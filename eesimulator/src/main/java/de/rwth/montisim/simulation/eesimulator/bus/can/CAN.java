@@ -52,7 +52,7 @@ public class CAN extends Bus {
     public static final long MEDIUM_SPEED_CAN_BITRATE = 500_000;
     public static final long LOW_SPEED_CAN_BITRATE = 125_000;
 
-    public final CANProperties properties;
+    public final transient CANProperties properties;
 
     private Instant startTime;
     // Time in the bus expressed in transmitted bits: Equivalent time in sec. is
@@ -62,19 +62,18 @@ public class CAN extends Bus {
     private long bitTime = 0;
 
     /** Currently registered messages at this bus. */
-    private PriorityQueue<CANMessageTransmission> messages;
+    private PriorityQueue<CANMessageTransmission> messages; // TODO serialize
 
-    private Optional<CANMessageTransmission> currentTransmission = Optional.empty();
+    private Optional<CANMessageTransmission> currentTransmission = Optional.empty(); // TODO serialize
 
-    private final Random rnd = new Random();
+    private final transient Random rnd = new Random();
 
     public CAN(CANProperties properties, MessagePriorityComparator comp) {
         super(properties);
-        this.messages = new PriorityQueue<CANMessageTransmission>(
-                new MessageTransmission.MsgTransPriorityComp(comp));
+        this.messages = new PriorityQueue<CANMessageTransmission>(new MessageTransmission.MsgTransPriorityComp(comp));
         this.properties = properties;
     }
-    
+
     @Override
     protected void init() {
         this.startTime = simulator.getSimulationTime();
@@ -89,51 +88,56 @@ public class CAN extends Bus {
     protected void sendMessage(MessageSendEvent event) {
         MessageTransmission current = nextTransmission();
         messages.offer(new CANMessageTransmission(event.getMessage(), rnd));
-        if (messages.peek() == current) return; // No change in the next event.
-        
+        if (messages.peek() == current)
+            return; // No change in the next event.
+
         // 2 remaining cases:
         // 1) There was no message being sent -> process the new message and create
-        //    an event for its transmission completion. (current == null)
-        // 2) The new message might interrupts the current transmission (higher priority)
-        //    if the current message uses multiple frames. If the current message is
-        //    a single frame message, the new message only overrides it if it is sent 
-        //    before the identifier is transmitted. => Currently not the case (interrupts
-        //    only if sending at the same time with higher priority).
+        // an event for its transmission completion. (current == null)
+        // 2) The new message might interrupts the current transmission (higher
+        // priority)
+        // if the current message uses multiple frames. If the current message is
+        // a single frame message, the new message only overrides it if it is sent
+        // before the identifier is transmitted. => Currently not the case (interrupts
+        // only if sending at the same time with higher priority).
 
-        // If there is a 'currentNextEvent': 
-        //      - Find frame at which the transmission is interrupted.
-        //      - Update 'bitTime' to AFTER the frame = time where the next frame can be sent.
+        // If there is a 'currentNextEvent':
+        // - Find frame at which the transmission is interrupted.
+        // - Update 'bitTime' to AFTER the frame = time where the next frame can be
+        // sent.
         // Else simply advance time.
         long t = bitTimeFromInstant(event.getEventTime());
         // /!\ State based, currentTransmission must have an associated event.
-        if (currentTransmission.isPresent()){ // 2)
+        if (currentTransmission.isPresent()) { // 2)
             CANMessageTransmission msg = currentTransmission.get();
             long deltaBits = t - bitTime;
-            int transmittedFrameCount = deltaBits == 0 ? 0 : (int) ((deltaBits-1)/FULL_FRAME)+1;
-            int transmittedBits = transmittedFrameCount*FULL_FRAME;
-            if (transmittedBits >= msg.getRemainingBits()) return; // The current transmission is not interrupted.
+            int transmittedFrameCount = deltaBits == 0 ? 0 : (int) ((deltaBits - 1) / FULL_FRAME) + 1;
+            int transmittedBits = transmittedFrameCount * FULL_FRAME;
+            if (transmittedBits >= msg.getRemainingBits())
+                return; // The current transmission is not interrupted.
             // Else interrupt transmission
             msg.transmitBits(transmittedBits);
             msg.event.get().invalid = true;
             currentTransmission = Optional.empty();
-            
-            bitTime += transmittedFrameCount*FULL_FRAME;
+
+            bitTime += transmittedFrameCount * FULL_FRAME;
         } else { // 1)
             bitTime = t;
         }
-        
+
         createNextReceiveEvent();
     }
 
     @Override
     protected void receiveMessage(MessageReceiveEvent event) {
-        if (!currentTransmission.isPresent() || currentTransmission.get().event.get() != event) 
+        if (!currentTransmission.isPresent() || currentTransmission.get().event.get() != event)
             throw new IllegalArgumentException("Unexpected MessageReceiveEvent");
-        
+
         // Complete Transmission
         CANMessageTransmission msg = currentTransmission.get();
         bitTime += msg.getRemainingBits() + INTERFRAME_SPACE_BITS;
-        msg.finished = true; // Tag the transmissions to remove them from the 'messages' (there is no guarantee that they are at the front of the queue)
+        msg.finished = true; // Tag the transmissions to remove them from the 'messages' (there is no
+                             // guarantee that they are at the front of the queue)
         currentTransmission = Optional.empty();
 
         createNextReceiveEvent();
@@ -141,11 +145,12 @@ public class CAN extends Bus {
 
     // Assumes the current bitTime is synchronized to the last frame end
     // (+interspace) or to the current time.
-    // NOTE: This model assumes that messages whose data doesn't fit into a single frame
-    //       get transmitted across multiple frames by some transparent mechanism.
-    private void createNextReceiveEvent(){
+    // NOTE: This model assumes that messages whose data doesn't fit into a single
+    // frame
+    // get transmitted across multiple frames by some transparent mechanism.
+    private void createNextReceiveEvent() {
         CANMessageTransmission next = nextTransmission();
-        if (next != null){
+        if (next != null) {
             long finishTime = bitTime + next.getRemainingBits();
             MessageReceiveEvent evt = new MessageReceiveEvent(instantFromBitTime(finishTime), this, next.msg);
             next.event = Optional.of(evt);
@@ -155,21 +160,22 @@ public class CAN extends Bus {
     }
 
     /** Returns the next unfinished message transmission. */
-    private CANMessageTransmission nextTransmission(){
+    private CANMessageTransmission nextTransmission() {
         CANMessageTransmission c = messages.peek();
-        while (c != null && c.finished){
+        while (c != null && c.finished) {
             messages.poll();
             c = messages.peek();
         }
         return c;
     }
 
-    private Instant instantFromBitTime(long time){
-        return startTime.plus(Duration.ofNanos((time*Time.SECOND_TO_NANOSEC)/properties.bitRate));
+    private Instant instantFromBitTime(long time) {
+        return startTime.plus(Duration.ofNanos((time * Time.SECOND_TO_NANOSEC) / properties.bit_rate));
     }
-    private long bitTimeFromInstant(Instant time){
+
+    private long bitTimeFromInstant(Instant time) {
         long nanos = Time.nanosecondsFromDuration(Duration.between(startTime, time));
-        return (nanos*properties.bitRate)/Time.SECOND_TO_NANOSEC;
+        return (nanos * properties.bit_rate) / Time.SECOND_TO_NANOSEC;
     }
 
 }

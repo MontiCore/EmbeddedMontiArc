@@ -3,6 +3,8 @@ package de.rwth.montisim.simulation.simulator.visualization;
 
 import javax.swing.*;
 import java.awt.BorderLayout;
+import java.io.IOException;
+import java.lang.reflect.InvocationTargetException;
 import java.time.*;
 import java.util.logging.Logger;
 
@@ -15,7 +17,6 @@ import de.rwth.montisim.simulation.simulator.visualization.car.CarRenderer;
 import de.rwth.montisim.simulation.simulator.visualization.plotter.TimePlotter;
 import de.rwth.montisim.simulation.simulator.visualization.ui.*;
 import de.rwth.montisim.simulation.vehicle.*;
-import de.rwth.montisim.simulation.vehicle.config.*;
 import de.rwth.montisim.simulation.vehicle.physicsmodel.rigidbody.RigidbodyPhysics;
 
 public class PhysicsDebug extends JFrame implements SimulationRunner {
@@ -90,25 +91,27 @@ public class PhysicsDebug extends JFrame implements SimulationRunner {
         crossedQuarter = false;
 
         mtManager = new MessageTypeManager();
-        VehicleConfig config = setupTurningCar();
+        VehicleProperties config = setupTurningCar();
         try {
-            vehicle = new VehicleBuilder(mtManager, null, config).setName("TestVehicle").build();
+            vehicle = VehicleBuilder.fromConfig(mtManager, null, config).setName("TestVehicle").build();
             physics = (RigidbodyPhysics) vehicle.physicsModel;
             physics.setGroundPosition(new Vec3(0, 0, 0), new Vec2(START_DIR.x, START_DIR.y));
             VehicleProperties p = vehicle.properties;
             cr.setCar(physics.getPhysicalObject(), new Vec3(p.body.length, p.body.width, p.body.height));
-        } catch (EEMessageTypeException e) {
+        } catch (ParsingException | InstantiationException | IllegalAccessException | IllegalArgumentException
+                | InvocationTargetException | NoSuchMethodException | SecurityException | EEMessageTypeException
+                | IOException e) {
             // TODO Auto-generated catch block
             e.printStackTrace();
         }
     }
 
-    private VehicleConfig setupTurningCar(){
+    private VehicleProperties setupTurningCar(){
         double turnRadius = 30;
         double maxSpeed = 0.8*270*Math.pow(turnRadius, -0.5614);
         System.out.println("MaxSpeed: "+Double.toString(maxSpeed));
 
-        return TestVehicleConfig.newCircleAutopilotConfig(maxSpeed, turnRadius);
+        return TestVehicleConfig.newCircleAutopilotConfig(maxSpeed, turnRadius).properties;
     }
 
     @Override

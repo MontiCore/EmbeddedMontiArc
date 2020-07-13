@@ -7,39 +7,33 @@ import de.rwth.montisim.simulation.vehicle.powertrain.electrical.motor.ElectricM
 
 public class ElectricalPowerTrain extends PowerTrain {
     public final Battery battery;
-    public final ElectricMotor e_motor;    
-    public final ElectricalPTProperties electricalPTProperties;
-
-    private final double transmissionRatio;
+    transient public final ElectricMotor e_motor;
+    transient public final ElectricalPTProperties electricalPTProperties;
 
     public ElectricalPowerTrain(ElectricalPTProperties properties) {
         super(properties);
         this.electricalPTProperties = properties;
 
-        this.transmissionRatio = properties.transmissionRatio;
-
-        switch (properties.batteryProperties.batteryType) {
+        switch (properties.batteryProperties.type) {
             case INFINITE:
-                battery = new InfiniteBattery();
+                battery = new InfiniteBattery(properties.batteryProperties);
                 break;
             case SIMPLE:
-                battery = new SimpleBattery();
+                battery = new SimpleBattery(properties.batteryProperties);
                 break;
             default:
-            battery = null;
+                battery = null;
                 break;
         }
-        this.battery.init(properties.batteryProperties);
 
-        switch(properties.motorProperties.type) {
+        switch (properties.motorProperties.type) {
             case DEFAULT:
-                e_motor = new ElectricMotor();
+                e_motor = new ElectricMotor(properties.motorProperties);
                 break;
             default:
                 e_motor = null;
         }
         this.e_motor.setBattery(this.battery);
-        this.e_motor.init(properties.motorProperties);
         this.motor = this.e_motor;
     }
 
@@ -50,6 +44,8 @@ public class ElectricalPowerTrain extends PowerTrain {
 
     @Override
     public double getTransmissionRatio() {
-        return transmissionRatio;
+        return electricalPTProperties.transmission_ratio;
     }
+
+    
 }

@@ -1,28 +1,36 @@
 /* (c) https://github.com/MontiCore/monticore */
 package de.rwth.montisim.simulation.eecomponents.navigation;
 
-import de.rwth.montisim.simulation.environment.pathfinding.Pathfinding;
-import de.rwth.montisim.simulation.vehicle.Vehicle;
-import de.rwth.montisim.simulation.vehicle.componentbuilders.ServiceComponentBuilder;
-import de.rwth.montisim.simulation.vehicle.componentbuilders.ServiceComponentProperties;
+import de.rwth.montisim.commons.utils.json.Typed;
+import de.rwth.montisim.simulation.eesimulator.components.EEComponentProperties;
+import de.rwth.montisim.simulation.eesimulator.components.EEComponentType;
+import de.rwth.montisim.simulation.vehicle.VehicleBuilder;
 
-public class NavigationProperties extends ServiceComponentProperties {
-    public static final String SERVICE_TYPE = "Navigation";
+@Typed(NavigationProperties.TYPE)
+public class NavigationProperties extends EEComponentProperties {
+    public static final String TYPE = "navigation";
     static {
-        ServiceComponentBuilder.registerServiceBuilder(SERVICE_TYPE, 
-            (ServiceComponentProperties properties, Pathfinding pathfinding, Vehicle vehicle) -> 
-                new Navigation((NavigationProperties) properties, pathfinding)
-        );
+        VehicleBuilder.registerComponentBuilder(TYPE,
+                (properties, context) -> new Navigation((NavigationProperties) properties, context.pathfinding));
     }
 
     public NavigationProperties() {
-        super(SERVICE_TYPE);
-        this.name = "UnnamedNavigation";
+        this.name = "DefaultNavigation";
     }
-    
+
     public NavigationProperties setName(String name) {
         this.name = name;
         return this;
+    }
+
+    @Override
+    public EEComponentType getGeneralType() {
+        return EEComponentType.SERVICE;
+    }
+
+    @Override
+    public String getType() {
+        return TYPE;
     }
 
 }

@@ -8,6 +8,6 @@ public class EEMessageTypeException extends Exception {
     private static final long serialVersionUID = -6968498943435246952L;
 
     public EEMessageTypeException(String name, EEComponent c1, DataType type1, EEComponent c2, DataType type2) {
-        super ("Message " + name + " registered with different types:\n\tComponent '"+c1.name+ "' with type "+type1+".\n\tComponent '"+c2.name+"' with type "+type2+".");
+        super ("Message " + name + " registered with different types:\n\tComponent '"+c1.properties.name+ "' with type "+type1+".\n\tComponent '"+c2.properties.name+"' with type "+type2+".");
 	}
 }

@@ -3,46 +3,62 @@ package de.rwth.montisim.simulation.eesimulator.sensor;
 
 import java.time.Duration;
 
+import de.rwth.montisim.commons.utils.json.Typed;
 import de.rwth.montisim.simulation.eesimulator.components.EEComponentProperties;
 import de.rwth.montisim.simulation.eesimulator.components.EEComponentType;
 
+@Typed(SensorProperties.TYPE)
 public class SensorProperties extends EEComponentProperties {
-    public SensorProperties() {
-        super(EEComponentType.SENSOR);
-    }
+    public static final String TYPE = "sensor";
+
+    public String physical_value_name;
+
+    public Duration update_interval;
+    public Duration read_time;
+    public boolean send_only_changed;
+
+
     public SensorProperties(Duration updateInterval, Duration readTime, boolean sendOnlyChanged) {
-        super(EEComponentType.SENSOR);
-        this.updateInterval = updateInterval;
-        this.readTime = readTime;
-        this.sendOnlyChanged = sendOnlyChanged;
+        this.update_interval = updateInterval;
+        this.read_time = readTime;
+        this.send_only_changed = sendOnlyChanged;
     }
-    
+
     public SensorProperties setName(String name) {
         this.name = name;
         return this;
     }
-    
+
     public SensorProperties setPhysicalValueName(String physicalValueName) {
-        this.physicalValueName = physicalValueName;
+        this.physical_value_name = physicalValueName;
         return this;
     }
 
     public SensorProperties setUpdateInterval(Duration updateInterval) {
-        this.updateInterval = updateInterval;
+        this.update_interval = updateInterval;
         return this;
     }
+
     public SensorProperties setReadTime(Duration readTime) {
-        this.readTime = readTime;
+        this.read_time = readTime;
         return this;
     }
+
     public SensorProperties setUpdateRule(boolean sendOnlyChanged) {
-        this.sendOnlyChanged = sendOnlyChanged;
+        this.send_only_changed = sendOnlyChanged;
         return this;
     }
 
-    public String physicalValueName;
 
-    public Duration updateInterval;
-    public Duration readTime; 
-    public boolean sendOnlyChanged;
+
+    
+    @Override
+    public EEComponentType getGeneralType() {
+        return EEComponentType.SENSOR;
+    }
+
+    @Override
+    public String getType() {
+        return TYPE;
+    }
 }

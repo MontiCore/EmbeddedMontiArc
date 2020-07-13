@@ -5,35 +5,36 @@ import de.rwth.montisim.simulation.vehicle.powertrain.Motor;
 import de.rwth.montisim.simulation.vehicle.powertrain.electrical.battery.Battery;
 
 public class ElectricMotor implements Motor {
-    Battery battery = null;
-    //TODO
-    public ElectricMotorProperties properties;
+    transient Battery battery = null;
+    // TODO
+    public final transient ElectricMotorProperties properties;
 
-    public void init(ElectricMotorProperties properties){
+    public ElectricMotor(ElectricMotorProperties properties) {
         this.properties = properties;
     }
 
     @Override
     public double getMaxTorque(double rpm) {
         // TODO Torque curve (following Back-EMF or oder model)
-        if (battery.charge < battery.criticalCharge)
+        if (battery.isCritical())
             return 0;
-        return properties.motorPeekTorque;
+        return properties.motor_peek_torque;
     }
 
     @Override
     public void consume(double energy, double delta_t) {
         // TODO Auto-generated method stub
-        this.battery.discharge(energy/properties.motorEfficiency);
+        this.battery.discharge(energy / properties.motor_efficiency);
     }
 
     @Override
     public void regenerate(double energy, double delta_t) {
         // TODO Auto-generated method stub
-        this.battery.charge(energy*properties.regenEfficiency);
+        this.battery.charge(energy * properties.regen_efficiency);
     }
 
-    public void setBattery(Battery battery){
+    public void setBattery(Battery battery) {
         this.battery = battery;
     }
+
 }

@@ -12,13 +12,13 @@ public class SimulationLoop {
     public SimulationLoop(Simulator simulator, SimulationConfig config){
         this.simulator = simulator;
         this.config = config;
-        this.simulationTime = config.simulationStart;
+        this.simulationTime = config.start_time;
     }
 
     public boolean run(){
         try {
             while (!simulator.finished()){
-                TimeUpdate tu = new TimeUpdate(simulationTime, config.tickDuration);
+                TimeUpdate tu = new TimeUpdate(simulationTime, config.tick_duration);
                 simulator.update(tu);
                 simulationTime = tu.newTime;
             }

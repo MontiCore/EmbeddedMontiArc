@@ -7,7 +7,6 @@ import de.rwth.montisim.simulation.eecomponents.autopilots.TestAutopilotProperti
 import de.rwth.montisim.simulation.eesimulator.bus.constant.ConstantBusProperties;
 import de.rwth.montisim.simulation.eesimulator.sensor.SensorProperties;
 import de.rwth.montisim.simulation.vehicle.VehicleProperties;
-import de.rwth.montisim.simulation.vehicle.config.*;
 import de.rwth.montisim.simulation.vehicle.physicalvalues.TrueVelocity;
 import de.rwth.montisim.simulation.vehicle.physicsmodel.rigidbody.RigidbodyPhysicsProperties;
 import de.rwth.montisim.simulation.vehicle.powertrain.electrical.ElectricalPTProperties;
@@ -15,23 +14,24 @@ import de.rwth.montisim.simulation.vehicle.powertrain.electrical.battery.Battery
 import de.rwth.montisim.simulation.vehicle.powertrain.electrical.battery.BatteryProperties.BatteryType;
 import de.rwth.montisim.simulation.vehicle.powertrain.electrical.motor.ElectricMotorProperties;
 
-public class TestVehicleConfig extends VehicleConfig {
+public class TestVehicleConfig {
+    public final VehicleProperties properties;
+
     public final ElectricalPTProperties electricalPTProperties;
     public final RigidbodyPhysicsProperties rbPhysicsProperties;
     public final BatteryProperties batteryProperties;
     public final ElectricMotorProperties motorProperties;
 
     public TestVehicleConfig() {
-        this.eeConfig = new EEConfig();
         this.properties = new VehicleProperties();
         this.batteryProperties = new BatteryProperties(BatteryType.INFINITE);
         this.motorProperties = new ElectricMotorProperties();
-        this.electricalPTProperties = new ElectricalPTProperties(eeConfig, motorProperties, batteryProperties);
-        this.powerTrainProperties = electricalPTProperties;
+        this.electricalPTProperties = new ElectricalPTProperties(properties, motorProperties, batteryProperties);
+        this.properties.powertrain = electricalPTProperties;
         this.rbPhysicsProperties = new RigidbodyPhysicsProperties();
-        this.physicsProperties = rbPhysicsProperties;
+        this.properties.physics = rbPhysicsProperties;
 
-        eeConfig.addComponent(
+        properties.addComponent(
             new SensorProperties(
                 Duration.ofMillis(100), // Update rate
                 Duration.ofMillis(10), // Read time
@@ -41,7 +41,7 @@ public class TestVehicleConfig extends VehicleConfig {
             .setPhysicalValueName(TrueVelocity.VALUE_NAME)
         );
         
-        eeConfig.addComponent(
+        properties.addComponent(
             ConstantBusProperties.instantBus().setName("DefaultBus")
         );
 
@@ -50,10 +50,10 @@ public class TestVehicleConfig extends VehicleConfig {
 
     static public TestVehicleConfig newCircleAutopilotConfig(double maxSpeed, double turnRadius){
         TestVehicleConfig config = new TestVehicleConfig();
-        double maxForce = config.electricalPTProperties.motorProperties.motorPeekTorque *
-            config.electricalPTProperties.transmissionRatio * 2 /
-            config.properties.wheels.wheelDiameter;
-        config.eeConfig.addComponent(
+        double maxForce = config.electricalPTProperties.motorProperties.motor_peek_torque *
+            config.electricalPTProperties.transmission_ratio * 2 /
+            config.properties.wheels.diameter;
+        config.properties.addComponent(
             TestAutopilotProperties.circleAutopilot(Duration.ofMillis(1), maxForce/config.properties.body.mass, maxSpeed, turnRadius).setName("TestAutopilot")
         );
         return config;
@@ -61,10 +61,10 @@ public class TestVehicleConfig extends VehicleConfig {
 
     static public TestVehicleConfig newStartStopAutopilotConfig(double targetSpeed){
         TestVehicleConfig config = new TestVehicleConfig();
-        double maxForce = config.electricalPTProperties.motorProperties.motorPeekTorque *
-            config.electricalPTProperties.transmissionRatio * 2 /
-            config.properties.wheels.wheelDiameter;
-        config.eeConfig.addComponent(
+        double maxForce = config.electricalPTProperties.motorProperties.motor_peek_torque *
+            config.electricalPTProperties.transmission_ratio * 2 /
+            config.properties.wheels.diameter;
+        config.properties.addComponent(
             TestAutopilotProperties.startStopAutopilot(Duration.ofMillis(1), maxForce/config.properties.body.mass, targetSpeed).setName("TestAutopilot")
         );
         return config;

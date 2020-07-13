@@ -11,8 +11,8 @@ import de.rwth.montisim.commons.utils.*;
 public class TrueCompass extends PhysicalValue {
     public static final String VALUE_NAME = "true_compass";
     public static final DataType TYPE = DataType.DOUBLE;
-    final DynamicObject object;
-    final Vec2 v = new Vec2();
+    transient final DynamicObject object;
+    transient final Vec2 v = new Vec2();
     public TrueCompass(DynamicObject object) {
         super(VALUE_NAME, TYPE, 0);
         this.object = object;

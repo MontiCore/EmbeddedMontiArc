@@ -4,17 +4,17 @@ package de.rwth.montisim.simulation.vehicle.powertrain.fuel;
 import de.rwth.montisim.simulation.vehicle.powertrain.Motor;
 
 public class FuelMotor implements Motor {
-    FuelTank tank = null;
-    double litersPerJoule;
+    transient FuelTank tank = null;
+    transient double litersPerJoule;
 
     public FuelMotor(FuelPTProperties properties){
-        this.litersPerJoule = 1.0/properties.joulesPerLiter;
+        this.litersPerJoule = 1.0/properties.joules_per_liter;
     }
 
     @Override
     public double getMaxTorque(double rpm) {
         // TODO Auto-generated method stub
-        if (tank.capacity < 0.01) return 0;
+        if (tank.contained < 0.01) return 0;
         return 0;
     }
 

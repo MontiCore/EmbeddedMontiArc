@@ -4,9 +4,9 @@ package de.rwth.montisim.simulation.vehicle.powertrain.fuel;
 import de.rwth.montisim.simulation.vehicle.powertrain.PowerTrain;
 
 public class FuelPowerTrain extends PowerTrain {
-    public final FuelMotor f_motor;
+    transient public final FuelMotor f_motor;
     public final FuelTank tank;
-    public final FuelPTProperties fuelPTProperties;
+    transient public final FuelPTProperties fuelPTProperties;
 
     public FuelPowerTrain(FuelPTProperties properties) {
         super(properties);

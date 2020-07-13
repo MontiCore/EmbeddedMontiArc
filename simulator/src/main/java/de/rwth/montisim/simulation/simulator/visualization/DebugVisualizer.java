@@ -5,6 +5,7 @@ import javax.swing.JFrame;
 import java.awt.BorderLayout;
 import java.io.File;
 
+import de.rwth.montisim.commons.utils.LibraryService;
 import de.rwth.montisim.commons.utils.Vec3;
 import de.rwth.montisim.simulation.environment.world.World;
 import de.rwth.montisim.simulation.environment.world.elements.*;
@@ -47,7 +48,8 @@ public class DebugVisualizer extends JFrame {
     }
 
     public void vis1(String args[]) {
-        String mapPath = "D:/EmbededMontiArc/basic-simulator/install/maps/aachen.osm";
+        System.out.println(LibraryService.getWorkingDirectory());
+        String mapPath = "simulator/src/test/resources/aachen.osm";
         try {
             World world = new OsmToWorldLoader(new OsmMap("aachen", new File(mapPath))).getWorld();
             viewer.addRenderer(new WorldRenderer(world, SHOW_SEGMENTS));
@@ -58,7 +60,7 @@ public class DebugVisualizer extends JFrame {
     }
 
     public void vis2(String args[]) {
-        String mapPath = "D:/EmbededMontiArc/basic-simulator/install/maps/Aachen2.osm";
+        String mapPath = "simulator/src/test/resources/Aachen2.osm";
         try {
             World world = new OsmToWorldLoader(new OsmMap("aachen", new File(mapPath))).getWorld();
             viewer.addRenderer(new WorldRenderer(world, SHOW_SEGMENTS));

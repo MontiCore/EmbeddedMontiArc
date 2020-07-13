@@ -11,14 +11,14 @@ import de.rwth.montisim.simulation.eesimulator.exceptions.EEMessageTypeException
 import de.rwth.montisim.simulation.eesimulator.message.MessageInformation;
 
 public class SensorLogic implements Updatable {
-    final PhysicalValue watchedValue;
-    final SensorProperties properties;
+    final transient PhysicalValue watchedValue;
+    final transient SensorProperties properties;
     
     Instant nextUpdate = Instant.EPOCH; // Time after which the sensor can send its next value
-    Object lastValue = null;
+    Object lastValue = null; // TODO serialize using type
 
-    MessageInformation msgInfo;
-    EEComponent component;
+    transient MessageInformation msgInfo;
+    transient EEComponent component;
 
     public SensorLogic(SensorProperties properties, PhysicalValue watchedValue) {
         this.watchedValue = watchedValue;
@@ -33,11 +33,11 @@ public class SensorLogic implements Updatable {
     @Override
     public void update(TimeUpdate newTime) {
         if (newTime.oldTime.isAfter(nextUpdate)){
-            this.nextUpdate = newTime.oldTime.plus(properties.updateInterval);
+            this.nextUpdate = newTime.oldTime.plus(properties.update_interval);
             Object readValue = readValue();
-            if (!properties.sendOnlyChanged || hasChanged(readValue)){
+            if (!properties.send_only_changed || hasChanged(readValue)){
                 lastValue = readValue;
-                component.sendMessage(newTime.oldTime.plus(properties.readTime), msgInfo, readValue);
+                component.sendMessage(newTime.oldTime.plus(properties.read_time), msgInfo, readValue);
             }
         }
     }

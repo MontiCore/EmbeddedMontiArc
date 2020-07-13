@@ -41,20 +41,20 @@ public class Navigation extends EEComponent {
     public static final DataType TRAJECTORY_LAT_TYPE = TRAJECTORY_X_TYPE;
 
     //MessageInformation gpsPosMsg;
-    MessageInformation truePosMsg;
+    transient MessageInformation truePosMsg;
 
-    MessageInformation pushTargetPosMsg;
-    MessageInformation popTargetPosMsg;
+    transient MessageInformation pushTargetPosMsg;
+    transient MessageInformation popTargetPosMsg;
 
-    MessageInformation atTargetPosMsg;
-    MessageInformation currentTargetPosMsg;
+    transient MessageInformation atTargetPosMsg;
+    transient MessageInformation currentTargetPosMsg;
 
-    MessageInformation trajectoryXMsg;
-    MessageInformation trajectoryYMsg;
-    MessageInformation trajectoryLonMsg;
-    MessageInformation trajectoryLatMsg;
+    transient MessageInformation trajectoryXMsg;
+    transient MessageInformation trajectoryYMsg;
+    transient MessageInformation trajectoryLonMsg;
+    transient MessageInformation trajectoryLatMsg;
 
-    final Pathfinding pathfinding;
+    transient final Pathfinding pathfinding;
 
     final Stack<Vec2> targets = new Stack<>();
     Optional<Path> currentPath = Optional.empty();
@@ -219,6 +219,5 @@ public class Navigation extends EEComponent {
     public EEComponentType getComponentType() {
         return EEComponentType.SERVICE;
     }
-
     
 }

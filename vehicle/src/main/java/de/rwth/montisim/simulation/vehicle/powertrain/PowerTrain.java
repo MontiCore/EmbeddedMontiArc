@@ -3,21 +3,25 @@ package de.rwth.montisim.simulation.vehicle.powertrain;
 
 import de.rwth.montisim.commons.dynamicinterface.DataType;
 import de.rwth.montisim.commons.simulation.PhysicalValue;
+import de.rwth.montisim.commons.utils.json.JsonEntry;
 import de.rwth.montisim.simulation.eesimulator.actuator.Actuator;
 import de.rwth.montisim.simulation.vehicle.Vehicle;
 
 public abstract class PowerTrain {
 
-    public final PowerTrainProperties properties;
-    public Motor motor;
+    transient public final PowerTrainProperties properties;
+    transient public Motor motor;
     
+    @JsonEntry("steering")
     public final PhysicalValue steeringValue; // In degrees
+    @JsonEntry("braking")
     public final PhysicalValue brakingValue;
+    @JsonEntry("gas")
     public final PhysicalValue gasValue;
     
-    public Actuator steeringActuator; // In degrees
-    public Actuator brakingActuator; // From 0 to 1 (no brake - full brake)
-    public Actuator gasActuator; // From -0.5 to 1 (backwards - forward)
+    transient public Actuator steeringActuator; // In degrees
+    transient public Actuator brakingActuator; // From 0 to 1 (no brake - full brake)
+    transient public Actuator gasActuator; // From -0.5 to 1 (backwards - forward)
 
     public PowerTrain(PowerTrainProperties properties) {
         this.properties = properties;
@@ -37,4 +41,5 @@ public abstract class PowerTrain {
      * @return The current ratio between the motor & the wheels (ratio = motor revolutions / wheel revolutions)
      */
     public abstract double getTransmissionRatio();
+
 }

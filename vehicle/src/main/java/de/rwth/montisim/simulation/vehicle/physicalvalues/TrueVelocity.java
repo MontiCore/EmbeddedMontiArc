@@ -12,7 +12,7 @@ import de.rwth.montisim.commons.utils.IPM;
 public class TrueVelocity extends PhysicalValue {
     public static final String VALUE_NAME = "true_velocity";
     public static final DataType TYPE = DataType.DOUBLE;
-    final DynamicObject object;
+    transient final DynamicObject object;
     public TrueVelocity(DynamicObject object) {
         super(VALUE_NAME, TYPE, 0);
         this.object = object;

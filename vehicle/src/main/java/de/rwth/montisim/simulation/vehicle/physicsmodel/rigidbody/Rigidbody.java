@@ -3,12 +3,15 @@ package de.rwth.montisim.simulation.vehicle.physicsmodel.rigidbody;
 
 import de.rwth.montisim.commons.simulation.DynamicObject;
 import de.rwth.montisim.commons.utils.*;
+import de.rwth.montisim.commons.utils.json.Typed;
 
 /**
  * Class that represents a mass point of a rigid body
  */
+@Typed("rigidbody")
 public class Rigidbody extends DynamicObject {
     public static final double GRAVITY = -9.81;
+
     public Mat3 Jl = Mat3.unit(); // (local) inertia tensor
     public Mat3 J = Mat3.unit(); // (global) inertia tensor
     public Mat3 Jl_i = Mat3.unit(); // (local) inverse inertia tensor
@@ -20,13 +23,13 @@ public class Rigidbody extends DynamicObject {
     public Vec3 T = new Vec3(0, 0, 0); // Torque 
 
     // Use to compute in place -> Avoid memory trashing
-    private Vec3 accel = new Vec3(0,0,0);
-    private Vec3 deltaX = new Vec3(0,0,0);
-    private Vec3 JW = new Vec3(0,0,0);
-    private Vec3 WxJW = new Vec3(0,0,0);
-    private Vec3 ang_accel = new Vec3(0,0,0);
-    private Mat3 cross_matrix = new Mat3();
-    private Mat3 a = new Mat3();
+    private transient Vec3 accel = new Vec3(0,0,0);
+    private transient Vec3 deltaX = new Vec3(0,0,0);
+    private transient Vec3 JW = new Vec3(0,0,0);
+    private transient Vec3 WxJW = new Vec3(0,0,0);
+    private transient Vec3 ang_accel = new Vec3(0,0,0);
+    private transient Mat3 cross_matrix = new Mat3();
+    private transient Mat3 a = new Mat3();
 
     public Rigidbody(String type) {
         super(type);
@@ -74,4 +77,5 @@ public class Rigidbody extends DynamicObject {
         T.y = 0;
         T.z = 0;
     }
+
 }

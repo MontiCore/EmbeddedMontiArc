@@ -15,13 +15,12 @@ import de.rwth.montisim.simulation.vehicle.physicalvalues.TrueVelocity;
 import de.rwth.montisim.simulation.vehicle.powertrain.PowerTrainProperties;
 
 public class TestAutopilot extends EEComponent {
-    final TestAutopilotProperties properties;
+    transient final TestAutopilotProperties properties;
 
-    MessageInformation velocityMsg;
-    MessageInformation steeringMsg;
-    MessageInformation accelMsg;
-    MessageInformation brakeMsg;
-
+    transient MessageInformation velocityMsg;
+    transient MessageInformation steeringMsg;
+    transient MessageInformation accelMsg;
+    transient MessageInformation brakeMsg;
 
     double currentVelocity = 0;
     double previous_error = 0;
@@ -31,19 +30,21 @@ public class TestAutopilot extends EEComponent {
 
     boolean braking = false;
 
-    final PID pid;
+    transient final PID pid;
 
     public TestAutopilot(TestAutopilotProperties properties) {
         super(properties);
         this.properties = properties;
-        this.pid = new PID(1,0,0.2);
+        this.pid = new PID(1, 0, 0.2);
     }
+
     @Override
     protected void init() throws EEMessageTypeException {
         this.velocityMsg = addInput(TrueVelocity.VALUE_NAME, TrueVelocity.TYPE);
-        this.steeringMsg = addOutput(Actuator.SETTER_PREFIX+PowerTrainProperties.STEERING_VALUE_NAME, DataType.DOUBLE);
-        this.accelMsg = addOutput(Actuator.SETTER_PREFIX+PowerTrainProperties.GAS_VALUE_NAME, DataType.DOUBLE);
-        this.brakeMsg = addOutput(Actuator.SETTER_PREFIX+PowerTrainProperties.BRAKING_VALUE_NAME, DataType.DOUBLE);
+        this.steeringMsg = addOutput(Actuator.SETTER_PREFIX + PowerTrainProperties.STEERING_VALUE_NAME,
+                DataType.DOUBLE);
+        this.accelMsg = addOutput(Actuator.SETTER_PREFIX + PowerTrainProperties.GAS_VALUE_NAME, DataType.DOUBLE);
+        this.brakeMsg = addOutput(Actuator.SETTER_PREFIX + PowerTrainProperties.BRAKING_VALUE_NAME, DataType.DOUBLE);
     }
 
     @Override
@@ -57,9 +58,9 @@ public class TestAutopilot extends EEComponent {
     }
 
     void compute(Instant startTime) {
-        Instant sendTime = startTime.plus(properties.computeTime);
+        Instant sendTime = startTime.plus(properties.compute_time);
         if (properties.mode == Mode.START_STOP) {
-            if (currentVelocity > properties.targetVelocity * 0.9 && !braking) {
+            if (currentVelocity > properties.target_velocity * 0.9 && !braking) {
                 braking = true;
                 System.out.println("Braking");
             }
@@ -75,11 +76,11 @@ public class TestAutopilot extends EEComponent {
         } else {
             dt = Time.secondsFromDuration(Duration.between(lastTime, startTime));
         }
-        double output = pid.compute(dt, currentVelocity, properties.targetVelocity);
+        double output = pid.compute(dt, currentVelocity, properties.target_velocity);
         output /= 3.6; // Convert to m/s related space
         double accel = output / properties.maxVehicleAccel; // Convert to [0:1] actuator range
-        
-        sendMessage(sendTime, steeringMsg, properties.turnAngle);
+
+        sendMessage(sendTime, steeringMsg, properties.turn_angle);
         sendMessage(sendTime, accelMsg, accel);
     }
 
@@ -87,6 +88,5 @@ public class TestAutopilot extends EEComponent {
     public EEComponentType getComponentType() {
         return EEComponentType.COMPUTER;
     }
-
     
 }

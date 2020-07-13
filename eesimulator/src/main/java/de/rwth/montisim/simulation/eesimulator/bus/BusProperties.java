@@ -2,7 +2,6 @@
 package de.rwth.montisim.simulation.eesimulator.bus;
 
 import de.rwth.montisim.simulation.eesimulator.components.EEComponentProperties;
-import de.rwth.montisim.simulation.eesimulator.components.EEComponentType;
 
 public abstract class BusProperties extends EEComponentProperties {
     public static enum BusType {
@@ -23,11 +22,6 @@ public abstract class BusProperties extends EEComponentProperties {
         }
     }
     
-    public final BusType busType;
-
-    public BusProperties(BusType busType) {
-        super(EEComponentType.BUS);
-        this.busType = busType;
-    }
+    public abstract BusType getBusType();
     
 }

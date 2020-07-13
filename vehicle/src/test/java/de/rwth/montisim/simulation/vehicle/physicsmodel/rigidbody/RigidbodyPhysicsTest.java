@@ -9,7 +9,6 @@ import org.junit.*;
 import de.rwth.montisim.commons.simulation.TimeUpdate;
 import de.rwth.montisim.commons.utils.*;
 import de.rwth.montisim.simulation.vehicle.*;
-import de.rwth.montisim.simulation.vehicle.config.EEConfig;
 import de.rwth.montisim.simulation.vehicle.powertrain.electrical.ElectricalPTProperties;
 import de.rwth.montisim.simulation.vehicle.powertrain.electrical.ElectricalPowerTrain;
 import de.rwth.montisim.simulation.vehicle.powertrain.electrical.battery.BatteryProperties;
@@ -25,9 +24,9 @@ public class RigidbodyPhysicsTest {
     @Test
     public void testAccel() throws Exception {
         VehicleProperties properties = new VehicleProperties();
-        ElectricalPowerTrain powerTrain = new ElectricalPowerTrain(new ElectricalPTProperties(new EEConfig(), new ElectricMotorProperties(), new BatteryProperties(BatteryType.SIMPLE)));
+        ElectricalPowerTrain powerTrain = new ElectricalPowerTrain(new ElectricalPTProperties(null, new ElectricMotorProperties(), new BatteryProperties(BatteryType.SIMPLE)));
 
-        RigidbodyPhysics physics = new RigidbodyPhysics(powerTrain, properties);
+        RigidbodyPhysics physics = new RigidbodyPhysics(new RigidbodyPhysicsProperties(), powerTrain, properties);
 
         physics.setGroundPosition(new Vec3(0,0,0), new Vec2(1,0));
         powerTrain.gasValue.set(1.0);

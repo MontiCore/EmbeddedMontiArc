@@ -8,7 +8,7 @@ import de.rwth.montisim.commons.utils.Vec2;
 public class TruePosition extends PhysicalValue {
     public static final String VALUE_NAME = "true_position";
     public static final DataType TYPE = DataType.VEC2;
-    final DynamicObject object;
+    transient final DynamicObject object;
     public TruePosition(DynamicObject object) {
         super(VALUE_NAME, TYPE, new Vec2(0,0));
         this.object = object;

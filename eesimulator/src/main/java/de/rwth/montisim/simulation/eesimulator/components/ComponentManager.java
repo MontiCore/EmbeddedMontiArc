@@ -66,13 +66,13 @@ public class ComponentManager {
      * NOTE: the component's name must be set before registering it.
      */
     public int registerComponent(EEEventProcessor comp, Optional<Integer> priority) {
-        if (componentsByName.containsKey(comp.name)){
-            errors.namesErrors.add(new EEComponentNameException(comp.name));
+        if (componentsByName.containsKey(comp.properties.name)){
+            errors.namesErrors.add(new EEComponentNameException(comp.properties.name));
         }
         int id = componentTable.size();
         componentTable.add(comp);
         componentPriority.add(priority.isPresent() ? priority.get() : 0);
-        componentsByName.put(comp.name, comp);
+        componentsByName.put(comp.properties.name, comp);
         if (comp instanceof Bridge) {
             bridges.add((Bridge) comp);
         } else if (comp instanceof EEComponent) {
@@ -104,7 +104,7 @@ public class ComponentManager {
         }
         EEEventProcessor p = componentTable.get(componentId);
         if (!(p instanceof Bus)){
-            errors.componentTypeExceptions.add(new EEComponentTypeException(p.name, p.getComponentType(), EEComponentType.BUS));
+            errors.componentTypeExceptions.add(new EEComponentTypeException(p.properties.name, p.getComponentType(), EEComponentType.BUS));
             return null;
         }
         return (Bus) p;
@@ -140,7 +140,7 @@ public class ComponentManager {
             type.set(i, e.getComponentType() == EEComponentType.BUS ? 0 : e.getComponentType() == EEComponentType.BRIDGE ? 1 : 2);
         }
         for (Bus b : buses){
-            for (BusComponent c : b.getConnectedComponents()){
+            for (BusUser c : b.getConnectedComponents()){
                 graph.addUndirectedEdge(b.id, c.id);
             }
         }
@@ -232,9 +232,9 @@ public class ComponentManager {
                                     if (o.msg.name.equals(p.msg.name)){
                                         if (senders == null){
                                             senders = new ArrayList<>();
-                                            senders.add(ec.name);
+                                            senders.add(ec.properties.name);
                                         }
-                                        senders.add(ec2.name);
+                                        senders.add(ec2.properties.name);
                                         multiple = true; // Detect if multiple components send the same message
                                     }
 
@@ -318,13 +318,13 @@ public class ComponentManager {
                                     targets.add(((Bus) componentTable.get(n)));
                                 }
                             }
-                            ((BusComponent) componentTable.get(j)).addMessageTargets(p.msg.messageId, targets);
+                            ((BusUser) componentTable.get(j)).addMessageTargets(p.msg.messageId, targets);
                         } else if (t == 0){
-                            List<BusComponent> targets = new ArrayList<>();
+                            List<BusUser> targets = new ArrayList<>();
                             for (int n : graph.adjacencies.get(j)){
                                 if (usesOutput.get(n) && n != parent.get(j)){
                                     if (type.get(n) == 0) throw new IllegalStateException("Incorrect neighboring.");
-                                    targets.add(((BusComponent) componentTable.get(n)));
+                                    targets.add(((BusUser) componentTable.get(n)));
                                 }
                             }
                             ((Bus) componentTable.get(j)).addMessageTargets(p.msg.messageId, targets);
@@ -348,12 +348,12 @@ public class ComponentManager {
                 // Check optional
                 if (!p.optional) {
                     if (info == null || (info != null && !info.covered))
-                        errors.missingOutputExceptions.add(new EEMissingOutputException(p.msg.name, c.name));
+                        errors.missingOutputExceptions.add(new EEMissingOutputException(p.msg.name, c.properties.name));
                 }
                 if (info != null) {
                     // Check if the "multipleInputs" flag is respected
                     if (!p.multipleInputsAllowed && info.multiple)
-                        errors.multipleInputsExceptions.add(new EEMultipleInputsException(c.name, p.msg.name, info.senders));
+                        errors.multipleInputsExceptions.add(new EEMultipleInputsException(c.properties.name, p.msg.name, info.senders));
                 }
                 
             }

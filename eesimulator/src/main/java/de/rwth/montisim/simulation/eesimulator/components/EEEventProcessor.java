@@ -1,26 +1,22 @@
 /* (c) https://github.com/MontiCore/monticore */
 package de.rwth.montisim.simulation.eesimulator.components;
 
-import java.util.Optional;
-
 import de.rwth.montisim.simulation.eesimulator.EESimulator;
 import de.rwth.montisim.simulation.eesimulator.events.EEDiscreteEvent;
 import de.rwth.montisim.simulation.eesimulator.exceptions.EEMessageTypeException;
 
 public abstract class EEEventProcessor {
-    public final String name;
-	protected EESimulator simulator;
-    public int id;
-    public Optional<Integer> priority;
+    public final transient EEComponentProperties properties;
+	protected transient EESimulator simulator;
+    public transient int id;
     
     public EEEventProcessor(EEComponentProperties properties){
-        this.name = properties.name;
-        this.priority = properties.priority;
+        this.properties = properties;
     }
 
     public void attachTo(EESimulator simulator) throws EEMessageTypeException {
         this.simulator = simulator;
-        this.id = simulator.getComponentManager().registerComponent(this, priority);
+        this.id = simulator.getComponentManager().registerComponent(this, properties.priority);
         init();
     }
 
@@ -30,6 +26,6 @@ public abstract class EEEventProcessor {
 
     @Override
     public String toString(){
-        return "EEEventProcessor \""+name+'"';
+        return "EEEventProcessor \""+properties.name+'"';
     }
 }

@@ -73,22 +73,22 @@ public class ComponentSetupTest {
         c3MsgTargets.put(m3.messageId, busTarget);
         assertContent(c3.msgTargets, c3MsgTargets);
 
-        HashMap<Integer, HashSet<BusComponent>> busTargets = new HashMap<>();
+        HashMap<Integer, HashSet<BusUser>> busTargets = new HashMap<>();
 
-        HashSet<BusComponent> m1Targets = new HashSet<>();
+        HashSet<BusUser> m1Targets = new HashSet<>();
         m1Targets.add(c1);
         m1Targets.add(c2);
         busTargets.put(m1.messageId, m1Targets);
         
-        HashSet<BusComponent> m2Targets = new HashSet<>();
+        HashSet<BusUser> m2Targets = new HashSet<>();
         m2Targets.add(c1);
         busTargets.put(m2.messageId, m2Targets);
 
-        HashSet<BusComponent> m3Targets = new HashSet<>();
+        HashSet<BusUser> m3Targets = new HashSet<>();
         m3Targets.add(c2);
         busTargets.put(m3.messageId, m3Targets);
 
-        HashSet<BusComponent> m4Targets = new HashSet<>();
+        HashSet<BusUser> m4Targets = new HashSet<>();
         m4Targets.add(c3);
         busTargets.put(m4.messageId, m4Targets);
 
@@ -239,28 +239,28 @@ public class ComponentSetupTest {
 
         // Buses
 
-        HashSet<BusComponent> targetC2 = new HashSet<>();
+        HashSet<BusUser> targetC2 = new HashSet<>();
         targetC2.add(c2);
-        HashSet<BusComponent> targetC3 = new HashSet<>();
+        HashSet<BusUser> targetC3 = new HashSet<>();
         targetC3.add(c3);
-        HashSet<BusComponent> targetC4 = new HashSet<>();
+        HashSet<BusUser> targetC4 = new HashSet<>();
         targetC4.add(c4);
-        HashSet<BusComponent> targetC5 = new HashSet<>();
+        HashSet<BusUser> targetC5 = new HashSet<>();
         targetC5.add(c5);
-        HashSet<BusComponent> targetC6 = new HashSet<>();
+        HashSet<BusUser> targetC6 = new HashSet<>();
         targetC6.add(c6);
-        HashSet<BusComponent> targetR1 = new HashSet<>();
+        HashSet<BusUser> targetR1 = new HashSet<>();
         targetR1.add(r1);
-        HashSet<BusComponent> targetR2 = new HashSet<>();
+        HashSet<BusUser> targetR2 = new HashSet<>();
         targetR2.add(r2);
-        HashSet<BusComponent> targetR1C2 = new HashSet<>();
+        HashSet<BusUser> targetR1C2 = new HashSet<>();
         targetR1C2.add(r1);
         targetR1C2.add(c2);
-        HashSet<BusComponent> targetR2C3 = new HashSet<>();
+        HashSet<BusUser> targetR2C3 = new HashSet<>();
         targetR2C3.add(r2);
         targetR2C3.add(c3);
 
-        HashMap<Integer, HashSet<BusComponent>> b1Targets = new HashMap<>();
+        HashMap<Integer, HashSet<BusUser>> b1Targets = new HashMap<>();
         b1Targets.put(m1.messageId, targetR1C2);
         b1Targets.put(m2.messageId, targetC2);
         b1Targets.put(m3.messageId, targetR1);
@@ -269,7 +269,7 @@ public class ComponentSetupTest {
         b1Targets.put(m7.messageId, targetR1);
         assertContent(b1.getMsgTargets(), b1Targets);
 
-        HashMap<Integer, HashSet<BusComponent>> b2Targets = new HashMap<>();
+        HashMap<Integer, HashSet<BusUser>> b2Targets = new HashMap<>();
         b2Targets.put(m1.messageId, targetR2C3);
         b2Targets.put(m3.messageId, targetC3);
         b2Targets.put(m4.messageId, targetR2);
@@ -277,18 +277,18 @@ public class ComponentSetupTest {
         b2Targets.put(m7.messageId, targetC3);
         assertContent(b2.getMsgTargets(), b2Targets);
 
-        HashMap<Integer, HashSet<BusComponent>> b3Targets = new HashMap<>();
+        HashMap<Integer, HashSet<BusUser>> b3Targets = new HashMap<>();
         b3Targets.put(m1.messageId, targetC5);
         b3Targets.put(m5.messageId, targetC5);
         assertContent(b3.getMsgTargets(), b3Targets);
 
-        HashMap<Integer, HashSet<BusComponent>> b4Targets = new HashMap<>();
+        HashMap<Integer, HashSet<BusUser>> b4Targets = new HashMap<>();
         b4Targets.put(m1.messageId, targetC4);
         b4Targets.put(m4.messageId, targetC4);
         b4Targets.put(m5.messageId, targetC4);
         assertContent(b4.getMsgTargets(), b4Targets);
 
-        HashMap<Integer, HashSet<BusComponent>> b5Targets = new HashMap<>();
+        HashMap<Integer, HashSet<BusUser>> b5Targets = new HashMap<>();
         b5Targets.put(m1.messageId, targetC6);
         b5Targets.put(m7.messageId, targetC6);
         assertContent(b5.getMsgTargets(), b5Targets);
@@ -309,12 +309,12 @@ public class ComponentSetupTest {
         
         // Bus
 
-        HashSet<BusComponent> targetCA = new HashSet<>();
+        HashSet<BusUser> targetCA = new HashSet<>();
         targetCA.add(cA);
-        HashSet<BusComponent> targetCB = new HashSet<>();
+        HashSet<BusUser> targetCB = new HashSet<>();
         targetCB.add(cB);
 
-        HashMap<Integer, HashSet<BusComponent>> bATargets = new HashMap<>();
+        HashMap<Integer, HashSet<BusUser>> bATargets = new HashMap<>();
         bATargets.put(mA.messageId, targetCB);
         bATargets.put(mB.messageId, targetCA);
         assertContent(bA.getMsgTargets(), bATargets);

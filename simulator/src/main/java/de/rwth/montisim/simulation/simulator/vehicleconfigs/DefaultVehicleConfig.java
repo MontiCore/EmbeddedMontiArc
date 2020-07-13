@@ -8,7 +8,6 @@ import de.rwth.montisim.simulation.eecomponents.navigation.NavigationProperties;
 import de.rwth.montisim.simulation.eesimulator.bus.constant.ConstantBusProperties;
 import de.rwth.montisim.simulation.eesimulator.sensor.SensorProperties;
 import de.rwth.montisim.simulation.vehicle.VehicleProperties;
-import de.rwth.montisim.simulation.vehicle.config.*;
 import de.rwth.montisim.simulation.vehicle.physicalvalues.*;
 import de.rwth.montisim.simulation.vehicle.physicsmodel.rigidbody.RigidbodyPhysicsProperties;
 import de.rwth.montisim.simulation.vehicle.powertrain.electrical.ElectricalPTProperties;
@@ -16,23 +15,24 @@ import de.rwth.montisim.simulation.vehicle.powertrain.electrical.battery.Battery
 import de.rwth.montisim.simulation.vehicle.powertrain.electrical.battery.BatteryProperties.BatteryType;
 import de.rwth.montisim.simulation.vehicle.powertrain.electrical.motor.ElectricMotorProperties;
 
-public class DefaultVehicleConfig extends VehicleConfig {
+public class DefaultVehicleConfig {
+    public final VehicleProperties properties;
+
     public final ElectricalPTProperties electricalPTProperties;
     public final RigidbodyPhysicsProperties rbPhysicsProperties;
     public final BatteryProperties batteryProperties;
     public final ElectricMotorProperties motorProperties;
 
     public DefaultVehicleConfig() {
-        this.eeConfig = new EEConfig();
         this.properties = new VehicleProperties();
         this.batteryProperties = new BatteryProperties(BatteryType.INFINITE);
         this.motorProperties = new ElectricMotorProperties();
-        this.electricalPTProperties = new ElectricalPTProperties(eeConfig, motorProperties, batteryProperties);
-        this.powerTrainProperties = electricalPTProperties;
+        this.electricalPTProperties = new ElectricalPTProperties(properties, motorProperties, batteryProperties);
+        this.properties.powertrain = electricalPTProperties;
         this.rbPhysicsProperties = new RigidbodyPhysicsProperties();
-        this.physicsProperties = rbPhysicsProperties;
+        this.properties.physics = rbPhysicsProperties;
 
-        eeConfig.addComponent(
+        properties.addComponent(
             new SensorProperties(
                 Duration.ofMillis(100), // Update rate
                 Duration.ofMillis(10), // Read time
@@ -42,7 +42,7 @@ public class DefaultVehicleConfig extends VehicleConfig {
             .setPhysicalValueName(TrueVelocity.VALUE_NAME)
         );
 
-        eeConfig.addComponent(
+        properties.addComponent(
             new SensorProperties(
                 Duration.ofMillis(100), // Update rate
                 Duration.ofMillis(10), // Read time
@@ -52,7 +52,7 @@ public class DefaultVehicleConfig extends VehicleConfig {
             .setPhysicalValueName(TruePosition.VALUE_NAME)
         );
 
-        eeConfig.addComponent(
+        properties.addComponent(
             new SensorProperties(
                 Duration.ofMillis(100), // Update rate
                 Duration.ofMillis(10), // Read time
@@ -62,24 +62,29 @@ public class DefaultVehicleConfig extends VehicleConfig {
             .setPhysicalValueName(TrueCompass.VALUE_NAME)
         );
 
-        eeConfig.addComponent(
+        properties.addComponent(
             new NavigationProperties().setName("Navigation")
         );
         
-        eeConfig.addComponent(
+        properties.addComponent(
             ConstantBusProperties.instantBus().setName("DefaultBus")
         );
     }
 
     public static DefaultVehicleConfig withJavaAutopilot() {
         DefaultVehicleConfig config = new DefaultVehicleConfig();
-        double maxForce = config.electricalPTProperties.motorProperties.motorPeekTorque *
-            config.electricalPTProperties.transmissionRatio * 2 /
-            config.properties.wheels.wheelDiameter;
-            config.eeConfig.addComponent(
+        double maxForce = config.electricalPTProperties.motorProperties.motor_peek_torque *
+            config.electricalPTProperties.transmission_ratio * 2 /
+            config.properties.wheels.diameter;
+            config.properties.addComponent(
                 new JavaAutopilotProperties(maxForce/config.properties.body.mass).setName("TestAutopilot")
             );
         return config;
+    }
+
+    public DefaultVehicleConfig setName(String vehicleName){
+        this.properties.vehicleName = vehicleName;
+        return this;
     }
 
 }

@@ -6,9 +6,9 @@ import java.time.*;
 import de.rwth.montisim.commons.utils.Time;
 
 public class SimulationConfig {
-    Duration maxSimulationDuration = Duration.ofSeconds(60);
-    Duration tickDuration = Duration.ofNanos(Time.SECOND_TO_NANOSEC/100);
-    Instant simulationStart = Instant.now();
+    Duration max_duration = Duration.ofSeconds(60);
+    Duration tick_duration = Duration.ofNanos(Time.SECOND_TO_NANOSEC/100);
+    Instant start_time = Instant.now();
 
     
 }

@@ -3,19 +3,19 @@ package de.rwth.montisim.simulation.eesimulator.bridge;
 
 import java.time.Duration;
 
+import de.rwth.montisim.commons.utils.json.Typed;
 import de.rwth.montisim.simulation.eesimulator.components.EEComponentProperties;
 import de.rwth.montisim.simulation.eesimulator.components.EEComponentType;
 
+@Typed(BridgeProperties.TYPE)
 public class BridgeProperties extends EEComponentProperties {
-    protected BridgeProperties() {
-        super(EEComponentType.BRIDGE);
-    }
-    
+    public static final String TYPE = "bridge";
+
     /**
      * The delay that is added to each event if it is transmitted over the bride.
      */
     public Duration delay;
-    
+
     public BridgeProperties setName(String name) {
         this.name = name;
         return this;
@@ -29,4 +29,15 @@ public class BridgeProperties extends EEComponentProperties {
         p.delay = Duration.ZERO;
         return p;
     }
+
+    @Override
+    public EEComponentType getGeneralType() {
+        return EEComponentType.BRIDGE;
+    }
+
+    @Override
+    public String getType() {
+        return TYPE;
+    }
+
 }

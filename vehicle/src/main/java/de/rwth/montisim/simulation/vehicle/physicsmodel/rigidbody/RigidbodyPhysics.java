@@ -6,13 +6,19 @@ import java.util.Optional;
 import de.rwth.montisim.commons.boundingbox.*;
 import de.rwth.montisim.commons.simulation.*;
 import de.rwth.montisim.commons.utils.*;
+import de.rwth.montisim.commons.utils.json.FieldSelect;
+import de.rwth.montisim.commons.utils.json.Select;
 import de.rwth.montisim.simulation.vehicle.*;
 import de.rwth.montisim.simulation.vehicle.physicsmodel.PhysicsModel;
+import de.rwth.montisim.simulation.vehicle.physicsmodel.PhysicsProperties;
 import de.rwth.montisim.simulation.vehicle.powertrain.*;
 import de.rwth.montisim.simulation.vehicle.powertrain.PowerTrainProperties.TractionType;
 
+@FieldSelect(Select.EXPLICIT)
 public class RigidbodyPhysics implements PhysicsModel {
     // TODO model wheel friction/slipping
+
+    final RigidbodyPhysicsProperties properties;
 
     private final PowerTrain powerTrain;
 
@@ -69,10 +75,11 @@ public class RigidbodyPhysics implements PhysicsModel {
     private final Vec3 ground_pos = new Vec3(0, 0, 0);
     final Collision c = new Collision();
 
-    public RigidbodyPhysics(PowerTrain powerTrain, VehicleProperties properties) {
+    public RigidbodyPhysics(RigidbodyPhysicsProperties properties, PowerTrain powerTrain, VehicleProperties vProperties) {
         this.powerTrain = powerTrain;
+        this.properties = properties;
 
-        VehicleProperties p = properties;
+        VehicleProperties p = vProperties;
         PowerTrainProperties ptp = powerTrain.properties;
 
         Vec3 size = new Vec3(p.body.length, p.body.width, p.body.height);
@@ -87,21 +94,17 @@ public class RigidbodyPhysics implements PhysicsModel {
         rb.updateVars();
 
         // TEMP wheel info
-        this.wheel_circumference_inv = 1 / (Math.PI * p.wheels.wheelDiameter);
-        this.wheel_radius_inv = 2 / p.wheels.wheelDiameter;
+        this.wheel_circumference_inv = 1 / (Math.PI * p.wheels.diameter);
+        this.wheel_radius_inv = 2 / p.wheels.diameter;
         this.wheel_dist = size.x * 0.8;
         this.wheel_width = size.y * 0.9;
 
-        this.frontAccel = ptp.tractionType == TractionType.FRONT
-                || ptp.tractionType == TractionType.ALL;
-        this.backAccel = ptp.tractionType == TractionType.REAR
-                || ptp.tractionType == TractionType.ALL;
+        this.frontAccel = ptp.traction == TractionType.FRONT || ptp.traction == TractionType.ALL;
+        this.backAccel = ptp.traction == TractionType.REAR || ptp.traction == TractionType.ALL;
         this.inv_traction_number = 1.0 / ((frontAccel ? 2 : 0) + (backAccel ? 2 : 0));
 
-        this.frontBrake = ptp.brakingType == TractionType.FRONT
-                || ptp.brakingType == TractionType.ALL;
-        this.backBrake = ptp.brakingType == TractionType.REAR
-                || ptp.brakingType == TractionType.ALL;
+        this.frontBrake = ptp.braking == TractionType.FRONT || ptp.braking == TractionType.ALL;
+        this.backBrake = ptp.braking == TractionType.REAR || ptp.braking == TractionType.ALL;
 
         for (int i = 0; i < 4; ++i) {
             this.wheel_pos[i] = new Vec3();
@@ -277,7 +280,7 @@ public class RigidbodyPhysics implements PhysicsModel {
 
         if ((front && frontBrake) || (!front && backBrake)) {
             double i_brake = (Double) powerTrain.brakingValue.value();
-            double f_brake_abs = i_brake * powerTrain.properties.maxBrakingForce;
+            double f_brake_abs = i_brake * powerTrain.properties.max_braking_force;
             // Limit braking force to avoid integration overshooting (when braking at near 0
             // speed)
             double max_f = Math.abs(front_vel) * rb.mass / deltaSecs;
@@ -413,6 +416,11 @@ public class RigidbodyPhysics implements PhysicsModel {
         rb.rotation.col2.set(side_vec);
         rb.rotation.col3.set(a);
         rb.updateVars();
+    }
+
+    @Override
+    public PhysicsProperties getProperties() {
+        return properties;
     }
 
 }

@@ -20,13 +20,13 @@ import de.rwth.montisim.simulation.eesimulator.message.PortInformation.PortDirec
  * Components that receives and sends messages in a car. The component must
  * register its different ports.
  */
-public abstract class EEComponent extends BusComponent {
+public abstract class EEComponent extends BusUser {
 	public EEComponent(EEComponentProperties properties) {
 		super(properties);
 	}
 
-	List<PortInformation> inputPorts = new ArrayList<>();
-	List<PortInformation> outputPorts = new ArrayList<>();
+	transient List<PortInformation> inputPorts = new ArrayList<>();
+	transient List<PortInformation> outputPorts = new ArrayList<>();
 
 	/**
 	 * Returns the messages that this component wants to receive.

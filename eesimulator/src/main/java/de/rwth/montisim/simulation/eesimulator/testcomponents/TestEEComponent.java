@@ -13,7 +13,7 @@ import de.rwth.montisim.simulation.eesimulator.events.MessageReceiveEvent;
  * events.
  */
 public class TestEEComponent extends EEComponent {
-    public List<MessageReceiveEvent> events = new ArrayList<>();
+    public transient List<MessageReceiveEvent> events = new ArrayList<>();
 
     public TestEEComponent(String name) {
         super(new TestCompProperties(name));
@@ -34,5 +34,5 @@ public class TestEEComponent extends EEComponent {
         // TODO Auto-generated method stub
 
     }
-    
+
 }

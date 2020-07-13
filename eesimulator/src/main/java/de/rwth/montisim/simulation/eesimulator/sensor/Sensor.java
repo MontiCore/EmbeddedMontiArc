@@ -1,6 +1,8 @@
 /* (c) https://github.com/MontiCore/monticore */
 package de.rwth.montisim.simulation.eesimulator.sensor;
 
+import java.lang.reflect.InvocationTargetException;
+
 import de.rwth.montisim.commons.simulation.PhysicalValue;
 import de.rwth.montisim.commons.simulation.TimeUpdate;
 import de.rwth.montisim.commons.simulation.Updatable;
@@ -38,5 +40,4 @@ public class Sensor extends EEComponent implements Updatable {
     public EEComponentType getComponentType() {
         return EEComponentType.SENSOR;
     }
-
 }

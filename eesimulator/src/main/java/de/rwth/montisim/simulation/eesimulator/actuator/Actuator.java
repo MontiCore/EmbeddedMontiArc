@@ -20,21 +20,24 @@ import de.rwth.montisim.simulation.eesimulator.sensor.SensorLogic;
 public class Actuator extends EEComponent implements Updatable {
     public static final String SETTER_PREFIX = "set_";
 
-    public final ActuatorProperties properties;
-    final PhysicalValue actuatedValue;
+    public final transient ActuatorProperties properties;
+    final transient PhysicalValue actuatedValue;
     SensorLogic sensor;
     public double targetValue;
-    final boolean sendFeedback; // Whether the actuator senses itself and sends its current value on the bus. ~>
+    final transient boolean sendFeedback; // Whether the actuator senses itself and sends its current value on the bus. ~>
                                 // "Sensor enabled"
 
-    MessageInformation msgInfo;
+    transient MessageInformation msgInfo;
 
     public Actuator(ActuatorProperties properties, PhysicalValue actuatedValue, Updater updater) {
         super(properties);
-        if (actuatedValue.type.type != Type.DOUBLE && actuatedValue.type.type != Type.FLOAT) throw new IllegalArgumentException("Actuator can only actuate on float or double values (but here type "+actuatedValue.type+ " for value "+ actuatedValue.name +")");
+        if (actuatedValue.type.type != Type.DOUBLE && actuatedValue.type.type != Type.FLOAT)
+            throw new IllegalArgumentException("Actuator can only actuate on float or double values (but here type "
+                    + actuatedValue.type + " for value " + actuatedValue.name + ")");
         this.properties = properties;
         this.actuatedValue = actuatedValue;
-        this.targetValue = actuatedValue.type.type == Type.DOUBLE ? (Double) actuatedValue.get() : (Float) actuatedValue.get();
+        this.targetValue = actuatedValue.type.type == Type.DOUBLE ? (Double) actuatedValue.get()
+                : (Float) actuatedValue.get();
         updater.addUpdatable(this);
         this.sendFeedback = properties.sensorProperties.isPresent();
         if (sendFeedback)
@@ -43,7 +46,7 @@ public class Actuator extends EEComponent implements Updatable {
 
     @Override
     protected void init() throws EEMessageTypeException {
-        this.msgInfo = addOptionalInput(SETTER_PREFIX+actuatedValue.name, DataType.DOUBLE, true);
+        this.msgInfo = addOptionalInput(SETTER_PREFIX + actuatedValue.name, DataType.DOUBLE, true);
         if (sendFeedback)
             sensor.init(this);
     }
@@ -56,28 +59,30 @@ public class Actuator extends EEComponent implements Updatable {
     }
 
     // Can be overwritten for more complex actuation behavior
-    protected void actuate(TimeUpdate newTime){
-        double val = actuatedValue.type.type == Type.DOUBLE ? (Double) actuatedValue.get() : (Float) actuatedValue.get();
-        double maxChange = properties.changeRate*newTime.deltaSeconds;
+    protected void actuate(TimeUpdate newTime) {
+        double val = actuatedValue.type.type == Type.DOUBLE ? (Double) actuatedValue.get()
+                : (Float) actuatedValue.get();
+        double maxChange = properties.change_rate * newTime.deltaSeconds;
         double delta = targetValue - val;
-        if (Math.abs(delta) > maxChange){
+        if (Math.abs(delta) > maxChange) {
             delta = Math.signum(delta) * maxChange;
         }
         val += delta;
-        if (val > properties.maxValue)
-            val = properties.maxValue;
-        if (val < properties.minValue)
-            val = properties.minValue;
+        if (val > properties.max)
+            val = properties.max;
+        if (val < properties.min)
+            val = properties.min;
         actuatedValue.set(actuatedValue.type.type == Type.DOUBLE ? new Double(val) : new Float(val));
     }
 
     @Override
     protected void receive(MessageReceiveEvent msgRecvEvent) {
         Message msg = msgRecvEvent.getMessage();
-        if (msg.msgId == msgInfo.messageId){
-            targetValue = (Double)msg.message;
+        if (msg.msgId == msgInfo.messageId) {
+            targetValue = (Double) msg.message;
         } else {
-            Logger.getLogger("Warnings").warning("Actuator \""+name+"\" received unexpected message: " + simulator.getMessageTypeManager().getMsgInfo(msg.msgId).name);
+            Logger.getLogger("Warnings").warning("Actuator \"" + properties.name + "\" received unexpected message: "
+                    + simulator.getMessageTypeManager().getMsgInfo(msg.msgId).name);
         }
     }
 
@@ -85,6 +90,5 @@ public class Actuator extends EEComponent implements Updatable {
     public EEComponentType getComponentType() {
         return EEComponentType.ACTUATOR;
     }
-
 
 }

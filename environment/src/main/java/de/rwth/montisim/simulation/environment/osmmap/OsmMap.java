@@ -3,6 +3,7 @@ package de.rwth.montisim.simulation.environment.osmmap;
 
 import de.rwth.montisim.commons.utils.XmlTraverser;
 import de.rwth.montisim.commons.utils.Coordinates;
+import de.rwth.montisim.commons.utils.StringRef;
 
 import java.io.File;
 import java.util.HashMap;
@@ -198,142 +199,128 @@ public class OsmMap {
     public OsmMap(String name, File file) throws Exception {
         this.name = name;
         getRoadTagsById();
-        parseMap(new XmlTraverser().from_file(file));
+        parseMap(new XmlTraverser().fromFile(file));
     }
 
     private void parseMap(XmlTraverser p) throws Exception {
         long start = System.nanoTime();
 
         //Find osm tag
-        String tag;
-        do {
-            tag = p.next_tag();
+        boolean foundOsm = false;
+        for (StringRef tag : p.tags()){
+            if (tag.equalsIgnoreCase("osm")){
+                foundOsm = true;
+                break;
+            }
         }
-        while (tag.length() > 0 && !tag.equalsIgnoreCase("osm"));
-
-        if (tag.length() == 0) throw new Exception("Could not find <osm> tag");
+        if (!foundOsm) throw new Exception("Could not find <osm> tag");
 
         //Ex: <osm version="0.6" generator="CGImap 0.7.5 (14605 thorn-01.openstreetmap.org)" copyright="OpenStreetMap and contributors" attribution="http://www.openstreetmap.org/copyright" license="http://opendatacommons.org/licenses/odbl/1-0/">
         
         //Search the "version" attribute from the <osm> tag.
-        String attrib;
-        do {
-            attrib = p.next_attribute();
+        boolean foundVersion = false;
+        for (StringRef attrib : p.attribs()){
+            if (attrib.equalsIgnoreCase("version")){
+                foundVersion = true;
+                StringRef version = p.getAttributeValue();
+                if (!version.equalsIgnoreCase("0.6")) throw new Exception("Unsupported osm version: " + version);
+                break;
+            }
         }
-        while (attrib.length() > 0 && !attrib.equalsIgnoreCase("version"));
-
         //Validate version
-        if (attrib.length() == 0) throw new Exception("Could not find osm version attribute");
-        String version = p.get_attribute_value();
-        if (!version.equalsIgnoreCase("0.6")) throw new Exception("Unsupported osm version: " + version);
+        if (!foundVersion) throw new Exception("Could not find osm version attribute");
 
         //Enter <osm> tag
-        p.enter_tag();
+        p.enterTag();
         //Check all tags from the <osm> tag.
-        do {
-            tag = p.next_tag();
+        for (StringRef tag : p.tags()){
             if (tag.equalsIgnoreCase("node")){
                 //Ex: <node id="6152869602" visible="true" version="1" changeset="65685715" timestamp="2018-12-22T05:39:15Z" user="adjuva" uid="92274" lat="50.7802316" lon="6.0716610"/>
                 long id = 0;
                 boolean got_id = false;
                 double lat = 0;
                 double lon = 0;
-                do {
-                    attrib = p.next_attribute();
+                for (StringRef attrib : p.attribs()){
                     if (attrib.equalsIgnoreCase("id")){
                         got_id = true;
-                        id = Long.parseLong(p.get_attribute_value());
+                        id = p.getAttributeValue().asLong();
                     } else if (attrib.equalsIgnoreCase("lat")){
-                        lat = Double.parseDouble(p.get_attribute_value());
+                        lat = p.getAttributeValue().asDouble();
                     } else if (attrib.equalsIgnoreCase("lon")){
-                        lon = Double.parseDouble(p.get_attribute_value());
+                        lon = p.getAttributeValue().asDouble();
                     }
-                } while (attrib.length() > 0);
+                }
                 if (!got_id) continue; // Simply ignore if no osmID
                 Node node = new Node(new Coordinates(lon, lat), id);
 
                 //Check node tags
-                if (p.enter_tag()){
-                    String tag2;
-                    do {
-                        tag2 = p.next_tag();
+                if (p.enterTag()){
+                    for (StringRef tag2 : p.tags()){
                         if (tag2.equalsIgnoreCase("tag")){
                             //Ex: <tag k="railway" v="signal"/>
-                            String att;
                             String key = null;
                             String value = null;
-                            do {
-                                att = p.next_attribute();
+                            for (StringRef att : p.attribs()){
                                 if (att.equalsIgnoreCase("k")){
-                                    key = p.get_attribute_value();
+                                    key = p.getAttributeValue().getRawString();
                                 } else if (att.equalsIgnoreCase("v")){
-                                    value = p.get_attribute_value();
-                                }  
-                            } while (att.length() > 0);
+                                    value = p.getAttributeValue().getRawString();
+                                }
+                            }
                             if (key != null && value != null){
                                 //node.tags.put(get_tag_id(key), value);
                                 node.tags.put(getStringId(key), getStringId(value));
                             }
-                        } 
+                        }
                     }
-                    while (tag2.length() > 0);
                 }
-                p.exit_tag();
+                p.exitTag();
                 
-
                 addNode(node);
             } else if (tag.equalsIgnoreCase("way")){
                 //Ex: <way id="5168924" visible="true" version="23" changeset="48959749" timestamp="2017-05-24T23:00:23Z" user="Steffen van Bergerem" uid="61868">
                 long id = 0;
                 boolean got_id = false;
-                do {
-                    attrib = p.next_attribute();
+                for (StringRef attrib : p.attribs()) {
                     if (attrib.equalsIgnoreCase("id")){
-                        id = Long.parseLong(p.get_attribute_value());
+                        id = p.getAttributeValue().asLong();
                         got_id = true;
                     }
-                } while (attrib.length() > 0);
+                }
                 if (!got_id) continue;
                 Way way = new Way(id);
 
                 //Go through list of <nd> (node references) and <tag>
-                if (p.enter_tag()){
-                    String tag2;
-                    do {
-                        tag2 = p.next_tag();
+                if (p.enterTag()){
+                    for (StringRef tag2 : p.tags()){
                         if (tag2.equalsIgnoreCase("nd")){
                             //Ex: <nd ref="335923980"/>
-                            String att;
-                            do {
-                                att = p.next_attribute();
+                            for (StringRef att : p.attribs()){
+                                if (att.equalsIgnoreCase("ref")){
+                                    long ref = p.getAttributeValue().asLong();
+                                    way.nodesLocalID.add(getNodeID(ref));
+                                    break;
+                                }
                             }
-                            while (att.length() > 0 && !att.equalsIgnoreCase("ref"));
-                            if (att.length() == 0) return;
-                            int ref_id = getNodeID(Long.parseLong(p.get_attribute_value()));
-                            way.nodesLocalID.add(ref_id);
                         } else if (tag2.equalsIgnoreCase("tag")){
                             //Ex: <tag k="highway" v="service"/>
-                            String att;
                             String key = null;
                             String value = null;
-                            do {
-                                att = p.next_attribute();
+                            for (StringRef att : p.attribs()){
                                 if (att.equalsIgnoreCase("k")){
-                                    key = p.get_attribute_value();
+                                    key = p.getAttributeValue().getRawString();
                                 } else if (att.equalsIgnoreCase("v")){
-                                    value = p.get_attribute_value();
-                                }  
-                            } while (att.length() > 0);
+                                    value = p.getAttributeValue().getRawString();
+                                } 
+                            }
                             if (key != null && value != null){
                                 //way.tags.put(get_tag_id(key), value);
                                 way.tags.put(getStringId(key), getStringId(value));
                             }
-                        } 
+                        }
                     }
-                    while (tag2.length() > 0);
-    
                 }
-                p.exit_tag();
+                p.exitTag();
                 
                 addWay(way);
             } else if (tag.equalsIgnoreCase("bounds")){
@@ -341,22 +328,19 @@ public class OsmMap {
                 //Ex: <bounds minlat="50.7784900" minlon="6.0621200" maxlat="50.7815800" maxlon="6.0705400"/>
                 
                 //Check attributes from the <bounds> tag
-                do {
-                    attrib = p.next_attribute();
+                for (StringRef attrib : p.attribs()) {
                     if (attrib.equalsIgnoreCase("minlat")){
-                        min_corner.lat = Double.parseDouble(p.get_attribute_value());
+                        min_corner.lat = p.getAttributeValue().asDouble();
                     } else if (attrib.equalsIgnoreCase("minlon")){
-                        min_corner.lon = Double.parseDouble(p.get_attribute_value());
+                        min_corner.lon = p.getAttributeValue().asDouble();
                     } else if (attrib.equalsIgnoreCase("maxlat")){
-                        max_corner.lat = Double.parseDouble(p.get_attribute_value());
+                        max_corner.lat = p.getAttributeValue().asDouble();
                     } else if (attrib.equalsIgnoreCase("maxlon")){
-                        max_corner.lon = Double.parseDouble(p.get_attribute_value());
+                        max_corner.lon = p.getAttributeValue().asDouble();
                     }
-                } while (attrib.length() > 0);
-
-            } 
+                }
+            }
         }
-        while (tag.length() > 0);
 
 
         //Sample code for tag and attribute iteration

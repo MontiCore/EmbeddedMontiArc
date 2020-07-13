@@ -4,10 +4,15 @@ package de.rwth.montisim.simulation.simulator.visualization;
 import javax.swing.*;
 import java.awt.BorderLayout;
 import java.io.File;
+import java.io.IOException;
+import java.lang.reflect.InvocationTargetException;
+import java.nio.file.Files;
+import java.nio.file.Paths;
 import java.time.*;
 
 import de.rwth.montisim.commons.simulation.TimeUpdate;
 import de.rwth.montisim.commons.utils.*;
+import de.rwth.montisim.commons.utils.json.Json;
 import de.rwth.montisim.simulation.eecomponents.navigation.Navigation;
 import de.rwth.montisim.simulation.eesimulator.exceptions.*;
 import de.rwth.montisim.simulation.eesimulator.message.MessageTypeManager;
@@ -21,17 +26,18 @@ import de.rwth.montisim.simulation.simulator.visualization.map.*;
 import de.rwth.montisim.simulation.simulator.visualization.plotter.TimePlotter;
 import de.rwth.montisim.simulation.simulator.visualization.ui.*;
 import de.rwth.montisim.simulation.vehicle.Vehicle;
-import de.rwth.montisim.simulation.vehicle.config.VehicleConfig;
+import de.rwth.montisim.simulation.vehicle.VehicleProperties;
 import de.rwth.montisim.simulation.vehicle.physicsmodel.rigidbody.RigidbodyPhysics;
-
 
 public class SimulationVisualizer extends JFrame implements SimulationRunner {
     private static final long serialVersionUID = -8677459653174721311L;
 
     public static final boolean SHOW_SEGMENTS = true;
+
     public static void main(String args[]) throws EESetupException {
         new SimulationVisualizer(args);
     }
+
     private static final Vec3 START_DIR = new Vec3(1, 0, 0);
 
     final long PHYSICS_TICK_DURATION_MS = 10;
@@ -92,7 +98,7 @@ public class SimulationVisualizer extends JFrame implements SimulationRunner {
     }
 
     public void vis1(String args[]) {
-        String mapPath = "D:/EmbededMontiArc/basic-simulator/install/maps/aachen.osm";
+        String mapPath = "simulator/src/test/resources/aachen.osm";
         try {
             world = new OsmToWorldLoader(new OsmMap("aachen", new File(mapPath))).getWorld();
             viewer.addRenderer(new WorldRenderer(world, SHOW_SEGMENTS));
@@ -111,34 +117,50 @@ public class SimulationVisualizer extends JFrame implements SimulationRunner {
         mtManager = new MessageTypeManager();
         simulator = new Simulator(new SimulationConfig(), world, pathfinding, mtManager);
 
-        //VehicleConfig config = setupTurningCar();
-        VehicleConfig config = DefaultVehicleConfig.withJavaAutopilot();
+        // VehicleConfig config = setupTurningCar();
+        VehicleProperties config = DefaultVehicleConfig.withJavaAutopilot().properties;
+
+
         try {
             vehicle = simulator.getVehicleBuilder(config).setName("TestVehicle").build();
-            simulator.addSimulationObject(vehicle);
             
+            simulator.addSimulationObject(vehicle);
+
             vehicle.physicsModel.setGroundPosition(new Vec3(0, 0, 0), new Vec2(START_DIR.x, START_DIR.y));
 
             cr.setCar(vehicle);
 
             Navigation nav = (Navigation) vehicle.eesimulator.getComponentManager().getComponent("Navigation").get();
             Vec2 TARGET_POS = new Vec2(-63.83, -171.96);
-            //nav.pushTargetPos(new Vec2(384.77, -283.72));
+            // nav.pushTargetPos(new Vec2(384.77, -283.72));
             nav.pushTargetPos(TARGET_POS);
             vehicle.addTarget(TARGET_POS);
-            
-        } catch (EEMessageTypeException e) {
+
+            printDebug();
+        } catch (ParsingException | InstantiationException | IllegalAccessException | IllegalArgumentException
+                | InvocationTargetException | NoSuchMethodException | SecurityException | EEMessageTypeException
+                | IOException e) {
             // TODO Auto-generated catch block
             e.printStackTrace();
         }
+
     }
 
-    private VehicleConfig setupTurningCar(){
+    private void printDebug() {
+        try {
+            Files.write(Paths.get("vehicle_config.json"), Json.toFormattedJson(vehicle.properties).getBytes());
+            Files.write(Paths.get("vehicle_state.json"), vehicle.stateToJson().getBytes());
+        } catch (IllegalArgumentException | IllegalAccessException | IOException e1) {
+            e1.printStackTrace();
+        }
+    }
+
+    private VehicleProperties setupTurningCar() {
         double turnRadius = 30;
         double maxSpeed = 0.8*270*Math.pow(turnRadius, -0.5614);
         System.out.println("MaxSpeed: "+Double.toString(maxSpeed));
 
-        return TestVehicleConfig.newCircleAutopilotConfig(maxSpeed, turnRadius);
+        return TestVehicleConfig.newCircleAutopilotConfig(maxSpeed, turnRadius).properties;
     }
 
     @Override

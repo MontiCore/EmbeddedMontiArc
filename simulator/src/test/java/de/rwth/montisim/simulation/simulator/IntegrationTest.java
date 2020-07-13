@@ -28,16 +28,18 @@ public class IntegrationTest {
         MessageTypeManager mtManager = new MessageTypeManager();
 
         SimulationConfig config = new SimulationConfig();
-        config.maxSimulationDuration = Duration.ofSeconds(300);
+        config.max_duration = Duration.ofSeconds(300);
         Simulator simulator = new Simulator(config, world, pathfinding, mtManager);
         SimulationLoop loop = new SimulationLoop(simulator, config);
 
+
+
         DefaultVehicleConfig vConf = DefaultVehicleConfig.withJavaAutopilot();
         
-        Vehicle vehicle = simulator.getVehicleBuilder(vConf).setName("TestVehicle").build();
+        Vehicle vehicle = simulator.getVehicleBuilder(vConf.properties).setName("TestVehicle").build();
+        vehicle.physicsModel.setGroundPosition(new Vec3(0, 0, 0), new Vec2(START_DIR.x, START_DIR.y));
         simulator.addSimulationObject(vehicle);
         
-        vehicle.physicsModel.setGroundPosition(new Vec3(0, 0, 0), new Vec2(START_DIR.x, START_DIR.y));
         
         Navigation nav = (Navigation) vehicle.eesimulator.getComponentManager().getComponent("Navigation").get();
         nav.pushTargetPos(TARGET_POS);

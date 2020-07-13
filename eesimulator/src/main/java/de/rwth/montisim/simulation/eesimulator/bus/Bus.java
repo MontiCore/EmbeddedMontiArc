@@ -3,15 +3,10 @@ package de.rwth.montisim.simulation.eesimulator.bus;
 
 import de.rwth.montisim.commons.eventsimulation.exceptions.*;
 import de.rwth.montisim.simulation.eesimulator.bus.BusProperties.BusType;
-import de.rwth.montisim.simulation.eesimulator.bus.can.CAN;
-import de.rwth.montisim.simulation.eesimulator.bus.can.CANProperties;
-import de.rwth.montisim.simulation.eesimulator.bus.constant.ConstantBus;
-import de.rwth.montisim.simulation.eesimulator.bus.constant.ConstantBusProperties;
-import de.rwth.montisim.simulation.eesimulator.components.BusComponent;
+import de.rwth.montisim.simulation.eesimulator.components.BusUser;
 import de.rwth.montisim.simulation.eesimulator.components.EEComponentType;
 import de.rwth.montisim.simulation.eesimulator.components.EEEventProcessor;
 import de.rwth.montisim.simulation.eesimulator.events.*;
-import de.rwth.montisim.simulation.eesimulator.message.MessagePriorityComparator;
 
 import java.util.ArrayList;
 import java.util.HashMap;
@@ -23,26 +18,26 @@ import java.util.List;
  */
 public abstract class Bus extends EEEventProcessor {
 
-	public static Bus buildBus(BusProperties properties, MessagePriorityComparator comp){
-		switch(properties.busType) {
-			case CAN:
-				return new CAN((CANProperties)properties, comp);
-			case CONSTANT_BUS:
-				return new ConstantBus((ConstantBusProperties)properties);
-			case FLEXRAY:
-			 	// TODO
-				return null;
-			default:
-				return null;
-		}
-	}
+	// public static Bus buildBus(BusProperties properties, MessagePriorityComparator comp){
+	// 	switch(properties.getBusType()) {
+	// 		case CAN:
+	// 			return new CAN((CANProperties)properties, comp);
+	// 		case CONSTANT_BUS:
+	// 			return new ConstantBus((ConstantBusProperties)properties);
+	// 		case FLEXRAY:
+	// 		 	// TODO
+	// 			return null;
+	// 		default:
+	// 			return null;
+	// 	}
+	// }
 
 	/**
 	 * Components that are connected to this bus.
 	 */
-	protected final List<BusComponent> connectedComponents = new ArrayList<>();
+	protected final transient List<BusUser> connectedComponents = new ArrayList<>();
 
-	protected final HashMap<Integer, List<BusComponent>> msgTargets = new HashMap<>();
+	protected final transient HashMap<Integer, List<BusUser>> msgTargets = new HashMap<>();
 
 	protected Bus(BusProperties properties) {
 		super(properties);
@@ -77,25 +72,25 @@ public abstract class Bus extends EEEventProcessor {
 
 	/** Dispatches the given Message to all its targets, effectively completing its transmission in this BUS. */
 	protected void dispatchMessage(MessageReceiveEvent msgRecvEvent) {
-		List<BusComponent> targets = msgTargets.get(msgRecvEvent.getMessage().msgId);
+		List<BusUser> targets = msgTargets.get(msgRecvEvent.getMessage().msgId);
 		if (targets == null) throw new IllegalArgumentException("Tried to dispatch a message with no associated targets. (event: "+msgRecvEvent+").");
-		for(BusComponent e : targets){
+		for(BusUser e : targets){
 			e.process(msgRecvEvent);
 		}
 	}
 
-	public void addComponent(BusComponent component) {
+	public void addComponent(BusUser component) {
 		if (connectedComponents.contains(component))
 			throw new IllegalArgumentException("Component " + component + " is already registered at " + this + ".");
 		connectedComponents.add(component);
 	}
 
-	public void addMessageTargets(int msgId, List<BusComponent> targets){
+	public void addMessageTargets(int msgId, List<BusUser> targets){
 		if (msgTargets.containsKey(msgId)) throw new IllegalArgumentException("Targets already registered for msgId: " + msgId);
 		msgTargets.put(msgId, targets);
 	}
 
-	public List<BusComponent> getConnectedComponents() {
+	public List<BusUser> getConnectedComponents() {
 		return this.connectedComponents;
 	}
 
@@ -147,10 +142,10 @@ public abstract class Bus extends EEEventProcessor {
 
 	@Override
 	public String toString(){
-		return getBusType() + " bus \"" + name+'"';
+		return getBusType() + " bus \"" + properties.name+'"';
 	}
 
-	public HashMap<Integer, List<BusComponent>> getMsgTargets(){
+	public HashMap<Integer, List<BusUser>> getMsgTargets(){
 		return msgTargets;
 	}
 }

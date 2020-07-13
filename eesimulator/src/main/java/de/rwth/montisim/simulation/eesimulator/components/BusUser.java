@@ -8,18 +8,18 @@ import java.util.List;
 import de.rwth.montisim.simulation.eesimulator.bus.Bus;
 import de.rwth.montisim.simulation.eesimulator.events.MessageSendEvent;
 
-public abstract class BusComponent extends EEEventProcessor{
+public abstract class BusUser extends EEEventProcessor{
 
-    public BusComponent(EEComponentProperties properties) {
+    public BusUser(EEComponentProperties properties) {
         super(properties);
 	}
 
 	/**
      * Buses this component is connected to.
      */
-    protected final List<Bus> connectedBuses = new ArrayList<>();
+    protected final transient List<Bus> connectedBuses = new ArrayList<>();
     
-    protected final HashMap<Integer, List<Bus>> msgTargets = new HashMap<>();
+    protected final transient HashMap<Integer, List<Bus>> msgTargets = new HashMap<>();
     
     public List<Bus> getConnectedBuses(){
         return connectedBuses;
@@ -29,7 +29,7 @@ public abstract class BusComponent extends EEEventProcessor{
      * A Component can be connected to multiple buses.
      */
     public void connectToBus(Bus bus) {
-        if (bus == null) return;
+        if (bus == null) return; // TODO EXCEPTION??
 		if (connectedBuses.contains(bus))
 			throw new IllegalArgumentException("Bus " + bus + " is already registered at " + this + ".");
         connectedBuses.add(bus);

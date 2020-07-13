@@ -7,9 +7,11 @@ import de.rwth.montisim.commons.utils.Vec2;
 import de.rwth.montisim.commons.utils.Vec3;
 import de.rwth.montisim.simulation.eesimulator.EESimulator;
 import de.rwth.montisim.simulation.vehicle.physicsmodel.PhysicsModel;
+import de.rwth.montisim.simulation.vehicle.physicsmodel.PhysicsProperties;
 import de.rwth.montisim.simulation.vehicle.powertrain.PowerTrain;
 
 public class MasspointPhysics implements PhysicsModel {
+    public static final String TYPE = "masspoint";
     DynamicObject physObj;
 
     public MasspointPhysics(PowerTrain power_train, EESimulator eesimulator) {
@@ -31,6 +33,12 @@ public class MasspointPhysics implements PhysicsModel {
     public void setGroundPosition(Vec3 pos, Vec2 front) {
         // TODO Auto-generated method stub
 
+    }
+
+    @Override
+    public PhysicsProperties getProperties() {
+        // TODO Auto-generated method stub
+        return null;
     }
 
 }
