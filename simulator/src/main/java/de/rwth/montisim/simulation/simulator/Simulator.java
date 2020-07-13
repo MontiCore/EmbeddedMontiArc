@@ -17,7 +17,7 @@ import de.rwth.montisim.simulation.vehicle.VehicleBuilder;
 import de.rwth.montisim.simulation.vehicle.VehicleProperties;
 
 public class Simulator implements ISimulator, Updatable {
-    final SimulationConfig config;
+    public final SimulationConfig config;
     final World world;
     final Pathfinding pathfinding;
     final MessageTypeManager mtManager;

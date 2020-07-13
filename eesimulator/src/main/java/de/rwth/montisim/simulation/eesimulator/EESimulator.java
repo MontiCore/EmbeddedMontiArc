@@ -126,7 +126,7 @@ public class EESimulator extends DiscreteEventSimulator<EEEventType, EEDiscreteE
 						throw new ParsingException("Unknown component: " + name);
 					Json.fromJson(t, o.get(), context);
 				}
-			} else if (e.key.equals(K_COMPONENTS)) {
+			} else if (e.key.equals(K_EVENTS)) {
 				for (ValueType vt : t.streamArray()) {
 					eventList.offer(Json.instantiateFromJson(t, EventData.class, context).getEvent(componentManager));
 				}

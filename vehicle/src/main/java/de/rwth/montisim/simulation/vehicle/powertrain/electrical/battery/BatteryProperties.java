@@ -1,8 +1,6 @@
 /* (c) https://github.com/MontiCore/monticore */
 package de.rwth.montisim.simulation.vehicle.powertrain.electrical.battery;
 
-import de.rwth.montisim.commons.utils.Pair;
-import de.rwth.montisim.commons.utils.json.Json;
 import de.rwth.montisim.commons.utils.json.JsonEntry;
 
 public class BatteryProperties {
@@ -17,6 +15,10 @@ public class BatteryProperties {
 
     public BatteryProperties(BatteryType batteryType) {
         this.type = batteryType;
+    }
+    
+    protected BatteryProperties() {
+        this.type = BatteryType.INFINITE;
     }
 
     // Partly taken from https://en.wikipedia.org/wiki/Tesla_Model_3

@@ -41,5 +41,4 @@ public abstract class PowerTrain {
      * @return The current ratio between the motor & the wheels (ratio = motor revolutions / wheel revolutions)
      */
     public abstract double getTransmissionRatio();
-
 }

@@ -24,6 +24,8 @@ public class SensorProperties extends EEComponentProperties {
         this.send_only_changed = sendOnlyChanged;
     }
 
+    protected SensorProperties() {}
+
     public SensorProperties setName(String name) {
         this.name = name;
         return this;

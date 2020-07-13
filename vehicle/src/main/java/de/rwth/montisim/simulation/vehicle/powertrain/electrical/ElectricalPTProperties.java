@@ -14,15 +14,19 @@ public class ElectricalPTProperties extends PowerTrainProperties {
 
     public ElectricalPTProperties(VehicleProperties config, ElectricMotorProperties motorProperties,
             BatteryProperties batteryProperties) {
-        super(PowerTrainType.ELECTRICAL, config);
+        super(config);
         this.motorProperties = motorProperties;
         this.batteryProperties = batteryProperties;
     }
 
     public ElectricalPTProperties(VehicleProperties config) {
-        super(PowerTrainType.ELECTRICAL, config);
+        super(config);
         this.motorProperties = null;
         this.batteryProperties = null;
+    }
+
+    protected ElectricalPTProperties(){
+        super(null);
     }
     
     @JsonEntry("motor")
@@ -31,6 +35,11 @@ public class ElectricalPTProperties extends PowerTrainProperties {
     public BatteryProperties batteryProperties;
 
     public double transmission_ratio = 9; // 9:1
+
+    @Override
+    public PowerTrainType getPowerTrainType() {
+        return PowerTrainType.ELECTRICAL;
+    }
 
 
 

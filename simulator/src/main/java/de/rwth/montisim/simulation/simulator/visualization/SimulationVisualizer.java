@@ -26,6 +26,7 @@ import de.rwth.montisim.simulation.simulator.visualization.map.*;
 import de.rwth.montisim.simulation.simulator.visualization.plotter.TimePlotter;
 import de.rwth.montisim.simulation.simulator.visualization.ui.*;
 import de.rwth.montisim.simulation.vehicle.Vehicle;
+import de.rwth.montisim.simulation.vehicle.VehicleBuilder;
 import de.rwth.montisim.simulation.vehicle.VehicleProperties;
 import de.rwth.montisim.simulation.vehicle.physicsmodel.rigidbody.RigidbodyPhysics;
 
@@ -163,10 +164,28 @@ public class SimulationVisualizer extends JFrame implements SimulationRunner {
         return TestVehicleConfig.newCircleAutopilotConfig(maxSpeed, turnRadius).properties;
     }
 
+    int i = 0;
+
     @Override
     public long run(Instant timePoint) {
         simulator.update(new TimeUpdate(simTime, dt));
-
+        if (i > 200){
+            try {
+                String state = vehicle.stateToJson();
+                Files.write(Paths.get("running_state.json"),state.getBytes());
+                simulator.removeSimulationObject(vehicle);
+                vehicle = VehicleBuilder.fromJsonState(mtManager, pathfinding, state).build();
+                simulator.addSimulationObject(vehicle);
+                cr.setCar(vehicle);
+                System.out.println("Transfered Vehicle using serialization");
+            } catch (IllegalArgumentException | IllegalAccessException | IOException | ParsingException
+                    | InstantiationException | InvocationTargetException | NoSuchMethodException | SecurityException
+                    | EESetupException | EEMessageTypeException e1) {
+                e1.printStackTrace();
+            }
+            i = 0;
+        }
+        i++;
         simTime = simTime.plus(dt);
         return TICK_NANO;
     }

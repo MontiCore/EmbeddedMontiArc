@@ -8,7 +8,11 @@ public class FuelPTProperties extends PowerTrainProperties {
     public static final String TYPE = "fuel";
 
     public FuelPTProperties(VehicleProperties config) {
-        super(PowerTrainType.FUEL_BASED, config);
+        super(config);
+    }
+
+    protected FuelPTProperties(){
+        super(null);
     }
 
     double tank_capacity = 50; // In Liters
@@ -17,5 +21,10 @@ public class FuelPTProperties extends PowerTrainProperties {
 
     public static final String K_TANK_CAPACITY = "tank_capacity";
     public static final String K_JOULES_PER_LITER = "joules_per_liter";
+
+    @Override
+    public PowerTrainType getPowerTrainType() {
+        return PowerTrainType.FUEL_BASED;
+    }
 
 }

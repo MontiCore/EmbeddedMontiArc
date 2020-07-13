@@ -10,6 +10,10 @@ public class Path {
         trajectoryX = new double[length];
         trajectoryY = new double[length];
     }
+    protected Path() {
+        trajectoryX = null;
+        trajectoryY = null;
+    }
     public int getLength(){
         return trajectoryX.length;
     }

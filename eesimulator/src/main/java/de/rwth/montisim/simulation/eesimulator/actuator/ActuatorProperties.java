@@ -27,6 +27,8 @@ public class ActuatorProperties extends EEComponentProperties {
         this.change_rate = changeRate;
     }
 
+    protected ActuatorProperties() {}
+
     // TODO
     // public ActuatorProperties setName(String name) {
     // this.name = name;

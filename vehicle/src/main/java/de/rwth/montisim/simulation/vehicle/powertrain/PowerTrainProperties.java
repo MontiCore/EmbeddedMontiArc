@@ -21,7 +21,6 @@ public abstract class PowerTrainProperties /*implements JsonSerializable*/ {
         ELECTRICAL,
         FUEL_BASED
     }
-    public final transient PowerTrainType powerTrainType;
     
     public static enum TractionType {
         @JsonEntry("front")
@@ -39,8 +38,7 @@ public abstract class PowerTrainProperties /*implements JsonSerializable*/ {
 
 
     
-    public PowerTrainProperties(PowerTrainType powerTrainType, VehicleProperties config){
-        this.powerTrainType = powerTrainType;
+    public PowerTrainProperties(VehicleProperties config){
         // TODO read some default properties from "VehicleProperties" ()
         // Add default actuator description
         if (config == null) return;
@@ -80,5 +78,5 @@ public abstract class PowerTrainProperties /*implements JsonSerializable*/ {
         
     }
 
-    
+    public abstract PowerTrainType getPowerTrainType();
 }
