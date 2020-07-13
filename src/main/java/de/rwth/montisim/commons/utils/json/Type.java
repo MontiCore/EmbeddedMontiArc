@@ -1,6 +1,6 @@
 package de.rwth.montisim.commons.utils.json;
 
-public enum StructureType {
+public enum Type {
     OBJECT,
     ARRAY
 }

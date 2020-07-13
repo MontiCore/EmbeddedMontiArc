@@ -1,9 +1,10 @@
 /* (c) https://github.com/MontiCore/monticore */
 package de.rwth.montisim.commons.utils;
 
-import de.rwth.montisim.commons.utils.JsonTraverser.ValueType;
+import de.rwth.montisim.commons.utils.json.*;
 
-public class Mat2 implements JsonSerializable {
+@JsonType(Type.ARRAY)
+public class Mat2 {
     public Vec2 col1;
     public Vec2 col2;
 
@@ -134,25 +135,25 @@ public class Mat2 implements JsonSerializable {
         }
     }
 
-    @Override
-    public void toJson(JsonWriter j) {
-        j.startArray();
-        col1.toJson(j);
-        col2.toJson(j);
-        j.endArray();
-    }
+    // @Override
+    // public void toJson(JsonWriter j) {
+    //     j.startArray();
+    //     col1.toJson(j);
+    //     col2.toJson(j);
+    //     j.endArray();
+    // }
 
-    @Override
-    public void fromJson(JsonTraverser j) {
-        int i = 1;
-        for (ValueType t : j.streamArray()){
-            switch(i){
-                case 1: col1.fromJson(j); break;
-                case 2: col2.fromJson(j); break;
-            }
-            ++i;
-        }
-        if (i < 3) throw new ParsingException("Missing entries in matrix array");
-        if (i > 3) throw new ParsingException("Too many entries in matrix array");
-    }
+    // @Override
+    // public void fromJson(JsonTraverser j) {
+    //     int i = 1;
+    //     for (ValueType t : j.streamArray()){
+    //         switch(i){
+    //             case 1: col1.fromJson(j); break;
+    //             case 2: col2.fromJson(j); break;
+    //         }
+    //         ++i;
+    //     }
+    //     if (i < 3) throw new ParsingException("Missing entries in matrix array");
+    //     if (i > 3) throw new ParsingException("Too many entries in matrix array");
+    // }
 }

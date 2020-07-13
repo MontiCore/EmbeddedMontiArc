@@ -1,85 +1,15 @@
-package de.rwth.montisim.commons.utils;
+package de.rwth.montisim.commons.utils.json;
 
 import java.io.IOException;
 
-import de.rwth.montisim.commons.utils.JsonTraverser.Entry;
-import de.rwth.montisim.commons.utils.JsonTraverser.ValueType;
+import de.rwth.montisim.commons.utils.json.JsonTraverser.*;
 
 public class JsonWriter {
 
-    public static void main(String args[]) throws IOException {
-        JsonWriter writer = new JsonWriter();
-        writer.format = true;
-        jsonTest(writer);
-
-        String s1 = writer.getString();
-
-        writer.format = false;
-        jsonTest(writer);
-
-        String s2 = writer.getString();
-
-        JsonTraverser j = new JsonTraverser();
-        j.init(s1);
-        writer.init();
-        rewrite(writer, j);
-
-        String s3 = writer.getString();
-
-        System.out.println("Re-written");
-        System.out.println(s3);
+    public JsonWriter(boolean format){
+        init();
+        this.format = format;
     }
-
-    public static void jsonTest(JsonWriter writer){
-        writer.init();
-
-        writer.startObject();
-        writer.writeKey("firstKey");
-        writer.writeValue(false);
-        writer.writeKey("sec Key");
-        writer.writeValue(3);
-        writer.writeKey("t Key");
-        writer.writeValue(4.2);
-        writer.writeKey("f Key");
-        writer.writeValue("a string \n \t \r \b \f \" \\ /");
-        writer.writeKey("NaN");
-        writer.writeValue(Double.NaN);
-        writer.writeKey("+Inf");
-        writer.writeValue(Double.POSITIVE_INFINITY);
-        writer.writeKey("-Inf");
-        writer.writeValue(Double.NEGATIVE_INFINITY);
-
-        writer.writeKey("Nested Object");
-        writer.startObject();
-        writer.writeKey("a");
-        writer.writeValue("b");
-        writer.endObject();
-        
-        writer.writeKey("Empty Object");
-        writer.startObject();
-        writer.endObject();
-
-        writer.writeKey("Array");
-        writer.startArray();
-        writer.writeValue("str");
-        writer.writeValue(true);
-        writer.writeKey("Nested Object");
-        writer.startObject();
-        writer.writeKey("a");
-        writer.writeValue("b");
-        writer.endObject();
-        writer.writeValue(true);
-        writer.endArray();
-
-        writer.writeKey("Empty array");
-        writer.startArray();
-        writer.endArray();
-
-        writer.endObject();
-
-        System.out.println(writer.getString());
-    }
-
 
     public static final int TAB = 2;
     public StringBuilder res;
@@ -286,5 +216,82 @@ public class JsonWriter {
             default:
                 break;
         }
+    }
+
+
+
+
+
+    
+    public static void main(String args[]) throws IOException {
+        JsonWriter writer = new JsonWriter(true);
+        jsonTest(writer);
+
+        String s1 = writer.getString();
+
+        writer.format = false;
+        jsonTest(writer);
+
+        String s2 = writer.getString();
+
+        JsonTraverser j = new JsonTraverser();
+        j.init(s1);
+        writer.init();
+        rewrite(writer, j);
+
+        String s3 = writer.getString();
+
+        System.out.println("Re-written");
+        System.out.println(s3);
+    }
+
+    public static void jsonTest(JsonWriter writer){
+        writer.init();
+
+        writer.startObject();
+        writer.writeKey("firstKey");
+        writer.writeValue(false);
+        writer.writeKey("sec Key");
+        writer.writeValue(3);
+        writer.writeKey("t Key");
+        writer.writeValue(4.2);
+        writer.writeKey("f Key");
+        writer.writeValue("a string \n \t \r \b \f \" \\ /");
+        writer.writeKey("NaN");
+        writer.writeValue(Double.NaN);
+        writer.writeKey("+Inf");
+        writer.writeValue(Double.POSITIVE_INFINITY);
+        writer.writeKey("-Inf");
+        writer.writeValue(Double.NEGATIVE_INFINITY);
+
+        writer.writeKey("Nested Object");
+        writer.startObject();
+        writer.writeKey("a");
+        writer.writeValue("b");
+        writer.endObject();
+        
+        writer.writeKey("Empty Object");
+        writer.startObject();
+        writer.endObject();
+
+        writer.writeKey("Array");
+        writer.startArray();
+        writer.writeValue("str");
+        writer.writeValue(true);
+        writer.writeKey("Nested Object");
+        writer.startObject();
+        writer.writeKey("a");
+        writer.writeValue("b");
+        writer.endObject();
+        writer.writeValue(true);
+        writer.endArray();
+
+        writer.writeKey("Empty array");
+        writer.startArray();
+        writer.endArray();
+
+        writer.endObject();
+
+        System.out.println(writer.getString());
     }
 }
