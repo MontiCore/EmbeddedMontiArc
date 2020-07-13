@@ -1,29 +1,28 @@
 /* (c) https://github.com/MontiCore/monticore */
 package de.rwth.montisim.commons.boundingbox;
 
-import de.rwth.montisim.commons.utils.JsonTraverser;
-import de.rwth.montisim.commons.utils.JsonTraverser.ObjectIterable;
-import de.rwth.montisim.commons.utils.JsonWriter;
+import de.rwth.montisim.commons.utils.json.Typed;
 
+@Typed("aabb")
 public class AABB implements BoundingBox {
-    public static final String TYPE_NAME = "aabb";
+    // public static final String TYPE_NAME = "aabb";
 
-    @Override
-    public void toJson(JsonWriter j) {
-        // TODO Auto-generated method stub
+    // @Override
+    // public void toJson(JsonWriter j) {
+    //     // TODO Auto-generated method stub
 
-    }
+    // }
 
-    @Override
-    public void fromJson(JsonTraverser j) {
-        // TODO Auto-generated method stub
+    // @Override
+    // public void fromJson(JsonTraverser j) {
+    //     // TODO Auto-generated method stub
 
-    }
+    // }
 
-    @Override
-    public void fromJson(JsonTraverser j, ObjectIterable it) {
-        // TODO Auto-generated method stub
+    // @Override
+    // public void fromJson(JsonTraverser j, ObjectIterable it) {
+    //     // TODO Auto-generated method stub
 
-    }
+    // }
 
 }

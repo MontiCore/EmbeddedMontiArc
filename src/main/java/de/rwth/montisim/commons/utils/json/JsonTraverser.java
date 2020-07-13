@@ -1,13 +1,17 @@
-package de.rwth.montisim.commons.utils;
+package de.rwth.montisim.commons.utils.json;
 
 import java.io.*;
 import java.util.Iterator;
+
+import de.rwth.montisim.commons.utils.Pair;
+import de.rwth.montisim.commons.utils.ParsingException;
+import de.rwth.montisim.commons.utils.StringRef;
+import de.rwth.montisim.commons.utils.json.Json;
 
 /**
  * @throws ParsingException
  */
 public class JsonTraverser {
-    public static final String K_TYPE = "type";
     private static final int PRE_DEPTH = 20;
 
     char[] data;
@@ -61,6 +65,24 @@ public class JsonTraverser {
     
     public ValueType getType() {
         return currentType;
+    }
+
+    private char nextNonWS(){
+        int p = pos;
+        char nc = '\0';
+        do {
+            p++;
+            nc = p >= data.length ? '\0' : data[p];
+        } while(nc == ' ' || nc == '\n' || nc == '\r' || nc == '\t');
+        return nc;
+    }
+
+    public boolean isEmpty(){
+        if (currentType == ValueType.OBJECT){
+            return nextNonWS() == '}';
+        } else if (currentType == ValueType.ARRAY) {
+            return nextNonWS() == ']';
+        } else return false;
     }
 
     public ObjectIterable streamObject() throws ParsingException {
@@ -146,20 +168,20 @@ public class JsonTraverser {
 
     public Pair<String, ObjectIterable> getStructureType() throws ParsingException {
         ObjectIterable it = streamObject();
-        if (!it.iterator().hasNext()) expected(K_TYPE);
+        if (!it.iterator().hasNext()) expected(Json.K_TYPE);
         Entry e = it.iterator().next();
-        if (!e.key.getJsonString().equals(K_TYPE)) expected(K_TYPE);
+        if (!e.key.getJsonString().equals(Json.K_TYPE)) expected(Json.K_TYPE);
         String type = getString().getJsonString();
         return new Pair<String, ObjectIterable>(type, it);
     }
 
     public ObjectIterable expectStructureType(String type) throws ParsingException {
         ObjectIterable it = streamObject();
-        if (!it.iterator().hasNext()) expected(K_TYPE);
+        if (!it.iterator().hasNext()) expected(Json.K_TYPE);
         Entry e = it.iterator().next();
-        if (!e.key.getJsonString().equals(K_TYPE)) expected(K_TYPE);
-        String t = getString().getJsonString();
-        if (!type.equals(t)) expectedStructureType(type, t);
+        if (!e.key.getJsonString().equals(Json.K_TYPE)) expected(Json.K_TYPE);
+        StringRef t = getString();
+        if (!t.equals(type)) expectedStructureType(type, t.getRawString());
         return it;
     }
 

@@ -10,7 +10,7 @@ import java.util.List;
  * applyUpdate() will update all registered objects.
  */
 public class Updater {
-    protected List<Updatable> updatables = new ArrayList<>();
+    protected transient List<Updatable> updatables = new ArrayList<>();
     
     /** Register an Updatable. */
     public void addUpdatable(Updatable u){

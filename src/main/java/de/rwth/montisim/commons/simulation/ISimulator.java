@@ -6,14 +6,14 @@ package de.rwth.montisim.commons.simulation;
  */
 public interface ISimulator {
 
-    void registerStaticObject(StaticObject staticObject);
+    void registerStaticObject(SimulationObject obj, StaticObject staticObject);
 
     /// If registering a dynamic object, do not register it as static
-    void registerDynamicObject(DynamicObject dynObject);
+    void registerDynamicObject(SimulationObject obj, DynamicObject dynObject);
 
-    void registerUpdatable(Updatable updatable);
+    void registerUpdatable(SimulationObject obj, Updatable updatable);
 
-    void registerDestroyable(Destroyable destroyable);
+    void registerDestroyable(SimulationObject obj, Destroyable destroyable);
 
-    void registerTaskRunner(TaskRunner runner);
+    void registerTaskRunner(SimulationObject obj, TaskRunner runner);
 }

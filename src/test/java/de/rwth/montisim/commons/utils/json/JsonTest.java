@@ -1,4 +1,4 @@
-package de.rwth.montisim.commons.utils;
+package de.rwth.montisim.commons.utils.json;
 
 import java.io.IOException;
 import java.lang.annotation.Annotation;
@@ -10,8 +10,8 @@ import org.junit.Test;
 
 import de.rwth.montisim.commons.dynamicinterface.DataType;
 import de.rwth.montisim.commons.simulation.DynamicObject;
-import de.rwth.montisim.commons.utils.JsonTraverser.Entry;
-import de.rwth.montisim.commons.utils.JsonTraverser.ValueType;
+import de.rwth.montisim.commons.utils.json.JsonTraverser.Entry;
+import de.rwth.montisim.commons.utils.json.JsonTraverser.ValueType;
 
 public class JsonTest {
     public static final String formatted = String.join("\n", "{", "  \"firstKey\": false,", "  \"sec Key\": 3,",
@@ -24,7 +24,7 @@ public class JsonTest {
 
     @Test
     public void jsonWriterTest() {
-        JsonWriter writer = new JsonWriter();
+        JsonWriter writer = new JsonWriter(true);
 
         writer.format = true;
         writeJsonSample(writer);

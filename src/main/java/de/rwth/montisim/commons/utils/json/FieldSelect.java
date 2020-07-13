@@ -1,6 +1,9 @@
 package de.rwth.montisim.commons.utils.json;
 
-public enum FieldSelect {
-    EXPLICIT,
-    ALL
+import java.lang.annotation.*;
+
+@Retention(RetentionPolicy.RUNTIME)
+@Target(ElementType.TYPE)
+public @interface FieldSelect {
+    Select value() default Select.ALL;
 }
