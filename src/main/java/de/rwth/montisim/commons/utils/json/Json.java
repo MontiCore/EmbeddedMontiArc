@@ -2,6 +2,7 @@ package de.rwth.montisim.commons.utils.json;
 
 import java.io.File;
 import java.io.IOException;
+import java.lang.reflect.Constructor;
 import java.lang.reflect.Field;
 import java.lang.reflect.InvocationTargetException;
 import java.lang.reflect.Modifier;
@@ -104,6 +105,7 @@ public abstract class Json {
                 return (T) registry.get(subC).instancer.instance(t, subC, it, context);
             }
         }
+        if (inf.instancer == null) throw new IllegalArgumentException("Cannot instanciate class "+c.getSimpleName());
         return (T) inf.instancer.instance(t, c, null, context);
     }
 
@@ -166,6 +168,11 @@ public abstract class Json {
             name = n;
             c = f.getType();
             primitive = c.isPrimitive();
+            if (primitive) {
+                isGeneric = false;
+                genericC = null;
+                return;
+            }
             TypeInfo inf = getTypeInfo(c);
             isGeneric = inf.isGeneric;
             if (inf.isGeneric) {
@@ -214,11 +221,8 @@ public abstract class Json {
             return inf;
         }
 
-        public static TypeInfo newSubtyped() {
+        public static TypeInfo newAbstract() {
             TypeInfo inf = new TypeInfo();
-            inf.subtyped = true;
-            inf.subtypes = new HashMap<>();
-            inf.type = "";
             return inf;
         }
 
@@ -258,8 +262,8 @@ public abstract class Json {
         if (registry.containsKey(c))
             return;
 
-        if (c.isInterface()) {
-            registry.put(c, TypeInfo.newSubtyped());
+        if (c.isInterface() || Modifier.isAbstract(c.getModifiers())) {
+            registry.put(c, TypeInfo.newAbstract());
             return;
         }
 
@@ -271,7 +275,6 @@ public abstract class Json {
         boolean obj = jt == null || jt.value() == Type.OBJECT;
         boolean isEnum = c.isEnum();
         boolean all = fs == null || fs.value() == Select.ALL;
-        boolean abstr = Modifier.isAbstract(c.getModifiers());
         boolean custom = false;
         for (Class<?> i : c.getInterfaces())
             if (i.equals(CustomJson.class)) {
@@ -321,16 +324,17 @@ public abstract class Json {
             writer = (w, o, context) -> {
                 ((CustomJson) o).write(w, context);
             };
-            if (!abstr) {
-                instancer = (t, cl, it, context) -> {
-                    Object ob = cl.getDeclaredConstructor().newInstance();
-                    ((CustomJson) ob).read(t, it, context);
-                    return ob;
-                };
-                reader = (t, o, it, context) -> {
-                    ((CustomJson) o).read(t, it, context);
-                };
-            }
+            instancer = (t, cl, it, context) -> {
+                Constructor<?> constr = cl.getDeclaredConstructor();
+                constr.setAccessible(true);
+                Object ob = constr.newInstance();
+                ((CustomJson) ob).read(t, it, context);
+                return ob;
+            };
+            reader = (t, o, it, context) -> {
+                ((CustomJson) o).read(t, it, context);
+            };
+            
         } else {
 
             final Vector<FieldInfo> fields = new Vector<>();
@@ -377,83 +381,84 @@ public abstract class Json {
                     w.endArray();
             };
 
-            if (!abstr) {
-                instancer = (t, cl, it, context) -> {
-                    Object ob = cl.getDeclaredConstructor().newInstance();
-                    if (obj) {
-                        if (it == null) {
-                            it = t.streamObject();
-                            if (typed) { // Only check type if it was not already
-                                if (!it.iterator().hasNext())
-                                    t.expected(K_TYPE);
-                                Entry e = it.iterator().next();
-                                if (!e.key.getJsonString().equals(K_TYPE))
-                                    t.expected(K_TYPE);
-                                StringRef rType = t.getString();
-                                if (!rType.equals(type))
-                                    t.expectedStructureType(type, rType.getRawString());
-                            }
+            instancer = (t, cl, it, context) -> {
+                Constructor<?> constr = cl.getDeclaredConstructor();
+                constr.setAccessible(true);
+                Object ob = constr.newInstance();
+                if (obj) {
+                    if (it == null) {
+                        it = t.streamObject();
+                        if (typed) { // Only check type if it was not already
+                            if (!it.iterator().hasNext())
+                                t.expected(K_TYPE);
+                            Entry e = it.iterator().next();
+                            if (!e.key.getJsonString().equals(K_TYPE))
+                                t.expected(K_TYPE);
+                            StringRef rType = t.getString();
+                            if (!rType.equals(type))
+                                t.expectedStructureType(type, rType.getRawString());
                         }
-
-                        for (Entry e : it) {
-                            FieldInfo f = map.get(e.key.getJsonString());
-                            if (f == null)
-                                t.unexpected(e);
-
-                            instanceField(t, ob, f, context);
-                        }
-                    } else {
-                        ArrayIterable ita = t.streamArray();
-                        for (FieldInfo f : fields) {
-                            if (!ita.iterator().hasNext())
-                                throw new ParsingException("Missing entries in " + c.getSimpleName() + " array");
-                            ita.iterator().next();
-
-                            instanceField(t, ob, f, context);
-                        }
-
-                        if (ita.iterator().hasNext())
-                            throw new ParsingException("Too many entries in " + c.getSimpleName() + " array");
                     }
-                    return ob;
-                };
 
-                reader = (t, o, it, context) -> {
-                    if (obj) {
-                        if (it == null) {
-                            it = t.streamObject();
-                            if (typed) { // Only check type if it was not already
-                                if (!it.iterator().hasNext())
-                                    t.expected(K_TYPE);
-                                Entry e = it.iterator().next();
-                                if (!e.key.getJsonString().equals(K_TYPE))
-                                    t.expected(K_TYPE);
-                                StringRef rType = t.getString();
-                                if (!rType.equals(type))
-                                    t.expectedStructureType(type, rType.getRawString());
-                            }
-                        }
+                    for (Entry e : it) {
+                        FieldInfo f = map.get(e.key.getJsonString());
+                        if (f == null)
+                            t.unexpected(e);
 
-                        for (Entry e : it) {
-                            FieldInfo f = map.get(e.key.getJsonString());
-                            if (f == null)
-                                t.unexpected(e);
-                            readField(t, o, f, context);
-                        }
-                    } else {
-                        ArrayIterable ita = t.streamArray();
-                        for (FieldInfo f : fields) {
-                            if (!ita.iterator().hasNext())
-                                throw new ParsingException("Missing entries in " + c.getSimpleName() + " array");
-                            ita.iterator().next();
-                            readField(t, o, f, context);
-                        }
-
-                        if (ita.iterator().hasNext())
-                            throw new ParsingException("Too many entries in " + c.getSimpleName() + " array");
+                        instanceField(t, ob, f, context);
                     }
-                };
-            }
+                } else {
+                    ArrayIterable ita = t.streamArray();
+                    for (FieldInfo f : fields) {
+                        if (!ita.iterator().hasNext())
+                            throw new ParsingException("Missing entries in " + c.getSimpleName() + " array");
+                        ita.iterator().next();
+
+                        instanceField(t, ob, f, context);
+                    }
+
+                    if (ita.iterator().hasNext())
+                        throw new ParsingException("Too many entries in " + c.getSimpleName() + " array");
+                }
+                return ob;
+            };
+
+            reader = (t, o, it, context) -> {
+                if (obj) {
+                    if (it == null) {
+                        it = t.streamObject();
+                        if (typed) { // Only check type if it was not already
+                            if (!it.iterator().hasNext())
+                                t.expected(K_TYPE);
+                            Entry e = it.iterator().next();
+                            if (!e.key.getJsonString().equals(K_TYPE))
+                                t.expected(K_TYPE);
+                            StringRef rType = t.getString();
+                            if (!rType.equals(type))
+                                t.expectedStructureType(type, rType.getRawString());
+                        }
+                    }
+
+                    for (Entry e : it) {
+                        FieldInfo f = map.get(e.key.getJsonString());
+                        if (f == null)
+                            t.unexpected(e);
+                        readField(t, o, f, context);
+                    }
+                } else {
+                    ArrayIterable ita = t.streamArray();
+                    for (FieldInfo f : fields) {
+                        if (!ita.iterator().hasNext())
+                            throw new ParsingException("Missing entries in " + c.getSimpleName() + " array");
+                        ita.iterator().next();
+                        readField(t, o, f, context);
+                    }
+
+                    if (ita.iterator().hasNext())
+                        throw new ParsingException("Too many entries in " + c.getSimpleName() + " array");
+                }
+            };
+            
         }
 
         registry.put(c, TypeInfo.newTypeInfo(writer, instancer, reader, type));
@@ -486,16 +491,40 @@ public abstract class Json {
             pr.read(t, o, f.f);
             return;
         }
+        Object subObj = f.f.get(o);
         TypeInfo inf = getTypeInfo(f.c);
-        if (f.isGeneric) {
-            if (inf.genericReader == null)
+        if (subObj == null){
+            // field is null => instantiate object
+            if (f.isGeneric) {
                 f.f.set(o, inf.genericInstancer.instance(t, f.genericC, c));
-            else
-                inf.genericReader.read(t, f.f.get(o), null, f.genericC, c);
+                return;
+            }
+            if (inf.subtyped) {
+                ObjectIterable it = t.streamObject();
+                if (!it.iterator().hasNext())
+                    t.expected(K_TYPE);
+                Entry e = it.iterator().next();
+                if (!e.key.equals(K_TYPE))
+                    t.expected(K_TYPE);
+                String rType = t.getString().getRawString();
+                Class<?> subC = inf.subtypes.get(rType);
+                if (subC == null)
+                    t.unexpected(e);
+                f.f.set(o, registry.get(subC).instancer.instance(t, subC, it, c));
+                return;
+            }
+            if (inf.instancer == null) throw new IllegalArgumentException("Cannot instance field "+f.f.getName());
+            f.f.set(o, instantiateFromJson(t, f.c, c));
+            return;
+        }
+        // field is not null => try to 'read' it.
+        if (f.isGeneric) {
+            if (inf.genericReader != null) inf.genericReader.read(t, subObj, null, f.genericC, c);
+            else f.f.set(o, inf.genericInstancer.instance(t, f.genericC, c));
             return;
         }
         if (inf.subtyped) {
-            TypeInfo subInf = getTypeInfo(f.f.get(o).getClass());
+            // Field is subtyped => check if type in json matches => else instantiate new
             ObjectIterable it = t.streamObject();
             if (!it.iterator().hasNext())
                 t.expected(K_TYPE);
@@ -503,22 +532,23 @@ public abstract class Json {
             if (!e.key.equals(K_TYPE))
                 t.expected(K_TYPE);
             String rType = t.getString().getRawString();
+            TypeInfo subInf = getTypeInfo(subObj.getClass());
             if (!rType.equals(subInf.type)) {
                 Class<?> subC = inf.subtypes.get(rType);
                 if (subC == null)
                     t.unexpected(e);
                 f.f.set(o, registry.get(subC).instancer.instance(t, subC, it, c));
             } else {
-                if (subInf.reader == null)
-                    f.f.set(o, subInf.instancer.instance(t, f.c, it, c));
-                else
-                    subInf.reader.read(t, f.f.get(o), it, c);
+                if (subInf.reader != null) subInf.reader.read(t, subObj, it, c);
+                else f.f.set(o, subInf.instancer.instance(t, f.c, it, c));
             }
-        } else if (inf.reader == null)
-            f.f.set(o, instantiateFromJson(t, f.c, c));
-        else
-            inf.reader.read(t, f.f.get(o), null, c);
-
+            return;
+        }
+        // Use field object's reader
+        Class<?> subC = subObj.getClass();
+        if (!subC.equals(f.c)) inf = getTypeInfo(subC);
+        if (inf.reader != null) inf.reader.read(t, subObj, null, c);
+        else f.f.set(o, inf.instancer.instance(t, f.c, null, c));
     }
 
     static void getFields(Class<?> c, Vector<FieldInfo> fields, HashMap<String, FieldInfo> map, boolean obj,

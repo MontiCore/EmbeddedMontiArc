@@ -195,7 +195,7 @@ public class JsonTraverser {
     }
 
     public void expected(String entryName) throws ParsingException {
-        throw new ParsingException("Expected entry " + entryName);
+        throw new ParsingException(data, pos, "Expected entry " + entryName);
     }
 
     public void expected(ValueType type) throws ParsingException {

@@ -50,7 +50,7 @@ public class ParsingException extends RuntimeException {
             }
             // Set marker
             line.append('\n');
-            for (int i = 0; i < added + (pos-start); ++i) line.append(' ');
+            for (int i = 0; i < added + (pos-start-1); ++i) line.append(' ');
             line.append('^');
             return line.toString();
         }

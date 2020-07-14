@@ -14,5 +14,5 @@ public abstract class SimulationObject {
      */
     public abstract void registerComponents(ISimulator simulator);
 
-    public ISimulatorState state;
+    public transient ISimulatorState state;
 }
