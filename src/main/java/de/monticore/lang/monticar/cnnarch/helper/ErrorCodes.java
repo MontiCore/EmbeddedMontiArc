@@ -37,9 +37,9 @@ public class ErrorCodes {
     public static final String ILLEGAL_LAYER_USE = "x04845";
     public static final String UNUSED_LAYER = "x04847";
     public static final String INVALID_CONSTANT = "x04856";
-    public static final String INVALID_MEMORY_LAYER_PARAMETERS = "x04866";
-    public static final String INVALID_REPLAY_MEMORY_LAYER_PLACEMENT = "x04876";
-    public static final String INVALID_REPLAY_QUERY_NET_PATH_OR_PREFIX = "x04877";
+    public static final String INVALID_LARGE_MEMORY_LAYER_PARAMETERS = "x04866";
+    public static final String INVALID_EPISODIC_MEMORY_LAYER_PLACEMENT = "x04876";
+    public static final String INVALID_EPISODIC_QUERY_NET_PATH_OR_PREFIX = "x04877";
     public static final String OUTPUT_WRITTEN_TO_MULTIPLE_TIMES = "x04836";
     public static final String UNROLL_INPUTS_TOO_MANY = "x02384";
     public static final String UNROLL_OUTPUTS_TOO_MANY = "x02385";

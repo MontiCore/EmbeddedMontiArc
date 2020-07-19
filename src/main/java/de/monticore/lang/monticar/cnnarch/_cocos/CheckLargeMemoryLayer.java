@@ -17,16 +17,16 @@ import java.util.Optional;
 import java.util.List;
 
 
-public class CheckMemoryLayer extends CNNArchSymbolCoCo {
+public class CheckLargeMemoryLayer extends CNNArchSymbolCoCo {
 
     @Override
     public void check(ArchitectureElementSymbol sym) {
-        if (sym instanceof LayerSymbol && sym.getName().equals("Memory")) {
-            checkMemoryLayer((LayerSymbol) sym);
+        if (sym instanceof LayerSymbol && sym.getName().equals("LargeMemory")) {
+            checkLargeMemoryLayer((LayerSymbol) sym);
         }
     }
 
-    public void checkMemoryLayer(LayerSymbol layer) {
+    public void checkLargeMemoryLayer(LayerSymbol layer) {
         List<ArgumentSymbol> arguments = layer.getArguments();
         Integer subKeySize = new Integer(0);
         Integer k = new Integer(0);
@@ -40,8 +40,8 @@ public class CheckMemoryLayer extends CNNArchSymbolCoCo {
         }
 
         if (subKeySize < k) {
-            Log.error("0" + ErrorCodes.INVALID_MEMORY_LAYER_PARAMETERS +
-                      " Invalid Memory layer Parameter values, subKeySize has to be greater or equal to k. ",
+            Log.error("0" + ErrorCodes.INVALID_LARGE_MEMORY_LAYER_PARAMETERS +
+                      " Invalid LargeMemory layer Parameter values, subKeySize has to be greater or equal to k. ",
                       layer.getSourcePosition());
         }
     }

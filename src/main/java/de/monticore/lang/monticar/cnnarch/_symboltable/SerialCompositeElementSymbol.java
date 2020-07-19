@@ -12,7 +12,7 @@ import java.util.*;
 
 public class SerialCompositeElementSymbol extends CompositeElementSymbol {
 
-    protected List<List<ArchitectureElementSymbol>> replaySubNetworks = new ArrayList<>(new ArrayList<>());
+    protected List<List<ArchitectureElementSymbol>> episodicSubNetworks = new ArrayList<>(new ArrayList<>());
 
     protected void setElements(List<ArchitectureElementSymbol> elements) {
         ArchitectureElementSymbol previous = null;
@@ -34,8 +34,8 @@ public class SerialCompositeElementSymbol extends CompositeElementSymbol {
         this.elements = elements;
     }
 
-    protected void setReplaySubNetworks(List<List<ArchitectureElementSymbol>> replaySubNetworks){
-        for (List<ArchitectureElementSymbol> subElements: replaySubNetworks){
+    protected void setEpisodicSubNetworks(List<List<ArchitectureElementSymbol>> episodicSubNetworks){
+        for (List<ArchitectureElementSymbol> subElements: episodicSubNetworks){
             ArchitectureElementSymbol previous = null;
             for (ArchitectureElementSymbol current : subElements){
                 if (previous != null){
@@ -53,11 +53,11 @@ public class SerialCompositeElementSymbol extends CompositeElementSymbol {
                 previous = current;
             }
         }
-        this.replaySubNetworks = replaySubNetworks;
+        this.episodicSubNetworks = episodicSubNetworks;
     }
 
-    public List<List<ArchitectureElementSymbol>> getReplaySubNetworks() {
-        return replaySubNetworks;
+    public List<List<ArchitectureElementSymbol>> getEpisodicSubNetworks() {
+        return episodicSubNetworks;
     }
 
     @Override

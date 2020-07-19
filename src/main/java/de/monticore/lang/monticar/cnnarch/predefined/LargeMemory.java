@@ -16,10 +16,10 @@ import java.util.Collections;
 import java.util.List;
 import java.util.Optional;
 
-public class Memory extends PredefinedLayerDeclaration {
+public class LargeMemory extends PredefinedLayerDeclaration {
 
-    private Memory() {
-        super(AllPredefinedLayers.MEMORY_NAME);
+    private LargeMemory() {
+        super(AllPredefinedLayers.LARGE_MEMORY_NAME);
     }
 
     @Override
@@ -57,8 +57,8 @@ public class Memory extends PredefinedLayerDeclaration {
         errorIfInputSizeIsNotOne(inputTypes, layer);
     }
 
-    public static Memory create(){
-        Memory declaration = new Memory();
+    public static LargeMemory create(){
+        LargeMemory declaration = new LargeMemory();
         List<ParameterSymbol> parameters = new ArrayList<>(Arrays.asList(
                 new ParameterSymbol.Builder()
                         .name(AllPredefinedLayers.STORE_DIST_MEASURE_NAME)

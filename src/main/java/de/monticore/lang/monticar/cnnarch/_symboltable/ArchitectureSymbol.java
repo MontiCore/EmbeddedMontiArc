@@ -214,15 +214,15 @@ public class ArchitectureSymbol extends CommonScopeSpanningSymbol {
         return copy;
     }
 
-    public void processForReplayMemory(){
+    public void processForEpisodicReplayMemory(){
         for(NetworkInstructionSymbol networkInstruction : networkInstructions){
             List<ArchitectureElementSymbol> elements = networkInstruction.getBody().getElements();
             List<ArchitectureElementSymbol> elementsNew = new ArrayList<>();
-            List<List<ArchitectureElementSymbol>> replaySubNetworks = new ArrayList<>(new ArrayList<>());
-            List<ArchitectureElementSymbol> currentReplaySubNetworkElements = new ArrayList<>();
+            List<List<ArchitectureElementSymbol>> episodicSubNetworks = new ArrayList<>(new ArrayList<>());
+            List<ArchitectureElementSymbol> currentEpisodicSubNetworkElements = new ArrayList<>();
 
             for (ArchitectureElementSymbol element : elements){
-                if (AllPredefinedLayers.REPLAY_LAYER_NAMES.contains(element.getName())) {
+                if (AllPredefinedLayers.EPISODIC_REPLAY_LAYER_NAMES.contains(element.getName())) {
                     boolean use_replay = false;
                     boolean use_local_adaption = false;
 
@@ -251,18 +251,18 @@ public class ArchitectureSymbol extends CommonScopeSpanningSymbol {
                     }
 
                     if (use_replay || use_local_adaption){
-                        if (!currentReplaySubNetworkElements.isEmpty()){
-                            replaySubNetworks.add(currentReplaySubNetworkElements);
+                        if (!currentEpisodicSubNetworkElements.isEmpty()){
+                            episodicSubNetworks.add(currentEpisodicSubNetworkElements);
                         }
-                        currentReplaySubNetworkElements = new ArrayList<>();
+                        currentEpisodicSubNetworkElements = new ArrayList<>();
                     }
                 }
-                currentReplaySubNetworkElements.add(element);
+                currentEpisodicSubNetworkElements.add(element);
             }
-            if (!currentReplaySubNetworkElements.isEmpty() && !replaySubNetworks.isEmpty()){
-                replaySubNetworks.add(currentReplaySubNetworkElements);
+            if (!currentEpisodicSubNetworkElements.isEmpty() && !episodicSubNetworks.isEmpty()){
+                episodicSubNetworks.add(currentEpisodicSubNetworkElements);
             }
-                networkInstruction.getBody().setReplaySubNetworks(replaySubNetworks);
+                networkInstruction.getBody().setEpisodicSubNetworks(episodicSubNetworks);
         }
     }
 }
