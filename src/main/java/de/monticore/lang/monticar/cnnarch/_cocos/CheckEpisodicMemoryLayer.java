@@ -21,7 +21,7 @@ import java.util.Optional;
 import java.util.List;
 import java.io.File;
 
-public class CheckReplayMemoryLayer extends CNNArchSymbolCoCo {
+public class CheckEpisodicMemoryLayer extends CNNArchSymbolCoCo {
 
     @Override
     public void check(StreamInstructionSymbol stream) {
@@ -29,22 +29,22 @@ public class CheckReplayMemoryLayer extends CNNArchSymbolCoCo {
 
         for (ArchitectureElementSymbol element : elements) {
             if (element instanceof ParallelCompositeElementSymbol) {
-                checkForReplayMemory((ParallelCompositeElementSymbol) element);
-            } else if (element.getName().equals("ReplayMemory")) {
+                checkForEpisodicMemory((ParallelCompositeElementSymbol) element);
+            } else if (element.getName().equals("EpisodicMemory")) {
                 checkParameters((LayerSymbol) element);
             }
         }
     }
 
-    public void checkForReplayMemory(ParallelCompositeElementSymbol parallelElement) {
+    public void checkForEpisodicMemory(ParallelCompositeElementSymbol parallelElement) {
         for (ArchitectureElementSymbol subStream : parallelElement.getElements()) {
             if (subStream instanceof SerialCompositeElementSymbol) { //should always be the case
                 for (ArchitectureElementSymbol element : ((SerialCompositeElementSymbol) subStream).getElements()) {
                     if (element instanceof ParallelCompositeElementSymbol) {
-                        checkForReplayMemory((ParallelCompositeElementSymbol) element);
-                    } else if (element.getName().equals("ReplayMemory")) {
-                        Log.error("0" + ErrorCodes.INVALID_REPLAY_MEMORY_LAYER_PLACEMENT +
-                                        " Invalid placement of ReplayMemory layer. It can't be placed inside a Prallalel execution block.",
+                        checkForEpisodicMemory((ParallelCompositeElementSymbol) element);
+                    } else if (element.getName().equals("EpisodicMemory")) {
+                        Log.error("0" + ErrorCodes.INVALID_EPISODIC_MEMORY_LAYER_PLACEMENT +
+                                        " Invalid placement of EpisodicMemory layer. It can't be placed inside a Prallalel execution block.",
                                 element.getSourcePosition());
                     }
                 }
@@ -74,7 +74,7 @@ public class CheckReplayMemoryLayer extends CNNArchSymbolCoCo {
                 }
             }
         }
-        Log.error("0" + ErrorCodes.INVALID_REPLAY_QUERY_NET_PATH_OR_PREFIX +
+        Log.error("0" + ErrorCodes.INVALID_EPISODIC_QUERY_NET_PATH_OR_PREFIX +
                         " For the concatination of queryNetDir and queryNetPrefix exists no file wich path has this as prefix.",
                         layer.getSourcePosition());
     }

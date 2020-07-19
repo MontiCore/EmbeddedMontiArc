@@ -55,11 +55,12 @@ public class AllPredefinedLayers {
     public static final String BROADCAST_ADD_NAME = "BroadcastAdd";
     public static final String RESHAPE_NAME = "Reshape";
     public static final String DOT_PRODUCT_SELF_ATTENTION_NAME = "DotProductSelfAttention";
+    public static final String LOAD_NETWORK_NAME = "LoadNetwork";
 
     //replay layers
-    public static final String MEMORY_NAME = "Memory";
-    public static final String REPLAY_MEMORY_NAME = "ReplayMemory";
-    public static final List<String> REPLAY_LAYER_NAMES = new ArrayList<String>(Arrays.asList(REPLAY_MEMORY_NAME));
+    public static final String LARGE_MEMORY_NAME = "LargeMemory";
+    public static final String EPISODIC_MEMORY_NAME = "EpisodicMemory";
+    public static final List<String> EPISODIC_REPLAY_LAYER_NAMES = new ArrayList<String>(Arrays.asList(EPISODIC_MEMORY_NAME));
 
 
     //predefined argument names
@@ -96,6 +97,11 @@ public class AllPredefinedLayers {
     public static final String SHAPE_NAME = "shape";
     public static final String RNN_DROPOUT_NAME = "dropout";
 
+    //parameters LoadNetwork layer
+    public static final String NETWORK_DIR_NAME = "networkDir";
+    public static final String NETWORK_PREFIX_NAME = "networkPrefix";
+    public static final String NUM_INPUTS_NAME = "numInputs";
+    public static final String OUTPUT_SHAPE_NAME = "outputShape";
 
     //parameters DotProductSelfAttention
     public static final String SCALE_FACTOR_NAME="scaleFactor";
@@ -103,7 +109,7 @@ public class AllPredefinedLayers {
     public static final String DIM_VALUES_NAME="dimValues";
     public static final String USE_PROJ_BIAS_NAME="useProjBias";
 
-    //shared parameters replay layers
+    //shared parameters episodic replay layers
     public static final String USE_REPLAY_NAME = "useReplay";
     public static final String REPLAY_INTERVAL_NAME = "replayInterval";
     public static final String REPLAY_BATCH_SIZE_NAME = "replayBatchSize";
@@ -115,7 +121,7 @@ public class AllPredefinedLayers {
     public static final String LOCAL_ADAPTION_GRADIENT_STEPS_NAME = "localAdaptionGradientSteps";
     public static final String LOCAL_ADAPTION_MEMORY_STORE_DIST_MEASURE_NAME = "localAdaptionMemoryStoreDistMeasure";
 
-	//parameters for memory layer
+	//parameters for episodic memory layer
     public static final String SUB_KEY_SIZE_NAME = "subKeySize";
     public static final String QUERY_SIZE_NAME = "querySize";
 	public static final String QUERY_ACT_NAME = "queryAct";
@@ -124,11 +130,12 @@ public class AllPredefinedLayers {
     public static final String STORE_DIST_MEASURE_NAME = "storeDistMeasure";
 	public static final String VALUES_DIM_NAME = "valuesDim";
 
-    //parameters for replay memory layer
+    //parameters for episodic memory layer
 	public static final String MAX_STORED_SAMPLES_NAME = "maxStoredSamples";
     public static final String REPLAY_MEMORY_STORE_PROB_NAME = "replayMemoryStoreProb";
 	public static final String QUERY_NET_DIR_NAME = "queryNetDir";
 	public static final String QUERY_NET_PREFIX_NAME = "queryNetPrefix";
+    public static final String QUERY_NET_NUM_INPUTS_NAME = "queryNetNumInputs";
 
     //possible String values
     public static final String PADDING_VALID = "valid";
@@ -184,9 +191,10 @@ public class AllPredefinedLayers {
                 SwapAxes.create(),
                 BroadcastAdd.create(),
                 Reshape.create(),
+                LoadNetwork.create(),
                 DotProductSelfAttention.create(),
-                Memory.create(),
-                ReplayMemory.create());
+                LargeMemory.create(),
+                EpisodicMemory.create());
     }
 
     public static List<UnrollDeclarationSymbol> createUnrollList(){

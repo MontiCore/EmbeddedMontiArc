@@ -16,31 +16,39 @@ import java.util.Collections;
 import java.util.List;
 import java.util.Optional;
 
-public class ReplayMemory extends PredefinedLayerDeclaration {
+public class EpisodicMemory extends PredefinedLayerDeclaration {
 
-    private ReplayMemory() {
-        super(AllPredefinedLayers.REPLAY_MEMORY_NAME);
+    private EpisodicMemory() {
+        super(AllPredefinedLayers.EPISODIC_MEMORY_NAME);
     }
 
     @Override
     public List<ArchTypeSymbol> computeOutputTypes(List<ArchTypeSymbol> inputTypes, LayerSymbol layer, VariableSymbol.Member member) {
 
-        return Collections.singletonList(new ArchTypeSymbol.Builder()
-            .channels(1)
-            .height(1)
-            .width(1)
-            .elementType("-oo", "oo")
-            .build());
-        
+        List<ArchTypeSymbol> outputShapes  = new ArrayList<>(layer.getInputTypes().size());
+        for (int i = 0; i < layer.getInputTypes().size(); i++) {
+            ArchTypeSymbol inputShape = layer.getInputTypes().get(i);
+            int inputHeight = inputShape.getHeight();
+            int inputWidth = inputShape.getWidth();
+            int inputChannels = inputShape.getChannels();
+
+            outputShapes.add(new ArchTypeSymbol.Builder()
+                    .height(inputHeight)
+                    .width(inputWidth)
+                    .channels(inputChannels)
+                    .elementType(layer.getInputTypes().get(i).getDomain())
+                    .build());
+        }
+        return outputShapes;
     }
     
     @Override
     public void checkInput(List<ArchTypeSymbol> inputTypes, LayerSymbol layer, VariableSymbol.Member member) {
-        errorIfInputSizeIsNotOne(inputTypes, layer);
+        errorIfInputIsEmpty(inputTypes, layer);
     }
 
-    public static ReplayMemory create(){
-        ReplayMemory declaration = new ReplayMemory();
+    public static EpisodicMemory create(){
+        EpisodicMemory declaration = new EpisodicMemory();
         List<ParameterSymbol> parameters = new ArrayList<>(Arrays.asList(
                 new ParameterSymbol.Builder()
                         .name(AllPredefinedLayers.USE_REPLAY_NAME)
@@ -104,6 +112,11 @@ public class ReplayMemory extends PredefinedLayerDeclaration {
                         .name(AllPredefinedLayers.QUERY_NET_PREFIX_NAME)
                         .constraints(Constraints.STRING)
                         .defaultValue(-1)
+                        .build(),
+                new ParameterSymbol.Builder()
+                        .name(AllPredefinedLayers.QUERY_NET_NUM_INPUTS_NAME)
+                        .constraints(Constraints.INTEGER)
+                        .defaultValue(1)
                         .build()));
         declaration.setParameters(parameters);
         return declaration;
