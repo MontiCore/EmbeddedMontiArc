@@ -183,6 +183,22 @@ public class ArchitectureElementData {
         return getLayerSymbol().getStringValue(AllPredefinedLayers.POOL_TYPE_NAME).get();
     }
 
+    public String getNetworkDir(){
+        return getLayerSymbol().getStringValue(AllPredefinedLayers.NETWORK_DIR_NAME).get();
+    }
+
+    public String getNetworkPrefix(){
+        return getLayerSymbol().getStringValue(AllPredefinedLayers.NETWORK_PREFIX_NAME).get();
+    }
+
+    public int getNumInputs(){
+        return getLayerSymbol().getIntValue(AllPredefinedLayers.NUM_INPUTS_NAME).get();
+    }
+
+    public List<Integer> getOutputShape(){
+        return getLayerSymbol().getIntTupleValue(AllPredefinedLayers.OUTPUT_SHAPE_NAME).get();
+    }
+
     public int getScaleFactor(){
         return getLayerSymbol().getIntValue(AllPredefinedLayers.SCALE_FACTOR_NAME).get();
     }
@@ -284,7 +300,11 @@ public class ArchitectureElementData {
     public String getQueryNetPrefix(){
         return getLayerSymbol().getStringValue(AllPredefinedLayers.QUERY_NET_PREFIX_NAME).get();
     }
-    
+
+    public int getQueryNetNumInputs(){
+        return getLayerSymbol().getIntValue(AllPredefinedLayers.QUERY_NET_NUM_INPUTS_NAME).get();
+    }
+
     public int getValuesDim(){
         return getLayerSymbol().getIntValue(AllPredefinedLayers.VALUES_DIM_NAME).get();
     }

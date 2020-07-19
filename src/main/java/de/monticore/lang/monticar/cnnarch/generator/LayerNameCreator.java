@@ -5,8 +5,8 @@ import de.monticore.lang.monticar.cnnarch._symboltable.*;
 import de.monticore.lang.monticar.cnnarch.predefined.Convolution;
 import de.monticore.lang.monticar.cnnarch.predefined.FullyConnected;
 import de.monticore.lang.monticar.cnnarch.predefined.Pooling;
-import de.monticore.lang.monticar.cnnarch.predefined.Memory;
-import de.monticore.lang.monticar.cnnarch.predefined.ReplayMemory;
+import de.monticore.lang.monticar.cnnarch.predefined.LargeMemory;
+import de.monticore.lang.monticar.cnnarch.predefined.EpisodicMemory;
 
 import java.util.*;
 
@@ -58,7 +58,7 @@ public class LayerNameCreator {
         for (ArchitectureElementSymbol subElement : compositeElement.getElements()){
             endStage = name(subElement, endStage, streamIndices);
         }
-        for (List<ArchitectureElementSymbol> subNetwork : compositeElement.getReplaySubNetworks()){
+        for (List<ArchitectureElementSymbol> subNetwork : compositeElement.getEpisodicSubNetworks()){
             for (ArchitectureElementSymbol subElement : subNetwork){
                 endStage = name(subElement, endStage, streamIndices);
             }
@@ -134,7 +134,7 @@ public class LayerNameCreator {
                 return "fc";
             } else if (layerDeclaration instanceof Pooling) {
                 return "pool";
-            } else if (layerDeclaration instanceof Memory || layerDeclaration instanceof ReplayMemory) {
+            } else if (layerDeclaration instanceof LargeMemory || layerDeclaration instanceof EpisodicMemory) {
                 return "memory";
             } else {
                 return layerDeclaration.getName().toLowerCase();
