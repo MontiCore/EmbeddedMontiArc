@@ -378,30 +378,30 @@ class ${tc.fileNameWithoutEnding}:
         loss_function.hybridize()
         
 <#list tc.architecture.networkInstructions as networkInstruction>    
-<#if networkInstruction.body.replaySubNetworks?has_content>
-<#assign replayVisited = true>
+<#if networkInstruction.body.episodicSubNetworks?has_content>
+<#assign episodicReplayVisited = true>
 </#if>
 </#list>    
 
-<#if replayVisited??>
-        #Memory Replay
-        replay_layers = {}
-        replay_store_buffer = {}
-        replay_query_networks = {}
+<#if episodicReplayVisited??>
+        #Episodic memory Replay
+        episodic_layers = {}
+        episodic_store_buffer = {}
+        episodic_query_networks = {}
         store_prob = {}
 <#list tc.architecture.networkInstructions as networkInstruction>
-        replay_layers[${networkInstruction?index}] = []
-        replay_store_buffer[${networkInstruction?index}] = []
-        replay_query_networks[${networkInstruction?index}] = []
+        episodic_layers[${networkInstruction?index}] = []
+        episodic_store_buffer[${networkInstruction?index}] = []
+        episodic_query_networks[${networkInstruction?index}] = []
         store_prob[${networkInstruction?index}] = []
-<#list networkInstruction.body.replaySubNetworks as elements>
+<#list networkInstruction.body.episodicSubNetworks as elements>
 <#if elements?index != 0>
-        sub_net = self._networks[${networkInstruction?index}].replay_sub_nets[${elements?index - 1}]
+        sub_net = self._networks[${networkInstruction?index}].episodic_sub_nets[${elements?index - 1}]
         layer = [param for param in inspect.getmembers(sub_net, lambda x: not(inspect.isroutine(x))) if param[0].startswith("memory")][0][1]
-        replay_layers[0].append(layer)
-        replay_store_buffer[${networkInstruction?index}].append([])
-        replay_query_networks[0].append(replay_layers[0][-1].get_query_network(mx_context))
-        store_prob[${networkInstruction?index}].append(nd.array([1-replay_layers[0][-1].store_prob, replay_layers[0][-1].store_prob], ctx=mx_context))                                                                                  
+        episodic_layers[0].append(layer)
+        episodic_store_buffer[${networkInstruction?index}].append([])
+        episodic_query_networks[0].append(episodic_layers[0][-1].get_query_network(mx_context))
+        store_prob[${networkInstruction?index}].append(nd.array([1-episodic_layers[0][-1].store_prob, episodic_layers[0][-1].store_prob], ctx=mx_context))                                                                                  
 </#if>
 </#list>
 </#list>
@@ -427,7 +427,7 @@ class ${tc.fileNameWithoutEnding}:
             train_iter.reset()
             for batch_i, batch in enumerate(train_iter):
                 
-<#include "pythonReplayExecuteTrain.ftl">
+<#include "pythonEpisodicExecuteTrain.ftl">
                                  
                 with autograd.record():
 <#include "pythonExecuteTrain.ftl">
@@ -454,11 +454,11 @@ class ${tc.fileNameWithoutEnding}:
                 for trainer in trainers:
                     trainer.step(batch_size)
     
-<#if replayVisited??>                                                  
-                #storing samples for replay
+<#if episodicReplayVisited??>                                                  
+                #storing samples for episodic replay
                 for net_i in range(len(self._networks)):
-                    for layer_i, layer in enumerate(replay_layers[net_i]):
-                        layer.store_samples(replay_store_buffer[net_i][layer_i], labels, replay_query_networks[net_i][layer_i], store_prob[net_i][layer_i], mx_context)
+                    for layer_i, layer in enumerate(episodic_layers[net_i]):
+                        layer.store_samples(episodic_store_buffer[net_i][layer_i], labels, episodic_query_networks[net_i][layer_i], store_prob[net_i][layer_i], mx_context)
 </#if>
                 if tic is None:
                     tic = time.time()
@@ -547,12 +547,12 @@ class ${tc.fileNameWithoutEnding}:
             network.save_parameters(self.parameter_path(i) + '-' + str(num_epoch + begin_epoch + 1).zfill(4) + '.params')
             network.export(self.parameter_path(i) + '_newest', epoch=0)
             
-            if hasattr(network, 'replay_sub_nets'):
-                network.replaysubnet0_.export(self.parameter_path(i) + '_newest_replay_sub_net_' + str(0), epoch=0)
-                for j, net in enumerate(network.replay_sub_nets):
-                    net.export(self.parameter_path(i) + '_newest_replay_sub_net_' + str(j+1), epoch=0)
-                    replay_query_networks[i][j].export(self.parameter_path(i) + '_newest_replay_query_net_' + str(j+1), epoch=0)
-                    replay_layers[i][j].save_memory(self.parameter_path(i) + "_newest_replay_memory_" + str(j + 1))
+            if hasattr(network, 'episodic_sub_nets'):
+                network.episodicsubnet0_.export(self.parameter_path(i) + '_newest_episodic_sub_net_' + str(0), epoch=0)
+                for j, net in enumerate(network.episodic_sub_nets):
+                    net.export(self.parameter_path(i) + '_newest_episodic_sub_net_' + str(j+1), epoch=0)
+                    episodic_query_networks[i][j].export(self.parameter_path(i) + '_newest_episodic_query_net_' + str(j+1), epoch=0)
+                    episodic_layers[i][j].save_memory(self.parameter_path(i) + "_newest_episodic_memory_" + str(j + 1))
             loss_function.export(self.parameter_path(i) + '_newest_loss', epoch=0)
 
     def parameter_path(self, index):

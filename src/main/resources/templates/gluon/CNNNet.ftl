@@ -4,6 +4,7 @@ import numpy as np
 import math
 import os
 import abc
+import warnings
 from mxnet import gluon, nd
 
 
@@ -160,11 +161,11 @@ class DotProductSelfAttention(gluon.HybridBlock):
         return ret
 
     
-class ReplayMemoryInterface(gluon.HybridBlock):
+class EpisodicReplayMemoryInterface(gluon.HybridBlock):
     __metaclass__ = abc.ABCMeta
 
     def __init__(self, use_replay, replay_interval, replay_batch_size, replay_steps, replay_gradient_steps, num_heads, **kwargs):
-        super(ReplayMemoryInterface, self).__init__(**kwargs)
+        super(EpisodicReplayMemoryInterface, self).__init__(**kwargs)
     
         self.use_replay = use_replay
         self.replay_interval = replay_interval
@@ -190,7 +191,7 @@ class ReplayMemoryInterface(gluon.HybridBlock):
         pass
     
 #Memory layer
-class Memory(gluon.HybridBlock):
+class LargeMemory(gluon.HybridBlock):
     def __init__(self, 
                  sub_key_size, 
                  query_size, 
@@ -200,7 +201,7 @@ class Memory(gluon.HybridBlock):
                  num_heads,
                  values_dim,
                  **kwargs):
-        super(Memory, self).__init__(**kwargs)
+        super(LargeMemory, self).__init__(**kwargs)
         with self.name_scope():
             #Memory parameters
             self.dist_measure = dist_measure
@@ -338,8 +339,8 @@ class Memory(gluon.HybridBlock):
             return self.query_network
     
     
-#ReplayMemory layer
-class ReplayMemory(ReplayMemoryInterface):
+#EpisodicMemory layer
+class EpisodicMemory(EpisodicReplayMemoryInterface):
     def __init__(self,
                  replay_interval,
                  replay_batch_size,
@@ -350,8 +351,9 @@ class ReplayMemory(ReplayMemoryInterface):
                  use_replay,
                  query_net_dir,
                  query_net_prefix,
+                 query_net_num_inputs,
                  **kwargs):
-        super(ReplayMemory, self).__init__(use_replay, replay_interval, replay_batch_size, replay_steps, replay_gradient_steps, 1, **kwargs)
+        super(EpisodicMemory, self).__init__(use_replay, replay_interval, replay_batch_size, replay_steps, replay_gradient_steps, 1, **kwargs)
         with self.name_scope():
             #Replay parameters
             self.store_prob = store_prob
@@ -359,6 +361,7 @@ class ReplayMemory(ReplayMemoryInterface):
     
             self.query_net_dir = query_net_dir
             self.query_net_prefix = query_net_prefix
+            self.query_net_num_inputs = query_net_num_inputs
     
             #Memory
             self.key_memory = nd.array([])
@@ -379,14 +382,14 @@ class ReplayMemory(ReplayMemoryInterface):
             self.value_memory = nd.empty(0, ctx=mx_context)
             self.label_memory = nd.empty((num_outputs, 0), ctx=mx_context)
 
-        ind = nd.sample_multinomial(store_prob, 10).as_in_context(mx_context)
+        ind = nd.sample_multinomial(store_prob, batch_size).as_in_context(mx_context)
 
         max = nd.max(ind)
         if(max[0]):
             to_store_values = []
             for i, out in enumerate(x):
                 to_store_values.append(nd.contrib.boolean_mask(out, ind))
-            to_store_keys = query_network(to_store_values[0])
+            to_store_keys = query_network(*to_store_values[0:self.query_net_num_inputs])
             to_store_labels = nd.empty((num_outputs, len(to_store_values[0])), ctx=mx_context)
             for i in range(num_outputs):
                 to_store_labels[i] = nd.contrib.boolean_mask(y[i], ind)
@@ -429,13 +432,21 @@ class ReplayMemory(ReplayMemoryInterface):
                 symbolFile = file
 
             if self.query_net_prefix in file and ".param" in file:
-                epochStr = file.replace(".params", "").replace(self.query_net_prefix + "-", "")
+                epochStr = file.replace(".params", "").replace(self.query_net_prefix, "")
                 epoch = int(epochStr)
                 if epoch >= lastEpoch:
                     lastEpoch = epoch
                     weightFile = file
 
-        net = mx.gluon.nn.SymbolBlock.imports(self.query_net_dir + symbolFile, ["data"], self.query_net_dir + weightFile, ctx=mx_context)
+        inputNames = []
+        if self.query_net_num_inputs == 1:
+            inputNames.append("data")
+        else:
+            for i in range(self.query_net_num_inputs):
+                inputNames.append("data" + str(i))
+        with warnings.catch_warnings():
+            warnings.simplefilter("ignore")
+            net = mx.gluon.nn.SymbolBlock.imports(self.query_net_dir + symbolFile, inputNames, self.query_net_dir + weightFile, ctx=mx_context)
         net.hybridize()
         return net
     
@@ -447,11 +458,11 @@ class ReplayMemory(ReplayMemoryInterface):
     
 <#list tc.architecture.networkInstructions as networkInstruction>
 #Stream ${networkInstruction?index}
-<#list networkInstruction.body.replaySubNetworks as elements>
-class ReplaySubNet_${elements?index}(gluon.HybridBlock):
-    def __init__(self, data_mean=None, data_std=None, **kwargs):
+<#list networkInstruction.body.episodicSubNetworks as elements>
+class EpisodicSubNet_${elements?index}(gluon.HybridBlock):
 <#if elements?index == 0 >
-        super(ReplaySubNet_${elements?index}, self).__init__(**kwargs)
+    def __init__(self, data_mean=None, data_std=None, mx_context=None, **kwargs):
+        super(EpisodicSubNet_${elements?index}, self).__init__(**kwargs)
         with self.name_scope():
 ${tc.include(networkInstruction.body, elements?index, "ARCHITECTURE_DEFINITION")}
     
@@ -461,7 +472,8 @@ ${tc.include(networkInstruction.body, elements?index, "ARCHITECTURE_DEFINITION")
 ${tc.include(networkInstruction.body, elements?index, "FORWARD_FUNCTION")}
         return [[${tc.join(tc.getSubnetOutputNames(elements), ", ")}]]
 <#else>
-        super(ReplaySubNet_${elements?index}, self).__init__(**kwargs)
+    def __init__(self, mx_context=None, **kwargs):
+        super(EpisodicSubNet_${elements?index}, self).__init__(**kwargs)
         with self.name_scope():
 ${tc.include(networkInstruction.body, elements?index, "ARCHITECTURE_DEFINITION")}
     
@@ -469,25 +481,33 @@ ${tc.include(networkInstruction.body, elements?index, "ARCHITECTURE_DEFINITION")
     
     def hybrid_forward(self, F, *args):
 ${tc.include(networkInstruction.body, elements?index, "FORWARD_FUNCTION")}
-        return [[${tc.join(tc.getSubnetOutputNames(elements), ", ")}], [${tc.getSubnetInputNames(elements)[0]}full_, ind_${tc.join(tc.getSubnetInputNames(elements), ", ")}]]
+        retNames = [${tc.join(tc.getSubnetOutputNames(elements), ", ")}]
+        ret = []
+        for elem in retNames:
+            if len(elem) >= 2:
+                for elem2 in elem: 
+                    ret.append(elem2)
+            else:
+                ret.append(elem)
+        return [ret, [${tc.getSubnetInputNames(elements)[0]}full_, ind_${tc.join(tc.getSubnetInputNames(elements), ", ")}]]
 </#if>
 
 </#list>
 
 class Net_${networkInstruction?index}(gluon.HybridBlock):
-    def __init__(self, data_mean=None, data_std=None, **kwargs):
+    def __init__(self, data_mean=None, data_std=None, mx_context=None, **kwargs):
         super(Net_${networkInstruction?index}, self).__init__(**kwargs)
         with self.name_scope():
-<#if networkInstruction.body.replaySubNetworks?has_content>
-<#list networkInstruction.body.replaySubNetworks as elements>
+<#if networkInstruction.body.episodicSubNetworks?has_content>
+<#list networkInstruction.body.episodicSubNetworks as elements>
 <#if elements?index == 0>
-            self.replaysubnet0_ = ReplaySubNet_${elements?index}(data_mean, data_std)
+            self.episodicsubnet0_ = EpisodicSubNet_${elements?index}(data_mean, data_std, mx_context)
 
-            self.replay_sub_nets = []
+            self.episodic_sub_nets = []
 
 <#else>
-            self.replay_sub_nets.append(ReplaySubNet_${elements?index}())
-            self.register_child(self.replay_sub_nets[${elements?index - 1}])
+            self.episodic_sub_nets.append(EpisodicSubNet_${elements?index}(mx_context=mx_context))
+            self.register_child(self.episodic_sub_nets[${elements?index - 1}])
 
 </#if>
 </#list>
@@ -497,15 +517,15 @@ ${tc.include(networkInstruction.body, "ARCHITECTURE_DEFINITION")}
         pass
 
     def hybrid_forward(self, F, ${tc.join(tc.getStreamInputNames(networkInstruction.body, false), ", ")}):
-<#if networkInstruction.body.replaySubNetworks?has_content>
-<#list networkInstruction.body.replaySubNetworks as elements>
+<#if networkInstruction.body.episodicSubNetworks?has_content>
+<#list networkInstruction.body.episodicSubNetworks as elements>
 <#if elements?index == 0>
-        replaysubnet${elements?index}_ = self.replaysubnet${elements?index}_(${tc.join(tc.getStreamInputNames(networkInstruction.body, false), ", ")})  
+        episodicsubnet${elements?index}_ = self.episodicsubnet${elements?index}_(${tc.join(tc.getStreamInputNames(networkInstruction.body, false), ", ")})  
 <#else>
-        replaysubnet${elements?index}_ = self.replay_sub_nets[${elements?index-1}](*replaysubnet${elements?index - 1}_[0])
+        episodicsubnet${elements?index}_ = self.episodic_sub_nets[${elements?index-1}](*episodicsubnet${elements?index - 1}_[0])
 </#if>
 </#list>
-        return [replaysubnet${networkInstruction.body.replaySubNetworks?size - 1}_[0], [<#list networkInstruction.body.replaySubNetworks as elements><#if elements?index != 0>replaysubnet${elements?index}_[1], </#if></#list>]]
+        return [episodicsubnet${networkInstruction.body.episodicSubNetworks?size - 1}_[0], [<#list networkInstruction.body.episodicSubNetworks as elements><#if elements?index != 0>episodicsubnet${elements?index}_[1], </#if></#list>]]
 <#else>
 ${tc.include(networkInstruction.body, "FORWARD_FUNCTION")}
 <#if tc.isAttentionNetwork() && networkInstruction.isUnroll() >

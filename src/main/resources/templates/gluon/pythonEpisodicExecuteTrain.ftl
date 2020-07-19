@@ -1,17 +1,17 @@
 <#list tc.architecture.networkInstructions as networkInstruction>
-<#if networkInstruction.body.replaySubNetworks?has_content>
-<#if !replayVisitedReplayExecuteTrain??>
-                #replay memory computations
+<#if networkInstruction.body.episodicSubNetworks?has_content>
+<#if !visitedEpisodicExecuteTrain??>
+                #episodic replay memory computations
                 if batch_i > 0:
-<#assign replayVisitedReplayExecuteTrain = true>
+<#assign visitedEpisodicExecuteTrain = true>
 </#if>
-                    for layer_i, layer in enumerate(replay_layers[${networkInstruction?index}]):
+                    for layer_i, layer in enumerate(episodic_layers[${networkInstruction?index}]):
                         if batch_i % layer.replay_interval == 0 and layer.use_replay:
-                            replay_batches = layer.sample_memory(batch_size, mx_context)
+                            episodic_batches = layer.sample_memory(batch_size, mx_context)
 
-                            for replay_batch in replay_batches:       
-                                labels = [replay_batch[1][i].as_in_context(mx_context) for i in range(${tc.architectureOutputs?size?c})]
-                                replay_data = [replay_batch[0][i].as_in_context(mx_context) for i in range(len(replay_batch[0]))]
+                            for episodic_batch in episodic_batches:       
+                                labels = [episodic_batch[1][i].as_in_context(mx_context) for i in range(${tc.architectureOutputs?size?c})]
+                                episodic_data = [episodic_batch[0][i].as_in_context(mx_context) for i in range(len(episodic_batch[0]))]
 
                                 for gradient_step in range(layer.replay_gradient_steps):
                                     with autograd.record():
@@ -20,15 +20,15 @@
 
                                         lossList = []
 
-                                        replay_output = self._networks[${networkInstruction?index}].replay_sub_nets[layer_i](*replay_data)[0]
-                                        for i in range(layer_i+1, len(replay_layers[${networkInstruction?index}])):
-                                            replay_output = self._networks[${networkInstruction?index}].replay_sub_nets[i](*replay_output)[0]
+                                        episodic_output = self._networks[${networkInstruction?index}].episodic_sub_nets[layer_i](*episodic_data)[0]
+                                        for i in range(layer_i+1, len(episodic_layers[${networkInstruction?index}])):
+                                            episodic_output = self._networks[${networkInstruction?index}].episodic_sub_nets[i](*episodic_output)[0]
 
 <#list tc.getStreamOutputNames(networkInstruction.body, true) as outputName>
 <#if tc.getNameWithoutIndex(outputName) == tc.outputName>
-                                        lossList.append(loss_function(replay_output[${tc.getIndex(outputName, true)}], labels[${tc.getIndex(outputName, true)}]))
+                                        lossList.append(loss_function(episodic_output[${tc.getIndex(outputName, true)}], labels[${tc.getIndex(outputName, true)}]))
 <#if tc.endsWithArgmax(networkInstruction.body)>
-                                        replay_output[${tc.getIndex(outputName, true)}] = mx.nd.argmax(replay_output[${tc.getIndex(outputName, true)}], axis=1).expand_dims(1)
+                                        episodic_output[${tc.getIndex(outputName, true)}] = mx.nd.argmax(episodic_output[${tc.getIndex(outputName, true)}], axis=1).expand_dims(1)
 </#if>
 </#if>
 </#list>
@@ -54,6 +54,6 @@
                                         trainer.step(batch_size, ignore_stale_grad=True)
 </#if>
 </#list>
-<#if replayVisitedReplayExecuteTrain??>
+<#if visitedEpisodicExecuteTrain??>
                     pass
 </#if>

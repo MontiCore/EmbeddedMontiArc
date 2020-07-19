@@ -87,11 +87,11 @@ public class CNNArch2GluonTemplateController extends CNNArchTemplateController {
         setCurrentElement(previousElement);
     }
 
-    public void include(SerialCompositeElementSymbol compositeElement, Integer replaySubNetIndex, Writer writer, NetDefinitionMode netDefinitionMode){
+    public void include(SerialCompositeElementSymbol compositeElement, Integer episodicSubNetIndex, Writer writer, NetDefinitionMode netDefinitionMode){
         ArchitectureElementData previousElement = getCurrentElement();
         setCurrentElement(compositeElement);
 
-        for (ArchitectureElementSymbol element : compositeElement.getReplaySubNetworks().get(replaySubNetIndex)){
+        for (ArchitectureElementSymbol element : compositeElement.getEpisodicSubNetworks().get(episodicSubNetIndex)){
             include(element, writer, netDefinitionMode);
         }
 
@@ -117,8 +117,8 @@ public class CNNArch2GluonTemplateController extends CNNArchTemplateController {
         include(architectureElementSymbol, NetDefinitionMode.fromString(netDefinitionMode));
     }
 
-    public void include(ArchitectureElementSymbol architectureElementSymbol, Integer replaySubNetIndex, String netDefinitionMode) {
-        include(architectureElementSymbol, replaySubNetIndex, NetDefinitionMode.fromString(netDefinitionMode));
+    public void include(ArchitectureElementSymbol architectureElementSymbol, Integer episodicSubNetIndex, String netDefinitionMode) {
+        include(architectureElementSymbol, episodicSubNetIndex, NetDefinitionMode.fromString(netDefinitionMode));
     }
 
     public void include(ArchitectureElementSymbol architectureElement, NetDefinitionMode netDefinitionMode){
@@ -128,11 +128,11 @@ public class CNNArch2GluonTemplateController extends CNNArchTemplateController {
         include(architectureElement, getWriter(), netDefinitionMode);
     }
 
-    public void include(ArchitectureElementSymbol architectureElement, Integer replaySubNetIndex, NetDefinitionMode netDefinitionMode){
+    public void include(ArchitectureElementSymbol architectureElement, Integer episodicSubNetIndex, NetDefinitionMode netDefinitionMode){
         if (getWriter() == null){
             throw new IllegalStateException("missing writer");
         }
-        include((SerialCompositeElementSymbol) architectureElement, replaySubNetIndex, getWriter(), netDefinitionMode);
+        include((SerialCompositeElementSymbol) architectureElement, episodicSubNetIndex, getWriter(), netDefinitionMode);
     }
 
     public Set<String> getStreamInputNames(SerialCompositeElementSymbol stream, boolean outputAsArray) {
@@ -262,6 +262,17 @@ public class CNNArch2GluonTemplateController extends CNNArchTemplateController {
         }
 
         return outputNames;
+    }
+
+    public int getSubnetOutputSize(List<ArchitectureElementSymbol> subNet){
+        int outputSize = 0;
+        for (ArchitectureElementSymbol element : subNet.get(subNet.size()-1).getLastAtomicElements()) {
+            outputSize += element.getOutputTypes().size();
+        }
+        if(outputSize == 0){
+            outputSize = 1;
+        }
+        return outputSize;
     }
 
     public List<String> getUnrollOutputNames(UnrollInstructionSymbol unroll, String variable) {
@@ -581,6 +592,15 @@ public class CNNArch2GluonTemplateController extends CNNArchTemplateController {
 
         return dimensions;
     }
+
+    public List<Integer> cutDimensionsInteger(List<Integer> dimensions) {
+        while (dimensions.size() > 1 && dimensions.get(dimensions.size() - 1).equals(1)) {
+            dimensions.remove(dimensions.size() - 1);
+        }
+
+        return dimensions;
+    }
+
 
     public boolean hasUnrollInstructions() {
         for (NetworkInstructionSymbol networkInstruction : getArchitecture().getNetworkInstructions()) {

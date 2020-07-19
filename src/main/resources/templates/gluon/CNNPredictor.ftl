@@ -31,8 +31,8 @@ public:
     std::vector<std::vector<std::string>> network_arg_names;
     std::vector<Executor *> network_handles;
     
-<#if networkInstruction.body.replaySubNetworks?has_content> 
-    //replay_memory
+<#if networkInstruction.body.episodicSubNetworks?has_content> 
+    //episodic replay_memory
     //loss
     const std::vector<std::string> loss_input_keys = {
         "data0",
@@ -41,16 +41,13 @@ public:
                            
     mx_uint num_outputs = ${tc.getStreamOutputNames(networkInstruction.body, false)?size};
     const std::vector<std::vector<mx_uint>> output_shapes = {<#list tc.getStreamOutputDimensions(networkInstruction.body) as dimensions>{1, ${tc.join(tc.cutDimensions(dimensions), ", ")}}<#sep>, </#list>};
-    std::vector<mx_uint> num_sub_net_outputs = {<#list networkInstruction.body.replaySubNetworks as elements> ${tc.getSubnetOutputNames(elements)?size}<#sep>, </#list>};
+    std::vector<mx_uint> num_sub_net_outputs = {<#list networkInstruction.body.episodicSubNetworks as subNet> ${tc.getSubnetOutputSize(subNet)}<#sep>, </#list>};
     std::vector<Executor *> loss_handles;
     
-    //replay query nets
-    const std::vector<std::string> replay_query_input_keys = {
-        "data"
-    };
+    //episodic replay query nets
     std::vector<Executor *> replay_query_handles;
     
-    //replay memories
+    //episodic replay memories
     std::vector<std::map<std::string, NDArray>> replay_memory;
     
     //parameters for local adapt
@@ -58,9 +55,10 @@ public:
     std::vector<std::string> dist_measure = {};
     std::vector<mx_uint> replay_k = {};
     std::vector<mx_uint> gradient_steps = {};
+    std::vector<mx_uint> query_num_inputs = {};
     Optimizer *optimizerHandle;
 
-    mx_uint num_subnets = ${networkInstruction.body.replaySubNetworks?size};
+    mx_uint num_subnets = ${networkInstruction.body.episodicSubNetworks?size};
 </#if>
         
     //misc
@@ -76,7 +74,7 @@ public:
         for(Executor * handle : network_handles){
             delete handle;
         }
-<#if networkInstruction.body.replaySubNetworks?has_content>
+<#if networkInstruction.body.episodicSubNetworks?has_content>
         for(Executor *handle : replay_query_handles){
                 delete handle;
         }
@@ -91,7 +89,7 @@ public:
     void predict(${tc.join(tc.getStreamInputNames(networkInstruction.body, false), ", ", "const std::vector<float> &in_", "")},
                  ${tc.join(tc.getStreamOutputNames(networkInstruction.body, false), ", ", "std::vector<float> &out_", "")}){
 
-<#if networkInstruction.body.replaySubNetworks?has_content> 
+<#if networkInstruction.body.episodicSubNetworks?has_content> 
         std::vector<std::vector<float>> network_input = {${tc.join(tc.getStreamInputNames(networkInstruction.body, false), ", ", "in_", "")}};
 
         for(mx_uint i=1; i < num_subnets; i++){
@@ -111,16 +109,17 @@ public:
         network_handles[0]->Forward(false);
         CheckMXNetError("Forward, predict, handle ind. 0");
     
-<#if networkInstruction.body.replaySubNetworks?has_content> 
+<#if networkInstruction.body.episodicSubNetworks?has_content> 
         for(int i=1; i < network_handles.size(); i++){
             std::vector<NDArray> prev_output = network_handles[i-1]->outputs;
-            if(num_sub_net_outputs[i-1] = 1){
+            if(num_sub_net_outputs[i-1] == 1){
                 prev_output[0].CopyTo(&(network_handles[i]->arg_dict()["data"]));
             }else{
                 for(int j = 0; j<num_sub_net_outputs[i-1]; j++){
                     prev_output[j].CopyTo(&(network_handles[i]->arg_dict()["data" + std::to_string(j)]));
                 }
             }
+        }
         NDArray::WaitAll();
 </#if>        
         
@@ -137,7 +136,7 @@ public:
 </#list>                                 
     }
     
-<#if networkInstruction.body.replaySubNetworks?has_content>     
+<#if networkInstruction.body.episodicSubNetworks?has_content>     
     //perform local adaption, train network on examples, only use updated on one inference (locally), don't save them
     void local_adapt(int net_start_ind,
                      Executor * query_handle,
@@ -176,8 +175,9 @@ public:
                 NDArray::WaitAll();
             }
         }
-
-        prev_output[0].CopyTo(&(query_handle->arg_dict()[replay_query_input_keys[0]]));
+    
+        for(mx_uint i=0; i < query_num_inputs[net_start_ind-1]; i++){
+            prev_output[I].CopyTo(&(query_handle->arg_dict()["data" + std::to_string(i)]));
         NDArray::WaitAll();
 
         query_handle->Forward(false);
@@ -256,7 +256,7 @@ public:
 
                 for(size_t k=net_start_ind; k < network_arg_names.size(); ++k) {
                     for(size_t k=0; k < network_arg_names[k].size(); k++){
-                        if (network_arg_names[k][k] == sub_network_input_key[0]) continue;
+                        if (network_arg_names[k][k].find("data") != 0) continue;
                         optimizerHandle->Update(k, network_handles[k]->arg_arrays[k], network_handles[k]->grad_arrays[k]);
                     }
                 }
@@ -323,7 +323,7 @@ public:
               Probably a bug in mxnet-cpp.
         */
         std::vector<NDArray> vals;
-        for(int i=0, i < memory.size()-2; i++){
+        for(int i=0; i < memory.size()-2; i++){
             Operator take_values("take");
             take_values.SetInput("a", memory["values_" + std::to_string(i)]);
             take_values.SetInput("indices", indices);
@@ -401,8 +401,8 @@ public:
             
         network_input_sizes = getSizesOfShapes(network_input_shapes);
 
-<#if networkInstruction.body.replaySubNetworks?has_content> 
-        //Init Replay Memory prediction
+<#if networkInstruction.body.episodicSubNetworks?has_content> 
+        //Init Episodic replay Memory prediction
 ${tc.include(networkInstruction.body, "PREDICTION_PARAMETER")}
     
         ModelLoader model_loader(file_prefix, num_subnets, ctx);
@@ -435,7 +435,12 @@ ${tc.include(networkInstruction.body, "PREDICTION_PARAMETER")}
             if(i == 0){
                 curr_input_keys = network_input_keys;
             }else{
-                curr_input_keys = {sub_network_input_key[0]};
+                if(num_sub_net_outputs[i-1] == 1){
+                    curr_input_keys = {"data"};
+                }else{
+                    curr_input_keys = {};
+                    for(mx_uint j=0; j < num_sub_net_outputs[i-1]; j++) curr_input_keys.push_back("data" + std::to_string(j));
+                }
             }
             
             std::map<std::string, std::vector<mx_uint>> in_shape_map;
@@ -448,15 +453,20 @@ ${tc.include(networkInstruction.body, "PREDICTION_PARAMETER")}
             std::vector<std::vector<mx_uint>> out_shapes;
             network_symbols[i].InferShape(in_shape_map, &in_shapes, &aux_shapes, &out_shapes);
             network_handles.push_back(initExecutor(network_symbols[i], network_param_maps[i], curr_input_keys, prev_out_shapes));
-           
+
             if(i >= 1){
+                std::vector<std::string> replay_query_input_keys = {};
                 std::map<std::string, std::vector<mx_uint>> query_in_shape_map;
-                for(mx_uint j=0; j < replay_query_input_keys.size(); j++){
+                for(mx_uint j=0; j < query_num_inputs[i-1]; j++){
+                    replay_query_input_keys.push_back("data" + std::to_string(j));
                     query_in_shape_map[replay_query_input_keys[j]] = prev_out_shapes[j];
                 }
                 replay_query_handles.push_back(initExecutor(replay_query_symbols[i-1], replay_query_param_maps[i-1], replay_query_input_keys, prev_out_shapes));
             }
-            prev_out_shapes = {out_shapes[0]};
+            prev_out_shapes = {};
+            if(i+1 < network_symbols.size()){
+                for(mx_uint j=0; j < num_sub_net_outputs[i]; j++) prev_out_shapes.push_back(out_shapes[j]);
+            }
         }
 
         for(mx_uint i=0; i < num_outputs; i++){

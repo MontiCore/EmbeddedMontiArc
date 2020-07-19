@@ -8,7 +8,7 @@
 <#assign numHeads = element.numHeads?c>
 <#assign valuesDim = element.valuesDim?c>
 <#if mode == "ARCHITECTURE_DEFINITION">
-            self.${element.name} = Memory(sub_key_size=${subKeySize}, query_size=${querySize}, query_act="${queryAct}", 
+            self.${element.name} = LargeMemory(sub_key_size=${subKeySize}, query_size=${querySize}, query_act="${queryAct}", 
                                           dist_measure="${storeDistMeasure}", k=${k}, num_heads=${numHeads}, 
                                           values_dim=${valuesDim})
 <#elseif mode == "FORWARD_FUNCTION">

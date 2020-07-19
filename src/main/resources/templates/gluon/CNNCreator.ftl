@@ -3,6 +3,7 @@ import mxnet as mx
 import logging
 import os
 import shutil
+import warnings
 
 <#list tc.architecture.networkInstructions as networkInstruction>
 from CNNNet_${tc.fullArchitectureName} import Net_${networkInstruction?index}
@@ -81,12 +82,14 @@ class ${tc.fileNameWithoutEnding}:
     
     def construct(self, context, data_mean=None, data_std=None):
 <#list tc.architecture.networkInstructions as networkInstruction>
-        self.networks[${networkInstruction?index}] = Net_${networkInstruction?index}(data_mean=data_mean, data_std=data_std)
-        self.networks[${networkInstruction?index}].collect_params().initialize(self.weight_initializer, ctx=context)
+        self.networks[${networkInstruction?index}] = Net_${networkInstruction?index}(data_mean=data_mean, data_std=data_std, mx_context=context)
+        with warnings.catch_warnings():
+            warnings.simplefilter("ignore")
+            self.networks[${networkInstruction?index}].collect_params().initialize(self.weight_initializer, force_reinit=False, ctx=context)
         self.networks[${networkInstruction?index}].hybridize()
-        self.networks[${networkInstruction?index}](<#list tc.getStreamInputDimensions(networkInstruction.body) as dimensions>mx.nd.zeros((1, ${tc.join(tc.cutDimensions(dimensions), ",")},), ctx=context)<#sep>, </#list>)
-<#if networkInstruction.body.replaySubNetworks?has_content>
-        self.networks[0].replaysubnet0_(<#list tc.getStreamInputDimensions(networkInstruction.body) as dimensions>mx.nd.zeros((1, ${tc.join(tc.cutDimensions(dimensions), ",")},), ctx=context)<#sep>, </#list>)
+        self.networks[${networkInstruction?index}](<#list tc.getStreamInputDimensions(networkInstruction.body) as dimensions><#if tc.cutDimensions(dimensions)[tc.cutDimensions(dimensions)?size-1] == "1">mx.nd.zeros((${tc.join(tc.cutDimensions(dimensions), ",")},), ctx=context)<#else>mx.nd.zeros((1, ${tc.join(tc.cutDimensions(dimensions), ",")},), ctx=context)</#if><#sep>, </#list>)
+<#if networkInstruction.body.episodicSubNetworks?has_content>
+        self.networks[0].episodicsubnet0_(<#list tc.getStreamInputDimensions(networkInstruction.body) as dimensions><#if tc.cutDimensions(dimensions)[tc.cutDimensions(dimensions)?size-1] == "1">mx.nd.zeros((${tc.join(tc.cutDimensions(dimensions), ",")},), ctx=context)<#else>mx.nd.zeros((1, ${tc.join(tc.cutDimensions(dimensions), ",")},), ctx=context)</#if><#sep>, </#list>)
 </#if>
 </#list>
 
