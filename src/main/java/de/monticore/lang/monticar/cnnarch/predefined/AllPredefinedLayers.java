@@ -108,6 +108,7 @@ public class AllPredefinedLayers {
     public static final String DIM_KEYS_NAME="dimKeys";
     public static final String DIM_VALUES_NAME="dimValues";
     public static final String USE_PROJ_BIAS_NAME="useProjBias";
+    public static final String USE_MASK_NAME="useMask";
 
     //shared parameters episodic replay layers
     public static final String USE_REPLAY_NAME = "useReplay";
