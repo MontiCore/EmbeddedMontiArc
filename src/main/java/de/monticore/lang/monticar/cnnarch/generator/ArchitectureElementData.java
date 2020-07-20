@@ -215,6 +215,10 @@ public class ArchitectureElementData {
         return getLayerSymbol().getBooleanValue(AllPredefinedLayers.USE_PROJ_BIAS_NAME).get();
     }
 
+    public boolean getUseMask() {
+        return getLayerSymbol().getBooleanValue(AllPredefinedLayers.USE_MASK_NAME).get();
+    }
+
     public int getSubKeySize(){
         return getLayerSymbol().getIntValue(AllPredefinedLayers.SUB_KEY_SIZE_NAME).get();
     }
