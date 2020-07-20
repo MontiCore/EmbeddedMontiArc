@@ -99,12 +99,14 @@ class DotProductSelfAttention(gluon.HybridBlock):
                  dim_keys,
                  dim_values,
                  use_proj_bias,
+                 use_mask,
                  **kwargs):
         super(DotProductSelfAttention, self).__init__(**kwargs)
         with self.name_scope():
             self.num_heads = num_heads
             self.dim_model = dim_model
             self.use_proj_bias = use_proj_bias
+            self.use_mask = use_mask
 
             if dim_keys == -1:
                 self.dim_keys = int(dim_model / self.num_heads)
@@ -145,7 +147,11 @@ class DotProductSelfAttention(gluon.HybridBlock):
 
         score = F.batch_dot(head_queries, head_keys, transpose_b=True)
         score = score * self.scale_factor
-        weights = F.softmax(score)
+        if self.use_mask:
+            mask = F.tile(mask, self.num_heads)
+            mask = F.repeat(mask, self.dim_model)
+            mask = F.reshape(mask, shape=(-1, self.dim_model))
+        weights = F.softmax(score, mask, use_length=self.use_mask)
 
         head_values = F.reshape(head_values, shape=(0, 0, self.num_heads, -1))
         head_values = F.transpose(head_values, axes=(0,2,1,3))
@@ -372,27 +378,37 @@ class EpisodicMemory(EpisodicReplayMemoryInterface):
         #propagate the input as the rest is only used for replay
         return [args, []]
 
-    def store_samples(self, data, y, query_network, store_prob, mx_context):
-        x = data[0]
-        batch_size = x[0].shape[0]
-        num_outputs = len(y)
+    def store_samples(self, data, y, query_network, store_prob):
+        num_pus = len(data)
+        sub_batch_sizes = [data[i][0][0].shape[0] for i in range(num_pus)]
+        num_inputs = len(data[0][0])
+        num_outputs = len(y[0])
 
         if len(self.key_memory) == 0:
-            self.key_memory = nd.empty(0, ctx=mx_context)
-            self.value_memory = nd.empty(0, ctx=mx_context)
-            self.label_memory = nd.empty((num_outputs, 0), ctx=mx_context)
+            self.key_memory = nd.empty(0, ctx=mx.cpu())
+            self.value_memory = nd.empty(0, ctx=mx.cpu())
+            self.label_memory = nd.empty((num_outputs, 0), ctx=mx.cpu())
 
-        ind = nd.sample_multinomial(store_prob, batch_size).as_in_context(mx_context)
+        ind = nd.sample_multinomial(store_prob, sub_batch_sizes)
+        if len(sub_batch_sizes) == 1:
+            ind = nd.reshape(ind, (1,-1))
 
-        max = nd.max(ind)
-        if(max[0]):
+        if(nd.max(ind)):
             to_store_values = []
-            for i, out in enumerate(x):
-                to_store_values.append(nd.contrib.boolean_mask(out, ind))
-            to_store_keys = query_network(*to_store_values[0:self.query_net_num_inputs])
-            to_store_labels = nd.empty((num_outputs, len(to_store_values[0])), ctx=mx_context)
+            for i in range(num_inputs):
+                tmp_values = nd.contrib.boolean_mask(data[0][0][i].as_in_context(mx.cpu()), ind[0])
+                for j in range(1, num_pus):
+                    tmp_values = nd.concat(tmp_values, nd.contrib.boolean_mask(data[j][0][i].as_in_context(mx.cpu()), ind[j]), dim=0)
+                to_store_values.append(tmp_values)
+
+            to_store_labels = nd.empty((num_outputs, len(to_store_values[0])), ctx=mx.cpu())
             for i in range(num_outputs):
-                to_store_labels[i] = nd.contrib.boolean_mask(y[i], ind)
+                tmp_labels = nd.contrib.boolean_mask(y[0][i].as_in_context(mx.cpu()), ind[0])
+                for j in range(1, num_pus):
+                    tmp_labels = nd.concat(tmp_labels, nd.contrib.boolean_mask(y[j][i].as_in_context(mx.cpu()), ind[j]), dim=0)
+                to_store_labels[i] = tmp_labels
+
+            to_store_keys = query_network(*to_store_values[0:self.query_net_num_inputs])
 
             if self.key_memory.shape[0] == 0:
                 self.key_memory = to_store_keys
@@ -411,12 +427,12 @@ class EpisodicMemory(EpisodicReplayMemoryInterface):
                     self.value_memory[i] = nd.concat(self.value_memory[i], to_store_values[i], dim=0)
                 self.label_memory = nd.concat(self.label_memory, to_store_labels, dim=1)
 
-    def sample_memory(self, batch_size, mx_context):
+    def sample_memory(self, batch_size):
         num_stored_samples = self.key_memory.shape[0]
         if self.replay_batch_size == -1:
-            sample_ind = nd.random.randint(0, num_stored_samples, (self.replay_steps, batch_size), ctx=mx_context)
+            sample_ind = nd.random.randint(0, num_stored_samples, (self.replay_steps, batch_size), ctx=mx.cpu())
         else:
-            sample_ind = nd.random.randint(0, num_stored_samples, (self.replay_steps, self.replay_batch_size), ctx=mx_context)
+            sample_ind = nd.random.randint(0, num_stored_samples, (self.replay_steps, self.replay_batch_size), ctx=mx.cpu())
 
         num_outputs = len(self.label_memory)
 
@@ -425,7 +441,7 @@ class EpisodicMemory(EpisodicReplayMemoryInterface):
 
         return sample_batches
 
-    def get_query_network(self, mx_context):
+    def get_query_network(self):
         lastEpoch = 0
         for file in os.listdir(self.query_net_dir):
             if self.query_net_prefix in file and ".json" in file:
@@ -446,7 +462,7 @@ class EpisodicMemory(EpisodicReplayMemoryInterface):
                 inputNames.append("data" + str(i))
         with warnings.catch_warnings():
             warnings.simplefilter("ignore")
-            net = mx.gluon.nn.SymbolBlock.imports(self.query_net_dir + symbolFile, inputNames, self.query_net_dir + weightFile, ctx=mx_context)
+            net = mx.gluon.nn.SymbolBlock.imports(self.query_net_dir + symbolFile, inputNames, self.query_net_dir + weightFile, ctx=mx.cpu())
         net.hybridize()
         return net
     

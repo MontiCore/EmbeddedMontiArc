@@ -279,10 +279,18 @@ class ${tc.fileNameWithoutEnding}:
               shuffle_data=False,
               clip_global_grad_norm=None,
               preprocessing = False):
+        num_pus = 1
         if context == 'gpu':
-            mx_context = mx.gpu()
+            num_pus = mx.context.num_gpus()
+            if num_pus >= 1:
+                if num_pus == 1:
+                    mx_context = [mx.gpu(0)]
+                else:
+                    mx_context = [mx.gpu(i) for i in range(num_pus)]
+            else:
+                logging.error("Context argument is '" + context + "'. But no gpu is present in the system.")
         elif context == 'cpu':
-            mx_context = mx.cpu()
+            mx_context = [mx.cpu()]
         else:
             logging.error("Context argument is '" + context + "'. Only 'cpu' and 'gpu are valid arguments'.")
 
@@ -400,8 +408,8 @@ class ${tc.fileNameWithoutEnding}:
         layer = [param for param in inspect.getmembers(sub_net, lambda x: not(inspect.isroutine(x))) if param[0].startswith("memory")][0][1]
         episodic_layers[0].append(layer)
         episodic_store_buffer[${networkInstruction?index}].append([])
-        episodic_query_networks[0].append(episodic_layers[0][-1].get_query_network(mx_context))
-        store_prob[${networkInstruction?index}].append(nd.array([1-episodic_layers[0][-1].store_prob, episodic_layers[0][-1].store_prob], ctx=mx_context))                                                                                  
+        episodic_query_networks[0].append(episodic_layers[0][-1].get_query_network())
+        store_prob[${networkInstruction?index}].append(nd.array([1-episodic_layers[0][-1].store_prob, episodic_layers[0][-1].store_prob], ctx=mx.cpu()))                                                                                  
 </#if>
 </#list>
 </#list>
@@ -432,15 +440,11 @@ class ${tc.fileNameWithoutEnding}:
                 with autograd.record():
 <#include "pythonExecuteTrain.ftl">
 
-                    loss = 0
-                    for element in lossList:
-                        loss = loss + element
+                for loss in losses:
+                    loss.backward()
+                    loss_total += loss.sum().asscalar()
+                    global_loss_train += loss.sum().asscalar()
 
-                loss.backward()
-
-                loss_total += loss.sum().asscalar()
-
-                global_loss_train += loss.sum().asscalar()
                 train_batches += 1
 
                 if clip_global_grad_norm:
@@ -458,7 +462,8 @@ class ${tc.fileNameWithoutEnding}:
                 #storing samples for episodic replay
                 for net_i in range(len(self._networks)):
                     for layer_i, layer in enumerate(episodic_layers[net_i]):
-                        layer.store_samples(episodic_store_buffer[net_i][layer_i], labels, episodic_query_networks[net_i][layer_i], store_prob[net_i][layer_i], mx_context)
+                        layer.store_samples(episodic_store_buffer[net_i][layer_i], labels, episodic_query_networks[net_i][layer_i], store_prob[net_i][layer_i])
+
 </#if>
                 if tic is None:
                     tic = time.time()
@@ -492,15 +497,17 @@ class ${tc.fileNameWithoutEnding}:
 
 <#include "saveAttentionImageTrain.ftl">
 
+                    for i in range(num_pus):
+                        predictions = []
+                        for output_name in outputs[i]:
+                            if mx.nd.shape_array(mx.nd.squeeze(output_name)).size > 1:
+                                predictions.append(mx.nd.argmax(output_name, axis=1))
+                            else:
+                                predictions.append(output_name)
 
-                    predictions = []
-                    for output_name in outputs:
-                        if mx.nd.shape_array(mx.nd.squeeze(output_name)).size > 1:
-                            predictions.append(mx.nd.argmax(output_name, axis=1))
-                        else:
-                            predictions.append(output_name)
+                        labels_metric = [[labels[j][i] for j in range(len(labels))] for i in range(num_pus)]
+                        metric.update(preds=predictions, labels=labels_metric[i])
 
-                    metric.update(preds=predictions, labels=labels)
                 train_metric_score = metric.get()[1]
             else:
                 train_metric_score = 0
@@ -517,18 +524,19 @@ class ${tc.fileNameWithoutEnding}:
 
 <#include "saveAttentionImageTest.ftl">
 
-                loss = 0
-                for element in lossList:
-                    loss = loss + element
-
-                global_loss_test += loss.sum().asscalar()
+                for loss in losses:
+                    global_loss_test += loss.sum().asscalar()
+    
                 test_batches += 1
 
-                predictions = []
-                for output_name in outputs:
-                    predictions.append(output_name)
+                for i in range(num_pus):
+                    predictions = []
+                    for output_name in outputs[i]:
+                        predictions.append(output_name)
 
-                metric.update(preds=predictions, labels=labels)
+                    labels_metric = [[labels[j][i] for j in range(len(labels))] for i in range(num_pus)]
+                    metric.update(preds=predictions, labels=labels_metric[i])
+
             test_metric_score = metric.get()[1]
 
             global_loss_test /= (test_batches * batch_size)

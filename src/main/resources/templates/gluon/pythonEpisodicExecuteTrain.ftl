@@ -7,39 +7,48 @@
 </#if>
                     for layer_i, layer in enumerate(episodic_layers[${networkInstruction?index}]):
                         if batch_i % layer.replay_interval == 0 and layer.use_replay:
-                            episodic_batches = layer.sample_memory(batch_size, mx_context)
+                            episodic_batches = layer.sample_memory(batch_size)
 
-                            for episodic_batch in episodic_batches:       
-                                labels = [episodic_batch[1][i].as_in_context(mx_context) for i in range(${tc.architectureOutputs?size?c})]
-                                episodic_data = [episodic_batch[0][i].as_in_context(mx_context) for i in range(len(episodic_batch[0]))]
+                            for episodic_batch in episodic_batches:
+                                labels = [gluon.utils.split_and_load(episodic_batch[1][i], ctx_list=mx_context, even_split=False) for i in range(${tc.architectureOutputs?size?c})]
+                                episodic_data = [[] for i in range(num_pus)]
+                                for i in range(len(episodic_batch[0])):
+                                    tmp_data = gluon.utils.split_and_load(episodic_batch[0][i], ctx_list=mx_context, even_split=False)
+                                    [episodic_data[j].append(tmp_data[j]) for j in range(num_pus)]
 
                                 for gradient_step in range(layer.replay_gradient_steps):
                                     with autograd.record():
 
                                         nd.waitall()
 
-                                        lossList = []
-
-                                        episodic_output = self._networks[${networkInstruction?index}].episodic_sub_nets[layer_i](*episodic_data)[0]
+                                        episodic_output = [self._networks[${networkInstruction?index}].episodic_sub_nets[layer_i](*(episodic_data[i]))[0] for i in range(num_pus)]
                                         for i in range(layer_i+1, len(episodic_layers[${networkInstruction?index}])):
                                             episodic_output = self._networks[${networkInstruction?index}].episodic_sub_nets[i](*episodic_output)[0]
 
+                                        losses = []
+                                        for i in range(num_pus):
+                                            lossList = []
 <#list tc.getStreamOutputNames(networkInstruction.body, true) as outputName>
 <#if tc.getNameWithoutIndex(outputName) == tc.outputName>
-                                        lossList.append(loss_function(episodic_output[${tc.getIndex(outputName, true)}], labels[${tc.getIndex(outputName, true)}]))
+                                            lossList.append(loss_function(episodic_output[i][${tc.getIndex(outputName, true)}], labels[${tc.getIndex(outputName, true)}][i]))
+</#if>
+</#list>
+                                            losses.append(0)
+                                            for element in lossList:
+                                                losses[i] = losses[i] + element
+
+<#list tc.getStreamOutputNames(networkInstruction.body, true) as outputName>
+<#if tc.getNameWithoutIndex(outputName) == tc.outputName>
 <#if tc.endsWithArgmax(networkInstruction.body)>
                                         episodic_output[${tc.getIndex(outputName, true)}] = mx.nd.argmax(episodic_output[${tc.getIndex(outputName, true)}], axis=1).expand_dims(1)
 </#if>
 </#if>
 </#list>
-                                        loss = 0
-                                        for element in lossList:
-                                            loss = loss + element
-                                
-                                    loss.backward()
-                        
-                                    loss_total += loss.sum().asscalar()
-                                    global_loss_train += loss.sum().asscalar()
+
+                                    for loss in losses:
+                                        loss.backward()
+                                        loss_total += loss.sum().asscalar()
+                                        global_loss_train += loss.sum().asscalar()
 
                                     if clip_global_grad_norm:
                                         grads = []

@@ -18,13 +18,13 @@
 
 <#if numInputs == "1">
             inputNames = ["data"]      
-            zeroInputs = [nd.zeros(<#if element.element.inputTypes[0].dimensions[0] == 1>(${tc.join(element.element.inputTypes[0].dimensions?reverse, ",")})<#else>(1,${tc.join(element.element.inputTypes[0].dimensions?reverse, ",")})</#if>)]
+            zeroInputs = [nd.zeros(<#if element.element.inputTypes[0].dimensions[0] == 1>(${tc.join(element.element.inputTypes[0].dimensions?reverse, ",")})<#else>(1,${tc.join(element.element.inputTypes[0].dimensions?reverse, ",")})</#if>, ctx=mx_context[0])]
 <#else>
             inputNames = []
             zeroInputs = []
 <#list element.element.inputTypes as inType>
             inputNames.append("data" + str(${inType?index}))
-            zeroInputs.append(nd.zeros(<#if inType.dimensions[0] == 1>(${tc.join(tc.cutDimensionsInteger(inType.dimensions)?reverse, ",")})<#else>(1,${tc.join(tc.cutDimensionsInteger(inType.dimensions)?reverse, ",")})</#if>, ctx=mx_context))
+            zeroInputs.append(nd.zeros(<#if inType.dimensions[0] == 1>(${tc.join(tc.cutDimensionsInteger(inType.dimensions)?reverse, ",")})<#else>(1,${tc.join(tc.cutDimensionsInteger(inType.dimensions)?reverse, ",")})</#if>, ctx=mx_context[0]))
 </#list>
 </#if>
             with warnings.catch_warnings():

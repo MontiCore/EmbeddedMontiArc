@@ -1,37 +1,36 @@
-                    labels = [batch.label[i].as_in_context(mx_context) for i in range(${tc.architectureOutputs?size?c})]
-
+                    labels = [gluon.utils.split_and_load(batch.label[i], ctx_list=mx_context, even_split=False) for i in range(${tc.architectureOutputs?size?c})]
 <#list tc.architectureInputs as input_name>
-                    ${input_name} = batch.data[${input_name?index}].as_in_context(mx_context)
+                    ${input_name} = gluon.utils.split_and_load(batch.data[${input_name?index}], ctx_list=mx_context, even_split=False)
 </#list>
 
 <#if tc.architectureOutputSymbols?size gt 1>
 <#assign outputName = tc.getNameWithoutIndex(tc.getName(tc.architectureOutputSymbols[0]))>
-                    ${outputName} = [mx.nd.zeros((batch_size, ${tc.join(tc.architectureOutputSymbols[0].ioDeclaration.type.dimensions, ", ")},), ctx=mx_context) for i in range(${tc.architectureOutputs?size?c})]
+                    #${outputName} = [mx.nd.zeros((batch_size, ${tc.join(tc.architectureOutputSymbols[0].ioDeclaration.type.dimensions, ", ")},), ctx=mx_context) for i in range(${tc.architectureOutputs?size?c})]
 <#else>
 <#list tc.architectureOutputSymbols as output>
-                    ${tc.getName(output)} = mx.nd.zeros((batch_size, ${tc.join(output.ioDeclaration.type.dimensions, ", ")},), ctx=mx_context)<#sep>,
+                    #${tc.getName(output)} = mx.nd.zeros((batch_size, ${tc.join(output.ioDeclaration.type.dimensions, ", ")},), ctx=mx_context)<#sep>,
 </#list>
 </#if>
 
 <#list tc.getLayerVariableMembers()?keys as member>
-                    ${member} = mx.nd.zeros((batch_size, ${tc.join(tc.cutDimensions(tc.getLayerVariableMembers()[member]), ", ")},), ctx=mx_context)
+                    #${member} = mx.nd.zeros((batch_size, ${tc.join(tc.cutDimensions(tc.getLayerVariableMembers()[member]), ", ")},), ctx=mx_context)
 </#list>
 
 <#list tc.architecture.constants as constant>
-                    ${tc.getName(constant)} = mx.nd.full((batch_size, 1,), ${constant.intValue?c}, ctx=mx_context)
+                    #${tc.getName(constant)} = mx.nd.full((batch_size, 1,), ${constant.intValue?c}, ctx=mx_context)
 </#list>
 
                     nd.waitall()
 
                     outputs = []
-                    lossList = []
                     attentionList = []
+
 <#list tc.architecture.networkInstructions as networkInstruction>
 <#if networkInstruction.isUnroll()>
                     k = ${tc.getBeamSearchWidth(networkInstruction)}
 <#list tc.getUnrollInputNames(networkInstruction, "1") as inputName>
 <#if tc.getNameWithoutIndex(inputName) == tc.outputName>
-                    sequences = [([${inputName}], mx.nd.full((batch_size, 1,), 1.0, ctx=mx_context), [mx.nd.full((batch_size, 64,), 0.0, ctx=mx_context)], [mx.nd.full((batch_size, 64,), 0.0, ctx=mx_context)])]
+                    sequences = [([${inputName}], mx.nd.full((batch_size, 1,), 1.0, ctx=mx_context[0]), [mx.nd.full((batch_size, 64,), 0.0, ctx=mx_context[0])], [mx.nd.full((batch_size, 64,), 0.0, ctx=mx_context[0])])]
 </#if>
 </#list>
 
@@ -105,15 +104,30 @@
 </#if>
 </#list>
 <#else>
-                    net_ret = self._networks[${networkInstruction?index}](${tc.join(tc.getStreamInputNames(networkInstruction.body, true), ", ")})
+                    net_ret = [self._networks[${networkInstruction?index}](${tc.join(tc.getStreamInputNames(networkInstruction.body, true), "[i], ")}[i]) for i in range(num_pus)]
 
 <#list tc.getStreamOutputNames(networkInstruction.body, true) as outputName>
-                    ${outputName} = net_ret[0][${outputName?index}]
+                    ${outputName} = [net_ret[i][0][${outputName?index}] for i in range(num_pus)]
+</#list>
+
+                    losses = []
+                    for i in range(num_pus):
+                        outputs.append([])
+                        lossList = []
+<#list tc.getStreamOutputNames(networkInstruction.body, true) as outputName>
 <#if tc.getNameWithoutIndex(outputName) == tc.outputName>
-                    outputs.append(${outputName})
-                    lossList.append(loss_function(${outputName}, labels[${tc.getIndex(outputName, true)}]))
+                        outputs[i].append(${outputName}[i])
+                        lossList.append(loss_function(${outputName}[i], labels[${tc.getIndex(outputName, true)}][i]))
+</#if>
+</#list>
+                        losses.append(0)
+                        for element in lossList:
+                            losses[i] = losses[i] + element
+
+<#list tc.getStreamOutputNames(networkInstruction.body, true) as outputName>
+<#if tc.getNameWithoutIndex(outputName) == tc.outputName>
 <#if tc.endsWithArgmax(networkInstruction.body)>
-                    ${outputName} = mx.nd.argmax(${outputName}, axis=1).expand_dims(1)
+                    ${outputName} = [mx.nd.argmax(${outputName}[i], axis=1).expand_dims(1), for i in range(num_pus)]
 </#if>
 </#if>
 </#list>
