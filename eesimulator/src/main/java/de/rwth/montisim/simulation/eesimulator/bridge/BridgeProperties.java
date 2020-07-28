@@ -4,11 +4,11 @@ package de.rwth.montisim.simulation.eesimulator.bridge;
 import java.time.Duration;
 
 import de.rwth.montisim.commons.utils.json.Typed;
-import de.rwth.montisim.simulation.eesimulator.components.EEComponentProperties;
+import de.rwth.montisim.simulation.eesimulator.components.BusUserProperties;
 import de.rwth.montisim.simulation.eesimulator.components.EEComponentType;
 
 @Typed(BridgeProperties.TYPE)
-public class BridgeProperties extends EEComponentProperties {
+public class BridgeProperties extends BusUserProperties {
     public static final String TYPE = "bridge";
 
     /**

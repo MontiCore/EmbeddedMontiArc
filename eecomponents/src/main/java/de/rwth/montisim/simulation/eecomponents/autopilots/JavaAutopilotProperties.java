@@ -4,12 +4,12 @@ package de.rwth.montisim.simulation.eecomponents.autopilots;
 import java.time.Duration;
 
 import de.rwth.montisim.commons.utils.json.Typed;
-import de.rwth.montisim.simulation.eesimulator.components.EEComponentProperties;
+import de.rwth.montisim.simulation.eesimulator.components.BusUserProperties;
 import de.rwth.montisim.simulation.eesimulator.components.EEComponentType;
 import de.rwth.montisim.simulation.vehicle.VehicleBuilder;
 
 @Typed(JavaAutopilotProperties.TYPE)
-public class JavaAutopilotProperties extends EEComponentProperties {
+public class JavaAutopilotProperties extends BusUserProperties {
     public static final String TYPE = "java_autopilot";
     static {
         VehicleBuilder.registerComponentBuilder(TYPE,

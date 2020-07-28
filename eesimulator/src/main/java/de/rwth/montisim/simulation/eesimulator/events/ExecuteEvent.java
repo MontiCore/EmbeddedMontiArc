@@ -27,6 +27,7 @@ public class ExecuteEvent extends EEDiscreteEvent {
 		ExecuteEventData(ExecuteEvent event) {
 			super(event);
 		}
+        protected ExecuteEventData() {}
 		@Override
 		public EEDiscreteEvent getEvent(ComponentManager cm) {
 			return new ExecuteEvent(time, EEDiscreteEvent.getTarget(target, cm));

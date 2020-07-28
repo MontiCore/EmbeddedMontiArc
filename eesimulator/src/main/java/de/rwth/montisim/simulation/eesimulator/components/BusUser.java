@@ -9,9 +9,11 @@ import de.rwth.montisim.simulation.eesimulator.bus.Bus;
 import de.rwth.montisim.simulation.eesimulator.events.MessageSendEvent;
 
 public abstract class BusUser extends EEEventProcessor{
+    public final transient BusUserProperties properties;
 
-    public BusUser(EEComponentProperties properties) {
+    public BusUser(BusUserProperties properties) {
         super(properties);
+        this.properties = properties;
 	}
 
 	/**
@@ -52,7 +54,7 @@ public abstract class BusUser extends EEEventProcessor{
     /** Dispatches the given Message to all its targets. */
 	protected void dispatchMessage(MessageSendEvent msgSendEvent) {
         // NOTE: targets must exist but can be an empty list. (=> The Routing has to have been computed for the EE system.)
-		List<Bus> targets = msgTargets.get(msgSendEvent.getMessage().msgId);
+		List<Bus> targets = msgTargets.get(msgSendEvent.getMessage().msgInfo.messageId);
 		if (targets == null) throw new IllegalArgumentException("Tried to dispatch a message with no associated targets. (event: "+msgSendEvent+").");
 		for(Bus e : targets){
 			e.process(msgSendEvent);

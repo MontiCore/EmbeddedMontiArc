@@ -5,12 +5,12 @@ import java.time.Duration;
 
 import de.rwth.montisim.commons.utils.json.JsonEntry;
 import de.rwth.montisim.commons.utils.json.Typed;
-import de.rwth.montisim.simulation.eesimulator.components.EEComponentProperties;
+import de.rwth.montisim.simulation.eesimulator.components.BusUserProperties;
 import de.rwth.montisim.simulation.eesimulator.components.EEComponentType;
 import de.rwth.montisim.simulation.vehicle.VehicleBuilder;
 
 @Typed(TestAutopilotProperties.TYPE)
-public class TestAutopilotProperties extends EEComponentProperties {
+public class TestAutopilotProperties extends BusUserProperties {
     public static final String TYPE = "test_autopilot";
     public static final String COMPUTER_TYPE = "test_autopilot";
     static {

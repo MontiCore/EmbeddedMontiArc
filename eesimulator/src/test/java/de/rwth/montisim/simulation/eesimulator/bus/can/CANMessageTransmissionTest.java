@@ -35,7 +35,7 @@ public class CANMessageTransmissionTest {
     public void testBitsizeComputation(int msgSize, int expectedFrames, long expectedBits)
             throws EEMessageTypeException {
         MessageTypeManager manager = new MessageTypeManager();
-        CANMessageTransmission tr = new CANMessageTransmission(new Message(0, new MessageInformation("m1", DataType.INT, manager, null), null, msgSize), rnd);
+        CANMessageTransmission tr = new CANMessageTransmission(new Message(null, new MessageInformation("m1", DataType.INT, manager, null), null, msgSize), rnd);
         Assert.assertEquals(expectedFrames, tr.getRequiredFrames());
         Assert.assertEquals(expectedBits, tr.getRequiredTotalBits());
     }

@@ -4,11 +4,11 @@ package de.rwth.montisim.simulation.eesimulator.sensor;
 import java.time.Duration;
 
 import de.rwth.montisim.commons.utils.json.Typed;
-import de.rwth.montisim.simulation.eesimulator.components.EEComponentProperties;
+import de.rwth.montisim.simulation.eesimulator.components.BusUserProperties;
 import de.rwth.montisim.simulation.eesimulator.components.EEComponentType;
 
 @Typed(SensorProperties.TYPE)
-public class SensorProperties extends EEComponentProperties {
+public class SensorProperties extends BusUserProperties {
     public static final String TYPE = "sensor";
 
     public String physical_value_name;

@@ -72,7 +72,7 @@ public abstract class Bus extends EEEventProcessor {
 
 	/** Dispatches the given Message to all its targets, effectively completing its transmission in this BUS. */
 	protected void dispatchMessage(MessageReceiveEvent msgRecvEvent) {
-		List<BusUser> targets = msgTargets.get(msgRecvEvent.getMessage().msgId);
+		List<BusUser> targets = msgTargets.get(msgRecvEvent.getMessage().msgInfo.messageId);
 		if (targets == null) throw new IllegalArgumentException("Tried to dispatch a message with no associated targets. (event: "+msgRecvEvent+").");
 		for(BusUser e : targets){
 			e.process(msgRecvEvent);

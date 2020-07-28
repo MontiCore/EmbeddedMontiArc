@@ -5,7 +5,9 @@ import java.util.Optional;
 import java.util.Vector;
 
 import de.rwth.montisim.commons.utils.Geometry;
+import de.rwth.montisim.commons.utils.json.FieldSelect;
 import de.rwth.montisim.commons.utils.json.JsonEntry;
+import de.rwth.montisim.commons.utils.json.Select;
 import de.rwth.montisim.simulation.eesimulator.components.EEComponentProperties;
 import de.rwth.montisim.simulation.vehicle.physicsmodel.PhysicsProperties;
 import de.rwth.montisim.simulation.vehicle.powertrain.PowerTrainProperties;

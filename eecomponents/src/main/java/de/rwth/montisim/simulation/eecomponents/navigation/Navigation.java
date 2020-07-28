@@ -91,7 +91,7 @@ public class Navigation extends EEComponent {
         //     // Update position -> Check current routing
         //     // TODO
         // } else 
-        if (msg.msgId == truePosMsg.messageId) {
+        if (msg.isMsg(truePosMsg)) {
             currentPos = Optional.of((Vec2) msg.message);
             if (!currentPath.isPresent() && !targets.empty()){
                 newTrajectory(time);
@@ -99,12 +99,12 @@ public class Navigation extends EEComponent {
                 updateTrajectory(time);
             }
             // TODO
-        } else if (msg.msgId == pushTargetPosMsg.messageId) {
+        } else if (msg.isMsg(pushTargetPosMsg)) {
             // Add new position to routing stack -> compute new routing
             // TODO
             pushTargetPos((Vec2)msg.message, time);
             newTrajectory(time);
-        } else if (msg.msgId == popTargetPosMsg.messageId) {
+        } else if (msg.isMsg(popTargetPosMsg)) {
             // Remove target from routing stack -> compute new routing
             // TODO
             popTargetPos();

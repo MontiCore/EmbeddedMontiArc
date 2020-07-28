@@ -21,7 +21,7 @@ import de.rwth.montisim.simulation.eesimulator.message.PortInformation.PortDirec
  * register its different ports.
  */
 public abstract class EEComponent extends BusUser {
-	public EEComponent(EEComponentProperties properties) {
+	public EEComponent(BusUserProperties properties) {
 		super(properties);
 	}
 
@@ -85,11 +85,11 @@ public abstract class EEComponent extends BusUser {
 	}
 	
 	public void sendMessage(Instant time, MessageInformation info, Object message, int msgLen) {
-		this.simulator.addEvent(new MessageSendEvent(time, this, new Message(this.id, info, message, msgLen)));
+		this.simulator.addEvent(new MessageSendEvent(time, this, new Message(this, info, message, msgLen)));
 	}
 
 	public void sendMessage(Instant time, MessageInformation info, Object message) {
-		this.simulator.addEvent(new MessageSendEvent(time, this, new Message(this.id, info, message)));
+		this.simulator.addEvent(new MessageSendEvent(time, this, new Message(this, info, message)));
 	}
 
 	protected abstract void receive(MessageReceiveEvent msgRecvEvent);

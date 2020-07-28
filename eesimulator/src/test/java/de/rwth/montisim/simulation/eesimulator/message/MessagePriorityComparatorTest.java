@@ -28,13 +28,18 @@ public class MessagePriorityComparatorTest {
             new Pair<String, Integer>("comp2", 2)
         ));
 
+        TestEEComponent c1 = new TestEEComponent("comp1");
+        TestEEComponent c2 = new TestEEComponent("comp2");
+        c1.id = 0;
+        c2.id = 1;
+
         PriorityQueue<CANMessageTransmission> messages = new PriorityQueue<CANMessageTransmission>(
             new MessageTransmission.MsgTransPriorityComp(simulator.getMsgPrioComp())
         );
-        Message msg1 = new Message(0, new MessageInformation("msg1", DataType.DOUBLE, mtManager, null), null, 1);
-        Message msg2 = new Message(0, new MessageInformation("msg2", DataType.DOUBLE, mtManager, null), null, 1);
-        Message msg3 = new Message(0, new MessageInformation("msg3", DataType.DOUBLE, mtManager, null), null, 1);
-        Message msg4 = new Message(1, new MessageInformation("msg4", DataType.DOUBLE, mtManager, null), null, 1);
+        Message msg1 = new Message(c1, new MessageInformation("msg1", DataType.DOUBLE, mtManager, null), null, 1);
+        Message msg2 = new Message(c1, new MessageInformation("msg2", DataType.DOUBLE, mtManager, null), null, 1);
+        Message msg3 = new Message(c1, new MessageInformation("msg3", DataType.DOUBLE, mtManager, null), null, 1);
+        Message msg4 = new Message(c2, new MessageInformation("msg4", DataType.DOUBLE, mtManager, null), null, 1);
 
         mtManager.addMessagePriorities(Arrays.asList(
             new Pair<String, Integer>("msg1", 1),

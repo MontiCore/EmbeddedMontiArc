@@ -2,12 +2,12 @@
 package de.rwth.montisim.simulation.eecomponents.navigation;
 
 import de.rwth.montisim.commons.utils.json.Typed;
-import de.rwth.montisim.simulation.eesimulator.components.EEComponentProperties;
+import de.rwth.montisim.simulation.eesimulator.components.BusUserProperties;
 import de.rwth.montisim.simulation.eesimulator.components.EEComponentType;
 import de.rwth.montisim.simulation.vehicle.VehicleBuilder;
 
 @Typed(NavigationProperties.TYPE)
-public class NavigationProperties extends EEComponentProperties {
+public class NavigationProperties extends BusUserProperties {
     public static final String TYPE = "navigation";
     static {
         VehicleBuilder.registerComponentBuilder(TYPE,

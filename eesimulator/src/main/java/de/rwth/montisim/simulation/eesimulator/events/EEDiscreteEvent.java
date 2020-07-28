@@ -75,6 +75,8 @@ public abstract class EEDiscreteEvent extends DiscreteEvent<EEEventType> {
             this.target = event.target.properties.name;
         }
 
+        protected EventData() {}
+
         public abstract EEDiscreteEvent getEvent(ComponentManager cm);
     }
     public abstract EventData getEventData();

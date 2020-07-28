@@ -4,6 +4,7 @@ package de.rwth.montisim.simulation.eesimulator.message;
 import java.util.HashMap;
 import java.util.HashSet;
 import java.util.List;
+import java.util.Optional;
 import java.util.Vector;
 
 import de.rwth.montisim.commons.utils.Pair;
@@ -15,13 +16,12 @@ import de.rwth.montisim.simulation.eesimulator.exceptions.EEMessageTypeException
  */
 public class MessageTypeManager {
     public HashMap<String, HashSet<EEMessageTypeException>> messageTypeErrors = new HashMap<>();
-    Vector<MessageInformation> messageIds = new Vector<>();
-    HashMap<String, Integer> messageIdByName = new HashMap<>();
+    int idCounter = 0;
+    HashMap<String, MessageInformation> messages = new HashMap<>();
 
-    public int registerMessage(MessageInformation info) throws EEMessageTypeException {
-        if (messageIdByName.containsKey(info.name)) {
-            int id = messageIdByName.get(info.name);
-            MessageInformation i = messageIds.get(id);
+    public int registerMessage(MessageInformation info) throws EEMessageTypeException {        
+        if (messages.containsKey(info.name)) {
+            MessageInformation i = messages.get(info.name);
             if (!i.type.equals(info.type)) {
                 throw new EEMessageTypeException(
                     info.name,
@@ -29,16 +29,17 @@ public class MessageTypeManager {
                     info.firstUser, info.type
                 );
             }
-            return id;
+            return i.messageId;
         }
-        int id = messageIds.size();
-        messageIds.add(info);
-        messageIdByName.put(info.name, id);
+        int id = idCounter++;
+        messages.put(info.name, info);
         return id;
     }
 
-    public MessageInformation getMsgInfo(int msgId){
-        return messageIds.elementAt(msgId);
+    public Optional<MessageInformation> getMsgInfo(String msgName){
+        MessageInformation info = messages.get(msgName);
+        if(info == null) return Optional.empty();
+        return Optional.of(info);
     }
 
     /** 
@@ -47,9 +48,8 @@ public class MessageTypeManager {
     */
     public void addMessagePriorities(List<Pair<String,Integer>> priorities) {
         for (Pair<String, Integer> p : priorities){
-            if (messageIdByName.containsKey(p.getKey())){
-                messageIds.get(messageIdByName.get(p.getKey())).priority = p.getValue();
-            }
+            MessageInformation info = messages.get(p.getKey());
+            if (info != null) info.priority = p.getValue();
         }
     }
 

@@ -78,11 +78,11 @@ public class Actuator extends EEComponent implements Updatable {
     @Override
     protected void receive(MessageReceiveEvent msgRecvEvent) {
         Message msg = msgRecvEvent.getMessage();
-        if (msg.msgId == msgInfo.messageId) {
+        if (msg.isMsg(msgInfo)) {
             targetValue = (Double) msg.message;
         } else {
             Logger.getLogger("Warnings").warning("Actuator \"" + properties.name + "\" received unexpected message: "
-                    + simulator.getMessageTypeManager().getMsgInfo(msg.msgId).name);
+                    + msg.msgInfo.name);
         }
     }
 

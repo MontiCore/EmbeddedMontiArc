@@ -57,19 +57,19 @@ public class CANTest {
         can.addComponent(c3);
 
         // Full frame payload
-        m1 = new Message(0, new MessageInformation("m1", DataType.DOUBLE, simulator.getMessageTypeManager(), c1), null, CAN.MAX_PAYLOAD_SIZE_BYTES);
+        m1 = new Message(null, new MessageInformation("m1", DataType.DOUBLE, simulator.getMessageTypeManager(), c1), null, CAN.MAX_PAYLOAD_SIZE_BYTES);
         t1 = new CANMessageTransmission(m1, null);
         // Partial frame payload
-        m2 = new Message(0, new MessageInformation("m2", DataType.DOUBLE, simulator.getMessageTypeManager(), c1), null, 3);
+        m2 = new Message(null, new MessageInformation("m2", DataType.DOUBLE, simulator.getMessageTypeManager(), c1), null, 3);
         t2 = new CANMessageTransmission(m2, null);
         // Multi frame payload (full)
-        m3 = new Message(0, new MessageInformation("m3", DataType.DOUBLE, simulator.getMessageTypeManager(), c1), null, CAN.MAX_PAYLOAD_SIZE_BYTES*5);
+        m3 = new Message(null, new MessageInformation("m3", DataType.DOUBLE, simulator.getMessageTypeManager(), c1), null, CAN.MAX_PAYLOAD_SIZE_BYTES*5);
         t3 = new CANMessageTransmission(m3, null);
         // Multi frame payload (full)
-        m4 = new Message(0, new MessageInformation("m4", DataType.DOUBLE, simulator.getMessageTypeManager(), c1), null, CAN.MAX_PAYLOAD_SIZE_BYTES*3 + 5);
+        m4 = new Message(null, new MessageInformation("m4", DataType.DOUBLE, simulator.getMessageTypeManager(), c1), null, CAN.MAX_PAYLOAD_SIZE_BYTES*3 + 5);
         t4 = new CANMessageTransmission(m4, null);
         // Full frame payload
-        m5 = new Message(0, new MessageInformation("m5", DataType.DOUBLE, simulator.getMessageTypeManager(), c1), null, CAN.MAX_PAYLOAD_SIZE_BYTES);
+        m5 = new Message(null, new MessageInformation("m5", DataType.DOUBLE, simulator.getMessageTypeManager(), c1), null, CAN.MAX_PAYLOAD_SIZE_BYTES);
         t5 = new CANMessageTransmission(m5, null);
         
         simulator.getMessageTypeManager().addMessagePriorities(Arrays.asList(
@@ -81,11 +81,11 @@ public class CANTest {
         ));
 
         // Register messages routing.
-        can.addMessageTargets(m1.msgId, Arrays.asList(c1,c2,c3));
-        can.addMessageTargets(m2.msgId, Arrays.asList(c1,c2,c3));
-        can.addMessageTargets(m3.msgId, Arrays.asList(c1,c2,c3));
-        can.addMessageTargets(m4.msgId, Arrays.asList(c1,c2,c3));
-        can.addMessageTargets(m5.msgId, Arrays.asList(c1,c2,c3));
+        can.addMessageTargets(m1.msgInfo.messageId, Arrays.asList(c1,c2,c3));
+        can.addMessageTargets(m2.msgInfo.messageId, Arrays.asList(c1,c2,c3));
+        can.addMessageTargets(m3.msgInfo.messageId, Arrays.asList(c1,c2,c3));
+        can.addMessageTargets(m4.msgInfo.messageId, Arrays.asList(c1,c2,c3));
+        can.addMessageTargets(m5.msgInfo.messageId, Arrays.asList(c1,c2,c3));
     }
 
     @Test

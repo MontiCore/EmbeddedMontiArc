@@ -50,7 +50,7 @@ public class TestAutopilot extends EEComponent {
     @Override
     protected void receive(MessageReceiveEvent msgRecvEvent) {
         Message msg = msgRecvEvent.getMessage();
-        if (msg.msgId == velocityMsg.messageId) {
+        if (msg.isMsg(velocityMsg)) {
             currentVelocity = (Double) msg.message;
             // Trigger computation
             compute(msgRecvEvent.getEventTime());

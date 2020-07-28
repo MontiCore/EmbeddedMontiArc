@@ -40,6 +40,7 @@ public class MessageSendEvent extends EEDiscreteEvent {
 			super(event);
 			msg = event.msg;
 		}
+        protected MessageSendEventData() {}
 		@Override
 		public EEDiscreteEvent getEvent(ComponentManager cm) {
 			return new MessageReceiveEvent(time, EEDiscreteEvent.getTarget(target, cm), msg);

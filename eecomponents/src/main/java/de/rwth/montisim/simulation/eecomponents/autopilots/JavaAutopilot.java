@@ -77,18 +77,18 @@ public class JavaAutopilot extends EEComponent {
     @Override
     protected void receive(MessageReceiveEvent msgRecvEvent) {
         Message msg = msgRecvEvent.getMessage();
-        if (msg.msgId == velocityMsg.messageId) {
+        if (msg.isMsg(velocityMsg)) {
             currentVelocity = (Double) msg.message;
-            // Trigger computation
-        } else if (msg.msgId == positionMsg.messageId) {
+        } else if (msg.isMsg(positionMsg)) {
             currentPosition = (Vec2) msg.message;
+            // Trigger computation
             compute(msgRecvEvent.getEventTime());
-        } else if (msg.msgId == compassMsg.messageId) {
+        } else if (msg.isMsg(compassMsg)) {
             currentCompass = (Double) msg.message;
-        } else if (msg.msgId == trajXMsg.messageId) {
+        } else if (msg.isMsg(trajXMsg)) {
             // Assumes the x positions array of a new trajectory always arrives first
             newTrajX = (double[]) msg.message;
-        } else if (msg.msgId == trajYMsg.messageId) {
+        } else if (msg.isMsg(trajYMsg)) {
             trajY = (double[]) msg.message;
             trajX = newTrajX;
         }
@@ -253,7 +253,7 @@ public class JavaAutopilot extends EEComponent {
 
             // Eval junction turn
             double junctionAngle = Math.acos(IPM.dot(currSeg.dir, nextSeg.dir));
-            double junctionSign = Math.signum(IPM.dot(normal, nextSeg.dir));
+            //double junctionSign = Math.signum(IPM.dot(normal, nextSeg.dir));
             double maxRadius = junctionAngle == 0 ? Double.POSITIVE_INFINITY
                     : MAX_DEVIATION / ((1 / Math.cos(junctionAngle * 0.5)) - 1);
             double maxDistToCorner = Math.sqrt(MAX_DEVIATION * (MAX_DEVIATION + maxRadius * 2));

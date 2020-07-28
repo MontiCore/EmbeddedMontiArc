@@ -5,12 +5,12 @@ import java.util.Optional;
 
 import de.rwth.montisim.commons.utils.json.JsonEntry;
 import de.rwth.montisim.commons.utils.json.Typed;
-import de.rwth.montisim.simulation.eesimulator.components.EEComponentProperties;
+import de.rwth.montisim.simulation.eesimulator.components.BusUserProperties;
 import de.rwth.montisim.simulation.eesimulator.components.EEComponentType;
 import de.rwth.montisim.simulation.eesimulator.sensor.SensorProperties;
 
 @Typed(ActuatorProperties.TYPE)
-public class ActuatorProperties extends EEComponentProperties {
+public class ActuatorProperties extends BusUserProperties {
     public static final String TYPE = "actuator";
 
     public String physical_value_name;

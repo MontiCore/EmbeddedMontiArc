@@ -255,7 +255,7 @@ public class VehicleBuilder {
         // Connect to buses
         cm.componentTable.stream().filter(x -> x.getComponentType() != EEComponentType.BUS).forEach(x -> {
             BusUser bc = (BusUser) x;
-            for (String busName : x.properties.buses) {
+            for (String busName : bc.properties.buses) {
                 bc.connectToBus(busName);
             }
         });

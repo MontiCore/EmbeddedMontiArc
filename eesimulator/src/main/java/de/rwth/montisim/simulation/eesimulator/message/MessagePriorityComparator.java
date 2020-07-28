@@ -18,13 +18,13 @@ public class MessagePriorityComparator implements Comparator<Message> {
 
     public int compare(Message a, Message b) {
         int r = Integer.compare(
-            msgManager.getMsgInfo(a.msgId).priority,
-            msgManager.getMsgInfo(b.msgId).priority
+            a.msgInfo.priority,
+            b.msgInfo.priority
         );
         if (r != 0) return r;
         return Integer.compare(
-            compManager.getComponentPriority(b.senderId),
-            compManager.getComponentPriority(a.senderId)
+            compManager.getComponentPriority(b.sender.id),
+            compManager.getComponentPriority(a.sender.id)
         );
     }
 }
