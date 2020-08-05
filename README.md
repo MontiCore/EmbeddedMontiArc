@@ -116,6 +116,27 @@ Definable arbitrarily often.
 Creates completely random vehicle spawns and destinations with optional avoidance of a given path.
 Definable arbitrarily often.
 
+### (carModelName)? "vehicle" "{"
+  "path" "(" [startLat] "," [startLong] ")" ( "->"  "(" [lat] "," [long]")" )* [destRadius]"m" ";"
+  "rotation" [rotation] ";"
+  "goals" "["(metricGoal|untilGoal)+"]" ";"
+  "platoon" "{" 
+    "size" [Number > 0] ";"
+  "}"
+"}"
+#### metricGoal = ["never"|"always"|"eventually"] [metricName] [">" | ">=" | "<" | "<=" | "==" ] [targetValue][unit];
+#### untilGoal = metricGoal1 "until" metricGoal2;
+#### metricName = ["speed"|"acceleration"|"batteryLevel"];
+Creates a vehicle or a platoon. A vehicle will spawn at the first way point defined in its path attribute(sartLat, startLong).
+If "platoon" is given, the rest vehicles will spawn following the leading vehicle. Their destinations are reached if the leading
+vehicle reached its destination and they still stay in the platoon. The initial rotation can be specified using the keyword "rotation".
+A vehicle can have multiple "goals", they can be used to describe which conditions must be fufilled before the simulation ends.
+Each condition should be given a type: "never", "always", "eventually" or "until".
+The type "until"(untilGoal) is special, its basic form is: cond1 "until" cond2, meaning cond1 should be true until cond2 is true.
+It can be used to test scenarios like: 
+an EV should not release too much power if battery level is low, otherwise it might damage the battery("batteryLevel" ">" 0.3 "until" "acceleration" ">" 25 km/s^2);
+a vehicle should stay still before the traffic light turns green("speed" "==" 0 km/s "until" "green").
+
 ### ("fixed"|"bound") "channel" [name] "{"
   CHANNEL_RULE1 ";"
   CHANNEL_RULE2 ";"
