@@ -32,7 +32,7 @@
         <Embedded-MontiArc.version>0.1.9-SNAPSHOT</Embedded-MontiArc.version>
         <Embedded-MontiArc-Math.version>0.1.9-SNAPSHOT</Embedded-MontiArc-Math.version>
         <Embedded-MontiArc-Behaviour.version>0.0.16-SNAPSHOT</Embedded-MontiArc-Behaviour.version>
-        <CNNArch.version>0.3.4-SNAPSHOT</CNNArch.version>
+        <CNNArch.version>0.3.5-SNAPSHOT</CNNArch.version>
         <Math.version>0.0.19-SNAPSHOT</Math.version>
         <MathOpt.version>0.1.1-SNAPSHOT</MathOpt.version>
         <embedded-montiarc-dynamics.version>0.0.4-SNAPSHOT</embedded-montiarc-dynamics.version>
