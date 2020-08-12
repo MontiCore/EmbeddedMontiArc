@@ -32,6 +32,7 @@ public class ArchitectureSymbol extends CommonScopeSpanningSymbol {
     private List<ConstantSymbol> constants = new ArrayList<>();
     private String dataPath;
     private String weightsPath;
+    private List<LayerPathParameterTagSymbol> layerPathParameterTagSymbols = new ArrayList<>();
     private String componentName;
 
     public ArchitectureSymbol() {
@@ -80,6 +81,12 @@ public class ArchitectureSymbol extends CommonScopeSpanningSymbol {
 
     public void setWeightsPath(String weightsPath) {
         this.weightsPath = weightsPath;
+    }
+
+    public void setLayerPathParameterTagSymbols(List<LayerPathParameterTagSymbol> layerPathParameterTagSymbols) { this.layerPathParameterTagSymbols = layerPathParameterTagSymbols; }
+
+    public List<LayerPathParameterTagSymbol> getLayerPathParameterTagSymbols() {
+        return layerPathParameterTagSymbols;
     }
 
     public void setComponentName(String componentName){
@@ -212,6 +219,16 @@ public class ArchitectureSymbol extends CommonScopeSpanningSymbol {
 
         copy.putInScope(enclosingScopeOfCopy);
         return copy;
+    }
+
+    public void processLayerPathParameterTags(){
+        for(NetworkInstructionSymbol networkInstruction : networkInstructions){
+            List<ArchitectureElementSymbol> elements = networkInstruction.getBody().getElements();
+
+            for (ArchitectureElementSymbol element : elements){
+
+            }
+        }
     }
 
     public void processForEpisodicReplayMemory(){
