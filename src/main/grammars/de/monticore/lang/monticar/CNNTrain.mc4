@@ -73,6 +73,7 @@ grammar CNNTrain extends de.monticore.lang.monticar.Common2, de.monticore.Number
                                          | inv:"inv"
                                          | poly:"poly"
                                          | sigmoid:"sigmoid");
+                                         
     TrainContextValue implements ConfigValue = (cpu:"cpu" | gpu:"gpu");
 
     interface OptimizerParamEntry extends Entry;
@@ -134,6 +135,8 @@ grammar CNNTrain extends de.monticore.lang.monticar.Common2, de.monticore.Number
 
     interface AdamEntry extends OptimizerParamEntry;
     AdamOptimizer implements OptimizerValue = name:"adam" ("{" params:AdamEntry* "}")?;
+
+    AdamWOptimizer implements OptimizerValue = name:"adamw" ("{" params:AdamEntry* "}")?;
 
     interface RmsPropEntry extends OptimizerParamEntry;
     RmsPropOptimizer implements OptimizerValue = name:"rmsprop" ("{" params:RmsPropEntry* "}")?;
