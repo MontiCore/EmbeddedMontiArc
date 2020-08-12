@@ -52,6 +52,8 @@ public abstract class TrainParamSupportChecker implements CNNTrainVisitor {
 
     public void visit(ASTAdamOptimizer node){}
 
+    public void visit(ASTAdamWOptimizer node){}
+
     public void visit(ASTRmsPropOptimizer node){}
 
     public void visit(ASTAdaGradOptimizer node){}
