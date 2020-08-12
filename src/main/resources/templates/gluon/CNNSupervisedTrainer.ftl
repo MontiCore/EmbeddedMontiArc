@@ -10,6 +10,11 @@ import math
 import sys
 import inspect
 from mxnet import gluon, autograd, nd
+try:
+    import AdamW
+except:
+    pass
+
 
 class CrossEntropyLoss(gluon.loss.Loss):
     def __init__(self, axis=-1, sparse_label=True, weight=None, batch_axis=0, **kwargs):
@@ -56,7 +61,7 @@ class SoftmaxCrossEntropyLossIgnoreIndices(gluon.loss.Loss):
             loss = -(pred * label).sum(axis=self._axis, keepdims=True)
         # ignore some indices for loss, e.g. <pad> tokens in NLP applications
         for i in self._ignore_indices:
-            loss = loss * mx.nd.logical_not(mx.nd.equal(mx.nd.argmax(pred, axis=1), mx.nd.ones_like(mx.nd.argmax(pred, axis=1))*i) * mx.nd.equal(mx.nd.argmax(pred, axis=1), label))
+            loss = F.broadcast_mul(loss, F.logical_not(F.broadcast_equal(F.argmax(pred, axis=1), F.ones_like(F.argmax(pred, axis=1))*i) * F.broadcast_equal(F.argmax(pred, axis=1), label)))
         return loss.mean(axis=self._batch_axis, exclude=True)
 
 class DiceLoss(gluon.loss.Loss):
@@ -293,6 +298,7 @@ class ${tc.fileNameWithoutEnding}:
             mx_context = [mx.cpu()]
         else:
             logging.error("Context argument is '" + context + "'. Only 'cpu' and 'gpu are valid arguments'.")
+        single_pu_batch_size = int(batch_size/num_pus)
 
         if preprocessing:
             preproc_lib = "CNNPreprocessor_${tc.fileNameWithoutEnding?keep_after("CNNSupervisedTrainer_")}_executor"
@@ -337,7 +343,10 @@ class ${tc.fileNameWithoutEnding}:
             if not os.path.isdir(self._net_creator._model_dir_):
                 raise
 
-        trainers = [mx.gluon.Trainer(network.collect_params(), optimizer, optimizer_params) for network in self._networks.values() if len(network.collect_params().values()) != 0]
+        if optimizer == "adamw":
+            trainers = [mx.gluon.Trainer(network.collect_params(), AdamW.AdamW(**optimizer_params)) for network in self._networks.values() if len(network.collect_params().values()) != 0]
+        else:
+            trainers = [mx.gluon.Trainer(network.collect_params(), optimizer, optimizer_params) for network in self._networks.values() if len(network.collect_params().values()) != 0]
 
         margin = loss_params['margin'] if 'margin' in loss_params else 1.0
         sparseLabel = loss_params['sparse_label'] if 'sparse_label' in loss_params else True
@@ -408,7 +417,7 @@ class ${tc.fileNameWithoutEnding}:
         layer = [param for param in inspect.getmembers(sub_net, lambda x: not(inspect.isroutine(x))) if param[0].startswith("memory")][0][1]
         episodic_layers[0].append(layer)
         episodic_store_buffer[${networkInstruction?index}].append([])
-        episodic_query_networks[0].append(episodic_layers[0][-1].get_query_network())
+        episodic_query_networks[0].append(episodic_layers[0][-1].get_query_network(mx_context))
         store_prob[${networkInstruction?index}].append(nd.array([1-episodic_layers[0][-1].store_prob, episodic_layers[0][-1].store_prob], ctx=mx.cpu()))                                                                                  
 </#if>
 </#list>
@@ -440,7 +449,12 @@ class ${tc.fileNameWithoutEnding}:
                 with autograd.record():
 <#include "pythonExecuteTrain.ftl">
 
-                for loss in losses:
+                    for i in range(num_pus):
+                        losses = [0]*num_pus
+                        for element in lossList[i]:
+                            losses[i] = losses[i] + element
+
+                for loss in losses: 
                     loss.backward()
                     loss_total += loss.sum().asscalar()
                     global_loss_train += loss.sum().asscalar()
@@ -462,7 +476,7 @@ class ${tc.fileNameWithoutEnding}:
                 #storing samples for episodic replay
                 for net_i in range(len(self._networks)):
                     for layer_i, layer in enumerate(episodic_layers[net_i]):
-                        layer.store_samples(episodic_store_buffer[net_i][layer_i], labels, episodic_query_networks[net_i][layer_i], store_prob[net_i][layer_i])
+                        layer.store_samples(episodic_store_buffer[net_i][layer_i], labels, episodic_query_networks[net_i][layer_i], store_prob[net_i][layer_i], mx_context)
 
 </#if>
                 if tic is None:
@@ -497,16 +511,14 @@ class ${tc.fileNameWithoutEnding}:
 
 <#include "saveAttentionImageTrain.ftl">
 
-                    for i in range(num_pus):
-                        predictions = []
-                        for output_name in outputs[i]:
-                            if mx.nd.shape_array(mx.nd.squeeze(output_name)).size > 1:
-                                predictions.append(mx.nd.argmax(output_name, axis=1))
-                            else:
-                                predictions.append(output_name)
+                    predictions = []
+                    for output_name in outputs:
+                        if mx.nd.shape_array(mx.nd.squeeze(output_name)).size > 1:
+                            predictions.append(mx.nd.argmax(output_name, axis=1))
+                        else:
+                            predictions.append(output_name)
 
-                        labels_metric = [[labels[j][i] for j in range(len(labels))] for i in range(num_pus)]
-                        metric.update(preds=predictions, labels=labels_metric[i])
+                    metric.update(preds=predictions, labels=[labels[j] for j in range(len(labels))])
 
                 train_metric_score = metric.get()[1]
             else:
@@ -524,22 +536,22 @@ class ${tc.fileNameWithoutEnding}:
 
 <#include "saveAttentionImageTest.ftl">
 
-                for loss in losses:
-                    global_loss_test += loss.sum().asscalar()
-    
+                for element in lossList:
+                    loss = loss + element
+
+                global_loss_test += loss.sum().asscalar()
+
                 test_batches += 1
 
-                for i in range(num_pus):
-                    predictions = []
-                    for output_name in outputs[i]:
-                        predictions.append(output_name)
+                predictions = []
+                for output_name in outputs:
+                    predictions.append(output_name)
 
-                    labels_metric = [[labels[j][i] for j in range(len(labels))] for i in range(num_pus)]
-                    metric.update(preds=predictions, labels=labels_metric[i])
+                metric.update(preds=predictions, labels=[labels[j] for j in range(len(labels))])
 
             test_metric_score = metric.get()[1]
 
-            global_loss_test /= (test_batches * batch_size)
+            global_loss_test /= (test_batches * single_pu_batch_size)
 
             logging.info("Epoch[%d] Train metric: %f, Test metric: %f, Train loss: %f, Test loss: %f" % (epoch, train_metric_score, test_metric_score, global_loss_train, global_loss_test))
 
@@ -547,10 +559,6 @@ class ${tc.fileNameWithoutEnding}:
                 for i, network in self._networks.items():
                     network.save_parameters(self.parameter_path(i) + '-' + str(epoch).zfill(4) + '.params')
 
-        print("--------------------------------------Speed------------------------------------------")
-        print(avg_speed/n)
-        print("--------------------------------------Speed------------------------------------------")
-    
         for i, network in self._networks.items():
             network.save_parameters(self.parameter_path(i) + '-' + str(num_epoch + begin_epoch + 1).zfill(4) + '.params')
             network.export(self.parameter_path(i) + '_newest', epoch=0)

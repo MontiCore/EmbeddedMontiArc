@@ -51,7 +51,7 @@ public class GenerationTest extends AbstractSymtabTest {
                         "CNNSupervisedTrainer_CifarClassifierNetwork.py",
                         "CNNPredictor_CifarClassifierNetwork.h",
                         "execute_CifarClassifierNetwork",
-                        "CNNBufferFile.h"));
+                        "CNNModelLoader.h"));
     }
 
     @Test

@@ -82,12 +82,12 @@ public:
             loadComponent(network_json_path, network_param_path, network_symbol_list, network_param_map_list);
         }else{
             for(int i=0; i < num_subnets; i++){
-                network_json_path = file_prefix + "_episodic_sub_net_" + std::to_string(i) + "-symbol.json";
-                network_param_path = file_prefix + "_episodic_sub_net_" + std::to_string(i) + "-0000.params";
+                network_json_path = file_prefix + "_replay_sub_net_" + std::to_string(i) + "-symbol.json";
+                network_param_path = file_prefix + "_replay_sub_net_" + std::to_string(i) + "-0000.params";
                 loadComponent(network_json_path, network_param_path, network_symbol_list, network_param_map_list);
                 if(i >= 1){
-                    query_json_path = file_prefix + "_episodic_query_net_" + std::to_string(i) + "-symbol.json";
-                    query_param_path = file_prefix + "_episodic_query_net_" + std::to_string(i) + "-0000.params";
+                    query_json_path = file_prefix + "_replay_query_net_" + std::to_string(i) + "-symbol.json";
+                    query_param_path = file_prefix + "_replay_query_net_" + std::to_string(i) + "-0000.params";
                     loadComponent(query_json_path, query_param_path, query_symbol_list, query_param_map_list);
                     
                     memory_path = file_prefix + "_replay_memory_" + std::to_string(i);

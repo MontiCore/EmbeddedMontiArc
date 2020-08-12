@@ -7,7 +7,105 @@ import shutil
 import pickle
 import math
 import sys
+import inspect
 from mxnet import gluon, autograd, nd
+from mxnet.ndarray.contrib import mp_adamw_update, adamw_update, multi_mp_adamw_update, multi_adamw_update
+    
+class AdamW(mx.optimizer.Optimizer):
+    def __init__(self, learning_rate=0.001, beta1=0.9, beta2=0.999, epsilon=1e-8, **kwargs):
+        super(AdamW, self).__init__(learning_rate=learning_rate, **kwargs)
+        self.beta1 = beta1
+        self.beta2 = beta2
+        self.epsilon = epsilon
+        self.aggregate_num = max(1, min(50, int(os.getenv('MXNET_OPTIMIZER_AGGREGATION_SIZE', '4'))))
+
+    def create_state(self, _, weight):
+        return (nd.zeros(weight.shape, weight.context, dtype=weight.dtype), #mean
+                nd.zeros(weight.shape, weight.context, dtype=weight.dtype)) #variance
+
+    def create_state_multi_precision(self, index, weight):
+        weight_master_copy = None
+        if self.multi_precision and weight.dtype == numpy.float16:
+            weight_master_copy = weight.astype(numpy.float32)
+            return (self.create_state(index, weight_master_copy), weight_master_copy)
+        return self.create_state(index, weight)
+
+    def update(self, index, weight, grad, state):
+        self._update_impl(index, weight, grad, state, multi_precision=False)
+
+    def update_multi_precision(self, index, weight, grad, state):
+        use_multi_precision = self.multi_precision and weight[0].dtype == numpy.float16
+        self._update_impl(index, weight, grad, state, multi_precision=use_multi_precision)
+
+    def _update_impl(self, indices, weight, grad, state, multi_precision=False):
+        """update function"""
+        aggregate = self.aggregate_num > 1
+        if not isinstance(indices, (tuple, list)):
+            indices = [indices]
+            weight = [weight]
+            grad = [grad]
+            state = [state]
+        for w_i, g_i in zip(weight, grad):
+            assert(isinstance(w_i, nd.NDArray))
+            assert(isinstance(g_i, nd.NDArray))
+            aggregate = (aggregate and
+                         w_i.stype == 'default' and
+                         g_i.stype == 'default')
+        self._update_count(indices)
+        lrs = self._get_lrs(indices)
+        wds = self._get_wds(indices)
+
+        # pylint: disable=access-member-before-definition
+        if not isinstance(self.rescale_grad, nd.NDArray):
+            self.rescale_grad = nd.full(shape=(1,), val=self.rescale_grad, ctx=weight[0].context)
+        else:
+            self.rescale_grad = self.rescale_grad.as_in_context(weight[0].context)
+
+        kwargs = {'beta1': self.beta1, 'beta2': self.beta2, 'epsilon': self.epsilon,
+                  'rescale_grad': self.rescale_grad}
+        if self.clip_gradient:
+            kwargs['clip_gradient'] = self.clip_gradient
+
+        if aggregate:
+            current_index = 0
+            while current_index < len(indices):
+                sidx = current_index
+                eidx = min(current_index + self.aggregate_num, len(indices))
+                if not multi_precision:
+                    mean, var = list(zip(*state[sidx:eidx]))
+                    multi_adamw_update(weight[sidx:eidx],
+                                       grad[sidx:eidx],
+                                       mean, var,
+                                       out=weight[sidx:eidx],
+                                       size=len(weight[sidx:eidx]),
+                                       lrs=list(np.ones(len(weight[sidx:eidx]))),
+                                       wds=wds[sidx:eidx],
+                                       etas=lrs[sidx:eidx],
+                                       **kwargs)
+                else:
+                    mean_var = list(zip(*state[sidx:eidx]))[0]
+                    tmean_var = list(zip(*mean_var))
+                    mean = tmean_var[0]
+                    var = tmean_var[1]
+                    multi_mp_adamw_update(weight[sidx:eidx],
+                                          grad[sidx:eidx],
+                                          mean, var,
+                                          list(zip(*state[sidx:eidx]))[1],
+                                          out=weight[sidx:eidx],
+                                          size=len(weight[sidx:eidx]),
+                                          lrs=list(np.ones(len(weight[sidx:eidx]))),
+                                          wds=wds[sidx:eidx],
+                                          etas=lrs[sidx:eidx],
+                                          **kwargs)
+                current_index += self.aggregate_num
+        else:
+            for w_i, g_i, s_i, lr, wd in zip(weight, grad, state, lrs, wds):
+                if not multi_precision:
+                    mean, var = s_i
+                    adamw_update(w_i, g_i, mean, var, out=w_i, lr=1, wd=wd, eta=lr, **kwargs)
+                else:
+                    mean, var = s_i[0]
+                    mp_adamw_update(w_i, g_i, mean, var, s_i[1], out=w_i, lr=1, wd=wd, eta=lr, **kwargs)    
 
 class CrossEntropyLoss(gluon.loss.Loss):
     def __init__(self, axis=-1, sparse_label=True, weight=None, batch_axis=0, **kwargs):
@@ -277,10 +375,18 @@ class CNNSupervisedTrainer_Alexnet:
               shuffle_data=False,
               clip_global_grad_norm=None,
               preprocessing = False):
+        num_pus = 1
         if context == 'gpu':
-            mx_context = mx.gpu()
+            num_pus = mx.context.num_gpus()
+            if num_pus >= 1:
+                if num_pus == 1:
+                    mx_context = [mx.gpu(0)]
+                else:
+                    mx_context = [mx.gpu(i) for i in range(num_pus)]
+            else:
+                logging.error("Context argument is '" + context + "'. But no gpu is present in the system.")
         elif context == 'cpu':
-            mx_context = mx.cpu()
+            mx_context = [mx.cpu()]
         else:
             logging.error("Context argument is '" + context + "'. Only 'cpu' and 'gpu are valid arguments'.")
 
@@ -327,7 +433,10 @@ class CNNSupervisedTrainer_Alexnet:
             if not os.path.isdir(self._net_creator._model_dir_):
                 raise
 
-        trainers = [mx.gluon.Trainer(network.collect_params(), optimizer, optimizer_params) for network in self._networks.values() if len(network.collect_params().values()) != 0]
+        if optimizer == "adamw":
+            trainers = [mx.gluon.Trainer(network.collect_params(), AdamW(**optimizer_params)) for network in self._networks.values() if len(network.collect_params().values()) != 0]
+        else:
+            trainers = [mx.gluon.Trainer(network.collect_params(), optimizer, optimizer_params) for network in self._networks.values() if len(network.collect_params().values()) != 0]
 
         margin = loss_params['margin'] if 'margin' in loss_params else 1.0
         sparseLabel = loss_params['sparse_label'] if 'sparse_label' in loss_params else True
@@ -372,9 +481,16 @@ class CNNSupervisedTrainer_Alexnet:
             loss_function = LogCoshLoss()
         else:
             logging.error("Invalid loss parameter.")
+        
+        loss_function.hybridize()
+        
+
 
         tic = None
 
+        avg_speed = 0
+        n = 0
+    
         for epoch in range(begin_epoch, begin_epoch + num_epoch):
             if shuffle_data:
                 if preprocessing:
@@ -389,31 +505,36 @@ class CNNSupervisedTrainer_Alexnet:
             loss_total = 0
             train_iter.reset()
             for batch_i, batch in enumerate(train_iter):
+                
+                                 
                 with autograd.record():
-                    labels = [batch.label[i].as_in_context(mx_context) for i in range(1)]
+                    labels = [gluon.utils.split_and_load(batch.label[i], ctx_list=mx_context, even_split=False) for i in range(1)]
 
-                    data_ = batch.data[0].as_in_context(mx_context)
+                    data_ = gluon.utils.split_and_load(batch.data[0], ctx_list=mx_context, even_split=False)
 
-                    predictions_ = mx.nd.zeros((batch_size, 10,), ctx=mx_context)
+                    #predictions_ = mx.nd.zeros((batch_size, 10,), ctx=mx_context)
 
 
                     nd.waitall()
 
-                    lossList = []
+                    net_ret = [self._networks[0](data_[i]) for i in range(num_pus)]
 
-                    predictions_ = self._networks[0](data_)
+                    predictions_ = [net_ret[i][0][0] for i in range(num_pus)]
 
-                    lossList.append(loss_function(predictions_, labels[0]))
+                    losses = []
+                    for i in range(num_pus):
+                        lossList = []
+                        lossList.append(loss_function(predictions_[i], labels[0][i]))						
+                        losses.append(0)
+                        for element in lossList:
+                            losses[i] = losses[i] + element	
 
-                    loss = 0
-                    for element in lossList:
-                        loss = loss + element
 
-                loss.backward()
+                for loss in losses:
+                    loss.backward()
+                    loss_total += loss.sum().asscalar()
+                    global_loss_train += loss.sum().asscalar()
 
-                loss_total += loss.sum().asscalar()
-
-                global_loss_train += loss.sum().asscalar()
                 train_batches += 1
 
                 if clip_global_grad_norm:
@@ -426,7 +547,7 @@ class CNNSupervisedTrainer_Alexnet:
 
                 for trainer in trainers:
                     trainer.step(batch_size)
-
+    
                 if tic is None:
                     tic = time.time()
                 else:
@@ -440,34 +561,45 @@ class CNNSupervisedTrainer_Alexnet:
                         loss_total = 0
 
                         logging.info("Epoch[%d] Batch[%d] Speed: %.2f samples/sec Loss: %.5f" % (epoch, batch_i, speed, loss_avg))
-
+                        
+                        avg_speed += speed
+                        n += 1
+    
                         tic = time.time()
 
             global_loss_train /= (train_batches * batch_size)
 
             tic = None
 
-
             if eval_train:
                 train_iter.reset()
                 metric = mx.metric.create(eval_metric, **eval_metric_params)
                 for batch_i, batch in enumerate(train_iter):
-                    labels = [batch.label[i].as_in_context(mx_context) for i in range(1)]
+                    labels = [gluon.utils.split_and_load(batch.label[i], ctx_list=mx_context, even_split=False) for i in range(1)]
+                    data_ = gluon.utils.split_and_load(batch.data[0], ctx_list=mx_context, even_split=False)
 
-                    data_ = batch.data[0].as_in_context(mx_context)
-
-                    predictions_ = mx.nd.zeros((batch_size, 10,), ctx=mx_context)
+                    #predictions_ = mx.nd.zeros((batch_size, 10,), ctx=mx_context)
 
 
                     nd.waitall()
 
                     outputs = []
-                    lossList = []
                     attentionList = []
-                    predictions_ = self._networks[0](data_)
 
-                    outputs.append(predictions_)
-                    lossList.append(loss_function(predictions_, labels[0]))
+                    net_ret = [self._networks[0](data_[i]) for i in range(num_pus)]
+
+                    predictions_ = [net_ret[i][0][0] for i in range(num_pus)]
+
+                    losses = []
+                    for i in range(num_pus):
+                        outputs.append([])
+                        lossList = []
+                        outputs[i].append(predictions_[i])
+                        lossList.append(loss_function(predictions_[i], labels[0][i]))
+                        losses.append(0)
+                        for element in lossList:
+                            losses[i] = losses[i] + element
+
 
 
                     if save_attention_image == "True":
@@ -510,15 +642,17 @@ class CNNSupervisedTrainer_Alexnet:
                             os.makedirs(target_dir)
                         plt.savefig(target_dir + '/attention_train.png')
                         plt.close()
+                    for i in range(num_pus):
+                        predictions = []
+                        for output_name in outputs[i]:
+                            if mx.nd.shape_array(mx.nd.squeeze(output_name)).size > 1:
+                                predictions.append(mx.nd.argmax(output_name, axis=1))
+                            else:
+                                predictions.append(output_name)
 
-                    predictions = []
-                    for output_name in outputs:
-                        if mx.nd.shape_array(mx.nd.squeeze(output_name)).size > 1:
-                            predictions.append(mx.nd.argmax(output_name, axis=1))
-                        else:
-                            predictions.append(output_name)
+                        labels_metric = [[labels[j][i] for j in range(len(labels))] for i in range(num_pus)]
+                        metric.update(preds=predictions, labels=labels_metric[i])
 
-                    metric.update(preds=predictions, labels=labels)
                 train_metric_score = metric.get()[1]
             else:
                 train_metric_score = 0
@@ -530,22 +664,31 @@ class CNNSupervisedTrainer_Alexnet:
             metric = mx.metric.create(eval_metric, **eval_metric_params)
             for batch_i, batch in enumerate(test_iter):
                 if True: 
-                    labels = [batch.label[i].as_in_context(mx_context) for i in range(1)]
+                    labels = [gluon.utils.split_and_load(batch.label[i], ctx_list=mx_context, even_split=False) for i in range(1)]
+                    data_ = gluon.utils.split_and_load(batch.data[0], ctx_list=mx_context, even_split=False)
 
-                    data_ = batch.data[0].as_in_context(mx_context)
-
-                    predictions_ = mx.nd.zeros((batch_size, 10,), ctx=mx_context)
+                    #predictions_ = mx.nd.zeros((batch_size, 10,), ctx=mx_context)
 
 
                     nd.waitall()
 
                     outputs = []
-                    lossList = []
                     attentionList = []
-                    predictions_ = self._networks[0](data_)
 
-                    outputs.append(predictions_)
-                    lossList.append(loss_function(predictions_, labels[0]))
+                    net_ret = [self._networks[0](data_[i]) for i in range(num_pus)]
+
+                    predictions_ = [net_ret[i][0][0] for i in range(num_pus)]
+
+                    losses = []
+                    for i in range(num_pus):
+                        outputs.append([])
+                        lossList = []
+                        outputs[i].append(predictions_[i])
+                        lossList.append(loss_function(predictions_[i], labels[0][i]))
+                        losses.append(0)
+                        for element in lossList:
+                            losses[i] = losses[i] + element
+
 
 
                     if save_attention_image == "True":
@@ -589,18 +732,19 @@ class CNNSupervisedTrainer_Alexnet:
                             os.makedirs(target_dir)
                         plt.savefig(target_dir + '/attention_test.png')
                         plt.close()
-                loss = 0
-                for element in lossList:
-                    loss = loss + element
-
-                global_loss_test += loss.sum().asscalar()
+                for loss in losses:
+                    global_loss_test += loss.sum().asscalar()
+    
                 test_batches += 1
 
-                predictions = []
-                for output_name in outputs:
-                    predictions.append(output_name)
+                for i in range(num_pus):
+                    predictions = []
+                    for output_name in outputs[i]:
+                        predictions.append(output_name)
 
-                metric.update(preds=predictions, labels=labels)
+                    labels_metric = [[labels[j][i] for j in range(len(labels))] for i in range(num_pus)]
+                    metric.update(preds=predictions, labels=labels_metric[i])
+
             test_metric_score = metric.get()[1]
 
             global_loss_test /= (test_batches * batch_size)
@@ -611,9 +755,21 @@ class CNNSupervisedTrainer_Alexnet:
                 for i, network in self._networks.items():
                     network.save_parameters(self.parameter_path(i) + '-' + str(epoch).zfill(4) + '.params')
 
+        print("--------------------------------------Speed------------------------------------------")
+        print(avg_speed/n)
+        print("--------------------------------------Speed------------------------------------------")
+    
         for i, network in self._networks.items():
             network.save_parameters(self.parameter_path(i) + '-' + str(num_epoch + begin_epoch + 1).zfill(4) + '.params')
             network.export(self.parameter_path(i) + '_newest', epoch=0)
+            
+            if hasattr(network, 'episodic_sub_nets'):
+                network.episodicsubnet0_.export(self.parameter_path(i) + '_newest_episodic_sub_net_' + str(0), epoch=0)
+                for j, net in enumerate(network.episodic_sub_nets):
+                    net.export(self.parameter_path(i) + '_newest_episodic_sub_net_' + str(j+1), epoch=0)
+                    episodic_query_networks[i][j].export(self.parameter_path(i) + '_newest_episodic_query_net_' + str(j+1), epoch=0)
+                    episodic_layers[i][j].save_memory(self.parameter_path(i) + "_newest_episodic_memory_" + str(j + 1))
+            loss_function.export(self.parameter_path(i) + '_newest_loss', epoch=0)
 
     def parameter_path(self, index):
         return self._net_creator._model_dir_ + self._net_creator._model_prefix_ + '_' + str(index)

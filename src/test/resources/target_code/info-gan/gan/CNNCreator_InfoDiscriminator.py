@@ -2,6 +2,7 @@ import mxnet as mx
 import logging
 import os
 import shutil
+import warnings
 
 from CNNNet_InfoDiscriminator import Net_0
 
@@ -71,12 +72,14 @@ class CNNCreator_InfoDiscriminator:
                     network.load_parameters(self._weights_dir_ + param_file, allow_missing=True, ignore_extra=True)
                 else:
                     logging.info("No pretrained weights available at: " + self._weights_dir_ + param_file)
-
+    
     def construct(self, context, data_mean=None, data_std=None):
-        self.networks[0] = Net_0(data_mean=data_mean, data_std=data_std)
-        self.networks[0].collect_params().initialize(self.weight_initializer, ctx=context)
+        self.networks[0] = Net_0(data_mean=data_mean, data_std=data_std, mx_context=context)
+        with warnings.catch_warnings():
+            warnings.simplefilter("ignore")
+            self.networks[0].collect_params().initialize(self.weight_initializer, force_reinit=False, ctx=context)
         self.networks[0].hybridize()
-        self.networks[0](mx.nd.zeros((1, 1,64,64,), ctx=context))
+        self.networks[0](mx.nd.zeros((1, 1,64,64,), ctx=context[0]))
 
         if not os.path.exists(self._model_dir_):
             os.makedirs(self._model_dir_)

@@ -130,12 +130,25 @@ public class CNNTrain2Gluon extends CNNTrainGenerator {
 
         Map<String, String> fileContentMap = new HashMap<>();
 
+        //Context Information and Optimizer for local adaption during prediction for replay memory layer (the second only applicaple for supervised learning)
+        String cnnTrainLAOptimizerTemplateContent = templateConfiguration.processTemplate(ftlContext, "CNNLAOptimizer.ftl");
+        fileContentMap.put("CNNLAOptimizer_" + getInstanceName() + ".h", cnnTrainLAOptimizerTemplateContent);
+
+        //AdamW optimizer if used for training
+        String optimizerName = configuration.getOptimizer().getName();
+        Optional<OptimizerSymbol> criticOptimizer = configuration.getCriticOptimizer();
+        String criticOptimizerName = "";
+        if (criticOptimizer.isPresent()){
+            criticOptimizerName = criticOptimizer.get().getName();
+        }
+        if (optimizerName.equals("adamw") || criticOptimizerName.equals("adamw")){
+            String adamWContent = templateConfiguration.processTemplate(ftlContext, "Optimizer/AdamW.ftl");
+            fileContentMap.put("AdamW.py", adamWContent);
+        }
+
         if (configData.isSupervisedLearning()) {
             String cnnTrainTrainerTemplateContent = templateConfiguration.processTemplate(ftlContext, "CNNTrainer.ftl");
             fileContentMap.put("CNNTrainer_" + getInstanceName() + ".py", cnnTrainTrainerTemplateContent);
-            //Optimizer for local adaption during prediction for replay memory layer
-            String cnnTrainLAOptimizerTemplateContent = templateConfiguration.processTemplate(ftlContext, "CNNLAOptimizer.ftl");
-            fileContentMap.put("CNNLAOptimizer_" + getInstanceName() + ".h", cnnTrainLAOptimizerTemplateContent);
         } else if (configData.isGan()) {
             final String trainerName = "CNNTrainer_" + getInstanceName();
             if (!configuration.getDiscriminatorNetwork().isPresent()) {
@@ -192,7 +205,6 @@ public class CNNTrain2Gluon extends CNNTrainGenerator {
 
             final String ganTrainerContent = templateConfiguration.processTemplate(ftlContext, "gan/Trainer.ftl");
             fileContentMap.put(trainerName + ".py", ganTrainerContent);
-
         } else if (configData.isReinforcementLearning()) {
             final String trainerName = "CNNTrainer_" + getInstanceName();
             final RLAlgorithm rlAlgorithm = configData.getRlAlgorithm();

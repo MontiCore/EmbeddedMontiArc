@@ -40,7 +40,7 @@ class ${tc.fileNameWithoutEnding}:
 
             if os.path.isdir(self._model_dir_):
                 for file in os.listdir(self._model_dir_):
-                    if ".params" in file and self._model_prefix_ + "_" + str(i) in file:
+                    if ".params" in file and self._model_prefix_ + "_" + str(i) in file and not "loss" in file:
                         epochStr = file.replace(".params","").replace(self._model_prefix_ + "_" + str(i) + "-","")
                         epoch = int(epochStr)
                         if epoch > lastEpoch:
@@ -69,7 +69,7 @@ class ${tc.fileNameWithoutEnding}:
 
                     for file in os.listdir(self._weights_dir_):
 
-                        if ".params" in file and self._model_prefix_ + "_" + str(i) in file:
+                        if ".params" in file and self._model_prefix_ + "_" + str(i) in file and not "loss" in file:
                             epochStr = file.replace(".params","").replace(self._model_prefix_ + "_" + str(i) + "-","")
                             epoch = int(epochStr)
                             if epoch > lastEpoch:
@@ -87,9 +87,9 @@ class ${tc.fileNameWithoutEnding}:
             warnings.simplefilter("ignore")
             self.networks[${networkInstruction?index}].collect_params().initialize(self.weight_initializer, force_reinit=False, ctx=context)
         self.networks[${networkInstruction?index}].hybridize()
-        self.networks[${networkInstruction?index}](<#list tc.getStreamInputDimensions(networkInstruction.body) as dimensions><#if tc.cutDimensions(dimensions)[tc.cutDimensions(dimensions)?size-1] == "1">mx.nd.zeros((${tc.join(tc.cutDimensions(dimensions), ",")},), ctx=context[0])<#else>mx.nd.zeros((1, ${tc.join(tc.cutDimensions(dimensions), ",")},), ctx=context[0])</#if><#sep>, </#list>)
+        self.networks[${networkInstruction?index}](<#list tc.getStreamInputDimensions(networkInstruction.body) as dimensions><#if tc.cutDimensions(dimensions)[tc.cutDimensions(dimensions)?size-1] == "1" && tc.cutDimensions(dimensions)?size != 1>mx.nd.zeros((${tc.join(tc.cutDimensions(dimensions), ",")},), ctx=context[0])<#else>mx.nd.zeros((1, ${tc.join(tc.cutDimensions(dimensions), ",")},), ctx=context[0])</#if><#sep>, </#list>)
 <#if networkInstruction.body.episodicSubNetworks?has_content>
-        self.networks[0].episodicsubnet0_(<#list tc.getStreamInputDimensions(networkInstruction.body) as dimensions><#if tc.cutDimensions(dimensions)[tc.cutDimensions(dimensions)?size-1] == "1">mx.nd.zeros((${tc.join(tc.cutDimensions(dimensions), ",")},), ctx=context[0])<#else>mx.nd.zeros((1, ${tc.join(tc.cutDimensions(dimensions), ",")},), ctx=context[0])</#if><#sep>, </#list>)
+        self.networks[0].episodicsubnet0_(<#list tc.getStreamInputDimensions(networkInstruction.body) as dimensions><#if tc.cutDimensions(dimensions)[tc.cutDimensions(dimensions)?size-1] == "1" && tc.cutDimensions(dimensions)?size != 1>mx.nd.zeros((${tc.join(tc.cutDimensions(dimensions), ",")},), ctx=context[0])<#else>mx.nd.zeros((1, ${tc.join(tc.cutDimensions(dimensions), ",")},), ctx=context[0])</#if><#sep>, </#list>)
 </#if>
 </#list>
 

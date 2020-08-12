@@ -19,8 +19,6 @@
                                 for gradient_step in range(layer.replay_gradient_steps):
                                     with autograd.record():
 
-                                        nd.waitall()
-
                                         episodic_output = [self._networks[${networkInstruction?index}].episodic_sub_nets[layer_i](*(episodic_data[i]))[0] for i in range(num_pus)]
                                         for i in range(layer_i+1, len(episodic_layers[${networkInstruction?index}])):
                                             episodic_output = self._networks[${networkInstruction?index}].episodic_sub_nets[i](*episodic_output)[0]

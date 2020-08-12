@@ -378,34 +378,44 @@ class EpisodicMemory(EpisodicReplayMemoryInterface):
         #propagate the input as the rest is only used for replay
         return [args, []]
 
-    def store_samples(self, data, y, query_network, store_prob):
+    def store_samples(self, data, y, query_network, store_prob, context):
         num_pus = len(data)
         sub_batch_sizes = [data[i][0][0].shape[0] for i in range(num_pus)]
         num_inputs = len(data[0][0])
-        num_outputs = len(y[0])
+        num_outputs = len(y)
+        mx_context = context[0]
 
         if len(self.key_memory) == 0:
-            self.key_memory = nd.empty(0, ctx=mx.cpu())
-            self.value_memory = nd.empty(0, ctx=mx.cpu())
-            self.label_memory = nd.empty((num_outputs, 0), ctx=mx.cpu())
+            self.key_memory = nd.empty(0, ctx=mx_context)
+            self.value_memory = nd.empty(0, ctx=mx_context)
+            self.label_memory = nd.empty((num_outputs, 0), ctx=mx_context)
 
-        ind = nd.sample_multinomial(store_prob, sub_batch_sizes)
-        if len(sub_batch_sizes) == 1:
-            ind = nd.reshape(ind, (1,-1))
+        ind = [nd.sample_multinomial(store_prob, sub_batch_sizes[i]).as_in_context(mx_context) for i in range(num_pus)]
 
-        if(nd.max(ind)):
+        max_inds = [nd.max(ind[i]) for i in range(num_pus)]
+        if any(max_inds):
             to_store_values = []
             for i in range(num_inputs):
-                tmp_values = nd.contrib.boolean_mask(data[0][0][i].as_in_context(mx.cpu()), ind[0])
-                for j in range(1, num_pus):
-                    tmp_values = nd.concat(tmp_values, nd.contrib.boolean_mask(data[j][0][i].as_in_context(mx.cpu()), ind[j]), dim=0)
+                tmp_values = []
+                for j in range(0, num_pus):
+                    if max_inds[j]:
+                        #tmp = data[j][0][i].as_in_context(mx_context)
+                        if isinstance(tmp_values, list):
+
+                            tmp_values = nd.contrib.boolean_mask(data[j][0][i].as_in_context(mx_context), ind[j])
+                        else:
+                            tmp_values = nd.concat(tmp_values, nd.contrib.boolean_mask(data[j][0][i].as_in_context(mx_context), ind[j]), dim=0)
                 to_store_values.append(tmp_values)
 
-            to_store_labels = nd.empty((num_outputs, len(to_store_values[0])), ctx=mx.cpu())
+            to_store_labels = nd.empty((num_outputs, len(to_store_values[0])), ctx=mx_context)
             for i in range(num_outputs):
-                tmp_labels = nd.contrib.boolean_mask(y[0][i].as_in_context(mx.cpu()), ind[0])
-                for j in range(1, num_pus):
-                    tmp_labels = nd.concat(tmp_labels, nd.contrib.boolean_mask(y[j][i].as_in_context(mx.cpu()), ind[j]), dim=0)
+                tmp_labels = []
+                for j in range(0, num_pus):
+                    if max_inds[j]:
+                        if isinstance(tmp_labels, list):
+                            tmp_labels = nd.contrib.boolean_mask(y[i][j].as_in_context(mx_context), ind[j])
+                        else:
+                            tmp_labels = nd.concat(tmp_labels, nd.contrib.boolean_mask(y[i][j].as_in_context(mx_context), ind[j]), dim=0)
                 to_store_labels[i] = tmp_labels
 
             to_store_keys = query_network(*to_store_values[0:self.query_net_num_inputs])
@@ -441,7 +451,7 @@ class EpisodicMemory(EpisodicReplayMemoryInterface):
 
         return sample_batches
 
-    def get_query_network(self):
+    def get_query_network(self, context):
         lastEpoch = 0
         for file in os.listdir(self.query_net_dir):
             if self.query_net_prefix in file and ".json" in file:
@@ -462,16 +472,16 @@ class EpisodicMemory(EpisodicReplayMemoryInterface):
                 inputNames.append("data" + str(i))
         with warnings.catch_warnings():
             warnings.simplefilter("ignore")
-            net = mx.gluon.nn.SymbolBlock.imports(self.query_net_dir + symbolFile, inputNames, self.query_net_dir + weightFile, ctx=mx.cpu())
+            net = mx.gluon.nn.SymbolBlock.imports(self.query_net_dir + symbolFile, inputNames, self.query_net_dir + weightFile, ctx=context[0])
         net.hybridize()
         return net
     
     def save_memory(self, path):
-        mem_arr = [("keys", self.key_memory)] + [("labels", self.key_memory)] + [("values_"+str(k),v) for (k,v) in enumerate(self.value_memory)]
+        mem_arr = [("keys", self.key_memory)] + [("labels", self.label_memory)] + [("values_"+str(k),v) for (k,v) in enumerate(self.value_memory)]
         mem_dict = {entry[0]:entry[1] for entry in mem_arr}
         nd.save(path, mem_dict)
-    
-    
+
+
 <#list tc.architecture.networkInstructions as networkInstruction>
 #Stream ${networkInstruction?index}
 <#list networkInstruction.body.episodicSubNetworks as elements>
@@ -530,7 +540,7 @@ class Net_${networkInstruction?index}(gluon.HybridBlock):
 <#else>
 ${tc.include(networkInstruction.body, "ARCHITECTURE_DEFINITION")}
 </#if>    
-        pass
+            pass
 
     def hybrid_forward(self, F, ${tc.join(tc.getStreamInputNames(networkInstruction.body, false), ", ")}):
 <#if networkInstruction.body.episodicSubNetworks?has_content>

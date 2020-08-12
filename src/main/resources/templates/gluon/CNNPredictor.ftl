@@ -98,9 +98,10 @@ public:
             }
         }
 </#if>
-    
+
+        NDArray input_temp;
 <#list tc.getStreamInputNames(networkInstruction.body, false) as variable>
-        NDArray input_temp(network_input_shapes[${variable?index}], ctx, false, dtype);
+        input_temp = NDArray(network_input_shapes[${variable?index}], ctx, false, dtype);
         input_temp.SyncCopyFromCPU(in_${variable}.data(), network_input_sizes[${variable?index}]);
         input_temp.CopyTo(&(network_handles[0]->arg_dict()[network_input_keys[${variable?index}]]));
 </#list>
@@ -177,7 +178,8 @@ public:
         }
     
         for(mx_uint i=0; i < query_num_inputs[net_start_ind-1]; i++){
-            prev_output[I].CopyTo(&(query_handle->arg_dict()["data" + std::to_string(i)]));
+            prev_output[i].CopyTo(&(query_handle->arg_dict()["data" + std::to_string(i)]));
+        }
         NDArray::WaitAll();
 
         query_handle->Forward(false);
@@ -417,9 +419,19 @@ ${tc.include(networkInstruction.body, "PREDICTION_PARAMETER")}
 
         replay_memory = model_loader.GetReplayMemory();
         
+        std::vector<mx_uint> label_memory_shape = replay_memory[0]["labels"].GetShape();
+        std::vector<mx_uint> lab_shape;
+        if(label_memory_shape.size() == 2){
+            lab_shape = {1, 1};
+        }else{
+            lab_shape.push_back(1);
+            for(mx_uint i=2; i<label_memory_shape.size(); i++){
+                lab_shape.push_back(label_memory_shape[i]);
+            }
+        }
         std::vector<std::vector<mx_uint>> label_shapes;
         for(mx_uint i=0; i < num_outputs; i++){
-            label_shapes.push_back({1, 1}); //<--------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------
+            label_shapes.push_back(lab_shape);
         }
     
         Symbol loss = MakeLoss(model_loader.GetLoss());
