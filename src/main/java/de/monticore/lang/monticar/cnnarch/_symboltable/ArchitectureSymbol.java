@@ -14,11 +14,13 @@ package de.monticore.lang.monticar.cnnarch._symboltable;
 import de.monticore.lang.monticar.cnnarch.helper.Utils;
 import de.monticore.lang.monticar.cnnarch.predefined.AllPredefinedLayers;
 import de.monticore.lang.monticar.cnnarch.predefined.AllPredefinedVariables;
+import de.monticore.lang.monticar.cnnarch._cocos.CheckLayerPathParameter;
 import de.monticore.symboltable.CommonScopeSpanningSymbol;
 import de.monticore.symboltable.Scope;
 import de.monticore.symboltable.Symbol;
 import org.apache.commons.math3.ml.neuralnet.Network;
 
+import java.lang.RuntimeException;
 import java.util.*;
 
 public class ArchitectureSymbol extends CommonScopeSpanningSymbol {
@@ -32,7 +34,6 @@ public class ArchitectureSymbol extends CommonScopeSpanningSymbol {
     private List<ConstantSymbol> constants = new ArrayList<>();
     private String dataPath;
     private String weightsPath;
-    private List<LayerPathParameterTagSymbol> layerPathParameterTagSymbols = new ArrayList<>();
     private String componentName;
 
     public ArchitectureSymbol() {
@@ -81,12 +82,6 @@ public class ArchitectureSymbol extends CommonScopeSpanningSymbol {
 
     public void setWeightsPath(String weightsPath) {
         this.weightsPath = weightsPath;
-    }
-
-    public void setLayerPathParameterTagSymbols(List<LayerPathParameterTagSymbol> layerPathParameterTagSymbols) { this.layerPathParameterTagSymbols = layerPathParameterTagSymbols; }
-
-    public List<LayerPathParameterTagSymbol> getLayerPathParameterTagSymbols() {
-        return layerPathParameterTagSymbols;
     }
 
     public void setComponentName(String componentName){
@@ -221,12 +216,37 @@ public class ArchitectureSymbol extends CommonScopeSpanningSymbol {
         return copy;
     }
 
-    public void processLayerPathParameterTags(){
+    public void processLayerPathParameterTags(HashMap layerPathParameterTags){
         for(NetworkInstructionSymbol networkInstruction : networkInstructions){
             List<ArchitectureElementSymbol> elements = networkInstruction.getBody().getElements();
+            processElementsLayerPathParameterTags(elements, layerPathParameterTags);
+        }
+    }
 
-            for (ArchitectureElementSymbol element : elements){
-
+    public void processElementsLayerPathParameterTags(List<ArchitectureElementSymbol> elements, HashMap layerPathParameterTags){
+        for (ArchitectureElementSymbol element : elements){
+            if (element instanceof SerialCompositeElementSymbol || element instanceof ParallelCompositeElementSymbol){
+                processElementsLayerPathParameterTags(((CompositeElementSymbol) element).getElements(), layerPathParameterTags);
+            }else if (element instanceof LayerSymbol){
+                for (ArgumentSymbol param : ((LayerSymbol) element).getArguments()){
+                    boolean isPathParam = false;
+                    for (Constraints constr : param.getParameter().getConstraints()){
+                        if (constr.name().equals("PATH_TAG_OR_PATH")){
+                            isPathParam = true;
+                        }
+                    }
+                    if (isPathParam){
+                        String paramValue = param.getRhs().getStringValue().get();
+                        if (paramValue.startsWith("tag:")) {
+                            String pathTag = param.getRhs().getStringValue().get().split(":")[1];
+                            String path = (String) layerPathParameterTags.get(pathTag);
+                            param.setRhs(ArchSimpleExpressionSymbol.of(path));
+                            CheckLayerPathParameter.check((LayerSymbol) element, path, pathTag, layerPathParameterTags);
+                        }else{
+                            CheckLayerPathParameter.check((LayerSymbol) element, paramValue, "", layerPathParameterTags);
+                        }
+                    }
+                }
             }
         }
     }

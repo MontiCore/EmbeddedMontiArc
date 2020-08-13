@@ -30,13 +30,11 @@ public class CheckEpisodicMemoryLayer extends CNNArchSymbolCoCo {
         for (ArchitectureElementSymbol element : elements) {
             if (element instanceof ParallelCompositeElementSymbol) {
                 checkForEpisodicMemory((ParallelCompositeElementSymbol) element);
-            } else if (element.getName().equals("EpisodicMemory")) {
-                checkParameters((LayerSymbol) element);
             }
         }
     }
 
-    public void checkForEpisodicMemory(ParallelCompositeElementSymbol parallelElement) {
+    protected void checkForEpisodicMemory(ParallelCompositeElementSymbol parallelElement) {
         for (ArchitectureElementSymbol subStream : parallelElement.getElements()) {
             if (subStream instanceof SerialCompositeElementSymbol) { //should always be the case
                 for (ArchitectureElementSymbol element : ((SerialCompositeElementSymbol) subStream).getElements()) {
@@ -50,32 +48,5 @@ public class CheckEpisodicMemoryLayer extends CNNArchSymbolCoCo {
                 }
             }
         }
-    }
-
-    public void checkParameters(LayerSymbol layer) {
-        List<ArgumentSymbol> arguments = layer.getArguments();
-        String queryNetDir = new String("");
-        String queryNetPrefix = new String("");
-
-        for (ArgumentSymbol arg : arguments) {
-            if (arg.getName().equals("queryNetDir")) {
-                queryNetDir = arg.getRhs().getStringValue().get();
-            } else if (arg.getName().equals("queryNetPrefix")) {
-                queryNetPrefix = arg.getRhs().getStringValue().get();
-            }
-        }
-
-        File dir = new File(queryNetDir);
-        if (dir.exists()) {
-            for (File file : dir.listFiles()) {
-                String file_name = file.getName();
-                if (file_name.startsWith(queryNetPrefix)) {
-                    return;
-                }
-            }
-        }
-        Log.error("0" + ErrorCodes.INVALID_EPISODIC_QUERY_NET_PATH_OR_PREFIX +
-                        " For the concatination of queryNetDir and queryNetPrefix exists no file wich path has this as prefix.",
-                        layer.getSourcePosition());
     }
 }

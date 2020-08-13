@@ -53,7 +53,7 @@ public class LoadNetwork extends PredefinedLayerDeclaration {
         List<ParameterSymbol> parameters = new ArrayList<>(Arrays.asList(
                 new ParameterSymbol.Builder()
                         .name(AllPredefinedLayers.NETWORK_DIR_NAME)
-                        .constraints(Constraints.STRING)
+                        .constraints(Constraints.PATH_TAG_OR_PATH)
                         .build(),
                 new ParameterSymbol.Builder()
                         .name(AllPredefinedLayers.NETWORK_PREFIX_NAME)

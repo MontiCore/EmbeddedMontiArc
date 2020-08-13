@@ -74,7 +74,18 @@ abstract public class ArchExpressionSymbol extends CommonSymbol {
 
     public boolean isString(){
         if (getValue().isPresent()){
-            return getStringValue().isPresent();
+            Optional<String> stringValue = getStringValue();
+            if (stringValue.isPresent() && !stringValue.get().startsWith("tag:")) {
+                return getStringValue().isPresent();
+            }
+        }
+        return false;
+    }
+
+    public boolean isStringTag(){
+        if (getValue().isPresent()) {
+            Optional<String> stringValue = getStringValue();
+            return stringValue.isPresent() && stringValue.get().startsWith("tag:");
         }
         return false;
     }

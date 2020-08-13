@@ -26,7 +26,7 @@ public class CheckLargeMemoryLayer extends CNNArchSymbolCoCo {
         }
     }
 
-    public void checkLargeMemoryLayer(LayerSymbol layer) {
+    protected void checkLargeMemoryLayer(LayerSymbol layer) {
         List<ArgumentSymbol> arguments = layer.getArguments();
         Integer subKeySize = new Integer(0);
         Integer k = new Integer(0);
