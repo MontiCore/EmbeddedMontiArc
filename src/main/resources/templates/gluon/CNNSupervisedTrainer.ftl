@@ -449,8 +449,8 @@ class ${tc.fileNameWithoutEnding}:
                 with autograd.record():
 <#include "pythonExecuteTrain.ftl">
 
+                    losses = [0]*num_pus
                     for i in range(num_pus):
-                        losses = [0]*num_pus
                         for element in lossList[i]:
                             losses[i] = losses[i] + element
 

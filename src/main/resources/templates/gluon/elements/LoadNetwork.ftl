@@ -29,7 +29,7 @@
 </#if>
             with warnings.catch_warnings():
                 warnings.simplefilter("ignore")
-                self.${element.name} = gluon.nn.SymbolBlock.imports("${networkDir}" + symbolFile, inputNames, "${networkDir}" + weightFile, ctx=mx_context)
+                self.${element.name} = gluon.nn.SymbolBlock.imports("${networkDir}/" + symbolFile, inputNames, "${networkDir}/" + weightFile, ctx=mx_context)
             self.${element.name}out_shape = self.${element.name}(*zeroInputs).shape
             if self.${element.name}out_shape != ${outputShape}:
                 outputSize=1

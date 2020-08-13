@@ -17,7 +17,7 @@
             self.${element.name} = EpisodicMemory(replay_interval=${replayInterval}, replay_batch_size=${replayBatchSize}, replay_steps=${replaySteps},
                                                 replay_gradient_steps=${replayGradientSteps}, store_prob=${replayMemoryStoreProb},
                                                 max_stored_samples=${maxStoredSamples}, use_replay=${useReplay},
-                                                query_net_dir="${queryNetDir}", 
+                                                query_net_dir="${queryNetDir}/", 
                                                 query_net_prefix="${queryNetPrefix}",
                                                 query_net_num_inputs=${queryNetNumInputs})
 <#elseif mode == "FORWARD_FUNCTION">
