@@ -105,7 +105,7 @@ public class EpisodicMemory extends PredefinedLayerDeclaration {
                         .build(),
                 new ParameterSymbol.Builder()
                         .name(AllPredefinedLayers.QUERY_NET_DIR_NAME)
-                        .constraints(Constraints.STRING)
+                        .constraints(Constraints.PATH_TAG_OR_PATH)
                         .defaultValue(-1)
                         .build(),
                 new ParameterSymbol.Builder()

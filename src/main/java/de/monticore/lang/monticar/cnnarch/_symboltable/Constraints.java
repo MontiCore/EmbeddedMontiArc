@@ -58,6 +58,16 @@ public enum Constraints {
             return "a string";
         }
     },
+    PATH_TAG_OR_PATH {
+        @Override
+        public boolean isValid(ArchSimpleExpressionSymbol exp) {
+            return exp.isString() || exp.isStringTag();
+        }
+        @Override
+        public String msgString() {
+            return "a path tag or a path string";
+        }
+    },
     TUPLE {
         @Override
         public boolean isValid(ArchSimpleExpressionSymbol exp) {
