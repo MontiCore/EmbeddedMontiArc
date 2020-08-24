@@ -1,1 +1,0 @@
-#include "defaultGAN_connector.h"
