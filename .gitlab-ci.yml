@@ -1,0 +1,69 @@
+# (c) https://github.com/MontiCore/monticore
+
+stages:
+#- windows
+- linux
+- deploy
+
+
+git masterJobLinux:
+  stage: deploy
+  image: maven:3-jdk-8
+  script:
+  - mvn -Dorg.slf4j.simpleLogger.log.org.apache.maven.cli.transfer.Slf4jMavenTransferListener=warn -B  -U clean deploy --settings settings.xml -DskipTests
+#  - cat target/site/jacoco/index.html
+#  - mvn package sonar:sonar -s settings.xml
+  only:
+  - master
+
+
+integrationMXNetJobLinux:
+  stage: linux
+  image: registry.git.rwth-aachen.de/monticore/embeddedmontiarc/applications/gans/mnist-infogan/gans_mxnet:latest
+  script:
+  - mvn -Dorg.slf4j.simpleLogger.log.org.apache.maven.cli.transfer.Slf4jMavenTransferListener=warn -B  -U clean install --settings settings.xml -Dtest=IntegrationMXNetTest
+
+
+integrationCaffe2JobLinux:
+  stage: linux
+  image: registry.git.rwth-aachen.de/monticore/embeddedmontiarc/generators/emadl2cpp/integrationtests/caffe2:v0.0.5
+  script:
+  - mvn -Dorg.slf4j.simpleLogger.log.org.apache.maven.cli.transfer.Slf4jMavenTransferListener=warn -B  -U clean install --settings settings.xml -Dtest=IntegrationCaffe2Test
+
+
+integrationGluonJobLinux:
+  stage: linux
+  image: registry.git.rwth-aachen.de/monticore/embeddedmontiarc/applications/gans/mnist-infogan/gans_mxnet:latest
+  script:
+  - mvn -Dorg.slf4j.simpleLogger.log.org.apache.maven.cli.transfer.Slf4jMavenTransferListener=warn -B  -U clean install --settings settings.xml -Dtest=IntegrationGluonTest
+
+integrationTensorflowJobLinux:
+  stage: linux
+  image: registry.git.rwth-aachen.de/monticore/embeddedmontiarc/generators/emadl2cpp/integrationtests/tensorflow
+  script:
+  - mvn -Dorg.slf4j.simpleLogger.log.org.apache.maven.cli.transfer.Slf4jMavenTransferListener=warn -B -U clean install --settings settings.xml -Dtest=IntegrationTensorflowTest
+
+
+integrationPythonWrapperTest:
+  stage: linux
+  image: registry.git.rwth-aachen.de/monticore/embeddedmontiarc/generators/emadl2pythonwrapper/tests/mvn-swig:latest
+  script:
+  - mvn -Dorg.slf4j.simpleLogger.log.org.apache.maven.cli.transfer.Slf4jMavenTransferListener=warn -B -U  clean install --settings settings.xml -Dtest=IntegrationPythonWrapperTest
+
+
+#masterJobWindows:
+#  stage: windows
+#  script:
+#  - mvn -Dorg.slf4j.simpleLogger.log.org.apache.maven.cli.transfer.Slf4jMavenTransferListener=warn -B -U clean install --settings settings.xml -Dtest="GenerationTest,SymtabTest"
+#  tags:
+#  - Windows10
+
+
+UnitTestJobLinux:
+  stage: linux
+  image: registry.git.rwth-aachen.de/monticore/embeddedmontiarc/applications/gans/mnist-infogan/gans_mxnet:latest
+#  image: maven:3-jdk-8
+  script:
+  - mvn -Dorg.slf4j.simpleLogger.log.org.apache.maven.cli.transfer.Slf4jMavenTransferListener=warn -B -U clean install sonar:sonar --settings settings.xml -Dtest="GenerationTest,SymtabTest*"
+#  - cat target/site/jacoco/index.html
+
