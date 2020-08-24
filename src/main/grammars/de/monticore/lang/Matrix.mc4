@@ -1,0 +1,17 @@
+/* (c) https://github.com/MontiCore/monticore */
+package de.monticore.lang;
+
+component grammar Matrix extends de.monticore.ExpressionsBasis  {
+   MathMatrixValueExplicitExpression implements Expression<220> =
+      "[" (MathMatrixAccessExpression || ";")* "]"
+    ;
+
+    MathMatrixAccessExpression =
+    	MathMatrixAccess (","? MathMatrixAccess)*;
+
+    MathMatrixAccess =
+    	doubleDot:":" | Expression;
+
+    MathVectorExpression  implements Expression<210>   =
+    	start:Expression ":" ( steps:Expression ":")? end:Expression ;
+}
