@@ -1,0 +1,9 @@
+/* (c) https://github.com/MontiCore/monticore */
+package testing.subpackage1;
+
+stream Comp2Test2 for Comp2 {
+    in1: 1.1;
+    in2: 1.1;
+
+    out1: 50.0 +/- 0.1;
+}

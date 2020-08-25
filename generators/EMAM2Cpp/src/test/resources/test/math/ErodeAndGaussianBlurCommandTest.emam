@@ -1,0 +1,37 @@
+/* (c) https://github.com/MontiCore/monticore */
+package test.math;
+
+component ErodeAndGaussianBlurCommandTest{
+    port
+    in Q^{960,720,3} imageIn,
+    in Z sizeXIn,
+    in Z sizeYIn,
+    in Q sigmaXIn,
+    in Q sigmaYIn,
+    //CvtColor ports
+    in Z colorConversionIn,
+    out Q^{960,720,3} modImageOut;
+
+    instance GaussianBlurCommandTest gaussBlur;
+    instance Arma arm;
+    instance CvtColorCommandTest cvtColor;
+
+
+    connect imageIn -> gaussBlur.src;
+    connect sizeXIn -> gaussBlur.sizeX;
+    connect sizeYIn -> gaussBlur.sizeY;
+    connect sigmaXIn -> gaussBlur.sigmaX;
+    connect sigmaYIn -> gaussBlur.sigmaY;
+    connect gaussBlur.dst -> arm.src;
+    connect arm.dst -> cvtColor.src;
+    connect colorConversionIn -> cvtColor.colorConversion;
+    connect cvtColor.dst -> modImageOut;
+
+    //implementation Math{
+
+    //    dst = erode(src, erosion_elem, iterations);
+    //    dst3 = dilate(dst, dilation_elem, iterations);
+    //    contours = findContours(dst3);
+
+    //}
+}

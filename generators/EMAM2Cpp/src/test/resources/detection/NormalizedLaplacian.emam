@@ -1,0 +1,22 @@
+/* (c) https://github.com/MontiCore/monticore */
+package detection;
+
+
+component NormalizedLaplacian<N1 n = 2500>{
+    ports in Q(-oo:oo)^{n,n} degree,
+          in Q(-oo:oo)^{n,n} similarity,
+          out Q(-oo:oo)^{n,n} nLaplacian;
+
+    implementation Math{
+        /*for i=1:size(degree,1)
+            for j=1:size(degree,2)
+                nLaplacian(i,j) = W(i,j) / (sqrt(degree(i,i)) * sqrt(degree(j,j)));
+            end
+        end*/
+        /*currently not working, this short notation will be automatically converted
+         * later on as it is equivalent to the expression below
+        */
+        nLaplacian = degree^(-0.5) * similarity * degree^(-0.5);
+        //nLaplacian = sqrtm(inv(degree)) * similarity * sqrtm(inv(degree));
+    }
+}

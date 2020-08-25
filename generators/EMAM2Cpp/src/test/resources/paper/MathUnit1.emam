@@ -1,0 +1,21 @@
+/* (c) https://github.com/MontiCore/monticore */
+package paper;
+
+component MathUnit1{
+    ports in Q(-oo:oo)^{1000,200} mat1,
+          in Q(-oo:oo)^{1000,200} mat2,
+          in Q(-oo:oo)^{200,10} mat3,
+          in Q(-oo:oo)^{10,100} mat4,
+          in Q(-oo:oo)^{100, 50000} mat5,
+          out Q(-oo:oo)^{1000,100} matOut1;
+
+    instance MatrixModifier matrixModifier;
+    connect mat1-> matrixModifier.mat1;
+    connect mat2-> matrixModifier.mat2;
+    connect mat3-> matrixModifier.mat3;
+    connect mat4-> matrixModifier.mat4;
+    connect mat5-> matrixModifier.mat5;
+    connect matrixModifier.matOut -> matOut1;
+
+
+}
