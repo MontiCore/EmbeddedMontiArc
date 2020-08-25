@@ -116,11 +116,9 @@ public class AllPredefinedLayers {
     public static final String REPLAY_BATCH_SIZE_NAME = "replayBatchSize";
     public static final String REPLAY_STEPS_NAME = "replaySteps";
     public static final String REPLAY_GRADIENT_STEPS_NAME = "replayGradientSteps";
-    public static final String REPLAY_MEMORY_STORE_DIST_MEASURE_NAME = "replayMemoryStoreDistMeasure";
     public static final String USE_LOCAL_ADAPTION_NAME = "useLocalAdaption";
     public static final String LOCAL_ADAPTION_K_NAME = "localAdaptionK";
     public static final String LOCAL_ADAPTION_GRADIENT_STEPS_NAME = "localAdaptionGradientSteps";
-    public static final String LOCAL_ADAPTION_MEMORY_STORE_DIST_MEASURE_NAME = "localAdaptionMemoryStoreDistMeasure";
 
 	//parameters for episodic memory layer
     public static final String SUB_KEY_SIZE_NAME = "subKeySize";
