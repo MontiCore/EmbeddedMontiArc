@@ -89,11 +89,6 @@ public class EpisodicMemory extends PredefinedLayerDeclaration {
                         .defaultValue(1)
                         .build(),
                 new ParameterSymbol.Builder()
-                        .name(AllPredefinedLayers.REPLAY_MEMORY_STORE_DIST_MEASURE_NAME)
-                        .constraints(Constraints.DIST_MEASURE_TYPE)
-                        .defaultValue(AllPredefinedLayers.L2)
-                        .build(),
-                new ParameterSymbol.Builder()
                         .name(AllPredefinedLayers.MAX_STORED_SAMPLES_NAME)
                         .constraints(Constraints.INTEGER, Constraints.POSITIVE_OR_MINUS_ONE)
                         .defaultValue(-1)

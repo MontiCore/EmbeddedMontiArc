@@ -21,6 +21,7 @@ import de.monticore.symboltable.Symbol;
 import org.apache.commons.math3.ml.neuralnet.Network;
 
 import java.lang.RuntimeException;
+import java.lang.NullPointerException;
 import java.util.*;
 
 public class ArchitectureSymbol extends CommonScopeSpanningSymbol {
@@ -230,9 +231,11 @@ public class ArchitectureSymbol extends CommonScopeSpanningSymbol {
             }else if (element instanceof LayerSymbol){
                 for (ArgumentSymbol param : ((LayerSymbol) element).getArguments()){
                     boolean isPathParam = false;
-                    for (Constraints constr : param.getParameter().getConstraints()){
-                        if (constr.name().equals("PATH_TAG_OR_PATH")){
-                            isPathParam = true;
+                    if (param.getParameter() != null) {
+                        for (Constraints constr : param.getParameter().getConstraints()) {
+                            if (constr.name().equals("PATH_TAG_OR_PATH")) {
+                                isPathParam = true;
+                            }
                         }
                     }
                     if (isPathParam){
