@@ -281,14 +281,6 @@ public class ArchitectureElementData {
         return getLayerSymbol().getBooleanValue(AllPredefinedLayers.USE_LOCAL_ADAPTION_NAME).get();
     }
 
-    public String getReplayMemoryStoreDistMeasure(){
-        return getLayerSymbol().getStringValue(AllPredefinedLayers.REPLAY_MEMORY_STORE_DIST_MEASURE_NAME).get();
-    }
-
-    public String getLocalAdaptionMemoryStoreDistMeasure(){
-        return getLayerSymbol().getStringValue(AllPredefinedLayers.LOCAL_ADAPTION_MEMORY_STORE_DIST_MEASURE_NAME).get();
-    }
-
     public int getLocalAdaptionK(){
         return getLayerSymbol().getIntValue(AllPredefinedLayers.LOCAL_ADAPTION_K_NAME).get();
     }
