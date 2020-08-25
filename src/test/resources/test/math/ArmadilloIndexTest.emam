@@ -1,0 +1,59 @@
+/* (c) https://github.com/MontiCore/monticore */
+package test.math;
+
+component ArmadilloIndexTest{
+
+    ports   in Q^{2, 2} in1,
+            in Z inRow,
+            in Z inCol,
+            out Q^{4, 4} out1;
+
+    implementation Math{
+
+        // test matrix initialization
+        Q^{2, 2} A;
+        A = ones(2,2);
+        A = [1 2; 3 4];
+
+        // test vector initialization
+        Q^{2} b;
+        b = zeros(2);
+        b = [11 12];
+
+        // test port initialization
+        out1 = zeros(4, 4);
+
+        // test matrix element assignment
+        A(2, 2) = 5;
+        A(2) = b(2);
+        A(1, 1) = b(2);
+        A(2, 1) = out1(1, 1);
+
+        // test vector element assignment
+        b(2) = 13;
+        b(1) = A(1);
+        b(1) = A(2, 2);
+        b(2) = out1(4, 4);
+
+        // test scalar element assignment
+        Q x = 0;
+        x = A(1, 2);
+        x = b(2);
+        x = in1(1, 1);
+
+        // test port element assignment
+        out1(1, 1) = in1(1, 1);
+        Q^{4, 4} test = zeros(4,4);
+        out1 = test;
+        out1(1) = test(1);
+        out1(2, 2) = A(2, 2);
+
+        // test scalar port matrix access
+        Q y = A(inRow, inCol);
+
+        // test scalar matrix access
+        Q^{4} C = [1; 1; 1; 1];
+        y = C(1) * C(4) * (C(1) + C(2) + C(3)) + C(3);
+
+    }
+}

@@ -1,0 +1,10 @@
+/* (c) https://github.com/MontiCore/monticore */
+package test.math;
+
+component OnesArmadilloOnlyCommandTest{
+    implementation Math{
+        Q^{3} a = ones(3);
+        Q^{3,3} b = ones(3,3);
+        Q^{3,3, 3} c = ones(3,3,3);
+    }
+}

@@ -1,0 +1,11 @@
+/* (c) https://github.com/MontiCore/monticore */
+package test.math;
+
+component JoinCubeDimCommandTest{
+    ports in Q(-1:1)^{1,28,28} img_in,
+          out Q(-1:1)^{2,28,28} img_out;
+
+    implementation Math{
+		img_out = joinCubeDim(img_in, img_in, 0);
+    }
+}

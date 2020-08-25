@@ -1,0 +1,23 @@
+/* (c) https://github.com/MontiCore/monticore */
+package testing.subpackage1;
+
+component Comp1 {
+    port
+        in B in1,
+        in Z in2,
+        in Q (0.0 : 0.1 : 100.0) in3,
+
+        out B out1,
+        out Z out2,
+        out Q (0.0 : 0.1 : 100.0) out3;
+
+    implementation Math {
+        if in1 == 0
+            out1 = 1;
+         else
+            out1 = 0;
+         end
+        out2 = -in2;
+        out3 = 100.0 - in3;
+    }
+}

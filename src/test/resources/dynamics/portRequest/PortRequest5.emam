@@ -1,0 +1,17 @@
+/* (c) https://github.com/MontiCore/monticore */
+package portRequest;
+
+dynamic component PortRequest5 {
+    ports
+        dynamic in Z a[0:2],
+        dynamic out Z b[0:2],
+        out B hasNewConnection;
+
+    connect false -> hasNewConnection;
+
+    @ a::connect && b::connect {
+        connect a[?] -> b[?];
+        connect true -> hasNewConnection;
+    }
+
+}
