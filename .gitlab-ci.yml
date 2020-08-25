@@ -10,7 +10,7 @@ githubjob:
   - eval $(ssh-agent -s)
   - ssh-add <(echo "$GITHUB_SSH_PRIV_KEY")
   - echo "$GITHUB_SSH_PRIV_KEY" | tr -d '\r' | ssh-add -
-  - git config --global user.email "kusmenko@se-rwth.de"
+  - git config --global user.email "${GIT_EMAIL}"
   - git config --global user.name "EMA CI Robot"
   - mkdir -p ~/.ssh
 #  - cat gitlab-known-hosts >> ~/.ssh/known_hosts
