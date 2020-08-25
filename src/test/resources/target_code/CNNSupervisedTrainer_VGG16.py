@@ -9,103 +9,11 @@ import math
 import sys
 import inspect
 from mxnet import gluon, autograd, nd
-from mxnet.ndarray.contrib import mp_adamw_update, adamw_update, multi_mp_adamw_update, multi_adamw_update
-    
-class AdamW(mx.optimizer.Optimizer):
-    def __init__(self, learning_rate=0.001, beta1=0.9, beta2=0.999, epsilon=1e-8, **kwargs):
-        super(AdamW, self).__init__(learning_rate=learning_rate, **kwargs)
-        self.beta1 = beta1
-        self.beta2 = beta2
-        self.epsilon = epsilon
-        self.aggregate_num = max(1, min(50, int(os.getenv('MXNET_OPTIMIZER_AGGREGATION_SIZE', '4'))))
+try:
+    import AdamW
+except:
+    pass
 
-    def create_state(self, _, weight):
-        return (nd.zeros(weight.shape, weight.context, dtype=weight.dtype), #mean
-                nd.zeros(weight.shape, weight.context, dtype=weight.dtype)) #variance
-
-    def create_state_multi_precision(self, index, weight):
-        weight_master_copy = None
-        if self.multi_precision and weight.dtype == numpy.float16:
-            weight_master_copy = weight.astype(numpy.float32)
-            return (self.create_state(index, weight_master_copy), weight_master_copy)
-        return self.create_state(index, weight)
-
-    def update(self, index, weight, grad, state):
-        self._update_impl(index, weight, grad, state, multi_precision=False)
-
-    def update_multi_precision(self, index, weight, grad, state):
-        use_multi_precision = self.multi_precision and weight[0].dtype == numpy.float16
-        self._update_impl(index, weight, grad, state, multi_precision=use_multi_precision)
-
-    def _update_impl(self, indices, weight, grad, state, multi_precision=False):
-        """update function"""
-        aggregate = self.aggregate_num > 1
-        if not isinstance(indices, (tuple, list)):
-            indices = [indices]
-            weight = [weight]
-            grad = [grad]
-            state = [state]
-        for w_i, g_i in zip(weight, grad):
-            assert(isinstance(w_i, nd.NDArray))
-            assert(isinstance(g_i, nd.NDArray))
-            aggregate = (aggregate and
-                         w_i.stype == 'default' and
-                         g_i.stype == 'default')
-        self._update_count(indices)
-        lrs = self._get_lrs(indices)
-        wds = self._get_wds(indices)
-
-        # pylint: disable=access-member-before-definition
-        if not isinstance(self.rescale_grad, nd.NDArray):
-            self.rescale_grad = nd.full(shape=(1,), val=self.rescale_grad, ctx=weight[0].context)
-        else:
-            self.rescale_grad = self.rescale_grad.as_in_context(weight[0].context)
-
-        kwargs = {'beta1': self.beta1, 'beta2': self.beta2, 'epsilon': self.epsilon,
-                  'rescale_grad': self.rescale_grad}
-        if self.clip_gradient:
-            kwargs['clip_gradient'] = self.clip_gradient
-
-        if aggregate:
-            current_index = 0
-            while current_index < len(indices):
-                sidx = current_index
-                eidx = min(current_index + self.aggregate_num, len(indices))
-                if not multi_precision:
-                    mean, var = list(zip(*state[sidx:eidx]))
-                    multi_adamw_update(weight[sidx:eidx],
-                                       grad[sidx:eidx],
-                                       mean, var,
-                                       out=weight[sidx:eidx],
-                                       size=len(weight[sidx:eidx]),
-                                       lrs=list(np.ones(len(weight[sidx:eidx]))),
-                                       wds=wds[sidx:eidx],
-                                       etas=lrs[sidx:eidx],
-                                       **kwargs)
-                else:
-                    mean_var = list(zip(*state[sidx:eidx]))[0]
-                    tmean_var = list(zip(*mean_var))
-                    mean = tmean_var[0]
-                    var = tmean_var[1]
-                    multi_mp_adamw_update(weight[sidx:eidx],
-                                          grad[sidx:eidx],
-                                          mean, var,
-                                          list(zip(*state[sidx:eidx]))[1],
-                                          out=weight[sidx:eidx],
-                                          size=len(weight[sidx:eidx]),
-                                          lrs=list(np.ones(len(weight[sidx:eidx]))),
-                                          wds=wds[sidx:eidx],
-                                          etas=lrs[sidx:eidx],
-                                          **kwargs)
-                current_index += self.aggregate_num
-        else:
-            for w_i, g_i, s_i, lr, wd in zip(weight, grad, state, lrs, wds):
-                if not multi_precision:
-                    mean, var = s_i
-                    adamw_update(w_i, g_i, mean, var, out=w_i, lr=1, wd=wd, eta=lr, **kwargs)
-                else:
-                    mean, var = s_i[0]
-                    mp_adamw_update(w_i, g_i, mean, var, s_i[1], out=w_i, lr=1, wd=wd, eta=lr, **kwargs)    
 
 class CrossEntropyLoss(gluon.loss.Loss):
     def __init__(self, axis=-1, sparse_label=True, weight=None, batch_axis=0, **kwargs):
@@ -152,7 +60,7 @@ class SoftmaxCrossEntropyLossIgnoreIndices(gluon.loss.Loss):
             loss = -(pred * label).sum(axis=self._axis, keepdims=True)
         # ignore some indices for loss, e.g. <pad> tokens in NLP applications
         for i in self._ignore_indices:
-            loss = loss * mx.nd.logical_not(mx.nd.equal(mx.nd.argmax(pred, axis=1), mx.nd.ones_like(mx.nd.argmax(pred, axis=1))*i) * mx.nd.equal(mx.nd.argmax(pred, axis=1), label))
+            loss = F.broadcast_mul(loss, F.logical_not(F.broadcast_equal(F.argmax(pred, axis=1), F.ones_like(F.argmax(pred, axis=1))*i) * F.broadcast_equal(F.argmax(pred, axis=1), label)))
         return loss.mean(axis=self._batch_axis, exclude=True)
 
 class DiceLoss(gluon.loss.Loss):
@@ -389,6 +297,7 @@ class CNNSupervisedTrainer_VGG16:
             mx_context = [mx.cpu()]
         else:
             logging.error("Context argument is '" + context + "'. Only 'cpu' and 'gpu are valid arguments'.")
+        single_pu_batch_size = int(batch_size/num_pus)
 
         if preprocessing:
             preproc_lib = "CNNPreprocessor_VGG16_executor"
@@ -434,7 +343,7 @@ class CNNSupervisedTrainer_VGG16:
                 raise
 
         if optimizer == "adamw":
-            trainers = [mx.gluon.Trainer(network.collect_params(), AdamW(**optimizer_params)) for network in self._networks.values() if len(network.collect_params().values()) != 0]
+            trainers = [mx.gluon.Trainer(network.collect_params(), AdamW.AdamW(**optimizer_params)) for network in self._networks.values() if len(network.collect_params().values()) != 0]
         else:
             trainers = [mx.gluon.Trainer(network.collect_params(), optimizer, optimizer_params) for network in self._networks.values() if len(network.collect_params().values()) != 0]
 
@@ -512,25 +421,25 @@ class CNNSupervisedTrainer_VGG16:
 
                     data_ = gluon.utils.split_and_load(batch.data[0], ctx_list=mx_context, even_split=False)
 
-                    #predictions_ = mx.nd.zeros((batch_size, 1000,), ctx=mx_context)
+                    predictions_ = [mx.nd.zeros((single_pu_batch_size, 1000,), ctx=context) for context in mx_context]
 
 
                     nd.waitall()
+                    lossList = []
+                    for i in range(num_pus):
+                        lossList.append([])
 
                     net_ret = [self._networks[0](data_[i]) for i in range(num_pus)]
-
                     predictions_ = [net_ret[i][0][0] for i in range(num_pus)]
+                    [lossList[i].append(loss_function(predictions_[i], labels[0][i])) for i in range(num_pus)]
 
-                    losses = []
+
+                    losses = [0]*num_pus
                     for i in range(num_pus):
-                        lossList = []
-                        lossList.append(loss_function(predictions_[i], labels[0][i]))						
-                        losses.append(0)
-                        for element in lossList:
-                            losses[i] = losses[i] + element	
+                        for element in lossList[i]:
+                            losses[i] = losses[i] + element
 
-
-                for loss in losses:
+                for loss in losses: 
                     loss.backward()
                     loss_total += loss.sum().asscalar()
                     global_loss_train += loss.sum().asscalar()
@@ -575,30 +484,22 @@ class CNNSupervisedTrainer_VGG16:
                 train_iter.reset()
                 metric = mx.metric.create(eval_metric, **eval_metric_params)
                 for batch_i, batch in enumerate(train_iter):
-                    labels = [gluon.utils.split_and_load(batch.label[i], ctx_list=mx_context, even_split=False) for i in range(1)]
-                    data_ = gluon.utils.split_and_load(batch.data[0], ctx_list=mx_context, even_split=False)
+                    labels = [gluon.utils.split_and_load(batch.label[i], ctx_list=mx_context, even_split=False)[0] for i in range(1)]
+                    data_ = gluon.utils.split_and_load(batch.data[0], ctx_list=mx_context, even_split=False)[0]
 
-                    #predictions_ = mx.nd.zeros((batch_size, 1000,), ctx=mx_context)
+                    predictions_ = mx.nd.zeros((single_pu_batch_size, 1000,), ctx=mx_context[0])
 
 
                     nd.waitall()
 
+                    lossList = []
                     outputs = []
                     attentionList = []
 
-                    net_ret = [self._networks[0](data_[i]) for i in range(num_pus)]
-
-                    predictions_ = [net_ret[i][0][0] for i in range(num_pus)]
-
-                    losses = []
-                    for i in range(num_pus):
-                        outputs.append([])
-                        lossList = []
-                        outputs[i].append(predictions_[i])
-                        lossList.append(loss_function(predictions_[i], labels[0][i]))
-                        losses.append(0)
-                        for element in lossList:
-                            losses[i] = losses[i] + element
+                    net_ret = self._networks[0](data_)
+                    predictions_ = net_ret[0][0]
+                    outputs.append(predictions_)
+                    lossList.append(loss_function(predictions_, labels[0]))
 
 
 
@@ -642,16 +543,14 @@ class CNNSupervisedTrainer_VGG16:
                             os.makedirs(target_dir)
                         plt.savefig(target_dir + '/attention_train.png')
                         plt.close()
-                    for i in range(num_pus):
-                        predictions = []
-                        for output_name in outputs[i]:
-                            if mx.nd.shape_array(mx.nd.squeeze(output_name)).size > 1:
-                                predictions.append(mx.nd.argmax(output_name, axis=1))
-                            else:
-                                predictions.append(output_name)
+                    predictions = []
+                    for output_name in outputs:
+                        if mx.nd.shape_array(mx.nd.squeeze(output_name)).size > 1:
+                            predictions.append(mx.nd.argmax(output_name, axis=1))
+                        else:
+                            predictions.append(output_name)
 
-                        labels_metric = [[labels[j][i] for j in range(len(labels))] for i in range(num_pus)]
-                        metric.update(preds=predictions, labels=labels_metric[i])
+                    metric.update(preds=predictions, labels=[labels[j] for j in range(len(labels))])
 
                 train_metric_score = metric.get()[1]
             else:
@@ -664,30 +563,22 @@ class CNNSupervisedTrainer_VGG16:
             metric = mx.metric.create(eval_metric, **eval_metric_params)
             for batch_i, batch in enumerate(test_iter):
                 if True: 
-                    labels = [gluon.utils.split_and_load(batch.label[i], ctx_list=mx_context, even_split=False) for i in range(1)]
-                    data_ = gluon.utils.split_and_load(batch.data[0], ctx_list=mx_context, even_split=False)
+                    labels = [gluon.utils.split_and_load(batch.label[i], ctx_list=mx_context, even_split=False)[0] for i in range(1)]
+                    data_ = gluon.utils.split_and_load(batch.data[0], ctx_list=mx_context, even_split=False)[0]
 
-                    #predictions_ = mx.nd.zeros((batch_size, 1000,), ctx=mx_context)
+                    predictions_ = mx.nd.zeros((single_pu_batch_size, 1000,), ctx=mx_context[0])
 
 
                     nd.waitall()
 
+                    lossList = []
                     outputs = []
                     attentionList = []
 
-                    net_ret = [self._networks[0](data_[i]) for i in range(num_pus)]
-
-                    predictions_ = [net_ret[i][0][0] for i in range(num_pus)]
-
-                    losses = []
-                    for i in range(num_pus):
-                        outputs.append([])
-                        lossList = []
-                        outputs[i].append(predictions_[i])
-                        lossList.append(loss_function(predictions_[i], labels[0][i]))
-                        losses.append(0)
-                        for element in lossList:
-                            losses[i] = losses[i] + element
+                    net_ret = self._networks[0](data_)
+                    predictions_ = net_ret[0][0]
+                    outputs.append(predictions_)
+                    lossList.append(loss_function(predictions_, labels[0]))
 
 
 
@@ -732,35 +623,35 @@ class CNNSupervisedTrainer_VGG16:
                             os.makedirs(target_dir)
                         plt.savefig(target_dir + '/attention_test.png')
                         plt.close()
-                for loss in losses:
-                    global_loss_test += loss.sum().asscalar()
-    
+                loss = 0
+                for element in lossList:
+                    loss = loss + element
+
+                global_loss_test += loss.sum().asscalar()
+
                 test_batches += 1
 
-                for i in range(num_pus):
-                    predictions = []
-                    for output_name in outputs[i]:
-                        predictions.append(output_name)
+                predictions = []
+                for output_name in outputs:
+                    predictions.append(output_name)
 
-                    labels_metric = [[labels[j][i] for j in range(len(labels))] for i in range(num_pus)]
-                    metric.update(preds=predictions, labels=labels_metric[i])
+                metric.update(preds=predictions, labels=[labels[j] for j in range(len(labels))])
 
             test_metric_score = metric.get()[1]
 
-            global_loss_test /= (test_batches * batch_size)
+            global_loss_test /= (test_batches * single_pu_batch_size)
 
             logging.info("Epoch[%d] Train metric: %f, Test metric: %f, Train loss: %f, Test loss: %f" % (epoch, train_metric_score, test_metric_score, global_loss_train, global_loss_test))
 
-            if (epoch - begin_epoch) % checkpoint_period == 0:
+            if (epoch+1) % checkpoint_period == 0:
                 for i, network in self._networks.items():
                     network.save_parameters(self.parameter_path(i) + '-' + str(epoch).zfill(4) + '.params')
+                    if hasattr(network, 'episodic_sub_nets'):
+                        for j, net in enumerate(network.episodic_sub_nets):
+                            episodic_layers[i][j].save_memory(self.parameter_path(i) + "_episodic_memory_sub_net_" + str(j + 1) + "-" + str(epoch).zfill(4))
 
-        print("--------------------------------------Speed------------------------------------------")
-        print(avg_speed/n)
-        print("--------------------------------------Speed------------------------------------------")
-    
         for i, network in self._networks.items():
-            network.save_parameters(self.parameter_path(i) + '-' + str(num_epoch + begin_epoch + 1).zfill(4) + '.params')
+            network.save_parameters(self.parameter_path(i) + '-' + str((num_epoch-1) + begin_epoch).zfill(4) + '.params')
             network.export(self.parameter_path(i) + '_newest', epoch=0)
             
             if hasattr(network, 'episodic_sub_nets'):
@@ -768,7 +659,8 @@ class CNNSupervisedTrainer_VGG16:
                 for j, net in enumerate(network.episodic_sub_nets):
                     net.export(self.parameter_path(i) + '_newest_episodic_sub_net_' + str(j+1), epoch=0)
                     episodic_query_networks[i][j].export(self.parameter_path(i) + '_newest_episodic_query_net_' + str(j+1), epoch=0)
-                    episodic_layers[i][j].save_memory(self.parameter_path(i) + "_newest_episodic_memory_" + str(j + 1))
+                    episodic_layers[i][j].save_memory(self.parameter_path(i) + "_episodic_memory_sub_net_" + str(j + 1) + "-" + str((num_epoch - 1) + begin_epoch).zfill(4))
+                    episodic_layers[i][j].save_memory(self.parameter_path(i) + "_newest_episodic_memory_sub_net_" + str(j + 1) + "-0000")
             loss_function.export(self.parameter_path(i) + '_newest_loss', epoch=0)
 
     def parameter_path(self, index):

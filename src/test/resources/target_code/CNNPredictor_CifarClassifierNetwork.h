@@ -45,6 +45,7 @@ public:
     void predict(const std::vector<float> &in_data_,
                  std::vector<float> &out_softmax_){
 
+
         NDArray input_temp;
         input_temp = NDArray(network_input_shapes[0], ctx, false, dtype);
         input_temp.SyncCopyFromCPU(in_data_.data(), network_input_sizes[0]);
@@ -61,7 +62,8 @@ public:
         curr_output_shape = output[0].GetShape();
         curr_output_size = 1;
         for (mx_uint i : curr_output_shape) curr_output_size *= i;
-        assert(curr_output_size == out_softmax_.size());
+        //Fix due to a bug in the in how the output arrays are initialized when there are multiple outputs
+        assert((curr_output_size == out_softmax_.size()) || (curr_output_size == out_softmax_[0]));
         output[0].SyncCopyToCPU(&out_softmax_);
     
     }

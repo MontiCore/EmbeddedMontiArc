@@ -499,57 +499,148 @@ class EpisodicMemory(EpisodicReplayMemoryInterface):
 
 
 #Stream 0
+class EpisodicSubNet_0(gluon.HybridBlock):
+    def __init__(self, data_mean=None, data_std=None, mx_context=None, **kwargs):
+        super(EpisodicSubNet_0, self).__init__(**kwargs)
+        with self.name_scope():
+            if data_mean:
+                assert(data_std)
+                self.input_normalization_data_ = ZScoreNormalization(data_mean=data_mean['data_'],
+                                                                               data_std=data_std['data_'])
+            else:
+                self.input_normalization_data_ = NoNormalization()
+
+
+    
+            pass
+    
+    def hybrid_forward(self, F, data_):
+        data_ = self.input_normalization_data_(data_)
+
+        return [[data_]]
+
+class EpisodicSubNet_1(gluon.HybridBlock):
+    def __init__(self, mx_context=None, **kwargs):
+        super(EpisodicSubNet_1, self).__init__(**kwargs)
+        with self.name_scope():
+            self.memory1_ = EpisodicMemory(replay_interval=78, replay_batch_size=100, replay_steps=1,
+                                                replay_gradient_steps=1, store_prob=0.5,
+                                                max_stored_samples=-1, use_replay=True,
+                                                query_net_dir="pretrained/", 
+                                                query_net_prefix="network_name-",
+                                                query_net_num_inputs=1)
+            self.fc1_ = gluon.nn.Dense(units=33, use_bias=True, flatten=True)
+            # fc1_, output shape: {[33,1,1]}
+
+
+    
+            pass
+    
+    def hybrid_forward(self, F, *args):
+        memory1_full_, ind_memory1_ = self.memory1_(*args)
+        memory1_ = memory1_full_[0]
+        fc1_ = self.fc1_(memory1_)
+
+        retNames = [fc1_]
+        ret = []
+        for elem in retNames:
+            if isinstance(elem, list) and len(elem) >= 2:
+                for elem2 in elem: 
+                    ret.append(elem2)
+            else:
+                ret.append(elem)
+        return [ret, [memory1_full_, ind_memory1_]]
+
+class EpisodicSubNet_2(gluon.HybridBlock):
+    def __init__(self, mx_context=None, **kwargs):
+        super(EpisodicSubNet_2, self).__init__(**kwargs)
+        with self.name_scope():
+            self.memory2_ = EpisodicMemory(replay_interval=78, replay_batch_size=100, replay_steps=1,
+                                                replay_gradient_steps=1, store_prob=0.5,
+                                                max_stored_samples=-1, use_replay=True,
+                                                query_net_dir="pretrained/", 
+                                                query_net_prefix="network_name-",
+                                                query_net_num_inputs=1)
+            self.fc2_ = gluon.nn.Dense(units=33, use_bias=True, flatten=True)
+            # fc2_, output shape: {[33,1,1]}
+
+
+    
+            pass
+    
+    def hybrid_forward(self, F, *args):
+        memory2_full_, ind_memory2_ = self.memory2_(*args)
+        memory2_ = memory2_full_[0]
+        fc2_ = self.fc2_(memory2_)
+
+        retNames = [fc2_]
+        ret = []
+        for elem in retNames:
+            if isinstance(elem, list) and len(elem) >= 2:
+                for elem2 in elem: 
+                    ret.append(elem2)
+            else:
+                ret.append(elem)
+        return [ret, [memory2_full_, ind_memory2_]]
+
+class EpisodicSubNet_3(gluon.HybridBlock):
+    def __init__(self, mx_context=None, **kwargs):
+        super(EpisodicSubNet_3, self).__init__(**kwargs)
+        with self.name_scope():
+            self.memory3_ = EpisodicMemory(replay_interval=78, replay_batch_size=100, replay_steps=1,
+                                                replay_gradient_steps=1, store_prob=0.5,
+                                                max_stored_samples=-1, use_replay=True,
+                                                query_net_dir="pretrained/", 
+                                                query_net_prefix="network_name-",
+                                                query_net_num_inputs=1)
+            self.fc3_ = gluon.nn.Dense(units=33, use_bias=True, flatten=True)
+            # fc3_, output shape: {[33,1,1]}
+
+
+    
+            pass
+    
+    def hybrid_forward(self, F, *args):
+        memory3_full_, ind_memory3_ = self.memory3_(*args)
+        memory3_ = memory3_full_[0]
+        fc3_ = self.fc3_(memory3_)
+        softmax3_ = F.softmax(fc3_, axis=-1)
+        softmax_ = F.identity(softmax3_)
+
+        retNames = [softmax_]
+        ret = []
+        for elem in retNames:
+            if isinstance(elem, list) and len(elem) >= 2:
+                for elem2 in elem: 
+                    ret.append(elem2)
+            else:
+                ret.append(elem)
+        return [ret, [memory3_full_, ind_memory3_]]
+
 
 class Net_0(gluon.HybridBlock):
     def __init__(self, data_mean=None, data_std=None, mx_context=None, **kwargs):
         super(Net_0, self).__init__(**kwargs)
         with self.name_scope():
-            if data_mean:
-                assert(data_std)
-                self.input_normalization_state_ = ZScoreNormalization(data_mean=data_mean['state_'],
-                                                                               data_std=data_std['state_'])
-            else:
-                self.input_normalization_state_ = NoNormalization()
+            self.episodicsubnet0_ = EpisodicSubNet_0(data_mean, data_std, mx_context)
 
-            self.fc2_1_ = gluon.nn.Dense(units=300, use_bias=True, flatten=True)
-            # fc2_1_, output shape: {[300,1,1]}
+            self.episodic_sub_nets = []
 
-            self.relu2_1_ = gluon.nn.Activation(activation='relu')
-            self.fc3_1_ = gluon.nn.Dense(units=600, use_bias=True, flatten=True)
-            # fc3_1_, output shape: {[600,1,1]}
+            self.episodic_sub_nets.append(EpisodicSubNet_1(mx_context=mx_context))
+            self.register_child(self.episodic_sub_nets[0])
 
-            if data_mean:
-                assert(data_std)
-                self.input_normalization_action_ = ZScoreNormalization(data_mean=data_mean['action_'],
-                                                                               data_std=data_std['action_'])
-            else:
-                self.input_normalization_action_ = NoNormalization()
+            self.episodic_sub_nets.append(EpisodicSubNet_2(mx_context=mx_context))
+            self.register_child(self.episodic_sub_nets[1])
 
-            self.fc2_2_ = gluon.nn.Dense(units=600, use_bias=True, flatten=True)
-            # fc2_2_, output shape: {[600,1,1]}
-
-            self.fc4_ = gluon.nn.Dense(units=600, use_bias=True, flatten=True)
-            # fc4_, output shape: {[600,1,1]}
-
-            self.relu4_ = gluon.nn.Activation(activation='relu')
-            self.fc5_ = gluon.nn.Dense(units=1, use_bias=True, flatten=True)
-            # fc5_, output shape: {[1,1,1]}
-
+            self.episodic_sub_nets.append(EpisodicSubNet_3(mx_context=mx_context))
+            self.register_child(self.episodic_sub_nets[2])
 
             pass
 
-    def hybrid_forward(self, F, state_, action_):
-        state_ = self.input_normalization_state_(state_)
-        fc2_1_ = self.fc2_1_(state_)
-        relu2_1_ = self.relu2_1_(fc2_1_)
-        fc3_1_ = self.fc3_1_(relu2_1_)
-        action_ = self.input_normalization_action_(action_)
-        fc2_2_ = self.fc2_2_(action_)
-        add4_ = fc3_1_ + fc2_2_
-        fc4_ = self.fc4_(add4_)
-        relu4_ = self.relu4_(fc4_)
-        fc5_ = self.fc5_(relu4_)
-        qvalues_ = F.identity(fc5_)
-
-        return [[qvalues_]]
+    def hybrid_forward(self, F, data_):
+        episodicsubnet0_ = self.episodicsubnet0_(data_)  
+        episodicsubnet1_ = self.episodic_sub_nets[0](*episodicsubnet0_[0])
+        episodicsubnet2_ = self.episodic_sub_nets[1](*episodicsubnet1_[0])
+        episodicsubnet3_ = self.episodic_sub_nets[2](*episodicsubnet2_[0])
+        return [episodicsubnet3_[0], [episodicsubnet1_[1], episodicsubnet2_[1], episodicsubnet3_[1], ]]
 

@@ -2,7 +2,7 @@
 <#assign networkDir = element.networkDir>
 <#assign networkPrefix = element.networkPrefix>
 <#assign numInputs = element.numInputs?c>
-<#assign outputShape = "(1,"+ tc.join(element.outputShape, ",") + ")">
+<#assign outputShape = tc.join(element.outputShape, ",")>
 <#if mode == "ARCHITECTURE_DEFINITION">
             lastEpoch = 0
             for file in os.listdir("${networkDir}"):
@@ -31,17 +31,17 @@
                 warnings.simplefilter("ignore")
                 self.${element.name} = gluon.nn.SymbolBlock.imports("${networkDir}/" + symbolFile, inputNames, "${networkDir}/" + weightFile, ctx=mx_context)
             self.${element.name}out_shape = self.${element.name}(*zeroInputs).shape
-            if self.${element.name}out_shape != ${outputShape}:
+            if self.${element.name}out_shape != (1,${outputShape}):
                 outputSize=1
-                for x in ${outputShape}: 
+                for x in (${outputShape}): 
                     outputSize = outputSize * x  
                 self.${element.name}fc_ = gluon.nn.Dense(units=outputSize, use_bias=False, flatten=False)
 
 <#elseif mode == "FORWARD_FUNCTION">
         ${element.name} = self.${element.name}(${tc.join(element.inputs, ",")})
-        if self.${element.name}out_shape != ${outputShape}:
-            ${element.name} = self.${element.name}fc(${element.name})
-            ${element.name} = F.reshape(${element.name}, shape=${outputShape})
+        if self.${element.name}out_shape != (1,${outputShape}):
+            ${element.name} = self.${element.name}fc_(${element.name})
+            ${element.name} = F.reshape(${element.name}, shape=(-1,${outputShape}))
 <#elseif mode == "PREDICTION_PARAMETER">
 	    query_num_inputs.push_back(${numInputs});
 </#if>

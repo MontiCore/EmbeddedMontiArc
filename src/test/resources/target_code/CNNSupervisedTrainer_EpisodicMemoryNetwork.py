@@ -257,7 +257,7 @@ class BLEU(mx.metric.EvalMetric):
 
 
 
-class CNNSupervisedTrainer_CifarClassifierNetwork:
+class CNNSupervisedTrainer_EpisodicMemoryNetwork:
     def __init__(self, data_loader, net_constructor):
         self._data_loader = data_loader
         self._net_creator = net_constructor
@@ -300,7 +300,7 @@ class CNNSupervisedTrainer_CifarClassifierNetwork:
         single_pu_batch_size = int(batch_size/num_pus)
 
         if preprocessing:
-            preproc_lib = "CNNPreprocessor_CifarClassifierNetwork_executor"
+            preproc_lib = "CNNPreprocessor_EpisodicMemoryNetwork_executor"
             train_iter, test_iter, data_mean, data_std, train_images, test_images = self._data_loader.load_preprocessed_data(batch_size, preproc_lib, shuffle_data)
         else:
             train_iter, test_iter, data_mean, data_std, train_images, test_images = self._data_loader.load_data(batch_size, shuffle_data)
@@ -394,6 +394,33 @@ class CNNSupervisedTrainer_CifarClassifierNetwork:
         loss_function.hybridize()
         
 
+        #Episodic memory Replay
+        episodic_layers = {}
+        episodic_store_buffer = {}
+        episodic_query_networks = {}
+        store_prob = {}
+        episodic_layers[0] = []
+        episodic_store_buffer[0] = []
+        episodic_query_networks[0] = []
+        store_prob[0] = []
+        sub_net = self._networks[0].episodic_sub_nets[0]
+        layer = [param for param in inspect.getmembers(sub_net, lambda x: not(inspect.isroutine(x))) if param[0].startswith("memory")][0][1]
+        episodic_layers[0].append(layer)
+        episodic_store_buffer[0].append([])
+        episodic_query_networks[0].append(episodic_layers[0][-1].get_query_network(mx_context))
+        store_prob[0].append(nd.array([1-episodic_layers[0][-1].store_prob, episodic_layers[0][-1].store_prob], ctx=mx.cpu()))                                                                                  
+        sub_net = self._networks[0].episodic_sub_nets[1]
+        layer = [param for param in inspect.getmembers(sub_net, lambda x: not(inspect.isroutine(x))) if param[0].startswith("memory")][0][1]
+        episodic_layers[0].append(layer)
+        episodic_store_buffer[0].append([])
+        episodic_query_networks[0].append(episodic_layers[0][-1].get_query_network(mx_context))
+        store_prob[0].append(nd.array([1-episodic_layers[0][-1].store_prob, episodic_layers[0][-1].store_prob], ctx=mx.cpu()))                                                                                  
+        sub_net = self._networks[0].episodic_sub_nets[2]
+        layer = [param for param in inspect.getmembers(sub_net, lambda x: not(inspect.isroutine(x))) if param[0].startswith("memory")][0][1]
+        episodic_layers[0].append(layer)
+        episodic_store_buffer[0].append([])
+        episodic_query_networks[0].append(episodic_layers[0][-1].get_query_network(mx_context))
+        store_prob[0].append(nd.array([1-episodic_layers[0][-1].store_prob, episodic_layers[0][-1].store_prob], ctx=mx.cpu()))                                                                                  
 
         tic = None
 
@@ -403,7 +430,7 @@ class CNNSupervisedTrainer_CifarClassifierNetwork:
         for epoch in range(begin_epoch, begin_epoch + num_epoch):
             if shuffle_data:
                 if preprocessing:
-                    preproc_lib = "CNNPreprocessor_CifarClassifierNetwork_executor"
+                    preproc_lib = "CNNPreprocessor_EpisodicMemoryNetwork_executor"
                     train_iter, test_iter, data_mean, data_std, train_images, test_images = self._data_loader.load_preprocessed_data(batch_size, preproc_lib, shuffle_data)
                 else:
                     train_iter, test_iter, data_mean, data_std, train_images, test_images = self._data_loader.load_data(batch_size, shuffle_data)
@@ -415,13 +442,58 @@ class CNNSupervisedTrainer_CifarClassifierNetwork:
             train_iter.reset()
             for batch_i, batch in enumerate(train_iter):
                 
+                #episodic replay memory computations
+                if batch_i > 0:
+                    for layer_i, layer in enumerate(episodic_layers[0]):
+                        if batch_i % layer.replay_interval == 0 and layer.use_replay:
+                            episodic_batches = layer.sample_memory(batch_size)
+
+                            for episodic_batch in episodic_batches:
+                                labels = [gluon.utils.split_and_load(episodic_batch[1][i], ctx_list=mx_context, even_split=False) for i in range(1)]
+                                episodic_data = [[] for i in range(num_pus)]
+                                for i in range(len(episodic_batch[0])):
+                                    tmp_data = gluon.utils.split_and_load(episodic_batch[0][i], ctx_list=mx_context, even_split=False)
+                                    [episodic_data[j].append(tmp_data[j]) for j in range(num_pus)]
+
+                                for gradient_step in range(layer.replay_gradient_steps):
+                                    with autograd.record():
+
+                                        episodic_output = [self._networks[0].episodic_sub_nets[layer_i](*(episodic_data[i]))[0] for i in range(num_pus)]
+                                        for i in range(layer_i+1, len(episodic_layers[0])):
+                                            episodic_output = [self._networks[0].episodic_sub_nets[i](*(episodic_output[j]))[0] for j in range(num_pus)]
+
+                                        losses = []
+                                        for i in range(num_pus):
+                                            lossList = []
+                                            lossList.append(loss_function(episodic_output[i][0], labels[0][i]))
+                                            losses.append(0)
+                                            for element in lossList:
+                                                losses[i] = losses[i] + element
+
+                                    for loss in losses:
+                                        loss.backward()
+                                        loss_total += loss.sum().asscalar()
+                                        global_loss_train += loss.sum().asscalar()
+
+                                    if clip_global_grad_norm:
+                                        grads = []
+
+                                        for network in self._networks.values():
+                                            grads.extend(
+                                                [param.grad(mx_context) for param in network.collect_params().values()])
+
+                                        gluon.utils.clip_global_norm(grads, clip_global_grad_norm)
+
+                                    for trainer in trainers:
+                                        trainer.step(batch_size, ignore_stale_grad=True)
+                    pass
                                  
                 with autograd.record():
                     labels = [gluon.utils.split_and_load(batch.label[i], ctx_list=mx_context, even_split=False) for i in range(1)]
 
                     data_ = gluon.utils.split_and_load(batch.data[0], ctx_list=mx_context, even_split=False)
 
-                    softmax_ = [mx.nd.zeros((single_pu_batch_size, 10,), ctx=context) for context in mx_context]
+                    softmax_ = [mx.nd.zeros((single_pu_batch_size, 33,), ctx=context) for context in mx_context]
 
 
                     nd.waitall()
@@ -430,6 +502,13 @@ class CNNSupervisedTrainer_CifarClassifierNetwork:
                         lossList.append([])
 
                     net_ret = [self._networks[0](data_[i]) for i in range(num_pus)]
+
+                    for i in range(len(episodic_layers[0])):
+                        temp_buffer_data = []
+                        for j in range(num_pus):
+                            temp_buffer_data.append(net_ret[j][1][i])
+                        episodic_store_buffer[0][i] = temp_buffer_data
+
                     softmax_ = [net_ret[i][0][0] for i in range(num_pus)]
                     [lossList[i].append(loss_function(softmax_[i], labels[0][i])) for i in range(num_pus)]
 
@@ -457,6 +536,11 @@ class CNNSupervisedTrainer_CifarClassifierNetwork:
                 for trainer in trainers:
                     trainer.step(batch_size)
     
+                #storing samples for episodic replay
+                for net_i in range(len(self._networks)):
+                    for layer_i, layer in enumerate(episodic_layers[net_i]):
+                        layer.store_samples(episodic_store_buffer[net_i][layer_i], labels, episodic_query_networks[net_i][layer_i], store_prob[net_i][layer_i], mx_context)
+
                 if tic is None:
                     tic = time.time()
                 else:
@@ -487,7 +571,7 @@ class CNNSupervisedTrainer_CifarClassifierNetwork:
                     labels = [gluon.utils.split_and_load(batch.label[i], ctx_list=mx_context, even_split=False)[0] for i in range(1)]
                     data_ = gluon.utils.split_and_load(batch.data[0], ctx_list=mx_context, even_split=False)[0]
 
-                    softmax_ = mx.nd.zeros((single_pu_batch_size, 10,), ctx=mx_context[0])
+                    softmax_ = mx.nd.zeros((single_pu_batch_size, 33,), ctx=mx_context[0])
 
 
                     nd.waitall()
@@ -566,7 +650,7 @@ class CNNSupervisedTrainer_CifarClassifierNetwork:
                     labels = [gluon.utils.split_and_load(batch.label[i], ctx_list=mx_context, even_split=False)[0] for i in range(1)]
                     data_ = gluon.utils.split_and_load(batch.data[0], ctx_list=mx_context, even_split=False)[0]
 
-                    softmax_ = mx.nd.zeros((single_pu_batch_size, 10,), ctx=mx_context[0])
+                    softmax_ = mx.nd.zeros((single_pu_batch_size, 33,), ctx=mx_context[0])
 
 
                     nd.waitall()

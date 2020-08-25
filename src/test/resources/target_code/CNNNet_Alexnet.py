@@ -171,7 +171,7 @@ class EpisodicReplayMemoryInterface(gluon.HybridBlock):
 
     def __init__(self, use_replay, replay_interval, replay_batch_size, replay_steps, replay_gradient_steps, num_heads, **kwargs):
         super(EpisodicReplayMemoryInterface, self).__init__(**kwargs)
-    
+
         self.use_replay = use_replay
         self.replay_interval = replay_interval
         self.replay_batch_size = replay_batch_size
@@ -190,9 +190,13 @@ class EpisodicReplayMemoryInterface(gluon.HybridBlock):
     @abc.abstractmethod
     def get_query_network(self, mx_context):
         pass   
-    
+
     @abc.abstractmethod
     def save_memory(self, path):
+        pass
+
+    @abc.abstractmethod
+    def load_memory(self, path):
         pass
     
 #Memory layer
@@ -385,9 +389,9 @@ class EpisodicMemory(EpisodicReplayMemoryInterface):
         mx_context = context[0]
 
         if len(self.key_memory) == 0:
-            self.key_memory = nd.empty(0, ctx=mx_context)
-            self.value_memory = nd.empty(0, ctx=mx_context)
-            self.label_memory = nd.empty((num_outputs, 0), ctx=mx_context)
+            self.key_memory = nd.empty(0, ctx=mx.cpu())
+            self.value_memory = []
+            self.label_memory = []#nd.empty((num_outputs, 0), ctx=mx.cpu())
 
         ind = [nd.sample_multinomial(store_prob, sub_batch_sizes[i]).as_in_context(mx_context) for i in range(num_pus)]
 
@@ -398,15 +402,13 @@ class EpisodicMemory(EpisodicReplayMemoryInterface):
                 tmp_values = []
                 for j in range(0, num_pus):
                     if max_inds[j]:
-                        #tmp = data[j][0][i].as_in_context(mx_context)
                         if isinstance(tmp_values, list):
-
                             tmp_values = nd.contrib.boolean_mask(data[j][0][i].as_in_context(mx_context), ind[j])
                         else:
                             tmp_values = nd.concat(tmp_values, nd.contrib.boolean_mask(data[j][0][i].as_in_context(mx_context), ind[j]), dim=0)
                 to_store_values.append(tmp_values)
 
-            to_store_labels = nd.empty((num_outputs, len(to_store_values[0])), ctx=mx_context)
+            to_store_labels = []
             for i in range(num_outputs):
                 tmp_labels = []
                 for j in range(0, num_pus):
@@ -415,26 +417,29 @@ class EpisodicMemory(EpisodicReplayMemoryInterface):
                             tmp_labels = nd.contrib.boolean_mask(y[i][j].as_in_context(mx_context), ind[j])
                         else:
                             tmp_labels = nd.concat(tmp_labels, nd.contrib.boolean_mask(y[i][j].as_in_context(mx_context), ind[j]), dim=0)
-                to_store_labels[i] = tmp_labels
+                to_store_labels.append(tmp_labels)
 
             to_store_keys = query_network(*to_store_values[0:self.query_net_num_inputs])
 
             if self.key_memory.shape[0] == 0:
-                self.key_memory = to_store_keys
-                self.value_memory = to_store_values
-                self.label_memory = to_store_labels
+                self.key_memory = to_store_keys.as_in_context(mx.cpu())
+                for i in range(num_inputs):
+                    self.value_memory.append(to_store_values[i].as_in_context(mx.cpu()))
+                for i in range(num_outputs):
+                    self.label_memory.append(to_store_labels[i].as_in_context(mx.cpu()))
             elif self.max_stored_samples != -1 and self.key_memory.shape[0] >= self.max_stored_samples:
                 num_to_store = to_store_keys.shape[0]
-                self.key_memory = nd.concat(self.key_memory[num_to_store:], to_store_keys, dim=0)
-                for i in range(len(to_store_values)):
-                    self.value_memory[i] = nd.concat(self.value_memory[i][num_to_store:], to_store_values[i], dim=0)
-                self.label_memory = nd.slice_axis(self.label_memory, axis=1, begin=num_to_store, end=-1)
-                self.label_memory = nd.concat(self.label_memory, to_store_labels, dim=1)
+                self.key_memory = nd.concat(self.key_memory[num_to_store:], to_store_keys.as_in_context(mx.cpu()), dim=0)
+                for i in range(num_inputs):
+                    self.value_memory[i] = nd.concat(self.value_memory[i][num_to_store:], to_store_values[i].as_in_context(mx.cpu()), dim=0)
+                for i in range(num_outputs):
+                    self.label_memory[i] = nd.concat(self.label_memory[i][num_to_store:], to_store_labels[i].as_in_context(mx.cpu()), dim=1)
             else:
-                self.key_memory = nd.concat(self.key_memory, to_store_keys, dim=0)
-                for i in range(len(to_store_values)):
-                    self.value_memory[i] = nd.concat(self.value_memory[i], to_store_values[i], dim=0)
-                self.label_memory = nd.concat(self.label_memory, to_store_labels, dim=1)
+                self.key_memory = nd.concat(self.key_memory, to_store_keys.as_in_context(mx.cpu()), dim=0)
+                for i in range(num_inputs):
+                    self.value_memory[i] = nd.concat(self.value_memory[i], to_store_values[i].as_in_context(mx.cpu()), dim=0)
+                for i in range(num_outputs):
+                    self.label_memory[i] = nd.concat(self.label_memory[i], to_store_labels[i].as_in_context(mx.cpu()), dim=0)
 
     def sample_memory(self, batch_size):
         num_stored_samples = self.key_memory.shape[0]
@@ -476,9 +481,21 @@ class EpisodicMemory(EpisodicReplayMemoryInterface):
         return net
     
     def save_memory(self, path):
-        mem_arr = [("keys", self.key_memory)] + [("labels", self.key_memory)] + [("values_"+str(k),v) for (k,v) in enumerate(self.value_memory)]
+        mem_arr = [("keys", self.key_memory)] + [("values_"+str(k),v) for (k,v) in enumerate(self.value_memory)] + [("labels_"+str(k),v) for (k,v) in enumerate(self.label_memory)]
         mem_dict = {entry[0]:entry[1] for entry in mem_arr}
         nd.save(path, mem_dict)
+
+    def load_memory(self, path):
+        mem_dict = nd.load(path)
+        self.value_memory = []
+        self.label_memory = []
+        for key in sorted(mem_dict.keys()):
+            if key == "keys":
+                self.key_memory = mem_dict[key]
+            elif key.startswith("values_"):
+                self.value_memory.append(mem_dict[key])
+            elif key.startswith("labels_"):
+                self.label_memory.append(mem_dict[key])
 
 
 #Stream 0
@@ -604,7 +621,7 @@ class Net_0(gluon.HybridBlock):
             # fc8_, output shape: {[10,1,1]}
 
 
-        pass
+            pass
 
     def hybrid_forward(self, F, data_):
         data_ = self.input_normalization_data_(data_)

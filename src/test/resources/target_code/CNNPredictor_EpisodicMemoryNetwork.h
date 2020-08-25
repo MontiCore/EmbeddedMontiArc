@@ -1,6 +1,5 @@
-<#-- (c) https://github.com/MontiCore/monticore -->
-#ifndef ${tc.fileNameWithoutEnding?upper_case}
-#define ${tc.fileNameWithoutEnding?upper_case}
+#ifndef CNNPREDICTOR_EPISODICMEMORYNETWORK
+#define CNNPREDICTOR_EPISODICMEMORYNETWORK
 
 #include <mxnet-cpp/MxNetCpp.h>
 
@@ -9,29 +8,23 @@
 #include <vector>
     
 #include <CNNModelLoader.h>
-#include <CNNLAOptimizer_${tc.getFullArchitectureName()}.h>
+#include <CNNLAOptimizer_EpisodicMemoryNetwork.h>
 
 using namespace mxnet::cpp;    
     
-<#list tc.architecture.networkInstructions as networkInstruction>
-class ${tc.fileNameWithoutEnding}_${networkInstruction?index}{
+class CNNPredictor_EpisodicMemoryNetwork_0{
 public:
-    const std::string file_prefix = "model/${tc.componentName}/model_${networkInstruction?index}_newest";
+    const std::string file_prefix = "model/EpisodicMemoryNetwork/model_0_newest";
     
     //network
     const std::vector<std::string> network_input_keys = {
-<#if tc.getStreamInputNames(networkInstruction.body, true)?size == 1>
         "data"
-<#else>
-        <#list tc.getStreamInputNames(networkInstruction.body, true) as variable>"data${variable?index}"<#sep>, </#list>
-</#if>
     };
-    const std::vector<std::vector<mx_uint>> network_input_shapes = {<#list tc.getStreamInputDimensions(networkInstruction.body) as dimensions>{1, ${tc.join(tc.cutDimensions(dimensions), ", ")}}<#sep>, </#list>};
+    const std::vector<std::vector<mx_uint>> network_input_shapes = {{1, 128}};
     std::vector<mx_uint> network_input_sizes;
     std::vector<std::vector<std::string>> network_arg_names;
     std::vector<Executor *> network_handles;
     
-<#if networkInstruction.body.episodicSubNetworks?has_content> 
     //episodic replay_memory
     //loss
     const std::vector<std::string> loss_input_keys = {
@@ -39,9 +32,9 @@ public:
         "data1"
     };
                            
-    mx_uint num_outputs = ${tc.getStreamOutputNames(networkInstruction.body, false)?size};
-    const std::vector<std::vector<mx_uint>> output_shapes = {<#list tc.getStreamOutputDimensions(networkInstruction.body) as dimensions>{1, ${tc.join(tc.cutDimensions(dimensions), ", ")}}<#sep>, </#list>};
-    std::vector<mx_uint> num_sub_net_outputs = {<#list networkInstruction.body.episodicSubNetworks as subNet> ${tc.getSubnetOutputSize(subNet)}<#sep>, </#list>};
+    mx_uint num_outputs = 1;
+    const std::vector<std::vector<mx_uint>> output_shapes = {{1, 33}};
+    std::vector<mx_uint> num_sub_net_outputs = { 1,  1,  1,  1};
     std::vector<Executor *> loss_handles;
     
     //episodic replay query nets
@@ -57,23 +50,21 @@ public:
     std::vector<mx_uint> query_num_inputs = {};
     Optimizer *optimizerHandle;
 
-    mx_uint num_subnets = ${networkInstruction.body.episodicSubNetworks?size};
-</#if>
+    mx_uint num_subnets = 4;
         
     //misc
     Context ctx = Context::cpu(); //Will be updated later in init according to use_gpu
     int dtype = 0; //use data type (float32=0 float64=1 ...)
  
                                                                                                            
-    explicit ${tc.fileNameWithoutEnding}_${networkInstruction?index}(){
+    explicit CNNPredictor_EpisodicMemoryNetwork_0(){
         init(file_prefix, network_input_keys, network_input_shapes);
     }
 
-    ~${tc.fileNameWithoutEnding}_${networkInstruction?index}(){
+    ~CNNPredictor_EpisodicMemoryNetwork_0(){
         for(Executor * handle : network_handles){
             delete handle;
         }
-<#if networkInstruction.body.episodicSubNetworks?has_content>
         for(Executor *handle : replay_query_handles){
                 delete handle;
         }
@@ -81,35 +72,29 @@ public:
             delete handle;
         }
         delete optimizerHandle;
-</#if>
         MXNotifyShutdown();
     }
 
-    void predict(${tc.join(tc.getStreamInputNames(networkInstruction.body, false), ", ", "const std::vector<float> &in_", "")},
-                 ${tc.join(tc.getStreamOutputNames(networkInstruction.body, false), ", ", "std::vector<float> &out_", "")}){
+    void predict(const std::vector<float> &in_data_,
+                 std::vector<float> &out_softmax_){
 
-<#if networkInstruction.body.episodicSubNetworks?has_content> 
-        std::vector<std::vector<float>> network_input = {${tc.join(tc.getStreamInputNames(networkInstruction.body, false), ", ", "in_", "")}};
+        std::vector<std::vector<float>> network_input = {in_data_};
 
         for(mx_uint i=1; i < num_subnets; i++){
             if(use_local_adaption[i-1]){
                 local_adapt(i, replay_query_handles[i-1], replay_memory[i-1], network_input, network_input_keys, network_input_shapes, network_input_sizes, loss_input_keys, gradient_steps[i-1], replay_k[i-1]);
             }
         }
-</#if>
 
         NDArray input_temp;
-<#list tc.getStreamInputNames(networkInstruction.body, false) as variable>
-        input_temp = NDArray(network_input_shapes[${variable?index}], ctx, false, dtype);
-        input_temp.SyncCopyFromCPU(in_${variable}.data(), network_input_sizes[${variable?index}]);
-        input_temp.CopyTo(&(network_handles[0]->arg_dict()[network_input_keys[${variable?index}]]));
-</#list>
+        input_temp = NDArray(network_input_shapes[0], ctx, false, dtype);
+        input_temp.SyncCopyFromCPU(in_data_.data(), network_input_sizes[0]);
+        input_temp.CopyTo(&(network_handles[0]->arg_dict()[network_input_keys[0]]));
         NDArray::WaitAll();
     
         network_handles[0]->Forward(false);
         CheckMXNetError("Forward, predict, handle ind. 0");
     
-<#if networkInstruction.body.episodicSubNetworks?has_content> 
         for(int i=1; i < network_handles.size(); i++){
             std::vector<NDArray> prev_output = network_handles[i-1]->outputs;
             if(num_sub_net_outputs[i-1] == 1){
@@ -121,23 +106,19 @@ public:
             }
         }
         NDArray::WaitAll();
-</#if>        
         
         std::vector<NDArray> output = network_handles.back()->outputs;
         std::vector<mx_uint> curr_output_shape;
         size_t curr_output_size; 
-<#list tc.getStreamOutputNames(networkInstruction.body, false) as output_name>    
-        curr_output_shape = output[${output_name?index}].GetShape();
+        curr_output_shape = output[0].GetShape();
         curr_output_size = 1;
         for (mx_uint i : curr_output_shape) curr_output_size *= i;
         //Fix due to a bug in the in how the output arrays are initialized when there are multiple outputs
-        assert((curr_output_size == out_${output_name}.size()) || (curr_output_size == out_${output_name}[0]));
-        output[${output_name?index}].SyncCopyToCPU(&out_${output_name});
+        assert((curr_output_size == out_softmax_.size()) || (curr_output_size == out_softmax_[0]));
+        output[0].SyncCopyToCPU(&out_softmax_);
     
-</#list>                                 
     }
     
-<#if networkInstruction.body.episodicSubNetworks?has_content>     
     //perform local adaption, train network on examples, only use updated on one inference (locally), don't save them
 void local_adapt(int net_start_ind,
                      Executor * query_handle,
@@ -340,7 +321,6 @@ void local_adapt(int net_start_ind,
         ret.push_back(labs);
         return ret;
     }
-</#if>
     
     
     Executor* initExecutor(Symbol &sym,
@@ -392,7 +372,7 @@ void local_adapt(int net_start_ind,
               const std::vector<std::string> &network_input_keys,
               const std::vector<std::vector<mx_uint>> &network_input_shapes){
 
-        CNNLAOptimizer_${tc.getFullArchitectureName()} optimizer_creator = CNNLAOptimizer_${tc.getFullArchitectureName()}();
+        CNNLAOptimizer_EpisodicMemoryNetwork optimizer_creator = CNNLAOptimizer_EpisodicMemoryNetwork();
     
         if(optimizer_creator.getContextName() == "gpu"){
             ctx = Context::gpu();
@@ -400,9 +380,20 @@ void local_adapt(int net_start_ind,
             
         network_input_sizes = getSizesOfShapes(network_input_shapes);
 
-<#if networkInstruction.body.episodicSubNetworks?has_content> 
         //Init Episodic replay Memory prediction
-${tc.include(networkInstruction.body, "PREDICTION_PARAMETER")}
+		use_local_adaption.push_back(true);
+	    replay_k.push_back(32);
+        gradient_steps.push_back(30);
+	    query_num_inputs.push_back(1);
+		use_local_adaption.push_back(true);
+	    replay_k.push_back(32);
+        gradient_steps.push_back(30);
+	    query_num_inputs.push_back(1);
+		use_local_adaption.push_back(true);
+	    replay_k.push_back(32);
+        gradient_steps.push_back(30);
+	    query_num_inputs.push_back(1);
+
     
         ModelLoader model_loader(file_prefix, num_subnets, ctx);
     
@@ -491,26 +482,6 @@ ${tc.include(networkInstruction.body, "PREDICTION_PARAMETER")}
     
         optimizerHandle = optimizer_creator.getOptimizer();
     
-<#else>
-        ModelLoader model_loader(file_prefix, 0, ctx);
-    
-        std::vector<Symbol> network_symbols = model_loader.GetNetworkSymbols();
-        std::vector<std::map<std::string, NDArray>> network_param_maps;
-        network_param_maps = model_loader.GetNetworkParamMaps();
-    
-        //Init handles
-        std::map<std::string, std::vector<mx_uint>> in_shape_map;
-        for(mx_uint i=0; i < network_input_keys.size(); i++){
-            in_shape_map[network_input_keys[i]] = network_input_shapes[i];
-        }
-        std::vector<std::vector<mx_uint>> in_shapes;
-        std::vector<std::vector<mx_uint>> aux_shapes;
-        std::vector<std::vector<mx_uint>> out_shapes;
-        network_symbols[0].InferShape(in_shape_map, &in_shapes, &aux_shapes, &out_shapes);
-        network_handles.push_back(initExecutor(network_symbols[0], network_param_maps[0], network_input_keys, network_input_shapes));
-    
-</#if>
     }
 };
-</#list>
-#endif // ${tc.fileNameWithoutEnding?upper_case}
+#endif // CNNPREDICTOR_EPISODICMEMORYNETWORK

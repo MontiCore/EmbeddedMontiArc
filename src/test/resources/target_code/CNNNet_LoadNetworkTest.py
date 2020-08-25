@@ -506,50 +506,50 @@ class Net_0(gluon.HybridBlock):
         with self.name_scope():
             if data_mean:
                 assert(data_std)
-                self.input_normalization_state_ = ZScoreNormalization(data_mean=data_mean['state_'],
-                                                                               data_std=data_std['state_'])
+                self.input_normalization_data_ = ZScoreNormalization(data_mean=data_mean['data_'],
+                                                                               data_std=data_std['data_'])
             else:
-                self.input_normalization_state_ = NoNormalization()
+                self.input_normalization_data_ = NoNormalization()
 
-            self.fc2_1_ = gluon.nn.Dense(units=300, use_bias=True, flatten=True)
-            # fc2_1_, output shape: {[300,1,1]}
+            lastEpoch = 0
+            for file in os.listdir("pretrained"):
+                if "network_name-" in file and ".json" in file:
+                    symbolFile = file
 
-            self.relu2_1_ = gluon.nn.Activation(activation='relu')
-            self.fc3_1_ = gluon.nn.Dense(units=600, use_bias=True, flatten=True)
-            # fc3_1_, output shape: {[600,1,1]}
+                if "network_name-" in file and ".param" in file:
+                    epochStr = file.replace(".params", "").replace("network_name-", "")
+                    epoch = int(epochStr)
+                    if epoch >= lastEpoch:
+                        lastEpoch = epoch
+                        weightFile = file
 
-            if data_mean:
-                assert(data_std)
-                self.input_normalization_action_ = ZScoreNormalization(data_mean=data_mean['action_'],
-                                                                               data_std=data_std['action_'])
-            else:
-                self.input_normalization_action_ = NoNormalization()
+            inputNames = ["data"]      
+            zeroInputs = [nd.zeros((1,128), ctx=mx_context[0])]
+            with warnings.catch_warnings():
+                warnings.simplefilter("ignore")
+                self.loadnetwork1_ = gluon.nn.SymbolBlock.imports("pretrained/" + symbolFile, inputNames, "pretrained/" + weightFile, ctx=mx_context)
+            self.loadnetwork1_out_shape = self.loadnetwork1_(*zeroInputs).shape
+            if self.loadnetwork1_out_shape != (1,1,768):
+                outputSize=1
+                for x in (1,768): 
+                    outputSize = outputSize * x  
+                self.loadnetwork1_fc_ = gluon.nn.Dense(units=outputSize, use_bias=False, flatten=False)
 
-            self.fc2_2_ = gluon.nn.Dense(units=600, use_bias=True, flatten=True)
-            # fc2_2_, output shape: {[600,1,1]}
-
-            self.fc4_ = gluon.nn.Dense(units=600, use_bias=True, flatten=True)
-            # fc4_, output shape: {[600,1,1]}
-
-            self.relu4_ = gluon.nn.Activation(activation='relu')
-            self.fc5_ = gluon.nn.Dense(units=1, use_bias=True, flatten=True)
-            # fc5_, output shape: {[1,1,1]}
+            self.fc1_ = gluon.nn.Dense(units=33, use_bias=True, flatten=True)
+            # fc1_, output shape: {[33,1,1]}
 
 
             pass
 
-    def hybrid_forward(self, F, state_, action_):
-        state_ = self.input_normalization_state_(state_)
-        fc2_1_ = self.fc2_1_(state_)
-        relu2_1_ = self.relu2_1_(fc2_1_)
-        fc3_1_ = self.fc3_1_(relu2_1_)
-        action_ = self.input_normalization_action_(action_)
-        fc2_2_ = self.fc2_2_(action_)
-        add4_ = fc3_1_ + fc2_2_
-        fc4_ = self.fc4_(add4_)
-        relu4_ = self.relu4_(fc4_)
-        fc5_ = self.fc5_(relu4_)
-        qvalues_ = F.identity(fc5_)
+    def hybrid_forward(self, F, data_):
+        data_ = self.input_normalization_data_(data_)
+        loadnetwork1_ = self.loadnetwork1_(data_)
+        if self.loadnetwork1_out_shape != (1,1,768):
+            loadnetwork1_ = self.loadnetwork1_fc_(loadnetwork1_)
+            loadnetwork1_ = F.reshape(loadnetwork1_, shape=(-1,1,768))
+        fc1_ = self.fc1_(loadnetwork1_)
+        softmax1_ = F.softmax(fc1_, axis=-1)
+        softmax_ = F.identity(softmax1_)
 
-        return [[qvalues_]]
+        return [[softmax_]]
 

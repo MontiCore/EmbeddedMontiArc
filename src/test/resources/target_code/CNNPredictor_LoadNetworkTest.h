@@ -1,5 +1,5 @@
-#ifndef CNNPREDICTOR_VGG16
-#define CNNPREDICTOR_VGG16
+#ifndef CNNPREDICTOR_LOADNETWORKTEST
+#define CNNPREDICTOR_LOADNETWORKTEST
 
 #include <mxnet-cpp/MxNetCpp.h>
 
@@ -8,19 +8,19 @@
 #include <vector>
     
 #include <CNNModelLoader.h>
-#include <CNNLAOptimizer_VGG16.h>
+#include <CNNLAOptimizer_LoadNetworkTest.h>
 
 using namespace mxnet::cpp;    
     
-class CNNPredictor_VGG16_0{
+class CNNPredictor_LoadNetworkTest_0{
 public:
-    const std::string file_prefix = "model/VGG16/model_0_newest";
+    const std::string file_prefix = "model/LoadNetworkTest/model_0_newest";
     
     //network
     const std::vector<std::string> network_input_keys = {
         "data"
     };
-    const std::vector<std::vector<mx_uint>> network_input_shapes = {{1, 3, 224, 224}};
+    const std::vector<std::vector<mx_uint>> network_input_shapes = {{1, 128}};
     std::vector<mx_uint> network_input_sizes;
     std::vector<std::vector<std::string>> network_arg_names;
     std::vector<Executor *> network_handles;
@@ -31,11 +31,11 @@ public:
     int dtype = 0; //use data type (float32=0 float64=1 ...)
  
                                                                                                            
-    explicit CNNPredictor_VGG16_0(){
+    explicit CNNPredictor_LoadNetworkTest_0(){
         init(file_prefix, network_input_keys, network_input_shapes);
     }
 
-    ~CNNPredictor_VGG16_0(){
+    ~CNNPredictor_LoadNetworkTest_0(){
         for(Executor * handle : network_handles){
             delete handle;
         }
@@ -43,7 +43,7 @@ public:
     }
 
     void predict(const std::vector<float> &in_data_,
-                 std::vector<float> &out_predictions_){
+                 std::vector<float> &out_softmax_){
 
 
         NDArray input_temp;
@@ -63,8 +63,8 @@ public:
         curr_output_size = 1;
         for (mx_uint i : curr_output_shape) curr_output_size *= i;
         //Fix due to a bug in the in how the output arrays are initialized when there are multiple outputs
-        assert((curr_output_size == out_predictions_.size()) || (curr_output_size == out_predictions_[0]));
-        output[0].SyncCopyToCPU(&out_predictions_);
+        assert((curr_output_size == out_softmax_.size()) || (curr_output_size == out_softmax_[0]));
+        output[0].SyncCopyToCPU(&out_softmax_);
     
     }
     
@@ -119,7 +119,7 @@ public:
               const std::vector<std::string> &network_input_keys,
               const std::vector<std::vector<mx_uint>> &network_input_shapes){
 
-        CNNLAOptimizer_VGG16 optimizer_creator = CNNLAOptimizer_VGG16();
+        CNNLAOptimizer_LoadNetworkTest optimizer_creator = CNNLAOptimizer_LoadNetworkTest();
     
         if(optimizer_creator.getContextName() == "gpu"){
             ctx = Context::gpu();
@@ -146,4 +146,4 @@ public:
     
     }
 };
-#endif // CNNPREDICTOR_VGG16
+#endif // CNNPREDICTOR_LOADNETWORKTEST

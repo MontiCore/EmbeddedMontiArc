@@ -21,7 +21,7 @@
 
                                         episodic_output = [self._networks[${networkInstruction?index}].episodic_sub_nets[layer_i](*(episodic_data[i]))[0] for i in range(num_pus)]
                                         for i in range(layer_i+1, len(episodic_layers[${networkInstruction?index}])):
-                                            episodic_output = self._networks[${networkInstruction?index}].episodic_sub_nets[i](*episodic_output)[0]
+                                            episodic_output = [self._networks[${networkInstruction?index}].episodic_sub_nets[i](*(episodic_output[j]))[0] for j in range(num_pus)]
 
                                         losses = []
                                         for i in range(num_pus):
@@ -34,14 +34,6 @@
                                             losses.append(0)
                                             for element in lossList:
                                                 losses[i] = losses[i] + element
-
-<#list tc.getStreamOutputNames(networkInstruction.body, true) as outputName>
-<#if tc.getNameWithoutIndex(outputName) == tc.outputName>
-<#if tc.endsWithArgmax(networkInstruction.body)>
-                                        episodic_output[${tc.getIndex(outputName, true)}] = mx.nd.argmax(episodic_output[${tc.getIndex(outputName, true)}], axis=1).expand_dims(1)
-</#if>
-</#if>
-</#list>
 
                                     for loss in losses:
                                         loss.backward()

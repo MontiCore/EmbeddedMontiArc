@@ -7,7 +7,6 @@
 <#assign maxStoredSamples = element.maxStoredSamples?c>
 <#assign useReplay = element.useReplay?string("True", "False")>
 <#assign useLocalAdaption = element.useLocalAdaption?string("true", "false")>
-<#assign replayMemoryStoreDistMeasure = element.replayMemoryStoreDistMeasure>
 <#assign localAdaptionK = element.localAdaptionK?c>
 <#assign localAdaptionGradientSteps = element.localAdaptionGradientSteps?c>
 <#assign queryNetDir = element.queryNetDir>
@@ -38,8 +37,8 @@
 </#if>
 <#elseif mode == "PREDICTION_PARAMETER">
 		use_local_adaption.push_back(${useLocalAdaption});
-        dist_measure.push_back("${replayMemoryStoreDistMeasure}");
 	    replay_k.push_back(${localAdaptionK});
         gradient_steps.push_back(${localAdaptionGradientSteps});
+	    query_num_inputs.push_back(${queryNetNumInputs});
 </#if>
 	

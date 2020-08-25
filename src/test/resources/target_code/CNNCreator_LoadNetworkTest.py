@@ -5,10 +5,10 @@ import shutil
 import warnings
 import inspect
 
-from CNNNet_Discriminator import Net_0
+from CNNNet_LoadNetworkTest import Net_0
 
-class CNNCreator_Discriminator:
-    _model_dir_ = "model/Discriminator/"
+class CNNCreator_LoadNetworkTest:
+    _model_dir_ = "model/LoadNetworkTest/"
     _model_prefix_ = "model"
 
     def __init__(self):
@@ -162,7 +162,7 @@ class CNNCreator_Discriminator:
             warnings.simplefilter("ignore")
             self.networks[0].collect_params().initialize(self.weight_initializer, force_reinit=False, ctx=context)
         self.networks[0].hybridize()
-        self.networks[0](mx.nd.zeros((1, 1,64,64,), ctx=context[0]))
+        self.networks[0](mx.nd.zeros((1, 128,), ctx=context[0]))
 
         if not os.path.exists(self._model_dir_):
             os.makedirs(self._model_dir_)
@@ -172,14 +172,14 @@ class CNNCreator_Discriminator:
 
     def getInputs(self):
         inputs = {}
-        input_dimensions = (1,64,64,)
-        input_domains = (float,-1.0,1.0,)
+        input_dimensions = (128,)
+        input_domains = (int,0.0,255.0,)
         inputs["data_"] = input_domains + (input_dimensions,)
         return inputs
 
     def getOutputs(self):
         outputs = {}
-        output_dimensions = (1,4,4,)
+        output_dimensions = (33,1,1,)
         output_domains = (float,0.0,1.0,)
-        outputs["dis_"] = output_domains + (output_dimensions,)
+        outputs["softmax_"] = output_domains + (output_dimensions,)
         return outputs

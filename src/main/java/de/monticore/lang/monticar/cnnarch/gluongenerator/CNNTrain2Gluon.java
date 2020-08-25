@@ -135,15 +135,17 @@ public class CNNTrain2Gluon extends CNNTrainGenerator {
         fileContentMap.put("CNNLAOptimizer_" + getInstanceName() + ".h", cnnTrainLAOptimizerTemplateContent);
 
         //AdamW optimizer if used for training
-        String optimizerName = configuration.getOptimizer().getName();
-        Optional<OptimizerSymbol> criticOptimizer = configuration.getCriticOptimizer();
-        String criticOptimizerName = "";
-        if (criticOptimizer.isPresent()){
-            criticOptimizerName = criticOptimizer.get().getName();
-        }
-        if (optimizerName.equals("adamw") || criticOptimizerName.equals("adamw")){
-            String adamWContent = templateConfiguration.processTemplate(ftlContext, "Optimizer/AdamW.ftl");
-            fileContentMap.put("AdamW.py", adamWContent);
+        if(configuration.getOptimizer() != null) {
+            String optimizerName = configuration.getOptimizer().getName();
+            Optional<OptimizerSymbol> criticOptimizer = configuration.getCriticOptimizer();
+            String criticOptimizerName = "";
+            if (criticOptimizer.isPresent()) {
+                criticOptimizerName = criticOptimizer.get().getName();
+            }
+            if (optimizerName.equals("adamw") || criticOptimizerName.equals("adamw")) {
+                String adamWContent = templateConfiguration.processTemplate(ftlContext, "Optimizer/AdamW.ftl");
+                fileContentMap.put("AdamW.py", adamWContent);
+            }
         }
 
         if (configData.isSupervisedLearning()) {

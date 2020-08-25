@@ -257,7 +257,7 @@ class BLEU(mx.metric.EvalMetric):
 
 
 
-class CNNSupervisedTrainer_CifarClassifierNetwork:
+class CNNSupervisedTrainer_LoadNetworkTest:
     def __init__(self, data_loader, net_constructor):
         self._data_loader = data_loader
         self._net_creator = net_constructor
@@ -300,7 +300,7 @@ class CNNSupervisedTrainer_CifarClassifierNetwork:
         single_pu_batch_size = int(batch_size/num_pus)
 
         if preprocessing:
-            preproc_lib = "CNNPreprocessor_CifarClassifierNetwork_executor"
+            preproc_lib = "CNNPreprocessor_LoadNetworkTest_executor"
             train_iter, test_iter, data_mean, data_std, train_images, test_images = self._data_loader.load_preprocessed_data(batch_size, preproc_lib, shuffle_data)
         else:
             train_iter, test_iter, data_mean, data_std, train_images, test_images = self._data_loader.load_data(batch_size, shuffle_data)
@@ -403,7 +403,7 @@ class CNNSupervisedTrainer_CifarClassifierNetwork:
         for epoch in range(begin_epoch, begin_epoch + num_epoch):
             if shuffle_data:
                 if preprocessing:
-                    preproc_lib = "CNNPreprocessor_CifarClassifierNetwork_executor"
+                    preproc_lib = "CNNPreprocessor_LoadNetworkTest_executor"
                     train_iter, test_iter, data_mean, data_std, train_images, test_images = self._data_loader.load_preprocessed_data(batch_size, preproc_lib, shuffle_data)
                 else:
                     train_iter, test_iter, data_mean, data_std, train_images, test_images = self._data_loader.load_data(batch_size, shuffle_data)
@@ -421,7 +421,7 @@ class CNNSupervisedTrainer_CifarClassifierNetwork:
 
                     data_ = gluon.utils.split_and_load(batch.data[0], ctx_list=mx_context, even_split=False)
 
-                    softmax_ = [mx.nd.zeros((single_pu_batch_size, 10,), ctx=context) for context in mx_context]
+                    softmax_ = [mx.nd.zeros((single_pu_batch_size, 33,), ctx=context) for context in mx_context]
 
 
                     nd.waitall()
@@ -487,7 +487,7 @@ class CNNSupervisedTrainer_CifarClassifierNetwork:
                     labels = [gluon.utils.split_and_load(batch.label[i], ctx_list=mx_context, even_split=False)[0] for i in range(1)]
                     data_ = gluon.utils.split_and_load(batch.data[0], ctx_list=mx_context, even_split=False)[0]
 
-                    softmax_ = mx.nd.zeros((single_pu_batch_size, 10,), ctx=mx_context[0])
+                    softmax_ = mx.nd.zeros((single_pu_batch_size, 33,), ctx=mx_context[0])
 
 
                     nd.waitall()
@@ -566,7 +566,7 @@ class CNNSupervisedTrainer_CifarClassifierNetwork:
                     labels = [gluon.utils.split_and_load(batch.label[i], ctx_list=mx_context, even_split=False)[0] for i in range(1)]
                     data_ = gluon.utils.split_and_load(batch.data[0], ctx_list=mx_context, even_split=False)[0]
 
-                    softmax_ = mx.nd.zeros((single_pu_batch_size, 10,), ctx=mx_context[0])
+                    softmax_ = mx.nd.zeros((single_pu_batch_size, 33,), ctx=mx_context[0])
 
 
                     nd.waitall()

@@ -90,7 +90,7 @@ public:
                     query_param_path = file_prefix + "_episodic_query_net_" + std::to_string(i) + "-0000.params";
                     loadComponent(query_json_path, query_param_path, query_symbol_list, query_param_map_list);
                     
-                    memory_path = file_prefix + "_replay_memory_" + std::to_string(i);
+                    memory_path = file_prefix + "_episodic_memory_sub_net_" + std::to_string(i) + "-0000";
                     checkFile(memory_path);
 
                     std::map<std::string, NDArray> mem_map = NDArray::LoadToMap(memory_path);

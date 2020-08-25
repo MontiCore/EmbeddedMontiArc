@@ -24,7 +24,11 @@ public:
     explicit CNNLAOptimizer_${config.instanceName}(){
     
 <#if (config.configuration.optimizer)??>
+<#if config.optimizerName == "adamw">
+        optimizerHandle = OptimizerRegistry::Find("adam");    
+<#else>    
         optimizerHandle = OptimizerRegistry::Find("${config.optimizerName}");
+</#if> 
 <#list config.optimizerParams?keys as param>
 <#if param == "learning_rate">
         optimizerHandle->SetParam("lr", ${config.optimizerParams[param]});
@@ -40,10 +44,10 @@ public:
         optimizerHandle->SetParam("${param}", ${config.optimizerParams[param]});
 </#if>
 </#list>
-<#if (learningRateDecay)??>
+<#if (learningRateDecay)?? && (stepSize)??>
 <#if !(minLearningRate)??>
 <#assign minLearningRate = "1e-08">       
-</#if>     
+</#if>
         std::unique_ptr<LRScheduler> lrScheduler(new FactorScheduler(${stepSize}, ${learningRateDecay}, ${minLearningRate}));
         optimizerHandle->SetLRScheduler(std::move(lrScheduler));
 </#if>    
