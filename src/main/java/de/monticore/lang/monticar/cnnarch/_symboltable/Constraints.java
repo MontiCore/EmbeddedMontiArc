@@ -289,6 +289,25 @@ public enum Constraints {
                     + AllPredefinedLayers.RANDOM;
         }
     },
+    MEMORY_REPLACEMENT_STRATEGY_TYPE {
+        @Override
+        public boolean isValid(ArchSimpleExpressionSymbol exp) {
+            Optional<String> optString= exp.getStringValue();
+            if (optString.isPresent()){
+                if (optString.get().equals(AllPredefinedLayers.REPLACE_OLDEST)
+                        || optString.get().equals(AllPredefinedLayers.NO_REPLACEMENT)){
+                    return true;
+                }
+            }
+            return false;
+        }
+
+        @Override
+        protected String msgString() {
+            return AllPredefinedLayers.REPLACE_OLDEST + " or "
+                    + AllPredefinedLayers.NO_REPLACEMENT;
+        }
+    },
     NULLABLE_AXIS {
         @Override
         public boolean isValid(ArchSimpleExpressionSymbol exp) {

@@ -120,7 +120,7 @@ public class AllPredefinedLayers {
     public static final String LOCAL_ADAPTION_K_NAME = "localAdaptionK";
     public static final String LOCAL_ADAPTION_GRADIENT_STEPS_NAME = "localAdaptionGradientSteps";
 
-	//parameters for episodic memory layer
+	//parameters for large memory layer
     public static final String SUB_KEY_SIZE_NAME = "subKeySize";
     public static final String QUERY_SIZE_NAME = "querySize";
 	public static final String QUERY_ACT_NAME = "queryAct";
@@ -128,6 +128,7 @@ public class AllPredefinedLayers {
 	public static final String NUM_HEADS_NAME = "numHeads";
     public static final String STORE_DIST_MEASURE_NAME = "storeDistMeasure";
 	public static final String VALUES_DIM_NAME = "valuesDim";
+    public static final String MEMORY_REPLACEMENT_STRATEGY_NAME = "memoryReplacementStrategy";
 
     //parameters for episodic memory layer
 	public static final String MAX_STORED_SAMPLES_NAME = "maxStoredSamples";
@@ -145,6 +146,8 @@ public class AllPredefinedLayers {
     public static final String L2 = "l2";
     public static final String INNER_PROD = "inner_prod";
     public static final String RANDOM = "random";
+    public static final String REPLACE_OLDEST = "replace_oldest";
+    public static final String NO_REPLACEMENT = "no_replacement";
 	
 	//possible activation values for the querry network in the memory layer
 	public static final String MEMORY_ACTIVATION_LINEAR = "linear";

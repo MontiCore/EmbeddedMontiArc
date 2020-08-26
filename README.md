@@ -356,7 +356,7 @@ architecture RNNencdec {
 ```
 
 ## Predefined Layers
-All methods with the exception of *Concatenate*, *Add*, *Get* and *Split* can only handle 1 input stream and have 1 output stream. 
+All methods with the exception of *Concatenate*, *Add*, *Get* and *Split*, EpisodicMemory, DotProductSelfAttention and potentially LoadNetwork can only handle 1 input stream and have 1 output stream. 
 All predefined methods start with a capital letter and all constructed methods have to start with a lowercase letter.
 
 * **FullyConnected(units, no_bias=false, flatten=true)**
@@ -585,6 +585,7 @@ All predefined methods start with a capital letter and all constructed methods h
   * **n** (integer > 0, required): How often to copy the entries of the given axis
   * **axis** (-1 <= integer <= 2, optional, default=-1): The axis to use for copying. Uses the last axis (-1) by default.
 
+
 * **Reshape(shape)**
 
   Transforms the input tensor into a different shape, while keeping the number of total entries in the tensor. 
@@ -602,6 +603,61 @@ All predefined methods start with a capital letter and all constructed methods h
   * **padding** ({"valid", "same", "no_loss"}, optional, default="same"): One of "valid", "same" or "no_loss". "valid" means no padding. "same"   results in padding the input such that the output has the same length as the original input divided by the stride (rounded up). "no_loss" results in minimal padding such that each input is used by at least one filter (identical to "valid" if *stride* equals 1).
   * **no_bias** (boolean, optional, default=false): Whether to disable the bias parameter.
     
+    
+* **EpisodicMemory(replayMemoryStoreProb=1, maxStoredSamples=-1, memoryReplacementStrategy="replace_oldest", useReplay=true, replayInterval, replayBatchSize=-1, replaySteps, replayGradientSteps=1, useLocalAdaption=true, localAdaptionGradientSteps=1, localAdaptionK=1, queryNetDir=-1, queryNetPrefix=-1, queryNetNumInputs=1)**
+
+  Episodic Memory as described in [1], although we implemented it as a layer which can also be used inside of a network. Works with multiple inputs. Not learned. Inputs are stored and are repleayed on part of the network following this layer. Local adaption retrives samples to the sample for which inference should be done from memory and performs finetuning learning with these on the part of the network following this layer.
+
+  * **replayMemoryStoreProb** ( 0 <= integer <= 1, optional, default=1): Probability with which a sample seen during training will be stored in memory (per actual sample, not batch).
+  * **maxStoredSamples** (integer > 0 or -1, optional, default=-1): Maximum number of samples stored in memory. If -1 use unlimeted memory (Watch out for your ram or gpu memory).
+  * **memoryReplacementStrategy** ("replace_oldest" or "no_replacement", optional, default="replace_oldest"): Strategy to use when memory is full (maxStoredSamples is reached. Either "replace_oldest" for replacing the oldest samples, or "no_replacement" for no replacement.
+  * **useReplay** (boolean, optional, default=true): Whether to use replay portion of this layer.
+  * **replayInterval** (integer > 0, required): the intervall of batches after which to perform replay.
+  * **replayBatchSize** (integer > 0 or -1, optional, default=-1): the batch size per replay step replay (number of samples taken from memory per replay step). If -1 use training batch size.
+  * **replaySteps** (integer > 0, required): how many batches of replay to perform per replay intervall.
+  * **replayGradientSteps** (integer > 0, optional, default=1): how many gradient updates to perform per replay batch.
+  * **useLocalAdaption** (boolean, optional, default=true): Whether to use local adaption portion of this layer.
+  * **localAdaptionGradientSteps** (Integer > 0, optional, default=1): how many gradient updates to perform during local adaption.
+  * **localAdaptionK** (integer > 0, optional, default=1): number of samples taken from memory for local adaption.
+  * **queryNetDir** (layerPathParameterTag or path (string), required): the relative path to the directory in which the query network lies
+  * **queryNetPrefix** (layerPathParameterTag or path (string), required):
+  * **queryNetNumInputs** (Integer > 0, required): name of the query network to load. This is a prefix of the file names, e.g. for Gluon there willl be two files (symbol and params) wich start with networkName- (the prefix would be networkName- with the -) followed by epoch number (param file) and file endings.
+
+
+* **LargeMemory(storeDistMeasure="inner_prod", subKeySize, querySize=512, queryAct="linear", k, numHeads=1, valuesDim=-1)**
+
+  A learnable value key memory as described in [2]. Takes one input which is used to calculate the query.
+  
+  * **storeDistMeasure** ("inner_prod", "l2" or "random", optional, default="inner_prod"): which distance measure to use between querrie and keys.
+  * **subKeySize** (integer > 0, required): dimension of the sub key vectors.
+  * **querySize** (integer or Integer tuple > 0, optional, default=512): If an integer the dimension of the query vector (one layer query network), if a tuple the dimensions of the layers of the query network, last entry dimension of the query vector.
+  * **queryAct** (activation type, optional, default="linear"): The activation to use in the query network (the same for all layers).
+  * **k** (integer > 0, required): how many top_k matches to extract form memory for averaging.
+  * **numHeads** (integer > 0, optional, defualt=1): number of heads to use (parrallel computations to use, aggregated in the end).
+  * **valuesDim** (integer > 0 or -1, optinal, default=-1): the dimension of a value vector. For -1 this will be query size or its last value.
+          
+
+* **DotProductSelfAttention(scaleFactor=-1, numHeads=1, dimKeys=-1, dimValues=-1, useProjBias=true, useMask=false)**
+
+  Calculates the DotProductSelfAttention. As described in [3]. Takes three inputs: queries, keys, values and optionally a mask for masked Self Attention as used in Bert.
+  
+  * **scaleFactor** (integer > 0 or -1, optional, default=-1): factor to scale the score of the dot porduct of querries and keys, for -1 this is sqrt(dimKeys).
+  * **numHeads** (integer > 0, optional, default=1): how many attention heads to use (parrellel attention calculations over the inputs).
+  * **dimKeys** (integer > 0 or -1, optional, default=-1): the dimension of the keys and queries after initial linear transformation into a vector. For -1 this is the product of the input dimensions of the input querries devided by numHeads.
+  * **dimValues** (integer > 0 or -1, optional, default=-1): the dimension of the values after initial linear transformation into a vector. For -1 this is the product of the input dimensions of the input querries devided by numHeads.
+  * **useProjBias** (boolean, optional, default=true): wether to use a bias in the linear transformations in this layer.
+  * **useMask** (boolean, optional, default=false): wether to perform masked self attention.
+
+
+* **LoadNetwork(networkDir, networkPrefix, numInputs, outputShape)**
+  
+  Loads a pretrained network as a layer in the own network. Will then be jointly trained further with the rest of the own network. Can accept multiple inputs but currently just one output.
+  
+  * **networkDir** (layerPathParameterTag or path (string), required): the relative path to the directory in which the network lies
+  * **networkPrefix** (string, required): name of the network to load. This is a prefix of the file names, e.g. for Gluon there willl be two files (symbol and params) wich start with networkName- (the prefix would be networkName- with the -) followed by epoch number (param file) and file endings.
+  * **numInputs** (integer > 0, required): number of inputs the loaded network expects.
+  * **outputShape** (integer tuple > 0, reqiured): The expected shape of the output. If the network does not provide this shape, it it will be transformed with a dense layer and a reshape.
+
 
 ## Predefined Unroll Types
 * **GreedySearch(max_length)**
@@ -617,3 +673,10 @@ All predefined methods start with a capital letter and all constructed methods h
 
   * **max_length** (integer > 0, required): The maximum number of timesteps to run the RNN, and thus the maximum length of the generated sequence.
   * **width** (integer > 0, required): The number of candidates to consider each in timestep. Sometimes called k.
+
+
+## Refrences
+
+  [1] Cyprien De Masson, Sebastian Ruder, Lingpeng Kong and Dani Yogatama, "Episodic Memory in Lifelong Language Learning", Proc. NeurIPS, 2019
+  [2] Guillaume Lample, Alexandre Sablayrolles, Marc’Aurelio Ranzato, Ludovic Denoyer and Hervé Jégou, "Large memory layers with product keys", Proc. NeurIPS, Dec. 2019.
+  [3] Ashish Vaswani, Noam Shazeer, Niki Parmar, Jakob Uszkoreit, Llion Jones, Aidan N Gomez, Lukasz Kaiser and Illia Polosukhin, "Attention is all you need", Proc. NeurIPS, 2017
