@@ -101,17 +101,19 @@ public class EpisodicMemory extends PredefinedLayerDeclaration {
                 new ParameterSymbol.Builder()
                         .name(AllPredefinedLayers.QUERY_NET_DIR_NAME)
                         .constraints(Constraints.PATH_TAG_OR_PATH)
-                        .defaultValue(-1)
                         .build(),
                 new ParameterSymbol.Builder()
                         .name(AllPredefinedLayers.QUERY_NET_PREFIX_NAME)
                         .constraints(Constraints.STRING)
-                        .defaultValue(-1)
                         .build(),
                 new ParameterSymbol.Builder()
                         .name(AllPredefinedLayers.QUERY_NET_NUM_INPUTS_NAME)
-                        .constraints(Constraints.INTEGER)
-                        .defaultValue(1)
+                        .constraints(Constraints.INTEGER, Constraints.POSITIVE)
+                        .build(),
+                new ParameterSymbol.Builder()
+                        .name(AllPredefinedLayers.MEMORY_REPLACEMENT_STRATEGY_NAME)
+                        .constraints(Constraints.MEMORY_REPLACEMENT_STRATEGY_TYPE)
+                        .defaultValue(AllPredefinedLayers.REPLACE_OLDEST)
                         .build()));
         declaration.setParameters(parameters);
         return declaration;
