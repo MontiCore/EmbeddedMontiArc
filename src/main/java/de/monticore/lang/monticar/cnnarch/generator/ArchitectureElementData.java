@@ -273,6 +273,10 @@ public class ArchitectureElementData {
         return getLayerSymbol().getIntValue(AllPredefinedLayers.MAX_STORED_SAMPLES_NAME).get();
     }
 
+    public String getMemoryReplacementStrategy(){
+        return getLayerSymbol().getStringValue(AllPredefinedLayers.MEMORY_REPLACEMENT_STRATEGY_NAME).get();
+    }
+
     public boolean getUseReplay(){
         return getLayerSymbol().getBooleanValue(AllPredefinedLayers.USE_REPLAY_NAME).get();
     }
