@@ -5,6 +5,7 @@
 <#assign replayGradientSteps = element.replayGradientSteps?c>
 <#assign replayMemoryStoreProb = element.replayMemoryStoreProb?c>
 <#assign maxStoredSamples = element.maxStoredSamples?c>
+<#assign memoryReplacementStrategy = element.memoryReplacementStrategy>
 <#assign useReplay = element.useReplay?string("True", "False")>
 <#assign useLocalAdaption = element.useLocalAdaption?string("true", "false")>
 <#assign localAdaptionK = element.localAdaptionK?c>
@@ -15,7 +16,7 @@
 <#if mode == "ARCHITECTURE_DEFINITION">
             self.${element.name} = EpisodicMemory(replay_interval=${replayInterval}, replay_batch_size=${replayBatchSize}, replay_steps=${replaySteps},
                                                 replay_gradient_steps=${replayGradientSteps}, store_prob=${replayMemoryStoreProb},
-                                                max_stored_samples=${maxStoredSamples}, use_replay=${useReplay},
+                                                max_stored_samples=${maxStoredSamples}, memory_replacement_strategy="${memoryReplacementStrategy}", use_replay=${useReplay},
                                                 query_net_dir="${queryNetDir}/", 
                                                 query_net_prefix="${queryNetPrefix}",
                                                 query_net_num_inputs=${queryNetNumInputs})
