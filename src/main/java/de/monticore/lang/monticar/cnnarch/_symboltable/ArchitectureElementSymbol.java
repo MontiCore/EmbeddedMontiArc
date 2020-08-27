@@ -157,6 +157,7 @@ public abstract class ArchitectureElementSymbol extends ResolvableSymbol {
         else {
             return Optional.empty();
         }
+
     }
 
     /**

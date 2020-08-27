@@ -60,6 +60,8 @@ public class CNNArchCocos {
                 .addCoCo(new CheckLayerVariableDeclarationLayerType())
                 .addCoCo(new CheckLayerVariableDeclarationIsUsed())
                 .addCoCo(new CheckConstants())
+                .addCoCo(new CheckLargeMemoryLayer())
+                .addCoCo(new CheckEpisodicMemoryLayer())
                 .addCoCo(new CheckUnrollInputsOutputsTooMany());
     }
 

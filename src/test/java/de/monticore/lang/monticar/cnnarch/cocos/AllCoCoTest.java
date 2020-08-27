@@ -57,7 +57,8 @@ public class AllCoCoTest extends AbstractCoCoTest {
         checkValid("valid_tests", "RNNencdec");
         checkValid("valid_tests", "RNNsearch");
         checkValid("valid_tests", "RNNtest");
-
+        checkValid("valid_tests", "EpisodicMemoryNetwork");
+        checkValid("valid_tests", "LargeMemoryNetwork");
     }
 
     @Test
@@ -311,6 +312,24 @@ public class AllCoCoTest extends AbstractCoCoTest {
                 new CNNArchSymbolCoCoChecker().addCoCo(new CheckUnrollInputsOutputsTooMany()),
                 "invalid_tests", "UnrollInputsTooMany",
                 new ExpectedErrorInfo(1, ErrorCodes.UNROLL_INPUTS_TOO_MANY));
+    }
+
+    @Test
+    public void testEpisodicMemoryInvalidPlacement() {
+        checkInvalid(new CNNArchCoCoChecker(),
+                new CNNArchSymbolCoCoChecker(),
+                new CNNArchSymbolCoCoChecker().addCoCo(new CheckEpisodicMemoryLayer()),
+                "invalid_tests", "EpisodicMemoryInvalidPlacement",
+                new ExpectedErrorInfo(2, ErrorCodes.INVALID_EPISODIC_MEMORY_LAYER_PLACEMENT));
+    }
+
+    @Test
+    public void testLargeMemoryInvalidParameterCombination() {
+        checkInvalid(new CNNArchCoCoChecker(),
+                new CNNArchSymbolCoCoChecker(),
+                new CNNArchSymbolCoCoChecker().addCoCo(new CheckLargeMemoryLayer()),
+                "invalid_tests", "LargeMemoryInvalidParameterCombination",
+                new ExpectedErrorInfo(1, ErrorCodes.INVALID_LARGE_MEMORY_LAYER_PARAMETERS));
     }
 }
 

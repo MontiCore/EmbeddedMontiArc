@@ -30,7 +30,6 @@ public class ArchTypeSymbol extends CommonSymbol {
     private int widthIndex = -1;
     private List<ArchSimpleExpressionSymbol> dimensions = new ArrayList<>();
 
-
     public ArchTypeSymbol() {
         super("", KIND);
         ASTElementType elementType = new ASTElementType();
@@ -146,7 +145,7 @@ public class ArchTypeSymbol extends CommonSymbol {
         }
         return dimensionList;
     }
-
+    
     public Set<ParameterSymbol> resolve() {
         if (!isResolved()){
             if (isResolvable()){

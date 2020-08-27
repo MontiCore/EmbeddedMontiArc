@@ -14,11 +14,14 @@ package de.monticore.lang.monticar.cnnarch._symboltable;
 import de.monticore.lang.monticar.cnnarch.helper.Utils;
 import de.monticore.lang.monticar.cnnarch.predefined.AllPredefinedLayers;
 import de.monticore.lang.monticar.cnnarch.predefined.AllPredefinedVariables;
+import de.monticore.lang.monticar.cnnarch._cocos.CheckLayerPathParameter;
 import de.monticore.symboltable.CommonScopeSpanningSymbol;
 import de.monticore.symboltable.Scope;
 import de.monticore.symboltable.Symbol;
 import org.apache.commons.math3.ml.neuralnet.Network;
 
+import java.lang.RuntimeException;
+import java.lang.NullPointerException;
 import java.util.*;
 
 public class ArchitectureSymbol extends CommonScopeSpanningSymbol {
@@ -214,5 +217,92 @@ public class ArchitectureSymbol extends CommonScopeSpanningSymbol {
         return copy;
     }
 
+    public void processLayerPathParameterTags(HashMap layerPathParameterTags){
+        for(NetworkInstructionSymbol networkInstruction : networkInstructions){
+            List<ArchitectureElementSymbol> elements = networkInstruction.getBody().getElements();
+            processElementsLayerPathParameterTags(elements, layerPathParameterTags);
+        }
+    }
 
+    public void processElementsLayerPathParameterTags(List<ArchitectureElementSymbol> elements, HashMap layerPathParameterTags){
+        for (ArchitectureElementSymbol element : elements){
+            if (element instanceof SerialCompositeElementSymbol || element instanceof ParallelCompositeElementSymbol){
+                processElementsLayerPathParameterTags(((CompositeElementSymbol) element).getElements(), layerPathParameterTags);
+            }else if (element instanceof LayerSymbol){
+                for (ArgumentSymbol param : ((LayerSymbol) element).getArguments()){
+                    boolean isPathParam = false;
+                    if (param.getParameter() != null) {
+                        for (Constraints constr : param.getParameter().getConstraints()) {
+                            if (constr.name().equals("PATH_TAG_OR_PATH")) {
+                                isPathParam = true;
+                            }
+                        }
+                    }
+                    if (isPathParam){
+                        String paramValue = param.getRhs().getStringValue().get();
+                        if (paramValue.startsWith("tag:")) {
+                            String pathTag = param.getRhs().getStringValue().get().split(":")[1];
+                            String path = (String) layerPathParameterTags.get(pathTag);
+                            param.setRhs(ArchSimpleExpressionSymbol.of(path));
+                            CheckLayerPathParameter.check((LayerSymbol) element, path, pathTag, layerPathParameterTags);
+                        }else{
+                            CheckLayerPathParameter.check((LayerSymbol) element, paramValue, "", layerPathParameterTags);
+                        }
+                    }
+                }
+            }
+        }
+    }
+
+    public void processForEpisodicReplayMemory(){
+        for(NetworkInstructionSymbol networkInstruction : networkInstructions){
+            List<ArchitectureElementSymbol> elements = networkInstruction.getBody().getElements();
+            List<ArchitectureElementSymbol> elementsNew = new ArrayList<>();
+            List<List<ArchitectureElementSymbol>> episodicSubNetworks = new ArrayList<>(new ArrayList<>());
+            List<ArchitectureElementSymbol> currentEpisodicSubNetworkElements = new ArrayList<>();
+
+            for (ArchitectureElementSymbol element : elements){
+                if (AllPredefinedLayers.EPISODIC_REPLAY_LAYER_NAMES.contains(element.getName())) {
+                    boolean use_replay = false;
+                    boolean use_local_adaption = false;
+
+                    for (ArgumentSymbol arg : ((LayerSymbol)element).getArguments()){
+                        if (arg.getName().equals(AllPredefinedLayers.USE_REPLAY_NAME) && (boolean)arg.getRhs().getValue().get()){
+                            use_replay = true;
+                            break;
+                        }else if (arg.getName().equals(AllPredefinedLayers.USE_LOCAL_ADAPTION_NAME) && (boolean)arg.getRhs().getValue().get()){
+                            use_local_adaption = true;
+                            break;
+                        }
+                    }
+
+                    if (!use_replay && !use_local_adaption) {
+                        for (ParameterSymbol param : ((LayerSymbol) element).getDeclaration().getParameters()) {
+                            if (param.getName().equals(AllPredefinedLayers.USE_REPLAY_NAME) &&
+                                    (boolean) param.getDefaultExpression().get().getValue().get()) {
+                                use_replay = true;
+                                break;
+                            } else if (param.getName().equals(AllPredefinedLayers.USE_LOCAL_ADAPTION_NAME) &&
+                                    (boolean) param.getDefaultExpression().get().getValue().get()) {
+                                use_local_adaption = true;
+                                break;
+                            }
+                        }
+                    }
+
+                    if (use_replay || use_local_adaption){
+                        if (!currentEpisodicSubNetworkElements.isEmpty()){
+                            episodicSubNetworks.add(currentEpisodicSubNetworkElements);
+                        }
+                        currentEpisodicSubNetworkElements = new ArrayList<>();
+                    }
+                }
+                currentEpisodicSubNetworkElements.add(element);
+            }
+            if (!currentEpisodicSubNetworkElements.isEmpty() && !episodicSubNetworks.isEmpty()){
+                episodicSubNetworks.add(currentEpisodicSubNetworkElements);
+            }
+                networkInstruction.getBody().setEpisodicSubNetworks(episodicSubNetworks);
+        }
+    }
 }

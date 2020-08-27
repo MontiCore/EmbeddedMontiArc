@@ -30,9 +30,8 @@ public class ArgumentSymbol extends CommonSymbol {
     }
 
     public ParameterSymbol getParameter() {
-        if (parameter == null){
+        if (parameter == null && getEnclosingScope() != null){
             Symbol spanningSymbol = getEnclosingScope().getSpanningSymbol().get();
-
             if (spanningSymbol instanceof UnrollInstructionSymbol) {
                 UnrollInstructionSymbol unroll = (UnrollInstructionSymbol) getEnclosingScope().getSpanningSymbol().get();
 

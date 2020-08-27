@@ -48,6 +48,26 @@ public enum Constraints {
             return "a boolean";
         }
     },
+    STRING {
+        @Override
+        public boolean isValid(ArchSimpleExpressionSymbol exp) {
+            return exp.isString();
+        }
+        @Override
+        public String msgString() {
+            return "a string";
+        }
+    },
+    PATH_TAG_OR_PATH {
+        @Override
+        public boolean isValid(ArchSimpleExpressionSymbol exp) {
+            return exp.isString() || exp.isStringTag();
+        }
+        @Override
+        public String msgString() {
+            return "a path tag or a path string";
+        }
+    },
     TUPLE {
         @Override
         public boolean isValid(ArchSimpleExpressionSymbol exp) {
@@ -68,6 +88,16 @@ public enum Constraints {
             return "a tuple of integers";
         }
     },
+    INTEGER_OR_INTEGER_TUPLE {
+        @Override
+        public boolean isValid(ArchSimpleExpressionSymbol exp) {
+            return exp.isInt().get() || exp.isIntTuple().get();
+        }
+        @Override
+        public String msgString() {
+            return "an integer or tuple of integers";
+        }
+    },
     POSITIVE {
         @Override
         public boolean isValid(ArchSimpleExpressionSymbol exp) {
@@ -78,6 +108,28 @@ public enum Constraints {
                 boolean isPositive = true;
                 for (double value : exp.getDoubleTupleValues().get()){
                     if (value <= 0){
+                        isPositive = false;
+                    }
+                }
+                return isPositive;
+            }
+            return false;
+        }
+        @Override
+        public String msgString() {
+            return "a positive number";
+        }
+    },
+    POSITIVE_OR_MINUS_ONE {
+        @Override
+        public boolean isValid(ArchSimpleExpressionSymbol exp) {
+            if (exp.getDoubleValue().isPresent()){
+                return exp.getDoubleValue().get() > 0 || exp.getDoubleValue().get() == -1;
+            }
+            else if (exp.getDoubleTupleValues().isPresent()){
+                boolean isPositive = true;
+                for (double value : exp.getDoubleTupleValues().get()){
+                    if (value < -1 || value == 0){
                         isPositive = false;
                     }
                 }
@@ -189,6 +241,71 @@ public enum Constraints {
         protected String msgString() {
             return AllPredefinedLayers.POOL_MAX + " or "
                     + AllPredefinedLayers.POOL_AVG;
+        }
+    },
+    ACTIVATION_TYPE {
+        @Override
+        public boolean isValid(ArchSimpleExpressionSymbol exp) {
+            Optional<String> optString= exp.getStringValue();
+            if (optString.isPresent()){
+                if (optString.get().equals(AllPredefinedLayers.MEMORY_ACTIVATION_LINEAR)
+                        || optString.get().equals(AllPredefinedLayers.MEMORY_ACTIVATION_RELU)
+                        || optString.get().equals(AllPredefinedLayers.MEMORY_ACTIVATION_TANH)
+                        || optString.get().equals(AllPredefinedLayers.MEMORY_ACTIVATION_SIGMOID)
+                        || optString.get().equals(AllPredefinedLayers.MEMORY_ACTIVATION_SOFTRELU)
+                        || optString.get().equals(AllPredefinedLayers.MEMORY_ACTIVATION_SOFTSIGN)){
+                    return true;
+                }
+            }
+            return false;
+        }
+        @Override
+        protected String msgString() {
+            return AllPredefinedLayers.MEMORY_ACTIVATION_LINEAR + " or "
+                    + AllPredefinedLayers.MEMORY_ACTIVATION_RELU + " or "
+                    + AllPredefinedLayers.MEMORY_ACTIVATION_TANH + " or "
+                    + AllPredefinedLayers.MEMORY_ACTIVATION_SIGMOID + " or "
+                    + AllPredefinedLayers.MEMORY_ACTIVATION_SOFTRELU + " or "
+                    + AllPredefinedLayers.MEMORY_ACTIVATION_SOFTSIGN;
+        }
+    },
+    DIST_MEASURE_TYPE {
+        @Override
+        public boolean isValid(ArchSimpleExpressionSymbol exp) {
+            Optional<String> optString= exp.getStringValue();
+            if (optString.isPresent()){
+                if (optString.get().equals(AllPredefinedLayers.L2)
+                        || optString.get().equals(AllPredefinedLayers.INNER_PROD)){
+                    return true;
+                }
+            }
+            return false;
+        }
+
+        @Override
+        protected String msgString() {
+            return AllPredefinedLayers.L2 + " or "
+                    + AllPredefinedLayers.INNER_PROD + "or"
+                    + AllPredefinedLayers.RANDOM;
+        }
+    },
+    MEMORY_REPLACEMENT_STRATEGY_TYPE {
+        @Override
+        public boolean isValid(ArchSimpleExpressionSymbol exp) {
+            Optional<String> optString= exp.getStringValue();
+            if (optString.isPresent()){
+                if (optString.get().equals(AllPredefinedLayers.REPLACE_OLDEST)
+                        || optString.get().equals(AllPredefinedLayers.NO_REPLACEMENT)){
+                    return true;
+                }
+            }
+            return false;
+        }
+
+        @Override
+        protected String msgString() {
+            return AllPredefinedLayers.REPLACE_OLDEST + " or "
+                    + AllPredefinedLayers.NO_REPLACEMENT;
         }
     },
     NULLABLE_AXIS {
