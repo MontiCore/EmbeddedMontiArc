@@ -8,7 +8,13 @@ import shutil
 import pickle
 import math
 import sys
+import inspect
 from mxnet import gluon, autograd, nd
+try:
+    import AdamW
+except:
+    pass
+
 
 class CrossEntropyLoss(gluon.loss.Loss):
     def __init__(self, axis=-1, sparse_label=True, weight=None, batch_axis=0, **kwargs):
@@ -55,7 +61,7 @@ class SoftmaxCrossEntropyLossIgnoreIndices(gluon.loss.Loss):
             loss = -(pred * label).sum(axis=self._axis, keepdims=True)
         # ignore some indices for loss, e.g. <pad> tokens in NLP applications
         for i in self._ignore_indices:
-            loss = loss * mx.nd.logical_not(mx.nd.equal(mx.nd.argmax(pred, axis=1), mx.nd.ones_like(mx.nd.argmax(pred, axis=1))*i) * mx.nd.equal(mx.nd.argmax(pred, axis=1), label))
+            loss = F.broadcast_mul(loss, F.logical_not(F.broadcast_equal(F.argmax(pred, axis=1), F.ones_like(F.argmax(pred, axis=1))*i) * F.broadcast_equal(F.argmax(pred, axis=1), label)))
         return loss.mean(axis=self._batch_axis, exclude=True)
 
 class DiceLoss(gluon.loss.Loss):
@@ -278,12 +284,21 @@ class ${tc.fileNameWithoutEnding}:
               shuffle_data=False,
               clip_global_grad_norm=None,
               preprocessing = False):
+        num_pus = 1
         if context == 'gpu':
-            mx_context = mx.gpu()
+            num_pus = mx.context.num_gpus()
+            if num_pus >= 1:
+                if num_pus == 1:
+                    mx_context = [mx.gpu(0)]
+                else:
+                    mx_context = [mx.gpu(i) for i in range(num_pus)]
+            else:
+                logging.error("Context argument is '" + context + "'. But no gpu is present in the system.")
         elif context == 'cpu':
-            mx_context = mx.cpu()
+            mx_context = [mx.cpu()]
         else:
             logging.error("Context argument is '" + context + "'. Only 'cpu' and 'gpu are valid arguments'.")
+        single_pu_batch_size = int(batch_size/num_pus)
 
         if preprocessing:
             preproc_lib = "CNNPreprocessor_${tc.fileNameWithoutEnding?keep_after("CNNSupervisedTrainer_")}_executor"
@@ -328,7 +343,10 @@ class ${tc.fileNameWithoutEnding}:
             if not os.path.isdir(self._net_creator._model_dir_):
                 raise
 
-        trainers = [mx.gluon.Trainer(network.collect_params(), optimizer, optimizer_params) for network in self._networks.values() if len(network.collect_params().values()) != 0]
+        if optimizer == "adamw":
+            trainers = [mx.gluon.Trainer(network.collect_params(), AdamW.AdamW(**optimizer_params)) for network in self._networks.values() if len(network.collect_params().values()) != 0]
+        else:
+            trainers = [mx.gluon.Trainer(network.collect_params(), optimizer, optimizer_params) for network in self._networks.values() if len(network.collect_params().values()) != 0]
 
         margin = loss_params['margin'] if 'margin' in loss_params else 1.0
         sparseLabel = loss_params['sparse_label'] if 'sparse_label' in loss_params else True
@@ -373,9 +391,44 @@ class ${tc.fileNameWithoutEnding}:
             loss_function = LogCoshLoss()
         else:
             logging.error("Invalid loss parameter.")
+        
+        loss_function.hybridize()
+        
+<#list tc.architecture.networkInstructions as networkInstruction>    
+<#if networkInstruction.body.episodicSubNetworks?has_content>
+<#assign episodicReplayVisited = true>
+</#if>
+</#list>    
+
+<#if episodicReplayVisited??>
+        #Episodic memory Replay
+        episodic_layers = {}
+        episodic_store_buffer = {}
+        episodic_query_networks = {}
+        store_prob = {}
+<#list tc.architecture.networkInstructions as networkInstruction>
+        episodic_layers[${networkInstruction?index}] = []
+        episodic_store_buffer[${networkInstruction?index}] = []
+        episodic_query_networks[${networkInstruction?index}] = []
+        store_prob[${networkInstruction?index}] = []
+<#list networkInstruction.body.episodicSubNetworks as elements>
+<#if elements?index != 0>
+        sub_net = self._networks[${networkInstruction?index}].episodic_sub_nets[${elements?index - 1}]
+        layer = [param for param in inspect.getmembers(sub_net, lambda x: not(inspect.isroutine(x))) if param[0].startswith("memory")][0][1]
+        episodic_layers[0].append(layer)
+        episodic_store_buffer[${networkInstruction?index}].append([])
+        episodic_query_networks[0].append(episodic_layers[0][-1].get_query_network(mx_context))
+        store_prob[${networkInstruction?index}].append(nd.array([1-episodic_layers[0][-1].store_prob, episodic_layers[0][-1].store_prob], ctx=mx.cpu()))                                                                                  
+</#if>
+</#list>
+</#list>
+</#if>
 
         tic = None
 
+        avg_speed = 0
+        n = 0
+    
         for epoch in range(begin_epoch, begin_epoch + num_epoch):
             if shuffle_data:
                 if preprocessing:
@@ -390,18 +443,22 @@ class ${tc.fileNameWithoutEnding}:
             loss_total = 0
             train_iter.reset()
             for batch_i, batch in enumerate(train_iter):
+                
+<#include "pythonEpisodicExecuteTrain.ftl">
+                                 
                 with autograd.record():
 <#include "pythonExecuteTrain.ftl">
 
-                    loss = 0
-                    for element in lossList:
-                        loss = loss + element
+                    losses = [0]*num_pus
+                    for i in range(num_pus):
+                        for element in lossList[i]:
+                            losses[i] = losses[i] + element
 
-                loss.backward()
+                for loss in losses: 
+                    loss.backward()
+                    loss_total += loss.sum().asscalar()
+                    global_loss_train += loss.sum().asscalar()
 
-                loss_total += loss.sum().asscalar()
-
-                global_loss_train += loss.sum().asscalar()
                 train_batches += 1
 
                 if clip_global_grad_norm:
@@ -414,7 +471,14 @@ class ${tc.fileNameWithoutEnding}:
 
                 for trainer in trainers:
                     trainer.step(batch_size)
+    
+<#if episodicReplayVisited??>                                                  
+                #storing samples for episodic replay
+                for net_i in range(len(self._networks)):
+                    for layer_i, layer in enumerate(episodic_layers[net_i]):
+                        layer.store_samples(episodic_store_buffer[net_i][layer_i], labels, episodic_query_networks[net_i][layer_i], store_prob[net_i][layer_i], mx_context)
 
+</#if>
                 if tic is None:
                     tic = time.time()
                 else:
@@ -428,13 +492,15 @@ class ${tc.fileNameWithoutEnding}:
                         loss_total = 0
 
                         logging.info("Epoch[%d] Batch[%d] Speed: %.2f samples/sec Loss: %.5f" % (epoch, batch_i, speed, loss_avg))
-
+                        
+                        avg_speed += speed
+                        n += 1
+    
                         tic = time.time()
 
             global_loss_train /= (train_batches * batch_size)
 
             tic = None
-
 
             if eval_train:
                 train_iter.reset()
@@ -445,7 +511,6 @@ class ${tc.fileNameWithoutEnding}:
 
 <#include "saveAttentionImageTrain.ftl">
 
-
                     predictions = []
                     for output_name in outputs:
                         if mx.nd.shape_array(mx.nd.squeeze(output_name)).size > 1:
@@ -453,7 +518,8 @@ class ${tc.fileNameWithoutEnding}:
                         else:
                             predictions.append(output_name)
 
-                    metric.update(preds=predictions, labels=labels)
+                    metric.update(preds=predictions, labels=[labels[j] for j in range(len(labels))])
+
                 train_metric_score = metric.get()[1]
             else:
                 train_metric_score = 0
@@ -475,26 +541,40 @@ class ${tc.fileNameWithoutEnding}:
                     loss = loss + element
 
                 global_loss_test += loss.sum().asscalar()
+
                 test_batches += 1
 
                 predictions = []
                 for output_name in outputs:
                     predictions.append(output_name)
 
-                metric.update(preds=predictions, labels=labels)
+                metric.update(preds=predictions, labels=[labels[j] for j in range(len(labels))])
+
             test_metric_score = metric.get()[1]
 
-            global_loss_test /= (test_batches * batch_size)
+            global_loss_test /= (test_batches * single_pu_batch_size)
 
             logging.info("Epoch[%d] Train metric: %f, Test metric: %f, Train loss: %f, Test loss: %f" % (epoch, train_metric_score, test_metric_score, global_loss_train, global_loss_test))
 
-            if (epoch - begin_epoch) % checkpoint_period == 0:
+            if (epoch+1) % checkpoint_period == 0:
                 for i, network in self._networks.items():
                     network.save_parameters(self.parameter_path(i) + '-' + str(epoch).zfill(4) + '.params')
+                    if hasattr(network, 'episodic_sub_nets'):
+                        for j, net in enumerate(network.episodic_sub_nets):
+                            episodic_layers[i][j].save_memory(self.parameter_path(i) + "_episodic_memory_sub_net_" + str(j + 1) + "-" + str(epoch).zfill(4))
 
         for i, network in self._networks.items():
-            network.save_parameters(self.parameter_path(i) + '-' + str(num_epoch + begin_epoch + 1).zfill(4) + '.params')
+            network.save_parameters(self.parameter_path(i) + '-' + str((num_epoch-1) + begin_epoch).zfill(4) + '.params')
             network.export(self.parameter_path(i) + '_newest', epoch=0)
+            
+            if hasattr(network, 'episodic_sub_nets'):
+                network.episodicsubnet0_.export(self.parameter_path(i) + '_newest_episodic_sub_net_' + str(0), epoch=0)
+                for j, net in enumerate(network.episodic_sub_nets):
+                    net.export(self.parameter_path(i) + '_newest_episodic_sub_net_' + str(j+1), epoch=0)
+                    episodic_query_networks[i][j].export(self.parameter_path(i) + '_newest_episodic_query_net_' + str(j+1), epoch=0)
+                    episodic_layers[i][j].save_memory(self.parameter_path(i) + "_episodic_memory_sub_net_" + str(j + 1) + "-" + str((num_epoch - 1) + begin_epoch).zfill(4))
+                    episodic_layers[i][j].save_memory(self.parameter_path(i) + "_newest_episodic_memory_sub_net_" + str(j + 1) + "-0000")
+            loss_function.export(self.parameter_path(i) + '_newest_loss', epoch=0)
 
     def parameter_path(self, index):
         return self._net_creator._model_dir_ + self._net_creator._model_prefix_ + '_' + str(index)

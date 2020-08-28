@@ -5,4 +5,3 @@ Alexnet data/Alexnet
 MultipleOutputs data/MultipleOutputs
 ResNeXt50 data/ResNeXt50
 RNNtest data/RNNtest
-

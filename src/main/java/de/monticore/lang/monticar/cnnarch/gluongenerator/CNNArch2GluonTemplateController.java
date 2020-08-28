@@ -87,6 +87,17 @@ public class CNNArch2GluonTemplateController extends CNNArchTemplateController {
         setCurrentElement(previousElement);
     }
 
+    public void include(SerialCompositeElementSymbol compositeElement, Integer episodicSubNetIndex, Writer writer, NetDefinitionMode netDefinitionMode){
+        ArchitectureElementData previousElement = getCurrentElement();
+        setCurrentElement(compositeElement);
+
+        for (ArchitectureElementSymbol element : compositeElement.getEpisodicSubNetworks().get(episodicSubNetIndex)){
+            include(element, writer, netDefinitionMode);
+        }
+
+        setCurrentElement(previousElement);
+    }
+
     public void include(ArchitectureElementSymbol architectureElement, Writer writer, NetDefinitionMode netDefinitionMode){
         if (architectureElement instanceof CompositeElementSymbol){
             include((CompositeElementSymbol) architectureElement, writer, netDefinitionMode);
@@ -106,6 +117,10 @@ public class CNNArch2GluonTemplateController extends CNNArchTemplateController {
         include(architectureElementSymbol, NetDefinitionMode.fromString(netDefinitionMode));
     }
 
+    public void include(ArchitectureElementSymbol architectureElementSymbol, Integer episodicSubNetIndex, String netDefinitionMode) {
+        include(architectureElementSymbol, episodicSubNetIndex, NetDefinitionMode.fromString(netDefinitionMode));
+    }
+
     public void include(ArchitectureElementSymbol architectureElement, NetDefinitionMode netDefinitionMode){
         if (getWriter() == null){
             throw new IllegalStateException("missing writer");
@@ -113,8 +128,19 @@ public class CNNArch2GluonTemplateController extends CNNArchTemplateController {
         include(architectureElement, getWriter(), netDefinitionMode);
     }
 
+    public void include(ArchitectureElementSymbol architectureElement, Integer episodicSubNetIndex, NetDefinitionMode netDefinitionMode){
+        if (getWriter() == null){
+            throw new IllegalStateException("missing writer");
+        }
+        include((SerialCompositeElementSymbol) architectureElement, episodicSubNetIndex, getWriter(), netDefinitionMode);
+    }
+
     public Set<String> getStreamInputNames(SerialCompositeElementSymbol stream, boolean outputAsArray) {
         return getStreamInputs(stream, outputAsArray).keySet();
+    }
+
+    public Set<String> getSubnetInputNames(List<ArchitectureElementSymbol> subNet) {
+        return getSubnetInputs(subNet).keySet();
     }
 
     public ArrayList<String> getStreamInputVariableNames(SerialCompositeElementSymbol stream, boolean outputAsArray) {
@@ -224,6 +250,29 @@ public class CNNArch2GluonTemplateController extends CNNArchTemplateController {
 
 
         return outputNames;
+    }
+
+    public Set<String> getSubnetOutputNames(List<ArchitectureElementSymbol> subNet){
+        Set<String> outputNames = new LinkedHashSet<>();
+
+        for (ArchitectureElementSymbol element : subNet.get(subNet.size()-1).getLastAtomicElements()) {
+            String name = getName(element);
+
+            outputNames.add(name);
+        }
+
+        return outputNames;
+    }
+
+    public int getSubnetOutputSize(List<ArchitectureElementSymbol> subNet){
+        int outputSize = 0;
+        for (ArchitectureElementSymbol element : subNet.get(subNet.size()-1).getLastAtomicElements()) {
+            outputSize += element.getOutputTypes().size();
+        }
+        if(outputSize == 0){
+            outputSize = 1;
+        }
+        return outputSize;
     }
 
     public List<String> getUnrollOutputNames(UnrollInstructionSymbol unroll, String variable) {
@@ -403,6 +452,31 @@ public class CNNArch2GluonTemplateController extends CNNArchTemplateController {
         return inputs;
     }
 
+    public Map<String, List<String>> getSubnetInputs(List<ArchitectureElementSymbol> subNet) {
+        Map<String, List<String>> inputs = new LinkedHashMap<>();
+
+        for (ArchitectureElementSymbol element : subNet.get(0).getFirstAtomicElements()) {
+
+            if (element instanceof ConstantSymbol) {
+                inputs.put(getName(element), Arrays.asList("1"));
+            }
+            else {
+                List<Integer> intDimensions = element.getOutputTypes().get(0).getDimensions();
+
+                List<String> dimensions = new ArrayList<>();
+                for (Integer intDimension : intDimensions) {
+                    dimensions.add(intDimension.toString());
+                }
+
+                String name = getName(element);
+
+                inputs.put(name, dimensions);
+            }
+        }
+
+        return inputs;
+    }
+
     public Map<String, List<String>> getStreamOutputs(SerialCompositeElementSymbol stream, boolean outputAsArray) {
         Map<String, List<String>> outputs = new LinkedHashMap<>();
 
@@ -518,6 +592,15 @@ public class CNNArch2GluonTemplateController extends CNNArchTemplateController {
 
         return dimensions;
     }
+
+    public List<Integer> cutDimensionsInteger(List<Integer> dimensions) {
+        while (dimensions.size() > 1 && dimensions.get(dimensions.size() - 1).equals(1)) {
+            dimensions.remove(dimensions.size() - 1);
+        }
+
+        return dimensions;
+    }
+
 
     public boolean hasUnrollInstructions() {
         for (NetworkInstructionSymbol networkInstruction : getArchitecture().getNetworkInstructions()) {
