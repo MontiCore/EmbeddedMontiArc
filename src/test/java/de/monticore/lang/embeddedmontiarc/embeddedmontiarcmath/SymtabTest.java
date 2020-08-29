@@ -8,11 +8,16 @@ import de.monticore.lang.embeddedmontiarc.embeddedmontiarcmath._parser.EmbeddedM
 import de.monticore.lang.embeddedmontiarc.embeddedmontiarcmath.helper.TypeHelper;
 import de.monticore.lang.math._symboltable.MathStatementsSymbol;
 import de.monticore.lang.math._symboltable.MathStatementsSymbolKind;
+import de.monticore.lang.math._symboltable.expression.MathArithmeticExpressionSymbol;
 import de.monticore.lang.math._symboltable.expression.MathAssignmentExpressionSymbol;
+import de.monticore.lang.math._symboltable.expression.MathExpressionSymbol;
 import de.monticore.symboltable.Scope;
 import de.se_rwth.commons.logging.Log;
 import org.junit.Ignore;
 import org.junit.Test;
+
+import java.util.Collection;
+import java.util.stream.Collectors;
 
 import static org.junit.Assert.assertEquals;
 import static org.junit.Assert.assertNotNull;
@@ -83,6 +88,41 @@ public class SymtabTest extends AbstractSymtabTest {
     Log.debug(a3.toString(),"info");
 
     TypeHelper.getUnitNumberFromUnitNumberTypeArgument((ASTSubComponent) a3.getAstNode().get(),0);
+    }
+
+    @Test
+    public void testParameterInstanceInstance() {
+        Scope symTab = createSymTab("src/test/resources/emam");
+        EMAComponentInstanceSymbol a =
+                symTab.<EMAComponentInstanceSymbol>resolve("test.simpleParameterInstanceInstance",
+                        EMAComponentInstanceSymbol.KIND).orElse(null);
+        assertNotNull(a);
+        EMAComponentInstanceSymbol sub1 = a.getSubComponent("simpleParameterInstance1").orElse(null);
+        EMAComponentInstanceSymbol sub2 = a.getSubComponent("simpleParameterInstance2").orElse(null);
+        assertNotNull(sub1);
+        assertNotNull(sub2);
+        assertEquals("2", ((MathExpressionSymbol) sub1.getArguments().get(0).getSymbol()).getTextualRepresentation());
+        assertEquals("9", ((MathExpressionSymbol) sub2.getArguments().get(0).getSymbol()).getTextualRepresentation());
+        EMAComponentInstanceSymbol sub11 = sub1.getSubComponent("simpleParameter").orElse(null);
+        EMAComponentInstanceSymbol sub21 = sub2.getSubComponent("simpleParameter").orElse(null);
+        assertNotNull(sub11);
+        assertNotNull(sub21);
+        assertEquals("2", ((MathExpressionSymbol) sub11.getArguments().get(0).getSymbol()).getTextualRepresentation());
+        assertEquals("9", ((MathExpressionSymbol) sub21.getArguments().get(0).getSymbol()).getTextualRepresentation());
+        Collection<MathExpressionSymbol> symbols11 = sub11.getSpannedScope().resolveLocally(MathExpressionSymbol.KIND);
+        Collection<MathExpressionSymbol> symbols21 = sub21.getSpannedScope().resolveLocally(MathExpressionSymbol.KIND);
+        symbols11 =
+                symbols11.stream().filter(s -> s instanceof MathArithmeticExpressionSymbol)
+                        .collect(Collectors.toList());
+        symbols21 =
+                symbols21.stream().filter(s -> s instanceof MathArithmeticExpressionSymbol)
+                        .collect(Collectors.toList());
+        assert (symbols11.size() == 1);
+        assert (symbols21.size() == 1);
+        MathArithmeticExpressionSymbol assignment1 = (MathArithmeticExpressionSymbol) symbols11.iterator().next();
+        MathArithmeticExpressionSymbol assignment2 = (MathArithmeticExpressionSymbol) symbols21.iterator().next();
+        assertEquals("2", assignment1.getRightExpression().getTextualRepresentation());
+        assertEquals("9", assignment2.getRightExpression().getTextualRepresentation());
     }
 
     /*
