@@ -8,10 +8,13 @@
     <!-- == PROJECT COORDINATES ============================================= -->
     <groupId>de.monticore.lang.monticar</groupId>
     <artifactId>struct</artifactId>
-    <version>0.0.18-SNAPSHOT</version>
+    <version>0.2.12-SNAPSHOT</version>
 
     <!-- == PROJECT DEPENDENCIES ============================================= -->
     <properties>
+        <!-- .. EMA-Libraries ................................................. -->
+        <EMA.version>0.2.12-SNAPSHOT</EMA.version>
+
         <!-- .. SE-Libraries .................................................. -->
         <monticore.version>5.0.1</monticore.version>
         <se-commons.version>1.7.7</se-commons.version>
