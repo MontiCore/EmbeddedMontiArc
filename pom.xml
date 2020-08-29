@@ -10,22 +10,23 @@
 
   <groupId>de.monticore.lang.monticar</groupId>
   <artifactId>embedded-montiarc</artifactId>
-  <version>0.1.19-SNAPSHOT</version>
+  <version>0.2.12-SNAPSHOT</version>
 
   <!-- == PROJECT DEPENDENCIES ============================================= -->
 
   <properties>
     <wagon.provider.version>2.6</wagon.provider.version>
 
+    <!-- .. EMA-Libraries ................................................. -->
+    <struct.version>0.2.12-SNAPSHOT</struct.version>
+    <Common-MontiCar.version>0.2.12-SNAPSHOT</Common-MontiCar.version>
+    <tagging.version>0.2.12-SNAPSHOT</tagging.version>
 
     <!-- .. SE-Libraries .................................................. -->
     <monticore.version>5.0.0</monticore.version>
     <se-commons.version>1.7.7</se-commons.version>
     <mc.grammars.assembly.version>0.0.6-SNAPSHOT</mc.grammars.assembly.version>
-	<languages.version>4.0.1-SNAPSHOT</languages.version>
-    <struct.version>0.0.18-SNAPSHOT</struct.version>
-    <Common-MontiCar.version>0.0.19-SNAPSHOT</Common-MontiCar.version>
-    <tagging.version>0.0.6</tagging.version>
+    <languages.version>4.0.1-SNAPSHOT</languages.version>
     <!-- .. Libraries .................................................. -->
     <guava.version>18.0</guava.version>
     <junit.version>4.12</junit.version>
