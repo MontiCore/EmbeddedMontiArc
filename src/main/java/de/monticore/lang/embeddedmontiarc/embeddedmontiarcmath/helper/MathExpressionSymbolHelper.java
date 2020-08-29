@@ -4,8 +4,8 @@ package de.monticore.lang.embeddedmontiarc.embeddedmontiarcmath.helper;
 import de.monticore.lang.math._symboltable.MathForLoopHeadSymbol;
 import de.monticore.lang.math._symboltable.MathStatementsSymbol;
 import de.monticore.lang.math._symboltable.expression.*;
-import de.monticore.lang.math._symboltable.expression.visitor.MathExpressionSymbolVisitor;
 import de.monticore.lang.math._symboltable.matrix.*;
+import de.monticore.lang.math._symboltable.visitor.MathExpressionSymbolVisitor;
 
 import java.util.LinkedList;
 import java.util.List;
