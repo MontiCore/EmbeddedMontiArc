@@ -3,8 +3,11 @@ package de.monticore.lang.embeddedmontiarc.embeddedmontiarc;
 
 import de.monticore.lang.embeddedmontiarc.embeddedmontiarc._symboltable.cncModel.EMAComponentSymbol;
 import de.monticore.lang.monticar.stream._symboltable.StreamLanguage;
+import de.monticore.lang.monticar.streamunits._ast.ASTStreamUnitsCompilationUnit;
+import de.monticore.lang.monticar.streamunits._parser.StreamUnitsParser;
 import de.monticore.lang.monticar.streamunits._symboltable.ComponentStreamUnitsSymbol;
 import de.monticore.symboltable.Scope;
+import de.se_rwth.commons.Joiners;
 import de.se_rwth.commons.Names;
 import de.se_rwth.commons.logging.Log;
 
@@ -15,13 +18,7 @@ import java.nio.file.Files;
 import java.nio.file.Path;
 import java.nio.file.SimpleFileVisitor;
 import java.nio.file.attribute.BasicFileAttributes;
-import java.util.ArrayList;
-import java.util.Collections;
-import java.util.HashMap;
-import java.util.HashSet;
-import java.util.List;
-import java.util.Map;
-import java.util.Set;
+import java.util.*;
 
 public final class StreamScanner {
 
@@ -67,11 +64,22 @@ public final class StreamScanner {
             }
             Path relativePath = scanner.basePath.relativize(file);
             String streamModelName = getStreamModelName(relativePath);
-            ComponentStreamUnitsSymbol s = scanner.symTab.<ComponentStreamUnitsSymbol>resolve(streamModelName, ComponentStreamUnitsSymbol.KIND).orElse(null);
-            if (s != null) {
-                processComponentStreamUnitsSymbol(s, f);
+            Optional<ASTStreamUnitsCompilationUnit> ast = new StreamUnitsParser().parse(f.getAbsolutePath());
+            if (ast.isPresent()) {
+                String packageName = Joiners.DOT.join(ast.get().getPackageList());
+                if (getStreamModelName(relativePath.getParent()).equals(packageName)){
+                    ComponentStreamUnitsSymbol s = scanner.symTab.<ComponentStreamUnitsSymbol>resolve(streamModelName,
+                            ComponentStreamUnitsSymbol.KIND).orElse(null);
+                    if (s != null) {
+                        processComponentStreamUnitsSymbol(s, f);
+                    } else {
+                        Log.warn("could not resolve stream model defined in file " + f.getAbsolutePath());
+                    }
+                } else {
+                    Log.warn("package structure does not match file structure in file " + f.getAbsolutePath());
+                }
             } else {
-                Log.warn("could not resolve stream model defined in file " + f.getAbsolutePath());
+                Log.warn("could not parse stream model defined in file " + f.getAbsolutePath());
             }
             return FileVisitResult.CONTINUE;
         }
