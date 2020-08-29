@@ -16,11 +16,12 @@
 
     <properties>
 
+        <!-- .. EMA-Libraries ................................................. -->
+        <Common-MontiCar.version>0.2.12-SNAPSHOT</Common-MontiCar.version>
         <!-- .. SE-Libraries .................................................. -->
         <monticore.version>5.0.1</monticore.version>
         <se-commons.version>1.7.7</se-commons.version>
         <mc.grammars.assembly.version>0.0.6</mc.grammars.assembly.version>
-        <Common-MontiCar.version>0.0.14-SNAPSHOT</Common-MontiCar.version>
         <!-- .. Libraries .................................................. -->
         <guava.version>18.0</guava.version>
         <junit.version>4.12</junit.version>
