@@ -10,13 +10,14 @@
 
     <groupId>de.monticore.lang.monticar</groupId>
     <artifactId>embedded-montiarc-math-generator</artifactId>
-    <version>0.1.16-SNAPSHOT</version>
+    <version>0.2.12-SNAPSHOT</version>
 
     <!-- == PROJECT DEPENDENCIES ============================================= -->
 
     <properties>
 
-        <Embedded-MontiArc-Math.version>0.1.11-SNAPSHOT</Embedded-MontiArc-Math.version>
+        <!-- .. EMA-Libraries ................................................. -->
+        <Embedded-MontiArc-Math.version>0.2.12-SNAPSHOT</Embedded-MontiArc-Math.version>
 
         <!-- .. Libraries .................................................. -->
         <guava.version>25.1-jre</guava.version>
