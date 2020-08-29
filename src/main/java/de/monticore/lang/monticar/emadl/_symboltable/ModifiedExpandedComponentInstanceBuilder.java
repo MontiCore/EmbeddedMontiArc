@@ -1,9 +1,3 @@
-/**
- * (c) https://github.com/MontiCore/monticore
- *
- * The license generally applicable for this project
- * can be found under https://github.com/MontiCore/monticore.
- */
 /* (c) https://github.com/MontiCore/monticore */
 package de.monticore.lang.monticar.emadl._symboltable;
 
@@ -29,23 +23,30 @@ public class ModifiedExpandedComponentInstanceBuilder extends EMAComponentInstan
     @Override
     public EMAComponentInstanceSymbol build() {
         EMAComponentInstanceSymbol instance = super.build();
-        EMAComponentSymbol component = instance.getComponentType().getReferencedSymbol();
+
+        Optional<ArchitectureSymbol> architecture = instance.getSpannedScope()
+                .resolve("", ArchitectureSymbol.KIND);
+
+        // Need to be done after parameter exchange, so after build
+        if (architecture.isPresent())
+            addArchitectureParameterSymbolsToInstance(instance);
+
+        return instance;
+    }
+
+    @Override protected void addOtherToComponentInstance(EMAComponentInstanceSymbol sym) {
+        EMAComponentSymbol component = sym.getComponentType().getReferencedSymbol();
         Optional<ArchitectureSymbol> architecture = component.getSpannedScope()
                 .resolve("", ArchitectureSymbol.KIND);
 
         if (architecture.isPresent()){
-
-            addPortArraySymbolsToInstance(instance);
-            addParameterSymbolsToInstance(instance);
-
             ArchitectureSymbol architectureInstance = architecture.get()
-                    .preResolveDeepCopy(instance.getSpannedScope());
-            instance.getSpannedScope().getAsMutableScope().add(architectureInstance);
+                    .preResolveDeepCopy(sym.getSpannedScope());
+            sym.getSpannedScope().getAsMutableScope().add(architectureInstance);
         }
-        return instance;
     }
 
-    public void addParameterSymbolsToInstance(EMAComponentInstanceSymbol instance){
+    public void addArchitectureParameterSymbolsToInstance(EMAComponentInstanceSymbol instance){
         //add generics
         for (ResolutionDeclarationSymbol sym : instance.getResolutionDeclarationSymbols()){
             if (sym.getASTResolution() instanceof ASTUnitNumberResolution){
@@ -83,26 +84,6 @@ public class ModifiedExpandedComponentInstanceBuilder extends EMAComponentInstan
                 Log.error("Argument type error. Arguments of a CNN component " +
                                 "that are not numbers are currently not supported."
                         , instance.getArguments().get(i).get_SourcePositionStart());
-            }
-        }
-    }
-
-    public void addPortArraySymbolsToInstance(EMAComponentInstanceSymbol instance){
-        Map<String, List<EMAPortInstanceSymbol>> nameToPortList = new HashMap<>();
-        for (EMAPortInstanceSymbol port : instance.getPortInstanceList()){
-            List<EMAPortInstanceSymbol> list = nameToPortList
-                    .computeIfAbsent(port.getNameWithoutArrayBracketPart(), k -> new ArrayList<>());
-            list.add(port);
-        }
-
-        for (String name : nameToPortList.keySet()){
-            if (!instance.getSpannedScope().resolveLocally(name, EMAPortArraySymbol.KIND).isPresent()) {
-                List<EMAPortInstanceSymbol> ports = nameToPortList.get(name);
-                EMAPortArraySymbol portArray = new EMAPortArraySymbol(name, null);
-                portArray.setDimension(ports.size());
-                portArray.setDirection(ports.get(0).isIncoming());
-                portArray.setTypeReference(ports.get(0).getTypeReference());
-                instance.getSpannedScope().getAsMutableScope().add(portArray);
             }
         }
     }
