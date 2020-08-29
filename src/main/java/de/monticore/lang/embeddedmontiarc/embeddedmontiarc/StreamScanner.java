@@ -67,7 +67,8 @@ public final class StreamScanner {
             Optional<ASTStreamUnitsCompilationUnit> ast = new StreamUnitsParser().parse(f.getAbsolutePath());
             if (ast.isPresent()) {
                 String packageName = Joiners.DOT.join(ast.get().getPackageList());
-                if (getStreamModelName(relativePath.getParent()).equals(packageName)){
+                String modelName = f.getName().substring(0, f.getName().indexOf("."));
+                if (streamModelName.equals(packageName + "." + modelName)){
                     ComponentStreamUnitsSymbol s = scanner.symTab.<ComponentStreamUnitsSymbol>resolve(streamModelName,
                             ComponentStreamUnitsSymbol.KIND).orElse(null);
                     if (s != null) {
