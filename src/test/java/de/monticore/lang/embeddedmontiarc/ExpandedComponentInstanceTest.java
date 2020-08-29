@@ -196,6 +196,47 @@ public class ExpandedComponentInstanceTest extends AbstractSymtabTest {
     }
 
     @Test
+    public void testExpandedParameterInstance() {
+        Scope symTab = createSymTab("src/test/resources");
+        EMAComponentInstanceSymbol inst = symTab.<EMAComponentInstanceSymbol>resolve(
+                "testing.expandedParameterInstanceInstance", EMAComponentInstanceSymbol.KIND).orElse(null);
+
+        assertNotNull(inst);
+
+        assertEquals(2, inst.getSubComponents().size());
+        assertEquals(1, inst.getSubComponents().iterator().next().getParameters().size());
+        for (ASTExpression astExpression : inst.getSubComponents().iterator().next().getArguments()) {
+            Log.info(astExpression.toString(), "info:");
+        }
+        Iterator<EMAComponentInstanceSymbol> iterator = inst.getSubComponents().iterator();
+        EMAComponentInstanceSymbol sub1 = iterator.next();
+        EMAComponentInstanceSymbol sub2 = iterator.next();
+        Iterator<EMAComponentInstanceSymbol> iterator1 = sub1.getSubComponents().iterator();
+        EMAComponentInstanceSymbol sub11 = iterator1.next();
+        EMAComponentInstanceSymbol sub12 = iterator1.next();
+        Iterator<EMAComponentInstanceSymbol> iterator2 = sub2.getSubComponents().iterator();
+        EMAComponentInstanceSymbol sub21 = iterator2.next();
+        EMAComponentInstanceSymbol sub22 = iterator2.next();
+
+        UnitNumberExpressionSymbol symbol1 = (UnitNumberExpressionSymbol) sub1.getArguments().get(0).getSymbolOpt().get();
+        UnitNumberExpressionSymbol symbol2 = (UnitNumberExpressionSymbol) sub2.getArguments().get(0).getSymbolOpt().get();
+        UnitNumberExpressionSymbol symbol11 =
+                (UnitNumberExpressionSymbol) sub11.getArguments().get(0).getSymbolOpt().get();
+        UnitNumberExpressionSymbol symbol12 =
+                (UnitNumberExpressionSymbol) sub12.getArguments().get(0).getSymbolOpt().get();
+        UnitNumberExpressionSymbol symbol21 =
+                (UnitNumberExpressionSymbol) sub21.getArguments().get(0).getSymbolOpt().get();
+        UnitNumberExpressionSymbol symbol22 =
+                (UnitNumberExpressionSymbol) sub22.getArguments().get(0).getSymbolOpt().get();
+        assertEquals("2", symbol1.getTextualRepresentation());
+        assertEquals("9", symbol2.getTextualRepresentation());
+        assertEquals("2", symbol11.getTextualRepresentation());
+        assertEquals("2", symbol12.getTextualRepresentation());
+        assertEquals("9", symbol21.getTextualRepresentation());
+        assertEquals("9", symbol22.getTextualRepresentation());
+    }
+
+    @Test
     public void testAdaptableParameterInstance() {
         Scope symtab = createSymTab("src/test/resources");
 
