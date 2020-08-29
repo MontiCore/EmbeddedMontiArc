@@ -11,12 +11,13 @@
  * can be found under https://github.com/MontiCore/monticore.
  */
 /* (c) https://github.com/MontiCore/monticore */
-package de.monticore.lang.math._symboltable.expression.visitor;
+package de.monticore.lang.math._symboltable.copy;
 
 import de.monticore.lang.math._symboltable.MathForLoopHeadSymbol;
 import de.monticore.lang.math._symboltable.MathStatementsSymbol;
 import de.monticore.lang.math._symboltable.expression.*;
 import de.monticore.lang.math._symboltable.matrix.*;
+import de.monticore.lang.math._symboltable.visitor.MathExpressionSymbolVisitor;
 import de.monticore.symboltable.MutableScope;
 
 import java.util.LinkedList;
