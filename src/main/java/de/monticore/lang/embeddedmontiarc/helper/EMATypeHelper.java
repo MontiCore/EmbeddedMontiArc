@@ -249,7 +249,7 @@ public class EMATypeHelper {
                 // typeArgumentSymbolReference.setStringRepresentation(TypesPrinter
                 // .printType(astTypeNoBound));
 
-                addTypeArgumentsToTypeSymbol(typeArgumentSymbolReference, astTypeNoBound, symbolTableCreator);
+                typeArgumentSymbolReference = addTypeArgumentsToTypeSymbol(typeArgumentSymbolReference, astTypeNoBound, symbolTableCreator);
 
                 actualTypeArguments.add(new ActualTypeArgument(typeArgumentSymbolReference));
             } else {
