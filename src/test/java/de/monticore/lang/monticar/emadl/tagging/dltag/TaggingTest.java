@@ -14,6 +14,7 @@ import de.monticore.lang.monticar.emadl.AbstractTaggingResolverTest;
 import de.monticore.lang.tagging._symboltable.TagSymbol;
 import de.monticore.lang.tagging._symboltable.TaggingResolver;
 import de.monticore.lang.monticar.emadl.tagging.dltag.DataPathSymbol;
+import de.monticore.lang.monticar.emadl.tagging.dltag.LayerPathParameterSymbol;
 
 import org.junit.Test;
 
@@ -32,9 +33,9 @@ public class TaggingTest extends AbstractTaggingResolverTest {
         Collection<TagSymbol> tags = tagging.getTags(symbol, DataPathSymbol.KIND);
         assertEquals(1, tags.size());
 
-        DataPathSymbol tag = (DataPathSymbol) tags.iterator().next();
-        assertEquals(tag.getPath(), "data");
-        assertEquals(tag.getType(), "random");
+        DataPathSymbol tagDataPath = (DataPathSymbol) tags.iterator().next();
+        assertEquals(tagDataPath.getPath(), "data");
+        assertEquals(tagDataPath.getType(), "random");
     }
 
     @Test
