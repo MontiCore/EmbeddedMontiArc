@@ -29,7 +29,7 @@
         <monticore.version>5.0.1</monticore.version>
         <se-commons.version>1.7.8</se-commons.version>
         <mc.grammars.assembly.version>0.0.6</mc.grammars.assembly.version>
-        <CNNArch.version>0.3.4-SNAPSHOT</CNNArch.version>
+        <CNNArch.version>0.3.7-SNAPSHOT</CNNArch.version>
 
         <!-- .. Libraries .................................................. -->
         <guava.version>18.0</guava.version>
