@@ -1,5 +1,5 @@
 /* (c) https://github.com/MontiCore/monticore */
-package de.monticore.lang.monticar.semantics.construct;
+package de.monticore.lang.monticar.semantics.resolve;
 
 import de.monticore.lang.embeddedmontiarc.embeddedmontiarc._ast.ASTEMACompilationUnit;
 import de.monticore.lang.embeddedmontiarc.embeddedmontiarc._symboltable.EmbeddedMontiArcSymbolTableCreator;
@@ -11,13 +11,13 @@ import de.monticore.lang.embeddedmontiarc.embeddedmontiarcmath._visitor.Embedded
 import de.monticore.lang.embeddedmontiarc.embeddedmontiarcmath._visitor.EmbeddedMontiArcMathVisitor;
 import de.monticore.lang.embeddedmontiarcdynamic.embeddedmontiarcdynamic._symboltable.EmbeddedMontiArcDynamicSymbolTableCreator;
 import de.monticore.lang.mathopt._symboltable.MathOptSymbolTableCreator;
+import de.monticore.lang.monticar.semantics.construct.Replacement;
 import de.monticore.symboltable.MutableScope;
 import de.monticore.symboltable.ResolvingConfiguration;
 import de.monticore.symboltable.Scope;
 import de.se_rwth.commons.logging.Log;
 
 import java.util.Deque;
-import java.util.Set;
 
 public class MyEmbeddedMontiArcSymbolTableCreator extends EmbeddedMontiArcMathSymbolTableCreator {
 
@@ -27,7 +27,7 @@ public class MyEmbeddedMontiArcSymbolTableCreator extends EmbeddedMontiArcMathSy
     private EmbeddedMontiArcMathSymbolTableCreatorTOP emamSTC;
     private MathOptSymbolTableCreator mathOptSTC;
     private EmbeddedMontiArcMathVisitor realThis = this;
-    private Set<ComponentReplacement> componentReplacements;
+    private Replacement replacements;
 
     public MyEmbeddedMontiArcSymbolTableCreator(ResolvingConfiguration resolvingConfig, Deque<MutableScope> scopeStack) {
         super(resolvingConfig, scopeStack);
@@ -43,7 +43,7 @@ public class MyEmbeddedMontiArcSymbolTableCreator extends EmbeddedMontiArcMathSy
     protected void initSuperSTC(ResolvingConfiguration resolvingConfig) {
 
         this.emadSTC = new MyEmbeddedMontiArcDynamicSymbolTableCreator(resolvingConfig, this.scopeStack);
-        this.emadSTC.setComponentReplacements(componentReplacements);
+        this.emadSTC.setReplacements(replacements);
         this.emadSTC.setInstanceSymbolCreator(new ModifiedEMAComponentInstanceSymbolCreator());
         this.emaBehaviorSTC = new EmbeddedMontiArcBehaviorSymbolTableCreator(resolvingConfig, this.scopeStack);
         this.emamSTC = new EmbeddedMontiArcMathSymbolTableCreatorTOP(resolvingConfig, this.scopeStack);
@@ -101,8 +101,8 @@ public class MyEmbeddedMontiArcSymbolTableCreator extends EmbeddedMontiArcMathSy
         return this.emadSTC;
     }
 
-    public void setComponentReplacements(Set<ComponentReplacement> componentReplacements) {
-        this.componentReplacements = componentReplacements;
-        this.emadSTC.setComponentReplacements(componentReplacements);
+    public void setReplacements(Replacement replacements) {
+        this.replacements = replacements;
+        this.emadSTC.setReplacements(replacements);
     }
 }

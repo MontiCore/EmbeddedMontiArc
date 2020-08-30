@@ -3,13 +3,14 @@ package de.monticore.lang.monticar.semantics.solver.linearsolver;
 
 import de.monticore.expressionsbasis._ast.ASTExpression;
 import de.monticore.lang.math._symboltable.expression.MathAssignmentExpressionSymbol;
+import de.monticore.lang.monticar.semantics.solver.symbolic.LinearSolver;
 
 import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.Map;
 import java.util.Set;
 
-public class LinearEquationSystemSolver {
+public class LinearEquationSystemSolver implements LinearSolver {
 
     private final DeterminantSolver determinantSolver;
     private final Simplifier simplifier;
@@ -19,7 +20,11 @@ public class LinearEquationSystemSolver {
         this.simplifier = simplifier;
     }
 
-    public Map<String, String> solveLinearEquationSystem(Set<MathAssignmentExpressionSymbol> system, Set<String> variables) {
+    public Map<String, String> solve(Set<MathAssignmentExpressionSymbol> system
+            , Set<String> variables) {
+        this.determinantSolver.setVariables(variables);
+        this.simplifier.setVariables(variables);
+
         Map<String, String> res = new HashMap<>();
         Map<String, Integer> mappingToIndex = new HashMap<>();
 
@@ -37,6 +42,8 @@ public class LinearEquationSystemSolver {
             converter.handle(expressionSymbol);
             A.add(converter.getRow());
             b.add(converter.getSolution());
+            this.determinantSolver.setConstants(converter.getConstants());
+            this.simplifier.setConstants(converter.getConstants());
         }
 
         String detB = determinantSolver.det(A);

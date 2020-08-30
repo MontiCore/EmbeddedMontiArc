@@ -8,7 +8,7 @@ component ParallelLoop {
         out Q out1;
 
     instance SimpleLoop simple1, simple2;
-    instance PlusMinus difference;
+    instance PlusMinus<Q> difference;
     instance Sum<Q,2> sum;
 
     connect in1 -> difference.in1;

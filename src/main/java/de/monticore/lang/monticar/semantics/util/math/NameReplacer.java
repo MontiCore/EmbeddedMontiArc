@@ -2,8 +2,9 @@
 package de.monticore.lang.monticar.semantics.util.math;
 
 import de.monticore.lang.math._symboltable.expression.MathNameExpressionSymbol;
+import de.monticore.lang.math._symboltable.visitor.MathExpressionSymbolVisitor;
 
-public class NameReplacer implements MathSymbolVisitor {
+public class NameReplacer implements MathExpressionSymbolVisitor {
 
     private final String oldName;
     private final String newName;

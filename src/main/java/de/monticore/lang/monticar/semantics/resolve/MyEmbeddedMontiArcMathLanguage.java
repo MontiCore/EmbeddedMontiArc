@@ -1,20 +1,20 @@
 /* (c) https://github.com/MontiCore/monticore */
-package de.monticore.lang.monticar.semantics.construct;
+package de.monticore.lang.monticar.semantics.resolve;
 
 import de.monticore.lang.embeddedmontiarc.embeddedmontiarcmath._symboltable.EmbeddedMontiArcMathLanguage;
 import de.monticore.lang.embeddedmontiarc.embeddedmontiarcmath._symboltable.EmbeddedMontiArcMathSymbolTableCreator;
+import de.monticore.lang.monticar.semantics.construct.Replacement;
 import de.monticore.symboltable.MutableScope;
 import de.monticore.symboltable.ResolvingConfiguration;
 
 import java.util.Optional;
-import java.util.Set;
 
 public class MyEmbeddedMontiArcMathLanguage extends EmbeddedMontiArcMathLanguage {
 
 
-    private final Set<ComponentReplacement> componentReplacements;
+    private final Replacement componentReplacements;
 
-    public MyEmbeddedMontiArcMathLanguage(Set<ComponentReplacement> componentReplacements) {
+    public MyEmbeddedMontiArcMathLanguage(Replacement componentReplacements) {
         this.componentReplacements = componentReplacements;
     }
 
@@ -22,7 +22,7 @@ public class MyEmbeddedMontiArcMathLanguage extends EmbeddedMontiArcMathLanguage
     public Optional<EmbeddedMontiArcMathSymbolTableCreator> getSymbolTableCreator(ResolvingConfiguration resolvingConfiguration, MutableScope enclosingScope) {
         // TODO: forward replacement parameters to SymbolTableCreator
         MyEmbeddedMontiArcSymbolTableCreator symbolTableCreator = new MyEmbeddedMontiArcSymbolTableCreator(resolvingConfiguration, enclosingScope);
-        symbolTableCreator.setComponentReplacements(componentReplacements);
+        symbolTableCreator.setReplacements(componentReplacements);
         return Optional.of(symbolTableCreator);
     }
 }

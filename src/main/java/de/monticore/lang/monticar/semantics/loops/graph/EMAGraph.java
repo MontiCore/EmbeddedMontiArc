@@ -77,11 +77,9 @@ public class EMAGraph {
         vertices.add(v);
         for (EMAPort outport : v.getOutports()) {
             portMap.put(outport.getFullName(), outport);
-            portMap.put(outport.getFullName().toLowerCase(), outport);
         }
         for (EMAPort inport : v.getInports()) {
             portMap.put(inport.getFullName(), inport);
-            portMap.put(inport.getFullName().toLowerCase(), inport);
         }
     }
 
@@ -89,11 +87,9 @@ public class EMAGraph {
         vertices.remove(v);
         for (EMAPort outport : v.getOutports()) {
             portMap.remove(outport.getFullName(), outport);
-            portMap.remove(outport.getFullName().toLowerCase(), outport);
         }
         for (EMAPort inport : v.getInports()) {
             portMap.remove(inport.getFullName(), inport);
-            portMap.remove(inport.getFullName().toLowerCase(), inport);
         }
     }
 

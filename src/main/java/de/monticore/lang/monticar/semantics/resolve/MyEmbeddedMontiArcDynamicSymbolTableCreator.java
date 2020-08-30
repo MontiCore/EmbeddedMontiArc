@@ -1,5 +1,5 @@
 /* (c) https://github.com/MontiCore/monticore */
-package de.monticore.lang.monticar.semantics.construct;
+package de.monticore.lang.monticar.semantics.resolve;
 
 import de.monticore.lang.embeddedmontiarc.embeddedmontiarc._ast.ASTEMACompilationUnit;
 import de.monticore.lang.embeddedmontiarc.embeddedmontiarc._ast.ASTElement;
@@ -9,6 +9,9 @@ import de.monticore.lang.embeddedmontiarc.embeddedmontiarc._symboltable.instance
 import de.monticore.lang.embeddedmontiarc.embeddedmontiarc._symboltable.instanceStructure.EMAComponentInstantiationSymbol;
 import de.monticore.lang.embeddedmontiarc.embeddedmontiarcmath._ast.EmbeddedMontiArcMathMill;
 import de.monticore.lang.embeddedmontiarcdynamic.embeddedmontiarcdynamic._symboltable.EmbeddedMontiArcDynamicSymbolTableCreator;
+import de.monticore.lang.monticar.semantics.construct.ComponentReplacement;
+import de.monticore.lang.monticar.semantics.construct.Replacement;
+import de.monticore.lang.monticar.semantics.construct.SynthesizedComponentSymbol;
 import de.monticore.symboltable.MutableScope;
 import de.monticore.symboltable.ResolvingConfiguration;
 import de.monticore.symboltable.Scope;
@@ -21,7 +24,7 @@ import java.util.stream.Collectors;
 public class MyEmbeddedMontiArcDynamicSymbolTableCreator extends EmbeddedMontiArcDynamicSymbolTableCreator {
 
     protected static Stack<Stack<String>> instanceStack = new Stack<>();
-    private Set<ComponentReplacement> componentReplacements;
+    private Replacement replacements;
 
     public MyEmbeddedMontiArcDynamicSymbolTableCreator(ResolvingConfiguration resolvingConfig, Deque<MutableScope> scopeStack) {
         super(resolvingConfig, scopeStack);
@@ -39,10 +42,10 @@ public class MyEmbeddedMontiArcDynamicSymbolTableCreator extends EmbeddedMontiAr
             instanceStack.peek().push(packageName + "." + node.getComponent().getName());
         }
 
-        List<ComponentReplacement> currentComponentReplacements = getCurrentReplacements();
+        List<ComponentReplacement> currentComponentReplacements = getCurrentComponentReplacements();
         for (ComponentReplacement componentReplacement : currentComponentReplacements) {
             addImportStatement(node, componentReplacement.getPackageName(), componentReplacement.getType());
-            removeSubComponent(node, componentReplacement.getInstanceNameToReplace());
+            removeSubComponent(node, componentReplacement.getOldInstanceName());
             addSubComponent(node, componentReplacement.getType(), componentReplacement.getNewInstanceName());
         }
 
@@ -53,7 +56,7 @@ public class MyEmbeddedMontiArcDynamicSymbolTableCreator extends EmbeddedMontiAr
     public void endVisit(ASTEMACompilationUnit node) {
         super.endVisit(node);
 
-        List<ComponentReplacement> currentComponentReplacements = getCurrentReplacements();
+        List<ComponentReplacement> currentComponentReplacements = getCurrentComponentReplacements();
         for (ComponentReplacement componentReplacement : currentComponentReplacements) {
             replaceSymbolWithSynthesizedKind(node, componentReplacement);
         }
@@ -119,7 +122,7 @@ public class MyEmbeddedMontiArcDynamicSymbolTableCreator extends EmbeddedMontiAr
     private void replaceSymbolWithSynthesizedKind(ASTEMACompilationUnit node, ComponentReplacement componentReplacement) {
         Scope spannedScope = node.getComponent().getSpannedScope();
         EMAComponentInstantiationSymbol oldSymbol =
-                spannedScope.<EMAComponentInstantiationSymbol>resolveLocally(componentReplacement.getInstanceNameToReplace(), EMAComponentInstantiationSymbol.KIND)
+                spannedScope.<EMAComponentInstantiationSymbol>resolveLocally(componentReplacement.getOldInstanceName(), EMAComponentInstantiationSymbol.KIND)
                         .orElse(null);
 
         EMAComponentInstanceSymbol newSymbol =
@@ -132,13 +135,13 @@ public class MyEmbeddedMontiArcDynamicSymbolTableCreator extends EmbeddedMontiAr
         newSymbol.toString();
     }
 
-    public void setComponentReplacements(Set<ComponentReplacement> componentReplacements) {
-        this.componentReplacements = componentReplacements;
+    public void setReplacements(Replacement replacements) {
+        this.replacements = replacements;
     }
 
-    private List<ComponentReplacement> getCurrentReplacements() {
+    private List<ComponentReplacement> getCurrentComponentReplacements() {
         String currentComponent = getCurrentComponent().toLowerCase();
-        return componentReplacements.stream().filter(s -> s.getParentComponent().toLowerCase().equals(currentComponent)).collect(Collectors.toList());
+        return replacements.getComponentReplacements().stream().filter(s -> s.getParentComponent().toLowerCase().equals(currentComponent)).collect(Collectors.toList());
     }
 
     private static String getCurrentComponent() {

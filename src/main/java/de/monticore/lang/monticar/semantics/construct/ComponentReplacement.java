@@ -3,14 +3,14 @@ package de.monticore.lang.monticar.semantics.construct;
 
 public class ComponentReplacement {
     private String parentComponent;
-    private String instanceNameToReplace;
+    private String oldInstanceName;
     private String packageName;
     private String type;
     private String newInstanceName;
 
-    public ComponentReplacement(String parentComponent, String instanceNameToReplace, String packageName, String type, String newInstanceName) {
+    public ComponentReplacement(String parentComponent, String oldInstanceName, String packageName, String type, String newInstanceName) {
         this.parentComponent = parentComponent;
-        this.instanceNameToReplace = instanceNameToReplace;
+        this.oldInstanceName = oldInstanceName;
         this.packageName = packageName;
         this.newInstanceName = newInstanceName;
         this.type = type;
@@ -20,8 +20,8 @@ public class ComponentReplacement {
         return parentComponent;
     }
 
-    public String getInstanceNameToReplace() {
-        return instanceNameToReplace;
+    public String getOldInstanceName() {
+        return oldInstanceName;
     }
 
     public String getPackageName() {

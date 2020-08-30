@@ -31,7 +31,7 @@ public class LinearEquationSystemSolverTest {
         MathEclipseSolver detSimplsolver = new MathEclipseSolver();
         LinearEquationSystemSolver solver = new LinearEquationSystemSolver(detSimplsolver, detSimplsolver);
 
-//        Map<String, String> res = solver.solveLinearEquationSystem(system, variables);
+//        Map<String, String> res = solver.solve(system, variables);
 //
 //        assertEquals(res.get("x1"), "(a1*a2)/(1+a2)");
 //        assertEquals(res.get("x2"), "a1/(1+a2)");
@@ -49,7 +49,7 @@ public class LinearEquationSystemSolverTest {
         MathEclipseSolver detSimplsolver = new MathEclipseSolver();
         LinearEquationSystemSolver solver = new LinearEquationSystemSolver(detSimplsolver, detSimplsolver);
 
-//        Map<String, String> res = solver.solveLinearEquationSystem(system, variables);
+//        Map<String, String> res = solver.solve(system, variables);
 //
 //        assertEquals(res.get("x2"), "a1/(1+a2)");
     }

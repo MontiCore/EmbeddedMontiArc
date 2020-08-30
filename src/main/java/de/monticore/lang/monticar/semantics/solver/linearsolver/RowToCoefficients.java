@@ -1,24 +1,20 @@
 /* (c) https://github.com/MontiCore/monticore */
 package de.monticore.lang.monticar.semantics.solver.linearsolver;
 
-import de.monticore.assignmentexpressions._ast.*;
-import de.monticore.commonexpressions._ast.*;
-import de.monticore.lang.embeddedmontiarc.embeddedmontiarcmath._visitor.EmbeddedMontiArcMathVisitor;
-import de.monticore.lang.math._ast.ASTNameExpression;
-import de.monticore.lang.math._ast.ASTNumberExpression;
 import de.monticore.lang.math._symboltable.expression.*;
-import de.monticore.lang.monticar.semantics.util.ExpressionPrettyPrinter;
-import de.monticore.lang.monticar.semantics.util.math.MathSymbolVisitor;
+import de.monticore.lang.math._symboltable.visitor.MathExpressionSymbolVisitor;
 import de.se_rwth.commons.logging.Log;
 
 import java.util.ArrayList;
+import java.util.HashSet;
 import java.util.Map;
 import java.util.Set;
 
-public class RowToCoefficients implements MathSymbolVisitor {
+public class RowToCoefficients implements MathExpressionSymbolVisitor {
 
     private ArrayList<String> row;
-    String solution;
+    private String solution;
+    private Set<String> constants = new HashSet<>();
 
     private Set<String> variables;
     private Map<String, Integer> mappingToIndex;
@@ -148,6 +144,11 @@ public class RowToCoefficients implements MathSymbolVisitor {
             addToIndex(mappingToIndex.get(expr.getNameToResolveValue()), "1");
         } else {
             addToSolution(expr.getNameToResolveValue());
+            constants.add(expr.getNameToResolveValue());
         }
+    }
+
+    public Set<String> getConstants() {
+        return constants;
     }
 }

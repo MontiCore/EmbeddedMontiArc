@@ -8,6 +8,5 @@ component Derivation<T> {
 
 	implementation Math{
 	    // TODO
-	    out1 = 1;
 	}
 }

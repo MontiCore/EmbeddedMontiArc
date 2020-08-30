@@ -12,9 +12,11 @@ import de.monticore.lang.math._symboltable.MathStatementsSymbol;
 import de.monticore.lang.math._symboltable.expression.*;
 import de.monticore.lang.math._symboltable.matrix.MathMatrixExpressionSymbol;
 import de.monticore.lang.math._visitor.MathVisitor;
+import de.monticore.lang.monticar.semantics.loops.detection.ConnectedComponent;
 import de.monticore.lang.monticar.semantics.loops.detection.SimpleCycle;
 import de.monticore.lang.monticar.semantics.loops.detection.StrongConnectedComponent;
 import de.monticore.lang.monticar.semantics.loops.graph.*;
+import de.monticore.lang.monticar.semantics.util.math.CopyMathSymbol;
 import de.monticore.lang.monticar.semantics.util.math.NameReplacer;
 import de.se_rwth.commons.logging.Log;
 import org.apache.poi.ss.formula.functions.Na;
@@ -37,7 +39,7 @@ public class LoopAnalyzer {
     private void setStatements(StrongConnectedComponent strongConnectedComponent) {
         for (EMAVertex component : strongConnectedComponent.getAllComponents()) {
             for (EMAPort outport : component.getOutports()) {
-                Optional<MathAssignmentExpressionSymbol> statementForPort = getStatementForPort(component.getReferencedSymbol(), outport.getName());
+                Optional<MathAssignmentExpressionSymbol> statementForPort = MathStatementCalculator.getStatementForPort(component.getReferencedSymbol(), outport.getName());
                 if (statementForPort.isPresent()) {
                     // replace portNames by fullNames
                     statementForPort.get().setNameOfMathValue(outport.getFullName());
@@ -61,6 +63,7 @@ public class LoopAnalyzer {
     }
 
     private void replaceNameInStatement(MathExpressionSymbol mathExpressionSymbol, String newName, String oldName) {
+        oldName = oldName.replace("[","(").replace("]", ")");
         NameReplacer replacer = new NameReplacer(newName, oldName);
         replacer.handle(mathExpressionSymbol);
     }
@@ -115,121 +118,26 @@ public class LoopAnalyzer {
     private void analyzeKind(StrongConnectedComponent strongConnectedComponent) {
         // TODO
         for (SimpleCycle simpleCycle : strongConnectedComponent.getSimpleCycles()) {
-            simpleCycle.setKind(LoopKind.QuadraticLinear);
+            if (isLinear(simpleCycle))
+                simpleCycle.setKind(LoopKind.QuadraticLinear);
         }
-        strongConnectedComponent.setKind(LoopKind.QuadraticLinear);
+        if (isLinear(strongConnectedComponent))
+            strongConnectedComponent.setKind(LoopKind.QuadraticLinear);
 
     }
 
-    private Optional<MathAssignmentExpressionSymbol> getStatementForPort(EMAComponentInstanceSymbol component, String portName) {
-        // Work on symbols because the the symbol table will be recreated either way
-        Optional<MathStatementsSymbol> mathStatements = component.getSpannedScope().<MathStatementsSymbol>resolve("MathStatements", MathStatementsSymbol.KIND);
-        if (!mathStatements.isPresent())
-            return Optional.empty();
+    private boolean isLinear(ConnectedComponent system) {
+        Set<EMAPort> emaPorts = system.getPortStatements().keySet();
+        Set<String> variables = emaPorts.stream().map(s -> s.getFullName()).collect(Collectors.toSet());
 
-
-        MathAssignmentExpressionSymbol res = null;
-        ListIterator<MathExpressionSymbol> iter = mathStatements.get().getMathExpressionSymbols()
-                .listIterator(mathStatements.get().getMathExpressionSymbols().size());
-        while (iter.hasPrevious()) {
-            MathExpressionSymbol statement = iter.previous();
-            if (statement.isAssignmentExpression()) {
-                MathAssignmentExpressionSymbol assignmentStatement = (MathAssignmentExpressionSymbol) statement;
-
-                if (assignmentStatement.getNameOfMathValue().equals(portName)) {
-                    res = assignmentStatement;
-                } else if (res != null) {
-                    // TODO replace
-                    res = res;
-                }
-            } else
-                Log.error("0x654987 not yet supported");
+        for (EMAPort emaPort : emaPorts) {
+            MathAssignmentExpressionSymbol expressionSymbol = system.getPortStatements().get(emaPort);
+            CheckLinear check = new CheckLinear(variables);
+            check.handle(expressionSymbol);
+            if (!check.getResult())
+                return false;
         }
 
-        return Optional.ofNullable(res);
-    }
-
-    private class ExpressionReplacer implements MathVisitor {
-
-        // TODO implement all AST-Expressions visit
-
-        private final String toSubstitue;
-        private final ASTExpression expression;
-
-        private ExpressionReplacer(String toSubstitute, ASTExpression expression) {
-            this.toSubstitue = toSubstitute;
-            this.expression = expression;
-        }
-
-        private boolean isNameExpression(ASTExpression nameExpression) {
-            if (nameExpression instanceof ASTNameExpression)
-                if (((ASTNameExpression) nameExpression).getName().equals(toSubstitue))
-                    return true;
-            return false;
-        }
-
-        @Override
-        public void visit(ASTMathArithmeticPowerOfExpression node) {
-            if (isNameExpression(node.getLeftExpression())) {
-                node.setLeftExpression(expression);
-            }
-            if (isNameExpression(node.getRightExpression())) {
-                node.setRightExpression(expression);
-            }
-        }
-
-        @Override
-        public void visit(ASTIncSuffixExpression node) {
-            if (isNameExpression(node.getExpression())) {
-                node.setExpression(expression);
-            }
-        }
-
-        @Override
-        public void visit(ASTDecSuffixExpression node) {
-            if (isNameExpression(node.getExpression())) {
-                node.setExpression(expression);
-            }
-        }
-
-        @Override
-        public void visit(ASTMultExpression node) {
-            if (isNameExpression(node.getLeftExpression())) {
-                node.setLeftExpression(expression);
-            }
-            if (isNameExpression(node.getRightExpression())) {
-                node.setRightExpression(expression);
-            }
-        }
-
-        @Override
-        public void visit(ASTDivideExpression node) {
-            if (isNameExpression(node.getLeftExpression())) {
-                node.setLeftExpression(expression);
-            }
-            if (isNameExpression(node.getRightExpression())) {
-                node.setRightExpression(expression);
-            }
-        }
-
-        @Override
-        public void visit(ASTPlusExpression node) {
-            if (isNameExpression(node.getLeftExpression())) {
-                node.setLeftExpression(expression);
-            }
-            if (isNameExpression(node.getRightExpression())) {
-                node.setRightExpression(expression);
-            }
-        }
-
-        @Override
-        public void visit(ASTMinusExpression node) {
-            if (isNameExpression(node.getLeftExpression())) {
-                node.setLeftExpression(expression);
-            }
-            if (isNameExpression(node.getRightExpression())) {
-                node.setRightExpression(expression);
-            }
-        }
+        return true;
     }
 }

@@ -7,8 +7,9 @@ component SerialLoop {
         in Q in1,
         out Q out1;
 
-    instance SimpleLoop simple1, simple2;
-    instance PlusMinus difference;
+    instance SimpleLoop simple1;
+    instance SimpleLoop simple2;
+    instance PlusMinus<Q> difference;
 
     connect in1 -> difference.in1;
     connect difference.out1 -> simple1.in1;

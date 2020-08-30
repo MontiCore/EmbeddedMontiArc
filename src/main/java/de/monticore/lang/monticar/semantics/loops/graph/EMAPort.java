@@ -1,21 +1,22 @@
 package de.monticore.lang.monticar.semantics.loops.graph;
 
 import de.monticore.lang.embeddedmontiarc.embeddedmontiarc._symboltable.cncModel.EMAPortSymbol;
+import de.monticore.lang.embeddedmontiarc.embeddedmontiarc._symboltable.instanceStructure.EMAPortInstanceSymbol;
 
 public class EMAPort {
 
     private String name;
     private String fullName;
     private EMAVertex emaVertex;
-    private EMAPortSymbol referencedPort;
+    private EMAPortInstanceSymbol referencedPort;
 
-    public EMAPort(EMAPortSymbol referencedPort) {
+    public EMAPort(EMAPortInstanceSymbol referencedPort) {
         this.referencedPort = referencedPort;
         this.name = referencedPort.getName();
         this.fullName = referencedPort.getFullName();
     }
 
-    public EMAPort(EMAPortSymbol referencedPort, String fullName, String name) {
+    public EMAPort(EMAPortInstanceSymbol referencedPort, String fullName, String name) {
         this.name = name;
         this.fullName = fullName;
         this.referencedPort = referencedPort;
@@ -29,7 +30,7 @@ public class EMAPort {
         return fullName;
     }
 
-    public EMAPortSymbol getReferencedPort() {
+    public EMAPortInstanceSymbol getReferencedPort() {
         return referencedPort;
     }
 

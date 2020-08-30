@@ -1,5 +1,5 @@
 /* (c) https://github.com/MontiCore/monticore */
-package de.monticore.lang.monticar.semantics.loops.resolve;
+package de.monticore.lang.monticar.semantics.resolve;
 
 import de.monticore.lang.math._ast.ASTMathDottedNameExpression;
 import de.monticore.lang.math._ast.ASTNameExpression;

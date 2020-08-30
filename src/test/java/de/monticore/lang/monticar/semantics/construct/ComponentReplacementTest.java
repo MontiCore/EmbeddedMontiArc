@@ -30,7 +30,8 @@ public class ComponentReplacementTest {
                 "de.monticore.lang.monticar.semantics.synth", "DifferenceSynthesized", "difference");
         Set<ComponentReplacement> componentReplacements = new HashSet<>();
         componentReplacements.add(componentReplacement);
-        GlobalScope symTab = SymtabCreator.createSymTabForReplacement(componentReplacements, "src/test/resources", "src/main/resources", "target/generated-components");
+        Replacement replacement = new Replacement(componentReplacements, new HashSet<>(), new HashSet<>());
+        GlobalScope symTab = SymtabCreator.createSymTabForReplacement(replacement, "src/test/resources", "src/main/resources", "target/generated-components");
         EMAComponentSymbol component = symTab.<EMAComponentSymbol>resolve("de.monticore.lang.monticar.semantics.loops.SimpleLoop", EMAComponentSymbol.KIND).orElse(null);
 
         EMAComponentInstanceSymbol emaComponentSymbol = symTab.<EMAComponentInstanceSymbol>resolve("de.monticore.lang.monticar.semantics.loops.simpleLoop.difference", EMAComponentInstanceSymbol.KIND).orElse(null);
