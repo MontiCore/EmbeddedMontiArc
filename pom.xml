@@ -29,7 +29,7 @@
         <compiler.plugin>3.8.0</compiler.plugin>
         <source.plugin>2.4</source.plugin>
         <shade.plugin>2.4.3</shade.plugin>
-        <jacoco.plugin>0.8.1</jacoco.plugin>
+        <jacoco.plugin>0.8.4</jacoco.plugin>
 
         <!-- Classifiers -->
         <grammars.classifier>grammars</grammars.classifier>

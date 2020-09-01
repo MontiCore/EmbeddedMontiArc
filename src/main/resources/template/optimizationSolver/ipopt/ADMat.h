@@ -32,7 +32,8 @@ public:
 
     // arithematic binary operators with matrices
     inline ADMat operator+(const ADMat &matrix) {
-        assert(this->size() == matrix.size());
+        assert(this->n_rows == matrix.n_rows);
+        assert(this->n_cols == matrix.n_cols);
         ADMat res = ADMat(*this);
         for (int i = 0; i < size(); i++) {
             res[i] = this->at(i) + matrix[i];
@@ -50,7 +51,8 @@ public:
     };
 
     inline ADMat operator-(const ADMat &matrix) {
-        assert(this->size() == matrix.size());
+        assert(this->n_rows == matrix.n_rows);
+        assert(this->n_cols == matrix.n_cols);
         ADMat res = ADMat(*this);
         for (int i = 0; i < size(); i++) {
             res[i] = this->at(i) - matrix[i];
@@ -71,7 +73,7 @@ public:
 
     inline ADMat operator*(const ADMat &matrix) {
         assert(n_cols == matrix.n_rows);
-        assert(n_rows == matrix.n_cols);
+        //assert(n_rows == matrix.n_cols);
         ADMat res = ADMat(n_rows, matrix.n_cols);
         res.fill(0);
         for (int i = 0; i < n_rows; i++) {
@@ -86,7 +88,7 @@ public:
 
     inline ADMat operator*(const mat &matrix) {
         assert(n_cols == matrix.n_rows);
-        assert(n_rows == matrix.n_cols);
+        //assert(n_rows == matrix.n_cols);
         ADMat res = ADMat(n_rows, matrix.n_cols);
         res.fill(0);
         for (int i = 0; i < n_rows; i++) {
@@ -278,7 +280,7 @@ inline ADMat operator*(const double &left, const ADMat &right) {
 
 inline ADMat operator*(const arma::subview_field<CppAD::AD<double>> &left, const arma::subview_field<CppAD::AD<double> > &right) {
     assert(left.n_cols == right.n_rows);
-    assert(left.n_rows == right.n_cols);
+    //assert(left.n_rows == right.n_cols);
     ADMat res = ADMat(left.n_rows, right.n_cols);
     res.fill(0);
     for (int i = 0; i < left.n_rows; i++) {
@@ -293,7 +295,7 @@ inline ADMat operator*(const arma::subview_field<CppAD::AD<double>> &left, const
 
 inline ADMat operator*(const mat &left, const ADMat &right) {
     assert(left.n_cols == right.n_rows);
-    assert(left.n_rows == right.n_cols);
+    //assert(left.n_rows == right.n_cols);
     ADMat res = ADMat(left.n_rows, right.n_cols);
     res.fill(0);
     for (int i = 0; i < left.n_rows; i++) {

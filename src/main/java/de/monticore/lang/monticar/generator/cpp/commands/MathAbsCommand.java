@@ -71,9 +71,11 @@ public class MathAbsCommand extends MathCommand {
         // 0 - Why is std:: used in the first place? the other commands don't utilize the namespace
         // 1 - How to determine if ipopt is used?
 
-        MathStringExpression stringExpression = new MathStringExpression("abs"+valueListString,mathMatrixNameExpressionSymbol.getMathMatrixAccessOperatorSymbol().getMathMatrixAccessSymbols());
         //Old
         //MathStringExpression stringExpression = new MathStringExpression("std::abs"+valueListString,mathMatrixNameExpressionSymbol.getMathMatrixAccessOperatorSymbol().getMathMatrixAccessSymbols());
+
+
+        MathStringExpression stringExpression = new MathStringExpression("abs"+valueListString,mathMatrixNameExpressionSymbol.getMathMatrixAccessOperatorSymbol().getMathMatrixAccessSymbols());
         newMatrixAccessSymbols.add(new MathMatrixAccessSymbol(stringExpression));
 
         mathMatrixNameExpressionSymbol.getMathMatrixAccessOperatorSymbol().setMathMatrixAccessSymbols(newMatrixAccessSymbols);
