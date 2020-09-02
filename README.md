@@ -1,7 +1,7 @@
 <!-- (c) https://github.com/MontiCore/monticore -->
 # MNISTCalculator
 
-The current version for gluon is located in gluon-cpp wich uses the newest EMADL2CPP generator (v0.4.1, this is also the version located in this repository) with a full CPP MXNet/Gluon api, rather than the old c prediction api for inference.
+The current version for gluon is located in gluon-cpp wich uses the newest EMADL2CPP generator (v0.4.1, this is also the version located in this repository) with a full CPP MXNet/Gluon api, rather than the old c prediction api for inference which can be found in the gluon-old and mxnet folders.
 
 ## Prerequisites
 1. Ubuntu Linux 16.04 LTS or 18.04 LTS (experimental)
