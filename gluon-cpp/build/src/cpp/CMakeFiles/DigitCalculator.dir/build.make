@@ -132,7 +132,7 @@ src/cpp/DigitCalculator: /usr/local/lib/libopencv_xfeatures2d.so.3.3.1
 src/cpp/DigitCalculator: /usr/local/lib/libopencv_ximgproc.so.3.3.1
 src/cpp/DigitCalculator: /usr/local/lib/libopencv_xobjdetect.so.3.3.1
 src/cpp/DigitCalculator: /usr/local/lib/libopencv_xphoto.so.3.3.1
-src/cpp/DigitCalculator: /usr/lib/libarmadillo.so
+src/cpp/DigitCalculator: /usr/lib/x86_64-linux-gnu/libarmadillo.so
 src/cpp/DigitCalculator: /usr/local/lib/libopencv_cudafeatures2d.so.3.3.1
 src/cpp/DigitCalculator: /usr/local/lib/libopencv_cudacodec.so.3.3.1
 src/cpp/DigitCalculator: /usr/local/lib/libopencv_cudaoptflow.so.3.3.1

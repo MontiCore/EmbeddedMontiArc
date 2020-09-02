@@ -46,7 +46,7 @@ add_library(cNNCalculator_connector STATIC IMPORTED)
 
 set_target_properties(cNNCalculator_connector PROPERTIES
   INTERFACE_INCLUDE_DIRECTORIES "/home/julian/Documents/MontiCore/mnistcalculator/gluon-cpp/target;/usr/include"
-  INTERFACE_LINK_LIBRARIES "/usr/lib/libarmadillo.so;mxnet"
+  INTERFACE_LINK_LIBRARIES "/usr/lib/x86_64-linux-gnu/libarmadillo.so;mxnet"
 )
 
 # Import target "cNNCalculator_connector" for configuration ""

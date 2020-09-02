@@ -18,7 +18,7 @@
 Armadillo_INCLUDE_DIR:PATH=/usr/include
 
 //Path to a library.
-Armadillo_LIBRARY:FILEPATH=/usr/lib/libarmadillo.so
+Armadillo_LIBRARY:FILEPATH=/usr/lib/x86_64-linux-gnu/libarmadillo.so
 
 //Path to a program.
 CMAKE_ADDR2LINE:FILEPATH=/usr/bin/addr2line
@@ -193,7 +193,7 @@ CMAKE_VERBOSE_MAKEFILE:BOOL=FALSE
 cNNCalculator_connector_BINARY_DIR:STATIC=/home/julian/Documents/MontiCore/mnistcalculator/gluon-cpp/target/build
 
 //Dependencies for the target
-cNNCalculator_connector_LIB_DEPENDS:STATIC=general;/usr/lib/libarmadillo.so;general;mxnet;
+cNNCalculator_connector_LIB_DEPENDS:STATIC=general;/usr/lib/x86_64-linux-gnu/libarmadillo.so;general;mxnet;
 
 //Value Computed by CMake
 cNNCalculator_connector_SOURCE_DIR:STATIC=/home/julian/Documents/MontiCore/mnistcalculator/gluon-cpp/target
@@ -335,5 +335,5 @@ CMAKE_UNAME:INTERNAL=/bin/uname
 //ADVANCED property for variable: CMAKE_VERBOSE_MAKEFILE
 CMAKE_VERBOSE_MAKEFILE-ADVANCED:INTERNAL=1
 //Details about finding Armadillo
-FIND_PACKAGE_MESSAGE_DETAILS_Armadillo:INTERNAL=[/usr/include][/usr/lib/libarmadillo.so][v()]
+FIND_PACKAGE_MESSAGE_DETAILS_Armadillo:INTERNAL=[/usr/include][/usr/lib/x86_64-linux-gnu/libarmadillo.so][v()]
 

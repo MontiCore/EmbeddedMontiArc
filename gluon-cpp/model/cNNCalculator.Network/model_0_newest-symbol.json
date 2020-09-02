@@ -7,7 +7,7 @@
     }, 
     {
       "op": "Pad", 
-      "name": "net_00_padding0_pad0", 
+      "name": "padding0_pad0", 
       "attrs": {
         "constant_value": "0", 
         "mode": "constant", 
@@ -17,7 +17,7 @@
     }, 
     {
       "op": "null", 
-      "name": "net_00_conv0_weight", 
+      "name": "conv0_weight", 
       "attrs": {
         "__dtype__": "0", 
         "__lr_mult__": "1.0", 
@@ -29,7 +29,7 @@
     }, 
     {
       "op": "null", 
-      "name": "net_00_conv0_bias", 
+      "name": "conv0_bias", 
       "attrs": {
         "__dtype__": "0", 
         "__init__": "zeros", 
@@ -42,7 +42,7 @@
     }, 
     {
       "op": "Convolution", 
-      "name": "net_00_conv0_fwd", 
+      "name": "conv0_fwd", 
       "attrs": {
         "dilate": "(1, 1)", 
         "kernel": "(5, 5)", 
@@ -57,13 +57,13 @@
     }, 
     {
       "op": "Activation", 
-      "name": "net_00_relu0_fwd", 
+      "name": "relu0_fwd", 
       "attrs": {"act_type": "relu"}, 
       "inputs": [[4, 0, 0]]
     }, 
     {
       "op": "Pooling", 
-      "name": "net_00_pool0_fwd", 
+      "name": "pool0_fwd", 
       "attrs": {
         "global_pool": "False", 
         "kernel": "(2, 2)", 
@@ -77,7 +77,7 @@
     }, 
     {
       "op": "Pad", 
-      "name": "net_00_padding1_pad0", 
+      "name": "padding1_pad0", 
       "attrs": {
         "constant_value": "0", 
         "mode": "constant", 
@@ -87,7 +87,7 @@
     }, 
     {
       "op": "null", 
-      "name": "net_00_conv1_weight", 
+      "name": "conv1_weight", 
       "attrs": {
         "__dtype__": "0", 
         "__lr_mult__": "1.0", 
@@ -99,7 +99,7 @@
     }, 
     {
       "op": "null", 
-      "name": "net_00_conv1_bias", 
+      "name": "conv1_bias", 
       "attrs": {
         "__dtype__": "0", 
         "__init__": "zeros", 
@@ -112,7 +112,7 @@
     }, 
     {
       "op": "Convolution", 
-      "name": "net_00_conv1_fwd", 
+      "name": "conv1_fwd", 
       "attrs": {
         "dilate": "(1, 1)", 
         "kernel": "(5, 5)", 
@@ -127,13 +127,13 @@
     }, 
     {
       "op": "Activation", 
-      "name": "net_00_relu1_fwd", 
+      "name": "relu1_fwd", 
       "attrs": {"act_type": "relu"}, 
       "inputs": [[10, 0, 0]]
     }, 
     {
       "op": "Pooling", 
-      "name": "net_00_pool1_fwd", 
+      "name": "pool1_fwd", 
       "attrs": {
         "global_pool": "False", 
         "kernel": "(2, 2)", 
@@ -147,7 +147,7 @@
     }, 
     {
       "op": "null", 
-      "name": "net_00_dense0_weight", 
+      "name": "dense0_weight", 
       "attrs": {
         "__dtype__": "0", 
         "__lr_mult__": "1.0", 
@@ -159,7 +159,7 @@
     }, 
     {
       "op": "null", 
-      "name": "net_00_dense0_bias", 
+      "name": "dense0_bias", 
       "attrs": {
         "__dtype__": "0", 
         "__init__": "zeros", 
@@ -172,7 +172,7 @@
     }, 
     {
       "op": "FullyConnected", 
-      "name": "net_00_dense0_fwd", 
+      "name": "dense0_fwd", 
       "attrs": {
         "flatten": "True", 
         "no_bias": "False", 
@@ -182,13 +182,13 @@
     }, 
     {
       "op": "Activation", 
-      "name": "net_00_relu2_fwd", 
+      "name": "relu2_fwd", 
       "attrs": {"act_type": "relu"}, 
       "inputs": [[15, 0, 0]]
     }, 
     {
       "op": "Dropout", 
-      "name": "net_00_dropout0_fwd", 
+      "name": "dropout0_fwd", 
       "attrs": {
         "axes": "()", 
         "cudnn_off": "False", 
@@ -198,7 +198,7 @@
     }, 
     {
       "op": "null", 
-      "name": "net_00_dense1_weight", 
+      "name": "dense1_weight", 
       "attrs": {
         "__dtype__": "0", 
         "__lr_mult__": "1.0", 
@@ -210,7 +210,7 @@
     }, 
     {
       "op": "null", 
-      "name": "net_00_dense1_bias", 
+      "name": "dense1_bias", 
       "attrs": {
         "__dtype__": "0", 
         "__init__": "zeros", 
@@ -223,7 +223,7 @@
     }, 
     {
       "op": "FullyConnected", 
-      "name": "net_00_dense1_fwd", 
+      "name": "dense1_fwd", 
       "attrs": {
         "flatten": "True", 
         "no_bias": "False", 
@@ -233,18 +233,18 @@
     }, 
     {
       "op": "softmax", 
-      "name": "net_00_softmax0", 
+      "name": "softmax0", 
       "attrs": {"axis": "-1"}, 
       "inputs": [[20, 0, 0]]
     }, 
     {
       "op": "_copy", 
-      "name": "net_00_identity0", 
+      "name": "identity0", 
       "inputs": [[21, 0, 0]]
     }, 
     {
       "op": "_copy", 
-      "name": "net_00_identity1", 
+      "name": "identity1", 
       "inputs": [[22, 0, 0]]
     }
   ], 

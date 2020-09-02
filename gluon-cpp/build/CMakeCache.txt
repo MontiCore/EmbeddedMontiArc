@@ -18,7 +18,7 @@
 Armadillo_INCLUDE_DIR:PATH=/usr/include
 
 //Path to a library.
-Armadillo_LIBRARY:FILEPATH=/usr/lib/libarmadillo.so
+Armadillo_LIBRARY:FILEPATH=/usr/lib/x86_64-linux-gnu/libarmadillo.so
 
 //Path to a program.
 CMAKE_ADDR2LINE:FILEPATH=/usr/bin/addr2line
@@ -379,7 +379,7 @@ OpenCV_DIR:PATH=/usr/local/share/OpenCV
 cNNCalculator_connector_BINARY_DIR:STATIC=/home/julian/Documents/MontiCore/mnistcalculator/gluon-cpp/build/target
 
 //Dependencies for the target
-cNNCalculator_connector_LIB_DEPENDS:STATIC=general;/usr/lib/libarmadillo.so;general;mxnet;
+cNNCalculator_connector_LIB_DEPENDS:STATIC=general;/usr/lib/x86_64-linux-gnu/libarmadillo.so;general;mxnet;
 
 //Value Computed by CMake
 cNNCalculator_connector_SOURCE_DIR:STATIC=/home/julian/Documents/MontiCore/mnistcalculator/gluon-cpp/target
@@ -650,7 +650,7 @@ CUDA_parse_cubin:INTERNAL=/home/julian/.local/lib/python3.5/site-packages/cmake/
 //Location of run_nvcc.cmake
 CUDA_run_nvcc:INTERNAL=/home/julian/.local/lib/python3.5/site-packages/cmake/data/share/cmake-3.17/Modules/FindCUDA/run_nvcc.cmake
 //Details about finding Armadillo
-FIND_PACKAGE_MESSAGE_DETAILS_Armadillo:INTERNAL=[/usr/include][/usr/lib/libarmadillo.so][v()]
+FIND_PACKAGE_MESSAGE_DETAILS_Armadillo:INTERNAL=[/usr/include][/usr/lib/x86_64-linux-gnu/libarmadillo.so][v()]
 //Details about finding CUDA
 FIND_PACKAGE_MESSAGE_DETAILS_CUDA:INTERNAL=[/usr/local/cuda-10.0][/usr/local/cuda-10.0/bin/nvcc][/usr/local/cuda-10.0/include][/usr/local/cuda-10.0/lib64/libcudart_static.a][v10.0(10.0)]
 //Details about finding OpenCV
