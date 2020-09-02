@@ -26,7 +26,7 @@ TestCAFFE2:
 
 TestGLUON:
   stage: linux
-  image: registry.git.rwth-aachen.de/monticore/embeddedmontiarc/applications/mnistcalculator/mxnet:v0.0.5
+  image: registry.git.rwth-aachen.de/monticore/embeddedmontiarc/generators/emadl2cpp/integrationtests/mxnet:v0.0.5
   script: 
   - cd gluon-cpp
   - chmod +x build.sh
@@ -46,7 +46,7 @@ TestTENSORFLOW:
 
 TestMnistCalculator-II:
   stage: linux
-  image: registry.git.rwth-aachen.de/monticore/embeddedmontiarc/applications/mnistcalculator/mxnet:v0.0.5
+  image: registry.git.rwth-aachen.de/monticore/embeddedmontiarc/generators/emadl2cpp/integrationtests/mxnet:v0.0.5
   script:
   - cd mnist-calculator
   - mvn streamtest:streamtest-build -s settings.xml
