@@ -5,7 +5,7 @@ stages:
 
 TestMXNET:
   stage: linux
-  image: registry.git.rwth-aachen.de/monticore/embeddedmontiarc/applications/mnistcalculator/mxnet:v0.0.3
+  image: registry.git.rwth-aachen.de/monticore/embeddedmontiarc/generators/emadl2cpp/integrationtests/mxnet:v0.0.5
   script: 
   - cd mxnet
   - chmod +x build.sh
