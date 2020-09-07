@@ -8,6 +8,6 @@ component Integration<T> {
 
 	implementation Math{
 	    // TODO
-	    out1 = 1;
+	    out1 = Integration(in1);
 	}
 }

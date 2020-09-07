@@ -1,25 +1,14 @@
 /* (c) https://github.com/MontiCore/monticore */
 package de.monticore.lang.monticar.semantics.loops.analyze;
 
-import de.monticore.commonexpressions._ast.ASTDivideExpression;
-import de.monticore.commonexpressions._ast.ASTMinusExpression;
-import de.monticore.commonexpressions._ast.ASTMultExpression;
-import de.monticore.commonexpressions._ast.ASTPlusExpression;
-import de.monticore.expressionsbasis._ast.ASTExpression;
-import de.monticore.lang.embeddedmontiarc.embeddedmontiarc._symboltable.instanceStructure.EMAComponentInstanceSymbol;
-import de.monticore.lang.math._ast.*;
-import de.monticore.lang.math._symboltable.MathStatementsSymbol;
+import de.monticore.lang.math._symboltable.copy.CopyMathExpressionSymbol;
 import de.monticore.lang.math._symboltable.expression.*;
-import de.monticore.lang.math._symboltable.matrix.MathMatrixExpressionSymbol;
-import de.monticore.lang.math._visitor.MathVisitor;
 import de.monticore.lang.monticar.semantics.loops.detection.ConnectedComponent;
 import de.monticore.lang.monticar.semantics.loops.detection.SimpleCycle;
 import de.monticore.lang.monticar.semantics.loops.detection.StrongConnectedComponent;
 import de.monticore.lang.monticar.semantics.loops.graph.*;
-import de.monticore.lang.monticar.semantics.util.math.CopyMathSymbol;
 import de.monticore.lang.monticar.semantics.util.math.NameReplacer;
 import de.se_rwth.commons.logging.Log;
-import org.apache.poi.ss.formula.functions.Na;
 
 import java.util.*;
 import java.util.stream.Collectors;
@@ -42,30 +31,38 @@ public class LoopAnalyzer {
                 Optional<MathAssignmentExpressionSymbol> statementForPort = MathStatementCalculator.getStatementForPort(component.getReferencedSymbol(), outport.getName());
                 if (statementForPort.isPresent()) {
                     // replace portNames by fullNames
-                    statementForPort.get().setNameOfMathValue(outport.getFullName());
+                    Map<String, String> nameMapping = new HashMap<>();
+                    nameMapping.put(outport.getName(), outport.getFullName());
                     for (EMAPort inport : component.getInports()) {
                         Optional<EMAEdge> edgeWithTargetPort = strongConnectedComponent.getGraph().getEdgeWithTargetPort(inport);
                         if (!edgeWithTargetPort.isPresent()) {
                             Log.error("0x1544231 no source port for connector");
                         }
 
-                        String sourcePort;
+                        String sourcePortFullName;
                         if (edgeWithTargetPort.get().getSourceVertex() instanceof EMAPortVertex)
-                            sourcePort = edgeWithTargetPort.get().getSourceVertex().getFullName();
+                            sourcePortFullName = edgeWithTargetPort.get().getSourceVertex().getFullName();
                         else
-                            sourcePort = edgeWithTargetPort.get().getSourcePort().getFullName();
-                        replaceNameInStatement(statementForPort.get(), sourcePort, inport.getName());
+                            sourcePortFullName = edgeWithTargetPort.get().getSourcePort().getFullName();
+                        nameMapping.put(inport.getName(), sourcePortFullName);
                     }
-                    strongConnectedComponent.addPortStatement(outport, statementForPort.get());
+                    MathAssignmentExpressionSymbol mathExpressionSymbol = replaceNameInStatement(statementForPort.get(), nameMapping);
+                    strongConnectedComponent.addPortStatement(outport, mathExpressionSymbol);
                 }
             }
         }
     }
 
-    private void replaceNameInStatement(MathExpressionSymbol mathExpressionSymbol, String newName, String oldName) {
-        oldName = oldName.replace("[","(").replace("]", ")");
-        NameReplacer replacer = new NameReplacer(newName, oldName);
-        replacer.handle(mathExpressionSymbol);
+    private MathAssignmentExpressionSymbol replaceNameInStatement(MathAssignmentExpressionSymbol mathExpressionSymbol, Map<String, String> nameMapping) {
+        Map<String, String> newNameMapping = new HashMap<>();
+        for (Map.Entry<String, String> entry : nameMapping.entrySet()) {
+            String newKey = entry.getKey().replace("[","(").replace("]", ")");
+            newNameMapping.put(newKey, entry.getValue());
+        }
+        NameReplacer replacer = new NameReplacer(newNameMapping);
+        MathAssignmentExpressionSymbol copy = (MathAssignmentExpressionSymbol) CopyMathExpressionSymbol.copy(mathExpressionSymbol);
+        replacer.handle(copy);
+        return copy;
     }
 
     private void setPorts(StrongConnectedComponent strongConnectedComponent) {
@@ -116,28 +113,23 @@ public class LoopAnalyzer {
     }
 
     private void analyzeKind(StrongConnectedComponent strongConnectedComponent) {
-        // TODO
-        for (SimpleCycle simpleCycle : strongConnectedComponent.getSimpleCycles()) {
-            if (isLinear(simpleCycle))
-                simpleCycle.setKind(LoopKind.QuadraticLinear);
-        }
-        if (isLinear(strongConnectedComponent))
-            strongConnectedComponent.setKind(LoopKind.QuadraticLinear);
-
+        for (SimpleCycle simpleCycle : strongConnectedComponent.getSimpleCycles())
+            setKind(simpleCycle);
+        setKind(strongConnectedComponent);
     }
 
-    private boolean isLinear(ConnectedComponent system) {
-        Set<EMAPort> emaPorts = system.getPortStatements().keySet();
+    private void setKind(ConnectedComponent component) {
+        Set<EMAPort> emaPorts = component.getPortStatements().keySet();
         Set<String> variables = emaPorts.stream().map(s -> s.getFullName()).collect(Collectors.toSet());
 
+        LoopKind currentKind = LoopKind.Default;
         for (EMAPort emaPort : emaPorts) {
-            MathAssignmentExpressionSymbol expressionSymbol = system.getPortStatements().get(emaPort);
-            CheckLinear check = new CheckLinear(variables);
+            MathAssignmentExpressionSymbol expressionSymbol = component.getPortStatements().get(emaPort);
+            CheckKind check = new CheckKind(variables);
             check.handle(expressionSymbol);
-            if (!check.getResult())
-                return false;
+            currentKind = LoopKindHelper.combine(currentKind, check.getKind());
         }
 
-        return true;
+        component.setKind(currentKind);
     }
 }

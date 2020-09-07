@@ -7,7 +7,7 @@ import de.monticore.lang.math._symboltable.visitor.MathExpressionSymbolVisitor;
 
 import java.util.Collection;
 
-public class ContainsName implements MathExpressionSymbolVisitor {
+public class ContainsName extends MathExpressionSymbolVisitor {
     private boolean result = false;
     private Collection<String> names;
 

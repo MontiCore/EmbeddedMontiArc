@@ -35,4 +35,16 @@ public class ComponentReplacement {
     public String getType() {
         return type;
     }
+
+    @Override
+    public boolean equals(Object obj) {
+        if (!(obj instanceof ComponentReplacement)) return false;
+        ComponentReplacement other = (ComponentReplacement) obj;
+        if (!parentComponent.equals(other.getParentComponent())) return false;
+        if (!oldInstanceName.equals(other.getOldInstanceName())) return false;
+        if (!packageName.equals(other.getPackageName())) return false;
+        if (!newInstanceName.equals(other.getNewInstanceName())) return false;
+        if (!type.equals(other.getType())) return false;
+        return true;
+    }
 }

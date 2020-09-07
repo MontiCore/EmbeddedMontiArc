@@ -7,7 +7,7 @@ import de.monticore.lang.math._symboltable.visitor.MathExpressionSymbolVisitor;
 
 import java.util.Set;
 
-public class CheckLinear implements MathExpressionSymbolVisitor {
+public class CheckLinear extends MathExpressionSymbolVisitor {
     private boolean result = true;
 
     private final Set<String> variables;

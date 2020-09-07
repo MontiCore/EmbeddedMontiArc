@@ -5,7 +5,10 @@ import de.monticore.lang.embeddedmontiarc.embeddedmontiarc._ast.ASTConnector;
 import de.monticore.lang.embeddedmontiarc.embeddedmontiarc._ast.ASTConnectorTargets;
 import de.monticore.lang.embeddedmontiarc.embeddedmontiarc._ast.ASTPort;
 import de.monticore.lang.embeddedmontiarc.embeddedmontiarc._ast.ASTQualifiedNameWithArrayAndStar;
+import de.monticore.lang.embeddedmontiarc.embeddedmontiarc._symboltable.instanceStructure.EMAComponentInstanceBuilder;
+import de.monticore.lang.embeddedmontiarc.embeddedmontiarc._symboltable.instanceStructure.EMAComponentInstanceSymbol;
 import de.monticore.lang.embeddedmontiarc.embeddedmontiarcmath._ast.EmbeddedMontiArcMathMill;
+import de.monticore.lang.embeddedmontiarcdynamic.embeddedmontiarcdynamic._symboltable.instanceStructure.EMADynamicComponentInstanceBuilder;
 import de.monticore.lang.embeddedmontiarcdynamic.embeddedmontiarcdynamic._symboltable.instanceStructure.EMADynamicComponentInstanceSymbol;
 import de.monticore.lang.embeddedmontiarcdynamic.embeddedmontiarcdynamic._symboltable.instanceStructure.EMADynamicConnectorInstanceSymbol;
 import de.monticore.lang.embeddedmontiarcdynamic.embeddedmontiarcdynamic._symboltable.instanceStructure.EMADynamicPortInstanceSymbol;
@@ -81,16 +84,29 @@ public class InstanceCreator {
         return connectorInstanceSymbol;
     }
 
-    public static EMADynamicComponentInstanceSymbol rename(EMADynamicComponentInstanceSymbol symbol, String newName) {
-        EMADynamicComponentInstanceSymbol newSymbol = new EMADynamicComponentInstanceSymbol(newName, symbol.getComponentType());
-        newSymbol.setDynamicInstance(symbol.isDynamicInstance());
+    public static EMAComponentInstanceSymbol rename(EMAComponentInstanceSymbol symbol, String newName) {
+        EMAComponentInstanceSymbol newSymbol;
+        if (symbol instanceof EMADynamicComponentInstanceSymbol) {
+            newSymbol = (new EMADynamicComponentInstanceBuilder())
+                    .setName(newName)
+                    .setSymbolReference(symbol.getComponentType())
+                    .setPackageName(symbol.getPackageName())
+                    .build();
+            ((EMADynamicComponentInstanceSymbol) newSymbol)
+                    .setDynamicInstance(((EMADynamicComponentInstanceSymbol) symbol).isDynamicInstance());
+        } else {
+            newSymbol = (new EMAComponentInstanceBuilder())
+                    .setName(newName)
+                    .setSymbolReference(symbol.getComponentType())
+                    .setPackageName(symbol.getPackageName())
+                    .build();
+        }
         newSymbol.setAccessModifier(symbol.getAccessModifier());
         newSymbol.setAstNode(symbol.getAstNode().orElse(null));
         newSymbol.setActualTypeArguments(symbol.getActualTypeArguments());
         newSymbol.setArguments(symbol.getArguments());
         newSymbol.setEnclosingScope(symbol.getEnclosingScope().getAsMutableScope());
         newSymbol.setFullName(symbol.getPackageName() + "." + newName);
-        newSymbol.setPackageName(symbol.getPackageName());
         newSymbol.setParameters(symbol.getParameters());
         newSymbol.setResolutionDeclarationSymbols(symbol.getResolutionDeclarationSymbols());
 

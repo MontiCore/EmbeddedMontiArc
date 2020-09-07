@@ -4,12 +4,13 @@ package de.monticore.lang.monticar.semantics.construct;
 import de.monticore.expressionsbasis._ast.ASTExpression;
 import de.monticore.lang.embeddedmontiarc.embeddedmontiarc._symboltable.instanceStructure.EMAComponentInstanceSymbol;
 import de.monticore.lang.embeddedmontiarc.embeddedmontiarcmath._parser.EmbeddedMontiArcMathParser;
-import de.monticore.lang.monticar.semantics.loops.detection.StrongConnectedComponent;
+import de.monticore.lang.monticar.semantics.loops.detection.ConnectedComponent;
 import de.monticore.lang.monticar.semantics.loops.graph.EMAEdge;
 import de.monticore.lang.monticar.semantics.loops.graph.EMAGraph;
 import de.monticore.lang.monticar.semantics.loops.graph.EMAPort;
 import de.monticore.lang.monticar.semantics.loops.graph.EMAVertex;
 import de.monticore.lang.monticar.semantics.resolve.ConstantsCalculator;
+import org.apache.commons.lang3.StringUtils;
 
 import java.io.IOException;
 import java.io.StringReader;
@@ -22,23 +23,22 @@ public class ReplacementCalculator {
     private final String synthNamePostFix = "_synth";
     private final String synthPackagePreFix = "synth";
 
-    private Set<ComponentReplacement> componentReplacements;
-    private Set<ConnectorReplacement> connectorReplacements;
-    private Set<PortReplacement> portReplacements;
+    private Replacement replacement;
+
+    public ReplacementCalculator(Replacement replacement) {
+        this.replacement = replacement;
+    }
 
     public void calculateReplacementsAndGenerateComponents
-            (EMAComponentInstanceSymbol rootComponent, StrongConnectedComponent strongConnectedComponent, Set<EMAVertex> componentsToReplace,
+            (EMAComponentInstanceSymbol rootComponent, ConnectedComponent strongConnectedComponent, Set<EMAVertex> componentsToReplace,
              Map<String, String> solutionForPort) {
 
-        componentReplacements = new HashSet<>();
-        connectorReplacements = new HashSet<>();
-        portReplacements = new HashSet<>();
         MathComponentGenerator generator = new MathComponentGenerator();
 
         for (EMAVertex vertexToReplace : componentsToReplace) {
             String parentComponent = vertexToReplace.getReferencedSymbol().getParent().get().getFullName();
-            String type = vertexToReplace.getReferencedSymbol().getComponentType().getName() + synthNamePostFix;
-            String packageName = synthPackagePreFix + "." + vertexToReplace.getReferencedSymbol().getPackageName();
+            String type = StringUtils.capitalize(vertexToReplace.getName()) + synthNamePostFix;
+            String packageName = synthPackagePreFix + "." + parentComponent;
             Map<String, String> inports = new HashMap<>();
             Map<String, String> outports = new HashMap<>();
             List<String> mathStatements = new LinkedList<>();
@@ -54,7 +54,7 @@ public class ReplacementCalculator {
             // Analyze math Statements in order to redirect new input ports
             // Dependend constants should be output ports of some components or the input ports of the rootcomponent
             Set<String> dependendConstants = getDependedConstants(mathStatements, outports.keySet());
-            Set<EMAPort> dependingPorts = dependendConstants.stream().map(
+            Set<EMAPort> dependingPorts = dependendConstants.stream().filter(s -> !isTime(s)).map(
                     s -> strongConnectedComponent.getGraph().getPortMap().get(s)).collect(Collectors.toSet());
 
             for (EMAPort dependingPort : dependingPorts) {
@@ -64,18 +64,17 @@ public class ReplacementCalculator {
                     nameOfInputPort = inport.get().getName();
                 } else {
                     // Calculate redirections
-                    ConnectSourceWithTargetPort connectSourceWithTargetPort = new ConnectSourceWithTargetPort(rootComponent, dependingPort, vertexToReplace);
-                    Set<ConnectorReplacement> newConnectors = connectSourceWithTargetPort.getNewConnectors();
-                    Set<PortReplacement> newPorts = connectSourceWithTargetPort.getNewPorts();
+                    ConnectSourceWithTargetPort connectSourceWithTargetPort = new ConnectSourceWithTargetPort(replacement, rootComponent);
+                    connectSourceWithTargetPort.addConnection(dependingPort, vertexToReplace);
 
-                    PortReplacement newInport = newPorts.stream().filter(p -> p.getComponent().equals(vertexToReplace.getFullName()))
+                    PortReplacement newInport = replacement.getPortReplacements()
+                            .stream()
+                            .filter(p -> p.getComponent().equals(vertexToReplace.getFullName()))
                             .collect(Collectors.toList()).get(0);
                     inports.put(newInport.getName(), newInport.getType());
                     nameOfInputPort = newInport.getName();
 
-                    newPorts.remove(newInport);
-                    connectorReplacements.addAll(newConnectors);
-                    portReplacements.addAll(newPorts);
+                    replacement.remove(newInport);
                 }
 
                 // Replace the name of the depening port with the existing connecting / new connecting port
@@ -88,13 +87,18 @@ public class ReplacementCalculator {
 
             generator.generate(type, packageName, inports, outports, mathStatements, synthPath);
 
-            ComponentReplacement replacement = new ComponentReplacement(parentComponent, vertexToReplace.getName(),
+            ComponentReplacement componentReplacement = new ComponentReplacement(parentComponent, vertexToReplace.getName(),
                     packageName, type, vertexToReplace.getName());
-            componentReplacements.add(replacement);
+
+            replacement.add(componentReplacement);
         }
     }
 
-    private Optional<EMAPort> getAlreadyConnectingPort(StrongConnectedComponent strongConnectedComponent,
+    private boolean isTime(String s) {
+        return "t".equals(s);
+    }
+
+    private Optional<EMAPort> getAlreadyConnectingPort(ConnectedComponent strongConnectedComponent,
                                                        EMAVertex emaVertex, EMAPort port) {
         EMAGraph graph = strongConnectedComponent.getGraph();
         List<EMAEdge> edgesWithSourcePort = graph.getEdgesWithSourcePort(port);
@@ -124,17 +128,5 @@ public class ReplacementCalculator {
                     s -> s = s.replace("_", ".")).collect(Collectors.toSet()));
         }
         return res;
-    }
-
-    public Set<ComponentReplacement> getComponentReplacements() {
-        return componentReplacements;
-    }
-
-    public Set<ConnectorReplacement> getConnectorReplacements() {
-        return connectorReplacements;
-    }
-
-    public Set<PortReplacement> getPortReplacements() {
-        return portReplacements;
     }
 }

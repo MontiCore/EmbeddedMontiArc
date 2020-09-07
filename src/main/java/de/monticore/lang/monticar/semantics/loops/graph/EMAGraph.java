@@ -93,6 +93,10 @@ public class EMAGraph {
         }
     }
 
+    public void removePortVertex(EMAPortVertex v) {
+        vertices.remove(v);
+    }
+
     public void addEdge(EMAEdge e) {
         edges.add(e);
     }

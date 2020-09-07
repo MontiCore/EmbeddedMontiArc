@@ -63,7 +63,7 @@ public class EMAGraphTransformation {
     }
 
     private void removeInnerPorts(EMAGraph graph, Set<EMAPortVertex> newPorts) {
-        Set<EMAVertex> portsToRemove = new HashSet<>();
+        Set<EMAPortVertex> portsToRemove = new HashSet<>();
 
         for (EMAVertex vertex: graph.getVertices()) {
             if (vertex instanceof EMAPortVertex && !newPorts.contains(vertex)) {
@@ -84,11 +84,11 @@ public class EMAGraphTransformation {
                 for (EMAEdge to: tos) {
                     graph.removeEdge(to);
                 }
-                portsToRemove.add(vertex);
+                portsToRemove.add((EMAPortVertex) vertex);
             }
         }
-        for (EMAVertex v: portsToRemove) {
-            graph.removeVertex(v);
+        for (EMAPortVertex v: portsToRemove) {
+            graph.removePortVertex(v);
         }
     }
 

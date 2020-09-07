@@ -7,6 +7,6 @@ component Derivation<T> {
 		out T out1;
 
 	implementation Math{
-	    // TODO
+	    out1 = Derivative(in1);
 	}
 }

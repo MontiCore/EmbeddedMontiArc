@@ -29,4 +29,15 @@ public class PortReplacement {
     public boolean isIncoming() {
         return incoming;
     }
+
+    @Override
+    public boolean equals(Object obj) {
+        if (!(obj instanceof PortReplacement)) return false;
+        PortReplacement other = (PortReplacement) obj;
+        if (!component.equals(other.getComponent())) return false;
+        if (!type.equals(other.getType())) return false;
+        if (!name.equals(other.getName())) return false;
+        if (incoming != other.isIncoming()) return false;
+        return true;
+    }
 }

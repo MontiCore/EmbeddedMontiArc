@@ -10,7 +10,7 @@ import java.util.HashSet;
 import java.util.Map;
 import java.util.Set;
 
-public class RowToCoefficients implements MathExpressionSymbolVisitor {
+public class RowToCoefficients extends MathExpressionSymbolVisitor {
 
     private ArrayList<String> row;
     private String solution;

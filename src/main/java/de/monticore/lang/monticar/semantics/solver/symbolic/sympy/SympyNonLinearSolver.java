@@ -3,13 +3,12 @@ package de.monticore.lang.monticar.semantics.solver.symbolic.sympy;
 
 import de.monticore.lang.math._symboltable.expression.MathAssignmentExpressionSymbol;
 import de.monticore.lang.monticar.semantics.solver.ExecutePython;
-import de.monticore.lang.monticar.semantics.solver.symbolic.LinearSolver;
+import de.monticore.lang.monticar.semantics.solver.symbolic.NonLinearSolver;
 
 import java.util.*;
 import java.util.stream.Collectors;
 
-public class SympyLinearSolver implements LinearSolver {
-
+public class SympyNonLinearSolver implements NonLinearSolver {
     @Override
     public Map<String, String> solve(Set<MathAssignmentExpressionSymbol> system, Set<String> variables) {
         PrintSympyFormat print = new PrintSympyFormat();

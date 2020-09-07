@@ -16,43 +16,43 @@ import static org.junit.Assert.fail;
 
 public class LinearEquationSystemSolverTest {
 
-    @Test
-    public void solveLinearEquationSystem1() {
-        ASTExpression expression1 = parseExpression("x2=a1-x1");
-        ASTExpression expression2 = parseExpression("x1=a2*x2");
-
-        Set<ASTExpression> system = new HashSet<>();
-        Set<String> variables = new HashSet<>();
-        system.add(expression1);
-        system.add(expression2);
-        variables.add("x1");
-        variables.add("x2");
-
-        MathEclipseSolver detSimplsolver = new MathEclipseSolver();
-        LinearEquationSystemSolver solver = new LinearEquationSystemSolver(detSimplsolver, detSimplsolver);
-
-//        Map<String, String> res = solver.solve(system, variables);
+//    @Test
+//    public void solveLinearEquationSystem1() {
+//        ASTExpression expression1 = parseExpression("x2=a1-x1");
+//        ASTExpression expression2 = parseExpression("x1=a2*x2");
 //
-//        assertEquals(res.get("x1"), "(a1*a2)/(1+a2)");
-//        assertEquals(res.get("x2"), "a1/(1+a2)");
-    }
-
-    @Test
-    public void solveLinearEquationSystem2() {
-        ASTExpression expression1 = parseExpression("x2=a1-a2*x2");
-
-        Set<ASTExpression> system = new HashSet<>();
-        Set<String> variables = new HashSet<>();
-        system.add(expression1);
-        variables.add("x2");
-
-        MathEclipseSolver detSimplsolver = new MathEclipseSolver();
-        LinearEquationSystemSolver solver = new LinearEquationSystemSolver(detSimplsolver, detSimplsolver);
-
-//        Map<String, String> res = solver.solve(system, variables);
+//        Set<ASTExpression> system = new HashSet<>();
+//        Set<String> variables = new HashSet<>();
+//        system.add(expression1);
+//        system.add(expression2);
+//        variables.add("x1");
+//        variables.add("x2");
 //
-//        assertEquals(res.get("x2"), "a1/(1+a2)");
-    }
+//        MathEclipseSolver detSimplsolver = new MathEclipseSolver();
+//        LinearEquationSystemSolver solver = new LinearEquationSystemSolver(detSimplsolver, detSimplsolver);
+//
+////        Map<String, String> res = solver.solve(system, variables);
+////
+////        assertEquals(res.get("x1"), "(a1*a2)/(1+a2)");
+////        assertEquals(res.get("x2"), "a1/(1+a2)");
+//    }
+//
+//    @Test
+//    public void solveLinearEquationSystem2() {
+//        ASTExpression expression1 = parseExpression("x2=a1-a2*x2");
+//
+//        Set<ASTExpression> system = new HashSet<>();
+//        Set<String> variables = new HashSet<>();
+//        system.add(expression1);
+//        variables.add("x2");
+//
+//        MathEclipseSolver detSimplsolver = new MathEclipseSolver();
+//        LinearEquationSystemSolver solver = new LinearEquationSystemSolver(detSimplsolver, detSimplsolver);
+//
+////        Map<String, String> res = solver.solve(system, variables);
+////
+////        assertEquals(res.get("x2"), "a1/(1+a2)");
+//    }
 
     EmbeddedMontiArcMathParser parser = new EmbeddedMontiArcMathParser();
 
