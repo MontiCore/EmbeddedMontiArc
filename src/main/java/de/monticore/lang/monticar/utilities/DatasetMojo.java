@@ -7,10 +7,12 @@ import org.apache.maven.plugin.MojoFailureException;
 import org.apache.maven.plugins.annotations.Mojo;
 
 @Mojo(name="build")
-public class TestMojo extends AbstractMojo {
+public class TestMojo extends BaseMojo {
+
   public void execute() throws MojoExecutionException, MojoFailureException {
     DatasetArtifactCreator creator = new DatasetArtifactCreator();
-    creator.createArtifact();
+    creator.createArtifact(this.getPathToDataset());
     getLog().info("TEST LOGGING");
   }
+
 }
