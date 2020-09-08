@@ -1,21 +1,27 @@
 package de.monticore.lang.monticar.utilities.jarcreator;
 
+import java.io.File;
 import java.util.LinkedList;
 import java.util.jar.Attributes;
 import java.util.jar.Manifest;
 
 public class DatasetArtifactCreator {
 
-  public void createArtifact() {
+  public void createArtifact(String pathToDataset) {
     Manifest manifest = createManifest();
     String jarFileName = System.getProperty("user.dir") + "/dataset.jar";
 
-    String logFile = "/home/abdallah/Documents/RWTH/master_thesis/ma-atouani/"
-        + "03.Workspace/digitclassifier/train.log";
-    FileLocation fileLocation = new FileLocation();
-    fileLocation.setJarLocation("dataset/test.log");
-    fileLocation.setSourceLocation(logFile);
-    JarCreator.create(jarFileName, manifest, new LinkedList<FileLocation>() { {add(fileLocation);} });
+    FileLocation trainDataLocation = new FileLocation();
+    trainDataLocation.setJarLocation("dataset/train.h5");
+    File trainDataFile = new File(pathToDataset, "train.h5");
+    trainDataLocation.setSourceLocation(trainDataFile.getAbsolutePath());
+
+    FileLocation testDataLocation = new FileLocation();
+    testDataLocation.setJarLocation("dataset/test.h5");
+    File testDataFile = new File(pathToDataset, "test.h5");
+    testDataLocation.setSourceLocation(testDataFile.getAbsolutePath());
+
+    JarCreator.create(jarFileName, manifest, new LinkedList<FileLocation>() { {add(trainDataLocation); add(testDataLocation);} });
   }
 
   private Manifest createManifest() {

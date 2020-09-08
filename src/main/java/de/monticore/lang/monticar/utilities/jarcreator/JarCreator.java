@@ -28,9 +28,6 @@ public class JarCreator {
         jarOutputStream.closeEntry();
       }
     }
-    catch (FileNotFoundException e) {
-      e.printStackTrace();
-    }
     catch (IOException e) {
       e.printStackTrace();
     }
