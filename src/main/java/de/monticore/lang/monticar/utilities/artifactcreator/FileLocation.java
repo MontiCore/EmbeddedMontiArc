@@ -1,4 +1,4 @@
-package de.monticore.lang.monticar.utilities.jarcreator;
+package de.monticore.lang.monticar.utilities.artifactcreator;
 
 class FileLocation {
 

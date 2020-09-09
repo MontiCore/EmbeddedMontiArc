@@ -1,4 +1,4 @@
-package de.monticore.lang.monticar.utilities.jarcreator;
+package de.monticore.lang.monticar.utilities.artifactcreator;
 
 import com.google.common.base.Preconditions;
 import de.monticore.lang.monticar.utilities.models.DatasetToStore;

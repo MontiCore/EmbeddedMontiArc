@@ -1,4 +1,4 @@
-package de.monticore.lang.monticar.utilities.jarcreator;
+package de.monticore.lang.monticar.utilities.artifactcreator;
 
 import java.io.*;
 import java.util.List;

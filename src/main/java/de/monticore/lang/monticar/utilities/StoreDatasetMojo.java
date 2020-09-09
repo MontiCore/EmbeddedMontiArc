@@ -1,6 +1,6 @@
 package de.monticore.lang.monticar.utilities;
 
-import de.monticore.lang.monticar.utilities.jarcreator.DatasetArtifactCreator;
+import de.monticore.lang.monticar.utilities.artifactcreator.DatasetArtifactCreator;
 import org.apache.maven.plugin.MojoExecutionException;
 import org.apache.maven.plugin.MojoFailureException;
 import org.apache.maven.plugins.annotations.Mojo;
