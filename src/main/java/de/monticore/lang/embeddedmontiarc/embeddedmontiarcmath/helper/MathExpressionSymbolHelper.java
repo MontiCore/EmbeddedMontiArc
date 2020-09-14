@@ -26,7 +26,7 @@ public class MathExpressionSymbolHelper {
         return visitor.symbols;
     }
 
-    private static class AddAllVisitor implements MathExpressionSymbolVisitor {
+    private static class AddAllVisitor extends MathExpressionSymbolVisitor {
         List<MathExpressionSymbol> symbols = new LinkedList<>();
 
         @Override public void visit(MathArithmeticExpressionSymbol node) {

@@ -22,7 +22,7 @@ component SpectralClusterer<N1 n, N1 k, N1 maximumClusters>{
     }
 
     instance Similarity<2500> similarity;
-    instance NormalizedLaplacian<n> ;
+    instance NormalizedLaplacian<n> normalizedLaplacian;
     instance EigenSolver<n,k> eigenSolver;
     instance KMeansClustering<n, k, maximumClusters> kMeansClustering;
 

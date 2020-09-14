@@ -1,19 +1,15 @@
 /* (c) https://github.com/MontiCore/monticore */
 package de.monticore.lang.embeddedmontiarc.embeddedmontiarcmath._symboltable.instanceStructure;
 
+import de.monticore.commonexpressions._ast.ASTDivideExpression;
+import de.monticore.commonexpressions._ast.ASTInfixExpression;
 import de.monticore.expressionsbasis._ast.ASTExpression;
-import de.monticore.lang.embeddedmontiarc.embeddedmontiarc._ast.EmbeddedMontiArcMill;
-import de.monticore.lang.embeddedmontiarc.embeddedmontiarc._symboltable.UnitNumberExpressionSymbol;
 import de.monticore.lang.embeddedmontiarc.embeddedmontiarc._symboltable.cncModel.EMAComponentSymbol;
 import de.monticore.lang.embeddedmontiarc.embeddedmontiarc._symboltable.instanceStructure.EMAComponentInstanceSymbol;
 import de.monticore.lang.embeddedmontiarc.embeddedmontiarcmath._ast.EmbeddedMontiArcMathMill;
-import de.monticore.lang.embeddedmontiarc.embeddedmontiarcmath._symboltable.EmbeddedMontiArcMathLanguage;
-import de.monticore.lang.embeddedmontiarc.embeddedmontiarcmath._symboltable.EmbeddedMontiArcMathSymbolTableCreator;
 import de.monticore.lang.embeddedmontiarc.embeddedmontiarcmath.helper.MathExpressionSymbolHelper;
 import de.monticore.lang.embeddedmontiarcdynamic.embeddedmontiarcdynamic._symboltable.instanceStructure.EMADynamicComponentInstanceBuilder;
-import de.monticore.lang.math._ast.ASTMathNode;
-import de.monticore.lang.math._ast.ASTNameExpression;
-import de.monticore.lang.math._ast.ASTNumberExpression;
+import de.monticore.lang.math._ast.*;
 import de.monticore.lang.math._symboltable.MathExpressionReplacer;
 import de.monticore.lang.math._symboltable.MathLanguage;
 import de.monticore.lang.math._symboltable.MathStatementsSymbol;
@@ -21,14 +17,11 @@ import de.monticore.lang.math._symboltable.MathSymbolTableCreator;
 import de.monticore.lang.math._symboltable.copy.CopyMathExpressionSymbol;
 import de.monticore.lang.math._symboltable.expression.MathExpressionSymbol;
 import de.monticore.lang.math._symboltable.expression.MathNameExpressionSymbol;
-import de.monticore.lang.math._symboltable.expression.MathNumberExpressionSymbol;
 import de.monticore.lang.math._symboltable.expression.MathValueSymbol;
 import de.monticore.lang.monticar.common2._ast.ASTLiteralValue;
 import de.monticore.lang.monticar.common2._ast.ASTParameter;
 import de.monticore.lang.monticar.common2._ast.ASTValue;
-import de.monticore.lang.monticar.resolution._ast.ASTUnitNumberExpression;
 import de.monticore.lang.monticar.ts.MCTypeSymbol;
-import de.monticore.literals.LiteralsHelper;
 import de.monticore.literals.literals._ast.ASTBooleanLiteral;
 import de.monticore.literals.literals._ast.ASTSignedNumericLiteral;
 import de.monticore.numberunit._ast.ASTNumberWithInf;
@@ -90,32 +83,46 @@ public class ModifiedEMAComponentInstanceBuilder extends EMADynamicComponentInst
                     String name = ((MathNameExpressionSymbol) mexp).getNameToResolveValue();
                     if (arguments.containsKey(name)) {
                         MathNameExpressionSymbol nameSymbol = (MathNameExpressionSymbol) mexp;
-                        ASTExpression exchange = arguments.get(name);
-
-                        ResolvingConfiguration configuration = new ResolvingConfiguration();
-                        configuration.addDefaultFilters(inst.getSpannedScope().getResolvingFilters());
-                        Optional<MathSymbolTableCreator> symbolTableCreator =
-                                (new MathLanguage()).getSymbolTableCreator(configuration,
-                                        (MutableScope) inst.getSpannedScope());
-                        Scope fromAST = symbolTableCreator.get().createFromAST((ASTMathNode) exchange);
-                        Collection<MathExpressionSymbol> newEprs = fromAST.resolveLocally(MathExpressionSymbol.KIND);
-                        MathExpressionSymbol exchangeSymbol = null;
-                        for (MathExpressionSymbol newEpr : newEprs) {
-                            // set to last
-                            exchangeSymbol = newEpr;
-                        }
-
-                        for (MathStatementsSymbol mathStatementSymbol : mathStatementSymbols) {
+                        MathExpressionSymbol exchangeSymbol = createFromASTExpression(inst, arguments.get(name));
+                        for (MathStatementsSymbol mathStatementSymbol : mathStatementSymbols)
                             MathExpressionReplacer
                                     .replaceMathExpression(mathStatementSymbol, exchangeSymbol, nameSymbol);
-                        }
 
-                        ((MutableScope) inst.getSpannedScope()).remove(nameSymbol);
+                        inst.getSpannedScope().getAsMutableScope().remove(nameSymbol);
                     }
                 }
             }
         }
     }
+
+    private MathExpressionSymbol createFromASTExpression(EMAComponentInstanceSymbol instance, ASTExpression expression) {
+        MathExpressionSymbol exchangeSymbol = null;
+        ResolvingConfiguration configuration = new ResolvingConfiguration();
+        configuration.addDefaultFilters(instance.getSpannedScope().getResolvingFilters());
+        CommonScope newScope = new CommonScope();
+        Optional<MathSymbolTableCreator> symbolTableCreator =
+                (new MathLanguage()).getSymbolTableCreator(configuration,
+                        newScope);
+        if (expression instanceof ASTMathNode)
+            symbolTableCreator.get().createFromAST((ASTMathNode) expression);
+        else {
+            // hack to get a MathNode
+            ASTIncSuffixExpression statement = MathMill
+                    .incSuffixExpressionBuilder()
+                    .setExpression(expression)
+                    .build();
+            symbolTableCreator.get().createFromAST(statement);
+        }
+
+        Collection<MathExpressionSymbol> newEprs = newScope.resolveLocally(MathExpressionSymbol.KIND);
+        Iterator<MathExpressionSymbol> iterator = newEprs.iterator();
+        while (iterator.hasNext())
+            exchangeSymbol = iterator.next();
+        instance.getSpannedScope().getAsMutableScope().add(exchangeSymbol);
+
+        return exchangeSymbol;
+    }
+
 
     @Override
     protected ASTExpression createArgumentFromDefaultValue(ASTParameter astParameter) {
