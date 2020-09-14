@@ -34,7 +34,7 @@ public class Resolver {
     private EMAComponentInstanceSymbol rootComponent;
     private GlobalScope scope;
     private Replacement replacement;
-    private boolean reduceSymbolTableFlag = false; // Reduce symbol table by eliminating unnecessary components
+    private boolean reduceSymbolTableFlag = true; // Reduce symbol table by eliminating unnecessary components
 
     public Resolver(GlobalScope scope, String rootModel) {
         this.scope = scope;
@@ -48,8 +48,7 @@ public class Resolver {
     }
 
     public void handleScope() {
-        Detection detection = new Detection();
-        Set<StrongConnectedComponent> strongConnectedComponents = detection.detectLoops(rootComponent);
+        Set<StrongConnectedComponent> strongConnectedComponents = Detection.detectLoops(rootComponent);
         for (StrongConnectedComponent strongConnectedComponent : strongConnectedComponents) {
             LoopAnalyzer analyzer = new LoopAnalyzer();
             analyzer.analyze(strongConnectedComponent);
@@ -82,10 +81,10 @@ public class Resolver {
     private void addSymbolicReplacementFromSolutionMap(ConnectedComponent connectedComponent,
                                                        Set<EMAVertex> componentsToReplace,
                                                        Map<String, String> solutionForPort) {
-        reduceSymbolTable(connectedComponent, componentsToReplace);
         ReplacementCalculator replacementCalculator = new ReplacementCalculator(replacement);
         replacementCalculator.calculateReplacementsAndGenerateComponents(rootComponent, connectedComponent,
                 componentsToReplace, solutionForPort);
+        reduceSymbolTable(connectedComponent, componentsToReplace);
     }
 
     private void reduceSymbolTable(ConnectedComponent connectedComponent, Set<EMAVertex> componentsToReplace) {
@@ -196,14 +195,7 @@ public class Resolver {
             // Resolve new instance
             String newChildFullName = NameHelper.toInstanceFullQualifiedName(componentReplacement.getPackageName(),
                     componentReplacement.getType());
-            EMAComponentInstanceSymbol newChild = scope.<EMAComponentInstanceSymbol>resolve(
-                    newChildFullName, EMAComponentInstanceSymbol.KIND).orElse(null);
-
-            // Rename and repackage
-            newChild = InstanceCreator.rename(newChild, componentReplacement.getNewInstanceName());
-            newChild.setPackageName(parent.getFullName());
-            newChild.setFullName(parent.getFullName() + "." + componentReplacement.getNewInstanceName());
-            parent.getSpannedScope().getAsMutableScope().add(newChild);
+            SymbolTableHelper.resolveInstanceTo(scope, newChildFullName, parent);
         }
 
         for (PortReplacement portReplacement : replacement.getPortReplacements()) {

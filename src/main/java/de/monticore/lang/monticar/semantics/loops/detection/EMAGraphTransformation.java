@@ -67,7 +67,10 @@ public class EMAGraphTransformation {
 
         for (EMAVertex vertex: graph.getVertices()) {
             if (vertex instanceof EMAPortVertex && !newPorts.contains(vertex)) {
-                Optional<EMAEdge> from = graph.getEdgeWithTargetNode(vertex);
+                List<EMAEdge> edgesWithTargetNode = graph.getEdgeWithTargetNode(vertex);
+                Optional<EMAEdge> from = Optional.empty();
+                if (edgesWithTargetNode.size() == 1)
+                    from = Optional.ofNullable(edgesWithTargetNode.get(0));
                 List<EMAEdge> tos = graph.getEdgesWithSourceNode(vertex);
 
                 if (from.isPresent()) {

@@ -12,7 +12,6 @@ import java.util.Map;
 import java.util.Set;
 
 public interface ConnectedComponent {
-
     public Collection<EMAVertex> getAllComponents();
     public EMAGraph getGraph();
     public LoopKind getKind();
@@ -21,6 +20,6 @@ public interface ConnectedComponent {
     public void setInports(Set<EMAPort> inports);
     public Set<EMAPort> getOutports();
     public void setOutports(Set<EMAPort> outports);
-    Map<EMAPort, MathAssignmentExpressionSymbol> getPortStatements();
-    void addPortStatement(EMAPort port, MathAssignmentExpressionSymbol statement);
+    public Map<EMAPort, MathAssignmentExpressionSymbol> getPortStatements();
+    public void addPortStatement(EMAPort port, MathAssignmentExpressionSymbol statement);
 }

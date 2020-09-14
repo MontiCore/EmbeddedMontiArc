@@ -4,6 +4,7 @@ package de.monticore.lang.monticar.semantics.construct;
 import de.monticore.expressionsbasis._ast.ASTExpression;
 import de.monticore.lang.embeddedmontiarc.embeddedmontiarc._symboltable.instanceStructure.EMAComponentInstanceSymbol;
 import de.monticore.lang.embeddedmontiarc.embeddedmontiarcmath._parser.EmbeddedMontiArcMathParser;
+import de.monticore.lang.monticar.semantics.Options;
 import de.monticore.lang.monticar.semantics.loops.detection.ConnectedComponent;
 import de.monticore.lang.monticar.semantics.loops.graph.EMAEdge;
 import de.monticore.lang.monticar.semantics.loops.graph.EMAGraph;
@@ -19,10 +20,6 @@ import java.util.stream.Collectors;
 
 public class ReplacementCalculator {
 
-    private final String synthPath = "target/generated-components";
-    private final String synthNamePostFix = "_synth";
-    private final String synthPackagePreFix = "synth";
-
     private Replacement replacement;
 
     public ReplacementCalculator(Replacement replacement) {
@@ -37,8 +34,8 @@ public class ReplacementCalculator {
 
         for (EMAVertex vertexToReplace : componentsToReplace) {
             String parentComponent = vertexToReplace.getReferencedSymbol().getParent().get().getFullName();
-            String type = StringUtils.capitalize(vertexToReplace.getName()) + synthNamePostFix;
-            String packageName = synthPackagePreFix + "." + parentComponent;
+            String type = StringUtils.capitalize(vertexToReplace.getName());
+            String packageName = Options.synthPackagePreFix + "." + parentComponent;
             Map<String, String> inports = new HashMap<>();
             Map<String, String> outports = new HashMap<>();
             List<String> mathStatements = new LinkedList<>();
@@ -85,7 +82,7 @@ public class ReplacementCalculator {
                 }
             }
 
-            generator.generate(type, packageName, inports, outports, mathStatements, synthPath);
+            generator.generate(type, packageName, inports, outports, mathStatements, Options.synthPath);
 
             ComponentReplacement componentReplacement = new ComponentReplacement(parentComponent, vertexToReplace.getName(),
                     packageName, type, vertexToReplace.getName());

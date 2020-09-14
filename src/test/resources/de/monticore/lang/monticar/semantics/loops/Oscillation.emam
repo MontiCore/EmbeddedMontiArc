@@ -1,15 +1,13 @@
 /* (c) https://github.com/MontiCore/monticore */
 package de.monticore.lang.monticar.semantics.loops;
 
-import de.monticore.lang.monticar.semantics.basicLibrary.*;
-
 component Oscillation {
     port
         out Q out1;
 
-    instance Integration<Q>{out1 = 2} y;
-    instance Integration<Q>{out1 = 0} yDiff;
-    instance Gain<Q>(-2/5) yDiffDiff;
+    instance de.monticore.lang.monticar.semantics.basicLibrary.Integration<Q>{out1 = 2} y;
+    instance de.monticore.lang.monticar.semantics.basicLibrary.Integration<Q>{out1 = 0} yDiff;
+    instance de.monticore.lang.monticar.semantics.basicLibrary.Gain<Q>(-2/5) yDiffDiff;
 
     connect y.out1 -> yDiffDiff.in1, out1;
     connect yDiffDiff.out1 -> yDiff.in1;

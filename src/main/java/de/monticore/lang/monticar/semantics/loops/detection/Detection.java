@@ -16,13 +16,21 @@ import java.util.Set;
 
 public class Detection {
 
-    public Set<StrongConnectedComponent> detectLoops(EMAComponentInstanceSymbol component) {
+    public static Set<StrongConnectedComponent> detectLoops(EMAComponentInstanceSymbol component) {
         EMAGraphTransformation emaTransformation = new EMAGraphTransformation();
         EMAGraph emaGraph = emaTransformation.transform(component);
 
+        return detectLoops(emaGraph);
+    }
+
+    public static Set<StrongConnectedComponent> detectLoops(EMAGraph emaGraph) {
         JGraphTransformation jGraphTransformation = new JGraphTransformation();
         Graph<EMAVertex, JGraphEdge> graph = jGraphTransformation.transform(emaGraph);
 
+        return detectLoops(graph, emaGraph);
+    }
+
+    public static Set<StrongConnectedComponent> detectLoops(Graph<EMAVertex, JGraphEdge> graph, EMAGraph emaGraph) {
         StrongConnectivityAlgorithm<EMAVertex, JGraphEdge> inspector = new KosarajuStrongConnectivityInspector<>(graph);
         List<Set<EMAVertex>> components = inspector.stronglyConnectedSets();
 
@@ -32,10 +40,10 @@ public class Detection {
                 iterator.remove();
         }
 
-        HawickJamesSimpleCycles<EMAVertex, JGraphEdge> hawickJamesSimpleCycles​ =
+        HawickJamesSimpleCycles<EMAVertex, JGraphEdge> hawickJamesSimpleCycles =
                 new HawickJamesSimpleCycles<>(graph);
 
-        List<List<EMAVertex>> simpleCycles = hawickJamesSimpleCycles​.findSimpleCycles();
+        List<List<EMAVertex>> simpleCycles = hawickJamesSimpleCycles.findSimpleCycles();
 
         Set<StrongConnectedComponent> res = new HashSet<>();
         for (Set<EMAVertex> strongConnectedComponent : components) {
