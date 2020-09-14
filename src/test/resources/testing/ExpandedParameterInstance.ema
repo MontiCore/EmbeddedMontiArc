@@ -1,7 +1,7 @@
 /* (c) https://github.com/MontiCore/monticore */
 package testing;
 
-component ExpandedParameterInstance(N1 val = 2){
+component ExpandedParameterInstance(N1 val = 3){
 
     instance ExpandedParameter(val) basicParameter;
 

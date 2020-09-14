@@ -255,9 +255,12 @@ public class EmbeddedMontiArcSymbolTableCreator extends EmbeddedMontiArcSymbolTa
         /* for (ASTExpression arg : node.getArguments()) { String value = new JavaDSLPrettyPrinter(new
          * IndentPrinter()).prettyprint(arg); value = value.replace("\"", "\\\"").replace("\n", "");
          * configArgs.add(new ValueSymbol<>(value, Kind.Expression)); } */
-        for (ASTExpression astExpression : node.getArgumentsList())
-            componentTypeReference.addArgument(astExpression);
+        componentTypeReference.setArguments(node.getArgumentsList());
         componentTypeReference.fixResolutions(this);
+        // InitialGuesses
+        componentTypeReference.setInitialGuesses(node.getInitialGuessList());
+
+
         // instances
 
         if (!node.getInstancesList().isEmpty()) {
