@@ -20,6 +20,8 @@
     </properties>
 
 
+    <!-- ........... DEPENDENCIES ............................ -->
+
     <dependencies>
         <dependency>
             <groupId>org.apache.maven</groupId>
@@ -41,6 +43,9 @@
         </dependency>
     </dependencies>
 
+
+    <!-- ........... BUILD ................................... -->
+
     <build>
         <plugins>
             <plugin>
@@ -53,5 +58,15 @@
         </plugins>
     </build>
 
+
+    <!-- ........... DISTRIBUTION ............................ -->
+
+    <distributionManagement>
+        <repository>
+            <id>mlprocess.repo</id>
+            <name>Local Test Repository for ML-Process Artifacts</name>
+            <url>file://${user.home}/.m2/test-repository/</url>
+        </repository>
+    </distributionManagement>
 
 </project>

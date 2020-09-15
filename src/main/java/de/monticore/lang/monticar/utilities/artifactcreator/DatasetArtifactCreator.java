@@ -5,31 +5,23 @@ import de.monticore.lang.monticar.utilities.models.DatasetToStore;
 
 import java.io.File;
 import java.util.LinkedList;
+import java.util.List;
 import java.util.jar.Attributes;
 import java.util.jar.Manifest;
 
 public class DatasetArtifactCreator {
 
-  public void createArtifact(DatasetToStore datasetToStore) {
+  public void createArtifact(DatasetToStore datasetToStore, String tempDirectory) {
     String datasetName = datasetToStore.getName();
     String datasetPath = datasetToStore.getPath();
     Preconditions.checkNotNull(datasetName);
     Preconditions.checkNotNull(datasetPath);
 
     Manifest manifest = createManifest(datasetName);
-    String jarFileName = createJarFileName();
+    String jarFileName = createJarFileName(tempDirectory);
+    List<FileLocation> datasetLocations = getDatasetLocations(datasetPath);
 
-    FileLocation trainDataLocation = new FileLocation();
-    trainDataLocation.setJarLocation(String.format("dataset%strain.h5", File.separator));
-    File trainDataFile = new File(datasetPath, "train.h5");
-    trainDataLocation.setSourceLocation(trainDataFile.getAbsolutePath());
-
-    FileLocation testDataLocation = new FileLocation();
-    testDataLocation.setJarLocation(String.format("dataset%stest.h5", File.separator));
-    File testDataFile = new File(datasetPath, "test.h5");
-    testDataLocation.setSourceLocation(testDataFile.getAbsolutePath());
-
-    JarCreator.create(jarFileName, manifest, new LinkedList<FileLocation>() { {add(trainDataLocation); add(testDataLocation);} });
+    JarCreator.create(jarFileName, manifest, datasetLocations);
   }
 
   private Manifest createManifest(String name) {
@@ -43,8 +35,28 @@ public class DatasetArtifactCreator {
     return manifest;
   }
 
-  private String createJarFileName() {
-    return String.format("%s%sdataset.jar", System.getProperty("user.dir"), File.separator);
+  private String createJarFileName(String tempDirectory) {
+    return String.format("%s%s%s%sdataset.jar", System.getProperty("user.dir"), File.separator, tempDirectory, File.separator);
+  }
+
+  private List<FileLocation> getDatasetLocations(String datasetPath) {
+    File directory = new File(datasetPath);
+    List<FileLocation> datasetLocations = new LinkedList<>();
+
+    for (File dataset: directory.listFiles()) {
+      String datasetName = dataset.getName();
+
+      // IF dataset is a h5 file
+      if (datasetName.matches(".*\\.h5$")) {
+        FileLocation fileLocation = new FileLocation();
+        fileLocation.setJarLocation(String.format("dataset%s%s", File.separator, dataset.getName()));
+        fileLocation.setSourceLocation((new File(datasetPath, dataset.getName()).getAbsolutePath()));
+
+        datasetLocations.add(fileLocation);
+      }
+    }
+
+    return datasetLocations;
   }
 
 }

@@ -9,9 +9,10 @@ import org.apache.maven.plugins.annotations.Mojo;
 public class StoreDatasetMojo extends BaseMojo {
 
   public void execute() throws MojoExecutionException, MojoFailureException {
+    this.mkdir(TEMP_FOLDER);
     DatasetArtifactCreator creator = new DatasetArtifactCreator();
     getLog().info(String.format("STARTING creating Jar for dataset in directory %s", this.getDatasetToStore().getPath()));
-    creator.createArtifact(this.getDatasetToStore());
+    creator.createArtifact(this.getDatasetToStore(), TEMP_FOLDER);
     getLog().info("FINISHED creating Jar for dataset");
   }
 
