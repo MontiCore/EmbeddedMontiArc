@@ -1,4 +1,6 @@
-package de.monticore.lang.monticar.utilities.artifactcreator;
+package de.monticore.lang.monticar.utilities.utils;
+
+import de.monticore.lang.monticar.utilities.models.FileLocation;
 
 import java.io.*;
 import java.util.List;

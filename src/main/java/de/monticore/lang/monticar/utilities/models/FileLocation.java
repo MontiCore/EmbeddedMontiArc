@@ -1,6 +1,6 @@
-package de.monticore.lang.monticar.utilities.artifactcreator;
+package de.monticore.lang.monticar.utilities.models;
 
-class FileLocation {
+public class FileLocation {
 
   private String jarLocation;
 

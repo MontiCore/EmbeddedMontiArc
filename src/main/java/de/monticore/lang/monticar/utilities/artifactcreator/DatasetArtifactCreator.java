@@ -2,6 +2,8 @@ package de.monticore.lang.monticar.utilities.artifactcreator;
 
 import com.google.common.base.Preconditions;
 import de.monticore.lang.monticar.utilities.models.DatasetToStore;
+import de.monticore.lang.monticar.utilities.models.FileLocation;
+import de.monticore.lang.monticar.utilities.utils.JarCreator;
 
 import java.io.File;
 import java.util.LinkedList;
