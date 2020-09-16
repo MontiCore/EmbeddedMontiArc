@@ -1,6 +1,7 @@
 package de.monticore.lang.monticar.utilities.artifactcreator;
 
 import com.google.common.base.Preconditions;
+import de.monticore.lang.monticar.utilities.models.Constants;
 import de.monticore.lang.monticar.utilities.models.DatasetToStore;
 import de.monticore.lang.monticar.utilities.models.FileLocation;
 import de.monticore.lang.monticar.utilities.utils.JarCreator;
@@ -9,31 +10,38 @@ import java.io.File;
 import java.io.IOException;
 import java.util.LinkedList;
 import java.util.List;
+import java.util.Objects;
 import java.util.jar.Attributes;
 import java.util.jar.Manifest;
 
 public class DatasetArtifactCreator {
 
+  private static final Attributes.Name GROUP_ID = new Attributes.Name("Group-ID");
+  private static final Attributes.Name ARTIFACT_ID = new Attributes.Name("Artifact-ID");
+  private static final Attributes.Name VERSION = new Attributes.Name("Version");
+
   public static File createArtifact(DatasetToStore datasetToStore, String tempDirectory) throws IOException {
-    String datasetName = datasetToStore.getName();
-    String datasetPath = datasetToStore.getPath();
-    Preconditions.checkNotNull(datasetName);
+    String datasetGroupId = datasetToStore.getGroupId();
+    String datasetArtifactId = datasetToStore.getArtifactId();
+    File datasetPath = datasetToStore.getPath();
+    Preconditions.checkNotNull(datasetGroupId);
+    Preconditions.checkNotNull(datasetArtifactId);
     Preconditions.checkNotNull(datasetPath);
 
-    Manifest manifest = createManifest(datasetName);
+    Manifest manifest = createManifest(datasetGroupId, datasetArtifactId);
     String jarFileName = createJarFileName(tempDirectory);
     List<FileLocation> datasetLocations = getDatasetLocations(datasetPath);
 
     return JarCreator.createArtifact(jarFileName, manifest, datasetLocations);
   }
 
-  private static Manifest createManifest(String name) {
-    String version = "1.0.0";
+  private static Manifest createManifest(String groupId, String artifactId) {
     Manifest manifest = new Manifest();
     Attributes attributes = manifest.getMainAttributes();
-    attributes.put(Attributes.Name.MANIFEST_VERSION, version);
-    attributes.put(new Attributes.Name("name"), name);
-    attributes.put(new Attributes.Name("version"), version);
+    attributes.put(Attributes.Name.MANIFEST_VERSION, "1.0.0");
+    attributes.put(GROUP_ID, groupId);
+    attributes.put(ARTIFACT_ID, artifactId);
+    attributes.put(VERSION, String.valueOf(Constants.INITIAL_VERSION));
 
     return manifest;
   }
@@ -42,11 +50,10 @@ public class DatasetArtifactCreator {
     return String.format("%s%s%s%sdataset.jar", System.getProperty("user.dir"), File.separator, tempDirectory, File.separator);
   }
 
-  private static List<FileLocation> getDatasetLocations(String datasetPath) {
-    File directory = new File(datasetPath);
+  private static List<FileLocation> getDatasetLocations(File datasetPath) {
     List<FileLocation> datasetLocations = new LinkedList<>();
 
-    for (File dataset: directory.listFiles()) {
+    for (File dataset: Objects.requireNonNull(datasetPath.listFiles())) {
       String datasetName = dataset.getName();
 
       // IF dataset is a h5 file

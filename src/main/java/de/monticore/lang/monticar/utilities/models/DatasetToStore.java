@@ -1,24 +1,30 @@
 package de.monticore.lang.monticar.utilities.models;
 
+import java.io.File;
+
 public class DatasetToStore {
 
-  private String path;
+  private String groupId;
 
-  private String name;
+  private String artifactId;
 
-  public String getPath() {
+  private File path;
+
+  private String description;
+
+  public String getGroupId() {
+    return groupId;
+  }
+
+  public String getArtifactId() {
+    return artifactId;
+  }
+
+  public File getPath() {
     return path;
   }
 
-  public void setPath(String path) {
-    this.path = path;
-  }
-
-  public String getName() {
-    return name;
-  }
-
-  public void setName(String name) {
-    this.name = name;
+  public String getDescription() {
+    return description;
   }
 }
