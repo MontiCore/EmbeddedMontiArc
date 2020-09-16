@@ -16,8 +16,6 @@ public class JarDeployer {
   private static final String VERSION = "version";
 
   public static void deployArtifact(String jarFile, MavenProject project) throws MavenInvocationException {
-    nullCheck(project);
-
     Properties properties = new Properties();
     properties.setProperty(FILE, jarFile);
     properties.setProperty(URL, "file:/home/abdallah/.m2/test-repository");
@@ -31,12 +29,5 @@ public class JarDeployer {
     Invoker invoker = new DefaultInvoker();
     invoker.execute(request);
   }
-
-  private static void nullCheck(MavenProject project) {
-    Preconditions.checkNotNull(project.getGroupId(), "GroupId of the project must be specified");
-    Preconditions.checkNotNull(project.getArtifactId(), "ArtifactId of the project must be specified");
-    Preconditions.checkNotNull(project.getVersion(), "Version of the project must be specified");
-  }
-
 
 }
