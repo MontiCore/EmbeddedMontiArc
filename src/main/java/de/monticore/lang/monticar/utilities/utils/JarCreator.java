@@ -10,8 +10,9 @@ import java.util.jar.Manifest;
 
 public class JarCreator {
 
-  public static void create(String jarFileName, Manifest manifest, List<FileLocation> fileList) {
+  public static File createArtifact(String jarFileName, Manifest manifest, List<FileLocation> fileList) throws IOException {
     File jarFile = new File(jarFileName);
+    jarFile.deleteOnExit();
 
     try (OutputStream outputStream = new FileOutputStream(jarFile);
          JarOutputStream jarOutputStream = new JarOutputStream(outputStream, manifest))
@@ -30,10 +31,8 @@ public class JarCreator {
         jarOutputStream.closeEntry();
       }
     }
-    catch (IOException e) {
-      e.printStackTrace();
-    }
 
+    return jarFile;
   }
 
 }

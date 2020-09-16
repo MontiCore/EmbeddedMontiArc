@@ -6,6 +6,7 @@ import de.monticore.lang.monticar.utilities.models.FileLocation;
 import de.monticore.lang.monticar.utilities.utils.JarCreator;
 
 import java.io.File;
+import java.io.IOException;
 import java.util.LinkedList;
 import java.util.List;
 import java.util.jar.Attributes;
@@ -13,7 +14,7 @@ import java.util.jar.Manifest;
 
 public class DatasetArtifactCreator {
 
-  public void createArtifact(DatasetToStore datasetToStore, String tempDirectory) {
+  public static File createArtifact(DatasetToStore datasetToStore, String tempDirectory) throws IOException {
     String datasetName = datasetToStore.getName();
     String datasetPath = datasetToStore.getPath();
     Preconditions.checkNotNull(datasetName);
@@ -23,10 +24,10 @@ public class DatasetArtifactCreator {
     String jarFileName = createJarFileName(tempDirectory);
     List<FileLocation> datasetLocations = getDatasetLocations(datasetPath);
 
-    JarCreator.create(jarFileName, manifest, datasetLocations);
+    return JarCreator.createArtifact(jarFileName, manifest, datasetLocations);
   }
 
-  private Manifest createManifest(String name) {
+  private static Manifest createManifest(String name) {
     String version = "1.0.0";
     Manifest manifest = new Manifest();
     Attributes attributes = manifest.getMainAttributes();
@@ -37,11 +38,11 @@ public class DatasetArtifactCreator {
     return manifest;
   }
 
-  private String createJarFileName(String tempDirectory) {
+  private static String createJarFileName(String tempDirectory) {
     return String.format("%s%s%s%sdataset.jar", System.getProperty("user.dir"), File.separator, tempDirectory, File.separator);
   }
 
-  private List<FileLocation> getDatasetLocations(String datasetPath) {
+  private static List<FileLocation> getDatasetLocations(String datasetPath) {
     File directory = new File(datasetPath);
     List<FileLocation> datasetLocations = new LinkedList<>();
 
