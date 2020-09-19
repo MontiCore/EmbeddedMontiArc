@@ -28,7 +28,7 @@ public class StoreModelMojo extends BaseMojo {
       jarFile = ModelArtifactCreator.createArtifact(this.modelToStore, TEMP_FOLDER);
       getLog().info("FINISHED creating Jar for model");
 
-      ArtifactDeployer.deployArtifact(jarFile.getAbsolutePath(), modelToStore);
+      ArtifactDeployer.deployArtifact(jarFile.getAbsolutePath(), this.modelToStore, this.getRepository());
     }
     catch (Exception e) {
       throw new MojoFailureException(Arrays.toString(e.getStackTrace()));
