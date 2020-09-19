@@ -2,7 +2,7 @@ package de.monticore.lang.monticar.utilities.models;
 
 import java.io.File;
 
-public class DatasetToStore {
+public class StorageInformation {
 
   private String groupId;
 

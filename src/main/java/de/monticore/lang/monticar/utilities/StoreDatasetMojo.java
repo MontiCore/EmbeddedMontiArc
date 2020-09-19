@@ -1,8 +1,8 @@
 package de.monticore.lang.monticar.utilities;
 
 import de.monticore.lang.monticar.utilities.artifactcreator.DatasetArtifactCreator;
-import de.monticore.lang.monticar.utilities.artifactdeployer.DatasetArtifactDeployer;
-import de.monticore.lang.monticar.utilities.models.DatasetToStore;
+import de.monticore.lang.monticar.utilities.artifactdeployer.ArtifactDeployer;
+import de.monticore.lang.monticar.utilities.models.StorageInformation;
 import org.apache.maven.plugin.MojoExecutionException;
 import org.apache.maven.plugin.MojoFailureException;
 import org.apache.maven.plugins.annotations.Mojo;
@@ -17,7 +17,7 @@ import java.util.Arrays;
 public class StoreDatasetMojo extends BaseMojo {
 
   @Parameter
-  private DatasetToStore datasetToStore;
+  private StorageInformation datasetToStore;
 
   public void execute() throws MojoExecutionException, MojoFailureException {
     this.mkTmpDir();
@@ -28,7 +28,7 @@ public class StoreDatasetMojo extends BaseMojo {
       jarFile = DatasetArtifactCreator.createArtifact(this.datasetToStore, TEMP_FOLDER);
       getLog().info("FINISHED creating Jar for dataset");
 
-      DatasetArtifactDeployer.deployArtifact(jarFile.getAbsolutePath(), this.datasetToStore);
+      ArtifactDeployer.deployArtifact(jarFile.getAbsolutePath(), this.datasetToStore);
     }
     catch (IOException | MavenInvocationException e) {
       throw new MojoFailureException(Arrays.toString(e.getStackTrace()));

@@ -1,50 +1,52 @@
 package de.monticore.lang.monticar.utilities.artifactcreator;
 
-import de.monticore.ModelingLanguageFamily;
-import de.monticore.io.paths.ModelPath;
+import com.google.common.base.Preconditions;
 import de.monticore.lang.embeddedmontiarc.embeddedmontiarc._ast.ASTEMACompilationUnit;
-import de.monticore.lang.embeddedmontiarc.embeddedmontiarc._symboltable.cncModel.EMAComponentSymbol;
 import de.monticore.lang.monticar.emadl._parser.EMADLParser;
-import de.monticore.lang.monticar.emadl._symboltable.EMADLLanguage;
-import de.monticore.lang.monticar.utilities.models.DatasetToStore;
-import de.monticore.symboltable.GlobalScope;
-import de.monticore.symboltable.Scope;
+import de.monticore.lang.monticar.utilities.models.StorageInformation;
+import de.monticore.lang.monticar.utilities.models.FileLocation;
+import de.monticore.lang.monticar.utilities.utils.JarCreator;
+import org.apache.maven.plugin.MojoExecutionException;
 
 import java.io.File;
 import java.io.IOException;
+import java.util.Collections;
 import java.util.List;
 import java.util.Optional;
+import java.util.jar.Manifest;
 
-public class ModelArtifactCreator {
+public class ModelArtifactCreator extends ArtifactCreator {
 
-  public static void createArtifact(DatasetToStore modelToStore) throws IOException {
+  public static File createArtifact(StorageInformation modelToStore, String tempDirectory) throws IOException, MojoExecutionException {
+    String modelGroupId = modelToStore.getGroupId();
+    String modelArtifactId = modelToStore.getArtifactId();
+    File modelPath = modelToStore.getPath();
+    Preconditions.checkNotNull(modelGroupId);
+    Preconditions.checkNotNull(modelArtifactId);
+    Preconditions.checkNotNull(modelPath);
+
     EMADLParser parser = new EMADLParser();
-    Optional<ASTEMACompilationUnit> node = parser.parse(modelToStore.getPath().getAbsolutePath());
-
+    Optional<ASTEMACompilationUnit> node = parser.parse(modelPath.getAbsolutePath());
     if (!node.isPresent()) {
-      System.out.println("NOT PRESENT");
-      return;
+      throw new MojoExecutionException("No parser for " + modelPath + " found");
     }
-
     ASTEMACompilationUnit ast = node.get();
-    String modelName = createModelName(ast.getComponent().getName(), ast.getPackageList());
 
-    Scope scope = createScope(modelToStore.getPath());
-    Optional<EMAComponentSymbol> comp = scope.<EMAComponentSymbol>resolve(modelName, EMAComponentSymbol.KIND);
+    Manifest manifest = createManifest(modelGroupId, modelArtifactId);
+    String jarFileName = createJarFileName(tempDirectory, "model");
+    String packagePath = createPackagePath(modelPath.getName(), ast.getPackageList());
+
+    FileLocation fileLocation = new FileLocation();
+    fileLocation.setJarLocation(String.format("model%s%s", File.separator, packagePath));
+    fileLocation.setSourceLocation(modelPath.getAbsolutePath());
+
+    return JarCreator.createArtifact(jarFileName, manifest, Collections.singletonList(fileLocation));
   }
 
-  private static String createModelName(String name, List<String> packageList) {
-    String packageName = packageList.isEmpty() ? "" : String.join(".", packageList) + ".";
+  private static String createPackagePath(String name, List<String> packageList) {
+    String packageName = packageList.isEmpty() ? "" : String.join(File.separator, packageList) + File.separator;
     return packageName + name;
   }
 
-  private static Scope createScope(File modelPath) {
-    ModelingLanguageFamily modelingLanguageFamily = new ModelingLanguageFamily();
-    modelingLanguageFamily.addModelingLanguage(new EMADLLanguage());
-
-    final ModelPath mp = new ModelPath(modelPath.toPath());
-    GlobalScope globalScope = new GlobalScope(new ModelPath(), new ModelingLanguageFamily());
-    return globalScope;
-  }
-
 }
+
