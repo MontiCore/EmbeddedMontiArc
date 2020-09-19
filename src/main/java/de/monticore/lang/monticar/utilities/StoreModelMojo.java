@@ -7,8 +7,10 @@ import org.apache.maven.plugin.MojoExecutionException;
 import org.apache.maven.plugin.MojoFailureException;
 import org.apache.maven.plugins.annotations.Mojo;
 import org.apache.maven.plugins.annotations.Parameter;
+import org.apache.maven.shared.invoker.MavenInvocationException;
 
 import java.io.File;
+import java.io.IOException;
 import java.util.Arrays;
 
 @Mojo(name = "storeModel")
@@ -30,7 +32,7 @@ public class StoreModelMojo extends BaseMojo {
 
       ArtifactDeployer.deployArtifact(jarFile.getAbsolutePath(), this.modelToStore, this.getRepository());
     }
-    catch (Exception e) {
+    catch (IOException | MavenInvocationException e) {
       throw new MojoFailureException(Arrays.toString(e.getStackTrace()));
     }
 

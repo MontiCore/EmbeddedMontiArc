@@ -4,6 +4,7 @@ import com.google.common.base.Preconditions;
 import de.monticore.lang.monticar.utilities.models.StorageInformation;
 import de.monticore.lang.monticar.utilities.models.FileLocation;
 import de.monticore.lang.monticar.utilities.utils.JarCreator;
+import org.apache.commons.lang3.StringUtils;
 
 import java.io.File;
 import java.io.IOException;
@@ -18,9 +19,9 @@ public class DatasetArtifactCreator extends ArtifactCreator {
     String datasetGroupId = datasetToStore.getGroupId();
     String datasetArtifactId = datasetToStore.getArtifactId();
     File datasetPath = datasetToStore.getPath();
-    Preconditions.checkNotNull(datasetGroupId);
-    Preconditions.checkNotNull(datasetArtifactId);
-    Preconditions.checkNotNull(datasetPath);
+    Preconditions.checkArgument(!StringUtils.isEmpty(datasetGroupId), "Group ID of dataset artifact must be specified.");
+    Preconditions.checkArgument(!StringUtils.isEmpty(datasetArtifactId), "Artifact ID of dataset artifact must be specified.");
+    Preconditions.checkNotNull(datasetPath, "Path of dataset must be specified.");
 
     Manifest manifest = createManifest(datasetGroupId, datasetArtifactId);
     String jarFileName = createJarFileName(tempDirectory, "dataset");

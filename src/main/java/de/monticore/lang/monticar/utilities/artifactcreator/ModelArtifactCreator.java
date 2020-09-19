@@ -6,6 +6,7 @@ import de.monticore.lang.monticar.emadl._parser.EMADLParser;
 import de.monticore.lang.monticar.utilities.models.StorageInformation;
 import de.monticore.lang.monticar.utilities.models.FileLocation;
 import de.monticore.lang.monticar.utilities.utils.JarCreator;
+import org.apache.commons.lang3.StringUtils;
 import org.apache.maven.plugin.MojoExecutionException;
 
 import java.io.File;
@@ -21,9 +22,9 @@ public class ModelArtifactCreator extends ArtifactCreator {
     String modelGroupId = modelToStore.getGroupId();
     String modelArtifactId = modelToStore.getArtifactId();
     File modelPath = modelToStore.getPath();
-    Preconditions.checkNotNull(modelGroupId);
-    Preconditions.checkNotNull(modelArtifactId);
-    Preconditions.checkNotNull(modelPath);
+    Preconditions.checkArgument(!StringUtils.isEmpty(modelGroupId), "Group ID of EMADL model artifact must be specified.");
+    Preconditions.checkArgument(!StringUtils.isEmpty(modelArtifactId), "Artifact ID of EMADL model artifact must be specified.");
+    Preconditions.checkNotNull(modelPath, "Path of EMADL model must be specified.");
 
     EMADLParser parser = new EMADLParser();
     Optional<ASTEMACompilationUnit> node = parser.parse(modelPath.getAbsolutePath());
