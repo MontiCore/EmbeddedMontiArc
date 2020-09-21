@@ -1,0 +1,49 @@
+/* (c) https://github.com/MontiCore/monticore */
+
+package de.monticore.lang.monticar;
+
+/**
+ * Grammar for common elements that should be imported from somewhere else in future.
+ */
+grammar Common2 extends de.monticore.lang.monticar.Types2 {
+
+  /**
+  * Use this interface to embedd values.
+  * It has to be implemented by all values and additionally servers
+  * as an extension point to add futher values to sublanguages.
+  */ 
+  interface Value;
+
+  /**
+  * A signed literal value.
+  * @example "Any String", -3, 17.3
+  *
+  * @attribute value the concrete literal value
+  */
+  LiteralValue implements Value =
+        value:SignedLiteral;
+
+  /**
+  * Parameters are used in configurable components.
+  *
+  * @attribute AdaptableKeyword should the parameter be adaptable at runtime
+  * @attribute Type the type of the parameter
+  * @attribute name the name of the parameter
+  */
+  Parameter =
+    AdaptableKeyword? Type NameWithArray ("=" (defaultValue:Value))?;
+
+    AdaptableKeyword = "adaptable";
+
+    /** TODO rename/refactor after everything that uses this works correctly**/
+  QualifiedNameWithArray=
+    (compName:Name compArray:ArrayAccess? ".")? (portName:Name portArray:ArrayAccess? );
+
+  NameWithArray= Name ArrayDeclaration?;
+  ArrayAccess = ("[" ( intLiteral:UnitNumberResolution | [":"] | lowerbound:UnitNumberResolution ":" upperbound:UnitNumberResolution) "]" );
+  ArrayDeclaration = "[" intLiteral:UnitNumberResolution "]" ;
+
+    ast CommonMatrixType= method public String printType(){return "CommonMatrixType";};
+    CommonMatrixType implements PrintType, Type = ElementType Dimension;
+
+}
