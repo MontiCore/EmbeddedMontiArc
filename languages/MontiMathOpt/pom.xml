@@ -26,7 +26,7 @@
         <mc.grammars.assembly.version>0.0.6</mc.grammars.assembly.version>
 
         <!-- .. Libraries .................................................. -->
-        <guava.version>18.0</guava.version>
+        <guava.version>25.1-jre</guava.version>
         <junit.version>4.12</junit.version>
         <logback.version>1.1.2</logback.version>
         <jscience.version>4.3.1</jscience.version>
@@ -87,11 +87,11 @@
             <version>${se-commons.version}</version>
         </dependency>
 
-        <dependency>
+        <!--<dependency>
             <groupId>com.google.guava</groupId>
             <artifactId>guava</artifactId>
             <version>${guava.version}</version>
-        </dependency>
+        </dependency>-->
 
         <dependency>
             <groupId>org.apache.commons</groupId>
