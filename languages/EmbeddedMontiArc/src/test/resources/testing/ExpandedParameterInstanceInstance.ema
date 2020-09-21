@@ -1,0 +1,9 @@
+/* (c) https://github.com/MontiCore/monticore */
+package testing;
+
+component ExpandedParameterInstanceInstance {
+
+    instance ExpandedParameterInstance basicParameter;
+
+    instance ExpandedParameterInstance(9) basicParameter2;
+}
