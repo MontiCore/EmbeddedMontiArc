@@ -1,0 +1,7 @@
+package valid;
+
+component SubComp {
+    port
+        in B a,
+        in Q(-oo:200) b;
+}

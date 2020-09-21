@@ -1,0 +1,18 @@
+package invalid;
+
+component Test2 {
+    ports
+        in B a,
+        in B b,
+        out Q c,
+        out Q d;
+
+    @a::value(true){
+        connect 0 -> c;
+    }
+
+    @a::value(true){
+        connect 1 -> c;
+    }
+
+}
