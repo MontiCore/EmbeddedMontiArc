@@ -1,0 +1,7 @@
+package invalid;
+
+component Test3 {
+    ports
+        in Q(255:-255) a,
+        in B b;
+}

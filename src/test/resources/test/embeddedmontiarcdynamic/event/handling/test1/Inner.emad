@@ -1,0 +1,12 @@
+/* (c) https://github.com/MontiCore/monticore */
+
+
+package handling.test1;
+
+component Inner<Z classes = 10> (Z convChannels){
+
+    ports
+        in Q a,
+        out Q b;
+
+}

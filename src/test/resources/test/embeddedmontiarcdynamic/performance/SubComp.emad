@@ -1,0 +1,7 @@
+package performance;
+
+component SubComp {
+    port
+        in Q(0:255) inPort[70],
+        out B outPort;
+}
