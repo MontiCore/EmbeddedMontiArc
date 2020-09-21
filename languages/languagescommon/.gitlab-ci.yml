@@ -24,7 +24,6 @@ githubjob:
   only:
   - master
 
-
 masterJobLinux:
   stage: linux
   image: maven:3.5.4-jdk-8-alpine
@@ -36,7 +35,6 @@ masterJobLinux:
     changes:
     - .gitlab-ci.yml
     - README.md
-
 
 BranchJobLinux:
   stage: linux
