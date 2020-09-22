@@ -5,12 +5,12 @@
     <modelVersion>4.0.0</modelVersion>
 
     <groupId>de.monticore.lang.monticar.utilities</groupId>
-    <artifactId>mlprocess-maven-plugin</artifactId>
+    <artifactId>emadl-maven-plugin</artifactId>
     <version>0.0.1-SNAPSHOT</version>
     <packaging>maven-plugin</packaging>
 
-    <name>Process Automatization of Machine Learning Projects</name>
-    <description>Maven plugin supporting process automatization of ML projects</description>
+    <name>Process Automatization of EMADL Projects</name>
+    <description>Maven plugin supporting process automatization of EmbeddedMontiArc Deep Learning projects</description>
 
     <properties>
         <maven.compiler.target>1.8</maven.compiler.target>
@@ -62,7 +62,7 @@
                 <artifactId>maven-plugin-plugin</artifactId>
                 <version>3.6.0</version>
                 <configuration>
-                    <goalPrefix>mlprocess</goalPrefix>
+                    <goalPrefix>emadl</goalPrefix>
                 </configuration>
             </plugin>
         </plugins>
@@ -73,7 +73,7 @@
 
     <distributionManagement>
         <repository>
-            <id>mlprocess.repo</id>
+            <id>emadl-repo</id>
             <name>Local Test Repository for ML-Process Artifacts</name>
             <url>file://${user.home}/.m2/test-repository/</url>
         </repository>
