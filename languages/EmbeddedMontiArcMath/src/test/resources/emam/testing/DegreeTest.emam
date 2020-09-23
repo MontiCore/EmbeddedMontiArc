@@ -1,0 +1,12 @@
+/* (c) https://github.com/MontiCore/monticore */
+package testing;
+
+component DegreeTest {
+  ports in Q(0° : 1° : 180°) in1,
+        in Q(0° : 1° : 180°) in2,
+       out Q(0° : 1° : 180°) out1;
+       
+  implementation Math {
+    out1 = in1 + in2;
+  }
+}
