@@ -1,0 +1,26 @@
+/* (c) https://github.com/MontiCore/monticore */
+package test.symtable;
+
+import test.symtable.sub1.S1;
+import test.symtable.sub1.S2;
+import test.symtable.sub2.*;
+
+struct MyFancyStruct1 {
+  B f1;
+  Z f2;
+  S1 f3;
+  T3 f4;
+  test.symtable.sub3.K1 f5;
+  Q f6;
+  (0 : oo) f7;
+  (-10 : 10) f8;
+  (-10m : 10cm : 10m) f9;
+  B f10;
+  C f11;
+  S2[] f12;
+  T1[] f13;
+  test.symtable.sub3.K2[] f14;
+  T5[] f15;
+  Z f16;
+  S1[][][][][][][][][][] f17;
+}
