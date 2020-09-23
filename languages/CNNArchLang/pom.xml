@@ -33,7 +33,7 @@
         <mc.grammars.assembly.version>0.0.6</mc.grammars.assembly.version>
         <SIUnit.version>0.0.11</SIUnit.version>
         <Common-MontiCar.version>0.0.19-SNAPSHOT</Common-MontiCar.version>
-        <Math.version>0.0.20-SNAPSHOT</Math.version>
+        <Math.version>0.2.12-SNAPSHOT</Math.version>
 
         <!-- .. Libraries .................................................. -->
         <guava.version>25.1-jre</guava.version>
