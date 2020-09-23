@@ -1,0 +1,25 @@
+/* (c) https://github.com/MontiCore/monticore */
+architecture RNNencdec<max_length=50, vocabulary_size=30000, hidden_size=1000>{
+    def input Q^{max_length, vocabulary_size} source
+    def output Q^{max_length, vocabulary_size} target
+
+    layer LSTM(units=hidden_size) encoder;
+
+    source ->
+    Embedding(units=hidden_size) ->
+    encoder;
+
+    layer LSTM(units=hidden_size) decoder;
+
+    1 -> OneHot() -> target[0];
+    encoder.state -> decoder.state;
+
+    timed<t> BeamSearch(width=5, size=max_length) {
+        target[t-1] ->
+        Embedding(units=hidden_size)
+        decoder ->
+        FullyConnected(units=vocabulary_size) ->
+        Softmax() ->
+        target[t]
+    };
+}

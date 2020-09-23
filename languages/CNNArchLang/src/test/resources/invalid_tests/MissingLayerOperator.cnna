@@ -1,0 +1,12 @@
+/* (c) https://github.com/MontiCore/monticore */
+architecture MissingLayerOperator(){
+    def input Q(-oo:+oo)^{10} in1
+    def output Q(0:1)^{2} out1
+
+    in1 ->
+    FullyConnected(units=64, no_bias=true) ->
+    Tanh()
+    FullyConnected(units=2, no_bias=true)
+    Softmax() ->
+    out1;
+}
