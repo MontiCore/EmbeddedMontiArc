@@ -14,4 +14,4 @@ TestBuildByStreamtest:
   stage: linux
   image: registry.git.rwth-aachen.de/monticore/embeddedmontiarc/applications/mnistcalculator/mxnet:v0.0.5
   script:
-    - mvn clean install -s setting.xml
+    - mvn clean install -s settings.xml
