@@ -54,6 +54,11 @@ masterJobLinux:
   - mvn package sonar:sonar -s settings.xml
   only:
   - master
+  except:
+    changes:
+    - .gitlab-ci.yml
+    - README.md
+    - .gitignore
 #
 #masterJobWindows:
 #  stage: windows
