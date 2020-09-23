@@ -10,6 +10,8 @@ public class StorageInformation {
 
   private File path;
 
+  private Integer version;
+
   private String description;
 
   public String getGroupId() {
@@ -22,6 +24,14 @@ public class StorageInformation {
 
   public File getPath() {
     return path;
+  }
+
+  public Integer getVersion() {
+    return version;
+  }
+
+  public void setVersion(Integer version) {
+    this.version = version;
   }
 
   public String getDescription() {

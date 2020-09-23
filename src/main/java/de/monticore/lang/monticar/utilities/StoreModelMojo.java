@@ -23,6 +23,8 @@ public class StoreModelMojo extends BaseMojo {
   @Override
   public void execute() throws MojoExecutionException, MojoFailureException {
     this.mkTmpDir();
+    int newestVersion = this.getNewestVersion(modelToStore);
+    modelToStore.setVersion(newestVersion);
 
     File jarFile;
     try {
@@ -30,7 +32,7 @@ public class StoreModelMojo extends BaseMojo {
       jarFile = ModelArtifactCreator.createArtifact(this.modelToStore, TEMP_FOLDER);
       getLog().info("FINISHED creating Jar for model");
 
-      ArtifactDeployer.deployArtifact(jarFile.getAbsolutePath(), this.modelToStore, this.getRepository());
+      ArtifactDeployer.deployArtifact(jarFile.getAbsolutePath(), this.modelToStore, this.getRepository(), this.getRemoteRepository(), this.getRepositorySystem(), this.getRepositorySystemSession());
     }
     catch (IOException | MavenInvocationException e) {
       throw new MojoFailureException(Arrays.toString(e.getStackTrace()));

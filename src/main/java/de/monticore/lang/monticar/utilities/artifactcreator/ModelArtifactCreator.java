@@ -42,7 +42,7 @@ public class ModelArtifactCreator extends ArtifactCreator {
 
     String packagePath = getPackagePath(emaAST.getPackageList());
 
-    Manifest manifest = createManifest(modelGroupId, modelArtifactId);
+    Manifest manifest = createManifest(modelGroupId, modelArtifactId, modelToStore.getVersion());
     String jarFileName = createJarFileName(tempDirectory, "model");
     List<FileLocation> fileLocations = getFileLocations(packagePath, modelPath, cnnTrainPath);
 

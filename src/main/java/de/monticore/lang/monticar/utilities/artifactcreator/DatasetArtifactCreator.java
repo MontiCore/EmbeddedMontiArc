@@ -23,7 +23,7 @@ public class DatasetArtifactCreator extends ArtifactCreator {
     Preconditions.checkArgument(!StringUtils.isEmpty(datasetArtifactId), "Artifact ID of dataset artifact must be specified.");
     Preconditions.checkNotNull(datasetPath, "Path of dataset must be specified.");
 
-    Manifest manifest = createManifest(datasetGroupId, datasetArtifactId);
+    Manifest manifest = createManifest(datasetGroupId, datasetArtifactId, datasetToStore.getVersion());
     String jarFileName = createJarFileName(tempDirectory, "dataset");
     List<FileLocation> datasetLocations = getDatasetLocations(datasetPath);
 

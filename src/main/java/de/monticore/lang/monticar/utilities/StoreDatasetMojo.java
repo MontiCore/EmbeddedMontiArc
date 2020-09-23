@@ -21,6 +21,8 @@ public class StoreDatasetMojo extends BaseMojo {
 
   public void execute() throws MojoExecutionException, MojoFailureException {
     this.mkTmpDir();
+    int newestVersion = this.getNewestVersion(datasetToStore);
+    datasetToStore.setVersion(newestVersion);
 
     File jarFile;
     try {
@@ -28,7 +30,7 @@ public class StoreDatasetMojo extends BaseMojo {
       jarFile = DatasetArtifactCreator.createArtifact(this.datasetToStore, TEMP_FOLDER);
       getLog().info("FINISHED creating Jar for dataset");
 
-      ArtifactDeployer.deployArtifact(jarFile.getAbsolutePath(), this.datasetToStore, this.getRepository());
+      ArtifactDeployer.deployArtifact(jarFile.getAbsolutePath(), this.datasetToStore, this.getRepository(), this.getRemoteRepository(), this.getRepositorySystem(), this.getRepositorySystemSession());
     }
     catch (IOException | MavenInvocationException e) {
       throw new MojoFailureException(Arrays.toString(e.getStackTrace()));
