@@ -14,4 +14,5 @@ TestBuildByStreamtest:
   stage: linux
   image: registry.git.rwth-aachen.de/monticore/embeddedmontiarc/applications/mnistcalculator/mxnet:v0.0.5
   script:
+    - cd AtariPong-Maven
     - mvn clean install -s settings.xml
