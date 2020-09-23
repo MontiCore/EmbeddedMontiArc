@@ -6,7 +6,7 @@
 
     <groupId>de.monticore.lang.monticar.application</groupId>
     <artifactId>mnist-calculator</artifactId>
-    <version>0.0.1-SNAPSHOT</version>
+    <version>0.0.2-SNAPSHOT</version>
 
     <properties>
 
@@ -26,13 +26,13 @@
         <dependency>
             <groupId>de.monticore.lang.monticar.utilities</groupId>
             <artifactId>maven-streamtest</artifactId>
-            <version>0.0.14-SNAPSHOT</version>
+            <version>0.0.16</version>
         </dependency>
 
         <dependency>
             <groupId>${project.groupId}</groupId>
             <artifactId>mnist-calculator</artifactId>
-            <version>0.0.1-SNAPSHOT</version>
+            <version>0.0.2-SNAPSHOT</version>
             <classifier>training-weight</classifier>
             <type>jar</type>
             <scope>provided</scope>
@@ -87,7 +87,7 @@
             <plugin>
                 <groupId>de.monticore.lang.monticar.utilities</groupId>
                 <artifactId>maven-streamtest</artifactId>
-                <version>0.0.14-SNAPSHOT</version>
+                <version>0.0.17</version>
                 <configuration>
                     <pathMain>./src/main/ema/emadl/models</pathMain>
                     <pathTest>./src/main/ema/emadl/models</pathTest>
