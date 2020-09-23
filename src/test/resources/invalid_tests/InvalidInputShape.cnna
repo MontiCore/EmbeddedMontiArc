@@ -1,0 +1,12 @@
+/* (c) https://github.com/MontiCore/monticore */
+architecture InvalidInputShape(inputs=10, classes=2){
+    def input Q(-oo:+oo)^{inputs} in1[2]
+    def output Q(0:1)^{classes} out1[2]
+
+    in1 ->
+    FullyConnected(units=64) ->
+    Tanh() ->
+    FullyConnected(units=classes) ->
+    Softmax() ->
+    out1;
+}
