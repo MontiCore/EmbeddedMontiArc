@@ -1,0 +1,83 @@
+/* (c) https://github.com/MontiCore/monticore */
+// Kinematic Bicycle model
+// @author Christoph Richter
+
+package test.math.optimization.mpc;
+
+component KinematicBicycleMPC
+{
+    ports in Q^{4, 3} z_ref,
+          in Q^{4} z_t,
+          in Q^{2} u_prev,
+          out Q^{2} u;
+
+    implementation Math
+    {
+        // constant mpc parameters
+        Q t_s = 0.1;     // sampling time
+        Q hp = 3;       // prediction horizon
+
+        // constant vehicle parameters
+        Q l_f = 1;    // length center to front
+        Q l_r = 1;    // length center to back
+
+        // static bounds on u
+        Q^{2} u_min = [-1.5; -37];
+        Q^{2} u_max = [1; 37];
+        Q^{2} du_min = [-3; -10];
+        Q^{2} du_max = [1.5; 10];
+
+        // declare optimization variable
+        Q^{2, 3} u_i = zeros(2,3);
+        Q^{4, 3} z = zeros(4,3);
+
+        // read last output values
+        u_i(:,1) = [u_prev(1); u_prev(2)];
+
+        z(:,1) = z_t;
+
+        for i = 2:hp
+
+            // update state
+            Q x = z(1, i - 1);     // x position
+            Q y = z(2, i - 1);     // y position
+            Q psi = z(3, i - 1);   // angle the vehicle faces
+            Q v = z(4, i - 1);     // velocity
+
+            // last output u
+            Q a = u_i(1, i - 1);           // previous acceleration
+            Q delta_f = u_i(1, i - 1);     // previous steering angle of the front wheel
+
+            // calculate state updates and update function
+            Q beta = arctan(l_r / (l_f + l_r) * tan(delta_f));
+            Q dx = v * cos(psi + beta);
+            Q dy = v * sin(psi + beta);
+            Q dpsi = v / l_r * sin(beta);
+            Q dv = a;
+
+            // update function
+            Q^{4} update = [x + dx * t_s; y + dy * t_s; psi * dpsi * t_s; v + dv * t_s];
+
+            // assign next predicted state
+            z(:,i) = update;
+        end
+
+        // define cost matrices
+        Q^{4,4} costQ = eye(4,4);
+        Q^{2,2} costR = eye(2,2);
+        Q^{2,2} costRBar = eye(2,2);
+
+        // minimization statement
+        Q error = minimize(Q^{2, 3} u_i)
+            (sum(((z(:,i) - z_ref(:,i))' * costQ * (z(:,i) - z_ref(:,i))), i, 0, h_p))
+                + sum(((u_i(:,i) - u_i(:,i-1))' * costRBar * (u_i(:,i) - u_i(:,i-1) + u_i(:,i)' * costR * u(:,i))), i, 2, h_p);
+        subject to
+            for j = 1:hp
+                u_min <= u_i(:,j) <= u_max;
+            end
+            for i = 2:hp
+                du_min <= u_i(:,i) - u_i(:,i-1) <= du_max;
+            end
+        end
+    }
+}

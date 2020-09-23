@@ -1,0 +1,12 @@
+/* (c) https://github.com/MontiCore/monticore */
+package test.math.optimization;
+
+component ScalarMinimizationTest{
+    implementation Math{
+        Q y = minimize(Q x)
+            (x*x) - 2 * x + 1;
+        subject to
+            x >= 0;
+        end
+    }
+}
