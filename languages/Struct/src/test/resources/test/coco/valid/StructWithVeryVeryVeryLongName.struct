@@ -1,0 +1,11 @@
+/* (c) https://github.com/MontiCore/monticore */
+package test.coco.valid;
+
+struct StructWithVeryVeryVeryLongName {
+  B fieldWithVeryLongName;
+  (-0.1 : 0.001 : 0.1) fieldWithVeryVeryLongName;
+  (10m : 1m : 100km) fieldWithVeryVeryVeryLongName;
+  C fieldWithVeryVeryVeryVeryLongName;
+  test.coco.valid.T1[] fieldWithVeryVeryVeryVeryVeryLongName;
+  W1[][][][][][][][][][][][][][][][][][][][][][][][] fieldWithVeryVeryVeryVeryVeryVeryLongName;
+}
