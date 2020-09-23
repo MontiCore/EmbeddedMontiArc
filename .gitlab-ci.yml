@@ -4,6 +4,8 @@ image: maven:3-jdk-8
 
 
 githubjob:
+  image: maven:3-jdk-8
+  stage: linux
   before_script:
   - 'which ssh-agent || ( apt-get update -y && apt-get install openssh-client -y )'
   - eval $(ssh-agent -s)
@@ -17,10 +19,11 @@ githubjob:
   script: 
   - git clone git@github.com:MontiCore/EmbeddedMontiArc.git
   - cd EmbeddedMontiArc
-  - git subtree pull --prefix languages/EmbeddedMontiArc https://git.rwth-aachen.de/monticore/EmbeddedMontiArc/languages/EmbeddedMontiArc.git master
+  - git subtree pull --prefix $PRJ_NAME https://git.rwth-aachen.de/monticore/EmbeddedMontiArc/${PRJ_NAME}.git master --squash
   - git push --force
   only:
   - master
+
 
 
 masterJob:
