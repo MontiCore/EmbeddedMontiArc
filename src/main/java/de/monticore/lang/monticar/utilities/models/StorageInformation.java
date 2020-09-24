@@ -37,4 +37,20 @@ public class StorageInformation {
   public String getDescription() {
     return description;
   }
+
+  public void setGroupId(String groupId) {
+    this.groupId = groupId;
+  }
+
+  public void setArtifactId(String artifactId) {
+    this.artifactId = artifactId;
+  }
+
+  public void setPath(File path) {
+    this.path = path;
+  }
+
+  public void setDescription(String description) {
+    this.description = description;
+  }
 }
