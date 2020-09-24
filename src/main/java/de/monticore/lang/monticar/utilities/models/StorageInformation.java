@@ -53,4 +53,15 @@ public class StorageInformation {
   public void setDescription(String description) {
     this.description = description;
   }
+
+  public StorageInformation createCopy() {
+    StorageInformation copy = new StorageInformation();
+    copy.setGroupId(this.groupId);
+    copy.setArtifactId(this.artifactId);
+    copy.setVersion(this.version);
+    copy.setPath(this.path);
+    copy.setDescription(this.description);
+
+    return copy;
+  }
 }

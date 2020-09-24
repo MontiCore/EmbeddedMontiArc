@@ -47,10 +47,7 @@ public class ModelArtifactCreator extends ArtifactCreator {
 
     for (File file: Objects.requireNonNull(storageInformation.getPath().listFiles())) {
       if (!file.isFile() && file.isDirectory()) {
-        StorageInformation subdirectoryInformation = new StorageInformation();
-        subdirectoryInformation.setGroupId(storageInformation.getGroupId());
-        subdirectoryInformation.setArtifactId(storageInformation.getArtifactId());
-        subdirectoryInformation.setVersion(storageInformation.getVersion());
+        StorageInformation subdirectoryInformation = storageInformation.createCopy();
         subdirectoryInformation.setPath(file);
         modelLocations.addAll(getFileLocations(subdirectoryInformation));
       }
