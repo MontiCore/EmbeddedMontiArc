@@ -1,0 +1,14 @@
+/* (c) https://github.com/MontiCore/monticore */
+configuration FixTargetNetworkRequiresInterval1 {
+    learning_method : reinforcement
+
+    agent_name : "reinforcement-agent"
+
+    environment : gym { name:"CartPole-v1" }
+
+    context : cpu
+
+    loss : huber
+
+    use_fix_target_network : true
+}
