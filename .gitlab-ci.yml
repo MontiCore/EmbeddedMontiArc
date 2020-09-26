@@ -43,9 +43,10 @@ masterJobLinux:
   only:
   - master
   except:
-  - .gitlab-ci.yml
-  - .README.md
-  - .gitignore
+    changes:
+    - .gitlab-ci.yml
+    - .README.md
+    - .gitignore
   
 #masterJobWindows:
 #  stage: windows
