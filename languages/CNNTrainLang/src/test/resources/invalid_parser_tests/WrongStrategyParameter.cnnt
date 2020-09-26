@@ -1,0 +1,12 @@
+/* (c) https://github.com/MontiCore/monticore */
+configuration WrongStrategyParameter {
+     learning_method : reinforcement
+     rl_algorithm: ddpg-algorithm
+     environment : gym { name:"CartPole-v1" }
+     strategy: epsgreedy {
+        epsilon: 1.0
+        epsilon_decay_method: linear
+        epsilon_decay: 0.01
+        mu: (0.01)
+     }
+}
