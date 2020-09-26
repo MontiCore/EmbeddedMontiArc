@@ -32,7 +32,7 @@ public class StoreModelMojo extends BaseMojo {
       jarFile = ModelArtifactCreator.createArtifact(this.modelToStore, TEMP_FOLDER);
       getLog().info("FINISHED creating Jar for model");
 
-      ArtifactDeployer.deployArtifact(jarFile.getAbsolutePath(), this.modelToStore, this.getRepository(), this.getRemoteRepository(), this.getRepositorySystem(), this.getRepositorySystemSession());
+      ArtifactDeployer.deployArtifact(jarFile.getAbsolutePath(), this.modelToStore, this.getRepository());
     }
     catch (IOException | MavenInvocationException e) {
       throw new MojoFailureException(Arrays.toString(e.getStackTrace()));
