@@ -1,0 +1,27 @@
+/* (c) https://github.com/MontiCore/monticore */
+package dltag;
+
+tagschema DeepLearningFilePathSchema {
+    /*
+     tag schema definition for use in EmbeddedMontiArcDL
+     The CNNTrainModel field of training config data is optional.
+     When this field is not present, we'll try to load the CNNTrain model with the same name as the tagged MTDL/EMADL model
+     TODO add corresponding implementation for the rest two tag schemas in EMADL and apply them in EMADL2CPP
+    */
+	tagtype DataPath for EMAComponentSymbol is { path = ${path:String}, type = ${type:String} };
+	tagtype TrainingConfigDataPath for EMAComponentSymbol is { CNNTrainModel = ${CNNTrainModel:String} };
+    tagtype PreTrainedModelWeightsDataPath for EMAComponentSymbol is { path = ${path:String}, fileName = ${type:String} };
+
+    /*
+     tag schema definition for use in MontiThingsDL
+     The CNNTrainModel field of training config data is optional.
+     When this field is not present, we'll try to load the CNNTrain model with the same name as the tagged MTDL/EMADL model
+    */
+	tagtype DataPath for ComponentSymbol is { path = ${path:String}, type = ${type:String} };
+    tagtype TrainingConfigDataPath for ComponentSymbol is { CNNTrainModel = ${CNNTrainModel:String} };
+    tagtype PreTrainedModelWeightsDataPath for ComponentSymbol is { path = ${path:String}, fileName = ${type:String} };
+
+	tagtype DataPath for ComponentInstanceSymbol is { path = ${path:String}, type = ${type:String} };
+    tagtype TrainingConfigDataPath for ComponentInstanceSymbol is { CNNTrainModel = ${CNNTrainModel:String} };
+    tagtype PreTrainedModelWeightsDataPath for ComponentInstanceSymbol is { path = ${path:String}, fileName = ${type:String} };
+}
