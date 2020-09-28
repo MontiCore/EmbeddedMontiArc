@@ -12,7 +12,7 @@ import java.util.Optional;
 /**
  */
 public class EMAMBluePrint {
-    protected EMAGenerator generator;//currentGeneratorInstance
+    protected EMAMGenerator generator;//currentGeneratorInstance
     protected List<Variable> variables = new ArrayList<>();
     protected List<Method> methods = new ArrayList<>();
     protected List<Variable> genericsVariableList = new ArrayList<>();
@@ -120,7 +120,7 @@ public class EMAMBluePrint {
         return generator;
     }
 
-    public void setGenerator(EMAGenerator generator) {
+    public void setGenerator(EMAMGenerator generator) {
         this.generator = generator;
     }
 

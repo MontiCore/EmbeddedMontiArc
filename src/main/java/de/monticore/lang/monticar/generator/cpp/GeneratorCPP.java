@@ -33,7 +33,7 @@ import java.util.*;
 
 /**
  */
-public class GeneratorCPP implements EMAGenerator {
+public class GeneratorCPP implements EMAMGenerator {
     public static GeneratorCPP currentInstance;
     private Path modelsDirPath;
     private boolean isGenerateTests = false;
