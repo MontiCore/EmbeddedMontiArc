@@ -93,7 +93,7 @@ public class Parser extends ParserTest{
         generatorCPP.setModelsDirPath(Paths.get("src/test/resources/emastudio/autopilot/"));
         generatorCPP.setGenerateTests(true);
         generatorCPP.setCheckModelDir(true);
-        List<File> files = generatorCPP.generateFiles(componentSymbol, symTab);
+        List<File> files = generatorCPP.generateFiles(symTab, componentSymbol);;
 //        System.out.println(files);
     }
 }

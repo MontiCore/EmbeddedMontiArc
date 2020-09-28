@@ -80,7 +80,7 @@ public class DynamicPortConnectionGenerationTest extends AbstractSymtabTest {
             GeneratorCPP generatorCPP = new GeneratorCPP();
             generatorCPP.useArmadilloBackend();
             generatorCPP.setGenerationTargetPath(target);
-            List<File> files = generatorCPP.generateFiles(symtab, componentSymbol, symtab);
+            List<File> files = generatorCPP.generateFiles(symtab, componentSymbol);
         }catch (IOException ex){
             ex.printStackTrace();
             Log.error(ex.getMessage());

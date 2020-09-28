@@ -39,7 +39,7 @@ public class GenerateCMakeTest extends AbstractSymtabTest {
         generatorCPP.useArmadilloBackend();
         generatorCPP.setGenerateCMake(true);
         generatorCPP.setGenerationTargetPath("./target/generated-sources-cpp/cmake/test/BasicConstantAssignment");
-        List<File> files = generatorCPP.generateFiles(componentSymbol, symtab);
+        List<File> files = generatorCPP.generateFiles(symtab, componentSymbol);;
         String restPath = "cmake/test/BasicConstantAssignment/";
         testCMakeFilesEqual(files, restPath);
     }
@@ -52,7 +52,7 @@ public class GenerateCMakeTest extends AbstractSymtabTest {
         generatorCPP.useArmadilloBackend();
         generatorCPP.setGenerateCMake(true);
         generatorCPP.setGenerationTargetPath("./target/generated-sources-cpp/cmake/testing/Model");
-        List<File> files = generatorCPP.generateFiles(componentSymbol, symtab);
+        List<File> files = generatorCPP.generateFiles(symtab, componentSymbol);;
         String restPath = "cmake/testing/Model/";
         testCMakeFilesEqual(files, restPath);
     }
@@ -69,7 +69,7 @@ public class GenerateCMakeTest extends AbstractSymtabTest {
         generatorCPP.setModelsDirPath(Paths.get("src/test/resources/generatecmake"));
         generatorCPP.setGenerateTests(true);
         generatorCPP.setCheckModelDir(true);
-        List<File> files = generatorCPP.generateFiles(componentSymbol, symtab);
+        List<File> files = generatorCPP.generateFiles(symtab, componentSymbol);;
         String restPath = "cmake/test/BasicPortsMath/";
         testCMakeFilesEqual(files, restPath);
     }
@@ -106,7 +106,7 @@ public class GenerateCMakeTest extends AbstractSymtabTest {
         generatorCPP.setModelsDirPath(Paths.get("src/test/resources/generatecmake"));
         generatorCPP.setGenerateTests(true);
         generatorCPP.setCheckModelDir(false);
-        List<File> files = generatorCPP.generateFiles(componentSymbol, symtab);
+        List<File> files = generatorCPP.generateFiles(symtab, componentSymbol);;
         String restPath = "cmake/test/math/FloatDivisionTest/";
         testCMakeFilesEqual(files, restPath);
     }
