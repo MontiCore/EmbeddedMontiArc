@@ -40,7 +40,7 @@ public class MathOptimizerTest extends AbstractSymtabTest {
         generatorCPP.setGenerateCMake(false);
 
         generatorCPP.setGenerationTargetPath("./target/generated-sources-cpp/optimizer/l1/");
-        List<File> files = generatorCPP.generateFiles(componentSymbol, symtab);
+        List<File> files = generatorCPP.generateFiles(symtab, componentSymbol);;
         String restPath = "optimizer/l1/";
         testFilesAreEqual(files, restPath);
 
@@ -59,7 +59,7 @@ public class MathOptimizerTest extends AbstractSymtabTest {
         generatorCPP.setGenerateCMake(false);
 
         generatorCPP.setGenerationTargetPath("./target/generated-sources-cpp/optimizer/l1/");
-        List<File> files = generatorCPP.generateFiles(componentSymbol, symtab);
+        List<File> files = generatorCPP.generateFiles(symtab, componentSymbol);;
         String restPath = "optimizer/l1/";
         testFilesAreEqual(files, restPath);
     }
@@ -77,7 +77,7 @@ public class MathOptimizerTest extends AbstractSymtabTest {
         generatorCPP.setGenerateCMake(false);
 
         generatorCPP.setGenerationTargetPath("./target/generated-sources-cpp/optimizer/l1/");
-        List<File> files = generatorCPP.generateFiles(componentSymbol, symtab);
+        List<File> files = generatorCPP.generateFiles(symtab, componentSymbol);;
         String restPath = "optimizer/l1/";
         testFilesAreEqual(files, restPath);
 
@@ -96,7 +96,7 @@ public class MathOptimizerTest extends AbstractSymtabTest {
         generatorCPP.setGenerateCMake(false);
 
         generatorCPP.setGenerationTargetPath("./target/generated-sources-cpp/optimizer/l1/");
-        List<File> files = generatorCPP.generateFiles(componentSymbol, symtab);
+        List<File> files = generatorCPP.generateFiles(symtab, componentSymbol);;
         String restPath = "optimizer/l1/";
         testFilesAreEqual(files, restPath);
     }
@@ -115,7 +115,7 @@ public class MathOptimizerTest extends AbstractSymtabTest {
         generatorCPP.setGenerateCMake(false);
 
         generatorCPP.setGenerationTargetPath("./target/generated-sources-cpp/optimizer/l1/");
-        List<File> files = generatorCPP.generateFiles(componentSymbol, symtab);
+        List<File> files = generatorCPP.generateFiles(symtab, componentSymbol);;
         String restPath = "optimizer/l1/";
         testFilesAreEqual(files, restPath);
     }
@@ -133,7 +133,7 @@ public class MathOptimizerTest extends AbstractSymtabTest {
         generatorCPP.setGenerateCMake(false);
 
         generatorCPP.setGenerationTargetPath("./target/generated-sources-cpp/optimizer/l1/");
-        List<File> files = generatorCPP.generateFiles(componentSymbol, symtab);
+        List<File> files = generatorCPP.generateFiles(symtab, componentSymbol);;
         String restPath = "optimizer/l1/";
         testFilesAreEqual(files, restPath);
 
@@ -152,7 +152,7 @@ public class MathOptimizerTest extends AbstractSymtabTest {
         generatorCPP.setGenerateCMake(false);
 
         generatorCPP.setGenerationTargetPath("./target/generated-sources-cpp/optimizer/l1/");
-        List<File> files = generatorCPP.generateFiles(componentSymbol, symtab);
+        List<File> files = generatorCPP.generateFiles(symtab, componentSymbol);;
         String restPath = "optimizer/l1/";
         testFilesAreEqual(files, restPath);
 
@@ -171,7 +171,7 @@ public class MathOptimizerTest extends AbstractSymtabTest {
         generatorCPP.setGenerateCMake(false);
 
         generatorCPP.setGenerationTargetPath("./target/generated-sources-cpp/optimizer/l1/");
-        List<File> files = generatorCPP.generateFiles(componentSymbol, symtab);
+        List<File> files = generatorCPP.generateFiles(symtab, componentSymbol);;
         String restPath = "optimizer/l1/";
         testFilesAreEqual(files, restPath);
     }
@@ -191,7 +191,7 @@ public class MathOptimizerTest extends AbstractSymtabTest {
         generatorCPP.setGenerateCMake(false);
 
         generatorCPP.setGenerationTargetPath("./target/generated-sources-cpp/optimizer/l1/");
-        List<File> files = generatorCPP.generateFiles(componentSymbol, symtab);
+        List<File> files = generatorCPP.generateFiles(symtab, componentSymbol);;
         String restPath = "optimizer/l1/";
         testFilesAreEqual(files, restPath);
     }
@@ -209,7 +209,7 @@ public class MathOptimizerTest extends AbstractSymtabTest {
         generatorCPP.setGenerateCMake(false);
 
         generatorCPP.setGenerationTargetPath("./target/generated-sources-cpp/optimizer/l1/");
-        List<File> files = generatorCPP.generateFiles(componentSymbol, symtab);
+        List<File> files = generatorCPP.generateFiles(symtab, componentSymbol);;
         String restPath = "optimizer/l1/";
         testFilesAreEqual(files, restPath);
 
@@ -228,7 +228,7 @@ public class MathOptimizerTest extends AbstractSymtabTest {
         generatorCPP.setGenerateCMake(false);
 
         generatorCPP.setGenerationTargetPath("./target/generated-sources-cpp/optimizer/l1/");
-        List<File> files = generatorCPP.generateFiles(componentSymbol, symtab);
+        List<File> files = generatorCPP.generateFiles(symtab, componentSymbol);;
         String restPath = "optimizer/l1/";
         testFilesAreEqual(files, restPath);
 
@@ -247,7 +247,7 @@ public class MathOptimizerTest extends AbstractSymtabTest {
         generatorCPP.setGenerateCMake(false);
 
         generatorCPP.setGenerationTargetPath("./target/generated-sources-cpp/optimizer/l1/");
-        List<File> files = generatorCPP.generateFiles(componentSymbol, symtab);
+        List<File> files = generatorCPP.generateFiles(symtab, componentSymbol);;
         String restPath = "optimizer/l1/";
         testFilesAreEqual(files, restPath);
     }
@@ -265,7 +265,7 @@ public class MathOptimizerTest extends AbstractSymtabTest {
         generatorCPP.setGenerateCMake(false);
 
         generatorCPP.setGenerationTargetPath("./target/generated-sources-cpp/optimizer/l1/");
-        List<File> files = generatorCPP.generateFiles(componentSymbol, symtab);
+        List<File> files = generatorCPP.generateFiles(symtab, componentSymbol);;
         String restPath = "optimizer/l1/";
         testFilesAreEqual(files, restPath);
 
@@ -284,7 +284,7 @@ public class MathOptimizerTest extends AbstractSymtabTest {
         generatorCPP.setGenerateCMake(false);
 
         generatorCPP.setGenerationTargetPath("./target/generated-sources-cpp/optimizer/l1/");
-        List<File> files = generatorCPP.generateFiles(componentSymbol, symtab);
+        List<File> files = generatorCPP.generateFiles(symtab, componentSymbol);;
         String restPath = "optimizer/l1/";
         testFilesAreEqual(files, restPath);
 
@@ -303,7 +303,7 @@ public class MathOptimizerTest extends AbstractSymtabTest {
         generatorCPP.setGenerateCMake(false);
 
         generatorCPP.setGenerationTargetPath("./target/generated-sources-cpp/optimizer/l1/");
-        List<File> files = generatorCPP.generateFiles(componentSymbol, symtab);
+        List<File> files = generatorCPP.generateFiles(symtab, componentSymbol);;
         String restPath = "optimizer/l1/";
         testFilesAreEqual(files, restPath);
     }
@@ -321,7 +321,7 @@ public class MathOptimizerTest extends AbstractSymtabTest {
         generatorCPP.setGenerateCMake(false);
 
         generatorCPP.setGenerationTargetPath("./target/generated-sources-cpp/optimizer/l1/");
-        List<File> files = generatorCPP.generateFiles(componentSymbol, symtab);
+        List<File> files = generatorCPP.generateFiles(symtab, componentSymbol);;
         String restPath = "optimizer/l1/";
         testFilesAreEqual(files, restPath);
 
@@ -340,7 +340,7 @@ public class MathOptimizerTest extends AbstractSymtabTest {
         generatorCPP.setGenerateCMake(false);
 
         generatorCPP.setGenerationTargetPath("./target/generated-sources-cpp/optimizer/l1/");
-        List<File> files = generatorCPP.generateFiles(componentSymbol, symtab);
+        List<File> files = generatorCPP.generateFiles(symtab, componentSymbol);;
         String restPath = "optimizer/l1/";
         testFilesAreEqual(files, restPath);
 
@@ -359,7 +359,7 @@ public class MathOptimizerTest extends AbstractSymtabTest {
         generatorCPP.setGenerateCMake(false);
 
         generatorCPP.setGenerationTargetPath("./target/generated-sources-cpp/optimizer/l1/");
-        List<File> files = generatorCPP.generateFiles(componentSymbol, symtab);
+        List<File> files = generatorCPP.generateFiles(symtab, componentSymbol);;
         String restPath = "optimizer/l1/";
         //testFilesAreEqual(files, restPath);
 
@@ -374,7 +374,7 @@ public class MathOptimizerTest extends AbstractSymtabTest {
         GeneratorCPP generatorCPP = new GeneratorCPP();
         generatorCPP.setUseAlgebraicOptimizations(true);
         generatorCPP.setGenerationTargetPath("./target/generated-sources-cpp/paperMatrixModifier/l1");
-        generatorCPP.generateFiles(componentSymbol, symtab);
+        generatorCPP.generateFiles(symtab, componentSymbol);;
     }
 
     @Test
@@ -386,7 +386,7 @@ public class MathOptimizerTest extends AbstractSymtabTest {
         GeneratorCPP generatorCPP = new GeneratorCPP();
         generatorCPP.setUseAlgebraicOptimizations(true);
         generatorCPP.setGenerationTargetPath("./target/generated-sources-cpp/paperMatrixModifier/l1");
-        generatorCPP.generateFiles(componentSymbol, symtab);
+        generatorCPP.generateFiles(symtab, componentSymbol);;
     }
 
     @Ignore
@@ -399,7 +399,7 @@ public class MathOptimizerTest extends AbstractSymtabTest {
         GeneratorCPP generatorCPP = new GeneratorCPP();
         generatorCPP.setUseAlgebraicOptimizations(true);
         generatorCPP.setGenerationTargetPath("./target/generated-sources-cpp/optimizer/l1");
-        generatorCPP.generateFiles(componentSymbol, symtab);
+        generatorCPP.generateFiles(symtab, componentSymbol);;
     }
 
     @Test
@@ -412,6 +412,6 @@ public class MathOptimizerTest extends AbstractSymtabTest {
         generatorCPP.useArmadilloBackend();
         //generatorCPP.setUseAlgebraicOptimizations(true);
         generatorCPP.setGenerationTargetPath("./target/generated-sources-cpp/armadillo/optimizer/l1");
-        generatorCPP.generateFiles(componentSymbol, symtab);
+        generatorCPP.generateFiles(symtab, componentSymbol);;
     }
 }

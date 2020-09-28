@@ -98,7 +98,7 @@ public class EMAGenerationTest {
         generatorCPP.useArmadilloBackend();
         generatorCPP.setGenerationTargetPath("./target/generated-sources-cpp/dynamics/ema/test01");
         generatorCPP.setGenerateCMake(true);
-        List<File> files = generatorCPP.generateFiles(symtab, componentSymbol, symtab);
+        List<File> files = generatorCPP.generateFiles(symtab, componentSymbol);
 //        files.stream().forEach(f -> System.out.println("Generated: "+f.getName()));
     }
 
@@ -113,7 +113,7 @@ public class EMAGenerationTest {
         generatorCPP.useArmadilloBackend();
         generatorCPP.setGenerationTargetPath("./target/generated-sources-cpp/dynamics/ema/test02");
         generatorCPP.setGenerateCMake(true);
-        List<File> files = generatorCPP.generateFiles(symtab, componentSymbol, symtab);
+        List<File> files = generatorCPP.generateFiles(symtab, componentSymbol);
 //        files.stream().forEach(f -> System.out.println("Generated: "+f.getName()));
     }
 }

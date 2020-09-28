@@ -26,7 +26,7 @@ public class CarModelGenerationTest extends AbstractSymtabTest {
         GeneratorCPP generatorCPP = new GeneratorCPP();
         generatorCPP.useArmadilloBackend();
         generatorCPP.setGenerationTargetPath("./target/generated-sources-cpp/mathopt/carmodel/" + fullModelName.substring(fullModelName.lastIndexOf(".") + 1, fullModelName.length()));
-        return generatorCPP.generateFiles(componentInstanceSymbol, symtab);
+        return generatorCPP.generateFiles(symtab, componentInstanceSymbol);
     }
 
     @Test

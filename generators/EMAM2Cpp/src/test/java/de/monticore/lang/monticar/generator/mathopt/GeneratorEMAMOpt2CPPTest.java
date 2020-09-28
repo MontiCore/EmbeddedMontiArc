@@ -30,7 +30,7 @@ public class GeneratorEMAMOpt2CPPTest extends AbstractSymtabTest {
         assertNotNull(componentSymbol);
         GeneratorCPP generator = new GeneratorCPP();
         generator.setGenerationTargetPath("./target/generated-sources-cpp/mathopt/generator/" + modelName);
-        List<File> files = generator.generateFiles(symtab, componentSymbol, symtab);
+        List<File> files = generator.generateFiles(symtab, componentSymbol);
         return files;
     }
 

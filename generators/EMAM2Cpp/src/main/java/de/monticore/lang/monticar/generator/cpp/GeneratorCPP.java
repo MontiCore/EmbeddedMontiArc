@@ -121,8 +121,8 @@ public class GeneratorCPP implements EMAMGenerator {
         //Log.warn("This backend has been deprecated. Armadillo is the recommended backend now.");
     }
 
-    public String generateString(TaggingResolver taggingResolver, EMAComponentInstanceSymbol componentInstanceSymbol, Scope symtab) {
-        MathStatementsSymbol mathSymbol = Helper.getMathStatementsSymbolFor(componentInstanceSymbol, symtab);
+    public String generateString(TaggingResolver taggingResolver, EMAComponentInstanceSymbol componentInstanceSymbol) {
+        MathStatementsSymbol mathSymbol = Helper.getMathStatementsSymbolFor(componentInstanceSymbol, taggingResolver);
         return generateString(taggingResolver, componentInstanceSymbol, mathSymbol);
     }
 
@@ -180,7 +180,7 @@ public class GeneratorCPP implements EMAMGenerator {
     public static List<FileContent> currentFileContentList = null;
 
     @Override
-    public List<FileContent> generateStrings(TaggingResolver taggingResolver, EMAComponentInstanceSymbol componentInstanceSymbol, Scope symtab) {
+    public List<FileContent> generateStrings(TaggingResolver taggingResolver, EMAComponentInstanceSymbol componentInstanceSymbol) {
         List<FileContent> fileContents = new ArrayList<>();
         if (componentInstanceSymbol.getFullName().equals("simulator.mainController")) {
             setGenerateSimulatorInterface(true);
@@ -190,9 +190,9 @@ public class GeneratorCPP implements EMAMGenerator {
 
         currentFileContentList = fileContents;
         if (!streamTestGenerationMode)
-            fileContents.add(new FileContent(generateString(taggingResolver, componentInstanceSymbol, symtab), componentInstanceSymbol));
+            fileContents.add(new FileContent(generateString(taggingResolver, componentInstanceSymbol), componentInstanceSymbol));
         else
-            fileContents.add(new FileContent(generateString(taggingResolver, componentInstanceSymbol, symtab),
+            fileContents.add(new FileContent(generateString(taggingResolver, componentInstanceSymbol),
                     componentInstanceSymbol.getPackageName().replaceAll("\\.", "\\/") + "/" + Names.FirstUpperCase(componentInstanceSymbol.getName()) + "Test" + testNamePostFix + ".stream"));
         String lastNameWithoutArrayPart = "";
         if (!streamTestGenerationMode) {
@@ -207,7 +207,7 @@ public class GeneratorCPP implements EMAMGenerator {
                     Log.info(generateComponentInstance + "", "Bool:");
                 }
                 if (generateComponentInstance) {
-                    fileContents.addAll(generateStrings(taggingResolver, instanceSymbol, symtab));
+                    fileContents.addAll(generateStrings(taggingResolver, instanceSymbol));
                 }
             }
             if (MathConverter.curBackend.getBackendName().equals("OctaveBackend"))
@@ -250,27 +250,26 @@ public class GeneratorCPP implements EMAMGenerator {
     }
 
     //TODO add incremental generation based on described concept
-    public List<File> generateFiles(TaggingResolver taggingResolver, EMAComponentInstanceSymbol componentSymbol,
-                                    Scope symtab) throws IOException {
+    public List<File> generateFiles(TaggingResolver taggingResolver, EMAComponentInstanceSymbol componentSymbol) throws IOException {
         List<FileContent> fileContents = new ArrayList<>();
         if (componentSymbol == null) {
-            ComponentScanner componentScanner = new ComponentScanner(getModelsDirPath(), symtab, "emam");
+            ComponentScanner componentScanner = new ComponentScanner(getModelsDirPath(), taggingResolver, "emam");
             Set<String> availableComponents = componentScanner.scan();
             for (String componentFullName : availableComponents) {
                 componentFullName = Names.getExpandedComponentInstanceSymbolName(componentFullName);
-                if (symtab.resolve(componentFullName,
+                if (taggingResolver.resolve(componentFullName,
                         EMAComponentInstanceSymbol.KIND).isPresent()) {
-                    EMAComponentInstanceSymbol componentInstanceSymbol = (EMAComponentInstanceSymbol) symtab.resolve(componentFullName,
+                    EMAComponentInstanceSymbol componentInstanceSymbol = (EMAComponentInstanceSymbol) taggingResolver.resolve(componentFullName,
                             EMAComponentInstanceSymbol.KIND).get();
-                    fileContents.addAll(generateStrings(taggingResolver, componentInstanceSymbol, symtab));
+                    fileContents.addAll(generateStrings(taggingResolver, componentInstanceSymbol));
                 }
             }
         } else {
-            searchForCVEverywhere(componentSymbol, symtab);
-            fileContents = generateStrings(taggingResolver, componentSymbol, symtab);
+            searchForCVEverywhere(componentSymbol, taggingResolver);
+            fileContents = generateStrings(taggingResolver, componentSymbol);
         }
         fileContents.addAll(generateTypes(TypeConverter.getTypeSymbols()));
-        fileContents.addAll(handleTestAndCheckDir(symtab, componentSymbol));
+        fileContents.addAll(handleTestAndCheckDir(taggingResolver, componentSymbol));
         if (isGenerateAutopilotAdapter()) {
             fileContents.addAll(getAutopilotAdapterFiles(componentSymbol));
         }
@@ -320,11 +319,6 @@ public class GeneratorCPP implements EMAMGenerator {
             fileContents.addAll(fileConts);
         }
         return fileContents;
-    }
-
-    public List<File> generateFiles(EMAComponentInstanceSymbol componentSymbol,
-                                    TaggingResolver taggingResolver) throws IOException {
-        return generateFiles(taggingResolver, componentSymbol, taggingResolver);
     }
 
     public File generateFile(FileContent fileContent) throws IOException {
