@@ -3,16 +3,13 @@ package de.monticore.lang.monticar.generator.cpp.converter;
 
 import de.monticore.expressionsbasis._ast.ASTExpression;
 import de.monticore.lang.embeddedmontiarc.embeddedmontiarc._symboltable.instanceStructure.EMAComponentInstanceSymbol;
-import de.monticore.lang.embeddedmontiarc.embeddedmontiarc._symboltable.instanceStructure.EMAConnectorInstanceSymbol;
 import de.monticore.lang.embeddedmontiarc.embeddedmontiarc._symboltable.instanceStructure.EMAPortInstanceSymbol;
-import de.monticore.lang.embeddedmontiarc.embeddedmontiarc._symboltable.instanceStructure.InstanceInformation;
 import de.monticore.lang.embeddedmontiarc.embeddedmontiarc.types.EMAVariable;
 import de.monticore.lang.embeddedmontiarcdynamic.embeddedmontiarcdynamic._symboltable.instanceStructure.EMADynamicComponentInstanceSymbol;
 import de.monticore.lang.math._symboltable.MathStatementsSymbol;
 import de.monticore.lang.math._symboltable.expression.MathAssignmentExpressionSymbol;
 import de.monticore.lang.math._symboltable.expression.MathExpressionSymbol;
 import de.monticore.lang.math._symboltable.expression.MathValueSymbol;
-import de.monticore.lang.math._symboltable.matrix.MathMatrixAccessSymbol;
 import de.monticore.lang.math._symboltable.matrix.MathMatrixArithmeticValueSymbol;
 import de.monticore.lang.math._symboltable.matrix.MathMatrixExpressionSymbol;
 import de.monticore.lang.math._symboltable.matrix.MathMatrixNameExpressionSymbol;
@@ -29,13 +26,13 @@ import java.util.stream.Collectors;
  */
 public class ComponentConverter {
 
-    public static BluePrintCPP currentBluePrint = null;
+    public static EMAMBluePrintCPP currentBluePrint = null;
     public static List<String> namesOfFunctions = new ArrayList<>();
     public static List<MathCommand> usedMathCommand = new ArrayList<>();
     public static HashMap<MathExpressionSymbol, MathExpressionProperties> tuples = new HashMap<>();
 
-    public static BluePrint convertComponentSymbolToBluePrint(EMAComponentInstanceSymbol componentSymbol, MathStatementsSymbol mathStatementsSymbol, List<String> includeStrings, GeneratorCPP generatorCPP) {
-        BluePrintCPP bluePrint = new BluePrintCPP(GeneralHelperMethods.getTargetLanguageComponentName(componentSymbol.getFullName()));
+    public static EMAMBluePrint convertComponentSymbolToBluePrint(EMAComponentInstanceSymbol componentSymbol, MathStatementsSymbol mathStatementsSymbol, List<String> includeStrings, GeneratorCPP generatorCPP) {
+        EMAMBluePrintCPP bluePrint = new EMAMBluePrintCPP(GeneralHelperMethods.getTargetLanguageComponentName(componentSymbol.getFullName()));
         ComponentConverter.currentBluePrint = bluePrint;
         bluePrint.setGenerator(generatorCPP);
         bluePrint.setOriginalSymbol(componentSymbol);
@@ -127,7 +124,7 @@ public class ComponentConverter {
         return bluePrint;
     }
 
-    public static void addVariables(EMAComponentInstanceSymbol componentSymbol, BluePrintCPP bluePrint) {
+    public static void addVariables(EMAComponentInstanceSymbol componentSymbol, EMAMBluePrintCPP bluePrint) {
         //add parameters as variables
         for (EMAVariable variable : componentSymbol.getParameters()) {
             Log.debug("EMAVAR: " + variable.getName() + " " + variable.getType().toString(), "ComponentConverter");
@@ -156,7 +153,7 @@ public class ComponentConverter {
         }
     }
 
-    public static void addParentDynamicFunctionPointer(BluePrint bluePrint){
+    public static void addParentDynamicFunctionPointer(EMAMBluePrint bluePrint){
         if(!bluePrint.getVariable("(*__parent_dynamic)(void)").isPresent()) {
             Variable pd = new Variable();
             pd.setTypeNameTargetLanguage("void*");
@@ -197,7 +194,7 @@ public class ComponentConverter {
         }
     }
 
-    public static Method generateInitMethod(EMAComponentInstanceSymbol componentSymbol, BluePrintCPP bluePrint, GeneratorCPP generatorCPP, List<String> includeStrings) {
+    public static Method generateInitMethod(EMAComponentInstanceSymbol componentSymbol, EMAMBluePrintCPP bluePrint, GeneratorCPP generatorCPP, List<String> includeStrings) {
         Method method = new Method("init", "void");
         bluePrint.addMethod(method);
         for (Variable v : bluePrint.getMathInformationRegister().getVariables()) {
@@ -259,7 +256,7 @@ public class ComponentConverter {
         return method;
     }
 
-    public static void extendInitMethod(EMAComponentInstanceSymbol componentSymbol, BluePrintCPP bluePrint, GeneratorCPP generatorCPP, List<String> includeStrings){
+    public static void extendInitMethod(EMAComponentInstanceSymbol componentSymbol, EMAMBluePrintCPP bluePrint, GeneratorCPP generatorCPP, List<String> includeStrings){
         Optional<Method> init = bluePrint.getMethod("init");
         if(!init.isPresent()){
             init = Optional.of(new Method("init", "void"));
@@ -276,7 +273,7 @@ public class ComponentConverter {
         }
     }
 
-    public static void generateInitStaticVariablePart(Method method, Variable v, BluePrintCPP bluePrint) {
+    public static void generateInitStaticVariablePart(Method method, Variable v, EMAMBluePrintCPP bluePrint) {
         //TODO add static variable filter function before generate init method
         //extract the static variable and their possible assignments
         //generate the static variable and their assignment if present
@@ -306,7 +303,7 @@ public class ComponentConverter {
         }
     }
 
-    public static void generateInitNonStaticVariable(Method method, Variable v, BluePrintCPP bluePrint) {
+    public static void generateInitNonStaticVariable(Method method, Variable v, EMAMBluePrintCPP bluePrint) {
         Log.info("v: " + v.getName(), "generateInitNonStaticVariable");
         if(v.isParameterVariable()){
             method.addInstruction(new TargetCodeInstruction("this->" + MathInformationRegister.getVariableInitName(v, bluePrint) + "=" + MathInformationRegister.getVariableInitName(v, bluePrint) + ";\n"));
@@ -366,15 +363,15 @@ public class ComponentConverter {
         return parameterString;
     }
 
-    public static BluePrint convertComponentSymbolToBluePrint(EMAComponentInstanceSymbol
+    public static EMAMBluePrint convertComponentSymbolToBluePrint(EMAComponentInstanceSymbol
                                                                       componentSymbol, List<String> includeStrings, GeneratorCPP generatorCPP) {
         return convertComponentSymbolToBluePrint(componentSymbol, null, includeStrings, generatorCPP);
     }
-    public static void fixMathFunctions(MathExpressionSymbol mathExpressionSymbol, BluePrintCPP bluePrintCPP) {
+    public static void fixMathFunctions(MathExpressionSymbol mathExpressionSymbol, EMAMBluePrintCPP bluePrintCPP) {
         MathFunctionFixer.fixMathFunctions(mathExpressionSymbol, bluePrintCPP);
     }
 
-    private static void fixFunctionTypes(String nameOfFunction, MathExpressionSymbol mathExpressionSymbol, BluePrintCPP bluePrintCPP) {
+    private static void fixFunctionTypes(String nameOfFunction, MathExpressionSymbol mathExpressionSymbol, EMAMBluePrintCPP bluePrintCPP) {
         String outputName = getNameOfOutput(mathExpressionSymbol);
         switch (nameOfFunction) {
             case "findContours":
@@ -389,7 +386,7 @@ public class ComponentConverter {
         }
     }
 
-    public static void redefineVariables(List<MathExpressionSymbol> mathExpressionSymbols, BluePrintCPP bluePrintCPP){
+    public static void redefineVariables(List<MathExpressionSymbol> mathExpressionSymbols, EMAMBluePrintCPP bluePrintCPP){
         for(MathExpressionSymbol mathExpressionSymbol : mathExpressionSymbols){
             if(mathExpressionSymbol.isAssignmentExpression() && ((MathAssignmentExpressionSymbol)mathExpressionSymbol).getExpressionSymbol().isMatrixExpression()) {
                 MathMatrixExpressionSymbol mathMatrixExpressionSymbol = (MathMatrixExpressionSymbol) ((MathAssignmentExpressionSymbol) mathExpressionSymbol).getExpressionSymbol();
@@ -412,7 +409,7 @@ public class ComponentConverter {
     }
 
 
-   public static void fixVariableType(String variableName, BluePrintCPP bluePrint, String typeNameMontiCar, String typeNameTargetLanguage, String includeName){
+   public static void fixVariableType(String variableName, EMAMBluePrintCPP bluePrint, String typeNameMontiCar, String typeNameTargetLanguage, String includeName){
         List<Variable> variables = bluePrint.getVariables();
         for(Variable var: variables){
             if(var.getName().equals(variableName)){

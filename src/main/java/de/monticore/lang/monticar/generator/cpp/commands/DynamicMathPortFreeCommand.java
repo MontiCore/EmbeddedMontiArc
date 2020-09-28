@@ -5,7 +5,7 @@ import de.monticore.lang.math._symboltable.expression.MathExpressionSymbol;
 import de.monticore.lang.math._symboltable.matrix.MathMatrixAccessSymbol;
 import de.monticore.lang.math._symboltable.matrix.MathMatrixNameExpressionSymbol;
 import de.monticore.lang.monticar.generator.*;
-import de.monticore.lang.monticar.generator.cpp.BluePrintCPP;
+import de.monticore.lang.monticar.generator.cpp.EMAMBluePrintCPP;
 import de.monticore.lang.monticar.generator.cpp.MathFunctionFixer;
 import de.monticore.lang.monticar.generator.cpp.converter.ExecuteMethodGenerator;
 import de.monticore.lang.monticar.generator.cpp.symbols.MathStringExpression;
@@ -24,7 +24,7 @@ public class DynamicMathPortFreeCommand extends MathCommand {
     }
 
     @Override
-    protected void convert(MathExpressionSymbol mathExpressionSymbol, BluePrint bluePrint) {
+    protected void convert(MathExpressionSymbol mathExpressionSymbol, EMAMBluePrint bluePrint) {
         ports_free_functionID++;
 
 
@@ -38,7 +38,7 @@ public class DynamicMathPortFreeCommand extends MathCommand {
         mathMatrixNameExpressionSymbol.setNameToAccess(" ");
 
         for (MathMatrixAccessSymbol accessSymbol : symbols)
-            MathFunctionFixer.fixMathFunctions(accessSymbol, (BluePrintCPP) bluePrint);
+            MathFunctionFixer.fixMathFunctions(accessSymbol, (EMAMBluePrintCPP) bluePrint);
 
 
         String call = "__ports_free_"+ports_free_functionID;

@@ -9,7 +9,7 @@ import de.monticore.lang.embeddedmontiarcdynamic.embeddedmontiarcdynamic._symbol
 import de.monticore.lang.math._ast.ASTAssignmentType;
 import de.monticore.lang.monticar.common2._ast.ASTCommonMatrixType;
 import de.monticore.lang.monticar.generator.Variable;
-import de.monticore.lang.monticar.generator.cpp.BluePrintCPP;
+import de.monticore.lang.monticar.generator.cpp.EMAMBluePrintCPP;
 import de.monticore.lang.monticar.ts.MCTypeSymbol;
 import de.monticore.lang.monticar.ts.references.MCASTTypeSymbolReference;
 import de.monticore.lang.monticar.ts.references.MCTypeReference;
@@ -26,14 +26,14 @@ public class PortConverter {
 
     public static int counterConstantPorts = 0;
 
-    public static Variable getVariableForPortSymbol(EMAConnectorInstanceSymbol connectorSymbol, String connectName, BluePrintCPP bluePrint) {
+    public static Variable getVariableForPortSymbol(EMAConnectorInstanceSymbol connectorSymbol, String connectName, EMAMBluePrintCPP bluePrint) {
         /*Optional<Variable> variable = bluePrint.getVariable(PortSymbol.getNameWithoutArrayBracketPart(connectName));
         if (variable.isPresent())
             return variable.get();*/
         return convertPortSymbolToVariable(connectorSymbol, connectName, bluePrint);
     }
 
-    public static Variable convertPortSymbolToVariable(EMAConnectorInstanceSymbol connectorSymbol, String connectName, BluePrintCPP bluePrint) {
+    public static Variable convertPortSymbolToVariable(EMAConnectorInstanceSymbol connectorSymbol, String connectName, EMAMBluePrintCPP bluePrint) {
     /*    Variable variable = bluePrint.getVariable(PortConverter.getPortNameWithoutArrayBracketPart(connectName)).orElse(null);
         if (variable != null&&variable.isArray())
             return variable;
@@ -48,7 +48,7 @@ public class PortConverter {
         return convertPortSymbolToVariable(portSymbol, connectName, bluePrint);
     }
 
-    public static Variable convertPortSymbolToVariable(EMAPortInstanceSymbol portSymbol, String connectName, BluePrintCPP bluePrint) {
+    public static Variable convertPortSymbolToVariable(EMAPortInstanceSymbol portSymbol, String connectName, EMAMBluePrintCPP bluePrint) {
     /*    Variable variable = bluePrint.getVariable(PortConverter.getPortNameWithoutArrayBracketPart(connectName)).orElse(null);
         if (variable != null&&variable.isArray())
             return variable;
@@ -79,7 +79,7 @@ public class PortConverter {
         return variable;
     }
 
-    public static Variable convertPortNameToVariable(String portName, EMAComponentInstanceSymbol instance, BluePrintCPP bluePrintCPP){
+    public static Variable convertPortNameToVariable(String portName, EMAComponentInstanceSymbol instance, EMAMBluePrintCPP bluePrintCPP){
         String fullName = portName;
         if(portName.contains(".")){
             instance = instance.getSubComponent(portName.substring(0, portName.indexOf("."))).orElse(null);

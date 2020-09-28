@@ -2,19 +2,18 @@
 package de.monticore.lang.monticar.generator;
 
 import de.monticore.lang.monticar.generator.cpp.GeneralHelperMethods;
-import de.monticore.lang.monticar.generator.cpp.converter.ComponentConverter;
 
 /**
  */
 public class ExecuteInstruction implements Instruction {
     String componentName;
-    BluePrint bluePrint;
+    EMAMBluePrint bluePrint;
     String threadName = null;
     boolean canBeThreaded = false;
     boolean dynamic = false;
     public static int threadCounter = 0;
 
-    public ExecuteInstruction(String componentName, BluePrint bluePrint, boolean canBeThreaded) {
+    public ExecuteInstruction(String componentName, EMAMBluePrint bluePrint, boolean canBeThreaded) {
         this.bluePrint = bluePrint;
         this.canBeThreaded = canBeThreaded;
         while (!bluePrint.getVariable(componentName).isPresent() && componentName.contains("_")) {

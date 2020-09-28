@@ -11,8 +11,8 @@ import java.util.Optional;
 
 /**
  */
-public class BluePrint {
-    protected Generator generator;//currentGeneratorInstance
+public class EMAMBluePrint {
+    protected EMAMGenerator generator;//currentGeneratorInstance
     protected List<Variable> variables = new ArrayList<>();
     protected List<Method> methods = new ArrayList<>();
     protected List<Variable> genericsVariableList = new ArrayList<>();
@@ -21,7 +21,7 @@ public class BluePrint {
     protected String packageName;
     protected EMAComponentInstanceSymbol originalSymbol;
 
-    public BluePrint(String name) {
+    public EMAMBluePrint(String name) {
         this.name = name;
     }
 
@@ -120,7 +120,7 @@ public class BluePrint {
         return generator;
     }
 
-    public void setGenerator(Generator generator) {
+    public void setGenerator(EMAMGenerator generator) {
         this.generator = generator;
     }
 

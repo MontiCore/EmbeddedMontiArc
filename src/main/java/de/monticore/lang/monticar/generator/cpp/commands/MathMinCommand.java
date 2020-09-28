@@ -4,11 +4,10 @@ package de.monticore.lang.monticar.generator.cpp.commands;
 import de.monticore.lang.math._symboltable.expression.MathExpressionSymbol;
 import de.monticore.lang.math._symboltable.matrix.MathMatrixAccessSymbol;
 import de.monticore.lang.math._symboltable.matrix.MathMatrixNameExpressionSymbol;
-import de.monticore.lang.monticar.generator.BluePrint;
+import de.monticore.lang.monticar.generator.EMAMBluePrint;
 import de.monticore.lang.monticar.generator.MathCommand;
-import de.monticore.lang.monticar.generator.cpp.BluePrintCPP;
+import de.monticore.lang.monticar.generator.cpp.EMAMBluePrintCPP;
 import de.monticore.lang.monticar.generator.cpp.OctaveHelper;
-import de.monticore.lang.monticar.generator.cpp.converter.ComponentConverter;
 import de.monticore.lang.monticar.generator.cpp.converter.ExecuteMethodGenerator;
 import de.monticore.lang.monticar.generator.cpp.MathFunctionFixer;
 import de.monticore.lang.monticar.generator.cpp.converter.MathConverter;
@@ -26,7 +25,7 @@ public class MathMinCommand extends MathCommand {
     }
 
     @Override
-    public void convert(MathExpressionSymbol mathExpressionSymbol, BluePrint bluePrint) {
+    public void convert(MathExpressionSymbol mathExpressionSymbol, EMAMBluePrint bluePrint) {
         String backendName = MathConverter.curBackend.getBackendName();
         if (backendName.equals("OctaveBackend")) {
             convertUsingOctaveBackend(mathExpressionSymbol, bluePrint);
@@ -36,7 +35,7 @@ public class MathMinCommand extends MathCommand {
         }
     }
 
-    public void convertUsingOctaveBackend(MathExpressionSymbol mathExpressionSymbol, BluePrint bluePrint) {
+    public void convertUsingOctaveBackend(MathExpressionSymbol mathExpressionSymbol, EMAMBluePrint bluePrint) {
         MathMatrixNameExpressionSymbol mathMatrixNameExpressionSymbol = (MathMatrixNameExpressionSymbol) mathExpressionSymbol;
 
         mathMatrixNameExpressionSymbol.setNameToAccess("");
@@ -44,7 +43,7 @@ public class MathMinCommand extends MathCommand {
 
         String valueListString = "";
         for (MathMatrixAccessSymbol accessSymbol : mathMatrixNameExpressionSymbol.getMathMatrixAccessOperatorSymbol().getMathMatrixAccessSymbols())
-            MathFunctionFixer.fixMathFunctions(accessSymbol, (BluePrintCPP) bluePrint);
+            MathFunctionFixer.fixMathFunctions(accessSymbol, (EMAMBluePrintCPP) bluePrint);
         valueListString += ExecuteMethodGenerator.generateExecuteCode(mathExpressionSymbol, new ArrayList<String>());
         //OctaveHelper.getCallOctaveFunction(mathExpressionSymbol, "sum","Double", valueListString));
         List<MathMatrixAccessSymbol> newMatrixAccessSymbols = new ArrayList<>();
@@ -52,15 +51,15 @@ public class MathMinCommand extends MathCommand {
         newMatrixAccessSymbols.add(new MathMatrixAccessSymbol(stringExpression));
 
         mathMatrixNameExpressionSymbol.getMathMatrixAccessOperatorSymbol().setMathMatrixAccessSymbols(newMatrixAccessSymbols);
-        ((BluePrintCPP) bluePrint).addAdditionalIncludeString("octave/builtin-defun-decls");
+        ((EMAMBluePrintCPP) bluePrint).addAdditionalIncludeString("octave/builtin-defun-decls");
 
 
     }
 
-    public void convertUsingArmadilloBackend(MathExpressionSymbol mathExpressionSymbol, BluePrint bluePrint) {
+    public void convertUsingArmadilloBackend(MathExpressionSymbol mathExpressionSymbol, EMAMBluePrint bluePrint) {
         MathMatrixNameExpressionSymbol mathMatrixNameExpressionSymbol = (MathMatrixNameExpressionSymbol) mathExpressionSymbol;
         mathMatrixNameExpressionSymbol.setNameToAccess("");
-        BluePrintCPP bluePrintCPP = (BluePrintCPP) bluePrint;
+        EMAMBluePrintCPP bluePrintCPP = (EMAMBluePrintCPP) bluePrint;
         int parametersNumber = mathMatrixNameExpressionSymbol.getMathMatrixAccessOperatorSymbol().getMathMatrixAccessSymbols().size();
 
         for (MathMatrixAccessSymbol accessSymbol : mathMatrixNameExpressionSymbol.getMathMatrixAccessOperatorSymbol().getMathMatrixAccessSymbols())
@@ -74,7 +73,7 @@ public class MathMinCommand extends MathCommand {
         }
     }
 
-    private void convertMinAramadillo(MathMatrixNameExpressionSymbol mathMatrixNameExpressionSymbol, BluePrintCPP bluePrint){
+    private void convertMinAramadillo(MathMatrixNameExpressionSymbol mathMatrixNameExpressionSymbol, EMAMBluePrintCPP bluePrint){
         String valueListString = ExecuteMethodGenerator.generateExecuteCode(mathMatrixNameExpressionSymbol, new ArrayList<>());
         MathStringExpression stringExpression = new MathStringExpression("min(min" + valueListString + ")", mathMatrixNameExpressionSymbol.getMathMatrixAccessOperatorSymbol().getMathMatrixAccessSymbols());
         List<MathMatrixAccessSymbol> newMatrixAccessSymbols = new ArrayList<>();
@@ -82,7 +81,7 @@ public class MathMinCommand extends MathCommand {
         mathMatrixNameExpressionSymbol.getMathMatrixAccessOperatorSymbol().setMathMatrixAccessSymbols(newMatrixAccessSymbols);
     }
 
-    private void convertMinStd(MathMatrixNameExpressionSymbol mathMatrixNameExpressionSymbol, BluePrintCPP bluePrint) {
+    private void convertMinStd(MathMatrixNameExpressionSymbol mathMatrixNameExpressionSymbol, EMAMBluePrintCPP bluePrint) {
         String valueListString = ExecuteMethodGenerator.generateExecuteCode(mathMatrixNameExpressionSymbol, new ArrayList<>());
         MathStringExpression stringExpression = new MathStringExpression("std::min" + valueListString, mathMatrixNameExpressionSymbol.getMathMatrixAccessOperatorSymbol().getMathMatrixAccessSymbols());
         List<MathMatrixAccessSymbol> newMatrixAccessSymbols = new ArrayList<>();

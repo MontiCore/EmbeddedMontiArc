@@ -2,10 +2,8 @@
 package de.monticore.lang.monticar.generator;
 
 import de.monticore.lang.embeddedmontiarc.embeddedmontiarc._symboltable.instanceStructure.EMAComponentInstanceSymbol;
-import de.monticore.lang.math._symboltable.MathStatementsSymbol;
-import de.monticore.lang.tagging._symboltable.TaggingResolver;
 
-public interface EMAGenerator extends Generator<EMAComponentInstanceSymbol> {
+public interface EMAMGenerator extends Generator<EMAComponentInstanceSymbol> {
 
     boolean useAlgebraicOptimizations();
 

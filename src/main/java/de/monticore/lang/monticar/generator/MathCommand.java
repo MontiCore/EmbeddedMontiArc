@@ -4,7 +4,7 @@ package de.monticore.lang.monticar.generator;
 
 import de.monticore.lang.math._symboltable.expression.MathExpressionSymbol;
 import de.monticore.lang.math._symboltable.matrix.MathMatrixNameExpressionSymbol;
-import de.monticore.lang.monticar.generator.cpp.BluePrintCPP;
+import de.monticore.lang.monticar.generator.cpp.EMAMBluePrintCPP;
 
 import java.util.HashSet;
 import java.util.List;
@@ -35,9 +35,9 @@ public abstract class MathCommand {
         this.mathCommandName = mathCommandName;
     }
 
-    protected abstract void convert(MathExpressionSymbol mathExpressionSymbol, BluePrint bluePrint);
+    protected abstract void convert(MathExpressionSymbol mathExpressionSymbol, EMAMBluePrint bluePrint);
 
-    public void convertAndSetTargetLanguageName(MathExpressionSymbol mathExpressionSymbol, BluePrint bluePrint) {
+    public void convertAndSetTargetLanguageName(MathExpressionSymbol mathExpressionSymbol, EMAMBluePrint bluePrint) {
         convert(mathExpressionSymbol, bluePrint);
         if (mathExpressionSymbol instanceof MathMatrixNameExpressionSymbol) {
             MathMatrixNameExpressionSymbol mathMatrixNameExpressionSymbol = (MathMatrixNameExpressionSymbol) mathExpressionSymbol;
@@ -65,7 +65,7 @@ public abstract class MathCommand {
         return false;
     }
 
-    public String getTypeOfFirstInput(MathMatrixNameExpressionSymbol mathMatrixNameExpressionSymbol, BluePrintCPP bluePrintCPP){
+    public String getTypeOfFirstInput(MathMatrixNameExpressionSymbol mathMatrixNameExpressionSymbol, EMAMBluePrintCPP bluePrintCPP){
         String nameOfFirstParameter = mathMatrixNameExpressionSymbol.getMathMatrixAccessOperatorSymbol().getMathMatrixAccessSymbols().get(0).getTextualRepresentation();
         for(Variable var: bluePrintCPP.getVariables()){
             String varName = var.getName();
@@ -79,7 +79,7 @@ public abstract class MathCommand {
         return "";
     }
 
-    public static void redefineArmaMat(BluePrintCPP bluePrint){
+    public static void redefineArmaMat(EMAMBluePrintCPP bluePrint){
         List<Variable> vars= bluePrint.getVariables();
         for(Variable var : vars){
         VariableType varType = var.getVariableType();
@@ -96,7 +96,7 @@ public abstract class MathCommand {
         }
     }
 
-    public static void redefineInit(BluePrintCPP bluePrint){
+    public static void redefineInit(EMAMBluePrintCPP bluePrint){
         Optional<Method> methodOpt = bluePrint.getMethod("init");
         Method initMethod = methodOpt.get();
         List<Instruction> instructs = initMethod.getInstructions();

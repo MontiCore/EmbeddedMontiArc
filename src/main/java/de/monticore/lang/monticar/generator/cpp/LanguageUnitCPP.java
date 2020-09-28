@@ -3,13 +3,9 @@ package de.monticore.lang.monticar.generator.cpp;
 
 import de.monticore.lang.embeddedmontiarc.embeddedmontiarc._symboltable.instanceStructure.EMAComponentInstanceSymbol;
 import de.monticore.lang.math._symboltable.MathStatementsSymbol;
-import de.monticore.lang.math._symboltable.expression.MathAssignmentExpressionSymbol;
-import de.monticore.lang.math._symboltable.expression.MathExpressionSymbol;
-import de.monticore.lang.math._symboltable.matrix.MathMatrixNameExpressionSymbol;
 import de.monticore.lang.monticar.generator.*;
 import de.monticore.lang.monticar.generator.cpp.converter.ComponentConverter;
 import de.monticore.lang.monticar.generator.cpp.converter.MathConverter;
-import de.monticore.lang.monticar.generator.MathCommand;
 import de.monticore.lang.monticar.generator.cpp.instruction.ConnectInstructionCPP;
 import de.monticore.lang.monticar.generator.cpp.template.AllTemplates;
 import de.monticore.lang.monticar.generator.cpp.viewmodel.LoggingViewModel;
@@ -18,7 +14,6 @@ import de.monticore.symboltable.Symbol;
 import de.se_rwth.commons.logging.Log;
 
 import java.util.*;
-import java.util.stream.Collectors;
 
 /**
  */
@@ -59,14 +54,14 @@ public class LanguageUnitCPP extends LanguageUnit {
                     if (nextSymbol.isKindOf(MathStatementsSymbol.KIND)) {
 
 
-                        BluePrint bluePrint = ComponentConverter.convertComponentSymbolToBluePrint((EMAComponentInstanceSymbol) symbol, (MathStatementsSymbol) nextSymbol, includeStrings, generatorCPP);
+                        EMAMBluePrint bluePrint = ComponentConverter.convertComponentSymbolToBluePrint((EMAComponentInstanceSymbol) symbol, (MathStatementsSymbol) nextSymbol, includeStrings, generatorCPP);
                         bluePrints.add(bluePrint);
 
                         ++i;
                     }
 
                 } else {
-                    BluePrint bluePrint = ComponentConverter.convertComponentSymbolToBluePrint((EMAComponentInstanceSymbol) symbol, includeStrings, generatorCPP);
+                    EMAMBluePrint bluePrint = ComponentConverter.convertComponentSymbolToBluePrint((EMAComponentInstanceSymbol) symbol, includeStrings, generatorCPP);
                     bluePrints.add(bluePrint);
                 }
             }
@@ -74,7 +69,7 @@ public class LanguageUnitCPP extends LanguageUnit {
         }
     }
 
-    public String getGeneratedHeader(TaggingResolver taggingResolver, BluePrintCPP bluePrint) {
+    public String getGeneratedHeader(TaggingResolver taggingResolver, EMAMBluePrintCPP bluePrint) {
         ExecutionOrderFixer.fixExecutionOrder(taggingResolver, bluePrint, (GeneratorCPP) bluePrint.getGenerator());
         String resultString = "";
         //guard defines
@@ -222,7 +217,7 @@ public class LanguageUnitCPP extends LanguageUnit {
         }
     }
 
-    protected String generateMethod(Method method, BluePrint bluePrint){
+    protected String generateMethod(Method method, EMAMBluePrint bluePrint){
 
         int counter = 0;
         String resultString = method.getReturnTypeName() + " " + method.getName() + "(";

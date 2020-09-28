@@ -14,7 +14,6 @@ import de.monticore.lang.monticar.generator.cmake.CMakeFindModule;
 import de.monticore.lang.monticar.generator.cpp.Dynamics.DynamicHelper;
 import de.monticore.lang.monticar.generator.cpp.Dynamics.EventPortValueCheck;
 import de.monticore.lang.monticar.generator.cpp.converter.*;
-import de.monticore.lang.monticar.generator.cpp.BluePrintCPP.*;
 import de.monticore.lang.monticar.generator.cpp.mathopt.MathOptSolverConfig;
 import de.monticore.lang.monticar.generator.cpp.template.AllTemplates;
 import de.monticore.lang.monticar.generator.cpp.viewmodel.AutopilotAdapterDataModel;
@@ -34,14 +33,14 @@ import java.util.*;
 
 /**
  */
-public class GeneratorCPP implements EMAGenerator {
+public class GeneratorCPP implements EMAMGenerator {
     public static GeneratorCPP currentInstance;
     private Path modelsDirPath;
     private boolean isGenerateTests = false;
     private boolean isGenerateAutopilotAdapter = false;
     private boolean isGenerateServerWrapper = false;
     protected boolean isExecutionLoggingActive = false;
-    private final List<BluePrintCPP> bluePrints = new ArrayList<>();
+    private final List<EMAMBluePrintCPP> bluePrints = new ArrayList<>();
 
     protected String generationTargetPath = "./target/generated-sources-cpp/";
 
@@ -160,10 +159,10 @@ public class GeneratorCPP implements EMAGenerator {
             languageUnitCPP.generateBluePrints();
         else
             streamTestGenerator.createStreamTest(componentSymbol, amountTickValues, testNamePostFix);
-        BluePrintCPP bluePrintCPP = null;
-        for (BluePrint bluePrint : languageUnitCPP.getBluePrints()) {
+        EMAMBluePrintCPP bluePrintCPP = null;
+        for (EMAMBluePrint bluePrint : languageUnitCPP.getBluePrints()) {
             if (bluePrint.getOriginalSymbol().equals(componentSymbol)) {
-                bluePrintCPP = (BluePrintCPP) bluePrint;
+                bluePrintCPP = (EMAMBluePrintCPP) bluePrint;
             }
         }
 
@@ -215,9 +214,9 @@ public class GeneratorCPP implements EMAGenerator {
                 fileContents.add(OctaveHelper.getOctaveHelperFileContent());
             if (MathConverter.curBackend.getBackendName().equals("ArmadilloBackend")) {
                 fileContents.add(ArmadilloHelper.getArmadilloHelperFileContent(isGenerateTests));
-                if (BluePrintCPP.usedCV) {
+                if (EMAMBluePrintCPP.usedCV) {
                     fileContents.add(ConversionHelper.getConversionHelperFileContent(isGenerateTests));
-                    BluePrintCPP.usedCV = false;
+                    EMAMBluePrintCPP.usedCV = false;
                 }
             }
             if (shouldGenerateMainClass()) {
@@ -465,7 +464,7 @@ public class GeneratorCPP implements EMAGenerator {
         this.checkModelDir = checkModelDir;
     }
 
-    public List<BluePrintCPP> getBluePrints() {
+    public List<EMAMBluePrintCPP> getBluePrints() {
         return Collections.unmodifiableList(bluePrints);
     }
 
