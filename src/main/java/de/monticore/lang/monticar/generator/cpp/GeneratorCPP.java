@@ -128,6 +128,18 @@ public class GeneratorCPP implements Generator {
     }
 
     @Override
+    public CMakeConfig getCmakeConfig() {
+        if (cMakeConfig == null)
+            setupCMake();
+        return cMakeConfig;
+    }
+
+    @Override
+    public boolean isGenerateCMake() {
+        return generateCMake;
+    }
+
+    @Override
     public String getGenerationTargetPath() {
         return generationTargetPath;
     }
@@ -486,6 +498,7 @@ public class GeneratorCPP implements Generator {
         String fileContents = AllTemplates.generateAutopilotAdapterH(dm);
         return new FileContent(fileContents, "AutopilotAdapter.h");
     }
+
     private static FileContent generateAutopilotAdapterCpp(AutopilotAdapterDataModel dm) {
         String fileContents = AllTemplates.generateAutopilotAdapterCpp(dm);
         if (currentInstance.generateCMake)
