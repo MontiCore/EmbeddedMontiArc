@@ -25,6 +25,10 @@ public abstract class TemplateConfiguration {
         configuration.setClassForTemplateLoading(TemplateConfiguration.class, getBaseTemplatePackagePath());
         configuration.setDefaultEncoding("UTF-8");
         configuration.setTemplateExceptionHandler(TemplateExceptionHandler.RETHROW_HANDLER);
+
+        // numbers in windows germany are formatted as '0,2' instead of '0.2'
+        configuration.setNumberFormat("computer");
+
         return configuration;
     }
 
