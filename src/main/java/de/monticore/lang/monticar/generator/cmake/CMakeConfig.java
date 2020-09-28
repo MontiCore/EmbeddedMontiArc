@@ -55,6 +55,8 @@ public class CMakeConfig {
 
     private List<String> cmakeCommandListEnd = new ArrayList<>();
 
+    private List<String> cmakeLibraryLinkage = new ArrayList<>();
+
     // constructor
     public CMakeConfig(String compName) {
         cMakeListsViewModel.setCompName(compName);
@@ -63,6 +65,7 @@ public class CMakeConfig {
 
     // methods
     protected void configureCMakeListsViewModel() {
+        cMakeListsViewModel.setCmakeLibraryLinkageList(cmakeLibraryLinkage);
         cMakeListsViewModel.setCmakeCommandList(cmakeCommandList);
         cMakeListsViewModel.setCmakeCommandListEnd(cmakeCommandListEnd);
     }
@@ -146,4 +149,7 @@ public class CMakeConfig {
     }
 
 
+    public void addCmakeLibraryLinkage(String cmakeLibraryLinkage) {
+        this.cmakeLibraryLinkage.add(cmakeLibraryLinkage);
+    }
 }
