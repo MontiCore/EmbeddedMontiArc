@@ -60,22 +60,6 @@
 
         <dependency>
             <groupId>de.monticore.lang.monticar</groupId>
-            <artifactId>cnn-arch</artifactId>
-            <version>${CNNArch2X.version}</version>
-            <classifier>${grammars.classifier}</classifier>
-            <scope>provided</scope>
-        </dependency>
-
-        <dependency>
-            <groupId>de.monticore.lang.monticar</groupId>
-            <artifactId>cnn-train</artifactId>
-            <version>${CNNArch2X.version}</version>
-            <classifier>${grammars.classifier}</classifier>
-            <scope>provided</scope>
-        </dependency>
-
-        <dependency>
-            <groupId>de.monticore.lang.monticar</groupId>
             <artifactId>cnnarch-generator</artifactId>
             <version>${CNNArch2X.version}</version>
         </dependency>
