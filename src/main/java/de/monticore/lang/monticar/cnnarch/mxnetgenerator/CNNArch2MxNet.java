@@ -23,7 +23,7 @@ import java.util.Map;
 
 public class CNNArch2MxNet extends CNNArchGenerator {
 
-    CMakeConfig cMakeConfig;
+    CMakeConfig cMakeConfig = new CMakeConfig("");
 
     public CNNArch2MxNet() {
         architectureSupportChecker = new CNNArch2MxNetArchitectureSupportChecker();
@@ -32,6 +32,13 @@ public class CNNArch2MxNet extends CNNArchGenerator {
 
     //check cocos with CNNArchCocos.checkAll(architecture) before calling this method.
     public List<FileContent> generateStrings(TaggingResolver var1, ArchitectureSymbol architecture){
+        if(architecture != null && architecture.getFullName() != null) {
+            cMakeConfig.getCMakeListsViewModel().setCompName(architecture.getFullName().replace('.', '_').replace('[', '_').replace(']', '_'));
+        }
+        // Add cmake dependencies when they are needed
+        cMakeConfig.addModuleDependency(new CMakeFindModule("Armadillo", true));
+        cMakeConfig.addCmakeLibraryLinkage("mxnet");
+
         List<FileContent> fileContents = new ArrayList<>();
         FileContent temp;
         CNNArch2MxNetTemplateController archTc = new CNNArch2MxNetTemplateController(architecture);
