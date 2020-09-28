@@ -17,7 +17,7 @@ find_package(${var.packageName} <#if var.required>REQUIRED<#else></#if>)
 
 # additional library linkage
 <#list viewModel.cmakeLibraryLinkageList as cmd>
-    set(LIBS "${LIBS}" ${cmd})
+    set(LIBS ${r"${LIBS}"} ${cmd})
 </#list>
 
 # additional commands
