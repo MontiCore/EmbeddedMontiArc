@@ -19,7 +19,7 @@
 
       <CNNArch.version>0.3.7-SNAPSHOT</CNNArch.version>
       <CNNTrain.version>0.3.12-SNAPSHOT</CNNTrain.version>
-      <embedded-montiarc-math-generator>0.2.12-SNAPSHOT</embedded-montiarc-math-generator>
+      <embedded-montiarc-math-generator>0.4.0-SNAPSHOT</embedded-montiarc-math-generator>
     
         <!-- .. Libraries .................................................. -->
         <guava.version>18.0</guava.version>
