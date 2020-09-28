@@ -5,9 +5,9 @@ import de.monticore.lang.math._symboltable.expression.*;
 import de.monticore.lang.math._symboltable.matrix.MathMatrixAccessOperatorSymbol;
 import de.monticore.lang.math._symboltable.matrix.MathMatrixAccessSymbol;
 import de.monticore.lang.math._symboltable.matrix.MathMatrixNameExpressionSymbol;
-import de.monticore.lang.monticar.generator.BluePrint;
+import de.monticore.lang.monticar.generator.EMAMBluePrint;
 import de.monticore.lang.monticar.generator.Variable;
-import de.monticore.lang.monticar.generator.cpp.BluePrintCPP;
+import de.monticore.lang.monticar.generator.cpp.EMAMBluePrintCPP;
 import de.monticore.lang.monticar.generator.cpp.converter.TypeConverter;
 import de.se_rwth.commons.logging.Log;
 
@@ -22,9 +22,9 @@ import java.util.Optional;
 public class MathInformationRegister {
     protected List<Variable> variables = new ArrayList<>();//contains in implementation Math section declared Variables
     protected List<MathValueSymbol> mathValueSymbols = new ArrayList<>();
-    protected BluePrint bluePrint;
+    protected EMAMBluePrint bluePrint;
 
-    public MathInformationRegister(BluePrint bluePrint) {
+    public MathInformationRegister(EMAMBluePrint bluePrint) {
         this.bluePrint = bluePrint;
     }
 
@@ -176,7 +176,7 @@ public class MathInformationRegister {
         return null;
     }
 
-    public static String getVariableInitName(Variable v, BluePrintCPP bluePrint) {
+    public static String getVariableInitName(Variable v, EMAMBluePrintCPP bluePrint) {
         /*for (Variable v2 : bluePrint.getVariables()) {
             if (v2.isArray() && PortConverter.getPortNameWithoutArrayBracketPart(v2.getName()).equals(v.getName())) {
                 if (!v.getName().endsWith("]")) {

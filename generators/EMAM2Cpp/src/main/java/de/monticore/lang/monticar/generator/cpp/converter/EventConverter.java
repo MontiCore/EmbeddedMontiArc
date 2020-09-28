@@ -1,32 +1,26 @@
 /* (c) https://github.com/MontiCore/monticore */
 package de.monticore.lang.monticar.generator.cpp.converter;
 
-import alice.tuprolog.Var;
-import de.monticore.lang.embeddedmontiarc.embeddedmontiarc._symboltable.cncModel.EMAPortSymbol;
 import de.monticore.lang.embeddedmontiarc.embeddedmontiarc._symboltable.instanceStructure.EMAComponentInstanceSymbol;
-import de.monticore.lang.embeddedmontiarc.embeddedmontiarc._symboltable.instanceStructure.EMAConnectorInstanceSymbol;
 import de.monticore.lang.embeddedmontiarc.embeddedmontiarc._symboltable.instanceStructure.EMAPortInstanceSymbol;
 import de.monticore.lang.embeddedmontiarcdynamic.embeddedmontiarcdynamic._symboltable.instanceStructure.EMADynamicComponentInstanceSymbol;
 import de.monticore.lang.embeddedmontiarcdynamic.embeddedmontiarcdynamic._symboltable.instanceStructure.EMADynamicConnectorInstanceSymbol;
 import de.monticore.lang.embeddedmontiarcdynamic.embeddedmontiarcdynamic._symboltable.instanceStructure.EMADynamicEventHandlerInstanceSymbol;
-import de.monticore.lang.embeddedmontiarcdynamic.embeddedmontiarcdynamic._symboltable.instanceStructure.EMADynamicPortInstanceSymbol;
 import de.monticore.lang.embeddedmontiarcdynamic.event._symboltable.expression.*;
 import de.monticore.lang.embeddedmontiarcdynamic.event._symboltable.expression.portvalueexpressionvalues.*;
 import de.monticore.lang.math._symboltable.MathStatementsSymbol;
 import de.monticore.lang.monticar.generator.*;
-import de.monticore.lang.monticar.generator.cpp.BluePrintCPP;
+import de.monticore.lang.monticar.generator.cpp.EMAMBluePrintCPP;
 import de.monticore.lang.monticar.generator.cpp.GeneratorCPP;
 import de.monticore.lang.monticar.generator.cpp.VariablePortValueChecker;
-import de.monticore.lang.monticar.generator.cpp.instruction.ConnectInstructionCPP;
 import de.monticore.lang.monticar.generator.cpp.instruction.EventConnectInstructionCPP;
-import de.monticore.lang.monticar.generator.cpp.instruction.ExecuteDynamicConnects;
 import de.se_rwth.commons.logging.Log;
 
 import java.util.*;
 
 public class EventConverter {
 
-    public static void generateEvents(Method executeMethod, EMAComponentInstanceSymbol componentSymbol, BluePrintCPP bluePrint, MathStatementsSymbol mathStatementsSymbol, GeneratorCPP generatorCPP, List<String> includeStrings){
+    public static void generateEvents(Method executeMethod, EMAComponentInstanceSymbol componentSymbol, EMAMBluePrintCPP bluePrint, MathStatementsSymbol mathStatementsSymbol, GeneratorCPP generatorCPP, List<String> includeStrings){
         if(!(componentSymbol instanceof EMADynamicComponentInstanceSymbol)){
             return;
         }
@@ -58,7 +52,7 @@ public class EventConverter {
         }
     }
 
-    protected static void generateEventConditionMethod(EMADynamicEventHandlerInstanceSymbol event, EMAComponentInstanceSymbol componentSymbol,BluePrintCPP bluePrint ){
+    protected static void generateEventConditionMethod(EMADynamicEventHandlerInstanceSymbol event, EMAComponentInstanceSymbol componentSymbol, EMAMBluePrintCPP bluePrint ){
         Method condition = new Method(EventConnectInstructionCPP.getEventNameCPP(event.getName()), "bool");
         condition.setPublic(false);
 
@@ -71,7 +65,7 @@ public class EventConverter {
         bluePrint.addMethod(condition);
     }
 
-    protected static boolean generateValueEvent(EMADynamicEventHandlerInstanceSymbol event, Method executeMethod, BluePrintCPP bluePrint ){
+    protected static boolean generateValueEvent(EMADynamicEventHandlerInstanceSymbol event, Method executeMethod, EMAMBluePrintCPP bluePrint ){
         int number = 0;
         for(EMADynamicConnectorInstanceSymbol connector : event.getConnectorsDynamic()){
             if(connector.isDynamicSourceNewComponent() || connector.isDynamicSourceNewPort() ||
@@ -85,14 +79,14 @@ public class EventConverter {
         return number > 0;
     }
 
-    protected static boolean generateFreeEvent(EMADynamicEventHandlerInstanceSymbol event, Method executeMethod, BluePrint bluePrint){
+    protected static boolean generateFreeEvent(EMADynamicEventHandlerInstanceSymbol event, Method executeMethod, EMAMBluePrint bluePrint){
 
 
 
         return true;
     }
 
-    public static void generatePVCNextMethod(BluePrintCPP bluePrint){
+    public static void generatePVCNextMethod(EMAMBluePrintCPP bluePrint){
         Method next = new Method("next", "void");
         next.setPublic(false);
 
@@ -107,7 +101,7 @@ public class EventConverter {
         }
     }
 
-    protected static void generateEventConnector(String eventName, EMADynamicConnectorInstanceSymbol connector, BluePrintCPP bluePrint, Method method){
+    protected static void generateEventConnector(String eventName, EMADynamicConnectorInstanceSymbol connector, EMAMBluePrintCPP bluePrint, Method method){
         if (!connector.isConstant()) {
             Log.info("source:" + connector.getSource() + " target:" + connector.getTarget(), "Port info:");
             Variable v1 = PortConverter.getVariableForPortSymbol(connector, connector.getSource(), bluePrint);
@@ -145,7 +139,7 @@ public class EventConverter {
 
     //<editor-fold desc="Generate event condition">
 
-    protected static String generateEventCondition(EventExpressionSymbol expression, EMAComponentInstanceSymbol componentSymbol, BluePrintCPP bluePrint){
+    protected static String generateEventCondition(EventExpressionSymbol expression, EMAComponentInstanceSymbol componentSymbol, EMAMBluePrintCPP bluePrint){
         if(expression instanceof EventBracketExpressionSymbol){
             return "( "+generateEventCondition(((EventBracketExpressionSymbol) expression).getInnerExpression(), componentSymbol, bluePrint)+" )";
         }else if(expression instanceof EventLogicalOperationExpressionSymbol){
@@ -166,7 +160,7 @@ public class EventConverter {
         return "";
     }
 
-    protected static String generateEventConditionEventLogicalExpressionSymbol(EventLogicalOperationExpressionSymbol expression, EMAComponentInstanceSymbol componentSymbol, BluePrintCPP bluePrint){
+    protected static String generateEventConditionEventLogicalExpressionSymbol(EventLogicalOperationExpressionSymbol expression, EMAComponentInstanceSymbol componentSymbol, EMAMBluePrintCPP bluePrint){
         String result = "( ";
         if (expression.getLeftExpression() != null){
             result += generateEventCondition(expression.getLeftExpression(), componentSymbol, bluePrint);
@@ -181,7 +175,7 @@ public class EventConverter {
         return  result+" )";
     }
 
-    protected static String generateEventConditionEventPortValueSymbol(EventPortExpressionValueSymbol expressionValueSymbol, EMAComponentInstanceSymbol componentSymbol, BluePrintCPP bluePrint){
+    protected static String generateEventConditionEventPortValueSymbol(EventPortExpressionValueSymbol expressionValueSymbol, EMAComponentInstanceSymbol componentSymbol, EMAMBluePrintCPP bluePrint){
 
         VariablePortValueChecker pvc = new VariablePortValueChecker(expressionValueSymbol.getName());
         bluePrint.addVariable(pvc);
@@ -198,7 +192,7 @@ public class EventConverter {
 
     }
 
-    protected static String generateEventConditionEventPortConnectSymbol(EventPortExpressionConnectSymbol expressionConnectSymbol, EMAComponentInstanceSymbol componentSymbol, BluePrint bluePrint){
+    protected static String generateEventConditionEventPortConnectSymbol(EventPortExpressionConnectSymbol expressionConnectSymbol, EMAComponentInstanceSymbol componentSymbol, EMAMBluePrint bluePrint){
 
         return "("+expressionConnectSymbol.getName()+"_has_connect_request())";
 

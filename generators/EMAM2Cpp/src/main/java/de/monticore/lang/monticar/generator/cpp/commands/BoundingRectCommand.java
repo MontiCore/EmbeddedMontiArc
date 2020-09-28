@@ -3,9 +3,9 @@ package de.monticore.lang.monticar.generator.cpp.commands;
 import de.monticore.lang.math._symboltable.expression.MathExpressionSymbol;
 import de.monticore.lang.math._symboltable.matrix.MathMatrixAccessSymbol;
 import de.monticore.lang.math._symboltable.matrix.MathMatrixNameExpressionSymbol;
-import de.monticore.lang.monticar.generator.BluePrint;
+import de.monticore.lang.monticar.generator.EMAMBluePrint;
 import de.monticore.lang.monticar.generator.MathCommand;
-import de.monticore.lang.monticar.generator.cpp.BluePrintCPP;
+import de.monticore.lang.monticar.generator.cpp.EMAMBluePrintCPP;
 import de.monticore.lang.monticar.generator.cpp.MathFunctionFixer;
 import de.monticore.lang.monticar.generator.cpp.converter.ComponentConverter;
 import de.monticore.lang.monticar.generator.cpp.converter.ExecuteMethodGenerator;
@@ -26,7 +26,7 @@ public class BoundingRectCommand extends MathCommand{
     }
 
     @Override
-    public void convert(MathExpressionSymbol mathExpressionSymbol, BluePrint bluePrint) {
+    public void convert(MathExpressionSymbol mathExpressionSymbol, EMAMBluePrint bluePrint) {
         String backendName = MathConverter.curBackend.getBackendName();
         if (backendName.equals("OctaveBackend")) {
             convertUsingOctaveBackend(mathExpressionSymbol, bluePrint);
@@ -40,14 +40,14 @@ public class BoundingRectCommand extends MathCommand{
         return true;
     }
 
-        public void convertUsingOctaveBackend(MathExpressionSymbol mathExpressionSymbol, BluePrint bluePrint) {
+        public void convertUsingOctaveBackend(MathExpressionSymbol mathExpressionSymbol, EMAMBluePrint bluePrint) {
         Log.error("No implementation for Octave Backend");
     }
 
-    public void convertUsingArmadilloBackend(MathExpressionSymbol mathExpressionSymbol, BluePrint bluePrint) {
+    public void convertUsingArmadilloBackend(MathExpressionSymbol mathExpressionSymbol, EMAMBluePrint bluePrint) {
         MathMatrixNameExpressionSymbol mathMatrixNameExpressionSymbol = (MathMatrixNameExpressionSymbol) mathExpressionSymbol;
         mathMatrixNameExpressionSymbol.setNameToAccess("");
-        BluePrintCPP bluePrintCPP = (BluePrintCPP) bluePrint;
+        EMAMBluePrintCPP bluePrintCPP = (EMAMBluePrintCPP) bluePrint;
 
 
         String valueListString = "";

@@ -7,7 +7,7 @@ import de.monticore.lang.math._symboltable.expression.MathAssignmentExpressionSy
 import de.monticore.lang.math._symboltable.expression.MathExpressionSymbol;
 import de.monticore.lang.math._symboltable.matrix.*;
 import de.monticore.lang.monticar.generator.*;
-import de.monticore.lang.monticar.generator.cpp.BluePrintCPP;
+import de.monticore.lang.monticar.generator.cpp.EMAMBluePrintCPP;
 import de.monticore.lang.monticar.generator.cpp.MathExpressionProperties;
 import de.monticore.lang.monticar.generator.cpp.OctaveBackend;
 import de.monticore.lang.monticar.generator.optimization.MathInformationRegister;
@@ -24,11 +24,11 @@ public class MathConverter {
 
     public static MathBackend curBackend = new OctaveBackend();
 
-    public static Variable getVariableFromBluePrint(MathMatrixNameExpressionSymbol mathExpressionSymbol, BluePrintCPP bluePrintCPP) {
+    public static Variable getVariableFromBluePrint(MathMatrixNameExpressionSymbol mathExpressionSymbol, EMAMBluePrintCPP bluePrintCPP) {
         return getVariableFromBluePrint(mathExpressionSymbol.getNameToAccess(), bluePrintCPP);
     }
 
-    public static Variable getVariableFromBluePrint(String namey, BluePrintCPP bluePrintCPP) {
+    public static Variable getVariableFromBluePrint(String namey, EMAMBluePrintCPP bluePrintCPP) {
 
         String name = EMAPortSymbol.getNameWithoutArrayBracketPart(namey);
         Variable variable = bluePrintCPP.getVariable(name).orElse(null);
@@ -110,15 +110,15 @@ public class MathConverter {
         return CONSTANTCONSTANTVECTORID++;
     }
 
-    public static String getMatrixInitLine(Variable v, BluePrintCPP bluePrint) {
+    public static String getMatrixInitLine(Variable v, EMAMBluePrintCPP bluePrint) {
         return MathInformationRegister.getVariableInitName(v, bluePrint) + "=" + curBackend.getMatrixTypeName() + "(" + v.getDimensionalInformation().get(0) + "," + v.getDimensionalInformation().get(1) + ");\n";
     }
 
-    public static String getRowVectorInitLine(Variable v, BluePrintCPP bluePrint) {
+    public static String getRowVectorInitLine(Variable v, EMAMBluePrintCPP bluePrint) {
         return MathInformationRegister.getVariableInitName(v, bluePrint) + "=" + curBackend.getRowVectorTypeName() + "(" + v.getDimensionalInformation().get(1) + ");\n";
     }
 
-    public static String getColumnVectorInitLine(Variable v, BluePrintCPP bluePrint) {
+    public static String getColumnVectorInitLine(Variable v, EMAMBluePrintCPP bluePrint) {
         return MathInformationRegister.getVariableInitName(v, bluePrint) + "=" + curBackend.getColumnVectorTypeName() + "(" + v.getDimensionalInformation().get(0) + ");\n";
     }
 
@@ -133,27 +133,27 @@ public class MathConverter {
         }
     }
 
-    public static String getCubeTypeInitLine(Variable v, BluePrintCPP bluePrint) {
+    public static String getCubeTypeInitLine(Variable v, EMAMBluePrintCPP bluePrint) {
         return String.format("%s = %s(%s, %s, %s);\n", MathInformationRegister.getVariableInitName(v, bluePrint), curBackend.getCubeTypeName(), v.getDimensionalInformation().get(0), v.getDimensionalInformation().get(1), v.getDimensionalInformation().get(2));
     }
 
-    public static String getWholeNumberMatrixInitLine(Variable v, BluePrintCPP bluePrint) {
+    public static String getWholeNumberMatrixInitLine(Variable v, EMAMBluePrintCPP bluePrint) {
         return MathInformationRegister.getVariableInitName(v, bluePrint) + "=" + curBackend.getWholeNumberMatrixTypeName() + "(" + v.getDimensionalInformation().get(0) + "," + v.getDimensionalInformation().get(1) + ");\n";
     }
 
-    public static String getWholeNumberRowVectorInitLine(Variable v, BluePrintCPP bluePrint) {
+    public static String getWholeNumberRowVectorInitLine(Variable v, EMAMBluePrintCPP bluePrint) {
         return MathInformationRegister.getVariableInitName(v, bluePrint) + "=" + curBackend.getWholeNumberRowVectorTypeName() + "(" + v.getDimensionalInformation().get(1) + ");\n";
     }
 
-    public static String getWholeNumberColumnVectorInitLine(Variable v, BluePrintCPP bluePrint) {
+    public static String getWholeNumberColumnVectorInitLine(Variable v, EMAMBluePrintCPP bluePrint) {
         return MathInformationRegister.getVariableInitName(v, bluePrint) + "=" + curBackend.getWholeNumberColumnVectorTypeName() + "(" + v.getDimensionalInformation().get(0) + ");\n";
     }
 
-    public static String getWholeNumberCubeInitLine(Variable v, BluePrintCPP bluePrint) {
+    public static String getWholeNumberCubeInitLine(Variable v, EMAMBluePrintCPP bluePrint) {
         return String.format("%s = %s(%s, %s, %s);\n", MathInformationRegister.getVariableInitName(v, bluePrint), curBackend.getWholeNumberCubeTypeName(), v.getDimensionalInformation().get(0), v.getDimensionalInformation().get(1), v.getDimensionalInformation().get(2));
     }
 
-    public static Optional<String> getInitLine(Variable v, BluePrintCPP bluePrint) {
+    public static Optional<String> getInitLine(Variable v, EMAMBluePrintCPP bluePrint) {
         String initLine = null;
         if (v.getVariableType().getTypeNameTargetLanguage().equals(MathConverter.curBackend.getMatrixTypeName())) {
             initLine = MathConverter.getMatrixInitLine(v, bluePrint);
@@ -182,7 +182,7 @@ public class MathConverter {
         return Optional.ofNullable(initLine);
     }
 
-    public static void setPropertiesForMathExpression(List<MathExpressionSymbol> mathExpressionSymbols, MathExpressionSymbol mathExpressionSymbol, BluePrintCPP bluePrint, MathExpressionProperties properties){
+    public static void setPropertiesForMathExpression(List<MathExpressionSymbol> mathExpressionSymbols, MathExpressionSymbol mathExpressionSymbol, EMAMBluePrintCPP bluePrint, MathExpressionProperties properties){
         String nameOfFunction = ComponentConverter.getNameOfMathCommand(mathExpressionSymbol);
         MathCommand currentCommand = bluePrint.getMathCommandRegister().getMathCommand(nameOfFunction);
         int indexOfCurrentMathExpression = mathExpressionSymbols.indexOf(mathExpressionSymbol);
@@ -192,7 +192,7 @@ public class MathConverter {
         }
     }
 
-    public static void setPrePropertyForMathExpression(List<MathExpressionSymbol> mathExpressionSymbols, MathExpressionSymbol currentMathExpressionSymbol, BluePrintCPP bluePrint, int currentMathExpressionIndex, MathExpressionProperties properties){
+    public static void setPrePropertyForMathExpression(List<MathExpressionSymbol> mathExpressionSymbols, MathExpressionSymbol currentMathExpressionSymbol, EMAMBluePrintCPP bluePrint, int currentMathExpressionIndex, MathExpressionProperties properties){
         for (int i = 0; i < currentMathExpressionIndex; i++) {
             MathExpressionSymbol preMathExpressionSymbol = mathExpressionSymbols.get(i);
             String nameOfMathCommand = ComponentConverter.getNameOfMathCommand(preMathExpressionSymbol);
@@ -205,7 +205,7 @@ public class MathConverter {
         }
     }
 
-    public static void setSucPropertyForMathExpression(List<MathExpressionSymbol> mathExpressionSymbols, MathExpressionSymbol currentMathExpressionSymbol, BluePrintCPP bluePrint, int currentMathExpressionIndex,  MathExpressionProperties properties){
+    public static void setSucPropertyForMathExpression(List<MathExpressionSymbol> mathExpressionSymbols, MathExpressionSymbol currentMathExpressionSymbol, EMAMBluePrintCPP bluePrint, int currentMathExpressionIndex, MathExpressionProperties properties){
         int endIndex = mathExpressionSymbols.size();
         for (int i = currentMathExpressionIndex + 1; i < endIndex; i++) {
             MathExpressionSymbol sucMathExpressionSymbol = mathExpressionSymbols.get(i);

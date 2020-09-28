@@ -3,7 +3,7 @@ package de.monticore.lang.monticar.generator.cpp.mathopt.optimizationSolver.solv
 
 import de.monticore.lang.mathopt._symboltable.MathOptimizationType;
 import de.monticore.lang.monticar.generator.Variable;
-import de.monticore.lang.monticar.generator.cpp.BluePrintCPP;
+import de.monticore.lang.monticar.generator.cpp.EMAMBluePrintCPP;
 import de.monticore.lang.monticar.generator.cpp.mathopt.optimizationSolver.problem.Problem;
 import de.monticore.lang.monticar.generator.cpp.viewmodel.ViewModelBase;
 
@@ -329,7 +329,7 @@ public abstract class SolverViewModel extends ViewModelBase {
         return knownVariablesWithType;
     }
 
-    public void setKnownVariablesFromBluePrint(BluePrintCPP bluePrint) {
+    public void setKnownVariablesFromBluePrint(EMAMBluePrintCPP bluePrint) {
         List<Variable> variables = bluePrint.getMathInformationRegister().getVariables();
         variables.addAll(bluePrint.getVariables());
         for (Variable v : variables) {

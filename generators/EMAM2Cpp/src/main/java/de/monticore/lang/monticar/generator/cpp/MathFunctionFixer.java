@@ -55,7 +55,7 @@ public class MathFunctionFixer extends BaseMathFunctionFixerHandler {
     }
 
     @Override
-    protected void doFixMathFunction(MathExpressionSymbol mathExpressionSymbol, BluePrintCPP bluePrintCPP) {
+    protected void doFixMathFunction(MathExpressionSymbol mathExpressionSymbol, EMAMBluePrintCPP bluePrintCPP) {
         boolean notHandled = true;
         if (mathExpressionSymbol == null) {
             notHandled = false;
@@ -112,15 +112,15 @@ public class MathFunctionFixer extends BaseMathFunctionFixerHandler {
         }
     }
 
-    public static void fixMathFunctions(MathExpressionSymbol mathExpressionSymbol, BluePrintCPP bluePrintCPP) {
+    public static void fixMathFunctions(MathExpressionSymbol mathExpressionSymbol, EMAMBluePrintCPP bluePrintCPP) {
         getInstance().chainHandleFixMathFunction(mathExpressionSymbol, bluePrintCPP);
     }
 
-    public static void fixMathFunctions(MathPreOperatorExpressionSymbol mathExpressionSymbol, BluePrintCPP bluePrintCPP) {
+    public static void fixMathFunctions(MathPreOperatorExpressionSymbol mathExpressionSymbol, EMAMBluePrintCPP bluePrintCPP) {
         fixMathFunctions(mathExpressionSymbol.getMathExpressionSymbol(), bluePrintCPP);
     }
 
-    public static void fixMathFunctions(MathChainedExpression mathChainedExpression, BluePrintCPP bluePrintCPP) {
+    public static void fixMathFunctions(MathChainedExpression mathChainedExpression, EMAMBluePrintCPP bluePrintCPP) {
         if (mathChainedExpression.getFirstExpressionSymbol().isMatrixExpression()) {
             MathMatrixExpressionSymbol mathMatrixExpressionSymbol = (MathMatrixExpressionSymbol) mathChainedExpression.getFirstExpressionSymbol();
             if (mathMatrixExpressionSymbol.isMatrixAccessExpression()) {
@@ -134,7 +134,7 @@ public class MathFunctionFixer extends BaseMathFunctionFixerHandler {
         fixMathFunctions(mathChainedExpression.getFirstExpressionSymbol(), bluePrintCPP);
     }
 
-    public static void fixMathFunctions(MathConditionalExpressionsSymbol mathExpressionSymbol, BluePrintCPP bluePrintCPP) {
+    public static void fixMathFunctions(MathConditionalExpressionsSymbol mathExpressionSymbol, EMAMBluePrintCPP bluePrintCPP) {
         fixMathFunctions(mathExpressionSymbol.getIfConditionalExpression(), bluePrintCPP);
         for (MathConditionalExpressionSymbol mathConditionalExpressionSymbol : mathExpressionSymbol.getIfElseConditionalExpressions())
             fixMathFunctions(mathConditionalExpressionSymbol, bluePrintCPP);
@@ -142,20 +142,20 @@ public class MathFunctionFixer extends BaseMathFunctionFixerHandler {
             fixMathFunctions(mathExpressionSymbol.getElseConditionalExpression().get(), bluePrintCPP);
     }
 
-    public static void fixMathFunctions(MathConditionalExpressionSymbol mathExpressionSymbol, BluePrintCPP bluePrintCPP) {
+    public static void fixMathFunctions(MathConditionalExpressionSymbol mathExpressionSymbol, EMAMBluePrintCPP bluePrintCPP) {
         if (mathExpressionSymbol.getCondition().isPresent())
             fixMathFunctions(mathExpressionSymbol.getCondition().get(), bluePrintCPP);
         for (MathExpressionSymbol bodyExpression : mathExpressionSymbol.getBodyExpressions())
             fixMathFunctions(bodyExpression, bluePrintCPP);
     }
 
-    public static void fixMathFunctions(MathValueSymbol mathExpressionSymbol, BluePrintCPP bluePrintCPP) {
+    public static void fixMathFunctions(MathValueSymbol mathExpressionSymbol, EMAMBluePrintCPP bluePrintCPP) {
         bluePrintCPP.getMathInformationRegister().addVariable(mathExpressionSymbol);
         if (mathExpressionSymbol.getValue() != null)
             fixMathFunctions(mathExpressionSymbol.getValue(), bluePrintCPP);
     }
 
-    public static void fixMathFunctions(MathAssignmentExpressionSymbol mathExpressionSymbol, BluePrintCPP bluePrintCPP) {
+    public static void fixMathFunctions(MathAssignmentExpressionSymbol mathExpressionSymbol, EMAMBluePrintCPP bluePrintCPP) {
         if (mathExpressionSymbol.getMathMatrixAccessOperatorSymbol() != null && fixForLoopAccess(mathExpressionSymbol.getNameOfMathValue(), bluePrintCPP)) {
             for (MathMatrixAccessSymbol mathMatrixAccessSymbol : mathExpressionSymbol.getMathMatrixAccessOperatorSymbol().getMathMatrixAccessSymbols())
                 //fixMathFunctionsForLoopAccess(mathMatrixAccessSymbol, bluePrintCPP);
@@ -166,7 +166,7 @@ public class MathFunctionFixer extends BaseMathFunctionFixerHandler {
     }
 
     //TODO find function which does not pass fixMathFunction/debug MathSumCommand
-    public static void fixMathFunctions(MathMatrixExpressionSymbol mathExpressionSymbol, BluePrintCPP bluePrintCPP) {
+    public static void fixMathFunctions(MathMatrixExpressionSymbol mathExpressionSymbol, EMAMBluePrintCPP bluePrintCPP) {
         if (mathExpressionSymbol.isMatrixNameExpression()) {
             fixMathFunctions((MathMatrixNameExpressionSymbol) mathExpressionSymbol, bluePrintCPP);
         } else if (mathExpressionSymbol.isMatrixVectorExpression()) {
@@ -184,13 +184,13 @@ public class MathFunctionFixer extends BaseMathFunctionFixerHandler {
         }
     }
 
-    public static void fixMathFunctions(MathMatrixArithmeticExpressionSymbol mathExpressionSymbol, BluePrintCPP bluePrintCPP) {
+    public static void fixMathFunctions(MathMatrixArithmeticExpressionSymbol mathExpressionSymbol, EMAMBluePrintCPP bluePrintCPP) {
         fixMathFunctions(mathExpressionSymbol.getLeftExpression(), bluePrintCPP);
         if (mathExpressionSymbol.getRightExpression() != null)
             fixMathFunctions(mathExpressionSymbol.getRightExpression(), bluePrintCPP);
     }
 
-    public static void fixMathFunctions(MathMatrixNameExpressionSymbol mathExpressionSymbol, BluePrintCPP bluePrintCPP) {
+    public static void fixMathFunctions(MathMatrixNameExpressionSymbol mathExpressionSymbol, EMAMBluePrintCPP bluePrintCPP) {
         String name = EMAPortSymbol.getNameWithoutArrayBracketPart(mathExpressionSymbol.getNameToAccess());
         Variable variable = bluePrintCPP.getVariable(name).orElse(null);
         //change () to [] if it is a variable and no function
@@ -221,7 +221,7 @@ public class MathFunctionFixer extends BaseMathFunctionFixerHandler {
         }
     }
 
-    public static void fixMathFunctions(MathMatrixAccessSymbol mathExpressionSymbol, BluePrintCPP bluePrintCPP) {
+    public static void fixMathFunctions(MathMatrixAccessSymbol mathExpressionSymbol, EMAMBluePrintCPP bluePrintCPP) {
         if (mathExpressionSymbol.getMathExpressionSymbol().isPresent()) {
             fixMathFunctions(mathExpressionSymbol.getMathExpressionSymbol().get(), bluePrintCPP);
             MathExpressionSymbol mathExp = mathExpressionSymbol.getMathExpressionSymbol().get();
@@ -239,7 +239,7 @@ public class MathFunctionFixer extends BaseMathFunctionFixerHandler {
         }
     }
 
-    public static void fixMathFunctionsForLoopAccess(MathMatrixAccessSymbol mathExpressionSymbol, BluePrintCPP bluePrintCPP) {
+    public static void fixMathFunctionsForLoopAccess(MathMatrixAccessSymbol mathExpressionSymbol, EMAMBluePrintCPP bluePrintCPP) {
         if (mathExpressionSymbol.getMathExpressionSymbol().isPresent()) {
             fixMathFunctions(mathExpressionSymbol.getMathExpressionSymbol().get(), bluePrintCPP);
             MathExpressionSymbol mathExp = mathExpressionSymbol.getMathExpressionSymbol().get();
@@ -264,51 +264,51 @@ public class MathFunctionFixer extends BaseMathFunctionFixerHandler {
     }
 
 
-    public static void fixMathFunctions(MathParenthesisExpressionSymbol mathExpressionSymbol, BluePrintCPP bluePrintCPP) {
+    public static void fixMathFunctions(MathParenthesisExpressionSymbol mathExpressionSymbol, EMAMBluePrintCPP bluePrintCPP) {
         fixMathFunctions(mathExpressionSymbol.getMathExpressionSymbol(), bluePrintCPP);
     }
 
-    public static void fixMathFunctions(MathArithmeticExpressionSymbol mathExpressionSymbol, BluePrintCPP bluePrintCPP) {
+    public static void fixMathFunctions(MathArithmeticExpressionSymbol mathExpressionSymbol, EMAMBluePrintCPP bluePrintCPP) {
         fixMathFunctions(mathExpressionSymbol.getLeftExpression(), bluePrintCPP);
         fixMathFunctions(mathExpressionSymbol.getRightExpression(), bluePrintCPP);
     }
 
-    public static void fixMathFunctions(MathForLoopExpressionSymbol mathExpressionSymbol, BluePrintCPP bluePrintCPP) {
+    public static void fixMathFunctions(MathForLoopExpressionSymbol mathExpressionSymbol, EMAMBluePrintCPP bluePrintCPP) {
         ComponentConverter.currentBluePrint.getMathInformationRegister().addVariable(new Variable(mathExpressionSymbol.getForLoopHead().getNameLoopVariable(), Variable.FORLOOPINFO));
         fixMathFunctions(mathExpressionSymbol.getForLoopHead().getMathExpression(), bluePrintCPP);
         for (MathExpressionSymbol mathExpressionSymbol1 : mathExpressionSymbol.getForLoopBody())
             fixMathFunctions(mathExpressionSymbol1, bluePrintCPP);
     }
 
-    public static void fixMathFunctions(MathCompareExpressionSymbol mathExpressionSymbol, BluePrintCPP bluePrintCPP) {
+    public static void fixMathFunctions(MathCompareExpressionSymbol mathExpressionSymbol, EMAMBluePrintCPP bluePrintCPP) {
         fixMathFunctions(mathExpressionSymbol.getLeftExpression(), bluePrintCPP);
         fixMathFunctions(mathExpressionSymbol.getRightExpression(), bluePrintCPP);
     }
 
-    public static void fixMathFunctions(MathMatrixVectorExpressionSymbol mathExpressionSymbol, BluePrintCPP bluePrintCPP) {
+    public static void fixMathFunctions(MathMatrixVectorExpressionSymbol mathExpressionSymbol, EMAMBluePrintCPP bluePrintCPP) {
         fixMathFunctions(mathExpressionSymbol.getStart(), bluePrintCPP);
         if (mathExpressionSymbol.getStep().isPresent())
             fixMathFunctions(mathExpressionSymbol.getStep().get(), bluePrintCPP);
         fixMathFunctions(mathExpressionSymbol.getEnd(), bluePrintCPP);
     }
 
-    public static boolean fixForLoopAccess(MathMatrixNameExpressionSymbol mathExpressionSymbol, BluePrintCPP bluePrintCPP) {
+    public static boolean fixForLoopAccess(MathMatrixNameExpressionSymbol mathExpressionSymbol, EMAMBluePrintCPP bluePrintCPP) {
         Variable variable = MathConverter.getVariableFromBluePrint(mathExpressionSymbol, bluePrintCPP);
         return fixForLoopAccess(mathExpressionSymbol, variable, bluePrintCPP);
     }
 
-    public static boolean fixForLoopAccess(String nameToAccess, BluePrintCPP bluePrintCPP) {
+    public static boolean fixForLoopAccess(String nameToAccess, EMAMBluePrintCPP bluePrintCPP) {
         Variable variable = MathConverter.getVariableFromBluePrint(nameToAccess, bluePrintCPP);
         if (variable == null)
             variable = bluePrintCPP.getMathInformationRegister().getVariable(nameToAccess);
         return fixForLoopAccess(nameToAccess, variable, bluePrintCPP);
     }
 
-    public static boolean fixForLoopAccess(MathMatrixNameExpressionSymbol mathExpressionSymbol, Variable variable, BluePrintCPP bluePrintCPP) {
+    public static boolean fixForLoopAccess(MathMatrixNameExpressionSymbol mathExpressionSymbol, Variable variable, EMAMBluePrintCPP bluePrintCPP) {
         return fixForLoopAccess(mathExpressionSymbol.getNameToAccess(), variable, bluePrintCPP);
     }
 
-    public static boolean fixForLoopAccess(String nameToAccess, Variable variable, BluePrintCPP bluePrintCPP) {
+    public static boolean fixForLoopAccess(String nameToAccess, Variable variable, EMAMBluePrintCPP bluePrintCPP) {
         MathCommand mathCommand = bluePrintCPP.getMathCommandRegister().getMathCommand(nameToAccess);
         if ((mathCommand == null) && (variable != null) && (variable.getVariableType() != null) && (variable.getVariableType().getTypeNameTargetLanguage() != null)) {
             String type = variable.getVariableType().getTypeNameTargetLanguage();

@@ -5,12 +5,11 @@ import de.monticore.lang.math._symboltable.expression.MathExpressionSymbol;
 import de.monticore.lang.math._symboltable.matrix.MathMatrixAccessSymbol;
 import de.monticore.lang.math._symboltable.matrix.MathMatrixNameExpressionSymbol;
 import de.monticore.lang.monticar.generator.*;
-import de.monticore.lang.monticar.generator.cpp.BluePrintCPP;
+import de.monticore.lang.monticar.generator.cpp.EMAMBluePrintCPP;
 import de.monticore.lang.monticar.generator.cpp.MathFunctionFixer;
 import de.monticore.lang.monticar.generator.cpp.OctaveHelper;
 import de.monticore.lang.monticar.generator.cpp.converter.ExecuteMethodGenerator;
 import de.monticore.lang.monticar.generator.cpp.converter.MathConverter;
-import de.monticore.lang.monticar.generator.cpp.converter.StringIndexHelper;
 import de.monticore.lang.monticar.generator.cpp.symbols.MathStringExpression;
 import de.se_rwth.commons.logging.Log;
 
@@ -36,7 +35,7 @@ public class MathSumCommand extends MathCommand {
     }
 
     @Override
-    public void convert(MathExpressionSymbol mathExpressionSymbol, BluePrint bluePrint) {
+    public void convert(MathExpressionSymbol mathExpressionSymbol, EMAMBluePrint bluePrint) {
         String backendName = MathConverter.curBackend.getBackendName();
         if (backendName.equals("OctaveBackend")) {
             convertUsingOctaveBackend(mathExpressionSymbol, bluePrint);
@@ -46,14 +45,14 @@ public class MathSumCommand extends MathCommand {
 
     }
 
-    public void convertUsingOctaveBackend(MathExpressionSymbol mathExpressionSymbol, BluePrint bluePrint) {
+    public void convertUsingOctaveBackend(MathExpressionSymbol mathExpressionSymbol, EMAMBluePrint bluePrint) {
         MathMatrixNameExpressionSymbol mathMatrixNameExpressionSymbol = (MathMatrixNameExpressionSymbol) mathExpressionSymbol;
 
         mathMatrixNameExpressionSymbol.setNameToAccess("");
 
         String valueListString = "";
         for (MathMatrixAccessSymbol accessSymbol : mathMatrixNameExpressionSymbol.getMathMatrixAccessOperatorSymbol().getMathMatrixAccessSymbols())
-            MathFunctionFixer.fixMathFunctions(accessSymbol, (BluePrintCPP) bluePrint);
+            MathFunctionFixer.fixMathFunctions(accessSymbol, (EMAMBluePrintCPP) bluePrint);
         valueListString += ExecuteMethodGenerator.generateExecuteCode(mathExpressionSymbol, new ArrayList<>());
         //OctaveHelper.getCallOctaveFunction(mathExpressionSymbol, "sum","Double", valueListString));
         List<MathMatrixAccessSymbol> newMatrixAccessSymbols = new ArrayList<>();
@@ -61,17 +60,17 @@ public class MathSumCommand extends MathCommand {
         newMatrixAccessSymbols.add(new MathMatrixAccessSymbol(stringExpression));
 
         mathMatrixNameExpressionSymbol.getMathMatrixAccessOperatorSymbol().setMathMatrixAccessSymbols(newMatrixAccessSymbols);
-        ((BluePrintCPP) bluePrint).addAdditionalIncludeString("octave/builtin-defun-decls");
+        ((EMAMBluePrintCPP) bluePrint).addAdditionalIncludeString("octave/builtin-defun-decls");
         // error if using extended syntax here
         if (mathMatrixNameExpressionSymbol.getMathMatrixAccessOperatorSymbol().getMathMatrixAccessSymbols().size() == 4) {
             Log.error(String.format("Syntax: \"%s\" is not supported when using deprecated backend Octave", SUM_SYNTAX_EXTENDED));
         }
     }
 
-    public void convertUsingArmadilloBackend(MathExpressionSymbol mathExpressionSymbol, BluePrint bluePrint) {
+    public void convertUsingArmadilloBackend(MathExpressionSymbol mathExpressionSymbol, EMAMBluePrint bluePrint) {
         MathMatrixNameExpressionSymbol mathMatrixNameExpressionSymbol = (MathMatrixNameExpressionSymbol) mathExpressionSymbol;
         mathMatrixNameExpressionSymbol.setNameToAccess("");
-        BluePrintCPP bluePrintCPP = (BluePrintCPP) bluePrint;
+        EMAMBluePrintCPP bluePrintCPP = (EMAMBluePrintCPP) bluePrint;
         for (MathMatrixAccessSymbol accessSymbol : mathMatrixNameExpressionSymbol.getMathMatrixAccessOperatorSymbol().getMathMatrixAccessSymbols())
             MathFunctionFixer.fixMathFunctions(accessSymbol, bluePrintCPP);
         if (mathMatrixNameExpressionSymbol.getMathMatrixAccessOperatorSymbol().getMathMatrixAccessSymbols().size() == 1) {
@@ -89,7 +88,7 @@ public class MathSumCommand extends MathCommand {
         }
     }
 
-    private void convertSumImplementationArmadillo(MathMatrixNameExpressionSymbol mathMatrixNameExpressionSymbol, BluePrintCPP bluePrintCPP) {
+    private void convertSumImplementationArmadillo(MathMatrixNameExpressionSymbol mathMatrixNameExpressionSymbol, EMAMBluePrintCPP bluePrintCPP) {
         String valueListString = ExecuteMethodGenerator.generateExecuteCode(mathMatrixNameExpressionSymbol, new ArrayList<>());
         // correct index for armadillo
         valueListString = valueListString.substring(0, valueListString.length() - 1) + "-1)";
@@ -103,10 +102,10 @@ public class MathSumCommand extends MathCommand {
      * Implements the sum command using Armadillos accu command
      *
      * @param mathMatrixNameExpressionSymbol MathMatrixNameExpressionSymbol passed to convert
-     * @param bluePrint                      BluePrint of current code generation
+     * @param bluePrint                      EMAMBluePrint of current code generation
      * @see <a href="http://arma.sourceforge.net/docs.html#accu">Armadillo Documentation</a>
      */
-    private void convertAccuSumImplementationArmadillo(MathMatrixNameExpressionSymbol mathMatrixNameExpressionSymbol, BluePrintCPP bluePrint) {
+    private void convertAccuSumImplementationArmadillo(MathMatrixNameExpressionSymbol mathMatrixNameExpressionSymbol, EMAMBluePrintCPP bluePrint) {
         String valueListString = ExecuteMethodGenerator.generateExecuteCode(mathMatrixNameExpressionSymbol, new ArrayList<>());
         //OctaveHelper.getCallOctaveFunction(mathExpressionSymbol, "sum","Double", valueListString));
         MathStringExpression stringExpression = new MathStringExpression("accu" + valueListString, mathMatrixNameExpressionSymbol.getMathMatrixAccessOperatorSymbol().getMathMatrixAccessSymbols());
@@ -126,7 +125,7 @@ public class MathSumCommand extends MathCommand {
      * @param sumStart                       start value of the sum variable
      * @param sumEnd                         end value of the sum variable
      */
-    private void convertExtendedSumImplementationArmadillo(MathMatrixNameExpressionSymbol mathMatrixNameExpressionSymbol, MathMatrixAccessSymbol func, MathMatrixAccessSymbol sumVar, MathMatrixAccessSymbol sumStart, MathMatrixAccessSymbol sumEnd, BluePrintCPP bluePrint) {
+    private void convertExtendedSumImplementationArmadillo(MathMatrixNameExpressionSymbol mathMatrixNameExpressionSymbol, MathMatrixAccessSymbol func, MathMatrixAccessSymbol sumVar, MathMatrixAccessSymbol sumStart, MathMatrixAccessSymbol sumEnd, EMAMBluePrintCPP bluePrint) {
         mathMatrixNameExpressionSymbol.getMathMatrixAccessOperatorSymbol().setAccessStartSymbol("");
         mathMatrixNameExpressionSymbol.getMathMatrixAccessOperatorSymbol().setAccessEndSymbol("");
         mathMatrixNameExpressionSymbol.getMathMatrixAccessOperatorSymbol().getMathMatrixAccessSymbols().clear();
@@ -140,7 +139,7 @@ public class MathSumCommand extends MathCommand {
         bluePrint.addMethod(calcSumMethod);
     }
 
-    private Method getSumCalculationMethod(MathMatrixAccessSymbol func, MathMatrixAccessSymbol sumVar, MathMatrixAccessSymbol sumStart, MathMatrixAccessSymbol sumEnd, BluePrintCPP bluePrint) {
+    private Method getSumCalculationMethod(MathMatrixAccessSymbol func, MathMatrixAccessSymbol sumVar, MathMatrixAccessSymbol sumStart, MathMatrixAccessSymbol sumEnd, EMAMBluePrintCPP bluePrint) {
         // create new method
         Method method = getNewEmptySumCalculationMethod();
         // generate function code
@@ -172,14 +171,14 @@ public class MathSumCommand extends MathCommand {
         return method;
     }
 
-    private void setParameters(Method method, BluePrint bluePrint) {
+    private void setParameters(Method method, EMAMBluePrint bluePrint) {
         List<Variable> vars = bluePrint.getMathInformationRegister().getVariables();
         for (int i = 0; i < vars.size() - 2; i++) { // the last variable is the one we are assigning now
             method.addParameterUnique(vars.get(i));
         }
     }
 
-    private Variable generateLoopVariable(String name, BluePrint bluePrint) {
+    private Variable generateLoopVariable(String name, EMAMBluePrint bluePrint) {
         Variable loopVar = new Variable(name, Variable.FORLOOPINFO);
         loopVar.setVariableType(new VariableType("Integer", "int", ""));
         bluePrint.getMathInformationRegister().addVariable(loopVar);
@@ -242,7 +241,7 @@ public class MathSumCommand extends MathCommand {
         };
     }
 
-    private void addLoopVarParamToMethod(Method method, Variable loopVar, BluePrintCPP bluePrint) {
+    private void addLoopVarParamToMethod(Method method, Variable loopVar, EMAMBluePrintCPP bluePrint) {
         String func = method.getInstructions().get(2).getTargetLanguageInstruction();
         if (func.contains(CALC_SUM_METHOD_NAME)) {
             String[] split1 = func.split(CALC_SUM_METHOD_NAME);

@@ -4,7 +4,6 @@ package de.monticore.lang.monticar.generator.cpp;
 import de.monticore.lang.math._symboltable.expression.MathExpressionSymbol;
 import de.monticore.lang.mathopt._symboltable.MathOptimizationStatementSymbol;
 import de.monticore.lang.monticar.generator.BaseMathFunctionFixerHandler;
-import de.monticore.lang.monticar.generator.cpp.BluePrintCPP;
 
 /**
  * fixes math optimization functions
@@ -21,7 +20,7 @@ public class MathOptFunctionFixer extends BaseMathFunctionFixerHandler {
     }
 
     @Override
-    protected void doFixMathFunction(MathExpressionSymbol symbol, BluePrintCPP bluePrintCPP) {
+    protected void doFixMathFunction(MathExpressionSymbol symbol, EMAMBluePrintCPP bluePrintCPP) {
         // nothing to fix here
     }
 
