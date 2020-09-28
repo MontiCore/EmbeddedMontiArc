@@ -6,7 +6,7 @@ import de.monticore.lang.math._symboltable.expression.*;
 import de.monticore.lang.math._symboltable.matrix.MathMatrixArithmeticExpressionSymbol;
 import de.monticore.lang.math._symboltable.matrix.MathMatrixExpressionSymbol;
 import de.monticore.lang.math._symboltable.matrix.MathMatrixNameExpressionSymbol;
-import de.monticore.lang.monticar.generator.cpp.BluePrintCPP;
+import de.monticore.lang.monticar.generator.cpp.EMAMBluePrintCPP;
 import de.se_rwth.commons.logging.Log;
 
 import java.util.ArrayList;
@@ -15,7 +15,7 @@ import java.util.List;
 /**
  */
 public class MathOptimizer {
-    public static BluePrintCPP currentBluePrint;
+    public static EMAMBluePrintCPP currentBluePrint;
     public static List<MathOptimizationRule> optimizationRules = new ArrayList<>();
 
     public static void addOptimizationRule(MathOptimizationRule mathOptimizationRule) {

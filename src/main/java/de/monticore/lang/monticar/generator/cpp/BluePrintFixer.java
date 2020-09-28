@@ -1,11 +1,10 @@
 /* (c) https://github.com/MontiCore/monticore */
 package de.monticore.lang.monticar.generator.cpp;
 
-import de.monticore.lang.monticar.generator.BluePrint;
+import de.monticore.lang.monticar.generator.EMAMBluePrint;
 import de.monticore.lang.monticar.generator.Method;
 import de.monticore.lang.monticar.generator.TargetCodeInstruction;
 import de.monticore.lang.monticar.generator.Variable;
-import de.monticore.lang.monticar.generator.cpp.symbols.MathStringExpression;
 import de.se_rwth.commons.logging.Log;
 
 import java.util.*;
@@ -14,7 +13,7 @@ import java.util.stream.Collectors;
 /**
  */
 public class BluePrintFixer {
-    public static void fixBluePrintVariableArrays(BluePrint bluePrint) {
+    public static void fixBluePrintVariableArrays(EMAMBluePrint bluePrint) {
         List<Variable> newVars = new ArrayList<>();
 
         //Group variables of the same array
@@ -52,7 +51,7 @@ public class BluePrintFixer {
     }
 
 
-    protected static Variable addConnectedVariableForVariable(List<Variable> varList, String nameWithoutArray, BluePrint bluePrint){
+    protected static Variable addConnectedVariableForVariable(List<Variable> varList, String nameWithoutArray, EMAMBluePrint bluePrint){
         Log.info("Adding __connected variable for "+nameWithoutArray, "Dynamic Connected Variable");
 
         VariableConstantArray variable = new VariableConstantArray("__"+nameWithoutArray+"_connected");
@@ -74,7 +73,7 @@ public class BluePrintFixer {
     }
 
 
-    public static void fixBluePrintDynamicVariableConnectRequestQueues(BluePrint bluePrint){
+    public static void fixBluePrintDynamicVariableConnectRequestQueues(EMAMBluePrint bluePrint){
         int s = bluePrint.getVariables().size();
         for(int i = 0; i < s; ++i){
             Variable v = bluePrint.getVariables().get(i);
@@ -141,7 +140,7 @@ public class BluePrintFixer {
         }
     }
 
-    protected static Variable addConnectedRequestQueueForVariable(String nameWithoutArray, BluePrint bluePrint){
+    protected static Variable addConnectedRequestQueueForVariable(String nameWithoutArray, EMAMBluePrint bluePrint){
         Log.info("Adding __connect_request variable for "+nameWithoutArray, "Dynamic Request Connect Queue for Variable");
         Variable variable = new Variable();
         variable.setName("__"+nameWithoutArray+"_connect_request");
@@ -154,7 +153,7 @@ public class BluePrintFixer {
         return variable;
     }
 
-    protected static Variable addFreeRequestQueueForVariable(String nameWithoutArray, BluePrint bluePrint){
+    protected static Variable addFreeRequestQueueForVariable(String nameWithoutArray, EMAMBluePrint bluePrint){
         Log.info("Adding __free_request variable for "+nameWithoutArray, "Dynamic Request Free Queue for Variable");
         Variable variable = new Variable();
         variable.setName("__"+nameWithoutArray+"_free_request");

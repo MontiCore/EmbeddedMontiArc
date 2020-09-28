@@ -1,11 +1,10 @@
 package de.monticore.lang.monticar.generator.cpp.commands;
 
 import de.monticore.lang.math._symboltable.expression.MathExpressionSymbol;
-import de.monticore.lang.math._symboltable.expression.MathValueType;
 import de.monticore.lang.math._symboltable.matrix.MathMatrixAccessSymbol;
 import de.monticore.lang.math._symboltable.matrix.MathMatrixNameExpressionSymbol;
 import de.monticore.lang.monticar.generator.*;
-import de.monticore.lang.monticar.generator.cpp.BluePrintCPP;
+import de.monticore.lang.monticar.generator.cpp.EMAMBluePrintCPP;
 import de.monticore.lang.monticar.generator.cpp.MathFunctionFixer;
 import de.monticore.lang.monticar.generator.cpp.converter.ExecuteMethodGenerator;
 import de.monticore.lang.monticar.generator.cpp.converter.MathConverter;
@@ -27,7 +26,7 @@ public class MathJoinCubeDimCommand extends MathCommand {
     }
 
     @Override
-    public void convert(MathExpressionSymbol mathExpressionSymbol, BluePrint bluePrint) {
+    public void convert(MathExpressionSymbol mathExpressionSymbol, EMAMBluePrint bluePrint) {
         String backendName = MathConverter.curBackend.getBackendName();
         if (backendName.equals("OctaveBackend")) {
             convertUsingOctaveBackend(mathExpressionSymbol, bluePrint);
@@ -37,20 +36,20 @@ public class MathJoinCubeDimCommand extends MathCommand {
 
     }
 
-    public void convertUsingOctaveBackend(MathExpressionSymbol mathExpressionSymbol, BluePrint bluePrint) {
+    public void convertUsingOctaveBackend(MathExpressionSymbol mathExpressionSymbol, EMAMBluePrint bluePrint) {
         Log.error("Not implemented for Octave Backend");
     }
 
-    public void convertUsingArmadilloBackend(MathExpressionSymbol mathExpressionSymbol, BluePrint bluePrint) {
+    public void convertUsingArmadilloBackend(MathExpressionSymbol mathExpressionSymbol, EMAMBluePrint bluePrint) {
         MathMatrixNameExpressionSymbol mathMatrixNameExpressionSymbol = (MathMatrixNameExpressionSymbol) mathExpressionSymbol;
         mathMatrixNameExpressionSymbol.setNameToAccess("");
 
         String valueListString = "";
         for (MathMatrixAccessSymbol accessSymbol : mathMatrixNameExpressionSymbol.getMathMatrixAccessOperatorSymbol().getMathMatrixAccessSymbols())
-            MathFunctionFixer.fixMathFunctions(accessSymbol, (BluePrintCPP) bluePrint);
+            MathFunctionFixer.fixMathFunctions(accessSymbol, (EMAMBluePrintCPP) bluePrint);
         valueListString += ExecuteMethodGenerator.generateExecuteCode(mathExpressionSymbol, new ArrayList<String>());
 
-        BluePrintCPP bluePrintCPP = (BluePrintCPP) bluePrint;
+        EMAMBluePrintCPP bluePrintCPP = (EMAMBluePrintCPP) bluePrint;
         for (MathMatrixAccessSymbol accessSymbol : mathMatrixNameExpressionSymbol.getMathMatrixAccessOperatorSymbol().getMathMatrixAccessSymbols())
             MathFunctionFixer.fixMathFunctions(accessSymbol, bluePrintCPP);
         if (mathMatrixNameExpressionSymbol.getMathMatrixAccessOperatorSymbol().getMathMatrixAccessSymbols().size() == 3) {
@@ -68,7 +67,7 @@ public class MathJoinCubeDimCommand extends MathCommand {
      * Implements a scaleCube function with syntax "scaleCube( CUBE , AXIS , NEW_X , NEW_Y )"
      *
      */
-    private void convertExtendedJoinerImplementationArmadillo(String valueString, MathMatrixNameExpressionSymbol mathMatrixNameExpressionSymbol, BluePrint bluePrint) {
+    private void convertExtendedJoinerImplementationArmadillo(String valueString, MathMatrixNameExpressionSymbol mathMatrixNameExpressionSymbol, EMAMBluePrint bluePrint) {
         mathMatrixNameExpressionSymbol.getMathMatrixAccessOperatorSymbol().setAccessStartSymbol("");
         mathMatrixNameExpressionSymbol.getMathMatrixAccessOperatorSymbol().setAccessEndSymbol("");
         mathMatrixNameExpressionSymbol.getMathMatrixAccessOperatorSymbol().getMathMatrixAccessSymbols().clear();
@@ -82,7 +81,7 @@ public class MathJoinCubeDimCommand extends MathCommand {
         bluePrint.addMethod(calcJoinerMethod);
     }
 
-    private Method getJoinerCalculationMethod(BluePrint bluePrint) {
+    private Method getJoinerCalculationMethod(EMAMBluePrint bluePrint) {
         // create new method
         Method method = getNewEmptyScalerCalculationMethod();
 

@@ -4,7 +4,7 @@ package de.monticore.lang.monticar.generator.cpp;
 import de.monticore.lang.embeddedmontiarc.embeddedmontiarc._ast.ASTSubComponent;
 import de.monticore.lang.embeddedmontiarc.embeddedmontiarc._symboltable.instanceStructure.EMAComponentInstanceSymbol;
 import de.monticore.lang.embeddedmontiarc.embeddedmontiarc._symboltable.instanceStructure.InstanceInformation;
-import de.monticore.lang.monticar.generator.BluePrint;
+import de.monticore.lang.monticar.generator.EMAMBluePrint;
 import de.monticore.lang.monticar.generator.Instruction;
 import de.monticore.lang.monticar.generator.Variable;
 import de.monticore.lang.monticar.resolution._ast.ASTUnitNumberResolution;
@@ -16,12 +16,12 @@ import java.util.List;
 
 /**
  */
-public class BluePrintCPP extends BluePrint {
+public class EMAMBluePrintCPP extends EMAMBluePrint {
     public List<String> additionalIncludeStrings = new ArrayList<>();
     public List<String> cvIncludeStrings = new ArrayList<>();
     public static boolean usedCV = false;
 
-    public BluePrintCPP(String name) {
+    public EMAMBluePrintCPP(String name) {
         super(name);
     }
 

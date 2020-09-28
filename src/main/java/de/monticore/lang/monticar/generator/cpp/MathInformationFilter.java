@@ -14,7 +14,7 @@ import java.util.List;
 /**
  */
 public class MathInformationFilter {
-    public static void filterStaticInformation(EMAComponentInstanceSymbol componentSymbol, BluePrintCPP bluePrint, MathStatementsSymbol mathStatementsSymbol, GeneratorCPP generatorCPP, List<String> includeStrings) {
+    public static void filterStaticInformation(EMAComponentInstanceSymbol componentSymbol, EMAMBluePrintCPP bluePrint, MathStatementsSymbol mathStatementsSymbol, GeneratorCPP generatorCPP, List<String> includeStrings) {
         if (mathStatementsSymbol != null) {
             for (MathExpressionSymbol expressionSymbol : mathStatementsSymbol.getMathExpressionSymbols()) {
                 if (expressionSymbol.isAssignmentDeclarationExpression()) {

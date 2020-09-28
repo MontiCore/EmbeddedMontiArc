@@ -5,7 +5,7 @@ import de.monticore.lang.math._symboltable.expression.MathExpressionSymbol;
 import de.monticore.lang.math._symboltable.matrix.MathMatrixAccessSymbol;
 import de.monticore.lang.math._symboltable.matrix.MathMatrixNameExpressionSymbol;
 import de.monticore.lang.monticar.generator.*;
-import de.monticore.lang.monticar.generator.cpp.BluePrintCPP;
+import de.monticore.lang.monticar.generator.cpp.EMAMBluePrintCPP;
 import de.monticore.lang.monticar.generator.cpp.MathFunctionFixer;
 import de.monticore.lang.monticar.generator.cpp.converter.ExecuteMethodGenerator;
 import de.monticore.lang.monticar.generator.cpp.symbols.MathStringExpression;
@@ -24,7 +24,7 @@ public class DynamicMathPortNewConnectCommand extends MathCommand {
     }
 
     @Override
-    protected void convert(MathExpressionSymbol mathExpressionSymbol, BluePrint bluePrint) {
+    protected void convert(MathExpressionSymbol mathExpressionSymbol, EMAMBluePrint bluePrint) {
         ports_connect_functionID++;
 
         MathMatrixNameExpressionSymbol mathMatrixNameExpressionSymbol = (MathMatrixNameExpressionSymbol) mathExpressionSymbol;
@@ -40,7 +40,7 @@ public class DynamicMathPortNewConnectCommand extends MathCommand {
 
 
         for (MathMatrixAccessSymbol accessSymbol : symbols)
-            MathFunctionFixer.fixMathFunctions(accessSymbol, (BluePrintCPP) bluePrint);
+            MathFunctionFixer.fixMathFunctions(accessSymbol, (EMAMBluePrintCPP) bluePrint);
 
         String call = "__ports_connect_"+ports_connect_functionID;
         Method connM = new Method();
