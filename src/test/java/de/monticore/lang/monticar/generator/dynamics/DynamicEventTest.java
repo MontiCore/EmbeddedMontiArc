@@ -45,7 +45,7 @@ public class DynamicEventTest extends AbstractSymtabTest {
             generatorCPP.useArmadilloBackend();
             generatorCPP.setGenerationTargetPath(target);
 //            generatorCPP.setUseThreadingOptimization(true);
-            List<File> files = generatorCPP.generateFiles(symtab, componentSymbol, symtab);
+            List<File> files = generatorCPP.generateFiles(symtab, componentSymbol);
         }catch (IOException ex){
             ex.printStackTrace();
             Log.error(ex.getMessage());

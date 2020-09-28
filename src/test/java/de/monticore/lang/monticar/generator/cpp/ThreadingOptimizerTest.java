@@ -32,7 +32,7 @@ public class ThreadingOptimizerTest extends AbstractSymtabTest {
         generatorCPP.setGenerateCMake(false);
 
         generatorCPP.setGenerationTargetPath("./target/generated-sources-cpp/paperMatrixModifier/l2");
-        List<File> files = generatorCPP.generateFiles(componentSymbol, symtab);
+        List<File> files = generatorCPP.generateFiles(symtab, componentSymbol);;
         String restPath = "paperMatrixModifier/l2/";
         testFilesAreEqual(files, restPath);
     }

@@ -33,11 +33,11 @@ public interface Generator<T extends Symbol> {
      * This method should generate the source for the EMAComponentInstanceSymbol and
      * add MathStatementsSymbols, accordingly. Does also do this for all of its subcomponents.
      */
-    List<FileContent> generateStrings(TaggingResolver taggingResolver, T symbol, Scope symtab);
+    List<FileContent> generateStrings(TaggingResolver taggingResolver, T symbol);
 
     /**
      * This methods writes the resulting code for the ExpandedComponentInstance and its subcomponents to the corresponding files
      */
-    List<File> generateFiles(TaggingResolver taggingResolver, T symbol, Scope symtab) throws IOException;
+    List<File> generateFiles(TaggingResolver taggingResolver, T symbol) throws IOException;
 
 }
