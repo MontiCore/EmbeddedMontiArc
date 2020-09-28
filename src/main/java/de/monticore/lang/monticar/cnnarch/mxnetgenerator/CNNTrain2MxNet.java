@@ -23,12 +23,12 @@ public class CNNTrain2MxNet extends CNNTrainGenerator {
     @Override
     public void generate(Path modelsDirPath, String rootModelName) {
         ConfigurationSymbol configuration = getConfigurationSymbol(modelsDirPath, rootModelName);
-        Map<String, String> fileContents = generateStrings(configuration);
+        List<FileContent> fileContents = generateStrings(configuration);
         GeneratorCPP genCPP = new GeneratorCPP();
         genCPP.setGenerationTargetPath(getGenerationTargetPath());
         try {
-            for (String fileName : fileContents.keySet()){
-                genCPP.generateFile(new FileContent(fileContents.get(fileName), fileName));
+            for (FileContent fileContent : fileContents){
+                genCPP.generateFile(fileContent);
             }
         } catch (IOException e) {
             Log.error("CNNTrainer file could not be generated" + e.getMessage());
@@ -36,7 +36,7 @@ public class CNNTrain2MxNet extends CNNTrainGenerator {
     }
 
     @Override
-    public Map<String, String> generateStrings(ConfigurationSymbol configuration) {
+    public List<FileContent>  generateStrings(ConfigurationSymbol configuration) {
         TemplateConfiguration templateConfiguration = new MxNetTemplateConfiguration();
         ConfigurationData configData = new ConfigurationData(configuration, getInstanceName());
         List<ConfigurationData> configDataList = new ArrayList<>();
@@ -44,6 +44,9 @@ public class CNNTrain2MxNet extends CNNTrainGenerator {
         Map<String, Object> ftlContext = Collections.singletonMap("configurations", configDataList);
 
         String templateContent = templateConfiguration.processTemplate(ftlContext, "CNNTrainer.ftl");
-        return Collections.singletonMap("CNNTrainer_" + getInstanceName() + ".py", templateContent);
+        List<FileContent> fileContents = new ArrayList<>();
+        FileContent temp = new FileContent(templateContent, "CNNTrainer_" + getInstanceName() + ".py");
+        fileContents.add(temp);
+        return fileContents;
     }
 }
