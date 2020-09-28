@@ -34,16 +34,13 @@ public class CNNTrain2Tensorflow extends CNNTrainGenerator {
     }
     
     private void generateFilesFromConfigurationSymbol(ConfigurationSymbol configuration) {
-        Map<String, String> fileContents = this.generateStrings(configuration);
+        List<FileContent> fileContents = this.generateStrings(configuration);
         GeneratorCPP genCPP = new GeneratorCPP();
         genCPP.setGenerationTargetPath(this.getGenerationTargetPath());
 
         try {
-            Iterator var6 = fileContents.keySet().iterator();
-
-            while(var6.hasNext()) {
-                String fileName = (String)var6.next();
-                genCPP.generateFile(new FileContent((String)fileContents.get(fileName), fileName));
+            for (FileContent fileContent : fileContents) {
+                genCPP.generateFile(fileContent);
             }
         } catch (IOException var8) {
             Log.error("CNNTrainer file could not be generated" + var8.getMessage());
@@ -51,7 +48,7 @@ public class CNNTrain2Tensorflow extends CNNTrainGenerator {
     }
 
 	@Override
-    public Map<String, String> generateStrings(ConfigurationSymbol configuration) {
+    public List<FileContent> generateStrings(ConfigurationSymbol configuration) {
         TemplateConfiguration templateConfiguration = new TensorflowTemplateConfiguration();
         
         ConfigurationData configData = new ConfigurationData(configuration, getInstanceName());
@@ -61,11 +58,11 @@ public class CNNTrain2Tensorflow extends CNNTrainGenerator {
         
         Map<String, Object> ftlContext = Maps.newHashMap();
         ftlContext.put("configurations", configDataList);
-        Map<String, String> fileContentMap = new HashMap<>();
+        List<FileContent> fileContents = new ArrayList<>();
 
         String cnnTrainTemplateContent = templateConfiguration.processTemplate(ftlContext, "CNNTrainer.ftl");
-        fileContentMap.put("CNNTrainer_" + getInstanceName() + ".py", cnnTrainTemplateContent);
+        fileContents.add(new FileContent(cnnTrainTemplateContent, "CNNTrainer_" + getInstanceName() + ".py"));
  
-        return fileContentMap;
+        return fileContents;
     }
 }

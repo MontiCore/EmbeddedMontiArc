@@ -27,10 +27,13 @@ import de.monticore.lang.monticar.cnnarch._symboltable.ArchitectureSymbol;
 import de.monticore.lang.monticar.generator.FileContent;
 import de.monticore.lang.monticar.generator.cmake.CMakeConfig;
 import de.monticore.lang.monticar.generator.cmake.CMakeFindModule;
+import de.monticore.lang.tagging._symboltable.TaggingResolver;
 
 import java.util.*;
 
 public class CNNArch2Tensorflow extends CNNArchGenerator {
+
+    private CMakeConfig cMakeConfig = new CMakeConfig("");
 
     public CNNArch2Tensorflow() {
         architectureSupportChecker = new CNNArch2TensorflowArchitectureSupportChecker();
@@ -38,68 +41,82 @@ public class CNNArch2Tensorflow extends CNNArchGenerator {
     }
 
     //check cocos with CNNArchCocos.checkAll(architecture) before calling this method.
-    public Map<String, String> generateStrings(ArchitectureSymbol architecture){
-        Map<String, String> fileContentMap = compileFileContentMap(architecture);
+    public List<FileContent> generateStrings(TaggingResolver taggingResolver, ArchitectureSymbol architecture){
+        if(architecture != null && architecture.getFullName() != null) {
+            cMakeConfig.getCMakeListsViewModel().setCompName(architecture.getFullName().replace('.', '_').replace('[', '_').replace(']', '_'));
+        }
+        List<FileContent> fileContents = compileFileContentMap(architecture);
         
-        return fileContentMap;
+        return fileContents;
     }
     
-    private Map<String, String> compilePythonFiles(CNNArch2TensorflowTemplateController controller, ArchitectureSymbol architecture) {
-        Map<String, String> fileContentMap = new HashMap<>();
-        Map.Entry<String, String> temp;
+    private List<FileContent> compilePythonFiles(CNNArch2TensorflowTemplateController controller, ArchitectureSymbol architecture) {
+        List<FileContent> fileContents = new ArrayList<>();
+        FileContent temp;
      
         temp = controller.process("CNNCreator", Target.PYTHON);
-        fileContentMap.put(temp.getKey(), temp.getValue());
+        fileContents.add(temp);
         
         if (architecture.getDataPath() != null) {
             temp = controller.process("CNNDataLoader", Target.PYTHON);
-            fileContentMap.put(temp.getKey(), temp.getValue());
+            fileContents.add(temp);
         }
         
-        return fileContentMap;
+        return fileContents;
     }
     
-    private Map<String, String> compileCppFiles(CNNArch2TensorflowTemplateController controller) {
-        Map<String, String> fileContentMap = new HashMap<>();
-        Map.Entry<String, String> temp;
+    private List<FileContent> compileCppFiles(CNNArch2TensorflowTemplateController controller) {
+        // Add cmake dependencies when they are needed
+        addCMakeDependencies();
+        List<FileContent> fileContents = new ArrayList<>();
+        FileContent temp;
 
         temp = controller.process("CNNPredictor", Target.CPP);
-        fileContentMap.put(temp.getKey(), temp.getValue());
+        fileContents.add(temp);
 
         temp = controller.process("execute", Target.CPP);
-        fileContentMap.put(temp.getKey().replace(".h", ""), temp.getValue());
+        fileContents.add(new FileContent(temp.getFileContent(), temp.getFileName().replace(".h", "")));
 
-        return fileContentMap;
+        return fileContents;
     }
     
-    private Map<String, String> compileFileContentMap(ArchitectureSymbol architecture) {
+    private List<FileContent> compileFileContentMap(ArchitectureSymbol architecture) {
         TemplateConfiguration templateConfiguration = new TensorflowTemplateConfiguration();
 
-        Map<String, String> fileContentMap = new HashMap<>();
+        List<FileContent> fileContents = new ArrayList<>();
         CNNArch2TensorflowTemplateController archTc = new CNNArch2TensorflowTemplateController(
                 architecture, templateConfiguration);
 
-        fileContentMap.putAll(compilePythonFiles(archTc, architecture));
-        fileContentMap.putAll(compileCppFiles(archTc));
+        fileContents.addAll(compilePythonFiles(archTc, architecture));
+        fileContents.addAll(compileCppFiles(archTc));
 
-        return fileContentMap;
+        return fileContents;
     }
 
-    public Map<String, String> generateCMakeContent(String rootModelName) {
+    public List<FileContent> generateCMakeContent(String rootModelName) {
         // model name should start with a lower case letter. If it is a component, replace dot . by _
         rootModelName = rootModelName.replace('.', '_').replace('[', '_').replace(']', '_');
         rootModelName =  rootModelName.substring(0, 1).toLowerCase() + rootModelName.substring(1);
 
-        CMakeConfig cMakeConfig = new CMakeConfig(rootModelName);
-        cMakeConfig.addModuleDependency(new CMakeFindModule("Armadillo", true));
+        cMakeConfig.getCMakeListsViewModel().setCompName(rootModelName);
 
-        cMakeConfig.addCMakeCommand("find_package(TensorflowCC REQUIRED)");
-        cMakeConfig.addCMakeCommand("set(LIBS ${LIBS} TensorflowCC::Shared)");
+        addCMakeDependencies();
 
-        Map<String,String> fileContentMap = new HashMap<>();
+        List<FileContent> fileContents = new ArrayList<>();
         for (FileContent fileContent : cMakeConfig.generateCMakeFiles()){
-            fileContentMap.put(fileContent.getFileName(), fileContent.getFileContent());
+            fileContents.add(fileContent);
         }
-        return fileContentMap;
+        return fileContents;
+    }
+
+    private void addCMakeDependencies() {
+        cMakeConfig.addModuleDependency(new CMakeFindModule("Armadillo", true));
+        cMakeConfig.addCMakeCommand("find_package(TensorflowCC REQUIRED)");
+        cMakeConfig.addCmakeLibraryLinkage("TensorflowCC::Shared");
+    }
+
+    @Override
+    public CMakeConfig getCmakeConfig() {
+        return cMakeConfig;
     }
 }

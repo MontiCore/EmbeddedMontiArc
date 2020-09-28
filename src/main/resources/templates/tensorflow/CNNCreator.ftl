@@ -343,12 +343,12 @@ class ${tc.fileNameWithoutEnding}:
         output_names = []
 
 <#list tc.architecture.streams as stream>
-<#if stream.isTrainable()> 
+<#--<#if stream.isTrainable()>-->
                                 
 #************* Start Stream ${stream?index}*****************************
 ${tc.include(stream)}
 #************* End Stream ${stream?index}*******************************        
-</#if>
+<#--</#if>-->
 </#list>           
                  
         self.model = tf.keras.models.Model(inputs=input_tensors, outputs=[${tc.join(tc.architectureOutputs, ",")}])
