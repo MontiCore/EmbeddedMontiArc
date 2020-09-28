@@ -42,8 +42,8 @@ public class GenerationTest extends AbstractSymtabTest {
         assertTrue(Log.getFindings().isEmpty());
 
         checkFilesAreEqual(
-                Paths.get("./target/generated-sources-cnnarch"),
-                Paths.get("./src/test/resources/target_code"),
+                Paths.get("target/generated-sources-cnnarch"),
+                Paths.get("src/test/resources/target_code"),
                 Arrays.asList(
                         "CNNCreator_CifarClassifierNetwork.py",
                         "CNNNet_CifarClassifierNetwork.py",
@@ -435,8 +435,8 @@ public class GenerationTest extends AbstractSymtabTest {
 
         assertTrue(Log.getFindings().stream().noneMatch(Finding::isError));
         checkFilesAreEqual(
-                Paths.get("./target/generated-sources-cnnarch"),
-                Paths.get("./src/test/resources/target_code/default-gan"),
+                Paths.get("target/generated-sources-cnnarch"),
+                Paths.get("src/test/resources/target_code/default-gan"),
                 Arrays.asList(
                         "gan/CNNCreator_Discriminator.py",
                         "gan/CNNNet_Discriminator.py",
@@ -462,8 +462,8 @@ public class GenerationTest extends AbstractSymtabTest {
 
         assertTrue(Log.getFindings().stream().noneMatch(Finding::isError));
         checkFilesAreEqual(
-                Paths.get("./target/generated-sources-cnnarch"),
-                Paths.get("./src/test/resources/target_code/info-gan"),
+                Paths.get("target/generated-sources-cnnarch"),
+                Paths.get("src/test/resources/target_code/info-gan"),
                 Arrays.asList(
                         "gan/CNNCreator_InfoDiscriminator.py",
                         "gan/CNNNet_InfoDiscriminator.py",
