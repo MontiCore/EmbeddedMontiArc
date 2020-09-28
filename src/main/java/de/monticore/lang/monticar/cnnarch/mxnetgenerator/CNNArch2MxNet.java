@@ -61,8 +61,7 @@ public class CNNArch2MxNet extends CNNArchGenerator {
 
         cMakeConfig = new CMakeConfig(rootModelName);
         cMakeConfig.addModuleDependency(new CMakeFindModule("Armadillo", true));
-        cMakeConfig.addCMakeCommand("set(LIBS ${LIBS} mxnet)");
-        //cMakeConfig.addCmakeLibraryLinkage("mxnet");
+        cMakeConfig.addCmakeLibraryLinkage("mxnet");
 
         fileContents.addAll(cMakeConfig.generateCMakeFiles());
 
