@@ -8,17 +8,14 @@
 
   <groupId>de.monticore.lang.monticar</groupId>
   <artifactId>cnnarch-tensorflow-generator</artifactId>
-  <version>0.1.0-SNAPSHOT</version>
+  <version>0.4.0-SNAPSHOT</version>
 
   <!-- == PROJECT DEPENDENCIES ============================================= -->
 
   <properties>
 
     <!-- .. SE-Libraries .................................................. -->
-      <CNNArch.version>0.3.3-SNAPSHOT</CNNArch.version>
-      <CNNTrain.version>0.3.6-SNAPSHOT</CNNTrain.version>
-      <CNNArch2X.version>0.0.4-SNAPSHOT</CNNArch2X.version>
-      <embedded-montiarc-math-opt-generator>0.1.4</embedded-montiarc-math-opt-generator>
+      <CNNArch2X.version>0.4.0-SNAPSHOT</CNNArch2X.version>
       <EMADL2PythonWrapper.version>0.0.2-SNAPSHOT</EMADL2PythonWrapper.version>
     
         <!-- .. Libraries .................................................. -->
@@ -65,40 +62,6 @@
             <groupId>de.monticore.lang.monticar</groupId>
             <artifactId>cnnarch-generator</artifactId>
             <version>${CNNArch2X.version}</version>
-        </dependency>
-
-        <dependency>
-            <groupId>de.monticore.lang.monticar</groupId>
-            <artifactId>cnn-arch</artifactId>
-            <version>${CNNArch.version}</version>
-        </dependency>
-
-        <dependency>
-            <groupId>de.monticore.lang.monticar</groupId>
-            <artifactId>cnn-arch</artifactId>
-            <version>${CNNArch.version}</version>
-            <classifier>${grammars.classifier}</classifier>
-            <scope>provided</scope>
-        </dependency>
-
-        <dependency>
-            <groupId>de.monticore.lang.monticar</groupId>
-            <artifactId>cnn-train</artifactId>
-            <version>${CNNTrain.version}</version>
-        </dependency>
-
-        <dependency>
-            <groupId>de.monticore.lang.monticar</groupId>
-            <artifactId>cnn-train</artifactId>
-            <version>${CNNTrain.version}</version>
-            <classifier>${grammars.classifier}</classifier>
-            <scope>provided</scope>
-        </dependency>
-
-        <dependency>
-            <groupId>de.monticore.lang.monticar</groupId>
-            <artifactId>embedded-montiarc-math-opt-generator</artifactId>
-            <version>${embedded-montiarc-math-opt-generator}</version>
         </dependency>
 
         <dependency>

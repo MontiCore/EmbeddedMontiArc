@@ -11,9 +11,12 @@ find_package(Armadillo REQUIRED)
 set(INCLUDE_DIRS ${INCLUDE_DIRS} ${Armadillo_INCLUDE_DIRS})
 set(LIBS ${LIBS} ${Armadillo_LIBRARIES})
 
+
+# additional library linkage
+set(LIBS ${LIBS} TensorflowCC::Shared)
+
 # additional commands
 find_package(TensorflowCC REQUIRED)
-set(LIBS ${LIBS} TensorflowCC::Shared)
 
 # create static library
 include_directories(${INCLUDE_DIRS})
