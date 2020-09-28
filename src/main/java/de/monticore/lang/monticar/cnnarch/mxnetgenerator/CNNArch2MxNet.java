@@ -11,13 +11,19 @@ import de.monticore.lang.monticar.cnnarch._symboltable.ArchitectureSymbol;
 import de.monticore.lang.monticar.generator.FileContent;
 import de.monticore.lang.monticar.generator.cmake.CMakeConfig;
 import de.monticore.lang.monticar.generator.cmake.CMakeFindModule;
+import de.monticore.lang.tagging._symboltable.TaggingResolver;
 import de.monticore.symboltable.Scope;
 
+import java.io.File;
 import java.io.IOException;
+import java.util.ArrayList;
 import java.util.HashMap;
+import java.util.List;
 import java.util.Map;
 
 public class CNNArch2MxNet extends CNNArchGenerator {
+
+    CMakeConfig cMakeConfig;
 
     public CNNArch2MxNet() {
         architectureSupportChecker = new CNNArch2MxNetArchitectureSupportChecker();
@@ -25,39 +31,44 @@ public class CNNArch2MxNet extends CNNArchGenerator {
     }
 
     //check cocos with CNNArchCocos.checkAll(architecture) before calling this method.
-    public Map<String, String> generateStrings(ArchitectureSymbol architecture){
-        Map<String, String> fileContentMap = new HashMap<>();
+    public List<FileContent> generateStrings(TaggingResolver var1, ArchitectureSymbol architecture){
+        List<FileContent> fileContents = new ArrayList<>();
+        FileContent temp;
         CNNArch2MxNetTemplateController archTc = new CNNArch2MxNetTemplateController(architecture);
-        Map.Entry<String, String> temp;
 
         temp = archTc.process("CNNPredictor", Target.CPP);
-        fileContentMap.put(temp.getKey(), temp.getValue());
+        fileContents.add(temp);
 
         temp = archTc.process("CNNCreator", Target.PYTHON);
-        fileContentMap.put(temp.getKey(), temp.getValue());
+        fileContents.add(temp);
 
         temp = archTc.process("execute", Target.CPP);
-        fileContentMap.put(temp.getKey().replace(".h", ""), temp.getValue());
+        temp.setFileName(temp.getFileName().replace(".h", ""));
+        fileContents.add(temp);
 
         temp = archTc.process("CNNBufferFile", Target.CPP);
-        fileContentMap.put("CNNBufferFile.h", temp.getValue());
+        temp.setFileName("CNNBufferFile.h");
+        fileContents.add(temp);
 
-        return fileContentMap;
+        return fileContents;
     }
 
-    public Map<String, String> generateCMakeContent(String rootModelName) {
+    public List<FileContent>  generateCMakeContent(String rootModelName) {
+        List<FileContent> fileContents = new ArrayList<>();
         // model name should start with a lower case letter. If it is a component, replace dot . by _
         rootModelName = rootModelName.replace('.', '_').replace('[', '_').replace(']', '_');
         rootModelName = rootModelName.substring(0, 1).toLowerCase() + rootModelName.substring(1);
 
-        CMakeConfig cMakeConfig = new CMakeConfig(rootModelName);
+        cMakeConfig = new CMakeConfig(rootModelName);
         cMakeConfig.addModuleDependency(new CMakeFindModule("Armadillo", true));
-        cMakeConfig.addCMakeCommand("set(LIBS ${LIBS} mxnet)");
+        cMakeConfig.addCmakeLibraryLinkage("mxnet");
 
-        Map<String,String> fileContentMap = new HashMap<>();
-        for (FileContent fileContent : cMakeConfig.generateCMakeFiles()){
-            fileContentMap.put(fileContent.getFileName(), fileContent.getFileContent());
-        }
-        return fileContentMap;
+        fileContents.addAll(cMakeConfig.generateCMakeFiles());
+
+        return fileContents;
+    }
+
+    public CMakeConfig getCmakeConfig() {
+        return this.cMakeConfig;
     }
 }
