@@ -10,15 +10,19 @@ set(CMAKE_MODULE_PATH ${CMAKE_MODULE_PATH} ${CMAKE_CURRENT_SOURCE_DIR}/cmake)
 find_package(Armadillo REQUIRED)
 set(INCLUDE_DIRS ${INCLUDE_DIRS} ${Armadillo_INCLUDE_DIRS})
 set(LIBS ${LIBS} ${Armadillo_LIBRARIES})
+
 find_package(Caffe2 REQUIRED)
 set(INCLUDE_DIRS ${INCLUDE_DIRS} ${Caffe2_INCLUDE_DIRS})
 set(LIBS ${LIBS} ${Caffe2_LIBRARIES})
 
-# additional commands
-set(LIBS ${LIBS} -lprotobuf -lglog -lgflags)
-find_package(CUDA)
 
-if(CUDA_FOUND)
+# additional library linkage
+
+# additional commands
+    set(LIBS ${LIBS} -lprotobuf -lglog -lgflags)
+    find_package(CUDA)
+
+    if(CUDA_FOUND)
   set(LIBS ${LIBS} caffe2 caffe2_gpu)
   set(INCLUDE_DIRS ${INCLUDE_DIRS} ${CUDA_INCLUDE_DIRS})
   set(LIBS ${LIBS} ${CUDA_LIBRARIES} ${CUDA_curand_LIBRARY})

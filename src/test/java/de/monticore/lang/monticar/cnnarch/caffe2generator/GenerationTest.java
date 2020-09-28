@@ -193,9 +193,7 @@ public class GenerationTest extends AbstractSymtabTest{
         String rootModelName = "alexnet";
         CNNArch2Caffe2 generator = new CNNArch2Caffe2();
         generator.setGenerationTargetPath("./target/generated-sources-cnnarch");
-        if(generator.isCMakeRequired()){
-            generator.generateCMake(rootModelName);
-        }
+        generator.generateCMake(rootModelName);
 
         assertTrue(Log.getFindings().isEmpty());
 

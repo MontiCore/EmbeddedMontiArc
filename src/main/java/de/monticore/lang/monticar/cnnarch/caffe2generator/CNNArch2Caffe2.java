@@ -2,6 +2,7 @@
 package de.monticore.lang.monticar.cnnarch.caffe2generator;
 
 import de.monticore.lang.monticar.cnnarch.generator.CNNArchGenerator;
+
 import de.monticore.lang.monticar.cnnarch.generator.DataPathConfigParser;
 import de.monticore.lang.monticar.cnnarch.generator.Target;
 
@@ -14,12 +15,16 @@ import de.monticore.lang.monticar.generator.FileContent;
 import de.monticore.lang.monticar.generator.cmake.CMakeConfig;
 import de.monticore.lang.monticar.generator.cmake.CMakeFindModule;
 import de.monticore.lang.monticar.generator.cpp.GeneratorCPP;
+import de.monticore.lang.tagging._symboltable.TaggingResolver;
 
 import java.io.IOException;
+import java.util.ArrayList;
 import java.util.HashMap;
+import java.util.List;
 import java.util.Map;
 
 public class CNNArch2Caffe2 extends CNNArchGenerator {
+    CMakeConfig cMakeConfig;
 
     public CNNArch2Caffe2() {
         architectureSupportChecker = new CNNArch2Caffe2ArchitectureSupportChecker();
@@ -27,29 +32,31 @@ public class CNNArch2Caffe2 extends CNNArchGenerator {
     }
 
     //check cocos with CNNArchCocos.checkAll(architecture) before calling this method.
-    public Map<String, String> generateStrings(ArchitectureSymbol architecture){
-        Map<String, String> fileContentMap = new HashMap<>();
+    public List<FileContent> generateStrings(TaggingResolver taggingResolver, ArchitectureSymbol architecture){
+        List<FileContent> fileContents = new ArrayList<>();
         CNNArchTemplateController archTc = new CNNArchTemplateController(architecture);
-        Map.Entry<String, String> temp;
+        FileContent temp;
 
         temp = archTc.process("CNNPredictor", Target.CPP);
-        fileContentMap.put(temp.getKey(), temp.getValue());
+        fileContents.add(temp);
 
         temp = archTc.process("CNNCreator", Target.PYTHON);
-        fileContentMap.put(temp.getKey(), temp.getValue());
+        fileContents.add(temp);
 
         temp = archTc.process("execute", Target.CPP);
-        fileContentMap.put(temp.getKey().replace(".h", ""), temp.getValue());
+        temp.setFileName(temp.getFileName().replace(".h", ""));
+        fileContents.add(temp);
 
-        return fileContentMap;
+        return fileContents;
     }
 
-    public Map<String, String> generateCMakeContent(String rootModelName) {
+    public List<FileContent> generateCMakeContent(String rootModelName) {
+        List<FileContent> fileContents = new ArrayList<>();
         // model name should start with a lower case letter. If it is a component, replace dot . by _
         rootModelName = rootModelName.replace('.', '_').replace('[', '_').replace(']', '_');
         rootModelName =  rootModelName.substring(0, 1).toLowerCase() + rootModelName.substring(1);
 
-        CMakeConfig cMakeConfig = new CMakeConfig(rootModelName);
+        cMakeConfig = new CMakeConfig(rootModelName);
         cMakeConfig.addModuleDependency(new CMakeFindModule("Armadillo", true));
         cMakeConfig.addModuleDependency(new CMakeFindModule("Caffe2", true));
         cMakeConfig.addCMakeCommand("set(LIBS ${LIBS} -lprotobuf -lglog -lgflags)");
@@ -64,10 +71,13 @@ public class CNNArch2Caffe2 extends CNNArchGenerator {
                                     + "  set(LIBS ${LIBS} caffe2)" + "\n" 
                                     + "endif()");
 
-        Map<String,String> fileContentMap = new HashMap<>();
         for (FileContent fileContent : cMakeConfig.generateCMakeFiles()){
-            fileContentMap.put(fileContent.getFileName(), fileContent.getFileContent());
+            fileContents.add(fileContent);
         }
-        return fileContentMap;
+        return fileContents;
+    }
+
+    public CMakeConfig getCmakeConfig() {
+        return this.cMakeConfig;
     }
 }
