@@ -209,7 +209,7 @@ public abstract class CNNArchTemplateController {
         include("", templateNameWithoutEnding, newWriter);
         String fileEnding = targetLanguage.toString();
         String fileName = getFileNameWithoutEnding() + fileEnding;
-        FileContent fileContent = new FileContent(fileName, newWriter.toString());
+        FileContent fileContent = new FileContent(newWriter.toString(), fileName);
 
         this.mainTemplateNameWithoutEnding = null;
         this.targetLanguage = null;
