@@ -15,19 +15,20 @@ import java.util.*;
 
 public class CNNArch2Gluon extends CNNArchGenerator {
 
+    private CMakeConfig cMakeConfig = new CMakeConfig("");
+
     public CNNArch2Gluon() {
         architectureSupportChecker = new CNNArch2GluonArchitectureSupportChecker();
         layerSupportChecker = new CNNArch2GluonLayerSupportChecker();
     }
 
-    @Override
-    public CMakeConfig getCmakeConfig() {
-        return null;
-    }
-
     //check cocos with CNNArchCocos.checkAll(architecture) before calling this method.
     @Override
     public List<FileContent> generateStrings(TaggingResolver taggingResolver, ArchitectureSymbol architecture){
+        if(architecture != null && architecture.getFullName() != null) {
+            cMakeConfig.getCMakeListsViewModel().setCompName(architecture.getFullName().replace('.', '_').replace('[', '_').replace(']', '_'));
+        }
+
         List<FileContent> fileContents = compileFileContents(architecture);
         return fileContents;
     }
@@ -85,6 +86,10 @@ public class CNNArch2Gluon extends CNNArchGenerator {
 
 
     private List<FileContent> compileFileContents(ArchitectureSymbol architecture) {
+        // Add cmake dependencies when they are needed
+        cMakeConfig.addModuleDependency(new CMakeFindModule("Armadillo", true));
+        cMakeConfig.addCmakeLibraryLinkage("mxnet");
+
         TemplateConfiguration templateConfiguration = new GluonTemplateConfiguration();
 
         architecture.processForEpisodicReplayMemory();
@@ -111,7 +116,7 @@ public class CNNArch2Gluon extends CNNArchGenerator {
         rootModelName = rootModelName.replace('.', '_').replace('[', '_').replace(']', '_');
         rootModelName =  rootModelName.substring(0, 1).toLowerCase() + rootModelName.substring(1);
 
-        CMakeConfig cMakeConfig = new CMakeConfig(rootModelName);
+        cMakeConfig.getCMakeListsViewModel().setCompName(rootModelName);
         cMakeConfig.addModuleDependency(new CMakeFindModule("Armadillo", true));
         cMakeConfig.addCmakeLibraryLinkage("mxnet");
 
@@ -120,5 +125,10 @@ public class CNNArch2Gluon extends CNNArchGenerator {
             fileContents.add(fileContent);
         }
         return fileContents;
+    }
+
+    @Override
+    public CMakeConfig getCmakeConfig() {
+        return cMakeConfig;
     }
 }
