@@ -3,6 +3,7 @@ package de.monticore.lang.monticar.generator;
 
 import de.monticore.lang.embeddedmontiarc.embeddedmontiarc._symboltable.instanceStructure.EMAComponentInstanceSymbol;
 import de.monticore.lang.math._symboltable.MathStatementsSymbol;
+import de.monticore.lang.monticar.generator.cmake.CMakeConfig;
 import de.monticore.lang.tagging._symboltable.TaggingResolver;
 import de.monticore.symboltable.Scope;
 
@@ -15,6 +16,13 @@ import java.util.List;
  *
  */
 public interface Generator {
+
+    // Cmake
+    CMakeConfig getCmakeConfig();
+
+    boolean isGenerateCMake();
+
+    void setGenerateCMake(boolean generateCMake);
 
     String getGenerationTargetPath();
 
