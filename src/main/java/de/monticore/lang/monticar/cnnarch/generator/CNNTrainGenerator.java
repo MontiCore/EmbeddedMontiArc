@@ -113,5 +113,5 @@ public abstract class CNNTrainGenerator {
     public abstract void generate(Path modelsDirPath, String rootModelNames);
 
     //check cocos with CNNTrainCocos.checkAll(configuration) before calling this method.
-    public abstract Map<String, String> generateStrings(ConfigurationSymbol configuration);
+    public abstract List<FileContent> generateStrings(ConfigurationSymbol configuration);
 }

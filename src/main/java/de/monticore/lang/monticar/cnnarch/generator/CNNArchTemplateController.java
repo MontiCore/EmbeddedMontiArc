@@ -4,6 +4,8 @@ package de.monticore.lang.monticar.cnnarch.generator;
 import de.monticore.lang.monticar.cnnarch._symboltable.*;
 import de.monticore.lang.monticar.cnnarch.predefined.Sigmoid;
 import de.monticore.lang.monticar.cnnarch.predefined.Softmax;
+import de.monticore.lang.monticar.generator.FileContent;
+import org.apache.commons.io.monitor.FileEntry;
 
 import java.io.StringWriter;
 import java.io.Writer;
@@ -198,7 +200,7 @@ public abstract class CNNArchTemplateController {
         templateConfiguration.processTemplate(ftlContext, templatePath, writer);
     }
 
-    public Map.Entry<String,String> process(String templateNameWithoutEnding, Target targetLanguage){
+    public FileContent process(String templateNameWithoutEnding, Target targetLanguage){
         StringWriter newWriter = new StringWriter();
         this.mainTemplateNameWithoutEnding = templateNameWithoutEnding;
         this.targetLanguage = targetLanguage;
@@ -207,7 +209,7 @@ public abstract class CNNArchTemplateController {
         include("", templateNameWithoutEnding, newWriter);
         String fileEnding = targetLanguage.toString();
         String fileName = getFileNameWithoutEnding() + fileEnding;
-        Map.Entry<String,String> fileContent = new AbstractMap.SimpleEntry<>(fileName, newWriter.toString());
+        FileContent fileContent = new FileContent(fileName, newWriter.toString());
 
         this.mainTemplateNameWithoutEnding = null;
         this.targetLanguage = null;
