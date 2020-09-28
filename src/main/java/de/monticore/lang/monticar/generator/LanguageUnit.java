@@ -14,10 +14,10 @@ import java.util.Optional;
  */
 public abstract class LanguageUnit {
 
-    protected List<BluePrint> bluePrints = new ArrayList<>();
+    protected List<EMAMBluePrint> bluePrints = new ArrayList<>();
     protected List<Symbol> symbolsToConvert = new ArrayList<>();
 
-    public List<BluePrint> getBluePrints() {
+    public List<EMAMBluePrint> getBluePrints() {
         return bluePrints;
     }
 
@@ -25,8 +25,8 @@ public abstract class LanguageUnit {
         symbolsToConvert.add(symbol);
     }
 
-    public Optional<BluePrint> getBluePrint(String fullName) {
-        for (BluePrint bluePrint : bluePrints) {
+    public Optional<EMAMBluePrint> getBluePrint(String fullName) {
+        for (EMAMBluePrint bluePrint : bluePrints) {
             if (bluePrint.getName().equals(fullName.replaceAll("\\.", "_"))) {
                 return Optional.of(bluePrint);
             }

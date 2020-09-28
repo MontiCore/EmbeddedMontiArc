@@ -32,7 +32,7 @@ public class OctaveFunctionTest extends AbstractSymtabTest {
         generatorCPP.setGenerateCMake(false);
 
         generatorCPP.setGenerationTargetPath("./target/generated-sources-cpp/testMath/l0");
-        List<File> files = generatorCPP.generateFiles(componentSymbol, symtab);
+        List<File> files = generatorCPP.generateFiles(symtab, componentSymbol);;
         String restPath = "testMath/l0/";
         testFilesAreEqual(files, restPath);
     }
@@ -50,7 +50,7 @@ public class OctaveFunctionTest extends AbstractSymtabTest {
         generatorCPP.setGenerateCMake(false);
 
         generatorCPP.setGenerationTargetPath("./target/generated-sources-cpp/testMath/l0");
-        List<File> files = generatorCPP.generateFiles(componentSymbol, symtab);
+        List<File> files = generatorCPP.generateFiles(symtab, componentSymbol);;
         String restPath = "testMath/l0/";
 
         ComponentStreamUnitsSymbol streamSymbol = symtab.<ComponentStreamUnitsSymbol>resolve("test.math." + streamName, ComponentStreamUnitsSymbol.KIND).orElse(null);
@@ -70,7 +70,7 @@ public class OctaveFunctionTest extends AbstractSymtabTest {
         assertNotNull(componentSymbol);
         GeneratorCPP generatorCPP = new GeneratorCPP();
         generatorCPP.setGenerationTargetPath("./target/generated-sources-cpp/testMath/l0");
-        List<File> files = generatorCPP.generateFiles(componentSymbol, symtab);
+        List<File> files = generatorCPP.generateFiles(symtab, componentSymbol);;
         String restPath = "testMath/l0/";
         testFilesAreEqual(files, restPath);*/
         testMathCommand("abs");

@@ -191,7 +191,7 @@ public final class GeneratorCppCli {
 
         try {
             if (componentSymbol != null) {
-                g.generateFiles(componentSymbol, symTab);
+                g.generateFiles(symTab, componentSymbol);
             } else {
                 g.saveFilesToDisk(g.handleTestAndCheckDir(symTab, componentSymbol));
             }

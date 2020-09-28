@@ -1,11 +1,10 @@
 package de.monticore.lang.monticar.generator.cpp.commands;
 
-import alice.tuprolog.Int;
 import de.monticore.lang.math._symboltable.expression.MathExpressionSymbol;
 import de.monticore.lang.math._symboltable.matrix.MathMatrixAccessSymbol;
 import de.monticore.lang.math._symboltable.matrix.MathMatrixNameExpressionSymbol;
 import de.monticore.lang.monticar.generator.*;
-import de.monticore.lang.monticar.generator.cpp.BluePrintCPP;
+import de.monticore.lang.monticar.generator.cpp.EMAMBluePrintCPP;
 import de.monticore.lang.monticar.generator.cpp.MathExpressionProperties;
 import de.monticore.lang.monticar.generator.cpp.MathFunctionFixer;
 import de.monticore.lang.monticar.generator.cpp.converter.ComponentConverter;
@@ -16,7 +15,6 @@ import de.se_rwth.commons.logging.Log;
 
 import java.util.ArrayList;
 import java.util.List;
-import java.util.Properties;
 
 /**
  * @author Ahmed Diab
@@ -28,7 +26,7 @@ public class GaussianBlurCommand extends ArgumentNoReturnMathCommand{
     }
 
     @Override
-    public void convert(MathExpressionSymbol mathExpressionSymbol, BluePrint bluePrint) {
+    public void convert(MathExpressionSymbol mathExpressionSymbol, EMAMBluePrint bluePrint) {
         String backendName = MathConverter.curBackend.getBackendName();
         if (backendName.equals("OctaveBackend")) {
             convertUsingOctaveBackend(mathExpressionSymbol, bluePrint);
@@ -42,16 +40,16 @@ public class GaussianBlurCommand extends ArgumentNoReturnMathCommand{
         return true;
     }
 
-    public void convertUsingOctaveBackend(MathExpressionSymbol mathExpressionSymbol, BluePrint bluePrint) {
+    public void convertUsingOctaveBackend(MathExpressionSymbol mathExpressionSymbol, EMAMBluePrint bluePrint) {
         Log.error("No implementation for Octave Backend");
     }
 
-    public void convertUsingArmadilloBackend(MathExpressionSymbol mathExpressionSymbol, BluePrint bluePrint) {
+    public void convertUsingArmadilloBackend(MathExpressionSymbol mathExpressionSymbol, EMAMBluePrint bluePrint) {
         MathMatrixNameExpressionSymbol mathMatrixNameExpressionSymbol = (MathMatrixNameExpressionSymbol) mathExpressionSymbol;
         mathMatrixNameExpressionSymbol.setNameToAccess("");
         MathExpressionProperties properties = ComponentConverter.tuples.get(mathExpressionSymbol);
 
-        BluePrintCPP bluePrintCPP = (BluePrintCPP) bluePrint;
+        EMAMBluePrintCPP bluePrintCPP = (EMAMBluePrintCPP) bluePrint;
         String valueListString = "";
         for (MathMatrixAccessSymbol accessSymbol : mathMatrixNameExpressionSymbol.getMathMatrixAccessOperatorSymbol().getMathMatrixAccessSymbols())
             MathFunctionFixer.fixMathFunctions(accessSymbol, bluePrintCPP);
@@ -70,7 +68,7 @@ public class GaussianBlurCommand extends ArgumentNoReturnMathCommand{
         redefineInit(bluePrintCPP);
     }
 
-    private Method getGaussianBlurHelperMethod(MathMatrixNameExpressionSymbol mathMatrixNameExpressionSymbol, BluePrintCPP bluePrintCPP, MathExpressionProperties properties){
+    private Method getGaussianBlurHelperMethod(MathMatrixNameExpressionSymbol mathMatrixNameExpressionSymbol, EMAMBluePrintCPP bluePrintCPP, MathExpressionProperties properties){
         Method method = new Method("gaussianBlurHelper", "void");
         String typeName = getTypeOfFirstInput(mathMatrixNameExpressionSymbol, bluePrintCPP);
         String typeNameIn = "";

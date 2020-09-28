@@ -8,14 +8,12 @@ import de.monticore.lang.math._symboltable.MathStatementsSymbol;
 import de.monticore.lang.math._symboltable.expression.*;
 import de.monticore.lang.math._symboltable.matrix.*;
 import de.monticore.lang.monticar.generator.*;
-import de.monticore.lang.monticar.generator.cpp.BluePrintCPP;
+import de.monticore.lang.monticar.generator.cpp.EMAMBluePrintCPP;
 import de.monticore.lang.monticar.generator.cpp.GeneratorCPP;
 import de.monticore.lang.monticar.generator.cpp.MathFunctionFixer;
 import de.monticore.lang.monticar.generator.cpp.instruction.ConnectInstructionCPP;
 import de.monticore.lang.monticar.generator.cpp.symbols.MathStringExpression;
 import de.monticore.lang.monticar.generator.optimization.MathOptimizer;
-import de.monticore.lang.monticar.ts.MCTypeSymbol;
-import de.monticore.lang.monticar.ts.references.MCTypeReference;
 import de.se_rwth.commons.logging.Log;
 
 import java.util.ArrayList;
@@ -23,7 +21,6 @@ import java.util.Collection;
 import java.util.List;
 
 import static de.monticore.lang.monticar.generator.cpp.converter.ComponentConverter.getNameOfOutput;
-import static de.monticore.lang.monticar.generator.cpp.converter.ComponentConverter.getNameOfMathCommand;
 
 /**
  */
@@ -31,7 +28,7 @@ public class ComponentConverterMethodGeneration {
     public static int currentGenerationIndex = 0;
     public static EMAComponentInstanceSymbol currentComponentSymbol = null;
 
-    public static Method generateExecuteMethod(EMAComponentInstanceSymbol componentSymbol, BluePrintCPP bluePrint, MathStatementsSymbol mathStatementsSymbol, GeneratorCPP generatorCPP, List<String> includeStrings) {
+    public static Method generateExecuteMethod(EMAComponentInstanceSymbol componentSymbol, EMAMBluePrintCPP bluePrint, MathStatementsSymbol mathStatementsSymbol, GeneratorCPP generatorCPP, List<String> includeStrings) {
 
 
         currentComponentSymbol = componentSymbol;
@@ -66,7 +63,7 @@ public class ComponentConverterMethodGeneration {
         return exMethod;
     }
 
-    protected static void generateExecuteMethodInner(Method method, EMAComponentInstanceSymbol componentSymbol, BluePrintCPP bluePrint, MathStatementsSymbol mathStatementsSymbol, GeneratorCPP generatorCPP, List<String> includeStrings){
+    protected static void generateExecuteMethodInner(Method method, EMAComponentInstanceSymbol componentSymbol, EMAMBluePrintCPP bluePrint, MathStatementsSymbol mathStatementsSymbol, GeneratorCPP generatorCPP, List<String> includeStrings){
 
 
         Collection<EMAConnectorInstanceSymbol> connectors = componentSymbol.getConnectorInstances();
@@ -80,7 +77,7 @@ public class ComponentConverterMethodGeneration {
 
     }
 
-    public static void generateConnectors(Collection<EMAConnectorInstanceSymbol> connectors, BluePrintCPP bluePrint, Method method){
+    public static void generateConnectors(Collection<EMAConnectorInstanceSymbol> connectors, EMAMBluePrintCPP bluePrint, Method method){
         for (EMAConnectorInstanceSymbol connector : connectors) {
             if (!connector.isConstant()) {
                 Log.info("source:" + connector.getSource() + " target:" + connector.getTarget(), "Port info:");
@@ -120,7 +117,7 @@ public class ComponentConverterMethodGeneration {
     private static List<MathExpressionSymbol> visitedMathExpressionSymbols = new ArrayList<>();
     private static boolean swapNextInstructions = false;
 
-    private static void handleMathStatementGeneration(Method method, BluePrintCPP bluePrint, MathStatementsSymbol mathStatementsSymbol, GeneratorCPP generatorCPP, List<String> includeStrings) {
+    private static void handleMathStatementGeneration(Method method, EMAMBluePrintCPP bluePrint, MathStatementsSymbol mathStatementsSymbol, GeneratorCPP generatorCPP, List<String> includeStrings) {
         // add math implementation instructions to method
         List<MathExpressionSymbol> newMathExpressionSymbols = new ArrayList<>();
         MathOptimizer.currentBluePrint = bluePrint;
@@ -192,7 +189,7 @@ public class ComponentConverterMethodGeneration {
     }
 
     private static void generateInstruction(Method method, MathExpressionSymbol
-            mathExpressionSymbol, BluePrintCPP bluePrint, List<String> includeStrings/*, int lastIndex*/) {
+            mathExpressionSymbol, EMAMBluePrintCPP bluePrint, List<String> includeStrings/*, int lastIndex*/) {
         MathFunctionFixer.fixMathFunctions(mathExpressionSymbol, bluePrint);
         String result = ExecuteMethodGenerator.generateExecuteCode(mathExpressionSymbol, includeStrings);
         String outputName = "";

@@ -27,7 +27,7 @@ public class BasicGenerationTest extends AbstractSymtabTest {
         generatorCPP.useOctaveBackend();
         generatorCPP.setGenerateCMake(false);
         generatorCPP.setGenerationTargetPath("./target/generated-sources-cpp/testing/l0");
-        List<File> files = generatorCPP.generateFiles(componentSymbol, symtab);
+        List<File> files = generatorCPP.generateFiles(symtab, componentSymbol);;
         String restPath = "testing/l0/";
         testFilesAreEqual(files, restPath);
     }
@@ -42,7 +42,7 @@ public class BasicGenerationTest extends AbstractSymtabTest {
         generatorCPP.setGenerateCMake(false);
         generatorCPP.useOctaveBackend();
         generatorCPP.setGenerationTargetPath("./target/generated-sources-cpp/testing/l0");
-        List<File> files = generatorCPP.generateFiles(componentSymbol, symtab);
+        List<File> files = generatorCPP.generateFiles(symtab, componentSymbol);;
     }
 
     @Test
@@ -97,7 +97,7 @@ public class BasicGenerationTest extends AbstractSymtabTest {
         }
         generatorCPP.setGenerateCMake(false);
         generatorCPP.setGenerationTargetPath(firstPartOfPath + additionalPath);
-        generatorCPP.generateFiles(componentSymbol, symtab);
+        generatorCPP.generateFiles(symtab, componentSymbol);;
     }
 
     @Test
@@ -110,7 +110,7 @@ public class BasicGenerationTest extends AbstractSymtabTest {
         generatorCPP.useArmadilloBackend();
         generatorCPP.setGenerateCMake(false);
         generatorCPP.setGenerationTargetPath("./target/generated-sources-cpp/armadillo/testing");
-        generatorCPP.generateFiles(componentSymbol, symtab);
+        generatorCPP.generateFiles(symtab, componentSymbol);;
     }
 
     @Test
@@ -122,7 +122,7 @@ public class BasicGenerationTest extends AbstractSymtabTest {
         generatorCPP.useArmadilloBackend();
         generatorCPP.setGenerateCMake(false);
         generatorCPP.setGenerationTargetPath("./target/generated-sources-cpp/armadillo/testing");
-        List<File> files = generatorCPP.generateFiles(componentSymbol, symtab);
+        List<File> files = generatorCPP.generateFiles(symtab, componentSymbol);;
         String restPath = "armadillo/testing/";
         testFilesAreEqual(files, restPath);
     }
@@ -146,7 +146,7 @@ public class BasicGenerationTest extends AbstractSymtabTest {
         generatorCPP.setUseThreadingOptimization(false);
         generatorCPP.useOctaveBackend();
         generatorCPP.setGenerationTargetPath("./target/generated-sources-cpp/detectionObjectDetectorNoKMeans"  + "/l0");
-        List<File> files = generatorCPP.generateFiles(symtab, componentSymbol, symtab);
+        List<File> files = generatorCPP.generateFiles(symtab, componentSymbol);
         String restPath = "detectionObjectDetectorNoKMeans"  + "/l0/";
         //testFilesAreEqual(files, restPath);
     }
@@ -161,7 +161,7 @@ public class BasicGenerationTest extends AbstractSymtabTest {
         generatorCPP.setUseThreadingOptimization(false);
         generatorCPP.useOctaveBackend();
         generatorCPP.setGenerationTargetPath("./target/generated-sources-cpp/detectionObjectDetectorNoKMeans"  + "/l1");
-        List<File> files = generatorCPP.generateFiles(symtab, componentSymbol, symtab);
+        List<File> files = generatorCPP.generateFiles(symtab, componentSymbol);
         String restPath = "detectionObjectDetectorNoKMeans"  + "/l1/";
         //testFilesAreEqual(files, restPath);
     }
@@ -176,7 +176,7 @@ public class BasicGenerationTest extends AbstractSymtabTest {
         generatorCPP.setUseAlgebraicOptimizations(false);
         generatorCPP.useOctaveBackend();
         generatorCPP.setGenerationTargetPath("./target/generated-sources-cpp/detectionObjectDetectorNoKMeans"  + "/l2");
-        List<File> files = generatorCPP.generateFiles(symtab, componentSymbol, symtab);
+        List<File> files = generatorCPP.generateFiles(symtab, componentSymbol);
         String restPath = "detectionObjectDetectorNoKMeans"  + "/l2/";
         //testFilesAreEqual(files, restPath);
     }
@@ -192,7 +192,7 @@ public class BasicGenerationTest extends AbstractSymtabTest {
         generatorCPP.setUseThreadingOptimization(true);
         generatorCPP.useOctaveBackend();
         generatorCPP.setGenerationTargetPath("./target/generated-sources-cpp/detectionObjectDetectorNoKMeans"  + "/l3");
-        List<File> files = generatorCPP.generateFiles(symtab, componentSymbol, symtab);
+        List<File> files = generatorCPP.generateFiles(symtab, componentSymbol);
         String restPath = "detectionObjectDetectorNoKMeans"  + "/l3/";
         //testFilesAreEqual(files, restPath);
     }

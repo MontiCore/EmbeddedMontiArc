@@ -34,7 +34,7 @@ public class TrajectoryControllerTest extends AbstractSymtabTest {
 //        generator.getSolverOptions().put("Integer print_level", "3");
 //        generator.getSolverOptions().put("Numeric tol", "0.01");
 //        generator.getSolverOptions().put("Integer max_iter", "50");
-        List<File> files = generator.generateFiles(componentInstanceSymbol, symtab);
+        List<File> files = generator.generateFiles(symtab, componentInstanceSymbol);
     }
 
 }

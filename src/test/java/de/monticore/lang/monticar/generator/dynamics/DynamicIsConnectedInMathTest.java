@@ -36,7 +36,7 @@ public class DynamicIsConnectedInMathTest extends AbstractSymtabTest {
         generatorCPP.useArmadilloBackend();
         generatorCPP.setGenerationTargetPath("./target/generated-sources-cpp/dynamics/isconnected/test00");
 //            generatorCPP.setUseThreadingOptimization(true);
-        List<File> files = generatorCPP.generateFiles(symtab, componentSymbol, symtab);
+        List<File> files = generatorCPP.generateFiles(symtab, componentSymbol);
 //        files.stream().forEach(f -> System.out.println("Generated: "+f.getName()));
     }
 
@@ -51,7 +51,7 @@ public class DynamicIsConnectedInMathTest extends AbstractSymtabTest {
         generatorCPP.useArmadilloBackend();
         generatorCPP.setGenerationTargetPath("./target/generated-sources-cpp/dynamics/isconnected/test01");
 //            generatorCPP.setUseThreadingOptimization(true);
-        List<File> files = generatorCPP.generateFiles(symtab, componentSymbol, symtab);
+        List<File> files = generatorCPP.generateFiles(symtab, componentSymbol);
 //        files.stream().forEach(f -> System.out.println("Generated: "+f.getName()));
     }
 
@@ -66,7 +66,7 @@ public class DynamicIsConnectedInMathTest extends AbstractSymtabTest {
         generatorCPP.useArmadilloBackend();
         generatorCPP.setGenerationTargetPath("./target/generated-sources-cpp/dynamics/isconnected/test02");
 //            generatorCPP.setUseThreadingOptimization(true);
-        List<File> files = generatorCPP.generateFiles(symtab, componentSymbol, symtab);
+        List<File> files = generatorCPP.generateFiles(symtab, componentSymbol);
 //        files.stream().forEach(f -> System.out.println("Generated: "+f.getName()));
     }
 }

@@ -3,7 +3,7 @@ package de.monticore.lang.monticar.generator.cpp.viewmodel;
 
 import de.monticore.ast.ASTNode;
 import de.monticore.lang.embeddedmontiarc.embeddedmontiarc._symboltable.instanceStructure.EMAComponentInstanceSymbol;
-import de.monticore.lang.monticar.generator.BluePrint;
+import de.monticore.lang.monticar.generator.EMAMBluePrint;
 import de.monticore.lang.monticar.generator.Variable;
 import de.se_rwth.commons.SourcePosition;
 
@@ -29,7 +29,7 @@ public class LoggingViewModel extends ViewModelBase {
         return originalSymbol;
     }
 
-    public static LoggingViewModel fromBluePrint(BluePrint bluePrint){
+    public static LoggingViewModel fromBluePrint(EMAMBluePrint bluePrint){
         LoggingViewModel res = new LoggingViewModel();
         res.originalSymbol = bluePrint.getOriginalSymbol();
         res.variables = bluePrint.getVariables().stream()

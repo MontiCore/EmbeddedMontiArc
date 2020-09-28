@@ -8,7 +8,7 @@ import de.monticore.lang.embeddedmontiarcdynamic.embeddedmontiarcdynamic._symbol
 import de.monticore.lang.embeddedmontiarcdynamic.embeddedmontiarcdynamic._symboltable.instanceStructure.EMADynamicConnectorInstanceSymbol;
 import de.monticore.lang.embeddedmontiarcdynamic.embeddedmontiarcdynamic._symboltable.instanceStructure.EMADynamicEventHandlerInstanceSymbol;
 import de.monticore.lang.monticar.generator.*;
-import de.monticore.lang.monticar.generator.cpp.BluePrintCPP;
+import de.monticore.lang.monticar.generator.cpp.EMAMBluePrintCPP;
 import de.monticore.lang.monticar.generator.cpp.GeneralHelperMethods;
 import de.monticore.lang.monticar.generator.cpp.instruction.EventConnectInstructionCPP;
 import de.monticore.lang.monticar.generator.cpp.instruction.ExecuteDynamicConnects;
@@ -59,7 +59,7 @@ public class EventDynamicConnectConverter {
     protected static int freePositionInCodeCounter = 0;
     protected static List<String> resetConnectedArray = new ArrayList<>();
 
-    public static boolean generateDynamicConnectEvent(EMADynamicEventHandlerInstanceSymbol event, EMAComponentInstanceSymbol componentSymbol, Method executeMethod, BluePrintCPP bluePrint ) {
+    public static boolean generateDynamicConnectEvent(EMADynamicEventHandlerInstanceSymbol event, EMAComponentInstanceSymbol componentSymbol, Method executeMethod, EMAMBluePrintCPP bluePrint ) {
 
         free_method_index_counter = 0;
         resetConnectedArray.clear();
@@ -137,7 +137,7 @@ public class EventDynamicConnectConverter {
 
 
 
-    protected static void generateConnectMethod(List<String> portConnectNames, EMAComponentInstanceSymbol componentSymbol, BluePrintCPP bluePrint){
+    protected static void generateConnectMethod(List<String> portConnectNames, EMAComponentInstanceSymbol componentSymbol, EMAMBluePrintCPP bluePrint){
 
         List<String> names = new ArrayList<>();
         for(String pn : portConnectNames){
@@ -222,7 +222,7 @@ public class EventDynamicConnectConverter {
 
     //TODO: Free Methods
 
-//    protected static Method generateFreeMethod(List<String> portConnectNames, EMADynamicEventHandlerInstanceSymbol event, BluePrintCPP bluePrint){
+//    protected static Method generateFreeMethod(List<String> portConnectNames, EMADynamicEventHandlerInstanceSymbol event, EMAMBluePrintCPP bluePrint){
 //
 //        List<String> names = new ArrayList<>();
 //        for(String pn : portConnectNames){
@@ -305,7 +305,7 @@ public class EventDynamicConnectConverter {
 //        free.addInstruction(new TargetCodeInstruction("}\n}\n"));
 //    }
 
-    protected static void freeGenerateEventCondition(Method free, BluePrint bluePrint, List<String> names, EMADynamicEventHandlerInstanceSymbol event){
+    protected static void freeGenerateEventCondition(Method free, EMAMBluePrint bluePrint, List<String> names, EMADynamicEventHandlerInstanceSymbol event){
 
         String cond = "";
         for(int i = 0; i < names.size(); ++i){
@@ -331,7 +331,7 @@ public class EventDynamicConnectConverter {
 //        bluePrint.getMethod("free").get().addInstruction(new TargetCodeInstruction(";\n}\n"));
     }
 
-    protected static void generateDynamicMethod(BluePrintCPP bluePrint, String eventBodyName, String eventBodyNameFree){
+    protected static void generateDynamicMethod(EMAMBluePrintCPP bluePrint, String eventBodyName, String eventBodyNameFree){
         Optional<Method> dynamic = bluePrint.getMethod("dynamic");
         if(!dynamic.isPresent()){
             Method d = new Method("dynamic", "void");
@@ -370,7 +370,7 @@ public class EventDynamicConnectConverter {
 
     }
 
-    protected static void generateDynamicMethodFree(BluePrintCPP bluePrint){
+    protected static void generateDynamicMethodFree(EMAMBluePrintCPP bluePrint){
         if(!bluePrint.getMethod("dynamicfree").isPresent()){
             Method f = new Method();
             f.setPublic(false);
@@ -626,7 +626,7 @@ public class EventDynamicConnectConverter {
         }
     }
 
-    protected static void generateConnects(EMADynamicEventHandlerInstanceSymbol event, Method body, BluePrintCPP bluePrint, Method executeMethod, Method free){
+    protected static void generateConnects(EMADynamicEventHandlerInstanceSymbol event, Method body, EMAMBluePrintCPP bluePrint, Method executeMethod, Method free){
         for(EMADynamicConnectorInstanceSymbol connector : event.getConnectorsDynamic()){
 
             Optional<String> before = generateConnectsBefore(connector);
@@ -711,7 +711,7 @@ public class EventDynamicConnectConverter {
         return before;
     }
 
-    protected static void generateEventDynamicConnectVector(String typeName, BluePrint bluePrint){
+    protected static void generateEventDynamicConnectVector(String typeName, EMAMBluePrint bluePrint){
 
         Optional<Method> execDynConnects = bluePrint.getMethod("executeDynamicConnects");
         if(!execDynConnects.isPresent()){
@@ -788,7 +788,7 @@ public class EventDynamicConnectConverter {
         freePositionInCodeCounter = 0;
     }
 
-    public static boolean free_generateDynamicFreeEvent(EMADynamicEventHandlerInstanceSymbol event, EMAComponentInstanceSymbol componentSymbol, Method executeMethod, BluePrintCPP bluePrint ){
+    public static boolean free_generateDynamicFreeEvent(EMADynamicEventHandlerInstanceSymbol event, EMAComponentInstanceSymbol componentSymbol, Method executeMethod, EMAMBluePrintCPP bluePrint ){
         String bodyname = "__event_body_"+event.getName().replace("[", "_").replace("]", "_");
         Method body = new Method(bodyname, "void");
         body.setPublic(false);
@@ -833,7 +833,7 @@ public class EventDynamicConnectConverter {
         }
     }
 
-    protected static void free_generateConnects(EMADynamicEventHandlerInstanceSymbol event, Method body, BluePrintCPP bluePrint, Method executeMethod){
+    protected static void free_generateConnects(EMADynamicEventHandlerInstanceSymbol event, Method body, EMAMBluePrintCPP bluePrint, Method executeMethod){
         for(EMADynamicConnectorInstanceSymbol connector : event.getConnectorsDynamic()){
 
             String sourceName = generateConnectsSource(connector);

@@ -4,9 +4,9 @@ package de.monticore.lang.monticar.generator.cpp.commands;
 import de.monticore.lang.math._symboltable.expression.MathExpressionSymbol;
 import de.monticore.lang.math._symboltable.matrix.MathMatrixAccessSymbol;
 import de.monticore.lang.math._symboltable.matrix.MathMatrixNameExpressionSymbol;
-import de.monticore.lang.monticar.generator.BluePrint;
+import de.monticore.lang.monticar.generator.EMAMBluePrint;
 import de.monticore.lang.monticar.generator.MathCommand;
-import de.monticore.lang.monticar.generator.cpp.BluePrintCPP;
+import de.monticore.lang.monticar.generator.cpp.EMAMBluePrintCPP;
 import de.monticore.lang.monticar.generator.cpp.MathFunctionFixer;
 import de.monticore.lang.monticar.generator.cpp.converter.ExecuteMethodGenerator;
 import de.monticore.lang.monticar.generator.cpp.symbols.MathStringExpression;
@@ -22,7 +22,7 @@ public class DynamicMathPortIsConnectedCommand extends MathCommand {
     }
 
     @Override
-    protected void convert(MathExpressionSymbol mathExpressionSymbol, BluePrint bluePrint) {
+    protected void convert(MathExpressionSymbol mathExpressionSymbol, EMAMBluePrint bluePrint) {
         MathMatrixNameExpressionSymbol mathMatrixNameExpressionSymbol = (MathMatrixNameExpressionSymbol) mathExpressionSymbol;
 
         List<MathMatrixAccessSymbol> symbols = mathMatrixNameExpressionSymbol.getMathMatrixAccessOperatorSymbol().getMathMatrixAccessSymbols();
@@ -34,7 +34,7 @@ public class DynamicMathPortIsConnectedCommand extends MathCommand {
 
         String valueListString = "";
         for (MathMatrixAccessSymbol accessSymbol : symbols)
-            MathFunctionFixer.fixMathFunctions(accessSymbol, (BluePrintCPP) bluePrint);
+            MathFunctionFixer.fixMathFunctions(accessSymbol, (EMAMBluePrintCPP) bluePrint);
 
 
 
