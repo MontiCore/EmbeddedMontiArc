@@ -34,7 +34,7 @@ import java.util.*;
 
 /**
  */
-public class GeneratorCPP implements Generator {
+public class GeneratorCPP implements EMAGenerator {
     public static GeneratorCPP currentInstance;
     private Path modelsDirPath;
     private boolean isGenerateTests = false;
@@ -149,7 +149,6 @@ public class GeneratorCPP implements Generator {
         this.generationTargetPath = newPath;
     }
 
-    @Override
     public String generateString(TaggingResolver taggingResolver, EMAComponentInstanceSymbol componentSymbol, MathStatementsSymbol mathStatementsSymbol) {
         StreamTestGenerator streamTestGenerator = new StreamTestGenerator();//only used when creating streamTestsForAComponent
         LanguageUnitCPP languageUnitCPP = new LanguageUnitCPP();
