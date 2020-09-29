@@ -1,3 +1,6 @@
+/**
+ * (c) https://github.com/MontiCore/monticore
+ */
 #include "dll_interface.h"
 #include "utility/utility.h"
 

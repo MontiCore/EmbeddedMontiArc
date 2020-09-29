@@ -1,3 +1,6 @@
+/**
+ * (c) https://github.com/MontiCore/monticore
+ */
 #pragma once
 #include <unordered_map>
 #include "utility/utility.h"

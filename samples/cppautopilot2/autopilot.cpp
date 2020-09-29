@@ -1,3 +1,6 @@
+/**
+ * (c) https://github.com/MontiCore/monticore
+ */
 #include "autopilot.h"
 #define _USE_MATH_DEFINES
 #include <cmath>

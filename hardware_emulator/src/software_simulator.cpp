@@ -1,3 +1,6 @@
+/**
+ * (c) https://github.com/MontiCore/monticore
+ */
 #include "software_simulator.h"
 
 #include "utility/config.h"

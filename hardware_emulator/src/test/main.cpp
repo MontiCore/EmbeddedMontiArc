@@ -1,3 +1,6 @@
+/**
+ * (c) https://github.com/MontiCore/monticore
+ */
 #include "tests.h"
 #include "utility/utility.h"
 

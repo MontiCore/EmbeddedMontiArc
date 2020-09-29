@@ -1,4 +1,8 @@
 #!/bin/bash
+#
+# (c) https://github.com/MontiCore/monticore
+#
+
 
 apt update
 apt --assume-yes install libxext6

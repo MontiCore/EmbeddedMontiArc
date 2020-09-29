@@ -1,3 +1,6 @@
+/**
+ * (c) https://github.com/MontiCore/monticore
+ */
 #include "elf_loader.h"
 #include <unordered_map>
 

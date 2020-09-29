@@ -1,3 +1,6 @@
+/**
+ * (c) https://github.com/MontiCore/monticore
+ */
 #pragma once
 #include "memory.h"
 #include "computer_layout.h"

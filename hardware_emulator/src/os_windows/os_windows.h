@@ -1,3 +1,6 @@
+/**
+ * (c) https://github.com/MontiCore/monticore
+ */
 #pragma once
 #include "dll_loader.h"
 #include "computer/os.h"

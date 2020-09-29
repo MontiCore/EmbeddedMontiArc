@@ -1,3 +1,6 @@
+/**
+ * (c) https://github.com/MontiCore/monticore
+ */
 #include "direct_software_simulator.h"
 
 json DirectSoftwareSimulator::query_simulator(const json& query)

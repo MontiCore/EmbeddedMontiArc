@@ -1,3 +1,6 @@
+/**
+ * (c) https://github.com/MontiCore/monticore
+ */
 #include "de_rwth_montisim_hardware_emulator_CppBridge.h"
 #include "jni_interface.h"
 #include "software_simulator_manager.h"

@@ -1,3 +1,6 @@
+/**
+ * (c) https://github.com/MontiCore/monticore
+ */
 #include "computer/system_calls.h"
 #include "computer/computer_layout.h"
 #include "computer.h"

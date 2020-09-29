@@ -1,3 +1,6 @@
+/**
+ * (c) https://github.com/MontiCore/monticore
+ */
 #include "debug.h"
 #include <iostream>
 using namespace std;

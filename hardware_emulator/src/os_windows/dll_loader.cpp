@@ -1,3 +1,6 @@
+/**
+ * (c) https://github.com/MontiCore/monticore
+ */
 #include "os_windows/dll_loader.h"
 #include <parser-library/parse.h>
 #include "computer/system_calls.h"

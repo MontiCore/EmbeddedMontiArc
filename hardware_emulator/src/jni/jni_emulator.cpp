@@ -1,3 +1,6 @@
+/**
+ * (c) https://github.com/MontiCore/monticore
+ */
 #include "jni/jni_emulator.h"
 #include <jni.h>
 #include <stdlib.h>

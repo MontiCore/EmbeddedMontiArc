@@ -1,4 +1,8 @@
 #!/bin/bash
+#
+# (c) https://github.com/MontiCore/monticore
+#
+
 
 JAWT_LIB=$(find / -name libjawt.so -print -quit)
 AWT_LIB=$(find / -name libawt.so -print -quit)

@@ -1,3 +1,6 @@
+/**
+ * (c) https://github.com/MontiCore/monticore
+ */
 #pragma once
 
 #include <cstdint>
@@ -14,6 +17,14 @@ using u64 = uint64_t;
 
 using f32 = float;
 using f64 = double;
+
+static constexpr float PIf = 3.14159265358979323846f;
+static constexpr double PId = 3.14159265358979323846;
+
+static constexpr float DEG_TO_RADf = 2.0f / 360.0f * PIf;
+static constexpr double DEG_TO_RADd = 2.0 / 360.0 * PId;
+static constexpr float RAD_TO_DEGf = 360.0f / ( 2.0f * PIf );
+static constexpr double RAD_TO_DEGd = 360.0 / ( 2.0 * PId );
 
 template<typename T>
 struct vec2 {
@@ -68,24 +79,8 @@ struct vec2 {
 #undef vec_scalar_op
     
     //Cartesian length of the vector
-    T operator!() const {
-        return ( T ) sqrt( x * x + y * y );
-    }
-    
-    //Cartesian length of the vector, also use !vec
     T length() const {
-        return !*this;
-    }
-    
-    //Returns normalized vector
-    vec2 operator~() const {
-        auto l = length();
-        return l == 0 ? *this : *this / l;
-    }
-    
-    //Returns a the normalized vector, also use ~vec.
-    vec2 normalized() const {
-        return ~*this;
+        return ( T ) sqrt( x * x + y * y );
     }
     
     template<typename A>
@@ -93,3 +88,54 @@ struct vec2 {
         return vec2<A>( ( A )x, ( A )y );
     }
 };
+
+using vec2i8 = vec2<i8>;
+using vec2i16 = vec2<i16>;
+using vec2i32 = vec2<i32>;
+using vec2i64 = vec2<i64>;
+
+using vec2u8 = vec2<u8>;
+using vec2u16 = vec2<u16>;
+using vec2u32 = vec2<u32>;
+using vec2u64 = vec2<u64>;
+
+using vec2f32 = vec2<f32>;
+using vec2f64 = vec2<f64>;
+
+/*
+Returns the normalized <v> vector.
+Returns the zero vector if given the zero vector.
+*/
+template<template<typename> typename U, typename T>
+inline U<T> normalize( const U<T> &v ) {
+    T l = v.length();
+    if ( l == 0 )
+        return v;
+    return v / l;
+}
+
+template<template<typename> typename U>
+inline U<double> normalize( const U<f64> &v ) {
+    T l = v.length();
+    if ( l < 0.00000001 && l > -0.00000001 )
+        return U<f64>(0);
+    return v / l;
+}
+
+template<template<typename> typename U>
+inline U<float> normalize( const U<f32> &v ) {
+    float l = v.length();
+    if ( l < 0.000001f && l > -0.000001f )
+        return U<f32>(0);
+    return v / l;
+}
+
+template<typename T>
+inline T dot( const vec2<T> &v1, const vec2<T> &v2 ) {
+    return v1.x * v2.x + v1.y * v2.y;
+}
+
+template<typename T>
+inline T distance( const vec2<T> &v1, const vec2<T> &v2 ) {
+    return (v1-v2).length();
+}

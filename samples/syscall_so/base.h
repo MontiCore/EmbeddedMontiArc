@@ -1,3 +1,6 @@
+/**
+ * (c) https://github.com/MontiCore/monticore
+ */
 #pragma once
 #if defined(_MSC_VER)
     //  Microsoft 

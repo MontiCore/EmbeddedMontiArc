@@ -1,15 +1,18 @@
+/**
+ * (c) https://github.com/MontiCore/monticore
+ */
 package de.rwth.montisim.hardware_emulator;
 
 import java.io.IOException;
 import java.time.Duration;
 import java.time.Instant;
 import java.util.HashMap;
-import java.util.Vector;
 import java.util.logging.Logger;
 
 import de.rwth.montisim.commons.dynamicinterface.PortInformation;
 import de.rwth.montisim.commons.dynamicinterface.ProgramInterface;
 import de.rwth.montisim.commons.dynamicinterface.PortInformation.PortDirection;
+import de.rwth.montisim.commons.eventsimulation.DiscreteEvent;
 import de.rwth.montisim.commons.eventsimulation.exceptions.UnexpectedEventException;
 import de.rwth.montisim.commons.utils.Time;
 import de.rwth.montisim.commons.utils.json.Json;
@@ -17,7 +20,6 @@ import de.rwth.montisim.commons.utils.json.JsonTraverser;
 import de.rwth.montisim.commons.utils.json.JsonWriter;
 import de.rwth.montisim.commons.utils.json.SerializationException;
 import de.rwth.montisim.simulation.eesimulator.components.EEComponent;
-import de.rwth.montisim.simulation.eesimulator.events.EEDiscreteEvent;
 import de.rwth.montisim.simulation.eesimulator.events.ExecuteEvent;
 import de.rwth.montisim.simulation.eesimulator.events.MessageReceiveEvent;
 import de.rwth.montisim.simulation.eesimulator.events.MessageSendEvent;
@@ -59,11 +61,11 @@ public class Computer extends EEComponent {
             portIdByName.put(p.name, i);
             ++i;
         }
-        simulator.addEvent(new ExecuteEvent(simulator.getSimulationTime(), this));
+        eesystem.simulator.addEvent(new ExecuteEvent(this, eesystem.simulator.getSimulationTime()));
     }
 
     @Override
-    public void process(EEDiscreteEvent event) {
+    public void process(DiscreteEvent event) {
         int type = event.getType();
         if (type == MessageSendEvent.type) {
             dispatchMessage((MessageSendEvent) event);
@@ -135,7 +137,7 @@ public class Computer extends EEComponent {
         lastExec = time;
         
         Instant newExecTime = time.plus(Duration.ofMillis(100));
-        simulator.addEvent(new ExecuteEvent(newExecTime, this));
+        eesystem.simulator.addEvent(new ExecuteEvent(this, newExecTime));
     }
 
     protected void finalize() {

@@ -1,3 +1,6 @@
+/**
+ * (c) https://github.com/MontiCore/monticore
+ */
 #include "computer/computer.h"
 #include "unicorn/unicorn.h"
 

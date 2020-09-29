@@ -1,3 +1,7 @@
+@REM
+@REM (c) https://github.com/MontiCore/monticore
+@REM
+
 @echo off
 
 if "%1"=="--help" set Help=1

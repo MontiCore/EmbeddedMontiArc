@@ -1,3 +1,6 @@
+/**
+ * (c) https://github.com/MontiCore/monticore
+ */
 package de.rwth.montisim.hardware_emulator.interfaces;
 
 import java.io.Serializable;

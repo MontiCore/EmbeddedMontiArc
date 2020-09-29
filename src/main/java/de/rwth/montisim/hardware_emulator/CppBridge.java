@@ -1,11 +1,10 @@
+/**
+ * (c) https://github.com/MontiCore/monticore
+ */
 package de.rwth.montisim.hardware_emulator;
 
-import java.io.Serializable;
-import java.time.Duration;
-import java.util.HashMap;
 import java.util.logging.Logger;
 
-import de.rwth.montisim.hardware_emulator.config.SoftwareSimulatorConfig;
 import de.rwth.montisim.commons.utils.LibraryService;
 import de.rwth.montisim.commons.utils.LibraryService.LibraryException;
 

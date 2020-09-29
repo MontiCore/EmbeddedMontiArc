@@ -1,4 +1,8 @@
 #!/bin/bash
+#
+# (c) https://github.com/MontiCore/monticore
+#
+
 
 
 # Use colors to identify scripts messages better:

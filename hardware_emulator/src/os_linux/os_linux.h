@@ -1,3 +1,6 @@
+/**
+ * (c) https://github.com/MontiCore/monticore
+ */
 #pragma once
 #include "computer/os.h"
 #include "computer/function_calling.h"

@@ -1,3 +1,6 @@
+/**
+ * (c) https://github.com/MontiCore/monticore
+ */
 #include "software_simulator_manager.h"
 
 #include "hardware_emulator.h"

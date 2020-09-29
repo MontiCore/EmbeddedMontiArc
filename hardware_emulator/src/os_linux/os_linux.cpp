@@ -1,3 +1,6 @@
+/**
+ * (c) https://github.com/MontiCore/monticore
+ */
 #include "os_linux.h"
 
 #include "linux_calls.h"

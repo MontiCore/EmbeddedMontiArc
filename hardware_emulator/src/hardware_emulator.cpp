@@ -1,3 +1,6 @@
+/**
+ * (c) https://github.com/MontiCore/monticore
+ */
 #include "hardware_emulator.h"
 #include "os_windows/os_windows.h"
 #include "os_linux/os_linux.h"

@@ -1,3 +1,6 @@
+/**
+ * (c) https://github.com/MontiCore/monticore
+ */
 #include "os_windows/windows_calls.h"
 #include <cmath>
 

@@ -1,3 +1,6 @@
+/**
+ * (c) https://github.com/MontiCore/monticore
+ */
 #include "utility.h"
 #include <iomanip>
 #include <locale>

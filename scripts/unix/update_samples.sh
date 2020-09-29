@@ -1,4 +1,8 @@
 #!/bin/bash
+#
+# (c) https://github.com/MontiCore/monticore
+#
+
 
 SCRIPTS_DIR="$( cd "$( dirname "${BASH_SOURCE[0]}" )" >/dev/null 2>&1 && pwd )"
 #Import print()

@@ -1,3 +1,6 @@
+/**
+ * (c) https://github.com/MontiCore/monticore
+ */
 #include "instruction_time.h"
 
 #include "computer/memory.h"

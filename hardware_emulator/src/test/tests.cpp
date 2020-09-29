@@ -1,3 +1,6 @@
+/**
+ * (c) https://github.com/MontiCore/monticore
+ */
 #include "tests.h"
 #include "utility/dll_interface.h"
 #include "software_simulator_manager.h"

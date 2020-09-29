@@ -1,3 +1,6 @@
+/**
+ * (c) https://github.com/MontiCore/monticore
+ */
 #include "symbols.h"
 
 Symbols::Symbol Symbols::get_symbol( const std::string &name ) {
