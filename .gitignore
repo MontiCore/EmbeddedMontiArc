@@ -12,3 +12,4 @@
 .flattened-pom.xml
 .vscode/
 ./lib/
+**/vis
