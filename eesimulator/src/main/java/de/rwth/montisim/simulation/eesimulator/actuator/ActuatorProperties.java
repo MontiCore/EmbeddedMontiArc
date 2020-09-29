@@ -18,15 +18,11 @@ public class ActuatorProperties extends BusUserProperties {
 
     public String physical_value_name;
 
-    public double min;
-    public double max;
     public double change_rate;
     @JsonEntry("sensor")
     public Optional<SensorProperties> sensorProperties;
 
-    public ActuatorProperties(double minValue, double maxValue, double changeRate) {
-        this.max = maxValue;
-        this.min = minValue;
+    public ActuatorProperties(double changeRate) {
         this.change_rate = changeRate;
     }
 
@@ -41,12 +37,6 @@ public class ActuatorProperties extends BusUserProperties {
 
     public ActuatorProperties setPhysicalValueName(String physicalValueName) {
         this.physical_value_name = physicalValueName;
-        return this;
-    }
-
-    public ActuatorProperties setRange(double minValue, double maxValue) {
-        this.min = minValue;
-        this.max = maxValue;
         return this;
     }
 

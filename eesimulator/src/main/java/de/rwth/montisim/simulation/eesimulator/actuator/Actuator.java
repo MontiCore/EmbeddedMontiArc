@@ -69,10 +69,10 @@ public class Actuator extends EEComponent implements Updatable {
             delta = Math.signum(delta) * maxChange;
         }
         val += delta;
-        if (val > properties.max)
-            val = properties.max;
-        if (val < properties.min)
-            val = properties.min;
+        if (val > actuatedValue.getMax())
+            val = actuatedValue.getMax();
+        if (val < actuatedValue.getMin())
+            val = actuatedValue.getMin();
         //actuatedValue.set(isDouble ? Double.valueOf(val) : Float.valueOf((float)val));
         actuatedValue.set(Double.valueOf(val));
     }

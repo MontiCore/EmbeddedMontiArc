@@ -9,7 +9,15 @@ To use the different sub-project as maven dependency, add the following to your 
 ```xml
 <dependency>
     <groupId>montisim</groupId>
-    <artifactId>sub-project-name</artifactId>
+    <artifactId>*sub-project*</artifactId>
     <version>${revision}</version>
 </dependency>
 ```
+
+`*sub-project*` can be any of the following:
+
+- `environment`
+- `eesimulator`
+- `vehicle`
+- `eecomponents`
+- `simulator`

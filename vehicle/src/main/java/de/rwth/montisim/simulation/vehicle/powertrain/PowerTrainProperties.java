@@ -39,7 +39,7 @@ public abstract class PowerTrainProperties /*implements JsonSerializable*/ {
 
     public void addDefaultActuators(VehicleProperties config){
         config.addDefaultComponent(
-            new ActuatorProperties(-30, 30, 60)
+            new ActuatorProperties(60)
             .setPhysicalValueName(STEERING_VALUE_NAME)
             .setSensorProperties(new SensorProperties(
                 Duration.ofMillis(100), 
@@ -50,7 +50,7 @@ public abstract class PowerTrainProperties /*implements JsonSerializable*/ {
             //.setInternal()
         );
         config.addDefaultComponent(
-            new ActuatorProperties(0, 1, 10)
+            new ActuatorProperties(10)
             .setPhysicalValueName(BRAKING_VALUE_NAME)
             .setSensorProperties(new SensorProperties(
                 Duration.ofMillis(100), 
@@ -61,7 +61,7 @@ public abstract class PowerTrainProperties /*implements JsonSerializable*/ {
             //.setInternal()
         );
         config.addDefaultComponent(
-            new ActuatorProperties(-0.5, 1, Double.POSITIVE_INFINITY)
+            new ActuatorProperties(Double.POSITIVE_INFINITY)
             .setPhysicalValueName(GAS_VALUE_NAME)
             .setSensorProperties(new SensorProperties(
                 Duration.ofMillis(100), 
