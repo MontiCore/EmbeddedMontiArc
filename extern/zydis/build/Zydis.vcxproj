@@ -1,0 +1,321 @@
+﻿<?xml version="1.0" encoding="utf-8"?>
+<Project DefaultTargets="Build" ToolsVersion="16.0" xmlns="http://schemas.microsoft.com/developer/msbuild/2003">
+  <PropertyGroup>
+    <PreferredToolArchitecture>x64</PreferredToolArchitecture>
+  </PropertyGroup>
+  <ItemGroup Label="ProjectConfigurations">
+    <ProjectConfiguration Include="Debug|x64">
+      <Configuration>Debug</Configuration>
+      <Platform>x64</Platform>
+    </ProjectConfiguration>
+    <ProjectConfiguration Include="Release|x64">
+      <Configuration>Release</Configuration>
+      <Platform>x64</Platform>
+    </ProjectConfiguration>
+    <ProjectConfiguration Include="MinSizeRel|x64">
+      <Configuration>MinSizeRel</Configuration>
+      <Platform>x64</Platform>
+    </ProjectConfiguration>
+    <ProjectConfiguration Include="RelWithDebInfo|x64">
+      <Configuration>RelWithDebInfo</Configuration>
+      <Platform>x64</Platform>
+    </ProjectConfiguration>
+  </ItemGroup>
+  <PropertyGroup Label="Globals">
+    <ProjectGuid>{CB38C63F-CFA0-351C-9803-69AFA7D96DC4}</ProjectGuid>
+    <WindowsTargetPlatformVersion>10.0.18362.0</WindowsTargetPlatformVersion>
+    <Keyword>Win32Proj</Keyword>
+    <Platform>x64</Platform>
+    <ProjectName>Zydis</ProjectName>
+    <VCProjectUpgraderObjectName>NoUpgrade</VCProjectUpgraderObjectName>
+  </PropertyGroup>
+  <Import Project="$(VCTargetsPath)\Microsoft.Cpp.Default.props" />
+  <PropertyGroup Condition="'$(Configuration)|$(Platform)'=='Debug|x64'" Label="Configuration">
+    <ConfigurationType>StaticLibrary</ConfigurationType>
+    <CharacterSet>MultiByte</CharacterSet>
+    <PlatformToolset>v142</PlatformToolset>
+  </PropertyGroup>
+  <PropertyGroup Condition="'$(Configuration)|$(Platform)'=='Release|x64'" Label="Configuration">
+    <ConfigurationType>StaticLibrary</ConfigurationType>
+    <CharacterSet>MultiByte</CharacterSet>
+    <PlatformToolset>v142</PlatformToolset>
+  </PropertyGroup>
+  <PropertyGroup Condition="'$(Configuration)|$(Platform)'=='MinSizeRel|x64'" Label="Configuration">
+    <ConfigurationType>StaticLibrary</ConfigurationType>
+    <CharacterSet>MultiByte</CharacterSet>
+    <PlatformToolset>v142</PlatformToolset>
+  </PropertyGroup>
+  <PropertyGroup Condition="'$(Configuration)|$(Platform)'=='RelWithDebInfo|x64'" Label="Configuration">
+    <ConfigurationType>StaticLibrary</ConfigurationType>
+    <CharacterSet>MultiByte</CharacterSet>
+    <PlatformToolset>v142</PlatformToolset>
+  </PropertyGroup>
+  <Import Project="$(VCTargetsPath)\Microsoft.Cpp.props" />
+  <ImportGroup Label="ExtensionSettings">
+  </ImportGroup>
+  <ImportGroup Label="PropertySheets">
+    <Import Project="$(UserRootDir)\Microsoft.Cpp.$(Platform).user.props" Condition="exists('$(UserRootDir)\Microsoft.Cpp.$(Platform).user.props')" Label="LocalAppDataPlatform" />
+  </ImportGroup>
+  <PropertyGroup Label="UserMacros" />
+  <PropertyGroup>
+    <_ProjectFileVersion>10.0.20506.1</_ProjectFileVersion>
+    <OutDir Condition="'$(Configuration)|$(Platform)'=='Debug|x64'">D:\EmbededMontiArc\hardware_emulator - new cmake\extern\zydis\build\Debug\</OutDir>
+    <IntDir Condition="'$(Configuration)|$(Platform)'=='Debug|x64'">Zydis.dir\Debug\</IntDir>
+    <TargetName Condition="'$(Configuration)|$(Platform)'=='Debug|x64'">Zydis</TargetName>
+    <TargetExt Condition="'$(Configuration)|$(Platform)'=='Debug|x64'">.lib</TargetExt>
+    <OutDir Condition="'$(Configuration)|$(Platform)'=='Release|x64'">D:\EmbededMontiArc\hardware_emulator - new cmake\extern\zydis\build\Release\</OutDir>
+    <IntDir Condition="'$(Configuration)|$(Platform)'=='Release|x64'">Zydis.dir\Release\</IntDir>
+    <TargetName Condition="'$(Configuration)|$(Platform)'=='Release|x64'">Zydis</TargetName>
+    <TargetExt Condition="'$(Configuration)|$(Platform)'=='Release|x64'">.lib</TargetExt>
+    <OutDir Condition="'$(Configuration)|$(Platform)'=='MinSizeRel|x64'">D:\EmbededMontiArc\hardware_emulator - new cmake\extern\zydis\build\MinSizeRel\</OutDir>
+    <IntDir Condition="'$(Configuration)|$(Platform)'=='MinSizeRel|x64'">Zydis.dir\MinSizeRel\</IntDir>
+    <TargetName Condition="'$(Configuration)|$(Platform)'=='MinSizeRel|x64'">Zydis</TargetName>
+    <TargetExt Condition="'$(Configuration)|$(Platform)'=='MinSizeRel|x64'">.lib</TargetExt>
+    <OutDir Condition="'$(Configuration)|$(Platform)'=='RelWithDebInfo|x64'">D:\EmbededMontiArc\hardware_emulator - new cmake\extern\zydis\build\RelWithDebInfo\</OutDir>
+    <IntDir Condition="'$(Configuration)|$(Platform)'=='RelWithDebInfo|x64'">Zydis.dir\RelWithDebInfo\</IntDir>
+    <TargetName Condition="'$(Configuration)|$(Platform)'=='RelWithDebInfo|x64'">Zydis</TargetName>
+    <TargetExt Condition="'$(Configuration)|$(Platform)'=='RelWithDebInfo|x64'">.lib</TargetExt>
+  </PropertyGroup>
+  <ItemDefinitionGroup Condition="'$(Configuration)|$(Platform)'=='Debug|x64'">
+    <ClCompile>
+      <AdditionalIncludeDirectories>D:\EmbededMontiArc\hardware_emulator - new cmake\extern\zydis\include;D:\EmbededMontiArc\hardware_emulator - new cmake\extern\zydis\build;D:\EmbededMontiArc\hardware_emulator - new cmake\extern\zydis\src;D:\EmbededMontiArc\hardware_emulator - new cmake\extern\zydis\dependencies\zycore\include;D:\EmbededMontiArc\hardware_emulator - new cmake\extern\zydis\build\dependencies\zycore;%(AdditionalIncludeDirectories)</AdditionalIncludeDirectories>
+      <AdditionalOptions>%(AdditionalOptions) -fPIC</AdditionalOptions>
+      <AssemblerListingLocation>$(IntDir)</AssemblerListingLocation>
+      <BasicRuntimeChecks>EnableFastChecks</BasicRuntimeChecks>
+      <CompileAs>CompileAsC</CompileAs>
+      <DebugInformationFormat>ProgramDatabase</DebugInformationFormat>
+      <ExceptionHandling>
+      </ExceptionHandling>
+      <InlineFunctionExpansion>Disabled</InlineFunctionExpansion>
+      <Optimization>Disabled</Optimization>
+      <PrecompiledHeader>NotUsing</PrecompiledHeader>
+      <RuntimeLibrary>MultiThreadedDebugDLL</RuntimeLibrary>
+      <UseFullPaths>false</UseFullPaths>
+      <PreprocessorDefinitions>WIN32;_WINDOWS;_CRT_SECURE_NO_WARNINGS;ZYDIS_EXPORTS;CMAKE_INTDIR="Debug";%(PreprocessorDefinitions)</PreprocessorDefinitions>
+      <ObjectFileName>$(IntDir)</ObjectFileName>
+    </ClCompile>
+    <ResourceCompile>
+      <PreprocessorDefinitions>WIN32;_DEBUG;_WINDOWS;_CRT_SECURE_NO_WARNINGS;ZYDIS_EXPORTS;CMAKE_INTDIR=\"Debug\";%(PreprocessorDefinitions)</PreprocessorDefinitions>
+      <AdditionalIncludeDirectories>D:\EmbededMontiArc\hardware_emulator - new cmake\extern\zydis\include;D:\EmbededMontiArc\hardware_emulator - new cmake\extern\zydis\build;D:\EmbededMontiArc\hardware_emulator - new cmake\extern\zydis\src;D:\EmbededMontiArc\hardware_emulator - new cmake\extern\zydis\dependencies\zycore\include;D:\EmbededMontiArc\hardware_emulator - new cmake\extern\zydis\build\dependencies\zycore;%(AdditionalIncludeDirectories)</AdditionalIncludeDirectories>
+    </ResourceCompile>
+    <Midl>
+      <AdditionalIncludeDirectories>D:\EmbededMontiArc\hardware_emulator - new cmake\extern\zydis\include;D:\EmbededMontiArc\hardware_emulator - new cmake\extern\zydis\build;D:\EmbededMontiArc\hardware_emulator - new cmake\extern\zydis\src;D:\EmbededMontiArc\hardware_emulator - new cmake\extern\zydis\dependencies\zycore\include;D:\EmbededMontiArc\hardware_emulator - new cmake\extern\zydis\build\dependencies\zycore;%(AdditionalIncludeDirectories)</AdditionalIncludeDirectories>
+      <OutputDirectory>$(ProjectDir)/$(IntDir)</OutputDirectory>
+      <HeaderFileName>%(Filename).h</HeaderFileName>
+      <TypeLibraryName>%(Filename).tlb</TypeLibraryName>
+      <InterfaceIdentifierFileName>%(Filename)_i.c</InterfaceIdentifierFileName>
+      <ProxyFileName>%(Filename)_p.c</ProxyFileName>
+    </Midl>
+    <Lib>
+      <AdditionalOptions>%(AdditionalOptions) /machine:x64</AdditionalOptions>
+    </Lib>
+  </ItemDefinitionGroup>
+  <ItemDefinitionGroup Condition="'$(Configuration)|$(Platform)'=='Release|x64'">
+    <ClCompile>
+      <AdditionalIncludeDirectories>D:\EmbededMontiArc\hardware_emulator - new cmake\extern\zydis\include;D:\EmbededMontiArc\hardware_emulator - new cmake\extern\zydis\build;D:\EmbededMontiArc\hardware_emulator - new cmake\extern\zydis\src;D:\EmbededMontiArc\hardware_emulator - new cmake\extern\zydis\dependencies\zycore\include;D:\EmbededMontiArc\hardware_emulator - new cmake\extern\zydis\build\dependencies\zycore;%(AdditionalIncludeDirectories)</AdditionalIncludeDirectories>
+      <AdditionalOptions>%(AdditionalOptions) -fPIC</AdditionalOptions>
+      <AssemblerListingLocation>$(IntDir)</AssemblerListingLocation>
+      <CompileAs>CompileAsC</CompileAs>
+      <ExceptionHandling>
+      </ExceptionHandling>
+      <InlineFunctionExpansion>AnySuitable</InlineFunctionExpansion>
+      <Optimization>MaxSpeed</Optimization>
+      <PrecompiledHeader>NotUsing</PrecompiledHeader>
+      <RuntimeLibrary>MultiThreadedDLL</RuntimeLibrary>
+      <UseFullPaths>false</UseFullPaths>
+      <PreprocessorDefinitions>WIN32;_WINDOWS;NDEBUG;_CRT_SECURE_NO_WARNINGS;ZYDIS_EXPORTS;CMAKE_INTDIR="Release";%(PreprocessorDefinitions)</PreprocessorDefinitions>
+      <ObjectFileName>$(IntDir)</ObjectFileName>
+      <DebugInformationFormat>
+      </DebugInformationFormat>
+    </ClCompile>
+    <ResourceCompile>
+      <PreprocessorDefinitions>WIN32;_WINDOWS;NDEBUG;_CRT_SECURE_NO_WARNINGS;ZYDIS_EXPORTS;CMAKE_INTDIR=\"Release\";%(PreprocessorDefinitions)</PreprocessorDefinitions>
+      <AdditionalIncludeDirectories>D:\EmbededMontiArc\hardware_emulator - new cmake\extern\zydis\include;D:\EmbededMontiArc\hardware_emulator - new cmake\extern\zydis\build;D:\EmbededMontiArc\hardware_emulator - new cmake\extern\zydis\src;D:\EmbededMontiArc\hardware_emulator - new cmake\extern\zydis\dependencies\zycore\include;D:\EmbededMontiArc\hardware_emulator - new cmake\extern\zydis\build\dependencies\zycore;%(AdditionalIncludeDirectories)</AdditionalIncludeDirectories>
+    </ResourceCompile>
+    <Midl>
+      <AdditionalIncludeDirectories>D:\EmbededMontiArc\hardware_emulator - new cmake\extern\zydis\include;D:\EmbededMontiArc\hardware_emulator - new cmake\extern\zydis\build;D:\EmbededMontiArc\hardware_emulator - new cmake\extern\zydis\src;D:\EmbededMontiArc\hardware_emulator - new cmake\extern\zydis\dependencies\zycore\include;D:\EmbededMontiArc\hardware_emulator - new cmake\extern\zydis\build\dependencies\zycore;%(AdditionalIncludeDirectories)</AdditionalIncludeDirectories>
+      <OutputDirectory>$(ProjectDir)/$(IntDir)</OutputDirectory>
+      <HeaderFileName>%(Filename).h</HeaderFileName>
+      <TypeLibraryName>%(Filename).tlb</TypeLibraryName>
+      <InterfaceIdentifierFileName>%(Filename)_i.c</InterfaceIdentifierFileName>
+      <ProxyFileName>%(Filename)_p.c</ProxyFileName>
+    </Midl>
+    <Lib>
+      <AdditionalOptions>%(AdditionalOptions) /machine:x64</AdditionalOptions>
+    </Lib>
+  </ItemDefinitionGroup>
+  <ItemDefinitionGroup Condition="'$(Configuration)|$(Platform)'=='MinSizeRel|x64'">
+    <ClCompile>
+      <AdditionalIncludeDirectories>D:\EmbededMontiArc\hardware_emulator - new cmake\extern\zydis\include;D:\EmbededMontiArc\hardware_emulator - new cmake\extern\zydis\build;D:\EmbededMontiArc\hardware_emulator - new cmake\extern\zydis\src;D:\EmbededMontiArc\hardware_emulator - new cmake\extern\zydis\dependencies\zycore\include;D:\EmbededMontiArc\hardware_emulator - new cmake\extern\zydis\build\dependencies\zycore;%(AdditionalIncludeDirectories)</AdditionalIncludeDirectories>
+      <AdditionalOptions>%(AdditionalOptions) -fPIC</AdditionalOptions>
+      <AssemblerListingLocation>$(IntDir)</AssemblerListingLocation>
+      <CompileAs>CompileAsC</CompileAs>
+      <ExceptionHandling>
+      </ExceptionHandling>
+      <InlineFunctionExpansion>OnlyExplicitInline</InlineFunctionExpansion>
+      <Optimization>MinSpace</Optimization>
+      <PrecompiledHeader>NotUsing</PrecompiledHeader>
+      <RuntimeLibrary>MultiThreadedDLL</RuntimeLibrary>
+      <UseFullPaths>false</UseFullPaths>
+      <PreprocessorDefinitions>WIN32;_WINDOWS;NDEBUG;_CRT_SECURE_NO_WARNINGS;ZYDIS_EXPORTS;CMAKE_INTDIR="MinSizeRel";%(PreprocessorDefinitions)</PreprocessorDefinitions>
+      <ObjectFileName>$(IntDir)</ObjectFileName>
+      <DebugInformationFormat>
+      </DebugInformationFormat>
+    </ClCompile>
+    <ResourceCompile>
+      <PreprocessorDefinitions>WIN32;_WINDOWS;NDEBUG;_CRT_SECURE_NO_WARNINGS;ZYDIS_EXPORTS;CMAKE_INTDIR=\"MinSizeRel\";%(PreprocessorDefinitions)</PreprocessorDefinitions>
+      <AdditionalIncludeDirectories>D:\EmbededMontiArc\hardware_emulator - new cmake\extern\zydis\include;D:\EmbededMontiArc\hardware_emulator - new cmake\extern\zydis\build;D:\EmbededMontiArc\hardware_emulator - new cmake\extern\zydis\src;D:\EmbededMontiArc\hardware_emulator - new cmake\extern\zydis\dependencies\zycore\include;D:\EmbededMontiArc\hardware_emulator - new cmake\extern\zydis\build\dependencies\zycore;%(AdditionalIncludeDirectories)</AdditionalIncludeDirectories>
+    </ResourceCompile>
+    <Midl>
+      <AdditionalIncludeDirectories>D:\EmbededMontiArc\hardware_emulator - new cmake\extern\zydis\include;D:\EmbededMontiArc\hardware_emulator - new cmake\extern\zydis\build;D:\EmbededMontiArc\hardware_emulator - new cmake\extern\zydis\src;D:\EmbededMontiArc\hardware_emulator - new cmake\extern\zydis\dependencies\zycore\include;D:\EmbededMontiArc\hardware_emulator - new cmake\extern\zydis\build\dependencies\zycore;%(AdditionalIncludeDirectories)</AdditionalIncludeDirectories>
+      <OutputDirectory>$(ProjectDir)/$(IntDir)</OutputDirectory>
+      <HeaderFileName>%(Filename).h</HeaderFileName>
+      <TypeLibraryName>%(Filename).tlb</TypeLibraryName>
+      <InterfaceIdentifierFileName>%(Filename)_i.c</InterfaceIdentifierFileName>
+      <ProxyFileName>%(Filename)_p.c</ProxyFileName>
+    </Midl>
+    <Lib>
+      <AdditionalOptions>%(AdditionalOptions) /machine:x64</AdditionalOptions>
+    </Lib>
+  </ItemDefinitionGroup>
+  <ItemDefinitionGroup Condition="'$(Configuration)|$(Platform)'=='RelWithDebInfo|x64'">
+    <ClCompile>
+      <AdditionalIncludeDirectories>D:\EmbededMontiArc\hardware_emulator - new cmake\extern\zydis\include;D:\EmbededMontiArc\hardware_emulator - new cmake\extern\zydis\build;D:\EmbededMontiArc\hardware_emulator - new cmake\extern\zydis\src;D:\EmbededMontiArc\hardware_emulator - new cmake\extern\zydis\dependencies\zycore\include;D:\EmbededMontiArc\hardware_emulator - new cmake\extern\zydis\build\dependencies\zycore;%(AdditionalIncludeDirectories)</AdditionalIncludeDirectories>
+      <AdditionalOptions>%(AdditionalOptions) -fPIC</AdditionalOptions>
+      <AssemblerListingLocation>$(IntDir)</AssemblerListingLocation>
+      <CompileAs>CompileAsC</CompileAs>
+      <DebugInformationFormat>ProgramDatabase</DebugInformationFormat>
+      <ExceptionHandling>
+      </ExceptionHandling>
+      <InlineFunctionExpansion>OnlyExplicitInline</InlineFunctionExpansion>
+      <Optimization>MaxSpeed</Optimization>
+      <PrecompiledHeader>NotUsing</PrecompiledHeader>
+      <RuntimeLibrary>MultiThreadedDLL</RuntimeLibrary>
+      <UseFullPaths>false</UseFullPaths>
+      <PreprocessorDefinitions>WIN32;_WINDOWS;NDEBUG;_CRT_SECURE_NO_WARNINGS;ZYDIS_EXPORTS;CMAKE_INTDIR="RelWithDebInfo";%(PreprocessorDefinitions)</PreprocessorDefinitions>
+      <ObjectFileName>$(IntDir)</ObjectFileName>
+    </ClCompile>
+    <ResourceCompile>
+      <PreprocessorDefinitions>WIN32;_WINDOWS;NDEBUG;_CRT_SECURE_NO_WARNINGS;ZYDIS_EXPORTS;CMAKE_INTDIR=\"RelWithDebInfo\";%(PreprocessorDefinitions)</PreprocessorDefinitions>
+      <AdditionalIncludeDirectories>D:\EmbededMontiArc\hardware_emulator - new cmake\extern\zydis\include;D:\EmbededMontiArc\hardware_emulator - new cmake\extern\zydis\build;D:\EmbededMontiArc\hardware_emulator - new cmake\extern\zydis\src;D:\EmbededMontiArc\hardware_emulator - new cmake\extern\zydis\dependencies\zycore\include;D:\EmbededMontiArc\hardware_emulator - new cmake\extern\zydis\build\dependencies\zycore;%(AdditionalIncludeDirectories)</AdditionalIncludeDirectories>
+    </ResourceCompile>
+    <Midl>
+      <AdditionalIncludeDirectories>D:\EmbededMontiArc\hardware_emulator - new cmake\extern\zydis\include;D:\EmbededMontiArc\hardware_emulator - new cmake\extern\zydis\build;D:\EmbededMontiArc\hardware_emulator - new cmake\extern\zydis\src;D:\EmbededMontiArc\hardware_emulator - new cmake\extern\zydis\dependencies\zycore\include;D:\EmbededMontiArc\hardware_emulator - new cmake\extern\zydis\build\dependencies\zycore;%(AdditionalIncludeDirectories)</AdditionalIncludeDirectories>
+      <OutputDirectory>$(ProjectDir)/$(IntDir)</OutputDirectory>
+      <HeaderFileName>%(Filename).h</HeaderFileName>
+      <TypeLibraryName>%(Filename).tlb</TypeLibraryName>
+      <InterfaceIdentifierFileName>%(Filename)_i.c</InterfaceIdentifierFileName>
+      <ProxyFileName>%(Filename)_p.c</ProxyFileName>
+    </Midl>
+    <Lib>
+      <AdditionalOptions>%(AdditionalOptions) /machine:x64</AdditionalOptions>
+    </Lib>
+  </ItemDefinitionGroup>
+  <ItemGroup>
+    <CustomBuild Include="D:\EmbededMontiArc\hardware_emulator - new cmake\extern\zydis\CMakeLists.txt">
+      <Message Condition="'$(Configuration)|$(Platform)'=='Debug|x64'">Building Custom Rule D:/EmbededMontiArc/hardware_emulator - new cmake/extern/zydis/CMakeLists.txt</Message>
+      <Command Condition="'$(Configuration)|$(Platform)'=='Debug|x64'">setlocal
+"C:\Program Files\CMake\bin\cmake.exe" "-SD:/EmbededMontiArc/hardware_emulator - new cmake/extern/zydis" "-BD:/EmbededMontiArc/hardware_emulator - new cmake/extern/zydis/build" --check-stamp-file "D:/EmbededMontiArc/hardware_emulator - new cmake/extern/zydis/build/CMakeFiles/generate.stamp"
+if %errorlevel% neq 0 goto :cmEnd
+:cmEnd
+endlocal &amp; call :cmErrorLevel %errorlevel% &amp; goto :cmDone
+:cmErrorLevel
+exit /b %1
+:cmDone
+if %errorlevel% neq 0 goto :VCEnd</Command>
+      <AdditionalInputs Condition="'$(Configuration)|$(Platform)'=='Debug|x64'">C:\Program Files\CMake\share\cmake-3.15\Modules\CMakeCInformation.cmake;C:\Program Files\CMake\share\cmake-3.15\Modules\CMakeCXXInformation.cmake;C:\Program Files\CMake\share\cmake-3.15\Modules\CMakeCheckCompilerFlagCommonPatterns.cmake;C:\Program Files\CMake\share\cmake-3.15\Modules\CMakeCommonLanguageInclude.cmake;C:\Program Files\CMake\share\cmake-3.15\Modules\CMakeGenericSystem.cmake;C:\Program Files\CMake\share\cmake-3.15\Modules\CMakeInitializeConfigs.cmake;C:\Program Files\CMake\share\cmake-3.15\Modules\CMakeLanguageInformation.cmake;C:\Program Files\CMake\share\cmake-3.15\Modules\CMakeRCInformation.cmake;C:\Program Files\CMake\share\cmake-3.15\Modules\CMakeSystemSpecificInformation.cmake;C:\Program Files\CMake\share\cmake-3.15\Modules\CMakeSystemSpecificInitialize.cmake;C:\Program Files\CMake\share\cmake-3.15\Modules\CheckCCompilerFlag.cmake;C:\Program Files\CMake\share\cmake-3.15\Modules\CheckCSourceCompiles.cmake;C:\Program Files\CMake\share\cmake-3.15\Modules\CheckCXXCompilerFlag.cmake;C:\Program Files\CMake\share\cmake-3.15\Modules\CheckCXXSourceCompiles.cmake;C:\Program Files\CMake\share\cmake-3.15\Modules\Compiler\CMakeCommonCompilerMacros.cmake;C:\Program Files\CMake\share\cmake-3.15\Modules\Compiler\MSVC-C.cmake;C:\Program Files\CMake\share\cmake-3.15\Modules\Compiler\MSVC-CXX.cmake;C:\Program Files\CMake\share\cmake-3.15\Modules\GNUInstallDirs.cmake;C:\Program Files\CMake\share\cmake-3.15\Modules\GenerateExportHeader.cmake;C:\Program Files\CMake\share\cmake-3.15\Modules\Platform\Windows-MSVC-C.cmake;C:\Program Files\CMake\share\cmake-3.15\Modules\Platform\Windows-MSVC-CXX.cmake;C:\Program Files\CMake\share\cmake-3.15\Modules\Platform\Windows-MSVC.cmake;C:\Program Files\CMake\share\cmake-3.15\Modules\Platform\Windows.cmake;C:\Program Files\CMake\share\cmake-3.15\Modules\Platform\WindowsPaths.cmake;C:\Program Files\CMake\share\cmake-3.15\Modules\exportheader.cmake.in;D:\EmbededMontiArc\hardware_emulator - new cmake\extern\zydis\build\CMakeFiles\3.15.4\CMakeCCompiler.cmake;D:\EmbededMontiArc\hardware_emulator - new cmake\extern\zydis\build\CMakeFiles\3.15.4\CMakeCXXCompiler.cmake;D:\EmbededMontiArc\hardware_emulator - new cmake\extern\zydis\build\CMakeFiles\3.15.4\CMakeRCCompiler.cmake;D:\EmbededMontiArc\hardware_emulator - new cmake\extern\zydis\build\CMakeFiles\3.15.4\CMakeSystem.cmake;%(AdditionalInputs)</AdditionalInputs>
+      <Outputs Condition="'$(Configuration)|$(Platform)'=='Debug|x64'">D:\EmbededMontiArc\hardware_emulator - new cmake\extern\zydis\build\CMakeFiles\generate.stamp</Outputs>
+      <LinkObjects Condition="'$(Configuration)|$(Platform)'=='Debug|x64'">false</LinkObjects>
+      <Message Condition="'$(Configuration)|$(Platform)'=='Release|x64'">Building Custom Rule D:/EmbededMontiArc/hardware_emulator - new cmake/extern/zydis/CMakeLists.txt</Message>
+      <Command Condition="'$(Configuration)|$(Platform)'=='Release|x64'">setlocal
+"C:\Program Files\CMake\bin\cmake.exe" "-SD:/EmbededMontiArc/hardware_emulator - new cmake/extern/zydis" "-BD:/EmbededMontiArc/hardware_emulator - new cmake/extern/zydis/build" --check-stamp-file "D:/EmbededMontiArc/hardware_emulator - new cmake/extern/zydis/build/CMakeFiles/generate.stamp"
+if %errorlevel% neq 0 goto :cmEnd
+:cmEnd
+endlocal &amp; call :cmErrorLevel %errorlevel% &amp; goto :cmDone
+:cmErrorLevel
+exit /b %1
+:cmDone
+if %errorlevel% neq 0 goto :VCEnd</Command>
+      <AdditionalInputs Condition="'$(Configuration)|$(Platform)'=='Release|x64'">C:\Program Files\CMake\share\cmake-3.15\Modules\CMakeCInformation.cmake;C:\Program Files\CMake\share\cmake-3.15\Modules\CMakeCXXInformation.cmake;C:\Program Files\CMake\share\cmake-3.15\Modules\CMakeCheckCompilerFlagCommonPatterns.cmake;C:\Program Files\CMake\share\cmake-3.15\Modules\CMakeCommonLanguageInclude.cmake;C:\Program Files\CMake\share\cmake-3.15\Modules\CMakeGenericSystem.cmake;C:\Program Files\CMake\share\cmake-3.15\Modules\CMakeInitializeConfigs.cmake;C:\Program Files\CMake\share\cmake-3.15\Modules\CMakeLanguageInformation.cmake;C:\Program Files\CMake\share\cmake-3.15\Modules\CMakeRCInformation.cmake;C:\Program Files\CMake\share\cmake-3.15\Modules\CMakeSystemSpecificInformation.cmake;C:\Program Files\CMake\share\cmake-3.15\Modules\CMakeSystemSpecificInitialize.cmake;C:\Program Files\CMake\share\cmake-3.15\Modules\CheckCCompilerFlag.cmake;C:\Program Files\CMake\share\cmake-3.15\Modules\CheckCSourceCompiles.cmake;C:\Program Files\CMake\share\cmake-3.15\Modules\CheckCXXCompilerFlag.cmake;C:\Program Files\CMake\share\cmake-3.15\Modules\CheckCXXSourceCompiles.cmake;C:\Program Files\CMake\share\cmake-3.15\Modules\Compiler\CMakeCommonCompilerMacros.cmake;C:\Program Files\CMake\share\cmake-3.15\Modules\Compiler\MSVC-C.cmake;C:\Program Files\CMake\share\cmake-3.15\Modules\Compiler\MSVC-CXX.cmake;C:\Program Files\CMake\share\cmake-3.15\Modules\GNUInstallDirs.cmake;C:\Program Files\CMake\share\cmake-3.15\Modules\GenerateExportHeader.cmake;C:\Program Files\CMake\share\cmake-3.15\Modules\Platform\Windows-MSVC-C.cmake;C:\Program Files\CMake\share\cmake-3.15\Modules\Platform\Windows-MSVC-CXX.cmake;C:\Program Files\CMake\share\cmake-3.15\Modules\Platform\Windows-MSVC.cmake;C:\Program Files\CMake\share\cmake-3.15\Modules\Platform\Windows.cmake;C:\Program Files\CMake\share\cmake-3.15\Modules\Platform\WindowsPaths.cmake;C:\Program Files\CMake\share\cmake-3.15\Modules\exportheader.cmake.in;D:\EmbededMontiArc\hardware_emulator - new cmake\extern\zydis\build\CMakeFiles\3.15.4\CMakeCCompiler.cmake;D:\EmbededMontiArc\hardware_emulator - new cmake\extern\zydis\build\CMakeFiles\3.15.4\CMakeCXXCompiler.cmake;D:\EmbededMontiArc\hardware_emulator - new cmake\extern\zydis\build\CMakeFiles\3.15.4\CMakeRCCompiler.cmake;D:\EmbededMontiArc\hardware_emulator - new cmake\extern\zydis\build\CMakeFiles\3.15.4\CMakeSystem.cmake;%(AdditionalInputs)</AdditionalInputs>
+      <Outputs Condition="'$(Configuration)|$(Platform)'=='Release|x64'">D:\EmbededMontiArc\hardware_emulator - new cmake\extern\zydis\build\CMakeFiles\generate.stamp</Outputs>
+      <LinkObjects Condition="'$(Configuration)|$(Platform)'=='Release|x64'">false</LinkObjects>
+      <Message Condition="'$(Configuration)|$(Platform)'=='MinSizeRel|x64'">Building Custom Rule D:/EmbededMontiArc/hardware_emulator - new cmake/extern/zydis/CMakeLists.txt</Message>
+      <Command Condition="'$(Configuration)|$(Platform)'=='MinSizeRel|x64'">setlocal
+"C:\Program Files\CMake\bin\cmake.exe" "-SD:/EmbededMontiArc/hardware_emulator - new cmake/extern/zydis" "-BD:/EmbededMontiArc/hardware_emulator - new cmake/extern/zydis/build" --check-stamp-file "D:/EmbededMontiArc/hardware_emulator - new cmake/extern/zydis/build/CMakeFiles/generate.stamp"
+if %errorlevel% neq 0 goto :cmEnd
+:cmEnd
+endlocal &amp; call :cmErrorLevel %errorlevel% &amp; goto :cmDone
+:cmErrorLevel
+exit /b %1
+:cmDone
+if %errorlevel% neq 0 goto :VCEnd</Command>
+      <AdditionalInputs Condition="'$(Configuration)|$(Platform)'=='MinSizeRel|x64'">C:\Program Files\CMake\share\cmake-3.15\Modules\CMakeCInformation.cmake;C:\Program Files\CMake\share\cmake-3.15\Modules\CMakeCXXInformation.cmake;C:\Program Files\CMake\share\cmake-3.15\Modules\CMakeCheckCompilerFlagCommonPatterns.cmake;C:\Program Files\CMake\share\cmake-3.15\Modules\CMakeCommonLanguageInclude.cmake;C:\Program Files\CMake\share\cmake-3.15\Modules\CMakeGenericSystem.cmake;C:\Program Files\CMake\share\cmake-3.15\Modules\CMakeInitializeConfigs.cmake;C:\Program Files\CMake\share\cmake-3.15\Modules\CMakeLanguageInformation.cmake;C:\Program Files\CMake\share\cmake-3.15\Modules\CMakeRCInformation.cmake;C:\Program Files\CMake\share\cmake-3.15\Modules\CMakeSystemSpecificInformation.cmake;C:\Program Files\CMake\share\cmake-3.15\Modules\CMakeSystemSpecificInitialize.cmake;C:\Program Files\CMake\share\cmake-3.15\Modules\CheckCCompilerFlag.cmake;C:\Program Files\CMake\share\cmake-3.15\Modules\CheckCSourceCompiles.cmake;C:\Program Files\CMake\share\cmake-3.15\Modules\CheckCXXCompilerFlag.cmake;C:\Program Files\CMake\share\cmake-3.15\Modules\CheckCXXSourceCompiles.cmake;C:\Program Files\CMake\share\cmake-3.15\Modules\Compiler\CMakeCommonCompilerMacros.cmake;C:\Program Files\CMake\share\cmake-3.15\Modules\Compiler\MSVC-C.cmake;C:\Program Files\CMake\share\cmake-3.15\Modules\Compiler\MSVC-CXX.cmake;C:\Program Files\CMake\share\cmake-3.15\Modules\GNUInstallDirs.cmake;C:\Program Files\CMake\share\cmake-3.15\Modules\GenerateExportHeader.cmake;C:\Program Files\CMake\share\cmake-3.15\Modules\Platform\Windows-MSVC-C.cmake;C:\Program Files\CMake\share\cmake-3.15\Modules\Platform\Windows-MSVC-CXX.cmake;C:\Program Files\CMake\share\cmake-3.15\Modules\Platform\Windows-MSVC.cmake;C:\Program Files\CMake\share\cmake-3.15\Modules\Platform\Windows.cmake;C:\Program Files\CMake\share\cmake-3.15\Modules\Platform\WindowsPaths.cmake;C:\Program Files\CMake\share\cmake-3.15\Modules\exportheader.cmake.in;D:\EmbededMontiArc\hardware_emulator - new cmake\extern\zydis\build\CMakeFiles\3.15.4\CMakeCCompiler.cmake;D:\EmbededMontiArc\hardware_emulator - new cmake\extern\zydis\build\CMakeFiles\3.15.4\CMakeCXXCompiler.cmake;D:\EmbededMontiArc\hardware_emulator - new cmake\extern\zydis\build\CMakeFiles\3.15.4\CMakeRCCompiler.cmake;D:\EmbededMontiArc\hardware_emulator - new cmake\extern\zydis\build\CMakeFiles\3.15.4\CMakeSystem.cmake;%(AdditionalInputs)</AdditionalInputs>
+      <Outputs Condition="'$(Configuration)|$(Platform)'=='MinSizeRel|x64'">D:\EmbededMontiArc\hardware_emulator - new cmake\extern\zydis\build\CMakeFiles\generate.stamp</Outputs>
+      <LinkObjects Condition="'$(Configuration)|$(Platform)'=='MinSizeRel|x64'">false</LinkObjects>
+      <Message Condition="'$(Configuration)|$(Platform)'=='RelWithDebInfo|x64'">Building Custom Rule D:/EmbededMontiArc/hardware_emulator - new cmake/extern/zydis/CMakeLists.txt</Message>
+      <Command Condition="'$(Configuration)|$(Platform)'=='RelWithDebInfo|x64'">setlocal
+"C:\Program Files\CMake\bin\cmake.exe" "-SD:/EmbededMontiArc/hardware_emulator - new cmake/extern/zydis" "-BD:/EmbededMontiArc/hardware_emulator - new cmake/extern/zydis/build" --check-stamp-file "D:/EmbededMontiArc/hardware_emulator - new cmake/extern/zydis/build/CMakeFiles/generate.stamp"
+if %errorlevel% neq 0 goto :cmEnd
+:cmEnd
+endlocal &amp; call :cmErrorLevel %errorlevel% &amp; goto :cmDone
+:cmErrorLevel
+exit /b %1
+:cmDone
+if %errorlevel% neq 0 goto :VCEnd</Command>
+      <AdditionalInputs Condition="'$(Configuration)|$(Platform)'=='RelWithDebInfo|x64'">C:\Program Files\CMake\share\cmake-3.15\Modules\CMakeCInformation.cmake;C:\Program Files\CMake\share\cmake-3.15\Modules\CMakeCXXInformation.cmake;C:\Program Files\CMake\share\cmake-3.15\Modules\CMakeCheckCompilerFlagCommonPatterns.cmake;C:\Program Files\CMake\share\cmake-3.15\Modules\CMakeCommonLanguageInclude.cmake;C:\Program Files\CMake\share\cmake-3.15\Modules\CMakeGenericSystem.cmake;C:\Program Files\CMake\share\cmake-3.15\Modules\CMakeInitializeConfigs.cmake;C:\Program Files\CMake\share\cmake-3.15\Modules\CMakeLanguageInformation.cmake;C:\Program Files\CMake\share\cmake-3.15\Modules\CMakeRCInformation.cmake;C:\Program Files\CMake\share\cmake-3.15\Modules\CMakeSystemSpecificInformation.cmake;C:\Program Files\CMake\share\cmake-3.15\Modules\CMakeSystemSpecificInitialize.cmake;C:\Program Files\CMake\share\cmake-3.15\Modules\CheckCCompilerFlag.cmake;C:\Program Files\CMake\share\cmake-3.15\Modules\CheckCSourceCompiles.cmake;C:\Program Files\CMake\share\cmake-3.15\Modules\CheckCXXCompilerFlag.cmake;C:\Program Files\CMake\share\cmake-3.15\Modules\CheckCXXSourceCompiles.cmake;C:\Program Files\CMake\share\cmake-3.15\Modules\Compiler\CMakeCommonCompilerMacros.cmake;C:\Program Files\CMake\share\cmake-3.15\Modules\Compiler\MSVC-C.cmake;C:\Program Files\CMake\share\cmake-3.15\Modules\Compiler\MSVC-CXX.cmake;C:\Program Files\CMake\share\cmake-3.15\Modules\GNUInstallDirs.cmake;C:\Program Files\CMake\share\cmake-3.15\Modules\GenerateExportHeader.cmake;C:\Program Files\CMake\share\cmake-3.15\Modules\Platform\Windows-MSVC-C.cmake;C:\Program Files\CMake\share\cmake-3.15\Modules\Platform\Windows-MSVC-CXX.cmake;C:\Program Files\CMake\share\cmake-3.15\Modules\Platform\Windows-MSVC.cmake;C:\Program Files\CMake\share\cmake-3.15\Modules\Platform\Windows.cmake;C:\Program Files\CMake\share\cmake-3.15\Modules\Platform\WindowsPaths.cmake;C:\Program Files\CMake\share\cmake-3.15\Modules\exportheader.cmake.in;D:\EmbededMontiArc\hardware_emulator - new cmake\extern\zydis\build\CMakeFiles\3.15.4\CMakeCCompiler.cmake;D:\EmbededMontiArc\hardware_emulator - new cmake\extern\zydis\build\CMakeFiles\3.15.4\CMakeCXXCompiler.cmake;D:\EmbededMontiArc\hardware_emulator - new cmake\extern\zydis\build\CMakeFiles\3.15.4\CMakeRCCompiler.cmake;D:\EmbededMontiArc\hardware_emulator - new cmake\extern\zydis\build\CMakeFiles\3.15.4\CMakeSystem.cmake;%(AdditionalInputs)</AdditionalInputs>
+      <Outputs Condition="'$(Configuration)|$(Platform)'=='RelWithDebInfo|x64'">D:\EmbededMontiArc\hardware_emulator - new cmake\extern\zydis\build\CMakeFiles\generate.stamp</Outputs>
+      <LinkObjects Condition="'$(Configuration)|$(Platform)'=='RelWithDebInfo|x64'">false</LinkObjects>
+    </CustomBuild>
+  </ItemGroup>
+  <ItemGroup>
+    <ClInclude Include="D:\EmbededMontiArc\hardware_emulator - new cmake\extern\zydis\include\Zydis\MetaInfo.h" />
+    <ClInclude Include="D:\EmbededMontiArc\hardware_emulator - new cmake\extern\zydis\include\Zydis\Mnemonic.h" />
+    <ClInclude Include="D:\EmbededMontiArc\hardware_emulator - new cmake\extern\zydis\include\Zydis\Register.h" />
+    <ClInclude Include="D:\EmbededMontiArc\hardware_emulator - new cmake\extern\zydis\include\Zydis\SharedTypes.h" />
+    <ClInclude Include="D:\EmbededMontiArc\hardware_emulator - new cmake\extern\zydis\include\Zydis\ShortString.h" />
+    <ClInclude Include="D:\EmbededMontiArc\hardware_emulator - new cmake\extern\zydis\include\Zydis\Status.h" />
+    <ClInclude Include="D:\EmbededMontiArc\hardware_emulator - new cmake\extern\zydis\include\Zydis\Utils.h" />
+    <ClInclude Include="D:\EmbededMontiArc\hardware_emulator - new cmake\extern\zydis\include\Zydis\Zydis.h" />
+    <ClInclude Include="D:\EmbededMontiArc\hardware_emulator - new cmake\extern\zydis\include\Zydis\Internal\SharedData.h" />
+    <ClInclude Include="D:\EmbededMontiArc\hardware_emulator - new cmake\extern\zydis\include\Zydis\Internal\String.h" />
+    <ClCompile Include="D:\EmbededMontiArc\hardware_emulator - new cmake\extern\zydis\src\MetaInfo.c" />
+    <ClCompile Include="D:\EmbededMontiArc\hardware_emulator - new cmake\extern\zydis\src\Mnemonic.c" />
+    <ClCompile Include="D:\EmbededMontiArc\hardware_emulator - new cmake\extern\zydis\src\Register.c" />
+    <ClCompile Include="D:\EmbededMontiArc\hardware_emulator - new cmake\extern\zydis\src\SharedData.c" />
+    <ClCompile Include="D:\EmbededMontiArc\hardware_emulator - new cmake\extern\zydis\src\String.c" />
+    <ClCompile Include="D:\EmbededMontiArc\hardware_emulator - new cmake\extern\zydis\src\Utils.c" />
+    <ClCompile Include="D:\EmbededMontiArc\hardware_emulator - new cmake\extern\zydis\src\Zydis.c" />
+    <ClInclude Include="D:\EmbededMontiArc\hardware_emulator - new cmake\extern\zydis\include\Zydis\Decoder.h" />
+    <ClInclude Include="D:\EmbededMontiArc\hardware_emulator - new cmake\extern\zydis\include\Zydis\DecoderTypes.h" />
+    <ClInclude Include="D:\EmbededMontiArc\hardware_emulator - new cmake\extern\zydis\include\Zydis\Internal\DecoderData.h" />
+    <ClCompile Include="D:\EmbededMontiArc\hardware_emulator - new cmake\extern\zydis\src\Decoder.c" />
+    <ClCompile Include="D:\EmbededMontiArc\hardware_emulator - new cmake\extern\zydis\src\DecoderData.c" />
+    <ClInclude Include="D:\EmbededMontiArc\hardware_emulator - new cmake\extern\zydis\include\Zydis\Formatter.h" />
+    <ClInclude Include="D:\EmbededMontiArc\hardware_emulator - new cmake\extern\zydis\include\Zydis\FormatterBuffer.h" />
+    <ClInclude Include="D:\EmbededMontiArc\hardware_emulator - new cmake\extern\zydis\include\Zydis\Internal\FormatterATT.h" />
+    <ClInclude Include="D:\EmbededMontiArc\hardware_emulator - new cmake\extern\zydis\include\Zydis\Internal\FormatterBase.h" />
+    <ClInclude Include="D:\EmbededMontiArc\hardware_emulator - new cmake\extern\zydis\include\Zydis\Internal\FormatterIntel.h" />
+    <ClCompile Include="D:\EmbededMontiArc\hardware_emulator - new cmake\extern\zydis\src\Formatter.c" />
+    <ClCompile Include="D:\EmbededMontiArc\hardware_emulator - new cmake\extern\zydis\src\FormatterBuffer.c" />
+    <ClCompile Include="D:\EmbededMontiArc\hardware_emulator - new cmake\extern\zydis\src\FormatterATT.c" />
+    <ClCompile Include="D:\EmbededMontiArc\hardware_emulator - new cmake\extern\zydis\src\FormatterBase.c" />
+    <ClCompile Include="D:\EmbededMontiArc\hardware_emulator - new cmake\extern\zydis\src\FormatterIntel.c" />
+  </ItemGroup>
+  <ItemGroup>
+    <ProjectReference Include="D:\EmbededMontiArc\hardware_emulator - new cmake\extern\zydis\build\ZERO_CHECK.vcxproj">
+      <Project>{7DA761BB-874D-341F-960F-AE4FEB930032}</Project>
+      <Name>ZERO_CHECK</Name>
+      <ReferenceOutputAssembly>false</ReferenceOutputAssembly>
+      <CopyToOutputDirectory>Never</CopyToOutputDirectory>
+    </ProjectReference>
+    <ProjectReference Include="D:\EmbededMontiArc\hardware_emulator - new cmake\extern\zydis\build\dependencies\zycore\Zycore.vcxproj">
+      <Project>{0CB4C062-3C5A-31EE-B13F-343194D77B51}</Project>
+      <Name>Zycore</Name>
+      <ReferenceOutputAssembly>false</ReferenceOutputAssembly>
+      <CopyToOutputDirectory>Never</CopyToOutputDirectory>
+    </ProjectReference>
+  </ItemGroup>
+  <Import Project="$(VCTargetsPath)\Microsoft.Cpp.targets" />
+  <ImportGroup Label="ExtensionTargets">
+  </ImportGroup>
+</Project>
