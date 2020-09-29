@@ -1,9 +1,3 @@
-/**
- * (c) https://github.com/MontiCore/monticore
- *
- * The license generally applicable for this project
- * can be found under https://github.com/MontiCore/monticore.
- */
 #pragma once
 #include <inttypes.h>
 #include <exception>
@@ -17,6 +11,8 @@
 #include <list>
 #include <vector>
 #include <chrono>
+#include "json.hpp"
+using json = nlohmann::json;
 
 namespace Utility {
 
@@ -30,6 +26,7 @@ namespace Utility {
     void write_uint32_t( char *mem_pos, uint32_t value );
     uint32_t read_uint32_t( char *mem_pos );
 }
+
 
 
 
@@ -68,7 +65,7 @@ using ulong = uint64_t;
 #define             setFlagHigh(var, flag)  var |= static_cast<ulong>(flag)
 #define             setFlagLow(var, flag)   var &= ~(static_cast<ulong>(flag))
 
-extern uint BIT_MASKS[];
+extern ulong BIT_MASKS[65];
 
 
 
@@ -869,3 +866,11 @@ inline T abs_t( const T &val ) {
         return val;
     return -val;
 }
+
+
+
+
+bool json_get(const json& j, const char* entry, int& target);
+bool json_get(const json& j, const char* entry, uint& target);
+bool json_get(const json& j, const char* entry, ulong& target);
+bool json_get(const json& j, const char* entry, std::string& target);

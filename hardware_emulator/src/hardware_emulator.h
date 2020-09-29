@@ -1,9 +1,3 @@
-/**
- * (c) https://github.com/MontiCore/monticore
- *
- * The license generally applicable for this project
- * can be found under https://github.com/MontiCore/monticore.
- */
 #pragma once
 #include <fstream>
 
@@ -17,6 +11,29 @@
 #include <unordered_map>
 
 struct SoftwareSimulatorManager;
+
+struct EmulatedProgramInterface : public ProgramInterface {
+    Computer &computer;
+
+    uint64_t addr_get_interface = 0;
+    uint64_t addr_set_port = 0;
+    uint64_t addr_get_port = 0;
+    uint64_t addr_init = 0;
+    uint64_t addr_exec = 0;
+
+    EmulatedProgramInterface(Computer &computer) : computer(computer) {}
+
+    uint64_t resolve( const char *name );
+    void load();
+    
+    const char* get_interface();
+    void set_port(int i, const char* data);
+    const char* get_port(int i);
+    
+    void init();
+    void execute(double delta_sec);
+
+};
 
 /*
     The HardwareEmulator is the component handling the emulation of autopilots and their communication with the
@@ -46,43 +63,23 @@ struct HardwareEmulator : public SoftwareSimulator {
     std::string os_name;
     CacheSettings cache_settings;
 
-    uint64_t init_address = 0;
-    uint64_t execute_address = 0;
-
-    
     bool debug_time = false;
-    ulong execution_time = 0;
-    ulong simulation_time = 0;
-    MeanAvgCollector avg_runtime;
-    PrecisionTimer timer;
-    
-    std::string test_real_opt;
-    bool test_real = false;
-    std::unique_ptr<SoftwareSimulator> direct_simulator;
+
+    ulong timer_start;
     
     //True when virtual computer still running in virtual time
     bool computing() {
         return computer.time.micro_time > 0;
     }
     
-    std::string query_simulator( const char *msg );
+    json query_simulator(const json& query);
     
-    void init_simulator(SoftwareSimulatorManager&manager, const char *config );
-    void resolve_autopilot_os(SoftwareSimulatorManager&manager );
+    void init_simulator(const json& config, const FS::Directory& software_folder);
+    void resolve_autopilot_os(const FS::Directory& software_folder );
 
-    void run_cycle();
-    ulong get_cycle_time();
+    void start_timer();
+    ulong get_timer_micro();
 
-    void exec();
-    
-    void call_init();
-    
-    void resolve( const std::string &name, uint64_t &target );
-                     
-    void setup_debug( MessageParser &parser );
+    void parse_flags( const json &flags );
 
-    const char* get_string_by_id(const char* name, int id);
-    int get_int(const char* name);
-
-    Port* new_port_by_type(const PortInformation& info);
 };

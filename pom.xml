@@ -1,23 +1,16 @@
 <?xml version="1.0" encoding="UTF-8" ?>
-<!--
-
-    (c) https://github.com/MontiCore/monticore
-
-    The license generally applicable for this project
-    can be found under https://github.com/MontiCore/monticore.
-
--->
 <project xmlns="http://maven.apache.org/POM/4.0.0" 
     xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:schemaLocation="http://maven.apache.org/POM/4.0.0 http://maven.apache.org/xsd/maven-4.0.0.xsd">
     <modelVersion>4.0.0</modelVersion>
 
     <groupId>montisim</groupId>
     <artifactId>hardware_emulator</artifactId>
-    <version>1.0.5</version>
+    <version>2.0.0</version>
 
 
     <properties>
-        <commons.version>1.0.11</commons.version>
+        <commons.version>2.0.5</commons.version>
+        <simulation.version>3.0.0</simulation.version>
 
 
         <wagon.provider.version>2.6</wagon.provider.version>
@@ -43,6 +36,11 @@
             <groupId>montisim</groupId>
             <artifactId>commons</artifactId>
             <version>${commons.version}</version>
+        </dependency>
+        <dependency>
+            <groupId>montisim</groupId>
+            <artifactId>eesimulator</artifactId>
+            <version>${simulation.version}</version>
         </dependency>
     </dependencies>
 
@@ -72,7 +70,7 @@
                 <configuration>
                     <compilerArgs>
                         <arg>-h</arg>
-                        <arg>hardware_emulator/src</arg>
+                        <arg>hardware_emulator/src/lib</arg>
                     </compilerArgs>
                     <useIncrementalCompilation>true</useIncrementalCompilation>
                     <source>${java.version}</source>
@@ -126,14 +124,12 @@
                         <exclude>src/test/resources/**</exclude>
                         <exclude>src/main/resources/**</exclude>
                         <exclude>src/license/**</exclude>
-                        <exclude>zydis/**</exclude>
-                        <exclude>unicorn/**</exclude>
-                        <exclude>pe-parse/**</exclude>
-                        <exclude>**/libs/**</exclude>
+                        <exclude>extern/**</exclude>
                         <exclude>**/build/**</exclude>
                         <exclude>**/Debug/**</exclude>
                         <exclude>**/Release/**</exclude>
                         <exclude>**/CMakeLists.txt</exclude>
+                        <exclude>**.txt</exclude>
                     </excludes>
                 </configuration>
                 <executions>

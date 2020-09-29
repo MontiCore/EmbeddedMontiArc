@@ -1,9 +1,3 @@
-/**
- * (c) https://github.com/MontiCore/monticore
- *
- * The license generally applicable for this project
- * can be found under https://github.com/MontiCore/monticore.
- */
 #pragma once
 #include "utility/utility.h"
 #include <Zydis/Zydis.h>
@@ -79,8 +73,8 @@ struct ComputerTime {
     in case of write() operations, to register the address in the next cache levels.
 */
 struct MemoryAccessInterface {
-        virtual ulong read( ulong address, uint sec_id ) = 0;
-        virtual ulong write( ulong address, uint sec_id ) = 0;
+        virtual ulong read( ulong address ) = 0;
+        virtual ulong write( ulong address ) = 0;
         MemoryAccessInterface() : underlying_memory( nullptr ) {}
         virtual ~MemoryAccessInterface() {}
     protected:
@@ -98,10 +92,10 @@ struct MemoryTime : public MemoryAccessInterface {
         ulong read_time;
         ulong write_time;
     public:
-        ulong read( ulong address, uint sec_id ) {
+        ulong read( ulong address ) {
             return read_time;
         }
-        ulong write( ulong address, uint sec_id ) {
+        ulong write( ulong address ) {
             return write_time;
         }
         MemoryTime() : read_time( 1000000 ), write_time( 2000000 ) {}

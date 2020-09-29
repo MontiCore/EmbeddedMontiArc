@@ -1,9 +1,3 @@
-/**
- * (c) https://github.com/MontiCore/monticore
- *
- * The license generally applicable for this project
- * can be found under https://github.com/MontiCore/monticore.
- */
 #include "debug.h"
 #include <iostream>
 using namespace std;
@@ -36,7 +30,7 @@ void ComputerDebug::debug_code( ulong addr, uint size, ulong ticks, ulong time )
     if ( !debug || !d_code )
         return;
         
-    //Print the register updates now, since there is no callback for after an instruction execution.
+    //Print the register updates now (for the last instruction), since there is no callback for after an instruction execution.
     if ( d_regs )
         registers->print_registers();
     else if ( d_reg_update )
@@ -115,7 +109,8 @@ void ComputerDebug::debug_mem( MemAccess type, ulong addr, uint size, slong val,
         sprintf( buff, "%-21s", res.c_str() );
         *os << buff;
     }
-    Log::info << "time: " << ( time / 1000 ) << "ns     ";
+    Log::info << "                                        "
+    "time: " << ( time / 1000 ) <<'.' << ( time % 1000 ) << "ns     ";
     memory->print_address_info( addr );
     Log::info << "\n";
 }

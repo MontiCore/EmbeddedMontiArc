@@ -1,9 +1,3 @@
-/**
- * (c) https://github.com/MontiCore/monticore
- *
- * The license generally applicable for this project
- * can be found under https://github.com/MontiCore/monticore.
- */
 #pragma once
 #include "computer/registers.h"
 #include "computer/memory.h"
@@ -71,12 +65,45 @@ struct FunctionCalling {
     virtual void set_param2_float( float p ) = 0;
     virtual void set_param3_float( float p ) = 0;
     virtual void set_param4_float( float p ) = 0;
+
+    template<typename T> void set_param1(T v) {}
+    template<typename T> void set_param2(T v) {}
+    template<typename T> void set_param3(T v) {}
+    template<typename T> void set_param4(T v) {}
+    template<> inline void set_param1(double v) { set_param1_double(v); }
+    template<> inline void set_param2(double v) { set_param2_double(v); }
+    template<> inline void set_param3(double v) { set_param3_double(v); }
+    template<> inline void set_param4(double v) { set_param4_double(v); }
+    template<> inline void set_param1(float v) { set_param1_float(v); }
+    template<> inline void set_param2(float v) { set_param2_float(v); }
+    template<> inline void set_param3(float v) { set_param3_float(v); }
+    template<> inline void set_param4(float v) { set_param4_float(v); }
+    template<> inline void set_param1(int v) { set_param1_32(v); }
+    template<> inline void set_param2(int v) { set_param1_32(v); }
+    template<> inline void set_param3(int v) { set_param1_32(v); }
+    template<> inline void set_param4(int v) { set_param1_32(v); }
+    template<> inline void set_param1(unsigned char v) { set_param1_32(v); }
+    template<> inline void set_param2(unsigned char v) { set_param1_32(v); }
+    template<> inline void set_param3(unsigned char v) { set_param1_32(v); }
+    template<> inline void set_param4(unsigned char v) { set_param1_32(v); }
+    template<> inline void set_param1(bool v) { set_param1_32(v); }
+    template<> inline void set_param2(bool v) { set_param1_32(v); }
+    template<> inline void set_param3(bool v) { set_param1_32(v); }
+    template<> inline void set_param4(bool v) { set_param1_32(v); }
     
     virtual ulong get_return_64() = 0;
     virtual uint get_return_32() = 0;
     virtual double get_return_double() = 0;
     virtual float get_return_float() = 0;
     virtual char get_return_char() = 0;
+
+
+    template<typename T> T get_return() {}
+    template<> inline double get_return() { return get_return_double(); }
+    template<> inline float get_return() { return get_return_float(); }
+    template<> inline int get_return() { return get_return_32(); }
+    template<> inline unsigned char get_return() { return get_return_32(); }
+    template<> inline bool get_return() { return get_return_32(); }
     
     
     //Callee

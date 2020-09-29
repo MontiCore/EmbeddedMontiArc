@@ -1,9 +1,3 @@
-/**
- * (c) https://github.com/MontiCore/monticore
- *
- * The license generally applicable for this project
- * can be found under https://github.com/MontiCore/monticore.
- */
 #include "dll_interface.h"
 #include "utility/utility.h"
 
@@ -17,7 +11,7 @@ void add_symbol( uint64_t &target, const std::string &name, Computer &computer )
 }
 
 void ADD_DLL::Interface::init( Computer &computer, bool windows ) {
-    ProgramInterface::init( computer );
+    TestProgramInterface::init( computer );
     computer.os->load_file(FS::File("sample_simple"));
     addresses.resize( FUNCTION_COUNT );
     add_symbol(addresses[ADD], windows ? "add" : "add", computer);
@@ -33,7 +27,7 @@ int ADD_DLL::Interface::add( int a, int b ) {
 
 
 void LOADED_DLL::Interface::init( Computer &computer ) {
-    ProgramInterface::init( computer );
+    TestProgramInterface::init( computer );
     computer.os->load_file(FS::File("sample_syscall"));
     addresses.resize( FUNCTION_COUNT );
     add_symbol(addresses[TEST_METHOD], "test_method", computer);

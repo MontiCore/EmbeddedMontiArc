@@ -1,9 +1,3 @@
-/**
- * (c) https://github.com/MontiCore/monticore
- *
- * The license generally applicable for this project
- * can be found under https://github.com/MontiCore/monticore.
- */
 #pragma once
 #include "memory.h"
 #include "registers.h"
@@ -15,6 +9,8 @@
 #include "os.h"
 #include "caching.h"
 #include "utility/config.h"
+#include "json.hpp"
+using json = nlohmann::json;
 
 
 struct InternalComputer;
@@ -89,6 +85,7 @@ struct Computer {
         
         void set_os( OS::OS *os );
         
+        ulong add_symbol_handle(const char *name);
         
         
         //Calling this from within a callback will stop the simulation after the callback returns.
@@ -128,23 +125,28 @@ struct Computer {
     setup_computer() will then apply the configuration to the computer.
 */
 struct CacheSettings {
+    enum class CacheType {
+        SHARED,
+        I,
+        D
+    };
     struct Cache {
+        CacheType type;
+        int level;
         bool used;
         //Pico second times
         uint write_ticks;
         uint read_ticks;
-        uint block_size;
-        uint size; //Size is number of block entries
-        Cache() : used( false ), write_ticks(0), read_ticks(0), block_size(0), size(0) {}
-        Cache( uint read_ticks, uint write_ticks, uint size, uint block_size = 8 ) :
-            write_ticks( write_ticks ), read_ticks( read_ticks ), size( size ), block_size( block_size ), used( true ) {}
+        uint line_length;
+        ulong size; //Size is number of block entries
+        Cache() : used( false ), write_ticks(0), read_ticks(0), line_length(64), size(0), level(0), type(CacheType::SHARED) {}
+        /*Cache( CacheType type, int level, uint read_ticks, uint write_ticks, uint size, uint line_length = 8 ) :
+            type(type), level(level),
+            write_ticks( write_ticks ), read_ticks( read_ticks ), size( size ), line_length(line_length), used( true ) {}*/
     };
-    Cache IL1;
-    Cache DL1;
-    Cache L2;
-    Cache L3;
+    std::vector<std::unique_ptr<Cache>> caches;
     
-    void handle_config( MessageParser &parser );
+    void handle_config(const json& settings);
     
     void setup_computer( Computer &computer );
     

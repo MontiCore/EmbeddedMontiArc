@@ -1,9 +1,3 @@
-/**
- * (c) https://github.com/MontiCore/monticore
- *
- * The license generally applicable for this project
- * can be found under https://github.com/MontiCore/monticore.
- */
 #include "os_windows/windows_calls.h"
 #include <cmath>
 
@@ -36,6 +30,7 @@ void WindowsCalls::add_windows_calls( SystemCalls &sys_calls, OS::Windows &windo
     sys_calls.add_syscall( SysCall( "malloc", "MSVCRT.DLL", malloc ), reason );
     sys_calls.add_syscall( SysCall( "memcpy", "MSVCRT.DLL", memcpy ), reason );
     sys_calls.add_syscall( SysCall( "acos", "MSVCRT.DLL", acos ), reason );
+    sys_calls.add_syscall(SysCall("localeconv", "MSVCRT.DLL", localeconv), reason);
 }
 
 bool WindowsCalls::load_library_exw( Computer &computer ) {
@@ -280,5 +275,11 @@ bool WindowsCalls::memcpy( Computer &computer ) {
 
 bool WindowsCalls::acos( Computer &computer ) {
     computer.func_call->set_return_double( ::acos( computer.func_call->get_param1_double() ) );
+    return true;
+}
+
+bool WindowsCalls::localeconv(Computer& computer)
+{
+    computer.func_call->set_return_64(((OS::Windows*)computer.os.get())->lconv_slot.start_address);
     return true;
 }

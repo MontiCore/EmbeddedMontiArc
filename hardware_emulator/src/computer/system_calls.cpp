@@ -1,9 +1,3 @@
-/**
- * (c) https://github.com/MontiCore/monticore
- *
- * The license generally applicable for this project
- * can be found under https://github.com/MontiCore/monticore.
- */
 #include "computer/system_calls.h"
 #include "computer/computer_layout.h"
 #include "computer.h"

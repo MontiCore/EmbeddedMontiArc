@@ -1,9 +1,3 @@
-/**
- * (c) https://github.com/MontiCore/monticore
- *
- * The license generally applicable for this project
- * can be found under https://github.com/MontiCore/monticore.
- */
 #include "utility.h"
 #include <iomanip>
 #include <locale>
@@ -24,15 +18,6 @@
     #include <stdlib.h>
     #include <unistd.h>
 #endif
-
-
-uint BIT_MASKS[] = {
-    0b0,
-    0b1,                0b11,               0b111,              0b1111,
-    0b11111,            0b111111,           0b1111111,          0b11111111,
-    0b111111111,        0b1111111111,       0b11111111111,      0b111111111111,
-    0b1111111111111,    0b11111111111111,   0b111111111111111,  0b1111111111111111
-};
 
 
 void Utility::write_uint64_t( char *mem_pos, uint64_t value ) {
@@ -627,3 +612,57 @@ std::string Error::direct_sim_software_load_error(const std::string& description
 {
     return "DirectSimulator: Error loading software: \n\t" + description;
 }
+
+
+bool json_get(const json& j, const char* entry, int& target) {
+    if (!j.contains(entry)) return false;
+    auto& e = j[entry];
+    if (!e.is_number_integer()) return false;
+    target = e.get<int>();
+    return true;
+}
+bool json_get(const json& j, const char* entry, uint& target) {
+    if (!j.contains(entry)) return false;
+    auto& e = j[entry];
+    if (!e.is_number_unsigned()) return false;
+    target = e.get<uint>();
+    return true;
+}
+
+bool json_get(const json& j, const char* entry, ulong& target) {
+    if (!j.contains(entry)) return false;
+    auto& e = j[entry];
+    if (!e.is_number_integer()) return false;
+    target = e.get<ulong>();
+    return true;
+}
+
+bool json_get(const json& j, const char* entry, std::string& target) {
+    if (!j.contains(entry)) return false;
+    auto& e = j[entry];
+    if (!e.is_string()) return false;
+    target = e.get<std::string>();
+    return true;
+}
+
+
+
+ulong BIT_MASKS[65] = {
+    0x0LL,
+    0x1LL, 0x3LL, 0x7LL, 0xfLL,
+    0x1fLL, 0x3fLL, 0x7fLL, 0xffLL,
+    0x1ffLL, 0x3ffLL, 0x7ffLL, 0xfffLL,
+    0x1fffLL, 0x3fffLL, 0x7fffLL, 0xffffLL,
+    0x1ffffLL, 0x3ffffLL, 0x7ffffLL, 0xfffffLL,
+    0x1fffffLL, 0x3fffffLL, 0x7fffffLL, 0xffffffLL,
+    0x1ffffffLL, 0x3ffffffLL, 0x7ffffffLL, 0xfffffffLL,
+    0x1fffffffLL, 0x3fffffffLL, 0x7fffffffLL, 0xffffffffLL,
+    0x1ffffffffLL, 0x3ffffffffLL, 0x7ffffffffLL, 0xfffffffffLL,
+    0x1fffffffffLL, 0x3fffffffffLL, 0x7fffffffffLL, 0xffffffffffLL,
+    0x1ffffffffffLL, 0x3ffffffffffLL, 0x7ffffffffffLL, 0xfffffffffffLL,
+    0x1fffffffffffLL, 0x3fffffffffffLL, 0x7fffffffffffLL, 0xffffffffffffLL,
+    0x1ffffffffffffLL, 0x3ffffffffffffLL, 0x7ffffffffffffLL, 0xfffffffffffffLL,
+    0x1fffffffffffffLL, 0x3fffffffffffffLL, 0x7fffffffffffffLL, 0xffffffffffffffLL,
+    0x1ffffffffffffffLL, 0x3ffffffffffffffLL, 0x7ffffffffffffffLL, 0xfffffffffffffffLL,
+    0x1fffffffffffffffLL, 0x3fffffffffffffffLL, 0x7fffffffffffffffLL, 0xffffffffffffffffLL
+};

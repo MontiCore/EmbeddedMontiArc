@@ -1,9 +1,3 @@
-@REM
-@REM (c) https://github.com/MontiCore/monticore
-@REM
-@REM The license generally applicable for this project
-@REM can be found under https://github.com/MontiCore/monticore.
-@REM
 
 
 
@@ -19,10 +13,12 @@ IF [%1] == [] (SET SOLUTION_PATH="hardware-emulator.sln") else (SET SOLUTION_PAT
 IF [%2] == [] (SET TARGET=Release) else (SET TARGET=%2)
 IF [%3] == [] (SET GENERATOR="Visual Studio 16 2019") else (SET GENERATOR=%3)
 
-if not exist build mkdir build
-cd build
+::if not exist build mkdir build
+:: cd build
 echo [SCRIPT] Building with target %TARGET%...
-cmake -G %GENERATOR% ../
+:: cmake -G %GENERATOR% ../
+cmake -S . -B build
 echo [SCRIPT] Compiling...
-msbuild -verbosity:quiet %SOLUTION_PATH% /m /p:Configuration=%TARGET% /p:PlatformShortName=x64
-cd ..
+::msbuild -verbosity:quiet %SOLUTION_PATH% /m /p:Configuration=%TARGET% /p:PlatformShortName=x64
+cmake -DCMAKE_BUILD_TYPE=%TARGET% --build build
+:: cd ..

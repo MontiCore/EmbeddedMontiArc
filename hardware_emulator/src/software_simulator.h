@@ -1,15 +1,10 @@
-/**
- * (c) https://github.com/MontiCore/monticore
- *
- * The license generally applicable for this project
- * can be found under https://github.com/MontiCore/monticore.
- */
 #pragma once
 #include <vector>
 #include <memory>
 #include <unordered_map>
-#include "port/port.h"
-#include "dynamic_interface/resolver.h"
+#include "utility/utility.h"
+#include "json.hpp"
+using json = nlohmann::json;
 
 struct SoftwareSimulatorManager;
 
@@ -20,34 +15,39 @@ enum class TimeModel {
     TIME_MODELS
 };
 
-struct SoftwareSimulator : public DynamicSoftwareInterface {
-    void init(SoftwareSimulatorManager& manager, const char* config);
-    ulong run_cycle_get_time();
-    virtual void run_cycle();
-    virtual ulong get_cycle_time();
-    void add_one_input(JNIEnv* jni, jstring key, jobject value);
-    void query_outputs(JNIEnv* jni, jclass cls, jobject opaque_hashmap);
+struct ProgramInterface {
+    static constexpr const char *FUNC_NAME_GET_INTERFACE = "DI__get_interface";
+    static constexpr const char *FUNC_NAME_SET_PORT = "DI__set_port";
+    static constexpr const char *FUNC_NAME_GET_PORT = "DI__get_port";
+    static constexpr const char *FUNC_NAME_INIT = "DI__init";
+    static constexpr const char *FUNC_NAME_EXECUTE = "DI__execute";
+    virtual const char* get_interface() = 0;
+    virtual void set_port(int i, const char* data) = 0;
+    virtual const char* get_port(int i) = 0;
+    
+    virtual void init() = 0;
+    virtual void execute(double delta_sec) = 0;
+    virtual ~ProgramInterface() {}
+};
 
-    std::string query(const char* msg);
+struct SoftwareSimulator {
+    std::unique_ptr<ProgramInterface> program_interface;
+
+    void init(const json& config, const FS::Directory& software_folder);
+
+    virtual void start_timer() = 0;
+    virtual ulong get_timer_micro() = 0;
+    json query(const json& query);
+    
     virtual ~SoftwareSimulator() {}
-
-    Port* get_port(const char* port_name);
 protected:
     TimeModel time_model = TimeModel::INSTANT;
     ulong const_time = 0;
-    std::vector<std::unique_ptr<Port>> input_ports;
-    std::vector<std::unique_ptr<Port>> output_ports;
-    using PortMap = std::unordered_map<std::string, Port*>;
-    PortMap port_map;
-    std::string software_name;
+    
     FS::File software_path;
-
-    void process_inputs();
-    void process_outputs();
+    std::string program_name;
 
     //Methods that must be implemented by the Simulator instance
-    virtual std::string query_simulator(const char* msg) = 0;
-    virtual void init_simulator(SoftwareSimulatorManager& manager, const char* config) = 0;
-    virtual void exec() = 0;
-    virtual Port* new_port_by_type(const PortInformation& info) = 0;
+    virtual json query_simulator(const json& query) = 0;
+    virtual void init_simulator(const json& config, const FS::Directory& software_folder) = 0;
 };

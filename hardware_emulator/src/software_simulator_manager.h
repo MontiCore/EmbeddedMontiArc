@@ -1,15 +1,11 @@
-/**
- * (c) https://github.com/MontiCore/monticore
- *
- * The license generally applicable for this project
- * can be found under https://github.com/MontiCore/monticore.
- */
 #pragma once
 #include "software_simulator.h"
 #include <list>
 #include "utility/utility.h"
+#include "json.hpp"
+using json = nlohmann::json;
 
-static constexpr auto VERSION = "1.0.5";
+static constexpr auto VERSION = "2.0.0";
 
 /*
     The EmulatorManager is used to allocate and interact with autopilot emualtors.
@@ -17,7 +13,7 @@ static constexpr auto VERSION = "1.0.5";
 */
 struct SoftwareSimulatorManager {
     static SoftwareSimulatorManager instance;
-    bool loaded = false;
+    //bool loaded = false;
 	std::vector<std::unique_ptr<SoftwareSimulator>> simulators;
     uint simulator_count;
     
@@ -30,6 +26,10 @@ struct SoftwareSimulatorManager {
     
     
     std::string error_msg;
+
+
+    SoftwareSimulatorManager();
+
     /*
         config is the configuration of the MANAGER
         Supported configuration:
@@ -39,13 +39,13 @@ struct SoftwareSimulatorManager {
     
         The contents of default_config will be added to the start of the config used to allocate an emulator.
     */
-    void init( const char *config );
+    void init( const json& config );
     
     /*
         config is the configuration of the EMULATOR
         Returns the allocated emulator id or -1 on error. On error, error_msg contains the error trace.
     */
-    int alloc_simulator( const char *config );
+    int alloc_simulator(const json& config);
     void free_simulator( int id );
     
     
@@ -65,5 +65,5 @@ struct SoftwareSimulatorManager {
         response:   available_threads=number of threads of the machine running the manager.
     
     */
-    std::string query( const char *msg );
+    json query( const json& query );
 };

@@ -1,74 +1,38 @@
-/**
- * (c) https://github.com/MontiCore/monticore
- *
- * The license generally applicable for this project
- * can be found under https://github.com/MontiCore/monticore.
- */
 #include "direct_software_simulator.h"
-#include "port/port_simple.h"
-#include "port/port_array.h"
 
-std::string DirectSoftwareSimulator::query_simulator(const char* msg)
+json DirectSoftwareSimulator::query_simulator(const json& query)
 {
     return std::string();
 }
 
-void DirectSoftwareSimulator::init_simulator(SoftwareSimulatorManager& manager, const char* config)
+void DirectProgramInterface::load(Library &software){
+    real_init = (DirectProgramInterface::InitFunc)software.get_function( FUNC_NAME_INIT );
+    real_exec = (DirectProgramInterface::ExecFunc)software.get_function( FUNC_NAME_EXECUTE );
+    real_get_interface = (DirectProgramInterface::GetInterfaceFunc)software.get_function( FUNC_NAME_GET_INTERFACE );
+    real_set_port = (DirectProgramInterface::SetPortFunc)software.get_function( FUNC_NAME_SET_PORT );
+    real_get_port = (DirectProgramInterface::GetPortFunc)software.get_function( FUNC_NAME_GET_PORT );
+}
+
+void DirectSoftwareSimulator::init_simulator(const json& config, const FS::Directory& software_folder)
 {
     software.init(software_path);
 
-    resolve_real("init", real_init);
-    resolve_real("execute", real_exec);
+    DirectProgramInterface* prog_interface = new DirectProgramInterface();
+    prog_interface->load(software);
+    prog_interface->init();
 
-    ((InitFunc)real_init)();
+    program_interface = std::unique_ptr<ProgramInterface>(prog_interface);
 
-    Log::info << Log::tag << "Initiated software in direct mode: " << software_name << "\n";
+    Log::info << Log::tag << "Initiated software in direct mode: " << program_name << "\n";
 }
 
-void DirectSoftwareSimulator::exec()
+void DirectSoftwareSimulator::start_timer()
 {
-    ((ExecFunc)real_exec)();
+    timer.start();
 }
 
-Port* DirectSoftwareSimulator::new_port_by_type(const PortInformation& info)
+ulong DirectSoftwareSimulator::get_timer_micro()
 {
-    if (info.dimension.dimension == PortDimension::Dimension::SINGLE) {
-        switch (info.type.type) {
-        case PortType::Type::INT:
-            return new PortIntDirect(info, *this);
-        case PortType::Type::DOUBLE:
-            return new PortDoubleDirect(info, *this);
-        }
-    } else if (info.dimension.dimension == PortDimension::Dimension::ARRAY) {
-        switch (info.type.type) {
-        case PortType::Type::INT:
-            return new PortIntArrayDirect(info, *this);
-        case PortType::Type::DOUBLE:
-            return new PortDoubleArrayDirect(info, *this);
-        }
-    }
-    else if (info.dimension.dimension == PortDimension::Dimension::DYNAMIC) {
-
-    }
-    return nullptr;
-}
-
-const char* DirectSoftwareSimulator::get_string_by_id(const char* name, int id)
-{
-    void* function_address;
-    resolve_real(name, function_address);
-    using GetStringFunc = const char*(*)(int);
-    return ((GetStringFunc)function_address)(id);
-}
-
-int DirectSoftwareSimulator::get_int(const char* name)
-{
-    void* function_address;
-    resolve_real(name, function_address);
-    using GetCountFunc = int(*)();
-    return ((GetCountFunc)function_address)();
-}
-
-void DirectSoftwareSimulator::resolve_real( const std::string &name, void *&target ) {
-    target = software.get_function( name.c_str() );
+    timer.end();
+    return timer.getDelta();
 }

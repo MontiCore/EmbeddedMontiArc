@@ -1,9 +1,3 @@
-/**
- * (c) https://github.com/MontiCore/monticore
- *
- * The license generally applicable for this project
- * can be found under https://github.com/MontiCore/monticore.
- */
 #include "os_linux.h"
 
 #include "linux_calls.h"
@@ -18,7 +12,7 @@ namespace OS {
     
     
     void Linux::load_file( const FS::File &file ) {
-        elf.init(FS::File(file.folder, file.get_full_name() + ".so"), computer->sys_calls, computer->memory, computer->symbols);
+        elf.init(FS::File(file.folder, file.get_name() + ".so"), computer->sys_calls, computer->memory, computer->symbols);
         elf.elf_main( *computer );
     }
     

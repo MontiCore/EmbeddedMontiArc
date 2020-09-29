@@ -1,9 +1,3 @@
-/**
- * (c) https://github.com/MontiCore/monticore
- *
- * The license generally applicable for this project
- * can be found under https://github.com/MontiCore/monticore.
- */
 #include "computer/memory.h"
 #include <unicorn/unicorn.h>
 #include "computer/computer_layout.h"
@@ -201,6 +195,9 @@ void Memory::init( void *uc ) {
                                 "OS", false, true, true );
     sys_section->init_annotations();
     sys_section_stack.init( sys_section );
+
+    exchange_section = &new_section( MemoryRange( ComputerLayout::EXCHANGE_ADDRESS, ComputerLayout::EXCHANGE_RANGE ), "data_exchange",
+                                "EMU", false, true, false );
 }
 
 
@@ -232,7 +229,7 @@ void Memory::write_memory( MemoryRange range, void *data ) {
 }
 
 
-MemorySection &Memory::new_section( MemoryRange range, const std::string &name, const std::string &mode, bool exec,
+MemorySection &Memory::new_section( MemoryRange range, const std::string &name, const std::string &module, bool exec,
                                     bool read, bool write ) {
     if ( sections.size() <= section_count )
         sections.resize( sections.size() * 3 / 2 + 2 );
@@ -240,7 +237,7 @@ MemorySection &Memory::new_section( MemoryRange range, const std::string &name, 
     auto sec = new MemorySection();
     sections[sec_id] = std::unique_ptr<MemorySection>( sec );
     sec->link( internal_uc, page_size, *this );
-    sec->init( range, name, mode, exec, read, write );
+    sec->init( range, name, module, exec, read, write );
     section_lookup[range] = sec_id;
     return *sec;
 }
@@ -271,9 +268,15 @@ void MemorySection::print_annotation( ulong virtual_address ) {
             auto &note = *note_ptr;
             Log::info << "(";
             Log::note << note.name;
-            if ( note.base != virtual_address )
-                //Log::info << "[" << to_hex( virtual_address - note.base, 0 ) << "]";
-                Log::info << "[" << ( virtual_address - note.base ) << "]";
+            if (note.base != virtual_address) {
+                if (note.base < virtual_address) {
+                    //Log::info << "[" << to_hex( virtual_address - note.base, 0 ) << "]";
+                    Log::info << "[" << (virtual_address - note.base) << "]";
+                }
+                else {
+                    Log::info << "[-" << (note.base - virtual_address) << "]";
+                }
+            }
             Log::info << ") ";
         }
     }
@@ -313,7 +316,7 @@ wchar_t *Memory::read_wstr( ulong address ) {
     return ( wchar_t * )buffer.data();
 }
 
-uchar *Memory::read_wstr_as_str( ulong address ) {
+char *Memory::read_wstr_as_str( ulong address ) {
     auto name_str = read_wstr( address );
     ulong p = 0;
     wchar_t next;
@@ -323,30 +326,32 @@ uchar *Memory::read_wstr_as_str( ulong address ) {
         buffer[( uint )p] = c;
         ++p;
     } while ( next != 0 );
-    return buffer.data();
+    return (char*)buffer.data();
 }
 
-uchar *Memory::read_str( ulong address ) {
+char *Memory::read_str( ulong address ) {
     uint size = 0;
-    uchar c;
+    auto buff_size = buffer.size();
     do {
+        if (size >= buff_size){
+            buff_size += BUFFER_SIZE;
+            buffer.resize(buff_size);
+        }
         if ( uc_mem_read( static_cast<uc_engine *>( internal_uc ), address + size, buffer.data() + size, 1 ) ) {
             Log::err << Log::tag << "Error reading str at address " << address << "\n";
-            size = 1;
+            buffer[size] = 0;
             break;
         }
-        c = buffer[size];
-        ++size;
-    } while ( c != 0 && size < BUFFER_SIZE );
+    } while ( buffer[size++] != 0 && size < MAX_BUFFER_SIZE );
     
-    if ( size >= BUFFER_SIZE )
+    if ( size >= MAX_BUFFER_SIZE )
         buffer[size - 1] = 0;
-    return buffer.data();
+    return (char*)buffer.data();
 }
 
 void Memory::write_str( ulong address, std::string const &text ) {
     char *buff = ( char * )buffer.data();
-    uint size = ( uint )text.size();
+    uint size = min(( uint )text.size(), buffer.size());
     for ( uint i : urange( size ) )
         buff[i] = text[i];
     buff[size] = 0;

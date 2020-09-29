@@ -1,28 +1,49 @@
-/**
- * (c) https://github.com/MontiCore/monticore
- *
- * The license generally applicable for this project
- * can be found under https://github.com/MontiCore/monticore.
- */
 #pragma once
 
 #include "software_simulator.h"
+#include "utility/utility.h"
 
+struct DirectProgramInterface : public ProgramInterface {
+    using GetInterfaceFunc = const char*(*)(void);
+    using SetPortFunc = void(*)(int,const char*);
+    using GetPortFunc = const char*(*)(int);
+    using InitFunc = void(*)();
+    using ExecFunc = void(*)(double);
+    GetInterfaceFunc real_get_interface = nullptr;
+    SetPortFunc real_set_port = nullptr;
+    GetPortFunc real_get_port = nullptr;
+    InitFunc real_init = nullptr;
+    ExecFunc real_exec = nullptr;
+
+    void load(Library &software);
+    
+    const char* get_interface() {
+        return real_get_interface();
+    }
+    void set_port(int i, const char* data) {
+        real_set_port(i, data);
+    }
+    const char* get_port(int i) {
+        return real_get_port(i);
+    }
+    
+    void init() {
+        real_init();
+    }
+    void execute(double delta_sec) {
+        real_exec(delta_sec);
+    }
+};
 
 struct DirectSoftwareSimulator : public SoftwareSimulator {
-    using ExecFunc = void(*)();
-    using InitFunc = void(*)();
     Library software;
 
-    void* real_exec = nullptr;
-    void* real_init = nullptr;
-    long real_time_accumulator = 0;
+    MeanAvgCollector avg_runtime;
+    PrecisionTimer timer;
 
-    std::string query_simulator(const char* msg);
-    void init_simulator(SoftwareSimulatorManager& manager, const char* config);
-    void exec();
-    Port* new_port_by_type(const PortInformation& info);
-    const char* get_string_by_id(const char* name, int id);
-    int get_int(const char* name);
-    void resolve_real(const std::string& name, void*& target);
+    json query_simulator(const json& query);
+    void init_simulator(const json& config, const FS::Directory& software_folder);
+
+    void start_timer();
+    ulong get_timer_micro();
 };

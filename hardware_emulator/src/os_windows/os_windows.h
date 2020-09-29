@@ -1,9 +1,3 @@
-/**
- * (c) https://github.com/MontiCore/monticore
- *
- * The license generally applicable for this project
- * can be found under https://github.com/MontiCore/monticore.
- */
 #pragma once
 #include "dll_loader.h"
 #include "computer/os.h"
@@ -116,16 +110,25 @@ namespace OS {
         MemoryRange io_stdin;
         MemoryRange io_stdout;
         MemoryRange io_stderr;
+
+        MemoryRange lconv_slot;
         
 		std::vector<char> name_buffer;
         
         Windows() : name_buffer( 1024 ) {}
         
         void init( Computer &computer );
+        void setup_tib_gdt();
+        void setup_command_line_args();
+        void setup_cout();
+        void setup_io();
+        void setup_locale();
         
         //File without extension
         void load_file(const FS::File& file);
         
+
+        ulong upload_system_string(const std::string& str, const char* description);
     };
     
 }

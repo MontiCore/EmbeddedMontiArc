@@ -1,9 +1,3 @@
-/**
- * (c) https://github.com/MontiCore/monticore
- *
- * The license generally applicable for this project
- * can be found under https://github.com/MontiCore/monticore.
- */
 #include "os_windows/dll_loader.h"
 #include <parser-library/parse.h>
 #include "computer/system_calls.h"

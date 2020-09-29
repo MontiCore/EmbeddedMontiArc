@@ -1,9 +1,3 @@
-/**
- * (c) https://github.com/MontiCore/monticore
- *
- * The license generally applicable for this project
- * can be found under https://github.com/MontiCore/monticore.
- */
 #include "instruction_time.h"
 
 #include "computer/memory.h"
@@ -56,17 +50,17 @@ void MemoryModel::init( Memory &memory, ComputerTime &computer_time ) {
 }
 
 ulong MemoryModel::handle_access( MemAccess type, ulong addr ) {
-    uint sec_id = memory->section_lookup[MemoryRange( addr, 1 )];
+    //uint sec_id = memory->section_lookup[MemoryRange( addr, 1 )];
     ulong time = 0;
     switch ( type ) {
         case MemAccess::READ:
-            time = data_memory->read( addr, sec_id );
+            time = data_memory->read( addr );
             break;
         case MemAccess::WRITE:
-            time = data_memory->write( addr, sec_id );
+            time = data_memory->write( addr );
             break;
         case MemAccess::FETCH:
-            time = instruction_memory->read( addr, sec_id );
+            time = instruction_memory->read( addr );
             break;
     }
     computer_time->add_pico_time( time );

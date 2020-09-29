@@ -1,9 +1,3 @@
-/**
- * (c) https://github.com/MontiCore/monticore
- *
- * The license generally applicable for this project
- * can be found under https://github.com/MontiCore/monticore.
- */
 #pragma once
 
 #include "utility.h"
@@ -36,34 +30,34 @@
             Log::err << "Unknown command\n";
     }
 */
-struct MessageParser {
-    const char *msg;
-    uint cmd_size;
-    const char *rest;
-    const char *line_start;
-    const char *next;
-    
-    MessageParser( const char *msg );
-    bool has_next();
-    bool is_cmd( const char *cmd );
-    bool cmd_starts_with( const char *cmd );
-    bool get_long( slong &target );
-    std::string get_string();
-    
-    std::string get_cmd();
-    
-    void to_non_ws();
-    void to_comma();
-    
-    void unknown();
-};
+//struct MessageParser {
+//    const char *msg;
+//    uint cmd_size;
+//    const char *rest;
+//    const char *line_start;
+//    const char *next;
+//    
+//    MessageParser( const char *msg );
+//    bool has_next();
+//    bool is_cmd( const char *cmd );
+//    bool cmd_starts_with( const char *cmd );
+//    bool get_long( slong &target );
+//    std::string get_string();
+//    
+//    std::string get_cmd();
+//    
+//    void to_non_ws();
+//    void to_comma();
+//    
+//    void unknown();
+//};
 
 /*
     Simple builder of config and query messages.
     add() adds a new line to the message
     multiple arguments have to be manually separated by commas.
 */
-struct MessageBuilder {
-    std::string res;
-    void add( const std::string &cmd, const std::string &param = std::string() );
-};
+//struct MessageBuilder {
+//    std::string res;
+//    void add( const std::string &cmd, const std::string &param = std::string() );
+//};

@@ -1,9 +1,3 @@
-/**
- * (c) https://github.com/MontiCore/monticore
- *
- * The license generally applicable for this project
- * can be found under https://github.com/MontiCore/monticore.
- */
 #pragma once
 #include "utility/utility.h"
 #include "computer/computer_layout.h"
@@ -217,6 +211,7 @@ struct SectionStack {
 */
 struct Memory {
     static constexpr ulong BUFFER_SIZE = 4096;
+    static constexpr ulong MAX_BUFFER_SIZE = 1048576;
     void *internal_uc;
     ulong page_size;
     
@@ -228,6 +223,8 @@ struct Memory {
 	std::vector<uint8_t> buffer;
     MemorySection *sys_section;
     SectionStack sys_section_stack;
+
+    MemorySection *exchange_section;
     
     Memory() : internal_uc( nullptr ), section_count( 0 ), page_size(0), sys_section(nullptr) {}
     
@@ -242,7 +239,7 @@ struct Memory {
     void *read_memory( MemoryRange range );
     void write_memory( MemoryRange range, void *data );
     
-    MemorySection &new_section( MemoryRange range, const std::string &name, const std::string &mode, bool exec, bool read,
+    MemorySection &new_section( MemoryRange range, const std::string &name, const std::string &module, bool exec, bool read,
                                 bool write );
     MemorySection *get_section( ulong virtual_address );
     
@@ -250,8 +247,8 @@ struct Memory {
     void print_annotation( ulong virtual_address );
     
     wchar_t *read_wstr( ulong address );
-    uchar *read_wstr_as_str( ulong address );
-    uchar *read_str( ulong address );
+    char *read_wstr_as_str( ulong address );
+    char *read_str( ulong address );
     
     void write_wstr( ulong address, std::string const &text );
     void write_str( ulong address, std::string const &text );
