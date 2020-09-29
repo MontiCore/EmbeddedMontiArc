@@ -197,27 +197,4 @@ public class Vec3 {
         }
     }
 
-    // @Override
-    // public void toJson(JsonWriter j) {
-    //     j.startArray();
-    //     j.writeValue(x);
-    //     j.writeValue(y);
-    //     j.writeValue(z);
-    //     j.endArray();
-    // }
-
-    // @Override
-    // public void fromJson(JsonTraverser j) {
-    //     int i = 1;
-    //     for (ValueType t : j.streamArray()){
-    //         switch(i){
-    //             case 1: x = j.getDouble(); break;
-    //             case 2: y = j.getDouble(); break;
-    //             case 3: z = j.getDouble(); break;
-    //         }
-    //         ++i;
-    //     }
-    //     if (i < 4) throw new ParsingException("Missing entries in vector array");
-    //     if (i > 4) throw new ParsingException("Too many entries in vector array");
-    // }
 }

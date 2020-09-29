@@ -28,64 +28,62 @@ public abstract class Json {
     protected Json() {
     }
 
-    public static String toFormattedJson(Object o, SerializationContext context)
-            throws IllegalArgumentException, IllegalAccessException {
+    public static String toFormattedJson(Object o, SerializationContext context) throws SerializationException {
         JsonWriter w = new JsonWriter(true);
         Json.getTypeInfo(o.getClass()).writer.write(w, o, context);
         return w.getString();
     }
 
-    public static String toFormattedJson(Object o) throws IllegalArgumentException, IllegalAccessException {
+    public static String toFormattedJson(Object o) throws SerializationException {
         return toFormattedJson(o, null);
     }
 
-    public static String toJson(Object o, SerializationContext context)
-            throws IllegalArgumentException, IllegalAccessException {
+    public static String toJson(Object o, SerializationContext context) throws SerializationException {
         JsonWriter w = new JsonWriter(false);
         toJson(w, o, context);
         return w.getString();
     }
 
-    public static String toJson(Object o) throws IllegalArgumentException, IllegalAccessException {
+    public static String toJson(Object o) throws SerializationException {
         return toJson(o, null);
     }
 
-    public static void toJson(JsonWriter w, Object o, SerializationContext context)
-            throws IllegalArgumentException, IllegalAccessException {
+    public static void toJson(JsonWriter w, Object o, SerializationContext context) throws SerializationException {
         Json.getTypeInfo(o.getClass()).writer.write(w, o, context);
     }
 
     public static <T> T instantiateFromJson(String json, Class<T> c, SerializationContext context)
-            throws InstantiationException, IllegalAccessException, IllegalArgumentException, InvocationTargetException,
-            NoSuchMethodException, SecurityException, IOException {
+            throws SerializationException {
         JsonTraverser t = new JsonTraverser();
-        t.init(json);
+        try {
+            t.init(json);
+        } catch (IOException e) {
+            throw new SerializationException(e);
+        }
         return (T) instantiateFromJson(t, c, context);
     }
 
-    public static <T> T instantiateFromJson(String json, Class<T> c)
-            throws InstantiationException, IllegalAccessException, IllegalArgumentException, InvocationTargetException,
-            NoSuchMethodException, SecurityException, IOException {
+    public static <T> T instantiateFromJson(String json, Class<T> c) throws SerializationException {
         return instantiateFromJson(json, c, null);
     }
 
     public static <T> T instantiateFromJson(File json, Class<T> c, SerializationContext context)
-            throws InstantiationException, IllegalAccessException, IllegalArgumentException, InvocationTargetException,
-            NoSuchMethodException, SecurityException, IOException {
+            throws SerializationException {
         JsonTraverser t = new JsonTraverser();
-        t.init(json);
+        try {
+            t.init(json);
+        } catch (ParsingException | IOException e) {
+            throw new SerializationException(e);
+        }
         return (T) instantiateFromJson(t, c, context);
     }
 
-    public static <T> T instantiateFromJson(File json, Class<T> c)
-            throws InstantiationException, IllegalAccessException, IllegalArgumentException, InvocationTargetException,
-            NoSuchMethodException, SecurityException, IOException {
+    public static <T> T instantiateFromJson(File json, Class<T> c) throws SerializationException {
         return (T) instantiateFromJson(json, c, null);
     }
 
     public static <T> T instantiateFromJson(JsonTraverser t, Class<T> c, SerializationContext context)
-            throws InstantiationException, IllegalAccessException, IllegalArgumentException, InvocationTargetException,
-            NoSuchMethodException, SecurityException {
+            throws SerializationException {
         TypeInfo inf = getTypeInfo(c);
         if (inf.isGeneric)
             throw new IllegalArgumentException(
@@ -105,38 +103,40 @@ public abstract class Json {
                 return (T) registry.get(subC).instancer.instance(t, subC, it, context);
             }
         }
-        if (inf.instancer == null) throw new IllegalArgumentException("Cannot instanciate class "+c.getSimpleName());
+        if (inf.instancer == null)
+            throw new IllegalArgumentException("Cannot instanciate class " + c.getSimpleName());
         return (T) inf.instancer.instance(t, c, null, context);
     }
 
-    public static void fromJson(String json, Object o) throws InstantiationException, IllegalAccessException,
-            IllegalArgumentException, InvocationTargetException, NoSuchMethodException, SecurityException, IOException {
+    public static void fromJson(String json, Object o) throws SerializationException {
         fromJson(json, o, null);
     }
 
-    public static void fromJson(String json, Object o, SerializationContext context)
-            throws InstantiationException, IllegalAccessException, IllegalArgumentException, InvocationTargetException,
-            NoSuchMethodException, SecurityException, IOException {
+    public static void fromJson(String json, Object o, SerializationContext context) throws SerializationException {
         JsonTraverser t = new JsonTraverser();
-        t.init(json);
+        try {
+            t.init(json);
+        } catch (IOException e) {
+            throw new SerializationException(e);
+        }
         fromJson(t, o, context);
     }
 
-    public static void fromJson(File json, Object o) throws InstantiationException, IllegalAccessException,
-            IllegalArgumentException, InvocationTargetException, NoSuchMethodException, SecurityException, IOException {
+    public static void fromJson(File json, Object o) throws SerializationException {
         fromJson(json, o, null);
     }
 
-    public static void fromJson(File json, Object o, SerializationContext context)
-            throws InstantiationException, IllegalAccessException, IllegalArgumentException, InvocationTargetException,
-            NoSuchMethodException, SecurityException, IOException {
+    public static void fromJson(File json, Object o, SerializationContext context) throws SerializationException {
         JsonTraverser t = new JsonTraverser();
-        t.init(json);
+        try {
+            t.init(json);
+        } catch (ParsingException | IOException e) {
+            throw new SerializationException(e);
+        }
         fromJson(t, o, context);
     }
 
-    public static void fromJson(JsonTraverser t, Object o, SerializationContext context)
-            throws IllegalAccessException, InstantiationException, InvocationTargetException, NoSuchMethodException {
+    public static void fromJson(JsonTraverser t, Object o, SerializationContext context) throws SerializationException {
         Class<?> c = o.getClass();
         TypeInfo inf = getTypeInfo(c);
         if (inf.reader == null)
@@ -160,7 +160,7 @@ public abstract class Json {
         final java.lang.reflect.Type[] genericC;
         final Field f;
 
-        FieldInfo(Field f, JsonEntry je) throws IllegalArgumentException, IllegalAccessException {
+        FieldInfo(Field f, JsonEntry je) throws SerializationException {
             this.f = f;
             String n = je != null ? je.value() : null;
             if (n == null || n.length() == 0)
@@ -238,7 +238,7 @@ public abstract class Json {
 
     static final HashMap<Class<?>, TypeInfo> registry;
 
-    private static TypeInfo getTypeInfo(Class<?> c) throws IllegalArgumentException, IllegalAccessException {
+    private static TypeInfo getTypeInfo(Class<?> c) throws SerializationException {
         TypeInfo inf = registry.get(c);
         if (inf != null)
             return inf;
@@ -258,7 +258,7 @@ public abstract class Json {
         registry.put(c, TypeInfo.newGenericTypeInfo(w, r));
     }
 
-    public static void registerType(Class<?> c) throws IllegalArgumentException, IllegalAccessException {
+    public static void registerType(Class<?> c) throws SerializationException {
         if (registry.containsKey(c))
             return;
 
@@ -304,7 +304,12 @@ public abstract class Json {
                     String name = f.getName();
                     if (je != null && je.value().length() > 0)
                         name = je.value();
-                    Object val = f.get(null);
+                    Object val;
+                    try {
+                        val = f.get(null);
+                    } catch (IllegalArgumentException | IllegalAccessException e) {
+                        throw new SerializationException(e);
+                    }
                     names.put(val, name);
                     variantMap.put(name, val);
                 }
@@ -325,16 +330,27 @@ public abstract class Json {
                 ((CustomJson) o).write(w, context);
             };
             instancer = (t, cl, it, context) -> {
-                Constructor<?> constr = cl.getDeclaredConstructor();
+                Constructor<?> constr;
+                try {
+                    constr = cl.getDeclaredConstructor();
+                } catch (NoSuchMethodException | SecurityException e1) {
+                    throw new SerializationException(e1);
+                }
                 constr.setAccessible(true);
-                Object ob = constr.newInstance();
+                Object ob;
+                try {
+                    ob = constr.newInstance();
+                } catch (InstantiationException | IllegalAccessException | IllegalArgumentException
+                        | InvocationTargetException e) {
+                    throw new SerializationException(e);
+                }
                 ((CustomJson) ob).read(t, it, context);
                 return ob;
             };
             reader = (t, o, it, context) -> {
                 ((CustomJson) o).read(t, it, context);
             };
-            
+
         } else {
 
             final Vector<FieldInfo> fields = new Vector<>();
@@ -364,9 +380,18 @@ public abstract class Json {
                         PrimitiveWriter pw = primitiveWriterRegistry.get(f.c);
                         if (pw == null)
                             throw new IllegalArgumentException("Missing primitive field type support for: " + f.name);
-                        pw.write(w, o, f.f);
+                        try {
+                            pw.write(w, o, f.f);
+                        } catch (IllegalArgumentException | IllegalAccessException e) {
+                            throw new SerializationException(e);
+                        }
                     } else {
-                        Object o2 = f.f.get(o);
+                        Object o2;
+                        try {
+                            o2 = f.f.get(o);
+                        } catch (IllegalArgumentException | IllegalAccessException e) {
+                            throw new SerializationException(e);
+                        }
                         if (o2 != null) {
                             if (obj)
                                 w.writeKey(f.name);
@@ -382,9 +407,20 @@ public abstract class Json {
             };
 
             instancer = (t, cl, it, context) -> {
-                Constructor<?> constr = cl.getDeclaredConstructor();
+                Constructor<?> constr;
+                try {
+                    constr = cl.getDeclaredConstructor();
+                } catch (NoSuchMethodException | SecurityException e2) {
+                    throw new SerializationException(e2);
+                }
                 constr.setAccessible(true);
-                Object ob = constr.newInstance();
+                Object ob;
+                try {
+                    ob = constr.newInstance();
+                } catch (InstantiationException | IllegalAccessException | IllegalArgumentException
+                        | InvocationTargetException e1) {
+                    throw new SerializationException(e1);
+                }
                 if (obj) {
                     if (it == null) {
                         it = t.streamObject();
@@ -458,45 +494,68 @@ public abstract class Json {
                         throw new ParsingException("Too many entries in " + c.getSimpleName() + " array");
                 }
             };
-            
+
         }
 
         registry.put(c, TypeInfo.newTypeInfo(writer, instancer, reader, type));
     }
 
     static void instanceField(JsonTraverser t, Object ob, FieldInfo f, SerializationContext c)
-            throws IllegalAccessException, IllegalArgumentException, InstantiationException, InvocationTargetException,
-            NoSuchMethodException, SecurityException {
+            throws SerializationException {
         if (f.primitive) {
             PrimitiveReader pr = primitiveReaderRegistry.get(f.c);
             if (pr == null)
                 throw new IllegalArgumentException("Missing primitive field type support for: " + f.name);
-            pr.read(t, ob, f.f);
+            try {
+                pr.read(t, ob, f.f);
+            } catch (IllegalArgumentException | IllegalAccessException | NullPointerException | ParsingException e) {
+                throw new SerializationException(e);
+            }
             return;
         }
         if (f.isGeneric) {
-            f.f.set(ob, getTypeInfo(f.c).genericInstancer.instance(t, f.genericC, c));
+            try {
+                f.f.set(ob, getTypeInfo(f.c).genericInstancer.instance(t, f.genericC, c));
+            } catch (IllegalArgumentException | IllegalAccessException e) {
+                throw new SerializationException(e);
+            }
             return;
         }
-        f.f.set(ob, instantiateFromJson(t, f.c, c));
+        try {
+            f.f.set(ob, instantiateFromJson(t, f.c, c));
+        } catch (IllegalArgumentException | IllegalAccessException e) {
+            throw new SerializationException(e);
+        }
     }
 
     static void readField(JsonTraverser t, Object o, FieldInfo f, SerializationContext c)
-            throws IllegalAccessException, IllegalArgumentException, InstantiationException, InvocationTargetException,
-            NoSuchMethodException, SecurityException {
+            throws SerializationException {
         if (f.primitive) {
             PrimitiveReader pr = primitiveReaderRegistry.get(f.c);
             if (pr == null)
                 throw new IllegalArgumentException("Missing primitive field type support for: " + f.name);
-            pr.read(t, o, f.f);
+            try {
+                pr.read(t, o, f.f);
+            } catch (IllegalArgumentException | IllegalAccessException | NullPointerException | ParsingException e) {
+                throw new SerializationException(e);
+            }
             return;
         }
-        Object subObj = f.f.get(o);
+        Object subObj;
+        try {
+            subObj = f.f.get(o);
+        } catch (IllegalArgumentException | IllegalAccessException e2) {
+            throw new SerializationException(e2);
+        }
         TypeInfo inf = getTypeInfo(f.c);
-        if (subObj == null){
+        if (subObj == null) {
             // field is null => instantiate object
             if (f.isGeneric) {
-                f.f.set(o, inf.genericInstancer.instance(t, f.genericC, c));
+                try {
+                    f.f.set(o, inf.genericInstancer.instance(t, f.genericC, c));
+                } catch (IllegalArgumentException | IllegalAccessException e) {
+                    throw new SerializationException(e);
+                }
                 return;
             }
             if (inf.subtyped) {
@@ -510,17 +569,32 @@ public abstract class Json {
                 Class<?> subC = inf.subtypes.get(rType);
                 if (subC == null)
                     t.unexpected(e);
-                f.f.set(o, registry.get(subC).instancer.instance(t, subC, it, c));
+                try {
+                    f.f.set(o, registry.get(subC).instancer.instance(t, subC, it, c));
+                } catch (IllegalArgumentException | IllegalAccessException e1) {
+                    throw new SerializationException(e1);
+                }
                 return;
             }
-            if (inf.instancer == null) throw new IllegalArgumentException("Cannot instance field "+f.f.getName());
-            f.f.set(o, instantiateFromJson(t, f.c, c));
+            if (inf.instancer == null)
+                throw new IllegalArgumentException("Cannot instance field " + f.f.getName());
+            try {
+                f.f.set(o, instantiateFromJson(t, f.c, c));
+            } catch (IllegalArgumentException | IllegalAccessException e) {
+                throw new SerializationException(e);
+            }
             return;
         }
         // field is not null => try to 'read' it.
         if (f.isGeneric) {
-            if (inf.genericReader != null) inf.genericReader.read(t, subObj, null, f.genericC, c);
-            else f.f.set(o, inf.genericInstancer.instance(t, f.genericC, c));
+            if (inf.genericReader != null)
+                inf.genericReader.read(t, subObj, null, f.genericC, c);
+            else
+                try {
+                    f.f.set(o, inf.genericInstancer.instance(t, f.genericC, c));
+                } catch (IllegalArgumentException | IllegalAccessException e) {
+                    throw new SerializationException(e);
+                }
             return;
         }
         if (inf.subtyped) {
@@ -537,22 +611,39 @@ public abstract class Json {
                 Class<?> subC = inf.subtypes.get(rType);
                 if (subC == null)
                     t.unexpected(e);
-                f.f.set(o, registry.get(subC).instancer.instance(t, subC, it, c));
+                try {
+                    f.f.set(o, registry.get(subC).instancer.instance(t, subC, it, c));
+                } catch (IllegalArgumentException | IllegalAccessException e1) {
+                    throw new SerializationException(e1);
+                }
             } else {
-                if (subInf.reader != null) subInf.reader.read(t, subObj, it, c);
-                else f.f.set(o, subInf.instancer.instance(t, f.c, it, c));
+                if (subInf.reader != null)
+                    subInf.reader.read(t, subObj, it, c);
+                else
+                    try {
+                        f.f.set(o, subInf.instancer.instance(t, f.c, it, c));
+                    } catch (IllegalArgumentException | IllegalAccessException e1) {
+                        throw new SerializationException(e1);
+                    }
             }
             return;
         }
         // Use field object's reader
         Class<?> subC = subObj.getClass();
-        if (!subC.equals(f.c)) inf = getTypeInfo(subC);
-        if (inf.reader != null) inf.reader.read(t, subObj, null, c);
-        else f.f.set(o, inf.instancer.instance(t, f.c, null, c));
+        if (!subC.equals(f.c))
+            inf = getTypeInfo(subC);
+        if (inf.reader != null)
+            inf.reader.read(t, subObj, null, c);
+        else
+            try {
+                f.f.set(o, inf.instancer.instance(t, f.c, null, c));
+            } catch (IllegalArgumentException | IllegalAccessException e) {
+                throw new SerializationException(e);
+            }
     }
 
     static void getFields(Class<?> c, Vector<FieldInfo> fields, HashMap<String, FieldInfo> map, boolean obj,
-            boolean all) throws IllegalArgumentException, IllegalAccessException {
+            boolean all) throws SerializationException {
         Class<?> superC = c.getSuperclass();
         if (superC != null && !superC.equals(Object.class)) {
             JsonType jt = superC.getDeclaredAnnotation(JsonType.class);
@@ -584,13 +675,11 @@ public abstract class Json {
         }
     }
 
-    static void registerSubtype(Class<?> baseClass, String baseType)
-            throws IllegalArgumentException, IllegalAccessException {
+    static void registerSubtype(Class<?> baseClass, String baseType) throws SerializationException {
         registerSubtype(baseClass, baseType, baseClass);
     }
 
-    static void registerSubtype(Class<?> baseClass, String baseType, Class<?> c)
-            throws IllegalArgumentException, IllegalAccessException {
+    static void registerSubtype(Class<?> baseClass, String baseType, Class<?> c) throws SerializationException {
 
         Class<?>[] interfaces = c.getInterfaces();
         for (Class<?> i : interfaces) {
@@ -621,36 +710,32 @@ public abstract class Json {
     }
 
     static public interface Writer {
-        void write(JsonWriter w, Object o, SerializationContext context) throws IllegalAccessException;
+        void write(JsonWriter w, Object o, SerializationContext context) throws SerializationException;
     }
 
     static public interface Instancer {
-        Object instance(JsonTraverser t, Class<?> c, ObjectIterable it, SerializationContext context)
-                throws IllegalAccessException, InstantiationException, InvocationTargetException, NoSuchMethodException;
+        Object instance(JsonTraverser t, Class<?> c, ObjectIterable it, SerializationContext context) throws SerializationException;
     }
 
     static public interface Reader {
-        void read(JsonTraverser t, Object o, ObjectIterable it, SerializationContext context)
-                throws IllegalAccessException, InstantiationException, InvocationTargetException, NoSuchMethodException;
+        void read(JsonTraverser t, Object o, ObjectIterable it, SerializationContext context) throws SerializationException;
     }
 
     static interface PrimitiveWriter {
-        void write(JsonWriter w, Object o, Field f) throws IllegalAccessException;
+        void write(JsonWriter w, Object o, Field f) throws IllegalArgumentException, IllegalAccessException;
     }
 
     static interface PrimitiveReader {
-        void read(JsonTraverser t, Object o, Field f) throws IllegalAccessException;
+        void read(JsonTraverser t, Object o, Field f) throws IllegalArgumentException, IllegalAccessException, NullPointerException, ParsingException;
     }
 
     static interface GenericInstancer {
-        Object instance(JsonTraverser t, java.lang.reflect.Type[] generics, SerializationContext context)
-                throws IllegalAccessException, InstantiationException, InvocationTargetException, NoSuchMethodException;
+        Object instance(JsonTraverser t, java.lang.reflect.Type[] generics, SerializationContext context) throws SerializationException;
     }
 
     static interface GenericReader {
         void read(JsonTraverser t, Object o, ObjectIterable it, java.lang.reflect.Type[] generics,
-                SerializationContext context)
-                throws IllegalAccessException, InstantiationException, InvocationTargetException, NoSuchMethodException;
+                SerializationContext context) throws SerializationException;
     }
 
     static {
@@ -658,7 +743,7 @@ public abstract class Json {
         primitiveWriterRegistry = new HashMap<>();
         primitiveReaderRegistry = new HashMap<>();
 
-        registerPrimitive(double.class, (w, o, f) -> w.writeValue(f.getDouble(o)),
+        registerPrimitive(double.class, (w, o, f) -> w.writeValue(f.getDouble(o)), 
                 (t, o, f) -> f.setDouble(o, t.getDouble()));
         registerPrimitive(int.class, (w, o, f) -> w.writeValue(f.getInt(o)),
                 (t, o, f) -> f.setInt(o, (int) t.getLong()));

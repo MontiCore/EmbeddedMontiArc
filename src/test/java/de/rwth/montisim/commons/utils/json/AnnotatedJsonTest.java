@@ -1,9 +1,5 @@
 package de.rwth.montisim.commons.utils.json;
 
-import java.io.IOException;
-import java.lang.reflect.Field;
-import java.lang.reflect.InvocationTargetException;
-import java.lang.reflect.ParameterizedType;
 import java.util.Vector;
 
 import org.junit.Assert;
@@ -15,7 +11,7 @@ import de.rwth.montisim.commons.utils.json.JsonTraverser.ObjectIterable;
 public class AnnotatedJsonTest {
 
     @Test
-    public void simpleTest1() throws IllegalArgumentException, IllegalAccessException {
+    public void simpleTest1() throws SerializationException {
         SimpleClass1 o = new SimpleClass1();
 
         String res = Json.toFormattedJson(o);
@@ -24,7 +20,7 @@ public class AnnotatedJsonTest {
     }
 
     @Test
-    public void simpleTest2() throws IllegalArgumentException, IllegalAccessException {
+    public void simpleTest2() throws SerializationException {
         SimpleClass2 o = new SimpleClass2();
 
         String res = Json.toFormattedJson(o);
@@ -36,7 +32,7 @@ public class AnnotatedJsonTest {
     }
 
     @Test
-    public void emptyTest1() throws IllegalArgumentException, IllegalAccessException {
+    public void emptyTest1() throws SerializationException {
         EmptyClass1 o = new EmptyClass1();
 
         String res = Json.toFormattedJson(o);
@@ -46,7 +42,7 @@ public class AnnotatedJsonTest {
     }
 
     @Test
-    public void simpleTest3() throws IllegalArgumentException, IllegalAccessException {
+    public void simpleTest3() throws SerializationException {
         SimpleClass3 o = new SimpleClass3();
 
         String res = Json.toFormattedJson(o);
@@ -56,7 +52,7 @@ public class AnnotatedJsonTest {
     }
 
     @Test
-    public void nestedTest1() throws IllegalArgumentException, IllegalAccessException {
+    public void nestedTest1() throws SerializationException {
         NestedClass1 o = new NestedClass1();
 
         String res = Json.toFormattedJson(o);
@@ -72,7 +68,7 @@ public class AnnotatedJsonTest {
     }
 
     @Test
-    public void typedTest1() throws IllegalArgumentException, IllegalAccessException {
+    public void typedTest1() throws SerializationException {
         TypedClass1 o = new TypedClass1();
 
         String res = Json.toFormattedJson(o);
@@ -81,7 +77,7 @@ public class AnnotatedJsonTest {
     }
 
     @Test
-    public void typedTest2() throws IllegalArgumentException, IllegalAccessException {
+    public void typedTest2() throws SerializationException {
         TypedClass2 o = new TypedClass2();
 
         String res = Json.toFormattedJson(o);
@@ -90,7 +86,7 @@ public class AnnotatedJsonTest {
     }
 
     @Test
-    public void subclassTest1() throws IllegalArgumentException, IllegalAccessException {
+    public void subclassTest1() throws SerializationException {
         Subclass1 o = new Subclass1();
 
         String res = Json.toFormattedJson(o);
@@ -101,7 +97,7 @@ public class AnnotatedJsonTest {
     }
 
     @Test
-    public void subclassTest2() throws IllegalArgumentException, IllegalAccessException {
+    public void subclassTest2() throws SerializationException {
         Subclass2 o = new Subclass2();
 
         String res = Json.toFormattedJson(o);
@@ -111,17 +107,16 @@ public class AnnotatedJsonTest {
     }
 
     @Test
-    public void enumTest1() throws IllegalArgumentException, IllegalAccessException {
+    public void enumTest1() throws SerializationException {
         EnumClass1 o = new EnumClass1();
 
         String res = Json.toFormattedJson(o);
-        //System.out.println(res);
+        // System.out.println(res);
         Assert.assertEquals("{\n" + "  \"f1\": \"VARIANT1\",\n" + "  \"f2\": \"variant_2\"\n" + "}", res);
     }
 
     @Test
-    public void instantiateTest1() throws InstantiationException, IllegalAccessException, IllegalArgumentException,
-            InvocationTargetException, NoSuchMethodException, SecurityException, IOException {
+    public void instantiateTest1() throws SerializationException {
         SimpleClass1 o = new SimpleClass1();
         o.set2();
 
@@ -137,8 +132,7 @@ public class AnnotatedJsonTest {
     }
 
     @Test
-    public void instantiateTest2() throws InstantiationException, IllegalAccessException, IllegalArgumentException,
-            InvocationTargetException, NoSuchMethodException, SecurityException, IOException {
+    public void instantiateTest2() throws SerializationException {
         SimpleClass2 o = new SimpleClass2();
         o.set2();
 
@@ -149,8 +143,7 @@ public class AnnotatedJsonTest {
     }
 
     @Test
-    public void instantiateTest3() throws InstantiationException, IllegalAccessException, IllegalArgumentException,
-            InvocationTargetException, NoSuchMethodException, SecurityException, IOException {
+    public void instantiateTest3() throws SerializationException {
         SimpleClass3 o = new SimpleClass3();
         o.set2();
 
@@ -166,8 +159,7 @@ public class AnnotatedJsonTest {
     }
 
     @Test
-    public void instantiateNestedTest() throws InstantiationException, IllegalAccessException, IllegalArgumentException,
-            InvocationTargetException, NoSuchMethodException, SecurityException, IOException {
+    public void instantiateNestedTest() throws SerializationException {
         NestedClass1 o = new NestedClass1();
         o.set2();
 
@@ -178,8 +170,7 @@ public class AnnotatedJsonTest {
     }
 
     @Test
-    public void instantiateTyped1Test() throws InstantiationException, IllegalAccessException, IllegalArgumentException,
-            InvocationTargetException, NoSuchMethodException, SecurityException, IOException {
+    public void instantiateTyped1Test() throws SerializationException {
         TypedClass1 o = new TypedClass1();
         o.set2();
 
@@ -190,8 +181,7 @@ public class AnnotatedJsonTest {
     }
 
     @Test
-    public void instantiateTyped2Test() throws InstantiationException, IllegalAccessException, IllegalArgumentException,
-            InvocationTargetException, NoSuchMethodException, SecurityException, IOException {
+    public void instantiateTyped2Test() throws SerializationException {
         TypedClass2 o = new TypedClass2();
         o.set2();
 
@@ -202,8 +192,7 @@ public class AnnotatedJsonTest {
     }
 
     @Test
-    public void instantiateSubclass1Test() throws InstantiationException, IllegalAccessException,
-            IllegalArgumentException, InvocationTargetException, NoSuchMethodException, SecurityException, IOException {
+    public void instantiateSubclass1Test() throws SerializationException {
         Subclass1 o = new Subclass1();
         o.sset2();
 
@@ -214,8 +203,7 @@ public class AnnotatedJsonTest {
     }
 
     @Test
-    public void instantiateSubclass2Test() throws InstantiationException, IllegalAccessException,
-            IllegalArgumentException, InvocationTargetException, NoSuchMethodException, SecurityException, IOException {
+    public void instantiateSubclass2Test() throws SerializationException {
         Subclass2 o = new Subclass2();
         o.sset2();
 
@@ -226,8 +214,7 @@ public class AnnotatedJsonTest {
     }
 
     @Test
-    public void instantiateSubtyped1Test() throws InstantiationException, IllegalAccessException,
-            IllegalArgumentException, InvocationTargetException, NoSuchMethodException, SecurityException, IOException {
+    public void instantiateSubtyped1Test() throws SerializationException {
         NestedClass2 o = new NestedClass2();
         o.set2();
 
@@ -238,8 +225,7 @@ public class AnnotatedJsonTest {
     }
 
     @Test
-    public void instantiateSubtyped2Test() throws InstantiationException, IllegalAccessException,
-            IllegalArgumentException, InvocationTargetException, NoSuchMethodException, SecurityException, IOException {
+    public void instantiateSubtyped2Test() throws SerializationException {
         Subclass2 o = new Subclass2();
         o.set2();
 
@@ -251,8 +237,7 @@ public class AnnotatedJsonTest {
     }
 
     @Test
-    public void instantiateSubtypedInterface1Test() throws InstantiationException, IllegalAccessException,
-            IllegalArgumentException, InvocationTargetException, NoSuchMethodException, SecurityException, IOException {
+    public void instantiateSubtypedInterface1Test() throws SerializationException {
         ISubclass1 o = new ISubclass1();
         o.set2();
 
@@ -264,8 +249,7 @@ public class AnnotatedJsonTest {
     }
 
     @Test
-    public void testFromJson1() throws InstantiationException, IllegalAccessException, IllegalArgumentException,
-            InvocationTargetException, NoSuchMethodException, SecurityException, IOException {
+    public void testFromJson1() throws SerializationException {
         SimpleClass1 o = new SimpleClass1();
         Json.fromJson("{\"s1\": \"other string\"}", o);
 
@@ -275,8 +259,7 @@ public class AnnotatedJsonTest {
     }
 
     @Test
-    public void testFromJson2() throws InstantiationException, IllegalAccessException, IllegalArgumentException,
-            InvocationTargetException, NoSuchMethodException, SecurityException, IOException {
+    public void testFromJson2() throws SerializationException {
         NestedClass1 o = new NestedClass1();
         Json.fromJson("{\"s1\": \"xxxxxx\", \"c1\":{\"s1\": \"other string\"}, \"z1\": false }", o);
 
@@ -286,8 +269,7 @@ public class AnnotatedJsonTest {
     }
 
     @Test
-    public void testFromJson3() throws InstantiationException, IllegalAccessException, IllegalArgumentException,
-            InvocationTargetException, NoSuchMethodException, SecurityException, IOException {
+    public void testFromJson3() throws SerializationException {
 
         NestedClass1 o = new NestedClass1();
         o.set4();
@@ -299,8 +281,7 @@ public class AnnotatedJsonTest {
     }
 
     @Test
-    public void testFromJson4() throws InstantiationException, IllegalAccessException, IllegalArgumentException,
-            InvocationTargetException, NoSuchMethodException, SecurityException, IOException {
+    public void testFromJson4() throws SerializationException {
 
         NestedClass1 o = new NestedClass1();
         o.set2();
@@ -313,8 +294,7 @@ public class AnnotatedJsonTest {
     }
 
     @Test
-    public void customTest1() throws InstantiationException, IllegalAccessException, IllegalArgumentException,
-            InvocationTargetException, NoSuchMethodException, SecurityException, IOException {
+    public void customTest1() throws SerializationException {
 
         CustomClass1 o = new CustomClass1();
         o.set2();
@@ -326,8 +306,7 @@ public class AnnotatedJsonTest {
     }
 
     @Test
-    public void vectorTest1() throws InstantiationException, IllegalAccessException, IllegalArgumentException,
-            InvocationTargetException, NoSuchMethodException, SecurityException, IOException, NoSuchFieldException {
+    public void vectorTest1() throws SerializationException {
 
         VectorClass1 o = new VectorClass1();
         o.set2();
@@ -348,8 +327,7 @@ public class AnnotatedJsonTest {
     }
 
     @Test
-    public void instantiateEnum1Test() throws InstantiationException, IllegalAccessException,
-            IllegalArgumentException, InvocationTargetException, NoSuchMethodException, SecurityException, IOException {
+    public void instantiateEnum1Test() throws SerializationException {
         EnumClass1 o = new EnumClass1();
         o.set2();
 
@@ -360,8 +338,7 @@ public class AnnotatedJsonTest {
     }
 
     @Test
-    public void instantiateEnum2Test() throws InstantiationException, IllegalAccessException,
-            IllegalArgumentException, InvocationTargetException, NoSuchMethodException, SecurityException, IOException {
+    public void instantiateEnum2Test() throws SerializationException {
         EnumClass1 o = new EnumClass1();
         o.set2();
 
@@ -717,8 +694,9 @@ class Subclass3 extends SuperClass1 {
     static {
         try {
             Json.registerType(Subclass3.class);
-        } catch (IllegalArgumentException | IllegalAccessException e) {
+        } catch (SerializationException e) {
             e.printStackTrace();
+            System.exit(-1);
         }
     }
     int c;
@@ -784,9 +762,9 @@ class ISubclass1 implements Interface1 {
     static {
         try {
             Json.registerType(ISubclass1.class);
-        } catch (IllegalArgumentException | IllegalAccessException e) {
-            // TODO Auto-generated catch block
+        } catch (SerializationException e) {
             e.printStackTrace();
+            System.exit(-1);
         }
     }
     int f1;
@@ -825,9 +803,9 @@ class ISubclass2 implements Interface1 {
     static {
         try {
             Json.registerType(ISubclass2.class);
-        } catch (IllegalArgumentException | IllegalAccessException e) {
-            // TODO Auto-generated catch block
-            e.printStackTrace();
+        } catch (SerializationException e1) {
+            e1.printStackTrace();
+            System.exit(-1);
         }
     }
     String f3;
@@ -867,7 +845,7 @@ class CustomClass1 implements CustomJson {
     }
 
     @Override
-    public void write(JsonWriter w, SerializationContext context) throws IllegalAccessException {
+    public void write(JsonWriter w, SerializationContext context) {
         w.startObject();
         w.write("o1 custom", o1);
         w.write("subelem", n1.c1.d1);
@@ -875,8 +853,7 @@ class CustomClass1 implements CustomJson {
     }
 
     @Override
-    public void read(JsonTraverser t, ObjectIterable it, SerializationContext context)
-            throws IllegalAccessException, InstantiationException, InvocationTargetException, NoSuchMethodException {
+    public void read(JsonTraverser t, ObjectIterable it, SerializationContext context) {
         if (it == null) it = t.streamObject();
         for (Entry e : it) {
             if (e.key.equals("o1 custom")) o1 = (int) t.getLong();

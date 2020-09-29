@@ -12,7 +12,7 @@ import java.time.Instant;
 public class InvalidEventException extends EventException {
     private static final long serialVersionUID = 1811089291721590662L;
 
-    public InvalidEventException(DiscreteEvent<?> e, Instant simulationTime) {
+    public InvalidEventException(DiscreteEvent e, Instant simulationTime) {
         super("Event "+e+" lies in the past (sim-time: "+simulationTime+", event-time: "+e.getEventTime()+").");
     }
 }

@@ -201,28 +201,4 @@ public class Mat3 {
             default: return col1.at(row);
         }
     }
-
-    // @Override
-    // public void toJson(JsonWriter j) {
-    //     j.startArray();
-    //     col1.toJson(j);
-    //     col2.toJson(j);
-    //     col3.toJson(j);
-    //     j.endArray();
-    // }
-
-    // @Override
-    // public void fromJson(JsonTraverser j) {
-    //     int i = 1;
-    //     for (ValueType t : j.streamArray()){
-    //         switch(i){
-    //             case 1: col1.fromJson(j); break;
-    //             case 2: col2.fromJson(j); break;
-    //             case 3: col3.fromJson(j); break;
-    //         }
-    //         ++i;
-    //     }
-    //     if (i < 4) throw new ParsingException("Missing entries in matrix array");
-    //     if (i > 4) throw new ParsingException("Too many entries in matrix array");
-    // }
 }

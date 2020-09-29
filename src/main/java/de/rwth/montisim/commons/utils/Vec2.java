@@ -176,26 +176,4 @@ public class Vec2 {
         }
     }
 
-    
-    // @Override
-    // public void toJson(JsonWriter j) {
-    //     j.startArray();
-    //     j.writeValue(x);
-    //     j.writeValue(y);
-    //     j.endArray();
-    // }
-
-    // @Override
-    // public void fromJson(JsonTraverser j) {
-    //     int i = 1;
-    //     for (ValueType t : j.streamArray()){
-    //         switch(i){
-    //             case 1: x = j.getDouble(); break;
-    //             case 2: y = j.getDouble(); break;
-    //         }
-    //         ++i;
-    //     }
-    //     if (i < 3) throw new ParsingException("Missing entries in vector array");
-    //     if (i > 3) throw new ParsingException("Too many entries in vector array");
-    // }
 }

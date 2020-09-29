@@ -11,7 +11,7 @@ import de.rwth.montisim.commons.simulation.Updatable;
 /**
  * Abstract class for a discrete event simulation based on scheduled events.
  */
-public abstract class DiscreteEventSimulator<EventType, T extends DiscreteEvent<EventType>> implements Updatable {
+public class DiscreteEventSimulator implements Updatable {
 
     /** Comparator for events. Sorts in ascending order of event time. */
 	private static final DiscreteEvent.DiscreteEventComparator listComparator = new DiscreteEvent.DiscreteEventComparator();
@@ -20,42 +20,27 @@ public abstract class DiscreteEventSimulator<EventType, T extends DiscreteEvent<
 	protected Instant simulationTime = Instant.EPOCH;
 
     /** list of all discrete events */
-    protected final PriorityQueue<T> eventList = new PriorityQueue<>(listComparator);
-
-    /**
-     * Function that needs to be implemented in subclasses of DiscreteEventSimulator
-     * for processing events
-     *
-     * @param event Event to be processed
-     */
-    protected abstract void processEvent(T event);
+    protected final PriorityQueue<DiscreteEvent> eventList = new PriorityQueue<>(listComparator);
 
     /**
      * function that adds an event to be scheduled
      * 
      * @param event event to add
      */
-    public void addEvent(T event) {
+    public void addEvent(DiscreteEvent event) {
         if (event.getEventTime().isBefore(simulationTime)){
             throw new InvalidEventException(event, simulationTime);
         }
 		eventList.offer(event);
 	}
 
-    /**
-     * Is called after the simulation objects updated their states.
-     *
-     * @param simulationObjects List of all simulation objects
-     * @param totalTime         Total simulation time in milliseconds
-     * @param deltaTime         Delta simulation time in milliseconds
-     */
-    @ Override
+    @Override
     public void update(TimeUpdate newTime) {
-        T cur;
+        DiscreteEvent cur;
 		//loop until eventList is empty or next event is in future (not isAfter)
 		while(!eventList.isEmpty() && !eventList.peek().getEventTime().isAfter(newTime.newTime)){
-			cur = eventList.poll();
-			processEvent(cur);
+            cur = eventList.poll();
+            cur.target.process(cur);
 			this.simulationTime = cur.getEventTime();
         }
         this.simulationTime = newTime.newTime;
@@ -65,7 +50,7 @@ public abstract class DiscreteEventSimulator<EventType, T extends DiscreteEvent<
 		return simulationTime;
     }
     
-    public PriorityQueue<T> getEventList() {
+    public PriorityQueue<DiscreteEvent> getEventList() {
 		return eventList;
     }
 

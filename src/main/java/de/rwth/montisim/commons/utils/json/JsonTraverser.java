@@ -126,7 +126,7 @@ public class JsonTraverser {
 
 
     public StringRef getString() throws ParsingException {
-        if (currentType != ValueType.STRING) throw new ParsingException(data, pos, "Tried to read BOOLEAN but got "+currentType);
+        if (currentType != ValueType.STRING) throw new ParsingException(data, pos, "Tried to read STRING but got "+currentType);
         getString(currentString);
         return currentString;
     }
@@ -318,7 +318,7 @@ public class JsonTraverser {
     }
 
     public void skipDouble() {
-        while (((int) c >= (int) '0' && (int) c <= (int) '9') || c == '-' || c == '.' || c == 'E' || c == 'e')
+        while (((int) c >= (int) '0' && (int) c <= (int) '9') || c == '+' || c == '-' || c == '.' || c == 'E' || c == 'e')
             nextChar();
         currentType = ValueType.UNKNOWN;
     }
