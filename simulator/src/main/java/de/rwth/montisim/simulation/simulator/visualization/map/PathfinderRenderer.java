@@ -8,9 +8,10 @@ import java.util.List;
 
 import javax.swing.JMenuItem;
 
+import de.rwth.montisim.commons.map.Path;
+import de.rwth.montisim.commons.map.Pathfinding;
 import de.rwth.montisim.commons.utils.*;
 import de.rwth.montisim.simulation.simulator.visualization.ui.Renderer;
-import de.rwth.montisim.simulation.environment.pathfinding.*;
 
 public class PathfinderRenderer extends Renderer {
     public static final Color PATH_COLOR = new Color(255, 100, 100, 100);
@@ -19,12 +20,16 @@ public class PathfinderRenderer extends Renderer {
     Optional<Vec2> startPosition = Optional.empty();
     Optional<Vec2> targetPosition = Optional.empty();
 
-    final Pathfinding pathfinding;
+    Pathfinding pathfinding;
     Path res = null;
 
     final List<Polyline> lines = new ArrayList<>();
 
     public PathfinderRenderer(Pathfinding pathfinding) {
+        load(pathfinding);
+    }
+
+    public void load(Pathfinding pathfinding) {
         this.pathfinding = pathfinding;
         updatePath();
     }

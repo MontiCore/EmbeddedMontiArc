@@ -6,6 +6,7 @@ import java.time.Duration;
 import de.rwth.montisim.commons.utils.json.Typed;
 import de.rwth.montisim.simulation.eesimulator.components.BusUserProperties;
 import de.rwth.montisim.simulation.eesimulator.components.EEComponentType;
+import de.rwth.montisim.simulation.eesimulator.components.EEEventProcessor;
 
 @Typed(BridgeProperties.TYPE)
 public class BridgeProperties extends BusUserProperties {
@@ -38,6 +39,11 @@ public class BridgeProperties extends BusUserProperties {
     @Override
     public String getType() {
         return TYPE;
+    }
+
+    @Override
+    public EEEventProcessor build(ComponentBuildContext context) {
+        return new Bridge(this);
     }
 
 }

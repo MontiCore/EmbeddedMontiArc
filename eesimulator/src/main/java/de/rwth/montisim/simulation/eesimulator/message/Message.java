@@ -1,7 +1,6 @@
 /* (c) https://github.com/MontiCore/monticore */
 package de.rwth.montisim.simulation.eesimulator.message;
 
-import java.lang.reflect.InvocationTargetException;
 import java.util.Optional;
 
 import de.rwth.montisim.commons.utils.ParsingException;
@@ -11,9 +10,9 @@ import de.rwth.montisim.commons.utils.json.JsonTraverser.Entry;
 import de.rwth.montisim.commons.utils.json.JsonTraverser.ObjectIterable;
 import de.rwth.montisim.commons.utils.json.JsonWriter;
 import de.rwth.montisim.commons.utils.json.SerializationContext;
-import de.rwth.montisim.simulation.eesimulator.EESimulator.EESerializationContext;
+import de.rwth.montisim.commons.utils.json.SerializationException;
+import de.rwth.montisim.simulation.eesimulator.EESystem.EESerializationContext;
 import de.rwth.montisim.simulation.eesimulator.components.BusUser;
-import de.rwth.montisim.simulation.eesimulator.components.ComponentManager;
 import de.rwth.montisim.simulation.eesimulator.components.EEEventProcessor;
 
 /**
@@ -45,16 +44,16 @@ public class Message implements CustomJson {
         this.sender = sender;
         this.msgInfo = info;
         this.message = message;
-        this.msgLen = info.type.getDataSize();
+        this.msgLen = info.type.getDataSize(message);
     }
 
     protected Message() {
     }
 
-    public boolean isMsg(MessageInformation info){
-        return info.messageId == this.msgInfo.messageId;
+    // Check for INSTANCE EQUALITY (assumes all MessageInformation shared in the MessageTypeManager)
+    public boolean isMsg(MessageInformation info) {
+        return info == this.msgInfo;
     }
-
 
     public static final String K_SENDER = "sender";
     public static final String K_NAME = "name";
@@ -62,7 +61,7 @@ public class Message implements CustomJson {
     public static final String K_LENGTH = "length";
 
     @Override
-    public void write(JsonWriter w, SerializationContext context) throws IllegalAccessException {
+    public void write(JsonWriter w, SerializationContext context) throws SerializationException {
         w.startObject();
         w.write(K_SENDER, sender.properties.name);
         w.write(K_NAME, msgInfo.name);
@@ -73,8 +72,7 @@ public class Message implements CustomJson {
     }
 
     @Override
-    public void read(JsonTraverser t, ObjectIterable it, SerializationContext context)
-            throws IllegalAccessException, InstantiationException, InvocationTargetException, NoSuchMethodException {
+    public void read(JsonTraverser t, ObjectIterable it, SerializationContext context) throws SerializationException {
         EESerializationContext c = (EESerializationContext)context;
         for (Entry e : t.streamObject()) {
             if (e.key.equals(K_SENDER)) {

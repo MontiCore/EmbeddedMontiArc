@@ -3,12 +3,10 @@ package de.rwth.montisim.simulation.vehicle.physicsmodel.rigidbody;
 
 import de.rwth.montisim.commons.simulation.DynamicObject;
 import de.rwth.montisim.commons.utils.*;
-import de.rwth.montisim.commons.utils.json.Typed;
 
 /**
  * Class that represents a mass point of a rigid body
  */
-@Typed("rigidbody")
 public class Rigidbody extends DynamicObject {
     public static final double GRAVITY = -9.81;
 

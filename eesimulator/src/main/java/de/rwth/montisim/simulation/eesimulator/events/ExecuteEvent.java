@@ -7,35 +7,36 @@ import de.rwth.montisim.commons.utils.json.Typed;
 import de.rwth.montisim.simulation.eesimulator.components.ComponentManager;
 import de.rwth.montisim.simulation.eesimulator.components.EEEventProcessor;
 
-public class ExecuteEvent extends EEDiscreteEvent {
-	public final static String TYPE = "execute";
+public class ExecuteEvent extends EEEvent {
+	public static final int type = registerType(ExecuteEvent.class);
+	public final static String TYPE_NAME = "execute";
 
-	public ExecuteEvent(Instant eventTime, EEEventProcessor target) {
-		super(eventTime, target);
+	public ExecuteEvent(EEEventProcessor target, Instant eventTime) {
+		super(target, eventTime);
 	}
 
 	protected ExecuteEvent() {
 	}
 
-	@Override
-	public EEEventType getEventType() {
-		return EEEventType.EXECUTE;
-	}
-
-	@Typed("execute")
+	@Typed(ExecuteEvent.TYPE_NAME)
 	public static class ExecuteEventData extends EventData {
 		ExecuteEventData(ExecuteEvent event) {
 			super(event);
 		}
         protected ExecuteEventData() {}
 		@Override
-		public EEDiscreteEvent getEvent(ComponentManager cm) {
-			return new ExecuteEvent(time, EEDiscreteEvent.getTarget(target, cm));
+		public EEEvent getEvent(ComponentManager cm) {
+			return new ExecuteEvent(EEEvent.getTarget(target, cm), time);
 		}
 	}
 	
 	@Override
 	public EventData getEventData() {
 		return new ExecuteEventData(this);
+	}
+
+	@Override
+	public int getType() {
+		return type;
 	}
 }

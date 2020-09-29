@@ -1,23 +1,23 @@
 /* (c) https://github.com/MontiCore/monticore */
 package de.rwth.montisim.simulation.vehicle.powertrain;
 
-import de.rwth.montisim.commons.dynamicinterface.DataType;
-import de.rwth.montisim.commons.simulation.PhysicalValue;
+import de.rwth.montisim.commons.physicalvalue.*;
 import de.rwth.montisim.commons.utils.json.JsonEntry;
 import de.rwth.montisim.simulation.eesimulator.actuator.Actuator;
-import de.rwth.montisim.simulation.vehicle.Vehicle;
+import de.rwth.montisim.simulation.eesimulator.components.ComponentManager;
 
 public abstract class PowerTrain {
+    public static final double MAX_STEERING_ANGLE = 30.0;
 
     transient public final PowerTrainProperties properties;
     transient public Motor motor;
     
-    @JsonEntry("steering")
-    public final PhysicalValue steeringValue; // In degrees
-    @JsonEntry("braking")
-    public final PhysicalValue brakingValue;
-    @JsonEntry("gas")
-    public final PhysicalValue gasValue;
+    @JsonEntry(PowerTrainProperties.STEERING_VALUE_NAME)
+    public final PhysicalValueDouble steeringValue; // In degrees
+    @JsonEntry(PowerTrainProperties.BRAKING_VALUE_NAME)
+    public final PhysicalValueDouble brakingValue;
+    @JsonEntry(PowerTrainProperties.GAS_VALUE_NAME)
+    public final PhysicalValueDouble gasValue;
     
     transient public Actuator steeringActuator; // In degrees
     transient public Actuator brakingActuator; // From 0 to 1 (no brake - full brake)
@@ -25,15 +25,21 @@ public abstract class PowerTrain {
 
     public PowerTrain(PowerTrainProperties properties) {
         this.properties = properties;
-        this.steeringValue = new PhysicalValue(PowerTrainProperties.STEERING_VALUE_NAME, DataType.DOUBLE, 0.0);
-        this.brakingValue = new PhysicalValue(PowerTrainProperties.BRAKING_VALUE_NAME, DataType.DOUBLE, 0.0);
-        this.gasValue = new PhysicalValue(PowerTrainProperties.GAS_VALUE_NAME, DataType.DOUBLE, 0.0);
+        this.steeringValue = new PhysicalValueDouble(PowerTrainProperties.STEERING_VALUE_NAME, 0.0, -MAX_STEERING_ANGLE, MAX_STEERING_ANGLE);
+        this.brakingValue = new PhysicalValueDouble(PowerTrainProperties.BRAKING_VALUE_NAME, 1.0, 0, 1);
+        this.gasValue = new PhysicalValueDouble(PowerTrainProperties.GAS_VALUE_NAME, 0.0, -0.5, 1.0);
     }
 
-    public void registerPhysicalValues(Vehicle vehicle){
-        vehicle.addPhysicalValue(steeringValue);
-        vehicle.addPhysicalValue(brakingValue);
-        vehicle.addPhysicalValue(gasValue);
+    public void registerPhysicalValues(PhysicalValueRegistry physicalValues){
+        physicalValues.addPhysicalValue(steeringValue);
+        physicalValues.addPhysicalValue(brakingValue);
+        physicalValues.addPhysicalValue(gasValue);
+    }
+
+    public void resolveActuators(ComponentManager cm){
+        gasActuator = cm.getActuator(PowerTrainProperties.GAS_ACTUATOR_NAME).get();
+        brakingActuator = cm.getActuator(PowerTrainProperties.BRAKING_ACTUATOR_NAME).get();
+        steeringActuator = cm.getActuator(PowerTrainProperties.STEERING_ACTUATOR_NAME).get();
     }
 
     public abstract double getFuelPercentage();

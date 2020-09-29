@@ -3,7 +3,7 @@ package de.rwth.montisim.simulation.eecomponents.autopilots;
 
 import java.time.*;
 
-import de.rwth.montisim.commons.dynamicinterface.DataType;
+import de.rwth.montisim.commons.dynamicinterface.BasicType;
 import de.rwth.montisim.commons.utils.Time;
 import de.rwth.montisim.simulation.eesimulator.actuator.Actuator;
 import de.rwth.montisim.simulation.eesimulator.components.*;
@@ -42,9 +42,9 @@ public class TestAutopilot extends EEComponent {
     protected void init() throws EEMessageTypeException {
         this.velocityMsg = addInput(TrueVelocity.VALUE_NAME, TrueVelocity.TYPE);
         this.steeringMsg = addOutput(Actuator.SETTER_PREFIX + PowerTrainProperties.STEERING_VALUE_NAME,
-                DataType.DOUBLE);
-        this.accelMsg = addOutput(Actuator.SETTER_PREFIX + PowerTrainProperties.GAS_VALUE_NAME, DataType.DOUBLE);
-        this.brakeMsg = addOutput(Actuator.SETTER_PREFIX + PowerTrainProperties.BRAKING_VALUE_NAME, DataType.DOUBLE);
+                BasicType.DOUBLE);
+        this.accelMsg = addOutput(Actuator.SETTER_PREFIX + PowerTrainProperties.GAS_VALUE_NAME, BasicType.DOUBLE);
+        this.brakeMsg = addOutput(Actuator.SETTER_PREFIX + PowerTrainProperties.BRAKING_VALUE_NAME, BasicType.DOUBLE);
     }
 
     @Override
@@ -82,11 +82,6 @@ public class TestAutopilot extends EEComponent {
 
         sendMessage(sendTime, steeringMsg, properties.turn_angle);
         sendMessage(sendTime, accelMsg, accel);
-    }
-
-    @Override
-    public EEComponentType getComponentType() {
-        return EEComponentType.COMPUTER;
     }
     
 }

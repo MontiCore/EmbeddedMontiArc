@@ -5,9 +5,10 @@ import java.util.HashMap;
 import java.util.HashSet;
 import java.util.List;
 import java.util.Optional;
-import java.util.Vector;
 
+import de.rwth.montisim.commons.dynamicinterface.DataType;
 import de.rwth.montisim.commons.utils.Pair;
+import de.rwth.montisim.simulation.eesimulator.components.EEComponent;
 import de.rwth.montisim.simulation.eesimulator.exceptions.EEMessageTypeException;
 
 /**
@@ -16,24 +17,23 @@ import de.rwth.montisim.simulation.eesimulator.exceptions.EEMessageTypeException
  */
 public class MessageTypeManager {
     public HashMap<String, HashSet<EEMessageTypeException>> messageTypeErrors = new HashMap<>();
-    int idCounter = 0;
     HashMap<String, MessageInformation> messages = new HashMap<>();
 
-    public int registerMessage(MessageInformation info) throws EEMessageTypeException {        
-        if (messages.containsKey(info.name)) {
-            MessageInformation i = messages.get(info.name);
-            if (!i.type.equals(info.type)) {
+    public MessageInformation registerMessage(String name, DataType type, EEComponent source) throws EEMessageTypeException {        
+        if (messages.containsKey(name)) {
+            MessageInformation i = messages.get(name);
+            if (!i.type.equals(type)) {
                 throw new EEMessageTypeException(
-                    info.name,
+                    name,
                     i.firstUser, i.type,
-                    info.firstUser, info.type
+                    source, type
                 );
             }
-            return i.messageId;
+            return i;
         }
-        int id = idCounter++;
-        messages.put(info.name, info);
-        return id;
+        MessageInformation i = new MessageInformation(name, type, source);
+        messages.put(name, i);
+        return i;
     }
 
     public Optional<MessageInformation> getMsgInfo(String msgName){

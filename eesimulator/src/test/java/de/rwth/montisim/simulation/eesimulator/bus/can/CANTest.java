@@ -9,23 +9,23 @@ import org.junit.Assert;
 import org.junit.Before;
 import org.junit.Test;
 
-import de.rwth.montisim.commons.dynamicinterface.DataType;
+import de.rwth.montisim.commons.dynamicinterface.BasicType;
+import de.rwth.montisim.commons.eventsimulation.DiscreteEventSimulator;
 import de.rwth.montisim.commons.utils.Pair;
 import de.rwth.montisim.commons.utils.Time;
 import de.rwth.montisim.commons.simulation.TimeUpdate;
-import de.rwth.montisim.simulation.eesimulator.EESimulator;
+import de.rwth.montisim.simulation.eesimulator.EESystem;
 import de.rwth.montisim.simulation.eesimulator.events.MessageReceiveEvent;
 import de.rwth.montisim.simulation.eesimulator.events.MessageSendEvent;
 import de.rwth.montisim.simulation.eesimulator.exceptions.EEMessageTypeException;
 import de.rwth.montisim.simulation.eesimulator.message.Message;
-import de.rwth.montisim.simulation.eesimulator.message.MessageInformation;
 import de.rwth.montisim.simulation.eesimulator.message.MessageTypeManager;
 import de.rwth.montisim.simulation.eesimulator.testcomponents.TestEEComponent;
 
 public class CANTest {
     Instant startTime;
     MessageTypeManager mtManager;
-    EESimulator simulator;
+    EESystem eesystem;
     CAN can;
     TestEEComponent c1, c2, c3;
     Message m1, m2, m3, m4, m5;
@@ -45,34 +45,34 @@ public class CANTest {
         //startTime = Instant.now();
         startTime = Instant.EPOCH;
         mtManager = new MessageTypeManager();
-        simulator = new EESimulator(mtManager);
-        can = new CAN(new CANProperties().setBitRate(CAN.HIGH_SPEED_CAN_BITRATE).setName("TestCanBus"), simulator.getMsgPrioComp());
-        can.attachTo(simulator);
-        c1 = new TestEEComponent("TestComponent1"); c1.attachTo(simulator);
-        c2 = new TestEEComponent("TestComponent2"); c2.attachTo(simulator);
-        c3 = new TestEEComponent("TestComponent3"); c3.attachTo(simulator);
+        eesystem = new EESystem(new DiscreteEventSimulator(), mtManager);
+        can = new CAN(new CANProperties().setBitRate(CAN.HIGH_SPEED_CAN_BITRATE).setName("TestCanBus"), eesystem.getMsgPrioComp());
+        can.attachTo(eesystem);
+        c1 = new TestEEComponent("TestComponent1"); c1.attachTo(eesystem);
+        c2 = new TestEEComponent("TestComponent2"); c2.attachTo(eesystem);
+        c3 = new TestEEComponent("TestComponent3"); c3.attachTo(eesystem);
         // Not necessary
         can.addComponent(c1);
         can.addComponent(c2);
         can.addComponent(c3);
 
         // Full frame payload
-        m1 = new Message(null, new MessageInformation("m1", DataType.DOUBLE, simulator.getMessageTypeManager(), c1), null, CAN.MAX_PAYLOAD_SIZE_BYTES);
+        m1 = new Message(null, mtManager.registerMessage("m1", BasicType.DOUBLE, c1), null, CAN.MAX_PAYLOAD_SIZE_BYTES);
         t1 = new CANMessageTransmission(m1, null);
         // Partial frame payload
-        m2 = new Message(null, new MessageInformation("m2", DataType.DOUBLE, simulator.getMessageTypeManager(), c1), null, 3);
+        m2 = new Message(null, mtManager.registerMessage("m2", BasicType.DOUBLE, c1), null, 3);
         t2 = new CANMessageTransmission(m2, null);
         // Multi frame payload (full)
-        m3 = new Message(null, new MessageInformation("m3", DataType.DOUBLE, simulator.getMessageTypeManager(), c1), null, CAN.MAX_PAYLOAD_SIZE_BYTES*5);
+        m3 = new Message(null, mtManager.registerMessage("m3", BasicType.DOUBLE, c1), null, CAN.MAX_PAYLOAD_SIZE_BYTES*5);
         t3 = new CANMessageTransmission(m3, null);
         // Multi frame payload (full)
-        m4 = new Message(null, new MessageInformation("m4", DataType.DOUBLE, simulator.getMessageTypeManager(), c1), null, CAN.MAX_PAYLOAD_SIZE_BYTES*3 + 5);
+        m4 = new Message(null, mtManager.registerMessage("m4", BasicType.DOUBLE, c1), null, CAN.MAX_PAYLOAD_SIZE_BYTES*3 + 5);
         t4 = new CANMessageTransmission(m4, null);
         // Full frame payload
-        m5 = new Message(null, new MessageInformation("m5", DataType.DOUBLE, simulator.getMessageTypeManager(), c1), null, CAN.MAX_PAYLOAD_SIZE_BYTES);
+        m5 = new Message(null, mtManager.registerMessage("m5", BasicType.DOUBLE, c1), null, CAN.MAX_PAYLOAD_SIZE_BYTES);
         t5 = new CANMessageTransmission(m5, null);
         
-        simulator.getMessageTypeManager().addMessagePriorities(Arrays.asList(
+        eesystem.getMessageTypeManager().addMessagePriorities(Arrays.asList(
             new Pair<String, Integer>("m1", 1),
             new Pair<String, Integer>("m2", 2),
             new Pair<String, Integer>("m3", 3),
@@ -81,21 +81,21 @@ public class CANTest {
         ));
 
         // Register messages routing.
-        can.addMessageTargets(m1.msgInfo.messageId, Arrays.asList(c1,c2,c3));
-        can.addMessageTargets(m2.msgInfo.messageId, Arrays.asList(c1,c2,c3));
-        can.addMessageTargets(m3.msgInfo.messageId, Arrays.asList(c1,c2,c3));
-        can.addMessageTargets(m4.msgInfo.messageId, Arrays.asList(c1,c2,c3));
-        can.addMessageTargets(m5.msgInfo.messageId, Arrays.asList(c1,c2,c3));
+        can.addMessageTargets(m1.msgInfo, Arrays.asList(c1,c2,c3));
+        can.addMessageTargets(m2.msgInfo, Arrays.asList(c1,c2,c3));
+        can.addMessageTargets(m3.msgInfo, Arrays.asList(c1,c2,c3));
+        can.addMessageTargets(m4.msgInfo, Arrays.asList(c1,c2,c3));
+        can.addMessageTargets(m5.msgInfo, Arrays.asList(c1,c2,c3));
     }
 
     @Test
     public void fullFrameMsg(){
         // Create events
-        MessageSendEvent m1send = new MessageSendEvent(startTime, can, m1);
-        simulator.addEvent(m1send);
+        MessageSendEvent m1send = new MessageSendEvent(can, startTime, m1);
+        eesystem.simulator.addEvent(m1send);
 
         // Perform computation through EESimulator
-        simulator.update(new TimeUpdate(startTime, Duration.ofSeconds(1)));
+        eesystem.simulator.update(new TimeUpdate(startTime, Duration.ofSeconds(1)));
 
         // Verify (Test all components once)
         Assert.assertEquals("Unexpected number of events arrived at the TestEEComponent c1.", 1, c1.events.size());
@@ -109,11 +109,11 @@ public class CANTest {
     @Test
     public void partialFrameMsg(){
         // Create events
-        MessageSendEvent m2send = new MessageSendEvent(startTime.plus(Duration.ofMillis(3)), can, m2);
-        simulator.addEvent(m2send);
+        MessageSendEvent m2send = new MessageSendEvent(can, startTime.plus(Duration.ofMillis(3)), m2);
+        eesystem.simulator.addEvent(m2send);
 
         // Perform computation through EESimulator
-        simulator.update(new TimeUpdate(startTime, Duration.ofSeconds(2)));
+        eesystem.simulator.update(new TimeUpdate(startTime, Duration.ofSeconds(2)));
 
         // Verify
         Assert.assertEquals("Unexpected number of events arrived at the TestEEComponent c1.", 1, c1.events.size());
@@ -123,11 +123,11 @@ public class CANTest {
     @Test
     public void multiFullFrameMsg(){
         // Create events
-        MessageSendEvent m3send = new MessageSendEvent(startTime.plus(Duration.ofSeconds(1)), can, m3);
-        simulator.addEvent(m3send);
+        MessageSendEvent m3send = new MessageSendEvent(can, startTime.plus(Duration.ofSeconds(1)), m3);
+        eesystem.simulator.addEvent(m3send);
 
         // Perform computation through EESimulator
-        simulator.update(new TimeUpdate(startTime, Duration.ofSeconds(2)));
+        eesystem.simulator.update(new TimeUpdate(startTime, Duration.ofSeconds(2)));
 
         // Verify
         Assert.assertEquals("Unexpected number of events arrived at the TestEEComponent c1.", 1, c1.events.size());
@@ -137,11 +137,11 @@ public class CANTest {
     @Test
     public void multiPartialFrameMsg(){
         // Create events
-        MessageSendEvent m4send = new MessageSendEvent(startTime.plus(Duration.ofSeconds(1)), can, m4);
-        simulator.addEvent(m4send);
+        MessageSendEvent m4send = new MessageSendEvent(can, startTime.plus(Duration.ofSeconds(1)), m4);
+        eesystem.simulator.addEvent(m4send);
 
         // Perform computation through EESimulator
-        simulator.update(new TimeUpdate(startTime, Duration.ofSeconds(2)));
+        eesystem.simulator.update(new TimeUpdate(startTime, Duration.ofSeconds(2)));
 
         // Verify
         Assert.assertEquals("Unexpected number of events arrived at the TestEEComponent c1.", 1, c1.events.size());
@@ -151,18 +151,18 @@ public class CANTest {
     @Test
     public void multiMsgsInTime(){
         // Create events
-        MessageSendEvent m1send = new MessageSendEvent(startTime.plus(Duration.ofMillis(3)), can, m1);
-        MessageSendEvent m2send = new MessageSendEvent(startTime.plus(Duration.ofMillis(15)), can, m2);
-        MessageSendEvent m3send = new MessageSendEvent(startTime.plus(Duration.ofMillis(200)), can, m3);
-        MessageSendEvent m4send = new MessageSendEvent(startTime.plus(Duration.ofMillis(700)), can, m4);
+        MessageSendEvent m1send = new MessageSendEvent(can, startTime.plus(Duration.ofMillis(3)), m1);
+        MessageSendEvent m2send = new MessageSendEvent(can, startTime.plus(Duration.ofMillis(15)), m2);
+        MessageSendEvent m3send = new MessageSendEvent(can, startTime.plus(Duration.ofMillis(200)), m3);
+        MessageSendEvent m4send = new MessageSendEvent(can, startTime.plus(Duration.ofMillis(700)), m4);
 
-        simulator.addEvent(m1send);
-        simulator.addEvent(m2send);
-        simulator.addEvent(m3send);
-        simulator.addEvent(m4send);
+        eesystem.simulator.addEvent(m1send);
+        eesystem.simulator.addEvent(m2send);
+        eesystem.simulator.addEvent(m3send);
+        eesystem.simulator.addEvent(m4send);
 
         // Perform computation through EESimulator
-        simulator.update(new TimeUpdate(startTime, Duration.ofSeconds(2)));
+        eesystem.simulator.update(new TimeUpdate(startTime, Duration.ofSeconds(2)));
 
         // Verify
         Assert.assertEquals("Unexpected number of events arrived at the TestEEComponent.", 4, c1.events.size());
@@ -174,10 +174,10 @@ public class CANTest {
     @Test
     public void multiMsgsAtSameTime(){
         // Create events
-        MessageSendEvent m1send = new MessageSendEvent(startTime, can, m1);
-        MessageSendEvent m2send = new MessageSendEvent(startTime, can, m2);
-        MessageSendEvent m3send = new MessageSendEvent(startTime, can, m3);
-        MessageSendEvent m4send = new MessageSendEvent(startTime, can, m4);
+        MessageSendEvent m1send = new MessageSendEvent(can, startTime, m1);
+        MessageSendEvent m2send = new MessageSendEvent(can, startTime, m2);
+        MessageSendEvent m3send = new MessageSendEvent(can, startTime, m3);
+        MessageSendEvent m4send = new MessageSendEvent(can, startTime, m4);
 
         // Manual process for order
         can.process(m2send);
@@ -186,7 +186,7 @@ public class CANTest {
         can.process(m3send);
 
         // Perform computation through EESimulator
-        simulator.update(new TimeUpdate(startTime, Duration.ofSeconds(2)));
+        eesystem.simulator.update(new TimeUpdate(startTime, Duration.ofSeconds(2)));
 
         // Verify (Priorities should make the message arrive in order)
         Assert.assertEquals("Unexpected number of events arrived at the TestEEComponent.", 4, c1.events.size());
@@ -203,20 +203,20 @@ public class CANTest {
     @Test
     public void multiMsgsOverlappingTime(){
         // Create events
-        MessageSendEvent m4send = new MessageSendEvent(startTime, can, m4);
-        MessageSendEvent m3send = new MessageSendEvent(startTime.plus(Duration.ofNanos(bitsToNanos(CAN.FULL_FRAME))), can, m3);
-        MessageSendEvent m1send = new MessageSendEvent(startTime.plus(Duration.ofNanos(bitsToNanos(CAN.FULL_FRAME*3 - 20))), can, m1);
-        MessageSendEvent m1send2 = new MessageSendEvent(startTime.plus(Duration.ofNanos(bitsToNanos(CAN.FULL_FRAME*7))), can, m1);
-        MessageSendEvent m5send = new MessageSendEvent(startTime.plus(Duration.ofNanos(bitsToNanos(CAN.FULL_FRAME*10-100))), can, m5);
+        MessageSendEvent m4send = new MessageSendEvent(can, startTime, m4);
+        MessageSendEvent m3send = new MessageSendEvent(can, startTime.plus(Duration.ofNanos(bitsToNanos(CAN.FULL_FRAME))), m3);
+        MessageSendEvent m1send = new MessageSendEvent(can, startTime.plus(Duration.ofNanos(bitsToNanos(CAN.FULL_FRAME*3 - 20))), m1);
+        MessageSendEvent m1send2 = new MessageSendEvent(can, startTime.plus(Duration.ofNanos(bitsToNanos(CAN.FULL_FRAME*7))), m1);
+        MessageSendEvent m5send = new MessageSendEvent(can, startTime.plus(Duration.ofNanos(bitsToNanos(CAN.FULL_FRAME*10-100))), m5);
         
-        simulator.addEvent(m4send);
-        simulator.addEvent(m3send);
-        simulator.addEvent(m1send);
-        simulator.addEvent(m1send2);
-        simulator.addEvent(m5send);
+        eesystem.simulator.addEvent(m4send);
+        eesystem.simulator.addEvent(m3send);
+        eesystem.simulator.addEvent(m1send);
+        eesystem.simulator.addEvent(m1send2);
+        eesystem.simulator.addEvent(m5send);
 
         // Perform computation through EESimulator
-        simulator.update(new TimeUpdate(startTime, Duration.ofSeconds(2)));
+        eesystem.simulator.update(new TimeUpdate(startTime, Duration.ofSeconds(2)));
 
         // Verify (Priorities should make the message arrive in order)
         Assert.assertEquals("Unexpected number of events arrived at the TestEEComponent.", 5, c1.events.size());

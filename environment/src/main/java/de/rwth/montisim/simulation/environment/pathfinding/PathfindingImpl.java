@@ -5,6 +5,8 @@ import java.util.Comparator;
 import java.util.PriorityQueue;
 import java.util.logging.Logger;
 
+import de.rwth.montisim.commons.map.Path;
+import de.rwth.montisim.commons.map.Pathfinding;
 import de.rwth.montisim.commons.utils.IPM;
 import de.rwth.montisim.commons.utils.Vec2;
 import de.rwth.montisim.commons.utils.Vec3;

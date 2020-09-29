@@ -6,6 +6,7 @@ import java.time.Duration;
 import de.rwth.montisim.commons.utils.json.Typed;
 import de.rwth.montisim.simulation.eesimulator.components.BusUserProperties;
 import de.rwth.montisim.simulation.eesimulator.components.EEComponentType;
+import de.rwth.montisim.simulation.eesimulator.components.EEEventProcessor;
 
 @Typed(SensorProperties.TYPE)
 public class SensorProperties extends BusUserProperties {
@@ -17,14 +18,17 @@ public class SensorProperties extends BusUserProperties {
     public Duration read_time;
     public boolean send_only_changed;
 
-
     public SensorProperties(Duration updateInterval, Duration readTime, boolean sendOnlyChanged) {
         this.update_interval = updateInterval;
         this.read_time = readTime;
         this.send_only_changed = sendOnlyChanged;
     }
 
-    protected SensorProperties() {}
+    protected SensorProperties() {
+        this.update_interval = Duration.ofMillis(100);
+        this.read_time = Duration.ofMillis(10);
+        this.send_only_changed = false;
+    }
 
     public SensorProperties setName(String name) {
         this.name = name;
@@ -51,9 +55,6 @@ public class SensorProperties extends BusUserProperties {
         return this;
     }
 
-
-
-    
     @Override
     public EEComponentType getGeneralType() {
         return EEComponentType.SENSOR;
@@ -62,5 +63,10 @@ public class SensorProperties extends BusUserProperties {
     @Override
     public String getType() {
         return TYPE;
+    }
+
+    @Override
+    public EEEventProcessor build(ComponentBuildContext context) {
+        return new Sensor(this, context.physicalValues.getPhysicalValue(physical_value_name), context.componentUpdater);
     }
 }

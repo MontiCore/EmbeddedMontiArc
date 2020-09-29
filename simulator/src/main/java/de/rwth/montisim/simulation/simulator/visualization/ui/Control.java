@@ -16,6 +16,277 @@ import de.rwth.montisim.commons.utils.Time;
 public class Control extends JPanel implements ActionListener, ChangeListener {
     private static final long serialVersionUID = 2776373934381177954L;
 
+    /*
+     * Simulation/Replay properties
+     */
+
+    final private Mode mode;
+
+    double simulationSpeed = 1;
+    boolean fullspeed = false;
+
+    // Instant simulationStart;
+    // long simulationTimeNano = 0;
+    // long simulationRealTime = 0;
+    // long deltaT = 0;
+
+    final SimulationRunner runner;
+
+    final FrameCounter counter;
+    int manualCounter = 0;
+    long lastFPSTime = 0;
+
+    /*
+     * Timer system
+     */
+    
+    final Instant simulationStart;
+    final int deltaMs;
+    final int targetFps;
+
+    final double tickDurationSec;
+    final long tickDurationNano;
+    final double frameDurationSec;
+    final long frameDurationNano;
+    final long maxUpdateTimeNano;
+    int ticksPerFrame = 0;
+
+    final Duration dt;
+    TimeUpdate tu;
+
+    final Timer timer;
+    final int timerDelta;
+    private boolean playing = false;
+    // long lastFrameTime = 0;
+    // long lastUpdate = 0;
+    // long lastOvershoot = 0;
+    //Instant simTime = Instant.EPOCH;
+
+    /*
+     * Setup the Control Component
+     */
+
+    public Control(Mode mode, Instant simulationStart, SimulationRunner runner, int deltaMs, int targetFps, int minFps) {
+        this.mode = mode;
+        this.simulationStart = simulationStart;
+        this.runner = runner;
+        this.deltaMs = deltaMs;
+        this.targetFps = targetFps;
+        this.counter = new FrameCounter(targetFps);
+
+        tickDurationSec = deltaMs / 1000.0;
+        tickDurationNano = deltaMs * 1000000;
+        frameDurationSec = 1.0 / targetFps;
+        frameDurationNano = (Time.SECOND_TO_NANOSEC) / targetFps;
+        long maxFrameDuration = (Time.SECOND_TO_NANOSEC) / minFps;
+        maxUpdateTimeNano = maxFrameDuration;
+
+        dt = Duration.ofNanos(tickDurationNano);
+        tu = new TimeUpdate(simulationStart, dt);
+        lastSimTime = tu.oldTime;
+        timerDelta = (int)(frameDurationSec*1000);
+        timer = new Timer(timerDelta, this);
+        timer.setCoalesce(true);
+
+        setSimulationSpeed(1);
+
+        setupLayout();
+        
+        updateDeltaTLabel(tickDurationNano);
+        updateTimeLabel();
+    }
+
+    void setSimulationSpeed(double speed) {
+        this.simulationSpeed = speed;
+        double deltaPerFrame = speed * frameDurationSec;
+        this.ticksPerFrame = (int)Math.floor(deltaPerFrame/tickDurationSec);
+    }
+
+
+    /*
+     * Simulation Control
+     */
+    long callTime;
+    long lastFrameDuration;
+    //long nextCallTime;
+    long lastMsgTime = 0;
+    Instant lastSimTime;
+
+    private void updateSimulation(){
+        //nextCallTime += timerDelta*1000000;
+        long updateStart = System.nanoTime();
+
+        //if (updateStart > nextCallTime) return; // Timer calls catch
+        
+        lastFrameDuration = updateStart - callTime;
+        callTime = updateStart;
+
+        Duration lastUpdateDuration = Duration.between(lastSimTime, tu.newTime);
+        lastSimTime = tu.newTime;
+        
+        updateSimSpeedLabel(Time.secondsFromDuration(lastUpdateDuration) / (lastFrameDuration*Time.NANOSEC_TO_SEC));
+        addFrame(callTime);
+
+        // if (updateStart - lastMsgTime > Time.SECOND_TO_NANOSEC){
+        //     lastMsgTime = updateStart;
+        //     long expectedCallTime = nextCallTime-frameDurationNano;            
+        //     System.out.println("Current deviation: " + Double.toString((updateStart - expectedCallTime)*0.000001) +"ms");
+        // }
+
+        if (fullspeed){
+            updateSimulationFullspeed();
+        } else {
+            updateSimulationRealtime();
+        }
+        
+        // Render
+        updateTimeLabel();
+        runner.redraw();
+    }
+
+    private void updateSimulationFullspeed(){
+        long t;
+        long minTime = callTime + frameDurationNano/2; // Make sure at least half the time is spent simulating (vs rendering)
+        long targetTime = callTime + frameDurationNano;
+        do {
+            runner.update(tu);
+            tu = new TimeUpdate(tu.newTime, dt);
+            t = System.nanoTime();
+        } while (t < minTime || System.nanoTime() < targetTime);
+    }
+
+    private void updateSimulationRealtime() {
+        for (int i = 0; i < ticksPerFrame; ++i) {
+            runner.update(tu);
+            tu = new TimeUpdate(tu.newTime, dt);
+            if (System.nanoTime() - callTime > maxUpdateTimeNano) break; // Frame-skip
+        }
+    }
+
+    public void play() {
+        if (playing) return;
+        playing = true;
+        playPauseButton.setIcon(pauseIcon);
+        //System.out.println("Play");
+        timer.start();
+        callTime = System.nanoTime();
+        //nextCallTime = callTime + frameDurationNano;
+        // lastFrameTime = lastUpdate;
+        // lastFPSTime = lastUpdate;
+        // lastOvershoot = 0;
+    }
+
+    public void pause() {
+        if (!playing) return;
+        playing = false;
+        playPauseButton.setIcon(playIcon);
+        //System.out.println("Pause");
+        timer.stop();
+    }
+
+    private void reset(){
+        runner.reset();
+        tu = new TimeUpdate(simulationStart, dt);
+        lastSimTime = tu.oldTime;
+        updateTimeLabel();
+        runner.redraw();
+    }
+
+
+    private String printTime(Instant t){
+        return timeFormatter.format(t);
+    }
+
+    private void updateTimeLabel(){
+        timeLabel.setText(printTime(tu.oldTime));
+    }
+
+    private void updateDeltaTLabel(long deltaT){
+        deltaTLabel.setText(Long.toString(deltaT/1000000)+"ms");
+    }
+
+    private void updateSimSpeedLabel(double speedRatio){
+        simSpeedLabel.setText(ratioFormatter.format(speedRatio));
+    }
+
+    private void addFrame(long callTime){
+        counter.addFrame(callTime);
+        long avg = counter.getAvgDelta();
+        if (avg != 0){
+            double fps = counter.getFramesPerSeconds();
+            fpsLabel.setText(ratioFormatter.format(fps));
+            // frameDurationLabel.setText(Long.toString(avg/1000000)+"ms");
+            // long var = Math.round(Math.sqrt(counter.getVariance()));
+            // frameVarianceLabel.setText(Long.toString(var/1000)+"us");
+        }
+    }
+
+
+    /*
+        UI
+    */
+
+    
+    /*
+     * Handle the Component Actions
+     */
+
+    @Override
+    public void actionPerformed(ActionEvent e) {
+        Object s = e.getSource();
+        if (s == timer) {
+            if (!playing) return;
+            if (mode == Mode.SIMULATION){
+                updateSimulation();
+            }
+            else {
+                // TODO
+            }
+        }
+        else if (s == simModeButton) {
+            //System.out.println("Sim Mode: " + ((SimulationMode) simModeButton.getSelectedItem()).name);
+            if (((SimulationMode) simModeButton.getSelectedItem()) == SimulationMode.FULL_SPEED){
+                if (!fullspeed){
+                    fullspeed = true;
+                    this.remove(1);
+                    this.revalidate();
+                }
+            } else {
+                if (fullspeed){
+                    fullspeed = false;
+                    this.add(speedButton, 1);
+                    this.revalidate();
+                }
+            }
+        } else if (s == speedButton) {
+            //System.out.println("Speed: " + ((SimulationSpeed) speedButton.getSelectedItem()).name);
+            setSimulationSpeed(((SimulationSpeed) speedButton.getSelectedItem()).factor);
+        } else if (s == resetButton) {
+            reset();
+        } else if (s == stepBackButton) {
+            if (playing) return;
+            System.out.println("Step Back");
+            // TODO
+        } else if (s == playPauseButton) {
+            if (playing) pause();
+            else play();
+        } else if (s == stepForwardButton) {
+            if (playing) return;
+            System.out.println("Step Forward");
+            // TODO
+        }
+    }
+
+    @Override
+    public void stateChanged(ChangeEvent e) {
+        if (e.getSource() == slider){
+            //System.out.println("Slider: "+slider.getValue());
+            if (!slider.getValueIsAdjusting()){
+                // TODO
+            }
+        }
+    }
+    
     public static final ImageIcon playIcon;
     public static final ImageIcon pauseIcon;
     public static final ImageIcon stepForwardIcon;
@@ -85,77 +356,29 @@ public class Control extends JPanel implements ActionListener, ChangeListener {
      * SWING COMPONENTS
      */
 
-    final JButton resetButton;
-    final JComboBox<SimulationMode> simModeButton;
-    final JComboBox<SimulationSpeed> speedButton;
+    JButton resetButton;
+    JComboBox<SimulationMode> simModeButton;
+    JComboBox<SimulationSpeed> speedButton;
 
-    final JButton stepBackButton;
-    final JButton playPauseButton;
-    final JButton stepForwardButton;
+    JButton stepBackButton;
+    JButton playPauseButton;
+    JButton stepForwardButton;
 
-    final JLabel timeLabel;
+    JLabel timeLabel;
     //https://docs.oracle.com/javase/tutorial/uiswing/components/slider.html
-    final JSlider slider;
-    final JLabel deltaTLabel;
-    final JLabel simSpeedLabel;
+    JSlider slider;
+    JLabel deltaTLabel;
+    JLabel simSpeedLabel;
 
-    final JLabel fpsLabel;
+    JLabel fpsLabel;
     // final JLabel frameDurationLabel;
     // final JLabel frameVarianceLabel;
     
     // final JLabel manualFPSLabel;
 
-    /*
-     * Simulation/Replay properties
-     */
 
-    final private Mode mode;
-
-    double speed = 1;
-    boolean fullspeed = false;
-
-    Instant simulationStart;
-    long simulationTimeNano = 0;
-    long simulationRealTime = 0;
-    long deltaT = 0;
-
-    final SimulationRunner runner;
-
-    final FrameCounter counter;
-    int manualCounter = 0;
-    long lastFPSTime = 0;
-
-    /*
-     * Timer system
-     */
     
-    // TODO set physics update time as parameter
-    final long PHYSICS_TICK_DURATION_MS = 10;
-    final long TARGET_FPS = 30;
-
-    final double TICK_DURATION = PHYSICS_TICK_DURATION_MS / 1000.0;
-    final double FRAME_DURATION = 1.0 / TARGET_FPS;
-    final long FRAME_DURATION_NANO = (Time.SECOND_TO_NANOSEC) / TARGET_FPS;
-    final long TICK_NANO = PHYSICS_TICK_DURATION_MS * 1000000;
-    TimeUpdate tu = new TimeUpdate(Instant.EPOCH, Duration.ofMillis(PHYSICS_TICK_DURATION_MS));
-
-    final Timer timer;
-    private boolean playing = false;
-    long lastFrameTime = 0;
-    long lastUpdate = 0;
-    long lastOvershoot = 0;
-
-    /*
-     * Setup the Control Component
-     */
-
-    public Control(Mode mode, Instant simulationStart, SimulationRunner runner) {
-        this.mode = mode;
-        this.simulationStart = simulationStart;
-        this.runner = runner;
-        this.counter = new FrameCounter(30);
-
-        timer = new Timer((int)(FRAME_DURATION*1000), this);
+    private void setupLayout() {
 
         setLayout(new FlowLayout());
         // setBackground(new Color(255,255,255));
@@ -198,7 +421,7 @@ public class Control extends JPanel implements ActionListener, ChangeListener {
 
         // TODO labels
         add(new JLabel("Time:"));
-        timeLabel = new JLabel(printTime(simulationStart));
+        timeLabel = new JLabel();
         add(timeLabel);
 
         slider = new JSlider(JSlider.HORIZONTAL);
@@ -235,195 +458,7 @@ public class Control extends JPanel implements ActionListener, ChangeListener {
         // add(manualFPSLabel);
     }
 
-    /*
-     * Handle the Component Actions
-     */
-
-    @Override
-    public void actionPerformed(ActionEvent e) {
-        Object s = e.getSource();
-        if (s == timer) {
-            if (mode == Mode.SIMULATION){
-                updateSimulation();
-            }
-            else {
-                // TODO
-            }
-        }
-        else if (s == simModeButton) {
-            //System.out.println("Sim Mode: " + ((SimulationMode) simModeButton.getSelectedItem()).name);
-            if (((SimulationMode) simModeButton.getSelectedItem()) == SimulationMode.FULL_SPEED){
-                if (!fullspeed){
-                    fullspeed = true;
-                    this.remove(1);
-                    this.revalidate();
-                }
-            } else {
-                if (fullspeed){
-                    fullspeed = false;
-                    this.add(speedButton, 1);
-                    this.revalidate();
-                }
-            }
-        } else if (s == speedButton) {
-            //System.out.println("Speed: " + ((SimulationSpeed) speedButton.getSelectedItem()).name);
-            speed = ((SimulationSpeed) speedButton.getSelectedItem()).factor;
-        } else if (s == resetButton) {
-            reset();
-        } else if (s == stepBackButton) {
-            if (playing) return;
-            System.out.println("Step Back");
-            // TODO
-        } else if (s == playPauseButton) {
-            if (playing) pause();
-            else play();
-        } else if (s == stepForwardButton) {
-            if (playing) return;
-            System.out.println("Step Forward");
-            // TODO
-        }
-    }
-
-    @Override
-    public void stateChanged(ChangeEvent e) {
-        if (e.getSource() == slider){
-            //System.out.println("Slider: "+slider.getValue());
-            if (!slider.getValueIsAdjusting()){
-                // TODO
-            }
-        }
-    }
-
-    /*
-     * Simulation Control
-     */
-
-    private void updateSimulation(){
-            if ((System.nanoTime() - lastUpdate) < 1000000) return; // Avoid timer calls stacking up if slow simulation
-            // Simulate
-            boolean stopSim = false;
-            long newDeltaT = 0;
-            long time;
-            long target;
-
-            long simStartTime = simulationTimeNano;
-            long frameStartTime = lastFrameTime;
-
-            if (fullspeed){
-                time = System.nanoTime();
-                target = time + FRAME_DURATION_NANO;
-            } else {
-                lastFrameTime = System.nanoTime();
-                target = lastFrameTime - frameStartTime;
-                time = lastOvershoot; // Time in "Observed Time"
-            }
-
-            while(time < target) {
-                long dt = runner.run(simulationStart.plus(Duration.ofNanos(simulationTimeNano)));
-                if (dt == 0){
-                    stopSim = true;
-                    break;
-                }
-                newDeltaT = dt;
-                simulationTimeNano += dt;
-
-
-                if (fullspeed){
-                    time = System.nanoTime();
-                } else {
-                    time += (long) (dt/speed);
-                    lastFrameTime = System.nanoTime();
-                    target = lastFrameTime - frameStartTime;
-                }
-            }
-            lastOvershoot = time-target;
-
-            long computationTime = lastFrameTime - frameStartTime;
-            long simulatedTime = simulationTimeNano - simStartTime;
-
-            counter.addFrame(lastFrameTime);
-
-            updateFPS();
-
-            
-            // manualCounter++;
-            // if (lastFrameTime-lastFPSTime > Time.SECOND_TO_NANOSEC){
-            //     long fps = manualCounter*Time.SECOND_TO_NANOSEC/(lastFrameTime-lastFPSTime);
-            //     manualFPSLabel.setText(Long.toString(fps));
-            //     lastFPSTime = lastFrameTime;
-            //     manualCounter = 0;
-            // }
-        
-
-            updateTimeLabel();
-            updateDeltaTLabel(newDeltaT);
-            updateSimSpeedLabel(simulatedTime / (double) computationTime);
-
-            runner.redraw();
-
-            lastUpdate = System.nanoTime();
-
-            if (stopSim) pause();
-    }
-
-    public void play() {
-        if (playing) return;
-        playing = true;
-        playPauseButton.setIcon(pauseIcon);
-        //System.out.println("Play");
-        timer.start();
-        lastUpdate = System.nanoTime();
-        lastFrameTime = lastUpdate;
-        lastFPSTime = lastUpdate;
-        lastOvershoot = 0;
-    }
-
-    public void pause() {
-        if (!playing) return;
-        playing = false;
-        playPauseButton.setIcon(playIcon);
-        //System.out.println("Pause");
-        timer.stop();
-    }
-
-    private void reset(){
-        runner.reset();
-        this.simulationTimeNano = 0;
-        updateTimeLabel();
-        runner.redraw();
-    }
-
-
-    private String printTime(Instant t){
-        return timeFormatter.format(t);
-    }
-
-    private void updateTimeLabel(){
-        timeLabel.setText(printTime(simulationStart.plus(Duration.ofNanos(simulationTimeNano))));
-    }
-
-    private void updateDeltaTLabel(long newDeltaT){
-        if (newDeltaT != deltaT){
-            deltaT = newDeltaT;
-            deltaTLabel.setText(Long.toString(deltaT/1000000)+"ms");
-        }
-    }
-
-    private void updateSimSpeedLabel(double speedRatio){
-        simSpeedLabel.setText(ratioFormatter.format(speedRatio));
-    }
-
-    private void updateFPS(){
-        long avg = counter.getAvgDelta();
-        if (avg != 0){
-            double fps = counter.getFramesPerSeconds();
-            fpsLabel.setText(ratioFormatter.format(fps));
-            // frameDurationLabel.setText(Long.toString(avg/1000000)+"ms");
-            // long var = Math.round(Math.sqrt(counter.getVariance()));
-            // frameVarianceLabel.setText(Long.toString(var/1000)+"us");
-        }
-    }
-
+    
     
     protected static ImageIcon createImageIcon(String path) {
         java.net.URL imgURL = Control.class.getResource(path);
@@ -434,6 +469,7 @@ public class Control extends JPanel implements ActionListener, ChangeListener {
         // TODO error handling ?
         return null;
     }
+
 }
 
 class FrameCounter {
@@ -487,4 +523,5 @@ class FrameCounter {
         if (a == 0) return 0;
         return Time.SECOND_TO_NANOSEC/(double) a;
     }
+    
 }

@@ -5,7 +5,7 @@ import java.time.Duration;
 
 import org.junit.*;
 
-import de.rwth.montisim.commons.utils.LibraryService;
+import de.rwth.montisim.commons.map.Pathfinding;
 import de.rwth.montisim.commons.utils.Vec2;
 import de.rwth.montisim.commons.utils.Vec3;
 import de.rwth.montisim.simulation.eecomponents.navigation.Navigation;
@@ -41,7 +41,7 @@ public class IntegrationTest {
         simulator.addSimulationObject(vehicle);
         
         
-        Navigation nav = (Navigation) vehicle.eesimulator.getComponentManager().getComponent("Navigation").get();
+        Navigation nav = (Navigation) vehicle.eesystem.getComponentManager().getComponent("Navigation").get();
         nav.pushTargetPos(TARGET_POS);
 
         vehicle.addTarget(TARGET_POS);

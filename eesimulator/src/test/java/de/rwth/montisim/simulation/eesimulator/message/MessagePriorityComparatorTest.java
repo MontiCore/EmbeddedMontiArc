@@ -7,9 +7,10 @@ import java.util.PriorityQueue;
 import org.junit.Assert;
 import org.junit.Test;
 
-import de.rwth.montisim.commons.dynamicinterface.DataType;
+import de.rwth.montisim.commons.dynamicinterface.BasicType;
+import de.rwth.montisim.commons.eventsimulation.DiscreteEventSimulator;
 import de.rwth.montisim.commons.utils.Pair;
-import de.rwth.montisim.simulation.eesimulator.EESimulator;
+import de.rwth.montisim.simulation.eesimulator.EESystem;
 import de.rwth.montisim.simulation.eesimulator.bus.MessageTransmission;
 import de.rwth.montisim.simulation.eesimulator.bus.can.CANMessageTransmission;
 import de.rwth.montisim.simulation.eesimulator.exceptions.EEMessageTypeException;
@@ -19,11 +20,11 @@ public class MessagePriorityComparatorTest {
     @Test
     public void testComparator() throws EEMessageTypeException {
         MessageTypeManager mtManager = new MessageTypeManager();
-        EESimulator simulator = new EESimulator(mtManager);
-        new TestEEComponent("comp1").attachTo(simulator);
-        new TestEEComponent("comp2").attachTo(simulator);
+        EESystem eesystem = new EESystem(new DiscreteEventSimulator(), mtManager);
+        new TestEEComponent("comp1").attachTo(eesystem);
+        new TestEEComponent("comp2").attachTo(eesystem);
 
-        simulator.getComponentManager().addComponentPriorities(Arrays.asList(
+        eesystem.getComponentManager().addComponentPriorities(Arrays.asList(
             new Pair<String, Integer>("comp1", 1),
             new Pair<String, Integer>("comp2", 2)
         ));
@@ -34,12 +35,12 @@ public class MessagePriorityComparatorTest {
         c2.id = 1;
 
         PriorityQueue<CANMessageTransmission> messages = new PriorityQueue<CANMessageTransmission>(
-            new MessageTransmission.MsgTransPriorityComp(simulator.getMsgPrioComp())
+            new MessageTransmission.MsgTransPriorityComp(eesystem.getMsgPrioComp())
         );
-        Message msg1 = new Message(c1, new MessageInformation("msg1", DataType.DOUBLE, mtManager, null), null, 1);
-        Message msg2 = new Message(c1, new MessageInformation("msg2", DataType.DOUBLE, mtManager, null), null, 1);
-        Message msg3 = new Message(c1, new MessageInformation("msg3", DataType.DOUBLE, mtManager, null), null, 1);
-        Message msg4 = new Message(c2, new MessageInformation("msg4", DataType.DOUBLE, mtManager, null), null, 1);
+        Message msg1 = new Message(c1, mtManager.registerMessage("msg1", BasicType.DOUBLE, null), null, 1);
+        Message msg2 = new Message(c1, mtManager.registerMessage("msg2", BasicType.DOUBLE, null), null, 1);
+        Message msg3 = new Message(c1, mtManager.registerMessage("msg3", BasicType.DOUBLE, null), null, 1);
+        Message msg4 = new Message(c2, mtManager.registerMessage("msg4", BasicType.DOUBLE, null), null, 1);
 
         mtManager.addMessagePriorities(Arrays.asList(
             new Pair<String, Integer>("msg1", 1),

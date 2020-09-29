@@ -263,7 +263,7 @@ public class RigidbodyPhysics implements PhysicsModel {
      * @return The steering angle in RADIANS
      */
     private double getWheelAngle() {
-        return (Double) powerTrain.steeringValue.value() * Geometry.DEG_TO_RAD;
+        return (Double) powerTrain.steeringValue.getValue() * Geometry.DEG_TO_RAD;
     }
 
     private double getWheelForce(double wheelSpeed, double front_vel, double deltaSecs, boolean front, int index) {
@@ -273,13 +273,13 @@ public class RigidbodyPhysics implements PhysicsModel {
             // TODO right now this assumes 1:1 coupling between motor & wheels
             double ratio = powerTrain.getTransmissionRatio();
             double rpm = wheelSpeed * wheel_circumference_inv * 60 * ratio;
-            double i_accel = (Double) powerTrain.gasValue.value();
+            double i_accel = (Double) powerTrain.gasValue.getValue();
             // TODO right now this assumes 1:1 coupling between motor & wheels
             f_accel = i_accel * powerTrain.motor.getMaxTorque(rpm) * wheel_radius_inv * inv_traction_number * ratio;
         }
 
         if ((front && frontBrake) || (!front && backBrake)) {
-            double i_brake = (Double) powerTrain.brakingValue.value();
+            double i_brake = (Double) powerTrain.brakingValue.getValue();
             double f_brake_abs = i_brake * powerTrain.properties.max_braking_force;
             // Limit braking force to avoid integration overshooting (when braking at near 0
             // speed)

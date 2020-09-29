@@ -4,7 +4,7 @@ package de.rwth.montisim.simulation.eecomponents.autopilots;
 import java.time.Duration;
 import java.time.Instant;
 
-import de.rwth.montisim.commons.dynamicinterface.DataType;
+import de.rwth.montisim.commons.dynamicinterface.BasicType;
 import de.rwth.montisim.commons.utils.Geometry;
 import de.rwth.montisim.commons.utils.IPM;
 import de.rwth.montisim.commons.utils.Time;
@@ -12,7 +12,6 @@ import de.rwth.montisim.commons.utils.Vec2;
 import de.rwth.montisim.simulation.eecomponents.navigation.Navigation;
 import de.rwth.montisim.simulation.eesimulator.actuator.Actuator;
 import de.rwth.montisim.simulation.eesimulator.components.EEComponent;
-import de.rwth.montisim.simulation.eesimulator.components.EEComponentType;
 import de.rwth.montisim.simulation.eesimulator.events.MessageReceiveEvent;
 import de.rwth.montisim.simulation.eesimulator.exceptions.EEMessageTypeException;
 import de.rwth.montisim.simulation.eesimulator.message.Message;
@@ -69,9 +68,9 @@ public class JavaAutopilot extends EEComponent {
         this.trajYMsg = addInput(Navigation.TRAJECTORY_Y_MSG, Navigation.TRAJECTORY_Y_TYPE);
 
         this.steeringMsg = addOutput(Actuator.SETTER_PREFIX + PowerTrainProperties.STEERING_VALUE_NAME,
-                DataType.DOUBLE);
-        this.accelMsg = addOutput(Actuator.SETTER_PREFIX + PowerTrainProperties.GAS_VALUE_NAME, DataType.DOUBLE);
-        this.brakeMsg = addOutput(Actuator.SETTER_PREFIX + PowerTrainProperties.BRAKING_VALUE_NAME, DataType.DOUBLE);
+                BasicType.DOUBLE);
+        this.accelMsg = addOutput(Actuator.SETTER_PREFIX + PowerTrainProperties.GAS_VALUE_NAME, BasicType.DOUBLE);
+        this.brakeMsg = addOutput(Actuator.SETTER_PREFIX + PowerTrainProperties.BRAKING_VALUE_NAME, BasicType.DOUBLE);
     }
 
     @Override
@@ -339,9 +338,4 @@ public class JavaAutopilot extends EEComponent {
         target.set(trajX[index], trajY[index]);
     }
 
-    @Override
-    public EEComponentType getComponentType() {
-        return EEComponentType.COMPUTER;
-    }
-    
 }

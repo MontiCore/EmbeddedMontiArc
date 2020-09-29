@@ -38,7 +38,7 @@ public class WorldRenderer extends Renderer {
     public static final float MAX_HEIGHT = 20;
     public static final float SEGMENT_OFFSET = -0.2f; // Positive is to the left in segment direction
 
-    public final World world;
+    public World world;
     private final List<Polyline> roads = new ArrayList<>();
     private final List<Polyline> roadSegments = new ArrayList<>();
     private final List<Polygonn> area_roads = new ArrayList<>();
@@ -48,6 +48,10 @@ public class WorldRenderer extends Renderer {
 
     // Create the lines & polygons from the world
     public WorldRenderer(World world, boolean showSegments) {
+        load(world, showSegments);
+    }
+
+    public void load(World world, boolean showSegments){
         this.world = world;
         constructRoads();
         constructBuildings();

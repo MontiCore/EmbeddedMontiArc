@@ -24,16 +24,16 @@ public class ConstantBus extends Bus {
 		switch (properties.mode) {
 			case INSTANT:
 				// Directly dispatch the message
-				dispatchMessage(new MessageReceiveEvent(event.getEventTime(), null, event.getMessage()));
+				dispatchMessage(new MessageReceiveEvent(null, event.getEventTime(), event.getMessage()));
 				break;
 			case CONSTANT_RATE:
 				double time = event.getMessage().msgLen / properties.rate;
 				Duration d = Time.durationFromSeconds(time);
-				simulator.addEvent(new MessageReceiveEvent(event.getEventTime().plus(d), this, event.getMessage()));
+				eesystem.simulator.addEvent(new MessageReceiveEvent(this, event.getEventTime().plus(d), event.getMessage()));
 				break;
 			case CONSTANT_TIME:
-				simulator.addEvent(
-						new MessageReceiveEvent(event.getEventTime().plus(properties.time), this, event.getMessage()));
+				eesystem.simulator.addEvent(
+						new MessageReceiveEvent(this, event.getEventTime().plus(properties.time), event.getMessage()));
 				break;
 		}
 	}

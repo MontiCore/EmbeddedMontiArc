@@ -3,13 +3,12 @@ package de.rwth.montisim.simulation.simulator.visualization;
 
 import javax.swing.*;
 import java.awt.BorderLayout;
-import java.io.IOException;
-import java.lang.reflect.InvocationTargetException;
 import java.time.*;
 import java.util.logging.Logger;
 
 import de.rwth.montisim.commons.simulation.TimeUpdate;
 import de.rwth.montisim.commons.utils.*;
+import de.rwth.montisim.commons.utils.json.SerializationException;
 import de.rwth.montisim.simulation.eesimulator.exceptions.*;
 import de.rwth.montisim.simulation.eesimulator.message.MessageTypeManager;
 import de.rwth.montisim.simulation.simulator.vehicleconfigs.TestVehicleConfig;
@@ -17,6 +16,7 @@ import de.rwth.montisim.simulation.simulator.visualization.car.CarRenderer;
 import de.rwth.montisim.simulation.simulator.visualization.plotter.TimePlotter;
 import de.rwth.montisim.simulation.simulator.visualization.ui.*;
 import de.rwth.montisim.simulation.vehicle.*;
+import de.rwth.montisim.simulation.vehicle.VehicleProperties.BuildContext;
 import de.rwth.montisim.simulation.vehicle.physicsmodel.rigidbody.RigidbodyPhysics;
 
 public class PhysicsDebug extends JFrame implements SimulationRunner {
@@ -29,14 +29,9 @@ public class PhysicsDebug extends JFrame implements SimulationRunner {
 
     private static final long serialVersionUID = 1L;
 
-    final long PHYSICS_TICK_DURATION_MS = 10;
-    final long TARGET_FPS = 30;
-
-    final double TICK_DURATION = PHYSICS_TICK_DURATION_MS / 1000.0;
-    final double FRAME_DURATION = 1.0 / TARGET_FPS;
-    final long TICK_NANO = PHYSICS_TICK_DURATION_MS * 1000000;
-    Instant simTime = Instant.EPOCH;
-    Duration dt = Duration.ofMillis(PHYSICS_TICK_DURATION_MS);
+    final int PHYSICS_TICK_DURATION_MS = 10;
+    final int TARGET_FPS = 30;
+    final int MIN_FPS = 2;
 
     final Viewer2D viewer;
     final Control control;
@@ -71,7 +66,7 @@ public class PhysicsDebug extends JFrame implements SimulationRunner {
 
         plotter = new TimePlotter();
 
-        control = new Control(Control.Mode.SIMULATION, Instant.EPOCH, this);
+        control = new Control(Control.Mode.SIMULATION, Instant.EPOCH, this, PHYSICS_TICK_DURATION_MS, TARGET_FPS, MIN_FPS);
 
         JPanel topPanel = new JPanel();
         topPanel.setLayout(new BoxLayout(topPanel, BoxLayout.Y_AXIS));
@@ -86,22 +81,18 @@ public class PhysicsDebug extends JFrame implements SimulationRunner {
     }
 
     private void setup() throws EESetupException {
-        simTime = Instant.EPOCH;
         postedMsg = false;
         crossedQuarter = false;
 
         mtManager = new MessageTypeManager();
         VehicleProperties config = setupTurningCar();
         try {
-            vehicle = VehicleBuilder.fromConfig(mtManager, null, config).setName("TestVehicle").build();
+            vehicle = VehicleBuilder.fromConfig(new BuildContext(null, mtManager), config).setName("TestVehicle").build();
             physics = (RigidbodyPhysics) vehicle.physicsModel;
             physics.setGroundPosition(new Vec3(0, 0, 0), new Vec2(START_DIR.x, START_DIR.y));
             VehicleProperties p = vehicle.properties;
-            cr.setCar(physics.getPhysicalObject(), new Vec3(p.body.length, p.body.width, p.body.height));
-        } catch (ParsingException | InstantiationException | IllegalAccessException | IllegalArgumentException
-                | InvocationTargetException | NoSuchMethodException | SecurityException | EEMessageTypeException
-                | IOException e) {
-            // TODO Auto-generated catch block
+            cr.setCar(vehicle, new Vec3(p.body.length, p.body.width, p.body.height));
+        } catch (SerializationException | EEMessageTypeException e) {
             e.printStackTrace();
         }
     }
@@ -112,29 +103,6 @@ public class PhysicsDebug extends JFrame implements SimulationRunner {
         System.out.println("MaxSpeed: "+Double.toString(maxSpeed));
 
         return TestVehicleConfig.newCircleAutopilotConfig(maxSpeed, turnRadius).properties;
-    }
-
-    @Override
-    public long run(Instant timePoint) {
-        vehicle.update(new TimeUpdate(simTime, dt));
-
-        // Measure turning radius
-        // if (vehicle.physical_object.rotation.col1.dotProduct(START_DIR) <= 0){
-        //     crossedQuarter = true;
-        // }
-        // if (crossedQuarter && !postedMsg && vehicle.physical_object.rotation.col1.dotProduct(START_CROSS) <= 0){
-        //     Logger.getGlobal().info("Position at 180 deg turn: "+vehicle.physical_object.pos);
-        //     postedMsg = true;
-        // }
-
-        // Measure Flipping Speed
-        if (!postedMsg && Math.acos(vehicle.physicalObject.rotation.col3.z)*Geometry.RAD_TO_DEG >= 5){
-            Logger.getGlobal().info("Speed at 5 deg tilt (km/h): "+(vehicle.physicalObject.velocity.magnitude()*3.6));
-            postedMsg = true;
-        }
-
-        simTime = simTime.plus(dt);
-        return TICK_NANO;
     }
 
     @Override
@@ -149,6 +117,17 @@ public class PhysicsDebug extends JFrame implements SimulationRunner {
             setup();
         } catch (EESetupException e) {
             e.printStackTrace();
+        }
+    }
+
+    @Override
+    public void update(TimeUpdate newTime) {
+        vehicle.update(newTime);
+
+        // Measure Flipping Speed
+        if (!postedMsg && Math.acos(vehicle.physicalObject.rotation.col3.z)*Geometry.RAD_TO_DEG >= 5){
+            Logger.getGlobal().info("Speed at 5 deg tilt (km/h): "+(vehicle.physicalObject.velocity.magnitude()*3.6));
+            postedMsg = true;
         }
     }
 }

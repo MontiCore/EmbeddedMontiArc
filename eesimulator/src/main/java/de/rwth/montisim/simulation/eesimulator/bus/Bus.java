@@ -1,12 +1,13 @@
 /* (c) https://github.com/MontiCore/monticore */
 package de.rwth.montisim.simulation.eesimulator.bus;
 
+import de.rwth.montisim.commons.eventsimulation.DiscreteEvent;
 import de.rwth.montisim.commons.eventsimulation.exceptions.*;
 import de.rwth.montisim.simulation.eesimulator.bus.BusProperties.BusType;
 import de.rwth.montisim.simulation.eesimulator.components.BusUser;
-import de.rwth.montisim.simulation.eesimulator.components.EEComponentType;
 import de.rwth.montisim.simulation.eesimulator.components.EEEventProcessor;
 import de.rwth.montisim.simulation.eesimulator.events.*;
+import de.rwth.montisim.simulation.eesimulator.message.MessageInformation;
 
 import java.util.ArrayList;
 import java.util.HashMap;
@@ -37,14 +38,10 @@ public abstract class Bus extends EEEventProcessor {
 	 */
 	protected final transient List<BusUser> connectedComponents = new ArrayList<>();
 
-	protected final transient HashMap<Integer, List<BusUser>> msgTargets = new HashMap<>();
+	protected final transient HashMap<MessageInformation, List<BusUser>> msgTargets = new HashMap<>();
 
 	protected Bus(BusProperties properties) {
 		super(properties);
-	}
-
-	public EEComponentType getComponentType(){
-		return EEComponentType.BUS;
 	}
 
 	/**
@@ -53,26 +50,23 @@ public abstract class Bus extends EEEventProcessor {
 	 * MessageReceiveEvent: When a message transmission is completed (message gets passed to its targets).
 	 * 						This Event is only created by the BUS itself.
 	 */
-	public void process(EEDiscreteEvent evt) {
-		switch(evt.getEventType()){
-			case MESSAGE_SEND:
-				sendMessage((MessageSendEvent) evt);
-			break;
-			case MESSAGE_RECEIVE:
-				MessageReceiveEvent msgRecvEvent = (MessageReceiveEvent) evt;
-				if (!msgRecvEvent.invalid){
-					dispatchMessage(msgRecvEvent);
-					receiveMessage(msgRecvEvent);
-				}
-			break;
-			default:
-				throw new UnexpectedEventException(this.toString(), evt);
-		}
+	@Override
+	public void process(DiscreteEvent evt) {
+		int type = evt.getType();
+		if (type == MessageSendEvent.type){
+			sendMessage((MessageSendEvent) evt);
+		} else if (type == MessageReceiveEvent.type){
+			MessageReceiveEvent msgRecvEvent = (MessageReceiveEvent) evt;
+			if (!msgRecvEvent.invalid){
+				dispatchMessage(msgRecvEvent);
+				receiveMessage(msgRecvEvent);
+			}
+		} else throw new UnexpectedEventException(this.toString(), evt);
 	}
 
 	/** Dispatches the given Message to all its targets, effectively completing its transmission in this BUS. */
 	protected void dispatchMessage(MessageReceiveEvent msgRecvEvent) {
-		List<BusUser> targets = msgTargets.get(msgRecvEvent.getMessage().msgInfo.messageId);
+		List<BusUser> targets = msgTargets.get(msgRecvEvent.getMessage().msgInfo);
 		if (targets == null) throw new IllegalArgumentException("Tried to dispatch a message with no associated targets. (event: "+msgRecvEvent+").");
 		for(BusUser e : targets){
 			e.process(msgRecvEvent);
@@ -85,9 +79,9 @@ public abstract class Bus extends EEEventProcessor {
 		connectedComponents.add(component);
 	}
 
-	public void addMessageTargets(int msgId, List<BusUser> targets){
-		if (msgTargets.containsKey(msgId)) throw new IllegalArgumentException("Targets already registered for msgId: " + msgId);
-		msgTargets.put(msgId, targets);
+	public void addMessageTargets(MessageInformation msgInfo, List<BusUser> targets){
+		if (msgTargets.containsKey(msgInfo)) throw new IllegalArgumentException("Targets already registered for msgInfo: " + msgInfo);
+		msgTargets.put(msgInfo, targets);
 	}
 
 	public List<BusUser> getConnectedComponents() {
@@ -145,7 +139,7 @@ public abstract class Bus extends EEEventProcessor {
 		return getBusType() + " bus \"" + properties.name+'"';
 	}
 
-	public HashMap<Integer, List<BusUser>> getMsgTargets(){
+	public HashMap<MessageInformation, List<BusUser>> getMsgTargets(){
 		return msgTargets;
 	}
 }

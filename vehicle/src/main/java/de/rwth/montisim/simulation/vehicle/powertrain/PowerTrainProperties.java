@@ -31,17 +31,13 @@ public abstract class PowerTrainProperties /*implements JsonSerializable*/ {
         ALL // 4x4
     }
     public TractionType traction = TractionType.REAR;
-    public TractionType braking = TractionType.REAR;
+    public TractionType braking = TractionType.FRONT;
 
     // TODO check
     public double max_braking_force = 5000; // In Newtons
 
 
-    
-    public PowerTrainProperties(VehicleProperties config){
-        // TODO read some default properties from "VehicleProperties" ()
-        // Add default actuator description
-        if (config == null) return;
+    public void addDefaultActuators(VehicleProperties config){
         config.addDefaultComponent(
             new ActuatorProperties(-30, 30, 60)
             .setPhysicalValueName(STEERING_VALUE_NAME)
@@ -75,8 +71,9 @@ public abstract class PowerTrainProperties /*implements JsonSerializable*/ {
             .setName(GAS_ACTUATOR_NAME)
             //.setInternal()
         );
-        
     }
+
+    public abstract PowerTrain build();
 
     public abstract PowerTrainType getPowerTrainType();
 }

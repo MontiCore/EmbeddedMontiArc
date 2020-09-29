@@ -4,23 +4,26 @@ package de.rwth.montisim.simulation.simulator;
 import java.time.Duration;
 import java.util.Vector;
 
+import de.rwth.montisim.commons.map.Pathfinding;
 import de.rwth.montisim.commons.simulation.*;
 import de.rwth.montisim.commons.utils.json.Json;
+import de.rwth.montisim.commons.utils.json.SerializationException;
 import de.rwth.montisim.simulation.eecomponents.autopilots.JavaAutopilotProperties;
 import de.rwth.montisim.simulation.eecomponents.autopilots.TestAutopilotProperties;
 import de.rwth.montisim.simulation.eecomponents.navigation.NavigationProperties;
 import de.rwth.montisim.simulation.eesimulator.message.MessageTypeManager;
-import de.rwth.montisim.simulation.environment.pathfinding.Pathfinding;
 import de.rwth.montisim.simulation.environment.world.World;
 import de.rwth.montisim.simulation.simulator.vehicleconfigs.DefaultVehicleConfig;
 import de.rwth.montisim.simulation.vehicle.VehicleBuilder;
 import de.rwth.montisim.simulation.vehicle.VehicleProperties;
+import de.rwth.montisim.simulation.vehicle.VehicleProperties.BuildContext;
 
 public class Simulator implements ISimulator, Updatable {
     public final SimulationConfig config;
     final World world;
     final Pathfinding pathfinding;
     final MessageTypeManager mtManager;
+    final public BuildContext buildContext;
 
     Duration simulatedTime = Duration.ZERO;
 
@@ -39,6 +42,7 @@ public class Simulator implements ISimulator, Updatable {
         this.world = world;
         this.pathfinding = pathfinding;
         this.mtManager = mtManager;
+        this.buildContext = new BuildContext(pathfinding, mtManager);
         // TODO load static objects of the World
     }
 
@@ -65,11 +69,11 @@ public class Simulator implements ISimulator, Updatable {
     }
 
     public VehicleBuilder getVehicleBuilder(VehicleProperties config) {
-        return VehicleBuilder.fromConfig(mtManager, pathfinding, config);
+        return VehicleBuilder.fromConfig(buildContext, config);
     }
 
     public VehicleBuilder getDefaultVehicleBuilder() {
-        return VehicleBuilder.fromConfig(mtManager, pathfinding, new DefaultVehicleConfig().properties);
+        return VehicleBuilder.fromConfig(buildContext, new DefaultVehicleConfig().properties);
     }
 
     @Override
@@ -174,8 +178,9 @@ public class Simulator implements ISimulator, Updatable {
             Json.registerType(NavigationProperties.class);
             Json.registerType(JavaAutopilotProperties.class);
             Json.registerType(TestAutopilotProperties.class);
-        } catch (IllegalArgumentException | IllegalAccessException e) {
+        } catch (SerializationException e) {
             e.printStackTrace();
+            System.exit(-1);
         }
     }
 }

@@ -14,25 +14,9 @@ public class ElectricalPowerTrain extends PowerTrain {
         super(properties);
         this.electricalPTProperties = properties;
 
-        switch (properties.batteryProperties.type) {
-            case INFINITE:
-                battery = new InfiniteBattery(properties.batteryProperties);
-                break;
-            case SIMPLE:
-                battery = new SimpleBattery(properties.batteryProperties);
-                break;
-            default:
-                battery = null;
-                break;
-        }
-
-        switch (properties.motorProperties.type) {
-            case DEFAULT:
-                e_motor = new ElectricMotor(properties.motorProperties);
-                break;
-            default:
-                e_motor = null;
-        }
+        battery = properties.batteryProperties.build();
+        e_motor = properties.motorProperties.build();
+        
         this.e_motor.setBattery(this.battery);
         this.motor = this.e_motor;
     }

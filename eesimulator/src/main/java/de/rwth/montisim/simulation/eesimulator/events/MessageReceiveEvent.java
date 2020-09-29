@@ -11,31 +11,28 @@ import de.rwth.montisim.simulation.eesimulator.message.Message;
 /**
  * Event for the completion of a message transfer.
  */
-public class MessageReceiveEvent extends EEDiscreteEvent {
+public class MessageReceiveEvent extends EEEvent {
+	public static final int type = registerType(MessageReceiveEvent.class);
+	public final static String TYPE_NAME = "receive";
 
 	private Message msg;
 	/// Might be set if the transmission completion time got invalidated by another
 	/// earlier message transfer. (See Bus.)
 	public transient boolean invalid;
 
-	public MessageReceiveEvent(Instant eventTime, EEEventProcessor target, Message msg) {
-		super(eventTime, target);
+	public MessageReceiveEvent(EEEventProcessor target, Instant eventTime, Message msg) {
+		super(target, eventTime);
 		this.msg = msg;
 		this.invalid = false;
 	}
 
 	protected MessageReceiveEvent() {}
 
-	@Override
-	public EEEventType getEventType() {
-		return EEEventType.MESSAGE_RECEIVE;
-	}
-
 	public Message getMessage() {
 		return msg;
 	}
 
-	@Typed("receive")
+	@Typed(MessageReceiveEvent.TYPE_NAME)
 	public static class MessageReceiveEventData extends EventData {
 		Message msg;
 		MessageReceiveEventData(MessageReceiveEvent event) {
@@ -44,13 +41,18 @@ public class MessageReceiveEvent extends EEDiscreteEvent {
 		}
         protected MessageReceiveEventData() {}
 		@Override
-		public EEDiscreteEvent getEvent(ComponentManager cm) {
-			return new MessageReceiveEvent(time, EEDiscreteEvent.getTarget(target, cm), msg);
+		public EEEvent getEvent(ComponentManager cm) {
+			return new MessageReceiveEvent(EEEvent.getTarget(target, cm), time, msg);
 		}
 	}
 	
 	@Override
 	public EventData getEventData() {
 		return new MessageReceiveEventData(this);
+	}
+
+	@Override
+	public int getType() {
+		return type;
 	}
 }

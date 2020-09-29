@@ -4,9 +4,9 @@ package de.rwth.montisim.simulation.eecomponents.navigation;
 import java.time.*;
 import java.util.*;
 import de.rwth.montisim.commons.dynamicinterface.*;
-import de.rwth.montisim.commons.dynamicinterface.ArrayType.Dimensionality;
+import de.rwth.montisim.commons.map.Path;
+import de.rwth.montisim.commons.map.Pathfinding;
 import de.rwth.montisim.commons.utils.*;
-import de.rwth.montisim.simulation.environment.pathfinding.*;
 import de.rwth.montisim.simulation.vehicle.physicalvalues.TruePosition;
 import de.rwth.montisim.simulation.eesimulator.components.*;
 import de.rwth.montisim.simulation.eesimulator.events.MessageReceiveEvent;
@@ -33,12 +33,12 @@ public class Navigation extends EEComponent {
     public static final String TRAJECTORY_LON_MSG = "trajectory_lon";
     public static final String TRAJECTORY_LAT_MSG = "trajectory_lat";
 
-    public static final DataType AT_TARGET_POS_TYPE = DataType.BOOLEAN;
-    public static final DataType CURRENT_TARGET_POS_TYPE = DataType.VEC2;
-    public static final DataType TRAJECTORY_X_TYPE = new ArrayType(DataType.DOUBLE, Dimensionality.DYNAMIC, 10);
-    public static final DataType TRAJECTORY_Y_TYPE = TRAJECTORY_X_TYPE;
-    public static final DataType TRAJECTORY_LON_TYPE = TRAJECTORY_X_TYPE;
-    public static final DataType TRAJECTORY_LAT_TYPE = TRAJECTORY_X_TYPE;
+    public static final BasicType AT_TARGET_POS_TYPE = BasicType.BOOLEAN;
+    public static final BasicType CURRENT_TARGET_POS_TYPE = BasicType.VEC2;
+    public static final VectorType TRAJECTORY_X_TYPE = new VectorType(BasicType.DOUBLE, 128);
+    public static final VectorType TRAJECTORY_Y_TYPE = TRAJECTORY_X_TYPE;
+    public static final VectorType TRAJECTORY_LON_TYPE = TRAJECTORY_X_TYPE;
+    public static final VectorType TRAJECTORY_LAT_TYPE = TRAJECTORY_X_TYPE;
 
     //MessageInformation gpsPosMsg;
     transient MessageInformation truePosMsg;
@@ -67,11 +67,11 @@ public class Navigation extends EEComponent {
 
     @Override
     protected void init() throws EEMessageTypeException {
-        //this.gpsPosMsg = addInput(GPS_POS_MSG, DataType.VEC2);
+        //this.gpsPosMsg = addInput(GPS_POS_MSG, BasicType.VEC2);
         this.truePosMsg = addInput(TruePosition.VALUE_NAME, TruePosition.TYPE);
 
-        this.pushTargetPosMsg = addInput(PUSH_TARGET_POS_MSG, DataType.VEC2, true, true);
-        this.popTargetPosMsg = addInput(POP_TARGET_POS_MSG, DataType.EMPTY, true, true);
+        this.pushTargetPosMsg = addInput(PUSH_TARGET_POS_MSG, BasicType.VEC2, true, true);
+        this.popTargetPosMsg = addInput(POP_TARGET_POS_MSG, BasicType.EMPTY, true, true);
 
         this.atTargetPosMsg = addOutput(AT_TARGET_POS_MSG, AT_TARGET_POS_TYPE);
         this.currentTargetPosMsg = addOutput(CURRENT_TARGET_POS_MSG, CURRENT_TARGET_POS_TYPE);
@@ -113,7 +113,7 @@ public class Navigation extends EEComponent {
     }
 
     public void pushTargetPos(Vec2 target){
-        pushTargetPos(target, simulator.getSimulationTime());
+        pushTargetPos(target, eesystem.simulator.getSimulationTime());
     }
 
     public void pushTargetPos(Vec2 target, Instant time){
@@ -129,7 +129,7 @@ public class Navigation extends EEComponent {
         currentPath = Optional.empty();
         if (!currentPos.isPresent()) return;
         if (targets.empty()){
-            sendMessage(time, atTargetPosMsg, new Boolean(true));
+            sendMessage(time, atTargetPosMsg, Boolean.TRUE);
             return;
         }
         try {
@@ -214,10 +214,4 @@ public class Navigation extends EEComponent {
         return closestIndex;
     }
 
-
-    @Override
-    public EEComponentType getComponentType() {
-        return EEComponentType.SERVICE;
-    }
-    
 }

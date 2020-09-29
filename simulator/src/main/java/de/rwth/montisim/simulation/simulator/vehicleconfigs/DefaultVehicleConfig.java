@@ -27,7 +27,7 @@ public class DefaultVehicleConfig {
         this.properties = new VehicleProperties();
         this.batteryProperties = new BatteryProperties(BatteryType.INFINITE);
         this.motorProperties = new ElectricMotorProperties();
-        this.electricalPTProperties = new ElectricalPTProperties(properties, motorProperties, batteryProperties);
+        this.electricalPTProperties = new ElectricalPTProperties(motorProperties, batteryProperties);
         this.properties.powertrain = electricalPTProperties;
         this.rbPhysicsProperties = new RigidbodyPhysicsProperties();
         this.properties.physics = rbPhysicsProperties;

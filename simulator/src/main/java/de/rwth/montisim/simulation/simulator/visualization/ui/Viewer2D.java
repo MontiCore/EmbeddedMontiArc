@@ -161,6 +161,11 @@ public class Viewer2D extends JPanel implements MouseInputListener, MouseWheelLi
         this.renderers.add(r);
         r.dirty = true;
     }
+    public void clearRenderers() {
+        Renderer grid = renderers.get(0);
+        renderers.clear();
+        renderers.add(grid);
+    }
 
     public void translate(Vec2 mouseMotion) {
         // /!\ mouseMotion is in "Screen Space".
@@ -298,6 +303,11 @@ public class Viewer2D extends JPanel implements MouseInputListener, MouseWheelLi
     public void mouseWheelMoved(MouseWheelEvent e) {
         zoom(e.getWheelRotation(), new Vec2(e.getX(), e.getY()));
         repaint();
+    }
+
+
+    public void setDirty(){
+        this.dirty = true;
     }
 
 }

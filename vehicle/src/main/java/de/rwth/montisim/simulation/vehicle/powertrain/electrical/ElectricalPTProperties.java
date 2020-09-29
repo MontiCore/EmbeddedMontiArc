@@ -3,32 +3,27 @@ package de.rwth.montisim.simulation.vehicle.powertrain.electrical;
 
 import de.rwth.montisim.commons.utils.json.JsonEntry;
 import de.rwth.montisim.commons.utils.json.Typed;
-import de.rwth.montisim.simulation.vehicle.VehicleProperties;
+import de.rwth.montisim.simulation.vehicle.powertrain.PowerTrain;
 import de.rwth.montisim.simulation.vehicle.powertrain.PowerTrainProperties;
 import de.rwth.montisim.simulation.vehicle.powertrain.electrical.battery.BatteryProperties;
 import de.rwth.montisim.simulation.vehicle.powertrain.electrical.motor.ElectricMotorProperties;
 
-@Typed("electrical")
+@Typed(ElectricalPTProperties.TYPE)
 public class ElectricalPTProperties extends PowerTrainProperties {
     public static final String TYPE = "electrical";
 
-    public ElectricalPTProperties(VehicleProperties config, ElectricMotorProperties motorProperties,
+    public ElectricalPTProperties(ElectricMotorProperties motorProperties,
             BatteryProperties batteryProperties) {
-        super(config);
         this.motorProperties = motorProperties;
         this.batteryProperties = batteryProperties;
     }
 
-    public ElectricalPTProperties(VehicleProperties config) {
-        super(config);
-        this.motorProperties = null;
-        this.batteryProperties = null;
+    public ElectricalPTProperties() {
+        this.motorProperties = new ElectricMotorProperties();
+        this.batteryProperties = new BatteryProperties();
     }
 
-    protected ElectricalPTProperties(){
-        super(null);
-    }
-    
+
     @JsonEntry("motor")
     public ElectricMotorProperties motorProperties;
     @JsonEntry("battery")
@@ -39,6 +34,11 @@ public class ElectricalPTProperties extends PowerTrainProperties {
     @Override
     public PowerTrainType getPowerTrainType() {
         return PowerTrainType.ELECTRICAL;
+    }
+
+    @Override
+    public PowerTrain build() {
+        return new ElectricalPowerTrain(this);
     }
 
 

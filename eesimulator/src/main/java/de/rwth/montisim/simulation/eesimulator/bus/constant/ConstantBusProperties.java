@@ -7,6 +7,7 @@ import de.rwth.montisim.commons.utils.json.JsonEntry;
 import de.rwth.montisim.commons.utils.json.Typed;
 import de.rwth.montisim.simulation.eesimulator.bus.BusProperties;
 import de.rwth.montisim.simulation.eesimulator.components.EEComponentType;
+import de.rwth.montisim.simulation.eesimulator.components.EEEventProcessor;
 
 @Typed(ConstantBusProperties.TYPE)
 public class ConstantBusProperties extends BusProperties {
@@ -82,19 +83,23 @@ public class ConstantBusProperties extends BusProperties {
 		return r;
 	}
 
-
-
-
 	@Override
 	public BusType getBusType() {
 		return BusType.CONSTANT_BUS;
 	}
+
 	@Override
 	public EEComponentType getGeneralType() {
 		return EEComponentType.BUS;
 	}
+
 	@Override
 	public String getType() {
 		return TYPE;
+	}
+
+	@Override
+	public EEEventProcessor build(ComponentBuildContext context) {
+		return new ConstantBus(this);
 	}
 }

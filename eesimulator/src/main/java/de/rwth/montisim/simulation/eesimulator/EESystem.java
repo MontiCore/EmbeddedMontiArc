@@ -1,9 +1,9 @@
 /* (c) https://github.com/MontiCore/monticore */
 package de.rwth.montisim.simulation.eesimulator;
 
-import java.lang.reflect.InvocationTargetException;
 import java.util.Optional;
 
+import de.rwth.montisim.commons.eventsimulation.DiscreteEvent;
 import de.rwth.montisim.commons.eventsimulation.DiscreteEventSimulator;
 import de.rwth.montisim.commons.utils.ParsingException;
 import de.rwth.montisim.commons.utils.json.CustomJson;
@@ -14,12 +14,12 @@ import de.rwth.montisim.commons.utils.json.JsonTraverser.ObjectIterable;
 import de.rwth.montisim.commons.utils.json.JsonTraverser.ValueType;
 import de.rwth.montisim.commons.utils.json.JsonWriter;
 import de.rwth.montisim.commons.utils.json.SerializationContext;
+import de.rwth.montisim.commons.utils.json.SerializationException;
 import de.rwth.montisim.simulation.eesimulator.components.ComponentManager;
 import de.rwth.montisim.simulation.eesimulator.components.EEEventProcessor;
-import de.rwth.montisim.simulation.eesimulator.events.EEDiscreteEvent;
-import de.rwth.montisim.simulation.eesimulator.events.EEEventType;
+import de.rwth.montisim.simulation.eesimulator.events.EEEvent;
 import de.rwth.montisim.simulation.eesimulator.events.MessageReceiveEvent;
-import de.rwth.montisim.simulation.eesimulator.events.EEDiscreteEvent.EventData;
+import de.rwth.montisim.simulation.eesimulator.events.EEEvent.EventData;
 import de.rwth.montisim.simulation.eesimulator.exceptions.EESetupErrors;
 import de.rwth.montisim.simulation.eesimulator.exceptions.EESetupException;
 import de.rwth.montisim.simulation.eesimulator.message.MessagePriorityComparator;
@@ -34,28 +34,25 @@ import de.rwth.montisim.simulation.eesimulator.message.MessageTypeManager;
  * 
  * For more information on the EE-system, see [docs/eesimulator.md]
  */
-public class EESimulator extends DiscreteEventSimulator<EEEventType, EEDiscreteEvent> implements CustomJson {
+public class EESystem implements CustomJson {
 
 	// Vector<DataType> types = new Vector<>();
 	// HashMap<DataType, Integer> typeIds = new HashMap<>();
-
+	public final DiscreteEventSimulator simulator;
 	protected final MessagePriorityComparator msgPrioComp;
 	protected final ComponentManager componentManager;
 	protected final MessageTypeManager messageTypeManager;
 	protected final EESetupErrors errors;
 	private boolean finalized = false;
 
-	public EESimulator(MessageTypeManager messageTypeManager) {
+	public EESystem(DiscreteEventSimulator simulator, MessageTypeManager messageTypeManager) {
+		this.simulator = simulator;
 		this.errors = new EESetupErrors();
 		this.componentManager = new ComponentManager(this.errors);
 		this.messageTypeManager = messageTypeManager;
 		this.msgPrioComp = new MessagePriorityComparator(messageTypeManager, componentManager);
 	}
-
-	public void processEvent(EEDiscreteEvent event) {
-		event.getTarget().process(event);
-	}
-
+	
 	public MessageTypeManager getMessageTypeManager() {
 		return messageTypeManager;
 	}
@@ -69,7 +66,7 @@ public class EESimulator extends DiscreteEventSimulator<EEEventType, EEDiscreteE
 	}
 
 	public void finalizeSetup() throws EESetupException {
-		componentManager.finalizeSetup();
+		componentManager.finalizeSetup(messageTypeManager);
 		errors.throwExceptions();
 		this.finalized = true;
 	}
@@ -84,14 +81,15 @@ public class EESimulator extends DiscreteEventSimulator<EEEventType, EEDiscreteE
 	public static class EESerializationContext implements SerializationContext {
 		public final ComponentManager cm;
 		public final MessageTypeManager mtm;
-		public EESerializationContext(ComponentManager cm, MessageTypeManager mtm){
+
+		public EESerializationContext(ComponentManager cm, MessageTypeManager mtm) {
 			this.cm = cm;
 			this.mtm = mtm;
 		}
 	}
 
 	@Override
-	public void write(JsonWriter w, SerializationContext context) throws IllegalAccessException {
+	public void write(JsonWriter w, SerializationContext context) throws SerializationException {
 		context = new EESerializationContext(componentManager, messageTypeManager);
 		w.startObject();
 		w.writeKey(K_COMPONENTS);
@@ -105,17 +103,17 @@ public class EESimulator extends DiscreteEventSimulator<EEEventType, EEDiscreteE
 		w.writeKey(K_EVENTS);
 		w.startArray();
 		// Save all events -> resolve ids
-		for (EEDiscreteEvent e : eventList) {
+		for (DiscreteEvent e : simulator.getEventList()) {
+			if (!(e instanceof EEEvent)) continue;
 			if (e instanceof MessageReceiveEvent && ((MessageReceiveEvent)e).invalid) continue;
-			Json.toJson(w, e.getEventData(), context);
+			Json.toJson(w, ((EEEvent)e).getEventData(), context);
 		}
 		w.endArray();
 		w.endObject();
 	}
 
 	@Override
-	public void read(JsonTraverser t, ObjectIterable it, SerializationContext context)
-			throws IllegalAccessException, InstantiationException, InvocationTargetException, NoSuchMethodException {
+	public void read(JsonTraverser t, ObjectIterable it, SerializationContext context) throws SerializationException {
 		context = new EESerializationContext(componentManager, messageTypeManager);
 		for (Entry e : t.streamObject()) {
 			if (e.key.equals(K_COMPONENTS)) {
@@ -128,7 +126,7 @@ public class EESimulator extends DiscreteEventSimulator<EEEventType, EEDiscreteE
 				}
 			} else if (e.key.equals(K_EVENTS)) {
 				for (ValueType vt : t.streamArray()) {
-					eventList.offer(Json.instantiateFromJson(t, EventData.class, context).getEvent(componentManager));
+					simulator.getEventList().offer(Json.instantiateFromJson(t, EventData.class, context).getEvent(componentManager));
 				}
 			} else
 				t.unexpected(e);

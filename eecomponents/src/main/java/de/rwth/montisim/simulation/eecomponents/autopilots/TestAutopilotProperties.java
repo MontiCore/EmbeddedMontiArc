@@ -7,16 +7,11 @@ import de.rwth.montisim.commons.utils.json.JsonEntry;
 import de.rwth.montisim.commons.utils.json.Typed;
 import de.rwth.montisim.simulation.eesimulator.components.BusUserProperties;
 import de.rwth.montisim.simulation.eesimulator.components.EEComponentType;
-import de.rwth.montisim.simulation.vehicle.VehicleBuilder;
+import de.rwth.montisim.simulation.eesimulator.components.EEEventProcessor;
 
 @Typed(TestAutopilotProperties.TYPE)
 public class TestAutopilotProperties extends BusUserProperties {
     public static final String TYPE = "test_autopilot";
-    public static final String COMPUTER_TYPE = "test_autopilot";
-    static {
-        VehicleBuilder.registerComponentBuilder(TYPE,
-                (properties, context) -> new TestAutopilot((TestAutopilotProperties) properties));
-    }
 
     public static enum Mode {
         @JsonEntry("circle")
@@ -57,15 +52,19 @@ public class TestAutopilotProperties extends BusUserProperties {
         return new TestAutopilotProperties(Mode.START_STOP, computeTime, maxVehicleAccel, targetVelocity, 0);
     }
 
-
-
     @Override
     public EEComponentType getGeneralType() {
         return EEComponentType.COMPUTER;
     }
+
     @Override
     public String getType() {
         return TYPE;
+    }
+
+    @Override
+    public EEEventProcessor build(ComponentBuildContext context) {
+        return new TestAutopilot(this);
     }
 
 }

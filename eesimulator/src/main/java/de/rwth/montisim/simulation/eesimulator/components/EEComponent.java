@@ -6,15 +6,15 @@ import java.util.ArrayList;
 import java.util.List;
 
 import de.rwth.montisim.commons.dynamicinterface.DataType;
+import de.rwth.montisim.commons.dynamicinterface.PortInformation;
+import de.rwth.montisim.commons.dynamicinterface.PortInformation.PortDirection;
+import de.rwth.montisim.commons.eventsimulation.DiscreteEvent;
 import de.rwth.montisim.commons.eventsimulation.exceptions.UnexpectedEventException;
-import de.rwth.montisim.simulation.eesimulator.events.EEDiscreteEvent;
 import de.rwth.montisim.simulation.eesimulator.events.MessageReceiveEvent;
 import de.rwth.montisim.simulation.eesimulator.events.MessageSendEvent;
 import de.rwth.montisim.simulation.eesimulator.exceptions.EEMessageTypeException;
 import de.rwth.montisim.simulation.eesimulator.message.Message;
 import de.rwth.montisim.simulation.eesimulator.message.MessageInformation;
-import de.rwth.montisim.simulation.eesimulator.message.PortInformation;
-import de.rwth.montisim.simulation.eesimulator.message.PortInformation.PortDirection;
 
 /**
  * Components that receives and sends messages in a car. The component must
@@ -44,9 +44,8 @@ public abstract class EEComponent extends BusUser {
 
 	public MessageInformation addInput(String name, DataType type, boolean multipleInputsAllowed, boolean optional)
 			throws EEMessageTypeException {
-		MessageInformation m = new MessageInformation(name, type, simulator.getMessageTypeManager(), this);
-		inputPorts.add(new PortInformation(m, PortDirection.INPUT, multipleInputsAllowed, optional));
-		return m;
+		inputPorts.add(new PortInformation(name, type, PortDirection.INPUT, multipleInputsAllowed, optional));
+		return eesystem.getMessageTypeManager().registerMessage(name, type, this);
 	}
 
 	public MessageInformation addInput(String name, DataType type, boolean multipleInputsAllowed)
@@ -64,32 +63,27 @@ public abstract class EEComponent extends BusUser {
 	}
 
 	public MessageInformation addOutput(String name, DataType type) throws EEMessageTypeException {
-		MessageInformation m = new MessageInformation(name, type, simulator.getMessageTypeManager(), this);
-		outputPorts.add(new PortInformation(m, PortDirection.OUTPUT, false, true));
-		return m;
+		outputPorts.add(new PortInformation(name, type, PortDirection.OUTPUT, false, true));
+		return eesystem.getMessageTypeManager().registerMessage(name, type, this);
 	}
 
 
 	@Override
-    public void process(EEDiscreteEvent event) {
-		switch(event.getEventType()){
-			case MESSAGE_SEND:
-				dispatchMessage((MessageSendEvent) event);
-			break;
-			case MESSAGE_RECEIVE:
-                receive((MessageReceiveEvent) event);
-			break;
-			default:
-				throw new UnexpectedEventException(this.toString(), event);
-		}
+    public void process(DiscreteEvent event) {
+		int type = event.getType();
+		if (type == MessageSendEvent.type){
+			dispatchMessage((MessageSendEvent) event);
+		} else if (type == MessageReceiveEvent.type){
+			receive((MessageReceiveEvent) event);
+		} else throw new UnexpectedEventException(this.toString(), event);
 	}
 	
 	public void sendMessage(Instant time, MessageInformation info, Object message, int msgLen) {
-		this.simulator.addEvent(new MessageSendEvent(time, this, new Message(this, info, message, msgLen)));
+		this.eesystem.simulator.addEvent(new MessageSendEvent(this, time, new Message(this, info, message, msgLen)));
 	}
 
 	public void sendMessage(Instant time, MessageInformation info, Object message) {
-		this.simulator.addEvent(new MessageSendEvent(time, this, new Message(this, info, message)));
+		this.eesystem.simulator.addEvent(new MessageSendEvent(this, time, new Message(this, info, message)));
 	}
 
 	protected abstract void receive(MessageReceiveEvent msgRecvEvent);

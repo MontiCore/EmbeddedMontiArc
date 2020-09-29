@@ -76,7 +76,7 @@ public class CAN extends Bus {
 
     @Override
     protected void init() {
-        this.startTime = simulator.getSimulationTime();
+        this.startTime = eesystem.simulator.getSimulationTime();
     }
 
     @Override
@@ -152,10 +152,10 @@ public class CAN extends Bus {
         CANMessageTransmission next = nextTransmission();
         if (next != null) {
             long finishTime = bitTime + next.getRemainingBits();
-            MessageReceiveEvent evt = new MessageReceiveEvent(instantFromBitTime(finishTime), this, next.msg);
+            MessageReceiveEvent evt = new MessageReceiveEvent(this, instantFromBitTime(finishTime), next.msg);
             next.event = Optional.of(evt);
             currentTransmission = Optional.of(next);
-            this.simulator.addEvent(evt);
+            this.eesystem.simulator.addEvent(evt);
         }
     }
 

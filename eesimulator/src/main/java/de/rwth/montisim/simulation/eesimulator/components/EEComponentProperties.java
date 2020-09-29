@@ -3,6 +3,11 @@ package de.rwth.montisim.simulation.eesimulator.components;
 
 import java.util.Optional;
 
+import de.rwth.montisim.commons.map.Pathfinding;
+import de.rwth.montisim.commons.physicalvalue.PhysicalValueRegistry;
+import de.rwth.montisim.commons.simulation.Updater;
+import de.rwth.montisim.simulation.eesimulator.message.MessagePriorityComparator;
+
 public abstract class EEComponentProperties {
     public String name;
     public Optional<Integer> priority;
@@ -31,4 +36,19 @@ public abstract class EEComponentProperties {
     //     return this;
     // }
 
+    public static class ComponentBuildContext {
+        public final PhysicalValueRegistry physicalValues;
+        public final Updater componentUpdater;
+        public final MessagePriorityComparator comp;
+        public final Pathfinding pathfinding;
+
+        public ComponentBuildContext(PhysicalValueRegistry physicalValues, Updater componentUpdater, MessagePriorityComparator msgComp, Pathfinding pathfinding){
+            this.physicalValues = physicalValues;
+            this.componentUpdater = componentUpdater;
+            this.comp = msgComp;
+            this.pathfinding = pathfinding;
+        }
+    }
+    
+    public abstract EEEventProcessor build(ComponentBuildContext context);
 }

@@ -20,11 +20,6 @@ public class TestEEComponent extends EEComponent {
     }
 
     @Override
-    public EEComponentType getComponentType() {
-        return EEComponentType.TEST_COMPONENT;
-    }
-
-    @Override
     protected void receive(MessageReceiveEvent msgRecvEvent) {
         this.events.add(msgRecvEvent);
     }

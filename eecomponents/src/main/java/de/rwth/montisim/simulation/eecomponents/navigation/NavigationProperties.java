@@ -4,15 +4,11 @@ package de.rwth.montisim.simulation.eecomponents.navigation;
 import de.rwth.montisim.commons.utils.json.Typed;
 import de.rwth.montisim.simulation.eesimulator.components.BusUserProperties;
 import de.rwth.montisim.simulation.eesimulator.components.EEComponentType;
-import de.rwth.montisim.simulation.vehicle.VehicleBuilder;
+import de.rwth.montisim.simulation.eesimulator.components.EEEventProcessor;
 
 @Typed(NavigationProperties.TYPE)
 public class NavigationProperties extends BusUserProperties {
     public static final String TYPE = "navigation";
-    static {
-        VehicleBuilder.registerComponentBuilder(TYPE,
-                (properties, context) -> new Navigation((NavigationProperties) properties, context.pathfinding));
-    }
 
     public NavigationProperties() {
         this.name = "DefaultNavigation";
@@ -31,6 +27,12 @@ public class NavigationProperties extends BusUserProperties {
     @Override
     public String getType() {
         return TYPE;
+    }
+
+    @Override
+    public EEEventProcessor build(ComponentBuildContext context) {
+        // TODO Auto-generated method stub
+        return new Navigation(this, context.pathfinding);
     }
 
 }

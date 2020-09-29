@@ -1,64 +1,40 @@
 /* (c) https://github.com/MontiCore/monticore */
 package de.rwth.montisim.simulation.vehicle;
 
-import java.util.HashMap;
 import java.util.Optional;
 
+import de.rwth.montisim.commons.physicalvalue.PhysicalValueRegistry;
 import de.rwth.montisim.commons.simulation.*;
 import de.rwth.montisim.commons.utils.Vec2;
 import de.rwth.montisim.commons.utils.json.Json;
 import de.rwth.montisim.commons.utils.json.JsonWriter;
-import de.rwth.montisim.simulation.eesimulator.EESimulator;
+import de.rwth.montisim.commons.utils.json.SerializationException;
+import de.rwth.montisim.simulation.eesimulator.EESystem;
 import de.rwth.montisim.simulation.vehicle.physicalvalues.*;
 import de.rwth.montisim.simulation.vehicle.physicsmodel.PhysicsModel;
 import de.rwth.montisim.simulation.vehicle.powertrain.PowerTrain;
 
 public class Vehicle extends SimulationObject implements Updatable, Destroyable, TaskRunner {
     public static final boolean SERIALIZE_FORMATTED = true;
-    
-    static {
-        // Register all the Physical Values statically HERE so that they are guaranteed
-        // to be loaded for the calls to 'getPhysicalValue()'
-        PhysicalValueBuilder.registerPhysicalValueBuilder(TrueVelocity.VALUE_NAME,
-                (Vehicle vehicle) -> new TrueVelocity(vehicle.physicalObject));
-        PhysicalValueBuilder.registerPhysicalValueBuilder(TruePosition.VALUE_NAME,
-                (Vehicle vehicle) -> new TruePosition(vehicle.physicalObject));
-        PhysicalValueBuilder.registerPhysicalValueBuilder(TrueCompass.VALUE_NAME,
-                (Vehicle vehicle) -> new TrueCompass(vehicle.physicalObject));
-    }
 
-    public transient VehicleProperties properties;
-    public EESimulator eesimulator;
+    public final transient VehicleProperties properties;
+    public EESystem eesystem;
     public PowerTrain powerTrain;
     public PhysicsModel physicsModel;
     public DynamicObject physicalObject;
 
-    transient HashMap<String, PhysicalValue> physicalValues = new HashMap<>();
-    
-    public transient Updater updater = new Updater();
+    public transient final PhysicalValueRegistry physicalValues = new PhysicalValueRegistry();
+    public transient final Updater updater = new Updater();
 
     TaskStatus carStatus = TaskStatus.SUCCEEDED;
     Optional<Vec2> target = Optional.empty();
     Vec2 a = new Vec2();
 
-    /** Should only be for RESOLVING the physical values, not repeated access. */
-    public PhysicalValue getPhysicalValue(String name) {
-        PhysicalValue res = physicalValues.get(name);
-        if (res == null) {
-            res = PhysicalValueBuilder.buildPhysicalValue(name, this);
-            physicalValues.put(name, res);
-        }
-        return res;
+    protected Vehicle(VehicleProperties properties) {
+        this.properties = properties;
     }
 
-    public void addPhysicalValue(PhysicalValue value) {
-        physicalValues.put(value.name, value);
-    }
-
-    protected Vehicle() {
-    }
-
-    //int c = 0;
+    // int c = 0;
 
     @Override
     public void update(TimeUpdate newTime) {
@@ -66,7 +42,7 @@ public class Vehicle extends SimulationObject implements Updatable, Destroyable,
         // values -> "Sync" between physics & EE
         updater.applyUpdate(newTime);
         // Update Physics & EESim (can be async)
-        eesimulator.update(newTime);
+        eesystem.simulator.update(newTime);
         physicsModel.update(newTime);
 
         // TODO this is temp
@@ -112,10 +88,16 @@ public class Vehicle extends SimulationObject implements Updatable, Destroyable,
         return carStatus;
     }
 
-    
+    protected void addPhysicalValues() {
+        physicalValues.addPhysicalValue(new TrueCompass(physicalObject));
+        physicalValues.addPhysicalValue(new TrueVelocity(physicalObject));
+        physicalValues.addPhysicalValue(new TruePosition(physicalObject));
+    }
+
     public static final String K_CONFIG = "config";
     public static final String K_STATE = "state";
-    public String stateToJson() throws IllegalArgumentException, IllegalAccessException {
+
+    public String stateToJson() throws SerializationException {
         JsonWriter w = new JsonWriter(SERIALIZE_FORMATTED);
         w.startObject();
         w.writeKey(K_CONFIG);        

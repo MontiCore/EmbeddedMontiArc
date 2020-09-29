@@ -8,6 +8,8 @@ import java.util.List;
 import java.util.Optional;
 import java.util.Vector;
 
+import de.rwth.montisim.commons.dynamicinterface.PortInformation;
+
 // import org.jfree.util.Log;
 
 import de.rwth.montisim.commons.utils.Graph;
@@ -16,7 +18,8 @@ import de.rwth.montisim.simulation.eesimulator.actuator.Actuator;
 import de.rwth.montisim.simulation.eesimulator.bridge.Bridge;
 import de.rwth.montisim.simulation.eesimulator.bus.Bus;
 import de.rwth.montisim.simulation.eesimulator.exceptions.*;
-import de.rwth.montisim.simulation.eesimulator.message.PortInformation;
+import de.rwth.montisim.simulation.eesimulator.message.MessageInformation;
+import de.rwth.montisim.simulation.eesimulator.message.MessageTypeManager;
 import de.rwth.montisim.simulation.eesimulator.sensor.Sensor;
 
 /**
@@ -42,17 +45,17 @@ public class ComponentManager {
 
     public Optional<Actuator> getActuator(String name) {
         EEEventProcessor e = componentsByName.get(name);
-        if (e == null || e.getComponentType() != EEComponentType.ACTUATOR) return Optional.empty();
+        if (e == null || e.properties.getGeneralType() != EEComponentType.ACTUATOR) return Optional.empty();
         return Optional.of((Actuator)e);
     }
     public Optional<Sensor> getSensor(String name) {
         EEEventProcessor e = componentsByName.get(name);
-        if (e == null || e.getComponentType() != EEComponentType.SENSOR) return Optional.empty();
+        if (e == null || e.properties.getGeneralType() != EEComponentType.SENSOR) return Optional.empty();
         return Optional.of((Sensor)e);
     }
     public Optional<Bridge> getBridge(String name) {
         EEEventProcessor e = componentsByName.get(name);
-        if (e == null || e.getComponentType() != EEComponentType.BRIDGE) return Optional.empty();
+        if (e == null || e.properties.getGeneralType() != EEComponentType.BRIDGE) return Optional.empty();
         return Optional.of((Bridge)e);
     }
 
@@ -90,8 +93,8 @@ public class ComponentManager {
             errors.missingComponentExceptions.add(new EEMissingComponentException(name));
             return null;
         }
-        if (p.getComponentType() != EEComponentType.BUS){
-            errors.componentTypeExceptions.add(new EEComponentTypeException(name, p.getComponentType(), EEComponentType.BUS));
+        if (p.properties.getGeneralType() != EEComponentType.BUS){
+            errors.componentTypeExceptions.add(new EEComponentTypeException(name, p.properties.getGeneralType(), EEComponentType.BUS));
             return null;
         }
         return (Bus) p;
@@ -104,7 +107,7 @@ public class ComponentManager {
         }
         EEEventProcessor p = componentTable.get(componentId);
         if (!(p instanceof Bus)){
-            errors.componentTypeExceptions.add(new EEComponentTypeException(p.properties.name, p.getComponentType(), EEComponentType.BUS));
+            errors.componentTypeExceptions.add(new EEComponentTypeException(p.properties.name, p.properties.getGeneralType(), EEComponentType.BUS));
             return null;
         }
         return (Bus) p;
@@ -127,7 +130,7 @@ public class ComponentManager {
     }
 
     // Currently: minimizes traffic -> Assumes the components & bridges are configured to send/transmit only messages where they are required
-    public void finalizeSetup() {
+    public void finalizeSetup(MessageTypeManager mtm) {
         if (componentTable.size() == 0) return;
 		// Create EE system graph.
 		// - Vertices: Components, Buses, Bridges (with type)
@@ -137,7 +140,7 @@ public class ComponentManager {
         // Use the component id as vertex id
         for (int i = 0; i < componentTable.size(); ++i){
             EEEventProcessor e = componentTable.get(i);
-            type.set(i, e.getComponentType() == EEComponentType.BUS ? 0 : e.getComponentType() == EEComponentType.BRIDGE ? 1 : 2);
+            type.set(i, e.properties.getGeneralType() == EEComponentType.BUS ? 0 : e.properties.getGeneralType() == EEComponentType.BRIDGE ? 1 : 2);
         }
         for (Bus b : buses){
             for (BusUser c : b.getConnectedComponents()){
@@ -188,7 +191,7 @@ public class ComponentManager {
                 HashMap<String, InputInfo> map = new HashMap<>();
                 inputsCovered.set(ec.id, map);
                 for (PortInformation p : ports){
-                    map.put(p.msg.name, new InputInfo());
+                    map.put(p.name, new InputInfo());
                 }
             }
         }
@@ -229,7 +232,7 @@ public class ComponentManager {
                                 EEComponent ec2 = ((EEComponent) componentTable.get(a));
                                 List<PortInformation> outputs = ec2.getOutputPorts();
                                 for (PortInformation o : outputs) 
-                                    if (o.msg.name.equals(p.msg.name)){
+                                    if (o.name.equals(p.name)){
                                         if (senders == null){
                                             senders = new ArrayList<>();
                                             senders.add(ec.properties.name);
@@ -240,13 +243,13 @@ public class ComponentManager {
 
                                 // Check if the component has the message as input
                                 HashMap<String, InputInfo> map = inputsCovered.get(a);
-                                if (map != null && map.containsKey(p.msg.name)){
-                                    map.get(p.msg.name).covered = true;
+                                if (map != null && map.containsKey(p.name)){
+                                    map.get(p.name).covered = true;
                                     usesOutput.set(a, true);
                                 }
                             } else {
                                 HashMap<String, InputInfo> map = inputsCovered.get(a);
-                                if (map != null && map.containsKey(p.msg.name)){
+                                if (map != null && map.containsKey(p.name)){
                                     usesOutput.set(a, true); // Routing for this message is already covered from here on
                                 } else {
                                     stack.push(a); // Simply propagate through Buses and Bridges
@@ -267,8 +270,8 @@ public class ComponentManager {
                         // Set "multiple" flag
                         if (multiple && type.get(j) == 2){
                             HashMap<String, InputInfo> map = inputsCovered.get(j);
-                            if (map != null && map.containsKey(p.msg.name)){
-                                InputInfo info = map.get(p.msg.name);
+                            if (map != null && map.containsKey(p.name)){
+                                InputInfo info = map.get(p.name);
                                 info.multiple = true;
                                 info.senders = senders;
                             }
@@ -278,7 +281,7 @@ public class ComponentManager {
                 //   - Warning if not used
                 if (stack.size() == 0){
                     //TODO adapt
-                    //Log.warn("Output: "+p.msg.name + " of component "+ec.name+ " not used.");
+                    //Log.warn("Output: "+p.name + " of component "+ec.name+ " not used.");
                 }
 
                 //   - Propagate "Usage" color (following backpointers)
@@ -294,13 +297,15 @@ public class ComponentManager {
                     }
                 }
 
+                MessageInformation msgInfo = mtm.getMsgInfo(p.name).get();
+
                 //   - Add routing info to Buses, Bridges and the message sender (collect neighbors marked with "usage" & different from backpointer).
                 for (int j = 0; j < componentTable.size(); ++j){
                     if (usesOutput.get(j)){
                         int t = type.get(j);
                         if (t == 0 || t == 1){
                             HashMap<String, InputInfo> map = inputsCovered.get(j);
-                            if (map != null && map.containsKey(p.msg.name)){
+                            if (map != null && map.containsKey(p.name)){
                                 continue; // Routing for this message is already covered
                             }
                             // Mark the bus or bridge as routing the message
@@ -308,7 +313,7 @@ public class ComponentManager {
                                 map = new HashMap<>();
                                 inputsCovered.set(j, map);
                             }
-                            map.put(p.msg.name, null);
+                            map.put(p.name, null);
                         }
                         if (ec.id == j || t == 1){
                             List<Bus> targets = new ArrayList<>();
@@ -318,7 +323,7 @@ public class ComponentManager {
                                     targets.add(((Bus) componentTable.get(n)));
                                 }
                             }
-                            ((BusUser) componentTable.get(j)).addMessageTargets(p.msg.messageId, targets);
+                            ((BusUser) componentTable.get(j)).addMessageTargets(msgInfo, targets);
                         } else if (t == 0){
                             List<BusUser> targets = new ArrayList<>();
                             for (int n : graph.adjacencies.get(j)){
@@ -327,14 +332,14 @@ public class ComponentManager {
                                     targets.add(((BusUser) componentTable.get(n)));
                                 }
                             }
-                            ((Bus) componentTable.get(j)).addMessageTargets(p.msg.messageId, targets);
+                            ((Bus) componentTable.get(j)).addMessageTargets(msgInfo, targets);
                         }
                     }
                 }
 
                 // If message not used -> Set empty targets @ Component
                 if (!visited.get(ec.id)){
-                    ec.addMessageTargets(p.msg.messageId, new ArrayList<>());
+                    ec.addMessageTargets(msgInfo, new ArrayList<>());
                 }
             }
         }
@@ -344,16 +349,16 @@ public class ComponentManager {
             HashMap<String,InputInfo> map = inputsCovered.get(c.id);
             if (map == null) continue;
             for (PortInformation p : c.getInputPorts()){
-                InputInfo info = map.get(p.msg.name);
+                InputInfo info = map.get(p.name);
                 // Check optional
                 if (!p.optional) {
                     if (info == null || (info != null && !info.covered))
-                        errors.missingOutputExceptions.add(new EEMissingOutputException(p.msg.name, c.properties.name));
+                        errors.missingOutputExceptions.add(new EEMissingOutputException(p.name, c.properties.name));
                 }
                 if (info != null) {
                     // Check if the "multipleInputs" flag is respected
-                    if (!p.multipleInputsAllowed && info.multiple)
-                        errors.multipleInputsExceptions.add(new EEMultipleInputsException(c.properties.name, p.msg.name, info.senders));
+                    if (!p.allows_multiple_inputs && info.multiple)
+                        errors.multipleInputsExceptions.add(new EEMultipleInputsException(c.properties.name, p.name, info.senders));
                 }
                 
             }

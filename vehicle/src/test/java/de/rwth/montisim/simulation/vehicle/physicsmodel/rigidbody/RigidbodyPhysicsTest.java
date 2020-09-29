@@ -24,12 +24,14 @@ public class RigidbodyPhysicsTest {
     @Test
     public void testAccel() throws Exception {
         VehicleProperties properties = new VehicleProperties();
-        ElectricalPowerTrain powerTrain = new ElectricalPowerTrain(new ElectricalPTProperties(null, new ElectricMotorProperties(), new BatteryProperties(BatteryType.SIMPLE)));
+        ElectricalPowerTrain powerTrain = new ElectricalPowerTrain(new ElectricalPTProperties(new ElectricMotorProperties(), new BatteryProperties(BatteryType.SIMPLE)));
 
         RigidbodyPhysics physics = new RigidbodyPhysics(new RigidbodyPhysicsProperties(), powerTrain, properties);
 
         physics.setGroundPosition(new Vec3(0,0,0), new Vec2(1,0));
         powerTrain.gasValue.set(1.0);
+        powerTrain.brakingValue.set(0.0);
+        powerTrain.steeringValue.set(0.0);
 
         long ST = System.nanoTime();
         TimeUpdate tu = new TimeUpdate(Instant.EPOCH, Duration.ofMillis(10)); // Don't update absolute time -> physics should only use deltas
