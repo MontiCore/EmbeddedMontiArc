@@ -3,11 +3,13 @@ package de.monticore.lang.montisim.simlang;
 
 import de.monticore.lang.montisim.simlang.adapter.SimLangContainer;
 
+import de.monticore.lang.montisim.util.types.LTLVehicle;
 import de.se_rwth.commons.logging.Log;
 import org.junit.Before;
 import org.junit.Test;
 
 import java.nio.file.Paths;
+import java.util.Arrays;
 
 public class SimLangContainerTest {
   @Before
@@ -110,6 +112,41 @@ public class SimLangContainerTest {
     assert adapter.getPathedVehicles().get().get(0).getPath().getDestLong() == 960.0f;
     assert adapter.getPathedVehicles().get().get(0).getStartRad().getNumberUnit().equals("201.0");
     assert adapter.getPathedVehicles().get().get(0).getDestRad().getNumberUnit().equals("200.0");
+
+
+    assert adapter.getLTLVehicles().isPresent();
+    double[][] path =  {
+            {1d, 0d, 0d},
+            {1d, 1d, 0d},
+            {1d, 1d, 1d},
+    };
+    LTLVehicle vehicle = adapter.getLTLVehicles().get().get(0);
+    for (int i = 0; i < vehicle.getPath().size(); i++) {
+      assert Arrays.equals(vehicle.getPath().get(i), path[i]);
+    }
+
+    LTLVehicle.Goal goal;
+    goal = vehicle.getGoals().get().get(0);
+    assert goal.ltlOperator.equals(LTLVehicle.LTLOperator.ALWAYS);
+    assert goal.metricName.equals("acceleration");
+    assert goal.comparator.equals(LTLVehicle.Comparator.LESS);
+    assert goal.targetMetric.getNumber() == 100f;
+    assert goal.targetMetric.getUnit().equals("m/s²");
+
+    goal = vehicle.getGoals().get().get(1);
+    assert goal.ltlOperator.equals(LTLVehicle.LTLOperator.EVENTUALLY);
+    assert goal.metricName.equals("speed");
+    assert goal.comparator.equals(LTLVehicle.Comparator.EQUAL);
+    assert goal.targetMetric.getNumber() == 0f;
+    assert goal.targetMetric.getUnit().equals("m/s");
+
+    goal = vehicle.getGoals().get().get(2);
+    assert goal.ltlOperator.equals(LTLVehicle.LTLOperator.NEVER);
+    assert goal.metricName.equals("battery");
+    assert goal.comparator.equals(LTLVehicle.Comparator.LESS);
+    assert goal.targetMetric.getNumber() == 0.1f;
+
+    assert adapter.getLTLVehicles().get().get(0).getPlatoonSize().get() == 5;
 
     assert adapter.getRandomVehicles().isPresent();
     assert adapter.getRandomVehicles().get().size() == 2;

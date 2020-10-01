@@ -39,6 +39,7 @@ public class SimLangContainer {
     private Optional<ArrayList<ExplicitVehicle>> explicit_vehicles = Optional.empty();
     private Optional<ArrayList<RandomVehicle>> random_vehicles = Optional.empty();
     private Optional<ArrayList<PathedVehicle>> pathed_vehicles = Optional.empty();
+    private Optional<ArrayList<LTLVehicle>> ltl_vehicles = Optional.empty();
 
     private Optional<ArrayList<Channel>> channels = Optional.empty();
 
@@ -134,6 +135,15 @@ public class SimLangContainer {
                 content.add(sym.getVehicle());
             }
             this.pathed_vehicles = Optional.of(content);
+        }
+
+        Collection<LTLVehicleSymbol> ltl_vehicles = symTab.resolveMany(symPrefix + "ltl_vehicle", LTLVehicleSymbol.KIND);
+        if (!ltl_vehicles.isEmpty()) {
+            ArrayList<LTLVehicle> content = new ArrayList<>();
+            for (LTLVehicleSymbol sym : ltl_vehicles) {
+                content.add(sym.getVehicle());
+            }
+            this.ltl_vehicles = Optional.of(content);
         }
 
         Collection<RandomVehicleSymbol> random_vehicles = symTab.<RandomVehicleSymbol>resolveMany(symPrefix + "random_vehicle", RandomVehicleSymbol.KIND);
@@ -234,6 +244,10 @@ public class SimLangContainer {
 
     public Optional<ArrayList<PathedVehicle>> getPathedVehicles() {
         return this.pathed_vehicles;
+    }
+
+    public Optional<ArrayList<LTLVehicle>> getLTLVehicles() {
+        return this.ltl_vehicles;
     }
 
     public Optional<ArrayList<RandomVehicle>> getRandomVehicles() {

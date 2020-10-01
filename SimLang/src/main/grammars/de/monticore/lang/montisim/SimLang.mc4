@@ -78,7 +78,26 @@ grammar SimLang extends de.monticore.lang.montisim.Weather, de.monticore.lang.mo
   
   //completely random vehicle spawns and destinations with optional avoidance of path
   RandomVehicle implements SimulationEntity = "vehicle" amount:NumberWithUnit ("(" startLat:NumberWithUnit "," startLong:NumberWithUnit ")" "->" "(" destLat:NumberWithUnit "," destLong:NumberWithUnit ")")?;
-  
+
+ // Vehicle configuration with goals
+ interface VehicleSetting;
+ LTLVehicle implements SimulationEntity = (CarModel)? "vehicle" "{" (VehicleSetting ";")* "}" ;
+ Path implements VehicleSetting = "path"
+    "(" startLat:NumberWithUnit "," startLong:NumberWithUnit "," startAlt:NumberWithUnit ")"
+    (
+      "->"
+      "(" destLat:NumberWithUnit "," destLong:NumberWithUnit "," destAlt:NumberWithUnit ")"
+    )*;
+ RandomPath implements VehicleSetting = "randomPath";
+ Network implements VehicleSetting = "network" network:Name;
+ //LTLOperator = ["always" | "never" | "eventually" | "until" ];
+ //Comparator = ("<" | "<=" | ">" | ">=" | "="); // not working, tokenizer seems doesn't recognize 2 following symbols
+ //Comparator = ["lt" | "le" | "gt" | "ge" | "eq"];
+ Goal implements VehicleSetting= lTLOperator:Name metricName:Name comparator:Name target:NumberWithUnit;
+ GoalList implements VehicleSetting = "goals" "[" Goal ("," Goal)* "]";
+ Platoon implements VehicleSetting = "platoon" "{" "size" size:NumberWithUnit";" "}";
+
+
   //
   // Communication Configuration
   //

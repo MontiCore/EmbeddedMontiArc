@@ -118,24 +118,29 @@ Definable arbitrarily often.
 
 ### (carModelName)? "vehicle" "{"
   "path" "(" [startLat] "," [startLong] ")" ( "->"  "(" [lat] "," [long]")" )* [destRadius]"m" ";"
-  "rotation" [rotation] ";"
-  "goals" "["(metricGoal|untilGoal)+"]" ";"
+  "randomPath"; // if randomPath is set, then "path" will be ignored
+  "network" [networkType];
+  "goals" "[" (unaryGoal|binaryGoal)+ "]" ";"
   "platoon" "{" 
     "size" [Number > 0] ";"
+    // or describing multiple scenarios with different platoon sizes
+    "size" [startSize:endSize:step] ";"
   "}"
 "}"
-#### metricGoal = ["never"|"always"|"eventually"] [metricName] [">" | ">=" | "<" | "<=" | "==" ] [targetValue][unit];
-#### untilGoal = metricGoal1 "until" metricGoal2;
-#### metricName = ["speed"|"acceleration"|"batteryLevel"];
+#### unaryGoal = ["never" | "always" | "eventually" |] [metricName] ["gt" | "ge" | "lt" | "le" | "eq" ] [targetValue][unit];
+#### binaryGoal = unaryGoal "until" unaryGoal;
+#### metricName = ["speed" | "acceleration" | "batteryLevel"];
 Creates a vehicle or a platoon. A vehicle will spawn at the first way point defined in its path attribute(sartLat, startLong).
-If "platoon" is given, the rest vehicles will spawn following the leading vehicle. Their destinations are reached if the leading
-vehicle reached its destination and they still stay in the platoon. The initial rotation can be specified using the keyword "rotation".
-A vehicle can have multiple "goals", they can be used to describe which conditions must be fufilled before the simulation ends.
+If "platoon" is given, the rest vehicles will spawn following the leading vehicle.
+A platoon is considered reached its destination if the leading vehicle reached the destination
+while the rest of the vehicles are still in the platoon.
+A vehicle can have multiple "goals", they should be fullfilled for a successful simulation.
 Each condition should be given a type: "never", "always", "eventually" or "until".
-The type "until"(untilGoal) is special, its basic form is: cond1 "until" cond2, meaning cond1 should be true until cond2 is true.
+The binary goal "until" is special, its basic form is: cond1 "until" cond2, meaning cond1 should always be true until cond2 is true.
 It can be used to test scenarios like: 
-an EV should not release too much power if battery level is low, otherwise it might damage the battery("batteryLevel" ">" 0.3 "until" "acceleration" ">" 25 km/s^2);
-a vehicle should stay still before the traffic light turns green("speed" "==" 0 km/s "until" "green").
+an EV should not release too much power until battery level is above some level, otherwise it might damage the battery("batteryLevel" ">" 0.3 "until" "acceleration" ">" 25 km/s^2);
+or:
+a vehicle should stay still until the traffic light turns green("speed" "==" 0 km/s "until" "green").
 
 ### ("fixed"|"bound") "channel" [name] "{"
   CHANNEL_RULE1 ";"
