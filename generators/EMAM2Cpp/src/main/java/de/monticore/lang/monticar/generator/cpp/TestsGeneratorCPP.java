@@ -8,7 +8,6 @@ import de.monticore.lang.embeddedmontiarc.embeddedmontiarc.StreamScanner;
 import de.monticore.lang.embeddedmontiarc.embeddedmontiarc._symboltable.cncModel.EMAComponentSymbol;
 import de.monticore.lang.embeddedmontiarc.embeddedmontiarc._symboltable.cncModel.EMAPortSymbol;
 import de.monticore.lang.embeddedmontiarc.embeddedmontiarc._symboltable.instanceStructure.EMAComponentInstanceSymbol;
-import de.monticore.lang.embeddedmontiarc.embeddedmontiarc._symboltable.instanceStructure.EMAPortInstanceSymbol;
 import de.monticore.lang.monticar.generator.FileContent;
 import de.monticore.lang.monticar.generator.cmake.CMakeConfig;
 import de.monticore.lang.monticar.generator.cpp.converter.MathConverter;
@@ -27,7 +26,6 @@ import de.monticore.lang.monticar.streamunits._visitor.StreamUnitsVisitor;
 import de.monticore.literals.literals._ast.ASTBooleanLiteral;
 import de.monticore.numberunit._ast.ASTNumberWithUnit;
 import de.monticore.symboltable.Scope;
-import de.monticore.symboltable.types.references.TypeReference;
 import de.se_rwth.commons.logging.Log;
 
 import java.util.*;
@@ -37,7 +35,7 @@ public final class TestsGeneratorCPP {
     public static final String TESTS_DIRECTORY_NAME = "/test";
 
     private final GeneratorCPP generator;
-    private List<BluePrintCPP> bluePrints;
+    private List<EMAMBluePrintCPP> bluePrints;
     public static Map<EMAComponentSymbol, Set<ComponentStreamUnitsSymbol>> availableStreams;
     private Set<String> testedComponents;
     private List<FileContent> files;
@@ -75,7 +73,7 @@ public final class TestsGeneratorCPP {
         files = new ArrayList<>();
         viewModelForMain = new TestsMainEntryViewModel();
         viewModelForMain.setIncludes(new ArrayList<>());
-        for (BluePrintCPP b : bluePrints) {
+        for (EMAMBluePrintCPP b : bluePrints) {
             EMAComponentInstanceSymbol s = b.getOriginalSymbol();
             if (s != null) {
                 processBluePrint(b, s);
@@ -188,7 +186,7 @@ public final class TestsGeneratorCPP {
         return result;
     }
 
-    private void processBluePrint(BluePrintCPP b, EMAComponentInstanceSymbol s) {
+    private void processBluePrint(EMAMBluePrintCPP b, EMAComponentInstanceSymbol s) {
         //TODO: 123 : check if EMAComponentSymbol is correct choice here:  ComponentSymbol cs = s.getComponentType().getReferencedSymbol();
         EMAComponentSymbol cs = s.getComponentType().getReferencedSymbol();
         if (testedComponents.add(cs.getFullName())) {
@@ -196,7 +194,7 @@ public final class TestsGeneratorCPP {
         }
     }
 
-    private void processBluePrint(BluePrintCPP b, EMAComponentSymbol cs) {
+    private void processBluePrint(EMAMBluePrintCPP b, EMAComponentSymbol cs) {
         Set<ComponentStreamUnitsSymbol> streamsForComponent = availableStreams.get(cs);
         if (streamsForComponent == null || streamsForComponent.isEmpty()) {
             return;
@@ -209,7 +207,7 @@ public final class TestsGeneratorCPP {
 
     }
 
-    private static ComponentStreamTestViewModel getStreamViewModel(BluePrintCPP b, EMAComponentSymbol cs, Set<ComponentStreamUnitsSymbol> streamsForComponent) {
+    private static ComponentStreamTestViewModel getStreamViewModel(EMAMBluePrintCPP b, EMAComponentSymbol cs, Set<ComponentStreamUnitsSymbol> streamsForComponent) {
         ComponentStreamTestViewModel viewModel = new ComponentStreamTestViewModel();
         viewModel.setComponentName(b.getName());
         viewModel.setFileNameWithoutExtension(b.getName() + "_test");

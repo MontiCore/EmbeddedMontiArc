@@ -5,7 +5,7 @@ call variables.bat
 set STREAM_TESTING=%PROJECT_ROOT%\target\generated-sources-cpp\streamtest
 set AUTOPILOT_TESTS=%STREAM_TESTING%\target\generated-sources-cpp\streamtest\autopilot
 set STREAM_TEST_EXEC_DIR=%STREAM_TESTING%\exec
-g++ -version
+g++ --version
 
 g++ -std=c++11 ^
    -I"%JAVA_HOME%\include_win" ^

@@ -25,6 +25,8 @@ public class CMakeListsCPPViewModel extends ViewModelBase {
 
     private List<String> cmakeCommandListEnd = new ArrayList<>();
 
+    private List<String> cmakeLibraryLinkageList = new ArrayList<>();
+
     // methods
 
     public String getCompName() {
@@ -57,5 +59,13 @@ public class CMakeListsCPPViewModel extends ViewModelBase {
 
     public void setCmakeCommandListEnd(List<String> cmakeCommandListEnd) {
         this.cmakeCommandListEnd = cmakeCommandListEnd;
+    }
+
+    public List<String> getCmakeLibraryLinkageList() {
+        return cmakeLibraryLinkageList;
+    }
+
+    public void setCmakeLibraryLinkageList(List<String> cmakeLibraryLinkageList) {
+        this.cmakeLibraryLinkageList = cmakeLibraryLinkageList;
     }
 }

@@ -27,7 +27,7 @@ public class BasicMathGenerationTest extends AbstractSymtabTest {
         generatorCPP.setGenerateCMake(false);
         generatorCPP.useOctaveBackend();
         generatorCPP.setGenerationTargetPath("./target/generated-sources-cpp/testMath/l0");
-        List<File> files = generatorCPP.generateFiles(componentSymbol, symtab);
+        List<File> files = generatorCPP.generateFiles(symtab, componentSymbol);;
         String restPath = "testMath/l0/";
         testFilesAreEqual(files, restPath);
     }
@@ -43,7 +43,7 @@ public class BasicMathGenerationTest extends AbstractSymtabTest {
         generatorCPP.useOctaveBackend();
         generatorCPP.setGenerateCMake(false);
         generatorCPP.setGenerationTargetPath("./target/generated-sources-cpp/testMath/l0");
-        List<File> files = generatorCPP.generateFiles(componentSymbol, symtab);
+        List<File> files = generatorCPP.generateFiles(symtab, componentSymbol);;
         String restPath = "testMath/l0/";
         testFilesAreEqual(files, restPath);
     }
@@ -58,7 +58,7 @@ public class BasicMathGenerationTest extends AbstractSymtabTest {
         generatorCPP.useOctaveBackend();
         generatorCPP.setGenerateCMake(false);
         generatorCPP.setGenerationTargetPath("./target/generated-sources-cpp/testMath/l0");
-        List<File> files = generatorCPP.generateFiles(componentSymbol, symtab);
+        List<File> files = generatorCPP.generateFiles(symtab, componentSymbol);;
         String restPath = "testMath/l0/";
         testFilesAreEqual(files, restPath);
     }
@@ -73,7 +73,7 @@ public class BasicMathGenerationTest extends AbstractSymtabTest {
         generatorCPP.useOctaveBackend();
         generatorCPP.setGenerateCMake(false);
         generatorCPP.setGenerationTargetPath("./target/generated-sources-cpp/testMath/l0");
-        List<File> files = generatorCPP.generateFiles(componentSymbol, symtab);
+        List<File> files = generatorCPP.generateFiles(symtab, componentSymbol);;
         String restPath = "testMath/l0/";
         testFilesAreEqual(files, restPath);
     }
@@ -87,7 +87,7 @@ public class BasicMathGenerationTest extends AbstractSymtabTest {
         generatorCPP.useArmadilloBackend();
         generatorCPP.setGenerateCMake(false);
         generatorCPP.setGenerationTargetPath("./target/generated-sources-cpp/testMath/l0");
-        List<File> files = generatorCPP.generateFiles(componentSymbol, symtab);
+        List<File> files = generatorCPP.generateFiles(symtab, componentSymbol);;
         String restPath = "testMath/l0/";
         testFilesAreEqual(files, restPath);
     }
@@ -102,7 +102,7 @@ public class BasicMathGenerationTest extends AbstractSymtabTest {
         generatorCPP.useArmadilloBackend();
         generatorCPP.setGenerateCMake(false);
         generatorCPP.setGenerationTargetPath("./target/generated-sources-cpp/testMath/l0");
-        List<File> files = generatorCPP.generateFiles(componentSymbol, symtab);
+        List<File> files = generatorCPP.generateFiles(symtab, componentSymbol);;
         String restPath = "testMath/l0/";
         testFilesAreEqual(files, restPath);
     }
@@ -117,7 +117,7 @@ public class BasicMathGenerationTest extends AbstractSymtabTest {
         generatorCPP.useArmadilloBackend();
         generatorCPP.setGenerateCMake(false);
         generatorCPP.setGenerationTargetPath("./target/generated-sources-cpp/testMath/l0");
-        List<File> files = generatorCPP.generateFiles(componentSymbol, symtab);
+        List<File> files = generatorCPP.generateFiles(symtab, componentSymbol);;
         String restPath = "testMath/l0/";
         testFilesAreEqual(files, restPath);
     }

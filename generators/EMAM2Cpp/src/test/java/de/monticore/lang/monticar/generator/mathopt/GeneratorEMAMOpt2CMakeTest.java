@@ -41,7 +41,7 @@ public class GeneratorEMAMOpt2CMakeTest extends AbstractSymtabTest {
         generator.setCheckModelDir(true);
         generator.setModelsDirPath(Paths.get("src/test/resources/mathopt"));
 
-        return generator.generateFiles(componentInstanceSymbol, symtab);
+        return generator.generateFiles(symtab, componentInstanceSymbol);
     }
 
     @Test

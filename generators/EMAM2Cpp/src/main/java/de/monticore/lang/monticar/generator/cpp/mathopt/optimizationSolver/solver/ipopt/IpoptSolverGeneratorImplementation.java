@@ -4,7 +4,7 @@ package de.monticore.lang.monticar.generator.cpp.mathopt.optimizationSolver.solv
 import de.monticore.lang.monticar.generator.FileContent;
 import de.monticore.lang.monticar.generator.Generator;
 import de.monticore.lang.monticar.generator.cmake.CMakeFindModule;
-import de.monticore.lang.monticar.generator.cpp.BluePrintCPP;
+import de.monticore.lang.monticar.generator.cpp.EMAMBluePrintCPP;
 import de.monticore.lang.monticar.generator.cpp.GeneratorCPP;
 import de.monticore.lang.monticar.generator.cpp.mathopt.optimizationSolver.problem.DNLPProblem;
 import de.monticore.lang.monticar.generator.cpp.mathopt.optimizationSolver.problem.NLPProblem;
@@ -60,7 +60,7 @@ public class IpoptSolverGeneratorImplementation implements NLPSolverGeneratorImp
     }
 
     @Override
-    public String generateSolverCode(Problem optimizationProblem, List<FileContent> auxillaryFiles, BluePrintCPP bluePrint) {
+    public String generateSolverCode(Problem optimizationProblem, List<FileContent> auxillaryFiles, EMAMBluePrintCPP bluePrint) {
         String result = "";
 //        GeneratorEMAMOpt2CPP generator = (GeneratorEMAMOpt2CPP) bluePrint.getGenerator();
         GeneratorCPP generator = (GeneratorCPP) bluePrint.getGenerator();
@@ -122,7 +122,7 @@ public class IpoptSolverGeneratorImplementation implements NLPSolverGeneratorImp
         }
     }
 
-    protected void addCMakeDependenciesToGenerator(BluePrintCPP bluePrint) {
+    protected void addCMakeDependenciesToGenerator(EMAMBluePrintCPP bluePrint) {
         Generator gen = bluePrint.getGenerator();
         if (gen instanceof GeneratorCPP) {
             List<CMakeFindModule> dependencies = getCMakeDependencies();

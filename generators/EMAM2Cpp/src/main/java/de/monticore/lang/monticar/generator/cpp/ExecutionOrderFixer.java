@@ -20,7 +20,7 @@ import java.util.*;
 /**
  */
 public class ExecutionOrderFixer {
-    public static void fixExecutionOrder(TaggingResolver taggingResolver, BluePrintCPP bluePrintCPP, GeneratorCPP generatorCPP) {
+    public static void fixExecutionOrder(TaggingResolver taggingResolver, EMAMBluePrintCPP bluePrintCPP, GeneratorCPP generatorCPP) {
 
         Method method = bluePrintCPP.getMethod("execute").get();
 
@@ -57,7 +57,7 @@ public class ExecutionOrderFixer {
 
     }
 
-    public static void fixSlistExecutionOrder(EMAComponentInstanceSymbol instanceSymbol, List<Instruction> newList, BluePrintCPP bluePrintCPP, List<EMAComponentInstanceSymbol> threadableComponents, GeneratorCPP generatorCPP) {
+    public static void fixSlistExecutionOrder(EMAComponentInstanceSymbol instanceSymbol, List<Instruction> newList, EMAMBluePrintCPP bluePrintCPP, List<EMAComponentInstanceSymbol> threadableComponents, GeneratorCPP generatorCPP) {
         for (EMAComponentInstanceSymbol subComponent : instanceSymbol.getSubComponents()) {
             if (!listContainsExecuteInstruction(newList, subComponent.getName())) {
                 ExecuteInstruction executeInstruction = (ExecuteInstruction) getExecuteInstruction(subComponent.getName(), bluePrintCPP, threadableComponents, generatorCPP);
@@ -71,13 +71,13 @@ public class ExecutionOrderFixer {
         }
     }
 
-    public static void fixNextInstruction(List<Instruction> newList, BluePrintCPP bluePrintCPP){
+    public static void fixNextInstruction(List<Instruction> newList, EMAMBluePrintCPP bluePrintCPP){
         if(bluePrintCPP.getMethod("next").isPresent()){
             newList.add(0, new TargetCodeInstruction("next();\n"));
         }
     }
 
-    public static void fixDynamicInstruction(List<Instruction> newList, BluePrintCPP bluePrintCPP){
+    public static void fixDynamicInstruction(List<Instruction> newList, EMAMBluePrintCPP bluePrintCPP){
         if(bluePrintCPP.getMethod("dynamic").isPresent()){
             newList.add(0, new TargetCodeInstruction("dynamic();\n"));
         }
@@ -94,7 +94,7 @@ public class ExecutionOrderFixer {
         return false;
     }
 
-    public static Instruction getExecuteInstruction(String nameToAdd, BluePrintCPP bluePrintCPP, List<EMAComponentInstanceSymbol> threadableComponents, GeneratorCPP generatorCPP) {
+    public static Instruction getExecuteInstruction(String nameToAdd, EMAMBluePrintCPP bluePrintCPP, List<EMAComponentInstanceSymbol> threadableComponents, GeneratorCPP generatorCPP) {
         boolean canBeThreaded = false;
         if (generatorCPP.useThreadingOptimizations())
             for (EMAComponentInstanceSymbol instanceSymbol : threadableComponents) {
@@ -107,7 +107,7 @@ public class ExecutionOrderFixer {
         return exI;
     }
 
-    public static Instruction getExecuteInstruction(EMAComponentInstanceSymbol componentInstanceSymbol, BluePrintCPP bluePrintCPP, List<EMAComponentInstanceSymbol> threadableComponents) {
+    public static Instruction getExecuteInstruction(EMAComponentInstanceSymbol componentInstanceSymbol, EMAMBluePrintCPP bluePrintCPP, List<EMAComponentInstanceSymbol> threadableComponents) {
         return getExecuteInstruction(componentInstanceSymbol.getName(), bluePrintCPP, threadableComponents, (GeneratorCPP) bluePrintCPP.getGenerator());
     }
 
@@ -153,7 +153,7 @@ public class ExecutionOrderFixer {
         return otherInstructions;
     }
 
-    public static List<Instruction> getExecutionOrderInstructionsList(List<EMAComponentInstanceSymbol> exOrder, Map<String, List<Instruction>> map, BluePrintCPP bluePrintCPP, List<EMAComponentInstanceSymbol> threadableSubComponents) {
+    public static List<Instruction> getExecutionOrderInstructionsList(List<EMAComponentInstanceSymbol> exOrder, Map<String, List<Instruction>> map, EMAMBluePrintCPP bluePrintCPP, List<EMAComponentInstanceSymbol> threadableSubComponents) {
         List<Instruction> newList = new ArrayList<>();
         for (EMAComponentInstanceSymbol instanceSymbol : exOrder) {
             String namey = instanceSymbol.getName();

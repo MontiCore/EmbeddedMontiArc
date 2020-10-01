@@ -1,9 +1,7 @@
 /* (c) https://github.com/MontiCore/monticore */
 package de.monticore.lang.monticar.generator.cpp;
 
-import de.monticore.lang.monticar.generator.BluePrint;
-
-import java.util.List;
+import de.monticore.lang.monticar.generator.EMAMBluePrint;
 
 /**
  */
@@ -18,7 +16,7 @@ public class GeneralHelperMethods {
         return componentName.replaceFirst(regex, replacement);
     }
 
-    public static String getTargetLanguageVariableInstanceName(String componentName, BluePrint bluePrint) {
+    public static String getTargetLanguageVariableInstanceName(String componentName, EMAMBluePrint bluePrint) {
         while (!bluePrint.getVariable(componentName).isPresent() && componentName.contains("_")) {
             componentName = replaceUnderScoreWithSquareBrackets(componentName, "\\_", "[");
             componentName = replaceUnderScoreWithSquareBrackets(componentName, "\\_", "]");

@@ -26,7 +26,7 @@ public class AutomaticStreamTestGenerator extends AbstractSymtab {
         generatorCPP.setGenerationTargetPath(targetPath);
         generatorCPP.useArmadilloBackend();
         generatorCPP.setModelsDirPath(Paths.get(basePath));
-        List<File> files = generatorCPP.generateFiles(symtab, componentSymbol, symtab);
+        List<File> files = generatorCPP.generateFiles(symtab, componentSymbol);
 
     }
 }

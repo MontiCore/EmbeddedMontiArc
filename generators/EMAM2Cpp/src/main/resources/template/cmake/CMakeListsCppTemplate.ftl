@@ -15,6 +15,11 @@ find_package(${var.packageName} <#if var.required>REQUIRED<#else></#if>)
 <#if var.fortranQuadMath>set(LIBS ${r"${LIBS}"} "quadmath")</#if>
 </#list>
 
+# additional library linkage
+<#list viewModel.cmakeLibraryLinkageList as cmd>
+set(LIBS ${r"${LIBS}"} ${cmd})
+</#list>
+
 # additional commands
 <#list viewModel.cmakeCommandList as cmd>
 ${cmd}

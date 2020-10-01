@@ -38,7 +38,7 @@ public class TestsGenTest extends AbstractSymtabTest {
         generatorCPP.useOctaveBackend();
         generatorCPP.setGenerationTargetPath("./target/generated-sources-cpp/MySuperAwesomeComponent1/");
         generatorCPP.setCheckModelDir(true);
-        Set<File> files = new HashSet<>(generatorCPP.generateFiles(symTab, componentSymbol, symTab));
+        Set<File> files = new HashSet<>(generatorCPP.generateFiles(symTab, componentSymbol));
 
 //        assertEquals(18, files.size());
         assertEquals(13, files.size()); // TODO: check if 14 is correct here?
@@ -58,7 +58,7 @@ public class TestsGenTest extends AbstractSymtabTest {
         generatorCPP.setGenerateCMake(true);
         generatorCPP.setGenerationTargetPath("./target/generated-sources-cpp/structs/simpleStructComp");
         generatorCPP.setCheckModelDir(true);
-        Set<File> files = new HashSet<>(generatorCPP.generateFiles(symTab, componentSymbol, symTab));
+        Set<File> files = new HashSet<>(generatorCPP.generateFiles(symTab, componentSymbol));
 
         Optional<File> testFileOpt = files.stream().filter(file -> file.getName().endsWith("structs_simpleStructComp_test.hpp")).findFirst();
 
@@ -83,7 +83,7 @@ public class TestsGenTest extends AbstractSymtabTest {
         generatorCPP.setGenerateCMake(true);
         generatorCPP.setGenerationTargetPath("./target/generated-sources-cpp/structs/nestedStructComp");
         generatorCPP.setCheckModelDir(true);
-        Set<File> files = new HashSet<>(generatorCPP.generateFiles(symTab, componentSymbol, symTab));
+        Set<File> files = new HashSet<>(generatorCPP.generateFiles(symTab, componentSymbol));
 
         Optional<File> testFileOpt = files.stream().filter(file -> file.getName().endsWith("structs_nestedStructComp_test.hpp")).findFirst();
 
@@ -111,7 +111,7 @@ public class TestsGenTest extends AbstractSymtabTest {
         generatorCPP.setGenerateCMake(true);
         generatorCPP.setGenerationTargetPath("./target/generated-sources-cpp/streamTest/matrix/");
         generatorCPP.setCheckModelDir(true);
-        Set<File> files = new HashSet<>(generatorCPP.generateFiles(symTab, componentSymbol, symTab));
+        Set<File> files = new HashSet<>(generatorCPP.generateFiles(symTab, componentSymbol));
 
         Optional<File> testFileOpt = files.stream().filter(file -> file.getName().endsWith("basic_matrixComp_test.hpp")).findFirst();
 

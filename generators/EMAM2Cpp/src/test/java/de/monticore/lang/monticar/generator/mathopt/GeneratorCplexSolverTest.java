@@ -45,7 +45,7 @@ public class GeneratorCplexSolverTest extends AbstractSymtabTest {
         generator.getMathOptSolverConfig().setForceUsePreferredSolver(true);
 
         generator.setGenerationTargetPath("./target/generated-sources-cpp/mathopt/cplex/" + fullModelName.substring(fullModelName.lastIndexOf(".") + 1, fullModelName.length()) + "/src/");
-        return generator.generateFiles(componentInstanceSymbol, symtab);
+        return generator.generateFiles(symtab, componentInstanceSymbol);
     }
 
     @Test

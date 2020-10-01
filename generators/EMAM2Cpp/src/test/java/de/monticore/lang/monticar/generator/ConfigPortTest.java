@@ -40,7 +40,7 @@ public class ConfigPortTest extends AbstractSymtabTest{
         generatorCPP.setGenerateCMake(false);
 
         generatorCPP.setGenerationTargetPath("./target/generated-sources-cpp/configPort/");
-        List<File> files = generatorCPP.generateFiles(comp, symtab);
+        List<File> files = generatorCPP.generateFiles(symtab, comp);
 
         testFilesAreEqual(files,"configPort/");
     }
@@ -63,7 +63,7 @@ public class ConfigPortTest extends AbstractSymtabTest{
         generatorCPP.setGenerateCMake(false);
 
         generatorCPP.setGenerationTargetPath("./target/generated-sources-cpp/configPortFromKeyword/");
-        List<File> files = generatorCPP.generateFiles(comp, symtab);
+        List<File> files = generatorCPP.generateFiles(symtab, comp);
 
         testFilesAreEqual(files,"configPortFromKeyword/");
 

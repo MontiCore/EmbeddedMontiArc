@@ -138,7 +138,7 @@ public class AutomaticStreamTestGenerationTest extends AbstractSymtabTest {
         generatorCPP.setGenerateTests(true);
         EMAComponentInstanceSymbol componentSymbol = symtab.<EMAComponentInstanceSymbol>resolve("de.rwth.armin.modeling.autopilot.motion.calculatePidError", EMAComponentInstanceSymbol.KIND).orElse(null);
         assertNotNull(componentSymbol);
-        generatorCPP.generateFiles(symtab, componentSymbol, symtab);
+        generatorCPP.generateFiles(symtab, componentSymbol);
         //generatorCPP.setModelsDirPath(Paths.get("./target/generated-sources-cpp/streamtest/cluster"));
         // generatorCPP.saveFilesToDisk(generatorCPP.handleTestAndCheckDir(symtab));
         //testFilesAreEqual(files, restPath); generated values are random

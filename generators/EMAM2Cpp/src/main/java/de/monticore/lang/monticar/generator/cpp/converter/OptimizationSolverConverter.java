@@ -4,11 +4,10 @@ package de.monticore.lang.monticar.generator.cpp.converter;
 import de.monticore.lang.math._symboltable.expression.MathValueSymbol;
 import de.monticore.lang.math._symboltable.expression.MathValueType;
 import de.monticore.lang.mathopt._symboltable.MathOptimizationStatementSymbol;
-import de.monticore.lang.monticar.generator.BluePrint;
+import de.monticore.lang.monticar.generator.EMAMBluePrint;
 import de.monticore.lang.monticar.generator.FileContent;
-import de.monticore.lang.monticar.generator.cpp.BluePrintCPP;
+import de.monticore.lang.monticar.generator.cpp.EMAMBluePrintCPP;
 import de.monticore.lang.monticar.generator.cpp.GeneratorCPP;
-import de.monticore.lang.monticar.generator.cpp.mathopt.MathOptSolverConfig;
 import de.monticore.lang.monticar.generator.cpp.mathopt.optimizationSolver.problem.OptimizationProblemClassification;
 import de.monticore.lang.monticar.generator.cpp.mathopt.optimizationSolver.problem.Problem;
 import de.monticore.lang.monticar.generator.cpp.mathopt.optimizationSolver.solver.SolverGenerator;
@@ -45,7 +44,7 @@ public class OptimizationSolverConverter {
      * @param includeStrings Additional include strings which are necessary to execute the code
      * @return Code line which will execute the optimization solver on the optimization problem
      */
-    public static String getOptimizationExpressionCode(MathOptimizationStatementSymbol symbol, List<String> includeStrings, BluePrintCPP bluePrint) {
+    public static String getOptimizationExpressionCode(MathOptimizationStatementSymbol symbol, List<String> includeStrings, EMAMBluePrintCPP bluePrint) {
 
         // first step: decide for correct solver for problem class
         OptimizationProblemClassification problemClassification = new OptimizationProblemClassification(symbol);
@@ -83,7 +82,7 @@ public class OptimizationSolverConverter {
     }
 
 
-    private static boolean isOptimizationVariableAlreadyDefined(MathValueSymbol optimizationVariable, BluePrintCPP bluePrint) {
+    private static boolean isOptimizationVariableAlreadyDefined(MathValueSymbol optimizationVariable, EMAMBluePrintCPP bluePrint) {
         boolean defined = false;
         if (optimizationVariable.getType() == null) {
             defined = true;
@@ -93,7 +92,7 @@ public class OptimizationSolverConverter {
         return defined;
     }
 
-    private static String getOutputVariableDeclarations(MathOptimizationStatementSymbol symbol, Problem problemType, BluePrintCPP bluePrint) {
+    private static String getOutputVariableDeclarations(MathOptimizationStatementSymbol symbol, Problem problemType, EMAMBluePrintCPP bluePrint) {
         String result = "";
         if (!isOptimizationVariableAlreadyDefined(symbol.getOptimizationVariable(), bluePrint))
             result += ExecuteMethodGenerator.generateExecuteCode(symbol.getOptimizationVariable(), new ArrayList<>());
@@ -115,7 +114,7 @@ public class OptimizationSolverConverter {
         return result;
     }
 
-    protected GeneratorCPP getGenerator(BluePrint bluePrint) {
+    protected GeneratorCPP getGenerator(EMAMBluePrint bluePrint) {
         GeneratorCPP g = null;
         if (bluePrint.getGenerator() instanceof GeneratorCPP)
             g = (GeneratorCPP) bluePrint.getGenerator();

@@ -5,7 +5,7 @@ import de.monticore.lang.monticar.generator.FileContent;
 import de.monticore.lang.monticar.generator.Generator;
 import de.monticore.lang.monticar.generator.cmake.CMakeConfig;
 import de.monticore.lang.monticar.generator.cmake.CMakeFindModule;
-import de.monticore.lang.monticar.generator.cpp.BluePrintCPP;
+import de.monticore.lang.monticar.generator.cpp.EMAMBluePrintCPP;
 import de.monticore.lang.monticar.generator.cpp.GeneratorCPP;
 import de.monticore.lang.monticar.generator.cpp.mathopt.optimizationSolver.problem.MIQPProblem;
 import de.monticore.lang.monticar.generator.cpp.mathopt.optimizationSolver.problem.Problem;
@@ -54,7 +54,7 @@ public class CplexSolverGeneratorImplementation implements QPSolverGeneratorImpl
     private List<String> necessaryIncludes = new ArrayList<>();
 
     @Override
-    public String generateSolverCode(Problem optimizationProblem, List<FileContent> auxillaryFiles, BluePrintCPP bluePrint) {
+    public String generateSolverCode(Problem optimizationProblem, List<FileContent> auxillaryFiles, EMAMBluePrintCPP bluePrint) {
         String result = "";
         GeneratorCPP generator = (GeneratorCPP) bluePrint.getGenerator();
         if ((optimizationProblem instanceof QPProblem) || (optimizationProblem instanceof MIQPProblem)) {
@@ -107,7 +107,7 @@ public class CplexSolverGeneratorImplementation implements QPSolverGeneratorImpl
         }
     }
 
-    protected void addCMakeDependenciesToGenerator(BluePrintCPP bluePrint) {
+    protected void addCMakeDependenciesToGenerator(EMAMBluePrintCPP bluePrint) {
         Generator gen = bluePrint.getGenerator();
         if (gen instanceof GeneratorCPP) {
             CMakeConfig cmake = ((GeneratorCPP) gen).getCMakeConfig();
