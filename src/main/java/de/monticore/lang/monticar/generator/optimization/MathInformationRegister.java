@@ -52,7 +52,7 @@ public class MathInformationRegister {
         if (firstDoubleDot)
             result = 1;
         else {
-            result = getAmount(name, 1);
+            result = getAmount(name, 0);
         }
         return result;
     }
@@ -132,7 +132,7 @@ public class MathInformationRegister {
         if (secondDoubleDot)
             result = 1;
         else {
-            result = getAmount(name, 0);
+            result = getAmount(name, 1);
         }
         return result;
     }
