@@ -42,4 +42,30 @@ public class PathGoalTest {
         goal.update(v);
         assertEquals(TaskStatus.SUCCEEDED, goal.getStatus());
     }
+
+    @Test
+    public void testNever() {
+        Goal goal = PathGoal.newBuilder()
+                .never()
+                .arrive(new Vec2(100, 0))
+                .arrive(new Vec2(200, 0))
+                .arrive(new Vec2(300, 0))
+                .withInRange(10)
+                .build();
+
+        Vehicle v = mock(Vehicle.class);
+        v.physicalObject = mock(DynamicObject.class);
+
+        v.physicalObject.pos = new Vec3(0, 0, 0);
+        goal.update(v);
+        assertEquals(TaskStatus.SUCCEEDED, goal.getStatus());
+
+        v.physicalObject.pos = new Vec3(95, 0, 0);
+        goal.update(v);
+        assertEquals(TaskStatus.FAILED, goal.getStatus());
+
+        v.physicalObject.pos = new Vec3(0, 0, 0);
+        goal.update(v);
+        assertEquals(TaskStatus.FAILED, goal.getStatus());
+    }
 }

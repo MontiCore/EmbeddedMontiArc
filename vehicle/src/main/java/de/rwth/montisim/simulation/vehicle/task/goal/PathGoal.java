@@ -3,6 +3,7 @@ package de.rwth.montisim.simulation.vehicle.task.goal;
 import de.rwth.montisim.commons.simulation.TaskStatus;
 import de.rwth.montisim.commons.utils.LTLOperator;
 import de.rwth.montisim.commons.utils.Vec2;
+import de.rwth.montisim.commons.utils.Vec3;
 import de.rwth.montisim.commons.utils.json.Typed;
 import de.rwth.montisim.simulation.vehicle.Vehicle;
 
@@ -18,14 +19,24 @@ public class PathGoal extends Goal {
     public PathGoal() {
     }
 
-    public PathGoal(LTLOperator ltlOperator, List<Vec2> path, double range) {
+    public PathGoal(LTLOperator ltlOperator, List<Vec2> path, double radius) {
         this.ltlOperator = ltlOperator;
         this.path = path;
-        this.radius = range;
+        this.radius = radius;
         this.currDestIdx = 0;
     }
 
     public void update(Vehicle v) {
+        if (ltlOperator.equals(LTLOperator.EVENTUALLY)){
+            handleEventually(v);
+        } else if (ltlOperator.equals(LTLOperator.NEVER)) {
+            handleNever(v);
+        }
+    }
+
+    private void handleEventually(Vehicle v) {
+        if (currDestIdx >= path.size()) return; // skip if all destinations have been reached
+
         Vec2 dest = path.get(currDestIdx);
         double dist = v.physicalObject.pos.asVec2().distance(dest);
 
@@ -47,6 +58,22 @@ public class PathGoal extends Goal {
         }
     }
 
+    private void handleNever(Vehicle v) {
+        // "never" operator expect the expression to always be false (FAILED)
+        // i.e. the vehicle should never arrive in the area of any given destination
+        TaskStatus status = TaskStatus.FAILED;
+
+        for (Vec2 vec: path) {
+            if (v.physicalObject.pos.distance(new Vec3(vec.x, vec.y, 0)) < radius) {
+                // succeeded if arrived in the area of vec
+                status = TaskStatus.SUCCEEDED;
+                break;
+            }
+        }
+
+        updateStatus(status);
+    }
+
     @Override
     public boolean equals(Object obj) {
         if (obj == this)
@@ -66,5 +93,14 @@ public class PathGoal extends Goal {
     public static PathGoalBuilder newBuilder() {
         return new PathGoalBuilder();
     }
+
+    public List<Vec2> getPath() {
+        return path;
+    }
+
+    public double getRadius() {
+        return radius;
+    }
+
 }
 
