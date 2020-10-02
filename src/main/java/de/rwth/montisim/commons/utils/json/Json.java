@@ -9,11 +9,7 @@ import java.lang.reflect.Modifier;
 import java.lang.reflect.ParameterizedType;
 import java.time.Duration;
 import java.time.Instant;
-import java.util.HashMap;
-import java.util.Iterator;
-import java.util.Optional;
-import java.util.Stack;
-import java.util.Vector;
+import java.util.*;
 
 import de.rwth.montisim.commons.utils.*;
 import de.rwth.montisim.commons.utils.json.JsonTraverser.*;
@@ -1020,6 +1016,22 @@ public abstract class Json {
                     stack.add(Json.instantiateFromJson(t, (Class<?>)generics[0], context));
                 }
             }
+        );
+        registerGeneric(List.class, (j, o, c) -> {
+                    List list = (List) o;
+                    j.startArray();
+                    Iterator it = list.iterator();
+                    while (it.hasNext()) {
+                        Json.toJson(j, it.next(), c);
+                    }
+                    j.endArray();
+                },
+                (t, o, it, generics, context) -> {
+                    List list = (List)o;
+                    for (ValueType vt : t.streamArray()){
+                        list.add(Json.instantiateFromJson(t, (Class<?>)generics[0], context));
+                    }
+                }
         );
     }
 }
