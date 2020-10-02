@@ -13,6 +13,7 @@ import de.rwth.montisim.simulation.eesimulator.EESystem;
 import de.rwth.montisim.simulation.vehicle.physicalvalues.*;
 import de.rwth.montisim.simulation.vehicle.physicsmodel.PhysicsModel;
 import de.rwth.montisim.simulation.vehicle.powertrain.PowerTrain;
+import de.rwth.montisim.simulation.vehicle.task.Task;
 
 public class Vehicle extends SimulationObject implements Updatable, Destroyable, TaskRunner {
     public static final boolean SERIALIZE_FORMATTED = true;
@@ -26,9 +27,10 @@ public class Vehicle extends SimulationObject implements Updatable, Destroyable,
     public transient final PhysicalValueRegistry physicalValues = new PhysicalValueRegistry();
     public transient final Updater updater = new Updater();
 
-    TaskStatus carStatus = TaskStatus.SUCCEEDED;
+    TaskStatus carStatus = TaskStatus.RUNNING;
     Optional<Vec2> target = Optional.empty();
     Vec2 a = new Vec2();
+    Task task;
 
     protected Vehicle(VehicleProperties properties) {
         this.properties = properties;
@@ -45,21 +47,24 @@ public class Vehicle extends SimulationObject implements Updatable, Destroyable,
         eesystem.simulator.update(newTime);
         physicsModel.update(newTime);
 
+        task.update(this);
+        carStatus = task.status();
+
         // TODO this is temp
-        double DIST_TO_TARGET = 5;
-        if (carStatus == TaskStatus.RUNNING) {
-            if (target.isPresent()) {
-                a.set(physicalObject.pos);
-                double dist = a.distance(target.get());
-                // if (c %100 == 0){
-                // System.out.println("Dist to target: "+dist);
-                // }
-                // c++;
-                if (dist < DIST_TO_TARGET) {
-                    carStatus = TaskStatus.SUCCEEDED;
-                }
-            }
-        }
+//        double DIST_TO_TARGET = 5;
+//        if (carStatus == TaskStatus.RUNNING) {
+//            if (target.isPresent()) {
+//                a.set(physicalObject.pos);
+//                double dist = a.distance(target.get());
+//                // if (c %100 == 0){
+//                // System.out.println("Dist to target: "+dist);
+//                // }
+//                // c++;
+//                if (dist < DIST_TO_TARGET) {
+//                    carStatus = TaskStatus.SUCCEEDED;
+//                }
+//            }
+//        }
     }
 
     // TODO this is temp
@@ -100,11 +105,15 @@ public class Vehicle extends SimulationObject implements Updatable, Destroyable,
     public String stateToJson() throws SerializationException {
         JsonWriter w = new JsonWriter(SERIALIZE_FORMATTED);
         w.startObject();
-        w.writeKey(K_CONFIG);        
+        w.writeKey(K_CONFIG);
         Json.toJson(w, properties, null);
         w.writeKey(K_STATE);
         Json.toJson(w, this, null);
         w.endObject();
         return w.getString();
+    }
+
+    public void setTask(Task task) {
+        this.task = task;
     }
 }
