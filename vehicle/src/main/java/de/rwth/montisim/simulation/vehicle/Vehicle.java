@@ -116,4 +116,9 @@ public class Vehicle extends SimulationObject implements Updatable, Destroyable,
     public void setTask(Task task) {
         this.task = task;
     }
+
+    public Task getTask() {
+        return task;
+    }
+
 }
