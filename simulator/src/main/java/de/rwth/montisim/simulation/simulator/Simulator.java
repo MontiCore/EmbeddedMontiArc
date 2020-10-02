@@ -169,7 +169,7 @@ public class Simulator implements ISimulator, Updatable {
     @Override
     public void registerTaskRunner(SimulationObject obj, TaskRunner runner) {
         SimulatorState state = (SimulatorState) obj.state;
-        state.updatableId = taskRunners.size();
+        state.taskRunnerId = taskRunners.size();
         taskRunners.add(runner);
     }
 
@@ -182,5 +182,9 @@ public class Simulator implements ISimulator, Updatable {
             e.printStackTrace();
             System.exit(-1);
         }
+    }
+
+    public Vector<Updatable> getUpdatables() {
+        return updatables;
     }
 }
