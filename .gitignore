@@ -10,3 +10,5 @@ hardware_emulator/Debug/
 target/
 src/main/resources/linux/
 src/main/resources/windows/
+*.o
+*.so
