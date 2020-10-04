@@ -76,8 +76,8 @@ linux_maven_master:
   only:
   - master
   dependencies:
-    - linux_build
-    - windows_build
+#    - linux_build
+#    - windows_build
 
 linux_maven_branch:
   stage: maven
@@ -90,4 +90,4 @@ linux_maven_branch:
   except:
   - master
   dependencies:
-    - linux_build
+#    - linux_build
