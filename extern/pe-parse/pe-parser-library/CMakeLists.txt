@@ -16,11 +16,17 @@ if ( CMAKE_COMPILER_IS_GNUCC )
     -static-libstdc++
   )
 endif()
-add_library(${PROJECT_NAME} ${PEPARSERLIB_SOURCEFILES})
-target_include_directories(${PROJECT_NAME} PUBLIC ${CMAKE_CURRENT_SOURCE_DIR}/include)
-target_compile_options(${PROJECT_NAME} PRIVATE ${GLOBAL_CXXFLAGS})
+add_library(pe-parser-library ${PEPARSERLIB_SOURCEFILES})
+target_include_directories(pe-parser-library PUBLIC ${CMAKE_CURRENT_SOURCE_DIR}/include)
+target_compile_options(pe-parser-library PRIVATE ${GLOBAL_CXXFLAGS})
 
-# install(TARGETS ${PROJECT_NAME}
+if ( CMAKE_COMPILER_IS_GNUCC )
+  target_compile_options(pe-parser-library PRIVATE
+      -fPIC
+  )
+endif()
+
+# install(TARGETS pe-parser-library
 #   RUNTIME DESTINATION "bin"
 #   LIBRARY DESTINATION "lib"
 #   ARCHIVE DESTINATION "lib"

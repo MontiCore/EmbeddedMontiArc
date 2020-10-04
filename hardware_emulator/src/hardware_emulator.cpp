@@ -180,7 +180,7 @@ ulong HardwareEmulator::get_timer_micro()
 }
 
 void HardwareEmulator::parse_flags(const json& config) {
-    computer.debug.debug = true;
+    computer.debug.debug = false;
     computer.debug.d_mem = false;
     computer.debug.d_code = false;
     computer.debug.d_regs = false;
@@ -191,21 +191,22 @@ void HardwareEmulator::parse_flags(const json& config) {
     debug_time = false;
 
     if (!config.contains("debug_flags")) return;
+    computer.debug.debug = true;
     auto& flags = config["debug_flags"];
     if (!flags.is_array()) return;
     for (auto& e : flags) {
         if (!e.is_string()) {
             Log::err << Log::tag << "Invalid flag: " << e.dump() << "\n";
         }
-        auto& flag = e.get<std::string>();
-        if (flag.compare("p_mem") == 0) computer.debug.d_mem = true;
-        else if (flag.compare("p_regs") == 0) computer.debug.d_regs = true;
-        else if (flag.compare("p_reg_update") == 0) computer.debug.d_reg_update = true;
-        else if (flag.compare("p_syscalls") == 0) computer.debug.d_syscalls = true;
-        else if (flag.compare("p_unsupported_syscalls") == 0) computer.debug.d_unsupported_syscalls = true;
-        else if (flag.compare("p_code") == 0) computer.debug.d_code = true;
-        else if (flag.compare("p_call") == 0) computer.debug.d_call = true;
-        else if (flag.compare("p_time") == 0) debug_time = true;
+        auto flag = e.get<std::string>();
+        if (flag.compare("d_mem") == 0) computer.debug.d_mem = true;
+        else if (flag.compare("d_regs") == 0) computer.debug.d_regs = true;
+        else if (flag.compare("d_reg_update") == 0) computer.debug.d_reg_update = true;
+        else if (flag.compare("d_syscalls") == 0) computer.debug.d_syscalls = true;
+        else if (flag.compare("d_unsupported_syscalls") == 0) computer.debug.d_unsupported_syscalls = true;
+        else if (flag.compare("d_code") == 0) computer.debug.d_code = true;
+        else if (flag.compare("d_call") == 0) computer.debug.d_call = true;
+        else if (flag.compare("d_time") == 0) debug_time = true;
         else Log::err << Log::tag << "Unknown flag: " << flag << "\n";
     }
 }

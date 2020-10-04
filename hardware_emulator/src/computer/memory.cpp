@@ -354,7 +354,7 @@ char *Memory::read_str( ulong address ) {
 
 void Memory::write_str( ulong address, std::string const &text ) {
     char *buff = ( char * )buffer.data();
-    uint size = min(( uint )text.size(), buffer.size());
+    uint size = std::min(( uint )text.size(), (uint)buffer.size());
     for ( uint i : urange( size ) )
         buff[i] = text[i];
     buff[size] = 0;

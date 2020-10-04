@@ -15,6 +15,7 @@ struct LinuxCalls {
     static void add_linux_calls( SystemCalls &sys_calls );
     
     static bool malloc( Computer &computer );
+    static bool operatornew( Computer &computer );
     static bool time( Computer &computer );
     static bool srand( Computer &computer );
     static bool posix_memalign( Computer &computer );
@@ -26,4 +27,7 @@ struct LinuxCalls {
     static bool log( Computer &computer );
     static bool atan2( Computer &computer );
     static bool memcpy( Computer &computer );
+    static bool memset( Computer &computer );
+    static bool strtoll( Computer &computer );
+    static bool strtod( Computer &computer );
 };

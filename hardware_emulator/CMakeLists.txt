@@ -28,7 +28,7 @@ add_subdirectory("${ROOT_DIR}/extern/unicorn" unicorn)
 add_library(hardware_emulator STATIC)
 
 target_include_directories(hardware_emulator PUBLIC src ../extern/json)
-target_link_libraries(hardware_emulator PUBLIC "Zydis" unicorn_static pe-parser-library)
+target_link_libraries(hardware_emulator PUBLIC Zydis unicorn_static pe-parser-library)
 if (CMAKE_HOST_WIN32)
   target_link_libraries(hardware_emulator PUBLIC Dbghelp Shlwapi)
 elseif(CMAKE_HOST_UNIX)
@@ -36,7 +36,14 @@ elseif(CMAKE_HOST_UNIX)
 endif()
 target_compile_features(hardware_emulator PUBLIC cxx_std_17)
 target_compile_definitions(hardware_emulator PUBLIC _CRT_SECURE_NO_WARNINGS)
-
+if ( CMAKE_COMPILER_IS_GNUCC )
+  target_compile_options(hardware_emulator PRIVATE
+    -fPIC
+    #-fpermissive
+    #-static-libgcc
+    #-static-libstdc++
+  )
+endif()
 
 set(hardware_emulator_SOURCES
 src/software_simulator_manager.h
@@ -135,6 +142,14 @@ set(hardware_emulator_lib_SOURCES
 )
 target_sources(hardware_emulator_lib PRIVATE ${hardware_emulator_lib_SOURCES})
 
+if ( CMAKE_COMPILER_IS_GNUCC )
+  target_compile_options(hardware_emulator_lib PRIVATE
+    -fPIC
+    #-fpermissive
+    #-static-libgcc
+    #-static-libstdc++
+  )
+endif()
 
 
 
@@ -178,12 +193,4 @@ source_group(
 #   target_include_directories(hardware_emulator PUBLIC ../zydis/msvc)
 # endif()
 
-# if ( CMAKE_COMPILER_IS_GNUCC )
-#   add_definitions(
-#     -fPIC
-#     -fpermissive
-#     -static-libgcc
-#     -static-libstdc++
-#   )
-# endif()
 

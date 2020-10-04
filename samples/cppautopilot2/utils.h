@@ -115,16 +115,16 @@ inline U<T> normalize( const U<T> &v ) {
 }
 
 template<template<typename> typename U>
-inline U<double> normalize( const U<f64> &v ) {
-    T l = v.length();
+inline U<f64> normalize( const U<f64> &v ) {
+    f64 l = v.length();
     if ( l < 0.00000001 && l > -0.00000001 )
         return U<f64>(0);
     return v / l;
 }
 
 template<template<typename> typename U>
-inline U<float> normalize( const U<f32> &v ) {
-    float l = v.length();
+inline U<f32> normalize( const U<f32> &v ) {
+    f32 l = v.length();
     if ( l < 0.000001f && l > -0.000001f )
         return U<f32>(0);
     return v / l;

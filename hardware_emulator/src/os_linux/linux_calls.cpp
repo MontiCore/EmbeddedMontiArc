@@ -10,6 +10,8 @@ void LinuxCalls::add_linux_calls( SystemCalls &sys_calls ) {
     std::string mod = "SYSTEM";
     const char *reason = "linux";
     sys_calls.add_syscall( SysCall( "malloc", mod, malloc ), reason );
+    sys_calls.add_syscall( SysCall( "_Znwm", mod, operatornew ), reason );
+    sys_calls.add_syscall( SysCall( "_Znam", mod, operatornew ), reason );
     sys_calls.add_syscall( SysCall( "time", mod, time ), reason );
     sys_calls.add_syscall( SysCall( "srand", mod, srand ), reason );
     sys_calls.add_syscall( SysCall( "posix_memalign", mod, posix_memalign ), reason );
@@ -21,6 +23,9 @@ void LinuxCalls::add_linux_calls( SystemCalls &sys_calls ) {
     sys_calls.add_syscall( SysCall( "log", mod, log ), reason );
     sys_calls.add_syscall( SysCall( "atan2", mod, atan2 ), reason );
     sys_calls.add_syscall( SysCall( "memcpy", mod, memcpy ), reason );
+    sys_calls.add_syscall( SysCall( "memset", mod, memset ), reason );
+    sys_calls.add_syscall( SysCall( "strtoll", mod, strtoll ), reason );
+    sys_calls.add_syscall( SysCall( "strtod", mod, strtod ), reason );
 }
 
 bool LinuxCalls::malloc( Computer &computer ) {
@@ -31,6 +36,19 @@ bool LinuxCalls::malloc( Computer &computer ) {
         computer.func_call->set_return_64( addr );
     else
         computer.func_call->set_return_64( 0 );
+    return true;
+}
+
+bool LinuxCalls::operatornew( Computer &computer ) {
+    auto byte_count = computer.func_call->get_param1_64();
+    //cout << "malloc(" << byte_count << ")" << endl;
+    uint64_t addr;
+    if ( computer.heap.alloc( byte_count, addr ) )
+        computer.func_call->set_return_64( addr );
+    else{
+        computer.func_call->set_return_64( 0 );
+        std::cerr << "Warning: no more memory for operator new" << std::endl;
+    }
     return true;
 }
 
@@ -127,5 +145,63 @@ bool LinuxCalls::memcpy( Computer &computer ) {
         Log::sys << "memcpy(" << to_hex( target_pointer ) << ", " << to_hex( source_pointer ) << ", " << size << ")\n";
     auto r = computer.memory.read_memory( source_pointer, size );
     computer.memory.write_memory( target_pointer, size, r );
+    return true;
+}
+
+
+bool LinuxCalls::memset( Computer &computer ) {
+    // void * memset ( void * ptr, int value, size_t num );
+    auto ptr = computer.func_call->get_param1_64();
+    auto value = computer.func_call->get_param2_64();
+    auto num = computer.func_call->get_param3_64();
+    computer.func_call->set_return_64(ptr);
+    if (ptr == 0) return true;
+
+    for (auto i : urange(num/8)){
+        computer.memory.write_long_word(ptr+8*i, value);
+    }
+    for (auto i : urange(num%8)){
+        computer.memory.write_memory(ptr+num/8+i, 1, &value);
+    }
+
+    return true;
+}
+
+
+bool LinuxCalls::strtoll( Computer &computer ) {
+    // long long int strtoll (const char* str, char** endptr, int base);
+    auto str = computer.func_call->get_param1_64();
+    auto endptr = computer.func_call->get_param2_64();
+    auto base = computer.func_call->get_param3_64();
+    if (str == 0){
+        computer.func_call->set_return_64(0);
+        return true;
+    }
+    auto str_read = computer.memory.read_str(str);
+    char *ep;
+    slong res = ::strtoll(str_read, &ep, base);
+    if (endptr != 0){
+        computer.memory.write_long_word(endptr, str+ep-str_read);
+    }
+
+    computer.func_call->set_return_64(res);
+    return true;
+}
+bool LinuxCalls::strtod( Computer &computer ) {
+    // double strtod (const char* str, char** endptr);
+    auto str = computer.func_call->get_param1_64();
+    auto endptr = computer.func_call->get_param2_64();
+    if (str == 0){
+        computer.func_call->set_return_double(std::nan(nullptr));
+        return true;
+    }
+    auto str_read = computer.memory.read_str(str);
+    char *ep;
+    double res = ::strtod(str_read, &ep);
+    if (endptr != 0){
+        computer.memory.write_long_word(endptr, str+ep-str_read);
+    }
+
+    computer.func_call->set_return_double(res);
     return true;
 }

@@ -33,4 +33,11 @@ print "Copying syscall sample..."
 cp "sample_syscall.so" "../../hardware_emulator/bin/"
 popd
 
+print "Updating cppautopilotzigzag sample..."
+pushd cppautopilotzigzag
+make
+print "Copying cppautopilotzigzag sample..."
+cp "cppautopilotzigzag.so" "../../hardware_emulator/bin/"
+popd
+
 popd

@@ -29,7 +29,7 @@ IF [%GENERATOR%] == [] (
     cmake -S . -B build
 ) else (
     echo [SCRIPT] Building the hardware_emulator in %CONFIG% mode with generator: %GENERATOR%.
-    cmake -S . -B build
+    cmake -G"%GENERATOR%" -S . -B build
 )
 cmake --build build --config %CONFIG%
 cmake --install build --config %CONFIG%

@@ -233,68 +233,6 @@ void test_hardware_manager_querries() {
     //     throw_error("Did not recieve response from 'get_available_autopilots' query to EmulatorManager\n");
 }
 
-
-//void test_dynamic_interface()
-//{
-//    auto emu_ptr = std::unique_ptr<HardwareEmulator>(new HardwareEmulator());
-//    auto& emu = *emu_ptr;
-//    emu.init()
-//}
-//
-//void test_input_double( HardwareEmulator &emulator, const char *name, double value ) {
-//    auto port_ptr = emulator.get_port( name );
-//    if ( port_ptr == nullptr )
-//        throw_error("Could not get input port id of: " + std::string(name) + "\n");
-//    
-//    auto &port = *port_ptr;
-//    if ( port.get_port_type() != PortType::Type::DOUBLE) throw_error("Type of port: " + std::string(name) + " not 'double'\n"); 
-//
-//    ((PortDoubleEmu*)port_ptr)->data = value;
-//    port.process_input();
-//}
-//
-//void test_input_int( HardwareEmulator &emulator, const char *name, int value ) {
-//    auto port_ptr = emulator.get_port(name);
-//    if (port_ptr == nullptr)
-//        throw_error("Could not get input port id of: " + std::string(name) + "\n");
-//
-//    auto& port = *port_ptr;
-//    if (port.get_port_type() != PortType::Type::INT) throw_error("Type of port: " + std::string(name) + " not 'double'\n");
-//
-//    ((PortIntEmu*)port_ptr)->data = value;
-//    port.process_input();
-//}
-//
-//void test_input_double_array( HardwareEmulator &emulator, const char *name, double *values, int size ) {
-//    auto port_ptr = emulator.get_port(name);
-//    if (port_ptr == nullptr)
-//        throw_error("Could not get input port id of: " + std::string(name) + "\n");
-//
-//    auto& port = *port_ptr;
-//    if (port.get_port_type() != PortType::Type::DOUBLE && port.get_port_dimension() != PortDimension::Dimension::ARRAY) 
-//        throw_error("Type of port: " + std::string(name) + " not 'double[]'\n");
-//
-//    auto& data = ((PortDoubleArrayEmu*)port_ptr)->data;
-//    data.resize(size);
-//    ((PortDoubleArrayEmu*)port_ptr)->size = size;
-//    for (auto i : urange(size)) {
-//        data[i] = values[i];
-//    }
-//    port.process_input();
-//}
-//
-//void test_output_double( HardwareEmulator &emulator, const char *name, double &target ) {
-//    auto port_ptr = emulator.get_port(name);
-//    if (port_ptr == nullptr)
-//        throw_error("Could not get input port id of: " + std::string(name) + "\n");
-//
-//    auto& port = *port_ptr;
-//    if (port.get_port_type() != PortType::Type::DOUBLE) throw_error("Type of port: " + std::string(name) + " not 'double'\n");
-//
-//    port.process_output();
-//    target = ((PortDoubleEmu*)port_ptr)->data;
-//}
-
 int second = false;
 void test_autopilot(const char* config_str){
     auto config = json::parse(config_str);
@@ -305,10 +243,22 @@ void test_autopilot(const char* config_str){
     auto &simulator = *(manager.simulators[id].get());
     auto &prog = *(simulator.program_interface.get());
 
+    auto &computer = ((HardwareEmulator*) manager.simulators[id].get())->computer;
+    computer.debug.debug = true;
+    //computer.debug.d_code = true;
+    //computer.debug.d_mem = true;
+    //computer.debug.d_reg_update = true;
+    // computer.debug.d_syscalls = true;
+    // computer.debug.d_call = true;
+    // computer.debug.d_unsupported_syscalls = true;
+
 
     prog.set_port(0, "5.6");
     prog.set_port(1, "[0,0]");
     prog.set_port(2, "0");
+    // computer.debug.d_code = true;
+    // computer.debug.d_mem = true;
+    // computer.debug.d_reg_update = true;
     prog.set_port(3, "[0,1,2]");
     prog.set_port(4, "[0,0,-1]");
 
@@ -328,7 +278,7 @@ void test_autopilot(const char* config_str){
 void test_autopilot_native() {
     test_autopilot(R"(
     {
-        "software_name": "cppautopilot",
+        "software_name": "cppautopilotzigzag",
         "emulator_type": "direct"
     }
     )");
@@ -337,7 +287,7 @@ void test_autopilot_native() {
 void test_autopilot_emu_windows() {
     test_autopilot(R"(
     {
-        "software_name": "cppautopilot",
+        "software_name": "cppautopilotzigzag",
         "emulator_type": "emu",
         "os": "windows",
         "time_model": {
@@ -350,18 +300,37 @@ void test_autopilot_emu_windows() {
                 {"type": "shared", "level": 2, "size": 2097152, "read_ticks": 6, "write_ticks": 6},
                 {"type": "shared", "level": 3, "size": 12582912, "read_ticks": 40, "write_ticks": 40}
             ]
-        }
+        },
+        "debug_flags": ["d_unsupported_syscalls"]
     }
     )");
 }
 void test_autopilot_emu_linux() {
-    
+    test_autopilot(R"(
+    {
+        "software_name": "cppautopilotzigzag",
+        "emulator_type": "emu",
+        "os": "linux",
+        "time_model": {
+            "type": "models",
+            "cpu_frequency": 4000000000,
+            "memory_frequency": 2500000000,
+            "caches": [
+                {"type": "I", "level": 1, "size": 262144, "read_ticks": 4, "write_ticks": 4},
+                {"type": "D", "level": 1, "size": 262144, "read_ticks": 4, "write_ticks": 4},
+                {"type": "shared", "level": 2, "size": 2097152, "read_ticks": 6, "write_ticks": 6},
+                {"type": "shared", "level": 3, "size": 12582912, "read_ticks": 40, "write_ticks": 40}
+            ]
+        },
+        "debug_flags": ["d_unsupported_syscalls"]
+    }
+    )");
 }
 
 void test_linux_elf_info() {
     FileReader fr;
-    if (!fr.open(FS::File("AutopilotAdapter.so")))
-        throw_error("Could not open AutopilotAdapter.so");
+    if (!fr.open(FS::File("cppautopilotzigzag.so")))
+        throw_error("Could not open cppautopilotzigzag.so");
     
     ElfFile elf;
     fr.read( elf.data );
