@@ -52,8 +52,6 @@
                     "DefaultBus"
                 ],
                 "physical_value_name": "steering",
-                "min": -30.0,
-                "max": 30.0,
                 "change_rate": 60.0,
                 "sensor": {
                     "type": "sensor",
@@ -81,8 +79,6 @@
                     "DefaultBus"
                 ],
                 "physical_value_name": "braking",
-                "min": 0.0,
-                "max": 1.0,
                 "change_rate": 10.0,
                 "sensor": {
                     "type": "sensor",
@@ -110,8 +106,6 @@
                     "DefaultBus"
                 ],
                 "physical_value_name": "gas",
-                "min": -0.5,
-                "max": 1.0,
                 "change_rate": "Infinity",
                 "sensor": {
                     "type": "sensor",
