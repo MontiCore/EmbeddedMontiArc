@@ -3,26 +3,22 @@
 
     (c) https://github.com/MontiCore/monticore
 
-    The license generally applicable for this project
-    can be found under https://github.com/MontiCore/monticore
-
 -->
 <project xmlns="http://maven.apache.org/POM/4.0.0" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:schemaLocation="http://maven.apache.org/POM/4.0.0 http://maven.apache.org/xsd/maven-4.0.0.xsd">
     <modelVersion>4.0.0</modelVersion>
 
     <groupId>de.rwth-aachen.se.montisim.simulators</groupId>
     <artifactId>basic-simulator</artifactId>
-    <version>1.1</version>
+    <version>2.0</version>
 
     <name>basic-simulator</name>
 
     <properties>
         <!-- USE THESE TO SET THE VERSIONS OF THE DEPENDENCIES FOR ALL THE SUB-PROJECTS -->
-        <montisim.commons.version>1.0.11</montisim.commons.version>
-        <montisim.controller.version>1.0.4</montisim.controller.version>
-        <montisim.server.version>2.2.0</montisim.server.version>
-        <montisim.hardware_emulator.version>1.0.2</montisim.hardware_emulator.version>
-        <montisim.simulation.version>2.0.4</montisim.simulation.version>
+        <montisim.commons.version>2.0.5</montisim.commons.version>
+        <!-- <montisim.controller.version>1.0.4</montisim.controller.version> -->
+        <montisim.hardware_emulator.version>2.0.0</montisim.hardware_emulator.version>
+        <montisim.simulation.version>3.0.0</montisim.simulation.version>
 
 
         <project.build.sourceEncoding>UTF-8</project.build.sourceEncoding>
@@ -89,7 +85,7 @@
             <version>4.11</version>
             <scope>test</scope>
         </dependency>
-        <dependency>
+        <!-- <dependency>
             <groupId>org.glassfish</groupId>
             <artifactId>javax.json</artifactId>
             <version>1.1.4</version>
@@ -98,48 +94,20 @@
             <groupId>javax.json</groupId>
             <artifactId>javax.json-api</artifactId>
             <version>1.1.4</version>
-        </dependency>
-
-        <dependency>
-            <groupId>org.jogamp.gluegen</groupId>
-            <artifactId>gluegen-rt-main</artifactId>
-            <version>2.3.2</version>
-        </dependency>
-        <dependency>
-            <groupId>org.jogamp.jogl</groupId>
-            <artifactId>jogl-all-main</artifactId>
-            <version>2.3.2</version>
-        </dependency>
-        <dependency>
-            <groupId>com.hackoeur</groupId>
-            <artifactId>jglm</artifactId>
-            <version>1.0.0</version>
-        </dependency>
-        <!-- https://mvnrepository.com/artifact/com.github.kotlin-graphics/uno-sdk -->
-        <!-- <dependency>
-            <groupId>com.github.kotlin-graphics</groupId>
-            <artifactId>uno-sdk</artifactId>
-            <version>5156f73d30a703a3f8ab4744c7e926d13efd54e1</version>
         </dependency> -->
 
-
         <dependency>
-            <groupId>montisim-simulation</groupId>
+            <groupId>montisim</groupId>
             <artifactId>simulator</artifactId>
             <version>${montisim.simulation.version}</version>
         </dependency>
         <dependency>
-            <groupId>montisim-simulation</groupId>
+            <groupId>montisim</groupId>
             <artifactId>vehicle</artifactId>
             <version>${montisim.simulation.version}</version>
         </dependency>
         <dependency>
-            <groupId>montisim-simulation</groupId>
-            <artifactId>sensors</artifactId>
-            <version>${montisim.simulation.version}</version>
-        </dependency>
-        <dependency>
-            <groupId>montisim-simulation</groupId>
+            <groupId>montisim</groupId>
             <artifactId>environment</artifactId>
             <version>${montisim.simulation.version}</version>
         </dependency>
@@ -153,24 +121,14 @@
             <artifactId>commons</artifactId>
             <version>${montisim.commons.version}</version>
         </dependency>
-        <dependency>
-            <groupId>montisim-controller</groupId>
-            <artifactId>library</artifactId>
-            <version>${montisim.controller.version}</version>
-        </dependency>
-        <dependency>
-            <groupId>montisim-controller</groupId>
-            <artifactId>navigation</artifactId>
-            <version>${montisim.controller.version}</version>
-        </dependency>
 
-
+<!-- 
         <dependency>
             <groupId>joda-time</groupId>
             <artifactId>joda-time</artifactId>
             <version>2.9.1</version>
-        </dependency>
-
+        </dependency> -->
+<!-- 
         <dependency>
             <groupId>de.topobyte</groupId>
             <artifactId>osm4j-core</artifactId>
@@ -251,7 +209,7 @@
             <groupId>org.jogamp.jogl</groupId>
             <artifactId>jogl-all-main</artifactId>
             <version>2.3.2</version>
-        </dependency>
+        </dependency> -->
 
     </dependencies>
 
@@ -276,23 +234,11 @@
                         </goals>
                         <configuration>
                             <filters>
-                                <filter>
-                                    <artifact>org.glassfish:javax.json</artifact>
-                                    <includes>
-                                        <include>**</include>
-                                    </includes>
-                                </filter>
-                                <filter>
-                                    <artifact>org.jogamp.gluegen:gluegen-rt-main</artifact>
-                                    <includes>
-                                        <include>**</include>
-                                    </includes>
-                                </filter>
                             </filters>
                             <minimizeJar>true</minimizeJar>
                             <transformers>
                                 <transformer implementation="org.apache.maven.plugins.shade.resource.ManifestResourceTransformer">
-                                    <mainClass>de.rwth.monticore.EmbeddedMontiArc.simulators.basic_simulator.App</mainClass>
+                                    <mainClass>de.rwth.montisim.basic_simulator.App</mainClass>
                                 </transformer>
                             </transformers>
                             <outputFile>${project.basedir}/install/${project.name}.jar</outputFile>
@@ -366,7 +312,7 @@
                     <arguments>
                         <argument>-classpath</argument>
                         <classpath />
-                        <argument>de.rwth.monticore.EmbeddedMontiArc.simulators.basic_simulator.App</argument>
+                        <argument>de.rwth.montisim.basic_simulator.App</argument>
                     </arguments>
                     <workingDirectory>${project.basedir}/install</workingDirectory>
                 </configuration>
