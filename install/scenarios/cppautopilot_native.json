@@ -1,0 +1,221 @@
+{
+    "name": "new_basic",
+    "map_name": "aachen",
+    "cars": [
+        {
+            "name": "TestVehicle",
+            "start_coords": [
+                0,
+                0
+            ],
+            "end_coords": [
+                -63.83,
+                -171.96
+            ],
+            "body": {
+                "mass": 1642.0,
+                "length": 4.971,
+                "width": 1.87,
+                "height": 1.383,
+                "center_of_gravity_height": 0.34575
+            },
+            "wheels": {
+                "diameter": 0.6612,
+                "width": 0.255,
+                "front_wheel_axis_offset": 1.0,
+                "max_turning_angle": 30.0,
+                "front_track_width": 1.57988,
+                "back_track_dist": 1.60274,
+                "wheelbase": 2.812,
+                "wheelbase_offset": 0.0
+            },
+            "powertrain": {
+                "type": "electrical",
+                "traction": "rear",
+                "braking": "front",
+                "max_braking_force": 5000.0,
+                "motor": {
+                    "motor_efficiency": 0.7,
+                    "regen_efficiency": 0.5,
+                    "motor_peek_torque": 450.0
+                },
+                "battery": {
+                    "type": "infinite",
+                    "capacity": 1.8E8,
+                    "critical_charge": 10.0
+                },
+                "transmission_ratio": 9.0
+            },
+            "physics": {
+                "type": "rigidbody"
+            },
+            "components": [
+                {
+                    "type": "actuator",
+                    "name": "SteeringActuator",
+                    "priority": {},
+                    "buses": [
+                        "DefaultBus"
+                    ],
+                    "physical_value_name": "steering",
+                    "min": -30.0,
+                    "max": 30.0,
+                    "change_rate": 60.0,
+                    "sensor": {
+                        "type": "sensor",
+                        "name": "UnnamedComponent",
+                        "priority": {},
+                        "buses": [
+                            "DefaultBus"
+                        ],
+                        "update_interval": [
+                            0,
+                            100000000
+                        ],
+                        "read_time": [
+                            0,
+                            1000000
+                        ],
+                        "send_only_changed": false
+                    }
+                },
+                {
+                    "type": "actuator",
+                    "name": "BrakingActuator",
+                    "priority": {},
+                    "buses": [
+                        "DefaultBus"
+                    ],
+                    "physical_value_name": "braking",
+                    "min": 0.0,
+                    "max": 1.0,
+                    "change_rate": 10.0,
+                    "sensor": {
+                        "type": "sensor",
+                        "name": "UnnamedComponent",
+                        "priority": {},
+                        "buses": [
+                            "DefaultBus"
+                        ],
+                        "update_interval": [
+                            0,
+                            100000000
+                        ],
+                        "read_time": [
+                            0,
+                            1000000
+                        ],
+                        "send_only_changed": false
+                    }
+                },
+                {
+                    "type": "actuator",
+                    "name": "GasActuator",
+                    "priority": {},
+                    "buses": [
+                        "DefaultBus"
+                    ],
+                    "physical_value_name": "gas",
+                    "min": -0.5,
+                    "max": 1.0,
+                    "change_rate": "Infinity",
+                    "sensor": {
+                        "type": "sensor",
+                        "name": "UnnamedComponent",
+                        "priority": {},
+                        "buses": [
+                            "DefaultBus"
+                        ],
+                        "update_interval": [
+                            0,
+                            100000000
+                        ],
+                        "read_time": [
+                            0,
+                            1000000
+                        ],
+                        "send_only_changed": false
+                    }
+                },
+                {
+                    "type": "sensor",
+                    "name": "TrueVelocitySensor",
+                    "priority": {},
+                    "buses": [
+                        "DefaultBus"
+                    ],
+                    "physical_value_name": "true_velocity",
+                    "update_interval": [
+                        0,
+                        100000000
+                    ],
+                    "read_time": [
+                        0,
+                        10000000
+                    ],
+                    "send_only_changed": false
+                },
+                {
+                    "type": "sensor",
+                    "name": "TruePositionSensor",
+                    "priority": {},
+                    "buses": [
+                        "DefaultBus"
+                    ],
+                    "physical_value_name": "true_position",
+                    "update_interval": [
+                        0,
+                        100000000
+                    ],
+                    "read_time": [
+                        0,
+                        10000000
+                    ],
+                    "send_only_changed": false
+                },
+                {
+                    "type": "sensor",
+                    "name": "TrueCompassSensor",
+                    "priority": {},
+                    "buses": [
+                        "DefaultBus"
+                    ],
+                    "physical_value_name": "true_compass",
+                    "update_interval": [
+                        0,
+                        100000000
+                    ],
+                    "read_time": [
+                        0,
+                        10000000
+                    ],
+                    "send_only_changed": false
+                },
+                {
+                    "type": "navigation",
+                    "name": "Navigation",
+                    "priority": {},
+                    "buses": [
+                        "DefaultBus"
+                    ]
+                },
+                {
+                    "type": "constant_bus",
+                    "name": "DefaultBus",
+                    "priority": {},
+                    "mode": "instant",
+                    "rate": 0.0
+                },
+                {
+                    "type": "hardware_emulator",
+                    "software_name": "cppautopilotzigzag",
+                    "emulator_type": "direct",
+                    "os": "windows",
+                    "time_model": {
+                        "type": "instant"
+                    }
+                }
+            ]
+        }
+    ]
+}
