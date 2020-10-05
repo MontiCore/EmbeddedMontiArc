@@ -8,6 +8,14 @@
 
 #include <iostream>
 
+#ifdef min
+#undef min
+#endif
+#ifdef max
+#undef max
+#endif
+
+
 void AnnotationTable::init() {
     annotations.resize( DEFAULT_ANNOTATION_SIZE );
     annotation_pos = 0;
@@ -351,6 +359,7 @@ char *Memory::read_str( ulong address ) {
         buffer[size - 1] = 0;
     return (char*)buffer.data();
 }
+
 
 void Memory::write_str( ulong address, std::string const &text ) {
     char *buff = ( char * )buffer.data();

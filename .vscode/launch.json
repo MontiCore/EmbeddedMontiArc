@@ -5,7 +5,7 @@
     "version": "0.2.0",
     "configurations": [
         {
-            "name": "HardwareEmulatorTest Debug",
+            "name": "(Unix) HardwareEmulatorTest Debug",
             "type": "cppdbg",
             "request": "launch",
             "program": "${workspaceFolder}/hardware_emulator/Debug/hardware_emulator_test",
