@@ -38,7 +38,7 @@ public class MathInformationRegister {
     }
 
     public int getAmountRows(String name) {
-        return getAmount(name, 1);
+        return getAmount(name, 0);
     }
 
     public int getAmountRows(String name, MathMatrixAccessOperatorSymbol mathMatrixAccessOperatorSymbol) {
@@ -119,7 +119,7 @@ public class MathInformationRegister {
     }
 
     public int getAmountColumns(String name) {
-        return getAmount(name, 0);
+        return getAmount(name, 1);
     }
 
     public int getAmountColumns(String name, MathMatrixAccessOperatorSymbol mathMatrixAccessOperatorSymbol) {
