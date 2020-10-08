@@ -17,12 +17,12 @@ find_package(${var.packageName} <#if var.required>REQUIRED<#else></#if>)
 
 # additional library linkage
 <#list viewModel.cmakeLibraryLinkageList as cmd>
-    set(LIBS "${LIBS}" ${cmd})
+set(LIBS ${r"${LIBS}"} ${cmd})
 </#list>
 
 # additional commands
 <#list viewModel.cmakeCommandList as cmd>
-    ${cmd}
+${cmd}
 </#list>
 
 # create static library
