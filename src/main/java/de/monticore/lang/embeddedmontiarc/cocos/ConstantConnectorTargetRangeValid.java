@@ -1,9 +1,13 @@
 package de.monticore.lang.embeddedmontiarc.cocos;
 
-import de.monticore.lang.embeddedmontiarc.embeddedmontiarc._ast.*;
+import de.monticore.lang.embeddedmontiarc.embeddedmontiarc._ast.ASTComponent;
+import de.monticore.lang.embeddedmontiarc.embeddedmontiarc._ast.ASTConnector;
+import de.monticore.lang.embeddedmontiarc.embeddedmontiarc._ast.ASTPort;
+import de.monticore.lang.embeddedmontiarc.embeddedmontiarc._ast.ASTQualifiedNameWithArrayAndStar;
 import de.monticore.lang.embeddedmontiarc.embeddedmontiarc._cocos.EmbeddedMontiArcASTComponentCoCo;
 import de.monticore.lang.monticar.types2._ast.ASTElementType;
 import de.se_rwth.commons.logging.Log;
+
 import java.util.List;
 import java.util.Optional;
 

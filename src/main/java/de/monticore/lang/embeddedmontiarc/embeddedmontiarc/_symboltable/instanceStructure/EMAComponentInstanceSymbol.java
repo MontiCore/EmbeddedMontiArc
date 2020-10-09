@@ -1,13 +1,13 @@
 /* (c) https://github.com/MontiCore/monticore */
 package de.monticore.lang.embeddedmontiarc.embeddedmontiarc._symboltable.instanceStructure;
 
+import de.monticore.expressionsbasis._ast.ASTExpression;
 import de.monticore.lang.embeddedmontiarc.embeddedmontiarc._symboltable.cncModel.EMAComponentSymbolReference;
 import de.monticore.lang.embeddedmontiarc.embeddedmontiarc._symboltable.cncModel.EMAPortArraySymbol;
 import de.monticore.lang.embeddedmontiarc.embeddedmontiarc.types.EMAVariable;
 import de.monticore.lang.embeddedmontiarc.helper.SymbolPrinter;
-import de.monticore.expressionsbasis._ast.ASTExpression;
-import de.monticore.lang.monticar.si._symboltable.ResolutionDeclarationSymbol;
 import de.monticore.lang.monticar.resolution._ast.ASTUnitNumberResolution;
+import de.monticore.lang.monticar.si._symboltable.ResolutionDeclarationSymbol;
 import de.monticore.symboltable.CommonScopeSpanningSymbol;
 import de.monticore.symboltable.types.references.ActualTypeArgument;
 

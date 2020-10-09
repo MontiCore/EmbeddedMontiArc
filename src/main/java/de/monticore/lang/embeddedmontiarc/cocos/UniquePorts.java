@@ -1,10 +1,10 @@
 /* (c) https://github.com/MontiCore/monticore */
 package de.monticore.lang.embeddedmontiarc.cocos;
 
-import de.monticore.lang.embeddedmontiarc.helper.ArcTypePrinter;
 import de.monticore.lang.embeddedmontiarc.embeddedmontiarc._ast.ASTInterface;
 import de.monticore.lang.embeddedmontiarc.embeddedmontiarc._ast.ASTPort;
 import de.monticore.lang.embeddedmontiarc.embeddedmontiarc._cocos.EmbeddedMontiArcASTInterfaceCoCo;
+import de.monticore.lang.embeddedmontiarc.helper.ArcTypePrinter;
 import de.se_rwth.commons.StringTransformations;
 import de.se_rwth.commons.logging.Log;
 

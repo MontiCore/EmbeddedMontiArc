@@ -1,10 +1,11 @@
 /* (c) https://github.com/MontiCore/monticore */
 package de.monticore.lang.embeddedmontiarc.cocos;
 
-import de.monticore.lang.embeddedmontiarc.embeddedmontiarc._ast.*;
+import de.monticore.lang.embeddedmontiarc.embeddedmontiarc._ast.ASTComponent;
+import de.monticore.lang.embeddedmontiarc.embeddedmontiarc._ast.ASTConnector;
+import de.monticore.lang.embeddedmontiarc.embeddedmontiarc._ast.ASTQualifiedNameWithArrayAndStar;
 import de.monticore.lang.embeddedmontiarc.embeddedmontiarc._cocos.EmbeddedMontiArcASTComponentCoCo;
 import de.monticore.lang.monticar.common2._ast.ASTQualifiedNameWithArray;
-import de.monticore.types.types._ast.ASTQualifiedName;
 import de.se_rwth.commons.logging.Log;
 
 import java.util.ArrayList;

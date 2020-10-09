@@ -1,28 +1,21 @@
 /* (c) https://github.com/MontiCore/monticore */
 package de.monticore.lang.embeddedmontiarc.embeddedmontiarc._symboltable.instanceStructure;
 
-import com.google.common.hash.BloomFilter;
-import com.sun.org.apache.xalan.internal.xsltc.compiler.sym;
-import de.monticore.javaclassexpressions._ast.ASTLiteralExpression;
-import de.monticore.javaclassexpressions._ast.ASTNameExpression;
+import de.monticore.expressionsbasis._ast.ASTExpression;
 import de.monticore.lang.embeddedmontiarc.embeddedmontiarc._ast.ASTComponent;
 import de.monticore.lang.embeddedmontiarc.embeddedmontiarc._ast.ASTInitialGuess;
 import de.monticore.lang.embeddedmontiarc.embeddedmontiarc._ast.EmbeddedMontiArcMill;
-import de.monticore.lang.embeddedmontiarc.embeddedmontiarc._symboltable.EmbeddedMontiArcSymbolMill;
 import de.monticore.lang.embeddedmontiarc.embeddedmontiarc._symboltable.UnitNumberExpressionSymbol;
 import de.monticore.lang.embeddedmontiarc.embeddedmontiarc._symboltable.cncModel.*;
 import de.monticore.lang.embeddedmontiarc.embeddedmontiarc.types.EMAVariable;
-import de.monticore.expressionsbasis._ast.ASTExpression;
 import de.monticore.lang.monticar.common2._ast.ASTLiteralValue;
 import de.monticore.lang.monticar.common2._ast.ASTParameter;
 import de.monticore.lang.monticar.common2._ast.ASTValue;
 import de.monticore.lang.monticar.resolution._ast.ASTUnitNumberExpression;
-import de.monticore.lang.monticar.resolution._ast.ASTUnitNumberResolution;
 import de.monticore.lang.monticar.resolution._ast.ASTUnitNumberResolutionExpression;
 import de.monticore.lang.monticar.si._symboltable.ResolutionDeclarationSymbol;
 import de.monticore.lang.monticar.ts.MCTypeSymbol;
 import de.monticore.lang.monticar.ts.references.MCTypeReference;
-import de.monticore.lang.monticar.types2._symboltable.UnitNumberResolutionSymbol;
 import de.monticore.literals.literals._ast.*;
 import de.monticore.numberunit._ast.ASTNumberWithInf;
 import de.monticore.numberunit._ast.ASTNumberWithUnit;

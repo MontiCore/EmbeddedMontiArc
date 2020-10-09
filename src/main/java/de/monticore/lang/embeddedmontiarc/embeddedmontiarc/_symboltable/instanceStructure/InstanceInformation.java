@@ -4,9 +4,9 @@ package de.monticore.lang.embeddedmontiarc.embeddedmontiarc._symboltable.instanc
 import de.monticore.lang.embeddedmontiarc.embeddedmontiarc._ast.ASTSubComponent;
 import de.monticore.lang.embeddedmontiarc.embeddedmontiarc._ast.ASTSubComponentInstance;
 import de.monticore.lang.embeddedmontiarc.embeddedmontiarc._symboltable.cncModel.EMAPortArraySymbol;
-import de.monticore.lang.monticar.si._symboltable.ResolutionDeclarationSymbol;
 import de.monticore.lang.monticar.resolution._ast.ASTUnitNumberResolution;
 import de.monticore.lang.monticar.resolution._ast.ASTUnitNumberTypeArgument;
+import de.monticore.lang.monticar.si._symboltable.ResolutionDeclarationSymbol;
 import de.monticore.symboltable.Symbol;
 import de.monticore.types.types._ast.ASTSimpleReferenceType;
 import de.monticore.types.types._ast.ASTTypeArgument;

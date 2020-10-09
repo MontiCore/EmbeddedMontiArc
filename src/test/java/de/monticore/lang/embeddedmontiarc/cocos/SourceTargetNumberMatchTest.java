@@ -4,7 +4,6 @@ package de.monticore.lang.embeddedmontiarc.cocos;
 import de.monticore.lang.embeddedmontiarc.embeddedmontiarc._cocos.EmbeddedMontiArcCoCoChecker;
 import de.se_rwth.commons.logging.Log;
 import org.junit.BeforeClass;
-import org.junit.Ignore;
 import org.junit.Test;
 
 /**

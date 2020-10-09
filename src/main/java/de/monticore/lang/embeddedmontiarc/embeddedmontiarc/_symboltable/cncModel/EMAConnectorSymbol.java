@@ -11,7 +11,8 @@ import de.se_rwth.commons.Joiners;
 import de.se_rwth.commons.Splitters;
 import de.se_rwth.commons.logging.Log;
 
-import java.util.*;
+import java.util.Iterator;
+import java.util.Optional;
 
 /**
  * Symboltable entry for connectors.

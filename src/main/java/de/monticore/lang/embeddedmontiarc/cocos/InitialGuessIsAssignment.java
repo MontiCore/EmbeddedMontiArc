@@ -7,8 +7,6 @@ import de.monticore.lang.embeddedmontiarc.embeddedmontiarc._cocos.EmbeddedMontiA
 import de.monticore.mcexpressions._ast.ASTAssignmentExpression;
 import de.se_rwth.commons.logging.Log;
 
-import java.util.Optional;
-
 public class InitialGuessIsAssignment implements EmbeddedMontiArcASTSubComponentCoCo {
     @Override
     public void check(ASTSubComponent node) {

@@ -3,12 +3,12 @@ package de.monticore.lang.embeddedmontiarc.embeddedmontiarc._symboltable.cncMode
 
 import de.monticore.lang.embeddedmontiarc.embeddedmontiarc._symboltable.instanceStructure.EMAComponentInstantiationSymbol;
 import de.monticore.lang.embeddedmontiarc.helper.SymbolPrinter;
+import de.monticore.lang.monticar.ts.MCFieldSymbol;
+import de.monticore.lang.monticar.ts.MCTypeSymbol;
 import de.monticore.symboltable.MutableScope;
 import de.monticore.symboltable.Symbol;
 import de.monticore.symboltable.resolving.CommonResolvingFilter;
 import de.monticore.symboltable.resolving.ResolvingFilter;
-import de.monticore.lang.monticar.ts.MCFieldSymbol;
-import de.monticore.lang.monticar.ts.MCTypeSymbol;
 import de.se_rwth.commons.logging.Log;
 
 import java.util.Collection;

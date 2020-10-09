@@ -1,15 +1,15 @@
 /* (c) https://github.com/MontiCore/monticore */
 package de.monticore.lang.embeddedmontiarc;
 
-import static org.junit.Assert.assertNotNull;
-import static org.junit.Assert.assertTrue;
+import de.monticore.lang.embeddedmontiarc.embeddedmontiarc._ast.ASTEMACompilationUnit;
+import de.monticore.lang.embeddedmontiarc.embeddedmontiarc._parser.EmbeddedMontiArcParser;
+import de.monticore.lang.monticar.ranges._ast.ASTRanges;
+import de.se_rwth.commons.logging.Log;
+import org.junit.Before;
+import org.junit.Test;
 
 import java.io.IOException;
-import java.nio.file.FileVisitResult;
-import java.nio.file.Files;
-import java.nio.file.Path;
-import java.nio.file.Paths;
-import java.nio.file.SimpleFileVisitor;
+import java.nio.file.*;
 import java.nio.file.attribute.BasicFileAttributes;
 import java.util.ArrayList;
 import java.util.Arrays;
@@ -17,15 +17,8 @@ import java.util.List;
 import java.util.Optional;
 import java.util.stream.Collectors;
 
-import de.monticore.lang.embeddedmontiarc.embeddedmontiarc._ast.ASTEMACompilationUnit;
-import de.monticore.lang.embeddedmontiarc.embeddedmontiarc._parser.EmbeddedMontiArcParser;
-import de.monticore.lang.monticar.ranges._ast.ASTRange;
-import de.monticore.lang.monticar.ranges._ast.ASTRanges;
-import de.monticore.types.types._ast.ASTType;
-import de.se_rwth.commons.logging.Log;
-import org.junit.Before;
-import org.junit.Ignore;
-import org.junit.Test;
+import static org.junit.Assert.assertNotNull;
+import static org.junit.Assert.assertTrue;
 
 /**
  */

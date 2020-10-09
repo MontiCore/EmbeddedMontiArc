@@ -10,7 +10,6 @@ import de.monticore.lang.monticar.struct._symboltable.StructLanguage;
 import de.monticore.symboltable.GlobalScope;
 import de.monticore.symboltable.Scope;
 
-import java.nio.file.Path;
 import java.nio.file.Paths;
 
 /**

@@ -2,7 +2,7 @@
 package de.monticore.lang.embeddedmontiarc.cocos;
 
 import de.monticore.lang.embeddedmontiarc.embeddedmontiarc._cocos.EmbeddedMontiArcASTConnectorCoCo;
-import de.monticore.lang.embeddedmontiarc.embeddedmontiarc._cocos.*;
+import de.monticore.lang.embeddedmontiarc.embeddedmontiarc._cocos.EmbeddedMontiArcCoCoChecker;
 
 /**
  * Bundle of CoCos for the MontiArc language.

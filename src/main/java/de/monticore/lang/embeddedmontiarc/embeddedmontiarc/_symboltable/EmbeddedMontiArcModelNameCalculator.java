@@ -1,14 +1,10 @@
 /* (c) https://github.com/MontiCore/monticore */
 package de.monticore.lang.embeddedmontiarc.embeddedmontiarc._symboltable;
 
-import java.util.ArrayList;
-import java.util.Collections;
-import java.util.LinkedHashSet;
-import java.util.List;
-import java.util.Set;
-
 import com.google.common.collect.ImmutableSet;
 import de.monticore.CommonModelNameCalculator;
+import de.monticore.lang.embeddedmontiarc.cocos.ComponentCapitalized;
+import de.monticore.lang.embeddedmontiarc.cocos.PackageLowerCase;
 import de.monticore.lang.embeddedmontiarc.embeddedmontiarc._symboltable.cncModel.EMAComponentSymbol;
 import de.monticore.lang.embeddedmontiarc.embeddedmontiarc._symboltable.cncModel.EMAConnectorSymbol;
 import de.monticore.lang.embeddedmontiarc.embeddedmontiarc._symboltable.cncModel.EMAPortArraySymbol;
@@ -18,6 +14,8 @@ import de.monticore.lang.embeddedmontiarc.embeddedmontiarc._symboltable.instance
 import de.monticore.symboltable.SymbolKind;
 import de.se_rwth.commons.Joiners;
 import de.se_rwth.commons.Splitters;
+
+import java.util.*;
 
 /**
  * Helps loading inner components, by mapping their full-qualified names to the full-qualified name

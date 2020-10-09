@@ -5,7 +5,6 @@ import com.google.common.collect.ImmutableList;
 import de.monticore.expressionsbasis._ast.ASTExpression;
 import de.monticore.lang.embeddedmontiarc.embeddedmontiarc._ast.ASTInitialGuess;
 import de.monticore.lang.embeddedmontiarc.embeddedmontiarc._symboltable.ComponentKind;
-import de.monticore.lang.embeddedmontiarc.embeddedmontiarc._symboltable.instanceStructure.EMAComponentInstanceSymbol;
 import de.monticore.lang.embeddedmontiarc.embeddedmontiarc._symboltable.instanceStructure.EMAComponentInstantiationSymbol;
 import de.monticore.lang.embeddedmontiarc.embeddedmontiarc.types.EMAVariable;
 import de.monticore.lang.embeddedmontiarc.helper.SymbolPrinter;
@@ -20,7 +19,10 @@ import de.monticore.symboltable.modifiers.AccessModifier;
 import de.monticore.symboltable.types.references.ActualTypeArgument;
 import de.se_rwth.commons.logging.Log;
 
-import java.util.*;
+import java.util.ArrayList;
+import java.util.Collection;
+import java.util.List;
+import java.util.Optional;
 import java.util.stream.Collectors;
 
 import static com.google.common.base.Preconditions.checkArgument;

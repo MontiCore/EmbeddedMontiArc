@@ -9,10 +9,10 @@ import de.monticore.lang.embeddedmontiarc.embeddedmontiarc._symboltable.instance
 import de.monticore.lang.monticar.ValueSymbol;
 import de.monticore.lang.monticar.helper.IndentPrinter;
 import de.monticore.lang.monticar.ts.MCTypeSymbol;
+import de.monticore.lang.monticar.ts.references.MCTypeReference;
 import de.monticore.symboltable.Symbol;
 import de.monticore.symboltable.types.TypeSymbol;
 import de.monticore.symboltable.types.references.ActualTypeArgument;
-import de.monticore.lang.monticar.ts.references.MCTypeReference;
 import de.monticore.symboltable.types.references.TypeReference;
 
 import java.util.Collection;

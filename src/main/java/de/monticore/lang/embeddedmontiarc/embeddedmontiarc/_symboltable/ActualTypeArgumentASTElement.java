@@ -1,10 +1,10 @@
 /* (c) https://github.com/MontiCore/monticore */
 package de.monticore.lang.embeddedmontiarc.embeddedmontiarc._symboltable;
 
-import de.monticore.types.types._ast.ASTTypeArgument;
 import de.monticore.symboltable.types.TypeSymbol;
 import de.monticore.symboltable.types.references.ActualTypeArgument;
 import de.monticore.symboltable.types.references.TypeReference;
+import de.monticore.types.types._ast.ASTTypeArgument;
 
 /**
  */

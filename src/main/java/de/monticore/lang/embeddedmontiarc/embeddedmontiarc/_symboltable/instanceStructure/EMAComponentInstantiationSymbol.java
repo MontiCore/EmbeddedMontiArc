@@ -1,11 +1,6 @@
 /* (c) https://github.com/MontiCore/monticore */
 package de.monticore.lang.embeddedmontiarc.embeddedmontiarc._symboltable.instanceStructure;
 
-import java.util.ArrayList;
-import java.util.Collection;
-import java.util.List;
-import java.util.Optional;
-
 import de.monticore.lang.embeddedmontiarc.embeddedmontiarc._symboltable.cncModel.EMAComponentSymbolReference;
 import de.monticore.lang.embeddedmontiarc.embeddedmontiarc._symboltable.cncModel.EMAConnectorSymbol;
 import de.monticore.lang.embeddedmontiarc.helper.SymbolPrinter;
@@ -13,6 +8,11 @@ import de.monticore.lang.monticar.ValueSymbol;
 import de.monticore.symboltable.CommonScopeSpanningSymbol;
 import de.monticore.symboltable.types.TypeSymbol;
 import de.monticore.symboltable.types.references.TypeReference;
+
+import java.util.ArrayList;
+import java.util.Collection;
+import java.util.List;
+import java.util.Optional;
 
 /**
  * Represents an instance of a component.
@@ -80,7 +80,7 @@ public class EMAComponentInstantiationSymbol extends CommonScopeSpanningSymbol i
     }
 
     /**
-     * @param cfgList configuration arguments to set
+     * @param configArgs configuration arguments to set
      */
     public void setConfigArgs(List<ValueSymbol<TypeReference<TypeSymbol>>> configArgs) {
         this.configArgs = configArgs;

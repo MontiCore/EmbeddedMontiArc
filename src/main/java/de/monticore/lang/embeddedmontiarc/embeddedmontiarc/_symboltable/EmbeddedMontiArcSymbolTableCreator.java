@@ -1,7 +1,6 @@
 /* (c) https://github.com/MontiCore/monticore */
 package de.monticore.lang.embeddedmontiarc.embeddedmontiarc._symboltable;
 
-import de.monticore.expressionsbasis._ast.ASTExpression;
 import de.monticore.lang.embeddedmontiarc.embeddedmontiarc._ast.*;
 import de.monticore.lang.embeddedmontiarc.embeddedmontiarc._symboltable.cncModel.EMAComponentSymbol;
 import de.monticore.lang.embeddedmontiarc.embeddedmontiarc._symboltable.cncModel.EMAComponentSymbolReference;
@@ -12,7 +11,6 @@ import de.monticore.lang.embeddedmontiarc.helper.ArcTypePrinter;
 import de.monticore.lang.embeddedmontiarc.helper.EMAJavaHelper;
 import de.monticore.lang.monticar.ValueSymbol;
 import de.monticore.lang.monticar.common2._ast.ASTCommonMatrixType;
-import de.monticore.lang.monticar.common2._ast.ASTQualifiedNameWithArray;
 import de.monticore.lang.monticar.resolution._ast.ASTUnitNumberExpression;
 import de.monticore.lang.monticar.ts.MCTypeSymbol;
 import de.monticore.lang.monticar.ts.MontiCarSymbolFactory;
@@ -30,11 +28,11 @@ import de.se_rwth.commons.logging.Log;
 
 import java.util.*;
 
+import static de.monticore.lang.embeddedmontiarc.embeddedmontiarc._symboltable.EmbeddedMontiArcSymbolTableHelper.*;
 import static de.monticore.lang.embeddedmontiarc.embeddedmontiarc._symboltable.cncModel.EMAPortHelper.*;
+import static de.monticore.lang.embeddedmontiarc.embeddedmontiarc._symboltable.instanceStructure.EMAComponentInstanceSymbolCreator.getGlobalScope;
 import static de.monticore.lang.embeddedmontiarc.helper.EMATypeHelper.addTypeArgumentsToTypeSymbol;
 import static de.monticore.lang.embeddedmontiarc.helper.EMATypeHelper.initTypeRef;
-import static de.monticore.lang.embeddedmontiarc.embeddedmontiarc._symboltable.instanceStructure.EMAComponentInstanceSymbolCreator.getGlobalScope;
-import static de.monticore.lang.embeddedmontiarc.embeddedmontiarc._symboltable.EmbeddedMontiArcSymbolTableHelper.*;
 //import de.monticore.common.common._ast.ASTStereoValue;
 //import de.monticore.types.TypesHelper;
 //import de.monticore.types.types._ast.*;

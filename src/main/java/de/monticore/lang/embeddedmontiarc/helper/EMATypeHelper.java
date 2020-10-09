@@ -6,7 +6,6 @@ import de.monticore.lang.embeddedmontiarc.embeddedmontiarc._symboltable.ActualTy
 import de.monticore.lang.embeddedmontiarc.embeddedmontiarc._symboltable.EmbeddedMontiArcSymbolTableCreator;
 import de.monticore.lang.embeddedmontiarc.embeddedmontiarc._symboltable.cncModel.EMAComponentSymbolReference;
 import de.monticore.lang.embeddedmontiarc.embeddedmontiarc.types.TypesHelper;
-import de.monticore.lang.embeddedmontiarc.helper.ArcTypePrinter;
 import de.monticore.lang.monticar.ranges._ast.ASTRange;
 import de.monticore.lang.monticar.ranges._ast.ASTRanges;
 import de.monticore.lang.monticar.si._symboltable.SIUnitRangesSymbolReference;

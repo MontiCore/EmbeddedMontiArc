@@ -1,16 +1,20 @@
 /* (c) https://github.com/MontiCore/monticore */
 package de.monticore.lang.embeddedmontiarc;
 
-import de.monticore.lang.embeddedmontiarc.embeddedmontiarc._symboltable.*;
-import de.monticore.lang.embeddedmontiarc.embeddedmontiarc._symboltable.cncModel.*;
+import de.monticore.expressionsbasis._ast.ASTExpression;
+import de.monticore.lang.embeddedmontiarc.embeddedmontiarc._symboltable.EmbeddedMontiArcModelLoader;
+import de.monticore.lang.embeddedmontiarc.embeddedmontiarc._symboltable.UnitNumberExpressionSymbol;
+import de.monticore.lang.embeddedmontiarc.embeddedmontiarc._symboltable.cncModel.EMAComponentSymbol;
+import de.monticore.lang.embeddedmontiarc.embeddedmontiarc._symboltable.cncModel.EMAConnectorSymbol;
+import de.monticore.lang.embeddedmontiarc.embeddedmontiarc._symboltable.cncModel.EMAPortArraySymbol;
+import de.monticore.lang.embeddedmontiarc.embeddedmontiarc._symboltable.cncModel.EMAPortSymbol;
 import de.monticore.lang.embeddedmontiarc.embeddedmontiarc._symboltable.instanceStructure.*;
 import de.monticore.lang.embeddedmontiarc.embeddedmontiarc.unit.constant.EMAConstantSIUnit;
-import de.monticore.expressionsbasis._ast.ASTExpression;
+import de.monticore.lang.monticar.resolution._ast.ASTUnitNumberResolution;
 import de.monticore.lang.monticar.si._symboltable.ResolutionDeclarationSymbol;
 import de.monticore.lang.monticar.si._symboltable.SIUnitRangesSymbol;
 import de.monticore.lang.monticar.struct._symboltable.StructSymbol;
 import de.monticore.lang.monticar.ts.MCTypeSymbol;
-import de.monticore.lang.monticar.resolution._ast.ASTUnitNumberResolution;
 import de.monticore.symboltable.Scope;
 import de.se_rwth.commons.logging.Log;
 import org.jscience.mathematics.number.Rational;
@@ -23,9 +27,7 @@ import java.util.Collection;
 import java.util.Iterator;
 import java.util.List;
 
-import static org.junit.Assert.assertEquals;
-import static org.junit.Assert.assertNotNull;
-import static org.junit.Assert.assertTrue;
+import static org.junit.Assert.*;
 
 /**
  * This is a symbol table test.
