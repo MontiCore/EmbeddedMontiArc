@@ -6,6 +6,7 @@ package de.monticore.lang.embeddedmontiarc.embeddedmontiarc._symboltable.cncMode
 
 import com.google.common.collect.ImmutableList;
 import de.monticore.expressionsbasis._ast.ASTExpression;
+import de.monticore.lang.embeddedmontiarc.embeddedmontiarc._ast.ASTInitialGuess;
 import de.monticore.lang.embeddedmontiarc.embeddedmontiarc._symboltable.EmbeddedMontiArcSymbolTableCreator;
 import de.monticore.lang.monticar.si._symboltable.ResolutionDeclarationSymbol;
 import de.monticore.symboltable.MutableScope;
@@ -31,6 +32,7 @@ public class EMAComponentSymbolReference extends EMAComponentSymbol implements
 
     private List<ResolutionDeclarationSymbol> resSymbols = new ArrayList<>();
     private List<ASTExpression> arguments = new ArrayList<>();
+    private List<ASTInitialGuess> initalGuesses = new ArrayList<>();
 
     public EMAComponentSymbolReference(final String name, final Scope definingScopeOfReference) {
         super(name);
@@ -161,7 +163,22 @@ public class EMAComponentSymbolReference extends EMAComponentSymbol implements
         this.arguments = arguments;
     }
 
-  /* Methods of Symbol interface */
+    @Override
+    public List<ASTInitialGuess> getInitalGuesses() {
+        return this.initalGuesses;
+    }
+
+    @Override
+    public void addInitialGuess(ASTInitialGuess initialGuess) {
+        this.initalGuesses.add(initialGuess);
+    }
+
+    @Override
+    public void setInitialGuesses(List<ASTInitialGuess> initalGuesses) {
+        this.initalGuesses = initalGuesses;
+    }
+
+    /* Methods of Symbol interface */
 
     @Override
     public String getName() {

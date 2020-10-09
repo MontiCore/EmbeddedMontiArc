@@ -79,7 +79,11 @@ public class EMAComponentInstanceSymbolCreator {
                         .setSymbolReference(new EMAComponentSymbolReference(cmp.getName(),
                                 cmp.getEnclosingScope()))
                         .addPorts(cmp.getPortsList())
-                        .addConnectors(cmp.getConnectors()).addResolutionDeclarationSymbols(cmp.getResolutionDeclarationSymbols()).addParameters(cmp.getParameters()).addArguments(cmp.getArguments());
+                        .addConnectors(cmp.getConnectors())
+                        .addResolutionDeclarationSymbols(cmp.getResolutionDeclarationSymbols())
+                        .addParameters(cmp.getParameters())
+                        .addArguments(cmp.getArguments())
+                        .addInitialGuesses(cmp.getInitalGuesses());
         for (EMAConnectorSymbol emaConnectorSymbol : cmp.getConnectors())
             Log.info(emaConnectorSymbol.toString(), "Building Connector:");
         // add sub components
@@ -95,7 +99,8 @@ public class EMAComponentInstanceSymbolCreator {
                             .addResolvingFilters(filters)
                             .addResolutionDeclarationSymbols(inst.getComponentType().getResolutionDeclarationSymbols())
                             .addParameters(inst.getComponentType().getReferencedSymbol().getParameters())
-                            .addArguments(inst.getComponentType().getReferencedSymbol().getArguments()).build());
+                            .addArguments(inst.getComponentType().getReferencedSymbol().getArguments())
+                            .addInitialGuesses(inst.getComponentType().getReferencedSymbol().getInitalGuesses()).build());
             Log.debug(inst.getInstanceInformation().get().getInstanceNumberForArgumentIndex(0) + "", "InstanceInformation:");
 
             Log.debug(inst.toString(), "ComponentInstance CreateInstance PostSub");

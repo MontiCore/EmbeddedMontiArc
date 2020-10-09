@@ -4,13 +4,12 @@ package de.monticore.lang.embeddedmontiarc;
 import de.monticore.lang.embeddedmontiarc.embeddedmontiarc._symboltable.*;
 import de.monticore.expressionsbasis._ast.ASTExpression;
 import de.monticore.lang.embeddedmontiarc.embeddedmontiarc._symboltable.cncModel.*;
-import de.monticore.lang.embeddedmontiarc.embeddedmontiarc._symboltable.instanceStructure.EMAComponentInstanceBuilder;
-import de.monticore.lang.embeddedmontiarc.embeddedmontiarc._symboltable.instanceStructure.EMAComponentInstanceSymbol;
-import de.monticore.lang.embeddedmontiarc.embeddedmontiarc._symboltable.instanceStructure.EMAConnectorInstanceSymbol;
-import de.monticore.lang.embeddedmontiarc.embeddedmontiarc._symboltable.instanceStructure.InstanceInformation;
+import de.monticore.lang.embeddedmontiarc.embeddedmontiarc._symboltable.instanceStructure.*;
 import de.monticore.lang.embeddedmontiarc.helper.ConstantPortHelper;
+import de.monticore.lang.monticar.resolution._ast.ASTUnitNumberExpression;
 import de.monticore.lang.monticar.si._symboltable.ResolutionDeclarationSymbol;
 import de.monticore.symboltable.Scope;
+import de.monticore.symboltable.Symbol;
 import de.se_rwth.commons.logging.Log;
 import org.junit.BeforeClass;
 import org.junit.Ignore;
@@ -228,10 +227,10 @@ public class ExpandedComponentInstanceTest extends AbstractSymtabTest {
                 (UnitNumberExpressionSymbol) sub21.getArguments().get(0).getSymbolOpt().get();
         UnitNumberExpressionSymbol symbol22 =
                 (UnitNumberExpressionSymbol) sub22.getArguments().get(0).getSymbolOpt().get();
-        assertEquals("2", symbol1.getTextualRepresentation());
+        assertEquals("3", symbol1.getTextualRepresentation());
         assertEquals("9", symbol2.getTextualRepresentation());
-        assertEquals("2", symbol11.getTextualRepresentation());
-        assertEquals("2", symbol12.getTextualRepresentation());
+        assertEquals("3", symbol11.getTextualRepresentation());
+        assertEquals("3", symbol12.getTextualRepresentation());
         assertEquals("9", symbol21.getTextualRepresentation());
         assertEquals("9", symbol22.getTextualRepresentation());
     }
@@ -538,4 +537,53 @@ public class ExpandedComponentInstanceTest extends AbstractSymtabTest {
     assertNotNull(inst);
   }
   */
+
+    @Test
+    public void testInitialGuesses() {
+        Scope symTab = createSymTab("src/test/resources");
+        EMAComponentInstanceSymbol inst = symTab.<EMAComponentInstanceSymbol>resolve(
+                "testing.initialGuessTest", EMAComponentInstanceSymbol.KIND).orElse(null);
+
+        assertNotNull(inst);
+
+        EMAPortInstanceSymbol port = symTab.<EMAPortInstanceSymbol>resolve(
+                "testing.initialGuessTest.simple.out1",
+                EMAPortInstanceSymbol.KIND).orElse(null);
+        assertTrue(port.isInitialGuessPresent());
+        assertEquals(2.0, ((ASTUnitNumberExpression) port.getInitialGuess()).getNumberWithUnit().getNumber().get(), 0.001);
+        assertNotNull(port);
+
+        port = symTab.<EMAPortInstanceSymbol>resolve(
+                "testing.initialGuessTest.fromParameterDefault.simple.out1",
+                EMAPortInstanceSymbol.KIND).orElse(null);
+        assertTrue(port.isInitialGuessPresent());
+        assertEquals(3.0, ((ASTUnitNumberExpression) port.getInitialGuess()).getNumberWithUnit().getNumber().get(), 0.001);
+        assertNotNull(port);
+
+        port = symTab.<EMAPortInstanceSymbol>resolve(
+                "testing.initialGuessTest.fromParameterGiven.simple.out1",
+                EMAPortInstanceSymbol.KIND).orElse(null);
+        assertTrue(port.isInitialGuessPresent());
+        assertEquals(5.0, ((ASTUnitNumberExpression) port.getInitialGuess()).getNumberWithUnit().getNumber().get(), 0.001);
+        assertNotNull(port);
+
+        port = symTab.<EMAPortInstanceSymbol>resolve(
+                "testing.initialGuessTest.portArray.out1[1]",
+                EMAPortInstanceSymbol.KIND).orElse(null);
+        assertFalse(port.isInitialGuessPresent());
+        assertNotNull(port);
+
+        port = symTab.<EMAPortInstanceSymbol>resolve(
+                "testing.initialGuessTest.portArray.out1[2]",
+                EMAPortInstanceSymbol.KIND).orElse(null);
+        assertTrue(port.isInitialGuessPresent());
+        assertEquals(7.0, ((ASTUnitNumberExpression) port.getInitialGuess()).getNumberWithUnit().getNumber().get(), 0.001);
+        assertNotNull(port);
+
+        port = symTab.<EMAPortInstanceSymbol>resolve(
+                "testing.initialGuessTest.portArray.out1[3]",
+                EMAPortInstanceSymbol.KIND).orElse(null);
+        assertFalse(port.isInitialGuessPresent());
+        assertNotNull(port);
+    }
 }

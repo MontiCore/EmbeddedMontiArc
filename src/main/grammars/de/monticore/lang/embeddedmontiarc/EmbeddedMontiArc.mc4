@@ -126,7 +126,8 @@ grammar EmbeddedMontiArc extends de.monticore.lang.monticar.Common2 {
        "instance"
       type:ReferenceType
       ("(" arguments:(Expression || ",")+ ")" )?
-      instances:(SubComponentInstance || ",")* ";" ;
+      ("{" (InitialGuess || ",")+ "}")?
+      instances:(SubComponentInstance || ",")+ ";" ;
 
 
   /**
@@ -143,7 +144,10 @@ grammar EmbeddedMontiArc extends de.monticore.lang.monticar.Common2 {
   // TODO better/more intuitive name? e.g. "refConnector" (not really good...)
   SubComponentInstance =
     Name
-    ("[" UnitNumberResolution "]")? ;
+    ("[" UnitNumberResolution "]")?;
+
+  InitialGuess =
+    Name ( "[" UnitNumberResolution "]" )? "=" Expression;
 
   /**
     * port1

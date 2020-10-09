@@ -1,9 +1,12 @@
 /* (c) https://github.com/MontiCore/monticore */
 package de.monticore.lang.embeddedmontiarc.embeddedmontiarc._symboltable.instanceStructure;
 
+import com.google.common.hash.BloomFilter;
+import com.sun.org.apache.xalan.internal.xsltc.compiler.sym;
 import de.monticore.javaclassexpressions._ast.ASTLiteralExpression;
 import de.monticore.javaclassexpressions._ast.ASTNameExpression;
 import de.monticore.lang.embeddedmontiarc.embeddedmontiarc._ast.ASTComponent;
+import de.monticore.lang.embeddedmontiarc.embeddedmontiarc._ast.ASTInitialGuess;
 import de.monticore.lang.embeddedmontiarc.embeddedmontiarc._ast.EmbeddedMontiArcMill;
 import de.monticore.lang.embeddedmontiarc.embeddedmontiarc._symboltable.EmbeddedMontiArcSymbolMill;
 import de.monticore.lang.embeddedmontiarc.embeddedmontiarc._symboltable.UnitNumberExpressionSymbol;
@@ -27,6 +30,7 @@ import de.monticore.symboltable.MutableScope;
 import de.monticore.symboltable.Symbol;
 import de.monticore.symboltable.resolving.ResolvingFilter;
 import de.monticore.symboltable.types.references.ActualTypeArgument;
+import de.se_rwth.commons.Names;
 import de.se_rwth.commons.logging.Log;
 
 import java.util.*;
@@ -48,6 +52,7 @@ public class EMAComponentInstanceBuilder {
     protected List<EMAVariable> parameters = new ArrayList<>();
     protected List<ASTExpression> arguments = new ArrayList<>();
     protected String packageName = "";
+    protected List<ASTInitialGuess> initialGuesses = new ArrayList<>();
 
     protected static Map<MCTypeSymbol, ActualTypeArgument> createMap(List<MCTypeSymbol> keys,
             List<ActualTypeArgument> values) {
@@ -307,6 +312,20 @@ public class EMAComponentInstanceBuilder {
                 Log.error("TODO");
             }
         }
+
+        for (EMAPortInstanceSymbol port : inst.getPortInstanceList()) {
+            if (port.isInitialGuessPresent()) {
+                ASTExpression initialGuess = port.getInitialGuess();
+                if (initialGuess instanceof ASTUnitNumberResolutionExpression) {
+                    if (((ASTUnitNumberResolutionExpression) initialGuess).getUnitNumberResolution().getNameOpt().isPresent()) {
+                        String par = ((ASTUnitNumberResolutionExpression) initialGuess).getUnitNumberResolution().getName();
+                        ASTExpression argument = arguments.get(par);
+                        if (argument != null)
+                            port.setInitialGuess(argument);
+                    }
+                }
+            }
+        }
     }
 
     protected ASTExpression calculateExchange(ASTExpression argument, Map<String, ASTExpression> arguments) {
@@ -359,12 +378,15 @@ public class EMAComponentInstanceBuilder {
             final MutableScope scope = (MutableScope) sym.getSpannedScope();
             resolvingFilters.stream().forEachOrdered(f -> scope.addResolver(f));
 
+            String componentFullName = Names.getQualifiedName(sym.getPackageName(), sym.getName());
             ports.stream().forEachOrdered(p ->
-                    instantiatePortSymbol(p, sym.getFullName(), scope)); // must be cloned since we change it if it has
+                    handlePort(p, componentFullName, scope)); // must be cloned since we change it if it has
             addPortArraySymbolsToInstance(sym);
+            Collection<EMAPortInstanceSymbol> portInstances = scope.resolveLocally(EMAPortInstanceSymbol.KIND);
+            handleInitialGuesses(sym);
 
             // generics
-            connectors.stream().forEachOrdered(c -> instantiateConnectorSymbol(c, sym.getFullName(), scope));
+            connectors.stream().forEachOrdered(c -> instantiateConnectorSymbol(c, componentFullName, scope));
             subComponents.stream().forEachOrdered(s -> scope.add(s));
 
             sym.setActualTypeArguments(actualTypeArguments.values().stream().collect(Collectors.toList()));
@@ -375,7 +397,7 @@ public class EMAComponentInstanceBuilder {
             // set arguments
             // there are either no arguments or the equal number to parameters
             if (!arguments.isEmpty() && arguments.size() != parameters.size()) {
-                Log.error("TODO Wrong number of arguments: " + sym.getFullName());
+                Log.error("TODO Wrong number of arguments: " + componentFullName);
             }
             setDefaultValuesToArguments(sym);
             sym.setArguments(arguments);
@@ -390,6 +412,19 @@ public class EMAComponentInstanceBuilder {
         }
         Log.error("not all parameters have been set before to build the expanded component instance symbol");
         throw new Error("not all parameters have been set before to build the expanded component instance symbol");
+    }
+
+    private void handleInitialGuesses(EMAComponentInstanceSymbol sym) {
+        Collection<EMAPortInstanceSymbol> portInstanceList = sym.getPortInstanceList();
+        for (ASTInitialGuess initialGuess : initialGuesses) {
+            String arrayAccess = "";
+            if (initialGuess.isPresentUnitNumberResolution())
+                arrayAccess += "[" + initialGuess.getUnitNumberResolution().getNumber().get().intValue() + "]";
+            final String portAccessName = initialGuess.getName() + arrayAccess;
+            portInstanceList.stream()
+                    .filter(port -> port.getName().equals(portAccessName))
+                    .forEachOrdered(port -> port.setInitialGuess(initialGuess.getExpression()));
+        }
     }
 
     private void setDefaultValuesToArguments(EMAComponentInstanceSymbol sym) {
@@ -420,9 +455,24 @@ public class EMAComponentInstanceBuilder {
         scope.add(EMAConnectorBuilder.instantiate(c, fullName));
     }
 
-    protected void instantiatePortSymbol(EMAPortSymbol port, String packageName, MutableScope scope) {
-        EMAPortInstanceSymbol symbol = EMAPortBuilder.instantiate(port, packageName);
+    protected void handlePort(EMAPortSymbol port, String packageName, MutableScope scope) {
+        if (port instanceof EMAPortArraySymbol)
+            instantiatePortArraySymbol((EMAPortArraySymbol) port, packageName, scope);
+        else
+            instantiatePortSymbol(port, packageName, port.getName(), scope);
+    }
+
+    protected EMAPortInstanceSymbol instantiatePortSymbol(EMAPortSymbol port, String packageName, String name, MutableScope scope) {
+        EMAPortInstanceSymbol symbol = EMAPortBuilder.instantiate(port, packageName, name);
         scope.add(symbol);
+        return symbol;
+    }
+
+    protected void instantiatePortArraySymbol(EMAPortArraySymbol port, String packageName, MutableScope scope) {
+        for (int i = 0; i < port.getDimension(); ++i) {
+            String portName = port.getName() + "[" + (i + 1) + "]";
+            instantiatePortSymbol(port, packageName, portName,  scope);
+        }
     }
 
     protected void addOtherToComponentInstance(EMAComponentInstanceSymbol sym) {
@@ -564,5 +614,17 @@ public class EMAComponentInstanceBuilder {
     public EMAComponentInstanceBuilder setPackageName(String packageName) {
         this.packageName = packageName;
         return this;
+    }
+
+    public EMAComponentInstanceBuilder addInitialGuesses(List<ASTInitialGuess> initialGuesses) {
+        for (ASTInitialGuess initialGuess : initialGuesses) {
+            if (!this.initialGuesses.contains(initialGuess))
+                this.initialGuesses.add(initialGuess);
+        }
+        return this;
+    }
+
+    public List<ASTInitialGuess> getInitialGuesses() {
+        return initialGuesses;
     }
 }

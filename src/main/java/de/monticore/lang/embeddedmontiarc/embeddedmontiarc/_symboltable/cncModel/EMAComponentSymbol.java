@@ -3,6 +3,7 @@ package de.monticore.lang.embeddedmontiarc.embeddedmontiarc._symboltable.cncMode
 
 import com.google.common.collect.ImmutableList;
 import de.monticore.expressionsbasis._ast.ASTExpression;
+import de.monticore.lang.embeddedmontiarc.embeddedmontiarc._ast.ASTInitialGuess;
 import de.monticore.lang.embeddedmontiarc.embeddedmontiarc._symboltable.ComponentKind;
 import de.monticore.lang.embeddedmontiarc.embeddedmontiarc._symboltable.instanceStructure.EMAComponentInstanceSymbol;
 import de.monticore.lang.embeddedmontiarc.embeddedmontiarc._symboltable.instanceStructure.EMAComponentInstantiationSymbol;
@@ -19,10 +20,7 @@ import de.monticore.symboltable.modifiers.AccessModifier;
 import de.monticore.symboltable.types.references.ActualTypeArgument;
 import de.se_rwth.commons.logging.Log;
 
-import java.util.ArrayList;
-import java.util.Collection;
-import java.util.List;
-import java.util.Optional;
+import java.util.*;
 import java.util.stream.Collectors;
 
 import static com.google.common.base.Preconditions.checkArgument;
@@ -56,6 +54,8 @@ public class EMAComponentSymbol extends CommonScopeSpanningSymbol implements EMA
     private List<EMAVariable> parameters = new ArrayList<>();
 
     private List<ASTExpression> arguments = new ArrayList<>();
+
+    private List<ASTInitialGuess> initalGuesses = new ArrayList<>();
 
     public EMAComponentSymbol(String name) {
         super(name, KIND);
@@ -646,5 +646,22 @@ public class EMAComponentSymbol extends CommonScopeSpanningSymbol implements EMA
 
     public Optional<EMAComponentSymbol> getParent() {
         return (Optional<EMAComponentSymbol>) getEnclosingScope().getSpanningSymbol();
+    }
+
+    public List<ASTInitialGuess> getInitalGuesses() {
+        if (referencedComponent.isPresent())
+            return referencedComponent.get().getInitalGuesses();
+        return initalGuesses;
+    }
+
+    public void addInitialGuess(ASTInitialGuess initialGuess) {
+        if (referencedComponent.isPresent())
+                referencedComponent.get().addInitialGuess(initialGuess);
+        else
+            this.initalGuesses.add(initialGuess);
+    }
+
+    public void setInitialGuesses(List<ASTInitialGuess> initalGuesses) {
+        this.initalGuesses = initalGuesses;
     }
 }
