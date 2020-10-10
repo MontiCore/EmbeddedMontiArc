@@ -30,7 +30,6 @@ import de.monticore.lang.tagging._symboltable.TaggingResolver;
 import de.monticore.symboltable.GlobalScope;
 import de.monticore.symboltable.Scope;
 import de.se_rwth.commons.logging.Log;
-import org.apache.maven.plugin.AbstractMojo;
 import org.apache.maven.plugin.MojoExecutionException;
 import org.apache.maven.plugin.MojoFailureException;
 import org.apache.maven.plugins.annotations.Parameter;
@@ -41,46 +40,7 @@ import java.time.LocalDateTime;
 import java.time.format.DateTimeFormatter;
 import java.util.*;
 
-public class StreamTestMojoBase extends AbstractMojo {
-
-  @Parameter(property = "pathMain",defaultValue = "./src/model")
-  protected String pathMain;
-  public String getPathMain() {
-    return pathMain;
-  }
-  public void setPathMain(String path) {
-    this.pathMain = path;
-  }
-
-  @Parameter(property = "pathTest",defaultValue = "./src/model")
-  protected String pathTest;
-  public String getPathTest() {
-    return pathTest;
-  }
-  public void setPathTest(String pathTest) {
-    this.pathTest = pathTest;
-  }
-
-  @Parameter(property = "pathTmpOut", defaultValue = "./target/tmp")
-  protected String pathTmpOut;
-  public String getPathTmpOut() {
-    return pathTmpOut;
-  }
-  public void setPathTmpOut(String pathTmpOut) {
-    this.pathTmpOut = pathTmpOut;
-  }
-  public String getPathTmpOutCPP(){
-    return Paths.get(this.pathTmpOut, "cpp/").toString();
-  }
-  public String getPathTmpOutEMAM(){
-    return Paths.get(this.pathTmpOut, "emam/").toString();
-  }
-  public String getPathTmpOutEMADL(){
-    return Paths.get(this.pathTmpOut,"emadl/").toString();
-  }
-  public String getPathTmpOutBUILD() {
-    return Paths.get(this.getPathTmpOut(), "build/").toString();
-  }
+public class StreamTestMojoBase extends BaseMojo {
 
   @Parameter(name = "wrapperTestExtension", defaultValue = "_TestWrapper")
   protected String wrapperTestExtension;
@@ -248,9 +208,9 @@ public class StreamTestMojoBase extends AbstractMojo {
       fam.addModelingLanguage(new EMADLLanguage());
       final ModelPath mp_main = new ModelPath();
 
-      mp_main.addEntry(Paths.get(this.pathMain));
-      if (!this.pathMain.equals(this.pathTest)) {
-        mp_main.addEntry(Paths.get(this.pathTest));
+      mp_main.addEntry(Paths.get(this.getPathMain()));
+      if (!this.getPathMain().equals(this.getPathTest())) {
+        mp_main.addEntry(Paths.get(this.getPathTest()));
       }
 
       GlobalScope gs = new GlobalScope(mp_main, fam);
@@ -258,9 +218,9 @@ public class StreamTestMojoBase extends AbstractMojo {
 
       ArrayList<String> col = new ArrayList<String>();
 
-      col.add(this.pathMain);
-      if (!this.pathMain.equals(this.pathTest)) {
-        col.add(this.pathTest);
+      col.add(this.getPathMain());
+      if (!this.getPathMain().equals(this.getPathTest())) {
+        col.add(this.getPathTest());
       }
 
       this.myTaggingResolver = new TaggingResolver(gs, col);
@@ -289,13 +249,13 @@ public class StreamTestMojoBase extends AbstractMojo {
   }
 
   protected List<EMAComponentSymbol> getComponentSymbols(boolean output) {
-    ComponentScanner componentScannerEMADL = new ComponentScanner(Paths.get(this.pathMain), this.getScope(), "emadl");
+    ComponentScanner componentScannerEMADL = new ComponentScanner(Paths.get(this.getPathMain()), this.getScope(), "emadl");
     Set<String> componentNames = componentScannerEMADL.scan();
 
-    ComponentScanner componentScannerEMAM = new ComponentScanner(Paths.get(this.pathMain), this.getScope(), "emam");
+    ComponentScanner componentScannerEMAM = new ComponentScanner(Paths.get(this.getPathMain()), this.getScope(), "emam");
     componentNames.addAll(componentScannerEMAM.scan());
 
-    StreamScanner scanner = new StreamScanner(Paths.get(this.pathMain), this.getScope());
+    StreamScanner scanner = new StreamScanner(Paths.get(this.getPathMain()), this.getScope());
     Map<EMAComponentSymbol, Set<ComponentStreamUnitsSymbol>> streamTests = scanner.scan();
 
     if(output) {

@@ -61,8 +61,8 @@ public class TrainingMojo extends StreamTestMojoBase {
 
     try{
       File temam = Paths.get(this.getPathTmpOutEMAM()).toFile();
-      FileUtils.copyDirectory(Paths.get(this.pathMain).toFile(), temam);
-      FileUtils.copyDirectory(Paths.get(this.pathTest).toFile(), temam);
+      FileUtils.copyDirectory(Paths.get(this.getPathMain()).toFile(), temam);
+      FileUtils.copyDirectory(Paths.get(this.getPathTest()).toFile(), temam);
     } catch (IOException e) {
       e.printStackTrace();
       throw new MojoExecutionException("Could not copy files: "+e.getMessage() );
@@ -148,19 +148,19 @@ public class TrainingMojo extends StreamTestMojoBase {
   //<editor-fold desc="Hashfiles">
 
   protected File hashFileMain(){
-    return Paths.get(this.pathTmpOut, mojoDirectory, this.MojoName(), "Main.txt").toFile();
+    return Paths.get(this.getPathTmpOut(), mojoDirectory, this.MojoName(), "Main.txt").toFile();
   }
 
   protected File hashFileTest(){
-    return Paths.get(this.pathTmpOut, mojoDirectory, this.MojoName(), "Test.txt").toFile();
+    return Paths.get(this.getPathTmpOut(), mojoDirectory, this.MojoName(), "Test.txt").toFile();
   }
 
   protected File hashEmamFile(){
-    return Paths.get(this.pathTmpOut, mojoDirectory, this.MojoName(), "Emam.txt").toFile();
+    return Paths.get(this.getPathTmpOut(), mojoDirectory, this.MojoName(), "Emam.txt").toFile();
   }
 
   protected File hashEmadlFile(){
-    return Paths.get(this.pathTmpOut,mojoDirectory,this.MojoName(),"Emadl.txt").toFile();
+    return Paths.get(this.getPathTmpOut(),mojoDirectory,this.MojoName(),"Emadl.txt").toFile();
   }
 
   //</editor-fold>

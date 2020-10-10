@@ -57,9 +57,9 @@ public class ValidateMojo extends StreamTestMojoBase {
 
     logInfo("Cocos Check:");
 
-    List<File> ff = SearchFiles.searchFiles(this.pathMain, "emam", "struct", "enum","emadl");
-    Map<String, File> files = SearchFiles.searchFilesMap(this.pathMain, "emam", "struct", "enum","emadl");
-    files.putAll(SearchFiles.searchFilesMap(this.pathTest, "emam", "stream","emadl"));
+    List<File> ff = SearchFiles.searchFiles(this.getPathMain(), "emam", "struct", "enum","emadl");
+    Map<String, File> files = SearchFiles.searchFilesMap(this.getPathMain(), "emam", "struct", "enum","emadl");
+    files.putAll(SearchFiles.searchFilesMap(this.getPathTest(), "emam", "stream","emadl"));
 
     for (Map.Entry<String,File> f:files.entrySet()) {
       String ending = f.getKey().substring(f.getKey().lastIndexOf(".") + 1);

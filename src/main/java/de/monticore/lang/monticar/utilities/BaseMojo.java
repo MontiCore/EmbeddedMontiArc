@@ -30,12 +30,19 @@ public abstract class BaseMojo extends AbstractMojo {
   @Parameter
   private Repository repository;
 
+  @Parameter(property = "pathMain",defaultValue = "./src/model")
+  private String pathMain;
+
+  @Parameter(property = "pathTest",defaultValue = "./src/model")
+  private String pathTest;
+
+  @Parameter(property = "pathTmpOut", defaultValue = "./target/tmp")
+  private String pathTmpOut;
+
   private RemoteRepository remoteRepository;
 
-  protected static final String TEMP_FOLDER = "target/tmp";
-
   public void mkTmpDir() {
-    this.mkdir(TEMP_FOLDER);
+    this.mkdir(getPathTmpOut());
   }
 
   private void mkdir(String path) {
@@ -47,6 +54,34 @@ public abstract class BaseMojo extends AbstractMojo {
     }catch (Exception ex){
       ex.printStackTrace();
     }
+  }
+
+  public String getPathMain() {
+    return pathMain;
+  }
+
+  public String getPathTest() {
+    return pathTest;
+  }
+
+  public String getPathTmpOut() {
+    return pathTmpOut;
+  }
+
+  public String getPathTmpOutCPP(){
+    return Paths.get(this.pathTmpOut, "cpp/").toString();
+  }
+
+  public String getPathTmpOutEMAM(){
+    return Paths.get(this.pathTmpOut, "emam/").toString();
+  }
+
+  public String getPathTmpOutEMADL(){
+    return Paths.get(this.pathTmpOut,"emadl/").toString();
+  }
+
+  public String getPathTmpOutBUILD() {
+    return Paths.get(this.getPathTmpOut(), "build/").toString();
   }
 
   public Repository getRepository() {

@@ -27,7 +27,7 @@ public class DeployDatasetMojo extends BaseMojo {
     File jarFile;
     try {
       getLog().info(String.format("STARTING creating Jar for dataset in directory %s", this.datasetToStore.getPath()));
-      jarFile = DatasetArtifactCreator.createArtifact(this.datasetToStore, TEMP_FOLDER);
+      jarFile = DatasetArtifactCreator.createArtifact(this.datasetToStore, this.getPathTmpOut());
       getLog().info("FINISHED creating Jar for dataset");
 
       ArtifactDeployer.deployArtifact(jarFile.getAbsolutePath(), this.datasetToStore, this.getRepository());
