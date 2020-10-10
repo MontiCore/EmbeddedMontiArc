@@ -11,8 +11,8 @@ import org.apache.maven.shared.invoker.MavenInvocationException;
 
 import java.util.List;
 
-@Mojo(name = "install")
-public class InstallMojo extends BaseMojo {
+@Mojo(name = "import")
+public class ImportMojo extends BaseMojo {
 
   @Override
   public void execute() throws MojoExecutionException, MojoFailureException {

@@ -13,8 +13,8 @@ import java.io.File;
 import java.io.IOException;
 import java.util.Arrays;
 
-@Mojo(name = "storeModel")
-public class StoreModelMojo extends BaseMojo {
+@Mojo(name = "deploy-project")
+public class DeployProjectMojo extends BaseMojo {
 
   @Parameter
   private StorageInformation modelToStore;

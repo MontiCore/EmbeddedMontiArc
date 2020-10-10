@@ -13,8 +13,8 @@ import java.io.File;
 import java.io.IOException;
 import java.util.Arrays;
 
-@Mojo(name="storeDataset")
-public class StoreDatasetMojo extends BaseMojo {
+@Mojo(name="deploy-dataset")
+public class DeployDatasetMojo extends BaseMojo {
 
   @Parameter
   private StorageInformation datasetToStore;
