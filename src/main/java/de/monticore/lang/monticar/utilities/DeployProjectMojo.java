@@ -29,7 +29,7 @@ public class DeployProjectMojo extends BaseMojo {
     File jarFile;
     try {
       getLog().info(String.format("STARTING creating Jar for model %s", this.modelToStore.getPath()));
-      jarFile = ModelArtifactCreator.createArtifact(this.modelToStore, TEMP_FOLDER);
+      jarFile = ModelArtifactCreator.createArtifact(this.modelToStore, this.getPathTmpOut());
       getLog().info("FINISHED creating Jar for model");
 
       ArtifactDeployer.deployArtifact(jarFile.getAbsolutePath(), this.modelToStore, this.getRepository());

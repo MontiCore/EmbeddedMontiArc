@@ -9,6 +9,6 @@ public class DeployResultMojo extends BaseMojo {
 
   @Override
   public void execute() throws MojoExecutionException, MojoFailureException {
-    
+
   }
 }
