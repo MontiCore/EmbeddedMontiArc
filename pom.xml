@@ -29,7 +29,6 @@
             <version>3.0-alpha-2</version>
             <exclusions>
                 <exclusion>
-                    <!-- whatever the correct values are -->
                     <groupId>com.google.code.google-collections</groupId>
                     <artifactId>google-collect</artifactId>
                 </exclusion>
@@ -61,7 +60,6 @@
             <groupId>de.monticore.lang.monticar</groupId>
             <artifactId>embedded-montiarc-emadl-generator</artifactId>
             <version>0.4.0</version>
-
         </dependency>
 
     </dependencies>
