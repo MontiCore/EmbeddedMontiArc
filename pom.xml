@@ -19,24 +19,18 @@
 
     <!-- .. SE-Libraries .................................................. -->
     <monticore.version>5.0.0</monticore.version>
-    <se-commons.version>1.7.7</se-commons.version>
     <mc.grammars.assembly.version>0.0.6-SNAPSHOT</mc.grammars.assembly.version>
     <!-- .. Libraries .................................................. -->
-    <guava.version>18.0</guava.version>
     <junit.version>4.12</junit.version>
-    <logback.version>1.1.2</logback.version>
     <jscience.version>4.3.1</jscience.version>
 
     <!-- .. Plugins ....................................................... -->
-    <monticore.plugin>5.0.0</monticore.plugin>
     <assembly.plugin>2.5.4</assembly.plugin>
     <compiler.plugin>3.5</compiler.plugin>
     <source.plugin>2.4</source.plugin>
-    <shade.plugin>2.4.3</shade.plugin>
 
     <!-- Classifiers -->
     <grammars.classifier>grammars</grammars.classifier>
-    <cli.classifier>cli</cli.classifier>
 
     <!-- .. Misc .......................................................... -->
     <java.version>1.8</java.version>
@@ -45,32 +39,16 @@
     <project.reporting.outputEncoding>UTF-8</project.reporting.outputEncoding>
     <github.global.server>github</github.global.server>
   </properties>
+
   <scm>
     <url>https://github.com/EmbeddedMontiArc/languagescommon</url>
     <connection>scm:git:git://github.com/EmbeddedMontiArc/languagescommon.git</connection>
     <developerConnection>scm:git:git@github.com:EmbeddedMontiArc/languagescommon.git</developerConnection>
   </scm>
+
   <dependencies>
 
-    <dependency>
-      <groupId>org.antlr</groupId>
-      <artifactId>antlr4-runtime</artifactId>
-      <version>4.7.1</version>
-    </dependency>
-
-    <dependency>
-      <groupId>de.se_rwth.commons</groupId>
-      <artifactId>se-commons-logging</artifactId>
-      <version>${se-commons.version}</version>
-    </dependency>
-
-    <dependency>
-      <groupId>com.google.guava</groupId>
-      <artifactId>guava</artifactId>
-      <version>${guava.version}</version>
-    </dependency>
-
-    <!-- MontiCore Dependencies -->
+    <!-- .. MontiCore Dependencies ........................................ -->
     <dependency>
       <groupId>de.monticore</groupId>
       <artifactId>monticore-runtime</artifactId>
@@ -91,13 +69,7 @@
       <scope>provided</scope>
     </dependency>
 
-    <dependency>
-      <groupId>de.se_rwth.commons</groupId>
-      <artifactId>se-commons-groovy</artifactId>
-      <version>${se-commons.version}</version>
-    </dependency>
-
-    <!-- .. Test Libraries ............................................... -->
+    <!-- .. Test Libraries ................................................ -->
     <dependency>
       <groupId>junit</groupId>
       <artifactId>junit</artifactId>
@@ -105,20 +77,8 @@
       <scope>test</scope>
     </dependency>
 
-    <dependency>
-      <groupId>de.monticore</groupId>
-      <artifactId>monticore-runtime</artifactId>
-      <version>${monticore.version}</version>
-      <type>test-jar</type>
-      <scope>test</scope>
-    </dependency>
+    <!-- .. Others ........................................................ -->
 
-    <dependency>
-      <groupId>ch.qos.logback</groupId>
-      <artifactId>logback-classic</artifactId>
-      <version>${logback.version}</version>
-    </dependency>
-  
     <dependency>
       <groupId>org.jscience</groupId>
       <artifactId>jscience</artifactId>
@@ -139,7 +99,7 @@
             <plugin>
                 <groupId>de.monticore.mojo</groupId>
                 <artifactId>monticore-maven-plugin</artifactId>
-                <version>${monticore.plugin}</version>
+                <version>${monticore.version}</version>
                 <configuration>
                     <skip>false</skip>
                     <script>de/monticore/monticore_noemf.groovy</script>
