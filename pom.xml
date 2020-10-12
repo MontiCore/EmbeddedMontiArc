@@ -8,13 +8,13 @@
     <!-- == PROJECT COORDINATES ============================================= -->
     <groupId>de.monticore.lang.monticar</groupId>
     <artifactId>struct</artifactId>
-    <version>0.2.12-SNAPSHOT</version>
+    <version>0.4.4-SNAPSHOT</version>
 
     <!-- == PROJECT DEPENDENCIES ============================================= -->
     <properties>
         <!-- .. EMA-Libraries ................................................. -->
-        <Common-MontiCar.version>0.2.12-SNAPSHOT</Common-MontiCar.version>
-        <enumlang.version>0.2.12-SNAPSHOT</enumlang.version>
+        <Common-MontiCar.version>0.4.4-SNAPSHOT</Common-MontiCar.version>
+        <enumlang.version>0.4.4-SNAPSHOT</enumlang.version>
 
         <!-- .. SE-Libraries .................................................. -->
         <monticore.version>5.0.1</monticore.version>
@@ -227,32 +227,32 @@
                 </executions>
             </plugin>
             <!-- to add copyright information automatically-->
-            <plugin>
-                <groupId>com.mycila</groupId>
-                <artifactId>license-maven-plugin</artifactId>
-                <version>3.0</version>
-                <configuration>
-                    <header>${project.baseUri}/src/license/se/license.txt</header>
-                    <properties>
-                        <owner>Michael von Wenckstern</owner>
-                        <email>vonwenckstern@se-rwth.de</email>
-                    </properties>
-                    <excludes>
-                        <exclude>**/README</exclude>
-                        <exclude>src/test/resources/**</exclude>
-                        <exclude>src/main/resources/**</exclude>
-                        <exclude>src/license/**</exclude>
-                    </excludes>
-                </configuration>
-                <executions>
-                    <execution>
-                        <goals>
-                            <goal>format</goal>
-                        </goals>
-                        <phase>process-sources</phase>
-                    </execution>
-                </executions>
-            </plugin>
+<!--            <plugin>-->
+<!--                <groupId>com.mycila</groupId>-->
+<!--                <artifactId>license-maven-plugin</artifactId>-->
+<!--                <version>3.0</version>-->
+<!--                <configuration>-->
+<!--                    <header>${project.baseUri}/src/license/se/license.txt</header>-->
+<!--                    <properties>-->
+<!--                        <owner>Michael von Wenckstern</owner>-->
+<!--                        <email>vonwenckstern@se-rwth.de</email>-->
+<!--                    </properties>-->
+<!--                    <excludes>-->
+<!--                        <exclude>**/README</exclude>-->
+<!--                        <exclude>src/test/resources/**</exclude>-->
+<!--                        <exclude>src/main/resources/**</exclude>-->
+<!--                        <exclude>src/license/**</exclude>-->
+<!--                    </excludes>-->
+<!--                </configuration>-->
+<!--                <executions>-->
+<!--                    <execution>-->
+<!--                        <goals>-->
+<!--                            <goal>format</goal>-->
+<!--                        </goals>-->
+<!--                        <phase>process-sources</phase>-->
+<!--                    </execution>-->
+<!--                </executions>-->
+<!--            </plugin>-->
                  <plugin>
                 <groupId>org.apache.maven.plugins</groupId>
                 <artifactId>maven-surefire-plugin</artifactId>
