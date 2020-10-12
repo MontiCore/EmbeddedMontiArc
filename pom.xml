@@ -17,14 +17,12 @@
         <Common-MontiCar.version>0.4.4-SNAPSHOT</Common-MontiCar.version>
 
         <!-- .. SE-Libraries .................................................. -->
+        <guava.version>25.1-jre</guava.version>
         <monticore.version>5.0.0</monticore.version>
         <mc.grammars.assembly.version>0.0.8</mc.grammars.assembly.version>
 
         <!-- .. Libraries .................................................. -->
         <junit.version>4.12</junit.version>
-<!--        <logback.version>1.1.2</logback.version>-->
-<!--        <jscience.version>4.3.1</jscience.version>-->
-<!--        <antlr.version>4.7.1</antlr.version>-->
 
         <!-- .. Plugins ....................................................... -->
         <assembly.plugin>2.5.4</assembly.plugin>
@@ -42,30 +40,11 @@
 
     <dependencies>
 
-<!--        <dependency>-->
-<!--            <groupId>org.antlr</groupId>-->
-<!--            <artifactId>antlr4-runtime</artifactId>-->
-<!--            <version>4.7.1</version>-->
-<!--        </dependency>-->
-
-<!--        <dependency>-->
-<!--            <groupId>de.se_rwth.commons</groupId>-->
-<!--            <artifactId>se-commons-logging</artifactId>-->
-<!--            <version>${se-commons.version}</version>-->
-<!--        </dependency>-->
-
-        <!-- MontiCore Dependencies -->
-<!--        <dependency>-->
-<!--            <groupId>de.monticore</groupId>-->
-<!--            <artifactId>monticore-runtime</artifactId>-->
-<!--            <version>${monticore.version}</version>-->
-<!--        </dependency>-->
-
-<!--        <dependency>-->
-<!--            <groupId>de.monticore</groupId>-->
-<!--            <artifactId>monticore-grammar</artifactId>-->
-<!--            <version>${monticore.version}</version>-->
-<!--        </dependency>-->
+        <dependency>
+            <groupId>com.google.guava</groupId>
+            <artifactId>guava</artifactId>
+            <version>${guava.version}</version>
+        </dependency>
 
         <dependency>
             <groupId>de.monticore</groupId>
@@ -96,26 +75,6 @@
             <version>${junit.version}</version>
             <scope>test</scope>
         </dependency>
-
-<!--        <dependency>-->
-<!--            <groupId>de.monticore</groupId>-->
-<!--            <artifactId>monticore-runtime</artifactId>-->
-<!--            <version>${monticore.version}</version>-->
-<!--            <type>test-jar</type>-->
-<!--            <scope>test</scope>-->
-<!--        </dependency>-->
-
-<!--        <dependency>-->
-<!--            <groupId>ch.qos.logback</groupId>-->
-<!--            <artifactId>logback-classic</artifactId>-->
-<!--            <version>${logback.version}</version>-->
-<!--        </dependency>-->
-
-<!--        <dependency>-->
-<!--            <groupId>org.jscience</groupId>-->
-<!--            <artifactId>jscience</artifactId>-->
-<!--            <version>${jscience.version}</version>-->
-<!--        </dependency>-->
 
     </dependencies>
 
