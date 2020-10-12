@@ -17,6 +17,7 @@
         <enumlang.version>0.4.4-SNAPSHOT</enumlang.version>
 
         <!-- .. SE-Libraries .............................................. -->
+        <guava.version>25.1-jre</guava.version>
         <monticore.version>5.0.0</monticore.version>
         <mc.grammars.assembly.version>0.0.8</mc.grammars.assembly.version>
 
@@ -38,6 +39,12 @@
     </properties>
 
     <dependencies>
+
+        <dependency>
+            <groupId>com.google.guava</groupId>
+            <artifactId>guava</artifactId>
+            <version>${guava.version}</version>
+        </dependency>
 
         <!-- MontiCore Dependencies -->
         <dependency>
