@@ -15,22 +15,25 @@
 
         <!-- .. EMA-Libraries ................................................. -->
         <Common-MontiCar.version>0.4.4-SNAPSHOT</Common-MontiCar.version>
+
         <!-- .. SE-Libraries .................................................. -->
         <monticore.version>5.0.0</monticore.version>
-        <se-commons.version>1.7.7</se-commons.version>
         <mc.grammars.assembly.version>0.0.8</mc.grammars.assembly.version>
+
         <!-- .. Libraries .................................................. -->
         <junit.version>4.12</junit.version>
-        <logback.version>1.1.2</logback.version>
-        <jscience.version>4.3.1</jscience.version>
-        <antlr.version>4.7.1</antlr.version>
+<!--        <logback.version>1.1.2</logback.version>-->
+<!--        <jscience.version>4.3.1</jscience.version>-->
+<!--        <antlr.version>4.7.1</antlr.version>-->
+
         <!-- .. Plugins ....................................................... -->
-        <monticore.plugin>5.0.0</monticore.plugin>
         <assembly.plugin>2.5.4</assembly.plugin>
         <compiler.plugin>3.3</compiler.plugin>
         <source.plugin>2.4</source.plugin>
+
         <!-- Classifiers -->
         <grammars.classifier>grammars</grammars.classifier>
+
         <!-- .. Misc .......................................................... -->
         <java.version>1.8</java.version>
         <project.build.sourceEncoding>UTF-8</project.build.sourceEncoding>
@@ -39,30 +42,30 @@
 
     <dependencies>
 
-        <dependency>
-            <groupId>org.antlr</groupId>
-            <artifactId>antlr4-runtime</artifactId>
-            <version>4.7.1</version>
-        </dependency>
+<!--        <dependency>-->
+<!--            <groupId>org.antlr</groupId>-->
+<!--            <artifactId>antlr4-runtime</artifactId>-->
+<!--            <version>4.7.1</version>-->
+<!--        </dependency>-->
 
-        <dependency>
-            <groupId>de.se_rwth.commons</groupId>
-            <artifactId>se-commons-logging</artifactId>
-            <version>${se-commons.version}</version>
-        </dependency>
+<!--        <dependency>-->
+<!--            <groupId>de.se_rwth.commons</groupId>-->
+<!--            <artifactId>se-commons-logging</artifactId>-->
+<!--            <version>${se-commons.version}</version>-->
+<!--        </dependency>-->
 
         <!-- MontiCore Dependencies -->
-        <dependency>
-            <groupId>de.monticore</groupId>
-            <artifactId>monticore-runtime</artifactId>
-            <version>${monticore.version}</version>
-        </dependency>
+<!--        <dependency>-->
+<!--            <groupId>de.monticore</groupId>-->
+<!--            <artifactId>monticore-runtime</artifactId>-->
+<!--            <version>${monticore.version}</version>-->
+<!--        </dependency>-->
 
-        <dependency>
-            <groupId>de.monticore</groupId>
-            <artifactId>monticore-grammar</artifactId>
-            <version>${monticore.version}</version>
-        </dependency>
+<!--        <dependency>-->
+<!--            <groupId>de.monticore</groupId>-->
+<!--            <artifactId>monticore-grammar</artifactId>-->
+<!--            <version>${monticore.version}</version>-->
+<!--        </dependency>-->
 
         <dependency>
             <groupId>de.monticore</groupId>
@@ -94,25 +97,25 @@
             <scope>test</scope>
         </dependency>
 
-        <dependency>
-            <groupId>de.monticore</groupId>
-            <artifactId>monticore-runtime</artifactId>
-            <version>${monticore.version}</version>
-            <type>test-jar</type>
-            <scope>test</scope>
-        </dependency>
+<!--        <dependency>-->
+<!--            <groupId>de.monticore</groupId>-->
+<!--            <artifactId>monticore-runtime</artifactId>-->
+<!--            <version>${monticore.version}</version>-->
+<!--            <type>test-jar</type>-->
+<!--            <scope>test</scope>-->
+<!--        </dependency>-->
 
-        <dependency>
-            <groupId>ch.qos.logback</groupId>
-            <artifactId>logback-classic</artifactId>
-            <version>${logback.version}</version>
-        </dependency>
+<!--        <dependency>-->
+<!--            <groupId>ch.qos.logback</groupId>-->
+<!--            <artifactId>logback-classic</artifactId>-->
+<!--            <version>${logback.version}</version>-->
+<!--        </dependency>-->
 
-        <dependency>
-            <groupId>org.jscience</groupId>
-            <artifactId>jscience</artifactId>
-            <version>${jscience.version}</version>
-        </dependency>
+<!--        <dependency>-->
+<!--            <groupId>org.jscience</groupId>-->
+<!--            <artifactId>jscience</artifactId>-->
+<!--            <version>${jscience.version}</version>-->
+<!--        </dependency>-->
 
     </dependencies>
 
@@ -124,7 +127,7 @@
             <plugin>
                 <groupId>de.monticore.mojo</groupId>
                 <artifactId>monticore-maven-plugin</artifactId>
-                <version>${monticore.plugin}</version>
+                <version>${monticore.version}</version>
                 <configuration>
                     <skip>false</skip>
                     <script>de/monticore/monticore_noemf.groovy</script>
