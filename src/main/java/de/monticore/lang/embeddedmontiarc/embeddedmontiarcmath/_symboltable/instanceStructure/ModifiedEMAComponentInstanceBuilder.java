@@ -21,6 +21,7 @@ import de.monticore.lang.math._symboltable.expression.MathValueSymbol;
 import de.monticore.lang.monticar.common2._ast.ASTLiteralValue;
 import de.monticore.lang.monticar.common2._ast.ASTParameter;
 import de.monticore.lang.monticar.common2._ast.ASTValue;
+import de.monticore.lang.monticar.resolution._ast.ASTUnitNumberResolutionExpression;
 import de.monticore.lang.monticar.ts.MCTypeSymbol;
 import de.monticore.literals.literals._ast.ASTBooleanLiteral;
 import de.monticore.literals.literals._ast.ASTSignedNumericLiteral;
@@ -52,7 +53,7 @@ public class ModifiedEMAComponentInstanceBuilder extends EMADynamicComponentInst
 
     @Override
     protected void exchangeGenerics(EMAComponentInstanceSymbol inst,
-            Map<MCTypeSymbol, ActualTypeArgument> mapTypeArguments) {
+                                    Map<MCTypeSymbol, ActualTypeArgument> mapTypeArguments) {
         super.exchangeGenerics(inst, mapTypeArguments);
 
         Collection<MathExpressionSymbol> eprs = inst.getSpannedScope().resolveLocally(MathExpressionSymbol.KIND);
@@ -83,50 +84,45 @@ public class ModifiedEMAComponentInstanceBuilder extends EMADynamicComponentInst
                     String name = ((MathNameExpressionSymbol) mexp).getNameToResolveValue();
                     if (arguments.containsKey(name)) {
                         MathNameExpressionSymbol nameSymbol = (MathNameExpressionSymbol) mexp;
-                        MathExpressionSymbol exchangeSymbol = createFromASTExpression(inst, arguments.get(name));
+                        MathExpressionSymbol exchangeSymbol = createFromASTExpression(arguments.get(name));
                         for (MathStatementsSymbol mathStatementSymbol : mathStatementSymbols)
                             MathExpressionReplacer
                                     .replaceMathExpression(mathStatementSymbol, exchangeSymbol, nameSymbol);
 
                         inst.getSpannedScope().getAsMutableScope().remove(nameSymbol);
+                        inst.getSpannedScope().getAsMutableScope().add(exchangeSymbol);
                     }
                 }
             }
         }
     }
 
-    private MathExpressionSymbol createFromASTExpression(EMAComponentInstanceSymbol instance, ASTExpression expression) {
-        MathExpressionSymbol exchangeSymbol = null;
+    private MathExpressionSymbol createFromASTExpression(ASTExpression expression) {
         ResolvingConfiguration configuration = new ResolvingConfiguration();
-        configuration.addDefaultFilters(instance.getSpannedScope().getResolvingFilters());
-        CommonScope newScope = new CommonScope();
+
         Optional<MathSymbolTableCreator> symbolTableCreator =
                 (new MathLanguage()).getSymbolTableCreator(configuration,
-                        newScope);
-        if (expression instanceof ASTMathNode)
-            symbolTableCreator.get().createFromAST((ASTMathNode) expression);
-        else {
+                        new CommonScope());
+
+        if (!(expression instanceof ASTMathNode)) {
             // hack to get a MathNode
-            ASTIncSuffixExpression statement = MathMill
+            ASTMathNode node = MathMill
                     .incSuffixExpressionBuilder()
                     .setExpression(expression)
                     .build();
-            symbolTableCreator.get().createFromAST(statement);
+            symbolTableCreator.get().createFromAST(node);
+        } else {
+            symbolTableCreator.get().createFromAST((ASTMathNode) expression);
         }
 
-        Collection<MathExpressionSymbol> newEprs = newScope.resolveLocally(MathExpressionSymbol.KIND);
-        Iterator<MathExpressionSymbol> iterator = newEprs.iterator();
-        while (iterator.hasNext())
-            exchangeSymbol = iterator.next();
-        instance.getSpannedScope().getAsMutableScope().add(exchangeSymbol);
-
-        return exchangeSymbol;
+        return (MathExpressionSymbol) expression.getSymbolOpt().orElse(null);
     }
 
 
     @Override
     protected ASTExpression createArgumentFromDefaultValue(ASTParameter astParameter) {
         ASTValue defaultValue = astParameter.getDefaultValue();
+        ASTExpression expression = null;
         if (defaultValue instanceof ASTLiteralValue) {
             if (((ASTLiteralValue) defaultValue).getValue() instanceof ASTSignedNumericLiteral) {
                 ASTNumberWithInf numberWithInf =
@@ -137,22 +133,24 @@ public class ModifiedEMAComponentInstanceBuilder extends EMADynamicComponentInst
                                 .numberWithUnitBuilder()
                                 .setNum(numberWithInf)
                                 .build();
-                ASTNumberExpression expression =
-                        EmbeddedMontiArcMathMill
+                expression = EmbeddedMontiArcMathMill
                                 .numberExpressionBuilder()
                                 .setNumberWithUnit(numberWithUnit)
                                 .build();
-                return expression;
             } else if (((ASTLiteralValue) defaultValue).getValue() instanceof ASTBooleanLiteral) {
-                if (((ASTBooleanLiteral) ((ASTLiteralValue) defaultValue).getValue()).getValue())
-                    return EmbeddedMontiArcMathMill
+                if (((ASTBooleanLiteral) ((ASTLiteralValue) defaultValue).getValue()).getValue()) {
+                    expression = EmbeddedMontiArcMathMill
                             .mathTrueExpressionBuilder()
                             .build();
-                else
-                    return EmbeddedMontiArcMathMill
+                } else
+                    expression = EmbeddedMontiArcMathMill
                             .mathFalseExpressionBuilder()
                             .build();
             }
+        }
+        if (expression != null) {
+            createFromASTExpression(expression);
+            return expression;
         }
 
         return super.createArgumentFromDefaultValue(astParameter);
@@ -163,6 +161,8 @@ public class ModifiedEMAComponentInstanceBuilder extends EMADynamicComponentInst
         if (argument instanceof ASTNameExpression) {
             String argumentName = ((ASTNameExpression) argument).getName();
             return arguments.get(argumentName);
+        } else if (argument instanceof ASTNumberExpression) {
+            return argument;
         }
         // TODO Fall untersuchen
         return super.calculateExchange(argument, arguments);
