@@ -9,7 +9,7 @@
 
     <properties>
         <se-commons.version>1.7.9-SNAPSHOT</se-commons.version>
-        <junit.version>4.12</junit.version>
+        <junit.version>4.13.1</junit.version>
         <monticore-runtime.version>5.0.1</monticore-runtime.version>
         <org.eclipse.lsp4j.version>0.7.0</org.eclipse.lsp4j.version>
         <se-commons-logging.version>1.7.9</se-commons-logging.version>
