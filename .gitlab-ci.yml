@@ -5,7 +5,7 @@ githubjob:
   image: maven:3-jdk-8
   stage: linux
   before_script:
-  - 'which ssh-agent || ( apt-get update -y && apt-get install openssh-client -y )'
+  - 'which ssh-agent || ( apt-get update -y && apt-get install openssh-client -y && apt-get update git -y)'
   - eval $(ssh-agent -s)
   - ssh-add <(echo "$GITHUB_SSH_PRIV_KEY")
   - echo "$GITHUB_SSH_PRIV_KEY" | tr -d '\r' | ssh-add -
