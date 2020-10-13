@@ -10,15 +10,15 @@
 
     <groupId>de.monticore.lang</groupId>
     <artifactId>math-opt</artifactId>
-    <version>0.2.12-SNAPSHOT</version>
+    <version>0.4.4-SNAPSHOT</version>
 
     <!-- == PROJECT DEPENDENCIES ============================================= -->
 
     <properties>
 
         <!-- .. EMA-Libraries ................................................. -->
-        <Common-MontiCar.version>0.2.12-SNAPSHOT</Common-MontiCar.version>
-        <Math.version>0.2.12-SNAPSHOT</Math.version>
+        <Common-MontiCar.version>0.4.4-SNAPSHOT</Common-MontiCar.version>
+        <Math.version>0.4.4-SNAPSHOT</Math.version>
 
         <!-- .. SE-Libraries .................................................. -->
         <monticore.version>5.0.1</monticore.version>
@@ -75,17 +75,17 @@
             <scope>provided</scope>
         </dependency>
 
-        <dependency>
-            <groupId>org.antlr</groupId>
-            <artifactId>antlr4-runtime</artifactId>
-            <version>4.7.1</version>
-        </dependency>
+<!--        <dependency>-->
+<!--            <groupId>org.antlr</groupId>-->
+<!--            <artifactId>antlr4-runtime</artifactId>-->
+<!--            <version>4.7.1</version>-->
+<!--        </dependency>-->
 
-        <dependency>
-            <groupId>de.se_rwth.commons</groupId>
-            <artifactId>se-commons-logging</artifactId>
-            <version>${se-commons.version}</version>
-        </dependency>
+<!--        <dependency>-->
+<!--            <groupId>de.se_rwth.commons</groupId>-->
+<!--            <artifactId>se-commons-logging</artifactId>-->
+<!--            <version>${se-commons.version}</version>-->
+<!--        </dependency>-->
 
         <dependency>
             <groupId>com.google.guava</groupId>
@@ -94,48 +94,11 @@
         </dependency>
 
         <dependency>
-            <groupId>org.apache.commons</groupId>
-            <artifactId>commons-math3</artifactId>
-            <version>3.6.1</version>
-        </dependency>
-
-        <dependency>
-            <groupId>it.unibo.alice.tuprolog</groupId>
-            <artifactId>tuprolog</artifactId>
-            <version>3.2.1</version>
-        </dependency>
-
-        <!-- MontiCore Dependencies -->
-        <dependency>
-            <groupId>de.monticore</groupId>
-            <artifactId>monticore-runtime</artifactId>
-            <version>${monticore.version}</version>
-        </dependency>
-
-        <dependency>
-            <groupId>de.monticore</groupId>
-            <artifactId>monticore-grammar</artifactId>
-            <version>${monticore.version}</version>
-        </dependency>
-
-        <dependency>
             <groupId>de.monticore</groupId>
             <artifactId>monticore-grammar</artifactId>
             <version>${monticore.version}</version>
             <classifier>${grammars.classifier}</classifier>
             <scope>provided</scope>
-        </dependency>
-
-        <dependency>
-            <groupId>de.se_rwth.commons</groupId>
-            <artifactId>se-commons-groovy</artifactId>
-            <version>${se-commons.version}</version>
-        </dependency>
-
-        <dependency>
-            <groupId>de.monticore.lang.monticar</groupId>
-            <artifactId>common-monticar</artifactId>
-            <version>${Common-MontiCar.version}</version>
         </dependency>
 
         <dependency>
@@ -145,6 +108,7 @@
             <classifier>${grammars.classifier}</classifier>
             <scope>provided</scope>
         </dependency>
+
         <!-- .. Test Libraries ............................................... -->
         <dependency>
             <groupId>junit</groupId>
@@ -159,18 +123,6 @@
             <version>${monticore.version}</version>
             <type>test-jar</type>
             <scope>test</scope>
-        </dependency>
-
-        <dependency>
-            <groupId>ch.qos.logback</groupId>
-            <artifactId>logback-classic</artifactId>
-            <version>${logback.version}</version>
-        </dependency>
-
-        <dependency>
-            <groupId>org.jscience</groupId>
-            <artifactId>jscience</artifactId>
-            <version>${jscience.version}</version>
         </dependency>
 
     </dependencies>
@@ -194,19 +146,6 @@
                     <skip>false</skip>
                     <script>script.groovy</script>
                 </configuration>
-                <dependencies>
-                    <dependency>
-                        <groupId>org.antlr</groupId>
-                        <artifactId>antlr4</artifactId>
-                        <version>4.7.1</version>
-                    </dependency>
-                    <!-- https://mvnrepository.com/artifact/org.antlr/antlr4-runtime -->
-                    <dependency>
-                        <groupId>org.antlr</groupId>
-                        <artifactId>antlr4-runtime</artifactId>
-                        <version>4.7.1</version>
-                    </dependency>
-                </dependencies>
                 <executions>
                     <execution>
                         <goals>
