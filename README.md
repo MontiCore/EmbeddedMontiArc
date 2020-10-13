@@ -6,8 +6,9 @@
 [![PPTX-Docu](https://img.shields.io/badge/PPTX--Docu-2018--05--22-brightgreen.svg)](https://github.com/EmbeddedMontiArc/Documentation/blob/master/reposlides/18.05.22.Docu.EmbeddedMontiArc.pdf)
 
 # EmbeddedMontiArc
+EmbeddedMontiArc is a language family developed for the design of embedded and cyber-physical systems.
 
-## Overview of Languages
+## Overview of the Main Languages
 ```
                                                             
      EmbeddedMontiArc                                         MontiMath   
@@ -28,3 +29,6 @@
             |                                               
     EmbeddedMontiArcDL                                      
 ```
+## Licence
+The license for this project can be found here [here](https://github.com/MontiCore/monticore).
+The project is also available on [Github](https://github.com/MontiCore/EmbeddedMontiArc/tree/master/languages/EmbeddedMontiArc)
