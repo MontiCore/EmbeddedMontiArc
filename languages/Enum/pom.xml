@@ -20,7 +20,7 @@
         <se-commons.version>1.7.7</se-commons.version>
         <mc.grammars.assembly.version>0.0.8</mc.grammars.assembly.version>
         <!-- .. Libraries .................................................. -->
-        <junit.version>4.12</junit.version>
+        <junit.version>4.13.1</junit.version>
         <logback.version>1.1.2</logback.version>
         <jscience.version>4.3.1</jscience.version>
         <antlr.version>4.7.1</antlr.version>
