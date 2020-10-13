@@ -75,18 +75,6 @@
             <scope>provided</scope>
         </dependency>
 
-<!--        <dependency>-->
-<!--            <groupId>org.antlr</groupId>-->
-<!--            <artifactId>antlr4-runtime</artifactId>-->
-<!--            <version>4.7.1</version>-->
-<!--        </dependency>-->
-
-<!--        <dependency>-->
-<!--            <groupId>de.se_rwth.commons</groupId>-->
-<!--            <artifactId>se-commons-logging</artifactId>-->
-<!--            <version>${se-commons.version}</version>-->
-<!--        </dependency>-->
-
         <dependency>
             <groupId>com.google.guava</groupId>
             <artifactId>guava</artifactId>
