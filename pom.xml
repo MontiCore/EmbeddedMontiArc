@@ -78,12 +78,6 @@
     </dependency>
 
     <dependency>
-      <groupId>de.se_rwth.commons</groupId>
-      <artifactId>se-commons-groovy</artifactId>
-      <version>${se-commons.version}</version>
-    </dependency>
-
-    <dependency>
       <groupId>de.monticore.lang.monticar</groupId>
       <artifactId>common-monticar</artifactId>
       <version>${Common-MontiCar.version}</version>
