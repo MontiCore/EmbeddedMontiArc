@@ -3,6 +3,7 @@ package de.monticore.lang.monticar.generator.cpp.mathopt.optimizationSolver.solv
 
 import de.monticore.lang.monticar.generator.FileContent;
 import de.monticore.lang.monticar.generator.Generator;
+import de.monticore.lang.monticar.generator.cmake.CMakeConfig;
 import de.monticore.lang.monticar.generator.cmake.CMakeFindModule;
 import de.monticore.lang.monticar.generator.cpp.EMAMBluePrintCPP;
 import de.monticore.lang.monticar.generator.cpp.GeneratorCPP;
@@ -125,26 +126,11 @@ public class IpoptSolverGeneratorImplementation implements NLPSolverGeneratorImp
     protected void addCMakeDependenciesToGenerator(EMAMBluePrintCPP bluePrint) {
         Generator gen = bluePrint.getGenerator();
         if (gen instanceof GeneratorCPP) {
-            List<CMakeFindModule> dependencies = getCMakeDependencies();
-            for (CMakeFindModule dep : dependencies)
-                ((GeneratorCPP) gen).getCMakeConfig().addModuleDependency(dep);
-        }
-//        if (gen instanceof GeneratorEMAMOpt2CPP) {
-//            List<CMakeFindModule> dependencies = getCMakeDependencies();
-//            for (CMakeFindModule dep : dependencies)
-//                ((GeneratorEMAMOpt2CPP) gen).getCMakeConfig().addModuleDependency(dep);
-//        }
-    }
+            CMakeConfig cmake = ((GeneratorCPP) gen).getCMakeConfig();
 
-    public List<CMakeFindModule> getCMakeDependencies() {
-        CMakeFindModule findCPPAD = new CMakeFindModule("CPPAD", "cppad/ipopt/solve.hpp", "", new ArrayList<String>(), new ArrayList<String>(), true, false, true);
-        CMakeFindModule findIPOpt = new CMakeFindModule("Ipopt", "coin/IpNLP.hpp", "ipopt", new ArrayList<String>(), new ArrayList<String>(), true, true, true);
-        CMakeFindModule findCoinMumps = new CMakeFindModule("CoinMumps", "", "coinmumps", new ArrayList<String>(), new ArrayList<String>(), false, true, true);
-        CMakeFindModule findCoinLapack = new CMakeFindModule("CoinLapack", "", "coinlapack", new ArrayList<String>(), new ArrayList<String>(), false, true, true);
-        CMakeFindModule findCoinBlas = new CMakeFindModule("CoinBlas", "", "coinblas", new ArrayList<String>(), new ArrayList<String>(), false, true, true);
-        CMakeFindModule findCoinMetis = new CMakeFindModule("CoinMetis", "", "coinmetis", new ArrayList<String>(), new ArrayList<String>(), false, true, true);
-        CMakeFindModule findGfortran = new CMakeFindModule("GFortran", "", "gfortran", new ArrayList<String>(), new ArrayList<String>(), false, true, true);
-        return Arrays.asList(findCPPAD, findIPOpt, findCoinMumps, findCoinLapack, findCoinBlas, findCoinMetis, findGfortran);
+            cmake.addCmakeLibraryLinkage("ipopt");
+        }
+
     }
 
 }
