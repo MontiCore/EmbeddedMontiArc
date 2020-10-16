@@ -50,7 +50,7 @@ public class DotProductSelfAttention extends PredefinedLayerDeclaration {
         List<ParameterSymbol> parameters = new ArrayList<>(Arrays.asList(
                 new ParameterSymbol.Builder()
                         .name(AllPredefinedLayers.SCALE_FACTOR_NAME)
-                        .constraints(Constraints.INTEGER, Constraints.POSITIVE)
+                        .constraints(Constraints.POSITIVE)
                         .defaultValue(-1)
                         .build(),
                 new ParameterSymbol.Builder()

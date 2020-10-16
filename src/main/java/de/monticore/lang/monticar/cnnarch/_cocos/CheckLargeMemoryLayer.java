@@ -32,9 +32,9 @@ public class CheckLargeMemoryLayer extends CNNArchSymbolCoCo {
         Integer k = new Integer(0);
 
         for (ArgumentSymbol arg : arguments) {
-            if (arg.getName().equals("subKeySize")) {
+            if (arg.getName().equals("subKeySize") && arg.getRhs().getIntValue().isPresent()) {
                 subKeySize = arg.getRhs().getIntValue().get();
-            } else if (arg.getName().equals("k")) {
+            } else if (arg.getName().equals("k") && arg.getRhs().getIntValue().isPresent()) {
                 k = arg.getRhs().getIntValue().get();
             }
         }

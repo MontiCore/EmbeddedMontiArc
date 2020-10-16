@@ -80,7 +80,7 @@ public class EpisodicMemory extends PredefinedLayerDeclaration {
                         .build(),
                 new ParameterSymbol.Builder()
                         .name(AllPredefinedLayers.USE_LOCAL_ADAPTION_NAME)
-                        .constraints(Constraints.BOOLEAN, Constraints.POSITIVE)
+                        .constraints(Constraints.BOOLEAN)
                         .defaultValue(true)
                         .build(),
                 new ParameterSymbol.Builder()

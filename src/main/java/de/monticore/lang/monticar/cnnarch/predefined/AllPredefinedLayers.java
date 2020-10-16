@@ -31,6 +31,7 @@ public class AllPredefinedLayers {
     public static final String GLOBAL_POOLING_NAME = "GlobalPooling";
     public static final String LRN_NAME = "Lrn";
     public static final String BATCHNORM_NAME = "BatchNorm";
+    public static final String LAYERNORM_NAME = "LayerNorm";
     public static final String SPLIT_NAME = "Split";
     public static final String GET_NAME = "Get";
     public static final String ADD_NAME = "Add";
@@ -126,7 +127,6 @@ public class AllPredefinedLayers {
 	public static final String QUERY_ACT_NAME = "queryAct";
     public static final String K_NAME = "k";
 	public static final String NUM_HEADS_NAME = "numHeads";
-    public static final String STORE_DIST_MEASURE_NAME = "storeDistMeasure";
 	public static final String VALUES_DIM_NAME = "valuesDim";
     public static final String MEMORY_REPLACEMENT_STRATEGY_NAME = "memoryReplacementStrategy";
 
@@ -143,8 +143,6 @@ public class AllPredefinedLayers {
     public static final String PADDING_NO_LOSS = "no_loss";
     public static final String POOL_MAX = "max";
     public static final String POOL_AVG = "avg";
-    public static final String L2 = "l2";
-    public static final String INNER_PROD = "inner_prod";
     public static final String RANDOM = "random";
     public static final String REPLACE_OLDEST = "replace_oldest";
     public static final String NO_REPLACEMENT = "no_replacement";
@@ -174,6 +172,7 @@ public class AllPredefinedLayers {
                 GlobalPooling.create(),
                 Lrn.create(),
                 BatchNorm.create(),
+                LayerNorm.create(),
                 Split.create(),
                 Get.create(),
                 Add.create(),
