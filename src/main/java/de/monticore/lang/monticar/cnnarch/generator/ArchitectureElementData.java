@@ -196,7 +196,13 @@ public class ArchitectureElementData {
     }
 
     public List<Integer> getOutputShape(){
-        return getLayerSymbol().getIntTupleValue(AllPredefinedLayers.OUTPUT_SHAPE_NAME).get();
+        if (getLayerSymbol().getIntValue(AllPredefinedLayers.OUTPUT_SHAPE_NAME).isPresent()){
+            List<Integer> list = new ArrayList<>();
+            list.add((Integer) getLayerSymbol().getIntValue(AllPredefinedLayers.OUTPUT_SHAPE_NAME).get());
+            return list;
+        }else{
+            return getLayerSymbol().getIntTupleValue(AllPredefinedLayers.OUTPUT_SHAPE_NAME).get();
+        }
     }
 
     public int getScaleFactor(){
