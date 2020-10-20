@@ -74,18 +74,23 @@ public class EpisodicMemory extends PredefinedLayerDeclaration {
                         .defaultValue(1)
                         .build(),
                 new ParameterSymbol.Builder()
-                        .name(AllPredefinedLayers.REPLAY_MEMORY_STORE_PROB_NAME)
-                        .constraints(Constraints.NUMBER, Constraints.BETWEEN_ZERO_AND_ONE)
-                        .defaultValue(1)
-                        .build(),
-                new ParameterSymbol.Builder()
-                        .name(AllPredefinedLayers.USE_LOCAL_ADAPTION_NAME)
+                        .name(AllPredefinedLayers.USE_LOCAL_ADAPTATION_NAME)
                         .constraints(Constraints.BOOLEAN)
                         .defaultValue(true)
                         .build(),
                 new ParameterSymbol.Builder()
-                        .name(AllPredefinedLayers.LOCAL_ADAPTION_GRADIENT_STEPS_NAME)
+                        .name(AllPredefinedLayers.LOCAL_ADAPTATION_GRADIENT_STEPS_NAME)
                         .constraints(Constraints.INTEGER, Constraints.POSITIVE)
+                        .defaultValue(1)
+                        .build(),
+                new ParameterSymbol.Builder()
+                        .name(AllPredefinedLayers.LOCAL_ADAPTATION_K_NAME)
+                        .constraints(Constraints.INTEGER, Constraints.POSITIVE)
+                        .defaultValue(1)
+                        .build(),
+                new ParameterSymbol.Builder()
+                        .name(AllPredefinedLayers.MEMORY_STORE_PROB_NAME)
+                        .constraints(Constraints.NUMBER, Constraints.BETWEEN_ZERO_AND_ONE)
                         .defaultValue(1)
                         .build(),
                 new ParameterSymbol.Builder()
@@ -94,9 +99,9 @@ public class EpisodicMemory extends PredefinedLayerDeclaration {
                         .defaultValue(-1)
                         .build(),
                 new ParameterSymbol.Builder()
-                        .name(AllPredefinedLayers.LOCAL_ADAPTION_K_NAME)
-                        .constraints(Constraints.INTEGER, Constraints.POSITIVE)
-                        .defaultValue(1)
+                        .name(AllPredefinedLayers.MEMORY_REPLACEMENT_STRATEGY_NAME)
+                        .constraints(Constraints.MEMORY_REPLACEMENT_STRATEGY_TYPE)
+                        .defaultValue(AllPredefinedLayers.REPLACE_OLDEST)
                         .build(),
                 new ParameterSymbol.Builder()
                         .name(AllPredefinedLayers.QUERY_NET_DIR_NAME)
@@ -109,11 +114,6 @@ public class EpisodicMemory extends PredefinedLayerDeclaration {
                 new ParameterSymbol.Builder()
                         .name(AllPredefinedLayers.QUERY_NET_NUM_INPUTS_NAME)
                         .constraints(Constraints.INTEGER, Constraints.POSITIVE)
-                        .build(),
-                new ParameterSymbol.Builder()
-                        .name(AllPredefinedLayers.MEMORY_REPLACEMENT_STRATEGY_NAME)
-                        .constraints(Constraints.MEMORY_REPLACEMENT_STRATEGY_TYPE)
-                        .defaultValue(AllPredefinedLayers.REPLACE_OLDEST)
                         .build()));
         declaration.setParameters(parameters);
         return declaration;

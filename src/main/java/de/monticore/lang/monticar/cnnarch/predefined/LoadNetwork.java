@@ -61,11 +61,11 @@ public class LoadNetwork extends PredefinedLayerDeclaration {
                         .build(),
                 new ParameterSymbol.Builder()
                         .name(AllPredefinedLayers.NUM_INPUTS_NAME)
-                        .constraints(Constraints.INTEGER)
+                        .constraints(Constraints.INTEGER, Constraints.POSITIVE)
                         .build(),
                 new ParameterSymbol.Builder()
                         .name(AllPredefinedLayers.OUTPUT_SHAPE_NAME)
-                        .constraints(Constraints.INTEGER_OR_INTEGER_TUPLE)
+                        .constraints(Constraints.INTEGER_OR_INTEGER_TUPLE, Constraints.POSITIVE)
                         .build()));
         declaration.setParameters(parameters);
         return declaration;

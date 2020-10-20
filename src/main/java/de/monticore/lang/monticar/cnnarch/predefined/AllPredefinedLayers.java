@@ -117,9 +117,15 @@ public class AllPredefinedLayers {
     public static final String REPLAY_BATCH_SIZE_NAME = "replayBatchSize";
     public static final String REPLAY_STEPS_NAME = "replaySteps";
     public static final String REPLAY_GRADIENT_STEPS_NAME = "replayGradientSteps";
-    public static final String USE_LOCAL_ADAPTION_NAME = "useLocalAdaption";
-    public static final String LOCAL_ADAPTION_K_NAME = "localAdaptionK";
-    public static final String LOCAL_ADAPTION_GRADIENT_STEPS_NAME = "localAdaptionGradientSteps";
+    public static final String USE_LOCAL_ADAPTATION_NAME = "useLocalAdaptation";
+    public static final String LOCAL_ADAPTATION_K_NAME = "localAdaptationK";
+    public static final String LOCAL_ADAPTATION_GRADIENT_STEPS_NAME = "localAdaptationGradientSteps";
+    public static final String MAX_STORED_SAMPLES_NAME = "maxStoredSamples";
+    public static final String MEMORY_REPLACEMENT_STRATEGY_NAME = "memoryReplacementStrategy";
+    public static final String MEMORY_STORE_PROB_NAME = "memoryStoreProb";
+    public static final String QUERY_NET_DIR_NAME = "queryNetDir";
+    public static final String QUERY_NET_PREFIX_NAME = "queryNetPrefix";
+    public static final String QUERY_NET_NUM_INPUTS_NAME = "queryNetNumInputs";
 
 	//parameters for large memory layer
     public static final String SUB_KEY_SIZE_NAME = "subKeySize";
@@ -128,14 +134,6 @@ public class AllPredefinedLayers {
     public static final String K_NAME = "k";
 	public static final String NUM_HEADS_NAME = "numHeads";
 	public static final String VALUES_DIM_NAME = "valuesDim";
-    public static final String MEMORY_REPLACEMENT_STRATEGY_NAME = "memoryReplacementStrategy";
-
-    //parameters for episodic memory layer
-	public static final String MAX_STORED_SAMPLES_NAME = "maxStoredSamples";
-    public static final String REPLAY_MEMORY_STORE_PROB_NAME = "replayMemoryStoreProb";
-	public static final String QUERY_NET_DIR_NAME = "queryNetDir";
-	public static final String QUERY_NET_PREFIX_NAME = "queryNetPrefix";
-    public static final String QUERY_NET_NUM_INPUTS_NAME = "queryNetNumInputs";
 
     //possible String values
     public static final String PADDING_VALID = "valid";
