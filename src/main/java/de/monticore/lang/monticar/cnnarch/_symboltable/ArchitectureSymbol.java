@@ -260,14 +260,14 @@ public class ArchitectureSymbol extends CommonScopeSpanningSymbol {
             List<ArchitectureElementSymbol> elementsNew = new ArrayList<>();
             List<List<ArchitectureElementSymbol>> episodicSubNetworks = new ArrayList<>(new ArrayList<>());
             List<ArchitectureElementSymbol> currentEpisodicSubNetworkElements = new ArrayList<>();
-            boolean anyEpisodicLocalAdaption = false;
+            boolean anyEpisodicLocalAdaptation = false;
 
             for (ArchitectureElementSymbol element : elements){
                 if (AllPredefinedLayers.EPISODIC_REPLAY_LAYER_NAMES.contains(element.getName())) {
                     boolean use_replay = false;
-                    boolean use_local_adaption = false;
+                    boolean use_local_adaptation = false;
                     boolean use_replay_specified = false;
-                    boolean use_local_adaption_specified = false;
+                    boolean use_local_adaptation_specified = false;
 
                     for (ArgumentSymbol arg : ((LayerSymbol)element).getArguments()){
                         if (arg.getName().equals(AllPredefinedLayers.USE_REPLAY_NAME)){
@@ -276,11 +276,11 @@ public class ArchitectureSymbol extends CommonScopeSpanningSymbol {
                                     use_replay = true;
                                     break;
                                 }
-                        }else if (arg.getName().equals(AllPredefinedLayers.USE_LOCAL_ADAPTION_NAME)){
-                            use_local_adaption_specified = true;
+                        }else if (arg.getName().equals(AllPredefinedLayers.USE_LOCAL_ADAPTATION_NAME)){
+                            use_local_adaptation_specified = true;
                             if ((boolean)arg.getRhs().getValue().get()) {
-                                use_local_adaption = true;
-                                anyEpisodicLocalAdaption = true;
+                                use_local_adaptation = true;
+                                anyEpisodicLocalAdaptation = true;
                                 break;
                             }
                         }
@@ -295,18 +295,18 @@ public class ArchitectureSymbol extends CommonScopeSpanningSymbol {
                             }
                         }
                     }
-                    if (!use_local_adaption_specified) {
+                    if (!use_local_adaptation_specified) {
                         for (ParameterSymbol param : ((LayerSymbol) element).getDeclaration().getParameters()) {
-                            if (param.getName().equals(AllPredefinedLayers.USE_LOCAL_ADAPTION_NAME) &&
+                            if (param.getName().equals(AllPredefinedLayers.USE_LOCAL_ADAPTATION_NAME) &&
                                     (boolean) param.getDefaultExpression().get().getValue().get()) {
-                                use_local_adaption = true;
-                                anyEpisodicLocalAdaption = true;
+                                use_local_adaptation = true;
+                                anyEpisodicLocalAdaptation = true;
                                 break;
                             }
                         }
                     }
 
-                    if (use_replay || use_local_adaption){
+                    if (use_replay || use_local_adaptation){
                         if (!currentEpisodicSubNetworkElements.isEmpty()){
                             episodicSubNetworks.add(currentEpisodicSubNetworkElements);
                         }
@@ -319,7 +319,7 @@ public class ArchitectureSymbol extends CommonScopeSpanningSymbol {
                 episodicSubNetworks.add(currentEpisodicSubNetworkElements);
             }
                 networkInstruction.getBody().setEpisodicSubNetworks(episodicSubNetworks);
-                networkInstruction.getBody().setAnyEpisodicLocalAdaption(anyEpisodicLocalAdaption);
+                networkInstruction.getBody().setAnyEpisodicLocalAdaptation(anyEpisodicLocalAdaptation);
         }
     }
 }
