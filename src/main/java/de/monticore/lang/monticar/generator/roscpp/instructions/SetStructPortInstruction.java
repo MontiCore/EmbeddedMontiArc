@@ -94,7 +94,7 @@ public class SetStructPortInstruction{
                         upperBound = boundExists ? split[1].replaceAll("[^0-9]", "")+"-1" : dimSizes.get(dimSizes.size()-1)+"-1";  
                     } else { //no bounds given
                         lowerBound = "0";
-                   	upperBound = dimSizes.get(dimSizes.size()-1)+"-1";
+                        upperBound = "msg->data.size()-1";
                     }
 
 
