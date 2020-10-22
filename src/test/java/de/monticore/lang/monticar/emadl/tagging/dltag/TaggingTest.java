@@ -14,7 +14,6 @@ import de.monticore.lang.monticar.emadl.AbstractTaggingResolverTest;
 import de.monticore.lang.tagging._symboltable.TagSymbol;
 import de.monticore.lang.tagging._symboltable.TaggingResolver;
 import de.monticore.lang.monticar.emadl.tagging.dltag.DataPathSymbol;
-import de.monticore.lang.monticar.emadl.tagging.dltag.LayerPathParameterSymbol;
 
 import org.junit.Test;
 
