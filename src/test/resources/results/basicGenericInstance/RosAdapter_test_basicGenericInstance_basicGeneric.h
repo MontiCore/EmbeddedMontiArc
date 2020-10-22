@@ -36,11 +36,11 @@ class RosAdapter_test_basicGenericInstance_basicGeneric: public IAdapter_test_ba
 		int counter = 0;
 		for(int i0 = 0; i0 < n; i0++){
 			for(int i1 = 0; i1 < n; i1++){
-				if(0 <= counter && counter <= n-1){
+				if(0 <= counter && counter <= msg->data.size()-1){
 					(component->mat1)(i0, i1) = msg->data[counter];
 				}
 				else if(0 > counter){
-					(component->mat1)(i0, i1+n-1-0+1) = 0;
+					(component->mat1)(i0, i1+msg->data.size()-1-0+1) = 0;
 				}
 				else{
 					(component->mat1)(i0, i1) = 0;
