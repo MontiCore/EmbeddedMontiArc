@@ -250,10 +250,6 @@ public class ArchitectureElementData {
 	public int getNumHeads(){
         return getLayerSymbol().getIntValue(AllPredefinedLayers.NUM_HEADS_NAME).get();
     }
-
-    public String getStoreDistMeasure(){
-        return getLayerSymbol().getStringValue(AllPredefinedLayers.STORE_DIST_MEASURE_NAME).get();
-    }
     
     public int getReplayInterval(){
         return getLayerSymbol().getIntValue(AllPredefinedLayers.REPLAY_INTERVAL_NAME).get();
@@ -271,8 +267,8 @@ public class ArchitectureElementData {
         return getLayerSymbol().getIntValue(AllPredefinedLayers.REPLAY_GRADIENT_STEPS_NAME).get();
     }
     
-    public double getReplayMemoryStoreProb(){
-        return getLayerSymbol().getDoubleValue(AllPredefinedLayers.REPLAY_MEMORY_STORE_PROB_NAME).get();
+    public double getMemoryStoreProb(){
+        return getLayerSymbol().getDoubleValue(AllPredefinedLayers.MEMORY_STORE_PROB_NAME).get();
     }
     
     public int getMaxStoredSamples(){
@@ -287,16 +283,16 @@ public class ArchitectureElementData {
         return getLayerSymbol().getBooleanValue(AllPredefinedLayers.USE_REPLAY_NAME).get();
     }
 
-    public boolean getUseLocalAdaption(){
-        return getLayerSymbol().getBooleanValue(AllPredefinedLayers.USE_LOCAL_ADAPTION_NAME).get();
+    public boolean getUseLocalAdaptation(){
+        return getLayerSymbol().getBooleanValue(AllPredefinedLayers.USE_LOCAL_ADAPTATION_NAME).get();
     }
 
-    public int getLocalAdaptionK(){
-        return getLayerSymbol().getIntValue(AllPredefinedLayers.LOCAL_ADAPTION_K_NAME).get();
+    public int getLocalAdaptationK(){
+        return getLayerSymbol().getIntValue(AllPredefinedLayers.LOCAL_ADAPTATION_K_NAME).get();
     }
 
-    public int getlocalAdaptionGradientSteps(){
-        return getLayerSymbol().getIntValue(AllPredefinedLayers.LOCAL_ADAPTION_GRADIENT_STEPS_NAME).get();
+    public int getlocalAdaptationGradientSteps(){
+        return getLayerSymbol().getIntValue(AllPredefinedLayers.LOCAL_ADAPTATION_GRADIENT_STEPS_NAME).get();
     }
 
     public String getQueryNetDir(){
