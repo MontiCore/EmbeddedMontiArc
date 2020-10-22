@@ -110,6 +110,37 @@ class SoftmaxCrossEntropyLossIgnoreLabel(gluon.loss.Loss):
         loss = gluon.loss._apply_weighting(F, loss, self._weight, sample_weight)
         return F.sum(loss) / F.sum(valid_label_map)
 
+class LocalAdaptationLoss(gluon.loss.Loss):
+    def __init__(self, lamb, axis=-1, sparse_label=True, weight=None, batch_axis=0,  **kwargs):
+        super(LocalAdaptationLoss, self).__init__(weight, batch_axis, **kwargs)
+        self.lamb = lamb
+        self._axis = axis
+        self._sparse_label = sparse_label
+
+    def hybrid_forward(self, F, pred, label, curr_weights, base_weights, sample_weight=None):
+        pred = F.log(pred)
+        if self._sparse_label:
+            cross_entr_loss = -F.pick(pred, label, axis=self._axis, keepdims=True)
+        else:
+            label = gluon.loss._reshape_like(F, label, pred)
+            cross_entr_loss = -F.sum(pred * label, axis=self._axis, keepdims=True)
+        cross_entr_loss = F.mean(cross_entr_loss, axis=self._batch_axis, exclude=True)
+
+        weight_diff_loss = 0
+        for param_key in base_weights:
+            weight_diff_loss = F.add(weight_diff_loss, F.norm(curr_weights[param_key] - base_weights[param_key]))
+
+        #this check is neccessary, otherwise if weight_diff_loss is zero (first training iteration)
+        #the trainer would update the networks weights to nan, this must have somthing to do how
+        #mxnet internally calculates the derivatives / tracks the weights
+        if weight_diff_loss > 0:
+            loss = self.lamb * weight_diff_loss + cross_entr_loss
+            loss = gluon.loss._apply_weighting(F, loss, self._weight, sample_weight)
+        else:
+            loss = gluon.loss._apply_weighting(F, cross_entr_loss, self._weight, sample_weight)
+
+        return loss    
+
 @mx.metric.register
 class ACCURACY_IGNORE_LABEL(mx.metric.EvalMetric):
     """Ignores a label when computing accuracy.
@@ -421,6 +452,8 @@ class CNNSupervisedTrainer_EpisodicMemoryNetwork:
         episodic_store_buffer[0].append([])
         episodic_query_networks[0].append(episodic_layers[0][-1].get_query_network(mx_context))
         store_prob[0].append(nd.array([1-episodic_layers[0][-1].store_prob, episodic_layers[0][-1].store_prob], ctx=mx.cpu()))                                                                                  
+        # Episodic memory local adaptation
+        local_adaptation_loss_function = LocalAdaptationLoss(lamb=0.001)
 
         tic = None
 
@@ -563,13 +596,22 @@ class CNNSupervisedTrainer_EpisodicMemoryNetwork:
             global_loss_train /= (train_batches * batch_size)
 
             tic = None
-
+    
+            params = {}
+            for key in self._networks:
+                paramDict = self._networks[key].collect_params()
+                params[key] = {}
+                for param in paramDict:
+                    params[key][param] = paramDict[param].data(ctx=mx_context[0]).copy()
+    
             if eval_train:
+                train_iter.batch_size = single_pu_batch_size
                 train_iter.reset()
                 metric = mx.metric.create(eval_metric, **eval_metric_params)
                 for batch_i, batch in enumerate(train_iter):
-                    labels = [gluon.utils.split_and_load(batch.label[i], ctx_list=mx_context, even_split=False)[0] for i in range(1)]
-                    data_ = gluon.utils.split_and_load(batch.data[0], ctx_list=mx_context, even_split=False)[0]
+
+                    labels = [batch.label[i].as_in_context(mx_context[0]) for i in range(1)]
+                    data_ = batch.data[0].as_in_context(mx_context[0])
 
                     softmax_ = mx.nd.zeros((single_pu_batch_size, 33,), ctx=mx_context[0])
 
@@ -580,61 +622,76 @@ class CNNSupervisedTrainer_EpisodicMemoryNetwork:
                     outputs = []
                     attentionList = []
 
-                    net_ret = self._networks[0](data_)
-                    softmax_ = net_ret[0][0]
-                    outputs.append(softmax_)
-                    lossList.append(loss_function(softmax_, labels[0]))
+                    for layer_i, layer in enumerate(episodic_layers[0]):
+                        if layer.use_local_adaptation:
 
+                            local_adaptation_output = self._networks[0].episodicsubnet0_(data_)[0]
+                            for i in range(1, layer_i):
+                                local_adaptation_output = self._networks[0].episodic_sub_nets[i](*local_adaptation_output)[0]
 
+                            local_adaptation_batch = layer.sample_neighbours(local_adaptation_output, episodic_query_networks[0][layer_i])
 
-                    if save_attention_image == "True":
-                        import matplotlib
-                        matplotlib.use('Agg')
-                        import matplotlib.pyplot as plt
-                        logging.getLogger('matplotlib').setLevel(logging.ERROR)
+                            local_adaptation_data = {}
+                            local_adaptation_labels = {}
+                            local_adaptation_data[layer_i] = [[local_adaptation_batch[0][i][j].as_in_context(mx_context[0]) for i in range(len(local_adaptation_batch[0]))] for j in range(single_pu_batch_size)]
+                            local_adaptation_labels[layer_i] = [[local_adaptation_batch[1][i][j].as_in_context(mx_context[0]) for i in range(len(local_adaptation_batch[1]))] for j in range(single_pu_batch_size)]
 
-                        if(os.path.isfile('src/test/resources/training_data/Show_attend_tell/dict.pkl')):
-                            with open('src/test/resources/training_data/Show_attend_tell/dict.pkl', 'rb') as f:
-                                dict = pickle.load(f)
+                    for local_adaptation_batch_i in range(single_pu_batch_size):
+                        
+                        self._networks[0].collect_params().load_dict(params[0], ctx=mx_context[0])
 
-                        plt.clf()
-                        fig = plt.figure(figsize=(15,15))
-                        max_length = len(labels)-1
-
-                        ax = fig.add_subplot(max_length//3, max_length//4, 1)
-                        ax.imshow(train_images[0+batch_size*(batch_i)].transpose(1,2,0))
-
-                        for l in range(max_length):
-                            attention = attentionList[l]
-                            attention = mx.nd.slice_axis(attention, axis=0, begin=0, end=1).squeeze()
-                            attention_resized = np.resize(attention.asnumpy(), (8, 8))
-                            ax = fig.add_subplot(max_length//3, max_length//4, l+2)
-                            if int(labels[l+1][0].asscalar()) > len(dict):
-                                ax.set_title("<unk>")
-                            elif dict[int(labels[l+1][0].asscalar())] == "<end>":
-                                ax.set_title(".")
-                                img = ax.imshow(train_images[0+batch_size*(batch_i)].transpose(1,2,0))
-                                ax.imshow(attention_resized, cmap='gray', alpha=0.6, extent=img.get_extent())
-                                break
+                        if len(self._networks[0].collect_params().values()) != 0:
+                            if optimizer == "adamw":
+                                local_adaptation_trainer = mx.gluon.Trainer(self._networks[0].collect_params(), AdamW.AdamW(**optimizer_params)) 
                             else:
-                                ax.set_title(dict[int(labels[l+1][0].asscalar())])
-                            img = ax.imshow(train_images[0+batch_size*(batch_i)].transpose(1,2,0))
-                            ax.imshow(attention_resized, cmap='gray', alpha=0.6, extent=img.get_extent())
+                                local_adaptation_trainer = mx.gluon.Trainer(self._networks[0].collect_params(), optimizer, optimizer_params)
 
-                        plt.tight_layout()
-                        target_dir = 'target/attention_images'
-                        if not os.path.exists(target_dir):
-                            os.makedirs(target_dir)
-                        plt.savefig(target_dir + '/attention_train.png')
-                        plt.close()
-                    predictions = []
-                    for output_name in outputs:
-                        if mx.nd.shape_array(mx.nd.squeeze(output_name)).size > 1:
-                            predictions.append(mx.nd.argmax(output_name, axis=1))
-                        else:
-                            predictions.append(output_name)
+                        for layer_i, layer in enumerate(episodic_layers[0]):
+                            if layer.use_local_adaptation:
+                                for gradient_step in range(layer.local_adaptation_gradient_steps):
+                                    with autograd.record():
+                                        local_adaptation_output = self._networks[0].episodic_sub_nets[layer_i](*(local_adaptation_data[layer_i][local_adaptation_batch_i]))[0]
+                                        for i in range(layer_i+1, len(episodic_layers[0])):
+                                            local_adaptation_output = self._networks[0].episodic_sub_nets[i](*local_adaptation_output)[0]
 
-                    metric.update(preds=predictions, labels=[labels[j] for j in range(len(labels))])
+                                        curr_param_dict = self._networks[0].collect_params()
+                                        curr_params = {}
+                                        for param in curr_param_dict:
+                                            curr_params[param] = curr_param_dict[param].data()
+                                        local_adaptation_loss_list = []
+                                        local_adaptation_loss_list.append(local_adaptation_loss_function(local_adaptation_output[0], local_adaptation_labels[layer_i][local_adaptation_batch_i][0], curr_params, params[0]))
+
+                                        loss = 0
+                                        for element in local_adaptation_loss_list:
+                                            loss = loss + element
+
+                                    loss.backward()
+
+                                    if clip_global_grad_norm:
+                                            grads = []
+
+                                            for network in self._networks.values():
+                                                grads.extend([param.grad(mx_context) for param in network.collect_params().values()])
+
+                                            gluon.utils.clip_global_norm(grads, clip_global_grad_norm)
+
+                                    local_adaptation_trainer.step(layer.k)
+                        outputs = []
+                        lossList = []
+                        net_ret = self._networks[0](data_.take(nd.array([local_adaptation_batch_i], ctx=mx_context[0])))        
+                        softmax_ = net_ret[0][0]
+                        outputs.append(softmax_)
+                        lossList.append(loss_function(softmax_, labels[0][local_adaptation_batch_i]))
+
+                        predictions = []
+                        for output_name in outputs:
+                            if mx.nd.shape_array(mx.nd.squeeze(output_name)).size > 1:
+                                predictions.append(mx.nd.argmax(output_name, axis=1))
+                            else:
+                                predictions.append(output_name)
+
+                        metric.update(preds=predictions, labels=[labels[j][local_adaptation_batch_i] for j in range(len(labels))])
+                self._networks[0].collect_params().load_dict(params[0], ctx=mx_context[0])
 
                 train_metric_score = metric.get()[1]
             else:
@@ -642,13 +699,15 @@ class CNNSupervisedTrainer_EpisodicMemoryNetwork:
 
             global_loss_test = 0.0
             test_batches = 0
-
+    
+            test_iter.batch_size = single_pu_batch_size
             test_iter.reset()
             metric = mx.metric.create(eval_metric, **eval_metric_params)
             for batch_i, batch in enumerate(test_iter):
                 if True: 
-                    labels = [gluon.utils.split_and_load(batch.label[i], ctx_list=mx_context, even_split=False)[0] for i in range(1)]
-                    data_ = gluon.utils.split_and_load(batch.data[0], ctx_list=mx_context, even_split=False)[0]
+                                                   
+                    labels = [batch.label[i].as_in_context(mx_context[0]) for i in range(1)]
+                    data_ = batch.data[0].as_in_context(mx_context[0])
 
                     softmax_ = mx.nd.zeros((single_pu_batch_size, 33,), ctx=mx_context[0])
 
@@ -659,71 +718,86 @@ class CNNSupervisedTrainer_EpisodicMemoryNetwork:
                     outputs = []
                     attentionList = []
 
-                    net_ret = self._networks[0](data_)
-                    softmax_ = net_ret[0][0]
-                    outputs.append(softmax_)
-                    lossList.append(loss_function(softmax_, labels[0]))
+                    for layer_i, layer in enumerate(episodic_layers[0]):
+                        if layer.use_local_adaptation:
 
+                            local_adaptation_output = self._networks[0].episodicsubnet0_(data_)[0]
+                            for i in range(1, layer_i):
+                                local_adaptation_output = self._networks[0].episodic_sub_nets[i](*local_adaptation_output)[0]
 
+                            local_adaptation_batch = layer.sample_neighbours(local_adaptation_output, episodic_query_networks[0][layer_i])
 
-                    if save_attention_image == "True":
-                        if not eval_train:
-                            import matplotlib
-                            matplotlib.use('Agg')
-                            import matplotlib.pyplot as plt
-                            logging.getLogger('matplotlib').setLevel(logging.ERROR)
+                            local_adaptation_data = {}
+                            local_adaptation_labels = {}
+                            local_adaptation_data[layer_i] = [[local_adaptation_batch[0][i][j].as_in_context(mx_context[0]) for i in range(len(local_adaptation_batch[0]))] for j in range(single_pu_batch_size)]
+                            local_adaptation_labels[layer_i] = [[local_adaptation_batch[1][i][j].as_in_context(mx_context[0]) for i in range(len(local_adaptation_batch[1]))] for j in range(single_pu_batch_size)]
 
-                            if(os.path.isfile('src/test/resources/training_data/Show_attend_tell/dict.pkl')):
-                                with open('src/test/resources/training_data/Show_attend_tell/dict.pkl', 'rb') as f:
-                                    dict = pickle.load(f)
+                    for local_adaptation_batch_i in range(single_pu_batch_size):
+                        
+                        self._networks[0].collect_params().load_dict(params[0], ctx=mx_context[0])
 
-                        plt.clf()
-                        fig = plt.figure(figsize=(15,15))
-                        max_length = len(labels)-1
-
-                        ax = fig.add_subplot(max_length//3, max_length//4, 1)
-                        ax.imshow(test_images[0+batch_size*(batch_i)].transpose(1,2,0))
-
-                        for l in range(max_length):
-                            attention = attentionList[l]
-                            attention = mx.nd.slice_axis(attention, axis=0, begin=0, end=1).squeeze()
-                            attention_resized = np.resize(attention.asnumpy(), (8, 8))
-                            ax = fig.add_subplot(max_length//3, max_length//4, l+2)
-                            if int(mx.nd.slice_axis(outputs[l+1], axis=0, begin=0, end=1).squeeze().asscalar()) > len(dict):
-                                ax.set_title("<unk>")
-                            elif dict[int(mx.nd.slice_axis(outputs[l+1], axis=0, begin=0, end=1).squeeze().asscalar())] == "<end>":
-                                ax.set_title(".")
-                                img = ax.imshow(test_images[0+batch_size*(batch_i)].transpose(1,2,0))
-                                ax.imshow(attention_resized, cmap='gray', alpha=0.6, extent=img.get_extent())
-                                break
+                        if len(self._networks[0].collect_params().values()) != 0:
+                            if optimizer == "adamw":
+                                local_adaptation_trainer = mx.gluon.Trainer(self._networks[0].collect_params(), AdamW.AdamW(**optimizer_params)) 
                             else:
-                                ax.set_title(dict[int(mx.nd.slice_axis(outputs[l+1], axis=0, begin=0, end=1).squeeze().asscalar())])
-                            img = ax.imshow(test_images[0+batch_size*(batch_i)].transpose(1,2,0))
-                            ax.imshow(attention_resized, cmap='gray', alpha=0.6, extent=img.get_extent())
+                                local_adaptation_trainer = mx.gluon.Trainer(self._networks[0].collect_params(), optimizer, optimizer_params)
 
-                        plt.tight_layout()
-                        target_dir = 'target/attention_images'
-                        if not os.path.exists(target_dir):
-                            os.makedirs(target_dir)
-                        plt.savefig(target_dir + '/attention_test.png')
-                        plt.close()
-                loss = 0
-                for element in lossList:
-                    loss = loss + element
+                        for layer_i, layer in enumerate(episodic_layers[0]):
+                            if layer.use_local_adaptation:
+                                for gradient_step in range(layer.local_adaptation_gradient_steps):
+                                    with autograd.record():
+                                        local_adaptation_output = self._networks[0].episodic_sub_nets[layer_i](*(local_adaptation_data[layer_i][local_adaptation_batch_i]))[0]
+                                        for i in range(layer_i+1, len(episodic_layers[0])):
+                                            local_adaptation_output = self._networks[0].episodic_sub_nets[i](*local_adaptation_output)[0]
 
-                global_loss_test += loss.sum().asscalar()
+                                        curr_param_dict = self._networks[0].collect_params()
+                                        curr_params = {}
+                                        for param in curr_param_dict:
+                                            curr_params[param] = curr_param_dict[param].data()
+                                        local_adaptation_loss_list = []
+                                        local_adaptation_loss_list.append(local_adaptation_loss_function(local_adaptation_output[0], local_adaptation_labels[layer_i][local_adaptation_batch_i][0], curr_params, params[0]))
 
-                test_batches += 1
+                                        loss = 0
+                                        for element in local_adaptation_loss_list:
+                                            loss = loss + element
 
-                predictions = []
-                for output_name in outputs:
-                    predictions.append(output_name)
+                                    loss.backward()
 
-                metric.update(preds=predictions, labels=[labels[j] for j in range(len(labels))])
+                                    if clip_global_grad_norm:
+                                            grads = []
+
+                                            for network in self._networks.values():
+                                                grads.extend([param.grad(mx_context) for param in network.collect_params().values()])
+
+                                            gluon.utils.clip_global_norm(grads, clip_global_grad_norm)
+
+                                    local_adaptation_trainer.step(layer.k)
+                        outputs = []
+                        lossList = []
+                        net_ret = self._networks[0](data_.take(nd.array([local_adaptation_batch_i], ctx=mx_context[0])))        
+                        softmax_ = net_ret[0][0]
+                        outputs.append(softmax_)
+                        lossList.append(loss_function(softmax_, labels[0][local_adaptation_batch_i]))
+    
+                        loss = 0
+                        for element in lossList:
+                            loss = loss + element
+                        global_loss_test += loss.sum().asscalar()
+
+                        test_batches += 1
+                
+                        predictions = []
+                        for output_name in outputs:
+                            if mx.nd.shape_array(mx.nd.squeeze(output_name)).size > 1:
+                                predictions.append(mx.nd.argmax(output_name, axis=1))
+                            else:
+                                predictions.append(output_name)
+
+                        metric.update(preds=predictions, labels=[labels[j][local_adaptation_batch_i] for j in range(len(labels))])
+                self._networks[0].collect_params().load_dict(params[0], ctx=mx_context[0])
+            global_loss_test /= (test_batches)    
 
             test_metric_score = metric.get()[1]
-
-            global_loss_test /= (test_batches * single_pu_batch_size)
 
             logging.info("Epoch[%d] Train metric: %f, Test metric: %f, Train loss: %f, Test loss: %f" % (epoch, train_metric_score, test_metric_score, global_loss_train, global_loss_test))
 
