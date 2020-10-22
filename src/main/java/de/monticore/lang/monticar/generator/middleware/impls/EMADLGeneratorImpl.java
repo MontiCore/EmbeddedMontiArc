@@ -41,7 +41,6 @@ public class EMADLGeneratorImpl implements GeneratorImpl {
         for (FileContent fileContent : fileContents) {
             files.add(emadlGenerator.getEmamGen().generateFile(fileContent));
         }
-
         return files;
     }
 
