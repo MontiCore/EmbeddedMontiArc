@@ -40,7 +40,7 @@ class RosAdapter_test_basicGenericInstance_basicGeneric: public IAdapter_test_ba
 					(component->mat1)(i0, i1) = msg->data[counter];
 				}
 				else if(0 > counter){
-					(component->mat1)(i0, i1+n-1-0+1) = 0;
+					(component->mat1)(i0, i1+msg->data.size()-1-0+1) = 0;
 				}
 				else{
 					(component->mat1)(i0, i1) = 0;
