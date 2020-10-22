@@ -46,11 +46,11 @@ class RosAdapter_tests_structs_arrayHandlingComp: public IAdapter_tests_structs_
 		int counter = 0;
 		for(int i0 = 0; i0 < 3; i0++){
 			for(int i1 = 0; i1 < 1; i1++){
-				if(0 <= counter && counter <= msg->data.size()-1){
+				if(0 <= counter && counter <= 1-1){
 					(component->in1)(i0, i1-0) = msg->data[counter];
 				}
 				else if(0 > counter){
-					(component->in1)(i0, i1+msg->data.size()-1-0+1) = 0;
+					(component->in1)(i0, i1+1-1-0+1) = 0;
 				}
 				else{
 					(component->in1)(i0, i1) = 0;
