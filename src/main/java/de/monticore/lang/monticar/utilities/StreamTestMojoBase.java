@@ -1,34 +1,17 @@
 /* (c) https://github.com/MontiCore/monticore */
 package de.monticore.lang.monticar.utilities;
 
-import de.monticore.ModelingLanguageFamily;
 import de.monticore.antlr4.MCConcreteParser;
-import de.monticore.io.paths.ModelPath;
 import de.monticore.lang.embeddedmontiarc.embeddedmontiarc.ComponentScanner;
 import de.monticore.lang.embeddedmontiarc.embeddedmontiarc.StreamScanner;
 import de.monticore.lang.embeddedmontiarc.embeddedmontiarc._symboltable.cncModel.EMAComponentSymbol;
 import de.monticore.lang.embeddedmontiarc.embeddedmontiarcmath._parser.EmbeddedMontiArcMathParser;
-import de.monticore.lang.embeddedmontiarc.embeddedmontiarcmath._symboltable.EmbeddedMontiArcMathLanguage;
 import de.monticore.lang.monticar.emadl._parser.EMADLParser;
-import de.monticore.lang.monticar.emadl._symboltable.EMADLLanguage;
 import de.monticore.lang.monticar.enumlang._parser.EnumLangParser;
-import de.monticore.lang.monticar.enumlang._symboltable.EnumLangLanguage;
-import de.monticore.lang.monticar.generator.order.nfp.TagBreakpointsTagSchema.TagBreakpointsTagSchema;
-import de.monticore.lang.monticar.generator.order.nfp.TagDelayTagSchema.TagDelayTagSchema;
-import de.monticore.lang.monticar.generator.order.nfp.TagExecutionOrderTagSchema.TagExecutionOrderTagSchema;
-import de.monticore.lang.monticar.generator.order.nfp.TagInitTagSchema.TagInitTagSchema;
-import de.monticore.lang.monticar.generator.order.nfp.TagMinMaxTagSchema.TagMinMaxTagSchema;
-import de.monticore.lang.monticar.generator.order.nfp.TagTableTagSchema.TagTableTagSchema;
-import de.monticore.lang.monticar.generator.order.nfp.TagThresholdTagSchema.TagThresholdTagSchema;
 import de.monticore.lang.monticar.streamunits._parser.StreamUnitsParser;
 import de.monticore.lang.monticar.streamunits._symboltable.ComponentStreamUnitsSymbol;
-import de.monticore.lang.monticar.streamunits._symboltable.StreamUnitsLanguage;
 import de.monticore.lang.monticar.struct._parser.StructParser;
-import de.monticore.lang.monticar.struct._symboltable.StructLanguage;
 import de.monticore.lang.monticar.utilities.utils.LogToFile;
-import de.monticore.lang.tagging._symboltable.TaggingResolver;
-import de.monticore.symboltable.GlobalScope;
-import de.monticore.symboltable.Scope;
 import de.se_rwth.commons.logging.Log;
 import org.apache.maven.plugin.MojoExecutionException;
 import org.apache.maven.plugin.MojoFailureException;
@@ -192,60 +175,6 @@ public class StreamTestMojoBase extends BaseMojo {
       resetToMyLog();
     }
     return myParser;
-  }
-
-  private Scope myScope = null;
-  private TaggingResolver myTaggingResolver = null;
-  protected Scope getScope(){
-    if(myScope == null) {
-      ModelingLanguageFamily fam = new ModelingLanguageFamily();
-      /*TODO: To delete*/
-      fam.addModelingLanguage(new EmbeddedMontiArcMathLanguage());
-
-      fam.addModelingLanguage(new StreamUnitsLanguage());
-      fam.addModelingLanguage(new StructLanguage());
-      fam.addModelingLanguage(new EnumLangLanguage());
-      fam.addModelingLanguage(new EMADLLanguage());
-      final ModelPath mp_main = new ModelPath();
-
-      mp_main.addEntry(Paths.get(this.getPathMain()));
-      if (!this.getPathMain().equals(this.getPathTest())) {
-        mp_main.addEntry(Paths.get(this.getPathTest()));
-      }
-
-      GlobalScope gs = new GlobalScope(mp_main, fam);
-      de.monticore.lang.monticar.Utils.addBuiltInTypes(gs);
-
-      ArrayList<String> col = new ArrayList<String>();
-
-      col.add(this.getPathMain());
-      if (!this.getPathMain().equals(this.getPathTest())) {
-        col.add(this.getPathTest());
-      }
-
-      this.myTaggingResolver = new TaggingResolver(gs, col);
-      TagMinMaxTagSchema.registerTagTypes(this.myTaggingResolver);
-      TagTableTagSchema.registerTagTypes(this.myTaggingResolver);
-      TagBreakpointsTagSchema.registerTagTypes(this.myTaggingResolver);
-      TagExecutionOrderTagSchema.registerTagTypes(this.myTaggingResolver);
-      TagInitTagSchema.registerTagTypes(this.myTaggingResolver);
-      TagThresholdTagSchema.registerTagTypes(this.myTaggingResolver);
-      TagDelayTagSchema.registerTagTypes(this.myTaggingResolver);
-      resetToMyLog();
-      myScope = gs;
-    }
-    return myScope;
-  }
-  protected TaggingResolver getTaggingResolver(){
-    if(this.myTaggingResolver == null){
-      this.getScope();
-    }
-    return this.myTaggingResolver;
-  }
-
-  protected void resetTaggingResolver(){
-    this.myScope = null;
-    this.myTaggingResolver = null;
   }
 
   protected List<EMAComponentSymbol> getComponentSymbols(boolean output) {

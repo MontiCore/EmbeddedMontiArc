@@ -2,7 +2,6 @@
 package de.monticore.lang.monticar.utilities;
 
 import de.monticore.lang.monticar.emadl.generator.EMADLGenerator;
-import de.monticore.lang.monticar.utilities.models.TrainingConfiguration;
 import de.monticore.lang.monticar.utilities.utils.SearchFiles;
 import de.se_rwth.commons.Joiners;
 import de.se_rwth.commons.logging.Log;
@@ -10,9 +9,7 @@ import freemarker.template.TemplateException;
 import org.apache.commons.io.FileUtils;
 import org.apache.maven.plugin.MojoExecutionException;
 import org.apache.maven.plugin.MojoFailureException;
-import org.apache.maven.plugins.annotations.Execute;
 import org.apache.maven.plugins.annotations.Mojo;
-import org.apache.maven.plugins.annotations.Parameter;
 
 import java.io.File;
 import java.io.IOException;
@@ -24,12 +21,7 @@ import java.util.List;
  * Generates c++ code for all components which have a stream test
  */
 @Mojo(name = "start-training")
-@Execute(goal = "validate")
 public class TrainingMojo extends StreamTestMojoBase {
-
-  @Parameter
-  private TrainingConfiguration training;
-
 
   @Override
   protected void preExecution() throws MojoExecutionException, MojoFailureException {
@@ -125,14 +117,14 @@ public class TrainingMojo extends StreamTestMojoBase {
 
 
   public void train() {
-    EMADLGenerator emadlGenerator = new EMADLGenerator(training.getBackend());
+    EMADLGenerator emadlGenerator = new EMADLGenerator(this.getTrainingConfig().getBackend());
 
     String outputPath = getPathTmpOut();
     if (outputPath != null){
       emadlGenerator.setGenerationTargetPath(outputPath);
     }
     try{
-      emadlGenerator.generate(this.getPathMain(), training.getModelToTrain(), training.getPathToPython().getAbsolutePath(), "x", true);
+      emadlGenerator.generate(this.getPathMain(), this.getTrainingConfig().getModelToTrain(), this.getTrainingConfig().getPathToPython().getAbsolutePath(), "x", true);
     }
     catch (IOException e){
       Log.error("io error during generation", e);

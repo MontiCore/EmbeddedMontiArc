@@ -1,8 +1,26 @@
 package de.monticore.lang.monticar.utilities;
 
+import de.monticore.ModelingLanguageFamily;
+import de.monticore.io.paths.ModelPath;
+import de.monticore.lang.embeddedmontiarc.embeddedmontiarcmath._symboltable.EmbeddedMontiArcMathLanguage;
+import de.monticore.lang.monticar.emadl._symboltable.EMADLLanguage;
+import de.monticore.lang.monticar.enumlang._symboltable.EnumLangLanguage;
+import de.monticore.lang.monticar.generator.order.nfp.TagBreakpointsTagSchema.TagBreakpointsTagSchema;
+import de.monticore.lang.monticar.generator.order.nfp.TagDelayTagSchema.TagDelayTagSchema;
+import de.monticore.lang.monticar.generator.order.nfp.TagExecutionOrderTagSchema.TagExecutionOrderTagSchema;
+import de.monticore.lang.monticar.generator.order.nfp.TagInitTagSchema.TagInitTagSchema;
+import de.monticore.lang.monticar.generator.order.nfp.TagMinMaxTagSchema.TagMinMaxTagSchema;
+import de.monticore.lang.monticar.generator.order.nfp.TagTableTagSchema.TagTableTagSchema;
+import de.monticore.lang.monticar.generator.order.nfp.TagThresholdTagSchema.TagThresholdTagSchema;
+import de.monticore.lang.monticar.streamunits._symboltable.StreamUnitsLanguage;
+import de.monticore.lang.monticar.struct._symboltable.StructLanguage;
 import de.monticore.lang.monticar.utilities.models.Constants;
 import de.monticore.lang.monticar.utilities.models.Repository;
 import de.monticore.lang.monticar.utilities.models.StorageInformation;
+import de.monticore.lang.monticar.utilities.models.TrainingConfiguration;
+import de.monticore.lang.tagging._symboltable.TaggingResolver;
+import de.monticore.symboltable.GlobalScope;
+import de.monticore.symboltable.Scope;
 import org.apache.maven.plugin.AbstractMojo;
 import org.apache.maven.plugins.annotations.Component;
 import org.apache.maven.plugins.annotations.Parameter;
@@ -17,6 +35,7 @@ import org.eclipse.aether.resolution.VersionRangeResult;
 
 import java.io.File;
 import java.nio.file.Paths;
+import java.util.ArrayList;
 import java.util.Collections;
 
 public abstract class BaseMojo extends AbstractMojo {
@@ -30,14 +49,21 @@ public abstract class BaseMojo extends AbstractMojo {
   @Parameter
   private Repository repository;
 
-  @Parameter(property = "pathMain",defaultValue = "./src/model")
+  @Parameter
+  private TrainingConfiguration training;
+
+  @Parameter(property = "pathMain",defaultValue = "src/main/emadl")
   private String pathMain;
 
-  @Parameter(property = "pathTest",defaultValue = "./src/model")
+  @Parameter(property = "pathTest",defaultValue = "src/main/emadl")
   private String pathTest;
 
-  @Parameter(property = "pathTmpOut", defaultValue = "./target/tmp")
+  @Parameter(property = "pathTmpOut", defaultValue = "target/tmp")
   private String pathTmpOut;
+
+  private Scope myScope;
+
+  private TaggingResolver myTaggingResolver;
 
   private RemoteRepository remoteRepository;
 
@@ -54,6 +80,10 @@ public abstract class BaseMojo extends AbstractMojo {
     }catch (Exception ex){
       ex.printStackTrace();
     }
+  }
+
+  public TrainingConfiguration getTrainingConfig() {
+    return training;
   }
 
   public String getPathMain() {
@@ -119,7 +149,7 @@ public abstract class BaseMojo extends AbstractMojo {
     int newestVersion;
     try {
       VersionRangeResult rangeResult = repositorySystem.resolveVersionRange( repositorySystemSession, rangeRequest );
-      newestVersion = Integer.parseInt(rangeResult.getHighestVersion().toString());
+      newestVersion = rangeResult.getHighestVersion() != null ? Integer.parseInt(rangeResult.getHighestVersion().toString()) : Constants.INITIAL_VERSION - 1;
       return ++newestVersion;
     }
     catch (VersionRangeResolutionException e) {
@@ -128,5 +158,51 @@ public abstract class BaseMojo extends AbstractMojo {
 
     return Constants.INITIAL_VERSION;
   }
+
+  public Scope getScope(){
+    if(myScope == null) {
+      ModelingLanguageFamily fam = new ModelingLanguageFamily();
+      fam.addModelingLanguage(new EmbeddedMontiArcMathLanguage());
+      fam.addModelingLanguage(new StreamUnitsLanguage());
+      fam.addModelingLanguage(new StructLanguage());
+      fam.addModelingLanguage(new EnumLangLanguage());
+      fam.addModelingLanguage(new EMADLLanguage());
+      final ModelPath mp_main = new ModelPath();
+
+      mp_main.addEntry(Paths.get(this.getPathMain()));
+      if (!this.getPathMain().equals(this.getPathTest())) {
+        mp_main.addEntry(Paths.get(this.getPathTest()));
+      }
+
+      GlobalScope gs = new GlobalScope(mp_main, fam);
+      de.monticore.lang.monticar.Utils.addBuiltInTypes(gs);
+
+      ArrayList<String> col = new ArrayList<String>();
+
+      col.add(this.getPathMain());
+      if (!this.getPathMain().equals(this.getPathTest())) {
+        col.add(this.getPathTest());
+      }
+
+      this.myTaggingResolver = new TaggingResolver(gs, col);
+      TagMinMaxTagSchema.registerTagTypes(this.myTaggingResolver);
+      TagTableTagSchema.registerTagTypes(this.myTaggingResolver);
+      TagBreakpointsTagSchema.registerTagTypes(this.myTaggingResolver);
+      TagExecutionOrderTagSchema.registerTagTypes(this.myTaggingResolver);
+      TagInitTagSchema.registerTagTypes(this.myTaggingResolver);
+      TagThresholdTagSchema.registerTagTypes(this.myTaggingResolver);
+      TagDelayTagSchema.registerTagTypes(this.myTaggingResolver);
+      myScope = gs;
+    }
+    return myScope;
+  }
+  protected TaggingResolver getTaggingResolver(){
+    if(this.myTaggingResolver == null){
+      this.getScope();
+    }
+    return this.myTaggingResolver;
+  }
+
+
 
 }

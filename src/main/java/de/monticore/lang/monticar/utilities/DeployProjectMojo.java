@@ -19,7 +19,6 @@ public class DeployProjectMojo extends BaseMojo {
   @Parameter
   private StorageInformation modelToStore;
 
-
   @Override
   public void execute() throws MojoExecutionException, MojoFailureException {
     this.mkTmpDir();
