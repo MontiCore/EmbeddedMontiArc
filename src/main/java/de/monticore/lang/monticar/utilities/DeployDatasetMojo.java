@@ -3,6 +3,7 @@ package de.monticore.lang.monticar.utilities;
 import de.monticore.lang.monticar.utilities.artifactcreator.DatasetArtifactCreator;
 import de.monticore.lang.monticar.utilities.artifactdeployer.ArtifactDeployer;
 import de.monticore.lang.monticar.utilities.models.StorageInformation;
+import de.monticore.lang.monticar.utilities.utils.JarClassifier;
 import org.apache.maven.plugin.MojoExecutionException;
 import org.apache.maven.plugin.MojoFailureException;
 import org.apache.maven.plugins.annotations.Mojo;
@@ -30,7 +31,7 @@ public class DeployDatasetMojo extends BaseMojo {
       jarFile = DatasetArtifactCreator.createArtifact(this.datasetToStore, this.getPathTmpOut());
       getLog().info("FINISHED creating Jar for dataset");
 
-      ArtifactDeployer.deployArtifact(jarFile.getAbsolutePath(), this.datasetToStore, this.getRepository());
+      ArtifactDeployer.deployArtifact(jarFile.getAbsolutePath(), this.datasetToStore, this.getRepository(), JarClassifier.DATASET);
     }
     catch (IOException | MavenInvocationException e) {
       throw new MojoFailureException(Arrays.toString(e.getStackTrace()));
