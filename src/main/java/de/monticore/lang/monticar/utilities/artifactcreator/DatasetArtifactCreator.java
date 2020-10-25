@@ -11,6 +11,7 @@ import java.io.IOException;
 import java.util.LinkedList;
 import java.util.List;
 import java.util.Objects;
+import java.util.jar.Attributes;
 import java.util.jar.Manifest;
 
 public class DatasetArtifactCreator extends ArtifactCreator {
@@ -23,7 +24,7 @@ public class DatasetArtifactCreator extends ArtifactCreator {
     Preconditions.checkArgument(!StringUtils.isEmpty(datasetArtifactId), "Artifact ID of dataset artifact must be specified.");
     Preconditions.checkNotNull(datasetPath, "Path of dataset must be specified.");
 
-    Manifest manifest = createManifest(datasetGroupId, datasetArtifactId, datasetToStore.getVersion());
+    Manifest manifest = createManifest(datasetGroupId, datasetArtifactId, datasetToStore.getVersion(), getAdditionalAttributes());
     String jarFileName = createJarFileName(tempDirectory, "dataset");
     List<FileLocation> datasetLocations = getDatasetLocations(datasetPath);
 
@@ -47,6 +48,13 @@ public class DatasetArtifactCreator extends ArtifactCreator {
     }
 
     return datasetLocations;
+  }
+
+  private static Attributes getAdditionalAttributes() {
+    Attributes attributes = new Attributes();
+    attributes.put(new Attributes.Name("File-Type"), "HDF5");
+
+    return attributes;
   }
 
 }
