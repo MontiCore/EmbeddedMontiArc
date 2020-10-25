@@ -16,7 +16,7 @@ public class ArtifactDeployer {
   private static final String GROUP_ID = "groupId";
   private static final String ARTIFACT_ID = "artifactId";
   private static final String VERSION = "version";
-  private static final String CLASSIFIERS = "classifier";
+  private static final String CLASSIFIER = "classifier";
 
   public static void deployArtifact(String jarFile, StorageInformation storageInformation, Repository repository, JarClassifier classifier) throws MavenInvocationException {
     Properties properties = new Properties();
@@ -26,7 +26,7 @@ public class ArtifactDeployer {
     properties.setProperty(GROUP_ID, storageInformation.getGroupId());
     properties.setProperty(ARTIFACT_ID, storageInformation.getArtifactId());
     properties.setProperty(VERSION, String.valueOf(storageInformation.getVersion()));
-    properties.setProperty(CLASSIFIERS, classifier.value);
+    properties.setProperty(CLASSIFIER, classifier.value);
 
     JarDeployer.deployArtifact(properties);
   }
