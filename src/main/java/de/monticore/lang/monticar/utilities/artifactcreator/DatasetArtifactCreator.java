@@ -30,7 +30,7 @@ public class DatasetArtifactCreator extends ArtifactCreator {
     return JarCreator.createArtifact(jarFileName, manifest, datasetLocations);
   }
 
-  private static List<FileLocation> getDatasetLocations(File datasetPath) {
+  protected static List<FileLocation> getDatasetLocations(File datasetPath) {
     List<FileLocation> datasetLocations = new LinkedList<>();
 
     for (File dataset: Objects.requireNonNull(datasetPath.listFiles())) {

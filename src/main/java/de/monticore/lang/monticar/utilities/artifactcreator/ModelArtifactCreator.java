@@ -39,7 +39,7 @@ public class ModelArtifactCreator extends ArtifactCreator {
     return packageList.isEmpty() ? "" : String.join(File.separator, packageList) + File.separator;
   }
 
-  private static List<FileLocation> getFileLocations(StorageInformation storageInformation) throws IOException {
+  protected static List<FileLocation> getFileLocations(StorageInformation storageInformation) throws IOException {
     String extension;
     List<FileLocation> modelLocations = new LinkedList<>();
 
