@@ -33,7 +33,7 @@
             self.${element.name}out_shape = self.${element.name}(*zeroInputs).shape
             if self.${element.name}out_shape != (1,${outputShape}):
                 outputSize=1
-                for x in (${outputShape}): 
+                for x in (${outputShape},): 
                     outputSize = outputSize * x  
                 self.${element.name}fc_ = gluon.nn.Dense(units=outputSize, use_bias=False, flatten=False)
 
@@ -42,7 +42,5 @@
         if self.${element.name}out_shape != (1,${outputShape}):
             ${element.name} = self.${element.name}fc_(${element.name})
             ${element.name} = F.reshape(${element.name}, shape=(-1,${outputShape}))
-<#elseif mode == "PREDICTION_PARAMETER">
-	    query_num_inputs.push_back(${numInputs});
 </#if>
 	
