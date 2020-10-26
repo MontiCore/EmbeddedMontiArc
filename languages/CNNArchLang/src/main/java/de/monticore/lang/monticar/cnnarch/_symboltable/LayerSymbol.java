@@ -283,6 +283,10 @@ public class LayerSymbol extends ArchitectureElementSymbol {
         return getTValue(parameterName, ArchExpressionSymbol::getIntTupleValues);
     }
 
+    public Optional<List<Integer>> getIntOrIntTupleValues(String parameterName){
+        return getTValue(parameterName, ArchExpressionSymbol::getIntOrIntTupleValues);
+    }
+
     public Optional<Boolean> getBooleanValue(String parameterName){
         return getTValue(parameterName, ArchExpressionSymbol::getBooleanValue);
     }

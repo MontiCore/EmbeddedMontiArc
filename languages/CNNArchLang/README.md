@@ -606,6 +606,8 @@ All predefined methods start with a capital letter and all constructed methods h
     
 * **EpisodicMemory(replayMemoryStoreProb=1, maxStoredSamples=-1, memoryReplacementStrategy="replace_oldest", useReplay=true, replayInterval, replayBatchSize=-1, replaySteps, replayGradientSteps=1, useLocalAdaption=true, localAdaptionGradientSteps=1, localAdaptionK=1, queryNetDir=-1, queryNetPrefix=-1, queryNetNumInputs=1)**
 
+!!! Important: Needs mxnet version 1.7.0, see installation instructions at: [EMADL2CPP](https://git.rwth-aachen.de/monticore/EmbeddedMontiArc/generators/EMADL2CPP)!!!
+
   Episodic Memory as described in [1], although we implemented it as a layer which can also be used inside of a network. Works with multiple inputs. Not learned. Inputs are stored and are repleayed on part of the network following this layer. Local adaption retrives samples to the sample for which inference should be done from memory and performs finetuning learning with these on the part of the network following this layer.
 
   * **replayMemoryStoreProb** ( 0 <= integer <= 1, optional, default=1): Probability with which a sample seen during training will be stored in memory (per actual sample, not batch).
@@ -638,6 +640,8 @@ All predefined methods start with a capital letter and all constructed methods h
           
 
 * **DotProductSelfAttention(scaleFactor=-1, numHeads=1, dimKeys=-1, dimValues=-1, useProjBias=true, useMask=false)**
+
+!!! Important: Needs mxnet version 1.7.0, see installation instructions at: [EMADL2CPP](https://git.rwth-aachen.de/monticore/EmbeddedMontiArc/generators/EMADL2CPP)!!!
 
   Calculates the DotProductSelfAttention. As described in [3]. Takes three inputs: queries, keys, values and optionally a mask for masked Self Attention as used in Bert.
   
@@ -677,6 +681,6 @@ All predefined methods start with a capital letter and all constructed methods h
 
 ## Refrences
 
-  [1] Cyprien De Masson, Sebastian Ruder, Lingpeng Kong and Dani Yogatama, "Episodic Memory in Lifelong Language Learning", Proc. NeurIPS, 2019
-  [2] Guillaume Lample, Alexandre Sablayrolles, Marc’Aurelio Ranzato, Ludovic Denoyer and Hervé Jégou, "Large memory layers with product keys", Proc. NeurIPS, Dec. 2019.
+  [1] Cyprien De Masson, Sebastian Ruder, Lingpeng Kong and Dani Yogatama, "Episodic Memory in Lifelong Language Learning", Proc. NeurIPS, 2019 \
+  [2] Guillaume Lample, Alexandre Sablayrolles, Marc’Aurelio Ranzato, Ludovic Denoyer and Hervé Jégou, "Large memory layers with product keys", Proc. NeurIPS, Dec. 2019. \
   [3] Ashish Vaswani, Noam Shazeer, Niki Parmar, Jakob Uszkoreit, Llion Jones, Aidan N Gomez, Lukasz Kaiser and Illia Polosukhin, "Attention is all you need", Proc. NeurIPS, 2017

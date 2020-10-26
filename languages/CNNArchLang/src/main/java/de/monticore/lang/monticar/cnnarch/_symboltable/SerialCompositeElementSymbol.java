@@ -13,6 +13,7 @@ import java.util.*;
 public class SerialCompositeElementSymbol extends CompositeElementSymbol {
 
     protected List<List<ArchitectureElementSymbol>> episodicSubNetworks = new ArrayList<>(new ArrayList<>());
+    protected boolean anyEpisodicLocalAdaptation = false;
 
     protected void setElements(List<ArchitectureElementSymbol> elements) {
         ArchitectureElementSymbol previous = null;
@@ -59,6 +60,10 @@ public class SerialCompositeElementSymbol extends CompositeElementSymbol {
     public List<List<ArchitectureElementSymbol>> getEpisodicSubNetworks() {
         return episodicSubNetworks;
     }
+    
+    protected void setAnyEpisodicLocalAdaptation(boolean value) { anyEpisodicLocalAdaptation = value; }
+
+    public boolean getAnyEpisodicLocalAdaptation() { return anyEpisodicLocalAdaptation; }
 
     @Override
     public void setInputElement(ArchitectureElementSymbol inputElement) {
