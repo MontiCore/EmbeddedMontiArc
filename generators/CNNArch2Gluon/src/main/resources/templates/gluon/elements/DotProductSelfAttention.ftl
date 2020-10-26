@@ -9,15 +9,12 @@
 <#assign useProjBias = element.useProjBias?string("True", "False")>
 <#assign useMask = element.useMask?string("True", "False")>
 <#if mode == "ARCHITECTURE_DEFINITION">
-<#assign dimModel = 1>
-<#list element.element.outputTypes[0].dimensions as dim>
-<#assign dimModel = dimModel * dim>
-</#list>
+<#assign dimModel = element.element.outputTypes[0].dimensions?reverse[1]>
             self.${element.name} = DotProductSelfAttention(scale_factor=${scaleFactor}, num_heads=${numHeads}, dim_model=${dimModel}, dim_keys=${dimKeys}, dim_values=${dimValues}, use_proj_bias=${useProjBias}, use_mask=${useMask})
 			<#include "OutputShape.ftl">
 <#elseif mode == "FORWARD_FUNCTION">
 <#if (element.inputs[3])??>
-        ${element.name} = self.${element.name}(${inputQueries}, ${inputKeys}, ${inputValues}, element.inputs[3])
+        ${element.name} = self.${element.name}(${inputQueries}, ${inputKeys}, ${inputValues}, ${element.inputs[3]})
 <#else>
         ${element.name} = self.${element.name}(${inputQueries}, ${inputKeys}, ${inputValues})
 </#if>	
