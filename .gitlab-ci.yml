@@ -1,0 +1,13 @@
+# (c) https://github.com/MontiCore/monticore
+
+stages:
+- linux
+
+TestMemoriesWithProductKeys:
+  stage: linux
+  image: registry.git.rwth-aachen.de/monticore/embeddedmontiarc/applications/memorieswithproductkeys/mxnet:v0.0.5
+  script:
+  - cd memories-with-product-keys
+  - mvn streamtest:streamtest-build -s settings.xml
+  - bash build_CPP_for_prediction.sh
+  - RES=$(./build/src/main/ema/cpp/MemoriesWithProductKeys src/main/resources/prediction_data/prediction_samples.txt src/main/resources/prediction_data/prediction_sequences.txt src/main/resources/prediction_data/prediction_lengths.txt)
