@@ -61,11 +61,6 @@ public class LargeMemory extends PredefinedLayerDeclaration {
         LargeMemory declaration = new LargeMemory();
         List<ParameterSymbol> parameters = new ArrayList<>(Arrays.asList(
                 new ParameterSymbol.Builder()
-                        .name(AllPredefinedLayers.STORE_DIST_MEASURE_NAME)
-                        .constraints(Constraints.DIST_MEASURE_TYPE)
-                        .defaultValue(AllPredefinedLayers.INNER_PROD)
-                        .build(),
-                new ParameterSymbol.Builder()
                         .name(AllPredefinedLayers.SUB_KEY_SIZE_NAME)
                         .constraints(Constraints.INTEGER, Constraints.POSITIVE)
                         .build(),
