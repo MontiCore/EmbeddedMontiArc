@@ -1,0 +1,72 @@
+{
+  "nodes": [
+    {
+      "op": "null", 
+      "name": "data0", 
+      "inputs": []
+    }, 
+    {
+      "op": "_copy", 
+      "name": "simpleembedding0_identity0", 
+      "inputs": [[0, 0, 0]]
+    }, 
+    {
+      "op": "null", 
+      "name": "data1", 
+      "inputs": []
+    }, 
+    {
+      "op": "_copy", 
+      "name": "simpleembedding0_identity1", 
+      "inputs": [[2, 0, 0]]
+    }, 
+    {
+      "op": "_mul_scalar", 
+      "name": "simpleembedding0__mulscalar0", 
+      "attrs": {"scalar": "0"}, 
+      "inputs": [[3, 0, 0]]
+    }, 
+    {
+      "op": "broadcast_add", 
+      "name": "simpleembedding0_broadcast_add0", 
+      "inputs": [[1, 0, 0], [4, 0, 0]]
+    }, 
+    {
+      "op": "null", 
+      "name": "data2", 
+      "inputs": []
+    }, 
+    {
+      "op": "_copy", 
+      "name": "simpleembedding0_identity2", 
+      "inputs": [[6, 0, 0]]
+    }, 
+    {
+      "op": "_mul_scalar", 
+      "name": "simpleembedding0__mulscalar1", 
+      "attrs": {"scalar": "0"}, 
+      "inputs": [[7, 0, 0]]
+    }, 
+    {
+      "op": "broadcast_add", 
+      "name": "simpleembedding0_broadcast_add1", 
+      "inputs": [[5, 0, 0], [8, 0, 0]]
+    }
+  ], 
+  "arg_nodes": [0, 2, 6], 
+  "node_row_ptr": [
+    0, 
+    1, 
+    2, 
+    3, 
+    4, 
+    5, 
+    6, 
+    7, 
+    8, 
+    9, 
+    10
+  ], 
+  "heads": [[9, 0, 0]], 
+  "attrs": {"mxnet_version": ["int", 10501]}
+}

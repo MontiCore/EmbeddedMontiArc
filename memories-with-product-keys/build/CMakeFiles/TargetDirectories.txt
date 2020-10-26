@@ -1,0 +1,8 @@
+/home/julian/Documents/MontiCore/memorieswithproductkeys/memories-with-product-keys/build/CMakeFiles/rebuild_cache.dir
+/home/julian/Documents/MontiCore/memorieswithproductkeys/memories-with-product-keys/build/CMakeFiles/edit_cache.dir
+/home/julian/Documents/MontiCore/memorieswithproductkeys/memories-with-product-keys/build/src/main/ema/cpp/CMakeFiles/rebuild_cache.dir
+/home/julian/Documents/MontiCore/memorieswithproductkeys/memories-with-product-keys/build/src/main/ema/cpp/CMakeFiles/edit_cache.dir
+/home/julian/Documents/MontiCore/memorieswithproductkeys/memories-with-product-keys/build/src/main/ema/cpp/CMakeFiles/MemoriesWithProductKeys.dir
+/home/julian/Documents/MontiCore/memorieswithproductkeys/memories-with-product-keys/build/target/tmp/CMakeFiles/rebuild_cache.dir
+/home/julian/Documents/MontiCore/memorieswithproductkeys/memories-with-product-keys/build/target/tmp/CMakeFiles/edit_cache.dir
+/home/julian/Documents/MontiCore/memorieswithproductkeys/memories-with-product-keys/build/target/tmp/CMakeFiles/memorieswithproductkeys_connector.dir

@@ -1,0 +1,2 @@
+/usr/bin/ar qc libmemorieswithproductkeys_network.a  CMakeFiles/memorieswithproductkeys_network.dir/memorieswithproductkeys_network.cpp.o
+/usr/bin/ranlib libmemorieswithproductkeys_network.a

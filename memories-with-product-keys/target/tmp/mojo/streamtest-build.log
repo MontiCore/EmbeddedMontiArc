@@ -1,0 +1,1430 @@
+[info] streamtest-generator : [2020-10-26 11:54:23.990] Execution necessary: One or more input files chaned.
+[info] StreamTestGeneratorMojo : StreamTestGeneratorMojo
+[debug] de.se_rwth.commons.logging.Log : Switching logging component from de.monitcore.lang.monticar.utilities.tools.LogToFile to de.monticore.lang.math.LogConfig
+[info] streamtest-generator : [2020-10-26 11:54:24.104] Cocos Check:
+[info] streamtest-generator : [2020-10-26 11:54:24.105]  - memorieswithproductkeys/Network.emadl
+[trace]  : START resolveDownMany("memorieswithproductkeys.Network", "de.monticore.lang.embeddedmontiarc.embeddedmontiarc._symboltable.ComponentKind") in scope "Optional.empty". Found #0 (local)
+[trace]  : END resolveDownMany("memorieswithproductkeys.Network", "de.monticore.lang.embeddedmontiarc.embeddedmontiarc._symboltable.ComponentKind") in scope "Optional.empty". Found #0
+[debug] ModelingLanguageModelLoader : Start parsing model Location: file:/home/julian/Documents/MontiCore/memorieswithproductkeys/memories-with-product-keys/src/main/ema/emadl/models/memorieswithproductkeys/Network.emadl Package: memorieswithproductkeys/Network.emadl.
+[debug] ModelingLanguageModelLoader : Parsed model Location: file:/home/julian/Documents/MontiCore/memorieswithproductkeys/memories-with-product-keys/src/main/ema/emadl/models/memorieswithproductkeys/Network.emadl Package: memorieswithproductkeys/Network.emadl successfully.
+[debug] EMADLModelLoader : Start creation of symbol table for model "memorieswithproductkeys.Network".
+[debug] EmbeddedMontiArcSymbolTableCreator : Building Symboltable for Component: Network
+[debug] Resolution Declaration: : de.monticore.lang.monticar.types2._ast.ASTTypeVariableDeclaration2@de7e193
+[debug] Added ResolutionDeclarationSymbol with name:  : n
+[debug] Added ResolutionDeclarationSymbol to EMAComponentSymbol with name: : Network
+[debug] CommonScope : No resolver found for symbol targetKind "de.monticore.lang.monticar.ts.MCTypeSymbolKind" in scope "Optional[Network]"
+[debug] CommonScope : No resolver found for symbol targetKind "de.monticore.lang.monticar.ts.MCAttributeSymbolKind" in scope "Optional[Network]"
+[debug] CommonScope : No resolver found for symbol targetKind "de.monticore.symboltable.SymbolKind" in scope "Optional[Network]"
+[debug] CommonScope : No resolver found for symbol targetKind "de.monticore.symboltable.SymbolKind" in scope "Optional[Network]"
+[debug] CommonScope : No resolver found for symbol targetKind "de.monticore.symboltable.SymbolKind" in scope "Optional[Network]"
+[debug] CommonScope : No resolver found for symbol targetKind "de.monticore.symboltable.SymbolKind" in scope "Optional[Network]"
+[debug] CommonScope : No resolver found for symbol targetKind "de.monticore.lang.embeddedmontiarc.embeddedmontiarc._symboltable.ComponentKind" in scope "Optional[Network]"
+[debug] CommonScope : No resolver found for symbol targetKind "de.monticore.symboltable.SymbolKind" in scope "Optional[Network]"
+[debug] CommonScope : No resolver found for symbol targetKind "de.monticore.symboltable.SymbolKind" in scope "Optional[Network]"
+[debug] ComponentPreGeneric : package memorieswithproductkeys;
+component Network {
+}
+
+[debug] CommonScope : No resolver found for symbol targetKind "de.monticore.lang.monticar.ts.MCTypeSymbolKind" in scope "Optional[Network]"
+[debug] CommonScope : No resolver found for symbol targetKind "de.monticore.lang.monticar.ts.MCTypeSymbolKind" in scope "Optional[Network]"
+[debug] CommonScope : No resolver found for symbol targetKind "de.monticore.lang.monticar.ts.MCAttributeSymbolKind" in scope "Optional[Network]"
+[debug] CommonScope : No resolver found for symbol targetKind "de.monticore.symboltable.SymbolKind" in scope "Optional[Network]"
+[debug] CommonScope : No resolver found for symbol targetKind "de.monticore.symboltable.SymbolKind" in scope "Optional[Network]"
+[debug] CommonScope : No resolver found for symbol targetKind "de.monticore.symboltable.SymbolKind" in scope "Optional[Network]"
+[debug] CommonScope : No resolver found for symbol targetKind "de.monticore.symboltable.SymbolKind" in scope "Optional[Network]"
+[debug] CommonScope : No resolver found for symbol targetKind "de.monticore.lang.embeddedmontiarc.embeddedmontiarc._symboltable.ComponentKind" in scope "Optional[Network]"
+[debug] CommonScope : No resolver found for symbol targetKind "de.monticore.symboltable.SymbolKind" in scope "Optional[Network]"
+[debug] CommonScope : No resolver found for symbol targetKind "de.monticore.symboltable.SymbolKind" in scope "Optional[Network]"
+[debug] ComponentPostGeneric : package memorieswithproductkeys;
+component Network {
+}
+
+[debug] CommonScope : No resolver found for symbol targetKind "de.monticore.lang.monticar.ts.MCTypeSymbolKind" in scope "Optional[Network]"
+[debug] CommonScope : No resolver found for symbol targetKind "de.monticore.lang.monticar.ts.MCAttributeSymbolKind" in scope "Optional[Network]"
+[debug] CommonScope : No resolver found for symbol targetKind "de.monticore.symboltable.SymbolKind" in scope "Optional[Network]"
+[debug] CommonScope : No resolver found for symbol targetKind "de.monticore.symboltable.SymbolKind" in scope "Optional[Network]"
+[debug] CommonScope : No resolver found for symbol targetKind "de.monticore.symboltable.SymbolKind" in scope "Optional[Network]"
+[debug] CommonScope : No resolver found for symbol targetKind "de.monticore.symboltable.SymbolKind" in scope "Optional[Network]"
+[debug] CommonScope : No resolver found for symbol targetKind "de.monticore.lang.embeddedmontiarc.embeddedmontiarc._symboltable.ComponentKind" in scope "Optional[Network]"
+[debug] CommonScope : No resolver found for symbol targetKind "de.monticore.symboltable.SymbolKind" in scope "Optional[Network]"
+[debug] CommonScope : No resolver found for symbol targetKind "de.monticore.symboltable.SymbolKind" in scope "Optional[Network]"
+[debug] ComponentPreParam : package memorieswithproductkeys;
+component Network {
+}
+
+[debug] CommonScope : No resolver found for symbol targetKind "de.monticore.lang.monticar.ts.MCTypeSymbolKind" in scope "Optional[Network]"
+[debug] CommonScope : No resolver found for symbol targetKind "de.monticore.lang.monticar.ts.MCAttributeSymbolKind" in scope "Optional[Network]"
+[debug] CommonScope : No resolver found for symbol targetKind "de.monticore.symboltable.SymbolKind" in scope "Optional[Network]"
+[debug] CommonScope : No resolver found for symbol targetKind "de.monticore.symboltable.SymbolKind" in scope "Optional[Network]"
+[debug] CommonScope : No resolver found for symbol targetKind "de.monticore.symboltable.SymbolKind" in scope "Optional[Network]"
+[debug] CommonScope : No resolver found for symbol targetKind "de.monticore.symboltable.SymbolKind" in scope "Optional[Network]"
+[debug] CommonScope : No resolver found for symbol targetKind "de.monticore.lang.embeddedmontiarc.embeddedmontiarc._symboltable.ComponentKind" in scope "Optional[Network]"
+[debug] CommonScope : No resolver found for symbol targetKind "de.monticore.symboltable.SymbolKind" in scope "Optional[Network]"
+[debug] CommonScope : No resolver found for symbol targetKind "de.monticore.symboltable.SymbolKind" in scope "Optional[Network]"
+[debug] ComponentPostParam : package memorieswithproductkeys;
+component Network {
+}
+
+[trace]  : START resolveDownMany("memorieswithproductkeys.Network", "de.monticore.lang.embeddedmontiarc.embeddedmontiarc._symboltable.ComponentKind") in scope "Optional.empty". Found #0 (local)
+[debug] CommonScope : The symbol Network has already been resolved.
+[trace]  : START resolveDownMany("Network", "de.monticore.lang.embeddedmontiarc.embeddedmontiarc._symboltable.ComponentKind") in scope "Optional[Network]". Found #1 (local)
+[trace]  : END resolveDownMany("Network", "de.monticore.lang.embeddedmontiarc.embeddedmontiarc._symboltable.ComponentKind") in scope "Optional[Network]". Found #1
+[trace]  : END resolveDownMany("memorieswithproductkeys.Network", "de.monticore.lang.embeddedmontiarc.embeddedmontiarc._symboltable.ComponentKind") in scope "Optional.empty". Found #1
+[debug] info : data_0 de.monticore.lang.monticar.common2._ast.ASTCommonMatrixType@22d322f5
+[debug] info : data_1 de.monticore.lang.monticar.common2._ast.ASTCommonMatrixType@78ec89a6
+[debug] info : data_2 de.monticore.lang.monticar.common2._ast.ASTCommonMatrixType@53d2d002
+[debug] info : softmax de.monticore.lang.monticar.common2._ast.ASTCommonMatrixType@5b39a3e6
+[debug] SymbolTableCreator: : endVisit of memorieswithproductkeys.Network
+[trace]  : START resolveDownMany("memorieswithproductkeys.network", "de.monticore.symboltable.SymbolKind") in scope "Optional[Network]". Found #0 (local)
+[trace]  : END resolveDownMany("memorieswithproductkeys.network", "de.monticore.symboltable.SymbolKind") in scope "Optional[Network]". Found #0
+[info] class de.monticore.lang.embeddedmontiarc.embeddedmontiarc._symboltable.instanceStructure.EMAComponentInstanceSymbolCreator : expanded component instance is not created, b/c top level has generic parameters and can, therefore, not be instantiated
+[debug] EMADLModelLoader : Created symbol table for model "memorieswithproductkeys.Network".
+[trace]  : START resolveDownMany("memorieswithproductkeys.Network", "de.monticore.lang.embeddedmontiarc.embeddedmontiarc._symboltable.ComponentKind") in scope "Optional.empty". Found #0 (local)
+[debug] CommonScope : The symbol Network has already been resolved.
+[trace]  : START resolveDownMany("Network", "de.monticore.lang.embeddedmontiarc.embeddedmontiarc._symboltable.ComponentKind") in scope "Optional[Network]". Found #1 (local)
+[trace]  : END resolveDownMany("Network", "de.monticore.lang.embeddedmontiarc.embeddedmontiarc._symboltable.ComponentKind") in scope "Optional[Network]". Found #1
+[trace]  : END resolveDownMany("memorieswithproductkeys.Network", "de.monticore.lang.embeddedmontiarc.embeddedmontiarc._symboltable.ComponentKind") in scope "Optional.empty". Found #1
+[info] streamtest-generator : [2020-10-26 11:54:26.056]    -> parsed & resolved
+[info] streamtest-generator : [2020-10-26 11:54:26.056]  - memorieswithproductkeys/ArgMax.emadl
+[trace]  : START resolveDownMany("memorieswithproductkeys.ArgMax", "de.monticore.lang.embeddedmontiarc.embeddedmontiarc._symboltable.ComponentKind") in scope "Optional.empty". Found #0 (local)
+[trace]  : START resolveDownMany("ArgMax", "de.monticore.lang.embeddedmontiarc.embeddedmontiarc._symboltable.ComponentKind") in scope "Optional[Network]". Found #0 (local)
+[trace]  : END resolveDownMany("ArgMax", "de.monticore.lang.embeddedmontiarc.embeddedmontiarc._symboltable.ComponentKind") in scope "Optional[Network]". Found #0
+[trace]  : END resolveDownMany("memorieswithproductkeys.ArgMax", "de.monticore.lang.embeddedmontiarc.embeddedmontiarc._symboltable.ComponentKind") in scope "Optional.empty". Found #0
+[debug] ModelingLanguageModelLoader : Start parsing model Location: file:/home/julian/Documents/MontiCore/memorieswithproductkeys/memories-with-product-keys/src/main/ema/emadl/models/memorieswithproductkeys/ArgMax.emadl Package: memorieswithproductkeys/ArgMax.emadl.
+[debug] ModelingLanguageModelLoader : Parsed model Location: file:/home/julian/Documents/MontiCore/memorieswithproductkeys/memories-with-product-keys/src/main/ema/emadl/models/memorieswithproductkeys/ArgMax.emadl Package: memorieswithproductkeys/ArgMax.emadl successfully.
+[debug] EMADLModelLoader : Start creation of symbol table for model "memorieswithproductkeys.ArgMax".
+[debug] EmbeddedMontiArcSymbolTableCreator : Building Symboltable for Component: ArgMax
+[debug] Resolution Declaration: : de.monticore.lang.monticar.types2._ast.ASTTypeVariableDeclaration2@125f16b2
+[debug] Added ResolutionDeclarationSymbol with name:  : n
+[debug] Added ResolutionDeclarationSymbol to EMAComponentSymbol with name: : ArgMax
+[debug] CommonScope : No resolver found for symbol targetKind "de.monticore.lang.monticar.ts.MCTypeSymbolKind" in scope "Optional[ArgMax]"
+[debug] CommonScope : No resolver found for symbol targetKind "de.monticore.lang.monticar.ts.MCAttributeSymbolKind" in scope "Optional[ArgMax]"
+[debug] CommonScope : No resolver found for symbol targetKind "de.monticore.symboltable.SymbolKind" in scope "Optional[ArgMax]"
+[debug] CommonScope : No resolver found for symbol targetKind "de.monticore.symboltable.SymbolKind" in scope "Optional[ArgMax]"
+[debug] CommonScope : No resolver found for symbol targetKind "de.monticore.symboltable.SymbolKind" in scope "Optional[ArgMax]"
+[debug] CommonScope : No resolver found for symbol targetKind "de.monticore.symboltable.SymbolKind" in scope "Optional[ArgMax]"
+[debug] CommonScope : No resolver found for symbol targetKind "de.monticore.lang.embeddedmontiarc.embeddedmontiarc._symboltable.ComponentKind" in scope "Optional[ArgMax]"
+[debug] CommonScope : No resolver found for symbol targetKind "de.monticore.symboltable.SymbolKind" in scope "Optional[ArgMax]"
+[debug] CommonScope : No resolver found for symbol targetKind "de.monticore.symboltable.SymbolKind" in scope "Optional[ArgMax]"
+[debug] ComponentPreGeneric : package memorieswithproductkeys;
+component ArgMax {
+}
+
+[debug] CommonScope : No resolver found for symbol targetKind "de.monticore.lang.monticar.ts.MCTypeSymbolKind" in scope "Optional[ArgMax]"
+[debug] CommonScope : No resolver found for symbol targetKind "de.monticore.lang.monticar.ts.MCTypeSymbolKind" in scope "Optional[ArgMax]"
+[debug] CommonScope : No resolver found for symbol targetKind "de.monticore.lang.monticar.ts.MCAttributeSymbolKind" in scope "Optional[ArgMax]"
+[debug] CommonScope : No resolver found for symbol targetKind "de.monticore.symboltable.SymbolKind" in scope "Optional[ArgMax]"
+[debug] CommonScope : No resolver found for symbol targetKind "de.monticore.symboltable.SymbolKind" in scope "Optional[ArgMax]"
+[debug] CommonScope : No resolver found for symbol targetKind "de.monticore.symboltable.SymbolKind" in scope "Optional[ArgMax]"
+[debug] CommonScope : No resolver found for symbol targetKind "de.monticore.symboltable.SymbolKind" in scope "Optional[ArgMax]"
+[debug] CommonScope : No resolver found for symbol targetKind "de.monticore.lang.embeddedmontiarc.embeddedmontiarc._symboltable.ComponentKind" in scope "Optional[ArgMax]"
+[debug] CommonScope : No resolver found for symbol targetKind "de.monticore.symboltable.SymbolKind" in scope "Optional[ArgMax]"
+[debug] CommonScope : No resolver found for symbol targetKind "de.monticore.symboltable.SymbolKind" in scope "Optional[ArgMax]"
+[debug] ComponentPostGeneric : package memorieswithproductkeys;
+component ArgMax {
+}
+
+[debug] CommonScope : No resolver found for symbol targetKind "de.monticore.lang.monticar.ts.MCTypeSymbolKind" in scope "Optional[ArgMax]"
+[debug] CommonScope : No resolver found for symbol targetKind "de.monticore.lang.monticar.ts.MCAttributeSymbolKind" in scope "Optional[ArgMax]"
+[debug] CommonScope : No resolver found for symbol targetKind "de.monticore.symboltable.SymbolKind" in scope "Optional[ArgMax]"
+[debug] CommonScope : No resolver found for symbol targetKind "de.monticore.symboltable.SymbolKind" in scope "Optional[ArgMax]"
+[debug] CommonScope : No resolver found for symbol targetKind "de.monticore.symboltable.SymbolKind" in scope "Optional[ArgMax]"
+[debug] CommonScope : No resolver found for symbol targetKind "de.monticore.symboltable.SymbolKind" in scope "Optional[ArgMax]"
+[debug] CommonScope : No resolver found for symbol targetKind "de.monticore.lang.embeddedmontiarc.embeddedmontiarc._symboltable.ComponentKind" in scope "Optional[ArgMax]"
+[debug] CommonScope : No resolver found for symbol targetKind "de.monticore.symboltable.SymbolKind" in scope "Optional[ArgMax]"
+[debug] CommonScope : No resolver found for symbol targetKind "de.monticore.symboltable.SymbolKind" in scope "Optional[ArgMax]"
+[debug] ComponentPreParam : package memorieswithproductkeys;
+component ArgMax {
+}
+
+[debug] CommonScope : No resolver found for symbol targetKind "de.monticore.lang.monticar.ts.MCTypeSymbolKind" in scope "Optional[ArgMax]"
+[debug] CommonScope : No resolver found for symbol targetKind "de.monticore.lang.monticar.ts.MCAttributeSymbolKind" in scope "Optional[ArgMax]"
+[debug] CommonScope : No resolver found for symbol targetKind "de.monticore.symboltable.SymbolKind" in scope "Optional[ArgMax]"
+[debug] CommonScope : No resolver found for symbol targetKind "de.monticore.symboltable.SymbolKind" in scope "Optional[ArgMax]"
+[debug] CommonScope : No resolver found for symbol targetKind "de.monticore.symboltable.SymbolKind" in scope "Optional[ArgMax]"
+[debug] CommonScope : No resolver found for symbol targetKind "de.monticore.symboltable.SymbolKind" in scope "Optional[ArgMax]"
+[debug] CommonScope : No resolver found for symbol targetKind "de.monticore.lang.embeddedmontiarc.embeddedmontiarc._symboltable.ComponentKind" in scope "Optional[ArgMax]"
+[debug] CommonScope : No resolver found for symbol targetKind "de.monticore.symboltable.SymbolKind" in scope "Optional[ArgMax]"
+[debug] CommonScope : No resolver found for symbol targetKind "de.monticore.symboltable.SymbolKind" in scope "Optional[ArgMax]"
+[debug] ComponentPostParam : package memorieswithproductkeys;
+component ArgMax {
+}
+
+[trace]  : START resolveDownMany("memorieswithproductkeys.ArgMax", "de.monticore.lang.embeddedmontiarc.embeddedmontiarc._symboltable.ComponentKind") in scope "Optional.empty". Found #0 (local)
+[trace]  : START resolveDownMany("ArgMax", "de.monticore.lang.embeddedmontiarc.embeddedmontiarc._symboltable.ComponentKind") in scope "Optional[Network]". Found #0 (local)
+[trace]  : END resolveDownMany("ArgMax", "de.monticore.lang.embeddedmontiarc.embeddedmontiarc._symboltable.ComponentKind") in scope "Optional[Network]". Found #0
+[debug] CommonScope : The symbol ArgMax has already been resolved.
+[trace]  : START resolveDownMany("ArgMax", "de.monticore.lang.embeddedmontiarc.embeddedmontiarc._symboltable.ComponentKind") in scope "Optional[ArgMax]". Found #1 (local)
+[trace]  : END resolveDownMany("ArgMax", "de.monticore.lang.embeddedmontiarc.embeddedmontiarc._symboltable.ComponentKind") in scope "Optional[ArgMax]". Found #1
+[trace]  : END resolveDownMany("memorieswithproductkeys.ArgMax", "de.monticore.lang.embeddedmontiarc.embeddedmontiarc._symboltable.ComponentKind") in scope "Optional.empty". Found #1
+[debug] info : inputVector de.monticore.lang.monticar.common2._ast.ASTCommonMatrixType@79195c22
+[debug] info : maxIndex de.monticore.lang.monticar.types2._ast.ASTElementType@c9b5a99
+[debug] info : maxValue de.monticore.lang.monticar.types2._ast.ASTElementType@70be89ec
+[debug] SymbolTableCreator: : endVisit of memorieswithproductkeys.ArgMax
+[trace]  : START resolveDownMany("memorieswithproductkeys.argMax", "de.monticore.symboltable.SymbolKind") in scope "Optional[ArgMax]". Found #0 (local)
+[trace]  : END resolveDownMany("memorieswithproductkeys.argMax", "de.monticore.symboltable.SymbolKind") in scope "Optional[ArgMax]". Found #0
+[info] class de.monticore.lang.embeddedmontiarc.embeddedmontiarc._symboltable.instanceStructure.EMAComponentInstanceSymbolCreator : expanded component instance is not created, b/c top level has generic parameters and can, therefore, not be instantiated
+[debug] EMADLModelLoader : Created symbol table for model "memorieswithproductkeys.ArgMax".
+[trace]  : START resolveDownMany("memorieswithproductkeys.ArgMax", "de.monticore.lang.embeddedmontiarc.embeddedmontiarc._symboltable.ComponentKind") in scope "Optional.empty". Found #0 (local)
+[trace]  : START resolveDownMany("ArgMax", "de.monticore.lang.embeddedmontiarc.embeddedmontiarc._symboltable.ComponentKind") in scope "Optional[Network]". Found #0 (local)
+[trace]  : END resolveDownMany("ArgMax", "de.monticore.lang.embeddedmontiarc.embeddedmontiarc._symboltable.ComponentKind") in scope "Optional[Network]". Found #0
+[debug] CommonScope : The symbol ArgMax has already been resolved.
+[trace]  : START resolveDownMany("ArgMax", "de.monticore.lang.embeddedmontiarc.embeddedmontiarc._symboltable.ComponentKind") in scope "Optional[ArgMax]". Found #1 (local)
+[trace]  : END resolveDownMany("ArgMax", "de.monticore.lang.embeddedmontiarc.embeddedmontiarc._symboltable.ComponentKind") in scope "Optional[ArgMax]". Found #1
+[trace]  : END resolveDownMany("memorieswithproductkeys.ArgMax", "de.monticore.lang.embeddedmontiarc.embeddedmontiarc._symboltable.ComponentKind") in scope "Optional.empty". Found #1
+[info] streamtest-generator : [2020-10-26 11:54:26.490]    -> parsed & resolved
+[info] streamtest-generator : [2020-10-26 11:54:26.490]  - memorieswithproductkeys/Connector.emadl
+[trace]  : START resolveDownMany("memorieswithproductkeys.Connector", "de.monticore.lang.embeddedmontiarc.embeddedmontiarc._symboltable.ComponentKind") in scope "Optional.empty". Found #0 (local)
+[trace]  : START resolveDownMany("Connector", "de.monticore.lang.embeddedmontiarc.embeddedmontiarc._symboltable.ComponentKind") in scope "Optional[Network]". Found #0 (local)
+[trace]  : END resolveDownMany("Connector", "de.monticore.lang.embeddedmontiarc.embeddedmontiarc._symboltable.ComponentKind") in scope "Optional[Network]". Found #0
+[trace]  : START resolveDownMany("Connector", "de.monticore.lang.embeddedmontiarc.embeddedmontiarc._symboltable.ComponentKind") in scope "Optional[ArgMax]". Found #0 (local)
+[trace]  : END resolveDownMany("Connector", "de.monticore.lang.embeddedmontiarc.embeddedmontiarc._symboltable.ComponentKind") in scope "Optional[ArgMax]". Found #0
+[trace]  : END resolveDownMany("memorieswithproductkeys.Connector", "de.monticore.lang.embeddedmontiarc.embeddedmontiarc._symboltable.ComponentKind") in scope "Optional.empty". Found #0
+[debug] ModelingLanguageModelLoader : Start parsing model Location: file:/home/julian/Documents/MontiCore/memorieswithproductkeys/memories-with-product-keys/src/main/ema/emadl/models/memorieswithproductkeys/Connector.emadl Package: memorieswithproductkeys/Connector.emadl.
+[debug] ModelingLanguageModelLoader : Parsed model Location: file:/home/julian/Documents/MontiCore/memorieswithproductkeys/memories-with-product-keys/src/main/ema/emadl/models/memorieswithproductkeys/Connector.emadl Package: memorieswithproductkeys/Connector.emadl successfully.
+[debug] EMADLModelLoader : Start creation of symbol table for model "memorieswithproductkeys.Connector".
+[debug] EmbeddedMontiArcSymbolTableCreator : Building Symboltable for Component: Connector
+[debug] CommonScope : No resolver found for symbol targetKind "de.monticore.lang.monticar.ts.MCTypeSymbolKind" in scope "Optional[Connector]"
+[debug] CommonScope : No resolver found for symbol targetKind "de.monticore.lang.monticar.ts.MCAttributeSymbolKind" in scope "Optional[Connector]"
+[debug] CommonScope : No resolver found for symbol targetKind "de.monticore.symboltable.SymbolKind" in scope "Optional[Connector]"
+[debug] CommonScope : No resolver found for symbol targetKind "de.monticore.symboltable.SymbolKind" in scope "Optional[Connector]"
+[debug] CommonScope : No resolver found for symbol targetKind "de.monticore.symboltable.SymbolKind" in scope "Optional[Connector]"
+[debug] CommonScope : No resolver found for symbol targetKind "de.monticore.symboltable.SymbolKind" in scope "Optional[Connector]"
+[debug] CommonScope : No resolver found for symbol targetKind "de.monticore.lang.embeddedmontiarc.embeddedmontiarc._symboltable.ComponentKind" in scope "Optional[Connector]"
+[debug] CommonScope : No resolver found for symbol targetKind "de.monticore.symboltable.SymbolKind" in scope "Optional[Connector]"
+[debug] CommonScope : No resolver found for symbol targetKind "de.monticore.symboltable.SymbolKind" in scope "Optional[Connector]"
+[debug] ComponentPreGeneric : package memorieswithproductkeys;
+component Connector {
+}
+
+[debug] CommonScope : No resolver found for symbol targetKind "de.monticore.lang.monticar.ts.MCTypeSymbolKind" in scope "Optional[Connector]"
+[debug] CommonScope : No resolver found for symbol targetKind "de.monticore.lang.monticar.ts.MCAttributeSymbolKind" in scope "Optional[Connector]"
+[debug] CommonScope : No resolver found for symbol targetKind "de.monticore.symboltable.SymbolKind" in scope "Optional[Connector]"
+[debug] CommonScope : No resolver found for symbol targetKind "de.monticore.symboltable.SymbolKind" in scope "Optional[Connector]"
+[debug] CommonScope : No resolver found for symbol targetKind "de.monticore.symboltable.SymbolKind" in scope "Optional[Connector]"
+[debug] CommonScope : No resolver found for symbol targetKind "de.monticore.symboltable.SymbolKind" in scope "Optional[Connector]"
+[debug] CommonScope : No resolver found for symbol targetKind "de.monticore.lang.embeddedmontiarc.embeddedmontiarc._symboltable.ComponentKind" in scope "Optional[Connector]"
+[debug] CommonScope : No resolver found for symbol targetKind "de.monticore.symboltable.SymbolKind" in scope "Optional[Connector]"
+[debug] CommonScope : No resolver found for symbol targetKind "de.monticore.symboltable.SymbolKind" in scope "Optional[Connector]"
+[debug] ComponentPostGeneric : package memorieswithproductkeys;
+component Connector {
+}
+
+[debug] CommonScope : No resolver found for symbol targetKind "de.monticore.lang.monticar.ts.MCTypeSymbolKind" in scope "Optional[Connector]"
+[debug] CommonScope : No resolver found for symbol targetKind "de.monticore.lang.monticar.ts.MCAttributeSymbolKind" in scope "Optional[Connector]"
+[debug] CommonScope : No resolver found for symbol targetKind "de.monticore.symboltable.SymbolKind" in scope "Optional[Connector]"
+[debug] CommonScope : No resolver found for symbol targetKind "de.monticore.symboltable.SymbolKind" in scope "Optional[Connector]"
+[debug] CommonScope : No resolver found for symbol targetKind "de.monticore.symboltable.SymbolKind" in scope "Optional[Connector]"
+[debug] CommonScope : No resolver found for symbol targetKind "de.monticore.symboltable.SymbolKind" in scope "Optional[Connector]"
+[debug] CommonScope : No resolver found for symbol targetKind "de.monticore.lang.embeddedmontiarc.embeddedmontiarc._symboltable.ComponentKind" in scope "Optional[Connector]"
+[debug] CommonScope : No resolver found for symbol targetKind "de.monticore.symboltable.SymbolKind" in scope "Optional[Connector]"
+[debug] CommonScope : No resolver found for symbol targetKind "de.monticore.symboltable.SymbolKind" in scope "Optional[Connector]"
+[debug] ComponentPreParam : package memorieswithproductkeys;
+component Connector {
+}
+
+[debug] CommonScope : No resolver found for symbol targetKind "de.monticore.lang.monticar.ts.MCTypeSymbolKind" in scope "Optional[Connector]"
+[debug] CommonScope : No resolver found for symbol targetKind "de.monticore.lang.monticar.ts.MCAttributeSymbolKind" in scope "Optional[Connector]"
+[debug] CommonScope : No resolver found for symbol targetKind "de.monticore.symboltable.SymbolKind" in scope "Optional[Connector]"
+[debug] CommonScope : No resolver found for symbol targetKind "de.monticore.symboltable.SymbolKind" in scope "Optional[Connector]"
+[debug] CommonScope : No resolver found for symbol targetKind "de.monticore.symboltable.SymbolKind" in scope "Optional[Connector]"
+[debug] CommonScope : No resolver found for symbol targetKind "de.monticore.symboltable.SymbolKind" in scope "Optional[Connector]"
+[debug] CommonScope : No resolver found for symbol targetKind "de.monticore.lang.embeddedmontiarc.embeddedmontiarc._symboltable.ComponentKind" in scope "Optional[Connector]"
+[debug] CommonScope : No resolver found for symbol targetKind "de.monticore.symboltable.SymbolKind" in scope "Optional[Connector]"
+[debug] CommonScope : No resolver found for symbol targetKind "de.monticore.symboltable.SymbolKind" in scope "Optional[Connector]"
+[debug] ComponentPostParam : package memorieswithproductkeys;
+component Connector {
+}
+
+[trace]  : START resolveDownMany("memorieswithproductkeys.Connector", "de.monticore.lang.embeddedmontiarc.embeddedmontiarc._symboltable.ComponentKind") in scope "Optional.empty". Found #0 (local)
+[trace]  : START resolveDownMany("Connector", "de.monticore.lang.embeddedmontiarc.embeddedmontiarc._symboltable.ComponentKind") in scope "Optional[Network]". Found #0 (local)
+[trace]  : END resolveDownMany("Connector", "de.monticore.lang.embeddedmontiarc.embeddedmontiarc._symboltable.ComponentKind") in scope "Optional[Network]". Found #0
+[trace]  : START resolveDownMany("Connector", "de.monticore.lang.embeddedmontiarc.embeddedmontiarc._symboltable.ComponentKind") in scope "Optional[ArgMax]". Found #0 (local)
+[trace]  : END resolveDownMany("Connector", "de.monticore.lang.embeddedmontiarc.embeddedmontiarc._symboltable.ComponentKind") in scope "Optional[ArgMax]". Found #0
+[debug] CommonScope : The symbol Connector has already been resolved.
+[trace]  : START resolveDownMany("Connector", "de.monticore.lang.embeddedmontiarc.embeddedmontiarc._symboltable.ComponentKind") in scope "Optional[Connector]". Found #1 (local)
+[trace]  : END resolveDownMany("Connector", "de.monticore.lang.embeddedmontiarc.embeddedmontiarc._symboltable.ComponentKind") in scope "Optional[Connector]". Found #1
+[trace]  : END resolveDownMany("memorieswithproductkeys.Connector", "de.monticore.lang.embeddedmontiarc.embeddedmontiarc._symboltable.ComponentKind") in scope "Optional.empty". Found #1
+[debug] info : data_0 de.monticore.lang.monticar.common2._ast.ASTCommonMatrixType@60deefed
+[debug] info : data_1 de.monticore.lang.monticar.common2._ast.ASTCommonMatrixType@49754e74
+[debug] info : data_2 de.monticore.lang.monticar.common2._ast.ASTCommonMatrixType@31881aa2
+[debug] info : res de.monticore.lang.monticar.types2._ast.ASTElementType@1b46392c
+[debug] Type : de.monticore.types.types._ast.ASTSimpleReferenceType@cf01c2e
+[debug] referencedCompName : Network
+[debug] Scope : {=[, , , , , ], data_0=[in CommonMatrixType data_0], data_1=[in CommonMatrixType data_1], data_2=[in CommonMatrixType data_2], res=[out Z res]}
+[debug] SymbolReference : Load full information of 'Network' (Kind de.monticore.lang.embeddedmontiarc.embeddedmontiarc._symboltable.ComponentKind).
+[trace] CommonQualifiedNamesCalculator : Potential qualified names for "Network": [Network, memorieswithproductkeys.Network]
+[trace]  : START resolveDownMany("Network", "de.monticore.lang.embeddedmontiarc.embeddedmontiarc._symboltable.ComponentKind") in scope "Optional.empty". Found #0 (local)
+[trace]  : END resolveDownMany("Network", "de.monticore.lang.embeddedmontiarc.embeddedmontiarc._symboltable.ComponentKind") in scope "Optional.empty". Found #0
+[trace]  : START resolveDownMany("Network", "de.monticore.lang.embeddedmontiarc.embeddedmontiarc._symboltable.ComponentKind") in scope "Optional.empty". Found #0 (local)
+[trace]  : END resolveDownMany("Network", "de.monticore.lang.embeddedmontiarc.embeddedmontiarc._symboltable.ComponentKind") in scope "Optional.empty". Found #0
+[trace]  : START resolveDownMany("memorieswithproductkeys.Network", "de.monticore.lang.embeddedmontiarc.embeddedmontiarc._symboltable.ComponentKind") in scope "Optional.empty". Found #0 (local)
+[debug] CommonScope : The symbol Network has already been resolved.
+[trace]  : START resolveDownMany("Network", "de.monticore.lang.embeddedmontiarc.embeddedmontiarc._symboltable.ComponentKind") in scope "Optional[Network]". Found #1 (local)
+[trace]  : END resolveDownMany("Network", "de.monticore.lang.embeddedmontiarc.embeddedmontiarc._symboltable.ComponentKind") in scope "Optional[Network]". Found #1
+[trace]  : START resolveDownMany("Network", "de.monticore.lang.embeddedmontiarc.embeddedmontiarc._symboltable.ComponentKind") in scope "Optional[ArgMax]". Found #0 (local)
+[trace]  : END resolveDownMany("Network", "de.monticore.lang.embeddedmontiarc.embeddedmontiarc._symboltable.ComponentKind") in scope "Optional[ArgMax]". Found #0
+[trace]  : START resolveDownMany("Network", "de.monticore.lang.embeddedmontiarc.embeddedmontiarc._symboltable.ComponentKind") in scope "Optional[Connector]". Found #0 (local)
+[trace]  : END resolveDownMany("Network", "de.monticore.lang.embeddedmontiarc.embeddedmontiarc._symboltable.ComponentKind") in scope "Optional[Connector]". Found #0
+[trace]  : END resolveDownMany("memorieswithproductkeys.Network", "de.monticore.lang.embeddedmontiarc.embeddedmontiarc._symboltable.ComponentKind") in scope "Optional.empty". Found #1
+[debug] SymbolReference : Loaded full information of 'Network' successfully.
+[debug] info : Loading resolution declarationSymbols
+[debug] SymbolReference : Load full information of 'Network' (Kind de.monticore.lang.embeddedmontiarc.embeddedmontiarc._symboltable.ComponentKind).
+[trace] CommonQualifiedNamesCalculator : Potential qualified names for "Network": [Network, memorieswithproductkeys.Network]
+[trace]  : START resolveDownMany("Network", "de.monticore.lang.embeddedmontiarc.embeddedmontiarc._symboltable.ComponentKind") in scope "Optional.empty". Found #0 (local)
+[trace]  : END resolveDownMany("Network", "de.monticore.lang.embeddedmontiarc.embeddedmontiarc._symboltable.ComponentKind") in scope "Optional.empty". Found #0
+[debug] GlobalScope : Already tried to load model for 'Network'. If model exists, continue with cached version.
+[debug] GlobalScope : Already tried to load model for 'Network'. If model exists, continue with cached version.
+[trace]  : START resolveDownMany("Network", "de.monticore.lang.embeddedmontiarc.embeddedmontiarc._symboltable.ComponentKind") in scope "Optional.empty". Found #0 (local)
+[trace]  : END resolveDownMany("Network", "de.monticore.lang.embeddedmontiarc.embeddedmontiarc._symboltable.ComponentKind") in scope "Optional.empty". Found #0
+[trace]  : START resolveDownMany("memorieswithproductkeys.Network", "de.monticore.lang.embeddedmontiarc.embeddedmontiarc._symboltable.ComponentKind") in scope "Optional.empty". Found #0 (local)
+[debug] CommonScope : The symbol Network has already been resolved.
+[trace]  : START resolveDownMany("Network", "de.monticore.lang.embeddedmontiarc.embeddedmontiarc._symboltable.ComponentKind") in scope "Optional[Network]". Found #1 (local)
+[trace]  : END resolveDownMany("Network", "de.monticore.lang.embeddedmontiarc.embeddedmontiarc._symboltable.ComponentKind") in scope "Optional[Network]". Found #1
+[trace]  : START resolveDownMany("Network", "de.monticore.lang.embeddedmontiarc.embeddedmontiarc._symboltable.ComponentKind") in scope "Optional[ArgMax]". Found #0 (local)
+[trace]  : END resolveDownMany("Network", "de.monticore.lang.embeddedmontiarc.embeddedmontiarc._symboltable.ComponentKind") in scope "Optional[ArgMax]". Found #0
+[trace]  : START resolveDownMany("Network", "de.monticore.lang.embeddedmontiarc.embeddedmontiarc._symboltable.ComponentKind") in scope "Optional[Connector]". Found #0 (local)
+[trace]  : END resolveDownMany("Network", "de.monticore.lang.embeddedmontiarc.embeddedmontiarc._symboltable.ComponentKind") in scope "Optional[Connector]". Found #0
+[trace]  : END resolveDownMany("memorieswithproductkeys.Network", "de.monticore.lang.embeddedmontiarc.embeddedmontiarc._symboltable.ComponentKind") in scope "Optional.empty". Found #1
+[debug] SymbolReference : Loaded full information of 'Network' successfully.
+[debug] CommonSymbolReference : Full information of 'Network' already loaded. Use cached version.
+[debug] New Resolution Value: : 5
+[debug] CommonSymbolReference : Full information of 'Network' already loaded. Use cached version.
+[debug] CommonSymbolReference : Full information of 'Network' already loaded. Use cached version.
+[debug] Pre Handle Size: : de.monticore.types.types._ast.ASTSimpleReferenceType@cf01c2e
+[debug] CommonSymbolReference : Full information of 'Network' already loaded. Use cached version.
+[debug] Test : Network<UnitNumberTypeArgument> predictor
+[debug] SubComponentInstance Scope : {}
+[info] CompInst : Name:nvalue: 5
+[info] Added InstanceInformation : ComponentName: predictor  de.monticore.lang.embeddedmontiarcdynamic.embeddedmontiarcdynamic._ast.ASTSubComponentInstance@1d60059f
+[debug] created SubComponentInstance: : predictor
+[debug] Type : de.monticore.types.types._ast.ASTSimpleReferenceType@134a8ead
+[debug] referencedCompName : ArgMax
+[debug] CommonSymbolReference : Full information of 'Network' already loaded. Use cached version.
+[debug] Scope : {=[, , , , , ], data_0=[in CommonMatrixType data_0], data_1=[in CommonMatrixType data_1], data_2=[in CommonMatrixType data_2], res=[out Z res], predictor=[Network<UnitNumberTypeArgument> predictor]}
+[debug] SymbolReference : Load full information of 'ArgMax' (Kind de.monticore.lang.embeddedmontiarc.embeddedmontiarc._symboltable.ComponentKind).
+[trace] CommonQualifiedNamesCalculator : Potential qualified names for "ArgMax": [ArgMax, memorieswithproductkeys.ArgMax]
+[trace]  : START resolveDownMany("ArgMax", "de.monticore.lang.embeddedmontiarc.embeddedmontiarc._symboltable.ComponentKind") in scope "Optional.empty". Found #0 (local)
+[trace]  : END resolveDownMany("ArgMax", "de.monticore.lang.embeddedmontiarc.embeddedmontiarc._symboltable.ComponentKind") in scope "Optional.empty". Found #0
+[trace]  : START resolveDownMany("ArgMax", "de.monticore.lang.embeddedmontiarc.embeddedmontiarc._symboltable.ComponentKind") in scope "Optional.empty". Found #0 (local)
+[trace]  : END resolveDownMany("ArgMax", "de.monticore.lang.embeddedmontiarc.embeddedmontiarc._symboltable.ComponentKind") in scope "Optional.empty". Found #0
+[trace]  : START resolveDownMany("memorieswithproductkeys.ArgMax", "de.monticore.lang.embeddedmontiarc.embeddedmontiarc._symboltable.ComponentKind") in scope "Optional.empty". Found #0 (local)
+[trace]  : START resolveDownMany("ArgMax", "de.monticore.lang.embeddedmontiarc.embeddedmontiarc._symboltable.ComponentKind") in scope "Optional[Network]". Found #0 (local)
+[trace]  : END resolveDownMany("ArgMax", "de.monticore.lang.embeddedmontiarc.embeddedmontiarc._symboltable.ComponentKind") in scope "Optional[Network]". Found #0
+[debug] CommonScope : The symbol ArgMax has already been resolved.
+[trace]  : START resolveDownMany("ArgMax", "de.monticore.lang.embeddedmontiarc.embeddedmontiarc._symboltable.ComponentKind") in scope "Optional[ArgMax]". Found #1 (local)
+[trace]  : END resolveDownMany("ArgMax", "de.monticore.lang.embeddedmontiarc.embeddedmontiarc._symboltable.ComponentKind") in scope "Optional[ArgMax]". Found #1
+[trace]  : START resolveDownMany("ArgMax", "de.monticore.lang.embeddedmontiarc.embeddedmontiarc._symboltable.ComponentKind") in scope "Optional[Connector]". Found #0 (local)
+[trace]  : END resolveDownMany("ArgMax", "de.monticore.lang.embeddedmontiarc.embeddedmontiarc._symboltable.ComponentKind") in scope "Optional[Connector]". Found #0
+[trace]  : END resolveDownMany("memorieswithproductkeys.ArgMax", "de.monticore.lang.embeddedmontiarc.embeddedmontiarc._symboltable.ComponentKind") in scope "Optional.empty". Found #1
+[debug] SymbolReference : Loaded full information of 'ArgMax' successfully.
+[debug] info : Loading resolution declarationSymbols
+[debug] SymbolReference : Load full information of 'ArgMax' (Kind de.monticore.lang.embeddedmontiarc.embeddedmontiarc._symboltable.ComponentKind).
+[trace] CommonQualifiedNamesCalculator : Potential qualified names for "ArgMax": [ArgMax, memorieswithproductkeys.ArgMax]
+[trace]  : START resolveDownMany("ArgMax", "de.monticore.lang.embeddedmontiarc.embeddedmontiarc._symboltable.ComponentKind") in scope "Optional.empty". Found #0 (local)
+[trace]  : END resolveDownMany("ArgMax", "de.monticore.lang.embeddedmontiarc.embeddedmontiarc._symboltable.ComponentKind") in scope "Optional.empty". Found #0
+[debug] GlobalScope : Already tried to load model for 'ArgMax'. If model exists, continue with cached version.
+[debug] GlobalScope : Already tried to load model for 'ArgMax'. If model exists, continue with cached version.
+[trace]  : START resolveDownMany("ArgMax", "de.monticore.lang.embeddedmontiarc.embeddedmontiarc._symboltable.ComponentKind") in scope "Optional.empty". Found #0 (local)
+[trace]  : END resolveDownMany("ArgMax", "de.monticore.lang.embeddedmontiarc.embeddedmontiarc._symboltable.ComponentKind") in scope "Optional.empty". Found #0
+[trace]  : START resolveDownMany("memorieswithproductkeys.ArgMax", "de.monticore.lang.embeddedmontiarc.embeddedmontiarc._symboltable.ComponentKind") in scope "Optional.empty". Found #0 (local)
+[trace]  : START resolveDownMany("ArgMax", "de.monticore.lang.embeddedmontiarc.embeddedmontiarc._symboltable.ComponentKind") in scope "Optional[Network]". Found #0 (local)
+[trace]  : END resolveDownMany("ArgMax", "de.monticore.lang.embeddedmontiarc.embeddedmontiarc._symboltable.ComponentKind") in scope "Optional[Network]". Found #0
+[debug] CommonScope : The symbol ArgMax has already been resolved.
+[trace]  : START resolveDownMany("ArgMax", "de.monticore.lang.embeddedmontiarc.embeddedmontiarc._symboltable.ComponentKind") in scope "Optional[ArgMax]". Found #1 (local)
+[trace]  : END resolveDownMany("ArgMax", "de.monticore.lang.embeddedmontiarc.embeddedmontiarc._symboltable.ComponentKind") in scope "Optional[ArgMax]". Found #1
+[trace]  : START resolveDownMany("ArgMax", "de.monticore.lang.embeddedmontiarc.embeddedmontiarc._symboltable.ComponentKind") in scope "Optional[Connector]". Found #0 (local)
+[trace]  : END resolveDownMany("ArgMax", "de.monticore.lang.embeddedmontiarc.embeddedmontiarc._symboltable.ComponentKind") in scope "Optional[Connector]". Found #0
+[trace]  : END resolveDownMany("memorieswithproductkeys.ArgMax", "de.monticore.lang.embeddedmontiarc.embeddedmontiarc._symboltable.ComponentKind") in scope "Optional.empty". Found #1
+[debug] SymbolReference : Loaded full information of 'ArgMax' successfully.
+[debug] CommonSymbolReference : Full information of 'ArgMax' already loaded. Use cached version.
+[debug] New Resolution Value: : 32
+[debug] CommonSymbolReference : Full information of 'ArgMax' already loaded. Use cached version.
+[debug] CommonSymbolReference : Full information of 'ArgMax' already loaded. Use cached version.
+[debug] Pre Handle Size: : de.monticore.types.types._ast.ASTSimpleReferenceType@134a8ead
+[debug] CommonSymbolReference : Full information of 'ArgMax' already loaded. Use cached version.
+[debug] Test : ArgMax<UnitNumberTypeArgument> argMax
+[debug] SubComponentInstance Scope : {}
+[info] CompInst : Name:nvalue: 32
+[info] Added InstanceInformation : ComponentName: argMax  de.monticore.lang.embeddedmontiarcdynamic.embeddedmontiarcdynamic._ast.ASTSubComponentInstance@427308f8
+[debug] created SubComponentInstance: : argMax
+[debug] PortArray : No PortArrayName was specified
+[debug] CompNameParts : portName: de.monticore.lang.monticar.common2._ast.ASTQualifiedNameWithArray@54247647 1
+[debug] PortNameParts : 1
+[info] SourcePorts : 1
+[debug] PortArray : No PortArrayName was specified
+[debug] CompNameParts : portName: de.monticore.lang.monticar.common2._ast.ASTQualifiedNameWithArray@4975dda1 1
+[debug] PortNameParts : 1
+[info] target : predictor.data_0
+[info] source : data_0
+[info] TARGETNAME SET TO : predictor.data_0
+[debug] PortArray : No PortArrayName was specified
+[debug] CompNameParts : portName: de.monticore.lang.monticar.common2._ast.ASTQualifiedNameWithArray@230232b0 1
+[debug] PortNameParts : 1
+[info] SourcePorts : 1
+[debug] PortArray : No PortArrayName was specified
+[debug] CompNameParts : portName: de.monticore.lang.monticar.common2._ast.ASTQualifiedNameWithArray@44fd7ba4 1
+[debug] PortNameParts : 1
+[info] target : predictor.data_1
+[info] source : data_1
+[info] TARGETNAME SET TO : predictor.data_1
+[debug] PortArray : No PortArrayName was specified
+[debug] CompNameParts : portName: de.monticore.lang.monticar.common2._ast.ASTQualifiedNameWithArray@22f8adc2 1
+[debug] PortNameParts : 1
+[info] SourcePorts : 1
+[debug] PortArray : No PortArrayName was specified
+[debug] CompNameParts : portName: de.monticore.lang.monticar.common2._ast.ASTQualifiedNameWithArray@69d103f0 1
+[debug] PortNameParts : 1
+[info] target : predictor.data_2
+[info] source : data_2
+[info] TARGETNAME SET TO : predictor.data_2
+[debug] PortArray : No PortArrayName was specified
+[debug] CompNameParts : portName: de.monticore.lang.monticar.common2._ast.ASTQualifiedNameWithArray@5b742bc8 1
+[debug] PortNameParts : 1
+[info] SourcePorts : 1
+[debug] PortArray : No PortArrayName was specified
+[debug] CompNameParts : portName: de.monticore.lang.monticar.common2._ast.ASTQualifiedNameWithArray@74fb5b59 1
+[debug] PortNameParts : 1
+[info] target : argMax.inputVector
+[info] source : predictor.softmax
+[info] TARGETNAME SET TO : argMax.inputVector
+[debug] PortArray : No PortArrayName was specified
+[debug] CompNameParts : portName: de.monticore.lang.monticar.common2._ast.ASTQualifiedNameWithArray@130a6eb9 1
+[debug] PortNameParts : 1
+[info] SourcePorts : 1
+[debug] PortArray : No PortArrayName was specified
+[debug] CompNameParts : portName: de.monticore.lang.monticar.common2._ast.ASTQualifiedNameWithArray@722531ab 1
+[debug] PortNameParts : 1
+[info] target : res
+[info] source : argMax.maxIndex
+[info] TARGETNAME SET TO : res
+[debug] SymbolTableCreator: : endVisit of memorieswithproductkeys.Connector
+[trace]  : START resolveDownMany("memorieswithproductkeys.connector", "de.monticore.symboltable.SymbolKind") in scope "Optional[Connector]". Found #0 (local)
+[trace]  : END resolveDownMany("memorieswithproductkeys.connector", "de.monticore.symboltable.SymbolKind") in scope "Optional[Connector]". Found #0
+[debug] SymbolReference : Load full information of 'Connector' (Kind de.monticore.lang.embeddedmontiarc.embeddedmontiarc._symboltable.ComponentKind).
+[debug] CommonScope : The symbol Connector has already been resolved.
+[debug] SymbolReference : Loaded full information of 'Connector' successfully.
+[debug] SymbolReference : Load full information of 'Connector' (Kind de.monticore.lang.embeddedmontiarc.embeddedmontiarc._symboltable.ComponentKind).
+[debug] CommonScope : The symbol Connector has already been resolved.
+[debug] SymbolReference : Loaded full information of 'Connector' successfully.
+[info] Building Connector: : data_0 -> predictor.data_0
+[info] Building Connector: : data_1 -> predictor.data_1
+[info] Building Connector: : data_2 -> predictor.data_2
+[info] Building Connector: : predictor.softmax -> argMax.inputVector
+[info] Building Connector: : argMax.maxIndex -> res
+[debug] CommonSymbolReference : Full information of 'Network' already loaded. Use cached version.
+[info] Important: : 1
+[debug] CommonSymbolReference : Full information of 'Network' already loaded. Use cached version.
+[debug] ComponentInstance CreateInstance PreSub : Network<UnitNumberTypeArgument> predictor
+[debug] CommonSymbolReference : Full information of 'Network' already loaded. Use cached version.
+[debug] CommonSymbolReference : Full information of 'Network' already loaded. Use cached version.
+[debug] CommonSymbolReference : Full information of 'Network' already loaded. Use cached version.
+[debug] SymbolReference : Load full information of 'Network' (Kind de.monticore.lang.embeddedmontiarc.embeddedmontiarc._symboltable.ComponentKind).
+[debug] CommonScope : The symbol Network has already been resolved.
+[debug] SymbolReference : Loaded full information of 'Network' successfully.
+[debug] SymbolReference : Load full information of 'Network' (Kind de.monticore.lang.embeddedmontiarc.embeddedmontiarc._symboltable.ComponentKind).
+[debug] CommonScope : The symbol Network has already been resolved.
+[debug] SymbolReference : Loaded full information of 'Network' successfully.
+[info] Added ResolutionDeclarationSymbol To EMAComponentInstanceBuilder : name: n astResolution: de.monticore.lang.monticar.resolution._ast.ASTUnitNumberResolution@426c0486
+[debug] CommonSymbolReference : Full information of 'Network' already loaded. Use cached version.
+[debug] CommonSymbolReference : Full information of 'Network' already loaded. Use cached version.
+[debug] CommonSymbolReference : Full information of 'Network' already loaded. Use cached version.
+[debug] exchangeGenerics inst : package memorieswithproductkeys;
+component /*instance*/ predictor {
+  ports
+    in CommonMatrixType data_0,
+    in CommonMatrixType data_1,
+    in CommonMatrixType data_2,
+    out CommonMatrixType softmax;
+}
+
+[debug] Fixing Wrong Ports : See next lines
+[debug] CommonSymbolReference : Full information of 'Network' already loaded. Use cached version.
+[debug] build end sym : package memorieswithproductkeys;
+component /*instance*/ predictor {
+  ports
+    in CommonMatrixType data_0,
+    in CommonMatrixType data_1,
+    in CommonMatrixType data_2,
+    out CommonMatrixType softmax;
+}
+
+[debug] CommonSymbolReference : Full information of 'Network' already loaded. Use cached version.
+[debug] EMAPortArraySymbol  : softmax
+[debug] set NameSizeDependsOn to: : null
+[debug] EMAPortArraySymbol  : data_0
+[debug] set NameSizeDependsOn to: : null
+[debug] EMAPortArraySymbol  : data_2
+[debug] set NameSizeDependsOn to: : null
+[debug] EMAPortArraySymbol  : data_1
+[debug] set NameSizeDependsOn to: : null
+[debug] InstanceInformation: : 5
+[debug] CommonSymbolReference : Full information of 'Network' already loaded. Use cached version.
+[debug] ComponentInstance CreateInstance PostSub : Network<UnitNumberTypeArgument> predictor
+[debug] CommonSymbolReference : Full information of 'ArgMax' already loaded. Use cached version.
+[info] Important: : 1
+[debug] CommonSymbolReference : Full information of 'ArgMax' already loaded. Use cached version.
+[debug] ComponentInstance CreateInstance PreSub : ArgMax<UnitNumberTypeArgument> argMax
+[debug] CommonSymbolReference : Full information of 'ArgMax' already loaded. Use cached version.
+[debug] CommonSymbolReference : Full information of 'ArgMax' already loaded. Use cached version.
+[debug] CommonSymbolReference : Full information of 'ArgMax' already loaded. Use cached version.
+[debug] SymbolReference : Load full information of 'ArgMax' (Kind de.monticore.lang.embeddedmontiarc.embeddedmontiarc._symboltable.ComponentKind).
+[debug] CommonScope : The symbol ArgMax has already been resolved.
+[debug] SymbolReference : Loaded full information of 'ArgMax' successfully.
+[debug] SymbolReference : Load full information of 'ArgMax' (Kind de.monticore.lang.embeddedmontiarc.embeddedmontiarc._symboltable.ComponentKind).
+[debug] CommonScope : The symbol ArgMax has already been resolved.
+[debug] SymbolReference : Loaded full information of 'ArgMax' successfully.
+[info] Added ResolutionDeclarationSymbol To EMAComponentInstanceBuilder : name: n astResolution: de.monticore.lang.monticar.resolution._ast.ASTUnitNumberResolution@78b0ec3a
+[debug] CommonSymbolReference : Full information of 'ArgMax' already loaded. Use cached version.
+[debug] CommonSymbolReference : Full information of 'ArgMax' already loaded. Use cached version.
+[debug] CommonSymbolReference : Full information of 'ArgMax' already loaded. Use cached version.
+[debug] exchangeGenerics inst : package memorieswithproductkeys;
+component /*instance*/ argMax {
+  ports
+    in CommonMatrixType inputVector,
+    out Z maxIndex,
+    out Q maxValue;
+}
+
+[debug] SymbolReference : Load full information of 'Z' (Kind de.monticore.lang.monticar.ts.MCTypeSymbolKind).
+[trace] CommonQualifiedNamesCalculator : Potential qualified names for "Z": [Z, memorieswithproductkeys.Z]
+[debug] CommonScope : The symbol Z has already been resolved.
+[debug] CommonScope : The symbol Z has already been resolved.
+[debug] CommonScope : The symbol Z has already been resolved.
+[debug] CommonScope : The symbol Z has already been resolved.
+[debug] CommonScope : The symbol Z has already been resolved.
+[debug] CommonScope : The symbol Z has already been resolved.
+[debug] CommonScope : The symbol Z has already been resolved.
+[debug] CommonScope : The symbol Z has already been resolved.
+[debug] CommonScope : The symbol Z has already been resolved.
+[debug] CommonScope : The symbol Z has already been resolved.
+[debug] CommonScope : The symbol Z has already been resolved.
+[trace]  : START resolveDownMany("Z", "de.monticore.lang.monticar.ts.MCTypeSymbolKind") in scope "Optional.empty". Found #1 (local)
+[trace]  : END resolveDownMany("Z", "de.monticore.lang.monticar.ts.MCTypeSymbolKind") in scope "Optional.empty". Found #1
+[debug] SymbolReference : Loaded full information of 'Z' successfully.
+[debug] SymbolReference : Load full information of 'Z' (Kind de.monticore.lang.monticar.ts.MCTypeSymbolKind).
+[trace] CommonQualifiedNamesCalculator : Potential qualified names for "Z": [Z, memorieswithproductkeys.Z]
+[debug] CommonScope : The symbol Z has already been resolved.
+[debug] CommonScope : The symbol Z has already been resolved.
+[debug] CommonScope : The symbol Z has already been resolved.
+[debug] CommonScope : The symbol Z has already been resolved.
+[debug] CommonScope : The symbol Z has already been resolved.
+[debug] CommonScope : The symbol Z has already been resolved.
+[debug] CommonScope : The symbol Z has already been resolved.
+[debug] CommonScope : The symbol Z has already been resolved.
+[debug] CommonScope : The symbol Z has already been resolved.
+[debug] CommonScope : The symbol Z has already been resolved.
+[debug] CommonScope : The symbol Z has already been resolved.
+[trace]  : START resolveDownMany("Z", "de.monticore.lang.monticar.ts.MCTypeSymbolKind") in scope "Optional.empty". Found #1 (local)
+[trace]  : END resolveDownMany("Z", "de.monticore.lang.monticar.ts.MCTypeSymbolKind") in scope "Optional.empty". Found #1
+[debug] SymbolReference : Loaded full information of 'Z' successfully.
+[debug] SymbolReference : Load full information of 'Q' (Kind de.monticore.lang.monticar.ts.MCTypeSymbolKind).
+[trace] CommonQualifiedNamesCalculator : Potential qualified names for "Q": [Q, memorieswithproductkeys.Q]
+[debug] CommonScope : The symbol Q has already been resolved.
+[debug] CommonScope : The symbol Q has already been resolved.
+[debug] CommonScope : The symbol Q has already been resolved.
+[debug] CommonScope : The symbol Q has already been resolved.
+[debug] CommonScope : The symbol Q has already been resolved.
+[debug] CommonScope : The symbol Q has already been resolved.
+[debug] CommonScope : The symbol Q has already been resolved.
+[debug] CommonScope : The symbol Q has already been resolved.
+[debug] CommonScope : The symbol Q has already been resolved.
+[debug] CommonScope : The symbol Q has already been resolved.
+[debug] CommonScope : The symbol Q has already been resolved.
+[trace]  : START resolveDownMany("Q", "de.monticore.lang.monticar.ts.MCTypeSymbolKind") in scope "Optional.empty". Found #1 (local)
+[trace]  : END resolveDownMany("Q", "de.monticore.lang.monticar.ts.MCTypeSymbolKind") in scope "Optional.empty". Found #1
+[debug] SymbolReference : Loaded full information of 'Q' successfully.
+[debug] SymbolReference : Load full information of 'Q' (Kind de.monticore.lang.monticar.ts.MCTypeSymbolKind).
+[trace] CommonQualifiedNamesCalculator : Potential qualified names for "Q": [Q, memorieswithproductkeys.Q]
+[debug] CommonScope : The symbol Q has already been resolved.
+[debug] CommonScope : The symbol Q has already been resolved.
+[debug] CommonScope : The symbol Q has already been resolved.
+[debug] CommonScope : The symbol Q has already been resolved.
+[debug] CommonScope : The symbol Q has already been resolved.
+[debug] CommonScope : The symbol Q has already been resolved.
+[debug] CommonScope : The symbol Q has already been resolved.
+[debug] CommonScope : The symbol Q has already been resolved.
+[debug] CommonScope : The symbol Q has already been resolved.
+[debug] CommonScope : The symbol Q has already been resolved.
+[debug] CommonScope : The symbol Q has already been resolved.
+[trace]  : START resolveDownMany("Q", "de.monticore.lang.monticar.ts.MCTypeSymbolKind") in scope "Optional.empty". Found #1 (local)
+[trace]  : END resolveDownMany("Q", "de.monticore.lang.monticar.ts.MCTypeSymbolKind") in scope "Optional.empty". Found #1
+[debug] SymbolReference : Loaded full information of 'Q' successfully.
+[debug] Fixing Wrong Ports : See next lines
+[debug] CommonSymbolReference : Full information of 'ArgMax' already loaded. Use cached version.
+[debug] build end sym : package memorieswithproductkeys;
+component /*instance*/ argMax {
+  ports
+    in CommonMatrixType inputVector,
+    out Z maxIndex,
+    out Q maxValue;
+}
+
+[debug] CommonSymbolReference : Full information of 'ArgMax' already loaded. Use cached version.
+[trace] CommonQualifiedNamesCalculator : Potential qualified names for "": [, memorieswithproductkeys.]
+[trace]  : START resolveDownMany("", "de.monticore.lang.monticar.cnnarch._symboltable.ArchitectureKind") in scope "Optional.empty". Found #0 (local)
+[trace]  : END resolveDownMany("", "de.monticore.lang.monticar.cnnarch._symboltable.ArchitectureKind") in scope "Optional.empty". Found #0
+[trace]  : START resolveDownMany("", "de.monticore.lang.monticar.cnnarch._symboltable.ArchitectureKind") in scope "Optional.empty". Found #0 (local)
+[trace]  : END resolveDownMany("", "de.monticore.lang.monticar.cnnarch._symboltable.ArchitectureKind") in scope "Optional.empty". Found #0
+[trace]  : START resolveDownMany("memorieswithproductkeys.", "de.monticore.lang.monticar.cnnarch._symboltable.ArchitectureKind") in scope "Optional.empty". Found #0 (local)
+[trace]  : START resolveDownMany("", "de.monticore.lang.monticar.cnnarch._symboltable.ArchitectureKind") in scope "Optional[Network]". Found #0 (local)
+[trace]  : END resolveDownMany("", "de.monticore.lang.monticar.cnnarch._symboltable.ArchitectureKind") in scope "Optional[Network]". Found #0
+[trace]  : START resolveDownMany("", "de.monticore.lang.monticar.cnnarch._symboltable.ArchitectureKind") in scope "Optional[ArgMax]". Found #0 (local)
+[trace]  : END resolveDownMany("", "de.monticore.lang.monticar.cnnarch._symboltable.ArchitectureKind") in scope "Optional[ArgMax]". Found #0
+[trace]  : START resolveDownMany("", "de.monticore.lang.monticar.cnnarch._symboltable.ArchitectureKind") in scope "Optional[Connector]". Found #0 (local)
+[trace]  : END resolveDownMany("", "de.monticore.lang.monticar.cnnarch._symboltable.ArchitectureKind") in scope "Optional[Connector]". Found #0
+[trace]  : END resolveDownMany("memorieswithproductkeys.", "de.monticore.lang.monticar.cnnarch._symboltable.ArchitectureKind") in scope "Optional.empty". Found #0
+[trace]  : START resolveDownMany("memorieswithproductkeys.", "de.monticore.lang.monticar.cnnarch._symboltable.ArchitectureKind") in scope "Optional.empty". Found #0 (local)
+[trace]  : START resolveDownMany("", "de.monticore.lang.monticar.cnnarch._symboltable.ArchitectureKind") in scope "Optional[Network]". Found #0 (local)
+[trace]  : END resolveDownMany("", "de.monticore.lang.monticar.cnnarch._symboltable.ArchitectureKind") in scope "Optional[Network]". Found #0
+[trace]  : START resolveDownMany("", "de.monticore.lang.monticar.cnnarch._symboltable.ArchitectureKind") in scope "Optional[ArgMax]". Found #0 (local)
+[trace]  : END resolveDownMany("", "de.monticore.lang.monticar.cnnarch._symboltable.ArchitectureKind") in scope "Optional[ArgMax]". Found #0
+[trace]  : START resolveDownMany("", "de.monticore.lang.monticar.cnnarch._symboltable.ArchitectureKind") in scope "Optional[Connector]". Found #0 (local)
+[trace]  : END resolveDownMany("", "de.monticore.lang.monticar.cnnarch._symboltable.ArchitectureKind") in scope "Optional[Connector]". Found #0
+[trace]  : END resolveDownMany("memorieswithproductkeys.", "de.monticore.lang.monticar.cnnarch._symboltable.ArchitectureKind") in scope "Optional.empty". Found #0
+[debug] InstanceInformation: : 32
+[debug] CommonSymbolReference : Full information of 'ArgMax' already loaded. Use cached version.
+[debug] ComponentInstance CreateInstance PostSub : ArgMax<UnitNumberTypeArgument> argMax
+[debug] CommonSymbolReference : Full information of 'Connector' already loaded. Use cached version.
+[debug] CommonSymbolReference : Full information of 'Network' already loaded. Use cached version.
+[debug] CommonSymbolReference : Full information of 'ArgMax' already loaded. Use cached version.
+[debug] exchangeGenerics inst : package memorieswithproductkeys;
+component /*instance*/ connector {
+  ports
+    in CommonMatrixType data_0,
+    in CommonMatrixType data_1,
+    in CommonMatrixType data_2,
+    out Z res;
+  component /*instance*/ predictor {
+    ports
+      in CommonMatrixType data_0,
+      in CommonMatrixType data_1,
+      in CommonMatrixType data_2,
+      out CommonMatrixType softmax;
+  }
+  component /*instance*/ argMax {
+    ports
+      in CommonMatrixType inputVector,
+      out Z maxIndex,
+      out Q maxValue;
+  }
+  connect argMax.maxIndex -> res;
+  connect data_0 -> predictor.data_0;
+  connect data_1 -> predictor.data_1;
+  connect data_2 -> predictor.data_2;
+  connect predictor.softmax -> argMax.inputVector;
+}
+
+[debug] CommonSymbolReference : Full information of 'Network' already loaded. Use cached version.
+[debug] CommonScope : No resolver found for symbol targetKind "de.monticore.lang.monticar.ts.MCTypeSymbolKind" in scope "Optional[de.monticore.lang.monticar.types2._ast.ASTElementType@485caa8f]"
+[debug] CommonScope : No resolver found for symbol targetKind "de.monticore.lang.monticar.ts.MCTypeSymbolKind" in scope "Optional[de.monticore.lang.monticar.types2._ast.ASTElementType@485caa8f]"
+[debug] ComponentType : component Network<de.monticore.lang.monticar.types2._ast.ASTElementType@485caa8f> {
+  ports
+    in CommonMatrixType data_0,
+    in CommonMatrixType data_1,
+    in CommonMatrixType data_2,
+    out CommonMatrixType softmax;
+}
+
+[debug] FormalTypeParameters : [de.monticore.lang.monticar.types2._ast.ASTElementType@485caa8f]
+[debug] CommonSymbolReference : Full information of 'Network' already loaded. Use cached version.
+[debug] exchangeGenerics inst : package memorieswithproductkeys;
+component /*instance*/ predictor {
+  ports
+    in CommonMatrixType data_0,
+    in CommonMatrixType data_1,
+    in CommonMatrixType data_2,
+    out CommonMatrixType softmax;
+}
+
+[debug] Fixing Wrong Ports : See next lines
+[debug] CommonSymbolReference : Full information of 'ArgMax' already loaded. Use cached version.
+[debug] CommonScope : No resolver found for symbol targetKind "de.monticore.lang.monticar.ts.MCTypeSymbolKind" in scope "Optional[de.monticore.lang.monticar.types2._ast.ASTElementType@5384ce66]"
+[debug] CommonScope : No resolver found for symbol targetKind "de.monticore.lang.monticar.ts.MCTypeSymbolKind" in scope "Optional[de.monticore.lang.monticar.types2._ast.ASTElementType@5384ce66]"
+[debug] ComponentType : component ArgMax<de.monticore.lang.monticar.types2._ast.ASTElementType@5384ce66> {
+  ports
+    in CommonMatrixType inputVector,
+    out Z maxIndex,
+    out Q maxValue;
+}
+
+[debug] FormalTypeParameters : [de.monticore.lang.monticar.types2._ast.ASTElementType@5384ce66]
+[debug] CommonSymbolReference : Full information of 'ArgMax' already loaded. Use cached version.
+[debug] exchangeGenerics inst : package memorieswithproductkeys;
+component /*instance*/ argMax {
+  ports
+    in CommonMatrixType inputVector,
+    out Z maxIndex,
+    out Q maxValue;
+}
+
+[debug] CommonSymbolReference : Full information of 'Z' already loaded. Use cached version.
+[debug] CommonSymbolReference : Full information of 'Q' already loaded. Use cached version.
+[debug] Fixing Wrong Ports : See next lines
+[debug] Fixing Wrong Ports : See next lines
+[debug] CommonSymbolReference : Full information of 'Connector' already loaded. Use cached version.
+[debug] CommonSymbolReference : Full information of 'Network' already loaded. Use cached version.
+[debug] CommonSymbolReference : Full information of 'ArgMax' already loaded. Use cached version.
+[debug] build end sym : package memorieswithproductkeys;
+component /*instance*/ connector {
+  ports
+    in CommonMatrixType data_0,
+    in CommonMatrixType data_1,
+    in CommonMatrixType data_2,
+    out Z res;
+  component /*instance*/ predictor {
+    ports
+      in CommonMatrixType data_0,
+      in CommonMatrixType data_1,
+      in CommonMatrixType data_2,
+      out CommonMatrixType softmax;
+  }
+  component /*instance*/ argMax {
+    ports
+      in CommonMatrixType inputVector,
+      out Z maxIndex,
+      out Q maxValue;
+  }
+  connect argMax.maxIndex -> res;
+  connect data_0 -> predictor.data_0;
+  connect data_1 -> predictor.data_1;
+  connect data_2 -> predictor.data_2;
+  connect predictor.softmax -> argMax.inputVector;
+}
+
+[debug] CommonSymbolReference : Full information of 'Connector' already loaded. Use cached version.
+[trace] CommonQualifiedNamesCalculator : Potential qualified names for "": [, memorieswithproductkeys.]
+[trace]  : START resolveDownMany("", "de.monticore.lang.monticar.cnnarch._symboltable.ArchitectureKind") in scope "Optional.empty". Found #0 (local)
+[trace]  : END resolveDownMany("", "de.monticore.lang.monticar.cnnarch._symboltable.ArchitectureKind") in scope "Optional.empty". Found #0
+[trace]  : START resolveDownMany("", "de.monticore.lang.monticar.cnnarch._symboltable.ArchitectureKind") in scope "Optional.empty". Found #0 (local)
+[trace]  : END resolveDownMany("", "de.monticore.lang.monticar.cnnarch._symboltable.ArchitectureKind") in scope "Optional.empty". Found #0
+[trace]  : START resolveDownMany("memorieswithproductkeys.", "de.monticore.lang.monticar.cnnarch._symboltable.ArchitectureKind") in scope "Optional.empty". Found #0 (local)
+[trace]  : START resolveDownMany("", "de.monticore.lang.monticar.cnnarch._symboltable.ArchitectureKind") in scope "Optional[Network]". Found #0 (local)
+[trace]  : END resolveDownMany("", "de.monticore.lang.monticar.cnnarch._symboltable.ArchitectureKind") in scope "Optional[Network]". Found #0
+[trace]  : START resolveDownMany("", "de.monticore.lang.monticar.cnnarch._symboltable.ArchitectureKind") in scope "Optional[ArgMax]". Found #0 (local)
+[trace]  : END resolveDownMany("", "de.monticore.lang.monticar.cnnarch._symboltable.ArchitectureKind") in scope "Optional[ArgMax]". Found #0
+[trace]  : START resolveDownMany("", "de.monticore.lang.monticar.cnnarch._symboltable.ArchitectureKind") in scope "Optional[Connector]". Found #0 (local)
+[trace]  : END resolveDownMany("", "de.monticore.lang.monticar.cnnarch._symboltable.ArchitectureKind") in scope "Optional[Connector]". Found #0
+[trace]  : END resolveDownMany("memorieswithproductkeys.", "de.monticore.lang.monticar.cnnarch._symboltable.ArchitectureKind") in scope "Optional.empty". Found #0
+[trace]  : START resolveDownMany("memorieswithproductkeys.", "de.monticore.lang.monticar.cnnarch._symboltable.ArchitectureKind") in scope "Optional.empty". Found #0 (local)
+[trace]  : START resolveDownMany("", "de.monticore.lang.monticar.cnnarch._symboltable.ArchitectureKind") in scope "Optional[Network]". Found #0 (local)
+[trace]  : END resolveDownMany("", "de.monticore.lang.monticar.cnnarch._symboltable.ArchitectureKind") in scope "Optional[Network]". Found #0
+[trace]  : START resolveDownMany("", "de.monticore.lang.monticar.cnnarch._symboltable.ArchitectureKind") in scope "Optional[ArgMax]". Found #0 (local)
+[trace]  : END resolveDownMany("", "de.monticore.lang.monticar.cnnarch._symboltable.ArchitectureKind") in scope "Optional[ArgMax]". Found #0
+[trace]  : START resolveDownMany("", "de.monticore.lang.monticar.cnnarch._symboltable.ArchitectureKind") in scope "Optional[Connector]". Found #0 (local)
+[trace]  : END resolveDownMany("", "de.monticore.lang.monticar.cnnarch._symboltable.ArchitectureKind") in scope "Optional[Connector]". Found #0
+[trace]  : END resolveDownMany("memorieswithproductkeys.", "de.monticore.lang.monticar.cnnarch._symboltable.ArchitectureKind") in scope "Optional.empty". Found #0
+[debug] EMADLModelLoader : Created symbol table for model "memorieswithproductkeys.Connector".
+[trace]  : START resolveDownMany("memorieswithproductkeys.Connector", "de.monticore.lang.embeddedmontiarc.embeddedmontiarc._symboltable.ComponentKind") in scope "Optional.empty". Found #0 (local)
+[trace]  : START resolveDownMany("Connector", "de.monticore.lang.embeddedmontiarc.embeddedmontiarc._symboltable.ComponentKind") in scope "Optional[Network]". Found #0 (local)
+[trace]  : END resolveDownMany("Connector", "de.monticore.lang.embeddedmontiarc.embeddedmontiarc._symboltable.ComponentKind") in scope "Optional[Network]". Found #0
+[trace]  : START resolveDownMany("Connector", "de.monticore.lang.embeddedmontiarc.embeddedmontiarc._symboltable.ComponentKind") in scope "Optional[ArgMax]". Found #0 (local)
+[trace]  : END resolveDownMany("Connector", "de.monticore.lang.embeddedmontiarc.embeddedmontiarc._symboltable.ComponentKind") in scope "Optional[ArgMax]". Found #0
+[debug] CommonScope : The symbol Connector has already been resolved.
+[trace]  : START resolveDownMany("Connector", "de.monticore.lang.embeddedmontiarc.embeddedmontiarc._symboltable.ComponentKind") in scope "Optional[Connector]". Found #1 (local)
+[trace]  : END resolveDownMany("Connector", "de.monticore.lang.embeddedmontiarc.embeddedmontiarc._symboltable.ComponentKind") in scope "Optional[Connector]". Found #1
+[trace]  : END resolveDownMany("memorieswithproductkeys.Connector", "de.monticore.lang.embeddedmontiarc.embeddedmontiarc._symboltable.ComponentKind") in scope "Optional.empty". Found #1
+[info] streamtest-generator : [2020-10-26 11:54:26.551]    -> parsed & resolved
+[info] streamtest-generator : [2020-10-26 11:54:26.551]  - memorieswithproductkeys/Stream.emadl
+[trace]  : START resolveDownMany("memorieswithproductkeys.Stream", "de.monticore.lang.embeddedmontiarc.embeddedmontiarc._symboltable.ComponentKind") in scope "Optional.empty". Found #0 (local)
+[trace]  : START resolveDownMany("Stream", "de.monticore.lang.embeddedmontiarc.embeddedmontiarc._symboltable.ComponentKind") in scope "Optional[Network]". Found #0 (local)
+[trace]  : END resolveDownMany("Stream", "de.monticore.lang.embeddedmontiarc.embeddedmontiarc._symboltable.ComponentKind") in scope "Optional[Network]". Found #0
+[trace]  : START resolveDownMany("Stream", "de.monticore.lang.embeddedmontiarc.embeddedmontiarc._symboltable.ComponentKind") in scope "Optional[ArgMax]". Found #0 (local)
+[trace]  : END resolveDownMany("Stream", "de.monticore.lang.embeddedmontiarc.embeddedmontiarc._symboltable.ComponentKind") in scope "Optional[ArgMax]". Found #0
+[trace]  : START resolveDownMany("Stream", "de.monticore.lang.embeddedmontiarc.embeddedmontiarc._symboltable.ComponentKind") in scope "Optional[Connector]". Found #0 (local)
+[trace]  : END resolveDownMany("Stream", "de.monticore.lang.embeddedmontiarc.embeddedmontiarc._symboltable.ComponentKind") in scope "Optional[Connector]". Found #0
+[trace]  : END resolveDownMany("memorieswithproductkeys.Stream", "de.monticore.lang.embeddedmontiarc.embeddedmontiarc._symboltable.ComponentKind") in scope "Optional.empty". Found #0
+[debug] ModelingLanguageModelLoader : Start parsing model Location: file:/home/julian/Documents/MontiCore/memorieswithproductkeys/memories-with-product-keys/src/main/ema/emadl/models/memorieswithproductkeys/Stream.emadl Package: memorieswithproductkeys/Stream.emadl.
+[debug] ModelingLanguageModelLoader : Parsed model Location: file:/home/julian/Documents/MontiCore/memorieswithproductkeys/memories-with-product-keys/src/main/ema/emadl/models/memorieswithproductkeys/Stream.emadl Package: memorieswithproductkeys/Stream.emadl successfully.
+[debug] EMADLModelLoader : Start creation of symbol table for model "memorieswithproductkeys.Stream".
+[debug] EmbeddedMontiArcSymbolTableCreator : Building Symboltable for Component: Stream
+[debug] CommonScope : No resolver found for symbol targetKind "de.monticore.lang.monticar.ts.MCTypeSymbolKind" in scope "Optional[Stream]"
+[debug] CommonScope : No resolver found for symbol targetKind "de.monticore.lang.monticar.ts.MCAttributeSymbolKind" in scope "Optional[Stream]"
+[debug] CommonScope : No resolver found for symbol targetKind "de.monticore.symboltable.SymbolKind" in scope "Optional[Stream]"
+[debug] CommonScope : No resolver found for symbol targetKind "de.monticore.symboltable.SymbolKind" in scope "Optional[Stream]"
+[debug] CommonScope : No resolver found for symbol targetKind "de.monticore.symboltable.SymbolKind" in scope "Optional[Stream]"
+[debug] CommonScope : No resolver found for symbol targetKind "de.monticore.symboltable.SymbolKind" in scope "Optional[Stream]"
+[debug] CommonScope : No resolver found for symbol targetKind "de.monticore.lang.embeddedmontiarc.embeddedmontiarc._symboltable.ComponentKind" in scope "Optional[Stream]"
+[debug] CommonScope : No resolver found for symbol targetKind "de.monticore.symboltable.SymbolKind" in scope "Optional[Stream]"
+[debug] CommonScope : No resolver found for symbol targetKind "de.monticore.symboltable.SymbolKind" in scope "Optional[Stream]"
+[debug] ComponentPreGeneric : package memorieswithproductkeys;
+component Stream {
+}
+
+[debug] CommonScope : No resolver found for symbol targetKind "de.monticore.lang.monticar.ts.MCTypeSymbolKind" in scope "Optional[Stream]"
+[debug] CommonScope : No resolver found for symbol targetKind "de.monticore.lang.monticar.ts.MCAttributeSymbolKind" in scope "Optional[Stream]"
+[debug] CommonScope : No resolver found for symbol targetKind "de.monticore.symboltable.SymbolKind" in scope "Optional[Stream]"
+[debug] CommonScope : No resolver found for symbol targetKind "de.monticore.symboltable.SymbolKind" in scope "Optional[Stream]"
+[debug] CommonScope : No resolver found for symbol targetKind "de.monticore.symboltable.SymbolKind" in scope "Optional[Stream]"
+[debug] CommonScope : No resolver found for symbol targetKind "de.monticore.symboltable.SymbolKind" in scope "Optional[Stream]"
+[debug] CommonScope : No resolver found for symbol targetKind "de.monticore.lang.embeddedmontiarc.embeddedmontiarc._symboltable.ComponentKind" in scope "Optional[Stream]"
+[debug] CommonScope : No resolver found for symbol targetKind "de.monticore.symboltable.SymbolKind" in scope "Optional[Stream]"
+[debug] CommonScope : No resolver found for symbol targetKind "de.monticore.symboltable.SymbolKind" in scope "Optional[Stream]"
+[debug] ComponentPostGeneric : package memorieswithproductkeys;
+component Stream {
+}
+
+[debug] CommonScope : No resolver found for symbol targetKind "de.monticore.lang.monticar.ts.MCTypeSymbolKind" in scope "Optional[Stream]"
+[debug] CommonScope : No resolver found for symbol targetKind "de.monticore.lang.monticar.ts.MCAttributeSymbolKind" in scope "Optional[Stream]"
+[debug] CommonScope : No resolver found for symbol targetKind "de.monticore.symboltable.SymbolKind" in scope "Optional[Stream]"
+[debug] CommonScope : No resolver found for symbol targetKind "de.monticore.symboltable.SymbolKind" in scope "Optional[Stream]"
+[debug] CommonScope : No resolver found for symbol targetKind "de.monticore.symboltable.SymbolKind" in scope "Optional[Stream]"
+[debug] CommonScope : No resolver found for symbol targetKind "de.monticore.symboltable.SymbolKind" in scope "Optional[Stream]"
+[debug] CommonScope : No resolver found for symbol targetKind "de.monticore.lang.embeddedmontiarc.embeddedmontiarc._symboltable.ComponentKind" in scope "Optional[Stream]"
+[debug] CommonScope : No resolver found for symbol targetKind "de.monticore.symboltable.SymbolKind" in scope "Optional[Stream]"
+[debug] CommonScope : No resolver found for symbol targetKind "de.monticore.symboltable.SymbolKind" in scope "Optional[Stream]"
+[debug] ComponentPreParam : package memorieswithproductkeys;
+component Stream {
+}
+
+[debug] CommonScope : No resolver found for symbol targetKind "de.monticore.lang.monticar.ts.MCTypeSymbolKind" in scope "Optional[Stream]"
+[debug] CommonScope : No resolver found for symbol targetKind "de.monticore.lang.monticar.ts.MCAttributeSymbolKind" in scope "Optional[Stream]"
+[debug] CommonScope : No resolver found for symbol targetKind "de.monticore.symboltable.SymbolKind" in scope "Optional[Stream]"
+[debug] CommonScope : No resolver found for symbol targetKind "de.monticore.symboltable.SymbolKind" in scope "Optional[Stream]"
+[debug] CommonScope : No resolver found for symbol targetKind "de.monticore.symboltable.SymbolKind" in scope "Optional[Stream]"
+[debug] CommonScope : No resolver found for symbol targetKind "de.monticore.symboltable.SymbolKind" in scope "Optional[Stream]"
+[debug] CommonScope : No resolver found for symbol targetKind "de.monticore.lang.embeddedmontiarc.embeddedmontiarc._symboltable.ComponentKind" in scope "Optional[Stream]"
+[debug] CommonScope : No resolver found for symbol targetKind "de.monticore.symboltable.SymbolKind" in scope "Optional[Stream]"
+[debug] CommonScope : No resolver found for symbol targetKind "de.monticore.symboltable.SymbolKind" in scope "Optional[Stream]"
+[debug] ComponentPostParam : package memorieswithproductkeys;
+component Stream {
+}
+
+[trace]  : START resolveDownMany("memorieswithproductkeys.Stream", "de.monticore.lang.embeddedmontiarc.embeddedmontiarc._symboltable.ComponentKind") in scope "Optional.empty". Found #0 (local)
+[trace]  : START resolveDownMany("Stream", "de.monticore.lang.embeddedmontiarc.embeddedmontiarc._symboltable.ComponentKind") in scope "Optional[Network]". Found #0 (local)
+[trace]  : END resolveDownMany("Stream", "de.monticore.lang.embeddedmontiarc.embeddedmontiarc._symboltable.ComponentKind") in scope "Optional[Network]". Found #0
+[trace]  : START resolveDownMany("Stream", "de.monticore.lang.embeddedmontiarc.embeddedmontiarc._symboltable.ComponentKind") in scope "Optional[ArgMax]". Found #0 (local)
+[trace]  : END resolveDownMany("Stream", "de.monticore.lang.embeddedmontiarc.embeddedmontiarc._symboltable.ComponentKind") in scope "Optional[ArgMax]". Found #0
+[trace]  : START resolveDownMany("Stream", "de.monticore.lang.embeddedmontiarc.embeddedmontiarc._symboltable.ComponentKind") in scope "Optional[Connector]". Found #0 (local)
+[trace]  : END resolveDownMany("Stream", "de.monticore.lang.embeddedmontiarc.embeddedmontiarc._symboltable.ComponentKind") in scope "Optional[Connector]". Found #0
+[debug] CommonScope : The symbol Stream has already been resolved.
+[trace]  : START resolveDownMany("Stream", "de.monticore.lang.embeddedmontiarc.embeddedmontiarc._symboltable.ComponentKind") in scope "Optional[Stream]". Found #1 (local)
+[trace]  : END resolveDownMany("Stream", "de.monticore.lang.embeddedmontiarc.embeddedmontiarc._symboltable.ComponentKind") in scope "Optional[Stream]". Found #1
+[trace]  : END resolveDownMany("memorieswithproductkeys.Stream", "de.monticore.lang.embeddedmontiarc.embeddedmontiarc._symboltable.ComponentKind") in scope "Optional.empty". Found #1
+[debug] info : hundreds de.monticore.lang.monticar.types2._ast.ASTElementType@6d8b7ea9
+[debug] info : tens de.monticore.lang.monticar.types2._ast.ASTElementType@5a39e554
+[debug] info : ones de.monticore.lang.monticar.types2._ast.ASTElementType@333d44f6
+[debug] info : number de.monticore.lang.monticar.types2._ast.ASTElementType@350bbd5d
+[debug] SymbolTableCreator: : endVisit of memorieswithproductkeys.Stream
+[trace]  : START resolveDownMany("memorieswithproductkeys.stream", "de.monticore.symboltable.SymbolKind") in scope "Optional[Stream]". Found #0 (local)
+[trace]  : END resolveDownMany("memorieswithproductkeys.stream", "de.monticore.symboltable.SymbolKind") in scope "Optional[Stream]". Found #0
+[debug] SymbolReference : Load full information of 'Stream' (Kind de.monticore.lang.embeddedmontiarc.embeddedmontiarc._symboltable.ComponentKind).
+[debug] CommonScope : The symbol Stream has already been resolved.
+[debug] SymbolReference : Loaded full information of 'Stream' successfully.
+[debug] SymbolReference : Load full information of 'Stream' (Kind de.monticore.lang.embeddedmontiarc.embeddedmontiarc._symboltable.ComponentKind).
+[debug] CommonScope : The symbol Stream has already been resolved.
+[debug] SymbolReference : Loaded full information of 'Stream' successfully.
+[debug] CommonSymbolReference : Full information of 'Stream' already loaded. Use cached version.
+[debug] exchangeGenerics inst : package memorieswithproductkeys;
+component /*instance*/ stream {
+  ports
+    in Z hundreds,
+    in Z tens,
+    in Z ones,
+    out Z number;
+}
+
+[debug] Fixing Wrong Ports : See next lines
+[debug] CommonSymbolReference : Full information of 'Stream' already loaded. Use cached version.
+[debug] build end sym : package memorieswithproductkeys;
+component /*instance*/ stream {
+  ports
+    in Z hundreds,
+    in Z tens,
+    in Z ones,
+    out Z number;
+}
+
+[debug] CommonSymbolReference : Full information of 'Stream' already loaded. Use cached version.
+[trace] CommonQualifiedNamesCalculator : Potential qualified names for "": [, memorieswithproductkeys.]
+[trace]  : START resolveDownMany("", "de.monticore.lang.monticar.cnnarch._symboltable.ArchitectureKind") in scope "Optional.empty". Found #0 (local)
+[trace]  : END resolveDownMany("", "de.monticore.lang.monticar.cnnarch._symboltable.ArchitectureKind") in scope "Optional.empty". Found #0
+[trace]  : START resolveDownMany("", "de.monticore.lang.monticar.cnnarch._symboltable.ArchitectureKind") in scope "Optional.empty". Found #0 (local)
+[trace]  : END resolveDownMany("", "de.monticore.lang.monticar.cnnarch._symboltable.ArchitectureKind") in scope "Optional.empty". Found #0
+[trace]  : START resolveDownMany("memorieswithproductkeys.", "de.monticore.lang.monticar.cnnarch._symboltable.ArchitectureKind") in scope "Optional.empty". Found #0 (local)
+[trace]  : START resolveDownMany("", "de.monticore.lang.monticar.cnnarch._symboltable.ArchitectureKind") in scope "Optional[Network]". Found #0 (local)
+[trace]  : END resolveDownMany("", "de.monticore.lang.monticar.cnnarch._symboltable.ArchitectureKind") in scope "Optional[Network]". Found #0
+[trace]  : START resolveDownMany("", "de.monticore.lang.monticar.cnnarch._symboltable.ArchitectureKind") in scope "Optional[ArgMax]". Found #0 (local)
+[trace]  : END resolveDownMany("", "de.monticore.lang.monticar.cnnarch._symboltable.ArchitectureKind") in scope "Optional[ArgMax]". Found #0
+[trace]  : START resolveDownMany("", "de.monticore.lang.monticar.cnnarch._symboltable.ArchitectureKind") in scope "Optional[Connector]". Found #0 (local)
+[trace]  : END resolveDownMany("", "de.monticore.lang.monticar.cnnarch._symboltable.ArchitectureKind") in scope "Optional[Connector]". Found #0
+[trace]  : START resolveDownMany("", "de.monticore.lang.monticar.cnnarch._symboltable.ArchitectureKind") in scope "Optional[Stream]". Found #0 (local)
+[trace]  : END resolveDownMany("", "de.monticore.lang.monticar.cnnarch._symboltable.ArchitectureKind") in scope "Optional[Stream]". Found #0
+[trace]  : END resolveDownMany("memorieswithproductkeys.", "de.monticore.lang.monticar.cnnarch._symboltable.ArchitectureKind") in scope "Optional.empty". Found #0
+[trace]  : START resolveDownMany("memorieswithproductkeys.", "de.monticore.lang.monticar.cnnarch._symboltable.ArchitectureKind") in scope "Optional.empty". Found #0 (local)
+[trace]  : START resolveDownMany("", "de.monticore.lang.monticar.cnnarch._symboltable.ArchitectureKind") in scope "Optional[Network]". Found #0 (local)
+[trace]  : END resolveDownMany("", "de.monticore.lang.monticar.cnnarch._symboltable.ArchitectureKind") in scope "Optional[Network]". Found #0
+[trace]  : START resolveDownMany("", "de.monticore.lang.monticar.cnnarch._symboltable.ArchitectureKind") in scope "Optional[ArgMax]". Found #0 (local)
+[trace]  : END resolveDownMany("", "de.monticore.lang.monticar.cnnarch._symboltable.ArchitectureKind") in scope "Optional[ArgMax]". Found #0
+[trace]  : START resolveDownMany("", "de.monticore.lang.monticar.cnnarch._symboltable.ArchitectureKind") in scope "Optional[Connector]". Found #0 (local)
+[trace]  : END resolveDownMany("", "de.monticore.lang.monticar.cnnarch._symboltable.ArchitectureKind") in scope "Optional[Connector]". Found #0
+[trace]  : START resolveDownMany("", "de.monticore.lang.monticar.cnnarch._symboltable.ArchitectureKind") in scope "Optional[Stream]". Found #0 (local)
+[trace]  : END resolveDownMany("", "de.monticore.lang.monticar.cnnarch._symboltable.ArchitectureKind") in scope "Optional[Stream]". Found #0
+[trace]  : END resolveDownMany("memorieswithproductkeys.", "de.monticore.lang.monticar.cnnarch._symboltable.ArchitectureKind") in scope "Optional.empty". Found #0
+[debug] EMADLModelLoader : Created symbol table for model "memorieswithproductkeys.Stream".
+[trace]  : START resolveDownMany("memorieswithproductkeys.Stream", "de.monticore.lang.embeddedmontiarc.embeddedmontiarc._symboltable.ComponentKind") in scope "Optional.empty". Found #0 (local)
+[trace]  : START resolveDownMany("Stream", "de.monticore.lang.embeddedmontiarc.embeddedmontiarc._symboltable.ComponentKind") in scope "Optional[Network]". Found #0 (local)
+[trace]  : END resolveDownMany("Stream", "de.monticore.lang.embeddedmontiarc.embeddedmontiarc._symboltable.ComponentKind") in scope "Optional[Network]". Found #0
+[trace]  : START resolveDownMany("Stream", "de.monticore.lang.embeddedmontiarc.embeddedmontiarc._symboltable.ComponentKind") in scope "Optional[ArgMax]". Found #0 (local)
+[trace]  : END resolveDownMany("Stream", "de.monticore.lang.embeddedmontiarc.embeddedmontiarc._symboltable.ComponentKind") in scope "Optional[ArgMax]". Found #0
+[trace]  : START resolveDownMany("Stream", "de.monticore.lang.embeddedmontiarc.embeddedmontiarc._symboltable.ComponentKind") in scope "Optional[Connector]". Found #0 (local)
+[trace]  : END resolveDownMany("Stream", "de.monticore.lang.embeddedmontiarc.embeddedmontiarc._symboltable.ComponentKind") in scope "Optional[Connector]". Found #0
+[debug] CommonScope : The symbol Stream has already been resolved.
+[trace]  : START resolveDownMany("Stream", "de.monticore.lang.embeddedmontiarc.embeddedmontiarc._symboltable.ComponentKind") in scope "Optional[Stream]". Found #1 (local)
+[trace]  : END resolveDownMany("Stream", "de.monticore.lang.embeddedmontiarc.embeddedmontiarc._symboltable.ComponentKind") in scope "Optional[Stream]". Found #1
+[trace]  : END resolveDownMany("memorieswithproductkeys.Stream", "de.monticore.lang.embeddedmontiarc.embeddedmontiarc._symboltable.ComponentKind") in scope "Optional.empty". Found #1
+[info] streamtest-generator : [2020-10-26 11:54:26.785]    -> parsed & resolved
+[info] streamtest-generator : [2020-10-26 11:54:26.785]  - memorieswithproductkeys/StreamTest.stream
+[trace]  : START resolveDownMany("memorieswithproductkeys.StreamTest", "de.monticore.lang.monticar.streamunits._symboltable.ComponentStreamUnitsKind") in scope "Optional.empty". Found #0 (local)
+[trace]  : START resolveDownMany("StreamTest", "de.monticore.lang.monticar.streamunits._symboltable.ComponentStreamUnitsKind") in scope "Optional[Network]". Found #0 (local)
+[trace]  : END resolveDownMany("StreamTest", "de.monticore.lang.monticar.streamunits._symboltable.ComponentStreamUnitsKind") in scope "Optional[Network]". Found #0
+[trace]  : START resolveDownMany("StreamTest", "de.monticore.lang.monticar.streamunits._symboltable.ComponentStreamUnitsKind") in scope "Optional[ArgMax]". Found #0 (local)
+[trace]  : END resolveDownMany("StreamTest", "de.monticore.lang.monticar.streamunits._symboltable.ComponentStreamUnitsKind") in scope "Optional[ArgMax]". Found #0
+[trace]  : START resolveDownMany("StreamTest", "de.monticore.lang.monticar.streamunits._symboltable.ComponentStreamUnitsKind") in scope "Optional[Connector]". Found #0 (local)
+[trace]  : END resolveDownMany("StreamTest", "de.monticore.lang.monticar.streamunits._symboltable.ComponentStreamUnitsKind") in scope "Optional[Connector]". Found #0
+[trace]  : START resolveDownMany("StreamTest", "de.monticore.lang.monticar.streamunits._symboltable.ComponentStreamUnitsKind") in scope "Optional[Stream]". Found #0 (local)
+[trace]  : END resolveDownMany("StreamTest", "de.monticore.lang.monticar.streamunits._symboltable.ComponentStreamUnitsKind") in scope "Optional[Stream]". Found #0
+[trace]  : END resolveDownMany("memorieswithproductkeys.StreamTest", "de.monticore.lang.monticar.streamunits._symboltable.ComponentStreamUnitsKind") in scope "Optional.empty". Found #0
+[debug] ModelingLanguageModelLoader : Start parsing model Location: file:/home/julian/Documents/MontiCore/memorieswithproductkeys/memories-with-product-keys/src/main/ema/emadl/models/memorieswithproductkeys/StreamTest.stream Package: memorieswithproductkeys/StreamTest.stream.
+[debug] ModelingLanguageModelLoader : Parsed model Location: file:/home/julian/Documents/MontiCore/memorieswithproductkeys/memories-with-product-keys/src/main/ema/emadl/models/memorieswithproductkeys/StreamTest.stream Package: memorieswithproductkeys/StreamTest.stream successfully.
+[debug] StreamUnitsModelLoader : Start creation of symbol table for model "memorieswithproductkeys.StreamTest".
+[debug] StreamUnitsSymbolTableCreator : Building Symboltable for Stream: StreamTest
+[debug] StreamUnitsModelLoader : Created symbol table for model "memorieswithproductkeys.StreamTest".
+[trace]  : START resolveDownMany("memorieswithproductkeys.StreamTest", "de.monticore.lang.monticar.streamunits._symboltable.ComponentStreamUnitsKind") in scope "Optional.empty". Found #0 (local)
+[trace]  : START resolveDownMany("StreamTest", "de.monticore.lang.monticar.streamunits._symboltable.ComponentStreamUnitsKind") in scope "Optional[Network]". Found #0 (local)
+[trace]  : END resolveDownMany("StreamTest", "de.monticore.lang.monticar.streamunits._symboltable.ComponentStreamUnitsKind") in scope "Optional[Network]". Found #0
+[trace]  : START resolveDownMany("StreamTest", "de.monticore.lang.monticar.streamunits._symboltable.ComponentStreamUnitsKind") in scope "Optional[ArgMax]". Found #0 (local)
+[trace]  : END resolveDownMany("StreamTest", "de.monticore.lang.monticar.streamunits._symboltable.ComponentStreamUnitsKind") in scope "Optional[ArgMax]". Found #0
+[trace]  : START resolveDownMany("StreamTest", "de.monticore.lang.monticar.streamunits._symboltable.ComponentStreamUnitsKind") in scope "Optional[Connector]". Found #0 (local)
+[trace]  : END resolveDownMany("StreamTest", "de.monticore.lang.monticar.streamunits._symboltable.ComponentStreamUnitsKind") in scope "Optional[Connector]". Found #0
+[trace]  : START resolveDownMany("StreamTest", "de.monticore.lang.monticar.streamunits._symboltable.ComponentStreamUnitsKind") in scope "Optional[Stream]". Found #0 (local)
+[trace]  : END resolveDownMany("StreamTest", "de.monticore.lang.monticar.streamunits._symboltable.ComponentStreamUnitsKind") in scope "Optional[Stream]". Found #0
+[trace]  : START resolveDownMany("StreamTest", "de.monticore.lang.monticar.streamunits._symboltable.ComponentStreamUnitsKind") in scope "Optional[StreamTest]". Found #1 (local)
+[trace]  : END resolveDownMany("StreamTest", "de.monticore.lang.monticar.streamunits._symboltable.ComponentStreamUnitsKind") in scope "Optional[StreamTest]". Found #1
+[trace]  : END resolveDownMany("memorieswithproductkeys.StreamTest", "de.monticore.lang.monticar.streamunits._symboltable.ComponentStreamUnitsKind") in scope "Optional.empty". Found #1
+[info] streamtest-generator : [2020-10-26 11:54:26.822]    -> parsed & resolved
+[trace]  : START resolveDownMany("memorieswithproductkeys.StreamTest", "de.monticore.lang.monticar.streamunits._symboltable.ComponentStreamUnitsKind") in scope "Optional.empty". Found #0 (local)
+[trace]  : START resolveDownMany("StreamTest", "de.monticore.lang.monticar.streamunits._symboltable.ComponentStreamUnitsKind") in scope "Optional[Network]". Found #0 (local)
+[trace]  : END resolveDownMany("StreamTest", "de.monticore.lang.monticar.streamunits._symboltable.ComponentStreamUnitsKind") in scope "Optional[Network]". Found #0
+[trace]  : START resolveDownMany("StreamTest", "de.monticore.lang.monticar.streamunits._symboltable.ComponentStreamUnitsKind") in scope "Optional[ArgMax]". Found #0 (local)
+[trace]  : END resolveDownMany("StreamTest", "de.monticore.lang.monticar.streamunits._symboltable.ComponentStreamUnitsKind") in scope "Optional[ArgMax]". Found #0
+[trace]  : START resolveDownMany("StreamTest", "de.monticore.lang.monticar.streamunits._symboltable.ComponentStreamUnitsKind") in scope "Optional[Connector]". Found #0 (local)
+[trace]  : END resolveDownMany("StreamTest", "de.monticore.lang.monticar.streamunits._symboltable.ComponentStreamUnitsKind") in scope "Optional[Connector]". Found #0
+[trace]  : START resolveDownMany("StreamTest", "de.monticore.lang.monticar.streamunits._symboltable.ComponentStreamUnitsKind") in scope "Optional[Stream]". Found #0 (local)
+[trace]  : END resolveDownMany("StreamTest", "de.monticore.lang.monticar.streamunits._symboltable.ComponentStreamUnitsKind") in scope "Optional[Stream]". Found #0
+[trace]  : START resolveDownMany("StreamTest", "de.monticore.lang.monticar.streamunits._symboltable.ComponentStreamUnitsKind") in scope "Optional[StreamTest]". Found #1 (local)
+[trace]  : END resolveDownMany("StreamTest", "de.monticore.lang.monticar.streamunits._symboltable.ComponentStreamUnitsKind") in scope "Optional[StreamTest]". Found #1
+[trace]  : END resolveDownMany("memorieswithproductkeys.StreamTest", "de.monticore.lang.monticar.streamunits._symboltable.ComponentStreamUnitsKind") in scope "Optional.empty". Found #1
+[trace] CommonQualifiedNamesCalculator : Potential qualified names for "Stream": [Stream, memorieswithproductkeys.Stream]
+[trace]  : START resolveDownMany("Stream", "de.monticore.lang.embeddedmontiarc.embeddedmontiarc._symboltable.ComponentKind") in scope "Optional.empty". Found #0 (local)
+[trace]  : END resolveDownMany("Stream", "de.monticore.lang.embeddedmontiarc.embeddedmontiarc._symboltable.ComponentKind") in scope "Optional.empty". Found #0
+[trace]  : START resolveDownMany("Stream", "de.monticore.lang.embeddedmontiarc.embeddedmontiarc._symboltable.ComponentKind") in scope "Optional.empty". Found #0 (local)
+[trace]  : END resolveDownMany("Stream", "de.monticore.lang.embeddedmontiarc.embeddedmontiarc._symboltable.ComponentKind") in scope "Optional.empty". Found #0
+[trace]  : START resolveDownMany("memorieswithproductkeys.Stream", "de.monticore.lang.embeddedmontiarc.embeddedmontiarc._symboltable.ComponentKind") in scope "Optional.empty". Found #0 (local)
+[trace]  : START resolveDownMany("Stream", "de.monticore.lang.embeddedmontiarc.embeddedmontiarc._symboltable.ComponentKind") in scope "Optional[Network]". Found #0 (local)
+[trace]  : END resolveDownMany("Stream", "de.monticore.lang.embeddedmontiarc.embeddedmontiarc._symboltable.ComponentKind") in scope "Optional[Network]". Found #0
+[trace]  : START resolveDownMany("Stream", "de.monticore.lang.embeddedmontiarc.embeddedmontiarc._symboltable.ComponentKind") in scope "Optional[ArgMax]". Found #0 (local)
+[trace]  : END resolveDownMany("Stream", "de.monticore.lang.embeddedmontiarc.embeddedmontiarc._symboltable.ComponentKind") in scope "Optional[ArgMax]". Found #0
+[trace]  : START resolveDownMany("Stream", "de.monticore.lang.embeddedmontiarc.embeddedmontiarc._symboltable.ComponentKind") in scope "Optional[Connector]". Found #0 (local)
+[trace]  : END resolveDownMany("Stream", "de.monticore.lang.embeddedmontiarc.embeddedmontiarc._symboltable.ComponentKind") in scope "Optional[Connector]". Found #0
+[debug] CommonScope : The symbol Stream has already been resolved.
+[trace]  : START resolveDownMany("Stream", "de.monticore.lang.embeddedmontiarc.embeddedmontiarc._symboltable.ComponentKind") in scope "Optional[Stream]". Found #1 (local)
+[trace]  : END resolveDownMany("Stream", "de.monticore.lang.embeddedmontiarc.embeddedmontiarc._symboltable.ComponentKind") in scope "Optional[Stream]". Found #1
+[trace]  : START resolveDownMany("Stream", "de.monticore.lang.embeddedmontiarc.embeddedmontiarc._symboltable.ComponentKind") in scope "Optional[StreamTest]". Found #0 (local)
+[trace]  : END resolveDownMany("Stream", "de.monticore.lang.embeddedmontiarc.embeddedmontiarc._symboltable.ComponentKind") in scope "Optional[StreamTest]". Found #0
+[trace]  : END resolveDownMany("memorieswithproductkeys.Stream", "de.monticore.lang.embeddedmontiarc.embeddedmontiarc._symboltable.ComponentKind") in scope "Optional.empty". Found #1
+[info] streamtest-generator : [2020-10-26 11:54:26.831] Searching components (with wrapper) with streamtests.
+[info] streamtest-generator : [2020-10-26 11:54:26.831]  - memorieswithproductkeys.Connector
+[warn] [2020-10-26 11:54:26.832]    -> No streamtest found for memorieswithproductkeys.Connector
+[info] streamtest-generator : [2020-10-26 11:54:26.832]  - memorieswithproductkeys.Network
+[warn] [2020-10-26 11:54:26.832]    -> No streamtest found for memorieswithproductkeys.Network
+[info] streamtest-generator : [2020-10-26 11:54:26.833]  - memorieswithproductkeys.Stream
+[info] streamtest-generator : [2020-10-26 11:54:26.833]    -> Test with component: memorieswithproductkeys.Stream :
+[info] streamtest-generator : [2020-10-26 11:54:26.833]       # Streamtest: memorieswithproductkeys.StreamTest
+[info] streamtest-generator : [2020-10-26 11:54:26.833]  - memorieswithproductkeys.ArgMax
+[warn] [2020-10-26 11:54:26.833]    -> No streamtest found for memorieswithproductkeys.ArgMax
+[info] streamtest-generator : [2020-10-26 11:54:26.833] Generate CPP:
+[info] streamtest-generator : [2020-10-26 11:54:26.833]  - memorieswithproductkeys.Stream = memorieswithproductkeys.stream
+[trace]  : START resolveDownMany("memorieswithproductkeys.stream", "de.monticore.symboltable.SymbolKind") in scope "Optional.empty". Found #0 (local)
+[trace]  : START resolveDownMany("stream", "de.monticore.symboltable.SymbolKind") in scope "Optional[Network]". Found #0 (local)
+[trace]  : END resolveDownMany("stream", "de.monticore.symboltable.SymbolKind") in scope "Optional[Network]". Found #0
+[trace]  : START resolveDownMany("stream", "de.monticore.symboltable.SymbolKind") in scope "Optional[ArgMax]". Found #0 (local)
+[trace]  : END resolveDownMany("stream", "de.monticore.symboltable.SymbolKind") in scope "Optional[ArgMax]". Found #0
+[trace]  : START resolveDownMany("stream", "de.monticore.symboltable.SymbolKind") in scope "Optional[Connector]". Found #0 (local)
+[trace]  : END resolveDownMany("stream", "de.monticore.symboltable.SymbolKind") in scope "Optional[Connector]". Found #0
+[debug] CommonScope : The symbol stream has already been resolved.
+[trace]  : START resolveDownMany("stream", "de.monticore.symboltable.SymbolKind") in scope "Optional[Stream]". Found #1 (local)
+[trace]  : END resolveDownMany("stream", "de.monticore.symboltable.SymbolKind") in scope "Optional[Stream]". Found #1
+[trace]  : START resolveDownMany("stream", "de.monticore.symboltable.SymbolKind") in scope "Optional[StreamTest]". Found #0 (local)
+[trace]  : END resolveDownMany("stream", "de.monticore.symboltable.SymbolKind") in scope "Optional[StreamTest]". Found #0
+[trace]  : END resolveDownMany("memorieswithproductkeys.stream", "de.monticore.symboltable.SymbolKind") in scope "Optional.empty". Found #1
+[trace]  : START resolveDownMany("memorieswithproductkeys.Stream.MathStatements", "de.monticore.symboltable.SymbolKind") in scope "Optional.empty". Found #0 (local)
+[trace]  : START resolveDownMany("Stream.MathStatements", "de.monticore.symboltable.SymbolKind") in scope "Optional[Network]". Found #0 (local)
+[trace]  : END resolveDownMany("Stream.MathStatements", "de.monticore.symboltable.SymbolKind") in scope "Optional[Network]". Found #0
+[trace]  : START resolveDownMany("Stream.MathStatements", "de.monticore.symboltable.SymbolKind") in scope "Optional[ArgMax]". Found #0 (local)
+[trace]  : END resolveDownMany("Stream.MathStatements", "de.monticore.symboltable.SymbolKind") in scope "Optional[ArgMax]". Found #0
+[trace]  : START resolveDownMany("Stream.MathStatements", "de.monticore.symboltable.SymbolKind") in scope "Optional[Connector]". Found #0 (local)
+[trace]  : END resolveDownMany("Stream.MathStatements", "de.monticore.symboltable.SymbolKind") in scope "Optional[Connector]". Found #0
+[trace]  : START resolveDownMany("Stream.MathStatements", "de.monticore.symboltable.SymbolKind") in scope "Optional[Stream]". Found #0 (local)
+[debug] CommonScope : The symbol MathStatements has already been resolved.
+[trace]  : START resolveDownMany("MathStatements", "de.monticore.symboltable.SymbolKind") in scope "Optional[Stream]". Found #1 (local)
+[trace]  : END resolveDownMany("MathStatements", "de.monticore.symboltable.SymbolKind") in scope "Optional[Stream]". Found #1
+[trace]  : END resolveDownMany("Stream.MathStatements", "de.monticore.symboltable.SymbolKind") in scope "Optional[Stream]". Found #1
+[trace]  : START resolveDownMany("Stream.MathStatements", "de.monticore.symboltable.SymbolKind") in scope "Optional[StreamTest]". Found #0 (local)
+[trace]  : END resolveDownMany("Stream.MathStatements", "de.monticore.symboltable.SymbolKind") in scope "Optional[StreamTest]". Found #0
+[trace]  : END resolveDownMany("memorieswithproductkeys.Stream.MathStatements", "de.monticore.symboltable.SymbolKind") in scope "Optional.empty". Found #1
+[info] MathSymbol: : MathStatements
+[debug] CommonSymbolReference : Full information of 'Stream' already loaded. Use cached version.
+[info] Current Symbol(size:2): : package memorieswithproductkeys;
+component /*instance*/ stream {
+  ports
+    in Z hundreds,
+    in Z tens,
+    in Z ones,
+    out Z number;
+}
+
+[info] Next Symbol: : MathStatements
+[debug] SymbolReference : Load full information of 'Z' (Kind de.monticore.lang.monticar.ts.MCTypeSymbolKind).
+[trace] CommonQualifiedNamesCalculator : Potential qualified names for "Z": [Z, memorieswithproductkeys.Z]
+[debug] CommonScope : The symbol Z has already been resolved.
+[debug] CommonScope : The symbol Z has already been resolved.
+[debug] CommonScope : The symbol Z has already been resolved.
+[debug] CommonScope : The symbol Z has already been resolved.
+[debug] CommonScope : The symbol Z has already been resolved.
+[debug] CommonScope : The symbol Z has already been resolved.
+[debug] CommonScope : The symbol Z has already been resolved.
+[debug] CommonScope : The symbol Z has already been resolved.
+[debug] CommonScope : The symbol Z has already been resolved.
+[debug] CommonScope : The symbol Z has already been resolved.
+[debug] CommonScope : The symbol Z has already been resolved.
+[trace]  : START resolveDownMany("Z", "de.monticore.lang.monticar.ts.MCTypeSymbolKind") in scope "Optional.empty". Found #1 (local)
+[trace]  : END resolveDownMany("Z", "de.monticore.lang.monticar.ts.MCTypeSymbolKind") in scope "Optional.empty". Found #1
+[debug] SymbolReference : Loaded full information of 'Z' successfully.
+[debug] SymbolReference : Load full information of 'Z' (Kind de.monticore.lang.monticar.ts.MCTypeSymbolKind).
+[trace] CommonQualifiedNamesCalculator : Potential qualified names for "Z": [Z, memorieswithproductkeys.Z]
+[debug] CommonScope : The symbol Z has already been resolved.
+[debug] CommonScope : The symbol Z has already been resolved.
+[debug] CommonScope : The symbol Z has already been resolved.
+[debug] CommonScope : The symbol Z has already been resolved.
+[debug] CommonScope : The symbol Z has already been resolved.
+[debug] CommonScope : The symbol Z has already been resolved.
+[debug] CommonScope : The symbol Z has already been resolved.
+[debug] CommonScope : The symbol Z has already been resolved.
+[debug] CommonScope : The symbol Z has already been resolved.
+[debug] CommonScope : The symbol Z has already been resolved.
+[debug] CommonScope : The symbol Z has already been resolved.
+[trace]  : START resolveDownMany("Z", "de.monticore.lang.monticar.ts.MCTypeSymbolKind") in scope "Optional.empty". Found #1 (local)
+[trace]  : END resolveDownMany("Z", "de.monticore.lang.monticar.ts.MCTypeSymbolKind") in scope "Optional.empty". Found #1
+[debug] SymbolReference : Loaded full information of 'Z' successfully.
+[info] addVariable : v: hundreds
+[debug] PortConverter : EMAVAR: hundreds targetType:int isArray:false
+[debug] SymbolReference : Load full information of 'Z' (Kind de.monticore.lang.monticar.ts.MCTypeSymbolKind).
+[trace] CommonQualifiedNamesCalculator : Potential qualified names for "Z": [Z, memorieswithproductkeys.Z]
+[debug] CommonScope : The symbol Z has already been resolved.
+[debug] CommonScope : The symbol Z has already been resolved.
+[debug] CommonScope : The symbol Z has already been resolved.
+[debug] CommonScope : The symbol Z has already been resolved.
+[debug] CommonScope : The symbol Z has already been resolved.
+[debug] CommonScope : The symbol Z has already been resolved.
+[debug] CommonScope : The symbol Z has already been resolved.
+[debug] CommonScope : The symbol Z has already been resolved.
+[debug] CommonScope : The symbol Z has already been resolved.
+[debug] CommonScope : The symbol Z has already been resolved.
+[debug] CommonScope : The symbol Z has already been resolved.
+[trace]  : START resolveDownMany("Z", "de.monticore.lang.monticar.ts.MCTypeSymbolKind") in scope "Optional.empty". Found #1 (local)
+[trace]  : END resolveDownMany("Z", "de.monticore.lang.monticar.ts.MCTypeSymbolKind") in scope "Optional.empty". Found #1
+[debug] SymbolReference : Loaded full information of 'Z' successfully.
+[debug] SymbolReference : Load full information of 'Z' (Kind de.monticore.lang.monticar.ts.MCTypeSymbolKind).
+[trace] CommonQualifiedNamesCalculator : Potential qualified names for "Z": [Z, memorieswithproductkeys.Z]
+[debug] CommonScope : The symbol Z has already been resolved.
+[debug] CommonScope : The symbol Z has already been resolved.
+[debug] CommonScope : The symbol Z has already been resolved.
+[debug] CommonScope : The symbol Z has already been resolved.
+[debug] CommonScope : The symbol Z has already been resolved.
+[debug] CommonScope : The symbol Z has already been resolved.
+[debug] CommonScope : The symbol Z has already been resolved.
+[debug] CommonScope : The symbol Z has already been resolved.
+[debug] CommonScope : The symbol Z has already been resolved.
+[debug] CommonScope : The symbol Z has already been resolved.
+[debug] CommonScope : The symbol Z has already been resolved.
+[trace]  : START resolveDownMany("Z", "de.monticore.lang.monticar.ts.MCTypeSymbolKind") in scope "Optional.empty". Found #1 (local)
+[trace]  : END resolveDownMany("Z", "de.monticore.lang.monticar.ts.MCTypeSymbolKind") in scope "Optional.empty". Found #1
+[debug] SymbolReference : Loaded full information of 'Z' successfully.
+[info] addVariable : v: tens
+[debug] PortConverter : EMAVAR: tens targetType:int isArray:false
+[debug] SymbolReference : Load full information of 'Z' (Kind de.monticore.lang.monticar.ts.MCTypeSymbolKind).
+[trace] CommonQualifiedNamesCalculator : Potential qualified names for "Z": [Z, memorieswithproductkeys.Z]
+[debug] CommonScope : The symbol Z has already been resolved.
+[debug] CommonScope : The symbol Z has already been resolved.
+[debug] CommonScope : The symbol Z has already been resolved.
+[debug] CommonScope : The symbol Z has already been resolved.
+[debug] CommonScope : The symbol Z has already been resolved.
+[debug] CommonScope : The symbol Z has already been resolved.
+[debug] CommonScope : The symbol Z has already been resolved.
+[debug] CommonScope : The symbol Z has already been resolved.
+[debug] CommonScope : The symbol Z has already been resolved.
+[debug] CommonScope : The symbol Z has already been resolved.
+[debug] CommonScope : The symbol Z has already been resolved.
+[trace]  : START resolveDownMany("Z", "de.monticore.lang.monticar.ts.MCTypeSymbolKind") in scope "Optional.empty". Found #1 (local)
+[trace]  : END resolveDownMany("Z", "de.monticore.lang.monticar.ts.MCTypeSymbolKind") in scope "Optional.empty". Found #1
+[debug] SymbolReference : Loaded full information of 'Z' successfully.
+[debug] SymbolReference : Load full information of 'Z' (Kind de.monticore.lang.monticar.ts.MCTypeSymbolKind).
+[trace] CommonQualifiedNamesCalculator : Potential qualified names for "Z": [Z, memorieswithproductkeys.Z]
+[debug] CommonScope : The symbol Z has already been resolved.
+[debug] CommonScope : The symbol Z has already been resolved.
+[debug] CommonScope : The symbol Z has already been resolved.
+[debug] CommonScope : The symbol Z has already been resolved.
+[debug] CommonScope : The symbol Z has already been resolved.
+[debug] CommonScope : The symbol Z has already been resolved.
+[debug] CommonScope : The symbol Z has already been resolved.
+[debug] CommonScope : The symbol Z has already been resolved.
+[debug] CommonScope : The symbol Z has already been resolved.
+[debug] CommonScope : The symbol Z has already been resolved.
+[debug] CommonScope : The symbol Z has already been resolved.
+[trace]  : START resolveDownMany("Z", "de.monticore.lang.monticar.ts.MCTypeSymbolKind") in scope "Optional.empty". Found #1 (local)
+[trace]  : END resolveDownMany("Z", "de.monticore.lang.monticar.ts.MCTypeSymbolKind") in scope "Optional.empty". Found #1
+[debug] SymbolReference : Loaded full information of 'Z' successfully.
+[info] addVariable : v: ones
+[debug] PortConverter : EMAVAR: ones targetType:int isArray:false
+[debug] SymbolReference : Load full information of 'Z' (Kind de.monticore.lang.monticar.ts.MCTypeSymbolKind).
+[trace] CommonQualifiedNamesCalculator : Potential qualified names for "Z": [Z, memorieswithproductkeys.Z]
+[debug] CommonScope : The symbol Z has already been resolved.
+[debug] CommonScope : The symbol Z has already been resolved.
+[debug] CommonScope : The symbol Z has already been resolved.
+[debug] CommonScope : The symbol Z has already been resolved.
+[debug] CommonScope : The symbol Z has already been resolved.
+[debug] CommonScope : The symbol Z has already been resolved.
+[debug] CommonScope : The symbol Z has already been resolved.
+[debug] CommonScope : The symbol Z has already been resolved.
+[debug] CommonScope : The symbol Z has already been resolved.
+[debug] CommonScope : The symbol Z has already been resolved.
+[debug] CommonScope : The symbol Z has already been resolved.
+[trace]  : START resolveDownMany("Z", "de.monticore.lang.monticar.ts.MCTypeSymbolKind") in scope "Optional.empty". Found #1 (local)
+[trace]  : END resolveDownMany("Z", "de.monticore.lang.monticar.ts.MCTypeSymbolKind") in scope "Optional.empty". Found #1
+[debug] SymbolReference : Loaded full information of 'Z' successfully.
+[debug] SymbolReference : Load full information of 'Z' (Kind de.monticore.lang.monticar.ts.MCTypeSymbolKind).
+[trace] CommonQualifiedNamesCalculator : Potential qualified names for "Z": [Z, memorieswithproductkeys.Z]
+[debug] CommonScope : The symbol Z has already been resolved.
+[debug] CommonScope : The symbol Z has already been resolved.
+[debug] CommonScope : The symbol Z has already been resolved.
+[debug] CommonScope : The symbol Z has already been resolved.
+[debug] CommonScope : The symbol Z has already been resolved.
+[debug] CommonScope : The symbol Z has already been resolved.
+[debug] CommonScope : The symbol Z has already been resolved.
+[debug] CommonScope : The symbol Z has already been resolved.
+[debug] CommonScope : The symbol Z has already been resolved.
+[debug] CommonScope : The symbol Z has already been resolved.
+[debug] CommonScope : The symbol Z has already been resolved.
+[trace]  : START resolveDownMany("Z", "de.monticore.lang.monticar.ts.MCTypeSymbolKind") in scope "Optional.empty". Found #1 (local)
+[trace]  : END resolveDownMany("Z", "de.monticore.lang.monticar.ts.MCTypeSymbolKind") in scope "Optional.empty". Found #1
+[debug] SymbolReference : Loaded full information of 'Z' successfully.
+[info] addVariable : v: number
+[debug] PortConverter : EMAVAR: number targetType:int isArray:false
+[info] generateInitNonStaticVariable : v: hundreds
+[info] generateInitNonStaticVariable : v: tens
+[info] generateInitNonStaticVariable : v: ones
+[info] generateInitNonStaticVariable : v: number
+[info] initBluePrintCreate: : Variable: hundreds
+[info] initBluePrintCreate: : Variable: tens
+[info] initBluePrintCreate: : Variable: ones
+[info] initBluePrintCreate: : Variable: number
+[info] mathAssignmentExpressionSymbol: : number=ones+10*tens+100*hundreds;
+[info] assignment0: : ones+10*tens+100*hundreds
+[info] NameToResolveValue: : ones
+[info] NameToResolveValue: : tens
+[info] NameToResolveValue: : hundreds
+[info] assignment3: : ones+10*tens+100*hundreds
+[info] additionalInfo: : number = ones+10*tens+100*hundreds
+[info] MathAssignmentExpressionSymbol : result3: number = ones+10*tens+100*hundreds;
+
+[info] GenerateSymbol: : de.monticore.lang.math._symboltable.expression.MathAssignmentExpressionSymbol number=ones+10*tens+100*hundreds;
+[info] EXP: : number=ones+10*tens+100*hundreds;
+[info] EXP: : ones+10*tens+100*hundreds
+[info] EXP: : ones+10*tens
+[info] EXP: : ones
+[info] EXP: : 10*tens
+[info] EXP: : 10
+[info] EXP: : tens
+[info] EXP: : 100*hundreds
+[info] EXP: : 100
+[info] EXP: : hundreds
+[info] Instruction: : number = ones+10*tens+100*hundreds;
+
+[info] Used Variables: : ones
+[info] Used Variables: : tens
+[info] Used Variables: : hundreds
+[info] initBluePrintExtension: : Variable: hundreds
+[info] initBluePrintExtension: : Variable: tens
+[info] initBluePrintExtension: : Variable: ones
+[info] initBluePrintExtension: : Variable: number
+[info] beforRes: : void init()
+{
+
+[info] afterRes: : void init()
+{
+
+[info] beforRes: : void init()
+{
+
+[info] afterRes: : void init()
+{
+
+[info] beforRes: : void init()
+{
+
+[info] afterRes: : void init()
+{
+
+[info] beforRes: : void init()
+{
+
+[info] afterRes: : void init()
+{
+
+[info] beforRes: : void execute()
+{
+
+[info] afterRes: : void execute()
+{
+number = ones+10*tens+100*hundreds;
+
+[info] Before RESSSS: : #ifndef MEMORIESWITHPRODUCTKEYS_STREAM
+#define MEMORIESWITHPRODUCTKEYS_STREAM
+#ifndef M_PI
+#define M_PI 3.14159265358979323846
+#endif
+#include "armadillo"
+using namespace arma;
+class memorieswithproductkeys_stream{
+public:
+int hundreds;
+int tens;
+int ones;
+int number;
+void init()
+{
+}
+void execute()
+{
+number = ones+10*tens+100*hundreds;
+}
+
+};
+#endif
+
+[trace]  : START resolveDownMany("memorieswithproductkeys.StreamTest", "de.monticore.lang.monticar.streamunits._symboltable.ComponentStreamUnitsKind") in scope "Optional.empty". Found #0 (local)
+[trace]  : START resolveDownMany("StreamTest", "de.monticore.lang.monticar.streamunits._symboltable.ComponentStreamUnitsKind") in scope "Optional[Network]". Found #0 (local)
+[trace]  : END resolveDownMany("StreamTest", "de.monticore.lang.monticar.streamunits._symboltable.ComponentStreamUnitsKind") in scope "Optional[Network]". Found #0
+[trace]  : START resolveDownMany("StreamTest", "de.monticore.lang.monticar.streamunits._symboltable.ComponentStreamUnitsKind") in scope "Optional[ArgMax]". Found #0 (local)
+[trace]  : END resolveDownMany("StreamTest", "de.monticore.lang.monticar.streamunits._symboltable.ComponentStreamUnitsKind") in scope "Optional[ArgMax]". Found #0
+[trace]  : START resolveDownMany("StreamTest", "de.monticore.lang.monticar.streamunits._symboltable.ComponentStreamUnitsKind") in scope "Optional[Connector]". Found #0 (local)
+[trace]  : END resolveDownMany("StreamTest", "de.monticore.lang.monticar.streamunits._symboltable.ComponentStreamUnitsKind") in scope "Optional[Connector]". Found #0
+[trace]  : START resolveDownMany("StreamTest", "de.monticore.lang.monticar.streamunits._symboltable.ComponentStreamUnitsKind") in scope "Optional[Stream]". Found #0 (local)
+[trace]  : END resolveDownMany("StreamTest", "de.monticore.lang.monticar.streamunits._symboltable.ComponentStreamUnitsKind") in scope "Optional[Stream]". Found #0
+[trace]  : START resolveDownMany("StreamTest", "de.monticore.lang.monticar.streamunits._symboltable.ComponentStreamUnitsKind") in scope "Optional[StreamTest]". Found #1 (local)
+[trace]  : END resolveDownMany("StreamTest", "de.monticore.lang.monticar.streamunits._symboltable.ComponentStreamUnitsKind") in scope "Optional[StreamTest]". Found #1
+[trace]  : END resolveDownMany("memorieswithproductkeys.StreamTest", "de.monticore.lang.monticar.streamunits._symboltable.ComponentStreamUnitsKind") in scope "Optional.empty". Found #1
+[trace] CommonQualifiedNamesCalculator : Potential qualified names for "Stream": [Stream, memorieswithproductkeys.Stream]
+[trace]  : START resolveDownMany("Stream", "de.monticore.lang.embeddedmontiarc.embeddedmontiarc._symboltable.ComponentKind") in scope "Optional.empty". Found #0 (local)
+[trace]  : END resolveDownMany("Stream", "de.monticore.lang.embeddedmontiarc.embeddedmontiarc._symboltable.ComponentKind") in scope "Optional.empty". Found #0
+[debug] GlobalScope : Already tried to load model for 'Stream'. If model exists, continue with cached version.
+[debug] GlobalScope : Already tried to load model for 'Stream'. If model exists, continue with cached version.
+[trace]  : START resolveDownMany("Stream", "de.monticore.lang.embeddedmontiarc.embeddedmontiarc._symboltable.ComponentKind") in scope "Optional.empty". Found #0 (local)
+[trace]  : END resolveDownMany("Stream", "de.monticore.lang.embeddedmontiarc.embeddedmontiarc._symboltable.ComponentKind") in scope "Optional.empty". Found #0
+[trace]  : START resolveDownMany("memorieswithproductkeys.Stream", "de.monticore.lang.embeddedmontiarc.embeddedmontiarc._symboltable.ComponentKind") in scope "Optional.empty". Found #0 (local)
+[trace]  : START resolveDownMany("Stream", "de.monticore.lang.embeddedmontiarc.embeddedmontiarc._symboltable.ComponentKind") in scope "Optional[Network]". Found #0 (local)
+[trace]  : END resolveDownMany("Stream", "de.monticore.lang.embeddedmontiarc.embeddedmontiarc._symboltable.ComponentKind") in scope "Optional[Network]". Found #0
+[trace]  : START resolveDownMany("Stream", "de.monticore.lang.embeddedmontiarc.embeddedmontiarc._symboltable.ComponentKind") in scope "Optional[ArgMax]". Found #0 (local)
+[trace]  : END resolveDownMany("Stream", "de.monticore.lang.embeddedmontiarc.embeddedmontiarc._symboltable.ComponentKind") in scope "Optional[ArgMax]". Found #0
+[trace]  : START resolveDownMany("Stream", "de.monticore.lang.embeddedmontiarc.embeddedmontiarc._symboltable.ComponentKind") in scope "Optional[Connector]". Found #0 (local)
+[trace]  : END resolveDownMany("Stream", "de.monticore.lang.embeddedmontiarc.embeddedmontiarc._symboltable.ComponentKind") in scope "Optional[Connector]". Found #0
+[debug] CommonScope : The symbol Stream has already been resolved.
+[trace]  : START resolveDownMany("Stream", "de.monticore.lang.embeddedmontiarc.embeddedmontiarc._symboltable.ComponentKind") in scope "Optional[Stream]". Found #1 (local)
+[trace]  : END resolveDownMany("Stream", "de.monticore.lang.embeddedmontiarc.embeddedmontiarc._symboltable.ComponentKind") in scope "Optional[Stream]". Found #1
+[trace]  : START resolveDownMany("Stream", "de.monticore.lang.embeddedmontiarc.embeddedmontiarc._symboltable.ComponentKind") in scope "Optional[StreamTest]". Found #0 (local)
+[trace]  : END resolveDownMany("Stream", "de.monticore.lang.embeddedmontiarc.embeddedmontiarc._symboltable.ComponentKind") in scope "Optional[StreamTest]". Found #0
+[trace]  : END resolveDownMany("memorieswithproductkeys.Stream", "de.monticore.lang.embeddedmontiarc.embeddedmontiarc._symboltable.ComponentKind") in scope "Optional.empty". Found #1
+[debug] CommonSymbolReference : Full information of 'Stream' already loaded. Use cached version.
+[debug] TestGeneratorCPP.processIncomingPort : Processing: hundreds
+[debug] TestGeneratorCPP.processIncomingPort : Processing: tens
+[debug] TestGeneratorCPP.processIncomingPort : Processing: ones
+[info] FileCreation: : memorieswithproductkeys_stream.h
+[info] FileCreation: : HelperA.h
+[info] FileCreation: : HelperA.h
+[info] FileCreation: : memorieswithproductkeys_stream_test.hpp
+[info] FileCreation: : tests_main.cpp
+[info] FileCreation: : existingStreams.txt
+[info] FileCreation: : existingComponents.txt
+[info] FileCreation: : testComponents.txt
+[info] FileCreation: : CMakeLists.txt
+[info] FileCreation: : memorieswithproductkeys_stream.cpp
+[info] FileCreation: : FindArmadillo.cmake
+[info] streamtest-generator : [2020-10-26 11:54:27.066]    -> Success
+[debug] de.se_rwth.commons.logging.Log : Switching logging component from de.monitcore.lang.monticar.utilities.tools.LogToFile to de.monticore.lang.embeddedmontiarc.LogConfig
+[trace]  : START resolveDownMany("memorieswithproductkeys.StreamTest", "de.monticore.lang.monticar.streamunits._symboltable.ComponentStreamUnitsKind") in scope "Optional.empty". Found #0 (local)
+[trace]  : END resolveDownMany("memorieswithproductkeys.StreamTest", "de.monticore.lang.monticar.streamunits._symboltable.ComponentStreamUnitsKind") in scope "Optional.empty". Found #0
+[debug] ModelingLanguageModelLoader : Start parsing model Location: file:/home/julian/Documents/MontiCore/memorieswithproductkeys/memories-with-product-keys/src/main/ema/emadl/models/memorieswithproductkeys/StreamTest.stream Package: memorieswithproductkeys/StreamTest.stream.
+[debug] ModelingLanguageModelLoader : Parsed model Location: file:/home/julian/Documents/MontiCore/memorieswithproductkeys/memories-with-product-keys/src/main/ema/emadl/models/memorieswithproductkeys/StreamTest.stream Package: memorieswithproductkeys/StreamTest.stream successfully.
+[debug] StreamUnitsModelLoader : Start creation of symbol table for model "memorieswithproductkeys.StreamTest".
+[debug] StreamUnitsSymbolTableCreator : Building Symboltable for Stream: StreamTest
+[debug] StreamUnitsModelLoader : Created symbol table for model "memorieswithproductkeys.StreamTest".
+[trace]  : START resolveDownMany("memorieswithproductkeys.StreamTest", "de.monticore.lang.monticar.streamunits._symboltable.ComponentStreamUnitsKind") in scope "Optional.empty". Found #0 (local)
+[trace]  : START resolveDownMany("StreamTest", "de.monticore.lang.monticar.streamunits._symboltable.ComponentStreamUnitsKind") in scope "Optional[StreamTest]". Found #1 (local)
+[trace]  : END resolveDownMany("StreamTest", "de.monticore.lang.monticar.streamunits._symboltable.ComponentStreamUnitsKind") in scope "Optional[StreamTest]". Found #1
+[trace]  : END resolveDownMany("memorieswithproductkeys.StreamTest", "de.monticore.lang.monticar.streamunits._symboltable.ComponentStreamUnitsKind") in scope "Optional.empty". Found #1
+[trace] CommonQualifiedNamesCalculator : Potential qualified names for "Stream": [Stream, memorieswithproductkeys.Stream]
+[trace]  : START resolveDownMany("Stream", "de.monticore.lang.embeddedmontiarc.embeddedmontiarc._symboltable.ComponentKind") in scope "Optional.empty". Found #0 (local)
+[trace]  : END resolveDownMany("Stream", "de.monticore.lang.embeddedmontiarc.embeddedmontiarc._symboltable.ComponentKind") in scope "Optional.empty". Found #0
+[trace]  : START resolveDownMany("Stream", "de.monticore.lang.embeddedmontiarc.embeddedmontiarc._symboltable.ComponentKind") in scope "Optional.empty". Found #0 (local)
+[trace]  : END resolveDownMany("Stream", "de.monticore.lang.embeddedmontiarc.embeddedmontiarc._symboltable.ComponentKind") in scope "Optional.empty". Found #0
+[trace]  : START resolveDownMany("memorieswithproductkeys.Stream", "de.monticore.lang.embeddedmontiarc.embeddedmontiarc._symboltable.ComponentKind") in scope "Optional.empty". Found #0 (local)
+[trace]  : START resolveDownMany("Stream", "de.monticore.lang.embeddedmontiarc.embeddedmontiarc._symboltable.ComponentKind") in scope "Optional[StreamTest]". Found #0 (local)
+[trace]  : END resolveDownMany("Stream", "de.monticore.lang.embeddedmontiarc.embeddedmontiarc._symboltable.ComponentKind") in scope "Optional[StreamTest]". Found #0
+[trace]  : END resolveDownMany("memorieswithproductkeys.Stream", "de.monticore.lang.embeddedmontiarc.embeddedmontiarc._symboltable.ComponentKind") in scope "Optional.empty". Found #0
+[debug] ModelingLanguageModelLoader : Start parsing model Location: file:/home/julian/Documents/MontiCore/memorieswithproductkeys/memories-with-product-keys/src/main/ema/emadl/models/memorieswithproductkeys/Stream.emadl Package: memorieswithproductkeys/Stream.emadl.
+[debug] ModelingLanguageModelLoader : Parsed model Location: file:/home/julian/Documents/MontiCore/memorieswithproductkeys/memories-with-product-keys/src/main/ema/emadl/models/memorieswithproductkeys/Stream.emadl Package: memorieswithproductkeys/Stream.emadl successfully.
+[debug] EMADLModelLoader : Start creation of symbol table for model "memorieswithproductkeys.Stream".
+[debug] EmbeddedMontiArcSymbolTableCreator : Building Symboltable for Component: Stream
+[debug] CommonScope : No resolver found for symbol targetKind "de.monticore.lang.monticar.ts.MCTypeSymbolKind" in scope "Optional[Stream]"
+[debug] CommonScope : No resolver found for symbol targetKind "de.monticore.lang.monticar.ts.MCAttributeSymbolKind" in scope "Optional[Stream]"
+[debug] CommonScope : No resolver found for symbol targetKind "de.monticore.symboltable.SymbolKind" in scope "Optional[Stream]"
+[debug] CommonScope : No resolver found for symbol targetKind "de.monticore.symboltable.SymbolKind" in scope "Optional[Stream]"
+[debug] CommonScope : No resolver found for symbol targetKind "de.monticore.symboltable.SymbolKind" in scope "Optional[Stream]"
+[debug] CommonScope : No resolver found for symbol targetKind "de.monticore.symboltable.SymbolKind" in scope "Optional[Stream]"
+[debug] CommonScope : No resolver found for symbol targetKind "de.monticore.lang.embeddedmontiarc.embeddedmontiarc._symboltable.ComponentKind" in scope "Optional[Stream]"
+[debug] CommonScope : No resolver found for symbol targetKind "de.monticore.symboltable.SymbolKind" in scope "Optional[Stream]"
+[debug] CommonScope : No resolver found for symbol targetKind "de.monticore.symboltable.SymbolKind" in scope "Optional[Stream]"
+[debug] ComponentPreGeneric : package memorieswithproductkeys;
+component Stream {
+}
+
+[debug] CommonScope : No resolver found for symbol targetKind "de.monticore.lang.monticar.ts.MCTypeSymbolKind" in scope "Optional[Stream]"
+[debug] CommonScope : No resolver found for symbol targetKind "de.monticore.lang.monticar.ts.MCAttributeSymbolKind" in scope "Optional[Stream]"
+[debug] CommonScope : No resolver found for symbol targetKind "de.monticore.symboltable.SymbolKind" in scope "Optional[Stream]"
+[debug] CommonScope : No resolver found for symbol targetKind "de.monticore.symboltable.SymbolKind" in scope "Optional[Stream]"
+[debug] CommonScope : No resolver found for symbol targetKind "de.monticore.symboltable.SymbolKind" in scope "Optional[Stream]"
+[debug] CommonScope : No resolver found for symbol targetKind "de.monticore.symboltable.SymbolKind" in scope "Optional[Stream]"
+[debug] CommonScope : No resolver found for symbol targetKind "de.monticore.lang.embeddedmontiarc.embeddedmontiarc._symboltable.ComponentKind" in scope "Optional[Stream]"
+[debug] CommonScope : No resolver found for symbol targetKind "de.monticore.symboltable.SymbolKind" in scope "Optional[Stream]"
+[debug] CommonScope : No resolver found for symbol targetKind "de.monticore.symboltable.SymbolKind" in scope "Optional[Stream]"
+[debug] ComponentPostGeneric : package memorieswithproductkeys;
+component Stream {
+}
+
+[debug] CommonScope : No resolver found for symbol targetKind "de.monticore.lang.monticar.ts.MCTypeSymbolKind" in scope "Optional[Stream]"
+[debug] CommonScope : No resolver found for symbol targetKind "de.monticore.lang.monticar.ts.MCAttributeSymbolKind" in scope "Optional[Stream]"
+[debug] CommonScope : No resolver found for symbol targetKind "de.monticore.symboltable.SymbolKind" in scope "Optional[Stream]"
+[debug] CommonScope : No resolver found for symbol targetKind "de.monticore.symboltable.SymbolKind" in scope "Optional[Stream]"
+[debug] CommonScope : No resolver found for symbol targetKind "de.monticore.symboltable.SymbolKind" in scope "Optional[Stream]"
+[debug] CommonScope : No resolver found for symbol targetKind "de.monticore.symboltable.SymbolKind" in scope "Optional[Stream]"
+[debug] CommonScope : No resolver found for symbol targetKind "de.monticore.lang.embeddedmontiarc.embeddedmontiarc._symboltable.ComponentKind" in scope "Optional[Stream]"
+[debug] CommonScope : No resolver found for symbol targetKind "de.monticore.symboltable.SymbolKind" in scope "Optional[Stream]"
+[debug] CommonScope : No resolver found for symbol targetKind "de.monticore.symboltable.SymbolKind" in scope "Optional[Stream]"
+[debug] ComponentPreParam : package memorieswithproductkeys;
+component Stream {
+}
+
+[debug] CommonScope : No resolver found for symbol targetKind "de.monticore.lang.monticar.ts.MCTypeSymbolKind" in scope "Optional[Stream]"
+[debug] CommonScope : No resolver found for symbol targetKind "de.monticore.lang.monticar.ts.MCAttributeSymbolKind" in scope "Optional[Stream]"
+[debug] CommonScope : No resolver found for symbol targetKind "de.monticore.symboltable.SymbolKind" in scope "Optional[Stream]"
+[debug] CommonScope : No resolver found for symbol targetKind "de.monticore.symboltable.SymbolKind" in scope "Optional[Stream]"
+[debug] CommonScope : No resolver found for symbol targetKind "de.monticore.symboltable.SymbolKind" in scope "Optional[Stream]"
+[debug] CommonScope : No resolver found for symbol targetKind "de.monticore.symboltable.SymbolKind" in scope "Optional[Stream]"
+[debug] CommonScope : No resolver found for symbol targetKind "de.monticore.lang.embeddedmontiarc.embeddedmontiarc._symboltable.ComponentKind" in scope "Optional[Stream]"
+[debug] CommonScope : No resolver found for symbol targetKind "de.monticore.symboltable.SymbolKind" in scope "Optional[Stream]"
+[debug] CommonScope : No resolver found for symbol targetKind "de.monticore.symboltable.SymbolKind" in scope "Optional[Stream]"
+[debug] ComponentPostParam : package memorieswithproductkeys;
+component Stream {
+}
+
+[trace]  : START resolveDownMany("memorieswithproductkeys.Stream", "de.monticore.lang.embeddedmontiarc.embeddedmontiarc._symboltable.ComponentKind") in scope "Optional.empty". Found #0 (local)
+[trace]  : START resolveDownMany("Stream", "de.monticore.lang.embeddedmontiarc.embeddedmontiarc._symboltable.ComponentKind") in scope "Optional[StreamTest]". Found #0 (local)
+[trace]  : END resolveDownMany("Stream", "de.monticore.lang.embeddedmontiarc.embeddedmontiarc._symboltable.ComponentKind") in scope "Optional[StreamTest]". Found #0
+[debug] CommonScope : The symbol Stream has already been resolved.
+[trace]  : START resolveDownMany("Stream", "de.monticore.lang.embeddedmontiarc.embeddedmontiarc._symboltable.ComponentKind") in scope "Optional[Stream]". Found #1 (local)
+[trace]  : END resolveDownMany("Stream", "de.monticore.lang.embeddedmontiarc.embeddedmontiarc._symboltable.ComponentKind") in scope "Optional[Stream]". Found #1
+[trace]  : END resolveDownMany("memorieswithproductkeys.Stream", "de.monticore.lang.embeddedmontiarc.embeddedmontiarc._symboltable.ComponentKind") in scope "Optional.empty". Found #1
+[debug] info : hundreds de.monticore.lang.monticar.types2._ast.ASTElementType@68303c3e
+[debug] info : tens de.monticore.lang.monticar.types2._ast.ASTElementType@2ec23ec3
+[debug] info : ones de.monticore.lang.monticar.types2._ast.ASTElementType@7c2e88b9
+[debug] info : number de.monticore.lang.monticar.types2._ast.ASTElementType@556843a5
+[debug] SymbolTableCreator: : endVisit of memorieswithproductkeys.Stream
+[trace]  : START resolveDownMany("memorieswithproductkeys.stream", "de.monticore.symboltable.SymbolKind") in scope "Optional[Stream]". Found #0 (local)
+[trace]  : END resolveDownMany("memorieswithproductkeys.stream", "de.monticore.symboltable.SymbolKind") in scope "Optional[Stream]". Found #0
+[debug] SymbolReference : Load full information of 'Stream' (Kind de.monticore.lang.embeddedmontiarc.embeddedmontiarc._symboltable.ComponentKind).
+[debug] CommonScope : The symbol Stream has already been resolved.
+[debug] SymbolReference : Loaded full information of 'Stream' successfully.
+[debug] SymbolReference : Load full information of 'Stream' (Kind de.monticore.lang.embeddedmontiarc.embeddedmontiarc._symboltable.ComponentKind).
+[debug] CommonScope : The symbol Stream has already been resolved.
+[debug] SymbolReference : Loaded full information of 'Stream' successfully.
+[debug] CommonSymbolReference : Full information of 'Stream' already loaded. Use cached version.
+[debug] exchangeGenerics inst : package memorieswithproductkeys;
+component /*instance*/ stream {
+  ports
+    in Z hundreds,
+    in Z tens,
+    in Z ones,
+    out Z number;
+}
+
+[debug] Fixing Wrong Ports : See next lines
+[debug] CommonSymbolReference : Full information of 'Stream' already loaded. Use cached version.
+[debug] build end sym : package memorieswithproductkeys;
+component /*instance*/ stream {
+  ports
+    in Z hundreds,
+    in Z tens,
+    in Z ones,
+    out Z number;
+}
+
+[debug] CommonSymbolReference : Full information of 'Stream' already loaded. Use cached version.
+[trace] CommonQualifiedNamesCalculator : Potential qualified names for "": [, memorieswithproductkeys.]
+[trace]  : START resolveDownMany("", "de.monticore.lang.monticar.cnnarch._symboltable.ArchitectureKind") in scope "Optional.empty". Found #0 (local)
+[trace]  : END resolveDownMany("", "de.monticore.lang.monticar.cnnarch._symboltable.ArchitectureKind") in scope "Optional.empty". Found #0
+[trace]  : START resolveDownMany("", "de.monticore.lang.monticar.cnnarch._symboltable.ArchitectureKind") in scope "Optional.empty". Found #0 (local)
+[trace]  : END resolveDownMany("", "de.monticore.lang.monticar.cnnarch._symboltable.ArchitectureKind") in scope "Optional.empty". Found #0
+[trace]  : START resolveDownMany("memorieswithproductkeys.", "de.monticore.lang.monticar.cnnarch._symboltable.ArchitectureKind") in scope "Optional.empty". Found #0 (local)
+[trace]  : START resolveDownMany("", "de.monticore.lang.monticar.cnnarch._symboltable.ArchitectureKind") in scope "Optional[StreamTest]". Found #0 (local)
+[trace]  : END resolveDownMany("", "de.monticore.lang.monticar.cnnarch._symboltable.ArchitectureKind") in scope "Optional[StreamTest]". Found #0
+[trace]  : START resolveDownMany("", "de.monticore.lang.monticar.cnnarch._symboltable.ArchitectureKind") in scope "Optional[Stream]". Found #0 (local)
+[trace]  : END resolveDownMany("", "de.monticore.lang.monticar.cnnarch._symboltable.ArchitectureKind") in scope "Optional[Stream]". Found #0
+[trace]  : END resolveDownMany("memorieswithproductkeys.", "de.monticore.lang.monticar.cnnarch._symboltable.ArchitectureKind") in scope "Optional.empty". Found #0
+[trace]  : START resolveDownMany("memorieswithproductkeys.", "de.monticore.lang.monticar.cnnarch._symboltable.ArchitectureKind") in scope "Optional.empty". Found #0 (local)
+[trace]  : START resolveDownMany("", "de.monticore.lang.monticar.cnnarch._symboltable.ArchitectureKind") in scope "Optional[StreamTest]". Found #0 (local)
+[trace]  : END resolveDownMany("", "de.monticore.lang.monticar.cnnarch._symboltable.ArchitectureKind") in scope "Optional[StreamTest]". Found #0
+[trace]  : START resolveDownMany("", "de.monticore.lang.monticar.cnnarch._symboltable.ArchitectureKind") in scope "Optional[Stream]". Found #0 (local)
+[trace]  : END resolveDownMany("", "de.monticore.lang.monticar.cnnarch._symboltable.ArchitectureKind") in scope "Optional[Stream]". Found #0
+[trace]  : END resolveDownMany("memorieswithproductkeys.", "de.monticore.lang.monticar.cnnarch._symboltable.ArchitectureKind") in scope "Optional.empty". Found #0
+[debug] EMADLModelLoader : Created symbol table for model "memorieswithproductkeys.Stream".
+[trace]  : START resolveDownMany("memorieswithproductkeys.Stream", "de.monticore.lang.embeddedmontiarc.embeddedmontiarc._symboltable.ComponentKind") in scope "Optional.empty". Found #0 (local)
+[trace]  : START resolveDownMany("Stream", "de.monticore.lang.embeddedmontiarc.embeddedmontiarc._symboltable.ComponentKind") in scope "Optional[StreamTest]". Found #0 (local)
+[trace]  : END resolveDownMany("Stream", "de.monticore.lang.embeddedmontiarc.embeddedmontiarc._symboltable.ComponentKind") in scope "Optional[StreamTest]". Found #0
+[debug] CommonScope : The symbol Stream has already been resolved.
+[trace]  : START resolveDownMany("Stream", "de.monticore.lang.embeddedmontiarc.embeddedmontiarc._symboltable.ComponentKind") in scope "Optional[Stream]". Found #1 (local)
+[trace]  : END resolveDownMany("Stream", "de.monticore.lang.embeddedmontiarc.embeddedmontiarc._symboltable.ComponentKind") in scope "Optional[Stream]". Found #1
+[trace]  : END resolveDownMany("memorieswithproductkeys.Stream", "de.monticore.lang.embeddedmontiarc.embeddedmontiarc._symboltable.ComponentKind") in scope "Optional.empty". Found #1
+[info] streamtest-build : [2020-10-26 11:54:53.264] Build StreamTest executables:
+[info] streamtest-build : [2020-10-26 11:54:53.264]  - memorieswithproductkeys.Stream
+[info] streamtest-build : [2020-10-26 11:54:53.268]    -> Files are up to date
+[trace]  : START resolveDownMany("memorieswithproductkeys.StreamTest", "de.monticore.lang.monticar.streamunits._symboltable.ComponentStreamUnitsKind") in scope "Optional.empty". Found #0 (local)
+[trace]  : START resolveDownMany("StreamTest", "de.monticore.lang.monticar.streamunits._symboltable.ComponentStreamUnitsKind") in scope "Optional[StreamTest]". Found #1 (local)
+[trace]  : END resolveDownMany("StreamTest", "de.monticore.lang.monticar.streamunits._symboltable.ComponentStreamUnitsKind") in scope "Optional[StreamTest]". Found #1
+[trace]  : START resolveDownMany("StreamTest", "de.monticore.lang.monticar.streamunits._symboltable.ComponentStreamUnitsKind") in scope "Optional[Stream]". Found #0 (local)
+[trace]  : END resolveDownMany("StreamTest", "de.monticore.lang.monticar.streamunits._symboltable.ComponentStreamUnitsKind") in scope "Optional[Stream]". Found #0
+[trace]  : END resolveDownMany("memorieswithproductkeys.StreamTest", "de.monticore.lang.monticar.streamunits._symboltable.ComponentStreamUnitsKind") in scope "Optional.empty". Found #1
+[trace] CommonQualifiedNamesCalculator : Potential qualified names for "Stream": [Stream, memorieswithproductkeys.Stream]
+[trace]  : START resolveDownMany("Stream", "de.monticore.lang.embeddedmontiarc.embeddedmontiarc._symboltable.ComponentKind") in scope "Optional.empty". Found #0 (local)
+[trace]  : END resolveDownMany("Stream", "de.monticore.lang.embeddedmontiarc.embeddedmontiarc._symboltable.ComponentKind") in scope "Optional.empty". Found #0
+[debug] GlobalScope : Already tried to load model for 'Stream'. If model exists, continue with cached version.
+[debug] GlobalScope : Already tried to load model for 'Stream'. If model exists, continue with cached version.
+[trace]  : START resolveDownMany("Stream", "de.monticore.lang.embeddedmontiarc.embeddedmontiarc._symboltable.ComponentKind") in scope "Optional.empty". Found #0 (local)
+[trace]  : END resolveDownMany("Stream", "de.monticore.lang.embeddedmontiarc.embeddedmontiarc._symboltable.ComponentKind") in scope "Optional.empty". Found #0
+[trace]  : START resolveDownMany("memorieswithproductkeys.Stream", "de.monticore.lang.embeddedmontiarc.embeddedmontiarc._symboltable.ComponentKind") in scope "Optional.empty". Found #0 (local)
+[trace]  : START resolveDownMany("Stream", "de.monticore.lang.embeddedmontiarc.embeddedmontiarc._symboltable.ComponentKind") in scope "Optional[StreamTest]". Found #0 (local)
+[trace]  : END resolveDownMany("Stream", "de.monticore.lang.embeddedmontiarc.embeddedmontiarc._symboltable.ComponentKind") in scope "Optional[StreamTest]". Found #0
+[debug] CommonScope : The symbol Stream has already been resolved.
+[trace]  : START resolveDownMany("Stream", "de.monticore.lang.embeddedmontiarc.embeddedmontiarc._symboltable.ComponentKind") in scope "Optional[Stream]". Found #1 (local)
+[trace]  : END resolveDownMany("Stream", "de.monticore.lang.embeddedmontiarc.embeddedmontiarc._symboltable.ComponentKind") in scope "Optional[Stream]". Found #1
+[trace]  : END resolveDownMany("memorieswithproductkeys.Stream", "de.monticore.lang.embeddedmontiarc.embeddedmontiarc._symboltable.ComponentKind") in scope "Optional.empty". Found #1

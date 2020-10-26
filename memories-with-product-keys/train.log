@@ -1,0 +1,2 @@
+Epoch[0] Batch[10] Speed: 8.09 samples/sec Loss: 3.79787
+Epoch[0] Train metric: 0.000000, Test metric: 0.500000, Train loss: 3.386210, Test loss: 3.187179

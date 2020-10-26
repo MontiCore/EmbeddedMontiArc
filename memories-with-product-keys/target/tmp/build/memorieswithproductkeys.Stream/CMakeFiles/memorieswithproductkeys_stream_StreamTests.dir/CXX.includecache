@@ -1,0 +1,30 @@
+#IncludeRegexLine: ^[ 	]*[#%][ 	]*(include|import)[ 	]*[<"]([^">]+)([">])
+
+#IncludeRegexScan: ^.*$
+
+#IncludeRegexComplain: ^$
+
+#IncludeRegexTransform: 
+
+/home/julian/Documents/MontiCore/memorieswithproductkeys/memories-with-product-keys/target/tmp/cpp/memorieswithproductkeys.Stream/memorieswithproductkeys_stream.h
+armadillo
+/home/julian/Documents/MontiCore/memorieswithproductkeys/memories-with-product-keys/target/tmp/cpp/memorieswithproductkeys.Stream/armadillo
+
+/home/julian/Documents/MontiCore/memorieswithproductkeys/memories-with-product-keys/target/tmp/cpp/memorieswithproductkeys.Stream/test/memorieswithproductkeys_stream_test.hpp
+../memorieswithproductkeys_stream.h
+/home/julian/Documents/MontiCore/memorieswithproductkeys/memories-with-product-keys/target/tmp/cpp/memorieswithproductkeys.Stream/memorieswithproductkeys_stream.h
+iostream
+-
+fstream
+-
+string
+-
+
+/home/julian/Documents/MontiCore/memorieswithproductkeys/memories-with-product-keys/target/tmp/cpp/memorieswithproductkeys.Stream/test/tests_main.cpp
+iostream
+-
+stdio.h
+-
+memorieswithproductkeys_stream_test.hpp
+/home/julian/Documents/MontiCore/memorieswithproductkeys/memories-with-product-keys/target/tmp/cpp/memorieswithproductkeys.Stream/test/memorieswithproductkeys_stream_test.hpp
+
