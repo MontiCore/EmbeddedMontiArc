@@ -24,7 +24,7 @@ public class LoadNetwork extends PredefinedLayerDeclaration {
 
     @Override
     public List<ArchTypeSymbol> computeOutputTypes(List<ArchTypeSymbol> inputTypes, LayerSymbol layer, VariableSymbol.Member member) {
-        Optional<List<Integer>> optValue = layer.getIntTupleValue(AllPredefinedLayers.OUTPUT_SHAPE_NAME);
+        Optional<List<Integer>> optValue = layer.getIntOrIntTupleValues(AllPredefinedLayers.OUTPUT_SHAPE_NAME);
 
         List<Integer> shapeList = Arrays.asList(1, 1, 1);
 
@@ -61,11 +61,11 @@ public class LoadNetwork extends PredefinedLayerDeclaration {
                         .build(),
                 new ParameterSymbol.Builder()
                         .name(AllPredefinedLayers.NUM_INPUTS_NAME)
-                        .constraints(Constraints.INTEGER)
+                        .constraints(Constraints.INTEGER, Constraints.POSITIVE)
                         .build(),
                 new ParameterSymbol.Builder()
                         .name(AllPredefinedLayers.OUTPUT_SHAPE_NAME)
-                        .constraints(Constraints.INTEGER_TUPLE)
+                        .constraints(Constraints.INTEGER_OR_INTEGER_TUPLE, Constraints.POSITIVE)
                         .build()));
         declaration.setParameters(parameters);
         return declaration;

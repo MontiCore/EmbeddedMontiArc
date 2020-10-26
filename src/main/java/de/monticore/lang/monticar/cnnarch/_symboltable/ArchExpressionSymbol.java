@@ -229,6 +229,30 @@ abstract public class ArchExpressionSymbol extends CommonSymbol {
         return Optional.empty();
     }
 
+    public Optional<List<Integer>> getIntOrIntTupleValues(){
+        Optional<List<Object>> optValue = getTupleValues();
+        if (optValue.isPresent()){
+            List<Integer> list = new ArrayList<>();
+            for (Object value : optValue.get()) {
+                if (value instanceof Integer){
+                    list.add((Integer) value);
+                }
+                else {
+                    return Optional.empty();
+                }
+            }
+            return Optional.of(list);
+        }else{
+            List<Integer> list = new ArrayList<>();
+            Optional<Integer> optValueInt = getIntValue();
+            if (optValueInt.isPresent()){
+                list.add(optValueInt.get());
+                return Optional.of(list);
+            }
+        }
+        return Optional.empty();
+    }
+
     public Optional<List<Double>> getDoubleTupleValues() {
         Optional<List<Object>> optValue = getTupleValues();
         if (optValue.isPresent()){
