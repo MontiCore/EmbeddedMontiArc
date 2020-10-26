@@ -12,7 +12,6 @@ import de.monticore.lang.tagging._symboltable.TagSymbol;
 
 public class LayerPathParameterSymbol extends TagSymbol {
     public static final LayerPathParameterKind KIND  = LayerPathParameterKind.INSTANCE;
-
     public LayerPathParameterSymbol() {
         super(KIND, ".");
     }
