@@ -59,7 +59,7 @@ public class LayerPathParameterSymbolCreator implements TagSymbolCreator {
     protected void addTag(ASTTag tag, TaggingResolver tagging, String root, SymbolKind kind) {
         tag.getTagElementList().stream()
             .filter(tagElement -> tagElement.getName().equals("LayerPathParameter"))
-            .forEachOrdered(tagElement -> {
+            .forEachOrdered(tagElement ->  {
                 Matcher matcher = matchRegexPattern(tagElement.getTagValue());
                 tag.getScopeList().stream()
                     .filter(scope -> scope.getScopeKind().equals("NameScope"))
@@ -84,7 +84,7 @@ public class LayerPathParameterSymbolCreator implements TagSymbolCreator {
             Log.error(
                 String.format(
                         "'%s' does not match the specified regex pattern '%s'",
-                        regex, "{path = {LayerPathParameter}, name = {tagId}}"
+                        regex, "{path = {LayerPathParameter}, id = {tagId}}"
                 )
             );
             return null;
