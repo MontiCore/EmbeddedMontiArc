@@ -44,7 +44,7 @@ public:
     std::vector<std::map<std::string, NDArray>> replay_memory;
     
     //parameters for local adapt
-    std::vector<bool> use_local_adaption = {};
+    std::vector<bool> use_local_adaptation = {};
     std::vector<mx_uint> replay_k = {};
     std::vector<mx_uint> gradient_steps = {};
     std::vector<mx_uint> query_num_inputs = {};
@@ -81,7 +81,7 @@ public:
         std::vector<std::vector<float>> network_input = {in_data_};
 
         for(mx_uint i=1; i < num_subnets; i++){
-            if(use_local_adaption[i-1]){
+            if(use_local_adaptation[i-1]){
                 local_adapt(i, replay_query_handles[i-1], replay_memory[i-1], network_input, network_input_keys, network_input_shapes, network_input_sizes, loss_input_keys, gradient_steps[i-1], replay_k[i-1]);
             }
         }
@@ -119,7 +119,7 @@ public:
     
     }
     
-    //perform local adaption, train network on examples, only use updated on one inference (locally), don't save them
+    //perform local adaptation, train network on examples, only use updated on one inference (locally), don't save them
 void local_adapt(int net_start_ind,
                      Executor * query_handle,
                      std::map<std::string, NDArray> &memory,
@@ -381,15 +381,15 @@ void local_adapt(int net_start_ind,
         network_input_sizes = getSizesOfShapes(network_input_shapes);
 
         //Init Episodic replay Memory prediction
-		use_local_adaption.push_back(true);
+		use_local_adaptation.push_back(true);
 	    replay_k.push_back(32);
         gradient_steps.push_back(30);
 	    query_num_inputs.push_back(1);
-		use_local_adaption.push_back(true);
+		use_local_adaptation.push_back(true);
 	    replay_k.push_back(32);
         gradient_steps.push_back(30);
 	    query_num_inputs.push_back(1);
-		use_local_adaption.push_back(true);
+		use_local_adaptation.push_back(true);
 	    replay_k.push_back(32);
         gradient_steps.push_back(30);
 	    query_num_inputs.push_back(1);
