@@ -4,6 +4,7 @@ import de.rwth.montisim.commons.utils.Comparator;
 import de.rwth.montisim.commons.utils.LTLOperator;
 import de.rwth.montisim.commons.utils.json.Json;
 import de.rwth.montisim.commons.utils.json.SerializationException;
+import de.rwth.montisim.simulation.vehicle.physicalvalues.TrueVelocity;
 import de.rwth.montisim.simulation.vehicle.task.goal.*;
 import org.junit.Test;
 
@@ -17,7 +18,7 @@ public class TaskTest {
 
         origTask.addGoal(
                 MetricGoal.newBuilder()
-                .setProperty(VehicleProperty.SPEED)
+                .setProperty("speed")
                 .never()
                 .greater(100, "m/s")
                 .build()
@@ -55,12 +56,8 @@ public class TaskTest {
         assertEquals(LTLOperator.UNTIL, goal.getLtlOperator());
 
         // test vehicle properties
-        goal = MetricGoal.newBuilder().setProperty(VehicleProperty.ACCELERATION).build();
-        assertEquals(VehicleProperty.ACCELERATION, ((MetricGoal) goal).getProperty());
-        goal = MetricGoal.newBuilder().setProperty(VehicleProperty.SPEED).build();
-        assertEquals(VehicleProperty.SPEED, ((MetricGoal) goal).getProperty());
-        goal = MetricGoal.newBuilder().setProperty(VehicleProperty.MIN_BATTERY).build();
-        assertEquals(VehicleProperty.MIN_BATTERY, ((MetricGoal) goal).getProperty());
+        goal = MetricGoal.newBuilder().setProperty("speed").build();
+        assertEquals(TrueVelocity.VALUE_NAME, ((MetricGoal) goal).getProperty());
 
         // test comparators, target values and target units
         goal = MetricGoal.newBuilder().less(1, "m/s").build();

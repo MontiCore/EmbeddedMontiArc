@@ -5,11 +5,20 @@ import de.rwth.montisim.commons.utils.Comparator;
 import de.rwth.montisim.commons.utils.LTLOperator;
 import de.rwth.montisim.commons.utils.json.Typed;
 import de.rwth.montisim.simulation.vehicle.Vehicle;
+import de.rwth.montisim.simulation.vehicle.physicalvalues.TrueVelocity;
 
 
+/**
+ * This class represents a simple LTL formula that can be evaluated/updated
+ * at any time given an instance of the Vehicle class.
+ *
+ * The LTL formula of this class concentrate on vehicle's property such as
+ * orientation, velocity, speed, battery, etc.
+ *
+ */
 @Typed
 public class MetricGoal extends Goal {
-    private VehicleProperty property;
+    private String property;
     private Comparator comparator;
     private double value;
     private String unit;
@@ -17,7 +26,7 @@ public class MetricGoal extends Goal {
     public MetricGoal() {
     }
 
-    public MetricGoal(LTLOperator ltlOperator, VehicleProperty property, Comparator comparator, double value, String unit) {
+    public MetricGoal(LTLOperator ltlOperator, String property, Comparator comparator, double value, String unit) {
         this.ltlOperator = ltlOperator;
         this.property = property;
         this.comparator = comparator;
@@ -25,13 +34,21 @@ public class MetricGoal extends Goal {
         this.unit = unit;
     }
 
+    /**
+     * Update the goal's status by evaluating the LTL formula.
+     *
+     * @param v an instance of Vehicle class
+     */
     public void update(Vehicle v) {
-        double currValue = 0;
-        if (property.equals(VehicleProperty.SPEED)) {
-            currValue = v.physicalObject.velocity.magnitude();
+        boolean result;
+        if (property.equals(TrueVelocity.VALUE_NAME)) {
+            double vel = (double) v.getPhysicalValues().getPhysicalValue(property).get();
+            result = evaluate(vel);
+        } else {
+            System.out.printf("Vehicle is missing property %s.\n", this.property);
+            return;
         }
 
-        boolean result = compare(currValue);
         if (result) {
             updateStatus(TaskStatus.SUCCEEDED);
         } else {
@@ -39,17 +56,23 @@ public class MetricGoal extends Goal {
         }
     }
 
-    private boolean compare(double currValue) {
+    /**
+     * Evaluate the boolean expression of this goal
+     *
+     * @param value
+     * @return result of vehicle.[property] comparator value[unit]
+     */
+    private boolean evaluate(double value) {
         // TODO take unit into consideration
-        if (comparator.equals(Comparator.EQUAL) && currValue == value) {
+        if (comparator.equals(Comparator.EQUAL) && value == this.value) {
             return true;
-        } else if (comparator.equals(Comparator.GREATER) && currValue > value) {
+        } else if (comparator.equals(Comparator.GREATER) && value > this.value) {
             return true;
-        } else if (comparator.equals(Comparator.GREATER_EQUAL) && currValue >= value) {
+        } else if (comparator.equals(Comparator.GREATER_EQUAL) && value >= this.value) {
             return true;
-        } else if (comparator.equals(Comparator.LESS) && currValue < value) {
+        } else if (comparator.equals(Comparator.LESS) && value < this.value) {
             return true;
-        } else if (comparator.equals(Comparator.LESS_EQUAL) && currValue <= value) {
+        } else if (comparator.equals(Comparator.LESS_EQUAL) && value <= this.value) {
             return true;
         }
         return false;
@@ -79,7 +102,7 @@ public class MetricGoal extends Goal {
         return new MetricGoalBuilder();
     }
 
-    public VehicleProperty getProperty() {
+    public String getProperty() {
         return property;
     }
 

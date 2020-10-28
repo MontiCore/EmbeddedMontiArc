@@ -2,14 +2,23 @@ package de.rwth.montisim.simulation.vehicle.task.goal;
 
 import de.rwth.montisim.commons.utils.Comparator;
 
+import java.util.HashMap;
+
 public class MetricGoalBuilder extends GoalBuilder<MetricGoalBuilder> {
-    VehicleProperty property;
+    private final HashMap<String, String> metricNameAdapter = new HashMap<String, String>(){{
+        put("speed", "true_velocity");  // simulation.vehicle.physicalvalues
+    }};
+
+    String property;
     Comparator comparator;
     double targetValue;
     String targetUnit;
 
-    public MetricGoalBuilder setProperty(VehicleProperty property) {
-        this.property = property;
+    public MetricGoalBuilder setProperty(String property) {
+        if (metricNameAdapter.containsKey(property))
+            this.property = metricNameAdapter.get(property);
+        else
+            this.property = property;
         return getThis();
     }
 

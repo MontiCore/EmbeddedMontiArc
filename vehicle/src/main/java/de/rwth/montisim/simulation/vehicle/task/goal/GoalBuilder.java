@@ -4,6 +4,8 @@ import de.rwth.montisim.commons.utils.LTLOperator;
 import de.rwth.montisim.commons.utils.json.Json;
 import de.rwth.montisim.commons.utils.json.SerializationException;
 
+import java.util.HashMap;
+
 
 public abstract class GoalBuilder<T extends GoalBuilder<T>> {
     public Goal fromJson(String json) throws SerializationException {

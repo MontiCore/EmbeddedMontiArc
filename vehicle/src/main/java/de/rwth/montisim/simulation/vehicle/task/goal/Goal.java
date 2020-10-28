@@ -24,7 +24,8 @@ public abstract class Goal {
 
 
     /**
-     * Update goal status depending on the LTL operator and the new status
+     * Update goal status regarding the LTL operator and the current value of the boolean
+     * expression it contains.
      *
      * @param status new status
      */
