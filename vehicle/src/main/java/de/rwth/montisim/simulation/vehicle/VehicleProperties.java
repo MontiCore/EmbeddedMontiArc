@@ -1,6 +1,7 @@
 /* (c) https://github.com/MontiCore/monticore */
 package de.rwth.montisim.simulation.vehicle;
 
+import java.util.Objects;
 import java.util.Optional;
 import java.util.Vector;
 
@@ -23,6 +24,7 @@ import de.rwth.montisim.simulation.vehicle.physicsmodel.PhysicsProperties;
 import de.rwth.montisim.simulation.vehicle.physicsmodel.rigidbody.RigidbodyPhysicsProperties;
 import de.rwth.montisim.simulation.vehicle.powertrain.PowerTrainProperties;
 import de.rwth.montisim.simulation.vehicle.powertrain.electrical.ElectricalPTProperties;
+import de.rwth.montisim.simulation.vehicle.task.Task;
 
 /**
  * General properties of the Vehicle. All lengths are given in Meters. All
@@ -45,6 +47,8 @@ public class VehicleProperties /* implements JsonSerializable */ {
 
     public Vec2 start_coords = new Vec2();
     public Vec2 end_coords;
+
+    public Task task;
 
     public VehicleProperties(){
         body = new BodyProperties();
@@ -118,6 +122,10 @@ public class VehicleProperties /* implements JsonSerializable */ {
         components.add(properties);
     }
 
+    public void setTask(Task task) {
+        this.task = task;
+    }
+
     public static class BuildContext {
         public final MessageTypeManager mtManager;
         public final Pathfinding pathfinding;
@@ -174,6 +182,9 @@ public class VehicleProperties /* implements JsonSerializable */ {
         target.powerTrain.steeringActuator = cm.getActuator(PowerTrainProperties.STEERING_ACTUATOR_NAME).get();
 
         target.eesystem.finalizeSetup();
+
+        Objects.requireNonNull(task);
+        target.task = task;
         return target;
     }
 

@@ -113,12 +113,19 @@ public class Vehicle extends SimulationObject implements Updatable, Destroyable,
         return w.getString();
     }
 
-    public void setTask(Task task) {
-        this.task = task;
-    }
-
     public Task getTask() {
         return task;
+    }
+
+
+    /**
+     * For tests
+     *
+     * @return
+     */
+    public PhysicalValueRegistry getPhysicalValues() {
+
+        return physicalValues;
     }
 
 }

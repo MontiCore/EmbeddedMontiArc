@@ -9,10 +9,8 @@ import de.rwth.montisim.commons.simulation.TimeUpdate;
 import de.rwth.montisim.simulation.vehicle.VehicleBuilder;
 import de.rwth.montisim.simulation.vehicle.VehicleProperties;
 import de.rwth.montisim.simulation.vehicle.task.Task;
-import de.rwth.montisim.simulation.vehicle.task.goal.GoalBuilder;
 import de.rwth.montisim.simulation.vehicle.task.goal.MetricGoal;
 import de.rwth.montisim.simulation.vehicle.task.goal.PathGoal;
-import de.rwth.montisim.simulation.vehicle.task.goal.VehicleProperty;
 import org.junit.*;
 
 import de.rwth.montisim.commons.map.Pathfinding;
@@ -42,9 +40,6 @@ public class IntegrationTest {
         Simulator simulator = new Simulator(config, world, pathfinding, mtManager);
         SimulationLoop loop = new SimulationLoop(simulator, config);
 
-        DefaultVehicleConfig vConf = DefaultVehicleConfig.withJavaAutopilot();
-        Vehicle vehicle = simulator.getVehicleBuilder(vConf.properties).setName("TestVehicle").build();
-
         Task task = new Task();
         task.addGoal(PathGoal.newBuilder()
                 .eventually()
@@ -52,11 +47,13 @@ public class IntegrationTest {
                 .withInRange(10)
                 .build());
         task.addGoal(MetricGoal.newBuilder()
-                .setProperty(VehicleProperty.SPEED)
+                .setProperty("speed")
                 .never()
                 .greater(1000, "m/s")
                 .build());
-        vehicle.setTask(task);
+
+        DefaultVehicleConfig vConf = DefaultVehicleConfig.withJavaAutopilot().setTask(task);
+        Vehicle vehicle = simulator.getVehicleBuilder(vConf.properties).setName("TestVehicle").build();
 
         vehicle.physicsModel.setGroundPosition(new Vec3(0, 0, 0), new Vec2(START_DIR.x, START_DIR.y));
 
