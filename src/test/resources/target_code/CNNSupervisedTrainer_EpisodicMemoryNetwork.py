@@ -795,9 +795,14 @@ class CNNSupervisedTrainer_EpisodicMemoryNetwork:
 
                         metric.update(preds=predictions, labels=[labels[j][local_adaptation_batch_i] for j in range(len(labels))])
                 self._networks[0].collect_params().load_dict(params[0], ctx=mx_context[0])
-            global_loss_test /= (test_batches)    
+            global_loss_test /= (test_batches)
 
+            test_metric_name = metric.get()[0]
             test_metric_score = metric.get()[1]
+
+            metric_file = open(self._net_creator._model_dir_ + 'metric.txt', 'w')
+            metric_file.write(test_metric_name + " : " + str(test_metric_score))
+            metric_file.close()
 
             logging.info("Epoch[%d] Train metric: %f, Test metric: %f, Train loss: %f, Test loss: %f" % (epoch, train_metric_score, test_metric_score, global_loss_train, global_loss_test))
 
