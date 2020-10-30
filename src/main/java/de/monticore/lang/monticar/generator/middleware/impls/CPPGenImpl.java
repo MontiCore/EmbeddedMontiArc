@@ -44,7 +44,7 @@ public class CPPGenImpl implements GeneratorImpl {
         List<File> files = new ArrayList<>();
 
         generatorCPP.setGenerationTargetPath(generationTargetPath);
-        files.addAll(generatorCPP.generateFiles(componentInstanceSymbol, taggingResolver));
+        files.addAll(generatorCPP.generateFiles(taggingResolver, componentInstanceSymbol));
 
         return files;
     }
