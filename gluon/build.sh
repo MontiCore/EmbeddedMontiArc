@@ -11,7 +11,7 @@ if [ ! -f $MXNET_FOLDER/libmxnet.so ]; then
 fi
 
 rm -rf target
-java -jar ../embedded-montiarc-emadl-generator-0.4.1-jar-with-dependencies.jar -m src/emadl/models/ -r memorieswithproductkeys.Connector -o target -b GLUON -p /usr/bin/python3
+java -jar ../embedded-montiarc-emadl-generator-0.4.2-jar-with-dependencies.jar -m src/emadl/models/ -r memorieswithproductkeys.Connector -o target -b GLUON -f n -p /usr/bin/python3
 
 
 rm -rf build
