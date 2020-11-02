@@ -1,14 +1,19 @@
 /* (c) https://github.com/MontiCore/monticore */
 package de.monticore.lang.embeddedmontiarc.embeddedmontiarcmath.helper;
 
+import de.monticore.lang.embeddedmontiarc.embeddedmontiarcmath._symboltable.math.symbols.EMAMInitialGuessSymbol;
+import de.monticore.lang.embeddedmontiarc.embeddedmontiarcmath._symboltable.math.symbols.EMAMInitialValueSymbol;
+import de.monticore.lang.embeddedmontiarc.embeddedmontiarcmath._symboltable.math.symbols.EMAMEquationSymbol;
+import de.monticore.lang.embeddedmontiarc.embeddedmontiarcmath._symboltable.math.visitor.EMAMMathExpressionSymbolVisitor;
 import de.monticore.lang.math._symboltable.MathForLoopHeadSymbol;
 import de.monticore.lang.math._symboltable.MathStatementsSymbol;
 import de.monticore.lang.math._symboltable.expression.*;
 import de.monticore.lang.math._symboltable.matrix.*;
-import de.monticore.lang.math._symboltable.visitor.MathExpressionSymbolVisitor;
 
+import java.util.HashSet;
 import java.util.LinkedList;
 import java.util.List;
+import java.util.Set;
 
 public class MathExpressionSymbolHelper {
 
@@ -26,86 +31,128 @@ public class MathExpressionSymbolHelper {
         return visitor.symbols;
     }
 
-    private static class AddAllVisitor extends MathExpressionSymbolVisitor {
+    private static class AddAllVisitor implements EMAMMathExpressionSymbolVisitor {
         List<MathExpressionSymbol> symbols = new LinkedList<>();
 
-        @Override public void visit(MathArithmeticExpressionSymbol node) {
+        @Override
+        public void visit(MathArithmeticExpressionSymbol node) {
             symbols.add(node);
         }
 
-        @Override public void visit(MathAssignmentExpressionSymbol node) {
+        @Override
+        public void visit(MathAssignmentExpressionSymbol node) {
             symbols.add(node);
         }
 
-        @Override public void visit(MathBooleanExpressionSymbol node) {
+        @Override
+        public void visit(MathBooleanExpressionSymbol node) {
             symbols.add(node);
         }
 
-        @Override public void visit(MathCompareExpressionSymbol node) {
+        @Override
+        public void visit(MathCompareExpressionSymbol node) {
             symbols.add(node);
         }
 
-        @Override public void visit(MathConditionalExpressionsSymbol node) {
+        @Override
+        public void visit(MathConditionalExpressionsSymbol node) {
             symbols.add(node);
         }
 
-        @Override public void visit(MathConditionalExpressionSymbol node) {
+        @Override
+        public void visit(MathConditionalExpressionSymbol node) {
             symbols.add(node);
         }
 
-        @Override public void visit(MathForLoopHeadSymbol node) {
+        @Override
+        public void visit(MathForLoopHeadSymbol node) {
             symbols.add(node);
         }
 
-        @Override public void visit(MathForLoopExpressionSymbol node) {
+        @Override
+        public void visit(MathForLoopExpressionSymbol node) {
             symbols.add(node);
         }
 
-        @Override public void visit(MathNameExpressionSymbol node) {
+        @Override
+        public void visit(MathNameExpressionSymbol node) {
             symbols.add(node);
         }
 
-        @Override public void visit(MathNumberExpressionSymbol node) {
+        @Override
+        public void visit(MathNumberExpressionSymbol node) {
             symbols.add(node);
         }
 
-        @Override public void visit(MathParenthesisExpressionSymbol node) {
+        @Override
+        public void visit(MathParenthesisExpressionSymbol node) {
             symbols.add(node);
         }
 
-        @Override public void visit(MathPreOperatorExpressionSymbol node) {
+        @Override
+        public void visit(MathPreOperatorExpressionSymbol node) {
             symbols.add(node);
         }
 
-        @Override public void visit(MathValueSymbol node) {
+        @Override
+        public void visit(MathValueSymbol node) {
             symbols.add(node);
         }
 
-        @Override public void visit(MathValueType node) {
+        @Override
+        public void visit(MathValueType node) {
             symbols.add(node);
         }
 
-        @Override public void visit(MathMatrixAccessOperatorSymbol node) {
+        @Override
+        public void visit(MathMatrixAccessOperatorSymbol node) {
             symbols.add(node);
         }
 
-        @Override public void visit(MathMatrixNameExpressionSymbol node) {
+        @Override
+        public void visit(MathMatrixNameExpressionSymbol node) {
             symbols.add(node);
         }
 
-        @Override public void visit(MathMatrixVectorExpressionSymbol node) {
+        @Override
+        public void visit(MathMatrixVectorExpressionSymbol node) {
             symbols.add(node);
         }
 
-        @Override public void visit(MathMatrixArithmeticValueSymbol node) {
+        @Override
+        public void visit(MathMatrixArithmeticValueSymbol node) {
             symbols.add(node);
         }
 
-        @Override public void visit(MathMatrixAccessSymbol node) {
+        @Override
+        public void visit(MathMatrixAccessSymbol node) {
             symbols.add(node);
         }
 
-        @Override public void visit(MathMatrixArithmeticExpressionSymbol node) {
+        @Override
+        public void visit(MathMatrixArithmeticExpressionSymbol node) {
+            symbols.add(node);
+        }
+
+        protected Set<MathExpressionSymbol> visitedSymbols = new HashSet<>();
+
+        @Override
+        public Set<MathExpressionSymbol> getVisitedSymbols() {
+            return visitedSymbols;
+        }
+
+        @Override
+        public void visit(EMAMEquationSymbol node) {
+            symbols.add(node);
+        }
+
+        @Override
+        public void visit(EMAMInitialGuessSymbol node) {
+            symbols.add(node);
+        }
+
+        @Override
+        public void visit(EMAMInitialValueSymbol node) {
             symbols.add(node);
         }
     }

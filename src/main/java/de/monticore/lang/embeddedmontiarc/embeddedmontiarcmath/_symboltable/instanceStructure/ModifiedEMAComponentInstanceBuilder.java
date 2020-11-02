@@ -1,12 +1,12 @@
 /* (c) https://github.com/MontiCore/monticore */
 package de.monticore.lang.embeddedmontiarc.embeddedmontiarcmath._symboltable.instanceStructure;
 
-import de.monticore.commonexpressions._ast.ASTDivideExpression;
-import de.monticore.commonexpressions._ast.ASTInfixExpression;
 import de.monticore.expressionsbasis._ast.ASTExpression;
 import de.monticore.lang.embeddedmontiarc.embeddedmontiarc._symboltable.cncModel.EMAComponentSymbol;
 import de.monticore.lang.embeddedmontiarc.embeddedmontiarc._symboltable.instanceStructure.EMAComponentInstanceSymbol;
 import de.monticore.lang.embeddedmontiarc.embeddedmontiarcmath._ast.EmbeddedMontiArcMathMill;
+import de.monticore.lang.embeddedmontiarc.embeddedmontiarcmath._symboltable.math.visitor.EMAMCopyMathExpressionSymbol;
+import de.monticore.lang.embeddedmontiarc.embeddedmontiarcmath._symboltable.math.visitor.EMAMMathExpressionReplacementVisitor;
 import de.monticore.lang.embeddedmontiarc.embeddedmontiarcmath.helper.MathExpressionSymbolHelper;
 import de.monticore.lang.embeddedmontiarcdynamic.embeddedmontiarcdynamic._symboltable.instanceStructure.EMADynamicComponentInstanceBuilder;
 import de.monticore.lang.math._ast.*;
@@ -43,7 +43,7 @@ public class ModifiedEMAComponentInstanceBuilder extends EMADynamicComponentInst
         Optional<MathStatementsSymbol> math =
                 component.getSpannedScope().resolve("MathStatements", MathStatementsSymbol.KIND);
         if (math.isPresent()) {
-            MathStatementsSymbol copy = CopyMathExpressionSymbol.copy(math.get());
+            MathStatementsSymbol copy = EMAMCopyMathExpressionSymbol.copy(math.get());
             instanceSymbol.getSpannedScope().getAsMutableScope().add(copy);
             MathExpressionSymbolHelper.getAllSubExpressions(copy).stream().forEachOrdered(
                     s -> instanceSymbol.getSpannedScope().getAsMutableScope().add(s)
@@ -74,26 +74,27 @@ public class ModifiedEMAComponentInstanceBuilder extends EMADynamicComponentInst
     protected void exchangeParameters(EMAComponentInstanceSymbol inst, Map<String, ASTExpression> arguments) {
         super.exchangeParameters(inst, arguments);
 
-        Collection<MathExpressionSymbol> exprs = inst.getSpannedScope().resolveLocally(MathExpressionSymbol.KIND);
         Collection<MathStatementsSymbol> mathStatementSymbols =
                 inst.getSpannedScope().resolveLocally(MathStatementsSymbol.KIND);
 
         if (!mathStatementSymbols.isEmpty()) {
+            MathStatementsSymbol mathStatementsSymbol = mathStatementSymbols.stream().findFirst().get();
+            List<MathExpressionSymbol> exprs = MathExpressionSymbolHelper.getAllSubExpressions(mathStatementsSymbol);
+            Map<MathExpressionSymbol, MathExpressionSymbol> replacementMap = new HashMap<>();
             for (MathExpressionSymbol mexp : exprs) {
                 if (mexp instanceof MathNameExpressionSymbol) {
                     String name = ((MathNameExpressionSymbol) mexp).getNameToResolveValue();
-                    if (arguments.containsKey(name)) {
-                        MathNameExpressionSymbol nameSymbol = (MathNameExpressionSymbol) mexp;
-                        MathExpressionSymbol exchangeSymbol = createFromASTExpression(arguments.get(name));
-                        for (MathStatementsSymbol mathStatementSymbol : mathStatementSymbols)
-                            MathExpressionReplacer
-                                    .replaceMathExpression(mathStatementSymbol, exchangeSymbol, nameSymbol);
-
-                        inst.getSpannedScope().getAsMutableScope().remove(nameSymbol);
-                        inst.getSpannedScope().getAsMutableScope().add(exchangeSymbol);
-                    }
+                    if (arguments.containsKey(name))
+                        replacementMap.put(mexp, createFromASTExpression(arguments.get(name)));
                 }
             }
+            for (Map.Entry<MathExpressionSymbol, MathExpressionSymbol> replacement : replacementMap.entrySet()) {
+                inst.getSpannedScope().getAsMutableScope().remove(replacement.getKey());
+                inst.getSpannedScope().getAsMutableScope().add(replacement.getValue());
+            }
+            EMAMMathExpressionReplacementVisitor replacementVisitor =
+                    new EMAMMathExpressionReplacementVisitor(replacementMap);
+            replacementVisitor.handle(mathStatementsSymbol);
         }
     }
 
@@ -134,9 +135,9 @@ public class ModifiedEMAComponentInstanceBuilder extends EMADynamicComponentInst
                                 .setNum(numberWithInf)
                                 .build();
                 expression = EmbeddedMontiArcMathMill
-                                .numberExpressionBuilder()
-                                .setNumberWithUnit(numberWithUnit)
-                                .build();
+                        .numberExpressionBuilder()
+                        .setNumberWithUnit(numberWithUnit)
+                        .build();
             } else if (((ASTLiteralValue) defaultValue).getValue() instanceof ASTBooleanLiteral) {
                 if (((ASTBooleanLiteral) ((ASTLiteralValue) defaultValue).getValue()).getValue()) {
                     expression = EmbeddedMontiArcMathMill

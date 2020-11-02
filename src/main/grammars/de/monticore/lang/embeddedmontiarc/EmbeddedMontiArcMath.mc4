@@ -13,4 +13,16 @@ grammar EmbeddedMontiArcMath extends  de.monticore.lang.embeddedmontiarcdynamic.
 
     BehaviorName = name:"Math";
 
+
+    // TODO CoCos einführen
+    Equation implements Statement =
+        left:Expression "==" right:Expression ";";
+
+    InitialValueOrGuess implements Statement =
+        Name ("(" MathMatrixAccessExpression ")")?
+        "(" "t=0" ")" (guess:["~"])? "=" Expression ";";
+
+    SymbolicAssignmentStatement implements Statement =
+        "symbolic" type:AssignmentType Name+ ";";
+
 }

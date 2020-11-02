@@ -3,9 +3,21 @@
 package de.monticore.lang.embeddedmontiarc.embeddedmontiarcmath._symboltable;
 
 import de.monticore.lang.embeddedmontiarc.embeddedmontiarcmath._ast.ASTBehaviorEmbedding;
+import de.monticore.lang.embeddedmontiarc.embeddedmontiarcmath._ast.ASTEquation;
+import de.monticore.lang.embeddedmontiarc.embeddedmontiarcmath._ast.ASTInitialValueOrGuess;
+import de.monticore.lang.embeddedmontiarc.embeddedmontiarcmath._ast.ASTSymbolicAssignmentStatement;
+import de.monticore.lang.embeddedmontiarc.embeddedmontiarcmath._symboltable.math.symbols.EMAMInitialGuessSymbol;
+import de.monticore.lang.embeddedmontiarc.embeddedmontiarcmath._symboltable.math.symbols.EMAMInitialValueSymbol;
+import de.monticore.lang.embeddedmontiarc.embeddedmontiarcmath._symboltable.math.symbols.EMAMEquationSymbol;
 import de.monticore.lang.embeddedmontiarc.embeddedmontiarcmath._visitor.EmbeddedMontiArcMathVisitor;
 import de.monticore.lang.math._ast.ASTMathStatements;
 import de.monticore.lang.math._symboltable.MathStatementsSymbol;
+import de.monticore.lang.math._symboltable.expression.MathExpressionSymbol;
+import de.monticore.lang.math._symboltable.expression.MathNumberExpressionSymbol;
+import de.monticore.lang.math._symboltable.expression.MathValueSymbol;
+import de.monticore.lang.math._symboltable.expression.MathValueType;
+import de.monticore.lang.math._symboltable.matrix.MathMatrixAccessOperatorSymbol;
+import de.monticore.lang.math._symboltable.matrix.MathMatrixNameExpressionSymbol;
 import de.monticore.lang.monticar.common2._visitor.Common2Visitor;
 import de.se_rwth.commons.logging.Log;
 
@@ -80,7 +92,48 @@ public class EmbeddedMontiArcMathSymbolTableCreatorTOP extends de.monticore.symb
   }
 
   @Override
-  public void setRealThis(Common2Visitor realThis) {
+  public void endVisit(ASTEquation node) {
+    EMAMEquationSymbol symbol = new EMAMEquationSymbol();
+    symbol.setLeftExpression((MathExpressionSymbol) node.getLeft().getSymbol());
+    symbol.setRightExpression((MathExpressionSymbol) node.getRight().getSymbol());
 
+    addToScopeAndLinkWithNode(symbol, node);
+  }
+
+  @Override
+  public void endVisit(ASTInitialValueOrGuess node) {
+    MathMatrixNameExpressionSymbol nameExpressionSymbol = new MathMatrixNameExpressionSymbol(node.getName());
+    if(node.isPresentMathMatrixAccessExpression()) {
+      nameExpressionSymbol.setMathMatrixAccessOperatorSymbol((MathMatrixAccessOperatorSymbol) node.getMathMatrixAccessExpression().getSymbol());
+      ((MathMatrixAccessOperatorSymbol) node.getMathMatrixAccessExpression().getSymbol()).setMathMatrixNameExpressionSymbol(nameExpressionSymbol);
+    }
+    if (node.isGuess()) {
+      EMAMInitialGuessSymbol symbol = new EMAMInitialGuessSymbol(node.getName());
+      if(node.isPresentMathMatrixAccessExpression())
+        symbol.setMathMatrixAccessOperatorSymbol((MathMatrixAccessOperatorSymbol) node.getMathMatrixAccessExpression().getSymbol());
+      symbol.setValue((MathExpressionSymbol) node.getExpression().getSymbol());
+      addToScopeAndLinkWithNode(symbol, node);
+    } else {
+      EMAMInitialValueSymbol symbol = new EMAMInitialValueSymbol(node.getName());
+      if(node.isPresentMathMatrixAccessExpression())
+        symbol.setMathMatrixAccessOperatorSymbol((MathMatrixAccessOperatorSymbol) node.getMathMatrixAccessExpression().getSymbol());
+      symbol.setValue((MathExpressionSymbol) node.getExpression().getSymbol());
+      addToScopeAndLinkWithNode(symbol, node);
+    }
+  }
+
+  @Override
+  public void endVisit(ASTSymbolicAssignmentStatement node) {
+    for (String name : node.getNameList()) {
+      MathValueSymbol symbol = new MathValueSymbol(name);
+      symbol.setType(MathValueType.convert(node.getType()));
+      symbol.getType().getProperties().add("Symbolic");
+      addToScopeAndLinkWithNode(symbol, node);
+    }
+  }
+
+  @Override
+  public void setRealThis(Common2Visitor realThis) {
+    this.realThis = (EmbeddedMontiArcMathVisitor) realThis;
   }
 }
