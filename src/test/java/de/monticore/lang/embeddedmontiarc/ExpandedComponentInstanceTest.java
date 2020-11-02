@@ -228,10 +228,10 @@ public class ExpandedComponentInstanceTest extends AbstractSymtabTest {
                 (UnitNumberExpressionSymbol) sub21.getArguments().get(0).getSymbolOpt().get();
         UnitNumberExpressionSymbol symbol22 =
                 (UnitNumberExpressionSymbol) sub22.getArguments().get(0).getSymbolOpt().get();
-        assertEquals("2", symbol1.getTextualRepresentation());
+        assertEquals("3", symbol1.getTextualRepresentation());
         assertEquals("9", symbol2.getTextualRepresentation());
-        assertEquals("2", symbol11.getTextualRepresentation());
-        assertEquals("2", symbol12.getTextualRepresentation());
+        assertEquals("3", symbol11.getTextualRepresentation());
+        assertEquals("3", symbol12.getTextualRepresentation());
         assertEquals("9", symbol21.getTextualRepresentation());
         assertEquals("9", symbol22.getTextualRepresentation());
     }

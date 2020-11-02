@@ -27,6 +27,7 @@ import de.monticore.symboltable.MutableScope;
 import de.monticore.symboltable.Symbol;
 import de.monticore.symboltable.resolving.ResolvingFilter;
 import de.monticore.symboltable.types.references.ActualTypeArgument;
+import de.se_rwth.commons.Names;
 import de.se_rwth.commons.logging.Log;
 
 import java.util.*;
@@ -359,12 +360,13 @@ public class EMAComponentInstanceBuilder {
             final MutableScope scope = (MutableScope) sym.getSpannedScope();
             resolvingFilters.stream().forEachOrdered(f -> scope.addResolver(f));
 
+            String componentFullName = Names.getQualifiedName(sym.getPackageName(), sym.getName());
             ports.stream().forEachOrdered(p ->
-                    instantiatePortSymbol(p, sym.getFullName(), scope)); // must be cloned since we change it if it has
+                    handlePort(p, componentFullName, scope)); // must be cloned since we change it if it has
             addPortArraySymbolsToInstance(sym);
 
             // generics
-            connectors.stream().forEachOrdered(c -> instantiateConnectorSymbol(c, sym.getFullName(), scope));
+            connectors.stream().forEachOrdered(c -> instantiateConnectorSymbol(c, componentFullName, scope));
             subComponents.stream().forEachOrdered(s -> scope.add(s));
 
             sym.setActualTypeArguments(actualTypeArguments.values().stream().collect(Collectors.toList()));
@@ -375,7 +377,7 @@ public class EMAComponentInstanceBuilder {
             // set arguments
             // there are either no arguments or the equal number to parameters
             if (!arguments.isEmpty() && arguments.size() != parameters.size()) {
-                Log.error("TODO Wrong number of arguments: " + sym.getFullName());
+                Log.error("TODO Wrong number of arguments: " + componentFullName);
             }
             setDefaultValuesToArguments(sym);
             sym.setArguments(arguments);
@@ -420,9 +422,24 @@ public class EMAComponentInstanceBuilder {
         scope.add(EMAConnectorBuilder.instantiate(c, fullName));
     }
 
-    protected void instantiatePortSymbol(EMAPortSymbol port, String packageName, MutableScope scope) {
-        EMAPortInstanceSymbol symbol = EMAPortBuilder.instantiate(port, packageName);
+    protected void handlePort(EMAPortSymbol port, String packageName, MutableScope scope) {
+        if (port instanceof EMAPortArraySymbol)
+            instantiatePortArraySymbol((EMAPortArraySymbol) port, packageName, scope);
+        else
+            instantiatePortSymbol(port, packageName, port.getName(), scope);
+    }
+
+    protected EMAPortInstanceSymbol instantiatePortSymbol(EMAPortSymbol port, String packageName, String name, MutableScope scope) {
+        EMAPortInstanceSymbol symbol = EMAPortBuilder.instantiate(port, packageName, name);
         scope.add(symbol);
+        return symbol;
+    }
+
+    protected void instantiatePortArraySymbol(EMAPortArraySymbol port, String packageName, MutableScope scope) {
+        for (int i = 0; i < port.getDimension(); ++i) {
+            String portName = port.getName() + "[" + (i + 1) + "]";
+            instantiatePortSymbol(port, packageName, portName,  scope);
+        }
     }
 
     protected void addOtherToComponentInstance(EMAComponentInstanceSymbol sym) {
