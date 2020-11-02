@@ -4,6 +4,7 @@ package de.monticore.lang.monticar.generator.cmake;
 import de.monticore.lang.embeddedmontiarc.embeddedmontiarc._symboltable.instanceStructure.EMAComponentInstanceSymbol;
 import de.monticore.lang.monticar.generator.AbstractSymtabTest;
 import de.monticore.lang.monticar.generator.cpp.GeneratorCPP;
+import de.monticore.lang.monticar.generator.cpp.GeneratorCppCli;
 import de.monticore.lang.tagging._symboltable.TaggingResolver;
 import de.se_rwth.commons.logging.Log;
 import org.junit.Before;
@@ -13,8 +14,10 @@ import java.io.File;
 import java.io.IOException;
 import java.nio.file.Paths;
 import java.util.ArrayList;
+import java.util.Arrays;
 import java.util.List;
 
+import static junit.framework.TestCase.assertTrue;
 import static org.junit.Assert.assertNotNull;
 
 /**
@@ -109,6 +112,20 @@ public class GenerateCMakeTest extends AbstractSymtabTest {
         List<File> files = generatorCPP.generateFiles(symtab, componentSymbol);;
         String restPath = "cmake/test/math/FloatDivisionTest/";
         testCMakeFilesEqual(files, restPath);
+    }
+
+
+    @Test
+    public void testModelWithIpopt() {
+        Log.getFindings().clear();
+
+        String[] args = {"-m", "src/test/resources", "-r", "ipopt.QuadraticOpt", "-o", "./target/generated-sources-emadl"};
+        GeneratorCppCli.main(args);
+
+        //checkFilesAreEqual(Paths.get("./target/generated-sources-emadl"), Paths.get("./src/test/resources/target_code/ipopt"), Arrays.asList(
+        //        "CMakeLists.txt"
+        //));
+        assertTrue(Log.getFindings().isEmpty());
     }
 
 }

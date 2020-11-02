@@ -126,9 +126,10 @@ public class IpoptSolverGeneratorImplementation implements NLPSolverGeneratorImp
     protected void addCMakeDependenciesToGenerator(EMAMBluePrintCPP bluePrint) {
         Generator gen = bluePrint.getGenerator();
         if (gen instanceof GeneratorCPP) {
-            CMakeConfig cmake = ((GeneratorCPP) gen).getCMakeConfig();
+            //ToDo: Find bug, why linkage generation isn't executed.
+            //((GeneratorCPP) gen).getCMakeConfig().addCmakeLibraryLinkage("ipopt");
+            ((GeneratorCPP) gen).getCMakeConfig().addCMakeCommand("set(LIBS ${LIBS} ipopt)");
 
-            cmake.addCmakeLibraryLinkage("ipopt");
         }
 
     }

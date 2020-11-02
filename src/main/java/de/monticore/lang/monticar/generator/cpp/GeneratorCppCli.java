@@ -128,7 +128,7 @@ public final class GeneratorCppCli {
             runGenerator(cliArgs);
         }else{
             Log.error("Error parsing cli arguments!");
-            System.exit(1);
+            //System.exit(1);
         }
     }
 
