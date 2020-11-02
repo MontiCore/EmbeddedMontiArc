@@ -14,6 +14,7 @@ import de.monticore.lang.embeddedmontiarcdynamic.embeddedmontiarcdynamic._symbol
 import de.monticore.lang.math._ast.ASTMathNode;
 import de.monticore.lang.math._ast.ASTNameExpression;
 import de.monticore.lang.math._ast.ASTNumberExpression;
+import de.monticore.lang.math._ast.MathMill;
 import de.monticore.lang.math._symboltable.MathExpressionReplacer;
 import de.monticore.lang.math._symboltable.MathLanguage;
 import de.monticore.lang.math._symboltable.MathStatementsSymbol;
@@ -23,6 +24,7 @@ import de.monticore.lang.math._symboltable.expression.MathExpressionSymbol;
 import de.monticore.lang.math._symboltable.expression.MathNameExpressionSymbol;
 import de.monticore.lang.math._symboltable.expression.MathNumberExpressionSymbol;
 import de.monticore.lang.math._symboltable.expression.MathValueSymbol;
+import de.monticore.lang.math._symboltable.visitor.ReplacementVisitor;
 import de.monticore.lang.monticar.common2._ast.ASTLiteralValue;
 import de.monticore.lang.monticar.common2._ast.ASTParameter;
 import de.monticore.lang.monticar.common2._ast.ASTValue;
@@ -80,46 +82,56 @@ public class ModifiedEMAComponentInstanceBuilder extends EMADynamicComponentInst
     protected void exchangeParameters(EMAComponentInstanceSymbol inst, Map<String, ASTExpression> arguments) {
         super.exchangeParameters(inst, arguments);
 
-        Collection<MathExpressionSymbol> exprs = inst.getSpannedScope().resolveLocally(MathExpressionSymbol.KIND);
         Collection<MathStatementsSymbol> mathStatementSymbols =
                 inst.getSpannedScope().resolveLocally(MathStatementsSymbol.KIND);
 
         if (!mathStatementSymbols.isEmpty()) {
+            MathStatementsSymbol mathStatementsSymbol = mathStatementSymbols.stream().findFirst().get();
+            List<MathExpressionSymbol> exprs = MathExpressionSymbolHelper.getAllSubExpressions(mathStatementsSymbol);
+            Map<MathExpressionSymbol, MathExpressionSymbol> replacementMap = new HashMap<>();
             for (MathExpressionSymbol mexp : exprs) {
                 if (mexp instanceof MathNameExpressionSymbol) {
                     String name = ((MathNameExpressionSymbol) mexp).getNameToResolveValue();
-                    if (arguments.containsKey(name)) {
-                        MathNameExpressionSymbol nameSymbol = (MathNameExpressionSymbol) mexp;
-                        ASTExpression exchange = arguments.get(name);
-
-                        ResolvingConfiguration configuration = new ResolvingConfiguration();
-                        configuration.addDefaultFilters(inst.getSpannedScope().getResolvingFilters());
-                        Optional<MathSymbolTableCreator> symbolTableCreator =
-                                (new MathLanguage()).getSymbolTableCreator(configuration,
-                                        (MutableScope) inst.getSpannedScope());
-                        Scope fromAST = symbolTableCreator.get().createFromAST((ASTMathNode) exchange);
-                        Collection<MathExpressionSymbol> newEprs = fromAST.resolveLocally(MathExpressionSymbol.KIND);
-                        MathExpressionSymbol exchangeSymbol = null;
-                        for (MathExpressionSymbol newEpr : newEprs) {
-                            // set to last
-                            exchangeSymbol = newEpr;
-                        }
-
-                        for (MathStatementsSymbol mathStatementSymbol : mathStatementSymbols) {
-                            MathExpressionReplacer
-                                    .replaceMathExpression(mathStatementSymbol, exchangeSymbol, nameSymbol);
-                        }
-
-                        ((MutableScope) inst.getSpannedScope()).remove(nameSymbol);
-                    }
+                    if (arguments.containsKey(name))
+                        replacementMap.put(mexp, createFromASTExpression(arguments.get(name)));
                 }
             }
+            for (Map.Entry<MathExpressionSymbol, MathExpressionSymbol> replacement : replacementMap.entrySet()) {
+                inst.getSpannedScope().getAsMutableScope().remove(replacement.getKey());
+                inst.getSpannedScope().getAsMutableScope().add(replacement.getValue());
+            }
+            ReplacementVisitor replacementVisitor =
+                    new ReplacementVisitor(replacementMap);
+            replacementVisitor.handle(mathStatementsSymbol);
         }
     }
+
+    private MathExpressionSymbol createFromASTExpression(ASTExpression expression) {
+                        ResolvingConfiguration configuration = new ResolvingConfiguration();
+
+                        Optional<MathSymbolTableCreator> symbolTableCreator =
+                                (new MathLanguage()).getSymbolTableCreator(configuration,
+                        new CommonScope());
+
+        if (!(expression instanceof ASTMathNode)) {
+            // hack to get a MathNode
+            ASTMathNode node = MathMill
+                    .incSuffixExpressionBuilder()
+                    .setExpression(expression)
+                    .build();
+            symbolTableCreator.get().createFromAST(node);
+        } else {
+            symbolTableCreator.get().createFromAST((ASTMathNode) expression);
+                        }
+
+        return (MathExpressionSymbol) expression.getSymbolOpt().orElse(null);
+        }
+
 
     @Override
     protected ASTExpression createArgumentFromDefaultValue(ASTParameter astParameter) {
         ASTValue defaultValue = astParameter.getDefaultValue();
+        ASTExpression expression = null;
         if (defaultValue instanceof ASTLiteralValue) {
             if (((ASTLiteralValue) defaultValue).getValue() instanceof ASTSignedNumericLiteral) {
                 ASTNumberWithInf numberWithInf =
@@ -130,22 +142,24 @@ public class ModifiedEMAComponentInstanceBuilder extends EMADynamicComponentInst
                                 .numberWithUnitBuilder()
                                 .setNum(numberWithInf)
                                 .build();
-                ASTNumberExpression expression =
-                        EmbeddedMontiArcMathMill
+                expression = EmbeddedMontiArcMathMill
                                 .numberExpressionBuilder()
                                 .setNumberWithUnit(numberWithUnit)
                                 .build();
-                return expression;
             } else if (((ASTLiteralValue) defaultValue).getValue() instanceof ASTBooleanLiteral) {
-                if (((ASTBooleanLiteral) ((ASTLiteralValue) defaultValue).getValue()).getValue())
-                    return EmbeddedMontiArcMathMill
+                if (((ASTBooleanLiteral) ((ASTLiteralValue) defaultValue).getValue()).getValue()) {
+                    expression = EmbeddedMontiArcMathMill
                             .mathTrueExpressionBuilder()
                             .build();
-                else
-                    return EmbeddedMontiArcMathMill
+                } else
+                    expression = EmbeddedMontiArcMathMill
                             .mathFalseExpressionBuilder()
                             .build();
             }
+        }
+        if (expression != null) {
+            createFromASTExpression(expression);
+            return expression;
         }
 
         return super.createArgumentFromDefaultValue(astParameter);
@@ -156,6 +170,8 @@ public class ModifiedEMAComponentInstanceBuilder extends EMADynamicComponentInst
         if (argument instanceof ASTNameExpression) {
             String argumentName = ((ASTNameExpression) argument).getName();
             return arguments.get(argumentName);
+        } else if (argument instanceof ASTNumberExpression) {
+            return argument;
         }
         // TODO Fall untersuchen
         return super.calculateExchange(argument, arguments);

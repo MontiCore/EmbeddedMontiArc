@@ -81,6 +81,6 @@ public class EmbeddedMontiArcMathSymbolTableCreatorTOP extends de.monticore.symb
 
   @Override
   public void setRealThis(Common2Visitor realThis) {
-
+    this.realThis = (EmbeddedMontiArcMathVisitor) realThis;
   }
 }
