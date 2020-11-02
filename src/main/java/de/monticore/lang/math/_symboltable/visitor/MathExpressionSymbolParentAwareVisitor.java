@@ -5,10 +5,19 @@ import de.monticore.lang.math._symboltable.MathForLoopHeadSymbol;
 import de.monticore.lang.math._symboltable.expression.*;
 import de.monticore.lang.math._symboltable.matrix.*;
 
-public interface MathExpressionSymbolParentAwareVisitor extends MathExpressionSymbolVisitor {
-    public void pushParent(MathExpressionSymbol parent);
+import java.util.Stack;
 
-    public void popParent();
+public interface MathExpressionSymbolParentAwareVisitor extends MathExpressionSymbolVisitor {
+
+    Stack<MathExpressionSymbol> parents = new Stack<>();
+
+    default void pushParent(MathExpressionSymbol parent) {
+        parents.push(parent);
+    }
+
+    default void popParent() {
+        parents.pop();
+    }
 
     @Override
     public default void handle(MathArithmeticExpressionSymbol node) {

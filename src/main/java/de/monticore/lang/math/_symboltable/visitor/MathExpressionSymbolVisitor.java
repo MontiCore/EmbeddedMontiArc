@@ -5,10 +5,13 @@ import de.monticore.lang.math._symboltable.MathForLoopHeadSymbol;
 import de.monticore.lang.math._symboltable.expression.*;
 import de.monticore.lang.math._symboltable.matrix.*;
 
-public interface MathExpressionSymbolVisitor {
+import java.util.Set;
 
+public interface MathExpressionSymbolVisitor {
+    
     public default void handle(MathExpressionSymbol node) {
-        if (node instanceof MathArithmeticExpressionSymbol)
+        if (node == null) return;
+        else if (node instanceof MathArithmeticExpressionSymbol)
             handle((MathArithmeticExpressionSymbol) node);
         else if (node instanceof MathAssignmentExpressionSymbol)
             handle((MathAssignmentExpressionSymbol) node);
@@ -51,9 +54,11 @@ public interface MathExpressionSymbolVisitor {
     }
 
     public default void handle(MathArithmeticExpressionSymbol node) {
-        visit(node);
-        traverse(node);
-        endVisit(node);
+        if (shouldContinue(node)) {
+            visit(node);
+            traverse(node);
+            endVisit(node);
+        }
     }
 
     public default void visit(MathArithmeticExpressionSymbol node) {
@@ -70,9 +75,11 @@ public interface MathExpressionSymbolVisitor {
     }
 
     public default void handle(MathAssignmentExpressionSymbol node) {
-        visit(node);
-        traverse(node);
-        endVisit(node);
+        if (shouldContinue(node)) {
+            visit(node);
+            traverse(node);
+            endVisit(node);
+        }
     }
 
     public default void visit(MathAssignmentExpressionSymbol node) {
@@ -89,9 +96,11 @@ public interface MathExpressionSymbolVisitor {
     }
 
     public default void handle(MathBooleanExpressionSymbol node) {
-        visit(node);
-        traverse(node);
-        endVisit(node);
+        if (shouldContinue(node)) {
+            visit(node);
+            traverse(node);
+            endVisit(node);
+        }
     }
 
     public default void visit(MathBooleanExpressionSymbol node) {
@@ -107,9 +116,11 @@ public interface MathExpressionSymbolVisitor {
     }
 
     public default void handle(MathCompareExpressionSymbol node) {
-        visit(node);
-        traverse(node);
-        endVisit(node);
+        if (shouldContinue(node)) {
+            visit(node);
+            traverse(node);
+            endVisit(node);
+        }
     }
 
     public default void visit(MathCompareExpressionSymbol node) {
@@ -126,9 +137,11 @@ public interface MathExpressionSymbolVisitor {
     }
 
     public default void handle(MathConditionalExpressionsSymbol node) {
-        visit(node);
-        traverse(node);
-        endVisit(node);
+        if (shouldContinue(node)) {
+            visit(node);
+            traverse(node);
+            endVisit(node);
+        }
     }
 
     public default void visit(MathConditionalExpressionsSymbol node) {
@@ -149,9 +162,11 @@ public interface MathExpressionSymbolVisitor {
     }
 
     public default void handle(MathConditionalExpressionSymbol node) {
-        visit(node);
-        traverse(node);
-        endVisit(node);
+        if (shouldContinue(node)) {
+            visit(node);
+            traverse(node);
+            endVisit(node);
+        }
     }
 
     public default void visit(MathConditionalExpressionSymbol node) {
@@ -171,9 +186,11 @@ public interface MathExpressionSymbolVisitor {
     }
 
     public default void handle(MathForLoopHeadSymbol node) {
-        visit(node);
-        traverse(node);
-        endVisit(node);
+        if (shouldContinue(node)) {
+            visit(node);
+            traverse(node);
+            endVisit(node);
+        }
     }
 
     public default void visit(MathForLoopHeadSymbol node) {
@@ -189,9 +206,11 @@ public interface MathExpressionSymbolVisitor {
     }
 
     public default void handle(MathForLoopExpressionSymbol node) {
-        visit(node);
-        traverse(node);
-        endVisit(node);
+        if (shouldContinue(node)) {
+            visit(node);
+            traverse(node);
+            endVisit(node);
+        }
     }
 
     public default void visit(MathForLoopExpressionSymbol node) {
@@ -210,9 +229,11 @@ public interface MathExpressionSymbolVisitor {
     }
 
     public default void handle(MathNameExpressionSymbol node) {
-        visit(node);
-        traverse(node);
-        endVisit(node);
+        if (shouldContinue(node)) {
+            visit(node);
+            traverse(node);
+            endVisit(node);
+        }
     }
 
     public default void visit(MathNameExpressionSymbol node) {
@@ -228,9 +249,11 @@ public interface MathExpressionSymbolVisitor {
     }
 
     public default void handle(MathNumberExpressionSymbol node) {
-        visit(node);
-        traverse(node);
-        endVisit(node);
+        if (shouldContinue(node)) {
+            visit(node);
+            traverse(node);
+            endVisit(node);
+        }
     }
 
     public default void visit(MathNumberExpressionSymbol node) {
@@ -246,9 +269,11 @@ public interface MathExpressionSymbolVisitor {
     }
 
     public default void handle(MathParenthesisExpressionSymbol node) {
-        visit(node);
-        traverse(node);
-        endVisit(node);
+        if (shouldContinue(node)) {
+            visit(node);
+            traverse(node);
+            endVisit(node);
+        }
     }
 
     public default void visit(MathParenthesisExpressionSymbol node) {
@@ -264,9 +289,11 @@ public interface MathExpressionSymbolVisitor {
     }
 
     public default void handle(MathPreOperatorExpressionSymbol node) {
-        visit(node);
-        traverse(node);
-        endVisit(node);
+        if (shouldContinue(node)) {
+            visit(node);
+            traverse(node);
+            endVisit(node);
+        }
     }
 
     public default void visit(MathPreOperatorExpressionSymbol node) {
@@ -282,9 +309,11 @@ public interface MathExpressionSymbolVisitor {
     }
 
     public default void handle(MathValueSymbol node) {
-        visit(node);
-        traverse(node);
-        endVisit(node);
+        if (shouldContinue(node)) {
+            visit(node);
+            traverse(node);
+            endVisit(node);
+        }
     }
 
     public default void visit(MathValueSymbol node) {
@@ -301,9 +330,11 @@ public interface MathExpressionSymbolVisitor {
     }
 
     public default void handle(MathValueType node) {
-        visit(node);
-        traverse(node);
-        endVisit(node);
+        if (shouldContinue(node)) {
+            visit(node);
+            traverse(node);
+            endVisit(node);
+        }
     }
 
     public default void visit(MathValueType node) {
@@ -321,9 +352,11 @@ public interface MathExpressionSymbolVisitor {
     }
 
     public default void handle(MathMatrixAccessOperatorSymbol node) {
-        visit(node);
-        traverse(node);
-        endVisit(node);
+        if (shouldContinue(node)) {
+            visit(node);
+            traverse(node);
+            endVisit(node);
+        }
     }
 
     public default void visit(MathMatrixAccessOperatorSymbol node) {
@@ -342,9 +375,11 @@ public interface MathExpressionSymbolVisitor {
     }
 
     public default void handle(MathMatrixNameExpressionSymbol node) {
-        visit(node);
-        traverse(node);
-        endVisit(node);
+        if (shouldContinue(node)) {
+            visit(node);
+            traverse(node);
+            endVisit(node);
+        }
     }
 
     public default void visit(MathMatrixNameExpressionSymbol node) {
@@ -352,6 +387,7 @@ public interface MathExpressionSymbolVisitor {
     }
 
     public default void traverse(MathMatrixNameExpressionSymbol node) {
+        if (node.isMathMatrixAccessOperatorSymbolPresent()) handle(node.getMathMatrixAccessOperatorSymbol());
     }
 
     public default void endVisit(MathMatrixNameExpressionSymbol node) {
@@ -359,9 +395,11 @@ public interface MathExpressionSymbolVisitor {
     }
 
     public default void handle(MathMatrixVectorExpressionSymbol node) {
-        visit(node);
-        traverse(node);
-        endVisit(node);
+        if (shouldContinue(node)) {
+            visit(node);
+            traverse(node);
+            endVisit(node);
+        }
     }
 
     public default void visit(MathMatrixVectorExpressionSymbol node) {
@@ -380,9 +418,11 @@ public interface MathExpressionSymbolVisitor {
     }
 
     public default void handle(MathMatrixArithmeticValueSymbol node) {
-        visit(node);
-        traverse(node);
-        endVisit(node);
+        if (shouldContinue(node)) {
+            visit(node);
+            traverse(node);
+            endVisit(node);
+        }
     }
 
     public default void visit(MathMatrixArithmeticValueSymbol node) {
@@ -400,9 +440,11 @@ public interface MathExpressionSymbolVisitor {
     }
 
     public default void handle(MathMatrixAccessSymbol node) {
-        visit(node);
-        traverse(node);
-        endVisit(node);
+        if (shouldContinue(node)) {
+            visit(node);
+            traverse(node);
+            endVisit(node);
+        }
     }
 
     public default void visit(MathMatrixAccessSymbol node) {
@@ -419,9 +461,11 @@ public interface MathExpressionSymbolVisitor {
     }
 
     public default void handle(MathMatrixArithmeticExpressionSymbol node) {
-        visit(node);
-        traverse(node);
-        endVisit(node);
+        if (shouldContinue(node)) {
+            visit(node);
+            traverse(node);
+            endVisit(node);
+        }
     }
 
     public default void visit(MathMatrixArithmeticExpressionSymbol node) {
@@ -435,5 +479,15 @@ public interface MathExpressionSymbolVisitor {
 
     public default void endVisit(MathMatrixArithmeticExpressionSymbol node) {
 
+    }
+    
+
+    public Set<MathExpressionSymbol> getVisitedSymbols();
+
+    default boolean shouldContinue(MathExpressionSymbol node) {
+        if (node == null || getVisitedSymbols().contains(node))
+            return false;
+        getVisitedSymbols().add(node);
+        return true;
     }
 }

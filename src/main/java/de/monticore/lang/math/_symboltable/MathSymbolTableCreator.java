@@ -4,6 +4,7 @@ package de.monticore.lang.math._symboltable;
 import de.monticore.assignmentexpressions._ast.ASTDecSuffixExpression;
 import de.monticore.assignmentexpressions._ast.ASTIncSuffixExpression;
 import de.monticore.assignmentexpressions._ast.ASTMinusPrefixExpression;
+import de.monticore.assignmentexpressions._ast.ASTRegularAssignmentExpression;
 import de.monticore.assignmentexpressions._visitor.AssignmentExpressionsVisitor;
 import de.monticore.commonexpressions._ast.*;
 import de.monticore.commonexpressions._visitor.CommonExpressionsVisitor;
@@ -628,6 +629,26 @@ public class MathSymbolTableCreator extends MathSymbolTableCreatorTOP {
         for (ASTExpression astExpr : node.getDimensionList()) {
             handle(astExpr);
         }
+    }
+
+    @Override
+    public void endVisit(ASTRegularAssignmentExpression astNode) {
+        MathAssignmentExpressionSymbol symbol = new MathAssignmentExpressionSymbol();
+        symbol.setAssignmentOperator(new MathAssignmentOperator("="));
+
+        if (astNode.getLeftExpression() instanceof ASTNameExpression)
+            symbol.setNameOfMathValue(((ASTNameExpression) astNode.getLeftExpression()).getName());
+        else if (astNode.getLeftExpression() instanceof ASTMathMatrixNameExpression) {
+            MathMatrixNameExpressionSymbol mathMatrixNameExpressionSymbol = (MathMatrixNameExpressionSymbol) astNode.getLeftExpression().getSymbol();
+            symbol.setNameOfMathValue(mathMatrixNameExpressionSymbol.getName());
+            symbol.setMathMatrixAccessOperatorSymbol(mathMatrixNameExpressionSymbol.getMathMatrixAccessOperatorSymbol());
+        } else {
+            Log.error("TODO left side of assignment");
+        }
+
+        symbol.setExpressionSymbol((MathExpressionSymbol) astNode.getRightExpression().getSymbol());
+
+        addToScopeAndLinkWithNode(symbol, astNode);
     }
 
     @Override
