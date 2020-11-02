@@ -11,7 +11,7 @@ public class InitialValueCoCoTest extends AbstractCoCoTest {
         ASTEmbeddedMontiArcNode astNode = getAstNode("", model);
 
         EmbeddedMontiArcCoCoChecker checker = new EmbeddedMontiArcCoCoChecker();
-        checker.addCoCo(new InitialGuessIsAssignment());
+        checker.addCoCo(new InitialGuessIsNotAssignmentCoCo());
 
         checker.checkAll(astNode);
     }

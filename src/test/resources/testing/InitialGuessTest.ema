@@ -3,9 +3,9 @@ package testing;
 
 component InitialGuessTest {
 
-    instance InitialGuessSimple{out1 = 2} simple;
+    instance InitialGuessSimple{out1 ~= 2} simple;
     instance InitialGuessFromParameter fromParameterDefault;
     instance InitialGuessFromParameter(5) fromParameterGiven;
-    instance InitialGuessPortArray{out1[2] = 7} portArray;
+    instance InitialGuessPortArray{out1[2] ~= 7} portArray;
 
 }

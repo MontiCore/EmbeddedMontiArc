@@ -3,7 +3,7 @@ package de.monticore.lang.embeddedmontiarc.embeddedmontiarc._symboltable.instanc
 
 import de.monticore.expressionsbasis._ast.ASTExpression;
 import de.monticore.lang.embeddedmontiarc.embeddedmontiarc._ast.ASTComponent;
-import de.monticore.lang.embeddedmontiarc.embeddedmontiarc._ast.ASTInitialGuess;
+import de.monticore.lang.embeddedmontiarc.embeddedmontiarc._ast.ASTPortInitialValueOrGuess;
 import de.monticore.lang.embeddedmontiarc.embeddedmontiarc._ast.EmbeddedMontiArcMill;
 import de.monticore.lang.embeddedmontiarc.embeddedmontiarc._symboltable.UnitNumberExpressionSymbol;
 import de.monticore.lang.embeddedmontiarc.embeddedmontiarc._symboltable.cncModel.*;
@@ -45,7 +45,7 @@ public class EMAComponentInstanceBuilder {
     protected List<EMAVariable> parameters = new ArrayList<>();
     protected List<ASTExpression> arguments = new ArrayList<>();
     protected String packageName = "";
-    protected List<ASTInitialGuess> initialGuesses = new ArrayList<>();
+    protected List<ASTPortInitialValueOrGuess> initialGuesses = new ArrayList<>();
 
     protected static Map<MCTypeSymbol, ActualTypeArgument> createMap(List<MCTypeSymbol> keys,
             List<ActualTypeArgument> values) {
@@ -307,14 +307,18 @@ public class EMAComponentInstanceBuilder {
         }
 
         for (EMAPortInstanceSymbol port : inst.getPortInstanceList()) {
-            if (port.isInitialGuessPresent()) {
-                ASTExpression initialGuess = port.getInitialGuess();
-                if (initialGuess instanceof ASTUnitNumberResolutionExpression) {
-                    if (((ASTUnitNumberResolutionExpression) initialGuess).getUnitNumberResolution().getNameOpt().isPresent()) {
-                        String par = ((ASTUnitNumberResolutionExpression) initialGuess).getUnitNumberResolution().getName();
+            if (port.isInitialGuessPresent() || port.isInitialValuePresent()) {
+                ASTExpression initial = port.isInitialGuessPresent() ? port.getInitialGuess() : port.getInitialValue();
+                if (initial instanceof ASTUnitNumberResolutionExpression) {
+                    if (((ASTUnitNumberResolutionExpression) initial).getUnitNumberResolution().getNameOpt().isPresent()) {
+                        String par = ((ASTUnitNumberResolutionExpression) initial).getUnitNumberResolution().getName();
                         ASTExpression argument = arguments.get(par);
-                        if (argument != null)
-                            port.setInitialGuess(argument);
+                        if (argument != null) {
+                            if (port.isInitialGuessPresent())
+                                port.setInitialGuess(argument);
+                            else
+                                port.setInitialValue(argument);
+                        }
                     }
                 }
             }
@@ -409,14 +413,19 @@ public class EMAComponentInstanceBuilder {
 
     private void handleInitialGuesses(EMAComponentInstanceSymbol sym) {
         Collection<EMAPortInstanceSymbol> portInstanceList = sym.getPortInstanceList();
-        for (ASTInitialGuess initialGuess : initialGuesses) {
+        for (ASTPortInitialValueOrGuess initialGuess : initialGuesses) {
             String arrayAccess = "";
             if (initialGuess.isPresentUnitNumberResolution())
                 arrayAccess += "[" + initialGuess.getUnitNumberResolution().getNumber().get().intValue() + "]";
             final String portAccessName = initialGuess.getName() + arrayAccess;
             portInstanceList.stream()
                     .filter(port -> port.getName().equals(portAccessName))
-                    .forEachOrdered(port -> port.setInitialGuess(initialGuess.getExpression()));
+                    .forEachOrdered(port -> {
+                        if(initialGuess.isGuess())
+                            port.setInitialGuess(initialGuess.getExpression());
+                        else
+                            port.setInitialValue(initialGuess.getExpression());
+                    });
         }
     }
 
@@ -609,15 +618,15 @@ public class EMAComponentInstanceBuilder {
         return this;
     }
 
-    public EMAComponentInstanceBuilder addInitialGuesses(List<ASTInitialGuess> initialGuesses) {
-        for (ASTInitialGuess initialGuess : initialGuesses) {
+    public EMAComponentInstanceBuilder addInitialGuesses(List<ASTPortInitialValueOrGuess> initialGuesses) {
+        for (ASTPortInitialValueOrGuess initialGuess : initialGuesses) {
             if (!this.initialGuesses.contains(initialGuess))
                 this.initialGuesses.add(initialGuess);
         }
         return this;
     }
 
-    public List<ASTInitialGuess> getInitialGuesses() {
+    public List<ASTPortInitialValueOrGuess> getInitialGuesses() {
         return initialGuesses;
     }
 }

@@ -55,6 +55,8 @@ public class EMAPortInstanceSymbol extends EMAPortSymbol implements EMAElementIn
 
   private Optional<ASTExpression> initialGuess = Optional.empty();
 
+  private Optional<ASTExpression> initialValue = Optional.empty();
+
   /**
    * use {@link #builder()}
    */
@@ -284,6 +286,21 @@ public class EMAPortInstanceSymbol extends EMAPortSymbol implements EMAElementIn
   public ASTExpression getInitialGuess() {
     if (isInitialGuessPresent())
       return this.initialGuess.get();
+    else
+      return null;
+  }
+
+  public boolean isInitialValuePresent() {
+    return this.initialValue.isPresent();
+  }
+
+  public void setInitialValue(ASTExpression initialGuess) {
+    this.initialValue = Optional.ofNullable(initialGuess);
+  }
+
+  public ASTExpression getInitialValue() {
+    if (isInitialValuePresent())
+      return this.initialValue.get();
     else
       return null;
   }

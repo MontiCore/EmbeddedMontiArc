@@ -3,7 +3,7 @@ package de.monticore.lang.embeddedmontiarc.embeddedmontiarc._symboltable.cncMode
 
 import com.google.common.collect.ImmutableList;
 import de.monticore.expressionsbasis._ast.ASTExpression;
-import de.monticore.lang.embeddedmontiarc.embeddedmontiarc._ast.ASTInitialGuess;
+import de.monticore.lang.embeddedmontiarc.embeddedmontiarc._ast.ASTPortInitialValueOrGuess;
 import de.monticore.lang.embeddedmontiarc.embeddedmontiarc._symboltable.ComponentKind;
 import de.monticore.lang.embeddedmontiarc.embeddedmontiarc._symboltable.instanceStructure.EMAComponentInstantiationSymbol;
 import de.monticore.lang.embeddedmontiarc.embeddedmontiarc.types.EMAVariable;
@@ -57,7 +57,7 @@ public class EMAComponentSymbol extends CommonScopeSpanningSymbol implements EMA
 
     private List<ASTExpression> arguments = new ArrayList<>();
 
-    private List<ASTInitialGuess> initalGuesses = new ArrayList<>();
+    private List<ASTPortInitialValueOrGuess> initalGuesses = new ArrayList<>();
 
     public EMAComponentSymbol(String name) {
         super(name, KIND);
@@ -650,20 +650,20 @@ public class EMAComponentSymbol extends CommonScopeSpanningSymbol implements EMA
         return (Optional<EMAComponentSymbol>) getEnclosingScope().getSpanningSymbol();
     }
 
-    public List<ASTInitialGuess> getInitalGuesses() {
+    public List<ASTPortInitialValueOrGuess> getInitalGuesses() {
         if (referencedComponent.isPresent())
             return referencedComponent.get().getInitalGuesses();
         return initalGuesses;
     }
 
-    public void addInitialGuess(ASTInitialGuess initialGuess) {
+    public void addInitialGuess(ASTPortInitialValueOrGuess initialGuess) {
         if (referencedComponent.isPresent())
                 referencedComponent.get().addInitialGuess(initialGuess);
         else
             this.initalGuesses.add(initialGuess);
     }
 
-    public void setInitialGuesses(List<ASTInitialGuess> initalGuesses) {
+    public void setInitialGuesses(List<ASTPortInitialValueOrGuess> initalGuesses) {
         this.initalGuesses = initalGuesses;
     }
 }

@@ -256,7 +256,7 @@ public class EmbeddedMontiArcSymbolTableCreator extends EmbeddedMontiArcSymbolTa
         componentTypeReference.setArguments(node.getArgumentsList());
         componentTypeReference.fixResolutions(this);
         // InitialGuesses
-        componentTypeReference.setInitialGuesses(node.getInitialGuessList());
+        componentTypeReference.setInitialGuesses(node.getPortInitialValueOrGuessList());
 
 
         // instances

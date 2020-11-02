@@ -543,6 +543,7 @@ public class ExpandedComponentInstanceTest extends AbstractSymtabTest {
     @Test
     public void testInitialGuesses() {
         Scope symTab = createSymTab("src/test/resources");
+        Log.enableFailQuick(true);
         EMAComponentInstanceSymbol inst = symTab.<EMAComponentInstanceSymbol>resolve(
                 "testing.initialGuessTest", EMAComponentInstanceSymbol.KIND).orElse(null);
 

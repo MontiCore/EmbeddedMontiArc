@@ -30,6 +30,6 @@ public class EmbeddedMontiArcCoCos {
         .addCoCo(new InRosPortRosSender())
         .addCoCo(new ConstantConnectorTargetRangeValid())
         .addCoCo((new DistinctTargetPorts()))
-        .addCoCo(new InitialGuessIsAssignment());
+        .addCoCo(new InitialGuessIsNotAssignmentCoCo());
   }
 }
