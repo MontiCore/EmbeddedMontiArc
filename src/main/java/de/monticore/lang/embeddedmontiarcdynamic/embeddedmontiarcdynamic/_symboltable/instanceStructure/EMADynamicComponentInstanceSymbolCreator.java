@@ -119,6 +119,7 @@ public class EMADynamicComponentInstanceSymbolCreator extends EMAComponentInstan
                                     .addResolvingFilters(filters)
                                     .addResolutionDeclarationSymbols(inst.getComponentType().getReferencedSymbol().getResolutionDeclarationSymbols())
                                     .addParameters(inst.getComponentType().getReferencedSymbol().getParameters())
+                                    .addArguments(inst.getComponentType().getReferencedSymbol().getArguments())
                                     .build())
 
             );
