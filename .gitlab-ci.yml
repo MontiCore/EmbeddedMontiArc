@@ -3,14 +3,14 @@
 stages:
 - linux
 
-TestMemoriesWithProductKeys:
+TestMemoriesWithProductKeysTrain:
   stage: linux
   image: registry.git.rwth-aachen.de/monticore/embeddedmontiarc/generators/emadl2cpp/dockerimages/mxnet150:v0.0.5
   script:
   - cd memories-with-product-keys
   - mvn streamtest:streamtest-build -s settings.xml
 
-  TestMemoriesWithProductKeys:
+  TestMemoriesWithProductKeysPrediction:
   stage: linux
   image: registry.git.rwth-aachen.de/monticore/embeddedmontiarc/generators/emadl2cpp/dockerimages/mxnet170:v0.0.1
   script:
