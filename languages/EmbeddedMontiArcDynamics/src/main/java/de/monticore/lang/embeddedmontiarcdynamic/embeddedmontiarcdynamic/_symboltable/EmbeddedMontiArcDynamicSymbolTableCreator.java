@@ -322,8 +322,7 @@ public class EmbeddedMontiArcDynamicSymbolTableCreator extends EmbeddedMontiArcS
         // TODO internal representation of ValueSymbol ? that was heavily based on CommonValues
         // language and its expressions, but we use JavaDSL.
         List<ValueSymbol<TypeReference<TypeSymbol>>> configArgs = new ArrayList<>();
-        for (ASTExpression astExpression : node.getArgumentsList())
-            componentTypeReference.addArgument(astExpression);
+        componentTypeReference.setArguments(node.getArgumentsList());
         componentTypeReference.fixResolutions(this);
 
 

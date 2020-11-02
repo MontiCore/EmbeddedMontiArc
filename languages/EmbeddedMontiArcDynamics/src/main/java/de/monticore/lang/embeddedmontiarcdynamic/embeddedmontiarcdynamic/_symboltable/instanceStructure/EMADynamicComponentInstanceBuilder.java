@@ -57,31 +57,28 @@ public class EMADynamicComponentInstanceBuilder extends EMAComponentInstanceBuil
     }
 
     @Override
-    protected void instantiatePortSymbol(EMAPortSymbol port, String packageName, MutableScope scope) {
-        if (port instanceof EMADynamicPortArraySymbol) {
-            //port array
-            instantiateDynamicPortArraySymbol((EMADynamicPortArraySymbol) port, packageName, scope);
-        } else {
-            scope.add(EMADynamicPortInstanceSymbol.newAndInstantiate(port, packageName));
-        }
+    protected EMAPortInstanceSymbol instantiatePortSymbol(EMAPortSymbol port, String packageName, String name, MutableScope scope) {
+        EMAPortInstanceSymbol symbol = EMADynamicPortInstanceSymbol.newAndInstantiate(port, packageName, name);
+        scope.add(symbol);
+        return symbol;
     }
 
-    protected void instantiateDynamicPortArraySymbol(EMADynamicPortArraySymbol sym, String packageName,
+    @Override
+    protected void instantiatePortArraySymbol(EMAPortArraySymbol sym, String packageName,
             MutableScope scope) {
+        if (sym instanceof EMADynamicPortArraySymbol) {
         for (int i = 0; i < sym.getDimension(); ++i) {
-            EMADynamicPortInstanceSymbol inst = new EMADynamicPortInstanceSymbol(sym.getName() + "[" + (i + 1) + "]");
-            inst.instantiate(sym, packageName);
-            if (i < sym.getNonDynamicDimension()) {
+                EMADynamicPortInstanceSymbol inst = (EMADynamicPortInstanceSymbol)
+                        instantiatePortSymbol(sym, packageName,sym.getName() + "[" + (i + 1) + "]", scope);
+                if (i < ((EMADynamicPortArraySymbol) sym).getNonDynamicDimension())
                 inst.setDynamic(false);
             }
-            scope.add(inst);
-        }
-        if (sym.isDimensionInfinite()) {
-            EMADynamicPortInstanceSymbol inst = new EMADynamicPortInstanceSymbol(sym.getName() + "[oo]");
-            inst.instantiate(sym, packageName);
-            inst.setDimensionInfinite(true);
-            scope.add(inst);
-        }
+            if (((EMADynamicPortArraySymbol) sym).isDimensionInfinite()) {
+                EMADynamicPortInstanceSymbol inst = (EMADynamicPortInstanceSymbol)
+                        instantiatePortSymbol(sym, packageName,sym.getName() + "[oo]", scope);
+                inst.setDimensionInfinite(true);
+            }
+        } else super.instantiatePortArraySymbol(sym, packageName, scope);
     }
 
     @Override

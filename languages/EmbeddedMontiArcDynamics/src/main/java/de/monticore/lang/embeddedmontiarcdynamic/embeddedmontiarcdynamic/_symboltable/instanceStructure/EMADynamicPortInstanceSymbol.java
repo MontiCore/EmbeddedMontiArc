@@ -60,8 +60,8 @@ public class EMADynamicPortInstanceSymbol extends EMAPortInstanceSymbol {
 //        this.nameDependsOn = port.getNameDependsOn();
     }
 
-    public static EMADynamicPortInstanceSymbol newAndInstantiate(EMAPortSymbol port, String packageName){
-        EMADynamicPortInstanceSymbol p = new EMADynamicPortInstanceSymbol(port.getName());
+    public static EMADynamicPortInstanceSymbol newAndInstantiate(EMAPortSymbol port, String packageName, String name){
+        EMADynamicPortInstanceSymbol p = new EMADynamicPortInstanceSymbol(name);
         p.instantiate(port, packageName);
         return p;
     }
