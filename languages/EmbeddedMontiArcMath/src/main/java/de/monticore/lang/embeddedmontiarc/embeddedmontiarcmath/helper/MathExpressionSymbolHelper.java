@@ -7,8 +7,10 @@ import de.monticore.lang.math._symboltable.expression.*;
 import de.monticore.lang.math._symboltable.matrix.*;
 import de.monticore.lang.math._symboltable.visitor.MathExpressionSymbolVisitor;
 
+import java.util.HashSet;
 import java.util.LinkedList;
 import java.util.List;
+import java.util.Set;
 
 public class MathExpressionSymbolHelper {
 
@@ -105,8 +107,11 @@ public class MathExpressionSymbolHelper {
             symbols.add(node);
         }
 
-        @Override public void visit(MathMatrixArithmeticExpressionSymbol node) {
-            symbols.add(node);
+        protected Set<MathExpressionSymbol> visitedSymbols = new HashSet<>();
+
+        @Override
+        public Set<MathExpressionSymbol> getVisitedSymbols() {
+            return visitedSymbols;
         }
     }
 }
