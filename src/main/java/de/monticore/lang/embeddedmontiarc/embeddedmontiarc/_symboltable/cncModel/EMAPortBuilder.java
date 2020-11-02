@@ -86,8 +86,8 @@ public class EMAPortBuilder {
         throw new Error("not all parameters have been set before to build the port symbol");
     }
 
-    public static EMAPortInstanceSymbol instantiate(EMAPortSymbol port, String packageName) {
-        EMAPortInstanceSymbol portInstance = new EMAPortInstanceSymbol(port.getName());
+    public static EMAPortInstanceSymbol instantiate(EMAPortSymbol port, String packageName, String name) {
+        EMAPortInstanceSymbol portInstance = new EMAPortInstanceSymbol(name);
         portInstance.setDirection(port.isIncoming());
         portInstance.setTypeReference(port.getTypeReference());
         if (port.getAstNode().isPresent())
