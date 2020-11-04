@@ -68,6 +68,12 @@
             <version>2.3.1</version>
         </dependency>
 
+        <dependency>
+            <groupId>de.monticore.lang.monticar.utilities</groupId>
+            <artifactId>maven-streamtest</artifactId>
+            <version>0.0.16</version>
+        </dependency>
+
 
     </dependencies>
 
