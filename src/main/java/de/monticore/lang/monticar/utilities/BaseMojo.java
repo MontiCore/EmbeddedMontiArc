@@ -21,9 +21,12 @@ import de.monticore.lang.monticar.utilities.models.TrainingConfiguration;
 import de.monticore.lang.tagging._symboltable.TaggingResolver;
 import de.monticore.symboltable.GlobalScope;
 import de.monticore.symboltable.Scope;
+import org.apache.maven.execution.MavenSession;
 import org.apache.maven.plugin.AbstractMojo;
+import org.apache.maven.plugin.BuildPluginManager;
 import org.apache.maven.plugins.annotations.Component;
 import org.apache.maven.plugins.annotations.Parameter;
+import org.apache.maven.project.MavenProject;
 import org.eclipse.aether.RepositorySystem;
 import org.eclipse.aether.RepositorySystemSession;
 import org.eclipse.aether.artifact.Artifact;
@@ -42,6 +45,15 @@ public abstract class BaseMojo extends AbstractMojo {
 
   @Component
   private RepositorySystem repositorySystem;
+
+  @Component
+  private MavenProject mavenProject;
+
+  @Component
+  private MavenSession mavenSession;
+
+  @Component
+  private BuildPluginManager pluginManager;
 
   @Parameter( defaultValue = "${repositorySystemSession}", readonly = true )
   private RepositorySystemSession repositorySystemSession;
@@ -80,6 +92,18 @@ public abstract class BaseMojo extends AbstractMojo {
     }catch (Exception ex){
       ex.printStackTrace();
     }
+  }
+
+  public MavenProject getMavenProject() {
+    return mavenProject;
+  }
+
+  public MavenSession getMavenSession() {
+    return mavenSession;
+  }
+
+  public BuildPluginManager getPluginManager() {
+    return pluginManager;
   }
 
   public TrainingConfiguration getTrainingConfig() {
