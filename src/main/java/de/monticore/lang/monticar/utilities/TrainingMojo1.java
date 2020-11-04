@@ -19,7 +19,8 @@ public class TrainingMojo1 extends BaseMojo {
     executeMojo(
         plugin(
             groupId("de.monticore.lang.monticar.utilities"),
-            artifactId("maven-streamtest")
+            artifactId("maven-streamtest"),
+            version("0.0.18")
         ),
         goal("streamtest-build"),
         configuration(
