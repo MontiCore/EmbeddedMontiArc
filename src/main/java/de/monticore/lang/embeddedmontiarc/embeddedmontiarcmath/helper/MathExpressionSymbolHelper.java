@@ -7,7 +7,7 @@ import de.monticore.lang.math._symboltable.expression.*;
 import de.monticore.lang.math._symboltable.matrix.*;
 import de.monticore.lang.mathopt._symboltable.MathOptimizationConditionSymbol;
 import de.monticore.lang.mathopt._symboltable.MathOptimizationStatementSymbol;
-import de.monticore.lang.mathopt.visitor.MathOptExpressionSymbolVisitor;
+import de.monticore.lang.mathopt._symboltable.visitor.MathOptExpressionSymbolVisitor;
 
 import java.util.HashSet;
 import java.util.LinkedList;
