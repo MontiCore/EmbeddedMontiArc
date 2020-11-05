@@ -256,7 +256,7 @@ public class StreamTestGeneratorMojo extends StreamTestMojoBase {
             generatorCPP.setGenerateCMake(true);
             List<File> files = null;
             try {
-                files = generatorCPP.generateFiles(tagging, ecis.get(), scope);
+                files = generatorCPP.generateFiles(tagging, ecis.get());
                 logInfo("   -> Success");
 
 
