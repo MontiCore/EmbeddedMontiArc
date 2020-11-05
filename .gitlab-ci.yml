@@ -69,12 +69,12 @@ BranchJobLinux:
     - .gitignore
     - .gitlab-ci.yml
 
-  trigger-emadl:
-    stage: trigger
-    trigger:
-      project: monticore/EmbeddedMontiArc/generators/EMADL2CPP
-      branch: master
+trigger-emadl:
+  stage: trigger
+  trigger:
+    project: monticore/EmbeddedMontiArc/generators/EMADL2CPP
+    branch: master
   only:
-    - master
+  - master
 
 
