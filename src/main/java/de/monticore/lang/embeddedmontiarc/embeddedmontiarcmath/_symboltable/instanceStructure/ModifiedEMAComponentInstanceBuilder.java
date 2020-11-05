@@ -15,16 +15,15 @@ import de.monticore.lang.math._ast.ASTMathNode;
 import de.monticore.lang.math._ast.ASTNameExpression;
 import de.monticore.lang.math._ast.ASTNumberExpression;
 import de.monticore.lang.math._ast.MathMill;
-import de.monticore.lang.math._symboltable.MathExpressionReplacer;
 import de.monticore.lang.math._symboltable.MathLanguage;
 import de.monticore.lang.math._symboltable.MathStatementsSymbol;
 import de.monticore.lang.math._symboltable.MathSymbolTableCreator;
-import de.monticore.lang.math._symboltable.copy.CopyMathExpressionSymbol;
 import de.monticore.lang.math._symboltable.expression.MathExpressionSymbol;
 import de.monticore.lang.math._symboltable.expression.MathNameExpressionSymbol;
 import de.monticore.lang.math._symboltable.expression.MathNumberExpressionSymbol;
 import de.monticore.lang.math._symboltable.expression.MathValueSymbol;
-import de.monticore.lang.math._symboltable.visitor.ReplacementVisitor;
+import de.monticore.lang.mathopt.visitor.CopyMathOptExpressionSymbol;
+import de.monticore.lang.mathopt.visitor.MathOptExpressionSymbolReplacementVisitor;
 import de.monticore.lang.monticar.common2._ast.ASTLiteralValue;
 import de.monticore.lang.monticar.common2._ast.ASTParameter;
 import de.monticore.lang.monticar.common2._ast.ASTValue;
@@ -51,7 +50,7 @@ public class ModifiedEMAComponentInstanceBuilder extends EMADynamicComponentInst
         Optional<MathStatementsSymbol> math =
                 component.getSpannedScope().resolve("MathStatements", MathStatementsSymbol.KIND);
         if (math.isPresent()) {
-            MathStatementsSymbol copy = CopyMathExpressionSymbol.copy(math.get());
+            MathStatementsSymbol copy = CopyMathOptExpressionSymbol.copy(math.get());
             instanceSymbol.getSpannedScope().getAsMutableScope().add(copy);
             MathExpressionSymbolHelper.getAllSubExpressions(copy).stream().forEachOrdered(
                     s -> instanceSymbol.getSpannedScope().getAsMutableScope().add(s)
@@ -100,8 +99,8 @@ public class ModifiedEMAComponentInstanceBuilder extends EMADynamicComponentInst
                 inst.getSpannedScope().getAsMutableScope().remove(replacement.getKey());
                 inst.getSpannedScope().getAsMutableScope().add(replacement.getValue());
             }
-            ReplacementVisitor replacementVisitor =
-                    new ReplacementVisitor(replacementMap);
+            MathOptExpressionSymbolReplacementVisitor replacementVisitor =
+                    new MathOptExpressionSymbolReplacementVisitor(replacementMap);
             replacementVisitor.handle(mathStatementsSymbol);
         }
     }
