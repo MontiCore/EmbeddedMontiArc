@@ -2,25 +2,34 @@
 package de.monticore.lang.embeddedmontiarc.embeddedmontiarcmath._symboltable.instanceStructure;
 
 import de.monticore.expressionsbasis._ast.ASTExpression;
+import de.monticore.lang.embeddedmontiarc.embeddedmontiarc._ast.EmbeddedMontiArcMill;
+import de.monticore.lang.embeddedmontiarc.embeddedmontiarc._symboltable.UnitNumberExpressionSymbol;
 import de.monticore.lang.embeddedmontiarc.embeddedmontiarc._symboltable.cncModel.EMAComponentSymbol;
 import de.monticore.lang.embeddedmontiarc.embeddedmontiarc._symboltable.instanceStructure.EMAComponentInstanceSymbol;
 import de.monticore.lang.embeddedmontiarc.embeddedmontiarcmath._ast.EmbeddedMontiArcMathMill;
+import de.monticore.lang.embeddedmontiarc.embeddedmontiarcmath._symboltable.EmbeddedMontiArcMathLanguage;
+import de.monticore.lang.embeddedmontiarc.embeddedmontiarcmath._symboltable.EmbeddedMontiArcMathSymbolTableCreator;
 import de.monticore.lang.embeddedmontiarc.embeddedmontiarcmath._symboltable.math.visitor.CopyEMAMMathExpressionSymbol;
 import de.monticore.lang.embeddedmontiarc.embeddedmontiarcmath._symboltable.math.visitor.EMAMMathExpressionSymbolReplacementVisitor;
 import de.monticore.lang.embeddedmontiarc.embeddedmontiarcmath.helper.MathExpressionSymbolHelper;
 import de.monticore.lang.embeddedmontiarcdynamic.embeddedmontiarcdynamic._symboltable.instanceStructure.EMADynamicComponentInstanceBuilder;
-import de.monticore.lang.math._ast.*;
+import de.monticore.lang.math._ast.ASTMathNode;
+import de.monticore.lang.math._ast.ASTNameExpression;
+import de.monticore.lang.math._ast.ASTNumberExpression;
+import de.monticore.lang.math._ast.MathMill;
 import de.monticore.lang.math._symboltable.MathLanguage;
 import de.monticore.lang.math._symboltable.MathStatementsSymbol;
 import de.monticore.lang.math._symboltable.MathSymbolTableCreator;
-import de.monticore.lang.math._symboltable.copy.CopyMathExpressionSymbol;
 import de.monticore.lang.math._symboltable.expression.MathExpressionSymbol;
 import de.monticore.lang.math._symboltable.expression.MathNameExpressionSymbol;
+import de.monticore.lang.math._symboltable.expression.MathNumberExpressionSymbol;
 import de.monticore.lang.math._symboltable.expression.MathValueSymbol;
 import de.monticore.lang.monticar.common2._ast.ASTLiteralValue;
 import de.monticore.lang.monticar.common2._ast.ASTParameter;
 import de.monticore.lang.monticar.common2._ast.ASTValue;
+import de.monticore.lang.monticar.resolution._ast.ASTUnitNumberExpression;
 import de.monticore.lang.monticar.ts.MCTypeSymbol;
+import de.monticore.literals.LiteralsHelper;
 import de.monticore.literals.literals._ast.ASTBooleanLiteral;
 import de.monticore.literals.literals._ast.ASTSignedNumericLiteral;
 import de.monticore.numberunit._ast.ASTNumberWithInf;
@@ -51,7 +60,7 @@ public class ModifiedEMAComponentInstanceBuilder extends EMADynamicComponentInst
 
     @Override
     protected void exchangeGenerics(EMAComponentInstanceSymbol inst,
-                                    Map<MCTypeSymbol, ActualTypeArgument> mapTypeArguments) {
+            Map<MCTypeSymbol, ActualTypeArgument> mapTypeArguments) {
         super.exchangeGenerics(inst, mapTypeArguments);
 
         Collection<MathExpressionSymbol> eprs = inst.getSpannedScope().resolveLocally(MathExpressionSymbol.KIND);
@@ -97,10 +106,10 @@ public class ModifiedEMAComponentInstanceBuilder extends EMADynamicComponentInst
     }
 
     private MathExpressionSymbol createFromASTExpression(ASTExpression expression) {
-        ResolvingConfiguration configuration = new ResolvingConfiguration();
+                        ResolvingConfiguration configuration = new ResolvingConfiguration();
 
-        Optional<MathSymbolTableCreator> symbolTableCreator =
-                (new MathLanguage()).getSymbolTableCreator(configuration,
+                        Optional<MathSymbolTableCreator> symbolTableCreator =
+                                (new MathLanguage()).getSymbolTableCreator(configuration,
                         new CommonScope());
 
         if (!(expression instanceof ASTMathNode)) {
@@ -112,10 +121,10 @@ public class ModifiedEMAComponentInstanceBuilder extends EMADynamicComponentInst
             symbolTableCreator.get().createFromAST(node);
         } else {
             symbolTableCreator.get().createFromAST((ASTMathNode) expression);
-        }
+                        }
 
         return (MathExpressionSymbol) expression.getSymbolOpt().orElse(null);
-    }
+        }
 
 
     @Override
@@ -133,9 +142,9 @@ public class ModifiedEMAComponentInstanceBuilder extends EMADynamicComponentInst
                                 .setNum(numberWithInf)
                                 .build();
                 expression = EmbeddedMontiArcMathMill
-                        .numberExpressionBuilder()
-                        .setNumberWithUnit(numberWithUnit)
-                        .build();
+                                .numberExpressionBuilder()
+                                .setNumberWithUnit(numberWithUnit)
+                                .build();
             } else if (((ASTLiteralValue) defaultValue).getValue() instanceof ASTBooleanLiteral) {
                 if (((ASTBooleanLiteral) ((ASTLiteralValue) defaultValue).getValue()).getValue()) {
                     expression = EmbeddedMontiArcMathMill

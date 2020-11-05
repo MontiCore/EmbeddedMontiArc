@@ -4,15 +4,13 @@ package de.monticore.lang.embeddedmontiarc.embeddedmontiarcmath._symboltable.mat
 import de.monticore.lang.embeddedmontiarc.embeddedmontiarcmath._symboltable.math.symbols.EMAMInitialGuessSymbol;
 import de.monticore.lang.embeddedmontiarc.embeddedmontiarcmath._symboltable.math.symbols.EMAMInitialValueSymbol;
 import de.monticore.lang.embeddedmontiarc.embeddedmontiarcmath._symboltable.math.symbols.EMAMEquationSymbol;
-import de.monticore.lang.math._symboltable.MathStatementsSymbol;
 import de.monticore.lang.math._symboltable.expression.*;
-import de.monticore.lang.math._symboltable.visitor.MathExpressionSymbolReplacementVisitor;
-import de.monticore.lang.math._symboltable.visitor.ReplacementVisitor;
+import de.monticore.lang.mathopt._symboltable.visitor.MathOptExpressionSymbolReplacementVisitor;
 
 import java.util.Map;
 import java.util.function.Function;
 
-public class EMAMMathExpressionSymbolReplacementVisitor extends MathExpressionSymbolReplacementVisitor
+public class EMAMMathExpressionSymbolReplacementVisitor extends MathOptExpressionSymbolReplacementVisitor
         implements EMAMMathExpressionSymbolVisitor {
 
     public EMAMMathExpressionSymbolReplacementVisitor(Map<MathExpressionSymbol, MathExpressionSymbol> replacementMap) {

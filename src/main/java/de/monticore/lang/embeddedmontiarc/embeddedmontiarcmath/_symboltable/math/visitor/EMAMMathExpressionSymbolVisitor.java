@@ -5,9 +5,9 @@ import de.monticore.lang.embeddedmontiarc.embeddedmontiarcmath._symboltable.math
 import de.monticore.lang.embeddedmontiarc.embeddedmontiarcmath._symboltable.math.symbols.EMAMInitialValueSymbol;
 import de.monticore.lang.embeddedmontiarc.embeddedmontiarcmath._symboltable.math.symbols.EMAMEquationSymbol;
 import de.monticore.lang.math._symboltable.expression.MathExpressionSymbol;
-import de.monticore.lang.math._symboltable.visitor.MathExpressionSymbolVisitor;
+import de.monticore.lang.mathopt._symboltable.visitor.MathOptExpressionSymbolVisitor;
 
-public interface EMAMMathExpressionSymbolVisitor extends MathExpressionSymbolVisitor {
+public interface EMAMMathExpressionSymbolVisitor extends MathOptExpressionSymbolVisitor {
 
     @Override
     public default void handle(MathExpressionSymbol node) {
@@ -19,7 +19,7 @@ public interface EMAMMathExpressionSymbolVisitor extends MathExpressionSymbolVis
         else if (node instanceof EMAMInitialValueSymbol)
             handle((EMAMInitialValueSymbol) node);
         else
-            MathExpressionSymbolVisitor.super.handle(node);
+            MathOptExpressionSymbolVisitor.super.handle(node);
     }
 
     public default void handle(EMAMEquationSymbol node) {

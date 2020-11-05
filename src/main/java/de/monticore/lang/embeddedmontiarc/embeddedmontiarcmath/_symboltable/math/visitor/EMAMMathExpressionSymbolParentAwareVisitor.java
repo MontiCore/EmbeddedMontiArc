@@ -4,9 +4,9 @@ package de.monticore.lang.embeddedmontiarc.embeddedmontiarcmath._symboltable.mat
 import de.monticore.lang.embeddedmontiarc.embeddedmontiarcmath._symboltable.math.symbols.EMAMEquationSymbol;
 import de.monticore.lang.embeddedmontiarc.embeddedmontiarcmath._symboltable.math.symbols.EMAMInitialGuessSymbol;
 import de.monticore.lang.embeddedmontiarc.embeddedmontiarcmath._symboltable.math.symbols.EMAMInitialValueSymbol;
-import de.monticore.lang.math._symboltable.visitor.MathExpressionSymbolParentAwareVisitor;
+import de.monticore.lang.mathopt._symboltable.visitor.MathOptExpressionSymbolParentAwareVisitor;
 
-public interface EMAMMathExpressionSymbolParentAwareVisitor extends MathExpressionSymbolParentAwareVisitor,
+public interface EMAMMathExpressionSymbolParentAwareVisitor extends MathOptExpressionSymbolParentAwareVisitor,
     EMAMMathExpressionSymbolVisitor {
 
     @Override

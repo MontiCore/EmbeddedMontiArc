@@ -7,17 +7,18 @@ import de.monticore.lang.embeddedmontiarc.embeddedmontiarcmath._symboltable.math
 import de.monticore.lang.math._symboltable.MathStatementsSymbol;
 import de.monticore.lang.math._symboltable.expression.MathExpressionSymbol;
 import de.monticore.lang.math._symboltable.visitor.CopyMathExpressionSymbol;
+import de.monticore.lang.mathopt._symboltable.visitor.CopyMathOptExpressionSymbol;
 
-public class CopyEMAMMathExpressionSymbol extends CopyMathExpressionSymbol implements EMAMMathExpressionSymbolVisitor {
+public class CopyEMAMMathExpressionSymbol extends CopyMathOptExpressionSymbol implements EMAMMathExpressionSymbolVisitor {
 
     public static MathStatementsSymbol copy(MathStatementsSymbol symbol) {
         instance = new CopyEMAMMathExpressionSymbol();
-        return CopyMathExpressionSymbol.copy(symbol);
+        return CopyMathOptExpressionSymbol.copy(symbol);
     }
 
     public static <T extends MathExpressionSymbol> T copy(T symbol) {
         instance = new CopyEMAMMathExpressionSymbol();
-        return CopyMathExpressionSymbol.copy(symbol);
+        return CopyMathOptExpressionSymbol.copy(symbol);
     }
 
     @Override

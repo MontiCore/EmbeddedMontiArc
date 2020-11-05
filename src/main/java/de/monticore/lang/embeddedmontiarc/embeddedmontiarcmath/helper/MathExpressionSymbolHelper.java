@@ -1,14 +1,13 @@
 /* (c) https://github.com/MontiCore/monticore */
 package de.monticore.lang.embeddedmontiarc.embeddedmontiarcmath.helper;
 
-import de.monticore.lang.embeddedmontiarc.embeddedmontiarcmath._symboltable.math.symbols.EMAMInitialGuessSymbol;
-import de.monticore.lang.embeddedmontiarc.embeddedmontiarcmath._symboltable.math.symbols.EMAMInitialValueSymbol;
-import de.monticore.lang.embeddedmontiarc.embeddedmontiarcmath._symboltable.math.symbols.EMAMEquationSymbol;
-import de.monticore.lang.embeddedmontiarc.embeddedmontiarcmath._symboltable.math.visitor.EMAMMathExpressionSymbolVisitor;
 import de.monticore.lang.math._symboltable.MathForLoopHeadSymbol;
 import de.monticore.lang.math._symboltable.MathStatementsSymbol;
 import de.monticore.lang.math._symboltable.expression.*;
 import de.monticore.lang.math._symboltable.matrix.*;
+import de.monticore.lang.mathopt._symboltable.MathOptimizationConditionSymbol;
+import de.monticore.lang.mathopt._symboltable.MathOptimizationStatementSymbol;
+import de.monticore.lang.mathopt.visitor.MathOptExpressionSymbolVisitor;
 
 import java.util.HashSet;
 import java.util.LinkedList;
@@ -31,7 +30,7 @@ public class MathExpressionSymbolHelper {
         return visitor.symbols;
     }
 
-    private static class AddAllVisitor implements EMAMMathExpressionSymbolVisitor {
+    private static class AddAllVisitor implements MathOptExpressionSymbolVisitor {
         List<MathExpressionSymbol> symbols = new LinkedList<>();
 
         @Override
@@ -130,8 +129,14 @@ public class MathExpressionSymbolHelper {
         }
 
         @Override
-        public void visit(MathMatrixArithmeticExpressionSymbol node) {
+        public void visit(MathOptimizationStatementSymbol node) {
             symbols.add(node);
+        }
+
+        @Override
+        public void visit(MathOptimizationConditionSymbol node) {
+            symbols.add(node);
+
         }
 
         protected Set<MathExpressionSymbol> visitedSymbols = new HashSet<>();
@@ -139,21 +144,6 @@ public class MathExpressionSymbolHelper {
         @Override
         public Set<MathExpressionSymbol> getVisitedSymbols() {
             return visitedSymbols;
-        }
-
-        @Override
-        public void visit(EMAMEquationSymbol node) {
-            symbols.add(node);
-        }
-
-        @Override
-        public void visit(EMAMInitialGuessSymbol node) {
-            symbols.add(node);
-        }
-
-        @Override
-        public void visit(EMAMInitialValueSymbol node) {
-            symbols.add(node);
         }
     }
 }
