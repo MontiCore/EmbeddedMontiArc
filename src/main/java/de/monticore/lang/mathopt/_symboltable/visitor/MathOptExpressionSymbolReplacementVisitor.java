@@ -6,6 +6,8 @@ import de.monticore.lang.math._symboltable.visitor.MathExpressionSymbolReplaceme
 import de.monticore.lang.mathopt._symboltable.MathOptimizationConditionSymbol;
 import de.monticore.lang.mathopt._symboltable.MathOptimizationStatementSymbol;
 
+import java.util.Iterator;
+import java.util.ListIterator;
 import java.util.Map;
 import java.util.function.Function;
 
@@ -30,8 +32,11 @@ public class MathOptExpressionSymbolReplacementVisitor extends MathExpressionSym
             node.setObjectiveValue(get(node.getObjectiveValue()));
         if (node.getObjectiveExpression() != null)
             node.setObjectiveExpression(get(node.getObjectiveExpression()));
-        for (MathExpressionSymbol subjectToExpression : node.getSubjectToExpressions())
-            node.getSubjectToExpressions().add(get(subjectToExpression));
+        ListIterator<MathExpressionSymbol> iterator = node.getSubjectToExpressions().listIterator();
+        while (iterator.hasNext()){
+            MathExpressionSymbol subjectToExpression = iterator.next();
+            iterator.set(get(subjectToExpression));
+        }
     }
 
     @Override
