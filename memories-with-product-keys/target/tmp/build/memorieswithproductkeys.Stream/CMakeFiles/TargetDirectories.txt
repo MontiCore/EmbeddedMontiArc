@@ -1,5 +1,0 @@
-/home/julian/Documents/MontiCore/memorieswithproductkeys/memories-with-product-keys/target/tmp/build/memorieswithproductkeys.Stream/CMakeFiles/rebuild_cache.dir
-/home/julian/Documents/MontiCore/memorieswithproductkeys/memories-with-product-keys/target/tmp/build/memorieswithproductkeys.Stream/CMakeFiles/run_memorieswithproductkeys_stream_StreamTests.dir
-/home/julian/Documents/MontiCore/memorieswithproductkeys/memories-with-product-keys/target/tmp/build/memorieswithproductkeys.Stream/CMakeFiles/edit_cache.dir
-/home/julian/Documents/MontiCore/memorieswithproductkeys/memories-with-product-keys/target/tmp/build/memorieswithproductkeys.Stream/CMakeFiles/memorieswithproductkeys_stream_StreamTests.dir
-/home/julian/Documents/MontiCore/memorieswithproductkeys/memories-with-product-keys/target/tmp/build/memorieswithproductkeys.Stream/CMakeFiles/memorieswithproductkeys_stream.dir

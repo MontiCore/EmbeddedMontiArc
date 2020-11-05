@@ -1,3 +1,0 @@
-/home/julian/Documents/MontiCore/memorieswithproductkeys/memories-with-product-keys/target/tmp/build/CMakeFiles/rebuild_cache.dir
-/home/julian/Documents/MontiCore/memorieswithproductkeys/memories-with-product-keys/target/tmp/build/CMakeFiles/edit_cache.dir
-/home/julian/Documents/MontiCore/memorieswithproductkeys/memories-with-product-keys/target/tmp/build/CMakeFiles/memorieswithproductkeys_connector.dir

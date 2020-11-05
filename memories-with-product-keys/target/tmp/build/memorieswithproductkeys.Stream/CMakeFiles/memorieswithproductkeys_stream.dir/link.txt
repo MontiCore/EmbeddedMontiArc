@@ -1,2 +1,0 @@
-/usr/bin/ar qc libmemorieswithproductkeys_stream.a  CMakeFiles/memorieswithproductkeys_stream.dir/memorieswithproductkeys_stream.cpp.o
-/usr/bin/ranlib libmemorieswithproductkeys_stream.a
