@@ -1,5 +1,5 @@
 /* (c) https://github.com/MontiCore/monticore */
-package de.monticore.lang.mathopt.visitor;
+package de.monticore.lang.mathopt._symboltable.visitor;
 
 import de.monticore.lang.math._symboltable.expression.MathExpressionSymbol;
 import de.monticore.lang.math._symboltable.visitor.MathExpressionSymbolVisitor;
