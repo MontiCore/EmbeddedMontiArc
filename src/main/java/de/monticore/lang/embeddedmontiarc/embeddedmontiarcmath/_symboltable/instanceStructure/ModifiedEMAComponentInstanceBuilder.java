@@ -5,12 +5,11 @@ import de.monticore.expressionsbasis._ast.ASTExpression;
 import de.monticore.lang.embeddedmontiarc.embeddedmontiarc._symboltable.cncModel.EMAComponentSymbol;
 import de.monticore.lang.embeddedmontiarc.embeddedmontiarc._symboltable.instanceStructure.EMAComponentInstanceSymbol;
 import de.monticore.lang.embeddedmontiarc.embeddedmontiarcmath._ast.EmbeddedMontiArcMathMill;
-import de.monticore.lang.embeddedmontiarc.embeddedmontiarcmath._symboltable.math.visitor.EMAMCopyMathExpressionSymbol;
-import de.monticore.lang.embeddedmontiarc.embeddedmontiarcmath._symboltable.math.visitor.EMAMMathExpressionReplacementVisitor;
+import de.monticore.lang.embeddedmontiarc.embeddedmontiarcmath._symboltable.math.visitor.CopyEMAMMathExpressionSymbol;
+import de.monticore.lang.embeddedmontiarc.embeddedmontiarcmath._symboltable.math.visitor.EMAMMathExpressionSymbolReplacementVisitor;
 import de.monticore.lang.embeddedmontiarc.embeddedmontiarcmath.helper.MathExpressionSymbolHelper;
 import de.monticore.lang.embeddedmontiarcdynamic.embeddedmontiarcdynamic._symboltable.instanceStructure.EMADynamicComponentInstanceBuilder;
 import de.monticore.lang.math._ast.*;
-import de.monticore.lang.math._symboltable.MathExpressionReplacer;
 import de.monticore.lang.math._symboltable.MathLanguage;
 import de.monticore.lang.math._symboltable.MathStatementsSymbol;
 import de.monticore.lang.math._symboltable.MathSymbolTableCreator;
@@ -21,7 +20,6 @@ import de.monticore.lang.math._symboltable.expression.MathValueSymbol;
 import de.monticore.lang.monticar.common2._ast.ASTLiteralValue;
 import de.monticore.lang.monticar.common2._ast.ASTParameter;
 import de.monticore.lang.monticar.common2._ast.ASTValue;
-import de.monticore.lang.monticar.resolution._ast.ASTUnitNumberResolutionExpression;
 import de.monticore.lang.monticar.ts.MCTypeSymbol;
 import de.monticore.literals.literals._ast.ASTBooleanLiteral;
 import de.monticore.literals.literals._ast.ASTSignedNumericLiteral;
@@ -43,7 +41,7 @@ public class ModifiedEMAComponentInstanceBuilder extends EMADynamicComponentInst
         Optional<MathStatementsSymbol> math =
                 component.getSpannedScope().resolve("MathStatements", MathStatementsSymbol.KIND);
         if (math.isPresent()) {
-            MathStatementsSymbol copy = EMAMCopyMathExpressionSymbol.copy(math.get());
+            MathStatementsSymbol copy = CopyEMAMMathExpressionSymbol.copy(math.get());
             instanceSymbol.getSpannedScope().getAsMutableScope().add(copy);
             MathExpressionSymbolHelper.getAllSubExpressions(copy).stream().forEachOrdered(
                     s -> instanceSymbol.getSpannedScope().getAsMutableScope().add(s)
@@ -92,8 +90,8 @@ public class ModifiedEMAComponentInstanceBuilder extends EMADynamicComponentInst
                 inst.getSpannedScope().getAsMutableScope().remove(replacement.getKey());
                 inst.getSpannedScope().getAsMutableScope().add(replacement.getValue());
             }
-            EMAMMathExpressionReplacementVisitor replacementVisitor =
-                    new EMAMMathExpressionReplacementVisitor(replacementMap);
+            EMAMMathExpressionSymbolReplacementVisitor replacementVisitor =
+                    new EMAMMathExpressionSymbolReplacementVisitor(replacementMap);
             replacementVisitor.handle(mathStatementsSymbol);
         }
     }

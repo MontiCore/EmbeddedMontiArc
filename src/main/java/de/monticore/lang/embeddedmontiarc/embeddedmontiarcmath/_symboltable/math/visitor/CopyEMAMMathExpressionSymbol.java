@@ -5,24 +5,24 @@ import de.monticore.lang.embeddedmontiarc.embeddedmontiarcmath._symboltable.math
 import de.monticore.lang.embeddedmontiarc.embeddedmontiarcmath._symboltable.math.symbols.EMAMInitialGuessSymbol;
 import de.monticore.lang.embeddedmontiarc.embeddedmontiarcmath._symboltable.math.symbols.EMAMInitialValueSymbol;
 import de.monticore.lang.math._symboltable.MathStatementsSymbol;
-import de.monticore.lang.math._symboltable.copy.CopyMathExpressionSymbol;
 import de.monticore.lang.math._symboltable.expression.MathExpressionSymbol;
+import de.monticore.lang.math._symboltable.visitor.CopyMathExpressionSymbol;
 
-public class EMAMCopyMathExpressionSymbol extends CopyMathExpressionSymbol implements EMAMMathExpressionSymbolVisitor {
+public class CopyEMAMMathExpressionSymbol extends CopyMathExpressionSymbol implements EMAMMathExpressionSymbolVisitor {
 
     public static MathStatementsSymbol copy(MathStatementsSymbol symbol) {
-        instance = new EMAMCopyMathExpressionSymbol();
+        instance = new CopyEMAMMathExpressionSymbol();
         return CopyMathExpressionSymbol.copy(symbol);
     }
 
     public static <T extends MathExpressionSymbol> T copy(T symbol) {
-        instance = new EMAMCopyMathExpressionSymbol();
+        instance = new CopyEMAMMathExpressionSymbol();
         return CopyMathExpressionSymbol.copy(symbol);
     }
 
     @Override
     protected CopyMathExpressionSymbol instantiate() {
-        return new EMAMCopyMathExpressionSymbol();
+        return new CopyEMAMMathExpressionSymbol();
     }
 
     @Override
@@ -36,7 +36,7 @@ public class EMAMCopyMathExpressionSymbol extends CopyMathExpressionSymbol imple
         else if (symbol instanceof EMAMInitialValueSymbol)
             copy = new EMAMInitialValueSymbol(((EMAMInitialValueSymbol) symbol).getNameToAccess());
         else
-            return super.get(symbol);
+            copy = super.get(symbol);
 
         leftToCopy.put(copy, symbol);
         copyMap.put(symbol, copy);

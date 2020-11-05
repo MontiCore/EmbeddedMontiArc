@@ -2,9 +2,7 @@
 package de.monticore.lang.embeddedmontiarc.embeddedmontiarcmath.cocos;
 
 import de.monticore.lang.embeddedmontiarc.embeddedmontiarcmath._ast.ASTBehaviorEmbedding;
-import de.monticore.lang.embeddedmontiarc.embeddedmontiarcmath._ast.ASTEquation;
-import de.monticore.lang.embeddedmontiarc.embeddedmontiarcmath._ast.ASTInitialValueOrGuess;
-import de.monticore.lang.embeddedmontiarc.embeddedmontiarcmath._ast.ASTSymbolicAssignmentStatement;
+import de.monticore.lang.embeddedmontiarc.embeddedmontiarcmath._ast.ASTSpecification;
 import de.monticore.lang.embeddedmontiarc.embeddedmontiarcmath._cocos.EmbeddedMontiArcMathASTBehaviorEmbeddingCoCo;
 import de.monticore.lang.math._ast.ASTStatement;
 import de.se_rwth.commons.logging.Log;
@@ -15,11 +13,7 @@ public class EqualityStatementsAloneCoCo implements EmbeddedMontiArcMathASTBehav
         boolean isSpecification = false;
         boolean isAssignments = false;
         for (ASTStatement astStatement : node.getStatementList()) {
-            if (astStatement instanceof ASTEquation)
-                isSpecification = true;
-            else if (astStatement instanceof ASTInitialValueOrGuess)
-                isSpecification = true;
-            else if (astStatement instanceof ASTSymbolicAssignmentStatement)
+            if (astStatement instanceof ASTSpecification)
                 isSpecification = true;
             else
                 isAssignments = true;

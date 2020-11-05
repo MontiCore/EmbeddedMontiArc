@@ -6,18 +6,20 @@ import de.monticore.lang.embeddedmontiarc.embeddedmontiarcmath._symboltable.math
 import de.monticore.lang.embeddedmontiarc.embeddedmontiarcmath._symboltable.math.symbols.EMAMEquationSymbol;
 import de.monticore.lang.math._symboltable.MathStatementsSymbol;
 import de.monticore.lang.math._symboltable.expression.*;
+import de.monticore.lang.math._symboltable.visitor.MathExpressionSymbolReplacementVisitor;
 import de.monticore.lang.math._symboltable.visitor.ReplacementVisitor;
 
 import java.util.Map;
 import java.util.function.Function;
 
-public class EMAMMathExpressionReplacementVisitor extends ReplacementVisitor implements EMAMMathExpressionSymbolVisitor {
+public class EMAMMathExpressionSymbolReplacementVisitor extends MathExpressionSymbolReplacementVisitor
+        implements EMAMMathExpressionSymbolVisitor {
 
-    public EMAMMathExpressionReplacementVisitor(Map<MathExpressionSymbol, MathExpressionSymbol> replacementMap) {
+    public EMAMMathExpressionSymbolReplacementVisitor(Map<MathExpressionSymbol, MathExpressionSymbol> replacementMap) {
         super(replacementMap);
     }
 
-    public EMAMMathExpressionReplacementVisitor(Function<MathExpressionSymbol, MathExpressionSymbol> replacementFunction) {
+    public EMAMMathExpressionSymbolReplacementVisitor(Function<MathExpressionSymbol, MathExpressionSymbol> replacementFunction) {
         super(replacementFunction);
     }
 
