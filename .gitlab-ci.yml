@@ -3,6 +3,7 @@
 stages:
 #- windows
 - linux
+- trigger
 
 githubjob:
   image: maven:3-jdk-8
@@ -67,4 +68,13 @@ BranchJobLinux:
     - README.md
     - .gitignore
     - .gitlab-ci.yml
+
+  trigger-emadl:
+    stage: trigger
+    trigger:
+      project: monticore/EmbeddedMontiArc/generators/EMADL2CPP
+      branch: master
+  only:
+    - master
+
 
