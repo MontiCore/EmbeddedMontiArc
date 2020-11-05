@@ -35,13 +35,13 @@ public class EMADLGeneratorImpl implements GeneratorImpl {
         List<File> files = new ArrayList<>();
 
         emadlGenerator.setGenerationTargetPath(generationTargetPath);
-        List<FileContent> fileContents = emadlGenerator.generateStrings(taggingResolver, componentInstanceSymbol,
-                taggingResolver, new HashSet<>(), "n");
+        List<FileContent> fileContents = emadlGenerator.generateStrings(taggingResolver, componentInstanceSymbol, new HashSet<>(), "n");
+
+        emadlGenerator.generateCMakeFiles(componentInstanceSymbol);
 
         for (FileContent fileContent : fileContents) {
             files.add(emadlGenerator.getEmamGen().generateFile(fileContent));
         }
-
         return files;
     }
 
