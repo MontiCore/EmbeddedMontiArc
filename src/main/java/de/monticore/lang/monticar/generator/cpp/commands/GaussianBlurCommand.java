@@ -4,6 +4,7 @@ import de.monticore.lang.math._symboltable.expression.MathExpressionSymbol;
 import de.monticore.lang.math._symboltable.matrix.MathMatrixAccessSymbol;
 import de.monticore.lang.math._symboltable.matrix.MathMatrixNameExpressionSymbol;
 import de.monticore.lang.monticar.generator.*;
+import de.monticore.lang.monticar.generator.cmake.CMakeFindModule;
 import de.monticore.lang.monticar.generator.cpp.EMAMBluePrintCPP;
 import de.monticore.lang.monticar.generator.cpp.MathExpressionProperties;
 import de.monticore.lang.monticar.generator.cpp.MathFunctionFixer;
@@ -66,6 +67,13 @@ public class GaussianBlurCommand extends ArgumentNoReturnMathCommand{
         bluePrint.addMethod(gaussianBlurHelperMethod);
         redefineArmaMat(bluePrintCPP);
         redefineInit(bluePrintCPP);
+
+        bluePrintCPP.getGenerator().getCmakeConfig()
+                .addModuleDependency(new CMakeFindModule("OpenCV", true));
+        bluePrintCPP.getGenerator().getCmakeConfig()
+                .addModuleDependency(new CMakeFindModule("blas", true));
+        bluePrintCPP.getGenerator().getCmakeConfig()
+                .addModuleDependency(new CMakeFindModule("openblas", true));
     }
 
     private Method getGaussianBlurHelperMethod(MathMatrixNameExpressionSymbol mathMatrixNameExpressionSymbol, EMAMBluePrintCPP bluePrintCPP, MathExpressionProperties properties){
