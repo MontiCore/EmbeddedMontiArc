@@ -59,7 +59,7 @@
         <dependency>
             <groupId>de.monticore.lang.monticar</groupId>
             <artifactId>embedded-montiarc-emadl-generator</artifactId>
-            <version>0.4.1</version>
+            <version>0.4.3-SNAPSHOT</version>
         </dependency>
 
         <dependency>
@@ -93,7 +93,7 @@
             <plugin>
                 <groupId>de.monticore.lang.monticar.utilities</groupId>
                 <artifactId>maven-streamtest</artifactId>
-                <version>0.0.16</version>
+                <version>0.0.18</version>
             </plugin>
         </plugins>
     </build>
