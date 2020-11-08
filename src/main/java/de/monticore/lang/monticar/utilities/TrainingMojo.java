@@ -12,7 +12,7 @@ import static org.twdata.maven.mojoexecutor.MojoExecutor.*;
  * Generates c++ code for all components which have a stream test
  */
 @Mojo(name = "train")
-public class TrainingMojo1 extends BaseMojo {
+public class TrainingMojo extends BaseMojo {
 
   @Override
   public void execute() throws MojoExecutionException, MojoFailureException {
