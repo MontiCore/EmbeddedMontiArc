@@ -12,8 +12,10 @@ import org.apache.maven.plugin.MojoExecutionException;
 import org.apache.maven.plugin.MojoFailureException;
 
 import java.io.File;
+import java.io.FileNotFoundException;
 import java.io.IOException;
 import java.util.*;
+import java.util.jar.Attributes;
 import java.util.jar.Manifest;
 
 public class ResultArtifactCreator extends ArtifactCreator {
@@ -31,7 +33,7 @@ public class ResultArtifactCreator extends ArtifactCreator {
 
     List<FileLocation> fileLocations = getResultFiles(tmpOut, fileName, component.getFullName());
     String jarFileName = createJarFileName(tmpOut, "result");
-    Manifest manifest = createManifest(storageInformation.getGroupId(), storageInformation.getArtifactId(), storageInformation.getVersion());
+    Manifest manifest = createManifest(storageInformation.getGroupId(), storageInformation.getArtifactId(), storageInformation.getVersion(), getMetric(component.getFullName()));
 
     return JarCreator.createArtifact(jarFileName, manifest, fileLocations);
   }
@@ -54,7 +56,6 @@ public class ResultArtifactCreator extends ArtifactCreator {
     }
 
     String modelDirectory = String.format("%s/model/%s/", System.getProperty("user.dir"), componentName);
-
     File architectureFile = new File(modelDirectory, "model_0_newest-symbol.json");
     if (!architectureFile.exists()) {
       throw new MojoExecutionException(String.format("Architecture file %s not found.", architectureFile.getAbsolutePath()));
@@ -90,6 +91,21 @@ public class ResultArtifactCreator extends ArtifactCreator {
     resultFiles.add("HelperA.h");
 
     return resultFiles;
+  }
+
+  private static Attributes getMetric(String componentName) throws FileNotFoundException {
+    String modelDirectory = String.format("%s/model/%s/", System.getProperty("user.dir"), componentName);
+    File metricFile = new File(modelDirectory + File.separator + "metric.txt");
+    Attributes attributes = new Attributes();
+
+    Scanner scanner = new Scanner(metricFile);
+    if (!scanner.hasNextLine()) {
+      return attributes;
+    }
+
+    String[] metric = scanner.nextLine().split(" ");
+    attributes.put(new Attributes.Name(metric[0].toUpperCase()), metric[1]);
+    return attributes;
   }
 
 }
