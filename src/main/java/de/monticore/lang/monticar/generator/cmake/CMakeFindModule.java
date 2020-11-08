@@ -5,6 +5,7 @@ import de.monticore.lang.monticar.generator.cpp.viewmodel.ViewModelBase;
 
 import java.util.ArrayList;
 import java.util.List;
+import java.util.Objects;
 
 /**
  * Representation of CMake Find files as Java class.
@@ -126,4 +127,24 @@ public class CMakeFindModule extends ViewModelBase {
         this.fortranQuadMath = fortranQuadMath;
     }
 
+    @Override
+    public boolean equals(Object o) {
+        if (this == o) return true;
+        if (!(o instanceof CMakeFindModule)) return false;
+        CMakeFindModule that = (CMakeFindModule) o;
+        return isRequired() == that.isRequired() &&
+                Objects.equals(getPackageName(), that.getPackageName()) &&
+                Objects.equals(getIncludeName(), that.getIncludeName()) &&
+                Objects.equals(getLibName(), that.getLibName()) &&
+                Objects.equals(getIncludePaths(), that.getIncludePaths()) &&
+                Objects.equals(getLibPaths(), that.getLibPaths()) &&
+                Objects.equals(getFindPath(), that.getFindPath()) &&
+                Objects.equals(getFindLibrary(), that.getFindLibrary()) &&
+                Objects.equals(getFortranQuadMath(), that.getFortranQuadMath());
+    }
+
+    @Override
+    public int hashCode() {
+        return Objects.hash(getPackageName(), getIncludeName(), getLibName(), getIncludePaths(), getLibPaths(), getFindPath(), getFindLibrary(), getFortranQuadMath(), isRequired());
+    }
 }

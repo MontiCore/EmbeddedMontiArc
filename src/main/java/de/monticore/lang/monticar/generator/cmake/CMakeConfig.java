@@ -22,7 +22,6 @@ import java.util.Map;
  * Is responsible for generating the cmake files from freemarker templates.
  * CMake dependencies to other modules can be added as Find Package file.
  * See also https://cmake.org/cmake/help/v3.8/command/find_package.html?highlight=i
- *
  */
 public class CMakeConfig {
 
@@ -55,7 +54,9 @@ public class CMakeConfig {
 
     private List<String> cmakeCommandListEnd = new ArrayList<>();
 
-    private List<String> cmakeLibraryLinkage = new ArrayList<>();
+    private List<String> cmakeLibraryLinkageList = new ArrayList<>();
+
+    private List<String> cmakeFindPackageList = new ArrayList<>();
 
     // constructor
     public CMakeConfig(String compName) {
@@ -65,9 +66,10 @@ public class CMakeConfig {
 
     // methods
     protected void configureCMakeListsViewModel() {
-        cMakeListsViewModel.setCmakeLibraryLinkageList(cmakeLibraryLinkage);
+        cMakeListsViewModel.setCmakeLibraryLinkageList(cmakeLibraryLinkageList);
         cMakeListsViewModel.setCmakeCommandList(cmakeCommandList);
         cMakeListsViewModel.setCmakeCommandListEnd(cmakeCommandListEnd);
+        cMakeListsViewModel.setCmakeFindPackageList(cmakeFindPackageList);
     }
 
     public List<FileContent> generateCMakeFiles() {
@@ -87,7 +89,7 @@ public class CMakeConfig {
         FileContent result = new FileContent();
         String compName = cMakeListsViewModel.getCompName().replace(".", "_");
         result.setFileName(compName + ".cpp");
-        result.setFileContent("#include \""+ compName +".h\"");
+        result.setFileContent("#include \"" + compName + ".h\"");
         return result;
     }
 
@@ -123,7 +125,8 @@ public class CMakeConfig {
     }
 
     public void addModuleDependency(CMakeFindModule module) {
-        moduleList.add(module);
+        if (!moduleList.contains(module))
+            moduleList.add(module);
     }
 
     public CMakeListsCPPViewModel getCMakeListsViewModel() {
@@ -136,7 +139,8 @@ public class CMakeConfig {
      * @param cmd some valid cmake command as string
      */
     public void addCMakeCommand(String cmd) {
-        cmakeCommandList.add(cmd);
+        if (!cmakeCommandList.contains(cmd))
+            cmakeCommandList.add(cmd);
     }
 
     /**
@@ -145,11 +149,20 @@ public class CMakeConfig {
      * @param cmd some valid cmake command as string
      */
     public void addCMakeCommandEnd(String cmd) {
-        cmakeCommandListEnd.add(cmd);
+        if (!cmakeCommandListEnd.contains(cmd))
+            cmakeCommandListEnd.add(cmd);
     }
 
 
     public void addCmakeLibraryLinkage(String cmakeLibraryLinkage) {
-        this.cmakeLibraryLinkage.add(cmakeLibraryLinkage);
+        if (!cmakeLibraryLinkageList.contains(cmakeLibraryLinkage))
+            this.cmakeLibraryLinkageList.add(cmakeLibraryLinkage);
     }
+
+    public void addFindPackage(String packageName) {
+        if (!cmakeFindPackageList.contains(packageName))
+            cmakeFindPackageList.add(packageName);
+    }
+
+
 }
