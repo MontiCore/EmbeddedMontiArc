@@ -71,11 +71,7 @@ public class ErodeCommand extends ArgumentNoReturnMathCommand{
         redefineInit(bluePrintCPP);
 
         bluePrintCPP.getGenerator().getCmakeConfig()
-                .addModuleDependency(new CMakeFindModule("OpenCV", true));
-        bluePrintCPP.getGenerator().getCmakeConfig()
-                .addModuleDependency(new CMakeFindModule("blas", true));
-        bluePrintCPP.getGenerator().getCmakeConfig()
-                .addModuleDependency(new CMakeFindModule("openblas", true));
+                .addFindPackage("OpenCV");
 
     }
 
