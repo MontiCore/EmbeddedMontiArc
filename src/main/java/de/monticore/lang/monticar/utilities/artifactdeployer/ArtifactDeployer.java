@@ -17,8 +17,22 @@ public class ArtifactDeployer {
   private static final String ARTIFACT_ID = "artifactId";
   private static final String VERSION = "version";
   private static final String CLASSIFIER = "classifier";
+  private static final String PACKAGING = "packaging";
 
   public static void deployArtifact(String jarFile, StorageInformation storageInformation, Repository repository, JarClassifier classifier) throws MavenInvocationException {
+    Properties properties = getProperties(jarFile, storageInformation, repository, classifier);
+
+    JarDeployer.deployArtifact(properties);
+  }
+
+  public static void installArtifact(String jarFile, StorageInformation storageInformation, Repository repository, JarClassifier classifier) throws MavenInvocationException {
+    Properties properties = getProperties(jarFile, storageInformation, repository, classifier);
+    properties.setProperty(PACKAGING, "jar");
+
+    JarDeployer.installArtifact(properties);
+  }
+
+  private static Properties getProperties(String jarFile, StorageInformation storageInformation, Repository repository, JarClassifier classifier) {
     Properties properties = new Properties();
     properties.setProperty(FILE, jarFile);
     properties.setProperty(REPOSITORY_ID, repository.getId());
@@ -27,8 +41,7 @@ public class ArtifactDeployer {
     properties.setProperty(ARTIFACT_ID, storageInformation.getArtifactId());
     properties.setProperty(VERSION, String.valueOf(storageInformation.getVersion()));
     properties.setProperty(CLASSIFIER, classifier.value);
-
-    JarDeployer.deployArtifact(properties);
+    return properties;
   }
 
 }

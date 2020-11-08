@@ -15,4 +15,13 @@ public class JarDeployer {
     invoker.execute(request);
   }
 
+  public static void installArtifact(Properties properties) throws MavenInvocationException {
+    InvocationRequest request = new DefaultInvocationRequest().setGoals(Collections.singletonList("install:install-file"));
+    request.setProperties(properties);
+
+    Invoker invoker = new DefaultInvoker();
+    invoker.execute(request);
+  }
+
+
 }
