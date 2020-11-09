@@ -3,14 +3,15 @@ package de.monticore.lang.monticar.utilities.artifactinstaller;
 import org.apache.maven.model.Dependency;
 import org.apache.maven.shared.invoker.*;
 
+import java.io.File;
 import java.util.Collections;
 import java.util.Properties;
 
-public class ArtifactInstaller {
+public class ArtifactImporter {
 
-  public static void installArtifact(Dependency dependency) throws MavenInvocationException {
+  public static void importArtifact(Dependency dependency) throws MavenInvocationException {
     Properties properties = new Properties();
-    properties.setProperty("outputDirectory", "${project.basedir}");
+    properties.setProperty("outputDirectory", String.format("${project.basedir}%simported-resources", File.separator));
     properties.setProperty("artifact",String.format("%s:%s:%s", dependency.getGroupId(), dependency.getArtifactId(), dependency.getVersion()) );
 
     InvocationRequest request = new DefaultInvocationRequest().setGoals(Collections.singletonList("dependency:unpack"));

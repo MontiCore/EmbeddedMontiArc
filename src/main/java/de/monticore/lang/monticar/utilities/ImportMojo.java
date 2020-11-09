@@ -1,6 +1,6 @@
 package de.monticore.lang.monticar.utilities;
 
-import de.monticore.lang.monticar.utilities.artifactinstaller.ArtifactInstaller;
+import de.monticore.lang.monticar.utilities.artifactinstaller.ArtifactImporter;
 import org.apache.commons.lang3.StringUtils;
 import org.apache.maven.model.Dependency;
 import org.apache.maven.plugin.MojoExecutionException;
@@ -22,7 +22,7 @@ public class ImportMojo extends BaseMojo {
     for (Dependency dependency: dependencies) {
       if (StringUtils.equals("dataset", dependency.getClassifier()) || StringUtils.equals("emadl", dependency.getClassifier())) {
         try {
-          ArtifactInstaller.installArtifact(dependency);
+          ArtifactImporter.importArtifact(dependency);
         }
         catch (MavenInvocationException e) {
           e.printStackTrace();
