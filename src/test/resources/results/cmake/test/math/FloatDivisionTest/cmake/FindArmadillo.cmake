@@ -16,7 +16,7 @@ find_path(Armadillo_INCLUDE_DIR
         )
 find_library(Armadillo_LIBRARY
         NAMES armadillo
-        PATH_SUFFIXES "lib" "lib64" "lib/x86_64-linux-gnu" "examples/lib_win64" "build" "Release"
+        PATH_SUFFIXES "lib" "lib64" "lib/x86_64-linux-gnu" "examples/lib_win64" "build" "Release" "x64" "x86"
         PATHS
         HINTS $ENV{Armadillo_HOME}
         )
