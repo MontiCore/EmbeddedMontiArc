@@ -67,9 +67,8 @@ public class InRangeCommand extends ArgumentNoReturnMathCommand{
         bluePrint.addMethod(inRangeHelperMethod);
         redefineArmaMat(bluePrintCPP);
         redefineInit(bluePrintCPP);
-
         bluePrintCPP.getGenerator().getCmakeConfig()
-                .addFindPackage("OpenCV");
+                .addModuleDependency(new CMakeFindModule("OpenCV", true).asFindAsPackage());
 
     }
 

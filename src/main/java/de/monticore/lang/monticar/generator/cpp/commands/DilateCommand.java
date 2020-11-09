@@ -67,9 +67,8 @@ public class DilateCommand extends ArgumentNoReturnMathCommand{
         bluePrint.addMethod(dilateHelperMethod);
         redefineArmaMat(bluePrintCPP);
         redefineInit(bluePrintCPP);
-
         bluePrintCPP.getGenerator().getCmakeConfig()
-                .addFindPackage("OpenCV");
+                .addModuleDependency(new CMakeFindModule("OpenCV", true).asFindAsPackage());
     }
 
     private Method getDilateHelperMethod(MathMatrixNameExpressionSymbol mathMatrixNameExpressionSymbol, EMAMBluePrintCPP bluePrintCPP, MathExpressionProperties properties){

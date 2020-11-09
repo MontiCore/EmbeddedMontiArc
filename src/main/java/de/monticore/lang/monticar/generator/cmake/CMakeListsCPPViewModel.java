@@ -27,8 +27,6 @@ public class CMakeListsCPPViewModel extends ViewModelBase {
 
     private List<String> cmakeLibraryLinkageList = new ArrayList<>();
 
-    private List<String> cmakeFindPackageList = new ArrayList<>();
-
     // methods
 
     public String getCompName() {
@@ -69,13 +67,5 @@ public class CMakeListsCPPViewModel extends ViewModelBase {
 
     public void setCmakeLibraryLinkageList(List<String> cmakeLibraryLinkageList) {
         this.cmakeLibraryLinkageList = cmakeLibraryLinkageList;
-    }
-
-    public List<String> getCmakeFindPackageList() {
-        return cmakeFindPackageList;
-    }
-
-    public void setCmakeFindPackageList(List<String> cmakeFindPackageList) {
-        this.cmakeFindPackageList = cmakeFindPackageList;
     }
 }

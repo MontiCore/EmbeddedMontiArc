@@ -23,6 +23,7 @@ public class CMakeFindModule extends ViewModelBase {
     private Boolean findPath;
     private Boolean findLibrary;
     private Boolean fortranQuadMath = false;
+    private Boolean findAsPackage = false;
 
     private boolean required;
 
@@ -50,6 +51,15 @@ public class CMakeFindModule extends ViewModelBase {
     }
 
     // methods
+
+    public CMakeFindModule asFindAsPackage() {
+        this.findLibrary = false;
+        this.findPath = false;
+        this.findAsPackage = true;
+        return this;
+    }
+
+    // getters and setters
 
     public String getPackageName() {
         return packageName;
@@ -127,6 +137,16 @@ public class CMakeFindModule extends ViewModelBase {
         this.fortranQuadMath = fortranQuadMath;
     }
 
+    public Boolean getFindAsPackage() {
+        return findAsPackage;
+    }
+
+    public void setFindAsPackage(Boolean findAsPackage) {
+        this.findAsPackage = findAsPackage;
+    }
+
+    // equals and hashcode
+
     @Override
     public boolean equals(Object o) {
         if (this == o) return true;
@@ -140,11 +160,12 @@ public class CMakeFindModule extends ViewModelBase {
                 Objects.equals(getLibPaths(), that.getLibPaths()) &&
                 Objects.equals(getFindPath(), that.getFindPath()) &&
                 Objects.equals(getFindLibrary(), that.getFindLibrary()) &&
-                Objects.equals(getFortranQuadMath(), that.getFortranQuadMath());
+                Objects.equals(getFortranQuadMath(), that.getFortranQuadMath()) &&
+                Objects.equals(getFindAsPackage(), that.getFindAsPackage());
     }
 
     @Override
     public int hashCode() {
-        return Objects.hash(getPackageName(), getIncludeName(), getLibName(), getIncludePaths(), getLibPaths(), getFindPath(), getFindLibrary(), getFortranQuadMath(), isRequired());
+        return Objects.hash(getPackageName(), getIncludeName(), getLibName(), getIncludePaths(), getLibPaths(), getFindPath(), getFindLibrary(), getFortranQuadMath(), getFindAsPackage(), isRequired());
     }
 }

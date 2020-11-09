@@ -71,9 +71,8 @@ public class RectangleCommand extends MathCommand{
         bluePrint.addMethod(rectangleHelperMethod);
         redefineArmaMat(bluePrintCPP);
         redefineInit(bluePrintCPP);
-
         bluePrintCPP.getGenerator().getCmakeConfig()
-                .addFindPackage("OpenCV");
+                .addModuleDependency(new CMakeFindModule("OpenCV", true).asFindAsPackage());
 
     }
 

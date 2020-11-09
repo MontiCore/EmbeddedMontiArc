@@ -65,9 +65,8 @@ public class BoundingRectCommand extends MathCommand{
 
         mathMatrixNameExpressionSymbol.getMathMatrixAccessOperatorSymbol().setMathMatrixAccessSymbols(newMatrixAccessSymbols);
         bluePrintCPP.addCVIncludeString("opencv2/imgproc/imgproc");
-
         bluePrintCPP.getGenerator().getCmakeConfig()
-                .addFindPackage("OpenCV");
+                .addModuleDependency(new CMakeFindModule("OpenCV", true).asFindAsPackage());
 
     }
 }

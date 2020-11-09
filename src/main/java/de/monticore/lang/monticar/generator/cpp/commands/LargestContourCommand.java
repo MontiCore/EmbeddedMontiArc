@@ -66,9 +66,8 @@ public class LargestContourCommand extends MathCommand {
         bluePrint.addMethod(largestContourMethod);
         redefineArmaMat(bluePrintCPP);
         redefineInit(bluePrintCPP);
-
         bluePrintCPP.getGenerator().getCmakeConfig()
-                .addFindPackage("OpenCV");
+                .addModuleDependency(new CMakeFindModule("OpenCV", true).asFindAsPackage());
 
     }
 

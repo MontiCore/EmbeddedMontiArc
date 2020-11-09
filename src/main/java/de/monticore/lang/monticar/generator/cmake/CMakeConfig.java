@@ -56,8 +56,6 @@ public class CMakeConfig {
 
     private List<String> cmakeLibraryLinkageList = new ArrayList<>();
 
-    private List<String> cmakeFindPackageList = new ArrayList<>();
-
     // constructor
     public CMakeConfig(String compName) {
         cMakeListsViewModel.setCompName(compName);
@@ -69,7 +67,6 @@ public class CMakeConfig {
         cMakeListsViewModel.setCmakeLibraryLinkageList(cmakeLibraryLinkageList);
         cMakeListsViewModel.setCmakeCommandList(cmakeCommandList);
         cMakeListsViewModel.setCmakeCommandListEnd(cmakeCommandListEnd);
-        cMakeListsViewModel.setCmakeFindPackageList(cmakeFindPackageList);
     }
 
     public List<FileContent> generateCMakeFiles() {
@@ -157,11 +154,6 @@ public class CMakeConfig {
     public void addCmakeLibraryLinkage(String cmakeLibraryLinkage) {
         if (!cmakeLibraryLinkageList.contains(cmakeLibraryLinkage))
             this.cmakeLibraryLinkageList.add(cmakeLibraryLinkage);
-    }
-
-    public void addFindPackage(String packageName) {
-        if (!cmakeFindPackageList.contains(packageName))
-            cmakeFindPackageList.add(packageName);
     }
 
 

@@ -10,19 +10,14 @@ set(CMAKE_MODULE_PATH ${r"${CMAKE_MODULE_PATH}"} ${r"${CMAKE_CURRENT_SOURCE_DIR}
 # add dependencies
 <#list viewModel.moduleDependencies as var>
 find_package(${var.packageName} <#if var.required>REQUIRED<#else></#if>)
-<#if var.findPath>set(INCLUDE_DIRS ${r"${INCLUDE_DIRS}"} ${r"${"}${var.packageName}${r"_INCLUDE_DIRS}"})</#if>
-<#if var.findLibrary>set(LIBS ${r"${LIBS}"} ${r"${"}${var.packageName}${r"_LIBRARIES}"})</#if>
+<#if var.findPath || var.findAsPackage>set(INCLUDE_DIRS ${r"${INCLUDE_DIRS}"} ${r"${"}${var.packageName}${r"_INCLUDE_DIRS}"})</#if>
+<#if var.findLibrary || var.findAsPackage>set(LIBS ${r"${LIBS}"} ${r"${"}${var.packageName}${r"_LIBRARIES}"})</#if>
 <#if var.fortranQuadMath>set(LIBS ${r"${LIBS}"} "quadmath")</#if>
-</#list>
-<#list viewModel.cmakeFindPackageList as cmd>
-find_package(${cmd} REQUIRED)
-set(INCLUDE_DIRS ${r"${INCLUDE_DIRS}"} ${r"${"}${cmd}${r"_INCLUDE_DIRSr}"})
-set(LIBS ${r"${LIBS}"} ${r"${"}${cmd}${r"_LIBS}"})
 </#list>
 
 # additional library linkage
-<#list viewModel.cmakeLibraryLinkageList as cmd>
-set(LIBS ${r"${LIBS}"} ${cmd})
+<#list viewModel.cmakeLibraryLinkageList as lib>
+set(LIBS ${r"${LIBS}"} ${lib})
 </#list>
 
 # additional commands

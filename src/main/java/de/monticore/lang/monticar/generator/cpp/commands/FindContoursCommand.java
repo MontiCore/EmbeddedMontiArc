@@ -68,9 +68,8 @@ public class FindContoursCommand extends ArgumentNoReturnMathCommand{
         bluePrint.addMethod(findContoursHelperMethod);
         redefineArmaMat(bluePrintCPP);
         redefineInit(bluePrintCPP);
-
         bluePrintCPP.getGenerator().getCmakeConfig()
-                .addFindPackage("OpenCV");
+                .addModuleDependency(new CMakeFindModule("OpenCV", true).asFindAsPackage());
 
     }
 
