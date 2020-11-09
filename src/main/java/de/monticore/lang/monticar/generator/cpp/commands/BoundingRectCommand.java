@@ -5,6 +5,7 @@ import de.monticore.lang.math._symboltable.matrix.MathMatrixAccessSymbol;
 import de.monticore.lang.math._symboltable.matrix.MathMatrixNameExpressionSymbol;
 import de.monticore.lang.monticar.generator.EMAMBluePrint;
 import de.monticore.lang.monticar.generator.MathCommand;
+import de.monticore.lang.monticar.generator.cmake.CMakeFindModule;
 import de.monticore.lang.monticar.generator.cpp.EMAMBluePrintCPP;
 import de.monticore.lang.monticar.generator.cpp.MathFunctionFixer;
 import de.monticore.lang.monticar.generator.cpp.converter.ComponentConverter;
@@ -64,6 +65,8 @@ public class BoundingRectCommand extends MathCommand{
 
         mathMatrixNameExpressionSymbol.getMathMatrixAccessOperatorSymbol().setMathMatrixAccessSymbols(newMatrixAccessSymbols);
         bluePrintCPP.addCVIncludeString("opencv2/imgproc/imgproc");
+        bluePrintCPP.getGenerator().getCmakeConfig()
+                .addModuleDependency(new CMakeFindModule("OpenCV", true).asFindAsPackage());
 
     }
 }
