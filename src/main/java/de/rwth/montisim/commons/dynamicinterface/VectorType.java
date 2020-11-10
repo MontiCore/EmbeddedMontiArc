@@ -1,35 +1,46 @@
 /* (c) https://github.com/MontiCore/monticore */
 package de.rwth.montisim.commons.dynamicinterface;
 
+import java.io.DataInputStream;
+import java.io.DataOutputStream;
+import java.io.IOException;
+
 import de.rwth.montisim.commons.utils.ParsingException;
 import de.rwth.montisim.commons.utils.json.*;
-import de.rwth.montisim.commons.utils.json.JsonTraverser.ArrayIterable;
 import de.rwth.montisim.commons.utils.json.JsonTraverser.ValueType;
 
+/**
+ * Represents a Vector of data. The corresponding object type must be a Java
+ * array of the given subtype. The serialization format is a JSON array with the
+ * serialized entries.
+ */
 @Typed("vector")
 public class VectorType extends DataType {
-    public DataType base_type;
-    public int max_size;
+    private DataType base_type;
+    private int size;
 
-    public VectorType(DataType base_type, int max_size) {
+    public VectorType(DataType base_type, int size) {
         this.base_type = base_type;
-        this.max_size = max_size;
+        this.size = size;
     }
 
-    private VectorType() {}
+    private VectorType() {
+    }
 
     @Override
     public int getDataSize(Object o) {
         // TODO optimize size calls
         int size = 0;
         Object arr[] = (Object[]) o;
-        for (Object oi : arr) size += base_type.getDataSize(oi);
-        return size + 4;
+        for (Object oi : arr)
+            size += base_type.getDataSize(oi);
+        return size;
     }
-    
+
     @Override
     public String toString() {
-        return "<" + base_type.toString() + "; " + max_size + ">";
+        return "[" + base_type.toString() + "; " + size + "]";
+        // return "<" + base_type.toString() + "; " + size + ">";
     }
 
     // Implement hashCode & equals to be able to perform hashmap lookup by type &
@@ -37,10 +48,10 @@ public class VectorType extends DataType {
 
     @Override
     public int hashCode() {
-        final int prime = 13;
+        final int prime = 31;
         int result = 1;
         result = prime * result + ((base_type == null) ? 0 : base_type.hashCode());
-        result = prime * result + Integer.valueOf(max_size).hashCode();
+        result = prime * result + Integer.valueOf(size).hashCode();
         return result;
     }
 
@@ -53,27 +64,27 @@ public class VectorType extends DataType {
         if (this.getClass() != o.getClass())
             return false;
         VectorType a = ((VectorType) o);
-        return this.base_type.equals(a.base_type) && this.max_size == a.max_size;
+        return this.base_type.equals(a.base_type) && this.size == a.size;
     }
 
     @Override
     public Object fromJson(JsonTraverser j, SerializationContext context) throws SerializationException {
         Class<?> array_c = base_type.getArrayType();
-        if (array_c == null) return null;
+        if (array_c == null)
+            return null;
         if (array_c != Object[].class)
             return Json.instantiateFromJson(j, array_c, context);
-        ArrayIterable it = j.streamArray();
-        if (!it.iterator().hasNext()) throw new ParsingException("Missing length entry in VectorType serialization.");
-        it.iterator().next();
-        int size = (int) j.getLong();
+
         Object o[] = new Object[size];
         int i = 0;
-        for (ValueType t : it){
-            if (i >= size) throw new ParsingException("Too much entries in VectorType serialization.");
+        for (ValueType t : j.streamArray()) {
+            if (i >= size)
+                throw new ParsingException("Too much entries in Array serialization.");
             o[i] = base_type.fromJson(j, context);
             i++;
         }
-        if (i < size) throw new ParsingException("Missing entries in VectorType serialization.");
+        if (i < size)
+            throw new ParsingException("Missing entries in Array serialization.");
         return o;
     }
 
@@ -82,17 +93,18 @@ public class VectorType extends DataType {
         if (o == null)
             return;
         Class<?> array_c = base_type.getArrayType();
-        if (array_c == null) return;
+        if (array_c == null)
+            return;
         if (array_c != Object[].class) {
             Json.toJson(j, o, context);
             return;
         }
-            
+
         Object arr[] = (Object[]) o;
         j.startArray();
-        if (arr.length > max_size) throw new IllegalArgumentException("Vector length above VectorType limit.");
-        j.writeValue(arr.length);
-        for (Object oi : arr){
+        if (arr.length != size)
+            throw new IllegalArgumentException("Array length does not match its ArrayType length");
+        for (Object oi : arr) {
             base_type.toJson(j, oi, context);
         }
         j.endArray();
@@ -100,7 +112,44 @@ public class VectorType extends DataType {
 
     @Override
     public Class<?> getArrayType() {
+        if (base_type instanceof BasicType) {
+            return base_type.getArrayType();
+        }
         return Object[].class;
+    }
+
+    public int getSize() {
+        return size;
+    }
+
+    public DataType getBaseType() {
+        return base_type;
+    }
+
+    @Override
+    public void toBinary(DataOutputStream os, Object o) throws IOException {
+        Class<?> array_c = base_type.getArrayType();
+        // Start with size as short (u16)
+        if (array_c == double[].class) {
+            double[] arr = (double[]) o;
+            os.writeShort(arr.length);
+            for (int i = 0; i < arr.length; ++i) {
+                os.writeDouble(arr[i]);
+            }
+        } else throw new IllegalArgumentException("Unimplemented");
+    }
+
+    @Override
+    public Object fromBinary(DataInputStream is) throws IOException {
+        Class<?> array_c = base_type.getArrayType();
+        if (array_c == double[].class) {
+            int length = is.readShort();
+            double[] arr = new double[length];
+            for (int i = 0; i < length; ++i) {
+                arr[i] = is.readDouble();
+            }
+            return arr;
+        } else throw new IllegalArgumentException("Unimplemented");
     }
 
 }

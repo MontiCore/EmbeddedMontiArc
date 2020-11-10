@@ -692,12 +692,7 @@ class Subclass2 extends SuperClass1 {
 @Typed()
 class Subclass3 extends SuperClass1 {
     static {
-        try {
-            Json.registerType(Subclass3.class);
-        } catch (SerializationException e) {
-            e.printStackTrace();
-            System.exit(-1);
-        }
+        Json.registerType(Subclass3.class);
     }
     int c;
     int d;
@@ -760,12 +755,7 @@ interface Interface1 {
 @Typed
 class ISubclass1 implements Interface1 {
     static {
-        try {
-            Json.registerType(ISubclass1.class);
-        } catch (SerializationException e) {
-            e.printStackTrace();
-            System.exit(-1);
-        }
+        Json.registerType(ISubclass1.class);
     }
     int f1;
     double f2;
@@ -801,12 +791,7 @@ class ISubclass1 implements Interface1 {
 @Typed
 class ISubclass2 implements Interface1 {
     static {
-        try {
-            Json.registerType(ISubclass2.class);
-        } catch (SerializationException e1) {
-            e1.printStackTrace();
-            System.exit(-1);
-        }
+        Json.registerType(ISubclass2.class);
     }
     String f3;
     short f4;
