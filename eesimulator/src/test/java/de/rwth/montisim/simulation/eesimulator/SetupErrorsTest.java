@@ -4,8 +4,8 @@ package de.rwth.montisim.simulation.eesimulator;
 import org.junit.Assert;
 import org.junit.Test;
 
-import de.rwth.montisim.commons.dynamicinterface.ArrayType;
 import de.rwth.montisim.commons.dynamicinterface.BasicType;
+import de.rwth.montisim.commons.dynamicinterface.VectorType;
 import de.rwth.montisim.commons.eventsimulation.DiscreteEventSimulator;
 import de.rwth.montisim.simulation.eesimulator.bridge.Bridge;
 import de.rwth.montisim.simulation.eesimulator.bridge.BridgeProperties;
@@ -138,7 +138,7 @@ public class SetupErrorsTest {
             ++errorsFound;
         }
         try {
-            c3.addInput("m1", new ArrayType(BasicType.INT, 5));
+            c3.addInput("m1", new VectorType(BasicType.INT, 5));
         } catch (EEMessageTypeException e){
             ++errorsFound;
         }

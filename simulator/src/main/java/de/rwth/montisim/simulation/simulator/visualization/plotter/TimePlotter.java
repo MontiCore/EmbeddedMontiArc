@@ -3,18 +3,11 @@ package de.rwth.montisim.simulation.simulator.visualization.plotter;
 
 import java.awt.Color;
 import java.awt.Dimension;
-import java.awt.FontMetrics;
 import java.awt.Graphics;
 import java.awt.Graphics2D;
 import java.awt.RenderingHints;
-import java.awt.event.MouseEvent;
-import java.awt.event.MouseWheelEvent;
-import java.awt.event.MouseWheelListener;
-import java.text.DecimalFormat;
-import java.text.DecimalFormatSymbols;
 import java.util.ArrayList;
 import java.util.List;
-import java.util.Locale;
 
 import javax.swing.JPanel;
 
@@ -88,8 +81,8 @@ public class TimePlotter extends JPanel {
 
     private int drawLegend(Graphics2D g) {
         // Get legend size
-        final int height = g.getFont().getSize();
-        final int offset = height + UIInfo.LINE_SPACE;
+        //final int height = g.getFont().getSize();
+        //final int offset = height + UIInfo.LINE_SPACE;
         int size = 0;
         // Draw legend
         return size;

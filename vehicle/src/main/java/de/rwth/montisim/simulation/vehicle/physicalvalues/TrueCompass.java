@@ -1,8 +1,6 @@
 /* (c) https://github.com/MontiCore/monticore */
 package de.rwth.montisim.simulation.vehicle.physicalvalues;
 
-import de.rwth.montisim.commons.dynamicinterface.BasicType;
-import de.rwth.montisim.commons.dynamicinterface.DataType;
 import de.rwth.montisim.commons.physicalvalue.PhysicalValueDouble;
 import de.rwth.montisim.commons.simulation.*;
 import de.rwth.montisim.commons.utils.*;

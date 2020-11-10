@@ -11,7 +11,7 @@ public class NavigationProperties extends BusUserProperties {
     public static final String TYPE = "navigation";
 
     public NavigationProperties() {
-        this.name = "DefaultNavigation";
+        this.name = "Navigation";
     }
 
     public NavigationProperties setName(String name) {

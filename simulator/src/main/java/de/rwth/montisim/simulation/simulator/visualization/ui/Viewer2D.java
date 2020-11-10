@@ -24,13 +24,13 @@ import de.rwth.montisim.commons.utils.*;
  */
 public class Viewer2D extends JPanel implements MouseInputListener, MouseWheelListener {
     private static final long serialVersionUID = 4687042051904715366L;
-    private static final ImageIcon a;
-    static {
-        java.net.URL imgURL = Control.class.getResource("/images/a.gif");
-        if (imgURL != null)
-            a = new ImageIcon(imgURL);
-        else a = null;
-    }
+    // private static final ImageIcon a;
+    // static {
+    //     java.net.URL imgURL = Control.class.getResource("/images/a.gif");
+    //     if (imgURL != null)
+    //         a = new ImageIcon(imgURL);
+    //     else a = null;
+    // }
 
     private static final DecimalFormat format = new DecimalFormat("##0.00",
             DecimalFormatSymbols.getInstance(Locale.ENGLISH));

@@ -18,7 +18,7 @@ public class ActuatorProperties extends BusUserProperties {
 
     public String physical_value_name;
 
-    public double change_rate;
+    public double change_rate = Double.POSITIVE_INFINITY;
     @JsonEntry("sensor")
     public Optional<SensorProperties> sensorProperties;
 

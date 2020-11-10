@@ -7,7 +7,6 @@ import java.util.Vector;
 import de.rwth.montisim.commons.map.Pathfinding;
 import de.rwth.montisim.commons.simulation.*;
 import de.rwth.montisim.commons.utils.json.Json;
-import de.rwth.montisim.commons.utils.json.SerializationException;
 import de.rwth.montisim.simulation.eecomponents.autopilots.JavaAutopilotProperties;
 import de.rwth.montisim.simulation.eecomponents.autopilots.TestAutopilotProperties;
 import de.rwth.montisim.simulation.eecomponents.navigation.NavigationProperties;
@@ -174,13 +173,8 @@ public class Simulator implements ISimulator, Updatable {
     }
 
     static {
-        try {
-            Json.registerType(NavigationProperties.class);
-            Json.registerType(JavaAutopilotProperties.class);
-            Json.registerType(TestAutopilotProperties.class);
-        } catch (SerializationException e) {
-            e.printStackTrace();
-            System.exit(-1);
-        }
+        Json.registerType(NavigationProperties.class);
+        Json.registerType(JavaAutopilotProperties.class);
+        Json.registerType(TestAutopilotProperties.class);
     }
 }
