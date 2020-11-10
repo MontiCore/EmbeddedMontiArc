@@ -8,7 +8,9 @@ import de.rwth.montisim.basic_simulator.gui.Browser;
 import de.rwth.montisim.commons.map.Pathfinding;
 import de.rwth.montisim.commons.utils.LibraryService;
 import de.rwth.montisim.commons.utils.json.*;
-import de.rwth.montisim.hardware_emulator.*;
+import de.rwth.montisim.hardware_emulator.CppBridge;
+import de.rwth.montisim.hardware_emulator.computer.ComputerProperties;
+import de.rwth.montisim.hardware_emulator.vcg.VCGProperties;
 import de.rwth.montisim.simulation.eecomponents.autopilots.*;
 import de.rwth.montisim.simulation.eecomponents.navigation.NavigationProperties;
 import de.rwth.montisim.simulation.eesimulator.actuator.ActuatorProperties;
@@ -35,24 +37,20 @@ import java.io.IOException;
 public class App 
 {
     static {
-        try {
-            Json.registerType(ElectricalPTProperties.class);
-            Json.registerType(FuelPTProperties.class);
-            Json.registerType(NavigationProperties.class);
-            Json.registerType(JavaAutopilotProperties.class);
-            Json.registerType(TestAutopilotProperties.class);
-            Json.registerType(RigidbodyPhysicsProperties.class);
-            Json.registerType(ActuatorProperties.class);
-            Json.registerType(BridgeProperties.class);
-            Json.registerType(CANProperties.class);
-            Json.registerType(ConstantBusProperties.class);
-            Json.registerType(SensorProperties.class);
-            Json.registerType(TestCompProperties.class);
-            Json.registerType(ComputerProperties.class);
-        } catch (SerializationException e) {
-            e.printStackTrace();
-            System.exit(-1);
-        }
+        Json.registerType(ElectricalPTProperties.class);
+        Json.registerType(FuelPTProperties.class);
+        Json.registerType(NavigationProperties.class);
+        Json.registerType(JavaAutopilotProperties.class);
+        Json.registerType(TestAutopilotProperties.class);
+        Json.registerType(RigidbodyPhysicsProperties.class);
+        Json.registerType(ActuatorProperties.class);
+        Json.registerType(BridgeProperties.class);
+        Json.registerType(CANProperties.class);
+        Json.registerType(ConstantBusProperties.class);
+        Json.registerType(SensorProperties.class);
+        Json.registerType(TestCompProperties.class);
+        Json.registerType(ComputerProperties.class);
+        Json.registerType(VCGProperties.class);
     }
 
     public static void main( String[] args )

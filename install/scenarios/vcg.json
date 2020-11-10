@@ -3,15 +3,9 @@
     "map_name": "aachen",
     "cars": [
         {
-            "name": "TestVehicle",
-            "start_coords": [
-                0,
-                0
-            ],
-            "end_coords": [
-                -63.83,
-                -171.96
-            ],
+            "name": "VCGTestVehicle",
+            "start_coords": [ 0, 0 ],
+            "end_coords": [ -63.83, -171.96 ],
             "body": {
                 "mass": 1642.0,
                 "length": 4.971,
@@ -54,26 +48,16 @@
                     "type": "actuator",
                     "name": "SteeringActuator",
                     "priority": {},
-                    "buses": [
-                        "DefaultBus"
-                    ],
+                    "buses": [ "DefaultBus" ],
                     "physical_value_name": "steering",
                     "change_rate": 60.0,
                     "sensor": {
                         "type": "sensor",
-                        "name": "UnnamedComponent",
+                        "name": "SteeringFeedbackSensor",
                         "priority": {},
-                        "buses": [
-                            "DefaultBus"
-                        ],
-                        "update_interval": [
-                            0,
-                            100000000
-                        ],
-                        "read_time": [
-                            0,
-                            1000000
-                        ],
+                        "buses": [ "DefaultBus" ],
+                        "update_interval": [ 0, 100000000 ],
+                        "read_time": [ 0, 1000000 ],
                         "send_only_changed": false
                     }
                 },
@@ -201,13 +185,16 @@
                     "rate": 0.0
                 },
                 {
-                    "type": "computer",
-                    "software_name": "cppautopilotzigzag",
-                    "emulator_type": "direct",
-                    "os": "windows",
-                    "time_model": {
-                        "type": "instant"
-                    }
+                    "type": "vcg",
+                    "name": "VCG",
+                    "communication": {
+                        "type": "tcp",
+                        "host": "::1",
+                        "port": 4567
+                    },
+                    "time": "measured",
+                    "cycle_duration": [0,100000000],
+                    "ref_id": 16384
                 }
             ]
         }

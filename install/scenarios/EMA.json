@@ -202,11 +202,19 @@
                 },
                 {
                     "type": "computer",
-                    "software_name": "cppautopilotzigzag",
-                    "emulator_type": "direct",
+                    "software_name": "BasicAutopilot",
+                    "emulator_type": "emu",
                     "os": "windows",
                     "time_model": {
-                        "type": "instant"
+                        "type": "models",
+                        "cpu_frequency": 4000000000,
+                        "memory_frequency": 2500000000,
+                        "caches": [
+                            {"type": "I", "level": 1, "size": 262144, "read_ticks": 4, "write_ticks": 4},
+                            {"type": "D", "level": 1, "size": 262144, "read_ticks": 4, "write_ticks": 4},
+                            {"type": "shared", "level": 2, "size": 2097152, "read_ticks": 6, "write_ticks": 6},
+                            {"type": "shared", "level": 3, "size": 12582912, "read_ticks": 40, "write_ticks": 40}
+                        ]
                     }
                 }
             ]

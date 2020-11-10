@@ -10,7 +10,6 @@ public class DefaultVis extends SimVis {
         setLayout(new BoxLayout(this, BoxLayout.Y_AXIS));
         setBorder(BorderFactory.createEmptyBorder(5, 5, 5, 5));
         add_text("Select one of the scenarios to start a simulation.");
-        add_text("Visualize the available maps. (Coming)");
         add_text("Watch completed simulations in the results. (Coming)");
         
         /* System.out.println("Creating OpenGL context.");

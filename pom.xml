@@ -15,9 +15,9 @@
 
     <properties>
         <!-- USE THESE TO SET THE VERSIONS OF THE DEPENDENCIES FOR ALL THE SUB-PROJECTS -->
-        <montisim.commons.version>2.0.5</montisim.commons.version>
-        <montisim.hardware_emulator.version>2.0.0</montisim.hardware_emulator.version>
-        <montisim.simulation.version>3.0.0</montisim.simulation.version>
+        <montisim.commons.version>2.0.6</montisim.commons.version>
+        <montisim.hardware_emulator.version>2.0.1</montisim.hardware_emulator.version>
+        <montisim.simulation.version>3.0.1</montisim.simulation.version>
 
 
         <project.build.sourceEncoding>UTF-8</project.build.sourceEncoding>

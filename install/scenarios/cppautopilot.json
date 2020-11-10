@@ -201,7 +201,7 @@
                     "rate": 0.0
                 },
                 {
-                    "type": "hardware_emulator",
+                    "type": "computer",
                     "software_name": "cppautopilotzigzag",
                     "emulator_type": "emu",
                     "os": "windows",
