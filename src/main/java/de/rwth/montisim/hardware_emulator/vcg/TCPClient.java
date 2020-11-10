@@ -163,7 +163,12 @@ public class TCPClient implements CommunicationInterface {
     private Packet getPacket() throws IOException {
         int id = din.readByte();
         int length = din.readShort();
-        byte[] data = din.readNBytes(length);
+        //byte[] data = din.readNBytes(length);
+        // Apparently readNBytes() is only in new versions => Emulate
+        byte[] data = new byte[length];
+        for (int i = 0; i < length; ++i) {
+            data[i] = din.readByte();
+        }
         //System.out.println("Received packet: id="+id + ", length="+length+", bytes="+new String(data));
         //System.out.println("Received packet: id="+id + ", length="+length);
         return new Packet(id, data);
