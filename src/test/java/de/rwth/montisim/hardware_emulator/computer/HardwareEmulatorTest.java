@@ -1,13 +1,13 @@
 /**
  * (c) https://github.com/MontiCore/monticore
  */
-package de.rwth.montisim.hardware_emulator;
+package de.rwth.montisim.hardware_emulator.computer;
 
 import java.util.logging.Logger;
 
 import org.junit.Test;
 
-import de.rwth.montisim.hardware_emulator.config.SoftwareSimulatorConfig;
+import de.rwth.montisim.hardware_emulator.CppBridge;
 
 public class HardwareEmulatorTest {
 

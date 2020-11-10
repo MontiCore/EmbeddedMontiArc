@@ -1,7 +1,7 @@
 /**
  * (c) https://github.com/MontiCore/monticore
  */
-package de.rwth.montisim.hardware_emulator;
+package de.rwth.montisim.hardware_emulator.computer;
 
 import java.io.IOException;
 import java.time.Duration;
@@ -19,6 +19,7 @@ import de.rwth.montisim.commons.utils.json.Json;
 import de.rwth.montisim.commons.utils.json.JsonTraverser;
 import de.rwth.montisim.commons.utils.json.JsonWriter;
 import de.rwth.montisim.commons.utils.json.SerializationException;
+import de.rwth.montisim.hardware_emulator.CppBridge;
 import de.rwth.montisim.simulation.eesimulator.components.EEComponent;
 import de.rwth.montisim.simulation.eesimulator.events.ExecuteEvent;
 import de.rwth.montisim.simulation.eesimulator.events.MessageReceiveEvent;

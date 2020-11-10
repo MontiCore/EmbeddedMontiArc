@@ -1,7 +1,7 @@
 /**
  * (c) https://github.com/MontiCore/monticore
  */
-package de.rwth.montisim.hardware_emulator;
+package de.rwth.montisim.hardware_emulator.computer;
 
 import java.time.Duration;
 import java.util.Vector;
@@ -16,17 +16,12 @@ import de.rwth.montisim.simulation.eesimulator.components.EEEventProcessor;
 
 @Typed(ComputerProperties.TYPE)
 public class ComputerProperties extends BusUserProperties {
-    public static final String TYPE = "hardware_emulator";
+    public static final String TYPE = "computer";
 
     static {
-        try {
-            Json.registerType(InstantTime.class);
-            Json.registerType(ConstantTime.class);
-            Json.registerType(HardwareTimeModel.class);
-        } catch (SerializationException e) {
-            e.printStackTrace();
-            System.exit(-1);
-        }
+        Json.registerType(InstantTime.class);
+        Json.registerType(ConstantTime.class);
+        Json.registerType(HardwareTimeModel.class);
     }
 
     public String software_name;

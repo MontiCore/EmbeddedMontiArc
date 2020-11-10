@@ -9,29 +9,19 @@ Autopilot autopilot;
 JsonWriter writer;
 
 EXPORT const char* DI__get_interface() {
-    // return "[\
-    // { \"name\": \"true_velocity\", \"type\": {\"type\": \"basic\", \"base_type\": \"double\"}, \"direction\": \"INPUT\", \"allows_multiple_inputs\": false, \"optional\": false},\
-    // { \"name\": \"true_position\", \"type\": {\"type\": \"basic\", \"base_type\": \"vec2\"}, \"direction\": \"INPUT\", \"allows_multiple_inputs\": false, \"optional\": false},\
-    // { \"name\": \"true_compass\", \"type\": {\"type\": \"basic\", \"base_type\": \"double\"}, \"direction\": \"INPUT\", \"allows_multiple_inputs\": false, \"optional\": false},\
-    // { \"name\": \"trajectory_x\", \"type\": {\"type\": \"vector\", \"base_type\": \"double\", \"max_size\": \"128\"}, \"direction\": \"INPUT\", \"allows_multiple_inputs\": false, \"optional\": false},\
-    // { \"name\": \"trajectory_y\", \"type\": {\"type\": \"vector\", \"base_type\": \"double\", \"max_size\": \"128\"}, \"direction\": \"INPUT\", \"allows_multiple_inputs\": false, \"optional\": false},\
-    // { \"name\": \"set_steering\", \"type\": {\"type\": \"basic\", \"base_type\": \"double\"}, \"direction\": \"OUTPUT\", \"allows_multiple_inputs\": false, \"optional\": false},\
-    // { \"name\": \"set_gas\", \"type\": {\"type\": \"basic\", \"base_type\": \"double\"}, \"direction\": \"OUTPUT\", \"allows_multiple_inputs\": false, \"optional\": false},\
-    // { \"name\": \"set_braking\", \"type\": {\"type\": \"basic\", \"base_type\": \"double\"}, \"direction\": \"OUTPUT\", \"allows_multiple_inputs\": false, \"optional\": false}\
-    // ]";
     return R"(
     {
         "version": "1.0.0",
         "name": "cppautopilot",
         "ports": [
-            { "name": "true_velocity", "type": {"type": "basic",  "base_type": "double" }, "direction": "INPUT", "allows_multiple_inputs": false, "optional": false },
+            { "name": "true_velocity", "type": {"type": "basic",  "base_type": "Q" }, "direction": "INPUT", "allows_multiple_inputs": false, "optional": false },
             { "name": "true_position", "type": {"type": "basic",  "base_type": "vec2"   }, "direction": "INPUT", "allows_multiple_inputs": false, "optional": false },
-            { "name": "true_compass",  "type": {"type": "basic",  "base_type": "double" }, "direction": "INPUT", "allows_multiple_inputs": false, "optional": false },
-            { "name": "trajectory_x",  "type": {"type": "vector", "base_type": {"type": "basic",  "base_type": "double" }, "max_size": 128 }, "direction": "INPUT", "allows_multiple_inputs": false, "optional": false },
-            { "name": "trajectory_y",  "type": {"type": "vector", "base_type": {"type": "basic",  "base_type": "double" }, "max_size": 128 }, "direction": "INPUT", "allows_multiple_inputs": false, "optional": false },
-            { "name": "set_steering",  "type": {"type": "basic",  "base_type": "double" }, "direction": "OUTPUT", "allows_multiple_inputs": false, "optional": false },
-            { "name": "set_gas",       "type": {"type": "basic",  "base_type": "double" }, "direction": "OUTPUT", "allows_multiple_inputs": false, "optional": false },
-            { "name": "set_braking",   "type": {"type": "basic",  "base_type": "double" }, "direction": "OUTPUT", "allows_multiple_inputs": false, "optional": false }
+            { "name": "true_compass",  "type": {"type": "basic",  "base_type": "Q" }, "direction": "INPUT", "allows_multiple_inputs": false, "optional": false },
+            { "name": "trajectory_x",  "type": {"type": "vector", "base_type": {"type": "basic",  "base_type": "Q" }, "size": 10 }, "direction": "INPUT", "allows_multiple_inputs": false, "optional": false },
+            { "name": "trajectory_y",  "type": {"type": "vector", "base_type": {"type": "basic",  "base_type": "Q" }, "size": 10 }, "direction": "INPUT", "allows_multiple_inputs": false, "optional": false },
+            { "name": "set_steering",  "type": {"type": "basic",  "base_type": "Q" }, "direction": "OUTPUT", "allows_multiple_inputs": false, "optional": false },
+            { "name": "set_gas",       "type": {"type": "basic",  "base_type": "Q" }, "direction": "OUTPUT", "allows_multiple_inputs": false, "optional": false },
+            { "name": "set_braking",   "type": {"type": "basic",  "base_type": "Q" }, "direction": "OUTPUT", "allows_multiple_inputs": false, "optional": false }
         ]
     })";
 }

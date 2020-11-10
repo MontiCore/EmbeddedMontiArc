@@ -8,6 +8,8 @@ import java.util.logging.Logger;
 import de.rwth.montisim.commons.utils.LibraryService;
 import de.rwth.montisim.commons.utils.LibraryService.LibraryException;
 
+import de.rwth.montisim.hardware_emulator.computer.HardwareEmulatorException;
+
 /// Contains the STATIC functions to interact with the native C++ library.
 public class CppBridge {
     static String lib_path = "";
@@ -39,7 +41,7 @@ public class CppBridge {
     static public void init(String config) throws Exception{
         String version = getVersion();
         if (!HardwareEmulatorVersion.version.equals(version)) 
-            throw new Exception("Wrong native HardwareEmulator library version: "+version+", expected: "+HardwareEmulatorVersion.version);
+            throw new Exception("Wrong native HardwareEmulator library version: "+version+", expected: "+HardwareEmulatorVersion.version+". Make sure to match versions in 'software_simulator_manager.h' and recompile the C++ project.");
         initManager(config);
         loaded = true;
     }
