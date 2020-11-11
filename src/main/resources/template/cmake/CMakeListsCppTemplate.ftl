@@ -32,8 +32,8 @@ target_include_directories(${viewModel.compName} PUBLIC ${r"${CMAKE_CURRENT_SOUR
 target_link_libraries(${viewModel.compName} PUBLIC ${r"${LIBS}"})
 set_target_properties(${viewModel.compName} PROPERTIES LINKER_LANGUAGE CXX)
 
-# export cmake project
-export(TARGETS ${viewModel.compName} FILE ${viewModel.compName}.cmake)
+# export cmake project TODO handle Armadillo Import
+# export(TARGETS ${viewModel.compName} FILE ${viewModel.compName}.cmake)
 
 # additional commands end
 <#list viewModel.cmakeCommandListEnd as cmd>

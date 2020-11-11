@@ -52,6 +52,13 @@ public final class GeneratorCppCli {
             .required(true)
             .build();
 
+    public static final Option OPTION_OUTPUT_NAME = Option.builder("n")
+            .longOpt("output-name")
+            .desc("Name for the dynamic-interface or server adapter.")
+            .hasArg(true)
+            .required(false)
+            .build();
+
     public static final Option OPTION_FLAG_TESTS = Option.builder("t")
             .longOpt("flag-generate-tests")
             .desc("optional flag indicating if tests generation is needed")
@@ -62,6 +69,13 @@ public final class GeneratorCppCli {
     public static final Option OPTION_FLAG_ARMADILLO = Option.builder("a")
             .longOpt("flag-use-armadillo-backend")
             .desc("optional flag indicating if Armadillo library should be used as backend")
+            .hasArg(false)
+            .required(false)
+            .build();
+
+    public static final Option OPTION_IMPORT_ARMADILLO = Option.builder()
+            .longOpt("armadillo-import")
+            .desc("If enabled, the project will include Armadillo for compilation based on the ARMADILLO_PATH environment variable")
             .hasArg(false)
             .required(false)
             .build();
@@ -88,9 +102,22 @@ public final class GeneratorCppCli {
             .required(false)
             .build();
 
-    public static final Option OPTION_FLAG_AUTOPILOT_ADAPTER = Option.builder()
-            .longOpt("flag-generate-autopilot-adapter")
-            .desc("optional flag indicating if autopilot adapter should be generated")
+
+    public static final Option OPTION_FLAG_DYNAMIC_INTERFACE = Option.builder("di")
+            .longOpt("dyn-interface")
+            .desc("Enable autopilot adapter generation")
+            .hasArg(false)
+            .required(false)
+            .build();
+    public static final Option OPTION_FLAG_GEN_TCP_SERVER = Option.builder("tcp")
+            .longOpt("tcp-adapter")
+            .desc("Generate the TCP-Server adapter for the model")
+            .hasArg(false)
+            .required(false)
+            .build();
+    public static final Option OPTION_FLAG_GEN_DDC_ADAPTER = Option.builder("ddc")
+            .longOpt("ddc-adapter")
+            .desc("Generate the DDC adapter for the model")
             .hasArg(false)
             .required(false)
             .build();
@@ -139,7 +166,11 @@ public final class GeneratorCppCli {
         options.addOption(OPTION_OUTPUT_PATH);
         options.addOption(OPTION_FLAG_TESTS);
         options.addOption(OPTION_FLAG_ARMADILLO);
-        options.addOption(OPTION_FLAG_AUTOPILOT_ADAPTER);
+        options.addOption(OPTION_IMPORT_ARMADILLO);
+        options.addOption(OPTION_FLAG_DYNAMIC_INTERFACE);
+        options.addOption(OPTION_OUTPUT_NAME);
+        options.addOption(OPTION_FLAG_GEN_TCP_SERVER);
+        options.addOption(OPTION_FLAG_GEN_DDC_ADAPTER);
         options.addOption(OPTION_FLAG_CHECK_MODEL_DIR);
         options.addOption(OPTION_FLAG_SERVER_WRAPPER);
         options.addOption(OPTION_FLAG_ALGEBRAIC);
@@ -175,12 +206,16 @@ public final class GeneratorCppCli {
         g.setModelsDirPath(modelsDirPath);
         g.setGenerationTargetPath(outputPath);
         g.setGenerateTests(cliArgs.hasOption(OPTION_FLAG_TESTS.getOpt()));
+        g.setImportArmadillo(cliArgs.hasOption(OPTION_IMPORT_ARMADILLO.getLongOpt()));
         if (cliArgs.hasOption(OPTION_FLAG_ARMADILLO.getOpt())) {
             g.useArmadilloBackend();
         }
         g.setCheckModelDir(cliArgs.hasOption(OPTION_FLAG_CHECK_MODEL_DIR.getLongOpt()));
         g.setGenerateServerWrapper(cliArgs.hasOption(OPTION_FLAG_SERVER_WRAPPER.getLongOpt()));
-        g.setGenerateAutopilotAdapter(cliArgs.hasOption(OPTION_FLAG_AUTOPILOT_ADAPTER.getLongOpt()));
+        g.setGenerateDynamicInterface(cliArgs.hasOption(OPTION_FLAG_DYNAMIC_INTERFACE.getLongOpt()));
+        g.setGenerateServerAdapter(cliArgs.hasOption(OPTION_FLAG_GEN_TCP_SERVER.getLongOpt()));
+        g.setGenerateDDCAdapter(cliArgs.hasOption(OPTION_FLAG_GEN_DDC_ADAPTER.getLongOpt()));
+        g.setOutputName(cliArgs.getOptionValue(OPTION_OUTPUT_NAME.getOpt()));
 
         g.setUseAlgebraicOptimizations(cliArgs.hasOption(OPTION_FLAG_ALGEBRAIC.getLongOpt()));
         g.setUseThreadingOptimization(cliArgs.hasOption(OPTION_FLAG_THREADING.getLongOpt()));
