@@ -530,7 +530,7 @@ namespace FS {
         char actualpath[PATH_MAX];
         if (realpath(path.c_str(), actualpath) != NULL)
             return Directory(actualpath);
-        throw_lasterr("realpath()");
+        throw_lasterr("realpath() on "+path);
     }
 
     bool Directory::exists() const
