@@ -8,8 +8,12 @@ if "%1"=="--help" set Help=1
 if "%1"=="-h" set Help=1
 if "%1"=="/?" set Help=1
 if defined Help (
-    echo "Usage: build_emulator.bat [Config (Debug/Release, defaults to Release)] [Generator (defaults to cmake default generator)]"
-    exit
+    echo Usage: 
+    echo    build_emulator.bat [config] [generator]
+    echo Where:
+    echo    'config' is Debug or Release. Defaults to "Release"
+    echo    'generator' is the cmake generator. Defaults to the default cmake generator.
+    exit \B 0
 )
 
 @REM -------------------------------------------------------------------------------------------------------------

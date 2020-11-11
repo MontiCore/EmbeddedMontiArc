@@ -5,6 +5,20 @@
     "version": "0.2.0",
     "configurations": [
         {
+            "type": "java",
+            "name": "CodeLens (Launch) - VCG",
+            "request": "launch",
+            "mainClass": "de.rwth.montisim.hardware_emulator.vcg.VCG",
+            "projectName": "hardware_emulator"
+        },
+        {
+            "type": "java",
+            "name": "CodeLens (Launch) - TCPClient",
+            "request": "launch",
+            "mainClass": "de.rwth.montisim.hardware_emulator.vcg.TCPClient",
+            "projectName": "hardware_emulator"
+        },
+        {
             "name": "(Unix) HardwareEmulatorTest Debug",
             "type": "cppdbg",
             "request": "launch",
