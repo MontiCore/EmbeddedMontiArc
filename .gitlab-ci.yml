@@ -18,4 +18,5 @@ TestLifeongLanguageLearningPrediction:
   - chmod +x build.sh
   - ./build.sh
   - RES=$(./build/src/cpp/LifelongLanguageLearning resources/prediction_data/prediction_samples.txt resources/prediction_data/prediction_sequences.txt resources/prediction_data/prediction_lengths.txt)
+  - "if [[ $RES != *\"Prediction for sample 0: 0\"* ]]; then echo \"Wrong result:\" $RES; exit 1; fi;"
   
