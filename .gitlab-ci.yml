@@ -5,7 +5,7 @@ stages:
 
 TestLifeongLanguageLearningTraining:
   stage: linux
-  image: registry.git.rwth-aachen.de/monticore/embeddedmontiarc/generators/emadl2cpp/dockerimages/mxnet150:v0.0.5
+  image: registry.git.rwth-aachen.de/monticore/embeddedmontiarc/generators/emadl2cpp/dockerimages/mxnet170:v0.0.1
   script:
   - cd lifelong-language-learning
   - mvn streamtest:streamtest-build -s settings.xml
