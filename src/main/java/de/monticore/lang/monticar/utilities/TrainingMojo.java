@@ -30,6 +30,8 @@ public class TrainingMojo extends BaseMojo {
             element(name("backend"), this.getTrainingConfig().getBackend().name()),
             element(name("rootModel"), this.getTrainingConfig().getModelToTrain()),
             element(name("pathToPython"), this.getTrainingConfig().getPathToPython().getAbsolutePath()),
+            element(name("pathMain"), this.getTrainingConfig().getPathToProject().getAbsolutePath()),
+            element(name("pathTest"), this.getTrainingConfig().getPathToTest().getAbsolutePath()),
             element(name("trainingNeeded"), "true")
         ),
         executionEnvironment(

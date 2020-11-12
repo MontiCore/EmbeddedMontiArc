@@ -13,6 +13,10 @@ public class TrainingConfiguration {
 
   private File pathToPython;
 
+  private File pathToProject;
+
+  private File pathToTest;
+
   private String modelToTrain;
 
   public GeneratorEnum getGenerator() {
@@ -33,6 +37,22 @@ public class TrainingConfiguration {
     }
 
     return pathToPython;
+  }
+
+  public File getPathToProject() {
+    if (pathToProject == null) {
+      pathToProject = new File("src/main/emadl");
+    }
+
+    return pathToProject;
+  }
+
+  public File getPathToTest() {
+    if (pathToTest == null) {
+      pathToTest = new File("src/main/emadl");
+    }
+
+    return pathToTest;
   }
 
   public String getModelToTrain() {
