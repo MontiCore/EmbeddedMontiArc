@@ -1,0 +1,8 @@
+/home/julian/Documents/MontiCore/lifelonglanguagelearning/lifelong-language-learning/build/CMakeFiles/rebuild_cache.dir
+/home/julian/Documents/MontiCore/lifelonglanguagelearning/lifelong-language-learning/build/CMakeFiles/edit_cache.dir
+/home/julian/Documents/MontiCore/lifelonglanguagelearning/lifelong-language-learning/build/src/main/ema/cpp/CMakeFiles/rebuild_cache.dir
+/home/julian/Documents/MontiCore/lifelonglanguagelearning/lifelong-language-learning/build/src/main/ema/cpp/CMakeFiles/edit_cache.dir
+/home/julian/Documents/MontiCore/lifelonglanguagelearning/lifelong-language-learning/build/src/main/ema/cpp/CMakeFiles/LifelongLanguageLearning.dir
+/home/julian/Documents/MontiCore/lifelonglanguagelearning/lifelong-language-learning/build/target/tmp/CMakeFiles/rebuild_cache.dir
+/home/julian/Documents/MontiCore/lifelonglanguagelearning/lifelong-language-learning/build/target/tmp/CMakeFiles/edit_cache.dir
+/home/julian/Documents/MontiCore/lifelonglanguagelearning/lifelong-language-learning/build/target/tmp/CMakeFiles/lifelongLanguageLearning_connector.dir

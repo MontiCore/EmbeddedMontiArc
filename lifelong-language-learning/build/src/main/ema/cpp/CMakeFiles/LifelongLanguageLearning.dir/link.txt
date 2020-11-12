@@ -1,0 +1,1 @@
+/usr/bin/c++     CMakeFiles/LifelongLanguageLearning.dir/LifelongLanguageLearning.cpp.o  -o LifelongLanguageLearning   -L/home/julian/.local/lib/python3.5/site-packages/mxnet  -Wl,-rpath,/home/julian/.local/lib/python3.5/site-packages/mxnet -lmxnet ../../../../target/tmp/liblifelongLanguageLearning_connector.a -lblas -lopenblas /usr/lib/x86_64-linux-gnu/libarmadillo.so -lmxnet 
