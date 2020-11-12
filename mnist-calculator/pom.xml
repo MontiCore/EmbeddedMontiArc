@@ -11,7 +11,7 @@
     <properties>
 
         <!-- .. SE-Libraries .................................................. -->
-        <streamtest.version>0.0.11-SNAPSHOT</streamtest.version>
+        <streamtest.version>0.0.19</streamtest.version>
 
  
         <!-- .. Misc .......................................................... -->
@@ -26,7 +26,7 @@
         <dependency>
             <groupId>de.monticore.lang.monticar.utilities</groupId>
             <artifactId>maven-streamtest</artifactId>
-            <version>0.0.16</version>
+            <version>0.0.19</version>
         </dependency>
 
         <dependency>
@@ -87,7 +87,7 @@
             <plugin>
                 <groupId>de.monticore.lang.monticar.utilities</groupId>
                 <artifactId>maven-streamtest</artifactId>
-                <version>0.0.17</version>
+                <version>0.0.19</version>
                 <configuration>
                     <pathMain>./src/main/ema/emadl/models</pathMain>
                     <pathTest>./src/main/ema/emadl/models</pathTest>
