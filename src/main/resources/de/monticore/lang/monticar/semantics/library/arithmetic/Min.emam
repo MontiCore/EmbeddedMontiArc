@@ -1,0 +1,16 @@
+/* (c) https://github.com/MontiCore/monticore */
+package de.monticore.lang.monticar.semantics.library.arithmetic;
+
+component Min<T,N1 n=2> {
+	port 
+		in T in1[n],
+		out T out1;
+
+	implementation Math{
+	    T minVal=in1(1);
+	    for i=1:n
+	        minVal=min(minVal,in1(i));
+	    end
+	    out1=minVal;
+	}
+}

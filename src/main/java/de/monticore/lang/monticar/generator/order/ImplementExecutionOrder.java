@@ -1,7 +1,6 @@
 /* (c) https://github.com/MontiCore/monticore */
 package de.monticore.lang.monticar.generator.order;
 
-import de.ma2cfg.helper.Names;
 import de.monticore.lang.embeddedmontiarc.embeddedmontiarc._symboltable.instanceStructure.EMAComponentInstanceSymbol;
 import de.monticore.lang.embeddedmontiarc.embeddedmontiarc._symboltable.instanceStructure.EMAConnectorInstanceSymbol;
 import de.monticore.lang.embeddedmontiarc.embeddedmontiarc._symboltable.instanceStructure.EMAPortInstanceSymbol;
@@ -11,6 +10,7 @@ import de.monticore.lang.monticar.generator.order.nfp.TagExecutionOrderTagSchema
 import de.monticore.lang.tagging._symboltable.TaggingResolver;
 import de.se_rwth.commons.Splitters;
 import de.se_rwth.commons.logging.Log;
+import org.apache.commons.lang3.StringUtils;
 
 import java.util.*;
 import java.util.stream.Collectors;
@@ -372,7 +372,7 @@ public class ImplementExecutionOrder {
         }
         if (parts.hasNext()) {
             instancePort = Optional.of(parts.next());
-            instance = Optional.of(Names.FirstLowerCase(instance.get()));
+            instance = Optional.of(StringUtils.uncapitalize(instance.get()));
 
             EMAComponentInstanceSymbol inst2 = inst.getSubComponent(instance.get()).get();
             port = inst2.getSpannedScope().<EMAPortInstanceSymbol>resolve(instancePort.get(), EMAPortInstanceSymbol.KIND);
@@ -414,7 +414,7 @@ public class ImplementExecutionOrder {
         }
         if (parts.hasNext()) {
             instancePort = Optional.of(parts.next());
-            instance = Optional.of(Names.FirstLowerCase(instance.get()));
+            instance = Optional.of(StringUtils.uncapitalize(instance.get()));
             /*Log.info(instance.get().toString(),"before error");
             for(EMAComponentInstanceSymbol symbol:inst.getSubComponents()){
                 Log.info(symbol.toString(),"found:");

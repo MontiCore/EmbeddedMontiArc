@@ -94,6 +94,12 @@ public class MathFunctionFixer extends BaseMathFunctionFixerHandler {
             if (mathValueExpressionSymbol.isNumberExpression()) {
                 notHandled = false;
             } else if (((MathValueExpressionSymbol) mathExpressionSymbol).isNameExpression()) {
+                if (ExecutionStepperHelper.getTimeVariableName()
+                        .equals(((MathNameExpressionSymbol) mathExpressionSymbol).getNameToResolveValue())) {
+                    ExecutionStepperHelper.setUsed();
+                    ((MathNameExpressionSymbol) mathExpressionSymbol).setNameToResolveValue("getCurrentTime()");
+                    bluePrintCPP.addAdditionalIncludeString(ExecutionStepperHelper.fileName);
+                }
                 notHandled = false;
             } else if (((MathValueExpressionSymbol) mathExpressionSymbol).isBooleanExpression()) {
                 notHandled = false;

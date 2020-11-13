@@ -116,6 +116,13 @@ public final class GeneratorCppCli {
             .required(false)
             .build();
 
+    public static final Option OPTION_DELTA_T = Option.builder("dt")
+            .longOpt("time-step")
+            .desc("optional parameter to set the time step duration as double")
+            .hasArg(true)
+            .required(false)
+            .build();
+
     private GeneratorCppCli() {
     }
 
@@ -146,6 +153,7 @@ public final class GeneratorCppCli {
         options.addOption(OPTION_FLAG_THREADING);
         options.addOption(OPTION_FLAG_EXEC_LOGGING);
         options.addOption(OPTION_FLAG_CMAKE);
+        options.addOption(OPTION_DELTA_T);
         return options;
     }
 
@@ -188,6 +196,11 @@ public final class GeneratorCppCli {
         g.setGenerateCMake(cliArgs.hasOption(OPTION_FLAG_CMAKE.getLongOpt()));
 
         g.setGenerateCMake(cliArgs.hasOption(OPTION_FLAG_CMAKE.getLongOpt()));
+
+        if (cliArgs.hasOption(OPTION_DELTA_T.getOpt()))
+            g.setDeltaT(cliArgs.getOptionValue(OPTION_DELTA_T.getOpt()));
+        if (cliArgs.hasOption(OPTION_DELTA_T.getLongOpt()))
+            g.setDeltaT(cliArgs.getOptionValue(OPTION_DELTA_T.getLongOpt()));
 
         try {
             if (componentSymbol != null) {

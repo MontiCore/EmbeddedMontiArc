@@ -1,10 +1,10 @@
 /* (c) https://github.com/MontiCore/monticore */
 package de.monticore.lang.monticar.generator.cpp;
 
-import de.ma2cfg.helper.Names;
 import de.monticore.lang.embeddedmontiarc.embeddedmontiarc.ComponentScanner;
 import de.monticore.lang.embeddedmontiarc.embeddedmontiarc._symboltable.instanceStructure.EMAComponentInstanceSymbol;
 import de.monticore.lang.embeddedmontiarc.embeddedmontiarc._symboltable.instanceStructure.EMAPortInstanceSymbol;
+import de.monticore.lang.embeddedmontiarc.embeddedmontiarcmath._symboltable.math.symbols.EMAMEquationSymbol;
 import de.monticore.lang.embeddedmontiarcdynamic.embeddedmontiarcdynamic._symboltable.instanceStructure.EMADynamicComponentInstanceSymbol;
 import de.monticore.lang.math._symboltable.MathStatementsSymbol;
 import de.monticore.lang.math._symboltable.expression.MathExpressionSymbol;
@@ -14,15 +14,21 @@ import de.monticore.lang.monticar.generator.cmake.CMakeFindModule;
 import de.monticore.lang.monticar.generator.cpp.Dynamics.DynamicHelper;
 import de.monticore.lang.monticar.generator.cpp.Dynamics.EventPortValueCheck;
 import de.monticore.lang.monticar.generator.cpp.converter.*;
+import de.monticore.lang.monticar.generator.cpp.instruction.ConnectInstructionCPP;
 import de.monticore.lang.monticar.generator.cpp.mathopt.MathOptSolverConfig;
 import de.monticore.lang.monticar.generator.cpp.template.AllTemplates;
 import de.monticore.lang.monticar.generator.cpp.viewmodel.AutopilotAdapterDataModel;
 import de.monticore.lang.monticar.generator.cpp.viewmodel.ServerWrapperViewModel;
 import de.monticore.lang.monticar.generator.testing.StreamTestGenerator;
+import de.monticore.lang.monticar.semantics.helper.NameHelper;
+import de.monticore.lang.monticar.semantics.loops.detection.EMAEquationSystem;
+import de.monticore.lang.monticar.semantics.loops.detection.LoopSymbolInstance;
+import de.monticore.lang.monticar.semantics.resolve.SymbolTableHelper;
 import de.monticore.lang.monticar.ts.MCTypeSymbol;
 import de.monticore.lang.tagging._symboltable.TaggingResolver;
 import de.monticore.symboltable.Scope;
 import de.se_rwth.commons.logging.Log;
+import org.apache.commons.lang3.StringUtils;
 
 import java.io.BufferedWriter;
 import java.io.File;
@@ -32,6 +38,7 @@ import java.nio.file.Path;
 import java.util.*;
 
 /**
+ *
  */
 public class GeneratorCPP implements EMAMGenerator {
     public static GeneratorCPP currentInstance;
@@ -53,11 +60,11 @@ public class GeneratorCPP implements EMAMGenerator {
     protected boolean checkModelDir = false;
     protected boolean streamTestGenerationMode = false;
     public boolean isGenerateCV = false;
+    protected double dt = 1;
 
     // CMake
     private boolean generateCMake = false;
     private CMakeConfig cMakeConfig;
-
 
 
     //MathOpt
@@ -168,6 +175,53 @@ public class GeneratorCPP implements EMAMGenerator {
 
         if (bluePrintCPP != null) {
             bluePrints.add(bluePrintCPP);
+
+            // connect information to eqs
+            if (componentSymbol instanceof LoopSymbolInstance) {
+                EMAEquationSystem equationSystem = ((LoopSymbolInstance) componentSymbol).getEquationSystem();
+                String eqsName = equationSystem.getName();
+                bluePrintCPP.addAdditionalIncludeString(eqsName);
+                Optional<Method> execute = bluePrintCPP.getMethod("execute");
+                if (execute.isPresent()) {
+                    for (EMAPortInstanceSymbol inport : equationSystem.getInports()) {
+                        Optional<EMAPortInstanceSymbol> originalSourcePort  = equationSystem.getAtomicSourceOf(inport);
+                        Optional<EMAPortInstanceSymbol> currentPort = componentSymbol.getIncomingPortInstances().stream()
+                                .filter(i -> SymbolTableHelper.getAtomicSourceOf(i).equals(originalSourcePort))
+                                .findFirst();
+                        if (currentPort.isPresent()) {
+                            String sourceName = currentPort.get().getName();
+                            String targetName =  String.join("::", eqsName,
+                                    NameHelper.replaceWithUnderScore(NameHelper.calculateFullQualifiedNameOf(inport)));
+                            Variable v1 = PortConverter.convertPortSymbolToVariable(currentPort.get(), sourceName, bluePrintCPP);
+                            Variable v2 = PortConverter.convertPortSymbolToVariable(inport, targetName, bluePrintCPP);
+                            execute.get().addInstruction(new ConnectInstructionCPP(v2, v1));
+                        } else Log.error("Missing information for equation system TODO");
+                    }
+                    execute.get().addInstruction(new Instruction() {
+                        @Override
+                        public String getTargetLanguageInstruction() {
+                            return String.join("::", eqsName, "execute();\n");
+                        }
+                        @Override
+                        public boolean isConnectInstruction() {
+                            return false;
+                        }
+                    });
+                    for (EMAPortInstanceSymbol outport : componentSymbol.getOutgoingPortInstances()) {
+                        Optional<EMAPortInstanceSymbol> eqsVar = equationSystem.getOutports().stream()
+                                .filter(p -> p.getFullName().equals(outport.getFullName()))
+                                .findFirst();
+                        if (eqsVar.isPresent()) {
+                            String sourceName = String.join("::", eqsName,
+                                    NameHelper.replaceWithUnderScore(NameHelper.calculateFullQualifiedNameOf(eqsVar.get())));
+                            String targetName = outport.getName();
+                            Variable v1 = PortConverter.convertPortSymbolToVariable(eqsVar.get(), sourceName, bluePrintCPP);
+                            Variable v2 = PortConverter.convertPortSymbolToVariable(outport, targetName, bluePrintCPP);
+                            execute.get().addInstruction(new ConnectInstructionCPP(v2, v1));
+                        } else Log.error("Could not find corresponding port");
+                    }
+                }
+            }
         }
         String result;
         if (!streamTestGenerationMode)
@@ -178,6 +232,8 @@ public class GeneratorCPP implements EMAMGenerator {
     }
 
     public static List<FileContent> currentFileContentList = null;
+
+    private static Set<EMAMEquationSymbol> equationSystemsAlreadyBuild = new HashSet<>();
 
     @Override
     public List<FileContent> generateStrings(TaggingResolver taggingResolver, EMAComponentInstanceSymbol componentInstanceSymbol) {
@@ -193,7 +249,7 @@ public class GeneratorCPP implements EMAMGenerator {
             fileContents.add(new FileContent(generateString(taggingResolver, componentInstanceSymbol), componentInstanceSymbol));
         else
             fileContents.add(new FileContent(generateString(taggingResolver, componentInstanceSymbol),
-                    componentInstanceSymbol.getPackageName().replaceAll("\\.", "\\/") + "/" + Names.FirstUpperCase(componentInstanceSymbol.getName()) + "Test" + testNamePostFix + ".stream"));
+                    componentInstanceSymbol.getPackageName().replaceAll("\\.", "\\/") + "/" + StringUtils.capitalize(componentInstanceSymbol.getName()) + "Test" + testNamePostFix + ".stream"));
         String lastNameWithoutArrayPart = "";
         if (!streamTestGenerationMode) {
             for (EMAComponentInstanceSymbol instanceSymbol : componentInstanceSymbol.getSubComponents()) {
@@ -220,7 +276,7 @@ public class GeneratorCPP implements EMAMGenerator {
                 }
             }
             if (shouldGenerateMainClass()) {
-                //fileContents.add(getMainClassFileContent(componentInstanceSymbol, fileContents.get(0)));
+                fileContents.add(getMainClassFileContent(componentInstanceSymbol, fileContents.get(0)));
             } else if (shouldGenerateSimulatorInterface()) {
                 fileContents.addAll(SimulatorIntegrationHelper.getSimulatorIntegrationHelperFileContent());
             }
@@ -230,20 +286,27 @@ public class GeneratorCPP implements EMAMGenerator {
         if (MathConverter.curBackend.getBackendName().equals("ArmadilloBackend"))
             fileContents.add(ArmadilloHelper.getArmadilloHelperFileContent(isGenerateTests));
 
-        if(componentInstanceSymbol instanceof EMADynamicComponentInstanceSymbol){
+        if (componentInstanceSymbol instanceof EMADynamicComponentInstanceSymbol) {
             //TODO: add Events Value Helper
-            if(!((EMADynamicComponentInstanceSymbol) componentInstanceSymbol).getEventHandlers().isEmpty())
+            if (!((EMADynamicComponentInstanceSymbol) componentInstanceSymbol).getEventHandlers().isEmpty())
                 fileContents.add(EventPortValueCheck.getEventPortValueCheckFileContent());
 
-            if(((EMADynamicComponentInstanceSymbol)componentInstanceSymbol).isDynamic()){
+            if (((EMADynamicComponentInstanceSymbol) componentInstanceSymbol).isDynamic()) {
                 fileContents.add(DynamicHelper.getDynamicHelperFileContent());
             }
         }
 
         if (shouldGenerateMainClass()) {
-            //fileContents.add(getMainClassFileContent(componentInstanceSymbol, fileContents.get(0)));
+            fileContents.add(getMainClassFileContent(componentInstanceSymbol, fileContents.get(0)));
         } else if (shouldGenerateSimulatorInterface()) {
             fileContents.addAll(SimulatorIntegrationHelper.getSimulatorIntegrationHelperFileContent());
+        }
+
+
+        if (componentInstanceSymbol instanceof LoopSymbolInstance) {
+            if (!equationSystemsAlreadyBuild.contains(((LoopSymbolInstance) componentInstanceSymbol).getEquationSystem())) {
+                // Generate Equation System components and Helper maybe
+            }
         }
 
         return fileContents;
@@ -256,7 +319,7 @@ public class GeneratorCPP implements EMAMGenerator {
             ComponentScanner componentScanner = new ComponentScanner(getModelsDirPath(), taggingResolver, "emam");
             Set<String> availableComponents = componentScanner.scan();
             for (String componentFullName : availableComponents) {
-                componentFullName = Names.getExpandedComponentInstanceSymbolName(componentFullName);
+                componentFullName = NameHelper.toInstanceFullQualifiedName(componentFullName);
                 if (taggingResolver.resolve(componentFullName,
                         EMAComponentInstanceSymbol.KIND).isPresent()) {
                     EMAComponentInstanceSymbol componentInstanceSymbol = (EMAComponentInstanceSymbol) taggingResolver.resolve(componentFullName,
@@ -280,6 +343,11 @@ public class GeneratorCPP implements EMAMGenerator {
         if (getGenerationTargetPath().charAt(getGenerationTargetPath().length() - 1) != '/') {
             setGenerationTargetPath(getGenerationTargetPath() + "/");
         }
+        // Add advanceTime
+        if (ExecutionStepperHelper.isUsed()) {
+            addAdvanceTimeToExecute(fileContents, componentSymbol);
+            fileContents.add(ExecutionStepperHelper.getTimeHelperFileContent(dt));
+        }
         List<File> files = saveFilesToDisk(fileContents);
         //cmake
         if (generateCMake)
@@ -288,9 +356,29 @@ public class GeneratorCPP implements EMAMGenerator {
         return files;
     }
 
+    public void addAdvanceTimeToExecute(List<FileContent> fileContents, EMAComponentInstanceSymbol componentSymbol) {
+        Optional<FileContent> main = fileContents.stream().filter(fileContent -> fileContent.getFileName().equals(
+                GeneralHelperMethods.getTargetLanguageComponentName(
+                        componentSymbol.getFullName()) + ".h")).findFirst();
+        if (!main.get().getFileContent().contains("advanceTime();")) {
+            String newFileContent = main.get().getFileContent()
+                    .replace(
+                            "void execute()\n" +
+                                    "{\n",
+                            "void execute()\n" +
+                                    "{\n" +
+                                    "advanceTime();\n");
+            if (!newFileContent.contains("#include \"ExecutionStepperHelper.h\""))
+                newFileContent = newFileContent.replace(
+                        "#endif\n", "#endif\n#include \"ExecutionStepperHelper.h\"\n"
+                );
+            main.get().setFileContent(newFileContent);
+        }
+    }
+
     protected List<File> generateCMakeFiles(EMAComponentInstanceSymbol componentInstanceSymbol) {
         List<File> files = new ArrayList<>();
-        if(componentInstanceSymbol != null) {
+        if (componentInstanceSymbol != null) {
             cMakeConfig.getCMakeListsViewModel().setCompName(componentInstanceSymbol.getFullName().replace('.', '_').replace('[', '_').replace(']', '_'));
         }
         List<FileContent> contents = cMakeConfig.generateCMakeFiles();
@@ -474,10 +562,10 @@ public class GeneratorCPP implements EMAMGenerator {
         dm.setMainModelName(GeneralHelperMethods.getTargetLanguageComponentName(componentSymbol.getFullName()));
         dm.setInputCount(componentSymbol.getIncomingPortInstances().size());
         dm.setOutputCount(componentSymbol.getOutgoingPortInstances().size());
-        for ( EMAPortInstanceSymbol port : componentSymbol.getIncomingPortInstances()){
+        for (EMAPortInstanceSymbol port : componentSymbol.getIncomingPortInstances()) {
             dm.addInput(port.getName(), port.getTypeReference().getName());
         }
-        for ( EMAPortInstanceSymbol port : componentSymbol.getOutgoingPortInstances()){
+        for (EMAPortInstanceSymbol port : componentSymbol.getOutgoingPortInstances()) {
             dm.addOutput(port.getName(), port.getTypeReference().getName());
         }
 
@@ -556,7 +644,6 @@ public class GeneratorCPP implements EMAMGenerator {
     }
 
 
-
     public MathOptSolverConfig getMathOptSolverConfig() {
         return mathOptSolverConfig;
     }
@@ -565,15 +652,15 @@ public class GeneratorCPP implements EMAMGenerator {
         return mathOptExecuteMethodGenerator;
     }
 
-    public void searchForCVEverywhere(EMAComponentInstanceSymbol componentInstanceSymbol, Scope symtab){
+    public void searchForCVEverywhere(EMAComponentInstanceSymbol componentInstanceSymbol, Scope symtab) {
         MathStatementsSymbol mathStatementsSymbol = Helper.getMathStatementsSymbolFor(componentInstanceSymbol, symtab);
-        if(mathStatementsSymbol != null) {
+        if (mathStatementsSymbol != null) {
             List<MathExpressionSymbol> mathExpressionSymbols = mathStatementsSymbol.getMathExpressionSymbols();
-            for(MathExpressionSymbol mathExpressionSymbol : mathExpressionSymbols){
+            for (MathExpressionSymbol mathExpressionSymbol : mathExpressionSymbols) {
                 String nameOfFunction = ComponentConverter.getNameOfMathCommand(mathExpressionSymbol);
                 MathCommand mathCommand = this.mathCommandRegister.getMathCommand(nameOfFunction);
-                if(mathCommand != null){
-                    if(mathCommand.isCVMathCommand()){
+                if (mathCommand != null) {
+                    if (mathCommand.isCVMathCommand()) {
                         this.isGenerateCV = true;
                     }
                 }
@@ -582,8 +669,19 @@ public class GeneratorCPP implements EMAMGenerator {
         }
         for (EMAComponentInstanceSymbol instanceSymbol : componentInstanceSymbol.getSubComponents()) {
             searchForCVEverywhere(instanceSymbol, symtab);
-            }
+        }
     }
 
+    public double getDeltaT() {
+        return dt;
+    }
 
+    public void setDeltaT(double dt) {
+        this.dt = dt;
+    }
+
+    public void setDeltaT(String dt) {
+        double v = Double.parseDouble(dt);
+        this.dt = v;
+    }
 }

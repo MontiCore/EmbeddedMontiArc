@@ -1,12 +1,12 @@
 /* (c) https://github.com/MontiCore/monticore */
 package de.monticore.lang.monticar.generator.order.tools;
 
-import de.ma2cfg.helper.Names;
 import de.monticore.lang.embeddedmontiarc.embeddedmontiarc._symboltable.instanceStructure.EMAComponentInstanceSymbol;
 import de.monticore.lang.monticar.generator.order.ImplementExecutionOrder;
 import de.monticore.lang.monticar.generator.order.NonVirtualBlock;
 import de.monticore.lang.monticar.generator.order.nfp.TagExecutionOrderTagSchema.TagExecutionOrderSymbol;
 import de.monticore.lang.monticar.generator.order.simulator.AbstractSymtab;
+import de.monticore.lang.monticar.semantics.helper.NameHelper;
 import de.monticore.lang.tagging._symboltable.TagSymbol;
 import de.monticore.lang.tagging._symboltable.TaggingResolver;
 import de.monticore.prettyprint.IndentPrinter;
@@ -60,7 +60,7 @@ public class Slist extends AbstractSymtab {
 
             TaggingResolver symTab = createSymTabAndTaggingResolver(modelPath);
             EMAComponentInstanceSymbol inst = symTab.<EMAComponentInstanceSymbol>resolve(
-                    Names.getExpandedComponentInstanceSymbolName(componentName),
+                    NameHelper.toInstanceFullQualifiedName(componentName),
                     EMAComponentInstanceSymbol.KIND).orElse(null);
             Log.debug(execute(symTab, inst), "Slist.main");
 //            System.out.println(execute(symTab, inst));
