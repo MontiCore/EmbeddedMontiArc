@@ -1,0 +1,18 @@
+package de.monticore.lang.monticar.semantics.loops;
+
+import de.monticore.lang.monticar.semantics.library.arithmetic.*;
+
+component Test01 {
+    port
+        out Q out1;
+
+    instance Constant<1> one;
+    instance Difference difference;
+    instance GainComponent<1> gain;
+    instance SumComponent<Q,2> sum;
+
+    connect one.out1 -> sum.in1[2];
+    connect difference.out1 -> gain.in1, sum.in1[1], out1;
+    connect gain.out1 -> difference.in2;
+    connect sum.out1 -> difference.in1;
+}

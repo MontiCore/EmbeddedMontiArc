@@ -1,0 +1,14 @@
+package de.monticore.lang.monticar.semantics.loops;
+
+import de.monticore.lang.monticar.semantics.library.arithmetic.Gain;
+
+component GainComponent<T>(T gainValue) {
+    port
+        in Q in1,
+        out Q out1;
+
+    instance Gain<T>(gainValue) gain;
+
+    connect in1 -> gain.in1;
+    connect gain.out1 -> out1;
+}
