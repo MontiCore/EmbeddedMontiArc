@@ -1,5 +1,5 @@
 /* (c) https://github.com/MontiCore/monticore */
-package de.monticore.lang.math._symboltable.copy;
+package de.monticore.lang.math._symboltable.visitor;
 
 import de.monticore.lang.math._ast.ASTMathStatements;
 import de.monticore.lang.math._symboltable.MathStatementsSymbol;
