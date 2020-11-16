@@ -123,10 +123,10 @@ public class CplexSolverGeneratorImplementation implements QPSolverGeneratorImpl
     }
 
     public List<CMakeFindModule> getCMakeDependencies() {
-        CMakeFindModule findIloCplex = new CMakeFindModule("ILOCPLEX", "ilcplex/ilocplex.h", "ilocplex", Arrays.asList("C:/Program Files/IBM/ILOG/CPLEX_Studio128/cplex/include", "/opt/ibm/ILOG/CPLEX_Studio128/cplex/include"), Arrays.asList("C:/Program Files/IBM/ILOG/CPLEX_Studio128/cplex/lib/x64_windows_vs2017/stat_mda", "/opt/ibm/ILOG/CPLEX_Studio128/cplex/lib/x86-64_linux/static_pic"), true, true, true);
-        CMakeFindModule findConcert = new CMakeFindModule("CONCERT", "ilconcert/ilomodel.h", "concert", Arrays.asList("C:/Program Files/IBM/ILOG/CPLEX_Studio128/concert/include", "/opt/ibm/ILOG/CPLEX_Studio128/concert/include"), Arrays.asList("C:/Program Files/IBM/ILOG/CPLEX_Studio128/concert/lib/x64_windows_vs2017/stat_mda", "/opt/ibm/ILOG/CPLEX_Studio128/concert/lib/x86-64_linux/static_pic"), true, true, true);
-        CMakeFindModule findCplex = new CMakeFindModule("CPLEX", "", "cplex", new ArrayList<String>(), Arrays.asList("C:/Program Files/IBM/ILOG/CPLEX_Studio128/cplex/lib/x64_windows_vs2017/stat_mda", "/opt/ibm/ILOG/CPLEX_Studio128/cplex/lib/x86-64_linux/static_pic"), false, true, true);
-        CMakeFindModule findM = new CMakeFindModule("M", "math.h", "m", new ArrayList<String>(), new ArrayList<String>(), true, true, true);
+        CMakeFindModule findIloCplex = new CMakeFindModule("ILOCPLEX", "ilcplex/ilocplex.h", "ilocplex", Arrays.asList("C:/Program Files/IBM/ILOG/CPLEX_Studio128/cplex/include", "/opt/ibm/ILOG/CPLEX_Studio128/cplex/include"), Arrays.asList("C:/Program Files/IBM/ILOG/CPLEX_Studio128/cplex/lib/x64_windows_vs2017/stat_mda", "/opt/ibm/ILOG/CPLEX_Studio128/cplex/lib/x86-64_linux/static_pic"), new ArrayList(), new ArrayList(), new ArrayList(), true, true, true);
+        CMakeFindModule findConcert = new CMakeFindModule("CONCERT", "ilconcert/ilomodel.h", "concert", Arrays.asList("C:/Program Files/IBM/ILOG/CPLEX_Studio128/concert/include", "/opt/ibm/ILOG/CPLEX_Studio128/concert/include"), Arrays.asList("C:/Program Files/IBM/ILOG/CPLEX_Studio128/concert/lib/x64_windows_vs2017/stat_mda", "/opt/ibm/ILOG/CPLEX_Studio128/concert/lib/x86-64_linux/static_pic"), new ArrayList(), new ArrayList(), new ArrayList(), true, true, true);
+        CMakeFindModule findCplex = new CMakeFindModule("CPLEX", "", "cplex", new ArrayList<String>(), Arrays.asList("C:/Program Files/IBM/ILOG/CPLEX_Studio128/cplex/lib/x64_windows_vs2017/stat_mda", "/opt/ibm/ILOG/CPLEX_Studio128/cplex/lib/x86-64_linux/static_pic"), new ArrayList(), new ArrayList(), new ArrayList(), false, true, true);
+        CMakeFindModule findM = new CMakeFindModule("M", "math.h", "m", new ArrayList<String>(), new ArrayList<String>(), new ArrayList(), new ArrayList(), new ArrayList(), true, true, true);
         return Arrays.asList(findIloCplex, findConcert, findCplex, findM);
     }
 }

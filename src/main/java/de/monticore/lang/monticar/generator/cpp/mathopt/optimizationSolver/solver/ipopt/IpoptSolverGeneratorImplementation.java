@@ -137,13 +137,13 @@ public class IpoptSolverGeneratorImplementation implements NLPSolverGeneratorImp
     }
 
     public List<CMakeFindModule> getCMakeDependencies() {
-        CMakeFindModule findCPPAD = new CMakeFindModule("CPPAD", "cppad/ipopt/solve.hpp", "", new ArrayList<String>(), new ArrayList<String>(), true, false, true);
-        CMakeFindModule findIPOpt = new CMakeFindModule("Ipopt", "coin/IpNLP.hpp", "ipopt", new ArrayList<String>(), new ArrayList<String>(), true, true, true);
-        CMakeFindModule findCoinMumps = new CMakeFindModule("CoinMumps", "", "coinmumps", new ArrayList<String>(), new ArrayList<String>(), false, true, true);
-        CMakeFindModule findCoinLapack = new CMakeFindModule("CoinLapack", "", "coinlapack", new ArrayList<String>(), new ArrayList<String>(), false, true, true);
-        CMakeFindModule findCoinBlas = new CMakeFindModule("CoinBlas", "", "coinblas", new ArrayList<String>(), new ArrayList<String>(), false, true, true);
-        CMakeFindModule findCoinMetis = new CMakeFindModule("CoinMetis", "", "coinmetis", new ArrayList<String>(), new ArrayList<String>(), false, true, true);
-        CMakeFindModule findGfortran = new CMakeFindModule("GFortran", "", "gfortran", new ArrayList<String>(), new ArrayList<String>(), false, true, true);
+        CMakeFindModule findCPPAD = new CMakeFindModule("CPPAD", "cppad/ipopt/solve.hpp", "", new ArrayList<String>(), new ArrayList<String>(), new ArrayList(), new ArrayList(), new ArrayList(), true, false, true);
+        CMakeFindModule findIPOpt = new CMakeFindModule("Ipopt", "coin/IpNLP.hpp", "ipopt", new ArrayList<String>(), new ArrayList<String>(), new ArrayList(), new ArrayList(), new ArrayList(), true, true, true);
+        CMakeFindModule findCoinMumps = new CMakeFindModule("CoinMumps", "", "coinmumps", new ArrayList<String>(), new ArrayList<String>(), new ArrayList(), new ArrayList(), new ArrayList(), false, true, true);
+        CMakeFindModule findCoinLapack = new CMakeFindModule("CoinLapack", "", "coinlapack", new ArrayList<String>(), new ArrayList<String>(), new ArrayList(), new ArrayList(), new ArrayList(), false, true, true);
+        CMakeFindModule findCoinBlas = new CMakeFindModule("CoinBlas", "", "coinblas", new ArrayList<String>(), new ArrayList<String>(), new ArrayList(), new ArrayList(), new ArrayList(), false, true, true);
+        CMakeFindModule findCoinMetis = new CMakeFindModule("CoinMetis", "", "coinmetis", new ArrayList<String>(), new ArrayList<String>(), new ArrayList(), new ArrayList(), new ArrayList(), false, true, true);
+        CMakeFindModule findGfortran = new CMakeFindModule("GFortran", "", "gfortran", new ArrayList<String>(), new ArrayList<String>(), new ArrayList(), new ArrayList(), new ArrayList(), false, true, true);
         return Arrays.asList(findCPPAD, findIPOpt, findCoinMumps, findCoinLapack, findCoinBlas, findCoinMetis, findGfortran);
     }
 
