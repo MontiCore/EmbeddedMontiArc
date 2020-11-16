@@ -129,6 +129,11 @@ public class MathExpressionSymbolHelper {
         }
 
         @Override
+        public void visit(MathMatrixArithmeticExpressionSymbol node) {
+            symbols.add(node);
+        }
+
+        @Override
         public void visit(MathOptimizationStatementSymbol node) {
             symbols.add(node);
         }
@@ -136,7 +141,6 @@ public class MathExpressionSymbolHelper {
         @Override
         public void visit(MathOptimizationConditionSymbol node) {
             symbols.add(node);
-
         }
 
         protected Set<MathExpressionSymbol> visitedSymbols = new HashSet<>();

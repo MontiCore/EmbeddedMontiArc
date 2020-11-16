@@ -99,9 +99,7 @@ public class ModifiedEMAComponentInstanceBuilder extends EMADynamicComponentInst
                 inst.getSpannedScope().getAsMutableScope().remove(replacement.getKey());
                 inst.getSpannedScope().getAsMutableScope().add(replacement.getValue());
             }
-            MathOptExpressionSymbolReplacementVisitor replacementVisitor =
-                    new MathOptExpressionSymbolReplacementVisitor(replacementMap);
-            replacementVisitor.handle(mathStatementsSymbol);
+            MathOptExpressionSymbolReplacementVisitor.replace(mathStatementsSymbol, replacementMap);
         }
     }
 
