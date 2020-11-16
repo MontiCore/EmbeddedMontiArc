@@ -4,20 +4,35 @@ package de.monticore.lang.mathopt._symboltable.visitor;
 import de.monticore.lang.math._symboltable.MathStatementsSymbol;
 import de.monticore.lang.math._symboltable.expression.MathExpressionSymbol;
 import de.monticore.lang.math._symboltable.visitor.CopyMathExpressionSymbol;
+import de.monticore.lang.math._symboltable.visitor.MathStatementsSymbolCopy;
 import de.monticore.lang.mathopt._symboltable.MathOptimizationConditionSymbol;
 import de.monticore.lang.mathopt._symboltable.MathOptimizationStatementSymbol;
+
+import java.util.LinkedList;
+import java.util.List;
 
 public class CopyMathOptExpressionSymbol extends CopyMathExpressionSymbol
         implements MathOptExpressionSymbolVisitor {
 
     public static MathStatementsSymbol copy(MathStatementsSymbol symbol) {
-        instance = new CopyMathOptExpressionSymbol();
-        return CopyMathExpressionSymbol.copy(symbol);
+        MathStatementsSymbolCopy res = new MathStatementsSymbolCopy(symbol.getName(), symbol.astMathStatements);
+        if (symbol.getAstNode().isPresent()) res.setAstNode(symbol.getAstNode().get());
+        res.setAccessModifier(symbol.getAccessModifier());
+        res.setPackageName(symbol.getPackageName());
+        res.setFullName(symbol.getFullName());
+        List<MathExpressionSymbol> mathExpressionSymbolsCopy = new LinkedList<>();
+        for (MathExpressionSymbol mathExpressionSymbol : symbol.getMathExpressionSymbols()) {
+            mathExpressionSymbolsCopy.add(copy(mathExpressionSymbol));
+        }
+        res.setMathExpressionSymbols(mathExpressionSymbolsCopy);
+        return res;
     }
 
     public static <T extends MathExpressionSymbol> T copy(T symbol) {
-        instance = new CopyMathOptExpressionSymbol();
-        return CopyMathExpressionSymbol.copy(symbol);
+        CopyMathOptExpressionSymbol copy = new CopyMathOptExpressionSymbol();
+        copy.handle(symbol);
+        T res = copy.get(symbol);
+        return res;
     }
 
     @Override
@@ -31,22 +46,18 @@ public class CopyMathOptExpressionSymbol extends CopyMathExpressionSymbol
         if (copy != null) return (T) copy;
         if (symbol instanceof MathOptimizationStatementSymbol)
             copy = new MathOptimizationStatementSymbol();
-        else if (symbol instanceof MathOptimizationConditionSymbol) {
-            MathExpressionSymbol lower = ((MathOptimizationConditionSymbol) symbol).getLowerBound().orElse(null);
-            MathExpressionSymbol expr = ((MathOptimizationConditionSymbol) symbol).getBoundedExpression();
-            MathExpressionSymbol upper = ((MathOptimizationConditionSymbol) symbol).getUpperBound().orElse(null);
-            copy = new MathOptimizationConditionSymbol(lower, expr, upper);
-        } else
-            copy = super.get(symbol);
+        else if (symbol instanceof MathOptimizationConditionSymbol)
+            copy = new MathOptimizationConditionSymbol(null, "", null);
+        else
+            return super.get(symbol);
 
-        leftToCopy.put(copy, symbol);
         copyMap.put(symbol, copy);
         return (T) copy;
     }
 
     @Override
     public void endVisit(MathOptimizationStatementSymbol node) {
-        MathOptimizationStatementSymbol res = new MathOptimizationStatementSymbol();
+        MathOptimizationStatementSymbol res = get(node);
         copyMathExpressionSymbol(res, node);
         if (node.getOptimizationType() != null)
             res.setOptimizationType(node.getOptimizationType().toString());
@@ -63,11 +74,14 @@ public class CopyMathOptExpressionSymbol extends CopyMathExpressionSymbol
 
     @Override
     public void endVisit(MathOptimizationConditionSymbol node) {
-        MathExpressionSymbol lower = node.getLowerBound().orElse(null);
-        MathExpressionSymbol expr = node.getBoundedExpression();
-        MathExpressionSymbol upper = node.getUpperBound().orElse(null);
-        MathOptimizationConditionSymbol res = new MathOptimizationConditionSymbol(lower, expr, upper);
+        MathOptimizationConditionSymbol res = get(node);
         copyMathExpressionSymbol(res, node);
+        if (node.getLowerBound().isPresent())
+            res.setLowerBound(get(node.getLowerBound().get()));
+        if (node.getBoundedExpression() != null)
+            res.setBoundedExpression(get(node.getBoundedExpression()));
+        if (node.getUpperBound().isPresent())
+            res.setUpperBound(get(node.getUpperBound().get()));
         copyMap.put(node, res);
     }
 }
