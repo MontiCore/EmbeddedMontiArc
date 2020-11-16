@@ -5,7 +5,7 @@ component Oscillation {
     port
         out Q out1;
 
-    instance de.monticore.lang.monticar.semantics.library.differential.Integration<(-oo:d:oo)>{out1 = 3} y;
+    instance de.monticore.lang.monticar.semantics.library.differential.Integration<(-oo:d:oo)>{out1 = 2} y;
     instance de.monticore.lang.monticar.semantics.library.differential.Integration<(-oo:d:oo)>(0) yDiff;
     instance de.monticore.lang.monticar.semantics.library.arithmetic.Gain<(-oo:d:oo)>(-2/5) yDiffDiff;
 

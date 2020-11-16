@@ -77,6 +77,7 @@ public class LoopTest {
 
         Resolver resolver = new Resolver(symtab, model);
         resolver.resolveLoopSymbols();
+//        resolver.doSymbolicSolveOfLoopSymbols();
         resolver.doSymbolicSolveOfSpecifications();
 
 
