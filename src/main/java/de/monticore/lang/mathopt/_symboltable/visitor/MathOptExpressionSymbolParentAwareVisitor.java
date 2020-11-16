@@ -10,19 +10,23 @@ public interface MathOptExpressionSymbolParentAwareVisitor extends MathExpressio
 
     @Override
     default void handle(MathOptimizationStatementSymbol node) {
-        pushParent(node);
-        visit(node);
-        traverse(node);
-        endVisit(node);
-        popParent();
+        if (shouldContinue(node)) {
+            visit(node);
+            pushParent(node);
+            traverse(node);
+            popParent();
+            endVisit(node);
+        }
     }
 
     @Override
     default void handle(MathOptimizationConditionSymbol node) {
-        pushParent(node);
-        visit(node);
-        traverse(node);
-        endVisit(node);
-        popParent();
+        if (shouldContinue(node)) {
+            visit(node);
+            pushParent(node);
+            traverse(node);
+            popParent();
+            endVisit(node);
+        }
     }
 }

@@ -1,22 +1,52 @@
 /* (c) https://github.com/MontiCore/monticore */
 package de.monticore.lang.mathopt._symboltable.visitor;
 
+import de.monticore.lang.math._symboltable.MathStatementsSymbol;
 import de.monticore.lang.math._symboltable.expression.MathExpressionSymbol;
 import de.monticore.lang.math._symboltable.visitor.MathExpressionSymbolReplacementVisitor;
 import de.monticore.lang.mathopt._symboltable.MathOptimizationConditionSymbol;
 import de.monticore.lang.mathopt._symboltable.MathOptimizationStatementSymbol;
 
+import java.util.ListIterator;
 import java.util.Map;
 import java.util.function.Function;
 
 public class MathOptExpressionSymbolReplacementVisitor extends MathExpressionSymbolReplacementVisitor
         implements MathOptExpressionSymbolVisitor {
 
-    public MathOptExpressionSymbolReplacementVisitor(Map<MathExpressionSymbol, MathExpressionSymbol> replacementMap) {
+    public static void replace(MathExpressionSymbol mathExpressionSymbol,
+                               Map<MathExpressionSymbol, MathExpressionSymbol> replacementMap) {
+        MathOptExpressionSymbolReplacementVisitor replacementVisitor =
+                new MathOptExpressionSymbolReplacementVisitor(replacementMap);
+        replacementVisitor.handle(mathExpressionSymbol);
+    }
+
+    public static void replace(MathExpressionSymbol mathExpressionSymbol,
+                               Function<MathExpressionSymbol, MathExpressionSymbol> replacementFunction) {
+        MathOptExpressionSymbolReplacementVisitor replacementVisitor =
+                new MathOptExpressionSymbolReplacementVisitor(replacementFunction);
+        replacementVisitor.handle(mathExpressionSymbol);
+    }
+
+    public static void replace(MathStatementsSymbol mathStatementsSymbol,
+                               Map<MathExpressionSymbol, MathExpressionSymbol> replacementMap) {
+        MathOptExpressionSymbolReplacementVisitor replacementVisitor =
+                new MathOptExpressionSymbolReplacementVisitor(replacementMap);
+        replacementVisitor.handle(mathStatementsSymbol);
+    }
+
+    public static void replace(MathStatementsSymbol mathStatementsSymbol,
+                               Function<MathExpressionSymbol, MathExpressionSymbol> replacementFunction) {
+        MathOptExpressionSymbolReplacementVisitor replacementVisitor =
+                new MathOptExpressionSymbolReplacementVisitor(replacementFunction);
+        replacementVisitor.handle(mathStatementsSymbol);
+    }
+
+    protected MathOptExpressionSymbolReplacementVisitor(Map<MathExpressionSymbol, MathExpressionSymbol> replacementMap) {
         super(replacementMap);
     }
 
-    public MathOptExpressionSymbolReplacementVisitor(Function<MathExpressionSymbol, MathExpressionSymbol> replacementFunction) {
+    protected MathOptExpressionSymbolReplacementVisitor(Function<MathExpressionSymbol, MathExpressionSymbol> replacementFunction) {
         super(replacementFunction);
     }
 
@@ -30,8 +60,11 @@ public class MathOptExpressionSymbolReplacementVisitor extends MathExpressionSym
             node.setObjectiveValue(get(node.getObjectiveValue()));
         if (node.getObjectiveExpression() != null)
             node.setObjectiveExpression(get(node.getObjectiveExpression()));
-        for (MathExpressionSymbol subjectToExpression : node.getSubjectToExpressions())
-            node.getSubjectToExpressions().add(get(subjectToExpression));
+        ListIterator<MathExpressionSymbol> iterator = node.getSubjectToExpressions().listIterator();
+        while (iterator.hasNext()){
+            MathExpressionSymbol subjectToExpression = iterator.next();
+            iterator.set(get(subjectToExpression));
+        }
     }
 
     @Override
