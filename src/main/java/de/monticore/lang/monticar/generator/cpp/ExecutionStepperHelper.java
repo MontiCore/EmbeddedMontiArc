@@ -33,8 +33,8 @@ public class ExecutionStepperHelper {
         return "#ifndef EXECUTIONSTEPPER\n" +
                 "#define EXECUTIONSTEPPER\n" +
                 "\n" +
-                "static double static_var_dt = " + dt + ";\n" +
-                "static double static_var_currentTime = 0;\n" +
+                String.format("static double static_var_dt = %s;\n", dt) +
+                String.format("static double static_var_currentTime = %s;\n", dt) +
                 "\n" +
                 "static double getCurrentTime() {\n" +
                 "    return static_var_currentTime;\n" +
