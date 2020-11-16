@@ -4,6 +4,10 @@
 
 # EMAMOpt2Cpp
 
+## :warning: WARNING :warning:
+This generator is deprecated. MontiMathOpt is directly integrated into EmbeddedMontiArcMath as of version 0.1.5-SNAPSHOT.
+The generator is directly integrated into EMAM2CPP.
+
 ## Summary
 
 EMAMOpt2Cpp is a code generator which converts EMAMOpt models to C++ code. It extends EMAM2Cpp which generates C++ code from EMAM models. 
