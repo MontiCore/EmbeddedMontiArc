@@ -8,6 +8,7 @@ component Delay<T>(T dvalue = 0) {
 	
 	implementation Math {
 	    in1(t=0) = dvalue;
-        out1 == in1(t-1);
+	// TODO syntax for t =
+        out1 == in1(t=timeStep(-1));
 	}
 }
