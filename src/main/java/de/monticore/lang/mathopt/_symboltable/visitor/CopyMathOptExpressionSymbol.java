@@ -36,11 +36,6 @@ public class CopyMathOptExpressionSymbol extends CopyMathExpressionSymbol
     }
 
     @Override
-    protected CopyMathExpressionSymbol instantiate() {
-        return new CopyMathOptExpressionSymbol();
-    }
-
-    @Override
     protected <T extends MathExpressionSymbol> T get(T symbol) {
         MathExpressionSymbol copy = copyMap.get(symbol);
         if (copy != null) return (T) copy;
