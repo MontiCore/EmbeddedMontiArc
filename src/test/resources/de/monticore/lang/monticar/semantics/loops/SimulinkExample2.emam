@@ -1,6 +1,7 @@
 package de.monticore.lang.monticar.semantics.loops;
 
-import de.monticore.lang.monticar.semantics.basicLibrary.*;
+import de.monticore.lang.monticar.semantics.library.arithmetic.*;
+import de.monticore.lang.monticar.semantics.library.differential.Integration;
 
 // see https://de.mathworks.com/help/simulink/ug/sorted_order_example_car_dynamics.png
 
@@ -10,7 +11,7 @@ component SimulinkExample2 {
         out Q out1;
 
     instance Constant<1> one;
-    instance PlusMinus<Q> diff;
+    instance Difference<Q> diff;
     instance Division<Q> div;
     instance Gain<1> gain;
     instance Integration<Q> integration;

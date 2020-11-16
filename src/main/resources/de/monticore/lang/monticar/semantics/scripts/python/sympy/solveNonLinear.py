@@ -1,5 +1,6 @@
-from sympy import symbols, Function, dsolve, sympify, Derivative, linsolve, solve, solveset, nonlinsolve
 import argparse
+from sympy import symbols, sympify, nonlinsolve
+
 
 def main(equations, symbolNames):
     symbols_ = {}

@@ -1,17 +1,22 @@
 /* (c) https://github.com/MontiCore/monticore */
 package de.monticore.lang.monticar.semantics.solver.symbolic.sympy;
 
+import de.monticore.lang.embeddedmontiarc.embeddedmontiarcmath._symboltable.math.symbols.EMAMEquationSymbol;
+import de.monticore.lang.embeddedmontiarc.embeddedmontiarcmath._symboltable.math.symbols.EMAMInitialGuessSymbol;
+import de.monticore.lang.embeddedmontiarc.embeddedmontiarcmath._symboltable.math.symbols.EMAMInitialValueSymbol;
+import de.monticore.lang.embeddedmontiarc.embeddedmontiarcmath._symboltable.math.visitor.EMAMMathExpressionSymbolVisitor;
 import de.monticore.lang.math._symboltable.MathForLoopHeadSymbol;
 import de.monticore.lang.math._symboltable.expression.*;
 import de.monticore.lang.math._symboltable.matrix.*;
-import de.monticore.lang.math._symboltable.visitor.MathExpressionSymbolVisitor;
 import de.monticore.prettyprint.IndentPrinter;
 import de.se_rwth.commons.logging.Log;
 
 import java.util.HashMap;
+import java.util.HashSet;
 import java.util.Map;
+import java.util.Set;
 
-public class PrintSympyFormat extends MathExpressionSymbolVisitor {
+public class PrintSympyFormat implements EMAMMathExpressionSymbolVisitor {
 
     private IndentPrinter printer = new IndentPrinter();
 
@@ -181,6 +186,32 @@ public class PrintSympyFormat extends MathExpressionSymbolVisitor {
         handle(node.getLeftExpression());
         printer.print(node.getMathOperator());
         handle(node.getRightExpression());
+    }
+
+    @Override
+    public void traverse(EMAMEquationSymbol node) {
+        printer.print("Eq(");
+        handle(node.getLeftExpression());
+        printer.print(",");
+        handle(node.getRightExpression());
+        printer.print(")");
+    }
+
+    @Override
+    public void traverse(EMAMInitialGuessSymbol node) {
+        notSupported(node);
+    }
+
+    @Override
+    public void traverse(EMAMInitialValueSymbol node) {
+        notSupported(node);
+    }
+
+    Set<MathExpressionSymbol> visitedSymbols = new HashSet<>();
+
+    @Override
+    public Set<MathExpressionSymbol> getVisitedSymbols() {
+        return visitedSymbols;
     }
 
     private void notSupported(MathExpressionSymbol node) {

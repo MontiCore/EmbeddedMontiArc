@@ -1,0 +1,13 @@
+/* (c) https://github.com/MontiCore/monticore */
+package de.monticore.lang.monticar.semantics.library.arithmetic;
+
+component Division<T> {
+	port
+		in T in1,
+		in T in2,
+		out T out1;
+
+    implementation Math{
+        out1 * in2 == in1;
+    }
+}

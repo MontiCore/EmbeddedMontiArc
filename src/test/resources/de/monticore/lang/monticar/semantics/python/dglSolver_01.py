@@ -1,4 +1,4 @@
-from sympy import symbols, Function, Eq, dsolve, pprint
+from sympy import symbols, Function, Eq, dsolve
 
 y = symbols('y', cls=Function)
 t = symbols('t')

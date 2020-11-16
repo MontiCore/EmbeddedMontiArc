@@ -4,10 +4,12 @@ import de.monticore.lang.embeddedmontiarc.embeddedmontiarc._symboltable.instance
 import de.monticore.lang.monticar.semantics.loops.detection.EMAGraphTransformation;
 import de.monticore.lang.monticar.semantics.loops.graph.EMAGraph;
 import de.monticore.symboltable.Scope;
+import org.junit.Ignore;
 import org.junit.Test;
 
 public class TransformGraphTest extends AbstractSymtabTest {
 
+    @Ignore
     @Test
     public void test() {
         Scope symTab = createSymTab("src/test/resources");

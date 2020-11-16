@@ -1,8 +1,9 @@
-from sympy import symbols, Function, dsolve, sympify, Derivative, linsolve, solve, solveset, nonlinsolve
 import argparse
+import re
+from sympy import symbols, Function, dsolve, sympify, Derivative, solve
 
 
-def reduceSystem(equs):
+def reduceSystem(equs, ics):
     differentialEquations = []
     algebraicEquations = []
     differentialFunctions = []
@@ -21,10 +22,10 @@ def reduceSystem(equs):
     if len(algebraicEquations) == 0:
         return differentialEquations
 
-    for eq in differentialEquations:
+    for eq in equs:
         fs = eq.atoms(Function)
         for f in fs:
-            if not f in differentialFunctions:
+            if not f in differentialFunctions and f not in algebraicFunctions:
                 algebraicFunctions.append(f)
 
     if len(algebraicFunctions) == 0:
@@ -39,7 +40,13 @@ def reduceSystem(equs):
             eq = eq.subs(f, s)
         newEqus.append(eq)
 
-    return newEqus
+    newIcs = {}
+    for f in ics.keys():
+        for d in differentialFunctions:
+            if f.func == d.func:
+                newIcs[f] = ics[f]
+
+    return newEqus, newIcs, algebraicEquations, algebraicFunctions, differentialFunctions
 
 
 def main(equations, symbolNames, functionNames, startValues):
@@ -57,11 +64,20 @@ def main(equations, symbolNames, functionNames, startValues):
         ics[function(0)] = startValues[functionName]
 
     equs = sympify(equations, locals(), evaluate=False)
-    equs = reduceSystem(equs)
+    equs, ics, algebraicEquations, algebraicFunctions, differentialFunctions = reduceSystem(equs, ics)
     solutions = dsolve(equs, ics=ics)
 
+    equationsToSolve = []
+    functionsToSolve = []
+    equationsToSolve.extend(algebraicEquations)
+    equationsToSolve.extend(solutions)
+    functionsToSolve.extend(algebraicFunctions)
+    functionsToSolve.extend(differentialFunctions)
+    sol = solve(equationsToSolve, functionsToSolve)
     for solution in solutions:
         print(str(solution.args[0]).replace('(' + time + ')', ''), "=", solution.args[1])
+    for f in algebraicFunctions:
+        print(str(f).replace('(' + time + ')', ''), "=", str(sol[f]).replace('(' + time + ')', ''))
 
 
 parser = argparse.ArgumentParser(description='Solve DAE symbolic if possible')
@@ -77,12 +93,13 @@ ics = {}
 for i in range(len(args.y0)):
     ics[args.functions[i]] = args.y0[i]
 
-time = 't'
+time = 'current_Time'
 system = []
 for eq in args.system:
     newEq = eq
     for f in args.functions:
-        newEq = newEq.replace(f, f + '(' + time + ')')
+        pat = re.compile(r'\b' + f + r'\b')
+        newEq = pat.sub(f + '(' + time + ')', newEq)
     system.append(newEq)
 
 main(system, [time], args.functions, ics)

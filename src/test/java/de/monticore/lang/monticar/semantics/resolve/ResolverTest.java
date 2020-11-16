@@ -41,6 +41,17 @@ public class ResolverTest {
         testComponent("de.monticore.lang.monticar.semantics.loops.oscillation");
     }
 
+    @Test
+    public void testOscillationAsSymbol() {
+        testComponent("de.monticore.lang.monticar.semantics.loops.oscillationAsSymbol");
+    }
+
+    @Test
+    public void testUnderSpecification() {
+        testComponent("de.monticore.lang.monticar.semantics.loops.underSpecification");
+    }
+
+
     private EMAComponentInstanceSymbol testComponent(String model) {
         Log.init();
         Log.enableFailQuick(true);
@@ -57,7 +68,7 @@ public class ResolverTest {
         }
         assert (ast.isPresent());
 
-        GlobalScope symTab = SymtabCreator.createSymTab("src/test/resources", "src/main/resources",
+        TaggingResolver symTab = SymtabCreator.createSymTab("src/test/resources", "src/main/resources",
                 "target/generated-components");
         LogStub.init();
         Log.enableFailQuick(true);

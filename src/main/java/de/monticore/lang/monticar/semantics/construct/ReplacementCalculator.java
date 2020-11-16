@@ -3,13 +3,18 @@ package de.monticore.lang.monticar.semantics.construct;
 
 import de.monticore.expressionsbasis._ast.ASTExpression;
 import de.monticore.lang.embeddedmontiarc.embeddedmontiarc._symboltable.instanceStructure.EMAComponentInstanceSymbol;
+import de.monticore.lang.embeddedmontiarc.embeddedmontiarc._symboltable.instanceStructure.EMAPortInstanceSymbol;
 import de.monticore.lang.embeddedmontiarc.embeddedmontiarcmath._parser.EmbeddedMontiArcMathParser;
-import de.monticore.lang.monticar.semantics.loops.detection.ConnectedComponent;
-import de.monticore.lang.monticar.semantics.loops.graph.EMAEdge;
-import de.monticore.lang.monticar.semantics.loops.graph.EMAGraph;
-import de.monticore.lang.monticar.semantics.loops.graph.EMAPort;
-import de.monticore.lang.monticar.semantics.loops.graph.EMAVertex;
+import de.monticore.lang.embeddedmontiarcdynamic.embeddedmontiarcdynamic._symboltable.instanceStructure.EMADynamicPortInstanceSymbol;
+import de.monticore.lang.monticar.semantics.Options;
+import de.monticore.lang.monticar.semantics.helper.NameHelper;
 import de.monticore.lang.monticar.semantics.resolve.ConstantsCalculator;
+import de.monticore.lang.monticar.semantics.resolve.SymbolTableHelper;
+import de.monticore.lang.monticar.semantics.util.math.MathHelper;
+import de.monticore.lang.tagging._symboltable.TaggingResolver;
+import de.monticore.symboltable.GlobalScope;
+import de.monticore.symboltable.Scope;
+import de.se_rwth.commons.logging.Log;
 import org.apache.commons.lang3.StringUtils;
 
 import java.io.IOException;
@@ -19,105 +24,102 @@ import java.util.stream.Collectors;
 
 public class ReplacementCalculator {
 
-    private final String synthPath = "target/generated-components";
-    private final String synthNamePostFix = "_synth";
-    private final String synthPackagePreFix = "synth";
-
-    private Replacement replacement;
-
-    public ReplacementCalculator(Replacement replacement) {
-        this.replacement = replacement;
-    }
-
-    public void calculateReplacementsAndGenerateComponents
-            (EMAComponentInstanceSymbol rootComponent, ConnectedComponent strongConnectedComponent, Set<EMAVertex> componentsToReplace,
-             Map<String, String> solutionForPort) {
+    public static void generateAndReplaceComponent(TaggingResolver globalScope, EMAComponentInstanceSymbol symbol,
+                                                   Map<EMAPortInstanceSymbol, String> solutions) {
 
         MathComponentGenerator generator = new MathComponentGenerator();
 
-        for (EMAVertex vertexToReplace : componentsToReplace) {
-            String parentComponent = vertexToReplace.getReferencedSymbol().getParent().get().getFullName();
-            String type = StringUtils.capitalize(vertexToReplace.getName()) + synthNamePostFix;
-            String packageName = synthPackagePreFix + "." + parentComponent;
-            Map<String, String> inports = new HashMap<>();
-            Map<String, String> outports = new HashMap<>();
-            List<String> mathStatements = new LinkedList<>();
+        String parentComponentName = symbol.getParent().isPresent() ? symbol.getParent().get().getFullName() : symbol.getPackageName();
+        String packageName = Options.synthPackagePreFix + "." + parentComponentName;
+        Scope enclosingScope = symbol.getEnclosingScope();
+        String type = StringUtils.capitalize(symbol.getName());
+        Map<String, String> inports = new HashMap<>();
+        Map<String, String> outports = new HashMap<>();
+        List<String> mathStatements = new LinkedList<>();
 
-            for (EMAPort inport : vertexToReplace.getInports()) {
-                inports.put(inport.getName(), inport.getReferencedPort().getTypeReference().getName());
-            }
-            for (EMAPort outport : vertexToReplace.getOutports()) {
-                outports.put(outport.getName(), outport.getReferencedPort().getTypeReference().getName());
-                mathStatements.add(outport.getName() + "=" + solutionForPort.get(outport.getFullName()));
-            }
-
-            // Analyze math Statements in order to redirect new input ports
-            // Dependend constants should be output ports of some components or the input ports of the rootcomponent
-            Set<String> dependendConstants = getDependedConstants(mathStatements, outports.keySet());
-            Set<EMAPort> dependingPorts = dependendConstants.stream().filter(s -> !isTime(s)).map(
-                    s -> strongConnectedComponent.getGraph().getPortMap().get(s)).collect(Collectors.toSet());
-
-            for (EMAPort dependingPort : dependingPorts) {
-                String nameOfInputPort = "";
-                Optional<EMAPort> inport = getAlreadyConnectingPort(strongConnectedComponent, vertexToReplace, dependingPort);
-                if (inport.isPresent()) {
-                    nameOfInputPort = inport.get().getName();
-                } else {
-                    // Calculate redirections
-                    ConnectSourceWithTargetPort connectSourceWithTargetPort = new ConnectSourceWithTargetPort(replacement, rootComponent);
-                    connectSourceWithTargetPort.addConnection(dependingPort, vertexToReplace);
-
-                    PortReplacement newInport = replacement.getPortReplacements()
-                            .stream()
-                            .filter(p -> p.getComponent().equals(vertexToReplace.getFullName()))
-                            .collect(Collectors.toList()).get(0);
-                    inports.put(newInport.getName(), newInport.getType());
-                    nameOfInputPort = newInport.getName();
-
-                    replacement.remove(newInport);
-                }
-
-                // Replace the name of the depening port with the existing connecting / new connecting port
-                ListIterator<String> statement = mathStatements.listIterator();
-                while (statement.hasNext()) {
-                    String s = statement.next();
-                    statement.set(s.replace(dependingPort.getFullName(), nameOfInputPort));
-                }
-            }
-
-            generator.generate(type, packageName, inports, outports, mathStatements, synthPath);
-
-            ComponentReplacement componentReplacement = new ComponentReplacement(parentComponent, vertexToReplace.getName(),
-                    packageName, type, vertexToReplace.getName());
-
-            replacement.add(componentReplacement);
+        for (EMAPortInstanceSymbol inport : symbol.getIncomingPortInstances()) {
+            inports.put(inport.getName(), inport.getTypeReference().getName());
         }
-    }
+        for (EMAPortInstanceSymbol outport : symbol.getOutgoingPortInstances()) {
+            outports.put(outport.getName(), outport.getTypeReference().getName());
+            mathStatements.add(outport.getName() + "=" + solutions.get(outport));
+        }
 
-    private boolean isTime(String s) {
-        return "t".equals(s);
-    }
-
-    private Optional<EMAPort> getAlreadyConnectingPort(ConnectedComponent strongConnectedComponent,
-                                                       EMAVertex emaVertex, EMAPort port) {
-        EMAGraph graph = strongConnectedComponent.getGraph();
-        List<EMAEdge> edgesWithSourcePort = graph.getEdgesWithSourcePort(port);
-        for (EMAEdge emaEdge : edgesWithSourcePort) {
-            if (emaEdge.getTargetVertex() == emaVertex) {
-                return Optional.of(emaEdge.getTargetPort());
+        // Analyze math Statements in order to redirect new input ports
+        // Dependend constants should be output ports of some components or the input ports of the rootcomponent
+        Set<String> dependendConstants = getDependedConstants(mathStatements, outports.keySet());
+        Set<EMAPortInstanceSymbol> dependingPorts = new HashSet<>();
+        for (String dependendConstant : dependendConstants) {
+            if (!isTime(dependendConstant)) {
+                Optional<EMAPortInstanceSymbol> port = symbol.getSpannedScope().resolve(dependendConstant, EMAPortInstanceSymbol.KIND);
+                if (!port.isPresent()) Log.error("TODO cannot find dependend port, is probably a non resolved parameter");
+                dependingPorts.add(port.get());
             }
         }
+
+        for (EMAPortInstanceSymbol dependingPort : dependingPorts) {
+            String nameOfInputPort = "";
+            Optional<EMAPortInstanceSymbol> inport = getAlreadyConnectingPort(symbol, dependingPort);
+            if (inport.isPresent()) {
+                nameOfInputPort = inport.get().getName();
+            } else {
+                // New port
+                nameOfInputPort = NameHelper.replaceWithUnderScore(dependingPort.getFullName());
+                String portType = dependingPort.getTypeReference().getReferencedSymbol().getName();
+                inports.put(nameOfInputPort, portType);
+                EMADynamicPortInstanceSymbol newPort = InstanceCreator.createPortInstanceSymbol(
+                        nameOfInputPort,
+                        symbol.getName(),
+                        portType,
+                        true,
+                        symbol.getSpannedScope().getAsMutableScope());
+
+                // Calculate redirections
+                ConnectSourceWithTargetPort.addConnection(dependingPort, newPort);
+            }
+
+            // Replace the name of the depening port with the existing connecting / new connecting port
+            ListIterator<String> statement = mathStatements.listIterator();
+            while (statement.hasNext()) {
+                String s = statement.next();
+                statement.set(s.replace(dependingPort.getFullName(), nameOfInputPort));
+            }
+        }
+
+        generator.generate(type, packageName, inports, outports, mathStatements, Options.synthPath);
+
+        // Remove old instance
+        SymbolTableHelper.removeComponent(symbol);
+
+        // Resolve new instance
+        String fullQualifiedName = NameHelper.toInstanceFullQualifiedName(packageName,
+                type);
+        SymbolTableHelper.resolveInstanceTo(globalScope, fullQualifiedName, enclosingScope, parentComponentName);
+
+    }
+
+    private static boolean isTime(String s) {
+        return Options.timeName.equals(s);
+    }
+
+    private static Optional<EMAPortInstanceSymbol> getAlreadyConnectingPort(EMAComponentInstanceSymbol component,
+                                                                     EMAPortInstanceSymbol port) {
+        Collection<EMAPortInstanceSymbol> atomicTargetsOf = SymbolTableHelper.getAtomicTargetsOf(port);
+        for (EMAPortInstanceSymbol targetPort : atomicTargetsOf)
+            if (targetPort.getComponentInstance().equals(component))
+                return Optional.of(targetPort);
         return Optional.empty();
     }
 
-    private Set<String> getDependedConstants(List<String> mathStatements, Set<String> variables) {
+    private static Set<String> getDependedConstants(List<String> mathStatements, Set<String> variables) {
         Set<String> res = new HashSet<>();
         EmbeddedMontiArcMathParser parser = new EmbeddedMontiArcMathParser();
         for (String mathStatement : mathStatements) {
             ASTExpression expr = null;
-            String parseName = mathStatement.replace(".", "_");
+            Map<String, String> backMapping = new HashMap<>();
+            mathStatement = MathHelper.replaceQualifiedNamesWithUnderscores(mathStatement, backMapping);
             try {
-                expr = parser.parseExpression(new StringReader(parseName)).get();
+                expr = parser.parseExpression(new StringReader(mathStatement)).get();
             } catch (IOException e) {
                 e.printStackTrace();
             }
@@ -125,7 +127,7 @@ public class ReplacementCalculator {
             ConstantsCalculator constantsCalculator = new ConstantsCalculator(variables);
             expr.accept(constantsCalculator);
             res.addAll(constantsCalculator.getConstants().stream().map(
-                    s -> s = s.replace("_", ".")).collect(Collectors.toSet()));
+                    s -> backMapping.getOrDefault(s, s)).collect(Collectors.toSet()));
         }
         return res;
     }

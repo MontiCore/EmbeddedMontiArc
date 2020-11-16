@@ -1,13 +1,13 @@
 package de.monticore.lang.monticar.semantics.loops;
 
-import de.monticore.lang.monticar.semantics.basicLibrary.*;
+import de.monticore.lang.monticar.semantics.library.arithmetic.*;
 
 component Test01 {
     port
         out Q out1;
 
     instance Constant<1> one;
-    instance PlusMinus difference;
+    instance Difference difference;
     instance GainComponent<1> gain;
     instance SumComponent<Q,2> sum;
 

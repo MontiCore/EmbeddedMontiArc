@@ -48,9 +48,8 @@ public class LoopDetectionTest extends AbstractSymtabTest{
     }
 
     public void check(String model) {
-        Scope symTab = createSymTab("src/test/resources");
+        Scope symTab = createSymTab("src/test/resources", "src/main/resources");
         EMAComponentInstanceSymbol component = symTab.<EMAComponentInstanceSymbol>resolve(model, EMAComponentInstanceSymbol.KIND).orElse(null);
-        Detection detection = new Detection();
-        Set<StrongConnectedComponent> strongConnectedComponents = detection.detectLoops(component);
+        Set<StrongConnectedComponent> strongConnectedComponents = Detection.detectLoops(component);
     }
 }

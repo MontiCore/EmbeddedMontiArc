@@ -6,39 +6,33 @@ import de.monticore.io.paths.ModelPath;
 import de.monticore.lang.embeddedmontiarc.LogConfig;
 import de.monticore.lang.embeddedmontiarc.embeddedmontiarcmath._symboltable.EmbeddedMontiArcMathLanguage;
 import de.monticore.lang.embeddedmontiarcdynamic.event._symboltable.EventLanguage;
-import de.monticore.lang.monticar.semantics.resolve.MyEmbeddedMontiArcMathLanguage;
 import de.monticore.lang.monticar.stream._symboltable.StreamLanguage;
 import de.monticore.lang.monticar.struct._symboltable.StructLanguage;
+import de.monticore.lang.tagging._symboltable.TaggingResolver;
 import de.monticore.symboltable.GlobalScope;
 
 import java.nio.file.Paths;
+import java.util.Arrays;
+import java.util.LinkedHashSet;
+import java.util.LinkedList;
 
 public class SymtabCreator {
 
-    public static GlobalScope createSymTabForReplacement(Replacement replacement, String... modelPath) {
-        ModelingLanguageFamily fam = getStandardModelingLanguageFamily();
-        // TODO add replacement parameters to language
-        MyEmbeddedMontiArcMathLanguage myEmbeddedMontiArcMathLanguage = new MyEmbeddedMontiArcMathLanguage(replacement);
-        fam.addModelingLanguage(myEmbeddedMontiArcMathLanguage);
-
-        return create(fam, modelPath);
-    }
-
-    public static GlobalScope createSymTab(String... modelPath) {
+    public static TaggingResolver createSymTab(String... modelPath) {
         ModelingLanguageFamily fam = getStandardModelingLanguageFamily();
         fam.addModelingLanguage(new EmbeddedMontiArcMathLanguage());
 
         return create(fam, modelPath);
     }
 
-    protected static GlobalScope create(ModelingLanguageFamily fam, String... modelPath) {
+    protected static TaggingResolver create(ModelingLanguageFamily fam, String... modelPath) {
         final ModelPath mp = getModelPath(modelPath);
 
         GlobalScope scope = new GlobalScope(mp, fam);
         de.monticore.lang.monticar.Utils.addBuiltInTypes(scope);
 
         LogConfig.init();
-        return scope;
+        return new TaggingResolver(scope, Arrays.asList(modelPath.clone()));
     }
 
     protected static ModelingLanguageFamily getStandardModelingLanguageFamily() {

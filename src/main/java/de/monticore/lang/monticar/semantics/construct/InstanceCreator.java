@@ -30,6 +30,7 @@ public class InstanceCreator {
         portInstanceSymbol.setPackageName(packageName);
         portInstanceSymbol.setFullName(packageName + "." + name);
         portInstanceSymbol.setEnclosingScope(enclosingScope);
+        enclosingScope.add(portInstanceSymbol);
 
         CommonMCTypeReference typeReference = new CommonMCTypeReference(type, MCTypeSymbol.KIND, enclosingScope);
         portInstanceSymbol.setTypeReference(typeReference);
@@ -56,6 +57,7 @@ public class InstanceCreator {
         connectorInstanceSymbol.setPackageName(packageName);
         connectorInstanceSymbol.setFullName(packageName + "." + target);
         connectorInstanceSymbol.setEnclosingScope(enclosingScope);
+        enclosingScope.add(connectorInstanceSymbol);
 
         // ASTNode
         String sourceComp = source.contains(".") ? source.substring(0, source.indexOf(".")) : null;

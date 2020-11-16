@@ -1,6 +1,6 @@
 package de.monticore.lang.monticar.semantics.loops;
 
-import de.monticore.lang.monticar.semantics.basicLibrary.*;
+import de.monticore.lang.monticar.semantics.library.arithmetic.Difference;
 
 component SerialLoop {
     port
@@ -9,7 +9,7 @@ component SerialLoop {
 
     instance SimpleLoop simple1;
     instance SimpleLoop simple2;
-    instance PlusMinus<Q> difference;
+    instance Difference<Q> difference;
 
     connect in1 -> difference.in1;
     connect difference.out1 -> simple1.in1;

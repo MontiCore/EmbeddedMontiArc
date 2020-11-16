@@ -1,6 +1,5 @@
 package de.monticore.lang.monticar.semantics.loops.graph;
 
-import de.monticore.lang.embeddedmontiarc.embeddedmontiarc._symboltable.cncModel.EMAPortSymbol;
 import de.monticore.lang.embeddedmontiarc.embeddedmontiarc._symboltable.instanceStructure.EMAPortInstanceSymbol;
 
 public class EMAPort {

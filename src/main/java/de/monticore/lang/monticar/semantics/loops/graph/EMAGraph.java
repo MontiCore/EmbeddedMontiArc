@@ -37,14 +37,12 @@ public class EMAGraph {
         return Optional.empty();
     }
 
-    public Optional<EMAEdge> getEdgeWithTargetNode(EMAVertex target) {
-        if (target == null) return Optional.empty();
+    public List<EMAEdge> getEdgeWithTargetNode(EMAVertex target) {
+        if (target == null) return new LinkedList<>();
         List<EMAEdge> edges = getEdges().stream().
                 filter(v -> v.getTargetVertex() == target).collect(Collectors.toList());
 
-        if (edges.size() == 1)
-            return Optional.of(edges.get(0));
-        return Optional.empty();
+        return edges;
     }
 
     public List<EMAEdge> getEdgesWithSourceNode(EMAVertex source) {

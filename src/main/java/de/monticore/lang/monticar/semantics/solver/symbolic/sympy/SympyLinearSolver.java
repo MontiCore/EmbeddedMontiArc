@@ -1,9 +1,9 @@
 /* (c) https://github.com/MontiCore/monticore */
 package de.monticore.lang.monticar.semantics.solver.symbolic.sympy;
 
-import de.monticore.lang.math._symboltable.expression.MathAssignmentExpressionSymbol;
-import de.monticore.lang.monticar.semantics.solver.ExecutePython;
+import de.monticore.lang.embeddedmontiarc.embeddedmontiarcmath._symboltable.math.symbols.EMAMEquationSymbol;
 import de.monticore.lang.monticar.semantics.solver.symbolic.LinearSolver;
+import de.monticore.lang.monticar.semantics.util.execution.ExecutePython;
 
 import java.util.*;
 import java.util.stream.Collectors;
@@ -11,11 +11,11 @@ import java.util.stream.Collectors;
 public class SympyLinearSolver implements LinearSolver {
 
     @Override
-    public Map<String, String> solve(Set<MathAssignmentExpressionSymbol> system, Set<String> variables) {
+    public Map<String, String> solve(Collection<EMAMEquationSymbol> system, Collection<String> variables) {
         PrintSympyFormat print = new PrintSympyFormat();
         List<String> equationSystem = new LinkedList<>();
-        for (MathAssignmentExpressionSymbol mathAssignmentExpressionSymbol : system)
-            equationSystem.add(print.print(mathAssignmentExpressionSymbol));
+        for (EMAMEquationSymbol equationSymbol : system)
+            equationSystem.add(print.print(equationSymbol));
 
         String arguments = String.join(" ", equationSystem)
                 + " --symbols "

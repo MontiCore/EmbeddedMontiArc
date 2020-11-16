@@ -1,24 +1,28 @@
 /* (c) https://github.com/MontiCore/monticore */
 package de.monticore.lang.monticar.semantics.helper;
 
+import de.monticore.lang.embeddedmontiarc.embeddedmontiarc._symboltable.instanceStructure.EMAComponentInstanceSymbol;
+import de.monticore.lang.embeddedmontiarc.embeddedmontiarc._symboltable.instanceStructure.EMAPortInstanceSymbol;
+import de.se_rwth.commons.Joiners;
+import de.se_rwth.commons.Names;
 import org.apache.commons.lang3.StringUtils;
 
 public class NameHelper {
 
     public static String getPackageOfFullQualifiedName(String fullQualifiedName) {
-        return StringUtils.substringBeforeLast(replaceWithDots(fullQualifiedName), ".");
+        return StringUtils.substringBeforeLast(fullQualifiedName, ".");
     }
 
     public static String getName(String fullQualifiedName) {
-        return StringUtils.substringAfterLast(replaceWithDots(fullQualifiedName), ".");
+        return StringUtils.substringAfterLast(fullQualifiedName, ".");
     }
 
     public static String toInstanceFullQualifiedName(String packageName, String componentName) {
-        return replaceWithDots(packageName) + "." + StringUtils.uncapitalize(componentName);
+        return Joiners.DOT.join(packageName, StringUtils.uncapitalize(componentName));
     }
 
     public static String toInstanceFullQualifiedName(String fullQualifiedName) {
-        return getPackageOfFullQualifiedName(fullQualifiedName) + "." + toInstanceName(fullQualifiedName);
+        return Joiners.DOT.join(getPackageOfFullQualifiedName(fullQualifiedName), toInstanceName(fullQualifiedName));
     }
 
     public static String toInstanceName(String fullQualifiedName) {
@@ -37,5 +41,13 @@ public class NameHelper {
                 .replace("\\","_")
                 .replace("/","_")
                 .replace(".", "_");
+    }
+
+    public static String calculateFullQualifiedNameOf(EMAPortInstanceSymbol port) {
+        return Names.getQualifiedName(port.getPackageName(), port.getName());
+    }
+
+    public static String calculateFullQualifiedNameOf(EMAComponentInstanceSymbol componentInstance) {
+        return Names.getQualifiedName(componentInstance.getPackageName(), componentInstance.getName());
     }
 }

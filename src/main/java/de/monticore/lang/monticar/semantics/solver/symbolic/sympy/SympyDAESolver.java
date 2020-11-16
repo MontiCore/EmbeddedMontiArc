@@ -1,22 +1,23 @@
 /* (c) https://github.com/MontiCore/monticore */
 package de.monticore.lang.monticar.semantics.solver.symbolic.sympy;
 
-import de.monticore.lang.math._symboltable.expression.MathAssignmentExpressionSymbol;
-import de.monticore.lang.monticar.semantics.solver.ExecutePython;
+import de.monticore.lang.embeddedmontiarc.embeddedmontiarcmath._symboltable.math.symbols.EMAMEquationSymbol;
 import de.monticore.lang.monticar.semantics.solver.symbolic.DAESolver;
+import de.monticore.lang.monticar.semantics.solver.symbolic.ODESolver;
+import de.monticore.lang.monticar.semantics.util.execution.ExecutePython;
 
 import java.util.*;
 import java.util.stream.Collectors;
 
-public class SympyDAESolver implements DAESolver {
+public class SympyDAESolver implements ODESolver, DAESolver {
 
     @Override
-    public Map<String, String> solve(Set<MathAssignmentExpressionSymbol> system, Set<String> variables
+    public Map<String, String> solve(Collection<EMAMEquationSymbol> system, Collection<String> variables
             , Map<String, Double> startValues) {
         PrintSympyFormat print = new PrintSympyFormat();
         List<String> equationSystem = new LinkedList<>();
-        for (MathAssignmentExpressionSymbol mathAssignmentExpressionSymbol : system)
-            equationSystem.add(print.print(mathAssignmentExpressionSymbol));
+        for (EMAMEquationSymbol mathEquationSymbol : system)
+            equationSystem.add(print.print(mathEquationSymbol));
         List<String> startValueKeys = startValues.keySet().stream().collect(Collectors.toList());
         String arguments = String.join(" ", equationSystem);
         arguments += " --functions "
@@ -33,6 +34,7 @@ public class SympyDAESolver implements DAESolver {
 
         Map<String, String> res = new HashMap<>();
         if (solutions.equals("-1")) return res;
+        if (solutions.startsWith("Traceback")) return res;
 
         for (String sol : solutions.split("\r\n")) {
             String[] split = sol.split("=");

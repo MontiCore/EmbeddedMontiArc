@@ -1,7 +1,6 @@
 /* (c) https://github.com/MontiCore/monticore */
 package de.monticore.lang.monticar.semantics.loops.detection;
 
-import de.monticore.lang.math._ast.ASTMathAssignmentStatement;
 import de.monticore.lang.math._symboltable.expression.MathAssignmentExpressionSymbol;
 import de.monticore.lang.monticar.semantics.loops.analyze.LoopKind;
 import de.monticore.lang.monticar.semantics.loops.graph.EMAGraph;
