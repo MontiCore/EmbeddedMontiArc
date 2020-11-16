@@ -12,16 +12,48 @@ import java.util.Map;
 import java.util.Set;
 import java.util.function.Function;
 
-public class ReplacementVisitor implements MathExpressionSymbolVisitor {
+public class MathExpressionSymbolReplacementVisitor implements MathExpressionSymbolVisitor {
 
     private Function<MathExpressionSymbol, MathExpressionSymbol> replacementFunction;
     private Map<MathExpressionSymbol, MathExpressionSymbol> replacementMap;
 
-    public ReplacementVisitor(Map<MathExpressionSymbol, MathExpressionSymbol> replacementMap) {
+    public static void replace(MathExpressionSymbol mathExpressionSymbol,
+                               Map<MathExpressionSymbol, MathExpressionSymbol> replacementMap) {
+        MathExpressionSymbolReplacementVisitor replacementVisitor =
+                new MathExpressionSymbolReplacementVisitor(replacementMap);
+        replacementVisitor.handle(mathExpressionSymbol);
+        replacementVisitor.handle(mathExpressionSymbol);
+    }
+
+    public static void replace(MathExpressionSymbol mathExpressionSymbol,
+                               Function<MathExpressionSymbol, MathExpressionSymbol> replacementFunction) {
+        MathExpressionSymbolReplacementVisitor replacementVisitor =
+                new MathExpressionSymbolReplacementVisitor(replacementFunction);
+        replacementVisitor.handle(mathExpressionSymbol);
+        replacementVisitor.handle(mathExpressionSymbol);
+    }
+
+    public static void replace(MathStatementsSymbol mathStatementsSymbol,
+                               Map<MathExpressionSymbol, MathExpressionSymbol> replacementMap) {
+        MathExpressionSymbolReplacementVisitor replacementVisitor =
+                new MathExpressionSymbolReplacementVisitor(replacementMap);
+        replacementVisitor.handle(mathStatementsSymbol);
+        replacementVisitor.handle(mathStatementsSymbol);
+    }
+
+    public static void replace(MathStatementsSymbol mathStatementsSymbol,
+                               Function<MathExpressionSymbol, MathExpressionSymbol> replacementFunction) {
+        MathExpressionSymbolReplacementVisitor replacementVisitor =
+                new MathExpressionSymbolReplacementVisitor(replacementFunction);
+        replacementVisitor.handle(mathStatementsSymbol);
+        replacementVisitor.handle(mathStatementsSymbol);
+    }
+
+    protected MathExpressionSymbolReplacementVisitor(Map<MathExpressionSymbol, MathExpressionSymbol> replacementMap) {
         this.replacementMap = replacementMap;
     }
 
-    public ReplacementVisitor(Function<MathExpressionSymbol, MathExpressionSymbol> replacementFunction) {
+    protected MathExpressionSymbolReplacementVisitor(Function<MathExpressionSymbol, MathExpressionSymbol> replacementFunction) {
         this.replacementFunction = replacementFunction;
     }
 
@@ -53,7 +85,7 @@ public class ReplacementVisitor implements MathExpressionSymbolVisitor {
     @Override
     public void visit(MathAssignmentExpressionSymbol node) {
         if (node.getMathMatrixAccessOperatorSymbol() != null)
-            node.setMathMatrixAccessOperatorSymbol((MathMatrixAccessOperatorSymbol) get(node.getMathMatrixAccessOperatorSymbol()));
+            node.setMathMatrixAccessOperatorSymbol(get(node.getMathMatrixAccessOperatorSymbol()));
         if (node.getExpressionSymbol() != null)
             node.setExpressionSymbol(get(node.getExpressionSymbol()));
     }
@@ -142,7 +174,7 @@ public class ReplacementVisitor implements MathExpressionSymbolVisitor {
 
     @Override public void visit(MathMatrixAccessOperatorSymbol node) {
         if (node.getMathMatrixNameExpressionSymbol() != null)
-            node.setMathMatrixNameExpressionSymbol((MathMatrixNameExpressionSymbol) get(node.getMathMatrixNameExpressionSymbol()));
+            node.setMathMatrixNameExpressionSymbol(get(node.getMathMatrixNameExpressionSymbol()));
         ListIterator<MathMatrixAccessSymbol> iterator = node.getMathMatrixAccessSymbols().listIterator();
         while(iterator.hasNext()) {
             MathExpressionSymbol next = iterator.next();
@@ -154,7 +186,7 @@ public class ReplacementVisitor implements MathExpressionSymbolVisitor {
         if (node.isASTMathMatrixNamePresent())
             node.setAstMathMatrixNameExpression(node.getAstMathMatrixNameExpression());
         if (node.isMathMatrixAccessOperatorSymbolPresent())
-            node.setMathMatrixAccessOperatorSymbol((MathMatrixAccessOperatorSymbol) get(node.getMathMatrixAccessOperatorSymbol()));
+            node.setMathMatrixAccessOperatorSymbol(get(node.getMathMatrixAccessOperatorSymbol()));
     }
 
     @Override public void visit(MathMatrixVectorExpressionSymbol node) {
