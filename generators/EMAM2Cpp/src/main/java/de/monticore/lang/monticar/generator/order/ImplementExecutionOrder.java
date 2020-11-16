@@ -137,7 +137,7 @@ public class ImplementExecutionOrder {
             //Case that given block is a block with an initial value parameter such as
             // Constant, Memory or Delay
             if ((subInst.getSubComponents().isEmpty() && subInst.getIncomingPortInstances().isEmpty()
-                    || !subInst.getComponentType().getConfigParameters().isEmpty())
+                    /*|| !subInst.getComponentType().getConfigParameters().isEmpty()*/)
                     && taggingResolver.getTags(subInst, TagExecutionOrderSymbol.KIND).isEmpty()) {
                 ExecutionOrder e = new NonVirtualBlock(s, b);
                 Log.info(e.toString(), "Adding tag:");
