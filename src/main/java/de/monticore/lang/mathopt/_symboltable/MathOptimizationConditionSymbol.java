@@ -66,6 +66,19 @@ public class MathOptimizationConditionSymbol extends MathExpressionSymbol {
         return boundedExpression;
     }
 
+    // setter
+    public void setLowerBound(MathExpressionSymbol lowerBound) {
+        this.lowerBound = lowerBound;
+    }
+    // setter
+    public void setUpperBound(MathExpressionSymbol upperBound) {
+        this.upperBound = upperBound;
+    }
+    // setter
+    public void setBoundedExpression(MathExpressionSymbol boundedExpression) {
+        this.boundedExpression = boundedExpression;
+    }
+
     /**
      * Uses optimizationVariable to determine which is the bounded expression and which is the bound and maybe switch
      * bound and bounded expression
