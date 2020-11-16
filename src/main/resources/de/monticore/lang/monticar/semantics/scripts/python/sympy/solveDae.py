@@ -93,7 +93,7 @@ ics = {}
 for i in range(len(args.y0)):
     ics[args.functions[i]] = args.y0[i]
 
-time = 't'
+time = 'current_Time'
 system = []
 for eq in args.system:
     newEq = eq
