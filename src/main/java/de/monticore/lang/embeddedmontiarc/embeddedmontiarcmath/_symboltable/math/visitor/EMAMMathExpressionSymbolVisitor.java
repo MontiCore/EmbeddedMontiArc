@@ -1,9 +1,7 @@
 /* (c) https://github.com/MontiCore/monticore */
 package de.monticore.lang.embeddedmontiarc.embeddedmontiarcmath._symboltable.math.visitor;
 
-import de.monticore.lang.embeddedmontiarc.embeddedmontiarcmath._symboltable.math.symbols.EMAMInitialGuessSymbol;
-import de.monticore.lang.embeddedmontiarc.embeddedmontiarcmath._symboltable.math.symbols.EMAMInitialValueSymbol;
-import de.monticore.lang.embeddedmontiarc.embeddedmontiarcmath._symboltable.math.symbols.EMAMEquationSymbol;
+import de.monticore.lang.embeddedmontiarc.embeddedmontiarcmath._symboltable.math.symbols.*;
 import de.monticore.lang.math._symboltable.expression.MathExpressionSymbol;
 import de.monticore.lang.mathopt._symboltable.visitor.MathOptExpressionSymbolVisitor;
 
@@ -12,6 +10,8 @@ public interface EMAMMathExpressionSymbolVisitor extends MathOptExpressionSymbol
     @Override
     public default void handle(MathExpressionSymbol node) {
         if (node == null) return;
+        else if (node instanceof EMAMSpecificationSymbol)
+            handle((EMAMSpecificationSymbol) node);
         else if (node instanceof EMAMEquationSymbol)
             handle((EMAMEquationSymbol) node);
         else if (node instanceof EMAMInitialGuessSymbol)
@@ -20,6 +20,54 @@ public interface EMAMMathExpressionSymbolVisitor extends MathOptExpressionSymbol
             handle((EMAMInitialValueSymbol) node);
         else
             MathOptExpressionSymbolVisitor.super.handle(node);
+    }
+
+    public default void handle(EMAMSpecificationSymbol node) {
+        if (shouldContinue(node)) {
+            visit(node);
+            traverse(node);
+            endVisit(node);
+        }
+    }
+
+    public default void traverse(EMAMSpecificationSymbol node) {
+        for (EMAMSymbolicVariableSymbol variable : node.getVariables())
+            handle(variable);
+        for (EMAMInitialValueSymbol initialValue : node.getInitialValues())
+            handle(initialValue);
+        for (EMAMInitialGuessSymbol initialGuess : node.getInitialGuesses())
+            handle(initialGuess);
+        for (EMAMEquationSymbol equation : node.getEquations())
+            handle(equation);
+    }
+
+    public default void visit(EMAMSpecificationSymbol node) {
+
+    }
+
+    public default void endVisit(EMAMSpecificationSymbol node) {
+
+    }
+
+
+    public default void handle(EMAMSymbolicVariableSymbol node) {
+        if (shouldContinue(node)) {
+            visit(node);
+            traverse(node);
+            endVisit(node);
+        }
+    }
+
+    public default void traverse(EMAMSymbolicVariableSymbol node) {
+        if (node.getType() != null) handle(node.getType());
+    }
+
+    public default void visit(EMAMSymbolicVariableSymbol node) {
+
+    }
+
+    public default void endVisit(EMAMSymbolicVariableSymbol node) {
+
     }
 
     public default void handle(EMAMEquationSymbol node) {

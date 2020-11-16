@@ -123,7 +123,7 @@ public class EmbeddedMontiArcMathSymbolTableCreatorTOP extends de.monticore.symb
   @Override
   public void endVisit(ASTSymbolicDeclaration node) {
     for (String name : node.getNameList()) {
-      MathValueSymbol symbol = new MathValueSymbol(name);
+      EMAMSymbolicVariableSymbol symbol = new EMAMSymbolicVariableSymbol(name);
       symbol.setType(MathValueType.convert(node.getType()));
       symbol.getType().getProperties().add("Symbolic");
       addToScopeAndLinkWithNode(symbol, node);

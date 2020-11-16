@@ -1,17 +1,48 @@
 /* (c) https://github.com/MontiCore/monticore */
 package de.monticore.lang.embeddedmontiarc.embeddedmontiarcmath._symboltable.math.visitor;
 
-import de.monticore.lang.embeddedmontiarc.embeddedmontiarcmath._symboltable.math.symbols.EMAMInitialGuessSymbol;
-import de.monticore.lang.embeddedmontiarc.embeddedmontiarcmath._symboltable.math.symbols.EMAMInitialValueSymbol;
-import de.monticore.lang.embeddedmontiarc.embeddedmontiarcmath._symboltable.math.symbols.EMAMEquationSymbol;
+import de.monticore.lang.embeddedmontiarc.embeddedmontiarcmath._symboltable.math.symbols.*;
+import de.monticore.lang.math._symboltable.MathStatementsSymbol;
 import de.monticore.lang.math._symboltable.expression.*;
+import de.monticore.lang.math._symboltable.visitor.MathExpressionSymbolReplacementVisitor;
 import de.monticore.lang.mathopt._symboltable.visitor.MathOptExpressionSymbolReplacementVisitor;
 
+import java.util.ArrayList;
+import java.util.Collection;
+import java.util.Iterator;
 import java.util.Map;
 import java.util.function.Function;
 
 public class EMAMMathExpressionSymbolReplacementVisitor extends MathOptExpressionSymbolReplacementVisitor
         implements EMAMMathExpressionSymbolVisitor {
+
+    public static void replace(MathExpressionSymbol mathExpressionSymbol,
+                               Map<MathExpressionSymbol, MathExpressionSymbol> replacementMap) {
+        EMAMMathExpressionSymbolReplacementVisitor replacementVisitor =
+                new EMAMMathExpressionSymbolReplacementVisitor(replacementMap);
+        replacementVisitor.handle(mathExpressionSymbol);
+    }
+
+    public static void replace(MathExpressionSymbol mathExpressionSymbol,
+                               Function<MathExpressionSymbol, MathExpressionSymbol> replacementFunction) {
+        EMAMMathExpressionSymbolReplacementVisitor replacementVisitor =
+                new EMAMMathExpressionSymbolReplacementVisitor(replacementFunction);
+        replacementVisitor.handle(mathExpressionSymbol);
+    }
+
+    public static void replace(MathStatementsSymbol mathStatementsSymbol,
+                               Map<MathExpressionSymbol, MathExpressionSymbol> replacementMap) {
+        EMAMMathExpressionSymbolReplacementVisitor replacementVisitor =
+                new EMAMMathExpressionSymbolReplacementVisitor(replacementMap);
+        replacementVisitor.handle(mathStatementsSymbol);
+    }
+
+    public static void replace(MathStatementsSymbol mathStatementsSymbol,
+                               Function<MathExpressionSymbol, MathExpressionSymbol> replacementFunction) {
+        EMAMMathExpressionSymbolReplacementVisitor replacementVisitor =
+                new EMAMMathExpressionSymbolReplacementVisitor(replacementFunction);
+        replacementVisitor.handle(mathStatementsSymbol);
+    }
 
     public EMAMMathExpressionSymbolReplacementVisitor(Map<MathExpressionSymbol, MathExpressionSymbol> replacementMap) {
         super(replacementMap);
@@ -19,6 +50,33 @@ public class EMAMMathExpressionSymbolReplacementVisitor extends MathOptExpressio
 
     public EMAMMathExpressionSymbolReplacementVisitor(Function<MathExpressionSymbol, MathExpressionSymbol> replacementFunction) {
         super(replacementFunction);
+    }
+
+    @Override
+    public void visit(EMAMSpecificationSymbol node) {
+        Collection<EMAMSymbolicVariableSymbol> variables = new ArrayList<>();
+        Collection<EMAMInitialValueSymbol> initialValues = new ArrayList<>();
+        Collection<EMAMInitialGuessSymbol> initialGuesses = new ArrayList<>();
+        Collection<EMAMEquationSymbol> equations = new ArrayList<>();
+
+        for (EMAMSymbolicVariableSymbol variable : node.getVariables())
+            variables.add(get(variable));
+        for (EMAMInitialValueSymbol initialValue : node.getInitialValues())
+            initialValues.add(get(initialValue));
+        for (EMAMInitialGuessSymbol initialGuess : node.getInitialGuesses())
+            initialGuesses.add(get(initialGuess));
+        for (EMAMEquationSymbol equation : node.getEquations())
+            equations.add(get(equation));
+
+        node.setVariables(variables);
+        node.setInitialValues(initialValues);
+        node.setInitialGuesses(initialGuesses);
+        node.setEquations(equations);
+    }
+
+    @Override
+    public void visit(EMAMSymbolicVariableSymbol node) {
+        if (node.getType() != null) node.setType(get(node.getType()));
     }
 
     @Override

@@ -1,13 +1,15 @@
 /* (c) https://github.com/MontiCore/monticore */
 package de.monticore.lang.embeddedmontiarc.embeddedmontiarcmath.helper;
 
+import de.monticore.lang.embeddedmontiarc.embeddedmontiarcmath._symboltable.math.symbols.*;
+import de.monticore.lang.embeddedmontiarc.embeddedmontiarcmath._symboltable.math.visitor.EMAMMathExpressionSymbolVisitor;
 import de.monticore.lang.math._symboltable.MathForLoopHeadSymbol;
 import de.monticore.lang.math._symboltable.MathStatementsSymbol;
 import de.monticore.lang.math._symboltable.expression.*;
 import de.monticore.lang.math._symboltable.matrix.*;
 import de.monticore.lang.mathopt._symboltable.MathOptimizationConditionSymbol;
 import de.monticore.lang.mathopt._symboltable.MathOptimizationStatementSymbol;
-import de.monticore.lang.mathopt.visitor.MathOptExpressionSymbolVisitor;
+import de.monticore.lang.mathopt._symboltable.visitor.MathOptExpressionSymbolVisitor;
 
 import java.util.HashSet;
 import java.util.LinkedList;
@@ -30,7 +32,7 @@ public class MathExpressionSymbolHelper {
         return visitor.symbols;
     }
 
-    private static class AddAllVisitor implements MathOptExpressionSymbolVisitor {
+    private static class AddAllVisitor implements EMAMMathExpressionSymbolVisitor {
         List<MathExpressionSymbol> symbols = new LinkedList<>();
 
         @Override
@@ -137,6 +139,36 @@ public class MathExpressionSymbolHelper {
         public void visit(MathOptimizationConditionSymbol node) {
             symbols.add(node);
 
+        }
+
+        @Override
+        public void visit(MathMatrixArithmeticExpressionSymbol node) {
+            symbols.add(node);
+        }
+
+        @Override
+        public void visit(EMAMSpecificationSymbol node) {
+            symbols.add(node);
+        }
+
+        @Override
+        public void visit(EMAMSymbolicVariableSymbol node) {
+            symbols.add(node);
+        }
+
+        @Override
+        public void visit(EMAMEquationSymbol node) {
+            symbols.add(node);
+        }
+
+        @Override
+        public void visit(EMAMInitialGuessSymbol node) {
+            symbols.add(node);
+        }
+
+        @Override
+        public void visit(EMAMInitialValueSymbol node) {
+            symbols.add(node);
         }
 
         protected Set<MathExpressionSymbol> visitedSymbols = new HashSet<>();

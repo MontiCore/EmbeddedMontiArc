@@ -1,52 +1,89 @@
 /* (c) https://github.com/MontiCore/monticore */
 package de.monticore.lang.embeddedmontiarc.embeddedmontiarcmath._symboltable.math.visitor;
 
-import de.monticore.lang.embeddedmontiarc.embeddedmontiarcmath._symboltable.math.symbols.EMAMEquationSymbol;
-import de.monticore.lang.embeddedmontiarc.embeddedmontiarcmath._symboltable.math.symbols.EMAMInitialGuessSymbol;
-import de.monticore.lang.embeddedmontiarc.embeddedmontiarcmath._symboltable.math.symbols.EMAMInitialValueSymbol;
+import de.monticore.lang.embeddedmontiarc.embeddedmontiarcmath._symboltable.math.symbols.*;
 import de.monticore.lang.math._symboltable.MathStatementsSymbol;
 import de.monticore.lang.math._symboltable.expression.MathExpressionSymbol;
 import de.monticore.lang.math._symboltable.visitor.CopyMathExpressionSymbol;
+import de.monticore.lang.math._symboltable.visitor.MathStatementsSymbolCopy;
 import de.monticore.lang.mathopt._symboltable.visitor.CopyMathOptExpressionSymbol;
+
+import java.util.ArrayList;
+import java.util.LinkedList;
+import java.util.List;
 
 public class CopyEMAMMathExpressionSymbol extends CopyMathOptExpressionSymbol implements EMAMMathExpressionSymbolVisitor {
 
     public static MathStatementsSymbol copy(MathStatementsSymbol symbol) {
-        instance = new CopyEMAMMathExpressionSymbol();
-        return CopyMathOptExpressionSymbol.copy(symbol);
+        MathStatementsSymbolCopy res = new MathStatementsSymbolCopy(symbol.getName(), symbol.astMathStatements);
+        if (symbol.getAstNode().isPresent()) res.setAstNode(symbol.getAstNode().get());
+        res.setAccessModifier(symbol.getAccessModifier());
+        res.setPackageName(symbol.getPackageName());
+        res.setFullName(symbol.getFullName());
+        List<MathExpressionSymbol> mathExpressionSymbolsCopy = new LinkedList<>();
+        for (MathExpressionSymbol mathExpressionSymbol : symbol.getMathExpressionSymbols()) {
+            mathExpressionSymbolsCopy.add(copy(mathExpressionSymbol));
+        }
+        res.setMathExpressionSymbols(mathExpressionSymbolsCopy);
+        return res;
     }
 
     public static <T extends MathExpressionSymbol> T copy(T symbol) {
-        instance = new CopyEMAMMathExpressionSymbol();
-        return CopyMathOptExpressionSymbol.copy(symbol);
-    }
-
-    @Override
-    protected CopyMathExpressionSymbol instantiate() {
-        return new CopyEMAMMathExpressionSymbol();
+        CopyEMAMMathExpressionSymbol copy = new CopyEMAMMathExpressionSymbol();
+        copy.handle(symbol);
+        T res = copy.get(symbol);
+        return res;
     }
 
     @Override
     protected <T extends MathExpressionSymbol> T get(T symbol) {
         MathExpressionSymbol copy = copyMap.get(symbol);
         if (copy != null) return (T) copy;
-        if (symbol instanceof EMAMEquationSymbol)
+        if (symbol instanceof EMAMSpecificationSymbol)
+            copy = new EMAMSpecificationSymbol(new ArrayList<>(), new ArrayList<>());
+        else if (symbol instanceof EMAMSymbolicVariableSymbol)
+            copy = new EMAMSymbolicVariableSymbol("");
+        else if (symbol instanceof EMAMEquationSymbol)
             copy = new EMAMEquationSymbol();
         else if (symbol instanceof EMAMInitialGuessSymbol)
-            copy = new EMAMInitialGuessSymbol(((EMAMInitialGuessSymbol) symbol).getNameToAccess());
+            copy = new EMAMInitialGuessSymbol("");
         else if (symbol instanceof EMAMInitialValueSymbol)
-            copy = new EMAMInitialValueSymbol(((EMAMInitialValueSymbol) symbol).getNameToAccess());
+            copy = new EMAMInitialValueSymbol("");
         else
-            copy = super.get(symbol);
+            return super.get(symbol);
 
-        leftToCopy.put(copy, symbol);
         copyMap.put(symbol, copy);
         return (T) copy;
     }
 
+
+    @Override
+    public void endVisit(EMAMSpecificationSymbol node) {
+        EMAMSpecificationSymbol res = get(node);
+        for (EMAMSymbolicVariableSymbol variable : node.getVariables())
+            res.addVariable(get(variable));
+        for (EMAMInitialValueSymbol initialValue : node.getInitialValues())
+            res.addInitialValue(get(initialValue));
+        for (EMAMInitialGuessSymbol initialGuess : node.getInitialGuesses())
+            res.addInitialGuess(get(initialGuess));
+        for (EMAMEquationSymbol equation : node.getEquations())
+            res.addEquation(get(equation));
+        copyMap.put(node, res);
+    }
+
+    @Override
+    public void endVisit(EMAMSymbolicVariableSymbol node) {
+        EMAMSymbolicVariableSymbol res = get(node);
+        copyMathExpressionSymbol(res, node);
+        if (node.getName() != null) res.setName(node.getName());
+        if (node.getPort().isPresent()) res.setPort(node.getPort().get());
+        if (node.getType() != null) res.setType(get(node.getType()));
+        copyMap.put(node, res);
+    }
+
     @Override
     public void endVisit(EMAMEquationSymbol node) {
-        EMAMEquationSymbol res = new EMAMEquationSymbol();
+        EMAMEquationSymbol res = get(node);
         copyMathExpressionSymbol(res, node);
         if (node.getLeftExpression() != null) res.setLeftExpression(get(node.getLeftExpression()));
         if (node.getRightExpression() != null) res.setRightExpression(get(node.getRightExpression()));
@@ -55,8 +92,9 @@ public class CopyEMAMMathExpressionSymbol extends CopyMathOptExpressionSymbol im
 
     @Override
     public void endVisit(EMAMInitialGuessSymbol node) {
-        EMAMInitialGuessSymbol res = new EMAMInitialGuessSymbol(node.getNameToAccess());
+        EMAMInitialGuessSymbol res = get(node);
         copyMathExpressionSymbol(res, node);
+        if (node.getNameToAccess() != null) res.setNameToAccess(node.getNameToAccess());
         if (node.isMathMatrixAccessOperatorSymbolPresent())
             res.setMathMatrixAccessOperatorSymbol(get(node.getMathMatrixAccessOperatorSymbol()));
         if (node.getValue() != null)
@@ -66,8 +104,9 @@ public class CopyEMAMMathExpressionSymbol extends CopyMathOptExpressionSymbol im
 
     @Override
     public void endVisit(EMAMInitialValueSymbol node) {
-        EMAMInitialValueSymbol res = new EMAMInitialValueSymbol(node.getNameToAccess());
+        EMAMInitialValueSymbol res = get(node);
         copyMathExpressionSymbol(res, node);
+        if (node.getNameToAccess() != null) res.setNameToAccess(node.getNameToAccess());
         if (node.isMathMatrixAccessOperatorSymbolPresent())
             res.setMathMatrixAccessOperatorSymbol(get(node.getMathMatrixAccessOperatorSymbol()));
         if (node.getValue() != null)
