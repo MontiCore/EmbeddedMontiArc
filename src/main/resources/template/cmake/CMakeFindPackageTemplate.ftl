@@ -11,23 +11,23 @@
 <#if viewModel.findPath>
 find_path(${viewModel.packageName}_INCLUDE_DIR
         NAMES ${viewModel.includeName}
-        PATH_SUFFIXES "include"
+        PATH_SUFFIXES <#list viewModel.includePathSuffixes as suffix>"${suffix}" </#list>
         PATHS
         <#list viewModel.includePaths as var>
         "${var}"
         </#list>
-        HINTS $ENV{${viewModel.packageName}_HOME}
+        HINTS <#list viewModel.environmentVariableHints as hint>$ENV{${hint}} </#list>
         )
 </#if>
 <#if viewModel.findLibrary>
 find_library(${viewModel.packageName}_LIBRARY
         NAMES ${viewModel.libName}
-        PATH_SUFFIXES "lib" "lib64" "lib/x86_64-linux-gnu" "examples/lib_win64" "build" "Release" "x64" "x86"
+        PATH_SUFFIXES <#list viewModel.libraryPathSuffixes as suffix>"${suffix}" </#list>
         PATHS
         <#list viewModel.libPaths as var>
         "${var}"
         </#list>
-        HINTS $ENV{${viewModel.packageName}_HOME}
+        HINTS <#list viewModel.environmentVariableHints as hint>$ENV{${hint}} </#list>
         )
 </#if>
 
@@ -35,8 +35,8 @@ include(FindPackageHandleStandardArgs)
 # if all listed variables are TRUE
 <#if viewModel.findAsPackage>
 find_package(${viewModel.packageName}
-    PATH_SUFFIXES "lib" "lib64" "lib/x86_64-linux-gnu" "examples/lib_win64" "build" "Release" "x64" "x86"
-    HINTS $ENV{${viewModel.packageName}_HOME}
+    PATH_SUFFIXES <#list viewModel.libraryPathSuffixes as suffix>"${suffix}" </#list>
+    HINTS <#list viewModel.environmentVariableHints as hint>$ENV{${hint}} </#list>
     REQUIRED
     )
 <#else>

@@ -3,9 +3,7 @@ package de.monticore.lang.monticar.generator.cmake;
 
 import de.monticore.lang.monticar.generator.cpp.viewmodel.ViewModelBase;
 
-import java.util.ArrayList;
-import java.util.List;
-import java.util.Objects;
+import java.util.*;
 
 /**
  * Representation of CMake Find files as Java class.
@@ -18,8 +16,11 @@ public class CMakeFindModule extends ViewModelBase {
     private String packageName;
     private String includeName;
     private String libName;
-    private List<String> includePaths = new ArrayList<>();
-    private List<String> libPaths = new ArrayList<>();
+    private List<String> includePaths = new ArrayList();
+    private List<String> libPaths = new ArrayList();
+    private List<String> environmentVariableHints = new ArrayList();
+    private List<String> includePathSuffixes = new ArrayList();
+    private List<String> libraryPathSuffixes = new ArrayList();
     private Boolean findPath;
     private Boolean findLibrary;
     private Boolean fortranQuadMath = false;
@@ -27,22 +28,38 @@ public class CMakeFindModule extends ViewModelBase {
 
     private boolean required;
 
+    private final List<String> includeSuffixes = Arrays.asList("include");
+    private final List<String> librarySuffixes = Arrays.asList("lib", "lib64", "lib/x86_64-linux-gnu", "examples/lib_win64", "build", "Release", "x64", "x86");
+
     public CMakeFindModule(String moduleName, Boolean required) {
         this.packageName = moduleName;
         this.required = required;
+        includePathSuffixes.addAll(includeSuffixes);
+        libraryPathSuffixes.addAll(librarySuffixes);
         // guess rest
+        this.environmentVariableHints.add(String.format("%s_HOME", moduleName));
         this.includeName = moduleName.toLowerCase();
         this.libName = moduleName.toLowerCase();
         findPath = true;
         findLibrary = true;
     }
 
-    public CMakeFindModule(String packageName, String includeName, String libName, List<String> includePaths, List<String> libPaths, Boolean findPath, Boolean findLibrary, boolean required) {
+    public CMakeFindModule(String packageName, String includeName, String libName,
+                           List<String> includePaths, List<String> libPaths,
+                           List<String> additionalIncludePathSuffixes, List<String> additionalLibraryPathSuffixes,
+                           List<String> additionalEnvironmentVariableHints,
+                           Boolean findPath, Boolean findLibrary, boolean required) {
         this.packageName = packageName;
         this.includeName = includeName;
         this.libName = libName;
         this.includePaths = includePaths;
         this.libPaths = libPaths;
+        this.environmentVariableHints.add(String.format("%s_HOME", packageName));
+        this.environmentVariableHints.addAll(additionalEnvironmentVariableHints);
+        this.includePathSuffixes.addAll(includeSuffixes);
+        this.libraryPathSuffixes.addAll(librarySuffixes);
+        this.libraryPathSuffixes.addAll(additionalLibraryPathSuffixes);
+        this.includePathSuffixes.addAll(additionalIncludePathSuffixes);
         this.findPath = findPath;
         this.findLibrary = findLibrary;
         this.required = required;
@@ -145,7 +162,32 @@ public class CMakeFindModule extends ViewModelBase {
         this.findAsPackage = findAsPackage;
     }
 
+    public List<String> getIncludePathSuffixes() {
+        return includePathSuffixes;
+    }
+
+    public void addAdditionalIncludePathSuffixes(Collection<String> additionalIncludePathSuffixes) {
+        this.includePathSuffixes.addAll(additionalIncludePathSuffixes);
+    }
+
+    public List<String> getLibraryPathSuffixes() {
+        return libraryPathSuffixes;
+    }
+
+    public void addAdditionalLibraryPathSuffixes(Collection<String> additionalLibraryPathSuffixes) {
+        this.libraryPathSuffixes.addAll(additionalLibraryPathSuffixes);
+    }
+
+    public List<String> getEnvironmentVariableHints() {
+        return environmentVariableHints;
+    }
+
+    public void addAdditionalEnvironmentVariableHints(List<String> additionalEnvironmentVariableHints) {
+        this.environmentVariableHints.addAll(additionalEnvironmentVariableHints);
+    }
+
     // equals and hashcode
+
 
     @Override
     public boolean equals(Object o) {
@@ -158,6 +200,9 @@ public class CMakeFindModule extends ViewModelBase {
                 Objects.equals(getLibName(), that.getLibName()) &&
                 Objects.equals(getIncludePaths(), that.getIncludePaths()) &&
                 Objects.equals(getLibPaths(), that.getLibPaths()) &&
+                Objects.equals(getEnvironmentVariableHints(), that.getEnvironmentVariableHints()) &&
+                Objects.equals(getIncludePathSuffixes(), that.getIncludePathSuffixes()) &&
+                Objects.equals(getLibraryPathSuffixes(), that.getLibraryPathSuffixes()) &&
                 Objects.equals(getFindPath(), that.getFindPath()) &&
                 Objects.equals(getFindLibrary(), that.getFindLibrary()) &&
                 Objects.equals(getFortranQuadMath(), that.getFortranQuadMath()) &&
@@ -166,6 +211,6 @@ public class CMakeFindModule extends ViewModelBase {
 
     @Override
     public int hashCode() {
-        return Objects.hash(getPackageName(), getIncludeName(), getLibName(), getIncludePaths(), getLibPaths(), getFindPath(), getFindLibrary(), getFortranQuadMath(), getFindAsPackage(), isRequired());
+        return Objects.hash(getPackageName(), getIncludeName(), getLibName(), getIncludePaths(), getLibPaths(), getEnvironmentVariableHints(), getIncludePathSuffixes(), getLibraryPathSuffixes(), getFindPath(), getFindLibrary(), getFortranQuadMath(), getFindAsPackage(), isRequired());
     }
 }
