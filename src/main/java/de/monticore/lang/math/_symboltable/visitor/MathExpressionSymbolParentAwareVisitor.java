@@ -1,3 +1,9 @@
+/**
+ * (c) https://github.com/MontiCore/monticore
+ * <p>
+ * The license generally applicable for this project
+ * can be found under https://github.com/MontiCore/monticore.
+ */
 /* (c) https://github.com/MontiCore/monticore */
 package de.monticore.lang.math._symboltable.visitor;
 
@@ -9,193 +15,233 @@ import java.util.Stack;
 
 public interface MathExpressionSymbolParentAwareVisitor extends MathExpressionSymbolVisitor {
 
-    Stack<MathExpressionSymbol> parents = new Stack<>();
+    Stack<MathExpressionSymbol> getParents();
 
     default void pushParent(MathExpressionSymbol parent) {
-        parents.push(parent);
+        getParents().push(parent);
     }
 
     default void popParent() {
-        parents.pop();
+        getParents().pop();
     }
 
     @Override
     public default void handle(MathArithmeticExpressionSymbol node) {
-        pushParent(node);
-        visit(node);
-        traverse(node);
-        endVisit(node);
-        popParent();
+        if (shouldContinue(node)) {
+            visit(node);
+            pushParent(node);
+            traverse(node);
+            popParent();
+            endVisit(node);
+        }
     }
 
     @Override
     public default void handle(MathAssignmentExpressionSymbol node) {
-        pushParent(node);
-        visit(node);
-        traverse(node);
-        endVisit(node);
-        popParent();
+        if (shouldContinue(node)) {
+            visit(node);
+            pushParent(node);
+            traverse(node);
+            popParent();
+            endVisit(node);
+        }
     }
 
     @Override
     public default void handle(MathBooleanExpressionSymbol node) {
-        pushParent(node);
-        visit(node);
-        traverse(node);
-        endVisit(node);
-        popParent();
+        if (shouldContinue(node)) {
+            visit(node);
+            pushParent(node);
+            traverse(node);
+            popParent();
+            endVisit(node);
+        }
     }
 
     @Override
     public default void handle(MathCompareExpressionSymbol node) {
-        pushParent(node);
-        visit(node);
-        traverse(node);
-        endVisit(node);
-        popParent();
+        if (shouldContinue(node)) {
+            visit(node);
+            pushParent(node);
+            traverse(node);
+            popParent();
+            endVisit(node);
+        }
     }
 
     @Override
     public default void handle(MathConditionalExpressionsSymbol node) {
-        pushParent(node);
-        visit(node);
-        traverse(node);
-        endVisit(node);
-        popParent();
+        if (shouldContinue(node)) {
+            visit(node);
+            pushParent(node);
+            traverse(node);
+            popParent();
+            endVisit(node);
+        }
     }
 
     @Override
     public default void handle(MathConditionalExpressionSymbol node) {
-        pushParent(node);
-        visit(node);
-        traverse(node);
-        endVisit(node);
-        popParent();
+        if (shouldContinue(node)) {
+            visit(node);
+            pushParent(node);
+            traverse(node);
+            popParent();
+            endVisit(node);
+        }
     }
 
     @Override
     public default void handle(MathForLoopHeadSymbol node) {
-        pushParent(node);
-        visit(node);
-        traverse(node);
-        endVisit(node);
-        popParent();
+        if (shouldContinue(node)) {
+            visit(node);
+            pushParent(node);
+            traverse(node);
+            popParent();
+            endVisit(node);
+        }
     }
 
     @Override
     public default void handle(MathForLoopExpressionSymbol node) {
-        pushParent(node);
-        visit(node);
-        traverse(node);
-        endVisit(node);
-        popParent();
+        if (shouldContinue(node)) {
+            visit(node);
+            pushParent(node);
+            traverse(node);
+            popParent();
+            endVisit(node);
+        }
     }
 
     @Override
     public default void handle(MathNameExpressionSymbol node) {
-        pushParent(node);
-        visit(node);
-        traverse(node);
-        endVisit(node);
-        popParent();
+        if (shouldContinue(node)) {
+            visit(node);
+            pushParent(node);
+            traverse(node);
+            popParent();
+            endVisit(node);
+        }
     }
 
     @Override
     public default void handle(MathNumberExpressionSymbol node) {
-        pushParent(node);
-        visit(node);
-        traverse(node);
-        endVisit(node);
-        popParent();
+        if (shouldContinue(node)) {
+            visit(node);
+            pushParent(node);
+            traverse(node);
+            popParent();
+            endVisit(node);
+        }
     }
 
     @Override
     public default void handle(MathParenthesisExpressionSymbol node) {
-        pushParent(node);
-        visit(node);
-        traverse(node);
-        endVisit(node);
-        popParent();
+        if (shouldContinue(node)) {
+            visit(node);
+            pushParent(node);
+            traverse(node);
+            popParent();
+            endVisit(node);
+        }
     }
 
     @Override
     public default void handle(MathPreOperatorExpressionSymbol node) {
-        pushParent(node);
-        visit(node);
-        traverse(node);
-        endVisit(node);
-        popParent();
+        if (shouldContinue(node)) {
+            visit(node);
+            pushParent(node);
+            traverse(node);
+            popParent();
+            endVisit(node);
+        }
     }
 
     @Override
     public default void handle(MathValueSymbol node) {
-        pushParent(node);
-        visit(node);
-        traverse(node);
-        endVisit(node);
-        popParent();
+        if (shouldContinue(node)) {
+            visit(node);
+            pushParent(node);
+            traverse(node);
+            popParent();
+            endVisit(node);
+        }
     }
 
     @Override
     public default void handle(MathValueType node) {
-        pushParent(node);
-        visit(node);
-        traverse(node);
-        endVisit(node);
-        popParent();
+        if (shouldContinue(node)) {
+            visit(node);
+            pushParent(node);
+            traverse(node);
+            popParent();
+            endVisit(node);
+        }
     }
 
     @Override
     public default void handle(MathMatrixAccessOperatorSymbol node) {
-        pushParent(node);
-        visit(node);
-        traverse(node);
-        endVisit(node);
-        popParent();
+        if (shouldContinue(node)) {
+            visit(node);
+            pushParent(node);
+            traverse(node);
+            popParent();
+            endVisit(node);
+        }
     }
 
     @Override
     public default void handle(MathMatrixNameExpressionSymbol node) {
-        pushParent(node);
-        visit(node);
-        traverse(node);
-        endVisit(node);
-        popParent();
+        if (shouldContinue(node)) {
+            visit(node);
+            pushParent(node);
+            traverse(node);
+            popParent();
+            endVisit(node);
+        }
     }
 
     @Override
     public default void handle(MathMatrixVectorExpressionSymbol node) {
-        pushParent(node);
-        visit(node);
-        traverse(node);
-        endVisit(node);
-        popParent();
+        if (shouldContinue(node)) {
+            visit(node);
+            pushParent(node);
+            traverse(node);
+            popParent();
+            endVisit(node);
+        }
     }
 
     @Override
     public default void handle(MathMatrixArithmeticValueSymbol node) {
-        pushParent(node);
-        visit(node);
-        traverse(node);
-        endVisit(node);
-        popParent();
+        if (shouldContinue(node)) {
+            visit(node);
+            pushParent(node);
+            traverse(node);
+            popParent();
+            endVisit(node);
+        }
     }
 
     @Override
     public default void handle(MathMatrixAccessSymbol node) {
-        pushParent(node);
-        visit(node);
-        traverse(node);
-        endVisit(node);
-        popParent();
+        if (shouldContinue(node)) {
+            visit(node);
+            pushParent(node);
+            traverse(node);
+            popParent();
+            endVisit(node);
+        }
     }
 
     @Override
     public default void handle(MathMatrixArithmeticExpressionSymbol node) {
-        pushParent(node);
-        visit(node);
-        traverse(node);
-        endVisit(node);
-        popParent();
+        if (shouldContinue(node)) {
+            visit(node);
+            pushParent(node);
+            traverse(node);
+            popParent();
+            endVisit(node);
+        }
     }
 }

@@ -1,24 +1,15 @@
 /* (c) https://github.com/MontiCore/monticore */
-package de.monticore.lang.math._symboltable.copy;
+package de.monticore.lang.math._symboltable.visitor;
 
 import de.monticore.lang.math._symboltable.MathForLoopHeadSymbol;
 import de.monticore.lang.math._symboltable.MathStatementsSymbol;
 import de.monticore.lang.math._symboltable.expression.*;
 import de.monticore.lang.math._symboltable.matrix.*;
-import de.monticore.lang.math._symboltable.visitor.MathExpressionSymbolParentAwareVisitor;
-import de.monticore.lang.math._symboltable.visitor.MathExpressionSymbolVisitor;
-import de.monticore.lang.math._symboltable.visitor.ReplacementVisitor;
 import de.monticore.symboltable.MutableScope;
 
 import java.util.*;
 
 public class CopyMathExpressionSymbol implements MathExpressionSymbolVisitor {
-
-    protected static CopyMathExpressionSymbol instance = new CopyMathExpressionSymbol();
-
-    protected CopyMathExpressionSymbol instantiate() {
-        return new CopyMathExpressionSymbol();
-    }
 
     public static MathStatementsSymbol copy(MathStatementsSymbol symbol) {
         MathStatementsSymbolCopy res = new MathStatementsSymbolCopy(symbol.getName(), symbol.astMathStatements);
@@ -35,24 +26,16 @@ public class CopyMathExpressionSymbol implements MathExpressionSymbolVisitor {
     }
 
     public static <T extends MathExpressionSymbol> T copy(T symbol) {
-        CopyMathExpressionSymbol copy = instance.instantiate();
+        CopyMathExpressionSymbol copy = new CopyMathExpressionSymbol();
         copy.handle(symbol);
         T res = copy.get(symbol);
-        Map<MathExpressionSymbol, MathExpressionSymbol> replacementMap = new HashMap<>();
-        for (MathExpressionSymbol key : copy.leftToCopy.keySet()) {
-            replacementMap.put(key, copy.get(copy.leftToCopy.get(key)));
-        }
-        ReplacementVisitor replacementVisitor = new ReplacementVisitor(replacementMap);
-        replacementVisitor.handle(res);
         return res;
     }
 
     protected Map<MathExpressionSymbol, MathExpressionSymbol> copyMap;
-    protected Map<MathExpressionSymbol, MathExpressionSymbol> leftToCopy;
 
     public CopyMathExpressionSymbol() {
         copyMap = new HashMap<>();
-        leftToCopy = new HashMap<>();
     }
 
     protected <T extends MathExpressionSymbol> T get(T symbol) {
@@ -98,7 +81,7 @@ public class CopyMathExpressionSymbol implements MathExpressionSymbolVisitor {
             copy = new MathMatrixAccessSymbol();
         else if (symbol instanceof MathMatrixArithmeticExpressionSymbol)
             copy = new MathMatrixArithmeticExpressionSymbol();
-        leftToCopy.put(copy, symbol);
+
         copyMap.put(symbol, copy);
         return (T) copy;
     }
@@ -127,7 +110,7 @@ public class CopyMathExpressionSymbol implements MathExpressionSymbolVisitor {
 
     @Override
     public void endVisit(MathAssignmentExpressionSymbol node) {
-        MathAssignmentExpressionSymbol res = new MathAssignmentExpressionSymbol();
+        MathAssignmentExpressionSymbol res = get(node);
         copyMathExpressionSymbol(res, node);
         res.setNameOfMathValue(node.getNameOfMathValue());
         if (node.getMathMatrixAccessOperatorSymbol() != null)
@@ -139,14 +122,14 @@ public class CopyMathExpressionSymbol implements MathExpressionSymbolVisitor {
 
     @Override
     public void endVisit(MathBooleanExpressionSymbol node) {
-        MathBooleanExpressionSymbol res = new MathBooleanExpressionSymbol(Boolean.valueOf(node.getTextualRepresentation()));
+        MathBooleanExpressionSymbol res = get(node);
         copyMathExpressionSymbol(res, node);
         copyMap.put(node, res);
     }
 
     @Override
     public void endVisit(MathCompareExpressionSymbol node) {
-        MathCompareExpressionSymbol res = new MathCompareExpressionSymbol();
+        MathCompareExpressionSymbol res = get(node);
         copyMathExpressionSymbol(res, node);
         res.setCompareOperator(node.getCompareOperator());
         if (node.getLeftExpression() != null) res.setLeftExpression(get(node.getLeftExpression()));
@@ -157,7 +140,7 @@ public class CopyMathExpressionSymbol implements MathExpressionSymbolVisitor {
 
     @Override
     public void endVisit(MathConditionalExpressionsSymbol node) {
-        MathConditionalExpressionsSymbol res = new MathConditionalExpressionsSymbol();
+        MathConditionalExpressionsSymbol res = get(node);
         copyMathExpressionSymbol(res, node);
         if (node.getIfConditionalExpression() != null)
             res.setIfConditionalExpression((MathConditionalExpressionSymbol) get(node.getIfConditionalExpression()));
@@ -173,7 +156,7 @@ public class CopyMathExpressionSymbol implements MathExpressionSymbolVisitor {
 
     @Override
     public void endVisit(MathConditionalExpressionSymbol node) {
-        MathConditionalExpressionSymbol res = new MathConditionalExpressionSymbol();
+        MathConditionalExpressionSymbol res = get(node);
         copyMathExpressionSymbol(res, node);
         if (node.getCondition().isPresent()) res.setCondition(get(node.getCondition().get()));
         res.setBodyExpressions(new LinkedList<>());
@@ -185,7 +168,7 @@ public class CopyMathExpressionSymbol implements MathExpressionSymbolVisitor {
 
     @Override
     public void endVisit(MathForLoopHeadSymbol node) {
-        MathForLoopHeadSymbol res = new MathForLoopHeadSymbol();
+        MathForLoopHeadSymbol res = get(node);
         copyMathExpressionSymbol(res, node);
         res.setNameLoopVariable(node.getNameLoopVariable());
         if (node.getMathExpression() != null) res.setMathExpression(get(node.getMathExpression()));
@@ -194,7 +177,7 @@ public class CopyMathExpressionSymbol implements MathExpressionSymbolVisitor {
 
     @Override
     public void endVisit(MathForLoopExpressionSymbol node) {
-        MathForLoopExpressionSymbol res = new MathForLoopExpressionSymbol();
+        MathForLoopExpressionSymbol res = get(node);
         copyMathExpressionSymbol(res, node);
         if (node.getForLoopHead() != null) res.setForLoopHead((MathForLoopHeadSymbol) get(node.getForLoopHead()));
         for (int i = 0; i < node.getForLoopBody().size(); i++) {
@@ -205,7 +188,7 @@ public class CopyMathExpressionSymbol implements MathExpressionSymbolVisitor {
 
     @Override
     public void endVisit(MathNameExpressionSymbol node) {
-        MathNameExpressionSymbol res = new MathNameExpressionSymbol();
+        MathNameExpressionSymbol res = get(node);
         copyMathExpressionSymbol(res, node);
         res.setNameToResolveValue(node.getNameToResolveValue());
         res.setNameToAccess(node.getNameToAccess());
@@ -214,7 +197,7 @@ public class CopyMathExpressionSymbol implements MathExpressionSymbolVisitor {
 
     @Override
     public void endVisit(MathNumberExpressionSymbol node) {
-        MathNumberExpressionSymbol res = new MathNumberExpressionSymbol();
+        MathNumberExpressionSymbol res = get(node);
         copyMathExpressionSymbol(res, node);
         res.setValue(node.getValue());
         copyMap.put(node, res);
@@ -222,7 +205,7 @@ public class CopyMathExpressionSymbol implements MathExpressionSymbolVisitor {
 
     @Override
     public void endVisit(MathParenthesisExpressionSymbol node) {
-        MathParenthesisExpressionSymbol res = new MathParenthesisExpressionSymbol();
+        MathParenthesisExpressionSymbol res = get(node);
         copyMathExpressionSymbol(res, node);
         if (node.getMathExpressionSymbol() != null) res.setMathExpressionSymbol(get(node.getMathExpressionSymbol()));
         copyMap.put(node, res);
@@ -230,7 +213,7 @@ public class CopyMathExpressionSymbol implements MathExpressionSymbolVisitor {
 
     @Override
     public void endVisit(MathPreOperatorExpressionSymbol node) {
-        MathPreOperatorExpressionSymbol res = new MathPreOperatorExpressionSymbol();
+        MathPreOperatorExpressionSymbol res = get(node);
         copyMathExpressionSymbol(res, node);
         if (node.getMathExpressionSymbol() != null) res.setMathExpressionSymbol(get(node.getMathExpressionSymbol()));
         res.setOperator(node.getOperator());
@@ -239,7 +222,7 @@ public class CopyMathExpressionSymbol implements MathExpressionSymbolVisitor {
 
     @Override
     public void endVisit(MathValueSymbol node) {
-        MathValueSymbol res = new MathValueSymbol(node.getName());
+        MathValueSymbol res = get(node);
         copyMathExpressionSymbol(res, node);
         res.setMatrixProperties(node.getMatrixProperties());
         if (node.getType() != null) res.setType((MathValueType) get(node.getType()));
@@ -249,7 +232,7 @@ public class CopyMathExpressionSymbol implements MathExpressionSymbolVisitor {
 
     @Override
     public void endVisit(MathValueType node) {
-        MathValueType res = new MathValueType();
+        MathValueType res = get(node);
         copyMathExpressionSymbol(res, node);
         res.setProperties(node.getProperties());
         res.setType(node.getType());
@@ -262,32 +245,32 @@ public class CopyMathExpressionSymbol implements MathExpressionSymbolVisitor {
     }
 
     @Override public void endVisit(MathMatrixAccessOperatorSymbol node) {
-        MathMatrixAccessOperatorSymbol res = new MathMatrixAccessOperatorSymbol();
+        MathMatrixAccessOperatorSymbol res = get(node);
         copyMathExpressionSymbol(res, node);
         res.setAccessStartSymbol(node.getAccessStartSymbol());
         res.setAccessEndSymbol(node.getAccessEndSymbol());
         if (node.getMathMatrixNameExpressionSymbol() != null)
-            res.setMathMatrixNameExpressionSymbol((MathMatrixNameExpressionSymbol) get(node.getMathMatrixNameExpressionSymbol()));
+            res.setMathMatrixNameExpressionSymbol(get(node.getMathMatrixNameExpressionSymbol()));
         res.setMathMatrixAccessSymbols(new LinkedList<>());
         for (int i = 0; i < node.getMathMatrixAccessSymbols().size(); i++) {
-            res.getMathMatrixAccessSymbols().add((MathMatrixAccessSymbol) get(node.getMathMatrixAccessSymbols().get(i)));
+            res.getMathMatrixAccessSymbols().add(get(node.getMathMatrixAccessSymbols().get(i)));
         }
         copyMap.put(node, res);
     }
 
     @Override public void endVisit(MathMatrixNameExpressionSymbol node) {
-        MathMatrixNameExpressionSymbol res = new MathMatrixNameExpressionSymbol(node.getNameToAccess());
+        MathMatrixNameExpressionSymbol res = get(node);
         copyMathExpressionSymbol(res, node);
         if (node.isASTMathMatrixNamePresent())
             res.setAstMathMatrixNameExpression(node.getAstMathMatrixNameExpression());
         if (node.isMathMatrixAccessOperatorSymbolPresent())
-            res.setMathMatrixAccessOperatorSymbol((MathMatrixAccessOperatorSymbol) get(node.getMathMatrixAccessOperatorSymbol()));
+            res.setMathMatrixAccessOperatorSymbol(get(node.getMathMatrixAccessOperatorSymbol()));
         res.setNameToAccess(node.getNameToAccess());
         copyMap.put(node, res);
     }
 
     @Override public void endVisit(MathMatrixVectorExpressionSymbol node) {
-        MathMatrixVectorExpressionSymbol res = new MathMatrixVectorExpressionSymbol();
+        MathMatrixVectorExpressionSymbol res = get(node);
         copyMathExpressionSymbol(res, node);
         if (node.getStart() != null) res.setStart(get(node.getStart()));
         if (node.getStep().isPresent())
@@ -297,7 +280,7 @@ public class CopyMathExpressionSymbol implements MathExpressionSymbolVisitor {
     }
 
     @Override public void endVisit(MathMatrixArithmeticValueSymbol node) {
-        MathMatrixArithmeticValueSymbol res = new MathMatrixArithmeticValueSymbol();
+        MathMatrixArithmeticValueSymbol res = get(node);
         copyMathExpressionSymbol(res, node);
         res.setMatrixProperties(node.getMatrixProperties());
         res.setVectors(new LinkedList<>());
@@ -308,7 +291,7 @@ public class CopyMathExpressionSymbol implements MathExpressionSymbolVisitor {
     }
 
     @Override public void endVisit(MathMatrixAccessSymbol node) {
-        MathMatrixAccessSymbol res = new MathMatrixAccessSymbol();
+        MathMatrixAccessSymbol res = get(node);
         copyMathExpressionSymbol(res, node);
         if (node.getMathExpressionSymbol().isPresent())
             res.setMathExpressionSymbol(get(node.getMathExpressionSymbol().get()));
@@ -316,7 +299,7 @@ public class CopyMathExpressionSymbol implements MathExpressionSymbolVisitor {
     }
 
     @Override public void endVisit(MathMatrixArithmeticExpressionSymbol node) {
-        MathMatrixArithmeticExpressionSymbol res = new MathMatrixArithmeticExpressionSymbol();
+        MathMatrixArithmeticExpressionSymbol res = get(node);
         copyMathExpressionSymbol(res, node);
         res.setOperator(node.getOperator());
         res.setMathOperator(node.getMathOperator());
