@@ -218,4 +218,8 @@ public class Navigation extends EEComponent {
         return closestIndex;
     }
 
+    public Stack<Vec2> getTargets() {
+        return targets;
+    }
+
 }

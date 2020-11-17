@@ -14,6 +14,7 @@ import de.rwth.montisim.simulation.vehicle.powertrain.electrical.ElectricalPTPro
 import de.rwth.montisim.simulation.vehicle.powertrain.electrical.battery.BatteryProperties;
 import de.rwth.montisim.simulation.vehicle.powertrain.electrical.battery.BatteryProperties.BatteryType;
 import de.rwth.montisim.simulation.vehicle.powertrain.electrical.motor.ElectricMotorProperties;
+import de.rwth.montisim.simulation.vehicle.task.Task;
 
 public class DefaultVehicleConfig {
     public final VehicleProperties properties;
@@ -84,6 +85,11 @@ public class DefaultVehicleConfig {
 
     public DefaultVehicleConfig setName(String vehicleName){
         this.properties.vehicleName = vehicleName;
+        return this;
+    }
+
+    public DefaultVehicleConfig setTask(Task task) {
+        this.properties.setTask(task);
         return this;
     }
 

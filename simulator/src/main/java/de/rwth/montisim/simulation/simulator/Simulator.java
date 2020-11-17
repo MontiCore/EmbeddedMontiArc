@@ -168,7 +168,7 @@ public class Simulator implements ISimulator, Updatable {
     @Override
     public void registerTaskRunner(SimulationObject obj, TaskRunner runner) {
         SimulatorState state = (SimulatorState) obj.state;
-        state.updatableId = taskRunners.size();
+        state.taskRunnerId = taskRunners.size();
         taskRunners.add(runner);
     }
 
@@ -176,5 +176,9 @@ public class Simulator implements ISimulator, Updatable {
         Json.registerType(NavigationProperties.class);
         Json.registerType(JavaAutopilotProperties.class);
         Json.registerType(TestAutopilotProperties.class);
+    }
+
+    public Vector<Updatable> getUpdatables() {
+        return updatables;
     }
 }
