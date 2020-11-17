@@ -125,7 +125,8 @@ component And<N1 n=2> { // pass a parameter for the number of ports
 	   out Boolean out1;
 }
 ```
-In the above example, the And component received a parameter ``n`` of type ``N1`` (a single integer number) which is used to create an array of input ports. If upon instantiation no parameter is found n defaults to 2, as seen in the example. The EMA syntax allows Java-like array syntax. The ports can be referenced individually (e.g. ``And.in[0]``) or together (using the MATLAB-like ``And.in[:]``).
+In the above example, the And component received a parameter ``n`` of type ``N1`` (a single integer number) which is used to create an array of input ports. If upon instantiation no parameter is found n defaults to 2, as seen in the example. The EMA syntax allows Java-like array syntax. The ports can be referenced individually (e.g. ``And.in[1]``) or together (using the MATLAB-like ``And.in[:]``).
+Note: ``n`` starts at ``1`` NOT at ``0``. 
 
 * How to deal with generics and default generic values?  
 
