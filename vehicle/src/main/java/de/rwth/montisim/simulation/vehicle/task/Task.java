@@ -18,9 +18,6 @@ public class Task {
     }
 
     public void addGoal(Goal goal) {
-        if (goal instanceof PathGoal && getPathGoals().size() > 0){
-            throw new RuntimeException("Only one path goal per task is allowed");
-        }
         goals.add(goal);
     }
 
