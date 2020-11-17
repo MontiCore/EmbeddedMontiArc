@@ -15,6 +15,12 @@ import java.util.stream.Collectors;
 
 
 /**
+ * PathGoal is used for setting up a set of locations, which a vehicle must or must
+ * not reach. The order in the path matters, they will be considered in the exact
+ * order as they are given.
+ *
+ * For example, path = [node1, node2, ...] means node2
+ * can only be considered, after node1 has been reached by the vehicle.
  *
  */
 @Typed
