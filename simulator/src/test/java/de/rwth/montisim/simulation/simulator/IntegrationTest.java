@@ -116,9 +116,6 @@ public class IntegrationTest {
         Navigation nav = (Navigation) vehicle.eesystem.getComponentManager().getComponent("Navigation").get();
         nav.pushTargetPos(targetPos);
 
-        vehicle.properties.setCoordinates(new Coordinates());
-        world.converter.get().metersToCoords(startPos, vehicle.properties.getCoordinates());
-
         Assert.assertFalse(simulator.allTasksSucceeded());
 
         // dump and reload vehicle every 1000 steps. test if it is able to reach the destination.
