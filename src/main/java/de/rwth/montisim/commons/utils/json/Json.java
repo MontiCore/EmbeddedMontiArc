@@ -156,7 +156,7 @@ public abstract class Json {
         final java.lang.reflect.Type[] genericC;
         final Field f;
 
-        FieldInfo(Field f, JsonEntry je) {
+        FieldInfo(Field f, JsonEntry je) throws SerializationException {
             this.f = f;
             String n = je != null ? je.value() : null;
             if (n == null || n.length() == 0)
@@ -234,7 +234,7 @@ public abstract class Json {
 
     static final HashMap<Class<?>, TypeInfo> registry;
 
-    private static TypeInfo getTypeInfo(Class<?> c) {
+    private static TypeInfo getTypeInfo(Class<?> c) throws SerializationException {
         TypeInfo inf = registry.get(c);
         if (inf != null)
             return inf;
@@ -254,7 +254,7 @@ public abstract class Json {
         registry.put(c, TypeInfo.newGenericTypeInfo(w, r));
     }
 
-    public static void registerType(Class<?> c) {
+    public static void registerType(Class<?> c) throws SerializationException {
         if (registry.containsKey(c))
             return;
 
@@ -304,7 +304,7 @@ public abstract class Json {
                     try {
                         val = f.get(null);
                     } catch (IllegalArgumentException | IllegalAccessException e) {
-                        throw new RuntimeException(e);
+                        throw new SerializationException(e);
                     }
                     names.put(val, name);
                     variantMap.put(name, val);
@@ -639,7 +639,7 @@ public abstract class Json {
     }
 
     static void getFields(Class<?> c, Vector<FieldInfo> fields, HashMap<String, FieldInfo> map, boolean obj,
-            boolean all) {
+            boolean all) throws SerializationException {
         Class<?> superC = c.getSuperclass();
         if (superC != null && !superC.equals(Object.class)) {
             JsonType jt = superC.getDeclaredAnnotation(JsonType.class);
@@ -671,11 +671,11 @@ public abstract class Json {
         }
     }
 
-    static void registerSubtype(Class<?> baseClass, String baseType) {
+    static void registerSubtype(Class<?> baseClass, String baseType) throws SerializationException {
         registerSubtype(baseClass, baseType, baseClass);
     }
 
-    static void registerSubtype(Class<?> baseClass, String baseType, Class<?> c) {
+    static void registerSubtype(Class<?> baseClass, String baseType, Class<?> c) throws SerializationException {
 
         Class<?>[] interfaces = c.getInterfaces();
         for (Class<?> i : interfaces) {
@@ -1002,20 +1002,20 @@ public abstract class Json {
             }
         });
         registerGeneric(Stack.class, (j, o, c) -> {
-                    Stack stack = (Stack) o;
-                    j.startArray();
-                    Iterator it = stack.iterator();
-                    while (it.hasNext()) {
-                        Json.toJson(j, it.next(), c);
-                    }
-                    j.endArray();
-                },
-                (t, o, it, generics, context) -> {
-                    Stack stack = (Stack) o;
-                    for (ValueType vt : t.streamArray()) {
-                        stack.add(Json.instantiateFromJson(t, (Class<?>) generics[0], context));
-                    }
+                Stack stack = (Stack) o;
+                j.startArray();
+                Iterator it = stack.iterator();
+                while (it.hasNext()) {
+                    Json.toJson(j, it.next(), c);
                 }
+                j.endArray();
+            },
+            (t, o, it, generics, context) -> {
+                Stack stack = (Stack)o;
+                for (ValueType vt : t.streamArray()){
+                    stack.add(Json.instantiateFromJson(t, (Class<?>)generics[0], context));
+                }
+            }
         );
         registerGeneric(List.class, (j, o, c) -> {
                     List list = (List) o;
@@ -1026,43 +1026,10 @@ public abstract class Json {
                     }
                     j.endArray();
                 },
-                (t, generics, context) -> {
-                    LinkedList<Object> ret = new LinkedList();
-                    for (ValueType vt : t.streamArray()) {
-                        ret.add(Json.instantiateFromJson(t, (Class<?>) generics[0], context));
-                    }
-                    return ret;
-                }
-        );
-        registerGeneric(ArrayList.class, (j, o, c) -> {
-                    List list = (List) o;
-                    j.startArray();
-                    Iterator it = list.iterator();
-                    while (it.hasNext()) {
-                        Json.toJson(j, it.next(), c);
-                    }
-                    j.endArray();
-                },
                 (t, o, it, generics, context) -> {
-                    List list = (List) o;
-                    for (ValueType vt : t.streamArray()) {
-                        list.add(Json.instantiateFromJson(t, (Class<?>) generics[0], context));
-                    }
-                }
-        );
-        registerGeneric(LinkedList.class, (j, o, c) -> {
-                    List list = (List) o;
-                    j.startArray();
-                    Iterator it = list.iterator();
-                    while (it.hasNext()) {
-                        Json.toJson(j, it.next(), c);
-                    }
-                    j.endArray();
-                },
-                (t, o, it, generics, context) -> {
-                    List list = (List) o;
-                    for (ValueType vt : t.streamArray()) {
-                        list.add(Json.instantiateFromJson(t, (Class<?>) generics[0], context));
+                    List list = (List)o;
+                    for (ValueType vt : t.streamArray()){
+                        list.add(Json.instantiateFromJson(t, (Class<?>)generics[0], context));
                     }
                 }
         );
