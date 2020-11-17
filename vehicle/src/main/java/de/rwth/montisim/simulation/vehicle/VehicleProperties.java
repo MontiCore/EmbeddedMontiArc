@@ -7,7 +7,6 @@ import java.util.Vector;
 
 import de.rwth.montisim.commons.eventsimulation.DiscreteEventSimulator;
 import de.rwth.montisim.commons.map.Pathfinding;
-import de.rwth.montisim.commons.utils.Coordinates;
 import de.rwth.montisim.commons.utils.Geometry;
 import de.rwth.montisim.commons.utils.Vec2;
 import de.rwth.montisim.commons.utils.json.JsonEntry;
@@ -50,7 +49,6 @@ public class VehicleProperties /* implements JsonSerializable */ {
     public Vec2 end_coords;
 
     public Task task;
-    public Coordinates coordinates; // keep track of vehicle's global coordinates
 
     public VehicleProperties(){
         body = new BodyProperties();
@@ -188,13 +186,5 @@ public class VehicleProperties /* implements JsonSerializable */ {
         Objects.requireNonNull(task);
         target.task = task;
         return target;
-    }
-
-    public Coordinates getCoordinates() {
-        return coordinates;
-    }
-
-    public void setCoordinates(Coordinates coordinates) {
-        this.coordinates = coordinates;
     }
 }
