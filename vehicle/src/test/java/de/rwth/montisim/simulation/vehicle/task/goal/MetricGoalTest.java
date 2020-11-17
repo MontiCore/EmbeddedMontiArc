@@ -9,6 +9,8 @@ import de.rwth.montisim.simulation.vehicle.VehicleBuilder;
 import de.rwth.montisim.simulation.vehicle.physicalvalues.TrueVelocity;
 import junit.framework.TestCase;
 
+import java.util.Optional;
+
 import static org.mockito.Mockito.mock;
 import static org.mockito.Mockito.when;
 

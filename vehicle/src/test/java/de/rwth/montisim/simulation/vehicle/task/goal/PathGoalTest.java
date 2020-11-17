@@ -12,6 +12,8 @@ import org.junit.After;
 import org.junit.Before;
 import org.junit.Test;
 
+import java.util.Optional;
+
 public class PathGoalTest {
     @Test
     public void testEventually() {

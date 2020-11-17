@@ -6,6 +6,7 @@ import java.time.Instant;
 
 import de.rwth.montisim.commons.simulation.SimulationObject;
 import de.rwth.montisim.commons.simulation.TimeUpdate;
+import de.rwth.montisim.commons.utils.Coordinates;
 import de.rwth.montisim.simulation.vehicle.VehicleBuilder;
 import de.rwth.montisim.simulation.vehicle.VehicleProperties;
 import de.rwth.montisim.simulation.vehicle.task.Task;
@@ -25,25 +26,27 @@ import de.rwth.montisim.simulation.simulator.vehicleconfigs.DefaultVehicleConfig
 import de.rwth.montisim.simulation.vehicle.Vehicle;
 
 public class IntegrationTest {
+    final private String MAP_PATH = "src/test/resources/aachen.osm";
+    private OsmMap osmMap;
+    private World world;
+
+    @Before
+    public void initResource() throws Exception {
+        osmMap = new OsmMap("myMap", new File(MAP_PATH));
+        world = new OsmToWorldLoader(osmMap).getWorld();
+        world.finalizeGraph();
+    }
+
     @Test
-    public void driveToTarget() throws Exception {
-        final Vec3 START_DIR = new Vec3(1, 0, 0);
-        final Vec2 TARGET_POS = new Vec2(-63.83, -171.96);
-
-        //System.out.println("Working Dir: " + LibraryService.getWorkingDirectory());
-        World world = new OsmToWorldLoader(new OsmMap("aachen", new File("src/test/resources/aachen.osm"))).getWorld();
-        Pathfinding pathfinding = new PathfindingImpl(world);
-        MessageTypeManager mtManager = new MessageTypeManager();
-
-        SimulationConfig config = new SimulationConfig();
-        config.max_duration = Duration.ofSeconds(300);
-        Simulator simulator = new Simulator(config, world, pathfinding, mtManager);
-        SimulationLoop loop = new SimulationLoop(simulator, config);
+    public void driveToTargetLocalCoordinate() throws Exception {
+        Vec3 startPos = new Vec3(1, 0, 0);
+        Vec2 targetPos = new Vec2(-63.83, -171.96);
 
         Task task = new Task();
         task.addGoal(PathGoal.newBuilder()
                 .eventually()
-                .arrive(TARGET_POS.x, TARGET_POS.y)
+                .arrive(startPos.asVec2())
+                .arrive(targetPos)
                 .withInRange(10)
                 .build());
         task.addGoal(MetricGoal.newBuilder()
@@ -52,15 +55,69 @@ public class IntegrationTest {
                 .greater(1000, "m/s")
                 .build());
 
+        driveToTarget(task);
+    }
+
+    @Test
+    public void driveToTargetGlobalCoordinate() throws Exception {
+        Coordinates startCoord = new Coordinates(6.0721450,50.7738916);
+        Coordinates targetCoord = new Coordinates(6.0690220,50.773491);
+
+        Task task = new Task();
+        task.addGoal(PathGoal.newBuilder()
+                .eventually()
+                .arrive(startCoord)
+                .arrive(targetCoord)
+                .withInRange(10)
+                .build());
+
+        task.getPathGoals().forEach(g -> g.convertCoordinate(osmMap, world));
+        driveToTarget(task);
+    }
+
+    @Test
+    public void driveToTargetGlobalOsmId() throws Exception {
+        long startOsmId = 3369847019l;
+        long targetOsmId = 444540939l;
+
+        Task task = new Task();
+        task.addGoal(PathGoal.newBuilder()
+                .eventually()
+                .arrive(startOsmId)
+                .arrive(targetOsmId)
+                .withInRange(10)
+                .build());
+
+        task.getPathGoals().forEach(g -> g.convertCoordinate(osmMap, world));
+        driveToTarget(task);
+    }
+
+    public void driveToTarget(Task task) throws Exception {
+        Pathfinding pathfinding = new PathfindingImpl(world);
+        MessageTypeManager mtManager = new MessageTypeManager();
+
+        SimulationConfig config = new SimulationConfig();
+        config.max_duration = Duration.ofSeconds(300);
+        Simulator simulator = new Simulator(config, world, pathfinding, mtManager);
+        SimulationLoop loop = new SimulationLoop(simulator, config);
+
         DefaultVehicleConfig vConf = DefaultVehicleConfig.withJavaAutopilot().setTask(task);
         Vehicle vehicle = simulator.getVehicleBuilder(vConf.properties).setName("TestVehicle").build();
 
-        vehicle.physicsModel.setGroundPosition(new Vec3(0, 0, 0), new Vec2(START_DIR.x, START_DIR.y));
+        // Read positions from task
+        PathGoal pg = task.getPathGoals().get(0);
+        Vec2 startPos = pg.getPath().get(0);
+        Vec2 targetPos = pg.getPath().get(pg.getPath().size() - 1);
+
+        vehicle.physicsModel.setGroundPosition(new Vec3(0, 0, 0), new Vec2(startPos.x, startPos.y));
 
         simulator.addSimulationObject(vehicle);
-        
+
         Navigation nav = (Navigation) vehicle.eesystem.getComponentManager().getComponent("Navigation").get();
-        nav.pushTargetPos(TARGET_POS);
+        nav.pushTargetPos(targetPos);
+
+        vehicle.properties.setCoordinates(new Coordinates());
+        world.converter.get().metersToCoords(startPos, vehicle.properties.getCoordinates());
 
         Assert.assertFalse(simulator.allTasksSucceeded());
 
@@ -78,7 +135,7 @@ public class IntegrationTest {
                 continue;
             }
 
-            double dist = vehicle.physicalObject.pos.distance(new Vec3(TARGET_POS.x, TARGET_POS.y, 0));
+            double dist = vehicle.physicalObject.pos.distance(new Vec3(targetPos.x, targetPos.y, 0));
             System.out.printf("dist: %.2fm, pos: %s\n", dist, vehicle.physicalObject.pos);
 
             System.out.println("Dumping and reloading vehicle...");
@@ -93,7 +150,7 @@ public class IntegrationTest {
             simulator.addSimulationObject(vehicle);
         }
 
-        double dist = vehicle.physicalObject.pos.distance(new Vec3(TARGET_POS.x, TARGET_POS.y, 0));
+        double dist = vehicle.physicalObject.pos.distance(new Vec3(targetPos.x, targetPos.y, 0));
         System.out.printf("dist: %.2fm, pos: %s\n", dist, vehicle.physicalObject.pos);
 
 //        vehicle.addTarget(TARGET_POS);
