@@ -156,7 +156,7 @@ public abstract class Json {
         final java.lang.reflect.Type[] genericC;
         final Field f;
 
-        FieldInfo(Field f, JsonEntry je) throws SerializationException {
+        FieldInfo(Field f, JsonEntry je) {
             this.f = f;
             String n = je != null ? je.value() : null;
             if (n == null || n.length() == 0)
@@ -234,7 +234,7 @@ public abstract class Json {
 
     static final HashMap<Class<?>, TypeInfo> registry;
 
-    private static TypeInfo getTypeInfo(Class<?> c) throws SerializationException {
+    private static TypeInfo getTypeInfo(Class<?> c) {
         TypeInfo inf = registry.get(c);
         if (inf != null)
             return inf;
@@ -254,7 +254,7 @@ public abstract class Json {
         registry.put(c, TypeInfo.newGenericTypeInfo(w, r));
     }
 
-    public static void registerType(Class<?> c) throws SerializationException {
+    public static void registerType(Class<?> c) {
         if (registry.containsKey(c))
             return;
 
@@ -304,7 +304,7 @@ public abstract class Json {
                     try {
                         val = f.get(null);
                     } catch (IllegalArgumentException | IllegalAccessException e) {
-                        throw new SerializationException(e);
+                        throw new RuntimeException(e);
                     }
                     names.put(val, name);
                     variantMap.put(name, val);
@@ -639,7 +639,7 @@ public abstract class Json {
     }
 
     static void getFields(Class<?> c, Vector<FieldInfo> fields, HashMap<String, FieldInfo> map, boolean obj,
-            boolean all) throws SerializationException {
+            boolean all) {
         Class<?> superC = c.getSuperclass();
         if (superC != null && !superC.equals(Object.class)) {
             JsonType jt = superC.getDeclaredAnnotation(JsonType.class);
@@ -671,11 +671,11 @@ public abstract class Json {
         }
     }
 
-    static void registerSubtype(Class<?> baseClass, String baseType) throws SerializationException {
+    static void registerSubtype(Class<?> baseClass, String baseType) {
         registerSubtype(baseClass, baseType, baseClass);
     }
 
-    static void registerSubtype(Class<?> baseClass, String baseType, Class<?> c) throws SerializationException {
+    static void registerSubtype(Class<?> baseClass, String baseType, Class<?> c) {
 
         Class<?>[] interfaces = c.getInterfaces();
         for (Class<?> i : interfaces) {
