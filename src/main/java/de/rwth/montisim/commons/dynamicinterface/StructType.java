@@ -1,6 +1,9 @@
 /* (c) https://github.com/MontiCore/monticore */
 package de.rwth.montisim.commons.dynamicinterface;
 
+import java.io.DataInputStream;
+import java.io.DataOutputStream;
+import java.io.IOException;
 import java.util.Vector;
 
 import de.rwth.montisim.commons.utils.json.*;
@@ -8,11 +11,19 @@ import de.rwth.montisim.commons.utils.json.JsonTraverser.ArrayIterable;
 import de.rwth.montisim.commons.utils.json.JsonTraverser.Entry;
 import de.rwth.montisim.commons.utils.json.JsonTraverser.ObjectIterable;
 
-@Typed("struct")
+/**
+ * Represents a named Struct with named and typed field. The corresponding
+ * object type must be an array of objects, in declaration order of the struct
+ * fields. Each object in the array must respect the data format for the field
+ * type. The serialization format for struct types is a JSON array with the
+ * serialization of each field, in declaration order.
+ */
+@Typed(StructType.TYPE)
 public class StructType extends DataType implements CustomJson {
-    public String name;
-    public Vector<String> fieldNames = new Vector<>();
-    public Vector<DataType> fieldTypes = new Vector<>();
+    public static final String TYPE = "struct";
+    private String name;
+    private Vector<String> field_names = new Vector<>();
+    private Vector<DataType> field_types = new Vector<>();
 
     public StructType(String name) {
         this.name = name;
@@ -25,21 +36,37 @@ public class StructType extends DataType implements CustomJson {
      * Adds a field to the struct type.
      */
     public void addField(String fieldName, DataType fieldType) {
-        fieldNames.add(fieldName);
-        fieldTypes.add(fieldType);
+        field_names.add(fieldName);
+        field_types.add(fieldType);
+    }
+
+    public String getName() {
+        return name;
+    }
+
+    public int getFieldCount() {
+        return field_names.size();
+    }
+
+    public String getFieldName(int i) {
+        return field_names.elementAt(i);
+    }
+
+    public DataType getFieldType(int i) {
+        return field_types.elementAt(i);
     }
 
     @Override
     public String toString() {
         String res = name + "{ ";
         boolean first = true;
-        for (int i = 0; i < fieldNames.size(); ++i) {
+        for (int i = 0; i < field_names.size(); ++i) {
             if (first) {
                 first = false;
             } else {
                 res += ", ";
             }
-            res += fieldNames.elementAt(i) + ": " + fieldTypes.elementAt(i);
+            res += field_names.elementAt(i) + ": " + field_types.elementAt(i);
         }
         res += "}";
         return res;
@@ -52,9 +79,9 @@ public class StructType extends DataType implements CustomJson {
     public int hashCode() {
         final int prime = 31;
         int result = name.hashCode();
-        for (int i = 0; i < fieldNames.size(); ++i) {
-            result = prime * result + fieldNames.elementAt(i).hashCode();
-            result = prime * result + fieldTypes.elementAt(i).hashCode();
+        for (int i = 0; i < field_names.size(); ++i) {
+            result = prime * result + field_names.elementAt(i).hashCode();
+            result = prime * result + field_types.elementAt(i).hashCode();
         }
         return result;
     }
@@ -70,12 +97,12 @@ public class StructType extends DataType implements CustomJson {
         StructType s = ((StructType) o);
         if (!this.name.equals(s.name))
             return false;
-        if (this.fieldNames.size() != s.fieldNames.size())
+        if (this.field_names.size() != s.field_names.size())
             return false;
-        for (int i = 0; i < fieldNames.size(); ++i) {
-            if (!fieldNames.elementAt(i).equals(s.fieldNames.elementAt(i)))
+        for (int i = 0; i < field_names.size(); ++i) {
+            if (!field_names.elementAt(i).equals(s.field_names.elementAt(i)))
                 return false;
-            if (!fieldTypes.elementAt(i).equals(s.fieldTypes.elementAt(i)))
+            if (!field_types.elementAt(i).equals(s.field_types.elementAt(i)))
                 return false;
         }
         return true;
@@ -84,11 +111,11 @@ public class StructType extends DataType implements CustomJson {
     @Override
     public int getDataSize(Object o) {
         Object arr[] = (Object[]) o;
-        if (arr.length != fieldTypes.size())
+        if (arr.length != field_types.size())
             throw new IllegalArgumentException("Struct data-object has wrong number of entries.");
         int size = 0;
-        for (int i = 0; i < fieldTypes.size(); ++i) {
-            size += fieldTypes.elementAt(i).getDataSize(arr[i]);
+        for (int i = 0; i < field_types.size(); ++i) {
+            size += field_types.elementAt(i).getDataSize(arr[i]);
         }
         return size;
     }
@@ -96,21 +123,21 @@ public class StructType extends DataType implements CustomJson {
     @Override
     public void toJson(JsonWriter j, Object o, SerializationContext context) throws SerializationException {
         Object arr[] = (Object[]) o;
-        if (arr.length != fieldTypes.size())
+        if (arr.length != field_types.size())
             throw new IllegalArgumentException("Struct data-object has wrong number of entries.");
         j.startArray();
-        for (int i = 0; i < fieldTypes.size(); ++i) {
-            fieldTypes.elementAt(i).toJson(j, arr[i], context);
+        for (int i = 0; i < field_types.size(); ++i) {
+            field_types.elementAt(i).toJson(j, arr[i], context);
         }
         j.endArray();
     }
 
     @Override
     public Object fromJson(JsonTraverser j, SerializationContext context) throws SerializationException {
-        Object arr[] = new Object[fieldTypes.size()];
+        Object arr[] = new Object[field_types.size()];
         ArrayIterable it = j.streamArray();
         int i = 0;
-        for (DataType t : fieldTypes) {
+        for (DataType t : field_types) {
             if (!it.iterator().hasNext())
                 throw new IllegalArgumentException("Struct data-object serialization missing entries.");
             it.iterator().next();
@@ -128,9 +155,9 @@ public class StructType extends DataType implements CustomJson {
 
         w.writeKey("fields");
         w.startObject();
-        for (int i = 0; i < fieldTypes.size(); ++i) {
-            w.writeKey(fieldNames.elementAt(i));
-            Json.toJson(w, fieldTypes.elementAt(i), context);
+        for (int i = 0; i < field_types.size(); ++i) {
+            w.writeKey(field_names.elementAt(i));
+            Json.toJson(w, field_types.elementAt(i), context);
         }
         w.endObject();
 
@@ -139,17 +166,18 @@ public class StructType extends DataType implements CustomJson {
 
     @Override
     public void read(JsonTraverser t, ObjectIterable it, SerializationContext context) throws SerializationException {
-        fieldNames.clear();
-        fieldTypes.clear();
-        for (Entry e : it){
-            if (e.key.equals("name")){
+        field_names.clear();
+        field_types.clear();
+        for (Entry e : it) {
+            if (e.key.equals("name")) {
                 name = t.getString().getJsonString();
-            } else if (e.key.equals("fields")){
-                for (Entry e2 : t.streamObject()){
-                    fieldNames.add(e2.key.getJsonString());
-                    fieldTypes.add(Json.instantiateFromJson(t, DataType.class, context));
+            } else if (e.key.equals("fields")) {
+                for (Entry e2 : t.streamObject()) {
+                    field_names.add(e2.key.getJsonString());
+                    field_types.add(Json.instantiateFromJson(t, DataType.class, context));
                 }
-            } else t.unexpected(e);
+            } else
+                t.unexpected(e);
         }
     }
 
@@ -157,4 +185,15 @@ public class StructType extends DataType implements CustomJson {
     public Class<?> getArrayType() {
         return Object[].class;
     }
+
+    @Override
+    public void toBinary(DataOutputStream os, Object o) throws IOException {
+        throw new IllegalArgumentException("Unimplemented");
+    }
+
+    @Override
+    public Object fromBinary(DataInputStream is) throws IOException {
+        throw new IllegalArgumentException("Unimplemented");
+    }
+
 }
