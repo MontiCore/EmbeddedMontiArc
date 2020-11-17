@@ -7,6 +7,7 @@ import de.rwth.montisim.simulation.vehicle.task.goal.*;
 
 import java.util.LinkedList;
 import java.util.List;
+import java.util.stream.Collectors;
 
 @Typed
 public class Task {
@@ -17,6 +18,9 @@ public class Task {
     }
 
     public void addGoal(Goal goal) {
+        if (goal instanceof PathGoal && getPathGoals().size() > 0){
+            throw new RuntimeException("Only one path goal per task is allowed");
+        }
         goals.add(goal);
     }
 
@@ -44,4 +48,17 @@ public class Task {
         return goals;
     }
 
+    public List<PathGoal> getPathGoals() {
+        return goals.stream()
+                .filter(g -> g instanceof PathGoal)
+                .map(g -> (PathGoal) g)
+                .collect(Collectors.toList());
+    }
+
+    public List<MetricGoal> getMetricGoals() {
+        return goals.stream()
+                .filter(g -> g instanceof MetricGoal)
+                .map(g -> (MetricGoal) g)
+                .collect(Collectors.toList());
+    }
 }
