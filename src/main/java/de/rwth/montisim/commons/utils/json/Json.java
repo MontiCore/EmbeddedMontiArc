@@ -739,7 +739,7 @@ public abstract class Json {
         primitiveWriterRegistry = new HashMap<>();
         primitiveReaderRegistry = new HashMap<>();
 
-        registerPrimitive(double.class, (w, o, f) -> w.writeValue(f.getDouble(o)), 
+        registerPrimitive(double.class, (w, o, f) -> w.writeValue(f.getDouble(o)),
                 (t, o, f) -> f.setDouble(o, t.getDouble()));
         registerPrimitive(int.class, (w, o, f) -> w.writeValue(f.getInt(o)),
                 (t, o, f) -> f.setInt(o, (int) t.getLong()));
@@ -1026,10 +1026,43 @@ public abstract class Json {
                     }
                     j.endArray();
                 },
+                (t, generics, context) -> {
+                    LinkedList<Object> ret = new LinkedList();
+                    for (ValueType vt : t.streamArray()) {
+                        ret.add(Json.instantiateFromJson(t, (Class<?>) generics[0], context));
+                    }
+                    return ret;
+                }
+        );
+        registerGeneric(ArrayList.class, (j, o, c) -> {
+                    List list = (List) o;
+                    j.startArray();
+                    Iterator it = list.iterator();
+                    while (it.hasNext()) {
+                        Json.toJson(j, it.next(), c);
+                    }
+                    j.endArray();
+                },
                 (t, o, it, generics, context) -> {
-                    List list = (List)o;
-                    for (ValueType vt : t.streamArray()){
-                        list.add(Json.instantiateFromJson(t, (Class<?>)generics[0], context));
+                    List list = (List) o;
+                    for (ValueType vt : t.streamArray()) {
+                        list.add(Json.instantiateFromJson(t, (Class<?>) generics[0], context));
+                    }
+                }
+        );
+        registerGeneric(LinkedList.class, (j, o, c) -> {
+                    List list = (List) o;
+                    j.startArray();
+                    Iterator it = list.iterator();
+                    while (it.hasNext()) {
+                        Json.toJson(j, it.next(), c);
+                    }
+                    j.endArray();
+                },
+                (t, o, it, generics, context) -> {
+                    List list = (List) o;
+                    for (ValueType vt : t.streamArray()) {
+                        list.add(Json.instantiateFromJson(t, (Class<?>) generics[0], context));
                     }
                 }
         );
