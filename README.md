@@ -116,6 +116,32 @@ Definable arbitrarily often.
 Creates completely random vehicle spawns and destinations with optional avoidance of a given path.
 Definable arbitrarily often.
 
+### (carModelName)? "vehicle" "{"
+  "path" "(" [startLat] "," [startLong] ")" ( "->"  "(" [lat] "," [long]")" )* [destRadius]"m" ";"
+  "randomPath"; // if randomPath is set, then "path" will be ignored
+  "network" [networkType];
+  "goals" "[" (unaryGoal|binaryGoal)+ "]" ";"
+  "platoon" "{" 
+    "size" [Number > 0] ";"
+    // or describing multiple scenarios with different platoon sizes
+    "size" [startSize:endSize:step] ";"
+  "}"
+"}"
+#### unaryGoal = ["never" | "always" | "eventually" |] [metricName] ["gt" | "ge" | "lt" | "le" | "eq" ] [targetValue][unit];
+#### binaryGoal = unaryGoal "until" unaryGoal;
+#### metricName = ["speed" | "acceleration" | "batteryLevel"];
+Creates a vehicle or a platoon. A vehicle will spawn at the first way point defined in its path attribute(sartLat, startLong).
+If "platoon" is given, the rest vehicles will spawn following the leading vehicle.
+A platoon is considered reached its destination if the leading vehicle reached the destination
+while the rest of the vehicles are still in the platoon.
+A vehicle can have multiple "goals", they should be fullfilled for a successful simulation.
+Each condition should be given a type: "never", "always", "eventually" or "until".
+The binary goal "until" is special, its basic form is: cond1 "until" cond2, meaning cond1 should always be true until cond2 is true.
+It can be used to test scenarios like: 
+an EV should not release too much power until battery level is above some level, otherwise it might damage the battery("batteryLevel" ">" 0.3 "until" "acceleration" ">" 25 km/s^2);
+or:
+a vehicle should stay still until the traffic light turns green("speed" "==" 0 km/s "until" "green").
+
 ### ("fixed"|"bound") "channel" [name] "{"
   CHANNEL_RULE1 ";"
   CHANNEL_RULE2 ";"

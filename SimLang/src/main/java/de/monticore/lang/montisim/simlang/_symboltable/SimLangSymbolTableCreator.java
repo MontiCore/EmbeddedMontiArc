@@ -664,6 +664,63 @@ public class SimLangSymbolTableCreator extends SimLangSymbolTableCreatorTOP {
         addToScopeAndLinkWithNode(symbol, node);
     }
 
+    public void visit(final ASTLTLVehicle node) {
+        LTLVehicle vehicle = new LTLVehicle();
+
+        // extract vehicle settings from corresponding ast elements
+        node.getVehicleSettingList().forEach(elem -> {
+            if (elem instanceof ASTPath) {
+                List<double[]> path = handlePath((ASTPath) elem);
+                vehicle.setPath(path);
+            } else if (elem instanceof ASTGoalList) {
+                List<LTLVehicle.Goal> goals = handleGoalList((ASTGoalList) elem);
+                vehicle.setGoals(Optional.of(goals));
+            } else if (elem instanceof ASTPlatoon) {
+                Optional<Double> size = ((ASTPlatoon) elem).getSize().getNumber();
+                size.ifPresent(aDouble -> vehicle.setPlatoonSize(Optional.of(aDouble.intValue())));
+            }
+        });
+
+        final LTLVehicleSymbol symbol = new LTLVehicleSymbol("ltl_vehicle", vehicle);
+        addToScopeAndLinkWithNode(symbol, node);
+    }
+
+    private List<LTLVehicle.Goal> handleGoalList(ASTGoalList goalList) {
+        return goalList.streamGoals().map(astGoal ->
+                new LTLVehicle.Goal(
+                        astGoal.getLTLOperator(),
+                        astGoal.getMetricName(),
+                        astGoal.getComparator(),
+                        new NumberUnit(astGoal.getTarget())
+                )
+        ).collect(Collectors.toList());
+    }
+
+    private List<double[]> handlePath(ASTPath path) {
+        List<double[]> ret = new ArrayList<>();
+        ret.add(new double[]{
+                path.getStartLat().getNumber().get(),
+                path.getStartLong().getNumber().get(),
+                path.getStartAlt().getNumber().get(),
+        });
+        for (int i = 0; i < path.getDestLatList().size(); i++) {
+            ret.add(new double[]{
+                    path.getDestLat(i).getNumber().get(),
+                    path.getDestLong(i).getNumber().get(),
+                    path.getDestAlt(i).getNumber().get()
+            });
+        }
+        return ret;
+    }
+
+    @Override
+    public void endVisit(ASTLTLVehicle node) {
+        if (!node.getCarModelOpt().isPresent()) return;
+        CarModelSymbolReference cms = (CarModelSymbolReference) node.getCarModel().getSymbolOpt().get();
+        LTLVehicleSymbol symbol = (LTLVehicleSymbol) node.getSymbolOpt().get();
+        symbol.getVehicle().setCarContainer(cms.getReferencedSymbol().getCarContainer());
+    }
+
     // todo: make this a scope
     public void visit(ASTExplicitVehicle node) {
         final ExplicitVehicleSymbol symbol = new ExplicitVehicleSymbol("explicit_vehicle",

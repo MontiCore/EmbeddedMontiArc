@@ -50,6 +50,7 @@ public class SimLangLang extends SimLangLanguage {
     addResolvingFilter(new PedestrianResolvingFilter());
     addResolvingFilter(new ExplicitVehicleResolvingFilter());
     addResolvingFilter(new PathedVehicleResolvingFilter());
+    addResolvingFilter(new LTLVehicleResolvingFilter());
     addResolvingFilter(new RandomVehicleResolvingFilter());
 
     addResolvingFilter(new ChannelResolvingFilter());

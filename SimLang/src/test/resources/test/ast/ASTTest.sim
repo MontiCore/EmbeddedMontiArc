@@ -31,7 +31,26 @@ sim ASTTest {
   vehicle(123, -94, 201)->(1024, 960, 200);
   vehicle 1000;
   vehicle 1234 (-150, -150) -> (500, 600);
-  
+
+  vehicle {
+     //path random;
+     //amount 500;
+     path (1, 0, 0)->(1, 1, 0)->(1, 1, 1);
+
+     network LTE;
+
+     goals [
+         always acceleration lt 100m/s^2,
+         eventually speed eq 0m/s,
+         never battery lt 0.1
+         // timeF constraint
+     ];
+
+     platoon {
+       size 5;
+     };
+  };
+
   fixed channel LTE {
     transfer_rate 20Hz;
     latency 10ms;
