@@ -30,12 +30,13 @@ public class Navigation extends EEComponent {
     // Might give less points if almost at target (or none if at target)
     public static final String TRAJECTORY_X_MSG = "trajectory_x";
     public static final String TRAJECTORY_Y_MSG = "trajectory_y";
+    public static final String TRAJECTORY_LENGTH_MSG = "trajectory_length";
     public static final String TRAJECTORY_LON_MSG = "trajectory_lon";
     public static final String TRAJECTORY_LAT_MSG = "trajectory_lat";
 
     public static final BasicType AT_TARGET_POS_TYPE = BasicType.BOOLEAN;
     public static final BasicType CURRENT_TARGET_POS_TYPE = BasicType.VEC2;
-    public static final VectorType TRAJECTORY_X_TYPE = new VectorType(BasicType.DOUBLE, 128);
+    public static final VectorType TRAJECTORY_X_TYPE = new VectorType(BasicType.DOUBLE, 10);
     public static final VectorType TRAJECTORY_Y_TYPE = TRAJECTORY_X_TYPE;
     public static final VectorType TRAJECTORY_LON_TYPE = TRAJECTORY_X_TYPE;
     public static final VectorType TRAJECTORY_LAT_TYPE = TRAJECTORY_X_TYPE;
@@ -51,6 +52,7 @@ public class Navigation extends EEComponent {
 
     transient MessageInformation trajectoryXMsg;
     transient MessageInformation trajectoryYMsg;
+    transient MessageInformation trajectoryLengthMsg;
     transient MessageInformation trajectoryLonMsg;
     transient MessageInformation trajectoryLatMsg;
 
@@ -78,6 +80,7 @@ public class Navigation extends EEComponent {
 
         this.trajectoryXMsg = addOutput(TRAJECTORY_X_MSG, TRAJECTORY_X_TYPE);
         this.trajectoryYMsg = addOutput(TRAJECTORY_Y_MSG, TRAJECTORY_Y_TYPE);
+        this.trajectoryLengthMsg = addOutput(TRAJECTORY_LENGTH_MSG, BasicType.N);
         this.trajectoryLonMsg = addOutput(TRAJECTORY_LON_MSG, TRAJECTORY_LON_TYPE);
         this.trajectoryLatMsg = addOutput(TRAJECTORY_LAT_MSG, TRAJECTORY_LAT_TYPE);
     }
@@ -154,6 +157,7 @@ public class Navigation extends EEComponent {
             y[i] = p.trajectoryY[index+i];
         }
         sendMessage(time, trajectoryXMsg, x, 8*size);
+        sendMessage(time, trajectoryLengthMsg, size);
         sendMessage(time.plus(Duration.ofMillis(10)), trajectoryYMsg, y, 8*size);
     }
 

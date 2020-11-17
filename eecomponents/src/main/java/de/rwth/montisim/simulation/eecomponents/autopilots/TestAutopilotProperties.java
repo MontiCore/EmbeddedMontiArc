@@ -15,7 +15,8 @@ public class TestAutopilotProperties extends BusUserProperties {
 
     public static enum Mode {
         @JsonEntry("circle")
-        CIRCLE, @JsonEntry("start_stop")
+        CIRCLE, 
+        @JsonEntry("start_stop")
         START_STOP
     }
 

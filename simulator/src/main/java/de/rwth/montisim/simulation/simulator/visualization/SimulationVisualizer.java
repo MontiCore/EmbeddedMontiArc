@@ -3,7 +3,6 @@ package de.rwth.montisim.simulation.simulator.visualization;
 
 import javax.swing.*;
 import java.awt.BorderLayout;
-import java.awt.event.*;
 import java.io.File;
 import java.io.IOException;
 import java.nio.file.Files;

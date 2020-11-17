@@ -25,7 +25,6 @@ public class PhysicsDebug extends JFrame implements SimulationRunner {
     }
 
     private static final Vec3 START_DIR = new Vec3(1, 0, 0);
-    private static final Vec3 START_CROSS = new Vec3(0, 1, 0);
 
     private static final long serialVersionUID = 1L;
 

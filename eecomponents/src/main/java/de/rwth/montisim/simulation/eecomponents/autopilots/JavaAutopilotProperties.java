@@ -13,10 +13,11 @@ public class JavaAutopilotProperties extends BusUserProperties {
     public static final String TYPE = "java_autopilot";
     
     public Duration compute_time = Duration.ZERO;
-    public transient double maxVehicleAccel;
+    public double maxVehicleAccel; // TODO get from properties system
 
     public JavaAutopilotProperties(double maxVehicleAccel) {
         this.maxVehicleAccel = maxVehicleAccel;
+        this.name = "JavaAutopilot";
     }
 
     protected JavaAutopilotProperties() {

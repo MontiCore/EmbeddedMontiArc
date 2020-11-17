@@ -13,6 +13,10 @@ import de.rwth.montisim.simulation.eesimulator.components.EEEventProcessor;
 public class ConstantBusProperties extends BusProperties {
 	public static final String TYPE = "constant_bus";
 
+	ConstantBusProperties() {
+		this.name = "DefaultBus";
+	}
+
 	public enum TransmissionMode {
 		/** Messages directly reach their target when sent. */
 		@JsonEntry("instant")
@@ -25,7 +29,7 @@ public class ConstantBusProperties extends BusProperties {
 		CONSTANT_TIME
 	}
 
-	public TransmissionMode mode;
+	public TransmissionMode mode = TransmissionMode.INSTANT;
 
 	/**
 	 * If TransmissionMode.CONSTANT_RATE, contains the transmission rate in

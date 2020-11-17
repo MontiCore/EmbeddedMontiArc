@@ -137,12 +137,7 @@ public class VehicleBuilder {
     }
 
     static {
-        try {
-            Json.registerType(ElectricalPTProperties.class);
-            Json.registerType(FuelPTProperties.class);
-        } catch (SerializationException e) {
-            e.printStackTrace();
-            System.exit(-1);
-        }
+        Json.registerType(ElectricalPTProperties.class);
+        Json.registerType(FuelPTProperties.class);
     }
 }
