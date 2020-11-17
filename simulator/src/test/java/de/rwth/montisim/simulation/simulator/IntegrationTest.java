@@ -97,7 +97,7 @@ public class IntegrationTest {
         MessageTypeManager mtManager = new MessageTypeManager();
 
         SimulationConfig config = new SimulationConfig();
-        config.max_duration = Duration.ofSeconds(300);
+        config.max_duration = Duration.ofSeconds(1000);
         Simulator simulator = new Simulator(config, world, pathfinding, mtManager);
         SimulationLoop loop = new SimulationLoop(simulator, config);
 
