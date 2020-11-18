@@ -47,9 +47,10 @@ public final class GeneratorCppCli {
 
     public static final Option OPTION_OUTPUT_PATH = Option.builder("o")
             .longOpt("output-dir")
-            .desc("full path to output directory for tests e.g. C:\\Users\\vpupkin\\proj\\MyAwesomeAutopilot\\target\\gen-cpp")
+            .desc("full path to output directory for tests e.g. C:\\Users\\vpupkin\\proj\\MyAwesomeAutopilot\\target\\gen-cpp\n" +
+                    "default is: ./target/generated-sources-cpp/")
             .hasArg(true)
-            .required(true)
+            .required(false)
             .build();
 
     public static final Option OPTION_FLAG_TESTS = Option.builder("t")
@@ -134,9 +135,19 @@ public final class GeneratorCppCli {
 
     public static Options getOptions() {
         Options options = new Options();
+        addBaseOptions(options);
+        addEMAM2CPPOptions(options);
+        return options;
+    }
+
+    public static void addBaseOptions(Options options) {
         options.addOption(OPTION_MODELS_PATH);
         options.addOption(OPTION_ROOT_MODEL);
         options.addOption(OPTION_OUTPUT_PATH);
+        options.addOption(OPTION_FLAG_CMAKE);
+    }
+
+    public static void addEMAM2CPPOptions(Options options) {
         options.addOption(OPTION_FLAG_TESTS);
         options.addOption(OPTION_FLAG_ARMADILLO);
         options.addOption(OPTION_FLAG_AUTOPILOT_ADAPTER);
@@ -145,8 +156,6 @@ public final class GeneratorCppCli {
         options.addOption(OPTION_FLAG_ALGEBRAIC);
         options.addOption(OPTION_FLAG_THREADING);
         options.addOption(OPTION_FLAG_EXEC_LOGGING);
-        options.addOption(OPTION_FLAG_CMAKE);
-        return options;
     }
 
     public static CommandLine parseArgs(Options options, CommandLineParser parser, String[] args) {
@@ -185,8 +194,6 @@ public final class GeneratorCppCli {
         g.setUseAlgebraicOptimizations(cliArgs.hasOption(OPTION_FLAG_ALGEBRAIC.getLongOpt()));
         g.setUseThreadingOptimization(cliArgs.hasOption(OPTION_FLAG_THREADING.getLongOpt()));
         g.setExecutionLoggingActive(cliArgs.hasOption(OPTION_FLAG_EXEC_LOGGING.getLongOpt()));
-        g.setGenerateCMake(cliArgs.hasOption(OPTION_FLAG_CMAKE.getLongOpt()));
-
         g.setGenerateCMake(cliArgs.hasOption(OPTION_FLAG_CMAKE.getLongOpt()));
 
         try {
