@@ -1,4 +1,4 @@
-if exist build del /F /Q build
+if exist build del /F /Q /S build
 mkdir build
 cd build
 cmake ..
