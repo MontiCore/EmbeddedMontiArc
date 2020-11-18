@@ -134,6 +134,11 @@ public final class GeneratorCppCli {
 
     public static Options getOptions() {
         Options options = new Options();
+        addEMAM2CPPOptions(options);
+        return options;
+    }
+
+    public static void addEMAM2CPPOptions(Options options) {
         options.addOption(OPTION_MODELS_PATH);
         options.addOption(OPTION_ROOT_MODEL);
         options.addOption(OPTION_OUTPUT_PATH);
@@ -146,7 +151,6 @@ public final class GeneratorCppCli {
         options.addOption(OPTION_FLAG_THREADING);
         options.addOption(OPTION_FLAG_EXEC_LOGGING);
         options.addOption(OPTION_FLAG_CMAKE);
-        return options;
     }
 
     public static CommandLine parseArgs(Options options, CommandLineParser parser, String[] args) {
@@ -185,8 +189,6 @@ public final class GeneratorCppCli {
         g.setUseAlgebraicOptimizations(cliArgs.hasOption(OPTION_FLAG_ALGEBRAIC.getLongOpt()));
         g.setUseThreadingOptimization(cliArgs.hasOption(OPTION_FLAG_THREADING.getLongOpt()));
         g.setExecutionLoggingActive(cliArgs.hasOption(OPTION_FLAG_EXEC_LOGGING.getLongOpt()));
-        g.setGenerateCMake(cliArgs.hasOption(OPTION_FLAG_CMAKE.getLongOpt()));
-
         g.setGenerateCMake(cliArgs.hasOption(OPTION_FLAG_CMAKE.getLongOpt()));
 
         try {
