@@ -135,14 +135,19 @@ public final class GeneratorCppCli {
 
     public static Options getOptions() {
         Options options = new Options();
+        addBaseOptions(options);
         addEMAM2CPPOptions(options);
         return options;
     }
 
-    public static void addEMAM2CPPOptions(Options options) {
+    public static void addBaseOptions(Options options) {
         options.addOption(OPTION_MODELS_PATH);
         options.addOption(OPTION_ROOT_MODEL);
         options.addOption(OPTION_OUTPUT_PATH);
+        options.addOption(OPTION_FLAG_CMAKE);
+    }
+
+    public static void addEMAM2CPPOptions(Options options) {
         options.addOption(OPTION_FLAG_TESTS);
         options.addOption(OPTION_FLAG_ARMADILLO);
         options.addOption(OPTION_FLAG_AUTOPILOT_ADAPTER);
@@ -151,7 +156,6 @@ public final class GeneratorCppCli {
         options.addOption(OPTION_FLAG_ALGEBRAIC);
         options.addOption(OPTION_FLAG_THREADING);
         options.addOption(OPTION_FLAG_EXEC_LOGGING);
-        options.addOption(OPTION_FLAG_CMAKE);
     }
 
     public static CommandLine parseArgs(Options options, CommandLineParser parser, String[] args) {
