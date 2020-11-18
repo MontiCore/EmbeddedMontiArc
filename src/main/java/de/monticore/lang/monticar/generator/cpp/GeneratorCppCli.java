@@ -47,9 +47,10 @@ public final class GeneratorCppCli {
 
     public static final Option OPTION_OUTPUT_PATH = Option.builder("o")
             .longOpt("output-dir")
-            .desc("full path to output directory for tests e.g. C:\\Users\\vpupkin\\proj\\MyAwesomeAutopilot\\target\\gen-cpp")
+            .desc("full path to output directory for tests e.g. C:\\Users\\vpupkin\\proj\\MyAwesomeAutopilot\\target\\gen-cpp\n" +
+                    "default is: ./target/generated-sources-cpp/")
             .hasArg(true)
-            .required(true)
+            .required(false)
             .build();
 
     public static final Option OPTION_FLAG_TESTS = Option.builder("t")
