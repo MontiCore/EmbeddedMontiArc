@@ -2,25 +2,7 @@ cmake_minimum_required(VERSION 3.7)
 project(unicorn)
 
 
-if ( CMAKE_COMPILER_IS_GNUCC )
-  find_package(Threads)
-
-  # For Linux -> use make
-  # add_custom_target(unicorn_make 
-  #   COMMAND ./make.sh
-  #   WORKING_DIRECTORY ${CMAKE_CURRENT_SOURCE_DIR}
-  # )
-  # add_dependencies(unicorn_static unicorn_make)
-
-  add_library(unicorn_static INTERFACE)
-
-  target_link_directories(unicorn_static INTERFACE "${CMAKE_CURRENT_SOURCE_DIR}/${CMAKE_BUILD_TYPE}")
-  target_link_libraries(unicorn_static INTERFACE libunicorn.a pthread)
-  target_include_directories(unicorn_static INTERFACE include)
-
-
-
-else()
+if (CMAKE_HOST_WIN32)
   # For Windows -> reproduce the VS project in 'msvc'
 
 
@@ -66,6 +48,7 @@ else()
   odbc32.lib
   odbccp32.lib
   )
+  target_link_libraries(unicorn_static PUBLIC Dbghelp Shlwapi)
 
 
 
@@ -263,6 +246,23 @@ else()
   #     /MT
   # )
 
+
+
+else()
+  find_package(Threads)
+
+  # For Linux -> use make
+  # add_custom_target(unicorn_make 
+  #   COMMAND ./make.sh
+  #   WORKING_DIRECTORY ${CMAKE_CURRENT_SOURCE_DIR}
+  # )
+  # add_dependencies(unicorn_static unicorn_make)
+
+  add_library(unicorn_static INTERFACE)
+
+  target_link_directories(unicorn_static INTERFACE "${CMAKE_CURRENT_SOURCE_DIR}/${CMAKE_BUILD_TYPE}")
+  target_link_libraries(unicorn_static INTERFACE unicorn pthread dl) # Should use "libunicorn" instead of "unicorn" ?
+  target_include_directories(unicorn_static INTERFACE include)
 
 
 endif()
