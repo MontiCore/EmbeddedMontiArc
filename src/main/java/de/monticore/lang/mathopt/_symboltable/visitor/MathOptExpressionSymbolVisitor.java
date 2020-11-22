@@ -2,6 +2,7 @@
 package de.monticore.lang.mathopt._symboltable.visitor;
 
 import de.monticore.lang.math._symboltable.expression.MathExpressionSymbol;
+import de.monticore.lang.math._symboltable.expression.MathValueSymbol;
 import de.monticore.lang.math._symboltable.visitor.MathExpressionSymbolVisitor;
 import de.monticore.lang.mathopt._symboltable.MathOptimizationConditionSymbol;
 import de.monticore.lang.mathopt._symboltable.MathOptimizationStatementSymbol;
@@ -28,7 +29,9 @@ public interface MathOptExpressionSymbolVisitor extends MathExpressionSymbolVisi
     }
 
     public default void traverse(MathOptimizationStatementSymbol node) {
-        if (node.getOptimizationVariable() != null) handle(node.getOptimizationVariable());
+        for (MathValueSymbol optimizationVar : node.getOptimizationVariables()) {
+            handle(optimizationVar);
+        }
         if (node.getObjectiveValue() != null) handle(node.getObjectiveValue());
         if (node.getObjectiveExpression() != null) handle(node.getObjectiveExpression());
         for (MathExpressionSymbol subjectToExpression : node.getSubjectToExpressions()) {

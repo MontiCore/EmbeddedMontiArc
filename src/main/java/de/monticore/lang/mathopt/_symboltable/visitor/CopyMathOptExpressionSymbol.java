@@ -56,8 +56,8 @@ public class CopyMathOptExpressionSymbol extends CopyMathExpressionSymbol
         copyMathExpressionSymbol(res, node);
         if (node.getOptimizationType() != null)
             res.setOptimizationType(node.getOptimizationType().toString());
-        if (node.getOptimizationVariable() != null)
-            res.setOptimizationVariable(get(node.getOptimizationVariable()));
+        for (MathExpressionSymbol optimizationVariable : node.getOptimizationVariables())
+            res.getSubjectToExpressions().add(get(optimizationVariable));
         if (node.getObjectiveValue() != null)
             res.setObjectiveValue(get(node.getObjectiveValue()));
         if (node.getObjectiveExpression() != null)
