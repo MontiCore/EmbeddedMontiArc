@@ -45,9 +45,10 @@ public class OptimizationStatementCheck implements MathOptASTOptimizationStateme
     }
 
     private void checkOptimizationVariable(ASTOptimizationStatement node) {
-        ASTOptimizationVariableDeclaration astOptVar = node.getOptimizationVariable();
-        if (!supportedOptimizationTypes.contains(astOptVar.getType().getElementType().getName())) {
-            Log.error(String.format("0xC0003 Optimization variable type \"%s\" is not supported as return value.", astOptVar.getType().toString()));
+        for (ASTOptimizationVariableDeclaration astOptVar :node.getOptimizationVariableList()) {
+            if (!supportedOptimizationTypes.contains(astOptVar.getType().getElementType().getName())) {
+                Log.error(String.format("0xC0003 Optimization variable type \"%s\" is not supported as return value.", astOptVar.getType().toString()));
+            }
         }
     }
 

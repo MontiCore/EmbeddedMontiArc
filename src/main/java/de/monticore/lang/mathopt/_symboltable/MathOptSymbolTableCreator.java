@@ -2,8 +2,10 @@
 package de.monticore.lang.mathopt._symboltable;
 
 import de.monticore.commonexpressions._ast.ASTLessEqualExpression;
+import de.monticore.lang.math._ast.ASTMathAssignmentDeclarationStatement;
 import de.monticore.lang.math._symboltable.MathForLoopHeadSymbol;
 import de.monticore.lang.math._symboltable.MathSymbolTableCreator;
+import de.monticore.lang.math._symboltable.MathVariableDeclarationSymbol;
 import de.monticore.lang.math._symboltable.expression.*;
 import de.monticore.lang.mathopt._ast.*;
 import de.monticore.lang.mathopt._visitor.MathOptVisitor;
@@ -11,7 +13,9 @@ import de.monticore.symboltable.MutableScope;
 import de.monticore.symboltable.ResolvingConfiguration;
 import de.se_rwth.commons.logging.Log;
 
+import java.util.ArrayList;
 import java.util.Deque;
+import java.util.List;
 
 /**
  * Creates a hand written symbol table for MontiMathOpt
@@ -104,26 +108,50 @@ public class MathOptSymbolTableCreator extends MathSymbolTableCreator implements
     }
 
     public void endVisit(final ASTOptimizationStatement astMathOptimizationStatement) {
+
         MathOptimizationStatementSymbol symbol = new MathOptimizationStatementSymbol();
+        //Minimize or Maximize
         symbol.setOptimizationType(astMathOptimizationStatement.getOptimizationType().toString());
         if (astMathOptimizationStatement.getObjectiveValueOpt().isPresent()) {
             symbol.setObjectiveValue((MathValueSymbol) astMathOptimizationStatement.getObjectiveValue().getSymbolOpt().get());
         }
-        if (astMathOptimizationStatement.getOptimizationVariable().getSymbolOpt().isPresent()) {
-            symbol.setOptimizationVariable((MathValueSymbol) astMathOptimizationStatement.getOptimizationVariable().getSymbolOpt().get());
+        //Optional stepsize definition( e.g. <n=1:10>)
+        if (astMathOptimizationStatement.isPresentStepSize()) {
+            symbol.setStepSizeExpression((MathExpressionSymbol) astMathOptimizationStatement.getStepSizeOpt().get());
         }
+        //Optimization variables
+        List<ASTOptimizationVariableDeclaration> optVarDecList = astMathOptimizationStatement.getOptimizationVariableList();
+        List<MathValueSymbol> optVariables = new ArrayList<>();
+        for (ASTOptimizationVariableDeclaration varDec : optVarDecList) {
+            optVariables.add((MathValueSymbol) varDec.getSymbolOpt().get());
+        }
+        symbol.setOptimizationVariables(optVariables);
+        //Independent variables
+        List<ASTMathAssignmentDeclarationStatement> indVarDecList = astMathOptimizationStatement.getIndependentDeclarationList();
+        List<MathVariableDeclarationSymbol> indVariables = new ArrayList<>();
+        for (ASTMathAssignmentDeclarationStatement varDec : indVarDecList) {
+            indVariables.add((MathVariableDeclarationSymbol) varDec.getSymbolOpt().get());
+        }
+        //Objective function
         if (astMathOptimizationStatement.getObjectiveFunction().getSymbolOpt().isPresent()) {
             symbol.setObjectiveExpression((MathExpressionSymbol) astMathOptimizationStatement.getObjectiveFunction().getSymbolOpt().get());
         }
+        //Constraints
         for (ASTOptimizationCondition condition : astMathOptimizationStatement.getConstraintList()) {
             if (condition.getSymbolOpt().isPresent()) {
                 MathExpressionSymbol conditionSymbol = (MathExpressionSymbol) condition.getSymbolOpt().get();
+
+                //What does this do?
                 if (conditionSymbol instanceof MathOptimizationConditionSymbol) {
-                    ((MathOptimizationConditionSymbol) conditionSymbol).resolveBoundedExpressionToOptimizationVariable(symbol.getOptimizationVariable());
+                    for (MathValueSymbol var: symbol.getOptimizationVariables()){
+                        ((MathOptimizationConditionSymbol) conditionSymbol).resolveBoundedExpressionToOptimizationVariable(var);
+                    }
                 } else if (conditionSymbol instanceof MathForLoopExpressionSymbol) {
                     for (MathExpressionSymbol sym : ((MathForLoopExpressionSymbol) conditionSymbol).getForLoopBody())
                         if (sym instanceof MathOptimizationConditionSymbol)
-                            ((MathOptimizationConditionSymbol) sym).resolveBoundedExpressionToOptimizationVariable(symbol.getOptimizationVariable());
+                            for (MathValueSymbol var: symbol.getOptimizationVariables()) {
+                                ((MathOptimizationConditionSymbol) sym).resolveBoundedExpressionToOptimizationVariable(var);
+                            }
                 }
                 symbol.getSubjectToExpressions().add(conditionSymbol);
             }
