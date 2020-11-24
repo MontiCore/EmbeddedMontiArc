@@ -97,7 +97,6 @@ public class GeneratorCPP implements EMAMGenerator {
                 // cMakeConfig.addCMakeCommand("set(LIBS ${LIBS} armadillo)");
                 //cMakeConfig.addCMakeCommand("target_link_libraries(armadillo -static)");
 
-                
                 cMakeConfig.addCMakeCommand("# Add simple Wrapper for header-only armadillo");
                 cMakeConfig.addCMakeCommand("add_library(armadillo INTERFACE)");
                 cMakeConfig.addCMakeCommand("target_include_directories(armadillo INTERFACE $ENV{ARMADILLO_PATH}/include)");
@@ -297,22 +296,8 @@ public class GeneratorCPP implements EMAMGenerator {
         }
         fileContents.addAll(generateTypes(TypeConverter.getTypeSymbols()));
         fileContents.addAll(handleTestAndCheckDir(taggingResolver, componentSymbol));
-        if (genDynamicInterface || genServerAdapter || genDDCAdapter) {
-            try {
-                fileContents.addAll(
-                    new DynamicInterfaceGenerator(
-                        componentSymbol, 
-                        cMakeConfig, 
-                        outputName,
-                        genDynamicInterface,
-                        genServerAdapter, 
-                        genDDCAdapter
-                    ).getFiles()
-                );
-            } catch (SerializationException e) {
-                throw new RuntimeException(e);
-            }
-        }
+
+        generateAdapters(fileContents, componentSymbol);
 
         if (isGenerateServerWrapper()) {
             fileContents.addAll(getServerWrapperFiles(componentSymbol));
@@ -343,6 +328,27 @@ public class GeneratorCPP implements EMAMGenerator {
         }
         return files;
     }
+
+    
+    public void generateAdapters(List<FileContent> fileContents, EMAComponentInstanceSymbol component) {
+        if (genDynamicInterface || genServerAdapter || genDDCAdapter) {
+            try {
+                fileContents.addAll(
+                    new DynamicInterfaceGenerator(
+                        component, 
+                        cMakeConfig, 
+                        outputName,
+                        genDynamicInterface,
+                        genServerAdapter, 
+                        genDDCAdapter
+                    ).getFiles()
+                );
+            } catch (SerializationException | IOException e) {
+                throw new RuntimeException(e);
+            }
+        }
+    }
+
 
     public List<File> saveFilesToDisk(List<FileContent> fileContents) throws IOException {
         List<File> files = new ArrayList<>();
