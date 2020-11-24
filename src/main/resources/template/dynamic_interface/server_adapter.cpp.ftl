@@ -22,8 +22,18 @@ void signal_handler(int signal);
 
 
 int main(int argc, char** argv) {
-    signal(SIGTERM, signal_handler);
-    signal(SIGINT, signal_handler);
+    struct sigaction sa;
+    sa.sa_handler = signal_handler;
+    sigemptyset(&sa.sa_mask);
+    sa.sa_flags = 0;
+    if (sigaction(SIGTERM, &sa, NULL) == -1) {
+        perror("sigaction");
+        exit(1);
+    }
+    if (sigaction(SIGINT, &sa, NULL) == -1) {
+        perror("sigaction");
+        exit(1);
+    }
 
     if (argc == 3) {
         string cmd = argv[1];

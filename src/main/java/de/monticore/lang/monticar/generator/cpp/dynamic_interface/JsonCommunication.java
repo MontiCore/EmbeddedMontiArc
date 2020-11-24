@@ -61,17 +61,17 @@ public class JsonCommunication {
     
 	public void addCMake(CMakeConfig cmake, String outputName) {
         // create shared lib
+        cmake.addCMakeCommandEnd("# The JSON/Dynamic-interface based communication adapter (for the hardware_emulator)");
         cmake.addCMakeCommandEnd("add_library("+outputName+" SHARED dynamic_interface.cpp json.cpp printf.cpp)");
         cmake.addCMakeCommandEnd("target_include_directories("+outputName+" PUBLIC ${INCLUDE_DIRS} ${CMAKE_CURRENT_SOURCE_DIR})");
         cmake.addCMakeCommandEnd("target_link_libraries("+outputName+" PUBLIC ${LIBS} -static-libgcc -static-libstdc++)");
         cmake.addCMakeCommandEnd("set_target_properties("+outputName+" PROPERTIES LINKER_LANGUAGE CXX POSITION_INDEPENDENT_CODE ON)");
         cmake.addCMakeCommandEnd("target_compile_features("+outputName+" PUBLIC cxx_std_11)");
-        cmake.addCMakeCommandEnd("IF (WIN32)");
-        cmake.addCMakeCommandEnd("  set_target_properties("+outputName+" PROPERTIES PREFIX \"\")");
-        cmake.addCMakeCommandEnd("ENDIF()");
+        cmake.addCMakeCommandEnd("set_target_properties("+outputName+" PROPERTIES PREFIX \"\")");
         // install shared lib
         cmake.addCMakeCommandEnd("install(TARGETS "+outputName+" DESTINATION $ENV{DLL_DIR})");
         //cmake.addCMakeCommandEnd("export(TARGETS "+outputName+" FILE "+outputName+".cmake)");
+        cmake.addCMakeCommandEnd("");
 	}
     
     public String generateSetPortCase(int id, PortInformation portInfo){

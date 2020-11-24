@@ -91,7 +91,17 @@ public class GeneratorCPP implements EMAMGenerator {
         if (usesArmadilloBackend()) {
             // add dependency on module Armadillo
             if (importArmadillo) {
-                cMakeConfig.addCMakeCommand("add_subdirectory($ENV{ARMADILLO_PATH} armadillo)");
+                // cMakeConfig.addCMakeCommand("SET(BUILD_SHARED_LIBS OFF)");
+                // cMakeConfig.addCMakeCommand("SET(CMAKE_EXE_LINKER_FLAGS \"-static\")");
+                // cMakeConfig.addCMakeCommand("add_subdirectory($ENV{ARMADILLO_PATH} armadillo)");
+                // cMakeConfig.addCMakeCommand("set(LIBS ${LIBS} armadillo)");
+                //cMakeConfig.addCMakeCommand("target_link_libraries(armadillo -static)");
+
+                
+                cMakeConfig.addCMakeCommand("# Add simple Wrapper for header-only armadillo");
+                cMakeConfig.addCMakeCommand("add_library(armadillo INTERFACE)");
+                cMakeConfig.addCMakeCommand("target_include_directories(armadillo INTERFACE $ENV{ARMADILLO_PATH}/include)");
+                cMakeConfig.addCMakeCommand("target_compile_definitions(armadillo INTERFACE ARMA_DONT_USE_WRAPPER)");
                 cMakeConfig.addCMakeCommand("set(LIBS ${LIBS} armadillo)");
             } else {
                 cMakeConfig.addModuleDependency(new CMakeFindModule("Armadillo", true));

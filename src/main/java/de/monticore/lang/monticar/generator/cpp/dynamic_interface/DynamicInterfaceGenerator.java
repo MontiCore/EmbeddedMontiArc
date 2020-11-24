@@ -102,6 +102,7 @@ public class DynamicInterfaceGenerator {
             for (String s : sources) sourceFiles += s + ' ';
 
             // create adapter executable
+            cmake.addCMakeCommandEnd("# Server (TCP) / DDC adapter");
             cmake.addCMakeCommandEnd("add_executable("+targetName+" "+sourceFiles+")");
             if (!libs.isEmpty()) {
                 String libList = "";
@@ -110,8 +111,7 @@ public class DynamicInterfaceGenerator {
             }
             cmake.addCMakeCommandEnd("target_link_libraries("+targetName+" PUBLIC ${LIBS})");
             cmake.addCMakeCommandEnd("target_compile_features("+targetName+" PUBLIC cxx_std_11)");
-            // install adapter
-            cmake.addCMakeCommandEnd("install(TARGETS "+targetName+" DESTINATION $ENV{DLL_DIR})");
+            cmake.addCMakeCommandEnd("");
         }
     }
 
