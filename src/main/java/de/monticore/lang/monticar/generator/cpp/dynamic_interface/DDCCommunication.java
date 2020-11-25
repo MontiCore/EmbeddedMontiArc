@@ -17,6 +17,7 @@ public class DDCCommunication {
     
     public DDCCommunication(DynamicInterfaceGenerator gen) {
         this.gen = gen;
+        throw new IllegalArgumentException("DDCCommunication not implemented yet.");
     }
     
     public List<FileContent> generate() throws SerializationException {
