@@ -22,7 +22,6 @@ public class DDCCommunication {
     
     public List<FileContent> generate() throws SerializationException {
         List<FileContent> files = new ArrayList<>();
-        
         return files;
     }
     
