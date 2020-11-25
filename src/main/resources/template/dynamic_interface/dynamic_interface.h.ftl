@@ -1,5 +1,4 @@
-<#-- (c) https://github.com/MontiCore/monticore -->
-<#include "/Common.ftl">
+/** (c) https://github.com/MontiCore/monticore */
 #pragma once
 #if defined(_MSC_VER)
     //  Microsoft
@@ -18,17 +17,13 @@
 
 extern "C" {
 
-EXPORT int get_input_count();
-EXPORT const char *get_input_name(int id);
-EXPORT const char *get_input_type(int id);
+// Returns a JSON string deserializable to the ProgramInterface class (Commons).
+EXPORT const char* DI__get_interface();
+EXPORT void DI__set_port(int i, const char* data);
+EXPORT const char* DI__get_port(int i);
 
-EXPORT int get_output_count();
-EXPORT const char *get_output_name(int id);
-EXPORT const char *get_output_type(int id);
-
-EXPORT void init();
-EXPORT void execute();
-
-${viewModel.functionDeclarations}
+// Methods
+EXPORT void DI__init();
+EXPORT void DI__execute(double delta_sec);
 
 }
