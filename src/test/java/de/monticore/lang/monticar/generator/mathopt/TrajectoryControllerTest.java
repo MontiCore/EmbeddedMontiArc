@@ -23,7 +23,7 @@ public class TrajectoryControllerTest extends AbstractSymtabTest {
         EMAComponentInstanceSymbol componentInstanceSymbol = symtab.<EMAComponentInstanceSymbol>resolve("de.rwth.monticar.mpc.trajectoryControllerMPC", EMAComponentInstanceSymbol.KIND).orElse(null);
         assertNotNull(componentInstanceSymbol);
         GeneratorCPP generator = new GeneratorCPP();
-        generator.setGenerateAutopilotAdapter(true);
+        generator.setGenerateDynamicInterface(true);
         generator.setGenerateServerWrapper(false);
         generator.setGenerateCMake(true);
         generator.setGenerationTargetPath("./target/generated-sources-cpp/TrajectoryControllerMPC/src/");
