@@ -40,7 +40,7 @@ public class DatasetArtifactCreator extends ArtifactCreator {
       // IF dataset is a h5 file
       if (datasetName.matches(".*\\.h5$")) {
         FileLocation fileLocation = new FileLocation();
-        fileLocation.setJarLocation(String.format("src%smain%sresources%straining_data%s%s", File.separator, File.separator, File.separator, File.separator, dataset.getName()));
+        fileLocation.setJarLocation(String.format("training_data%s%s", File.separator, dataset.getName()));
         fileLocation.setSourceLocation((new File(datasetPath, dataset.getName()).getAbsolutePath()));
 
         datasetLocations.add(fileLocation);
