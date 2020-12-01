@@ -84,7 +84,7 @@ public class ModelArtifactCreator extends ArtifactCreator {
   private static FileLocation createFileLocation(String packagePath, File model) {
     FileLocation modelLocation = new FileLocation();
     modelLocation.setSourceLocation(model.getAbsolutePath());
-    modelLocation.setJarLocation(String.format("src%smain%semadl%s%s%s", File.separator, File.separator, File.separator, packagePath, model.getName()));
+    modelLocation.setJarLocation(packagePath + model.getName());
 
     return modelLocation;
   }

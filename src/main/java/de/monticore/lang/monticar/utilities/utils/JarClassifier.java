@@ -4,6 +4,7 @@ public enum JarClassifier {
 
   DATASET("dataset"),
   EMADL("emadl"),
+  PRETRAINED("pretrained"),
   EMPTY("");
 
   public final String value;
