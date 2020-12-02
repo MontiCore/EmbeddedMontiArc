@@ -1,12 +1,13 @@
-package de.monticore.lang.monticar.utilities;
+package de.monticore.lang.monticar.utilities.mojos;
 
-import de.monticore.lang.monticar.utilities.artifactcreator.ResultArtifactCreator;
+import de.monticore.lang.monticar.utilities.artifactcreator.TrainingEnvironmentArtifactCreator;
 import de.monticore.lang.monticar.utilities.artifactdeployer.ArtifactDeployer;
 import de.monticore.lang.monticar.utilities.models.StorageInformation;
 import de.monticore.lang.monticar.utilities.utils.JarClassifier;
 import org.apache.maven.plugin.MojoExecutionException;
 import org.apache.maven.plugin.MojoFailureException;
 import org.apache.maven.plugins.annotations.Mojo;
+import org.apache.maven.plugins.annotations.Parameter;
 import org.apache.maven.project.MavenProject;
 import org.apache.maven.shared.invoker.MavenInvocationException;
 
@@ -14,8 +15,14 @@ import java.io.File;
 import java.io.IOException;
 import java.util.Arrays;
 
-@Mojo(name = "install-result")
-public class InstallResultMojo extends BaseMojo {
+@Mojo(name = "deploy-environment")
+public class DeployTrainingEnvironmentMojo extends BaseMojo {
+
+  @Parameter
+  private StorageInformation datasetToStore;
+
+  @Parameter
+  private StorageInformation modelToStore;
 
   @Override
   public void execute() throws MojoExecutionException, MojoFailureException {
@@ -25,24 +32,25 @@ public class InstallResultMojo extends BaseMojo {
 
     File jarFile;
     try {
-      getLog().info("STARTING creating Jar of the trained model.");
-      jarFile = ResultArtifactCreator.createArtifact(storageInformation, getTrainingConfig(), getPathTmpOut(), getScope(), getTaggingResolver());
-      getLog().info("FINISHED creating Jar of the trained model.");
+      getLog().info("STARTING creating Jar for training environment");
+      jarFile = TrainingEnvironmentArtifactCreator.createArtifact(storageInformation, this.datasetToStore, this.modelToStore, this.getPathTmpOut());
+      getLog().info("FINISHED creating Jar for training environment");
 
-      ArtifactDeployer.installArtifact(jarFile.getAbsolutePath(), storageInformation, this.getRepository(), JarClassifier.EMPTY);
+      ArtifactDeployer.deployArtifact(jarFile.getAbsolutePath(), storageInformation, this.getRepository(), JarClassifier.EMPTY);
     }
     catch (IOException | MavenInvocationException e) {
       throw new MojoFailureException(Arrays.toString(e.getStackTrace()));
     }
-
   }
 
   private StorageInformation getStorageInformation(MavenProject mavenProject) {
     StorageInformation storageInformation = new StorageInformation();
     storageInformation.setGroupId(mavenProject.getGroupId());
-    storageInformation.setArtifactId(mavenProject.getArtifactId() + "-trained-model");
+    storageInformation.setArtifactId(mavenProject.getArtifactId() + "-training-environment");
     storageInformation.setVersion(this.getNewestVersion(storageInformation));
 
     return storageInformation;
   }
+
 }
+

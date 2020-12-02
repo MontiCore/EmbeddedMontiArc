@@ -1,4 +1,4 @@
-package de.monticore.lang.monticar.utilities;
+package de.monticore.lang.monticar.utilities.mojos;
 
 import de.monticore.ModelingLanguageFamily;
 import de.monticore.io.paths.ModelPath;

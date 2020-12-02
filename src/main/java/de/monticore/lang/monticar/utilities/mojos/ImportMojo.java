@@ -1,4 +1,4 @@
-package de.monticore.lang.monticar.utilities;
+package de.monticore.lang.monticar.utilities.mojos;
 
 import de.monticore.lang.monticar.utilities.artifactinstaller.ArtifactImporter;
 import org.apache.commons.lang3.StringUtils;

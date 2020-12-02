@@ -1,6 +1,6 @@
-package de.monticore.lang.monticar.utilities;
+package de.monticore.lang.monticar.utilities.mojos;
 
-import de.monticore.lang.monticar.utilities.artifactcreator.DatasetArtifactCreator;
+import de.monticore.lang.monticar.utilities.artifactcreator.ModelArtifactCreator;
 import de.monticore.lang.monticar.utilities.artifactdeployer.ArtifactDeployer;
 import de.monticore.lang.monticar.utilities.models.StorageInformation;
 import de.monticore.lang.monticar.utilities.utils.JarClassifier;
@@ -14,24 +14,25 @@ import java.io.File;
 import java.io.IOException;
 import java.util.Arrays;
 
-@Mojo(name="install-dataset")
-public class InstallDatasetMojo extends BaseMojo {
+@Mojo(name = "deploy-project")
+public class DeployProjectMojo extends BaseMojo {
 
   @Parameter
-  private StorageInformation datasetToStore;
+  private StorageInformation modelToStore;
 
+  @Override
   public void execute() throws MojoExecutionException, MojoFailureException {
     this.mkTmpDir();
-    int newestVersion = this.getNewestVersion(datasetToStore);
-    datasetToStore.setVersion(newestVersion);
+    int newestVersion = this.getNewestVersion(modelToStore);
+    modelToStore.setVersion(newestVersion);
 
     File jarFile;
     try {
-      getLog().info(String.format("STARTING creating Jar for dataset in directory %s", this.datasetToStore.getPath()));
-      jarFile = DatasetArtifactCreator.createArtifact(this.datasetToStore, this.getPathTmpOut());
-      getLog().info("FINISHED creating Jar for dataset");
+      getLog().info(String.format("STARTING creating Jar for model %s", this.modelToStore.getPath()));
+      jarFile = ModelArtifactCreator.createArtifact(this.modelToStore, this.getPathTmpOut());
+      getLog().info("FINISHED creating Jar for model");
 
-      ArtifactDeployer.installArtifact(jarFile.getAbsolutePath(), this.datasetToStore, this.getRepository(), JarClassifier.DATASET);
+      ArtifactDeployer.deployArtifact(jarFile.getAbsolutePath(), this.modelToStore, this.getRepository(), JarClassifier.EMADL);
     }
     catch (IOException | MavenInvocationException e) {
       throw new MojoFailureException(Arrays.toString(e.getStackTrace()));
