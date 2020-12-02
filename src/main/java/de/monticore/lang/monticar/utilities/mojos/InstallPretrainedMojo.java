@@ -15,7 +15,7 @@ import java.io.IOException;
 import java.util.Arrays;
 
 @Mojo(name = "install-pretrained")
-public class InstallPretrained extends BaseMojo {
+public class InstallPretrainedMojo extends BaseMojo {
 
   @Parameter
   private StorageInformation pretrainedNetworkToStore;
