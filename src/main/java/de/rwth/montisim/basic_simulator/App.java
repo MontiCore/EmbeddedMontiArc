@@ -97,7 +97,12 @@ public class App
             // Run simulation
             SimulationLoop simLoop = new SimulationLoop(simulator, config);
             TaskStatus res = simLoop.run();
-            if (res == TaskStatus.FAILED) throw new IllegalStateException("Not all tasks were completed.");
+            if (res == TaskStatus.SUCCEEDED) {
+                System.out.println("Simulation SUCCEEDED.");
+            } else {
+                System.out.println("Simulation FAILED.");
+                System.exit(-1);
+            }
         } catch (Exception e1) {
             e1.printStackTrace();
             return;
