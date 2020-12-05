@@ -9,15 +9,15 @@
 
     <groupId>montisim</groupId>
     <artifactId>basic-simulator</artifactId>
-    <version>2.0</version>
+    <version>2.1.2</version>
 
     <name>basic-simulator</name>
 
     <properties>
         <!-- USE THESE TO SET THE VERSIONS OF THE DEPENDENCIES FOR ALL THE SUB-PROJECTS -->
-        <montisim.commons.version>2.0.6</montisim.commons.version>
-        <montisim.hardware_emulator.version>2.0.1</montisim.hardware_emulator.version>
-        <montisim.simulation.version>3.0.1</montisim.simulation.version>
+        <montisim.commons.version>2.0.10</montisim.commons.version>
+        <montisim.hardware_emulator.version>2.0.3</montisim.hardware_emulator.version>
+        <montisim.simulation.version>3.1.1</montisim.simulation.version>
 
 
         <project.build.sourceEncoding>UTF-8</project.build.sourceEncoding>

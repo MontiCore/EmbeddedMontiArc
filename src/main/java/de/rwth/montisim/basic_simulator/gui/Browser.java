@@ -4,18 +4,22 @@
 package de.rwth.montisim.basic_simulator.gui;
 
 import de.rwth.montisim.basic_simulator.filesystem.FileSystem;
+import de.rwth.montisim.simulation.simulator.visualization.ui.UIInfo;
 
 import javax.swing.*;
+import javax.swing.border.Border;
 import javax.swing.event.TreeSelectionEvent;
 import javax.swing.event.TreeSelectionListener;
 import javax.swing.tree.*;
 import java.awt.*;
+import java.awt.event.*;
 import java.io.IOException;
 import java.util.Enumeration;
 import java.util.HashMap;
 
 public class Browser extends JFrame implements TreeSelectionListener {
     private static final long serialVersionUID = -7491494784879564019L;
+    public static Border paneBorder;
 
     protected static class BrowserTree extends JTree {
         private static final long serialVersionUID = -3212587123492957572L;
@@ -48,7 +52,8 @@ public class Browser extends JFrame implements TreeSelectionListener {
     public Browser(FileSystem file_system) throws IOException {
         super("MontiSim basic-simulator");
         this.file_system = file_system;
-        setBackground(new Color(238,238,238));
+        //setBackground(new Color(238,238,238));
+        //getContentPane().setBackground(Color.WHITE);
         setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
         setLocationRelativeTo(null);
         setSize(1200, 900);
@@ -60,6 +65,7 @@ public class Browser extends JFrame implements TreeSelectionListener {
 
         //Add browser
         JScrollPane browser = new JScrollPane(JScrollPane.VERTICAL_SCROLLBAR_AS_NEEDED, JScrollPane.HORIZONTAL_SCROLLBAR_NEVER);
+        paneBorder = browser.getBorder();
 
         tree_root = new DefaultMutableTreeNode("Categories");
         tree_model = new DefaultTreeModel(tree_root);
@@ -85,10 +91,46 @@ public class Browser extends JFrame implements TreeSelectionListener {
 
         browser.setMinimumSize(new Dimension(300, 200));
         browser.setViewportView(tree);
-        getContentPane().add(BorderLayout.LINE_START, browser);
+        
+
+        JPanel interm = new JPanel();
+
+        JCheckBox checkBox1 = new JCheckBox("Antialiasing", UIInfo.antialiasing);        
+        checkBox1.addItemListener(new ItemListener() {
+            public void itemStateChanged(ItemEvent e) {         
+                UIInfo.antialiasing = e.getStateChange() == 1;
+                repaint();
+            }           
+        });
+        checkBox1.setBackground(Color.WHITE);
+        interm.add(checkBox1);
+
+        JCheckBox checkBox2 = new JCheckBox("Show Road Segments", UIInfo.showSegments);        
+        checkBox2.addItemListener(new ItemListener() {
+            public void itemStateChanged(ItemEvent e) {         
+                UIInfo.showSegments = e.getStateChange() == 1;
+                repaint();
+            }           
+        });
+        checkBox2.setBackground(Color.WHITE);
+        interm.add(checkBox2);
+
+        interm.setBackground(Color.WHITE);
+        JPanel optionPanel = new JPanel();
+        optionPanel.setLayout(new BoxLayout(optionPanel, BoxLayout.Y_AXIS));
+        optionPanel.setBorder(paneBorder);
+        optionPanel.add(interm);
 
 
+        JPanel sidePanel = new JPanel();
+        sidePanel.setLayout(new BorderLayout());
+        sidePanel.add(browser, BorderLayout.CENTER);
+        sidePanel.add(optionPanel, BorderLayout.PAGE_END);
 
+        getContentPane().add(BorderLayout.LINE_START, sidePanel);
+
+
+        setExtendedState(getExtendedState() | JFrame.MAXIMIZED_BOTH);
         setVisible(true); //making the frame visible
     }
 
