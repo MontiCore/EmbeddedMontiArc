@@ -5,13 +5,11 @@ package de.rwth.montisim.basic_simulator.gui;
 
 import de.rwth.montisim.basic_simulator.filesystem.FileSystem;
 import de.rwth.montisim.commons.map.Pathfinding;
+import de.rwth.montisim.commons.simulation.TaskStatus;
 import de.rwth.montisim.commons.simulation.TimeUpdate;
+import de.rwth.montisim.commons.utils.IPM;
 import de.rwth.montisim.commons.utils.Vec2;
-import de.rwth.montisim.commons.utils.Vec3;
 import de.rwth.montisim.commons.utils.json.SerializationException;
-import de.rwth.montisim.simulation.eecomponents.navigation.Navigation;
-import de.rwth.montisim.simulation.eesimulator.exceptions.EEMessageTypeException;
-import de.rwth.montisim.simulation.eesimulator.exceptions.EESetupException;
 import de.rwth.montisim.simulation.eesimulator.message.MessageTypeManager;
 import de.rwth.montisim.simulation.environment.pathfinding.PathfindingImpl;
 import de.rwth.montisim.simulation.environment.osmmap.*;
@@ -23,32 +21,37 @@ import de.rwth.montisim.simulation.simulator.visualization.map.PathfinderRendere
 import de.rwth.montisim.simulation.simulator.visualization.map.WorldRenderer;
 import de.rwth.montisim.simulation.simulator.visualization.ui.Control;
 import de.rwth.montisim.simulation.simulator.visualization.ui.SimulationRunner;
+import de.rwth.montisim.simulation.simulator.visualization.ui.UIInfo;
 import de.rwth.montisim.simulation.simulator.visualization.ui.Viewer2D;
 import de.rwth.montisim.simulation.vehicle.Vehicle;
-import de.rwth.montisim.simulation.vehicle.VehicleProperties;
 
 import javax.swing.*;
+import java.awt.Color;
+import java.awt.Dimension;
+import java.awt.FlowLayout;
+import java.awt.event.*;
 import java.awt.BorderLayout;
 import java.io.File;
 import java.time.*;
 import java.util.ArrayList;
+import java.util.Collection;
 import java.util.List;
 
 public class ScenarioVis extends SimVis implements SimulationRunner {
     private static final long serialVersionUID = 7903217594061845406L;
 
-    public static final boolean SHOW_SEGMENTS = true;
-
     final FileSystem fileSystem;
     String current_scenario = "";
     JLabel scenario_name;
 
-    final Control control;
-    final Viewer2D viewer;
+    Control control;
+    Viewer2D viewer;
     private List<CarRenderer> carRenderers = new ArrayList<>();
 
     Simulator simulator;
+    SimulationConfig simConfig;
     World world;
+    OsmMap map;
     Pathfinding pathfinding;
     MessageTypeManager mtManager;
 
@@ -58,87 +61,105 @@ public class ScenarioVis extends SimVis implements SimulationRunner {
     Duration dt = Duration.ofMillis(PHYSICS_TICK_DURATION_MS);
 
     public ScenarioVis(FileSystem fileSystem) {
+        UIInfo.inspectAutopilots = false;
+        // setBackground(Color.WHITE);
         this.fileSystem = fileSystem;
 
-        viewer = new Viewer2D();
-        viewer.setZoom(20);
-
-        control = new Control(Control.Mode.SIMULATION, Instant.EPOCH, this, (int)PHYSICS_TICK_DURATION_MS, 30, 3);
-
-        JPanel topPanel = new JPanel();
-        topPanel.setLayout(new BoxLayout(topPanel, BoxLayout.Y_AXIS));
-        topPanel.add(control);
-        topPanel.add(new JSeparator());
-
-        setLayout(new BorderLayout());
-        add(topPanel, BorderLayout.PAGE_START);
-        add(viewer, BorderLayout.CENTER);
-        // add(plotter, BorderLayout.PAGE_END);
+        setupUI();
     }
 
-    // public void setScenario(String scenario){
-    // if (scenario != current_scenario){
-    // current_scenario = scenario;
-    // scenario_name.setText(scenario);
-    // }
-    // }
-
     private void setup() {
+        // Cleanup if a sim is here
+        if (simulator != null) {
+            simulator.destroy();
+            simulator = null;
+            viewer.clearRenderers();
+            carRenderers.clear();
+        }
+
         File scenarioFile = fileSystem.getPath("scenarios", current_scenario + ".json");
-        SimulationConfig config;
         try {
-            config = SimulationConfig.fromFile(scenarioFile);
+            simConfig = SimulationConfig.fromFile(scenarioFile);
         } catch (SerializationException e1) {
             e1.printStackTrace();
             return;
         }
+        control.init(simConfig.tick_duration, simConfig.start_time);
 
         // Create simulator from scenario file
 
-        File map_path = fileSystem.getPath("maps", config.map_name + ".osm");
+        File map_path = fileSystem.getPath("maps", simConfig.map_name + ".osm");
         World world;
         try {
-            world = new OsmToWorldLoader(new OsmMap(config.map_name, map_path)).getWorld();
+            map = new OsmMap(simConfig.map_name, map_path);
+            world = new OsmToWorldLoader(map).getWorld();
             pathfinding = new PathfindingImpl(world);
         } catch (Exception e1) {
             e1.printStackTrace();
             return;
         }
         mtManager = new MessageTypeManager();
-        simulator = new Simulator(config, world, pathfinding, mtManager);
+        simulator = simConfig.build(world, pathfinding, mtManager, map);
 
         // Setup visualizer
 
-        viewer.clearRenderers();
-        viewer.addRenderer(new WorldRenderer(world, SHOW_SEGMENTS));
+        viewer.addRenderer(new WorldRenderer(world));
         viewer.addRenderer(new PathfinderRenderer(pathfinding));
 
-        carRenderers.clear();
-        for (VehicleProperties car_config : config.cars) {
-            Vehicle car;
-            try {
-                car = simulator.getVehicleBuilder(car_config).build();
-                
-                simulator.addSimulationObject(car);
+        // Init CarRenderers and find view for all Vehicles
+        Collection<Vehicle> vehicles = simulator.getVehicles();
+        setView(vehicles);
 
-                car.physicsModel.setGroundPosition(new Vec3(car_config.start_coords, 0), new Vec2(1,0));
-
-                Navigation nav = (Navigation) car.eesystem.getComponentManager().getComponent("Navigation").get();
-                nav.pushTargetPos(car_config.end_coords);
-                car.addTarget(car_config.end_coords);
-
-                CarRenderer cr = new CarRenderer();
-                cr.setCar(car);
-                viewer.addRenderer(cr);
-                carRenderers.add(cr);
-            } catch (SerializationException | EEMessageTypeException | EESetupException e) {
-                e.printStackTrace();
-            }
-            
+        for (Vehicle v : vehicles) {
+            CarRenderer cr = new CarRenderer();
+            cr.setCar(v);
+            viewer.addRenderer(cr);
+            carRenderers.add(cr);
         }
 
         viewer.repaint();
+    }
 
+    void setView(Collection<Vehicle> vehicles) {
+        Vec2 avg_pos = new Vec2(0, 0);
+        int count = 0;
+        Vec2 min_pos = new Vec2(Double.POSITIVE_INFINITY, Double.POSITIVE_INFINITY);
+        Vec2 max_pos = new Vec2(Double.NEGATIVE_INFINITY, Double.NEGATIVE_INFINITY);
+        Vec2 vpos = new Vec2();
+        for (Vehicle v : vehicles) {
+            vpos.set(v.physicalObject.pos);
+            IPM.add(avg_pos, vpos);
+            if (vpos.x < min_pos.x)
+                min_pos.x = vpos.x;
+            if (vpos.y < min_pos.y)
+                min_pos.y = vpos.y;
+            if (vpos.x > max_pos.x)
+                max_pos.x = vpos.x;
+            if (vpos.y > max_pos.y)
+                max_pos.y = vpos.y;
+            ++count;
+        }
+        if (count == 0) {
+            viewer.setCenter(avg_pos);
+            viewer.setZoom(4);
+            return;
+        }
+
+        IPM.multiply(avg_pos, 1.0 / (double) count);
+        viewer.setCenter(avg_pos);
+
+        Vec2 range = new Vec2();
+        IPM.subtractTo(range, max_pos, min_pos);
+        IPM.add(range, new Vec2(16, 16)); // Margin
+        Dimension d = viewer.getSize();
+        double xscale = d.getWidth() / range.x;
+        double yscale = d.getHeight() / range.y;
+        double scale = 20;
+        if (xscale < scale)
+            scale = xscale;
+        if (yscale < scale)
+            scale = yscale;
+        viewer.setZoom(scale);
     }
 
     @Override
@@ -163,5 +184,84 @@ public class ScenarioVis extends SimVis implements SimulationRunner {
     public void update(TimeUpdate newTime) {
         if (simulator != null)
             simulator.update(newTime);
+    }
+
+    void setupUI() {
+        viewer = new Viewer2D();
+        viewer.setZoom(20);
+
+        control = new Control(Control.Mode.SIMULATION, Instant.EPOCH, this, Duration.ofMillis(PHYSICS_TICK_DURATION_MS), 30, 3);
+        control.setBackground(Color.WHITE);
+
+        JPanel topPanel = new JPanel();
+        topPanel.setLayout(new BoxLayout(topPanel, BoxLayout.Y_AXIS));
+        topPanel.setBorder(Browser.paneBorder);
+        topPanel.add(control);
+
+        setLayout(new BorderLayout());
+        add(topPanel, BorderLayout.PAGE_START);
+
+        viewer.setBackground(Color.WHITE);
+        JPanel viewerContainer = new JPanel();
+        viewerContainer.setLayout(new BoxLayout(viewerContainer, BoxLayout.Y_AXIS));
+        viewerContainer.setBorder(Browser.paneBorder);
+        viewerContainer.add(viewer);
+        add(viewerContainer, BorderLayout.CENTER);
+
+        JPanel interm = new JPanel();
+        interm.setLayout(new FlowLayout());
+        interm.setBackground(Color.WHITE);
+
+        JCheckBox checkBox1 = new JCheckBox("Inspect Autopilot I/O", UIInfo.inspectAutopilots);
+        checkBox1.addItemListener(new ItemListener() {
+            public void itemStateChanged(ItemEvent e) {
+                UIInfo.inspectAutopilots = e.getStateChange() == 1;
+                viewer.repaint();
+            }
+        });
+        interm.add(checkBox1);
+
+        JCheckBox checkBox2 = new JCheckBox("Show Planned Path", UIInfo.drawPlannedPath);
+        checkBox2.addItemListener(new ItemListener() {
+            public void itemStateChanged(ItemEvent e) {
+                UIInfo.drawPlannedPath = e.getStateChange() == 1;
+                viewer.setDirty();
+                viewer.repaint();
+            }
+        });
+        interm.add(checkBox2);
+
+        JCheckBox checkBox3 = new JCheckBox("Show Trajectory (Navigation output)", UIInfo.drawPlannedTrajectory);
+        checkBox3.addItemListener(new ItemListener() {
+            public void itemStateChanged(ItemEvent e) {
+                UIInfo.drawPlannedTrajectory = e.getStateChange() == 1;
+                viewer.setDirty();
+                viewer.repaint();
+            }
+        });
+        interm.add(checkBox3);
+
+        JCheckBox checkBox4 = new JCheckBox("Show Actuators", UIInfo.drawActuators);
+        checkBox4.addItemListener(new ItemListener() {
+            public void itemStateChanged(ItemEvent e) {
+                UIInfo.drawActuators = e.getStateChange() == 1;
+                viewer.setDirty();
+                viewer.repaint();
+            }
+        });
+        interm.add(checkBox4);
+
+        JPanel bottomPanel = new JPanel();
+        bottomPanel.setLayout(new BoxLayout(bottomPanel, BoxLayout.Y_AXIS));
+        bottomPanel.setBorder(Browser.paneBorder);
+        bottomPanel.add(interm);
+        add(bottomPanel, BorderLayout.PAGE_END);
+
+        // add(plotter, BorderLayout.PAGE_END);
+    }
+
+    @Override
+    public TaskStatus status() {
+        return simulator.status();
     }
 }

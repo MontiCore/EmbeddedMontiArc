@@ -1,9 +1,9 @@
 {
-    "name": "new_basic",
+    "name": "EMADL_native",
     "map_name": "aachen",
     "cars": [
         {
-            "name": "TestVehicle",
+            "name": "EMADLTestVehicle",
             "start_pos": [ 0, 0 ],
             "task": {
                 "goals": [
@@ -55,19 +55,11 @@
                 { "type": "navigation" },
                 {
                     "type": "computer",
-                    "software_name": "cppautopilotzigzag",
-                    "emulator_type": "emu",
+                    "software_name": "TestEMADLAP",
+                    "emulator_type": "direct",
                     "os": "windows",
                     "time_model": {
-                        "type": "models",
-                        "cpu_frequency": 4000000000,
-                        "memory_frequency": 2500000000,
-                        "caches": [
-                            {"type": "I", "level": 1, "size": 262144, "read_ticks": 4, "write_ticks": 4},
-                            {"type": "D", "level": 1, "size": 262144, "read_ticks": 4, "write_ticks": 4},
-                            {"type": "shared", "level": 2, "size": 2097152, "read_ticks": 6, "write_ticks": 6},
-                            {"type": "shared", "level": 3, "size": 12582912, "read_ticks": 40, "write_ticks": 40}
-                        ]
+                        "type": "instant"
                     }
                 }
             ]
