@@ -6,7 +6,9 @@ package de.rwth.montisim.hardware_emulator.computer;
 import java.io.IOException;
 import java.time.Duration;
 import java.time.Instant;
+import java.util.ArrayList;
 import java.util.HashMap;
+import java.util.List;
 import java.util.logging.Logger;
 
 import de.rwth.montisim.commons.dynamicinterface.PortInformation;
@@ -14,6 +16,9 @@ import de.rwth.montisim.commons.dynamicinterface.ProgramInterface;
 import de.rwth.montisim.commons.dynamicinterface.PortInformation.PortDirection;
 import de.rwth.montisim.commons.eventsimulation.DiscreteEvent;
 import de.rwth.montisim.commons.eventsimulation.exceptions.UnexpectedEventException;
+import de.rwth.montisim.commons.simulation.Destroyable;
+import de.rwth.montisim.commons.simulation.Destroyer;
+import de.rwth.montisim.commons.simulation.Inspectable;
 import de.rwth.montisim.commons.utils.Time;
 import de.rwth.montisim.commons.utils.json.Json;
 import de.rwth.montisim.commons.utils.json.JsonTraverser;
@@ -28,7 +33,7 @@ import de.rwth.montisim.simulation.eesimulator.exceptions.EEMessageTypeException
 import de.rwth.montisim.simulation.eesimulator.message.Message;
 import de.rwth.montisim.simulation.eesimulator.message.MessageInformation;
 
-public class Computer extends EEComponent {
+public class Computer extends EEComponent implements Inspectable, Destroyable {
     transient final ComputerProperties properties;
 
     
@@ -38,21 +43,24 @@ public class Computer extends EEComponent {
     transient HashMap<String, Integer> portIdByName = new HashMap<>();
     transient JsonWriter writer = new JsonWriter(false);
     transient JsonTraverser traverser = new JsonTraverser();
-    transient Instant lastExec = null;    
+    transient Instant lastExec = null;
+    Object buffer[]; // Buffer for incoming inputs / Last output values
 
-    public Computer(ComputerProperties properties) throws HardwareEmulatorException, SerializationException {
+    public Computer(ComputerProperties properties, Destroyer destroyer) throws HardwareEmulatorException, SerializationException {
         super(properties);
         this.properties = properties;
         this.id = CppBridge.allocSimulator(Json.toJson(properties));
         System.out.println("Allocated SoftwareSimulator (id: " + this.id + ")");
         String interface_description = CppBridge.getInterface(id);
         program = Json.instantiateFromJson(interface_description, ProgramInterface.class);
+        destroyer.addDestroyable(this);
     }
 
     @Override
     protected void init() throws EEMessageTypeException {
         int i = 0;
         msgInfos = new MessageInformation[program.ports.size()];
+        buffer = new Object[program.ports.size()];
         for (PortInformation p : program.ports) {
             if (p.direction == PortDirection.INPUT) {
                 msgInfos[i] = addInput(p.name, p.type, p.allows_multiple_inputs, p.optional);
@@ -98,6 +106,7 @@ public class Computer extends EEComponent {
         }
         writer.init();
         try {
+            buffer[i] = msg.message;
             msg.msgInfo.type.toJson(writer, msg.message, null);
             CppBridge.setPort(id, i, writer.getString());
         } catch (SerializationException | HardwareEmulatorException e) {
@@ -131,6 +140,7 @@ public class Computer extends EEComponent {
                 String data = CppBridge.getPort(id, i);
                 traverser.init(data);
                 Object msg = p.type.fromJson(traverser, null);
+                buffer[i] = msg;
                 sendMessage(sendTime, msgInfos[i], msg);
             }
             ++i;
@@ -141,12 +151,60 @@ public class Computer extends EEComponent {
         eesystem.simulator.addEvent(new ExecuteEvent(this, newExecTime));
     }
 
+    @Override
+    public String getType() {
+        return "autopilot";
+    }
+
+    @Override
+    public String getName() {
+        return properties.name;
+    }
+
+    @Override
+    public List<String> getEntries() {
+        List<String> entries = new ArrayList<>();
+        int i = 0;
+        for (PortInformation p : program.ports) {
+            String res = p.direction == PortDirection.INPUT ? "input: " : "output: ";
+            res += p.name + ": ";
+            Object val = buffer[i];
+            if (val == null) entries.add(res + "null");
+            else {
+                List<String> toStr = p.type.toString(val);
+                if (toStr.size() == 0) entries.add(res + "No toString()");
+                if (toStr.size() == 1) entries.add(res + toStr.get(0));
+                else {
+                    entries.add(res);
+                    for (String s : toStr) {
+                        entries.add("  "+s);
+                    }
+                }
+            }
+            ++i;
+        }
+        return entries;
+    }
+
+    @Override
+    public void destroy() {
+        if (id < 0) throw new IllegalStateException("Calling Computer.destroy() on uninitialized/already destroyed component.");
+        clean();
+    }
     protected void finalize() {
+        clean();
+    }
+
+    void clean() {
+        if (id < 0) return;
+        System.out.println("Freed SoftwareSimulator (id: " + this.id + ")");
         try {
             CppBridge.freeSimulator(id);
+            id = -1;
         } catch (HardwareEmulatorException e) {
             e.printStackTrace();
         }
     }
+
 
 }
