@@ -6,12 +6,17 @@ package de.rwth.montisim.hardware_emulator.vcg;
 import java.io.IOException;
 import java.time.Duration;
 import java.time.Instant;
+import java.util.ArrayList;
 import java.util.HashMap;
+import java.util.List;
 
 import de.rwth.montisim.commons.dynamicinterface.*;
 import de.rwth.montisim.commons.dynamicinterface.PortInformation.PortDirection;
 import de.rwth.montisim.commons.eventsimulation.DiscreteEvent;
 import de.rwth.montisim.commons.eventsimulation.exceptions.UnexpectedEventException;
+import de.rwth.montisim.commons.simulation.Destroyable;
+import de.rwth.montisim.commons.simulation.Destroyer;
+import de.rwth.montisim.commons.simulation.Inspectable;
 import de.rwth.montisim.commons.utils.Time;
 import de.rwth.montisim.commons.utils.json.*;
 import de.rwth.montisim.hardware_emulator.vcg.VCGProperties.*;
@@ -23,7 +28,7 @@ import de.rwth.montisim.simulation.eesimulator.message.*;
 /**
  * Assumes DDC communication ("DDC interface")
  */
-public class VCG extends EEComponent {
+public class VCG extends EEComponent implements Inspectable, Destroyable {
 
  // To generate the "basic interface" string
     public static void main(String[] args) throws Exception {
@@ -66,7 +71,7 @@ public class VCG extends EEComponent {
     Object buffer[]; // Buffer for incoming inputs / Last output values
     //Object currentValues[]; // Buffer the state of the Program Ports
 
-    public VCG(VCGProperties properties) throws Exception {
+    public VCG(VCGProperties properties, Destroyer destroyer) throws Exception {
         super(properties);
         this.properties = properties;
 
@@ -83,6 +88,7 @@ public class VCG extends EEComponent {
         //currentValues = new Object[program.ports.size()];
         
         if (properties.time == TimeMode.REALTIME) throw new IllegalArgumentException("Unimplemented: TimeMode.REALTIME");
+        destroyer.addDestroyable(this);
     }
 
     @Override
@@ -130,10 +136,11 @@ public class VCG extends EEComponent {
         }
 
         if (properties.time == TimeMode.MEASURED) {
+            //System.out.println("VCG received MsgEvent: " + msg.msgInfo.name + " Payload: "+msg.message);
             buffer[i] = msg.message;
         } else if (properties.time == TimeMode.REALTIME) {
             // TODO directly send input ? or scheduled task ?
-            throw new IllegalStateException("Unimplemented");
+            throw new IllegalStateException("REALTIME TimeMode is Unimplemented");
         }
     }
 
@@ -157,6 +164,7 @@ public class VCG extends EEComponent {
         for (PortInformation port : program.ports) {
             if (port.direction == PortDirection.OUTPUT) {
                 if (buffer[i] != null) {
+                    //System.out.println("VCG sending MsgEvent: " + msgInfos[i].name + " Payload: "+buffer[i]);
                     sendMessage(sendTime, msgInfos[i], buffer[i]);
                 }
             }
@@ -175,6 +183,46 @@ public class VCG extends EEComponent {
 
     protected void finalize() {
         // Set "simulation running" to false
+    }
+
+    @Override
+    public String getType() {
+        return "autopilot";
+    }
+
+    @Override
+    public String getName() {
+        return properties.name;
+    }
+
+    @Override
+    public List<String> getEntries() {
+        List<String> entries = new ArrayList<>();
+        int i = 0;
+        for (PortInformation p : program.ports) {
+            String res = p.direction == PortDirection.INPUT ? "input: " : "output: ";
+            res += p.name + ": ";
+            Object val = buffer[i];
+            if (val == null) entries.add(res + "null");
+            else {
+                List<String> toStr = p.type.toString(val);
+                if (toStr.size() == 0) entries.add(res + "No toString()");
+                if (toStr.size() == 1) entries.add(res + toStr.get(0));
+                else {
+                    entries.add(res);
+                    for (String s : toStr) {
+                        entries.add("  "+s);
+                    }
+                }
+            }
+            ++i;
+        }
+        return entries;
+    }
+
+    @Override
+    public void destroy() {
+        comm.close();
     }
 
 }

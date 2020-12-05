@@ -132,7 +132,7 @@ public class ComputerProperties extends BusUserProperties {
     @Override
     public EEEventProcessor build(ComponentBuildContext context) {
         try {
-            return new Computer(this);
+            return new Computer(this, context.componentDestroyer);
         } catch (HardwareEmulatorException | SerializationException e) {
             e.printStackTrace();
             throw new IllegalArgumentException(e.getMessage());

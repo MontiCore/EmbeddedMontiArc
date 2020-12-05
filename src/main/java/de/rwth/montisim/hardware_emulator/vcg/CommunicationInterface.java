@@ -12,5 +12,6 @@ import de.rwth.montisim.hardware_emulator.vcg.VCGProperties.TimeMode;
 public interface CommunicationInterface {
     ProgramInterface init(TimeMode timeMode, int ref_id) throws Exception;
     boolean isAlive();
-    Duration measuredCycle(Object portData[], double deltaSec) throws IOException ;
+    Duration measuredCycle(Object portData[], double deltaSec) throws IOException;
+    void close();
 }
