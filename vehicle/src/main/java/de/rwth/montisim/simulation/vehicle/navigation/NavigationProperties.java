@@ -1,5 +1,5 @@
 /* (c) https://github.com/MontiCore/monticore */
-package de.rwth.montisim.simulation.eecomponents.navigation;
+package de.rwth.montisim.simulation.vehicle.navigation;
 
 import de.rwth.montisim.commons.utils.json.Typed;
 import de.rwth.montisim.simulation.eesimulator.components.BusUserProperties;
@@ -9,9 +9,10 @@ import de.rwth.montisim.simulation.eesimulator.components.EEEventProcessor;
 @Typed(NavigationProperties.TYPE)
 public class NavigationProperties extends BusUserProperties {
     public static final String TYPE = "navigation";
+    public static final String NAME = "Navigation";
 
     public NavigationProperties() {
-        this.name = "Navigation";
+        this.name = NAME;
     }
 
     public NavigationProperties setName(String name) {

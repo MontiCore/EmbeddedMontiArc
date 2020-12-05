@@ -47,16 +47,15 @@ public class WorldRenderer extends Renderer {
     final Coordinates coords = new Coordinates();
 
     // Create the lines & polygons from the world
-    public WorldRenderer(World world, boolean showSegments) {
-        load(world, showSegments);
+    public WorldRenderer(World world) {
+        load(world);
     }
 
-    public void load(World world, boolean showSegments){
+    public void load(World world){
         this.world = world;
         constructRoads();
         constructBuildings();
-        if (showSegments)
-            constructSegments();
+        constructSegments();
     }
 
     private void constructRoads() {
@@ -167,14 +166,15 @@ public class WorldRenderer extends Renderer {
     @Override
     public void draw(Graphics2D g) {
         drawLines(g, roads);
-        drawLines(g, roadSegments);
         drawPolygons(g, area_roads);
         drawPolygons(g, buildings);
+        if (UIInfo.showSegments)
+            drawLines(g, roadSegments);
     }
 
     @Override
-    public String[] getInfo() {
-        return new String[]{"Map: " + world.name};
+    public List<String> getInfo() {
+        return new ArrayList<String>(Arrays.asList("Map: " + world.name));
     }
 
     @Override

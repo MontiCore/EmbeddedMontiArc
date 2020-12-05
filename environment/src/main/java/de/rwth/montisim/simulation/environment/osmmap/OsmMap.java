@@ -175,6 +175,12 @@ public class OsmMap {
         }
     }
 
+    public Node getNode(long osmId) {
+        Integer i = nodeLocalIDByOsmID.get(osmId);
+        if (i == null) return null;
+        return nodeTable.elementAt(i);
+    }
+
     // Returns a local id for the node even if the node itself was not encountered yet and added.
     private int getNodeID(long osmID){
         Integer i = nodeLocalIDByOsmID.get(osmID);

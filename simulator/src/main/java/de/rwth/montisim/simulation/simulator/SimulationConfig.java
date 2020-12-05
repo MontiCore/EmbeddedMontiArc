@@ -3,11 +3,19 @@ package de.rwth.montisim.simulation.simulator;
 
 import java.io.File;
 import java.time.*;
+import java.util.Objects;
 import java.util.Vector;
 
+import de.rwth.montisim.commons.map.Pathfinding;
 import de.rwth.montisim.commons.utils.Time;
 import de.rwth.montisim.commons.utils.json.Json;
 import de.rwth.montisim.commons.utils.json.SerializationException;
+import de.rwth.montisim.simulation.eesimulator.exceptions.EEMessageTypeException;
+import de.rwth.montisim.simulation.eesimulator.exceptions.EESetupException;
+import de.rwth.montisim.simulation.eesimulator.message.MessageTypeManager;
+import de.rwth.montisim.simulation.environment.osmmap.OsmMap;
+import de.rwth.montisim.simulation.environment.world.World;
+import de.rwth.montisim.simulation.vehicle.Vehicle;
 import de.rwth.montisim.simulation.vehicle.VehicleProperties;
 
 public class SimulationConfig {
@@ -21,5 +29,23 @@ public class SimulationConfig {
 
     public static SimulationConfig fromFile(File file) throws SerializationException {
         return Json.instantiateFromJson(file, SimulationConfig.class);
+    }
+
+    public Simulator build(World world, Pathfinding pathfinding, MessageTypeManager mtManager, OsmMap map) {
+        Objects.requireNonNull(world);
+        Objects.requireNonNull(pathfinding);
+        Objects.requireNonNull(mtManager);
+        Simulator sim = new Simulator(this, world, pathfinding, mtManager, map);
+        // Add Vehicles
+        for (VehicleProperties v : cars) {
+            Vehicle vehicle;
+            try {
+                vehicle = sim.getVehicleBuilder(v).build();
+            } catch (SerializationException | EEMessageTypeException | EESetupException e) {
+                throw new IllegalStateException(e);
+            }
+            sim.addSimulationObject(vehicle);
+        }
+        return sim;
     }
 }

@@ -2,6 +2,10 @@
 package de.rwth.montisim.simulation.simulator.visualization.ui;
 
 import java.awt.*;
+import java.util.ArrayList;
+import java.util.Arrays;
+import java.util.List;
+
 import javax.swing.JMenuItem;
 import de.rwth.montisim.commons.utils.*;
 
@@ -74,8 +78,8 @@ public class GridRenderer extends Renderer {
     }
 
     @Override
-    public String[] getInfo() {
-        return new String[] {"Grid spacing: "+gridRes};
+    public List<String> getInfo() {
+        return new ArrayList<String>(Arrays.asList("Grid spacing: "+gridRes));
     }
 
     @Override

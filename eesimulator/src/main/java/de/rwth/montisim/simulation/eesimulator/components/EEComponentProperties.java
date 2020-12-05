@@ -5,6 +5,7 @@ import java.util.Optional;
 
 import de.rwth.montisim.commons.map.Pathfinding;
 import de.rwth.montisim.commons.physicalvalue.PhysicalValueRegistry;
+import de.rwth.montisim.commons.simulation.Destroyer;
 import de.rwth.montisim.commons.simulation.Updater;
 import de.rwth.montisim.simulation.eesimulator.message.MessagePriorityComparator;
 
@@ -39,12 +40,14 @@ public abstract class EEComponentProperties {
     public static class ComponentBuildContext {
         public final PhysicalValueRegistry physicalValues;
         public final Updater componentUpdater;
+        public final Destroyer componentDestroyer;
         public final MessagePriorityComparator comp;
         public final Pathfinding pathfinding;
 
-        public ComponentBuildContext(PhysicalValueRegistry physicalValues, Updater componentUpdater, MessagePriorityComparator msgComp, Pathfinding pathfinding){
+        public ComponentBuildContext(PhysicalValueRegistry physicalValues, Updater componentUpdater, Destroyer componentDestroyer, MessagePriorityComparator msgComp, Pathfinding pathfinding){
             this.physicalValues = physicalValues;
             this.componentUpdater = componentUpdater;
+            this.componentDestroyer = componentDestroyer;
             this.comp = msgComp;
             this.pathfinding = pathfinding;
         }

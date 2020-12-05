@@ -69,7 +69,7 @@ public class PathfinderRenderer extends Renderer {
     }
 
     @Override
-    public String[] getInfo() {
+    public List<String> getInfo() {
         return null;
     }
 

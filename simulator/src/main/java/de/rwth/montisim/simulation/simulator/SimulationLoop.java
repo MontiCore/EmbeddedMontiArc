@@ -3,6 +3,7 @@ package de.rwth.montisim.simulation.simulator;
 
 import java.time.Instant;
 
+import de.rwth.montisim.commons.simulation.TaskStatus;
 import de.rwth.montisim.commons.simulation.TimeUpdate;
 
 public class SimulationLoop {
@@ -15,17 +16,20 @@ public class SimulationLoop {
         this.simulationTime = config.start_time;
     }
 
-    public boolean run(){
+    public TaskStatus run() {
         try {
-            while (!simulator.finished()){
+            do {
+                TaskStatus res = simulator.status();
+                if (res != TaskStatus.RUNNING) return res;
+                
                 TimeUpdate tu = new TimeUpdate(simulationTime, config.tick_duration);
                 simulator.update(tu);
                 simulationTime = tu.newTime;
-            }
+
+            } while(true);
         } catch(Exception e){
             e.printStackTrace();
-            return false;
+            return TaskStatus.FAILED;
         }
-        return true;
     }
 }

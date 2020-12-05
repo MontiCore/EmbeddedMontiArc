@@ -1,7 +1,6 @@
-package de.rwth.montisim.simulation.vehicle.task.goal;
+package de.rwth.montisim.simulation.vehicle.task;
 
 import de.rwth.montisim.commons.simulation.TaskStatus;
-import de.rwth.montisim.commons.utils.LTLOperator;
 import de.rwth.montisim.simulation.vehicle.Vehicle;
 
 
@@ -17,8 +16,12 @@ import de.rwth.montisim.simulation.vehicle.Vehicle;
  * is running.
  */
 public abstract class Goal {
-    TaskStatus status = TaskStatus.RUNNING;
-    protected LTLOperator ltlOperator;
+    transient public final GoalProperties properties;
+    protected TaskStatus status = TaskStatus.RUNNING;
+
+    public Goal(GoalProperties properties) {
+        this.properties = properties;
+    }
 
     public abstract void update(Vehicle v);
 
@@ -29,13 +32,18 @@ public abstract class Goal {
      *
      * @param status new status
      */
-    void updateStatus(TaskStatus status) {
-        if (ltlOperator == LTLOperator.ALWAYS) {
-            handleAlways(status);
-        } else if (ltlOperator == LTLOperator.NEVER) {
-            handleNever(status);
-        } else if (ltlOperator == LTLOperator.EVENTUALLY) {
-            handleEventually(status);
+    protected void updateStatus(TaskStatus status) {
+        switch(properties.ltl_operator) {
+            case ALWAYS:
+                handleAlways(status);
+                break;
+            case EVENTUALLY:
+                handleEventually(status);
+                break;
+            case NEVER:
+                handleNever(status);
+                break;
+            default: throw new IllegalArgumentException("Specified LTL operator not supported.");
         }
     }
 
@@ -56,10 +64,6 @@ public abstract class Goal {
     private void handleEventually(TaskStatus status) {
         if (status == TaskStatus.SUCCEEDED)
             this.status = TaskStatus.SUCCEEDED;
-    }
-
-    public LTLOperator getLtlOperator() {
-        return ltlOperator;
     }
 
     public TaskStatus getStatus() {

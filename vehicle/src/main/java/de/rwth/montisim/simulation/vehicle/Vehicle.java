@@ -1,11 +1,8 @@
 /* (c) https://github.com/MontiCore/monticore */
 package de.rwth.montisim.simulation.vehicle;
 
-import java.util.Optional;
-
 import de.rwth.montisim.commons.physicalvalue.PhysicalValueRegistry;
 import de.rwth.montisim.commons.simulation.*;
-import de.rwth.montisim.commons.utils.Vec2;
 import de.rwth.montisim.commons.utils.json.Json;
 import de.rwth.montisim.commons.utils.json.JsonWriter;
 import de.rwth.montisim.commons.utils.json.SerializationException;
@@ -26,17 +23,13 @@ public class Vehicle extends SimulationObject implements Updatable, Destroyable,
 
     public transient final PhysicalValueRegistry physicalValues = new PhysicalValueRegistry();
     public transient final Updater updater = new Updater();
+    public transient final Destroyer destroyer = new Destroyer();
 
-    TaskStatus carStatus = TaskStatus.RUNNING;
-    Optional<Vec2> target = Optional.empty();
-    Vec2 a = new Vec2();
-    Task task;
+    public Task task; // Task with no goals => always succeeds
 
     protected Vehicle(VehicleProperties properties) {
         this.properties = properties;
     }
-
-    // int c = 0;
 
     @Override
     public void update(TimeUpdate newTime) {
@@ -48,29 +41,6 @@ public class Vehicle extends SimulationObject implements Updatable, Destroyable,
         physicsModel.update(newTime);
 
         task.update(this);
-        carStatus = task.status();
-
-        // TODO this is temp
-//        double DIST_TO_TARGET = 5;
-//        if (carStatus == TaskStatus.RUNNING) {
-//            if (target.isPresent()) {
-//                a.set(physicalObject.pos);
-//                double dist = a.distance(target.get());
-//                // if (c %100 == 0){
-//                // System.out.println("Dist to target: "+dist);
-//                // }
-//                // c++;
-//                if (dist < DIST_TO_TARGET) {
-//                    carStatus = TaskStatus.SUCCEEDED;
-//                }
-//            }
-//        }
-    }
-
-    // TODO this is temp
-    public void addTarget(Vec2 t) {
-        carStatus = TaskStatus.RUNNING;
-        target = Optional.of(t);
     }
 
     @Override
@@ -83,14 +53,12 @@ public class Vehicle extends SimulationObject implements Updatable, Destroyable,
 
     @Override
     public void destroy() {
-        // TODO Auto-generated method stub
-
+        destroyer.applyDestroy();
     }
 
     @Override
     public TaskStatus status() {
-        // TODO this is temp
-        return carStatus;
+        return task.status();
     }
 
     protected void addPhysicalValues() {
@@ -112,11 +80,6 @@ public class Vehicle extends SimulationObject implements Updatable, Destroyable,
         w.endObject();
         return w.getString();
     }
-
-    public Task getTask() {
-        return task;
-    }
-
 
     /**
      * For tests

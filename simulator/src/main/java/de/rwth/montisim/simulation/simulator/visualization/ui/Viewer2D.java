@@ -114,9 +114,22 @@ public class Viewer2D extends JPanel implements MouseInputListener, MouseWheelLi
         lines.add("Right clic to copy coordinates.");
         lines.add(" ");
 
+        if (UIInfo.drawPlannedPath) lines.add("RED LINE: Planned Path for the Vehicle.");
+        if (UIInfo.drawPlannedTrajectory) lines.add("GREEN LINE: Trajectory input to the autopilot.");
+        if (UIInfo.drawPlannedPath || UIInfo.drawPlannedTrajectory) lines.add(" ");
+
+        if (UIInfo.drawActuators) {
+            lines.add("GREEN CIRCLE on the car: GAS");
+            lines.add("RED CIRCLE on the car: BRAKES");
+            lines.add(" ");
+        }
+
         for (Renderer r : renderers){
-            String[] l = r.getInfo();
-            if (l != null) for(String s : l) lines.add(s);
+            List<String> l = r.getInfo();
+            if (l != null) {
+                lines.add(" ");
+                for(String s : l) lines.add(s);
+            }
         }
 
         lines.add(" ");
@@ -194,10 +207,17 @@ public class Viewer2D extends JPanel implements MouseInputListener, MouseWheelLi
         dirty = true;
     }
 
+    /** Sets the number of pixels per meter. */
     public void setZoom(double newScale) {
         // Get nearest scroll count
         scrollCount = (int) Math.round(Math.log(newScale)/Math.log(UIInfo.SCROLL_FACTOR));
         scale = Math.pow(UIInfo.SCROLL_FACTOR, scrollCount);
+        dirty = true;
+    }
+
+    /** Sets the World coordinates that should be at the center of the screen. */
+    public void setCenter(Vec2 center) {
+        this.center.set(center);
         dirty = true;
     }
 

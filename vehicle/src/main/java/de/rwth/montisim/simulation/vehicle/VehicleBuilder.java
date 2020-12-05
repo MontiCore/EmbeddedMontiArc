@@ -69,25 +69,6 @@ public class VehicleBuilder {
         this.context = context;
     }
 
-    // public VehicleBuilder setAutopilot() {
-    // // TODO
-    // return this;
-    // }
-
-    // public VehicleBuilder addBus() {
-    // // TODO
-    // return this;
-    // }
-
-    // public VehicleBuilder addComponent() {
-    // // TODO
-    // return this;
-    // }
-
-    public VehicleBuilder setName(String name) {
-        vehicleName = Optional.of(name);
-        return this;
-    }
 
     public Vehicle build() throws SerializationException, EEMessageTypeException, EESetupException {
         if (fromJson) {

@@ -4,20 +4,20 @@ import java.io.File;
 import java.time.Duration;
 import java.time.Instant;
 
-import de.rwth.montisim.commons.simulation.SimulationObject;
+import de.rwth.montisim.commons.simulation.TaskStatus;
 import de.rwth.montisim.commons.simulation.TimeUpdate;
+import de.rwth.montisim.commons.utils.Comparator;
 import de.rwth.montisim.commons.utils.Coordinates;
 import de.rwth.montisim.simulation.vehicle.VehicleBuilder;
-import de.rwth.montisim.simulation.vehicle.VehicleProperties;
-import de.rwth.montisim.simulation.vehicle.task.Task;
-import de.rwth.montisim.simulation.vehicle.task.goal.MetricGoal;
-import de.rwth.montisim.simulation.vehicle.task.goal.PathGoal;
+import de.rwth.montisim.simulation.vehicle.task.TaskProperties;
+import de.rwth.montisim.simulation.vehicle.task.metric.MetricGoalProperties;
+import de.rwth.montisim.simulation.vehicle.task.path.PathGoalProperties;
+
 import org.junit.*;
 
 import de.rwth.montisim.commons.map.Pathfinding;
 import de.rwth.montisim.commons.utils.Vec2;
 import de.rwth.montisim.commons.utils.Vec3;
-import de.rwth.montisim.simulation.eecomponents.navigation.Navigation;
 import de.rwth.montisim.simulation.eesimulator.message.MessageTypeManager;
 import de.rwth.montisim.simulation.environment.osmmap.*;
 import de.rwth.montisim.simulation.environment.pathfinding.*;
@@ -39,23 +39,21 @@ public class IntegrationTest {
 
     @Test
     public void driveToTargetLocalCoordinate() throws Exception {
-        Vec3 startPos = new Vec3(1, 0, 0);
+        Vec2 startPos = new Vec2(1, 0);
         Vec2 targetPos = new Vec2(-63.83, -171.96);
 
-        Task task = new Task();
-        task.addGoal(PathGoal.newBuilder()
-                .eventually()
-                .arrive(startPos.asVec2())
-                .arrive(targetPos)
-                .withInRange(10)
-                .build());
-        task.addGoal(MetricGoal.newBuilder()
-                .setProperty("speed")
-                .never()
-                .greater(1000, "m/s")
-                .build());
+        TaskProperties task = new TaskProperties();
+        task.addGoal(new PathGoalProperties()
+                .reach(targetPos)
+                .withinRange(10)
+                .eventually());
+        task.addGoal(new MetricGoalProperties()
+                .compare("true_velocity")
+                .with(1000, "m/s")
+                .operator(Comparator.GREATER)
+                .never());
 
-        driveToTarget(task);
+        driveToTarget(startPos, targetPos, task);
     }
 
     @Test
@@ -63,16 +61,17 @@ public class IntegrationTest {
         Coordinates startCoord = new Coordinates(6.0721450,50.7738916);
         Coordinates targetCoord = new Coordinates(6.0690220,50.773491);
 
-        Task task = new Task();
-        task.addGoal(PathGoal.newBuilder()
-                .eventually()
-                .arrive(startCoord)
-                .arrive(targetCoord)
-                .withInRange(10)
-                .build());
+        TaskProperties task = new TaskProperties();
+        task.addGoal(new PathGoalProperties()
+                .reach(targetCoord)
+                .withinRange(10)
+                .eventually());
 
-        task.getPathGoals().forEach(g -> g.convertCoordinate(osmMap, world));
-        driveToTarget(task);
+        Vec2 startPos = new Vec2();
+        Vec2 targetPos = new Vec2();
+        world.converter.get().coordsToMeters(startCoord, startPos);
+        world.converter.get().coordsToMeters(targetCoord, targetPos);
+        driveToTarget(startPos, targetPos, task);
     }
 
     @Test
@@ -80,49 +79,43 @@ public class IntegrationTest {
         long startOsmId = 3369847019l;
         long targetOsmId = 444540939l;
 
-        Task task = new Task();
-        task.addGoal(PathGoal.newBuilder()
-                .eventually()
-                .arrive(startOsmId)
-                .arrive(targetOsmId)
-                .withInRange(10)
-                .build());
+        TaskProperties task = new TaskProperties();
+        task.addGoal(new PathGoalProperties()
+                .reach(targetOsmId)
+                .withinRange(10)
+                .eventually());
 
-        task.getPathGoals().forEach(g -> g.convertCoordinate(osmMap, world));
-        driveToTarget(task);
+        Vec2 startPos = new Vec2();
+        Vec2 targetPos = new Vec2();
+        world.converter.get().coordsToMeters(osmMap.getNode(startOsmId).coords, startPos);
+        world.converter.get().coordsToMeters(osmMap.getNode(targetOsmId).coords, targetPos);
+        driveToTarget(startPos, targetPos, task);
     }
 
-    public void driveToTarget(Task task) throws Exception {
+    public void driveToTarget(Vec2 startPos, Vec2 targetPos, TaskProperties task) throws Exception {
         Pathfinding pathfinding = new PathfindingImpl(world);
         MessageTypeManager mtManager = new MessageTypeManager();
 
         SimulationConfig config = new SimulationConfig();
         config.max_duration = Duration.ofSeconds(1000);
-        Simulator simulator = new Simulator(config, world, pathfinding, mtManager);
-        SimulationLoop loop = new SimulationLoop(simulator, config);
 
         DefaultVehicleConfig vConf = DefaultVehicleConfig.withJavaAutopilot().setTask(task);
-        Vehicle vehicle = simulator.getVehicleBuilder(vConf.properties).setName("TestVehicle").build();
+        vConf.properties.start_pos = startPos;
+        config.cars.add(vConf.properties.setName("TestVehicle"));
 
-        // Read positions from task
-        PathGoal pg = task.getPathGoals().get(0);
-        Vec2 startPos = pg.getPath().get(0);
-        Vec2 targetPos = pg.getPath().get(pg.getPath().size() - 1);
+        Simulator simulator = config.build(world, pathfinding, mtManager, osmMap);
 
-        vehicle.physicsModel.setGroundPosition(new Vec3(0, 0, 0), new Vec2(startPos.x, startPos.y));
-
-        simulator.addSimulationObject(vehicle);
-
-        Navigation nav = (Navigation) vehicle.eesystem.getComponentManager().getComponent("Navigation").get();
-        nav.pushTargetPos(targetPos);
+        Vehicle vehicle = simulator.getVehicle("TestVehicle");
 
         Assert.assertFalse(simulator.allTasksSucceeded());
 
         // dump and reload vehicle every 1000 steps. test if it is able to reach the destination.
         Instant simulationTime = config.start_time;
         int cnt = 0;
-        while (!simulator.finished()) {
-//            cnt++;
+        while (true) {
+            TaskStatus status = simulator.status();
+            if (status == TaskStatus.SUCCEEDED) break;
+            if (status == TaskStatus.FAILED) throw new IllegalStateException("Vehicle did not reach target");
 
             TimeUpdate tu = new TimeUpdate(simulationTime, config.tick_duration);
             simulator.update(tu);
@@ -136,27 +129,15 @@ public class IntegrationTest {
             System.out.printf("dist: %.2fm, pos: %s\n", dist, vehicle.physicalObject.pos);
 
             System.out.println("Dumping and reloading vehicle...");
-//            simulator = new Simulator(config, world, pathfinding, mtManager);
-            simulator.getUpdatables().stream()
-                    .filter(x -> x instanceof Vehicle)
-                    .forEach(x -> simulator.removeSimulationObject((SimulationObject) x));
+            String state = vehicle.stateToJson();
+            simulator.removeSimulationObject(vehicle);
 
-            String json = vehicle.stateToJson();
-            VehicleProperties.BuildContext ctx = new VehicleProperties.BuildContext(pathfinding, mtManager);
-            vehicle = VehicleBuilder.fromJsonState(ctx, json).build();
+            vehicle = VehicleBuilder.fromJsonState(simulator.buildContext, state).build();
             simulator.addSimulationObject(vehicle);
         }
 
         double dist = vehicle.physicalObject.pos.distance(new Vec3(targetPos.x, targetPos.y, 0));
         System.out.printf("dist: %.2fm, pos: %s\n", dist, vehicle.physicalObject.pos);
 
-//        vehicle.addTarget(TARGET_POS);
-
-        Assert.assertTrue("Simulation Error", loop.run());
-        Assert.assertTrue("Vehicle did not reach target", simulator.allTasksSucceeded());
-        // TODO start at (0,0)
-        // Go to (-63.83, -171.96) in less than 45 secs
-        // TODO start at better position & orientation
-        // TODO add temporary "objective checker"
     }
 }
