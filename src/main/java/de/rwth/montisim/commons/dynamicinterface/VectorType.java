@@ -163,7 +163,7 @@ public class VectorType extends DataType {
             for (double d : arr) {
                 if (first) first = false;
                 else res += ", ";
-                res += Double.toString(d);
+                res += BasicType.df.format(d);
             }
             res += "]";
             return new ArrayList<String>(Arrays.asList(res));

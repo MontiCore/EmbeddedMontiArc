@@ -3,6 +3,7 @@ package de.rwth.montisim.commons.dynamicinterface;
 import java.io.DataInputStream;
 import java.io.DataOutputStream;
 import java.io.IOException;
+import java.text.DecimalFormat;
 import java.util.*;
 
 import de.rwth.montisim.commons.utils.*;
@@ -25,6 +26,8 @@ public class BasicType extends DataType {
 
     public static final BasicType VEC2 = new BasicType(Type.VEC2);
     public static final BasicType VEC3 = new BasicType(Type.VEC3);
+
+    static final DecimalFormat df = new DecimalFormat("#.###");
 
     public BasicType(Type basic_type) {
         this.base_type = basic_type;
@@ -189,12 +192,16 @@ public class BasicType extends DataType {
             case N1:
             case Z: 
                 return new ArrayList<String>(Arrays.asList(Integer.toString((Integer) o)));
-            case Q:
-                return new ArrayList<String>(Arrays.asList(Double.toString((Double) o)));
-            case VEC2:
-                return new ArrayList<String>(Arrays.asList(((Vec2) o).toString()));
-            case VEC3:
-                return new ArrayList<String>(Arrays.asList(((Vec3) o).toString()));
+            case Q: 
+                return new ArrayList<String>(Arrays.asList(df.format((Double) o)));
+            case VEC2:{
+                Vec2 v2 = (Vec2) o;
+                return new ArrayList<String>(Arrays.asList("[" + df.format(v2.x) + ", " + df.format(v2.y) + "]"));
+            }
+            case VEC3: {
+                Vec3 v3 = (Vec3) o;
+                return new ArrayList<String>(Arrays.asList("[" + df.format(v3.x) + ", " + df.format(v3.y) + ", " + df.format(v3.z)+ "]"));
+            }
             default:
                 throw new IllegalArgumentException("Missing case");
         }
