@@ -41,7 +41,7 @@ public class CppBridge {
     static public void init(String config) throws Exception{
         String version = getVersion();
         if (!HardwareEmulatorVersion.version.equals(version)) 
-            throw new Exception("Wrong native HardwareEmulator library version: "+version+", expected: "+HardwareEmulatorVersion.version+". Make sure to match versions in 'software_simulator_manager.h' and recompile the C++ project.");
+            System.out.println("WARNING: Wrong native HardwareEmulator library version: "+version+", expected: "+HardwareEmulatorVersion.version+". Make sure to match versions in 'software_simulator_manager.h' and recompile the C++ project.");
         initManager(config);
         loaded = true;
     }

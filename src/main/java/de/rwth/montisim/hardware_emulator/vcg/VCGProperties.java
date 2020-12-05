@@ -53,7 +53,7 @@ public class VCGProperties extends BusUserProperties {
     @Override
     public EEEventProcessor build(ComponentBuildContext context) {
         try {
-            return new VCG(this);
+            return new VCG(this, context.componentDestroyer);
         } catch (Exception e) {
             e.printStackTrace();
             throw new IllegalStateException("Could not build VCG component.");
