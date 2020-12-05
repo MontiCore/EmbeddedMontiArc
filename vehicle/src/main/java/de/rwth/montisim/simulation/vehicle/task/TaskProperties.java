@@ -19,7 +19,7 @@ public class TaskProperties {
 
     public Task build(Vehicle vehicle, OsmMap map, World world) {
         Optional<EEEventProcessor> res =vehicle.eesystem.getComponentManager().getComponent(NavigationProperties.NAME);
-        if (res.isEmpty()) throw new IllegalArgumentException("The Vehicle Tasks need the Navigation component");
+        if (!res.isPresent()) throw new IllegalArgumentException("The Vehicle Tasks need the Navigation component");
         EEEventProcessor r2 = res.get();
         if (!(r2 instanceof Navigation)) throw new IllegalArgumentException("Expected EEComponent with name 'Navigation' to be of type Navigation.");
         Task t = new Task(this, (Navigation)r2);
