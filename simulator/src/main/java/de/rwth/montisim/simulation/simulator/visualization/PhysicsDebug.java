@@ -6,6 +6,7 @@ import java.awt.BorderLayout;
 import java.time.*;
 import java.util.logging.Logger;
 
+import de.rwth.montisim.commons.simulation.TaskStatus;
 import de.rwth.montisim.commons.simulation.TimeUpdate;
 import de.rwth.montisim.commons.utils.*;
 import de.rwth.montisim.commons.utils.json.SerializationException;
@@ -65,7 +66,8 @@ public class PhysicsDebug extends JFrame implements SimulationRunner {
 
         plotter = new TimePlotter();
 
-        control = new Control(Control.Mode.SIMULATION, Instant.EPOCH, this, PHYSICS_TICK_DURATION_MS, TARGET_FPS, MIN_FPS);
+        control = new Control(Control.Mode.SIMULATION, Instant.EPOCH, this, Duration.ofMillis(PHYSICS_TICK_DURATION_MS),
+                TARGET_FPS, MIN_FPS);
 
         JPanel topPanel = new JPanel();
         topPanel.setLayout(new BoxLayout(topPanel, BoxLayout.Y_AXIS));
@@ -84,9 +86,9 @@ public class PhysicsDebug extends JFrame implements SimulationRunner {
         crossedQuarter = false;
 
         mtManager = new MessageTypeManager();
-        VehicleProperties config = setupTurningCar();
+        VehicleProperties config = setupTurningCar().setName("TestVehicle");
         try {
-            vehicle = VehicleBuilder.fromConfig(new BuildContext(null, mtManager), config).setName("TestVehicle").build();
+            vehicle = VehicleBuilder.fromConfig(new BuildContext(null, mtManager, null, null), config).build();
             physics = (RigidbodyPhysics) vehicle.physicsModel;
             physics.setGroundPosition(new Vec3(0, 0, 0), new Vec2(START_DIR.x, START_DIR.y));
             VehicleProperties p = vehicle.properties;
@@ -96,10 +98,10 @@ public class PhysicsDebug extends JFrame implements SimulationRunner {
         }
     }
 
-    private VehicleProperties setupTurningCar(){
+    private VehicleProperties setupTurningCar() {
         double turnRadius = 30;
-        double maxSpeed = 0.8*270*Math.pow(turnRadius, -0.5614);
-        System.out.println("MaxSpeed: "+Double.toString(maxSpeed));
+        double maxSpeed = 0.8 * 270 * Math.pow(turnRadius, -0.5614);
+        System.out.println("MaxSpeed: " + Double.toString(maxSpeed));
 
         return TestVehicleConfig.newCircleAutopilotConfig(maxSpeed, turnRadius).properties;
     }
@@ -124,9 +126,16 @@ public class PhysicsDebug extends JFrame implements SimulationRunner {
         vehicle.update(newTime);
 
         // Measure Flipping Speed
-        if (!postedMsg && Math.acos(vehicle.physicalObject.rotation.col3.z)*Geometry.RAD_TO_DEG >= 5){
-            Logger.getGlobal().info("Speed at 5 deg tilt (km/h): "+(vehicle.physicalObject.velocity.magnitude()*3.6));
+        if (!postedMsg && Math.acos(vehicle.physicalObject.rotation.col3.z) * Geometry.RAD_TO_DEG >= 5) {
+            Logger.getGlobal()
+                    .info("Speed at 5 deg tilt (km/h): " + (vehicle.physicalObject.velocity.magnitude() * 3.6));
             postedMsg = true;
         }
     }
+
+    @Override
+    public TaskStatus status() {
+        return TaskStatus.RUNNING;
+    }
+
 }

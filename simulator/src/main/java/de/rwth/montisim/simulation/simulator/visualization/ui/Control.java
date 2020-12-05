@@ -4,17 +4,22 @@ package de.rwth.montisim.simulation.simulator.visualization.ui;
 import javax.swing.*;
 import javax.swing.event.*;
 import java.awt.FlowLayout;
+import java.awt.Color;
 import java.awt.event.*;
 import java.text.*;
 import java.time.*;
 import java.time.format.DateTimeFormatter;
 import java.util.Locale;
 
+import de.rwth.montisim.commons.simulation.TaskStatus;
 import de.rwth.montisim.commons.simulation.TimeUpdate;
 import de.rwth.montisim.commons.utils.Time;
 
 public class Control extends JPanel implements ActionListener, ChangeListener {
     private static final long serialVersionUID = 2776373934381177954L;
+    public static final Color RUNNING_COLOR = new Color(47,141,235);
+    public static final Color SUCCEEDED_COLOR = Color.GREEN;
+    public static final Color FAILED_COLOR = Color.RED;
 
     /*
      * Simulation/Replay properties
@@ -40,23 +45,24 @@ public class Control extends JPanel implements ActionListener, ChangeListener {
      * Timer system
      */
     
-    final Instant simulationStart;
-    final int deltaMs;
+    Instant simulationStart;
+    Duration tick_duration;
     final int targetFps;
 
-    final double tickDurationSec;
-    final long tickDurationNano;
+    double tickDurationSec;
+    long tickDurationNano;
     final double frameDurationSec;
     final long frameDurationNano;
     final long maxUpdateTimeNano;
     int ticksPerFrame = 0;
 
-    final Duration dt;
     TimeUpdate tu;
+    TaskStatus status = null;
 
     final Timer timer;
     final int timerDelta;
     private boolean playing = false;
+    private boolean done = false;
     // long lastFrameTime = 0;
     // long lastUpdate = 0;
     // long lastOvershoot = 0;
@@ -66,33 +72,26 @@ public class Control extends JPanel implements ActionListener, ChangeListener {
      * Setup the Control Component
      */
 
-    public Control(Mode mode, Instant simulationStart, SimulationRunner runner, int deltaMs, int targetFps, int minFps) {
+    public Control(Mode mode, Instant simulationStart, SimulationRunner runner, Duration tick_duration, int targetFps, int minFps) {
         this.mode = mode;
-        this.simulationStart = simulationStart;
         this.runner = runner;
-        this.deltaMs = deltaMs;
         this.targetFps = targetFps;
         this.counter = new FrameCounter(targetFps);
-
-        tickDurationSec = deltaMs / 1000.0;
-        tickDurationNano = deltaMs * 1000000;
         frameDurationSec = 1.0 / targetFps;
         frameDurationNano = (Time.SECOND_TO_NANOSEC) / targetFps;
         long maxFrameDuration = (Time.SECOND_TO_NANOSEC) / minFps;
         maxUpdateTimeNano = maxFrameDuration;
 
-        dt = Duration.ofNanos(tickDurationNano);
-        tu = new TimeUpdate(simulationStart, dt);
-        lastSimTime = tu.oldTime;
+
         timerDelta = (int)(frameDurationSec*1000);
         timer = new Timer(timerDelta, this);
         timer.setCoalesce(true);
 
-        setSimulationSpeed(1);
 
         setupLayout();
         
-        updateDeltaTLabel(tickDurationNano);
+        setTickSpeed(tick_duration, simulationStart);
+        
         updateTimeLabel();
     }
 
@@ -100,6 +99,28 @@ public class Control extends JPanel implements ActionListener, ChangeListener {
         this.simulationSpeed = speed;
         double deltaPerFrame = speed * frameDurationSec;
         this.ticksPerFrame = (int)Math.floor(deltaPerFrame/tickDurationSec);
+    }
+
+    public void init(Duration tick_duration, Instant simulationStart) {
+        setTickSpeed(tick_duration, simulationStart);
+        done = false;
+        playing = false;
+        updateTimeLabel();
+        statusLabel.setText("INITIALIZED");
+        statusLabel.setForeground(Color.BLACK);
+        playPauseButton.setIcon(playIcon);
+        timer.stop();
+    }
+
+    void setTickSpeed(Duration tick_duration, Instant simulationStart) {
+        this.simulationStart = simulationStart;
+        this.tick_duration = tick_duration;
+        tickDurationSec = Time.secondsFromDuration(tick_duration);
+        tickDurationNano = tick_duration.getNano();
+        tu = new TimeUpdate(simulationStart, tick_duration);
+        lastSimTime = tu.oldTime;
+        updateDeltaTLabel(tickDurationNano);
+        setSimulationSpeed(this.simulationSpeed);
     }
 
 
@@ -113,6 +134,7 @@ public class Control extends JPanel implements ActionListener, ChangeListener {
     Instant lastSimTime;
 
     private void updateSimulation(){
+        if (done) return;
         //nextCallTime += timerDelta*1000000;
         long updateStart = System.nanoTime();
 
@@ -150,7 +172,9 @@ public class Control extends JPanel implements ActionListener, ChangeListener {
         long targetTime = callTime + frameDurationNano;
         do {
             runner.update(tu);
-            tu = new TimeUpdate(tu.newTime, dt);
+            if (checkStatus(runner.status())) return;
+
+            tu = new TimeUpdate(tu.newTime, tick_duration);
             t = System.nanoTime();
         } while (t < minTime || System.nanoTime() < targetTime);
     }
@@ -158,13 +182,35 @@ public class Control extends JPanel implements ActionListener, ChangeListener {
     private void updateSimulationRealtime() {
         for (int i = 0; i < ticksPerFrame; ++i) {
             runner.update(tu);
-            tu = new TimeUpdate(tu.newTime, dt);
+            if (checkStatus(runner.status())) return;
+            
+            tu = new TimeUpdate(tu.newTime, tick_duration);
             if (System.nanoTime() - callTime > maxUpdateTimeNano) break; // Frame-skip
         }
     }
 
+    boolean checkStatus(TaskStatus status) {
+        this.status = status;
+        if (status == TaskStatus.RUNNING) return false;
+
+        done = true;
+        pause();
+        if (status == TaskStatus.SUCCEEDED) {
+            statusLabel.setText("SUCCEEDED");
+            statusLabel.setForeground(SUCCEEDED_COLOR);
+        } else if (status == TaskStatus.FAILED) {
+            statusLabel.setText("FAILED");
+            statusLabel.setForeground(FAILED_COLOR);
+        }
+
+        return true;
+    }
+
     public void play() {
-        if (playing) return;
+        if (playing || done) return;
+        
+        statusLabel.setText("RUNNING");
+        statusLabel.setForeground(RUNNING_COLOR);
         playing = true;
         playPauseButton.setIcon(pauseIcon);
         //System.out.println("Play");
@@ -178,6 +224,10 @@ public class Control extends JPanel implements ActionListener, ChangeListener {
 
     public void pause() {
         if (!playing) return;
+        if (!done) {
+            statusLabel.setText("PAUSED");
+            statusLabel.setForeground(Color.ORANGE);
+        }
         playing = false;
         playPauseButton.setIcon(playIcon);
         //System.out.println("Pause");
@@ -186,9 +236,12 @@ public class Control extends JPanel implements ActionListener, ChangeListener {
 
     private void reset(){
         runner.reset();
-        tu = new TimeUpdate(simulationStart, dt);
+        done = false;
+        tu = new TimeUpdate(simulationStart, tick_duration);
         lastSimTime = tu.oldTime;
         updateTimeLabel();
+        statusLabel.setText("INITIALIZED");
+        statusLabel.setForeground(Color.BLACK);
         runner.redraw();
     }
 
@@ -371,6 +424,7 @@ public class Control extends JPanel implements ActionListener, ChangeListener {
     JLabel simSpeedLabel;
 
     JLabel fpsLabel;
+    JLabel statusLabel;
     // final JLabel frameDurationLabel;
     // final JLabel frameVarianceLabel;
     
@@ -440,6 +494,10 @@ public class Control extends JPanel implements ActionListener, ChangeListener {
         add(new JLabel("FPS="));
         fpsLabel = new JLabel("-");
         add(fpsLabel);
+
+        add(new JLabel("Status: "));
+        statusLabel = new JLabel("INITIALIZED");
+        add(statusLabel);
         
         // JLabel frameDurationText = new JLabel("FD=");
         // frameDurationText.setToolTipText("Average Frame Duration (Last "+counter.trackedFrames+" frames)");

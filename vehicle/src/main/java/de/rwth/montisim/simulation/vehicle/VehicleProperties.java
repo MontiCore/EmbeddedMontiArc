@@ -9,6 +9,7 @@ import de.rwth.montisim.commons.eventsimulation.DiscreteEventSimulator;
 import de.rwth.montisim.commons.map.Pathfinding;
 import de.rwth.montisim.commons.utils.Geometry;
 import de.rwth.montisim.commons.utils.Vec2;
+import de.rwth.montisim.commons.utils.Vec3;
 import de.rwth.montisim.commons.utils.json.JsonEntry;
 import de.rwth.montisim.simulation.eesimulator.EESystem;
 import de.rwth.montisim.simulation.eesimulator.components.BusUser;
@@ -20,17 +21,19 @@ import de.rwth.montisim.simulation.eesimulator.components.EEComponentProperties.
 import de.rwth.montisim.simulation.eesimulator.exceptions.EEMessageTypeException;
 import de.rwth.montisim.simulation.eesimulator.exceptions.EESetupException;
 import de.rwth.montisim.simulation.eesimulator.message.MessageTypeManager;
+import de.rwth.montisim.simulation.environment.osmmap.OsmMap;
+import de.rwth.montisim.simulation.environment.world.World;
 import de.rwth.montisim.simulation.vehicle.physicsmodel.PhysicsProperties;
 import de.rwth.montisim.simulation.vehicle.physicsmodel.rigidbody.RigidbodyPhysicsProperties;
 import de.rwth.montisim.simulation.vehicle.powertrain.PowerTrainProperties;
 import de.rwth.montisim.simulation.vehicle.powertrain.electrical.ElectricalPTProperties;
-import de.rwth.montisim.simulation.vehicle.task.Task;
+import de.rwth.montisim.simulation.vehicle.task.TaskProperties;
 
 /**
  * General properties of the Vehicle. All lengths are given in Meters. All
  * masses in kg. All angles in degrees.
  */
-public class VehicleProperties /* implements JsonSerializable */ {
+public class VehicleProperties {
     // Partially taken from https://en.wikipedia.org/wiki/BMW_M4
 
     @JsonEntry("name")
@@ -45,10 +48,10 @@ public class VehicleProperties /* implements JsonSerializable */ {
 
     public final Vector<EEComponentProperties> components;
 
-    public Vec2 start_coords = new Vec2();
-    public Vec2 end_coords;
+    public Vec2 start_pos = new Vec2(0,0);
+    public double start_orientation = 0.0;
 
-    public Task task;
+    public TaskProperties task;
 
     public VehicleProperties(){
         body = new BodyProperties();
@@ -57,6 +60,7 @@ public class VehicleProperties /* implements JsonSerializable */ {
         physics = new RigidbodyPhysicsProperties();
         components = new Vector<>();
         powertrain.addDefaultActuators(this);
+        task = new TaskProperties();
     }
 
     /**
@@ -96,6 +100,11 @@ public class VehicleProperties /* implements JsonSerializable */ {
 
     }
 
+    public VehicleProperties setName(String name) {
+        vehicleName = name;
+        return this;
+    }
+
     public Optional<EEComponentProperties> getComponentProperties(String componentName) {
         return components.stream().filter(x -> x.name.equals(componentName)).findFirst();
     }
@@ -122,17 +131,17 @@ public class VehicleProperties /* implements JsonSerializable */ {
         components.add(properties);
     }
 
-    public void setTask(Task task) {
-        this.task = task;
-    }
-
     public static class BuildContext {
         public final MessageTypeManager mtManager;
         public final Pathfinding pathfinding;
+        public final World world; // Can be null unless a PathGoal tries to resolve lat/lon
+        public final OsmMap map; // Can be null unless a PathGoal tries to resolve OSM-ids
 
-        public BuildContext(Pathfinding pathfinding, MessageTypeManager mtManager) {
+        public BuildContext(Pathfinding pathfinding, MessageTypeManager mtManager, World world,  OsmMap map) {
             this.pathfinding = pathfinding;
             this.mtManager = mtManager;
+            this.world = world;
+            this.map = map;
         }
     }
 
@@ -156,7 +165,8 @@ public class VehicleProperties /* implements JsonSerializable */ {
 
         ComponentBuildContext compContext = new ComponentBuildContext(
             target.physicalValues, 
-            target.updater, 
+            target.updater,
+            target.destroyer,
             target.eesystem.getMsgPrioComp(), 
             context.pathfinding
             );
@@ -183,8 +193,15 @@ public class VehicleProperties /* implements JsonSerializable */ {
 
         target.eesystem.finalizeSetup();
 
-        Objects.requireNonNull(task);
-        target.task = task;
+        Objects.requireNonNull(task, "Task of Vehicle not specified");
+        target.task = task.build(target, context.map, context.world);
+
+        // Position Vehicle
+        target.physicsModel.setGroundPosition(
+            new Vec3(start_pos.x, start_pos.y, 0), 
+            new Vec2(Math.cos(start_orientation * Geometry.DEG_TO_RAD), Math.sin(start_orientation * Geometry.DEG_TO_RAD))
+        );
+
         return target;
     }
 }

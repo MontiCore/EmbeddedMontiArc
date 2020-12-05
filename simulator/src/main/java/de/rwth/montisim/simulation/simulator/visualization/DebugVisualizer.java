@@ -19,7 +19,6 @@ import de.rwth.montisim.simulation.simulator.visualization.ui.*;
  * Start the main of this class to open a Map visualization. (MapViewer)
  */
 public class DebugVisualizer extends JFrame {
-    public static final boolean SHOW_SEGMENTS = true;
     public static void main(String args[]) {
         new DebugVisualizer(args);
     }
@@ -52,7 +51,7 @@ public class DebugVisualizer extends JFrame {
         String mapPath = "simulator/src/test/resources/aachen.osm";
         try {
             World world = new OsmToWorldLoader(new OsmMap("aachen", new File(mapPath))).getWorld();
-            viewer.addRenderer(new WorldRenderer(world, SHOW_SEGMENTS));
+            viewer.addRenderer(new WorldRenderer(world));
             viewer.addRenderer(new PathfinderRenderer(new PathfindingImpl(world)));
         } catch (Exception e) {
             e.printStackTrace();
@@ -63,7 +62,7 @@ public class DebugVisualizer extends JFrame {
         String mapPath = "simulator/src/test/resources/Aachen2.osm";
         try {
             World world = new OsmToWorldLoader(new OsmMap("aachen", new File(mapPath))).getWorld();
-            viewer.addRenderer(new WorldRenderer(world, SHOW_SEGMENTS));
+            viewer.addRenderer(new WorldRenderer(world));
             viewer.addRenderer(new PathfinderRenderer(new PathfindingImpl(world)));
         } catch (Exception e) {
             e.printStackTrace();
@@ -72,7 +71,7 @@ public class DebugVisualizer extends JFrame {
 
     public void vis3(String args[]) {
         World world = generateSimpleWorld();
-        viewer.addRenderer(new WorldRenderer(world, SHOW_SEGMENTS));
+        viewer.addRenderer(new WorldRenderer(world));
         viewer.addRenderer(new PathfinderRenderer(new PathfindingImpl(world)));
     }
 

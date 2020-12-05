@@ -4,17 +4,18 @@ package de.rwth.montisim.simulation.simulator.vehicleconfigs;
 import java.time.Duration;
 
 import de.rwth.montisim.simulation.eecomponents.autopilots.JavaAutopilotProperties;
-import de.rwth.montisim.simulation.eecomponents.navigation.NavigationProperties;
 import de.rwth.montisim.simulation.eesimulator.bus.constant.ConstantBusProperties;
 import de.rwth.montisim.simulation.eesimulator.sensor.SensorProperties;
 import de.rwth.montisim.simulation.vehicle.VehicleProperties;
+import de.rwth.montisim.simulation.vehicle.navigation.NavigationProperties;
 import de.rwth.montisim.simulation.vehicle.physicalvalues.*;
 import de.rwth.montisim.simulation.vehicle.physicsmodel.rigidbody.RigidbodyPhysicsProperties;
 import de.rwth.montisim.simulation.vehicle.powertrain.electrical.ElectricalPTProperties;
 import de.rwth.montisim.simulation.vehicle.powertrain.electrical.battery.BatteryProperties;
 import de.rwth.montisim.simulation.vehicle.powertrain.electrical.battery.BatteryProperties.BatteryType;
 import de.rwth.montisim.simulation.vehicle.powertrain.electrical.motor.ElectricMotorProperties;
-import de.rwth.montisim.simulation.vehicle.task.Task;
+import de.rwth.montisim.simulation.vehicle.task.TaskProperties;
+import de.rwth.montisim.simulation.vehicle.task.path.PathGoalProperties;
 
 public class DefaultVehicleConfig {
     public final VehicleProperties properties;
@@ -64,7 +65,7 @@ public class DefaultVehicleConfig {
         );
 
         properties.addComponent(
-            new NavigationProperties().setName("Navigation")
+            new NavigationProperties()
         );
         
         properties.addComponent(
@@ -83,13 +84,18 @@ public class DefaultVehicleConfig {
         return config;
     }
 
+    public DefaultVehicleConfig driveTo(double x, double y, double range) {
+        properties.task.addGoal(new PathGoalProperties().reach(x, y).withinRange(range).eventually());
+        return this;
+    }
+
     public DefaultVehicleConfig setName(String vehicleName){
         this.properties.vehicleName = vehicleName;
         return this;
     }
 
-    public DefaultVehicleConfig setTask(Task task) {
-        this.properties.setTask(task);
+    public DefaultVehicleConfig setTask(TaskProperties task) {
+        this.properties.task = task;
         return this;
     }
 

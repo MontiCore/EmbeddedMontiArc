@@ -12,4 +12,10 @@ public class UIInfo {
     public static final Color PANEL_COLOR = new Color(255, 255, 255, 180);
     
     public static boolean antialiasing = false;
+    public static boolean inspectAutopilots = true;
+    public static boolean drawPlannedTrajectory = true;
+    public static boolean drawPlannedPath = true;
+    public static boolean drawTargets = true;
+    public static boolean drawActuators = true;
+    public static boolean showSegments = false;
 }

@@ -3,25 +3,27 @@ package de.rwth.montisim.simulation.eecomponents.autopilots;
 
 import java.time.Duration;
 import java.time.Instant;
+import java.util.*;
 
 import de.rwth.montisim.commons.dynamicinterface.BasicType;
+import de.rwth.montisim.commons.simulation.Inspectable;
 import de.rwth.montisim.commons.utils.Geometry;
 import de.rwth.montisim.commons.utils.IPM;
 import de.rwth.montisim.commons.utils.Time;
 import de.rwth.montisim.commons.utils.Vec2;
-import de.rwth.montisim.simulation.eecomponents.navigation.Navigation;
 import de.rwth.montisim.simulation.eesimulator.actuator.Actuator;
 import de.rwth.montisim.simulation.eesimulator.components.EEComponent;
 import de.rwth.montisim.simulation.eesimulator.events.MessageReceiveEvent;
 import de.rwth.montisim.simulation.eesimulator.exceptions.EEMessageTypeException;
 import de.rwth.montisim.simulation.eesimulator.message.Message;
 import de.rwth.montisim.simulation.eesimulator.message.MessageInformation;
+import de.rwth.montisim.simulation.vehicle.navigation.Navigation;
 import de.rwth.montisim.simulation.vehicle.physicalvalues.TrueCompass;
 import de.rwth.montisim.simulation.vehicle.physicalvalues.TruePosition;
 import de.rwth.montisim.simulation.vehicle.physicalvalues.TrueVelocity;
 import de.rwth.montisim.simulation.vehicle.powertrain.PowerTrainProperties;
 
-public class JavaAutopilot extends EEComponent {
+public class JavaAutopilot extends EEComponent implements Inspectable {
     transient final JavaAutopilotProperties properties;
 
     public static final double MAX_DEVIATION = 3; // max allowed deviation from the trajectory "corners" (in meters)
@@ -32,6 +34,7 @@ public class JavaAutopilot extends EEComponent {
     transient MessageInformation positionMsg;
     transient MessageInformation compassMsg;
 
+    transient MessageInformation trajLengthMsg;
     transient MessageInformation trajXMsg;
     transient MessageInformation trajYMsg;
 
@@ -44,8 +47,14 @@ public class JavaAutopilot extends EEComponent {
     public double currentCompass = Double.NaN;
 
     double newTrajX[] = null;
+    public int newTrajLength = 0;
+    public int trajLength = 0;
     public double trajX[] = null;
     public double trajY[] = null;
+
+    public double currentGas = 0;
+    public double currentSteering = 0;
+    public double currentBrakes = 0;
 
     Instant lastTime = null;
     transient final PID speedPid;
@@ -64,6 +73,7 @@ public class JavaAutopilot extends EEComponent {
         this.positionMsg = addInput(TruePosition.VALUE_NAME, TruePosition.TYPE);
         this.compassMsg = addInput(TrueCompass.VALUE_NAME, TrueCompass.TYPE);
 
+        this.trajLengthMsg = addInput(Navigation.TRAJECTORY_LENGTH_MSG, BasicType.N);
         this.trajXMsg = addInput(Navigation.TRAJECTORY_X_MSG, Navigation.TRAJECTORY_X_TYPE);
         this.trajYMsg = addInput(Navigation.TRAJECTORY_Y_MSG, Navigation.TRAJECTORY_Y_TYPE);
 
@@ -84,11 +94,14 @@ public class JavaAutopilot extends EEComponent {
             compute(msgRecvEvent.getEventTime());
         } else if (msg.isMsg(compassMsg)) {
             currentCompass = (Double) msg.message;
+        } else if (msg.isMsg(trajLengthMsg)){
+            newTrajLength = (int)msg.message;
         } else if (msg.isMsg(trajXMsg)) {
-            // Assumes the x positions array of a new trajectory always arrives first
             newTrajX = (double[]) msg.message;
         } else if (msg.isMsg(trajYMsg)) {
+            // Assumes the y positions array of a new trajectory always arrives last
             trajY = (double[]) msg.message;
+            trajLength = newTrajLength;
             trajX = newTrajX;
         }
     }
@@ -144,6 +157,19 @@ public class JavaAutopilot extends EEComponent {
     int mode = 0;
     int target = 0;
 
+    void setGas(Instant sendTime, double val) {
+        this.currentGas = val;
+        sendMessage(sendTime, accelMsg, val);
+    }
+    void setBrakes(Instant sendTime, double val) {
+        this.currentBrakes = val;
+        sendMessage(sendTime, brakeMsg, val);
+    }
+    void setSteering(Instant sendTime, double val) {
+        this.currentSteering = val;
+        sendMessage(sendTime, steeringMsg, val);
+    }
+
     void compute(Instant startTime) {
         if (currentPosition == null || Double.isNaN(currentCompass))
             return;
@@ -153,14 +179,14 @@ public class JavaAutopilot extends EEComponent {
         int index = getNearestSegment(currentPosition);
         if (index < 0) {
             // No trajectory -> Stay in place
-            sendMessage(sendTime, accelMsg, 0.0);
-            sendMessage(sendTime, brakeMsg, 1.0);
+            setGas(sendTime, 0.0);
+            setBrakes(sendTime, 1.0);
             return;
         }
 
         carDir.set(Math.cos(carAngle), Math.sin(carAngle));
 
-        if (trajX.length == 1 || index + 1 >= trajX.length) {
+        if (trajLength == 1 || index + 1 >= trajLength) {
             // Only one point -> orient towards it
             // If "behind" -> just stop
             // Orient and try to stop at position
@@ -230,8 +256,9 @@ public class JavaAutopilot extends EEComponent {
         speedOutput /= 3.6; // Convert to m/s related space
         speedOutput /= properties.maxVehicleAccel; // Convert to [0:1] actuator range
 
-        sendMessage(sendTime, steeringMsg, turnOutput);
-        sendMessage(sendTime, accelMsg, speedOutput);
+        setSteering(sendTime, turnOutput);
+        setGas(sendTime, speedOutput);
+        setBrakes(sendTime, 0);
     }
 
     private double getDeltaTime(Instant time) {
@@ -246,7 +273,7 @@ public class JavaAutopilot extends EEComponent {
     SegmentPos findTargetSegment(int index) {
         currSeg.initFromTraj(index);
 
-        boolean hasNext = index + 2 < trajX.length;
+        boolean hasNext = index + 2 < trajLength;
         if (hasNext) {
             nextSeg.initFromTraj(index + 1);
 
@@ -286,7 +313,7 @@ public class JavaAutopilot extends EEComponent {
             return -1;
         double currentNearestDistance = Double.POSITIVE_INFINITY;
         int closestIndex = -1;
-        int count = trajX.length;
+        int count = trajLength;
         double dist;
         boolean hasLastPoint = false;
 
@@ -336,6 +363,48 @@ public class JavaAutopilot extends EEComponent {
 
     void getTrajPoint(int index, Vec2 target) {
         target.set(trajX[index], trajY[index]);
+    }
+
+    @Override
+    public String getType() {
+        return "autopilot";
+    }
+
+    void addEntry(List<String> entries, boolean output, MessageInformation msgInf, Object val) {
+        String res = output ? "output: " : "input: ";
+        res += msgInf.name + ": ";
+        if (val == null) entries.add(res + "null");
+        else {
+            List<String> toStr = msgInf.type.toString(val);
+            if (toStr.size() == 0) entries.add(res + "No toString()");
+            if (toStr.size() == 1) entries.add(res + toStr.get(0));
+            else {
+                entries.add(res);
+                for (String s : toStr) {
+                    entries.add("  "+s);
+                }
+            }
+        }
+    }
+
+    @Override
+    public List<String> getEntries() {
+        List<String> entries = new ArrayList<>();
+        addEntry(entries, false, velocityMsg, currentVelocity);
+        addEntry(entries, false, compassMsg, currentCompass);
+        addEntry(entries, false, positionMsg, currentPosition);
+        addEntry(entries, false, trajLengthMsg, trajLength);
+        addEntry(entries, false, trajXMsg, trajX);
+        addEntry(entries, false, trajYMsg, trajY);
+        addEntry(entries, true, accelMsg, currentGas);
+        addEntry(entries, true, steeringMsg, currentSteering);
+        addEntry(entries, true, brakeMsg, currentBrakes);
+        return entries;
+    }
+
+    @Override
+    public String getName() {
+        return properties.name;
     }
 
 }

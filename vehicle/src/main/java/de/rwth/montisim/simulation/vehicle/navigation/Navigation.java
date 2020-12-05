@@ -1,5 +1,5 @@
 /* (c) https://github.com/MontiCore/monticore */
-package de.rwth.montisim.simulation.eecomponents.navigation;
+package de.rwth.montisim.simulation.vehicle.navigation;
 
 import java.time.*;
 import java.util.*;
@@ -25,7 +25,7 @@ public class Navigation extends EEComponent {
     public static final String AT_TARGET_POS_MSG = "at_target_pos";
     public static final String CURRENT_TARGET_POS_MSG = "current_target_pos";
     // The following messages are sent regularly by the Navigation and give the one
-    // waypoint behind the vehicle and 4 after (targets)
+    // waypoint behind the vehicle and 9 after (targets)
     // In coordinate or local space (latlon - xy)
     // Might give less points if almost at target (or none if at target)
     public static final String TRAJECTORY_X_MSG = "trajectory_x";
@@ -36,7 +36,8 @@ public class Navigation extends EEComponent {
 
     public static final BasicType AT_TARGET_POS_TYPE = BasicType.BOOLEAN;
     public static final BasicType CURRENT_TARGET_POS_TYPE = BasicType.VEC2;
-    public static final VectorType TRAJECTORY_X_TYPE = new VectorType(BasicType.DOUBLE, 10);
+    public static final int TRAJ_ARRAY_LENGTH = 10;
+    public static final VectorType TRAJECTORY_X_TYPE = new VectorType(BasicType.DOUBLE, TRAJ_ARRAY_LENGTH);
     public static final VectorType TRAJECTORY_Y_TYPE = TRAJECTORY_X_TYPE;
     public static final VectorType TRAJECTORY_LON_TYPE = TRAJECTORY_X_TYPE;
     public static final VectorType TRAJECTORY_LAT_TYPE = TRAJECTORY_X_TYPE;
@@ -61,10 +62,13 @@ public class Navigation extends EEComponent {
     final Stack<Vec2> targets = new Stack<>();
     Optional<Path> currentPath = Optional.empty();
     Optional<Vec2> currentPos = Optional.empty();
+    transient Vec2 currentTraj[] = new Vec2[TRAJ_ARRAY_LENGTH];
+    transient int currentTrajSize = 0;
 
     public Navigation(NavigationProperties properties, Pathfinding pathfinding) {
         super(properties);
         this.pathfinding = pathfinding;
+        for (int i = 0; i < TRAJ_ARRAY_LENGTH; ++i) currentTraj[i] = new Vec2();
     }
 
     @Override
@@ -125,7 +129,9 @@ public class Navigation extends EEComponent {
     }
     
     public void popTargetPos() {
+        currentTrajSize = 0;
         if (!targets.empty()) targets.pop();
+        currentPath = Optional.empty();
     }
 
     private void newTrajectory(Instant time){
@@ -149,15 +155,18 @@ public class Navigation extends EEComponent {
         int index = getNearestSegment(currentPos.get());
         if (index < 0) return;
         Path p = currentPath.get();
-        int size = Math.min(10, p.getLength()-index);
-        double x[] = new double[size];
-        double y[] = new double[size];
+        int size = Math.min(TRAJ_ARRAY_LENGTH, p.getLength()-index);
+        currentTrajSize = size;
+        double x[] = new double[TRAJ_ARRAY_LENGTH];
+        double y[] = new double[TRAJ_ARRAY_LENGTH];
         for (int i = 0; i < size; ++i){
             x[i] = p.trajectoryX[index+i];
             y[i] = p.trajectoryY[index+i];
+            currentTraj[i].x = x[i];
+            currentTraj[i].y = y[i];
         }
-        sendMessage(time, trajectoryXMsg, x, 8*size);
         sendMessage(time, trajectoryLengthMsg, size);
+        sendMessage(time, trajectoryXMsg, x, 8*size);
         sendMessage(time.plus(Duration.ofMillis(10)), trajectoryYMsg, y, 8*size);
     }
 
@@ -216,6 +225,18 @@ public class Navigation extends EEComponent {
             hasLastPoint = true;
         }
         return closestIndex;
+    }
+
+    public Optional<Path> getCurrentPath() {
+        return currentPath;
+    }
+
+    public Vec2[] getCurrentTraj() {
+        return currentTraj;
+    }
+
+    public int getCurrentTrajSize() {
+        return currentTrajSize;
     }
 
     public Stack<Vec2> getTargets() {

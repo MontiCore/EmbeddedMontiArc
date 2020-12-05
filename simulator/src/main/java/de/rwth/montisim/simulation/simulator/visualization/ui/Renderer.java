@@ -14,7 +14,7 @@ public abstract class Renderer {
     public abstract void draw(Graphics2D g);
     public abstract void computeGeometry(Mat3 viewMatrix);
     // return "" if nothing to show
-    public abstract String[] getInfo();
+    public abstract List<String> getInfo();
     // return "" if nothing to show
     public abstract String[] getHoverInfo(Vec2 worldPos);
     // Return null if nothing to show

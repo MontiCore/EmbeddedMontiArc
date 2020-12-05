@@ -10,11 +10,11 @@ import java.nio.file.Paths;
 import java.time.*;
 
 import de.rwth.montisim.commons.map.Pathfinding;
+import de.rwth.montisim.commons.simulation.TaskStatus;
 import de.rwth.montisim.commons.simulation.TimeUpdate;
 import de.rwth.montisim.commons.utils.*;
 import de.rwth.montisim.commons.utils.json.Json;
 import de.rwth.montisim.commons.utils.json.SerializationException;
-import de.rwth.montisim.simulation.eecomponents.navigation.Navigation;
 import de.rwth.montisim.simulation.eesimulator.exceptions.*;
 import de.rwth.montisim.simulation.eesimulator.message.MessageTypeManager;
 import de.rwth.montisim.simulation.environment.osmmap.*;
@@ -33,8 +33,6 @@ import de.rwth.montisim.simulation.vehicle.physicsmodel.rigidbody.RigidbodyPhysi
 
 public class SimulationVisualizer extends JFrame implements SimulationRunner {
     private static final long serialVersionUID = -8677459653174721311L;
-
-    public static final boolean SHOW_SEGMENTS = true;
 
     // static class TestTimer implements ActionListener {
     //     Timer timer = new Timer(10, this);
@@ -79,8 +77,6 @@ public class SimulationVisualizer extends JFrame implements SimulationRunner {
         new SimulationVisualizer(args);
     }
 
-    private static final Vec3 START_DIR = new Vec3(1, 0, 0);
-
     final int PHYSICS_TICK_DURATION_MS = 10;
     final int TARGET_FPS = 30;
     final int MIN_FPS = 2;
@@ -94,7 +90,9 @@ public class SimulationVisualizer extends JFrame implements SimulationRunner {
     Vehicle vehicle;
     RigidbodyPhysics physics;
     Simulator simulator;
+    SimulationConfig simConfig;
     World world;
+    OsmMap map;
     Pathfinding pathfinding;
 
     boolean postedMsg = false;
@@ -119,7 +117,7 @@ public class SimulationVisualizer extends JFrame implements SimulationRunner {
 
         plotter = new TimePlotter();
 
-        control = new Control(Control.Mode.SIMULATION, Instant.EPOCH, this, PHYSICS_TICK_DURATION_MS, TARGET_FPS, MIN_FPS);
+        control = new Control(Control.Mode.SIMULATION, Instant.EPOCH, this, Duration.ofMillis(PHYSICS_TICK_DURATION_MS), TARGET_FPS, MIN_FPS);
 
         JPanel topPanel = new JPanel();
         topPanel.setLayout(new BoxLayout(topPanel, BoxLayout.Y_AXIS));
@@ -136,8 +134,9 @@ public class SimulationVisualizer extends JFrame implements SimulationRunner {
     public void vis1(String args[]) {
         String mapPath = "simulator/src/test/resources/aachen.osm";
         try {
-            world = new OsmToWorldLoader(new OsmMap("aachen", new File(mapPath))).getWorld();
-            viewer.addRenderer(new WorldRenderer(world, SHOW_SEGMENTS));
+            map = new OsmMap("aachen", new File(mapPath));
+            world = new OsmToWorldLoader(map).getWorld();
+            viewer.addRenderer(new WorldRenderer(world));
             pathfinding = new PathfindingImpl(world);
             viewer.addRenderer(new PathfinderRenderer(pathfinding));
         } catch (Exception e) {
@@ -150,32 +149,18 @@ public class SimulationVisualizer extends JFrame implements SimulationRunner {
         crossedQuarter = false;
 
         mtManager = new MessageTypeManager();
-        simulator = new Simulator(new SimulationConfig(), world, pathfinding, mtManager);
+        simConfig = new SimulationConfig();
 
         // VehicleConfig config = setupTurningCar();
-        VehicleProperties config = DefaultVehicleConfig.withJavaAutopilot().properties;
+        String vehicleName = "TestVehicle";
+        VehicleProperties config = DefaultVehicleConfig.withJavaAutopilot().driveTo(-63.83, -171.96, 5).properties.setName(vehicleName);
+        config.start_pos = new Vec2(0,0);
+        simConfig.cars.add(config);
 
+        simulator = simConfig.build(world, pathfinding, mtManager, map);
 
-        try {
-            vehicle = simulator.getVehicleBuilder(config).setName("TestVehicle").build();
-            
-            simulator.addSimulationObject(vehicle);
-
-            vehicle.physicsModel.setGroundPosition(new Vec3(0, 0, 0), new Vec2(START_DIR.x, START_DIR.y));
-
-            cr.setCar(vehicle);
-
-            Navigation nav = (Navigation) vehicle.eesystem.getComponentManager().getComponent("Navigation").get();
-            Vec2 TARGET_POS = new Vec2(-63.83, -171.96);
-            // nav.pushTargetPos(new Vec2(384.77, -283.72));
-            nav.pushTargetPos(TARGET_POS);
-            vehicle.addTarget(TARGET_POS);
-
-            printDebug();
-        } catch (SerializationException | EEMessageTypeException e) {
-            e.printStackTrace();
-        }
-
+        vehicle = simulator.getVehicle(vehicleName);
+        cr.setCar(vehicle);
     }
 
     private void printDebug() {
@@ -238,4 +223,10 @@ public class SimulationVisualizer extends JFrame implements SimulationRunner {
         }
         i++;
     }
+
+    @Override
+    public TaskStatus status() {
+        return simulator.status();
+    }
+
 }

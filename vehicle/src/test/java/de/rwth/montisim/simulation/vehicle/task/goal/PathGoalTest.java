@@ -5,55 +5,57 @@ import static org.mockito.Mockito.*;
 
 import de.rwth.montisim.commons.simulation.DynamicObject;
 import de.rwth.montisim.commons.simulation.TaskStatus;
-import de.rwth.montisim.commons.utils.Vec2;
 import de.rwth.montisim.commons.utils.Vec3;
 import de.rwth.montisim.simulation.vehicle.Vehicle;
-import org.junit.After;
-import org.junit.Before;
+import de.rwth.montisim.simulation.vehicle.navigation.Navigation;
+import de.rwth.montisim.simulation.vehicle.task.Goal;
+import de.rwth.montisim.simulation.vehicle.task.path.PathGoal;
+import de.rwth.montisim.simulation.vehicle.task.path.PathGoalProperties;
+
 import org.junit.Test;
 
-import java.util.Optional;
 
 public class PathGoalTest {
     @Test
     public void testEventually() {
-        Goal goal = PathGoal.newBuilder()
+        PathGoal goal = (PathGoal) new PathGoalProperties()
+                .reach(100, 0)
+                .reach(200, 0)
+                .reach(300, 0)
+                .withinRange(10)
                 .eventually()
-                .arrive(new Vec2(100, 0))
-                .arrive(new Vec2(200, 0))
-                .arrive(new Vec2(300, 0))
-                .withInRange(10)
-                .build();
+                .build(null, null, null);
 
         Vehicle v = mock(Vehicle.class);
         v.physicalObject = mock(DynamicObject.class);
+        Navigation nav = mock(Navigation.class);
 
         v.physicalObject.pos = new Vec3(0, 0, 0);
-        goal.update(v);
+        goal.updateDriveTarget(v, nav);
         assertEquals(TaskStatus.RUNNING, goal.getStatus());
 
         v.physicalObject.pos = new Vec3(95, 0, 0);
-        goal.update(v);
+        goal.updateDriveTarget(v, nav);
         assertEquals(TaskStatus.RUNNING, goal.getStatus());
 
         v.physicalObject.pos = new Vec3(195, 0, 0);
-        goal.update(v);
+        goal.updateDriveTarget(v, nav);
         assertEquals(TaskStatus.RUNNING, goal.getStatus());
 
         v.physicalObject.pos = new Vec3(295, 0, 0);
-        goal.update(v);
+        goal.updateDriveTarget(v, nav);
         assertEquals(TaskStatus.SUCCEEDED, goal.getStatus());
     }
 
     @Test
     public void testNever() {
-        Goal goal = PathGoal.newBuilder()
+        Goal goal = new PathGoalProperties()
+                .reach(100, 0)
+                .reach(200, 0)
+                .reach(300, 0)
+                .withinRange(10)
                 .never()
-                .arrive(new Vec2(100, 0))
-                .arrive(new Vec2(200, 0))
-                .arrive(new Vec2(300, 0))
-                .withInRange(10)
-                .build();
+                .build(null, null, null);
 
         Vehicle v = mock(Vehicle.class);
         v.physicalObject = mock(DynamicObject.class);
