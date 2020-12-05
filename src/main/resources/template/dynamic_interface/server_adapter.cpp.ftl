@@ -9,6 +9,11 @@
 #include "ddc_mode.h"
 </#if>
 
+#if defined _WIN32 || defined _WIN64
+#define IS_WIN
+#else
+#endif
+
 using namespace std;
 
 bool running = true;
@@ -22,6 +27,8 @@ void signal_handler(int signal);
 
 
 int main(int argc, char** argv) {
+    // No need for interupt handling on windows => Ctrl+C is handled by the OS
+#ifndef IS_WIN
     struct sigaction sa;
     sa.sa_handler = signal_handler;
     sigemptyset(&sa.sa_mask);
@@ -34,6 +41,7 @@ int main(int argc, char** argv) {
         perror("sigaction");
         exit(1);
     }
+#endif
 
     if (argc == 3) {
         string cmd = argv[1];
