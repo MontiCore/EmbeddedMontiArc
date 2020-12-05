@@ -6,28 +6,18 @@ package de.rwth.montisim.basic_simulator;
 import de.rwth.montisim.basic_simulator.filesystem.FileSystem;
 import de.rwth.montisim.basic_simulator.gui.Browser;
 import de.rwth.montisim.commons.map.Pathfinding;
+import de.rwth.montisim.commons.simulation.TaskStatus;
 import de.rwth.montisim.commons.utils.LibraryService;
 import de.rwth.montisim.commons.utils.json.*;
 import de.rwth.montisim.hardware_emulator.CppBridge;
 import de.rwth.montisim.hardware_emulator.computer.ComputerProperties;
 import de.rwth.montisim.hardware_emulator.vcg.VCGProperties;
-import de.rwth.montisim.simulation.eecomponents.autopilots.*;
-import de.rwth.montisim.simulation.eecomponents.navigation.NavigationProperties;
-import de.rwth.montisim.simulation.eesimulator.actuator.ActuatorProperties;
-import de.rwth.montisim.simulation.eesimulator.bridge.BridgeProperties;
-import de.rwth.montisim.simulation.eesimulator.bus.can.CANProperties;
-import de.rwth.montisim.simulation.eesimulator.bus.constant.ConstantBusProperties;
 import de.rwth.montisim.simulation.eesimulator.message.MessageTypeManager;
-import de.rwth.montisim.simulation.eesimulator.sensor.SensorProperties;
-import de.rwth.montisim.simulation.eesimulator.testcomponents.TestCompProperties;
 import de.rwth.montisim.simulation.environment.world.World;
 import de.rwth.montisim.simulation.environment.osmmap.*;
 import de.rwth.montisim.simulation.environment.pathfinding.PathfindingImpl;
 import de.rwth.montisim.simulation.simulator.*;
 import de.rwth.montisim.simulation.simulator.visualization.ui.UIInfo;
-import de.rwth.montisim.simulation.vehicle.physicsmodel.rigidbody.RigidbodyPhysicsProperties;
-import de.rwth.montisim.simulation.vehicle.powertrain.electrical.ElectricalPTProperties;
-import de.rwth.montisim.simulation.vehicle.powertrain.fuel.FuelPTProperties;
 
 import javax.swing.*;
 
@@ -37,20 +27,9 @@ import java.io.IOException;
 public class App 
 {
     static {
-        Json.registerType(ElectricalPTProperties.class);
-        Json.registerType(FuelPTProperties.class);
-        Json.registerType(NavigationProperties.class);
-        Json.registerType(JavaAutopilotProperties.class);
-        Json.registerType(TestAutopilotProperties.class);
-        Json.registerType(RigidbodyPhysicsProperties.class);
-        Json.registerType(ActuatorProperties.class);
-        Json.registerType(BridgeProperties.class);
-        Json.registerType(CANProperties.class);
-        Json.registerType(ConstantBusProperties.class);
-        Json.registerType(SensorProperties.class);
-        Json.registerType(TestCompProperties.class);
         Json.registerType(ComputerProperties.class);
         Json.registerType(VCGProperties.class);
+        Simulator.registerJsonTypes();
     }
 
     public static void main( String[] args )
@@ -109,14 +88,16 @@ public class App
             File scenarioFile = new File(path);
             SimulationConfig config = SimulationConfig.fromFile(scenarioFile);
             File mapPath = new File(config.map_name + ".osm");
-            World world = new OsmToWorldLoader(new OsmMap(config.map_name, mapPath)).getWorld();
+            OsmMap map = new OsmMap(config.map_name, mapPath);
+            World world = new OsmToWorldLoader(map).getWorld();
             Pathfinding pathfinding = new PathfindingImpl(world);
             MessageTypeManager mtManager = new MessageTypeManager();
-            Simulator simulator = new Simulator(config, world, pathfinding, mtManager);
+            Simulator simulator = config.build(world, pathfinding, mtManager, map);
 
             // Run simulation
             SimulationLoop simLoop = new SimulationLoop(simulator, config);
-            simLoop.run();
+            TaskStatus res = simLoop.run();
+            if (res == TaskStatus.FAILED) throw new IllegalStateException("Not all tasks were completed.");
         } catch (Exception e1) {
             e1.printStackTrace();
             return;
