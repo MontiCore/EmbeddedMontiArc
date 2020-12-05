@@ -4,6 +4,7 @@ package de.rwth.montisim.commons.dynamicinterface;
 import java.io.DataInputStream;
 import java.io.DataOutputStream;
 import java.io.IOException;
+import java.util.*;
 
 import de.rwth.montisim.commons.utils.ParsingException;
 import de.rwth.montisim.commons.utils.json.*;
@@ -161,6 +162,11 @@ public class MatrixType extends DataType {
     @Override
     public Object fromBinary(DataInputStream is) throws IOException {
         throw new IllegalArgumentException("Unimplemented");
+    }
+
+    @Override
+    public List<String> toString(Object o) {
+        return new ArrayList<String>(Arrays.asList("Unimplemented toString()"));
     }
 
 }

@@ -4,6 +4,7 @@ package de.rwth.montisim.commons.dynamicinterface;
 import java.io.DataInputStream;
 import java.io.DataOutputStream;
 import java.io.IOException;
+import java.util.List;
 
 import de.rwth.montisim.commons.utils.json.*;
 
@@ -30,6 +31,7 @@ public abstract class DataType {
 
     public abstract void toBinary(DataOutputStream os, Object o) throws IOException;
     public abstract Object fromBinary(DataInputStream is) throws IOException;
+    public abstract List<String> toString(Object o);
 
     public abstract Class<?> getArrayType();
 }

@@ -4,6 +4,7 @@ package de.rwth.montisim.commons.dynamicinterface;
 import java.io.DataInputStream;
 import java.io.DataOutputStream;
 import java.io.IOException;
+import java.util.*;
 
 import de.rwth.montisim.commons.utils.ParsingException;
 import de.rwth.montisim.commons.utils.json.*;
@@ -152,4 +153,20 @@ public class VectorType extends DataType {
         } else throw new IllegalArgumentException("Unimplemented");
     }
 
+    @Override
+    public List<String> toString(Object o) {
+        Class<?> array_c = base_type.getArrayType();
+        if (array_c == double[].class) {
+            double[] arr = (double[]) o;
+            String res = "[";
+            boolean first = true;
+            for (double d : arr) {
+                if (first) first = false;
+                else res += ", ";
+                res += Double.toString(d);
+            }
+            res += "]";
+            return new ArrayList<String>(Arrays.asList(res));
+        } else return new ArrayList<String>(Arrays.asList("Unimplemented toString()"));
+    }
 }

@@ -1,6 +1,15 @@
 package de.rwth.montisim.commons.utils;
 
+import de.rwth.montisim.commons.utils.json.JsonEntry;
+
 public enum LTLOperator {
-    ALWAYS, NEVER, EVENTUALLY, UNTIL
+    @JsonEntry("always")
+    ALWAYS,
+    @JsonEntry("never")
+    NEVER, 
+    @JsonEntry("eventually")
+    EVENTUALLY, 
+    @JsonEntry("until")
+    UNTIL
 }
 

@@ -3,6 +3,7 @@ package de.rwth.montisim.commons.dynamicinterface;
 import java.io.DataInputStream;
 import java.io.DataOutputStream;
 import java.io.IOException;
+import java.util.*;
 
 import de.rwth.montisim.commons.utils.*;
 import de.rwth.montisim.commons.utils.json.*;
@@ -171,6 +172,32 @@ public class BasicType extends DataType {
     @Override
     public String toString() {
         return base_type.name();
+    }
+
+
+    @Override
+    public List<String> toString(Object o) {
+        switch (base_type) {
+            case BOOLEAN:
+                if ((Boolean)o) return new ArrayList<String>(Arrays.asList("true"));
+                else return new ArrayList<String>(Arrays.asList("false"));
+            case C: 
+                return new ArrayList<String>(Arrays.asList("Unimplemented Type"));
+            case EMPTY: 
+                return new ArrayList<String>(Arrays.asList("void"));
+            case N:
+            case N1:
+            case Z: 
+                return new ArrayList<String>(Arrays.asList(Integer.toString((Integer) o)));
+            case Q:
+                return new ArrayList<String>(Arrays.asList(Double.toString((Double) o)));
+            case VEC2:
+                return new ArrayList<String>(Arrays.asList(((Vec2) o).toString()));
+            case VEC3:
+                return new ArrayList<String>(Arrays.asList(((Vec3) o).toString()));
+            default:
+                throw new IllegalArgumentException("Missing case");
+        }
     }
 
 }
