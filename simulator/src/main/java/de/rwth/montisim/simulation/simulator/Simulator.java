@@ -58,7 +58,7 @@ public class Simulator implements ISimulator, Updatable {
         this.world = world;
         this.pathfinding = pathfinding;
         this.mtManager = mtManager;
-        this.buildContext = new BuildContext(pathfinding, mtManager, world, map);
+        this.buildContext = new BuildContext(pathfinding, mtManager, world, map, config.start_time);
         // TODO load static objects of the World
     }
 
