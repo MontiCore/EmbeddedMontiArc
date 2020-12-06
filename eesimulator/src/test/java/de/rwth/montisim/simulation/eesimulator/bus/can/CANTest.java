@@ -45,7 +45,7 @@ public class CANTest {
         //startTime = Instant.now();
         startTime = Instant.EPOCH;
         mtManager = new MessageTypeManager();
-        eesystem = new EESystem(new DiscreteEventSimulator(), mtManager);
+        eesystem = new EESystem(new DiscreteEventSimulator(Instant.EPOCH), mtManager);
         can = new CAN(new CANProperties().setBitRate(CAN.HIGH_SPEED_CAN_BITRATE).setName("TestCanBus"), eesystem.getMsgPrioComp());
         can.attachTo(eesystem);
         c1 = new TestEEComponent("TestComponent1"); c1.attachTo(eesystem);

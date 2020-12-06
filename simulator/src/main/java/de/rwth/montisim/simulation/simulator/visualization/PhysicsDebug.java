@@ -88,7 +88,7 @@ public class PhysicsDebug extends JFrame implements SimulationRunner {
         mtManager = new MessageTypeManager();
         VehicleProperties config = setupTurningCar().setName("TestVehicle");
         try {
-            vehicle = VehicleBuilder.fromConfig(new BuildContext(null, mtManager, null, null), config).build();
+            vehicle = VehicleBuilder.fromConfig(new BuildContext(null, mtManager, null, null, Instant.EPOCH), config).build();
             physics = (RigidbodyPhysics) vehicle.physicsModel;
             physics.setGroundPosition(new Vec3(0, 0, 0), new Vec2(START_DIR.x, START_DIR.y));
             VehicleProperties p = vehicle.properties;

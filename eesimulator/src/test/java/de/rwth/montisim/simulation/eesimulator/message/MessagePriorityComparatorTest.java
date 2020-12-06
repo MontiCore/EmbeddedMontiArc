@@ -1,6 +1,7 @@
 /* (c) https://github.com/MontiCore/monticore */
 package de.rwth.montisim.simulation.eesimulator.message;
 
+import java.time.Instant;
 import java.util.Arrays;
 import java.util.PriorityQueue;
 
@@ -20,7 +21,7 @@ public class MessagePriorityComparatorTest {
     @Test
     public void testComparator() throws EEMessageTypeException {
         MessageTypeManager mtManager = new MessageTypeManager();
-        EESystem eesystem = new EESystem(new DiscreteEventSimulator(), mtManager);
+        EESystem eesystem = new EESystem(new DiscreteEventSimulator(Instant.EPOCH), mtManager);
         new TestEEComponent("comp1").attachTo(eesystem);
         new TestEEComponent("comp2").attachTo(eesystem);
 

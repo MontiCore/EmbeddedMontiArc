@@ -1,6 +1,8 @@
 /* (c) https://github.com/MontiCore/monticore */
 package de.rwth.montisim.simulation.eesimulator;
 
+import java.time.Instant;
+
 import org.junit.Assert;
 import org.junit.Test;
 
@@ -22,7 +24,7 @@ public class SetupErrorsTest {
     @Test
     public void cyclicSetup() throws EEMessageTypeException {
         MessageTypeManager mtManager = new MessageTypeManager();
-        EESystem eesystem = new EESystem(new DiscreteEventSimulator(), mtManager);
+        EESystem eesystem = new EESystem(new DiscreteEventSimulator(Instant.EPOCH), mtManager);
 
         Bus b1 = new ConstantBus(ConstantBusProperties.instantBus().setName("b1"));
         b1.attachTo(eesystem);
@@ -56,7 +58,7 @@ public class SetupErrorsTest {
     @Test
     public void sameOutput() throws EEMessageTypeException {
         MessageTypeManager mtManager = new MessageTypeManager();
-        EESystem eesystem = new EESystem(new DiscreteEventSimulator(), mtManager);
+        EESystem eesystem = new EESystem(new DiscreteEventSimulator(Instant.EPOCH), mtManager);
         Bus b1 = new ConstantBus(ConstantBusProperties.instantBus().setName("b1"));
         b1.attachTo(eesystem);
         Bus b2 = new ConstantBus(ConstantBusProperties.instantBus().setName("b2"));
@@ -91,7 +93,7 @@ public class SetupErrorsTest {
     @Test
     public void missingInput() throws EEMessageTypeException {
         MessageTypeManager mtManager = new MessageTypeManager();
-        EESystem eesystem = new EESystem(new DiscreteEventSimulator(), mtManager);
+        EESystem eesystem = new EESystem(new DiscreteEventSimulator(Instant.EPOCH), mtManager);
         Bus b1 = new ConstantBus(ConstantBusProperties.instantBus().setName("b1"));
         b1.attachTo(eesystem);
         Bus b2 = new ConstantBus(ConstantBusProperties.instantBus().setName("b2"));
@@ -121,7 +123,7 @@ public class SetupErrorsTest {
     @Test
     public void messageType() throws EEMessageTypeException {
         MessageTypeManager mtManager = new MessageTypeManager();
-        EESystem eesystem = new EESystem(new DiscreteEventSimulator(), mtManager);
+        EESystem eesystem = new EESystem(new DiscreteEventSimulator(Instant.EPOCH), mtManager);
         Bus b1 = new ConstantBus(ConstantBusProperties.instantBus().setName("b1"));
         b1.attachTo(eesystem);
         TestEEComponent c1 = new TestEEComponent("c1"); c1.attachTo(eesystem);
@@ -149,7 +151,7 @@ public class SetupErrorsTest {
     @Test
     public void invalidConnect() throws EEMessageTypeException {
         MessageTypeManager mtManager = new MessageTypeManager();
-        EESystem eesystem = new EESystem(new DiscreteEventSimulator(), mtManager);
+        EESystem eesystem = new EESystem(new DiscreteEventSimulator(Instant.EPOCH), mtManager);
         Bus b1 = new ConstantBus(ConstantBusProperties.instantBus().setName("b1"));
         b1.attachTo(eesystem);
         TestEEComponent c1 = new TestEEComponent("c1"); c1.attachTo(eesystem);

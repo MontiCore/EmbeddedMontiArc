@@ -1,6 +1,7 @@
 /* (c) https://github.com/MontiCore/monticore */
 package de.rwth.montisim.simulation.vehicle;
 
+import java.time.Instant;
 import java.util.Objects;
 import java.util.Optional;
 import java.util.Vector;
@@ -136,12 +137,14 @@ public class VehicleProperties {
         public final Pathfinding pathfinding;
         public final World world; // Can be null unless a PathGoal tries to resolve lat/lon
         public final OsmMap map; // Can be null unless a PathGoal tries to resolve OSM-ids
+        public final Instant startTime;
 
-        public BuildContext(Pathfinding pathfinding, MessageTypeManager mtManager, World world,  OsmMap map) {
+        public BuildContext(Pathfinding pathfinding, MessageTypeManager mtManager, World world,  OsmMap map, Instant startTime) {
             this.pathfinding = pathfinding;
             this.mtManager = mtManager;
             this.world = world;
             this.map = map;
+            this.startTime = startTime;
         }
     }
 
@@ -149,7 +152,7 @@ public class VehicleProperties {
         Vehicle target = new Vehicle(this);
 
         // Create EESimulator
-        target.eesystem = new EESystem(new DiscreteEventSimulator(), context.mtManager);
+        target.eesystem = new EESystem(new DiscreteEventSimulator(context.startTime), context.mtManager);
 
         // Create PowerTrain
         target.powerTrain = powertrain.build();

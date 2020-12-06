@@ -1,6 +1,7 @@
 /* (c) https://github.com/MontiCore/monticore */
 package de.rwth.montisim.simulation.eesimulator.components;
 
+import java.time.Instant;
 import java.util.HashMap;
 import java.util.HashSet;
 import java.util.List;
@@ -28,7 +29,7 @@ public class ComponentSetupTest {
     public void singleBus() throws EESetupException, EEMessageTypeException {
         // Create an EE Setup.
         MessageTypeManager mtManager = new MessageTypeManager();
-        EESystem eesystem = new EESystem(new DiscreteEventSimulator(), mtManager);
+        EESystem eesystem = new EESystem(new DiscreteEventSimulator(Instant.EPOCH), mtManager);
         Bus bus = new ConstantBus(ConstantBusProperties.instantBus().setName("TestInstantBus"));
         bus.attachTo(eesystem);
         TestEEComponent c1, c2, c3;
@@ -101,7 +102,7 @@ public class ComponentSetupTest {
     @Test
     public void multiBus() throws EESetupException, EEMessageTypeException {
         MessageTypeManager mtManager = new MessageTypeManager();
-        EESystem eesystem = new EESystem(new DiscreteEventSimulator(), mtManager);
+        EESystem eesystem = new EESystem(new DiscreteEventSimulator(Instant.EPOCH), mtManager);
 
         // Create an EE Setup.
         Bus b1 = new ConstantBus(ConstantBusProperties.instantBus().setName("b1"));
