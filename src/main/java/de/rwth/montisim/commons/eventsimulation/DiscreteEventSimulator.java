@@ -17,10 +17,14 @@ public class DiscreteEventSimulator implements Updatable {
 	private static final DiscreteEvent.DiscreteEventComparator listComparator = new DiscreteEvent.DiscreteEventComparator();
 
 	/** point of time of simulation */
-	protected Instant simulationTime = Instant.EPOCH;
+	protected Instant simulationTime;
 
     /** list of all discrete events */
     protected final PriorityQueue<DiscreteEvent> eventList = new PriorityQueue<>(listComparator);
+
+    public DiscreteEventSimulator(Instant startTime) {
+        this.simulationTime = startTime;
+    }
 
     /**
      * function that adds an event to be scheduled
