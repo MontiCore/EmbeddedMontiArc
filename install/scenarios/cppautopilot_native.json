@@ -4,7 +4,8 @@
     "cars": [
         {
             "name": "TestVehicle",
-            "start_pos": [ 0, 0 ],
+            "start_pos": [ -123.09, 21.64 ],
+            "start_orientation": -30.0,
             "task": {
                 "goals": [
                     {
