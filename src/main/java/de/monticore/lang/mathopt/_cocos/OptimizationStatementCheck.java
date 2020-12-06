@@ -52,5 +52,6 @@ public class OptimizationStatementCheck implements MathOptASTOptimizationStateme
         }
     }
 
+    //ToDo: Check for head loop
 
 }

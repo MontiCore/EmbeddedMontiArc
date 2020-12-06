@@ -52,14 +52,14 @@ public class MathOptimizationStatementSymbolTest {
 
     @Test
     public void getOptimizationVariable() {
-        assertTrue(minimizationTestSymbol.getOptimizationVariable().getName().contentEquals("x"));
-        assertNotNull(minimizationTestSymbol.getOptimizationVariable().getType());
-        assertTrue(existingOptimizationVarScalar.getOptimizationVariable().getName().contentEquals("x"));
-        assertNull(existingOptimizationVarScalar.getOptimizationVariable().getType());
-        assertTrue(existingOptimizationVarMatrix.getOptimizationVariable().getName().contentEquals("a"));
-        assertNull(existingOptimizationVarMatrix.getOptimizationVariable().getType());
-        assertTrue(existingOptimizationVarSubstituted.getOptimizationVariable().getName().contentEquals("a"));
-        assertNull(existingOptimizationVarSubstituted.getOptimizationVariable().getType());
+        assertTrue(minimizationTestSymbol.getOptimizationVariables().get(0).getName().contentEquals("x"));
+        assertNotNull(minimizationTestSymbol.getOptimizationVariables().get(0).getType());
+        assertTrue(existingOptimizationVarScalar.getOptimizationVariables().get(0).getName().contentEquals("x"));
+        assertNull(existingOptimizationVarScalar.getOptimizationVariables().get(0).getType());
+        assertTrue(existingOptimizationVarMatrix.getOptimizationVariables().get(0).getName().contentEquals("a"));
+        assertNull(existingOptimizationVarMatrix.getOptimizationVariables().get(0).getType());
+        assertTrue(existingOptimizationVarSubstituted.getOptimizationVariables().get(0).getName().contentEquals("a"));
+        assertNull(existingOptimizationVarSubstituted.getOptimizationVariables().get(0).getType());
     }
 
     @Test

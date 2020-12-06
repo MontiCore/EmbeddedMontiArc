@@ -27,10 +27,10 @@ grammar MathOpt extends de.monticore.lang.Math
     OptimizationObjectiveValue = type:ElementType Name "=";
 
     OptimizationStatement implements Statement =
-        optimizationType:OptimizationType ("<" stepSize:Expression ">")?
-        optimizationVariable:OptimizationVariableDeclaration ("," optimizationVariable:OptimizationVariableDeclaration)* ";"
+        optimizationType:OptimizationType ("<" stepSize:Expression ">")?    //stepSize shall only be loopHeadExpression (n=1:10)
+            optimizationVariable:OptimizationVariableDeclaration ("," optimizationVariable:OptimizationVariableDeclaration)* ";"
         "in"
-        objectiveValue:OptimizationObjectiveValue? objectiveFunction:Expression ";"
+            objectiveValue:OptimizationObjectiveValue? objectiveFunction:Expression ";"
         "subject to"
             independentDeclaration:MathAssignmentDeclarationStatement*
             constraint:OptimizationCondition*
