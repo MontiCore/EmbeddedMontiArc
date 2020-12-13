@@ -138,6 +138,7 @@ public class MathOptSymbolTableCreator extends MathSymbolTableCreator implements
         for (ASTMathAssignmentDeclarationStatement varDec : indVarDecList) {
             indVariables.add((MathValueSymbol) varDec.getSymbolOpt().get());
         }
+        symbol.setIndependentVariables(indVariables);
         //Objective function
         if (astMathOptimizationStatement.getObjectiveFunction().getSymbolOpt().isPresent()) {
             symbol.setObjectiveExpression((MathExpressionSymbol) astMathOptimizationStatement.getObjectiveFunction().getSymbolOpt().get());

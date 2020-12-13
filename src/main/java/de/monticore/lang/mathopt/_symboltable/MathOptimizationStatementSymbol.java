@@ -22,6 +22,8 @@ public class MathOptimizationStatementSymbol extends MathExpressionSymbol {
      * Variable which will be minimized/ maximized
      */
     private List<MathValueSymbol> optimizationVariables;
+
+    private List<MathValueSymbol> independentVariables;
     /**
      * Variable which will store the result of the optimization
      */
@@ -74,6 +76,14 @@ public class MathOptimizationStatementSymbol extends MathExpressionSymbol {
 
     public void setOptimizationVariables(List<MathValueSymbol> optimizationVariables) {
         this.optimizationVariables = optimizationVariables;
+    }
+
+    public List<MathValueSymbol> getIndependentVariables() {
+        return independentVariables;
+    }
+
+    public void setIndependentVariables(List<MathValueSymbol> independentVariables) {
+        this.independentVariables = independentVariables;
     }
 
     public MathExpressionSymbol getObjectiveExpression() {
