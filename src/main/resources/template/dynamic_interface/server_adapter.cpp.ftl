@@ -159,6 +159,7 @@ void SimulationSession::init(PacketReader &init_packet) {
     cout << "Running in time mode '" << mode << "'." << endl;
 
     program_instance.init();
+    init_program_data();
     cout << "Initialized Program." << endl;
     
     // Sending Program Interface
@@ -173,9 +174,7 @@ void SimulationSession::set_input(PacketReader &input_packet) {
     auto port_id = input_packet.read_u16();
 
     switch (port_id) {
-<#list setInputCases as setInputCase>
-${setInputCase}
-</#list>
+<#list setInputCases as setInputCase>${setInputCase}</#list>
         default:
             cerr << "Invalid INPUT port ID: '"<< port_id << "'" << endl;
             throw exception();
@@ -211,9 +210,7 @@ void SimulationSession::send_output(int port_id){
     
     // Write port data
     switch (port_id) {
-<#list sendOutputCases as sendOutputCase>
-${sendOutputCase}
-</#list>
+<#list sendOutputCases as sendOutputCase>${sendOutputCase}</#list>
         default:
             cerr << "Invalid output port ID: '"<< port_id << "'" << endl;
             throw exception();
@@ -229,8 +226,10 @@ void SimulationSession::send_time(double time) {
 }
 
 
-
-
+// TODO: Should be handled in the component init() code
+void SimulationSession::init_program_data() {
+<#list initDataCalls as initDataCall>${initDataCall}</#list>
+}
 
 
 
