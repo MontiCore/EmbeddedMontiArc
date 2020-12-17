@@ -29,6 +29,8 @@ struct SimulationSession {
     void run_cycle(PacketReader &run_packet);
     void send_output(int port_id);
     void send_time(double time);
+
+    void init_program_data();
 };
 
 

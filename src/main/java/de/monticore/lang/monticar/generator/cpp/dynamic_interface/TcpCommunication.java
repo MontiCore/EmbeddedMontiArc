@@ -29,9 +29,11 @@ public class TcpCommunication {
         List<String> setInputCases = new ArrayList<>();
         List<String> sendOutputCalls = new ArrayList<>();
         List<String> sendOutputCases = new ArrayList<>();
+        List<String> initDataCalls = new ArrayList<>();
 
         int i = 0;
         for (PortInformation portInfo : gen.programInterface.ports){
+            initDataCalls.add(generateInitData(portInfo));
             if (portInfo.direction == PortDirection.INPUT){
                 setInputCases.add(generateSetInputCase(i, portInfo));
             } else {
@@ -47,6 +49,7 @@ public class TcpCommunication {
         templateData.put("setInputCases", setInputCases);
         templateData.put("sendOutputCalls", sendOutputCalls);
         templateData.put("sendOutputCases", sendOutputCases);
+        templateData.put("initDataCalls", initDataCalls);
         templateData.put("useDDC", hasDDC);
 
         files.add(new FileContent(AllTemplates.generate(AllTemplates.TCP_ADAPTER_H, templateData), "server_adapter.h"));
@@ -64,7 +67,9 @@ public class TcpCommunication {
         return files;
     }
 
-	public void getSources(HashSet<String> sources) {
+	
+
+    public void getSources(HashSet<String> sources) {
         sources.add("json.cpp");
         sources.add("printf.cpp");
         sources.add("network.cpp");
@@ -92,6 +97,13 @@ public class TcpCommunication {
         generateGetter(portInfo.type, BASE_INDENT+1, 1, "program_instance."+portInfo.name);
         b.a(BASE_INDENT, "} break;");
 
+        return b.getContent();
+    }
+
+    
+    private String generateInitData(PortInformation portInfo) {
+        b.init();
+        generateInitData(portInfo.type, 1, 1, "program_instance."+portInfo.name);
         return b.getContent();
     }
 
@@ -135,12 +147,14 @@ public class TcpCommunication {
             VectorType vt = (VectorType)type;
             int newIndent = indent + 1;
             int size = vt.getSize();
-            String i = String.format("i%d", depth);
+            String iVar = String.format("i%d", depth);
+            String sizeVar = String.format("size%d", depth);
             String ref = String.format("res%d", depth);
 
-            
-            b.a(indent, "for (int %s=0; %s < %d; ++%s) {",   i, i, size, i);
-            b.a(indent, "    auto &%s = %s(%s);",            ref, varReference, i);
+            // TODO check in code if the received size is within the declared max size?
+            b.a(indent, "auto %s = input_packet.read_u16();", sizeVar);
+            b.a(indent, "for (int %s=0; %s < %s; ++%s) {",    iVar, iVar, sizeVar, iVar);
+            b.a(indent, "    auto &%s = %s(%s);",             ref, varReference, iVar);
             generateSetter(vt.getBaseType(), newIndent, depth+1, ref);
             b.a(indent, "}"                                  );
             
@@ -153,13 +167,13 @@ public class TcpCommunication {
             String j = String.format("j%d", depth);
             String ref = String.format("res%d", depth);
 
-            
             b.a(indent, "for (int %s=0; %s < %d; ++%s) {",       i, i, rows, i);
             b.a(indent, "    for (int %s=0; %s < %d; ++%s) {",   j, j, cols, j);
             b.a(indent, "        auto &%s = %s(%s, %s);",        ref, varReference, i, j);
             generateSetter(vt.getBaseType(), newIndent, depth+1, ref);
             b.a(indent, "    }"                                  );
             b.a(indent, "}"                                      );
+            throw new IllegalArgumentException("TODO read sizes first?");
 
         } else if (type instanceof DynVectorType) {
             System.out.println("Unimplemented: DynVectorType set_port case.");
@@ -225,7 +239,7 @@ public class TcpCommunication {
             String i = String.format("i%d", depth);
             String ref = String.format("res%d", depth);
 
-            
+            b.a(indent, "packet.write_u16(%d);", size);
             b.a(indent, "for (int %s=0; %s < %d; ++%s) {",   i, i, size, i);
             b.a(indent, "    auto &%s = %s(%s);",            ref, varReference, i);
             generateGetter(vt.getBaseType(), newIndent, depth+1, ref);
@@ -246,6 +260,7 @@ public class TcpCommunication {
             generateGetter(vt.getBaseType(), newIndent, depth+1, ref);
             b.a(indent, "    }"                                  );
             b.a(indent, "}"                                      );
+            throw new IllegalArgumentException("TODO write sizes?");
 
         }else if (type instanceof DynVectorType) {
             System.out.println("Unimplemented: DynVectorType get_port case.");
@@ -272,4 +287,91 @@ public class TcpCommunication {
     }
 
 
+
+
+
+    private void generateInitData(DataType type, int indent, int depth, String varReference) {
+        if (type instanceof BasicType){
+            BasicType t = (BasicType) type;
+            switch (t.getType()){
+                case Q: 
+                    b.a(indent, "%s = 0.0;", varReference);
+                    return;
+                case Z:
+                case N:
+                case N1:
+                    b.a(indent, "%s = 0;", varReference);
+                    return;
+                case C:
+                    b.a(indent, "%s = 0.0;", varReference);
+                    // TODO correct complex number native case
+                    throw new IllegalStateException("Unimplemented");
+                case BOOLEAN:
+                    b.a(indent, "%s = false;", varReference);
+                    return;
+                case EMPTY:
+                    return;
+                case VEC2:
+                    b.a(indent, "%s(0) = 0.0;", varReference);
+                    b.a(indent, "%s(1) = 0.0;", varReference);
+                    return;
+                case VEC3:
+                    b.a(indent, "%s(0) = 0.0;", varReference);
+                    b.a(indent, "%s(1) = 0.0;", varReference);
+                    b.a(indent, "%s(2) = 0.0;", varReference);
+                    return;
+                default:
+                throw new IllegalArgumentException("Missing case");
+            }
+        } else if (type instanceof VectorType) {
+            VectorType vt = (VectorType)type;
+            int newIndent = indent + 1;
+            int size = vt.getSize();
+            String iVar = String.format("i%d", depth);
+            String ref = String.format("res%d", depth);
+
+            b.a(indent, "for (int %s=0; %s < %d; ++%s) {",    iVar, iVar, size, iVar);
+            b.a(indent, "    auto &%s = %s(%s);",             ref, varReference, iVar);
+            generateInitData(vt.getBaseType(), newIndent, depth+1, ref);
+            b.a(indent, "}"                                  );
+            
+        } else if (type instanceof MatrixType) {
+            MatrixType vt = (MatrixType)type;
+            int newIndent = indent + 2;
+            int rows = vt.getRowCount();
+            int cols = vt.getColumnCount();
+            String i = String.format("i%d", depth);
+            String j = String.format("j%d", depth);
+            String ref = String.format("res%d", depth);
+
+            
+            b.a(indent, "for (int %s=0; %s < %d; ++%s) {",       i, i, rows, i);
+            b.a(indent, "    for (int %s=0; %s < %d; ++%s) {",   j, j, cols, j);
+            b.a(indent, "        auto &%s = %s(%s, %s);",        ref, varReference, i, j);
+            generateInitData(vt.getBaseType(), newIndent, depth+1, ref);
+            b.a(indent, "    }"                                  );
+            b.a(indent, "}"                                      );
+
+        } else if (type instanceof DynVectorType) {
+            System.out.println("Unimplemented: DynVectorType generateInitData case.");
+            //throw new IllegalArgumentException("Unimplemented");
+        } else if (type instanceof StructType) {
+            StructType st = (StructType)type;
+            int count = st.getFieldCount();
+
+            for (int i = 0; i < count; ++i){
+                String fieldName = st.getFieldName(i);
+                generateInitData(st.getFieldType(i), indent, depth+1, String.format("%s.%s", varReference, fieldName));
+            }
+        } else if (type instanceof EnumType) {
+            EnumType et = (EnumType)type;
+            
+            int variantCount = et.getVariantCount();
+            if (variantCount > 256) throw new IllegalArgumentException("Too much Enum variants for enum "+et.getName()+ " (TODO implement adaptive native type size)");
+
+            b.a(indent, "%s = static_cast<%s>(0);", et.getName());
+        } else {
+            throw new IllegalArgumentException("Missing case");
+        }
+    }
 }
