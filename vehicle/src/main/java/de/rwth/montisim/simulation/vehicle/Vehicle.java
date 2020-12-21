@@ -65,6 +65,7 @@ public class Vehicle extends SimulationObject implements Updatable, Destroyable,
         physicalValues.addPhysicalValue(new TrueCompass(physicalObject));
         physicalValues.addPhysicalValue(new TrueVelocity(physicalObject));
         physicalValues.addPhysicalValue(new TruePosition(physicalObject));
+        physicalValues.addPhysicalValue(new UpperSpeedLimit(physicalObject));
     }
 
     public static final String K_CONFIG = "config";
