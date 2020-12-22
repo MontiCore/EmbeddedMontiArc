@@ -96,7 +96,10 @@ public class SimplePacketType extends DataType {
     public Object fromBinary(DataInputStream is) throws IOException {
         Object res[] = new Object[2];
         short addrSize = is.readShort();
-        res[0] = new String(is.readNBytes(addrSize));
+        //res[0] = new String(is.readNBytes(addrSize));
+        byte bytes[] = new byte[addrSize];
+        for (int i = 0; i < addrSize; ++i) bytes[i] = is.readByte();
+        res[0] = new String(bytes);
         res[1] = payloadType.fromBinary(is);
         return res;
     }
