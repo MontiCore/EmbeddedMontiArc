@@ -9,6 +9,10 @@ import java.util.*;
 import de.rwth.montisim.commons.utils.*;
 import de.rwth.montisim.commons.utils.json.*;
 
+/**
+ * The associated object must be of the Java type specified in the 'Type' enum ('c' param).
+ * For native types, use the 'valueOf()' method to get the associated object, ex: Double.valueOf(2.0).
+ */
 @Typed(BasicType.TYPE)
 public class BasicType extends DataType {
     public static final String TYPE = "basic";
@@ -83,14 +87,14 @@ public class BasicType extends DataType {
     }
 
     @Override
-    public void toJson(JsonWriter j, Object o, SerializationContext context) throws SerializationException {
+    public void toJson(JsonWriter j, Object o, BuildContext context) throws SerializationException {
         if (o == null)
             return;
         Json.toJson(j, o, context);
     }
 
     @Override
-    public Object fromJson(JsonTraverser j, SerializationContext context) throws SerializationException {
+    public Object fromJson(JsonTraverser j, BuildContext context) throws SerializationException {
         if (base_type.c == null)
             return null;
         return Json.instantiateFromJson(j, base_type.c, context);

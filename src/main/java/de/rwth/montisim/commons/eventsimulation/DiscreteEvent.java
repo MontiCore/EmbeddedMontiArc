@@ -13,9 +13,12 @@ import java.util.List;
 public abstract class DiscreteEvent {
     protected EventTarget target;
     protected Instant time;
+	/// Might be set if the another event invalidated this one -> is then filtered out
+	public transient boolean invalid;
     public DiscreteEvent(EventTarget target, Instant time){
         this.target = target;
         this.time = time;
+        this.invalid = false;
     }
     protected DiscreteEvent(){
     }

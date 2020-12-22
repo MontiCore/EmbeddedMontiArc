@@ -2,7 +2,10 @@ package de.rwth.montisim.commons.physicalvalue;
 
 import java.util.HashMap;
 
-public class PhysicalValueRegistry {
+import de.rwth.montisim.commons.utils.BuildObject;
+
+public class PhysicalValueRegistry implements BuildObject {
+    public static final String CONTEXT_KEY = "physical_values";
     HashMap<String, PhysicalValue> physicalValues = new HashMap<>();
 
     /** Should only be for RESOLVING the physical values, not repeated access. */
@@ -15,5 +18,10 @@ public class PhysicalValueRegistry {
     public void addPhysicalValue(PhysicalValue value) {
         if (physicalValues.containsKey(value.name)) throw new IllegalArgumentException("Double register for PhysicalValue: "+value.name);
         physicalValues.put(value.name, value);
+    }
+
+    @Override
+    public String getKey() {
+        return CONTEXT_KEY;
     }
 }

@@ -6,6 +6,7 @@ import java.io.DataOutputStream;
 import java.io.IOException;
 import java.util.*;
 
+import de.rwth.montisim.commons.utils.BuildContext;
 import de.rwth.montisim.commons.utils.ParsingException;
 import de.rwth.montisim.commons.utils.json.*;
 import de.rwth.montisim.commons.utils.json.JsonTraverser.ValueType;
@@ -69,7 +70,7 @@ public class VectorType extends DataType {
     }
 
     @Override
-    public Object fromJson(JsonTraverser j, SerializationContext context) throws SerializationException {
+    public Object fromJson(JsonTraverser j, BuildContext context) throws SerializationException {
         Class<?> array_c = base_type.getArrayType();
         if (array_c == null)
             return null;
@@ -90,7 +91,7 @@ public class VectorType extends DataType {
     }
 
     @Override
-    public void toJson(JsonWriter j, Object o, SerializationContext context) throws SerializationException {
+    public void toJson(JsonWriter j, Object o, BuildContext context) throws SerializationException {
         if (o == null)
             return;
         Class<?> array_c = base_type.getArrayType();

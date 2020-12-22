@@ -6,13 +6,14 @@ import java.io.DataOutputStream;
 import java.io.IOException;
 import java.util.*;
 
+import de.rwth.montisim.commons.utils.BuildContext;
 import de.rwth.montisim.commons.utils.json.*;
 import de.rwth.montisim.commons.utils.json.JsonTraverser.ArrayIterable;
 import de.rwth.montisim.commons.utils.json.JsonTraverser.Entry;
 import de.rwth.montisim.commons.utils.json.JsonTraverser.ObjectIterable;
 
 /**
- * Represents a named Struct with named and typed field. The corresponding
+ * Represents a named Struct with named and typed field. The corresponding Java
  * object type must be an array of objects, in declaration order of the struct
  * fields. Each object in the array must respect the data format for the field
  * type. The serialization format for struct types is a JSON array with the
@@ -121,7 +122,7 @@ public class StructType extends DataType implements CustomJson {
     }
 
     @Override
-    public void toJson(JsonWriter j, Object o, SerializationContext context) throws SerializationException {
+    public void toJson(JsonWriter j, Object o, BuildContext context) throws SerializationException {
         Object arr[] = (Object[]) o;
         if (arr.length != field_types.size())
             throw new IllegalArgumentException("Struct data-object has wrong number of entries.");
@@ -133,7 +134,7 @@ public class StructType extends DataType implements CustomJson {
     }
 
     @Override
-    public Object fromJson(JsonTraverser j, SerializationContext context) throws SerializationException {
+    public Object fromJson(JsonTraverser j, BuildContext context) throws SerializationException {
         Object arr[] = new Object[field_types.size()];
         ArrayIterable it = j.streamArray();
         int i = 0;
@@ -148,7 +149,7 @@ public class StructType extends DataType implements CustomJson {
     }
 
     @Override
-    public void write(JsonWriter w, SerializationContext context) throws SerializationException {
+    public void write(JsonWriter w, BuildContext context) throws SerializationException {
         w.startObject();
         w.write("type", "struct");
         w.write("name", name);
@@ -165,7 +166,7 @@ public class StructType extends DataType implements CustomJson {
     }
 
     @Override
-    public void read(JsonTraverser t, ObjectIterable it, SerializationContext context) throws SerializationException {
+    public void read(JsonTraverser t, ObjectIterable it, BuildContext context) throws SerializationException {
         field_names.clear();
         field_types.clear();
         for (Entry e : it) {

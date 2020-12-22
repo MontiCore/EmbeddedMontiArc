@@ -5,12 +5,8 @@ import java.io.DataOutputStream;
 import java.io.IOException;
 import java.util.*;
 
-import de.rwth.montisim.commons.utils.json.Json;
-import de.rwth.montisim.commons.utils.json.JsonTraverser;
-import de.rwth.montisim.commons.utils.json.JsonWriter;
-import de.rwth.montisim.commons.utils.json.SerializationContext;
-import de.rwth.montisim.commons.utils.json.SerializationException;
-import de.rwth.montisim.commons.utils.json.Typed;
+import de.rwth.montisim.commons.utils.BuildContext;
+import de.rwth.montisim.commons.utils.json.*;
 
 /**
  * Represents a named Enum with named variants. The corresponding object type
@@ -80,12 +76,12 @@ public class EnumType extends DataType {
     }
 
     @Override
-    public void toJson(JsonWriter j, Object o, SerializationContext context) throws SerializationException {
+    public void toJson(JsonWriter j, Object o, BuildContext context) throws SerializationException {
         Json.toJson(j, o, context);
     }
 
     @Override
-    public Object fromJson(JsonTraverser j, SerializationContext context) throws SerializationException {
+    public Object fromJson(JsonTraverser j, BuildContext context) throws SerializationException {
         return Json.instantiateFromJson(j, String.class, context);
     }
 

@@ -24,7 +24,7 @@ public abstract class Json {
     protected Json() {
     }
 
-    public static String toFormattedJson(Object o, SerializationContext context) throws SerializationException {
+    public static String toFormattedJson(Object o, BuildContext context) throws SerializationException {
         JsonWriter w = new JsonWriter(true);
         Json.getTypeInfo(o.getClass()).writer.write(w, o, context);
         return w.getString();
@@ -34,7 +34,7 @@ public abstract class Json {
         return toFormattedJson(o, null);
     }
 
-    public static String toJson(Object o, SerializationContext context) throws SerializationException {
+    public static String toJson(Object o, BuildContext context) throws SerializationException {
         JsonWriter w = new JsonWriter(false);
         toJson(w, o, context);
         return w.getString();
@@ -44,11 +44,11 @@ public abstract class Json {
         return toJson(o, null);
     }
 
-    public static void toJson(JsonWriter w, Object o, SerializationContext context) throws SerializationException {
+    public static void toJson(JsonWriter w, Object o, BuildContext context) throws SerializationException {
         Json.getTypeInfo(o.getClass()).writer.write(w, o, context);
     }
 
-    public static <T> T instantiateFromJson(String json, Class<T> c, SerializationContext context)
+    public static <T> T instantiateFromJson(String json, Class<T> c, BuildContext context)
             throws SerializationException {
         JsonTraverser t = new JsonTraverser();
         try {
@@ -63,7 +63,7 @@ public abstract class Json {
         return instantiateFromJson(json, c, null);
     }
 
-    public static <T> T instantiateFromJson(File json, Class<T> c, SerializationContext context)
+    public static <T> T instantiateFromJson(File json, Class<T> c, BuildContext context)
             throws SerializationException {
         JsonTraverser t = new JsonTraverser();
         try {
@@ -78,7 +78,7 @@ public abstract class Json {
         return (T) instantiateFromJson(json, c, null);
     }
 
-    public static <T> T instantiateFromJson(JsonTraverser t, Class<T> c, SerializationContext context)
+    public static <T> T instantiateFromJson(JsonTraverser t, Class<T> c, BuildContext context)
             throws SerializationException {
         TypeInfo inf = getTypeInfo(c);
         if (inf.isGeneric)
@@ -95,7 +95,7 @@ public abstract class Json {
             if (!rType.equals(inf.type)) {
                 Class<?> subC = inf.subtypes.get(rType);
                 if (subC == null)
-                    t.unexpected(e);
+                    t.throwContextualParsingException("Unknown sub-type: "+rType);
                 return (T) registry.get(subC).instancer.instance(t, subC, it, context);
             }
         }
@@ -108,7 +108,7 @@ public abstract class Json {
         fromJson(json, o, null);
     }
 
-    public static void fromJson(String json, Object o, SerializationContext context) throws SerializationException {
+    public static void fromJson(String json, Object o, BuildContext context) throws SerializationException {
         JsonTraverser t = new JsonTraverser();
         try {
             t.init(json);
@@ -122,7 +122,7 @@ public abstract class Json {
         fromJson(json, o, null);
     }
 
-    public static void fromJson(File json, Object o, SerializationContext context) throws SerializationException {
+    public static void fromJson(File json, Object o, BuildContext context) throws SerializationException {
         JsonTraverser t = new JsonTraverser();
         try {
             t.init(json);
@@ -132,7 +132,7 @@ public abstract class Json {
         fromJson(t, o, context);
     }
 
-    public static void fromJson(JsonTraverser t, Object o, SerializationContext context) throws SerializationException {
+    public static void fromJson(JsonTraverser t, Object o, BuildContext context) throws SerializationException {
         Class<?> c = o.getClass();
         TypeInfo inf = getTypeInfo(c);
         if (inf.reader == null)
@@ -496,7 +496,7 @@ public abstract class Json {
         registry.put(c, TypeInfo.newTypeInfo(writer, instancer, reader, type));
     }
 
-    static void instanceField(JsonTraverser t, Object ob, FieldInfo f, SerializationContext c)
+    static void instanceField(JsonTraverser t, Object ob, FieldInfo f, BuildContext c)
             throws SerializationException {
         if (f.primitive) {
             PrimitiveReader pr = primitiveReaderRegistry.get(f.c);
@@ -524,7 +524,7 @@ public abstract class Json {
         }
     }
 
-    static void readField(JsonTraverser t, Object o, FieldInfo f, SerializationContext c)
+    static void readField(JsonTraverser t, Object o, FieldInfo f, BuildContext c)
             throws SerializationException {
         if (f.primitive) {
             PrimitiveReader pr = primitiveReaderRegistry.get(f.c);
@@ -706,15 +706,15 @@ public abstract class Json {
     }
 
     static public interface Writer {
-        void write(JsonWriter w, Object o, SerializationContext context) throws SerializationException;
+        void write(JsonWriter w, Object o, BuildContext context) throws SerializationException;
     }
 
     static public interface Instancer {
-        Object instance(JsonTraverser t, Class<?> c, ObjectIterable it, SerializationContext context) throws SerializationException;
+        Object instance(JsonTraverser t, Class<?> c, ObjectIterable it, BuildContext context) throws SerializationException;
     }
 
     static public interface Reader {
-        void read(JsonTraverser t, Object o, ObjectIterable it, SerializationContext context) throws SerializationException;
+        void read(JsonTraverser t, Object o, ObjectIterable it, BuildContext context) throws SerializationException;
     }
 
     static interface PrimitiveWriter {
@@ -726,12 +726,12 @@ public abstract class Json {
     }
 
     static interface GenericInstancer {
-        Object instance(JsonTraverser t, java.lang.reflect.Type[] generics, SerializationContext context) throws SerializationException;
+        Object instance(JsonTraverser t, java.lang.reflect.Type[] generics, BuildContext context) throws SerializationException;
     }
 
     static interface GenericReader {
         void read(JsonTraverser t, Object o, ObjectIterable it, java.lang.reflect.Type[] generics,
-                SerializationContext context) throws SerializationException;
+                BuildContext context) throws SerializationException;
     }
 
     static {

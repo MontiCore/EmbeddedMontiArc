@@ -7,11 +7,13 @@ import java.util.PriorityQueue;
 import de.rwth.montisim.commons.eventsimulation.exceptions.*;
 import de.rwth.montisim.commons.simulation.TimeUpdate;
 import de.rwth.montisim.commons.simulation.Updatable;
+import de.rwth.montisim.commons.utils.BuildObject;
 
 /**
  * Abstract class for a discrete event simulation based on scheduled events.
  */
-public class DiscreteEventSimulator implements Updatable {
+public class DiscreteEventSimulator implements Updatable, BuildObject {
+    public static final String CONTEXT_KEY = "event_simulator";
 
     /** Comparator for events. Sorts in ascending order of event time. */
 	private static final DiscreteEvent.DiscreteEventComparator listComparator = new DiscreteEvent.DiscreteEventComparator();
@@ -44,7 +46,8 @@ public class DiscreteEventSimulator implements Updatable {
 		//loop until eventList is empty or next event is in future (not isAfter)
 		while(!eventList.isEmpty() && !eventList.peek().getEventTime().isAfter(newTime.newTime)){
             cur = eventList.poll();
-            cur.target.process(cur);
+            if (!cur.invalid)
+                cur.target.process(cur);
 			this.simulationTime = cur.getEventTime();
         }
         this.simulationTime = newTime.newTime;
@@ -66,6 +69,11 @@ public class DiscreteEventSimulator implements Updatable {
     @Override
     public String toString() {
         return "DiscreteEventSimulator{" + "simTime=" + simulationTime + ", events=" + eventList+ '}';
+    }
+
+    @Override
+    public String getKey() {
+        return CONTEXT_KEY;
     }
 
 }

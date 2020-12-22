@@ -5,6 +5,7 @@ import java.util.Vector;
 import org.junit.Assert;
 import org.junit.Test;
 
+import de.rwth.montisim.commons.utils.BuildContext;
 import de.rwth.montisim.commons.utils.json.JsonTraverser.Entry;
 import de.rwth.montisim.commons.utils.json.JsonTraverser.ObjectIterable;
 
@@ -830,7 +831,7 @@ class CustomClass1 implements CustomJson {
     }
 
     @Override
-    public void write(JsonWriter w, SerializationContext context) {
+    public void write(JsonWriter w, BuildContext context) {
         w.startObject();
         w.write("o1 custom", o1);
         w.write("subelem", n1.c1.d1);
@@ -838,7 +839,7 @@ class CustomClass1 implements CustomJson {
     }
 
     @Override
-    public void read(JsonTraverser t, ObjectIterable it, SerializationContext context) {
+    public void read(JsonTraverser t, ObjectIterable it, BuildContext context) {
         if (it == null) it = t.streamObject();
         for (Entry e : it) {
             if (e.key.equals("o1 custom")) o1 = (int) t.getLong();

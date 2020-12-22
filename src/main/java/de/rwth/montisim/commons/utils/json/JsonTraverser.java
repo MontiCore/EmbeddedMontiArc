@@ -205,6 +205,9 @@ public class JsonTraverser {
         throw new ParsingException(data, pos, "Unexpected entry: "+e.key.getRawString());
     }
 
+    public void throwContextualParsingException(String msg) {
+        throw new ParsingException(data, pos, msg);
+    }
 
 
 

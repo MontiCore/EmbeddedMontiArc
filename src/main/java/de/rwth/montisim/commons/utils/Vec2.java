@@ -9,9 +9,7 @@ import de.rwth.montisim.commons.utils.json.*;
  */
 @JsonType(Type.ARRAY)
 public class Vec2 {
-    @JsonEntry
     public double x;
-    @JsonEntry
     public double y;
 
     public Vec2(double x, double y) {
