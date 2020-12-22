@@ -6,59 +6,78 @@ package de.rwth.montisim.hardware_emulator.computer;
 import java.time.Duration;
 import java.util.Vector;
 
-import de.rwth.montisim.commons.utils.json.Json;
+import de.rwth.montisim.commons.simulation.Destroyer;
+import de.rwth.montisim.commons.utils.BuildContext;
 import de.rwth.montisim.commons.utils.json.JsonEntry;
-import de.rwth.montisim.commons.utils.json.SerializationException;
 import de.rwth.montisim.commons.utils.json.Typed;
-import de.rwth.montisim.simulation.eesimulator.components.BusUserProperties;
-import de.rwth.montisim.simulation.eesimulator.components.EEComponentType;
-import de.rwth.montisim.simulation.eesimulator.components.EEEventProcessor;
+import de.rwth.montisim.simulation.eesimulator.EEComponent;
+import de.rwth.montisim.simulation.eesimulator.EEComponentProperties;
+import de.rwth.montisim.simulation.eesimulator.EEComponentType;
+import de.rwth.montisim.simulation.eesimulator.EESystem;
+import de.rwth.montisim.simulation.eesimulator.exceptions.EEMessageTypeException;
 
 @Typed(ComputerProperties.TYPE)
-public class ComputerProperties extends BusUserProperties {
+public class ComputerProperties extends EEComponentProperties {
     public static final String TYPE = "computer";
 
-    static {
-        Json.registerType(InstantTime.class);
-        Json.registerType(ConstantTime.class);
-        Json.registerType(HardwareTimeModel.class);
-    }
-
     public String software_name;
-    public EmulatorType emulator_type = EmulatorType.HARDWARE_EMULATOR;
-    public OS os = OS.AUTO;
+    public Backend backend = new HardwareEmulator();
     public TimeModel time_model = new ConstantTime();
+    // The maximum update speed at which the computer should run.
+    // (Will not run more than 'cycle_duration' even if the measured time is
+    // smaller.)
+    public Duration cycle_duration = Duration.ofMillis(20);
     public Vector<String> debug_flags = new Vector<>();
 
-    static public enum EmulatorType {
-        @JsonEntry("direct")
-        DIRECT, // No Emulator at all: the Autopilot library (DLL/SO/...) is loaded directly by
-                // the OS.
-        @JsonEntry("emu")
-        HARDWARE_EMULATOR // The Autopilot is loaded in a Virtual Computer (can load autopilots
-                          // cross-platform).
+    static public interface Backend {
     }
 
-    static public enum OS {
-        @JsonEntry("auto")
-        AUTO, // The Emulator tries to deduce the OS from the Autopilot.
-        @JsonEntry("windows")
-        WINDOWS, @JsonEntry("linux")
-        LINUX
+    // Runs through the hardware emulator library, but no emulator is used:
+    // the Autopilot library (DLL/SO/...) is loaded directly by the OS.
+    @Typed("direct")
+    static public class Direct implements Backend {
+
+    }
+
+    // The Autopilot is loaded in a Virtual Computer (can load autopilots
+    // cross-platform).
+    @Typed("emu")
+    static public class HardwareEmulator implements Backend {
+        static public enum OS {
+            @JsonEntry("auto")
+            AUTO, // The Emulator tries to deduce the OS from the Autopilot.
+            @JsonEntry("windows")
+            WINDOWS, @JsonEntry("linux")
+            LINUX
+        }
+
+        public OS os = OS.AUTO;
+    }
+
+    @Typed("tcp")
+    static public class TCP implements Backend {
+        public String host;
+        public int port;
+        public int ref_id = 0;
     }
 
     static public interface TimeModel {
     }
 
-    @Typed("instant")
-    static public class InstantTime implements TimeModel {
+    @Typed("measured")
+    static public class MeasuredTime implements TimeModel {
+    }
+
+    // An asynchronous mode (only TCP for now)
+    @Typed("realtime")
+    static public class Realtime implements TimeModel {
     }
 
     @Typed("constant")
     static public class ConstantTime implements TimeModel {
-        public Duration execution_time = Duration.ofMillis(100);
     }
 
+    // Only supported by the 'HardwareEmulator' backen in 'HARDWARE_EMULATOR' mode
     @Typed("models")
     static public class HardwareTimeModel implements TimeModel {
         public long cpu_frequency = 4000000000L;
@@ -129,11 +148,13 @@ public class ComputerProperties extends BusUserProperties {
         return TYPE;
     }
 
+
     @Override
-    public EEEventProcessor build(ComponentBuildContext context) {
+    public EEComponent build(EESystem eesystem, BuildContext context) throws EEMessageTypeException {
         try {
-            return new Computer(this, context.componentDestroyer);
-        } catch (HardwareEmulatorException | SerializationException e) {
+            Destroyer destroyer = context.getObject(EESystem.COMPONENT_DESTROYER_CONTEXT_KEY);
+            return new Computer(this, eesystem, destroyer);
+        } catch (Exception e) {
             e.printStackTrace();
             throw new IllegalArgumentException(e.getMessage());
         }

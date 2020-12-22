@@ -3,20 +3,6 @@
  */
 package de.rwth.montisim.hardware_emulator.vcg;
 
-import java.io.IOException;
-
-import de.rwth.montisim.commons.dynamicinterface.BasicType;
-import de.rwth.montisim.commons.dynamicinterface.DataType;
-import de.rwth.montisim.commons.dynamicinterface.MatrixType;
-import de.rwth.montisim.commons.dynamicinterface.PortInformation;
-import de.rwth.montisim.commons.dynamicinterface.ProgramInterface;
-import de.rwth.montisim.commons.dynamicinterface.StructType;
-import de.rwth.montisim.commons.dynamicinterface.VectorType;
-import de.rwth.montisim.commons.dynamicinterface.PortInformation.PortDirection;
-import de.rwth.montisim.commons.utils.Vec2;
-import de.rwth.montisim.commons.utils.Vec3;
-import de.rwth.montisim.hardware_emulator.vcg.VCG.ProgInterface;
-import de.rwth.montisim.hardware_emulator.vcg.VCGProperties.*;
 
 // public class DDCInterface {
 //     public static final int RUNNING_ENTRY = 0;

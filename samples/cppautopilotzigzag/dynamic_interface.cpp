@@ -10,20 +10,35 @@ JsonWriter writer;
 
 EXPORT const char* DI__get_interface() {
     return R"(
-    {
-        "version": "1.0.0",
-        "name": "cppautopilot",
-        "ports": [
-            { "name": "true_velocity", "type": {"type": "basic",  "base_type": "Q" }, "direction": "INPUT", "allows_multiple_inputs": false, "optional": false },
-            { "name": "true_position", "type": {"type": "basic",  "base_type": "vec2"   }, "direction": "INPUT", "allows_multiple_inputs": false, "optional": false },
-            { "name": "true_compass",  "type": {"type": "basic",  "base_type": "Q" }, "direction": "INPUT", "allows_multiple_inputs": false, "optional": false },
-            { "name": "trajectory_x",  "type": {"type": "vector", "base_type": {"type": "basic",  "base_type": "Q" }, "size": 10 }, "direction": "INPUT", "allows_multiple_inputs": false, "optional": false },
-            { "name": "trajectory_y",  "type": {"type": "vector", "base_type": {"type": "basic",  "base_type": "Q" }, "size": 10 }, "direction": "INPUT", "allows_multiple_inputs": false, "optional": false },
-            { "name": "set_steering",  "type": {"type": "basic",  "base_type": "Q" }, "direction": "OUTPUT", "allows_multiple_inputs": false, "optional": false },
-            { "name": "set_gas",       "type": {"type": "basic",  "base_type": "Q" }, "direction": "OUTPUT", "allows_multiple_inputs": false, "optional": false },
-            { "name": "set_braking",   "type": {"type": "basic",  "base_type": "Q" }, "direction": "OUTPUT", "allows_multiple_inputs": false, "optional": false }
-        ]
-    })";
+{
+"name": "cppautopilot",
+"version": "2.0",
+"ports": [{
+    "name": "true_velocity", "direction": "INPUT",
+    "data_type": { "type": "basic", "base_type": "Q" }
+},{
+    "name": "true_position", "direction": "INPUT",
+    "data_type": { "type": "basic", "base_type": "vec2" }
+},{
+    "name": "true_compass", "direction": "INPUT",
+    "data_type": { "type": "basic", "base_type": "Q" }
+},{
+    "name": "trajectory_x", "direction": "INPUT",
+    "data_type": { "type": "vector", "base_type": { "type": "basic", "base_type": "Q" }, "size": 10 }
+},{
+    "name": "trajectory_y", "direction": "INPUT",
+    "data_type": { "type": "vector", "base_type": { "type": "basic", "base_type": "Q" }, "size": 10 }
+},{
+    "name": "set_steering", "direction": "OUTPUT",
+    "data_type": { "type": "basic", "base_type": "Q" }
+},{
+    "name": "set_gas", "direction": "OUTPUT",
+    "data_type": { "type": "basic", "base_type": "Q" }
+},{
+    "name": "set_braking", "direction": "OUTPUT",
+    "data_type": { "type": "basic", "base_type": "Q" }
+}]
+})";
 }
 EXPORT void DI__set_port(int i, const char* data) {
     JsonTraverser traverser;
@@ -107,8 +122,6 @@ EXPORT const char* DI__get_port(int i) {
 
 // Methods
 EXPORT void DI__init() {
-    autopilot.trajectory_x.resize(128);
-    autopilot.trajectory_y.resize(128);
     writer.format = true;
     autopilot.init();
 }

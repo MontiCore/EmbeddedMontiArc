@@ -7,6 +7,7 @@
 #include "direct_software_simulator.h"
 #include "utility/config.h"
 #include <thread>
+#include <clocale>
 
 SoftwareSimulatorManager SoftwareSimulatorManager::instance;
 
@@ -16,6 +17,7 @@ SoftwareSimulatorManager::SoftwareSimulatorManager()
     softwares_folder = FS::current_directory();
     available_threads = std::thread::hardware_concurrency();
     simulator_count = 0;
+    setlocale(LC_ALL, "C");
 }
 
 void SoftwareSimulatorManager::init(const json& config) {
@@ -54,7 +56,11 @@ void SoftwareSimulatorManager::init(const json& config) {
 
 int SoftwareSimulatorManager::alloc_simulator( const json& config) {
     std::unique_ptr<SoftwareSimulator> simulator;
-    std::string simulator_mode = config["emulator_type"].get<std::string>();
+    if (!config.contains("backend")) throw_error("SoftwareSimulatorManager: Missing 'backend' entry in config.");
+    auto backend = config["backend"];
+    if (!backend.is_object()) throw_error("SoftwareSimulatorManager: 'backend' is not a JSON object.");
+    if (!backend.contains("type")) throw_error("SoftwareSimulatorManager: 'backend' config has no 'type' entry.");
+    std::string simulator_mode = backend["type"].get<std::string>();
     
     //Check simulator mode
     if (simulator_mode.compare("direct") == 0) {

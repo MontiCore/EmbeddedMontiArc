@@ -14,6 +14,8 @@ void Autopilot::init() {
     true_position.y = 0;
     true_compass = 0;
     speed_pid = PID(1, 0, 0.2);
+    trajectory_x.resize(10);
+    trajectory_y.resize(10);
 }
 // Simple Zig-Zag at TARGET_VELOCITY
 void Autopilot::execute(double delta_sec) {
@@ -25,6 +27,7 @@ void Autopilot::execute(double delta_sec) {
 
     // Turn in zig-zags
     set_steering = sin(time)*20;
+    set_braking = 0.0;
 
     time += delta_sec;
 }

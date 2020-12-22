@@ -798,7 +798,7 @@ struct MeanAvgCollector {
 struct PrecisionTimer {
     using HRClock = std::chrono::high_resolution_clock;
     using TimePoint = HRClock::time_point;
-    static inline ulong time_delta(TimePoint start, TimePoint end) {
+    static inline ulong time_delta_microsec(TimePoint start, TimePoint end) {
         return std::chrono::duration_cast<std::chrono::microseconds>(end - start).count();
     }
     static std::string microsecondTimeToString(ulong time) {
@@ -821,7 +821,7 @@ public:
     }
     //Returns timer delta in microseconds
     inline long getDelta() {
-        return (long)time_delta(m_start, m_end);
+        return (long)time_delta_microsec(m_start, m_end);
     }
     std::string print(std::string tab = std::string()) {
         return microsecondTimeToString(getDelta());

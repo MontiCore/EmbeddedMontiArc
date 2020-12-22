@@ -227,7 +227,7 @@ void Segment::init_point(const vec2f64& position, const vec2f64& vehicle_pos){
     this->dir = normalize(-rel_pos);
     this->proj_pos_end = rel_pos.length();
 
-    double n = nan(nullptr);
+    double n = std::numeric_limits<double>::quiet_NaN();
     this->end = vec2f64(n);
     this->length = 0;
     this->dist = 0;

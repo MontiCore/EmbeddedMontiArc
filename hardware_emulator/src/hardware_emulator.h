@@ -69,6 +69,7 @@ struct HardwareEmulator : public SoftwareSimulator {
     bool debug_time = false;
 
     ulong timer_start;
+    PrecisionTimer timer;
     
     //True when virtual computer still running in virtual time
     bool computing() {

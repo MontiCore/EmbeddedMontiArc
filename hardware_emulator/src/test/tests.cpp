@@ -254,13 +254,13 @@ void test_autopilot(const char* config_str){
 
 
     prog.set_port(0, "5.6");
-    prog.set_port(1, "[0,0]");
-    prog.set_port(2, "0");
+    prog.set_port(1, "[0.0,0.0]");
+    prog.set_port(2, "0.0");
     // computer.debug.d_code = true;
     // computer.debug.d_mem = true;
     // computer.debug.d_reg_update = true;
-    prog.set_port(3, "[0,1,2]");
-    prog.set_port(4, "[0,0,-1]");
+    prog.set_port(3, "[3,0.0,1.0,2.0]");
+    prog.set_port(4, "[3,0.0,0.0,-1.0]");
 
     prog.execute(0.1);
 
@@ -278,9 +278,59 @@ void test_autopilot(const char* config_str){
 void test_autopilot_native() {
     test_autopilot(R"(
     {
-        "software_name": "cppautopilotzigzag",
-        "emulator_type": "direct"
-    }
+  "type": "computer",
+  "name": "UnnamedComponent",
+  "connected_to": [],
+  "priority": {},
+  "software_name": "cppautopilotzigzag",
+  "backend": {
+    "type": "direct"
+  },
+  "time_model": {
+    "type": "models",
+    "cpu_frequency": 4000000000,
+    "memory_frequency": 2500000000,
+    "caches": [
+      {
+        "type": "I",
+        "level": 1,
+        "size": 262144,
+        "read_ticks": 4,
+        "write_ticks": 4,
+        "line_length": 64
+      },
+      {
+        "type": "D",
+        "level": 1,
+        "size": 262144,
+        "read_ticks": 4,
+        "write_ticks": 4,
+        "line_length": 64
+      },
+      {
+        "type": "shared",
+        "level": 2,
+        "size": 2097152,
+        "read_ticks": 6,
+        "write_ticks": 6,
+        "line_length": 64
+      },
+      {
+        "type": "shared",
+        "level": 3,
+        "size": 12582912,
+        "read_ticks": 40,
+        "write_ticks": 40,
+        "line_length": 64
+      }
+    ]
+  },
+  "cycle_duration": [
+    0,
+    20000000
+  ],
+  "debug_flags": []
+}
     )");
 }
 
@@ -288,8 +338,10 @@ void test_autopilot_emu_windows() {
     test_autopilot(R"(
     {
         "software_name": "cppautopilotzigzag",
-        "emulator_type": "emu",
-        "os": "windows",
+        "backend": {
+            "type": "emu",
+            "os": "windows"
+        },
         "time_model": {
             "type": "models",
             "cpu_frequency": 4000000000,
@@ -301,29 +353,67 @@ void test_autopilot_emu_windows() {
                 {"type": "shared", "level": 3, "size": 12582912, "read_ticks": 40, "write_ticks": 40}
             ]
         },
-        "debug_flags": ["d_unsupported_syscalls"]
+        "debug_flags": ["p_unsupported_syscalls"]
     }
     )");
 }
 void test_autopilot_emu_linux() {
     test_autopilot(R"(
     {
-        "software_name": "cppautopilotzigzag",
-        "emulator_type": "emu",
-        "os": "linux",
-        "time_model": {
-            "type": "models",
-            "cpu_frequency": 4000000000,
-            "memory_frequency": 2500000000,
-            "caches": [
-                {"type": "I", "level": 1, "size": 262144, "read_ticks": 4, "write_ticks": 4},
-                {"type": "D", "level": 1, "size": 262144, "read_ticks": 4, "write_ticks": 4},
-                {"type": "shared", "level": 2, "size": 2097152, "read_ticks": 6, "write_ticks": 6},
-                {"type": "shared", "level": 3, "size": 12582912, "read_ticks": 40, "write_ticks": 40}
-            ]
-        },
-        "debug_flags": ["d_unsupported_syscalls"]
-    }
+  "type": "computer",
+  "name": "UnnamedComponent",
+  "connected_to": [],
+  "priority": {},
+  "software_name": "cppautopilotzigzag",
+  "backend": {
+    "type": "emu",
+    "os": "linux"
+  },
+  "time_model": {
+    "type": "models",
+    "cpu_frequency": 4000000000,
+    "memory_frequency": 2500000000,
+    "caches": [
+      {
+        "type": "I",
+        "level": 1,
+        "size": 262144,
+        "read_ticks": 4,
+        "write_ticks": 4,
+        "line_length": 64
+      },
+      {
+        "type": "D",
+        "level": 1,
+        "size": 262144,
+        "read_ticks": 4,
+        "write_ticks": 4,
+        "line_length": 64
+      },
+      {
+        "type": "shared",
+        "level": 2,
+        "size": 2097152,
+        "read_ticks": 6,
+        "write_ticks": 6,
+        "line_length": 64
+      },
+      {
+        "type": "shared",
+        "level": 3,
+        "size": 12582912,
+        "read_ticks": 40,
+        "write_ticks": 40,
+        "line_length": 64
+      }
+    ]
+  },
+  "cycle_duration": [
+    0,
+    20000000
+  ],
+  "debug_flags": []
+}
     )");
 }
 

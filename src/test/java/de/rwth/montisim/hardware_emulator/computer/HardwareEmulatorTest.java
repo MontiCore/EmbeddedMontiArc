@@ -7,75 +7,75 @@ import java.util.logging.Logger;
 
 import org.junit.Test;
 
+import de.rwth.montisim.commons.utils.Vec2;
+import de.rwth.montisim.commons.utils.json.Json;
 import de.rwth.montisim.hardware_emulator.CppBridge;
+import de.rwth.montisim.hardware_emulator.TypedHardwareEmu;
+import de.rwth.montisim.hardware_emulator.computer.ComputerProperties.HardwareTimeModel;
+import de.rwth.montisim.hardware_emulator.computer.ComputerProperties.HardwareEmulator.OS;
 
 public class HardwareEmulatorTest {
+    static {
+        TypedHardwareEmu.registerTypedHardwareEmu();
+    }
 
     @Test
     public void native_test() throws Exception {
-        test_software("{"+
-            "\"software_name\": \"autopilots/cppautopilot\","+
-            "\"emulator_type\": \"direct\"" +
-        "}");
+        ComputerProperties config = new ComputerProperties();
+        config.software_name = "autopilots/cppautopilot";
+        //config.software_name = "src/test/resources/autopilots/cppautopilot";
+        config.backend = new ComputerProperties.Direct();
+        config.time_model = new HardwareTimeModel();
+        test_software(config);
     }
 
     @Test
     public void emu_test_windows() throws Exception {
-        test_software("{" +
-            "\"software_name\": \"autopilots/cppautopilot\"," +
-            "\"emulator_type\": \"emu\"," +
-            "\"os\": \"windows\"," +
-            "\"time_model\": {" +
-                "\"type\": \"models\"," +
-                "\"cpu_frequency\": 4000000000," +
-                "\"memory_frequency\": 2500000000," +
-                "\"caches\": [" +
-                    "{\"type\": \"I\", \"level\": 1, \"size\": 262144, \"read_ticks\": 4, \"write_ticks\": 4}," +
-                    "{\"type\": \"D\", \"level\": 1, \"size\": 262144, \"read_ticks\": 4, \"write_ticks\": 4}," +
-                    "{\"type\": \"shared\", \"level\": 2, \"size\": 2097152, \"read_ticks\": 6, \"write_ticks\": 6}," +
-                    "{\"type\": \"shared\", \"level\": 3, \"size\": 12582912, \"read_ticks\": 40, \"write_ticks\": 40}" +
-                "]" +
-            "}" +
-        "}");
+        ComputerProperties config = new ComputerProperties();
+        config.software_name = "autopilots/cppautopilot";
+        ComputerProperties.HardwareEmulator backend = new ComputerProperties.HardwareEmulator();
+        backend.os = OS.WINDOWS;
+        config.backend = backend;
+        config.time_model = new HardwareTimeModel();
+        test_software(config);
     }
 
     @Test
     public void emu_test_linux() throws Exception {
-        test_software("{" +
-            "\"software_name\": \"autopilots/cppautopilot\"," +
-            "\"emulator_type\": \"emu\"," +
-            "\"os\": \"linux\"," +
-            "\"time_model\": {" +
-                "\"type\": \"models\"," +
-                "\"cpu_frequency\": 4000000000," +
-                "\"memory_frequency\": 2500000000," +
-                "\"caches\": [" +
-                    "{\"type\": \"I\", \"level\": 1, \"size\": 262144, \"read_ticks\": 4, \"write_ticks\": 4}," +
-                    "{\"type\": \"D\", \"level\": 1, \"size\": 262144, \"read_ticks\": 4, \"write_ticks\": 4}," +
-                    "{\"type\": \"shared\", \"level\": 2, \"size\": 2097152, \"read_ticks\": 6, \"write_ticks\": 6}," +
-                    "{\"type\": \"shared\", \"level\": 3, \"size\": 12582912, \"read_ticks\": 40, \"write_ticks\": 40}" +
-                "]" +
-            "}" +
-        "}");
+        ComputerProperties config = new ComputerProperties();
+        config.software_name = "autopilots/cppautopilot";
+        ComputerProperties.HardwareEmulator backend = new ComputerProperties.HardwareEmulator();
+        backend.os = OS.LINUX;
+        config.backend = backend;
+        config.time_model = new HardwareTimeModel();
+        config.debug_flags.add("p_syscalls");
+        config.debug_flags.add("p_unsupported_syscalls");
+        config.debug_flags.add("p_call");
+        test_software(config);
     }
 
-    private void test_software(String config) throws Exception {
+    private void test_software(ComputerProperties config) throws Exception {
         CppBridge.init("{}");
-        int id = CppBridge.allocSimulator(config);
-        CppBridge.setPort(id, 0, "5.6");
-        CppBridge.setPort(id, 1, "[0,0]");
-        CppBridge.setPort(id, 2, "0");
-        CppBridge.setPort(id, 3, "[0,1,2]");
-        CppBridge.setPort(id, 4, "[0,0,-1]");
 
-        CppBridge.execute(id, 0.1);
+        //System.out.println(Json.toFormattedJson(config));
 
-        String steering = CppBridge.getPort(id, 5);
-        String gas = CppBridge.getPort(id, 6);
-        String brakes = CppBridge.getPort(id, 7);
+        HardwareEmulatorBackend backend = new HardwareEmulatorBackend(config);
+        Object portData[] = new Object[backend.getInterface().ports.size()];
+        portData[0] = Double.valueOf(5.6);
+        portData[1] = new Vec2(0,0);
+        portData[2] = Double.valueOf(0);
+        portData[3] = new double[]{0,1,2};
+        portData[4] = new double[]{0,0,-1};
+
+        backend.measuredCycle(portData, 0.1);
+
+        Double steering = (Double)portData[5];
+        Double gas = (Double)portData[6];
+        Double brakes = (Double)portData[7];
 
         Logger.getGlobal().info("Result (raw strings): [gas=" + gas + ", steering=" + steering + ", brakes=" + brakes + "]");
 
-        Logger.getGlobal().info("Result (parsed):      [gas=" + Double.parseDouble(gas) + ", steering=" + Double.parseDouble(steering) + ", brakes=" + Double.parseDouble(brakes) + "]");
+        Logger.getGlobal().info("Result (parsed):      [gas=" + gas + ", steering=" + steering + ", brakes=" + brakes + "]");
+        backend.clean();
     }
 }
