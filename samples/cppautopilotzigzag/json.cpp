@@ -355,7 +355,7 @@ double JsonTraverser::get_double() {
     } else if (current_type == ValueType::STRING) {
         auto s = get_string();
         if (s.equals("NaN"))
-            return nan(nullptr);
+            return std::numeric_limits<double>::quiet_NaN();
         if (s.equals("-Infinity"))
             return -std::numeric_limits<double>::infinity();
         if (s.equals("Infinity"))

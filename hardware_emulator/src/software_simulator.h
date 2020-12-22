@@ -13,7 +13,7 @@ struct SoftwareSimulatorManager;
 
 
 enum class TimeModel {
-    INSTANT,
+    MEASURED,
     CONSTANT,
     TIME_MODELS
 };
@@ -44,7 +44,7 @@ struct SoftwareSimulator {
     
     virtual ~SoftwareSimulator() {}
 protected:
-    TimeModel time_model = TimeModel::INSTANT;
+    TimeModel time_model = TimeModel::CONSTANT;
     ulong const_time = 0;
     
     FS::File software_path;

@@ -79,11 +79,8 @@ void HardwareEmulator::init_simulator(const json& config, const FS::Directory& s
         if (time_model_config.is_object()) {
             std::string type;
             if (json_get(time_model_config, "type", type)) {
-                if (type.compare("instant") == 0) time_model = TimeModel::INSTANT;
-                else if (type.compare("constant") == 0) {
-                    time_model = TimeModel::CONSTANT;
-                    json_get(time_model_config, "execution_time", const_time);
-                }
+                if (type.compare("measured") == 0) time_model = TimeModel::MEASURED;
+                else if (type.compare("constant") == 0) time_model = TimeModel::CONSTANT;
                 else if (type.compare("models") == 0) {
                     time_model = TimeModel::TIME_MODELS;
                     ulong cpu_f, mem_f;
@@ -95,8 +92,9 @@ void HardwareEmulator::init_simulator(const json& config, const FS::Directory& s
             }
         }
     }
-    
-    json_get(config, "os", os_name);
+
+    auto backend = config["backend"];
+    json_get(backend, "os", os_name);
     
     //Validate configuration and set up the computer.
     
@@ -171,12 +169,23 @@ void HardwareEmulator::resolve_autopilot_os( const FS::Directory& software_folde
 
 void HardwareEmulator::start_timer()
 {
-    timer_start = computer.time.micro_time;
+    if (time_model == TimeModel::MEASURED) {
+        timer.start();
+    }
+    else {
+        timer_start = computer.time.micro_time;
+    }
 }
 
 ulong HardwareEmulator::get_timer_micro()
 {
-    return computer.time.micro_time - timer_start;
+    if (time_model == TimeModel::MEASURED) {
+        timer.end();
+        return timer.getDelta();
+    }
+    else {
+        return computer.time.micro_time - timer_start;
+    }
 }
 
 void HardwareEmulator::parse_flags(const json& config) {
@@ -199,14 +208,14 @@ void HardwareEmulator::parse_flags(const json& config) {
             Log::err << Log::tag << "Invalid flag: " << e.dump() << "\n";
         }
         auto flag = e.get<std::string>();
-        if (flag.compare("d_mem") == 0) computer.debug.d_mem = true;
-        else if (flag.compare("d_regs") == 0) computer.debug.d_regs = true;
-        else if (flag.compare("d_reg_update") == 0) computer.debug.d_reg_update = true;
-        else if (flag.compare("d_syscalls") == 0) computer.debug.d_syscalls = true;
-        else if (flag.compare("d_unsupported_syscalls") == 0) computer.debug.d_unsupported_syscalls = true;
-        else if (flag.compare("d_code") == 0) computer.debug.d_code = true;
-        else if (flag.compare("d_call") == 0) computer.debug.d_call = true;
-        else if (flag.compare("d_time") == 0) debug_time = true;
+        if (flag.compare("p_mem") == 0) computer.debug.d_mem = true;
+        else if (flag.compare("p_regs") == 0) computer.debug.d_regs = true;
+        else if (flag.compare("p_reg_update") == 0) computer.debug.d_reg_update = true;
+        else if (flag.compare("p_syscalls") == 0) computer.debug.d_syscalls = true;
+        else if (flag.compare("p_unsupported_syscalls") == 0) computer.debug.d_unsupported_syscalls = true;
+        else if (flag.compare("p_code") == 0) computer.debug.d_code = true;
+        else if (flag.compare("p_call") == 0) computer.debug.d_call = true;
+        else if (flag.compare("p_time") == 0) debug_time = true;
         else Log::err << Log::tag << "Unknown flag: " << flag << "\n";
     }
 }

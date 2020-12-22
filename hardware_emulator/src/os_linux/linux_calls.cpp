@@ -192,7 +192,7 @@ bool LinuxCalls::strtod( Computer &computer ) {
     auto str = computer.func_call->get_param1_64();
     auto endptr = computer.func_call->get_param2_64();
     if (str == 0){
-        computer.func_call->set_return_double(std::nan(nullptr));
+        computer.func_call->set_return_double(std::numeric_limits<double>::quiet_NaN());
         return true;
     }
     auto str_read = computer.memory.read_str(str);

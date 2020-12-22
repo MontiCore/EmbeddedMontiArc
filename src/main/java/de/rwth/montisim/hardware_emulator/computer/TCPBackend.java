@@ -1,26 +1,22 @@
 /**
  * (c) https://github.com/MontiCore/monticore
  */
-package de.rwth.montisim.hardware_emulator.vcg;
+package de.rwth.montisim.hardware_emulator.computer;
 
 import java.time.Duration;
 import java.io.*;
 import java.net.*;
 
-import de.rwth.montisim.commons.dynamicinterface.BasicType;
-import de.rwth.montisim.commons.dynamicinterface.MatrixType;
-import de.rwth.montisim.commons.dynamicinterface.PortInformation;
-import de.rwth.montisim.commons.dynamicinterface.ProgramInterface;
-import de.rwth.montisim.commons.dynamicinterface.StructType;
-import de.rwth.montisim.commons.dynamicinterface.VectorType;
+import de.rwth.montisim.commons.dynamicinterface.*;
 import de.rwth.montisim.commons.dynamicinterface.PortInformation.PortDirection;
-import de.rwth.montisim.commons.utils.Time;
-import de.rwth.montisim.commons.utils.Vec2;
+import de.rwth.montisim.commons.utils.*;
 import de.rwth.montisim.commons.utils.json.Json;
-import de.rwth.montisim.hardware_emulator.vcg.VCGProperties.TCP;
-import de.rwth.montisim.hardware_emulator.vcg.VCGProperties.TimeMode;
+import de.rwth.montisim.hardware_emulator.TypedHardwareEmu;
+import de.rwth.montisim.hardware_emulator.computer.ComputerProperties.*;
 
-public class TCPClient implements CommunicationInterface {
+public class TCPBackend implements ComputerBackend {
+    public static final String TIME_MODE_REALTIME = "realtime";
+    public static final String TIME_MODE_MEASURED = "measured";
     public static final int PACKET_END = 0; // The simulator is closing the connection after
     public static final int PACKET_ERROR = 1; // As payload: An error message
     public static final int PACKET_INIT = 2; // As payload: TimeMode string ("measured" or "realtime")
@@ -37,17 +33,14 @@ public class TCPClient implements CommunicationInterface {
 
     // Small main() to test the protocol
     public static void main(String[] args) throws Exception {
-        Json.registerType(VectorType.class);
-        Json.registerType(BasicType.class);
-        Json.registerType(MatrixType.class);
-        Json.registerType(StructType.class);
+        TypedHardwareEmu.registerTypedHardwareEmu();
 
         TCP tcp = new TCP();
         tcp.host = "::1";
         tcp.port = 4567;
-        TCPClient client = new TCPClient(tcp);
+        TCPBackend client = new TCPBackend(tcp, new MeasuredTime());
 
-        ProgramInterface interf = client.init(TimeMode.MEASURED, 4000);
+        ProgramInterface interf = client.getInterface();
 
         Object[] data = new Object[interf.ports.size()];
         data[0] = 0.0;
@@ -87,12 +80,19 @@ public class TCPClient implements CommunicationInterface {
 
     ProgramInterface interf;
 
-    public TCPClient(TCP tcpProperties) {
+    public TCPBackend(TCP tcpProperties, TimeModel timeModel) throws Exception {
         this.tcpProperties = tcpProperties;
-    }
-
-    @Override
-    public ProgramInterface init(TimeMode timeMode, int ref_id) throws Exception {
+        
+        String timeMode;
+        
+        if (timeModel instanceof MeasuredTime || timeModel instanceof ConstantTime) {
+            timeMode = TIME_MODE_MEASURED;
+        } else if (timeModel instanceof Realtime) {
+            timeMode = TIME_MODE_REALTIME;
+        } else if (timeModel instanceof HardwareTimeModel) {
+            throw new IllegalArgumentException("The TCPBackend does not support the HardwareTimeModel.");
+        } else throw new IllegalArgumentException("Unknown TimeMode");
+        
         cs = new Socket(tcpProperties.host, tcpProperties.port);
         System.out.println("VCG: started TCPClient with host " + tcpProperties.host + " on port "
                 + Integer.toString(tcpProperties.port));
@@ -102,21 +102,26 @@ public class TCPClient implements CommunicationInterface {
 
         // Send Init packet
         // System.out.println("Sending INIT packet");
-        sendPacket(PACKET_INIT, timeMode.name().toLowerCase());
-        sendPacket(PACKET_REF_ID, ref_id);
+        sendPacket(PACKET_INIT, timeMode);
+        sendPacket(PACKET_REF_ID, tcpProperties.ref_id);
 
         // Get "ProgramInterface" packet
         // System.out.println("Waiting for INTERFACE packet");
         Packet p = getPacket();
         switch (p.id) {
             case PACKET_ERROR:
-                throw new Exception("Error on VCG: " + new String(p.data));
+                throw new IllegalStateException("Error on VCG: " + new String(p.data));
             case PACKET_INTERFACE:
                 this.interf = Json.instantiateFromJson(new String(p.data), ProgramInterface.class);
-                return this.interf;
+                break;
             default:
-                throw new Exception("Unexpected packet with id=" + p.id);
+                throw new IllegalStateException("Unexpected packet with id=" + p.id);
         }
+    }
+    
+    @Override
+    public ProgramInterface getInterface() {
+        return this.interf;
     }
 
     private void sendInputPacket(int portId, byte[] bytes) throws IOException {
@@ -175,11 +180,6 @@ public class TCPClient implements CommunicationInterface {
         return new Packet(id, data);
     }
 
-    @Override
-    public boolean isAlive() {
-        // TODO Auto-generated method stub
-        return false;
-    }
 
     @Override
     public Duration measuredCycle(Object[] portData, double deltaSec) throws IOException {
@@ -190,7 +190,7 @@ public class TCPClient implements CommunicationInterface {
                 // System.out.println("Sending INPUT for "+port.name +": "+portData[i]);
                 ByteArrayOutputStream os = new ByteArrayOutputStream();
                 DataOutputStream os2 = new DataOutputStream(os);
-                port.type.toBinary(os2, portData[i]);
+                port.data_type.toBinary(os2, portData[i]);
                 sendInputPacket(i, os.toByteArray());
             }
             ++i;
@@ -217,7 +217,7 @@ public class TCPClient implements CommunicationInterface {
                     if (port.direction != PortDirection.OUTPUT)
                         throw new IllegalArgumentException(
                                 "Received output packet for port " + port.name + " (but it is an INPUT port)");
-                    portData[portId] = port.type.fromBinary(is);
+                    portData[portId] = port.data_type.fromBinary(is);
                     break;
                 default:
                     throw new IllegalArgumentException("Unexpected packet with id=" + p.id);
@@ -243,7 +243,7 @@ public class TCPClient implements CommunicationInterface {
     }
 
     @Override
-    public void close() {
+    public void destroy() {
         try {
             sendPacket(PACKET_END);
             if (cs != null) cs.close();
@@ -252,4 +252,5 @@ public class TCPClient implements CommunicationInterface {
             e.printStackTrace();
         }
     }
+
 }
