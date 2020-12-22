@@ -1,5 +1,7 @@
 package de.rwth.montisim.simulation.vehicle.task.metric;
 
+import java.util.Optional;
+
 import de.rwth.montisim.commons.utils.Comparator;
 import de.rwth.montisim.commons.utils.json.Typed;
 import de.rwth.montisim.simulation.environment.osmmap.OsmMap;
@@ -41,7 +43,7 @@ public class MetricGoalProperties extends GoalProperties {
     }
 
     @Override
-    public MetricGoal build(Vehicle vehicle, OsmMap map, World world) {
+    public MetricGoal build(Vehicle vehicle, Optional<OsmMap> map, Optional<World> world) {
         return new MetricGoal(this, vehicle);
     }
 

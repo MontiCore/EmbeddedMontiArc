@@ -1,5 +1,7 @@
 package de.rwth.montisim.simulation.vehicle.task;
 
+import java.util.Optional;
+
 import de.rwth.montisim.commons.utils.LTLOperator;
 import de.rwth.montisim.simulation.environment.osmmap.OsmMap;
 import de.rwth.montisim.simulation.environment.world.World;
@@ -30,5 +32,5 @@ public abstract class GoalProperties {
         return this;
     }
 
-    public abstract Goal build(Vehicle vehicle, OsmMap map, World world);
+    public abstract Goal build(Vehicle vehicle, Optional<OsmMap> map, Optional<World> world);
 }

@@ -3,13 +3,19 @@ package de.rwth.montisim.simulation.eesimulator.sensor;
 
 import java.time.Duration;
 
+import de.rwth.montisim.commons.physicalvalue.PhysicalValue;
+import de.rwth.montisim.commons.physicalvalue.PhysicalValueRegistry;
+import de.rwth.montisim.commons.simulation.Updater;
+import de.rwth.montisim.commons.utils.BuildContext;
 import de.rwth.montisim.commons.utils.json.Typed;
-import de.rwth.montisim.simulation.eesimulator.components.BusUserProperties;
-import de.rwth.montisim.simulation.eesimulator.components.EEComponentType;
-import de.rwth.montisim.simulation.eesimulator.components.EEEventProcessor;
+import de.rwth.montisim.simulation.eesimulator.EESystem;
+import de.rwth.montisim.simulation.eesimulator.EEComponentProperties;
+import de.rwth.montisim.simulation.eesimulator.EEComponentType;
+import de.rwth.montisim.simulation.eesimulator.exceptions.EEMessageTypeException;
+import de.rwth.montisim.simulation.eesimulator.EEComponent;
 
 @Typed(SensorProperties.TYPE)
-public class SensorProperties extends BusUserProperties {
+public class SensorProperties extends EEComponentProperties {
     public static final String TYPE = "sensor";
 
     public String physical_value_name;
@@ -24,16 +30,12 @@ public class SensorProperties extends BusUserProperties {
         this.send_only_changed = sendOnlyChanged;
     }
 
-    protected SensorProperties() {
+    public SensorProperties() {
         this.update_interval = Duration.ofMillis(100);
         this.read_time = Duration.ofMillis(10);
         this.send_only_changed = false;
     }
 
-    public SensorProperties setName(String name) {
-        this.name = name;
-        return this;
-    }
 
     public SensorProperties setPhysicalValueName(String physicalValueName) {
         this.physical_value_name = physicalValueName;
@@ -66,7 +68,10 @@ public class SensorProperties extends BusUserProperties {
     }
 
     @Override
-    public EEEventProcessor build(ComponentBuildContext context) {
-        return new Sensor(this, context.physicalValues.getPhysicalValue(physical_value_name), context.componentUpdater);
+    public EEComponent build(EESystem eesystem, BuildContext context) throws EEMessageTypeException {
+        PhysicalValueRegistry values = context.getObject(PhysicalValueRegistry.CONTEXT_KEY);
+        PhysicalValue val = values.getPhysicalValue(physical_value_name);
+        Updater updater = context.getObject(EESystem.COMPONENT_UPDATER_CONTEXT_KEY);
+        return new Sensor(this, eesystem, val, updater);
     }
 }

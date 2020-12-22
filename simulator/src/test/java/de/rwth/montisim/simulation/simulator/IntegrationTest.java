@@ -3,6 +3,7 @@ package de.rwth.montisim.simulation.simulator;
 import java.io.File;
 import java.time.Duration;
 import java.time.Instant;
+import java.util.Optional;
 
 import de.rwth.montisim.commons.simulation.TaskStatus;
 import de.rwth.montisim.commons.simulation.TimeUpdate;
@@ -18,11 +19,10 @@ import org.junit.*;
 import de.rwth.montisim.commons.map.Pathfinding;
 import de.rwth.montisim.commons.utils.Vec2;
 import de.rwth.montisim.commons.utils.Vec3;
-import de.rwth.montisim.simulation.eesimulator.message.MessageTypeManager;
+import de.rwth.montisim.simulation.eecomponents.vehicleconfigs.DefaultVehicleConfig;
 import de.rwth.montisim.simulation.environment.osmmap.*;
 import de.rwth.montisim.simulation.environment.pathfinding.*;
 import de.rwth.montisim.simulation.environment.world.World;
-import de.rwth.montisim.simulation.simulator.vehicleconfigs.DefaultVehicleConfig;
 import de.rwth.montisim.simulation.vehicle.Vehicle;
 
 public class IntegrationTest {
@@ -53,7 +53,7 @@ public class IntegrationTest {
                 .operator(Comparator.GREATER)
                 .never());
 
-        driveToTarget(startPos, targetPos, task);
+        driveToTarget(Optional.of(startPos), Optional.empty(), Optional.empty(), targetPos, task);
     }
 
     @Test
@@ -67,11 +67,9 @@ public class IntegrationTest {
                 .withinRange(10)
                 .eventually());
 
-        Vec2 startPos = new Vec2();
         Vec2 targetPos = new Vec2();
-        world.converter.get().coordsToMeters(startCoord, startPos);
         world.converter.get().coordsToMeters(targetCoord, targetPos);
-        driveToTarget(startPos, targetPos, task);
+        driveToTarget(Optional.empty(), Optional.of(startCoord), Optional.empty(), targetPos, task);
     }
 
     @Test
@@ -85,25 +83,24 @@ public class IntegrationTest {
                 .withinRange(10)
                 .eventually());
 
-        Vec2 startPos = new Vec2();
         Vec2 targetPos = new Vec2();
-        world.converter.get().coordsToMeters(osmMap.getNode(startOsmId).coords, startPos);
         world.converter.get().coordsToMeters(osmMap.getNode(targetOsmId).coords, targetPos);
-        driveToTarget(startPos, targetPos, task);
+        driveToTarget(Optional.empty(), Optional.empty(), Optional.of(startOsmId), targetPos, task);
     }
 
-    public void driveToTarget(Vec2 startPos, Vec2 targetPos, TaskProperties task) throws Exception {
+    public void driveToTarget(Optional<Vec2> start_pos, Optional<Coordinates> start_coords, Optional<Long> start_osm_node, Vec2 targetPos, TaskProperties task) throws Exception {
         Pathfinding pathfinding = new PathfindingImpl(world);
-        MessageTypeManager mtManager = new MessageTypeManager();
 
         SimulationConfig config = new SimulationConfig();
-        config.max_duration = Duration.ofSeconds(1000);
+        config.max_duration = Duration.ofSeconds(500);
 
         DefaultVehicleConfig vConf = DefaultVehicleConfig.withJavaAutopilot().setTask(task);
-        vConf.properties.start_pos = startPos;
+        vConf.properties.start_pos = start_pos;
+        vConf.properties.start_coords = start_coords;
+        vConf.properties.start_osm_node = start_osm_node;
         config.cars.add(vConf.properties.setName("TestVehicle"));
 
-        Simulator simulator = config.build(world, pathfinding, mtManager, osmMap);
+        Simulator simulator = config.build(world, pathfinding, osmMap);
 
         Vehicle vehicle = simulator.getVehicle("TestVehicle");
 
@@ -111,7 +108,7 @@ public class IntegrationTest {
 
         // dump and reload vehicle every 1000 steps. test if it is able to reach the destination.
         Instant simulationTime = config.start_time;
-        int cnt = 0;
+        int cnt = 1;
         while (true) {
             TaskStatus status = simulator.status();
             if (status == TaskStatus.SUCCEEDED) break;
@@ -120,8 +117,9 @@ public class IntegrationTest {
             TimeUpdate tu = new TimeUpdate(simulationTime, config.tick_duration);
             simulator.update(tu);
             simulationTime = tu.newTime;
-
-            if (++cnt % 1000 != 0) {
+            
+            //++cnt;
+            if (cnt % 1000 != 0) {
                 continue;
             }
 

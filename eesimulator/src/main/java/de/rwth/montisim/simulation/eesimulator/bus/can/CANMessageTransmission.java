@@ -5,7 +5,7 @@ import java.util.Optional;
 import java.util.Random;
 
 import de.rwth.montisim.simulation.eesimulator.bus.MessageTransmission;
-import de.rwth.montisim.simulation.eesimulator.events.MessageReceiveEvent;
+import de.rwth.montisim.simulation.eesimulator.events.MessageSendEvent;
 import de.rwth.montisim.simulation.eesimulator.message.Message;
 
 /**
@@ -17,7 +17,7 @@ public class CANMessageTransmission extends MessageTransmission {
     int requiredFrames;
     long requiredTotalBits;
     long transmittedTotalBits;
-    Optional<MessageReceiveEvent> event;
+    Optional<MessageSendEvent> event;
     boolean finished;
 
     public CANMessageTransmission(Message msg, Random rnd) {

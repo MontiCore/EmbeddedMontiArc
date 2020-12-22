@@ -8,6 +8,7 @@ import java.util.PriorityQueue;
 import java.util.Random;
 
 import de.rwth.montisim.commons.utils.Time;
+import de.rwth.montisim.simulation.eesimulator.EESystem;
 import de.rwth.montisim.simulation.eesimulator.bus.Bus;
 import de.rwth.montisim.simulation.eesimulator.bus.MessageTransmission;
 import de.rwth.montisim.simulation.eesimulator.bus.BusProperties.BusType;
@@ -68,14 +69,10 @@ public class CAN extends Bus {
 
     private final transient Random rnd = new Random();
 
-    public CAN(CANProperties properties, MessagePriorityComparator comp) {
-        super(properties);
+    public CAN(CANProperties properties, EESystem eesystem, MessagePriorityComparator comp) {
+        super(properties, eesystem);
         this.messages = new PriorityQueue<CANMessageTransmission>(new MessageTransmission.MsgTransPriorityComp(comp));
         this.properties = properties;
-    }
-
-    @Override
-    protected void init() {
         this.startTime = eesystem.simulator.getSimulationTime();
     }
 
@@ -84,8 +81,14 @@ public class CAN extends Bus {
         return BusType.CAN;
     }
 
+    
+	/**
+	 * Process a MessageReceiveEvent: register the message for transmission and handle current transmissions up to the event time.
+	 * If the new message changes the current next MessageReceiveEvent, it has to be invalidated.
+	 * Responsible of registering the next MessageReceiveEvent for the next message transmission completion.
+	 */
     @Override
-    protected void sendMessage(MessageSendEvent event) {
+    protected void receive(MessageReceiveEvent event) {
         MessageTransmission current = nextTransmission();
         messages.offer(new CANMessageTransmission(event.getMessage(), rnd));
         if (messages.peek() == current)
@@ -125,11 +128,17 @@ public class CAN extends Bus {
             bitTime = t;
         }
 
-        createNextReceiveEvent();
+        createNextSendEvent();
     }
 
+    
+	/**
+	 * Update the bus simulation to when the event's message is transmitted.
+	 * The message itself is already checked for validity and dispatched to its targets.
+	 * Responsible of registering the next MessageSendEvent if there are still messages to be transmitted.
+	 */
     @Override
-    protected void receiveMessage(MessageReceiveEvent event) {
+    protected void messageSent(MessageSendEvent event) {
         if (!currentTransmission.isPresent() || currentTransmission.get().event.get() != event)
             throw new IllegalArgumentException("Unexpected MessageReceiveEvent");
 
@@ -140,7 +149,7 @@ public class CAN extends Bus {
                              // guarantee that they are at the front of the queue)
         currentTransmission = Optional.empty();
 
-        createNextReceiveEvent();
+        createNextSendEvent();
     }
 
     // Assumes the current bitTime is synchronized to the last frame end
@@ -148,11 +157,11 @@ public class CAN extends Bus {
     // NOTE: This model assumes that messages whose data doesn't fit into a single
     // frame
     // get transmitted across multiple frames by some transparent mechanism.
-    private void createNextReceiveEvent() {
+    private void createNextSendEvent() {
         CANMessageTransmission next = nextTransmission();
         if (next != null) {
             long finishTime = bitTime + next.getRemainingBits();
-            MessageReceiveEvent evt = new MessageReceiveEvent(this, instantFromBitTime(finishTime), next.msg);
+            MessageSendEvent evt = new MessageSendEvent(this, instantFromBitTime(finishTime), next.msg);
             next.event = Optional.of(evt);
             currentTransmission = Optional.of(next);
             this.eesystem.simulator.addEvent(evt);

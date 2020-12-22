@@ -4,15 +4,16 @@ package de.rwth.montisim.simulation.eesimulator.actuator;
 import java.util.logging.Logger;
 
 import de.rwth.montisim.commons.dynamicinterface.BasicType;
+import de.rwth.montisim.commons.dynamicinterface.PortInformation;
 import de.rwth.montisim.commons.physicalvalue.PhysicalValueDouble;
 import de.rwth.montisim.commons.simulation.TimeUpdate;
 import de.rwth.montisim.commons.simulation.Updatable;
 import de.rwth.montisim.commons.simulation.Updater;
-import de.rwth.montisim.simulation.eesimulator.components.EEComponent;
+import de.rwth.montisim.simulation.eesimulator.EESystem;
+import de.rwth.montisim.simulation.eesimulator.EEComponent;
 import de.rwth.montisim.simulation.eesimulator.events.MessageReceiveEvent;
 import de.rwth.montisim.simulation.eesimulator.exceptions.EEMessageTypeException;
 import de.rwth.montisim.simulation.eesimulator.message.Message;
-import de.rwth.montisim.simulation.eesimulator.message.MessageInformation;
 import de.rwth.montisim.simulation.eesimulator.sensor.SensorLogic;
 
 public class Actuator extends EEComponent implements Updatable {
@@ -25,10 +26,11 @@ public class Actuator extends EEComponent implements Updatable {
     final transient boolean sendFeedback; // Whether the actuator senses itself and sends its current value on the bus. ~>
                                 // "Sensor enabled"
     //transient boolean isDouble;
-    transient MessageInformation msgInfo;
+    transient int msgId;
 
-    public Actuator(ActuatorProperties properties, PhysicalValueDouble actuatedValue, Updater updater) {
-        super(properties);
+    public Actuator(ActuatorProperties properties, EESystem eesystem, PhysicalValueDouble actuatedValue, Updater updater)
+            throws EEMessageTypeException {
+        super(properties, eesystem);
         // isDouble = actuatedValue.type.equals(BasicType.DOUBLE);
         // if (!isDouble && !actuatedValue.type.equals(BasicType.FLOAT))
         //     throw new IllegalArgumentException("Actuator can only actuate on float or double values (but here type "
@@ -41,15 +43,11 @@ public class Actuator extends EEComponent implements Updatable {
         updater.addUpdatable(this);
         this.sendFeedback = properties.sensorProperties.isPresent();
         if (sendFeedback)
-            this.sensor = new SensorLogic(properties.sensorProperties.get(), actuatedValue);
+            this.sensor = new SensorLogic(this, properties.sensorProperties.get(), actuatedValue);
+
+        this.msgId = addPort(PortInformation.newOptionalInputDataPort(SETTER_PREFIX + actuatedValue.name, BasicType.DOUBLE, true));
     }
 
-    @Override
-    protected void init() throws EEMessageTypeException {
-        this.msgInfo = addOptionalInput(SETTER_PREFIX + actuatedValue.name, BasicType.DOUBLE, true);
-        if (sendFeedback)
-            sensor.init(this);
-    }
 
     @Override
     public void update(TimeUpdate newTime) {
@@ -80,7 +78,7 @@ public class Actuator extends EEComponent implements Updatable {
     @Override
     protected void receive(MessageReceiveEvent msgRecvEvent) {
         Message msg = msgRecvEvent.getMessage();
-        if (msg.isMsg(msgInfo)) {
+        if (msg.isMsg(msgId)) {
             targetValue = (Double) msg.message;
         } else {
             Logger.getLogger("Warnings").warning("Actuator \"" + properties.name + "\" received unexpected message: "

@@ -3,28 +3,23 @@ package de.rwth.montisim.simulation.eesimulator.exceptions;
 
 import java.util.ArrayList;
 import java.util.List;
-import java.util.Optional;
 
 /**
  * Super class for all exceptions occurring during the setup of the EEVehicle
  */
 public class EESetupErrors {
 
-    public Optional<EECyclicSetupException> cyclicError = Optional.empty();
+    public List<EEMessageTypeException> msgTypeExceptions = new ArrayList<>();
     public List<EEComponentNameException> namesErrors = new ArrayList<>();
     public List<EEMissingComponentException> missingComponentExceptions = new ArrayList<>();
-    public List<EEComponentTypeException> componentTypeExceptions = new ArrayList<>();
-    public List<EEInvalidComponentIdException> invalidIdExceptions = new ArrayList<>();
     public List<EEMultipleInputsException> multipleInputsExceptions = new ArrayList<>();
     public List<EEMissingOutputException> missingOutputExceptions = new ArrayList<>();
 
     public void throwExceptions() throws EESetupException {
         if (
-            cyclicError.isPresent() || 
+            !msgTypeExceptions.isEmpty() || 
             !namesErrors.isEmpty() || 
             !missingComponentExceptions.isEmpty() ||
-            !componentTypeExceptions.isEmpty() ||
-            !invalidIdExceptions.isEmpty() ||
             !multipleInputsExceptions.isEmpty() ||
             !missingOutputExceptions.isEmpty()
         )
@@ -34,13 +29,9 @@ public class EESetupErrors {
     @Override
     public String toString() {
         String res = "\n# EE Setup Errors\n";
-        if (cyclicError.isPresent()){
-            res += "## EECyclicSetupException: " +cyclicError.get().getMessage() + '\n';
-        }
+        res += printExceptions("EEMessageTypeException", msgTypeExceptions);
         res += printExceptions("EEComponentNameException", namesErrors);
         res += printExceptions("EEMissingComponentException", missingComponentExceptions);
-        res += printExceptions("EEComponentTypeException", componentTypeExceptions);
-        res += printExceptions("EEInvalidComponentIdException", invalidIdExceptions);
         res += printExceptions("EEMultipleInputsException", multipleInputsExceptions);
         res += printExceptions("EEMissingOutputException", missingOutputExceptions);
         return res;
@@ -51,7 +42,7 @@ public class EESetupErrors {
         String res = "";
         if (!exceptions.isEmpty()){
             res += "## "+name+ "s:\n";
-            for (Exception e : exceptions){
+            for (Exception e : exceptions) {
                 res += "- " + e.getMessage() + '\n';
             }
         }

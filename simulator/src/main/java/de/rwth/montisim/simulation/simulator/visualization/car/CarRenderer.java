@@ -13,7 +13,7 @@ import de.rwth.montisim.commons.map.Path;
 import de.rwth.montisim.commons.simulation.DynamicObject;
 import de.rwth.montisim.commons.simulation.Inspectable;
 import de.rwth.montisim.commons.utils.*;
-import de.rwth.montisim.simulation.eesimulator.components.EEEventProcessor;
+import de.rwth.montisim.simulation.eesimulator.EEComponent;
 import de.rwth.montisim.simulation.simulator.visualization.ui.Renderer;
 import de.rwth.montisim.simulation.simulator.visualization.ui.UIInfo;
 import de.rwth.montisim.simulation.vehicle.*;
@@ -195,7 +195,7 @@ public class CarRenderer extends Renderer {
         }
 
         if (UIInfo.drawPlannedPath || UIInfo.drawPlannedTrajectory) {
-            Optional<EEEventProcessor> res = vehicle.eesystem.getComponentManager().getComponent(NavigationProperties.NAME);
+            Optional<EEComponent> res = vehicle.eesystem.getComponent(NavigationProperties.NAME);
             if (res.isPresent()) {
                 Navigation nav = (Navigation)res.get();
 
@@ -337,7 +337,7 @@ public class CarRenderer extends Renderer {
         baseInfo.add("Car '"+rb.name+"' velocity: " + posFormat.format(rb.velocity.magnitude()*3.6));
         baseInfo.add("  pos: "+posFormat.format(rb.pos.x) + " : "+posFormat.format(rb.pos.y));
         if (UIInfo.inspectAutopilots) {
-            List<Inspectable> aps = car.get().eesystem.getComponentManager().componentTable.stream()
+            List<Inspectable> aps = car.get().eesystem.componentTable.stream()
                 .filter(c -> (c instanceof Inspectable))
                 .map(c -> ((Inspectable) c))
                 .filter(c -> c.getType().equals("autopilot"))
