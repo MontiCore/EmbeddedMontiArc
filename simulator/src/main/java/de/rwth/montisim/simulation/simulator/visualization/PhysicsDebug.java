@@ -6,18 +6,17 @@ import java.awt.BorderLayout;
 import java.time.*;
 import java.util.logging.Logger;
 
+import de.rwth.montisim.commons.eventsimulation.DiscreteEventSimulator;
 import de.rwth.montisim.commons.simulation.TaskStatus;
 import de.rwth.montisim.commons.simulation.TimeUpdate;
 import de.rwth.montisim.commons.utils.*;
 import de.rwth.montisim.commons.utils.json.SerializationException;
+import de.rwth.montisim.simulation.eecomponents.vehicleconfigs.TestVehicleConfig;
 import de.rwth.montisim.simulation.eesimulator.exceptions.*;
-import de.rwth.montisim.simulation.eesimulator.message.MessageTypeManager;
-import de.rwth.montisim.simulation.simulator.vehicleconfigs.TestVehicleConfig;
 import de.rwth.montisim.simulation.simulator.visualization.car.CarRenderer;
 import de.rwth.montisim.simulation.simulator.visualization.plotter.TimePlotter;
 import de.rwth.montisim.simulation.simulator.visualization.ui.*;
 import de.rwth.montisim.simulation.vehicle.*;
-import de.rwth.montisim.simulation.vehicle.VehicleProperties.BuildContext;
 import de.rwth.montisim.simulation.vehicle.physicsmodel.rigidbody.RigidbodyPhysics;
 
 public class PhysicsDebug extends JFrame implements SimulationRunner {
@@ -39,7 +38,7 @@ public class PhysicsDebug extends JFrame implements SimulationRunner {
     final TestVehicleConfig setup;
     final TimePlotter plotter;
 
-    MessageTypeManager mtManager;
+    final DiscreteEventSimulator eventSimulator;
     Vehicle vehicle;
     RigidbodyPhysics physics;
 
@@ -61,6 +60,8 @@ public class PhysicsDebug extends JFrame implements SimulationRunner {
         cr = new CarRenderer();
         viewer.addRenderer(cr);
         viewer.setZoom(20);
+
+        eventSimulator = new DiscreteEventSimulator(Instant.EPOCH);
 
         setup();
 
@@ -85,15 +86,16 @@ public class PhysicsDebug extends JFrame implements SimulationRunner {
         postedMsg = false;
         crossedQuarter = false;
 
-        mtManager = new MessageTypeManager();
         VehicleProperties config = setupTurningCar().setName("TestVehicle");
         try {
-            vehicle = VehicleBuilder.fromConfig(new BuildContext(null, mtManager, null, null, Instant.EPOCH), config).build();
+            BuildContext context = new BuildContext();
+            context.addObject(eventSimulator);
+            vehicle = VehicleBuilder.fromConfig(context, config).build();
             physics = (RigidbodyPhysics) vehicle.physicsModel;
             physics.setGroundPosition(new Vec3(0, 0, 0), new Vec2(START_DIR.x, START_DIR.y));
             VehicleProperties p = vehicle.properties;
             cr.setCar(vehicle, new Vec3(p.body.length, p.body.width, p.body.height));
-        } catch (SerializationException | EEMessageTypeException e) {
+        } catch (SerializationException | EEMessageTypeException | EEMissingComponentException e) {
             e.printStackTrace();
         }
     }
@@ -124,6 +126,7 @@ public class PhysicsDebug extends JFrame implements SimulationRunner {
     @Override
     public void update(TimeUpdate newTime) {
         vehicle.update(newTime);
+        eventSimulator.update(newTime);
 
         // Measure Flipping Speed
         if (!postedMsg && Math.acos(vehicle.physicalObject.rotation.col3.z) * Geometry.RAD_TO_DEG >= 5) {

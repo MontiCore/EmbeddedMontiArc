@@ -6,17 +6,17 @@ import java.time.Instant;
 import java.util.*;
 
 import de.rwth.montisim.commons.dynamicinterface.BasicType;
+import de.rwth.montisim.commons.dynamicinterface.PortInformation;
 import de.rwth.montisim.commons.simulation.Inspectable;
 import de.rwth.montisim.commons.utils.Geometry;
 import de.rwth.montisim.commons.utils.IPM;
 import de.rwth.montisim.commons.utils.Time;
 import de.rwth.montisim.commons.utils.Vec2;
 import de.rwth.montisim.simulation.eesimulator.actuator.Actuator;
-import de.rwth.montisim.simulation.eesimulator.components.EEComponent;
+import de.rwth.montisim.simulation.eesimulator.EEComponent;
+import de.rwth.montisim.simulation.eesimulator.EESystem;
 import de.rwth.montisim.simulation.eesimulator.events.MessageReceiveEvent;
-import de.rwth.montisim.simulation.eesimulator.exceptions.EEMessageTypeException;
 import de.rwth.montisim.simulation.eesimulator.message.Message;
-import de.rwth.montisim.simulation.eesimulator.message.MessageInformation;
 import de.rwth.montisim.simulation.vehicle.navigation.Navigation;
 import de.rwth.montisim.simulation.vehicle.physicalvalues.TrueCompass;
 import de.rwth.montisim.simulation.vehicle.physicalvalues.TruePosition;
@@ -30,17 +30,17 @@ public class JavaAutopilot extends EEComponent implements Inspectable {
     public static final double ORTHO_DIST = MAX_DEVIATION / (Math.sqrt(2) - 1); // max allowed deviation from the
                                                                                 // trajectory "corners" (in meters)
 
-    transient MessageInformation velocityMsg;
-    transient MessageInformation positionMsg;
-    transient MessageInformation compassMsg;
+    transient int velocityMsg;
+    transient int positionMsg;
+    transient int compassMsg;
 
-    transient MessageInformation trajLengthMsg;
-    transient MessageInformation trajXMsg;
-    transient MessageInformation trajYMsg;
+    transient int trajLengthMsg;
+    transient int trajXMsg;
+    transient int trajYMsg;
 
-    transient MessageInformation steeringMsg;
-    transient MessageInformation accelMsg;
-    transient MessageInformation brakeMsg;
+    transient int steeringMsg;
+    transient int accelMsg;
+    transient int brakeMsg;
 
     public double currentVelocity = 0;
     public Vec2 currentPosition = null;
@@ -60,27 +60,24 @@ public class JavaAutopilot extends EEComponent implements Inspectable {
     transient final PID speedPid;
     transient final PID turnPid;
 
-    public JavaAutopilot(JavaAutopilotProperties properties) {
-        super(properties);
+    public JavaAutopilot(JavaAutopilotProperties properties, EESystem eeSystem) {
+        super(properties, eeSystem);
         this.properties = properties;
         this.speedPid = new PID(1, 0, 0.2);
         this.turnPid = new PID(1, 0, 0.2);
-    }
 
-    @Override
-    protected void init() throws EEMessageTypeException {
-        this.velocityMsg = addInput(TrueVelocity.VALUE_NAME, TrueVelocity.TYPE);
-        this.positionMsg = addInput(TruePosition.VALUE_NAME, TruePosition.TYPE);
-        this.compassMsg = addInput(TrueCompass.VALUE_NAME, TrueCompass.TYPE);
+        this.velocityMsg = addPort(PortInformation.newRequiredInputDataPort(TrueVelocity.VALUE_NAME, TrueVelocity.TYPE, false));
+        this.positionMsg = addPort(PortInformation.newRequiredInputDataPort(TruePosition.VALUE_NAME, TruePosition.TYPE, false));
+        this.compassMsg = addPort(PortInformation.newRequiredInputDataPort(TrueCompass.VALUE_NAME, TrueCompass.TYPE, false));
 
-        this.trajLengthMsg = addInput(Navigation.TRAJECTORY_LENGTH_MSG, BasicType.N);
-        this.trajXMsg = addInput(Navigation.TRAJECTORY_X_MSG, Navigation.TRAJECTORY_X_TYPE);
-        this.trajYMsg = addInput(Navigation.TRAJECTORY_Y_MSG, Navigation.TRAJECTORY_Y_TYPE);
+        this.trajLengthMsg = addPort(PortInformation.newRequiredInputDataPort(Navigation.TRAJECTORY_LENGTH_MSG, BasicType.N, false));
+        this.trajXMsg = addPort(PortInformation.newRequiredInputDataPort(Navigation.TRAJECTORY_X_MSG, Navigation.TRAJECTORY_X_TYPE, false));
+        this.trajYMsg = addPort(PortInformation.newRequiredInputDataPort(Navigation.TRAJECTORY_Y_MSG, Navigation.TRAJECTORY_Y_TYPE, false));
 
-        this.steeringMsg = addOutput(Actuator.SETTER_PREFIX + PowerTrainProperties.STEERING_VALUE_NAME,
-                BasicType.DOUBLE);
-        this.accelMsg = addOutput(Actuator.SETTER_PREFIX + PowerTrainProperties.GAS_VALUE_NAME, BasicType.DOUBLE);
-        this.brakeMsg = addOutput(Actuator.SETTER_PREFIX + PowerTrainProperties.BRAKING_VALUE_NAME, BasicType.DOUBLE);
+        this.steeringMsg = addPort(PortInformation.newRequiredOutputDataPort(Actuator.SETTER_PREFIX + PowerTrainProperties.STEERING_VALUE_NAME,
+        BasicType.DOUBLE));
+        this.accelMsg = addPort(PortInformation.newRequiredOutputDataPort(Actuator.SETTER_PREFIX + PowerTrainProperties.GAS_VALUE_NAME, BasicType.DOUBLE));
+        this.brakeMsg = addPort(PortInformation.newRequiredOutputDataPort(Actuator.SETTER_PREFIX + PowerTrainProperties.BRAKING_VALUE_NAME, BasicType.DOUBLE));
     }
 
     @Override
@@ -370,12 +367,12 @@ public class JavaAutopilot extends EEComponent implements Inspectable {
         return "autopilot";
     }
 
-    void addEntry(List<String> entries, boolean output, MessageInformation msgInf, Object val) {
+    void addEntry(List<String> entries, boolean output, PortInformation portInf, Object val) {
         String res = output ? "output: " : "input: ";
-        res += msgInf.name + ": ";
+        res += portInf.name + ": ";
         if (val == null) entries.add(res + "null");
         else {
-            List<String> toStr = msgInf.type.toString(val);
+            List<String> toStr = portInf.data_type.toString(val);
             if (toStr.size() == 0) entries.add(res + "No toString()");
             if (toStr.size() == 1) entries.add(res + toStr.get(0));
             else {
@@ -390,15 +387,15 @@ public class JavaAutopilot extends EEComponent implements Inspectable {
     @Override
     public List<String> getEntries() {
         List<String> entries = new ArrayList<>();
-        addEntry(entries, false, velocityMsg, currentVelocity);
-        addEntry(entries, false, compassMsg, currentCompass);
-        addEntry(entries, false, positionMsg, currentPosition);
-        addEntry(entries, false, trajLengthMsg, trajLength);
-        addEntry(entries, false, trajXMsg, trajX);
-        addEntry(entries, false, trajYMsg, trajY);
-        addEntry(entries, true, accelMsg, currentGas);
-        addEntry(entries, true, steeringMsg, currentSteering);
-        addEntry(entries, true, brakeMsg, currentBrakes);
+        addEntry(entries, false, ports.elementAt(0), currentVelocity);
+        addEntry(entries, false, ports.elementAt(1), currentPosition);
+        addEntry(entries, false, ports.elementAt(2), currentCompass);
+        addEntry(entries, false, ports.elementAt(3), trajLength);
+        addEntry(entries, false, ports.elementAt(4), trajX);
+        addEntry(entries, false, ports.elementAt(5), trajY);
+        addEntry(entries, true, ports.elementAt(6), currentSteering);
+        addEntry(entries, true, ports.elementAt(7), currentGas);
+        addEntry(entries, true, ports.elementAt(8), currentBrakes);
         return entries;
     }
 

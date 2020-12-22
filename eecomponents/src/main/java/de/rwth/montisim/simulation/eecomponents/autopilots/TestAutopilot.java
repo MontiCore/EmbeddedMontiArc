@@ -4,9 +4,10 @@ package de.rwth.montisim.simulation.eecomponents.autopilots;
 import java.time.*;
 
 import de.rwth.montisim.commons.dynamicinterface.BasicType;
+import de.rwth.montisim.commons.dynamicinterface.PortInformation;
 import de.rwth.montisim.commons.utils.Time;
 import de.rwth.montisim.simulation.eesimulator.actuator.Actuator;
-import de.rwth.montisim.simulation.eesimulator.components.*;
+import de.rwth.montisim.simulation.eesimulator.*;
 import de.rwth.montisim.simulation.eesimulator.events.MessageReceiveEvent;
 import de.rwth.montisim.simulation.eesimulator.exceptions.EEMessageTypeException;
 import de.rwth.montisim.simulation.eesimulator.message.*;
@@ -17,10 +18,10 @@ import de.rwth.montisim.simulation.vehicle.powertrain.PowerTrainProperties;
 public class TestAutopilot extends EEComponent {
     transient final TestAutopilotProperties properties;
 
-    transient MessageInformation velocityMsg;
-    transient MessageInformation steeringMsg;
-    transient MessageInformation accelMsg;
-    transient MessageInformation brakeMsg;
+    transient int velocityMsg;
+    transient int steeringMsg;
+    transient int accelMsg;
+    transient int brakeMsg;
 
     double currentVelocity = 0;
     double previous_error = 0;
@@ -32,20 +33,18 @@ public class TestAutopilot extends EEComponent {
 
     transient final PID pid;
 
-    public TestAutopilot(TestAutopilotProperties properties) {
-        super(properties);
+    public TestAutopilot(TestAutopilotProperties properties, EESystem eeSystem) {
+        super(properties, eeSystem);
         this.properties = properties;
         this.pid = new PID(1, 0, 0.2);
+
+        this.velocityMsg = addPort(PortInformation.newRequiredInputDataPort(TrueVelocity.VALUE_NAME, TrueVelocity.TYPE, false));
+        this.steeringMsg = addPort(PortInformation.newRequiredOutputDataPort(Actuator.SETTER_PREFIX + PowerTrainProperties.STEERING_VALUE_NAME,
+        BasicType.DOUBLE));
+        this.accelMsg = addPort(PortInformation.newRequiredOutputDataPort(Actuator.SETTER_PREFIX + PowerTrainProperties.GAS_VALUE_NAME, BasicType.DOUBLE));
+        this.brakeMsg = addPort(PortInformation.newRequiredOutputDataPort(Actuator.SETTER_PREFIX + PowerTrainProperties.BRAKING_VALUE_NAME, BasicType.DOUBLE));
     }
 
-    @Override
-    protected void init() throws EEMessageTypeException {
-        this.velocityMsg = addInput(TrueVelocity.VALUE_NAME, TrueVelocity.TYPE);
-        this.steeringMsg = addOutput(Actuator.SETTER_PREFIX + PowerTrainProperties.STEERING_VALUE_NAME,
-                BasicType.DOUBLE);
-        this.accelMsg = addOutput(Actuator.SETTER_PREFIX + PowerTrainProperties.GAS_VALUE_NAME, BasicType.DOUBLE);
-        this.brakeMsg = addOutput(Actuator.SETTER_PREFIX + PowerTrainProperties.BRAKING_VALUE_NAME, BasicType.DOUBLE);
-    }
 
     @Override
     protected void receive(MessageReceiveEvent msgRecvEvent) {

@@ -3,7 +3,7 @@ package de.rwth.montisim.simulation.vehicle.task;
 import java.util.Optional;
 import java.util.Vector;
 
-import de.rwth.montisim.simulation.eesimulator.components.EEEventProcessor;
+import de.rwth.montisim.simulation.eesimulator.EEComponent;
 import de.rwth.montisim.simulation.environment.osmmap.OsmMap;
 import de.rwth.montisim.simulation.environment.world.World;
 import de.rwth.montisim.simulation.vehicle.Vehicle;
@@ -17,12 +17,16 @@ public class TaskProperties {
         goals.add(goal);
     }
 
-    public Task build(Vehicle vehicle, OsmMap map, World world) {
-        Optional<EEEventProcessor> res =vehicle.eesystem.getComponentManager().getComponent(NavigationProperties.NAME);
-        if (!res.isPresent()) throw new IllegalArgumentException("The Vehicle Tasks need the Navigation component");
-        EEEventProcessor r2 = res.get();
-        if (!(r2 instanceof Navigation)) throw new IllegalArgumentException("Expected EEComponent with name 'Navigation' to be of type Navigation.");
-        Task t = new Task(this, (Navigation)r2);
+    public Task build(Vehicle vehicle, Optional<OsmMap> map, Optional<World> world) {
+        Optional<EEComponent> res = vehicle.eesystem.getComponent(NavigationProperties.NAME);
+        Optional<Navigation> nav = Optional.empty();
+        if (res.isPresent()) {
+            EEComponent r2 = res.get();
+            if (!(r2 instanceof Navigation)) throw new IllegalArgumentException("Expected EEComponent with name 'Navigation' to be of type Navigation.");
+            nav = Optional.of((Navigation) r2);
+        }
+        
+        Task t = new Task(this, nav);
         for (GoalProperties goal : goals) {
             t.addGoal(goal.build(vehicle, map, world));
         }

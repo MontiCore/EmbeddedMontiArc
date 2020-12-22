@@ -5,15 +5,20 @@ import java.util.Optional;
 
 import de.rwth.montisim.commons.physicalvalue.PhysicalValue;
 import de.rwth.montisim.commons.physicalvalue.PhysicalValueDouble;
+import de.rwth.montisim.commons.physicalvalue.PhysicalValueRegistry;
+import de.rwth.montisim.commons.simulation.Updater;
+import de.rwth.montisim.commons.utils.BuildContext;
 import de.rwth.montisim.commons.utils.json.JsonEntry;
 import de.rwth.montisim.commons.utils.json.Typed;
-import de.rwth.montisim.simulation.eesimulator.components.BusUserProperties;
-import de.rwth.montisim.simulation.eesimulator.components.EEComponentType;
-import de.rwth.montisim.simulation.eesimulator.components.EEEventProcessor;
+import de.rwth.montisim.simulation.eesimulator.EESystem;
+import de.rwth.montisim.simulation.eesimulator.EEComponentProperties;
+import de.rwth.montisim.simulation.eesimulator.EEComponentType;
+import de.rwth.montisim.simulation.eesimulator.exceptions.EEMessageTypeException;
+import de.rwth.montisim.simulation.eesimulator.EEComponent;
 import de.rwth.montisim.simulation.eesimulator.sensor.SensorProperties;
 
 @Typed(ActuatorProperties.TYPE)
-public class ActuatorProperties extends BusUserProperties {
+public class ActuatorProperties extends EEComponentProperties {
     public static final String TYPE = "actuator";
 
     public String physical_value_name;
@@ -61,10 +66,12 @@ public class ActuatorProperties extends BusUserProperties {
     }
 
     @Override
-    public EEEventProcessor build(ComponentBuildContext context) {
+    public EEComponent build(EESystem eesystem, BuildContext context) throws EEMessageTypeException {
         // TODO physical value name resolve as "config error"
-        PhysicalValue val = context.physicalValues.getPhysicalValue(physical_value_name);
+        PhysicalValueRegistry values = context.getObject(PhysicalValueRegistry.CONTEXT_KEY);
+        PhysicalValue val = values.getPhysicalValue(physical_value_name);
         if (!(val instanceof PhysicalValueDouble)) throw new IllegalArgumentException("Actuators can only work on Double type Physical values");
-        return new Actuator(this, (PhysicalValueDouble) val, context.componentUpdater);
+        Updater updater = context.getObject(EESystem.COMPONENT_UPDATER_CONTEXT_KEY);
+        return new Actuator(this, eesystem, (PhysicalValueDouble) val, updater);
     }
 }

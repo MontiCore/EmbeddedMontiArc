@@ -3,6 +3,8 @@ package de.rwth.montisim.simulation.vehicle.task.goal;
 import static org.junit.Assert.*;
 import static org.mockito.Mockito.*;
 
+import java.util.Optional;
+
 import de.rwth.montisim.commons.simulation.DynamicObject;
 import de.rwth.montisim.commons.simulation.TaskStatus;
 import de.rwth.montisim.commons.utils.Vec3;
@@ -29,21 +31,22 @@ public class PathGoalTest {
         Vehicle v = mock(Vehicle.class);
         v.physicalObject = mock(DynamicObject.class);
         Navigation nav = mock(Navigation.class);
+        Optional<Navigation> navv = Optional.of(nav);
 
         v.physicalObject.pos = new Vec3(0, 0, 0);
-        goal.updateDriveTarget(v, nav);
+        goal.updateDriveTarget(v, navv);
         assertEquals(TaskStatus.RUNNING, goal.getStatus());
 
         v.physicalObject.pos = new Vec3(95, 0, 0);
-        goal.updateDriveTarget(v, nav);
+        goal.updateDriveTarget(v, navv);
         assertEquals(TaskStatus.RUNNING, goal.getStatus());
 
         v.physicalObject.pos = new Vec3(195, 0, 0);
-        goal.updateDriveTarget(v, nav);
+        goal.updateDriveTarget(v, navv);
         assertEquals(TaskStatus.RUNNING, goal.getStatus());
 
         v.physicalObject.pos = new Vec3(295, 0, 0);
-        goal.updateDriveTarget(v, nav);
+        goal.updateDriveTarget(v, navv);
         assertEquals(TaskStatus.SUCCEEDED, goal.getStatus());
     }
 

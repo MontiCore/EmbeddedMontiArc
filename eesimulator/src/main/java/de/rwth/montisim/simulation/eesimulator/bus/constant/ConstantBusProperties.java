@@ -3,11 +3,13 @@ package de.rwth.montisim.simulation.eesimulator.bus.constant;
 
 import java.time.Duration;
 
+import de.rwth.montisim.commons.utils.BuildContext;
 import de.rwth.montisim.commons.utils.json.JsonEntry;
 import de.rwth.montisim.commons.utils.json.Typed;
+import de.rwth.montisim.simulation.eesimulator.EESystem;
 import de.rwth.montisim.simulation.eesimulator.bus.BusProperties;
-import de.rwth.montisim.simulation.eesimulator.components.EEComponentType;
-import de.rwth.montisim.simulation.eesimulator.components.EEEventProcessor;
+import de.rwth.montisim.simulation.eesimulator.EEComponentType;
+import de.rwth.montisim.simulation.eesimulator.EEComponent;
 
 @Typed(ConstantBusProperties.TYPE)
 public class ConstantBusProperties extends BusProperties {
@@ -101,9 +103,14 @@ public class ConstantBusProperties extends BusProperties {
 	public String getType() {
 		return TYPE;
 	}
+	
+    @Override
+    public float routingCost() {
+        return 1.1f;
+    }
 
 	@Override
-	public EEEventProcessor build(ComponentBuildContext context) {
-		return new ConstantBus(this);
+	public EEComponent build(EESystem eesystem, BuildContext context) {
+		return new ConstantBus(this, eesystem);
 	}
 }

@@ -7,10 +7,8 @@ import org.junit.Assert;
 import org.junit.BeforeClass;
 import org.junit.Test;
 
-import de.rwth.montisim.commons.dynamicinterface.BasicType;
 import de.rwth.montisim.simulation.eesimulator.exceptions.EEMessageTypeException;
 import de.rwth.montisim.simulation.eesimulator.message.Message;
-import de.rwth.montisim.simulation.eesimulator.message.MessageTypeManager;
 
 public class CANMessageTransmissionTest {
     public static Random rnd;
@@ -33,8 +31,7 @@ public class CANMessageTransmissionTest {
 
     public void testBitsizeComputation(int msgSize, int expectedFrames, long expectedBits)
             throws EEMessageTypeException {
-        MessageTypeManager manager = new MessageTypeManager();
-        CANMessageTransmission tr = new CANMessageTransmission(new Message(null, manager.registerMessage("m1", BasicType.INT, null), null, msgSize), rnd);
+        CANMessageTransmission tr = new CANMessageTransmission(new Message(null, null, msgSize), rnd);
         Assert.assertEquals(expectedFrames, tr.getRequiredFrames());
         Assert.assertEquals(expectedBits, tr.getRequiredTotalBits());
     }

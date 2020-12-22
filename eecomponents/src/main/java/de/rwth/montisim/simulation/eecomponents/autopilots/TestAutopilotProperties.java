@@ -3,20 +3,22 @@ package de.rwth.montisim.simulation.eecomponents.autopilots;
 
 import java.time.Duration;
 
+import de.rwth.montisim.commons.utils.BuildContext;
 import de.rwth.montisim.commons.utils.json.JsonEntry;
 import de.rwth.montisim.commons.utils.json.Typed;
-import de.rwth.montisim.simulation.eesimulator.components.BusUserProperties;
-import de.rwth.montisim.simulation.eesimulator.components.EEComponentType;
-import de.rwth.montisim.simulation.eesimulator.components.EEEventProcessor;
+import de.rwth.montisim.simulation.eesimulator.EEComponentProperties;
+import de.rwth.montisim.simulation.eesimulator.EEComponentType;
+import de.rwth.montisim.simulation.eesimulator.EESystem;
+import de.rwth.montisim.simulation.eesimulator.exceptions.EEMessageTypeException;
+import de.rwth.montisim.simulation.eesimulator.EEComponent;
 
 @Typed(TestAutopilotProperties.TYPE)
-public class TestAutopilotProperties extends BusUserProperties {
+public class TestAutopilotProperties extends EEComponentProperties {
     public static final String TYPE = "test_autopilot";
 
     public static enum Mode {
         @JsonEntry("circle")
-        CIRCLE, 
-        @JsonEntry("start_stop")
+        CIRCLE, @JsonEntry("start_stop")
         START_STOP
     }
 
@@ -64,8 +66,8 @@ public class TestAutopilotProperties extends BusUserProperties {
     }
 
     @Override
-    public EEEventProcessor build(ComponentBuildContext context) {
-        return new TestAutopilot(this);
+    public EEComponent build(EESystem eesystem, BuildContext context) throws EEMessageTypeException {
+        return new TestAutopilot(this, eesystem);
     }
 
 }

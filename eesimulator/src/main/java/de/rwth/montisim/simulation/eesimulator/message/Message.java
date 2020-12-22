@@ -3,17 +3,16 @@ package de.rwth.montisim.simulation.eesimulator.message;
 
 import java.util.Optional;
 
+import de.rwth.montisim.commons.utils.BuildContext;
 import de.rwth.montisim.commons.utils.ParsingException;
 import de.rwth.montisim.commons.utils.json.CustomJson;
 import de.rwth.montisim.commons.utils.json.JsonTraverser;
 import de.rwth.montisim.commons.utils.json.JsonTraverser.Entry;
 import de.rwth.montisim.commons.utils.json.JsonTraverser.ObjectIterable;
 import de.rwth.montisim.commons.utils.json.JsonWriter;
-import de.rwth.montisim.commons.utils.json.SerializationContext;
 import de.rwth.montisim.commons.utils.json.SerializationException;
-import de.rwth.montisim.simulation.eesimulator.EESystem.EESerializationContext;
-import de.rwth.montisim.simulation.eesimulator.components.BusUser;
-import de.rwth.montisim.simulation.eesimulator.components.EEEventProcessor;
+import de.rwth.montisim.simulation.eesimulator.EEComponent;
+import de.rwth.montisim.simulation.eesimulator.EESystem;
 
 /**
  * Messages that are transmitted over buses between EEComponent(e.g. Sensors,
@@ -21,10 +20,7 @@ import de.rwth.montisim.simulation.eesimulator.components.EEEventProcessor;
  */
 public class Message implements CustomJson {
 
-    /** Component ID from the ComponentManager */
-    public BusUser sender;
-
-    /** MessageInformation allocated in the MessageTypeManager. */
+    /** Static information associated to this message. */
     public MessageInformation msgInfo;
 
     /** Message to be transmitted. */
@@ -33,15 +29,13 @@ public class Message implements CustomJson {
     /** Message length in bytes. */
     public int msgLen = -1;
 
-    public Message(BusUser sender, MessageInformation info, Object message, int msgLen) {
-        this.sender = sender;
+    public Message(MessageInformation info, Object message, int msgLen) {
         this.msgInfo = info;
         this.message = message;
         this.msgLen = msgLen;
     }
 
-    public Message(BusUser sender, MessageInformation info, Object message) {
-        this.sender = sender;
+    public Message(MessageInformation info, Object message) {
         this.msgInfo = info;
         this.message = message;
         this.msgLen = info.type.getDataSize(message);
@@ -50,9 +44,8 @@ public class Message implements CustomJson {
     protected Message() {
     }
 
-    // Check for INSTANCE EQUALITY (assumes all MessageInformation shared in the MessageTypeManager)
-    public boolean isMsg(MessageInformation info) {
-        return info == this.msgInfo;
+    public boolean isMsg(int msgId) {
+        return this.msgInfo.msgId == msgId;
     }
 
     public static final String K_SENDER = "sender";
@@ -61,9 +54,9 @@ public class Message implements CustomJson {
     public static final String K_LENGTH = "length";
 
     @Override
-    public void write(JsonWriter w, SerializationContext context) throws SerializationException {
+    public void write(JsonWriter w, BuildContext context) throws SerializationException {
         w.startObject();
-        w.write(K_SENDER, sender.properties.name);
+        w.write(K_SENDER, msgInfo.sender.properties.name);
         w.write(K_NAME, msgInfo.name);
         w.writeKey(K_MSG);
         msgInfo.type.toJson(w, message, context);
@@ -72,21 +65,22 @@ public class Message implements CustomJson {
     }
 
     @Override
-    public void read(JsonTraverser t, ObjectIterable it, SerializationContext context) throws SerializationException {
-        EESerializationContext c = (EESerializationContext)context;
+    public void read(JsonTraverser t, ObjectIterable it, BuildContext context) throws SerializationException {
+        EESystem eesystem = context.getObject(EESystem.CONTEXT_KEY);
+        EEComponent sender = null;
         for (Entry e : t.streamObject()) {
             if (e.key.equals(K_SENDER)) {
                 String name = t.getString().getJsonString();
-                Optional<EEEventProcessor> r = c.cm.getComponent(name);
+                Optional<EEComponent> r = eesystem.getComponent(name);
                 if (!r.isPresent())
                     throw new ParsingException("Unknown component: " + name);
-                this.sender = (BusUser)r.get();
+                sender = (EEComponent)r.get();
             } else if (e.key.equals(K_NAME)) {
+                if (sender == null) throw new ParsingException("Sender must be known before parsing the MessageInformation");
                 String name = t.getString().getJsonString();
-                Optional<MessageInformation> info = c.mtm.getMsgInfo(name);
-                if (!info.isPresent())
+                this.msgInfo = sender.getMsgInfo(name);
+                if (this.msgInfo == null)
                     throw new ParsingException("Unknown message type: " + name);
-                this.msgInfo = info.get();
             } else if (e.key.equals(K_MSG)) {
                 if (msgInfo == null)
                     throw new ParsingException("Message Info must be known before parsing the message");

@@ -1,6 +1,7 @@
 package de.rwth.montisim.simulation.vehicle.task.path;
 
 import java.util.List;
+import java.util.Optional;
 import java.util.Vector;
 import java.util.stream.Collectors;
 
@@ -87,7 +88,7 @@ public class PathGoalProperties extends GoalProperties {
     }
 
     @Override
-    public PathGoal build(Vehicle vehicle, OsmMap map, World world) {
+    public PathGoal build(Vehicle vehicle, Optional<OsmMap> map, Optional<World> world) {
         int spec = 0;
         if (path != null && path.size() > 0) ++spec;
         if (path_osm != null && path_osm.size() > 0) ++spec;
@@ -98,9 +99,12 @@ public class PathGoalProperties extends GoalProperties {
         Vector<Vec2> finalPath;
         // Convert paths as needed
         if (path_lonlat != null && path_lonlat.size() > 0) {
-            finalPath = convertLonLatPath(path_lonlat, world);
+            if (!world.isPresent()) throw new IllegalArgumentException("World missing from BuildContext for PathGoal");
+            finalPath = convertLonLatPath(path_lonlat, world.get());
         } else if (path_osm != null && path_osm.size() > 0) {
-            finalPath = convertLonLatPath(convertOsmPath(path_osm, map), world);
+            if (!map.isPresent()) throw new IllegalArgumentException("Osm Map missing from BuildContext for PathGoal");
+            if (!world.isPresent()) throw new IllegalArgumentException("World missing from BuildContext for PathGoal");
+            finalPath = convertLonLatPath(convertOsmPath(path_osm, map.get()), world.get());
         } else {
             finalPath = path;
         }

@@ -2,22 +2,21 @@
 package de.rwth.montisim.simulation.eesimulator.message;
 
 import de.rwth.montisim.commons.dynamicinterface.DataType;
-import de.rwth.montisim.simulation.eesimulator.components.EEComponent;
-import de.rwth.montisim.simulation.eesimulator.exceptions.EEMessageTypeException;
+import de.rwth.montisim.simulation.eesimulator.EEComponent;
 
 public class MessageInformation {
-    //public final int messageId;
+    public final int msgId; // The ID for all the messages with this name.
     public final String name;
     public final DataType type;
-    public final EEComponent firstUser;
+    public final EEComponent sender;
     public int priority;
 
-    protected MessageInformation(String name, DataType type, EEComponent source)
-            throws EEMessageTypeException {
-        this.priority = 0;
+    public MessageInformation(int msgId, String name, DataType type, EEComponent sender) {
+        this.msgId = msgId;
         this.name = name;
         this.type = type;
-        this.firstUser = source;
-        //this.messageId = manager.registerMessage(this);
+        this.sender = sender;
+        this.priority = 0;
     }
+
 }

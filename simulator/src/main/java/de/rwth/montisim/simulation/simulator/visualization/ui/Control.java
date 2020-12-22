@@ -433,8 +433,9 @@ public class Control extends JPanel implements ActionListener, ChangeListener {
 
     
     private void setupLayout() {
-
-        setLayout(new FlowLayout());
+        FlowLayout layout = new FlowLayout();
+        layout.setAlignment(FlowLayout.LEFT);
+        setLayout(layout);
         // setBackground(new Color(255,255,255));
 
         

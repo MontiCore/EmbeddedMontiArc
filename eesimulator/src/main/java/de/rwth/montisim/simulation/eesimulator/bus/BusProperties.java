@@ -1,7 +1,7 @@
 /* (c) https://github.com/MontiCore/monticore */
 package de.rwth.montisim.simulation.eesimulator.bus;
 
-import de.rwth.montisim.simulation.eesimulator.components.EEComponentProperties;
+import de.rwth.montisim.simulation.eesimulator.EEComponentProperties;
 
 public abstract class BusProperties extends EEComponentProperties {
     public static enum BusType {
@@ -20,6 +20,11 @@ public abstract class BusProperties extends EEComponentProperties {
         public String toString(){
             return this.name;
         }
+    }
+    
+    @Override
+    public boolean canTransferMessages() {
+        return true;
     }
     
     public abstract BusType getBusType();

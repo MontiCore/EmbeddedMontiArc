@@ -1,5 +1,5 @@
 /* (c) https://github.com/MontiCore/monticore */
-package de.rwth.montisim.simulation.simulator.vehicleconfigs;
+package de.rwth.montisim.simulation.eecomponents.vehicleconfigs;
 
 import java.time.Duration;
 
@@ -37,8 +37,9 @@ public class TestVehicleConfig {
                 Duration.ofMillis(10), // Read time
                 false
             )
-            .setName("TrueVelocitySensor")
             .setPhysicalValueName(TrueVelocity.VALUE_NAME)
+            .setName("TrueVelocitySensor")
+            .connectTo("DefaultBus")
         );
         
         properties.addComponent(
@@ -54,7 +55,9 @@ public class TestVehicleConfig {
             config.electricalPTProperties.transmission_ratio * 2 /
             config.properties.wheels.diameter;
         config.properties.addComponent(
-            TestAutopilotProperties.circleAutopilot(Duration.ofMillis(1), maxForce/config.properties.body.mass, maxSpeed, turnRadius).setName("TestAutopilot")
+            TestAutopilotProperties.circleAutopilot(Duration.ofMillis(1), maxForce/config.properties.body.mass, maxSpeed, turnRadius)
+            .setName("TestAutopilot")
+            .connectTo("DefaultBus")
         );
         return config;
     }
@@ -65,7 +68,9 @@ public class TestVehicleConfig {
             config.electricalPTProperties.transmission_ratio * 2 /
             config.properties.wheels.diameter;
         config.properties.addComponent(
-            TestAutopilotProperties.startStopAutopilot(Duration.ofMillis(1), maxForce/config.properties.body.mass, targetSpeed).setName("TestAutopilot")
+            TestAutopilotProperties.startStopAutopilot(Duration.ofMillis(1), maxForce/config.properties.body.mass, targetSpeed)
+            .setName("TestAutopilot")
+            .connectTo("DefaultBus")
         );
         return config;
     }

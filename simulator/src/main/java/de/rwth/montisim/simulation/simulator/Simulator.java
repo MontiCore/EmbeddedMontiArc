@@ -6,38 +6,26 @@ import java.util.Collection;
 import java.util.HashMap;
 import java.util.Vector;
 
+import de.rwth.montisim.commons.eventsimulation.DiscreteEventSimulator;
 import de.rwth.montisim.commons.map.Pathfinding;
 import de.rwth.montisim.commons.simulation.*;
-import de.rwth.montisim.commons.utils.json.Json;
-import de.rwth.montisim.simulation.eecomponents.autopilots.JavaAutopilotProperties;
-import de.rwth.montisim.simulation.eecomponents.autopilots.TestAutopilotProperties;
-import de.rwth.montisim.simulation.eesimulator.actuator.ActuatorProperties;
-import de.rwth.montisim.simulation.eesimulator.bridge.BridgeProperties;
-import de.rwth.montisim.simulation.eesimulator.bus.can.CANProperties;
-import de.rwth.montisim.simulation.eesimulator.bus.constant.ConstantBusProperties;
-import de.rwth.montisim.simulation.eesimulator.message.MessageTypeManager;
-import de.rwth.montisim.simulation.eesimulator.sensor.SensorProperties;
-import de.rwth.montisim.simulation.eesimulator.testcomponents.TestCompProperties;
+import de.rwth.montisim.commons.utils.BuildContext;
+import de.rwth.montisim.simulation.eecomponents.simple_network.SimulatorModule;
+import de.rwth.montisim.simulation.eecomponents.vehicleconfigs.DefaultVehicleConfig;
 import de.rwth.montisim.simulation.environment.osmmap.OsmMap;
 import de.rwth.montisim.simulation.environment.world.World;
-import de.rwth.montisim.simulation.simulator.vehicleconfigs.DefaultVehicleConfig;
 import de.rwth.montisim.simulation.vehicle.Vehicle;
 import de.rwth.montisim.simulation.vehicle.VehicleBuilder;
 import de.rwth.montisim.simulation.vehicle.VehicleProperties;
-import de.rwth.montisim.simulation.vehicle.VehicleProperties.BuildContext;
-import de.rwth.montisim.simulation.vehicle.navigation.NavigationProperties;
-import de.rwth.montisim.simulation.vehicle.physicsmodel.rigidbody.RigidbodyPhysicsProperties;
-import de.rwth.montisim.simulation.vehicle.powertrain.electrical.ElectricalPTProperties;
-import de.rwth.montisim.simulation.vehicle.powertrain.fuel.FuelPTProperties;
-import de.rwth.montisim.simulation.vehicle.task.metric.MetricGoalProperties;
-import de.rwth.montisim.simulation.vehicle.task.path.PathGoalProperties;
 
 public class Simulator implements ISimulator, Updatable {
     public final SimulationConfig config;
     final World world;
     final Pathfinding pathfinding;
-    final MessageTypeManager mtManager;
     final public BuildContext buildContext;
+    public final DiscreteEventSimulator eventSimulator;
+    final Vector<SimulatorModule> modules = new Vector<>();
+    final HashMap<String, SimulatorModule> moduleByName = new HashMap<>();
 
     Duration simulatedTime = Duration.ZERO;
 
@@ -53,12 +41,16 @@ public class Simulator implements ISimulator, Updatable {
     boolean timeout = false;
 
     // OsmMap can be null
-    public Simulator(SimulationConfig config, World world, Pathfinding pathfinding, MessageTypeManager mtManager, OsmMap map) {
+    public Simulator(SimulationConfig config, World world, Pathfinding pathfinding, OsmMap map) {
         this.config = config;
         this.world = world;
         this.pathfinding = pathfinding;
-        this.mtManager = mtManager;
-        this.buildContext = new BuildContext(pathfinding, mtManager, world, map, config.start_time);
+        this.buildContext = new BuildContext();
+        this.eventSimulator = new DiscreteEventSimulator(config.start_time);
+        buildContext.addObject(pathfinding, Pathfinding.CONTEXT_KEY);
+        buildContext.addObject(world);
+        buildContext.addObject(map);
+        buildContext.addObject(eventSimulator);
         // TODO load static objects of the World
     }
 
@@ -116,6 +108,7 @@ public class Simulator implements ISimulator, Updatable {
             if (x != null)
                 x.update(newTime);
         });
+        eventSimulator.update(newTime);
         simulatedTime = simulatedTime.plus(newTime.deltaTime);
         timeout = simulatedTime.compareTo(config.max_duration) > 0;
     }
@@ -208,26 +201,6 @@ public class Simulator implements ISimulator, Updatable {
         SimulatorState state = (SimulatorState) obj.state;
         state.taskRunnerId = taskRunners.size();
         taskRunners.add(runner);
-    }
-
-    public static void registerJsonTypes() {
-        Json.registerType(NavigationProperties.class);
-        Json.registerType(JavaAutopilotProperties.class);
-        Json.registerType(TestAutopilotProperties.class);
-        Json.registerType(ElectricalPTProperties.class);
-        Json.registerType(FuelPTProperties.class);
-        Json.registerType(NavigationProperties.class);
-        Json.registerType(JavaAutopilotProperties.class);
-        Json.registerType(TestAutopilotProperties.class);
-        Json.registerType(RigidbodyPhysicsProperties.class);
-        Json.registerType(ActuatorProperties.class);
-        Json.registerType(BridgeProperties.class);
-        Json.registerType(CANProperties.class);
-        Json.registerType(ConstantBusProperties.class);
-        Json.registerType(SensorProperties.class);
-        Json.registerType(TestCompProperties.class);
-        Json.registerType(PathGoalProperties.class);
-        Json.registerType(MetricGoalProperties.class);
     }
 
     public Vector<Updatable> getUpdatables() {
