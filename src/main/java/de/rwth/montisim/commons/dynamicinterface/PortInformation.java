@@ -1,7 +1,6 @@
 package de.rwth.montisim.commons.dynamicinterface;
 
-import java.util.HashSet;
-import java.util.Set;
+import java.util.Vector;
 
 public class PortInformation {
     public static enum PortDirection {
@@ -20,7 +19,7 @@ public class PortInformation {
     public DataType data_type;
     public boolean allows_multiple_inputs = true;
     public boolean optional = false;
-    public final Set<String> tags = new HashSet<>(); // Tags for routing. Example: 'network' tag -> gets collected by the Gateway component
+    public Vector<String> tags = new Vector<>(); // Tags for routing. Example: 'network' tag -> gets collected by the Gateway component
 
     protected PortInformation() {}
     

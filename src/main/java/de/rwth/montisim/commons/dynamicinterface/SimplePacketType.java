@@ -87,19 +87,22 @@ public class SimplePacketType extends DataType {
     public void toBinary(DataOutputStream os, Object o) throws IOException {
         Object packet[] = (Object[]) o;
         String addr = (String)packet[0];
-        os.writeShort(addr.length());
         os.write(addr.getBytes());
+        os.writeByte(0); // Termination char
         payloadType.toBinary(os, packet[1]);
     }
 
     @Override
     public Object fromBinary(DataInputStream is) throws IOException {
         Object res[] = new Object[2];
-        short addrSize = is.readShort();
-        //res[0] = new String(is.readNBytes(addrSize));
-        byte bytes[] = new byte[addrSize];
-        for (int i = 0; i < addrSize; ++i) bytes[i] = is.readByte();
-        res[0] = new String(bytes);
+        StringBuilder sb = new StringBuilder();
+        byte c;
+        do {
+            c = is.readByte();
+            if (c == 0) break;
+            sb.append((char)c);
+        } while (true);
+        res[0] = sb.toString();
         res[1] = payloadType.fromBinary(is);
         return res;
     }
@@ -111,6 +114,11 @@ public class SimplePacketType extends DataType {
         res.add("SimplePacket: addr="+((String) packet[0])+" payload=");
         res.addAll(payloadType.toString(packet[1]));
         return res;
+    }
+
+    @Override
+    public String toString() {
+        return "SimplePacket(" + payloadType + ")";
     }
 
     @Override
