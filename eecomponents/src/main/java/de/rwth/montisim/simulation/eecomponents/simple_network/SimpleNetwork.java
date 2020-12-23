@@ -77,6 +77,7 @@ public class SimpleNetwork implements EventTarget, SimulatorModule {
             });
         } else {
             SimpleNetworkNodeInfo target = ipToNode.get(event.msg.target.addr);
+            if (target == null) throw new IllegalArgumentException("Sending to Unknown IP: "+event.msg.target.addr);
             if (inRange(target, sender)) {
                 target.component.process(recvEvent);
             }

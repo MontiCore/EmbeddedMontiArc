@@ -155,30 +155,29 @@ public class Navigation extends EEComponent {
         if (index < 0) return;
         Path p = currentPath.get();
         int size = Math.min(TRAJ_ARRAY_LENGTH, p.getLength()-index);
-        currentTrajSize = size;
         double x[] = new double[TRAJ_ARRAY_LENGTH];
         double y[] = new double[TRAJ_ARRAY_LENGTH];
-        int j = 0;
-        for (int i = 0; i < size; ++j){
-            double vx = 0, vy = 0;
-            if (j > 0) {
-                double dist = 0;
-                do {
-                    vx = p.trajectoryX[index+i];
-                    vy = p.trajectoryY[index+i];
-                    dist = currentTraj[i-1].distance(vx, vy);
-                    ++i;
-                } while(dist < 0.01 && i < size); // Search the next traj point that is not too near the last
-                if (i >= size) break;
-            } else ++i;
-            x[j] = vx;
-            y[j] = vy;
-            currentTraj[j].x = x[j];
-            currentTraj[j].y = y[j];
+
+        int pointCount = 0;
+        for (int i = 0; i < size; ++i){
+            double vx = p.trajectoryX[index+i];
+            double vy = p.trajectoryY[index+i];
+            // Only add the point if it is far enough from the last
+            if (pointCount > 0) {
+                double dist = currentTraj[pointCount-1].distance(vx, vy);
+                if (dist < 0.01) continue; // Skip
+            }
+            x[pointCount] = vx;
+            y[pointCount] = vy;
+            currentTraj[pointCount].x = x[pointCount];
+            currentTraj[pointCount].y = y[pointCount];
+            ++pointCount;
         }
-        sendMessage(time, trajectoryLengthMsg, j);
-        sendMessage(time, trajectoryXMsg, x, 8*j);
-        sendMessage(time.plus(Duration.ofMillis(10)), trajectoryYMsg, y, 8*j);
+        
+        currentTrajSize = pointCount;
+        sendMessage(time, trajectoryLengthMsg, currentTrajSize);
+        sendMessage(time, trajectoryXMsg, x, 8*currentTrajSize);
+        sendMessage(time.plus(Duration.ofMillis(10)), trajectoryYMsg, y, 8*currentTrajSize);
     }
 
     private int getNearestSegment(Vec2 pos) {
