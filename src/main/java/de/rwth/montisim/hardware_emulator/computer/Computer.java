@@ -9,12 +9,14 @@ import java.time.Instant;
 import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.List;
+import java.util.Vector;
 
 import de.rwth.montisim.commons.dynamicinterface.BasicType;
 import de.rwth.montisim.commons.dynamicinterface.PortInformation;
 import de.rwth.montisim.commons.dynamicinterface.ProgramInterface;
 import de.rwth.montisim.commons.dynamicinterface.VectorType;
 import de.rwth.montisim.commons.dynamicinterface.PortInformation.PortDirection;
+import de.rwth.montisim.commons.dynamicinterface.PortInformation.PortType;
 import de.rwth.montisim.commons.eventsimulation.DiscreteEvent;
 import de.rwth.montisim.commons.eventsimulation.exceptions.UnexpectedEventException;
 import de.rwth.montisim.commons.simulation.Destroyer;
@@ -54,6 +56,11 @@ public class Computer extends EEComponent implements Inspectable {
         System.out.println(Json.toJson(basicInterface));
     }
 
+
+    public static class SocketQueues {
+        Vector<Object> in = new Vector<>(); // To the computer
+        Vector<Object> out = new Vector<>(); // From the computer
+    }
 
 
 
@@ -97,6 +104,7 @@ public class Computer extends EEComponent implements Inspectable {
         for (PortInformation p : program.ports) {
             msgIds[i] = addPort(p);
             portIdByName.put(p.name, i);
+            if (p.port_type == PortType.SOCKET) buffer[i] = new SocketQueues();
             ++i;
         }
         if (!realTime)
@@ -134,7 +142,12 @@ public class Computer extends EEComponent implements Inspectable {
             // TODO directly send input ? or scheduled task ?
             throw new IllegalStateException("REALTIME TimeMode is Unimplemented");
         } else {
-            buffer[i] = msg.message;
+            if (inf.port_type == PortType.SOCKET) {
+                SocketQueues sq = (SocketQueues)buffer[i];
+                sq.in.add(msg.message);
+            } else {
+                buffer[i] = msg.message;
+            }
         }
     }
 
@@ -159,8 +172,17 @@ public class Computer extends EEComponent implements Inspectable {
         
         int i = 0;
         for (PortInformation port : program.ports) {
-            if (port.direction == PortDirection.OUTPUT && buffer[i] != null) {
-                sendMessage(sendTime, msgIds[i], buffer[i]);
+            if (port.isOutput()) {
+                if (port.port_type == PortType.SOCKET) {
+                    SocketQueues sq = (SocketQueues)buffer[i];
+                    for (Object o : sq.out) {
+                        sendMessage(sendTime, msgIds[i], o);
+                    }
+                } else {
+                    if (buffer[i] != null) {
+                        sendMessage(sendTime, msgIds[i], buffer[i]);
+                    }
+                }
             }
             ++i;
         }
@@ -183,20 +205,54 @@ public class Computer extends EEComponent implements Inspectable {
         List<String> entries = new ArrayList<>();
         int i = 0;
         for (PortInformation p : program.ports) {
-            String res = p.direction == PortDirection.INPUT ? "input: " : "output: ";
-            res += p.name + ": ";
-            Object val = buffer[i];
-            if (val == null) entries.add(res + "null");
-            else {
-                List<String> toStr = p.data_type.toString(val);
-                if (toStr.size() == 0) entries.add(res + "No toString()");
-                if (toStr.size() == 1) entries.add(res + toStr.get(0));
+            if (p.port_type == PortType.DATA) {
+                String res = p.direction == PortDirection.INPUT ? "input: " : "output: ";
+                res += p.name + ": ";
+                Object val = buffer[i];
+                if (val == null) entries.add(res + "null");
                 else {
-                    entries.add(res);
-                    for (String s : toStr) {
-                        entries.add("  "+s);
+                    List<String> toStr = p.data_type.toString(val);
+                    if (toStr.size() == 0) entries.add(res + "No toString()");
+                    if (toStr.size() == 1) entries.add(res + toStr.get(0));
+                    else {
+                        entries.add(res);
+                        for (String s : toStr) {
+                            entries.add("  "+s);
+                        }
                     }
                 }
+            } else {
+                SocketQueues sq = (SocketQueues)buffer[i];
+                String res = "socket";
+                if (p.isInput()) {
+                    if (sq.in.size() > 0) {
+                        entries.add(res + " IN [");
+                        for (Object o : sq.in) {
+                            List<String> toStr = p.data_type.toString(o);
+                            for (String s : toStr) {
+                                entries.add("  "+s);
+                            }
+                        }
+                        res = "]";
+                    } else {
+                        res += " IN: []";
+                    }
+                }
+                if (p.isOutput()) {
+                    if (sq.out.size() > 0) {
+                        entries.add(res + " OUT [");
+                        for (Object o : sq.out) {
+                            List<String> toStr = p.data_type.toString(o);
+                            for (String s : toStr) {
+                                entries.add("  "+s);
+                            }
+                        }
+                        res = "]";
+                    } else {
+                        res += " OUT: []";
+                    }
+                }
+                entries.add(res);
             }
             ++i;
         }

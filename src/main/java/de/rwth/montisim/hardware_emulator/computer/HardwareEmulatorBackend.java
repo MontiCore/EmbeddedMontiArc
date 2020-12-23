@@ -8,13 +8,14 @@ import java.time.Duration;
 
 import de.rwth.montisim.commons.dynamicinterface.PortInformation;
 import de.rwth.montisim.commons.dynamicinterface.ProgramInterface;
-import de.rwth.montisim.commons.dynamicinterface.PortInformation.PortDirection;
+import de.rwth.montisim.commons.dynamicinterface.PortInformation.PortType;
 import de.rwth.montisim.commons.utils.Time;
 import de.rwth.montisim.commons.utils.json.Json;
 import de.rwth.montisim.commons.utils.json.JsonTraverser;
 import de.rwth.montisim.commons.utils.json.JsonWriter;
 import de.rwth.montisim.commons.utils.json.SerializationException;
 import de.rwth.montisim.hardware_emulator.CppBridge;
+import de.rwth.montisim.hardware_emulator.computer.Computer.SocketQueues;
 
 public class HardwareEmulatorBackend implements ComputerBackend {
 
@@ -44,12 +45,26 @@ public class HardwareEmulatorBackend implements ComputerBackend {
             int i = 0;
             //System.out.println("inputs:");
             for (PortInformation port : program.ports) {
-                if (port.direction == PortDirection.INPUT && portData[i] != null) {
-                    writer.init();
-                    port.data_type.toJson(writer, portData[i], null);
-                    String res = writer.getString();
-                    //System.out.println("  " +res);
-                    CppBridge.setPort(id, i, res);
+                if (port.isInput()) {
+                    if (port.port_type == PortType.SOCKET) {
+                        SocketQueues sq = (SocketQueues)portData[i];
+                        for (Object o : sq.in) {
+                            writer.init();
+                            port.data_type.toJson(writer, o, null);
+                            String res = writer.getString();
+                            //System.out.println("  " +res);
+                            CppBridge.setPort(id, i, res); // Must correctly add to queue
+                        }
+                        sq.in.clear();
+                    } else {
+                        if (portData[i] != null) {
+                            writer.init();
+                            port.data_type.toJson(writer, portData[i], null);
+                            String res = writer.getString();
+                            //System.out.println("  " +res);
+                            CppBridge.setPort(id, i, res);
+                        }
+                    }
                 }
                 ++i;
             }
@@ -65,11 +80,23 @@ public class HardwareEmulatorBackend implements ComputerBackend {
             // Get outputs
             i = 0;
             for (PortInformation p : program.ports) {
-                if (p.direction == PortDirection.OUTPUT) {
-                    String data = CppBridge.getPort(id, i);
-                    traverser.init(data);
-                    Object msg = p.data_type.fromJson(traverser, null);
-                    portData[i] = msg;
+                if (p.isOutput()) {
+                    if (p.port_type == PortType.SOCKET) {
+                        SocketQueues sq = (SocketQueues)portData[i];
+                        sq.out.clear();
+                        while (true) {
+                            String data = CppBridge.getPort(id, i); // Assumes 'getPort()' pulls from the queue until returning "".
+                            if (data.length() == 0) break;
+                            traverser.init(data);
+                            Object msg = p.data_type.fromJson(traverser, null);
+                            sq.out.add(msg);
+                        }
+                    } else {
+                        String data = CppBridge.getPort(id, i);
+                        traverser.init(data);
+                        Object msg = p.data_type.fromJson(traverser, null);
+                        portData[i] = msg;
+                    }
                 }
                 ++i;
             }

@@ -8,10 +8,11 @@ import java.io.*;
 import java.net.*;
 
 import de.rwth.montisim.commons.dynamicinterface.*;
-import de.rwth.montisim.commons.dynamicinterface.PortInformation.PortDirection;
+import de.rwth.montisim.commons.dynamicinterface.PortInformation.PortType;
 import de.rwth.montisim.commons.utils.*;
 import de.rwth.montisim.commons.utils.json.Json;
 import de.rwth.montisim.hardware_emulator.TypedHardwareEmu;
+import de.rwth.montisim.hardware_emulator.computer.Computer.SocketQueues;
 import de.rwth.montisim.hardware_emulator.computer.ComputerProperties.*;
 
 public class TCPBackend implements ComputerBackend {
@@ -186,12 +187,26 @@ public class TCPBackend implements ComputerBackend {
         // Send inputs
         int i = 0;
         for (PortInformation port : interf.ports) {
-            if (port.direction == PortDirection.INPUT && portData[i] != null) {
-                // System.out.println("Sending INPUT for "+port.name +": "+portData[i]);
-                ByteArrayOutputStream os = new ByteArrayOutputStream();
-                DataOutputStream os2 = new DataOutputStream(os);
-                port.data_type.toBinary(os2, portData[i]);
-                sendInputPacket(i, os.toByteArray());
+            if (port.isInput()) {
+                if (port.port_type == PortType.SOCKET) {
+                    SocketQueues sq = (SocketQueues)portData[i];
+                    for (Object o : sq.in) {
+                        // System.out.println("Sending INPUT for "+port.name +": "+portData[i]);
+                        ByteArrayOutputStream os = new ByteArrayOutputStream();
+                        DataOutputStream os2 = new DataOutputStream(os);
+                        port.data_type.toBinary(os2, o);
+                        sendInputPacket(i, os.toByteArray());
+                    }
+                    sq.in.clear();
+                } else {
+                    if (portData[i] != null) {
+                        // System.out.println("Sending INPUT for "+port.name +": "+portData[i]);
+                        ByteArrayOutputStream os = new ByteArrayOutputStream();
+                        DataOutputStream os2 = new DataOutputStream(os);
+                        port.data_type.toBinary(os2, portData[i]);
+                        sendInputPacket(i, os.toByteArray());
+                    }
+                }
             }
             ++i;
         }
@@ -203,6 +218,17 @@ public class TCPBackend implements ComputerBackend {
         out.flush();
         // Receive outputs & exec time
         // System.out.println("Waiting for responses");
+        i = 0;
+        for (PortInformation p : interf.ports) {
+            if (p.isOutput()) {
+                if (p.port_type == PortType.SOCKET) {
+                    SocketQueues sq = (SocketQueues)portData[i];
+                    sq.out.clear();
+                }
+            }
+            ++i;
+        }
+
         Packet p = getPacket();
         while (true) {
             switch (p.id) {
@@ -214,10 +240,16 @@ public class TCPBackend implements ComputerBackend {
                     DataInputStream is = new DataInputStream(new ByteArrayInputStream(p.data));
                     int portId = is.readShort();
                     PortInformation port = interf.ports.elementAt(portId);
-                    if (port.direction != PortDirection.OUTPUT)
+                    if (!port.isOutput())
                         throw new IllegalArgumentException(
                                 "Received output packet for port " + port.name + " (but it is an INPUT port)");
-                    portData[portId] = port.data_type.fromBinary(is);
+                    Object res = port.data_type.fromBinary(is);
+                    if (port.port_type == PortType.SOCKET) {
+                        SocketQueues sq = (SocketQueues)portData[portId];
+                        sq.out.add(res);
+                    } else {
+                        portData[portId] = res;
+                    }
                     break;
                 default:
                     throw new IllegalArgumentException("Unexpected packet with id=" + p.id);
