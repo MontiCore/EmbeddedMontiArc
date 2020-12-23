@@ -16,7 +16,19 @@
                 ]
             },
             "components": [
-                { "type": "constant_bus" },
+                { 
+                    "type": "constant_bus",
+                    "connected_to": [
+                        "SteeringActuator",
+                        "BrakingActuator",
+                        "GasActuator",
+                        "TrueVelocitySensor",
+                        "TruePositionSensor",
+                        "TrueCompassSensor",
+                        "Navigation",
+                        "Computer"
+                    ]
+                },
                 {
                     "type": "actuator",
                     "name": "SteeringActuator",
@@ -55,12 +67,15 @@
                 { "type": "navigation" },
                 {
                     "type": "computer",
+                    "name": "Computer",
                     "software_name": "TestEMADLAP",
-                    "emulator_type": "direct",
-                    "os": "windows",
+                    "backend": {
+                        "type": "direct"
+                    },
                     "time_model": {
-                        "type": "instant"
-                    }
+                        "type": "constant"
+                    },
+                    "cycle_duration": [0,10000000]
                 }
             ]
         }

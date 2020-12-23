@@ -10,7 +10,6 @@ import de.rwth.montisim.commons.simulation.TimeUpdate;
 import de.rwth.montisim.commons.utils.IPM;
 import de.rwth.montisim.commons.utils.Vec2;
 import de.rwth.montisim.commons.utils.json.SerializationException;
-import de.rwth.montisim.simulation.eesimulator.message.MessageTypeManager;
 import de.rwth.montisim.simulation.environment.pathfinding.PathfindingImpl;
 import de.rwth.montisim.simulation.environment.osmmap.*;
 import de.rwth.montisim.simulation.environment.world.World;
@@ -53,7 +52,6 @@ public class ScenarioVis extends SimVis implements SimulationRunner {
     World world;
     OsmMap map;
     Pathfinding pathfinding;
-    MessageTypeManager mtManager;
 
     final long PHYSICS_TICK_DURATION_MS = 10;
     final long TICK_NANO = PHYSICS_TICK_DURATION_MS * 1000000;
@@ -98,8 +96,7 @@ public class ScenarioVis extends SimVis implements SimulationRunner {
             e1.printStackTrace();
             return;
         }
-        mtManager = new MessageTypeManager();
-        simulator = simConfig.build(world, pathfinding, mtManager, map);
+        simulator = simConfig.build(world, pathfinding, map);
 
         // Setup visualizer
 

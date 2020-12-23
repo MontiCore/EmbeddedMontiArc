@@ -1,11 +1,16 @@
 {
-    "name": "java_autopilot",
+    "name": "two_vcgs",
     "map_name": "aachen",
+    "modules": [
+        {
+            "type": "simple_network",
+            "transmission_time": [0, 100000000]
+        }
+    ],
     "cars": [
         {
-            "name": "Car1",
-            "start_pos": [ -123.09, 21.64 ],
-            "start_orientation": -30.0,
+            "name": "VCGTestVehicle1",
+            "start_pos": [ 0, 0 ],
             "task": {
                 "goals": [
                     {
@@ -27,7 +32,8 @@
                         "TruePositionSensor",
                         "TrueCompassSensor",
                         "Navigation",
-                        "JavaAutopilot"
+                        "SimpleCommunicationGateway",
+                        "Computer"
                     ]
                 },
                 {
@@ -66,23 +72,32 @@
                     "physical_value_name": "true_compass"
                 },
                 { "type": "navigation" },
+                { "type": "simple_communication_gateway" },
                 {
-                    "type": "java_autopilot",
-                    "name": "JavaAutopilot",
-                    "maxVehicleAccel": 7.460690450979396
+                    "type": "computer",
+                    "name": "Computer",
+                    "backend": {
+                        "type": "tcp",
+                        "host": "::1",
+                        "port": 4567,
+                        "ref_id": 16384
+                    },
+                    "time_model": {
+                        "type": "measured"
+                    },
+                    "cycle_duration": [0,10000000]
                 }
             ]
         },
         {
-            "name": "Car2",
-            "start_pos": [ -265.85, -56.34 ],
-            "start_orientation": 40.0,
+            "name": "VCGTestVehicle2",
+            "start_pos": [ 0, 10 ],
             "task": {
                 "goals": [
                     {
                         "type": "path",
                         "ltl_operator": "eventually",
-                        "path": [ [-159.65, -48.59] ],
+                        "path": [ [-63.83, -171.96] ],
                         "range": 5
                     }
                 ]
@@ -98,7 +113,8 @@
                         "TruePositionSensor",
                         "TrueCompassSensor",
                         "Navigation",
-                        "JavaAutopilot"
+                        "SimpleCommunicationGateway",
+                        "Computer"
                     ]
                 },
                 {
@@ -106,7 +122,7 @@
                     "name": "SteeringActuator",
                     "physical_value_name": "steering",
                     "change_rate": 60.0,
-                    "sensor": { "type": "sensor" }
+                    "sensor": { "type": "sensor"}
                 },
                 {
                     "type": "actuator",
@@ -137,10 +153,20 @@
                     "physical_value_name": "true_compass"
                 },
                 { "type": "navigation" },
+                { "type": "simple_communication_gateway" },
                 {
-                    "type": "java_autopilot",
-                    "name": "JavaAutopilot",
-                    "maxVehicleAccel": 7.460690450979396
+                    "type": "computer",
+                    "name": "Computer",
+                    "backend": {
+                        "type": "tcp",
+                        "host": "::1",
+                        "port": 5678,
+                        "ref_id": 16384
+                    },
+                    "time_model": {
+                        "type": "measured"
+                    },
+                    "cycle_duration": [0,10000000]
                 }
             ]
         }

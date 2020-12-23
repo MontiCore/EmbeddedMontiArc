@@ -8,11 +8,8 @@ import de.rwth.montisim.basic_simulator.gui.Browser;
 import de.rwth.montisim.commons.map.Pathfinding;
 import de.rwth.montisim.commons.simulation.TaskStatus;
 import de.rwth.montisim.commons.utils.LibraryService;
-import de.rwth.montisim.commons.utils.json.*;
 import de.rwth.montisim.hardware_emulator.CppBridge;
-import de.rwth.montisim.hardware_emulator.computer.ComputerProperties;
-import de.rwth.montisim.hardware_emulator.vcg.VCGProperties;
-import de.rwth.montisim.simulation.eesimulator.message.MessageTypeManager;
+import de.rwth.montisim.hardware_emulator.TypedHardwareEmu;
 import de.rwth.montisim.simulation.environment.world.World;
 import de.rwth.montisim.simulation.environment.osmmap.*;
 import de.rwth.montisim.simulation.environment.pathfinding.PathfindingImpl;
@@ -27,9 +24,7 @@ import java.io.IOException;
 public class App 
 {
     static {
-        Json.registerType(ComputerProperties.class);
-        Json.registerType(VCGProperties.class);
-        Simulator.registerJsonTypes();
+        TypedHardwareEmu.registerTypedHardwareEmu();
     }
 
     public static void main( String[] args )
@@ -72,7 +67,7 @@ public class App
                 return;
             }
 
-            Browser gui = new Browser(fileSystem);
+            new Browser(fileSystem);
             fileSystem.check_updates(); //Infinite loop until gui calls System.exit()
         } catch (IOException e) {
             e.printStackTrace();
@@ -91,8 +86,7 @@ public class App
             OsmMap map = new OsmMap(config.map_name, mapPath);
             World world = new OsmToWorldLoader(map).getWorld();
             Pathfinding pathfinding = new PathfindingImpl(world);
-            MessageTypeManager mtManager = new MessageTypeManager();
-            Simulator simulator = config.build(world, pathfinding, mtManager, map);
+            Simulator simulator = config.build(world, pathfinding, map);
 
             // Run simulation
             SimulationLoop simLoop = new SimulationLoop(simulator, config);
