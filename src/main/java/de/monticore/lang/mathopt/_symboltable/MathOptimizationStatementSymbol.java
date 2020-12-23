@@ -40,7 +40,7 @@ public class MathOptimizationStatementSymbol extends MathExpressionSymbol {
     /**
      * List of all constraint expressions, unmodified.
      */
-    private List<MathExpressionSymbol> constraints = new ArrayList<>();
+    private List<MathOptimizationConditionSymbol> constraints = new ArrayList<>();
 
     private MathExpressionSymbol stepSizeExpression;
 
@@ -118,11 +118,11 @@ public class MathOptimizationStatementSymbol extends MathExpressionSymbol {
         this.stepSizeExpression = stepSizeExpression;
     }
 
-    public List<MathExpressionSymbol> getConstraints() {
+    public List<MathOptimizationConditionSymbol> getConstraints() {
         return constraints;
     }
 
-    public void setConstraints(List<MathExpressionSymbol> constraints) {
+    public void setConstraints(List<MathOptimizationConditionSymbol> constraints) {
         this.constraints = constraints;
     }
 

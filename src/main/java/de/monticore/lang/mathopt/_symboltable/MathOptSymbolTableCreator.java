@@ -148,17 +148,19 @@ public class MathOptSymbolTableCreator extends MathSymbolTableCreator implements
             if (condition.getSymbolOpt().isPresent()) {
                 MathExpressionSymbol conditionSymbol = (MathExpressionSymbol) condition.getSymbolOpt().get();
 
-                //What does this do?
+                //What does this do? A: Re-sorts upper/lower/boundedExpressions
                 if (conditionSymbol instanceof MathOptimizationConditionSymbol) {
-                    for (MathValueSymbol var: symbol.getOptimizationVariables()){
-                        ((MathOptimizationConditionSymbol) conditionSymbol).resolveBoundedExpressionToOptimizationVariable(var);
-                    }
+                    ((MathOptimizationConditionSymbol) conditionSymbol).resolveBoundedExpressionToOptimizationVariable(symbol.getOptimizationVariables());
+                    ((MathOptimizationConditionSymbol) conditionSymbol).resolveBoundedExpressionToOptimizationVariable(symbol.getIndependentVariables());
+                    symbol.getConstraints().add((MathOptimizationConditionSymbol) conditionSymbol);
                 } else if (conditionSymbol instanceof MathForLoopExpressionSymbol) {
                     for (MathExpressionSymbol sym : ((MathForLoopExpressionSymbol) conditionSymbol).getForLoopBody())
-                        if (sym instanceof MathOptimizationConditionSymbol)
-                            for (MathValueSymbol var: symbol.getOptimizationVariables()) {
-                                ((MathOptimizationConditionSymbol) sym).resolveBoundedExpressionToOptimizationVariable(var);
-                            }
+                        if (sym instanceof MathOptimizationConditionSymbol) {
+                            ((MathOptimizationConditionSymbol) sym).resolveBoundedExpressionToOptimizationVariable(symbol.getOptimizationVariables());
+                            ((MathOptimizationConditionSymbol) sym).resolveBoundedExpressionToOptimizationVariable(symbol.getIndependentVariables());
+                            symbol.getConstraints().add((MathOptimizationConditionSymbol) conditionSymbol);
+                            //ToDo: Check for loop constraints
+                        }
                 }
                 symbol.getSubjectToExpressions().add(conditionSymbol);
             }

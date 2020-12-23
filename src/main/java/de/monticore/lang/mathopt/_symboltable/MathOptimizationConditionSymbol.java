@@ -13,6 +13,10 @@ import java.util.Optional;
 public class MathOptimizationConditionSymbol extends MathExpressionSymbol {
 
     // fields
+    private MathExpressionSymbol left = null;
+    private MathExpressionSymbol right = null;
+    private String operator = "";
+    private boolean isSimpleCondition = false;
     /**
      * optional lower bound of the constraint
      */
@@ -32,10 +36,15 @@ public class MathOptimizationConditionSymbol extends MathExpressionSymbol {
         this.lowerBound = lower;
         this.boundedExpression = expr;
         this.upperBound = upper;
+        this.isSimpleCondition = false;
     }
 
     public MathOptimizationConditionSymbol(MathExpressionSymbol left, String operator, MathExpressionSymbol right) {
         super();
+        this.left = left;
+        this.right = right;
+        this.operator = operator;
+        this.isSimpleCondition = true;
         switch (operator) {
             case "==":
                 boundedExpression = left;
@@ -66,6 +75,14 @@ public class MathOptimizationConditionSymbol extends MathExpressionSymbol {
         return boundedExpression;
     }
 
+    public MathExpressionSymbol getLeft() { return left; }
+
+    public MathExpressionSymbol getRight() { return right; }
+
+    public String getOperator() { return operator; }
+
+    public boolean isSimpleCondition() { return isSimpleCondition; }
+
     // setter
     public void setLowerBound(MathExpressionSymbol lowerBound) {
         this.lowerBound = lowerBound;
@@ -79,28 +96,39 @@ public class MathOptimizationConditionSymbol extends MathExpressionSymbol {
         this.boundedExpression = boundedExpression;
     }
 
+
+    public static boolean stringContainsItemFromMathValueList(String input, List<MathValueSymbol> symbols){
+        return symbols.stream().anyMatch(mathName -> (mathName.getName().equals(input)));
+    }
+
     /**
      * Uses optimizationVariable to determine which is the bounded expression and which is the bound and maybe switch
      * bound and bounded expression
      *
-     * @param optimizationVariable Optimization Variable of the Optimization Statement
+     * @param variables Variables defined in the scope of the optimization statement
      */
-    public void resolveBoundedExpressionToOptimizationVariable(MathValueSymbol optimizationVariable) {
-        if (!boundedExpression.getTextualRepresentation().contains(optimizationVariable.getName())) {
-            // switch bound(s) and expression
-            MathExpressionSymbol newBound = boundedExpression;
-            if (getLowerBound().isPresent() && (getUpperBound().isPresent()) && (lowerBound == upperBound)) {
-                boundedExpression = lowerBound;
-                lowerBound = newBound;
-                upperBound = newBound;
-            } else if (getLowerBound().isPresent() && !getUpperBound().isPresent()) {
-                boundedExpression = lowerBound;
-                lowerBound = newBound;
-            } else if (getUpperBound().isPresent() && !getLowerBound().isPresent()) {
-                boundedExpression = upperBound;
-                upperBound = newBound;
+    public void resolveBoundedExpressionToOptimizationVariable(List<MathValueSymbol> variables) {
+        //ToDo: rewrite this, so it works on a visitor, not on getTextualRepresentation()
+        //for(MathValueSymbol var : variables) {
+            //Bug: For loop not applicable here, .contains(variables)
+            //if (!boundedExpression.getTextualRepresentation().contains(var.getName())) {
+            //if (!boundedExpression.getTextualRepresentation().(var.getName())) {
+            if (stringContainsItemFromMathValueList(boundedExpression.getTextualRepresentation(),variables)) {
+                // switch bound(s) and expression
+                MathExpressionSymbol newBound = boundedExpression;
+                if (getLowerBound().isPresent() && (getUpperBound().isPresent()) && (lowerBound == upperBound)) {
+                    boundedExpression = lowerBound;
+                    lowerBound = newBound;
+                    upperBound = newBound;
+                } else if (getLowerBound().isPresent() && !getUpperBound().isPresent()) {
+                    boundedExpression = lowerBound;
+                    lowerBound = newBound;
+                } else if (getUpperBound().isPresent() && !getLowerBound().isPresent()) {
+                    boundedExpression = upperBound;
+                    upperBound = newBound;
+                }
             }
-        }
+        //}
     }
 
     @Override

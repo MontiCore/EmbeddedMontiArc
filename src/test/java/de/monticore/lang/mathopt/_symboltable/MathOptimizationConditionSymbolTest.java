@@ -81,7 +81,7 @@ public class MathOptimizationConditionSymbolTest {
 
     private void resolveBoundedExpressionToOptimizationVariableForOperator(MathExpressionSymbol bound, MathExpressionSymbol expr, String op) {
         MathOptimizationConditionSymbol symbol = new MathOptimizationConditionSymbol(bound, op, expr);
-        symbol.resolveBoundedExpressionToOptimizationVariable(helper.getMinimizationTestSymbol().getOptimizationVariables().get(0));
+        symbol.resolveBoundedExpressionToOptimizationVariable(helper.getMinimizationTestSymbol().getOptimizationVariables());
         assertTrue(symbol.getBoundedExpression().getTextualRepresentation().contains(helper.getMinimizationTestSymbol().getOptimizationVariables().get(0).getName()));
     }
 
