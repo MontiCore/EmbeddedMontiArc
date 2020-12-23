@@ -1,10 +1,13 @@
 {
     "name": "explicit",
     "map_name": "aachen",
+    "max_duration": [60,0],
+    "tick_duration": [0,10000000],
     "cars": [
         {
             "name": "TestVehicle",
             "start_pos": [ -123.09, 21.64 ],
+            "start_orientation": -30.0,
             "task": {
                 "goals": [
                     {
@@ -53,22 +56,30 @@
                 "type": "rigidbody"
             },
             "components": [
+                { 
+                    "type": "constant_bus",
+                    "name": "DefaultBus",
+                    "mode": "instant",
+                    "rate": 0.0,
+                    "connected_to": [
+                        "SteeringActuator",
+                        "BrakingActuator",
+                        "GasActuator",
+                        "TrueVelocitySensor",
+                        "TruePositionSensor",
+                        "TrueCompassSensor",
+                        "Navigation",
+                        "TestAutopilot"
+                    ]
+                },
                 {
                     "type": "actuator",
                     "name": "SteeringActuator",
-                    "priority": {},
-                    "buses": [
-                        "DefaultBus"
-                    ],
                     "physical_value_name": "steering",
                     "change_rate": 60.0,
                     "sensor": {
                         "type": "sensor",
                         "name": "UnnamedComponent",
-                        "priority": {},
-                        "buses": [
-                            "DefaultBus"
-                        ],
                         "update_interval": [
                             0,
                             100000000
@@ -83,19 +94,11 @@
                 {
                     "type": "actuator",
                     "name": "BrakingActuator",
-                    "priority": {},
-                    "buses": [
-                        "DefaultBus"
-                    ],
                     "physical_value_name": "braking",
                     "change_rate": 10.0,
                     "sensor": {
                         "type": "sensor",
                         "name": "UnnamedComponent",
-                        "priority": {},
-                        "buses": [
-                            "DefaultBus"
-                        ],
                         "update_interval": [
                             0,
                             100000000
@@ -110,19 +113,11 @@
                 {
                     "type": "actuator",
                     "name": "GasActuator",
-                    "priority": {},
-                    "buses": [
-                        "DefaultBus"
-                    ],
                     "physical_value_name": "gas",
                     "change_rate": "Infinity",
                     "sensor": {
                         "type": "sensor",
                         "name": "UnnamedComponent",
-                        "priority": {},
-                        "buses": [
-                            "DefaultBus"
-                        ],
                         "update_interval": [
                             0,
                             100000000
@@ -137,10 +132,6 @@
                 {
                     "type": "sensor",
                     "name": "TrueVelocitySensor",
-                    "priority": {},
-                    "buses": [
-                        "DefaultBus"
-                    ],
                     "physical_value_name": "true_velocity",
                     "update_interval": [
                         0,
@@ -155,10 +146,6 @@
                 {
                     "type": "sensor",
                     "name": "TruePositionSensor",
-                    "priority": {},
-                    "buses": [
-                        "DefaultBus"
-                    ],
                     "physical_value_name": "true_position",
                     "update_interval": [
                         0,
@@ -173,10 +160,6 @@
                 {
                     "type": "sensor",
                     "name": "TrueCompassSensor",
-                    "priority": {},
-                    "buses": [
-                        "DefaultBus"
-                    ],
                     "physical_value_name": "true_compass",
                     "update_interval": [
                         0,
@@ -190,26 +173,11 @@
                 },
                 {
                     "type": "navigation",
-                    "name": "Navigation",
-                    "priority": {},
-                    "buses": [
-                        "DefaultBus"
-                    ]
-                },
-                {
-                    "type": "constant_bus",
-                    "name": "DefaultBus",
-                    "priority": {},
-                    "mode": "instant",
-                    "rate": 0.0
+                    "name": "Navigation"
                 },
                 {
                     "type": "java_autopilot",
                     "name": "TestAutopilot",
-                    "priority": {},
-                    "buses": [
-                        "DefaultBus"
-                    ],
                     "compute_time": [
                         0,
                         0

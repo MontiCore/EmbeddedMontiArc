@@ -16,7 +16,19 @@
                 ]
             },
             "components": [
-                { "type": "constant_bus" },
+                { 
+                    "type": "constant_bus",
+                    "connected_to": [
+                        "SteeringActuator",
+                        "BrakingActuator",
+                        "GasActuator",
+                        "TrueVelocitySensor",
+                        "TruePositionSensor",
+                        "TrueCompassSensor",
+                        "Navigation",
+                        "Computer"
+                    ]
+                },
                 {
                     "type": "actuator",
                     "name": "SteeringActuator",
@@ -54,16 +66,18 @@
                 },
                 { "type": "navigation" },
                 {
-                    "type": "vcg",
-                    "name": "VCG",
-                    "communication": {
+                    "type": "computer",
+                    "name": "Computer",
+                    "backend": {
                         "type": "tcp",
                         "host": "::1",
-                        "port": 4567
+                        "port": 4567,
+                        "ref_id": 16384
                     },
-                    "time": "measured",
-                    "cycle_duration": [0,100000000],
-                    "ref_id": 16384
+                    "time_model": {
+                        "type": "measured"
+                    },
+                    "cycle_duration": [0,10000000]
                 }
             ]
         }

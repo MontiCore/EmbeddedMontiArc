@@ -16,7 +16,19 @@
                 ]
             },
             "components": [
-                { "type": "constant_bus" },
+                { 
+                    "type": "constant_bus",
+                    "connected_to": [
+                        "SteeringActuator",
+                        "BrakingActuator",
+                        "GasActuator",
+                        "TrueVelocitySensor",
+                        "TruePositionSensor",
+                        "TrueCompassSensor",
+                        "Navigation",
+                        "Computer"
+                    ]
+                },
                 {
                     "type": "actuator",
                     "name": "SteeringActuator",
@@ -56,8 +68,10 @@
                 {
                     "type": "computer",
                     "software_name": "TestEMAMAP",
-                    "emulator_type": "emu",
-                    "os": "windows",
+                    "backend": {
+                        "type": "emu",
+                        "os": "auto"
+                    },
                     "time_model": {
                         "type": "models",
                         "cpu_frequency": 4000000000,
