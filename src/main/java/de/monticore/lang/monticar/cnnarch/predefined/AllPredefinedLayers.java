@@ -57,6 +57,7 @@ public class AllPredefinedLayers {
     public static final String RESHAPE_NAME = "Reshape";
     public static final String DOT_PRODUCT_SELF_ATTENTION_NAME = "DotProductSelfAttention";
     public static final String LOAD_NETWORK_NAME = "LoadNetwork";
+    public static final String CUSTOM_LAYER = "CustomLayer";
 
     //replay layers
     public static final String LARGE_MEMORY_NAME = "LargeMemory";
