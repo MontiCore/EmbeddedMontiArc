@@ -1,4 +1,5 @@
 import argparse
+
 from sympy import symbols, sympify, nonlinsolve
 
 

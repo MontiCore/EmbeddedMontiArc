@@ -17,30 +17,30 @@ public class LoopKindHelper {
                 switch (kind2) {
                     case Polynom: return LoopKind.Polynom;
                     case NonLinear: return LoopKind.NonLinear;
-                    case LinearDifferencial: return LoopKind.LinearDifferencial;
-                    case NonLinearDifferencial: return LoopKind.NonLinearDifferencial;
+                    case ODE: return LoopKind.ODE;
+                    case DAE: return LoopKind.DAE;
                     default: return kind1;
                 }
             case Polynom:
                 switch (kind2) {
                     case NonLinear: return LoopKind.NonLinear;
-                    case LinearDifferencial: return LoopKind.NonLinearDifferencial;
-                    case NonLinearDifferencial: return LoopKind.NonLinearDifferencial;
+                    case ODE: return LoopKind.DAE;
+                    case DAE: return LoopKind.DAE;
                     default: return kind1;
                 }
             case NonLinear:
                 switch (kind2) {
-                    case LinearDifferencial: return LoopKind.NonLinearDifferencial;
-                    case NonLinearDifferencial: return LoopKind.NonLinearDifferencial;
+                    case ODE: return LoopKind.DAE;
+                    case DAE: return LoopKind.DAE;
                     default: return kind1;
                 }
-            case LinearDifferencial:
+            case ODE:
                 switch (kind2) {
-                    case NonLinearDifferencial: return LoopKind.NonLinearDifferencial;
+                    case DAE: return LoopKind.DAE;
                     default: return kind1;
                 }
-            case NonLinearDifferencial:
-                return LoopKind.NonLinearDifferencial;
+            case DAE:
+                return LoopKind.DAE;
             case Default:
                 return kind2;
             default: return kind1;

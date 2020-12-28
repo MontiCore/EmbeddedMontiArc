@@ -1,14 +1,15 @@
 /* (c) https://github.com/MontiCore/monticore */
 package de.monticore.lang.monticar.semantics.resolve;
 
-import de.monticore.lang.embeddedmontiarc.embeddedmontiarc._symboltable.EmbeddedMontiArcArtifactScope;
 import de.monticore.lang.embeddedmontiarc.embeddedmontiarc._symboltable.instanceStructure.EMAComponentInstanceSymbol;
 import de.monticore.lang.embeddedmontiarc.embeddedmontiarc._symboltable.instanceStructure.EMAConnectorInstanceSymbol;
 import de.monticore.lang.embeddedmontiarc.embeddedmontiarc._symboltable.instanceStructure.EMAPortInstanceSymbol;
 import de.monticore.lang.monticar.semantics.construct.SymtabCreator;
 import de.monticore.lang.monticar.semantics.helper.NameHelper;
+import de.monticore.lang.monticar.semantics.loops.detection.ConnectionHelper;
 import de.monticore.lang.tagging._symboltable.TaggingResolver;
-import de.monticore.symboltable.*;
+import de.monticore.symboltable.MutableScope;
+import de.monticore.symboltable.Scope;
 import de.se_rwth.commons.Joiners;
 import de.se_rwth.commons.logging.Log;
 
@@ -108,7 +109,7 @@ public class SymbolTableHelper {
                 .collect(Collectors.toSet());
 
         if (connectors.size() > 1) { // There are still other connectors using this port
-            if (!isAtomic(connector.getTargetPort().getComponentInstance()))
+            if (!ConnectionHelper.isAtomic(connector.getTargetPort().getComponentInstance()))
                 removePort(connector.getTargetPort());
             removeConnector(connector);
             return result;
@@ -129,7 +130,7 @@ public class SymbolTableHelper {
                 .collect(Collectors.toSet());
         enclosingConnectors.stream().forEach(c -> result.addAll(removeIncomingConnectorRecursive(c)));
 
-        if (!isAtomic(connector.getTargetPort().getComponentInstance()))
+        if (!ConnectionHelper.isAtomic(connector.getTargetPort().getComponentInstance()))
             removePort(connector.getTargetPort());
         removeConnector(connector);
 
@@ -149,7 +150,7 @@ public class SymbolTableHelper {
         connectors = connectors.stream().filter(c -> c.getSourcePort().equals(targetPort)).collect(Collectors.toSet());
         connectors.stream().forEach(c -> result.addAll(removeOutgoingConnectorRecursive(c)));
 
-        if (!isAtomic(connector.getSourcePort().getComponentInstance()))
+        if (!ConnectionHelper.isAtomic(connector.getSourcePort().getComponentInstance()))
             removePort(connector.getSourcePort());
         removeConnector(connector);
 
@@ -163,7 +164,7 @@ public class SymbolTableHelper {
 
     public static EMAComponentInstanceSymbol resolveNewInstance(TaggingResolver scope, String fullQualifiedName) {
 
-        TaggingResolver symTab = SymtabCreator.createSymTab("src/test/resources", "src/main/resources",
+        TaggingResolver symTab = SymtabCreator.createSymTab("src/testing/resources", "src/main/resources",
                 "target/generated-components");
 
         String fullQualifiedNameWithoutSynth = fullQualifiedName;
@@ -180,43 +181,11 @@ public class SymbolTableHelper {
         return emaComponentInstanceSymbol;
     }
 
-    private static Scope getInnermostScope(Scope scope, String fullQualifiedName) {
-        Scope bestScope = null;
-        String bestPackage = "";
-        for (Scope subScope : scope.getSubScopes()) {
-            if (subScope instanceof EmbeddedMontiArcArtifactScope) {
-                String packageName = ((EmbeddedMontiArcArtifactScope) subScope).getPackageName();
-                if (fullQualifiedName.startsWith(packageName) &&
-                    packageName.length() > bestPackage.length()) {
-                    bestPackage = packageName;
-                    bestScope = subScope;
-                }
-            }
-            if (subScope instanceof CommonScope) {
-                Optional<? extends ScopeSpanningSymbol> spanningSymbol = subScope.getSpanningSymbol();
-                if (spanningSymbol.isPresent() &&
-                    fullQualifiedName.startsWith(spanningSymbol.get().getFullName()) &&
-                        spanningSymbol.get().getFullName().length() > bestPackage.length()) {
-                    bestPackage = spanningSymbol.get().getFullName();
-                    bestScope = subScope;
-                }
-            }
-        }
-
-        if (bestScope == null) return scope;
-        return getInnermostScope(bestScope, fullQualifiedName);
+        public static EMAComponentInstanceSymbol resolveInstanceTo(TaggingResolver scope,
+                                                               String fullQualifiedName,
+                                                               EMAComponentInstanceSymbol parent) {
+        return resolveInstanceTo(scope, fullQualifiedName, parent.getSpannedScope(), parent.getFullName());
     }
-
-//    public static EMAComponentInstanceSymbol resolveInstanceTo(TaggingResolverscope,
-//                                                               String fullQualifiedName,
-//                                                               EMAComponentInstanceSymbol parent) {
-//        EMAComponentInstanceSymbol instance = resolveNewInstance(scope, fullQualifiedName);
-//        instance.setPackageName(parent.getFullName());
-//        instance.setFullName(Joiners.DOT.join(parent.getFullName(), NameHelper.getName(fullQualifiedName)));
-//        instance.getEnclosingScope().getAsMutableScope().remove(instance);
-//        parent.getSpannedScope().getAsMutableScope().add(instance);
-//        return instance;
-//    }
 
     public static EMAComponentInstanceSymbol resolveInstanceTo(TaggingResolver scope,
                                                                String fullQualifiedName,
@@ -228,56 +197,6 @@ public class SymbolTableHelper {
         instance.getEnclosingScope().getAsMutableScope().remove(instance);
         enclosingScope.getAsMutableScope().add(instance);
         return instance;
-    }
-
-    public static Collection<EMAPortInstanceSymbol> getAtomicTargetsOf(EMAPortInstanceSymbol port) {
-        if (port.isIncoming() && isAtomic(port.getComponentInstance())) return Collections.singletonList(port);
-        if (!port.getComponentInstance().getParent().isPresent())
-            return Collections.singletonList(port);
-
-        EMAComponentInstanceSymbol next;
-        if (port.isIncoming()) // targets another subcomponent
-            next = port.getComponentInstance();
-        else // targets parent
-            next = port.getComponentInstance().getParent().get();
-
-        List<EMAConnectorInstanceSymbol> targets =
-                next.getConnectorInstances()
-                        .stream()
-                        .filter(c -> port.equals(c.getSourcePort()))
-                        .collect(Collectors.toList());
-        if (targets.size() < 1)
-            Log.error("TODO there should be a connector for this port");
-
-        Collection<EMAPortInstanceSymbol> targetPorts = new LinkedList<>();
-        targets.stream().forEachOrdered(t -> targetPorts.addAll(getAtomicTargetsOf(t.getTargetPort())));
-        return targetPorts;
-    }
-
-    public static Optional<EMAPortInstanceSymbol> getAtomicSourceOf(EMAPortInstanceSymbol port) {
-        if (port.isOutgoing() && isAtomic(port.getComponentInstance())) return Optional.of(port);
-        if (!port.getComponentInstance().getParent().isPresent())
-            return Optional.of(port);
-
-        EMAComponentInstanceSymbol next;
-        if (port.isOutgoing()) // comes from another subcomponent
-            next = port.getComponentInstance();
-        else // comes from parent
-            next = port.getComponentInstance().getParent().get();
-
-        List<EMAConnectorInstanceSymbol> sources =
-                next.getConnectorInstances()
-                        .stream()
-                        .filter(c -> port.equals(c.getTargetPort()))
-                        .collect(Collectors.toList());
-        if (sources.size() != 1)
-            Log.error("TODO there should be a connector for this port");
-
-        return getAtomicSourceOf(sources.get(0).getSourcePort());
-    }
-
-    public static boolean isAtomic(EMAComponentInstanceSymbol componentInstance) {
-        return componentInstance.getSubComponents().isEmpty();
     }
 
     public static void moveComponent(EMAComponentInstanceSymbol component, EMAComponentInstanceSymbol parent) {

@@ -12,7 +12,7 @@ import de.monticore.lang.math._symboltable.matrix.MathMatrixAccessOperatorSymbol
 import de.monticore.lang.math._symboltable.matrix.MathMatrixAccessSymbol;
 import de.monticore.lang.math._symboltable.matrix.MathMatrixNameExpressionSymbol;
 import de.monticore.lang.monticar.semantics.helper.NameHelper;
-import de.monticore.lang.monticar.semantics.loops.detection.EMAEquationSystem;
+import de.monticore.lang.monticar.semantics.loops.symbols.EMAEquationSystem;
 import de.monticore.lang.monticar.semantics.util.math.MathHelper;
 import de.monticore.lang.monticar.semantics.util.math.NameReplacer;
 import de.se_rwth.commons.Names;
@@ -32,7 +32,7 @@ public class SpecificationConverter {
         Optional<EMAMSpecificationSymbol> result = getSpecificationFromMath(component);
         if (!result.isPresent()) result = calculateSpecificationFromAssignments(component);
         if (result.isPresent())
-            return Optional.ofNullable(MathFunctionFixer.fixFunctions(result.get()));
+            return Optional.ofNullable(MathFunctionFixer.replaceInnerArrayByIndividualPorts(result.get()));
         return Optional.empty();
     }
 
@@ -40,14 +40,17 @@ public class SpecificationConverter {
         Collection<MathStatementsSymbol> symbols = component.getSpannedScope().resolveLocally(MathStatementsSymbol.KIND);
         if (symbols.size() != 1) return Optional.empty();
         MathStatementsSymbol mathStatementsSymbol = symbols.stream().findFirst().get();
-        Optional<MathExpressionSymbol> first = mathStatementsSymbol.getMathExpressionSymbols()
+        Optional<EMAMSpecificationSymbol> first = mathStatementsSymbol.getMathExpressionSymbols()
                 .stream()
                 .filter(e -> e instanceof EMAMSpecificationSymbol)
+                .map(s -> (EMAMSpecificationSymbol) s)
                 .findFirst();
 
-        if (first.isPresent()) return Optional.ofNullable((EMAMSpecificationSymbol) first.get());
+        if (!first.isPresent())
+            return Optional.empty();
 
-        return Optional.empty();
+        EMAMSpecificationSymbol specification = first.get();
+        return Optional.of(specification);
     }
 
 
@@ -258,15 +261,16 @@ public class SpecificationConverter {
 
         component.getOutgoingPortInstances()
                 .stream()
-                .forEach(port -> nameMapping.put(port.getName(), NameHelper.calculateFullQualifiedNameOf(port)));
+                .forEach(port -> nameMapping.put(replacePortBrackets(port.getName()),
+                        replacePortBrackets(NameHelper.calculateFullQualifiedNameOf(port))));
 
         for (EMAPortInstanceSymbol inport : component.getIncomingPortInstances()) {
             Optional<EMAPortInstanceSymbol> source = system.getAtomicSourceOf(inport);
             if (!source.isPresent())
                 Log.error("0x1544231 no source port for connector");
 
-            String sourcePortFullName = NameHelper.calculateFullQualifiedNameOf(source.get());
-            nameMapping.put(inport.getName(), sourcePortFullName);
+            String sourcePortFullName = replacePortBrackets(NameHelper.calculateFullQualifiedNameOf(source.get()));
+            nameMapping.put(replacePortBrackets(inport.getName()), sourcePortFullName);
         }
 
         String componentFullName = NameHelper.calculateFullQualifiedNameOf(component);
@@ -275,6 +279,10 @@ public class SpecificationConverter {
                 nameMapping.put(variable.getName(), Names.getQualifiedName(componentFullName, variable.getName()));
 
         return nameMapping;
+    }
+
+    private static String replacePortBrackets(String port) {
+        return port.replace("[","(").replace("]",")");
     }
 
 
@@ -335,7 +343,8 @@ public class SpecificationConverter {
 
 
         MathMatrixAccessOperatorSymbol index = new MathMatrixAccessOperatorSymbol();
-        MathMatrixAccessSymbol accessSymbol = new MathMatrixAccessSymbol(new MathNumberExpressionSymbol(Rational.valueOf(strIndex)));
+        MathMatrixAccessSymbol accessSymbol = new MathMatrixAccessSymbol(
+                new MathNumberExpressionSymbol(Rational.valueOf(strIndex)));
         index.setMathMatrixAccessSymbols(Collections.singletonList(accessSymbol));
 
         return index;
@@ -353,8 +362,14 @@ public class SpecificationConverter {
             NameReplacer replacer = new NameReplacer(s -> getCurrentNameOf(s));
             replacer.handle(copy);
 
+            MathExpressionSymbol leftSide;
+            if (expression.getMathMatrixAccessOperatorSymbol() != null)
+                leftSide = new MathMatrixNameExpressionSymbol(copy.getNameOfMathValue());
+            else
+                leftSide = new MathNameExpressionSymbol(copy.getNameOfMathValue());
+
             EMAMEquationSymbol equationSymbol = new EMAMEquationSymbol();
-            equationSymbol.setLeftExpression(new MathMatrixNameExpressionSymbol(copy.getNameOfMathValue()));
+            equationSymbol.setLeftExpression(leftSide);
             equationSymbol.setRightExpression(copy.getExpressionSymbol());
 
             if (variables.stream().filter(v -> v.getName().equals(currentName)).collect(Collectors.toSet()).isEmpty()) {

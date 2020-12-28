@@ -3,14 +3,14 @@ package de.monticore.lang.monticar.semantics.library.logic;
 
 component Not<T> {
 	port
-		in T in1,
-		out T out1;
+		in T input,
+		out T output;
 
 	implementation Math{
-	    if in1==0
-	        out1=1;
+	    if input==0
+	        output=1;
 	    else
-	        out1=0;
+	        output=0;
 	     end
 	}
 }

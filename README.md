@@ -1,3 +1,3 @@
 # Semantics
 
-Provides the execution semantics for EmbeddedMontiArc
+Provides the execution executionSemantics for EmbeddedMontiArc

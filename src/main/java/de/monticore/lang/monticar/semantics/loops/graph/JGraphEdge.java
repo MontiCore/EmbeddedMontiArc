@@ -4,13 +4,13 @@ package de.monticore.lang.monticar.semantics.loops.graph;
 import org.jgrapht.graph.DefaultEdge;
 
 public class JGraphEdge extends DefaultEdge {
-    private EMAEdge ref;
+    private EMAAtomicConnector ref;
 
-    public EMAEdge getReferencedEdge() {
+    public EMAAtomicConnector getReferencedEdge() {
         return ref;
     }
 
-    public void ReferencedEdge(EMAEdge ref) {
+    public void ReferencedEdge(EMAAtomicConnector ref) {
         this.ref = ref;
     }
 }

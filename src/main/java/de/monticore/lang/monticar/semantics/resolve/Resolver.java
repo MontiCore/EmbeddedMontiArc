@@ -9,9 +9,10 @@ import de.monticore.lang.math._symboltable.MathStatementsSymbol;
 import de.monticore.lang.math._symboltable.expression.MathExpressionSymbol;
 import de.monticore.lang.monticar.semantics.construct.ReplacementCalculator;
 import de.monticore.lang.monticar.semantics.loops.analyze.SpecificationConverter;
-import de.monticore.lang.monticar.semantics.loops.detection.*;
+import de.monticore.lang.monticar.semantics.loops.detection.LoopDetection;
+import de.monticore.lang.monticar.semantics.loops.detection.StronglyConnectedComponent;
+import de.monticore.lang.monticar.semantics.loops.symbols.*;
 import de.monticore.lang.tagging._symboltable.TaggingResolver;
-import de.monticore.symboltable.GlobalScope;
 import de.se_rwth.commons.logging.Log;
 
 import java.util.*;
@@ -21,28 +22,34 @@ public class Resolver {
 
     private EMAComponentInstanceSymbol rootComponent;
     private TaggingResolver scope;
-    private Set<LoopSymbolInstance> loopSymbols = new HashSet<>();
+    private Set<LoopComponentSymbolInstance> loopSymbols = new HashSet<>();
+
+    public Resolver(TaggingResolver scope, EMAComponentInstanceSymbol rootComponent) {
+        this.scope = scope;
+        this.rootComponent = rootComponent;
+    }
 
     public Resolver(TaggingResolver scope, String rootModel) {
-        Log.init();
-        Log.enableFailQuick(true);
         this.scope = scope;
         this.rootComponent = scope.<EMAComponentInstanceSymbol>resolve(rootModel, EMAComponentInstanceSymbol.KIND).orElse(null);
     }
 
     public void handleScope() {
-        resolveLoopSymbols();
+        Set<StronglyConnectedComponent> stronglyConnectedComponents = LoopDetection.detectLoops(rootComponent);
+        resolveLoopSymbols(stronglyConnectedComponents, true);
         doSymbolicSolveOfLoopSymbols();
         doSymbolicSolveOfSpecifications();
     }
 
-    public Set<LoopSymbolInstance> resolveLoopSymbols() {
-        Set<StrongConnectedComponent> strongConnectedComponents = Detection.detectLoops(rootComponent);
-        Set<LoopSymbolInstance> loopSymbols = new HashSet<>();
+    public Set<LoopComponentSymbolInstance> resolveLoopSymbols(Set<StronglyConnectedComponent> stronglyConnectedComponents,
+                                                               boolean handleArtificialLoops) {
+        Set<LoopComponentSymbolInstance> loopSymbols = new HashSet<>();
 
-        for (StrongConnectedComponent strongConnectedComponent : strongConnectedComponents) {
-            Set<EMAComponentInstanceSymbol> components = strongConnectedComponent.getAllComponents()
-                    .stream().map(c -> c.getReferencedSymbol()).collect(Collectors.toSet());
+        for (StronglyConnectedComponent stronglyConnectedComponent : stronglyConnectedComponents) {
+            if (stronglyConnectedComponent.isArtificial() && handleArtificialLoops)
+                continue;
+            Set<EMAComponentInstanceSymbol> components = stronglyConnectedComponent.getAllComponents()
+                    .stream().collect(Collectors.toSet());
 
             EMAEquationSystem equationSystem = EMAEquationSystemBuilder.buildFrom(components);
             Set<EMAComponentInstanceSymbol> componentsToBuildLoopSymbolFrom =
@@ -55,7 +62,7 @@ public class Resolver {
             });
 
             componentsToBuildLoopSymbolFrom.stream().forEach(component -> {
-                LoopSymbolInstance loopSymbol = LoopSymbolInstance.instantiate(component, equationSystem);
+                LoopComponentSymbolInstance loopSymbol = LoopComponentSymbolInstance.instantiate(component, equationSystem);
                 SymbolTableHelper.replaceComponent(component, loopSymbol);
                 loopSymbol.connectInformation();
                 loopSymbols.add(loopSymbol);
@@ -76,29 +83,36 @@ public class Resolver {
         return false;
     }
 
-    public void doSymbolicSolveOfLoopSymbols() {
-        Set<LoopSymbolInstance> solvedSymbols = new HashSet<>();
-        for (LoopSymbolInstance loopSymbol : loopSymbols) {
+    public Map<LoopComponentSymbolInstance, EMAComponentInstanceSymbol> doSymbolicSolveOfLoopSymbols() {
+        Map<LoopComponentSymbolInstance, EMAComponentInstanceSymbol> solvedSymbols = new HashMap<>();
+        for (LoopComponentSymbolInstance loopSymbol : loopSymbols) {
             if (EMAEquationSystemHelper.trySymbolicSolve(loopSymbol.getEquationSystem())) {
-                ReplacementCalculator.generateAndReplaceComponent(scope, loopSymbol,
+                EMAComponentInstanceSymbol symbolSolution =
+                        ReplacementCalculator.generateAndReplaceComponent(scope, loopSymbol,
                         loopSymbol.getEquationSystem().getSolution());
-                solvedSymbols.add(loopSymbol);
+                solvedSymbols.put(loopSymbol, symbolSolution);
             }
         }
-        loopSymbols.removeAll(solvedSymbols);
+        loopSymbols.removeAll(solvedSymbols.keySet());
+        return solvedSymbols;
     }
 
-    public void doSymbolicSolveOfSpecifications() {
+    public Map<EMAComponentInstanceSymbol, EMAComponentInstanceSymbol> doSymbolicSolveOfSpecifications() {
+        Map<EMAComponentInstanceSymbol, EMAComponentInstanceSymbol> solvedSymbols = new HashMap<>();
         for (EMAComponentInstanceSymbol component : searchForSpecifications(rootComponent)) {
             EMAMSpecificationSymbol specification = SpecificationConverter.convert(component).orElse(null);
             if (specification == null) Log.error("TODO");
-            Optional<Map<EMAMSymbolicVariableSymbol, MathExpressionSymbol>> solution = EquationSystemSymbolicSolver.trySymbolicSolve(specification);
+            Optional<Map<EMAMSymbolicVariableSymbol, MathExpressionSymbol>> solution =
+                    EquationSystemSymbolicSolver.trySymbolicSolve(specification);
             if (solution.isPresent()) {
-                Map<EMAPortInstanceSymbol, String> solutionMap = EMAEquationSystemHelper.convertSolutionMap(solution.get(), component.getPortInstanceList());
-                ReplacementCalculator.generateAndReplaceComponent(scope, component, solutionMap);
+                Map<EMAPortInstanceSymbol, String> solutionMap =
+                        EMAEquationSystemHelper.convertSolutionMap(solution.get(), component.getPortInstanceList());
+                EMAComponentInstanceSymbol symbolSolution =
+                        ReplacementCalculator.generateAndReplaceComponent(scope, component, solutionMap);
+                solvedSymbols.put(component, symbolSolution);
             }
         }
-
+        return solvedSymbols;
     }
 
     private Collection<EMAComponentInstanceSymbol> searchForSpecifications(EMAComponentInstanceSymbol component) {

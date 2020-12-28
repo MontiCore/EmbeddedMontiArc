@@ -3,11 +3,11 @@ package de.monticore.lang.monticar.semantics.library.differential;
 
 component Derivation<T>(T dvalue = 0) {
 	port
-		in T in1,
-		out T out1;
+		in T input,
+		out T output;
 
 	implementation Math{
 	    in1(t=0) = dvalue;
-	    out1 == diff(in1);
+	     diff(input) == output;
 	}
 }

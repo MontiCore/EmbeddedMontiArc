@@ -4,14 +4,13 @@ package de.monticore.lang.monticar.semantics.library.arithmetic;
 component Max<T,N1 n=2> {
 	port
 		in T in1[n],
-		out T out1;
+		out T maximum;
 
 	implementation Math{
 	    T maxVal = in1(1);
-
 	    for i=1:n
 	        maxVal=max(maxVal,in1(i));
 	    end
-	    out1=maxVal;
+	    maximum=maxVal;
 	}
 }

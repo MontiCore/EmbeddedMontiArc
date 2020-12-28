@@ -10,7 +10,7 @@ public class ExecutePython extends ExecuteAbs {
     public static String executePython(String scriptFile, String command) {
         if (isPythonInstalled()) {
             String line = "python " + resolvePythonScriptPath(scriptFile) + " " + command;
-            return executeCommand(line);
+            return executeCommand(line, true);
         } else {
             Log.warn("python is not installed.");
             return  "-1";
@@ -39,7 +39,7 @@ public class ExecutePython extends ExecuteAbs {
             commandString = "python --version";
         }
 
-        if (executeCommand(commandString).startsWith("Python 3."))
+        if (executeCommand(commandString, true).startsWith("Python 3."))
             return true;
         else {
             Log.error("could not retrieve python version");

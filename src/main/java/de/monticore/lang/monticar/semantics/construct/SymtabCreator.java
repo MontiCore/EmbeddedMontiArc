@@ -13,8 +13,6 @@ import de.monticore.symboltable.GlobalScope;
 
 import java.nio.file.Paths;
 import java.util.Arrays;
-import java.util.LinkedHashSet;
-import java.util.LinkedList;
 
 public class SymtabCreator {
 
@@ -31,7 +29,6 @@ public class SymtabCreator {
         GlobalScope scope = new GlobalScope(mp, fam);
         de.monticore.lang.monticar.Utils.addBuiltInTypes(scope);
 
-        LogConfig.init();
         return new TaggingResolver(scope, Arrays.asList(modelPath.clone()));
     }
 

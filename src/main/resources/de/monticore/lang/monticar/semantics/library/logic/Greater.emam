@@ -3,11 +3,11 @@ package de.monticore.lang.monticar.semantics.library.logic;
 
 component Greater<T> {
 	port
-		in T in1,
-		in T in2,
-		out B out1;
+		in T input1,
+		in T input2,
+		out B output;
 
 	implementation Math{
-	    out1=in1>in2;
+	    output=input1>input2;
 	}
 }

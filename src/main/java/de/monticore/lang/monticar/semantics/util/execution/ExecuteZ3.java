@@ -7,12 +7,12 @@ import java.io.File;
 
 public class ExecuteZ3 extends ExecuteAbs {
 
-    public static final String DEFAULT_Z3_LOCATION = "target/generated-z3";
+    public static final String DEFAULT_Z3_SCRIPT_LOCATION = "target/generated-z3";
 
     public static String executeZ3(String scriptFile) {
         if (isZ3Installed()) {
             String line = "z3 " + resolveScriptPath(scriptFile);
-            return executeCommand(line);
+            return executeCommand(line, false);
         } else {
             Log.warn("z3 is not installed.");
             return  "-1";
@@ -26,7 +26,7 @@ public class ExecuteZ3 extends ExecuteAbs {
         res = res + ".z3";
         File file = new File(res);
         if (!file.exists())
-            res = DEFAULT_Z3_LOCATION + "/" + res;
+            res = DEFAULT_Z3_SCRIPT_LOCATION + "/" + res;
         file = new File(res);
         if (!file.exists())
             Log.error("Cannot find z3 script: " + relativePath);
@@ -44,7 +44,7 @@ public class ExecuteZ3 extends ExecuteAbs {
             commandString = "z3 -version";
         }
 
-        if (executeCommand(commandString).toLowerCase().startsWith("z3 version"))
+        if (executeCommand(commandString, true).toLowerCase().startsWith("z3 version"))
             return true;
         else {
             Log.error("could not retrieve python version");

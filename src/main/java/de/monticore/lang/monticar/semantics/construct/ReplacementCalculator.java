@@ -6,13 +6,13 @@ import de.monticore.lang.embeddedmontiarc.embeddedmontiarc._symboltable.instance
 import de.monticore.lang.embeddedmontiarc.embeddedmontiarc._symboltable.instanceStructure.EMAPortInstanceSymbol;
 import de.monticore.lang.embeddedmontiarc.embeddedmontiarcmath._parser.EmbeddedMontiArcMathParser;
 import de.monticore.lang.embeddedmontiarcdynamic.embeddedmontiarcdynamic._symboltable.instanceStructure.EMADynamicPortInstanceSymbol;
-import de.monticore.lang.monticar.semantics.Options;
+import de.monticore.lang.monticar.semantics.Constants;
 import de.monticore.lang.monticar.semantics.helper.NameHelper;
+import de.monticore.lang.monticar.semantics.loops.detection.ConnectionHelper;
 import de.monticore.lang.monticar.semantics.resolve.ConstantsCalculator;
 import de.monticore.lang.monticar.semantics.resolve.SymbolTableHelper;
 import de.monticore.lang.monticar.semantics.util.math.MathHelper;
 import de.monticore.lang.tagging._symboltable.TaggingResolver;
-import de.monticore.symboltable.GlobalScope;
 import de.monticore.symboltable.Scope;
 import de.se_rwth.commons.logging.Log;
 import org.apache.commons.lang3.StringUtils;
@@ -24,13 +24,13 @@ import java.util.stream.Collectors;
 
 public class ReplacementCalculator {
 
-    public static void generateAndReplaceComponent(TaggingResolver globalScope, EMAComponentInstanceSymbol symbol,
-                                                   Map<EMAPortInstanceSymbol, String> solutions) {
+    public static EMAComponentInstanceSymbol generateAndReplaceComponent(TaggingResolver globalScope, EMAComponentInstanceSymbol symbol,
+                                                                         Map<EMAPortInstanceSymbol, String> solutions) {
 
         MathComponentGenerator generator = new MathComponentGenerator();
 
         String parentComponentName = symbol.getParent().isPresent() ? symbol.getParent().get().getFullName() : symbol.getPackageName();
-        String packageName = Options.synthPackagePreFix + "." + parentComponentName;
+        String packageName = Constants.synthPackagePreFix + "." + parentComponentName;
         Scope enclosingScope = symbol.getEnclosingScope();
         String type = StringUtils.capitalize(symbol.getName());
         Map<String, String> inports = new HashMap<>();
@@ -52,7 +52,9 @@ public class ReplacementCalculator {
         for (String dependendConstant : dependendConstants) {
             if (!isTime(dependendConstant)) {
                 Optional<EMAPortInstanceSymbol> port = symbol.getSpannedScope().resolve(dependendConstant, EMAPortInstanceSymbol.KIND);
-                if (!port.isPresent()) Log.error("TODO cannot find dependend port, is probably a non resolved parameter");
+                if (!port.isPresent())
+                    Log.error(String.format("TODO cannot find dependend port %s, is probably a non resolved parameter",
+                            dependendConstant));
                 dependingPorts.add(port.get());
             }
         }
@@ -86,7 +88,7 @@ public class ReplacementCalculator {
             }
         }
 
-        generator.generate(type, packageName, inports, outports, mathStatements, Options.synthPath);
+        generator.generate(type, packageName, inports, outports, mathStatements, Constants.synthPath);
 
         // Remove old instance
         SymbolTableHelper.removeComponent(symbol);
@@ -94,17 +96,17 @@ public class ReplacementCalculator {
         // Resolve new instance
         String fullQualifiedName = NameHelper.toInstanceFullQualifiedName(packageName,
                 type);
-        SymbolTableHelper.resolveInstanceTo(globalScope, fullQualifiedName, enclosingScope, parentComponentName);
+        return SymbolTableHelper.resolveInstanceTo(globalScope, fullQualifiedName, enclosingScope, parentComponentName);
 
     }
 
     private static boolean isTime(String s) {
-        return Options.timeName.equals(s);
+        return Constants.timeName.equals(s);
     }
 
     private static Optional<EMAPortInstanceSymbol> getAlreadyConnectingPort(EMAComponentInstanceSymbol component,
                                                                      EMAPortInstanceSymbol port) {
-        Collection<EMAPortInstanceSymbol> atomicTargetsOf = SymbolTableHelper.getAtomicTargetsOf(port);
+        Collection<EMAPortInstanceSymbol> atomicTargetsOf = ConnectionHelper.targetsOf(port);
         for (EMAPortInstanceSymbol targetPort : atomicTargetsOf)
             if (targetPort.getComponentInstance().equals(component))
                 return Optional.of(targetPort);

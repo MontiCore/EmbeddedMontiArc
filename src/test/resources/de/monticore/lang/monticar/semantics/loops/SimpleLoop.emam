@@ -1,17 +1,17 @@
 package de.monticore.lang.monticar.semantics.loops;
 
-import de.monticore.lang.monticar.semantics.library.arithmetic.Difference;
+import de.monticore.lang.monticar.semantics.library.arithmetic.Subtract;
 import de.monticore.lang.monticar.semantics.loops.GainComponent;
 
 component SimpleLoop {
     port
-        in Q in1,
-        out Q out1;
+        in Q input,
+        out Q output;
 
-    instance Difference<Q> difference;
+    instance Subtract<Q> subtract;
     instance GainComponent<Q>(2) gain;
 
-    connect in1 -> difference.in1;
-    connect difference.out1 -> gain.in1, out1;
-    connect gain.out1 -> difference.in2;
+    connect input -> subtract.minuend;
+    connect subtract.difference -> gain.input, output;
+    connect gain.output -> subtract.subtrahend;
 }

@@ -2,7 +2,6 @@ package de.monticore.lang.monticar.semantics.loops;
 
 import de.monticore.ModelingLanguageFamily;
 import de.monticore.io.paths.ModelPath;
-import de.monticore.lang.embeddedmontiarc.LogConfig;
 import de.monticore.lang.embeddedmontiarc.embeddedmontiarc._symboltable.EmbeddedMontiArcLanguage;
 import de.monticore.lang.embeddedmontiarc.embeddedmontiarcmath._symboltable.EmbeddedMontiArcMathLanguage;
 import de.monticore.lang.embeddedmontiarcdynamic.event._symboltable.EventLanguage;
@@ -22,7 +21,6 @@ public class AbstractSymtabTest {
         GlobalScope scope = new GlobalScope(mp, fam);
         de.monticore.lang.monticar.Utils.addBuiltInTypes(scope);
 
-        LogConfig.init();
         return scope;
     }
 

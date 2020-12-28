@@ -94,8 +94,6 @@ public class InstanceCreator {
                     .setSymbolReference(symbol.getComponentType())
                     .setPackageName(symbol.getPackageName())
                     .build();
-            ((EMADynamicComponentInstanceSymbol) newSymbol)
-                    .setDynamicInstance(((EMADynamicComponentInstanceSymbol) symbol).isDynamicInstance());
         } else {
             newSymbol = (new EMAComponentInstanceBuilder())
                     .setName(newName)
@@ -111,6 +109,7 @@ public class InstanceCreator {
         newSymbol.setFullName(symbol.getPackageName() + "." + newName);
         newSymbol.setParameters(symbol.getParameters());
         newSymbol.setResolutionDeclarationSymbols(symbol.getResolutionDeclarationSymbols());
+        newSymbol.setComponentModifiers(symbol.getComponentModifiers());
 
         CommonScope spannedScope = (CommonScope) newSymbol.getSpannedScope();
         spannedScope.setResolvingFilters(symbol.getSpannedScope().getResolvingFilters());

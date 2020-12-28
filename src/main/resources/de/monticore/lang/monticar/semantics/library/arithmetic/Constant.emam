@@ -3,9 +3,9 @@ package de.monticore.lang.monticar.semantics.library.arithmetic;
 
 component Constant<T>(T cvalue) {
 	port 
-		out T out1;
+		out T value;
 
     implementation Math{
-        out1 == cvalue;
+        value == cvalue;
     }
 }

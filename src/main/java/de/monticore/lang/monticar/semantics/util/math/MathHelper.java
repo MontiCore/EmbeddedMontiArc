@@ -51,7 +51,7 @@ public class MathHelper {
         try {
             astExpression = parser.parse_StringExpression(expressionString);
         } catch (IOException e) {
-            Log.error("TODO Could not parse Expression");
+            Log.error("TODO Could not parseSolve Expression");
         }
         return astExpression;
     }

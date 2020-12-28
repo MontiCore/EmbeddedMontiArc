@@ -3,14 +3,14 @@ package de.monticore.lang.monticar.semantics.library.logic;
 
 component Or<T,N1 n=2> {
 	port 
-		in B in1[n],
-		out B out1;
+		in B input[n],
+		out B output;
 
 	implementation Math{
-	    T outVal=in1(1);
+	    T outVal=input(1);
 	    for i=1:n
-	        outVal=or(outVal,in1(i));
+	        outVal=or(outVal,input(i));
 	    end
-	    out1=outVal;
+	    output=outVal;
 	}
 }

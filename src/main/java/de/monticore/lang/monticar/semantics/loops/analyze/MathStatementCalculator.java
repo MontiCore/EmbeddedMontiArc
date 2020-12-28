@@ -18,59 +18,14 @@ import java.util.stream.Collectors;
 
 public class MathStatementCalculator {
 
-    // TODO
-
-    public static final String packageName = "de.monticore.lang.monticar.semantics.basicLibrary";
-    public static final String packageNameWithDot = packageName + ".";
-    public static final String And = packageNameWithDot + "And";
-    public static final String Constant = packageNameWithDot + "Constant";
-    public static final String Delay = packageNameWithDot + "Delay";
-    public static final String Derivative = packageNameWithDot + "Derivative";
-    public static final String Division = packageNameWithDot + "Division";
-    public static final String Equals = packageNameWithDot + "Equals";
-    public static final String Gain = packageNameWithDot + "Gain";
-    public static final String Greater = packageNameWithDot + "Greater";
-    public static final String GreaterEquals = packageNameWithDot + "GreaterEquals";
-    public static final String Integration = packageNameWithDot + "Integration";
-    public static final String Less = packageNameWithDot + "Less";
-    public static final String LookUp = packageNameWithDot + "LookUp";
-    public static final String Max = packageNameWithDot + "Max";
-    public static final String Memory = packageNameWithDot + "Memory";
-    public static final String Min = packageNameWithDot + "Min";
-    public static final String MinusPlus = packageNameWithDot + "MinusPlus";
-    public static final String Mod = packageNameWithDot + "Mod";
-    public static final String MultDiv = packageNameWithDot + "MultDiv";
-    public static final String Multiplication = packageNameWithDot + "Multiplication";
-    public static final String Not = packageNameWithDot + "Not";
-    public static final String Or = packageNameWithDot + "Or";
-    public static final String PlusMinus = packageNameWithDot + "PlusMinus";
-    public static final String PlusMinusPlus = packageNameWithDot + "PlusMinusPlus";
-    public static final String Saturation = packageNameWithDot + "Saturation";
-    public static final String Smaller = packageNameWithDot + "Smaller";
-    public static final String SmallerEquals = packageNameWithDot + "SmallerEquals";
-    public static final String Sum = packageNameWithDot + "Sum";
-    public static final String Switch = packageNameWithDot + "Switch";
-    public static final String SwitchB = packageNameWithDot + "SwitchB";
-    public static final String SwitchM = packageNameWithDot + "SwitchM";
-    public static final String SwitchMultiport = packageNameWithDot + "SwitchMultiport";
-
-    public static Set<EMAMEquationSymbol> getStatementForPort(EMAPortInstanceSymbol port) {
-        EMAComponentInstanceSymbol component = port.getComponentInstance();
-        Set<EMAMEquationSymbol> res = preDefinedStatement(component, port);
-
-//        if(res.isEmpty())
-//            res = calculateStatementForPortSymbolic(component, port);
-        return res;
-    }
-
     private static Set<EMAMEquationSymbol> preDefinedStatement(EMAComponentInstanceSymbol component, EMAPortInstanceSymbol port) {
         EMAMEquationSymbol res = null;
 
         String componentTypeName = component.getComponentType().getReferencedComponent().get().getPackageName()
          + "." + component.getComponentType().getName();
-        if (componentTypeName.equals(Sum) || componentTypeName.equals(Multiplication)) {
-            String operator = componentTypeName.equals(Sum) ? "+" :
-                    componentTypeName.equals(Multiplication) ? "*" : "";
+        if (componentTypeName.equals("") || componentTypeName.equals("")) {
+            String operator = componentTypeName.equals("") ? "+" :
+                    componentTypeName.equals("") ? "*" : "";
             ASTResolution resolution = component.getResolutionDeclarationSymbol("n").getASTResolution();
             double n = 0;
             if (resolution instanceof ASTUnitNumberResolution) {
