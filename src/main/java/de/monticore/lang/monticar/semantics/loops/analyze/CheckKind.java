@@ -1,8 +1,6 @@
 /* (c) https://github.com/MontiCore/monticore */
 package de.monticore.lang.monticar.semantics.loops.analyze;
 
-import com.sun.xml.internal.bind.v2.runtime.reflect.opt.Const;
-import de.monticore.lang.embeddedmontiarc.embeddedmontiarc._symboltable.instanceStructure.EMAPortInstanceSymbol;
 import de.monticore.lang.embeddedmontiarc.embeddedmontiarcmath._symboltable.math.symbols.*;
 import de.monticore.lang.embeddedmontiarc.embeddedmontiarcmath._symboltable.math.visitor.EMAMMathExpressionSymbolVisitor;
 import de.monticore.lang.math._symboltable.MathForLoopHeadSymbol;
@@ -10,63 +8,63 @@ import de.monticore.lang.math._symboltable.expression.*;
 import de.monticore.lang.math._symboltable.matrix.*;
 import de.monticore.lang.mathopt._symboltable.MathOptimizationConditionSymbol;
 import de.monticore.lang.mathopt._symboltable.MathOptimizationStatementSymbol;
-import de.monticore.lang.monticar.semantics.Constants;
-import de.monticore.symboltable.Symbol;
+import de.monticore.lang.monticar.semantics.Options;
 import de.se_rwth.commons.logging.Log;
 
-import java.util.*;
+import java.util.Collection;
+import java.util.HashSet;
+import java.util.Set;
 import java.util.stream.Collectors;
 
-import static de.monticore.lang.monticar.semantics.loops.analyze.LoopKind.*;
+public class CheckKind implements EMAMMathExpressionSymbolVisitor {
 
-public class AnalyzeKind implements EMAMMathExpressionSymbolVisitor {
-
-    private final Collection<String> linearFunctions = Arrays.asList("sum");
+    public static LoopKind kindOf(MathExpressionSymbol expressionSymbol, Set<String> variables) {
+        CheckKind checkKind = new CheckKind(variables);
+        checkKind.handle(expressionSymbol);
+        return checkKind.getKind();
+    }
 
     public static LoopKind kindOf(EMAMEquationSymbol expressionSymbol, Collection<EMAMSymbolicVariableSymbol> variables) {
-        AnalyzeKind analyzeKind = new AnalyzeKind(variables.stream().map(v -> v.getName()).collect(Collectors.toSet()));
-        analyzeKind.handle(expressionSymbol);
-        return analyzeKind.getKind();
+        CheckKind checkKind = new CheckKind(variables.stream().map(v -> v.getName()).collect(Collectors.toSet()));
+        checkKind.handle(expressionSymbol);
+        return checkKind.getKind();
     }
 
     public static LoopKind kindOf(Collection<EMAMEquationSymbol> equations, Collection<EMAMSymbolicVariableSymbol> variables) {
-        if (equations.size() < variables.size())
-            return Underspecified;
-        if (equations.size() > variables.size())
-            return Overspecified;
-        LoopKind currentKind = Constant;
+        LoopKind currentKind = LoopKind.Constant;
         for (EMAMEquationSymbol equation : equations) {
-            LoopKind loopKind = AnalyzeKind.kindOf(equation, variables);
+            LoopKind loopKind = CheckKind.kindOf(equation, variables);
             currentKind = LoopKindHelper.combine(currentKind, loopKind);
         }
         return currentKind;
+    }
+
+    public static LoopKind kindOf(Collection<EMAMEquationSymbol> equations, Set<String> variables) {
+        return kindOf(equations,
+                variables.stream().map(v -> new EMAMSymbolicVariableSymbol(v)).collect(Collectors.toSet()));
     }
 
     public LoopKind getKind() {
         return lastResult;
     }
 
-    private LoopKind lastResult = Constant;
+    private LoopKind lastResult = LoopKind.Constant;
     private final Set<String> variables;
 
-    public AnalyzeKind(Set<String> variables) {
+    public CheckKind(Set<String> variables) {
         this.variables = variables;
     }
 
     @Override
     public void traverse(MathArithmeticExpressionSymbol node) {
-        lastResult = Constant;
         if (node.getLeftExpression() != null) handle(node.getLeftExpression());
         LoopKind leftResult = lastResult;
-
-        lastResult = Constant;
         if (node.getRightExpression() != null) handle(node.getRightExpression());
         LoopKind rightResult = lastResult;
-
         if (node.isAdditionOperator() || node.isSubtractionOperator())
             lastResult = LoopKindHelper.combine(leftResult, rightResult);
-        else if (leftResult != Constant && rightResult != Constant) // one side is just constant
-            lastResult = LoopKindHelper.combineKinds(NonLinear, leftResult, rightResult);
+        else if (leftResult != LoopKind.Constant && rightResult != LoopKind.Constant)
+            lastResult = LoopKindHelper.combineKinds(LoopKind.NonLinear, leftResult, rightResult);
         else
             lastResult = LoopKindHelper.combine(leftResult, rightResult);
     }
@@ -109,14 +107,12 @@ public class AnalyzeKind implements EMAMMathExpressionSymbolVisitor {
     @Override
     public void traverse(MathNameExpressionSymbol node) {
         if (variables.contains(node.getNameToResolveValue()))
-            lastResult = Linear;
-        else
-            lastResult = Constant;
+            lastResult = LoopKindHelper.combine(lastResult, LoopKind.Linear);
     }
 
     @Override
     public void traverse(MathNumberExpressionSymbol node) {
-        lastResult = Constant;
+        lastResult = LoopKindHelper.combine(lastResult, LoopKind.Linear);
     }
 
     @Override
@@ -127,68 +123,41 @@ public class AnalyzeKind implements EMAMMathExpressionSymbolVisitor {
 
     @Override
     public void traverse(MathValueSymbol node) {
-        // TODO
         notSupported(node);
     }
 
     @Override
     public void traverse(MathValueType node) {
-        // TODO
         notSupported(node);
     }
 
     @Override
     public void traverse(MathMatrixAccessOperatorSymbol node) {
-        LoopKind result = Constant;
-        for (MathMatrixAccessSymbol access : node.getMathMatrixAccessSymbols()) {
-            lastResult = Constant;
-            handle(access);
-            result = LoopKindHelper.combine(result, lastResult);
-        }
-        lastResult = result;
+        // TODO
+        EMAMMathExpressionSymbolVisitor.super.traverse(node);
     }
 
     @Override
     public void traverse(MathMatrixNameExpressionSymbol node) {
-        lastResult = Constant;
-        if (node.isMathMatrixAccessOperatorSymbolPresent())
-            handle(node.getMathMatrixAccessOperatorSymbol());
-        LoopKind innerKind = lastResult;
-
-        if (isAccess(node))
-            lastResult = innerKind;
-        else if (isLinearFunction(node))
-            lastResult = innerKind == Constant ? Constant : LoopKindHelper.combine(Linear, innerKind);
+        // TODO maybe is not a function?
+        if (node.isMathMatrixAccessOperatorSymbolPresent()) handle(node.getMathMatrixAccessOperatorSymbol());
         if (isIntegral(node) || isDerivative(node))
-            lastResult = innerKind == Constant ? Constant : LoopKindHelper.combine(ODE, innerKind);
-        else
-            lastResult = innerKind == Constant ? Constant : LoopKindHelper.combine(NonLinear, innerKind);
+            lastResult = LoopKindHelper.combine(LoopKind.LinearDifferencial, lastResult);
 
     }
 
-    private boolean isAccess(MathMatrixNameExpressionSymbol node) {
-        Optional<EMAPortInstanceSymbol> port =
-                node.getEnclosingScope().resolve(node.getNameToAccess(), EMAPortInstanceSymbol.KIND);
-        Optional<EMAMSymbolicVariableSymbol> variable =
-                node.getEnclosingScope().resolve(node.getNameToAccess(), EMAMSymbolicVariableSymbol.KIND);
-        if (port.isPresent() && port.get().isPartOfPortArray())
-            return true;
-        else if (variable.isPresent() && variable.get().getType().getDimensions().size() > 0)
-            return true;
-        return false;
-    }
-
-    private boolean isLinearFunction(MathMatrixNameExpressionSymbol node) {
-        return linearFunctions.contains(node.getNameToAccess());
+    private boolean isFunction(MathMatrixNameExpressionSymbol node) {
+        // TODO
+        return true;
     }
 
     private boolean isIntegral(MathMatrixNameExpressionSymbol node) {
-        return Constants.integrateOperatorName.equals(node.getNameToAccess());
+        return Options.integrateOperatorName.equals(node.getNameToAccess());
 
     }
 
     private boolean isDerivative(MathMatrixNameExpressionSymbol node) {
-        return Constants.derivativeOperatorName.equals(node.getNameToAccess());
+        return Options.derivativeOperatorName.equals(node.getNameToAccess());
     }
 
     @Override
@@ -208,18 +177,14 @@ public class AnalyzeKind implements EMAMMathExpressionSymbolVisitor {
 
     @Override
     public void traverse(MathMatrixArithmeticExpressionSymbol node) {
-        lastResult = Constant;
         if (node.getLeftExpression() != null) handle(node.getLeftExpression());
         LoopKind leftResult = lastResult;
-
-        lastResult = Constant;
         if (node.getRightExpression() != null) handle(node.getRightExpression());
         LoopKind rightResult = lastResult;
-
         if (node.isAdditionOperator() || node.isSubtractionOperator())
             lastResult = LoopKindHelper.combine(leftResult, rightResult);
-        else if (leftResult != Constant && rightResult != Constant) // one side is just constant
-            lastResult = LoopKindHelper.combineKinds(NonLinear, leftResult, rightResult);
+        else if (leftResult != LoopKind.Constant && rightResult != LoopKind.Constant)
+            lastResult = LoopKindHelper.combineKinds(LoopKind.NonLinear, leftResult, rightResult);
         else
             lastResult = LoopKindHelper.combine(leftResult, rightResult);
     }

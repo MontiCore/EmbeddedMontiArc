@@ -1,10 +1,12 @@
 /* (c) https://github.com/MontiCore/monticore */
 package de.monticore.lang.monticar.semantics.loops.analyze;
 
+import static de.monticore.lang.monticar.semantics.loops.analyze.LoopKind.*;
+
 public class LoopKindHelper {
 
     public static LoopKind combineKinds(LoopKind... kinds) {
-        LoopKind res = LoopKind.Default;
+        LoopKind res = LoopKind.Constant;
         for (LoopKind kind : kinds) {
             res = combine(res, kind);
         }
@@ -15,33 +17,34 @@ public class LoopKindHelper {
         switch (kind1) {
             case Linear:
                 switch (kind2) {
-                    case Polynom: return LoopKind.Polynom;
-                    case NonLinear: return LoopKind.NonLinear;
-                    case ODE: return LoopKind.ODE;
-                    case DAE: return LoopKind.DAE;
-                    default: return kind1;
+                    case Polynom: return Polynom;
+                    case NonLinear: return NonLinear;
+                    case ODE: return DAE;
+                    case DAE: return DAE;
+                    default: return Linear;
                 }
             case Polynom:
                 switch (kind2) {
-                    case NonLinear: return LoopKind.NonLinear;
-                    case ODE: return LoopKind.DAE;
-                    case DAE: return LoopKind.DAE;
-                    default: return kind1;
+                    case NonLinear: return NonLinear;
+                    case ODE: return DAE;
+                    case DAE: return DAE;
+                    default: return Polynom;
                 }
             case NonLinear:
                 switch (kind2) {
-                    case ODE: return LoopKind.DAE;
-                    case DAE: return LoopKind.DAE;
-                    default: return kind1;
+                    case ODE: return DAE;
+                    case DAE: return DAE;
+                    default: return NonLinear;
                 }
             case ODE:
                 switch (kind2) {
-                    case DAE: return LoopKind.DAE;
-                    default: return kind1;
+                    case ODE: return ODE;
+                    case Constant: return ODE;
+                    default: return DAE;
                 }
             case DAE:
-                return LoopKind.DAE;
-            case Default:
+                return DAE;
+            case Constant:
                 return kind2;
             default: return kind1;
         }

@@ -2,5 +2,5 @@
 package de.monticore.lang.monticar.semantics.loops.analyze;
 
 public enum LoopKind {
-    Default, Linear, Polynom, NonLinear, ODE, DAE, UNDERSPECIFIED;
+    Constant, Linear, Polynom, NonLinear, ODE, DAE, Underspecified, Overspecified
 }
