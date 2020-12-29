@@ -7,10 +7,6 @@ import java.io.File;
 
 public class TrainingConfiguration {
 
-  private GeneratorEnum generator;
-
-  private Backend backend;
-
   private File pathToPython;
 
   private File pathToProject;
@@ -19,43 +15,31 @@ public class TrainingConfiguration {
 
   private String modelToTrain;
 
-  public GeneratorEnum getGenerator() {
-    return generator;
-  }
+  private Backend backend;
 
-  public Backend getBackend() {
-    if (backend == null) {
-      backend = Backend.GLUON;
-    }
-
-    return backend;
-  }
+  private GeneratorEnum generator;
 
   public File getPathToPython() {
-    if (pathToPython == null) {
-      pathToPython = new File("/usr/bin/python");
-    }
-
     return pathToPython;
   }
 
   public File getPathToProject() {
-    if (pathToProject == null) {
-      pathToProject = new File("src/main/emadl");
-    }
-
     return pathToProject;
   }
 
   public File getPathToTest() {
-    if (pathToTest == null) {
-      pathToTest = new File("src/main/emadl");
-    }
-
     return pathToTest;
   }
 
   public String getModelToTrain() {
     return modelToTrain;
+  }
+
+  public Backend getBackend() {
+    return backend;
+  }
+
+  public GeneratorEnum getGenerator() {
+    return generator;
   }
 }
