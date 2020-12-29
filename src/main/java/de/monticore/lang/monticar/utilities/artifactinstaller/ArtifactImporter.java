@@ -9,10 +9,11 @@ import java.util.Properties;
 
 public class ArtifactImporter {
 
-  public static void importArtifact(Dependency dependency) throws MavenInvocationException {
+  public static void importArtifact(Dependency dependency, File targetPath) throws MavenInvocationException {
     Properties properties = new Properties();
-    properties.setProperty("outputDirectory", String.format("${project.basedir}%simported-resources", File.separator));
-    properties.setProperty("artifact",String.format("%s:%s:%s", dependency.getGroupId(), dependency.getArtifactId(), dependency.getVersion()) );
+    properties.setProperty("outputDirectory", targetPath.getAbsolutePath());
+    properties.setProperty("artifact",String.format("%s:%s:%s:jar:%s",
+        dependency.getGroupId(), dependency.getArtifactId(), dependency.getVersion(), dependency.getClassifier()));
 
     InvocationRequest request = new DefaultInvocationRequest().setGoals(Collections.singletonList("dependency:unpack"));
     request.setProperties(properties);
