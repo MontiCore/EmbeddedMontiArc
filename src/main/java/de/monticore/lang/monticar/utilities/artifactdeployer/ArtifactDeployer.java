@@ -2,7 +2,7 @@ package de.monticore.lang.monticar.utilities.artifactdeployer;
 
 import de.monticore.lang.monticar.utilities.models.Repository;
 import de.monticore.lang.monticar.utilities.models.StorageInformation;
-import de.monticore.lang.monticar.utilities.utils.JarClassifier;
+import de.monticore.lang.monticar.utilities.utils.JarClassifierEnum;
 import de.monticore.lang.monticar.utilities.utils.JarDeployer;
 import org.apache.maven.shared.invoker.MavenInvocationException;
 
@@ -19,20 +19,20 @@ public class ArtifactDeployer {
   private static final String CLASSIFIER = "classifier";
   private static final String PACKAGING = "packaging";
 
-  public static void deployArtifact(String jarFile, StorageInformation storageInformation, Repository repository, JarClassifier classifier) throws MavenInvocationException {
+  public static void deployArtifact(String jarFile, StorageInformation storageInformation, Repository repository, JarClassifierEnum classifier) throws MavenInvocationException {
     Properties properties = getProperties(jarFile, storageInformation, repository, classifier);
 
     JarDeployer.deployArtifact(properties);
   }
 
-  public static void installArtifact(String jarFile, StorageInformation storageInformation, Repository repository, JarClassifier classifier) throws MavenInvocationException {
+  public static void installArtifact(String jarFile, StorageInformation storageInformation, Repository repository, JarClassifierEnum classifier) throws MavenInvocationException {
     Properties properties = getProperties(jarFile, storageInformation, repository, classifier);
     properties.setProperty(PACKAGING, "jar");
 
     JarDeployer.installArtifact(properties);
   }
 
-  private static Properties getProperties(String jarFile, StorageInformation storageInformation, Repository repository, JarClassifier classifier) {
+  private static Properties getProperties(String jarFile, StorageInformation storageInformation, Repository repository, JarClassifierEnum classifier) {
     Properties properties = new Properties();
     properties.setProperty(FILE, jarFile);
     properties.setProperty(REPOSITORY_ID, repository.getId());

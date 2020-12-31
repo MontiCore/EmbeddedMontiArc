@@ -1,6 +1,6 @@
 package de.monticore.lang.monticar.utilities.utils;
 
-public enum JarClassifier {
+public enum JarClassifierEnum {
 
   DATASET("dataset"),
   EMADL("emadl"),
@@ -9,7 +9,7 @@ public enum JarClassifier {
 
   public final String value;
 
-  private JarClassifier(String value) {
+  private JarClassifierEnum(String value) {
     this.value = value;
   }
 

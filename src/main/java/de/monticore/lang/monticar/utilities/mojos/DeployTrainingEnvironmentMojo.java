@@ -3,7 +3,7 @@ package de.monticore.lang.monticar.utilities.mojos;
 import de.monticore.lang.monticar.utilities.artifactcreator.TrainingEnvironmentArtifactCreator;
 import de.monticore.lang.monticar.utilities.artifactdeployer.ArtifactDeployer;
 import de.monticore.lang.monticar.utilities.models.StorageInformation;
-import de.monticore.lang.monticar.utilities.utils.JarClassifier;
+import de.monticore.lang.monticar.utilities.utils.JarClassifierEnum;
 import org.apache.maven.plugin.MojoExecutionException;
 import org.apache.maven.plugin.MojoFailureException;
 import org.apache.maven.plugins.annotations.Mojo;
@@ -36,7 +36,7 @@ public class DeployTrainingEnvironmentMojo extends BaseMojo {
       jarFile = TrainingEnvironmentArtifactCreator.createArtifact(storageInformation, this.datasetToStore, this.modelToStore, this.getPathTmpOut());
       getLog().info("FINISHED creating Jar for training environment");
 
-      ArtifactDeployer.deployArtifact(jarFile.getAbsolutePath(), storageInformation, this.getRepository(), JarClassifier.EMPTY);
+      ArtifactDeployer.deployArtifact(jarFile.getAbsolutePath(), storageInformation, this.getRepository(), JarClassifierEnum.EMPTY);
     }
     catch (IOException | MavenInvocationException e) {
       throw new MojoFailureException(Arrays.toString(e.getStackTrace()));

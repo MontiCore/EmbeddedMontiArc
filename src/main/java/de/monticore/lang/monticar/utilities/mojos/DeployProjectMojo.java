@@ -3,7 +3,7 @@ package de.monticore.lang.monticar.utilities.mojos;
 import de.monticore.lang.monticar.utilities.artifactcreator.ModelArtifactCreator;
 import de.monticore.lang.monticar.utilities.artifactdeployer.ArtifactDeployer;
 import de.monticore.lang.monticar.utilities.models.StorageInformation;
-import de.monticore.lang.monticar.utilities.utils.JarClassifier;
+import de.monticore.lang.monticar.utilities.utils.JarClassifierEnum;
 import org.apache.maven.plugin.MojoExecutionException;
 import org.apache.maven.plugin.MojoFailureException;
 import org.apache.maven.plugins.annotations.Mojo;
@@ -32,7 +32,7 @@ public class DeployProjectMojo extends BaseMojo {
       jarFile = ModelArtifactCreator.createArtifact(this.modelToStore, this.getPathTmpOut());
       getLog().info("FINISHED creating Jar for model");
 
-      ArtifactDeployer.deployArtifact(jarFile.getAbsolutePath(), this.modelToStore, this.getRepository(), JarClassifier.EMADL);
+      ArtifactDeployer.deployArtifact(jarFile.getAbsolutePath(), this.modelToStore, this.getRepository(), JarClassifierEnum.EMADL);
     }
     catch (IOException | MavenInvocationException e) {
       throw new MojoFailureException(Arrays.toString(e.getStackTrace()));

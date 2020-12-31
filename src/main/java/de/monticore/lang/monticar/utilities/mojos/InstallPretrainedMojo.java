@@ -3,7 +3,7 @@ package de.monticore.lang.monticar.utilities.mojos;
 import de.monticore.lang.monticar.utilities.artifactcreator.PretrainedArtifactCreator;
 import de.monticore.lang.monticar.utilities.artifactdeployer.ArtifactDeployer;
 import de.monticore.lang.monticar.utilities.models.StorageInformation;
-import de.monticore.lang.monticar.utilities.utils.JarClassifier;
+import de.monticore.lang.monticar.utilities.utils.JarClassifierEnum;
 import org.apache.maven.plugin.MojoExecutionException;
 import org.apache.maven.plugin.MojoFailureException;
 import org.apache.maven.plugins.annotations.Mojo;
@@ -32,7 +32,7 @@ public class InstallPretrainedMojo extends BaseMojo {
       jarFile = PretrainedArtifactCreator.createArtifact(this.pretrainedNetworkToStore, this.getPathTmpOut());
       getLog().info("FINISHED creating Jar for pretrained network");
 
-      ArtifactDeployer.installArtifact(jarFile.getAbsolutePath(), this.pretrainedNetworkToStore, this.getRepository(), JarClassifier.PRETRAINED);
+      ArtifactDeployer.installArtifact(jarFile.getAbsolutePath(), this.pretrainedNetworkToStore, this.getRepository(), JarClassifierEnum.PRETRAINED);
     } catch (IOException | MavenInvocationException e) {
       throw new MojoFailureException(Arrays.toString(e.getStackTrace()));
     }
