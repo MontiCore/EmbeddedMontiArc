@@ -1,19 +1,19 @@
 /* (c) https://github.com/MontiCore/monticore */
 package de.monticore.lang.monticar.semantics.loops.analyze;
 
-import static de.monticore.lang.monticar.semantics.loops.analyze.LoopKind.*;
+import static de.monticore.lang.monticar.semantics.loops.analyze.EquationSystemType.*;
 
-public class LoopKindHelper {
+public class EquationSystemTypeCombiner {
 
-    public static LoopKind combineKinds(LoopKind... kinds) {
-        LoopKind res = LoopKind.Constant;
-        for (LoopKind kind : kinds) {
+    public static EquationSystemType combineKinds(EquationSystemType... kinds) {
+        EquationSystemType res = EquationSystemType.Constant;
+        for (EquationSystemType kind : kinds) {
             res = combine(res, kind);
         }
         return res;
     }
 
-    public static LoopKind combine(LoopKind kind1, LoopKind kind2) {
+    public static EquationSystemType combine(EquationSystemType kind1, EquationSystemType kind2) {
         switch (kind1) {
             case Linear:
                 switch (kind2) {

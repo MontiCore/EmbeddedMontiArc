@@ -7,7 +7,7 @@ component Derivation<T>(T dvalue = 0) {
 		out T output;
 
 	implementation Math{
-	    in1(t=0) = dvalue;
-	     diff(input) == output;
+	    input(t=0) = dvalue;
+        diff(input) == output;
 	}
 }

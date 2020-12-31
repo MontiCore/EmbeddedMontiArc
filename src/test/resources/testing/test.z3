@@ -19,7 +19,7 @@
 
 (echo "Port Range Validation")
 (push)
-(echo "output2 lowerLimitValidation range")
+(echo "output2 lowerLimit range")
 (assert (>= input -1000))
 (assert (<= input 1000))
 

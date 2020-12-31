@@ -1,10 +1,12 @@
 /* (c) https://github.com/MontiCore/monticore */
 package de.monticore.lang.monticar.semantics.loops.symbols;
 
+import de.monticore.lang.embeddedmontiarc.embeddedmontiarc._symboltable.instanceStructure.EMAComponentInstanceSymbol;
+import de.monticore.lang.embeddedmontiarc.embeddedmontiarc._symboltable.instanceStructure.EMAPortInstanceSymbol;
 import de.monticore.lang.embeddedmontiarc.embeddedmontiarcmath._symboltable.math.symbols.*;
 import de.monticore.lang.math._symboltable.expression.MathExpressionSymbol;
-import de.monticore.lang.monticar.semantics.loops.analyze.AnalyzeKind;
-import de.monticore.lang.monticar.semantics.loops.analyze.LoopKind;
+import de.monticore.lang.monticar.semantics.loops.analyze.AnalyzeEquationSystemType;
+import de.monticore.lang.monticar.semantics.loops.analyze.EquationSystemType;
 import de.monticore.lang.monticar.semantics.solver.analytic.AnalyticSolvers;
 import de.monticore.lang.monticar.semantics.solver.solutionValidation.SolutionValidation;
 import de.monticore.lang.monticar.semantics.util.math.MathHelper;
@@ -15,14 +17,15 @@ import java.util.stream.Collectors;
 
 public class EquationSystemSymbolicSolver {
 
-    public static Optional<Map<EMAMSymbolicVariableSymbol, MathExpressionSymbol>> trySymbolicSolve(EMAMSpecificationSymbol specification) {
+    public static Optional<Map<EMAMSymbolicVariableSymbol, MathExpressionSymbol>>
+    trySymbolicSolve(EMAMSpecificationSymbol specification, Collection<EMAMSymbolicVariableSymbol> inports) {
 
-        LoopKind kind = AnalyzeKind.kindOf(specification.getEquations(), specification.getVariables());
+        EquationSystemType type = AnalyzeEquationSystemType.kindOf(specification.getEquations(), specification.getVariables());
 
         EquationSystemSymbolicSolver solver = new EquationSystemSymbolicSolver(specification);
 
         Map<String, String> solution = new HashMap<>();
-        switch (kind) {
+        switch (type) {
             case Linear:
                 solution = solver.handleLinearSymbolic();
                 break;
@@ -38,7 +41,7 @@ public class EquationSystemSymbolicSolver {
             case Polynom:
                 solution = solver.handlePolynomSymbolic();
                 break;
-            case UNDERSPECIFIED:
+            case Underspecified:
                 solution = solver.handleUnderSpecification();
                 break;
             default:
@@ -51,7 +54,7 @@ public class EquationSystemSymbolicSolver {
         Optional<Map<EMAMSymbolicVariableSymbol, MathExpressionSymbol>> solutionAsSymbols =
                 convertSolutionToSymbols(solution, specification);
 
-        if (SolutionValidation.isValid(specification.getVariables(), solutionAsSymbols.get()))
+        if (SolutionValidation.isValid(specification.getVariables(), inports, solutionAsSymbols.get()))
             return solutionAsSymbols;
 
         return Optional.empty();

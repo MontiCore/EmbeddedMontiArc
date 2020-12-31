@@ -37,7 +37,7 @@ public class EMAGraphTransformation {
                     }
 
 //                // adding for outports, may be unnecessary, but it does not harm
-//                for (EMAPortInstanceSymbol outport : subComponent.getOutgoingPortInstances()) {
+//                for (EMAPortInstanceSymbol outport : subComponent.getComponentOutgoingPortInstances()) {
 //                    Collection<EMAPortInstanceSymbol> targets = ConnectionHelper.targetsOf(outport, considerNonVirtual);
 //                    for (EMAPortInstanceSymbol target : targets)
 //                        // Add only inner graph connections

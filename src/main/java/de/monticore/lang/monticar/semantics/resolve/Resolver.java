@@ -73,7 +73,7 @@ public class Resolver {
     }
 
     private boolean isAKepper(EMAComponentInstanceSymbol component, EMAEquationSystem equationSystem) {
-        if (equationSystem.getOutports()
+        if (equationSystem.getOutgoingPorts()
                 .stream()
                 .map(port -> port.getComponentInstance())
                 .collect(Collectors.toSet()).contains(component))
@@ -103,7 +103,8 @@ public class Resolver {
             EMAMSpecificationSymbol specification = SpecificationConverter.convert(component).orElse(null);
             if (specification == null) Log.error("TODO");
             Optional<Map<EMAMSymbolicVariableSymbol, MathExpressionSymbol>> solution =
-                    EquationSystemSymbolicSolver.trySymbolicSolve(specification);
+                    EquationSystemSymbolicSolver.trySymbolicSolve(specification,
+                            SpecificationConverter.getIncomingPortsAsVariables(component));
             if (solution.isPresent()) {
                 Map<EMAPortInstanceSymbol, String> solutionMap =
                         EMAEquationSystemHelper.convertSolutionMap(solution.get(), component.getPortInstanceList());

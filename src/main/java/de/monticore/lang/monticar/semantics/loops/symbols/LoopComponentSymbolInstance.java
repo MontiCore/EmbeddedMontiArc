@@ -41,7 +41,7 @@ public class LoopComponentSymbolInstance extends EMADynamicComponentInstanceSymb
 
         // Only add ports, connectors and Math Statements need to be empty, // solve equation system
         symbol.getPortInstanceList().stream()
-                .filter(p -> eqs.getInports().contains(p) || p.isOutgoing())
+                .filter(p -> eqs.getIncomingPorts().contains(p) || p.isOutgoing())
                 .forEach(p -> {
             spannedScope.add(p);
             p.setEnclosingScope(spannedScope);
@@ -54,7 +54,7 @@ public class LoopComponentSymbolInstance extends EMADynamicComponentInstanceSymb
 
     public void connectInformation() {
         // Connect all information (inports) from the equation system to this component
-        for (EMAPortInstanceSymbol inport : eqs.getInports()) {
+        for (EMAPortInstanceSymbol inport : eqs.getIncomingPorts()) {
             if (!getPortInstanceList().contains(inport)) {
                 String newPortName = NameHelper.replaceWithUnderScore(NameHelper.calculateFullQualifiedNameOf(inport));
                 EMADynamicPortInstanceSymbol portInstanceSymbol = InstanceCreator.createPortInstanceSymbol(newPortName,

@@ -1,34 +1,49 @@
 /* (c) https://github.com/MontiCore/monticore */
 package de.monticore.lang.monticar.semantics.loops.symbols;
 
+import de.monticore.lang.embeddedmontiarc.embeddedmontiarc._symboltable.instanceStructure.EMAComponentInstanceSymbol;
 import de.monticore.lang.embeddedmontiarc.embeddedmontiarc._symboltable.instanceStructure.EMAPortInstanceSymbol;
-import de.monticore.lang.embeddedmontiarc.embeddedmontiarcmath._symboltable.math.symbols.EMAMSpecificationSymbol;
-import de.monticore.lang.embeddedmontiarc.embeddedmontiarcmath._symboltable.math.symbols.EMAMSymbolicVariableSymbol;
+import de.monticore.lang.embeddedmontiarc.embeddedmontiarcmath._symboltable.math.symbols.*;
 import de.monticore.lang.math._symboltable.expression.MathExpressionSymbol;
+import de.monticore.lang.math._symboltable.expression.MathNameExpressionSymbol;
+import de.monticore.lang.math._symboltable.expression.MathNumberExpressionSymbol;
+import de.monticore.lang.math._symboltable.matrix.MathMatrixAccessOperatorSymbol;
+import de.monticore.lang.math._symboltable.matrix.MathMatrixNameExpressionSymbol;
+import de.monticore.lang.monticar.semantics.Constants;
 import de.monticore.lang.monticar.semantics.helper.NameHelper;
+import de.monticore.lang.monticar.semantics.loops.analyze.AnalyzeEquationSystemType;
+import de.monticore.lang.monticar.semantics.loops.analyze.EquationSystemType;
 import de.monticore.lang.monticar.semantics.loops.analyze.SpecificationConverter;
+import de.monticore.lang.monticar.semantics.loops.symbols.semiexplicit.ComponentCall;
+import de.monticore.lang.monticar.semantics.loops.symbols.semiexplicit.ExplicitFunction;
+import de.monticore.lang.monticar.semantics.loops.symbols.semiexplicit.SemiExplicitForm;
+import de.monticore.lang.monticar.semantics.loops.symbols.semiexplicit.SemiExplicitFormBuilder;
 import de.se_rwth.commons.logging.Log;
+import org.jscience.mathematics.number.Rational;
 
-import java.util.Collection;
-import java.util.HashMap;
-import java.util.Map;
-import java.util.Optional;
+import java.util.*;
+
+import static de.monticore.lang.monticar.semantics.loops.analyze.EquationSystemType.DAE;
+import static de.monticore.lang.monticar.semantics.loops.analyze.EquationSystemType.ODE;
 
 public class EMAEquationSystemHelper {
 
     public static boolean trySymbolicSolve(EMAEquationSystem system) {
         if (system.isPresentSolution()) return !system.getSolution().isEmpty();
+        SemiExplicitForm semiExplicitForm = buildSemiExplicitForm(system);
+        semiExplicitForm.toString();
 
         Optional<EMAMSpecificationSymbol> specification = SpecificationConverter.convert(system);
 
         if (!specification.isPresent()) return false;
 
-        Optional<Map<EMAMSymbolicVariableSymbol, MathExpressionSymbol>> solution = EquationSystemSymbolicSolver.trySymbolicSolve(
-                specification.get());
+        Optional<Map<EMAMSymbolicVariableSymbol, MathExpressionSymbol>> solution =
+                EquationSystemSymbolicSolver.trySymbolicSolve(
+                specification.get(), SpecificationConverter.getIncomingPortsAsVariables(system));
 
         if (!solution.isPresent() || solution.get().isEmpty()) return false;
 
-        system.setSolution(convertSolutionMap(solution.get(), system.getOutgoingPortInstances()));
+        system.setSolution(convertSolutionMap(solution.get(), system.getComponentOutgoingPortInstances()));
         return true;
     }
 
@@ -48,6 +63,105 @@ public class EMAEquationSystemHelper {
             }
         }
         return solutions;
+    }
+
+    public static SemiExplicitForm buildSemiExplicitForm(EMAEquationSystem system) {
+        SemiExplicitFormBuilder builder = SemiExplicitFormBuilder.aSemiExplicitForm();
+
+        Collection<EMAMSymbolicVariableSymbol> variables = SpecificationConverter.getVariables(system);
+        Collection<EMAMSymbolicVariableSymbol> differentialVariables = new HashSet<>();
+        for (EMAComponentInstanceSymbol component : system.getComponentInstanceSymbols()) {
+            Optional<EMAMSpecificationSymbol> specification = SpecificationConverter.convert(system, component);
+            if (specification.isPresent()) {
+                for (EMAMEquationSymbol equation : specification.get().getEquations()) {
+                    EquationSystemType type = AnalyzeEquationSystemType.kindOf(equation, variables);
+                    if (type == ODE || type == DAE) {
+                        // diff(x) is alone on the left side!
+                        EMAMSymbolicVariableSymbol variable = getVarOfDifferentialEquation(equation, variables);
+                        builder.addY(variable);
+                        differentialVariables.add(variable);
+                        Optional<MathExpressionSymbol> initialValue =
+                                findInitialValue(variable, specification.get().getInitialValues());
+                        if (initialValue.isPresent())
+                            builder.addInitialValue(initialValue.get());
+                        else
+                            builder.addInitialValue(new MathNumberExpressionSymbol(Rational.ZERO));
+                        builder.addF(equation.getRightExpression());
+                    } else
+                        builder.addG(new ExplicitFunction(equation));
+                }
+            } else {
+                for (EMAPortInstanceSymbol outport : component.getOutgoingPortInstances()) {
+                    builder.addG(new ComponentCall(component, outport));
+                }
+            }
+        }
+
+        Collection<EMAMInitialValueSymbol> initialValues = SpecificationConverter.getInitialValues(system);
+        Collection<EMAMInitialGuessSymbol> initialGuesses = SpecificationConverter.getInitialGuesses(system);
+
+        variables.stream().filter(v -> !differentialVariables.contains(v))
+                .forEach(v -> {
+                    Optional<MathExpressionSymbol> value = findInitialValue(v, initialValues);
+                    if (!value.isPresent())
+                        value = findInitialGuess(v, initialGuesses);
+                    if (!value.isPresent())
+                        value = Optional.of(new MathNumberExpressionSymbol(Rational.ZERO));
+                    builder.addZ(v);
+                    builder.addInitialGuess(value.get());
+                });
+
+        return builder.build();
+    }
+
+    private static Optional<MathExpressionSymbol> findInitialValue(EMAMSymbolicVariableSymbol variable,
+                                                                      Collection<EMAMInitialValueSymbol> initialValues) {
+        String name = variable.getName();
+
+        Optional<EMAMInitialValueSymbol> initialValue =
+                initialValues.stream().filter(i -> i.getNameWithArray().equals(name)).findFirst();
+        if (!initialValue.isPresent())
+            return Optional.empty();
+        else
+            return Optional.ofNullable(initialValue.get().getValue());
+    }
+
+    private static Optional<MathExpressionSymbol> findInitialGuess(EMAMSymbolicVariableSymbol variable,
+                                                                      Collection<EMAMInitialGuessSymbol> initialGuesses) {
+        String name;
+        if (variable.isPort())
+            name = variable.getPort().get().getName().replace("[","(").replace("]",")");
+        else
+            name = variable.getName();
+
+        Optional<EMAMInitialGuessSymbol> initialGuess =
+                initialGuesses.stream().filter(i -> i.getNameWithArray().equals(name)).findFirst();
+        if (!initialGuess.isPresent())
+            return Optional.empty();
+        else
+            return Optional.ofNullable(initialGuess.get().getValue());
+    }
+
+    private static EMAMSymbolicVariableSymbol getVarOfDifferentialEquation(EMAMEquationSymbol equation,
+                                                                           Collection<EMAMSymbolicVariableSymbol> variables) {
+        MathExpressionSymbol leftExpression = equation.getLeftExpression();
+        if (!(leftExpression instanceof MathMatrixNameExpressionSymbol))
+            Log.error("TODO Differential operators are only allowed on the left side of an equation");
+        String operator = ((MathMatrixNameExpressionSymbol) leftExpression).getNameToAccess();
+        if (!operator.equals(Constants.derivativeOperatorName))
+            Log.error("TODO Differential operators are only allowed on the left side of an equation");
+        MathMatrixAccessOperatorSymbol mathMatrixAccessOperatorSymbol = ((MathMatrixNameExpressionSymbol) leftExpression).getMathMatrixAccessOperatorSymbol();
+        if (mathMatrixAccessOperatorSymbol.getMathMatrixAccessSymbols().size() != 1)
+            Log.error("TODO Differential operators are only allowed on the left side of an equation");
+        MathExpressionSymbol var = mathMatrixAccessOperatorSymbol.getMathMatrixAccessSymbol(0).get();
+        if (!(var instanceof MathNameExpressionSymbol))
+            Log.error("TODO Differential operators are only allowed on the left side of an equation");
+        String varName = ((MathNameExpressionSymbol) var).getNameToAccess();
+        Optional<EMAMSymbolicVariableSymbol> result = variables.stream().filter(v -> v.getName().equals(varName)).findFirst();
+        if (!result.isPresent())
+            Log.error(String.format("TODO Could not find variable for \"%s\" in equation %s",
+                    varName, equation.getTextualRepresentation()));
+        return result.get();
     }
 
 
@@ -79,8 +193,8 @@ public class EMAEquationSystemHelper {
 //            MathExpressionSymbol currentFunction;
 //            MathAssignmentExpressionSymbol currentStatement = getPortStatements(system).get(port);
 //
-//            LoopKind loopKind = AnalyzeKind.kindOf(portStatements.get(port), variables);
-//            if (loopKind.equals(LoopKind.LinearDifferencial) || loopKind.equals(LoopKind.NonLinearDifferencial)) {
+//            EquationSystemType loopKind = AnalyzeEquationSystemType.kindOf(portStatements.get(port), variables);
+//            if (loopKind.equals(EquationSystemType.LinearDifferencial) || loopKind.equals(EquationSystemType.NonLinearDifferencial)) {
 //                currentRow = buildRowFor(i, ports.size());
 //                currentFunction = new MathNameExpressionSymbol(currentStatement.getNameOfMathValue());
 //            } else {

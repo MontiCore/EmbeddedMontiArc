@@ -4,7 +4,7 @@ package de.monticore.lang.monticar.semantics.loops.symbols;
 import de.monticore.lang.embeddedmontiarc.embeddedmontiarc._symboltable.instanceStructure.EMAComponentInstanceSymbol;
 import de.monticore.lang.embeddedmontiarc.embeddedmontiarc._symboltable.instanceStructure.EMAConnectorInstanceSymbol;
 import de.monticore.lang.embeddedmontiarc.embeddedmontiarc._symboltable.instanceStructure.EMAPortInstanceSymbol;
-import de.monticore.lang.monticar.semantics.loops.analyze.LoopKind;
+import de.monticore.lang.monticar.semantics.loops.analyze.EquationSystemType;
 import de.se_rwth.commons.logging.Log;
 
 import java.util.*;
@@ -17,7 +17,7 @@ public class EMAEquationSystem {
 
     private String name;
 
-    private LoopKind kind = LoopKind.Default;
+    private EquationSystemType type = EquationSystemType.Constant;
 
     private Collection<EMAComponentInstanceSymbol> components;
     private Collection<EMAConnectorInstanceSymbol> connectors;
@@ -67,23 +67,23 @@ public class EMAEquationSystem {
         return atomicTargets.getOrDefault(port, new HashSet<>());
     }
 
-    LoopKind getLoopKind() {
-        return kind;
+    EquationSystemType getType() {
+        return type;
     }
 
-    void setLoopKind(LoopKind loopKind) {
-        this.kind = loopKind;
+    void setType(EquationSystemType equationSystemType) {
+        this.type = equationSystemType;
     }
 
     public Collection<EMAConnectorInstanceSymbol> getConnectors() {
         return connectors;
     }
 
-    public Collection<EMAPortInstanceSymbol> getInports() {
+    public Collection<EMAPortInstanceSymbol> getIncomingPorts() {
         return inports;
     }
 
-    public Collection<EMAPortInstanceSymbol> getOutports() {
+    public Collection<EMAPortInstanceSymbol> getOutgoingPorts() {
         return outports;
     }
 
@@ -123,7 +123,7 @@ public class EMAEquationSystem {
         return solution.isPresent() && getSolution().containsKey(port);
     }
 
-    public Collection<EMAPortInstanceSymbol> getIncomingPortInstances() {
+    public Collection<EMAPortInstanceSymbol> getComponentIncomingPortInstances() {
         return getComponentInstanceSymbols()
                 .stream()
                 .map(c -> c.getIncomingPortInstances())
@@ -131,7 +131,7 @@ public class EMAEquationSystem {
                 .collect(Collectors.toSet());
     }
 
-    public Collection<EMAPortInstanceSymbol> getOutgoingPortInstances() {
+    public Collection<EMAPortInstanceSymbol> getComponentOutgoingPortInstances() {
         return getComponentInstanceSymbols()
                 .stream()
                 .map(c -> c.getOutgoingPortInstances())

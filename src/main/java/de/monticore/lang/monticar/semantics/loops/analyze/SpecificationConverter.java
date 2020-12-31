@@ -12,6 +12,7 @@ import de.monticore.lang.math._symboltable.matrix.MathMatrixAccessOperatorSymbol
 import de.monticore.lang.math._symboltable.matrix.MathMatrixAccessSymbol;
 import de.monticore.lang.math._symboltable.matrix.MathMatrixNameExpressionSymbol;
 import de.monticore.lang.monticar.semantics.helper.NameHelper;
+import de.monticore.lang.monticar.semantics.loops.detection.ConnectionHelper;
 import de.monticore.lang.monticar.semantics.loops.symbols.EMAEquationSystem;
 import de.monticore.lang.monticar.semantics.util.math.MathHelper;
 import de.monticore.lang.monticar.semantics.util.math.NameReplacer;
@@ -25,6 +26,26 @@ import java.util.regex.Pattern;
 import java.util.stream.Collectors;
 
 public class SpecificationConverter {
+
+    public static Optional<EMAMSpecificationSymbol> convert(EMAEquationSystem system, EMAComponentInstanceSymbol component) {
+        Optional<EMAMSpecificationSymbol> specification = convert(component);
+        if (!specification.isPresent()) return specification;
+
+        Map<String, String> nameMapping = getNameMapping(component, system);
+        specification.get().setVariables(specification.get().getVariables().stream()
+                .map(v -> replaceName(v, nameMapping))
+                .collect(Collectors.toSet()));
+        specification.get().setEquations(specification.get().getEquations().stream()
+                .map(v -> replaceName(v, nameMapping))
+                .collect(Collectors.toSet()));
+        specification.get().setInitialValues(specification.get().getInitialValues().stream()
+                .map(v -> replaceName(v, nameMapping))
+                .collect(Collectors.toSet()));
+        specification.get().setInitialGuesses(specification.get().getInitialGuesses().stream()
+                .map(v -> replaceName(v, nameMapping))
+                .collect(Collectors.toSet()));
+        return specification;
+    }
 
 
     public static Optional<EMAMSpecificationSymbol> convert(EMAComponentInstanceSymbol component) {
@@ -55,7 +76,7 @@ public class SpecificationConverter {
 
 
     private static Optional<EMAMSpecificationSymbol> calculateSpecificationFromAssignments(EMAComponentInstanceSymbol component) {
-        Collection<EMAMSymbolicVariableSymbol> variables = getPortsAsVariables(component);
+        Collection<EMAMSymbolicVariableSymbol> variables = getOutgoingPortsAsVariables(component);
         Collection<EMAMInitialValueSymbol> initialValues = getPortInitialValues(component);
         Collection<EMAMInitialGuessSymbol> initialGuesses = getPortInitialGuesses(component);
 
@@ -67,9 +88,53 @@ public class SpecificationConverter {
         return Optional.of(new EMAMSpecificationSymbolSynth(variables, equations, initialValues, initialGuesses));
     }
 
-    public static Collection<EMAMSymbolicVariableSymbol> getPortsAsVariables(EMAComponentInstanceSymbol component) {
+    public static Collection<EMAMSymbolicVariableSymbol> getOutgoingPortsAsVariables(EMAEquationSystem system,
+                                                                                     EMAComponentInstanceSymbol component) {
+        Map<String, String> nameMapping = getNameMapping(component, system);
+        return getOutgoingPortsAsVariables(component).stream()
+                .map(v -> replaceName(v, nameMapping))
+                .collect(Collectors.toSet());
+    }
+
+    public static Collection<EMAMSymbolicVariableSymbol> getOutgoingPortsAsVariables(EMAComponentInstanceSymbol component) {
         Collection<EMAMSymbolicVariableSymbol> variables = new HashSet<>();
         for (EMAPortInstanceSymbol port : component.getOutgoingPortInstances()) {
+            // TODO maybe array
+            EMAMSymbolicVariableSymbol var = new EMAMSymbolicVariableSymbol(port.getName());
+            var.setPort(port);
+            variables.add(var);
+        }
+        return variables;
+    }
+
+    public static Collection<EMAMSymbolicVariableSymbol> getIncomingPortsAsVariables(EMAEquationSystem system) {
+        Collection<EMAMSymbolicVariableSymbol> result = new HashSet<>();
+        system.getIncomingPorts().stream()
+                .map(i -> system.getAtomicSourceOf(i))
+                .filter(source -> source.isPresent())
+                .map(source -> source.get())
+                .forEach(source -> {
+                    Optional<EMAMSymbolicVariableSymbol> var = getOutgoingPortsAsVariables(system, source.getComponentInstance())
+                            .stream().filter(v -> v.isPort())
+                            .filter(v -> v.getPort().get() == source)
+                            .findFirst();
+                    if (var.isPresent())
+                        result.add(var.get());
+                });
+        return result;
+    }
+
+    public static Collection<EMAMSymbolicVariableSymbol> getIncomingPortsAsVariables(EMAEquationSystem system,
+                                                                                     EMAComponentInstanceSymbol component) {
+        Map<String, String> nameMapping = getNameMapping(component, system);
+        return getIncomingPortsAsVariables(component).stream()
+                .map(v -> replaceName(v, nameMapping))
+                .collect(Collectors.toSet());
+    }
+
+    public static Collection<EMAMSymbolicVariableSymbol> getIncomingPortsAsVariables(EMAComponentInstanceSymbol component) {
+        Collection<EMAMSymbolicVariableSymbol> variables = new HashSet<>();
+        for (EMAPortInstanceSymbol port : component.getIncomingPortInstances()) {
             // TODO maybe array
             EMAMSymbolicVariableSymbol var = new EMAMSymbolicVariableSymbol(port.getName());
             var.setPort(port);
@@ -199,18 +264,17 @@ public class SpecificationConverter {
     }
 
 
-
-
     public static Collection<EMAMSymbolicVariableSymbol> getVariables(EMAComponentInstanceSymbol component) {
         Optional<EMAMSpecificationSymbol> spec = getSpecificationFromMath(component);
         if (spec.isPresent()) return spec.get().getVariables();
-        else return getPortsAsVariables(component); // Maybe should add some of the assignments from the assignments
+        else
+            return getOutgoingPortsAsVariables(component); // Maybe should add some of the assignments from the assignments
     }
 
     public static Collection<EMAMEquationSymbol> getEquations(EMAComponentInstanceSymbol component) {
         Optional<EMAMSpecificationSymbol> spec = getSpecificationFromMath(component);
         if (spec.isPresent()) return spec.get().getEquations();
-        else return calculateEquationsFromAssignments(component, getPortsAsVariables(component));
+        else return calculateEquationsFromAssignments(component, getOutgoingPortsAsVariables(component));
     }
 
     public static Collection<EMAMInitialGuessSymbol> getInitialGuesses(EMAComponentInstanceSymbol component) {
@@ -224,7 +288,6 @@ public class SpecificationConverter {
         if (spec.isPresent()) return spec.get().getInitialValues();
         else return getPortInitialValues(component); // Maybe should add some of the assignments from the assignments
     }
-
 
 
     public static Collection<EMAMSymbolicVariableSymbol> getVariables(EMAEquationSystem system, EMAComponentInstanceSymbol component) {
@@ -266,15 +329,18 @@ public class SpecificationConverter {
 
         for (EMAPortInstanceSymbol inport : component.getIncomingPortInstances()) {
             Optional<EMAPortInstanceSymbol> source = system.getAtomicSourceOf(inport);
-            if (!source.isPresent())
-                Log.error("0x1544231 no source port for connector");
+            if (!source.isPresent()) {
+                Log.warn(String.format("0x1544231 no source port for input port %s",
+                        NameHelper.calculateFullQualifiedNameOf(inport)));
+                source = Optional.of(inport);
+            }
 
             String sourcePortFullName = replacePortBrackets(NameHelper.calculateFullQualifiedNameOf(source.get()));
             nameMapping.put(replacePortBrackets(inport.getName()), sourcePortFullName);
         }
 
         String componentFullName = NameHelper.calculateFullQualifiedNameOf(component);
-        for (EMAMSymbolicVariableSymbol variable : getPortsAsVariables(component))
+        for (EMAMSymbolicVariableSymbol variable : getOutgoingPortsAsVariables(component))
             if (!nameMapping.containsKey(variable.getName()))
                 nameMapping.put(variable.getName(), Names.getQualifiedName(componentFullName, variable.getName()));
 
@@ -282,7 +348,7 @@ public class SpecificationConverter {
     }
 
     private static String replacePortBrackets(String port) {
-        return port.replace("[","(").replace("]",")");
+        return port.replace("[", "(").replace("]", ")");
     }
 
 

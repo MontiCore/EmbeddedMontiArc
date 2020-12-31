@@ -7,7 +7,7 @@ component Integrator<T>(T dvalue = 0) {
 		out T output;
 
 	implementation Math{
-	    out1(t=0) = dvalue;
+	    output(t=0) = dvalue;
 	    diff(output) == input;
 	}
 }

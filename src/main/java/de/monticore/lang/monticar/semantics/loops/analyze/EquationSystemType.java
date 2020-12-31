@@ -1,6 +1,6 @@
 /* (c) https://github.com/MontiCore/monticore */
 package de.monticore.lang.monticar.semantics.loops.analyze;
 
-public enum LoopKind {
+public enum EquationSystemType {
     Constant, Linear, Polynom, NonLinear, ODE, DAE, Underspecified, Overspecified
 }
