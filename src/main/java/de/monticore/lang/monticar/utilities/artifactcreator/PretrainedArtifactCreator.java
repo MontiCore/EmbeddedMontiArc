@@ -17,12 +17,10 @@ import java.util.jar.Manifest;
 public class PretrainedArtifactCreator extends ArtifactCreator {
 
   public static File createArtifact(StorageInformation pretrainedToStore, String tempDirectory) throws MojoExecutionException, IOException {
+    checkStorageInformation(pretrainedToStore, "pretrained network");
     String pretrainedGroupId = pretrainedToStore.getGroupId();
     String pretrainedArtifactId = pretrainedToStore.getArtifactId();
     File pretrainedPath = pretrainedToStore.getPath();
-    Preconditions.checkArgument(!StringUtils.isEmpty(pretrainedGroupId), "Group ID of pretrained network artifact must be specified.");
-    Preconditions.checkArgument(!StringUtils.isEmpty(pretrainedArtifactId), "Artifact ID of pretrained network artifact must be specified.");
-    Preconditions.checkNotNull(pretrainedPath, "Path of pretrained network must be specified.");
 
     getPretrainedNetworkLocations(pretrainedPath);
     Manifest manifest = createManifest(pretrainedGroupId, pretrainedArtifactId, pretrainedToStore.getVersion());

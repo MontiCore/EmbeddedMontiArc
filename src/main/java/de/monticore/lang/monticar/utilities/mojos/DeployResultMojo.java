@@ -26,7 +26,7 @@ public class DeployResultMojo extends BaseMojo {
     File jarFile;
     try {
       getLog().info("STARTING creating Jar of the trained model.");
-      jarFile = ResultArtifactCreator.createArtifact(storageInformation, getTrainingConfig(), getPathTmpOut(), getScope(), getTaggingResolver());
+      jarFile = ResultArtifactCreator.createArtifact(storageInformation, getTrainingConfig(), getPathTmpOut(), getTaggingResolver());
       getLog().info("FINISHED creating Jar of the trained model.");
 
       ArtifactDeployer.deployArtifact(jarFile.getAbsolutePath(), storageInformation, this.getRepository(), JarClassifierEnum.EMPTY);

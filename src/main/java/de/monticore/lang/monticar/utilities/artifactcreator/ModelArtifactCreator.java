@@ -21,12 +21,10 @@ import java.util.jar.Manifest;
 public class ModelArtifactCreator extends ArtifactCreator {
 
   public static File createArtifact(StorageInformation modelToStore, String tempDirectory) throws IOException, MojoExecutionException {
+    checkStorageInformation(modelToStore, "EMADL project");
     String modelGroupId = modelToStore.getGroupId();
     String modelArtifactId = modelToStore.getArtifactId();
     File modelPath = modelToStore.getPath();
-    Preconditions.checkArgument(!StringUtils.isEmpty(modelGroupId), "Group ID of EMADL model artifact must be specified.");
-    Preconditions.checkArgument(!StringUtils.isEmpty(modelArtifactId), "Artifact ID of EMADL model artifact must be specified.");
-    Preconditions.checkNotNull(modelPath, "Path of EMADL model must be specified.");
 
     Manifest manifest = createManifest(modelGroupId, modelArtifactId, modelToStore.getVersion());
     String jarFileName = createJarFileName(tempDirectory, "model");

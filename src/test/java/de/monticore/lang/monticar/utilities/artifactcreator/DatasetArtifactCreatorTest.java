@@ -31,9 +31,7 @@ public class DatasetArtifactCreatorTest {
     storageInformation.setArtifactId("artifactId");
     storageInformation.setPath(new File("path"));
 
-    String expectedMessage = "Group ID of dataset artifact must be specified.";
-
-    assertThrowsException(new IllegalArgumentException(), storageInformation, expectedMessage);
+    assertThrowsException(new IllegalArgumentException(), storageInformation);
   }
 
   @Test
@@ -42,9 +40,7 @@ public class DatasetArtifactCreatorTest {
     storageInformation.setGroupId("groupId");
     storageInformation.setPath(new File("path"));
 
-    String expectedMessage = "Artifact ID of dataset artifact must be specified.";
-
-    assertThrowsException(new IllegalArgumentException(), storageInformation, expectedMessage);
+    assertThrowsException(new IllegalArgumentException(), storageInformation);
   }
 
   @Test
@@ -53,9 +49,7 @@ public class DatasetArtifactCreatorTest {
     storageInformation.setArtifactId("artifactId");
     storageInformation.setGroupId("groupId");
 
-    String expectedMessage = "Path of dataset must be specified.";
-
-    assertThrowsException(new NullPointerException(), storageInformation, expectedMessage);
+    assertThrowsException(new NullPointerException(), storageInformation);
   }
 
   @Test
@@ -85,11 +79,9 @@ public class DatasetArtifactCreatorTest {
   }
 
 
-  private static void assertThrowsException(Exception expectedException, StorageInformation storageInformation, String expectedMessage) {
-    Exception exception = assertThrows(expectedException.getClass(), () ->
+  private static void assertThrowsException(Exception expectedException, StorageInformation storageInformation) {
+    assertThrows(expectedException.getClass(), () ->
         DatasetArtifactCreator.createArtifact(storageInformation, "/tmp")
     );
-
-    assertTrue(exception.getMessage().contains(expectedMessage));
   }
 }

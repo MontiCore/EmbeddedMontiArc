@@ -20,8 +20,9 @@ import java.util.jar.Manifest;
 
 public class ResultArtifactCreator extends ArtifactCreator {
 
-  public static File createArtifact(StorageInformation storageInformation, TrainingConfiguration trainingConfiguration, String tmpOut, Scope scope, TaggingResolver taggingResolver)
+  public static File createArtifact(StorageInformation storageInformation, TrainingConfiguration trainingConfiguration, String tmpOut, TaggingResolver taggingResolver)
       throws MojoFailureException, MojoExecutionException, IOException {
+    checkStorageInformation(storageInformation, "training result");
     EMAComponentSymbol component = (EMAComponentSymbol) taggingResolver.resolve(trainingConfiguration.getModelToTrain(), EMAComponentSymbol.KIND).orElse(null);
     if (component == null) {
       throw new MojoFailureException(String.format("Component with name %s does not exist", trainingConfiguration.getModelToTrain()));

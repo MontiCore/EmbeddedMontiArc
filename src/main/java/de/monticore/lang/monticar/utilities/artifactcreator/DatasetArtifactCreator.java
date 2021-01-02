@@ -17,12 +17,10 @@ import java.util.jar.Manifest;
 public class DatasetArtifactCreator extends ArtifactCreator {
 
   public static File createArtifact(StorageInformation datasetToStore, String tempDirectory) throws IOException {
+    checkStorageInformation(datasetToStore, "dataset");
     String datasetGroupId = datasetToStore.getGroupId();
     String datasetArtifactId = datasetToStore.getArtifactId();
     File datasetPath = datasetToStore.getPath();
-    Preconditions.checkArgument(!StringUtils.isEmpty(datasetGroupId), "Group ID of dataset artifact must be specified.");
-    Preconditions.checkArgument(!StringUtils.isEmpty(datasetArtifactId), "Artifact ID of dataset artifact must be specified.");
-    Preconditions.checkNotNull(datasetPath, "Path of dataset must be specified.");
 
     Manifest manifest = createManifest(datasetGroupId, datasetArtifactId, datasetToStore.getVersion(), getAdditionalAttributes());
     String jarFileName = createJarFileName(tempDirectory, "dataset");
