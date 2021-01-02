@@ -9,6 +9,9 @@ import de.monticore.lang.monticar.semantics.executionOrder.SListEntry;
 import de.monticore.lang.monticar.semantics.helper.Find;
 import de.monticore.prettyprint.IndentPrinter;
 
+import java.util.List;
+import java.util.Map;
+
 import static de.monticore.lang.monticar.semantics.loops.detection.ConnectionHelper.isAtomic;
 import static de.monticore.lang.monticar.semantics.loops.detection.ConnectionHelper.isNonVirtual;
 
@@ -30,18 +33,48 @@ public class PrintExecutionOrder {
         return printer.getContent();
     }
 
-    public static String printSList(EMAComponentInstanceSymbol rootComponent) {
+    public static String printSListAtomic(EMAComponentInstanceSymbol rootComponent) {
+        return printSList(SList.sListAtomic(rootComponent), rootComponent);
+    }
+
+    public static String printSList(List<SListEntry> sList) {
         IndentPrinter printer = new IndentPrinter();
 
         int i = 1;
-        for (SListEntry entry : SList.sList(rootComponent)) {
+        for (SListEntry entry : sList) {
             printer.println(String.format("%s) %s: %s", i++,
-                    getPartialName(entry.getComponent(), rootComponent),
+                    entry.getComponent().getFullName(),
                     printCall(entry.getCall())));
             printer.unindent();
         }
 
         return printer.getContent();
+    }
+
+    public static String printSList(List<SListEntry> sList, EMAComponentInstanceSymbol relativeComponent) {
+        IndentPrinter printer = new IndentPrinter();
+
+        int i = 1;
+        for (SListEntry entry : sList) {
+            printer.println(String.format("%s) %s: %s", i++,
+                    getPartialName(entry.getComponent(), relativeComponent),
+                    printCall(entry.getCall())));
+            printer.unindent();
+        }
+
+        return printer.getContent();
+    }
+
+    public static String printSListSubSystem(EMAComponentInstanceSymbol rootComponent) {
+        String result = "";
+        Map<EMAComponentInstanceSymbol, List<SListEntry>> sLists = SList.sListSubSystem(rootComponent);
+        for (Map.Entry<EMAComponentInstanceSymbol, List<SListEntry>> sListsEntry : sLists.entrySet()) {
+            result += String.format("SList for Component :%s\n", sListsEntry.getKey().getFullName());
+            result += printSList(sListsEntry.getValue(), sListsEntry.getKey());
+            result += "\n";
+        }
+
+        return result;
     }
 
     private static String printCall(Call call) {

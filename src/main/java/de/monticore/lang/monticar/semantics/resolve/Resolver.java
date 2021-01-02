@@ -104,7 +104,7 @@ public class Resolver {
             if (specification == null) Log.error("TODO");
             Optional<Map<EMAMSymbolicVariableSymbol, MathExpressionSymbol>> solution =
                     EquationSystemSymbolicSolver.trySymbolicSolve(specification,
-                            SpecificationConverter.getIncomingPortsAsVariables(component));
+                            SpecificationConverter.getIncomingInformationAsVariables(component));
             if (solution.isPresent()) {
                 Map<EMAPortInstanceSymbol, String> solutionMap =
                         EMAEquationSystemHelper.convertSolutionMap(solution.get(), component.getPortInstanceList());

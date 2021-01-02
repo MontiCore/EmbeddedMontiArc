@@ -12,7 +12,6 @@ import de.monticore.lang.math._symboltable.matrix.MathMatrixAccessOperatorSymbol
 import de.monticore.lang.math._symboltable.matrix.MathMatrixAccessSymbol;
 import de.monticore.lang.math._symboltable.matrix.MathMatrixNameExpressionSymbol;
 import de.monticore.lang.monticar.semantics.helper.NameHelper;
-import de.monticore.lang.monticar.semantics.loops.detection.ConnectionHelper;
 import de.monticore.lang.monticar.semantics.loops.symbols.EMAEquationSystem;
 import de.monticore.lang.monticar.semantics.util.math.MathHelper;
 import de.monticore.lang.monticar.semantics.util.math.NameReplacer;
@@ -107,7 +106,7 @@ public class SpecificationConverter {
         return variables;
     }
 
-    public static Collection<EMAMSymbolicVariableSymbol> getIncomingPortsAsVariables(EMAEquationSystem system) {
+    public static Collection<EMAMSymbolicVariableSymbol> getIncomingInformationAsVariables(EMAEquationSystem system) {
         Collection<EMAMSymbolicVariableSymbol> result = new HashSet<>();
         system.getIncomingPorts().stream()
                 .map(i -> system.getAtomicSourceOf(i))
@@ -124,15 +123,15 @@ public class SpecificationConverter {
         return result;
     }
 
-    public static Collection<EMAMSymbolicVariableSymbol> getIncomingPortsAsVariables(EMAEquationSystem system,
-                                                                                     EMAComponentInstanceSymbol component) {
+    public static Collection<EMAMSymbolicVariableSymbol> getIncomingInformationAsVariables(EMAEquationSystem system,
+                                                                                           EMAComponentInstanceSymbol component) {
         Map<String, String> nameMapping = getNameMapping(component, system);
-        return getIncomingPortsAsVariables(component).stream()
+        return getIncomingInformationAsVariables(component).stream()
                 .map(v -> replaceName(v, nameMapping))
                 .collect(Collectors.toSet());
     }
 
-    public static Collection<EMAMSymbolicVariableSymbol> getIncomingPortsAsVariables(EMAComponentInstanceSymbol component) {
+    public static Collection<EMAMSymbolicVariableSymbol> getIncomingInformationAsVariables(EMAComponentInstanceSymbol component) {
         Collection<EMAMSymbolicVariableSymbol> variables = new HashSet<>();
         for (EMAPortInstanceSymbol port : component.getIncomingPortInstances()) {
             // TODO maybe array

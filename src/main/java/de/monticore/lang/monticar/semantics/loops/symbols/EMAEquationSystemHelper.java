@@ -39,7 +39,7 @@ public class EMAEquationSystemHelper {
 
         Optional<Map<EMAMSymbolicVariableSymbol, MathExpressionSymbol>> solution =
                 EquationSystemSymbolicSolver.trySymbolicSolve(
-                specification.get(), SpecificationConverter.getIncomingPortsAsVariables(system));
+                specification.get(), SpecificationConverter.getIncomingInformationAsVariables(system));
 
         if (!solution.isPresent() || solution.get().isEmpty()) return false;
 

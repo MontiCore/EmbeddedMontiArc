@@ -34,6 +34,13 @@ public class ExecutionOrder {
         }
     }
 
+    public static boolean needsOutputAndUpdateSplit(EMAComponentInstanceSymbol component) {
+        if (component.getOrderOutput().size() == 0) return false;
+        if (component.getOrderOutput().size() > 1) return true;
+        if (component.getOrderOutput().get(0) + 1 != component.getOrderUpdate()) return true;
+        return false;
+    }
+
     private Set<EMAComponentInstanceSymbol> handledComponents = new HashSet<>();
     private Set<EMAComponentInstanceSymbol> nondfComponents = new HashSet<>();
 
@@ -46,7 +53,7 @@ public class ExecutionOrder {
         // handledComponents is only relevant for reoccurring components due to a nondirect feedthrough loop
         //  i.e. a Delay: first time as Output, second time as update
         // For nonvirtual components as part of artificial loop, this is called a fixed number
-        if(isPartOfArtificialLoop(handleArtificialLoops, component, artificialLoops)) {
+        if (isPartOfArtificialLoop(handleArtificialLoops, component, artificialLoops)) {
             if (isNonDirectFeedthroughPort(targetsPort)) {
                 nondfComponents.add(component);
                 component.setOrderOutput(Collections.singletonList(1));
