@@ -14,7 +14,7 @@ import java.io.File;
 import java.io.IOException;
 import java.util.Arrays;
 
-@Mojo( name = "deploy-pretrained")
+@Mojo(name = "deploy-pretrained")
 public class DeployPretrainedMojo extends BaseMojo {
 
   @Parameter
@@ -33,7 +33,8 @@ public class DeployPretrainedMojo extends BaseMojo {
       getLog().info("FINISHED creating Jar for pretrained network");
 
       ArtifactDeployer.deployArtifact(jarFile.getAbsolutePath(), this.pretrainedNetworkToStore, this.getRepository(), JarClassifierEnum.PRETRAINED);
-    } catch (IOException | MavenInvocationException e) {
+    }
+    catch (IOException | MavenInvocationException e) {
       throw new MojoFailureException(Arrays.toString(e.getStackTrace()));
     }
   }

@@ -1,10 +1,8 @@
 package de.monticore.lang.monticar.utilities.artifactcreator;
 
-import com.google.common.base.Preconditions;
 import de.monticore.lang.monticar.utilities.models.FileLocation;
 import de.monticore.lang.monticar.utilities.models.StorageInformation;
 import de.monticore.lang.monticar.utilities.utils.JarCreator;
-import org.apache.commons.lang3.StringUtils;
 
 import java.io.File;
 import java.io.IOException;
@@ -32,7 +30,7 @@ public class DatasetArtifactCreator extends ArtifactCreator {
   protected static List<FileLocation> getDatasetLocations(File datasetPath) {
     List<FileLocation> datasetLocations = new LinkedList<>();
 
-    for (File dataset: Objects.requireNonNull(datasetPath.listFiles())) {
+    for (File dataset : Objects.requireNonNull(datasetPath.listFiles())) {
       String datasetName = dataset.getName();
 
       // IF dataset is a h5 file

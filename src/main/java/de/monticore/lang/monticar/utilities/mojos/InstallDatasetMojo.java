@@ -14,7 +14,7 @@ import java.io.File;
 import java.io.IOException;
 import java.util.Arrays;
 
-@Mojo(name="install-dataset")
+@Mojo(name = "install-dataset")
 public class InstallDatasetMojo extends BaseMojo {
 
   @Parameter

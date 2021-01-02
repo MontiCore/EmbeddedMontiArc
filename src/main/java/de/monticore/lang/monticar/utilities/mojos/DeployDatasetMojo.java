@@ -14,7 +14,7 @@ import java.io.File;
 import java.io.IOException;
 import java.util.Arrays;
 
-@Mojo(name="deploy-dataset")
+@Mojo(name = "deploy-dataset")
 public class DeployDatasetMojo extends BaseMojo {
 
   @Parameter

@@ -55,7 +55,7 @@ public abstract class BaseMojo extends AbstractMojo {
   @Component
   private BuildPluginManager pluginManager;
 
-  @Parameter( defaultValue = "${repositorySystemSession}", readonly = true )
+  @Parameter(defaultValue = "${repositorySystemSession}", readonly = true)
   private RepositorySystemSession repositorySystemSession;
 
   @Parameter
@@ -64,10 +64,10 @@ public abstract class BaseMojo extends AbstractMojo {
   @Parameter
   private TrainingConfiguration training;
 
-  @Parameter(property = "pathMain",defaultValue = "src/main/emadl")
+  @Parameter(property = "pathMain", defaultValue = "src/main/emadl")
   private String pathMain;
 
-  @Parameter(property = "pathTest",defaultValue = "src/main/emadl")
+  @Parameter(property = "pathTest", defaultValue = "src/main/emadl")
   private String pathTest;
 
   @Parameter(property = "pathTmpOut", defaultValue = "target/tmp")
@@ -86,10 +86,11 @@ public abstract class BaseMojo extends AbstractMojo {
   private void mkdir(String path) {
     try {
       File tmpOut = Paths.get(path).toFile();
-      if(!tmpOut.exists()){
+      if (!tmpOut.exists()) {
         tmpOut.mkdirs();
       }
-    }catch (Exception ex){
+    }
+    catch (Exception ex) {
       ex.printStackTrace();
     }
   }
@@ -122,16 +123,16 @@ public abstract class BaseMojo extends AbstractMojo {
     return pathTmpOut;
   }
 
-  public String getPathTmpOutCPP(){
+  public String getPathTmpOutCPP() {
     return Paths.get(this.pathTmpOut, "cpp/").toString();
   }
 
-  public String getPathTmpOutEMAM(){
+  public String getPathTmpOutEMAM() {
     return Paths.get(this.pathTmpOut, "emam/").toString();
   }
 
-  public String getPathTmpOutEMADL(){
-    return Paths.get(this.pathTmpOut,"emadl/").toString();
+  public String getPathTmpOutEMADL() {
+    return Paths.get(this.pathTmpOut, "emadl/").toString();
   }
 
   public String getPathTmpOutBUILD() {
@@ -164,15 +165,15 @@ public abstract class BaseMojo extends AbstractMojo {
       return storageInformation.getVersion();
     }
 
-    Artifact artifact = new DefaultArtifact( String.format("%s:%s:[1,)" , storageInformation.getGroupId(), storageInformation.getArtifactId()));
+    Artifact artifact = new DefaultArtifact(String.format("%s:%s:[1,)", storageInformation.getGroupId(), storageInformation.getArtifactId()));
 
     VersionRangeRequest rangeRequest = new VersionRangeRequest();
-    rangeRequest.setArtifact( artifact );
+    rangeRequest.setArtifact(artifact);
     rangeRequest.setRepositories(Collections.singletonList(getRemoteRepository()));
 
     int newestVersion;
     try {
-      VersionRangeResult rangeResult = repositorySystem.resolveVersionRange( repositorySystemSession, rangeRequest );
+      VersionRangeResult rangeResult = repositorySystem.resolveVersionRange(repositorySystemSession, rangeRequest);
       newestVersion = rangeResult.getHighestVersion() != null ? Integer.parseInt(rangeResult.getHighestVersion().toString()) : Constants.INITIAL_VERSION - 1;
       return ++newestVersion;
     }
@@ -183,8 +184,8 @@ public abstract class BaseMojo extends AbstractMojo {
     return Constants.INITIAL_VERSION;
   }
 
-  public Scope getScope(){
-    if(myScope == null) {
+  public Scope getScope() {
+    if (myScope == null) {
       ModelingLanguageFamily fam = new ModelingLanguageFamily();
       fam.addModelingLanguage(new EmbeddedMontiArcMathLanguage());
       fam.addModelingLanguage(new StreamUnitsLanguage());
@@ -220,13 +221,12 @@ public abstract class BaseMojo extends AbstractMojo {
     }
     return myScope;
   }
-  protected TaggingResolver getTaggingResolver(){
-    if(this.myTaggingResolver == null){
+
+  protected TaggingResolver getTaggingResolver() {
+    if (this.myTaggingResolver == null) {
       this.getScope();
     }
     return this.myTaggingResolver;
   }
-
-
 
 }

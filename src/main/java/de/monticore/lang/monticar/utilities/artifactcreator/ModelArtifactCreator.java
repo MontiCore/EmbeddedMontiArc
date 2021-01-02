@@ -1,13 +1,11 @@
 package de.monticore.lang.monticar.utilities.artifactcreator;
 
-import com.google.common.base.Preconditions;
 import de.monticore.lang.embeddedmontiarc.embeddedmontiarc._ast.ASTEMACompilationUnit;
 import de.monticore.lang.monticar.emadl._parser.EMADLParser;
 import de.monticore.lang.monticar.utilities.models.FileLocation;
 import de.monticore.lang.monticar.utilities.models.StorageInformation;
 import de.monticore.lang.monticar.utilities.utils.JarCreator;
 import org.apache.commons.io.FilenameUtils;
-import org.apache.commons.lang3.StringUtils;
 import org.apache.maven.plugin.MojoExecutionException;
 
 import java.io.File;
@@ -28,7 +26,7 @@ public class ModelArtifactCreator extends ArtifactCreator {
 
     Manifest manifest = createManifest(modelGroupId, modelArtifactId, modelToStore.getVersion());
     String jarFileName = createJarFileName(tempDirectory, "model");
-    List<FileLocation> fileLocations = getFileLocations(modelToStore);
+    List<FileLocation> fileLocations = getFileLocations(modelPath);
 
     return JarCreator.createArtifact(jarFileName, manifest, fileLocations);
   }
@@ -37,17 +35,15 @@ public class ModelArtifactCreator extends ArtifactCreator {
     return packageList.isEmpty() ? "" : String.join(File.separator, packageList) + File.separator;
   }
 
-  protected static List<FileLocation> getFileLocations(StorageInformation storageInformation) throws IOException {
+  protected static List<FileLocation> getFileLocations(File modelPath) throws IOException {
     String extension;
     List<FileLocation> modelLocations = new LinkedList<>();
 
     EMADLParser emadlParser = new EMADLParser();
 
-    for (File file: Objects.requireNonNull(storageInformation.getPath().listFiles())) {
+    for (File file : Objects.requireNonNull(modelPath.listFiles())) {
       if (!file.isFile() && file.isDirectory()) {
-        StorageInformation subdirectoryInformation = storageInformation.createCopy();
-        subdirectoryInformation.setPath(file);
-        modelLocations.addAll(getFileLocations(subdirectoryInformation));
+        modelLocations.addAll(getFileLocations(file));
       }
 
       extension = FilenameUtils.getExtension(file.getName());

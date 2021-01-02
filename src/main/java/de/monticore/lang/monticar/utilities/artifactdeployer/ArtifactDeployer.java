@@ -19,13 +19,15 @@ public class ArtifactDeployer {
   private static final String CLASSIFIER = "classifier";
   private static final String PACKAGING = "packaging";
 
-  public static void deployArtifact(String jarFile, StorageInformation storageInformation, Repository repository, JarClassifierEnum classifier) throws MavenInvocationException {
+  public static void deployArtifact(String jarFile, StorageInformation storageInformation, Repository repository, JarClassifierEnum classifier)
+      throws MavenInvocationException {
     Properties properties = getProperties(jarFile, storageInformation, repository, classifier);
 
     JarDeployer.deployArtifact(properties);
   }
 
-  public static void installArtifact(String jarFile, StorageInformation storageInformation, Repository repository, JarClassifierEnum classifier) throws MavenInvocationException {
+  public static void installArtifact(String jarFile, StorageInformation storageInformation, Repository repository, JarClassifierEnum classifier)
+      throws MavenInvocationException {
     Properties properties = getProperties(jarFile, storageInformation, repository, classifier);
     properties.setProperty(PACKAGING, "jar");
 

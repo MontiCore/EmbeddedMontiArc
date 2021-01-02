@@ -12,10 +12,13 @@ import java.util.jar.Manifest;
 
 public class TrainingEnvironmentArtifactCreator extends ArtifactCreator {
 
-  public static File createArtifact(StorageInformation storageInformation, StorageInformation datasetToStore, StorageInformation modelToStore, String tmpDirectory) throws IOException {
+  public static File createArtifact(StorageInformation storageInformation, StorageInformation datasetToStore, StorageInformation modelToStore, String tmpDirectory)
+      throws IOException {
     List<FileLocation> fileLocations = new LinkedList<>();
-    if (datasetToStore != null) fileLocations.addAll(DatasetArtifactCreator.getDatasetLocations(datasetToStore.getPath()));
-    if (modelToStore != null) fileLocations.addAll(ModelArtifactCreator.getFileLocations(modelToStore));
+    if (datasetToStore != null)
+      fileLocations.addAll(DatasetArtifactCreator.getDatasetLocations(datasetToStore.getPath()));
+    if (modelToStore != null)
+      fileLocations.addAll(ModelArtifactCreator.getFileLocations(modelToStore.getPath()));
 
     Manifest manifest = createManifest(storageInformation.getGroupId(), storageInformation.getArtifactId(), storageInformation.getVersion());
     String jarFileName = createJarFileName(tmpDirectory, "training-env");

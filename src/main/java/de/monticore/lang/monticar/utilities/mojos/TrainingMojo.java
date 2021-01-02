@@ -43,11 +43,16 @@ public class TrainingMojo extends BaseMojo {
     elements.add(element(name("rootModel"), trainingConfig.getModelToTrain()));
     elements.add(element(name("trainingNeeded"), "true"));
 
-    if (trainingConfig.getPathToProject() != null) elements.add(element(name("pathMain"), trainingConfig.getPathToProject().getAbsolutePath()));
-    if (trainingConfig.getPathToTest() != null) elements.add(element(name("pathTest"), trainingConfig.getPathToTest().getAbsolutePath()));
-    if (trainingConfig.getBackend() != null) elements.add(element(name("backend"), trainingConfig.getBackend().name()));
-    if (trainingConfig.getPathToPython() != null) elements.add(element(name("pathToPython"), trainingConfig.getPathToPython().getAbsolutePath()));
-    if (trainingConfig.getGenerator() != null) elements.add(element(name("generator"), trainingConfig.getGenerator().name()));
+    if (trainingConfig.getPathToProject() != null)
+      elements.add(element(name("pathMain"), trainingConfig.getPathToProject().getAbsolutePath()));
+    if (trainingConfig.getPathToTest() != null)
+      elements.add(element(name("pathTest"), trainingConfig.getPathToTest().getAbsolutePath()));
+    if (trainingConfig.getBackend() != null)
+      elements.add(element(name("backend"), trainingConfig.getBackend().name()));
+    if (trainingConfig.getPathToPython() != null)
+      elements.add(element(name("pathToPython"), trainingConfig.getPathToPython().getAbsolutePath()));
+    if (trainingConfig.getGenerator() != null)
+      elements.add(element(name("generator"), trainingConfig.getGenerator().name()));
     return elements;
   }
 

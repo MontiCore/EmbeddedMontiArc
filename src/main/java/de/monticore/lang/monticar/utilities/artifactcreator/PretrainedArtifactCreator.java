@@ -1,10 +1,8 @@
 package de.monticore.lang.monticar.utilities.artifactcreator;
 
-import com.google.common.base.Preconditions;
 import de.monticore.lang.monticar.utilities.models.FileLocation;
 import de.monticore.lang.monticar.utilities.models.StorageInformation;
 import de.monticore.lang.monticar.utilities.utils.JarCreator;
-import org.apache.commons.lang3.StringUtils;
 import org.apache.maven.plugin.MojoExecutionException;
 
 import java.io.File;
@@ -35,7 +33,7 @@ public class PretrainedArtifactCreator extends ArtifactCreator {
 
     boolean paramFileFound = false;
     boolean jsonFileFound = false;
-    for (File file: Objects.requireNonNull(pretrainedPath.listFiles())) {
+    for (File file : Objects.requireNonNull(pretrainedPath.listFiles())) {
       if (file.isDirectory()) {
         continue;
       }

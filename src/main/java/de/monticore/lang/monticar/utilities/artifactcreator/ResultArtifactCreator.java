@@ -7,7 +7,6 @@ import de.monticore.lang.monticar.utilities.models.StorageInformation;
 import de.monticore.lang.monticar.utilities.models.TrainingConfiguration;
 import de.monticore.lang.monticar.utilities.utils.JarCreator;
 import de.monticore.lang.tagging._symboltable.TaggingResolver;
-import de.monticore.symboltable.Scope;
 import org.apache.maven.plugin.MojoExecutionException;
 import org.apache.maven.plugin.MojoFailureException;
 
@@ -49,7 +48,7 @@ public class ResultArtifactCreator extends ArtifactCreator {
       throw new MojoExecutionException(String.format("Files %s.cpp and %s.h not available.", fileName, fileName));
     }
 
-    for (File file: files) {
+    for (File file : files) {
       FileLocation fileLocation = new FileLocation();
       fileLocation.setSourceLocation(file.getAbsolutePath());
       fileLocation.setJarLocation(String.format("trained_model%s%s", File.separator, file.getName()));
