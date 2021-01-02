@@ -18,14 +18,17 @@ import de.monticore.lang.monticar.generator.cpp.instruction.ConnectInstructionCP
 import de.monticore.lang.monticar.generator.cpp.loopSolver.CPPEquationSystemHelper;
 import de.monticore.lang.monticar.generator.cpp.loopSolver.daecpp.DAECPPEquationSystemGenerator;
 import de.monticore.lang.monticar.generator.cpp.loopSolver.daecpp.DAECPPOptions;
+import de.monticore.lang.monticar.generator.cpp.loopSolver.odeint.OdeintEquationSystemGenerator;
+import de.monticore.lang.monticar.generator.cpp.loopSolver.odeint.OdeintOptions;
 import de.monticore.lang.monticar.generator.cpp.mathopt.MathOptSolverConfig;
 import de.monticore.lang.monticar.generator.cpp.template.AllTemplates;
 import de.monticore.lang.monticar.generator.cpp.viewmodel.AutopilotAdapterDataModel;
 import de.monticore.lang.monticar.generator.cpp.viewmodel.ServerWrapperViewModel;
 import de.monticore.lang.monticar.generator.testing.StreamTestGenerator;
 import de.monticore.lang.monticar.semantics.helper.NameHelper;
-import de.monticore.lang.monticar.semantics.loops.detection.EMAEquationSystem;
-import de.monticore.lang.monticar.semantics.loops.detection.LoopSymbolInstance;
+import de.monticore.lang.monticar.semantics.loops.detection.ConnectionHelper;
+import de.monticore.lang.monticar.semantics.loops.symbols.EMAEquationSystem;
+import de.monticore.lang.monticar.semantics.loops.symbols.LoopComponentSymbolInstance;
 import de.monticore.lang.monticar.semantics.resolve.SymbolTableHelper;
 import de.monticore.lang.monticar.ts.MCTypeSymbol;
 import de.monticore.lang.tagging._symboltable.TaggingResolver;
@@ -63,7 +66,6 @@ public class GeneratorCPP implements EMAMGenerator {
     protected boolean checkModelDir = false;
     protected boolean streamTestGenerationMode = false;
     public boolean isGenerateCV = false;
-    protected double dt = 1;
 
     // CMake
     private boolean generateCMake = false;
@@ -195,14 +197,14 @@ public class GeneratorCPP implements EMAMGenerator {
                             return false;
                         }
                     });
-                    bluePrintCPP.addAdditionalIncludeString(ExecutionStepperHelper.fileName);
+                    bluePrintCPP.addAdditionalIncludeString(ExecutionStepperHelper.FILENAME);
                 }
             }
 
             // connect information to eqs
-            if (componentSymbol instanceof LoopSymbolInstance) {
+            if (componentSymbol instanceof LoopComponentSymbolInstance) {
                 ExecutionStepperHelper.setUsed();
-                EMAEquationSystem equationSystem = ((LoopSymbolInstance) componentSymbol).getEquationSystem();
+                EMAEquationSystem equationSystem = ((LoopComponentSymbolInstance) componentSymbol).getEquationSystem();
                 String eqsName = equationSystem.getName();
                 Variable eqs = new Variable("eqs", "");
                 eqs.setVariableType(new VariableType("", eqsName, eqsName));
@@ -212,7 +214,7 @@ public class GeneratorCPP implements EMAMGenerator {
                     for (EMAPortInstanceSymbol inport : equationSystem.getInports()) {
                         Optional<EMAPortInstanceSymbol> originalSourcePort  = equationSystem.getAtomicSourceOf(inport);
                         Optional<EMAPortInstanceSymbol> currentPort = componentSymbol.getIncomingPortInstances().stream()
-                                .filter(i -> SymbolTableHelper.getAtomicSourceOf(i).equals(originalSourcePort))
+                                .filter(i -> ConnectionHelper.sourceOf(i).equals(originalSourcePort))
                                 .findFirst();
                         if (currentPort.isPresent()) {
                             String sourceName = currentPort.get().getName();
@@ -270,12 +272,12 @@ public class GeneratorCPP implements EMAMGenerator {
             //setGenerateMainClass(true);
         }
 
-        if (componentInstanceSymbol instanceof LoopSymbolInstance) {
-            ((LoopSymbolInstance) componentInstanceSymbol).getEquationSystem()
+        if (componentInstanceSymbol instanceof LoopComponentSymbolInstance) {
+            ((LoopComponentSymbolInstance) componentInstanceSymbol).getEquationSystem()
                     .setName(String.join("_",
                             NameHelper.replaceWithUnderScore(NameHelper.calculateFullQualifiedNameOf(rootModel)),
-                            ((LoopSymbolInstance) componentInstanceSymbol).getEquationSystem().getName()));
-            for (CMakeFindModule dependency : DAECPPOptions.getDependencies()) {
+                            ((LoopComponentSymbolInstance) componentInstanceSymbol).getEquationSystem().getName()));
+            for (CMakeFindModule dependency : OdeintOptions.getDependencies()) {
                 cMakeConfig.addModuleDependency(dependency);
             }
         }
@@ -340,10 +342,10 @@ public class GeneratorCPP implements EMAMGenerator {
         }
 
 
-        if (componentInstanceSymbol instanceof LoopSymbolInstance) {
-            if (!equationSystemsAlreadyBuild.contains(((LoopSymbolInstance) componentInstanceSymbol).getEquationSystem())) {
-                fileContents.addAll(DAECPPEquationSystemGenerator.generateEquationSystem(
-                        ((LoopSymbolInstance) componentInstanceSymbol).getEquationSystem()));
+        if (componentInstanceSymbol instanceof LoopComponentSymbolInstance) {
+            if (!equationSystemsAlreadyBuild.contains(((LoopComponentSymbolInstance) componentInstanceSymbol).getEquationSystem())) {
+                fileContents.addAll(OdeintEquationSystemGenerator.generateEquationSystem(
+                        ((LoopComponentSymbolInstance) componentInstanceSymbol).getEquationSystem()));
             }
         }
 
@@ -384,7 +386,7 @@ public class GeneratorCPP implements EMAMGenerator {
         }
         // Add advanceTime
         if (ExecutionStepperHelper.isUsed()) {
-            fileContents.add(ExecutionStepperHelper.getTimeHelperFileContent(dt));
+            fileContents.add(ExecutionStepperHelper.getTimeHelperFileContent());
         }
         List<File> files = saveFilesToDisk(fileContents);
         //cmake
@@ -691,15 +693,15 @@ public class GeneratorCPP implements EMAMGenerator {
     }
 
     public double getDeltaT() {
-        return dt;
+        return ExecutionStepperHelper.getDT();
     }
 
     public void setDeltaT(double dt) {
-        this.dt = dt;
+        ExecutionStepperHelper.setDT(dt);
     }
 
     public void setDeltaT(String dt) {
         double v = Double.parseDouble(dt);
-        this.dt = v;
+        setDeltaT(v);
     }
 }

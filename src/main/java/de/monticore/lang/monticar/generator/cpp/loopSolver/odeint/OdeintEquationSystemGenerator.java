@@ -1,5 +1,5 @@
 /* (c) https://github.com/MontiCore/monticore */
-package de.monticore.lang.monticar.generator.cpp.loopSolver.daecpp;
+package de.monticore.lang.monticar.generator.cpp.loopSolver.odeint;
 
 import de.monticore.lang.monticar.generator.FileContent;
 import de.monticore.lang.monticar.generator.cpp.loopSolver.EquationSystemViewModel;
@@ -19,10 +19,9 @@ import java.util.HashSet;
 import java.util.Locale;
 import java.util.Map;
 
-public class DAECPPEquationSystemGenerator {
+public class OdeintEquationSystemGenerator {
 
     private static final Template EQUATIONSYSTEM_TEMPLATE;
-    private static final Template MASSMATRIX_TEMPLATE;
     private static final Template RHS_TEMPLATE;
 
     static {
@@ -30,12 +29,11 @@ public class DAECPPEquationSystemGenerator {
         conf.setDefaultEncoding("UTF-8");
         conf.setTemplateExceptionHandler(TemplateExceptionHandler.DEBUG_HANDLER);
         conf.setLogTemplateExceptions(false);
-        conf.setClassForTemplateLoading(AllTemplates.class, "/template/loopSolver/daecpp/");
+        conf.setClassForTemplateLoading(AllTemplates.class, "/template/loopSolver/odeint/");
         conf.setNumberFormat("#.################");
         conf.setLocale(Locale.ENGLISH);
         try {
             EQUATIONSYSTEM_TEMPLATE = conf.getTemplate("EquationSystem.ftl");
-            MASSMATRIX_TEMPLATE = conf.getTemplate("MassMatrix.ftl");
             RHS_TEMPLATE = conf.getTemplate("RHS.ftl");
         } catch (IOException e) {
             String msg = "could not load cmake templates";
@@ -54,10 +52,6 @@ public class DAECPPEquationSystemGenerator {
             StringWriter sw = new StringWriter();
             EQUATIONSYSTEM_TEMPLATE.process(dataForTemplate, sw);
             result.add(new FileContent(sw.toString(), String.format("/%s.h", eqs.getName())));
-
-            sw = new StringWriter();
-            MASSMATRIX_TEMPLATE.process(dataForTemplate, sw);
-            result.add(new FileContent(sw.toString(), String.format("/%s_MassMatrix.h", eqs.getName())));
 
             sw = new StringWriter();
             RHS_TEMPLATE.process(dataForTemplate, sw);

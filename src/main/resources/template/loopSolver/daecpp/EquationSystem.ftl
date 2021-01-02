@@ -18,10 +18,13 @@ private:
 
     static daecpp::SolverOptions initOptions() {
         daecpp::SolverOptions res;
-        res.atol = 1.0e-15;
-        res.dt_init = 0.01;
-        res.dt_max = 0.01;
-        res.verbosity = 0;
+        <#if viewModel.isAlgebraic>
+        res.time_stepping = 1;
+        </#if>
+        res.atol = ${viewModel.atol?string["0.0#######E0"]};
+        res.dt_init = ${viewModel.dt_init?string["0.0#######E0"]};
+        res.dt_max = ${viewModel.dt_max?string["0.0#######E0"]};
+        res.verbosity = ${viewModel.loggingLevel};
         return res;
     }
 
@@ -38,21 +41,22 @@ public:
         x {${viewModel.initialValues?join(", ")}},
         mass {},
         rhs {},
-        jac {rhs, 1.0e-15},
+        jac {rhs, ${viewModel.jtol?string["0.0#######E0"]}},
         opt { initOptions() },
-        solver {rhs, jac, mass, opt} {
-    }
+        solver {rhs, jac, mass, opt} {}
 
     void execute() {
         <#list viewModel.inports as inport>
         rhs.${inport} = ${inport};
         </#list>
+        <#if viewModel.inports?size gt 0>
 
+        </#if>
         double t = getCurrentTime();
         solver(x, t);
-<#list viewModel.variables as var>
+        <#list viewModel.variables as var>
         ${var} = x[${var?index}];
-</#list>
+        </#list>
     }
 };
 #endif

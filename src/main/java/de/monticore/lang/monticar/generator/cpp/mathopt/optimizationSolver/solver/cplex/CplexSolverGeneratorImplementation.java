@@ -22,10 +22,7 @@ import freemarker.template.TemplateExceptionHandler;
 
 import java.io.IOException;
 import java.io.StringWriter;
-import java.util.ArrayList;
-import java.util.Arrays;
-import java.util.List;
-import java.util.Map;
+import java.util.*;
 
 public class CplexSolverGeneratorImplementation implements QPSolverGeneratorImplementation, MIQPSolverGeneratorImplementation {
 
@@ -40,6 +37,7 @@ public class CplexSolverGeneratorImplementation implements QPSolverGeneratorImpl
         conf.setLogTemplateExceptions(false);
         conf.setClassForTemplateLoading(AllTemplates.class, "/template/optimizationSolver/cplex/");
         conf.setNumberFormat("0.####E0");
+        conf.setLocale(Locale.ENGLISH);
         try {
             CALL_CPLEX_H = conf.getTemplate("CallCplexTemplate_HeaderOnly.ftl");
             CPLEXMAT_H = conf.getTemplate("CplexMat.h");

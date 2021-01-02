@@ -4,17 +4,16 @@ package basicLibrary;
 
 component Switch<T=B> { // if no generic is given, then default type B is taken
 	port 
-		in T in1, //if
+		in T input1, //if
 	    in B cond, // condition
-		in T in3, //else
-		out T out1;
+		in T input2, //else
+		out T output;
 
 	implementation Math{
 	    if cond
-	        out1=in1;
+	        output=input1;
 	    else
-	        out1=in3;
-
+	        output=input2;
 	    end
 	}
 }

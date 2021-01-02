@@ -3,10 +3,10 @@ package de.monticore.lang.monticar.semantics.library.arithmetic;
 
 component Gain<T>(T gainValue) {
 	port
-		in T in1,
-		out T out1;
+		in T input,
+		out T output;
 
 	implementation Math{
-	    out1 == in1 * gainValue;
+	    output == input * gainValue;
 	}
 }

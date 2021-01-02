@@ -1,15 +1,18 @@
 /* (c) https://github.com/MontiCore/monticore */
 package de.monticore.lang.monticar.semantics.loops;
 
+import de.monticore.lang.monticar.semantics.library.differential.Integrator;
+import de.monticore.lang.monticar.semantics.library.arithmetic.Gain;
+
 component Oscillation {
     port
-        out Q out1;
+        out Q output;
 
-    instance de.monticore.lang.monticar.semantics.library.differential.Integration<(-oo:d:oo)>{out1 = 2} y;
-    instance de.monticore.lang.monticar.semantics.library.differential.Integration<(-oo:d:oo)>(0) yDiff;
-    instance de.monticore.lang.monticar.semantics.library.arithmetic.Gain<(-oo:d:oo)>(-2/5) yDiffDiff;
+    instance Integrator<(-oo:d:oo)>{output(t=0) = 2} x;
+    instance Integrator<(-oo:d:oo)>(0) v;
+    instance Gain<(-oo:d:oo)>(-2/5){output(t=0) ~= 0} factor;
 
-    connect y.out1 -> yDiffDiff.in1, out1;
-    connect yDiffDiff.out1 -> yDiff.in1;
-    connect yDiff.out1 -> y.in1;
+    connect x.output -> factor.input, output;
+    connect factor.output -> v.input;
+    connect v.output -> x.input;
 }

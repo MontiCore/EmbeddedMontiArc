@@ -4,21 +4,24 @@ package de.monticore.lang.monticar.generator.cpp;
 import de.monticore.lang.monticar.generator.FileContent;
 
 public class ExecutionStepperHelper {
-    public static String fileName = "ExecutionStepper";
 
-    private static boolean usedTime = false;
+    private static double DT = 0.1;
+
+    public static String FILENAME = "ExecutionStepper";
+
+    private static boolean TIME_USED = false;
 
     public static void setUsed() {
-        usedTime = true;
+        TIME_USED = true;
     }
 
     public static boolean isUsed() {
-        return usedTime;
+        return TIME_USED;
     }
 
     public static FileContent getTimeHelperFileContent(double dt) {
         FileContent fileContent = new FileContent();
-        fileContent.setFileName(fileName + ".h");
+        fileContent.setFileName(FILENAME + ".h");
         String fileContentString = getTimeHelperSourceCode(dt);
 
         fileContent.setFileContent(fileContentString);
@@ -26,7 +29,7 @@ public class ExecutionStepperHelper {
     }
 
     public static FileContent getTimeHelperFileContent(){
-        return getTimeHelperFileContent(1);
+        return getTimeHelperFileContent(DT);
     }
 
     public static String getTimeHelperSourceCode(double dt) {
@@ -46,6 +49,14 @@ public class ExecutionStepperHelper {
     }
 
     public static String getTimeVariableName() {
-        return de.monticore.lang.monticar.semantics.Options.timeName;
+        return de.monticore.lang.monticar.semantics.Constants.timeName;
+    }
+
+    public static double getDT() {
+        return DT;
+    }
+
+    public static void setDT(double dt) {
+        ExecutionStepperHelper.DT = DT;
     }
 }

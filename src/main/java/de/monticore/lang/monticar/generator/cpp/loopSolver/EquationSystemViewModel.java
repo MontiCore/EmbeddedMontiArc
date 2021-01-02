@@ -11,10 +11,11 @@ import de.monticore.lang.math._symboltable.expression.MathExpressionSymbol;
 import de.monticore.lang.math._symboltable.expression.MathNameExpressionSymbol;
 import de.monticore.lang.math._symboltable.expression.MathParenthesisExpressionSymbol;
 import de.monticore.lang.math._symboltable.matrix.MathMatrixNameExpressionSymbol;
+import de.monticore.lang.monticar.generator.cpp.ExecutionStepperHelper;
 import de.monticore.lang.monticar.generator.cpp.viewmodel.ViewModelBase;
 import de.monticore.lang.monticar.semantics.helper.NameHelper;
 import de.monticore.lang.monticar.semantics.loops.analyze.SpecificationConverter;
-import de.monticore.lang.monticar.semantics.loops.detection.EMAEquationSystem;
+import de.monticore.lang.monticar.semantics.loops.symbols.EMAEquationSystem;
 import de.monticore.lang.monticar.semantics.resolve.SymbolTableHelper;
 import de.monticore.lang.monticar.semantics.util.math.NameReplacer;
 import de.se_rwth.commons.logging.Log;
@@ -31,6 +32,15 @@ public class EquationSystemViewModel extends ViewModelBase {
     private List<String> massMatrixDiag = new ArrayList<>();
     private List<String> function = new ArrayList<>();
     private List<String> inports = new ArrayList<>();
+
+    private boolean isAlgebraic = true;
+
+    private double atol;
+    private double rtol;
+    private double jtol;
+    private double dt_init;
+    private double dt_max;
+    private double loggingLevel;
 
     private List<EMAComponentInstanceSymbol> algebraicComponents = new ArrayList<>();
 
@@ -58,12 +68,50 @@ public class EquationSystemViewModel extends ViewModelBase {
         return inports;
     }
 
+    public boolean getIsAlgebraic() {
+        return isAlgebraic;
+    }
+
+    public double getAtol() {
+        return atol;
+    }
+
+    public double getRtol() {
+        return rtol;
+    }
+
+    public double getJtol() {
+        return jtol;
+    }
+
+    public double getDt_init() {
+        return dt_init;
+    }
+
+    public double getDt_max() {
+        return dt_max;
+    }
+
+    public double getLoggingLevel() {
+        return loggingLevel;
+    }
+
     public List<EMAComponentInstanceSymbol> getAlgebraicComponents() {
         return algebraicComponents;
     }
 
+    private void setOptions() {
+        this.atol = NumericSolverOptions.ATOL;
+        this.rtol = NumericSolverOptions.RTOL;
+        this.jtol = NumericSolverOptions.JTOL;
+        this.loggingLevel = NumericSolverOptions.LEVEL_LOGGING;
+        this.dt_init = NumericSolverOptions.DT_SOLVER;
+        this.dt_max = NumericSolverOptions.DT_SOLVER;
+    }
+
 
     public EquationSystemViewModel (EMAEquationSystem eqs) {
+        setOptions();
         this.name = eqs.getName();
 
         Map<String, String> inportMapping = new HashMap<>();
@@ -151,6 +199,10 @@ public class EquationSystemViewModel extends ViewModelBase {
                         CPPEquationSystemHelper.getNameOfPortOfComponent(portVariable.getPort().get())));
             }
         }
+
+        if (massMatrixDiag.stream().filter(s -> "1".equals(s))
+                .findFirst().isPresent())
+            this.isAlgebraic = false;
     }
 
     private String getFunction(MathExpressionSymbol symbol,
@@ -184,7 +236,7 @@ public class EquationSystemViewModel extends ViewModelBase {
 
         @Override
         public void visit(MathMatrixNameExpressionSymbol node) {
-            if (node.getNameToAccess().equals(de.monticore.lang.monticar.semantics.Options.derivativeOperatorName)) {
+            if (node.getNameToAccess().equals(de.monticore.lang.monticar.semantics.Constants.derivativeOperatorName)) {
                 if(! (getParents().peek() instanceof EMAMEquationSymbol))
                     Log.error("Not supported diff operator: should stand alone to the lift side of an equation");
                 if (! ((EMAMEquationSymbol) getParents().peek()).getLeftExpression().equals(node))

@@ -5,10 +5,10 @@ package de.monticore.lang.monticar.semantics.library.arithmetic;
 */
 component Saturation<T> (T minValue, T maxValue){
 	port 
-		in T in1,
-		out T out1;
+		in T input,
+		out T output;
    
     implementation Math {
-       out1 = min(max(in1, minValue), maxValue);
+       output = min(max(input, minValue), maxValue);
     }
 }

@@ -3,12 +3,12 @@ package de.monticore.lang.monticar.semantics.library.basicLibrary;
 
 component Delay<T>(T dvalue = 0) {
 	port 
-		in T in1,
-		out T out1;
+		in T input,
+		out T output;
 	
 	implementation Math {
-	    in1(t=0) = dvalue;
-	// TODO syntax for t =
-        out1 == in1(t=timeStep(-1));
+	    static delayed = dvalue;
+        output = dvalue;
+        dvalue = input;
 	}
 }

@@ -21,10 +21,7 @@ import freemarker.template.TemplateExceptionHandler;
 
 import java.io.IOException;
 import java.io.StringWriter;
-import java.util.ArrayList;
-import java.util.Arrays;
-import java.util.List;
-import java.util.Map;
+import java.util.*;
 
 /**
  * Generates Ipopt C++ code to solve a given problem
@@ -41,6 +38,7 @@ public class IpoptSolverGeneratorImplementation implements NLPSolverGeneratorImp
         conf.setLogTemplateExceptions(false);
         conf.setClassForTemplateLoading(AllTemplates.class, "/template/optimizationSolver/ipopt/");
         conf.setNumberFormat("0.####E0");
+        conf.setLocale(Locale.ENGLISH);
         try {
             CALL_IPOPT_HPP = conf.getTemplate("CallIpoptTemplate_HeaderOnly.ftl");
             ADMAT_H = conf.getTemplate("ADMat.h");

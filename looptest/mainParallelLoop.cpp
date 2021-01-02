@@ -1,8 +1,8 @@
-#include "de_monticore_lang_monticar_semantics_loops_serialLoop.h"
+#include "de_monticore_lang_monticar_semantics_loops_parallelLoop.h"
 #include "ExecutionStepper.h"
 int main(int argc, char** argv)
 {
-    de_monticore_lang_monticar_semantics_loops_serialLoop instance;
+    de_monticore_lang_monticar_semantics_loops_parallelLoop instance;
     instance.init();
     int i;
     for (i=1; i<argc; i++) {

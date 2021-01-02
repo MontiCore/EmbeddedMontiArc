@@ -5,9 +5,11 @@ import de.monticore.lang.embeddedmontiarc.embeddedmontiarc._ast.ASTEMACompilatio
 import de.monticore.lang.embeddedmontiarc.embeddedmontiarc._symboltable.instanceStructure.EMAComponentInstanceSymbol;
 import de.monticore.lang.embeddedmontiarc.embeddedmontiarcmath._parser.EmbeddedMontiArcMathParser;
 import de.monticore.lang.monticar.generator.cpp.GeneratorCPP;
+import de.monticore.lang.monticar.semantics.ExecutionSemantics;
 import de.monticore.lang.monticar.semantics.helper.NameHelper;
 import de.monticore.lang.monticar.semantics.resolve.Resolver;
 import de.monticore.lang.tagging._symboltable.TaggingResolver;
+import de.monticore.symboltable.Symbol;
 import de.se_rwth.commons.logging.Log;
 import org.apache.commons.lang3.StringUtils;
 import org.junit.Test;
@@ -75,10 +77,13 @@ public class LoopTest {
         TaggingResolver symtab = createSymTabAndTaggingResolver("src/test/resources", "src/main/resources",
                 "target/generated-components");
 
-        Resolver resolver = new Resolver(symtab, model);
-        resolver.resolveLoopSymbols();
-//        resolver.doSymbolicSolveOfLoopSymbols();
-        resolver.doSymbolicSolveOfSpecifications();
+        Optional<EMAComponentInstanceSymbol> resolve = symtab.resolve(model, EMAComponentInstanceSymbol.KIND);
+        ExecutionSemantics semantics = new ExecutionSemantics(symtab, resolve.get());
+        semantics.setSolveSymbolicSpecification(true);
+        semantics.setSolveSymbolicLoops(false);
+        semantics.setHandleArtificialLoops(true);
+        semantics.setResolveLoops(true);
+        semantics.addExecutionSemantics();
 
 
         EMAComponentInstanceSymbol componentSymbol = symtab.<EMAComponentInstanceSymbol>resolve(model, EMAComponentInstanceSymbol.KIND).orElse(null);
