@@ -20,11 +20,10 @@ import java.util.jar.JarFile;
 
 import static org.junit.Assert.*;
 import static org.mockito.ArgumentMatchers.anyString;
-import static org.powermock.api.mockito.PowerMockito.spy;
-import static org.powermock.api.mockito.PowerMockito.when;
+import static org.powermock.api.mockito.PowerMockito.*;
 
 @RunWith(PowerMockRunner.class)
-@PrepareForTest( {ArtifactCreator.class, ModelArtifactCreator.class} )
+@PrepareForTest(ArtifactCreator.class)
 public class ModelArtifactCreatorTest {
 
   @Rule
@@ -91,17 +90,23 @@ public class ModelArtifactCreatorTest {
 
   @Test
   public void testGetFileLocationsWithCNNTFileAndSubpackage() throws IOException {
-    File modelPath =  new File(getClass().getClassLoader().getResource("emadl/classifier/").getFile());
+    File modelPath =  mock(File.class);
     EMADLParser emadlParser = new EMADLParser();
 
+    File utilsDirectory = new File(getClass().getClassLoader().getResource("emadl/classifier/utils").getFile());
+    File networkEMADL = new File(getClass().getClassLoader().getResource("emadl/classifier/Network.emadl").getFile());
+    File networkCNNT = new File(getClass().getClassLoader().getResource("emadl/classifier/Network.cnnt").getFile());
+    File[] files = new File[] {utilsDirectory, networkEMADL, networkCNNT};
+
+    when(modelPath.listFiles()).thenReturn(files);
     List<FileLocation> fileLocations = ModelArtifactCreator.getFileLocations(modelPath, emadlParser);
 
     assertEquals(3, fileLocations.size());
-    assertEquals(modelPath.getAbsolutePath() + "/utils/ArgMax.emadl", fileLocations.get(0).getSourceLocation());
+    assertEquals(utilsDirectory.getAbsolutePath() + "/ArgMax.emadl", fileLocations.get(0).getSourceLocation());
     assertEquals("classifier/utils/ArgMax.emadl", fileLocations.get(0).getJarLocation());
-    assertEquals(modelPath.getAbsolutePath() + "/Network.emadl", fileLocations.get(1).getSourceLocation());
+    assertEquals(networkEMADL.getAbsolutePath(), fileLocations.get(1).getSourceLocation());
     assertEquals("classifier/Network.emadl", fileLocations.get(1).getJarLocation());
-    assertEquals(modelPath.getAbsolutePath() + "/Network.cnnt", fileLocations.get(2).getSourceLocation());
+    assertEquals(networkCNNT.getAbsolutePath(), fileLocations.get(2).getSourceLocation());
     assertEquals("classifier/Network.cnnt", fileLocations.get(2).getJarLocation());
   }
 
