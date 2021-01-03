@@ -12,6 +12,7 @@ import org.powermock.modules.junit4.PowerMockRunner;
 import java.io.File;
 import java.io.IOException;
 import java.util.List;
+import java.util.jar.JarFile;
 
 import static org.junit.Assert.*;
 import static org.mockito.ArgumentMatchers.anyString;
@@ -64,8 +65,12 @@ public class DatasetArtifactCreatorTest {
 
     spy(ArtifactCreator.class);
     when(ArtifactCreator.createJarFileName(anyString(), anyString())).thenReturn(tmpFolder.getRoot().getAbsolutePath() + "/dataset.jar");
-    File file = DatasetArtifactCreator.createArtifact(storageInformation, tmpFolder.getRoot().getAbsolutePath());
-    assertTrue(file.exists());
+
+    File artifact = DatasetArtifactCreator.createArtifact(storageInformation, tmpFolder.getRoot().getAbsolutePath());
+    JarFile jar = new JarFile(artifact);
+
+    assertTrue(artifact.exists());
+    assertEquals(3, jar.size());
   }
 
   @Test

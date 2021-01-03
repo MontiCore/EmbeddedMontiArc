@@ -26,24 +26,24 @@ public class ModelArtifactCreator extends ArtifactCreator {
 
     Manifest manifest = createManifest(modelGroupId, modelArtifactId, modelToStore.getVersion());
     String jarFileName = createJarFileName(tempDirectory, "model");
-    List<FileLocation> fileLocations = getFileLocations(modelPath);
+
+    EMADLParser emadlParser = new EMADLParser();
+    List<FileLocation> fileLocations = getFileLocations(modelPath, emadlParser);
 
     return JarCreator.createArtifact(jarFileName, manifest, fileLocations);
   }
 
-  private static String getPackagePath(List<String> packageList) {
+  protected static String getPackagePath(List<String> packageList) {
     return packageList.isEmpty() ? "" : String.join(File.separator, packageList) + File.separator;
   }
 
-  protected static List<FileLocation> getFileLocations(File modelPath) throws IOException {
+  protected static List<FileLocation> getFileLocations(File modelPath, EMADLParser emadlParser) throws IOException {
     String extension;
     List<FileLocation> modelLocations = new LinkedList<>();
 
-    EMADLParser emadlParser = new EMADLParser();
-
     for (File file : Objects.requireNonNull(modelPath.listFiles())) {
       if (!file.isFile() && file.isDirectory()) {
-        modelLocations.addAll(getFileLocations(file));
+        modelLocations.addAll(getFileLocations(file, emadlParser));
       }
 
       extension = FilenameUtils.getExtension(file.getName());

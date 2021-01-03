@@ -1,5 +1,6 @@
 package de.monticore.lang.monticar.utilities.artifactcreator;
 
+import de.monticore.lang.monticar.emadl._parser.EMADLParser;
 import de.monticore.lang.monticar.utilities.models.FileLocation;
 import de.monticore.lang.monticar.utilities.models.StorageInformation;
 import de.monticore.lang.monticar.utilities.utils.JarCreator;
@@ -18,7 +19,7 @@ public class TrainingEnvironmentArtifactCreator extends ArtifactCreator {
     if (datasetToStore != null)
       fileLocations.addAll(DatasetArtifactCreator.getDatasetLocations(datasetToStore.getPath()));
     if (modelToStore != null)
-      fileLocations.addAll(ModelArtifactCreator.getFileLocations(modelToStore.getPath()));
+      fileLocations.addAll(ModelArtifactCreator.getFileLocations(modelToStore.getPath(), new EMADLParser()));
 
     Manifest manifest = createManifest(storageInformation.getGroupId(), storageInformation.getArtifactId(), storageInformation.getVersion());
     String jarFileName = createJarFileName(tmpDirectory, "training-env");
