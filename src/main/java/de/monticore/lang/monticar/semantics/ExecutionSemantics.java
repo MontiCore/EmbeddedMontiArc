@@ -3,15 +3,18 @@ package de.monticore.lang.monticar.semantics;
 
 import de.monticore.lang.embeddedmontiarc.embeddedmontiarc._symboltable.instanceStructure.EMAComponentInstanceSymbol;
 import de.monticore.lang.monticar.semantics.executionOrder.ExecutionOrder;
+import de.monticore.lang.monticar.semantics.helper.Find;
 import de.monticore.lang.monticar.semantics.loops.detection.EMALoop;
 import de.monticore.lang.monticar.semantics.loops.detection.LoopDetection;
 import de.monticore.lang.monticar.semantics.loops.detection.SimpleCycle;
 import de.monticore.lang.monticar.semantics.loops.detection.StronglyConnectedComponent;
-import de.monticore.lang.monticar.semantics.loops.symbols.LoopComponentSymbolInstance;
+import de.monticore.lang.monticar.semantics.loops.symbols.LoopComponentInstanceSymbol;
 import de.monticore.lang.monticar.semantics.resolve.Resolver;
 import de.monticore.lang.tagging._symboltable.TaggingResolver;
 import de.se_rwth.commons.logging.Log;
 
+import java.util.HashMap;
+import java.util.LinkedList;
 import java.util.Map;
 import java.util.Set;
 import java.util.stream.Collectors;
@@ -46,7 +49,7 @@ public class ExecutionSemantics {
         resolver.resolveLoopSymbols(stronglyConnectedComponents, handleArtificialLoops);
 
         if (solveSymbolicLoops) {
-            Map<LoopComponentSymbolInstance, EMAComponentInstanceSymbol> solvedSymbols
+            Map<LoopComponentInstanceSymbol, EMAComponentInstanceSymbol> solvedSymbols
                     = resolver.doSymbolicSolveOfLoopSymbols();
             logSymbolicSolveOfLoops(solvedSymbols);
         }
@@ -57,6 +60,9 @@ public class ExecutionSemantics {
             logSymbolicSolveOfSpecifications(solvedSymbols);
         }
 
+        LinkedList<EMAComponentInstanceSymbol> allComponents = Find.allComponents(rootComponent);
+        Map<EMAComponentInstanceSymbol, Boolean> nonVirtual = new HashMap<>();
+        allComponents.stream().forEachOrdered(c -> nonVirtual.put(c, c.isNonVirtual()));
         Set<StronglyConnectedComponent> artificialLoops =
                 stronglyConnectedComponents.stream().filter(EMALoop::isArtificial).collect(Collectors.toSet());
         ExecutionOrder.calculateExecutionOrder(rootComponent, artificialLoops, handleArtificialLoops);
@@ -67,7 +73,7 @@ public class ExecutionSemantics {
 //            Log.warn("TODO There are analytical solutions to component");
     }
 
-    private void logSymbolicSolveOfLoops(Map<LoopComponentSymbolInstance, EMAComponentInstanceSymbol> solvedSymbols) {
+    private void logSymbolicSolveOfLoops(Map<LoopComponentInstanceSymbol, EMAComponentInstanceSymbol> solvedSymbols) {
         if (logSymbolicSolve)
             Log.warn("TODO There are analytical solutions to component");
     }

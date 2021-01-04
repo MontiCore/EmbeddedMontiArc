@@ -7,6 +7,7 @@ import de.monticore.symboltable.Symbol;
 import de.se_rwth.commons.logging.Log;
 
 import java.util.*;
+import java.util.stream.Collectors;
 
 import static de.monticore.lang.monticar.semantics.loops.detection.ConnectionHelper.isAtomic;
 
@@ -23,7 +24,7 @@ public class SList {
 
         for (int currentIndex = 1; currentIndex <= maxIndex; currentIndex++) {
             ListIterator<EMAComponentInstanceSymbol> iterator = components.listIterator();
-            while(iterator.hasNext()) {
+            while (iterator.hasNext()) {
                 EMAComponentInstanceSymbol component = iterator.next();
                 if (component.getOrderOutput().contains(currentIndex)) {
                     if (component.getOrderUpdate() == currentIndex + 1) {
@@ -47,9 +48,9 @@ public class SList {
     }
 
     private static Map<EMAComponentInstanceSymbol, List<SListEntry>> sListsSubSystem(EMAComponentInstanceSymbol subSystem,
-                                                                                    List<SListEntry> sListAtomic) {
+                                                                                     List<SListEntry> sListAtomic) {
         Map<EMAComponentInstanceSymbol, List<SListEntry>> sLists = new HashMap<>();
-        if(isAtomic(subSystem)) return sLists;
+        if (isAtomic(subSystem)) return sLists;
 
         sLists.put(subSystem, sListSubSystem(subSystem, sListAtomic));
 

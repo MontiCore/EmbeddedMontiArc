@@ -12,18 +12,43 @@ import static de.monticore.lang.monticar.semantics.loops.detection.ConnectionHel
 
 public class Find {
 
-    public static List<EMAComponentInstanceSymbol> allAtomicOrNVComponents(EMAComponentInstanceSymbol component) {
+    public static LinkedList<EMAComponentInstanceSymbol> allComponents(EMAComponentInstanceSymbol component) {
+        LinkedList<EMAComponentInstanceSymbol> result = new LinkedList<>();
+        result.add(component);
+        for (EMAComponentInstanceSymbol subComponent : component.getSubComponents())
+            result.addAll(allComponents(subComponent));
+        return result;
+    }
+
+    public static LinkedList<EMAComponentInstanceSymbol> allAtomicOrNVComponents(EMAComponentInstanceSymbol component) {
         return allAtomicOrNVComponents(component, true);
     }
 
-    private static List<EMAComponentInstanceSymbol> allAtomicOrNVComponents(EMAComponentInstanceSymbol component,
+    private static LinkedList<EMAComponentInstanceSymbol> allAtomicOrNVComponents(EMAComponentInstanceSymbol component,
                                                                            boolean firstCall) {
         if (isAtomic(component) || isNonVirtual(component) && !firstCall)
-            return Collections.singletonList(component);
+            return new LinkedList(Collections.singletonList(component));
 
-        List<EMAComponentInstanceSymbol> result = new LinkedList<>();
+        LinkedList<EMAComponentInstanceSymbol> result = new LinkedList<>();
         for (EMAComponentInstanceSymbol subComponent : component.getSubComponents())
             result.addAll(allAtomicOrNVComponents(subComponent, false));
+        return result;
+    }
+
+    public static LinkedList<EMAComponentInstanceSymbol> allSubSystems(EMAComponentInstanceSymbol component) {
+        return allSubSystems(component, true);
+    }
+
+    private static LinkedList<EMAComponentInstanceSymbol> allSubSystems(EMAComponentInstanceSymbol component,
+                                                                  boolean firstCall) {
+        if (isAtomic(component))
+            return new LinkedList<>();
+
+        LinkedList<EMAComponentInstanceSymbol> result = new LinkedList<>();
+        if (isNonVirtual(component) && !firstCall)
+            result.add(component);
+        for (EMAComponentInstanceSymbol subComponent : component.getSubComponents())
+            result.addAll(allSubSystems(subComponent, false));
         return result;
     }
 }
