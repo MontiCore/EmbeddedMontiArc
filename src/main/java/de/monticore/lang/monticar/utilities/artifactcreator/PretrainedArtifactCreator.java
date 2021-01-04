@@ -20,7 +20,6 @@ public class PretrainedArtifactCreator extends ArtifactCreator {
     String pretrainedArtifactId = pretrainedToStore.getArtifactId();
     File pretrainedPath = pretrainedToStore.getPath();
 
-    getPretrainedNetworkLocations(pretrainedPath);
     Manifest manifest = createManifest(pretrainedGroupId, pretrainedArtifactId, pretrainedToStore.getVersion());
     String jarFileName = createJarFileName(tempDirectory, "pretrained");
     List<FileLocation> pretrainedNetworkLocations = getPretrainedNetworkLocations(pretrainedPath);
@@ -28,7 +27,7 @@ public class PretrainedArtifactCreator extends ArtifactCreator {
     return JarCreator.createArtifact(jarFileName, manifest, pretrainedNetworkLocations);
   }
 
-  private static List<FileLocation> getPretrainedNetworkLocations(File pretrainedPath) throws MojoExecutionException {
+  protected static List<FileLocation> getPretrainedNetworkLocations(File pretrainedPath) throws MojoExecutionException {
     List<FileLocation> pretrainedLocations = new LinkedList<>();
 
     boolean paramFileFound = false;
