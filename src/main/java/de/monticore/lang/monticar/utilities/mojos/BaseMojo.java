@@ -222,7 +222,7 @@ public abstract class BaseMojo extends AbstractMojo {
     return myScope;
   }
 
-  protected TaggingResolver getTaggingResolver() {
+  public TaggingResolver getTaggingResolver() {
     if (this.myTaggingResolver == null) {
       this.getScope();
     }
