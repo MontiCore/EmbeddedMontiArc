@@ -42,6 +42,7 @@ public class InstallResultMojo extends BaseMojo {
     storageInformation.setGroupId(mavenProject.getGroupId());
     storageInformation.setArtifactId(mavenProject.getArtifactId() + "-trained-model");
     storageInformation.setVersion(this.getNewestVersion(storageInformation));
+    storageInformation.setPath(new File(getPathTmpOut()));
 
     return storageInformation;
   }

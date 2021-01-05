@@ -7,11 +7,13 @@ import de.monticore.lang.monticar.utilities.models.StorageInformation;
 import de.monticore.lang.monticar.utilities.models.TrainingConfiguration;
 import de.monticore.lang.monticar.utilities.utils.JarCreator;
 import de.monticore.lang.tagging._symboltable.TaggingResolver;
+import org.apache.commons.lang3.StringUtils;
 import org.apache.maven.plugin.MojoExecutionException;
 import org.apache.maven.plugin.MojoFailureException;
 
 import java.io.File;
 import java.io.FileNotFoundException;
+import java.io.FilenameFilter;
 import java.io.IOException;
 import java.util.*;
 import java.util.jar.Attributes;
@@ -42,7 +44,7 @@ public class ResultArtifactCreator extends ArtifactCreator {
     List<FileLocation> fileLocations = new LinkedList<>();
 
     File directory = new File(path);
-    List<File> files = Arrays.asList(directory.listFiles((file, s) -> getResultFileNames(fileName).contains(s)));
+    List<File> files = Arrays.asList(directory.listFiles(getFileNameFilter(fileName)));
     if (files.stream().noneMatch(file -> file.getName().equals(String.format("%s.cpp", fileName))) &&
         files.stream().noneMatch(file -> file.getName().equals(String.format("%s.h", fileName)))) {
       throw new MojoExecutionException(String.format("Files %s.cpp and %s.h not available.", fileName, fileName));
@@ -81,18 +83,6 @@ public class ResultArtifactCreator extends ArtifactCreator {
     return fileLocations;
   }
 
-  private static Set<String> getResultFileNames(String fileName) {
-    Set<String> resultFiles = new HashSet<>();
-    resultFiles.add(String.format("%s.cpp", fileName));
-    resultFiles.add(String.format("%s.h", fileName));
-    resultFiles.add(String.format("CNNPredictor_%s.h", fileName));
-    resultFiles.add("CNNBufferFile.h");
-    resultFiles.add("CNNTranslator.h");
-    resultFiles.add("HelperA.h");
-
-    return resultFiles;
-  }
-
   private static Attributes getMetric(String componentName) throws FileNotFoundException {
     String modelDirectory = String.format("%s/model/%s/", System.getProperty("user.dir"), componentName);
     File metricFile = new File(modelDirectory + File.separator + "metric.txt");
@@ -106,6 +96,16 @@ public class ResultArtifactCreator extends ArtifactCreator {
     String[] metric = scanner.nextLine().split(" ");
     attributes.put(new Attributes.Name(metric[0].toUpperCase()), metric[1]);
     return attributes;
+  }
+
+  private static FilenameFilter getFileNameFilter(String fileName) {
+    return (dir, name) ->
+        name.endsWith(fileName + ".cpp") ||
+        name.endsWith(fileName + ".h") ||
+        StringUtils.equals(name, "CNNBufferFile.h") ||
+        StringUtils.equals(name, "CNNTranslator.h") ||
+        StringUtils.equals(name, "CNNModelLoader.h") ||
+        StringUtils.equals(name, "HelperA.h");
   }
 
 }
