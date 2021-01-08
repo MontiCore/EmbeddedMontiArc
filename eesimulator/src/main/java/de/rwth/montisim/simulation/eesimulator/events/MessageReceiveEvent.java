@@ -4,8 +4,8 @@ package de.rwth.montisim.simulation.eesimulator.events;
 import java.time.Instant;
 
 import de.rwth.montisim.commons.utils.json.Typed;
-import de.rwth.montisim.simulation.eesimulator.components.ComponentManager;
-import de.rwth.montisim.simulation.eesimulator.components.EEEventProcessor;
+import de.rwth.montisim.simulation.eesimulator.EEComponent;
+import de.rwth.montisim.simulation.eesimulator.EESystem;
 import de.rwth.montisim.simulation.eesimulator.message.Message;
 
 /**
@@ -16,14 +16,10 @@ public class MessageReceiveEvent extends EEEvent {
 	public final static String TYPE_NAME = "receive";
 
 	private Message msg;
-	/// Might be set if the transmission completion time got invalidated by another
-	/// earlier message transfer. (See Bus.)
-	public transient boolean invalid;
 
-	public MessageReceiveEvent(EEEventProcessor target, Instant eventTime, Message msg) {
+	public MessageReceiveEvent(EEComponent target, Instant eventTime, Message msg) {
 		super(target, eventTime);
 		this.msg = msg;
-		this.invalid = false;
 	}
 
 	protected MessageReceiveEvent() {}
@@ -41,8 +37,8 @@ public class MessageReceiveEvent extends EEEvent {
 		}
         protected MessageReceiveEventData() {}
 		@Override
-		public EEEvent getEvent(ComponentManager cm) {
-			return new MessageReceiveEvent(EEEvent.getTarget(target, cm), time, msg);
+		public EEEvent getEvent(EESystem eesystem) {
+			return new MessageReceiveEvent(EEEvent.getTarget(target, eesystem), time, msg);
 		}
 	}
 	

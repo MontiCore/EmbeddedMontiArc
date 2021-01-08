@@ -3,17 +3,17 @@ package de.rwth.montisim.simulation.eesimulator.message;
 
 import java.util.Comparator;
 
-import de.rwth.montisim.simulation.eesimulator.components.ComponentManager;
+import de.rwth.montisim.commons.utils.BuildObject;
+import de.rwth.montisim.simulation.eesimulator.EESystem;
 
 /**
  * Used for sorting in descending order of message priority
  */
-public class MessagePriorityComparator implements Comparator<Message> {
-    final MessageTypeManager msgManager;
-    final ComponentManager compManager;
-    public MessagePriorityComparator(MessageTypeManager msgManager, ComponentManager compManager){
-        this.msgManager = msgManager;
-        this.compManager = compManager;
+public class MessagePriorityComparator implements Comparator<Message>, BuildObject {
+    public static final String CONTEXT_KEY = "msg_prio_comparator";
+    final EESystem eesystem;
+    public MessagePriorityComparator(EESystem eesystem){
+        this.eesystem = eesystem;
     }
 
     public int compare(Message a, Message b) {
@@ -23,8 +23,13 @@ public class MessagePriorityComparator implements Comparator<Message> {
         );
         if (r != 0) return r;
         return Integer.compare(
-            compManager.getComponentPriority(b.sender.id),
-            compManager.getComponentPriority(a.sender.id)
+            eesystem.getComponentPriority(b.msgInfo.sender.id),
+            eesystem.getComponentPriority(a.msgInfo.sender.id)
         );
+    }
+
+    @Override
+    public String getKey() {
+        return CONTEXT_KEY;
     }
 }

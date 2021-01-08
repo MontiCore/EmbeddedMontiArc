@@ -3,6 +3,7 @@ package de.rwth.montisim.simulation.vehicle;
 
 import de.rwth.montisim.commons.physicalvalue.PhysicalValueRegistry;
 import de.rwth.montisim.commons.simulation.*;
+import de.rwth.montisim.commons.utils.BuildObject;
 import de.rwth.montisim.commons.utils.json.Json;
 import de.rwth.montisim.commons.utils.json.JsonWriter;
 import de.rwth.montisim.commons.utils.json.SerializationException;
@@ -13,7 +14,8 @@ import de.rwth.montisim.simulation.vehicle.powertrain.PowerTrain;
 import de.rwth.montisim.simulation.vehicle.powertrain.electrical.ElectricalPowerTrain;
 import de.rwth.montisim.simulation.vehicle.task.Task;
 
-public class Vehicle extends SimulationObject implements Updatable, Destroyable, TaskRunner {
+public class Vehicle extends SimulationObject implements Updatable, Destroyable, TaskRunner, BuildObject {
+    public static final String CONTEXT_KEY = "vehicle";
     public static final boolean SERIALIZE_FORMATTED = true;
 
     public final transient VehicleProperties properties;
@@ -38,9 +40,9 @@ public class Vehicle extends SimulationObject implements Updatable, Destroyable,
         // values -> "Sync" between physics & EE
         updater.applyUpdate(newTime);
         // Update Physics & EESim (can be async)
-        eesystem.simulator.update(newTime);
         physicsModel.update(newTime);
 
+        // TODO use NEW time for update? (Navigation...)
         task.update(this);
     }
 
@@ -94,6 +96,11 @@ public class Vehicle extends SimulationObject implements Updatable, Destroyable,
     public PhysicalValueRegistry getPhysicalValues() {
 
         return physicalValues;
+    }
+
+    @Override
+    public String getKey() {
+        return CONTEXT_KEY;
     }
 
 }

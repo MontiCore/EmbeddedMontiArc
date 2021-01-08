@@ -8,6 +8,7 @@ import java.io.IOException;
 import java.nio.file.Files;
 import java.nio.file.Paths;
 import java.time.*;
+import java.util.Optional;
 
 import de.rwth.montisim.commons.map.Pathfinding;
 import de.rwth.montisim.commons.simulation.TaskStatus;
@@ -15,13 +16,12 @@ import de.rwth.montisim.commons.simulation.TimeUpdate;
 import de.rwth.montisim.commons.utils.*;
 import de.rwth.montisim.commons.utils.json.Json;
 import de.rwth.montisim.commons.utils.json.SerializationException;
+import de.rwth.montisim.simulation.eecomponents.vehicleconfigs.*;
 import de.rwth.montisim.simulation.eesimulator.exceptions.*;
-import de.rwth.montisim.simulation.eesimulator.message.MessageTypeManager;
 import de.rwth.montisim.simulation.environment.osmmap.*;
 import de.rwth.montisim.simulation.environment.world.World;
 import de.rwth.montisim.simulation.environment.pathfinding.*;
 import de.rwth.montisim.simulation.simulator.*;
-import de.rwth.montisim.simulation.simulator.vehicleconfigs.*;
 import de.rwth.montisim.simulation.simulator.visualization.car.CarRenderer;
 import de.rwth.montisim.simulation.simulator.visualization.map.*;
 import de.rwth.montisim.simulation.simulator.visualization.plotter.TimePlotter;
@@ -86,7 +86,6 @@ public class SimulationVisualizer extends JFrame implements SimulationRunner {
     final CarRenderer cr;
     final TimePlotter plotter;
 
-    MessageTypeManager mtManager;
     Vehicle vehicle;
     RigidbodyPhysics physics;
     Simulator simulator;
@@ -148,16 +147,15 @@ public class SimulationVisualizer extends JFrame implements SimulationRunner {
         postedMsg = false;
         crossedQuarter = false;
 
-        mtManager = new MessageTypeManager();
         simConfig = new SimulationConfig();
 
         // VehicleConfig config = setupTurningCar();
         String vehicleName = "TestVehicle";
         VehicleProperties config = DefaultVehicleConfig.withJavaAutopilot().driveTo(-63.83, -171.96, 5).properties.setName(vehicleName);
-        config.start_pos = new Vec2(0,0);
+        config.start_pos = Optional.of(new Vec2(0,0));
         simConfig.cars.add(config);
 
-        simulator = simConfig.build(world, pathfinding, mtManager, map);
+        simulator = simConfig.build(world, pathfinding, map);
 
         vehicle = simulator.getVehicle(vehicleName);
         cr.setCar(vehicle);
@@ -215,7 +213,8 @@ public class SimulationVisualizer extends JFrame implements SimulationRunner {
                 simulator.addSimulationObject(vehicle);
                 cr.setCar(vehicle);
                 System.out.println("Transfered Vehicle using serialization");
-            } catch (SerializationException | IOException | EEMessageTypeException | EESetupException e1) {
+            } catch (SerializationException | IOException | EEMessageTypeException | EESetupException
+                    | EEMissingComponentException e1) {
                 e1.printStackTrace();
             }
             i = 0;

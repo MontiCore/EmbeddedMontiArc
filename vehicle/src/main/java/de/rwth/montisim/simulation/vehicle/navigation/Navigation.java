@@ -8,9 +8,8 @@ import de.rwth.montisim.commons.map.Path;
 import de.rwth.montisim.commons.map.Pathfinding;
 import de.rwth.montisim.commons.utils.*;
 import de.rwth.montisim.simulation.vehicle.physicalvalues.TruePosition;
-import de.rwth.montisim.simulation.eesimulator.components.*;
+import de.rwth.montisim.simulation.eesimulator.*;
 import de.rwth.montisim.simulation.eesimulator.events.MessageReceiveEvent;
-import de.rwth.montisim.simulation.eesimulator.exceptions.EEMessageTypeException;
 import de.rwth.montisim.simulation.eesimulator.message.*;
 
 // TODOS:
@@ -43,19 +42,19 @@ public class Navigation extends EEComponent {
     public static final VectorType TRAJECTORY_LAT_TYPE = TRAJECTORY_X_TYPE;
 
     //MessageInformation gpsPosMsg;
-    transient MessageInformation truePosMsg;
+    transient int truePosMsg;
 
-    transient MessageInformation pushTargetPosMsg;
-    transient MessageInformation popTargetPosMsg;
+    transient int pushTargetPosMsg;
+    transient int popTargetPosMsg;
 
-    transient MessageInformation atTargetPosMsg;
-    transient MessageInformation currentTargetPosMsg;
+    transient int atTargetPosMsg;
+    transient int currentTargetPosMsg;
 
-    transient MessageInformation trajectoryXMsg;
-    transient MessageInformation trajectoryYMsg;
-    transient MessageInformation trajectoryLengthMsg;
-    transient MessageInformation trajectoryLonMsg;
-    transient MessageInformation trajectoryLatMsg;
+    transient int trajectoryXMsg;
+    transient int trajectoryYMsg;
+    transient int trajectoryLengthMsg;
+    transient int trajectoryLonMsg;
+    transient int trajectoryLatMsg;
 
     transient final Pathfinding pathfinding;
 
@@ -65,28 +64,26 @@ public class Navigation extends EEComponent {
     transient Vec2 currentTraj[] = new Vec2[TRAJ_ARRAY_LENGTH];
     transient int currentTrajSize = 0;
 
-    public Navigation(NavigationProperties properties, Pathfinding pathfinding) {
-        super(properties);
+    public Navigation(NavigationProperties properties, EESystem eeSystem, Pathfinding pathfinding) {
+        super(properties, eeSystem);
         this.pathfinding = pathfinding;
         for (int i = 0; i < TRAJ_ARRAY_LENGTH; ++i) currentTraj[i] = new Vec2();
-    }
 
-    @Override
-    protected void init() throws EEMessageTypeException {
+        
         //this.gpsPosMsg = addInput(GPS_POS_MSG, BasicType.VEC2);
-        this.truePosMsg = addInput(TruePosition.VALUE_NAME, TruePosition.TYPE);
+        this.truePosMsg = addPort(PortInformation.newOptionalInputDataPort(TruePosition.VALUE_NAME, TruePosition.TYPE, false));
 
-        this.pushTargetPosMsg = addInput(PUSH_TARGET_POS_MSG, BasicType.VEC2, true, true);
-        this.popTargetPosMsg = addInput(POP_TARGET_POS_MSG, BasicType.EMPTY, true, true);
+        this.pushTargetPosMsg = addPort(PortInformation.newOptionalInputDataPort(PUSH_TARGET_POS_MSG, BasicType.VEC2, true));
+        this.popTargetPosMsg = addPort(PortInformation.newOptionalInputDataPort(POP_TARGET_POS_MSG, BasicType.EMPTY, true));
 
-        this.atTargetPosMsg = addOutput(AT_TARGET_POS_MSG, AT_TARGET_POS_TYPE);
-        this.currentTargetPosMsg = addOutput(CURRENT_TARGET_POS_MSG, CURRENT_TARGET_POS_TYPE);
+        this.atTargetPosMsg = addPort(PortInformation.newOptionalOutputDataPort(AT_TARGET_POS_MSG, AT_TARGET_POS_TYPE));
+        this.currentTargetPosMsg = addPort(PortInformation.newOptionalOutputDataPort(CURRENT_TARGET_POS_MSG, CURRENT_TARGET_POS_TYPE));
 
-        this.trajectoryXMsg = addOutput(TRAJECTORY_X_MSG, TRAJECTORY_X_TYPE);
-        this.trajectoryYMsg = addOutput(TRAJECTORY_Y_MSG, TRAJECTORY_Y_TYPE);
-        this.trajectoryLengthMsg = addOutput(TRAJECTORY_LENGTH_MSG, BasicType.N);
-        this.trajectoryLonMsg = addOutput(TRAJECTORY_LON_MSG, TRAJECTORY_LON_TYPE);
-        this.trajectoryLatMsg = addOutput(TRAJECTORY_LAT_MSG, TRAJECTORY_LAT_TYPE);
+        this.trajectoryLengthMsg = addPort(PortInformation.newOptionalOutputDataPort(TRAJECTORY_LENGTH_MSG, BasicType.N));
+        this.trajectoryXMsg = addPort(PortInformation.newOptionalOutputDataPort(TRAJECTORY_X_MSG, TRAJECTORY_X_TYPE));
+        this.trajectoryYMsg = addPort(PortInformation.newOptionalOutputDataPort(TRAJECTORY_Y_MSG, TRAJECTORY_Y_TYPE));
+        this.trajectoryLonMsg = addPort(PortInformation.newOptionalOutputDataPort(TRAJECTORY_LON_MSG, TRAJECTORY_LON_TYPE));
+        this.trajectoryLatMsg = addPort(PortInformation.newOptionalOutputDataPort(TRAJECTORY_LAT_MSG, TRAJECTORY_LAT_TYPE));
     }
 
     @Override
@@ -125,6 +122,8 @@ public class Navigation extends EEComponent {
 
     public void pushTargetPos(Vec2 target, Instant time){
         targets.push(target);
+        currentPath = Optional.empty();
+        currentTrajSize = 0;
         sendMessage(time, currentTargetPosMsg, target);
     }
     
@@ -156,18 +155,29 @@ public class Navigation extends EEComponent {
         if (index < 0) return;
         Path p = currentPath.get();
         int size = Math.min(TRAJ_ARRAY_LENGTH, p.getLength()-index);
-        currentTrajSize = size;
         double x[] = new double[TRAJ_ARRAY_LENGTH];
         double y[] = new double[TRAJ_ARRAY_LENGTH];
+
+        int pointCount = 0;
         for (int i = 0; i < size; ++i){
-            x[i] = p.trajectoryX[index+i];
-            y[i] = p.trajectoryY[index+i];
-            currentTraj[i].x = x[i];
-            currentTraj[i].y = y[i];
+            double vx = p.trajectoryX[index+i];
+            double vy = p.trajectoryY[index+i];
+            // Only add the point if it is far enough from the last
+            if (pointCount > 0) {
+                double dist = currentTraj[pointCount-1].distance(vx, vy);
+                if (dist < 0.01) continue; // Skip
+            }
+            x[pointCount] = vx;
+            y[pointCount] = vy;
+            currentTraj[pointCount].x = x[pointCount];
+            currentTraj[pointCount].y = y[pointCount];
+            ++pointCount;
         }
-        sendMessage(time, trajectoryLengthMsg, size);
-        sendMessage(time, trajectoryXMsg, x, 8*size);
-        sendMessage(time.plus(Duration.ofMillis(10)), trajectoryYMsg, y, 8*size);
+        
+        currentTrajSize = pointCount;
+        sendMessage(time, trajectoryLengthMsg, currentTrajSize);
+        sendMessage(time, trajectoryXMsg, x, 8*currentTrajSize);
+        sendMessage(time.plus(Duration.ofMillis(10)), trajectoryYMsg, y, 8*currentTrajSize);
     }
 
     private int getNearestSegment(Vec2 pos) {

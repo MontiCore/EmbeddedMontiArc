@@ -47,6 +47,7 @@ public abstract class PowerTrainProperties /*implements JsonSerializable*/ {
                 false
             ))
             .setName(STEERING_ACTUATOR_NAME)
+            .connectTo("DefaultBus")
             //.setInternal()
         );
         config.addDefaultComponent(
@@ -58,6 +59,7 @@ public abstract class PowerTrainProperties /*implements JsonSerializable*/ {
                 false
             ))
             .setName(BRAKING_ACTUATOR_NAME)
+            .connectTo("DefaultBus")
             //.setInternal()
         );
         config.addDefaultComponent(
@@ -69,6 +71,7 @@ public abstract class PowerTrainProperties /*implements JsonSerializable*/ {
                 false
             ))
             .setName(GAS_ACTUATOR_NAME)
+            .connectTo("DefaultBus")
             //.setInternal()
         );
     }

@@ -8,6 +8,7 @@ import de.rwth.montisim.simulation.vehicle.navigation.Navigation;
 import de.rwth.montisim.simulation.vehicle.task.Goal;
 
 import java.util.List;
+import java.util.Optional;
 import java.util.Vector;
 
 
@@ -48,7 +49,9 @@ public class PathGoal extends Goal {
 
     // Only gets called when this PathGoal is active
     // Returns true if all completed
-    public boolean updateDriveTarget(Vehicle v, Navigation nav) {
+    public boolean updateDriveTarget(Vehicle v, Optional<Navigation> nav) {
+        if (!nav.isPresent()) throw new IllegalArgumentException("PathGoal requires a Navigation component in the Vehicle.");
+        Navigation navv = nav.get();
         boolean newTarget = false;
         if (currDestIdx < 0) {
             newTarget = true;
@@ -58,7 +61,7 @@ public class PathGoal extends Goal {
             double dist = v.physicalObject.pos.asVec2().distance(dest);
 
             if (dist <= properties.range) {
-                nav.popTargetPos();
+                navv.popTargetPos();
                 newTarget = true;
             }
         } else return true;
@@ -66,7 +69,7 @@ public class PathGoal extends Goal {
             currDestIdx += 1;
             if (currDestIdx < path.size()) {
                 updateStatus(TaskStatus.RUNNING);
-                nav.pushTargetPos(path.get(currDestIdx));
+                navv.pushTargetPos(path.get(currDestIdx));
             } else {
                 // goal is successful if all destinations have been reached
                 updateStatus(TaskStatus.SUCCEEDED);

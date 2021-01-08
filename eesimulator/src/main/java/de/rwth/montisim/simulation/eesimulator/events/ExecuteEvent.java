@@ -4,14 +4,14 @@ package de.rwth.montisim.simulation.eesimulator.events;
 import java.time.Instant;
 
 import de.rwth.montisim.commons.utils.json.Typed;
-import de.rwth.montisim.simulation.eesimulator.components.ComponentManager;
-import de.rwth.montisim.simulation.eesimulator.components.EEEventProcessor;
+import de.rwth.montisim.simulation.eesimulator.EEComponent;
+import de.rwth.montisim.simulation.eesimulator.EESystem;
 
 public class ExecuteEvent extends EEEvent {
 	public static final int type = registerType(ExecuteEvent.class);
 	public final static String TYPE_NAME = "execute";
 
-	public ExecuteEvent(EEEventProcessor target, Instant eventTime) {
+	public ExecuteEvent(EEComponent target, Instant eventTime) {
 		super(target, eventTime);
 	}
 
@@ -25,8 +25,8 @@ public class ExecuteEvent extends EEEvent {
 		}
         protected ExecuteEventData() {}
 		@Override
-		public EEEvent getEvent(ComponentManager cm) {
-			return new ExecuteEvent(EEEvent.getTarget(target, cm), time);
+		public EEEvent getEvent(EESystem eesystem) {
+			return new ExecuteEvent(EEEvent.getTarget(target, eesystem), time);
 		}
 	}
 	

@@ -5,6 +5,7 @@ import java.io.File;
 import java.io.IOException;
 import java.util.Optional;
 
+import de.rwth.montisim.commons.utils.BuildContext;
 import de.rwth.montisim.commons.utils.ParsingException;
 import de.rwth.montisim.commons.utils.json.Json;
 import de.rwth.montisim.commons.utils.json.JsonTraverser;
@@ -12,9 +13,6 @@ import de.rwth.montisim.commons.utils.json.SerializationException;
 import de.rwth.montisim.commons.utils.json.JsonTraverser.Entry;
 import de.rwth.montisim.commons.utils.json.JsonTraverser.ObjectIterable;
 import de.rwth.montisim.simulation.eesimulator.exceptions.*;
-import de.rwth.montisim.simulation.vehicle.VehicleProperties.BuildContext;
-import de.rwth.montisim.simulation.vehicle.powertrain.electrical.ElectricalPTProperties;
-import de.rwth.montisim.simulation.vehicle.powertrain.fuel.FuelPTProperties;
 
 public class VehicleBuilder {
 
@@ -63,14 +61,14 @@ public class VehicleBuilder {
     Optional<VehicleProperties> config = Optional.empty();
     Optional<File> file = Optional.empty();
     Optional<String> dataString = Optional.empty();
-    Optional<String> vehicleName = Optional.empty();
 
     private VehicleBuilder(BuildContext context) {
         this.context = context;
     }
 
 
-    public Vehicle build() throws SerializationException, EEMessageTypeException, EESetupException {
+    public Vehicle build() throws SerializationException, EEMessageTypeException, EESetupException,
+            EEMissingComponentException {
         if (fromJson) {
             JsonTraverser j = new JsonTraverser();
             try {
@@ -110,15 +108,8 @@ public class VehicleBuilder {
         }
     }
 
-    private Vehicle buildFromConfig() throws EEMessageTypeException, EESetupException {
-        VehicleProperties conf = config.get();
-        if (vehicleName.isPresent()) conf.vehicleName = vehicleName.get();
-        Vehicle target = conf.build(context);
-        return target;
+    private Vehicle buildFromConfig() throws EEMessageTypeException, EESetupException, EEMissingComponentException {
+        return config.get().build(context);
     }
 
-    static {
-        Json.registerType(ElectricalPTProperties.class);
-        Json.registerType(FuelPTProperties.class);
-    }
 }

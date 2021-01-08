@@ -4,8 +4,8 @@ package de.rwth.montisim.simulation.eesimulator.events;
 import java.time.Instant;
 
 import de.rwth.montisim.commons.utils.json.Typed;
-import de.rwth.montisim.simulation.eesimulator.components.ComponentManager;
-import de.rwth.montisim.simulation.eesimulator.components.EEEventProcessor;
+import de.rwth.montisim.simulation.eesimulator.EEComponent;
+import de.rwth.montisim.simulation.eesimulator.EESystem;
 import de.rwth.montisim.simulation.eesimulator.message.Message;
 
 /**
@@ -18,7 +18,7 @@ public class MessageSendEvent extends EEEvent {
 
 	private Message msg;
 
-	public MessageSendEvent(EEEventProcessor target, Instant eventTime, Message msg) {
+	public MessageSendEvent(EEComponent target, Instant eventTime, Message msg) {
 		super(target, eventTime);
 		this.msg = msg;
 	}
@@ -39,8 +39,8 @@ public class MessageSendEvent extends EEEvent {
 		}
         protected MessageSendEventData() {}
 		@Override
-		public EEEvent getEvent(ComponentManager cm) {
-			return new MessageReceiveEvent(EEEvent.getTarget(target, cm), time, msg);
+		public EEEvent getEvent(EESystem eesystem) {
+			return new MessageReceiveEvent(EEEvent.getTarget(target, eesystem), time, msg);
 		}
 	}
 	

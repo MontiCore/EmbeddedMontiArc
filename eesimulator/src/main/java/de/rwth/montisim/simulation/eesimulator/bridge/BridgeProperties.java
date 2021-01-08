@@ -3,13 +3,15 @@ package de.rwth.montisim.simulation.eesimulator.bridge;
 
 import java.time.Duration;
 
+import de.rwth.montisim.commons.utils.BuildContext;
 import de.rwth.montisim.commons.utils.json.Typed;
-import de.rwth.montisim.simulation.eesimulator.components.BusUserProperties;
-import de.rwth.montisim.simulation.eesimulator.components.EEComponentType;
-import de.rwth.montisim.simulation.eesimulator.components.EEEventProcessor;
+import de.rwth.montisim.simulation.eesimulator.EEComponentProperties;
+import de.rwth.montisim.simulation.eesimulator.EEComponentType;
+import de.rwth.montisim.simulation.eesimulator.EESystem;
+import de.rwth.montisim.simulation.eesimulator.EEComponent;
 
 @Typed(BridgeProperties.TYPE)
-public class BridgeProperties extends BusUserProperties {
+public class BridgeProperties extends EEComponentProperties {
     public static final String TYPE = "bridge";
 
     /**
@@ -32,6 +34,15 @@ public class BridgeProperties extends BusUserProperties {
     }
 
     @Override
+    public boolean canTransferMessages() {
+        return true;
+    }
+    @Override
+    public float routingCost() {
+        return 1.5f;
+    }
+
+    @Override
     public EEComponentType getGeneralType() {
         return EEComponentType.BRIDGE;
     }
@@ -42,8 +53,8 @@ public class BridgeProperties extends BusUserProperties {
     }
 
     @Override
-    public EEEventProcessor build(ComponentBuildContext context) {
-        return new Bridge(this);
+    public EEComponent build(EESystem eesystem, BuildContext context) {
+        return new Bridge(this, eesystem);
     }
 
 }

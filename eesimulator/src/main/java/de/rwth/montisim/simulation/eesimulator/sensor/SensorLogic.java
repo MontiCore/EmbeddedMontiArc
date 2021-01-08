@@ -3,12 +3,12 @@ package de.rwth.montisim.simulation.eesimulator.sensor;
 
 import java.time.Instant;
 
+import de.rwth.montisim.commons.dynamicinterface.PortInformation;
 import de.rwth.montisim.commons.physicalvalue.PhysicalValue;
 import de.rwth.montisim.commons.simulation.TimeUpdate;
 import de.rwth.montisim.commons.simulation.Updatable;
-import de.rwth.montisim.simulation.eesimulator.components.EEComponent;
+import de.rwth.montisim.simulation.eesimulator.EEComponent;
 import de.rwth.montisim.simulation.eesimulator.exceptions.EEMessageTypeException;
-import de.rwth.montisim.simulation.eesimulator.message.MessageInformation;
 
 public class SensorLogic implements Updatable {
     final transient PhysicalValue watchedValue;
@@ -16,16 +16,14 @@ public class SensorLogic implements Updatable {
 
     Instant nextUpdate = Instant.EPOCH; // Time after which the sensor can send its next value
 
-    transient MessageInformation msgInfo;
+    transient int msgId;
     transient EEComponent component;
 
-    public SensorLogic(SensorProperties properties, PhysicalValue watchedValue) {
+    public SensorLogic(EEComponent component, SensorProperties properties, PhysicalValue watchedValue)
+            throws EEMessageTypeException {
         this.watchedValue = watchedValue;
         this.properties = properties;
-    }
-
-    public void init(EEComponent component) throws EEMessageTypeException {
-        this.msgInfo = component.addOutput(watchedValue.name, watchedValue.getType());
+        this.msgId = component.addPort(PortInformation.newOptionalOutputDataPort(watchedValue.name, watchedValue.getType()));
         this.component = component;
     }
 
@@ -35,7 +33,7 @@ public class SensorLogic implements Updatable {
             this.nextUpdate = newTime.oldTime.plus(properties.update_interval);
             Object readValue = readValue();
             if (!properties.send_only_changed || watchedValue.hasChanged()) {
-                component.sendMessage(newTime.oldTime.plus(properties.read_time), msgInfo, readValue);
+                component.sendMessage(newTime.oldTime.plus(properties.read_time), msgId, readValue);
             }
         }
     }

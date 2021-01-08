@@ -3,8 +3,8 @@ package de.rwth.montisim.simulation.vehicle.powertrain;
 
 import de.rwth.montisim.commons.physicalvalue.*;
 import de.rwth.montisim.commons.utils.json.JsonEntry;
+import de.rwth.montisim.simulation.eesimulator.EESystem;
 import de.rwth.montisim.simulation.eesimulator.actuator.Actuator;
-import de.rwth.montisim.simulation.eesimulator.components.ComponentManager;
 
 public abstract class PowerTrain {
     public static final double MAX_STEERING_ANGLE = 30.0;
@@ -36,10 +36,10 @@ public abstract class PowerTrain {
         physicalValues.addPhysicalValue(gasValue);
     }
 
-    public void resolveActuators(ComponentManager cm){
-        gasActuator = cm.getActuator(PowerTrainProperties.GAS_ACTUATOR_NAME).get();
-        brakingActuator = cm.getActuator(PowerTrainProperties.BRAKING_ACTUATOR_NAME).get();
-        steeringActuator = cm.getActuator(PowerTrainProperties.STEERING_ACTUATOR_NAME).get();
+    public void resolveActuators(EESystem eeSystem){
+        gasActuator = eeSystem.getActuator(PowerTrainProperties.GAS_ACTUATOR_NAME).get();
+        brakingActuator = eeSystem.getActuator(PowerTrainProperties.BRAKING_ACTUATOR_NAME).get();
+        steeringActuator = eeSystem.getActuator(PowerTrainProperties.STEERING_ACTUATOR_NAME).get();
     }
 
     public abstract double getFuelPercentage();

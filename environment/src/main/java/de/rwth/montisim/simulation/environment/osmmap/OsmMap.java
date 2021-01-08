@@ -2,6 +2,7 @@
 package de.rwth.montisim.simulation.environment.osmmap;
 
 import de.rwth.montisim.commons.utils.XmlTraverser;
+import de.rwth.montisim.commons.utils.BuildObject;
 import de.rwth.montisim.commons.utils.Coordinates;
 import de.rwth.montisim.commons.utils.StringRef;
 
@@ -12,7 +13,9 @@ import java.util.Vector;
 import java.util.logging.Logger;
 
 
-public class OsmMap {
+public class OsmMap implements BuildObject {
+    public static final String CONTEXT_KEY = "osm_map";
+
     public class Tagged {
         // TODO only allocate tags if used
         public HashMap<Integer, Integer> tags = new HashMap<>();
@@ -404,5 +407,10 @@ public class OsmMap {
         roadTags.add(HIGHWAY.PEDESTRIAN.id);
         roadTags.add(HIGHWAY.TRACK.id);
         roadTags.add(HIGHWAY.RACEWAY.id);
+    }
+
+    @Override
+    public String getKey() {
+        return CONTEXT_KEY;
     }
 }

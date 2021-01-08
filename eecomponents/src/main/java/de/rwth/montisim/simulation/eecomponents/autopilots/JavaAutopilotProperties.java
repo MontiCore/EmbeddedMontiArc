@@ -3,15 +3,15 @@ package de.rwth.montisim.simulation.eecomponents.autopilots;
 
 import java.time.Duration;
 
+import de.rwth.montisim.commons.utils.BuildContext;
 import de.rwth.montisim.commons.utils.json.Typed;
-import de.rwth.montisim.simulation.eesimulator.components.BusUserProperties;
-import de.rwth.montisim.simulation.eesimulator.components.EEComponentType;
-import de.rwth.montisim.simulation.eesimulator.components.EEEventProcessor;
+import de.rwth.montisim.simulation.eesimulator.*;
+import de.rwth.montisim.simulation.eesimulator.exceptions.EEMessageTypeException;
 
 @Typed(JavaAutopilotProperties.TYPE)
-public class JavaAutopilotProperties extends BusUserProperties {
+public class JavaAutopilotProperties extends EEComponentProperties {
     public static final String TYPE = "java_autopilot";
-    
+
     public Duration compute_time = Duration.ZERO;
     public double maxVehicleAccel; // TODO get from properties system
 
@@ -44,8 +44,8 @@ public class JavaAutopilotProperties extends BusUserProperties {
     }
 
     @Override
-    public EEEventProcessor build(ComponentBuildContext context) {
-        return new JavaAutopilot(this);
+    public EEComponent build(EESystem eesystem, BuildContext context) throws EEMessageTypeException {
+        return new JavaAutopilot(this, eesystem);
     }
 
 }

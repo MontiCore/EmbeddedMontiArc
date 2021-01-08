@@ -3,8 +3,9 @@ package de.rwth.montisim.simulation.eesimulator.events;
 
 import de.rwth.montisim.commons.eventsimulation.DiscreteEvent;
 import de.rwth.montisim.commons.utils.ParsingException;
-import de.rwth.montisim.simulation.eesimulator.components.ComponentManager;
-import de.rwth.montisim.simulation.eesimulator.components.EEEventProcessor;
+import de.rwth.montisim.simulation.eesimulator.EEComponent;
+import de.rwth.montisim.simulation.eesimulator.EESystem;
+
 import java.time.Instant;
 import java.util.Optional;
 
@@ -13,7 +14,7 @@ import java.util.Optional;
  */
 public abstract class EEEvent extends DiscreteEvent {
 
-    public EEEvent(EEEventProcessor target, Instant eventTime) {
+    public EEEvent(EEComponent target, Instant eventTime) {
         super(target, eventTime);
     }
 
@@ -31,16 +32,16 @@ public abstract class EEEvent extends DiscreteEvent {
 
         EventData(EEEvent event) {
             this.time = event.time;
-            this.target = ((EEEventProcessor)event.target).properties.name;
+            this.target = ((EEComponent)event.target).properties.name;
         }
 
         protected EventData() {}
 
-        public abstract EEEvent getEvent(ComponentManager cm);
+        public abstract EEEvent getEvent(EESystem eesystem);
     }
     public abstract EventData getEventData();
-    protected static EEEventProcessor getTarget(String name, ComponentManager cm){
-        Optional<EEEventProcessor> r = cm.getComponent(name);
+    protected static EEComponent getTarget(String name, EESystem eesystem){
+        Optional<EEComponent> r = eesystem.getComponent(name);
         if (!r.isPresent()) throw new ParsingException("Unknown target component: "+name);
         return r.get();
     }

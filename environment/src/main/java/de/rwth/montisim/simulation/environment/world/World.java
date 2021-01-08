@@ -6,6 +6,7 @@ import java.util.List;
 import java.util.Optional;
 import java.util.Vector;
 
+import de.rwth.montisim.commons.utils.BuildObject;
 import de.rwth.montisim.commons.utils.IPM;
 import de.rwth.montisim.commons.utils.SimpleCoordinateConverter;
 import de.rwth.montisim.commons.utils.Vec2;
@@ -20,7 +21,8 @@ import de.rwth.montisim.simulation.environment.world.elements.*;
  * This representation is serializable into json and can be created
  * from an [OsmMap].
  */
-public class World {
+public class World implements BuildObject {
+    public static final String CONTEXT_KEY = "world";
     public final String name;
 
     public Optional<SimpleCoordinateConverter> converter = Optional.empty();
@@ -150,5 +152,10 @@ public class World {
             }
         }
         
+    }
+
+    @Override
+    public String getKey() {
+        return CONTEXT_KEY;
     }
 }

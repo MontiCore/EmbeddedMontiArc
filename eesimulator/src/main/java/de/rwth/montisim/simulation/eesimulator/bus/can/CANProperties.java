@@ -1,10 +1,13 @@
 /* (c) https://github.com/MontiCore/monticore */
 package de.rwth.montisim.simulation.eesimulator.bus.can;
 
+import de.rwth.montisim.commons.utils.BuildContext;
 import de.rwth.montisim.commons.utils.json.Typed;
+import de.rwth.montisim.simulation.eesimulator.EESystem;
 import de.rwth.montisim.simulation.eesimulator.bus.BusProperties;
-import de.rwth.montisim.simulation.eesimulator.components.EEComponentType;
-import de.rwth.montisim.simulation.eesimulator.components.EEEventProcessor;
+import de.rwth.montisim.simulation.eesimulator.EEComponentType;
+import de.rwth.montisim.simulation.eesimulator.EEComponent;
+import de.rwth.montisim.simulation.eesimulator.message.MessagePriorityComparator;
 
 @Typed(CANProperties.TYPE)
 public class CANProperties extends BusProperties {
@@ -36,9 +39,14 @@ public class CANProperties extends BusProperties {
     public String getType() {
         return TYPE;
     }
+    
+    @Override
+    public float routingCost() {
+        return 1.2f;
+    }
 
     @Override
-    public EEEventProcessor build(ComponentBuildContext context) {
-        return new CAN(this, context.comp);
+    public EEComponent build(EESystem eesystem, BuildContext context) {
+        return new CAN(this, eesystem, context.getObject(MessagePriorityComparator.CONTEXT_KEY));
     }
 }

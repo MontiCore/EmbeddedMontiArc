@@ -1,7 +1,5 @@
 /* (c) https://github.com/MontiCore/monticore */
-package de.rwth.montisim.simulation.simulator.vehicleconfigs;
-
-import java.time.Duration;
+package de.rwth.montisim.simulation.eecomponents.vehicleconfigs;
 
 import de.rwth.montisim.simulation.eecomponents.autopilots.JavaAutopilotProperties;
 import de.rwth.montisim.simulation.eesimulator.bus.constant.ConstantBusProperties;
@@ -35,37 +33,29 @@ public class DefaultVehicleConfig {
         this.properties.physics = rbPhysicsProperties;
 
         properties.addComponent(
-            new SensorProperties(
-                Duration.ofMillis(100), // Update rate
-                Duration.ofMillis(10), // Read time
-                false
-            )
-            .setName("TrueVelocitySensor")
+            new SensorProperties()
             .setPhysicalValueName(TrueVelocity.VALUE_NAME)
+            .setName("TrueVelocitySensor")
+            .connectTo("DefaultBus")
         );
 
         properties.addComponent(
-            new SensorProperties(
-                Duration.ofMillis(100), // Update rate
-                Duration.ofMillis(10), // Read time
-                false
-            )
-            .setName("TruePositionSensor")
+            new SensorProperties()
             .setPhysicalValueName(TruePosition.VALUE_NAME)
+            .setName("TruePositionSensor")
+            .connectTo("DefaultBus")
         );
 
         properties.addComponent(
-            new SensorProperties(
-                Duration.ofMillis(100), // Update rate
-                Duration.ofMillis(10), // Read time
-                false
-            )
-            .setName("TrueCompassSensor")
+            new SensorProperties()
             .setPhysicalValueName(TrueCompass.VALUE_NAME)
+            .setName("TrueCompassSensor")
+            .connectTo("DefaultBus")
         );
 
         properties.addComponent(
             new NavigationProperties()
+            .connectTo("DefaultBus")
         );
         
         properties.addComponent(
@@ -79,7 +69,9 @@ public class DefaultVehicleConfig {
             config.electricalPTProperties.transmission_ratio * 2 /
             config.properties.wheels.diameter;
             config.properties.addComponent(
-                new JavaAutopilotProperties(maxForce/config.properties.body.mass).setName("TestAutopilot")
+                new JavaAutopilotProperties(maxForce/config.properties.body.mass)
+                .setName("TestAutopilot")
+                .connectTo("DefaultBus")
             );
         return config;
     }

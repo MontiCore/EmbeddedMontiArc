@@ -8,17 +8,18 @@ import de.rwth.montisim.simulation.vehicle.task.metric.MetricGoal;
 import de.rwth.montisim.simulation.vehicle.task.path.PathGoal;
 
 import java.util.List;
+import java.util.Optional;
 import java.util.Vector;
 import java.util.stream.Collectors;
 
 public class Task {
     transient public final TaskProperties properties;
-    transient protected final Navigation nav;
+    transient protected final Optional<Navigation> nav;
     transient private Vector<Goal> goals = new Vector<>();
     transient private Vector<PathGoal> driveGoals = new Vector<>();
     int activeDriveGoal = -1;
 
-    public Task(TaskProperties properties, Navigation nav) {
+    public Task(TaskProperties properties, Optional<Navigation> nav) {
         this.properties = properties;
         this.nav = nav;
     }
