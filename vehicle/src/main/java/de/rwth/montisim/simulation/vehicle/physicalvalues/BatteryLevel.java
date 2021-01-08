@@ -1,0 +1,26 @@
+package de.rwth.montisim.simulation.vehicle.physicalvalues;
+
+import de.rwth.montisim.commons.physicalvalue.PhysicalValueDouble;
+import de.rwth.montisim.simulation.vehicle.powertrain.electrical.battery.Battery;
+
+public class BatteryLevel extends PhysicalValueDouble {
+    public static final String VALUE_NAME = "battery_level";
+    transient final Battery battery;
+    
+    public BatteryLevel(Battery battery) {
+        super(VALUE_NAME);
+        this.battery = battery;
+    }
+
+    /**
+    * @return [x,y, upper_speed_limit] */
+    @Override
+    public Object get(){
+        return battery.percentage();
+    }
+
+    @Override
+    public void set(Object value){
+        // cannot change the battery level this way
+    }
+}
