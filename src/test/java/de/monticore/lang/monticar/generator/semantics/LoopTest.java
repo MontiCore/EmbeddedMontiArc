@@ -12,6 +12,7 @@ import de.monticore.lang.tagging._symboltable.TaggingResolver;
 import de.monticore.symboltable.Symbol;
 import de.se_rwth.commons.logging.Log;
 import org.apache.commons.lang3.StringUtils;
+import org.junit.Ignore;
 import org.junit.Test;
 
 import java.io.File;
@@ -49,11 +50,13 @@ public class LoopTest {
         testComponent("de.monticore.lang.monticar.semantics.loops.oscillation");
     }
 
+    @Ignore
     @Test
     public void testOscillationAsSymbol() throws IOException {
         testComponent("de.monticore.lang.monticar.semantics.loops.oscillationAsSymbol");
     }
 
+    @Ignore
     @Test
     public void testUnderSpecification() throws IOException {
         testComponent("de.monticore.lang.monticar.semantics.loops.underSpecification");

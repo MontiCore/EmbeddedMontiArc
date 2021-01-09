@@ -14,21 +14,32 @@ import de.monticore.lang.monticar.generator.cpp.MathFunctionFixer;
 import de.monticore.lang.monticar.generator.cpp.instruction.ConnectInstructionCPP;
 import de.monticore.lang.monticar.generator.cpp.symbols.MathStringExpression;
 import de.monticore.lang.monticar.generator.optimization.MathOptimizer;
+import de.monticore.lang.monticar.semantics.executionOrder.SList;
+import de.monticore.lang.monticar.semantics.executionOrder.SListEntry;
+import de.monticore.lang.monticar.semantics.helper.Find;
+import de.monticore.lang.monticar.semantics.helper.NameHelper;
+import de.monticore.lang.monticar.semantics.loops.analyze.GenerateComponentFunction;
+import de.monticore.lang.monticar.semantics.loops.detection.ConnectionHelper;
+import de.monticore.lang.monticar.semantics.loops.graph.EMAAtomicConnectorInstance;
 import de.se_rwth.commons.logging.Log;
 
-import java.util.ArrayList;
-import java.util.Collection;
-import java.util.List;
+import java.util.*;
 
 import static de.monticore.lang.monticar.generator.cpp.converter.ComponentConverter.getNameOfOutput;
 
 /**
  */
 public class ComponentConverterMethodGeneration {
+    public static final String EXECUTE_METHOD_NAME = "execute";
+    public static final String OUTPUT_METHOD_NAME = "output";
+    public static final String UPDATE_METHOD_NAME = "update";
     public static int currentGenerationIndex = 0;
     public static EMAComponentInstanceSymbol currentComponentSymbol = null;
 
-    public static Method generateExecuteMethod(EMAComponentInstanceSymbol componentSymbol, EMAMBluePrintCPP bluePrint, MathStatementsSymbol mathStatementsSymbol, GeneratorCPP generatorCPP, List<String> includeStrings) {
+
+    public static Method generateExecuteMethod(EMAComponentInstanceSymbol componentSymbol, EMAMBluePrintCPP bluePrint,
+                                               MathStatementsSymbol mathStatementsSymbol, GeneratorCPP generatorCPP,
+                                               List<String> includeStrings) {
 
 
         currentComponentSymbol = componentSymbol;
@@ -57,24 +68,24 @@ public class ComponentConverterMethodGeneration {
             }
         }
 */
-        Method exMethod = new Method("execute", "void");
+        Method exMethod = new Method(EXECUTE_METHOD_NAME, "void");
         generateExecuteMethodInner(exMethod,componentSymbol, bluePrint, mathStatementsSymbol, generatorCPP, includeStrings);
 //        bluePrint.addMethod(exMethod);
         return exMethod;
     }
 
-    protected static void generateExecuteMethodInner(Method method, EMAComponentInstanceSymbol componentSymbol, EMAMBluePrintCPP bluePrint, MathStatementsSymbol mathStatementsSymbol, GeneratorCPP generatorCPP, List<String> includeStrings){
-
-
-        Collection<EMAConnectorInstanceSymbol> connectors = componentSymbol.getConnectorInstances();
-        generateConnectors(connectors, bluePrint, method);
-
-
-
-        if (mathStatementsSymbol != null) {
+    protected static void generateExecuteMethodInner(Method method, EMAComponentInstanceSymbol componentSymbol,
+                                                     EMAMBluePrintCPP bluePrint,
+                                                     MathStatementsSymbol mathStatementsSymbol,
+                                                     GeneratorCPP generatorCPP, List<String> includeStrings){
+        if (mathStatementsSymbol == null) {
+//            Collection<EMAConnectorInstanceSymbol> connectors = new HashSet<>();
+//            connectors.addAll(Find.allAtomicConnectors(componentSymbol));
+//            generateConnectors(connectors, bluePrint, method);
+            if (componentSymbol.isNonVirtual() || !componentSymbol.getParent().isPresent())
+                generateSListConnectors(Find.allAtomicConnectors(componentSymbol), bluePrint, method);
+        } else
             handleMathStatementGeneration(method, bluePrint, mathStatementsSymbol, generatorCPP, includeStrings);
-        }
-
     }
 
     public static void generateConnectors(Collection<EMAConnectorInstanceSymbol> connectors, EMAMBluePrintCPP bluePrint, Method method){
@@ -83,6 +94,11 @@ public class ComponentConverterMethodGeneration {
                 Log.info("source:" + connector.getSource() + " target:" + connector.getTarget(), "Port info:");
                 Variable v1 = PortConverter.getVariableForPortSymbol(connector, connector.getSource(), bluePrint);
                 Variable v2 = PortConverter.getVariableForPortSymbol(connector, connector.getTarget(), bluePrint);
+                if (!connector.getComponentInstance().getIncomingPortInstances().contains(connector.getSourcePort()))
+                    v1.addAdditionalInformation(Variable.CROSSCOMPONENT);
+                if (!connector.getComponentInstance().getOutgoingPortInstances().contains(connector.getTargetPort()))
+                    v2.addAdditionalInformation(Variable.CROSSCOMPONENT);
+
                 Log.info("v1: " + v1.getName() + " v2: " + v2.getName(), "Variable Info:");
                 Log.info("v1: " + v1.getNameTargetLanguageFormat() + " v2: " + v2.getNameTargetLanguageFormat(), "Variable Info:");
 
@@ -114,10 +130,140 @@ public class ComponentConverterMethodGeneration {
         }
     }
 
+    public static void generateSListConnectors(Collection<EMAAtomicConnectorInstance> connectors,
+                                               EMAMBluePrintCPP bluePrint,
+                                               Method method) {
+        for (EMAPortInstanceSymbol inport : currentComponentSymbol.getIncomingPortInstances())
+            if (!inport.isConstant())
+                method.addInstructions(createTargetConnectors(bluePrint, inport));
+
+        generateConstantConnectors(connectors, bluePrint, method);
+
+        boolean useThreadingOptimizations = false;
+        if (bluePrint.getGenerator() instanceof GeneratorCPP
+                && ((GeneratorCPP) bluePrint.getGenerator()).useThreadingOptimizations())
+            useThreadingOptimizations = true;
+        if (!useThreadingOptimizations)
+            generateComponentExecutionForNonThreadedSList(bluePrint, method);
+        else
+            generateComponentExecutionForThreadedSList(bluePrint, method);
+    }
+
+    private static void generateComponentExecutionForNonThreadedSList(EMAMBluePrintCPP bluePrint, Method method) {
+        List<SListEntry> slist = SList.sListAtomic(currentComponentSymbol);
+        generateComponentExecutionForSList(bluePrint, method, slist, false);
+    }
+
+    private static void generateComponentExecutionForThreadedSList(EMAMBluePrintCPP bluePrint, Method method) {
+        List<List<SListEntry>> slist = SList.sListParallel(currentComponentSymbol);
+        int lastIndex = 0;
+        for (List<SListEntry> sListEntries : slist) {
+            generateComponentExecutionForSList(bluePrint, method, sListEntries, true);
+        }
+    }
+
+    private static void generateComponentExecutionForSList(EMAMBluePrintCPP bluePrint, Method method,
+                                                           List<SListEntry> sListEntries, boolean allCanBeThreaded) {
+        List<Instruction> newInstructions = new LinkedList<>();
+        for (SListEntry entry : sListEntries) {
+            entry.getComponent().getFullName();
+            String componentName = NameHelper.calculatePartialName(entry.getComponent(), currentComponentSymbol);
+            if (entry.isExecuteCall())
+                newInstructions.add(new ExecuteInstruction(componentName, bluePrint, allCanBeThreaded));
+            else if(entry.isOutputCall())
+                newInstructions.add(new OutputInstruction(componentName, bluePrint, allCanBeThreaded));
+            else if (entry.isUpdateCall())
+                newInstructions.add(new UpdateInstruction(componentName, bluePrint, allCanBeThreaded));
+
+            // if allCanBeThreaded delay after all are calculated
+            if (!allCanBeThreaded && (entry.isExecuteCall() || entry.isOutputCall())) {
+                for (EMAPortInstanceSymbol outport : entry.getComponent().getOutgoingPortInstances())
+                    newInstructions.addAll(createTargetConnectors(bluePrint, outport));
+            }
+        }
+
+        if (allCanBeThreaded) {
+            List<Instruction> joinInstructions = new LinkedList<>();
+            for (Instruction instruction : newInstructions) {
+                if (instruction.isExecuteInstruction()) {
+                    ExecuteInstruction executeInstruction = (ExecuteInstruction) instruction;
+                    joinInstructions.add(new TargetCodeInstruction(executeInstruction.getThreadName() + ".join();\n"));
+                }
+            }
+            newInstructions.addAll(joinInstructions);
+            for (SListEntry entry : sListEntries) {
+                if (entry.isExecuteCall() || entry.isOutputCall()) {
+                    for (EMAPortInstanceSymbol outport : entry.getComponent().getOutgoingPortInstances())
+                        newInstructions.addAll(createTargetConnectors(bluePrint, outport));
+                }
+            }
+        }
+        method.addInstructions(newInstructions);
+    }
+
+    private static void generateConstantConnectors(Collection<EMAAtomicConnectorInstance> connectors, EMAMBluePrintCPP bluePrint, Method method) {
+        for (EMAAtomicConnectorInstance connector : connectors) {
+            if (connector.isConstant()) {
+                if (connector.getSourcePort().isConstant()) {
+                    EMAPortInstanceSymbol constPort =  connector.getSourcePort();
+                    Variable v1 = new Variable();
+                    v1.setName(constPort.getConstantValue().get().getValueAsString());
+                    String targetName = NameHelper.calculatePartialName(connector.getTarget(),
+                            currentComponentSymbol.getFullName());
+                    Variable v2 = PortConverter.getVariableForPortSymbol(connector, targetName, bluePrint);
+
+
+                    Instruction instruction = new ConnectInstructionCPP(v2, v1);
+                    method.addInstruction(instruction);
+                } else if (connector.getTargetPort().isConstant()) {
+                    EMAPortInstanceSymbol constPort = connector.getTargetPort();
+                    Variable v2 = new Variable();
+                    v2.setName(constPort.getConstantValue().get().getValueAsString());
+                    String sourceName = NameHelper.calculatePartialName(connector.getSource(),
+                            currentComponentSymbol.getFullName());
+                    Variable v1 = PortConverter.getVariableForPortSymbol(connector, sourceName, bluePrint);
+
+
+                    Instruction instruction = new ConnectInstructionCPP(v2, v1);
+                    method.addInstruction(instruction);
+                } else {
+                    Log.error("0xWRONGCONNECTOR the connector is constant but target nor source are constant");
+                }
+            }
+        }
+    }
+
+    private static List<Instruction> createTargetConnectors(EMAMBluePrintCPP bluePrint,
+                                                            EMAPortInstanceSymbol source) {
+        List<Instruction> newInstructions = new LinkedList<>();
+        for (EMAPortInstanceSymbol target: ConnectionHelper.targetsOf(source)) {
+            if (target.equals(source)) continue;
+            String sourceName = NameHelper.calculatePartialName(source.getFullName(),
+                    currentComponentSymbol.getFullName());
+            String targetName = NameHelper.calculatePartialName(target.getFullName(),
+                    currentComponentSymbol.getFullName());
+            Variable v1 = PortConverter.convertPortSymbolToVariable(source, sourceName, bluePrint);
+            Variable v2 = PortConverter.convertPortSymbolToVariable(target, targetName, bluePrint);
+            if (!currentComponentSymbol.getIncomingPortInstances().contains(source))
+                v1.addAdditionalInformation(Variable.CROSSCOMPONENT);
+            if (!currentComponentSymbol.getOutgoingPortInstances().contains(target))
+                v2.addAdditionalInformation(Variable.CROSSCOMPONENT);
+
+            Log.info("v1: " + v1.getName() + " v2: " + v2.getName(), "Variable Info:");
+            Log.info("v1: " + v1.getNameTargetLanguageFormat() + " v2: " + v2.getNameTargetLanguageFormat(), "Variable Info:");
+
+            Instruction instruction = new ConnectInstructionCPP(v2, v1);
+            newInstructions.add(instruction);
+        }
+        return newInstructions;
+    }
+
     private static List<MathExpressionSymbol> visitedMathExpressionSymbols = new ArrayList<>();
     private static boolean swapNextInstructions = false;
 
-    private static void handleMathStatementGeneration(Method method, EMAMBluePrintCPP bluePrint, MathStatementsSymbol mathStatementsSymbol, GeneratorCPP generatorCPP, List<String> includeStrings) {
+    private static void handleMathStatementGeneration(Method method, EMAMBluePrintCPP bluePrint,
+                                                      MathStatementsSymbol mathStatementsSymbol,
+                                                      GeneratorCPP generatorCPP, List<String> includeStrings) {
         // add math implementation instructions to method
         List<MathExpressionSymbol> newMathExpressionSymbols = new ArrayList<>();
         MathOptimizer.currentBluePrint = bluePrint;
@@ -379,6 +525,74 @@ public class ComponentConverterMethodGeneration {
     }
 
 
+    public static Method generateOutputMethod(EMAComponentInstanceSymbol componentSymbol, EMAMBluePrintCPP bluePrint,
+                                              MathStatementsSymbol mathStatementsSymbol, GeneratorCPP generatorCPP,
+                                              List<String> includeStrings) {
+        Optional<Method> execute = bluePrint.getMethod(EXECUTE_METHOD_NAME);
+        if (!execute.isPresent())
+            return null;
 
+        Method output = new Method(OUTPUT_METHOD_NAME, "void");
+        output.setPublic(true);
+        for (Variable parameter : execute.get().getParameters())
+            output.addParameter(parameter);
 
+        List<Instruction> newInstructions = new ArrayList<>();
+        if (mathStatementsSymbol != null) {
+            Map<String, String> resets = new HashMap<>();
+
+            // copy static variables to temp variables
+            for (Instruction instruction : execute.get().getInstructions()) {
+                if (instruction instanceof TargetCodeMathInstruction) {
+                    MathExpressionSymbol expressionSymbol = ((TargetCodeMathInstruction) instruction).getMathExpressionSymbol();
+                    Optional<MathValueSymbol> copy = GenerateComponentFunction.createCopy(expressionSymbol, resets);
+                    if (copy.isPresent())
+                        newInstructions.add(new TargetCodeMathInstruction(copy.get().getTextualRepresentation(), copy.get()));
+                }
+                newInstructions.add(instruction);
+            }
+            // reset static variables
+            for (Map.Entry<String, String> reset : resets.entrySet()) {
+                MathAssignmentExpressionSymbol resetAssignment =
+                        GenerateComponentFunction.createReset(reset.getValue(), reset.getKey());
+                newInstructions.add(new TargetCodeMathInstruction(resetAssignment.getTextualRepresentation(), resetAssignment));
+            }
+        } else {
+            // do not update
+            for (Instruction instruction : execute.get().getInstructions()) {
+                if (instruction instanceof UpdateInstruction) continue;
+                else if (instruction instanceof ExecuteInstruction && !(instruction instanceof OutputInstruction))
+                    newInstructions.add(new OutputInstruction((ExecuteInstruction) instruction));
+                else
+                    newInstructions.add(instruction);
+            }
+        }
+
+        output.setInstructions(newInstructions);
+        return output;
+    }
+
+    public static Method generateUpdateMethod(EMAComponentInstanceSymbol componentSymbol, EMAMBluePrintCPP bluePrint,
+                                              MathStatementsSymbol mathStatementsSymbol, GeneratorCPP generatorCPP,
+                                              List<String> includeStrings) {
+        Optional<Method> execute = bluePrint.getMethod(EXECUTE_METHOD_NAME);
+        if (!execute.isPresent())
+            return null;
+
+        Method update = new Method(UPDATE_METHOD_NAME, "void");
+        update.setPublic(true);
+        for (Variable parameter : execute.get().getParameters())
+            update.addParameter(parameter);
+
+        if (mathStatementsSymbol != null)
+            update.setInstructions(execute.get().getInstructions());
+        else {
+            for (Instruction instruction : execute.get().getInstructions()) {
+                if (instruction instanceof ExecuteInstruction && !(instruction instanceof OutputInstruction))
+                    update.addInstruction(new UpdateInstruction((ExecuteInstruction) instruction));
+            }
+        }
+
+        return update;
+    }
 }

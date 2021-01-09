@@ -5,15 +5,15 @@ import de.monticore.lang.monticar.semantics.library.arithmetic.*;
 
 component Test02 {
     port
-        in Q in1,
-        in Q in2,
-        out Q out1;
+        in Q input1,
+        in Q input2,
+        out Q output;
 
-    instance Difference<Q> difference;
+    instance Subtract<Q> subtract;
     instance Multiplication<Q,2> mult;
 
-    connect in1 -> difference.in1;
-    connect in2 -> mult.in1[1];
-    connect difference.out1 -> out1, mult.in1[2];
-    connect mult.out1 -> difference.in2;
+    connect input1 -> subtract.minuend;
+    connect input2 -> mult.factor[1];
+    connect subtract.difference -> output, mult.factor[2];
+    connect mult.product -> subtract.subtrahend;
 }

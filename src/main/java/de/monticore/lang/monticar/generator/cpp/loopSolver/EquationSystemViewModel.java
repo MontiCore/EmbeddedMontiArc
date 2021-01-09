@@ -115,7 +115,7 @@ public class EquationSystemViewModel extends ViewModelBase {
         this.name = eqs.getName();
 
         Map<String, String> inportMapping = new HashMap<>();
-        for (EMAPortInstanceSymbol inport : eqs.getInports()) {
+        for (EMAPortInstanceSymbol inport : eqs.getIncomingPorts()) {
             Optional<EMAPortInstanceSymbol> source = eqs.getAtomicSourceOf(inport);
             String nameOfPort = CPPEquationSystemHelper.getNameOfPort(source.get());
             inports.add(nameOfPort);

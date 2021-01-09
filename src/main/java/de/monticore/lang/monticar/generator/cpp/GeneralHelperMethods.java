@@ -59,4 +59,11 @@ public class GeneralHelperMethods {
         return nameChanged;
 
     }
+
+    public static String getTargetLanguageQualifiedComponentName(String componentName) {
+        if (!componentName.contains(".")) return componentName;
+        String[] parts = componentName.split("\\.");
+        if (parts.length <= 1) return componentName;
+        return String.join("->", parts);
+    }
 }

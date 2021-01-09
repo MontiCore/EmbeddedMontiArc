@@ -1,26 +1,26 @@
 package de.monticore.lang.monticar.semantics.loops;
 
 import de.monticore.lang.monticar.semantics.library.arithmetic.*;
-import de.monticore.lang.monticar.semantics.library.differential.Integration;
+import de.monticore.lang.monticar.semantics.library.differential.Integrator;
 
 // see https://de.mathworks.com/help/simulink/ug/sorted_order_example_car_dynamics.png
 
 component SimulinkExample2 {
     port
-        in Q in1,
-        out Q out1;
+        in Q input,
+        out Q output;
 
     instance Constant<1> one;
-    instance Difference<Q> diff;
+    instance Subtract<Q> subtract;
     instance Division<Q> div;
     instance Gain<1> gain;
-    instance Integration<Q> integration;
+    instance Integrator<Q> Integrator;
 
 
-    connect in1 -> diff.in1;
-    connect one.out1 -> div.in1;
-    connect diff.out1 -> div.in2;
-    connect div.out1 -> integration.in1;
-    connect integration.out1 -> out1, gain.in1;
-    connect gain.out1 -> diff.in2;
+    connect input -> subtract.minuend;
+    connect one.output -> div.dividend;
+    connect subtract.difference -> div.divisor;
+    connect div.division -> Integrator.input;
+    connect Integrator.output -> output, gain.input;
+    connect gain.output -> subtract.subtrahend;
 }

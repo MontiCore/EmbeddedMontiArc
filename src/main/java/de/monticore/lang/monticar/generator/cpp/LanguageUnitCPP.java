@@ -70,7 +70,7 @@ public class LanguageUnitCPP extends LanguageUnit {
     }
 
     public String getGeneratedHeader(TaggingResolver taggingResolver, EMAMBluePrintCPP bluePrint) {
-        ExecutionOrderFixer.fixExecutionOrder(taggingResolver, bluePrint, (GeneratorCPP) bluePrint.getGenerator());
+//        ExecutionOrderFixer.fixExecutionOrder(taggingResolver, bluePrint, (GeneratorCPP) bluePrint.getGenerator());
         String resultString = "";
         //guard defines
         resultString += "#ifndef " + bluePrint.getName().toUpperCase() + "\n";

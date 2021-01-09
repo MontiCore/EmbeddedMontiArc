@@ -17,6 +17,7 @@ import de.monticore.lang.monticar.generator.*;
 import de.monticore.lang.monticar.generator.cpp.*;
 import de.monticore.lang.monticar.generator.cpp.instruction.ConstantConnectInstructionCPP;
 import de.monticore.lang.monticar.generator.optimization.MathInformationRegister;
+import de.monticore.lang.monticar.semantics.executionOrder.ExecutionOrder;
 import de.se_rwth.commons.logging.Log;
 
 import java.util.*;
@@ -96,8 +97,8 @@ public class ComponentConverter {
         generateInitMethod(componentSymbol, bluePrint, generatorCPP, includeStrings);
 
         //generate execute method
-        Method execute = ComponentConverterMethodGeneration.generateExecuteMethod(componentSymbol, bluePrint, mathStatementsSymbol, generatorCPP, includeStrings);
-
+        Method execute = ComponentConverterMethodGeneration.generateExecuteMethod(componentSymbol, bluePrint,
+                mathStatementsSymbol, generatorCPP, includeStrings);
 
         EventConverter.generateEvents(execute, componentSymbol, bluePrint, mathStatementsSymbol,generatorCPP, includeStrings);
 
@@ -121,6 +122,16 @@ public class ComponentConverter {
             MathCommand.redefineArmaMat(bluePrint);
             MathCommand.redefineInit(bluePrint);
         }
+
+        // generate output and update
+        if (ExecutionOrder.needsOutputAndUpdateSplit(componentSymbol)) {
+            Method output = ComponentConverterMethodGeneration.generateOutputMethod(componentSymbol, bluePrint,
+                    mathStatementsSymbol, generatorCPP, includeStrings);
+
+            Method update = ComponentConverterMethodGeneration.generateUpdateMethod(componentSymbol, bluePrint,
+                    mathStatementsSymbol, generatorCPP, includeStrings);
+        }
+
         return bluePrint;
     }
 

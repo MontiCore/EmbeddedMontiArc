@@ -24,11 +24,15 @@ import de.monticore.lang.monticar.generator.cpp.mathopt.MathOptSolverConfig;
 import de.monticore.lang.monticar.generator.cpp.template.AllTemplates;
 import de.monticore.lang.monticar.generator.cpp.viewmodel.AutopilotAdapterDataModel;
 import de.monticore.lang.monticar.generator.cpp.viewmodel.ServerWrapperViewModel;
+import de.monticore.lang.monticar.generator.order.ImplementExecutionOrder;
 import de.monticore.lang.monticar.generator.testing.StreamTestGenerator;
+import de.monticore.lang.monticar.semantics.ExecutionSemantics;
+import de.monticore.lang.monticar.semantics.helper.Find;
 import de.monticore.lang.monticar.semantics.helper.NameHelper;
 import de.monticore.lang.monticar.semantics.loops.detection.ConnectionHelper;
 import de.monticore.lang.monticar.semantics.loops.symbols.EMAEquationSystem;
-import de.monticore.lang.monticar.semantics.loops.symbols.LoopComponentSymbolInstance;
+import de.monticore.lang.monticar.semantics.loops.symbols.LoopComponentInstanceSymbol;
+import de.monticore.lang.monticar.semantics.loops.symbols.LoopComponentInstanceSymbol;
 import de.monticore.lang.monticar.semantics.resolve.SymbolTableHelper;
 import de.monticore.lang.monticar.ts.MCTypeSymbol;
 import de.monticore.lang.tagging._symboltable.TaggingResolver;
@@ -161,7 +165,8 @@ public class GeneratorCPP implements EMAMGenerator {
         this.generationTargetPath = newPath;
     }
 
-    public String generateString(TaggingResolver taggingResolver, EMAComponentInstanceSymbol componentSymbol, MathStatementsSymbol mathStatementsSymbol) {
+    public String generateString(TaggingResolver taggingResolver, EMAComponentInstanceSymbol componentSymbol,
+                                 MathStatementsSymbol mathStatementsSymbol) {
         StreamTestGenerator streamTestGenerator = new StreamTestGenerator();//only used when creating streamTestsForAComponent
         LanguageUnitCPP languageUnitCPP = new LanguageUnitCPP();
         languageUnitCPP.setGeneratorCPP(this);
@@ -184,41 +189,38 @@ public class GeneratorCPP implements EMAMGenerator {
 
             if (componentSymbol.equals(this.rootModel) && ExecutionStepperHelper.isUsed()) {
                 Optional<Method> execute = bluePrintCPP.getMethod("execute");
-                if (!execute.isPresent()) Log.error("TODO should not happen, bc ExecutionStepper is used");
-                else {
-                    execute.get().getInstructions().add(new Instruction() {
-                        @Override
-                        public String getTargetLanguageInstruction() {
-                            return "advanceTime();\n";
-                        }
+                execute.get().getInstructions().add(new Instruction() {
+                    @Override
+                    public String getTargetLanguageInstruction() {
+                        return "advanceTime();\n";
+                    }
 
-                        @Override
-                        public boolean isConnectInstruction() {
-                            return false;
-                        }
-                    });
-                    bluePrintCPP.addAdditionalIncludeString(ExecutionStepperHelper.FILENAME);
-                }
+                    @Override
+                    public boolean isConnectInstruction() {
+                        return false;
+                    }
+                });
+                bluePrintCPP.addAdditionalIncludeString(ExecutionStepperHelper.FILENAME);
             }
 
-            // connect information to eqs
-            if (componentSymbol instanceof LoopComponentSymbolInstance) {
+            if (componentSymbol instanceof LoopComponentInstanceSymbol) {
+                // connect information to eqs
                 ExecutionStepperHelper.setUsed();
-                EMAEquationSystem equationSystem = ((LoopComponentSymbolInstance) componentSymbol).getEquationSystem();
+                EMAEquationSystem equationSystem = ((LoopComponentInstanceSymbol) componentSymbol).getEquationSystem();
                 String eqsName = equationSystem.getName();
                 Variable eqs = new Variable("eqs", "");
                 eqs.setVariableType(new VariableType("", eqsName, eqsName));
                 bluePrintCPP.addVariable(eqs);
                 Optional<Method> execute = bluePrintCPP.getMethod("execute");
                 if (execute.isPresent()) {
-                    for (EMAPortInstanceSymbol inport : equationSystem.getInports()) {
-                        Optional<EMAPortInstanceSymbol> originalSourcePort  = equationSystem.getAtomicSourceOf(inport);
+                    for (EMAPortInstanceSymbol inport : equationSystem.getIncomingPorts()) {
+                        Optional<EMAPortInstanceSymbol> originalSourcePort = equationSystem.getAtomicSourceOf(inport);
                         Optional<EMAPortInstanceSymbol> currentPort = componentSymbol.getIncomingPortInstances().stream()
                                 .filter(i -> ConnectionHelper.sourceOf(i).equals(originalSourcePort))
                                 .findFirst();
                         if (currentPort.isPresent()) {
                             String sourceName = currentPort.get().getName();
-                            String targetName =  String.join(".", "eqs",
+                            String targetName = String.join(".", "eqs",
                                     CPPEquationSystemHelper.getNameOfPort(inport));
                             Variable v1 = PortConverter.convertPortSymbolToVariable(currentPort.get(), sourceName, bluePrintCPP);
                             Variable v2 = PortConverter.convertPortSymbolToVariable(inport, targetName, bluePrintCPP);
@@ -230,13 +232,14 @@ public class GeneratorCPP implements EMAMGenerator {
                         public String getTargetLanguageInstruction() {
                             return "eqs.execute();\n";
                         }
+
                         @Override
                         public boolean isConnectInstruction() {
                             return false;
                         }
                     });
                     for (EMAPortInstanceSymbol outport : componentSymbol.getOutgoingPortInstances()) {
-                        Optional<EMAPortInstanceSymbol> eqsVar = equationSystem.getOutports().stream()
+                        Optional<EMAPortInstanceSymbol> eqsVar = equationSystem.getOutgoingPorts().stream()
                                 .filter(p -> p.getFullName().equals(outport.getFullName()))
                                 .findFirst();
                         if (eqsVar.isPresent()) {
@@ -272,14 +275,15 @@ public class GeneratorCPP implements EMAMGenerator {
             //setGenerateMainClass(true);
         }
 
-        if (componentInstanceSymbol instanceof LoopComponentSymbolInstance) {
-            ((LoopComponentSymbolInstance) componentInstanceSymbol).getEquationSystem()
+//        ImplementExecutionOrder.exOrder(taggingResolver, componentInstanceSymbol);
+
+        if (componentInstanceSymbol instanceof LoopComponentInstanceSymbol) {
+            ((LoopComponentInstanceSymbol) componentInstanceSymbol).getEquationSystem()
                     .setName(String.join("_",
                             NameHelper.replaceWithUnderScore(NameHelper.calculateFullQualifiedNameOf(rootModel)),
-                            ((LoopComponentSymbolInstance) componentInstanceSymbol).getEquationSystem().getName()));
-            for (CMakeFindModule dependency : OdeintOptions.getDependencies()) {
+                            ((LoopComponentInstanceSymbol) componentInstanceSymbol).getEquationSystem().getName()));
+            for (CMakeFindModule dependency : OdeintOptions.getDependencies())
                 cMakeConfig.addModuleDependency(dependency);
-            }
         }
 
         currentFileContentList = fileContents;
@@ -342,10 +346,10 @@ public class GeneratorCPP implements EMAMGenerator {
         }
 
 
-        if (componentInstanceSymbol instanceof LoopComponentSymbolInstance) {
-            if (!equationSystemsAlreadyBuild.contains(((LoopComponentSymbolInstance) componentInstanceSymbol).getEquationSystem())) {
+        if (componentInstanceSymbol instanceof LoopComponentInstanceSymbol) {
+            if (!equationSystemsAlreadyBuild.contains(((LoopComponentInstanceSymbol) componentInstanceSymbol).getEquationSystem())) {
                 fileContents.addAll(OdeintEquationSystemGenerator.generateEquationSystem(
-                        ((LoopComponentSymbolInstance) componentInstanceSymbol).getEquationSystem()));
+                        ((LoopComponentInstanceSymbol) componentInstanceSymbol).getEquationSystem()));
             }
         }
 
@@ -355,6 +359,7 @@ public class GeneratorCPP implements EMAMGenerator {
     //TODO add incremental generation based on described concept
     public List<File> generateFiles(TaggingResolver taggingResolver, EMAComponentInstanceSymbol componentSymbol) throws IOException {
         this.rootModel = componentSymbol;
+        
         List<FileContent> fileContents = new ArrayList<>();
         if (componentSymbol == null) {
             ComponentScanner componentScanner = new ComponentScanner(getModelsDirPath(), taggingResolver, "emam");
@@ -365,10 +370,16 @@ public class GeneratorCPP implements EMAMGenerator {
                         EMAComponentInstanceSymbol.KIND).isPresent()) {
                     EMAComponentInstanceSymbol componentInstanceSymbol = (EMAComponentInstanceSymbol) taggingResolver.resolve(componentFullName,
                             EMAComponentInstanceSymbol.KIND).get();
+
+                    ExecutionSemantics semantics = new ExecutionSemantics(taggingResolver, componentInstanceSymbol);
+                    semantics.addExecutionSemantics();
                     fileContents.addAll(generateStrings(taggingResolver, componentInstanceSymbol));
                 }
             }
         } else {
+            ExecutionSemantics semantics = new ExecutionSemantics(taggingResolver, rootModel);
+            semantics.addExecutionSemantics();
+
             searchForCVEverywhere(componentSymbol, taggingResolver);
             fileContents = generateStrings(taggingResolver, componentSymbol);
         }

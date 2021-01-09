@@ -3,11 +3,11 @@ package de.monticore.lang.monticar.semantics.loops;
 
 component UnderSpecification {
     port
-        in Q in1,
-        out Q out1,
-        out Q out2;
+        in Q input,
+        out Q output1,
+        out Q output2;
 
     implementation Math {
-        in1 == out1 + out2;
+        input == output1 + output2;
     }
 }

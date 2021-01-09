@@ -3,16 +3,18 @@ package de.monticore.lang.monticar.semantics.loops;
 
 component SerialLoopAsSymbol {
     port
-        in Q in1,
-        out Q out1;
+        in Q input,
+        out Q output;
 
     implementation Math {
-        x_0 == in1-x_3;
-        x_3 == x_1-x_4;
-        x_4 == 2*x_3;
-        x_1 == x_0-x_2;
-        x_2 == 3*x_1;
+        symbolic Q subtract1, subtract2, subtract3, gain1, gain2;
+
+        subtract3 == input-subtract2;
+        subtract2 == subtract1-gain2;
+        gain2 == 2*subtract2;
+        subtract1 == subtract3-gain1;
+        gain1 == 3*subtract1;
         
-        out1 == x_3;
+        output == subtract2;
     }
 }
