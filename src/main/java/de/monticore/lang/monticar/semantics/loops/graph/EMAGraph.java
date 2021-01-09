@@ -8,7 +8,7 @@ import java.util.stream.Collectors;
 
 public class EMAGraph {
     private Set<EMAComponentInstanceSymbol> vertices;
-    private Set<EMAAtomicConnector> edges;
+    private Set<EMAAtomicConnectorInstance> edges;
 
 
     public EMAGraph() {
@@ -20,7 +20,7 @@ public class EMAGraph {
         for (EMAComponentInstanceSymbol vertex : subgraph.getVertices()) {
             addVertex(vertex);
         }
-        for (EMAAtomicConnector edge : subgraph.getEdges()) {
+        for (EMAAtomicConnectorInstance edge : subgraph.getEdges()) {
             addEdge(edge);
         }
     }
@@ -34,25 +34,25 @@ public class EMAGraph {
         return Optional.empty();
     }
 
-    public List<EMAAtomicConnector> getEdgeWithTargetNode(EMAComponentInstanceSymbol target) {
+    public List<EMAAtomicConnectorInstance> getEdgeWithTargetNode(EMAComponentInstanceSymbol target) {
         if (target == null) return new LinkedList<>();
-        List<EMAAtomicConnector> edges = getEdges().stream().
+        List<EMAAtomicConnectorInstance> edges = getEdges().stream().
                 filter(v -> v.getTargetComponent() == target).collect(Collectors.toList());
 
         return edges;
     }
 
-    public List<EMAAtomicConnector> getEdgesWithSourceNode(EMAComponentInstanceSymbol source) {
+    public List<EMAAtomicConnectorInstance> getEdgesWithSourceNode(EMAComponentInstanceSymbol source) {
         if (source == null) return new LinkedList<>();
-        List<EMAAtomicConnector> edges = getEdges().stream().
+        List<EMAAtomicConnectorInstance> edges = getEdges().stream().
                 filter(v -> v.getSourceComponent() == source).collect(Collectors.toList());
 
         return edges;
     }
 
-    public Optional<EMAAtomicConnector> getEdgeWithTargetPort(EMAPortInstanceSymbol target) {
+    public Optional<EMAAtomicConnectorInstance> getEdgeWithTargetPort(EMAPortInstanceSymbol target) {
         if (target == null) return Optional.empty();
-        List<EMAAtomicConnector> edges = getEdges().stream().
+        List<EMAAtomicConnectorInstance> edges = getEdges().stream().
                 filter(v -> v.getTargetPort() == target).collect(Collectors.toList());
 
         if (edges.size() == 1)
@@ -60,9 +60,9 @@ public class EMAGraph {
         return Optional.empty();
     }
 
-    public List<EMAAtomicConnector> getEdgesWithSourcePort(EMAPortInstanceSymbol source) {
+    public List<EMAAtomicConnectorInstance> getEdgesWithSourcePort(EMAPortInstanceSymbol source) {
         if (source == null) return new LinkedList<>();
-        List<EMAAtomicConnector> edges = getEdges().stream().
+        List<EMAAtomicConnectorInstance> edges = getEdges().stream().
                 filter(v -> v.getSourcePort() == source).collect(Collectors.toList());
 
         return edges;
@@ -72,11 +72,11 @@ public class EMAGraph {
         vertices.add(v);
     }
 
-    public void addEdge(EMAAtomicConnector e) {
+    public void addEdge(EMAAtomicConnectorInstance e) {
         edges.add(e);
     }
 
-    public void removeEdge(EMAAtomicConnector e) {
+    public void removeEdge(EMAAtomicConnectorInstance e) {
         edges.remove(e);
     }
 
@@ -84,7 +84,7 @@ public class EMAGraph {
         return vertices;
     }
 
-    public Set<EMAAtomicConnector> getEdges() {
+    public Set<EMAAtomicConnectorInstance> getEdges() {
         return edges;
     }
 }

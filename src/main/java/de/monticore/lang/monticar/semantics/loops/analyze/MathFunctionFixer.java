@@ -11,6 +11,7 @@ import de.monticore.lang.math._symboltable.expression.MathNameExpressionSymbol;
 import de.monticore.lang.math._symboltable.matrix.MathMatrixAccessOperatorSymbol;
 import de.monticore.lang.math._symboltable.matrix.MathMatrixAccessSymbol;
 import de.monticore.lang.math._symboltable.matrix.MathMatrixNameExpressionSymbol;
+import de.monticore.lang.monticar.semantics.setup.Delegate;
 import de.monticore.symboltable.Symbol;
 
 import java.util.*;
@@ -23,7 +24,7 @@ public class MathFunctionFixer implements EMAMMathExpressionSymbolVisitor {
         Collection<EMAMEquationSymbol> newEquations = new ArrayList<>();
         MathFunctionFixer visitor = new MathFunctionFixer();
         for (EMAMEquationSymbol equation : specificationSymbol.getEquations()) {
-            EMAMEquationSymbol copy = CopyEMAMMathExpressionSymbol.copy(equation);
+            EMAMEquationSymbol copy = Delegate.copyMathExpressionSymbol(equation);
             visitor.handle(copy);
             newEquations.add(copy);
         }

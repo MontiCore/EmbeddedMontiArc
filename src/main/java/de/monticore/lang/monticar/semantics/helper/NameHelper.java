@@ -2,7 +2,9 @@
 package de.monticore.lang.monticar.semantics.helper;
 
 import de.monticore.lang.embeddedmontiarc.embeddedmontiarc._symboltable.instanceStructure.EMAComponentInstanceSymbol;
+import de.monticore.lang.embeddedmontiarc.embeddedmontiarc._symboltable.instanceStructure.EMAElementInstanceSymbol;
 import de.monticore.lang.embeddedmontiarc.embeddedmontiarc._symboltable.instanceStructure.EMAPortInstanceSymbol;
+import de.monticore.symboltable.CommonSymbol;
 import de.se_rwth.commons.Joiners;
 import de.se_rwth.commons.Names;
 import org.apache.commons.lang3.StringUtils;
@@ -43,11 +45,26 @@ public class NameHelper {
                 .replace(".", "_");
     }
 
-    public static String calculateFullQualifiedNameOf(EMAPortInstanceSymbol port) {
-        return Names.getQualifiedName(port.getPackageName(), port.getName());
+    public static String calculateFullQualifiedNameOf(CommonSymbol symbol) {
+        String fullName = null;
+        try {
+            fullName = symbol.getFullName();
+        } catch (Exception e) {
+        }
+        if (fullName != null && !fullName.equals(""))
+            return fullName;
+        return Names.getQualifiedName(symbol.getPackageName(), symbol.getName());
     }
 
-    public static String calculateFullQualifiedNameOf(EMAComponentInstanceSymbol componentInstance) {
-        return Names.getQualifiedName(componentInstance.getPackageName(), componentInstance.getName());
+    public static String calculatePartialName(EMAComponentInstanceSymbol childComponent,
+                                              EMAComponentInstanceSymbol parentComponent) {
+        return calculatePartialName(calculateFullQualifiedNameOf(childComponent),
+                calculateFullQualifiedNameOf(parentComponent));
+    }
+
+    public static String calculatePartialName(String childName, String parentName) {
+        if (childName.equals(parentName)) return "";
+        if (!childName.contains(parentName + ".")) return childName;
+        return childName.substring(parentName.length() + 1);
     }
 }

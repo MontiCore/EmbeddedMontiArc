@@ -29,11 +29,14 @@ public class EMAGraphTransformation {
                     // Adding for inports
                     for (EMAPortInstanceSymbol inport : subComponent.getIncomingPortInstances()) {
                         Optional<EMAPortInstanceSymbol> source = ConnectionHelper.sourceOf(inport, considerNonVirtual);
-                        if (!source.isPresent()) Log.error("TODO inport not connected");
+                        if (!source.isPresent()) {
+//                            Log.warn(String.format("TODO There is no incoming connection for port \"%s\"", inport.getFullName()));
+                            continue;
+                        }
 
                         // Add only inner graph connections
                         if (graph.getVertices().contains(source.get().getComponentInstance()))
-                            graph.addEdge(new EMAAtomicConnector(source.get(), inport));
+                            graph.addEdge(new EMAAtomicConnectorInstance(source.get(), inport));
                     }
 
 //                // adding for outports, may be unnecessary, but it does not harm
@@ -42,7 +45,7 @@ public class EMAGraphTransformation {
 //                    for (EMAPortInstanceSymbol target : targets)
 //                        // Add only inner graph connections
 //                        if (graph.getVertices().contains(target.getComponentInstance()))
-//                            graph.addEdge(new EMAAtomicConnector(outport, target));
+//                            graph.addEdge(new EMAAtomicConnectorInstance(outport, target));
 //                }
                 }
             }

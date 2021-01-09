@@ -41,8 +41,8 @@ public class ConnectionHelper {
                         .stream()
                         .filter(c -> port.equals(c.getSourcePort()))
                         .collect(Collectors.toList());
-        if (targets.size() < 1)
-            Log.error("TODO there should be a connector for this port");
+//        if (targets.size() < 1)
+//            Log.warn(String.format("TODO There is no outgoing connection for port \"%s\"", port.getFullName()));
 
         Collection<EMAPortInstanceSymbol> targetPorts = new LinkedList<>();
         targets.stream().forEachOrdered(t -> targetPorts.addAll(targetsOf(t.getTargetPort(),
@@ -61,7 +61,7 @@ public class ConnectionHelper {
 
     private static Optional<EMAPortInstanceSymbol> sourceOf(EMAPortInstanceSymbol port, boolean considerNonVirtual,
                                                             boolean firstCall) {
-        if (port.getConstantValue().isPresent())
+        if (port.isConstant())
             return Optional.of(port);
         if (port.isOutgoing() && isAtomic(port.getComponentInstance()))
             return Optional.of(port);
@@ -83,17 +83,23 @@ public class ConnectionHelper {
                         .stream()
                         .filter(c -> port.equals(c.getTargetPort()))
                         .collect(Collectors.toList());
-        if (sources.size() != 1)
-            Log.error("TODO there should be a connector for this port");
+        if (sources.size() != 1) {
+            if (port.isConfig())
+                return Optional.of(port);
+            else {
+//                Log.warn(String.format("TODO There is no incoming connection for port \"%s\"", port.getFullName()));
+                return Optional.empty();
+            }
+        }
 
         return sourceOf(sources.get(0).getSourcePort(), considerNonVirtual, false);
     }
 
     public static boolean isAtomic(EMAComponentInstanceSymbol componentInstance) {
-        return componentInstance.getSubComponents().isEmpty();
+        return componentInstance.getSubComponents().isEmpty() && componentInstance.getConnectorInstances().isEmpty();
     }
 
     public static boolean isNonVirtual(EMAComponentInstanceSymbol componentInstanceSymbol) {
-        return componentInstanceSymbol.isNonVirtual();
+        return componentInstanceSymbol.isNonVirtual() || !componentInstanceSymbol.getParent().isPresent();
     }
 }

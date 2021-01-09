@@ -1,6 +1,7 @@
 /* (c) https://github.com/MontiCore/monticore */
 package de.monticore.lang.monticar.semantics;
 
+import de.monticore.lang.embeddedmontiarc.embeddedmontiarc._ast.*;
 import de.monticore.lang.embeddedmontiarc.embeddedmontiarc._symboltable.instanceStructure.EMAComponentInstanceSymbol;
 import de.monticore.lang.monticar.semantics.executionOrder.ExecutionOrder;
 import de.monticore.lang.monticar.semantics.helper.Find;
@@ -11,12 +12,10 @@ import de.monticore.lang.monticar.semantics.loops.detection.StronglyConnectedCom
 import de.monticore.lang.monticar.semantics.loops.symbols.LoopComponentInstanceSymbol;
 import de.monticore.lang.monticar.semantics.resolve.Resolver;
 import de.monticore.lang.tagging._symboltable.TaggingResolver;
+import de.monticore.prettyprint.IndentPrinter;
 import de.se_rwth.commons.logging.Log;
 
-import java.util.HashMap;
-import java.util.LinkedList;
-import java.util.Map;
-import java.util.Set;
+import java.util.*;
 import java.util.stream.Collectors;
 
 public class ExecutionSemantics {
@@ -60,22 +59,58 @@ public class ExecutionSemantics {
             logSymbolicSolveOfSpecifications(solvedSymbols);
         }
 
-        LinkedList<EMAComponentInstanceSymbol> allComponents = Find.allComponents(rootComponent);
-        Map<EMAComponentInstanceSymbol, Boolean> nonVirtual = new HashMap<>();
-        allComponents.stream().forEachOrdered(c -> nonVirtual.put(c, c.isNonVirtual()));
+//        Map<EMAComponentInstanceSymbol, Boolean> virtual = makeAllNonVirtual(Find.allComponents(rootComponent));
+//        stronglyConnectedComponents = LoopDetection.detectLoops(rootComponent);
+
         Set<StronglyConnectedComponent> artificialLoops =
                 stronglyConnectedComponents.stream().filter(EMALoop::isArtificial).collect(Collectors.toSet());
         ExecutionOrder.calculateExecutionOrder(rootComponent, artificialLoops, handleArtificialLoops);
+
+//        resetNonVirtual(virtual);
+    }
+
+    private void resetNonVirtual(Map<EMAComponentInstanceSymbol, Boolean> virtual) {
+        for (EMAComponentInstanceSymbol component : virtual.keySet()) {
+            if (virtual.get(component)) {
+                Iterator<ASTComponentModifier> modifierIterator = component.getComponentModifiers().iterator();
+                while(modifierIterator.hasNext()) {
+                    ASTComponentModifier modifier = modifierIterator.next();
+                    if (modifier instanceof ASTVirtModifier &&
+                            ((ASTVirtModifier) modifier).getVIRTUAL().equals(ASTVIRTUAL.VIRTUAL))
+                        modifierIterator.remove();
+                }
+            }
+        }
+    }
+
+    private static Map<EMAComponentInstanceSymbol, Boolean> makeAllNonVirtual(Collection<EMAComponentInstanceSymbol> components) {
+        Map<EMAComponentInstanceSymbol, Boolean> virtual = new HashMap<>();
+        ASTVirtModifier virtModifier =
+                EmbeddedMontiArcMill.virtModifierBuilder().setVIRTUAL(ASTVIRTUAL.NONVIRTUAL).build();
+        components.stream().forEachOrdered(c -> {
+            virtual.put(c, c.isVirtual());
+            if (c.isVirtual()) {
+                c.getComponentModifiers().add(virtModifier);
+            }
+        });
+
+        return virtual;
     }
 
     private void logSymbolicSolveOfSpecifications(Map<EMAComponentInstanceSymbol, EMAComponentInstanceSymbol> solvedSymbols) {
-//        if (logSymbolicSolve)
-//            Log.warn("TODO There are analytical solutions to component");
+        if (logSymbolicSolve) {
+            for (EMAComponentInstanceSymbol solved : solvedSymbols.keySet()) {
+                Log.warn(String.format("Solved component \"%s\" analytically", solved.getFullName()));
+            }
+        }
     }
 
     private void logSymbolicSolveOfLoops(Map<LoopComponentInstanceSymbol, EMAComponentInstanceSymbol> solvedSymbols) {
-        if (logSymbolicSolve)
-            Log.warn("TODO There are analytical solutions to component");
+        if (logSymbolicSolve) {
+            for (LoopComponentInstanceSymbol solved : solvedSymbols.keySet()) {
+                Log.warn(String.format("Solved component \"%s\" analytically", solved.getFullName()));
+            }
+        }
     }
 
     private void checkViableOptions(Set<StronglyConnectedComponent> stronglyConnectedComponents) {
@@ -102,17 +137,55 @@ public class ExecutionSemantics {
     }
 
     private void warnLoops(Set<StronglyConnectedComponent> stronglyConnectedComponents) {
-        if (warnLoops)
-            Log.warn("TODO There are loops");
+        if (warnLoops) {
+            IndentPrinter printer = new IndentPrinter();
+            printer.println("Found Loops:");
+            printer.indent();
+            for (StronglyConnectedComponent loop : stronglyConnectedComponents) {
+                printer.println(String.format("Loop consisting of %s components", loop.getAllComponents().size()));
+                printer.indent();
+                for (EMAComponentInstanceSymbol component : loop.getAllComponents()) {
+                    printer.println(String.format("- %s", component.getFullName()));
+                }
+                printer.unindent();
+            }
+            printer.unindent();
+            Log.warn(printer.getContent());
+        }
     }
 
     private void warnArtificialLoops(Set<StronglyConnectedComponent> stronglyConnectedComponents) {
-        if (warnArtificialLoops)
-            Log.warn("TODO There are artificial loops");
+        if (warnArtificialLoops) {
+            IndentPrinter printer = new IndentPrinter();
+            printer.println("Found Artificial Loops:");
+            printer.indent();
+            for (StronglyConnectedComponent loop : stronglyConnectedComponents) {
+                printer.println(String.format("Loop consisting of %s components", loop.getAllComponents().size()));
+                printer.indent();
+                for (EMAComponentInstanceSymbol component : loop.getAllComponents()) {
+                    printer.println(String.format("- %s", component.getFullName()));
+                }
+                printer.unindent();
+            }
+            printer.unindent();
+            Log.warn(printer.getContent());
+        }
     }
 
     private void errorUnresolvedLoops(Set<StronglyConnectedComponent> stronglyConnectedComponents) {
-        Log.error("TODO There are loops");
+        IndentPrinter printer = new IndentPrinter();
+        printer.println("Found Unresolved Loops:");
+        printer.indent();
+        for (StronglyConnectedComponent loop : stronglyConnectedComponents) {
+            printer.println(String.format("Loop consisting of %s components", loop.getAllComponents().size()));
+            printer.indent();
+            for (EMAComponentInstanceSymbol component : loop.getAllComponents()) {
+                printer.println(String.format("- %s", component.getFullName()));
+            }
+            printer.unindent();
+        }
+        printer.unindent();
+        Log.error(printer.getContent());
     }
 
 

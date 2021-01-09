@@ -13,6 +13,7 @@ import de.monticore.lang.math._symboltable.matrix.MathMatrixAccessSymbol;
 import de.monticore.lang.math._symboltable.matrix.MathMatrixNameExpressionSymbol;
 import de.monticore.lang.monticar.semantics.helper.NameHelper;
 import de.monticore.lang.monticar.semantics.loops.symbols.EMAEquationSystem;
+import de.monticore.lang.monticar.semantics.setup.Delegate;
 import de.monticore.lang.monticar.semantics.util.math.MathHelper;
 import de.monticore.lang.monticar.semantics.util.math.NameReplacer;
 import de.se_rwth.commons.Names;
@@ -329,8 +330,8 @@ public class SpecificationConverter {
         for (EMAPortInstanceSymbol inport : component.getIncomingPortInstances()) {
             Optional<EMAPortInstanceSymbol> source = system.getAtomicSourceOf(inport);
             if (!source.isPresent()) {
-                Log.warn(String.format("0x1544231 no source port for input port %s",
-                        NameHelper.calculateFullQualifiedNameOf(inport)));
+//                Log.warn(String.format("0x1544231 no source port for input port %s",
+//                        NameHelper.calculateFullQualifiedNameOf(inport)));
                 source = Optional.of(inport);
             }
 
@@ -353,7 +354,7 @@ public class SpecificationConverter {
 
     private static <T extends MathExpressionSymbol> T replaceName(T mathExpressionSymbol, Map<String, String> nameMapping) {
         Map<String, String> newNameMapping = computeNameMapping(nameMapping);
-        T copy = CopyEMAMMathExpressionSymbol.copy(mathExpressionSymbol);
+        T copy = Delegate.copyMathExpressionSymbol(mathExpressionSymbol);
         NameReplacer.replaceNames(copy, s -> newNameMapping.get(s));
         return copy;
     }
@@ -420,7 +421,7 @@ public class SpecificationConverter {
         private Set<EMAMSymbolicVariableSymbol> variables = new HashSet<>();
 
         private void handleExpression(MathAssignmentExpressionSymbol expression) {
-            MathAssignmentExpressionSymbol copy = CopyEMAMMathExpressionSymbol.copy(expression);
+            MathAssignmentExpressionSymbol copy = Delegate.copyMathExpressionSymbol(expression);
             String name = copy.getNameOfMathValue();
             incIndexOf(name);
             String currentName = getCurrentNameOf(name);

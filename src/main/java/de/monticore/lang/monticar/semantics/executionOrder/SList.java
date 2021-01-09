@@ -13,34 +13,59 @@ import static de.monticore.lang.monticar.semantics.loops.detection.ConnectionHel
 
 public class SList {
 
+    public static List<List<SListEntry>> sListParallel(EMAComponentInstanceSymbol rootComponent) {
+        List<List<SListEntry>> sList = new LinkedList<>();
+
+        // This List is sorted for hierarchy
+        List<EMAComponentInstanceSymbol> components = Find.allAtomicOrNVComponents(rootComponent);
+        int maxIndex = components.stream()
+                .filter(p -> !p.getOrderOutput().isEmpty() && !p.getOrderUpdate().equals(Integer.MAX_VALUE))
+                .map(p -> Integer.max(Collections.max(p.getOrderOutput()), p.getOrderUpdate()))
+                .max(Integer::compareTo).orElse(0);
+
+        for (int currentIndex = 1; currentIndex <= maxIndex; currentIndex++) {
+            ListIterator<EMAComponentInstanceSymbol> iterator = components.listIterator();
+            List<SListEntry> currentList = new LinkedList<>();
+            sList.add(currentList);
+            addAllWithCurrentIndex(currentIndex, iterator, currentList);
+        }
+
+        return sList;
+    }
+
     public static List<SListEntry> sListAtomic(EMAComponentInstanceSymbol rootComponent) {
         List<SListEntry> sList = new LinkedList<>();
 
         // This List is sorted for hierarchy
         List<EMAComponentInstanceSymbol> components = Find.allAtomicOrNVComponents(rootComponent);
         int maxIndex = components.stream()
+                .filter(p -> !p.getOrderOutput().isEmpty() && !p.getOrderUpdate().equals(Integer.MAX_VALUE))
                 .map(p -> Integer.max(Collections.max(p.getOrderOutput()), p.getOrderUpdate()))
                 .max(Integer::compareTo).orElse(0);
 
         for (int currentIndex = 1; currentIndex <= maxIndex; currentIndex++) {
             ListIterator<EMAComponentInstanceSymbol> iterator = components.listIterator();
-            while (iterator.hasNext()) {
-                EMAComponentInstanceSymbol component = iterator.next();
-                if (component.getOrderOutput().contains(currentIndex)) {
-                    if (component.getOrderUpdate() == currentIndex + 1) {
-                        sList.add(new SListEntry(component, Call.EXECUTE));
-                        iterator.remove();
-                    } else {
-                        sList.add(new SListEntry(component, Call.OUTPUT));
-                    }
-                } else if (component.getOrderUpdate() == currentIndex) {
-                    sList.add(new SListEntry(component, Call.UPDATE));
-                    iterator.remove();
-                }
-            }
+            addAllWithCurrentIndex(currentIndex, iterator, sList);
         }
 
         return sList;
+    }
+
+    private static void addAllWithCurrentIndex(int currentIndex, ListIterator<EMAComponentInstanceSymbol> iterator, List<SListEntry> currentList) {
+        while (iterator.hasNext()) {
+            EMAComponentInstanceSymbol component = iterator.next();
+            if (component.getOrderOutput().contains(currentIndex)) {
+                if (component.getOrderUpdate() == currentIndex + 1) {
+                    currentList.add(new SListEntry(component, Call.EXECUTE));
+                    iterator.remove();
+                } else {
+                    currentList.add(new SListEntry(component, Call.OUTPUT));
+                }
+            } else if (component.getOrderUpdate() == currentIndex) {
+                currentList.add(new SListEntry(component, Call.UPDATE));
+                iterator.remove();
+            }
+        }
     }
 
     public static Map<EMAComponentInstanceSymbol, List<SListEntry>> sListSubSystem(EMAComponentInstanceSymbol rootComponent) {

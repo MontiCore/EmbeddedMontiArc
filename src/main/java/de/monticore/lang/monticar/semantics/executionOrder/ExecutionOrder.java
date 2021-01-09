@@ -3,6 +3,7 @@ package de.monticore.lang.monticar.semantics.executionOrder;
 
 import de.monticore.lang.embeddedmontiarc.embeddedmontiarc._symboltable.instanceStructure.EMAComponentInstanceSymbol;
 import de.monticore.lang.embeddedmontiarc.embeddedmontiarc._symboltable.instanceStructure.EMAPortInstanceSymbol;
+import de.monticore.lang.monticar.semantics.helper.Find;
 import de.monticore.lang.monticar.semantics.loops.detection.ConnectionHelper;
 import de.monticore.lang.monticar.semantics.loops.detection.StronglyConnectedComponent;
 import de.se_rwth.commons.logging.Log;
@@ -12,8 +13,7 @@ import java.util.HashSet;
 import java.util.Optional;
 import java.util.Set;
 
-import static de.monticore.lang.monticar.semantics.loops.detection.ConnectionHelper.isNonVirtual;
-import static de.monticore.lang.monticar.semantics.loops.detection.ConnectionHelper.sourceOf;
+import static de.monticore.lang.monticar.semantics.loops.detection.ConnectionHelper.*;
 
 public class ExecutionOrder {
 
@@ -37,10 +37,21 @@ public class ExecutionOrder {
 
         for (EMAPortInstanceSymbol outport : rootComponent.getOutgoingPortInstances()) {
             Optional<EMAPortInstanceSymbol> sourcePort = ConnectionHelper.sourceOf(outport);
-            if (!sourcePort.isPresent())
-                Log.error("TODO no connection for component output port");
+            if (!sourcePort.isPresent()) {
+                Log.warn(String.format("TODO no connection for component output port \"%s\"", outport.getFullName()));
+                continue;
+            }
+            if (sourcePort.get().isConstant())
+                continue;
+            if (sourcePort.get().getComponentInstance() == rootComponent)
+                continue;
             order.calculateExecutionOrderRec(sourcePort.get().getComponentInstance(), sourcePort.get(), artificialLoops,
                     handleArtificialLoops);
+        }
+
+        for (EMAComponentInstanceSymbol component : Find.allAtomicOrNVComponents(rootComponent)) {
+            if (component.getOrderOutput().isEmpty())
+                order.calculateExecutionOrderRec(component, null, artificialLoops, handleArtificialLoops);
         }
 
         for (EMAComponentInstanceSymbol component : order.nondfComponents)
@@ -54,12 +65,14 @@ public class ExecutionOrder {
                                             EMAPortInstanceSymbol targetsPort,
                                             Set<StronglyConnectedComponent> artificialLoops,
                                             boolean handleArtificialLoops) {
-        if (isNonVirtual(component) && !ConnectionHelper.isAtomic(component) && !handledComponents.contains(component))
+        if (isNonVirtual(component) && !isAtomic(component) && !handledComponents.contains(component))
             calculateExecutionOrder(component, artificialLoops, handleArtificialLoops);
 
         // handledComponents is only relevant for reoccurring components due to a nondirect feedthrough loop
         //  i.e. a Delay: first time as Output, second time as update
         // For nonvirtual components as part of artificial loop, this is called a fixed number
+        // If a component is part of an artificial loop, output could be calculated "too" many times, because
+        //  independent components can call this as well, but this does not hurt too much
         if (isPartOfArtificialLoop(handleArtificialLoops, component, artificialLoops)) {
             if (isNonDirectFeedthroughPort(targetsPort)) {
                 nondfComponents.add(component);
@@ -102,8 +115,12 @@ public class ExecutionOrder {
 
         for (EMAPortInstanceSymbol inport : component.getIncomingPortInstances()) {
             Optional<EMAPortInstanceSymbol> sourcePort = ConnectionHelper.sourceOf(inport);
-            if (!sourcePort.isPresent())
-                Log.error("TODO no connection for component input port");
+            if (!sourcePort.isPresent()){
+//                Log.warn(String.format("TODO There is no incoming connection for port \"%s\"", inport.getFullName()));
+                continue;
+            }
+            if (sourcePort.get().isConstant())
+                continue;
             EMAComponentInstanceSymbol componentInstance = sourcePort.get().getComponentInstance();
             if (componentInstance.getParent().isPresent() // do not add for rootcomponent
                     && !(sourcePort.get().isIncoming() && isNonVirtual(componentInstance))) // do not add for nonvirtual components
@@ -162,7 +179,7 @@ public class ExecutionOrder {
                                            EMAComponentInstanceSymbol component,
                                            Set<StronglyConnectedComponent> artificialLoops) {
         if (!handleArtificialLoops) return false;
-        if (!isNonVirtual(component) || ConnectionHelper.isAtomic(component))
+        if (!isNonVirtual(component) || isAtomic(component))
             return false;
 
         for (StronglyConnectedComponent artificialLoop : artificialLoops)
@@ -175,9 +192,14 @@ public class ExecutionOrder {
     // returns true for output ports of nonvirtual components which only connects to nondirect feedthrough
     //  components inside
     private boolean isNonDirectFeedthroughPort(EMAPortInstanceSymbol port) {
+        if (port == null) return false;
         Optional<EMAPortInstanceSymbol> source = sourceOf(port);
-        if (!source.isPresent())
-            Log.error("TODO no source port");
+        if (!source.isPresent()) {
+//            Log.warn(String.format("TODO There is no incoming connection for port \"%s\"", port.getFullName()));
+            return true;
+        }
+        if (source.get().isConstant())
+            return true;
 
         // is direct feedthrough because it points to the nonvirtual parent component and the chain is not
         //  "interrupted" by a nondirect feedthrough component

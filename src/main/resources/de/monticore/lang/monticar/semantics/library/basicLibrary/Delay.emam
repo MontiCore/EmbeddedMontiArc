@@ -7,7 +7,7 @@ non-df component Delay<T>(T dvalue = 0) {
 		out T output;
 	
 	implementation Math {
-	    static delayed = dvalue;
+	    static T delayed = dvalue;
         output = dvalue;
         dvalue = input;
 	}

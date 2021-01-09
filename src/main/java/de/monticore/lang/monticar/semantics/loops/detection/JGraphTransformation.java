@@ -2,7 +2,7 @@
 package de.monticore.lang.monticar.semantics.loops.detection;
 
 import de.monticore.lang.embeddedmontiarc.embeddedmontiarc._symboltable.instanceStructure.EMAComponentInstanceSymbol;
-import de.monticore.lang.monticar.semantics.loops.graph.EMAAtomicConnector;
+import de.monticore.lang.monticar.semantics.loops.graph.EMAAtomicConnectorInstance;
 import de.monticore.lang.monticar.semantics.loops.graph.EMAGraph;
 import de.monticore.lang.monticar.semantics.loops.graph.JGraphEdge;
 import org.jgrapht.Graph;
@@ -17,7 +17,7 @@ public class JGraphTransformation {
         for (EMAComponentInstanceSymbol vertex: emaGraph.getVertices())
             graph.addVertex(vertex);
 
-        for (EMAAtomicConnector edge: emaGraph.getEdges())
+        for (EMAAtomicConnectorInstance edge: emaGraph.getEdges())
             graph.addEdge(edge.getSourceComponent(), edge.getTargetComponent());
 
         return graph;

@@ -19,4 +19,16 @@ public class SListEntry {
     public Call getCall() {
         return call;
     }
+
+    public boolean isExecuteCall() {
+        return call.equals(Call.EXECUTE);
+    }
+
+    public boolean isOutputCall() {
+        return call.equals(Call.OUTPUT);
+    }
+
+    public boolean isUpdateCall() {
+        return call.equals(Call.UPDATE);
+    }
 }

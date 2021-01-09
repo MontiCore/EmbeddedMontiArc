@@ -5,6 +5,8 @@ import de.monticore.lang.embeddedmontiarc.embeddedmontiarcmath._symboltable.math
 import de.monticore.lang.embeddedmontiarc.embeddedmontiarcmath._symboltable.math.visitor.EMAMMathExpressionSymbolReplacementVisitor;
 import de.monticore.lang.math._symboltable.expression.MathExpressionSymbol;
 import de.monticore.lang.math._symboltable.matrix.MathMatrixNameExpressionSymbol;
+import de.monticore.lang.monticar.semantics.setup.Delegate;
+import de.monticore.lang.monticar.semantics.setup.Instances;
 
 import java.util.Collection;
 import java.util.stream.Collectors;
@@ -20,8 +22,8 @@ public class PredefinedExpressionReplacer {
     }
 
     public static MathExpressionSymbol replace(MathExpressionSymbol expression) {
-        MathExpressionSymbol copy = CopyEMAMMathExpressionSymbol.copy(expression);
-        (new EMAMMathExpressionSymbolReplacementVisitor(PredefinedExpressionReplacer::replaceFunction)).handle(copy);
+        MathExpressionSymbol copy = Delegate.copyMathExpressionSymbol(expression);
+        Instances.instantiateMathExpressionSymbolReplacement(PredefinedExpressionReplacer::replaceFunction).handle(copy);
         return copy;
     }
 

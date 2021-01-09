@@ -8,7 +8,7 @@ import de.monticore.lang.embeddedmontiarc.embeddedmontiarc._symboltable.instance
 import de.monticore.lang.embeddedmontiarc.embeddedmontiarc._symboltable.instanceStructure.EMAPortInstanceSymbol;
 import de.monticore.lang.monticar.semantics.helper.NameHelper;
 import de.monticore.lang.monticar.semantics.loops.detection.ConnectionHelper;
-import de.monticore.lang.monticar.semantics.loops.graph.EMAAtomicConnector;
+import de.monticore.lang.monticar.semantics.loops.graph.EMAAtomicConnectorInstance;
 import de.se_rwth.commons.Joiners;
 
 import java.util.*;
@@ -66,7 +66,7 @@ public final class EMAEquationSystemBuilder {
     public static EMAEquationSystem buildFrom(Collection<EMAComponentInstanceSymbol> components) {
         Map<EMAComponentInstanceSymbol, String> nameMapping = new HashMap<>();
 
-        Set<EMAAtomicConnector> atomicConnectors = new HashSet<>();
+        Set<EMAAtomicConnectorInstance> atomicConnectors = new HashSet<>();
         for (EMAComponentInstanceSymbol component : components) {
             String newName = formattedNameOf(component);
             nameMapping.put(component, newName);
@@ -75,14 +75,14 @@ public final class EMAEquationSystemBuilder {
                     .forEachOrdered(in -> {
                         Optional<EMAPortInstanceSymbol> source = ConnectionHelper.sourceOf(in);
                         if (source.isPresent())
-                            atomicConnectors.add(new EMAAtomicConnector(source.get(), in));
+                            atomicConnectors.add(new EMAAtomicConnectorInstance(source.get(), in));
                     });
             component.getOutgoingPortInstances()
                     .stream()
                     .forEachOrdered(out -> atomicConnectors.addAll(
                             ConnectionHelper.targetsOf(out)
                                     .stream()
-                                    .map(target -> new EMAAtomicConnector(out, target))
+                                    .map(target -> new EMAAtomicConnectorInstance(out, target))
                                     .collect(Collectors.toSet())
                     ));
         }
@@ -132,7 +132,7 @@ public final class EMAEquationSystemBuilder {
                 .build();
     }
 
-    private static EMAConnectorInstanceSymbol buildConnectorFrom(EMAAtomicConnector c, Map<EMAComponentInstanceSymbol, String> nameMapping) {
+    private static EMAConnectorInstanceSymbol buildConnectorFrom(EMAAtomicConnectorInstance c, Map<EMAComponentInstanceSymbol, String> nameMapping) {
         String source = formattedQualifiedNameOf(c.getSourcePort(), nameMapping);
         String target =  formattedQualifiedNameOf(c.getTargetPort(), nameMapping);
         EMAConnectorSymbol connectorSymbol = EMAConnectorInstanceSymbol.builder()

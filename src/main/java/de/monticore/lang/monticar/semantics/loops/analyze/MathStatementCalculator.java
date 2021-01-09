@@ -10,6 +10,7 @@ import de.monticore.lang.math._symboltable.expression.*;
 import de.monticore.lang.math._symboltable.matrix.MathMatrixNameExpressionSymbol;
 import de.monticore.lang.monticar.resolution._ast.ASTResolution;
 import de.monticore.lang.monticar.resolution._ast.ASTUnitNumberResolution;
+import de.monticore.lang.monticar.semantics.setup.Delegate;
 import de.monticore.lang.monticar.semantics.util.math.NameReplacer;
 import de.se_rwth.commons.logging.Log;
 
@@ -121,7 +122,7 @@ public class MathStatementCalculator {
     private Set<String> variables = new HashSet<>();
 
     private void handleExpression(MathAssignmentExpressionSymbol expression) {
-        MathAssignmentExpressionSymbol copy = CopyEMAMMathExpressionSymbol.copy(expression);
+        MathAssignmentExpressionSymbol copy = Delegate.copyMathExpressionSymbol(expression);
         String name = copy.getNameOfMathValue();
         incIndexOf(name);
         String currentName = getCurrentNameOf(name);

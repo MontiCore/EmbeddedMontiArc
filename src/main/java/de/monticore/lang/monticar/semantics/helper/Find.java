@@ -2,13 +2,18 @@
 package de.monticore.lang.monticar.semantics.helper;
 
 import de.monticore.lang.embeddedmontiarc.embeddedmontiarc._symboltable.instanceStructure.EMAComponentInstanceSymbol;
+import de.monticore.lang.embeddedmontiarc.embeddedmontiarc._symboltable.instanceStructure.EMAConnectorInstanceSymbol;
+import de.monticore.lang.embeddedmontiarc.embeddedmontiarc._symboltable.instanceStructure.EMAPortInstanceSymbol;
+import de.monticore.lang.monticar.semantics.loops.detection.ConnectionHelper;
+import de.monticore.lang.monticar.semantics.loops.graph.EMAAtomicConnectorInstance;
 
+import java.util.Collection;
 import java.util.Collections;
 import java.util.LinkedList;
-import java.util.List;
+import java.util.Optional;
+import java.util.stream.Collectors;
 
-import static de.monticore.lang.monticar.semantics.loops.detection.ConnectionHelper.isAtomic;
-import static de.monticore.lang.monticar.semantics.loops.detection.ConnectionHelper.isNonVirtual;
+import static de.monticore.lang.monticar.semantics.loops.detection.ConnectionHelper.*;
 
 public class Find {
 
@@ -25,8 +30,8 @@ public class Find {
     }
 
     private static LinkedList<EMAComponentInstanceSymbol> allAtomicOrNVComponents(EMAComponentInstanceSymbol component,
-                                                                           boolean firstCall) {
-        if (isAtomic(component) || isNonVirtual(component) && !firstCall)
+                                                                                  boolean firstCall) {
+        if ((isAtomic(component) || isNonVirtual(component)) && !firstCall)
             return new LinkedList(Collections.singletonList(component));
 
         LinkedList<EMAComponentInstanceSymbol> result = new LinkedList<>();
@@ -40,7 +45,7 @@ public class Find {
     }
 
     private static LinkedList<EMAComponentInstanceSymbol> allSubSystems(EMAComponentInstanceSymbol component,
-                                                                  boolean firstCall) {
+                                                                        boolean firstCall) {
         if (isAtomic(component))
             return new LinkedList<>();
 
@@ -49,6 +54,35 @@ public class Find {
             result.add(component);
         for (EMAComponentInstanceSymbol subComponent : component.getSubComponents())
             result.addAll(allSubSystems(subComponent, false));
+        return result;
+    }
+
+    public static LinkedList<EMAAtomicConnectorInstance> allAtomicConnectors(EMAComponentInstanceSymbol component) {
+        LinkedList<EMAAtomicConnectorInstance> result = new LinkedList<>();
+
+        for (EMAComponentInstanceSymbol subComponent : allAtomicOrNVComponents(component)) {
+            subComponent.getOutgoingPortInstances().stream().forEachOrdered(p -> {
+                Collection<EMAPortInstanceSymbol> targets = ConnectionHelper.targetsOf(p);
+                result.addAll(targets.stream().map(t -> new EMAAtomicConnectorInstance(p, t)).collect(Collectors.toSet()));
+            });
+            subComponent.getIncomingPortInstances().stream().forEachOrdered(p -> {
+                Optional<EMAPortInstanceSymbol> source = sourceOf(p);
+                if (source.isPresent())
+                    result.add(new EMAAtomicConnectorInstance(source.get(), p));
+            });
+        }
+        for (EMAConnectorInstanceSymbol connector : component.getConnectorInstances()) {
+            if (connector.getSourcePort().getComponentInstance().equals(component)
+                    && connector.getTargetPort().getComponentInstance().equals(component))
+                result.add(new EMAAtomicConnectorInstance(connector.getSourcePort(), connector.getTargetPort()));
+            else if (connector.getSourcePort().getComponentInstance().equals(component)
+                    && connector.getTargetPort().isConstant())
+                result.add(new EMAAtomicConnectorInstance(connector.getSourcePort(), connector.getTargetPort()));
+            else if (connector.getSourcePort().isConstant()
+                    && connector.getTargetPort().equals(component))
+                result.add(new EMAAtomicConnectorInstance(connector.getSourcePort(), connector.getTargetPort()));
+        }
+
         return result;
     }
 }
