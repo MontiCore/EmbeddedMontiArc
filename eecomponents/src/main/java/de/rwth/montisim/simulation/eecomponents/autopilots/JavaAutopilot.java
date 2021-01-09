@@ -18,6 +18,7 @@ import de.rwth.montisim.simulation.eesimulator.EESystem;
 import de.rwth.montisim.simulation.eesimulator.events.MessageReceiveEvent;
 import de.rwth.montisim.simulation.eesimulator.message.Message;
 import de.rwth.montisim.simulation.vehicle.navigation.Navigation;
+import de.rwth.montisim.simulation.vehicle.physicalvalues.BatteryLevel;
 import de.rwth.montisim.simulation.vehicle.physicalvalues.TrueCompass;
 import de.rwth.montisim.simulation.vehicle.physicalvalues.TruePosition;
 import de.rwth.montisim.simulation.vehicle.physicalvalues.TrueVelocity;
@@ -42,9 +43,12 @@ public class JavaAutopilot extends EEComponent implements Inspectable {
     transient int accelMsg;
     transient int brakeMsg;
 
+    transient int batteryMsg;
+
     public double currentVelocity = 0;
     public Vec2 currentPosition = null;
     public double currentCompass = Double.NaN;
+    public double batteryLevel = 0;
 
     double newTrajX[] = null;
     public int newTrajLength = 0;
@@ -78,6 +82,8 @@ public class JavaAutopilot extends EEComponent implements Inspectable {
         BasicType.DOUBLE));
         this.accelMsg = addPort(PortInformation.newRequiredOutputDataPort(Actuator.SETTER_PREFIX + PowerTrainProperties.GAS_VALUE_NAME, BasicType.DOUBLE));
         this.brakeMsg = addPort(PortInformation.newRequiredOutputDataPort(Actuator.SETTER_PREFIX + PowerTrainProperties.BRAKING_VALUE_NAME, BasicType.DOUBLE));
+
+        this.batteryMsg = addPort(PortInformation.newOptionalInputDataPort(BatteryLevel.VALUE_NAME, BatteryLevel.TYPE, false));
     }
 
     @Override
@@ -100,6 +106,8 @@ public class JavaAutopilot extends EEComponent implements Inspectable {
             trajY = (double[]) msg.message;
             trajLength = newTrajLength;
             trajX = newTrajX;
+        } else if (msg.isMsg(batteryMsg)) {
+            batteryLevel = (double) msg.message;
         }
     }
 
@@ -396,6 +404,7 @@ public class JavaAutopilot extends EEComponent implements Inspectable {
         addEntry(entries, true, ports.elementAt(6), currentSteering);
         addEntry(entries, true, ports.elementAt(7), currentGas);
         addEntry(entries, true, ports.elementAt(8), currentBrakes);
+        addEntry(entries, false, ports.elementAt(9), batteryLevel);
         return entries;
     }
 

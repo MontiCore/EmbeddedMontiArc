@@ -13,7 +13,7 @@ public class BatteryLevel extends PhysicalValueDouble {
     }
 
     /**
-    * @return [x,y, upper_speed_limit] */
+    * @return battery level in percentage */
     @Override
     public Object get(){
         return battery.percentage();

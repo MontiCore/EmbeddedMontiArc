@@ -54,6 +54,13 @@ public class DefaultVehicleConfig {
         );
 
         properties.addComponent(
+            new SensorProperties()
+            .setPhysicalValueName(BatteryLevel.VALUE_NAME)
+            .setName("BatterySensor")
+            .connectTo("DefaultBus")
+        );
+
+        properties.addComponent(
             new NavigationProperties()
             .connectTo("DefaultBus")
         );
