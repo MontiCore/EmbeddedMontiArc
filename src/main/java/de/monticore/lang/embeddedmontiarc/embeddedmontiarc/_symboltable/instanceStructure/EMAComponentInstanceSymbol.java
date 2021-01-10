@@ -310,10 +310,12 @@ public class EMAComponentInstanceSymbol
     }
 
     public Optional<EMAComponentInstanceSymbol> getEnclosingComponent() {
+        if (getEnclosingScope() == null) return Optional.empty();
         return (Optional<EMAComponentInstanceSymbol>) getEnclosingScope().getSpanningSymbol();
     }
 
     public Optional<EMAComponentInstanceSymbol> getParent() {
+        if (getEnclosingScope() == null) return Optional.empty();
         return (Optional<EMAComponentInstanceSymbol>) getEnclosingScope().getSpanningSymbol();
     }
 
