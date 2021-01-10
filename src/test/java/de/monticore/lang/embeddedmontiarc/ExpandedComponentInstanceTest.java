@@ -541,52 +541,77 @@ public class ExpandedComponentInstanceTest extends AbstractSymtabTest {
   */
 
     @Test
-    public void testInitialGuesses() {
+    public void testPortInitials() {
         Scope symTab = createSymTab("src/test/resources");
         Log.enableFailQuick(true);
         EMAComponentInstanceSymbol inst = symTab.<EMAComponentInstanceSymbol>resolve(
-                "testing.initialGuessTest", EMAComponentInstanceSymbol.KIND).orElse(null);
+                "testing.portInitialTest", EMAComponentInstanceSymbol.KIND).orElse(null);
 
         assertNotNull(inst);
 
         EMAPortInstanceSymbol port = symTab.<EMAPortInstanceSymbol>resolve(
-                "testing.initialGuessTest.simple.out1",
+                "testing.portInitialTest.simple.out1",
                 EMAPortInstanceSymbol.KIND).orElse(null);
         assertTrue(port.isInitialGuessPresent());
         assertEquals(2.0, ((ASTUnitNumberExpression) port.getInitialGuess()).getNumberWithUnit().getNumber().get(), 0.001);
         assertNotNull(port);
 
         port = symTab.<EMAPortInstanceSymbol>resolve(
-                "testing.initialGuessTest.fromParameterDefault.simple.out1",
+                "testing.portInitialTest.fromParameterDefault.simple.out1",
                 EMAPortInstanceSymbol.KIND).orElse(null);
         assertTrue(port.isInitialGuessPresent());
         assertEquals(3.0, ((ASTUnitNumberExpression) port.getInitialGuess()).getNumberWithUnit().getNumber().get(), 0.001);
         assertNotNull(port);
 
         port = symTab.<EMAPortInstanceSymbol>resolve(
-                "testing.initialGuessTest.fromParameterGiven.simple.out1",
+                "testing.portInitialTest.fromParameterGiven.simple.out1",
                 EMAPortInstanceSymbol.KIND).orElse(null);
         assertTrue(port.isInitialGuessPresent());
         assertEquals(5.0, ((ASTUnitNumberExpression) port.getInitialGuess()).getNumberWithUnit().getNumber().get(), 0.001);
         assertNotNull(port);
 
         port = symTab.<EMAPortInstanceSymbol>resolve(
-                "testing.initialGuessTest.portArray.out1[1]",
+                "testing.portInitialTest.portArray.out1[1]",
                 EMAPortInstanceSymbol.KIND).orElse(null);
         assertFalse(port.isInitialGuessPresent());
         assertNotNull(port);
 
         port = symTab.<EMAPortInstanceSymbol>resolve(
-                "testing.initialGuessTest.portArray.out1[2]",
+                "testing.portInitialTest.portArray.out1[2]",
                 EMAPortInstanceSymbol.KIND).orElse(null);
         assertTrue(port.isInitialGuessPresent());
         assertEquals(7.0, ((ASTUnitNumberExpression) port.getInitialGuess()).getNumberWithUnit().getNumber().get(), 0.001);
         assertNotNull(port);
 
         port = symTab.<EMAPortInstanceSymbol>resolve(
-                "testing.initialGuessTest.portArray.out1[3]",
+                "testing.portInitialTest.portArray.out1[3]",
                 EMAPortInstanceSymbol.KIND).orElse(null);
         assertFalse(port.isInitialGuessPresent());
         assertNotNull(port);
+    }
+
+    @Test
+    public void testVirtDF() {
+        Scope symTab = createSymTab("src/test/resources");
+        Log.enableFailQuick(true);
+        EMAComponentInstanceSymbol virtDF = symTab.<EMAComponentInstanceSymbol>resolve(
+                "testing.virtDF", EMAComponentInstanceSymbol.KIND).orElse(null);
+        EMAComponentInstanceSymbol nonVirtNonDF = symTab.<EMAComponentInstanceSymbol>resolve(
+                "testing.nonVirtNonDF", EMAComponentInstanceSymbol.KIND).orElse(null);
+
+        assertNotNull(virtDF);
+
+        assertTrue(virtDF.isVirtual());
+        assertFalse(virtDF.isNonVirtual());
+        assertTrue(virtDF.isDirectFeedThrough());
+        assertFalse(virtDF.isNonDirectFeedThrough());
+
+
+        assertNotNull(nonVirtNonDF);
+
+        assertTrue(nonVirtNonDF.isNonVirtual());
+        assertFalse(nonVirtNonDF.isVirtual());
+        assertTrue(nonVirtNonDF.isNonDirectFeedThrough());
+        assertFalse(nonVirtNonDF.isDirectFeedThrough());
     }
 }

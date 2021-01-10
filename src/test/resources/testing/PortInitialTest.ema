@@ -1,0 +1,11 @@
+/* (c) https://github.com/MontiCore/monticore */
+package testing;
+
+component PortInitialTest {
+
+    instance PortInitialSimple{out1(t=0) ~= 2} simple;
+    instance PortInitialFromParameter fromParameterDefault;
+    instance PortInitialFromParameter(5) fromParameterGiven;
+    instance PortInitialPortArray{out1[2](t=0) ~= 7} portArray;
+
+}
