@@ -39,7 +39,7 @@ public class EMAEquationSystemHelper {
 
         Optional<Map<EMAMSymbolicVariableSymbol, MathExpressionSymbol>> solution =
                 EquationSystemSymbolicSolver.trySymbolicSolve(
-                specification.get(), SpecificationConverter.getIncomingInformationAsVariables(system));
+                        specification.get(), SpecificationConverter.getIncomingInformationAsVariables(system));
 
         if (!solution.isPresent() || solution.get().isEmpty()) return false;
 
@@ -49,7 +49,7 @@ public class EMAEquationSystemHelper {
 
 
     public static Map<EMAPortInstanceSymbol, String> convertSolutionMap(Map<EMAMSymbolicVariableSymbol, MathExpressionSymbol> solutionForPort,
-                                                                         Collection<EMAPortInstanceSymbol> ports) {
+                                                                        Collection<EMAPortInstanceSymbol> ports) {
         Map<EMAPortInstanceSymbol, String> solutions = new HashMap<>();
         for (EMAMSymbolicVariableSymbol variable : solutionForPort.keySet()) {
             if (variable.isPort()) {
@@ -73,23 +73,7 @@ public class EMAEquationSystemHelper {
         for (EMAComponentInstanceSymbol component : system.getComponentInstanceSymbols()) {
             Optional<EMAMSpecificationSymbol> specification = SpecificationConverter.convert(system, component);
             if (specification.isPresent()) {
-                for (EMAMEquationSymbol equation : specification.get().getEquations()) {
-                    EquationSystemType type = AnalyzeEquationSystemType.kindOf(equation, variables);
-                    if (type == ODE || type == DAE) {
-                        // diff(x) is alone on the left side!
-                        EMAMSymbolicVariableSymbol variable = getVarOfDifferentialEquation(equation, variables);
-                        builder.addY(variable);
-                        differentialVariables.add(variable);
-                        Optional<MathExpressionSymbol> initialValue =
-                                findInitialValue(variable, specification.get().getInitialValues());
-                        if (initialValue.isPresent())
-                            builder.addInitialValue(initialValue.get());
-                        else
-                            builder.addInitialValue(new MathNumberExpressionSymbol(Rational.ZERO));
-                        builder.addF(equation.getRightExpression());
-                    } else
-                        builder.addG(new ExplicitFunction(equation));
-                }
+                handleSpecification(specification.get(), builder, variables, differentialVariables);
             } else {
                 for (EMAPortInstanceSymbol outport : component.getOutgoingPortInstances()) {
                     builder.addG(new ComponentCall(component, outport));
@@ -100,6 +84,49 @@ public class EMAEquationSystemHelper {
         Collection<EMAMInitialValueSymbol> initialValues = SpecificationConverter.getInitialValues(system);
         Collection<EMAMInitialGuessSymbol> initialGuesses = SpecificationConverter.getInitialGuesses(system);
 
+        handleVariables(builder, variables, differentialVariables, initialValues, initialGuesses);
+
+        return builder.build();
+    }
+
+    public static SemiExplicitForm buildSemiExplicitForm(EMAComponentInstanceSymbol component,
+                                                         EMAMSpecificationSymbol specification) {
+        SemiExplicitFormBuilder builder = SemiExplicitFormBuilder.aSemiExplicitForm();
+
+        Collection<EMAMSymbolicVariableSymbol> variables = SpecificationConverter.getVariables(component);
+        Collection<EMAMSymbolicVariableSymbol> differentialVariables = new HashSet<>();
+
+        handleSpecification(specification, builder, variables, differentialVariables);
+
+        Collection<EMAMInitialValueSymbol> initialValues = SpecificationConverter.getInitialValues(component);
+        Collection<EMAMInitialGuessSymbol> initialGuesses = SpecificationConverter.getInitialGuesses(component);
+
+        handleVariables(builder, variables, differentialVariables, initialValues, initialGuesses);
+
+        return builder.build();
+    }
+
+    private static void handleSpecification(EMAMSpecificationSymbol specification, SemiExplicitFormBuilder builder, Collection<EMAMSymbolicVariableSymbol> variables, Collection<EMAMSymbolicVariableSymbol> differentialVariables) {
+        for (EMAMEquationSymbol equation : specification.getEquations()) {
+            EquationSystemType type = AnalyzeEquationSystemType.kindOf(equation, variables);
+            if (type == ODE || type == DAE) {
+                // diff(x) is alone on the left side!
+                EMAMSymbolicVariableSymbol variable = getVarOfDifferentialEquation(equation, variables);
+                builder.addY(variable);
+                differentialVariables.add(variable);
+                Optional<MathExpressionSymbol> initialValue =
+                        findInitialValue(variable, specification.getInitialValues());
+                if (initialValue.isPresent())
+                    builder.addInitialValue(initialValue.get());
+                else
+                    builder.addInitialValue(new MathNumberExpressionSymbol(Rational.ZERO));
+                builder.addF(equation.getRightExpression());
+            } else
+                builder.addG(new ExplicitFunction(equation));
+        }
+    }
+
+    private static void handleVariables(SemiExplicitFormBuilder builder, Collection<EMAMSymbolicVariableSymbol> variables, Collection<EMAMSymbolicVariableSymbol> differentialVariables, Collection<EMAMInitialValueSymbol> initialValues, Collection<EMAMInitialGuessSymbol> initialGuesses) {
         variables.stream().filter(v -> !differentialVariables.contains(v))
                 .forEach(v -> {
                     Optional<MathExpressionSymbol> value = findInitialValue(v, initialValues);
@@ -110,12 +137,10 @@ public class EMAEquationSystemHelper {
                     builder.addZ(v);
                     builder.addInitialGuess(value.get());
                 });
-
-        return builder.build();
     }
 
     private static Optional<MathExpressionSymbol> findInitialValue(EMAMSymbolicVariableSymbol variable,
-                                                                      Collection<EMAMInitialValueSymbol> initialValues) {
+                                                                   Collection<EMAMInitialValueSymbol> initialValues) {
         String name = variable.getName();
 
         Optional<EMAMInitialValueSymbol> initialValue =
@@ -127,10 +152,10 @@ public class EMAEquationSystemHelper {
     }
 
     private static Optional<MathExpressionSymbol> findInitialGuess(EMAMSymbolicVariableSymbol variable,
-                                                                      Collection<EMAMInitialGuessSymbol> initialGuesses) {
+                                                                   Collection<EMAMInitialGuessSymbol> initialGuesses) {
         String name;
         if (variable.isPort())
-            name = variable.getPort().get().getName().replace("[","(").replace("]",")");
+            name = variable.getPort().get().getName().replace("[", "(").replace("]", ")");
         else
             name = variable.getName();
 

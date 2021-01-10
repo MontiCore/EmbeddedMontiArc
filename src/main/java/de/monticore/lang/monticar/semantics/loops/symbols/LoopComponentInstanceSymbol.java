@@ -4,13 +4,18 @@ package de.monticore.lang.monticar.semantics.loops.symbols;
 import de.monticore.lang.embeddedmontiarc.embeddedmontiarc._symboltable.cncModel.EMAComponentSymbolReference;
 import de.monticore.lang.embeddedmontiarc.embeddedmontiarc._symboltable.instanceStructure.EMAComponentInstanceSymbol;
 import de.monticore.lang.embeddedmontiarc.embeddedmontiarc._symboltable.instanceStructure.EMAPortInstanceSymbol;
+import de.monticore.lang.embeddedmontiarc.embeddedmontiarcmath._ast.EmbeddedMontiArcMathMill;
 import de.monticore.lang.embeddedmontiarcdynamic.embeddedmontiarcdynamic._symboltable.instanceStructure.EMADynamicComponentInstanceSymbol;
 import de.monticore.lang.embeddedmontiarcdynamic.embeddedmontiarcdynamic._symboltable.instanceStructure.EMADynamicPortInstanceSymbol;
+import de.monticore.lang.math._ast.ASTMathStatements;
+import de.monticore.lang.math._symboltable.MathStatementsSymbol;
 import de.monticore.lang.monticar.semantics.construct.ConnectSourceWithTargetPort;
 import de.monticore.lang.monticar.semantics.construct.InstanceCreator;
 import de.monticore.lang.monticar.semantics.helper.NameHelper;
 import de.monticore.symboltable.CommonScope;
 import de.se_rwth.commons.logging.Log;
+
+import java.util.LinkedList;
 
 public class LoopComponentInstanceSymbol extends EMADynamicComponentInstanceSymbol {
 
@@ -48,6 +53,9 @@ public class LoopComponentInstanceSymbol extends EMADynamicComponentInstanceSymb
         });
 
         loopSymbol.eqs = eqs;
+
+        if (!spannedScope.resolve("MathStatements", MathStatementsSymbol.KIND).isPresent())
+            spannedScope.add(new MathStatementsSymbol("MathStatements", new ASTMathStatements()));
 
         return loopSymbol;
     }
