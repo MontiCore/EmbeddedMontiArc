@@ -5,6 +5,7 @@ import de.rwth.montisim.simulation.eecomponents.autopilots.JavaAutopilotProperti
 import de.rwth.montisim.simulation.eesimulator.bus.constant.ConstantBusProperties;
 import de.rwth.montisim.simulation.eesimulator.sensor.SensorProperties;
 import de.rwth.montisim.simulation.vehicle.VehicleProperties;
+import de.rwth.montisim.simulation.vehicle.lidar.LidarProperties;
 import de.rwth.montisim.simulation.vehicle.navigation.NavigationProperties;
 import de.rwth.montisim.simulation.vehicle.physicalvalues.*;
 import de.rwth.montisim.simulation.vehicle.physicsmodel.rigidbody.RigidbodyPhysicsProperties;
@@ -62,6 +63,11 @@ public class DefaultVehicleConfig {
 
         properties.addComponent(
             new NavigationProperties()
+            .connectTo("DefaultBus")
+        );
+
+        properties.addComponent(
+            new LidarProperties()
             .connectTo("DefaultBus")
         );
         

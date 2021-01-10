@@ -7,6 +7,7 @@ import java.util.*;
 
 import de.rwth.montisim.commons.dynamicinterface.BasicType;
 import de.rwth.montisim.commons.dynamicinterface.PortInformation;
+import de.rwth.montisim.commons.physicalvalue.PhysicalValueDouble;
 import de.rwth.montisim.commons.simulation.Inspectable;
 import de.rwth.montisim.commons.utils.Geometry;
 import de.rwth.montisim.commons.utils.IPM;
@@ -17,6 +18,7 @@ import de.rwth.montisim.simulation.eesimulator.EEComponent;
 import de.rwth.montisim.simulation.eesimulator.EESystem;
 import de.rwth.montisim.simulation.eesimulator.events.MessageReceiveEvent;
 import de.rwth.montisim.simulation.eesimulator.message.Message;
+import de.rwth.montisim.simulation.vehicle.lidar.Lidar;
 import de.rwth.montisim.simulation.vehicle.navigation.Navigation;
 import de.rwth.montisim.simulation.vehicle.physicalvalues.BatteryLevel;
 import de.rwth.montisim.simulation.vehicle.physicalvalues.TrueCompass;
@@ -45,10 +47,13 @@ public class JavaAutopilot extends EEComponent implements Inspectable {
 
     transient int batteryMsg;
 
+    transient int frontSensorMsg;
+
     public double currentVelocity = 0;
     public Vec2 currentPosition = null;
     public double currentCompass = Double.NaN;
     public double batteryLevel = 0;
+    public double frontSensor = 0;
 
     double newTrajX[] = null;
     public int newTrajLength = 0;
@@ -84,6 +89,8 @@ public class JavaAutopilot extends EEComponent implements Inspectable {
         this.brakeMsg = addPort(PortInformation.newRequiredOutputDataPort(Actuator.SETTER_PREFIX + PowerTrainProperties.BRAKING_VALUE_NAME, BasicType.DOUBLE));
 
         this.batteryMsg = addPort(PortInformation.newOptionalInputDataPort(BatteryLevel.VALUE_NAME, BatteryLevel.TYPE, false));
+
+        this.frontSensorMsg = addPort(PortInformation.newOptionalInputDataPort(Lidar.FRONT_SENSOR_MSG, PhysicalValueDouble.TYPE, false));
     }
 
     @Override
@@ -108,6 +115,8 @@ public class JavaAutopilot extends EEComponent implements Inspectable {
             trajX = newTrajX;
         } else if (msg.isMsg(batteryMsg)) {
             batteryLevel = (double) msg.message;
+        } else if (msg.isMsg(frontSensorMsg)) {
+            this.frontSensor = (double) msg.message;
         }
     }
 
@@ -405,6 +414,7 @@ public class JavaAutopilot extends EEComponent implements Inspectable {
         addEntry(entries, true, ports.elementAt(7), currentGas);
         addEntry(entries, true, ports.elementAt(8), currentBrakes);
         addEntry(entries, false, ports.elementAt(9), batteryLevel);
+        addEntry(entries, false, ports.elementAt(10), frontSensor);
         return entries;
     }
 
