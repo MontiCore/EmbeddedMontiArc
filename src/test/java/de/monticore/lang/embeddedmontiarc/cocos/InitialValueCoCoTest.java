@@ -18,7 +18,7 @@ public class InitialValueCoCoTest extends AbstractCoCoTest {
 
     @Test
     public void testValid() {
-        checkModel("testing.InitialGuessTest");
-        checkModel("testing.InitialGuessFromParameter");
+        checkModel("testing.PortInitialTest");
+        checkModel("testing.PortInitialFromParameter");
     }
 }

@@ -3,6 +3,6 @@ package testing;
 
 component InitialGuessFromParameter(Q val = 3) {
 
-    instance InitialGuessSimple{out1 ~= val} simple;
+    instance InitialGuessSimple{out1 = val} simple;
 
 }

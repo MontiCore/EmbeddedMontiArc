@@ -1,18 +1,13 @@
 /* (c) https://github.com/MontiCore/monticore */
 package testing;
 
-component BasicResolutionInstance {
+component BasicResolutionInstance<N1 nn = 5, N1 kk = 3> {
 	port
-		in B a1[6],
-		in B a2[3],
+		in B a1[nn],
+		in B a2[kk],
 		out B out1;
 
-	instance BasicResolution<6,3> br1;
+	instance BasicResolution<nn,kk> br1;
 
-    connect a1[1]->br1.in1[1];
-    connect a1[2]->br1.in1[2];
-    connect a1[3]->br1.in1[3];
-    connect a1[4]->br1.in1[4];
-    connect a1[5]->br1.in1[5];
-    connect a1[6]->br1.in1[6];
+    connect a1[:]->br1.in1[:];
 }

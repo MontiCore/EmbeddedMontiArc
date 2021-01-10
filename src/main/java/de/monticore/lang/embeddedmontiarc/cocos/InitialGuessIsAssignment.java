@@ -7,11 +7,11 @@ import de.monticore.lang.embeddedmontiarc.embeddedmontiarc._cocos.EmbeddedMontiA
 import de.monticore.mcexpressions._ast.ASTAssignmentExpression;
 import de.se_rwth.commons.logging.Log;
 
-public class InitialGuessIsNotAssignmentCoCo implements EmbeddedMontiArcASTSubComponentCoCo {
+public class InitialGuessIsAssignment implements EmbeddedMontiArcASTSubComponentCoCo {
     @Override
     public void check(ASTSubComponent node) {
-        for (ASTPortInitial portInitial : node.getPortInitialList()) {
-            if (portInitial.getExpression() instanceof ASTAssignmentExpression) {
+        for (ASTPortInitial initialGuess : node.getPortInitialList()) {
+            if (initialGuess.getExpression() instanceof ASTAssignmentExpression) {
                 Log.error(String.format("0x079B7 Initial guess of has to be an assignment"),
                 node.get_SourcePositionStart());
             }

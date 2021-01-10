@@ -103,7 +103,7 @@ public class EmbeddedMontiArcModelLoader extends EmbeddedMontiArcModelLoaderTOP 
 
     de.monticore.lang.monticar.Utils.addBuiltInTypes(scope);
 
-    LogConfig.init();
+//    LogConfig.init();
     InstancingRegister.reset();
     InstancingRegister.mainComponent = mainComponent;
     InstancingRegister.mainInstantiation = mainInstantiation;

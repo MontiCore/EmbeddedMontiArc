@@ -174,6 +174,10 @@ public class EmbeddedMontiArcSymbolTableCreator extends EmbeddedMontiArcSymbolTa
             component.setSuperComponent(Optional.of(ref));
         }
 
+        // Component Modifiers
+        if (!node.getComponentModifierList().isEmpty())
+            component.setComponentModifiers(node.getComponentModifierList());
+
         // check if this component is an inner component
         if (!componentStack.isEmpty()) {
             component.setIsInnerComponent(true);
@@ -255,8 +259,9 @@ public class EmbeddedMontiArcSymbolTableCreator extends EmbeddedMontiArcSymbolTa
          * configArgs.add(new ValueSymbol<>(value, Kind.Expression)); } */
         componentTypeReference.setArguments(node.getArgumentsList());
         componentTypeReference.fixResolutions(this);
-        // InitialGuesses
-        componentTypeReference.setInitialGuesses(node.getPortInitialValueOrGuessList());
+
+        // PortInitials
+        componentTypeReference.setPortInitials(node.getPortInitialList());
 
 
         // instances
