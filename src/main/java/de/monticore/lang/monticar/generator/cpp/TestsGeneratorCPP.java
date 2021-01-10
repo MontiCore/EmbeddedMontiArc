@@ -188,6 +188,7 @@ public final class TestsGeneratorCPP {
 
     private void processBluePrint(EMAMBluePrintCPP b, EMAComponentInstanceSymbol s) {
         //TODO: 123 : check if EMAComponentSymbol is correct choice here:  ComponentSymbol cs = s.getComponentType().getReferencedSymbol();
+        if (s.getComponentType() == null) return;
         EMAComponentSymbol cs = s.getComponentType().getReferencedSymbol();
         if (testedComponents.add(cs.getFullName())) {
             processBluePrint(b, cs);

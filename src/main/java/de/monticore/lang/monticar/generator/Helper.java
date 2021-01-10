@@ -12,10 +12,15 @@ import org.apache.commons.lang3.StringUtils;
  */
 public class Helper {
     public static MathStatementsSymbol getMathStatementsSymbolFor(EMAComponentInstanceSymbol instanceSymbol, Scope symtab) {
-        String resolveName = instanceSymbol.getPackageName() + "." + StringUtils.capitalize(instanceSymbol.getName()) + ".MathStatements";
-        MathStatementsSymbol mathSymbol = symtab.<MathStatementsSymbol>resolve(resolveName, MathStatementsSymbol.KIND).orElse(null);
+        String resolveName = "MathStatements";
+        MathStatementsSymbol mathSymbol = instanceSymbol.getSpannedScope().<MathStatementsSymbol>resolve(resolveName, MathStatementsSymbol.KIND).orElse(null);
 
         if (mathSymbol == null) {
+            resolveName = instanceSymbol.getPackageName() + "." + StringUtils.capitalize(instanceSymbol.getName()) + ".MathStatements";
+            mathSymbol = symtab.<MathStatementsSymbol>resolve(resolveName, MathStatementsSymbol.KIND).orElse(null);
+        }
+
+        if (mathSymbol == null && instanceSymbol.getComponentType() != null) {
             EMAComponentSymbol symbol = instanceSymbol.getComponentType().getReferencedSymbol();
             resolveName = symbol.getPackageName() + "." + symbol.getName() + ".MathStatements";
             mathSymbol = symtab.<MathStatementsSymbol>resolve(resolveName, MathStatementsSymbol.KIND).orElse(null);

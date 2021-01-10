@@ -16,6 +16,7 @@ import de.monticore.lang.math._symboltable.matrix.MathMatrixNameExpressionSymbol
 import de.monticore.lang.monticar.generator.*;
 import de.monticore.lang.monticar.generator.cpp.*;
 import de.monticore.lang.monticar.generator.cpp.instruction.ConstantConnectInstructionCPP;
+import de.monticore.lang.monticar.generator.cpp.loopSolver.EquationSystemComponentInstanceSymbol;
 import de.monticore.lang.monticar.generator.optimization.MathInformationRegister;
 import de.monticore.lang.monticar.semantics.executionOrder.ExecutionOrder;
 import de.se_rwth.commons.logging.Log;
@@ -253,7 +254,11 @@ public class ComponentConverter {
                 parameterString += getExpressionParameterConversion(var);
             }
             String result = "";
-            result += GeneralHelperMethods.getTargetLanguageVariableInstanceName(subComponent.getName()) + ".init(" + parameterString + ");\n";
+
+            if (componentSymbol instanceof EquationSystemComponentInstanceSymbol)
+                result += GeneralHelperMethods.getTargetLanguageVariableInstanceName(subComponent.getFullName()) + ".init(" + parameterString + ");\n";
+            else
+                result += GeneralHelperMethods.getTargetLanguageVariableInstanceName(subComponent.getName()) + ".init(" + parameterString + ");\n";
 
             if((componentSymbol instanceof EMADynamicComponentInstanceSymbol) && (subComponent instanceof EMADynamicComponentInstanceSymbol)){
                 if(((EMADynamicComponentInstanceSymbol) componentSymbol).isDynamic() && ((EMADynamicComponentInstanceSymbol) subComponent).isDynamic()){

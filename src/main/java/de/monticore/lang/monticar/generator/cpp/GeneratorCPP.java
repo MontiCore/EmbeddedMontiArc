@@ -16,6 +16,7 @@ import de.monticore.lang.monticar.generator.cpp.Dynamics.EventPortValueCheck;
 import de.monticore.lang.monticar.generator.cpp.converter.*;
 import de.monticore.lang.monticar.generator.cpp.instruction.ConnectInstructionCPP;
 import de.monticore.lang.monticar.generator.cpp.loopSolver.CPPEquationSystemHelper;
+import de.monticore.lang.monticar.generator.cpp.loopSolver.EquationSystemComponentInstanceSymbol;
 import de.monticore.lang.monticar.generator.cpp.loopSolver.daecpp.DAECPPEquationSystemGenerator;
 import de.monticore.lang.monticar.generator.cpp.loopSolver.daecpp.DAECPPOptions;
 import de.monticore.lang.monticar.generator.cpp.loopSolver.odeint.OdeintEquationSystemGenerator;
@@ -37,6 +38,7 @@ import de.monticore.lang.monticar.semantics.resolve.SymbolTableHelper;
 import de.monticore.lang.monticar.ts.MCTypeSymbol;
 import de.monticore.lang.tagging._symboltable.TaggingResolver;
 import de.monticore.symboltable.Scope;
+import de.se_rwth.commons.Joiners;
 import de.se_rwth.commons.logging.Log;
 import org.apache.commons.lang3.StringUtils;
 
@@ -279,8 +281,7 @@ public class GeneratorCPP implements EMAMGenerator {
 
         if (componentInstanceSymbol instanceof LoopComponentInstanceSymbol) {
             ((LoopComponentInstanceSymbol) componentInstanceSymbol).getEquationSystem()
-                    .setName(String.join("_",
-                            NameHelper.replaceWithUnderScore(NameHelper.calculateFullQualifiedNameOf(rootModel)),
+                    .setName(Joiners.DOT.join(rootModel.getFullName(),
                             ((LoopComponentInstanceSymbol) componentInstanceSymbol).getEquationSystem().getName()));
             for (CMakeFindModule dependency : OdeintOptions.getDependencies())
                 cMakeConfig.addModuleDependency(dependency);
@@ -347,9 +348,12 @@ public class GeneratorCPP implements EMAMGenerator {
 
 
         if (componentInstanceSymbol instanceof LoopComponentInstanceSymbol) {
-            if (!equationSystemsAlreadyBuild.contains(((LoopComponentInstanceSymbol) componentInstanceSymbol).getEquationSystem())) {
-                fileContents.addAll(OdeintEquationSystemGenerator.generateEquationSystem(
-                        ((LoopComponentInstanceSymbol) componentInstanceSymbol).getEquationSystem()));
+            EMAEquationSystem equationSystem = ((LoopComponentInstanceSymbol) componentInstanceSymbol).getEquationSystem();
+            if (!equationSystemsAlreadyBuild.contains(equationSystem)) {
+//                fileContents.addAll(OdeintEquationSystemGenerator.generateEquationSystem(
+//                        ((LoopComponentInstanceSymbol) componentInstanceSymbol).getEquationSystem()));
+                fileContents.addAll(generateStrings(taggingResolver,
+                        new EquationSystemComponentInstanceSymbol(equationSystem)));
             }
         }
 
