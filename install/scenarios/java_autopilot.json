@@ -27,7 +27,9 @@
                         "TrueVelocitySensor",
                         "TruePositionSensor",
                         "TrueCompassSensor",
+                        "BatterySensor",
                         "Navigation",
+                        "Lidar",
                         "JavaAutopilot"
                     ]
                 },
@@ -66,7 +68,13 @@
                     "name": "TrueCompassSensor",
                     "physical_value_name": "true_compass"
                 },
+                {
+                    "type": "sensor",
+                    "name": "BatterySensor",
+                    "physical_value_name": "battery_level"
+                },
                 { "type": "navigation" },
+                { "type": "lidar" },
                 {
                     "type": "java_autopilot",
                     "name": "JavaAutopilot",
