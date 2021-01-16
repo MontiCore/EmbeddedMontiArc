@@ -123,22 +123,6 @@ public abstract class BaseMojo extends AbstractMojo {
     return pathTmpOut;
   }
 
-  public String getPathTmpOutCPP() {
-    return Paths.get(this.pathTmpOut, "cpp/").toString();
-  }
-
-  public String getPathTmpOutEMAM() {
-    return Paths.get(this.pathTmpOut, "emam/").toString();
-  }
-
-  public String getPathTmpOutEMADL() {
-    return Paths.get(this.pathTmpOut, "emadl/").toString();
-  }
-
-  public String getPathTmpOutBUILD() {
-    return Paths.get(this.getPathTmpOut(), "build/").toString();
-  }
-
   public Repository getRepository() {
     return repository;
   }

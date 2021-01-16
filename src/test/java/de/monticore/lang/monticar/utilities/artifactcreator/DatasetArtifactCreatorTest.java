@@ -2,6 +2,7 @@ package de.monticore.lang.monticar.utilities.artifactcreator;
 
 import de.monticore.lang.monticar.utilities.models.FileLocation;
 import de.monticore.lang.monticar.utilities.models.StorageInformation;
+import org.apache.commons.lang3.StringUtils;
 import org.junit.Rule;
 import org.junit.Test;
 import org.junit.rules.TemporaryFolder;
@@ -11,6 +12,7 @@ import org.powermock.modules.junit4.PowerMockRunner;
 
 import java.io.File;
 import java.io.IOException;
+import java.util.LinkedList;
 import java.util.List;
 import java.util.jar.JarFile;
 
@@ -79,8 +81,10 @@ public class DatasetArtifactCreatorTest {
     List<FileLocation> datasetLocations = DatasetArtifactCreator.getDatasetLocations(datasetPath);
 
     assertEquals(2, datasetLocations.size());
-    assertEquals("training_data/train.h5", datasetLocations.get(0).getJarLocation());
-    assertEquals("training_data/test.h5", datasetLocations.get(1).getJarLocation());
+
+    List<String> jarLocations = new LinkedList<String>() {{add(datasetLocations.get(0).getJarLocation()); add(datasetLocations.get(1).getJarLocation());}};
+    assertTrue(jarLocations.stream().anyMatch(l -> StringUtils.equals(l, "training_data/train.h5")));
+    assertTrue(jarLocations.stream().anyMatch(l -> StringUtils.equals(l, "training_data/test.h5")));
   }
 
 
