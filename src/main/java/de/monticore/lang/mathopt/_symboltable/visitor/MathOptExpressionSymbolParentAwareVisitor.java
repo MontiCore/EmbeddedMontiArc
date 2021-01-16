@@ -6,7 +6,7 @@ import de.monticore.lang.mathopt._symboltable.MathOptimizationConditionSymbol;
 import de.monticore.lang.mathopt._symboltable.MathOptimizationStatementSymbol;
 
 public interface MathOptExpressionSymbolParentAwareVisitor extends MathExpressionSymbolParentAwareVisitor,
-    MathOptExpressionSymbolVisitor {
+        MathOptExpressionSymbolVisitor {
 
     @Override
     default void handle(MathOptimizationStatementSymbol node) {
