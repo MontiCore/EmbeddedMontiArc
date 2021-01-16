@@ -5,7 +5,6 @@ import de.monticore.lang.embeddedmontiarc.embeddedmontiarc._symboltable.instance
 import de.monticore.lang.monticar.generator.pythonwrapper.building.PythonModuleBuilder;
 import de.monticore.lang.monticar.generator.pythonwrapper.building.PythonModuleBuildingException;
 import de.monticore.lang.monticar.generator.pythonwrapper.symbolservices.data.ComponentPortInformation;
-import de.monticore.lang.tagging._symboltable.TaggingResolver;
 import de.se_rwth.commons.logging.Log;
 
 import java.io.IOException;
