@@ -69,6 +69,9 @@ public class GaussianBlurCommand extends ArgumentNoReturnMathCommand{
         redefineInit(bluePrintCPP);
         bluePrintCPP.getGenerator().getCmakeConfig()
                 .addModuleDependency(new CMakeFindModule("OpenCV", true).asFindAsPackage());
+        bluePrintCPP.addAdditionalNameSpaceStrings("std");
+
+        ConversionHelper.setUsedCV();
     }
 
     private Method getGaussianBlurHelperMethod(MathMatrixNameExpressionSymbol mathMatrixNameExpressionSymbol, EMAMBluePrintCPP bluePrintCPP, MathExpressionProperties properties){

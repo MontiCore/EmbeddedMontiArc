@@ -308,9 +308,9 @@ public class GeneratorCPP implements EMAMGenerator {
                 fileContents.add(OctaveHelper.getOctaveHelperFileContent());
             if (MathConverter.curBackend.getBackendName().equals("ArmadilloBackend")) {
                 fileContents.add(ArmadilloHelper.getArmadilloHelperFileContent(isGenerateTests));
-                if (EMAMBluePrintCPP.usedCV) {
+                if (ConversionHelper.isUsedCV()) {
                     fileContents.add(ConversionHelper.getConversionHelperFileContent(isGenerateTests));
-                    EMAMBluePrintCPP.usedCV = false;
+                    ConversionHelper.unsetUsedCV();
                 }
             }
             if (shouldGenerateMainClass()) {

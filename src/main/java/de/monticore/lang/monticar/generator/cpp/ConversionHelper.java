@@ -8,6 +8,7 @@ import de.monticore.lang.monticar.generator.FileContent;
  */
 public class ConversionHelper {
     public static String fileName = "ConvHelper";
+    private static boolean usedCV = false;
 
     public static FileContent getConversionHelperFileContent(boolean generateTests) {
         FileContent fileContent = new FileContent();
@@ -20,5 +21,17 @@ public class ConversionHelper {
 
     public static FileContent getConversionHelperFileContent(){
         return getConversionHelperFileContent(false);
+    }
+
+    public static boolean isUsedCV() {
+        return usedCV;
+    }
+
+    public static void setUsedCV() {
+        usedCV = true;
+    }
+
+    public static void unsetUsedCV() {
+        usedCV = false;
     }
 }

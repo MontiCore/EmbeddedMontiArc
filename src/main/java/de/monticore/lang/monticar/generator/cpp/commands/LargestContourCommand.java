@@ -69,6 +69,7 @@ public class LargestContourCommand extends MathCommand {
         bluePrintCPP.getGenerator().getCmakeConfig()
                 .addModuleDependency(new CMakeFindModule("OpenCV", true).asFindAsPackage());
 
+        ConversionHelper.setUsedCV();
     }
 
     private Method getLargestContourMethod(){

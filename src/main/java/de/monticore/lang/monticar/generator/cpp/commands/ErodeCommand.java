@@ -72,6 +72,7 @@ public class ErodeCommand extends ArgumentNoReturnMathCommand{
         bluePrintCPP.getGenerator().getCmakeConfig()
                 .addModuleDependency(new CMakeFindModule("OpenCV", true).asFindAsPackage());
 
+        ConversionHelper.setUsedCV();
     }
 
     private Method getErodeHelperMethod(MathMatrixNameExpressionSymbol mathMatrixNameExpressionSymbol, EMAMBluePrintCPP bluePrintCPP, MathExpressionProperties properties){

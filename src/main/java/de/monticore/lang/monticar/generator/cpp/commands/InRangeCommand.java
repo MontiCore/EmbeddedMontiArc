@@ -70,6 +70,7 @@ public class InRangeCommand extends ArgumentNoReturnMathCommand{
         bluePrintCPP.getGenerator().getCmakeConfig()
                 .addModuleDependency(new CMakeFindModule("OpenCV", true).asFindAsPackage());
 
+        ConversionHelper.setUsedCV();
     }
 
     private Method getInRangeHelperMethod(MathMatrixNameExpressionSymbol mathMatrixNameExpressionSymbol, EMAMBluePrintCPP bluePrintCPP, MathExpressionProperties properties){

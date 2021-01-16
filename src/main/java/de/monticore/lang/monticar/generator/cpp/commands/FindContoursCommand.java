@@ -71,6 +71,7 @@ public class FindContoursCommand extends ArgumentNoReturnMathCommand{
         bluePrintCPP.getGenerator().getCmakeConfig()
                 .addModuleDependency(new CMakeFindModule("OpenCV", true).asFindAsPackage());
 
+        ConversionHelper.setUsedCV();
     }
 
     private Method getFindContoursHelperMethod(MathMatrixNameExpressionSymbol mathMatrixNameExpressionSymbol, EMAMBluePrintCPP bluePrintCPP, MathExpressionProperties properties){

@@ -70,6 +70,7 @@ public class CvtColorCommand extends ArgumentNoReturnMathCommand{
         bluePrintCPP.getGenerator().getCmakeConfig()
                 .addModuleDependency(new CMakeFindModule("OpenCV", true).asFindAsPackage());
 
+        ConversionHelper.setUsedCV();
     }
 
     private Method getCvtColorHelperMethod(MathMatrixNameExpressionSymbol mathMatrixNameExpressionSymbol, EMAMBluePrintCPP bluePrintCPP, MathExpressionProperties properties){
