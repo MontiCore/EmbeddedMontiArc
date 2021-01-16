@@ -17,10 +17,12 @@ import java.util.Optional;
 public class Variable {
     public static final String INCOMING = "Incoming";
     public static final String OUTGOING = "outgoing";
+    public static final String COMPONENT = "component";
     public static String FORLOOPINFO = "ForLoopVariable";
     public static String VARIABLE = "Variable";
     public static String ORIGINPORT = "OriginPort";
     public static String STATIC = "Static";
+    public static String FROMMATH = "fromMath";
     public static String CROSSCOMPONENT = "CrossComponent";
 
     String name = "";
