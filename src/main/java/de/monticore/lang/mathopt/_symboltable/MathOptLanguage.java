@@ -24,7 +24,6 @@ public class MathOptLanguage extends MathOptLanguageTOP {
     public MathOptLanguage() {
         super("Math Optimization Language", MathLanguage.FILE_ENDING);
         parentLanguage = new MathLanguage();
-        LogConfig.init();
     }
 
     @Override
