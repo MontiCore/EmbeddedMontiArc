@@ -66,4 +66,8 @@ public class GeneralHelperMethods {
         if (parts.length <= 1) return componentName;
         return String.join("->", parts);
     }
+
+    public static String getTargetLanguageComponentVariableInstanceName(String componentName) {
+        return getTargetLanguageComponentName(getTargetLanguageVariableInstanceName(componentName));
+    }
 }
