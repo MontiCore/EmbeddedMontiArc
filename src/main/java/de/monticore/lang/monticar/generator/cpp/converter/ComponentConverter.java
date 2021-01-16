@@ -116,7 +116,7 @@ public class ComponentConverter {
                 //TODO: ADD parent dynamic function pointer
                 addParentDynamicFunctionPointer(bluePrint);
 
-                bluePrint.addAdditionalIncludeString("DynamicHelper");
+                bluePrint.addAdditionalUserIncludeStrings("DynamicHelper");
             }
         }
         if(generatorCPP.isGenerateCV){

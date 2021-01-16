@@ -98,7 +98,7 @@ public class MathFunctionFixer extends BaseMathFunctionFixerHandler {
                         .equals(((MathNameExpressionSymbol) mathExpressionSymbol).getNameToResolveValue())) {
                     ExecutionStepperHelper.setUsed();
                     ((MathNameExpressionSymbol) mathExpressionSymbol).setNameToResolveValue("getCurrentTime()");
-                    bluePrintCPP.addAdditionalIncludeString(ExecutionStepperHelper.FILENAME);
+                    bluePrintCPP.addAdditionalUserIncludeStrings(ExecutionStepperHelper.FILENAME);
                 }
                 notHandled = false;
             } else if (((MathValueExpressionSymbol) mathExpressionSymbol).isBooleanExpression()) {
@@ -211,7 +211,7 @@ public class MathFunctionFixer extends BaseMathFunctionFixerHandler {
             MathCommand mathCommand = bluePrintCPP.getMathCommandRegister().getMathCommand(mathExpressionSymbol.getNameToAccess());
             if (mathCommand != null) {
                 if (MathConverter.curBackend.getBackendName().equals("OctaveBackend"))
-                    bluePrintCPP.addAdditionalIncludeString("Helper");
+                    bluePrintCPP.addAdditionalUserIncludeStrings("Helper");
                 mathCommand.convertAndSetTargetLanguageName(mathExpressionSymbol, bluePrintCPP);
             }
             if (fixForLoopAccess(mathExpressionSymbol, variable, bluePrintCPP)) {

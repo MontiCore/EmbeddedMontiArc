@@ -115,39 +115,39 @@ public class LanguageUnitCPP extends LanguageUnit {
             resultString += "#include \"" + "HelperA" + ".h\"\n";
         }
 
-        for (String string : bluePrint.getAdditionalIncludeStrings())
-            resultString += "#include \"" + string + ".h\"\n";
+        for (String string : bluePrint.getAdditionalUserIncludeStrings())
+            resultString += String.format("#include \"%s.h\"\n", string);
+        for (String string : bluePrint.getAdditionalStandardIncludeStrings())
+            resultString += String.format("#include <%s>\n", string);
+        for (String string : bluePrint.getAdditionalStandardIncludeStringsWithH())
+            resultString += String.format("#include <%s.h>\n", string);
+        for (String string : bluePrint.getAdditionalStandardIncludeStringsWithHPP())
+            resultString += String.format("#include <%s.hpp>\n", string);
 
-        for(String includeName: bluePrint.getCVIncludeStrings())
-            if(!alreadyGeneratedCVIncludes.contains(includeName)) {
-                alreadyGeneratedCVIncludes.add(includeName);
-                if (includeName.contains("vector")) {
-                    resultString += "#include <" + includeName + ">\n";
-                } else if (includeName.contains("ConvHelper")) {
-                    resultString += "#include \"" + "ConvHelper" + ".h\"\n";
-                } else {
-                    resultString += "#include <" + includeName + ".hpp>\n";
-                }
-            }
         if (generatorCPP.isExecutionLoggingActive)
             resultString += "#include <fstream>\n";
 
-        for (String include : includeStrings) {
+        for (String include : includeStrings)
             resultString += include;
-        }
+
         if (generatorCPP.useThreadingOptimizations()) {
             //if(MathConverter.curBackend.getBackendName().equals("OctaveBackend"))
             //resultString+="#include \"mingw.thread.h\"\n";
             //else if(MathConverter.curBackend.getBackendName().equals("ArmadilloBackend"))
             resultString += "#include <thread>\n";
         }
-        if (MathConverter.curBackend.getBackendName().equals("ArmadilloBackend")) {
+        if (MathConverter.curBackend.getBackendName().equals("ArmadilloBackend"))
             resultString += "using namespace arma;\n";
-        }
 
-        if(!bluePrint.cvIncludeStrings.isEmpty()){
-            resultString += "using namespace std;\n";
-        }
+        for (String nameSpaceString : bluePrint.getAdditionalNameSpaceStrings())
+            resultString += String.format("using namespace %s;\n", nameSpaceString);
+
+        for (String typeDefString : bluePrint.getAdditionalTypeDefStrings())
+            resultString += String.format("typedef %s;\n", typeDefString);
+
+//        if(!bluePrint.cvIncludeStrings.isEmpty()){
+//            resultString += "using namespace std;\n";
+//        }
 
         //class definition start
         resultString += "class " + bluePrint.getName();
