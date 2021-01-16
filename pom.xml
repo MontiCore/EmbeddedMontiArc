@@ -9,15 +9,17 @@
 
     <groupId>de.monticore.lang.monticar</groupId>
     <artifactId>embedded-montiarc-emadl-pythonwrapper-generator</artifactId>
-    <version>0.0.2-SNAPSHOT</version>
+    <version>0.0.3-SNAPSHOT</version>
 
     <!-- == PROJECT DEPENDENCIES ============================================= -->
     <properties>
+
+        <!-- .. EMA-Libraries ................................................. -->
+        <emadl.version>0.4.4-SNAPSHOT</emadl.version>
+
         <!-- .. SE-Libraries .................................................. -->
         <se-commons.version>1.7.7</se-commons.version>
-        <embedded-montiarc-math.version>0.1.7-SNAPSHOT</embedded-montiarc-math.version>
-        <embedded-montiarc.version>0.1.9-SNAPSHOT</embedded-montiarc.version>
-        <embedded-montiarc-emadl-generator.version>0.3.0</embedded-montiarc-emadl-generator.version>
+        <embedded-montiarc-math.version>0.4.4-SNAPSHOT</embedded-montiarc-math.version>
 
         <!-- .. Libraries .................................................. -->
         <guava.version>18.0</guava.version>
@@ -48,14 +50,8 @@
 
         <dependency>
             <groupId>de.monticore.lang.monticar</groupId>
-            <artifactId>embedded-montiarc</artifactId>
-            <version>${embedded-montiarc.version}</version>
-        </dependency>
-
-        <dependency>
-            <groupId>de.monticore.lang</groupId>
-            <artifactId>math</artifactId>
-            <version>0.0.19-SNAPSHOT</version>
+            <artifactId>embedded-montiarc-deeplearning</artifactId>
+            <version>${emadl.version}</version>
         </dependency>
 
         <!-- Apache Commons CLI -->
@@ -91,12 +87,6 @@
             <groupId>org.mockito</groupId>
             <artifactId>mockito-core</artifactId>
             <version>1.10.19</version>
-            <scope>test</scope>
-        </dependency>
-        <dependency>
-            <groupId>de.monticore.lang.monticar</groupId>
-            <artifactId>embedded-montiarc-emadl-generator</artifactId>
-            <version>${embedded-montiarc-emadl-generator.version}</version>
             <scope>test</scope>
         </dependency>
     </dependencies>
