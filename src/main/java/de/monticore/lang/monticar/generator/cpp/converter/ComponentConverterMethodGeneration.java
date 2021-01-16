@@ -336,7 +336,7 @@ public class ComponentConverterMethodGeneration {
 
     private static void generateInstruction(Method method, MathExpressionSymbol
             mathExpressionSymbol, EMAMBluePrintCPP bluePrint, List<String> includeStrings/*, int lastIndex*/) {
-        MathFunctionFixer.fixMathFunctions(mathExpressionSymbol, bluePrint);
+//        MathFunctionFixer.fixMathFunctions(mathExpressionSymbol, bluePrint);
         String result = ExecuteMethodGenerator.generateExecuteCode(mathExpressionSymbol, includeStrings);
         String outputName = "";
         for (MathCommand mathCommand : ComponentConverter.usedMathCommand) {

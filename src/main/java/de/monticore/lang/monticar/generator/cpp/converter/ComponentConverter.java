@@ -95,6 +95,16 @@ public class ComponentConverter {
             }
         }
 
+
+        bluePrint.addMethod(new Method("init", "void"));
+        bluePrint.addMethod(new Method(ComponentConverterMethodGeneration.EXECUTE_METHOD_NAME, "void"));
+
+        if (mathStatementsSymbol != null) {
+            for (MathExpressionSymbol mathExpressionSymbol : mathStatementsSymbol.getMathExpressionSymbols()) {
+                MathFunctionFixer.fixMathFunctions(mathExpressionSymbol, bluePrint);
+            }
+        }
+
         generateInitMethod(componentSymbol, bluePrint, generatorCPP, includeStrings);
 
         //generate execute method
@@ -207,7 +217,7 @@ public class ComponentConverter {
     }
 
     public static Method generateInitMethod(EMAComponentInstanceSymbol componentSymbol, EMAMBluePrintCPP bluePrint, GeneratorCPP generatorCPP, List<String> includeStrings) {
-        Method method = new Method("init", "void");
+        Method method = bluePrint.getMethod("init").orElse(new Method("init", "void"));
         bluePrint.addMethod(method);
         for (Variable v : bluePrint.getMathInformationRegister().getVariables()) {
             String oldName = v.getName();
@@ -218,7 +228,11 @@ public class ComponentConverter {
             }
             if (v.isStaticVariable()) {
                 generateInitStaticVariablePart(method, v, bluePrint);
-            } else {
+            } else if (v.getAdditionalInformation().contains(Variable.COMPONENT)
+                    || v.isInputVariable()
+                    || v.isParameterVariable()
+                    || v.getAdditionalInformation().contains(Variable.OUTGOING)
+                    || v.getAdditionalInformation().contains(Variable.ORIGINPORT)) {
                 generateInitNonStaticVariable(method, v, bluePrint);
             }
             if (v.isArray())
@@ -358,6 +372,7 @@ public class ComponentConverter {
         }
         return outputName;
     }
+
     public static String getExpressionParameterConversion(ASTExpression var) {
         String parameterString = "";
         if (var.getSymbolOpt().isPresent()) {
@@ -383,6 +398,7 @@ public class ComponentConverter {
                                                                       componentSymbol, List<String> includeStrings, GeneratorCPP generatorCPP) {
         return convertComponentSymbolToBluePrint(componentSymbol, null, includeStrings, generatorCPP);
     }
+
     public static void fixMathFunctions(MathExpressionSymbol mathExpressionSymbol, EMAMBluePrintCPP bluePrintCPP) {
         MathFunctionFixer.fixMathFunctions(mathExpressionSymbol, bluePrintCPP);
     }
