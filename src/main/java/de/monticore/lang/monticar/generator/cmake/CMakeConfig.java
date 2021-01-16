@@ -59,6 +59,7 @@ public class CMakeConfig {
     public CMakeConfig(String compName) {
         cMakeListsViewModel.setCompName(compName);
         cMakeListsViewModel.setModuleDependencies(moduleList);
+        configureCMakeListsViewModel();
     }
 
     // methods
@@ -106,7 +107,7 @@ public class CMakeConfig {
 
     public FileContent generateCMakeLists() {
         FileContent result = null;
-        configureCMakeListsViewModel();
+        //configureCMakeListsViewModel();
         // map data
         Map<String, Object> dataForTemplate = TemplateHelper.getDataForTemplate(cMakeListsViewModel);
         // try generate file content

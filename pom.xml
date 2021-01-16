@@ -59,12 +59,12 @@
             <version>${EmbeddedMontiArc-executionSemantics.version}</version>
         </dependency>
 
-
-<!--        <dependency>-->
-<!--            <groupId>montiarc.verification</groupId>-->
-<!--            <artifactId>montiarc-execution-order</artifactId>-->
-<!--            <version>4.0.1-SNAPSHOT</version>-->
-<!--        </dependency>-->
+        <!-- MontiSim Dependency for the DynamicInterface generation -->
+        <dependency>
+            <groupId>montisim</groupId>
+            <artifactId>commons</artifactId>
+            <version>2.0.11</version>
+        </dependency>
 
         <dependency>
             <groupId>org.freemarker</groupId>

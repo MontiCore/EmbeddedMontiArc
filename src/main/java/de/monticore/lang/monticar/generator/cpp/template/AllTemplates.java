@@ -18,8 +18,12 @@ public final class AllTemplates {
     private static final Template TESTS_MAIN_ENTRY;
     private static final Template STRUCT;
     private static final Template ENUM;
-    private static final Template AUTOPILOT_ADAPTER_CPP;
-    private static final Template AUTOPILOT_ADAPTER_H;
+    public static final Template DYNAMIC_INTERFACE_CPP;
+    public static final Template DYNAMIC_INTERFACE_H;
+    public static final Template TCP_ADAPTER_CPP;
+    public static final Template TCP_ADAPTER_H;
+    public static final Template DDC_ADAPTER_CPP;
+    public static final Template DDC_ADAPTER_ADAPTER_H;
     private static final Template SERVER_WRAPPER;
 
     private static final Template DYNAMICS_EVENT_PortValueCheker;
@@ -40,8 +44,12 @@ public final class AllTemplates {
             TESTS_MAIN_ENTRY = conf.getTemplate("/test/TestsMainEntry.ftl");
             STRUCT = conf.getTemplate("/type/Struct.ftl");
             ENUM = conf.getTemplate("/type/Enum.ftl");
-            AUTOPILOT_ADAPTER_CPP = conf.getTemplate("/autopilotadapter/AutopilotAdapterCpp.ftl");
-            AUTOPILOT_ADAPTER_H = conf.getTemplate("/autopilotadapter/AutopilotAdapterH.ftl");
+            DYNAMIC_INTERFACE_CPP = conf.getTemplate("/dynamic_interface/dynamic_interface.cpp.ftl");
+            DYNAMIC_INTERFACE_H = conf.getTemplate("/dynamic_interface/dynamic_interface.h.ftl");
+            TCP_ADAPTER_CPP = conf.getTemplate("/dynamic_interface/server_adapter.cpp.ftl");
+            TCP_ADAPTER_H = conf.getTemplate("/dynamic_interface/server_adapter.h.ftl");
+            DDC_ADAPTER_CPP = conf.getTemplate("/dynamic_interface/ddc_adapter.cpp.ftl");
+            DDC_ADAPTER_ADAPTER_H = conf.getTemplate("/dynamic_interface/ddc_adapter.h.ftl");
             SERVER_WRAPPER = conf.getTemplate("/serverwrapper/ServerWrapper.ftl");
             DYNAMICS_EVENT_PortValueCheker = conf.getTemplate("/dynamics/events_port_value_check_h.ftl");
             DYNAMICS_EVENT_DynamicHelper = conf.getTemplate("/dynamics/dynamic_port_request_connect_helper_h.ftl");
@@ -72,13 +80,6 @@ public final class AllTemplates {
         return generate(ENUM, viewModel);
     }
 
-    public static String generateAutopilotAdapterCpp(AutopilotAdapterDataModel viewModel) {
-        return generate(AUTOPILOT_ADAPTER_CPP, viewModel);
-    }
-    public static String generateAutopilotAdapterH(AutopilotAdapterDataModel viewModel) {
-        return generate(AUTOPILOT_ADAPTER_H, viewModel);
-    }
-
     public static String generateServerWrapper(ServerWrapperViewModel viewModel) {
         return generate(SERVER_WRAPPER, viewModel);
     }
@@ -95,12 +96,12 @@ public final class AllTemplates {
         return generate(LOG_METHODS, model);
     }
 
-    private static String generate(Template template, ViewModelBase viewModelBase) {
+    public static String generate(Template template, ViewModelBase viewModelBase) {
         return generate(template, TemplateHelper.getDataForTemplate(viewModelBase));
     }
 
 
-    private static String generateWithoutData(Template template){
+    public static String generateWithoutData(Template template){
         Log.errorIfNull(template);
         StringWriter sw = new StringWriter();
         try{
@@ -111,7 +112,7 @@ public final class AllTemplates {
         return sw.toString();
     }
 
-    private static String generate(Template template, Object dataForTemplate) {
+    public static String generate(Template template, Object dataForTemplate) {
         Log.errorIfNull(template);
         Log.errorIfNull(dataForTemplate);
         StringWriter sw = new StringWriter();
