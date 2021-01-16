@@ -19,8 +19,20 @@ public class OctaveBackend implements MathBackend {
     }
 
     @Override
+    public String getMatrixTypeUnsignedCharName() {
+        Log.info("Matrix Unsigned Char Type not supported by currentBackend. ", getBackendName());
+        return null;
+    }
+
+    @Override
     public String getCubeTypeName() {
         Log.info("Cube Type not supported by currentBackend. ", getBackendName());
+        return null;
+    }
+
+    @Override
+    public String getCubeUnsignedCharName() {
+        Log.info("Cube Unsigned Char Type not supported by currentBackend. ", getBackendName());
         return null;
     }
 

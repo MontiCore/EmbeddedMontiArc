@@ -16,7 +16,18 @@ public class LinalgBackend implements MathBackend {
     }
 
     @Override
+    public String getMatrixTypeUnsignedCharName() {
+        return null;
+    }
+
+    @Override
     public String getCubeTypeName() {
+        return null;
+    }
+
+    @Override
+    public String getCubeUnsignedCharName() {
+        Log.info("Cube Unsigned Char Type not supported by currentBackend. ", getBackendName());
         return null;
     }
 
