@@ -4,8 +4,8 @@
 #define M_PI 3.14159265358979323846
 #endif
 #include "armadillo"
-#include <opencv2/imgproc/imgproc.hpp>
 #include "ConvHelper.h"
+#include <opencv2/imgproc/imgproc.hpp>
 
 using namespace arma;
 using namespace std;
@@ -17,8 +17,8 @@ int iterations;
 arma::Mat<unsigned char> dst;
 void init()
 {
-src=Mat<unsigned char>(n,m);
-dst=Mat<unsigned char>(n,m);
+src=arma::Mat<unsigned char>(n,m);
+dst=arma::Mat<unsigned char>(n,m);
 }
 void erodeHelper(const arma::Mat<unsigned char>& src, arma::Mat<unsigned char>& dst, int erosion_elem, int iterations)
 {

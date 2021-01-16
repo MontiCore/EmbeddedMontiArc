@@ -4,9 +4,9 @@
 #define M_PI 3.14159265358979323846
 #endif
 #include "armadillo"
-#include <opencv2/imgproc/imgproc.hpp>
 #include "ConvHelper.h"
 #include <vector>
+#include <opencv2/imgproc/imgproc.hpp>
 using namespace arma;
 using namespace std;
 class test_math_findContoursCommandTest{
@@ -17,7 +17,7 @@ int method;
 std::vector<std::vector<cv::Point>> contours;
 void init()
 {
-image=Mat<unsigned char>(n,m);
+image=arma::Mat<unsigned char>(n,m);
 }
 void findContoursHelper(const arma::Mat<unsigned char>& image, std::vector<std::vector<cv::Point>>& contours, int mode, int method)
 {

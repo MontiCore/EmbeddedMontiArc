@@ -10,5 +10,5 @@ component SumComponent<T,N1 n=2> {
     instance Add<T, n> add;
 
     connect input[:] -> add.summand[:];
-    connect add.sum -> output;
+    connect add.sum1 -> output;
 }

@@ -35,6 +35,7 @@ public class LoopTest {
         testComponent("de.monticore.lang.monticar.semantics.loops.serialLoop");
     }
 
+    @Ignore
     @Test
     public void testParallelLoop() throws IOException {
         testComponent("de.monticore.lang.monticar.semantics.loops.parallelLoop");
@@ -50,10 +51,14 @@ public class LoopTest {
         testComponent("de.monticore.lang.monticar.semantics.loops.oscillation");
     }
 
-    @Ignore
     @Test
-    public void testOscillationAsSymbol() throws IOException {
+    public void testOscillationAsDAESymbol() throws IOException {
         testComponent("de.monticore.lang.monticar.semantics.loops.oscillationAsSymbol");
+    }
+
+    @Test
+    public void testOscillationAsODESymbol() throws IOException {
+        testComponent("de.monticore.lang.monticar.semantics.loops.oscillationAsODESymbol");
     }
 
     @Ignore
@@ -77,16 +82,9 @@ public class LoopTest {
         }
         assert (ast.isPresent());
 
-        TaggingResolver symtab = createSymTabAndTaggingResolver("src/test/resources", "src/main/resources",
-                "target/generated-components");
+        TaggingResolver symtab = createSymTabAndTaggingResolver("src/test/resources", "src/main/resources");
 
         Optional<EMAComponentInstanceSymbol> resolve = symtab.resolve(model, EMAComponentInstanceSymbol.KIND);
-        ExecutionSemantics semantics = new ExecutionSemantics(symtab, resolve.get());
-        semantics.setSolveSymbolicSpecification(true);
-        semantics.setSolveSymbolicLoops(false);
-        semantics.setHandleArtificialLoops(true);
-        semantics.setResolveLoops(true);
-        semantics.addExecutionSemantics();
 
 
         EMAComponentInstanceSymbol componentSymbol = symtab.<EMAComponentInstanceSymbol>resolve(model, EMAComponentInstanceSymbol.KIND).orElse(null);
@@ -96,6 +94,8 @@ public class LoopTest {
         generatorCPP.useArmadilloBackend();
         generatorCPP.setGenerateCMake(false);
         generatorCPP.setDeltaT(0.1);
+        generatorCPP.setResolveLoops(true);
+        generatorCPP.setSolveLoopsSymbolic(false);
         generatorCPP.setGenerateCMake(true);
         List<File> files = generatorCPP.generateFiles(symtab, componentSymbol);
 

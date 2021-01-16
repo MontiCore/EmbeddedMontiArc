@@ -28,16 +28,6 @@ movementHandler.init();
 }
 void execute()
 {
-movementHandler.moveUp = moveUp;
-movementHandler.moveDown = moveDown;
-movementHandler.moveLeft = moveLeft;
-movementHandler.moveRight = moveRight;
-movementHandler.pacmanPositionX = pacmanPositionX;
-movementHandler.pacmanPositionY = pacmanPositionY;
-movementHandler.world = world;
-movementHandler.execute();
-pacmanNextPositionX = movementHandler.pacmanNextPositionX;
-pacmanNextPositionY = movementHandler.pacmanNextPositionY;
 }
 
 };

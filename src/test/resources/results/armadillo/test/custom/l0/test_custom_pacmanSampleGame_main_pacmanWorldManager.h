@@ -29,16 +29,6 @@ pacmanWorldHandler.init();
 }
 void execute()
 {
-pacmanWorldHandler.moveUp = moveUp;
-pacmanWorldHandler.moveDown = moveDown;
-pacmanWorldHandler.moveLeft = moveLeft;
-pacmanWorldHandler.moveRight = moveRight;
-pacmanWorldHandler.pacmanPositionX = pacmanPositionX;
-pacmanWorldHandler.pacmanPositionY = pacmanPositionY;
-pacmanWorldHandler.world = world;
-pacmanWorldHandler.execute();
-pacmanNextPositionX = pacmanWorldHandler.pacmanNextPositionX;
-pacmanNextPositionY = pacmanWorldHandler.pacmanNextPositionY;
 }
 
 };
