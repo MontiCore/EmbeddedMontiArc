@@ -25,6 +25,7 @@ import de.monticore.symboltable.MutableScope;
 import de.monticore.symboltable.Symbol;
 import de.monticore.symboltable.resolving.ResolvingFilter;
 import de.monticore.symboltable.types.references.ActualTypeArgument;
+import de.se_rwth.commons.Joiners;
 import de.se_rwth.commons.Names;
 import de.se_rwth.commons.logging.Log;
 
@@ -667,5 +668,13 @@ public class EMAComponentInstanceBuilder {
     public EMAComponentInstanceBuilder setComponentModifiers(List<ASTComponentModifier> componentModifiers) {
         this.componentModifiers = componentModifiers;
         return this;
+    }
+
+    public void fixSubComponentPackageNames() {
+        subComponents.stream().forEach(s -> {
+            String newPackageName = Joiners.DOT.join(packageName, name.get());
+            s.setPackageName(newPackageName);
+            s.setFullName(Joiners.DOT.join(newPackageName, s.getName()));
+        });
     }
 }
