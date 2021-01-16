@@ -21,13 +21,7 @@ import de.monticore.ast.ASTNode;
 import de.monticore.lang.tagging._ast.*;
 import de.monticore.lang.tagging._parser.TaggingParser;
 import de.monticore.lang.tagging.helper.RangeFixer;
-import de.monticore.symboltable.CommonScope;
-import de.monticore.symboltable.MutableScope;
-import de.monticore.symboltable.Scope;
-import de.monticore.symboltable.ScopeSpanningSymbol;
-import de.monticore.symboltable.Symbol;
-import de.monticore.symboltable.SymbolKind;
-import de.monticore.symboltable.SymbolPredicate;
+import de.monticore.symboltable.*;
 import de.monticore.symboltable.modifiers.AccessModifier;
 import de.monticore.symboltable.resolving.ResolvingFilter;
 import de.se_rwth.commons.logging.Log;
@@ -276,5 +270,21 @@ public class TaggingResolver implements Scope {
   @Override
   public MutableScope getAsMutableScope() {
     return globalScope.getAsMutableScope();
+  }
+
+  public void addSubScope(MutableScope subScope) {
+    if (!(globalScope instanceof GlobalScope)) return;
+    if (!globalScope.getSubScopes().contains(subScope)) {
+      ((GlobalScope) this.globalScope).addSubScope(subScope);
+      subScope.setEnclosingScope((GlobalScope) this.globalScope);
+    }
+  }
+
+  public void removeSubScope(MutableScope subScope) {
+    if (!(globalScope instanceof GlobalScope)) return;
+    if (globalScope.getSubScopes().contains(subScope)) {
+      ((GlobalScope) this.globalScope).removeSubScope(subScope);
+      subScope.setEnclosingScope(null);
+    }
   }
 }
