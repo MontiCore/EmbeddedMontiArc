@@ -6,9 +6,9 @@ int main(int argc, char** argv)
     instance.init();
     int i;
     for (i=1; i<argc; i++) {
-        instance.in1 = atof(argv[i]);
+        instance.input = atof(argv[i]);
         instance.execute();
-        std::cout << "t = " << getCurrentTime() << ":\t " << instance.out1 << "\n";
+        std::cout << "t = " << getCurrentTime() << ":\t " << instance.output << "\n";
     }
     return 0;
 }
