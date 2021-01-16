@@ -22,7 +22,7 @@
         <mc.grammars.assembly.version>0.0.8</mc.grammars.assembly.version>
 
         <!-- .. Libraries .................................................. -->
-        <junit.version>4.13</junit.version>
+        <junit.version>4.13.1</junit.version>
 
         <!-- .. Plugins ....................................................... -->
         <assembly.plugin>2.5.4</assembly.plugin>
