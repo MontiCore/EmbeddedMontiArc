@@ -652,4 +652,100 @@ public class GeneratorCPP implements EMAMGenerator {
         double v = Double.parseDouble(dt);
         setDeltaT(v);
     }
+
+    public List<FileContent> getCurrentFileContents() {
+        return currentFileContentList;
+    }
+
+    public void addFileContent(FileContent fileContent) {
+        currentFileContentList.add(fileContent);
+    }
+
+    public void setATol(String optionValue) {
+        NumericSolverOptions.ATOL = Double.parseDouble(optionValue);
+    }
+
+    public void setRTol(String optionValue) {
+        NumericSolverOptions.RTOL = Double.parseDouble(optionValue);
+    }
+
+    public void setJTol(String optionValue) {
+        NumericSolverOptions.JTOL = Double.parseDouble(optionValue);
+    }
+
+    public void setDeltaTSolver(String optionValue) {
+        NumericSolverOptions.DT_SOLVER = Double.parseDouble(optionValue);
+    }
+
+    public void setResolveLoops(String optionValue) {
+        ExecutionSemantics.RESOLVE_LOOPS = Boolean.parseBoolean(optionValue);
+    }
+
+    public void setHandleArtificial(String optionValue) {
+        ExecutionSemantics.HANDLE_ARTIFICIAL_LOOPS = Boolean.parseBoolean(optionValue);
+    }
+
+    public void setSolveLoopsSymbolic(String optionValue) {
+        ExecutionSemantics.SOLVE_LOOPS_SYMBOLIC = Boolean.parseBoolean(optionValue);
+    }
+
+    public void setSolveSpecificationSymbolic(String optionValue) {
+        ExecutionSemantics.SOLVE_SPECIFICATIONS_SYMBOLIC = Boolean.parseBoolean(optionValue);
+    }
+
+    public void setWarnLoops(String optionValue) {
+        ExecutionSemantics.WARN_LOOPS = Boolean.parseBoolean(optionValue);
+    }
+
+    public void setWarnArtificial(String optionValue) {
+        ExecutionSemantics.WARN_ARTIFICIAL_LOOPS = Boolean.parseBoolean(optionValue);
+    }
+
+    public void setLogSymbolicSolve(String optionValue) {
+        ExecutionSemantics.LOG_SYMBOLIC_SOLVE = Boolean.parseBoolean(optionValue);
+    }
+
+    public void setATol(double optionValue) {
+        NumericSolverOptions.ATOL = (optionValue);
+    }
+
+    public void setRTol(double optionValue) {
+        NumericSolverOptions.RTOL = (optionValue);
+    }
+
+    public void setJTol(double optionValue) {
+        NumericSolverOptions.JTOL = (optionValue);
+    }
+
+    public void setDeltaTSolver(double optionValue) {
+        NumericSolverOptions.DT_SOLVER = (optionValue);
+    }
+
+    public void setResolveLoops(boolean optionValue) {
+        ExecutionSemantics.RESOLVE_LOOPS = (optionValue);
+    }
+
+    public void setHandleArtificial(boolean optionValue) {
+        ExecutionSemantics.HANDLE_ARTIFICIAL_LOOPS = (optionValue);
+    }
+
+    public void setSolveLoopsSymbolic(boolean optionValue) {
+        ExecutionSemantics.SOLVE_LOOPS_SYMBOLIC = (optionValue);
+    }
+
+    public void setSolveSpecificationSymbolic(boolean optionValue) {
+        ExecutionSemantics.SOLVE_SPECIFICATIONS_SYMBOLIC = (optionValue);
+    }
+
+    public void setWarnLoops(boolean optionValue) {
+        ExecutionSemantics.WARN_LOOPS = (optionValue);
+    }
+
+    public void setWarnArtificial(boolean optionValue) {
+        ExecutionSemantics.WARN_ARTIFICIAL_LOOPS = (optionValue);
+    }
+
+    public void setLogSymbolicSolve(boolean optionValue) {
+        ExecutionSemantics.LOG_SYMBOLIC_SOLVE = (optionValue);
+    }
 }

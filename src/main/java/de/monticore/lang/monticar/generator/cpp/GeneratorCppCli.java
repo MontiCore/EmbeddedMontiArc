@@ -124,6 +124,83 @@ public final class GeneratorCppCli {
             .required(false)
             .build();
 
+    public static final Option OPTION_ATOL = Option.builder("atol")
+            .longOpt("absolute-tolerance")
+            .desc("optional parameter to set the absolute tolerance for numeric solves")
+            .hasArg(true)
+            .required(false)
+            .build();
+
+    public static final Option OPTION_RTOL = Option.builder("rtol")
+            .longOpt("relative-tolerance")
+            .desc("optional parameter to set the relative tolerance for numeric solves")
+            .hasArg(true)
+            .required(false)
+            .build();
+
+    public static final Option OPTION_JTOL = Option.builder("jtol")
+            .longOpt("jacobean-tolerance")
+            .desc("optional parameter to set the tolerance for Jacobeans for numeric solves")
+            .hasArg(true)
+            .required(false)
+            .build();
+
+    public static final Option OPTION_DT_SOLVER = Option.builder("dts")
+            .longOpt("time-step-solver")
+            .desc("optional parameter to set the time step for numeric solves as double")
+            .hasArg(true)
+            .required(false)
+            .build();
+
+    public static final Option OPTION_RESOLVE_LOOPS = Option.builder()
+            .longOpt("resolve-loops")
+            .desc("optional parameter to resolve loops automatically,...")
+            .hasArg(true)
+            .required(false)
+            .build();
+
+    public static final Option OPTION_HANDLE_ARTIFICIAL = Option.builder()
+            .longOpt("handle-artificial")
+            .desc("optional parameter to handle artificial loops automatically,...")
+            .hasArg(true)
+            .required(false)
+            .build();
+
+    public static final Option OPTION_SOLVE_LOOPS_SYMBOLIC = Option.builder()
+            .longOpt("solve-loops-symbolic")
+            .desc("optional parameter to solve loops analytically,...")
+            .hasArg(true)
+            .required(false)
+            .build();
+
+    public static final Option OPTION_SOLVE_SPECIFICATION_SYMBOLIC = Option.builder()
+            .longOpt("solve-specifications-symbolic")
+            .desc("optional parameter to solve specifications analytically,...")
+            .hasArg(true)
+            .required(false)
+            .build();
+
+    public static final Option OPTION_WARN_LOOPS = Option.builder()
+            .longOpt("warn-loops")
+            .desc("optional parameter to log loops")
+            .hasArg(true)
+            .required(false)
+            .build();
+
+    public static final Option OPTION_WARN_ARTIFICIAL_LOOPS = Option.builder()
+            .longOpt("warn-artificial-loops")
+            .desc("optional parameter to log artificial loops")
+            .hasArg(true)
+            .required(false)
+            .build();
+
+    public static final Option OPTION_LOG_SYMBOLIC_SOLVE = Option.builder()
+            .longOpt("log-symbolic-solve")
+            .desc("optional parameter to log symbolic solves")
+            .hasArg(true)
+            .required(false)
+            .build();
+
     private GeneratorCppCli() {
     }
 
@@ -155,6 +232,18 @@ public final class GeneratorCppCli {
         options.addOption(OPTION_FLAG_EXEC_LOGGING);
         options.addOption(OPTION_FLAG_CMAKE);
         options.addOption(OPTION_DELTA_T);
+        options.addOption(OPTION_ATOL);
+        options.addOption(OPTION_RTOL);
+        options.addOption(OPTION_JTOL);
+        options.addOption(OPTION_DT_SOLVER);
+        options.addOption(OPTION_RESOLVE_LOOPS);
+        options.addOption(OPTION_HANDLE_ARTIFICIAL);
+        options.addOption(OPTION_SOLVE_LOOPS_SYMBOLIC);
+        options.addOption(OPTION_SOLVE_SPECIFICATION_SYMBOLIC);
+        options.addOption(OPTION_WARN_LOOPS);
+        options.addOption(OPTION_WARN_ARTIFICIAL_LOOPS);
+        options.addOption(OPTION_LOG_SYMBOLIC_SOLVE);
+
         return options;
     }
 
@@ -202,6 +291,50 @@ public final class GeneratorCppCli {
             g.setDeltaT(cliArgs.getOptionValue(OPTION_DELTA_T.getOpt()));
         if (cliArgs.hasOption(OPTION_DELTA_T.getLongOpt()))
             g.setDeltaT(cliArgs.getOptionValue(OPTION_DELTA_T.getLongOpt()));
+
+        if (cliArgs.hasOption(OPTION_ATOL.getOpt()))
+            g.setATol(cliArgs.getOptionValue(OPTION_ATOL.getOpt()));
+        if (cliArgs.hasOption(OPTION_ATOL.getLongOpt()))
+            g.setATol(cliArgs.getOptionValue(OPTION_ATOL.getLongOpt()));
+
+        if (cliArgs.hasOption(OPTION_RTOL.getOpt()))
+            g.setRTol(cliArgs.getOptionValue(OPTION_RTOL.getOpt()));
+        if (cliArgs.hasOption(OPTION_RTOL.getLongOpt()))
+            g.setRTol(cliArgs.getOptionValue(OPTION_RTOL.getLongOpt()));
+
+        if (cliArgs.hasOption(OPTION_JTOL.getOpt()))
+            g.setJTol(cliArgs.getOptionValue(OPTION_JTOL.getOpt()));
+        if (cliArgs.hasOption(OPTION_JTOL.getLongOpt()))
+            g.setJTol(cliArgs.getOptionValue(OPTION_JTOL.getLongOpt()));
+
+        if (cliArgs.hasOption(OPTION_DT_SOLVER.getOpt()))
+            g.setDeltaTSolver(cliArgs.getOptionValue(OPTION_DT_SOLVER.getOpt()));
+        if (cliArgs.hasOption(OPTION_DT_SOLVER.getLongOpt()))
+            g.setDeltaTSolver(cliArgs.getOptionValue(OPTION_DT_SOLVER.getLongOpt()));
+
+
+        if (cliArgs.hasOption(OPTION_RESOLVE_LOOPS.getLongOpt()))
+            g.setResolveLoops(cliArgs.getOptionValue(OPTION_RESOLVE_LOOPS.getLongOpt()));
+
+        if (cliArgs.hasOption(OPTION_HANDLE_ARTIFICIAL.getLongOpt()))
+            g.setHandleArtificial(cliArgs.getOptionValue(OPTION_HANDLE_ARTIFICIAL.getLongOpt()));
+
+        if (cliArgs.hasOption(OPTION_SOLVE_LOOPS_SYMBOLIC.getLongOpt()))
+            g.setSolveLoopsSymbolic(cliArgs.getOptionValue(OPTION_SOLVE_LOOPS_SYMBOLIC.getLongOpt()));
+
+        if (cliArgs.hasOption(OPTION_SOLVE_SPECIFICATION_SYMBOLIC.getLongOpt()))
+            g.setSolveSpecificationSymbolic(cliArgs.getOptionValue(OPTION_SOLVE_SPECIFICATION_SYMBOLIC.getLongOpt()));
+
+        if (cliArgs.hasOption(OPTION_WARN_LOOPS.getLongOpt()))
+            g.setWarnLoops(cliArgs.getOptionValue(OPTION_WARN_LOOPS.getLongOpt()));
+
+        if (cliArgs.hasOption(OPTION_WARN_ARTIFICIAL_LOOPS.getLongOpt()))
+            g.setWarnArtificial(cliArgs.getOptionValue(OPTION_WARN_ARTIFICIAL_LOOPS.getLongOpt()));
+
+        if (cliArgs.hasOption(OPTION_LOG_SYMBOLIC_SOLVE.getLongOpt()))
+            g.setLogSymbolicSolve(cliArgs.getOptionValue(OPTION_LOG_SYMBOLIC_SOLVE.getLongOpt()));
+
+
 
         try {
             if (componentSymbol != null) {
