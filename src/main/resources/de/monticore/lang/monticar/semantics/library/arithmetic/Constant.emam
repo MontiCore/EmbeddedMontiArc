@@ -6,6 +6,6 @@ component Constant<T>(T cvalue) {
 		out T value;
 
     implementation Math{
-        value == cvalue;
+        value = cvalue;
     }
 }
