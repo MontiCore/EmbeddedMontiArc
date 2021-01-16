@@ -14,7 +14,6 @@ public class MathLanguage extends MathLanguageTOP{
 
     public MathLanguage() {
         super("Math Language", FILE_ENDING);
-        LogConfig.init();
     }
 
     @Override
