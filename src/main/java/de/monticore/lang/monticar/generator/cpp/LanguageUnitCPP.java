@@ -185,6 +185,9 @@ public class LanguageUnitCPP extends LanguageUnit {
             resultString += generateHeaderGenerateVariable(v);
         }
 
+        if (bluePrint.getConstructor() != null)
+            resultString += generateConstructor(bluePrint.getConstructor(), bluePrint);
+
         //generate methods
         for (Method method : bluePrint.getMethods()) {
             if(!method.isPublic()){
@@ -201,6 +204,29 @@ public class LanguageUnitCPP extends LanguageUnit {
         //guard define end
         resultString += "#endif\n";
         Log.info(resultString, "Before RESSSS:");
+        return resultString;
+    }
+
+    private String generateConstructor(Method constructor, EMAMBluePrintCPP bluePrint) {
+        int counter = 0;
+        String resultString = constructor.getName() + "(";
+        for (Variable param : constructor.getParameters()) {
+            if (counter == 0) {
+                ++counter;
+                resultString += param.getVariableType().getTypeNameTargetLanguage() + " " + param.getNameTargetLanguageFormat();
+            } else {
+                resultString += ", " + param.getVariableType().getTypeNameTargetLanguage() + " " + param.getNameTargetLanguageFormat();
+            }
+            if (param.isArray())
+                resultString += "[" + param.getArraySize() + "]";
+        }
+        resultString += ") :\n";//TODO add semicolon when using source files
+
+        for (Instruction instruction : constructor.getInstructions())
+            resultString += instruction.getTargetLanguageInstruction();
+
+        resultString += "{}\n";
+
         return resultString;
     }
 

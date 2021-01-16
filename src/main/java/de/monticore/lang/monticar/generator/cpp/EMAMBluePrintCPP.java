@@ -154,4 +154,12 @@ public class EMAMBluePrintCPP extends EMAMBluePrint {
     public void addInstructionToMethod(Instruction instruction, String methodName) {
         getMethod(methodName).get().addInstruction(instruction);
     }
+
+    public void setConstructor(Method constructor) {
+        this.constructor = constructor;
+    }
+
+    public Method getConstructor() {
+        return constructor;
+    }
 }
