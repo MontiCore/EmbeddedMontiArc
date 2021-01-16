@@ -9,10 +9,16 @@ public class ExecutionStepperHelper {
 
     public static String FILENAME = "ExecutionStepper";
 
+    public static String CURRENTTIME_METHOD_NAME = "getCurrentTime";
+
     private static boolean TIME_USED = false;
 
     public static void setUsed() {
         TIME_USED = true;
+    }
+
+    public static void setUnused() {
+        TIME_USED = false;
     }
 
     public static boolean isUsed() {

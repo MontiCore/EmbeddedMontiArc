@@ -14,31 +14,23 @@ import de.monticore.lang.monticar.generator.cmake.CMakeFindModule;
 import de.monticore.lang.monticar.generator.cpp.Dynamics.DynamicHelper;
 import de.monticore.lang.monticar.generator.cpp.Dynamics.EventPortValueCheck;
 import de.monticore.lang.monticar.generator.cpp.converter.*;
-import de.monticore.lang.monticar.generator.cpp.instruction.ConnectInstructionCPP;
 import de.monticore.lang.monticar.generator.cpp.loopSolver.CPPEquationSystemHelper;
 import de.monticore.lang.monticar.generator.cpp.loopSolver.EquationSystemComponentInstanceSymbol;
-import de.monticore.lang.monticar.generator.cpp.loopSolver.daecpp.DAECPPEquationSystemGenerator;
-import de.monticore.lang.monticar.generator.cpp.loopSolver.daecpp.DAECPPOptions;
-import de.monticore.lang.monticar.generator.cpp.loopSolver.odeint.OdeintEquationSystemGenerator;
-import de.monticore.lang.monticar.generator.cpp.loopSolver.odeint.OdeintOptions;
+import de.monticore.lang.monticar.generator.cpp.loopSolver.NumericSolverOptions;
+import de.monticore.lang.monticar.generator.cpp.loopSolver.RHSComponentInstanceSymbol;
 import de.monticore.lang.monticar.generator.cpp.mathopt.MathOptSolverConfig;
 import de.monticore.lang.monticar.generator.cpp.template.AllTemplates;
 import de.monticore.lang.monticar.generator.cpp.viewmodel.AutopilotAdapterDataModel;
 import de.monticore.lang.monticar.generator.cpp.viewmodel.ServerWrapperViewModel;
-import de.monticore.lang.monticar.generator.order.ImplementExecutionOrder;
 import de.monticore.lang.monticar.generator.testing.StreamTestGenerator;
 import de.monticore.lang.monticar.semantics.ExecutionSemantics;
-import de.monticore.lang.monticar.semantics.helper.Find;
 import de.monticore.lang.monticar.semantics.helper.NameHelper;
-import de.monticore.lang.monticar.semantics.loops.detection.ConnectionHelper;
 import de.monticore.lang.monticar.semantics.loops.symbols.EMAEquationSystem;
 import de.monticore.lang.monticar.semantics.loops.symbols.LoopComponentInstanceSymbol;
-import de.monticore.lang.monticar.semantics.loops.symbols.LoopComponentInstanceSymbol;
-import de.monticore.lang.monticar.semantics.resolve.SymbolTableHelper;
 import de.monticore.lang.monticar.ts.MCTypeSymbol;
 import de.monticore.lang.tagging._symboltable.TaggingResolver;
 import de.monticore.symboltable.Scope;
-import de.se_rwth.commons.Joiners;
+import de.se_rwth.commons.Names;
 import de.se_rwth.commons.logging.Log;
 import org.apache.commons.lang3.StringUtils;
 
@@ -84,6 +76,10 @@ public class GeneratorCPP implements EMAMGenerator {
     private MathOptFunctionFixer mathOptFunctionFixer = new MathOptFunctionFixer();
     private EMAComponentInstanceSymbol rootModel = null;
 
+    // EMAM
+    private EMAMSymbolHandler specificationSymbolHandler = new EMAMSymbolHandler();
+    private EMAMFunctionFixer emamFunctionFixer = new EMAMFunctionFixer();
+
     public GeneratorCPP() {
         this.mathCommandRegister = new MathCommandRegisterCPP();
         setGenerateCMake(true);
@@ -93,6 +89,9 @@ public class GeneratorCPP implements EMAMGenerator {
 
         mathOptExecuteMethodGenerator.setSuccessor(ExecuteMethodGenerator.getInstance());
         mathOptFunctionFixer.setSuccessor(MathFunctionFixer.getInstance());
+
+        specificationSymbolHandler.setSuccessor(mathOptExecuteMethodGenerator);
+        emamFunctionFixer.setSuccessor(mathOptFunctionFixer);
     }
 
 
@@ -188,72 +187,10 @@ public class GeneratorCPP implements EMAMGenerator {
 
         if (bluePrintCPP != null) {
             bluePrints.add(bluePrintCPP);
-
             if (componentSymbol.equals(this.rootModel) && ExecutionStepperHelper.isUsed()) {
                 Optional<Method> execute = bluePrintCPP.getMethod("execute");
-                execute.get().getInstructions().add(new Instruction() {
-                    @Override
-                    public String getTargetLanguageInstruction() {
-                        return "advanceTime();\n";
-                    }
-
-                    @Override
-                    public boolean isConnectInstruction() {
-                        return false;
-                    }
-                });
-                bluePrintCPP.addAdditionalIncludeString(ExecutionStepperHelper.FILENAME);
-            }
-
-            if (componentSymbol instanceof LoopComponentInstanceSymbol) {
-                // connect information to eqs
-                ExecutionStepperHelper.setUsed();
-                EMAEquationSystem equationSystem = ((LoopComponentInstanceSymbol) componentSymbol).getEquationSystem();
-                String eqsName = equationSystem.getName();
-                Variable eqs = new Variable("eqs", "");
-                eqs.setVariableType(new VariableType("", eqsName, eqsName));
-                bluePrintCPP.addVariable(eqs);
-                Optional<Method> execute = bluePrintCPP.getMethod("execute");
-                if (execute.isPresent()) {
-                    for (EMAPortInstanceSymbol inport : equationSystem.getIncomingPorts()) {
-                        Optional<EMAPortInstanceSymbol> originalSourcePort = equationSystem.getAtomicSourceOf(inport);
-                        Optional<EMAPortInstanceSymbol> currentPort = componentSymbol.getIncomingPortInstances().stream()
-                                .filter(i -> ConnectionHelper.sourceOf(i).equals(originalSourcePort))
-                                .findFirst();
-                        if (currentPort.isPresent()) {
-                            String sourceName = currentPort.get().getName();
-                            String targetName = String.join(".", "eqs",
-                                    CPPEquationSystemHelper.getNameOfPort(inport));
-                            Variable v1 = PortConverter.convertPortSymbolToVariable(currentPort.get(), sourceName, bluePrintCPP);
-                            Variable v2 = PortConverter.convertPortSymbolToVariable(inport, targetName, bluePrintCPP);
-                            execute.get().addInstruction(new ConnectInstructionCPP(v2, v1));
-                        } else Log.error("Missing information for equation system TODO");
-                    }
-                    execute.get().addInstruction(new Instruction() {
-                        @Override
-                        public String getTargetLanguageInstruction() {
-                            return "eqs.execute();\n";
-                        }
-
-                        @Override
-                        public boolean isConnectInstruction() {
-                            return false;
-                        }
-                    });
-                    for (EMAPortInstanceSymbol outport : componentSymbol.getOutgoingPortInstances()) {
-                        Optional<EMAPortInstanceSymbol> eqsVar = equationSystem.getOutgoingPorts().stream()
-                                .filter(p -> p.getFullName().equals(outport.getFullName()))
-                                .findFirst();
-                        if (eqsVar.isPresent()) {
-                            String sourceName = String.join(".", "eqs",
-                                    CPPEquationSystemHelper.getNameOfPort(eqsVar.get()));
-                            String targetName = outport.getName();
-                            Variable v1 = PortConverter.convertPortSymbolToVariable(eqsVar.get(), sourceName, bluePrintCPP);
-                            Variable v2 = PortConverter.convertPortSymbolToVariable(outport, targetName, bluePrintCPP);
-                            execute.get().addInstruction(new ConnectInstructionCPP(v2, v1));
-                        } else Log.error("Could not find corresponding port");
-                    }
-                }
+                execute.get().getInstructions().add(new TargetCodeInstruction("advanceTime();\n"));
+                bluePrintCPP.addAdditionalUserIncludeStrings(ExecutionStepperHelper.FILENAME);
             }
         }
         String result;
@@ -264,7 +201,7 @@ public class GeneratorCPP implements EMAMGenerator {
         return result;
     }
 
-    public static List<FileContent> currentFileContentList = null;
+    public List<FileContent> currentFileContentList = new ArrayList<>();
 
     private static Set<EMAMEquationSymbol> equationSystemsAlreadyBuild = new HashSet<>();
 
@@ -279,15 +216,6 @@ public class GeneratorCPP implements EMAMGenerator {
 
 //        ImplementExecutionOrder.exOrder(taggingResolver, componentInstanceSymbol);
 
-        if (componentInstanceSymbol instanceof LoopComponentInstanceSymbol) {
-            ((LoopComponentInstanceSymbol) componentInstanceSymbol).getEquationSystem()
-                    .setName(Joiners.DOT.join(rootModel.getFullName(),
-                            ((LoopComponentInstanceSymbol) componentInstanceSymbol).getEquationSystem().getName()));
-            for (CMakeFindModule dependency : OdeintOptions.getDependencies())
-                cMakeConfig.addModuleDependency(dependency);
-        }
-
-        currentFileContentList = fileContents;
         String lastNameWithoutArrayPart = "";
         if (!streamTestGenerationMode) {
             for (EMAComponentInstanceSymbol instanceSymbol : componentInstanceSymbol.getSubComponents()) {
@@ -319,6 +247,20 @@ public class GeneratorCPP implements EMAMGenerator {
                 fileContents.addAll(SimulatorIntegrationHelper.getSimulatorIntegrationHelperFileContent());
             }
         }
+
+        if (componentInstanceSymbol instanceof LoopComponentInstanceSymbol) {
+            EMAEquationSystem equationSystem = ((LoopComponentInstanceSymbol) componentInstanceSymbol).getEquationSystem();
+            if (!equationSystemsAlreadyBuild.contains(equationSystem)) {
+                equationSystem.setName(Names.getQualifiedName(rootModel.getFullName(),
+                        equationSystem.getName()));
+                CPPEquationSystemHelper.handleSubComponents(equationSystem);
+                fileContents.addAll(generateStrings(taggingResolver,
+                        new EquationSystemComponentInstanceSymbol(equationSystem)));
+                fileContents.addAll(generateStrings(taggingResolver,
+                        new RHSComponentInstanceSymbol(equationSystem)));
+            }
+        }
+
         if (!streamTestGenerationMode)
             fileContents.add(new FileContent(generateString(taggingResolver, componentInstanceSymbol), componentInstanceSymbol));
         else
@@ -346,17 +288,6 @@ public class GeneratorCPP implements EMAMGenerator {
             fileContents.addAll(SimulatorIntegrationHelper.getSimulatorIntegrationHelperFileContent());
         }
 
-
-        if (componentInstanceSymbol instanceof LoopComponentInstanceSymbol) {
-            EMAEquationSystem equationSystem = ((LoopComponentInstanceSymbol) componentInstanceSymbol).getEquationSystem();
-            if (!equationSystemsAlreadyBuild.contains(equationSystem)) {
-//                fileContents.addAll(OdeintEquationSystemGenerator.generateEquationSystem(
-//                        ((LoopComponentInstanceSymbol) componentInstanceSymbol).getEquationSystem()));
-                fileContents.addAll(generateStrings(taggingResolver,
-                        new EquationSystemComponentInstanceSymbol(equationSystem)));
-            }
-        }
-
         return fileContents;
     }
 
@@ -375,6 +306,7 @@ public class GeneratorCPP implements EMAMGenerator {
                     EMAComponentInstanceSymbol componentInstanceSymbol = (EMAComponentInstanceSymbol) taggingResolver.resolve(componentFullName,
                             EMAComponentInstanceSymbol.KIND).get();
 
+                    // TODO add properties
                     ExecutionSemantics semantics = new ExecutionSemantics(taggingResolver, componentInstanceSymbol);
                     semantics.addExecutionSemantics();
                     fileContents.addAll(generateStrings(taggingResolver, componentInstanceSymbol));
@@ -403,6 +335,7 @@ public class GeneratorCPP implements EMAMGenerator {
         if (ExecutionStepperHelper.isUsed()) {
             fileContents.add(ExecutionStepperHelper.getTimeHelperFileContent());
         }
+        fileContents.addAll(currentFileContentList);
         List<File> files = saveFilesToDisk(fileContents);
         //cmake
         if (generateCMake)

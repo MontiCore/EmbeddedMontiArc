@@ -1,5 +1,7 @@
+/* (c) https://github.com/MontiCore/monticore */
 package de.monticore.lang.monticar.generator.cpp.loopSolver;
 
+import de.monticore.lang.embeddedmontiarc.embeddedmontiarc._symboltable.cncModel.EMAComponentSymbolReference;
 import de.monticore.lang.embeddedmontiarc.embeddedmontiarc._symboltable.instanceStructure.EMAComponentInstanceSymbol;
 import de.monticore.lang.embeddedmontiarc.embeddedmontiarc._symboltable.instanceStructure.EMAPortInstanceSymbol;
 import de.monticore.lang.monticar.generator.VariableType;
@@ -8,6 +10,7 @@ import de.monticore.lang.monticar.generator.cpp.converter.TypeConverter;
 import de.monticore.lang.monticar.semantics.helper.NameHelper;
 import de.monticore.lang.monticar.semantics.loops.symbols.EMAEquationSystem;
 import de.monticore.lang.monticar.semantics.loops.symbols.EMAEquationSystemHelper;
+import de.monticore.lang.monticar.semantics.loops.symbols.semiexplicit.ComponentCall;
 import de.monticore.lang.monticar.semantics.loops.symbols.semiexplicit.SemiExplicitForm;
 import de.se_rwth.commons.Joiners;
 import de.se_rwth.commons.Names;
@@ -16,14 +19,15 @@ import java.util.Collection;
 import java.util.HashSet;
 import java.util.Optional;
 import java.util.Set;
+import java.util.stream.Collectors;
 
-public class EquationSystemComponentInstanceSymbol extends EMAComponentInstanceSymbol {
+public class RHSComponentInstanceSymbol extends EMAComponentInstanceSymbol {
 
-    private SemiExplicitForm semiExplicitForm;
-    private EMAEquationSystem equationSystem;
+    private final EMAEquationSystem equationSystem;
+    private final SemiExplicitForm semiExplicitForm;
 
-    public EquationSystemComponentInstanceSymbol(EMAEquationSystem equationSystem) {
-        super(equationSystem.getName(), null);
+    public RHSComponentInstanceSymbol(EMAEquationSystem equationSystem) {
+        super(equationSystem.getName() + "_RHS", null);
         this.equationSystem = equationSystem;
         this.semiExplicitForm = EMAEquationSystemHelper.buildSemiExplicitForm(equationSystem);
     }
@@ -34,22 +38,6 @@ public class EquationSystemComponentInstanceSymbol extends EMAComponentInstanceS
 
     public SemiExplicitForm getSemiExplicitForm() {
         return semiExplicitForm;
-    }
-
-    public String getSubComponentName(EMAComponentInstanceSymbol subComponent) {
-        String parentName = NameHelper.getPackageOfFullQualifiedName(getFullName());
-        String fullName = NameHelper.calculatePartialName(subComponent.getFullName(), parentName);
-        return Joiners.DOT.join(getFullName(), fullName);
-    }
-
-    public VariableType getTypeOfSubComponent(EMAComponentInstanceSymbol subComponent) {
-        String fullName = subComponent.getFullName();
-        VariableType type = new VariableType();
-        type.setTypeNameMontiCar(fullName);
-        type.setTypeNameTargetLanguage(GeneralHelperMethods.getTargetLanguageComponentName(fullName));
-        type.setIncludeName(type.getTypeNameTargetLanguage());
-        TypeConverter.addNonPrimitiveVariableType(type);
-        return type;
     }
 
     @Override
@@ -72,7 +60,12 @@ public class EquationSystemComponentInstanceSymbol extends EMAComponentInstanceS
 
     @Override
     public Collection<EMAComponentInstanceSymbol> getSubComponents() {
-        return new HashSet<>();
+        Set<EMAComponentInstanceSymbol> components = semiExplicitForm.getG().stream()
+                .filter(g -> g instanceof ComponentCall)
+                .map(g -> ((ComponentCall) g).getComponent())
+                .collect(Collectors.toSet());
+//        return equationSystem.getComponentInstanceSymbols();
+        return components;
     }
 
     @Override

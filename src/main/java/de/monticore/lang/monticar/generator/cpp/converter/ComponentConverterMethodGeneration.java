@@ -9,10 +9,14 @@ import de.monticore.lang.math._symboltable.expression.*;
 import de.monticore.lang.math._symboltable.matrix.*;
 import de.monticore.lang.monticar.generator.*;
 import de.monticore.lang.monticar.generator.cpp.EMAMBluePrintCPP;
+import de.monticore.lang.monticar.generator.cpp.GeneralHelperMethods;
 import de.monticore.lang.monticar.generator.cpp.GeneratorCPP;
 import de.monticore.lang.monticar.generator.cpp.MathFunctionFixer;
 import de.monticore.lang.monticar.generator.cpp.instruction.ConnectInstructionCPP;
-import de.monticore.lang.monticar.generator.cpp.symbols.MathStringExpression;
+import de.monticore.lang.monticar.generator.cpp.loopSolver.CPPEquationSystemHelper;
+import de.monticore.lang.monticar.generator.cpp.loopSolver.EquationSystemComponentInstanceSymbol;
+import de.monticore.lang.monticar.generator.cpp.loopSolver.RHSComponentInstanceSymbol;
+import de.monticore.lang.embeddedmontiarc.embeddedmontiarcmath._symboltable.math.symbols.MathStringExpression;
 import de.monticore.lang.monticar.generator.optimization.MathOptimizer;
 import de.monticore.lang.monticar.semantics.executionOrder.SList;
 import de.monticore.lang.monticar.semantics.executionOrder.SListEntry;
@@ -21,6 +25,9 @@ import de.monticore.lang.monticar.semantics.helper.NameHelper;
 import de.monticore.lang.monticar.semantics.loops.analyze.GenerateComponentFunction;
 import de.monticore.lang.monticar.semantics.loops.detection.ConnectionHelper;
 import de.monticore.lang.monticar.semantics.loops.graph.EMAAtomicConnectorInstance;
+import de.monticore.lang.monticar.semantics.loops.symbols.EMAEquationSystem;
+import de.monticore.lang.monticar.semantics.loops.symbols.LoopComponentInstanceSymbol;
+import de.monticore.lang.monticar.semantics.loops.symbols.semiexplicit.*;
 import de.se_rwth.commons.logging.Log;
 
 import java.util.*;
@@ -28,6 +35,7 @@ import java.util.*;
 import static de.monticore.lang.monticar.generator.cpp.converter.ComponentConverter.getNameOfOutput;
 
 /**
+ *
  */
 public class ComponentConverterMethodGeneration {
     public static final String EXECUTE_METHOD_NAME = "execute";
@@ -68,16 +76,72 @@ public class ComponentConverterMethodGeneration {
             }
         }
 */
-        Method exMethod = new Method(EXECUTE_METHOD_NAME, "void");
-        generateExecuteMethodInner(exMethod,componentSymbol, bluePrint, mathStatementsSymbol, generatorCPP, includeStrings);
-//        bluePrint.addMethod(exMethod);
+        Method exMethod = bluePrint.getMethod(EXECUTE_METHOD_NAME).orElse(new Method(EXECUTE_METHOD_NAME, "void"));
+        bluePrint.addMethod(exMethod);
+
+        if (componentSymbol instanceof LoopComponentInstanceSymbol) {
+            generateExecuteForLoopComponent((LoopComponentInstanceSymbol) componentSymbol, exMethod, bluePrint);
+        } else if (componentSymbol instanceof EquationSystemComponentInstanceSymbol) {
+            generateExecuteExecuteForEquationSystemComponent((EquationSystemComponentInstanceSymbol) componentSymbol, bluePrint, generatorCPP, includeStrings, exMethod);
+        } else if (componentSymbol instanceof RHSComponentInstanceSymbol) {
+            generateExecuteForRHSComponent((RHSComponentInstanceSymbol) componentSymbol, bluePrint, generatorCPP, includeStrings, exMethod);
+        } else
+            generateExecuteMethodInner(exMethod, componentSymbol, bluePrint, mathStatementsSymbol, generatorCPP, includeStrings);
+
+        // rearrange execute to be last
+        bluePrint.getMethods().remove(exMethod);
+        bluePrint.addMethod(exMethod);
+
         return exMethod;
+    }
+
+    private static void generateExecuteForRHSComponent(RHSComponentInstanceSymbol componentSymbol, EMAMBluePrintCPP bluePrint, GeneratorCPP generatorCPP, List<String> includeStrings, Method exMethod) {
+        SemiExplicitForm semiExplicitForm = componentSymbol.getSemiExplicitForm();
+        addRHSOutputCalls(componentSymbol, exMethod, bluePrint, generatorCPP);
+        CPPEquationSystemHelper.handleRHS(semiExplicitForm, bluePrint, generatorCPP, includeStrings);
+        addRHSUpdateCalls(componentSymbol, exMethod, bluePrint, generatorCPP);
+    }
+
+    private static void generateExecuteExecuteForEquationSystemComponent(EquationSystemComponentInstanceSymbol componentSymbol, EMAMBluePrintCPP bluePrint, GeneratorCPP generatorCPP, List<String> includeStrings, Method exMethod) {
+        for (Variable variable : bluePrint.getVariables())
+            if (variable.getAdditionalInformation().contains("Incoming"))
+                exMethod.addInstruction(new TargetCodeInstruction(String.format("rhs.%s = %s;\n", variable.getName(), variable.getName())));
+        SemiExplicitForm semiExplicitForm = componentSymbol.getSemiExplicitForm();
+        CPPEquationSystemHelper.handleEquationSystem(semiExplicitForm, bluePrint, generatorCPP, includeStrings);
+    }
+
+    private static void addRHSOutputCalls(RHSComponentInstanceSymbol componentSymbol, Method exMethod, EMAMBluePrintCPP bluePrint, GeneratorCPP generatorCPP) {
+        List<Instruction> newInstructions = new LinkedList<>();
+        for (EMAComponentInstanceSymbol subComponent : componentSymbol.getSubComponents()) {
+            String name = GeneralHelperMethods.getTargetLanguageComponentVariableInstanceName(subComponent.getFullName());
+            newInstructions.add(new OutputInstruction(name, bluePrint, generatorCPP.useThreadingOptimizations()));
+        }
+        exMethod.addInstructions(newInstructions);
+        if (generatorCPP.useThreadingOptimizations())
+            for (EMAComponentInstanceSymbol subComponent : componentSymbol.getSubComponents()) {
+                String name = GeneralHelperMethods.getTargetLanguageComponentVariableInstanceName(subComponent.getFullName());
+                for (Instruction instruction : newInstructions) {
+                    if (instruction.isExecuteInstruction()) {
+                        ExecuteInstruction executeInstruction = (ExecuteInstruction) instruction;
+                        exMethod.addInstruction(new TargetCodeInstruction(executeInstruction.getThreadName() + ".join();\n"));
+                    }
+                }
+            }
+    }
+
+    private static void addRHSUpdateCalls(RHSComponentInstanceSymbol componentSymbol, Method exMethod, EMAMBluePrintCPP bluePrint, GeneratorCPP generatorCPP) {
+        List<Instruction> newInstructions = new LinkedList<>();
+        for (EMAComponentInstanceSymbol subComponent : componentSymbol.getSubComponents()) {
+            String name = GeneralHelperMethods.getTargetLanguageComponentVariableInstanceName(subComponent.getFullName());
+            newInstructions.add(new UpdateInstruction(name, bluePrint, generatorCPP.useThreadingOptimizations()));
+        }
+        exMethod.addInstructions(newInstructions);
     }
 
     protected static void generateExecuteMethodInner(Method method, EMAComponentInstanceSymbol componentSymbol,
                                                      EMAMBluePrintCPP bluePrint,
                                                      MathStatementsSymbol mathStatementsSymbol,
-                                                     GeneratorCPP generatorCPP, List<String> includeStrings){
+                                                     GeneratorCPP generatorCPP, List<String> includeStrings) {
         if (mathStatementsSymbol == null) {
 //            Collection<EMAConnectorInstanceSymbol> connectors = new HashSet<>();
 //            connectors.addAll(Find.allAtomicConnectors(componentSymbol));
@@ -88,7 +152,40 @@ public class ComponentConverterMethodGeneration {
             handleMathStatementGeneration(method, bluePrint, mathStatementsSymbol, generatorCPP, includeStrings);
     }
 
-    public static void generateConnectors(Collection<EMAConnectorInstanceSymbol> connectors, EMAMBluePrintCPP bluePrint, Method method){
+    private static void generateExecuteForLoopComponent(LoopComponentInstanceSymbol componentSymbol, Method method,
+                                                        EMAMBluePrintCPP bluePrintCPP) {
+        EMAEquationSystem equationSystem = componentSymbol.getEquationSystem();
+        for (EMAPortInstanceSymbol inport : equationSystem.getIncomingPorts()) {
+            Optional<EMAPortInstanceSymbol> originalSourcePort = equationSystem.getAtomicSourceOf(inport);
+            Optional<EMAPortInstanceSymbol> currentPort = componentSymbol.getIncomingPortInstances().stream()
+                    .filter(i -> ConnectionHelper.sourceOf(i).equals(originalSourcePort))
+                    .findFirst();
+            if (currentPort.isPresent()) {
+                String sourceName = currentPort.get().getName();
+                String targetName = String.join(".", "eqs",
+                        CPPEquationSystemHelper.getNameOfPort(inport));
+                Variable v1 = PortConverter.convertPortSymbolToVariable(currentPort.get(), sourceName, bluePrintCPP);
+                Variable v2 = PortConverter.convertPortSymbolToVariable(inport, targetName, bluePrintCPP);
+                method.addInstruction(new ConnectInstructionCPP(v2, v1));
+            } else Log.error("Missing information for equation system TODO");
+        }
+        method.addInstruction(new ExecuteInstruction("eqs", bluePrintCPP, false));
+        for (EMAPortInstanceSymbol outport : componentSymbol.getOutgoingPortInstances()) {
+            Optional<EMAPortInstanceSymbol> eqsVar = equationSystem.getOutgoingPorts().stream()
+                    .filter(p -> p.getFullName().equals(outport.getFullName()))
+                    .findFirst();
+            if (eqsVar.isPresent()) {
+                String sourceName = String.join(".", "eqs",
+                        CPPEquationSystemHelper.getNameOfPort(eqsVar.get()));
+                String targetName = outport.getName();
+                Variable v1 = PortConverter.convertPortSymbolToVariable(eqsVar.get(), sourceName, bluePrintCPP);
+                Variable v2 = PortConverter.convertPortSymbolToVariable(outport, targetName, bluePrintCPP);
+                method.addInstruction(new ConnectInstructionCPP(v2, v1));
+            } else Log.error("Could not find corresponding port");
+        }
+    }
+
+    public static void generateConnectors(Collection<EMAConnectorInstanceSymbol> connectors, EMAMBluePrintCPP bluePrint, Method method) {
         for (EMAConnectorInstanceSymbol connector : connectors) {
             if (!connector.isConstant()) {
                 Log.info("source:" + connector.getSource() + " target:" + connector.getTarget(), "Port info:");
@@ -106,7 +203,7 @@ public class ComponentConverterMethodGeneration {
                 method.addInstruction(instruction);
             } else {
                 if (connector.getSourcePort().isConstant()) {
-                    EMAPortInstanceSymbol constPort =  connector.getSourcePort();
+                    EMAPortInstanceSymbol constPort = connector.getSourcePort();
                     Variable v1 = new Variable();
                     v1.setName(constPort.getConstantValue().get().getValueAsString());
                     Variable v2 = PortConverter.getVariableForPortSymbol(connector, connector.getTarget(), bluePrint);
@@ -170,7 +267,7 @@ public class ComponentConverterMethodGeneration {
             String componentName = NameHelper.calculatePartialName(entry.getComponent(), currentComponentSymbol);
             if (entry.isExecuteCall())
                 newInstructions.add(new ExecuteInstruction(componentName, bluePrint, allCanBeThreaded));
-            else if(entry.isOutputCall())
+            else if (entry.isOutputCall())
                 newInstructions.add(new OutputInstruction(componentName, bluePrint, allCanBeThreaded));
             else if (entry.isUpdateCall())
                 newInstructions.add(new UpdateInstruction(componentName, bluePrint, allCanBeThreaded));
@@ -205,7 +302,7 @@ public class ComponentConverterMethodGeneration {
         for (EMAAtomicConnectorInstance connector : connectors) {
             if (connector.isConstant()) {
                 if (connector.getSourcePort().isConstant()) {
-                    EMAPortInstanceSymbol constPort =  connector.getSourcePort();
+                    EMAPortInstanceSymbol constPort = connector.getSourcePort();
                     Variable v1 = new Variable();
                     v1.setName(constPort.getConstantValue().get().getValueAsString());
                     String targetName = NameHelper.calculatePartialName(connector.getTarget(),
@@ -236,7 +333,7 @@ public class ComponentConverterMethodGeneration {
     private static List<Instruction> createTargetConnectors(EMAMBluePrintCPP bluePrint,
                                                             EMAPortInstanceSymbol source) {
         List<Instruction> newInstructions = new LinkedList<>();
-        for (EMAPortInstanceSymbol target: ConnectionHelper.targetsOf(source)) {
+        for (EMAPortInstanceSymbol target : ConnectionHelper.targetsOf(source)) {
             if (target.equals(source)) continue;
             String sourceName = NameHelper.calculatePartialName(source.getFullName(),
                     currentComponentSymbol.getFullName());
@@ -291,11 +388,11 @@ public class ComponentConverterMethodGeneration {
             removeUselessVariableDefinitions(method);
     }
 
-    private static boolean containsExactObject(Collection collection, Object obj){
-        for(Object other : collection){
+    private static boolean containsExactObject(Collection collection, Object obj) {
+        for (Object other : collection) {
             //equals is not used on purpose!
             //the jvm object id must be the same!
-            if(other == obj) return true;
+            if (other == obj) return true;
         }
 
         return false;
@@ -493,32 +590,32 @@ public class ComponentConverterMethodGeneration {
         if (beginIndex != currentGenerationIndex) swapNextInstructions = true;
     }
 
-    private static String fixArgumentNoReturnInstruction(String instruction, String outputName){
-    String newInstruction = "";
-    if(instruction.contains("=")){
-        int indexOfEqualOperator = instruction.indexOf("=");
-        String afterEqualOperatorSubString = instruction.substring(indexOfEqualOperator+2);
-
-        if(afterEqualOperatorSubString.contains(",")){
-            int indexOfCommaOperator  = afterEqualOperatorSubString.indexOf(",");
-            newInstruction = afterEqualOperatorSubString.substring(0,indexOfCommaOperator) + ", " + outputName +
-                    afterEqualOperatorSubString.substring(indexOfCommaOperator);
-        }else{
-            int indexOfBracket = afterEqualOperatorSubString.indexOf(")");
-            newInstruction = afterEqualOperatorSubString.substring(0,indexOfBracket) + ", " + outputName +
-                    afterEqualOperatorSubString.substring(indexOfBracket);
-        }
-        newInstruction = removeBracket(newInstruction);
-        return newInstruction;
-    }
-    return instruction;
-    }
-
-    private static String removeBracket(String instruction){
+    private static String fixArgumentNoReturnInstruction(String instruction, String outputName) {
         String newInstruction = "";
-        if(instruction.indexOf("(") == 0){
+        if (instruction.contains("=")) {
+            int indexOfEqualOperator = instruction.indexOf("=");
+            String afterEqualOperatorSubString = instruction.substring(indexOfEqualOperator + 2);
+
+            if (afterEqualOperatorSubString.contains(",")) {
+                int indexOfCommaOperator = afterEqualOperatorSubString.indexOf(",");
+                newInstruction = afterEqualOperatorSubString.substring(0, indexOfCommaOperator) + ", " + outputName +
+                        afterEqualOperatorSubString.substring(indexOfCommaOperator);
+            } else {
+                int indexOfBracket = afterEqualOperatorSubString.indexOf(")");
+                newInstruction = afterEqualOperatorSubString.substring(0, indexOfBracket) + ", " + outputName +
+                        afterEqualOperatorSubString.substring(indexOfBracket);
+            }
+            newInstruction = removeBracket(newInstruction);
+            return newInstruction;
+        }
+        return instruction;
+    }
+
+    private static String removeBracket(String instruction) {
+        String newInstruction = "";
+        if (instruction.indexOf("(") == 0) {
             int indexOfLastBracket = instruction.lastIndexOf(")");
-            newInstruction = instruction.substring(1,indexOfLastBracket) + instruction.substring(indexOfLastBracket+1);
+            newInstruction = instruction.substring(1, indexOfLastBracket) + instruction.substring(indexOfLastBracket + 1);
             return newInstruction;
         }
         return instruction;
@@ -547,7 +644,7 @@ public class ComponentConverterMethodGeneration {
                     MathExpressionSymbol expressionSymbol = ((TargetCodeMathInstruction) instruction).getMathExpressionSymbol();
                     Optional<MathValueSymbol> copy = GenerateComponentFunction.createCopy(expressionSymbol, resets);
                     if (copy.isPresent())
-                        newInstructions.add(new TargetCodeMathInstruction(copy.get().getTextualRepresentation(), copy.get()));
+                        newInstructions.add(new TargetCodeMathInstruction(copy.get().getTextualRepresentation() + "\n", copy.get()));
                 }
                 newInstructions.add(instruction);
             }
@@ -555,7 +652,7 @@ public class ComponentConverterMethodGeneration {
             for (Map.Entry<String, String> reset : resets.entrySet()) {
                 MathAssignmentExpressionSymbol resetAssignment =
                         GenerateComponentFunction.createReset(reset.getValue(), reset.getKey());
-                newInstructions.add(new TargetCodeMathInstruction(resetAssignment.getTextualRepresentation(), resetAssignment));
+                newInstructions.add(new TargetCodeMathInstruction(resetAssignment.getTextualRepresentation() + ";\n", resetAssignment));
             }
         } else {
             // do not update

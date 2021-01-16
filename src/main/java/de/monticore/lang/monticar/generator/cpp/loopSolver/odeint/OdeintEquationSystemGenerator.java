@@ -2,7 +2,7 @@
 package de.monticore.lang.monticar.generator.cpp.loopSolver.odeint;
 
 import de.monticore.lang.monticar.generator.FileContent;
-import de.monticore.lang.monticar.generator.cpp.loopSolver.EquationSystemViewModel;
+import de.monticore.lang.monticar.generator.cpp.loopSolver.SemiExplicitFormViewModel;
 import de.monticore.lang.monticar.generator.cpp.template.AllTemplates;
 import de.monticore.lang.monticar.generator.cpp.template.TemplateHelper;
 import de.monticore.lang.monticar.semantics.loops.symbols.EMAEquationSystem;
@@ -44,7 +44,7 @@ public class OdeintEquationSystemGenerator {
 
     public static Collection<FileContent> generateEquationSystem(EMAEquationSystem eqs) {
         Collection<FileContent> result = new HashSet<>();
-        EquationSystemViewModel viewModel = new EquationSystemViewModel(eqs);
+        SemiExplicitFormViewModel viewModel = new SemiExplicitFormViewModel(eqs);
         // map data
         Map<String, Object> dataForTemplate = TemplateHelper.getDataForTemplate(viewModel);
         // try generate file content
