@@ -91,10 +91,10 @@ public class SetStructPortInstruction{
                         //extract bounds from msgField
                         lowerBound = boundExists ? split[0].replaceAll("[^0-9]", "")+"-1" : "0";
                         boundExists = !split[1].replaceAll("[^0-9]", "").isEmpty() && !split[1].replaceAll("[^0-9]", "").equals("0"); //0 is not a valid bound in EMAM;
-                        upperBound = boundExists ? split[1].replaceAll("[^0-9]", "")+"-1" : dimSizes.get(dimSizes.size()-1)+"-1";  
+                        upperBound = boundExists ? split[1].replaceAll("[^0-9]", "")+"-1" : "msg->data.size()-1";  
                     } else { //no bounds given
                         lowerBound = "0";
-                   	upperBound = dimSizes.get(dimSizes.size()-1)+"-1";
+                        upperBound = "msg->data.size()-1";
                     }
 
 
