@@ -595,7 +595,7 @@ public class ExpandedComponentInstanceTest extends AbstractSymtabTest {
         Scope symTab = createSymTab("src/test/resources");
         Log.enableFailQuick(true);
         EMAComponentInstanceSymbol virtDF = symTab.<EMAComponentInstanceSymbol>resolve(
-                "testing.virtDF", EMAComponentInstanceSymbol.KIND).orElse(null);
+                "testing.virtDFParent.virtDF", EMAComponentInstanceSymbol.KIND).orElse(null);
         EMAComponentInstanceSymbol nonVirtNonDF = symTab.<EMAComponentInstanceSymbol>resolve(
                 "testing.nonVirtNonDF", EMAComponentInstanceSymbol.KIND).orElse(null);
 

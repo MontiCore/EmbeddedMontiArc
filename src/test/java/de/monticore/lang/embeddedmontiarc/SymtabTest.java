@@ -587,7 +587,7 @@ public class SymtabTest extends AbstractSymtabTest {
     @Test
     public void testTypeVariableGenericsInstanciation() {
         Scope symTab = createSymTab("src/test/resources");
-        EMAComponentInstanceSymbol cs = symTab.<EMAComponentInstanceSymbol>resolve("testing.basicResolutionInstanceInstance", EMAComponentInstanceSymbol.KIND).orElse(null);
+        EMAComponentInstanceSymbol cs = symTab.<EMAComponentInstanceSymbol>resolve("testing.basicResolutionInstance", EMAComponentInstanceSymbol.KIND).orElse(null);
         assertNotNull(cs);
         //EMAComponentInstantiationSymbol csInner = symTab.<EMAComponentInstantiationSymbol>resolve("testing.BasicResolutionInstance.br1", EMAComponentInstantiationSymbol.KIND).orElse(null);
         //assertNotNull(csInner);

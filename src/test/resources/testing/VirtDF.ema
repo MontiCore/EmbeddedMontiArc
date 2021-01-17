@@ -1,7 +1,8 @@
 /* (c) https://github.com/MontiCore/monticore */
 package testing;
 
-component VirtDF {
+// when having no parent this is non-virtual
+virtual direct feedthrough component VirtDF {
     ports
         in Q in1,
         out Q out1;
