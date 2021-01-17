@@ -41,6 +41,7 @@ public class LoopTest {
         testComponent("de.monticore.lang.monticar.semantics.loops.parallelLoop");
     }
 
+    @Ignore
     @Test
     public void test02() throws IOException {
         testComponent("de.monticore.lang.monticar.semantics.loops.test02");

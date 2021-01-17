@@ -328,7 +328,6 @@ public class GeneratorCPP implements EMAMGenerator {
                     EMAComponentInstanceSymbol componentInstanceSymbol = (EMAComponentInstanceSymbol) taggingResolver.resolve(componentFullName,
                             EMAComponentInstanceSymbol.KIND).get();
 
-                    // TODO add properties
                     ExecutionSemantics semantics = new ExecutionSemantics(taggingResolver, componentInstanceSymbol);
                     semantics.addExecutionSemantics();
                     fileContents.addAll(generateStrings(taggingResolver, componentInstanceSymbol));
