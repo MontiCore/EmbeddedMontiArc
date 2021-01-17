@@ -5,6 +5,8 @@ package de.monticore.lang.monticar.generator.cpp;
 import de.monticore.lang.embeddedmontiarc.embeddedmontiarc._symboltable.instanceStructure.EMAComponentInstanceSymbol;
 import de.monticore.lang.monticar.generator.cpp.resolver.Resolver;
 import de.monticore.lang.monticar.generator.order.simulator.AbstractSymtab;
+import de.monticore.lang.monticar.semantics.Constants;
+import de.monticore.lang.monticar.semantics.util.BasicLibrary;
 import de.monticore.lang.tagging._symboltable.TaggingResolver;
 import de.se_rwth.commons.logging.Log;
 import org.apache.commons.cli.CommandLine;
@@ -303,7 +305,7 @@ public final class GeneratorCppCli {
         Path modelsDirPath = Paths.get(cliArgs.getOptionValue(OPTION_MODELS_PATH.getOpt()));
         String rootModelName = cliArgs.getOptionValue(OPTION_ROOT_MODEL.getOpt());
         String outputPath = cliArgs.getOptionValue(OPTION_OUTPUT_PATH.getOpt());
-        TaggingResolver symTab = AbstractSymtab.createSymTabAndTaggingResolver(modelsDirPath.toString());
+        TaggingResolver symTab = getSymTabAndTaggingResolver(modelsDirPath);
         Resolver resolver = new Resolver(symTab);
         EMAComponentInstanceSymbol componentSymbol = resolveSymbol(resolver, rootModelName);
 
@@ -389,6 +391,12 @@ public final class GeneratorCppCli {
             //System.exit(1);
         }
 
+    }
+
+    private static TaggingResolver getSymTabAndTaggingResolver(Path modelsDirPath) {
+        BasicLibrary.extract();
+        return AbstractSymtab.createSymTabAndTaggingResolver(modelsDirPath.toString(),
+                Constants.SYNTHESIZED_COMPONENTS_ROOT, BasicLibrary.BASIC_LIBRARY_ROOT);
     }
 
     private static EMAComponentInstanceSymbol resolveSymbol(Resolver resolver, String rootModelName) {

@@ -8,6 +8,7 @@ import de.monticore.lang.monticar.generator.cpp.GeneratorCPP;
 import de.monticore.lang.monticar.semantics.ExecutionSemantics;
 import de.monticore.lang.monticar.semantics.helper.NameHelper;
 import de.monticore.lang.monticar.semantics.resolve.Resolver;
+import de.monticore.lang.monticar.semantics.util.BasicLibrary;
 import de.monticore.lang.tagging._symboltable.TaggingResolver;
 import de.monticore.symboltable.Symbol;
 import de.se_rwth.commons.logging.Log;
@@ -35,7 +36,6 @@ public class LoopTest {
         testComponent("de.monticore.lang.monticar.semantics.loops.serialLoop");
     }
 
-    @Ignore
     @Test
     public void testParallelLoop() throws IOException {
         testComponent("de.monticore.lang.monticar.semantics.loops.parallelLoop");
@@ -83,7 +83,9 @@ public class LoopTest {
         }
         assert (ast.isPresent());
 
-        TaggingResolver symtab = createSymTabAndTaggingResolver("src/test/resources", "src/main/resources");
+        BasicLibrary.extract();
+        TaggingResolver symtab = createSymTabAndTaggingResolver("src/test/resources", "src/main/resources",
+                BasicLibrary.BASIC_LIBRARY_ROOT);
 
         Optional<EMAComponentInstanceSymbol> resolve = symtab.resolve(model, EMAComponentInstanceSymbol.KIND);
 
@@ -96,7 +98,7 @@ public class LoopTest {
         generatorCPP.setGenerateCMake(false);
         generatorCPP.setDeltaT(0.1);
         generatorCPP.setResolveLoops(true);
-        generatorCPP.setSolveLoopsSymbolic(false);
+        generatorCPP.setSolveLoopsSymbolic(true);
         generatorCPP.setGenerateCMake(true);
         List<File> files = generatorCPP.generateFiles(symtab, componentSymbol);
 

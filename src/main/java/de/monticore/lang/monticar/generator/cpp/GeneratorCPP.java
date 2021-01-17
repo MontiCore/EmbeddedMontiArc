@@ -235,6 +235,8 @@ public class GeneratorCPP implements EMAMGenerator {
             // setGenerateMainClass(true);
         }
 
+        addSemantics(taggingResolver, componentInstanceSymbol);
+
         String lastNameWithoutArrayPart = "";
         if (!streamTestGenerationMode) {
             for (EMAComponentInstanceSymbol instanceSymbol : componentInstanceSymbol.getSubComponents()) {
@@ -327,16 +329,10 @@ public class GeneratorCPP implements EMAMGenerator {
                         EMAComponentInstanceSymbol.KIND).isPresent()) {
                     EMAComponentInstanceSymbol componentInstanceSymbol = (EMAComponentInstanceSymbol) taggingResolver.resolve(componentFullName,
                             EMAComponentInstanceSymbol.KIND).get();
-
-                    ExecutionSemantics semantics = new ExecutionSemantics(taggingResolver, componentInstanceSymbol);
-                    semantics.addExecutionSemantics();
                     fileContents.addAll(generateStrings(taggingResolver, componentInstanceSymbol));
                 }
             }
         } else {
-            ExecutionSemantics semantics = new ExecutionSemantics(taggingResolver, rootModel);
-            semantics.addExecutionSemantics();
-
             searchForCVEverywhere(componentSymbol, taggingResolver);
             fileContents = generateStrings(taggingResolver, componentSymbol);
         }
@@ -363,6 +359,13 @@ public class GeneratorCPP implements EMAMGenerator {
             files.addAll(generateCMakeFiles(componentSymbol));
 
         return files;
+    }
+
+    public void addSemantics(TaggingResolver taggingResolver, EMAComponentInstanceSymbol component) {
+        if (component.getOrderOutput().isEmpty()) {
+            ExecutionSemantics semantics = new ExecutionSemantics(taggingResolver, component);
+            semantics.addExecutionSemantics();
+        }
     }
 
     protected List<File> generateCMakeFiles(EMAComponentInstanceSymbol componentInstanceSymbol) {
