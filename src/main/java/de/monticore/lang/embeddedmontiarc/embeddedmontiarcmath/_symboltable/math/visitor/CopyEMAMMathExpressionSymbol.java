@@ -4,6 +4,7 @@ package de.monticore.lang.embeddedmontiarc.embeddedmontiarcmath._symboltable.mat
 import de.monticore.lang.embeddedmontiarc.embeddedmontiarcmath._symboltable.math.symbols.*;
 import de.monticore.lang.math._symboltable.MathStatementsSymbol;
 import de.monticore.lang.math._symboltable.expression.MathExpressionSymbol;
+import de.monticore.lang.math._symboltable.matrix.MathMatrixAccessSymbol;
 import de.monticore.lang.math._symboltable.visitor.CopyMathExpressionSymbol;
 import de.monticore.lang.math._symboltable.visitor.MathStatementsSymbolCopy;
 import de.monticore.lang.mathopt._symboltable.visitor.CopyMathOptExpressionSymbol;
@@ -49,6 +50,10 @@ public class CopyEMAMMathExpressionSymbol extends CopyMathOptExpressionSymbol im
             copy = new EMAMInitialGuessSymbol("");
         else if (symbol instanceof EMAMInitialValueSymbol)
             copy = new EMAMInitialValueSymbol("");
+        else if (symbol instanceof MathStringExpression)
+            copy = new MathStringExpression();
+        else if (symbol instanceof MathChainedExpression)
+            copy = new MathChainedExpression();
         else
             return super.get(symbol);
 
@@ -111,6 +116,27 @@ public class CopyEMAMMathExpressionSymbol extends CopyMathOptExpressionSymbol im
             res.setMathMatrixAccessOperatorSymbol(get(node.getMathMatrixAccessOperatorSymbol()));
         if (node.getValue() != null)
             res.setValue(get(node.getValue()));
+        copyMap.put(node, res);
+    }
+
+    @Override
+    public void endVisit(MathStringExpression node) {
+        MathStringExpression res = get(node);
+        copyMathExpressionSymbol(res, node);
+        if (node.getText() != null) res.setText(node.getText());
+        for (MathMatrixAccessSymbol previousExpressionSymbol : node.getPreviousExpressionSymbols())
+            res.getPreviousExpressionSymbols().add(get(previousExpressionSymbol));
+        copyMap.put(node, res);
+    }
+
+    @Override
+    public void endVisit(MathChainedExpression node) {
+        MathChainedExpression res = get(node);
+        copyMathExpressionSymbol(res, node);
+        if (node.getFirstExpressionSymbol() != null)
+            res.setFirstExpressionSymbol(get(node.getFirstExpressionSymbol()));
+        if (node.getSecondExpressionSymbol() != null)
+            res.setSecondExpressionSymbol(get(node.getSecondExpressionSymbol()));
         copyMap.put(node, res);
     }
 }

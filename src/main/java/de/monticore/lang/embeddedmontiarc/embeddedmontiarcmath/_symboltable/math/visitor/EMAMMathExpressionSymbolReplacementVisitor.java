@@ -4,13 +4,11 @@ package de.monticore.lang.embeddedmontiarc.embeddedmontiarcmath._symboltable.mat
 import de.monticore.lang.embeddedmontiarc.embeddedmontiarcmath._symboltable.math.symbols.*;
 import de.monticore.lang.math._symboltable.MathStatementsSymbol;
 import de.monticore.lang.math._symboltable.expression.*;
+import de.monticore.lang.math._symboltable.matrix.MathMatrixAccessSymbol;
 import de.monticore.lang.math._symboltable.visitor.MathExpressionSymbolReplacementVisitor;
 import de.monticore.lang.mathopt._symboltable.visitor.MathOptExpressionSymbolReplacementVisitor;
 
-import java.util.ArrayList;
-import java.util.Collection;
-import java.util.Iterator;
-import java.util.Map;
+import java.util.*;
 import java.util.function.Function;
 
 public class EMAMMathExpressionSymbolReplacementVisitor extends MathOptExpressionSymbolReplacementVisitor
@@ -97,5 +95,21 @@ public class EMAMMathExpressionSymbolReplacementVisitor extends MathOptExpressio
         if (node.isMathMatrixAccessOperatorSymbolPresent())
             node.setMathMatrixAccessOperatorSymbol(get(node.getMathMatrixAccessOperatorSymbol()));
         if (node.getValue() != null) node.setValue(get(node.getValue()));
+    }
+
+    @Override
+    public void visit(MathStringExpression node) {
+        List<MathMatrixAccessSymbol> previousExpressionSymbols = new ArrayList<>();
+        for (MathMatrixAccessSymbol previousExpressionSymbol : node.getPreviousExpressionSymbols())
+            previousExpressionSymbols.add(get(previousExpressionSymbol));
+        node.setPreviousExpressionSymbols(previousExpressionSymbols);
+    }
+
+    @Override
+    public void visit(MathChainedExpression node) {
+        if (node.getFirstExpressionSymbol() != null)
+            node.setFirstExpressionSymbol(get(node.getFirstExpressionSymbol()));
+        if (node.getSecondExpressionSymbol() != null)
+            node.setSecondExpressionSymbol(get(node.getSecondExpressionSymbol()));
     }
 }

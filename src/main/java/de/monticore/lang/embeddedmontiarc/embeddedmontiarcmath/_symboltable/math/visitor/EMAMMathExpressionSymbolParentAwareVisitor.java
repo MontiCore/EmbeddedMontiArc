@@ -61,4 +61,26 @@ public interface EMAMMathExpressionSymbolParentAwareVisitor extends MathOptExpre
             endVisit(node);
         }
     }
+
+    @Override
+    default void handle(MathStringExpression node) {
+        if (shouldContinue(node)) {
+            visit(node);
+            pushParent(node);
+            traverse(node);
+            popParent();
+            endVisit(node);
+        }
+    }
+
+    @Override
+    default void handle(MathChainedExpression node) {
+        if (shouldContinue(node)) {
+            visit(node);
+            pushParent(node);
+            traverse(node);
+            popParent();
+            endVisit(node);
+        }
+    }
 }

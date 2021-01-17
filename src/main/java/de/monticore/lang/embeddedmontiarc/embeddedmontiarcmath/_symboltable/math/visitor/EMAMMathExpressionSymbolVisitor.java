@@ -3,6 +3,7 @@ package de.monticore.lang.embeddedmontiarc.embeddedmontiarcmath._symboltable.mat
 
 import de.monticore.lang.embeddedmontiarc.embeddedmontiarcmath._symboltable.math.symbols.*;
 import de.monticore.lang.math._symboltable.expression.MathExpressionSymbol;
+import de.monticore.lang.math._symboltable.matrix.MathMatrixAccessSymbol;
 import de.monticore.lang.mathopt._symboltable.visitor.MathOptExpressionSymbolVisitor;
 
 public interface EMAMMathExpressionSymbolVisitor extends MathOptExpressionSymbolVisitor {
@@ -18,6 +19,10 @@ public interface EMAMMathExpressionSymbolVisitor extends MathOptExpressionSymbol
             handle((EMAMInitialGuessSymbol) node);
         else if (node instanceof EMAMInitialValueSymbol)
             handle((EMAMInitialValueSymbol) node);
+        else if (node instanceof MathStringExpression)
+            handle((MathStringExpression) node);
+        else if (node instanceof MathChainedExpression)
+            handle((MathChainedExpression) node);
         else
             MathOptExpressionSymbolVisitor.super.handle(node);
     }
@@ -134,6 +139,52 @@ public interface EMAMMathExpressionSymbolVisitor extends MathOptExpressionSymbol
     }
 
     public default void endVisit(EMAMInitialValueSymbol node) {
+
+    }
+
+
+    public default void handle(MathStringExpression node) {
+        if (shouldContinue(node)) {
+            visit(node);
+            traverse(node);
+            endVisit(node);
+        }
+    }
+
+    public default void traverse(MathStringExpression node) {
+        for (MathMatrixAccessSymbol previousExpressionSymbol : node.getPreviousExpressionSymbols())
+            handle(previousExpressionSymbol);
+    }
+
+    public default void visit(MathStringExpression node) {
+
+    }
+
+    public default void endVisit(MathStringExpression node) {
+
+    }
+
+
+    public default void handle(MathChainedExpression node) {
+        if (shouldContinue(node)) {
+            visit(node);
+            traverse(node);
+            endVisit(node);
+        }
+    }
+
+    public default void traverse(MathChainedExpression node) {
+        if (node.getFirstExpressionSymbol() != null)
+            handle(node.getFirstExpressionSymbol());
+        if (node.getSecondExpressionSymbol() != null)
+            handle(node.getSecondExpressionSymbol());
+    }
+
+    public default void visit(MathChainedExpression node) {
+
+    }
+
+    public default void endVisit(MathChainedExpression node) {
 
     }
 }

@@ -11,8 +11,6 @@ public class EMAMSymbolicVariableSymbol extends MathExpressionSymbol {
 
     protected MathValueType type;
 
-    private boolean isPort = false;
-
     private String name;
 
     private Optional<EMAPortInstanceSymbol> port = Optional.empty();
