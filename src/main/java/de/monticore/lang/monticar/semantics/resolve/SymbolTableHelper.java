@@ -4,6 +4,7 @@ package de.monticore.lang.monticar.semantics.resolve;
 import de.monticore.lang.embeddedmontiarc.embeddedmontiarc._symboltable.instanceStructure.EMAComponentInstanceSymbol;
 import de.monticore.lang.embeddedmontiarc.embeddedmontiarc._symboltable.instanceStructure.EMAConnectorInstanceSymbol;
 import de.monticore.lang.embeddedmontiarc.embeddedmontiarc._symboltable.instanceStructure.EMAPortInstanceSymbol;
+import de.monticore.lang.monticar.semantics.Constants;
 import de.monticore.lang.monticar.semantics.construct.SymtabCreator;
 import de.monticore.lang.monticar.semantics.helper.NameHelper;
 import de.monticore.lang.monticar.semantics.loops.detection.ConnectionHelper;
@@ -175,7 +176,7 @@ public class SymbolTableHelper {
     public static EMAComponentInstanceSymbol resolveNewInstance(TaggingResolver scope, String fullQualifiedName) {
 
         TaggingResolver symTab = SymtabCreator.createSymTab("src/testing/resources", "src/main/resources",
-                "target/generated-components");
+                Constants.SYNTHESIZED_COMPONENTS_ROOT);
 
         String fullQualifiedNameWithoutSynth = fullQualifiedName;
 //        if (fullQualifiedName.startsWith(Options.synthPackagePreFix))

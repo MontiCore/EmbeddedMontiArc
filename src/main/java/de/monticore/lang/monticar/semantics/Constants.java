@@ -2,10 +2,10 @@
 package de.monticore.lang.monticar.semantics;
 
 public class Constants {
-    public static String synthPath = "target/generated-components";
-    public static String synthPackagePreFix = "synth";
-    public static String timeName = "current_Time"; // is also present in resources/de/monticore/lang/monticar/semantics/scripts/python/sympy/solveDAE.py
-    public static String derivativeOperatorName = "diff";
-    public static String integrateOperatorName = "integrate";
+    public static final String SYNTHESIZED_COMPONENTS_ROOT = Constants.SYNTHESIZED_COMPONENTS_ROOT;
+    public static final String synthPackagePreFix = "synth";
+    public static final String timeName = "current_Time"; // is also present in resources/de/monticore/lang/monticar/semantics/scripts/python/sympy/solveDAE.py
+    public static final String derivativeOperatorName = "diff";
+    public static final String integrateOperatorName = "integrate";
 
 }

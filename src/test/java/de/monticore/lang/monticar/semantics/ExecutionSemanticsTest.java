@@ -79,7 +79,7 @@ public class ExecutionSemanticsTest {
     private EMAComponentInstanceSymbol testComponent(String model) {
 
         TaggingResolver symTab = SymtabCreator.createSymTab("src/test/resources", "src/main/resources",
-                "target/generated-components");
+                Constants.SYNTHESIZED_COMPONENTS_ROOT);
 
 
 

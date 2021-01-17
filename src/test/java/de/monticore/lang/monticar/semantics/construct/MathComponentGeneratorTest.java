@@ -1,5 +1,6 @@
 package de.monticore.lang.monticar.semantics.construct;
 
+import de.monticore.lang.monticar.semantics.Constants;
 import org.junit.Test;
 
 import java.util.HashMap;
@@ -22,7 +23,7 @@ public class MathComponentGeneratorTest {
         statementList.add("out1 = synthPort_SimpleLoop_in1 / 2");
 
         componentCreator.generate("DifferenceSynthesized", "de.monticore.lang.monticar.semantics.synth",
-                ins, outs, statementList, "target/generated-components");
+                ins, outs, statementList, Constants.SYNTHESIZED_COMPONENTS_ROOT);
 
     }
 

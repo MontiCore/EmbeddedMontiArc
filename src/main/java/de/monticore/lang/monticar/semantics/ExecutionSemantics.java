@@ -10,6 +10,7 @@ import de.monticore.lang.monticar.semantics.loops.detection.SimpleCycle;
 import de.monticore.lang.monticar.semantics.loops.detection.StronglyConnectedComponent;
 import de.monticore.lang.monticar.semantics.loops.symbols.LoopComponentInstanceSymbol;
 import de.monticore.lang.monticar.semantics.resolve.Resolver;
+import de.monticore.lang.monticar.semantics.util.BasicLibrary;
 import de.monticore.lang.tagging._symboltable.TaggingResolver;
 import de.monticore.prettyprint.IndentPrinter;
 import de.se_rwth.commons.logging.Log;
@@ -32,6 +33,7 @@ public class ExecutionSemantics {
     public static boolean LOG_SYMBOLIC_SOLVE = true;
 
     public ExecutionSemantics(TaggingResolver globalScope, EMAComponentInstanceSymbol rootComponent) {
+        BasicLibrary.extract();
         this.globalScope = globalScope;
         this.rootComponent = rootComponent;
     }

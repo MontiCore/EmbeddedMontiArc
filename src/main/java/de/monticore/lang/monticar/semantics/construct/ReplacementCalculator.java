@@ -112,7 +112,7 @@ public class ReplacementCalculator {
             }
         }
 
-        generator.generate(type, packageName, inports, outports, mathStatements, Constants.synthPath);
+        generator.generate(type, packageName, inports, outports, mathStatements, Constants.SYNTHESIZED_COMPONENTS_ROOT);
 
         // Remove old instance
         SymbolTableHelper.removeComponent(symbol);
