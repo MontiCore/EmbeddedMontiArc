@@ -674,7 +674,7 @@ public class EMAComponentInstanceBuilder {
         subComponents.stream().forEach(s -> {
             String newPackageName = Joiners.DOT.join(packageName, name.get());
             s.setPackageName(newPackageName);
-            s.setFullName(Joiners.DOT.join(newPackageName, s.getName()));
+            s.resetFullNames();
         });
     }
 }

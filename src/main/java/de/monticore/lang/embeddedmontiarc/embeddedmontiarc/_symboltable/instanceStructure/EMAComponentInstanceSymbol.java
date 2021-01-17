@@ -11,6 +11,7 @@ import de.monticore.lang.monticar.resolution._ast.ASTUnitNumberResolution;
 import de.monticore.lang.monticar.si._symboltable.ResolutionDeclarationSymbol;
 import de.monticore.symboltable.CommonScopeSpanningSymbol;
 import de.monticore.symboltable.types.references.ActualTypeArgument;
+import de.se_rwth.commons.Joiners;
 
 import java.util.*;
 import java.util.stream.Collectors;
@@ -351,5 +352,13 @@ public class EMAComponentInstanceSymbol
 
     public boolean isDirectFeedThrough() {
         return !isNonDirectFeedThrough();
+    }
+
+    public void resetFullNames() {
+        setFullName(Joiners.DOT.join(this.getPackageName(), this.getName()));
+        for (EMAComponentInstanceSymbol subComponent : getSubComponents()) {
+            subComponent.setPackageName(getFullName());
+            subComponent.resetFullNames();
+        }
     }
 }
