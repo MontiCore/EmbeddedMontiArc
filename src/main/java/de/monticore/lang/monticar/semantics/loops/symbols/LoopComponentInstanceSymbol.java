@@ -27,7 +27,7 @@ public class LoopComponentInstanceSymbol extends EMADynamicComponentInstanceSymb
 
     public static LoopComponentInstanceSymbol instantiate(EMAComponentInstanceSymbol symbol, EMAEquationSystem eqs) {
         if (!symbol.getSubComponents().isEmpty() && !symbol.isNonVirtual()) {
-            Log.error ("TODO should be atomic or nonvirtual");
+            Log.error ("0xEMAES4481 should be atomic or nonvirtual");
         }
 
         LoopComponentInstanceSymbol loopSymbol = new LoopComponentInstanceSymbol(symbol.getName(), symbol.getComponentType());
@@ -66,7 +66,7 @@ public class LoopComponentInstanceSymbol extends EMADynamicComponentInstanceSymb
             if (!getPortInstanceList().contains(inport)) {
                 String newPortName = NameHelper.replaceWithUnderScore(NameHelper.calculateFullQualifiedNameOf(inport));
                 EMADynamicPortInstanceSymbol portInstanceSymbol = InstanceCreator.createPortInstanceSymbol(newPortName,
-                        inport.getPackageName(),
+                        getFullName(),
                         inport.getTypeReference().getName(),
                         true,
                         getSpannedScope().getAsMutableScope());

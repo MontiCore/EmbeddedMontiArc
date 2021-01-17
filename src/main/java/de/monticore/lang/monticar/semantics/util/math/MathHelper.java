@@ -24,7 +24,7 @@ public class MathHelper {
                 new MathSymbolTableCreator(new ResolvingConfiguration(), new CommonScope());
         astExpression.accept(symbolTableCreator);
         if (astExpression.getSymbolOpt() == null || !astExpression.getSymbolOpt().isPresent())
-            Log.error("TODO could not resolve Math Expression");
+            Log.error("0xEMAES7812 could not resolve Math Expression");
 
         return (MathExpressionSymbol) astExpression.getSymbol();
     }
@@ -51,7 +51,7 @@ public class MathHelper {
         try {
             astExpression = parser.parse_StringExpression(expressionString);
         } catch (IOException e) {
-            Log.error("TODO Could not parseSolve Expression");
+            Log.error("0xEMAES7813 Could not parseSolve Expression");
         }
         return astExpression;
     }

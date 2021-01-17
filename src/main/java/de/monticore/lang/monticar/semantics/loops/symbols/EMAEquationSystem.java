@@ -5,6 +5,10 @@ import de.monticore.lang.embeddedmontiarc.embeddedmontiarc._symboltable.instance
 import de.monticore.lang.embeddedmontiarc.embeddedmontiarc._symboltable.instanceStructure.EMAConnectorInstanceSymbol;
 import de.monticore.lang.embeddedmontiarc.embeddedmontiarc._symboltable.instanceStructure.EMAPortInstanceSymbol;
 import de.monticore.lang.monticar.semantics.loops.analyze.EquationSystemType;
+import de.monticore.lang.monticar.semantics.loops.graph.EMAAtomicConnectorInstance;
+import de.monticore.symboltable.CommonScope;
+import de.monticore.symboltable.Scope;
+import de.monticore.symboltable.Symbol;
 import de.se_rwth.commons.logging.Log;
 
 import java.util.*;
@@ -14,13 +18,14 @@ public class EMAEquationSystem {
 
     private static int index = 1;
     private static final String EQUATION_SYSTEM_NAME = "EquationSystem";
+    private final CommonScope spannedScope;
 
     private String name;
 
     private EquationSystemType type = EquationSystemType.Constant;
 
     private Collection<EMAComponentInstanceSymbol> components;
-    private Collection<EMAConnectorInstanceSymbol> connectors;
+    private Collection<EMAAtomicConnectorInstance> connectors;
 
     private Collection<EMAPortInstanceSymbol> inports;
     private Collection<EMAPortInstanceSymbol> outports;
@@ -30,14 +35,22 @@ public class EMAEquationSystem {
 
     private Optional<Map<EMAPortInstanceSymbol, String>> solution = Optional.empty();
 
-    EMAEquationSystem(Collection<EMAComponentInstanceSymbol> components, Collection<EMAConnectorInstanceSymbol> connectors, Collection<EMAPortInstanceSymbol> inports, Collection<EMAPortInstanceSymbol> outports, Map<EMAPortInstanceSymbol, EMAPortInstanceSymbol> atomicSources, Map<EMAPortInstanceSymbol, Set<EMAPortInstanceSymbol>> atomicTargets) {
-        this.components = components;
+    EMAEquationSystem(Collection<EMAComponentInstanceSymbol> components, Collection<EMAAtomicConnectorInstance> connectors, Collection<EMAPortInstanceSymbol> inports, Collection<EMAPortInstanceSymbol> outports, Map<EMAPortInstanceSymbol, EMAPortInstanceSymbol> atomicSources, Map<EMAPortInstanceSymbol, Set<EMAPortInstanceSymbol>> atomicTargets) {
         this.connectors = connectors;
         this.inports = inports;
         this.outports = outports;
         this.atomicSources = atomicSources;
         this.atomicTargets = atomicTargets;
         this.name = EQUATION_SYSTEM_NAME + "_" + index;
+        this.spannedScope = new CommonScope();
+        Optional<EMAComponentInstanceSymbol> any = components.stream().findAny();
+        if (any.isPresent()) {
+            Scope enclosingScope = any.get().getEnclosingScope();
+            if (enclosingScope != null) {
+                spannedScope.setResolvingFilters(enclosingScope.getResolvingFilters());
+            }
+        }
+        this.spannedScope.setName(getName());
     }
 
     public String getName() {
@@ -46,17 +59,20 @@ public class EMAEquationSystem {
 
     public void setName(String name) {
         this.name = name;
+        this.spannedScope.setName(name);
     }
 
     public Set<EMAComponentInstanceSymbol> getComponentInstanceSymbols() {
-        Set<EMAComponentInstanceSymbol> res = new HashSet<>();
-        for (EMAComponentInstanceSymbol subcomponent : components)
-            if (components instanceof EMAEquationSystem)
-                res.addAll(((EMAEquationSystem) components).getComponentInstanceSymbols());
-            else
-                res.add(subcomponent);
-
-        return res;
+        Map<String, Collection<Symbol>> localSymbols = spannedScope.getLocalSymbols();
+        Set<EMAComponentInstanceSymbol> result = new HashSet<>();
+        for (Collection<Symbol> symbols : localSymbols.values()) {
+            for (Symbol symbol : symbols) {
+                if (symbol.isKindOf(EMAComponentInstanceSymbol.KIND)) {
+                    result.add((EMAComponentInstanceSymbol) symbol);
+                }
+            }
+        }
+        return result;
     }
 
     public Optional<EMAPortInstanceSymbol> getAtomicSourceOf(EMAPortInstanceSymbol port) {
@@ -75,7 +91,7 @@ public class EMAEquationSystem {
         this.type = equationSystemType;
     }
 
-    public Collection<EMAConnectorInstanceSymbol> getConnectors() {
+    public Collection<EMAAtomicConnectorInstance> getConnectors() {
         return connectors;
     }
 
@@ -97,13 +113,13 @@ public class EMAEquationSystem {
 
     public Map<EMAPortInstanceSymbol, String> getSolution() {
         if (!isPresentSolution())
-            Log.error("TODO solution not present");
+            Log.error("0xEMAES3911 solution not present");
         return solution.get();
     }
 
     public String getSolution(EMAPortInstanceSymbol port) {
         if (!isPresentSolution(port))
-            Log.error("TODO solution not present");
+            Log.error("0xEMAES3912 solution not present");
         return solution.get().get(port);
     }
 
@@ -137,5 +153,9 @@ public class EMAEquationSystem {
                 .map(c -> c.getOutgoingPortInstances())
                 .flatMap(Collection::stream)
                 .collect(Collectors.toSet());
+    }
+
+    public void addComponentsToLocalScope(Set<EMAComponentInstanceSymbol> components) {
+        components.stream().forEach(c -> spannedScope.add(c));
     }
 }

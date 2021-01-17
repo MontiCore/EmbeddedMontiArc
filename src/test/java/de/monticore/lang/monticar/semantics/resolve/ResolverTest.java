@@ -3,6 +3,7 @@ package de.monticore.lang.monticar.semantics.resolve;
 import de.monticore.lang.embeddedmontiarc.embeddedmontiarc._ast.ASTEMACompilationUnit;
 import de.monticore.lang.embeddedmontiarc.embeddedmontiarc._symboltable.instanceStructure.EMAComponentInstanceSymbol;
 import de.monticore.lang.embeddedmontiarc.embeddedmontiarcmath._parser.EmbeddedMontiArcMathParser;
+import de.monticore.lang.monticar.semantics.ExecutionSemantics;
 import de.monticore.lang.monticar.semantics.construct.SymtabCreator;
 import de.monticore.lang.tagging._symboltable.TaggingResolver;
 import de.se_rwth.commons.logging.Log;
@@ -69,12 +70,12 @@ public class ResolverTest {
 
         TaggingResolver symTab = SymtabCreator.createSymTab("src/test/resources", "src/main/resources",
                 "target/generated-components");
+        Optional<EMAComponentInstanceSymbol> component = symTab.<EMAComponentInstanceSymbol>resolve(model, EMAComponentInstanceSymbol.KIND);
+        assert (component.isPresent());
         LogStub.init();
         Log.enableFailQuick(true);
-        Resolver resolver = new Resolver(symTab, model);
-        resolver.handleScope();
-        EMAComponentInstanceSymbol component = symTab.<EMAComponentInstanceSymbol>resolve(model, EMAComponentInstanceSymbol.KIND).orElse(null);
+        ExecutionSemantics semantics = new ExecutionSemantics(symTab, component.get());
         assert(component != null);
-        return component;
+        return component.get();
     }
 }

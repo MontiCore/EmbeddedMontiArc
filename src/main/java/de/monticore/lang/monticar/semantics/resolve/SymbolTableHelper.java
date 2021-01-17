@@ -26,7 +26,17 @@ public class SymbolTableHelper {
     }
 
     public static void removeComponent(EMAComponentInstanceSymbol component) {
-        component.getEnclosingScope().getAsMutableScope().remove(component);
+        Scope enclosingScope = component.getEnclosingScope();
+//        Scope mostEnclosingScope = enclosingScope;
+//        while (mostEnclosingScope.getEnclosingScope().isPresent())
+//            mostEnclosingScope = mostEnclosingScope.getEnclosingScope().get();
+//
+//        for (Scope subScope : enclosingScope.getSubScopes()) {
+//            if (subScope.getSpanningSymbol().isPresent()
+//            && subScope.getSpanningSymbol().get().equals(component))
+//                enclosingScope.getAsMutableScope().removeSubScope(subScope.getAsMutableScope());
+//        }
+        enclosingScope.getAsMutableScope().remove(component);
     }
 
     public static void removeConnector(EMAConnectorInstanceSymbol connector) {
@@ -46,7 +56,7 @@ public class SymbolTableHelper {
 
     public static void removeComponentWithConnectors(EMAComponentInstanceSymbol component) {
         MutableScope enclosingScope = component.getEnclosingScope().getAsMutableScope();
-        enclosingScope.remove(component);
+        removeComponent(component);
         Collection<EMAConnectorInstanceSymbol> connectors = enclosingScope.resolveLocally(EMAConnectorInstanceSymbol.KIND);
         connectors.stream()
                 .filter(c -> c.getTarget().startsWith(component.getName()) || c.getSource().startsWith(component.getName()))
@@ -174,7 +184,7 @@ public class SymbolTableHelper {
         EMAComponentInstanceSymbol emaComponentInstanceSymbol = symTab.<EMAComponentInstanceSymbol>resolve(
                 fullQualifiedNameWithoutSynth, EMAComponentInstanceSymbol.KIND).orElse(null);
 
-        if (emaComponentInstanceSymbol == null) Log.error("TODO");
+        if (emaComponentInstanceSymbol == null) Log.error(String.format("0xEMAES6001 could not resolve model \"%s\"", fullQualifiedName));
 
         scope.addSubScope(emaComponentInstanceSymbol.getEnclosingScope().getAsMutableScope());
 
@@ -192,10 +202,9 @@ public class SymbolTableHelper {
                                                                Scope enclosingScope,
                                                                String packageName) {
         EMAComponentInstanceSymbol instance = resolveNewInstance(scope, fullQualifiedName);
-        instance.setPackageName(packageName);
-        instance.setFullName(Joiners.DOT.join(packageName, NameHelper.getName(fullQualifiedName)));
         instance.getEnclosingScope().getAsMutableScope().remove(instance);
         enclosingScope.getAsMutableScope().add(instance);
+        repackage(instance, packageName);
         return instance;
     }
 
@@ -229,10 +238,12 @@ public class SymbolTableHelper {
 
     public static void replaceComponent(EMAComponentInstanceSymbol oldSymbol, EMAComponentInstanceSymbol newSymbol) {
         if (oldSymbol.getEnclosingScope() == null) {
-            Log.error("TODO no enclosing scope");
+            Log.error(String.format("0xEMAES6002 symbol \"%s\" has no enclosing scope", oldSymbol.getFullName()));
         }
         MutableScope scope = oldSymbol.getEnclosingScope().getAsMutableScope();
-        scope.remove(oldSymbol);
+        String packageName = oldSymbol.getPackageName();
+        removeComponent(oldSymbol);
         scope.add(newSymbol);
+        repackage(newSymbol, packageName);
     }
 }

@@ -21,6 +21,7 @@ public class ConnectionHelper {
 
     public static Collection<EMAPortInstanceSymbol> targetsOf(EMAPortInstanceSymbol port, boolean considerNonVirtual,
                                                               boolean firstCall) {
+        if (port == null) return new HashSet<>();
         if (port.isIncoming() && isAtomic(port.getComponentInstance()))
             return Collections.singletonList(port);
         if (port.isOutgoing() && !port.getComponentInstance().getParent().isPresent())
@@ -61,6 +62,7 @@ public class ConnectionHelper {
 
     private static Optional<EMAPortInstanceSymbol> sourceOf(EMAPortInstanceSymbol port, boolean considerNonVirtual,
                                                             boolean firstCall) {
+        if (port == null) return Optional.empty();
         if (port.isConstant())
             return Optional.of(port);
         if (port.isOutgoing() && isAtomic(port.getComponentInstance()))

@@ -65,18 +65,6 @@ public class PrintExecutionOrder {
         return printer.getContent();
     }
 
-    public static String printSListSubSystem(EMAComponentInstanceSymbol rootComponent) {
-        String result = "";
-        Map<EMAComponentInstanceSymbol, List<SListEntry>> sLists = SList.sListSubSystem(rootComponent);
-        for (Map.Entry<EMAComponentInstanceSymbol, List<SListEntry>> sListsEntry : sLists.entrySet()) {
-            result += String.format("SList for Component :%s\n", sListsEntry.getKey().getFullName());
-            result += printSList(sListsEntry.getValue(), sListsEntry.getKey());
-            result += "\n";
-        }
-
-        return result;
-    }
-
     private static String printCall(Call call) {
         switch (call) {
             case OUTPUT: return "output";

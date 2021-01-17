@@ -14,11 +14,9 @@ import de.monticore.lang.monticar.semantics.helper.NameHelper;
 import de.monticore.lang.monticar.semantics.loops.analyze.AnalyzeEquationSystemType;
 import de.monticore.lang.monticar.semantics.loops.analyze.EquationSystemType;
 import de.monticore.lang.monticar.semantics.loops.analyze.SpecificationConverter;
-import de.monticore.lang.monticar.semantics.loops.symbols.semiexplicit.ComponentCall;
-import de.monticore.lang.monticar.semantics.loops.symbols.semiexplicit.ExplicitFunction;
-import de.monticore.lang.monticar.semantics.loops.symbols.semiexplicit.SemiExplicitForm;
-import de.monticore.lang.monticar.semantics.loops.symbols.semiexplicit.SemiExplicitFormBuilder;
+import de.monticore.lang.monticar.semantics.loops.symbols.semiexplicit.*;
 import de.se_rwth.commons.logging.Log;
+import org.checkerframework.checker.units.qual.A;
 import org.jscience.mathematics.number.Rational;
 
 import java.util.*;
@@ -58,7 +56,7 @@ public class EMAEquationSystemHelper {
                         .filter(p -> variable.getName().equals(NameHelper.calculateFullQualifiedNameOf(p))
                                 || variable.getName().equals(p.getName()))
                         .findFirst();
-                if (!port.isPresent()) Log.error("TODO could not find port to variable");
+                if (!port.isPresent()) Log.error("0xEMAES4016 could not find port to variable");
                 else solutions.put(port.get(), solutionForPort.get(variable).getTextualRepresentation());
             }
         }
@@ -108,7 +106,7 @@ public class EMAEquationSystemHelper {
 
     private static void handleSpecification(EMAMSpecificationSymbol specification, SemiExplicitFormBuilder builder, Collection<EMAMSymbolicVariableSymbol> variables, Collection<EMAMSymbolicVariableSymbol> differentialVariables) {
         for (EMAMEquationSymbol equation : specification.getEquations()) {
-            EquationSystemType type = AnalyzeEquationSystemType.kindOf(equation, variables);
+            EquationSystemType type = AnalyzeEquationSystemType.typeOf(equation, variables);
             if (type == ODE || type == DAE) {
                 // diff(x) is alone on the left side!
                 EMAMSymbolicVariableSymbol variable = getVarOfDifferentialEquation(equation, variables);
@@ -171,20 +169,20 @@ public class EMAEquationSystemHelper {
                                                                            Collection<EMAMSymbolicVariableSymbol> variables) {
         MathExpressionSymbol leftExpression = equation.getLeftExpression();
         if (!(leftExpression instanceof MathMatrixNameExpressionSymbol))
-            Log.error("TODO Differential operators are only allowed on the left side of an equation");
+            Log.error("0xEMAES4011 Differential operators are only allowed on the left side of an equation");
         String operator = ((MathMatrixNameExpressionSymbol) leftExpression).getNameToAccess();
         if (!operator.equals(Constants.derivativeOperatorName))
-            Log.error("TODO Differential operators are only allowed on the left side of an equation");
+            Log.error("0xEMAES4012 Differential operators are only allowed on the left side of an equation");
         MathMatrixAccessOperatorSymbol mathMatrixAccessOperatorSymbol = ((MathMatrixNameExpressionSymbol) leftExpression).getMathMatrixAccessOperatorSymbol();
         if (mathMatrixAccessOperatorSymbol.getMathMatrixAccessSymbols().size() != 1)
-            Log.error("TODO Differential operators are only allowed on the left side of an equation");
+            Log.error("0xEMAES4013 Differential operators are only allowed on the left side of an equation");
         MathExpressionSymbol var = mathMatrixAccessOperatorSymbol.getMathMatrixAccessSymbol(0).get();
         if (!(var instanceof MathNameExpressionSymbol))
-            Log.error("TODO Differential operators are only allowed on the left side of an equation");
+            Log.error("0xEMAES4014 Differential operators are only allowed on the left side of an equation");
         String varName = ((MathNameExpressionSymbol) var).getNameToAccess();
         Optional<EMAMSymbolicVariableSymbol> result = variables.stream().filter(v -> v.getName().equals(varName)).findFirst();
         if (!result.isPresent())
-            Log.error(String.format("TODO Could not find variable for \"%s\" in equation %s",
+            Log.error(String.format("0xEMAES4015 Could not find variable for \"%s\" in equation %s",
                     varName, equation.getTextualRepresentation()));
         return result.get();
     }
@@ -218,7 +216,7 @@ public class EMAEquationSystemHelper {
 //            MathExpressionSymbol currentFunction;
 //            MathAssignmentExpressionSymbol currentStatement = getPortStatements(system).get(port);
 //
-//            EquationSystemType loopKind = AnalyzeEquationSystemType.kindOf(portStatements.get(port), variables);
+//            EquationSystemType loopKind = AnalyzeEquationSystemType.typeOf(portStatements.get(port), variables);
 //            if (loopKind.equals(EquationSystemType.LinearDifferencial) || loopKind.equals(EquationSystemType.NonLinearDifferencial)) {
 //                currentRow = buildRowFor(i, ports.size());
 //                currentFunction = new MathNameExpressionSymbol(currentStatement.getNameOfMathValue());

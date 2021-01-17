@@ -37,11 +37,35 @@ public class ReplacementCalculator {
         Map<String, String> outports = new HashMap<>();
         List<String> mathStatements = new LinkedList<>();
 
+        Set<String> handledIncomingPortArrays = new HashSet<>();
+        Set<String> handledOutgoingPortArrays = new HashSet<>();
         for (EMAPortInstanceSymbol inport : symbol.getIncomingPortInstances()) {
-            inports.put(inport.getName(), inport.getTypeReference().getName());
+            if (!inport.isPartOfPortArray())
+                inports.put(inport.getName(), inport.getTypeReference().getName());
+            else {
+                String nameWithoutArrayBracketPart = inport.getNameWithoutArrayBracketPart();
+                if (!handledIncomingPortArrays.contains(nameWithoutArrayBracketPart)) {
+                    handledIncomingPortArrays.add(nameWithoutArrayBracketPart);
+                    long count = symbol.getIncomingPortInstances().stream()
+                            .filter(p -> nameWithoutArrayBracketPart.equals(p.getNameWithoutArrayBracketPart()))
+                            .count();
+                    inports.put(String.format("%s[%s]",nameWithoutArrayBracketPart, count), inport.getTypeReference().getName());
+                }
+            }
         }
         for (EMAPortInstanceSymbol outport : symbol.getOutgoingPortInstances()) {
-            outports.put(outport.getName(), outport.getTypeReference().getName());
+            if (!outport.isPartOfPortArray())
+                outports.put(outport.getName(), outport.getTypeReference().getName());
+            else {
+                String nameWithoutArrayBracketPart = outport.getNameWithoutArrayBracketPart();
+                if (!handledOutgoingPortArrays.contains(nameWithoutArrayBracketPart)) {
+                    handledOutgoingPortArrays.add(nameWithoutArrayBracketPart);
+                    long count = symbol.getOutgoingPortInstances().stream()
+                            .filter(p -> nameWithoutArrayBracketPart.equals(p.getNameWithoutArrayBracketPart()))
+                            .count();
+                    outports.put(String.format("%s[%s]",nameWithoutArrayBracketPart, count), outport.getTypeReference().getName());
+                }
+            }
             mathStatements.add(outport.getName() + "=" + solutions.get(outport));
         }
 
@@ -53,7 +77,7 @@ public class ReplacementCalculator {
             if (!isTime(dependendConstant)) {
                 Optional<EMAPortInstanceSymbol> port = symbol.getSpannedScope().resolve(dependendConstant, EMAPortInstanceSymbol.KIND);
                 if (!port.isPresent())
-                    Log.error(String.format("TODO cannot find dependend port %s, is probably a non resolved parameter",
+                    Log.error(String.format("0xEMAES2341 cannot find dependend port %s, is probably a non resolved parameter",
                             dependendConstant));
                 dependingPorts.add(port.get());
             }

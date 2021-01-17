@@ -1,8 +1,6 @@
 /* (c) https://github.com/MontiCore/monticore */
 package de.monticore.lang.monticar.semantics.loops.symbols.semiexplicit;
 
-import de.monticore.lang.embeddedmontiarc.embeddedmontiarcmath._symboltable.math.symbols.EMAMInitialGuessSymbol;
-import de.monticore.lang.embeddedmontiarc.embeddedmontiarcmath._symboltable.math.symbols.EMAMInitialValueSymbol;
 import de.monticore.lang.embeddedmontiarc.embeddedmontiarcmath._symboltable.math.symbols.EMAMSymbolicVariableSymbol;
 import de.monticore.lang.math._symboltable.expression.MathExpressionSymbol;
 
@@ -81,6 +79,22 @@ public final class SemiExplicitFormBuilder {
     public SemiExplicitFormBuilder addInitialGuess(MathExpressionSymbol initialGuess) {
         this.initialGuesses.add(initialGuess);
         return this;
+    }
+
+    public ArrayList<EMAMSymbolicVariableSymbol> getY() {
+        return y;
+    }
+
+    public ArrayList<EMAMSymbolicVariableSymbol> getZ() {
+        return z;
+    }
+
+    public ArrayList<MathExpressionSymbol> getF() {
+        return f;
+    }
+
+    public ArrayList<EquationSystemFunction> getG() {
+        return g;
     }
 
     public SemiExplicitForm build() {

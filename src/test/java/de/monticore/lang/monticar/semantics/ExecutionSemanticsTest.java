@@ -117,7 +117,6 @@ public class ExecutionSemanticsTest {
 
         System.out.println("\n\nExecution Order of model \"" + model + "\": \n" + PrintExecutionOrder.printExecutionOrder(component));
         System.out.println("\nSList of model \"" + model + "\": \n" + PrintExecutionOrder.printSListAtomic(component));
-        System.out.println("\nSLists of model \"" + model + "\": \n" + PrintExecutionOrder.printSListSubSystem(component));
 
         return symTab.<EMAComponentInstanceSymbol>resolve(model, EMAComponentInstanceSymbol.KIND).orElse(null);
     }

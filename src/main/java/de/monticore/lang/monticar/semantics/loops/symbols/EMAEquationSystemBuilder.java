@@ -16,7 +16,7 @@ import java.util.stream.Collectors;
 
 public final class EMAEquationSystemBuilder {
     Collection<EMAComponentInstanceSymbol> components = new HashSet<>();
-    Collection<EMAConnectorInstanceSymbol> connectors = new HashSet<>();
+    Collection<EMAAtomicConnectorInstance> connectors = new HashSet<>();
     Collection<EMAPortInstanceSymbol> inports = new HashSet<>();
     Collection<EMAPortInstanceSymbol> outports = new HashSet<>();
     Map<EMAPortInstanceSymbol, EMAPortInstanceSymbol> atomicSources = new HashMap<>();
@@ -34,7 +34,7 @@ public final class EMAEquationSystemBuilder {
         return this;
     }
 
-    public EMAEquationSystemBuilder setConnectors(Collection<EMAConnectorInstanceSymbol> connectors) {
+    public EMAEquationSystemBuilder setConnectors(Collection<EMAAtomicConnectorInstance> connectors) {
         this.connectors = connectors;
         return this;
     }
@@ -91,12 +91,10 @@ public final class EMAEquationSystemBuilder {
         Map<EMAPortInstanceSymbol, Set<EMAPortInstanceSymbol>> atomicTargets = new HashMap<>();
 
         // inner connectors
-        Set<EMAConnectorInstanceSymbol> innerConnectors = new HashSet<>();
         atomicConnectors.stream()
                 .filter(c -> components.contains(c.getSourcePort().getComponentInstance())
                         && components.contains(c.getTargetPort().getComponentInstance()))
                 .forEachOrdered(c -> {
-                    innerConnectors.add(buildConnectorFrom(c, nameMapping));
                     atomicSources.put(c.getTargetPort(), c.getSourcePort());
                     atomicTargets.getOrDefault(c.getSourcePort(), new HashSet<>()).add(c.getTargetPort());
                 });
@@ -124,7 +122,7 @@ public final class EMAEquationSystemBuilder {
 
         return builder()
                 .setComponents(components)
-                .setConnectors(innerConnectors)
+                .setConnectors(atomicConnectors)
                 .setInports(inportSymbols)
                 .setOutports(outportSymbols)
                 .setAtomicSources(atomicSources)
@@ -132,7 +130,8 @@ public final class EMAEquationSystemBuilder {
                 .build();
     }
 
-    private static EMAConnectorInstanceSymbol buildConnectorFrom(EMAAtomicConnectorInstance c, Map<EMAComponentInstanceSymbol, String> nameMapping) {
+    private static EMAConnectorInstanceSymbol buildConnectorFrom(EMAAtomicConnectorInstance c,
+                                                                 Map<EMAComponentInstanceSymbol, String> nameMapping) {
         String source = formattedQualifiedNameOf(c.getSourcePort(), nameMapping);
         String target =  formattedQualifiedNameOf(c.getTargetPort(), nameMapping);
         EMAConnectorSymbol connectorSymbol = EMAConnectorInstanceSymbol.builder()

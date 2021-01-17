@@ -160,9 +160,7 @@ public class PrintSympyFormat implements EMAMMathExpressionSymbolVisitor {
     @Override
     public void traverse(MathMatrixNameExpressionSymbol node) {
         printer.print(rename(node.getNameToAccess()));
-        printer.print("(");
         handle(node.getMathMatrixAccessOperatorSymbol());
-        printer.print(")");
     }
 
     @Override
