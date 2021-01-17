@@ -8,6 +8,6 @@ component Division<T> {
 		out T division;
 
     implementation Math{
-        division * divisor == dividend;
+        division = dividend / divisor;
     }
 }

@@ -81,23 +81,10 @@ public class ExecutionSemanticsTest {
         TaggingResolver symTab = SymtabCreator.createSymTab("src/test/resources", "src/main/resources",
                 Constants.SYNTHESIZED_COMPONENTS_ROOT);
 
-
-
         EMAComponentInstanceSymbol component =
                 symTab.<EMAComponentInstanceSymbol>resolve(model, EMAComponentInstanceSymbol.KIND).orElse(null);
 
-
-
-
-
         ExecutionSemantics executionSemantics = new ExecutionSemantics(symTab, component);
-
-
-
-
-
-
-
 
         executionSemantics.setResolveLoops(true);
         executionSemantics.setHandleArtificialLoops(true);

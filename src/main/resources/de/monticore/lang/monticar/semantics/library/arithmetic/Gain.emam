@@ -7,6 +7,6 @@ component Gain<T>(T gainValue) {
 		out T output;
 
 	implementation Math{
-	    output == input * gainValue;
+	    output = input * gainValue;
 	}
 }
