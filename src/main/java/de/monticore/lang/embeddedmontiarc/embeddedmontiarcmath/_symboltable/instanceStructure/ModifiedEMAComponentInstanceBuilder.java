@@ -26,6 +26,8 @@ import de.monticore.lang.math._symboltable.expression.MathExpressionSymbol;
 import de.monticore.lang.math._symboltable.expression.MathNameExpressionSymbol;
 import de.monticore.lang.math._symboltable.expression.MathNumberExpressionSymbol;
 import de.monticore.lang.math._symboltable.expression.MathValueSymbol;
+import de.monticore.lang.mathopt._symboltable.visitor.CopyMathOptExpressionSymbol;
+import de.monticore.lang.mathopt._symboltable.visitor.MathOptExpressionSymbolReplacementVisitor;
 import de.monticore.lang.monticar.common2._ast.ASTLiteralValue;
 import de.monticore.lang.monticar.common2._ast.ASTParameter;
 import de.monticore.lang.monticar.common2._ast.ASTValue;
