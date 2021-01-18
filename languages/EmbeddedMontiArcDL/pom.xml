@@ -1,3 +1,11 @@
+<!--
+
+    (c) https://github.com/MontiCore/monticore
+
+    The license generally applicable for this project
+    can be found under https://github.com/MontiCore/monticore.
+
+-->
 <!-- (c) https://github.com/MontiCore/monticore -->
 
 <project xmlns="http://maven.apache.org/POM/4.0.0"
@@ -10,26 +18,26 @@
 
     <groupId>de.monticore.lang.monticar</groupId>
     <artifactId>embedded-montiarc-deeplearning</artifactId>
-    <version>0.2.12-SNAPSHOT</version>
+    <version>0.4.4-SNAPSHOT</version>
 
     <!-- == PROJECT DEPENDENCIES ============================================= -->
 
     <properties>
 
         <!-- .. EMA-Libraries ................................................. -->
-        <Common-MontiCar.version>0.2.12-SNAPSHOT</Common-MontiCar.version>
-        <Embedded-MontiArc.version>0.2.12-SNAPSHOT</Embedded-MontiArc.version>
-        <Embedded-MontiArc-Math.version>0.2.12-SNAPSHOT</Embedded-MontiArc-Math.version>
-        <Embedded-MontiArc-Dynamics.version>0.2.12-SNAPSHOT</Embedded-MontiArc-Dynamics.version>
-        <Embedded-MontiArc-Behaviour.version>0.2.12-SNAPSHOT</Embedded-MontiArc-Behaviour.version>
-        <Math.version>0.2.12-SNAPSHOT</Math.version>
-        <MathOpt.version>0.2.12-SNAPSHOT</MathOpt.version>
+        <Common-MontiCar.version>0.4.4-SNAPSHOT</Common-MontiCar.version>
+        <Embedded-MontiArc.version>0.4.4-SNAPSHOT</Embedded-MontiArc.version>
+        <Embedded-MontiArc-Math.version>0.4.4-SNAPSHOT</Embedded-MontiArc-Math.version>
+        <Embedded-MontiArc-Dynamics.version>0.4.4-SNAPSHOT</Embedded-MontiArc-Dynamics.version>
+        <Embedded-MontiArc-Behaviour.version>0.4.4-SNAPSHOT</Embedded-MontiArc-Behaviour.version>
+        <Math.version>0.4.4-SNAPSHOT</Math.version>
+        <MathOpt.version>0.4.4-SNAPSHOT</MathOpt.version>
+        <CNNArch.version>0.4.4-SNAPSHOT</CNNArch.version>
 
         <!-- .. SE-Libraries .................................................. -->
         <monticore.version>5.0.1</monticore.version>
         <se-commons.version>1.7.8</se-commons.version>
         <mc.grammars.assembly.version>0.0.6</mc.grammars.assembly.version>
-        <CNNArch.version>0.4.0-SNAPSHOT</CNNArch.version>
 
         <!-- .. Libraries .................................................. -->
         <guava.version>25.1-jre</guava.version>
@@ -117,11 +125,11 @@
             <version>${se-commons.version}</version>
         </dependency>
 
-        <dependency>
-            <groupId>de.monticore.lang.monticar</groupId>
-            <artifactId>common-monticar</artifactId>
-            <version>${Common-MontiCar.version}</version>
-        </dependency>
+<!--        <dependency>-->
+<!--            <groupId>de.monticore.lang.monticar</groupId>-->
+<!--            <artifactId>common-monticar</artifactId>-->
+<!--            <version>${Common-MontiCar.version}</version>-->
+<!--        </dependency>-->
 
         <dependency>
             <groupId>de.monticore.lang.monticar</groupId>
@@ -131,11 +139,11 @@
             <scope>provided</scope>
         </dependency>
 
-        <dependency>
-            <groupId>de.monticore.lang.monticar</groupId>
-            <artifactId>embedded-montiarc</artifactId>
-            <version>${Embedded-MontiArc.version}</version>
-        </dependency>
+<!--        <dependency>-->
+<!--            <groupId>de.monticore.lang.monticar</groupId>-->
+<!--            <artifactId>embedded-montiarc</artifactId>-->
+<!--            <version>${Embedded-MontiArc.version}</version>-->
+<!--        </dependency>-->
 
         <dependency>
             <groupId>de.monticore.lang.monticar</groupId>
@@ -146,11 +154,11 @@
         </dependency>
 
 
-        <dependency>
-            <groupId>de.monticore.lang.monticar</groupId>
-            <artifactId>embedded-montiarc-behaviour</artifactId>
-            <version>${Embedded-MontiArc-Behaviour.version}</version>
-        </dependency>
+<!--        <dependency>-->
+<!--            <groupId>de.monticore.lang.monticar</groupId>-->
+<!--            <artifactId>embedded-montiarc-behaviour</artifactId>-->
+<!--            <version>${Embedded-MontiArc-Behaviour.version}</version>-->
+<!--        </dependency>-->
 
         <dependency>
             <groupId>de.monticore.lang.monticar</groupId>
@@ -160,11 +168,11 @@
             <scope>provided</scope>
         </dependency>
 
-        <dependency>
-            <groupId>de.monticore.lang</groupId>
-            <artifactId>math</artifactId>
-            <version>${Math.version}</version>
-        </dependency>
+<!--        <dependency>-->
+<!--            <groupId>de.monticore.lang</groupId>-->
+<!--            <artifactId>math</artifactId>-->
+<!--            <version>${Math.version}</version>-->
+<!--        </dependency>-->
 
         <dependency>
             <groupId>de.monticore.lang</groupId>
@@ -174,11 +182,11 @@
             <scope>provided</scope>
         </dependency>
 
-        <dependency>
-            <groupId>de.monticore.lang</groupId>
-            <artifactId>math-opt</artifactId>
-            <version>${MathOpt.version}</version>
-        </dependency>
+<!--        <dependency>-->
+<!--            <groupId>de.monticore.lang</groupId>-->
+<!--            <artifactId>math-opt</artifactId>-->
+<!--            <version>${MathOpt.version}</version>-->
+<!--        </dependency>-->
 
         <dependency>
             <groupId>de.monticore.lang</groupId>
@@ -216,11 +224,11 @@
             <scope>provided</scope>
         </dependency>
 
-        <dependency>
-            <groupId>de.monticore.lang.monticar</groupId>
-            <artifactId>embedded-montiarc-dynamics</artifactId>
-            <version>${Embedded-MontiArc-Dynamics.version}</version>
-        </dependency>
+<!--        <dependency>-->
+<!--            <groupId>de.monticore.lang.monticar</groupId>-->
+<!--            <artifactId>embedded-montiarc-dynamics</artifactId>-->
+<!--            <version>${Embedded-MontiArc-Dynamics.version}</version>-->
+<!--        </dependency>-->
 
         <dependency>
             <groupId>de.monticore.lang.monticar</groupId>
