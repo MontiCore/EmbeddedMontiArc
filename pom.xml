@@ -8,31 +8,31 @@
     <!-- == PROJECT COORDINATES ============================================= -->
     <groupId>de.monticore.lang.monticar</groupId>
     <artifactId>struct</artifactId>
-    <version>0.2.12-SNAPSHOT</version>
+    <version>0.4.4-SNAPSHOT</version>
 
     <!-- == PROJECT DEPENDENCIES ============================================= -->
     <properties>
-        <!-- .. EMA-Libraries ................................................. -->
-        <Common-MontiCar.version>0.2.12-SNAPSHOT</Common-MontiCar.version>
-        <enumlang.version>0.2.12-SNAPSHOT</enumlang.version>
+        <!-- .. EMA-Libraries ............................................. -->
+        <Common-MontiCar.version>0.4.4-SNAPSHOT</Common-MontiCar.version>
+        <enumlang.version>0.4.4-SNAPSHOT</enumlang.version>
 
-        <!-- .. SE-Libraries .................................................. -->
-        <monticore.version>5.0.1</monticore.version>
-        <se-commons.version>1.7.7</se-commons.version>
+        <!-- .. SE-Libraries .............................................. -->
+        <guava.version>25.1-jre</guava.version>
+        <monticore.version>5.0.0</monticore.version>
         <mc.grammars.assembly.version>0.0.8</mc.grammars.assembly.version>
-        <!-- .. Libraries .................................................. -->
+
+        <!-- .. Libraries ................................................. -->
         <junit.version>4.13.1</junit.version>
-        <logback.version>1.1.2</logback.version>
-        <jscience.version>4.3.1</jscience.version>
-        <antlr.version>4.7.1</antlr.version>
-        <!-- .. Plugins ....................................................... -->
-        <monticore.plugin>5.0.0</monticore.plugin>
+
+        <!-- .. Plugins ................................................... -->
         <assembly.plugin>2.5.4</assembly.plugin>
         <compiler.plugin>3.3</compiler.plugin>
         <source.plugin>2.4</source.plugin>
+
         <!-- Classifiers -->
         <grammars.classifier>grammars</grammars.classifier>
-        <!-- .. Misc .......................................................... -->
+
+        <!-- .. Misc ...................................................... -->
         <java.version>1.8</java.version>
         <project.build.sourceEncoding>UTF-8</project.build.sourceEncoding>
         <project.reporting.outputEncoding>UTF-8</project.reporting.outputEncoding>
@@ -41,42 +41,18 @@
     <dependencies>
 
         <dependency>
-            <groupId>org.antlr</groupId>
-            <artifactId>antlr4-runtime</artifactId>
-            <version>4.7.1</version>
-        </dependency>
-
-        <dependency>
-            <groupId>de.se_rwth.commons</groupId>
-            <artifactId>se-commons-logging</artifactId>
-            <version>${se-commons.version}</version>
+            <groupId>com.google.guava</groupId>
+            <artifactId>guava</artifactId>
+            <version>${guava.version}</version>
         </dependency>
 
         <!-- MontiCore Dependencies -->
-        <dependency>
-            <groupId>de.monticore</groupId>
-            <artifactId>monticore-runtime</artifactId>
-            <version>${monticore.version}</version>
-        </dependency>
-
-        <dependency>
-            <groupId>de.monticore</groupId>
-            <artifactId>monticore-grammar</artifactId>
-            <version>${monticore.version}</version>
-        </dependency>
-
         <dependency>
             <groupId>de.monticore</groupId>
             <artifactId>monticore-grammar</artifactId>
             <version>${monticore.version}</version>
             <classifier>${grammars.classifier}</classifier>
             <scope>provided</scope>
-        </dependency>
-
-        <dependency>
-            <groupId>de.monticore.lang.monticar</groupId>
-            <artifactId>common-monticar</artifactId>
-            <version>${Common-MontiCar.version}</version>
         </dependency>
 
         <dependency>
@@ -101,26 +77,6 @@
             <scope>test</scope>
         </dependency>
 
-        <dependency>
-            <groupId>de.monticore</groupId>
-            <artifactId>monticore-runtime</artifactId>
-            <version>${monticore.version}</version>
-            <type>test-jar</type>
-            <scope>test</scope>
-        </dependency>
-
-        <dependency>
-            <groupId>ch.qos.logback</groupId>
-            <artifactId>logback-classic</artifactId>
-            <version>${logback.version}</version>
-        </dependency>
-
-        <dependency>
-            <groupId>org.jscience</groupId>
-            <artifactId>jscience</artifactId>
-            <version>${jscience.version}</version>
-        </dependency>
-
     </dependencies>
 
     <!-- == PROJECT BUILD SETTINGS =========================================== -->
@@ -136,24 +92,11 @@
             <plugin>
                 <groupId>de.monticore.mojo</groupId>
                 <artifactId>monticore-maven-plugin</artifactId>
-                <version>${monticore.plugin}</version>
+                <version>${monticore.version}</version>
                 <configuration>
                     <skip>false</skip>
                     <script>de/monticore/monticore_noemf.groovy</script>
                 </configuration>
-                <dependencies>
-                    <dependency>
-                        <groupId>org.antlr</groupId>
-                        <artifactId>antlr4</artifactId>
-                        <version>4.7.1</version>
-                    </dependency>
-                    <!-- https://mvnrepository.com/artifact/org.antlr/antlr4-runtime -->
-                    <dependency>
-                        <groupId>org.antlr</groupId>
-                        <artifactId>antlr4-runtime</artifactId>
-                        <version>4.7.1</version>
-                    </dependency>
-                </dependencies>
                 <executions>
                     <execution>
                         <goals>
@@ -227,32 +170,32 @@
                 </executions>
             </plugin>
             <!-- to add copyright information automatically-->
-            <plugin>
-                <groupId>com.mycila</groupId>
-                <artifactId>license-maven-plugin</artifactId>
-                <version>3.0</version>
-                <configuration>
-                    <header>${project.baseUri}/src/license/se/license.txt</header>
-                    <properties>
-                        <owner>Michael von Wenckstern</owner>
-                        <email>vonwenckstern@se-rwth.de</email>
-                    </properties>
-                    <excludes>
-                        <exclude>**/README</exclude>
-                        <exclude>src/test/resources/**</exclude>
-                        <exclude>src/main/resources/**</exclude>
-                        <exclude>src/license/**</exclude>
-                    </excludes>
-                </configuration>
-                <executions>
-                    <execution>
-                        <goals>
-                            <goal>format</goal>
-                        </goals>
-                        <phase>process-sources</phase>
-                    </execution>
-                </executions>
-            </plugin>
+<!--            <plugin>-->
+<!--                <groupId>com.mycila</groupId>-->
+<!--                <artifactId>license-maven-plugin</artifactId>-->
+<!--                <version>3.0</version>-->
+<!--                <configuration>-->
+<!--                    <header>${project.baseUri}/src/license/se/license.txt</header>-->
+<!--                    <properties>-->
+<!--                        <owner>Michael von Wenckstern</owner>-->
+<!--                        <email>vonwenckstern@se-rwth.de</email>-->
+<!--                    </properties>-->
+<!--                    <excludes>-->
+<!--                        <exclude>**/README</exclude>-->
+<!--                        <exclude>src/test/resources/**</exclude>-->
+<!--                        <exclude>src/main/resources/**</exclude>-->
+<!--                        <exclude>src/license/**</exclude>-->
+<!--                    </excludes>-->
+<!--                </configuration>-->
+<!--                <executions>-->
+<!--                    <execution>-->
+<!--                        <goals>-->
+<!--                            <goal>format</goal>-->
+<!--                        </goals>-->
+<!--                        <phase>process-sources</phase>-->
+<!--                    </execution>-->
+<!--                </executions>-->
+<!--            </plugin>-->
                  <plugin>
                 <groupId>org.apache.maven.plugins</groupId>
                 <artifactId>maven-surefire-plugin</artifactId>
