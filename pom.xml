@@ -7,7 +7,6 @@
 
     <!-- == PROJECT COORDINATES ============================================= -->
 
-
     <groupId>de.monticore.lang.monticar</groupId>
     <artifactId>embedded-montiarc-component-clustering</artifactId>
     <version>0.0.3-SNAPSHOT</version>
