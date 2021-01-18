@@ -82,7 +82,9 @@ public class EMAComponentInstanceSymbolCreator {
                         .addConnectors(cmp.getConnectors())
                         .addResolutionDeclarationSymbols(cmp.getResolutionDeclarationSymbols())
                         .addParameters(cmp.getParameters())
-                        .addArguments(cmp.getArguments());
+                        .addArguments(cmp.getArguments())
+                        .addPortInitials(cmp.getPortInitials())
+                        .addComponentModifiers(cmp.getComponentModifiers());
         for (EMAConnectorSymbol emaConnectorSymbol : cmp.getConnectors())
             Log.info(emaConnectorSymbol.toString(), "Building Connector:");
         // add sub components
@@ -99,6 +101,8 @@ public class EMAComponentInstanceSymbolCreator {
                             .addResolutionDeclarationSymbols(inst.getComponentType().getResolutionDeclarationSymbols())
                             .addParameters(inst.getComponentType().getReferencedSymbol().getParameters())
                             .addArguments(inst.getComponentType().getReferencedSymbol().getArguments())
+                            .addPortInitials(inst.getComponentType().getReferencedSymbol().getPortInitials())
+                            .addComponentModifiers(inst.getComponentType().getReferencedSymbol().getComponentModifiers())
                             .build());
             Log.debug(inst.getInstanceInformation().get().getInstanceNumberForArgumentIndex(0) + "", "InstanceInformation:");
 

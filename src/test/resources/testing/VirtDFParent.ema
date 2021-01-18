@@ -1,0 +1,10 @@
+/* (c) https://github.com/MontiCore/monticore */
+package testing;
+
+component VirtDFParent {
+    ports
+        in Q input,
+        out Q output;
+
+    instance VirtDF virtDF;
+}

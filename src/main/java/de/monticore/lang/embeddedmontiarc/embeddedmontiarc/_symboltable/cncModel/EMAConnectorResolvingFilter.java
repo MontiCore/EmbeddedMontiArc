@@ -1,17 +1,13 @@
 /* (c) https://github.com/MontiCore/monticore */
 package de.monticore.lang.embeddedmontiarc.embeddedmontiarc._symboltable.cncModel;
 
-import java.util.Collection;
-import java.util.LinkedHashSet;
-import java.util.Map;
-import java.util.Optional;
-import java.util.Set;
-
 import de.monticore.symboltable.Symbol;
 import de.monticore.symboltable.SymbolKind;
 import de.monticore.symboltable.resolving.CommonResolvingFilter;
 import de.monticore.symboltable.resolving.ResolvingFilter;
 import de.monticore.symboltable.resolving.ResolvingInfo;
+
+import java.util.*;
 
 /**
  * Created by MichaelvonWenckstern on 02.09.2016.

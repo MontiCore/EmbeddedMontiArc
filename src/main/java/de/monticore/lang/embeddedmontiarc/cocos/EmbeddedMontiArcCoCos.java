@@ -2,7 +2,7 @@
 package de.monticore.lang.embeddedmontiarc.cocos;
 
 import de.monticore.lang.embeddedmontiarc.embeddedmontiarc._cocos.EmbeddedMontiArcASTConnectorCoCo;
-import de.monticore.lang.embeddedmontiarc.embeddedmontiarc._cocos.*;
+import de.monticore.lang.embeddedmontiarc.embeddedmontiarc._cocos.EmbeddedMontiArcCoCoChecker;
 
 /**
  * Bundle of CoCos for the MontiArc language.
@@ -29,6 +29,7 @@ public class EmbeddedMontiArcCoCos {
         .addCoCo(new OnlyIncomingPortIsConfig())
         .addCoCo(new InRosPortRosSender())
         .addCoCo(new ConstantConnectorTargetRangeValid())
-        .addCoCo((new DistinctTargetPorts()));
+        .addCoCo((new DistinctTargetPorts()))
+        .addCoCo(new InitialGuessIsNotAssignmentCoCo());
   }
 }
