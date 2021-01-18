@@ -10,7 +10,7 @@
 
   <groupId>de.monticore.lang.monticar</groupId>
   <artifactId>embedded-montiarc-math-roscpp-generator</artifactId>
-  <version>0.1.8-SNAPSHOT</version>
+  <version>0.1.9-SNAPSHOT</version>
 
   <!-- == PROJECT DEPENDENCIES ============================================= -->
 
@@ -18,8 +18,7 @@
 
     <!-- .. SE-Libraries .................................................. -->
     <se-commons.version>1.7.7</se-commons.version>
-    <Embedded-MontiArc-Math.version>0.1.13-SNAPSHOT</Embedded-MontiArc-Math.version>
-    <Embedded-montiarc-math-rosmsg-generator.version>0.1.3-SNAPSHOT</Embedded-montiarc-math-rosmsg-generator.version>
+    <Embedded-montiarc-math-rosmsg-generator.version>0.1.4-SNAPSHOT</Embedded-montiarc-math-rosmsg-generator.version>
 
     <!-- .. Libraries .................................................. -->
     <guava.version>18.0</guava.version>
@@ -65,20 +64,6 @@
       <groupId>de.se_rwth.commons</groupId>
       <artifactId>se-commons-groovy</artifactId>
       <version>${se-commons.version}</version>
-    </dependency>
-
-    <dependency>
-      <groupId>de.monticore.lang.monticar</groupId>
-      <artifactId>embedded-montiarc-math</artifactId>
-      <version>${Embedded-MontiArc-Math.version}</version>
-    </dependency>
-
-    <dependency>
-      <groupId>de.monticore.lang.monticar</groupId>
-      <artifactId>embedded-montiarc-math</artifactId>
-      <version>${Embedded-MontiArc-Math.version}</version>
-      <classifier>${grammars.classifier}</classifier>
-      <scope>provided</scope>
     </dependency>
 
 
