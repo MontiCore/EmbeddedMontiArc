@@ -36,6 +36,7 @@ public class Z3UnderSpecificationSolver implements UnderSpecificationSolver {
 
         String script = String.join("\n", constDeclarations)
                 + "\n" + String.join("\n", equations)
+                // + add Ranges
                 + "\n(check-sat)"
                 + "\n(get-model)";
 
