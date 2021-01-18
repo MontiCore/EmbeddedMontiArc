@@ -28,8 +28,6 @@ public class EMAEquationSystemHelper {
 
     public static boolean trySymbolicSolve(EMAEquationSystem system) {
         if (system.isPresentSolution()) return !system.getSolution().isEmpty();
-        SemiExplicitForm semiExplicitForm = buildSemiExplicitForm(system);
-        semiExplicitForm.toString();
 
         Optional<EMAMSpecificationSymbol> specification = SpecificationConverter.convert(system);
 

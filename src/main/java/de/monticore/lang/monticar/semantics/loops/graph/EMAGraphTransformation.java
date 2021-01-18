@@ -12,8 +12,8 @@ public class EMAGraphTransformation {
 
 
     public static EMAGraph transform(EMAComponentInstanceSymbol component,
-                              boolean considerDirectFeedThrough,
-                              boolean considerNonVirtual) {
+                                     boolean considerDirectFeedThrough,
+                                     boolean considerNonVirtual) {
         EMAGraph graph = new EMAGraph();
 
         // Add all subcomponents of this component, transitively
@@ -23,21 +23,21 @@ public class EMAGraphTransformation {
         flattened.stream().forEach(graph::addVertex);
 
 
-            for (EMAComponentInstanceSymbol subComponent : graph.getVertices()) {
-                // add only if component is df
-                if (!considerDirectFeedThrough || subComponent.isDirectFeedThrough()) {
-                    // Adding for inports
-                    for (EMAPortInstanceSymbol inport : subComponent.getIncomingPortInstances()) {
-                        Optional<EMAPortInstanceSymbol> source = ConnectionHelper.sourceOf(inport, considerNonVirtual);
-                        if (!source.isPresent()) {
+        for (EMAComponentInstanceSymbol subComponent : graph.getVertices()) {
+            // add only if component is df
+            if (!considerDirectFeedThrough || subComponent.isDirectFeedThrough()) {
+                // Adding for inports
+                for (EMAPortInstanceSymbol inport : subComponent.getIncomingPortInstances()) {
+                    Optional<EMAPortInstanceSymbol> source = ConnectionHelper.sourceOf(inport, considerNonVirtual);
+                    if (!source.isPresent()) {
 //                            Log.warn(String.format("TODO There is no incoming connection for port \"%s\"", inport.getFullName()));
-                            continue;
-                        }
-
-                        // Add only inner graph connections
-                        if (graph.getVertices().contains(source.get().getComponentInstance()))
-                            graph.addEdge(new EMAAtomicConnectorInstance(source.get(), inport));
+                        continue;
                     }
+
+                    // Add only inner graph connections
+                    if (graph.getVertices().contains(source.get().getComponentInstance()))
+                        graph.addEdge(new EMAAtomicConnectorInstance(source.get(), inport));
+                }
 
 //                // adding for outports, may be unnecessary, but it does not harm
 //                for (EMAPortInstanceSymbol outport : subComponent.getComponentOutgoingPortInstances()) {
@@ -47,8 +47,8 @@ public class EMAGraphTransformation {
 //                        if (graph.getVertices().contains(target.getComponentInstance()))
 //                            graph.addEdge(new EMAAtomicConnectorInstance(outport, target));
 //                }
-                }
             }
+        }
 
         // if nonvirtual got considered, subcomponents of those are not part of the graph, add subgraphs here
         if (considerNonVirtual)
