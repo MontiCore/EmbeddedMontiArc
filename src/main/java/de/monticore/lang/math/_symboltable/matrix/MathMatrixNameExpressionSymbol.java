@@ -66,9 +66,9 @@ public class MathMatrixNameExpressionSymbol extends MathMatrixExpressionSymbol i
     public String getTextualRepresentation() {
         String result = "";
         result += nameToAccess;
-        result += "(";
+//        result += "(";
         result += getMathMatrixAccessOperatorSymbol().getTextualRepresentation();
-        result += ")";
+//        result += ")";
         return result;
     }
 
