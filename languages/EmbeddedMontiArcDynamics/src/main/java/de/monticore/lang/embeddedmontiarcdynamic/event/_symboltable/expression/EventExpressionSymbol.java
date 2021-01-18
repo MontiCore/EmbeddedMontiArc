@@ -3,7 +3,6 @@ package de.monticore.lang.embeddedmontiarcdynamic.event._symboltable.expression;
 
 import de.monticore.lang.monticar.interfaces.TextualExpression;
 import de.monticore.symboltable.CommonSymbol;
-import org.w3c.dom.events.EventException;
 
 import java.util.List;
 

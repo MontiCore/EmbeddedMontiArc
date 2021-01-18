@@ -1,21 +1,16 @@
 /* (c) https://github.com/MontiCore/monticore */
 package de.monticore.lang.embeddedmontiarcdynamic.event._symboltable;
 
-import de.monticore.ast.ASTNode;
-import de.monticore.commonexpressions._ast.*;
-import de.monticore.commonexpressions._visitor.CommonExpressionsVisitor;
 import de.monticore.expressionsbasis._ast.ASTExpression;
-import de.monticore.lang.embeddedmontiarcdynamic.event._ast.*;
-import de.monticore.lang.embeddedmontiarcdynamic.event._symboltable.expression.*;
-import de.monticore.lang.embeddedmontiarcdynamic.event._symboltable.expression.portvalueexpressionvalues.*;
+import de.monticore.lang.embeddedmontiarcdynamic.event._ast.ASTComponentEvent;
+import de.monticore.lang.embeddedmontiarcdynamic.event._ast.ASTEventCompilationUnit;
+import de.monticore.lang.embeddedmontiarcdynamic.event._symboltable.expression.EventExpressionSymbol;
+import de.monticore.lang.embeddedmontiarcdynamic.event._symboltable.expression.EventExpressionSymbolBUILDER;
 import de.monticore.lang.embeddedmontiarcdynamic.event._symboltable.helper.ComponentEventSymbolHelper;
-import de.monticore.lang.embeddedmontiarcdynamic.event._visitor.EventDelegatorVisitor;
 import de.monticore.lang.embeddedmontiarcdynamic.event._visitor.EventVisitor;
-import de.monticore.numberunit._ast.ASTNumberWithUnit;
 import de.monticore.symboltable.ArtifactScope;
 import de.monticore.symboltable.MutableScope;
 import de.monticore.symboltable.ResolvingConfiguration;
-import de.monticore.symboltable.Scope;
 import de.se_rwth.commons.Names;
 import de.se_rwth.commons.logging.Log;
 

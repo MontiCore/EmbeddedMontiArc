@@ -2,7 +2,6 @@
 package de.monticore.lang.embeddedmontiarcdynamic.event._symboltable.expression;
 
 import java.util.List;
-import java.util.Optional;
 
 public class EventPortExpressionConnectSymbol extends EventPortExpression {
 

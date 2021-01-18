@@ -1,16 +1,14 @@
 package de.monticore.lang.embeddedmontiarcdynamic.consistencychecks;
 
-import de.monticore.lang.embeddedmontiarc.embeddedmontiarc._symboltable.cncModel.EMAComponentSymbol;
 import de.monticore.lang.embeddedmontiarcdynamic.consistencychecks.outputparser.OutputParser;
 import de.monticore.lang.embeddedmontiarcdynamic.consistencychecks.templatebuilder.TemplateBuilder;
+import de.monticore.lang.embeddedmontiarcdynamic.embeddedmontiarcdynamic._symboltable.cncModel.EMADynamicComponentSymbol;
+import de.se_rwth.commons.logging.Log;
 
 import java.io.BufferedReader;
 import java.io.IOException;
 import java.io.InputStreamReader;
 import java.util.Date;
-
-import de.monticore.lang.embeddedmontiarcdynamic.embeddedmontiarcdynamic._symboltable.cncModel.EMADynamicComponentSymbol;
-import de.se_rwth.commons.logging.Log;
 
 public class ConsistencyChecker {
 

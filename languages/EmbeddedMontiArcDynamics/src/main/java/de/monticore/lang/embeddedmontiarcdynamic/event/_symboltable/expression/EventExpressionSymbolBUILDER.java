@@ -20,8 +20,6 @@ import de.monticore.symboltable.Scope;
 import de.se_rwth.commons.Names;
 import de.se_rwth.commons.logging.Log;
 
-import java.util.Optional;
-
 public class EventExpressionSymbolBUILDER  {
 
     //<editor-fold desc="Single Instance">

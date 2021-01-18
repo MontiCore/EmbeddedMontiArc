@@ -6,11 +6,7 @@ import de.monticore.lang.embeddedmontiarcdynamic.event._symboltable.expression.E
 import de.monticore.lang.monticar.ts.MCTypeSymbol;
 import de.monticore.symboltable.Scope;
 
-import java.util.Collection;
 import java.util.List;
-import java.util.stream.Collectors;
-
-import static com.google.common.base.Preconditions.checkArgument;
 
 public class ComponentEventSymbolReference extends ComponentEventSymbolReferenceTOP  {
     public ComponentEventSymbolReference(String name, Scope enclosingScopeOfReference) {

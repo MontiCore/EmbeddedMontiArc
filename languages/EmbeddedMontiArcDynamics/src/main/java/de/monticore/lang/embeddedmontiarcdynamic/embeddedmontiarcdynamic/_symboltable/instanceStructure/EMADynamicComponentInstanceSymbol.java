@@ -1,11 +1,12 @@
 /* (c) https://github.com/MontiCore/monticore */
 package de.monticore.lang.embeddedmontiarcdynamic.embeddedmontiarcdynamic._symboltable.instanceStructure;
 
+import de.monticore.lang.embeddedmontiarc.embeddedmontiarc._ast.ASTComponentModifier;
 import de.monticore.lang.embeddedmontiarc.embeddedmontiarc._symboltable.cncModel.EMAComponentSymbolReference;
 import de.monticore.lang.embeddedmontiarc.embeddedmontiarc._symboltable.cncModel.EMAPortSymbol;
 import de.monticore.lang.embeddedmontiarc.embeddedmontiarc._symboltable.instanceStructure.*;
+import de.monticore.lang.embeddedmontiarcdynamic.embeddedmontiarcdynamic._ast.ASTDynamicModifier;
 import de.monticore.lang.embeddedmontiarcdynamic.embeddedmontiarcdynamic._symboltable.cncModel.EMADynamicComponentSymbolReference;
-import de.monticore.lang.embeddedmontiarcdynamic.embeddedmontiarcdynamic._symboltable.cncModel.EMADynamicEventHandlerSymbol;
 import de.monticore.lang.embeddedmontiarcdynamic.helper.SymbolPrinter;
 
 import java.util.*;
@@ -36,6 +37,11 @@ public class EMADynamicComponentInstanceSymbol extends EMAComponentInstanceSymbo
 
     public boolean isDynamic() {
         return ((EMADynamicComponentSymbolReference)type).getReferencedSymbolAsDynamic().isDynamic();
+    }
+
+    @Override
+    public boolean isNonVirtual() {
+        return super.isNonVirtual() || isDynamic();
     }
 
     @Override
@@ -136,8 +142,4 @@ public class EMADynamicComponentInstanceSymbol extends EMAComponentInstanceSymbo
         return InstancingRegister.getInstanceInformation(this.getName());
     }
 
-    @Override
-    public String getFullName() {
-      return determineFullName();
-    }
 }

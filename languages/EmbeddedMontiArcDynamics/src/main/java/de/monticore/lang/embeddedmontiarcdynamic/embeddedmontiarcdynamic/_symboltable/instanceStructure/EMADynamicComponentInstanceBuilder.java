@@ -1,21 +1,20 @@
 /* (c) https://github.com/MontiCore/monticore */
 package de.monticore.lang.embeddedmontiarcdynamic.embeddedmontiarcdynamic._symboltable.instanceStructure;
 
-import de.monticore.lang.embeddedmontiarc.embeddedmontiarc._symboltable.cncModel.*;
+import de.monticore.lang.embeddedmontiarc.embeddedmontiarc._symboltable.cncModel.EMAConnectorSymbol;
+import de.monticore.lang.embeddedmontiarc.embeddedmontiarc._symboltable.cncModel.EMAPortArraySymbol;
+import de.monticore.lang.embeddedmontiarc.embeddedmontiarc._symboltable.cncModel.EMAPortSymbol;
 import de.monticore.lang.embeddedmontiarc.embeddedmontiarc._symboltable.instanceStructure.EMAComponentInstanceBuilder;
 import de.monticore.lang.embeddedmontiarc.embeddedmontiarc._symboltable.instanceStructure.EMAComponentInstanceSymbol;
 import de.monticore.lang.embeddedmontiarc.embeddedmontiarc._symboltable.instanceStructure.EMAPortInstanceSymbol;
-import de.monticore.lang.embeddedmontiarcdynamic.embeddedmontiarcdynamic._symboltable.cncModel.*;
+import de.monticore.lang.embeddedmontiarcdynamic.embeddedmontiarcdynamic._symboltable.cncModel.EMADynamicEventHandlerSymbol;
+import de.monticore.lang.embeddedmontiarcdynamic.embeddedmontiarcdynamic._symboltable.cncModel.EMADynamicPortArraySymbol;
 import de.monticore.lang.embeddedmontiarcdynamic.embeddedmontiarcdynamic._symboltable.instanceStructure.builder.EMADynamicEventHandlerInstanceBuilder;
-import de.monticore.lang.monticar.ts.MCTypeSymbol;
-import de.monticore.lang.monticar.ts.references.MCTypeReference;
 import de.monticore.symboltable.MutableScope;
-import de.monticore.symboltable.types.TypeSymbol;
-import de.monticore.symboltable.types.references.ActualTypeArgument;
-import de.se_rwth.commons.logging.Log;
 
-import java.util.*;
-import java.util.stream.Collectors;
+import java.util.ArrayList;
+import java.util.Collection;
+import java.util.List;
 
 public class EMADynamicComponentInstanceBuilder extends EMAComponentInstanceBuilder {
 
@@ -67,11 +66,11 @@ public class EMADynamicComponentInstanceBuilder extends EMAComponentInstanceBuil
     protected void instantiatePortArraySymbol(EMAPortArraySymbol sym, String packageName,
             MutableScope scope) {
         if (sym instanceof EMADynamicPortArraySymbol) {
-        for (int i = 0; i < sym.getDimension(); ++i) {
+            for (int i = 0; i < sym.getDimension(); ++i) {
                 EMADynamicPortInstanceSymbol inst = (EMADynamicPortInstanceSymbol)
                         instantiatePortSymbol(sym, packageName,sym.getName() + "[" + (i + 1) + "]", scope);
                 if (i < ((EMADynamicPortArraySymbol) sym).getNonDynamicDimension())
-                inst.setDynamic(false);
+                    inst.setDynamic(false);
             }
             if (((EMADynamicPortArraySymbol) sym).isDimensionInfinite()) {
                 EMADynamicPortInstanceSymbol inst = (EMADynamicPortInstanceSymbol)

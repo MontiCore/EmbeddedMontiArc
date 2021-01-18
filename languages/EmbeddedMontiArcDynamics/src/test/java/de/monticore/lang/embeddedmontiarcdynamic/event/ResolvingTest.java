@@ -1,13 +1,8 @@
 /* (c) https://github.com/MontiCore/monticore */
 package de.monticore.lang.embeddedmontiarcdynamic.event;
 
-import de.monticore.ModelingLanguageFamily;
-import de.monticore.io.paths.ModelPath;
-import de.monticore.lang.embeddedmontiarcdynamic.event._ast.ASTEventCompilationUnit;
-import de.monticore.lang.embeddedmontiarcdynamic.event._parser.EventParser;
 import de.monticore.lang.embeddedmontiarcdynamic.event._symboltable.ComponentEventSymbol;
 import de.monticore.lang.embeddedmontiarcdynamic.event._symboltable.EventLanguage;
-import de.monticore.symboltable.GlobalScope;
 import de.monticore.symboltable.Scope;
 import de.se_rwth.commons.logging.Log;
 import org.junit.Before;

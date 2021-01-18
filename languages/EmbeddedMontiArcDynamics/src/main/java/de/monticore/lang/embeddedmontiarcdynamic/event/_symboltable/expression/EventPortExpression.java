@@ -1,8 +1,6 @@
 /* (c) https://github.com/MontiCore/monticore */
 package de.monticore.lang.embeddedmontiarcdynamic.event._symboltable.expression;
 
-import de.monticore.symboltable.Symbol;
-
 import java.util.Optional;
 
 public class EventPortExpression extends EventExpressionSymbol {

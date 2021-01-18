@@ -18,7 +18,6 @@ import freemarker.template.TemplateExceptionHandler;
 import java.io.*;
 import java.util.*;
 
-import static de.monticore.lang.embeddedmontiarcdynamic.consistencychecks.enums.Enums.LogMessageTypes.EQUALCONDITIONS;
 import static de.monticore.lang.embeddedmontiarcdynamic.consistencychecks.enums.Enums.LogMessageTypes.*;
 
 public class TemplateBuilder {

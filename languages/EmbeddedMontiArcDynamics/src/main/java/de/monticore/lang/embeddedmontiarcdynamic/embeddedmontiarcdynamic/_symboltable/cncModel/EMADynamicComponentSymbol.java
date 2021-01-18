@@ -1,13 +1,13 @@
 /* (c) https://github.com/MontiCore/monticore */
 package de.monticore.lang.embeddedmontiarcdynamic.embeddedmontiarcdynamic._symboltable.cncModel;
 
-import de.monticore.lang.embeddedmontiarc.embeddedmontiarc._symboltable.ComponentKind;
+import de.monticore.lang.embeddedmontiarc.embeddedmontiarc._ast.ASTComponentModifier;
 import de.monticore.lang.embeddedmontiarc.embeddedmontiarc._symboltable.cncModel.EMAComponentSymbol;
 import de.monticore.lang.embeddedmontiarc.embeddedmontiarc._symboltable.cncModel.EMAConnectorSymbol;
 import de.monticore.lang.embeddedmontiarc.embeddedmontiarc._symboltable.cncModel.EMAPortArraySymbol;
 import de.monticore.lang.embeddedmontiarc.embeddedmontiarc._symboltable.cncModel.EMAPortSymbol;
-import de.monticore.lang.embeddedmontiarc.embeddedmontiarc._symboltable.instanceStructure.EMAComponentInstantiationKind;
 import de.monticore.lang.embeddedmontiarc.embeddedmontiarc._symboltable.instanceStructure.EMAComponentInstantiationSymbol;
+import de.monticore.lang.embeddedmontiarcdynamic.embeddedmontiarcdynamic._ast.ASTDynamicModifier;
 import de.monticore.lang.embeddedmontiarcdynamic.embeddedmontiarcdynamic._symboltable.instanceStructure.EMADynamicComponentInstantiationSymbol;
 import de.monticore.lang.embeddedmontiarcdynamic.helper.SymbolPrinter;
 import de.monticore.symboltable.SymbolKind;
@@ -100,6 +100,11 @@ public class EMADynamicComponentSymbol extends EMAComponentSymbol {
                 .getSpannedScope().<EMADynamicPortArraySymbol>resolveLocally(EMADynamicPortArraySymbol.KIND);
         return c.stream().sorted((o1, o2) -> o1.getSourcePosition().compareTo(o2.getSourcePosition()))
                 .collect(Collectors.toList());
+    }
+
+    @Override
+    public boolean isNonVirtual() {
+        return isDynamic() ? true : super.isNonVirtual();
     }
 
     public boolean isDynamic() {

@@ -1,12 +1,9 @@
 /* (c) https://github.com/MontiCore/monticore */
 package de.monticore.lang.embeddedmontiarcdynamic.event._symboltable.expression;
 
-import de.monticore.lang.embeddedmontiarc.embeddedmontiarc._symboltable.instanceStructure.EMAComponentInstanceBuilder;
 import de.monticore.lang.embeddedmontiarc.embeddedmontiarc.types.EMAVariable;
 import de.monticore.lang.embeddedmontiarcdynamic.event._symboltable.ComponentEventSymbolReference;
 import de.monticore.lang.embeddedmontiarcdynamic.event._symboltable.expression.portvalueexpressionvalues.PortValueSymbol;
-import de.monticore.lang.embeddedmontiarcdynamic.event._symboltable.expression.portvalueexpressionvalues.PortValueSymbolHelper;
-import de.monticore.lang.embeddedmontiarcdynamic.helper.SymbolPrinter;
 import de.monticore.lang.monticar.ts.MCTypeSymbol;
 import de.monticore.symboltable.types.references.ActualTypeArgument;
 

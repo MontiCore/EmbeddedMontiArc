@@ -5,27 +5,23 @@
     <modelVersion>4.0.0</modelVersion>
     <groupId>de.monticore.lang.monticar</groupId>
     <artifactId>embedded-montiarc-dynamics</artifactId>
-    <version>0.2.12-SNAPSHOT</version>
+    <version>0.4.4-SNAPSHOT</version>
 
     <name>EmbeddedMontiarcDynamic</name>
 
     <properties>
 
         <!-- .. EMA-Libraries ................................................. -->
-        <Embedded-MontiArc.version>0.2.12-SNAPSHOT</Embedded-MontiArc.version>
-        <Common-MontiCar.version>0.2.12-SNAPSHOT</Common-MontiCar.version>
+        <Embedded-MontiArc.version>0.4.4-SNAPSHOT</Embedded-MontiArc.version>
+        <Common-MontiCar.version>0.4.4-SNAPSHOT</Common-MontiCar.version>
 
         <!-- .. SE-Libraries .................................................. -->
         <monticore.version>5.0.1</monticore.version>
-        <se-commons.version>1.7.8</se-commons.version>
-
 
         <!-- Test ............................................................. -->
 
         <junit.version>4.13.1</junit.version>
         <logback.version>1.1.2</logback.version>
-        <jscience.version>4.3.1</jscience.version>
-
 
         <!-- .. Plugins ....................................................... -->
         <monticore.plugin>5.0.1</monticore.plugin>
@@ -34,16 +30,16 @@
         <source.plugin>2.4</source.plugin>
         <mc.grammars.assembly.version>0.0.6-SNAPSHOT</mc.grammars.assembly.version>
 
+        <guava.version>25.1-jre</guava.version>
+
         <!-- Classifiers -->
         <grammars.classifier>grammars</grammars.classifier>
 
         <!-- .. Misc .......................................................... -->
         <java.version>1.8</java.version>
 
-
         <!-- Use plexus compiler to speed up testing -->
         <plexus.compiler.eclipse.version>2.8</plexus.compiler.eclipse.version>
-
 
         <project.build.sourceEncoding>UTF-8</project.build.sourceEncoding>
         <project.reporting.outputEncoding>UTF-8</project.reporting.outputEncoding>
@@ -51,18 +47,11 @@
     </properties>
 
     <dependencies>
-        <dependency>
-            <groupId>org.antlr</groupId>
-            <artifactId>antlr4-runtime</artifactId>
-            <version>4.7.1</version>
-        </dependency>
 
-
-        <!-- MontiCore Dependencies -->
         <dependency>
-            <groupId>de.monticore</groupId>
-            <artifactId>monticore-runtime</artifactId>
-            <version>${monticore.version}</version>
+            <groupId>com.google.guava</groupId>
+            <artifactId>guava</artifactId>
+            <version>${guava.version}</version>
         </dependency>
 
         <dependency>
@@ -77,18 +66,6 @@
             <version>${monticore.version}</version>
             <classifier>${grammars.classifier}</classifier>
             <scope>provided</scope>
-        </dependency>
-
-        <dependency>
-            <groupId>de.se_rwth.commons</groupId>
-            <artifactId>se-commons-groovy</artifactId>
-            <version>${se-commons.version}</version>
-        </dependency>
-
-        <dependency>
-            <groupId>de.monticore.lang.monticar</groupId>
-            <artifactId>common-monticar</artifactId>
-            <version>${Common-MontiCar.version}</version>
         </dependency>
 
         <dependency>
@@ -105,6 +82,7 @@
             <artifactId>embedded-montiarc</artifactId>
             <version>${Embedded-MontiArc.version}</version>
         </dependency>
+
         <dependency>
             <groupId>de.monticore.lang.monticar</groupId>
             <artifactId>embedded-montiarc</artifactId>
@@ -113,33 +91,12 @@
             <scope>provided</scope>
         </dependency>
 
-
         <!-- .. Test Libraries ............................................... -->
         <dependency>
             <groupId>junit</groupId>
             <artifactId>junit</artifactId>
             <version>${junit.version}</version>
             <scope>test</scope>
-        </dependency>
-
-        <dependency>
-            <groupId>de.monticore</groupId>
-            <artifactId>monticore-runtime</artifactId>
-            <version>${monticore.version}</version>
-            <type>test-jar</type>
-            <scope>test</scope>
-        </dependency>
-
-        <dependency>
-            <groupId>ch.qos.logback</groupId>
-            <artifactId>logback-classic</artifactId>
-            <version>${logback.version}</version>
-        </dependency>
-
-        <dependency>
-            <groupId>org.jscience</groupId>
-            <artifactId>jscience</artifactId>
-            <version>${jscience.version}</version>
         </dependency>
 
     </dependencies>
@@ -160,19 +117,6 @@
                     <skip>false</skip>
                     <script>de/monticore/monticore_noemf.groovy</script>
                 </configuration>
-                <dependencies>
-                    <dependency>
-                        <groupId>org.antlr</groupId>
-                        <artifactId>antlr4</artifactId>
-                        <version>4.7.1</version>
-                    </dependency>
-                    <!-- https://mvnrepository.com/artifact/org.antlr/antlr4-runtime -->
-                    <dependency>
-                        <groupId>org.antlr</groupId>
-                        <artifactId>antlr4-runtime</artifactId>
-                        <version>4.7.1</version>
-                    </dependency>
-                </dependencies>
                 <executions>
                     <execution>
                         <goals>
