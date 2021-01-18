@@ -38,16 +38,14 @@ Create a environment variable called _Armadillo_Home_ with the path to the base 
 * For conversion between _Armadillo_-matrix/cube and _OpenCV_-matrix/cube it exists a helper-header _ConvHelper.h_. This is generated automatically if at least one CV-command is used.
 * For more information about how to use CV-Command, see the _BallTracking_-project in the application repository.
 
-### Install Loop Solver Code Generation
+## Install Loop Solver Code Generation
 
-## [Odeint](http://headmyshoulder.github.io/odeint-v2/)
-# Install
+### [Odeint](http://headmyshoulder.github.io/odeint-v2/)
 * Download the header only library Boost [here](https://www.boost.org/)
 * Extract the library to a destination of your choice (e.g. `C:\lib`)
 * Add the environment variable `BOOST_HOME` with the library as value (e.g. `C:\lib\boost`)
 
-## [DAECPP](https://github.com/ikorotkin/dae-cpp)
-# Install
+### [DAECPP](https://github.com/ikorotkin/dae-cpp)
 * Follow the steps described [here](https://github.com/ikorotkin/dae-cpp#installation) to install the 
   [Intel Math Kernel Library](https://software.intel.com/content/www/us/en/develop/tools/oneapi/components/onemkl.html)
   version `2019.3`
@@ -62,7 +60,7 @@ Create a environment variable called _Armadillo_Home_ with the path to the base 
   * e.g. `cmake .. -DCMAKE_INSTALL_PREFIX=C:/lib/dae-cpp/`
 * Add the environment variable `DAECPP_HOME` with value `$installDir` (e.g. `C:\lib\daecpp`)
 
-# Use
+### Use DAECPP
 * To use this library the MKL variables need to be set first
 * Open command line
   * Include the variables
