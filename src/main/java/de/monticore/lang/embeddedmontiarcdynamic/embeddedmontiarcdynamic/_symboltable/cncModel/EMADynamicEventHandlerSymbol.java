@@ -5,15 +5,18 @@ import de.monticore.lang.embeddedmontiarc.embeddedmontiarc._symboltable.cncModel
 import de.monticore.lang.embeddedmontiarc.embeddedmontiarc._symboltable.cncModel.EMAElementSymbol;
 import de.monticore.lang.embeddedmontiarc.embeddedmontiarc._symboltable.cncModel.EMAPortSymbol;
 import de.monticore.lang.embeddedmontiarcdynamic.embeddedmontiarcdynamic._symboltable.instanceStructure.EMADynamicComponentInstantiationSymbol;
-import de.monticore.lang.embeddedmontiarcdynamic.embeddedmontiarcdynamic._symboltable.instanceStructure.EMADynamicEventHandlerInstanceSymbol;
-import de.monticore.lang.embeddedmontiarcdynamic.event._symboltable.expression.EventBracketExpressionSymbol;
 import de.monticore.lang.embeddedmontiarcdynamic.event._symboltable.expression.EventExpressionSymbol;
-import de.monticore.lang.embeddedmontiarcdynamic.event._symboltable.expression.EventLogicalOperationExpressionSymbol;
 import de.monticore.lang.embeddedmontiarcdynamic.event._symboltable.expression.EventPortExpression;
 import de.monticore.lang.monticar.si._symboltable.ResolutionDeclarationSymbol;
-import de.monticore.symboltable.*;
+import de.monticore.symboltable.CommonScopeSpanningSymbol;
+import de.monticore.symboltable.Scope;
+import de.monticore.symboltable.Symbol;
+import de.monticore.symboltable.SymbolKind;
 
-import java.util.*;
+import java.util.ArrayList;
+import java.util.Collection;
+import java.util.List;
+import java.util.Optional;
 import java.util.stream.Collectors;
 
 public class EMADynamicEventHandlerSymbol extends CommonScopeSpanningSymbol implements EMAElementSymbol {

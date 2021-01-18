@@ -1,30 +1,20 @@
 /* (c) https://github.com/MontiCore/monticore */
 package de.monticore.lang.embeddedmontiarcdynamic.embeddedmontiarcdynamic;
 
-import de.monticore.lang.embeddedmontiarc.cocos.EmbeddedMontiArcCoCos;
 import de.monticore.lang.embeddedmontiarc.embeddedmontiarc._ast.ASTEMACompilationUnit;
-import de.monticore.lang.embeddedmontiarc.embeddedmontiarc._ast.ASTEmbeddedMontiArcNode;
-import de.monticore.lang.embeddedmontiarc.embeddedmontiarc._symboltable.cncModel.EMAComponentSymbol;
 import de.monticore.lang.embeddedmontiarcdynamic.cocos.EmbeddedMontiArcDynamicCoCos;
 import de.monticore.lang.embeddedmontiarcdynamic.embeddedmontiarcdynamic._parser.EmbeddedMontiArcDynamicParser;
-import de.monticore.symboltable.Scope;
 import de.se_rwth.commons.logging.Log;
-import org.apache.commons.io.FileUtils;
-import org.apache.commons.io.filefilter.DirectoryFileFilter;
-import org.apache.commons.io.filefilter.RegexFileFilter;
-import org.junit.Ignore;
 import org.junit.Test;
 
 import java.io.IOException;
-import java.nio.file.*;
+import java.nio.file.FileVisitResult;
+import java.nio.file.Path;
+import java.nio.file.SimpleFileVisitor;
 import java.nio.file.attribute.BasicFileAttributes;
 import java.util.ArrayList;
-import java.util.Collection;
 import java.util.List;
 import java.util.Optional;
-
-import static org.junit.Assert.assertNotNull;
-import static org.junit.Assert.assertTrue;
 
 public class CocoTest extends AbstractTest {
 

@@ -2,31 +2,27 @@
 package de.monticore.lang.embeddedmontiarcdynamic.embeddedmontiarcdynamic._symboltable;
 
 
-import de.monticore.expressionsbasis._ast.ASTExpression;
-import de.monticore.lang.embeddedmontiarc.embeddedmontiarc._ast.*;
+import de.monticore.lang.embeddedmontiarc.embeddedmontiarc._ast.ASTComponent;
+import de.monticore.lang.embeddedmontiarc.embeddedmontiarc._ast.ASTConnector;
+import de.monticore.lang.embeddedmontiarc.embeddedmontiarc._ast.ASTEMACompilationUnit;
+import de.monticore.lang.embeddedmontiarc.embeddedmontiarc._ast.ASTSubComponent;
 import de.monticore.lang.embeddedmontiarc.embeddedmontiarc._symboltable.EmbeddedMontiArcSymbolTableCreator;
 import de.monticore.lang.embeddedmontiarc.embeddedmontiarc._symboltable.EmbeddedMontiArcSymbolTableHelper;
-import de.monticore.lang.embeddedmontiarc.embeddedmontiarc._symboltable.cncModel.*;
-import de.monticore.lang.embeddedmontiarc.embeddedmontiarc._symboltable.instanceStructure.EMAComponentInstanceBuilder;
-import de.monticore.lang.embeddedmontiarc.embeddedmontiarc._symboltable.instanceStructure.EMAComponentInstanceSymbolCreator;
-import de.monticore.lang.embeddedmontiarc.embeddedmontiarc._symboltable.instanceStructure.EMAComponentInstantiationSymbol;
-import de.monticore.lang.embeddedmontiarc.embeddedmontiarc._symboltable.instanceStructure.InstancingRegister;
+import de.monticore.lang.embeddedmontiarc.embeddedmontiarc._symboltable.cncModel.EMAComponentSymbolReference;
+import de.monticore.lang.embeddedmontiarc.embeddedmontiarc._symboltable.cncModel.EMAPortArraySymbol;
+import de.monticore.lang.embeddedmontiarc.embeddedmontiarc._symboltable.cncModel.EMAPortSymbol;
 import de.monticore.lang.embeddedmontiarc.helper.ArcTypePrinter;
 import de.monticore.lang.embeddedmontiarc.helper.EMAJavaHelper;
 import de.monticore.lang.embeddedmontiarc.helper.EMATypeHelper;
-import de.monticore.lang.embeddedmontiarcdynamic.embeddedmontiarcdynamic._ast.ASTComponent;
-
+import de.monticore.lang.embeddedmontiarcdynamic.embeddedmontiarcdynamic._ast.ASTDynamicModifier;
 import de.monticore.lang.embeddedmontiarcdynamic.embeddedmontiarcdynamic._ast.ASTEventHandler;
 import de.monticore.lang.embeddedmontiarcdynamic.embeddedmontiarcdynamic._ast.ASTPort;
-import de.monticore.lang.embeddedmontiarcdynamic.embeddedmontiarcdynamic._symboltable.cncModel.*;
-import de.monticore.lang.embeddedmontiarcdynamic.embeddedmontiarcdynamic._symboltable.instanceStructure.EMADynamicComponentInstanceBuilder;
+import de.monticore.lang.embeddedmontiarcdynamic.embeddedmontiarcdynamic._symboltable.cncModel.EMADynamicComponentSymbol;
+import de.monticore.lang.embeddedmontiarcdynamic.embeddedmontiarcdynamic._symboltable.cncModel.EMADynamicComponentSymbolReference;
+import de.monticore.lang.embeddedmontiarcdynamic.embeddedmontiarcdynamic._symboltable.cncModel.EMADynamicEventHandlerSymbol;
+import de.monticore.lang.embeddedmontiarcdynamic.embeddedmontiarcdynamic._symboltable.cncModel.EMADynamicPortHelper;
 import de.monticore.lang.embeddedmontiarcdynamic.embeddedmontiarcdynamic._symboltable.instanceStructure.EMADynamicComponentInstanceSymbolCreator;
-import de.monticore.lang.embeddedmontiarcdynamic.embeddedmontiarcdynamic._visitor.EmbeddedMontiArcDynamicDelegatorVisitor;
-import de.monticore.lang.embeddedmontiarcdynamic.embeddedmontiarcdynamic._visitor.EmbeddedMontiArcDynamicInheritanceVisitor;
 import de.monticore.lang.embeddedmontiarcdynamic.embeddedmontiarcdynamic._visitor.EmbeddedMontiArcDynamicVisitor;
-//import de.monticore.lang.embeddedmontiarcdynamic.event._ast.ASTAndEventConditionExpression;
-//import de.monticore.lang.embeddedmontiarcdynamic.event._ast.ASTEventConditionExpression;
-import de.monticore.lang.embeddedmontiarcdynamic.event._symboltable.EventSymbolTableCreator;
 import de.monticore.lang.embeddedmontiarcdynamic.event._symboltable.expression.EventExpressionSymbol;
 import de.monticore.lang.embeddedmontiarcdynamic.event._symboltable.expression.EventExpressionSymbolBUILDER;
 import de.monticore.lang.monticar.ValueSymbol;
@@ -40,9 +36,7 @@ import de.monticore.symboltable.modifiers.BasicAccessModifier;
 import de.monticore.symboltable.types.TypeSymbol;
 import de.monticore.symboltable.types.references.TypeReference;
 import de.monticore.types.types._ast.ASTReferenceType;
-import de.monticore.types.types._ast.ASTSimpleReferenceType;
 import de.monticore.types.types._ast.ASTType;
-import de.monticore.types.types._ast.ASTTypeArgument;
 import de.se_rwth.commons.Names;
 import de.se_rwth.commons.StringTransformations;
 import de.se_rwth.commons.logging.Log;
@@ -121,7 +115,9 @@ public class EmbeddedMontiArcDynamicSymbolTableCreator extends EmbeddedMontiArcS
         component.setImports(currentImports);
         component.setPackageName(componentPackageName);
         //set is dynamic
-        component.setDynamic(node.isDynamic());
+        boolean isDynamic = node.getComponentModifierList().stream()
+                .filter(m -> m instanceof ASTDynamicModifier).findAny().isPresent();
+        component.setDynamic(isDynamic);
 
         // Handle ResolutionDeclaration of stuff like <N1 n=5>
         if (node.getGenericTypeParametersOpt().isPresent()) {
@@ -152,6 +148,10 @@ public class EmbeddedMontiArcDynamicSymbolTableCreator extends EmbeddedMontiArcS
 
             component.setSuperComponent(Optional.of(ref));
         }
+
+        // Component Modifiers
+        if (!node.getComponentModifierList().isEmpty())
+            component.setComponentModifiers(node.getComponentModifierList());
 
         // check if this component is an inner component
         if (!componentStack.isEmpty()) {
@@ -324,6 +324,9 @@ public class EmbeddedMontiArcDynamicSymbolTableCreator extends EmbeddedMontiArcS
         List<ValueSymbol<TypeReference<TypeSymbol>>> configArgs = new ArrayList<>();
         componentTypeReference.setArguments(node.getArgumentsList());
         componentTypeReference.fixResolutions(this);
+
+        // PortInitials
+        componentTypeReference.setPortInitials(node.getPortInitialList());
 
 
         if (!node.getInstancesList().isEmpty()) {

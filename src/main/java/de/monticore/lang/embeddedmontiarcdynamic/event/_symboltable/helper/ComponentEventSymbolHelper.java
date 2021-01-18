@@ -4,9 +4,6 @@ package de.monticore.lang.embeddedmontiarcdynamic.event._symboltable.helper;
 
 import de.monticore.lang.embeddedmontiarc.embeddedmontiarc.types.TypesHelper;
 import de.monticore.lang.embeddedmontiarc.embeddedmontiarc.types.TypesPrinter;
-import de.monticore.lang.embeddedmontiarc.helper.EMAJavaHelper;
-import de.monticore.lang.embeddedmontiarc.helper.EMATypeHelper;
-import de.monticore.lang.embeddedmontiarcdynamic.embeddedmontiarcdynamic._symboltable.instanceStructure.builder.EMADynamicEventHandlerInstanceBuilder;
 import de.monticore.lang.embeddedmontiarcdynamic.event._ast.ASTComponentEvent;
 import de.monticore.lang.embeddedmontiarcdynamic.event._ast.ASTPortResolutionDeclaration;
 import de.monticore.lang.embeddedmontiarcdynamic.event._symboltable.ComponentEventSymbol;
@@ -20,10 +17,8 @@ import de.monticore.lang.monticar.ts.references.MontiCarTypeSymbolReference;
 import de.monticore.lang.monticar.types2._ast.ASTTypeParameters2;
 import de.monticore.lang.monticar.types2._ast.ASTTypeVariableDeclaration2;
 import de.monticore.symboltable.Scope;
-import de.monticore.types.types._ast.ASTType;
 import de.se_rwth.commons.logging.Log;
 
-import java.util.ArrayList;
 import java.util.List;
 
 

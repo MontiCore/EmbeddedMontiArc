@@ -5,7 +5,6 @@ import de.monticore.lang.embeddedmontiarc.embeddedmontiarc._symboltable.Embedded
 import de.monticore.lang.embeddedmontiarcdynamic.embeddedmontiarcdynamic._symboltable.instanceStructure.EMADynamicComponentInstanceSymbol;
 import de.monticore.symboltable.SymbolKind;
 
-import java.util.LinkedHashSet;
 import java.util.Set;
 
 public class EmbeddedMontiArcDynamicModelNameCalculator extends EmbeddedMontiArcModelNameCalculator {

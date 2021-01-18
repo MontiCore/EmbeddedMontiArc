@@ -3,16 +3,11 @@ package de.monticore.lang.embeddedmontiarcdynamic.event;
 
 import de.monticore.lang.embeddedmontiarcdynamic.cocos.EventCoCos;
 import de.monticore.lang.embeddedmontiarcdynamic.event._ast.ASTEventCompilationUnit;
-import de.monticore.lang.embeddedmontiarcdynamic.event._ast.ASTEventNode;
-import de.monticore.lang.embeddedmontiarcdynamic.event._cocos.EventCoCoChecker;
 import de.monticore.lang.embeddedmontiarcdynamic.event._parser.EventParser;
 import de.monticore.lang.embeddedmontiarcdynamic.event._symboltable.ComponentEventSymbol;
-import de.monticore.symboltable.Scope;
 import de.se_rwth.commons.logging.Log;
-import org.junit.Before;
 import org.junit.Test;
 
-import java.nio.file.FileSystemNotFoundException;
 import java.nio.file.Paths;
 import java.util.Optional;
 

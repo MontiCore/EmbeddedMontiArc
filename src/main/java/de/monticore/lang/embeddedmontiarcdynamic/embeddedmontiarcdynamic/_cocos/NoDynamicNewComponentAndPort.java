@@ -2,15 +2,10 @@
 package de.monticore.lang.embeddedmontiarcdynamic.embeddedmontiarcdynamic._cocos;
 
 import de.monticore.lang.embeddedmontiarc.embeddedmontiarc._ast.ASTConnector;
-import de.monticore.lang.embeddedmontiarc.embeddedmontiarc._ast.ASTElement;
 import de.monticore.lang.embeddedmontiarc.embeddedmontiarc._ast.ASTQualifiedNameWithArrayAndStar;
 import de.monticore.lang.embeddedmontiarc.embeddedmontiarc._cocos.EmbeddedMontiArcASTConnectorCoCo;
-import de.monticore.lang.embeddedmontiarcdynamic.embeddedmontiarcdynamic._ast.ASTComponent;
-import de.monticore.lang.embeddedmontiarcdynamic.embeddedmontiarcdynamic._ast.ASTEventHandler;
 import de.monticore.lang.embeddedmontiarcdynamic.embeddedmontiarcdynamic._symboltable.cncModel.EMADynamicPortHelper;
 import de.se_rwth.commons.logging.Log;
-
-import java.util.List;
 
 
 public class NoDynamicNewComponentAndPort implements EmbeddedMontiArcASTConnectorCoCo{

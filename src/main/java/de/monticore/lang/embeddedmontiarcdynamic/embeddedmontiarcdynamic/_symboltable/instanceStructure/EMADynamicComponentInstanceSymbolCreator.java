@@ -3,15 +3,15 @@ package de.monticore.lang.embeddedmontiarcdynamic.embeddedmontiarcdynamic._symbo
 
 import de.monticore.lang.embeddedmontiarc.embeddedmontiarc._symboltable.cncModel.EMAComponentSymbol;
 import de.monticore.lang.embeddedmontiarc.embeddedmontiarc._symboltable.instanceStructure.EMAComponentInstanceBuilder;
-import de.monticore.lang.embeddedmontiarc.embeddedmontiarc._symboltable.instanceStructure.EMAComponentInstanceSymbol;
 import de.monticore.lang.embeddedmontiarc.embeddedmontiarc._symboltable.instanceStructure.EMAComponentInstanceSymbolCreator;
 import de.monticore.lang.embeddedmontiarc.embeddedmontiarc._symboltable.instanceStructure.EMAComponentInstantiationSymbol;
-import de.monticore.lang.embeddedmontiarcdynamic.embeddedmontiarcdynamic._symboltable.cncModel.*;
+import de.monticore.lang.embeddedmontiarcdynamic.embeddedmontiarcdynamic._symboltable.cncModel.EMADynamicComponentSymbol;
+import de.monticore.lang.embeddedmontiarcdynamic.embeddedmontiarcdynamic._symboltable.cncModel.EMADynamicComponentSymbolReference;
+import de.monticore.lang.embeddedmontiarcdynamic.embeddedmontiarcdynamic._symboltable.cncModel.EMADynamicEventHandlerSymbol;
+import de.monticore.lang.embeddedmontiarcdynamic.embeddedmontiarcdynamic._symboltable.cncModel.EMADynamicPortArraySymbol;
 import de.monticore.lang.monticar.si._symboltable.ResolutionDeclarationSymbol;
-import de.monticore.symboltable.MutableScope;
 import de.monticore.symboltable.Symbol;
 import de.monticore.symboltable.resolving.ResolvingFilter;
-import de.se_rwth.commons.Joiners;
 import de.se_rwth.commons.logging.Log;
 
 import java.util.*;
@@ -46,7 +46,9 @@ public class EMADynamicComponentInstanceSymbolCreator extends EMAComponentInstan
                 .addConnectors(cmp.getConnectors())
                 .addResolutionDeclarationSymbols(cmp.getResolutionDeclarationSymbols())
                 .addParameters(cmp.getParameters())
-                .addArguments(cmp.getArguments());
+                .addArguments(cmp.getArguments())
+                .addPortInitials(cmp.getPortInitials())
+                .addComponentModifiers(cmp.getComponentModifiers());
 
         Collection<EMADynamicEventHandlerSymbol> eventHandlers = new ArrayList<>();
 
@@ -120,6 +122,8 @@ public class EMADynamicComponentInstanceSymbolCreator extends EMAComponentInstan
                                     .addResolutionDeclarationSymbols(inst.getComponentType().getReferencedSymbol().getResolutionDeclarationSymbols())
                                     .addParameters(inst.getComponentType().getReferencedSymbol().getParameters())
                                     .addArguments(inst.getComponentType().getReferencedSymbol().getArguments())
+                                    .addPortInitials(cmp.getPortInitials())
+                                    .addComponentModifiers(cmp.getComponentModifiers())
                                     .build())
 
             );
@@ -141,6 +145,7 @@ public class EMADynamicComponentInstanceSymbolCreator extends EMAComponentInstan
                 for(int i = 0; i < dinst.getDimension(); ++i){
                     EMAComponentInstanceBuilder b = builderForComponentInstantiationSymbol(inst, filters, resolutionDeclarationSymbols, packageName);
                     b.setName(dinst.getNameWithoutArrayBracketPart()+"["+(i+1)+"]");
+                    b.fixSubComponentPackageNames();
 
                     if(i >= dinst.getNonDynamicDimension() ){
                         if(b instanceof EMADynamicComponentInstanceBuilder){
@@ -153,6 +158,7 @@ public class EMADynamicComponentInstanceSymbolCreator extends EMAComponentInstan
                 if(dinst.isDimensionInfinite()){
                     EMAComponentInstanceBuilder b = builderForComponentInstantiationSymbol(inst, filters, resolutionDeclarationSymbols, packageName);
                     b.setName(dinst.getNameWithoutArrayBracketPart()+"[oo]");
+                    b.fixSubComponentPackageNames();
                     b = ((EMADynamicComponentInstanceBuilder)b).addDynamicInstance(true);
                     builder.addSubComponent(b.build());
                 }
@@ -160,6 +166,7 @@ public class EMADynamicComponentInstanceSymbolCreator extends EMAComponentInstan
                 for(int i = 0; i < dinst.getDimension(); ++i){
                     EMAComponentInstanceBuilder b = builderForComponentInstantiationSymbol(inst, filters, resolutionDeclarationSymbols, packageName);
                     b.setName(dinst.getNameWithoutArrayBracketPart()+"["+(i+1)+"]");
+                    b.fixSubComponentPackageNames();
                     builder.addSubComponent(b.build());
                 }
             }else{
@@ -179,6 +186,8 @@ public class EMADynamicComponentInstanceSymbolCreator extends EMAComponentInstan
                 .addResolvingFilters(filters)
                 .addResolutionDeclarationSymbols(inst.getComponentType().getResolutionDeclarationSymbols())
                 .addParameters(inst.getComponentType().getReferencedSymbol().getParameters())
-                .addArguments(inst.getComponentType().getReferencedSymbol().getArguments());
+                .addArguments(inst.getComponentType().getReferencedSymbol().getArguments())
+                .addPortInitials(inst.getComponentType().getReferencedSymbol().getPortInitials())
+                .addComponentModifiers(inst.getComponentType().getReferencedSymbol().getComponentModifiers());
     }
 }

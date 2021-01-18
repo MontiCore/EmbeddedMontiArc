@@ -1,16 +1,13 @@
 /* (c) https://github.com/MontiCore/monticore */
 package de.monticore.lang.embeddedmontiarcdynamic.embeddedmontiarcdynamic._symboltable;
 
-import de.monticore.CommonModelingLanguage;
-import de.monticore.io.paths.ModelPath;
 import de.monticore.lang.embeddedmontiarc.embeddedmontiarc._ast.ASTEMACompilationUnit;
 import de.monticore.lang.embeddedmontiarc.embeddedmontiarc._symboltable.EmbeddedMontiArcModelLoader;
-import de.monticore.lang.embeddedmontiarc.embeddedmontiarc._symboltable.EmbeddedMontiArcSymbolTableCreator;
-import de.monticore.symboltable.*;
+import de.monticore.symboltable.ArtifactScope;
+import de.monticore.symboltable.MutableScope;
+import de.monticore.symboltable.ResolvingConfiguration;
+import de.monticore.symboltable.Scope;
 import de.se_rwth.commons.logging.Log;
-
-import java.util.Collection;
-import java.util.Optional;
 
 public class EmbeddedMontiArcDynamicModelLoader extends EmbeddedMontiArcDynamicModelLoaderTOP {
 

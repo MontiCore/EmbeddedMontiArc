@@ -1,7 +1,6 @@
 /* (c) https://github.com/MontiCore/monticore */
 package de.monticore.lang.embeddedmontiarcdynamic.event._symboltable.expression.portvalueexpressionvalues;
 
-import de.monticore.commonexpressions._ast.ASTNotEqualsExpression;
 import de.monticore.lang.embeddedmontiarcdynamic.event._ast.*;
 import de.se_rwth.commons.logging.Log;
 

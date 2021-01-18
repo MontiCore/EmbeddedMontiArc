@@ -4,8 +4,6 @@ package de.monticore.lang.embeddedmontiarcdynamic.embeddedmontiarcdynamic._symbo
 import de.monticore.lang.embeddedmontiarc.embeddedmontiarc._symboltable.cncModel.EMAConnectorSymbol;
 import de.monticore.lang.embeddedmontiarc.embeddedmontiarc._symboltable.instanceStructure.EMAConnectorInstanceKind;
 
-import java.util.Optional;
-
 public class EMADynamicConnectorSymbol extends EMAConnectorSymbol {
 
     protected boolean dynamicSourceNewComponent;

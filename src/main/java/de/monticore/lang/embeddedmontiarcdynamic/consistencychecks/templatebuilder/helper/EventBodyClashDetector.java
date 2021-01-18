@@ -3,7 +3,8 @@ package de.monticore.lang.embeddedmontiarcdynamic.consistencychecks.templatebuil
 import de.monticore.lang.embeddedmontiarc.embeddedmontiarc._symboltable.cncModel.EMAConnectorSymbol;
 import de.monticore.lang.embeddedmontiarcdynamic.consistencychecks.enums.Enums;
 import freemarker.ext.util.WrapperTemplateModel;
-import freemarker.template.*;
+import freemarker.template.TemplateMethodModelEx;
+import freemarker.template.TemplateModelException;
 
 import java.util.List;
 

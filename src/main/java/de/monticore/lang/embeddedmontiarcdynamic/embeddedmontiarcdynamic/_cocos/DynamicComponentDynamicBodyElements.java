@@ -1,18 +1,21 @@
 /* (c) https://github.com/MontiCore/monticore */
 package de.monticore.lang.embeddedmontiarcdynamic.embeddedmontiarcdynamic._cocos;
 
+import de.monticore.lang.embeddedmontiarc.embeddedmontiarc._ast.ASTComponent;
 import de.monticore.lang.embeddedmontiarc.embeddedmontiarc._ast.ASTElement;
 import de.monticore.lang.embeddedmontiarc.embeddedmontiarc._ast.ASTInterface;
-import de.monticore.lang.embeddedmontiarcdynamic.embeddedmontiarcdynamic._ast.ASTComponent;
+import de.monticore.lang.embeddedmontiarc.embeddedmontiarc._cocos.EmbeddedMontiArcASTComponentCoCo;
+import de.monticore.lang.embeddedmontiarcdynamic.embeddedmontiarcdynamic._ast.ASTDynamicModifier;
 import de.monticore.lang.embeddedmontiarcdynamic.embeddedmontiarcdynamic._ast.ASTEventHandler;
 import de.monticore.lang.embeddedmontiarcdynamic.embeddedmontiarcdynamic._ast.ASTPort;
 import de.se_rwth.commons.logging.Log;
 
-public class DynamicComponentDynamicBodyElements implements EmbeddedMontiArcDynamicASTComponentCoCo {
+public class DynamicComponentDynamicBodyElements implements EmbeddedMontiArcASTComponentCoCo {
     @Override
     public void check(ASTComponent node) {
 
-        boolean isDynamic = node.isDynamic();
+        boolean isDynamic = node.getComponentModifierList().stream()
+                .filter(m -> m instanceof ASTDynamicModifier).findAny().isPresent();
 
         for (ASTElement ele : node.getBody().getElementList()){
             //Check Interface

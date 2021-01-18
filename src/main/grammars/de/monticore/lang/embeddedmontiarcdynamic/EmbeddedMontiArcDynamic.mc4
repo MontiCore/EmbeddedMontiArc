@@ -8,15 +8,8 @@ grammar EmbeddedMontiArcDynamic extends de.monticore.lang.embeddedmontiarcdynami
 
     start EMACompilationUnit;
 
-    // Extend Component for dynamic component. [isDynamic is new]
-    Component =
-            (dynamic:["dynamic"])? "component" (["interface"])? Name
-            genericTypeParameters:TypeParameters2?
-            (  "("  (Parameter || ",")+  ")" )?
-            ("implements" superComponent:ReferenceType)?
-            body:ComponentBody;
-
-
+    DynamicModifier implements ComponentModifier =
+        "dynamic";
 
 
     // Handler for events
