@@ -3,8 +3,16 @@ package de.monticore.lang.monticar.generator.pythonwrapper.util;
 
 import de.monticore.ModelingLanguageFamily;
 import de.monticore.io.paths.ModelPath;
+import de.monticore.lang.embeddedmontiarc.LogConfig;
+import de.monticore.lang.embeddedmontiarc.helper.ConstantPortHelper;
 import de.monticore.lang.monticar.cnnarch._symboltable.CNNArchCompilationUnitSymbol;
 import de.monticore.lang.monticar.cnnarch._symboltable.CNNArchLanguage;
+import de.monticore.lang.monticar.emadl._symboltable.EMADLLanguage;
+import de.monticore.lang.monticar.emadl.tagging.dltag.DataPathTagSchema;
+import de.monticore.lang.monticar.enumlang._symboltable.EnumLangLanguage;
+import de.monticore.lang.monticar.streamunits._symboltable.StreamUnitsLanguage;
+import de.monticore.lang.monticar.struct._symboltable.StructLanguage;
+import de.monticore.lang.tagging._symboltable.TaggingResolver;
 import de.monticore.symboltable.GlobalScope;
 import de.monticore.symboltable.Scope;
 import org.junit.Assert;
@@ -14,6 +22,7 @@ import java.io.IOException;
 import java.nio.file.Files;
 import java.nio.file.Path;
 import java.nio.file.Paths;
+import java.util.Arrays;
 import java.util.List;
 import java.util.stream.Collectors;
 
@@ -86,5 +95,32 @@ public class AbstractSymtabTest {
                 .map(String::trim)
                 .filter(l -> !l.isEmpty())
                 .collect(Collectors.toList());
+    }
+
+    protected static TaggingResolver createSymTabandTaggingResolver(String... modelPath) {
+        Scope scope = createSymTab(modelPath);
+        TaggingResolver tagging = new TaggingResolver(scope, Arrays.asList(modelPath));
+        DataPathTagSchema.registerTagTypes(tagging);
+
+        return tagging;
+    }
+
+    protected static Scope createSymTab(String... modelPath) {
+        ConstantPortHelper.resetLastID();
+        ModelingLanguageFamily fam = new ModelingLanguageFamily();
+        EMADLLanguage montiArcLanguage = new EMADLLanguage();
+
+        fam.addModelingLanguage(montiArcLanguage);
+        fam.addModelingLanguage(new StreamUnitsLanguage());
+        fam.addModelingLanguage(new StructLanguage());
+        fam.addModelingLanguage(new EnumLangLanguage());
+        final ModelPath mp = new ModelPath();
+        for (String m : modelPath) {
+            mp.addEntry(Paths.get(m));
+        }
+        LogConfig.init();//TODO comment for debug output
+        GlobalScope scope = new GlobalScope(mp, fam);
+        de.monticore.lang.monticar.Utils.addBuiltInTypes(scope);
+        return scope;
     }
 }

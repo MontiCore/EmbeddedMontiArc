@@ -12,6 +12,6 @@ component DeepLearningComponent {
         FullyConnected(units=10) ->
         FullyConnected(units=5) ->
         Softmax ->
-        prediction
+        predictions;
     }
 }
