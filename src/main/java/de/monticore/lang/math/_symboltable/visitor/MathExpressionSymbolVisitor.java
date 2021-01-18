@@ -51,6 +51,12 @@ public interface MathExpressionSymbolVisitor {
             handle((MathMatrixAccessSymbol) node);
         else if (node instanceof MathMatrixArithmeticExpressionSymbol)
             handle((MathMatrixArithmeticExpressionSymbol) node);
+        else
+            handleUnkown(node);
+    }
+
+    public default void handleUnkown(MathExpressionSymbol node) {
+
     }
 
     public default void handle(MathArithmeticExpressionSymbol node) {
