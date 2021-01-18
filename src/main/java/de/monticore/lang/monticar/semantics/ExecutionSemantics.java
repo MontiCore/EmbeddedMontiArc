@@ -4,13 +4,13 @@ package de.monticore.lang.monticar.semantics;
 import de.monticore.lang.embeddedmontiarc.embeddedmontiarc._ast.*;
 import de.monticore.lang.embeddedmontiarc.embeddedmontiarc._symboltable.instanceStructure.EMAComponentInstanceSymbol;
 import de.monticore.lang.monticar.semantics.executionOrder.ExecutionOrder;
-import de.monticore.lang.monticar.semantics.helper.Find;
 import de.monticore.lang.monticar.semantics.loops.detection.EMALoop;
 import de.monticore.lang.monticar.semantics.loops.detection.LoopDetection;
 import de.monticore.lang.monticar.semantics.loops.detection.SimpleCycle;
 import de.monticore.lang.monticar.semantics.loops.detection.StronglyConnectedComponent;
 import de.monticore.lang.monticar.semantics.loops.symbols.LoopComponentInstanceSymbol;
 import de.monticore.lang.monticar.semantics.resolve.Resolver;
+import de.monticore.lang.monticar.semantics.util.BasicLibrary;
 import de.monticore.lang.tagging._symboltable.TaggingResolver;
 import de.monticore.prettyprint.IndentPrinter;
 import de.se_rwth.commons.logging.Log;
@@ -23,40 +23,41 @@ public class ExecutionSemantics {
     private final TaggingResolver globalScope;
     private final EMAComponentInstanceSymbol rootComponent;
 
-    private boolean resolveLoops = false;
-    private boolean handleArtificialLoops = false;
-    private boolean solveSymbolicLoops = true;
-    private boolean solveSymbolicSpecification = true;
+    public static boolean RESOLVE_LOOPS = false;
+    public static boolean HANDLE_ARTIFICIAL_LOOPS = false;
+    public static boolean SOLVE_LOOPS_SYMBOLIC = true;
+    public static boolean SOLVE_SPECIFICATIONS_SYMBOLIC = true;
 
-    private boolean warnLoops = true;
-    private boolean warnArtificialLoops = true;
-    private boolean logSymbolicSolve = true;
+    public static boolean WARN_LOOPS = true;
+    public static boolean WARN_ARTIFICIAL_LOOPS = true;
+    public static boolean LOG_SYMBOLIC_SOLVE = true;
 
     public ExecutionSemantics(TaggingResolver globalScope, EMAComponentInstanceSymbol rootComponent) {
+        BasicLibrary.extract();
         this.globalScope = globalScope;
         this.rootComponent = rootComponent;
     }
 
     public void addExecutionSemantics() {
         if (rootComponent == null)
-            Log.error("TODO component is null, cannot calculate execution semantics");
+            Log.error("0xEMAES0001  component is null, cannot calculate execution semantics");
         Set<StronglyConnectedComponent> stronglyConnectedComponents = LoopDetection.detectLoops(rootComponent);
-
         checkViableOptions(stronglyConnectedComponents);
 
         Resolver resolver = new Resolver(globalScope, rootComponent);
-        resolver.resolveLoopSymbols(stronglyConnectedComponents, handleArtificialLoops);
-
-        if (solveSymbolicLoops) {
-            Map<LoopComponentInstanceSymbol, EMAComponentInstanceSymbol> solvedSymbols
-                    = resolver.doSymbolicSolveOfLoopSymbols();
-            logSymbolicSolveOfLoops(solvedSymbols);
-        }
-
-        if (solveSymbolicSpecification) {
+        if (SOLVE_SPECIFICATIONS_SYMBOLIC) {
             Map<EMAComponentInstanceSymbol, EMAComponentInstanceSymbol> solvedSymbols =
                     resolver.doSymbolicSolveOfSpecifications();
             logSymbolicSolveOfSpecifications(solvedSymbols);
+        }
+
+        stronglyConnectedComponents = LoopDetection.detectLoops(rootComponent);
+        resolver.resolveLoopSymbols(stronglyConnectedComponents, HANDLE_ARTIFICIAL_LOOPS);
+
+        if (SOLVE_LOOPS_SYMBOLIC) {
+            Map<LoopComponentInstanceSymbol, EMAComponentInstanceSymbol> solvedSymbols
+                    = resolver.doSymbolicSolveOfLoopSymbols();
+            logSymbolicSolveOfLoops(solvedSymbols);
         }
 
 //        Map<EMAComponentInstanceSymbol, Boolean> virtual = makeAllNonVirtual(Find.allComponents(rootComponent));
@@ -64,7 +65,7 @@ public class ExecutionSemantics {
 
         Set<StronglyConnectedComponent> artificialLoops =
                 stronglyConnectedComponents.stream().filter(EMALoop::isArtificial).collect(Collectors.toSet());
-        ExecutionOrder.calculateExecutionOrder(rootComponent, artificialLoops, handleArtificialLoops);
+        ExecutionOrder.calculateExecutionOrder(rootComponent, artificialLoops, HANDLE_ARTIFICIAL_LOOPS);
 
 //        resetNonVirtual(virtual);
     }
@@ -98,7 +99,7 @@ public class ExecutionSemantics {
     }
 
     private void logSymbolicSolveOfSpecifications(Map<EMAComponentInstanceSymbol, EMAComponentInstanceSymbol> solvedSymbols) {
-        if (logSymbolicSolve) {
+        if (LOG_SYMBOLIC_SOLVE) {
             for (EMAComponentInstanceSymbol solved : solvedSymbols.keySet()) {
                 Log.warn(String.format("Solved component \"%s\" analytically", solved.getFullName()));
             }
@@ -106,7 +107,7 @@ public class ExecutionSemantics {
     }
 
     private void logSymbolicSolveOfLoops(Map<LoopComponentInstanceSymbol, EMAComponentInstanceSymbol> solvedSymbols) {
-        if (logSymbolicSolve) {
+        if (LOG_SYMBOLIC_SOLVE) {
             for (LoopComponentInstanceSymbol solved : solvedSymbols.keySet()) {
                 Log.warn(String.format("Solved component \"%s\" analytically", solved.getFullName()));
             }
@@ -125,19 +126,19 @@ public class ExecutionSemantics {
                     containsArtificial |= simpleCycle.isArtificial();
             }
 
-            if (!onlyArtificial && !resolveLoops)
+            if (!onlyArtificial && !RESOLVE_LOOPS)
                 errorUnresolvedLoops(stronglyConnectedComponents);
 
-            if (!onlyArtificial && resolveLoops)
+            if (!onlyArtificial && RESOLVE_LOOPS)
                 warnLoops(stronglyConnectedComponents);
 
-            if (containsArtificial && !handleArtificialLoops)
+            if (containsArtificial && !HANDLE_ARTIFICIAL_LOOPS)
                 warnArtificialLoops(stronglyConnectedComponents);
         }
     }
 
     private void warnLoops(Set<StronglyConnectedComponent> stronglyConnectedComponents) {
-        if (warnLoops) {
+        if (WARN_LOOPS) {
             IndentPrinter printer = new IndentPrinter();
             printer.println("Found Loops:");
             printer.indent();
@@ -155,7 +156,7 @@ public class ExecutionSemantics {
     }
 
     private void warnArtificialLoops(Set<StronglyConnectedComponent> stronglyConnectedComponents) {
-        if (warnArtificialLoops) {
+        if (WARN_ARTIFICIAL_LOOPS) {
             IndentPrinter printer = new IndentPrinter();
             printer.println("Found Artificial Loops:");
             printer.indent();
@@ -190,30 +191,30 @@ public class ExecutionSemantics {
 
 
     public void setResolveLoops(boolean resolveLoops) {
-        this.resolveLoops = resolveLoops;
+        this.RESOLVE_LOOPS = resolveLoops;
     }
 
     public void setSolveSymbolicLoops(boolean solveSymbolicLoops) {
-        this.solveSymbolicLoops = solveSymbolicLoops;
+        this.SOLVE_LOOPS_SYMBOLIC = solveSymbolicLoops;
     }
 
     public void setHandleArtificialLoops(boolean handleArtificialLoops) {
-        this.handleArtificialLoops = handleArtificialLoops;
+        this.HANDLE_ARTIFICIAL_LOOPS = handleArtificialLoops;
     }
 
     public void setWarnLoops(boolean warnLoops) {
-        this.warnLoops = warnLoops;
+        this.WARN_LOOPS = warnLoops;
     }
 
     public void setSolveSymbolicSpecification(boolean solveSymbolicSpecification) {
-        this.solveSymbolicSpecification = solveSymbolicSpecification;
+        this.SOLVE_SPECIFICATIONS_SYMBOLIC = solveSymbolicSpecification;
     }
 
     public void setWarnArtificialLoops(boolean warnArtificialLoops) {
-        this.warnArtificialLoops = warnArtificialLoops;
+        this.WARN_ARTIFICIAL_LOOPS = warnArtificialLoops;
     }
 
     public void setLogSymbolicSolve(boolean logSymbolicSolve) {
-        this.logSymbolicSolve = logSymbolicSolve;
+        this.LOG_SYMBOLIC_SOLVE = logSymbolicSolve;
     }
 }

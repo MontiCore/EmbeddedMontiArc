@@ -79,25 +79,12 @@ public class ExecutionSemanticsTest {
     private EMAComponentInstanceSymbol testComponent(String model) {
 
         TaggingResolver symTab = SymtabCreator.createSymTab("src/test/resources", "src/main/resources",
-                "target/generated-components");
-
-
+                Constants.SYNTHESIZED_COMPONENTS_ROOT);
 
         EMAComponentInstanceSymbol component =
                 symTab.<EMAComponentInstanceSymbol>resolve(model, EMAComponentInstanceSymbol.KIND).orElse(null);
 
-
-
-
-
         ExecutionSemantics executionSemantics = new ExecutionSemantics(symTab, component);
-
-
-
-
-
-
-
 
         executionSemantics.setResolveLoops(true);
         executionSemantics.setHandleArtificialLoops(true);
@@ -117,7 +104,6 @@ public class ExecutionSemanticsTest {
 
         System.out.println("\n\nExecution Order of model \"" + model + "\": \n" + PrintExecutionOrder.printExecutionOrder(component));
         System.out.println("\nSList of model \"" + model + "\": \n" + PrintExecutionOrder.printSListAtomic(component));
-        System.out.println("\nSLists of model \"" + model + "\": \n" + PrintExecutionOrder.printSListSubSystem(component));
 
         return symTab.<EMAComponentInstanceSymbol>resolve(model, EMAComponentInstanceSymbol.KIND).orElse(null);
     }

@@ -10,6 +10,10 @@ import de.monticore.lang.math._symboltable.matrix.*;
 import de.monticore.lang.mathopt._symboltable.MathOptimizationConditionSymbol;
 import de.monticore.lang.mathopt._symboltable.MathOptimizationStatementSymbol;
 import de.monticore.lang.monticar.semantics.Constants;
+import de.monticore.lang.monticar.semantics.loops.symbols.semiexplicit.ComponentCall;
+import de.monticore.lang.monticar.semantics.loops.symbols.semiexplicit.EquationSystemFunction;
+import de.monticore.lang.monticar.semantics.loops.symbols.semiexplicit.ExplicitFunction;
+import de.monticore.lang.monticar.semantics.loops.symbols.semiexplicit.SemiExplicitForm;
 import de.se_rwth.commons.logging.Log;
 
 import java.util.*;
@@ -21,26 +25,49 @@ public class AnalyzeEquationSystemType implements EMAMMathExpressionSymbolVisito
 
     private final Collection<String> linearFunctions = Arrays.asList("sum");
 
-    public static EquationSystemType kindOf(EMAMEquationSymbol expressionSymbol, Collection<EMAMSymbolicVariableSymbol> variables) {
+    public static EquationSystemType typeOf(EMAMEquationSymbol expressionSymbol, Collection<EMAMSymbolicVariableSymbol> variables) {
         AnalyzeEquationSystemType analyzeEquationSystemType = new AnalyzeEquationSystemType(variables.stream().map(v -> v.getName()).collect(Collectors.toSet()));
         analyzeEquationSystemType.handle(expressionSymbol);
-        return analyzeEquationSystemType.getKind();
+        return analyzeEquationSystemType.getType();
     }
 
-    public static EquationSystemType kindOf(Collection<EMAMEquationSymbol> equations, Collection<EMAMSymbolicVariableSymbol> variables) {
+    public static EquationSystemType typeOf(Collection<EMAMEquationSymbol> equations, Collection<EMAMSymbolicVariableSymbol> variables) {
         if (equations.size() < variables.size())
             return Underspecified;
         if (equations.size() > variables.size())
             return Overspecified;
         EquationSystemType currentKind = Constant;
         for (EMAMEquationSymbol equation : equations) {
-            EquationSystemType equationSystemType = AnalyzeEquationSystemType.kindOf(equation, variables);
+            EquationSystemType equationSystemType = AnalyzeEquationSystemType.typeOf(equation, variables);
             currentKind = EquationSystemTypeCombiner.combine(currentKind, equationSystemType);
         }
         return currentKind;
     }
 
-    public EquationSystemType getKind() {
+    public static EquationSystemType typeOf(SemiExplicitForm semiExplicitForm) {
+        EquationSystemType type = Constant;
+        if (!semiExplicitForm.getF().isEmpty()) {
+            type = ODE;
+            if (semiExplicitForm.getG().isEmpty())
+                return type;
+        }
+
+        Collection<EMAMSymbolicVariableSymbol> variables = new HashSet<>();
+        variables.addAll(semiExplicitForm.getY());
+        variables.addAll(semiExplicitForm.getZ());
+        for (EquationSystemFunction equationSystemFunction : semiExplicitForm.getG()) {
+            if (equationSystemFunction instanceof ComponentCall)
+                return EquationSystemTypeCombiner.combine(type, NonLinear);
+            else if (equationSystemFunction instanceof ExplicitFunction) {
+                type = EquationSystemTypeCombiner.combine(type,
+                        typeOf(((ExplicitFunction) equationSystemFunction).getEquation(), variables));
+            }
+        }
+
+        return type;
+    }
+
+    public EquationSystemType getType() {
         return lastResult;
     }
 

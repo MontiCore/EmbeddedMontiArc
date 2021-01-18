@@ -3,6 +3,7 @@ package de.monticore.lang.monticar.semantics.solver.analytic;
 
 import de.monticore.lang.embeddedmontiarc.embeddedmontiarcmath._symboltable.math.symbols.EMAMEquationSymbol;
 
+import java.io.IOException;
 import java.util.Collection;
 import java.util.Map;
 

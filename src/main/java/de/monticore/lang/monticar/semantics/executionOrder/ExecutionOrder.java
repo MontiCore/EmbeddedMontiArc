@@ -38,7 +38,7 @@ public class ExecutionOrder {
         for (EMAPortInstanceSymbol outport : rootComponent.getOutgoingPortInstances()) {
             Optional<EMAPortInstanceSymbol> sourcePort = ConnectionHelper.sourceOf(outport);
             if (!sourcePort.isPresent()) {
-                Log.warn(String.format("TODO no connection for component output port \"%s\"", outport.getFullName()));
+                Log.info(String.format("0xEMAES8712 no connection for component output port \"%s\"", outport.getFullName()), "missing connection");
                 continue;
             }
             if (sourcePort.get().isConstant())

@@ -1,8 +1,6 @@
 /* (c) https://github.com/MontiCore/monticore */
 package de.monticore.lang.monticar.semantics.loops.symbols;
 
-import de.monticore.lang.embeddedmontiarc.embeddedmontiarc._symboltable.instanceStructure.EMAComponentInstanceSymbol;
-import de.monticore.lang.embeddedmontiarc.embeddedmontiarc._symboltable.instanceStructure.EMAPortInstanceSymbol;
 import de.monticore.lang.embeddedmontiarc.embeddedmontiarcmath._symboltable.math.symbols.*;
 import de.monticore.lang.math._symboltable.expression.MathExpressionSymbol;
 import de.monticore.lang.monticar.semantics.loops.analyze.AnalyzeEquationSystemType;
@@ -20,7 +18,7 @@ public class EquationSystemSymbolicSolver {
     public static Optional<Map<EMAMSymbolicVariableSymbol, MathExpressionSymbol>>
     trySymbolicSolve(EMAMSpecificationSymbol specification, Collection<EMAMSymbolicVariableSymbol> inports) {
 
-        EquationSystemType type = AnalyzeEquationSystemType.kindOf(specification.getEquations(), specification.getVariables());
+        EquationSystemType type = AnalyzeEquationSystemType.typeOf(specification.getEquations(), specification.getVariables());
 
         EquationSystemSymbolicSolver solver = new EquationSystemSymbolicSolver(specification);
 

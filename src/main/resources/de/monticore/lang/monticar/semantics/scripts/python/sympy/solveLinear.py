@@ -1,5 +1,4 @@
 import argparse
-
 from sympy import symbols, sympify, linsolve
 
 
@@ -7,11 +6,15 @@ def main(equations, symbolNames):
     symbols_ = {}
     for symbolName in symbolNames:
         symbols_[symbolName] = symbols(symbolName)
+
     equs = sympify(equations, locals(), evaluate=False)
     solution = linsolve(equs, symbols_)
-    for i, sol in enumerate(solution.args[0]):
+
+    i = 0
+    for sol in solution.args[0]:
         print(symbolNames[i], "=", sol)
         i = i + 1
+
 
 parser = argparse.ArgumentParser(description='Solve DAE symbolic if possible')
 parser.add_argument('system', metavar='eq', type=str, nargs='+')

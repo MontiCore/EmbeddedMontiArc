@@ -1,13 +1,14 @@
 /* (c) https://github.com/MontiCore/monticore */
-package de.monticore.lang.monticar.semantics.solver.analytic.sympy;
+package de.monticore.lang.monticar.semantics.solver.analytic.z3;
 
-import de.monticore.lang.embeddedmontiarc.embeddedmontiarcmath._symboltable.math.symbols.EMAMEquationSymbol;
-import de.monticore.lang.embeddedmontiarc.embeddedmontiarcmath._symboltable.math.symbols.EMAMInitialGuessSymbol;
-import de.monticore.lang.embeddedmontiarc.embeddedmontiarcmath._symboltable.math.symbols.EMAMInitialValueSymbol;
+import afu.org.checkerframework.checker.igj.qual.I;
+import de.monticore.lang.embeddedmontiarc.embeddedmontiarcmath._symboltable.math.symbols.*;
 import de.monticore.lang.embeddedmontiarc.embeddedmontiarcmath._symboltable.math.visitor.EMAMMathExpressionSymbolVisitor;
 import de.monticore.lang.math._symboltable.MathForLoopHeadSymbol;
 import de.monticore.lang.math._symboltable.expression.*;
 import de.monticore.lang.math._symboltable.matrix.*;
+import de.monticore.lang.mathopt._symboltable.MathOptimizationConditionSymbol;
+import de.monticore.lang.mathopt._symboltable.MathOptimizationStatementSymbol;
 import de.monticore.prettyprint.IndentPrinter;
 import de.se_rwth.commons.logging.Log;
 
@@ -16,7 +17,9 @@ import java.util.HashSet;
 import java.util.Map;
 import java.util.Set;
 
-public class PrintSympyFormat implements EMAMMathExpressionSymbolVisitor {
+public class PrintZ3Format implements EMAMMathExpressionSymbolVisitor {
+
+    public Set<String> registeredNames = new HashSet<>();
 
     private IndentPrinter printer = new IndentPrinter();
 
@@ -35,10 +38,14 @@ public class PrintSympyFormat implements EMAMMathExpressionSymbolVisitor {
     }
 
     public String rename(String name) {
-        if (!name.contains(toReplace)) return name;
+        if (!name.contains(toReplace)) {
+            registeredNames.add(name);
+            return name;
+        }
         if (renaming.containsKey(name)) return renaming.get(name);
         String newName = name.replace(toReplace, replacment);
         renaming.put(name, newName);
+        registeredNames.add(newName);
         return newName;
     }
 
@@ -51,51 +58,83 @@ public class PrintSympyFormat implements EMAMMathExpressionSymbolVisitor {
     }
 
     @Override
-    public void traverse(MathArithmeticExpressionSymbol node) {
+    public void traverse(EMAMSpecificationSymbol node) {
+    }
+
+    @Override
+    public void traverse(EMAMSymbolicVariableSymbol node) {
+    }
+
+    @Override
+    public void traverse(EMAMEquationSymbol node) {
+        printer.print("(= ");
         handle(node.getLeftExpression());
-        printer.print(node.getMathOperator());
+        printer.print(" ");
         handle(node.getRightExpression());
+        printer.print(")");
+    }
+
+    @Override
+    public void traverse(EMAMInitialGuessSymbol node) {
+    }
+
+    @Override
+    public void traverse(EMAMInitialValueSymbol node) {
+    }
+
+    @Override
+    public void traverse(MathStringExpression node) {
+        notSupported(node);
+    }
+
+    @Override
+    public void traverse(MathChainedExpression node) {
+        notSupported(node);
+    }
+
+    @Override
+    public void traverse(MathOptimizationStatementSymbol node) {
+        notSupported(node);
+    }
+
+    @Override
+    public void traverse(MathOptimizationConditionSymbol node) {
+        notSupported(node);
+    }
+
+    @Override
+    public void traverse(MathArithmeticExpressionSymbol node) {
+        printer.print(String.format("(%s ", node.getMathOperator()));
+        handle(node.getLeftExpression());
+        printer.print(" ");
+        handle(node.getRightExpression());
+        printer.print(")");
     }
 
     @Override
     public void traverse(MathAssignmentExpressionSymbol node) {
-        if (!"=".equals(node.getAssignmentOperator().getOperator()))
-            notSupported(node);
-        else {
-            printer.print("Eq(" + rename(node.getNameOfMathValue()) + ",");
-            handle(node.getExpressionSymbol());
-            printer.print(")");
-        }
+        printer.print(String.format("(%s %s ", node.getAssignmentOperator().getOperator(),
+                rename(node.getNameOfMathValue())));
+        handle(node.getExpressionSymbol());
+        printer.print(")");
     }
 
     @Override
     public void traverse(MathBooleanExpressionSymbol node) {
-        notSupported(node);
-//        printer.print(node.getTextualRepresentation());
+        printer.print(node.getTextualRepresentation());
     }
 
     @Override
     public void traverse(MathCompareExpressionSymbol node) {
-//        handle(node.getLeftExpression());
-//        printer.print(node.getCompareOperator());
-//        handle(node.getRightExpression());
-        notSupported(node);
+        printer.print(String.format("(%s ", node.getOperator()));
+        handle(node.getLeftExpression());
+        printer.print(" ");
+        handle(node.getRightExpression());
+        printer.print(")");
     }
 
     @Override
     public void traverse(MathConditionalExpressionsSymbol node) {
-//        printer.print("If:");
-//        handle(node.getIfConditionalExpression());
-//        if (node.getIfElseConditionalExpressions().size() > 0)
-//            printer.print("Else If:");
-//        for (MathConditionalExpressionSymbol symbol : node.getIfElseConditionalExpressions()) {
-//            printer.print("Else If:");
-//            handle(symbol);
-//        }
-//        if (node.getElseConditionalExpression().isPresent()) {
-//            printer.print("Else:");
-//            handle(node.getElseConditionalExpression().get());
-//        }
         notSupported(node);
     }
 
@@ -116,7 +155,7 @@ public class PrintSympyFormat implements EMAMMathExpressionSymbolVisitor {
 
     @Override
     public void traverse(MathNameExpressionSymbol node) {
-        printer.print(rename(node.getNameToResolveValue()));
+        printer.print(rename(node.getNameToAccess()));
     }
 
     @Override
@@ -167,6 +206,7 @@ public class PrintSympyFormat implements EMAMMathExpressionSymbolVisitor {
             printer.print(node.getAccessEndSymbol());
     }
 
+
     @Override
     public void traverse(MathMatrixNameExpressionSymbol node) {
         if (node.getNameToAccess().equals("sum")) {
@@ -193,43 +233,23 @@ public class PrintSympyFormat implements EMAMMathExpressionSymbolVisitor {
     public void traverse(MathMatrixAccessSymbol node) {
         if (node.getMathExpressionSymbol().isPresent())
             handle(node.getMathExpressionSymbol().get());
+
     }
 
     @Override
     public void traverse(MathMatrixArithmeticExpressionSymbol node) {
-        handle(node.getLeftExpression());
-        printer.print(node.getMathOperator());
-        handle(node.getRightExpression());
-    }
-
-    @Override
-    public void traverse(EMAMEquationSymbol node) {
-        printer.print("Eq(");
-        handle(node.getLeftExpression());
-        printer.print(",");
-        handle(node.getRightExpression());
-        printer.print(")");
-    }
-
-    @Override
-    public void traverse(EMAMInitialGuessSymbol node) {
         notSupported(node);
     }
 
-    @Override
-    public void traverse(EMAMInitialValueSymbol node) {
-        notSupported(node);
-    }
-
-    Set<MathExpressionSymbol> visitedSymbols = new HashSet<>();
+    private Set<MathExpressionSymbol> visitedSymbols = new HashSet<>();
 
     @Override
     public Set<MathExpressionSymbol> getVisitedSymbols() {
-        return visitedSymbols;
+        return this.visitedSymbols;
     }
 
     private void notSupported(MathExpressionSymbol node) {
         hasErrors = true;
-        Log.warn("0xE0891239 Not supported MathExpressionSymbol: " + node.getTextualRepresentation());
+        Log.warn("0xE0891240 Not supported MathExpressionSymbol: " + node.getTextualRepresentation());
     }
 }

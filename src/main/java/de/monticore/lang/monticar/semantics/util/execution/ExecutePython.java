@@ -4,6 +4,14 @@ package de.monticore.lang.monticar.semantics.util.execution;
 import jline.internal.Log;
 
 import java.io.File;
+import java.io.FileOutputStream;
+import java.io.IOException;
+import java.io.InputStream;
+import java.nio.file.Files;
+import java.nio.file.Path;
+import java.nio.file.StandardCopyOption;
+import java.util.Optional;
+import java.util.Scanner;
 
 public class ExecutePython extends ExecuteAbs {
 
@@ -13,22 +21,25 @@ public class ExecutePython extends ExecuteAbs {
             return executeCommand(line, true);
         } else {
             Log.warn("python is not installed.");
-            return  "-1";
+            return "-1";
         }
     }
+
+    private static String standardPath = "de/monticore/lang/monticar/semantics/scripts/python";
 
     private static String resolvePythonScriptPath(String relativePath) {
         if (relativePath.endsWith(".py"))
             relativePath = relativePath.substring(0, relativePath.lastIndexOf("."));
         String res = relativePath.replace(".", "/").replace("\\", "/");
         res = res + ".py";
-        File file = new File(res);
-        if (!file.exists())
-            res = "src/main/resources/de/monticore/lang/monticar/semantics/scripts/python/" + res;
-        file = new File(res);
-        if (!file.exists())
+
+        Optional<File> file = searchIn(res, standardPath, "src/main/resources/" + standardPath, "target/classes/" + standardPath);
+
+        if (!file.isPresent() || !file.get().exists()) {
             Log.error("Cannot find python script: " + relativePath);
-        return res;
+            return "";
+        }
+        return file.get().getAbsolutePath();
     }
 
     private static boolean isPythonInstalled() {

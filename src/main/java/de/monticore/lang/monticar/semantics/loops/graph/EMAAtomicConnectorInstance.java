@@ -5,6 +5,7 @@ import de.monticore.lang.embeddedmontiarc.embeddedmontiarc._symboltable.instance
 import de.monticore.lang.embeddedmontiarc.embeddedmontiarc._symboltable.instanceStructure.EMAPortInstanceSymbol;
 import de.monticore.lang.embeddedmontiarcdynamic.embeddedmontiarcdynamic._symboltable.instanceStructure.EMADynamicConnectorInstanceSymbol;
 
+import java.util.Objects;
 import java.util.Optional;
 
 public class EMAAtomicConnectorInstance extends EMADynamicConnectorInstanceSymbol {
@@ -84,5 +85,10 @@ public class EMAAtomicConnectorInstance extends EMADynamicConnectorInstanceSymbo
     @Override
     public String getTarget() {
         return getTargetPortName();
+    }
+
+    @Override
+    public int hashCode() {
+        return Objects.hash(getSource(), getTarget());
     }
 }

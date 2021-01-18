@@ -68,50 +68,6 @@ public class SList {
         }
     }
 
-    public static Map<EMAComponentInstanceSymbol, List<SListEntry>> sListSubSystem(EMAComponentInstanceSymbol rootComponent) {
-        return sListsSubSystem(rootComponent, sListAtomic(rootComponent));
-    }
-
-    private static Map<EMAComponentInstanceSymbol, List<SListEntry>> sListsSubSystem(EMAComponentInstanceSymbol subSystem,
-                                                                                     List<SListEntry> sListAtomic) {
-        Map<EMAComponentInstanceSymbol, List<SListEntry>> sLists = new HashMap<>();
-        if (isAtomic(subSystem)) return sLists;
-
-        sLists.put(subSystem, sListSubSystem(subSystem, sListAtomic));
-
-        for (EMAComponentInstanceSymbol subComponent : subSystem.getSubComponents()) {
-            if (!isAtomic(subComponent))
-                sLists.putAll(sListsSubSystem(subComponent, sListAtomic));
-        }
-
-        return sLists;
-    }
-
-    public static List<SListEntry> sListSubSystem(EMAComponentInstanceSymbol subsystem, List<SListEntry> sListAtomic) {
-        List<SListEntry> sList = new LinkedList<>();
-        Collection<EMAComponentInstanceSymbol> subComponents = subsystem.getSubComponents();
-
-        boolean began = false;
-        boolean finished = false;
-        for (SListEntry sListEntry : sListAtomic) {
-            if (isContainedIn(sListEntry.getComponent(), subsystem)) {
-                if (finished)
-                    Log.error("TODO Not supported, virtual subsystem creates artificial loop: " + subsystem.getFullName());
-                began = true;
-                if (subComponents.contains(sListEntry.getComponent()))
-                    sList.add(sListEntry);
-                else {
-                    EMAComponentInstanceSymbol subComponent = subComponents.stream()
-                            .filter(s -> isContainedIn(sListEntry.getComponent(), s))
-                            .findFirst().orElse(null);
-                    sList.add(new SListEntry(subComponent, sListEntry.getCall()));
-                }
-            } else if (began) finished = true;
-        }
-
-        return sList;
-    }
-
     private static boolean isContainedIn(EMAComponentInstanceSymbol component, EMAComponentInstanceSymbol subSystem) {
         if (isAtomic(subSystem)) return false;
         return component.getFullName().startsWith(subSystem.getFullName());

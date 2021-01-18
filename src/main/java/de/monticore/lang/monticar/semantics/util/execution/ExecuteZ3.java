@@ -14,7 +14,7 @@ public class ExecuteZ3 extends ExecuteAbs {
             String line = "z3 " + resolveScriptPath(scriptFile);
             return executeCommand(line, false);
         } else {
-            Log.warn("z3 is not installed.");
+            Log.warn("0xEMAES5402 z3 is not installed.");
             return  "-1";
         }
     }

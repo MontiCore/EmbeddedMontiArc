@@ -4,6 +4,10 @@ package de.monticore.lang.monticar.semantics.helper;
 import de.monticore.lang.embeddedmontiarc.embeddedmontiarc._symboltable.instanceStructure.EMAComponentInstanceSymbol;
 import de.monticore.lang.embeddedmontiarc.embeddedmontiarc._symboltable.instanceStructure.EMAElementInstanceSymbol;
 import de.monticore.lang.embeddedmontiarc.embeddedmontiarc._symboltable.instanceStructure.EMAPortInstanceSymbol;
+import de.monticore.lang.embeddedmontiarcdynamic.embeddedmontiarcdynamic._symboltable.cncModel.EMADynamicPortArraySymbol;
+import de.monticore.lang.embeddedmontiarcdynamic.embeddedmontiarcdynamic._symboltable.instanceStructure.EMADynamicComponentInstanceSymbol;
+import de.monticore.lang.embeddedmontiarcdynamic.embeddedmontiarcdynamic._symboltable.instanceStructure.EMADynamicConnectorInstanceSymbol;
+import de.monticore.lang.embeddedmontiarcdynamic.embeddedmontiarcdynamic._symboltable.instanceStructure.EMADynamicPortInstanceSymbol;
 import de.monticore.symboltable.CommonSymbol;
 import de.se_rwth.commons.Joiners;
 import de.se_rwth.commons.Names;
@@ -33,23 +37,28 @@ public class NameHelper {
 
     public static String replaceWithDots(String str) {
         return str
-                .replace("\\",".")
-                .replace("/",".")
+                .replace("\\", ".")
+                .replace("/", ".")
                 .replace("_", ".");
     }
 
     public static String replaceWithUnderScore(String str) {
         return str
-                .replace("\\","_")
-                .replace("/","_")
+                .replace("\\", "_")
+                .replace("/", "_")
                 .replace(".", "_");
     }
 
     public static String calculateFullQualifiedNameOf(CommonSymbol symbol) {
         String fullName = null;
-        try {
-            fullName = symbol.getFullName();
-        } catch (Exception e) {
+        if (!(symbol instanceof EMADynamicPortInstanceSymbol ||
+                symbol instanceof EMADynamicConnectorInstanceSymbol ||
+                symbol instanceof EMADynamicPortArraySymbol ||
+                symbol instanceof EMADynamicComponentInstanceSymbol)) {
+            try {
+                fullName = symbol.getFullName();
+            } catch (Exception e) {
+            }
         }
         if (fullName != null && !fullName.equals(""))
             return fullName;

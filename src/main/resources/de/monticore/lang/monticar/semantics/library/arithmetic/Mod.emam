@@ -8,6 +8,6 @@ component Mod<T> {
 		out T output;
 
 	implementation Math{
-	    output == modulo(input1,input2);
+	    output = modulo(input1,input2);
 	}
 }

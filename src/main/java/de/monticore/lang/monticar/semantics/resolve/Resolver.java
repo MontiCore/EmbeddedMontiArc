@@ -34,13 +34,6 @@ public class Resolver {
         this.rootComponent = scope.<EMAComponentInstanceSymbol>resolve(rootModel, EMAComponentInstanceSymbol.KIND).orElse(null);
     }
 
-    public void handleScope() {
-        Set<StronglyConnectedComponent> stronglyConnectedComponents = LoopDetection.detectLoops(rootComponent);
-        resolveLoopSymbols(stronglyConnectedComponents, true);
-        doSymbolicSolveOfLoopSymbols();
-        doSymbolicSolveOfSpecifications();
-    }
-
     public Set<LoopComponentInstanceSymbol> resolveLoopSymbols(Set<StronglyConnectedComponent> stronglyConnectedComponents,
                                                                boolean handleArtificialLoops) {
         Set<LoopComponentInstanceSymbol> loopSymbols = new HashSet<>();
@@ -67,6 +60,8 @@ public class Resolver {
                 loopSymbol.connectInformation();
                 loopSymbols.add(loopSymbol);
             });
+
+            equationSystem.addComponentsToLocalScope(components);
         }
         this.loopSymbols = loopSymbols;
         return loopSymbols;
@@ -89,7 +84,7 @@ public class Resolver {
             if (EMAEquationSystemHelper.trySymbolicSolve(loopSymbol.getEquationSystem())) {
                 EMAComponentInstanceSymbol symbolSolution =
                         ReplacementCalculator.generateAndReplaceComponent(scope, loopSymbol,
-                        loopSymbol.getEquationSystem().getSolution());
+                                loopSymbol.getEquationSystem().getSolution());
                 solvedSymbols.put(loopSymbol, symbolSolution);
             }
         }
@@ -101,7 +96,7 @@ public class Resolver {
         Map<EMAComponentInstanceSymbol, EMAComponentInstanceSymbol> solvedSymbols = new HashMap<>();
         for (EMAComponentInstanceSymbol component : searchForSpecifications(rootComponent)) {
             EMAMSpecificationSymbol specification = SpecificationConverter.convert(component).orElse(null);
-            if (specification == null) Log.error("TODO");
+            if (specification == null) Log.error("0xEMAES5012 tried to solve specification although there is none");
             Optional<Map<EMAMSymbolicVariableSymbol, MathExpressionSymbol>> solution =
                     EquationSystemSymbolicSolver.trySymbolicSolve(specification,
                             SpecificationConverter.getIncomingInformationAsVariables(component));
@@ -119,12 +114,17 @@ public class Resolver {
     private Collection<EMAComponentInstanceSymbol> searchForSpecifications(EMAComponentInstanceSymbol component) {
         Set<EMAComponentInstanceSymbol> result = new HashSet<>();
 
-
         if (isSpecification(component))
             result.add(component);
-        else
-            for (EMAComponentInstanceSymbol subComponent : component.getSubComponents())
-                result.addAll(searchForSpecifications(subComponent));
+        else {
+            if (component instanceof LoopComponentInstanceSymbol)
+                for (EMAComponentInstanceSymbol subComponent
+                        : ((LoopComponentInstanceSymbol) component).getEquationSystem().getComponentInstanceSymbols())
+                    result.addAll(searchForSpecifications(subComponent));
+            else
+                for (EMAComponentInstanceSymbol subComponent : component.getSubComponents())
+                    result.addAll(searchForSpecifications(subComponent));
+        }
 
         return result;
     }

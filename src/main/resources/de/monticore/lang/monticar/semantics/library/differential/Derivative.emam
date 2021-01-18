@@ -8,6 +8,6 @@ component Derivation<T>(T dvalue = 0) {
 
 	implementation Math{
 	    input(t=0) = dvalue;
-        diff(input) == output;
+      diff(input) == output;
 	}
 }
