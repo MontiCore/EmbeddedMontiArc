@@ -1,15 +1,17 @@
 /* (c) https://github.com/MontiCore/monticore */
 package de.monticore.lang.embeddedmontiarc.embeddedmontiarc._symboltable.instanceStructure;
 
+import de.monticore.expressionsbasis._ast.ASTExpression;
+import de.monticore.lang.embeddedmontiarc.embeddedmontiarc._ast.*;
 import de.monticore.lang.embeddedmontiarc.embeddedmontiarc._symboltable.cncModel.EMAComponentSymbolReference;
 import de.monticore.lang.embeddedmontiarc.embeddedmontiarc._symboltable.cncModel.EMAPortArraySymbol;
 import de.monticore.lang.embeddedmontiarc.embeddedmontiarc.types.EMAVariable;
 import de.monticore.lang.embeddedmontiarc.helper.SymbolPrinter;
-import de.monticore.expressionsbasis._ast.ASTExpression;
-import de.monticore.lang.monticar.si._symboltable.ResolutionDeclarationSymbol;
 import de.monticore.lang.monticar.resolution._ast.ASTUnitNumberResolution;
+import de.monticore.lang.monticar.si._symboltable.ResolutionDeclarationSymbol;
 import de.monticore.symboltable.CommonScopeSpanningSymbol;
 import de.monticore.symboltable.types.references.ActualTypeArgument;
+import de.se_rwth.commons.Joiners;
 
 import java.util.*;
 import java.util.stream.Collectors;
@@ -77,6 +79,11 @@ public class EMAComponentInstanceSymbol
     protected List<ResolutionDeclarationSymbol> resolutionDeclarationSymbols;
     protected List<EMAVariable> parameters = new ArrayList<>();
     protected List<ASTExpression> arguments = new ArrayList<>();
+
+    protected List<ASTComponentModifier> componentModifiers = new ArrayList<>();
+
+    protected List<Integer> orderOutput = new ArrayList<>();
+    protected Integer orderUpdate = Integer.MAX_VALUE;
 
     /**
      * use {@link #builder()}
@@ -274,11 +281,84 @@ public class EMAComponentInstanceSymbol
         this.arguments = arguments;
     }
 
+    public List<ASTComponentModifier> getComponentModifiers() {
+        return componentModifiers;
+    }
+
+    public void setComponentModifiers(List<ASTComponentModifier> componentModifiers) {
+        this.componentModifiers = componentModifiers;
+    }
+
+    public List<Integer> getOrderOutput() {
+        return orderOutput;
+    }
+
+    public void setOrderOutput(List<Integer> orderOutput) {
+        this.orderOutput = orderOutput;
+    }
+
+    public void addOrderOutput(Integer orderOutput) {
+        if (!this.orderOutput.contains(orderOutput))
+            this.orderOutput.add(orderOutput);
+    }
+
+    public Integer getOrderUpdate() {
+        return orderUpdate;
+    }
+
+    public void setOrderUpdate(Integer orderUpdate) {
+        this.orderUpdate = orderUpdate;
+    }
+
     public Optional<EMAComponentInstanceSymbol> getEnclosingComponent() {
+        if (getEnclosingScope() == null) return Optional.empty();
         return (Optional<EMAComponentInstanceSymbol>) getEnclosingScope().getSpanningSymbol();
     }
 
     public Optional<EMAComponentInstanceSymbol> getParent() {
+        if (getEnclosingScope() == null) return Optional.empty();
         return (Optional<EMAComponentInstanceSymbol>) getEnclosingScope().getSpanningSymbol();
+    }
+
+
+    public boolean isNonVirtual() {
+        if (!getParent().isPresent()) return true;
+        for (ASTComponentModifier componentModifier : componentModifiers) {
+            if (componentModifier instanceof ASTVirtModifier) {
+                if (((ASTVirtModifier) componentModifier).getVIRTUAL().equals(ASTVIRTUAL.NONVIRTUAL))
+                    return true;
+                else
+                    return false;
+            }
+        }
+        return false;
+    }
+
+    public boolean isVirtual() {
+        return !isNonVirtual();
+    }
+
+    public boolean isNonDirectFeedThrough() {
+        for (ASTComponentModifier componentModifier : componentModifiers) {
+            if (componentModifier instanceof ASTDFModifier) {
+                if (((ASTDFModifier) componentModifier).getDIRECTFEEDTHROUGH().equals(ASTDIRECTFEEDTHROUGH.NONDF))
+                    return true;
+                else
+                    return false;
+            }
+        }
+        return false;
+    }
+
+    public boolean isDirectFeedThrough() {
+        return !isNonDirectFeedThrough();
+    }
+
+    public void resetFullNames() {
+        setFullName(Joiners.DOT.join(this.getPackageName(), this.getName()));
+        for (EMAComponentInstanceSymbol subComponent : getSubComponents()) {
+            subComponent.setPackageName(getFullName());
+            subComponent.resetFullNames();
+        }
     }
 }

@@ -1,10 +1,10 @@
 /* (c) https://github.com/MontiCore/monticore */
 package de.monticore.lang.embeddedmontiarc.helper;
 
-import de.monticore.lang.monticar.ts.references.MontiCarTypeSymbolReference;
 import de.monticore.lang.monticar.ts.MCTypeSymbol;
-import de.monticore.symboltable.types.references.ActualTypeArgument;
 import de.monticore.lang.monticar.ts.references.MCTypeReference;
+import de.monticore.lang.monticar.ts.references.MontiCarTypeSymbolReference;
+import de.monticore.symboltable.types.references.ActualTypeArgument;
 
 import java.util.List;
 import java.util.stream.Collectors;
@@ -12,7 +12,7 @@ import java.util.stream.Collectors;
 import static com.google.common.base.Preconditions.checkNotNull;
 
 /**
- * Checks type compatibility of {@link ArcTypeReference}s.
+ * Checks type compatibility of {@link MCTypeReference}s.
  *
  */
 public class TypeCompatibilityChecker {
@@ -29,7 +29,7 @@ public class TypeCompatibilityChecker {
   }
 
   /**
-   * Checks compatibility of {@link ArcTypeReference}s. The sourceTypeFomalTypeParameters list all
+   * Checks compatibility of {@link MCTypeReference}s. The sourceTypeFomalTypeParameters list all
    * type parameters, while the sourceTypeArguments define the current binding of them. E.g., a
    * generic source Type {@code A<X, Y>} could be bound to
    * <code>{@code A<List<Optional<Integer>>, String>}</code>. For a targetType to match, it must

@@ -64,12 +64,23 @@ grammar EmbeddedMontiArc extends de.monticore.lang.monticar.Common2 {
   */
   
   symbol scope Component implements Element =
-    "component" (["interface"])? Name
-    //("component" | ["component_interface"]) Name
+    ComponentModifier* "component" (["interface"])? Name
 	genericTypeParameters:TypeParameters2?
     (  "("  (Parameter || ",")+  ")" )?
     ("implements" superComponent:ReferenceType)?
     body:ComponentBody;
+
+  interface ComponentModifier;
+
+  VirtModifier implements ComponentModifier =
+    VIRTUAL;
+  enum VIRTUAL =
+    "virtual" | VIRTUAL:"virt" | "nonvirtual" | NONVIRTUAL:"non-virt";
+
+  DFModifier implements ComponentModifier =
+    DIRECTFEEDTHROUGH;
+  enum DIRECTFEEDTHROUGH =
+    DF:"direct feedthrough" | "df" | NONDF:"nondirect feedthrough" | NONDF:"non-df";
 
 
   /**
@@ -123,10 +134,11 @@ grammar EmbeddedMontiArc extends de.monticore.lang.monticar.Common2 {
     *   created
     */
     SubComponent implements Element =
-       "instance"
+      "instance"
       type:ReferenceType
       ("(" arguments:(Expression || ",")+ ")" )?
-      instances:(SubComponentInstance || ",")* ";" ;
+      ("{" (PortInitial || ",")+ "}")?
+      instances:(SubComponentInstance || ",")+ ";" ;
 
 
   /**
@@ -143,7 +155,13 @@ grammar EmbeddedMontiArc extends de.monticore.lang.monticar.Common2 {
   // TODO better/more intuitive name? e.g. "refConnector" (not really good...)
   SubComponentInstance =
     Name
-    ("[" UnitNumberResolution "]")? ;
+    ("[" UnitNumberResolution "]")?;
+
+  PortInitial =
+    Name ( "[" UnitNumberResolution "]" )?
+    "(" "t=0" ")"
+    (guess:["~"])? "="
+    Expression;
 
   /**
     * port1

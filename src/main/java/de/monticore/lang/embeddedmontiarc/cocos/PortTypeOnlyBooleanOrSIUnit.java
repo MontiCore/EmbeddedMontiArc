@@ -1,14 +1,10 @@
 /* (c) https://github.com/MontiCore/monticore */
 package de.monticore.lang.embeddedmontiarc.cocos;
 
-import de.monticore.lang.embeddedmontiarc.embeddedmontiarc._cocos.EmbeddedMontiArcASTPortCoCo;
-
 import de.monticore.lang.embeddedmontiarc.embeddedmontiarc._ast.ASTPort;
+import de.monticore.lang.embeddedmontiarc.embeddedmontiarc._cocos.EmbeddedMontiArcASTPortCoCo;
 import de.monticore.lang.monticar.ranges._ast.ASTRange;
 import de.monticore.lang.monticar.ranges._ast.ASTRanges;
-//import de.monticore.types.types._ast.ASTPrimitiveType;
-//import de.monticore.types.types._ast.ASTType;
-import de.monticore.lang.monticar.types2._ast.*;
 import de.monticore.types.types._ast.ASTPrimitiveType;
 import de.monticore.types.types._ast.ASTType;
 import de.se_rwth.commons.logging.Log;

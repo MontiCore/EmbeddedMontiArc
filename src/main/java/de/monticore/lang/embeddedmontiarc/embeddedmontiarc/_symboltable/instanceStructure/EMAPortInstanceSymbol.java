@@ -1,6 +1,7 @@
 /* (c) https://github.com/MontiCore/monticore */
 package de.monticore.lang.embeddedmontiarc.embeddedmontiarc._symboltable.instanceStructure;
 
+import de.monticore.expressionsbasis._ast.ASTExpression;
 import de.monticore.lang.embeddedmontiarc.embeddedmontiarc._symboltable.cncModel.EMAComponentSymbol;
 import de.monticore.lang.embeddedmontiarc.embeddedmontiarc._symboltable.cncModel.EMAPortBuilder;
 import de.monticore.lang.embeddedmontiarc.embeddedmontiarc._symboltable.cncModel.EMAPortSymbol;
@@ -51,6 +52,10 @@ public class EMAPortInstanceSymbol extends EMAPortSymbol implements EMAElementIn
   private Optional<MiddlewareSymbol> middlewareSymbol = Optional.empty();
 
   private Optional<EMAConstantValue> constantValue = Optional.empty();
+
+  private Optional<ASTExpression> initialGuess = Optional.empty();
+
+  private Optional<ASTExpression> initialValue = Optional.empty();
 
   /**
    * use {@link #builder()}
@@ -268,5 +273,35 @@ public class EMAPortInstanceSymbol extends EMAPortSymbol implements EMAElementIn
   
   public boolean isSomeIPPort() {
     return getMiddlewareSymbol().isPresent() && getMiddlewareSymbol().get().isKindOf(SomeIPConnectionSymbol.KIND);
+  }
+
+  public boolean isInitialGuessPresent() {
+    return this.initialGuess.isPresent();
+  }
+
+  public void setInitialGuess(ASTExpression initialGuess) {
+    this.initialGuess = Optional.ofNullable(initialGuess);
+  }
+
+  public ASTExpression getInitialGuess() {
+    if (isInitialGuessPresent())
+      return this.initialGuess.get();
+    else
+      return null;
+  }
+
+  public boolean isInitialValuePresent() {
+    return this.initialValue.isPresent();
+  }
+
+  public void setInitialValue(ASTExpression initialGuess) {
+    this.initialValue = Optional.ofNullable(initialGuess);
+  }
+
+  public ASTExpression getInitialValue() {
+    if (isInitialValuePresent())
+      return this.initialValue.get();
+    else
+      return null;
   }
 }

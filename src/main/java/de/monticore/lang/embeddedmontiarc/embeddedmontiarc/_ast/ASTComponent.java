@@ -2,8 +2,8 @@
 package de.monticore.lang.embeddedmontiarc.embeddedmontiarc._ast;
 
 import de.monticore.lang.monticar.common2._ast.ASTParameter;
-import de.monticore.types.types._ast.ASTReferenceType;
 import de.monticore.lang.monticar.types2._ast.ASTTypeParameters2;
+import de.monticore.types.types._ast.ASTReferenceType;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -16,12 +16,12 @@ import java.util.stream.Collectors;
  */
 public class ASTComponent extends ASTComponentTOP {
 
-    public ASTComponent() {
+    protected ASTComponent() {
         super();
     }
 
-    public ASTComponent(String name, Optional<ASTTypeParameters2> genericTypeParameters, List<ASTParameter> parameters, Optional<ASTReferenceType> superComponent, ASTComponentBody body, boolean r__interface) {
-        super(name, genericTypeParameters, parameters, superComponent, body, r__interface);
+    protected ASTComponent(List<ASTComponentModifier> componentModifiers, String name, Optional<ASTTypeParameters2> genericTypeParameters, List<ASTParameter> parameters, Optional<ASTReferenceType> superComponent, ASTComponentBody body, boolean r__interface) {
+        super(componentModifiers, name, genericTypeParameters, parameters, superComponent, body, r__interface);
     }
 
     // do not use symbol table, since symbol table must not be created

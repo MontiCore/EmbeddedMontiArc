@@ -3,8 +3,8 @@ package de.monticore.lang.embeddedmontiarc.embeddedmontiarc._symboltable.cncMode
 
 import com.google.common.collect.ImmutableList;
 import de.monticore.expressionsbasis._ast.ASTExpression;
+import de.monticore.lang.embeddedmontiarc.embeddedmontiarc._ast.*;
 import de.monticore.lang.embeddedmontiarc.embeddedmontiarc._symboltable.ComponentKind;
-import de.monticore.lang.embeddedmontiarc.embeddedmontiarc._symboltable.instanceStructure.EMAComponentInstanceSymbol;
 import de.monticore.lang.embeddedmontiarc.embeddedmontiarc._symboltable.instanceStructure.EMAComponentInstantiationSymbol;
 import de.monticore.lang.embeddedmontiarc.embeddedmontiarc.types.EMAVariable;
 import de.monticore.lang.embeddedmontiarc.helper.SymbolPrinter;
@@ -42,8 +42,6 @@ public class EMAComponentSymbol extends CommonScopeSpanningSymbol implements EMA
 
     private Optional<EMAComponentSymbolReference> superComponent = Optional.empty();
 
-    private boolean delayed = false;
-
     // when "this" not actually is a component, but a reference to a component, this optional
     // attribute is set by the symbol-table creator to the referenced component and must be used for
     // implementation.
@@ -56,6 +54,10 @@ public class EMAComponentSymbol extends CommonScopeSpanningSymbol implements EMA
     private List<EMAVariable> parameters = new ArrayList<>();
 
     private List<ASTExpression> arguments = new ArrayList<>();
+
+    private List<ASTPortInitial> portInitials = new ArrayList<>();
+
+    private List<ASTComponentModifier> componentModifiers = new ArrayList<>();
 
     public EMAComponentSymbol(String name) {
         super(name, KIND);
@@ -516,22 +518,6 @@ public class EMAComponentSymbol extends CommonScopeSpanningSymbol implements EMA
                 .collect(Collectors.toList());
     }
 
-    /**
-     * Sets, if the component has a delay.
-     *
-     * @param delayed true, if the component has a delay, else false.
-     */
-    public void setDelayed(boolean delayed) {
-        referencedComponent.orElse(this).delayed = delayed;
-    }
-
-    /**
-     * @return true, if the component has a delay, else false.
-     */
-    public boolean hasDelay() {
-        return referencedComponent.orElse(this).delayed;
-    }
-
     public boolean isDecomposed() {
         return !isAtomic();
     }
@@ -646,5 +632,72 @@ public class EMAComponentSymbol extends CommonScopeSpanningSymbol implements EMA
 
     public Optional<EMAComponentSymbol> getParent() {
         return (Optional<EMAComponentSymbol>) getEnclosingScope().getSpanningSymbol();
+    }
+
+    public List<ASTPortInitial> getPortInitials() {
+        if (referencedComponent.isPresent())
+            return referencedComponent.get().getPortInitials();
+        return portInitials;
+    }
+
+    public void addPortInitial(ASTPortInitial initialGuess) {
+        if (referencedComponent.isPresent())
+                referencedComponent.get().addPortInitial(initialGuess);
+        else
+            this.portInitials.add(initialGuess);
+    }
+
+    public void setPortInitials(List<ASTPortInitial> initalGuesses) {
+        this.portInitials = initalGuesses;
+    }
+
+
+    public List<ASTComponentModifier> getComponentModifiers() {
+        if (referencedComponent.isPresent())
+            return referencedComponent.get().getComponentModifiers();
+        return componentModifiers;
+    }
+
+    public void addComponentModifier(ASTComponentModifier componentModifier) {
+        if (referencedComponent.isPresent())
+            referencedComponent.get().addComponentModifier(componentModifier);
+        else
+            this.componentModifiers.add(componentModifier);
+    }
+
+    public void setComponentModifiers(List<ASTComponentModifier> componentModifiers) {
+        this.componentModifiers = componentModifiers;
+    }
+
+    public boolean isNonVirtual() {
+        for (ASTComponentModifier componentModifier : componentModifiers) {
+            if (componentModifier instanceof ASTVirtModifier) {
+                if (((ASTVirtModifier) componentModifier).getVIRTUAL().equals(ASTVIRTUAL.NONVIRTUAL))
+                    return true;
+                else
+                    return false;
+            }
+        }
+        return false;
+    }
+
+    public boolean isVirtual() {
+        return !isNonVirtual();
+    }
+
+    public boolean isNonDirectFeedThrough() {
+        for (ASTComponentModifier componentModifier : componentModifiers) {
+            if (componentModifier instanceof ASTDFModifier) {
+                if (((ASTDFModifier) componentModifier).getDIRECTFEEDTHROUGH().equals(ASTDIRECTFEEDTHROUGH.NONDF))
+                    return true;
+                else
+                    return false;
+            }
+        }
+        return false;
+    }
+
+    public boolean isDirectFeedThrough() {
+        return !isNonDirectFeedThrough();
     }
 }
