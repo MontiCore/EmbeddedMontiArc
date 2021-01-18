@@ -22,7 +22,7 @@
         <se-commons.version>1.7.7</se-commons.version>
 
         <!-- .. Libraries .................................................. -->
-        <guava.version>18.0</guava.version>
+        <guava.version>25.1-jre</guava.version>
         <junit.version>4.12</junit.version>
         <freemarker.version>2.3.20</freemarker.version>
 
