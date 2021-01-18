@@ -1,7 +1,10 @@
 /* (c) https://github.com/MontiCore/monticore */
 package de.monticore.lang.embeddedmontiarc.embeddedmontiarc._symboltable.instanceStructure;
 
-import de.monticore.lang.embeddedmontiarc.embeddedmontiarc._symboltable.cncModel.*;
+import de.monticore.lang.embeddedmontiarc.embeddedmontiarc._symboltable.cncModel.EMAComponentSymbol;
+import de.monticore.lang.embeddedmontiarc.embeddedmontiarc._symboltable.cncModel.EMAConnectorBuilder;
+import de.monticore.lang.embeddedmontiarc.embeddedmontiarc._symboltable.cncModel.EMAConnectorSymbol;
+import de.monticore.lang.embeddedmontiarc.embeddedmontiarc._symboltable.cncModel.EMAPortSymbol;
 import de.monticore.lang.embeddedmontiarc.embeddedmontiarc.types.TypesPrinter;
 import de.monticore.lang.embeddedmontiarc.helper.SymbolPrinter;
 import de.se_rwth.commons.Joiners;

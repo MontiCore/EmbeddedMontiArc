@@ -1,25 +1,23 @@
 /* (c) https://github.com/MontiCore/monticore */
 package de.monticore.lang.embeddedmontiarc.embeddedmontiarc._symboltable.instanceStructure;
 
-import de.monticore.javaclassexpressions._ast.ASTLiteralExpression;
-import de.monticore.javaclassexpressions._ast.ASTNameExpression;
+import de.monticore.expressionsbasis._ast.ASTExpression;
 import de.monticore.lang.embeddedmontiarc.embeddedmontiarc._ast.ASTComponent;
+import de.monticore.lang.embeddedmontiarc.embeddedmontiarc._ast.ASTComponentModifier;
+import de.monticore.lang.embeddedmontiarc.embeddedmontiarc._ast.ASTPortInitial;
 import de.monticore.lang.embeddedmontiarc.embeddedmontiarc._ast.EmbeddedMontiArcMill;
-import de.monticore.lang.embeddedmontiarc.embeddedmontiarc._symboltable.EmbeddedMontiArcSymbolMill;
 import de.monticore.lang.embeddedmontiarc.embeddedmontiarc._symboltable.UnitNumberExpressionSymbol;
 import de.monticore.lang.embeddedmontiarc.embeddedmontiarc._symboltable.cncModel.*;
 import de.monticore.lang.embeddedmontiarc.embeddedmontiarc.types.EMAVariable;
-import de.monticore.expressionsbasis._ast.ASTExpression;
 import de.monticore.lang.monticar.common2._ast.ASTLiteralValue;
 import de.monticore.lang.monticar.common2._ast.ASTParameter;
 import de.monticore.lang.monticar.common2._ast.ASTValue;
 import de.monticore.lang.monticar.resolution._ast.ASTUnitNumberExpression;
-import de.monticore.lang.monticar.resolution._ast.ASTUnitNumberResolution;
 import de.monticore.lang.monticar.resolution._ast.ASTUnitNumberResolutionExpression;
 import de.monticore.lang.monticar.si._symboltable.ResolutionDeclarationSymbol;
 import de.monticore.lang.monticar.ts.MCTypeSymbol;
 import de.monticore.lang.monticar.ts.references.MCTypeReference;
-import de.monticore.lang.monticar.types2._symboltable.UnitNumberResolutionSymbol;
+import de.monticore.lang.monticar.types2._ast.ASTElementType;
 import de.monticore.literals.literals._ast.*;
 import de.monticore.numberunit._ast.ASTNumberWithInf;
 import de.monticore.numberunit._ast.ASTNumberWithUnit;
@@ -27,6 +25,7 @@ import de.monticore.symboltable.MutableScope;
 import de.monticore.symboltable.Symbol;
 import de.monticore.symboltable.resolving.ResolvingFilter;
 import de.monticore.symboltable.types.references.ActualTypeArgument;
+import de.se_rwth.commons.Joiners;
 import de.se_rwth.commons.Names;
 import de.se_rwth.commons.logging.Log;
 
@@ -49,9 +48,11 @@ public class EMAComponentInstanceBuilder {
     protected List<EMAVariable> parameters = new ArrayList<>();
     protected List<ASTExpression> arguments = new ArrayList<>();
     protected String packageName = "";
+    protected List<ASTPortInitial> portInitials = new ArrayList<>();
+    protected List<ASTComponentModifier> componentModifiers = new ArrayList<>();
 
     protected static Map<MCTypeSymbol, ActualTypeArgument> createMap(List<MCTypeSymbol> keys,
-            List<ActualTypeArgument> values) {
+                                                                     List<ActualTypeArgument> values) {
         Map<MCTypeSymbol, ActualTypeArgument> ret = new LinkedHashMap<>();
         for (int i = 0; i < keys.size(); i++) {
             ret.put(keys.get(i), values.get(i));
@@ -82,6 +83,8 @@ public class EMAComponentInstanceBuilder {
                 .addResolutionDeclarationSymbols(inst.getResolutionDeclarationSymbols())
                 .addParameters(inst.getParameters())
                 .addArguments(inst.getArguments())
+                .addPortInitials(inst.getComponentType().getPortInitials())
+                .addComponentModifiers(inst.getComponentModifiers())
                 .setPackageName(inst.getPackageName());
 
         return res.build();
@@ -127,13 +130,13 @@ public class EMAComponentInstanceBuilder {
     }
 
     public EMAComponentInstanceBuilder addActualTypeArgument(MCTypeSymbol formalTypeParameter,
-            ActualTypeArgument typeArgument) {
+                                                             ActualTypeArgument typeArgument) {
         this.actualTypeArguments.put(formalTypeParameter, typeArgument);
         return this;
     }
 
     public EMAComponentInstanceBuilder addActualTypeArguments(List<MCTypeSymbol> formalTypeParameters,
-            List<ActualTypeArgument> actualTypeArguments) {
+                                                              List<ActualTypeArgument> actualTypeArguments) {
         if (formalTypeParameters.size() != actualTypeArguments.size()) {
             Log.debug(formalTypeParameters.toString(), "FormalTypeParameters");
             Log.debug(actualTypeArguments.toString(), "ActualTypeArguments");
@@ -161,7 +164,7 @@ public class EMAComponentInstanceBuilder {
      * adds ports if they do not exist and replace generics of ports
      */
     public EMAComponentInstanceBuilder addPortsIfNameDoesNotExists(Collection<EMAPortSymbol> ports,
-            List<MCTypeSymbol> formalTypeParameters, List<ActualTypeArgument> actualTypeArguments) {
+                                                                   List<MCTypeSymbol> formalTypeParameters, List<ActualTypeArgument> actualTypeArguments) {
         List<EMAPortSymbol> pList = ports.stream().collect(Collectors.toList());
         createMap(formalTypeParameters, actualTypeArguments).forEach((k, v) ->
                 ports.stream().filter(p -> p.getTypeReference().getReferencedSymbol().getName().equals(k.getName()))
@@ -229,7 +232,7 @@ public class EMAComponentInstanceBuilder {
     }
 
     protected void exchangeGenerics(EMAComponentInstanceSymbol inst,
-            Map<MCTypeSymbol, ActualTypeArgument> mapTypeArguments) {
+                                    Map<MCTypeSymbol, ActualTypeArgument> mapTypeArguments) {
         Log.debug(inst.toString(), "exchangeGenerics inst");
         // TODO work with full names, but then you got the problem with generics.GenericInstance.Generic.T != generics.SuperGenericComparableComp2.T
         // because when delegating the name of the referenced type must be created
@@ -248,14 +251,24 @@ public class EMAComponentInstanceBuilder {
                     // now update the actual type reference definitions by replacing them according to the hash map
                     .forEachOrdered(
                             s -> s.setActualTypeArguments(
-                            s.getActualTypeArguments().stream()
-                                    // replace this filtered type arguments with the value we want to replace
-                                    //                  .map(a -> a.getType().getReferencedSymbol().getFullName().equals(k.getFullName()) ? v : a)
-                                    .map(a -> (a.getType().existsReferencedSymbol() ? (
-                                            a.getType().getReferencedSymbol().getName().equals(k.getName()) ? v : a)
-                                                       : a))
-                                    .collect(Collectors.toList())
-                    ));
+                                    s.getActualTypeArguments().stream()
+                                            // replace this filtered type arguments with the value we want to replace
+                                            //                  .map(a -> a.getType().getReferencedSymbol().getFullName().equals(k.getFullName()) ? v : a)
+                                            .map(a -> (a.getType().existsReferencedSymbol() ? (
+                                                    a.getType().getReferencedSymbol().getName().equals(k.getName()) ? v : a)
+                                                    : a))
+                                            .collect(Collectors.toList())
+                            ));
+
+            // 3) replace Parameter generics
+            // TODO more, maybe ranges etc. Parameter types should have the same class as all other types...
+            inst.getParameters().stream()
+                    .filter(emaVariable -> emaVariable.getType() instanceof ASTElementType
+                                    && ((ASTElementType) emaVariable.getType()).isPresentName()
+                                    && ((ASTElementType) emaVariable.getType()).getName().equals(k.getName()))
+                    .forEach(emaVariable -> {
+                        ((ASTElementType) emaVariable.getType()).setName(v.getType().getName());
+                    });
 
         });
 
@@ -308,6 +321,24 @@ public class EMAComponentInstanceBuilder {
                 Log.error("TODO");
             }
         }
+
+        for (EMAPortInstanceSymbol port : inst.getPortInstanceList()) {
+            if (port.isInitialGuessPresent() || port.isInitialValuePresent()) {
+                ASTExpression initial = port.isInitialGuessPresent() ? port.getInitialGuess() : port.getInitialValue();
+                if (initial instanceof ASTUnitNumberResolutionExpression) {
+                    if (((ASTUnitNumberResolutionExpression) initial).getUnitNumberResolution().getNameOpt().isPresent()) {
+                        String par = ((ASTUnitNumberResolutionExpression) initial).getUnitNumberResolution().getName();
+                        ASTExpression argument = arguments.get(par);
+                        if (argument != null) {
+                            if (port.isInitialGuessPresent())
+                                port.setInitialGuess(argument);
+                            else
+                                port.setInitialValue(argument);
+                        }
+                    }
+                }
+            }
+        }
     }
 
     protected ASTExpression calculateExchange(ASTExpression argument, Map<String, ASTExpression> arguments) {
@@ -324,9 +355,9 @@ public class EMAComponentInstanceBuilder {
         return null;
     }
 
-    public void addPortArraySymbolsToInstance(EMAComponentInstanceSymbol instance){
+    public void addPortArraySymbolsToInstance(EMAComponentInstanceSymbol instance) {
         Map<String, List<EMAPortInstanceSymbol>> nameToPortList = new HashMap<>();
-        for (EMAPortInstanceSymbol port : instance.getPortInstanceList()){
+        for (EMAPortInstanceSymbol port : instance.getPortInstanceList()) {
             List<EMAPortInstanceSymbol> list = nameToPortList
                     .computeIfAbsent(port.getNameWithoutArrayBracketPart(), k -> new ArrayList<>());
             list.add(port);
@@ -335,7 +366,7 @@ public class EMAComponentInstanceBuilder {
             }
         }
 
-        for (String name : nameToPortList.keySet()){
+        for (String name : nameToPortList.keySet()) {
             if (!instance.getSpannedScope().resolveLocally(name, EMAPortArraySymbol.KIND).isPresent()) {
                 List<EMAPortInstanceSymbol> ports = nameToPortList.get(name);
                 EMAPortArraySymbol portArray = new EMAPortArraySymbol(name, null);
@@ -364,6 +395,10 @@ public class EMAComponentInstanceBuilder {
             ports.stream().forEachOrdered(p ->
                     handlePort(p, componentFullName, scope)); // must be cloned since we change it if it has
             addPortArraySymbolsToInstance(sym);
+            handlePortInitials(sym);
+
+            // Component Modifiers
+            sym.setComponentModifiers(componentModifiers);
 
             // generics
             connectors.stream().forEachOrdered(c -> instantiateConnectorSymbol(c, componentFullName, scope));
@@ -394,6 +429,24 @@ public class EMAComponentInstanceBuilder {
         throw new Error("not all parameters have been set before to build the expanded component instance symbol");
     }
 
+    private void handlePortInitials(EMAComponentInstanceSymbol sym) {
+        Collection<EMAPortInstanceSymbol> portInstanceList = sym.getPortInstanceList();
+        for (ASTPortInitial initialGuess : portInitials) {
+            String arrayAccess = "";
+            if (initialGuess.isPresentUnitNumberResolution())
+                arrayAccess += "[" + initialGuess.getUnitNumberResolution().getNumber().get().intValue() + "]";
+            final String portAccessName = initialGuess.getName() + arrayAccess;
+            portInstanceList.stream()
+                    .filter(port -> port.getName().equals(portAccessName))
+                    .forEachOrdered(port -> {
+                        if (initialGuess.isGuess())
+                            port.setInitialGuess(initialGuess.getExpression());
+                        else
+                            port.setInitialValue(initialGuess.getExpression());
+                    });
+        }
+    }
+
     private void setDefaultValuesToArguments(EMAComponentInstanceSymbol sym) {
         if (arguments.isEmpty() && !parameters.isEmpty()) {
             // set default values
@@ -418,7 +471,7 @@ public class EMAComponentInstanceBuilder {
     }
 
     protected void instantiateConnectorSymbol(EMAConnectorSymbol c, String fullName,
-            MutableScope scope) {
+                                              MutableScope scope) {
         scope.add(EMAConnectorBuilder.instantiate(c, fullName));
     }
 
@@ -438,7 +491,7 @@ public class EMAComponentInstanceBuilder {
     protected void instantiatePortArraySymbol(EMAPortArraySymbol port, String packageName, MutableScope scope) {
         for (int i = 0; i < port.getDimension(); ++i) {
             String portName = port.getName() + "[" + (i + 1) + "]";
-            instantiatePortSymbol(port, packageName, portName,  scope);
+            instantiatePortSymbol(port, packageName, portName, scope);
         }
     }
 
@@ -581,5 +634,47 @@ public class EMAComponentInstanceBuilder {
     public EMAComponentInstanceBuilder setPackageName(String packageName) {
         this.packageName = packageName;
         return this;
+    }
+
+    public EMAComponentInstanceBuilder addPortInitials(List<ASTPortInitial> portInitials) {
+        for (ASTPortInitial portInitial : portInitials) {
+            if (!this.portInitials.contains(portInitial))
+                this.portInitials.add(portInitial);
+        }
+        return this;
+    }
+
+    public List<ASTPortInitial> getPortInitials() {
+        return portInitials;
+    }
+
+    public EMAComponentInstanceBuilder setPortInitials(List<ASTPortInitial> portInitials) {
+        this.portInitials = portInitials;
+        return this;
+    }
+
+    public List<ASTComponentModifier> getComponentModifiers() {
+        return componentModifiers;
+    }
+
+    public EMAComponentInstanceBuilder addComponentModifiers(List<ASTComponentModifier> componentModifiers) {
+        for (ASTComponentModifier componentModifier : componentModifiers) {
+            if (!this.componentModifiers.contains(componentModifier))
+                this.componentModifiers.add(componentModifier);
+        }
+        return this;
+    }
+
+    public EMAComponentInstanceBuilder setComponentModifiers(List<ASTComponentModifier> componentModifiers) {
+        this.componentModifiers = componentModifiers;
+        return this;
+    }
+
+    public void fixSubComponentPackageNames() {
+        subComponents.stream().forEach(s -> {
+            String newPackageName = Joiners.DOT.join(packageName, name.get());
+            s.setPackageName(newPackageName);
+            s.resetFullNames();
+        });
     }
 }

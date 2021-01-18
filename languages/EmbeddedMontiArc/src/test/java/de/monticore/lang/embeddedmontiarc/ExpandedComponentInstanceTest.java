@@ -1,14 +1,15 @@
 /* (c) https://github.com/MontiCore/monticore */
 package de.monticore.lang.embeddedmontiarc;
 
-import de.monticore.lang.embeddedmontiarc.embeddedmontiarc._symboltable.*;
 import de.monticore.expressionsbasis._ast.ASTExpression;
-import de.monticore.lang.embeddedmontiarc.embeddedmontiarc._symboltable.cncModel.*;
-import de.monticore.lang.embeddedmontiarc.embeddedmontiarc._symboltable.instanceStructure.EMAComponentInstanceBuilder;
-import de.monticore.lang.embeddedmontiarc.embeddedmontiarc._symboltable.instanceStructure.EMAComponentInstanceSymbol;
-import de.monticore.lang.embeddedmontiarc.embeddedmontiarc._symboltable.instanceStructure.EMAConnectorInstanceSymbol;
-import de.monticore.lang.embeddedmontiarc.embeddedmontiarc._symboltable.instanceStructure.InstanceInformation;
+import de.monticore.lang.embeddedmontiarc.embeddedmontiarc._symboltable.UnitNumberExpressionSymbol;
+import de.monticore.lang.embeddedmontiarc.embeddedmontiarc._symboltable.cncModel.EMAComponentSymbol;
+import de.monticore.lang.embeddedmontiarc.embeddedmontiarc._symboltable.cncModel.EMAComponentSymbolReference;
+import de.monticore.lang.embeddedmontiarc.embeddedmontiarc._symboltable.cncModel.EMAConnectorSymbol;
+import de.monticore.lang.embeddedmontiarc.embeddedmontiarc._symboltable.cncModel.EMAPortSymbol;
+import de.monticore.lang.embeddedmontiarc.embeddedmontiarc._symboltable.instanceStructure.*;
 import de.monticore.lang.embeddedmontiarc.helper.ConstantPortHelper;
+import de.monticore.lang.monticar.resolution._ast.ASTUnitNumberExpression;
 import de.monticore.lang.monticar.si._symboltable.ResolutionDeclarationSymbol;
 import de.monticore.symboltable.Scope;
 import de.se_rwth.commons.logging.Log;
@@ -538,4 +539,79 @@ public class ExpandedComponentInstanceTest extends AbstractSymtabTest {
     assertNotNull(inst);
   }
   */
+
+    @Test
+    public void testPortInitials() {
+        Scope symTab = createSymTab("src/test/resources");
+        Log.enableFailQuick(true);
+        EMAComponentInstanceSymbol inst = symTab.<EMAComponentInstanceSymbol>resolve(
+                "testing.portInitialTest", EMAComponentInstanceSymbol.KIND).orElse(null);
+
+        assertNotNull(inst);
+
+        EMAPortInstanceSymbol port = symTab.<EMAPortInstanceSymbol>resolve(
+                "testing.portInitialTest.simple.out1",
+                EMAPortInstanceSymbol.KIND).orElse(null);
+        assertTrue(port.isInitialGuessPresent());
+        assertEquals(2.0, ((ASTUnitNumberExpression) port.getInitialGuess()).getNumberWithUnit().getNumber().get(), 0.001);
+        assertNotNull(port);
+
+        port = symTab.<EMAPortInstanceSymbol>resolve(
+                "testing.portInitialTest.fromParameterDefault.simple.out1",
+                EMAPortInstanceSymbol.KIND).orElse(null);
+        assertTrue(port.isInitialGuessPresent());
+        assertEquals(3.0, ((ASTUnitNumberExpression) port.getInitialGuess()).getNumberWithUnit().getNumber().get(), 0.001);
+        assertNotNull(port);
+
+        port = symTab.<EMAPortInstanceSymbol>resolve(
+                "testing.portInitialTest.fromParameterGiven.simple.out1",
+                EMAPortInstanceSymbol.KIND).orElse(null);
+        assertTrue(port.isInitialGuessPresent());
+        assertEquals(5.0, ((ASTUnitNumberExpression) port.getInitialGuess()).getNumberWithUnit().getNumber().get(), 0.001);
+        assertNotNull(port);
+
+        port = symTab.<EMAPortInstanceSymbol>resolve(
+                "testing.portInitialTest.portArray.out1[1]",
+                EMAPortInstanceSymbol.KIND).orElse(null);
+        assertFalse(port.isInitialGuessPresent());
+        assertNotNull(port);
+
+        port = symTab.<EMAPortInstanceSymbol>resolve(
+                "testing.portInitialTest.portArray.out1[2]",
+                EMAPortInstanceSymbol.KIND).orElse(null);
+        assertTrue(port.isInitialGuessPresent());
+        assertEquals(7.0, ((ASTUnitNumberExpression) port.getInitialGuess()).getNumberWithUnit().getNumber().get(), 0.001);
+        assertNotNull(port);
+
+        port = symTab.<EMAPortInstanceSymbol>resolve(
+                "testing.portInitialTest.portArray.out1[3]",
+                EMAPortInstanceSymbol.KIND).orElse(null);
+        assertFalse(port.isInitialGuessPresent());
+        assertNotNull(port);
+    }
+
+    @Test
+    public void testVirtDF() {
+        Scope symTab = createSymTab("src/test/resources");
+        Log.enableFailQuick(true);
+        EMAComponentInstanceSymbol virtDF = symTab.<EMAComponentInstanceSymbol>resolve(
+                "testing.virtDFParent.virtDF", EMAComponentInstanceSymbol.KIND).orElse(null);
+        EMAComponentInstanceSymbol nonVirtNonDF = symTab.<EMAComponentInstanceSymbol>resolve(
+                "testing.nonVirtNonDF", EMAComponentInstanceSymbol.KIND).orElse(null);
+
+        assertNotNull(virtDF);
+
+        assertTrue(virtDF.isVirtual());
+        assertFalse(virtDF.isNonVirtual());
+        assertTrue(virtDF.isDirectFeedThrough());
+        assertFalse(virtDF.isNonDirectFeedThrough());
+
+
+        assertNotNull(nonVirtNonDF);
+
+        assertTrue(nonVirtNonDF.isNonVirtual());
+        assertFalse(nonVirtNonDF.isVirtual());
+        assertTrue(nonVirtNonDF.isNonDirectFeedThrough());
+        assertFalse(nonVirtNonDF.isDirectFeedThrough());
+    }
 }

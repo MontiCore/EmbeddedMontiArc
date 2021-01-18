@@ -6,6 +6,8 @@ package de.monticore.lang.embeddedmontiarc.embeddedmontiarc._symboltable.cncMode
 
 import com.google.common.collect.ImmutableList;
 import de.monticore.expressionsbasis._ast.ASTExpression;
+import de.monticore.lang.embeddedmontiarc.embeddedmontiarc._ast.ASTComponentModifier;
+import de.monticore.lang.embeddedmontiarc.embeddedmontiarc._ast.ASTPortInitial;
 import de.monticore.lang.embeddedmontiarc.embeddedmontiarc._symboltable.EmbeddedMontiArcSymbolTableCreator;
 import de.monticore.lang.monticar.si._symboltable.ResolutionDeclarationSymbol;
 import de.monticore.symboltable.MutableScope;
@@ -31,6 +33,8 @@ public class EMAComponentSymbolReference extends EMAComponentSymbol implements
 
     private List<ResolutionDeclarationSymbol> resSymbols = new ArrayList<>();
     private List<ASTExpression> arguments = new ArrayList<>();
+    private List<ASTPortInitial> portInitials = new ArrayList<>();
+    private List<ASTComponentModifier> componentModifiers = new ArrayList<>();
 
     public EMAComponentSymbolReference(final String name, final Scope definingScopeOfReference) {
         super(name);
@@ -161,7 +165,37 @@ public class EMAComponentSymbolReference extends EMAComponentSymbol implements
         this.arguments = arguments;
     }
 
-  /* Methods of Symbol interface */
+    @Override
+    public List<ASTPortInitial> getPortInitials() {
+        return this.portInitials;
+    }
+
+    @Override
+    public void addPortInitial(ASTPortInitial initialGuess) {
+        this.portInitials.add(initialGuess);
+    }
+
+    @Override
+    public void setPortInitials(List<ASTPortInitial> portInintials) {
+        this.portInitials = portInintials;
+    }
+
+    @Override
+    public List<ASTComponentModifier> getComponentModifiers() {
+        return this.componentModifiers;
+    }
+
+    @Override
+    public void addComponentModifier(ASTComponentModifier componentModifier) {
+        this.componentModifiers.add(componentModifier);
+    }
+
+    @Override
+    public void setComponentModifiers(List<ASTComponentModifier> componentModifiers) {
+        this.componentModifiers = componentModifiers;
+    }
+
+    /* Methods of Symbol interface */
 
     @Override
     public String getName() {

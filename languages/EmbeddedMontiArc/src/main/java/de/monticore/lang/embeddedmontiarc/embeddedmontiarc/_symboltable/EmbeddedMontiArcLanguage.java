@@ -10,17 +10,17 @@ import de.monticore.lang.embeddedmontiarc.embeddedmontiarc._symboltable.instance
 import de.monticore.lang.embeddedmontiarc.embeddedmontiarc._symboltable.instanceStructure.EMAComponentInstantiationSymbol;
 import de.monticore.lang.embeddedmontiarc.embeddedmontiarc._symboltable.instanceStructure.EMAConnectorInstanceSymbol;
 import de.monticore.lang.embeddedmontiarc.embeddedmontiarc._symboltable.instanceStructure.EMAPortInstanceSymbol;
-import de.monticore.lang.monticar.ts.MCASTTypeSymbol;
-import de.monticore.lang.monticar.ts.MontiCarTypeSymbol;
 import de.monticore.lang.monticar.si._symboltable.ResolutionDeclarationSymbol;
-import de.monticore.lang.monticar.types2._symboltable.UnitNumberResolutionSymbol;
 import de.monticore.lang.monticar.si._symboltable.SIUnitRangesSymbol;
 import de.monticore.lang.monticar.si._symboltable.SIUnitSymbol;
+import de.monticore.lang.monticar.ts.MCASTTypeSymbol;
+import de.monticore.lang.monticar.ts.MCFieldSymbol;
+import de.monticore.lang.monticar.ts.MCTypeSymbol;
+import de.monticore.lang.monticar.ts.MontiCarTypeSymbol;
+import de.monticore.lang.monticar.types2._symboltable.UnitNumberResolutionSymbol;
 import de.monticore.modelloader.ModelingLanguageModelLoader;
 import de.monticore.symboltable.resolving.CommonResolvingFilter;
-import de.monticore.lang.monticar.ts.MCFieldSymbol;
 import de.monticore.symboltable.types.JMethodSymbol;
-import de.monticore.lang.monticar.ts.MCTypeSymbol;
 
 /**
  * The MontiArc Language
