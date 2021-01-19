@@ -98,7 +98,7 @@ public class LoopTest {
         generatorCPP.setGenerateCMake(false);
         generatorCPP.setDeltaT(0.1);
         generatorCPP.setResolveLoops(true);
-        generatorCPP.setSolveLoopsSymbolic(true);
+        generatorCPP.setSolveLoopsSymbolic(false);
         generatorCPP.setGenerateCMake(true);
         List<File> files = generatorCPP.generateFiles(symtab, componentSymbol);
 

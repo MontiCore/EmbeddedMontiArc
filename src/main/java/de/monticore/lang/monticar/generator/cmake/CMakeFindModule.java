@@ -46,7 +46,8 @@ public class CMakeFindModule extends ViewModelBase {
 
     public CMakeFindModule(String packageName, String includeName, String libName,
                            List<String> includePaths, List<String> libPaths,
-                           List<String> additionalIncludePathSuffixes, List<String> additionalLibraryPathSuffixes,
+                           List<String> additionalIncludePathSuffixes,
+                           List<String> additionalLibraryPathSuffixes,
                            List<String> additionalEnvironmentVariableHints,
                            Boolean findPath, Boolean findLibrary, boolean required) {
         this.packageName = packageName;
