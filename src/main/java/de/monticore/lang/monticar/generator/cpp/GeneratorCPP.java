@@ -318,6 +318,7 @@ public class GeneratorCPP implements EMAMGenerator {
     public List<File> generateFiles(TaggingResolver taggingResolver, EMAComponentInstanceSymbol componentSymbol)
             throws IOException {
         this.rootModel = componentSymbol;
+        resetStatics();
 
         List<FileContent> fileContents = new ArrayList<>();
         if (componentSymbol == null) {
@@ -359,6 +360,11 @@ public class GeneratorCPP implements EMAMGenerator {
             files.addAll(generateCMakeFiles(componentSymbol));
 
         return files;
+    }
+
+    private void resetStatics() {
+        ExecutionStepperHelper.setUnused();
+        ConversionHelper.unsetUsedCV();
     }
 
     public void addSemantics(TaggingResolver taggingResolver, EMAComponentInstanceSymbol component) {
