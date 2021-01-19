@@ -1,0 +1,18 @@
+/* (c) https://github.com/MontiCore/monticore */
+package de.monticore.lang.monticar.semantics.loops;
+
+import de.monticore.lang.monticar.semantics.library.differential.Integrator;
+import de.monticore.lang.monticar.semantics.library.arithmetic.Gain;
+
+component Oscillation {
+    port
+        out Q output;
+
+    instance Integrator<Q>{output(t=0) = 2} x;
+    instance Integrator<Q>(0) v;
+    instance Gain<Q>(-2/5) factor;
+
+    connect x.output -> factor.input, output;
+    connect factor.output -> v.input;
+    connect v.output -> x.input;
+}

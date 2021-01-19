@@ -36,24 +36,6 @@ controller.init();
 }
 void execute()
 {
-pacmanMovementPositionCalculator.moveUp = moveUp;
-pacmanMovementPositionCalculator.moveDown = moveDown;
-pacmanMovementPositionCalculator.moveLeft = moveLeft;
-pacmanMovementPositionCalculator.moveRight = moveRight;
-pacmanMovementPositionCalculator.pacmanPositionX = pacmanPositionX;
-pacmanMovementPositionCalculator.pacmanPositionY = pacmanPositionY;
-pacmanMovementPositionCalculator.execute();
-pacmanMovementCollisionChecker.world = world;
-pacmanMovementCollisionChecker.pacmanPositionX = pacmanPositionX;
-pacmanMovementCollisionChecker.pacmanPositionY = pacmanPositionY;
-pacmanMovementCollisionChecker.pacmanPossibleNextPositionX = pacmanMovementPositionCalculator.pacmanNextPositionX;
-pacmanMovementCollisionChecker.pacmanPossibleNextPositionY = pacmanMovementPositionCalculator.pacmanNextPositionY;
-pacmanMovementCollisionChecker.execute();
-controller.pacmanPositionX = pacmanMovementCollisionChecker.pacmanChosenNextPositionX;
-controller.pacmanPositionY = pacmanMovementCollisionChecker.pacmanChosenNextPositionY;
-controller.execute();
-pacmanNextPositionX = pacmanMovementCollisionChecker.pacmanChosenNextPositionX;
-pacmanNextPositionY = pacmanMovementCollisionChecker.pacmanChosenNextPositionY;
 }
 
 };

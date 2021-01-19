@@ -25,12 +25,22 @@ spectralClusterer.init();
 }
 void execute()
 {
-spectralClusterer.red = red1;
-spectralClusterer.green = green1;
-spectralClusterer.blue = blue1;
-std::thread thread1( [ this ] {this->spectralClusterer.execute();});
+spectralClusterer.similarity.red = red1;
+spectralClusterer.similarity.green = green1;
+spectralClusterer.similarity.blue = blue1;
+std::thread thread1( [ this ] {this->spectralClusterer.similarity.execute();});
 thread1.join();
-clusters = spectralClusterer.clusters;
+spectralClusterer.normalizedLaplacian.similarity = spectralClusterer.similarity.similarity;
+spectralClusterer.normalizedLaplacian.degree = spectralClusterer.similarity.degree;
+std::thread thread2( [ this ] {this->spectralClusterer.normalizedLaplacian.execute();});
+thread2.join();
+spectralClusterer.eigenSolver.matrix = spectralClusterer.normalizedLaplacian.nLaplacian;
+std::thread thread3( [ this ] {this->spectralClusterer.eigenSolver.execute();});
+thread3.join();
+spectralClusterer.kMeansClustering.vectors = spectralClusterer.eigenSolver.eigenvectors;
+std::thread thread4( [ this ] {this->spectralClusterer.kMeansClustering.execute();});
+thread4.join();
+clusters = spectralClusterer.kMeansClustering.clusters;
 }
 
 };

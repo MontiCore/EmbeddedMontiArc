@@ -7,4 +7,5 @@ component LookUpInstance{
     instance LookUp([ 1 2 3 4]) lookUp;
 
     connect 2 -> lookUp.in1;
+    connect lookUp.out1 -> out1;
 }

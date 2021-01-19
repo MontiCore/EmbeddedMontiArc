@@ -17,10 +17,13 @@ import java.util.Optional;
 public class Variable {
     public static final String INCOMING = "Incoming";
     public static final String OUTGOING = "outgoing";
+    public static final String COMPONENT = "component";
     public static String FORLOOPINFO = "ForLoopVariable";
     public static String VARIABLE = "Variable";
     public static String ORIGINPORT = "OriginPort";
     public static String STATIC = "Static";
+    public static String FROMMATH = "fromMath";
+    public static String CROSSCOMPONENT = "CrossComponent";
 
     String name = "";
     VariableType type = new VariableType();
@@ -194,11 +197,14 @@ public class Variable {
     }
 
     public boolean isCrossComponentVariable() {
-        return name.contains(".");
+        return additionalInformation.contains(CROSSCOMPONENT);
     }
 
     public String getComponentName() {
-        return name.split("\\.")[0];
+        String[] split = name.split("\\.");
+        if (split.length >= 2)
+            return split[split.length - 2];
+        return "";
     }
 
     public void addDimensionalInformation(String dimension) {

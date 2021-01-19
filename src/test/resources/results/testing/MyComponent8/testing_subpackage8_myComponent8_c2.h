@@ -5,6 +5,8 @@
 #define M_PI 3.14159265358979323846
 #endif
 #include "octave/oct.h"
+#include "Helper.h"
+#include "octave/builtin-defun-decls.h"
 class testing_subpackage8_myComponent8_c2{
 public:
 double in1;

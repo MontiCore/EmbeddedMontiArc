@@ -211,7 +211,7 @@ public class EventDynamicConnectConverter {
         valueInits.stream().forEach(vi -> method.addInstruction(vi));
 
         method.addInstruction(new TargetCodeInstruction("return true;\n"));
-        bluePrint.addAdditionalIncludeString("DynamicHelper");
+        bluePrint.addAdditionalUserIncludeStrings("DynamicHelper");
         bluePrint.addMethod(method);
 
         free_method.addInstruction(new TargetCodeInstruction("dynamicfree();\n"));

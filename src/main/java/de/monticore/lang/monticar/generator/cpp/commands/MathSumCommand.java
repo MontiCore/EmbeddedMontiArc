@@ -10,7 +10,7 @@ import de.monticore.lang.monticar.generator.cpp.MathFunctionFixer;
 import de.monticore.lang.monticar.generator.cpp.OctaveHelper;
 import de.monticore.lang.monticar.generator.cpp.converter.ExecuteMethodGenerator;
 import de.monticore.lang.monticar.generator.cpp.converter.MathConverter;
-import de.monticore.lang.monticar.generator.cpp.symbols.MathStringExpression;
+import de.monticore.lang.embeddedmontiarc.embeddedmontiarcmath._symboltable.math.symbols.MathStringExpression;
 import de.se_rwth.commons.logging.Log;
 
 import java.util.ArrayList;
@@ -60,7 +60,7 @@ public class MathSumCommand extends MathCommand {
         newMatrixAccessSymbols.add(new MathMatrixAccessSymbol(stringExpression));
 
         mathMatrixNameExpressionSymbol.getMathMatrixAccessOperatorSymbol().setMathMatrixAccessSymbols(newMatrixAccessSymbols);
-        ((EMAMBluePrintCPP) bluePrint).addAdditionalIncludeString("octave/builtin-defun-decls");
+        ((EMAMBluePrintCPP) bluePrint).addAdditionalUserIncludeStrings("octave/builtin-defun-decls");
         // error if using extended syntax here
         if (mathMatrixNameExpressionSymbol.getMathMatrixAccessOperatorSymbol().getMathMatrixAccessSymbols().size() == 4) {
             Log.error(String.format("Syntax: \"%s\" is not supported when using deprecated backend Octave", SUM_SYNTAX_EXTENDED));
@@ -112,7 +112,7 @@ public class MathSumCommand extends MathCommand {
         List<MathMatrixAccessSymbol> newMatrixAccessSymbols = new ArrayList<>();
         newMatrixAccessSymbols.add(new MathMatrixAccessSymbol(stringExpression));
         mathMatrixNameExpressionSymbol.getMathMatrixAccessOperatorSymbol().setMathMatrixAccessSymbols(newMatrixAccessSymbols);
-        bluePrint.addAdditionalIncludeString("HelperA"); // question: why? (CR)
+        bluePrint.addAdditionalUserIncludeStrings("HelperA"); // question: why? (CR)
     }
 
     /**

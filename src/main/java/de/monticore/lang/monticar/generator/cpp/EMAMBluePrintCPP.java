@@ -4,9 +4,7 @@ package de.monticore.lang.monticar.generator.cpp;
 import de.monticore.lang.embeddedmontiarc.embeddedmontiarc._ast.ASTSubComponent;
 import de.monticore.lang.embeddedmontiarc.embeddedmontiarc._symboltable.instanceStructure.EMAComponentInstanceSymbol;
 import de.monticore.lang.embeddedmontiarc.embeddedmontiarc._symboltable.instanceStructure.InstanceInformation;
-import de.monticore.lang.monticar.generator.EMAMBluePrint;
-import de.monticore.lang.monticar.generator.Instruction;
-import de.monticore.lang.monticar.generator.Variable;
+import de.monticore.lang.monticar.generator.*;
 import de.monticore.lang.monticar.resolution._ast.ASTUnitNumberResolution;
 import de.monticore.lang.monticar.si._symboltable.ResolutionDeclarationSymbol;
 import de.se_rwth.commons.logging.Log;
@@ -17,43 +15,75 @@ import java.util.List;
 /**
  */
 public class EMAMBluePrintCPP extends EMAMBluePrint {
-    public List<String> additionalIncludeStrings = new ArrayList<>();
-    public List<String> cvIncludeStrings = new ArrayList<>();
-    public static boolean usedCV = false;
+    private List<String> additionalUserIncludeStrings = new ArrayList<>();
+    private List<String> additionalStandardIncludeStrings = new ArrayList<>();
+    private List<String> additionalStandardIncludeStringsWithH = new ArrayList<>();
+    private List<String> additionalStandardIncludeStringsWithHPP = new ArrayList<>();
+    private List<String> additionalNameSpaceStrings = new ArrayList<>();
+    private List<String> additionalTypeDefStrings = new ArrayList<>();
+//    public List<String> cvIncludeStrings = new ArrayList<>();
+    private Method constructor;
 
     public EMAMBluePrintCPP(String name) {
         super(name);
     }
 
 
-    public List<String> getAdditionalIncludeStrings() {
-        return additionalIncludeStrings;
+    public List<String> getAdditionalUserIncludeStrings() {
+        return additionalUserIncludeStrings;
     }
 
-    public void addAdditionalIncludeString(String includeString) {
-        if (!hasAdditionalIncludeString(includeString))
-            additionalIncludeStrings.add(includeString);
+    public void addAdditionalUserIncludeStrings(String includeString) {
+        if (!hasAdditionalUserIncludeStrings(includeString))
+            additionalUserIncludeStrings.add(includeString);
     }
 
-    public boolean hasAdditionalIncludeString(String includeString) {
-        return additionalIncludeStrings.contains(includeString);
+    public boolean hasAdditionalUserIncludeStrings(String includeString) {
+        return additionalUserIncludeStrings.contains(includeString);
     }
 
-    public List<String> getCVIncludeStrings() {
-        return cvIncludeStrings;
+    public List<String> getAdditionalStandardIncludeStrings() {
+        return additionalStandardIncludeStrings;
     }
 
-    public void addCVIncludeString(String includeString) {
-        if (!hasCVIncludeString(includeString)) {
-            cvIncludeStrings.add(includeString);
-            usedCV = true;
-        }
+    public void addAdditionalStandardInclude(String includeString) {
+        if (!this.additionalStandardIncludeStrings.contains(includeString))
+        this.additionalStandardIncludeStrings.add(includeString);
     }
 
-    public boolean hasCVIncludeString(String includeString) {
-        return cvIncludeStrings.contains(includeString);
+    public List<String> getAdditionalStandardIncludeStringsWithH() {
+        return additionalStandardIncludeStringsWithH;
     }
 
+    public void addAdditionalStandardIncludeStringWithH(String includeString) {
+        if (!this.additionalStandardIncludeStringsWithH.contains(includeString))
+        this.additionalStandardIncludeStringsWithH.add(includeString);
+    }
+
+    public void addAdditionalStandardIncludeStringWithHPP(String includeString) {
+        if (!this.additionalStandardIncludeStringsWithHPP.contains(includeString))
+            this.additionalStandardIncludeStringsWithHPP.add(includeString);
+    }
+
+    public List<String> getAdditionalStandardIncludeStringsWithHPP() {
+        return additionalStandardIncludeStringsWithHPP;
+    }
+
+    public List<String> getAdditionalNameSpaceStrings() {
+        return additionalNameSpaceStrings;
+    }
+
+    public void addAdditionalNameSpaceStrings(String nameSpaceString) {
+        this.additionalNameSpaceStrings.add(nameSpaceString);
+    }
+
+    public List<String> getAdditionalTypeDefStrings() {
+        return additionalTypeDefStrings;
+    }
+
+    public void addAdditionalTypeDefString(String typeDefString) {
+        this.additionalTypeDefStrings.add(typeDefString);
+    }
 
     public List<String> getConsts() {
         List<String> consts = new ArrayList<>();
@@ -123,5 +153,13 @@ public class EMAMBluePrintCPP extends EMAMBluePrint {
 
     public void addInstructionToMethod(Instruction instruction, String methodName) {
         getMethod(methodName).get().addInstruction(instruction);
+    }
+
+    public void setConstructor(Method constructor) {
+        this.constructor = constructor;
+    }
+
+    public Method getConstructor() {
+        return constructor;
     }
 }

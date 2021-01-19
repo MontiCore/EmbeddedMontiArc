@@ -5,6 +5,8 @@ package de.monticore.lang.monticar.generator.cpp;
 import de.monticore.lang.embeddedmontiarc.embeddedmontiarc._symboltable.instanceStructure.EMAComponentInstanceSymbol;
 import de.monticore.lang.monticar.generator.cpp.resolver.Resolver;
 import de.monticore.lang.monticar.generator.order.simulator.AbstractSymtab;
+import de.monticore.lang.monticar.semantics.Constants;
+import de.monticore.lang.monticar.semantics.util.BasicLibrary;
 import de.monticore.lang.tagging._symboltable.TaggingResolver;
 import de.se_rwth.commons.logging.Log;
 import org.apache.commons.cli.CommandLine;
@@ -110,12 +112,14 @@ public final class GeneratorCppCli {
             .hasArg(false)
             .required(false)
             .build();
+
     public static final Option OPTION_FLAG_GEN_TCP_SERVER = Option.builder("tcp")
             .longOpt("tcp-adapter")
             .desc("Generate the TCP-Server adapter for the model")
             .hasArg(false)
             .required(false)
             .build();
+
     public static final Option OPTION_FLAG_GEN_DDC_ADAPTER = Option.builder("ddc")
             .longOpt("ddc-adapter")
             .desc("Generate the DDC adapter for the model")
@@ -141,6 +145,90 @@ public final class GeneratorCppCli {
             .longOpt("flag-generate-cmake")
             .desc("optional flag indicating if a CMake project should be generated to build the model")
             .hasArg(false)
+            .required(false)
+            .build();
+
+    public static final Option OPTION_DELTA_T = Option.builder("dt")
+            .longOpt("time-step")
+            .desc("optional parameter to set the time step duration as double")
+            .hasArg(true)
+            .required(false)
+            .build();
+
+    public static final Option OPTION_ATOL = Option.builder("atol")
+            .longOpt("absolute-tolerance")
+            .desc("optional parameter to set the absolute tolerance for numeric solves")
+            .hasArg(true)
+            .required(false)
+            .build();
+
+    public static final Option OPTION_RTOL = Option.builder("rtol")
+            .longOpt("relative-tolerance")
+            .desc("optional parameter to set the relative tolerance for numeric solves")
+            .hasArg(true)
+            .required(false)
+            .build();
+
+    public static final Option OPTION_JTOL = Option.builder("jtol")
+            .longOpt("jacobean-tolerance")
+            .desc("optional parameter to set the tolerance for Jacobeans for numeric solves")
+            .hasArg(true)
+            .required(false)
+            .build();
+
+    public static final Option OPTION_DT_SOLVER = Option.builder("dts")
+            .longOpt("time-step-solver")
+            .desc("optional parameter to set the time step for numeric solves as double")
+            .hasArg(true)
+            .required(false)
+            .build();
+
+    public static final Option OPTION_RESOLVE_LOOPS = Option.builder()
+            .longOpt("resolve-loops")
+            .desc("optional parameter to resolve loops automatically,...")
+            .hasArg(true)
+            .required(false)
+            .build();
+
+    public static final Option OPTION_HANDLE_ARTIFICIAL = Option.builder()
+            .longOpt("handle-artificial")
+            .desc("optional parameter to handle artificial loops automatically,...")
+            .hasArg(true)
+            .required(false)
+            .build();
+
+    public static final Option OPTION_SOLVE_LOOPS_SYMBOLIC = Option.builder()
+            .longOpt("solve-loops-symbolic")
+            .desc("optional parameter to solve loops analytically,...")
+            .hasArg(true)
+            .required(false)
+            .build();
+
+    public static final Option OPTION_SOLVE_SPECIFICATION_SYMBOLIC = Option.builder()
+            .longOpt("solve-specifications-symbolic")
+            .desc("optional parameter to solve specifications analytically,...")
+            .hasArg(true)
+            .required(false)
+            .build();
+
+    public static final Option OPTION_WARN_LOOPS = Option.builder()
+            .longOpt("warn-loops")
+            .desc("optional parameter to log loops")
+            .hasArg(true)
+            .required(false)
+            .build();
+
+    public static final Option OPTION_WARN_ARTIFICIAL_LOOPS = Option.builder()
+            .longOpt("warn-artificial-loops")
+            .desc("optional parameter to log artificial loops")
+            .hasArg(true)
+            .required(false)
+            .build();
+
+    public static final Option OPTION_LOG_SYMBOLIC_SOLVE = Option.builder()
+            .longOpt("log-symbolic-solve")
+            .desc("optional parameter to log symbolic solves")
+            .hasArg(true)
             .required(false)
             .build();
 
@@ -187,6 +275,18 @@ public final class GeneratorCppCli {
         options.addOption(OPTION_FLAG_ALGEBRAIC);
         options.addOption(OPTION_FLAG_THREADING);
         options.addOption(OPTION_FLAG_EXEC_LOGGING);
+        options.addOption(OPTION_DELTA_T);
+        options.addOption(OPTION_ATOL);
+        options.addOption(OPTION_RTOL);
+        options.addOption(OPTION_JTOL);
+        options.addOption(OPTION_DT_SOLVER);
+        options.addOption(OPTION_RESOLVE_LOOPS);
+        options.addOption(OPTION_HANDLE_ARTIFICIAL);
+        options.addOption(OPTION_SOLVE_LOOPS_SYMBOLIC);
+        options.addOption(OPTION_SOLVE_SPECIFICATION_SYMBOLIC);
+        options.addOption(OPTION_WARN_LOOPS);
+        options.addOption(OPTION_WARN_ARTIFICIAL_LOOPS);
+        options.addOption(OPTION_LOG_SYMBOLIC_SOLVE);
     }
 
     public static CommandLine parseArgs(Options options, CommandLineParser parser, String[] args) {
@@ -205,7 +305,7 @@ public final class GeneratorCppCli {
         Path modelsDirPath = Paths.get(cliArgs.getOptionValue(OPTION_MODELS_PATH.getOpt()));
         String rootModelName = cliArgs.getOptionValue(OPTION_ROOT_MODEL.getOpt());
         String outputPath = cliArgs.getOptionValue(OPTION_OUTPUT_PATH.getOpt());
-        TaggingResolver symTab = AbstractSymtab.createSymTabAndTaggingResolver(modelsDirPath.toString());
+        TaggingResolver symTab = getSymTabAndTaggingResolver(modelsDirPath);
         Resolver resolver = new Resolver(symTab);
         EMAComponentInstanceSymbol componentSymbol = resolveSymbol(resolver, rootModelName);
 
@@ -231,6 +331,55 @@ public final class GeneratorCppCli {
         g.setExecutionLoggingActive(cliArgs.hasOption(OPTION_FLAG_EXEC_LOGGING.getLongOpt()));
         g.setGenerateCMake(cliArgs.hasOption(OPTION_FLAG_CMAKE.getLongOpt()));
 
+        if (cliArgs.hasOption(OPTION_DELTA_T.getOpt()))
+            g.setDeltaT(cliArgs.getOptionValue(OPTION_DELTA_T.getOpt()));
+        if (cliArgs.hasOption(OPTION_DELTA_T.getLongOpt()))
+            g.setDeltaT(cliArgs.getOptionValue(OPTION_DELTA_T.getLongOpt()));
+
+        if (cliArgs.hasOption(OPTION_ATOL.getOpt()))
+            g.setATol(cliArgs.getOptionValue(OPTION_ATOL.getOpt()));
+        if (cliArgs.hasOption(OPTION_ATOL.getLongOpt()))
+            g.setATol(cliArgs.getOptionValue(OPTION_ATOL.getLongOpt()));
+
+        if (cliArgs.hasOption(OPTION_RTOL.getOpt()))
+            g.setRTol(cliArgs.getOptionValue(OPTION_RTOL.getOpt()));
+        if (cliArgs.hasOption(OPTION_RTOL.getLongOpt()))
+            g.setRTol(cliArgs.getOptionValue(OPTION_RTOL.getLongOpt()));
+
+        if (cliArgs.hasOption(OPTION_JTOL.getOpt()))
+            g.setJTol(cliArgs.getOptionValue(OPTION_JTOL.getOpt()));
+        if (cliArgs.hasOption(OPTION_JTOL.getLongOpt()))
+            g.setJTol(cliArgs.getOptionValue(OPTION_JTOL.getLongOpt()));
+
+        if (cliArgs.hasOption(OPTION_DT_SOLVER.getOpt()))
+            g.setDeltaTSolver(cliArgs.getOptionValue(OPTION_DT_SOLVER.getOpt()));
+        if (cliArgs.hasOption(OPTION_DT_SOLVER.getLongOpt()))
+            g.setDeltaTSolver(cliArgs.getOptionValue(OPTION_DT_SOLVER.getLongOpt()));
+
+
+        if (cliArgs.hasOption(OPTION_RESOLVE_LOOPS.getLongOpt()))
+            g.setResolveLoops(cliArgs.getOptionValue(OPTION_RESOLVE_LOOPS.getLongOpt()));
+
+        if (cliArgs.hasOption(OPTION_HANDLE_ARTIFICIAL.getLongOpt()))
+            g.setHandleArtificial(cliArgs.getOptionValue(OPTION_HANDLE_ARTIFICIAL.getLongOpt()));
+
+        if (cliArgs.hasOption(OPTION_SOLVE_LOOPS_SYMBOLIC.getLongOpt()))
+            g.setSolveLoopsSymbolic(cliArgs.getOptionValue(OPTION_SOLVE_LOOPS_SYMBOLIC.getLongOpt()));
+
+        if (cliArgs.hasOption(OPTION_SOLVE_SPECIFICATION_SYMBOLIC.getLongOpt()))
+            g.setSolveSpecificationSymbolic(cliArgs.getOptionValue(OPTION_SOLVE_SPECIFICATION_SYMBOLIC.getLongOpt()));
+
+        if (cliArgs.hasOption(OPTION_WARN_LOOPS.getLongOpt()))
+            g.setWarnLoops(cliArgs.getOptionValue(OPTION_WARN_LOOPS.getLongOpt()));
+
+        if (cliArgs.hasOption(OPTION_WARN_ARTIFICIAL_LOOPS.getLongOpt()))
+            g.setWarnArtificial(cliArgs.getOptionValue(OPTION_WARN_ARTIFICIAL_LOOPS.getLongOpt()));
+
+        if (cliArgs.hasOption(OPTION_LOG_SYMBOLIC_SOLVE.getLongOpt()))
+            g.setLogSymbolicSolve(cliArgs.getOptionValue(OPTION_LOG_SYMBOLIC_SOLVE.getLongOpt()));
+
+
+
         try {
             if (componentSymbol != null) {
                 g.generateFiles(symTab, componentSymbol);
@@ -242,6 +391,12 @@ public final class GeneratorCppCli {
             //System.exit(1);
         }
 
+    }
+
+    private static TaggingResolver getSymTabAndTaggingResolver(Path modelsDirPath) {
+        BasicLibrary.extract();
+        return AbstractSymtab.createSymTabAndTaggingResolver(modelsDirPath.toString(),
+                Constants.SYNTHESIZED_COMPONENTS_ROOT, BasicLibrary.BASIC_LIBRARY_ROOT);
     }
 
     private static EMAComponentInstanceSymbol resolveSymbol(Resolver resolver, String rootModelName) {

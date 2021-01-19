@@ -20,12 +20,6 @@ sab.init();
 }
 void execute()
 {
-sab.v1x = currentDirectionX;
-sab.v1y = currentDirectionY;
-sab.v2x = desiredDirectionX;
-sab.v2y = desiredDirectionY;
-sab.execute();
-steeringAngle = sab.angle;
 }
 
 };

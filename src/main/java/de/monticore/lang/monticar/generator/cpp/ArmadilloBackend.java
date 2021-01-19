@@ -19,8 +19,18 @@ public class ArmadilloBackend implements MathBackend {
     }
 
     @Override
+    public String getMatrixTypeUnsignedCharName() {
+        return "arma::Mat<unsigned char>";
+    }
+
+    @Override
     public String getCubeTypeName() {
         return "cube";
+    }
+
+    @Override
+    public String getCubeUnsignedCharName() {
+        return "Cube<unsigned char>";
     }
 
     @Override

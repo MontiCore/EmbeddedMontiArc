@@ -21,11 +21,6 @@ eb.init();
 }
 void execute()
 {
-eb.lowerBound = -0.785;
-eb.upperBound = 0.785;
-eb.input = input;
-eb.execute();
-output = eb.output;
 }
 
 };

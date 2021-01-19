@@ -5,13 +5,14 @@ import de.monticore.lang.math._symboltable.matrix.MathMatrixAccessSymbol;
 import de.monticore.lang.math._symboltable.matrix.MathMatrixNameExpressionSymbol;
 import de.monticore.lang.monticar.generator.*;
 import de.monticore.lang.monticar.generator.cmake.CMakeFindModule;
+import de.monticore.lang.monticar.generator.cpp.ConversionHelper;
 import de.monticore.lang.monticar.generator.cpp.EMAMBluePrintCPP;
 import de.monticore.lang.monticar.generator.cpp.MathExpressionProperties;
 import de.monticore.lang.monticar.generator.cpp.converter.ComponentConverter;
 import de.monticore.lang.monticar.generator.cpp.converter.ExecuteMethodGenerator;
 import de.monticore.lang.monticar.generator.cpp.MathFunctionFixer;
 import de.monticore.lang.monticar.generator.cpp.converter.MathConverter;
-import de.monticore.lang.monticar.generator.cpp.symbols.MathStringExpression;
+import de.monticore.lang.embeddedmontiarc.embeddedmontiarcmath._symboltable.math.symbols.MathStringExpression;
 import de.se_rwth.commons.logging.Log;
 
 import java.util.ArrayList;
@@ -64,14 +65,16 @@ public class ErodeCommand extends ArgumentNoReturnMathCommand{
 
 
         mathMatrixNameExpressionSymbol.getMathMatrixAccessOperatorSymbol().setMathMatrixAccessSymbols(newMatrixAccessSymbols);
-        bluePrintCPP.addCVIncludeString("opencv2/imgproc/imgproc");
-        bluePrintCPP.addCVIncludeString("ConvHelper");
+        bluePrintCPP.addAdditionalStandardIncludeStringWithHPP("opencv2/imgproc/imgproc");
+        bluePrintCPP.addAdditionalUserIncludeStrings("ConvHelper");
         bluePrint.addMethod(erodeHelperMethod);
         redefineArmaMat(bluePrintCPP);
         redefineInit(bluePrintCPP);
         bluePrintCPP.getGenerator().getCmakeConfig()
                 .addModuleDependency(new CMakeFindModule("OpenCV", true).asFindAsPackage());
+        bluePrintCPP.addAdditionalNameSpaceStrings("std");
 
+        ConversionHelper.setUsedCV();
     }
 
     private Method getErodeHelperMethod(MathMatrixNameExpressionSymbol mathMatrixNameExpressionSymbol, EMAMBluePrintCPP bluePrintCPP, MathExpressionProperties properties){
