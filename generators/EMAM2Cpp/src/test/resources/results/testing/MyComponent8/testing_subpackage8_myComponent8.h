@@ -22,8 +22,8 @@ void execute()
 {
 c1.in1 = in1;
 c1.in2 = in1;
-c1.execute();
 c2.in1 = in1;
+c1.execute();
 c2.in2 = c1.out1;
 c2.execute();
 out1 = c2.out1;

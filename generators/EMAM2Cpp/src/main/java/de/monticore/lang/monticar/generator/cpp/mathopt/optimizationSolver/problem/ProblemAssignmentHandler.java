@@ -234,7 +234,7 @@ public class ProblemAssignmentHandler {
         if (isConstraintOnOptVar(p, expr)) {
             mergeBoundsInX(p, xL, xU, expr, bounds[0], bounds[1], xMatrixElementConstraints);
         } else {
-            MathFunctionFixer.fixMathFunctions(expr, ComponentConverter.currentBluePrint);
+//            MathFunctionFixer.fixMathFunctions(expr, ComponentConverter.currentBluePrint);
             String gAsString = ExecuteMethodGenerator.generateExecuteCode(expr, new ArrayList<>());
             g.add(gAsString);
             gL.add(bounds[0]);
@@ -289,7 +289,7 @@ public class ProblemAssignmentHandler {
 
     private String getObjectiveFunctionAsCode(MathOptimizationStatementSymbol symbol) {
         MathExpressionSymbol substitutedObjFunc = ComponentConverter.currentBluePrint.getMathInformationRegister().resolveMathExpressionToAtomarExpression(symbol.getObjectiveExpression().getAssignedMathExpressionSymbol(), symbol.getOptimizationVariable().getName());
-        MathFunctionFixer.fixMathFunctions(substitutedObjFunc, ComponentConverter.currentBluePrint);
+//        MathFunctionFixer.fixMathFunctions(substitutedObjFunc, ComponentConverter.currentBluePrint);
         return ExecuteMethodGenerator.generateExecuteCode(substitutedObjFunc, new ArrayList<>());
     }
 

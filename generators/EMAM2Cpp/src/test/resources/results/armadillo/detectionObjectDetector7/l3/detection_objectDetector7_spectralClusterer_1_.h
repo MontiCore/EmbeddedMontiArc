@@ -1,4 +1,3 @@
-/* (c) https://github.com/MontiCore/monticore */
 #ifndef DETECTION_OBJECTDETECTOR7_SPECTRALCLUSTERER_1_
 #define DETECTION_OBJECTDETECTOR7_SPECTRALCLUSTERER_1_
 #ifndef M_PI
@@ -38,19 +37,6 @@ kMeansClustering.init();
 }
 void execute()
 {
-similarity.red = red;
-similarity.green = green;
-similarity.blue = blue;
-similarity.execute();
-normalizedLaplacian.degree = similarity.degree;
-normalizedLaplacian.similarity = similarity.similarity;
-normalizedLaplacian.execute();
-eigenSolver.matrix = normalizedLaplacian.nLaplacian;
-eigenSolver.execute();
-kMeansClustering.vectors = eigenSolver.eigenvectors;
-std::thread thread8( [ this ] {this->kMeansClustering.execute();});
-thread8.join();
-clusters = kMeansClustering.clusters;
 }
 
 };

@@ -5,6 +5,8 @@
 #define M_PI 3.14159265358979323846
 #endif
 #include "octave/oct.h"
+#include "Helper.h"
+#include "octave/builtin-defun-decls.h"
 class testing_subpackage9_myComponent9_calcMotionCmds_d2v2{
 public:
 double distance;
@@ -22,7 +24,7 @@ D1=1;
 V1=1;
 D2=15;
 V2=7;
-COEF_K=((Helper::getDoubleFromOctaveListFirstResult(Flog(Helper::convertToOctaveValueList((V1/V2)),1))))/(D2-D1);
+COEF_K=(Helper::getDoubleFromOctaveListFirstResult(Flog(Helper::convertToOctaveValueList((V1/V2)),1)))/(D2-D1);
 }
 void execute()
 {
@@ -44,6 +46,5 @@ v = maxVelocity;
 }
 velocity = v;
 }
-
 };
 #endif

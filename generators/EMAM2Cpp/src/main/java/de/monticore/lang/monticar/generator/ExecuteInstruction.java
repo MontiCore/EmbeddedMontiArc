@@ -6,7 +6,9 @@ import de.monticore.lang.monticar.generator.cpp.GeneralHelperMethods;
 /**
  */
 public class ExecuteInstruction implements Instruction {
+    protected String EXECUTE_COMMAND = "execute";
     String componentName;
+    String targetComponentName;
     EMAMBluePrint bluePrint;
     String threadName = null;
     boolean canBeThreaded = false;
@@ -21,6 +23,7 @@ public class ExecuteInstruction implements Instruction {
             componentName = componentName.replaceFirst("\\_", "]");
         }
         this.componentName = GeneralHelperMethods.getTargetLanguageVariableInstanceName(componentName);
+//        this.targetComponentName = GeneralHelperMethods.getTargetLanguageQualifiedComponentName(this.componentName);
         if (canBeThreaded)
             this.threadName = "thread" + ++threadCounter;
     }
@@ -29,16 +32,8 @@ public class ExecuteInstruction implements Instruction {
         return componentName;
     }
 
-    public void setComponentName(String componentName) {
-        this.componentName = componentName;
-    }
-
-    public boolean isCanBeThreaded() {
+    public boolean canBeThreaded() {
         return canBeThreaded;
-    }
-
-    public void setCanBeThreaded(boolean canBeThreaded) {
-        this.canBeThreaded = canBeThreaded;
     }
 
     public String getThreadName() {
@@ -53,7 +48,7 @@ public class ExecuteInstruction implements Instruction {
             String inst = componentName.substring(0, componentName.indexOf("["));
             String id = componentName.substring(componentName.indexOf("[")+1, componentName.lastIndexOf("]"));
 
-            return String.format("if(__%s_connected[%s]){ executeDynamicConnects(&(%s)); %s}", inst, id,componentName, exec);
+            return String.format("if(__%s_connected[%s]){ " + EXECUTE_COMMAND + "DynamicConnects(&(%s)); %s}", inst, id,componentName, exec);
         }
 
         return exec;
@@ -69,13 +64,13 @@ public class ExecuteInstruction implements Instruction {
             //++threadCounter;
 
             //OLD: result += "this->" + componentName + ".execute();});\n";
-            result += addConditionIfDynamic("this->"+componentName+".execute();");
+            result += addConditionIfDynamic("this->"+componentName+ "." + EXECUTE_COMMAND + "();");
             result += "});\n";
 
             return result;
         }
 
-        return addConditionIfDynamic(componentName + ".execute();")+"\n";
+        return addConditionIfDynamic(componentName + "." + EXECUTE_COMMAND + "();")+"\n";
     }
 
     @Override

@@ -43,19 +43,19 @@ steerController1.init();
 }
 void execute()
 {
-steerController1.x[0] = pathX[0];
-steerController1.x[1] = pathX[1];
-steerController1.y[0] = pathY[0];
-steerController1.y[1] = pathY[1];
-steerController1.gpsX = gpsX;
-steerController1.gpsY = gpsY;
-steerController1.orientation = sensorCompass;
-steerController1.currentSteeringAngle = sensorSteering;
-steerController1.minSteeringAngle = minSteeringAngle;
-steerController1.maxSteeringAngle = maxSteeringAngle;
-steerController1.execute();
+steerController1.steeringCalculator.x[0] = pathX[0];
+steerController1.steeringCalculator.x[1] = pathX[1];
+steerController1.steeringCalculator.y[0] = pathY[0];
+steerController1.steeringCalculator.y[1] = pathY[1];
+steerController1.steeringCalculator.gpsX = gpsX;
+steerController1.steeringCalculator.gpsY = gpsY;
+steerController1.steeringCalculator.currentSteeringAngle = sensorSteering;
+steerController1.steeringCalculator.orientation = sensorCompass;
+steerController1.steeringCalculator.minSteeringAngle = minSteeringAngle;
+steerController1.steeringCalculator.maxSteeringAngle = maxSteeringAngle;
 actuatorEngine = 3.5;
-actuatorSteering = steerController1.steeringAngle;
+steerController1.steeringCalculator.execute();
+actuatorSteering = steerController1.steeringCalculator.newSteeringAngle;
 }
 
 };

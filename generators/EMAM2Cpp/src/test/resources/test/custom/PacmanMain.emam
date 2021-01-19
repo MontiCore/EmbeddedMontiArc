@@ -24,12 +24,20 @@ component PacmanMain{
     connect pacmanInputControl.moveLeft -> pacmanWorldManager.moveLeft;
     connect pacmanInputControl.moveRight -> pacmanWorldManager.moveRight;
 
-    connect pacmanWorldManager.pacmanNextPositionX -> stateSaver.positionX;
-    connect pacmanWorldManager.pacmanNextPositionY -> stateSaver.positionY;
+//    connect pacmanWorldManager.pacmanNextPositionX -> stateSaver.positionX;
+//    connect pacmanWorldManager.pacmanNextPositionY -> stateSaver.positionY;
 
     connect stateSaver.pacmanPositionX -> pacmanWorldManager.pacmanPositionX;
     connect stateSaver.pacmanPositionY -> pacmanWorldManager.pacmanPositionY;
 
-    connect pacmanWorldManager.pacmanNextPositionX -> stateSaver.pacmanPositionX;
-    connect pacmanWorldManager.pacmanNextPositionY -> stateSaver.pacmanPositionY;
+//    connect pacmanWorldManager.pacmanNextPositionX -> stateSaver.pacmanPositionX;
+//    connect pacmanWorldManager.pacmanNextPositionY -> stateSaver.pacmanPositionY;
+
+    instance Delay<Q>(0) delayedPosX;
+    instance Delay<Q>(0) delayedPosY;
+
+    connect pacmanWorldManager.pacmanNextPositionX -> delayedPosX.input;
+    connect delayedPosX.output -> stateSaver.positionX;
+    connect pacmanWorldManager.pacmanNextPositionY -> delayedPosY.input;
+    connect delayedPosY.output -> stateSaver.positionY;
 }

@@ -10,6 +10,7 @@ import freemarker.template.TemplateExceptionHandler;
 
 import java.io.IOException;
 import java.io.StringWriter;
+import java.util.Locale;
 
 public final class AllTemplates {
 
@@ -36,6 +37,8 @@ public final class AllTemplates {
         conf.setTemplateExceptionHandler(TemplateExceptionHandler.DEBUG_HANDLER);
         conf.setLogTemplateExceptions(false);
         conf.setClassForTemplateLoading(AllTemplates.class, "/template");
+        conf.setNumberFormat("#.################");
+        conf.setLocale(Locale.ENGLISH);
         try {
             COMPONENT_STREAM_TEST = conf.getTemplate("/test/ComponentStreamTest2.ftl");
             TESTS_MAIN_ENTRY = conf.getTemplate("/test/TestsMainEntry.ftl");

@@ -114,6 +114,10 @@ public class MathConverter {
         return MathInformationRegister.getVariableInitName(v, bluePrint) + "=" + curBackend.getMatrixTypeName() + "(" + v.getDimensionalInformation().get(0) + "," + v.getDimensionalInformation().get(1) + ");\n";
     }
 
+    private static String getMatrixUnsignedCharInitLine(Variable v, EMAMBluePrintCPP bluePrint) {
+        return MathInformationRegister.getVariableInitName(v, bluePrint) + "=" + curBackend.getMatrixTypeUnsignedCharName() + "(" + v.getDimensionalInformation().get(0) + "," + v.getDimensionalInformation().get(1) + ");\n";
+    }
+
     public static String getRowVectorInitLine(Variable v, EMAMBluePrintCPP bluePrint) {
         return MathInformationRegister.getVariableInitName(v, bluePrint) + "=" + curBackend.getRowVectorTypeName() + "(" + v.getDimensionalInformation().get(1) + ");\n";
     }
@@ -137,6 +141,10 @@ public class MathConverter {
         return String.format("%s = %s(%s, %s, %s);\n", MathInformationRegister.getVariableInitName(v, bluePrint), curBackend.getCubeTypeName(), v.getDimensionalInformation().get(0), v.getDimensionalInformation().get(1), v.getDimensionalInformation().get(2));
     }
 
+    private static String getCubeUnsignedCharInitLine(Variable v, EMAMBluePrintCPP bluePrint) {
+        return String.format("%s = %s(%s, %s, %s);\n", MathInformationRegister.getVariableInitName(v, bluePrint), curBackend.getCubeUnsignedCharName(), v.getDimensionalInformation().get(0), v.getDimensionalInformation().get(1), v.getDimensionalInformation().get(2));
+    }
+
     public static String getWholeNumberMatrixInitLine(Variable v, EMAMBluePrintCPP bluePrint) {
         return MathInformationRegister.getVariableInitName(v, bluePrint) + "=" + curBackend.getWholeNumberMatrixTypeName() + "(" + v.getDimensionalInformation().get(0) + "," + v.getDimensionalInformation().get(1) + ");\n";
     }
@@ -157,12 +165,16 @@ public class MathConverter {
         String initLine = null;
         if (v.getVariableType().getTypeNameTargetLanguage().equals(MathConverter.curBackend.getMatrixTypeName())) {
             initLine = MathConverter.getMatrixInitLine(v, bluePrint);
-        } else if (v.getVariableType().getTypeNameTargetLanguage().equals(MathConverter.curBackend.getRowVectorTypeName())) {
+        } else if (v.getVariableType().getTypeNameTargetLanguage().equals(MathConverter.curBackend.getMatrixTypeUnsignedCharName())) {
+            initLine = MathConverter.getMatrixUnsignedCharInitLine(v, bluePrint);
+        }else if (v.getVariableType().getTypeNameTargetLanguage().equals(MathConverter.curBackend.getRowVectorTypeName())) {
             initLine = MathConverter.getRowVectorInitLine(v, bluePrint);
         } else if (v.getVariableType().getTypeNameTargetLanguage().equals(MathConverter.curBackend.getColumnVectorTypeName())) {
             initLine = MathConverter.getColumnVectorInitLine(v, bluePrint);
         } else if (v.getVariableType().getTypeNameTargetLanguage().equals(MathConverter.curBackend.getCubeTypeName())) {
             initLine = MathConverter.getCubeTypeInitLine(v, bluePrint);
+        } else if (v.getVariableType().getTypeNameTargetLanguage().equals(MathConverter.curBackend.getCubeUnsignedCharName())) {
+            initLine = MathConverter.getCubeUnsignedCharInitLine(v, bluePrint);
         } else if (v.getVariableType().getTypeNameTargetLanguage().equals(MathConverter.curBackend.getWholeNumberMatrixTypeName())) {
             initLine = MathConverter.getWholeNumberMatrixInitLine(v, bluePrint);
         } else if (v.getVariableType().getTypeNameTargetLanguage().equals(MathConverter.curBackend.getWholeNumberRowVectorTypeName())) {

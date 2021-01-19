@@ -19,8 +19,20 @@ public class OctaveBackend implements MathBackend {
     }
 
     @Override
+    public String getMatrixTypeUnsignedCharName() {
+        Log.info("Matrix Unsigned Char Type not supported by currentBackend. ", getBackendName());
+        return null;
+    }
+
+    @Override
     public String getCubeTypeName() {
         Log.info("Cube Type not supported by currentBackend. ", getBackendName());
+        return null;
+    }
+
+    @Override
+    public String getCubeUnsignedCharName() {
+        Log.info("Cube Unsigned Char Type not supported by currentBackend. ", getBackendName());
         return null;
     }
 
@@ -110,25 +122,25 @@ public class OctaveBackend implements MathBackend {
 
     @Override
     public String getWholeNumberRowVectorTypeName() {
-        Log.warn("Octave does not support whole number matrices. Using real matrix instead!");
+        Log.info("Octave does not support whole number matrices. Using real matrix instead!", "Octave");
         return getRowVectorTypeName();
     }
 
     @Override
     public String getWholeNumberColumnVectorTypeName() {
-        Log.warn("Octave does not support whole number matrices. Using real matrix instead!");
+        Log.info("Octave does not support whole number matrices. Using real matrix instead!", "Octave");
         return getColumnVectorTypeName();
     }
 
     @Override
     public String getWholeNumberMatrixTypeName() {
-        Log.warn("Octave does not support whole number matrices. Using real matrix instead!");
+        Log.info("Octave does not support whole number matrices. Using real matrix instead!", "Octave");
         return getMatrixTypeName();
     }
 
     @Override
     public String getWholeNumberCubeTypeName() {
-        Log.warn("Octave does not support whole number matrices. Using real matrix instead!");
+        Log.info("Octave does not support whole number matrices. Using real matrix instead!", "Octave");
         return getCubeTypeName();
     }
 
