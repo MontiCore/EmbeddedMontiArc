@@ -163,6 +163,7 @@ public class MathInformationRegister {
             var.addDimensionalInformation(dimension.getTextualRepresentation());
         this.variables.add(var);
         var.addProperties(mathValueSymbol.getType().getProperties());
+        var.addAdditionalInformation(Variable.FROMMATH);
         this.mathValueSymbols.add(mathValueSymbol);
     }
 

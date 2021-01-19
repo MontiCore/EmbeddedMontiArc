@@ -4,8 +4,8 @@
 #define M_PI 3.14159265358979323846
 #endif
 #include "armadillo"
-#include <opencv2/core/core.hpp>
 #include "ConvHelper.h"
+#include <opencv2/core/core.hpp>
 using namespace arma;
 using namespace std;
 class test_math_inRangeCommandTest{
@@ -16,10 +16,10 @@ colvec upperBoundary;
 arma::Mat<unsigned char> dst;
 void init()
 {
-src=Mat<unsigned char>(n,m);
+src=arma::Mat<unsigned char>(n,m);
 lowerBoundary=colvec(3);
 upperBoundary=colvec(3);
-dst=Mat<unsigned char>(n,m);
+dst=arma::Mat<unsigned char>(n,m);
 }
 void inRangeHelper(const Cube<unsigned char>& src, arma::Mat<unsigned char>& dst, colvec lowerB, colvec upperB)
 {

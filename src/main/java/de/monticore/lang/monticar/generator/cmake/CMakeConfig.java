@@ -12,10 +12,7 @@ import freemarker.template.TemplateExceptionHandler;
 
 import java.io.IOException;
 import java.io.StringWriter;
-import java.util.ArrayList;
-import java.util.LinkedHashSet;
-import java.util.List;
-import java.util.Map;
+import java.util.*;
 
 /**
  * Class to configure cmake file generation.
@@ -34,6 +31,8 @@ public class CMakeConfig {
         conf.setTemplateExceptionHandler(TemplateExceptionHandler.DEBUG_HANDLER);
         conf.setLogTemplateExceptions(false);
         conf.setClassForTemplateLoading(AllTemplates.class, "/template/cmake/");
+        conf.setNumberFormat("#.################");
+        conf.setLocale(Locale.ENGLISH);
         try {
             CMAKE_LISTS_CPP = conf.getTemplate("CMakeListsCppTemplate.ftl");
             CMAKE_FIND_PACKAGE = conf.getTemplate("CMakeFindPackageTemplate.ftl");

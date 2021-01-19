@@ -31,24 +31,6 @@ calcMotionCmds.init();
 }
 void execute()
 {
-trimPath.currentPositionX = currentPositionX;
-trimPath.currentPositionY = currentPositionY;
-trimPath.plannedTrajectoryLength = plannedTrajectoryLength;
-trimPath.plannedTrajectoryX = plannedTrajectoryX;
-trimPath.plannedTrajectoryY = plannedTrajectoryY;
-trimPath.execute();
-calcMotionCmds.currentPositionX = currentPositionX;
-calcMotionCmds.currentPositionY = currentPositionY;
-calcMotionCmds.currentDirectionX = currentDirectionX;
-calcMotionCmds.currentDirectionY = currentDirectionY;
-calcMotionCmds.trimmedTrajectoryLength = trimPath.trimmedTrajectoryLength;
-calcMotionCmds.trimmedTrajectoryX = trimPath.trimmedTrajectoryX;
-calcMotionCmds.trimmedTrajectoryY = trimPath.trimmedTrajectoryY;
-calcMotionCmds.execute();
-desiredDirectionX = calcMotionCmds.desiredDirectionX;
-desiredDirectionY = calcMotionCmds.desiredDirectionY;
-signedDistanceToTrajectory = calcMotionCmds.signedDistanceToTrajectory;
-desiredVelocity = calcMotionCmds.desiredVelocity;
 }
 
 };

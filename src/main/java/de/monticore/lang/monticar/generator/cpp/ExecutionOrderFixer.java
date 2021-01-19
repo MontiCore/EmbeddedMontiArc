@@ -38,7 +38,7 @@ public class ExecutionOrderFixer {
         for (Instruction instruction : newList) {
             if (instruction.isExecuteInstruction()) {
                 ExecuteInstruction executeInstruction = (ExecuteInstruction) instruction;
-                if (executeInstruction.isCanBeThreaded()) {
+                if (executeInstruction.canBeThreaded()) {
                     joinInstructions.add(new TargetCodeInstruction(executeInstruction.getThreadName() + ".join();\n"));
                 }
             }
@@ -153,7 +153,8 @@ public class ExecutionOrderFixer {
         return otherInstructions;
     }
 
-    public static List<Instruction> getExecutionOrderInstructionsList(List<EMAComponentInstanceSymbol> exOrder, Map<String, List<Instruction>> map, EMAMBluePrintCPP bluePrintCPP, List<EMAComponentInstanceSymbol> threadableSubComponents) {
+    public static List<Instruction> getExecutionOrderInstructionsList(List<EMAComponentInstanceSymbol> exOrder, Map<String,
+            List<Instruction>> map, EMAMBluePrintCPP bluePrintCPP, List<EMAComponentInstanceSymbol> threadableSubComponents) {
         List<Instruction> newList = new ArrayList<>();
         for (EMAComponentInstanceSymbol instanceSymbol : exOrder) {
             String namey = instanceSymbol.getName();

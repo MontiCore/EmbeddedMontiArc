@@ -1,4 +1,3 @@
-/* (c) https://github.com/MontiCore/monticore */
 #ifndef PAPER_MATHUNIT1_MATRIXMODIFIER
 #define PAPER_MATHUNIT1_MATRIXMODIFIER
 #ifndef M_PI

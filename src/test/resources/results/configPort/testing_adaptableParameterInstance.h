@@ -23,8 +23,8 @@ void execute()
 {
 adaptableParameter.param1 = in1;
 adaptableParameter.execute();
-adaptableParameter2.execute();
 out1 = adaptableParameter.out1;
+adaptableParameter2.execute();
 out2 = adaptableParameter2.out1;
 }
 

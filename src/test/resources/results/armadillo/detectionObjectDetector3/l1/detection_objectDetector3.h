@@ -40,21 +40,42 @@ spectralClusterer[2].init();
 }
 void execute()
 {
-spectralClusterer[0].red = red1;
-spectralClusterer[0].green = green1;
-spectralClusterer[0].blue = blue1;
-spectralClusterer[0].execute();
-spectralClusterer[1].red = red2;
-spectralClusterer[1].green = green2;
-spectralClusterer[1].blue = blue2;
-spectralClusterer[1].execute();
-spectralClusterer[2].red = red3;
-spectralClusterer[2].green = green3;
-spectralClusterer[2].blue = blue3;
-spectralClusterer[2].execute();
-clusters[0] = spectralClusterer[0].clusters;
-clusters[1] = spectralClusterer[1].clusters;
-clusters[2] = spectralClusterer[2].clusters;
+spectralClusterer.similarity.red = red1;
+spectralClusterer.similarity.green = green1;
+spectralClusterer.similarity.blue = blue1;
+spectralClusterer.similarity.red = red2;
+spectralClusterer.similarity.green = green2;
+spectralClusterer.similarity.blue = blue2;
+spectralClusterer.similarity.red = red3;
+spectralClusterer.similarity.green = green3;
+spectralClusterer.similarity.blue = blue3;
+spectralClusterer[0].similarity.execute();
+spectralClusterer.normalizedLaplacian.similarity = spectralClusterer.similarity.similarity;
+spectralClusterer.normalizedLaplacian.degree = spectralClusterer.similarity.degree;
+spectralClusterer[1].similarity.execute();
+spectralClusterer.normalizedLaplacian.similarity = spectralClusterer.similarity.similarity;
+spectralClusterer.normalizedLaplacian.degree = spectralClusterer.similarity.degree;
+spectralClusterer[2].similarity.execute();
+spectralClusterer.normalizedLaplacian.similarity = spectralClusterer.similarity.similarity;
+spectralClusterer.normalizedLaplacian.degree = spectralClusterer.similarity.degree;
+spectralClusterer[0].normalizedLaplacian.execute();
+spectralClusterer.eigenSolver.matrix = spectralClusterer.normalizedLaplacian.nLaplacian;
+spectralClusterer[1].normalizedLaplacian.execute();
+spectralClusterer.eigenSolver.matrix = spectralClusterer.normalizedLaplacian.nLaplacian;
+spectralClusterer[2].normalizedLaplacian.execute();
+spectralClusterer.eigenSolver.matrix = spectralClusterer.normalizedLaplacian.nLaplacian;
+spectralClusterer[0].eigenSolver.execute();
+spectralClusterer.kMeansClustering.vectors = spectralClusterer.eigenSolver.eigenvectors;
+spectralClusterer[1].eigenSolver.execute();
+spectralClusterer.kMeansClustering.vectors = spectralClusterer.eigenSolver.eigenvectors;
+spectralClusterer[2].eigenSolver.execute();
+spectralClusterer.kMeansClustering.vectors = spectralClusterer.eigenSolver.eigenvectors;
+spectralClusterer[0].kMeansClustering.execute();
+clusters[0] = spectralClusterer.kMeansClustering.clusters;
+spectralClusterer[1].kMeansClustering.execute();
+clusters[1] = spectralClusterer.kMeansClustering.clusters;
+spectralClusterer[2].kMeansClustering.execute();
+clusters[2] = spectralClusterer.kMeansClustering.clusters;
 }
 
 };

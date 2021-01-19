@@ -10,14 +10,14 @@
 
     <groupId>de.monticore.lang.monticar</groupId>
     <artifactId>embedded-montiarc-math-generator</artifactId>
-    <version>0.4.3</version>
+    <version>0.4.4-SNAPSHOT</version>
 
     <!-- == PROJECT DEPENDENCIES ============================================= -->
 
     <properties>
 
         <!-- .. EMA-Libraries ................................................. -->
-        <Embedded-MontiArc-Math.version>0.2.12-SNAPSHOT</Embedded-MontiArc-Math.version>
+        <EmbeddedMontiArc-executionSemantics.version>0.4.4-SNAPSHOT</EmbeddedMontiArc-executionSemantics.version>
 
         <!-- .. Libraries .................................................. -->
         <guava.version>25.1-jre</guava.version>
@@ -55,16 +55,8 @@
         <!-- MontiCore Dependencies -->
         <dependency>
             <groupId>de.monticore.lang.monticar</groupId>
-            <artifactId>embedded-montiarc-math</artifactId>
-            <version>${Embedded-MontiArc-Math.version}</version>
-        </dependency>
-
-        <dependency>
-            <groupId>de.monticore.lang.monticar</groupId>
-            <artifactId>embedded-montiarc-math</artifactId>
-            <version>${Embedded-MontiArc-Math.version}</version>
-            <classifier>${grammars.classifier}</classifier>
-            <scope>provided</scope>
+            <artifactId>executionSemantics</artifactId>
+            <version>${EmbeddedMontiArc-executionSemantics.version}</version>
         </dependency>
 
         <!-- MontiSim Dependency for the DynamicInterface generation -->
@@ -74,17 +66,10 @@
             <version>2.0.11</version>
         </dependency>
 
-
-        <dependency>
-            <groupId>montiarc.verification</groupId>
-            <artifactId>montiarc-execution-order</artifactId>
-            <version>4.0.1-SNAPSHOT</version>
-        </dependency>
-
         <dependency>
             <groupId>org.freemarker</groupId>
             <artifactId>freemarker</artifactId>
-            <version>2.3.23</version>
+            <version>2.3.29</version>
         </dependency>
 
         <dependency>

@@ -128,8 +128,8 @@ public class GenerationTest extends AbstractSymtabTest {
                 "}\n" +
                 "void execute()\n" +
                 "{\n" +
-                "out1 = in2;\n" +
                 "out2 = in1;\n" +
+                "out1 = in2;\n" +
                 "}\n" +
                 "\n" +
                 "};\n" +

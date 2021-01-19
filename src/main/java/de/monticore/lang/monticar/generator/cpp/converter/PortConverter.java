@@ -79,27 +79,27 @@ public class PortConverter {
         return variable;
     }
 
-    public static Variable convertPortNameToVariable(String portName, EMAComponentInstanceSymbol instance, EMAMBluePrintCPP bluePrintCPP){
-        String fullName = portName;
-        if(portName.contains(".")){
-            instance = instance.getSubComponent(portName.substring(0, portName.indexOf("."))).orElse(null);
-
-            portName = portName.substring(portName.indexOf(".")+1);
-        }
-        if(instance == null){
-            Log.error("Can't find instance for port: "+portName);
-            return null;
-        }
-
-        Optional<EMAPortInstanceSymbol> port = instance.getPortInstance(portName);
-        if(!port.isPresent()){
-            Log.error("Can't find port: "+portName);
-            return null;
-        }
-
-        return convertPortSymbolToVariable(port.get(), fullName, bluePrintCPP);
-
-    }
+//    public static Variable convertPortNameToVariable(String portName, EMAComponentInstanceSymbol instance, EMAMBluePrintCPP bluePrintCPP){
+//        String fullName = portName;
+//        if(portName.contains(".")){
+//            instance = instance.getSubComponent(portName.substring(0, portName.indexOf("."))).orElse(null);
+//
+//            portName = portName.substring(portName.indexOf(".")+1);
+//        }
+//        if(instance == null){
+//            Log.error("Can't find instance for port: "+portName);
+//            return null;
+//        }
+//
+//        Optional<EMAPortInstanceSymbol> port = instance.getPortInstance(portName);
+//        if(!port.isPresent()){
+//            Log.error("Can't find port: "+portName);
+//            return null;
+//        }
+//
+//        return convertPortSymbolToVariable(port.get(), fullName, bluePrintCPP);
+//
+//    }
 
     private static void handlePortDirection(EMAPortInstanceSymbol portSymbol, Variable variable) {
         if (portSymbol.isIncoming()) {

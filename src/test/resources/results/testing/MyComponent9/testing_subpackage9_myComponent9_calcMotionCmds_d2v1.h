@@ -24,7 +24,7 @@ D1=1;
 V1=1;
 D2=15;
 V2=7;
-COEF_K=log(((V1/V2)))/(D2-D1);
+COEF_K=(Helper::getDoubleFromOctaveListFirstResult(Flog(Helper::convertToOctaveValueList((V1/V2)),1)))/(D2-D1);
 }
 void execute()
 {

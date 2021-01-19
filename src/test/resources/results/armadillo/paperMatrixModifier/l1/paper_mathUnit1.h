@@ -1,4 +1,3 @@
-/* (c) https://github.com/MontiCore/monticore */
 #ifndef PAPER_MATHUNIT1
 #define PAPER_MATHUNIT1
 #ifndef M_PI
@@ -23,6 +22,18 @@ mat2=mat(1000,200);
 mat3=mat(200,10);
 mat4=mat(10,100);
 mat5=mat(100,50000);
+matOut1=mat(1000,100);
+mat1=mat(1000,200);
+matrixModifier.mat1=mat(1000,2);
+mat2=mat(1000,200);
+matrixModifier.mat2=mat(2,1000);
+mat3=mat(200,10);
+matrixModifier.mat3=mat(1000,2);
+mat4=mat(10,100);
+matrixModifier.mat4=mat(2,10000);
+mat5=mat(100,50000);
+matrixModifier.mat5=mat(10000,10000);
+matrixModifier.matOut=mat(1000,10000);
 matOut1=mat(1000,100);
 matrixModifier.init();
 }
