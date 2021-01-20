@@ -9,9 +9,12 @@ import de.monticore.lang.embeddedmontiarcdynamic.embeddedmontiarcdynamic._symbol
 import de.monticore.lang.embeddedmontiarcdynamic.embeddedmontiarcdynamic._symboltable.instanceStructure.EMADynamicConnectorInstanceSymbol;
 import de.monticore.lang.embeddedmontiarcdynamic.embeddedmontiarcdynamic._symboltable.instanceStructure.EMADynamicPortInstanceSymbol;
 import de.monticore.symboltable.CommonSymbol;
+import de.monticore.symboltable.Symbol;
 import de.se_rwth.commons.Joiners;
 import de.se_rwth.commons.Names;
 import org.apache.commons.lang3.StringUtils;
+
+import java.util.Optional;
 
 public class NameHelper {
 
@@ -67,13 +70,25 @@ public class NameHelper {
 
     public static String calculatePartialName(EMAComponentInstanceSymbol childComponent,
                                               EMAComponentInstanceSymbol parentComponent) {
-        return calculatePartialName(calculateFullQualifiedNameOf(childComponent),
+        String childName = calculatePartialName(calculateFullQualifiedNameOf(childComponent),
                 calculateFullQualifiedNameOf(parentComponent));
+        if (childName.equals(childComponent.getFullName())) {
+            Optional<Symbol> child = parentComponent.getSpannedScope().resolveDown(childName, EMAComponentInstanceSymbol.KIND);
+            if (child.isPresent()) {
+                childName = childComponent.getName();
+                Optional<EMAComponentInstanceSymbol> parent = childComponent.getParent();
+                while (parent.isPresent() && !parent.get().equals(parentComponent)) {
+                    childName = parent.get().getName() + childName;
+                    parent = parent.get().getParent();
+                }
+            }
+        }
+        return childName;
     }
 
     public static String calculatePartialName(String childName, String parentName) {
         if (childName.equals(parentName)) return "";
-        if (!childName.contains(parentName + ".")) return childName;
+        if (childName.contains(parentName + ".")) return childName;
         return childName.substring(parentName.length() + 1);
     }
 }
