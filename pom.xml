@@ -15,7 +15,8 @@
     <!-- == PROJECT DEPENDENCIES ============================================= -->
 
     <properties>
-        <embedded-montiarc-math.version>0.1.9-SNAPSHOT</embedded-montiarc-math.version>
+        <embedded-montiarc-math-generator.version>0.4.4-SNAPSHOT</embedded-montiarc-math-generator.version>
+        <jgraph.version>1.4.0</jgraph.version>
 
         <!-- .. SE-Libraries .................................................. -->
         <se-commons.version>1.7.7</se-commons.version>
@@ -49,14 +50,8 @@
     <dependencies>
         <dependency>
             <groupId>de.monticore.lang.monticar</groupId>
-            <artifactId>embedded-montiarc-math</artifactId>
-            <version>${embedded-montiarc-math.version}</version>
-        </dependency>
-
-        <dependency>
-            <groupId>de.monticore.lang.monticar</groupId>
             <artifactId>embedded-montiarc-math-generator</artifactId>
-            <version>0.1.7-SNAPSHOT</version>
+            <version>${embedded-montiarc-math-generator.version}</version>
         </dependency>
 
         <!-- https://mvnrepository.com/artifact/com.google.code.gson/gson -->
@@ -64,12 +59,6 @@
             <groupId>com.google.code.gson</groupId>
             <artifactId>gson</artifactId>
             <version>${gson.version}</version>
-        </dependency>
-
-        <dependency>
-            <groupId>net.sourceforge</groupId>
-            <artifactId>javaml</artifactId>
-            <version>0.1.5</version>
         </dependency>
 
         <dependency>
@@ -93,7 +82,7 @@
         <dependency>
             <groupId>org.jgrapht</groupId>
             <artifactId>jgrapht-core</artifactId>
-            <version>1.1.0</version>
+            <version>${jgraph.version}</version>
         </dependency>
 
         <dependency>
