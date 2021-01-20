@@ -30,7 +30,7 @@ public class SList {
         return sList;
     }
 
-    public static List<SListEntry> sListAtomic(EMAComponentInstanceSymbol rootComponent) {
+    public static List<SListEntry> sListSerial(EMAComponentInstanceSymbol rootComponent) {
         List<SListEntry> sList = new LinkedList<>();
 
         // This List is sorted for hierarchy

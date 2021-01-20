@@ -32,8 +32,8 @@ public class PrintExecutionOrder {
         return printer.getContent();
     }
 
-    public static String printSListAtomic(EMAComponentInstanceSymbol rootComponent) {
-        return printSList(SList.sListAtomic(rootComponent), rootComponent);
+    public static String printSListSerial(EMAComponentInstanceSymbol rootComponent) {
+        return printSList(SList.sListSerial(rootComponent), rootComponent);
     }
 
     public static String printSList(List<SListEntry> sList) {
