@@ -86,9 +86,15 @@ public class NameHelper {
         return childName;
     }
 
+    public static String calculatePartialName(EMAPortInstanceSymbol childPort,
+                                              EMAComponentInstanceSymbol parentComponent) {
+        return Names.getQualifiedName(calculatePartialName(childPort.getComponentInstance(), parentComponent),
+                childPort.getName());
+    }
+
     public static String calculatePartialName(String childName, String parentName) {
         if (childName.equals(parentName)) return "";
-        if (childName.contains(parentName + ".")) return childName;
+        if (!childName.contains(parentName + ".")) return childName;
         return childName.substring(parentName.length() + 1);
     }
 }
