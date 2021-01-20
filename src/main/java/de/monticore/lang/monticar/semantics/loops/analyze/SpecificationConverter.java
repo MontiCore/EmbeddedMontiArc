@@ -11,6 +11,7 @@ import de.monticore.lang.math._symboltable.expression.*;
 import de.monticore.lang.math._symboltable.matrix.MathMatrixAccessOperatorSymbol;
 import de.monticore.lang.math._symboltable.matrix.MathMatrixAccessSymbol;
 import de.monticore.lang.math._symboltable.matrix.MathMatrixNameExpressionSymbol;
+import de.monticore.lang.monticar.semantics.helper.EMAPropertiesHelper;
 import de.monticore.lang.monticar.semantics.helper.NameHelper;
 import de.monticore.lang.monticar.semantics.loops.symbols.EMAEquationSystem;
 import de.monticore.lang.monticar.semantics.setup.Delegate;
@@ -49,7 +50,7 @@ public class SpecificationConverter {
 
 
     public static Optional<EMAMSpecificationSymbol> convert(EMAComponentInstanceSymbol component) {
-        if (component.getSubComponents().size() > 0) return Optional.empty();
+        if (!EMAPropertiesHelper.isAtomic(component)) return Optional.empty();
         Optional<EMAMSpecificationSymbol> result = getSpecificationFromMath(component);
         if (!result.isPresent()) result = calculateSpecificationFromAssignments(component);
         if (result.isPresent())

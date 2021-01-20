@@ -31,7 +31,7 @@ public class Find {
 
     private static LinkedList<EMAComponentInstanceSymbol> allAtomicOrNVComponents(EMAComponentInstanceSymbol component,
                                                                                   boolean firstCall) {
-        if ((isAtomic(component) || isNonVirtual(component)) && !firstCall)
+        if ((EMAPropertiesHelper.isAtomic(component) || EMAPropertiesHelper.isNonVirtual(component)) && !firstCall)
             return new LinkedList(Collections.singletonList(component));
 
         LinkedList<EMAComponentInstanceSymbol> result = new LinkedList<>();
@@ -46,11 +46,11 @@ public class Find {
 
     private static LinkedList<EMAComponentInstanceSymbol> allSubSystems(EMAComponentInstanceSymbol component,
                                                                         boolean firstCall) {
-        if (isAtomic(component))
+        if (EMAPropertiesHelper.isAtomic(component))
             return new LinkedList<>();
 
         LinkedList<EMAComponentInstanceSymbol> result = new LinkedList<>();
-        if (isNonVirtual(component) && !firstCall)
+        if (EMAPropertiesHelper.isNonVirtual(component) && !firstCall)
             result.add(component);
         for (EMAComponentInstanceSymbol subComponent : component.getSubComponents())
             result.addAll(allSubSystems(subComponent, false));

@@ -3,13 +3,10 @@ package de.monticore.lang.monticar.semantics.executionOrder;
 
 import de.monticore.lang.embeddedmontiarc.embeddedmontiarc._symboltable.instanceStructure.EMAComponentInstanceSymbol;
 import de.monticore.lang.monticar.semantics.helper.Find;
-import de.monticore.symboltable.Symbol;
-import de.se_rwth.commons.logging.Log;
 
 import java.util.*;
-import java.util.stream.Collectors;
 
-import static de.monticore.lang.monticar.semantics.loops.detection.ConnectionHelper.isAtomic;
+import static de.monticore.lang.monticar.semantics.helper.EMAPropertiesHelper.isAtomic;
 
 public class SList {
 

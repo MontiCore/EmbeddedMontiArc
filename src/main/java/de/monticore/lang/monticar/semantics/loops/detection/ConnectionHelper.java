@@ -4,7 +4,7 @@ package de.monticore.lang.monticar.semantics.loops.detection;
 import de.monticore.lang.embeddedmontiarc.embeddedmontiarc._symboltable.instanceStructure.EMAComponentInstanceSymbol;
 import de.monticore.lang.embeddedmontiarc.embeddedmontiarc._symboltable.instanceStructure.EMAConnectorInstanceSymbol;
 import de.monticore.lang.embeddedmontiarc.embeddedmontiarc._symboltable.instanceStructure.EMAPortInstanceSymbol;
-import de.se_rwth.commons.logging.Log;
+import de.monticore.lang.monticar.semantics.helper.EMAPropertiesHelper;
 
 import java.util.*;
 import java.util.stream.Collectors;
@@ -22,13 +22,13 @@ public class ConnectionHelper {
     public static Collection<EMAPortInstanceSymbol> targetsOf(EMAPortInstanceSymbol port, boolean considerNonVirtual,
                                                               boolean firstCall) {
         if (port == null) return new HashSet<>();
-        if (port.isIncoming() && isAtomic(port.getComponentInstance()))
+        if (port.isIncoming() && EMAPropertiesHelper.isAtomic(port.getComponentInstance()))
             return Collections.singletonList(port);
         if (port.isOutgoing() && !port.getComponentInstance().getParent().isPresent())
             return Collections.singletonList(port);
         if (!firstCall &&
                 (!port.getComponentInstance().getParent().isPresent()
-                        || considerNonVirtual && isNonVirtual(port.getComponentInstance())))
+                        || considerNonVirtual && EMAPropertiesHelper.isNonVirtual(port.getComponentInstance())))
             return Collections.singletonList(port);
 
         EMAComponentInstanceSymbol next;
@@ -65,13 +65,13 @@ public class ConnectionHelper {
         if (port == null) return Optional.empty();
         if (port.isConstant())
             return Optional.of(port);
-        if (port.isOutgoing() && isAtomic(port.getComponentInstance()))
+        if (port.isOutgoing() && EMAPropertiesHelper.isAtomic(port.getComponentInstance()))
             return Optional.of(port);
         if (port.isIncoming() && !port.getComponentInstance().getParent().isPresent())
             return Optional.of(port);
         if (!firstCall &&
                 (!port.getComponentInstance().getParent().isPresent()
-                        || considerNonVirtual && isNonVirtual(port.getComponentInstance())))
+                        || considerNonVirtual && EMAPropertiesHelper.isNonVirtual(port.getComponentInstance())))
             return Optional.of(port);
 
         EMAComponentInstanceSymbol next;
@@ -97,11 +97,4 @@ public class ConnectionHelper {
         return sourceOf(sources.get(0).getSourcePort(), considerNonVirtual, false);
     }
 
-    public static boolean isAtomic(EMAComponentInstanceSymbol componentInstance) {
-        return componentInstance.getSubComponents().isEmpty() && componentInstance.getConnectorInstances().isEmpty();
-    }
-
-    public static boolean isNonVirtual(EMAComponentInstanceSymbol componentInstanceSymbol) {
-        return componentInstanceSymbol.isNonVirtual() || !componentInstanceSymbol.getParent().isPresent();
-    }
 }

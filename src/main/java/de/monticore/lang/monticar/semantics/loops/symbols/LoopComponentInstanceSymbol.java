@@ -11,6 +11,7 @@ import de.monticore.lang.math._ast.ASTMathStatements;
 import de.monticore.lang.math._symboltable.MathStatementsSymbol;
 import de.monticore.lang.monticar.semantics.construct.ConnectSourceWithTargetPort;
 import de.monticore.lang.monticar.semantics.construct.InstanceCreator;
+import de.monticore.lang.monticar.semantics.helper.EMAPropertiesHelper;
 import de.monticore.lang.monticar.semantics.helper.NameHelper;
 import de.monticore.symboltable.CommonScope;
 import de.se_rwth.commons.logging.Log;
@@ -26,7 +27,7 @@ public class LoopComponentInstanceSymbol extends EMADynamicComponentInstanceSymb
     }
 
     public static LoopComponentInstanceSymbol instantiate(EMAComponentInstanceSymbol symbol, EMAEquationSystem eqs) {
-        if (!symbol.getSubComponents().isEmpty() && !symbol.isNonVirtual()) {
+        if (!EMAPropertiesHelper.isAtomic(symbol) && !EMAPropertiesHelper.isNonVirtual(symbol)) {
             Log.error ("0xEMAES4481 should be atomic or nonvirtual");
         }
 
