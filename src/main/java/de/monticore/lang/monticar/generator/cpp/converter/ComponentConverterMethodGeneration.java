@@ -247,7 +247,7 @@ public class ComponentConverterMethodGeneration {
     }
 
     private static void generateComponentExecutionForNonThreadedSList(EMAMBluePrintCPP bluePrint, Method method) {
-        List<SListEntry> slist = SList.sListAtomic(currentComponentSymbol);
+        List<SListEntry> slist = SList.sListSerial(currentComponentSymbol);
         generateComponentExecutionForSList(bluePrint, method, slist, false);
     }
 
