@@ -10,10 +10,9 @@ import de.monticore.lang.monticar.semantics.helper.Find;
 import de.monticore.prettyprint.IndentPrinter;
 
 import java.util.List;
-import java.util.Map;
 
-import static de.monticore.lang.monticar.semantics.loops.detection.ConnectionHelper.isAtomic;
-import static de.monticore.lang.monticar.semantics.loops.detection.ConnectionHelper.isNonVirtual;
+import static de.monticore.lang.monticar.semantics.helper.EMAPropertiesHelper.isAtomic;
+import static de.monticore.lang.monticar.semantics.helper.EMAPropertiesHelper.isNonVirtual;
 
 public class PrintExecutionOrder {
 
@@ -33,8 +32,8 @@ public class PrintExecutionOrder {
         return printer.getContent();
     }
 
-    public static String printSListAtomic(EMAComponentInstanceSymbol rootComponent) {
-        return printSList(SList.sListAtomic(rootComponent), rootComponent);
+    public static String printSListSerial(EMAComponentInstanceSymbol rootComponent) {
+        return printSList(SList.sListSerial(rootComponent), rootComponent);
     }
 
     public static String printSList(List<SListEntry> sList) {

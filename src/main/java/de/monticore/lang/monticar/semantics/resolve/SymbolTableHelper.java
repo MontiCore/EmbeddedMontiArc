@@ -6,12 +6,11 @@ import de.monticore.lang.embeddedmontiarc.embeddedmontiarc._symboltable.instance
 import de.monticore.lang.embeddedmontiarc.embeddedmontiarc._symboltable.instanceStructure.EMAPortInstanceSymbol;
 import de.monticore.lang.monticar.semantics.Constants;
 import de.monticore.lang.monticar.semantics.construct.SymtabCreator;
+import de.monticore.lang.monticar.semantics.helper.EMAPropertiesHelper;
 import de.monticore.lang.monticar.semantics.helper.NameHelper;
-import de.monticore.lang.monticar.semantics.loops.detection.ConnectionHelper;
 import de.monticore.lang.tagging._symboltable.TaggingResolver;
 import de.monticore.symboltable.MutableScope;
 import de.monticore.symboltable.Scope;
-import de.se_rwth.commons.Joiners;
 import de.se_rwth.commons.logging.Log;
 
 import java.util.*;
@@ -93,19 +92,13 @@ public class SymbolTableHelper {
         visitedComponents.remove(component);
         while (flag.get()) {
             flag.set(false);
-            visitedComponents.stream().filter(c -> isEmpty(c)).forEach(c -> {
+            visitedComponents.stream().filter(c -> EMAPropertiesHelper.isAtomic(c)).forEach(c -> {
                 flag.set(true);
                 removeComponentRecursive(c);
                 removedComponents.add(c);
             });
             visitedComponents.removeAll(removedComponents);
         }
-    }
-
-    private static boolean isEmpty(EMAComponentInstanceSymbol component) {
-        if (component.getSubComponents().size() > 0) return false;
-        if (component.getConnectorInstances().size() > 0) return false;
-        return true;
     }
 
     private static List<EMAComponentInstanceSymbol> removeIncomingConnectorRecursive(EMAConnectorInstanceSymbol connector) {
@@ -120,7 +113,7 @@ public class SymbolTableHelper {
                 .collect(Collectors.toSet());
 
         if (connectors.size() > 1) { // There are still other connectors using this port
-            if (!ConnectionHelper.isAtomic(connector.getTargetPort().getComponentInstance()))
+            if (!EMAPropertiesHelper.isAtomic(connector.getTargetPort().getComponentInstance()))
                 removePort(connector.getTargetPort());
             removeConnector(connector);
             return result;
@@ -141,7 +134,7 @@ public class SymbolTableHelper {
                 .collect(Collectors.toSet());
         enclosingConnectors.stream().forEach(c -> result.addAll(removeIncomingConnectorRecursive(c)));
 
-        if (!ConnectionHelper.isAtomic(connector.getTargetPort().getComponentInstance()))
+        if (!EMAPropertiesHelper.isAtomic(connector.getTargetPort().getComponentInstance()))
             removePort(connector.getTargetPort());
         removeConnector(connector);
 
@@ -161,7 +154,7 @@ public class SymbolTableHelper {
         connectors = connectors.stream().filter(c -> c.getSourcePort().equals(targetPort)).collect(Collectors.toSet());
         connectors.stream().forEach(c -> result.addAll(removeOutgoingConnectorRecursive(c)));
 
-        if (!ConnectionHelper.isAtomic(connector.getSourcePort().getComponentInstance()))
+        if (!EMAPropertiesHelper.isAtomic(connector.getSourcePort().getComponentInstance()))
             removePort(connector.getSourcePort());
         removeConnector(connector);
 

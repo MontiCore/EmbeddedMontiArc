@@ -1,6 +1,7 @@
 package de.monticore.lang.monticar.semantics.loops.detection;
 
 import de.monticore.lang.embeddedmontiarc.embeddedmontiarc._symboltable.instanceStructure.EMAComponentInstanceSymbol;
+import de.monticore.lang.monticar.semantics.helper.EMAPropertiesHelper;
 import de.monticore.lang.monticar.semantics.loops.graph.EMAGraph;
 import de.monticore.lang.monticar.semantics.loops.graph.EMAGraphTransformation;
 import de.monticore.lang.monticar.semantics.loops.graph.JGraphEdge;
@@ -39,7 +40,7 @@ public class LoopDetection {
             // Filter out NV components. This means to only consider atomic components
             Set<EMAComponentInstanceSymbol> components = sccNV.getAllComponents()
                     .stream()
-                    .filter(c -> c.isVirtual() || c.getSubComponents().isEmpty())
+                    .filter(c -> c.isVirtual() || EMAPropertiesHelper.isAtomic(c))
                     .collect(Collectors.toSet());
 
             Optional<StronglyConnectedComponent> any = stronglyConnectedComponents
@@ -56,7 +57,7 @@ public class LoopDetection {
                     // Filter out NV components. This means to only consider atomic components
                     Set<EMAComponentInstanceSymbol> simpleCycleComponents = simpleCycle.getAllComponents()
                             .stream()
-                            .filter(c -> c.isVirtual() || c.getSubComponents().isEmpty())
+                            .filter(c -> c.isVirtual() || EMAPropertiesHelper.isAtomic(c))
                             .collect(Collectors.toSet());
 
                     Optional<SimpleCycle> any1 = simpleCycles.

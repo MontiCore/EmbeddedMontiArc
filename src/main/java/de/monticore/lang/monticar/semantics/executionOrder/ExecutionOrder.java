@@ -3,6 +3,7 @@ package de.monticore.lang.monticar.semantics.executionOrder;
 
 import de.monticore.lang.embeddedmontiarc.embeddedmontiarc._symboltable.instanceStructure.EMAComponentInstanceSymbol;
 import de.monticore.lang.embeddedmontiarc.embeddedmontiarc._symboltable.instanceStructure.EMAPortInstanceSymbol;
+import de.monticore.lang.monticar.semantics.helper.EMAPropertiesHelper;
 import de.monticore.lang.monticar.semantics.helper.Find;
 import de.monticore.lang.monticar.semantics.loops.detection.ConnectionHelper;
 import de.monticore.lang.monticar.semantics.loops.detection.StronglyConnectedComponent;
@@ -65,7 +66,7 @@ public class ExecutionOrder {
                                             EMAPortInstanceSymbol targetsPort,
                                             Set<StronglyConnectedComponent> artificialLoops,
                                             boolean handleArtificialLoops) {
-        if (isNonVirtual(component) && !isAtomic(component) && !handledComponents.contains(component))
+        if (EMAPropertiesHelper.isNonVirtual(component) && !EMAPropertiesHelper.isAtomic(component) && !handledComponents.contains(component))
             calculateExecutionOrder(component, artificialLoops, handleArtificialLoops);
 
         // handledComponents is only relevant for reoccurring components due to a nondirect feedthrough loop
@@ -123,7 +124,7 @@ public class ExecutionOrder {
                 continue;
             EMAComponentInstanceSymbol componentInstance = sourcePort.get().getComponentInstance();
             if (componentInstance.getParent().isPresent() // do not add for rootcomponent
-                    && !(sourcePort.get().isIncoming() && isNonVirtual(componentInstance))) // do not add for nonvirtual components
+                    && !(sourcePort.get().isIncoming() && EMAPropertiesHelper.isNonVirtual(componentInstance))) // do not add for nonvirtual components
                 pres.add(sourcePort.get());
         }
 
@@ -179,7 +180,7 @@ public class ExecutionOrder {
                                            EMAComponentInstanceSymbol component,
                                            Set<StronglyConnectedComponent> artificialLoops) {
         if (!handleArtificialLoops) return false;
-        if (!isNonVirtual(component) || isAtomic(component))
+        if (!EMAPropertiesHelper.isNonVirtual(component) || EMAPropertiesHelper.isAtomic(component))
             return false;
 
         for (StronglyConnectedComponent artificialLoop : artificialLoops)

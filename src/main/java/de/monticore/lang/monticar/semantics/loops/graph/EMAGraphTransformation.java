@@ -2,6 +2,7 @@ package de.monticore.lang.monticar.semantics.loops.graph;
 
 import de.monticore.lang.embeddedmontiarc.embeddedmontiarc._symboltable.instanceStructure.EMAComponentInstanceSymbol;
 import de.monticore.lang.embeddedmontiarc.embeddedmontiarc._symboltable.instanceStructure.EMAPortInstanceSymbol;
+import de.monticore.lang.monticar.semantics.helper.EMAPropertiesHelper;
 import de.monticore.lang.monticar.semantics.loops.detection.ConnectionHelper;
 import de.se_rwth.commons.logging.Log;
 
@@ -61,9 +62,9 @@ public class EMAGraphTransformation {
     }
 
     private static Collection<EMAComponentInstanceSymbol> getFlattened(EMAComponentInstanceSymbol component, boolean considerNonVirtual) {
-        if (component.getSubComponents().isEmpty())
+        if (EMAPropertiesHelper.isAtomic(component))
             return Collections.singleton(component);
-        if (considerNonVirtual && component.isNonVirtual())
+        if (considerNonVirtual && EMAPropertiesHelper.isNonVirtual(component))
             return Collections.singleton(component);
 
         return component.getSubComponents().stream()
@@ -74,7 +75,7 @@ public class EMAGraphTransformation {
 
     private static Collection<EMAComponentInstanceSymbol> getNonVirtual(EMAComponentInstanceSymbol component) {
         Set result = new HashSet();
-        if (component.isNonVirtual())
+        if (EMAPropertiesHelper.isNonVirtual(component))
             result.add(component);
 
         for (EMAComponentInstanceSymbol subComponent : component.getSubComponents())
