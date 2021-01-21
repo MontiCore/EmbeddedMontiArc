@@ -247,7 +247,7 @@ public class ComponentConverterMethodGeneration {
     }
 
     private static void generateComponentExecutionForNonThreadedSList(EMAMBluePrintCPP bluePrint, Method method) {
-        List<SListEntry> slist = SList.sListAtomic(currentComponentSymbol);
+        List<SListEntry> slist = SList.sListSerial(currentComponentSymbol);
         generateComponentExecutionForSList(bluePrint, method, slist, false);
     }
 
@@ -305,8 +305,8 @@ public class ComponentConverterMethodGeneration {
                     EMAPortInstanceSymbol constPort = connector.getSourcePort();
                     Variable v1 = new Variable();
                     v1.setName(constPort.getConstantValue().get().getValueAsString());
-                    String targetName = NameHelper.calculatePartialName(connector.getTarget(),
-                            currentComponentSymbol.getFullName());
+                    String targetName = NameHelper.calculatePartialName(connector.getTargetPort(),
+                            currentComponentSymbol);
                     Variable v2 = PortConverter.getVariableForPortSymbol(connector, targetName, bluePrint);
 
 
@@ -316,8 +316,8 @@ public class ComponentConverterMethodGeneration {
                     EMAPortInstanceSymbol constPort = connector.getTargetPort();
                     Variable v2 = new Variable();
                     v2.setName(constPort.getConstantValue().get().getValueAsString());
-                    String sourceName = NameHelper.calculatePartialName(connector.getSource(),
-                            currentComponentSymbol.getFullName());
+                    String sourceName = NameHelper.calculatePartialName(connector.getSourcePort(),
+                            currentComponentSymbol);
                     Variable v1 = PortConverter.getVariableForPortSymbol(connector, sourceName, bluePrint);
 
 
@@ -335,10 +335,10 @@ public class ComponentConverterMethodGeneration {
         List<Instruction> newInstructions = new LinkedList<>();
         for (EMAPortInstanceSymbol target : ConnectionHelper.targetsOf(source)) {
             if (target.equals(source)) continue;
-            String sourceName = NameHelper.calculatePartialName(source.getFullName(),
-                    currentComponentSymbol.getFullName());
-            String targetName = NameHelper.calculatePartialName(target.getFullName(),
-                    currentComponentSymbol.getFullName());
+            String sourceName = NameHelper.calculatePartialName(source,
+                    currentComponentSymbol);
+            String targetName = NameHelper.calculatePartialName(target,
+                    currentComponentSymbol);
             Variable v1 = PortConverter.convertPortSymbolToVariable(source, sourceName, bluePrint);
             Variable v2 = PortConverter.convertPortSymbolToVariable(target, targetName, bluePrint);
             if (!currentComponentSymbol.getIncomingPortInstances().contains(source))
