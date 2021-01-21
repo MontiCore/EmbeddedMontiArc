@@ -33,38 +33,38 @@ spectralClusterer[1].init();
 }
 void execute()
 {
-spectralClusterer.similarity.red = red1;
-spectralClusterer.similarity.green = green1;
-spectralClusterer.similarity.blue = blue1;
-spectralClusterer.similarity.red = red2;
-spectralClusterer.similarity.green = green2;
-spectralClusterer.similarity.blue = blue2;
+spectralClusterer[0].similarity.red = red1;
+spectralClusterer[0].similarity.green = green1;
+spectralClusterer[0].similarity.blue = blue1;
+spectralClusterer[1].similarity.red = red2;
+spectralClusterer[1].similarity.green = green2;
+spectralClusterer[1].similarity.blue = blue2;
 std::thread thread1( [ this ] {this->spectralClusterer[0].similarity.execute();});
 std::thread thread2( [ this ] {this->spectralClusterer[1].similarity.execute();});
 thread1.join();
 thread2.join();
-spectralClusterer.normalizedLaplacian.similarity = spectralClusterer.similarity.similarity;
-spectralClusterer.normalizedLaplacian.degree = spectralClusterer.similarity.degree;
-spectralClusterer.normalizedLaplacian.similarity = spectralClusterer.similarity.similarity;
-spectralClusterer.normalizedLaplacian.degree = spectralClusterer.similarity.degree;
+spectralClusterer[0].normalizedLaplacian.similarity = spectralClusterer[0].similarity.similarity;
+spectralClusterer[0].normalizedLaplacian.degree = spectralClusterer[0].similarity.degree;
+spectralClusterer[1].normalizedLaplacian.similarity = spectralClusterer[1].similarity.similarity;
+spectralClusterer[1].normalizedLaplacian.degree = spectralClusterer[1].similarity.degree;
 std::thread thread3( [ this ] {this->spectralClusterer[0].normalizedLaplacian.execute();});
 std::thread thread4( [ this ] {this->spectralClusterer[1].normalizedLaplacian.execute();});
 thread3.join();
 thread4.join();
-spectralClusterer.eigenSolver.matrix = spectralClusterer.normalizedLaplacian.nLaplacian;
-spectralClusterer.eigenSolver.matrix = spectralClusterer.normalizedLaplacian.nLaplacian;
+spectralClusterer[0].eigenSolver.matrix = spectralClusterer[0].normalizedLaplacian.nLaplacian;
+spectralClusterer[1].eigenSolver.matrix = spectralClusterer[1].normalizedLaplacian.nLaplacian;
 std::thread thread5( [ this ] {this->spectralClusterer[0].eigenSolver.execute();});
 std::thread thread6( [ this ] {this->spectralClusterer[1].eigenSolver.execute();});
 thread5.join();
 thread6.join();
-spectralClusterer.kMeansClustering.vectors = spectralClusterer.eigenSolver.eigenvectors;
-spectralClusterer.kMeansClustering.vectors = spectralClusterer.eigenSolver.eigenvectors;
+spectralClusterer[0].kMeansClustering.vectors = spectralClusterer[0].eigenSolver.eigenvectors;
+spectralClusterer[1].kMeansClustering.vectors = spectralClusterer[1].eigenSolver.eigenvectors;
 std::thread thread7( [ this ] {this->spectralClusterer[0].kMeansClustering.execute();});
 std::thread thread8( [ this ] {this->spectralClusterer[1].kMeansClustering.execute();});
 thread7.join();
 thread8.join();
-clusters[0] = spectralClusterer.kMeansClustering.clusters;
-clusters[1] = spectralClusterer.kMeansClustering.clusters;
+clusters[0] = spectralClusterer[0].kMeansClustering.clusters;
+clusters[1] = spectralClusterer[1].kMeansClustering.clusters;
 }
 
 };

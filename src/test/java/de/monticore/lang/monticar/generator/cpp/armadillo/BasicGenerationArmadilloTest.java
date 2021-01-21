@@ -1,3 +1,7 @@
+/*
+ *  (c) https://github.com/MontiCore/monticore
+ */
+
 /* (c) https://github.com/MontiCore/monticore */
 package de.monticore.lang.monticar.generator.cpp.armadillo;
 
@@ -215,7 +219,7 @@ public class BasicGenerationArmadilloTest extends AbstractSymtabTest {
         generatorCPP.setGenerationTargetPath("./target/generated-sources-cpp/armadillo/detectionObjectDetector" + number + "/l0");
         List<File> files = generatorCPP.generateFiles(symtab, componentSymbol);
         String restPath = "armadillo/detectionObjectDetector" + number + "/l0/";
-        //      testFilesAreEqual(files, restPath);
+        testFilesAreEqual(files, restPath);
     }
 
     private void testObjectDetectorInstancingL1(int number) throws IOException {
