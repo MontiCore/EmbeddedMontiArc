@@ -5,11 +5,23 @@ import de.monticore.lang.embeddedmontiarc.embeddedmontiarc._symboltable.instance
 import de.monticore.lang.embeddedmontiarc.embeddedmontiarc._symboltable.instanceStructure.EMAConnectorInstanceSymbol;
 import de.monticore.lang.embeddedmontiarc.embeddedmontiarc._symboltable.instanceStructure.EMAPortInstanceSymbol;
 import de.monticore.lang.monticar.semantics.helper.EMAPropertiesHelper;
+import de.se_rwth.commons.Names;
 
 import java.util.*;
 import java.util.stream.Collectors;
 
 public class ConnectionHelper {
+
+    private static Map<EMAPortInstanceSymbol, Optional<EMAPortInstanceSymbol>> sourcesCache = new HashMap<>();
+    private static Map<EMAPortInstanceSymbol, Collection<EMAPortInstanceSymbol>> targetsCache = new HashMap<>();
+
+    private static Map<EMAComponentInstanceSymbol, Collection<EMAConnectorInstanceSymbol>> connectorsCache = new HashMap<>();
+
+    public static void resetCache() {
+        sourcesCache = new HashMap<>();
+        targetsCache = new HashMap<>();
+        connectorsCache = new HashMap<>();
+    }
 
     public static Collection<EMAPortInstanceSymbol> targetsOf(EMAPortInstanceSymbol port) {
         return targetsOf(port, true);
@@ -22,25 +34,31 @@ public class ConnectionHelper {
     public static Collection<EMAPortInstanceSymbol> targetsOf(EMAPortInstanceSymbol port, boolean considerNonVirtual,
                                                               boolean firstCall) {
         if (port == null) return new HashSet<>();
-        if (port.isIncoming() && EMAPropertiesHelper.isAtomic(port.getComponentInstance()))
+        if (targetsCache.containsKey(port)) return targetsCache.get(port);
+        EMAComponentInstanceSymbol portComponentInstance = port.getComponentInstance();
+        if (port.isIncoming() && EMAPropertiesHelper.isAtomic(portComponentInstance))
             return Collections.singletonList(port);
-        if (port.isOutgoing() && !port.getComponentInstance().getParent().isPresent())
+        if (port.isOutgoing() && !portComponentInstance.getParent().isPresent())
             return Collections.singletonList(port);
         if (!firstCall &&
-                (!port.getComponentInstance().getParent().isPresent()
-                        || considerNonVirtual && EMAPropertiesHelper.isNonVirtual(port.getComponentInstance())))
+                (!portComponentInstance.getParent().isPresent()
+                        || considerNonVirtual && EMAPropertiesHelper.isNonVirtual(portComponentInstance)))
             return Collections.singletonList(port);
 
         EMAComponentInstanceSymbol next;
-        if (port.isIncoming()) // targets another subcomponent
-            next = port.getComponentInstance();
-        else // targets parent
-            next = port.getComponentInstance().getParent().get();
+        String portName;
+        if (port.isIncoming()) { // targets another subcomponent
+            next = portComponentInstance;
+            portName = port.getName();
+        } else { // targets parent
+            next = portComponentInstance.getParent().get();
+            portName = Names.getQualifiedName(portComponentInstance.getName(), port.getName());
+        }
 
         List<EMAConnectorInstanceSymbol> targets =
-                next.getConnectorInstances()
+                getConnectors(next)
                         .stream()
-                        .filter(c -> port.equals(c.getSourcePort()))
+                        .filter(c -> portName.equals(c.getSource()))
                         .collect(Collectors.toList());
 //        if (targets.size() < 1)
 //            Log.warn(String.format("TODO There is no outgoing connection for port \"%s\"", port.getFullName()));
@@ -48,7 +66,13 @@ public class ConnectionHelper {
         Collection<EMAPortInstanceSymbol> targetPorts = new LinkedList<>();
         targets.stream().forEachOrdered(t -> targetPorts.addAll(targetsOf(t.getTargetPort(),
                 considerNonVirtual, false)));
-        return targetPorts;
+        return addToTargetsCashe(port, targetPorts);
+    }
+
+    private static Collection<EMAPortInstanceSymbol> addToTargetsCashe(EMAPortInstanceSymbol port,
+                                                                       Collection<EMAPortInstanceSymbol> targets) {
+        targetsCache.put(port, targets);
+        return targets;
     }
 
     public static Optional<EMAPortInstanceSymbol> sourceOf(EMAPortInstanceSymbol port) {
@@ -63,27 +87,33 @@ public class ConnectionHelper {
     private static Optional<EMAPortInstanceSymbol> sourceOf(EMAPortInstanceSymbol port, boolean considerNonVirtual,
                                                             boolean firstCall) {
         if (port == null) return Optional.empty();
+        if (sourcesCache.containsKey(port)) return sourcesCache.get(port);
         if (port.isConstant())
             return Optional.of(port);
-        if (port.isOutgoing() && EMAPropertiesHelper.isAtomic(port.getComponentInstance()))
+        EMAComponentInstanceSymbol portComponentInstance = port.getComponentInstance();
+        if (port.isOutgoing() && EMAPropertiesHelper.isAtomic(portComponentInstance))
             return Optional.of(port);
-        if (port.isIncoming() && !port.getComponentInstance().getParent().isPresent())
+        if (port.isIncoming() && !portComponentInstance.getParent().isPresent())
             return Optional.of(port);
         if (!firstCall &&
-                (!port.getComponentInstance().getParent().isPresent()
-                        || considerNonVirtual && EMAPropertiesHelper.isNonVirtual(port.getComponentInstance())))
+                (!portComponentInstance.getParent().isPresent()
+                        || considerNonVirtual && EMAPropertiesHelper.isNonVirtual(portComponentInstance)))
             return Optional.of(port);
 
         EMAComponentInstanceSymbol next;
-        if (port.isOutgoing()) // comes from another subcomponent
-            next = port.getComponentInstance();
-        else // comes from parent
-            next = port.getComponentInstance().getParent().get();
+        String portName;
+        if (port.isOutgoing()) { // comes from another subcomponent
+            next = portComponentInstance;
+            portName = port.getName();
+        } else { // comes from parent
+            next = portComponentInstance.getParent().get();
+            portName = Names.getQualifiedName(portComponentInstance.getName(), port.getName());
+        }
 
         List<EMAConnectorInstanceSymbol> sources =
-                next.getConnectorInstances()
+                getConnectors(next)
                         .stream()
-                        .filter(c -> port.equals(c.getTargetPort()))
+                        .filter(c -> portName.equals(c.getTarget()))
                         .collect(Collectors.toList());
         if (sources.size() != 1) {
             if (port.isConfig())
@@ -94,7 +124,17 @@ public class ConnectionHelper {
             }
         }
 
-        return sourceOf(sources.get(0).getSourcePort(), considerNonVirtual, false);
+        return addToSourcesCashe(port, sourceOf(sources.get(0).getSourcePort(), considerNonVirtual, false));
+    }
+
+    private static Optional<EMAPortInstanceSymbol> addToSourcesCashe(EMAPortInstanceSymbol port,
+                                                                     Optional<EMAPortInstanceSymbol> source) {
+        sourcesCache.put(port, source);
+        return source;
+    }
+
+    private static Collection<EMAConnectorInstanceSymbol> getConnectors(EMAComponentInstanceSymbol component) {
+        return connectorsCache.getOrDefault(component, component.getConnectorInstances());
     }
 
 }
