@@ -21,6 +21,8 @@ public class LoopDetection {
      * Artificial loops are detected as well, and are marked.
      */
     public static Set<StronglyConnectedComponent> detectLoops(EMAComponentInstanceSymbol component) {
+        ConnectionHelper.resetCache();
+
         EMAGraph emaGraphNV = EMAGraphTransformation.transform(component, true, true);
         Set<StronglyConnectedComponent> stronglyConnectedComponentsNV = detectLoops(emaGraphNV);
 

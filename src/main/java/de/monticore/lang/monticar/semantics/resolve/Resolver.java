@@ -9,6 +9,7 @@ import de.monticore.lang.math._symboltable.MathStatementsSymbol;
 import de.monticore.lang.math._symboltable.expression.MathExpressionSymbol;
 import de.monticore.lang.monticar.semantics.construct.ReplacementCalculator;
 import de.monticore.lang.monticar.semantics.loops.analyze.SpecificationConverter;
+import de.monticore.lang.monticar.semantics.loops.detection.ConnectionHelper;
 import de.monticore.lang.monticar.semantics.loops.detection.LoopDetection;
 import de.monticore.lang.monticar.semantics.loops.detection.StronglyConnectedComponent;
 import de.monticore.lang.monticar.semantics.loops.symbols.*;
@@ -64,6 +65,7 @@ public class Resolver {
             equationSystem.addComponentsToLocalScope(components);
         }
         this.loopSymbols = loopSymbols;
+        ConnectionHelper.resetCache();
         return loopSymbols;
     }
 
@@ -89,6 +91,7 @@ public class Resolver {
             }
         }
         loopSymbols.removeAll(solvedSymbols.keySet());
+        ConnectionHelper.resetCache();
         return solvedSymbols;
     }
 
@@ -108,6 +111,7 @@ public class Resolver {
                 solvedSymbols.put(component, symbolSolution);
             }
         }
+        ConnectionHelper.resetCache();
         return solvedSymbols;
     }
 
