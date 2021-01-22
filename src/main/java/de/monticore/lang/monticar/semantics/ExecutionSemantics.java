@@ -4,10 +4,7 @@ package de.monticore.lang.monticar.semantics;
 import de.monticore.lang.embeddedmontiarc.embeddedmontiarc._ast.*;
 import de.monticore.lang.embeddedmontiarc.embeddedmontiarc._symboltable.instanceStructure.EMAComponentInstanceSymbol;
 import de.monticore.lang.monticar.semantics.executionOrder.ExecutionOrder;
-import de.monticore.lang.monticar.semantics.loops.detection.EMALoop;
-import de.monticore.lang.monticar.semantics.loops.detection.LoopDetection;
-import de.monticore.lang.monticar.semantics.loops.detection.SimpleCycle;
-import de.monticore.lang.monticar.semantics.loops.detection.StronglyConnectedComponent;
+import de.monticore.lang.monticar.semantics.loops.detection.*;
 import de.monticore.lang.monticar.semantics.loops.symbols.LoopComponentInstanceSymbol;
 import de.monticore.lang.monticar.semantics.resolve.Resolver;
 import de.monticore.lang.monticar.semantics.util.BasicLibrary;
@@ -49,9 +46,9 @@ public class ExecutionSemantics {
             Map<EMAComponentInstanceSymbol, EMAComponentInstanceSymbol> solvedSymbols =
                     resolver.doSymbolicSolveOfSpecifications();
             logSymbolicSolveOfSpecifications(solvedSymbols);
+            stronglyConnectedComponents = LoopDetection.detectLoops(rootComponent);
         }
 
-        stronglyConnectedComponents = LoopDetection.detectLoops(rootComponent);
         resolver.resolveLoopSymbols(stronglyConnectedComponents, HANDLE_ARTIFICIAL_LOOPS);
 
         if (SOLVE_LOOPS_SYMBOLIC) {
@@ -60,14 +57,9 @@ public class ExecutionSemantics {
             logSymbolicSolveOfLoops(solvedSymbols);
         }
 
-//        Map<EMAComponentInstanceSymbol, Boolean> virtual = makeAllNonVirtual(Find.allComponents(rootComponent));
-//        stronglyConnectedComponents = LoopDetection.detectLoops(rootComponent);
-
         Set<StronglyConnectedComponent> artificialLoops =
                 stronglyConnectedComponents.stream().filter(EMALoop::isArtificial).collect(Collectors.toSet());
         ExecutionOrder.calculateExecutionOrder(rootComponent, artificialLoops, HANDLE_ARTIFICIAL_LOOPS);
-
-//        resetNonVirtual(virtual);
     }
 
     private void resetNonVirtual(Map<EMAComponentInstanceSymbol, Boolean> virtual) {
