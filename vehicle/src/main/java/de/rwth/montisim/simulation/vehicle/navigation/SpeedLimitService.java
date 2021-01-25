@@ -2,6 +2,7 @@ package de.rwth.montisim.simulation.vehicle.navigation;
 
 import de.rwth.montisim.commons.dynamicinterface.BasicType;
 import de.rwth.montisim.commons.dynamicinterface.PortInformation;
+import de.rwth.montisim.commons.dynamicinterface.VectorType;
 import de.rwth.montisim.commons.utils.UMath;
 import de.rwth.montisim.commons.utils.Vec3;
 import de.rwth.montisim.simulation.eesimulator.EEComponent;
@@ -24,8 +25,8 @@ public class SpeedLimitService extends EEComponent {
     private SpeedLimitServiceProperties properties;
 
 
-    private Double[] trajectoryX = null;
-    private Double[] trajectoryY = null;
+    private double[] trajectoryX = null;
+    private double[] trajectoryY = null;
     private int trajectoryLength = 0;
 
     //inputs
@@ -37,6 +38,10 @@ public class SpeedLimitService extends EEComponent {
     transient int upperSpeedLimitMsg,
         lowerSpeedLimitMsg;
 
+    public static final String UPPER_SPEED_LIMIT_MSG = "upper_speed_limit";
+
+    public static final VectorType SPEED_LIMIT_TYPE = new VectorType(BasicType.DOUBLE, Navigation.TRAJ_ARRAY_LENGTH - 1);
+
     public SpeedLimitService(SpeedLimitServiceProperties properties, EESystem eeSystem, World world) {
         super(properties, eeSystem);
         this.world = world;
@@ -44,6 +49,8 @@ public class SpeedLimitService extends EEComponent {
         this.trajectoryLengthMsg = addPort(PortInformation.newRequiredInputDataPort(Navigation.TRAJECTORY_LENGTH_MSG, BasicType.N, false));
         this.trajectoryXMsg = addPort(PortInformation.newRequiredInputDataPort(Navigation.TRAJECTORY_X_MSG, Navigation.TRAJECTORY_X_TYPE, false));
         this.trajectoryYMsg = addPort(PortInformation.newRequiredInputDataPort(Navigation.TRAJECTORY_Y_MSG, Navigation.TRAJECTORY_Y_TYPE, false));
+
+        this.upperSpeedLimitMsg = addPort(PortInformation.newRequiredOutputDataPort(UPPER_SPEED_LIMIT_MSG, SPEED_LIMIT_TYPE));
     }
 
     @Override
@@ -51,10 +58,10 @@ public class SpeedLimitService extends EEComponent {
         Message msg = msgRecvEvent.getMessage();
         Instant time = msgRecvEvent.getEventTime();
         if (msg.isMsg(trajectoryYMsg)) {
-            trajectoryY = (Double[]) msg.message;
+            trajectoryY = (double[]) msg.message;
             compute(time);
         } else if(msg.isMsg(trajectoryXMsg)) {
-            trajectoryX = (Double[]) msg.message;
+            trajectoryX = (double[]) msg.message;
         } else if(msg.isMsg(trajectoryLengthMsg)) {
             trajectoryLength = (int) msg.message;
         }
@@ -62,31 +69,41 @@ public class SpeedLimitService extends EEComponent {
 
 
     private void compute(Instant time) {
-        Double[] maxSpeedArr = fetchUpperSpeedLimits();
-        sendMessage(time, upperSpeedLimitMsg, maxSpeedArr);
+        //System.out.println("testest");
+        double[] maxSpeedArr = fetchUpperSpeedLimits();
+        //sendMessage(time, upperSpeedLimitMsg, new double[]{0,0,0,0,0,0,0,0,0,0}, 8*trajectoryLength);
+        sendMessage(time, upperSpeedLimitMsg, maxSpeedArr, 8*trajectoryLength);
     }
 
-    private Double[] fetchUpperSpeedLimits() {
+    private double[] fetchUpperSpeedLimits() {
         Vector<Way> ways = world.ways;
-        Double[] maxSpeedArr = new Double[trajectoryLength - 1];
-        for (int i=0; i < trajectoryLength - 1; i++){
-            maxSpeedArr[i] = Double.MAX_VALUE;
+        double[] maxSpeedArr = new double[trajectoryLength];
+        for (int i=0; i < trajectoryLength; i++){
+            maxSpeedArr[i] = -1;
         }
         if ( trajectoryX != null && trajectoryLength > 1){
-            Vector<Node> wayNodes = new Vector<Node>();
-            for(Way way : ways){
-                for (int nodeId : way.nodeID){
-                    wayNodes.add(world.nodes.get(nodeId));
-                }
-            }
-            for(int i = 0; i<trajectoryLength; i++){
-                Optional<Node> node = getNodeForCoordinates(wayNodes, trajectoryX[i], trajectoryY[i]);
-                if (node.isPresent()) {
-                    Optional<Way> way = getNextWay(node.get(), trajectoryX[i+1], trajectoryY[i+1]);
-                    if (way.isPresent()) {
-                        maxSpeedArr[i] = way.get().maxSpeed;
+            PointInformation previousPointInfo = getPointInformation(world.ways, new Vec3(trajectoryX[0], trajectoryY[0], 0));
+            for(int i = 1; i < trajectoryLength; i++) {
+                Vec3 nextTrajPoint = new Vec3(trajectoryX[i], trajectoryY[i], 0);
+
+                if (previousPointInfo.ways.size() == 1){
+                    //previous trajectory point is a point but not an intersection
+                    maxSpeedArr[i-1] = previousPointInfo.ways.get(0).maxSpeed;
+                    previousPointInfo = getPointInformation(previousPointInfo.ways, nextTrajPoint);
+                } else if (previousPointInfo.ways.size() == 0) {
+                    //previous trajectory point cannot be found on any way
+                    previousPointInfo = getPointInformation(world.ways, nextTrajPoint);
+                } else {
+                    // initial/previous trajectory point is an intersection
+                    Optional<Way> mutualWay = getMutualWay(previousPointInfo, nextTrajPoint);
+                    if (mutualWay.isPresent()) {
+                        // current - and next trajectory points are on the same way
+                        Vector<Way> tmpWays = new Vector<>();
+                        tmpWays.add(mutualWay.get());
+                        maxSpeedArr[i-1] = mutualWay.get().maxSpeed;
+                        previousPointInfo = getPointInformation(tmpWays,nextTrajPoint);
                     } else {
-                        break;
+                        previousPointInfo = getPointInformation(world.ways, nextTrajPoint);
                     }
                 }
             }
@@ -94,33 +111,67 @@ public class SpeedLimitService extends EEComponent {
         return maxSpeedArr;
     }
 
-    private Optional<Node> getNodeForCoordinates(Vector<Node> nodes, double x, double y){
-        for (Node node : nodes) {
-            double currentDistance = node.point.distance(new Vec3(x,y,0));
-            if (UMath.equalsThreshold(currentDistance, 0, Lidar.DOUBLE_TOLERANCE)){
-                return Optional.of(node);
-            }
-        }
-        return Optional.empty();
-    }
-
-    private Vector<Node> getWayNodes(World world, Way way) {
-        Vector<Node> wayNodes = new Vector<Node>();
-        for (int nodeId : way.nodeID){
-            wayNodes.add(world.nodes.get(nodeId));
-        }
-        return wayNodes;
-    }
-
-    private Optional<Way> getNextWay(Node node, double x, double y){
-        if (node.ways.size() != 0) {
-            for (Way way : node.ways){
-                if (getNodeForCoordinates(getWayNodes(world, way),x,y).isPresent()) {
+    private Optional<Way> getMutualWay(PointInformation pointAInfo, Vec3 pointB) {
+        for (Way way : pointAInfo.ways){
+            for (int i=0; i < way.points.size() - 1; i++) {
+                Vec3 currentPoint = way.points.get(i);
+                Vec3 nextPoint = way.points.get(i+1);
+                if (currentPoint.equals(pointAInfo.coordinates) && nextPoint.equals(pointB)
+                    || currentPoint.equals(pointB) && nextPoint.equals(pointAInfo.coordinates)) {
                     return Optional.of(way);
                 }
             }
         }
-
         return Optional.empty();
+    }
+
+
+
+    /** @function: getNodeIdOfPoint
+     * @return: the nodeId if the given @code{point} is an intersection, otherwise -1
+     * */
+    private PointInformation getPointInformation(Vector<Way> ways, Vec3 point){
+        PointInformation pointInformation = new PointInformation();
+        for (Way way : ways) {
+            for (int i=0;i<way.points.size(); i++) {
+                if (way.points.get(i).equals(point)) {
+                    pointInformation.coordinates = point;
+                    pointInformation.ways.add(way);
+                    if (way.nodeID.get(i) != -1) {
+                        pointInformation.node = world.nodes.get(way.nodeID.get(i));
+                    }
+                }
+            }
+        }
+        return pointInformation;
+    }
+
+//    private Vector<Node> getWayNodes(World world, Way way) {
+//        Vector<Node> wayNodes = new Vector<Node>();
+//        for (int nodeId : way.nodeID){
+//            wayNodes.add(world.nodes.get(nodeId));
+//        }
+//        return wayNodes;
+//    }
+
+//    private Optional<Way> getNextWay(Node node, double x, double y){
+//        if (node.ways.size() != 0) {
+//            for (Way way : node.ways){
+//                if (getNodeIdOfPoint(getWayNodes(world, way),x,y).isPresent()) {
+//                    return Optional.of(way);
+//                }
+//            }
+//        }
+//
+//        return Optional.empty();
+//    }
+
+    /**
+     * @Class: PointInformation
+     * It provides information about a specific point from the world.*/
+    private static class PointInformation{
+        public Vec3 coordinates;
+        public Node node;
+        public Vector<Way> ways = new Vector<>();
     }
 }

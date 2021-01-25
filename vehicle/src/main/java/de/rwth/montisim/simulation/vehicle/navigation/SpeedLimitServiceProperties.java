@@ -1,6 +1,7 @@
 package de.rwth.montisim.simulation.vehicle.navigation;
 
 import de.rwth.montisim.commons.utils.BuildContext;
+import de.rwth.montisim.commons.utils.json.Typed;
 import de.rwth.montisim.simulation.eesimulator.EEComponent;
 import de.rwth.montisim.simulation.eesimulator.EEComponentProperties;
 import de.rwth.montisim.simulation.eesimulator.EEComponentType;
@@ -8,6 +9,7 @@ import de.rwth.montisim.simulation.eesimulator.EESystem;
 import de.rwth.montisim.simulation.eesimulator.exceptions.EEMessageTypeException;
 import de.rwth.montisim.simulation.environment.world.World;
 
+@Typed(SpeedLimitServiceProperties.TYPE)
 public class SpeedLimitServiceProperties extends EEComponentProperties {
     public static final String TYPE = "speed_limit";
     public static final String NAME = "SpeedLimit";

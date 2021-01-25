@@ -20,6 +20,7 @@ import de.rwth.montisim.simulation.eesimulator.events.MessageReceiveEvent;
 import de.rwth.montisim.simulation.eesimulator.message.Message;
 import de.rwth.montisim.simulation.vehicle.lidar.Lidar;
 import de.rwth.montisim.simulation.vehicle.navigation.Navigation;
+import de.rwth.montisim.simulation.vehicle.navigation.SpeedLimitService;
 import de.rwth.montisim.simulation.vehicle.physicalvalues.BatteryLevel;
 import de.rwth.montisim.simulation.vehicle.physicalvalues.TrueCompass;
 import de.rwth.montisim.simulation.vehicle.physicalvalues.TruePosition;
@@ -56,6 +57,8 @@ public class JavaAutopilot extends EEComponent implements Inspectable {
     transient int backRightSensorMsg;
     transient int backLeftSensorMsg;
 
+    transient int upperSpeedLimitMsg;
+
     public double currentVelocity = 0;
     public Vec2 currentPosition = null;
     public double currentCompass = Double.NaN;
@@ -74,6 +77,8 @@ public class JavaAutopilot extends EEComponent implements Inspectable {
     public int trajLength = 0;
     public double trajX[] = null;
     public double trajY[] = null;
+
+    public double upperSpeedLimitArr[] = null;
 
     public double currentGas = 0;
     public double currentSteering = 0;
@@ -112,6 +117,9 @@ public class JavaAutopilot extends EEComponent implements Inspectable {
         this.leftBackSensorMsg = addPort(PortInformation.newOptionalInputDataPort(Lidar.LEFT_BACK_SENSOR_MSG, PhysicalValueDouble.TYPE, false));
         this.backRightSensorMsg = addPort(PortInformation.newOptionalInputDataPort(Lidar.BACK_RIGHT_SENSOR_MSG, PhysicalValueDouble.TYPE, false));
         this.backLeftSensorMsg = addPort(PortInformation.newOptionalInputDataPort(Lidar.BACK_LEFT_SENSOR_MSG, PhysicalValueDouble.TYPE, false));
+
+        this.upperSpeedLimitMsg = addPort(PortInformation.newOptionalInputDataPort(SpeedLimitService.UPPER_SPEED_LIMIT_MSG, SpeedLimitService.SPEED_LIMIT_TYPE, false));
+
     }
 
     @Override
@@ -152,6 +160,8 @@ public class JavaAutopilot extends EEComponent implements Inspectable {
             this.backRightSensor = (double) msg.message;
         }else if (msg.isMsg(backLeftSensorMsg)) {
             this.backLeftSensor = (double) msg.message;
+        }else if (msg.isMsg(upperSpeedLimitMsg)) {
+            this.upperSpeedLimitArr = (double[]) msg.message;
         }
     }
 
@@ -457,6 +467,7 @@ public class JavaAutopilot extends EEComponent implements Inspectable {
         addEntry(entries, false, ports.elementAt(15), leftBackSensor);
         addEntry(entries, false, ports.elementAt(16), backRightSensor);
         addEntry(entries, false, ports.elementAt(17), backLeftSensor);
+        addEntry(entries, false, ports.elementAt(18), upperSpeedLimitArr);
         return entries;
     }
 
