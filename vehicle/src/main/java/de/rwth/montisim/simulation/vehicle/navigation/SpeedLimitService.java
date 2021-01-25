@@ -72,13 +72,13 @@ public class SpeedLimitService extends EEComponent {
         //System.out.println("testest");
         double[] maxSpeedArr = fetchUpperSpeedLimits();
         //sendMessage(time, upperSpeedLimitMsg, new double[]{0,0,0,0,0,0,0,0,0,0}, 8*trajectoryLength);
-        sendMessage(time, upperSpeedLimitMsg, maxSpeedArr, 8*trajectoryLength);
+        sendMessage(time, upperSpeedLimitMsg, maxSpeedArr, 8*(trajectoryLength - 1));
     }
 
     private double[] fetchUpperSpeedLimits() {
         Vector<Way> ways = world.ways;
-        double[] maxSpeedArr = new double[trajectoryLength];
-        for (int i=0; i < trajectoryLength; i++){
+        double[] maxSpeedArr = new double[trajectoryLength - 1];
+        for (int i=0; i < trajectoryLength - 1; i++){
             maxSpeedArr[i] = -1;
         }
         if ( trajectoryX != null && trajectoryLength > 1){
@@ -139,32 +139,13 @@ public class SpeedLimitService extends EEComponent {
                     pointInformation.ways.add(way);
                     if (way.nodeID.get(i) != -1) {
                         pointInformation.node = world.nodes.get(way.nodeID.get(i));
+                        pointInformation.ways.addAll(pointInformation.node.ways);
                     }
                 }
             }
         }
         return pointInformation;
     }
-
-//    private Vector<Node> getWayNodes(World world, Way way) {
-//        Vector<Node> wayNodes = new Vector<Node>();
-//        for (int nodeId : way.nodeID){
-//            wayNodes.add(world.nodes.get(nodeId));
-//        }
-//        return wayNodes;
-//    }
-
-//    private Optional<Way> getNextWay(Node node, double x, double y){
-//        if (node.ways.size() != 0) {
-//            for (Way way : node.ways){
-//                if (getNodeIdOfPoint(getWayNodes(world, way),x,y).isPresent()) {
-//                    return Optional.of(way);
-//                }
-//            }
-//        }
-//
-//        return Optional.empty();
-//    }
 
     /**
      * @Class: PointInformation
