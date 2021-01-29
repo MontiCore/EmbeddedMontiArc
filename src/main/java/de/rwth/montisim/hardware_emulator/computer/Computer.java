@@ -135,7 +135,7 @@ public class Computer extends EEComponent implements Inspectable {
         Integer i = portIdByName.get(name);
         if (i == null) throw new IllegalArgumentException("Received unknown Message at Computer: " + name);
         PortInformation inf = program.ports.elementAt(i);
-        if (inf.direction == PortDirection.OUTPUT) throw new IllegalArgumentException("Received Message at Computer Output port: " + name);
+        if (!inf.isInput()) throw new IllegalArgumentException("Received Message at Computer Output port: " + name);
 
         
         if (realTime) {
