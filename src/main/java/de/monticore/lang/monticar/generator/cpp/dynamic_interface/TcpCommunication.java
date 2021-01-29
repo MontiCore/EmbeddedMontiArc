@@ -6,9 +6,10 @@ import java.util.HashSet;
 import java.util.List;
 
 import de.monticore.lang.monticar.generator.FileContent;
+import de.monticore.lang.monticar.generator.cpp.dynamic_interface.DynamicInterfaceGenerator.SocketInfo;
 import de.monticore.lang.monticar.generator.cpp.template.AllTemplates;
 import de.rwth.montisim.commons.dynamicinterface.*;
-import de.rwth.montisim.commons.dynamicinterface.PortInformation.PortDirection;
+import de.rwth.montisim.commons.dynamicinterface.PortInformation.PortType;
 import de.rwth.montisim.commons.utils.json.SerializationException;
 
 public class TcpCommunication {
@@ -29,16 +30,23 @@ public class TcpCommunication {
         List<String> setInputCases = new ArrayList<>();
         List<String> sendOutputCalls = new ArrayList<>();
         List<String> sendOutputCases = new ArrayList<>();
+        List<String> sendSocketOutputsCases = new ArrayList<>();
         List<String> initDataCalls = new ArrayList<>();
 
         int i = 0;
         for (PortInformation portInfo : gen.programInterface.ports){
             initDataCalls.add(generateInitData(portInfo));
-            if (portInfo.direction == PortDirection.INPUT){
+            if (portInfo.isInput()){
                 setInputCases.add(generateSetInputCase(i, portInfo));
-            } else {
-                sendOutputCalls.add(String.format("send_output(%d);", i));
-                sendOutputCases.add(generateSendOutputCase(i, portInfo));
+            } 
+            if (portInfo.isOutput()) {
+                if (portInfo.port_type == PortType.DATA) {
+                    sendOutputCalls.add(String.format("send_output(%d);", i));
+                    sendOutputCases.add(generateSendOutputCase(i, portInfo));
+                } else {
+                    sendOutputCalls.add(String.format("send_socket_outputs(%d);", i));
+                    sendSocketOutputsCases.add(generateSendSocketOutputsCase(i, portInfo));
+                }
             }
             ++i;
         }
@@ -49,6 +57,7 @@ public class TcpCommunication {
         templateData.put("setInputCases", setInputCases);
         templateData.put("sendOutputCalls", sendOutputCalls);
         templateData.put("sendOutputCases", sendOutputCases);
+        templateData.put("sendSocketOutputsCases", sendSocketOutputsCases);
         templateData.put("initDataCalls", initDataCalls);
         templateData.put("useDDC", hasDDC);
 
@@ -79,13 +88,28 @@ public class TcpCommunication {
 
     }
 
-    
+
+
     public String generateSetInputCase(int id, PortInformation portInfo){
         b.init();
 
-        b.a(BASE_INDENT, "case %d: { // %s", id, portInfo.name);
-        generateSetter(portInfo.type, BASE_INDENT+1, 1, "program_instance."+portInfo.name);
-        b.a(BASE_INDENT, "} break;");
+        if (portInfo.port_type == PortType.DATA) {
+
+            b.a(BASE_INDENT, "case %d: { // %s", id, portInfo.name);
+            generateSetter(portInfo.data_type, BASE_INDENT+1, 1, "program_instance."+portInfo.name);
+            b.a(BASE_INDENT, "} break;");
+
+        } else {
+            SocketInfo sockInf = gen.getSocketInfo(portInfo);
+            b.a(BASE_INDENT, "case %d: { // %s", id, portInfo.name);
+            int indent = BASE_INDENT+1;
+            b.a(indent, "auto id = get_socket_id(input_packet, %d);", sockInf.array_length);
+            b.a(indent, "if (id < 0) return;");
+            b.a(indent, "auto &target = program_instance.%s[id];", sockInf.input_name);
+            generateSetter(((SimplePacketType) portInfo.data_type).getPayloadType(), BASE_INDENT+1, 1, "target");
+            b.a(BASE_INDENT, "} break;");
+
+        }
 
         return b.getContent();
     }
@@ -94,16 +118,70 @@ public class TcpCommunication {
         b.init();
 
         b.a(BASE_INDENT, "case %d: { // %s", id, portInfo.name);
-        generateGetter(portInfo.type, BASE_INDENT+1, 1, "program_instance."+portInfo.name);
+        generateGetter(portInfo.data_type, BASE_INDENT+1, 1, "program_instance."+portInfo.name);
         b.a(BASE_INDENT, "} break;");
 
         return b.getContent();
     }
 
     
+
+    private String generateSendSocketOutputsCase(int id, PortInformation portInfo) {
+        b.init();
+        b.a(BASE_INDENT, "case %d: { // %s", id, portInfo.name);
+        SocketInfo sockInf = gen.getSocketInfo(portInfo);
+        if (sockInf.is_bc) {
+            b.a(BASE_INDENT+1, "PacketWriter packet(buffer, BUFFER_SIZE, PACKET_OUTPUT);");
+            b.a(BASE_INDENT+1, "packet.write_u16(port_id);");
+            b.a(BASE_INDENT+1, "// Payload");
+            b.a(BASE_INDENT+1, "packet.write_str(N_TO_N_BROADCAST_ADDR); // Write address");
+            generateGetter(((SimplePacketType) portInfo.data_type).getPayloadType(), BASE_INDENT+1, 1, "program_instance."+sockInf.output_name);
+            b.a(BASE_INDENT+1, "packet.send(socket);");
+        } else {
+            b.a(BASE_INDENT+1, "for (int i = 0; i < %d; ++i) {", sockInf.array_length);
+            b.a(BASE_INDENT+1, "    PacketWriter packet(buffer, BUFFER_SIZE, PACKET_OUTPUT);");
+            b.a(BASE_INDENT+1, "    packet.write_u16(port_id);");
+            b.a(BASE_INDENT+1, "    // Payload");
+            b.a(BASE_INDENT+1, "    packet.write_str(N_TO_N_PREFIX + to_string(i+1)); // Write address");
+            b.a(BASE_INDENT+1, "    auto &target = program_instance.%s[i];", sockInf.output_name);
+            generateGetter(((SimplePacketType) portInfo.data_type).getPayloadType(), BASE_INDENT+2, 1, "target");
+            b.a(BASE_INDENT+1, "    packet.send(socket);");
+            b.a(BASE_INDENT+1, "}");
+        }
+        b.a(BASE_INDENT, "} break;");
+        return b.getContent();
+    }
+
+    
     private String generateInitData(PortInformation portInfo) {
         b.init();
-        generateInitData(portInfo.type, 1, 1, "program_instance."+portInfo.name);
+        if (portInfo.port_type == PortType.DATA) {
+            generateInitData(portInfo.data_type, 1, 1, "program_instance."+portInfo.name);
+        } else {
+            DataType dt = ((SimplePacketType) portInfo.data_type).getPayloadType();
+            SocketInfo sockInf = gen.getSocketInfo(portInfo);
+
+            if (portInfo.isInput()) {
+                for (int i =0; i < sockInf.array_length; ++i) {
+                    String varName = sockInf.input_name + Integer.toString(i);
+                    b.a(1, "auto &%s = program_instance.%s[%d];", varName, sockInf.input_name, i);
+                    generateInitData(dt, 1, 1, varName);
+                }
+            }
+            if (portInfo.isOutput()) {
+                if (sockInf.is_bc) {
+                    generateInitData(dt, 1, 1, "program_instance."+sockInf.output_name);
+                } else {
+                    for (int i =0; i < sockInf.array_length; ++i) {
+                        String varName = sockInf.output_name + Integer.toString(i);
+                        b.a(1, "auto &%s = program_instance.%s[%d];", varName, sockInf.output_name, i);
+                        generateInitData(dt, 1, 1, varName);
+                    }
+                }
+                
+            }
+            
+        }
         return b.getContent();
     }
 

@@ -21,7 +21,7 @@ constexpr int BUFFER_SIZE = 4096;
 char buffer[BUFFER_SIZE];
 
 void signal_handler(int signal);
-
+int get_socket_id(PacketReader &input_packet, int max_count);
 
 
 
@@ -170,6 +170,20 @@ void SimulationSession::init(PacketReader &init_packet) {
     cout << "Adapter initialization complete. Ready to run the program." << endl;
 }
 
+
+int get_socket_id(PacketReader &input_packet, int max_count) {
+    std::string ip = input_packet.read_str();
+    if (ip.find("2::") != 0) {
+        cerr << "Unsupported IP: '"<< ip << "' (only supports 'N-to-N' IPs with '2::' prefix)" << endl;
+    }
+    int id = strtol(ip.c_str()+3, nullptr, 10)-1;
+    if (id >= max_count) {
+        cerr << "'N-to-N' IP '" << ip << "' outside of range [1:"<< (max_count) << "]. Ignoring packet." << endl;
+        return -1;
+    }
+    return id;
+}
+
 void SimulationSession::set_input(PacketReader &input_packet) {
     auto port_id = input_packet.read_u16();
 
@@ -219,6 +233,19 @@ void SimulationSession::send_output(int port_id){
     // Send packet
     packet.send(socket);
 }
+
+static constexpr auto N_TO_N_BROADCAST_ADDR = "ff02::2";
+static constexpr auto N_TO_N_PREFIX = "2::";
+
+void SimulationSession::send_socket_outputs(int port_id){
+    switch (port_id) {
+<#list sendSocketOutputsCases as case>${case}</#list>
+        default:
+            cerr << "Invalid output port ID: '"<< port_id << "'" << endl;
+            throw exception();
+    }
+}
+
 void SimulationSession::send_time(double time) {
     PacketWriter writer(buffer, BUFFER_SIZE, PACKET_TIME);
     writer.write_f64(time);
