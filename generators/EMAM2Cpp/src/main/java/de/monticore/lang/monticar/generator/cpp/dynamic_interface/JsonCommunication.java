@@ -78,7 +78,7 @@ public class JsonCommunication {
         b.init();
 
         b.a(BASE_INDENT, "case %d: { // %s", id, portInfo.name);
-        generateSetter(portInfo.type, BASE_INDENT+1, 1, "program_instance."+portInfo.name);
+        generateSetter(portInfo.data_type, BASE_INDENT+1, 1, "program_instance."+portInfo.name);
         b.a(BASE_INDENT, "} break;");
         
         return b.getContent();
@@ -88,7 +88,7 @@ public class JsonCommunication {
         b.init();
 
         b.a(BASE_INDENT, "case %d: { // %s", id, portInfo.name);
-        generateGetter(portInfo.type, BASE_INDENT+1, 1, "program_instance."+portInfo.name);
+        generateGetter(portInfo.data_type, BASE_INDENT+1, 1, "program_instance."+portInfo.name);
         b.a(BASE_INDENT, "} break;");
 
         return b.getContent();
