@@ -17,8 +17,10 @@ public class ProgramInterface {
         String res = "ProgramInterface of "+name+ " (v" + version+"):\n";
         for (PortInformation p : ports) {
             res += '\t';
-            if (p.direction == PortDirection.INPUT) res += (p.port_type == PortType.SOCKET) ? "sock_in " : "I ";
-            else res += (p.port_type == PortType.SOCKET) ? "sock_out " : "O ";
+            if (p.port_type == PortType.SOCKET) res += "socket ";
+            if (p.direction == PortDirection.INPUT) res += "I  ";
+            else if (p.direction == PortDirection.OUTPUT) res += "O  ";
+            else res += "IO ";
             res += p.name + ": "+p.data_type.toString()+"\n";
         }
         return res;

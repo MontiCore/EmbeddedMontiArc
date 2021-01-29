@@ -35,6 +35,10 @@ public class SimplePacketType extends DataType {
     private SimplePacketType() {
     }
 
+    public DataType getPayloadType() {
+        return payloadType;
+    }
+
     @Override
     public int getDataSize(Object o) {
         return HEADER_SIZE + payloadType.getDataSize(o);
