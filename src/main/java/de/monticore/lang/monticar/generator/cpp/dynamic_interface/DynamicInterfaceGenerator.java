@@ -245,6 +245,7 @@ public class DynamicInterfaceGenerator {
             }
 
             portInf.direction = PortDirection.IO;
+            portInf.addTag("network");
         }
     }
 

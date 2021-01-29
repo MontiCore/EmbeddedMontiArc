@@ -176,11 +176,12 @@ int get_socket_id(PacketReader &input_packet, int max_count) {
     if (ip.find("2::") != 0) {
         cerr << "Unsupported IP: '"<< ip << "' (only supports 'N-to-N' IPs with '2::' prefix)" << endl;
     }
-    int id = strtol(ip.c_str()+3, nullptr, 10);
+    int id = strtol(ip.c_str()+3, nullptr, 10)-1;
     if (id >= max_count) {
-        cerr << "'N-to-N' IP '" << ip << "' outside of range [1:"<< (max_count+1) << "]. Ignoring packet." << endl;
+        cerr << "'N-to-N' IP '" << ip << "' outside of range [1:"<< (max_count) << "]. Ignoring packet." << endl;
         return -1;
     }
+    return id;
 }
 
 void SimulationSession::set_input(PacketReader &input_packet) {
