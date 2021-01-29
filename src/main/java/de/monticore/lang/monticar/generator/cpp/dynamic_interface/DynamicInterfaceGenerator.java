@@ -2,12 +2,14 @@ package de.monticore.lang.monticar.generator.cpp.dynamic_interface;
 
 import java.io.IOException;
 import java.util.ArrayList;
+import java.util.HashMap;
 import java.util.HashSet;
 import java.util.List;
 import java.util.Optional;
 
 import de.rwth.montisim.commons.dynamicinterface.*;
 import de.rwth.montisim.commons.dynamicinterface.PortInformation.PortDirection;
+import de.rwth.montisim.commons.dynamicinterface.PortInformation.PortType;
 import de.rwth.montisim.commons.utils.json.Json;
 import de.rwth.montisim.commons.utils.json.SerializationException;
 import de.monticore.ast.ASTNode;
@@ -38,6 +40,10 @@ import de.monticore.types.types._ast.ASTType;
     the EMA suite should verify how the different types and symbols are resolved.
 */
 public class DynamicInterfaceGenerator {
+    public static String SOCK_IN_SUFFIX = "_socket_in";
+    public static String SOCK_OUT_SUFFIX = "_socket_out";
+    public static String SOCK_BC_IN_SUFFIX = "_socket_bc_in";
+    public static String SOCK_BC_OUT_SUFFIX = "_socket_bc_out";
     
     HashSet<String> cppFileDependencies = new HashSet<>();
     List<FileContent> files = new ArrayList<>();
@@ -48,6 +54,8 @@ public class DynamicInterfaceGenerator {
     JsonCommunication dyn;
     TcpCommunication tcp;
     DDCCommunication ddc;
+
+
 
     public DynamicInterfaceGenerator(
         EMAComponentInstanceSymbol componentSymbol, 
@@ -123,25 +131,203 @@ public class DynamicInterfaceGenerator {
         cppFileDependencies.add(name);
     }
 
+    
+
+
 
     void resolve(EMAComponentInstanceSymbol componentSymbol){
         programInterface = new ProgramInterface();
         programInterface.name = componentSymbol.getName();
-        programInterface.version = "0.0";
+        programInterface.version = ProgramInterface.CURRENT_VERSION;
 
         // TODO ignore dynamic ports for now
         this.componentName = GeneralHelperMethods.getTargetLanguageComponentName(componentSymbol.getFullName());
-        for ( EMAPortInstanceSymbol port : componentSymbol.getIncomingPortInstances()){
-            boolean multipleInputsAllowed = false; // TODO
-            boolean optional = false; // TODO
-            programInterface.ports.add(new PortInformation(port.getName(), getDataType(port), PortDirection.INPUT, multipleInputsAllowed, optional));
-        }
-        for ( EMAPortInstanceSymbol port : componentSymbol.getOutgoingPortInstances()){
-            boolean multipleInputsAllowed = false; // TODO
-            boolean optional = false; // TODO
-            programInterface.ports.add(new PortInformation(port.getName(), getDataType(port), PortDirection.OUTPUT, multipleInputsAllowed, optional));
+
+        for ( EMAPortInstanceSymbol port : componentSymbol.getIncomingPortInstances()) {
+            String name = port.getName();
+            boolean isArray = isPortArray(port.getName());
+            if (isArray) name = getPortArrayName(port.getName());
+
+            if (isSocketPort(name)) {
+                if (!isSocketInput(name)) throw new IllegalArgumentException("Port '"+name+"' must be declared as output with this suffix.");
+                resolveSocket(port, name, isArray, true);
+            } else {
+                if (isArray) throw new IllegalArgumentException("ArrayPorts not implemented");
+
+                boolean multipleInputsAllowed = false; // TODO
+                boolean optional = false; // TODO
+                addPortInformation(PortInformation.newInputDataPort(name, getDataType(port), multipleInputsAllowed, optional));
+            }
+
         }
 
+        for ( EMAPortInstanceSymbol port : componentSymbol.getOutgoingPortInstances()) {
+            String name = port.getName();
+            boolean isArray = isPortArray(port.getName());
+            if (isArray) name = getPortArrayName(port.getName());
+
+            if (isSocketPort(name)) {
+                if (isSocketInput(name)) throw new IllegalArgumentException("Port '"+name+"' must be declared as input with this suffix.");
+                resolveSocket(port, name, isArray, false);
+            } else {
+                if (isArray) throw new IllegalArgumentException("ArrayPorts not implemented");
+
+                boolean optional = false; // TODO
+                addPortInformation(PortInformation.newOutputDataPort(name, getDataType(port), optional));
+            }
+        }
+
+        // For sockets: Check array lengths and convert data type to simple packet
+        for (PortInformation port : programInterface.ports) {
+            if (port.port_type != PortType.SOCKET) continue;
+            port.data_type = new SimplePacketType(port.data_type);
+
+            SocketInfo sockInf = sockByName.get(port.name);
+            sockInf.array_length = -1;
+            if (sockInf.is_bc) {
+                if (port.isInput()) {
+                    if (arraySizes.containsKey(port.name + SOCK_BC_IN_SUFFIX)){
+                        sockInf.array_length = arraySizes.get(port.name + SOCK_BC_IN_SUFFIX);
+                    } else throw new IllegalArgumentException("Socket-port '"+port.name + SOCK_BC_IN_SUFFIX+"' is not a port-array.");
+                }
+                if (port.isOutput()) {
+                    if (arraySizes.containsKey(port.name + SOCK_BC_OUT_SUFFIX)) {
+                        throw new IllegalArgumentException("Socket-port '"+port.name + SOCK_BC_OUT_SUFFIX+"' cannot be a  port-array (must be size of one).");
+                    }
+                }
+            } else {
+                if (port.isInput()) {
+                    if (arraySizes.containsKey(port.name + SOCK_IN_SUFFIX)){
+                        sockInf.array_length = arraySizes.get(port.name + SOCK_IN_SUFFIX);
+                    } else throw new IllegalArgumentException("Socket-port '"+port.name + SOCK_IN_SUFFIX+"' is not a port-array.");
+                }
+                if (port.isOutput()) {
+                    if (arraySizes.containsKey(port.name + SOCK_OUT_SUFFIX)){
+                        int size = arraySizes.get(port.name + SOCK_OUT_SUFFIX);
+                        if (sockInf.array_length == -1) sockInf.array_length = size;
+                        else if (sockInf.array_length != size) throw new IllegalArgumentException("PortArray size mismatch between input and output for port '"+port.name+"'.");
+                    } else throw new IllegalArgumentException("Socket-port '"+port.name + SOCK_OUT_SUFFIX+"' is not a port-array.");
+                }
+            }
+        }
+
+    }
+
+
+    
+    void resolveSocket(EMAPortInstanceSymbol port, String name, boolean isArray, boolean isInput) {
+        String targetName = getSocketTargetName(name);
+
+        if (isArray) {
+            trackPortArraySize(name, getPortArrayIndex(port.getName()));
+            if (!isFirstEncounterAndSet(name, arrayPorts)) return;
+        }
+
+        PortInformation portInf = portByName.get(targetName);
+        if (portInf == null) {
+            addPortInformation(PortInformation.newSocketPort(targetName, getDataType(port), isInput, !isInput));
+            sockByName.put(targetName, new SocketInfo(!isInput, isSocketBroadcast(name), name));
+        } else {
+            // Another socket already maps to the target name
+            // Cannot be a DATA port
+            if (portInf.port_type == PortType.DATA) throw new IllegalArgumentException("Port Name Clash: EMA Port '"+portInf.name+"' and EMA socket port '"+name+"' map to the same port name ('"+targetName+"').");
+            // DataType must match
+            DataType thisDataType = getDataType(port);
+            if (!portInf.data_type.equals(thisDataType)) throw new IllegalArgumentException("Socket port DataType mismatch between input and output for '"+portInf.name+"': "+portInf.data_type+" and "+thisDataType);
+            // 'Broadcast' must match
+            SocketInfo sockInf = sockByName.get(targetName);
+            if (sockInf.is_bc != isSocketBroadcast(name)) throw new IllegalArgumentException("Mixed BROADCAST usage of socket-port '"+targetName+"'.");
+
+            if (isInput) {
+                sockInf.input_name = name;
+            } else {
+                sockInf.output_name = name;
+            }
+
+            portInf.direction = PortDirection.IO;
+        }
+    }
+
+
+    public static class SocketInfo {
+        boolean is_bc;
+        int array_length;
+        String input_name;
+        String output_name;
+        SocketInfo(boolean output, boolean bc, String originalName) {
+            this.is_bc = bc;
+            if (output) {
+                output_name = originalName;
+            } else {
+                input_name = originalName;
+            }
+        }
+    }
+    HashMap<String, Integer> arraySizes = new HashMap<>();
+    HashMap<String, PortInformation> portByName = new HashMap<>();
+    HashMap<String, SocketInfo> sockByName = new HashMap<>();
+    HashSet<String> arrayPorts = new HashSet<>();
+
+    SocketInfo getSocketInfo(PortInformation portInfo) {
+        return sockByName.get(portInfo.name);
+    }
+
+    static boolean isPortArray(String portName) {
+        return portName.charAt(portName.length()-1) == ']';
+    }
+
+    static int getPortArrayIndex(String portName) {
+        int p = portName.length()-2;
+        while (p >= 0 && portName.charAt(p) != '[') --p;
+        return Integer.parseInt(portName.substring(p+1, portName.length()-1));
+    }
+    
+    static String getPortArrayName(String portName) {
+        int p = portName.length()-2;
+        while (p >= 0 && portName.charAt(p) != '[') --p;
+        return portName.substring(0, p);
+    }
+
+    void trackPortArraySize(String name, int index) {
+        Integer size = arraySizes.get(name);
+        if (size == null || size < index) arraySizes.put(name, index);
+    }
+
+    static boolean isFirstEncounterAndSet(String name, HashSet<String> encountered) {
+        if (encountered.contains(name)) return false;
+        encountered.add(name);
+        return true;
+    }
+
+    static boolean isSocketPort(String name) {
+        return name.endsWith(SOCK_BC_IN_SUFFIX) || name.endsWith(SOCK_IN_SUFFIX) || name.endsWith(SOCK_BC_OUT_SUFFIX) || name.endsWith(SOCK_OUT_SUFFIX);
+    }
+    static boolean isSocketInput(String name) {
+        return name.endsWith(SOCK_BC_IN_SUFFIX) || name.endsWith(SOCK_IN_SUFFIX);
+    }
+    static boolean isSocketBroadcast(String name) {
+        return name.endsWith(SOCK_BC_IN_SUFFIX) || name.endsWith(SOCK_BC_OUT_SUFFIX);
+    }
+
+    void addPortInformation(PortInformation portInf) {
+        // Add portInf and check there is no name clash
+        if (portByName.containsKey(portInf.name)) {
+            throw new IllegalArgumentException("Port Name Clash: Multiple EMA ports map to the same name: '"+portInf.name+"' (is one a socket port with suffix?)");
+        }
+        portByName.put(portInf.name, portInf);
+        programInterface.ports.add(portInf);
+    }
+
+    static String removeSuffix(String str, String suffix) {
+        return str.substring(0, str.length()-suffix.length());
+    }
+
+    static String getSocketTargetName(String name) {
+        if (name.endsWith(SOCK_BC_IN_SUFFIX)) return removeSuffix(name, SOCK_BC_IN_SUFFIX);
+        if (name.endsWith(SOCK_IN_SUFFIX)) return removeSuffix(name, SOCK_IN_SUFFIX);
+        if (name.endsWith(SOCK_BC_OUT_SUFFIX)) return removeSuffix(name, SOCK_BC_OUT_SUFFIX);
+        if (name.endsWith(SOCK_OUT_SUFFIX)) return removeSuffix(name, SOCK_OUT_SUFFIX);
+        return name;
     }
 
     int evalExpr(ASTExpression expr){
