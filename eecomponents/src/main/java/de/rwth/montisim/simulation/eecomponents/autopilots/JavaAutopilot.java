@@ -48,14 +48,7 @@ public class JavaAutopilot extends EEComponent implements Inspectable {
 
     transient int batteryMsg;
 
-    transient int frontRightSensorMsg;
-    transient int frontLeftSensorMsg;
-    transient int rightFrontSensorMsg;
-    transient int rightBackSensorMsg;
-    transient int leftFrontSensorMsg;
-    transient int leftBackSensorMsg;
-    transient int backRightSensorMsg;
-    transient int backLeftSensorMsg;
+    transient List<Integer> sensorMsg = Arrays.asList(0,0,0,0,0,0,0,0);
 
     transient int upperSpeedLimitMsg;
 
@@ -63,14 +56,7 @@ public class JavaAutopilot extends EEComponent implements Inspectable {
     public Vec2 currentPosition = null;
     public double currentCompass = Double.NaN;
     public double batteryLevel = 0;
-    public double frontRightSensor = 0;
-    public double frontLeftSensor = 0;
-    public double rightFrontSensor = 0;
-    public double rightBackSensor = 0;
-    public double leftFrontSensor = 0;
-    public double leftBackSensor = 0;
-    public double backRightSensor = 0;
-    public double backLeftSensor = 0;
+    public List<Double> lidarSensors = Arrays.asList(0.0,0.0,0.0,0.0,0.0,0.0,0.0,0.0);
 
     double newTrajX[] = null;
     public int newTrajLength = 0;
@@ -109,14 +95,9 @@ public class JavaAutopilot extends EEComponent implements Inspectable {
 
         this.batteryMsg = addPort(PortInformation.newOptionalInputDataPort(BatteryLevel.VALUE_NAME, BatteryLevel.TYPE, false));
 
-        this.frontRightSensorMsg = addPort(PortInformation.newOptionalInputDataPort(Lidar.FRONT_RIGHT_SENSOR_MSG, PhysicalValueDouble.TYPE, false));
-        this.frontLeftSensorMsg = addPort(PortInformation.newOptionalInputDataPort(Lidar.FRONT_LEFT_SENSOR_MSG, PhysicalValueDouble.TYPE, false));
-        this.rightFrontSensorMsg = addPort(PortInformation.newOptionalInputDataPort(Lidar.RIGHT_FRONT_SENSOR_MSG, PhysicalValueDouble.TYPE, false));
-        this.rightBackSensorMsg = addPort(PortInformation.newOptionalInputDataPort(Lidar.RIGHT_BACK_SENSOR_MSG, PhysicalValueDouble.TYPE, false));
-        this.leftFrontSensorMsg = addPort(PortInformation.newOptionalInputDataPort(Lidar.LEFT_FRONT_SENSOR_MSG, PhysicalValueDouble.TYPE, false));
-        this.leftBackSensorMsg = addPort(PortInformation.newOptionalInputDataPort(Lidar.LEFT_BACK_SENSOR_MSG, PhysicalValueDouble.TYPE, false));
-        this.backRightSensorMsg = addPort(PortInformation.newOptionalInputDataPort(Lidar.BACK_RIGHT_SENSOR_MSG, PhysicalValueDouble.TYPE, false));
-        this.backLeftSensorMsg = addPort(PortInformation.newOptionalInputDataPort(Lidar.BACK_LEFT_SENSOR_MSG, PhysicalValueDouble.TYPE, false));
+        for (int i=0; i<sensorMsg.size(); i++){
+            this.sensorMsg.set(i, addPort(PortInformation.newOptionalInputDataPort(Lidar.LIDAR_MSG.get(i), PhysicalValueDouble.TYPE, false)));
+        }
 
         this.upperSpeedLimitMsg = addPort(PortInformation.newOptionalInputDataPort(SpeedLimitService.UPPER_SPEED_LIMIT_MSG, SpeedLimitService.SPEED_LIMIT_TYPE, false));
 
@@ -144,24 +125,13 @@ public class JavaAutopilot extends EEComponent implements Inspectable {
             trajX = newTrajX;
         } else if (msg.isMsg(batteryMsg)) {
             batteryLevel = (double) msg.message;
-        } else if (msg.isMsg(frontRightSensorMsg)) {
-            this.frontRightSensor = (double) msg.message;
-        } else if (msg.isMsg(frontLeftSensorMsg)) {
-            this.frontLeftSensor = (double) msg.message;
-        } else if (msg.isMsg(rightFrontSensorMsg)) {
-            this.rightFrontSensor = (double) msg.message;
-        }else if (msg.isMsg(rightBackSensorMsg)) {
-            this.rightBackSensor = (double) msg.message;
-        }else if (msg.isMsg(leftFrontSensorMsg)) {
-            this.leftFrontSensor = (double) msg.message;
-        }else if (msg.isMsg(leftBackSensorMsg)) {
-            this.leftBackSensor = (double) msg.message;
-        }else if (msg.isMsg(backRightSensorMsg)) {
-            this.backRightSensor = (double) msg.message;
-        }else if (msg.isMsg(backLeftSensorMsg)) {
-            this.backLeftSensor = (double) msg.message;
-        }else if (msg.isMsg(upperSpeedLimitMsg)) {
-            this.upperSpeedLimitArr = (double[]) msg.message;
+        }
+        else {
+            for (int i=0; i<sensorMsg.size(); i++){
+                if(msg.isMsg(sensorMsg.get(i))){
+                    this.lidarSensors.set(i, (double) msg.message);
+                }
+            }
         }
     }
 
@@ -459,14 +429,14 @@ public class JavaAutopilot extends EEComponent implements Inspectable {
         addEntry(entries, true, ports.elementAt(7), currentGas);
         addEntry(entries, true, ports.elementAt(8), currentBrakes);
         addEntry(entries, false, ports.elementAt(9), batteryLevel);
-        addEntry(entries, false, ports.elementAt(10), frontRightSensor);
-        addEntry(entries, false, ports.elementAt(11), frontLeftSensor);
-        addEntry(entries, false, ports.elementAt(12), rightFrontSensor);
-        addEntry(entries, false, ports.elementAt(13), rightBackSensor);
-        addEntry(entries, false, ports.elementAt(14), leftFrontSensor);
-        addEntry(entries, false, ports.elementAt(15), leftBackSensor);
-        addEntry(entries, false, ports.elementAt(16), backRightSensor);
-        addEntry(entries, false, ports.elementAt(17), backLeftSensor);
+        addEntry(entries, false, ports.elementAt(10), lidarSensors.get(0)); // frontRightSensor
+        addEntry(entries, false, ports.elementAt(11), lidarSensors.get(1)); // frontLeftSensor
+        addEntry(entries, false, ports.elementAt(12), lidarSensors.get(2)); // rightFrontSensor
+        addEntry(entries, false, ports.elementAt(13), lidarSensors.get(3)); // rightBackSensor
+        addEntry(entries, false, ports.elementAt(14), lidarSensors.get(4)); // leftFrontSensor
+        addEntry(entries, false, ports.elementAt(15), lidarSensors.get(5)); // leftBackSensor
+        addEntry(entries, false, ports.elementAt(16), lidarSensors.get(6)); // backRightSensor
+        addEntry(entries, false, ports.elementAt(17), lidarSensors.get(7)); // backLeftSensor
         addEntry(entries, false, ports.elementAt(18), upperSpeedLimitArr);
         return entries;
     }

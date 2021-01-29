@@ -14,6 +14,8 @@ import de.rwth.montisim.simulation.vehicle.physicalvalues.TrueCompass;
 import de.rwth.montisim.simulation.vehicle.physicalvalues.TruePosition;
 
 import java.time.Instant;
+import java.util.Arrays;
+import java.util.List;
 import java.util.Vector;
 
 public class Lidar extends EEComponent {
@@ -25,28 +27,12 @@ public class Lidar extends EEComponent {
     private transient int truePositionMsg;
     private transient int trueCompassMsg;
 
-    // define sensors massages variables
-    private transient int frontRightSensorMsg;
-    private transient int frontLeftSensorMsg;
-    private transient int rightFrontSensorMsg;
-    private transient int rightBackSensorMsg;
-    private transient int leftFrontSensorMsg;
-    private transient int leftBackSensorMsg;
-    private transient int backRightSensorMsg;
-    private transient int backLeftSensorMsg;
-
-
+    private transient List<Integer> lidarMsg = Arrays.asList(0,0,0,0,0,0,0,0);
 
     private double angleDeg;
-
-    public static final String FRONT_RIGHT_SENSOR_MSG = "front_right_lidar";
-    public static final String FRONT_LEFT_SENSOR_MSG = "front_left_lidar";
-    public static final String RIGHT_FRONT_SENSOR_MSG = "right_front_lidar";
-    public static final String RIGHT_BACK_SENSOR_MSG = "right_back_lidar";
-    public static final String LEFT_FRONT_SENSOR_MSG = "left_front_lidar";
-    public static final String LEFT_BACK_SENSOR_MSG = "left_back_lidar";
-    public static final String BACK_RIGHT_SENSOR_MSG = "back_right_lidar";
-    public static final String BACK_LEFT_SENSOR_MSG = "back_left_lidar";
+    public static final List<String> LIDAR_MSG = Arrays.asList("front_right_lidar", "front_left_lidar",
+            "right_front_lidar", "right_back_lidar", "left_front_lidar", "left_back_lidar",
+            "back_right_lidar", "back_left_lidar");
 
     private Vec2 truePosition = new Vec2(0,0);
     private Vec2 orientation = new Vec2(0,0);
@@ -66,15 +52,9 @@ public class Lidar extends EEComponent {
         this.truePositionMsg = addPort(PortInformation.newOptionalInputDataPort(TruePosition.VALUE_NAME, TruePosition.TYPE, false));
         this.trueCompassMsg = addPort(PortInformation.newOptionalInputDataPort(TrueCompass.VALUE_NAME, TrueCompass.TYPE, false));
 
-        this.frontRightSensorMsg = addPort(PortInformation.newOptionalOutputDataPort(FRONT_RIGHT_SENSOR_MSG, PhysicalValueDouble.TYPE));
-        this.frontLeftSensorMsg = addPort(PortInformation.newOptionalOutputDataPort(FRONT_LEFT_SENSOR_MSG, PhysicalValueDouble.TYPE));
-        this.rightFrontSensorMsg = addPort(PortInformation.newOptionalOutputDataPort(RIGHT_FRONT_SENSOR_MSG, PhysicalValueDouble.TYPE));
-        this.rightBackSensorMsg = addPort(PortInformation.newOptionalOutputDataPort(RIGHT_BACK_SENSOR_MSG, PhysicalValueDouble.TYPE));
-        this.leftFrontSensorMsg = addPort(PortInformation.newOptionalOutputDataPort(LEFT_FRONT_SENSOR_MSG, PhysicalValueDouble.TYPE));
-        this.leftBackSensorMsg = addPort(PortInformation.newOptionalOutputDataPort(LEFT_BACK_SENSOR_MSG, PhysicalValueDouble.TYPE));
-        this.backRightSensorMsg = addPort(PortInformation.newOptionalOutputDataPort(BACK_RIGHT_SENSOR_MSG, PhysicalValueDouble.TYPE));
-        this.backLeftSensorMsg = addPort(PortInformation.newOptionalOutputDataPort(BACK_LEFT_SENSOR_MSG, PhysicalValueDouble.TYPE));
-        
+        for (int i=0; i<lidarMsg.size(); i++ ){
+            this.lidarMsg.set(i, addPort(PortInformation.newOptionalOutputDataPort(LIDAR_MSG.get(i), PhysicalValueDouble.TYPE)));
+        }
     }
     @Override
     protected void receive(MessageReceiveEvent msgRecvEvent) {
@@ -94,17 +74,6 @@ public class Lidar extends EEComponent {
 
         double length = 4.971;
         double width = 1.87;
-        double height = 1.383;
-
-        Vec2 frontRightPosition = truePosition.add(length/2,width/4);    //in front
-        Vec2 frontLeftPosition = truePosition.add(length/2,width/-4);     //in front
-        Vec2 rightFrontPosition = truePosition.add(length/4,width/2);     //on the right
-        Vec2 rightBackPosition = truePosition.add(length/-4,width/2);     //on the right
-        Vec2 leftFrontPosition = truePosition.add(length/4,width/-2);     //on the left
-        Vec2 leftBackPosition = truePosition.add(length/-4,width/-2);     //on the left
-        Vec2 backRightPosition = truePosition.add(length/-2,width/4);     //in the back
-        Vec2 backLeftPosition = truePosition.add(length/-2,width/-4);     //in the back
-
 
         double angleRad = (angleDeg + 90) * Geometry.DEG_TO_RAD;
         Vec2 rightOrientation = new Vec2(Math.cos(angleRad), Math.sin(angleRad));
@@ -115,23 +84,22 @@ public class Lidar extends EEComponent {
         angleRad = (angleDeg + 180) * Geometry.DEG_TO_RAD;
         Vec2 backOrientation = new Vec2(Math.cos(angleRad), Math.sin(angleRad));
 
-        double distanceFrontRight = computeShortestDistance(frontRightPosition, orientation);
-        double distanceFrontLeft = computeShortestDistance(frontLeftPosition, orientation);
-        double distanceRightFront = computeShortestDistance(rightFrontPosition, rightOrientation);
-        double distanceRightBack = computeShortestDistance(rightBackPosition, rightOrientation);
-        double distanceLeftFront = computeShortestDistance(leftFrontPosition, leftOrientation);
-        double distanceLeftBack = computeShortestDistance(leftBackPosition, leftOrientation);
-        double distanceBackRight = computeShortestDistance(backRightPosition, backOrientation);
-        double distanceBackLeft = computeShortestDistance(backLeftPosition, backOrientation);
+        // The lidars in the lists always follow the following order: front right, front left,
+        // right front, right back, left front, left back, back right, back left
+        List<Vec2> positionOffset = Arrays.asList(new Vec2(length/2,width/4), new Vec2(length/2,width/-4),
+                new Vec2(length/4,width/2), new Vec2(length/-4,width/2),
+                new Vec2(length/4,width/-2), new Vec2(length/-4,width/-2),
+                new Vec2(length/-2,width/4), new Vec2(length/-2,width/-4));
 
-        sendMessage(time, frontRightSensorMsg, distanceFrontRight);
-        sendMessage(time, frontLeftSensorMsg, distanceFrontLeft);
-        sendMessage(time, rightFrontSensorMsg, distanceRightFront);
-        sendMessage(time, rightBackSensorMsg, distanceRightBack);
-        sendMessage(time, leftFrontSensorMsg, distanceLeftFront);
-        sendMessage(time, leftBackSensorMsg, distanceLeftBack);
-        sendMessage(time, backRightSensorMsg, distanceBackRight);
-        sendMessage(time, backLeftSensorMsg, distanceBackLeft);
+        List<Vec2> orientationOffset = Arrays.asList(orientation, orientation,
+                rightOrientation, rightOrientation,
+                leftOrientation, leftOrientation,
+                backOrientation, backOrientation);
+
+        for (int i=0; i<lidarMsg.size(); i++){
+            double distance = computeShortestDistance(truePosition.add(positionOffset.get(i)), orientationOffset.get(i));
+            sendMessage(time, lidarMsg.get(i), distance);
+        }
         
     }
 
