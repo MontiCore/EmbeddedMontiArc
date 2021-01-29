@@ -1,0 +1,23 @@
+{
+    "configurations": [
+        {
+            "type": "java",
+            "name": "JAR EMAM2CPP",
+            "request": "launch",
+            "mainClass": "de.monticore.lang.monticar.generator.cpp.GeneratorCppCli",
+            "cwd": "${workspaceFolder}",
+            "classPaths": [
+                "${workspaceFolder}/target/embedded-montiarc-math-generator-0.4.5-jar-with-dependencies.jar"
+            ],
+            "args": [
+                "--models-dir=temp/model",
+                "--root-model=de.rwth.armin.modeling.autopilot.autopilot",
+                "--output-dir=temp/target/cpp",
+                "--output-name=test1",
+                "--flag-use-armadillo-backend",
+                "--tcp-adapter",
+                "--flag-generate-cmake"
+            ]
+        }
+    ]
+}
