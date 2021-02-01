@@ -70,7 +70,7 @@ public class SimpleCommunicationGateway extends EEComponent implements PortTagUs
         if (msgInfo == null) return; // The vehicle does not use this message
         // Resolve local MessageInformation
         Object newData[] = new Object[2];
-        newData[0] = event.msg.sender.addr;
+        newData[0] = event.msg.sender.getString();
         newData[1] = event.msg.message;
         Message newMsg = new Message(msgInfo, newData, event.msg.msgLen);
         eesystem.simulator.addEvent(new MessageSendEvent(this, event.getEventTime().plus(properties.processing_time), newMsg));

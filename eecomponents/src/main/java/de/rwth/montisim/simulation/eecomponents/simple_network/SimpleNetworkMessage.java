@@ -21,6 +21,6 @@ public class SimpleNetworkMessage extends Message {
     }
 
     public static Object newMessage(IPV6Address target, Object payload) {
-        return new Object[]{target.addr, payload};
+        return new Object[]{target.getString(), payload};
     }
 }
