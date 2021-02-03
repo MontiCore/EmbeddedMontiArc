@@ -5,7 +5,7 @@
  * can be found under https://github.com/MontiCore/monticore.
  */
 /* (c) https://github.com/MontiCore/monticore */
-package de.monticore.lang.monticar.emadl.tagging.dltag;
+package de.monticore.lang.monticar.emadl.tagging.artifacttag;
 
 import de.monticore.lang.embeddedmontiarc.embeddedmontiarc._symboltable.cncModel.EMAComponentSymbol;
 import de.monticore.lang.embeddedmontiarcdynamic.embeddedmontiarcdynamic._symboltable.instanceStructure.EMADynamicComponentInstantiationSymbol;
@@ -73,7 +73,6 @@ public class LayerArtifactParameterSymbolCreator implements TagSymbolCreator {
                     .forEachOrdered(scope -> {
                         String artifact = String.format("%s%s%s%s%s", matcher.group(1).replace('.', File.separatorChar),
                             File.separator, matcher.group(2), File.separator, matcher.group(3));
-                        // TODO: change dataset to pretrained
                         String jar = String.format("%s-%s-pretrained", matcher.group(2), matcher.group(3));
                         tagging.addTag(scope, new LayerArtifactParameterSymbol(artifact, jar, matcher.group(4))); }
                     );

@@ -5,7 +5,7 @@
  * can be found under https://github.com/MontiCore/monticore.
  */
 /* (c) https://github.com/MontiCore/monticore */
-package de.monticore.lang.monticar.emadl.tagging.dltag;
+package de.monticore.lang.monticar.emadl.tagging.artifacttag;
 
 import de.monticore.lang.tagging._symboltable.TaggingResolver;
 import de.monticore.symboltable.resolving.CommonResolvingFilter;
