@@ -303,7 +303,7 @@ public class GluonConfigurationData extends ConfigurationData {
         assert getConfiguration().getCriticInitializer().isPresent():
             "Critic initializer params called although, not present";
         Map<String, String>  mapToStrings = new HashMap<>();
-        Map<String, InitializerParamSymbol> initializerParams = getConfiguration().getCriticInitializer().getInitializerParamMap();
+        Map<String, InitializerParamSymbol> initializerParams = getConfiguration().getCriticInitializer().get().getInitializerParamMap();
         for (Map.Entry<String, InitializerParamSymbol> entry : initializerParams.entrySet()) {
             String paramName = entry.getKey();
             String valueAsString = entry.getValue().toString();
