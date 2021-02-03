@@ -83,13 +83,36 @@ if __name__ == "__main__":
 <#else>
     context = mx.cpu()
 </#if>
+<#if (config.configuration.initializer)??>
+    initializer_params = {
+<#list config.initializerParams?keys as param>
+        '${param}': ${config.initializerParams[param]}<#sep>,
+</#list>
+    }
+    initializer = mx.init.${config.initializerName?capitalize}(**initializer_params)
+<#else>
+    initializer = mx.init.Normal()
+</#if>
+<#if (config.configuration.criticInitializer)??>
+    critic_initializer_params = {
+<#list config.criticInitializerParams?keys as param>
+        '${param}': ${config.criticInitializerParams[param]}<#sep>,
+</#list>
+    }
+    critic_initializer = mx.init.${config.criticInitializerName?capitalize}(**critic_initializer_params)
+<#else>
+    critic_initializer = mx.init.Normal()
+</#if>
 <#if config.rlAlgorithm == "dqn">
     qnet_creator = CNNCreator_${config.instanceName}.CNNCreator_${config.instanceName}()
+    qnet_creator.setWeightInitializer(initializer)
     qnet_creator.construct(context)
 <#else>
     actor_creator = CNNCreator_${config.instanceName}.CNNCreator_${config.instanceName}()
+    actor_creator.setWeightInitializer(initializer)
     actor_creator.construct(context)
     critic_creator = CNNCreator_${criticInstanceName}()
+    critic_creator.setWeightInitializer(critic_initializer)
     critic_creator.construct(context)
 </#if>
 

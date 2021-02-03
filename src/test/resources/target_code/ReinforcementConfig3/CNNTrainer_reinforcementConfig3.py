@@ -53,7 +53,10 @@ if __name__ == "__main__":
     env = reinforcement_learning.environment.RosEnvironment(**env_params)
 
     context = mx.cpu()
+    initializer = mx.init.Normal()
+    critic_initializer = mx.init.Normal()
     qnet_creator = CNNCreator_reinforcementConfig3.CNNCreator_reinforcementConfig3()
+    qnet_creator.setWeightInitializer(initializer)
     qnet_creator.construct(context)
 
     agent_params = {
