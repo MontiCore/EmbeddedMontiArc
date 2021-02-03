@@ -16,6 +16,8 @@ import static de.monticore.lang.monticar.cnntrain.helper.ConfigEntryNameConstant
 public class ConfigurationSymbol extends CommonScopeSpanningSymbol {
 
     private Map<String, EntrySymbol> entryMap = new HashMap<>();
+    private InitializerSymbol initializer;
+    private InitializerSymbol criticInitializer;
     private OptimizerSymbol optimizer;
     private OptimizerSymbol criticOptimizer;
     private LossSymbol loss;
@@ -34,6 +36,22 @@ public class ConfigurationSymbol extends CommonScopeSpanningSymbol {
         preprocessingComponentSymbol = null;
         trainedArchitecture = null;
     }
+    
+    public InitializerSymbol getInitializer() {
+        return initializer;
+    }
+
+    public void setInitializer(InitializerSymbol initializer) {
+        this.initializer = initializer;
+    }
+
+    public void setCriticInitializer(InitializerSymbol criticInitializer) {
+        this.criticInitializer = criticInitializer;
+    }
+
+    public Optional<InitializerSymbol> getCriticInitializer() {
+        return Optional.ofNullable(criticInitializer);
+    } 
 
     public OptimizerSymbol getOptimizer() {
         return optimizer;
