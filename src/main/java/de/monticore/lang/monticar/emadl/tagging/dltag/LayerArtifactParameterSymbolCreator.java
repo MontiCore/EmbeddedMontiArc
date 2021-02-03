@@ -21,13 +21,14 @@ import de.se_rwth.commons.Joiners;
 import de.se_rwth.commons.logging.Log;
 import org.apache.commons.lang3.StringUtils;
 
+import java.io.File;
 import java.util.Optional;
 import java.util.regex.Matcher;
 import java.util.regex.Pattern;
 
 public class LayerArtifactParameterSymbolCreator implements TagSymbolCreator {
 
-    protected final String regexExpression =  "\\s*\\{\\s*artifact\\s*=\\s*(.*)\\s*,\\s*id\\s*=\\s*(.*)\\s*\\}\\s*";
+    protected final String regexExpression =  "\\s*\\{\\s*artifact\\s*=\\s*(.+):(.+):(.+)\\s*,\\s*id\\s*=\\s*(.*)\\s*\\}\\s*";
     protected final Pattern pattern = Pattern.compile(regexExpression, Pattern.MULTILINE);
 
     @Override
@@ -69,8 +70,12 @@ public class LayerArtifactParameterSymbolCreator implements TagSymbolCreator {
                     )
                     .filter(Optional::isPresent)
                     .map(Optional::get)
-                    .forEachOrdered(scope ->
-                            tagging.addTag(scope, new LayerArtifactParameterSymbol(matcher.group(1), matcher.group(2)))
+                    .forEachOrdered(scope -> {
+                        String artifact = String.format("%s%s%s%s%s", matcher.group(1).replace('.', File.separatorChar),
+                            File.separator, matcher.group(2), File.separator, matcher.group(3));
+                        // TODO: change dataset to pretrained
+                        String jar = String.format("%s-%s-pretrained", matcher.group(2), matcher.group(3));
+                        tagging.addTag(scope, new LayerArtifactParameterSymbol(artifact, jar, matcher.group(4))); }
                     );
             });
     }
@@ -84,7 +89,7 @@ public class LayerArtifactParameterSymbolCreator implements TagSymbolCreator {
             Log.error(
                 String.format(
                         "'%s' does not match the specified regex pattern '%s'",
-                        regex, "{artifact = {LayerArtifactParameter}, id = {tagId}}"
+                        regex, "{artifact = {groupId:artifactId:version}, id = {tagId}}"
                 )
             );
             return null;

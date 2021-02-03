@@ -18,20 +18,24 @@ public class LayerArtifactParameterSymbol extends TagSymbol {
         super(KIND, ".");
     }
 
-    public LayerArtifactParameterSymbol(String artifact, String name) {
-        this(KIND, artifact, name);
+    public LayerArtifactParameterSymbol(String artifact, String jar, String id) {
+        this(KIND, artifact, jar, id);
     }
 
-    public LayerArtifactParameterSymbol(LayerArtifactParameterKind kind, String artifact, String name) {
-        super(kind, artifact, name);
+    public LayerArtifactParameterSymbol(LayerArtifactParameterKind kind, String artifact, String jar, String id) {
+        super(kind, artifact, jar, id);
     }
 
     public String getArtifact() {
       return getValue(0);
     }
 
-    public String getId() {
+    public String getJar() {
         return getValue(1);
+    }
+
+    public String getId() {
+        return getValue(2);
     }
 
     @Override
