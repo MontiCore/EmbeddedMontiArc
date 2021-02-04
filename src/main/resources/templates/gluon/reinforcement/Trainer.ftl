@@ -93,6 +93,7 @@ if __name__ == "__main__":
 <#else>
     initializer = mx.init.Normal()
 </#if>
+<#if config.rlAlgorithm=="ddpg" || config.rlAlgorithm=="td3">
 <#if (config.configuration.criticInitializer)??>
     critic_initializer_params = {
 <#list config.criticInitializerParams?keys as param>
@@ -103,11 +104,12 @@ if __name__ == "__main__":
 <#else>
     critic_initializer = mx.init.Normal()
 </#if>
+</#if>
 <#if config.rlAlgorithm == "dqn">
     qnet_creator = CNNCreator_${config.instanceName}.CNNCreator_${config.instanceName}()
     qnet_creator.setWeightInitializer(initializer)
     qnet_creator.construct(context)
-<#else>
+<#elseif config.rlAlgorithm=="ddpg" || config.rlAlgorithm=="td3">
     actor_creator = CNNCreator_${config.instanceName}.CNNCreator_${config.instanceName}()
     actor_creator.setWeightInitializer(initializer)
     actor_creator.construct(context)

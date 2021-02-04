@@ -53,7 +53,6 @@ if __name__ == "__main__":
 
     context = mx.cpu()
     initializer = mx.init.Normal()
-    critic_initializer = mx.init.Normal()
     qnet_creator = CNNCreator_reinforcementConfig1.CNNCreator_reinforcementConfig1()
     qnet_creator.setWeightInitializer(initializer)
     qnet_creator.construct(context)
