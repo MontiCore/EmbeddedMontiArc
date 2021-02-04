@@ -26,7 +26,7 @@ public class ImportMojo extends BaseMojo {
     List<Dependency> dependencies = mavenProject.getDependencies();
 
     for (Dependency dependency : dependencies) {
-      if (StringUtils.equals("dataset", dependency.getClassifier()) || StringUtils.equals("emadl", dependency.getClassifier())) {
+      if (StringUtils.equals("emadl", dependency.getClassifier())) {
         try {
           ArtifactImporter.importArtifact(dependency, targetPath);
         }
