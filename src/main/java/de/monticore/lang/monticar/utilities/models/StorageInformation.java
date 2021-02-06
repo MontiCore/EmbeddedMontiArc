@@ -8,9 +8,9 @@ public class StorageInformation {
 
   private String artifactId;
 
-  private File path;
-
   private Integer version;
+
+  private File path;
 
   private String description;
 

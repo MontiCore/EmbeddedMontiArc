@@ -18,21 +18,21 @@ import java.util.Arrays;
 public class InstallPretrainedMojo extends BaseMojo {
 
   @Parameter
-  private StorageInformation pretrainedNetworkToStore;
+  private StorageInformation pretrainedModelToStore;
 
   @Override
   public void execute() throws MojoExecutionException, MojoFailureException {
     this.mkTmpDir();
-    int newestVersion = this.getNewestVersion(pretrainedNetworkToStore);
-    pretrainedNetworkToStore.setVersion(newestVersion);
+    int newestVersion = this.getNewestVersion(pretrainedModelToStore);
+    pretrainedModelToStore.setVersion(newestVersion);
 
     File jarFile;
     try {
-      getLog().info(String.format("STARTING creating Jar for pretrained network in directory %s", this.pretrainedNetworkToStore.getPath()));
-      jarFile = PretrainedArtifactCreator.createArtifact(this.pretrainedNetworkToStore, this.getPathTmpOut());
+      getLog().info(String.format("STARTING creating Jar for pretrained network in directory %s", this.pretrainedModelToStore.getPath()));
+      jarFile = PretrainedArtifactCreator.createArtifact(this.pretrainedModelToStore, this.getPathTmpOut());
       getLog().info("FINISHED creating Jar for pretrained network");
 
-      ArtifactDeployer.installArtifact(jarFile.getAbsolutePath(), this.pretrainedNetworkToStore, this.getRepository(), JarClassifierEnum.PRETRAINED);
+      ArtifactDeployer.installArtifact(jarFile.getAbsolutePath(), this.pretrainedModelToStore, this.getRepository(), JarClassifierEnum.PRETRAINED);
     }
     catch (IOException | MavenInvocationException e) {
       throw new MojoFailureException(Arrays.toString(e.getStackTrace()));

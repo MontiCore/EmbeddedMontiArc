@@ -53,7 +53,7 @@ public class ResultArtifactCreator extends ArtifactCreator {
     for (File file : files) {
       FileLocation fileLocation = new FileLocation();
       fileLocation.setSourceLocation(file.getAbsolutePath());
-      fileLocation.setJarLocation(String.format("trained_model%s%s", File.separator, file.getName()));
+      fileLocation.setJarLocation(String.format("component%s%s", File.separator, file.getName()));
       fileLocations.add(fileLocation);
     }
 
@@ -94,7 +94,7 @@ public class ResultArtifactCreator extends ArtifactCreator {
     }
 
     String[] metric = scanner.nextLine().split(" ");
-    attributes.put(new Attributes.Name(metric[0].toUpperCase()), metric[1]);
+    attributes.put(new Attributes.Name(metric[0].substring(0, 1).toUpperCase() + metric[0].substring(1)), metric[1]);
     return attributes;
   }
 
