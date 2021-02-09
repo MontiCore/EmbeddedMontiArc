@@ -83,13 +83,38 @@ if __name__ == "__main__":
 <#else>
     context = mx.cpu()
 </#if>
+<#if (config.initializer)??>
+<#if config.initializer.method=="normal">
+    initializer_params = {
+        'sigma': ${config.initializer.sigma}
+    }
+    initializer = mx.init.Normal(**initializer_params)
+</#if>
+<#else>
+    initializer = mx.init.Normal()
+</#if>
+<#if config.rlAlgorithm=="ddpg" || config.rlAlgorithm=="td3">
+<#if (config.criticInitializer)??>
+<#if config.criticInitializer.method=="normal">
+    critic_initializer_params = {
+        'sigma': ${config.criticInitializer.sigma}
+    }
+    critic_initializer = mx.init.Normal(**critic_initializer_params)
+</#if>
+<#else>
+    critic_initializer = mx.init.Normal()
+</#if>
+</#if>
 <#if config.rlAlgorithm == "dqn">
     qnet_creator = CNNCreator_${config.instanceName}.CNNCreator_${config.instanceName}()
+    qnet_creator.setWeightInitializer(initializer)
     qnet_creator.construct(context)
-<#else>
+<#elseif config.rlAlgorithm=="ddpg" || config.rlAlgorithm=="td3">
     actor_creator = CNNCreator_${config.instanceName}.CNNCreator_${config.instanceName}()
+    actor_creator.setWeightInitializer(initializer)
     actor_creator.construct(context)
     critic_creator = CNNCreator_${criticInstanceName}()
+    critic_creator.setWeightInitializer(critic_initializer)
     critic_creator.construct(context)
 </#if>
 
