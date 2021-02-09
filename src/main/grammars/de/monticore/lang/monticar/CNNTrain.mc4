@@ -38,8 +38,6 @@ grammar CNNTrain extends de.monticore.lang.monticar.Common2, de.monticore.Number
 
     ShuffleDataEntry implements ConfigEntry = name:"shuffle_data" ":" value:BooleanValue;
     ClipGlobalGradNormEntry implements ConfigEntry = name:"clip_global_grad_norm" ":" value:NumberValue;
-    
-    InitializerEntry implements ConfigEntry = (name:"initializer" | name:"actor_initializer") ":" value:InitializerValue;
 
     OptimizerEntry implements ConfigEntry = (name:"optimizer" | name:"actor_optimizer") ":" value:OptimizerValue;
     TrainContextEntry implements ConfigEntry = name:"context" ":" value:TrainContextValue;
@@ -77,8 +75,6 @@ grammar CNNTrain extends de.monticore.lang.monticar.Common2, de.monticore.Number
                                          | sigmoid:"sigmoid");
                                          
     TrainContextValue implements ConfigValue = (cpu:"cpu" | gpu:"gpu");
-    
-    interface InitializerParamEntry extends Entry;
     
     interface OptimizerParamEntry extends Entry;
 
@@ -132,12 +128,6 @@ grammar CNNTrain extends de.monticore.lang.monticar.Common2, de.monticore.Number
     IgnoreLabelEntry implements SoftmaxCrossEntropyIgnoreLabelEntry = name:"loss_ignore_label" ":" value:IntegerValue;
     MarginEntry implements HingeEntry, SquaredHingeEntry = name:"margin" ":" value:NumberValue;
     LabelFormatEntry implements LogisticEntry = name:"label_format" ":" value:StringValue;
-    
-    interface InitializerValue extends ConfigValue;
-    interface InitializerNormalEntry extends InitializerParamEntry;
-    NormalInitializer implements InitializerValue = name:"normal" ("{" params:InitializerNormalEntry* "}")?;
-    
-    InitializerNormalSigma implements InitializerNormalEntry = name:"sigma" ":" value:NumberValue;
 
     interface OptimizerValue extends ConfigValue;
     interface SGDEntry extends OptimizerParamEntry;
@@ -207,6 +197,14 @@ grammar CNNTrain extends de.monticore.lang.monticar.Common2, de.monticore.Number
     RLAlgorithmValue implements ConfigValue = (dqn:"dqn-algorithm" | ddpg:"ddpg-algorithm" | tdThree:"td3-algorithm");
 
     interface MultiParamConfigEntry extends ConfigEntry;
+    
+    // Initializer
+    InitializerEntry implements MultiParamConfigEntry = (name:"initializer" | name:"actor_initializer") ":" value:InitializerValue;
+    interface InitializerValue extends MultiParamValue;
+    
+    interface InitializerNormalEntry extends Entry;
+    InitializerNormalValue implements InitializerValue = name:"normal" ("{" params:InitializerNormalEntry* "}")?;
+    InitializerNormalSigma implements InitializerNormalEntry = name:"sigma" ":" value:NumberValue;
 
     // Replay Memory
     ReplayMemoryEntry implements MultiParamConfigEntry = name:"replay_memory" ":" value:ReplayMemoryValue;
@@ -279,7 +277,7 @@ grammar CNNTrain extends de.monticore.lang.monticar.Common2, de.monticore.Number
     // DDPG and TD3 exclusive parameters
     CriticNetworkEntry implements ConfigEntry = name:"critic" ":" value:ComponentNameValue;
     SoftTargetUpdateRateEntry implements ConfigEntry = name:"soft_target_update_rate" ":" value:NumberValue;
-    CriticInitializerEntry implements ConfigEntry = name:"critic_initializer" ":" value:InitializerValue;
+    CriticInitializerEntry implements MultiParamConfigEntry = name:"critic_initializer" ":" value:InitializerValue;
     CriticOptimizerEntry implements ConfigEntry = name:"critic_optimizer" ":" value:OptimizerValue;
 
     // TD3 exclusive parameters

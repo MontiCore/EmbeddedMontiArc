@@ -79,38 +79,22 @@ public class CNNTrainSymbolTableCreator extends CNNTrainSymbolTableCreatorTOP {
     
     @Override
     public void visit(ASTInitializerEntry node) {
-        InitializerSymbol initializer = new InitializerSymbol(node.getValue().getName());
-        configuration.setInitializer(initializer);
-        addToScopeAndLinkWithNode(initializer, node);
+        processMultiParamConfigVisit(node, node.getValue().getName());
     }
 
     @Override
     public void endVisit(ASTInitializerEntry node) {
-        for (ASTEntry nodeParam : node.getValue().getParamsList()) {
-            InitializerParamSymbol param = new InitializerParamSymbol();
-            InitializerParamValueSymbol valueSymbol = (InitializerParamValueSymbol) nodeParam.getValue().getSymbolOpt().get();
-            param.setValue(valueSymbol);
-            configuration.getInitializer().getInitializerParamMap().put(nodeParam.getName(), param);
-        }
-
+        processMultiParamConfigEndVisit(node);
     }
 
     @Override
     public void visit(ASTCriticInitializerEntry node) {
-        InitializerSymbol initializer = new InitializerSymbol(node.getValue().getName());
-        configuration.setCriticInitializer(initializer);
-        addToScopeAndLinkWithNode(initializer, node);
+        processMultiParamConfigVisit(node, node.getValue().getName());
     }
 
     @Override
     public void endVisit(ASTCriticInitializerEntry node) {
-        assert configuration.getCriticInitializer().isPresent(): "Critic initializer not present";
-        for (ASTEntry paramNode : node.getValue().getParamsList()) {
-            InitializerParamSymbol param = new InitializerParamSymbol();
-            InitializerParamValueSymbol valueSymbol = (InitializerParamValueSymbol)paramNode.getValue().getSymbolOpt().get();
-            param.setValue(valueSymbol);
-            configuration.getCriticInitializer().get().getInitializerParamMap().put(paramNode.getName(), param);
-        }
+        processMultiParamConfigEndVisit(node);
     }
 
     @Override

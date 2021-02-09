@@ -16,6 +16,8 @@ import java.util.List;
 class ParameterAlgorithmMapping {
     private static final List<Class> GENERAL_PARAMETERS = Lists.newArrayList(
         ASTTrainContextEntry.class,
+        ASTInitializerEntry.class,
+        ASTInitializerNormalSigma.class,
         ASTOptimizerEntry.class,
         ASTLearningRateEntry.class,
         ASTMinimumLearningRateEntry.class,
@@ -104,6 +106,7 @@ class ParameterAlgorithmMapping {
     private static final List<Class> EXCLUSIVE_DDPG_PARAMETERS = Lists.newArrayList(
         ASTCriticNetworkEntry.class,
         ASTSoftTargetUpdateRateEntry.class,
+        ASTCriticInitializerEntry.class,
         ASTCriticOptimizerEntry.class,
         ASTStrategyOUMu.class,
         ASTStrategyOUTheta.class,
@@ -114,6 +117,7 @@ class ParameterAlgorithmMapping {
     private static final List<Class> EXCLUSIVE_TD3_PARAMETERS = Lists.newArrayList(
         ASTCriticNetworkEntry.class,
         ASTSoftTargetUpdateRateEntry.class,
+        ASTCriticInitializerEntry.class,
         ASTCriticOptimizerEntry.class,
         ASTStrategyOUMu.class,
         ASTStrategyOUTheta.class,
