@@ -1,3 +1,9 @@
+/**
+ * (c) https://github.com/MontiCore/monticore
+ *
+ * The license generally applicable for this project
+ * can be found under https://github.com/MontiCore/monticore.
+ */
 package de.monticore.lang.monticar.emadl.tagging.artifacttag;
 
 import de.monticore.lang.embeddedmontiarc.embeddedmontiarc._symboltable.cncModel.EMAComponentSymbol;
@@ -21,7 +27,7 @@ import java.util.regex.Pattern;
 
 public class DatasetArtifactSymbolCreator implements TagSymbolCreator {
 
-  protected final String regexExpression =  "\\s*\\{\\s*artifact\\s*=\\s*(.+):(.+):(.+)\\s*\\}\\s*";
+  protected final String regexExpression =  "\\s*\\{\\s*artifact\\s*=\\s*(.+):(.+):(.+)\\s*,\\s*type\\s*=\\s*(.*)\\s*\\}\\s*";
   protected final Pattern pattern = Pattern.compile(regexExpression, Pattern.MULTILINE);
 
   @Override
@@ -67,7 +73,7 @@ public class DatasetArtifactSymbolCreator implements TagSymbolCreator {
                 String artifact = String.format("%s%s%s%s%s", matcher.group(1).replace('.', File.separatorChar),
                     File.separator, matcher.group(2), File.separator, matcher.group(3));
                 String jar = String.format("%s-%s-dataset", matcher.group(2), matcher.group(3));
-                tagging.addTag(scope, new LayerArtifactParameterSymbol(artifact, jar, matcher.group(4))); }
+                tagging.addTag(scope, new DatasetArtifactSymbol(artifact, jar, matcher.group(4))); }
               );
         });
   }

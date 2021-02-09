@@ -1,3 +1,9 @@
+/**
+ * (c) https://github.com/MontiCore/monticore
+ *
+ * The license generally applicable for this project
+ * can be found under https://github.com/MontiCore/monticore.
+ */
 package de.monticore.lang.monticar.emadl.tagging.artifacttag;
 
 import de.monticore.lang.tagging._symboltable.TagKind;
@@ -11,19 +17,23 @@ public class DatasetArtifactSymbol extends TagSymbol {
     super(KIND, ".");
   }
 
-  public DatasetArtifactSymbol(String artifact, String jar, String id) {
-    this(KIND, artifact, jar, id);
+  public DatasetArtifactSymbol(String artifact, String jar, String type) {
+    this(KIND, artifact, jar, type);
   }
 
-  public DatasetArtifactSymbol(DatasetArtifactKind kind, String artifact, String jar, String id) {
-    super(kind, artifact, jar, id);
+  public DatasetArtifactSymbol(DatasetArtifactKind kind, String artifact, String jar, String type) {
+    super(kind, artifact, jar, type);
+  }
+
+  public String getArtifact() {
+    return getValue(0);
   }
 
   public String getJar() {
     return getValue(1);
   }
 
-  public String getId() {
+  public String getType() {
     return getValue(2);
   }
 

@@ -1,3 +1,9 @@
+/**
+ * (c) https://github.com/MontiCore/monticore
+ *
+ * The license generally applicable for this project
+ * can be found under https://github.com/MontiCore/monticore.
+ */
 package de.monticore.lang.monticar.emadl.tagging.artifacttag;
 
 import de.monticore.lang.tagging._symboltable.TaggingResolver;
@@ -22,7 +28,7 @@ public class DatasetArtifactTagSchema {
     resolver.addTagSymbolResolvingFilter(CommonResolvingFilter.create(DatasetArtifactSymbol.KIND));
   }
 
-  protected void registerTagTypes(TaggingResolver resolver) {
+  public static void registerTagTypes(TaggingResolver resolver) {
     getInstance().doRegisterTagTypes(resolver);
   }
 
