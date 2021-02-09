@@ -83,24 +83,24 @@ if __name__ == "__main__":
 <#else>
     context = mx.cpu()
 </#if>
-<#if (config.configuration.initializer)??>
+<#if (config.initializer)??>
+<#if config.initializer.method=="normal">
     initializer_params = {
-<#list config.initializerParams?keys as param>
-        '${param}': ${config.initializerParams[param]}<#sep>,
-</#list>
+        'sigma': ${config.initializer.sigma}
     }
-    initializer = mx.init.${config.initializerName?capitalize}(**initializer_params)
+    initializer = mx.init.Normal(**initializer_params)
+</#if>
 <#else>
     initializer = mx.init.Normal()
 </#if>
 <#if config.rlAlgorithm=="ddpg" || config.rlAlgorithm=="td3">
-<#if (config.configuration.criticInitializer)??>
+<#if (config.criticInitializer)??>
+<#if config.criticInitializer.method=="normal">
     critic_initializer_params = {
-<#list config.criticInitializerParams?keys as param>
-        '${param}': ${config.criticInitializerParams[param]}<#sep>,
-</#list>
+        'sigma': ${config.criticInitializer.sigma}
     }
-    critic_initializer = mx.init.${config.criticInitializerName?capitalize}(**critic_initializer_params)
+    critic_initializer = mx.init.Normal(**critic_initializer_params)
+</#if>
 <#else>
     critic_initializer = mx.init.Normal()
 </#if>

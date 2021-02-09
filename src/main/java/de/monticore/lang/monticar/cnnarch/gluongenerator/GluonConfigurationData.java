@@ -160,6 +160,16 @@ public class GluonConfigurationData extends ConfigurationData {
         return !configurationContainsKey(LOSS)
                 ? null : retrieveConfigurationEntryValueByKey(LOSS).toString();
     }
+    
+    public Map<String, Object> getInitializer() {
+        Map<String, Object> initializer = getMultiParamEntry("initializer", "method");
+        Map<String, Object> actor_initializer = getMultiParamEntry("actor_initializer", "method");
+        return (initializer != null) ? initializer : actor_initializer;
+    }
+    
+    public Map<String, Object> getCriticInitializer() {
+        return getMultiParamEntry("critic_initializer", "method");
+    }
 
     public Map<String, Object> getReplayMemory() {
         return getMultiParamEntry(REPLAY_MEMORY, "method");
@@ -264,60 +274,6 @@ public class GluonConfigurationData extends ConfigurationData {
             return null;
         }
         return getRlRewardFunctionParameter().get().getOutputParameterName().orElse(null);
-    }
-    
-    public String getInitializerName() {
-        if (getConfiguration().getInitializer() == null) {
-            return null;
-        }
-        return getConfiguration().getInitializer().getName();
-    }
-    
-    public Map<String, String> getInitializerParams() {
-        Map<String, String>  mapToStrings = new HashMap<>();
-        Map<String, InitializerParamSymbol> initializerParams = getConfiguration().getInitializer().getInitializerParamMap();
-        for (Map.Entry<String, InitializerParamSymbol> entry : initializerParams.entrySet()) {
-            String paramName = entry.getKey();
-            String valueAsString = entry.getValue().toString();
-            Class realClass = entry.getValue().getValue().getValue().getClass();
-            if (realClass == Boolean.class) {
-                valueAsString = (Boolean) entry.getValue().getValue().getValue() ? "True" : "False";
-            }
-            mapToStrings.put(paramName, valueAsString);
-        }
-        if (mapToStrings.isEmpty()) {
-            return null;
-        } else {
-            return mapToStrings;
-        }
-    }
-    
-    public String getCriticInitializerName() {
-        if (!getConfiguration().getCriticInitializer().isPresent()) {
-            return null;
-        }
-        return getConfiguration().getCriticInitializer().get().getName();
-    }
-    
-    public Map<String, String> getCriticInitializerParams() {
-        assert getConfiguration().getCriticInitializer().isPresent():
-            "Critic initializer params called although, not present";
-        Map<String, String>  mapToStrings = new HashMap<>();
-        Map<String, InitializerParamSymbol> initializerParams = getConfiguration().getCriticInitializer().get().getInitializerParamMap();
-        for (Map.Entry<String, InitializerParamSymbol> entry : initializerParams.entrySet()) {
-            String paramName = entry.getKey();
-            String valueAsString = entry.getValue().toString();
-            Class realClass = entry.getValue().getValue().getValue().getClass();
-            if (realClass == Boolean.class) {
-                valueAsString = (Boolean) entry.getValue().getValue().getValue() ? "True" : "False";
-            }
-            mapToStrings.put(paramName, valueAsString);
-        }
-        if (mapToStrings.isEmpty()) {
-            return null;
-        } else {
-            return mapToStrings;
-        }
     }
 
     public String getCriticOptimizerName() {
