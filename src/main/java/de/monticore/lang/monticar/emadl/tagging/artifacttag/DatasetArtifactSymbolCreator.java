@@ -27,7 +27,7 @@ import java.util.regex.Pattern;
 
 public class DatasetArtifactSymbolCreator implements TagSymbolCreator {
 
-  protected final String regexExpression =  "\\s*\\{\\s*artifact\\s*=\\s*(.+):(.+):(.+)\\s*,\\s*type\\s*=\\s*(.*)\\s*\\}\\s*";
+  protected final String regexExpression = "\\s*\\{\\s*artifact\\s*=\\s*(.+):(.+):(.+)\\s*,\\s*type\\s*=\\s*(.*)\\s*\\}\\s*";
   protected final Pattern pattern = Pattern.compile(regexExpression, Pattern.MULTILINE);
 
   @Override
