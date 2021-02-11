@@ -1,0 +1,3 @@
+# ConfLang
+
+Basic configuration language
