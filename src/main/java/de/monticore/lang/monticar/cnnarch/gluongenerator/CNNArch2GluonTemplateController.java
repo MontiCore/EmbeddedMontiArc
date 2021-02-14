@@ -23,18 +23,13 @@ public class CNNArch2GluonTemplateController extends CNNArchTemplateController {
     }
 
 
+
     public void include(String relativePath, String templateWithoutFileEnding, Writer writer, NetDefinitionMode netDefinitionMode){
         String templatePath = relativePath + templateWithoutFileEnding + FTL_FILE_ENDING;
         Map<String, Object> ftlContext = new HashMap<>();
         ftlContext.put(TEMPLATE_CONTROLLER_KEY, this);
         ftlContext.put(ELEMENT_DATA_KEY, getCurrentElement());
         ftlContext.put(NET_DEFINITION_MODE_KEY, netDefinitionMode.toString());
-
-        if (this.getDataElement().getElement() instanceof LayerSymbol){
-            if(((LayerSymbol) (this.getDataElement().getElement())).getDeclaration() instanceof CustomLayerDeclaration){
-                templatePath = relativePath + "CustomLayer" + FTL_FILE_ENDING;
-            }
-        }
         getTemplateConfiguration().processTemplate(ftlContext, templatePath, writer);
     }
 
@@ -74,13 +69,7 @@ public class CNNArch2GluonTemplateController extends CNNArchTemplateController {
             String templateName = layer.getDeclaration().getName();
             include(TEMPLATE_ELEMENTS_DIR_PATH, templateName, writer, netDefinitionMode);
         }else if(layer.isArtificial()){
-            if(netDefinitionMode.equals(NetDefinitionMode.ARTIFICIAL_ARCH_CLASS)){
-                layer.setArtificial(false);
-                include(TEMPLATE_ELEMENTS_DIR_PATH,"ArtificialArchClass",writer,netDefinitionMode);
-                layer.setArtificial(true);
-            }else {
-                include(TEMPLATE_ELEMENTS_DIR_PATH, "ArtificialArch", writer, netDefinitionMode);
-            }
+            include(TEMPLATE_ELEMENTS_DIR_PATH,"artificial_arch",writer,netDefinitionMode);
         }
         else {
             include((ArchitectureElementSymbol) layer.getResolvedThis().get(), writer, netDefinitionMode);
