@@ -23,7 +23,6 @@ public class LayerSymbol extends ArchitectureElementSymbol {
 
     private LayerDeclarationSymbol declaration = null;
     private List<ArgumentSymbol> arguments;
-
     protected LayerSymbol(String name) {
         super(name);
     }
@@ -37,7 +36,6 @@ public class LayerSymbol extends ArchitectureElementSymbol {
         }
         return declaration;
     }
-
     @Override
     public boolean isResolvable() {
         return super.isResolvable() && getDeclaration() != null;
@@ -45,6 +43,9 @@ public class LayerSymbol extends ArchitectureElementSymbol {
 
     private void setDeclaration(LayerDeclarationSymbol declaration) {
         this.declaration = declaration;
+        if(this.declaration.getBody()!=null){
+            this.setArtificial(true);
+        }
     }
 
     public List<ArgumentSymbol> getArguments() {
