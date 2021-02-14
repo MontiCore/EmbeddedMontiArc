@@ -17,7 +17,7 @@ public abstract class ArchitectureElementSymbol extends ResolvableSymbol {
     private ArchitectureElementSymbol inputElement = null;
     private ArchitectureElementSymbol outputElement = null;
     private List<ArchTypeSymbol> outputTypes = null;
-
+    private boolean artificial = false;
     protected ArchitectureElementSymbol(String name) {
         super(name, KIND);
     }
@@ -25,6 +25,13 @@ public abstract class ArchitectureElementSymbol extends ResolvableSymbol {
     @Override
     protected ArchitectureElementScope createSpannedScope() {
         return new ArchitectureElementScope();
+    }
+    public boolean isArtificial(){
+        return this.artificial;
+    }
+
+    public void setArtificial(boolean artificial) {
+        this.artificial = artificial;
     }
 
     @Override
