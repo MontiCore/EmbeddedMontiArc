@@ -1,6 +1,6 @@
 <!-- (c) https://github.com/MontiCore/monticore -->
 Racing Car
-=======
+========
 
 In the folder racingCarModels, there are the models of the racing car and the evolutionary algorithm wich is used to optimize the PID parameters.
 
