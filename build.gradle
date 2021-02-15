@@ -1,0 +1,155 @@
+/* (c) https://github.com/MontiCore/monticore */
+import de.monticore.MCTask
+
+plugins {
+    id "java"
+    id "monticore" version "$mc_version" // MontiCore Plugin
+    id "maven-publish"
+    id "com.github.johnrengelman.shadow" version "6.0.0"
+    // useful reports
+    // todo: reactivate this plugin when new version compatible to gradle 6.0.1 is available
+//    id 'cz.malohlava.visteg' version '1.0.5'
+    id 'jacoco'
+}
+
+
+def guava_version = '25.1-jre'
+def findbugs_version = '3.0.0'
+def antlr_version = '4.7.1'
+def junit_version = '4.13.1'
+def logback_version = '1.1.2'
+
+def grammarDir = 'src/main/grammars'
+
+group = "de.monticore.lang"
+version = '1.0.0-SNAPSHOT'
+description = "ConfLang DSL"
+sourceCompatibility = "1.8"
+
+dependencies {
+    implementation "de.monticore:monticore-runtime:$mc_version"
+    implementation "de.monticore:monticore-grammar:$mc_version"
+    grammar("de.monticore:monticore-grammar:$mc_version") {
+        capabilities {
+            requireCapability("de.monticore:monticore-grammar-grammars")
+        }
+    }
+    implementation "de.se_rwth.commons:se-commons-logging:$se_commons_version"
+    implementation "de.se_rwth.commons:se-commons-utilities:$se_commons_version"
+    implementation group: 'com.google.guava', name: 'guava', version: guava_version
+    implementation group: 'org.antlr', name: 'antlr4-runtime', version: antlr_version
+    testImplementation "de.monticore:monticore-generator:$mc_version"
+    testImplementation group: 'junit', name: 'junit', version: junit_version
+    testImplementation("de.monticore:monticore-runtime:$mc_version") {
+        capabilities {
+            requireCapability("de.monticore:monticore-runtime-tests")
+        }
+    }
+    testImplementation group: 'ch.qos.logback', name: 'logback-classic', version: logback_version
+}
+
+// has to be placed directly under the dependency definition, since otherwise the grammar configurations are not found
+repositories {
+    if (("true").equals(getProperty('useLocalRepo'))) {
+        mavenLocal()
+    }
+    maven {
+        credentials.username mavenUser
+        credentials.password mavenPassword
+        url repo
+    }
+}
+
+// configure non-standard source sets
+sourceSets {
+    main.java.srcDirs += ["$projectDir/target/generated-sources/monticore/sourcecode"]
+}
+buildDir = file("$projectDir/target")
+
+// one task per file
+//fileTree(grammarDir).each {
+//    def g = it
+//    task  "generate${it.getName().substring(0,it.getName().lastIndexOf('.'))}" (type: MCTask) {
+//        grammar = file g
+//        outputDir = file "$buildDir/generated-sources/monticore/sourcecode"
+//        handcodedPath file("$projectDir/src/main/java")
+//        modelPath file("$grammarDir")
+//        def incCheckDir = file(grammarDir).toURI().relativize(g.toURI()).toString()
+//        incCheckDir = incCheckDir.substring(0,incCheckDir.lastIndexOf('.')).toLowerCase()
+//        def uptoDate = incCheck(outputDir.toString() +"/$incCheckDir/IncGenGradleCheck.txt")
+//        outputs.upToDateWhen { uptoDate }
+//    }
+//}
+
+task generateConfLang(type: MCTask) {
+    grammar = file "$grammarDir/ConfLang.mc4"
+    outputDir = file "$buildDir/generated-sources/monticore/sourcecode"
+    def uptoDate = incCheck("ConfLang.mc4")
+    outputs.upToDateWhen { uptoDate }
+}
+
+compileJava {
+    dependsOn project.collect { it.tasks.withType(MCTask) }
+}
+
+java {
+    withSourcesJar()
+    withJavadocJar()
+}
+// generated java doc contains errors, disable for now
+javadoc.failOnError(false)
+
+shadowJar { // all in one jar
+    manifest {
+        attributes "Main-Class": "conflang.ConfLangTool"
+    }
+    archiveClassifier = "cli"
+}
+
+// build grammar jar as well
+task grammarJar(type: Jar) {
+    from("$projectDir/$grammarDir") { include "**/*.mc4" }
+    archiveClassifier = "grammars"
+}
+
+
+// configure deployment
+publishing {
+    // configure what artifacts to publish
+    publications {
+        mavenJava(MavenPublication) {
+            artifactId = "$project.name"
+            from components.java
+            artifact grammarJar
+        }
+    }
+    repositories.maven {
+        credentials.username mavenUser
+        credentials.password mavenPassword
+        def releasesRepoUrl = "https://nexus.se.rwth-aachen.de/content/repositories/monticore-releases/"
+        def snapshotsRepoUrl = "https://nexus.se.rwth-aachen.de/content/repositories/monticore-snapshots/"
+        url = version.endsWith("SNAPSHOT") ? snapshotsRepoUrl : releasesRepoUrl
+    }
+}
+
+tasks.withType(JavaCompile) {
+    options.encoding = 'UTF-8'
+}
+
+// todo: reactivate this plugin when new version compatible to gradle 6.0.1 is available
+//visteg {
+//    destination    = 'target/reports/visteg.dot'
+//}
+
+task testReport(type: TestReport) {
+    destinationDir = file("$buildDir/reports/allTests")
+    // Include the results from the 'test' task
+    reportOn tasks.withType(Test)
+}
+
+
+task buildAll(type: GradleBuild) {
+    tasks = ['build']
+}
+
+defaultTasks 'build'
