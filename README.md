@@ -15,7 +15,7 @@ See here how to create new releases: https://help.github.com/articles/creating-r
 For stable releases later than version 1.4 please insert the EmbeddedMontiArcLogo as logo for the self extracting exe (https://www.youtube.com/watch?v=tWA0VFcwi4c) and replace `ide.bat` in the root folder by a link which also has the EmbeddedMontiArcLogo. (Here is the link to the logo: https://github.com/EmbeddedMontiArc/website/blob/master/EMALogoTransparentWithoutSE.png
 
 Release History
-=======
+========
 * **[v2.0:](https://rwth-aachen.sciebo.de/s/ljgKW9cWvL2qMH9?path=%2F2.0.0)** Installer with new professional IDE
   * BumperBot View Verification and NFPVerification do not work yet
 * **[v1.7.0:](https://rwth-aachen.sciebo.de/s/6g3uWJNQcqgnKRc)** Added IDE support for tags
@@ -38,7 +38,7 @@ Release History
 
 
 Credits
-=======
+========
 * Bernhard Rumpe (Organization-Leader and Sponsor of EmbeddedMontiArc)
 * Michael von Wenckstern (Project-Leader: EmbeddedMontiArc-Language, Compiler, Visualisation, IDE, PacMan, SuperMario, and OCL)
 * Evgeny Kusmenko (Project-Leader: Simulator, Physic Engine, and 3D-Car)
