@@ -58,7 +58,7 @@ cmake -G "Visual Studio 15 2017" -DCMAKE_BUILD_TYPE=Release ..
 ```
 
 Using the library
-=======
+========
 Once the library is installed, linking to it is easy! Add the following lines in your CMake project:
 
 ```
@@ -71,5 +71,5 @@ target_include_directories(your_target_name PRIVATE ${PEPARSE_INCLUDE_DIRS})
 You can see a full example in the examples/peaddrconv folder.
 
 Authors
-=======
+========
 pe-parse was designed and implemented by Andrew Ruef (andrew@trailofbits.com), with significant contributions from [Wesley Shields](https://github.com/wxsBSD).
