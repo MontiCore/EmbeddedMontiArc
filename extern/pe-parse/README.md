@@ -21,7 +21,7 @@ The interface is defined in `parser-library/parse.h`. The program in `dump-prog/
 Internally, the parser-library uses a bounded buffer abstraction to access information stored in the PE file. This should help in constructing a sane parser that allows for detection of the use of bogus values in the PE that would result in out of bounds accesses of the input buffer. Once data is read from the file it is sanitized and placed in C++ STL containers of internal types.
 
 Dependencies
-========
+==========
 ### CMake
   * Debian/Ubuntu: `sudo apt-get install cmake`
   * RedHat/Fedora: `sudo yum install cmake`
@@ -29,7 +29,7 @@ Dependencies
   * Windows: Download the installer from the [CMake page](https://cmake.org/download/)
 
 Building
-========
+==========
 ### Generic instructions
 ```
 git clone https://github.com/trailofbits/pe-parse.git
