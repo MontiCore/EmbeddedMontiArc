@@ -53,6 +53,15 @@ public class ConfLangParserTest extends AbstractTest {
     }
 
     @Test
+    public void nullValueInConfiguration() {
+        /* Act */
+        ASTConfLang model = parseModel("src/test/resources/conflang/parser/NullValue.conf");
+
+        /* Assert */
+        assertNotNull(model);
+    }
+
+    @Test
     public void cnntrainConfigurations() {
         /* Act */
         parseModel("src/test/resources/conflang/parser/AccuracyIgnoreLabel.conf");
