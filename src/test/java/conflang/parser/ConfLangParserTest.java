@@ -44,6 +44,38 @@ public class ConfLangParserTest extends AbstractTest {
     }
 
     @Test
+    public void ddpgConfiguration() {
+        /* Act */
+        ASTConfLang model = parseModel("src/test/resources/conflang/parser/DDPG.conf");
+
+        /* Assert */
+        assertNotNull(model);
+    }
+
+    @Test
+    public void cnntrainConfigurations() {
+        /* Act */
+        parseModel("src/test/resources/conflang/parser/AccuracyIgnoreLabel.conf");
+        parseModel("src/test/resources/conflang/parser/DefaultGAN.conf");
+        parseModel("src/test/resources/conflang/parser/Empty.conf");
+        parseModel("src/test/resources/conflang/parser/FlowNetEPE.conf");
+        parseModel("src/test/resources/conflang/parser/FullConfig.conf");
+        parseModel("src/test/resources/conflang/parser/FullConfig2.conf");
+        parseModel("src/test/resources/conflang/parser/FullConfig3.conf");
+        parseModel("src/test/resources/conflang/parser/FullConfig4.conf");
+        parseModel("src/test/resources/conflang/parser/ImageGAN.conf");
+        parseModel("src/test/resources/conflang/parser/InfoGAN.conf");
+        parseModel("src/test/resources/conflang/parser/Reinforcement.conf");
+        parseModel("src/test/resources/conflang/parser/Reinforcement2.conf");
+        parseModel("src/test/resources/conflang/parser/ReinforcementWithRosReward.conf");
+        parseModel("src/test/resources/conflang/parser/Simple1.conf");
+        parseModel("src/test/resources/conflang/parser/Simple2.conf");
+        parseModel("src/test/resources/conflang/parser/TD3.conf");
+
+        /* Assert */
+    }
+
+    @Test
     public void simpleConfigurationEntry() throws RecognitionException, IOException {
         ConfLangParser parser = new ConfLangParser();
         Optional<ASTSimpleConfigurationEntry> state = parser.parseSimpleConfigurationEntry(
