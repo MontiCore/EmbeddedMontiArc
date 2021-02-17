@@ -1,0 +1,5 @@
+deploy-pretrained:
+  image: maven:3.6-jdk-11
+  script:
+    - 'mvn deploy-pretrained -s ci_settings.xml'
+  when: manual
