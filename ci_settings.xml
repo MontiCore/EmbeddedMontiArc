@@ -77,4 +77,8 @@
             </pluginRepositories>
         </profile>
     </profiles>
+
+    <activeProfiles>
+        <activeProfile>se-nexus</activeProfile>
+    </activeProfiles>
 </settings>
