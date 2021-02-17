@@ -100,8 +100,8 @@ public class PretrainedArtifactCreatorTest {
   @Test
   public void testGetPretrainedNetworkLocationsForPathWithWrongFiles() {
     File pretrainedPath = mock(File.class);
-    File jsonFile = new File("json/file/path/test.json");
-    File paramsFile = new File("json/file/path/wrong.params");
+    File jsonFile = new File("json/file/path/test.xml");
+    File paramsFile = new File("json/file/path/wrong.java");
     when(pretrainedPath.listFiles()).thenReturn(new File[] {jsonFile, paramsFile});
 
     assertThrowsExceptionForGetLocations(pretrainedPath);
@@ -131,7 +131,7 @@ public class PretrainedArtifactCreatorTest {
     );
 
     assertEquals(
-        "Directory must contain simple_embedding{...}.param and simple_embedding{...}.json file.",
+        "Directory must contain {...}.param and {...}.json file.",
         exception.getMessage()
     );
   }
