@@ -26,7 +26,7 @@ public class TrainingMojo extends BaseMojo {
             artifactId("maven-streamtest"),
             version("0.0.19")
         ),
-        goal("streamtest-build"),
+        goal("streamtest-generator"),
         configuration(getConfigElements().toArray(new Element[0])),
         executionEnvironment(
             this.getMavenProject(),

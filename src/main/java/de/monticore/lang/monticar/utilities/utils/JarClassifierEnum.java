@@ -9,7 +9,7 @@ public enum JarClassifierEnum {
 
   public final String value;
 
-  private JarClassifierEnum(String value) {
+  JarClassifierEnum(String value) {
     this.value = value;
   }
 

@@ -37,7 +37,7 @@ public class PretrainedArtifactCreator extends ArtifactCreator {
         continue;
       }
 
-      if (file.getName().startsWith("simple_embedding-") && file.getName().endsWith(".params")) {
+      if (file.getName().endsWith(".params")) {
         FileLocation fileLocation = new FileLocation();
         fileLocation.setSourceLocation(file.getAbsolutePath());
         fileLocation.setJarLocation(file.getName());
@@ -45,7 +45,7 @@ public class PretrainedArtifactCreator extends ArtifactCreator {
         pretrainedLocations.add(fileLocation);
         paramFileFound = true;
       }
-      else if (file.getName().startsWith("simple_embedding-") && file.getName().endsWith(".json")) {
+      else if (file.getName().endsWith(".json")) {
         FileLocation fileLocation = new FileLocation();
         fileLocation.setSourceLocation(file.getAbsolutePath());
         fileLocation.setJarLocation(file.getName());
@@ -56,7 +56,7 @@ public class PretrainedArtifactCreator extends ArtifactCreator {
     }
 
     if (!paramFileFound || !jsonFileFound) {
-      throw new MojoExecutionException("Directory must contain simple_embedding{...}.param and simple_embedding{...}.json file.");
+      throw new MojoExecutionException("Directory must contain {...}.param and {...}.json file.");
     }
 
     return pretrainedLocations;
