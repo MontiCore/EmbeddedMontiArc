@@ -31,7 +31,7 @@ public class InstallDatasetMojo extends BaseMojo {
       jarFile = DatasetArtifactCreator.createArtifact(this.datasetToStore, this.getPathTmpOut());
       getLog().info("FINISHED creating Jar for dataset");
 
-      ArtifactDeployer.installArtifact(jarFile.getAbsolutePath(), this.datasetToStore, this.getRepository(), JarClassifierEnum.DATASET);
+      ArtifactDeployer.installArtifact(jarFile.getAbsolutePath(), this.datasetToStore, JarClassifierEnum.DATASET);
     }
     catch (IOException | MavenInvocationException e) {
       throw new MojoFailureException(Arrays.toString(e.getStackTrace()));

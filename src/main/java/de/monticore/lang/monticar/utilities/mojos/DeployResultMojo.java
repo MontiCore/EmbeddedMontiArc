@@ -29,7 +29,8 @@ public class DeployResultMojo extends BaseMojo {
       jarFile = ResultArtifactCreator.createArtifact(storageInformation, getTrainingConfig(), getPathTmpOut(), getTaggingResolver());
       getLog().info("FINISHED creating Jar of the trained model.");
 
-      ArtifactDeployer.deployArtifact(jarFile.getAbsolutePath(), storageInformation, this.getRepository(), JarClassifierEnum.EMPTY);
+      ArtifactDeployer.deployArtifact(jarFile.getAbsolutePath(), storageInformation, this.getRepository(), JarClassifierEnum.EMPTY,
+          getMavenSession().getRequest().getUserSettingsFile());
     }
     catch (IOException | MavenInvocationException e) {
       throw new MojoFailureException(Arrays.toString(e.getStackTrace()));

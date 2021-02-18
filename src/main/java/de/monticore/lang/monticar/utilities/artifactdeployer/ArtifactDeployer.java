@@ -6,6 +6,7 @@ import de.monticore.lang.monticar.utilities.utils.JarClassifierEnum;
 import de.monticore.lang.monticar.utilities.utils.JarDeployer;
 import org.apache.maven.shared.invoker.MavenInvocationException;
 
+import java.io.File;
 import java.util.Properties;
 
 public class ArtifactDeployer {
@@ -19,14 +20,13 @@ public class ArtifactDeployer {
   private static final String CLASSIFIER = "classifier";
   private static final String PACKAGING = "packaging";
 
-  public static void deployArtifact(String jarFile, StorageInformation storageInformation, Repository repository, JarClassifierEnum classifier)
+  public static void deployArtifact(String jarFile, StorageInformation storageInformation, Repository repository, JarClassifierEnum classifier, File settingsFile)
       throws MavenInvocationException {
     Properties properties = getDeployProperties(jarFile, storageInformation, repository, classifier);
-
-    JarDeployer.deployArtifact(properties);
+    JarDeployer.deployArtifact(properties, settingsFile);
   }
 
-  public static void installArtifact(String jarFile, StorageInformation storageInformation, Repository repository, JarClassifierEnum classifier)
+  public static void installArtifact(String jarFile, StorageInformation storageInformation, JarClassifierEnum classifier)
       throws MavenInvocationException {
     Properties properties = getInstallProperties(jarFile, storageInformation, classifier);
 
