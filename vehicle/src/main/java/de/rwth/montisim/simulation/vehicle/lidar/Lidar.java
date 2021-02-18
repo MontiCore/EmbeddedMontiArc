@@ -9,6 +9,7 @@ import de.rwth.montisim.simulation.eesimulator.events.MessageReceiveEvent;
 import de.rwth.montisim.simulation.eesimulator.message.Message;
 import de.rwth.montisim.simulation.environment.world.World;
 import de.rwth.montisim.simulation.environment.world.elements.Building;
+import de.rwth.montisim.simulation.vehicle.Vehicle;
 import de.rwth.montisim.simulation.vehicle.VehicleProperties;
 import de.rwth.montisim.simulation.vehicle.physicalvalues.TrueCompass;
 import de.rwth.montisim.simulation.vehicle.physicalvalues.TruePosition;
@@ -18,6 +19,10 @@ import java.util.Arrays;
 import java.util.List;
 import java.util.Vector;
 
+/**
+ * This component is responsible for computing distances from the vehicle to the surrounding buildings.
+ * It currently uses 8 distance sensors placed on the chassis of the vehicle
+ */
 public class Lidar extends EEComponent {
 
     public World world;
@@ -38,8 +43,12 @@ public class Lidar extends EEComponent {
     private Vec2 orientation = new Vec2(0,0);
     public static final double DOUBLE_TOLERANCE = 0.000001d;
 
-    public Lidar(LidarProperties properties, EESystem eeSystem, World world){
+    private final Vehicle vehicle;
+
+    public Lidar(LidarProperties properties, EESystem eeSystem, World world, Vehicle vehicle){
         super(properties,eeSystem);
+
+        this.vehicle = vehicle;
 
         for (Building building : world.buildings) {
             int corners = building.boundary.size();
@@ -59,8 +68,8 @@ public class Lidar extends EEComponent {
     @Override
     protected void receive(MessageReceiveEvent msgRecvEvent) {
         Message msg = msgRecvEvent.getMessage();
-        Instant time = msgRecvEvent.getEventTime();
         if (msg.isMsg(truePositionMsg)){
+            Instant time = msgRecvEvent.getEventTime();
             truePosition = (Vec2) msg.message;
             compute(time);
         } else if (msg.isMsg(trueCompassMsg)){
@@ -70,10 +79,14 @@ public class Lidar extends EEComponent {
         }
     }
 
+    /**
+     * The main computing part of the component.
+     * Here the distances are computed and sent to other components
+     * @param time the time of the last received truePosition message
+     */
     private void compute(Instant time) {
-
-        double length = 4.971;
-        double width = 1.87;
+        double length = vehicle.properties.body.length;
+        double width = vehicle.properties.body.width;
 
         double angleRad = (angleDeg + 90) * Geometry.DEG_TO_RAD;
         Vec2 rightOrientation = new Vec2(Math.cos(angleRad), Math.sin(angleRad));
@@ -103,8 +116,13 @@ public class Lidar extends EEComponent {
         
     }
 
-
-
+    /**
+     * Sends out a ray from a given point (rayStart) in a given direction (rayDirection)
+     * and returns the distance traveled until it hits the first building in the world.
+     * @param rayStart the starting point from where to shoot the ray
+     * @param rayDirection the direction of the ray
+     * @return the closest distance to a building
+     */
     public double computeShortestDistance(Vec2 rayStart, Vec2 rayDirection) {
         double shortestDistance = Double.MAX_VALUE, currentDistance = 0;
         Vec2 currentIntersection = null, nearestIntersection = null;
@@ -131,10 +149,19 @@ public class Lidar extends EEComponent {
         return shortestDistance;
     }
 
+    /**
+     * Calculates the determinant for a 2x2 matrix
+     * @param a the first column of the matrix
+     * @param b the second column of the matrix
+     * @return the determinant of the matrix
+     */
     private double determinant2x2(Vec2 a, Vec2 b){
         return a.x*b.y - a.y*b.x;
     }
 
+    /**
+     * Simple representation class for an edge, which consists of two points.
+     */
     private static class Edge {
         public Vec3 start;
         public Vec3 end;

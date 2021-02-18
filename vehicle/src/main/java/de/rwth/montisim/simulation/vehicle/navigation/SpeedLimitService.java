@@ -18,25 +18,27 @@ import java.time.Instant;
 import java.util.Optional;
 import java.util.Vector;
 
-
+/**
+ * This component supplies the vehicle with the upper speed limits for the current trajectory.
+ */
 public class SpeedLimitService extends EEComponent {
 
-    private World world;
-    private SpeedLimitServiceProperties properties;
-
+    /**
+     * The simulated world. Used for fetching speed limits
+     */
+    private final World world;
 
     private double[] trajectoryX = null;
     private double[] trajectoryY = null;
     private int trajectoryLength = 0;
 
-    //inputs
-    transient int trajectoryXMsg,
-            trajectoryYMsg,
-            trajectoryLengthMsg;
+    //input ports
+    transient int   trajectoryXMsg,
+                    trajectoryYMsg,
+                    trajectoryLengthMsg;
 
-    //outputs
-    transient int upperSpeedLimitMsg,
-        lowerSpeedLimitMsg;
+    //output ports
+    transient int   upperSpeedLimitMsg;
 
     public static final String UPPER_SPEED_LIMIT_MSG = "upper_speed_limit";
 
@@ -67,22 +69,30 @@ public class SpeedLimitService extends EEComponent {
         }
     }
 
-
+    /**
+     * Main compute method of this component. It is executed each time a trajetory is received.
+     * @param time the event time of the last trajectoryY event
+     */
     private void compute(Instant time) {
-        //System.out.println("testest");
         double[] maxSpeedArr = fetchUpperSpeedLimits();
-        //sendMessage(time, upperSpeedLimitMsg, new double[]{0,0,0,0,0,0,0,0,0,0}, 8*trajectoryLength);
         sendMessage(time, upperSpeedLimitMsg, maxSpeedArr, 8*(trajectoryLength - 1));
     }
 
-    private double[] fetchUpperSpeedLimits() {
-        Vector<Way> ways = world.ways;
+    /**
+     * Tries to fetch the upper speed limits for all the trajectory segments. Each segment is mapped
+     * to its speed limit and if it doesn't have one, -1 is returned.
+     * @return array of speed limits (with a length of trajectoryLength - 1)
+     */
+    public double[] fetchUpperSpeedLimits() {
         double[] maxSpeedArr = new double[trajectoryLength - 1];
         for (int i=0; i < trajectoryLength - 1; i++){
             maxSpeedArr[i] = -1;
         }
         if ( trajectoryX != null && trajectoryLength > 1){
-            PointInformation previousPointInfo = getPointInformation(world.ways, new Vec3(trajectoryX[0], trajectoryY[0], 0));
+
+            PointInformation previousPointInfo = getPointInformation(world.ways, new Vec3(trajectoryX[0],
+                    trajectoryY[0], 0));
+
             for(int i = 1; i < trajectoryLength; i++) {
                 Vec3 nextTrajPoint = new Vec3(trajectoryX[i], trajectoryY[i], 0);
 
@@ -96,6 +106,7 @@ public class SpeedLimitService extends EEComponent {
                 } else {
                     // initial/previous trajectory point is an intersection
                     Optional<Way> mutualWay = getMutualWay(previousPointInfo, nextTrajPoint);
+
                     if (mutualWay.isPresent()) {
                         // current - and next trajectory points are on the same way
                         Vector<Way> tmpWays = new Vector<>();
@@ -111,6 +122,14 @@ public class SpeedLimitService extends EEComponent {
         return maxSpeedArr;
     }
 
+    /**
+     * Checks if two points lie on the same way directly behind each other. If they do, the way is returned, otherwise
+     * an Optional.Empty() is returned. Only the ways in the pointAInfo object are considered.
+     * If two ways which fulfill the condition exist, only the first one is returned.
+     * @param pointAInfo point information for a point A
+     * @param pointB point B
+     * @return optional of the way, where the two points are contained.
+     */
     private Optional<Way> getMutualWay(PointInformation pointAInfo, Vec3 pointB) {
         for (Way way : pointAInfo.ways){
             for (int i=0; i < way.points.size() - 1; i++) {
@@ -127,8 +146,12 @@ public class SpeedLimitService extends EEComponent {
 
 
 
-    /** @function: getNodeIdOfPoint
-     * @return: the nodeId if the given @code{point} is an intersection, otherwise -1
+    /**
+     * Collects information about a point from a given vector of ways. The information
+     * is returned as a PointInformation object
+     * @param point the point to collect information about
+     * @param ways Some ways that can, but don't have to contain the point
+     * @return a PointInformation object with the corresponding coordinates, ways and node
      * */
     private PointInformation getPointInformation(Vector<Way> ways, Vec3 point){
         PointInformation pointInformation = new PointInformation();
@@ -148,11 +171,24 @@ public class SpeedLimitService extends EEComponent {
     }
 
     /**
-     * @Class: PointInformation
-     * It provides information about a specific point from the world.*/
+     * PointInformation
+     * It provides information about a specific point from the world.
+     */
     private static class PointInformation{
+        /**
+         * The coordinates of the point
+         */
         public Vec3 coordinates;
+
+        /**
+         * A node corresponding to the point. Not every point is correlated
+         * to a node, so this can be null.
+         */
         public Node node;
+
+        /**
+         * A vector of ways that contain the point.
+         */
         public Vector<Way> ways = new Vector<>();
     }
 }

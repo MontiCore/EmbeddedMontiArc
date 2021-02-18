@@ -3,6 +3,9 @@ package de.rwth.montisim.simulation.vehicle.physicalvalues;
 import de.rwth.montisim.commons.physicalvalue.PhysicalValueDouble;
 import de.rwth.montisim.simulation.vehicle.powertrain.electrical.battery.Battery;
 
+/**
+ * Current battery level in percent
+ */
 public class BatteryLevel extends PhysicalValueDouble {
     public static final String VALUE_NAME = "battery_level";
     transient final Battery battery;
@@ -12,8 +15,6 @@ public class BatteryLevel extends PhysicalValueDouble {
         this.battery = battery;
     }
 
-    /**
-    * @return battery level in percentage */
     @Override
     public Object get(){
         return battery.percentage();

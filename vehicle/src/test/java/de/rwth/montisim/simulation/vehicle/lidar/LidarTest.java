@@ -5,6 +5,8 @@ import de.rwth.montisim.commons.utils.Vec3;
 import de.rwth.montisim.simulation.eesimulator.EESystem;
 import de.rwth.montisim.simulation.environment.world.World;
 import de.rwth.montisim.simulation.environment.world.elements.Building;
+import de.rwth.montisim.simulation.vehicle.Vehicle;
+import de.rwth.montisim.simulation.vehicle.VehicleProperties;
 import org.junit.Assert;
 import org.junit.Test;
 
@@ -27,7 +29,8 @@ public class LidarTest {
 
         LidarProperties lidarProperties = mock(LidarProperties.class);
         EESystem eeSystem = mock(EESystem.class);
-        Lidar lidar = new Lidar(lidarProperties,eeSystem,world);
+        Vehicle vehicle = mock(Vehicle.class);
+        Lidar lidar = new Lidar(lidarProperties,eeSystem,world,vehicle);
 
 
         Assert.assertEquals(50d, lidar.computeShortestDistance(vehiclePos, ray), Lidar.DOUBLE_TOLERANCE);
@@ -43,7 +46,8 @@ public class LidarTest {
 
         LidarProperties lidarProperties = mock(LidarProperties.class);
         EESystem eeSystem = mock(EESystem.class);
-        Lidar lidar = new Lidar(lidarProperties,eeSystem,world);
+        Vehicle vehicle = mock(Vehicle.class);
+        Lidar lidar = new Lidar(lidarProperties,eeSystem,world,vehicle);
 
 
         Assert.assertEquals(Double.MAX_VALUE, lidar.computeShortestDistance(vehiclePos, ray), Lidar.DOUBLE_TOLERANCE);

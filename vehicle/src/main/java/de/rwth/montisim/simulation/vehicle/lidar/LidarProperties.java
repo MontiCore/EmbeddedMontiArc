@@ -8,6 +8,7 @@ import de.rwth.montisim.simulation.eesimulator.EEComponentType;
 import de.rwth.montisim.simulation.eesimulator.EESystem;
 import de.rwth.montisim.simulation.eesimulator.exceptions.EEMessageTypeException;
 import de.rwth.montisim.simulation.environment.world.World;
+import de.rwth.montisim.simulation.vehicle.Vehicle;
 
 @Typed(LidarProperties.TYPE)
 public class LidarProperties extends EEComponentProperties {
@@ -35,6 +36,6 @@ public class LidarProperties extends EEComponentProperties {
 
     @Override
     public EEComponent build(EESystem eesystem, BuildContext context) throws EEMessageTypeException {
-        return new Lidar(this, eesystem, context.getObject(World.CONTEXT_KEY));
+        return new Lidar(this, eesystem, context.getObject(World.CONTEXT_KEY), context.getObject( Vehicle.CONTEXT_KEY ));
     }
 }
