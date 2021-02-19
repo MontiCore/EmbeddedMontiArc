@@ -13,7 +13,7 @@
 
     <properties>
         <EMAM2CPP.version>0.4.0-SNAPSHOT</EMAM2CPP.version>
-        <EMAM2Middleware.version>0.0.33-SNAPSHOT</EMAM2Middleware.version>
+        <EMAM2Middleware.version>0.1.0-SNAPSHOT</EMAM2Middleware.version>
         <EMADL2CPP.version>0.4.3-SNAPSHOT</EMADL2CPP.version>
         <!--misc-->
         <project.build.sourceEncoding>UTF-8</project.build.sourceEncoding>
@@ -41,12 +41,6 @@
             <groupId>org.freemarker</groupId>
             <artifactId>freemarker</artifactId>
             <version>2.3.23</version>
-        </dependency>
-
-        <dependency>
-            <groupId>de.monticore.lang.monticar</groupId>
-            <artifactId>embedded-montiarc-emadl-generator</artifactId>
-            <version>${EMADL2CPP.version}</version>
         </dependency>
 
         <dependency>
