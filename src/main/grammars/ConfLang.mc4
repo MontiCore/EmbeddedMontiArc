@@ -6,8 +6,7 @@ grammar ConfLang extends de.monticore.types.MCBasicTypes, de.monticore.literals.
         "configuration" Name ("extends" upperBound:MCQualifiedName)? "{" (ConfigurationEntry*) "}" ;
 
     interface ConfigurationEntry = name:Name;
-    SimpleConfigurationEntry implements ConfigurationEntry = name:Name "=" value:Literal;
-    SignedSimpleConfigurationEntry implements ConfigurationEntry = name:Name "=" value:SignedLiteral;
-    VectorConfigurationEntry implements ConfigurationEntry = name:Name "=" value:"(" (Literal | SignedLiteral) ("," (Literal | SignedLiteral))* ")";
+    SimpleConfigurationEntry implements ConfigurationEntry = name:Name "=" value:SignedLiteral;
+    VectorConfigurationEntry implements ConfigurationEntry = name:Name "=" value:"(" SignedLiteral ("," SignedLiteral)* ")";
     NestedConfigurationEntry implements ConfigurationEntry = name:Name "=" value:Name? nestedEntries:"{" (ConfigurationEntry*) "}";
 }

@@ -7,6 +7,7 @@ import conflang._ast.ASTSimpleConfigurationEntry;
 import conflang._visitor.ConfLangHandler;
 import conflang._visitor.ConfLangTraverser;
 import de.monticore.literals.mccommonliterals._ast.ASTNatLiteral;
+import de.monticore.literals.mccommonliterals._ast.ASTSignedNatLiteral;
 import de.monticore.prettyprint.IndentPrinter;
 
 /**
@@ -61,8 +62,8 @@ public class PrettyPrinter implements ConfLangHandler {
         getPrinter().print(node.getName());
         getPrinter().print(" = ");
 
-        if (node.getValue() instanceof ASTNatLiteral) {
-            ASTNatLiteral literal = (ASTNatLiteral) node.getValue();
+        if (node.getValue() instanceof ASTSignedNatLiteral) {
+            ASTSignedNatLiteral literal = (ASTSignedNatLiteral) node.getValue();
             getPrinter().print(literal.getValue());
         }
         getPrinter().println();
