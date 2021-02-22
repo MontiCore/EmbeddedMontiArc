@@ -9,7 +9,8 @@
 /target
 *.pyc
 *.DS_Store
-install/*
+install/hardware_emulator_lib.dll
+install/basic-simulator.jar
 dependency-reduced-pom.xml
 .vscode/
 .factorypath
