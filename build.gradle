@@ -34,6 +34,12 @@ dependencies {
             requireCapability("de.monticore:monticore-grammar-grammars")
         }
     }
+    implementation "de.monticore:siunits:$mc_version"
+    grammar("de.monticore:siunits:$mc_version") {
+        capabilities {
+            requireCapability("de.monticore:siunits-grammars")
+        }
+    }
     implementation "de.se_rwth.commons:se-commons-logging:$se_commons_version"
     implementation "de.se_rwth.commons:se-commons-utilities:$se_commons_version"
     implementation group: 'com.google.guava', name: 'guava', version: guava_version

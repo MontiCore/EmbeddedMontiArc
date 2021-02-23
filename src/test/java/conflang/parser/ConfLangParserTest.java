@@ -62,6 +62,24 @@ public class ConfLangParserTest extends AbstractTest {
     }
 
     @Test
+    public void siunitsInConfiguration() {
+        /* Act */
+        ASTConfLang model = parseModel("src/test/resources/conflang/parser/SIUnits.conf");
+
+        /* Assert */
+        assertNotNull(model);
+    }
+
+    @Test
+    public void typelessAndComponentParametersInConfiguration() {
+        /* Act */
+        ASTConfLang model = parseModel("src/test/resources/conflang/parser/TypelessAndComponent.conf");
+
+        /* Assert */
+        assertNotNull(model);
+    }
+
+    @Test
     public void cnntrainConfigurations() {
         /* Act */
         parseModel("src/test/resources/conflang/parser/AccuracyIgnoreLabel.conf");

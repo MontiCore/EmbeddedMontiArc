@@ -1,9 +1,12 @@
 /* (c) https://github.com/MontiCore/monticore */
 
-grammar ConfLang extends de.monticore.types.MCBasicTypes, de.monticore.literals.MCCommonLiterals {
+grammar ConfLang extends de.monticore.types.MCBasicTypes, de.monticore.literals.MCCommonLiterals, de.monticore.SIUnitLiterals  {
 
     symbol scope ConfLang = MCPackageDeclaration? MCImportStatement*
-        "configuration" Name ("extends" upperBound:MCQualifiedName)? "{" (ConfigurationEntry*) "}" ;
+        "configuration" Name ("extends" superConf:MCQualifiedName)? "{" (ConfigurationEntry*) "}" ;
+
+    TypelessLiteral implements SignedLiteral = source:Name;
+    ComponentLiteral implements SignedLiteral = source:MCQualifiedName;
 
     interface ConfigurationEntry = name:Name;
     SimpleConfigurationEntry implements ConfigurationEntry = name:Name "=" value:SignedLiteral;

@@ -6,6 +6,7 @@ stages:
   - build
   #  - test
   - report
+  - deploy
 
 before_script:
   - chmod +x gradlew
@@ -17,7 +18,6 @@ variables:
   MAVEN_OPTS: "-Xmx4096m -Dorg.slf4j.simpleLogger.log.org.apache.maven.cli.transfer.Slf4jMavenTransferListener=WARN -Dorg.slf4j.simpleLogger.showDateTime=true -Djava.awt.headless=true -Dmaven.repo.local=$CI_PROJECT_DIR/.m2/repository"
   # `installAtEnd` and `deployAtEnd`are only effective with recent version of the corresponding plugins.
   MAVEN_CLI_OPTS: "--batch-mode --errors --fail-at-end --show-version -DinstallAtEnd=true"
-
 
 build:
   stage: build
@@ -66,3 +66,15 @@ pages:
       - public
   only:
     - master
+
+deploy:
+  stage: deploy
+  image: maven:3-jdk-8
+  script:
+    - mvn -Dorg.slf4j.simpleLogger.log.org.apache.maven.cli.transfer.Slf4jMavenTransferListener=warn -B  clean deploy --settings settings.xml
+  only:
+    - master
+  except:
+    changes:
+      - .gitlab-ci.yml
+      - README.md
