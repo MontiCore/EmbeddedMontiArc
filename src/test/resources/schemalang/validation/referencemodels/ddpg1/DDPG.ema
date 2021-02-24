@@ -1,0 +1,14 @@
+/* (c) https://github.com/MontiCore/monticore */
+package ddpg1;
+
+component DDPG {
+
+    component Actor {
+    }
+
+    component Critic {
+    }
+
+    instance Actor actor;
+    instance Critic critic;
+}

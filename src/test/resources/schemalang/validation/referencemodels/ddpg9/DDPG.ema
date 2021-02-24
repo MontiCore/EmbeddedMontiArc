@@ -1,0 +1,21 @@
+/* (c) https://github.com/MontiCore/monticore */
+package ddpg9;
+
+component DDPG {
+
+    component Actor {
+        ports in T state,
+              out U action;
+    }
+
+     component Critic {
+        ports in T state,
+              in U action,
+              out Q qvalue;
+    }
+
+    instance Actor actor;
+    instance Critic critic;
+
+    connect actor.action -> critic.action;
+}

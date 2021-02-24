@@ -1,0 +1,9 @@
+/* (c) https://github.com/MontiCore/monticore */
+package ddpg8;
+
+component Critic {
+    ports
+        in Q(-1:1)^{2} state,
+        in Q(-2:2)^{3} action,
+        out Q qvalue;
+}
