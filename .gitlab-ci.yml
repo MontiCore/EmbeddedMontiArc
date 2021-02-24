@@ -31,6 +31,7 @@ build:
 build_gradle:
   stage: build
   script:
+    - gradle --version
     - "./gradlew assemble"
     - "./gradlew testReport"
   artifacts:
