@@ -37,7 +37,7 @@ dependencies {
     implementation "de.monticore:siunits:$mc_version"
     grammar("de.monticore:siunits:$mc_version") {
         capabilities {
-            requireCapability("de.monticore:siunits-grammars")
+            requireCapability("de.monticore:siunits-grammars:$mc_version"")
         }
     }
     implementation "de.se_rwth.commons:se-commons-logging:$se_commons_version"
