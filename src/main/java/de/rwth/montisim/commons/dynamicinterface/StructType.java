@@ -151,7 +151,7 @@ public class StructType extends DataType implements CustomJson {
     @Override
     public void write(JsonWriter w, BuildContext context) throws SerializationException {
         w.startObject();
-        w.write("type", "struct");
+        w.write("type", TYPE);
         w.write("name", name);
 
         w.writeKey("fields");

@@ -286,6 +286,10 @@ public abstract class Json {
             throw new IllegalArgumentException("Enums cannot be typed.");
 
         String type = typed ? ta.value().length() > 0 ? ta.value() : c.getSimpleName() : null;
+        if (typed) {
+            registerSubtype(c, type);
+        }
+
 
         Writer writer = null;
         Reader reader = null;
@@ -352,10 +356,6 @@ public abstract class Json {
             final Vector<FieldInfo> fields = new Vector<>();
             final HashMap<String, FieldInfo> map = new HashMap<>();
             getFields(c, fields, map, obj, all);
-
-            if (typed) {
-                registerSubtype(c, type);
-            }
 
             writer = (w, o, context) -> {
                 if (obj)
