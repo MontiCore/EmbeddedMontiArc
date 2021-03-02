@@ -29,8 +29,10 @@ public interface MathOptExpressionSymbolVisitor extends MathExpressionSymbolVisi
     }
 
     public default void traverse(MathOptimizationStatementSymbol node) {
-        for (MathValueSymbol optimizationVar : node.getOptimizationVariables()) {
-            handle(optimizationVar);
+        if(node.getOptimizationVariables() != null) {
+            for (MathValueSymbol optimizationVar : node.getOptimizationVariables()) {
+                handle(optimizationVar);
+            }
         }
         if (node.getObjectiveValue() != null) handle(node.getObjectiveValue());
         if (node.getObjectiveExpression() != null) handle(node.getObjectiveExpression());

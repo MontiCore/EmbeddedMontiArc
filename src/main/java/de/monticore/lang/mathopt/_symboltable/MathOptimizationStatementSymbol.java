@@ -21,9 +21,9 @@ public class MathOptimizationStatementSymbol extends MathExpressionSymbol {
     /**
      * Variable which will be minimized/ maximized
      */
-    private List<MathValueSymbol> optimizationVariables;
+    private List<MathValueSymbol> optimizationVariables = new ArrayList<>();;
 
-    private List<MathValueSymbol> independentVariables;
+    private List<MathValueSymbol> independentVariables = new ArrayList<>();;
     /**
      * Variable which will store the result of the optimization
      */

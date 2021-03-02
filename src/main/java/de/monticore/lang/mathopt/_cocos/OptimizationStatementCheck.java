@@ -1,6 +1,7 @@
 /* (c) https://github.com/MontiCore/monticore */
 package de.monticore.lang.mathopt._cocos;
 
+import de.monticore.lang.math._ast.ASTMathAssignmentDeclarationStatement;
 import de.monticore.lang.mathopt._ast.ASTOptimizationObjectiveValue;
 import de.monticore.lang.mathopt._ast.ASTOptimizationStatement;
 import de.monticore.lang.mathopt._ast.ASTOptimizationVariableDeclaration;
@@ -24,6 +25,8 @@ public class OptimizationStatementCheck implements MathOptASTOptimizationStateme
         checkObjectiveFunction(node);
         checkObjectiveFunctionReturnVariable(node);
         checkOptimizationVariable(node);
+        checkIndependentVariables(node);
+        checkStepSize(node);
     }
 
     private void checkObjectiveFunction(ASTOptimizationStatement node) {
@@ -49,6 +52,20 @@ public class OptimizationStatementCheck implements MathOptASTOptimizationStateme
             if (!supportedOptimizationTypes.contains(astOptVar.getType().getElementType().getName())) {
                 Log.error(String.format("0xC0003 Optimization variable type \"%s\" is not supported as return value.", astOptVar.getType().toString()));
             }
+        }
+    }
+
+    private void checkIndependentVariables(ASTOptimizationStatement node) {
+        for (ASTMathAssignmentDeclarationStatement indVar :node.getIndependentDeclarationList()) {
+            if (!supportedOptimizationTypes.contains(indVar.getType().getElementType().getName())) {
+                Log.error(String.format("0xC0004 Optimization variable type \"%s\" is not supported as return value.", indVar.getType().toString()));
+            }
+        }
+    }
+
+    private void checkStepSize(ASTOptimizationStatement node) {
+        if(node.getStepSizeOpt().isPresent()){
+            //
         }
     }
 

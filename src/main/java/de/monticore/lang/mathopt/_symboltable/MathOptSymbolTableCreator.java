@@ -136,6 +136,7 @@ public class MathOptSymbolTableCreator extends MathSymbolTableCreator implements
         List<ASTMathAssignmentDeclarationStatement> indVarDecList = astMathOptimizationStatement.getIndependentDeclarationList();
         List<MathValueSymbol> indVariables = new ArrayList<>();
         for (ASTMathAssignmentDeclarationStatement varDec : indVarDecList) {
+            Log.warn("IndependentVariable "+ varDec.getName() +" Type: " + varDec.getSymbolOpt().get().getClass().toString());
             indVariables.add((MathValueSymbol) varDec.getSymbolOpt().get());
         }
         symbol.setIndependentVariables(indVariables);
