@@ -115,12 +115,16 @@ public abstract class ArchitectureElementSymbol extends ResolvableSymbol {
     public List<ArchitectureElementSymbol> getPrevious(){
         if (getInputElement().isPresent()){
             List<ArchitectureElementSymbol> inputElements = new ArrayList<>();
-            for (ArchitectureElementSymbol element : getInputElement().get().getLastAtomicElements()){
-                if (element.getMaxSerialLength().get() == 0){
-                    inputElements.addAll(element.getPrevious());
-                }
-                else {
-                    inputElements.add(element);
+
+            if(getInputElement().get().isArtificial()){
+                inputElements.add(getInputElement().get());
+            }else {
+                for (ArchitectureElementSymbol element : getInputElement().get().getLastAtomicElements()) {
+                    if (element.getMaxSerialLength().get() == 0) {
+                        inputElements.addAll(element.getPrevious());
+                    } else {
+                        inputElements.add(element);
+                    }
                 }
             }
             return inputElements;
