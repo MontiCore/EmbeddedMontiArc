@@ -2,9 +2,13 @@
 package de.monticore.lang.monticar.cnnarch.generator;
 
 import de.monticore.lang.monticar.cnnarch._symboltable.*;
-import de.monticore.lang.monticar.cnnarch.predefined.*;
-import sun.nio.ch.Net;
-
+import de.monticore.lang.monticar.cnnarch.predefined.Convolution;
+import de.monticore.lang.monticar.cnnarch.predefined.FullyConnected;
+import de.monticore.lang.monticar.cnnarch.predefined.Pooling;
+import de.monticore.lang.monticar.cnnarch.predefined.LargeMemory;
+import de.monticore.lang.monticar.cnnarch.predefined.EpisodicMemory;
+import de.monticore.lang.monticar.cnnarch.predefined.AdaNet;
+import de.monticore.lang.monticar.cnnarch.predefined.AllPredefinedLayers;
 import java.util.*;
 
 public class LayerNameCreator {
