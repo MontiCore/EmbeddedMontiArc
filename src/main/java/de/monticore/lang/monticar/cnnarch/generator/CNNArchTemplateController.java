@@ -127,6 +127,9 @@ public abstract class CNNArchTemplateController {
         List<String> inputNames = new ArrayList<>();
 
         for (ArchitectureElementSymbol input : layer.getPrevious()) {
+            if(input.isArtificial()){
+                inputNames.add(getName(input));
+            }else
             if (input.getOutputTypes().size() == 1) {
                 inputNames.add(getName(input));
             } else {
