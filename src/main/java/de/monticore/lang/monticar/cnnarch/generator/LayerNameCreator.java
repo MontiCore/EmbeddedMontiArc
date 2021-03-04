@@ -40,13 +40,15 @@ public class LayerNameCreator {
         } else if (architectureElement instanceof ParallelCompositeElementSymbol) {
             return nameParallelComposite((ParallelCompositeElementSymbol) architectureElement, stage, streamIndices);
         } else {
-            if (architectureElement.isAtomic()) {
-                if (architectureElement.getMaxSerialLength().get() > 0){
+            if (architectureElement.isAtomic()&& !architectureElement.isArtificial()) {
+                if (architectureElement.getMaxSerialLength().get() > 0) {
                     return add(architectureElement, stage, streamIndices);
                 } else {
                     return stage;
                 }
-            } else {
+            }else if (architectureElement.isArtificial()) {
+                return add(architectureElement,stage,streamIndices);
+            }else{
                 ArchitectureElementSymbol resolvedElement = (ArchitectureElementSymbol) architectureElement.getResolvedThis().get();
                 return name(resolvedElement, stage, streamIndices);
             }
