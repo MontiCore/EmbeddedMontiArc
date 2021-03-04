@@ -75,7 +75,7 @@ public class CNNArch2GluonTemplateController extends CNNArchTemplateController {
             String templateName = layer.getDeclaration().getName();
             include(TEMPLATE_ELEMENTS_DIR_PATH, templateName, writer, netDefinitionMode);
         }else if(layer.isArtificial()){
-            include(TEMPLATE_ELEMENTS_DIR_PATH,"artificial_arch",writer,netDefinitionMode);
+            include(TEMPLATE_ELEMENTS_DIR_PATH,"ArtificialArch",writer,netDefinitionMode);
         }
         else {
             include((ArchitectureElementSymbol) layer.getResolvedThis().get(), writer, netDefinitionMode);
