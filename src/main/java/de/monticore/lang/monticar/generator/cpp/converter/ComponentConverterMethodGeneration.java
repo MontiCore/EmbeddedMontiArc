@@ -13,6 +13,7 @@ import de.monticore.lang.monticar.generator.cpp.GeneralHelperMethods;
 import de.monticore.lang.monticar.generator.cpp.GeneratorCPP;
 import de.monticore.lang.monticar.generator.cpp.MathFunctionFixer;
 import de.monticore.lang.monticar.generator.cpp.instruction.ConnectInstructionCPP;
+import de.monticore.lang.monticar.generator.cpp.instruction.ExecuteDynamicConnects;
 import de.monticore.lang.monticar.generator.cpp.loopSolver.CPPEquationSystemHelper;
 import de.monticore.lang.monticar.generator.cpp.loopSolver.EquationSystemComponentInstanceSymbol;
 import de.monticore.lang.monticar.generator.cpp.loopSolver.RHSComponentInstanceSymbol;
@@ -88,11 +89,49 @@ public class ComponentConverterMethodGeneration {
         } else
             generateExecuteMethodInner(exMethod, componentSymbol, bluePrint, mathStatementsSymbol, generatorCPP, includeStrings);
 
+        // Add other instructions
+        fixDynamicInstruction(bluePrint, exMethod);
+        fixNextInstruction(bluePrint, exMethod);
+        fixExecuteDynamicConnects(exMethod);
+
         // rearrange execute to be last
         bluePrint.getMethods().remove(exMethod);
         bluePrint.addMethod(exMethod);
 
         return exMethod;
+    }
+
+    private static void fixExecuteDynamicConnects(Method exMethod) {
+        List<Instruction> instructions = exMethod.getInstructions();
+        List<Integer> idx = new ArrayList<>();
+
+        for(int i = 1; i < instructions.size(); ++i){
+            if((instructions.get(i-1) instanceof ExecuteDynamicConnects) && (instructions.get(i) instanceof ExecuteDynamicConnects)){
+                ExecuteDynamicConnects a = (ExecuteDynamicConnects) instructions.get(i-1);
+                ExecuteDynamicConnects b = (ExecuteDynamicConnects) instructions.get(i);
+                if(a.getBeforeComponentName().equals(b.getBeforeComponentName())){
+                    idx.add(i);
+                }
+            }
+        }
+
+        Collections.sort(idx, Collections.reverseOrder());
+        for(int i : idx){
+            instructions.remove(i);
+        }
+        exMethod.setInstructions(instructions);
+    }
+
+    private static void fixDynamicInstruction(EMAMBluePrintCPP bluePrint, Method exMethod) {
+        if(bluePrint.getMethod("dynamic").isPresent()){
+            exMethod.addInstruction(0, new TargetCodeInstruction("dynamic();\n"));
+        }
+    }
+
+    private static void fixNextInstruction(EMAMBluePrintCPP bluePrint, Method exMethod) {
+        if(bluePrint.getMethod("next").isPresent()){
+            exMethod.addInstruction(0, new TargetCodeInstruction("next();\n"));
+        }
     }
 
     private static void generateExecuteForRHSComponent(RHSComponentInstanceSymbol componentSymbol, EMAMBluePrintCPP bluePrint, GeneratorCPP generatorCPP, List<String> includeStrings, Method exMethod) {
