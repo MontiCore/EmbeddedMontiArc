@@ -90,8 +90,6 @@ public class ComponentConverterMethodGeneration {
             generateExecuteMethodInner(exMethod, componentSymbol, bluePrint, mathStatementsSymbol, generatorCPP, includeStrings);
 
         // Add other instructions
-        fixDynamicInstruction(bluePrint, exMethod);
-        fixNextInstruction(bluePrint, exMethod);
         fixExecuteDynamicConnects(exMethod);
 
         // rearrange execute to be last
@@ -120,18 +118,6 @@ public class ComponentConverterMethodGeneration {
             instructions.remove(i);
         }
         exMethod.setInstructions(instructions);
-    }
-
-    private static void fixDynamicInstruction(EMAMBluePrintCPP bluePrint, Method exMethod) {
-        if(bluePrint.getMethod("dynamic").isPresent()){
-            exMethod.addInstruction(0, new TargetCodeInstruction("dynamic();\n"));
-        }
-    }
-
-    private static void fixNextInstruction(EMAMBluePrintCPP bluePrint, Method exMethod) {
-        if(bluePrint.getMethod("next").isPresent()){
-            exMethod.addInstruction(0, new TargetCodeInstruction("next();\n"));
-        }
     }
 
     private static void generateExecuteForRHSComponent(RHSComponentInstanceSymbol componentSymbol, EMAMBluePrintCPP bluePrint, GeneratorCPP generatorCPP, List<String> includeStrings, Method exMethod) {
