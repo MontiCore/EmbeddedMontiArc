@@ -12,17 +12,13 @@ import freemarker.template.TemplateExceptionHandler;
 
 import java.io.IOException;
 import java.io.StringWriter;
-import java.util.ArrayList;
-import java.util.LinkedHashSet;
-import java.util.List;
-import java.util.Map;
+import java.util.*;
 
 /**
  * Class to configure cmake file generation.
  * Is responsible for generating the cmake files from freemarker templates.
  * CMake dependencies to other modules can be added as Find Package file.
  * See also https://cmake.org/cmake/help/v3.8/command/find_package.html?highlight=i
- *
  */
 public class CMakeConfig {
 
@@ -35,6 +31,8 @@ public class CMakeConfig {
         conf.setTemplateExceptionHandler(TemplateExceptionHandler.DEBUG_HANDLER);
         conf.setLogTemplateExceptions(false);
         conf.setClassForTemplateLoading(AllTemplates.class, "/template/cmake/");
+        conf.setNumberFormat("#.################");
+        conf.setLocale(Locale.ENGLISH);
         try {
             CMAKE_LISTS_CPP = conf.getTemplate("CMakeListsCppTemplate.ftl");
             CMAKE_FIND_PACKAGE = conf.getTemplate("CMakeFindPackageTemplate.ftl");
@@ -55,17 +53,18 @@ public class CMakeConfig {
 
     private List<String> cmakeCommandListEnd = new ArrayList<>();
 
-    private List<String> cmakeLibraryLinkage = new ArrayList<>();
+    private List<String> cmakeLibraryLinkageList = new ArrayList<>();
 
     // constructor
     public CMakeConfig(String compName) {
         cMakeListsViewModel.setCompName(compName);
         cMakeListsViewModel.setModuleDependencies(moduleList);
+        configureCMakeListsViewModel();
     }
 
     // methods
     protected void configureCMakeListsViewModel() {
-        cMakeListsViewModel.setCmakeLibraryLinkageList(cmakeLibraryLinkage);
+        cMakeListsViewModel.setCmakeLibraryLinkageList(cmakeLibraryLinkageList);
         cMakeListsViewModel.setCmakeCommandList(cmakeCommandList);
         cMakeListsViewModel.setCmakeCommandListEnd(cmakeCommandListEnd);
     }
@@ -87,7 +86,7 @@ public class CMakeConfig {
         FileContent result = new FileContent();
         String compName = cMakeListsViewModel.getCompName().replace(".", "_");
         result.setFileName(compName + ".cpp");
-        result.setFileContent("#include \""+ compName +".h\"");
+        result.setFileContent("#include \"" + compName + ".h\"");
         return result;
     }
 
@@ -108,7 +107,7 @@ public class CMakeConfig {
 
     public FileContent generateCMakeLists() {
         FileContent result = null;
-        configureCMakeListsViewModel();
+        //configureCMakeListsViewModel();
         // map data
         Map<String, Object> dataForTemplate = TemplateHelper.getDataForTemplate(cMakeListsViewModel);
         // try generate file content
@@ -123,7 +122,8 @@ public class CMakeConfig {
     }
 
     public void addModuleDependency(CMakeFindModule module) {
-        moduleList.add(module);
+        if (!moduleList.contains(module))
+            moduleList.add(module);
     }
 
     public CMakeListsCPPViewModel getCMakeListsViewModel() {
@@ -136,7 +136,8 @@ public class CMakeConfig {
      * @param cmd some valid cmake command as string
      */
     public void addCMakeCommand(String cmd) {
-        cmakeCommandList.add(cmd);
+        if (!cmakeCommandList.contains(cmd))
+            cmakeCommandList.add(cmd);
     }
 
     /**
@@ -145,11 +146,15 @@ public class CMakeConfig {
      * @param cmd some valid cmake command as string
      */
     public void addCMakeCommandEnd(String cmd) {
-        cmakeCommandListEnd.add(cmd);
+        if (!cmakeCommandListEnd.contains(cmd))
+            cmakeCommandListEnd.add(cmd);
     }
 
 
     public void addCmakeLibraryLinkage(String cmakeLibraryLinkage) {
-        this.cmakeLibraryLinkage.add(cmakeLibraryLinkage);
+        if (!cmakeLibraryLinkageList.contains(cmakeLibraryLinkage))
+            this.cmakeLibraryLinkageList.add(cmakeLibraryLinkage);
     }
+
+
 }

@@ -26,7 +26,7 @@ X1=0.1;
 Y1=0.01*MAX_STEERING_ANGLE;
 X2=5;
 Y2=0.05*MAX_STEERING_ANGLE;
-COEF_K=log(((Y1/Y2)))/(X2-X1);
+COEF_K=(Helper::getDoubleFromOctaveListFirstResult(Flog(Helper::convertToOctaveValueList((Y1/Y2)),1)))/(X2-X1);
 }
 void execute()
 {

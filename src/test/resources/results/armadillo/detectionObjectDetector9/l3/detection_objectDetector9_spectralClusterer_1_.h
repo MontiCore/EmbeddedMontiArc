@@ -38,19 +38,6 @@ kMeansClustering.init();
 }
 void execute()
 {
-similarity.red = red;
-similarity.green = green;
-similarity.blue = blue;
-similarity.execute();
-normalizedLaplacian.degree = similarity.degree;
-normalizedLaplacian.similarity = similarity.similarity;
-normalizedLaplacian.execute();
-eigenSolver.matrix = normalizedLaplacian.nLaplacian;
-eigenSolver.execute();
-kMeansClustering.vectors = eigenSolver.eigenvectors;
-std::thread thread10( [ this ] {this->kMeansClustering.execute();});
-thread10.join();
-clusters = kMeansClustering.clusters;
 }
 
 };

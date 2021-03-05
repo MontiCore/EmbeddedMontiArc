@@ -43,28 +43,6 @@ boundsEngine.init();
 }
 void execute()
 {
-sac.signedDistanceToTrajectory = signedDistanceToTrajectory;
-sac.execute();
-sum1.t1 = keepDirection.steeringAngle;
-sum1.t2 = sac.steeringAngleCorrection;
-sum1.execute();
-keepDirection.currentDirectionX = currentDirectionX;
-keepDirection.currentDirectionY = currentDirectionY;
-keepDirection.desiredDirectionX = desiredDirectionX;
-keepDirection.desiredDirectionY = desiredDirectionY;
-keepDirection.execute();
-engineAndBrakes.currentVelocity = currentVelocity;
-engineAndBrakes.desiredVelocity = desiredVelocity;
-engineAndBrakes.execute();
-boundsSteering.input = sum1.result;
-boundsSteering.execute();
-boundsBrakes.input = engineAndBrakes.brakes;
-boundsBrakes.execute();
-boundsEngine.input = engineAndBrakes.engine;
-boundsEngine.execute();
-engine = boundsEngine.output;
-steering = boundsSteering.output;
-brakes = boundsBrakes.output;
 }
 
 };

@@ -43,48 +43,6 @@ selector.init();
 }
 void execute()
 {
-isDriveToFirstPosition.currentPositionX = currentPositionX;
-isDriveToFirstPosition.currentPositionY = currentPositionY;
-isDriveToFirstPosition.trimmedTrajectoryLength = trimmedTrajectoryLength;
-isDriveToFirstPosition.trimmedTrajectoryX = trimmedTrajectoryX;
-isDriveToFirstPosition.trimmedTrajectoryY = trimmedTrajectoryY;
-isDriveToFirstPosition.execute();
-driveToFirstPosition.isDriveToFirstPosition = isDriveToFirstPosition.result;
-driveToFirstPosition.currentPositionX = currentPositionX;
-driveToFirstPosition.currentPositionY = currentPositionY;
-driveToFirstPosition.trimmedTrajectoryLength = trimmedTrajectoryLength;
-driveToFirstPosition.trimmedTrajectoryX = trimmedTrajectoryX;
-driveToFirstPosition.trimmedTrajectoryY = trimmedTrajectoryY;
-driveToFirstPosition.execute();
-d2v1.distance = driveToFirstPosition.distance;
-d2v1.minVelocity = driveToFirstPosition.minVelocity;
-d2v1.maxVelocity = driveToFirstPosition.maxVelocity;
-d2v1.execute();
-followTrajectory.isDriveToFirstPosition = isDriveToFirstPosition.result;
-followTrajectory.currentPositionX = currentPositionX;
-followTrajectory.currentPositionY = currentPositionY;
-followTrajectory.trimmedTrajectoryLength = trimmedTrajectoryLength;
-followTrajectory.trimmedTrajectoryX = trimmedTrajectoryX;
-followTrajectory.trimmedTrajectoryY = trimmedTrajectoryY;
-followTrajectory.execute();
-d2v2.distance = followTrajectory.distance;
-d2v2.minVelocity = followTrajectory.minVelocity;
-d2v2.maxVelocity = followTrajectory.maxVelocity;
-d2v2.execute();
-selector.isDriveToFirstPosition = isDriveToFirstPosition.result;
-selector.desiredDirectionX1 = driveToFirstPosition.desiredDirectionX;
-selector.desiredDirectionY1 = driveToFirstPosition.desiredDirectionY;
-selector.signedDistanceToTrajectory1 = driveToFirstPosition.signedDistanceToTrajectory;
-selector.desiredVelocity1 = d2v1.velocity;
-selector.desiredDirectionX2 = followTrajectory.desiredDirectionX;
-selector.desiredDirectionY2 = followTrajectory.desiredDirectionY;
-selector.signedDistanceToTrajectory2 = followTrajectory.signedDistanceToTrajectory;
-selector.desiredVelocity2 = d2v2.velocity;
-selector.execute();
-desiredDirectionX = selector.desiredDirectionX;
-desiredDirectionY = selector.desiredDirectionY;
-signedDistanceToTrajectory = selector.signedDistanceToTrajectory;
-desiredVelocity = selector.desiredVelocity;
 }
 
 };

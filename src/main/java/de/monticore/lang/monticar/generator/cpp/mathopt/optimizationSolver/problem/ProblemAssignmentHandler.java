@@ -255,7 +255,7 @@ public class ProblemAssignmentHandler {
         if (isConstraintOnOptVar(p, expr)) {
             mergeBoundsInX(p, xL, xU, expr, bounds[0], bounds[1], xMatrixElementConstraints);
         } else {
-            MathFunctionFixer.fixMathFunctions(expr, ComponentConverter.currentBluePrint);
+//            MathFunctionFixer.fixMathFunctions(expr, ComponentConverter.currentBluePrint);
             String gAsString = ExecuteMethodGenerator.generateExecuteCode(expr, new ArrayList<>());
             g.add(gAsString);
             gL.add(bounds[0]);
@@ -321,7 +321,7 @@ public class ProblemAssignmentHandler {
             expressionSymbol = ComponentConverter.currentBluePrint.getMathInformationRegister().
                 resolveMathExpressionToAtomarExpression(
                         expressionSymbol, optimizationVariable.getName());
-        MathFunctionFixer.fixMathFunctions(expressionSymbol, ComponentConverter.currentBluePrint);
+        //MathFunctionFixer.fixMathFunctions(expressionSymbol, ComponentConverter.currentBluePrint);
         return ExecuteMethodGenerator.generateExecuteCode(expressionSymbol, new ArrayList<>());
     }
 

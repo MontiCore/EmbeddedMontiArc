@@ -24,11 +24,18 @@ spectralClusterer.init();
 }
 void execute()
 {
-spectralClusterer.red = red1;
-spectralClusterer.green = green1;
-spectralClusterer.blue = blue1;
-spectralClusterer.execute();
-clusters = spectralClusterer.clusters;
+spectralClusterer.similarity.red = red1;
+spectralClusterer.similarity.green = green1;
+spectralClusterer.similarity.blue = blue1;
+spectralClusterer.similarity.execute();
+spectralClusterer.normalizedLaplacian.similarity = spectralClusterer.similarity.similarity;
+spectralClusterer.normalizedLaplacian.degree = spectralClusterer.similarity.degree;
+spectralClusterer.normalizedLaplacian.execute();
+spectralClusterer.eigenSolver.matrix = spectralClusterer.normalizedLaplacian.nLaplacian;
+spectralClusterer.eigenSolver.execute();
+spectralClusterer.kMeansClustering.vectors = spectralClusterer.eigenSolver.eigenvectors;
+spectralClusterer.kMeansClustering.execute();
+clusters = spectralClusterer.kMeansClustering.clusters;
 }
 
 };

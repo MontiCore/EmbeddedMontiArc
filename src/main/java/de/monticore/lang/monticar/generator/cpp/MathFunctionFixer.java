@@ -10,8 +10,8 @@ import de.monticore.lang.monticar.generator.MathCommand;
 import de.monticore.lang.monticar.generator.Variable;
 import de.monticore.lang.monticar.generator.cpp.converter.ComponentConverter;
 import de.monticore.lang.monticar.generator.cpp.converter.MathConverter;
-import de.monticore.lang.monticar.generator.cpp.symbols.MathChainedExpression;
-import de.monticore.lang.monticar.generator.cpp.symbols.MathStringExpression;
+import de.monticore.lang.embeddedmontiarc.embeddedmontiarcmath._symboltable.math.symbols.MathChainedExpression;
+import de.monticore.lang.embeddedmontiarc.embeddedmontiarcmath._symboltable.math.symbols.MathStringExpression;
 import de.se_rwth.commons.logging.Log;
 
 /**
@@ -94,6 +94,12 @@ public class MathFunctionFixer extends BaseMathFunctionFixerHandler {
             if (mathValueExpressionSymbol.isNumberExpression()) {
                 notHandled = false;
             } else if (((MathValueExpressionSymbol) mathExpressionSymbol).isNameExpression()) {
+                if (ExecutionStepperHelper.getTimeVariableName()
+                        .equals(((MathNameExpressionSymbol) mathExpressionSymbol).getNameToResolveValue())) {
+                    ExecutionStepperHelper.setUsed();
+                    ((MathNameExpressionSymbol) mathExpressionSymbol).setNameToResolveValue("getCurrentTime()");
+                    bluePrintCPP.addAdditionalUserIncludeStrings(ExecutionStepperHelper.FILENAME);
+                }
                 notHandled = false;
             } else if (((MathValueExpressionSymbol) mathExpressionSymbol).isBooleanExpression()) {
                 notHandled = false;
@@ -205,7 +211,7 @@ public class MathFunctionFixer extends BaseMathFunctionFixerHandler {
             MathCommand mathCommand = bluePrintCPP.getMathCommandRegister().getMathCommand(mathExpressionSymbol.getNameToAccess());
             if (mathCommand != null) {
                 if (MathConverter.curBackend.getBackendName().equals("OctaveBackend"))
-                    bluePrintCPP.addAdditionalIncludeString("Helper");
+                    bluePrintCPP.addAdditionalUserIncludeStrings("Helper");
                 mathCommand.convertAndSetTargetLanguageName(mathExpressionSymbol, bluePrintCPP);
             }
             if (fixForLoopAccess(mathExpressionSymbol, variable, bluePrintCPP)) {

@@ -61,26 +61,34 @@ public class AbstractSymtabTest extends AbstractSymtab {
         lines1 = discardCopyrightNotice(lines1);
         lines2 = discardEmptyLines(lines2);
         lines2 = discardCopyrightNotice(lines2);
+
+        String lines1AsString = String.join("\n", lines1);
+        String lines2AsString = String.join("\n", lines2);
+
         if (lines1.size() != lines2.size()) {
-            Assert.fail(
+            Assert.assertEquals(
                     "files have different number of lines: "
                             + file1.getAbsolutePath()
                             + " has " + lines1
-                            + " lines and " + file2.getAbsolutePath() + " has " + lines2 + " lines"
+                            + " lines and " + file2.getAbsolutePath() + " has " + lines2 + " lines",
+                    lines1AsString,
+                    lines2AsString
             );
             return false;
         }
+
         int len = lines1.size();
         for (int i = 0; i < len; i++) {
             String l1 = lines1.get(i).trim();
             String l2 = lines2.get(i).trim();
-            Assert.assertEquals("files differ in " + i + " line: "
-                            + file1.getAbsolutePath()
-                            + " has " + l1
-                            + " and " + file2.getAbsolutePath() + " has " + l2,
-                    l1,
-                    l2
-            );
+            if (!l1.equals(l2))
+                Assert.assertEquals("files differ in line " + i + ": "
+                                + file1.getAbsolutePath()
+                                + " has " + l1
+                                + " and " + file2.getAbsolutePath() + " has " + l2,
+                        String.join("\n\n", l1, lines1AsString),
+                        String.join("\n\n", l2, lines2AsString)
+                );
         }
         return true;
     }

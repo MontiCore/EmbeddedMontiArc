@@ -4,11 +4,13 @@ import de.monticore.lang.math._symboltable.expression.MathExpressionSymbol;
 import de.monticore.lang.math._symboltable.matrix.MathMatrixAccessSymbol;
 import de.monticore.lang.math._symboltable.matrix.MathMatrixNameExpressionSymbol;
 import de.monticore.lang.monticar.generator.*;
+import de.monticore.lang.monticar.generator.cmake.CMakeFindModule;
+import de.monticore.lang.monticar.generator.cpp.ConversionHelper;
 import de.monticore.lang.monticar.generator.cpp.EMAMBluePrintCPP;
 import de.monticore.lang.monticar.generator.cpp.MathFunctionFixer;
 import de.monticore.lang.monticar.generator.cpp.converter.ExecuteMethodGenerator;
 import de.monticore.lang.monticar.generator.cpp.converter.MathConverter;
-import de.monticore.lang.monticar.generator.cpp.symbols.MathStringExpression;
+import de.monticore.lang.embeddedmontiarc.embeddedmontiarcmath._symboltable.math.symbols.MathStringExpression;
 import de.se_rwth.commons.logging.Log;
 import de.monticore.lang.monticar.generator.cpp.converter.ComponentConverter;
 
@@ -61,11 +63,15 @@ public class LargestContourCommand extends MathCommand {
 
 
         mathMatrixNameExpressionSymbol.getMathMatrixAccessOperatorSymbol().setMathMatrixAccessSymbols(newMatrixAccessSymbols);
-        bluePrintCPP.addCVIncludeString("opencv2/imgproc/imgproc");
+        bluePrintCPP.addAdditionalStandardIncludeStringWithHPP("opencv2/imgproc/imgproc");
         bluePrint.addMethod(largestContourMethod);
         redefineArmaMat(bluePrintCPP);
         redefineInit(bluePrintCPP);
+        bluePrintCPP.getGenerator().getCmakeConfig()
+                .addModuleDependency(new CMakeFindModule("OpenCV", true).asFindAsPackage());
+        bluePrintCPP.addAdditionalNameSpaceStrings("std");
 
+        ConversionHelper.setUsedCV();
     }
 
     private Method getLargestContourMethod(){

@@ -22,10 +22,7 @@ import freemarker.template.TemplateExceptionHandler;
 
 import java.io.IOException;
 import java.io.StringWriter;
-import java.util.ArrayList;
-import java.util.Arrays;
-import java.util.List;
-import java.util.Map;
+import java.util.*;
 
 /**
  * Generates Ipopt C++ code to solve a given problem
@@ -42,6 +39,7 @@ public class IpoptSolverGeneratorImplementation implements NLPSolverGeneratorImp
         conf.setLogTemplateExceptions(false);
         conf.setClassForTemplateLoading(AllTemplates.class, "/template/optimizationSolver/ipopt/");
         conf.setNumberFormat("0.####E0");
+        conf.setLocale(Locale.ENGLISH);
         try {
             CALL_IPOPT_HPP = conf.getTemplate("CallIpoptTemplate_HeaderOnly.ftl");
             ADMAT_H = conf.getTemplate("ADMat.h");
@@ -130,12 +128,26 @@ public class IpoptSolverGeneratorImplementation implements NLPSolverGeneratorImp
     protected void addCMakeDependenciesToGenerator(EMAMBluePrintCPP bluePrint) {
         Generator gen = bluePrint.getGenerator();
         if (gen instanceof GeneratorCPP) {
-            //ToDo: Find bug, why linkage generation isn't executed.
-            //((GeneratorCPP) gen).getCMakeConfig().addCmakeLibraryLinkage("ipopt");
-            ((GeneratorCPP) gen).getCMakeConfig().addCMakeCommand("set(LIBS ${LIBS} ipopt)");
-
+            List<CMakeFindModule> dependencies = getCMakeDependencies();
+            for (CMakeFindModule dep : dependencies)
+                ((GeneratorCPP) gen).getCMakeConfig().addModuleDependency(dep);
         }
+//        if (gen instanceof GeneratorEMAMOpt2CPP) {
+//            List<CMakeFindModule> dependencies = getCMakeDependencies();
+//            for (CMakeFindModule dep : dependencies)
+//                ((GeneratorEMAMOpt2CPP) gen).getCMakeConfig().addModuleDependency(dep);
+//        }
+    }
 
+    public List<CMakeFindModule> getCMakeDependencies() {
+        CMakeFindModule findCPPAD = new CMakeFindModule("CPPAD", "cppad/ipopt/solve.hpp", "", new ArrayList<String>(), new ArrayList<String>(), new ArrayList(), new ArrayList(), new ArrayList(), true, false, true);
+        CMakeFindModule findIPOpt = new CMakeFindModule("Ipopt", "coin/IpNLP.hpp", "ipopt", new ArrayList<String>(), new ArrayList<String>(), new ArrayList(), new ArrayList(), new ArrayList(), true, true, true);
+        CMakeFindModule findCoinMumps = new CMakeFindModule("CoinMumps", "", "coinmumps", new ArrayList<String>(), new ArrayList<String>(), new ArrayList(), new ArrayList(), new ArrayList(), false, true, true);
+        CMakeFindModule findCoinLapack = new CMakeFindModule("CoinLapack", "", "coinlapack", new ArrayList<String>(), new ArrayList<String>(), new ArrayList(), new ArrayList(), new ArrayList(), false, true, true);
+        CMakeFindModule findCoinBlas = new CMakeFindModule("CoinBlas", "", "coinblas", new ArrayList<String>(), new ArrayList<String>(), new ArrayList(), new ArrayList(), new ArrayList(), false, true, true);
+        CMakeFindModule findCoinMetis = new CMakeFindModule("CoinMetis", "", "coinmetis", new ArrayList<String>(), new ArrayList<String>(), new ArrayList(), new ArrayList(), new ArrayList(), false, true, true);
+        CMakeFindModule findGfortran = new CMakeFindModule("GFortran", "", "gfortran", new ArrayList<String>(), new ArrayList<String>(), new ArrayList(), new ArrayList(), new ArrayList(), false, true, true);
+        return Arrays.asList(findCPPAD, findIPOpt, findCoinMumps, findCoinLapack, findCoinBlas, findCoinMetis, findGfortran);
     }
 
 }

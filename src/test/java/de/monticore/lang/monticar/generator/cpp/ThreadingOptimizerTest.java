@@ -36,4 +36,22 @@ public class ThreadingOptimizerTest extends AbstractSymtabTest {
         String restPath = "paperMatrixModifier/l2/";
         testFilesAreEqual(files, restPath);
     }
+
+    @Test
+    public void testMathUnitThreadingAutopilot() throws IOException {
+        TaggingResolver symtab = createSymTabAndTaggingResolver("src/test/resources");
+
+        EMAComponentInstanceSymbol componentSymbol = symtab.<EMAComponentInstanceSymbol>resolve("de.rwth.armin.modeling.autopilot.autopilot", EMAComponentInstanceSymbol.KIND).orElse(null);
+        assertNotNull(componentSymbol);
+        GeneratorCPP generatorCPP = new GeneratorCPP();
+        generatorCPP.setUseThreadingOptimization(true);
+
+        generatorCPP.useOctaveBackend();
+        generatorCPP.setGenerateCMake(false);
+
+        generatorCPP.setGenerationTargetPath("./target/generated-sources-cpp/autopilot/multithreading");
+        List<File> files = generatorCPP.generateFiles(symtab, componentSymbol);;
+        String restPath = "autopilot/multithreading/";
+        testFilesAreEqual(files, restPath);
+    }
 }

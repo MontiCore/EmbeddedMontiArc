@@ -76,7 +76,8 @@ public class OptimizationSolverConverter {
         }
 
         // do not forget to add include strings
-        bluePrint.additionalIncludeStrings.addAll(solverGenerator.getNecessaryIncludes());
+        for (String necessaryInclude : solverGenerator.getNecessaryIncludes())
+            bluePrint.addAdditionalUserIncludeStrings(necessaryInclude);
 
         return result;
     }

@@ -4,8 +4,8 @@ package de.monticore.lang.monticar.generator.cpp.converter;
 import de.monticore.lang.math._symboltable.expression.*;
 import de.monticore.lang.math._symboltable.matrix.MathMatrixAccessOperatorSymbol;
 import de.monticore.lang.math._symboltable.matrix.MathMatrixExpressionSymbol;
-import de.monticore.lang.monticar.generator.cpp.symbols.MathChainedExpression;
-import de.monticore.lang.monticar.generator.cpp.symbols.MathStringExpression;
+import de.monticore.lang.embeddedmontiarc.embeddedmontiarcmath._symboltable.math.symbols.MathChainedExpression;
+import de.monticore.lang.embeddedmontiarc.embeddedmontiarcmath._symboltable.math.symbols.MathStringExpression;
 import de.se_rwth.commons.logging.Log;
 
 import java.util.List;

@@ -24,7 +24,7 @@ void execute()
 modelColor.execute();
 rgba[0] = modelColor.red;
 rgba[1] = modelColor.green;
-rgba[1] = modelColor.blue;
+rgba[2] = modelColor.blue;
 rgba[3] = modelColor.alpha;
 }
 

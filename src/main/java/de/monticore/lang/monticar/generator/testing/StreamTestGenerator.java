@@ -1,8 +1,6 @@
 /* (c) https://github.com/MontiCore/monticore */
 package de.monticore.lang.monticar.generator.testing;
 
-import alice.tuprolog.Int;
-import de.ma2cfg.helper.Names;
 import de.monticore.ast.ASTNode;
 import de.monticore.lang.embeddedmontiarc.embeddedmontiarc._ast.ASTPort;
 import de.monticore.lang.embeddedmontiarc.embeddedmontiarc._symboltable.instanceStructure.EMAComponentInstanceSymbol;
@@ -11,6 +9,7 @@ import de.monticore.lang.math._ast.ASTNumberExpression;
 import de.monticore.lang.monticar.common2._ast.ASTCommonMatrixType;
 import de.monticore.lang.monticar.types2._ast.ASTElementType;
 import de.se_rwth.commons.logging.Log;
+import org.apache.commons.lang3.StringUtils;
 
 import java.util.Collection;
 
@@ -27,7 +26,7 @@ public class StreamTestGenerator {
 
         currentGeneratedStreamTest = new StreamTest();
         Collection<EMAPortInstanceSymbol> inPorts = expandedComponentInstanceSymbol.getIncomingPortInstances();
-        currentGeneratedStreamTest.setComponentName(Names.FirstUpperCase(expandedComponentInstanceSymbol.getName()));
+        currentGeneratedStreamTest.setComponentName(StringUtils.capitalize(expandedComponentInstanceSymbol.getName()));
         currentGeneratedStreamTest.setPackageName(expandedComponentInstanceSymbol.getPackageName());
         currentGeneratedStreamTest.setName(currentGeneratedStreamTest.getComponentName() + "Test" + testNamePostFix);
 

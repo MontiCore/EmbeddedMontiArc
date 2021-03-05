@@ -10,7 +10,11 @@ import de.monticore.lang.math._symboltable.matrix.MathMatrixVectorExpressionSymb
 public interface MathBackend {
     String getMatrixTypeName();
 
+    String getMatrixTypeUnsignedCharName();
+
     String getCubeTypeName();
+
+    String getCubeUnsignedCharName();
 
     String getMatrixInitString(int sizeN, int sizeM);
 

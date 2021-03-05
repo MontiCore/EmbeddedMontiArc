@@ -31,25 +31,6 @@ engineOrBrakes.init();
 }
 void execute()
 {
-pidParams.currentVelocity = currentVelocity;
-pidParams.desiredVelocity = desiredVelocity;
-pidParams.execute();
-pidError.currentVelocity = currentVelocity;
-pidError.desiredVelocity = desiredVelocity;
-pidError.execute();
-abs1.input = pidError.error;
-abs1.execute();
-pid.paramP = pidParams.paramP;
-pid.paramI = pidParams.paramI;
-pid.paramD = pidParams.paramD;
-pid.paramDecayCoefficient = pidParams.paramDecayCoefficient;
-pid.error = abs1.output;
-pid.execute();
-engineOrBrakes.error = pidError.error;
-engineOrBrakes.controlSignal = pid.control;
-engineOrBrakes.execute();
-engine = engineOrBrakes.engine;
-brakes = engineOrBrakes.brakes;
 }
 
 };
