@@ -39,6 +39,7 @@ public class EmbeddedMontiArcMathCoCos {
                 //Dynamic Cocos
                 .addCoCo(new DynamicComponentDynamicBodyElements())
                 .addCoCo(new NoDynamicNewComponentAndPort())
-                .addCoCo(new NoDynamicNewConnectsOutsideEventHandler());
+                .addCoCo(new NoDynamicNewConnectsOutsideEventHandler())
+                .addCoCo(new EqualityStatementsAloneCoCo());
     }
 }

@@ -12,9 +12,13 @@ import de.monticore.lang.embeddedmontiarc.embeddedmontiarc._ast.EmbeddedMontiArc
 import de.monticore.lang.embeddedmontiarc.embeddedmontiarc._symboltable.UnitNumberExpressionSymbol;
 import de.monticore.lang.embeddedmontiarc.embeddedmontiarc._symboltable.cncModel.EMAComponentSymbol;
 import de.monticore.lang.embeddedmontiarc.embeddedmontiarc._symboltable.instanceStructure.EMAComponentInstanceSymbol;
+import de.monticore.lang.embeddedmontiarc.embeddedmontiarc._symboltable.instanceStructure.EMAPortInstanceSymbol;
+import de.monticore.lang.embeddedmontiarc.embeddedmontiarc.types.EMAVariable;
 import de.monticore.lang.embeddedmontiarc.embeddedmontiarcmath._ast.EmbeddedMontiArcMathMill;
 import de.monticore.lang.embeddedmontiarc.embeddedmontiarcmath._symboltable.EmbeddedMontiArcMathLanguage;
 import de.monticore.lang.embeddedmontiarc.embeddedmontiarcmath._symboltable.EmbeddedMontiArcMathSymbolTableCreator;
+import de.monticore.lang.embeddedmontiarc.embeddedmontiarcmath._symboltable.math.visitor.CopyEMAMMathExpressionSymbol;
+import de.monticore.lang.embeddedmontiarc.embeddedmontiarcmath._symboltable.math.visitor.EMAMMathExpressionSymbolReplacementVisitor;
 import de.monticore.lang.embeddedmontiarc.embeddedmontiarcmath.helper.MathExpressionSymbolHelper;
 import de.monticore.lang.embeddedmontiarcdynamic.embeddedmontiarcdynamic._symboltable.instanceStructure.EMADynamicComponentInstanceBuilder;
 import de.monticore.lang.math._ast.ASTMathNode;
@@ -56,7 +60,7 @@ public class ModifiedEMAComponentInstanceBuilder extends EMADynamicComponentInst
         Optional<MathStatementsSymbol> math =
                 component.getSpannedScope().resolve("MathStatements", MathStatementsSymbol.KIND);
         if (math.isPresent()) {
-            MathStatementsSymbol copy = CopyMathOptExpressionSymbol.copy(math.get());
+            MathStatementsSymbol copy = CopyEMAMMathExpressionSymbol.copy(math.get());
             instanceSymbol.getSpannedScope().getAsMutableScope().add(copy);
             MathExpressionSymbolHelper.getAllSubExpressions(copy).stream().forEachOrdered(
                     s -> instanceSymbol.getSpannedScope().getAsMutableScope().add(s)
@@ -66,7 +70,7 @@ public class ModifiedEMAComponentInstanceBuilder extends EMADynamicComponentInst
 
     @Override
     protected void exchangeGenerics(EMAComponentInstanceSymbol inst,
-            Map<MCTypeSymbol, ActualTypeArgument> mapTypeArguments) {
+                                    Map<MCTypeSymbol, ActualTypeArgument> mapTypeArguments) {
         super.exchangeGenerics(inst, mapTypeArguments);
 
         Collection<MathExpressionSymbol> eprs = inst.getSpannedScope().resolveLocally(MathExpressionSymbol.KIND);
@@ -87,6 +91,13 @@ public class ModifiedEMAComponentInstanceBuilder extends EMADynamicComponentInst
     protected void exchangeParameters(EMAComponentInstanceSymbol inst, Map<String, ASTExpression> arguments) {
         super.exchangeParameters(inst, arguments);
 
+        Map<String, ASTExpression> argumentsWithoutConfigParameters = new HashMap<>();
+        for (Map.Entry<String, ASTExpression> argumentEntry : arguments.entrySet()) {
+            Optional<EMAPortInstanceSymbol> par = inst.getIncomingPortInstance(argumentEntry.getKey());
+            if (!par.isPresent() || !par.get().isConfig())
+                argumentsWithoutConfigParameters.put(argumentEntry.getKey(), argumentEntry.getValue());
+        }
+
         Collection<MathStatementsSymbol> mathStatementSymbols =
                 inst.getSpannedScope().resolveLocally(MathStatementsSymbol.KIND);
 
@@ -97,23 +108,24 @@ public class ModifiedEMAComponentInstanceBuilder extends EMADynamicComponentInst
             for (MathExpressionSymbol mexp : exprs) {
                 if (mexp instanceof MathNameExpressionSymbol) {
                     String name = ((MathNameExpressionSymbol) mexp).getNameToResolveValue();
-                    if (arguments.containsKey(name))
-                        replacementMap.put(mexp, createFromASTExpression(arguments.get(name)));
+                    if (argumentsWithoutConfigParameters.containsKey(name)) {
+                        replacementMap.put(mexp, createFromASTExpression(argumentsWithoutConfigParameters.get(name)));
+                    }
                 }
             }
             for (Map.Entry<MathExpressionSymbol, MathExpressionSymbol> replacement : replacementMap.entrySet()) {
                 inst.getSpannedScope().getAsMutableScope().remove(replacement.getKey());
                 inst.getSpannedScope().getAsMutableScope().add(replacement.getValue());
             }
-            MathOptExpressionSymbolReplacementVisitor.replace(mathStatementsSymbol, replacementMap);
+            EMAMMathExpressionSymbolReplacementVisitor.replace(mathStatementsSymbol, replacementMap);
         }
     }
 
     private MathExpressionSymbol createFromASTExpression(ASTExpression expression) {
-                        ResolvingConfiguration configuration = new ResolvingConfiguration();
+        ResolvingConfiguration configuration = new ResolvingConfiguration();
 
-                        Optional<MathSymbolTableCreator> symbolTableCreator =
-                                (new MathLanguage()).getSymbolTableCreator(configuration,
+        Optional<MathSymbolTableCreator> symbolTableCreator =
+                (new MathLanguage()).getSymbolTableCreator(configuration,
                         new CommonScope());
 
         if (!(expression instanceof ASTMathNode)) {
@@ -125,10 +137,10 @@ public class ModifiedEMAComponentInstanceBuilder extends EMADynamicComponentInst
             symbolTableCreator.get().createFromAST(node);
         } else {
             symbolTableCreator.get().createFromAST((ASTMathNode) expression);
-                        }
+        }
 
         return (MathExpressionSymbol) expression.getSymbolOpt().orElse(null);
-        }
+    }
 
 
     @Override
@@ -146,9 +158,9 @@ public class ModifiedEMAComponentInstanceBuilder extends EMADynamicComponentInst
                                 .setNum(numberWithInf)
                                 .build();
                 expression = EmbeddedMontiArcMathMill
-                                .numberExpressionBuilder()
-                                .setNumberWithUnit(numberWithUnit)
-                                .build();
+                        .numberExpressionBuilder()
+                        .setNumberWithUnit(numberWithUnit)
+                        .build();
             } else if (((ASTLiteralValue) defaultValue).getValue() instanceof ASTBooleanLiteral) {
                 if (((ASTBooleanLiteral) ((ASTLiteralValue) defaultValue).getValue()).getValue()) {
                     expression = EmbeddedMontiArcMathMill
