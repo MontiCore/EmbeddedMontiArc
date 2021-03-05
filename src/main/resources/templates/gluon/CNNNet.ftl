@@ -9,6 +9,9 @@ import abc
 import warnings
 import sys
 from mxnet import gluon, nd
+<#list tc.architecture.networkInstructions as networkInstruction>
+${tc.include(networkInstruction.body, "ARTIFICICIAL_ARCH_CLASS")}
+</#list>
 
 <#if tc.architecture.customPyFilesPath??>
 sys.path.insert(1, '${tc.architecture.customPyFilesPath}')
