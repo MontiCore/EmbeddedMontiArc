@@ -1,22 +1,14 @@
 <#-- (c) https://github.com/MontiCore/monticore -->
-<#-- So that the license is in the generated file: -->
-# (c) https://github.com/MontiCore/monticore
 import mxnet as mx
 import numpy as np
 import math
 import os
 import abc
 import warnings
-import sys
 from mxnet import gluon, nd
 <#list tc.architecture.networkInstructions as networkInstruction>
 ${tc.include(networkInstruction.body, "ARTIFICICIAL_ARCH_CLASS")}
 </#list>
-
-<#if tc.architecture.customPyFilesPath??>
-sys.path.insert(1, '${tc.architecture.customPyFilesPath}')
-from custom_layers import *
-</#if>
 
 
 class ZScoreNormalization(gluon.HybridBlock):
@@ -568,8 +560,6 @@ ${tc.include(networkInstruction.body, elements?index, "FORWARD_FUNCTION")}
 
 </#list>
 
-
-
 class Net_${networkInstruction?index}(gluon.HybridBlock):
     def __init__(self, data_mean=None, data_std=None, mx_context=None, **kwargs):
         super(Net_${networkInstruction?index}, self).__init__(**kwargs)
@@ -591,7 +581,6 @@ class Net_${networkInstruction?index}(gluon.HybridBlock):
 ${tc.include(networkInstruction.body, "ARCHITECTURE_DEFINITION")}
 </#if>    
             pass
-
 
     def hybrid_forward(self, F, ${tc.join(tc.getStreamInputNames(networkInstruction.body, false), ", ")}):
 <#if networkInstruction.body.episodicSubNetworks?has_content>
