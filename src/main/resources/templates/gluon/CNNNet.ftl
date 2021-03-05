@@ -6,6 +6,9 @@ import os
 import abc
 import warnings
 from mxnet import gluon, nd
+<#list tc.architecture.networkInstructions as networkInstruction>
+${tc.include(networkInstruction.body, "ARTIFICICIAL_ARCH_CLASS")}
+</#list>
 
 
 class ZScoreNormalization(gluon.HybridBlock):
