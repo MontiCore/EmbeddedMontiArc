@@ -5,6 +5,7 @@ package de.monticore.lang.monticar.generator.mathopt;
 import de.monticore.lang.embeddedmontiarc.embeddedmontiarc._symboltable.instanceStructure.EMAComponentInstanceSymbol;
 import de.monticore.lang.monticar.generator.AbstractSymtabTest;
 import de.monticore.lang.monticar.generator.cpp.GeneratorCPP;
+import de.monticore.lang.monticar.generator.cpp.GeneratorCppCli;
 import de.monticore.lang.tagging._symboltable.TaggingResolver;
 import org.junit.Test;
 
@@ -34,6 +35,16 @@ public class GeneratorEMAMOpt2CPPTest extends AbstractSymtabTest {
         return files;
     }
 
+    protected static List<File> doGenerateMathOptModel(String modelName) throws IOException {
+        TaggingResolver symtab = createSymTabAndTaggingResolver("src/test/resources/mathopt");
+        EMAComponentInstanceSymbol componentSymbol = symtab.<EMAComponentInstanceSymbol>resolve(String.format("de.rwth.monticar.%s", modelName), EMAComponentInstanceSymbol.KIND).orElse(null);
+        assertNotNull(componentSymbol);
+        GeneratorCPP generator = new GeneratorCPP();
+        generator.setGenerationTargetPath("./target/generated-sources-cpp/mathopt/generator/" + modelName);
+        List<File> files = generator.generateFiles(symtab, componentSymbol);
+        return files;
+    }
+
     /**
      * Simple quadratic problem min x^2-2x+1 s.t. x >= 0
      */
@@ -44,6 +55,18 @@ public class GeneratorEMAMOpt2CPPTest extends AbstractSymtabTest {
         // String restPath = "testMath/optimizationSolver/";
         // testFilesAreEqual(files, restPath);
     }
+
+    @Test
+    public void testMPCImplementation() throws IOException {
+
+        doGenerateMathOptModel("mpcautopilot.torcsWrapper");
+        // TODO: create reference solution
+        // String restPath = "testMath/optimizationSolver/";
+        // testFilesAreEqual(files, restPath);
+    }
+
+    //ToDo: Add more tests
+    //   Variable definition: ADMat vs ADouble (cardinality > 1)
 
     /**
      * Simple quadratic problem max x^2-2x+1 s.t. x >= 0

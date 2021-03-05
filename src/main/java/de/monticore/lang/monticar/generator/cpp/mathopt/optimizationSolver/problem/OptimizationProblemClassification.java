@@ -1,10 +1,7 @@
 /* (c) https://github.com/MontiCore/monticore */
 package de.monticore.lang.monticar.generator.cpp.mathopt.optimizationSolver.problem;
 
-import de.monticore.lang.math._symboltable.expression.MathConditionalExpressionSymbol;
-import de.monticore.lang.math._symboltable.expression.MathConditionalExpressionsSymbol;
-import de.monticore.lang.math._symboltable.expression.MathExpressionSymbol;
-import de.monticore.lang.math._symboltable.expression.MathValueType;
+import de.monticore.lang.math._symboltable.expression.*;
 import de.monticore.lang.mathopt._symboltable.MathOptimizationStatementSymbol;
 import de.se_rwth.commons.logging.Log;
 
@@ -59,7 +56,7 @@ public class OptimizationProblemClassification {
 
     private static boolean checkIfQP(MathOptimizationStatementSymbol symbol) {
         boolean result = false;
-        String optvar = symbol.getOptimizationVariable().getName();
+        //String optvar = symbol.getOptimizationVariable().getName();
         String text = symbol.getTextualRepresentation();
         if (!containsNonLinearFunctions(text)) {
 
@@ -96,9 +93,13 @@ public class OptimizationProblemClassification {
 
     private static boolean isMixedInteger(MathOptimizationStatementSymbol symbol) {
         boolean result = false;
-        MathValueType type = ProblemAssignmentHandler.getInstance().getVariableWithTypeInformations(symbol.getOptimizationVariable()).getType();
-        if (type.getType().isWholeNumber())
-            result = true;
+
+        for(MathValueSymbol optimizationVariable : symbol.getOptimizationVariables()){
+            MathValueType type = ProblemAssignmentHandler.getInstance().getVariableWithTypeInformations(optimizationVariable).getType();
+            if (type.getType().isWholeNumber())
+                result = true;
+        }
+
         return result;
     }
 

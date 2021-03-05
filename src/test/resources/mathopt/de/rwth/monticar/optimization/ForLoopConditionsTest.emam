@@ -7,8 +7,10 @@ component ForLoopConditionsTest{
           out Q yOut;
 
     implementation Math{
-        Q y = minimize(Q^{3} x)
-          x(1) * x(1) + x(2) * x(2) + x(3) * x(3);
+        minimize
+            Q^{3} x;
+        in
+          Q y = x(1) * x(1) + x(2) * x(2) + x(3) * x(3);
         subject to
           for i = 1:3
             x(i) >= 0;

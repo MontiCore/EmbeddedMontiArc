@@ -92,24 +92,27 @@ public class OptimizationSolverConverter {
         return defined;
     }
 
+    //ToDo: This will become obsolete, as the function call is to be generated dynamically.
     private static String getOutputVariableDeclarations(MathOptimizationStatementSymbol symbol, Problem problemType, EMAMBluePrintCPP bluePrint) {
         String result = "";
-        if (!isOptimizationVariableAlreadyDefined(symbol.getOptimizationVariable(), bluePrint))
-            result += ExecuteMethodGenerator.generateExecuteCode(symbol.getOptimizationVariable(), new ArrayList<>());
+        List<MathValueSymbol> vars = symbol.getOptimizationVariables();
+        for(MathValueSymbol var : vars)
+            if (!isOptimizationVariableAlreadyDefined(var, bluePrint))
+                result += ExecuteMethodGenerator.generateExecuteCode(var, new ArrayList<>());
         if (symbol.hasReturnValue()) {
             MathValueSymbol expr = symbol.getObjectiveValue();
             MathValueSymbol decl = new MathValueSymbol(expr.getName());
             decl.setType(expr.getType());
             result += ExecuteMethodGenerator.generateExecuteCode(decl, new ArrayList<>());
         } else {
-            problemType.setObjectiveValueVariable("objectiveValue" + problemType.getId());
-            MathValueSymbol decl = new MathValueSymbol(problemType.getObjectiveValueVariable());
+            //problemType.setObjectiveValueVariable("objectiveValue" + problemType.getId());
+            //MathValueSymbol decl = new MathValueSymbol(problemType.getObjectiveValueVariable());
             MathValueType type = new MathValueType();
             ASTElementType astType = new ASTElementType();
             astType.setName("Q");
             type.setType(astType);
-            decl.setType(type);
-            result += ExecuteMethodGenerator.generateExecuteCode(decl, new ArrayList<>());
+            //decl.setType(type);
+            //result += ExecuteMethodGenerator.generateExecuteCode(decl, new ArrayList<>());
         }
         return result;
     }

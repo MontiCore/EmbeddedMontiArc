@@ -13,9 +13,9 @@ public class CplexViewModel extends SolverViewModel {
     }
 
     // methods
-    @Override
+    //@Override
     public void setOptimizationVariableType(String optimizationVariableType) {
-        super.setOptimizationVariableType(optimizationVariableType);
+        //super.setOptimizationVariableType(optimizationVariableType);
         // also set active type
         if (optimizationVariableType.contentEquals("mat")) {
             this.setOptimizationVariableTypeActive("CplexMat");

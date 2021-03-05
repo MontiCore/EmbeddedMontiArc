@@ -1,6 +1,7 @@
 /* (c) https://github.com/MontiCore/monticore */
 package de.monticore.lang.monticar.generator.cpp.mathopt.optimizationSolver.problem;
 
+import de.monticore.lang.math._symboltable.MathVariableDeclarationSymbol;
 import de.monticore.lang.math._symboltable.expression.*;
 import de.monticore.lang.math._symboltable.matrix.MathMatrixNameExpressionSymbol;
 import de.monticore.lang.mathopt._symboltable.MathOptimizationConditionSymbol;
@@ -40,17 +41,21 @@ public class ProblemAssignmentHandler {
     private void setOptimizationVariableFromSymbol(Problem p, MathOptimizationStatementSymbol symbol) {
 
         Vector<Integer> dimensions = new Vector<>();
-        p.setN(getOptimizationVarDimension(symbol, dimensions));
-        p.setOptimizationVariableName(getOptimizationVarName(symbol));
-        p.setOptimizationVariableType(getOptimizationVarType(symbol));
-        p.setOptimizationVariableDimensions(dimensions);
+        List<MathValueSymbol> optVars = symbol.getOptimizationVariables();
+        List<MathValueSymbol> indVars = symbol.getIndependentVariables();
+        MathExpressionSymbol stepSize = symbol.getStepSizeExpression();
 
-        getOptimizationSymbolHandler().setCurrentOptimizationVariableName(getOptimizationVarName(symbol));
+
+        p.setN(getOptimizationVarDimensions(symbol, dimensions));
+        p.setOptimizationVariables(optVars);
+        p.setIndependentVariables(indVars);
+        p.setStepSize(stepSize);
     }
 
     private void setObjectiveFunctionFromSymbol(Problem p, MathOptimizationStatementSymbol symbol) {
-        p.setObjectiveValueVariable(getObjectiveValueVarName(symbol));
-        p.setObjectiveFunction(getObjectiveFunctionAsCode(symbol));
+
+        p.setObjectiveValueVariable(symbol.getObjectiveValue());
+        p.setObjectiveFunction(symbol.getObjectiveExpression());
     }
 
     private String[] getBoundsFromConstraint(Problem p, MathOptimizationConditionSymbol constraint) {
@@ -72,7 +77,7 @@ public class ProblemAssignmentHandler {
         } else {
             name = "";
         }
-        return name.contentEquals(p.getOptimizationVariableName());
+        return p.getOptimizationVariables().contains(name);
     }
 
     private void mergeBoundsInX(Problem p, Vector<String> xL, Vector<String> xU, MathExpressionSymbol expr, String currXL, String currXU, Vector<String> xMatrixElementConstraints) {
@@ -114,14 +119,28 @@ public class ProblemAssignmentHandler {
     }
 
     private void setBoundsOnXFromTypeDeclaration(MathOptimizationStatementSymbol symbol, Vector<String> xL, Vector<String> xU, int n) {
+
+        //ToDo refactor the string away.
+        Double lower = Double.parseDouble(Problem.LOWER_BOUND_INF);
+        Double upper = Double.parseDouble(Problem.UPPER_BOUND_INF);
         String lowerBoundX = Problem.LOWER_BOUND_INF;
         String upperBoundX = Problem.UPPER_BOUND_INF;
 
-        MathValueType type = getVariableWithTypeInformations(symbol.getOptimizationVariable()).getType();
-        if (type.getType().getRangeOpt().isPresent()) {
-            lowerBoundX = Double.toString(type.getType().getRange().getStartValue().doubleValue());
-            upperBoundX = Double.toString(type.getType().getRange().getEndValue().doubleValue());
+        //ToDo: Where would be the variable bound information? e.g. Q var (0:100)
+        for(MathValueSymbol var : symbol.getOptimizationVariables()){
+            MathValueType type = getVariableWithTypeInformations(var).getType();
+            if (type.getType().getRangeOpt().isPresent()) {
+                if(type.getType().getRange().getStartValue().doubleValue() < lower)
+                    lower = type.getType().getRange().getStartValue().doubleValue();
+                if(type.getType().getRange().getEndValue().doubleValue() > upper)
+                upper = type.getType().getRange().getEndValue().doubleValue();
+            }
         }
+
+        lowerBoundX = Double.toString(lower);
+        upperBoundX = Double.toString(upper);
+        //ToDo: How does xL and xU get written in the correct places??
+        //A: Currently it is written everywhere..
         for (int i = 0; i < n; i++) {
             xL.add(lowerBoundX);
             xU.add(upperBoundX);
@@ -136,12 +155,14 @@ public class ProblemAssignmentHandler {
         Vector<String> xU = new Vector<>();
         Vector<String> xMatrixElementConstraints = new Vector<>();
         // add constraints
-        setBoundsOnXFromTypeDeclaration(symbol, xL, xU, p.getN());
+        //ToDo: Implement in template through ipopt
+        //setBoundsOnXFromTypeDeclaration(symbol, xL, xU, p.getN());
+
         addConstraintsOnObjectiveVariable(symbol, g, gL, gU);
         addSubjectToConstraints(p, symbol, xL, xU, g, gL, gU, xMatrixElementConstraints);
         // set nlp
         p.setM(g.size());
-        p.setConstraintFunctions(g);
+        p.setConstraintFunctions(symbol.getConstraints());
         p.setgL(gL);
         p.setgU(gU);
         p.setxL(xL);
@@ -252,32 +273,38 @@ public class ProblemAssignmentHandler {
         return numberExpr;
     }
 
-    private int getOptimizationVarDimension(MathOptimizationStatementSymbol symbol, Vector<Integer> dimensions) {
+    private int getOptimizationVarDimensions(MathOptimizationStatementSymbol symbol, Vector<Integer> dimensions) {
         int n = 1;
         dimensions.clear();
-        MathValueSymbol optVarDeclaration = getVariableWithTypeInformations(symbol.getOptimizationVariable());
-        List<MathExpressionSymbol> dims = optVarDeclaration.getType().getDimensions();
-        for (MathExpressionSymbol d : dims) {
-            if (getNumber(d) != null) {
-                int currDim = getNumber(d).getValue().getRealNumber().intValue();
-                n *= currDim;
-                dimensions.add(currDim);
+
+        for (MathValueSymbol optVar : symbol.getOptimizationVariables()){
+            int currentN = 1;
+            MathValueSymbol optVarDeclaration = getVariableWithTypeInformations(optVar);
+
+            List<MathExpressionSymbol> dims = optVarDeclaration.getType().getDimensions();
+            for (MathExpressionSymbol d : dims) {
+                if (getNumber(d) != null) {
+                    int currDim = getNumber(d).getValue().getRealNumber().intValue();
+                    currentN *= currDim;
+                    dimensions.add(currDim);
+                }
             }
+            n += currentN;
         }
         return n;
     }
 
-    private String getOptimizationVarName(MathOptimizationStatementSymbol symbol) {
-        return symbol.getOptimizationVariable().getName();
+    private List<MathValueSymbol> getOptimizationVarName(MathOptimizationStatementSymbol symbol) {
+        return symbol.getOptimizationVariables();
     }
 
     public MathValueSymbol getVariableWithTypeInformations(MathValueSymbol symbol) {
         return ComponentConverter.currentBluePrint.getMathInformationRegister().getFullTypeInformation(symbol);
     }
 
-    private String getOptimizationVarType(MathOptimizationStatementSymbol symbol) {
-        return TypeConverter.getVariableTypeNameForMathLanguageTypeName(getVariableWithTypeInformations(symbol.getOptimizationVariable()).getType());
-    }
+    //private String getOptimizationVarType(MathOptimizationStatementSymbol symbol) {
+    //    return TypeConverter.getVariableTypeNameForMathLanguageTypeName(getVariableWithTypeInformations(symbol.getOptimizationVariable()).getType());
+    //}
 
     private String getObjectiveValueVarName(MathOptimizationStatementSymbol symbol) {
         String objValueVar = "";
@@ -288,9 +315,14 @@ public class ProblemAssignmentHandler {
     }
 
     private String getObjectiveFunctionAsCode(MathOptimizationStatementSymbol symbol) {
-        MathExpressionSymbol substitutedObjFunc = ComponentConverter.currentBluePrint.getMathInformationRegister().resolveMathExpressionToAtomarExpression(symbol.getObjectiveExpression().getAssignedMathExpressionSymbol(), symbol.getOptimizationVariable().getName());
-        MathFunctionFixer.fixMathFunctions(substitutedObjFunc, ComponentConverter.currentBluePrint);
-        return ExecuteMethodGenerator.generateExecuteCode(substitutedObjFunc, new ArrayList<>());
+        //Todo: why do we need a subsitute instead of renaming c-code "x"?
+        MathExpressionSymbol expressionSymbol = symbol.getObjectiveExpression().getAssignedMathExpressionSymbol();
+        for(MathValueSymbol optimizationVariable : symbol.getOptimizationVariables())
+            expressionSymbol = ComponentConverter.currentBluePrint.getMathInformationRegister().
+                resolveMathExpressionToAtomarExpression(
+                        expressionSymbol, optimizationVariable.getName());
+        MathFunctionFixer.fixMathFunctions(expressionSymbol, ComponentConverter.currentBluePrint);
+        return ExecuteMethodGenerator.generateExecuteCode(expressionSymbol, new ArrayList<>());
     }
 
     private OptimizationSymbolHandler getOptimizationSymbolHandler() {

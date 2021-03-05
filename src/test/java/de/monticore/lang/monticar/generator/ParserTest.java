@@ -129,7 +129,10 @@ public class ParserTest {
           if (expectingError) {
             Log.enableFailQuick(false);
           }
-          maModel = parser.parse(file.toString());
+          if(file.toString().contains("SteeringAngleCalculator")) {
+            maModel = parser.parse(file.toString());
+            int skjdfhk = 0;
+          }
         }
         catch (Exception e) {
           if (!expectingError) {
