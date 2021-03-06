@@ -125,11 +125,13 @@ public class IpoptViewModel extends SolverViewModel {
         MathMatrixVectorExpressionSymbol result = null;
         MathExpressionSymbol mathExpression = getStepSize();
         //ToDo: Add CoCo to ensure this always holds.
-        if(mathExpression.isAssignmentExpression()) {
-            MathAssignmentExpressionSymbol assignExpression = (MathAssignmentExpressionSymbol) mathExpression;
-            MathExpressionSymbol assignChildExpression = assignExpression.getExpressionSymbol();
+        if(mathExpression != null) {
+            if (mathExpression.isAssignmentExpression()) {
+                MathAssignmentExpressionSymbol assignExpression = (MathAssignmentExpressionSymbol) mathExpression;
+                MathExpressionSymbol assignChildExpression = assignExpression.getExpressionSymbol();
 
-            result = (MathMatrixVectorExpressionSymbol) assignChildExpression;
+                result = (MathMatrixVectorExpressionSymbol) assignChildExpression;
+            }
         }
         return result;
     }
@@ -137,28 +139,38 @@ public class IpoptViewModel extends SolverViewModel {
     public String getStepSizeName(){
         String result = "";
         MathExpressionSymbol mathExpression = getStepSize();
-        //ToDo: Add CoCo to ensure this always holds.
-        if(mathExpression.isAssignmentExpression()) {
-            MathAssignmentExpressionSymbol assignExpression = (MathAssignmentExpressionSymbol) mathExpression;
 
-            result = assignExpression.getNameOfMathValue();
+        if(mathExpression != null) {
+            //ToDo: Add CoCo to ensure this always holds.
+            if (mathExpression.isAssignmentExpression()) {
+                MathAssignmentExpressionSymbol assignExpression = (MathAssignmentExpressionSymbol) mathExpression;
+
+                result = assignExpression.getNameOfMathValue();
+            }
+
         }
         return result;
     }
 
 
     public int getStepSizeMin(){
-        String result = "";
+        int result = 0;
         MathMatrixVectorExpressionSymbol vectorExpressionSymbol = getStepSizeVectorSymbol();
-        MathNumberExpressionSymbol startExpression = (MathNumberExpressionSymbol) vectorExpressionSymbol.getStart();
-        return startExpression.getValue().getRealNumber().intValue();
+        if(vectorExpressionSymbol != null) {
+            MathNumberExpressionSymbol startExpression = (MathNumberExpressionSymbol) vectorExpressionSymbol.getStart();
+            result =  startExpression.getValue().getRealNumber().intValue();
+        }
+        return result;
     }
 
     public int getStepSizeMax(){
-        String result = "";
+        int result = 0;
         MathMatrixVectorExpressionSymbol vectorExpressionSymbol = getStepSizeVectorSymbol();
-        MathNumberExpressionSymbol endExpression = (MathNumberExpressionSymbol) vectorExpressionSymbol.getEnd();
-        return endExpression.getValue().getRealNumber().intValue();
+        if(vectorExpressionSymbol != null) {
+            MathNumberExpressionSymbol endExpression = (MathNumberExpressionSymbol) vectorExpressionSymbol.getEnd();
+            result =  endExpression.getValue().getRealNumber().intValue();
+        }
+        return result;
     }
 
     public int getStepSizeCount(){
@@ -210,11 +222,12 @@ public class IpoptViewModel extends SolverViewModel {
 
     public String listClassesInScope(){
         String result = "";
-
-        for ( Collection<Symbol> x : getIndependentVariables().get(0).getEnclosingScope().getLocalSymbols().values()){
-            result += ","+x.getClass().toString();
-            for(Symbol s : x){
-                result += ", "+s.getClass().toString();
+        if(!getIndependentVariables().isEmpty()) {
+            for (Collection<Symbol> x : getIndependentVariables().get(0).getEnclosingScope().getLocalSymbols().values()) {
+                result += "," + x.getClass().toString();
+                for (Symbol s : x) {
+                    result += ", " + s.getClass().toString();
+                }
             }
         }
         return result;

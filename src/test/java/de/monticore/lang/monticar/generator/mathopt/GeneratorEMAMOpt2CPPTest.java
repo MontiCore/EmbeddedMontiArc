@@ -59,7 +59,7 @@ public class GeneratorEMAMOpt2CPPTest extends AbstractSymtabTest {
     @Test
     public void testMPCImplementation() throws IOException {
 
-        doGenerateMathOptModel("mpcautopilot.torcsWrapper");
+        List<File> files = doGenerateMathOptModel("mpcautopilot.torcsWrapper");
         // TODO: create reference solution
         // String restPath = "testMath/optimizationSolver/";
         // testFilesAreEqual(files, restPath);
