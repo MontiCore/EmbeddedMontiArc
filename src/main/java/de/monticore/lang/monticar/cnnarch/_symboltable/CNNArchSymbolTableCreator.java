@@ -19,6 +19,7 @@ import de.monticore.lang.monticar.cnnarch.predefined.AllPredefinedVariables;
 import de.monticore.symboltable.*;
 import de.se_rwth.commons.Names;
 import de.se_rwth.commons.logging.Log;
+import jline.internal.Nullable;
 
 import java.util.*;
 
@@ -125,7 +126,7 @@ public class CNNArchSymbolTableCreator extends de.monticore.symboltable.CommonSy
 
     public void visit(final ASTArchitecture node) {
         architecture = new ArchitectureSymbol();
-
+        
         addToScopeAndLinkWithNode(architecture, node);
 
         createPredefinedConstants();
@@ -157,6 +158,7 @@ public class CNNArchSymbolTableCreator extends de.monticore.symboltable.CommonSy
     }
 
     private void createPredefinedLayers(){
+        
         for (LayerDeclarationSymbol sym : AllPredefinedLayers.createList()){
             addToScope(sym);
         }
