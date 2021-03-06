@@ -30,7 +30,7 @@
                     </pretrainedModelToStore>
                     <repository>
                         <id>gitlab-maven</id>
-                        <url>https://git.rwth-aachen.de/api/v4/projects/55417/packages/maven</url>
+                        <url>https://git.rwth-aachen.de/api/v4/projects/54873/packages/maven</url>
                     </repository>
                 </configuration>
            </plugin>
