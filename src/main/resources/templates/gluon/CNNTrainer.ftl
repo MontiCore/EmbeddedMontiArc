@@ -1,6 +1,7 @@
 <#-- (c) https://github.com/MontiCore/monticore -->
 import logging
 import mxnet as mx
+
 <#list configurations as config>
 import CNNCreator_${config.instanceName}
 import CNNDataLoader_${config.instanceName}
@@ -15,6 +16,7 @@ if __name__ == "__main__":
 
 <#list configurations as config>
     ${config.instanceName}_creator = CNNCreator_${config.instanceName}.CNNCreator_${config.instanceName}()
+    ${config.instanceName}_creator.validate_parameters()
     ${config.instanceName}_loader = CNNDataLoader_${config.instanceName}.CNNDataLoader_${config.instanceName}()
     ${config.instanceName}_trainer = CNNSupervisedTrainer_${config.instanceName}.CNNSupervisedTrainer_${config.instanceName}(
         ${config.instanceName}_loader,

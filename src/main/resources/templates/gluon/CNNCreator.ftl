@@ -5,6 +5,10 @@ import os
 import shutil
 import warnings
 import inspect
+import sys
+
+sys.path.insert(1, '${tc.architecture.customPyFilesPath}')
+from custom_layers import *
 
 <#list tc.architecture.networkInstructions as networkInstruction>
 from CNNNet_${tc.fullArchitectureName} import Net_${networkInstruction?index}
@@ -207,3 +211,8 @@ class ${tc.fileNameWithoutEnding}:
 </#list>
 </#list>
         return outputs
+
+    def validate_parameters(self):
+<#list tc.architecture.networkInstructions as networkInstruction>
+${tc.include(networkInstruction.body, "PARAMETER_VALIDATION")}
+</#list>
