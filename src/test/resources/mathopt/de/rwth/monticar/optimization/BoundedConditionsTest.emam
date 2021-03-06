@@ -7,13 +7,17 @@ component BoundedConditionsTest{
           out Q yOut;
 
     implementation Math{
-        Q y = minimize(Q x)
-            (x*x) - 2 * x + 1;
+
+        minimize
+            Q x;
+        in
+            Q y = (x*x) - 2 * x + 1;
         subject to
             0 <= x <= 1;
             0 <= 2*x <= 1;
         end
         xOut = x;
         yOut = y;
+
     }
 }

@@ -12,8 +12,9 @@ component ExistingOptimizationVariableTest{
 
     implementation Math{
         // 1. scalar
-        Q x = 3;
-        minimize(x)
+        minimize
+            Q x = 3;
+        in
             2 * x + 1;
         subject to
             -1 <= x <= 1;
@@ -21,9 +22,10 @@ component ExistingOptimizationVariableTest{
         xOut1 = x;
 
         // 2. matrix
-        Q^{3,3} a = zeros(3,3);
-        Q b = minimize(a)
-            a(1, 1) * a(2, 2) * a(3, 3);
+        minimize
+            Q^{3,3} a = zeros(3,3);
+        in
+            Q b = a(1, 1) * a(2, 2) * a(3, 3);
         subject to
             -10 <= a <= 10;
         end
@@ -31,10 +33,13 @@ component ExistingOptimizationVariableTest{
         bOut2 = b;
 
         // 3. substituted
-        Q^{3,3} ainc = a + 1;
-        Q c = minimize(a)
+
+        Q c = minimize
+            Q^{3,3} a = zeros(3,3);
+        in
             ainc(1, 1) * ainc(2, 2) * ainc(3, 3);
         subject to
+            Q^{3,3} ainc = a + 1;
             -20 <= a <= 20;
         end
         aOut3 = a;

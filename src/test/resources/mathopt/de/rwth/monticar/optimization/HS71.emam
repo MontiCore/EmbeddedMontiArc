@@ -13,7 +13,9 @@ component HS71{
           out Q yOut;
 
     implementation Math{
-        Q y = minimize(Q^{4} x)
+        minimize
+            Q^{4} x;
+        in
             x(1) * x(4) * (x(1) + x(2) + x(3)) + x(3);
         subject to
             x(1) * x(2) * x(3) * x(4) >= 25;

@@ -7,8 +7,10 @@ component ConstMatrixSumMinimizationTest{
           out Q yOut;
 
     implementation Math{
-        Q y = minimize(Q x)
-            sum([0, 0, x, 0]);
+        minimize
+            Q x;
+        in
+            Q y = sum([0, 0, x, 0]);
         subject to
             -1 <= x <= 1;
         end
