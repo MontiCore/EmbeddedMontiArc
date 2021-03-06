@@ -28,12 +28,10 @@
                         <groupId>de.monticore.embeddedmontiarc.applications.emacodebert</groupId>
                         <version>1</version>
                     </pretrainedModelToStore>
-                    <repositories>
-                        <repository>
-                            <id>gitlab-maven</id>
-                            <url>${env.CI_SERVER_URL}/api/v4/projects/${env.CI_PROJECT_ID}/packages/maven</url>
-                        </repository>
-                    </repositories>
+                    <repository>
+                        <id>gitlab-maven</id>
+                        <url>${env.CI_SERVER_URL}/api/v4/projects/${env.CI_PROJECT_ID}/packages/maven</url>
+                    </repository>
                     <distributionManagement>
                         <repository>
                             <id>gitlab-maven</id>
