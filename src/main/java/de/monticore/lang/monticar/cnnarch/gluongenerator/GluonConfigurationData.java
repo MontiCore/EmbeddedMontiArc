@@ -160,6 +160,16 @@ public class GluonConfigurationData extends ConfigurationData {
         return !configurationContainsKey(LOSS)
                 ? null : retrieveConfigurationEntryValueByKey(LOSS).toString();
     }
+    
+    public Map<String, Object> getInitializer() {
+        Map<String, Object> initializer = getMultiParamEntry("initializer", "method");
+        Map<String, Object> actor_initializer = getMultiParamEntry("actor_initializer", "method");
+        return (initializer != null) ? initializer : actor_initializer;
+    }
+    
+    public Map<String, Object> getCriticInitializer() {
+        return getMultiParamEntry("critic_initializer", "method");
+    }
 
     public Map<String, Object> getReplayMemory() {
         return getMultiParamEntry(REPLAY_MEMORY, "method");
