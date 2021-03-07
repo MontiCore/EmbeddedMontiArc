@@ -18,14 +18,14 @@ component MPCTest {
     	minimize<n=1:10>
             Q mpc_steering, Q mpc_acceleration;
         in
-            Q error = mpc_acceleration;
+            Q error = angle(n) * 10;
         subject to
             Q(-1:1)         angle               = currentHeading;
             Q(-10:200km/h)  velocity            = currentVelocity;
 
             angle(n+1)              == angle(n) + 1 / (velocity(n) * mpc_steering(n) * dT);
         end
-        y=x;
+        y = error;
     }
 
 }

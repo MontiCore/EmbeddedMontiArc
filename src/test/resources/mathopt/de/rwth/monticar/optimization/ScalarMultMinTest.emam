@@ -8,8 +8,10 @@ component ScalarMultMinTest{
 
     implementation Math{
 
-        Q y = minimize(Q x)
-            (([1,1] * [2;2]) * x);
+        minimize
+            Q x;
+        in
+            Q y = (([1,1] * [2;2]) * x);
         subject to
             x >= 5;
         end
