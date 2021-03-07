@@ -148,6 +148,11 @@ public abstract class SolverViewModel extends ViewModelBase {
 
 
     /* Derived values */
+
+    public Boolean hasObjectiveVariable() {
+        return objectiveVariable != null;
+    }
+
     public String getObjectiveVariableName() {
         if(objectiveVariable != null) {
             return objectiveVariable.getName();

@@ -108,7 +108,7 @@ public class IpoptViewModel extends SolverViewModel {
             code.replace(var.getName(), getIpoptVarRef(var));
         }
         for (MathValueSymbol var : getIndependentVariables()){
-            //code.replace(var.getName(), getIpoptIndex( var));
+            code.replace(var.getName(), getIpoptVarRef( var));
         }
         return result;
     }
@@ -124,12 +124,14 @@ public class IpoptViewModel extends SolverViewModel {
     public MathMatrixVectorExpressionSymbol getStepSizeVectorSymbol(){
         MathMatrixVectorExpressionSymbol result = null;
         MathExpressionSymbol mathExpression = getStepSize();
-        //ToDo: Add CoCo to ensure this always holds.
-        if(mathExpression.isAssignmentExpression()) {
-            MathAssignmentExpressionSymbol assignExpression = (MathAssignmentExpressionSymbol) mathExpression;
-            MathExpressionSymbol assignChildExpression = assignExpression.getExpressionSymbol();
+        if(mathExpression != null) {
+            //ToDo: Add CoCo to ensure this always holds.
+            if (mathExpression.isAssignmentExpression()) {
+                MathAssignmentExpressionSymbol assignExpression = (MathAssignmentExpressionSymbol) mathExpression;
+                MathExpressionSymbol assignChildExpression = assignExpression.getExpressionSymbol();
 
-            result = (MathMatrixVectorExpressionSymbol) assignChildExpression;
+                result = (MathMatrixVectorExpressionSymbol) assignChildExpression;
+            }
         }
         return result;
     }
@@ -138,31 +140,43 @@ public class IpoptViewModel extends SolverViewModel {
         String result = "";
         MathExpressionSymbol mathExpression = getStepSize();
         //ToDo: Add CoCo to ensure this always holds.
-        if(mathExpression.isAssignmentExpression()) {
-            MathAssignmentExpressionSymbol assignExpression = (MathAssignmentExpressionSymbol) mathExpression;
+        if(mathExpression != null) {
+            if (mathExpression.isAssignmentExpression()) {
+                MathAssignmentExpressionSymbol assignExpression = (MathAssignmentExpressionSymbol) mathExpression;
 
-            result = assignExpression.getNameOfMathValue();
+                result = assignExpression.getNameOfMathValue();
+            }
         }
         return result;
     }
 
 
     public int getStepSizeMin(){
-        String result = "";
-        MathMatrixVectorExpressionSymbol vectorExpressionSymbol = getStepSizeVectorSymbol();
-        MathNumberExpressionSymbol startExpression = (MathNumberExpressionSymbol) vectorExpressionSymbol.getStart();
-        return startExpression.getValue().getRealNumber().intValue();
+        int result = 0;
+        if(hasStepSize()) {
+            MathMatrixVectorExpressionSymbol vectorExpressionSymbol = getStepSizeVectorSymbol();
+            MathNumberExpressionSymbol startExpression = (MathNumberExpressionSymbol) vectorExpressionSymbol.getStart();
+            result = startExpression.getValue().getRealNumber().intValue();
+        }
+        return result;
     }
 
     public int getStepSizeMax(){
-        String result = "";
-        MathMatrixVectorExpressionSymbol vectorExpressionSymbol = getStepSizeVectorSymbol();
-        MathNumberExpressionSymbol endExpression = (MathNumberExpressionSymbol) vectorExpressionSymbol.getEnd();
-        return endExpression.getValue().getRealNumber().intValue();
+        int result = 0;
+        if(hasStepSize()) {
+            MathMatrixVectorExpressionSymbol vectorExpressionSymbol = getStepSizeVectorSymbol();
+            MathNumberExpressionSymbol endExpression = (MathNumberExpressionSymbol) vectorExpressionSymbol.getEnd();
+            result =  endExpression.getValue().getRealNumber().intValue();
+        }
+        return result;
     }
 
     public int getStepSizeCount(){
-        return (getStepSizeMax()-getStepSizeMin()+1);
+        if(hasStepSize()) {
+            return (getStepSizeMax() - getStepSizeMin() + 1);
+        }else {
+            return 0;
+        }
     }
 
     public String getVariableInitialization(MathValueSymbol variable){
@@ -195,6 +209,8 @@ public class IpoptViewModel extends SolverViewModel {
     }
 
     public String getConstraintUpperBound(MathOptimizationConditionSymbol constraint){
+        String hekp =constraint.getBoundedExpression().getTextualRepresentation();
+
         if(constraint.getUpperBound().isPresent())
             return constraint.getUpperBound().get().getTextualRepresentation();
         else
@@ -208,15 +224,34 @@ public class IpoptViewModel extends SolverViewModel {
             return "-1E19";
     }
 
+    public String getObjectiveFunctionWithIpoptVectorEntries() {
+
+        //getObjectiveFunction().
+        //replaceVariablesWithIpoptVectorEntry()
+                //ähnlich zu  getConstraintForFG_Eval!
+        return "";
+    }
+
     public String listClassesInScope(){
         String result = "";
-
-        for ( Collection<Symbol> x : getIndependentVariables().get(0).getEnclosingScope().getLocalSymbols().values()){
-            result += ","+x.getClass().toString();
-            for(Symbol s : x){
-                result += ", "+s.getClass().toString();
+        if(!getIndependentVariables().isEmpty()) {
+            for (Collection<Symbol> x : getIndependentVariables().get(0).getEnclosingScope().getLocalSymbols().values()) {
+                result += "," + x.getClass().toString();
+                for (Symbol s : x) {
+                    result += ", " + s.getClass().toString();
+                }
             }
         }
+        return result;
+    }
+
+    public String transformEMAMValueToVectorNotation(MathMatrixNameExpressionSymbol symbol, String VectorName, Integer indexOffset){
+        String result = "";
+        String MatrixName = symbol.getNameToAccess();
+        String MatrixIndex = symbol.getMathMatrixAccessOperatorSymbol().getTextualRepresentation();
+
+        result = VectorName + "[" + getIpoptVarRef(MatrixName)+" + "+ MatrixIndex + "]";
+
         return result;
     }
 
@@ -253,6 +288,11 @@ public class IpoptViewModel extends SolverViewModel {
 
         for (MathValueSymbol value : valueVisitor.getMathValueSymbols()){
             if(isOptScopedVariable(value.getName()))
+                return true;
+        }
+
+        for (MathNameExpressionSymbol value : accessVisitor.getMathNameExpressionSymbols()){
+            if(isOptScopedVariable(value.getNameToAccess()))
                 return true;
         }
 
@@ -438,6 +478,8 @@ public class IpoptViewModel extends SolverViewModel {
     private class MathAccessVisitor implements MathOptExpressionSymbolVisitor{
 
         private List<MathMatrixNameExpressionSymbol> mathMatrixNameExpressionSymbols = new ArrayList<>();
+
+        private List<MathNameExpressionSymbol> mathNameExpressionSymbols = new ArrayList<>();
         Set<MathExpressionSymbol> visited = new HashSet<>();
 
         public MathAccessVisitor() {
@@ -454,8 +496,17 @@ public class IpoptViewModel extends SolverViewModel {
             mathMatrixNameExpressionSymbols.add(node);
         }
 
+        @Override
+        public void visit(MathNameExpressionSymbol node) {
+            mathNameExpressionSymbols.add(node);
+        }
+
         public List<MathMatrixNameExpressionSymbol> getMathMatrixNameExpressionSymbols() {
             return mathMatrixNameExpressionSymbols;
+        }
+
+        public List<MathNameExpressionSymbol> getMathNameExpressionSymbols() {
+            return mathNameExpressionSymbols;
         }
 
     }

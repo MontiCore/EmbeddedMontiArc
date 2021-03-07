@@ -16,9 +16,11 @@ typedef CPPAD_TESTVECTOR(CppAD::AD<double>) ADvector;
 #define V_N_OPTVARS ${viewModel.getNumberOptimizationVariables()}
 #define V_N_INDVARS ${viewModel.getNumberIndependentVariables()}
 
+<#if viewModel.hasStepSize()>
 // Step variable: ${viewModel.getStepSizeName()}
 #define V_N_STEP_MAX ${viewModel.getStepSizeMax()?c}
 #define V_N_STEP_MIN ${viewModel.getStepSizeMin()?c}
+</#if>
 
 //Offsets for ipopt vector
 #define OPT_OFFSET 1
@@ -73,6 +75,11 @@ namespace AnonymNS${viewModel.id}
         <#list viewModel.getConstraintFunctions() as constr>
             ${viewModel.getConstraintForFG_Eval(constr)};
         </#list>
+
+        //Debug: Simplified Constraint Functions
+                <#list viewModel.getSimplifiedConstraintFunctions() as constr>
+                    ${viewModel.getConstraintForFG_Eval(constr)};
+                </#list>
         }
         return;
       }
