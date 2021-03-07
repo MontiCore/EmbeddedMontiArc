@@ -37,7 +37,7 @@ typedef CPPAD_TESTVECTOR(CppAD::AD<double>) ADvector;
 </#list>
 //Constraints
 <#list viewModel.getConstraintFunctions() as constr>
-#define V_CONSTRAINT_${constr?index?c} CONSTR_OFFSET + ${constr?index?c}
+#define ${viewModel.getIpoptConstraintRef(constr?index)} ${viewModel.getIpoptConstraintOffset(constr?index)}
 </#list>
 
 namespace AnonymNS${viewModel.id}
@@ -53,7 +53,7 @@ namespace AnonymNS${viewModel.id}
 
       void operator()(ADvector &fg,const ADvector &vars) {
         //fg[0] is evaluation function
-        fg[0] = ${viewModel.getObjectiveFunction().getTextualRepresentation()};
+        fg[0] = ${viewModel.getObjectiveFunctionWithIpoptVectorEntries()};
 
         //Following fg entries are reserved for variables.
         //We use the defines to get a meaningful address space
@@ -73,13 +73,13 @@ namespace AnonymNS${viewModel.id}
         {
         //Constraint Functions (e.g. x(n+1) == x(n)*2)
         <#list viewModel.getConstraintFunctions() as constr>
-            ${viewModel.getConstraintForFG_Eval(constr)};
+            ${viewModel.getConstraintForFG_Eval(constr,constr?index)};
         </#list>
 
         //Debug: Simplified Constraint Functions
-                <#list viewModel.getSimplifiedConstraintFunctions() as constr>
-                    ${viewModel.getConstraintForFG_Eval(constr)};
-                </#list>
+        <#list viewModel.getSimplifiedConstraintFunctions() as constr>
+            ${viewModel.getConstraintForFG_Eval(constr,constr?index)};
+        </#list>
         }
         return;
       }
@@ -145,7 +145,7 @@ class ${viewModel.callSolverName}
 
       <#list viewModel.independentVariables as var>
         // Independent variable: ${var.getName()}
-        vars_initial[ ${viewModel.getIpoptVarRef(var)} ] = 0; //TBD
+        vars_initial[ ${viewModel.getIpoptVarRef(var)} ] = ${viewModel.getVariableInitialization(var)};
         <#if viewModel.hasStepSize()>
         for(int ${viewModel.getStepSizeName()} = ${viewModel.getStepSizeMin()?c}; ${viewModel.getStepSizeName()} < ${viewModel.getStepSizeMax()?c}; ${viewModel.getStepSizeName()}++){
             vars_lowerbounds[ ${viewModel.getIpoptVarRef(var)} + (${viewModel.getStepSizeName()}-${viewModel.getStepSizeMin()?c})] = ${viewModel.getVariableLowerBound(var)};
@@ -159,17 +159,17 @@ class ${viewModel.callSolverName}
 
       // Initialize constraint bounds
 
-      <#list viewModel.getConstraintFunctions() as constr>
+      <#list viewModel.getSimplifiedConstraintFunctions() as constr>
         // Constraint: ${constr.getName()}
 
         <#if viewModel.hasStepSize()>
         for(int ${viewModel.getStepSizeName()} = ${viewModel.getStepSizeMin()?c}; ${viewModel.getStepSizeName()} < ${viewModel.getStepSizeMax()?c}; ${viewModel.getStepSizeName()}++){
-            constraint_lowerbounds[ ${constr?index?c} + (n-1) * V_N_STEP] = ${viewModel.getConstraintLowerBound(constr)};
-            constraint_upperbounds[ {constr?index?c} + (n-1) * V_N_STEP] = ${viewModel.getConstraintUpperBound(constr)};
+            constraint_lowerbounds[ ${viewModel.getIpoptConstraintRef(constr?index)} + (${viewModel.getStepSizeName()}-${viewModel.getStepSizeMin()?c})] = ${viewModel.getConstraintLowerBound(constr)};
+            constraint_upperbounds[ ${viewModel.getIpoptConstraintRef(constr?index)} + (${viewModel.getStepSizeName()}-${viewModel.getStepSizeMin()?c})] = ${viewModel.getConstraintUpperBound(constr)};
         }
         <#else>
-        constraint_lowerbounds[ ${constr?index?c} ] = ${viewModel.getConstraintLowerBound(constr)};
-        constraint_upperbounds[ ${constr?index?c} ] = ${viewModel.getConstraintUpperBound(constr)};
+        constraint_lowerbounds[ ${viewModel.getIpoptConstraintRef(constr?index)} ] = ${viewModel.getConstraintLowerBound(constr)};
+        constraint_upperbounds[ ${viewModel.getIpoptConstraintRef(constr?index)} ] = ${viewModel.getConstraintUpperBound(constr)};
         </#if>
       </#list>
 

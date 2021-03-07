@@ -102,6 +102,13 @@ public class IpoptViewModel extends SolverViewModel {
 
     public String getIpoptVarRef(String symbolName){return "_V_"+symbolName;}
 
+    public String getIpoptConstraintRef(int nr){return "_V_CONSTR"+nr;}
+
+    public String getIpoptConstraintOffset(int nr){
+        int pre_offset = getNumberVariables() * getStepSizeCount();
+        return pre_offset+" + " + getStepSizeCount() * nr;
+    }
+
     public String replaceVariablesWithIpoptVectorEntry(String code){
         String result = "";
         for (MathValueSymbol var : getOptimizationVariables()){
@@ -175,7 +182,7 @@ public class IpoptViewModel extends SolverViewModel {
         if(hasStepSize()) {
             return (getStepSizeMax() - getStepSizeMin() + 1);
         }else {
-            return 0;
+            return 1;
         }
     }
 
@@ -209,16 +216,15 @@ public class IpoptViewModel extends SolverViewModel {
     }
 
     public String getConstraintUpperBound(MathOptimizationConditionSymbol constraint){
-        String hekp =constraint.getBoundedExpression().getTextualRepresentation();
-
-        if(constraint.getUpperBound().isPresent())
-            return constraint.getUpperBound().get().getTextualRepresentation();
-        else
-            return "1E19";
+        //getSimplifiedConditions rearranges all constraints, such that <const> <= <activeExpression>.
+        //all upper bounds are automatically converted to lowerbounds.
+        return "1E19";
     }
 
     public String getConstraintLowerBound(MathOptimizationConditionSymbol constraint){
-        if(constraint.getLowerBound().isPresent())
+        if(constraint.getLeft() != null)
+            return constraint.getLeft().getTextualRepresentation();
+        else if(constraint.getLowerBound().isPresent())
             return constraint.getLowerBound().get().getTextualRepresentation();
         else
             return "-1E19";
@@ -226,9 +232,33 @@ public class IpoptViewModel extends SolverViewModel {
 
     public String getObjectiveFunctionWithIpoptVectorEntries() {
 
+        MathExpressionSymbol symbol = getObjectiveFunction();
+
+        MathValueVisitor valueVisitor = new MathValueVisitor();
+        MathAccessVisitor accessVisitor = new MathAccessVisitor();
+
+        valueVisitor.handle(symbol);
+        accessVisitor.handle(symbol);
         //getObjectiveFunction().
         //replaceVariablesWithIpoptVectorEntry()
                 //ähnlich zu  getConstraintForFG_Eval!
+
+        for (MathValueSymbol value : valueVisitor.getMathValueSymbols()){
+            if(isOptScopedVariable(value.getName())) {
+                value.getValue();
+            }
+        }
+
+        for (MathNameExpressionSymbol value : accessVisitor.getMathNameExpressionSymbols()){
+            if(isOptScopedVariable(value.getNameToAccess()))
+                return "";
+        }
+
+        for (MathMatrixNameExpressionSymbol value : accessVisitor.getMathMatrixNameExpressionSymbols()){
+            if(isOptScopedVariable(value.getNameToAccess()))
+                return "";
+        }
+
         return "";
     }
 
@@ -245,12 +275,11 @@ public class IpoptViewModel extends SolverViewModel {
         return result;
     }
 
-    public String transformEMAMValueToVectorNotation(MathMatrixNameExpressionSymbol symbol, String VectorName, Integer indexOffset){
+    public String transformEMAMValueToVectorNotation(MathNameExpressionSymbol symbol, String VectorName, Integer indexOffset){
         String result = "";
         String MatrixName = symbol.getNameToAccess();
-        String MatrixIndex = symbol.getMathMatrixAccessOperatorSymbol().getTextualRepresentation();
 
-        result = VectorName + "[" + getIpoptVarRef(MatrixName)+" + "+ MatrixIndex + "]";
+        result = VectorName + "[" + getIpoptVarRef(MatrixName)+"]";
 
         return result;
     }
@@ -279,7 +308,6 @@ public class IpoptViewModel extends SolverViewModel {
     }
 
     public boolean containsOptScopedVariable(MathExpressionSymbol symbol){
-        //Test for MathValueSymbols and MathMatrixAccessors
         MathValueVisitor valueVisitor = new MathValueVisitor();
         MathAccessVisitor accessVisitor = new MathAccessVisitor();
 
@@ -303,7 +331,6 @@ public class IpoptViewModel extends SolverViewModel {
         return false;
     }
 
-
     public MathOptimizationConditionSymbol resolveExpression(){
         return null;
     }
@@ -319,32 +346,12 @@ public class IpoptViewModel extends SolverViewModel {
 
             for(MathOptimizationConditionSymbol constraint : constraints) {
                 boolean handledConstraint = false;
-                //Initialize visitors
-/*                MathValueVisitor mvvLower = new MathValueVisitor();
-                MathValueVisitor mvvExpression = new MathValueVisitor();
-                MathValueVisitor mvvUpper = new MathValueVisitor();
-                MathAccessVisitor mavLower = new MathAccessVisitor();
-                MathAccessVisitor mavExpression = new MathAccessVisitor();
-                MathAccessVisitor mavUpper = new MathAccessVisitor();
 
-                mvvLower.handle(constraint.getLowerBound().get());
-                mavLower.handle(constraint.getLowerBound().get());
-                mvvUpper.handle(constraint.getUpperBound().get());
-                mavUpper.handle(constraint.getUpperBound().get());
-                mvvExpression.handle(constraint.getBoundedExpression());
-                mavExpression.handle(constraint.getBoundedExpression());
-
-                List<MathValueSymbol> lowerMathSymbols = mvvLower.getMathValueSymbols();
-                List<MathValueSymbol> upperMathSymbols = mvvUpper.getMathValueSymbols();
-                List<MathValueSymbol> expreMathSymbols = mvvExpression.getMathValueSymbols();
-
-                // Get used MathValueSymbols and filter for variables declared in optimization scope.
-              List<MathValueSymbol> lowerMathSymbols = mvvLower.getMathValueSymbols().stream().
-                        filter(mathSymbol -> isOptScopedVariable(mathSymbol.getName())).collect(Collectors.toList());
-                List<MathValueSymbol> upperMathSymbols = mvvUpper.getMathValueSymbols().stream().
-                        filter(mathSymbol -> isOptScopedVariable(mathSymbol.getName())).collect(Collectors.toList());
-                List<MathValueSymbol> expreMathSymbols = mvvExpression.getMathValueSymbols().stream().
-                        filter(mathSymbol -> isOptScopedVariable(mathSymbol.getName())).collect(Collectors.toList());*/
+                //Exclude if MPC equation
+                if(hasStepSize() && constraint.getOperator()=="=="){
+                    modifiedConstraints.add(constraint);
+                    continue;
+                }
 
                 //General form:     (lower <= expression <= upper)
                 // We can expect expression to contain variables
@@ -358,8 +365,6 @@ public class IpoptViewModel extends SolverViewModel {
                     upperBoundContainsActiveVariables = containsOptScopedVariable(constraint.getUpperBound().get());
 
                 boolean expressionContainsActiveVariables = containsOptScopedVariable(constraint.getBoundedExpression());
-
-                //ToDo: Add () to changed expressions
 
                 if (lowerBoundContainsActiveVariables) {
                     // Both lower and expression contain variables defined in optimization scope.
@@ -422,23 +427,20 @@ public class IpoptViewModel extends SolverViewModel {
             return modifiedConstraints;
     }
 
-    public String getConstraintForFG_Eval(MathExpressionSymbol constraint){
+    public String getIpoptTextualRepresentation(MathExpressionSymbol symbol, String vectorname, int offset){
 
-        //ToDo: Check bounds (don't exceed array limits)
+    }
+
+    public String getConstraintForFG_Eval(MathExpressionSymbol constraint, int nr){
         String debug = "";
         String result="";
 
-        //ToDo: isOptimizationCondition does not exist in MathExpressionSymbol
         if(constraint instanceof MathOptimizationConditionSymbol) {
 
             MathOptimizationConditionSymbol optCondition = (MathOptimizationConditionSymbol) constraint;
 
-            if(optCondition.getOperator().equals("==")) {
-                debug += "//"+optCondition.getTextualRepresentation()+"\nLeft: "+optCondition.getLeft().getClass().toString() + " / ";
-                debug += "\nRight: "+optCondition.getRight().getClass().toString() + " / ";
+            if(optCondition.getOperator().equals("==") && hasStepSize()) {
                 if(optCondition.getLeft() instanceof MathMatrixNameExpressionSymbol) {
-                    //ToDo: Distinguish between MPC and Matrix operation
-
                     //MPC
                     MathMatrixNameExpressionSymbol left = (MathMatrixNameExpressionSymbol) optCondition.getLeft();
                     String leftSide = transformEMAMMatrixAccessToVectorNotation(left,"fg",1);
@@ -449,16 +451,11 @@ public class IpoptViewModel extends SolverViewModel {
                     List<String[]> replacementList = new ArrayList<>();
 
                     for (MathMatrixNameExpressionSymbol matAccess : mav.getMathMatrixNameExpressionSymbols()){
-                        //Polymorphism for the win! - Sadly not :(
-                        //IpoptMathMatrixNameExpressionSymbol imneSymbol = (IpoptMathMatrixNameExpressionSymbol) matAccess;
-                        //ToDo: add Vectorname as attribute with getters & setters for consistency
-                        //Todo: Check if it contains a used mathValueSymbol
                         if(isOptScopedVariable(matAccess.getNameToAccess())) {
                             String replacement = transformEMAMMatrixAccessToVectorNotation(matAccess, "vars", 1);
                             String search = matAccess.getTextualRepresentation();
                             String replacementPair[] = {search, replacement};
                             replacementList.add(replacementPair);
-                            //debug += "\n search: " + search + " replacement: " + replacement;
                         }
                     }
 
@@ -468,7 +465,36 @@ public class IpoptViewModel extends SolverViewModel {
                     }
                     result = leftSide+" = "+rightSide;
                 }
+            } else {
+                String leftside = "fg[ 1 +"+getNumberVariables() + " + " + getIpoptConstraintRef(nr) + " ] ";
+                String rightside = ((MathOptimizationConditionSymbol) constraint).getRight().getTextualRepresentation();
+
+                MathAccessVisitor mav = new MathAccessVisitor();
+                mav.handle(optCondition.getRight());
+
+                List<String[]> replacementList = new ArrayList<>();
+                for (MathMatrixNameExpressionSymbol matAccess : mav.getMathMatrixNameExpressionSymbols()){
+                    if(isOptScopedVariable(matAccess.getNameToAccess())) {
+                        String replacement = transformEMAMMatrixAccessToVectorNotation(matAccess, "vars", 0);
+                        String search = matAccess.getTextualRepresentation();
+                        String replacementPair[] = {search, replacement};
+                        replacementList.add(replacementPair);
+                    }
+                }
+                for (MathNameExpressionSymbol matAccess : mav.getMathNameExpressionSymbols()){
+                    if(isOptScopedVariable(matAccess.getNameToAccess())) {
+                        String replacement = transformEMAMValueToVectorNotation(matAccess, "vars", 0);
+                        String search = matAccess.getTextualRepresentation();
+                        String replacementPair[] = {search, replacement};
+                        replacementList.add(replacementPair);
+                    }
+                }
+                for(String replacementPair[] : replacementList) {
+                    rightside = rightside.replace(replacementPair[0],replacementPair[1]);
+                }
+                result = leftside + " = " + rightside;
             }
+
         }
         return result;
     }
