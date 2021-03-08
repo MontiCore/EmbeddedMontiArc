@@ -161,7 +161,23 @@ public class ComponentConverter {
             bluePrint.addMethod(update);
         }
 
+        addOthersToExecuteMethod(bluePrint);
+
         return bluePrint;
+    }
+
+    private static void addOthersToExecuteMethod(EMAMBluePrintCPP bluePrint) {
+        Optional<Method> executeOpt = bluePrint.getMethod("execute");
+        if (executeOpt.isPresent()) {
+            Method exMethod = executeOpt.get();
+            if (bluePrint.getMethod("next").isPresent()) {
+                exMethod.addInstruction(0, new TargetCodeInstruction("next();\n"));
+            }
+
+            if (bluePrint.getMethod("dynamic").isPresent()) {
+                exMethod.addInstruction(0, new TargetCodeInstruction("dynamic();\n"));
+            }
+        }
     }
 
     public static void addVariables(EMAComponentInstanceSymbol componentSymbol, EMAMBluePrintCPP bluePrint) {
