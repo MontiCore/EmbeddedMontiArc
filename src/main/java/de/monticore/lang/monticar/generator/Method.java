@@ -85,6 +85,10 @@ public class Method {
         instructions.add(instruction);
     }
 
+    public void addInstruction(int index, Instruction instruction) {
+        instructions.add(index, instruction);
+    }
+
     public void addInstructions(List<Instruction> instructions) {
         this.instructions.addAll(instructions);
     }
