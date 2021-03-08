@@ -16,7 +16,9 @@ script LpTest
     Q ^{m, n} c = [3, 2; 1, 5; 5, 4];
 
     // minimization problem
-    minimize(Q^{3, 2} x)
+    minimize
+        Q^{3, 2} x;
+    in
         sum(c .* x);
     subject to
         sum(x, 2) == A;

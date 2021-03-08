@@ -34,11 +34,25 @@ public interface MathOptExpressionSymbolVisitor extends MathExpressionSymbolVisi
                 handle(optimizationVar);
             }
         }
+        if(node.getIndependentVariables() != null) {
+            for (MathValueSymbol independentVar : node.getIndependentVariables()) {
+                handle(independentVar);
+            }
+        }
+        if(node.getConstraints() != null) {
+            for (MathOptimizationConditionSymbol constr : node.getConstraints()) {
+                handle(constr);
+            }
+        }
+        if(node.getSubjectToExpressions() != null) {
+            for (MathExpressionSymbol subjectToExpression : node.getSubjectToExpressions()) {
+                handle(subjectToExpression);
+            }
+        }
+        if (node.getStepSizeExpression() != null) handle(node.getStepSizeExpression());
         if (node.getObjectiveValue() != null) handle(node.getObjectiveValue());
         if (node.getObjectiveExpression() != null) handle(node.getObjectiveExpression());
-        for (MathExpressionSymbol subjectToExpression : node.getSubjectToExpressions()) {
-            handle(subjectToExpression);
-        }
+
     }
 
     public default void visit(MathOptimizationStatementSymbol node) {

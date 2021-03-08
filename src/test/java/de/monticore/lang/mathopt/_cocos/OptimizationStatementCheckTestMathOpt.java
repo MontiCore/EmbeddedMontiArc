@@ -3,10 +3,7 @@ package de.monticore.lang.mathopt._cocos;
 
 import de.monticore.lang.mathopt._ast.ASTOptimizationStatement;
 import de.se_rwth.commons.logging.Log;
-import org.junit.After;
-import org.junit.Before;
-import org.junit.BeforeClass;
-import org.junit.Test;
+import org.junit.*;
 
 import java.io.IOException;
 
@@ -18,6 +15,7 @@ import static org.junit.Assert.assertNotNull;
  * Tests if OptimizationStatementCheck works correctly
  *
  */
+@Ignore
 public class OptimizationStatementCheckTestMathOpt extends AbstractMathOptCocoTest {
 
     private static OptimizationStatementCheck coco;

@@ -135,7 +135,9 @@ public class MathOptimizationStatementSymbol extends MathExpressionSymbol {
         for (int i=0; i < optimizationVariables.size()-1;i++){
             result.append("  "+optimizationVariables.get(i) + ",\n");
         }
-        result.append("  "+optimizationVariables.get(optimizationVariables.size()-1) + ";\n");
+        if(!optimizationVariables.isEmpty()) {
+            result.append("  " + optimizationVariables.get(optimizationVariables.size() - 1) + ";\n");
+        }
         result.append("in");
         result.append(String.format("  %s /n", objectiveExpression.getTextualRepresentation()));
         result.append("subject to \n");

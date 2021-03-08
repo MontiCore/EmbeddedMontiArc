@@ -160,4 +160,21 @@ public class MathOptimizationConditionSymbol extends MathExpressionSymbol {
         }
         return result;
     }
+
+    @Deprecated
+    public void setLeft(MathExpressionSymbol left) {
+        this.left = left;
+    }
+    @Deprecated
+    public void setRight(MathExpressionSymbol right) {
+        this.right = right;
+    }
+    @Deprecated
+    public void setOperator(String operator) {
+        this.operator = operator;
+    }
+    @Deprecated
+    public void setSimpleCondition(boolean simpleCondition) {
+        isSimpleCondition = simpleCondition;
+    }
 }

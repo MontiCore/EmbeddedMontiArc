@@ -3,6 +3,7 @@ package de.monticore.lang.mathopt._symboltable.visitor;
 
 import de.monticore.lang.math._symboltable.MathStatementsSymbol;
 import de.monticore.lang.math._symboltable.expression.MathExpressionSymbol;
+import de.monticore.lang.math._symboltable.expression.MathValueSymbol;
 import de.monticore.lang.math._symboltable.visitor.CopyMathExpressionSymbol;
 import de.monticore.lang.math._symboltable.visitor.MathStatementsSymbolCopy;
 import de.monticore.lang.mathopt._symboltable.MathOptimizationConditionSymbol;
@@ -56,14 +57,23 @@ public class CopyMathOptExpressionSymbol extends CopyMathExpressionSymbol
         copyMathExpressionSymbol(res, node);
         if (node.getOptimizationType() != null)
             res.setOptimizationType(node.getOptimizationType().toString());
-        for (MathExpressionSymbol optimizationVariable : node.getOptimizationVariables())
-            res.getSubjectToExpressions().add(get(optimizationVariable));
+        for (MathValueSymbol optimizationVariable : node.getOptimizationVariables())
+            res.getOptimizationVariables().add(get(optimizationVariable));
+        for (MathValueSymbol independentVariable : node.getIndependentVariables())
+            res.getIndependentVariables().add(get(independentVariable));
+        for (MathOptimizationConditionSymbol constr : node.getConstraints())
+            res.getConstraints().add(get(constr));
+        for (MathExpressionSymbol subjectToExpression : node.getSubjectToExpressions())
+            res.getSubjectToExpressions().add(get(subjectToExpression));
+
+        if(node.getStepSizeExpression() != null)
+            res.setStepSizeExpression(get(node.getStepSizeExpression()));
+
         if (node.getObjectiveValue() != null)
             res.setObjectiveValue(get(node.getObjectiveValue()));
         if (node.getObjectiveExpression() != null)
             res.setObjectiveExpression(get(node.getObjectiveExpression()));
-        for (MathExpressionSymbol subjectToExpression : node.getSubjectToExpressions())
-            res.getSubjectToExpressions().add(get(subjectToExpression));
+
         copyMap.put(node, res);
     }
 
@@ -71,6 +81,15 @@ public class CopyMathOptExpressionSymbol extends CopyMathExpressionSymbol
     public void endVisit(MathOptimizationConditionSymbol node) {
         MathOptimizationConditionSymbol res = get(node);
         copyMathExpressionSymbol(res, node);
+
+        if(node.getOperator() != null)
+            res.setOperator(node.getOperator());
+        if(node.getLeft() != null)
+            res.setLeft(get(node.getLeft()));
+        if(node.getRight() != null)
+            res.setRight(get(node.getRight()));
+        res.setSimpleCondition(node.isSimpleCondition());
+
         if (node.getLowerBound().isPresent())
             res.setLowerBound(get(node.getLowerBound().get()));
         if (node.getBoundedExpression() != null)
