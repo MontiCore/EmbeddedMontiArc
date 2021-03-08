@@ -101,7 +101,7 @@ class ${viewModel.callSolverName}
     
   public:
     //ToDo: Function header generation, add initialization parameters
-    static bool solveOptimizationProblemIpOpt()
+    static bool solveOptimizationProblemIpOpt(${viewModel.getIpoptSolverFunctionParameters()})
     {
       bool ok = true;
 
@@ -158,7 +158,6 @@ class ${viewModel.callSolverName}
       </#list>
 
       // Initialize constraint bounds
-
       <#list viewModel.getSimplifiedConstraintFunctions() as constr>
         // Constraint: ${constr.getName()}
 
@@ -173,7 +172,10 @@ class ${viewModel.callSolverName}
         </#if>
       </#list>
 
-
+      //Push constants to namespace
+      <#list viewModel.getExternalVariables() as ext>
+        ${viewModel.getExternalVariableType(ext)} AnonymNS${viewModel.id}::${ext.getName()} = ${ext.getName()};
+      </#list>
 
       // object that computes objective and constraints
       AnonymNS${viewModel.id}::FG_eval_${viewModel.callSolverName} fg_eval;
@@ -193,17 +195,22 @@ class ${viewModel.callSolverName}
       // Check some of the solution values
       ok&=solution.status==CppAD::ipopt::solve_result<Dvector>::success;
 
+
       // assign solution values
-      <#if viewModel.optimizationVariableDimensions?size == 0>
-      x${viewModel.id} = solution.x[0];
-      <#else>
+      //ToDO: ADMat variables
+      <#list viewModel.getOptimizationVariables() as opt>
+        &${opt.getName()} = solution.x[${opt?index?c}];
+      </#list>
       for (int i${viewModel.id} = 0; i${viewModel.id} < solution.x.size(); i${viewModel.id}++)
       {
         x${viewModel.id}(i${viewModel.id}) = solution.x[i${viewModel.id}];
       }
-      </#if>
+
+
+
       // objective value
       <#if viewModel.optimizationProblemType.name() == "MINIMIZATION">
+
       y${viewModel.id} = solution.obj_value;
       <#else>
       y${viewModel.id} = -1 * solution.obj_value;
@@ -218,8 +225,3 @@ class ${viewModel.callSolverName}
 };
 
 #endif
-
-/*
-Debug:
-${viewModel.listClassesInScope()}
-*/

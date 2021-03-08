@@ -1,7 +1,7 @@
 /* (c) https://github.com/MontiCore/monticore */
 package de.monticore.lang.monticar.generator.cpp.mathopt.optimizationSolver.solver.template;
 
-import de.monticore.lang.math._symboltable.MathVariableDeclarationSymbol;
+
 import de.monticore.lang.math._symboltable.expression.MathExpressionSymbol;
 import de.monticore.lang.math._symboltable.expression.MathValueExpressionSymbol;
 import de.monticore.lang.math._symboltable.expression.MathValueSymbol;
@@ -15,8 +15,6 @@ import de.monticore.lang.monticar.generator.cpp.viewmodel.ViewModelBase;
 import java.util.*;
 
 public abstract class SolverViewModel extends ViewModelBase {
-
-
 
     private String id;
 
@@ -49,10 +47,6 @@ public abstract class SolverViewModel extends ViewModelBase {
         //private int numberConstraints;
 
     private List<MathValueSymbol> emamVariables = new ArrayList<>();
-    private List<NumberedVariable> knownVariablesWithNumbers = new ArrayList<>(); //Rename & write getter
-
-     //all variables from EMAM workspace, somehow derived with Blueprint
-    private HashSet<MathValueSymbol> allEMAMVariables = new LinkedHashSet<>();
 
     /* ?? */
     /**
@@ -202,40 +196,6 @@ public abstract class SolverViewModel extends ViewModelBase {
         }*/
     }
 
-    protected boolean containsVariable(String variable) {
-        //TBI
-
-        Boolean result = false;
-        /*
-        if (exprContainsVar(objectiveFunction.getTextualRepresentation(), variable)) {
-            result = true;
-        }
-        for (String s : constraintFunctions) {
-            if (exprContainsVar(s, variable)) {
-                result = true;
-            }
-        }*/
-        return result;
-    }
-
-    private boolean exprContainsVar(String expr, String variable) {
-
-        String sepVar1 = "" + variable + "";
-        String sepVar2 = "" + variable + "[";
-
-        Boolean matches1 = expr.contains(sepVar1);
-        Boolean matches2 = expr.contains(sepVar2);
-
-        return matches1 || matches2;
-    }
-
-    protected String findRelpacementVariable(String variable) {
-        String replacementVar = variable;
-        while (containsVariable(replacementVar)) {
-            replacementVar += "Tmp";
-        }
-        return replacementVar;
-    }
 
     public String getOptimizationVariableTypeActive() {
         return optimizationVariableTypeActive;
@@ -247,32 +207,6 @@ public abstract class SolverViewModel extends ViewModelBase {
         for (int i = 0; i < knownVariables.size(); i++){
             knownVariablesWithNumbers.add(new NumberedVariable(knownVariables.get(i),i));
         }*/
-    }
-
-    public List<NumberedVariable> getKnownVariablesWithNumbers(){
-        return knownVariablesWithNumbers;
-    }
-
-    //obsolete
-
-    public void setKnownVariablesFromBluePrint(EMAMBluePrintCPP bluePrint) {
-        //TBI
-        /*
-        List<Variable> variables = bluePrint.getMathInformationRegister().getVariables();
-        variables.addAll(bluePrint.getVariables());
-        for (Variable v : variables) {
-            String name = v.getNameTargetLanguageFormat();
-            String type = v.getVariableType().getTypeNameTargetLanguage();
-            if ((!name.contentEquals(optimizationVariableName)) && (!name.contentEquals(objectiveVariableName)) && (!v.isForLoopVariable()) && (!knownVariables.contains(name))) {
-                knownVariables.add(name);
-                knownVariablesWithType.add(String.format("%s %s", type, name));
-            }
-        }*/
-    }
-
-    public Vector<Integer> getOptimizationVariableDimensions() {
-        //return optimizationVariableDimensions;
-        return new Vector<Integer>();
     }
 
     public MathOptimizationType getOptimizationProblemType() {
