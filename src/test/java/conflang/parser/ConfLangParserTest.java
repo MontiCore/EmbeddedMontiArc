@@ -61,7 +61,7 @@ public class ConfLangParserTest extends AbstractTest {
         assertNotNull(model);
     }
 
-    @Test
+    //@Test
     public void siunitsInConfiguration() {
         /* Act */
         ASTConfLang model = parseModel("src/test/resources/conflang/parser/SIUnits.conf");

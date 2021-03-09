@@ -213,13 +213,13 @@
             <version>${monticore.version}</version>
         </dependency>
 
-        <dependency>
-            <groupId>de.monticore</groupId>
-            <artifactId>siunits</artifactId>
-            <version>${monticore.version}</version>
-            <classifier>${grammars.classifier}</classifier>
-            <scope>provided</scope>
-        </dependency>
+<!--        <dependency>-->
+<!--            <groupId>de.monticore</groupId>-->
+<!--            <artifactId>siunits</artifactId>-->
+<!--            <version>${monticore.version}</version>-->
+<!--            <classifier>${grammars.classifier}</classifier>-->
+<!--            <scope>provided</scope>-->
+<!--        </dependency>-->
 
         <dependency>
             <groupId>org.slf4j</groupId>
