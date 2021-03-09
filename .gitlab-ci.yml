@@ -1,5 +1,5 @@
 # (c) https://github.com/MontiCore/monticore  
-image: registry.git.rwth-aachen.de/monticore/container-registry/gradle:6.5.1-jdk8
+image: maven:3.5.4-jdk-8-alpine
 
 # These are the default stages. You don't need to explicitly define them. But you could define any stages you need.
 stages:
@@ -8,17 +8,11 @@ stages:
   - report
   - deploy
 
-cache:
-  paths:
-    - .gradle/wrapper
-  key: ${CI_COMMIT_REF_SLUG}
-
 before_script:
   - chmod +x gradlew
   - export GRADLE_USER_HOME=`pwd`/.gradle
 
 variables:
-  GRADLE_OPTS: "-Dorg.gradle.daemon=false"
   # This will supress any download for dependencies and plugins or upload messages which would clutter the console log.
   # `showDateTime` will show the passed time in milliseconds. You need to specify `--batch-mode` to make this work.
   MAVEN_OPTS: "-Xmx4096m -Dorg.slf4j.simpleLogger.log.org.apache.maven.cli.transfer.Slf4jMavenTransferListener=WARN -Dorg.slf4j.simpleLogger.showDateTime=true -Djava.awt.headless=true -Dmaven.repo.local=$CI_PROJECT_DIR/.m2/repository"
@@ -28,7 +22,7 @@ variables:
 build:
   stage: build
   script:
-    - "./gradlew assemble --refresh-dependencies $GRADLE_OPT $ARGS1"
+    - "mvn $MAVEN_CLI_OPTS clean install -U"
   artifacts:
     reports:
       junit:
@@ -66,17 +60,15 @@ pages:
     - build_gradle
   cache: { }
   script:
-    - mv target/reports/allTests public
+    - "mv target/reports/allTests public"
   artifacts:
     paths:
       - public
   only:
     - master
 
-eploy:
+deploy:
   stage: deploy
-  dependencies:
-    - build
+  image: maven:3-jdk-8
   script:
-    - "./gradlew publish $GRADLE_OPT $ARGS3 -PmavenPassword=$password -PmavenUser=$username"
-
+    - "mvn -Dorg.slf4j.simpleLogger.log.org.apache.maven.cli.transfer.Slf4jMavenTransferListener=warn -B  clean deploy --settings settings.xml"

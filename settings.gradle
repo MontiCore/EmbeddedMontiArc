@@ -13,5 +13,3 @@ pluginManagement {
     }
 }
 rootProject.name = 'conflang'
-
-include(':gradle-plugin')
