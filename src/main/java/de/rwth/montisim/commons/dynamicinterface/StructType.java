@@ -189,12 +189,19 @@ public class StructType extends DataType implements CustomJson {
 
     @Override
     public void toBinary(DataOutputStream os, Object o) throws IOException {
-        throw new IllegalArgumentException("Unimplemented");
+        Object[] arr = (Object[]) o;
+        for(int i=0;i<this.getFieldCount();i++){
+            field_types.elementAt(i).toBinary(os, arr[i]);
+        }
     }
 
     @Override
     public Object fromBinary(DataInputStream is) throws IOException {
-        throw new IllegalArgumentException("Unimplemented");
+        Object[] arr = new Object[this.getFieldCount()];
+        for(int i=0;i<arr.length;i++){
+            arr[i] = this.field_types.elementAt(i).fromBinary(is);
+        }
+        return (Object) arr;
     }
 
     @Override
