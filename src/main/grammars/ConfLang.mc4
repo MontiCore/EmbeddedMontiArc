@@ -2,7 +2,7 @@
 
 grammar ConfLang extends de.monticore.types.MCBasicTypes, de.monticore.literals.MCCommonLiterals /*, de.monticore.SIUnitLiterals */  {
 
-    symbol scope ConfLang = MCPackageDeclaration? MCImportStatement*
+    symbol ConfLang = MCPackageDeclaration? MCImportStatement*
         "configuration" Name ("extends" superConf:MCQualifiedName)? "{" (ConfigurationEntry*) "}" ;
 
     TypelessLiteral implements SignedLiteral = source:Name;
