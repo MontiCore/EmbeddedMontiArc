@@ -8,8 +8,8 @@ grammar ConfLang extends de.monticore.types.MCBasicTypes, de.monticore.literals.
     TypelessLiteral implements SignedLiteral = source:Name;
     ComponentLiteral implements SignedLiteral = source:MCQualifiedName;
 
-    interface ConfigurationEntry = name:Name;
-    SimpleConfigurationEntry implements ConfigurationEntry = name:Name "=" value:SignedLiteral;
-    VectorConfigurationEntry implements ConfigurationEntry = name:Name "=" value:"(" SignedLiteral ("," SignedLiteral)* ")";
-    NestedConfigurationEntry implements ConfigurationEntry = name:Name "=" value:Name? nestedEntries:"{" (ConfigurationEntry*) "}";
+    interface symbol ConfigurationEntry = name:Name;
+    symbol SimpleConfigurationEntry implements ConfigurationEntry = name:Name "=" value:SignedLiteral;
+    symbol VectorConfigurationEntry implements ConfigurationEntry = name:Name "=" value:"(" SignedLiteral ("," SignedLiteral)* ")";
+    symbol NestedConfigurationEntry implements ConfigurationEntry = name:Name "=" value:Name? nestedEntries:"{" (ConfigurationEntry*) "}";
 }
