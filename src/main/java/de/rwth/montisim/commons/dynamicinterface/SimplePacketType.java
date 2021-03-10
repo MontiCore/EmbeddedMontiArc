@@ -41,7 +41,8 @@ public class SimplePacketType extends DataType {
 
     @Override
     public int getDataSize(Object o) {
-        return HEADER_SIZE + payloadType.getDataSize(o);
+        Object[] arr = (Object[]) o;
+        return HEADER_SIZE + payloadType.getDataSize(arr[1]);
     }
 
     @Override
