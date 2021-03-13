@@ -24,7 +24,9 @@ import de.monticore.symboltable.ResolvingConfiguration;
 import de.monticore.symboltable.Scope;
 import de.se_rwth.commons.logging.Log;
 
+import java.util.ArrayList;
 import java.util.Deque;
+import java.util.HashMap;
 
 public class EMADLSymbolTableCreator extends de.monticore.symboltable.CommonSymbolTableCreator
         implements EMADLVisitor {
@@ -43,13 +45,53 @@ public class EMADLSymbolTableCreator extends de.monticore.symboltable.CommonSymb
         initSuperSTC(resolvingConfig);
     }
 
+    public EMADLSymbolTableCreator(
+            final ResolvingConfiguration resolvingConfig, final MutableScope enclosingScope,
+            HashMap<String, ArrayList<String>> customLayers, String customPythonFilesPath) {
+        super(resolvingConfig, enclosingScope);
+        initSuperSTC(resolvingConfig, customLayers, customPythonFilesPath);
+    }
+
     public EMADLSymbolTableCreator(final ResolvingConfiguration resolvingConfig, final Deque<MutableScope> scopeStack) {
         super(resolvingConfig, scopeStack);
         initSuperSTC(resolvingConfig);
     }
 
+    public EMADLSymbolTableCreator(final ResolvingConfiguration resolvingConfig, final Deque<MutableScope> scopeStack,
+                                   HashMap<String, ArrayList<String>> customLayers, String customPythonFilesPath) {
+        super(resolvingConfig, scopeStack);
+        initSuperSTC(resolvingConfig, customLayers, customPythonFilesPath);
+    }
+
     private void initSuperSTC(final ResolvingConfiguration resolvingConfig) {
         this.cnnArchSTC = new CNNArchSymbolTableCreator(resolvingConfig, scopeStack);
+        this.emamSTC = new EmbeddedMontiArcMathSymbolTableCreatorTOP(resolvingConfig, scopeStack);
+        this.mathOptSTC = new MathOptSymbolTableCreator(resolvingConfig, scopeStack);
+        this.emadSTC = new ModifiedEMADynamicSymbolTableCreator(resolvingConfig, scopeStack);
+        this.emadSTC.setInstanceSymbolCreator(new ModifiedEMAComponentInstanceSymbolCreator()); //Use an instance symbo, creator that adds math statement to instances
+        this.emaBehaviorSTC = new EmbeddedMontiArcBehaviorSymbolTableCreator(resolvingConfig, scopeStack);
+
+        visitor.setEMADLVisitor(this);
+        visitor.setCNNArchVisitor(cnnArchSTC);
+
+        visitor.setEmbeddedMontiArcMathVisitor(emamSTC);
+        visitor.setEmbeddedMontiArcVisitor(emadSTC);
+        visitor.setEmbeddedMontiArcDynamicVisitor(emadSTC);
+        visitor.setEmbeddedMontiArcBehaviorVisitor(emaBehaviorSTC);
+        visitor.setMathVisitor(mathOptSTC);
+        visitor.setExpressionsBasisVisitor(mathOptSTC);
+        visitor.setCommonExpressionsVisitor(mathOptSTC);
+        visitor.setAssignmentExpressionsVisitor(mathOptSTC);
+        visitor.setMatrixExpressionsVisitor(mathOptSTC);
+        visitor.setMatrixVisitor(mathOptSTC);
+        visitor.setTypes2Visitor(mathOptSTC);
+        visitor.setMathOptVisitor(mathOptSTC);
+
+        visitor.setCommon2Visitor(emamSTC);
+    }
+
+    private void initSuperSTC(final ResolvingConfiguration resolvingConfig, HashMap<String, ArrayList<String>> customLayers, String customPythonFilesPath) {
+        this.cnnArchSTC = new CNNArchSymbolTableCreator(resolvingConfig, scopeStack, customLayers, customPythonFilesPath);
         this.emamSTC = new EmbeddedMontiArcMathSymbolTableCreatorTOP(resolvingConfig, scopeStack);
         this.mathOptSTC = new MathOptSymbolTableCreator(resolvingConfig, scopeStack);
         this.emadSTC = new ModifiedEMADynamicSymbolTableCreator(resolvingConfig, scopeStack);

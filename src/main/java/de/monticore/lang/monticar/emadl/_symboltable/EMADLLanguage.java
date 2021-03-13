@@ -26,17 +26,43 @@ import java.util.*;
 public class EMADLLanguage extends EmbeddingModelingLanguage {
 
     public static final String FILE_ENDING = "emadl";
+    private HashMap<String, ArrayList<String>> customLayers = null;
+    private String customPythonFilesPath = "";
 
     public static final EmbeddedMontiArcDynamicLanguage HOST_LANGUAGE = new EmbeddedMontiArcDynamicLanguage();
     public static final CNNArchLanguage CNNARCH_LANGUAGE = new CNNArchLanguage();
     public static final MathOptLanguage MATH_LANGUAGE = new MathOptLanguage();
-
 
     public EMADLLanguage() {
         super("Embedded MontiArc Deep Learning Language",
                 FILE_ENDING,
                 HOST_LANGUAGE,
                 Arrays.asList(CNNARCH_LANGUAGE, MATH_LANGUAGE));
+    }
+
+    public EMADLLanguage(HashMap<String, ArrayList<String>> customLayers, String customPythonFilesPath) {
+        super("Embedded MontiArc Deep Learning Language",
+                FILE_ENDING,
+                HOST_LANGUAGE,
+                Arrays.asList(CNNARCH_LANGUAGE, MATH_LANGUAGE));
+        setCustomLayers(customLayers);
+        setCustomPythonFilesPath(customPythonFilesPath);
+    }
+
+    private void setCustomLayers(HashMap<String, ArrayList<String>> customLayers){
+        this.customLayers = customLayers;
+    }
+
+    public HashMap<String, ArrayList<String>> getCustomLayers(){
+        return this.customLayers;
+    }
+
+    private void setCustomPythonFilesPath(String customPythonFilesPath){
+        this.customPythonFilesPath = customPythonFilesPath;
+    }
+
+    public String getCustomPythonFilesPath(){
+        return this.customPythonFilesPath;
     }
 
 
@@ -66,7 +92,7 @@ public class EMADLLanguage extends EmbeddingModelingLanguage {
     @Override
     public Optional<EMADLSymbolTableCreator> getSymbolTableCreator(ResolvingConfiguration resolvingConfiguration, MutableScope enclosingScope) {
         return Optional.of(new EMADLSymbolTableCreator(
-                resolvingConfiguration, enclosingScope));
+                resolvingConfiguration, enclosingScope, getCustomLayers(), getCustomPythonFilesPath()));
     }
 
 }
