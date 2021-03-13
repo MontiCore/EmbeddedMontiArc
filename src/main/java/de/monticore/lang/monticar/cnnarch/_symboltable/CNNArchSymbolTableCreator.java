@@ -30,6 +30,8 @@ public class CNNArchSymbolTableCreator extends de.monticore.symboltable.CommonSy
 
     private MathSymbolTableCreator mathSTC;
     private ArchitectureSymbol architecture;
+    private HashMap<String, ArrayList<String>> customLayers;
+    private String customPythonFilesPath;
 
 
     public CNNArchSymbolTableCreator(final ResolvingConfiguration resolvingConfig,
@@ -39,8 +41,28 @@ public class CNNArchSymbolTableCreator extends de.monticore.symboltable.CommonSy
     }
 
     public CNNArchSymbolTableCreator(final ResolvingConfiguration resolvingConfig,
+                                     final MutableScope enclosingScope,
+                                     HashMap<String, ArrayList<String>> customLayers,
+                                     String customPythonFilesPath) {
+        super(resolvingConfig, enclosingScope);
+        setCustomLayers(customLayers);
+        setCustomPythonFilesPath(customPythonFilesPath);
+        initSuperSTC(resolvingConfig);
+    }
+
+    public CNNArchSymbolTableCreator(final ResolvingConfiguration resolvingConfig,
                                      final Deque<MutableScope> scopeStack) {
         super(resolvingConfig, scopeStack);
+        initSuperSTC(resolvingConfig);
+    }
+
+    public CNNArchSymbolTableCreator(final ResolvingConfiguration resolvingConfig,
+                                     final Deque<MutableScope> scopeStack,
+                                     HashMap<String, ArrayList<String>> customLayers,
+                                     String customPythonFilesPath) {
+        super(resolvingConfig, scopeStack);
+        setCustomLayers(customLayers);
+        setCustomPythonFilesPath(customPythonFilesPath);
         initSuperSTC(resolvingConfig);
     }
 
@@ -64,6 +86,22 @@ public class CNNArchSymbolTableCreator extends de.monticore.symboltable.CommonSy
         Log.errorIfNull(rootNode, "0xA7004_650 Error by creating of the CNNArchSymbolTableCreatorTOP symbol table: top ast node is null");
         rootNode.accept(realThis);
         return getFirstCreatedScope();
+    }
+
+    private void setCustomLayers(HashMap<String, ArrayList<String>> customLayers){
+        this.customLayers = customLayers;
+    }
+
+    public HashMap<String, ArrayList<String>> getCustomLayers(){
+        return this.customLayers;
+    }
+
+    private void setCustomPythonFilesPath(String customPythonFilesPath){
+        this.customPythonFilesPath = customPythonFilesPath;
+    }
+
+    public String getCustomPythonFilesPath(){
+        return this.customPythonFilesPath;
     }
 
     private CNNArchVisitor realThis = this;
@@ -131,6 +169,7 @@ public class CNNArchSymbolTableCreator extends de.monticore.symboltable.CommonSy
 
         createPredefinedConstants();
         createPredefinedLayers();
+        createPythonCustomLayers();
     }
 
     public void endVisit(final ASTArchitecture node) {
@@ -166,6 +205,70 @@ public class CNNArchSymbolTableCreator extends de.monticore.symboltable.CommonSy
             addToScope(sym);
         }
     }
+
+    private void createPythonCustomLayers(){
+        for (HashMap.Entry<String, ArrayList<String>> entry : getCustomLayers().entrySet()) {
+            String key = entry.getKey();
+            ArrayList<String> value = entry.getValue();
+
+            CustomLayerDeclaration declaration = new CustomLayerDeclaration(key, getCustomPythonFilesPath());
+            List<ParameterSymbol> parameters = new ArrayList<ParameterSymbol>();
+
+            if(!(value.isEmpty())){
+                for(int index = 0; index < value.size(); index += 2){
+                    switch (value.get(index+1)){
+                        case "int":
+                            parameters.add(new ParameterSymbol.Builder()
+                                    .name(value.get(index))
+                                    .constraints(Constraints.INTEGER)
+                                    .defaultValue(0)
+                                    .build());
+                            break;
+                        case "float":
+                        case "complex":
+                        case "long":
+                            parameters.add(new ParameterSymbol.Builder()
+                                    .name(value.get(index))
+                                    .constraints(Constraints.NUMBER)
+                                    .defaultValue(0)
+                                    .build());
+                            break;
+                        case "tuple":
+                            parameters.add(new ParameterSymbol.Builder()
+                                     .name(value.get(index))
+                                     .constraints(Constraints.INTEGER_TUPLE)
+                                     .defaultValue(Arrays.asList(1,1))
+                                     .build());
+                            break;
+                        case "boolean":
+                            parameters.add(new ParameterSymbol.Builder()
+                                    .name(value.get(index))
+                                    .constraints(Constraints.BOOLEAN)
+                                    .defaultValue(false)
+                                    .build());
+                            break;
+                        case "str":
+                            parameters.add(new ParameterSymbol.Builder()
+                                    .name(value.get(index))
+                                    .constraints(Constraints.STRING)
+                                    .defaultValue("")
+                                    .build());
+                            break;
+                        default:
+                            parameters.add(new ParameterSymbol.Builder()
+                                    .name(value.get(index))
+                                    .defaultValue("")
+                                    .build());
+                    }
+
+                }
+
+            }
+            declaration.setParameters(parameters);
+            addToScope(declaration);
+        }
+    }
+
 
     @Override
     public void endVisit(ASTArchitectureParameter node) {

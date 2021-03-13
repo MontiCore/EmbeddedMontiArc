@@ -198,7 +198,6 @@ public class AllPredefinedLayers {
                 LoadNetwork.create(),
                 DotProductSelfAttention.create(),
                 LargeMemory.create(),
-                CustomLayer.create(),
                 EpisodicMemory.create());
 
     }
