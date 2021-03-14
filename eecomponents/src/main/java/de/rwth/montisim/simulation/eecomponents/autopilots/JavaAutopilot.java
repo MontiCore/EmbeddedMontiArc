@@ -125,6 +125,8 @@ public class JavaAutopilot extends EEComponent implements Inspectable {
             trajX = newTrajX;
         } else if (msg.isMsg(batteryMsg)) {
             batteryLevel = (double) msg.message;
+        } else if (msg.isMsg(upperSpeedLimitMsg)) {
+            upperSpeedLimitArr = (double[]) msg.message;
         }
         else {
             for (int i=0; i<sensorMsg.size(); i++){
