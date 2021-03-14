@@ -30,6 +30,7 @@
                         "BatterySensor",
                         "Navigation",
                         "Lidar",
+                        "SpeedLimit",
                         "JavaAutopilot"
                     ]
                 },
@@ -75,6 +76,7 @@
                 },
                 { "type": "navigation" },
                 { "type": "lidar" },
+                { "type": "speed_limit" },
                 {
                     "type": "java_autopilot",
                     "name": "JavaAutopilot",
