@@ -15,7 +15,9 @@ import de.rwth.montisim.simulation.eesimulator.events.MessageReceiveEvent.Messag
 import de.rwth.montisim.simulation.eesimulator.events.MessageSendEvent.MessageSendEventData;
 import de.rwth.montisim.simulation.eesimulator.sensor.SensorProperties;
 import de.rwth.montisim.simulation.eesimulator.testcomponents.TestCompProperties;
+import de.rwth.montisim.simulation.vehicle.lidar.LidarProperties;
 import de.rwth.montisim.simulation.vehicle.navigation.NavigationProperties;
+import de.rwth.montisim.simulation.vehicle.navigation.SpeedLimitServiceProperties;
 import de.rwth.montisim.simulation.vehicle.physicsmodel.rigidbody.RigidbodyPhysicsProperties;
 import de.rwth.montisim.simulation.vehicle.powertrain.electrical.ElectricalPTProperties;
 import de.rwth.montisim.simulation.vehicle.task.metric.MetricGoalProperties;
@@ -37,6 +39,8 @@ public class TypedSimulation {
         Json.registerType(SensorProperties.class);
         Json.registerType(TestCompProperties.class);
         Json.registerType(NavigationProperties.class);
+        Json.registerType(LidarProperties.class);
+        Json.registerType(SpeedLimitServiceProperties.class);
         Json.registerType(RigidbodyPhysicsProperties.class);
         Json.registerType(ElectricalPTProperties.class);
         Json.registerType(MetricGoalProperties.class);

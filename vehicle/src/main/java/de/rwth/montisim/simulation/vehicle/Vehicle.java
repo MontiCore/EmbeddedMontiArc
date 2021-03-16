@@ -11,6 +11,7 @@ import de.rwth.montisim.simulation.eesimulator.EESystem;
 import de.rwth.montisim.simulation.vehicle.physicalvalues.*;
 import de.rwth.montisim.simulation.vehicle.physicsmodel.PhysicsModel;
 import de.rwth.montisim.simulation.vehicle.powertrain.PowerTrain;
+import de.rwth.montisim.simulation.vehicle.powertrain.electrical.ElectricalPowerTrain;
 import de.rwth.montisim.simulation.vehicle.task.Task;
 
 public class Vehicle extends SimulationObject implements Updatable, Destroyable, TaskRunner, BuildObject {
@@ -64,6 +65,9 @@ public class Vehicle extends SimulationObject implements Updatable, Destroyable,
     }
 
     protected void addPhysicalValues() {
+        if ( powerTrain instanceof ElectricalPowerTrain  ) {
+            physicalValues.addPhysicalValue(new BatteryLevel( ((ElectricalPowerTrain) powerTrain).battery));
+        }
         physicalValues.addPhysicalValue(new TrueCompass(physicalObject));
         physicalValues.addPhysicalValue(new TrueVelocity(physicalObject));
         physicalValues.addPhysicalValue(new TruePosition(physicalObject));

@@ -7,6 +7,7 @@ import java.util.*;
 
 import de.rwth.montisim.commons.dynamicinterface.BasicType;
 import de.rwth.montisim.commons.dynamicinterface.PortInformation;
+import de.rwth.montisim.commons.physicalvalue.PhysicalValueDouble;
 import de.rwth.montisim.commons.simulation.Inspectable;
 import de.rwth.montisim.commons.utils.Geometry;
 import de.rwth.montisim.commons.utils.IPM;
@@ -17,7 +18,10 @@ import de.rwth.montisim.simulation.eesimulator.EEComponent;
 import de.rwth.montisim.simulation.eesimulator.EESystem;
 import de.rwth.montisim.simulation.eesimulator.events.MessageReceiveEvent;
 import de.rwth.montisim.simulation.eesimulator.message.Message;
+import de.rwth.montisim.simulation.vehicle.lidar.Lidar;
 import de.rwth.montisim.simulation.vehicle.navigation.Navigation;
+import de.rwth.montisim.simulation.vehicle.navigation.SpeedLimitService;
+import de.rwth.montisim.simulation.vehicle.physicalvalues.BatteryLevel;
 import de.rwth.montisim.simulation.vehicle.physicalvalues.TrueCompass;
 import de.rwth.montisim.simulation.vehicle.physicalvalues.TruePosition;
 import de.rwth.montisim.simulation.vehicle.physicalvalues.TrueVelocity;
@@ -42,15 +46,25 @@ public class JavaAutopilot extends EEComponent implements Inspectable {
     transient int accelMsg;
     transient int brakeMsg;
 
+    transient int batteryMsg;
+
+    transient List<Integer> sensorMsg = Arrays.asList(0,0,0,0,0,0,0,0);
+
+    transient int upperSpeedLimitMsg;
+
     public double currentVelocity = 0;
     public Vec2 currentPosition = null;
     public double currentCompass = Double.NaN;
+    public double batteryLevel = 0;
+    public List<Double> lidarSensors = Arrays.asList(0.0,0.0,0.0,0.0,0.0,0.0,0.0,0.0);
 
     double newTrajX[] = null;
     public int newTrajLength = 0;
     public int trajLength = 0;
     public double trajX[] = null;
     public double trajY[] = null;
+
+    public double upperSpeedLimitArr[] = null;
 
     public double currentGas = 0;
     public double currentSteering = 0;
@@ -78,6 +92,15 @@ public class JavaAutopilot extends EEComponent implements Inspectable {
         BasicType.DOUBLE));
         this.accelMsg = addPort(PortInformation.newRequiredOutputDataPort(Actuator.SETTER_PREFIX + PowerTrainProperties.GAS_VALUE_NAME, BasicType.DOUBLE));
         this.brakeMsg = addPort(PortInformation.newRequiredOutputDataPort(Actuator.SETTER_PREFIX + PowerTrainProperties.BRAKING_VALUE_NAME, BasicType.DOUBLE));
+
+        this.batteryMsg = addPort(PortInformation.newOptionalInputDataPort(BatteryLevel.VALUE_NAME, BatteryLevel.TYPE, false));
+
+        for (int i=0; i<sensorMsg.size(); i++){
+            this.sensorMsg.set(i, addPort(PortInformation.newOptionalInputDataPort(Lidar.LIDAR_MSG.get(i), PhysicalValueDouble.TYPE, false)));
+        }
+
+        this.upperSpeedLimitMsg = addPort(PortInformation.newOptionalInputDataPort(SpeedLimitService.UPPER_SPEED_LIMIT_MSG, SpeedLimitService.SPEED_LIMIT_TYPE, false));
+
     }
 
     @Override
@@ -100,6 +123,17 @@ public class JavaAutopilot extends EEComponent implements Inspectable {
             trajY = (double[]) msg.message;
             trajLength = newTrajLength;
             trajX = newTrajX;
+        } else if (msg.isMsg(batteryMsg)) {
+            batteryLevel = (double) msg.message;
+        } else if (msg.isMsg(upperSpeedLimitMsg)) {
+            upperSpeedLimitArr = (double[]) msg.message;
+        }
+        else {
+            for (int i=0; i<sensorMsg.size(); i++){
+                if(msg.isMsg(sensorMsg.get(i))){
+                    this.lidarSensors.set(i, (double) msg.message);
+                }
+            }
         }
     }
 
@@ -396,6 +430,16 @@ public class JavaAutopilot extends EEComponent implements Inspectable {
         addEntry(entries, true, ports.elementAt(6), currentSteering);
         addEntry(entries, true, ports.elementAt(7), currentGas);
         addEntry(entries, true, ports.elementAt(8), currentBrakes);
+        addEntry(entries, false, ports.elementAt(9), batteryLevel);
+        addEntry(entries, false, ports.elementAt(10), lidarSensors.get(0)); // frontRightSensor
+        addEntry(entries, false, ports.elementAt(11), lidarSensors.get(1)); // frontLeftSensor
+        addEntry(entries, false, ports.elementAt(12), lidarSensors.get(2)); // rightFrontSensor
+        addEntry(entries, false, ports.elementAt(13), lidarSensors.get(3)); // rightBackSensor
+        addEntry(entries, false, ports.elementAt(14), lidarSensors.get(4)); // leftFrontSensor
+        addEntry(entries, false, ports.elementAt(15), lidarSensors.get(5)); // leftBackSensor
+        addEntry(entries, false, ports.elementAt(16), lidarSensors.get(6)); // backRightSensor
+        addEntry(entries, false, ports.elementAt(17), lidarSensors.get(7)); // backLeftSensor
+        addEntry(entries, false, ports.elementAt(18), upperSpeedLimitArr);
         return entries;
     }
 
