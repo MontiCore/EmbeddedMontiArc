@@ -10,7 +10,7 @@ MasterJobLinux:
  stage: linux
  image: maven:3-jdk-8
  script: 
- - mvn -B clean deploy sonar:sonar -s settings.xml
+ - mvn -B clean deploy -s settings.xml
  #- cat report/target/coverage-report/html/index.html
  only:
  - master
