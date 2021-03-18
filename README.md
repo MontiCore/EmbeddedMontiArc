@@ -1,6 +1,6 @@
 <!-- (c) https://github.com/MontiCore/monticore -->
-# ShowAttendTellPredictor
 
+# ShowAttendTellPredictor
 This project aims at using the trained Show, attend and tell architecture for inference. It will predict a caption for a given input image. Read further for information on how to run the project.
 
 ## Prerequisites
