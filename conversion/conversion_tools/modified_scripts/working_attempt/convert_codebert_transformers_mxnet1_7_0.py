@@ -47,6 +47,9 @@
 # In addition to the parameter mapping I had to remove mlm parts, zero the token type embeddings weights, and adjust the padding part
 # Library Versions: gluonnlp Version: 0.10.0, mxnet 1.7.0.post2, torch 1.4.0, transformers 4.2.1
 
+# Use BERTEncoder class in gluonnlp 0.10.0 and look at the _load_pretrained_params function at https://nlp.gluon.ai/_modules/gluonnlp/model/bert.html#roberta_12_768_12
+# next steps, look at distilbert and encoder._collect_params_with_prefix() and compare to huggingface
+
 import os
 import re
 import sys
@@ -61,7 +64,7 @@ from numpy.testing import assert_allclose
 
 import torch
 import transformers
-from gluonnlp.model import roberta_12_768_12 as RobertaModel
+from gluonnlp.model import BERTEncoder, RoBERTaModel
 
 mx.npx.set_np()
 
@@ -99,9 +102,101 @@ def convert_config(hf_cfg, cfg):
     return cfg
 
 
-def convert_params(hf_model, hf_tokenizer, gluon_cfg, ctx):
+def convert_params(hf_model, hf_tokenizer, hf_cfg, ctx):
     print('converting params')
-    gluon_model = RobertaModel.from_cfg(gluon_cfg)
+    # num_layers : int
+    #     Number of attention layers.
+    # 
+    # units : int
+    #     Number of units for the output.
+    # hidden_size : int
+    #     number of units in the hidden layer of position-wise feed-forward networks
+    # max_length : int
+    #     Maximum length of the input sequence
+    # num_heads : int
+    #     Number of heads in multi-head attention
+    # dropout : float
+    #     Dropout probability of the attention probabilities and embedding.
+    # output_attention: bool, default False
+    #     Whether to output the attention weights
+    # output_all_encodings: bool, default False
+    #     Whether to output encodings of all encoder cells
+    # weight_initializer : str or Initializer
+    #     Initializer for the input weights matrix, used for the linear
+    #     transformation of the inputs.
+    # bias_initializer : str or Initializer
+    #     Initializer for the bias vector.
+    # prefix : str, default None.
+    #     Prefix for name of `Block`s. (and name of weight if params is `None`).
+    # params : Parameter or None
+    #     Container for weight sharing between cells. Created if `None`.
+    # activation : str, default 'gelu'
+    #     Activation methods in PositionwiseFFN
+    # layer_norm_eps : float, default 1e-12
+    #     Epsilon for layer_norm
+    gluon_encoder = BERTEncoder(
+        num_layers=hf_cfg.num_hidden_layers,
+        units=hf_cfg.hidden_size,
+        hidden_size=hf_cfg.intermediate_size,
+        max_length=hf_cfg.max_position_embeddings - 2,
+        num_heads=hf_cfg.num_attention_heads,
+        dropout=hf_cfg.attention_probs_dropout_prob,
+        layer_norm_eps=hf_cfg.layer_norm_eps,
+        output_all_encodings=True,
+        # weight_initializer=['truncnorm', 0, 0.02], leads to errors at the moment, try without
+        # bias_initializer=['zeros'],
+        activation=hf_cfg.hidden_act
+    )
+    print("%d, %d, %d, %d, %d, %d, %d, %s" % (
+        hf_cfg.num_hidden_layers, hf_cfg.hidden_size, 
+        hf_cfg.intermediate_size, hf_cfg.max_position_embeddings - 2, 
+        hf_cfg.num_attention_heads, hf_cfg.attention_probs_dropout_prob,
+        hf_cfg.layer_norm_eps, hf_cfg.hidden_act
+    ))
+    # encoder : BERTEncoder
+    #     Bidirectional encoder that encodes the input sentence.
+    # vocab_size : int or None, default None
+    #     The size of the vocabulary.
+    # token_type_vocab_size : int or None, default None
+    #     The vocabulary size of token types (number of segments).
+    # units : int or None, default None
+    #     Number of units for the final pooler layer.
+    # embed_size : int or None, default None
+    #     Size of the embedding vectors. It is used to generate the word and token type
+    #     embeddings if word_embed and token_type_embed are None.
+    # embed_initializer : Initializer, default None
+    #     Initializer of the embedding weights. It is used to generate the source and target
+    #     embeddings if word_embed and token_type_embed are None.
+    # word_embed : Block or None, default None
+    #     The word embedding. If set to None, word_embed will be constructed using embed_size.
+    # token_type_embed : Block or None, default None
+    #     The token type embedding (segment embedding). If set to None and the token_type_embed will
+    #     be constructed using embed_size.
+    # use_pooler : bool, default True
+    #     Whether to include the pooler which converts the encoded sequence tensor of shape
+    #     (batch_size, seq_length, units) to a tensor of shape (batch_size, units)
+    #     for segment level classification task.
+    # use_decoder : bool, default True
+    #     Whether to include the decoder for masked language model prediction.
+    # use_classifier : bool, default True
+    #     Whether to include the classifier for next sentence classification.
+    # use_token_type_embed : bool, default True
+    #     Whether to include token type embedding (segment embedding).
+    # prefix : str or None
+    #     See document of `mx.gluon.Block`.
+    # params : ParameterDict or None
+    #     See document of `mx.gluon.Block`.
+    hf_params = hf_model.state_dict()
+    hf_embed_name = "embeddings.word_embeddings.weight"
+    gluon_model = RoBERTaModel(
+        encoder=gluon_encoder,
+        vocab_size=hf_cfg.vocab_size,
+        use_decoder=False,
+        embed_size=768,
+        word_embed=None
+    )
+    print(hf_cfg.vocab_size)
+
     # output all hidden states for testing
     gluon_model._output_all_encodings = True
     gluon_model.encoder._output_all_encodings = True
@@ -109,9 +204,9 @@ def convert_params(hf_model, hf_tokenizer, gluon_cfg, ctx):
     gluon_model.initialize(ctx=ctx)
     gluon_model.hybridize()
     gluon_params = gluon_model.collect_params()
-    num_layers = gluon_cfg.MODEL.num_layers
+    num_layers = hf_cfg.num_hidden_layers
 
-    hf_params = hf_model.state_dict()
+    # TODO continue here, gluonnlp 0.10.0 params seem to differ greatly from the latest 1.0.0 params
 
     for layer_id in range(num_layers):
         hf_atten_prefix = 'encoder.layer.{}.attention.self.'.format(layer_id)
@@ -228,13 +323,8 @@ def convert_huggingface_model(args):
     hf_model.save_pretrained(args.save_dir)
     hf_tokenizer.save_pretrained(args.save_dir)
 
-    gluon_cfg = convert_config(hf_model.config, RobertaModel.get_cfg().clone())
-
-    with open(os.path.join(args.save_dir, 'model.yml'), 'w') as of:
-        of.write(gluon_cfg.dump())
-
     ctx = mx.gpu(args.gpu) if args.gpu is not None else mx.cpu()
-    gluon_model = convert_params(hf_model, hf_tokenizer, gluon_cfg, ctx)
+    gluon_model = convert_params(hf_model, hf_tokenizer, hf_model.config, ctx)
     if args.test:
         test_model(hf_model, hf_tokenizer, gluon_model, args.gpu)
 
