@@ -1,32 +1,20 @@
 /* (c) https://github.com/MontiCore/monticore */
 package conflang._symboltable;
 
-import de.monticore.symboltable.ISymbol;
-
-import java.util.Collection;
 import java.util.Optional;
 
 public class ConfLangSymbol extends ConfLangSymbolTOP {
 
-    protected String template;
-
     public ConfLangSymbol(final String name) {
         super(name);
-        template = "";
     }
 
     /**
-     * @return template
+     * @param name
+     * @return
      */
-    public String getTemplate() {
-        return this.template;
+    public boolean hasConfigurationEntry(String name) {
+        Optional<ConfigurationEntrySymbol> entry = getEnclosingScope().resolveConfigurationEntry(name);
+        return entry.isPresent();
     }
-
-    /**
-     * @param template the template to set
-     */
-    public void setTemplate(String template) {
-        this.template = template;
-    }
-
 }
