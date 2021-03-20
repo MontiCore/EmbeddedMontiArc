@@ -104,36 +104,25 @@ def convert_config(hf_cfg, cfg):
 
 def convert_params(hf_model, hf_tokenizer, hf_cfg, ctx):
     print('converting params')
-    # num_layers : int
-    #     Number of attention layers.
-    # 
-    # units : int
-    #     Number of units for the output.
-    # hidden_size : int
-    #     number of units in the hidden layer of position-wise feed-forward networks
-    # max_length : int
-    #     Maximum length of the input sequence
-    # num_heads : int
-    #     Number of heads in multi-head attention
-    # dropout : float
-    #     Dropout probability of the attention probabilities and embedding.
-    # output_attention: bool, default False
-    #     Whether to output the attention weights
-    # output_all_encodings: bool, default False
-    #     Whether to output encodings of all encoder cells
-    # weight_initializer : str or Initializer
-    #     Initializer for the input weights matrix, used for the linear
-    #     transformation of the inputs.
-    # bias_initializer : str or Initializer
-    #     Initializer for the bias vector.
-    # prefix : str, default None.
-    #     Prefix for name of `Block`s. (and name of weight if params is `None`).
-    # params : Parameter or None
-    #     Container for weight sharing between cells. Created if `None`.
-    # activation : str, default 'gelu'
-    #     Activation methods in PositionwiseFFN
-    # layer_norm_eps : float, default 1e-12
-    #     Epsilon for layer_norm
+
+# use nlp.model.get_model('roberta_12_768_12', dataset_name='openwebtext_ccnews_stories_books_cased', use_decoder=False) and look at its
+# source to get an idea of how to initialize a blank model you can use
+#
+# the function used is here
+# https://github.com/dmlc/gluon-nlp/blob/14559518a75081469bfba14150ded2dc97c13902/src/gluonnlp/model/bert.py#L1459
+#
+# where roberta_12_768_12_hparams = {
+#     'num_layers': 12,
+#     'units': 768,
+#     'hidden_size': 3072,
+#     'max_length': 512,
+#     'num_heads': 12,
+#     'dropout': 0.1,
+#     'embed_size': 768,
+#     'word_embed': None,
+#     'layer_norm_eps': 1e-5
+# }
+
     gluon_encoder = BERTEncoder(
         num_layers=hf_cfg.num_hidden_layers,
         units=hf_cfg.hidden_size,
@@ -153,39 +142,8 @@ def convert_params(hf_model, hf_tokenizer, hf_cfg, ctx):
         hf_cfg.num_attention_heads, hf_cfg.attention_probs_dropout_prob,
         hf_cfg.layer_norm_eps, hf_cfg.hidden_act
     ))
-    # encoder : BERTEncoder
-    #     Bidirectional encoder that encodes the input sentence.
-    # vocab_size : int or None, default None
-    #     The size of the vocabulary.
-    # token_type_vocab_size : int or None, default None
-    #     The vocabulary size of token types (number of segments).
-    # units : int or None, default None
-    #     Number of units for the final pooler layer.
-    # embed_size : int or None, default None
-    #     Size of the embedding vectors. It is used to generate the word and token type
-    #     embeddings if word_embed and token_type_embed are None.
-    # embed_initializer : Initializer, default None
-    #     Initializer of the embedding weights. It is used to generate the source and target
-    #     embeddings if word_embed and token_type_embed are None.
-    # word_embed : Block or None, default None
-    #     The word embedding. If set to None, word_embed will be constructed using embed_size.
-    # token_type_embed : Block or None, default None
-    #     The token type embedding (segment embedding). If set to None and the token_type_embed will
-    #     be constructed using embed_size.
-    # use_pooler : bool, default True
-    #     Whether to include the pooler which converts the encoded sequence tensor of shape
-    #     (batch_size, seq_length, units) to a tensor of shape (batch_size, units)
-    #     for segment level classification task.
-    # use_decoder : bool, default True
-    #     Whether to include the decoder for masked language model prediction.
-    # use_classifier : bool, default True
-    #     Whether to include the classifier for next sentence classification.
-    # use_token_type_embed : bool, default True
-    #     Whether to include token type embedding (segment embedding).
-    # prefix : str or None
-    #     See document of `mx.gluon.Block`.
-    # params : ParameterDict or None
-    #     See document of `mx.gluon.Block`.
+    #12, 768, 3072, 512, 12, 0, 0, gelu
+
     hf_params = hf_model.state_dict()
     hf_embed_name = "embeddings.word_embeddings.weight"
     gluon_model = RoBERTaModel(
@@ -195,7 +153,7 @@ def convert_params(hf_model, hf_tokenizer, hf_cfg, ctx):
         embed_size=768,
         word_embed=None
     )
-    print(hf_cfg.vocab_size)
+    print(hf_cfg.vocab_size) # 50265
 
     # output all hidden states for testing
     gluon_model._output_all_encodings = True
