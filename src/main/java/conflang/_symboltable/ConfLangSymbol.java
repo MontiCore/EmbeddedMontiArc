@@ -17,4 +17,14 @@ public class ConfLangSymbol extends ConfLangSymbolTOP {
         Optional<ConfigurationEntrySymbol> entry = getEnclosingScope().resolveConfigurationEntry(name);
         return entry.isPresent();
     }
+
+    /**
+     *
+     * @param name
+     * @return
+     */
+    public Optional<ConfigurationEntrySymbol> getConfigurationEntrySymbol(String name) {
+        Optional<ConfigurationEntrySymbol> entry = getEnclosingScope().resolveConfigurationEntry(name);
+        return entry;
+    }
 }
