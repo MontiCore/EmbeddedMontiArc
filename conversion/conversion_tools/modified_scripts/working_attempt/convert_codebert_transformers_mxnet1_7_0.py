@@ -101,67 +101,61 @@ def convert_config(hf_cfg, cfg):
     cfg.freeze()
     return cfg
 
+def get_gluon_model_arch(hf_cfg, ctx):
+    hyper_params = {
+        'num_layers': 12,
+        'units': 768,
+        'hidden_size': 3072,
+        'max_length': 512,
+        'num_heads': 12,
+        'dropout': 0.1,
+        'activation': 'gelu',
+        'embed_size': 768,
+        'word_embed': None,
+        'layer_norm_eps': 1e-5
+    }
+
+    gluon_encoder = BERTEncoder(
+        num_layers=hyper_params['num_layers'],
+        units=hyper_params['units'],
+        hidden_size=hyper_params['hidden_size'],
+        max_length=hyper_params['max_length'],
+        num_heads=hyper_params['num_heads'],
+        dropout=hyper_params['dropout'],
+        output_attention=False,
+        output_all_encodings=True,
+        activation=hyper_params.get('activation'),
+        layer_norm_eps=hyper_params.get('layer_norm_eps', 1e-5)
+    )
+
+    gluon_model = RoBERTaModel(
+        gluon_encoder, hf_cfg.vocab_size,
+        units=hyper_params['units'],
+        embed_size=hyper_params['embed_size'],
+        word_embed=hyper_params['word_embed'],
+        use_decoder=False
+    )
+
+    gluon_model._output_all_encodings = True
+    gluon_model.encoder._output_all_encodings = True
+    gluon_model.initialize(ctx=ctx)
+    gluon_model.hybridize()
+
+    return gluon_model
 
 def convert_params(hf_model, hf_tokenizer, hf_cfg, ctx):
     print('converting params')
-
-# use nlp.model.get_model('roberta_12_768_12', dataset_name='openwebtext_ccnews_stories_books_cased', use_decoder=False) and look at its
-# source to get an idea of how to initialize a blank model you can use
-#
-# the function used is here
-# https://github.com/dmlc/gluon-nlp/blob/14559518a75081469bfba14150ded2dc97c13902/src/gluonnlp/model/bert.py#L1459
-#
-# where roberta_12_768_12_hparams = {
-#     'num_layers': 12,
-#     'units': 768,
-#     'hidden_size': 3072,
-#     'max_length': 512,
-#     'num_heads': 12,
-#     'dropout': 0.1,
-#     'embed_size': 768,
-#     'word_embed': None,
-#     'layer_norm_eps': 1e-5
-# }
-
-    gluon_encoder = BERTEncoder(
-        num_layers=hf_cfg.num_hidden_layers,
-        units=hf_cfg.hidden_size,
-        hidden_size=hf_cfg.intermediate_size,
-        max_length=hf_cfg.max_position_embeddings - 2,
-        num_heads=hf_cfg.num_attention_heads,
-        dropout=hf_cfg.attention_probs_dropout_prob,
-        layer_norm_eps=hf_cfg.layer_norm_eps,
-        output_all_encodings=True,
-        # weight_initializer=['truncnorm', 0, 0.02], leads to errors at the moment, try without
-        # bias_initializer=['zeros'],
-        activation=hf_cfg.hidden_act
-    )
-    print("%d, %d, %d, %d, %d, %d, %d, %s" % (
-        hf_cfg.num_hidden_layers, hf_cfg.hidden_size, 
-        hf_cfg.intermediate_size, hf_cfg.max_position_embeddings - 2, 
-        hf_cfg.num_attention_heads, hf_cfg.attention_probs_dropout_prob,
-        hf_cfg.layer_norm_eps, hf_cfg.hidden_act
-    ))
-    #12, 768, 3072, 512, 12, 0, 0, gelu
-
-    hf_params = hf_model.state_dict()
-    hf_embed_name = "embeddings.word_embeddings.weight"
-    gluon_model = RoBERTaModel(
-        encoder=gluon_encoder,
-        vocab_size=hf_cfg.vocab_size,
-        use_decoder=False,
-        embed_size=768,
-        word_embed=None
-    )
-    print(hf_cfg.vocab_size) # 50265
-
-    # output all hidden states for testing
-    gluon_model._output_all_encodings = True
-    gluon_model.encoder._output_all_encodings = True
-
-    gluon_model.initialize(ctx=ctx)
-    gluon_model.hybridize()
+    # use nlp.model.get_model('roberta_12_768_12', dataset_name='openwebtext_ccnews_stories_books_cased', use_decoder=False) and look at its
+    # source to get an idea of how to initialize a blank model you can use
+    #
+    # the function used is here
+    # https://github.com/dmlc/gluon-nlp/blob/14559518a75081469bfba14150ded2dc97c13902/src/gluonnlp/model/bert.py#L1459
+    #
+    
+    gluon_model = get_gluon_model_arch(hf_cfg, ctx)
+    print(gluon_model)
     gluon_params = gluon_model.collect_params()
+    hf_params = hf_params = hf_model.state_dict()
     num_layers = hf_cfg.num_hidden_layers
 
     # TODO continue here, gluonnlp 0.10.0 params seem to differ greatly from the latest 1.0.0 params
