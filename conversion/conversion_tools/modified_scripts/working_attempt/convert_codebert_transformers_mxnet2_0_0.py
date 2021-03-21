@@ -48,10 +48,6 @@
 # Library Versions: gluonnlp 1.0.0.dev20210116, mxnet 2.0.0b20210116, torch 1.4.0, transformers 4.2.1
 
 import os
-import re
-import sys
-import json
-import shutil
 import logging
 import argparse
 
@@ -61,10 +57,7 @@ from numpy.testing import assert_allclose
 
 import torch
 import transformers
-from gluonnlp.data.vocab import Vocab as gluon_Vocab
-from gluonnlp.utils.misc import sha1sum, logging_config, naming_convention
-from gluonnlp.models.roberta import RobertaModel, RobertaForMLM
-from gluonnlp.data.tokenizers import HuggingFaceByteBPETokenizer
+from gluonnlp.models.roberta import RobertaModel
 
 mx.npx.set_np()
 
@@ -74,8 +67,6 @@ def parse_args():
                         help='Directory path to save the converted model.')
     parser.add_argument('--gpu', type=int, default=None,
                         help='The single gpu to run mxnet, (e.g. --gpu 0) the default device is cpu.')
-    parser.add_argument('--test', action='store_true',
-                        help='Whether to test the conversion.')
     return parser.parse_args()
 
 def convert_config(hf_cfg, cfg):
@@ -104,7 +95,8 @@ def convert_config(hf_cfg, cfg):
 
 def convert_params(hf_model, hf_tokenizer, gluon_cfg, ctx):
     print('converting params')
-    gluon_model = RobertaModel.from_cfg(gluon_cfg)
+    # TODO not sure if we need the pooling layer for our purposes?
+    gluon_model = RobertaModel.from_cfg(gluon_cfg, use_pooler=True)
     # output all hidden states for testing
     gluon_model._output_all_encodings = True
     gluon_model.encoder._output_all_encodings = True
@@ -233,13 +225,9 @@ def convert_huggingface_model(args):
 
     gluon_cfg = convert_config(hf_model.config, RobertaModel.get_cfg().clone())
 
-    with open(os.path.join(args.save_dir, 'model.yml'), 'w') as of:
-        of.write(gluon_cfg.dump())
-
     ctx = mx.gpu(args.gpu) if args.gpu is not None else mx.cpu()
     gluon_model = convert_params(hf_model, hf_tokenizer, gluon_cfg, ctx)
-    if args.test:
-        test_model(hf_model, hf_tokenizer, gluon_model, args.gpu)
+    test_model(hf_model, hf_tokenizer, gluon_model, args.gpu)
 
     gluon_model.export(os.path.join(args.save_dir, 'codebert'))
     logging.info('Exported the CodeBERT model to {}'.format(os.path.join(args.save_dir)))
@@ -247,5 +235,4 @@ def convert_huggingface_model(args):
 
 if __name__ == '__main__':
     args = parse_args()
-    logging_config()
     convert_huggingface_model(args)
