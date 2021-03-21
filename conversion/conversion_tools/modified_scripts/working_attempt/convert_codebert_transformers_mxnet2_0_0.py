@@ -48,7 +48,6 @@
 # Library Versions: gluonnlp 1.0.0.dev20210116, mxnet 2.0.0b20210116, torch 1.4.0, transformers 4.2.1
 
 import os
-import logging
 import argparse
 
 import mxnet as mx
@@ -230,8 +229,8 @@ def convert_huggingface_model(args):
     test_model(hf_model, hf_tokenizer, gluon_model, args.gpu)
 
     gluon_model.export(os.path.join(args.save_dir, 'codebert'))
-    logging.info('Exported the CodeBERT model to {}'.format(os.path.join(args.save_dir)))
-    logging.info('Conversion finished!')
+    print('Exported the CodeBERT model to {}'.format(os.path.join(args.save_dir)))
+    print('Conversion finished!')
 
 if __name__ == '__main__':
     args = parse_args()
