@@ -1,2 +1,2 @@
 pip install -r requirements.txt
-python ema.py %GITLAB_TOKEN%
+python mc.py %GITLAB_TOKEN%
