@@ -11,7 +11,7 @@
     <properties>
         <!-- .. Libraries ..................................................... -->
 
-        <monticore.version>6.8.0-SNAPSHOT</monticore.version>
+        <monticore.version>5.0.1</monticore.version>
         <guava.version>25.1-jre</guava.version>
         <jsr305.version>3.0.0</jsr305.version>
         <junit.version>4.13.1</junit.version>
@@ -21,6 +21,7 @@
         <emf.common.version>2.5.0</emf.common.version>
         <emf.ecore.version>2.5.0</emf.ecore.version>
         <emf.ecore.xmi.version>2.5.0</emf.ecore.xmi.version>
+        <mc.grammars.assembly.version>0.0.6</mc.grammars.assembly.version>
 
         <!-- .. Plugins ....................................................... -->
 
@@ -129,19 +130,49 @@
                 </executions>
             </plugin>
 
+<!--            <plugin>-->
+<!--                <groupId>org.apache.maven.plugins</groupId>-->
+<!--                <artifactId>maven-assembly-plugin</artifactId>-->
+<!--                <version>${assembly.plugin}</version>-->
+<!--                <executions>-->
+<!--                    <execution>-->
+<!--                        <configuration>-->
+<!--                            <formats>-->
+<!--                                <format>jar</format>-->
+<!--                            </formats>-->
+<!--                            <descriptor>src/main/assemblies/example-assembly.xml</descriptor>-->
+<!--                        </configuration>-->
+<!--                        <id>conflang-example-assembly</id>-->
+<!--                        <phase>package</phase>-->
+<!--                        <goals>-->
+<!--                            <goal>single</goal>-->
+<!--                        </goals>-->
+<!--                    </execution>-->
+<!--                </executions>-->
+<!--            </plugin>-->
+
             <plugin>
-                <groupId>org.apache.maven.plugins</groupId>
                 <artifactId>maven-assembly-plugin</artifactId>
                 <version>${assembly.plugin}</version>
+                <dependencies>
+                    <dependency>
+                        <groupId>de.monticore</groupId>
+                        <artifactId>mc-assemblies</artifactId>
+                        <version>${mc.grammars.assembly.version}</version>
+                    </dependency>
+                </dependencies>
                 <executions>
                     <execution>
+                        <id>grammars</id>
                         <configuration>
+                            <finalName>${project.artifactId}-${project.version}</finalName>
+                            <descriptorRefs>
+                                <descriptorRef>grammars-assembly</descriptorRef>
+                            </descriptorRefs>
                             <formats>
                                 <format>jar</format>
                             </formats>
-                            <descriptor>src/main/assemblies/example-assembly.xml</descriptor>
                         </configuration>
-                        <id>conflang-example-assembly</id>
                         <phase>package</phase>
                         <goals>
                             <goal>single</goal>
@@ -158,7 +189,6 @@
             <groupId>com.google.guava</groupId>
             <artifactId>guava</artifactId>
             <version>${guava.version}</version>
-            <scope>compile</scope>
         </dependency>
 
         <dependency>
@@ -208,29 +238,9 @@
         </dependency>
 
         <dependency>
-            <groupId>de.monticore</groupId>
-            <artifactId>siunits</artifactId>
-            <version>${monticore.version}</version>
-        </dependency>
-
-<!--        <dependency>-->
-<!--            <groupId>de.monticore</groupId>-->
-<!--            <artifactId>siunits</artifactId>-->
-<!--            <version>${monticore.version}</version>-->
-<!--            <classifier>${grammars.classifier}</classifier>-->
-<!--            <scope>provided</scope>-->
-<!--        </dependency>-->
-
-        <dependency>
-            <groupId>org.slf4j</groupId>
-            <artifactId>slf4j-api</artifactId>
-            <version>1.7.5</version>
-        </dependency>
-
-        <dependency>
-            <groupId>org.slf4j</groupId>
-            <artifactId>slf4j-simple</artifactId>
-            <version>1.6.4</version>
+            <groupId>org.apache.commons</groupId>
+            <artifactId>commons-lang3</artifactId>
+            <version>3.12.0</version>
         </dependency>
 
         <!-- .. Test Libraries ............................................... -->

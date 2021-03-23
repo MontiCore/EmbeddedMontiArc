@@ -1,15 +1,33 @@
 /* (c) https://github.com/MontiCore/monticore */
 
-grammar ConfLang extends de.monticore.types.MCBasicTypes, de.monticore.literals.MCCommonLiterals /*, de.monticore.SIUnitLiterals */  {
+grammar ConfLang extends ConfLangLiterals {
 
-    symbol ConfLang = MCPackageDeclaration? MCImportStatement*
-        "configuration" Name ("extends" superConf:MCQualifiedName)? "{" (ConfigurationEntry*) "}" ;
+    ConfLangCompilationUnit =
+        ("package" package:(Name& || ".")+ ";")?
+        ImportStatement*
+        Configuration;
 
-    TypelessLiteral implements SignedLiteral = source:Name;
-    ComponentLiteral implements SignedLiteral = source:MCQualifiedName;
+    symbol scope Configuration =
+        "configuration" Name ("extends" superConf:QualifiedName)? "{" (ConfigurationEntry*) "}" ;
 
-    interface symbol ConfigurationEntry = name:Name;
-    symbol SimpleConfigurationEntry implements ConfigurationEntry = name:Name "=" value:SignedLiteral;
-    symbol VectorConfigurationEntry implements ConfigurationEntry = name:Name "=" value:"(" SignedLiteral ("," SignedLiteral)* ")";
-    symbol NestedConfigurationEntry implements ConfigurationEntry = name:Name "=" value:Name? nestedEntries:"{" (ConfigurationEntry*) "}";
+    /**
+     * Production rule for 'basic' configuration entries of the
+     * following form.
+     *
+     * learning_method = supervised
+     */
+    symbol ConfigurationEntry = name:Name ":" value:SignedLiteral;
+
+    /**
+     * Production rule for nested configuration entries of the
+     * following form.
+     *
+     * optimizer = adam {
+     *     learning_rate = 0.0001
+     * }
+     *
+     * Nested configuration entries define an object with its own
+     * scope.
+     */
+    symbol scope NestedConfigurationEntry extends ConfigurationEntry = name:Name ":" value:SignedLiteral nestedEntries:"{" (ConfigurationEntry*) "}";
 }
