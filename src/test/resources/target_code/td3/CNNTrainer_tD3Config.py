@@ -68,10 +68,10 @@ if __name__ == "__main__":
         },
         'strategy_params': {
             'method':'gaussian',
-            'epsilon': 1,
+            'epsilon': 1.0,
             'min_epsilon': 0.001,
             'epsilon_decay_method': 'linear',
-            'epsilon_decay': 0.0001,
+            'epsilon_decay': 1.0E-4,
             'epsilon_decay_start': 50,
             'epsilon_decay_per_step': True,
             'noise_variance': 0.3,

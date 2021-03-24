@@ -4,17 +4,27 @@
 <#if (config.softTargetUpdateRate)??>
         'soft_target_update_rate': ${config.softTargetUpdateRate},
 </#if>
-<#if (config.configuration.optimizer)??>
-        'actor_optimizer': '${config.optimizerName}',
+<#if (config.actorOptimizer)??>
+        'actor_optimizer': '${config.actorOptimizerName}',
         'actor_optimizer_params': {
-<#list config.optimizerParams?keys as param>
-            '${param}': ${config.optimizerParams[param]}<#sep>,
+<#list config.actorOptimizerParameters?keys as param>
+        <#assign paramName = param>
+        <#assign paramValue = config.actorOptimizerParameters[param]>
+        <#if param == "learning_rate_policy">
+            <#assign paramValue = "'${paramValue}'">
+        </#if>
+        '${paramName}': ${paramValue}<#sep>,
 </#list>},
 </#if>
-<#if (config.configuration.criticOptimizer)??>
+<#if (config.criticOptimizer)??>
         'critic_optimizer': '${config.criticOptimizerName}',
         'critic_optimizer_params': {
-<#list config.criticOptimizerParams?keys as param>
-            '${param}': ${config.criticOptimizerParams[param]}<#sep>,
+<#list config.criticOptimizerParameters?keys as param>
+        <#assign paramName = param>
+        <#assign paramValue = config.criticOptimizerParameters[param]>
+        <#if param == "learning_rate_policy">
+            <#assign paramValue = "'${paramValue}'">
+        </#if>
+        '${paramName}': ${paramValue}<#sep>,
 </#list>},
 </#if>
