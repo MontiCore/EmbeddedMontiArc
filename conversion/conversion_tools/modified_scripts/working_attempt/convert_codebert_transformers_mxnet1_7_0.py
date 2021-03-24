@@ -57,6 +57,7 @@ import json
 import shutil
 import logging
 import argparse
+import pprint as pp
 
 import mxnet as mx
 import numpy as np
@@ -74,8 +75,6 @@ def parse_args():
                         help='Directory path to save the converted model.')
     parser.add_argument('--gpu', type=int, default=None,
                         help='The single gpu to run mxnet, (e.g. --gpu 0) the default device is cpu.')
-    parser.add_argument('--test', action='store_true',
-                        help='Whether to test the conversion.')
     return parser.parse_args()
 
 def convert_config(hf_cfg, cfg):
@@ -153,60 +152,81 @@ def convert_params(hf_model, hf_tokenizer, hf_cfg, ctx):
     #
     
     gluon_model = get_gluon_model_arch(hf_cfg, ctx)
-    print(gluon_model)
+    # print(gluon_model)
+    print(gluon_model.collect_params())
     gluon_params = gluon_model.collect_params()
-    hf_params = hf_params = hf_model.state_dict()
+    hf_params = hf_model.state_dict()
+    # print(hf_model)
+    pp.pprint(list(zip(list(hf_params.keys()), [hf_params[k].shape for k in hf_params.keys()])))
     num_layers = hf_cfg.num_hidden_layers
 
     # TODO continue here, gluonnlp 0.10.0 params seem to differ greatly from the latest 1.0.0 params
 
     for layer_id in range(num_layers):
-        hf_atten_prefix = 'encoder.layer.{}.attention.self.'.format(layer_id)
+        # hf_q_weight = hf_params[hf_atten_prefix + 'query.weight'].cpu().numpy()
+        # hf_k_weight = hf_params[hf_atten_prefix + 'key.weight'].cpu().numpy()
+        # hf_v_weight = hf_params[hf_atten_prefix + 'value.weight'].cpu().numpy()
+        # hf_q_bias = hf_params[hf_atten_prefix + 'query.bias'].cpu().numpy()
+        # hf_k_bias = hf_params[hf_atten_prefix + 'key.bias'].cpu().numpy()
+        # hf_v_bias = hf_params[hf_atten_prefix + 'value.bias'].cpu().numpy()
+        # set qkv weights/biases
+        # gluon_params[gl_qkv_prefix + 'query_weight'].set_data[hf_q_weight]
+        # gluon_params[gl_qkv_prefix + 'key_weight'].set_data[hf_k_weight]
+        # gluon_params[gl_qkv_prefix + 'value_weight'].set_data[hf_v_weight]
+        # gluon_params[gl_qkv_prefix + 'query_bias'].set_data[hf_q_bias]
+        # gluon_params[gl_qkv_prefix + 'key_bias'].set_data[hf_k_bias]
+        # gluon_params[gl_qkv_prefix + 'value_bias'].set_data[hf_v_bias]
+        hf_prefix = 'encoder.layer.{}.'.format(layer_id)
+        hf_atten_prefix = hf_prefix + 'attention.self.'
+        gl_prefix = 'bertencoder0_transformer{}'.format(layer_id)
+        gl_qkv_prefix = gl_prefix + '_dotproductselfattentioncell0_'
 
-        hf_q_weight = hf_params[hf_atten_prefix + 'query.weight'].cpu().numpy()
-        hf_k_weight = hf_params[hf_atten_prefix + 'key.weight'].cpu().numpy()
-        hf_v_weight = hf_params[hf_atten_prefix + 'value.weight'].cpu().numpy()
-        hf_q_bias = hf_params[hf_atten_prefix + 'query.bias'].cpu().numpy()
-        hf_k_bias = hf_params[hf_atten_prefix + 'key.bias'].cpu().numpy()
-        hf_v_bias = hf_params[hf_atten_prefix + 'value.bias'].cpu().numpy()
-
-        gl_qkv_prefix = 'encoder.all_layers.{}.attn_qkv.'.format(layer_id)
-        gl_qkv_weight = gluon_params[gl_qkv_prefix + 'weight']
-        gl_qkv_bias = gluon_params[gl_qkv_prefix + 'bias']
-        gl_qkv_weight.set_data(
-            np.concatenate([hf_q_weight, hf_k_weight, hf_v_weight], axis=0))
-        gl_qkv_bias.set_data(
-            np.concatenate([hf_q_bias, hf_k_bias, hf_v_bias], axis=0))
-
-        for k, v in [
-            ('attention.output.dense.weight', 'attention_proj.weight'),
-            ('attention.output.dense.bias', 'attention_proj.bias'),
-            ('attention.output.LayerNorm.weight', 'layer_norm.gamma'),
-            ('attention.output.LayerNorm.bias', 'layer_norm.beta'),
-            ('intermediate.dense.weight', 'ffn.ffn_1.weight'),
-            ('intermediate.dense.bias', 'ffn.ffn_1.bias'),
-            ('output.dense.weight', 'ffn.ffn_2.weight'),
-            ('output.dense.bias', 'ffn.ffn_2.bias'),
-            ('output.LayerNorm.weight', 'ffn.layer_norm.gamma'),
-            ('output.LayerNorm.bias', 'ffn.layer_norm.beta')
+        for name in [
+            'query{}weight', 'key{}weight', 'value{}weight', 
+            'query{}bias', 'key{}bias', 'value{}bias'
         ]:
-            # TODO upper part has same prefix, use variable?
-            hf_name = 'encoder.layer.{}.{}'.format(layer_id, k)
-            gl_name = 'encoder.all_layers.{}.{}'.format(layer_id, v)
+            gl_name = gl_qkv_prefix + name.format('_')
+            hf_name = hf_atten_prefix + name.format('.') 
             gluon_params[gl_name].set_data(hf_params[hf_name].cpu().numpy())
 
-    for k, v in [
-        ('word_embeddings.weight', 'word_embed.weight'),
-        ('LayerNorm.weight', 'embed_ln.gamma'),
-        ('LayerNorm.bias', 'embed_ln.beta'),
+            # ('attention.output.dense.weight', 'attention_proj.weight'),
+            # ('attention.output.dense.bias', 'attention_proj.bias'),
+            # ('attention.output.LayerNorm.weight', 'layer_norm.gamma'),
+            # ('attention.output.LayerNorm.bias', 'layer_norm.beta'),
+            # ('intermediate.dense.weight', 'ffn.ffn_1.weight'),
+            # ('intermediate.dense.bias', 'ffn.ffn_1.bias'),
+            # ('output.dense.weight', 'ffn.ffn_2.weight'),
+            # ('output.dense.bias', 'ffn.ffn_2.bias'),
+            # ('output.LayerNorm.weight', 'ffn.layer_norm.gamma'),
+            # ('output.LayerNorm.bias', 'ffn.layer_norm.beta')
+        for hf_suffix, gl_suffix in [
+            ('attention.output.dense.weight', '_proj_weight'),
+            ('attention.output.dense.bias', '_proj_bias'),
+            ('attention.output.LayerNorm.weight', '_layernorm0_gamma'),
+            ('attention.output.LayerNorm.bias', '_layernorm0_beta'),
+            ('intermediate.dense.weight', '_positionwiseffn0_ffn_1_weight'),
+            ('intermediate.dense.bias', '_positionwiseffn0_ffn_1_bias'),
+            ('output.dense.weight', '_positionwiseffn0_ffn_2_weight'),
+            ('output.dense.bias', '_positionwiseffn0_ffn_2_bias'),
+            ('output.LayerNorm.weight', '_positionwiseffn0_layernorm0_gamma'),
+            ('output.LayerNorm.bias', '_positionwiseffn0_layernorm0_beta')
+        ]:
+            hf_name = hf_prefix + hf_suffix
+            gl_name = gl_prefix + gl_suffix
+            gluon_params[gl_name].set_data(hf_params[hf_name].cpu().numpy())
+
+    for hf_suffix, gl_name in [
+        ('word_embeddings.weight', 'robertamodel0_word_embed_embedding0_weight'),
+        ('LayerNorm.weight', 'bertencoder0_layernorm0_gamma'),
+        ('LayerNorm.bias', 'bertencoder0_layernorm0_beta'),
     ]:
-        hf_embed_name = "embeddings." + k
-        gluon_params[v].set_data(hf_params[hf_embed_name].cpu().numpy())
+        hf_embed_name = "embeddings." + hf_suffix
+        gluon_params[gl_name].set_data(hf_params[hf_embed_name].cpu().numpy())
 
     # position embed weight
     padding_idx = hf_tokenizer.pad_token_id
     hf_pos_embed_name = 'embeddings.position_embeddings.weight'
-    gl_pos_embed_name = 'pos_embed._embed.weight'
+    gl_pos_embed_name = 'bertencoder0_position_weight'
     hf_wo_pad = hf_params[hf_pos_embed_name].cpu().numpy()[padding_idx + 1:, :]
     gluon_params[gl_pos_embed_name].set_data(hf_wo_pad)
 
@@ -277,8 +297,7 @@ def convert_huggingface_model(args):
 
     ctx = mx.gpu(args.gpu) if args.gpu is not None else mx.cpu()
     gluon_model = convert_params(hf_model, hf_tokenizer, hf_model.config, ctx)
-    if args.test:
-        test_model(hf_model, hf_tokenizer, gluon_model, args.gpu)
+    test_model(hf_model, hf_tokenizer, gluon_model, args.gpu)
 
     gluon_model.export(os.path.join(args.save_dir, 'codebert'))
     logging.info('Exported the CodeBERT model to {}'.format(os.path.join(args.save_dir)))
