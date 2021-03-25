@@ -65,9 +65,28 @@ from numpy.testing import assert_allclose
 
 import torch
 import transformers
-from gluonnlp.model import BERTEncoder, RoBERTaModel
+from gluonnlp.model import BERTEncoder, BERTModel
 
 mx.npx.set_np()
+
+class RoBERTaModelWPooler(BERTModel):
+    # analogous to gluonnlp 0.10.0 nlp.model.RobertaModel but it allows use_pooler and defaults to True
+    def __init__(self, encoder, vocab_size=None, units=None,
+        embed_size=None, embed_initializer=None,
+        word_embed=None, use_decoder=True,
+        prefix=None, params=None, use_pooler=True):
+            super(RoBERTaModelWPooler, self).__init__(encoder, vocab_size=vocab_size,
+                token_type_vocab_size=None, units=units,
+                embed_size=embed_size,
+                embed_initializer=embed_initializer,
+                word_embed=word_embed, token_type_embed=None,
+                use_pooler=use_pooler, use_decoder=use_decoder,
+                use_classifier=False, use_token_type_embed=False,
+                prefix=prefix, params=params)
+
+    def __call__(self, inputs, valid_length=None, masked_positions=None):
+        return super(RoBERTaModelWPooler, self).__call__(inputs, [], valid_length=valid_length,
+                                                  masked_positions=masked_positions)
 
 def parse_args():
     parser = argparse.ArgumentParser(description='Convert the huggingface CodeBERT Model to Gluon.')
@@ -127,12 +146,13 @@ def get_gluon_model_arch(hf_cfg, ctx):
         layer_norm_eps=hyper_params.get('layer_norm_eps', 1e-5)
     )
 
-    gluon_model = RoBERTaModel(
+    gluon_model = RoBERTaModelWPooler(
         gluon_encoder, hf_cfg.vocab_size,
         units=hyper_params['units'],
         embed_size=hyper_params['embed_size'],
         word_embed=hyper_params['word_embed'],
-        use_decoder=False
+        use_decoder=False,
+        use_pooler=True
     )
 
     gluon_model._output_all_encodings = True
@@ -215,13 +235,15 @@ def convert_params(hf_model, hf_tokenizer, hf_cfg, ctx):
             gl_name = gl_prefix + gl_suffix
             gluon_params[gl_name].set_data(hf_params[hf_name].cpu().numpy())
 
-    for hf_suffix, gl_name in [
-        ('word_embeddings.weight', 'robertamodel0_word_embed_embedding0_weight'),
-        ('LayerNorm.weight', 'bertencoder0_layernorm0_gamma'),
-        ('LayerNorm.bias', 'bertencoder0_layernorm0_beta'),
+    for hf_name, gl_name in [
+        ('embeddings.word_embeddings.weight', 'robertamodelwpooler0_word_embed_embedding0_weight'),
+        ('embeddings.LayerNorm.weight', 'bertencoder0_layernorm0_gamma'),
+        ('embeddings.LayerNorm.bias', 'bertencoder0_layernorm0_beta'),
+        ('pooler.dense.weight', 'robertamodelwpooler0_pooler_weight'),
+        ('pooler.dense.bias', 'robertamodelwpooler0_pooler_bias'),
+
     ]:
-        hf_embed_name = "embeddings." + hf_suffix
-        gluon_params[gl_name].set_data(hf_params[hf_embed_name].cpu().numpy())
+        gluon_params[gl_name].set_data(hf_params[hf_name].cpu().numpy())
 
     # position embed weight
     padding_idx = hf_tokenizer.pad_token_id
@@ -306,3 +328,6 @@ def convert_huggingface_model(args):
 if __name__ == '__main__':
     args = parse_args()
     convert_huggingface_model(args)
+
+
+
