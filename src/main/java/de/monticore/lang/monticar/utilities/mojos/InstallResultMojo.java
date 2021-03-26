@@ -29,7 +29,7 @@ public class InstallResultMojo extends BaseMojo {
       jarFile = ResultArtifactCreator.createArtifact(storageInformation, getTrainingConfig(), getPathTmpOut(), getTaggingResolver());
       getLog().info("FINISHED creating Jar of the trained model.");
 
-      ArtifactDeployer.installArtifact(jarFile.getAbsolutePath(), storageInformation, this.getRepository(), JarClassifierEnum.EMPTY);
+      ArtifactDeployer.installArtifact(jarFile.getAbsolutePath(), storageInformation, JarClassifierEnum.EMPTY);
     }
     catch (IOException | MavenInvocationException e) {
       throw new MojoFailureException(Arrays.toString(e.getStackTrace()));

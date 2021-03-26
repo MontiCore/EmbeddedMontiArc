@@ -6,6 +6,7 @@ import de.monticore.lang.monticar.utilities.utils.JarClassifierEnum;
 import de.monticore.lang.monticar.utilities.utils.JarDeployer;
 import org.apache.maven.shared.invoker.MavenInvocationException;
 
+import java.io.File;
 import java.util.Properties;
 
 public class ArtifactDeployer {
@@ -19,26 +20,34 @@ public class ArtifactDeployer {
   private static final String CLASSIFIER = "classifier";
   private static final String PACKAGING = "packaging";
 
-  public static void deployArtifact(String jarFile, StorageInformation storageInformation, Repository repository, JarClassifierEnum classifier)
+  public static void deployArtifact(String jarFile, StorageInformation storageInformation, Repository repository, JarClassifierEnum classifier, File settingsFile)
       throws MavenInvocationException {
-    Properties properties = getProperties(jarFile, storageInformation, repository, classifier);
-
-    JarDeployer.deployArtifact(properties);
+    Properties properties = getDeployProperties(jarFile, storageInformation, repository, classifier);
+    JarDeployer.deployArtifact(properties, settingsFile);
   }
 
-  public static void installArtifact(String jarFile, StorageInformation storageInformation, Repository repository, JarClassifierEnum classifier)
+  public static void installArtifact(String jarFile, StorageInformation storageInformation, JarClassifierEnum classifier)
       throws MavenInvocationException {
-    Properties properties = getProperties(jarFile, storageInformation, repository, classifier);
-    properties.setProperty(PACKAGING, "jar");
+    Properties properties = getInstallProperties(jarFile, storageInformation, classifier);
 
     JarDeployer.installArtifact(properties);
   }
 
-  private static Properties getProperties(String jarFile, StorageInformation storageInformation, Repository repository, JarClassifierEnum classifier) {
+  private static Properties getDeployProperties(String jarFile, StorageInformation storageInformation, Repository repository, JarClassifierEnum classifier) {
     Properties properties = new Properties();
-    properties.setProperty(FILE, jarFile);
     properties.setProperty(REPOSITORY_ID, repository.getId());
     properties.setProperty(URL, repository.getUrl().toString());
+    return getProperties(jarFile, storageInformation, classifier, properties);
+  }
+
+  private static Properties getInstallProperties(String jarFile, StorageInformation storageInformation, JarClassifierEnum classifier) {
+    Properties properties = new Properties();
+    properties.setProperty(PACKAGING, "jar");
+    return getProperties(jarFile, storageInformation, classifier, properties);
+  }
+
+  private static Properties getProperties(String jarFile, StorageInformation storageInformation, JarClassifierEnum classifier, Properties properties) {
+    properties.setProperty(FILE, jarFile);
     properties.setProperty(GROUP_ID, storageInformation.getGroupId());
     properties.setProperty(ARTIFACT_ID, storageInformation.getArtifactId());
     properties.setProperty(VERSION, String.valueOf(storageInformation.getVersion()));

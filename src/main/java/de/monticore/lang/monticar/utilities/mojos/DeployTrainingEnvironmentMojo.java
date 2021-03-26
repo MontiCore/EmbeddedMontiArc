@@ -36,7 +36,8 @@ public class DeployTrainingEnvironmentMojo extends BaseMojo {
       jarFile = TrainingEnvironmentArtifactCreator.createArtifact(storageInformation, this.datasetToStore, this.modelToStore, this.getPathTmpOut());
       getLog().info("FINISHED creating Jar for training environment");
 
-      ArtifactDeployer.deployArtifact(jarFile.getAbsolutePath(), storageInformation, this.getRepository(), JarClassifierEnum.EMPTY);
+      ArtifactDeployer.deployArtifact(jarFile.getAbsolutePath(), storageInformation, this.getRepository(), JarClassifierEnum.EMPTY,
+          getMavenSession().getRequest().getUserSettingsFile());
     }
     catch (IOException | MavenInvocationException e) {
       throw new MojoFailureException(Arrays.toString(e.getStackTrace()));

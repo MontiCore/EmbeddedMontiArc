@@ -32,7 +32,7 @@ public class InstallPretrainedMojo extends BaseMojo {
       jarFile = PretrainedArtifactCreator.createArtifact(this.pretrainedModelToStore, this.getPathTmpOut());
       getLog().info("FINISHED creating Jar for pretrained network");
 
-      ArtifactDeployer.installArtifact(jarFile.getAbsolutePath(), this.pretrainedModelToStore, this.getRepository(), JarClassifierEnum.PRETRAINED);
+      ArtifactDeployer.installArtifact(jarFile.getAbsolutePath(), this.pretrainedModelToStore, JarClassifierEnum.PRETRAINED);
     }
     catch (IOException | MavenInvocationException e) {
       throw new MojoFailureException(Arrays.toString(e.getStackTrace()));
