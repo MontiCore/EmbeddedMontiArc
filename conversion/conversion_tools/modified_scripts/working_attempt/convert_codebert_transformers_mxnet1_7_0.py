@@ -71,22 +71,43 @@ mx.npx.set_np()
 
 class RoBERTaModelWPooler(BERTModel):
     # analogous to gluonnlp 0.10.0 nlp.model.RobertaModel but it allows use_pooler and defaults to True
-    def __init__(self, encoder, vocab_size=None, units=None,
-        embed_size=None, embed_initializer=None,
-        word_embed=None, use_decoder=True,
-        prefix=None, params=None, use_pooler=True):
-            super(RoBERTaModelWPooler, self).__init__(encoder, vocab_size=vocab_size,
-                token_type_vocab_size=None, units=units,
-                embed_size=embed_size,
-                embed_initializer=embed_initializer,
-                word_embed=word_embed, token_type_embed=None,
-                use_pooler=use_pooler, use_decoder=use_decoder,
-                use_classifier=False, use_token_type_embed=False,
-                prefix=prefix, params=params)
+    def __init__(self, 
+        encoder, 
+        vocab_size=None,
+        token_type_vocab_size=None,
+        units=None,
+        embed_size=None, 
+        embed_initializer=None,
+        word_embed=None, 
+        use_decoder=True, 
+        use_token_type_embed=True, 
+        token_type_embed=None, 
+        prefix=None, 
+        params=None, 
+        use_pooler=True
+    ):
+        super(RoBERTaModelWPooler, self).__init__(
+            encoder, 
+            vocab_size=vocab_size,
+            token_type_vocab_size=token_type_vocab_size, 
+            units=units,
+            embed_size=embed_size,
+            embed_initializer=embed_initializer,
+            word_embed=word_embed, 
+            token_type_embed=token_type_embed,
+            use_pooler=use_pooler, 
+            use_decoder=use_decoder,
+            use_classifier=False, 
+            use_token_type_embed=use_token_type_embed,
+            prefix=prefix, 
+            params=params
+        )
 
     def __call__(self, inputs, valid_length=None, masked_positions=None):
-        return super(RoBERTaModelWPooler, self).__call__(inputs, [], valid_length=valid_length,
-                                                  masked_positions=masked_positions)
+        return super(RoBERTaModelWPooler, self).__call__(
+            inputs, [], valid_length=valid_length,
+            masked_positions=masked_positions
+        )
 
 def parse_args():
     parser = argparse.ArgumentParser(description='Convert the huggingface CodeBERT Model to Gluon.')
@@ -95,29 +116,6 @@ def parse_args():
     parser.add_argument('--gpu', type=int, default=None,
                         help='The single gpu to run mxnet, (e.g. --gpu 0) the default device is cpu.')
     return parser.parse_args()
-
-def convert_config(hf_cfg, cfg):
-    print('converting config')
-    cfg.defrost()
-    cfg.MODEL.vocab_size = hf_cfg.vocab_size
-    cfg.MODEL.units = hf_cfg.hidden_size
-    cfg.MODEL.hidden_size = hf_cfg.intermediate_size
-    cfg.MODEL.max_length = hf_cfg.max_position_embeddings - 2 # unsure about this
-    cfg.MODEL.num_heads = hf_cfg.num_attention_heads
-    cfg.MODEL.num_layers = hf_cfg.num_hidden_layers
-    cfg.MODEL.pos_embed_type = 'learned' # unsure about this
-    cfg.MODEL.activation = hf_cfg.hidden_act # unsure about this
-    cfg.MODEL.pooler_activation = 'tanh' # not sure where to source this in the hf config
-    cfg.MODEL.layer_norm_eps = hf_cfg.layer_norm_eps
-    cfg.MODEL.hidden_dropout_prob = hf_cfg.hidden_dropout_prob
-    cfg.MODEL.attention_dropout_prob = hf_cfg.attention_probs_dropout_prob # unsure about this
-    cfg.MODEL.dtype = 'float32'
-    cfg.INITIALIZER.embed = ['truncnorm', 0, 0.02]
-    cfg.INITIALIZER.weight = ['truncnorm', 0, 0.02]
-    cfg.INITIALIZER.bias = ['zeros']
-    cfg.VERSION = 1
-    cfg.freeze()
-    return cfg
 
 def get_gluon_model_arch(hf_cfg, ctx):
     hyper_params = {
@@ -147,11 +145,14 @@ def get_gluon_model_arch(hf_cfg, ctx):
     )
 
     gluon_model = RoBERTaModelWPooler(
-        gluon_encoder, hf_cfg.vocab_size,
+        encoder=gluon_encoder, 
+        vocab_size=hf_cfg.vocab_size,
         units=hyper_params['units'],
         embed_size=hyper_params['embed_size'],
         word_embed=hyper_params['word_embed'],
         use_decoder=False,
+        use_token_type_embed=True,
+        token_type_vocab_size=1,
         use_pooler=True
     )
 
