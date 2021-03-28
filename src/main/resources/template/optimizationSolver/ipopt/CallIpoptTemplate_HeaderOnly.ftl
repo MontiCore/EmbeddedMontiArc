@@ -39,13 +39,24 @@ typedef CPPAD_TESTVECTOR(CppAD::AD<double>) ADvector;
 <#list viewModel.getConstraintFunctions() as constr>
 #define ${viewModel.getIpoptConstraintRef(constr?index)} ${viewModel.getIpoptConstraintOffset(constr?index)}
 </#list>
+/*
+mat vec2mat(vec V, size_t cols) {
+    size_t rows = std::ceil(V.n_elems / double(cols));
+    return V.reshape(cols, rows);// return the original vector as matrix
+}
+*/
+
+
 
 namespace AnonymNS${viewModel.id}
 {
   using CppAD::AD;
   using namespace arma;
 
-
+  //constant variables
+  <#list viewModel.getExternalVariables() as ext>
+  ${viewModel.getExternalVariableType(ext)} ${ext.getName()};
+  </#list>
 
   class FG_eval_${viewModel.callSolverName} {
     public:
@@ -71,12 +82,8 @@ namespace AnonymNS${viewModel.id}
         for(int ${viewModel.getStepSizeName()} = ${viewModel.getStepSizeMin()?c}; ${viewModel.getStepSizeName()} < ${viewModel.getStepSizeMax()?c}; ${viewModel.getStepSizeName()}++)
         </#if>
         {
-        //Constraint Functions (e.g. x(n+1) == x(n)*2)
-        <#list viewModel.getConstraintFunctions() as constr>
-            ${viewModel.getConstraintForFG_Eval(constr,constr?index)};
-        </#list>
 
-        //Debug: Simplified Constraint Functions
+        // Constraint Functions
         <#list viewModel.getSimplifiedConstraintFunctions() as constr>
             ${viewModel.getConstraintForFG_Eval(constr,constr?index)};
         </#list>
@@ -174,7 +181,7 @@ class ${viewModel.callSolverName}
 
       //Push constants to namespace
       <#list viewModel.getExternalVariables() as ext>
-        ${viewModel.getExternalVariableType(ext)} AnonymNS${viewModel.id}::${ext.getName()} = ${ext.getName()};
+        AnonymNS${viewModel.id}::${ext.getName()} = ${ext.getName()}; //${viewModel.getExternalVariableType(ext)}
       </#list>
 
       // object that computes objective and constraints
@@ -195,31 +202,25 @@ class ${viewModel.callSolverName}
       // Check some of the solution values
       ok&=solution.status==CppAD::ipopt::solve_result<Dvector>::success;
 
-
       // assign solution values
-      //ToDO: ADMat variables
       <#list viewModel.getOptimizationVariables() as opt>
-        &${opt.getName()} = solution.x[${opt?index?c}];
+      <#if viewModel.hasStepSize()>
+        for(int ${viewModel.getStepSizeName()} = ${viewModel.getStepSizeMin()?c}; ${viewModel.getStepSizeName()} < ${viewModel.getStepSizeMax()?c}; ${viewModel.getStepSizeName()}++){
+            ${opt.getName()}[${viewModel.getStepSizeName()}] = solution.x[${viewModel.getIpoptVarRef(opt)} + ${viewModel.getStepSizeName()}];
+        }
+      <#else>
+        ${opt.getName()} = solution.x[${viewModel.getIpoptVarRef(opt)}];
+      </#if>
       </#list>
-      for (int i${viewModel.id} = 0; i${viewModel.id} < solution.x.size(); i${viewModel.id}++)
-      {
-        x${viewModel.id}(i${viewModel.id}) = solution.x[i${viewModel.id}];
-      }
-
-
-
       // objective value
       <#if viewModel.optimizationProblemType.name() == "MINIMIZATION">
-
-      y${viewModel.id} = solution.obj_value;
+      *${viewModel.getObjectiveVariableName()} = solution.obj_value;
       <#else>
-      y${viewModel.id} = -1 * solution.obj_value;
+      *${viewModel.getObjectiveVariableName()} = -1 * solution.obj_value;
       </#if>
 
       // print short message
       std::cout<<std::endl<<std::endl<<"Solving status: "<<solution.status<<"!"<<std::endl;
-      std::cout<<"${viewModel.optimizationProblemType.name()?capitalize} variable value: "<<std::endl<<"x = "<<std::endl<<x${viewModel.id}<<std::endl;
-      std::cout<<"${viewModel.optimizationProblemType.name()?capitalize} objective value: "<<std::endl<<"y = "<<y${viewModel.id}<<std::endl;
       return ok;
     }
 };

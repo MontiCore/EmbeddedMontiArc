@@ -92,9 +92,25 @@ public class IpoptViewModel extends SolverViewModel {
         List<Variable> variables = bluePrint.getMathInformationRegister().getVariables();
         variables.addAll(bluePrint.getVariables());
         for (Variable v : variables) {
-            if (!isOptScopedVariable(v.getName()) && (v.isConstantVariable() || v.isInputVariable())) {
+            if (!isOptScopedVariable(v.getName())){// && (v.isConstantVariable() || v.isInputVariable())) {
                 if(!isExternalVariable(v.getName()))
                     this.externalVariables.add(v);
+            }
+        }
+    }
+
+    public void transformOptVariables(EMAMBluePrintCPP bluePrint){
+        /* Doesn't work */
+        List<Variable> variables = bluePrint.getMathInformationRegister().getVariables();
+        variables.addAll(bluePrint.getVariables());
+        for (Variable v : variables) {
+            if( isOptScopedVariable(v.getName())){
+                v.getDimensionalInformation();
+                Variable temp = new Variable(v);
+                temp.addDimensionalInformation(Integer.toString(getStepSizeCount()));
+                temp.setTypeNameTargetLanguage("colvec");
+                bluePrint.replaceVariable(v,temp);
+
             }
         }
     }
@@ -116,10 +132,10 @@ public class IpoptViewModel extends SolverViewModel {
         //Pointer to optimization variables (return values)
         for (MathValueSymbol opt : getOptimizationVariables()){
             String varName = opt.getName();
-            result += varName+", ";
+            result += "&"+varName+", ";
         }
         //Objective variable (return value)
-        result += getObjectiveVariableName()+", ";
+        result += "&"+getObjectiveVariableName()+", ";
 
         //External Variables, treated as constants regarding optimization
         for(Variable var : getExternalVariables()){
@@ -139,10 +155,10 @@ public class IpoptViewModel extends SolverViewModel {
         for (MathValueSymbol opt : getOptimizationVariables()){
             String varType = getVariableType(opt);
             String varName = opt.getName();
-            result += varType+ " &"+varName+", ";
+            result += varType+ " *"+varName+", ";
         }
         //Objective variable (return value)
-        result += getVariableType(getObjectiveVariable()) + " &"+getObjectiveVariableName()+", ";
+        result += "double *"+getObjectiveVariableName()+", ";
 
         //External Variables, treated as constants regarding optimization
         for(Variable var : getExternalVariables()){
@@ -163,9 +179,11 @@ public class IpoptViewModel extends SolverViewModel {
         String result = "";
         String varTypeStr = symbol.getType().getType().getName();
         if (varTypeStr.contentEquals("Q"))
-            result = "AD<double>";
+            result = "double";
         if(symbol.getType().getDimensions().size() > 0)
-            result = "ADMat";
+            result = "mat";
+        if(hasStepSize())
+            result = "colvec";
         return result;
     }
 
@@ -351,7 +369,7 @@ public class IpoptViewModel extends SolverViewModel {
         String MatrixName = symbol.getNameToAccess();
         String MatrixIndex = symbol.getMathMatrixAccessOperatorSymbol().getTextualRepresentation();
 
-        result = VectorName + "[" + getIpoptVarRef(MatrixName)+" + "+ MatrixIndex + "]";
+        result = VectorName + "[" + indexOffset +" + " +getIpoptVarRef(MatrixName)+" + "+ MatrixIndex + "]";
 
         return result;
     }
@@ -366,6 +384,9 @@ public class IpoptViewModel extends SolverViewModel {
             if(var.getName().equals(varName))
                 return true;
         }
+        if(getObjectiveVariableName().equals(varName))
+            return true;
+
         return false;
     }
 

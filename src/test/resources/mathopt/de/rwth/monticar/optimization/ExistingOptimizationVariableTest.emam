@@ -13,7 +13,7 @@ component ExistingOptimizationVariableTest{
     implementation Math{
         // 1. scalar
         minimize
-            Q x = 3;
+            Q x;
         in
             2 * x + 1;
         subject to
@@ -34,7 +34,7 @@ component ExistingOptimizationVariableTest{
 
         // 3. substituted
 
-        Q c = minimize
+        minimize
             Q^{3,3} a = zeros(3,3);
         in
             ainc(1, 1) * ainc(2, 2) * ainc(3, 3);

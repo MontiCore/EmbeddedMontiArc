@@ -151,7 +151,7 @@ public abstract class SolverViewModel extends ViewModelBase {
         if(objectiveVariable != null) {
             return objectiveVariable.getName();
         }else{
-            return "";
+            return "y";
         }
     }
 
