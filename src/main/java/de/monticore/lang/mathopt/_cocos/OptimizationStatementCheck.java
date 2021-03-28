@@ -2,6 +2,8 @@
 package de.monticore.lang.mathopt._cocos;
 
 import de.monticore.lang.math._ast.ASTMathAssignmentDeclarationStatement;
+import de.monticore.lang.math._symboltable.expression.MathAssignmentExpressionSymbol;
+import de.monticore.lang.math._symboltable.matrix.MathMatrixVectorExpressionSymbol;
 import de.monticore.lang.mathopt._ast.ASTOptimizationObjectiveValue;
 import de.monticore.lang.mathopt._ast.ASTOptimizationStatement;
 import de.monticore.lang.mathopt._ast.ASTOptimizationVariableDeclaration;
@@ -55,20 +57,25 @@ public class OptimizationStatementCheck implements MathOptASTOptimizationStateme
         }
     }
 
+    private void checkStepSize(ASTOptimizationStatement node) {
+        //Check if it is in the form "n=1:10"
+        if(node.getStepSizeOpt().isPresent()){
+            if(node.getStepSize() instanceof MathAssignmentExpressionSymbol) {
+                MathAssignmentExpressionSymbol maes = (MathAssignmentExpressionSymbol) node.getStepSize();
+                if (maes.getExpressionSymbol() instanceof MathMatrixVectorExpressionSymbol)
+                    return;
+            }
+        }
+        Log.error(String.format("0xC0005 Stepsize definition is not supported. It must be a series."));
+    }
+
     private void checkIndependentVariables(ASTOptimizationStatement node) {
         for (ASTMathAssignmentDeclarationStatement indVar :node.getIndependentDeclarationList()) {
             if (!supportedOptimizationTypes.contains(indVar.getType().getElementType().getName())) {
-                Log.error(String.format("0xC0004 Optimization variable type \"%s\" is not supported as return value.", indVar.getType().toString()));
+                Log.error(String.format("0xC0006 Indpendent variable type \"%s\" is not supported as return value.", indVar.getType().toString()));
             }
         }
     }
 
-    private void checkStepSize(ASTOptimizationStatement node) {
-        if(node.getStepSizeOpt().isPresent()){
-            //
-        }
-    }
-
-    //ToDo: Check for head loop
 
 }

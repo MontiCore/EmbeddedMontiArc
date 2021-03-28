@@ -4,11 +4,9 @@ package de.monticore.lang.mathopt._symboltable;
 import de.monticore.commonexpressions._ast.ASTLessEqualExpression;
 import de.monticore.expressionsbasis._ast.ASTExpression;
 import de.monticore.lang.math._ast.ASTMathAssignmentDeclarationStatement;
-import de.monticore.lang.math._symboltable.MathForLoopHeadSymbol;
-import de.monticore.lang.math._symboltable.MathStatementsSymbol;
-import de.monticore.lang.math._symboltable.MathSymbolTableCreator;
-import de.monticore.lang.math._symboltable.MathVariableDeclarationSymbol;
+import de.monticore.lang.math._symboltable.*;
 import de.monticore.lang.math._symboltable.expression.*;
+import de.monticore.lang.math._symboltable.matrix.MathMatrixVectorExpressionSymbol;
 import de.monticore.lang.mathopt._ast.*;
 import de.monticore.lang.mathopt._parser.MathOptAntlrParser;
 import de.monticore.lang.mathopt._visitor.MathOptVisitor;
@@ -123,20 +121,30 @@ public class MathOptSymbolTableCreator extends MathSymbolTableCreator implements
         //Optional stepsize definition( e.g. <n=1:10>)
         if (astMathOptimizationStatement.isPresentStepSize()) {
             ASTExpression x = astMathOptimizationStatement.getStepSizeOpt().get();
-            symbol.setStepSizeExpression((MathExpressionSymbol) x.getSymbolOpt().get());
+            MathExpressionSymbol temp = (MathExpressionSymbol) x.getSymbolOpt().get();
+            symbol.setStepSizeExpression(temp);
         }
         //Optimization variables
         List<ASTOptimizationVariableDeclaration> optVarDecList = astMathOptimizationStatement.getOptimizationVariableList();
         List<MathValueSymbol> optVariables = new ArrayList<>();
+
         for (ASTOptimizationVariableDeclaration varDec : optVarDecList) {
-            optVariables.add((MathValueSymbol) varDec.getSymbolOpt().get());
+            MathValueSymbol temp = (MathValueSymbol) varDec.getSymbolOpt().get();
+            MathNumberExpressionSymbol newDim = new MathNumberExpressionSymbol();
+            if(temp.getType().getDimensions().isEmpty() && astMathOptimizationStatement.isPresentStepSize()) {
+                MathAssignmentExpressionSymbol assignExpression = (MathAssignmentExpressionSymbol) symbol.getStepSizeExpression();
+                MathMatrixVectorExpressionSymbol assignChildExpression = (MathMatrixVectorExpressionSymbol) assignExpression.getExpressionSymbol();
+                MathNumberExpressionSymbol endExpression = (MathNumberExpressionSymbol) assignChildExpression.getEnd();
+                newDim.setValue(endExpression.getValue());
+                temp.getType().addDimension(newDim);
+            }
+            optVariables.add(temp);
         }
         symbol.setOptimizationVariables(optVariables);
         //Independent variables
         List<ASTMathAssignmentDeclarationStatement> indVarDecList = astMathOptimizationStatement.getIndependentDeclarationList();
         List<MathValueSymbol> indVariables = new ArrayList<>();
         for (ASTMathAssignmentDeclarationStatement varDec : indVarDecList) {
-            Log.warn("IndependentVariable "+ varDec.getName() +" Type: " + varDec.getSymbolOpt().get().getClass().toString());
             indVariables.add((MathValueSymbol) varDec.getSymbolOpt().get());
         }
         symbol.setIndependentVariables(indVariables);
@@ -160,7 +168,6 @@ public class MathOptSymbolTableCreator extends MathSymbolTableCreator implements
                             ((MathOptimizationConditionSymbol) sym).resolveBoundedExpressionToOptimizationVariable(symbol.getOptimizationVariables());
                             ((MathOptimizationConditionSymbol) sym).resolveBoundedExpressionToOptimizationVariable(symbol.getIndependentVariables());
                             symbol.getConstraints().add((MathOptimizationConditionSymbol) conditionSymbol);
-                            //ToDo: Check for loop constraints
                         }
                 }
                 symbol.getSubjectToExpressions().add(conditionSymbol);
