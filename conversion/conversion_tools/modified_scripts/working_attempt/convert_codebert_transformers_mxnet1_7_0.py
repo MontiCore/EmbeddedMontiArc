@@ -181,22 +181,7 @@ def convert_params(hf_model, hf_tokenizer, hf_cfg, ctx):
     pp.pprint(list(zip(list(hf_params.keys()), [hf_params[k].shape for k in hf_params.keys()])))
     num_layers = hf_cfg.num_hidden_layers
 
-    # TODO continue here, gluonnlp 0.10.0 params seem to differ greatly from the latest 1.0.0 params
-
     for layer_id in range(num_layers):
-        # hf_q_weight = hf_params[hf_atten_prefix + 'query.weight'].cpu().numpy()
-        # hf_k_weight = hf_params[hf_atten_prefix + 'key.weight'].cpu().numpy()
-        # hf_v_weight = hf_params[hf_atten_prefix + 'value.weight'].cpu().numpy()
-        # hf_q_bias = hf_params[hf_atten_prefix + 'query.bias'].cpu().numpy()
-        # hf_k_bias = hf_params[hf_atten_prefix + 'key.bias'].cpu().numpy()
-        # hf_v_bias = hf_params[hf_atten_prefix + 'value.bias'].cpu().numpy()
-        # set qkv weights/biases
-        # gluon_params[gl_qkv_prefix + 'query_weight'].set_data[hf_q_weight]
-        # gluon_params[gl_qkv_prefix + 'key_weight'].set_data[hf_k_weight]
-        # gluon_params[gl_qkv_prefix + 'value_weight'].set_data[hf_v_weight]
-        # gluon_params[gl_qkv_prefix + 'query_bias'].set_data[hf_q_bias]
-        # gluon_params[gl_qkv_prefix + 'key_bias'].set_data[hf_k_bias]
-        # gluon_params[gl_qkv_prefix + 'value_bias'].set_data[hf_v_bias]
         hf_prefix = 'encoder.layer.{}.'.format(layer_id)
         hf_atten_prefix = hf_prefix + 'attention.self.'
         gl_prefix = 'bertencoder0_transformer{}'.format(layer_id)
@@ -210,16 +195,6 @@ def convert_params(hf_model, hf_tokenizer, hf_cfg, ctx):
             hf_name = hf_atten_prefix + name.format('.') 
             gluon_params[gl_name].set_data(hf_params[hf_name].cpu().numpy())
 
-            # ('attention.output.dense.weight', 'attention_proj.weight'),
-            # ('attention.output.dense.bias', 'attention_proj.bias'),
-            # ('attention.output.LayerNorm.weight', 'layer_norm.gamma'),
-            # ('attention.output.LayerNorm.bias', 'layer_norm.beta'),
-            # ('intermediate.dense.weight', 'ffn.ffn_1.weight'),
-            # ('intermediate.dense.bias', 'ffn.ffn_1.bias'),
-            # ('output.dense.weight', 'ffn.ffn_2.weight'),
-            # ('output.dense.bias', 'ffn.ffn_2.bias'),
-            # ('output.LayerNorm.weight', 'ffn.layer_norm.gamma'),
-            # ('output.LayerNorm.bias', 'ffn.layer_norm.beta')
         for hf_suffix, gl_suffix in [
             ('attention.output.dense.weight', '_proj_weight'),
             ('attention.output.dense.bias', '_proj_bias'),
@@ -238,6 +213,7 @@ def convert_params(hf_model, hf_tokenizer, hf_cfg, ctx):
 
     for hf_name, gl_name in [
         ('embeddings.word_embeddings.weight', 'robertamodelwpooler0_word_embed_embedding0_weight'),
+        ('embeddings.token_type_embeddings.weight', 'robertamodelwpooler0_token_type_embed_embedding0_weight'),
         ('embeddings.LayerNorm.weight', 'bertencoder0_layernorm0_gamma'),
         ('embeddings.LayerNorm.bias', 'bertencoder0_layernorm0_beta'),
         ('pooler.dense.weight', 'robertamodelwpooler0_pooler_weight'),
