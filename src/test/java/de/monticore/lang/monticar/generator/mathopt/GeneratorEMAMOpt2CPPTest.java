@@ -7,6 +7,7 @@ import de.monticore.lang.monticar.generator.AbstractSymtabTest;
 import de.monticore.lang.monticar.generator.cpp.GeneratorCPP;
 import de.monticore.lang.monticar.generator.cpp.GeneratorCppCli;
 import de.monticore.lang.tagging._symboltable.TaggingResolver;
+import org.junit.Ignore;
 import org.junit.Test;
 
 import java.io.File;
@@ -65,9 +66,6 @@ public class GeneratorEMAMOpt2CPPTest extends AbstractSymtabTest {
         // testFilesAreEqual(files, restPath);
     }
 
-    //ToDo: Add more tests
-    //   Variable definition: ADMat vs ADouble (cardinality > 1)
-
     /**
      * Simple quadratic problem max x^2-2x+1 s.t. x >= 0
      */
@@ -110,6 +108,7 @@ public class GeneratorEMAMOpt2CPPTest extends AbstractSymtabTest {
     /**
      * test loops in conditions
      */
+    @Ignore
     @Test
     public void testForLoopConditions() throws IOException {
         List<File> files = doGenerateOptimizationModel("forLoopConditionsTest");
@@ -132,6 +131,7 @@ public class GeneratorEMAMOpt2CPPTest extends AbstractSymtabTest {
     /**
      * test models which use a already declared optimization variable
      */
+    @Ignore
     @Test
     public void existingOptimizationVariable() throws IOException {
         List<File> files = doGenerateOptimizationModel("existingOptimizationVariableTest");

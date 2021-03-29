@@ -6,6 +6,7 @@ import de.monticore.lang.embeddedmontiarc.embeddedmontiarc._symboltable.instance
 import de.monticore.lang.monticar.generator.AbstractSymtabTest;
 import de.monticore.lang.monticar.generator.cpp.GeneratorCPP;
 import de.monticore.lang.tagging._symboltable.TaggingResolver;
+import org.junit.Ignore;
 import org.junit.Test;
 
 import java.io.File;
@@ -74,6 +75,7 @@ public class GeneratorEMAMOpt2CMakeTest extends AbstractSymtabTest {
         List<File> files = doGenerateModel("de.rwth.monticar.optimization.forLoopConditionsTest");
     }
 
+    @Ignore
     @Test
     public void existingOptimizationVariableCMakeTest() throws IOException {
         List<File> files = doGenerateModel("de.rwth.monticar.optimization.existingOptimizationVariableTest");
