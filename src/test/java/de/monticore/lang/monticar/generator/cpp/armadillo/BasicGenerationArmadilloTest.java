@@ -81,7 +81,7 @@ public class BasicGenerationArmadilloTest extends AbstractSymtabTest {
         testFilesAreEqual(files, restPath);
     }
 
-    @Ignore
+
     @Test
     public void testMathUnitAlgebraicOptimizations() throws IOException {
         ThreadingOptimizer.resetID();

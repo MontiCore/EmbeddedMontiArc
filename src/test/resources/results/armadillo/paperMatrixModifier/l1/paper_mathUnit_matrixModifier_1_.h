@@ -24,8 +24,10 @@ matOut=mat(1000,10000);
 }
 void execute()
 {
-matOut = (mat1*(mat2*mat3))*(mat4*mat5);
+mat h1 = mat1*mat2;
+mat h2 = mat3*mat4;
+mat h3 = h1*h2;
+matOut = h3*mat5;
 }
-
 };
 #endif

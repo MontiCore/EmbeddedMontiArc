@@ -305,17 +305,16 @@ public class ProblemAssignmentHandler {
     //private String getOptimizationVarType(MathOptimizationStatementSymbol symbol) {
     //    return TypeConverter.getVariableTypeNameForMathLanguageTypeName(getVariableWithTypeInformations(symbol.getOptimizationVariable()).getType());
     //}
-
+    /*
     private String getObjectiveValueVarName(MathOptimizationStatementSymbol symbol) {
         String objValueVar = "";
         if (symbol.hasReturnValue()) {
             objValueVar = symbol.getObjectiveValue().getName();
         }
         return objValueVar;
-    }
+    }*/
 
     private String getObjectiveFunctionAsCode(MathOptimizationStatementSymbol symbol) {
-        //Todo: why do we need a subsitute instead of renaming c-code "x"?
         MathExpressionSymbol expressionSymbol = symbol.getObjectiveExpression().getAssignedMathExpressionSymbol();
         for(MathValueSymbol optimizationVariable : symbol.getOptimizationVariables())
             expressionSymbol = ComponentConverter.currentBluePrint.getMathInformationRegister().
@@ -325,14 +324,12 @@ public class ProblemAssignmentHandler {
         return ExecuteMethodGenerator.generateExecuteCode(expressionSymbol, new ArrayList<>());
     }
 
-    private OptimizationSymbolHandler getOptimizationSymbolHandler() {
-
-        //TODO: DEBUG ?!
+    /*private OptimizationSymbolHandler getOptimizationSymbolHandler() {
         Generator gen = ComponentConverter.currentBluePrint.getGenerator();
         if (gen instanceof GeneratorCPP)
             return ((GeneratorCPP)gen).getMathOptExecuteMethodGenerator();
 //            return ((GeneratorEMAMOpt2CPP) gen).getExecuteMethodGeneratorOpt();
         else
             return null;
-    }
+    }*/
 }

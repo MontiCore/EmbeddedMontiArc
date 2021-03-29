@@ -75,20 +75,7 @@ public class IpoptSolverGeneratorImplementation implements NLPSolverGeneratorImp
                 options.put("Retape", "true");
             vm.setOptions(options);
             // set execute command
-            //vm.transformOptVariables(bluePrint);
             vm.setExternalVariablesFromBluePrint(bluePrint);
-
-            String knownVariables = ", ";
-            for (Variable v : vm.getExternalVariables()) {
-                knownVariables += v.getName() + ", ";
-            }
-            if (knownVariables.length() >= 2) {
-                knownVariables = knownVariables.substring(0, knownVariables.length() - 2);
-            }
-            String objVar = vm.getObjectiveVariableName();
-            if (objVar.isEmpty())
-                objVar = "objectiveValue" + optimizationProblem.getId();
-
             result = String.format("%s::solveOptimizationProblemIpOpt(%s);\n", vm.getCallSolverName(),vm.getIpoptSolverFunctionCallParameters());
             // generate templates by view model
             generateIpoptTemplates(vm, auxillaryFiles);
