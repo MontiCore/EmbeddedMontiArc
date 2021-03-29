@@ -14,14 +14,12 @@ component HS71{
 
     implementation Math{
         minimize
-            Q^{4} x;
+            Q(1:5)^{4} x;
         in
-            x(1) * x(4) * (x(1) + x(2) + x(3)) + x(3);
+            Q y = x(1) * x(4) * (x(1) + x(2) + x(3)) + x(3);
         subject to
             x(1) * x(2) * x(3) * x(4) >= 25;
             x(1) * x(1) + x(2) * x(2) + x(3) * x(3) + x(4) * x(4) == 40;
-            1 <= x;
-            x <= 5;
         end
         xOut = x;
         yOut = y;

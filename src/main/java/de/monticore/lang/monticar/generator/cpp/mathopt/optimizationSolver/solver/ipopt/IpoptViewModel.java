@@ -5,6 +5,7 @@ import de.monticore.lang.math._ast.ASTMathAssignmentDeclarationStatement;
 import de.monticore.lang.math._matrixprops.MatrixProperties;
 import de.monticore.lang.math._symboltable.JSValue;
 import de.monticore.lang.math._symboltable.MathStatementsSymbol;
+import de.monticore.lang.math._symboltable.MathValue;
 import de.monticore.lang.math._symboltable.MathVariableDeclarationSymbol;
 import de.monticore.lang.math._symboltable.expression.*;
 import de.monticore.lang.math._symboltable.matrix.MathMatrixNameExpressionSymbol;
@@ -99,22 +100,6 @@ public class IpoptViewModel extends SolverViewModel {
         }
     }
 
-    public void transformOptVariables(EMAMBluePrintCPP bluePrint){
-        /* Doesn't work */
-        List<Variable> variables = bluePrint.getMathInformationRegister().getVariables();
-        variables.addAll(bluePrint.getVariables());
-        for (Variable v : variables) {
-            if( isOptScopedVariable(v.getName())){
-                v.getDimensionalInformation();
-                Variable temp = new Variable(v);
-                temp.addDimensionalInformation(Integer.toString(getStepSizeCount()));
-                temp.setTypeNameTargetLanguage("colvec");
-                bluePrint.replaceVariable(v,temp);
-
-            }
-        }
-    }
-
     public String getExternalVariableType(Variable extVar){
         if(extVar.getVariableType() != null){
             return extVar.getVariableType().getTypeNameTargetLanguage();
@@ -174,8 +159,6 @@ public class IpoptViewModel extends SolverViewModel {
     }
 
     public String getVariableType(MathValueSymbol symbol){
-        //String debug = "type"+symbol.getType().getName() +
-        //        "\n typeType: "+symbol.getType().getType().getName() + "\n isRational: "+symbol.getType().getType().isRational();
         String result = "";
         String varTypeStr = symbol.getType().getType().getName();
         if (varTypeStr.contentEquals("Q"))
@@ -187,17 +170,82 @@ public class IpoptViewModel extends SolverViewModel {
         return result;
     }
 
+    public int getVariableDimensionM(MathValueSymbol symbol){
+        List<MathExpressionSymbol> mesList = symbol.getType().getDimensions();
+        if(mesList.size() >= 1){
+            MathExpressionSymbol mes = mesList.get(0);
+            MathNumberExpressionSymbol mnes = (MathNumberExpressionSymbol) mes;
+            return mnes.getValue().getRealNumber().intValue();
+        }
+        return 1;
+    }
+
+    public int getVariableDimensionN(MathValueSymbol symbol){
+        List<MathExpressionSymbol> mesList = symbol.getType().getDimensions();
+        if(mesList.size() >= 2){
+            MathExpressionSymbol mes = mesList.get(1);
+            MathNumberExpressionSymbol mnes = (MathNumberExpressionSymbol) mes;
+            return mnes.getValue().getRealNumber().intValue();
+        }
+        return 1;
+    }
+
+    public boolean isVarScalar(MathValueSymbol var){
+        return (var.getType().getDimensions().isEmpty());
+    }
+
+    public int getOptVarDimension(){
+        int result = 0;
+        for(MathValueSymbol optVar : getOptimizationVariables()) {
+            result += getVariableDimensionM(optVar) * getVariableDimensionN(optVar);
+
+        }
+        return result;
+    }
+
+    public int getIndVarDimension(){
+        int result = 0;
+        for(MathValueSymbol indVar : getIndependentVariables()) {
+            result += getVariableDimensionM(indVar) * getVariableDimensionN(indVar);
+        }
+        return result;
+    }
+
     public String getIpoptVarOffset(MathValueSymbol symbol){
         int var = -1;
         int pre_offset = 0;
-        if(getIndependentVariables().indexOf(symbol) != -1) {
-            var = getIndependentVariables().indexOf(symbol);
-            pre_offset = getNumberOptimizationVariables() * getStepSizeCount();
+        if(hasStepSize()) { //MPC
+            if (getIndependentVariables().indexOf(symbol) != -1) {
+                var = getIndependentVariables().indexOf(symbol);
+                pre_offset = getNumberOptimizationVariables() * getStepSizeCount();
+            }
+            if (getOptimizationVariables().indexOf(symbol) != -1) {
+                var = getOptimizationVariables().indexOf(symbol);
+            }
+            return pre_offset + " + " + getStepSizeCount() * var; //+ " * " + var;
+        }else{
+            int offset = 0;
+            if (getOptimizationVariables().indexOf(symbol) != -1) {
+                offset = 0;
+                var = getOptimizationVariables().indexOf(symbol);
+                for(int i = 0; i < getOptimizationVariables().indexOf(symbol);i++){
+                    MathValueSymbol optVar = getOptimizationVariables().get(i);
+                    offset += getVariableDimensionM(optVar) * getVariableDimensionN(optVar);
+                }
+            }
+            if (getIndependentVariables().indexOf(symbol) != -1) {
+                offset = 0;
+                var = getOptimizationVariables().indexOf(symbol);
+                for(MathValueSymbol optVar : getOptimizationVariables()){
+                    pre_offset += getVariableDimensionM(optVar) * getVariableDimensionN(optVar);
+                }
+                for(int i = 0; i < getIndependentVariables().indexOf(symbol);i++){
+                    MathValueSymbol indVar = getIndependentVariables().get(i);
+                    offset += getVariableDimensionM(indVar) * getVariableDimensionN(indVar);
+                }
+            }
+            return pre_offset + " + " + offset;
         }
-        if(getOptimizationVariables().indexOf(symbol) != -1) {
-            var = getOptimizationVariables().indexOf(symbol);
-        }
-        return pre_offset+" + " + getStepSizeCount() * var; //+ " * " + var;
     }
 
     public String getIpoptVarRef(MathValueSymbol symbol){return "_V_"+symbol.getName();}
@@ -207,8 +255,19 @@ public class IpoptViewModel extends SolverViewModel {
     public String getIpoptConstraintRef(int nr){return "_V_CONSTR"+nr;}
 
     public String getIpoptConstraintOffset(int nr){
-        int pre_offset = getNumberVariables() * getStepSizeCount();
-        return pre_offset+" + " + getStepSizeCount() * nr;
+        if(hasStepSize()) {
+            int pre_offset = getNumberVariables() * getStepSizeCount();
+            return pre_offset + " + " + getStepSizeCount() * nr;
+        }else{
+            int pre_offset = 0;
+            for(MathValueSymbol optVar : getOptimizationVariables()){
+                pre_offset += getVariableDimensionM(optVar) * getVariableDimensionN(optVar);
+            }
+            for(MathValueSymbol indVar : getIndependentVariables()){
+                pre_offset += getVariableDimensionM(indVar) * getVariableDimensionN(indVar);
+            }
+            return pre_offset + " + " + nr;
+        }
     }
 
     public String replaceVariablesWithIpoptVectorEntry(String code){
@@ -222,7 +281,6 @@ public class IpoptViewModel extends SolverViewModel {
         return result;
     }
 
-    //ToDo: Move to SolverViewModel
     public boolean hasStepSize(){
         if(getStepSize()!= null)
             return true;
@@ -234,7 +292,6 @@ public class IpoptViewModel extends SolverViewModel {
         MathMatrixVectorExpressionSymbol result = null;
         MathExpressionSymbol mathExpression = getStepSize();
         if(mathExpression != null) {
-            //ToDo: Add CoCo to ensure this always holds.
             if (mathExpression.isAssignmentExpression()) {
                 MathAssignmentExpressionSymbol assignExpression = (MathAssignmentExpressionSymbol) mathExpression;
                 MathExpressionSymbol assignChildExpression = assignExpression.getExpressionSymbol();
@@ -248,7 +305,6 @@ public class IpoptViewModel extends SolverViewModel {
     public String getStepSizeName(){
         String result = "";
         MathExpressionSymbol mathExpression = getStepSize();
-        //ToDo: Add CoCo to ensure this always holds.
         if(mathExpression != null) {
             if (mathExpression.isAssignmentExpression()) {
                 MathAssignmentExpressionSymbol assignExpression = (MathAssignmentExpressionSymbol) mathExpression;
@@ -340,6 +396,11 @@ public class IpoptViewModel extends SolverViewModel {
     public String getObjectiveFunctionWithIpoptVectorEntries() {
         MathExpressionSymbol symbol = getObjectiveFunction();
         return getIpoptTextualRepresentation(symbol, "vars", 0);
+    }
+
+    public String getRawObjectiveFunction() {
+        MathExpressionSymbol symbol = getObjectiveFunction();
+        return symbol.getTextualRepresentation();
     }
 
     public String listClassesInScope(){
@@ -462,7 +523,7 @@ public class IpoptViewModel extends SolverViewModel {
 
                     MathOptimizationConditionSymbol mocs = new MathOptimizationConditionSymbol(mnes, "<=", maes);
                     modifiedConstraints.add(mocs);
-                    Log.warn("Constraint <"+constraint.getTextualRepresentation()+"> changed to <"+mocs.getTextualRepresentation()+".");
+                    Log.info("Constraint <"+constraint.getTextualRepresentation()+"> changed to <"+mocs.getTextualRepresentation()+".","MathOptConstraints");
                     handledConstraint = true;
                 }
                 if (upperBoundContainsActiveVariables) {
@@ -478,7 +539,7 @@ public class IpoptViewModel extends SolverViewModel {
 
                     MathOptimizationConditionSymbol mocs = new MathOptimizationConditionSymbol(mnes, "<=", maes);
                     modifiedConstraints.add(mocs);
-                    Log.warn("Constraint <"+constraint.getTextualRepresentation()+"> changed to <"+mocs.getTextualRepresentation()+".");
+                    Log.info("Constraint <"+constraint.getTextualRepresentation()+"> changed to <"+mocs.getTextualRepresentation()+".","MathOptConstraints");
                     handledConstraint = true;
                 }
                 if (lowerBoundContainsActiveVariables && upperBoundContainsActiveVariables) {
@@ -494,20 +555,62 @@ public class IpoptViewModel extends SolverViewModel {
 
                     MathOptimizationConditionSymbol mocs = new MathOptimizationConditionSymbol(mnes, "<=", maes);
                     modifiedConstraints.add(mocs);
-                    Log.warn("Constraint <"+constraint.getTextualRepresentation()+"> changed to <"+mocs.getTextualRepresentation()+".");
+                    Log.info("Constraint <"+constraint.getTextualRepresentation()+"> changed to <"+mocs.getTextualRepresentation()+".","MathOptConstraints");
                     handledConstraint = true;
                 }
                 if (!upperBoundContainsActiveVariables && !lowerBoundContainsActiveVariables && expressionContainsActiveVariables) {
-                    //If only BoundedExpression contains variable defined in opt scope, let it through unchanged.
-                    modifiedConstraints.add(constraint);
-                    Log.warn("Constraint <"+constraint.getTextualRepresentation()+"> passed through.");
+
+                    if(constraint.getOperator()==">="){
+                        //Swap left and right.
+                        MathArithmeticExpressionSymbol maes = new MathArithmeticExpressionSymbol();
+                        maes.setOperator("-");
+                        maes.setLeftExpression(constraint.getBoundedExpression());
+                        maes.setRightExpression(constraint.getLowerBound().get());
+                        MathNumberExpressionSymbol mnes = new MathNumberExpressionSymbol();
+                        mnes.setValue(new JSValue(Rational.ZERO));
+
+                        MathOptimizationConditionSymbol mocs = new MathOptimizationConditionSymbol(mnes, "<=", maes);
+                        modifiedConstraints.add(mocs);
+                    }
+                    if(constraint.getOperator()=="=="){
+                        // 0 <= <constr> - <lower>
+                        MathArithmeticExpressionSymbol maes = new MathArithmeticExpressionSymbol();
+                        maes.setOperator("-");
+                        maes.setLeftExpression(constraint.getBoundedExpression());
+                        maes.setRightExpression(constraint.getLowerBound().get());
+                        MathNumberExpressionSymbol mnes = new MathNumberExpressionSymbol();
+                        mnes.setValue(new JSValue(Rational.ZERO));
+
+                        MathOptimizationConditionSymbol mocs = new MathOptimizationConditionSymbol(mnes, "<=", maes);
+                        modifiedConstraints.add(mocs);
+
+                        // 0 <= <upper> - <constr>
+                        maes = new MathArithmeticExpressionSymbol();
+                        maes.setOperator("-");
+                        maes.setLeftExpression(constraint.getUpperBound().get());
+                        maes.setRightExpression(constraint.getBoundedExpression());
+                        mnes = new MathNumberExpressionSymbol();
+                        mnes.setValue(new JSValue(Rational.ZERO));
+
+                        mocs = new MathOptimizationConditionSymbol(mnes, "<=", maes);
+                        modifiedConstraints.add(mocs);
+                    }
+                    if(constraint.getOperator()=="<="){
+                        //Let it through unchanged.
+                        modifiedConstraints.add(constraint);
+
+                    }
                     handledConstraint = true;
                 }
                 if(!handledConstraint){
-                    Log.warn("Constraint <"+constraint.getTextualRepresentation()+"> contains no active variables and is ignored.");
+                    Log.error("Constraint <"+constraint.getTextualRepresentation()+"> contains no active variables and is ignored.");
                 }
             }
             return modifiedConstraints;
+    }
+
+    public int getSimplifiedConstraintFunctionCount(){
+        return getSimplifiedConstraintFunctions().size();
     }
 
     private boolean replacementListContainsKey(List<String[]> list, String key){
@@ -572,8 +675,9 @@ public class IpoptViewModel extends SolverViewModel {
 
                 }
             } else {
-                String leftside = "fg[ 1 +"+getNumberVariables() + " + " + getIpoptConstraintRef(nr) + " ] ";
-                String rightside = getIpoptTextualRepresentation(((MathOptimizationConditionSymbol) constraint).getRight(), "vars", 0);
+                String leftside = "fg[ 1 +" + getIpoptConstraintRef(nr) + " ] ";
+                //String rightside = getIpoptTextualRepresentation(((MathOptimizationConditionSymbol) constraint).getRight(), "vars", 0);
+                String rightside = ((MathOptimizationConditionSymbol) constraint).getRight().getTextualRepresentation();
 
                 result = leftside + " = " + rightside;
             }

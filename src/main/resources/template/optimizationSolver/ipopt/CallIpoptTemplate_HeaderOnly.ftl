@@ -36,7 +36,7 @@ typedef CPPAD_TESTVECTOR(CppAD::AD<double>) ADvector;
 #define ${viewModel.getIpoptVarRef(indVar)} ${viewModel.getIpoptVarOffset(indVar)}
 </#list>
 //Constraints
-<#list viewModel.getConstraintFunctions() as constr>
+<#list viewModel.getSimplifiedConstraintFunctions() as constr>
 #define ${viewModel.getIpoptConstraintRef(constr?index)} ${viewModel.getIpoptConstraintOffset(constr?index)}
 </#list>
 /*
@@ -63,26 +63,42 @@ namespace AnonymNS${viewModel.id}
       typedef CPPAD_TESTVECTOR(AD<double>) ADvector;
 
       void operator()(ADvector &fg,const ADvector &vars) {
+
+        <#if !viewModel.hasStepSize()>
+        <#list viewModel.optimizationVariables as var>
+        ADMat ${var.getName()} = ADMat(${viewModel.getVariableDimensionM(var)!c},${viewModel.getVariableDimensionN(var)!c});
+        for(int m = 0; m < ${viewModel.getVariableDimensionM(var)!c};m++){
+            for(int n = 0; n < ${viewModel.getVariableDimensionN(var)!c};n++){
+                int i = m*${viewModel.getVariableDimensionM(var)!c} + n;
+                ${var.getName()}(i) = vars[${viewModel.getIpoptVarRef(var)} + i];
+            }
+        }
+        </#list>
+        </#if>
+
         //fg[0] is evaluation function
+        <#if !viewModel.hasStepSize()>
+        fg[0] = ${viewModel.getRawObjectiveFunction()};
+        <#else>
         fg[0] = ${viewModel.getObjectiveFunctionWithIpoptVectorEntries()};
 
         //Following fg entries are reserved for variables.
         //We use the defines to get a meaningful address space
 
-        //Initialization
+        //Independent Variable Initialization
         <#list viewModel.optimizationVariables as var>
           fg[ 1 + ${viewModel.getIpoptVarRef(var)} ]  = ${viewModel.getVariableInitialization(var)};
         </#list>
         <#list viewModel.independentVariables as var>
           fg[ 1 + ${viewModel.getIpoptVarRef(var)} ]  = ${viewModel.getVariableInitialization(var)};
         </#list>
+        </#if>
 
         //Updates
         <#if viewModel.hasStepSize()>
         for(int ${viewModel.getStepSizeName()} = ${viewModel.getStepSizeMin()?c}; ${viewModel.getStepSizeName()} < ${viewModel.getStepSizeMax()?c}; ${viewModel.getStepSizeName()}++)
         </#if>
         {
-
         // Constraint Functions
         <#list viewModel.getSimplifiedConstraintFunctions() as constr>
             ${viewModel.getConstraintForFG_Eval(constr,constr?index)};
@@ -107,14 +123,17 @@ class ${viewModel.callSolverName}
 
     
   public:
-    //ToDo: Function header generation, add initialization parameters
     static bool solveOptimizationProblemIpOpt(${viewModel.getIpoptSolverFunctionParameters()})
     {
       bool ok = true;
 
+      <#if !viewModel.hasStepSize()>
+      size_t n_vars = ${viewModel.getOptVarDimension()} + ${viewModel.getIndVarDimension()};
+      size_t n_constraints = ${viewModel.getSimplifiedConstraintFunctionCount()};
+      <#else>
       size_t n_vars = ${viewModel.getStepSizeCount()} * ${viewModel.getNumberIndependentVariables()} + (${viewModel.getStepSizeCount()}  - 1) * ${viewModel.getNumberOptimizationVariables()};
       size_t n_constraints = ${viewModel.getStepSizeCount()} * ${viewModel.getNumberConstraints()};
-
+      </#if>
       Dvector vars_initial = Dvector(n_vars);
       Dvector vars_lowerbounds = Dvector(n_vars);
       Dvector vars_upperbounds = Dvector(n_vars);
@@ -136,7 +155,6 @@ class ${viewModel.callSolverName}
 
       // Initialize variable bounds & initial value
       <#list viewModel.optimizationVariables as var>
-
         // Optimization variable: ${var.getName()}
         vars_initial[ ${viewModel.getIpoptVarRef(var)} ] = ${viewModel.getVariableInitialization(var)};
         <#if viewModel.hasStepSize()>
@@ -145,8 +163,13 @@ class ${viewModel.callSolverName}
             vars_upperbounds[ ${viewModel.getIpoptVarRef(var)} + (${viewModel.getStepSizeName()}-${viewModel.getStepSizeMin()?c})] = ${viewModel.getVariableUpperBound(var)};
         }
         <#else>
-        vars_lowerbounds[ ${viewModel.getIpoptVarRef(var)} ] = ${viewModel.getVariableLowerBound(var)};
-        vars_upperbounds[ ${viewModel.getIpoptVarRef(var)} ] = ${viewModel.getVariableUpperBound(var)};
+        for(int m = 0; m < ${viewModel.getVariableDimensionM(var)!c};m++){
+          for(int n = 0; n < ${viewModel.getVariableDimensionN(var)!c};n++){
+             int i = m*${viewModel.getVariableDimensionM(var)!c} + n;
+             vars_lowerbounds[ ${viewModel.getIpoptVarRef(var)} + i] = ${viewModel.getVariableLowerBound(var)};
+             vars_upperbounds[ ${viewModel.getIpoptVarRef(var)} + i] = ${viewModel.getVariableUpperBound(var)};
+          }
+        }
         </#if>
       </#list>
 
@@ -209,7 +232,16 @@ class ${viewModel.callSolverName}
             ${opt.getName()}[${viewModel.getStepSizeName()}] = solution.x[${viewModel.getIpoptVarRef(opt)} + ${viewModel.getStepSizeName()}];
         }
       <#else>
+        <#if viewModel.isVarScalar(opt)>
         ${opt.getName()} = solution.x[${viewModel.getIpoptVarRef(opt)}];
+        <#else>
+        for(int m = 0; m < ${viewModel.getVariableDimensionM(opt)!c};m++){
+          for(int n = 0; n < ${viewModel.getVariableDimensionN(opt)!c};n++){
+             int i = m*${viewModel.getVariableDimensionM(opt)!c} + n;
+             ${opt.getName()}[i] = solution.x[${viewModel.getIpoptVarRef(opt)} + i];
+          }
+        }
+        </#if>
       </#if>
       </#list>
       // objective value
