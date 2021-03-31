@@ -16,6 +16,7 @@
 
     <name>Process Automation of EMADL Projects</name>
     <description>Maven plugin supporting process automatization of EmbeddedMontiArc Deep Learning projects</description>
+    <url>https://git.rwth-aachen.de/monticore/EmbeddedMontiArc/utilities/emadl-maven-plugin</url>
 
     <properties>
         <maven.compiler.target>1.8</maven.compiler.target>
@@ -28,7 +29,6 @@
 
 
     <!-- ........... DEPENDENCIES ............................ -->
-
     <dependencies>
         <dependency>
             <groupId>org.apache.maven</groupId>
@@ -98,7 +98,6 @@
 
 
     <!-- ........... BUILD ................................... -->
-
     <build>
         <plugins>
             <plugin>
@@ -129,6 +128,8 @@
         </plugins>
     </build>
 
+
+    <!-- ........... REPORTING ............................... -->
     <reporting>
         <plugins>
             <plugin>
@@ -145,8 +146,8 @@
         </plugins>
     </reporting>
 
-    <!-- ........... DISTRIBUTION ............................ -->
 
+    <!-- ........... DISTRIBUTION ............................ -->
     <distributionManagement>
         <repository>
           <id>se-nexus</id>

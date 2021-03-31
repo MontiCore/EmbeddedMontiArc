@@ -1,4 +1,9 @@
-<project name="test">
+<project name="EMADL plugin">
+    <bannerRight>
+        <src>images/logo_small.png</src>
+        <href>/</href>
+    </bannerRight>
+
     <skin>
         <groupId>org.apache.maven.skins</groupId>
         <artifactId>maven-fluido-skin</artifactId>
@@ -12,7 +17,16 @@
     </custom>
 
     <body>
-        <menu ref="reports"/>
+        <menu name="EMADL Maven Plugin">
+            <item name="About" href="index.html"/>
+            <item name="Dependencies" href="dependencies.html"/>
+            <item name="Plugin Dependencies" href="plugins.html"/>
+            <item name="Summary" href="summary.html"/>
+        </menu>
+
+        <menu name="Plugin Documentation">
+            <item name="Documentation" href="plugin-info.html"/>
+        </menu>
     </body>
 
 </project>
