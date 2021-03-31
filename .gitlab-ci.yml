@@ -1,12 +1,4 @@
 # (c) https://github.com/MontiCore/monticore
-pages:
-  script:
-    - mvn site -s settings.xml
-    - mv target/site/ public/
-  artifacts:
-    paths:
-      - public
-
 stages:
   - linux
 
@@ -30,6 +22,16 @@ MasterDeployJobLinux:
       - .gitlab-ci.yml
       - .gitignore
       - README.md
+
+pages:
+  stage: linux
+  image: registry.git.rwth-aachen.de/monticore/embeddedmontiarc/applications/carlacomponents/ros-maven
+  script:
+    - mvn site -s settings.xml
+    - mv target/site/ public/
+  artifacts:
+    paths:
+      - public
 
 
 
