@@ -1,4 +1,12 @@
 # (c) https://github.com/MontiCore/monticore
+pages:
+  script:
+    - mvn site -s settings.xml
+    - mv target/site/ public/
+  artifacts:
+    paths:
+      - public
+
 stages:
   - linux
 
@@ -23,12 +31,5 @@ MasterDeployJobLinux:
       - .gitignore
       - README.md
 
-pages:
-  script:
-    - mvn site -s settings.xml
-    - mv target/site/ public/
-  artifacts:
-    paths:
-      - public
 
 
