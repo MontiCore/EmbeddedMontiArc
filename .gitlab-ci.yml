@@ -23,5 +23,12 @@ MasterDeployJobLinux:
       - .gitignore
       - README.md
 
+pages:
+  script:
+    - mvn site -s settings.xml doxygen/Doxyfile
+    - mv target/site/ public/
+  artifacts:
+    paths:
+      - public
 
 
