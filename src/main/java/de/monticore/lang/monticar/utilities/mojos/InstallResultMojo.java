@@ -14,6 +14,11 @@ import java.io.File;
 import java.io.IOException;
 import java.util.Arrays;
 
+/**
+ * Creates a JAR containing a training result and
+ * installs it into the local repository.
+ *
+ */
 @Mojo(name = "install-result")
 public class InstallResultMojo extends BaseMojo {
 

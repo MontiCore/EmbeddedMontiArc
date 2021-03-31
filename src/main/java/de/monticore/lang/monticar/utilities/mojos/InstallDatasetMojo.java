@@ -14,6 +14,10 @@ import java.io.File;
 import java.io.IOException;
 import java.util.Arrays;
 
+/**
+ * Creates a JAR containing a dataset and installs it into the local repository.
+ *
+ */
 @Mojo(name = "install-dataset")
 public class InstallDatasetMojo extends BaseMojo {
 

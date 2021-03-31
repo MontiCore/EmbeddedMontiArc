@@ -12,8 +12,7 @@ import java.util.List;
 import static org.twdata.maven.mojoexecutor.MojoExecutor.*;
 
 /**
- * Runs CoCos test on all components in pathMain and pathTest
- * Generates c++ code for all components which have a stream test
+ * Generates C++ code and trains an EMADL component with neural network implementation.
  */
 @Mojo(name = "train")
 public class TrainingMojo extends BaseMojo {

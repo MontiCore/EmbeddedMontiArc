@@ -14,6 +14,10 @@ import org.apache.maven.shared.invoker.MavenInvocationException;
 import java.io.File;
 import java.util.List;
 
+/**
+ *  Imports an EMADL project JAR to a local project.
+ *
+ */
 @Mojo(name = "import", defaultPhase = LifecyclePhase.INSTALL)
 public class ImportMojo extends BaseMojo {
 

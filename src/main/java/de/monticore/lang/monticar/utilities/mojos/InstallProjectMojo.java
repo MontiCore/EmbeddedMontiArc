@@ -14,6 +14,11 @@ import java.io.File;
 import java.io.IOException;
 import java.util.Arrays;
 
+/**
+ * Creates a JAR containing EMADL components and training configurations and
+ * installs it into the local repository.
+ *
+ */
 @Mojo(name = "install-project")
 public class InstallProjectMojo extends BaseMojo {
 
