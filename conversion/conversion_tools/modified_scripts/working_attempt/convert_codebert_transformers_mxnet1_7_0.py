@@ -103,9 +103,9 @@ class RoBERTaModelWPooler(BERTModel):
             params=params
         )
 
-    def __call__(self, inputs, valid_length=None, masked_positions=None):
+    def __call__(self, inputs, token_types=None, valid_length=None, masked_positions=None):
         return super(RoBERTaModelWPooler, self).__call__(
-            inputs, [], valid_length=valid_length,
+            inputs, token_types=token_types, valid_length=valid_length,
             masked_positions=masked_positions
         )
 
@@ -245,13 +245,17 @@ def test_model(hf_model, hf_tokenizer, gluon_model, gpu):
     for i in range(batch_size):  # add padding, not sure if necessary for hf codebert
         input_ids[i, valid_length[i]:] = padding_id
 
-    gl_input_ids = mx.np.array(input_ids, dtype=np.int32, ctx=ctx)
-    gl_valid_length = mx.np.array(valid_length, dtype=np.int32, ctx=ctx)
-
+    gl_input_ids = mx.nd.array(input_ids, ctx=ctx)
+    gl_valid_length = mx.nd.array(valid_length, ctx=ctx)
+    gl_token_types = mx.nd.zeros((batch_size, seq_length), ctx=ctx)
     hf_input_ids = torch.from_numpy(input_ids).cpu()
     hf_model.eval()
 
-    gl_all_hiddens, gl_pooled = gluon_model(gl_input_ids, gl_valid_length)
+    gl_all_hiddens, gl_pooled = gluon_model(
+        gl_input_ids, 
+        token_types=gl_token_types, 
+        valid_length=gl_valid_length
+    )
 
     # create attention mask for hf model
     hf_valid_length = np.zeros((batch_size, seq_length))
