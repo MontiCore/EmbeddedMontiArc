@@ -27,9 +27,14 @@ pages:
   stage: linux
   image: registry.git.rwth-aachen.de/monticore/embeddedmontiarc/applications/carlacomponents/ros-maven
   script:
-    - mvn site -s settings.xml
+    - mvn clean site -s settings.xml
     - mv target/site/ public/
   artifacts:
     paths:
       - public
+  except:
+    changes:
+      - .gitignore
+      - README.md
+
 
