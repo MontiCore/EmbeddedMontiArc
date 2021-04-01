@@ -67,8 +67,6 @@ import torch
 import transformers
 from gluonnlp.model import BERTEncoder, BERTModel
 
-mx.npx.set_np()
-
 class RoBERTaModelWPooler(BERTModel):
     # analogous to gluonnlp 0.10.0 nlp.model.RobertaModel but it allows use_pooler and defaults to True
     def __init__(self, 
@@ -193,7 +191,7 @@ def convert_params(hf_model, hf_tokenizer, hf_cfg, ctx):
         ]:
             gl_name = gl_qkv_prefix + name.format('_')
             hf_name = hf_atten_prefix + name.format('.') 
-            gluon_params[gl_name].set_data(hf_params[hf_name].cpu().numpy())
+            gluon_params[gl_name].set_data(arr_to_gl(hf_params[hf_name]))
 
         for hf_suffix, gl_suffix in [
             ('attention.output.dense.weight', '_proj_weight'),
@@ -209,7 +207,7 @@ def convert_params(hf_model, hf_tokenizer, hf_cfg, ctx):
         ]:
             hf_name = hf_prefix + hf_suffix
             gl_name = gl_prefix + gl_suffix
-            gluon_params[gl_name].set_data(hf_params[hf_name].cpu().numpy())
+            gluon_params[gl_name].set_data(arr_to_gl(hf_params[hf_name]))
 
     for hf_name, gl_name in [
         ('embeddings.word_embeddings.weight', 'robertamodelwpooler0_word_embed_embedding0_weight'),
@@ -220,17 +218,19 @@ def convert_params(hf_model, hf_tokenizer, hf_cfg, ctx):
         ('pooler.dense.bias', 'robertamodelwpooler0_pooler_bias'),
 
     ]:
-        gluon_params[gl_name].set_data(hf_params[hf_name].cpu().numpy())
+        gluon_params[gl_name].set_data(arr_to_gl(hf_params[hf_name]))
 
     # position embed weight
     padding_idx = hf_tokenizer.pad_token_id
     hf_pos_embed_name = 'embeddings.position_embeddings.weight'
     gl_pos_embed_name = 'bertencoder0_position_weight'
-    hf_wo_pad = hf_params[hf_pos_embed_name].cpu().numpy()[padding_idx + 1:, :]
+    hf_wo_pad = arr_to_gl(hf_params[hf_pos_embed_name])[padding_idx + 1:, :]
     gluon_params[gl_pos_embed_name].set_data(hf_wo_pad)
 
     return gluon_model
 
+def arr_to_gl(arr):
+    return mx.nd.array(arr.cpu().numpy())
 
 def test_model(hf_model, hf_tokenizer, gluon_model, gpu):
     print('testing model')
@@ -248,6 +248,7 @@ def test_model(hf_model, hf_tokenizer, gluon_model, gpu):
     gl_input_ids = mx.nd.array(input_ids, ctx=ctx)
     gl_valid_length = mx.nd.array(valid_length, ctx=ctx)
     gl_token_types = mx.nd.zeros((batch_size, seq_length), ctx=ctx)
+
     hf_input_ids = torch.from_numpy(input_ids).cpu()
     hf_model.eval()
 
@@ -256,6 +257,8 @@ def test_model(hf_model, hf_tokenizer, gluon_model, gpu):
         token_types=gl_token_types, 
         valid_length=gl_valid_length
     )
+    print(len(gl_all_hiddens))
+    print(gl_all_hiddens[0].shape)
 
     # create attention mask for hf model
     hf_valid_length = np.zeros((batch_size, seq_length))
@@ -265,6 +268,10 @@ def test_model(hf_model, hf_tokenizer, gluon_model, gpu):
 
     hf_outputs = hf_model(hf_input_ids, attention_mask=hf_valid_length, output_hidden_states=True)
     hf_all_hiddens = hf_outputs['hidden_states']
+    hf_pooled = hf_outputs['pooler_output']
+
+    # check pooling output
+    assert_allclose(gl_pooled.asnumpy(), hf_pooled.detach().cpu().numpy(), 1E-4, 1E-4)
 
     # checking all_encodings_outputs
     num_layers = hf_model.config.num_hidden_layers
