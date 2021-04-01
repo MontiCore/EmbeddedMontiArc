@@ -1,6 +1,10 @@
+<br/><br/>
 <div align="center">
-    <img src="src/site/resources/images/logo.svg" width="800"/>
+    <a href="https://monticore.pages.rwth-aachen.de/EmbeddedMontiArc/utilities/emadl-maven-plugin/index.html">
+        <img src="src/site/resources/images/logo.svg" width="800"/>
+    </a>
 </div>
+<br/><br/>
 
 <hr/>
 
@@ -13,8 +17,7 @@
 </div>
 
 <hr/>
-<hr/>
+<br/>
 
 # Describtion
-
 test to tset
