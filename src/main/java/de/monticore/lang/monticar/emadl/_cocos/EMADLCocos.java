@@ -12,6 +12,8 @@ import de.monticore.lang.embeddedmontiarc.embeddedmontiarc._symboltable.instance
 import de.monticore.lang.embeddedmontiarc.embeddedmontiarcmath.cocos.AtomicComponentCoCo;
 import de.monticore.lang.math._cocos.MatrixAssignmentDeclarationCheck;
 import de.monticore.lang.mathopt._cocos.MathOptCocos;
+import de.monticore.lang.mathopt._cocos.OptimizationConditionCheck;
+import de.monticore.lang.mathopt._cocos.OptimizationStatementCheck;
 import de.monticore.lang.monticar.cnnarch._cocos.CNNArchCocos;
 import de.monticore.lang.monticar.cnnarch._symboltable.ArchitectureSymbol;
 
@@ -52,6 +54,7 @@ public class EMADLCocos {
                 .addCoCo(new MatrixAssignmentDeclarationCheck())
                 //.addCoCo(new MatrixAssignmentCheck())
                 //MathOpt Cocos
-                .addCoCo(new MathOptCocos());
+                .addCoCo(new OptimizationStatementCheck())
+                .addCoCo(new OptimizationConditionCheck());
     }
 }
