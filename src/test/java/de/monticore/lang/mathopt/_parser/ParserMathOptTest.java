@@ -9,7 +9,7 @@ import org.junit.Ignore;
  * Tests for MontiMathOpt's parser
  *
  */
-@Ignore
+
 public class ParserMathOptTest extends ParserMathTest {
 
     @Override

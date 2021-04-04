@@ -15,7 +15,7 @@ import static org.junit.Assert.assertNotNull;
  * Tests if OptimizationStatementCheck works correctly
  *
  */
-@Ignore
+
 public class OptimizationStatementCheckTestMathOpt extends AbstractMathOptCocoTest {
 
     private static OptimizationStatementCheck coco;
@@ -39,7 +39,7 @@ public class OptimizationStatementCheckTestMathOpt extends AbstractMathOptCocoTe
     @Test
     public void checkValidReturnValue() throws IOException {
         // create ast node
-        ASTOptimizationStatement ast = getParser().parse_StringOptimizationStatement("Q y = minimize(Q x) x^2; subject to x >= 0; end").orElse(null);
+        ASTOptimizationStatement ast = getParser().parse_StringOptimizationStatement("minimize Q x; in Q y = x^2; subject to x >= 0; end").orElse(null);
         assertNotNull(ast);
         // attach symbol
         initializeSymbol(ast);
@@ -51,7 +51,7 @@ public class OptimizationStatementCheckTestMathOpt extends AbstractMathOptCocoTe
     @Test
     public void checkInvalidReturnValue() throws IOException {
         // create ast node
-        ASTOptimizationStatement ast = getParser().parse_StringOptimizationStatement("C y = minimize(Q x) x^2; subject to x >= 0; end").orElse(null);
+        ASTOptimizationStatement ast = getParser().parse_StringOptimizationStatement("minimize Q x; in C y = x^2; subject to x >= 0; end").orElse(null);
         assertNotNull(ast);
         // attach symbol
         initializeSymbol(ast);

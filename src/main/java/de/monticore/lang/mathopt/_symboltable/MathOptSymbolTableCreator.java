@@ -132,11 +132,17 @@ public class MathOptSymbolTableCreator extends MathSymbolTableCreator implements
             MathValueSymbol temp = (MathValueSymbol) varDec.getSymbolOpt().get();
             MathNumberExpressionSymbol newDim = new MathNumberExpressionSymbol();
             if(temp.getType().getDimensions().isEmpty() && astMathOptimizationStatement.isPresentStepSize()) {
-                MathAssignmentExpressionSymbol assignExpression = (MathAssignmentExpressionSymbol) symbol.getStepSizeExpression();
-                MathMatrixVectorExpressionSymbol assignChildExpression = (MathMatrixVectorExpressionSymbol) assignExpression.getExpressionSymbol();
-                MathNumberExpressionSymbol endExpression = (MathNumberExpressionSymbol) assignChildExpression.getEnd();
-                newDim.setValue(endExpression.getValue());
-                temp.getType().addDimension(newDim);
+                if(symbol.getStepSizeExpression() instanceof MathAssignmentExpressionSymbol) {
+                    MathAssignmentExpressionSymbol assignExpression = (MathAssignmentExpressionSymbol) symbol.getStepSizeExpression();
+                    if(assignExpression.getExpressionSymbol() instanceof MathMatrixVectorExpressionSymbol) {
+                        MathMatrixVectorExpressionSymbol assignChildExpression = (MathMatrixVectorExpressionSymbol) assignExpression.getExpressionSymbol();
+                        if(assignChildExpression.getEnd() instanceof MathNumberExpressionSymbol) {
+                            MathNumberExpressionSymbol endExpression = (MathNumberExpressionSymbol) assignChildExpression.getEnd();
+                            newDim.setValue(endExpression.getValue());
+                            temp.getType().addDimension(newDim);
+                        }
+                    }
+                }
             }
             optVariables.add(temp);
         }
@@ -157,18 +163,17 @@ public class MathOptSymbolTableCreator extends MathSymbolTableCreator implements
             if (condition.getSymbolOpt().isPresent()) {
                 MathExpressionSymbol conditionSymbol = (MathExpressionSymbol) condition.getSymbolOpt().get();
 
-                //What does this do? A: Re-sorts upper/lower/boundedExpressions
+                List<MathValueSymbol> allVariables = symbol.getOptimizationVariables();
+                allVariables.addAll(symbol.getIndependentVariables());
+
                 if (conditionSymbol instanceof MathOptimizationConditionSymbol) {
                     ((MathOptimizationConditionSymbol) conditionSymbol).resolveBoundedExpressionToOptimizationVariable(symbol.getOptimizationVariables());
-                    ((MathOptimizationConditionSymbol) conditionSymbol).resolveBoundedExpressionToOptimizationVariable(symbol.getIndependentVariables());
                     symbol.getConstraints().add((MathOptimizationConditionSymbol) conditionSymbol);
                 } else if (conditionSymbol instanceof MathForLoopExpressionSymbol) {
                     for (MathExpressionSymbol sym : ((MathForLoopExpressionSymbol) conditionSymbol).getForLoopBody())
                         if (sym instanceof MathOptimizationConditionSymbol) {
                             ((MathOptimizationConditionSymbol) sym).resolveBoundedExpressionToOptimizationVariable(symbol.getOptimizationVariables());
-                            ((MathOptimizationConditionSymbol) sym).resolveBoundedExpressionToOptimizationVariable(symbol.getIndependentVariables());
-                            symbol.getConstraints().add((MathOptimizationConditionSymbol) conditionSymbol);
-                        }
+                           }
                 }
                 symbol.getSubjectToExpressions().add(conditionSymbol);
             }

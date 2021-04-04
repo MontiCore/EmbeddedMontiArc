@@ -14,7 +14,7 @@ import static org.junit.Assert.*;
  * Unit Tests for MathOptimizationConditionSymbol
  *
  */
-@Ignore
+
 public class MathOptimizationConditionSymbolTest {
 
     // helper
@@ -86,6 +86,7 @@ public class MathOptimizationConditionSymbolTest {
         symbol.resolveBoundedExpressionToOptimizationVariable(helper.getMinimizationTestSymbol().getOptimizationVariables());
         assertTrue(symbol.getBoundedExpression().getTextualRepresentation().contains(helper.getMinimizationTestSymbol().getOptimizationVariables().get(0).getName()));
     }
+
 
     @Test
     public void testForLoopConditions() {

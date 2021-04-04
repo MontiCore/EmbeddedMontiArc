@@ -98,7 +98,7 @@ public class MathOptimizationConditionSymbol extends MathExpressionSymbol {
 
 
     public static boolean stringContainsItemFromMathValueList(String input, List<MathValueSymbol> symbols){
-        return symbols.stream().anyMatch(mathName -> (mathName.getName().equals(input)));
+        return symbols.stream().anyMatch(mathName -> (input.contains(mathName.getName())));
     }
 
     /**
@@ -113,7 +113,7 @@ public class MathOptimizationConditionSymbol extends MathExpressionSymbol {
             //Bug: For loop not applicable here, .contains(variables)
             //if (!boundedExpression.getTextualRepresentation().contains(var.getName())) {
             //if (!boundedExpression.getTextualRepresentation().(var.getName())) {
-            if (stringContainsItemFromMathValueList(boundedExpression.getTextualRepresentation(),variables)) {
+            if (!stringContainsItemFromMathValueList(boundedExpression.getTextualRepresentation(),variables)) {
                 // switch bound(s) and expression
                 MathExpressionSymbol newBound = boundedExpression;
                 if (getLowerBound().isPresent() && (getUpperBound().isPresent()) && (lowerBound == upperBound)) {
@@ -161,19 +161,19 @@ public class MathOptimizationConditionSymbol extends MathExpressionSymbol {
         return result;
     }
 
-    @Deprecated
+
     public void setLeft(MathExpressionSymbol left) {
         this.left = left;
     }
-    @Deprecated
+
     public void setRight(MathExpressionSymbol right) {
         this.right = right;
     }
-    @Deprecated
+
     public void setOperator(String operator) {
         this.operator = operator;
     }
-    @Deprecated
+
     public void setSimpleCondition(boolean simpleCondition) {
         isSimpleCondition = simpleCondition;
     }

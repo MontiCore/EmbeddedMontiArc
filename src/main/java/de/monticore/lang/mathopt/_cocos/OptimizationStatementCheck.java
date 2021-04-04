@@ -65,8 +65,8 @@ public class OptimizationStatementCheck implements MathOptASTOptimizationStateme
                 if (maes.getExpressionSymbol() instanceof MathMatrixVectorExpressionSymbol)
                     return;
             }
+            Log.error(String.format("0xC0005 Stepsize definition is not supported. It must be a series."));
         }
-        Log.error(String.format("0xC0005 Stepsize definition is not supported. It must be a series."));
     }
 
     private void checkIndependentVariables(ASTOptimizationStatement node) {
