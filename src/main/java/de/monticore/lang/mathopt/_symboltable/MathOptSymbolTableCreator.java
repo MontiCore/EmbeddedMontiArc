@@ -163,9 +163,6 @@ public class MathOptSymbolTableCreator extends MathSymbolTableCreator implements
             if (condition.getSymbolOpt().isPresent()) {
                 MathExpressionSymbol conditionSymbol = (MathExpressionSymbol) condition.getSymbolOpt().get();
 
-                List<MathValueSymbol> allVariables = symbol.getOptimizationVariables();
-                allVariables.addAll(symbol.getIndependentVariables());
-
                 if (conditionSymbol instanceof MathOptimizationConditionSymbol) {
                     ((MathOptimizationConditionSymbol) conditionSymbol).resolveBoundedExpressionToOptimizationVariable(symbol.getOptimizationVariables());
                     symbol.getConstraints().add((MathOptimizationConditionSymbol) conditionSymbol);
