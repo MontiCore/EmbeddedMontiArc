@@ -57,7 +57,7 @@ from numpy.testing import assert_allclose
 
 import torch
 import transformers
-from gluonnlp.models.roberta import RobertaModel
+import gluonnlp as nlp
 
 mx.npx.set_np()
 
@@ -69,34 +69,8 @@ def parse_args():
                         help='The single gpu to run mxnet, (e.g. --gpu 0) the default device is cpu.')
     return parser.parse_args()
 
-def convert_config(hf_cfg, cfg):
-    print('converting config')
-    cfg.defrost()
-    cfg.MODEL.vocab_size = hf_cfg.vocab_size
-    cfg.MODEL.units = hf_cfg.hidden_size
-    cfg.MODEL.hidden_size = hf_cfg.intermediate_size
-    cfg.MODEL.max_length = hf_cfg.max_position_embeddings - 2 # unsure about this
-    cfg.MODEL.num_heads = hf_cfg.num_attention_heads
-    cfg.MODEL.num_layers = hf_cfg.num_hidden_layers
-    cfg.MODEL.pos_embed_type = 'learned' # unsure about this
-    cfg.MODEL.activation = hf_cfg.hidden_act # unsure about this
-    cfg.MODEL.pooler_activation = 'tanh' # not sure where to source this in the hf config
-    cfg.MODEL.layer_norm_eps = hf_cfg.layer_norm_eps
-    cfg.MODEL.hidden_dropout_prob = hf_cfg.hidden_dropout_prob
-    cfg.MODEL.attention_dropout_prob = hf_cfg.attention_probs_dropout_prob # unsure about this
-    cfg.MODEL.dtype = 'float32'
-    cfg.INITIALIZER.embed = ['truncnorm', 0, 0.02]
-    cfg.INITIALIZER.weight = ['truncnorm', 0, 0.02]
-    cfg.INITIALIZER.bias = ['zeros']
-    cfg.VERSION = 1
-    cfg.freeze()
-    return cfg
-
-
-def convert_params(hf_model, hf_tokenizer, gluon_cfg, ctx):
+def convert_params(hf_model, hf_tokenizer, gluon_model, ctx):
     print('converting params')
-    # TODO not sure if we need the pooling layer for our purposes?
-    gluon_model = RobertaModel.from_cfg(gluon_cfg, use_pooler=True)
     # output all hidden states for testing
     gluon_model._output_all_encodings = True
     gluon_model.encoder._output_all_encodings = True
@@ -104,7 +78,7 @@ def convert_params(hf_model, hf_tokenizer, gluon_cfg, ctx):
     gluon_model.initialize(ctx=ctx)
     gluon_model.hybridize()
     gluon_params = gluon_model.collect_params()
-    num_layers = gluon_cfg.MODEL.num_layers
+    num_layers = gluon_model.num_layers
     hf_params = hf_model.state_dict()
 
     for layer_id in range(num_layers):
@@ -161,7 +135,6 @@ def convert_params(hf_model, hf_tokenizer, gluon_cfg, ctx):
     pp.pprint(list(zip(list(hf_params.keys()), [hf_params[k].shape for k in hf_params.keys()])))
     print(gluon_model)
     print(hf_model)
-    return gluon_model
 
 
 def test_model(hf_model, hf_tokenizer, gluon_model, gpu):
@@ -226,10 +199,13 @@ def convert_huggingface_model(args):
     hf_model.save_pretrained(args.save_dir)
     hf_tokenizer.save_pretrained(args.save_dir)
 
-    gluon_cfg = convert_config(hf_model.config, RobertaModel.get_cfg().clone())
+    # start with RoBERTaModel base
+    RobertaModel, gluon_cfg, _, local_params_path, _ = nlp.models.get_backbone('fairseq_roberta_base')
+    gluon_model = RobertaModel.from_cfg(gluon_cfg)
+    gluon_model.load_parameters(local_params_path)
 
     ctx = mx.gpu(args.gpu) if args.gpu is not None else mx.cpu()
-    gluon_model = convert_params(hf_model, hf_tokenizer, gluon_cfg, ctx)
+    convert_params(hf_model, hf_tokenizer, gluon_model, ctx)
     test_model(hf_model, hf_tokenizer, gluon_model, args.gpu)
 
     gluon_model.export(os.path.join(args.save_dir, 'codebert'))
