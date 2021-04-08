@@ -52,7 +52,7 @@ public abstract class BaseMojo extends AbstractMojo {
   @Parameter( defaultValue = "${session}", readonly = true )
   private MavenSession mavenSession;
 
-  @Parameter(defaultValue = "${pluginManager}", readonly = true)
+  @Component
   private BuildPluginManager pluginManager;
 
   @Parameter(defaultValue = "${repositorySystemSession}", readonly = true)
@@ -61,8 +61,7 @@ public abstract class BaseMojo extends AbstractMojo {
   @Parameter
   private Repository repository;
 
-  @Parameter
-  private TrainingConfiguration training;
+
 
   @Parameter(property = "pathMain", defaultValue = "src/main/emadl")
   private String pathMain;
@@ -72,10 +71,6 @@ public abstract class BaseMojo extends AbstractMojo {
 
   @Parameter(property = "pathTmpOut", defaultValue = "target/tmp")
   private String pathTmpOut;
-
-  private Scope myScope;
-
-  private TaggingResolver myTaggingResolver;
 
   private RemoteRepository remoteRepository;
 
@@ -105,18 +100,6 @@ public abstract class BaseMojo extends AbstractMojo {
 
   public BuildPluginManager getPluginManager() {
     return pluginManager;
-  }
-
-  public TrainingConfiguration getTrainingConfig() {
-    return training;
-  }
-
-  public String getPathMain() {
-    return pathMain;
-  }
-
-  public String getPathTest() {
-    return pathTest;
   }
 
   public String getPathTmpOut() {
@@ -167,50 +150,4 @@ public abstract class BaseMojo extends AbstractMojo {
 
     return Constants.INITIAL_VERSION;
   }
-
-  public Scope getScope() {
-    if (myScope == null) {
-      ModelingLanguageFamily fam = new ModelingLanguageFamily();
-      fam.addModelingLanguage(new EmbeddedMontiArcMathLanguage());
-      fam.addModelingLanguage(new StreamUnitsLanguage());
-      fam.addModelingLanguage(new StructLanguage());
-      fam.addModelingLanguage(new EnumLangLanguage());
-      fam.addModelingLanguage(new EMADLLanguage());
-      final ModelPath mp_main = new ModelPath();
-
-      mp_main.addEntry(Paths.get(this.getPathMain()));
-      if (!this.getPathMain().equals(this.getPathTest())) {
-        mp_main.addEntry(Paths.get(this.getPathTest()));
-      }
-
-      GlobalScope gs = new GlobalScope(mp_main, fam);
-      de.monticore.lang.monticar.Utils.addBuiltInTypes(gs);
-
-      ArrayList<String> col = new ArrayList<String>();
-
-      col.add(this.getPathMain());
-      if (!this.getPathMain().equals(this.getPathTest())) {
-        col.add(this.getPathTest());
-      }
-
-      this.myTaggingResolver = new TaggingResolver(gs, col);
-      TagMinMaxTagSchema.registerTagTypes(this.myTaggingResolver);
-      TagTableTagSchema.registerTagTypes(this.myTaggingResolver);
-      TagBreakpointsTagSchema.registerTagTypes(this.myTaggingResolver);
-      TagExecutionOrderTagSchema.registerTagTypes(this.myTaggingResolver);
-      TagInitTagSchema.registerTagTypes(this.myTaggingResolver);
-      TagThresholdTagSchema.registerTagTypes(this.myTaggingResolver);
-      TagDelayTagSchema.registerTagTypes(this.myTaggingResolver);
-      myScope = gs;
-    }
-    return myScope;
-  }
-
-  public TaggingResolver getTaggingResolver() {
-    if (this.myTaggingResolver == null) {
-      this.getScope();
-    }
-    return this.myTaggingResolver;
-  }
-
 }

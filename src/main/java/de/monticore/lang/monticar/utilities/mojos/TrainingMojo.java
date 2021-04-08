@@ -15,7 +15,7 @@ import static org.twdata.maven.mojoexecutor.MojoExecutor.*;
  * Generates C++ code and trains an EMADL component with neural network implementation.
  */
 @Mojo(name = "train")
-public class TrainingMojo extends BaseMojo {
+public class TrainingMojo extends TrainingConfigMojo {
 
   @Override
   public void execute() throws MojoExecutionException, MojoFailureException {

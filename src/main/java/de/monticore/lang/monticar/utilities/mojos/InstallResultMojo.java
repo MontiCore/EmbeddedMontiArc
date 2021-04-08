@@ -20,7 +20,7 @@ import java.util.Arrays;
  *
  */
 @Mojo(name = "install-result")
-public class InstallResultMojo extends BaseMojo {
+public class InstallResultMojo extends TrainingConfigMojo {
 
   @Override
   public void execute() throws MojoExecutionException, MojoFailureException {
