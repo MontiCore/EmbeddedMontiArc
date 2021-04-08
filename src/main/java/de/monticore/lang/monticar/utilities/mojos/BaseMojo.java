@@ -43,16 +43,16 @@ import java.util.Collections;
 
 public abstract class BaseMojo extends AbstractMojo {
 
-  @Component
+  @Parameter(defaultValue = "${repositorySystem}", readonly = true)
   private RepositorySystem repositorySystem;
 
-  @Component
+  @Parameter( defaultValue = "${project}", readonly = true )
   private MavenProject mavenProject;
 
-  @Component
+  @Parameter( defaultValue = "${session}", readonly = true )
   private MavenSession mavenSession;
 
-  @Component
+  @Parameter(defaultValue = "${pluginManager}", readonly = true)
   private BuildPluginManager pluginManager;
 
   @Parameter(defaultValue = "${repositorySystemSession}", readonly = true)
