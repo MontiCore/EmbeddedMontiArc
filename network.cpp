@@ -33,6 +33,7 @@ using namespace std;
 void *get_in_addr(struct sockaddr *sa);
 
 void Socket::write_s(char *buffer, int count) const {
+    TODO handle too long packets; // https://docs.microsoft.com/en-us/windows/win32/api/winsock2/nf-winsock2-send
     auto res = ::send(socket, buffer, count, 0);
     if (res != count) {
         auto msg = "Could not write " + to_string(count) + " bytes";
@@ -193,7 +194,7 @@ void close_sock(int sock) {
 }
 
 
-void single_session_server(char *port, void (*session_func)(int socket), bool &run_flag) {
+void session_server(char *port, void (*session_func)(int socket), bool &run_flag) {
 #ifdef IS_WIN
     WSADATA wsaData;
     int iResult;
@@ -277,8 +278,6 @@ void single_session_server(char *port, void (*session_func)(int socket), bool &r
         cout << "server: got connection from " << s << endl;
 
         session_func(new_fd);
-
-        close_sock(new_fd);
     }
 
     close_sock(sockfd);

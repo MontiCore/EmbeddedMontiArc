@@ -1,20 +1,6 @@
 #pragma once
 #include <string>
 #include <exception>
-#include <chrono>
-
-
-
-
-using HRClock = std::chrono::high_resolution_clock;
-using TimePoint = HRClock::time_point;
-using duration = std::chrono::duration<double>;
-
-
-enum TimeMode {
-    REALTIME,
-    MEASURED
-};
 
 
 /*
@@ -27,11 +13,14 @@ constexpr int PACKET_INTERFACE = 3; // As payload: TimeMode string ("measured" o
 // Payload for INPUT and OUTPUT packets:
 // uint16_t: Port ID (as defined in the DynamicInterface -> Order of appearance)
 // Type dependent payload
-constexpr int PACKET_INPUT = 4;
-constexpr int PACKET_OUTPUT = 5;
+constexpr int PACKET_INPUT_BINARY = 4;
+constexpr int PACKET_OUTPUT_BINARY = 5;
 constexpr int PACKET_RUN_CYCLE = 6; // Payload: double: delta_sec
 constexpr int PACKET_TIME = 7; // Payload: double: seconds
 constexpr int PACKET_REF_ID = 8; // Payload: uint32_t: reference id for the DDC exchange
-constexpr int PACKET_PING = 9; // No payload
-
-
+constexpr int PACKET_PING = 9; // No Payload
+constexpr int PACKET_EMU_ID = 10; // Payload: byte with ID for the new remote emulator. The emulator expects PACKET_CONFIG as response. This is sent before the PACKET_INTERFACE
+constexpr int PACKET_CONFIG = 11; // Payload: JSON string, response to PACKET_REQUEST_CONFIG
+constexpr int PACKET_RECONNECT = 12; // Payload: Emulator ID (byte), sent to remote hardware_emulator. Expects remote emulator to respond with PACKET_INTERFACE.
+constexpr int PACKET_INPUT_JSON = 14;
+constexpr int PACKET_OUTPUT_JSON = 15;

@@ -7,7 +7,9 @@
 
 constexpr int BACKLOG = 10;
 
-void single_session_server(char *port, void (*session_func)(int socket), bool &run_flag);
+// The threads/functions receiving the socket as part of the session_func callback are responsible to call 'close_sock()' when done.
+void session_server(char* port, void (*session_func)(int socket), bool& run_flag);
+void close_sock(int sock);
 
 class Socket {
     int socket;
@@ -40,6 +42,7 @@ struct PacketReader {
     
     // Directly reads the packet from the socket
     PacketReader(char *buffer, int buffer_size, const Socket &socket);
+    PacketReader(std::vector<char>& buffer, const Socket& socket) : PacketReader(buffer.data(), buffer.size(), socket) {}
 
 
     // Skips reading/writing *count* bytes, returns the current read/write position for later use
@@ -76,6 +79,11 @@ struct PacketWriter {
 
     // Init the packet with 'id' constructor
     PacketWriter(char *buffer, int buffer_size, int packet_id) : packet(buffer, buffer_size, packet_id), pos(buffer) {
+        write_u8(packet_id);
+        skip_bytes(2); // Write pos at the end
+    }
+    // Init the packet with 'id' constructor
+    PacketWriter(std::vector<char> &buffer, int packet_id) : packet(buffer.data(), buffer.size(), packet_id), pos(buffer.data()) {
         write_u8(packet_id);
         skip_bytes(2); // Write pos at the end
     }
