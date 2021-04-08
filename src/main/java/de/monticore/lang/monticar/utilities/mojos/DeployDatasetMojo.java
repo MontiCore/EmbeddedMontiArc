@@ -21,6 +21,20 @@ import java.util.Arrays;
 @Mojo(name = "deploy-dataset")
 public class DeployDatasetMojo extends BaseMojo {
 
+  /**
+   * Parameter to define the location of the files to store as well as the
+   * coordinates that are used when creating the JAR.
+   * <br>
+   * The parameter contains the following sub-parameters: <br>
+   * <ul>
+   *   <li><b>path</b>: location of the files to be packaged and stored</li>
+   *    <li><b>groupId</b>: the groupId used for the JAR.</li>
+   *    <li><b>artifactId</b>: the artifactId used for the JAR.</li>
+   *    <li><b>version</b>: the version used for the JAR.</li>
+   *    <li><b>description</b>: optional description added to the manifest file of the JAR.</li>
+   * </ul>
+   * All sub-parameters are required, except the description. <br><br>
+   */
   @Parameter
   private StorageInformation datasetToStore;
 

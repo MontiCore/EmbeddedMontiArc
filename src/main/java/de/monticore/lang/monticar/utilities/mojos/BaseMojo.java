@@ -1,26 +1,8 @@
 package de.monticore.lang.monticar.utilities.mojos;
 
-import de.monticore.ModelingLanguageFamily;
-import de.monticore.io.paths.ModelPath;
-import de.monticore.lang.embeddedmontiarc.embeddedmontiarcmath._symboltable.EmbeddedMontiArcMathLanguage;
-import de.monticore.lang.monticar.emadl._symboltable.EMADLLanguage;
-import de.monticore.lang.monticar.enumlang._symboltable.EnumLangLanguage;
-import de.monticore.lang.monticar.generator.order.nfp.TagBreakpointsTagSchema.TagBreakpointsTagSchema;
-import de.monticore.lang.monticar.generator.order.nfp.TagDelayTagSchema.TagDelayTagSchema;
-import de.monticore.lang.monticar.generator.order.nfp.TagExecutionOrderTagSchema.TagExecutionOrderTagSchema;
-import de.monticore.lang.monticar.generator.order.nfp.TagInitTagSchema.TagInitTagSchema;
-import de.monticore.lang.monticar.generator.order.nfp.TagMinMaxTagSchema.TagMinMaxTagSchema;
-import de.monticore.lang.monticar.generator.order.nfp.TagTableTagSchema.TagTableTagSchema;
-import de.monticore.lang.monticar.generator.order.nfp.TagThresholdTagSchema.TagThresholdTagSchema;
-import de.monticore.lang.monticar.streamunits._symboltable.StreamUnitsLanguage;
-import de.monticore.lang.monticar.struct._symboltable.StructLanguage;
 import de.monticore.lang.monticar.utilities.models.Constants;
 import de.monticore.lang.monticar.utilities.models.Repository;
 import de.monticore.lang.monticar.utilities.models.StorageInformation;
-import de.monticore.lang.monticar.utilities.models.TrainingConfiguration;
-import de.monticore.lang.tagging._symboltable.TaggingResolver;
-import de.monticore.symboltable.GlobalScope;
-import de.monticore.symboltable.Scope;
 import org.apache.maven.execution.MavenSession;
 import org.apache.maven.plugin.AbstractMojo;
 import org.apache.maven.plugin.BuildPluginManager;
@@ -38,7 +20,6 @@ import org.eclipse.aether.resolution.VersionRangeResult;
 
 import java.io.File;
 import java.nio.file.Paths;
-import java.util.ArrayList;
 import java.util.Collections;
 
 public abstract class BaseMojo extends AbstractMojo {
@@ -61,6 +42,10 @@ public abstract class BaseMojo extends AbstractMojo {
   @Parameter
   private Repository repository;
 
+  /**
+   * Target directory where all generated components are stored and created JARs are temporarily
+   * cached before being deployed. <br>
+   */
   @Parameter(property = "pathTmpOut", defaultValue = "target/tmp")
   private String pathTmpOut;
 
