@@ -156,7 +156,7 @@ def get_gluon_model_arch(hf_cfg, ctx):
 
     gluon_model._output_all_encodings = True
     gluon_model.encoder._output_all_encodings = True
-    gluon_model.initialize(init=mx.init.Normal(0.02), ctx=ctx) # unsure if it should be init with normal
+    gluon_model.initialize(ctx=ctx) # unsure if it should be init with normal
     gluon_model.hybridize()
 
     return gluon_model
@@ -245,15 +245,14 @@ def test_model(hf_model, hf_tokenizer, gluon_model, gpu):
     for i in range(batch_size):  # add padding, not sure if necessary for hf codebert
         input_ids[i, valid_length[i]:] = padding_id
 
-    gl_input_ids = mx.nd.array(input_ids.tolist(), dtype=np.int32)
-    gl_valid_length = mx.nd.array(valid_length.tolist(), dtype=np.int32)
+    gl_input_ids = mx.nd.array(input_ids)
+    gl_valid_length = mx.nd.array(valid_length)
     gl_token_types = mx.nd.zeros((batch_size, seq_length))
-
-    print(gl_input_ids)
 
     hf_input_ids = torch.from_numpy(input_ids).cpu()
     hf_model.eval()
 
+    # gl_all_hiddens shape is (num_layers, batch_size, seq_length, hidden_size)
     gl_all_hiddens, gl_pooled = gluon_model(
         gl_input_ids, 
         token_types=gl_token_types, 
@@ -267,7 +266,8 @@ def test_model(hf_model, hf_tokenizer, gluon_model, gpu):
     hf_valid_length = torch.from_numpy(hf_valid_length)
 
     hf_outputs = hf_model(hf_input_ids, attention_mask=hf_valid_length, output_hidden_states=True)
-    hf_all_hiddens = hf_outputs['hidden_states']
+    # (num_layers + 1, batch_size, seq_length, hidden_size)
+    hf_all_hiddens = hf_outputs['hidden_states'][1:]
     hf_pooled = hf_outputs['pooler_output']
 
     # check pooling output
