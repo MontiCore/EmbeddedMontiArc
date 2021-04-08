@@ -61,14 +61,6 @@ public abstract class BaseMojo extends AbstractMojo {
   @Parameter
   private Repository repository;
 
-
-
-  @Parameter(property = "pathMain", defaultValue = "src/main/emadl")
-  private String pathMain;
-
-  @Parameter(property = "pathTest", defaultValue = "src/main/emadl")
-  private String pathTest;
-
   @Parameter(property = "pathTmpOut", defaultValue = "target/tmp")
   private String pathTmpOut;
 
