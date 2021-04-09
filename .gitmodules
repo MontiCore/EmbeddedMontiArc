@@ -1,0 +1,3 @@
+[submodule "src/main/resources/shared_cpp"]
+	path = src/main/resources/shared_cpp
+	url = https://git.rwth-aachen.de/monticore/EmbeddedMontiArc/simulators/shared_cpp
