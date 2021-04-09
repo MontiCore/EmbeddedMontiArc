@@ -2,6 +2,7 @@
 #include <string>
 #include <exception>
 
+// SEE https://git.rwth-aachen.de/monticore/EmbeddedMontiArc/simulators/simulation/-/wikis/dev-docs/concepts/TCP-protocol
 
 /*
     PACKET IDS
@@ -22,5 +23,5 @@ constexpr int PACKET_PING = 9; // No Payload
 constexpr int PACKET_EMU_ID = 10; // Payload: byte with ID for the new remote emulator. The emulator expects PACKET_CONFIG as response. This is sent before the PACKET_INTERFACE
 constexpr int PACKET_CONFIG = 11; // Payload: JSON string, response to PACKET_REQUEST_CONFIG
 constexpr int PACKET_RECONNECT = 12; // Payload: Emulator ID (byte), sent to remote hardware_emulator. Expects remote emulator to respond with PACKET_INTERFACE.
-constexpr int PACKET_INPUT_JSON = 14;
-constexpr int PACKET_OUTPUT_JSON = 15;
+constexpr int PACKET_INPUT_JSON = 13;
+constexpr int PACKET_OUTPUT_JSON = 14;

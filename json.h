@@ -6,27 +6,29 @@
 #include <string>
 #include <exception>
 #include <stdint.h>
+#include "buffer.h"
 
 
 struct JsonWriter {
-
-    static constexpr int32_t START_BUFFER_SIZE = 1024;
-    char *buffer = nullptr;
-    int32_t pos = 0;
-    int32_t buffer_size = 0;
-    
-    static constexpr int32_t TAB = 2;
-    bool format = true;
-    int32_t offset = 0;
-    bool has_elem = false;
-    bool has_key = true;
-    
+    // Used for "snprintf" target
     static constexpr int32_t LOCAL_BUFFER_SIZE = 1024;
     static char LOCAL_BUFFER[LOCAL_BUFFER_SIZE];
 
-    void init();
+    static constexpr int32_t TAB = 2;
+
+    DynamicBuffer &buffer;
     
-    const char* get_string();
+    int32_t offset = 0;
+    bool has_elem = false;
+    bool has_key = true;
+    bool format = true;
+    
+
+    JsonWriter(DynamicBuffer &buffer) : buffer(buffer) {}
+
+    const char* get_string() {
+        return buffer.as_terminated_string();
+    }
 
     void start_object();
     void end_object();
@@ -70,18 +72,10 @@ struct JsonWriter {
         write_value(b);
     }
 
-    ~JsonWriter(){
-        if (buffer != nullptr) delete[] buffer;
-    }
-
     
 private:
     void separate();
     void add_offset();
-    void alloc();
-
-    void append(const char c);
-    void append(const char* str);
 };
 
 
@@ -203,9 +197,7 @@ struct JsonTraverser {
     friend struct ObjectIterator;
     friend struct ArrayIterator;
     
-
-
-    void init(const char *data);
+    JsonTraverser(const char *data);
 
     ValueType get_type() {
         return current_type;
@@ -224,10 +216,10 @@ struct JsonTraverser {
 private:
 
     //const char *data;
-    char c;
     const char* pos;
     int32_t depth;
     ValueType current_type;
+    char c;
     bool last_bool;
 
 

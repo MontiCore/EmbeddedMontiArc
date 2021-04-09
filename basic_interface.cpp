@@ -8,7 +8,7 @@ using namespace std;
     INTERFACE STRING
 */
 
-const char *BASIC_INTERFACE = R"(
+string BASIC_INTERFACE = string(R"(
 {
     "name":"basic_interface",
     "version":"1.0",
@@ -27,4 +27,4 @@ const char *BASIC_INTERFACE = R"(
         {"name":"set_braking","type":{"type":"basic","base_type":"Q"},"direction":"OUTPUT","allows_multiple_inputs":false,"optional":false}
     ]
 }
-)";
+)");

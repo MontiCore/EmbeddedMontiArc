@@ -14,63 +14,24 @@
 
 char JsonWriter::LOCAL_BUFFER[JsonWriter::LOCAL_BUFFER_SIZE];
 
-void JsonWriter::init(){
-    if (buffer == nullptr) {
-        alloc();
-    }
+JsonWriter::JsonWriter(DynamicBuffer &buffer) : buffer(buffer) {
     offset = 0;
-    pos = 0;
     has_elem = false;
     has_key = true;
+    buffer.reset();
 }
 
-void JsonWriter::alloc(){
-    buffer = new char[START_BUFFER_SIZE];
-    buffer_size = START_BUFFER_SIZE;
-    pos = 0;        
-}
-
-void JsonWriter::append(const char c) {
-    buffer[pos] = c;
-    ++pos;
-    if (pos >= buffer_size) {
-        int32_t new_size = buffer_size + START_BUFFER_SIZE;
-        char *new_buff = new char[new_size];
-        for (int32_t i = 0; i < buffer_size; ++i){
-            new_buff[i] = buffer[i];
-        }
-        delete[] buffer;
-        buffer = new_buff;
-        buffer_size = new_size;
-    }
-}
-
-void JsonWriter::append(const char* str){
-    int32_t i = 0;
-    while (str[i]){
-        append(str[i]); ++i;
-    }
-}
-
-
-const char* JsonWriter::get_string() {
-    if (buffer == nullptr) {
-        alloc();
-    }
-    buffer[pos] = '\0';
-    return buffer;
-}
 
 void JsonWriter::start_object() {
     separate();
     if (format) offset += TAB;
-    append('{');
+    buffer.append('{');
     has_elem = false;
 }
 
 void JsonWriter::add_offset(){
     for (int32_t i = 0; i < offset; ++i){
-        append(' ');
+        buffer.append(' ');
     }
 }
 
@@ -78,18 +39,18 @@ void JsonWriter::end_object() {
     if (format) {
         offset -= TAB;
         if (has_elem){
-            append('\n');
+            buffer.append('\n');
             add_offset();
         }
     }
-    append('}');
+    buffer.append('}');
     has_elem = true;
 }
 
 void JsonWriter::start_array() {
     separate();
     if (format) offset += TAB;
-    append('[');
+    buffer.append('[');
     has_elem = false;
 }
 
@@ -97,21 +58,21 @@ void JsonWriter::end_array() {
     if (format) {
         offset -= TAB;
         if (has_elem){
-            append('\n');
+            buffer.append('\n');
             add_offset();
         }
     }
-    append(']');
+    buffer.append(']');
     has_elem = true;
 }
 
 void JsonWriter::separate() {
-    if (has_elem && !has_key) append(',');
+    if (has_elem && !has_key) buffer.append(',');
     else has_elem = true;
     
     if (!has_key) {
         if (format) {
-            append('\n');
+            buffer.append('\n');
             add_offset();
         }
     }
@@ -121,72 +82,72 @@ void JsonWriter::separate() {
 void JsonWriter::write_key(const char* key) {
     write_value(key);
     has_key = true;
-    if (format) append(": ");
-    else append(':');
+    if (format) buffer.append(": ");
+    else buffer.append(':');
 }
 
 void JsonWriter::write_value(const char* str) {
     separate();
-    append('"');
+    buffer.append('"');
     int32_t i = 0;
     while (str[i]){
         char c = str[i];
         switch(c) {
-            case '\n': append("\\n"); break;
-            case '\t': append("\\t"); break;
-            case '\r': append("\\r"); break;
-            case '\f': append("\\f"); break;
-            case '\b': append("\\b"); break;
-            case '"': append("\\\""); break;
-            case '/': append("\\/"); break;
-            case '\\': append("\\\\"); break;
-            default: append(c); break;
+            case '\n': buffer.append("\\n"); break;
+            case '\t': buffer.append("\\t"); break;
+            case '\r': buffer.append("\\r"); break;
+            case '\f': buffer.append("\\f"); break;
+            case '\b': buffer.append("\\b"); break;
+            case '"': buffer.append("\\\""); break;
+            case '/': buffer.append("\\/"); break;
+            case '\\': buffer.append("\\\\"); break;
+            default: buffer.append(c); break;
         }
         ++i;
     }
-    append('"');
+    buffer.append('"');
 }
 
 void JsonWriter::write_value(int32_t i){
     separate();
     snprintf(LOCAL_BUFFER, LOCAL_BUFFER_SIZE, "%d", i);
-    append(LOCAL_BUFFER);
+    buffer.append(LOCAL_BUFFER);
 }
 void JsonWriter::write_value(int64_t l){
     separate();
     snprintf(LOCAL_BUFFER, LOCAL_BUFFER_SIZE, "%lld", l);
-    append(LOCAL_BUFFER);
+    buffer.append(LOCAL_BUFFER);
 }
 void JsonWriter::write_value(double d){
     separate();
-    if (isnan(d)) append("\"NaN\"");
+    if (isnan(d)) buffer.append("\"NaN\"");
     else if (isinf(d)) {
-        if (d < 0) append("\"-Infinity\"");
-        else append("\"Infinity\"");
+        if (d < 0) buffer.append("\"-Infinity\"");
+        else buffer.append("\"Infinity\"");
     }
     else {
         snprintf(LOCAL_BUFFER, LOCAL_BUFFER_SIZE, "%.*e", 17, d);
-        append(LOCAL_BUFFER);
+        buffer.append(LOCAL_BUFFER);
     }
 }
 void JsonWriter::write_value(float d){
     separate();
-    if (isnan(d)) append("\"NaN\"");
+    if (isnan(d)) buffer.append("\"NaN\"");
     else if (isinf(d)) {
-        if (d < 0) append("\"-Infinity\"");
-        else append("\"Infinity\"");
+        if (d < 0) buffer.append("\"-Infinity\"");
+        else buffer.append("\"Infinity\"");
     }
     else {
         snprintf(LOCAL_BUFFER, LOCAL_BUFFER_SIZE, "%.*e", 9, (double)d); //#define FLT_DECIMAL_DIG  9
-        append(LOCAL_BUFFER);
+        buffer.append(LOCAL_BUFFER);
     }
 }
 void JsonWriter::write_value(bool b){
     separate();
     if(b) {
-        append("true");
+        buffer.append("true");
     } else {
-        append("false");
+        buffer.append("false");
     }
 }
 
@@ -292,7 +253,7 @@ bool ArrayIterator::operator!=( const ArrayIterator& other ) {
 
 
 
-void JsonTraverser::init(const char *data) {
+JsonTraverser::JsonTraverser(const char *data) {
     pos = data;
     c = *pos;
     depth = 0;
