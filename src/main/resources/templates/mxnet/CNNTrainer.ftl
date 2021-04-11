@@ -1,6 +1,7 @@
 <#-- (c) https://github.com/MontiCore/monticore -->
 <#-- So that the license is in the generated file: -->
 # (c) https://github.com/MontiCore/monticore
+<#setting number_format="computer">
 import logging
 import mxnet as mx
 <#list configurations as config>
@@ -32,23 +33,28 @@ if __name__ == "__main__":
         normalize=${config.normalize?string("True","False")},
 </#if>
 <#if (config.evalMetric)??>
-        eval_metric='${config.evalMetric.name}',
+        eval_metric='${config.evalMetricName}',
 </#if>
-<#if (config.configuration.loss)??>
+<#if (config.loss)??>
         loss='${config.lossName}',
-<#if (config.lossParams)??>
+<#if (config.lossParameters)??>
         loss_params={
-<#list config.lossParams?keys as param>
-            '${param}': ${config.lossParams[param]}<#sep>,
+<#list config.lossParameters?keys as param>
+            '${param}': ${config.lossParameters[param]}<#sep>,
 </#list>
 },
 </#if>
 </#if>
-<#if (config.configuration.optimizer)??>
+<#if (config.optimizer)??>
         optimizer='${config.optimizerName}',
         optimizer_params={
-<#list config.optimizerParams?keys as param>
-            '${param}': ${config.optimizerParams[param]}<#sep>,
+<#list config.optimizerParameters?keys as param>
+        <#assign paramName = param>
+        <#assign paramValue = config.optimizerParameters[param]>
+        <#if param == "learning_rate_policy">
+            <#assign paramValue = "'${paramValue}'">
+        </#if>
+        '${paramName}': ${paramValue}<#sep>,
 </#list>
 }
 </#if>

@@ -1,19 +1,22 @@
 /* (c) https://github.com/MontiCore/monticore */
 package de.monticore.lang.monticar.cnnarch.mxnetgenerator;
 
+import de.monticore.lang.monticar.cnnarch.generator.GenerationAbortedException;
 import de.se_rwth.commons.logging.Log;
 import freemarker.template.TemplateException;
 import org.junit.Before;
 import org.junit.Rule;
 import org.junit.Test;
+import org.junit.contrib.java.lang.system.Assertion;
+import org.junit.contrib.java.lang.system.ExpectedSystemExit;
 
 import java.io.IOException;
 import java.nio.file.Path;
 import java.nio.file.Paths;
-import java.util.*;
+import java.util.Arrays;
 
-import org.junit.contrib.java.lang.system.Assertion;
-import org.junit.contrib.java.lang.system.ExpectedSystemExit;
+import static junit.framework.Assert.assertEquals;
+import static junit.framework.Assert.fail;
 import static junit.framework.TestCase.assertTrue;
 
 public class GenerationTest extends AbstractSymtabTest{
@@ -136,6 +139,9 @@ public class GenerationTest extends AbstractSymtabTest{
                 Paths.get("./src/test/resources/target_code"),
                 Arrays.asList(
                         "CNNTrainer_fullConfig.py"));
+
+        // TODO: Fix of test: bring in type info from schema.. at the moment the parameter is parsed as an integer, but in the schema it is a double
+        // --> we need schema info in getValue()-Method (or before?)
     }
 
     @Test
@@ -169,6 +175,34 @@ public class GenerationTest extends AbstractSymtabTest{
                         "CNNTrainer_emptyConfig.py"));
     }
 
+    @Test
+    public void testGenerationWithoutTrainingConfigurationFails() {
+        Log.getFindings().clear();
+        Path modelPath = Paths.get("src/test/resources/valid_tests");
+
+        try {
+            CNNTrain2MxNet trainGenerator = new CNNTrain2MxNet();
+            trainGenerator.generate(modelPath, "ModelWithoutTrainingConfiguration");
+            fail("A RuntimeException should have been thrown!");
+        } catch (RuntimeException e) {
+            assertEquals(1, Log.getErrorCount());
+            assertEquals("Could not resolve training configuration for model 'ModelWithoutTrainingConfiguration'.", e.getMessage());
+        }
+    }
+
+    @Test
+    public void testSchemaIsCheckedBeforeGenerationStarts() {
+        Log.getFindings().clear();
+        Path modelPath = Paths.get("src/test/resources/valid_tests");
+
+        try {
+            CNNTrain2MxNet trainGenerator = new CNNTrain2MxNet();
+            trainGenerator.generate(modelPath, "InvalidSchemaDefinition");
+            fail("A GenerationAbortedException should have been thrown!");
+        } catch (GenerationAbortedException e) {
+            assertEquals("Generation aborted due to errors in the training configuration.", e.getMessage());
+        }
+    }
 
     @Test
     public void testCMakeGeneration() {
@@ -192,5 +226,4 @@ public class GenerationTest extends AbstractSymtabTest{
                 Arrays.asList(
                         "FindArmadillo.cmake"));
     }
-
 }
