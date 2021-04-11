@@ -1,6 +1,7 @@
 <#-- (c) https://github.com/MontiCore/monticore -->
 <#-- So that the license is in the generated file: -->
 # (c) https://github.com/MontiCore/monticore
+<#setting number_format="computer">
 from caffe2.python import workspace, core, model_helper, brew, optimizer
 from caffe2.python.predictor import mobile_exporter
 from caffe2.proto import caffe2_pb2
@@ -20,41 +21,43 @@ if __name__ == "__main__":
 <#list configurations as config>
     ${config.instanceName} = CNNCreator_${config.instanceName}.CNNCreator_${config.instanceName}()
     ${config.instanceName}.train(
-<#if (config.numEpoch)??>
+    <#if (config.numEpoch)??>
         num_epoch=${config.numEpoch},
-</#if>
-<#if (config.batchSize)??>
-        batch_size=${config.batchSize},
-</#if>
-<#if (config.context)??>
-        context='${config.context}',
-</#if>
-<#if (config.evalMetric)??>
-        eval_metric='${config.evalMetric.name}',
-</#if>
-<#if (config.loss)??>
-        loss='${config.loss}',
-</#if>
-<#if (config.configuration.optimizer)??>
-        opt_type='${config.optimizerName}'<#if config.optimizerParams?has_content>,
-<#list config.optimizerParams?keys as param>
-    <#--To adapt parameter names to Caffe2 since they are different than in CNNTrainLang-->
-    <#assign paramName = param>
-    <#if param == "learning_rate">
-        <#assign paramName = "base_learning_rate">
-    <#elseif param == "learning_rate_policy">
-        <#assign paramName = "policy">
-    <#elseif param == "step_size">
-        <#assign paramName = "stepsize">
-    <#elseif param == "gamma1">
-        <#assign paramName = "gamma1">
-    <#elseif param == "learning_rate_decay">
-        <#assign paramName = "gamma">
     </#if>
-        ${paramName}=${config.optimizerParams[param]}<#sep>,
-</#list>
-</#if>
-</#if>
+    <#if (config.batchSize)??>
+        batch_size=${config.batchSize},
+    </#if>
+    <#if (config.context)??>
+        context='${config.context}',
+    </#if>
+    <#if (config.evalMetric)??>
+        eval_metric='${config.evalMetricName}',
+    </#if>
+    <#if (config.loss)??>
+        loss='${config.lossName}',
+    </#if>
+    <#if (config.optimizer)??>
+        opt_type='${config.optimizerName}'<#if config.optimizerParameters?has_content>,
+        <#list config.optimizerParameters?keys as param>
+        <#--To adapt parameter names to Caffe2 since they are different than in CNNTrainLang-->
+        <#assign paramName = param>
+        <#assign paramValue = config.optimizerParameters[param]>
+        <#if param == "learning_rate">
+            <#assign paramName = "base_learning_rate">
+        <#elseif param == "learning_rate_policy">
+            <#assign paramName = "policy">
+            <#assign paramValue = "'${paramValue}'">
+        <#elseif param == "step_size">
+            <#assign paramName = "stepsize">
+        <#elseif param == "gamma1">
+            <#assign paramName = "gamma1">
+        <#elseif param == "learning_rate_decay">
+            <#assign paramName = "gamma">
+        </#if>
+            ${paramName}=${paramValue}<#sep>,
+        </#list>
+    </#if>
+    </#if>
 
     )
 </#list>
