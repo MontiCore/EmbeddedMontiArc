@@ -51,3 +51,11 @@ TestMnistCalculator-II:
   - cd mnist-calculator
   - mvn streamtest:streamtest-build -s settings.xml
 
+TestEMADLMavenPlugin:
+  stage: linux
+  image: registry.git.rwth-aachen.de/monticore/embeddedmontiarc/applications/mnistcalculator/mxnet:v0.0.5
+  script:
+  - cd emadl-maven-plugin
+  - mvn emadl:train -s settings.xml
+
+
