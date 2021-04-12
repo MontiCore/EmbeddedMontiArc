@@ -126,7 +126,8 @@ public class MathOptimizer {
         MathExpressionSymbol realRightExpressionSymbol = getCurrentAssignment(mathArithmeticExpressionSymbol.getRightExpression().getRealMathExpressionSymbol(), precedingExpressions);
         long previousOperations = calculatePreviousOperations(realLeftExpressionSymbol, realRightExpressionSymbol, precedingExpressions);
 
-        return previousOperations + MathDimensionCalculator.getMatrixColumns(realLeftExpressionSymbol, precedingExpressions) * MathDimensionCalculator.getMatrixRows(realRightExpressionSymbol, precedingExpressions);
+        //orig return previousOperations + MathDimensionCalculator.getMatrixColumns(realLeftExpressionSymbol, precedingExpressions) * MathDimensionCalculator.getMatrixRows(realRightExpressionSymbol, precedingExpressions);
+        return previousOperations + MathDimensionCalculator.getMatrixRows(realLeftExpressionSymbol, precedingExpressions) * MathDimensionCalculator.getMatrixColumns(realRightExpressionSymbol, precedingExpressions);
 
     }
 

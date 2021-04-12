@@ -30,12 +30,13 @@ public class ProblemAssignmentHandler {
     }
 
     public void getProblemFromSymbol(Problem problem, MathOptimizationStatementSymbol symbol) {
-        problem.setId(symbol.getExpressionID());
+
         problem.setOptimizationProblemType(symbol.getOptimizationType());
         // assign all properties
         setOptimizationVariableFromSymbol(problem, symbol);
         setObjectiveFunctionFromSymbol(problem, symbol);
         setConstraintsFromSymbol(problem, symbol);
+        problem.setId(symbol.getExpressionID());
     }
 
     private void setOptimizationVariableFromSymbol(Problem p, MathOptimizationStatementSymbol symbol) {

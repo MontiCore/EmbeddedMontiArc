@@ -15,6 +15,7 @@ import de.monticore.lang.mathopt._symboltable.MathOptimizationConditionSymbol;
 import de.monticore.lang.mathopt._symboltable.visitor.MathOptExpressionSymbolVisitor;
 import de.monticore.lang.monticar.generator.Variable;
 import de.monticore.lang.monticar.generator.cpp.EMAMBluePrintCPP;
+import de.monticore.lang.monticar.generator.cpp.converter.ExecuteMethodGenerator;
 import de.monticore.lang.monticar.generator.cpp.mathopt.optimizationSolver.problem.Problem;
 import de.monticore.lang.monticar.generator.cpp.mathopt.optimizationSolver.solver.template.SolverViewModel;
 
@@ -399,9 +400,12 @@ public class IpoptViewModel extends SolverViewModel {
     }
 
     public String getRawObjectiveFunction() {
+
         MathExpressionSymbol symbol = getObjectiveFunction();
-        return symbol.getTextualRepresentation();
+        return ExecuteMethodGenerator.generateExecuteCode(symbol, new ArrayList<>());
+
     }
+
 
     public String listClassesInScope(){
         String result = "";
@@ -677,8 +681,7 @@ public class IpoptViewModel extends SolverViewModel {
             } else {
                 String leftside = "fg[ 1 +" + getIpoptConstraintRef(nr) + " ] ";
                 //String rightside = getIpoptTextualRepresentation(((MathOptimizationConditionSymbol) constraint).getRight(), "vars", 0);
-                String rightside = ((MathOptimizationConditionSymbol) constraint).getRight().getTextualRepresentation();
-
+                String rightside = ExecuteMethodGenerator.generateExecuteCode(((MathOptimizationConditionSymbol) constraint).getRight(), new ArrayList<>());
                 result = leftside + " = " + rightside;
             }
 

@@ -31,7 +31,8 @@ public class MathDimensionCalculatorHelper {
         if (MathDimensionCalculator.getMatrixRows(realRightExpression, precedingExpressions) == 1) {
             result = MathDimensionCalculator.getMatrixColumns(realLeftExpression, precedingExpressions);
         } else {
-            result = MathDimensionCalculator.getMatrixColumns(realLeftExpression, precedingExpressions);
+            //orig: result = MathDimensionCalculator.getMatrixColumns(realLeftExpression, precedingExpressions);
+            result = MathDimensionCalculator.getMatrixColumns(realRightExpression, precedingExpressions);
         }
         return result;
     }

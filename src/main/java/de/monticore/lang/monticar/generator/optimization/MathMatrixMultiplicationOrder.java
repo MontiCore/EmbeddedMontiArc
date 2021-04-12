@@ -347,10 +347,14 @@ public class MathMatrixMultiplicationOrder implements MathOptimizationRule {
         int n = dims.length - 1;
         int[][] m = new int[n][n];
         int[][] s = new int[n][n];
+        //orig
         dims[0] = MathDimensionCalculator.getMatrixColumns(mathExpressionSymbols.get(0), new ArrayList<MathExpressionSymbol>());
+        dims[0] = MathDimensionCalculator.getMatrixRows(mathExpressionSymbols.get(0), new ArrayList<MathExpressionSymbol>());
         Log.info(dims[0] + mathExpressionSymbols.get(0).getTextualRepresentation(), "most effi");
         for (int i = 1; i <= mathExpressionSymbols.size(); ++i) {
+            //orig
             dims[i] = MathDimensionCalculator.getMatrixRows(mathExpressionSymbols.get(i - 1), new ArrayList<MathExpressionSymbol>());
+            dims[i] = MathDimensionCalculator.getMatrixColumns(mathExpressionSymbols.get(i - 1), new ArrayList<MathExpressionSymbol>());
             Log.info(dims[i] + mathExpressionSymbols.get(i - 1).getTextualRepresentation(), "most effi");
 
         }

@@ -64,7 +64,15 @@ public class Problem {
     public void setId(int id) {
         this.id = id;
         if (id <= 0) {
-            this.id = this.hashCode();
+            //builtin hashcode introduces problems for code-testing
+            // (each java execution may yield a different value)
+            //this.id = this.hashCode();
+            String objVarName = getObjectiveValueVariable().getName();
+            this.id=0;
+            int arr[] = objVarName.chars().toArray();
+            for (int i = 0; i<arr.length;i++){
+                this.id += arr[i] + i * 256;
+            }
         }
     }
 
