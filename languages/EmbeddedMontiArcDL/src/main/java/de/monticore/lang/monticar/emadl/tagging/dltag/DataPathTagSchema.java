@@ -31,7 +31,7 @@ public class DataPathTagSchema {
     }
 
     public static void registerTagTypes(TaggingResolver tagging) {
-            getInstance().doRegisterTagTypes(tagging);
+        getInstance().doRegisterTagTypes(tagging);
     }
 
 }
