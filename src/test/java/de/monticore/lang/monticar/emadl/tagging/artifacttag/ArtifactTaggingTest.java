@@ -1,9 +1,7 @@
 package de.monticore.lang.monticar.emadl.tagging.artifacttag;
 
 import de.monticore.lang.embeddedmontiarc.embeddedmontiarc._symboltable.cncModel.EMAComponentSymbol;
-import de.monticore.lang.embeddedmontiarc.embeddedmontiarc._symboltable.instanceStructure.EMAComponentInstanceSymbol;
 import de.monticore.lang.monticar.emadl.AbstractTaggingResolverTest;
-import de.monticore.lang.monticar.emadl.tagging.dltag.DataPathSymbol;
 import de.monticore.lang.tagging._symboltable.TagSymbol;
 import de.monticore.lang.tagging._symboltable.TaggingResolver;
 import org.junit.Test;
@@ -15,13 +13,14 @@ import static org.junit.Assert.assertEquals;
 public class ArtifactTaggingTest extends AbstractTaggingResolverTest {
 
   private TaggingResolver tagging = createSymTabandTaggingResolver("src/test/resources");
+  private EMAComponentSymbol parentSymbol =
+      tagging.<EMAComponentSymbol>resolve("tagging.artifacttagging.Parent", EMAComponentSymbol.KIND).orElse(null);
+  private EMAComponentSymbol alexnetSymbol =
+      tagging.<EMAComponentSymbol>resolve("tagging.artifacttagging.Alexnet", EMAComponentSymbol.KIND).orElse(null);
 
   @Test
-  public void testValidDatasetArtifactTag() {
-    EMAComponentSymbol symbol = tagging.<EMAComponentSymbol>resolve("tagging.artifacttagging.Alexnet", EMAComponentSymbol.KIND)
-        .orElse(null);
-
-    Collection<TagSymbol> tags = tagging.getTags(symbol, DatasetArtifactSymbol.KIND);
+  public void testValidDatasetArtifactTagForComponent() {
+    Collection<TagSymbol> tags = tagging.getTags(alexnetSymbol, DatasetArtifactSymbol.KIND);
     assertEquals(1, tags.size());
 
     DatasetArtifactSymbol datasetArtifactSymbol = (DatasetArtifactSymbol) tags.iterator().next();
@@ -31,11 +30,9 @@ public class ArtifactTaggingTest extends AbstractTaggingResolverTest {
   }
 
   @Test
-  public void testValidLayerArtifactParameterTag() {
-    EMAComponentSymbol symbol = tagging.<EMAComponentSymbol>resolve("tagging.artifacttagging.Parent", EMAComponentSymbol.KIND).get();
-
-    Collection<TagSymbol> tagsA1 = tagging.getTags(symbol.getSpannedScope().getLocalSymbols().get("a1").iterator().next(), DatasetArtifactSymbol.KIND);
-    Collection<TagSymbol> tagsA2 = tagging.getTags(symbol.getSpannedScope().getLocalSymbols().get("a2").iterator().next(), DatasetArtifactSymbol.KIND);
+  public void testValidDatasetArtifactTagForComponentForInstances() {
+    Collection<TagSymbol> tagsA1 = tagging.getTags(parentSymbol.getSpannedScope().getLocalSymbols().get("a1").iterator().next(), DatasetArtifactSymbol.KIND);
+    Collection<TagSymbol> tagsA2 = tagging.getTags(parentSymbol.getSpannedScope().getLocalSymbols().get("a2").iterator().next(), DatasetArtifactSymbol.KIND);
     assertEquals(1, tagsA1.size());
     assertEquals(1, tagsA2.size());
 
@@ -48,15 +45,29 @@ public class ArtifactTaggingTest extends AbstractTaggingResolverTest {
     assertEquals("com/monticore/lang/monticar/imdb/2", tagA2.getArtifact());
     assertEquals("imdb-2-dataset", tagA2.getJar());
     assertEquals("HDF5", tagA2.getType());
-
-
-
-
   }
 
+  @Test
+  public void testValidLayerArtifactParameterTagForComponent() {
+    Collection<TagSymbol> tags = tagging.getTags(alexnetSymbol, LayerArtifactParameterSymbol.KIND);
+    assertEquals(1, tags.size());
 
+    LayerArtifactParameterSymbol layerArtifactParameterSymbol = (LayerArtifactParameterSymbol) tags.iterator().next();
+    assertEquals("com/emadl/pretrained-model/bert-small/2", layerArtifactParameterSymbol.getArtifact());
+    assertEquals("bert-small-2-pretrained", layerArtifactParameterSymbol.getJar());
+    assertEquals("bert-small", layerArtifactParameterSymbol.getId());
+  }
 
+  @Test
+  public void testValidLayerArtifactParameterTagForComponentForInstances() {
+    Collection<TagSymbol> tagsA1 = tagging.getTags(parentSymbol.getSpannedScope().getLocalSymbols().get("a1").iterator().next(), LayerArtifactParameterSymbol.KIND);
+    assertEquals(1, tagsA1.size());
 
+    LayerArtifactParameterSymbol layerArtifactParameterSymbolA1 = (LayerArtifactParameterSymbol) tagsA1.iterator().next();
+    assertEquals("com/emadl/pretrained-model/bert-large/1", layerArtifactParameterSymbolA1.getArtifact());
+    assertEquals("bert-large-1-pretrained", layerArtifactParameterSymbolA1.getJar());
+    assertEquals("bert", layerArtifactParameterSymbolA1.getId());
+  }
 
 
 }
