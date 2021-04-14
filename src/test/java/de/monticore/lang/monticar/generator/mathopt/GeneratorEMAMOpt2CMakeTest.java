@@ -22,7 +22,7 @@ import static org.junit.Assert.assertNotNull;
 public class GeneratorEMAMOpt2CMakeTest extends AbstractSymtabTest {
 
     protected static List<File> doGenerateModel(String fullModelName) throws IOException {
-        TaggingResolver symtab = createSymTabAndTaggingResolver("src/test/resources/mathopt");
+        TaggingResolver symtab = createSymTabAndTaggingResolver("src/test/resources/");
         EMAComponentInstanceSymbol componentInstanceSymbol = symtab.<EMAComponentInstanceSymbol>resolve(fullModelName, EMAComponentInstanceSymbol.KIND).orElse(null);
         assertNotNull(componentInstanceSymbol);
         GeneratorCPP generator = new GeneratorCPP();
@@ -75,11 +75,6 @@ public class GeneratorEMAMOpt2CMakeTest extends AbstractSymtabTest {
         List<File> files = doGenerateModel("de.rwth.monticar.optimization.forLoopConditionsTest");
     }
 
-    @Ignore
-    @Test
-    public void existingOptimizationVariableCMakeTest() throws IOException {
-        List<File> files = doGenerateModel("de.rwth.monticar.optimization.existingOptimizationVariableTest");
-    }
 
     @Test
     public void matrixSumMinimization1Test() throws IOException {

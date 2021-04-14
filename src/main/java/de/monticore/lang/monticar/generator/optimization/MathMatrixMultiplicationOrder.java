@@ -245,6 +245,7 @@ public class MathMatrixMultiplicationOrder implements MathOptimizationRule {
         MathExpressionSymbol newExpression = getMostEfficientExpression(newExps);
 
         Log.info(oldMathArithmeticExpressionSymbol.getTextualRepresentation(), "oldExpression inflated");
+        String debugHelpString = newExpression.getTextualRepresentation();
         Log.info(newExpression.getTextualRepresentation(), "newExpression:");
         Log.info(newExpression.getTextualRepresentation(), "Term Rewritten:");
         long operationsStandard = MathOptimizer.getEstimatedOperations(oldMathArithmeticExpressionSymbol, precedingExpressions);
@@ -343,21 +344,29 @@ public class MathMatrixMultiplicationOrder implements MathOptimizationRule {
      * @return
      */
     public MathExpressionSymbol getMostEfficientExpression(List<MathExpressionSymbol> mathExpressionSymbols) {
+
         int dims[] = new int[mathExpressionSymbols.size() + 1];
         int n = dims.length - 1;
         int[][] m = new int[n][n];
         int[][] s = new int[n][n];
+        //It is assumed, that the matrices fit together such that a valid multiplication can be performed.
+        // Then, it is sufficient to store the row of first matrix and column of each following in the expression,
+        // such that matrix_n = dim[n-1] x dim [n]
+
         //orig
-        dims[0] = MathDimensionCalculator.getMatrixColumns(mathExpressionSymbols.get(0), new ArrayList<MathExpressionSymbol>());
+        //dims[0] = MathDimensionCalculator.getMatrixColumns(mathExpressionSymbols.get(0), new ArrayList<MathExpressionSymbol>());
         dims[0] = MathDimensionCalculator.getMatrixRows(mathExpressionSymbols.get(0), new ArrayList<MathExpressionSymbol>());
         Log.info(dims[0] + mathExpressionSymbols.get(0).getTextualRepresentation(), "most effi");
         for (int i = 1; i <= mathExpressionSymbols.size(); ++i) {
             //orig
-            dims[i] = MathDimensionCalculator.getMatrixRows(mathExpressionSymbols.get(i - 1), new ArrayList<MathExpressionSymbol>());
+            //dims[i] = MathDimensionCalculator.getMatrixRows(mathExpressionSymbols.get(i - 1), new ArrayList<MathExpressionSymbol>());
             dims[i] = MathDimensionCalculator.getMatrixColumns(mathExpressionSymbols.get(i - 1), new ArrayList<MathExpressionSymbol>());
             Log.info(dims[i] + mathExpressionSymbols.get(i - 1).getTextualRepresentation(), "most effi");
 
         }
+
+        //Debug: dims fulfills the statement above
+
         for (int lenMinusOne = 1; lenMinusOne < n; lenMinusOne++) {
             for (int i = 0; i < n - lenMinusOne; i++) {
                 int j = i + lenMinusOne;
@@ -371,6 +380,10 @@ public class MathMatrixMultiplicationOrder implements MathOptimizationRule {
                 }
             }
         }
+
+        //Debug: Cost calculation is exactly as in
+        //https://en.wikipedia.org/wiki/Matrix_chain_multiplication
+
         /*for (MathExpressionSymbol mat : mathExpressionSymbols)
             Log.info(mat.getTextualRepresentation(), "Mat:");
         for (int i = 0; i < dims.length; ++i)
@@ -398,6 +411,9 @@ public class MathMatrixMultiplicationOrder implements MathOptimizationRule {
         counter = 0;
         buildOptimalExpression(s, 0, s.length - 1, inAResult);
         int lastIndex = 0;
+
+        //Debug: Result Map looks correct
+
         for (int i = 0; resultMap.containsKey(i); ++i) {
             /*Log.info(i + "A_" + resultMap.get(i).matrixIndexLeft + resultMap.get(i).isResultLeft + " A_" +
                     resultMap.get(i).matrixIndexRight + resultMap.get(i).isResultRight, "Index:");*/
@@ -417,6 +433,9 @@ public class MathMatrixMultiplicationOrder implements MathOptimizationRule {
             stepMap.put(resultOrder.matrixIndexRight, new MathParenthesisExpressionSymbol(mathArithmeticExpressionSymbol));
             lastIndex = resultOrder.matrixIndexLeft;
         }
+
+        //Debug: StepMap is correct!
+
         return stepMap.get(lastIndex);
     }
 

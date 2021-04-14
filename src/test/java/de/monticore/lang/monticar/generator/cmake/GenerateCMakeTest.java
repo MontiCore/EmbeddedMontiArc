@@ -115,17 +115,4 @@ public class GenerateCMakeTest extends AbstractSymtabTest {
     // }
 
 
-    @Test
-    public void testModelWithIpopt() {
-        Log.getFindings().clear();
-
-        String[] args = {"-m", "src/test/resources", "-r", "ipopt.QuadraticOpt", "-o", "./target/generated-sources-emadl"};
-        GeneratorCppCli.main(args);
-
-        //checkFilesAreEqual(Paths.get("./target/generated-sources-emadl"), Paths.get("./src/test/resources/target_code/ipopt"), Arrays.asList(
-        //        "CMakeLists.txt"
-        //));
-        assertTrue(Log.getFindings().isEmpty());
-    }
-
 }

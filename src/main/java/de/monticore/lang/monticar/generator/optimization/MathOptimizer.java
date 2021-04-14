@@ -126,17 +126,26 @@ public class MathOptimizer {
         MathExpressionSymbol realRightExpressionSymbol = getCurrentAssignment(mathArithmeticExpressionSymbol.getRightExpression().getRealMathExpressionSymbol(), precedingExpressions);
         long previousOperations = calculatePreviousOperations(realLeftExpressionSymbol, realRightExpressionSymbol, precedingExpressions);
 
-        //orig return previousOperations + MathDimensionCalculator.getMatrixColumns(realLeftExpressionSymbol, precedingExpressions) * MathDimensionCalculator.getMatrixRows(realRightExpressionSymbol, precedingExpressions);
-        return previousOperations + MathDimensionCalculator.getMatrixRows(realLeftExpressionSymbol, precedingExpressions) * MathDimensionCalculator.getMatrixColumns(realRightExpressionSymbol, precedingExpressions);
+        //orig
+        return previousOperations + MathDimensionCalculator.getMatrixColumns(realLeftExpressionSymbol, precedingExpressions) * MathDimensionCalculator.getMatrixRows(realRightExpressionSymbol, precedingExpressions);
+        //return previousOperations + MathDimensionCalculator.getMatrixRows(realLeftExpressionSymbol, precedingExpressions) * MathDimensionCalculator.getMatrixColumns(realRightExpressionSymbol, precedingExpressions);
 
     }
 
     public static long handleEstimatedOperationsMultiplication(MathArithmeticExpressionSymbol mathArithmeticExpressionSymbol, List<MathExpressionSymbol> precedingExpressions) {
         MathExpressionSymbol realLeftExpressionSymbol = getCurrentAssignment(mathArithmeticExpressionSymbol.getLeftExpression().getRealMathExpressionSymbol(), precedingExpressions);
         MathExpressionSymbol realRightExpressionSymbol = getCurrentAssignment(mathArithmeticExpressionSymbol.getRightExpression().getRealMathExpressionSymbol(), precedingExpressions);
+
+        //orig:
+        /*
         long n = MathDimensionCalculator.getMatrixColumns(realLeftExpressionSymbol, precedingExpressions);
         long m = MathDimensionCalculator.getMatrixRows(realLeftExpressionSymbol, precedingExpressions);
         long p = MathDimensionCalculator.getMatrixRows(realRightExpressionSymbol, precedingExpressions);
+        */
+        long n = MathDimensionCalculator.getMatrixRows(realLeftExpressionSymbol, precedingExpressions);
+        long m = MathDimensionCalculator.getMatrixColumns(realLeftExpressionSymbol, precedingExpressions);
+        long p = MathDimensionCalculator.getMatrixColumns(realRightExpressionSymbol, precedingExpressions);
+
         long previousOperations = 0;
         //Log.info(realLeftExpressionSymbol.getTextualRepresentation()+" "+MathDimensionCalculator.getMatrixRows(realLeftExpressionSymbol, precedingExpressions) +" "+
         //        MathDimensionCalculator.getMatrixColumns(realLeftExpressionSymbol, precedingExpressions),"Matrix:");
