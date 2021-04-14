@@ -40,31 +40,9 @@
                         <pathToProject>src/main/emadl</pathToProject>
                         <pathToTest>src/main/emadl</pathToTest>
                     </training>
-
-                    <repository>
-                        <id>mlprocess-repo</id>
-                        <url>file://${user.home}/.m2/test-repository/</url>
-                    </repository>
                 </configuration>
            </plugin>
         </plugins>
     </build>
-
-    <repositories>
-        <repository>
-            <id>emadl-repo</id>
-            <name>Local Test Repository for ML-Process Artifacts</name>
-            <url>file://${user.home}/.m2/test-repository/</url>
-        </repository> 
-    </repositories>
-
-    <distributionManagement>
-        <repository>
-            <id>emadl-repo</id>
-            <name>Local Test Repository for ML-Process Artifacts</name>
-            <url>file://${user.home}/.m2/test-repository/</url>
-        </repository>
-    </distributionManagement>
-
 
 </project>
