@@ -1,10 +1,13 @@
 /* (c) https://github.com/MontiCore/monticore */
 package de.monticore.lang.mathopt._symboltable;
 
+import de.monticore.lang.math._symboltable.expression.MathAssignmentExpressionSymbol;
+import de.monticore.lang.math._symboltable.matrix.MathMatrixVectorExpressionSymbol;
 import de.monticore.lang.mathopt.OptimizationModelHelper;
 import de.se_rwth.commons.logging.Log;
 import org.junit.Before;
 import org.junit.BeforeClass;
+import org.junit.Ignore;
 import org.junit.Test;
 
 import static org.junit.Assert.*;
@@ -17,9 +20,7 @@ public class MathOptimizationStatementSymbolTest {
     protected MathOptimizationStatementSymbol lpTestSymbol;
     protected MathOptimizationStatementSymbol upperAndLowerBoundTestSymbol;
     protected MathOptimizationStatementSymbol forLoopConditionTestSymbol;
-    protected MathOptimizationStatementSymbol existingOptimizationVarScalar;
-    protected MathOptimizationStatementSymbol existingOptimizationVarMatrix;
-    protected MathOptimizationStatementSymbol existingOptimizationVarSubstituted;
+    protected MathOptimizationStatementSymbol mPCTestSymbol;
 
     // helper
     private OptimizationModelHelper helper;
@@ -39,9 +40,7 @@ public class MathOptimizationStatementSymbolTest {
         lpTestSymbol = helper.getLpTestSymbol();
         upperAndLowerBoundTestSymbol = helper.getUpperAndLowerBoundTestSymbol();
         forLoopConditionTestSymbol = helper.getForLoopConditionTestSymbol();
-        existingOptimizationVarScalar = helper.getExistingOptimizationVarScalar();
-        existingOptimizationVarMatrix = helper.getExistingOptimizationVarMatrix();
-        existingOptimizationVarSubstituted = helper.getExistingOptimizationVarSubstituted();
+        mPCTestSymbol = helper.getMPCTestSymbol();
     }
 
     @Test
@@ -52,14 +51,23 @@ public class MathOptimizationStatementSymbolTest {
 
     @Test
     public void getOptimizationVariable() {
-        assertTrue(minimizationTestSymbol.getOptimizationVariable().getName().contentEquals("x"));
-        assertNotNull(minimizationTestSymbol.getOptimizationVariable().getType());
-        assertTrue(existingOptimizationVarScalar.getOptimizationVariable().getName().contentEquals("x"));
-        assertNull(existingOptimizationVarScalar.getOptimizationVariable().getType());
-        assertTrue(existingOptimizationVarMatrix.getOptimizationVariable().getName().contentEquals("a"));
-        assertNull(existingOptimizationVarMatrix.getOptimizationVariable().getType());
-        assertTrue(existingOptimizationVarSubstituted.getOptimizationVariable().getName().contentEquals("a"));
-        assertNull(existingOptimizationVarSubstituted.getOptimizationVariable().getType());
+        assertTrue(minimizationTestSymbol.getOptimizationVariables().get(0).getName().contentEquals("x"));
+        assertNotNull(minimizationTestSymbol.getOptimizationVariables().get(0).getType());
+        assertTrue(mPCTestSymbol.getOptimizationVariables().get(0).getName().contentEquals("x"));
+    }
+
+    @Test
+    public void getIndependentVariable(){
+        assertTrue(mPCTestSymbol.getIndependentVariables().get(0).getName().contentEquals("y"));
+    }
+
+    @Test
+    public void getStepSize(){
+        MathAssignmentExpressionSymbol maes = (MathAssignmentExpressionSymbol)  mPCTestSymbol.getStepSizeExpression();
+        MathMatrixVectorExpressionSymbol mves = (MathMatrixVectorExpressionSymbol) maes.getExpressionSymbol();
+        assertTrue(maes.getNameOfMathValue().contentEquals("n"));
+        assertTrue(mves.getStart().getTextualRepresentation().equals("1"));
+        assertTrue(mves.getEnd().getTextualRepresentation().equals("20"));
     }
 
     @Test
@@ -73,13 +81,15 @@ public class MathOptimizationStatementSymbolTest {
         assertTrue(lpTestSymbol.getSubjectToExpressions().size() == 3);
         assertTrue(upperAndLowerBoundTestSymbol.getSubjectToExpressions().size() == 2);
         assertTrue(forLoopConditionTestSymbol.getSubjectToExpressions().size() >= 1);
+        assertTrue(mPCTestSymbol.getSubjectToExpressions().size() == 2);
     }
 
     @Test
     public void getObjectiveValue() {
-        assertEquals(false, minimizationTestSymbol.hasReturnValue());
+        assertEquals(false,  minimizationTestSymbol.hasReturnValue());
         assertEquals("y", maximizationTestSymbol.getObjectiveValue().getName());
         assertEquals("Q", maximizationTestSymbol.getObjectiveValue().getType().getType().getName());
+        assertEquals("z",mPCTestSymbol.getObjectiveValue().getName());
     }
 
 }
