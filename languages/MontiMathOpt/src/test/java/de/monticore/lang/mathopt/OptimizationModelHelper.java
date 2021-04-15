@@ -18,6 +18,7 @@ public class OptimizationModelHelper extends AbstractMathOptChecker {
 
     private static OptimizationModelHelper ourInstance = new OptimizationModelHelper();
 
+
     public static OptimizationModelHelper getInstance() {
         return ourInstance;
     }
@@ -28,9 +29,7 @@ public class OptimizationModelHelper extends AbstractMathOptChecker {
     private MathOptimizationStatementSymbol lpTestSymbol;
     private MathOptimizationStatementSymbol upperAndLowerBoundTestSymbol;
     private MathOptimizationStatementSymbol forLoopConditionTestSymbol;
-    private MathOptimizationStatementSymbol existingOptimizationVarScalar;
-    private MathOptimizationStatementSymbol existingOptimizationVarMatrix;
-    private MathOptimizationStatementSymbol existingOptimizationVarSubstituted;
+    private MathOptimizationStatementSymbol mpcTestSymbol;
 
     private OptimizationModelHelper() {
 
@@ -82,54 +81,11 @@ public class OptimizationModelHelper extends AbstractMathOptChecker {
         return forLoopConditionTestSymbol;
     }
 
-    public MathOptimizationStatementSymbol getExistingOptimizationVarScalar() {
-        if (existingOptimizationVarScalar == null) {
-            existingOptimizationVarScalar = getMathOptimizationStatementSymbolFromTestScript("src/test/resources/optimization/ExistingOptimizationVariable.m", 0);
+    public MathOptimizationStatementSymbol getMPCTestSymbol(){
+        if (mpcTestSymbol == null) {
+            mpcTestSymbol = getMathOptimizationStatementSymbolFromTestScript("src/test/resources/optimization/MPCTest.m", 0);
         }
-        return existingOptimizationVarScalar;
+        return mpcTestSymbol;
     }
 
-    public MathOptimizationStatementSymbol getExistingOptimizationVarMatrix() {
-        if (existingOptimizationVarMatrix == null)
-            existingOptimizationVarMatrix = getMathOptimizationStatementSymbolFromTestScript("src/test/resources/optimization/ExistingOptimizationVariable.m", 1);
-        return existingOptimizationVarMatrix;
-    }
-
-    public MathOptimizationStatementSymbol getExistingOptimizationVarSubstituted() {
-        if (existingOptimizationVarSubstituted == null)
-            existingOptimizationVarSubstituted = getMathOptimizationStatementSymbolFromTestScript("src/test/resources/optimization/ExistingOptimizationVariable.m", 2);
-        return existingOptimizationVarSubstituted;
-    }
-
-    protected void setMinimizationTestSymbol(MathOptimizationStatementSymbol minimizationTestSymbol) {
-        this.minimizationTestSymbol = minimizationTestSymbol;
-    }
-
-    protected void setMaximizationTestSymbol(MathOptimizationStatementSymbol maximizationTestSymbol) {
-        this.maximizationTestSymbol = maximizationTestSymbol;
-    }
-
-    protected void setLpTestSymbol(MathOptimizationStatementSymbol lpTestSymbol) {
-        this.lpTestSymbol = lpTestSymbol;
-    }
-
-    protected void setUpperAndLowerBoundTestSymbol(MathOptimizationStatementSymbol upperAndLowerBoundTestSymbol) {
-        this.upperAndLowerBoundTestSymbol = upperAndLowerBoundTestSymbol;
-    }
-
-    protected void setForLoopConditionTestSymbol(MathOptimizationStatementSymbol forLoopConditionTestSymbol) {
-        this.forLoopConditionTestSymbol = forLoopConditionTestSymbol;
-    }
-
-    protected void setExistingOptimizationVarScalar(MathOptimizationStatementSymbol existingOptimizationVarScalar) {
-        this.existingOptimizationVarScalar = existingOptimizationVarScalar;
-    }
-
-    protected void setExistingOptimizationVarMatrix(MathOptimizationStatementSymbol existingOptimizationVarMatrix) {
-        this.existingOptimizationVarMatrix = existingOptimizationVarMatrix;
-    }
-
-    protected void setExistingOptimizationVarSubstituted(MathOptimizationStatementSymbol existingOptimizationVarSubstituted) {
-        this.existingOptimizationVarSubstituted = existingOptimizationVarSubstituted;
-    }
 }

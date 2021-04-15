@@ -2,6 +2,7 @@
 package de.monticore.lang.mathopt._symboltable.visitor;
 
 import de.monticore.lang.math._symboltable.expression.MathExpressionSymbol;
+import de.monticore.lang.math._symboltable.expression.MathValueSymbol;
 import de.monticore.lang.math._symboltable.visitor.MathExpressionSymbolVisitor;
 import de.monticore.lang.mathopt._symboltable.MathOptimizationConditionSymbol;
 import de.monticore.lang.mathopt._symboltable.MathOptimizationStatementSymbol;
@@ -28,12 +29,30 @@ public interface MathOptExpressionSymbolVisitor extends MathExpressionSymbolVisi
     }
 
     public default void traverse(MathOptimizationStatementSymbol node) {
-        if (node.getOptimizationVariable() != null) handle(node.getOptimizationVariable());
+        if(node.getOptimizationVariables() != null) {
+            for (MathValueSymbol optimizationVar : node.getOptimizationVariables()) {
+                handle(optimizationVar);
+            }
+        }
+        if(node.getIndependentVariables() != null) {
+            for (MathValueSymbol independentVar : node.getIndependentVariables()) {
+                handle(independentVar);
+            }
+        }
+        if(node.getConstraints() != null) {
+            for (MathOptimizationConditionSymbol constr : node.getConstraints()) {
+                handle(constr);
+            }
+        }
+        if(node.getSubjectToExpressions() != null) {
+            for (MathExpressionSymbol subjectToExpression : node.getSubjectToExpressions()) {
+                handle(subjectToExpression);
+            }
+        }
+        if (node.getStepSizeExpression() != null) handle(node.getStepSizeExpression());
         if (node.getObjectiveValue() != null) handle(node.getObjectiveValue());
         if (node.getObjectiveExpression() != null) handle(node.getObjectiveExpression());
-        for (MathExpressionSymbol subjectToExpression : node.getSubjectToExpressions()) {
-            handle(subjectToExpression);
-        }
+
     }
 
     public default void visit(MathOptimizationStatementSymbol node) {
