@@ -49,7 +49,8 @@ public class MathInformationRegister {
             secondDoubleDot = mathMatrixAccessOperatorSymbol.getMathMatrixAccessSymbols().get(1).isDoubleDot();
         }
 
-        if (firstDoubleDot)
+        //Check "doubleDots" !!!
+        if (secondDoubleDot)
             result = 1;
         else {
             result = getAmount(name, 0);
@@ -129,7 +130,7 @@ public class MathInformationRegister {
             firstDoubleDot = mathMatrixAccessOperatorSymbol.getMathMatrixAccessSymbols().get(0).isDoubleDot();
             secondDoubleDot = mathMatrixAccessOperatorSymbol.getMathMatrixAccessSymbols().get(1).isDoubleDot();
         }
-        if (secondDoubleDot)
+        if (firstDoubleDot)
             result = 1;
         else {
             result = getAmount(name, 1);

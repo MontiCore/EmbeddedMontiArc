@@ -136,15 +136,21 @@ public class MathOptimizer {
         MathExpressionSymbol realLeftExpressionSymbol = getCurrentAssignment(mathArithmeticExpressionSymbol.getLeftExpression().getRealMathExpressionSymbol(), precedingExpressions);
         MathExpressionSymbol realRightExpressionSymbol = getCurrentAssignment(mathArithmeticExpressionSymbol.getRightExpression().getRealMathExpressionSymbol(), precedingExpressions);
 
+        //Debug: A = m x n, B = n x p. Then: Op(A * B) = m * n * p
+
         //orig:
-        /*
         long n = MathDimensionCalculator.getMatrixColumns(realLeftExpressionSymbol, precedingExpressions);
         long m = MathDimensionCalculator.getMatrixRows(realLeftExpressionSymbol, precedingExpressions);
-        long p = MathDimensionCalculator.getMatrixRows(realRightExpressionSymbol, precedingExpressions);
-        */
-        long n = MathDimensionCalculator.getMatrixRows(realLeftExpressionSymbol, precedingExpressions);
-        long m = MathDimensionCalculator.getMatrixColumns(realLeftExpressionSymbol, precedingExpressions);
+        //long p = MathDimensionCalculator.getMatrixRows(realRightExpressionSymbol, precedingExpressions);
+
+        //Should be this:
         long p = MathDimensionCalculator.getMatrixColumns(realRightExpressionSymbol, precedingExpressions);
+
+        //Debug
+        long leftCol = MathDimensionCalculator.getMatrixColumns(realLeftExpressionSymbol, precedingExpressions);
+        long leftRow = MathDimensionCalculator.getMatrixRows(realLeftExpressionSymbol, precedingExpressions);
+        long rightCol = MathDimensionCalculator.getMatrixColumns(realRightExpressionSymbol, precedingExpressions);
+        long rightRow = MathDimensionCalculator.getMatrixRows(realRightExpressionSymbol, precedingExpressions);
 
         long previousOperations = 0;
         //Log.info(realLeftExpressionSymbol.getTextualRepresentation()+" "+MathDimensionCalculator.getMatrixRows(realLeftExpressionSymbol, precedingExpressions) +" "+
@@ -177,7 +183,7 @@ public class MathOptimizer {
             MathExpressionSymbol realLeftExpressionSymbol = getCurrentAssignment(mathArithmeticExpressionSymbol.getLeftExpression().getRealMathExpressionSymbol(), precedingExpressions);
             MathExpressionSymbol realRightExpressionSymbol = getCurrentAssignment(mathArithmeticExpressionSymbol.getRightExpression().getRealMathExpressionSymbol(), precedingExpressions);
 
-            return MathDimensionCalculator.getMatrixColumns(realLeftExpressionSymbol, precedingExpressions) * MathDimensionCalculator.getMatrixRows(realLeftExpressionSymbol, precedingExpressions) * MathDimensionCalculator.getMatrixRows(realRightExpressionSymbol, precedingExpressions);
+            return MathDimensionCalculator.getMatrixColumns(realLeftExpressionSymbol, precedingExpressions) * MathDimensionCalculator.getMatrixRows(realLeftExpressionSymbol, precedingExpressions) * MathDimensionCalculator.getMatrixColumns(realRightExpressionSymbol, precedingExpressions);
 
         } else if (mathArithmeticExpressionSymbol.getMathOperator().equals("+")) {
             MathExpressionSymbol realLeftExpressionSymbol = getCurrentAssignment(mathArithmeticExpressionSymbol.getLeftExpression().getRealMathExpressionSymbol(), precedingExpressions);

@@ -245,7 +245,8 @@ public class MathMatrixMultiplicationOrder implements MathOptimizationRule {
         MathExpressionSymbol newExpression = getMostEfficientExpression(newExps);
 
         Log.info(oldMathArithmeticExpressionSymbol.getTextualRepresentation(), "oldExpression inflated");
-        String debugHelpString = newExpression.getTextualRepresentation();
+        String debugHelpStringNew = newExpression.getTextualRepresentation();
+        String debugHelpStringOld = oldMathArithmeticExpressionSymbol.getTextualRepresentation();
         Log.info(newExpression.getTextualRepresentation(), "newExpression:");
         Log.info(newExpression.getTextualRepresentation(), "Term Rewritten:");
         long operationsStandard = MathOptimizer.getEstimatedOperations(oldMathArithmeticExpressionSymbol, precedingExpressions);
