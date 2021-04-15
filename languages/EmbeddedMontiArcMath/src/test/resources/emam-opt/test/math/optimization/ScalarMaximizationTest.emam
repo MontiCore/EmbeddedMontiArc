@@ -3,8 +3,10 @@ package test.math.optimization;
 
 component ScalarMaximizationTest{
     implementation Math{
-        Q z = maximize(Q x)
-            - x * x + 42;
+        maximize
+            Q x;
+        in
+            Q z = - x * x + 42;
         subject to
             x >= -10;
             x <= 10;
