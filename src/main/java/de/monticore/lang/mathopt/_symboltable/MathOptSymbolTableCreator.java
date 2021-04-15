@@ -127,9 +127,11 @@ public class MathOptSymbolTableCreator extends MathSymbolTableCreator implements
         //Optimization variables
         List<ASTOptimizationVariableDeclaration> optVarDecList = astMathOptimizationStatement.getOptimizationVariableList();
         List<MathValueSymbol> optVariables = new ArrayList<>();
-
         for (ASTOptimizationVariableDeclaration varDec : optVarDecList) {
             MathValueSymbol temp = (MathValueSymbol) varDec.getSymbolOpt().get();
+            if(varDec.getInitializationOpt().isPresent()) {
+                temp.setValue((MathExpressionSymbol) varDec.getInitializationOpt().get());
+            }
             MathNumberExpressionSymbol newDim = new MathNumberExpressionSymbol();
             if(temp.getType().getDimensions().isEmpty() && astMathOptimizationStatement.isPresentStepSize()) {
                 if(symbol.getStepSizeExpression() instanceof MathAssignmentExpressionSymbol) {

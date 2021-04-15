@@ -10,7 +10,7 @@ grammar MathOpt extends de.monticore.lang.Math
     OptimizationCompareOperator = operator:"==" | operator:"<=" | operator:">=";
 
     OptimizationVariableDeclaration =
-        type:AssignmentType?  Name;
+        type:AssignmentType?  Name (MathAssignmentOperator initialization:Expression)?;
 
     OptimizationSimpleCondition =
         left:Expression operator:OptimizationCompareOperator right:Expression ";";
