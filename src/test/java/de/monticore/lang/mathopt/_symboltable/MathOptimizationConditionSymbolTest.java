@@ -5,6 +5,7 @@ import de.monticore.lang.math._symboltable.expression.MathExpressionSymbol;
 import de.monticore.lang.math._symboltable.expression.MathForLoopExpressionSymbol;
 import de.monticore.lang.mathopt.OptimizationModelHelper;
 import org.junit.Before;
+import org.junit.Ignore;
 import org.junit.Test;
 
 import static org.junit.Assert.*;
@@ -13,6 +14,7 @@ import static org.junit.Assert.*;
  * Unit Tests for MathOptimizationConditionSymbol
  *
  */
+
 public class MathOptimizationConditionSymbolTest {
 
     // helper
@@ -81,9 +83,10 @@ public class MathOptimizationConditionSymbolTest {
 
     private void resolveBoundedExpressionToOptimizationVariableForOperator(MathExpressionSymbol bound, MathExpressionSymbol expr, String op) {
         MathOptimizationConditionSymbol symbol = new MathOptimizationConditionSymbol(bound, op, expr);
-        symbol.resolveBoundedExpressionToOptimizationVariable(helper.getMinimizationTestSymbol().getOptimizationVariable());
-        assertTrue(symbol.getBoundedExpression().getTextualRepresentation().contains(helper.getMinimizationTestSymbol().getOptimizationVariable().getName()));
+        symbol.resolveBoundedExpressionToOptimizationVariable(helper.getMinimizationTestSymbol().getOptimizationVariables());
+        assertTrue(symbol.getBoundedExpression().getTextualRepresentation().contains(helper.getMinimizationTestSymbol().getOptimizationVariables().get(0).getName()));
     }
+
 
     @Test
     public void testForLoopConditions() {

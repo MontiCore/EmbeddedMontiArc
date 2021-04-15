@@ -2,7 +2,9 @@
 package de.monticore.lang.mathopt._symboltable.visitor;
 
 import de.monticore.lang.math._symboltable.MathStatementsSymbol;
+import de.monticore.lang.math._symboltable.MathValue;
 import de.monticore.lang.math._symboltable.expression.MathExpressionSymbol;
+import de.monticore.lang.math._symboltable.expression.MathValueSymbol;
 import de.monticore.lang.math._symboltable.visitor.MathExpressionSymbolReplacementVisitor;
 import de.monticore.lang.mathopt._symboltable.MathOptimizationConditionSymbol;
 import de.monticore.lang.mathopt._symboltable.MathOptimizationStatementSymbol;
@@ -54,8 +56,11 @@ public class MathOptExpressionSymbolReplacementVisitor extends MathExpressionSym
     public void visit(MathOptimizationStatementSymbol node) {
         if (node.getOptimizationType() != null)
             node.setOptimizationType(node.getOptimizationType().toString());
-        if (node.getOptimizationVariable() != null)
-            node.setOptimizationVariable(get(node.getOptimizationVariable()));
+        ListIterator<MathValueSymbol> iteratorOptVar = node.getOptimizationVariables().listIterator();
+        while (iteratorOptVar.hasNext()){
+            MathValueSymbol subjectToExpression = iteratorOptVar.next();
+            iteratorOptVar.set(get(subjectToExpression));
+        }
         if (node.getObjectiveValue() != null)
             node.setObjectiveValue(get(node.getObjectiveValue()));
         if (node.getObjectiveExpression() != null)

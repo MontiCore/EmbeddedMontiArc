@@ -13,7 +13,7 @@ public class MathOptASTTest {
     @Test
     public void ASTOptimizationStatementTest() throws Exception {
         MathOptParser parser = new MathOptParser();
-        Optional<ASTOptimizationStatement> ast = parser.parse_StringOptimizationStatement("minimize(Q x) x; subject to x >= 0; end");
+        Optional<ASTOptimizationStatement> ast = parser.parse_StringOptimizationStatement("minimize Q x; in x; subject to x >= 0; end");
         assertTrue(ast.isPresent());
         assertFalse(parser.hasErrors());
         assertEquals(ASTOptimizationType.MINIMIZATION, ast.get().optimizationType);

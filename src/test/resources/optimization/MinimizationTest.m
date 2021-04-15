@@ -3,7 +3,9 @@
 package optimization;
 
 script MinimizationTest
-    minimize(Q x)
+    minimize
+        Q x;
+    in
         x^2;
     subject to
         x <= 1;
