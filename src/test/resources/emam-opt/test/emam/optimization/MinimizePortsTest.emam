@@ -7,10 +7,13 @@ component MinimizePortsTest{
           out Q y;
 
     implementation Math{
-        Q y1 = minimize(u)
-            (u*u) - 2 * u + 1;
+        minimize
+            Q v;
+        in
+            Q y1 = (v*v) - 2 * v + 1;
         subject to
-            u >= 0;
+            v >= 0;
         end
+        u=v;
     }
 }

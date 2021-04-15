@@ -19,8 +19,10 @@ component LPOptimizationTest{
         Q ^{m, n} c = [3, 2; 1, 5; 5, 4];
 
         // minimization problem
-        minimize(Q^{3, 2} x)
-            sum(c .* x);
+        minimize
+            Q^{3, 2} x;
+        in
+            Q y = sum(c .* x);
         subject to
             sum(x, 2) == A;
             sum(x, 1) == b;
