@@ -47,6 +47,7 @@ project such that they can be reused.
 
 
 ## Examples 
+Some examples of how to define the configurations for a certain goal can be found in the [Wiki](https://git.rwth-aachen.de/monticore/EmbeddedMontiArc/utilities/emadl-maven-plugin/-/wikis/Configuration-Eamples) page.
 
 
 ## License
