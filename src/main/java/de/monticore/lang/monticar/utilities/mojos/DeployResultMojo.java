@@ -14,8 +14,13 @@ import java.io.File;
 import java.io.IOException;
 import java.util.Arrays;
 
+/**
+ * Creates a JAR containing a training result and
+ * deploys it to the remote repository.
+ *
+ */
 @Mojo(name = "deploy-result")
-public class DeployResultMojo extends BaseMojo {
+public class DeployResultMojo extends TrainingConfigMojo {
 
   @Override
   public void execute() throws MojoExecutionException, MojoFailureException {
@@ -38,7 +43,7 @@ public class DeployResultMojo extends BaseMojo {
 
   }
 
-  private StorageInformation getStorageInformation(MavenProject mavenProject) {
+  private StorageInformation getStorageInformation(MavenProject mavenProject) throws MojoExecutionException {
     StorageInformation storageInformation = new StorageInformation();
     storageInformation.setGroupId(mavenProject.getGroupId());
     storageInformation.setArtifactId(mavenProject.getArtifactId() + "-trained-model");

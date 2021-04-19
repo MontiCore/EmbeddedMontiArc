@@ -15,6 +15,12 @@ import java.io.File;
 import java.io.IOException;
 import java.util.Arrays;
 
+/**
+ * Creates a JAR containing a training environment and
+ * deploys it to the remote repository. A training environment consists
+ * of EMADL components, training configurations and a dataset.
+ *
+ */
 @Mojo(name = "deploy-environment")
 public class DeployTrainingEnvironmentMojo extends BaseMojo {
 
@@ -44,7 +50,7 @@ public class DeployTrainingEnvironmentMojo extends BaseMojo {
     }
   }
 
-  private StorageInformation getStorageInformation(MavenProject mavenProject) {
+  private StorageInformation getStorageInformation(MavenProject mavenProject) throws MojoExecutionException {
     StorageInformation storageInformation = new StorageInformation();
     storageInformation.setGroupId(mavenProject.getGroupId());
     storageInformation.setArtifactId(mavenProject.getArtifactId() + "-training-environment");

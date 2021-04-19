@@ -12,11 +12,10 @@ import java.util.List;
 import static org.twdata.maven.mojoexecutor.MojoExecutor.*;
 
 /**
- * Runs CoCos test on all components in pathMain and pathTest
- * Generates c++ code for all components which have a stream test
+ * Generates C++ code and trains an EMADL component with neural network implementation.
  */
 @Mojo(name = "train")
-public class TrainingMojo extends BaseMojo {
+public class TrainingMojo extends TrainingConfigMojo {
 
   @Override
   public void execute() throws MojoExecutionException, MojoFailureException {
@@ -24,7 +23,7 @@ public class TrainingMojo extends BaseMojo {
         plugin(
             groupId("de.monticore.lang.monticar.utilities"),
             artifactId("maven-streamtest"),
-            version("0.0.19")
+            version("0.0.20")
         ),
         goal("streamtest-generator"),
         configuration(getConfigElements().toArray(new Element[0])),

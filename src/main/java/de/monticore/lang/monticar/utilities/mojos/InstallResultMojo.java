@@ -14,8 +14,13 @@ import java.io.File;
 import java.io.IOException;
 import java.util.Arrays;
 
+/**
+ * Creates a JAR containing a training result and
+ * installs it into the local repository.
+ *
+ */
 @Mojo(name = "install-result")
-public class InstallResultMojo extends BaseMojo {
+public class InstallResultMojo extends TrainingConfigMojo {
 
   @Override
   public void execute() throws MojoExecutionException, MojoFailureException {
@@ -37,7 +42,7 @@ public class InstallResultMojo extends BaseMojo {
 
   }
 
-  private StorageInformation getStorageInformation(MavenProject mavenProject) {
+  private StorageInformation getStorageInformation(MavenProject mavenProject) throws MojoExecutionException {
     StorageInformation storageInformation = new StorageInformation();
     storageInformation.setGroupId(mavenProject.getGroupId());
     storageInformation.setArtifactId(mavenProject.getArtifactId() + "-trained-model");

@@ -1,4 +1,4 @@
-package de.monticore.lang.monticar.utilities.artifactinstaller;
+package de.monticore.lang.monticar.utilities.artifactinmporter;
 
 import org.apache.maven.model.Dependency;
 import org.apache.maven.shared.invoker.*;

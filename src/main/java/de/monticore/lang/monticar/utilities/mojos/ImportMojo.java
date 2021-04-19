@@ -1,6 +1,6 @@
 package de.monticore.lang.monticar.utilities.mojos;
 
-import de.monticore.lang.monticar.utilities.artifactinstaller.ArtifactImporter;
+import de.monticore.lang.monticar.utilities.artifactinmporter.ArtifactImporter;
 import org.apache.commons.lang3.StringUtils;
 import org.apache.maven.model.Dependency;
 import org.apache.maven.plugin.MojoExecutionException;
@@ -14,6 +14,10 @@ import org.apache.maven.shared.invoker.MavenInvocationException;
 import java.io.File;
 import java.util.List;
 
+/**
+ *  Imports an EMADL project JAR to a local project.
+ *
+ */
 @Mojo(name = "import", defaultPhase = LifecyclePhase.INSTALL)
 public class ImportMojo extends BaseMojo {
 

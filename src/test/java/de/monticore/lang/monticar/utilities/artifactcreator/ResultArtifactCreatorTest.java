@@ -67,10 +67,18 @@ public class ResultArtifactCreatorTest {
     String resourcesEmadlUtilsProject = getClass().getClassLoader().getResource("emadl/utils").getFile();
 
     DeployResultMojo deployResultMojo = spy(DeployResultMojo.class);
-    when(deployResultMojo.getPathMain()).thenReturn(resourcesEmadlUtilsProject);
-    when(deployResultMojo.getPathTest()).thenReturn(resourcesEmadlUtilsProject);
+    TrainingConfiguration trainingConfiguration = getTrainingConfiguration(resourcesEmadlUtilsProject);
+    when(deployResultMojo.getTrainingConfig()).thenReturn(trainingConfiguration);
 
     return deployResultMojo.getTaggingResolver();
+  }
+
+  private TrainingConfiguration getTrainingConfiguration(String projectPath) {
+    TrainingConfiguration configuration = mock(TrainingConfiguration.class);
+    when(configuration.getPathToProject()).thenReturn(new File(projectPath));
+    when(configuration.getPathToTest()).thenReturn(new File(projectPath));
+
+    return configuration;
   }
 
 
