@@ -3,8 +3,9 @@
 Sentiment Analysis is the task of idenfifying opinions, sentiments and subjectivity from a sentence or text. In this project we use a BERT 
 model for the sentiment analysis task.
 <div align="center">
-    <img src="/resources/bert.pdf" width="500"/>
+    <img src="/resources/bert.png" width="500"/>
 </div>
+
 To *train the neural network* in this project, first the package with the pre-trained model must be downloaded locally. To do this, the command 
 ```bash
 mvn dependency:resolve -s settings.xml
