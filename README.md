@@ -38,11 +38,12 @@ To be able to get a quick responds from the CI, it is currently configured to us
         <classifier>pretrained</classifier>
     </dependency>
     ```
-    as a dependency.
+    as a dependency.  
+    
 2. *Modify LayerArtifactParameter Tag*  
     In the [tagging file](https://git.rwth-aachen.de/monticore/EmbeddedMontiArc/applications/bertsentimentanalyzer/-/blob/master/src/main/emadl/sentimentanalyzer/sentimentanalyzer.tag), change the artifact of the LayerArtifactParameter tag from `de.monticore.lang.monticar.pretrained:`**`simple-pretrained`**`:1` to `de.monticore.lang.monticar.pretrained:`**`bert-base`**`:1`.
 
-After that, the following commands can be rain to train the neural network:
+After that, the following commands can be run to train the neural network:
 ```bash
 mvn dependency:resolve -s settings.xml  
 mvn emadl:train -s settings.xml
