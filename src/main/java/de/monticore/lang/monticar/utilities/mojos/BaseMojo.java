@@ -1,11 +1,12 @@
 package de.monticore.lang.monticar.utilities.mojos;
 
 import de.monticore.lang.monticar.utilities.models.Constants;
-import de.monticore.lang.monticar.utilities.models.Repository;
 import de.monticore.lang.monticar.utilities.models.StorageInformation;
 import org.apache.maven.execution.MavenSession;
+import org.apache.maven.model.DeploymentRepository;
 import org.apache.maven.plugin.AbstractMojo;
 import org.apache.maven.plugin.BuildPluginManager;
+import org.apache.maven.plugin.MojoExecutionException;
 import org.apache.maven.plugins.annotations.Component;
 import org.apache.maven.plugins.annotations.Parameter;
 import org.apache.maven.project.MavenProject;
@@ -38,9 +39,6 @@ public abstract class BaseMojo extends AbstractMojo {
 
   @Parameter(defaultValue = "${repositorySystemSession}", readonly = true)
   private RepositorySystemSession repositorySystemSession;
-
-  @Parameter
-  private Repository repository;
 
   /**
    * Target directory where all generated components are stored and created JARs are temporarily
@@ -83,28 +81,20 @@ public abstract class BaseMojo extends AbstractMojo {
     return pathTmpOut;
   }
 
-  public Repository getRepository() {
-    return repository;
+  public DeploymentRepository getRepository() {
+    return mavenProject.getDistributionManagement().getRepository();
   }
 
-  public RepositorySystem getRepositorySystem() {
-    return repositorySystem;
-  }
-
-  public RepositorySystemSession getRepositorySystemSession() {
-    return repositorySystemSession;
-  }
-
-  public RemoteRepository getRemoteRepository() {
+  private RemoteRepository getRemoteRepository() {
     if (remoteRepository != null) {
       return remoteRepository;
     }
 
-    remoteRepository = new RemoteRepository.Builder(repository.getId(), "default", repository.getUrl().getPath()).build();
+    remoteRepository = new RemoteRepository.Builder(getRepository().getId(), "default", getRepository().getUrl()).build();
     return remoteRepository;
   }
 
-  public int getNewestVersion(StorageInformation storageInformation) {
+  public int getNewestVersion(StorageInformation storageInformation) throws MojoExecutionException {
     if (storageInformation.getVersion() != null) {
       return storageInformation.getVersion();
     }
@@ -121,10 +111,10 @@ public abstract class BaseMojo extends AbstractMojo {
       newestVersion = rangeResult.getHighestVersion() != null ? Integer.parseInt(rangeResult.getHighestVersion().toString()) : Constants.INITIAL_VERSION - 1;
       return ++newestVersion;
     }
-    catch (VersionRangeResolutionException e) {
+    catch (VersionRangeResolutionException | NullPointerException e) {
       e.printStackTrace();
+      throw new MojoExecutionException("Version was not defined and could not be determined automatically.");
     }
 
-    return Constants.INITIAL_VERSION;
   }
 }

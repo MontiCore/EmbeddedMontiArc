@@ -49,7 +49,7 @@ public class DeployDatasetMojo extends BaseMojo {
       jarFile = DatasetArtifactCreator.createArtifact(this.datasetToStore, this.getPathTmpOut());
       getLog().info("FINISHED creating Jar for dataset");
 
-      ArtifactDeployer.deployArtifact(jarFile.getAbsolutePath(), this.datasetToStore, this.getRepository(), JarClassifierEnum.DATASET,
+      ArtifactDeployer.deployArtifact(jarFile.getAbsolutePath(), this.datasetToStore, getRepository(), JarClassifierEnum.DATASET,
           getMavenSession().getRequest().getUserSettingsFile());
     }
     catch (IOException | MavenInvocationException e) {

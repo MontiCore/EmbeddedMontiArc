@@ -42,7 +42,7 @@ public class InstallResultMojo extends TrainingConfigMojo {
 
   }
 
-  private StorageInformation getStorageInformation(MavenProject mavenProject) {
+  private StorageInformation getStorageInformation(MavenProject mavenProject) throws MojoExecutionException {
     StorageInformation storageInformation = new StorageInformation();
     storageInformation.setGroupId(mavenProject.getGroupId());
     storageInformation.setArtifactId(mavenProject.getArtifactId() + "-trained-model");

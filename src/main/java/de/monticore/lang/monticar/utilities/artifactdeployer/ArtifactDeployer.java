@@ -1,9 +1,9 @@
 package de.monticore.lang.monticar.utilities.artifactdeployer;
 
-import de.monticore.lang.monticar.utilities.models.Repository;
 import de.monticore.lang.monticar.utilities.models.StorageInformation;
 import de.monticore.lang.monticar.utilities.utils.JarClassifierEnum;
 import de.monticore.lang.monticar.utilities.utils.JarDeployer;
+import org.apache.maven.model.DeploymentRepository;
 import org.apache.maven.shared.invoker.MavenInvocationException;
 
 import java.io.File;
@@ -20,7 +20,7 @@ public class ArtifactDeployer {
   private static final String CLASSIFIER = "classifier";
   private static final String PACKAGING = "packaging";
 
-  public static void deployArtifact(String jarFile, StorageInformation storageInformation, Repository repository, JarClassifierEnum classifier, File settingsFile)
+  public static void deployArtifact(String jarFile, StorageInformation storageInformation, DeploymentRepository repository, JarClassifierEnum classifier, File settingsFile)
       throws MavenInvocationException {
     Properties properties = getDeployProperties(jarFile, storageInformation, repository, classifier);
     JarDeployer.deployArtifact(properties, settingsFile);
@@ -29,14 +29,13 @@ public class ArtifactDeployer {
   public static void installArtifact(String jarFile, StorageInformation storageInformation, JarClassifierEnum classifier)
       throws MavenInvocationException {
     Properties properties = getInstallProperties(jarFile, storageInformation, classifier);
-
     JarDeployer.installArtifact(properties);
   }
 
-  private static Properties getDeployProperties(String jarFile, StorageInformation storageInformation, Repository repository, JarClassifierEnum classifier) {
+  private static Properties getDeployProperties(String jarFile, StorageInformation storageInformation, DeploymentRepository repository, JarClassifierEnum classifier) {
     Properties properties = new Properties();
     properties.setProperty(REPOSITORY_ID, repository.getId());
-    properties.setProperty(URL, repository.getUrl().toString());
+    properties.setProperty(URL, repository.getUrl());
     return getProperties(jarFile, storageInformation, classifier, properties);
   }
 
