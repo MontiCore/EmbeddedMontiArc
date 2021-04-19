@@ -33,6 +33,8 @@ pages:
   artifacts:
     paths:
       - public
+  only:
+    - master
   except:
     changes:
       - .gitignore
