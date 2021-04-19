@@ -7,7 +7,7 @@ configuration Network{
 	 shuffle_data:true
      load_checkpoint:false
 	 loss:cross_entropy
-     optimizer:adamw{
+     optimizer:adam{
          learning_rate:0.00003
 		 weight_decay:0.01
      }
