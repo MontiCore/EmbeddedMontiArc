@@ -77,13 +77,13 @@ public class StreamTestMojoBase extends AbstractMojo {
         this.pathTmpOut = pathTmpOut;
     }
     public String getPathTmpOutCPP(){
-        return Paths.get(this.pathTmpOut, "cpp/").toString();
+        return Paths.get(this.pathTmpOut, "").toString();
     }
     public String getPathTmpOutEMAM(){
-        return Paths.get(this.pathTmpOut, "emam/").toString();
+        return Paths.get(this.pathTmpOut, "/").toString();
     }
     public String getPathTmpOutEMADL(){
-        return Paths.get(this.pathTmpOut,"emadl/").toString();
+        return Paths.get(this.pathTmpOut,"/").toString();
     }
     public String getPathTmpOutBUILD() {
         return Paths.get(this.getPathTmpOut(), "build/").toString();
