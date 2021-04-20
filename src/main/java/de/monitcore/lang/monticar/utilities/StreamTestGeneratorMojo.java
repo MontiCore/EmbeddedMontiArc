@@ -242,7 +242,7 @@ public class StreamTestGeneratorMojo extends StreamTestMojoBase {
             generatorCPP.setModelsDirPath(Paths.get(this.getPathTmpOutEMAM()));
 
             generatorCPP.useArmadilloBackend();
-            generatorCPP.setGenerationTargetPath(Paths.get(this.getPathTmpOutCPP()).toString());
+            generatorCPP.setGenerationTargetPath(Paths.get(this.getPathTmpOutCPP(),cs.getFullName()).toString());
             generatorCPP.setGenerateMainClass(true);
             generatorCPP.setGenerateTests(true);
             generatorCPP.setCheckModelDir(true);
