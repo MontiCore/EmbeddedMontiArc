@@ -86,7 +86,7 @@ public class StreamTestMojoBase extends AbstractMojo {
         return Paths.get(this.pathTmpOut,"/").toString();
     }
     public String getPathTmpOutBUILD() {
-        return Paths.get(this.getPathTmpOut(), "build/").toString();
+        return Paths.get(this.getPathTmpOut(), "/").toString();
     }
 
     @Parameter(name = "wrapperTestExtension", defaultValue = "_TestWrapper")
@@ -445,6 +445,8 @@ public class StreamTestMojoBase extends AbstractMojo {
                 if(output) {
                     logWarn("   -> No streamtest found for " + componentName);
                 }
+                cs = getScope().resolve(componentName, EMAComponentSymbol.KIND);
+                toTestComponents.add(cs.get());
             }else{
                 if(output){
                     logInfo("   -> Test with component: "+cs.get().getFullName()+" :");
