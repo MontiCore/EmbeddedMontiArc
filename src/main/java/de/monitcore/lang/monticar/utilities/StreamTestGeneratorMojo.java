@@ -270,7 +270,7 @@ public class StreamTestGeneratorMojo extends StreamTestMojoBase {
 
 
             if (this.trainingNeeded){
-                String outputPath = getPathTmpOut();
+                String outputPath = Paths.get(this.getPathTmpOutCPP(),cs.getFullName()).toString();
                 if (outputPath != null){
                     emadlGenerator.setGenerationTargetPath(outputPath);
                 }
