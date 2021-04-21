@@ -199,8 +199,13 @@ public class AllPredefinedLayers {
                 LoadNetwork.create(),
                 DotProductSelfAttention.create(),
                 LargeMemory.create(),
+<<<<<<< HEAD
                 EpisodicMemory.create());
 
+=======
+                EpisodicMemory.create(),
+                ThreeDConvolution.create());
+>>>>>>> Renames 3DConvolution to ThreeDConvolution
     }
 
     public static List<UnrollDeclarationSymbol> createUnrollList(){
