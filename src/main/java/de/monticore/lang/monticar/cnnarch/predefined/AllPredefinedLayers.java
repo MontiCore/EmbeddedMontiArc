@@ -67,7 +67,11 @@ public class AllPredefinedLayers {
 =======
     public static final String ThreeDConvolution_Name = "3DConvolution";
     public static final String THREED_CONVOLUTION_Name = "3DConvolution";
+<<<<<<< HEAD
 >>>>>>> Renames 3DConvolution to ThreeDConvolution
+=======
+    public static final String CONVOLUTION3D_Name = "3DConvolution";
+>>>>>>> Renames ThreeDConvolution to Convolution3D
 
     //replay layers
     public static final String LARGE_MEMORY_NAME = "LargeMemory";
