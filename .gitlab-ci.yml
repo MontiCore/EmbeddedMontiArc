@@ -6,5 +6,5 @@ TrainSentimentAnalyzer:
   stage: linux
   image: registry.git.rwth-aachen.de/monticore/embeddedmontiarc/generators/emadl2cpp/dockerimages/mxnet150:v0.0.5
   script:
-    - mvn dependency:resolve -s settings.xml
-    - mvn emadl:train -s settings.xml 
+    - mvn dependency:resolve -B -s settings.xml
+    - mvn emadl:train -B -s settings.xml 
