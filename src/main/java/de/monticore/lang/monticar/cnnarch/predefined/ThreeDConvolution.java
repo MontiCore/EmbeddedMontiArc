@@ -14,10 +14,10 @@ import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.List;
 
-public class 3DConvolution extends PredefinedLayerDeclaration {
+public class ThreeDConvolution extends PredefinedLayerDeclaration {
 
-    private 3DConvolution() {
-        super(AllPredefinedLayers.ThreeDCONVOLUTION_NAME);
+    private ThreeDConvolution() {
+        super(AllPredefinedLayers.THREED_CONVOLUTION_NAME);
     }
 
     @Override
@@ -34,8 +34,8 @@ public class 3DConvolution extends PredefinedLayerDeclaration {
         errorIfInputSmallerThanKernel(inputTypes, layer);
     }
 
-    public static 3DConvolution create(){
-        3DConvolution declaration = new 3DConvolution();
+    public static ThreeDConvolution create(){
+        ThreeDConvolution declaration = new ThreeDConvolution();
         List<ParameterSymbol> parameters = new ArrayList<>(Arrays.asList(
                 new ParameterSymbol.Builder()
                         .name(AllPredefinedLayers.KERNEL_NAME)

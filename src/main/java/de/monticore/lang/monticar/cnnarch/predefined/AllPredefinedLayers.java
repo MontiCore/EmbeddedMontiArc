@@ -57,7 +57,7 @@ public class AllPredefinedLayers {
     public static final String RESHAPE_NAME = "Reshape";
     public static final String DOT_PRODUCT_SELF_ATTENTION_NAME = "DotProductSelfAttention";
     public static final String LOAD_NETWORK_NAME = "LoadNetwork";
-    public static final String ThreeDConvolution_Name = "3DConvolution";
+    public static final String THREED_CONVOLUTION_Name = "3DConvolution";
 
     //replay layers
     public static final String LARGE_MEMORY_NAME = "LargeMemory";
@@ -194,7 +194,8 @@ public class AllPredefinedLayers {
                 LoadNetwork.create(),
                 DotProductSelfAttention.create(),
                 LargeMemory.create(),
-                EpisodicMemory.create());
+                EpisodicMemory.create(),
+                ThreeDConvolution.create());
     }
 
     public static List<UnrollDeclarationSymbol> createUnrollList(){
