@@ -64,6 +64,7 @@ public class AllPredefinedLayers {
     public static final String UP_CONVOLUTION3D_NAME = "UpConvolution3D";
     public static final String RESHAPE3D_NAME = "Reshape3D";
 
+
     //replay layers
     public static final String LARGE_MEMORY_NAME = "LargeMemory";
     public static final String EPISODIC_MEMORY_NAME = "EpisodicMemory";
