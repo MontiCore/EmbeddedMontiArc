@@ -23,7 +23,7 @@
                 <configuration>
                     <training>
                         <backend>GLUON</backend>
-                        <modelToTrain>classifier.Network</modelToTrain>
+                        <modelToTrain>calculator.Connector</modelToTrain>
                         <pathToProject>src/main/emadl</pathToProject>
                         <pathToTest>src/main/emadl</pathToTest>
                     </training>
