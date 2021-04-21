@@ -60,7 +60,7 @@ public class PretrainedArtifactCreatorTest {
     StorageInformation storageInformation = new StorageInformation();
     storageInformation.setArtifactId("artifactId");
     storageInformation.setGroupId("groupId");
-    storageInformation.setVersion(1);
+    storageInformation.setVersion("1");
     storageInformation.setPath(pretrainedPath);
 
     File jar = new File("");

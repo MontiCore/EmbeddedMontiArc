@@ -13,7 +13,7 @@ public class ArtifactCreatorTest {
 
   private final String groupId = "com.awesome.company";
   private final String artifactId = "awesome-product";
-  private final int version = 2;
+  private final String version = "2";
 
   @Test
   public void testCreateManifestWithoutAdditionalAttributes() {
