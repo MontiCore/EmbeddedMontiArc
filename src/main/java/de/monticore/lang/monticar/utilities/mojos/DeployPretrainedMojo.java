@@ -42,7 +42,7 @@ public class DeployPretrainedMojo extends BaseMojo {
   @Override
   public void execute() throws MojoExecutionException, MojoFailureException {
     this.mkTmpDir();
-    int newestVersion = this.getNewestVersion(pretrainedModelToStore);
+    String newestVersion = this.getNewestVersion(pretrainedModelToStore);
     pretrainedModelToStore.setVersion(newestVersion);
 
     File jarFile;

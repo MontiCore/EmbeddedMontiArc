@@ -42,7 +42,7 @@ public class DeployProjectMojo extends BaseMojo {
   @Override
   public void execute() throws MojoExecutionException, MojoFailureException {
     this.mkTmpDir();
-    int newestVersion = this.getNewestVersion(projectToStore);
+    String newestVersion = this.getNewestVersion(projectToStore);
     projectToStore.setVersion(newestVersion);
 
     File jarFile;

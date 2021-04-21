@@ -40,7 +40,7 @@ public class InstallDatasetMojo extends BaseMojo {
 
   public void execute() throws MojoExecutionException, MojoFailureException {
     this.mkTmpDir();
-    int newestVersion = this.getNewestVersion(datasetToStore);
+    String newestVersion = this.getNewestVersion(datasetToStore);
     datasetToStore.setVersion(newestVersion);
 
     File jarFile;

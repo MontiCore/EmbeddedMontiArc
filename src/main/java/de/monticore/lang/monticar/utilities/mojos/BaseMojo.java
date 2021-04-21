@@ -94,7 +94,7 @@ public abstract class BaseMojo extends AbstractMojo {
     return remoteRepository;
   }
 
-  public int getNewestVersion(StorageInformation storageInformation) throws MojoExecutionException {
+  public String getNewestVersion(StorageInformation storageInformation) throws MojoExecutionException {
     if (storageInformation.getVersion() != null) {
       return storageInformation.getVersion();
     }
@@ -109,7 +109,7 @@ public abstract class BaseMojo extends AbstractMojo {
     try {
       VersionRangeResult rangeResult = repositorySystem.resolveVersionRange(repositorySystemSession, rangeRequest);
       newestVersion = rangeResult.getHighestVersion() != null ? Integer.parseInt(rangeResult.getHighestVersion().toString()) : Constants.INITIAL_VERSION - 1;
-      return ++newestVersion;
+      return String.valueOf(++newestVersion);
     }
     catch (VersionRangeResolutionException | NullPointerException e) {
       e.printStackTrace();
