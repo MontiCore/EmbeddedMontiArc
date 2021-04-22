@@ -60,7 +60,7 @@ public class DatasetArtifactCreatorTest {
     StorageInformation storageInformation = new StorageInformation();
     storageInformation.setArtifactId("artifactId");
     storageInformation.setGroupId("groupId");
-    storageInformation.setVersion(1);
+    storageInformation.setVersion("1");
     storageInformation.setPath(
         new File(getClass().getClassLoader().getResource("dataset/episodicMemorySimple").getFile())
     );

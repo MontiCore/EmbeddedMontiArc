@@ -14,17 +14,17 @@ abstract class ArtifactCreator {
   private static final Attributes.Name ARTIFACT_ID = new Attributes.Name("Artifact-ID");
   private static final Attributes.Name VERSION = new Attributes.Name("Version");
 
-  public static Manifest createManifest(String groupId, String artifactId, int version) {
+  public static Manifest createManifest(String groupId, String artifactId, String version) {
     return createManifest(groupId, artifactId, version, new Attributes());
   }
 
-  public static Manifest createManifest(String groupId, String artifactId, int version, Attributes additionalAttributes) {
+  public static Manifest createManifest(String groupId, String artifactId, String version, Attributes additionalAttributes) {
     Manifest manifest = new Manifest();
     Attributes attributes = manifest.getMainAttributes();
     attributes.put(Attributes.Name.MANIFEST_VERSION, "1.0.0");
     attributes.put(GROUP_ID, groupId);
     attributes.put(ARTIFACT_ID, artifactId);
-    attributes.put(VERSION, String.valueOf(version));
+    attributes.put(VERSION, version);
     attributes.putAll(additionalAttributes);
 
     return manifest;

@@ -62,7 +62,7 @@ public class ModelArtifactCreatorTest {
     StorageInformation storageInformation = new StorageInformation();
     storageInformation.setArtifactId("artifactId");
     storageInformation.setGroupId("groupId");
-    storageInformation.setVersion(1);
+    storageInformation.setVersion("1");
     storageInformation.setPath(modelPath);
 
     spy(ArtifactCreator.class);

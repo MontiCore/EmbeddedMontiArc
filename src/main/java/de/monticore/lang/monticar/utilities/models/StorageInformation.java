@@ -8,7 +8,7 @@ public class StorageInformation {
 
   private String artifactId;
 
-  private Integer version;
+  private String version;
 
   private File path;
 
@@ -26,11 +26,11 @@ public class StorageInformation {
     return path;
   }
 
-  public Integer getVersion() {
+  public String getVersion() {
     return version;
   }
 
-  public void setVersion(Integer version) {
+  public void setVersion(String version) {
     this.version = version;
   }
 

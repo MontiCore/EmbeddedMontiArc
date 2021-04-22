@@ -43,7 +43,7 @@ public class ResultArtifactCreator extends ArtifactCreator {
   private static List<FileLocation> getResultFiles(String path, String fileName, String componentName) throws MojoExecutionException {
     List<FileLocation> fileLocations = new LinkedList<>();
 
-    File directory = new File(path);
+    File directory = new File(path + "/cpp/" + componentName + "/");
     List<File> files = Arrays.asList(directory.listFiles(getFileNameFilter(fileName)));
     if (files.stream().noneMatch(file -> file.getName().equals(String.format("%s.cpp", fileName))) &&
         files.stream().noneMatch(file -> file.getName().equals(String.format("%s.h", fileName)))) {
