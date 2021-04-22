@@ -62,11 +62,6 @@
                     <releases><enabled /></releases>
                     <snapshots><enabled /></snapshots>
                 </repository>
-                <repository>
-                    <id>emadl-repo</id>
-                    <name>Local Test Repository for ML-Process Artifacts</name>
-                    <url>file://${user.home}/.m2/test-repository/</url>
-                </repository> 
             </repositories>
             <pluginRepositories>
                 <pluginRepository>
