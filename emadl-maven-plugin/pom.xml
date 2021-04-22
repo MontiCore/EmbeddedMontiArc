@@ -23,6 +23,7 @@
                 <configuration>
                     <training>
                         <backend>GLUON</backend>
+                        <pathToPython>/usr/bin/python3</pathToPython>
                         <modelToTrain>calculator.Connector</modelToTrain>
                         <pathToProject>src/main/emadl</pathToProject>
                         <pathToTest>src/main/emadl</pathToTest>
