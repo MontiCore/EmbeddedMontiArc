@@ -1,4 +1,3 @@
-
 <?xml version="1.0" encoding="UTF-8"?>
 <project xmlns="http://maven.apache.org/POM/4.0.0"
          xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
@@ -28,13 +27,26 @@
                         <groupId>de.monticore.lang.monticar.pretrained</groupId>
                         <version>1</version>
                     </pretrainedModelToStore>
-                    <repository>
-                        <id>gitlab-maven</id>
-                        <url>https://git.rwth-aachen.de/api/v4/projects/55417/packages/maven</url>
-                    </repository>
                 </configuration>
            </plugin>
         </plugins>
     </build>
+
+    <repositories>
+        <repository>
+            <id>gitlab-maven</id>
+            <url>https://git.rwth-aachen.de/api/v4/projects/55417/packages/maven</url>
+        </repository>
+    </repositories>
+    <distributionManagement>
+        <repository>
+            <id>gitlab-maven</id>
+            <url>https://git.rwth-aachen.de/api/v4/projects/55417/packages/maven</url>
+        </repository>
+        <snapshotRepository>
+            <id>gitlab-maven</id>
+            <url>https://git.rwth-aachen.de/api/v4/projects/55417/packages/maven</url>
+        </snapshotRepository>
+    </distributionManagement>
 
 </project>
