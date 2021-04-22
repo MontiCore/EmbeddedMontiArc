@@ -24,9 +24,25 @@ import java.util.Arrays;
 @Mojo(name = "deploy-environment")
 public class DeployTrainingEnvironmentMojo extends BaseMojo {
 
+  /**
+   * Parameter to define the location of the dataset to store
+   * <br>
+   * The parameter needs the following sub-parameter: <br>
+   * <ul>
+   *   <li><b>path</b>: location of the files to be packaged and stored</li>
+   * </ul>
+   */
   @Parameter
   private StorageInformation datasetToStore;
 
+  /**
+   * Parameter to define the location of the EMADL components and training configurations to store
+   * <br>
+   * The parameter needs the following sub-parameter: <br>
+   * <ul>
+   *   <li><b>path</b>: location of the files to be packaged and stored</li>
+   * </ul>
+   */
   @Parameter
   private StorageInformation projectToStore;
 
