@@ -55,11 +55,10 @@ TestEMADLMavenPlugin:
   stage: linux
   image: registry.git.rwth-aachen.de/monticore/embeddedmontiarc/applications/mnistcalculator/mxnet:v0.0.5
   artifacts:
-    paths:
-      - /
     when: always
   script:
   - cd emadl-maven-plugin
   - mvn emadl:train -s settings.xml
-
+  - pwd
+  - ls
 
