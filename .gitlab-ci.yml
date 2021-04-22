@@ -56,7 +56,7 @@ TestEMADLMavenPlugin:
   image: registry.git.rwth-aachen.de/monticore/embeddedmontiarc/applications/mnistcalculator/mxnet:v0.0.5
   artifacts:
     paths:
-      emadl-maven-plugin/target/
+      - emadl-maven-plugin/target/
     when: always
   script:
   - cd emadl-maven-plugin
