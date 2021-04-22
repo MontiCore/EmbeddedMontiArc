@@ -1,9 +1,9 @@
 /* (c) https://github.com/MontiCore/monticore */
 package calculator;
 
-component Network<Z(2:oo) classes = 10>{
+component Network{
     ports in Z(0:255)^{1, 28, 28} data,
-         out Q(0:1)^{classes} softmax;
+         out Q(0:1)^{10} softmax;
 
     implementation CNN {
         def conv(channels, kernel=1, stride=1){
@@ -18,7 +18,7 @@ component Network<Z(2:oo) classes = 10>{
         FullyConnected(units=500) ->
         Relu() ->
         Dropout() ->
-        FullyConnected(units=classes) ->
+        FullyConnected(units=10) ->
         Softmax() ->
         softmax;
     }
