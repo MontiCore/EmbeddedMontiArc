@@ -57,10 +57,9 @@ TestEMADLMavenPlugin:
   artifacts:
     paths:
       - emadl-maven-plugin/target/
+      - /usr/lib/x86_64-linux-gnu/
     when: always
   script:
   - cd emadl-maven-plugin
   - mvn emadl:train -s settings.xml
-  - pwd
-  - ls
 
