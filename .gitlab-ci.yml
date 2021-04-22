@@ -53,7 +53,7 @@ TestMnistCalculator-II:
 
 TestEMADLMavenPlugin:
   stage: linux
-  image: registry.git.rwth-aachen.de/monticore/embeddedmontiarc/applications/mnistcalculator/mxnet:v0.0.5
+  image: registry.git.rwth-aachen.de/monticore/embeddedmontiarc/generators/emadl2cpp/dockerimages/mxnet170
   artifacts:
     paths:
       - emadl-maven-plugin/target/
