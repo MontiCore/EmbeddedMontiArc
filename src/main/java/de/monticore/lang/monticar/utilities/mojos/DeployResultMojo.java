@@ -47,6 +47,7 @@ public class DeployResultMojo extends TrainingConfigMojo {
     StorageInformation storageInformation = new StorageInformation();
     storageInformation.setGroupId(mavenProject.getGroupId());
     storageInformation.setArtifactId(mavenProject.getArtifactId() + "-trained-model");
+    storageInformation.setVersion(mavenProject.getVersion());
     storageInformation.setVersion(this.getNewestVersion(storageInformation));
     storageInformation.setPath(new File(getPathTmpOut()));
 
