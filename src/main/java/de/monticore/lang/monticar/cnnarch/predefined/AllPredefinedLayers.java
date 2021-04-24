@@ -61,6 +61,7 @@ public class AllPredefinedLayers {
     public static final String LOAD_NETWORK_NAME = "LoadNetwork";
     public static final String CUSTOM_LAYER = "CustomLayer";
     public static final String CONVOLUTION3D_Name = "3DConvolution";
+    public static final String UP_CONVOLUTION3D_Name = "3DConvolution";
 
 
     //replay layers
@@ -200,17 +201,9 @@ public class AllPredefinedLayers {
                 LoadNetwork.create(),
                 DotProductSelfAttention.create(),
                 LargeMemory.create(),
-<<<<<<< HEAD
-                EpisodicMemory.create());
-
-=======
                 EpisodicMemory.create(),
-<<<<<<< HEAD
-                ThreeDConvolution.create());
->>>>>>> Renames 3DConvolution to ThreeDConvolution
-=======
-                Convolution3D.create());
->>>>>>> Renames ThreeDConvolution to Convolution3D
+                Convolution3D.create()
+                UpConvolution3D.create());
     }
 
     public static List<UnrollDeclarationSymbol> createUnrollList(){
