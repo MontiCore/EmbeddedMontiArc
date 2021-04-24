@@ -66,6 +66,7 @@ public class AllPredefinedLayers {
     public static final String RESHAPE3D_NAME = "Reshape3D";
 =======
     public static final String CONVOLUTION3D_Name = "3DConvolution";
+    public static final String UP_CONVOLUTION3D_Name = "3DConvolution";
 
 >>>>>>> Renames ThreeDConvolution to Convolution3D
 
