@@ -202,7 +202,7 @@ public class AllPredefinedLayers {
                 DotProductSelfAttention.create(),
                 LargeMemory.create(),
                 EpisodicMemory.create(),
-                Convolution3D.create()
+                Convolution3D.create(),
                 UpConvolution3D.create());
     }
 
