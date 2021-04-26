@@ -3,6 +3,7 @@
 #include <stdint.h>
 #include <string>
 #include <exception>
+#include <vector>
 
 
 constexpr int BACKLOG = 10;
