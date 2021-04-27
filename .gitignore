@@ -25,5 +25,3 @@ buildNumber.properties
 .project
 .vscode/
 .settings/
-
-temp/
