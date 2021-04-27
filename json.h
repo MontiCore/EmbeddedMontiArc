@@ -38,6 +38,9 @@ struct JsonWriter {
 
     void write_key(const char* key);
     void write_value(const char* str);
+    void write_str(const std::string &str) {
+        write_value(str.c_str());
+    }
 
     void write_value(int32_t i);
     void write_value(int64_t l);

@@ -3,23 +3,15 @@
  */
 #include "json.h"
 
-//#include <cstdio>
 #include <math.h>
 #include <cctype>
 #include <limits>
 #include <sstream>
 #include "printf.h"
-//#include <float.h>
 
 
 char JsonWriter::LOCAL_BUFFER[JsonWriter::LOCAL_BUFFER_SIZE];
 
-JsonWriter::JsonWriter(DynamicBuffer &buffer) : buffer(buffer) {
-    offset = 0;
-    has_elem = false;
-    has_key = true;
-    buffer.reset();
-}
 
 
 void JsonWriter::start_object() {

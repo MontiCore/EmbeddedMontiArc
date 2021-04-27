@@ -1,5 +1,18 @@
 #include "buffer.h"
+#include <iostream>
 
+int get_socket_id(BinaryReader &br, int max_count) {
+    std::string ip = br.read_str();
+    if (ip.find("2::") != 0) {
+        std::cerr << "Unsupported IP: '"<< ip << "' (only supports 'N-to-N' IPs with '2::' prefix)" << std::endl;
+    }
+    int id = strtol(ip.c_str()+3, nullptr, 10)-1;
+    if (id >= max_count) {
+        std::cerr << "'N-to-N' IP '" << ip << "' outside of range [1:"<< (max_count) << "]. Ignoring packet." << std::endl;
+        return -1;
+    }
+    return id;
+}
 
 void DynamicBuffer::check_size(int size) {
     if (size >= buffer_size) {

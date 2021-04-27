@@ -5,6 +5,7 @@
 #include <exception>
 #include <vector>
 
+#include "buffer.h"
 
 constexpr int BACKLOG = 10;
 
@@ -14,8 +15,12 @@ void close_sock(int sock);
 
 class Socket {
     int socket;
+    int max_msg_size;
 public:
-    Socket(int socket) : socket(socket) {}
+    Socket(int socket) : socket(socket) {
+        get_max_msg_size();
+    }
+    void get_max_msg_size();
     void write_s(char *buffer, int count) const;
     void read_s(char *buffer, int count) const;
 };
@@ -27,92 +32,48 @@ public:
     uint16_t: packet payload length
     payload: (*length* bytes)
 */
-struct Packet {
-    int id;
-    int size; // Total size of packet
-    char *buffer;
-    int buffer_size;
 
-    Packet(char *buffer, int buffer_size) : buffer(buffer), buffer_size(buffer_size), id(-1), size(0) {}
-    Packet(char *buffer, int buffer_size, int id) : buffer(buffer), buffer_size(buffer_size), id(id), size(0) {}
-};
 
 struct PacketReader {
-    Packet packet;
-    char *pos;
-    
-    // Directly reads the packet from the socket
-    PacketReader(char *buffer, int buffer_size, const Socket &socket);
-    PacketReader(std::vector<char>& buffer, const Socket& socket) : PacketReader(buffer.data(), buffer.size(), socket) {}
+    int id;
+    int size; // Total size of packet
 
+    DynamicBuffer &buffer;
+    const Socket &socket;
 
-    // Skips reading/writing *count* bytes, returns the current read/write position for later use
-    char *skip_bytes(int count) {
-        auto t = pos;
-        pos += count;
-        return t;
+    PacketReader(DynamicBuffer &buffer, const Socket &socket) : buffer(buffer), id(-1), size(0), socket(socket) {}
+    void receive();
+    BinaryReader getReader() {
+        return {buffer.buffer+3, payload_size()};
     }
-    void go_to(char* pos) {
-        this->pos = pos;
+    const char* getPayload() {
+        buffer.buffer[size] = '\0';
+        return buffer.buffer + 3;
     }
     
-    uint64_t read_u64();
-    uint32_t read_u32();
-    uint16_t read_u16();
-    uint8_t read_u8();
-    double read_f64();
-    std::string read_str();
-
-
-    private:
-    void check_range(int bytes, const char* type);
-    int size() {
-        return (int) (pos - packet.buffer);
-    }
     int payload_size() {
-        return size() - 3;
+        return size - 3;
     }
 };
 
+
+
 struct PacketWriter {
-    Packet packet;
-    char *pos;
 
-    // Init the packet with 'id' constructor
-    PacketWriter(char *buffer, int buffer_size, int packet_id) : packet(buffer, buffer_size, packet_id), pos(buffer) {
-        write_u8(packet_id);
-        skip_bytes(2); // Write pos at the end
-    }
-    // Init the packet with 'id' constructor
-    PacketWriter(std::vector<char> &buffer, int packet_id) : packet(buffer.data(), buffer.size(), packet_id), pos(buffer.data()) {
-        write_u8(packet_id);
-        skip_bytes(2); // Write pos at the end
+    DynamicBuffer &buffer;
+    BinaryWriter bw;
+
+    PacketWriter(DynamicBuffer &buffer, int packet_id) : buffer(buffer), bw(buffer) {
+        buffer.reset();
+        bw.write_u8(packet_id);
+        bw.write_u16(0); // Write payload size at the end
     }
 
+    bool has_payload() {
+        return buffer.position() > 3;
+    }
     void send(const Socket &socket);
 
-    // Skips reading/writing *count* bytes, returns the current read/write position for later use
-    char *skip_bytes(int count) {
-        auto t = pos;
-        pos += count;
-        return t;
-    }
-    
-    void write_u64(uint64_t value);
-    void write_u32(uint32_t value);
-    void write_u16(uint16_t value);
-    void write_u8(uint8_t value);
-    void write_f64(double value);
-    void write_str(const std::string &str);
-
-private:
-    void check_range(int bytes, const char* type);
-    int size() {
-        return (int) (pos - packet.buffer);
-    }
-    int payload_size() {
-        return size() - 3;
-    }
 };
 
 

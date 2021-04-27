@@ -112,3 +112,4 @@ public:
     }
 };
 
+int get_socket_id(BinaryReader &br, int max_count);
