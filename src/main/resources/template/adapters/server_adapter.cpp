@@ -17,7 +17,7 @@ using namespace std;
 bool running = true;
 
 void signal_handler(int signal);
-
+int get_socket_id(PacketReader &input_packet, int max_count);
 
 
 
