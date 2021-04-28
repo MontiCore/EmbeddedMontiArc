@@ -20,7 +20,12 @@ import de.monticore.symboltable.*;
 import de.se_rwth.commons.Names;
 import de.se_rwth.commons.logging.Log;
 import jline.internal.Nullable;
+import org.apache.commons.lang3.SystemUtils;
 
+import java.io.BufferedReader;
+import java.io.File;
+import java.io.IOException;
+import java.io.InputStreamReader;
 import java.util.*;
 
 public class CNNArchSymbolTableCreator extends de.monticore.symboltable.CommonSymbolTableCreator
@@ -30,8 +35,8 @@ public class CNNArchSymbolTableCreator extends de.monticore.symboltable.CommonSy
 
     private MathSymbolTableCreator mathSTC;
     private ArchitectureSymbol architecture;
-    private HashMap<String, ArrayList<String>> customLayers;
-    private String customPythonFilesPath;
+    private String backend;
+    private String customFilesPath = "";
 
 
     public CNNArchSymbolTableCreator(final ResolvingConfiguration resolvingConfig,
@@ -42,11 +47,11 @@ public class CNNArchSymbolTableCreator extends de.monticore.symboltable.CommonSy
 
     public CNNArchSymbolTableCreator(final ResolvingConfiguration resolvingConfig,
                                      final MutableScope enclosingScope,
-                                     HashMap<String, ArrayList<String>> customLayers,
-                                     String customPythonFilesPath) {
+                                     String customFilesPath,
+                                     String backend) {
         super(resolvingConfig, enclosingScope);
-        setCustomLayers(customLayers);
-        setCustomPythonFilesPath(customPythonFilesPath);
+        setBackend(backend);
+        setCustomFilesPath(customFilesPath);
         initSuperSTC(resolvingConfig);
     }
 
@@ -58,11 +63,11 @@ public class CNNArchSymbolTableCreator extends de.monticore.symboltable.CommonSy
 
     public CNNArchSymbolTableCreator(final ResolvingConfiguration resolvingConfig,
                                      final Deque<MutableScope> scopeStack,
-                                     HashMap<String, ArrayList<String>> customLayers,
-                                     String customPythonFilesPath) {
+                                     String customFilesPath,
+                                     String backend) {
         super(resolvingConfig, scopeStack);
-        setCustomLayers(customLayers);
-        setCustomPythonFilesPath(customPythonFilesPath);
+        setBackend(backend);
+        setCustomFilesPath(customFilesPath);
         initSuperSTC(resolvingConfig);
     }
 
@@ -88,20 +93,18 @@ public class CNNArchSymbolTableCreator extends de.monticore.symboltable.CommonSy
         return getFirstCreatedScope();
     }
 
-    private void setCustomLayers(HashMap<String, ArrayList<String>> customLayers){
-        this.customLayers = customLayers;
+    private void setBackend(String backend){
+        this.backend = backend;
     }
 
-    public HashMap<String, ArrayList<String>> getCustomLayers(){
-        return this.customLayers;
+    public String getBackend(){ return this.backend; }
+
+    private void setCustomFilesPath(String customPythonFilesPath){
+        this.customFilesPath = customPythonFilesPath;
     }
 
-    private void setCustomPythonFilesPath(String customPythonFilesPath){
-        this.customPythonFilesPath = customPythonFilesPath;
-    }
-
-    public String getCustomPythonFilesPath(){
-        return this.customPythonFilesPath;
+    public String getCustomFilesPath(){
+        return this.customFilesPath;
     }
 
     private CNNArchVisitor realThis = this;
@@ -169,7 +172,10 @@ public class CNNArchSymbolTableCreator extends de.monticore.symboltable.CommonSy
 
         createPredefinedConstants();
         createPredefinedLayers();
-        createPythonCustomLayers();
+        if(!getCustomFilesPath().equals("")) {
+            createCustomPythonLayers();
+            createCustomCPPLayers();
+        }
     }
 
     public void endVisit(final ASTArchitecture node) {
@@ -206,66 +212,43 @@ public class CNNArchSymbolTableCreator extends de.monticore.symboltable.CommonSy
         }
     }
 
-    private void createPythonCustomLayers(){
-        for (HashMap.Entry<String, ArrayList<String>> entry : getCustomLayers().entrySet()) {
-            String key = entry.getKey();
-            ArrayList<String> value = entry.getValue();
+    private void createCustomPythonLayers() {
+        String[] pyFiles = null;
+        File customFilesPath = new File(getCustomFilesPath() + "python/" + getBackend() + "/custom_layers/");
+        if (customFilesPath.exists() && customFilesPath.isDirectory()) {
+            pyFiles = customFilesPath.list();
+        }
 
-            CustomLayerDeclaration declaration = new CustomLayerDeclaration(key, getCustomPythonFilesPath());
-            List<ParameterSymbol> parameters = new ArrayList<ParameterSymbol>();
-
-            if(!(value.isEmpty())){
-                for(int index = 0; index < value.size(); index += 2){
-                    switch (value.get(index+1)){
-                        case "int":
-                            parameters.add(new ParameterSymbol.Builder()
-                                    .name(value.get(index))
-                                    .constraints(Constraints.INTEGER)
-                                    .defaultValue(0)
-                                    .build());
-                            break;
-                        case "float":
-                        case "complex":
-                        case "long":
-                            parameters.add(new ParameterSymbol.Builder()
-                                    .name(value.get(index))
-                                    .constraints(Constraints.NUMBER)
-                                    .defaultValue(0)
-                                    .build());
-                            break;
-                        case "tuple":
-                            parameters.add(new ParameterSymbol.Builder()
-                                     .name(value.get(index))
-                                     .constraints(Constraints.INTEGER_TUPLE)
-                                     .defaultValue(Arrays.asList(1,1))
-                                     .build());
-                            break;
-                        case "boolean":
-                            parameters.add(new ParameterSymbol.Builder()
-                                    .name(value.get(index))
-                                    .constraints(Constraints.BOOLEAN)
-                                    .defaultValue(false)
-                                    .build());
-                            break;
-                        case "str":
-                            parameters.add(new ParameterSymbol.Builder()
-                                    .name(value.get(index))
-                                    .constraints(Constraints.STRING)
-                                    .defaultValue("")
-                                    .build());
-                            break;
-                        default:
-                            parameters.add(new ParameterSymbol.Builder()
-                                    .name(value.get(index))
-                                    .defaultValue("")
-                                    .build());
-                    }
-
+        if (pyFiles != null) {
+            for (int index = 0; index < pyFiles.length; index++) {
+                if (pyFiles[index].equals("__init__.py") || !(pyFiles[index].endsWith(".py"))) {
+                    continue;
                 }
-
+                String nameWithoutExtension = pyFiles[index].substring(0, pyFiles[index].length() - 3);
+                CustomPythonLayerDeclaration declaration = new CustomPythonLayerDeclaration(nameWithoutExtension, customFilesPath, "python");
+                declaration.setParameters(declaration.extractParametersFromFile());
+                addToScope(declaration);
             }
-            declaration.setParameters(parameters);
-            addToScope(declaration);
+        }
+    }
+
+    private void createCustomCPPLayers() {
+        String[] cppFiles = null;
+        File customFilesPath = new File(getCustomFilesPath() + "cpp/custom_layers/");
+        if (customFilesPath.exists() && customFilesPath.isDirectory()) {
+            cppFiles = customFilesPath.list();
+        }
+
+        if (cppFiles != null) {
+            for (int index = 0; index < cppFiles.length; index++) {
+                if (!(cppFiles[index].endsWith(".cpp"))) {
+                    continue;
+                }
+                String nameWithoutExtension = cppFiles[index].substring(0, cppFiles[index].length() - 4);
+                CustomCPPLayerDeclaration declaration = new CustomCPPLayerDeclaration(nameWithoutExtension, customFilesPath, "cpp");
+                declaration.setParameters(declaration.extractParametersFromFile());
+                addToScope(declaration);
+            }
         }
     }
 

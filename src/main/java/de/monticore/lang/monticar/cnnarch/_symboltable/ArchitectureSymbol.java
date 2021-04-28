@@ -196,6 +196,7 @@ public class ArchitectureSymbol extends CommonScopeSpanningSymbol {
             copy.getSpannedScope().getAsMutableScope().add(unrollDeclaration);
         }
 
+
         for (LayerDeclarationSymbol layerDeclaration : getLayerDeclarations()){
             if (!layerDeclaration.isPredefined()) {
                 copy.getSpannedScope().getAsMutableScope().add(layerDeclaration.deepCopy());
