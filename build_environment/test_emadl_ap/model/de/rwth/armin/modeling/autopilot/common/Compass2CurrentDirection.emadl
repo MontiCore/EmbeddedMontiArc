@@ -1,0 +1,13 @@
+package de.rwth.armin.modeling.autopilot.common;
+
+component Compass2CurrentDirection {
+  port
+    in  Q (-oo : 0.001 : oo)              compass,
+    out Q ^ 2  currentDirection;
+
+  implementation Math {
+    Q angle = compass * M_PI / 180.0; // Degrees to radians
+    currentDirection(1) = cos(angle);
+    currentDirection(2) = sin(angle);
+  }
+}

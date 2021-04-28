@@ -1,0 +1,32 @@
+package de.rwth.armin.modeling.autopilot.behavior;
+
+component BehaviorGeneration {
+    port
+        in  Q (-oo m : 0.01 m : oo m) ^ 2       currentPosition,
+        in  Q (-oo m : 0.01 m : oo m) ^ 2       currentDirection,
+        in  N (0 : 10)                          plannedTrajectoryLength,
+        in  Q (-oo m : 0.01 m : oo m) ^ 10      plannedTrajectoryX,
+        in  Q (-oo m : 0.01 m : oo m) ^ 10      plannedTrajectoryY,
+
+        out Q (-oo m : 0.01 m : oo m) ^ 2       desiredDirection,
+        out Q (-oo m : 0.01 m : oo m)           signedDistanceToTrajectory,
+        out Q (0.0 m/s : 0.01 m/s : 13.0 m/s)   desiredVelocity;
+
+    instance TrimPath                           trimPath;
+    instance CalculateMotionCommands            calcMotionCmds;
+
+    connect currentPosition           ->  trimPath.currentPosition;
+    connect plannedTrajectoryLength   ->  trimPath.plannedTrajectoryLength;
+    connect plannedTrajectoryX        ->  trimPath.plannedTrajectoryX;
+    connect plannedTrajectoryY        ->  trimPath.plannedTrajectoryY;
+
+    connect currentPosition                   ->  calcMotionCmds.currentPosition;
+    connect currentDirection                  ->  calcMotionCmds.currentDirection;
+    connect trimPath.trimmedTrajectoryLength  ->  calcMotionCmds.trimmedTrajectoryLength;
+    connect trimPath.trimmedTrajectoryX       ->  calcMotionCmds.trimmedTrajectoryX;
+    connect trimPath.trimmedTrajectoryY       ->  calcMotionCmds.trimmedTrajectoryY;
+
+    connect calcMotionCmds.desiredDirection             ->  desiredDirection;
+    connect calcMotionCmds.signedDistanceToTrajectory   ->  signedDistanceToTrajectory;
+    connect calcMotionCmds.desiredVelocity              ->  desiredVelocity;
+}

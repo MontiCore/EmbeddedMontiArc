@@ -1,0 +1,17 @@
+package de.rwth.armin.modeling.autopilot.motion;
+
+import de.rwth.armin.modeling.autopilot.common.SignedAngleBetween;
+
+component KeepDirection {
+  port
+    in Q ^ 2 currentDirection,
+    in Q ^ 2 desiredDirection,
+
+    out Q                               steeringAngle;
+
+  instance SignedAngleBetween           sab;
+
+  connect currentDirection     ->      sab.v1;
+  connect desiredDirection     ->      sab.v2;
+  connect sab.angle             ->      steeringAngle;
+}

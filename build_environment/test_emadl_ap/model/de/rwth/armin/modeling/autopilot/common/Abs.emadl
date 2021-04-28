@@ -1,0 +1,11 @@
+package de.rwth.armin.modeling.autopilot.common;
+
+component Abs {
+  port
+    in Q input_data,
+    out Q output_data;
+
+  implementation Math {
+    output_data = abs(input_data);
+  }
+}

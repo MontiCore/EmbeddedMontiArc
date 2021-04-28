@@ -1,0 +1,45 @@
+package de.rwth.armin.modeling.autopilot.motion;
+
+import de.rwth.armin.modeling.autopilot.common.*;
+
+component MotionPlanning {
+  port
+    in  Q ^ 2                                                  currentDirection,
+    in  Q ^ 2               desiredDirection,
+    in  Q                                                       signedDistanceToTrajectory,
+    in  Q (0.0 m/s : 0.01 m/s : oo m/s)                         currentVelocity,
+    in  Q (0.0 m/s : 0.01 m/s : 13.0 m/s)                       desiredVelocity,
+
+    out Q                                                       engine,
+    out Q                                                       steering,
+    out Q                                                       brakes;
+
+  instance KeepDirection                                        keepDirection;
+  instance SteeringAngleCorrection                              sac;
+  instance Sum                                                  sum1;
+  instance CalculateEngineAndBrakes                             engineAndBrakes;
+  instance EnsureBoundsForSteeringAngle                         boundsSteering;
+  instance EnsureBoundsForBrakes                                boundsBrakes;
+  instance EnsureBoundsForEngine                                boundsEngine;
+
+  connect currentDirection                     ->              keepDirection.currentDirection;
+  connect desiredDirection                     ->              keepDirection.desiredDirection;
+
+  connect keepDirection.steeringAngle           ->              sum1.t1;
+  connect signedDistanceToTrajectory            ->              sac.signedDistanceToTrajectory;
+  connect sac.steeringAngleCorrection           ->              sum1.t2;
+
+  // brakes and engine
+  connect currentVelocity                       ->              engineAndBrakes.currentVelocity;
+  connect desiredVelocity                       ->              engineAndBrakes.desiredVelocity;
+
+  // compose output_data
+  connect engineAndBrakes.engine                ->              boundsEngine.input_data;
+  connect boundsEngine.output_data                   ->              engine;
+
+  connect sum1.result                           ->              boundsSteering.input_data;
+  connect boundsSteering.output_data                 ->              steering;
+
+  connect engineAndBrakes.brakes                ->              boundsBrakes.input_data;
+  connect boundsBrakes.output_data                   ->              brakes;
+}

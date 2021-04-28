@@ -1,0 +1,5 @@
+MODEL_DIR=model
+MODEL_NAME=de.rwth.armin.modeling.autopilot.autopilot
+OUTPUT_NAME=TestEMAMAP
+DLL_DIR=D:\EmbededMontiArc\basic-simulator\install\autopilots
+BUILD_CONFIG=Release

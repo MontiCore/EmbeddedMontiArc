@@ -1,0 +1,30 @@
+package de.rwth.armin.modeling.autopilot.behavior;
+
+component Selector {
+    port
+        in  B                                   isDriveToFirstPosition,
+        in  Q (-oo m : 0.01 m : oo m) ^ 2       desiredDirection1,
+        in  Q (-oo m : 0.01 m : oo m)           signedDistanceToTrajectory1,
+        in  Q (0.0 m/s : 0.01 m/s : 13.0 m/s)   desiredVelocity1,
+        in  Q (-oo m : 0.01 m : oo m) ^ 2       desiredDirection2,
+        in  Q (-oo m : 0.01 m : oo m)           signedDistanceToTrajectory2,
+        in  Q (0.0 m/s : 0.01 m/s : 13.0 m/s)   desiredVelocity2,
+
+        out Q (-oo m : 0.01 m : oo m) ^ 2       desiredDirection,
+        out Q (-oo m : 0.01 m : oo m)           signedDistanceToTrajectory,
+        out Q (0.0 m/s : 0.01 m/s : 13.0 m/s)   desiredVelocity;
+
+    implementation Math {
+        if (isDriveToFirstPosition)
+            desiredDirection(1) = desiredDirection1(1);
+            desiredDirection(2) = desiredDirection1(2);
+            signedDistanceToTrajectory = signedDistanceToTrajectory1;
+            desiredVelocity = desiredVelocity1;
+        else
+            desiredDirection(1) = desiredDirection2(1);
+            desiredDirection(2) = desiredDirection2(2);
+            signedDistanceToTrajectory = signedDistanceToTrajectory2;
+            desiredVelocity = desiredVelocity2;
+        end
+    }
+}

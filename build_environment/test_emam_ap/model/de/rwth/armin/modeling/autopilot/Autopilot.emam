@@ -1,0 +1,61 @@
+package de.rwth.armin.modeling.autopilot;
+
+import de.rwth.armin.modeling.autopilot.common.*;
+import de.rwth.armin.modeling.autopilot.behavior.*;
+import de.rwth.armin.modeling.autopilot.motion.*;
+
+component Autopilot {
+  port
+    in  Q (0.0 m/s : 0.01 m/s : oo m/s)          true_velocity,
+    in  Q (-oo m : 0.01 m : oo m) ^ 2            true_position,
+    in  Q (-oo : 0.001 : oo)                     true_compass, // Deviation in degrees from the X axis / West (positive and negative), counter-clockwise
+
+    // planned trajectory (with look ahead 100-200m)
+    // represented by two arrays trajectory_x[] and trajectory_y[]
+    // which both have length trajectory_length
+    in  N (0 : 10)                              trajectory_length,
+    in  Q (-oo m : 0.01 m : oo m) ^ 10          trajectory_x,
+    in  Q (-oo m : 0.01 m : oo m) ^ 10          trajectory_y,
+
+    
+    in Q test1_socket_in [2],
+    out Q test1_socket_out [2],
+    in Z test2_socket_bc_in [2],
+    out Z test2_socket_bc_out,
+    
+    // output actuation commands
+
+    out Q (-0.5 : 0.001 : 1.0)  set_gas,
+    in  Q (-0.5 : 0.001 : 1.0)  gas, // Actuator Feedback
+
+    // current steering actuation in degrees (directly describes the desired wheel orientation)
+    // positive value: left turn
+    // negative value: right turn
+    out Q (-30.0 : 0.1 : 30.0)  set_steering,
+    in  Q (-30.0 : 0.1 : 30.0)  steering, // Actuator Feedback
+
+    out Q (0.0 : 0.001 : 1.0)   set_braking,
+    in  Q (0.0 : 0.001 : 1.0)   braking; // Actuator Feedback
+
+    instance Compass2CurrentDirection            c2cd;
+    instance BehaviorGeneration                  behaviorGeneration;
+    instance MotionPlanning                      motionPlanning;
+
+    connect true_compass  ->  c2cd.compass;
+
+    connect true_position           ->  behaviorGeneration.currentPosition;
+    connect trajectory_length       ->  behaviorGeneration.plannedTrajectoryLength;
+    connect trajectory_x            ->  behaviorGeneration.plannedTrajectoryX;
+    connect trajectory_y            ->  behaviorGeneration.plannedTrajectoryY;
+    connect c2cd.currentDirection   ->  behaviorGeneration.currentDirection;
+
+    connect true_velocity                                   ->      motionPlanning.currentVelocity;
+    connect c2cd.currentDirection                           ->      motionPlanning.currentDirection;
+    connect behaviorGeneration.desiredDirection             ->      motionPlanning.desiredDirection;
+    connect behaviorGeneration.signedDistanceToTrajectory   ->      motionPlanning.signedDistanceToTrajectory;
+    connect behaviorGeneration.desiredVelocity              ->      motionPlanning.desiredVelocity;
+
+    connect motionPlanning.engine   ->  set_gas;
+    connect motionPlanning.steering ->  set_steering;
+    connect motionPlanning.brakes   ->  set_braking;
+}
