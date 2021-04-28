@@ -8,7 +8,6 @@ import de.monticore.io.paths.ModelPath;
 import de.monticore.lang.embeddedmontiarc.embeddedmontiarc.ComponentScanner;
 import de.monticore.lang.embeddedmontiarc.embeddedmontiarc.StreamScanner;
 import de.monticore.lang.embeddedmontiarc.embeddedmontiarc._symboltable.cncModel.EMAComponentSymbol;
-import de.monticore.lang.embeddedmontiarc.embeddedmontiarc._symboltable.instanceStructure.EMAComponentInstanceSymbol;
 import de.monticore.lang.embeddedmontiarc.embeddedmontiarcmath._parser.EmbeddedMontiArcMathParser;
 import de.monticore.lang.embeddedmontiarc.embeddedmontiarcmath._symboltable.EmbeddedMontiArcMathLanguage;
 import de.monticore.lang.monticar.emadl._parser.EMADLParser;
@@ -33,6 +32,7 @@ import de.monticore.symboltable.GlobalScope;
 import de.monticore.symboltable.Scope;
 import de.se_rwth.commons.logging.Log;
 import org.apache.commons.io.FileUtils;
+import org.apache.commons.lang3.StringUtils;
 import org.apache.commons.lang3.SystemUtils;
 import org.apache.maven.plugin.AbstractMojo;
 import org.apache.maven.plugin.MojoExecutionException;
@@ -40,7 +40,6 @@ import org.apache.maven.plugin.MojoFailureException;
 import org.apache.maven.plugins.annotations.Parameter;
 
 import java.io.File;
-import java.io.IOException;
 import java.nio.file.Paths;
 import java.time.LocalDateTime;
 import java.time.format.DateTimeFormatter;
@@ -445,8 +444,11 @@ public class StreamTestMojoBase extends AbstractMojo {
                 if(output) {
                     logWarn("   -> No streamtest found for " + componentName);
                 }
-                cs = getScope().resolve(componentName, EMAComponentSymbol.KIND);
-                toTestComponents.add(cs.get());
+                if (StringUtils.equals(componentName, getRootModel())) {
+                    cs = getScope().resolve(componentName, EMAComponentSymbol.KIND);
+                    toTestComponents.add(cs.get());
+                }
+
             }else{
                 if(output){
                     logInfo("   -> Test with component: "+cs.get().getFullName()+" :");
