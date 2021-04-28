@@ -1,0 +1,13 @@
+IMAGE_NAME=dsa-ddc:latest 
+IMAGE_WORKING_DIRECTORY=/home/wd
+
+EXTERNALS_DIRECTORY=../externals
+IMAGE_EXTERNALS_DIRECTORY=/home/externals
+
+SSH_CONFIG=student@lablogin.se.rwth-aachen.de
+
+EMAM_TO_CPP_PROJECT=C:\Users\Jean\Desktop\EMAM2Cpp
+EMAM_TO_CPP_VERSION=0.4.5
+
+EMADL_TO_CPP_PROJECT=D:\EmbededMontiArc\EMADL2CPP
+EMADL_TO_CPP_VERSION=0.4.8
