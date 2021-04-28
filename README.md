@@ -97,3 +97,8 @@ The test of a component can be divided into 3 steps:
 
 1. **streamtest-middleare-generate** : generates cpp / roscpp / odv (and so on) code for the given emam models 
 1. **streamtest-middleare-build** : runs cmake and make for generated c++ code
+
+
+# Dependency Graph of this project
+
+![Dependency graph](dependency-graph.svg)
