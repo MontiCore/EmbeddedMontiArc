@@ -26,8 +26,8 @@ import java.util.*;
 public class EMADLLanguage extends EmbeddingModelingLanguage {
 
     public static final String FILE_ENDING = "emadl";
-    private HashMap<String, ArrayList<String>> customLayers = null;
-    private String customPythonFilesPath = "";
+    private String customFilesPath = "";
+    private String backend = "";
 
     public static final EmbeddedMontiArcDynamicLanguage HOST_LANGUAGE = new EmbeddedMontiArcDynamicLanguage();
     public static final CNNArchLanguage CNNARCH_LANGUAGE = new CNNArchLanguage();
@@ -40,29 +40,29 @@ public class EMADLLanguage extends EmbeddingModelingLanguage {
                 Arrays.asList(CNNARCH_LANGUAGE, MATH_LANGUAGE));
     }
 
-    public EMADLLanguage(HashMap<String, ArrayList<String>> customLayers, String customPythonFilesPath) {
+    public EMADLLanguage(String customFilesPath, String backend) {
         super("Embedded MontiArc Deep Learning Language",
                 FILE_ENDING,
                 HOST_LANGUAGE,
                 Arrays.asList(CNNARCH_LANGUAGE, MATH_LANGUAGE));
-        setCustomLayers(customLayers);
-        setCustomPythonFilesPath(customPythonFilesPath);
+        setBackend(backend);
+        setCustomFilesPath(customFilesPath);
     }
 
-    private void setCustomLayers(HashMap<String, ArrayList<String>> customLayers){
-        this.customLayers = customLayers;
+    private void setBackend(String backend){
+        this.backend = backend;
     }
 
-    public HashMap<String, ArrayList<String>> getCustomLayers(){
-        return this.customLayers;
+    public String getBackend(){
+        return this.backend;
     }
 
-    private void setCustomPythonFilesPath(String customPythonFilesPath){
-        this.customPythonFilesPath = customPythonFilesPath;
+    private void setCustomFilesPath(String customPythonFilesPath){
+        this.customFilesPath = customPythonFilesPath;
     }
 
-    public String getCustomPythonFilesPath(){
-        return this.customPythonFilesPath;
+    public String getCustomFilesPath(){
+        return this.customFilesPath;
     }
 
 
@@ -92,7 +92,7 @@ public class EMADLLanguage extends EmbeddingModelingLanguage {
     @Override
     public Optional<EMADLSymbolTableCreator> getSymbolTableCreator(ResolvingConfiguration resolvingConfiguration, MutableScope enclosingScope) {
         return Optional.of(new EMADLSymbolTableCreator(
-                resolvingConfiguration, enclosingScope, getCustomLayers(), getCustomPythonFilesPath()));
+                resolvingConfiguration, enclosingScope,getCustomFilesPath(), getBackend()));
     }
 
 }
