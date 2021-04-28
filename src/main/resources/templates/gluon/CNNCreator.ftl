@@ -7,8 +7,10 @@ import warnings
 import inspect
 import sys
 
+<#if tc.architecture.customPyFilesPath??>
 sys.path.insert(1, '${tc.architecture.customPyFilesPath}')
 from custom_layers import *
+</#if>
 
 <#list tc.architecture.networkInstructions as networkInstruction>
 from CNNNet_${tc.fullArchitectureName} import Net_${networkInstruction?index}
@@ -218,4 +220,4 @@ class ${tc.fileNameWithoutEnding}:
     def validate_parameters(self):
 <#list tc.architecture.networkInstructions as networkInstruction>
 ${tc.include(networkInstruction.body, "PARAMETER_VALIDATION")}
-</#list>
+</#list>        pass

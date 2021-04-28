@@ -1,14 +1,12 @@
 <#-- (c) https://github.com/MontiCore/monticore -->
 <#assign input = element.inputs[0]>
 <#if mode == "ARCHITECTURE_DEFINITION">
-      <#if element.element.arguments?has_content>
+
             self.${element.name} = ${element.element.name}.${element.element.name}(<#rt>
                   <#list element.element.arguments as argument>
                         ${argument.name}=${argument.rhs.value.get()}<#sep>, </#sep><#t>
-                  </#list>)<#t>
-      <#else>
-            self.${element.name} = ${element.element.name}.${element.element.name}()
-      </#if>
+                  </#list>)<#lt>
+            <#include "OutputShape.ftl">
 
 <#elseif mode == "FORWARD_FUNCTION">
         ${element.name} = self.${element.name}(${input})

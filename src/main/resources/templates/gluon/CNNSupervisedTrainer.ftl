@@ -14,8 +14,7 @@ try:
     import AdamW
 except:
     pass
-sys.path.insert(1, '${tc.architecture.customPyFilesPath}')
-from custom_optimizers import *
+
 
 class CrossEntropyLoss(gluon.loss.Loss):
     def __init__(self, axis=-1, sparse_label=True, weight=None, batch_axis=0, **kwargs):
