@@ -444,16 +444,14 @@ public class StreamTestMojoBase extends AbstractMojo {
                 if(output) {
                     logWarn("   -> No streamtest found for " + componentName);
                 }
-                if (StringUtils.equals(componentName, getRootModel())) {
-                    cs = getScope().resolve(componentName, EMAComponentSymbol.KIND);
-                    toTestComponents.add(cs.get());
-                }
-
             }else{
                 if(output){
                     logInfo("   -> Test with component: "+cs.get().getFullName()+" :");
                     streamTests.get(cs.get()).forEach( (ComponentStreamUnitsSymbol csus) -> logInfo("      # Streamtest: "+csus.getFullName()));
                 }
+            }
+            if (StringUtils.equals(componentName, getRootModel())) {
+                cs = getScope().resolve(componentName, EMAComponentSymbol.KIND);
                 toTestComponents.add(cs.get());
             }
         }
