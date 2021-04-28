@@ -56,6 +56,7 @@ TestEMADLMavenPlugin:
   stage: linux
   image: registry.git.rwth-aachen.de/monticore/embeddedmontiarc/generators/emadl2cpp/dockerimages/mxnet170:v0.0.1
   script:
+  - find / -type f -name 'libmxnet.so'
   - mv mxnet/build/libmxnet.so mxnet/build/libmxnet.a /usr/lib/
   - cd emadl-maven-plugin
   - mvn emadl:train -s settings.xml
