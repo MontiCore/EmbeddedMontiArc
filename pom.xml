@@ -32,7 +32,7 @@
         <Embedded-MontiArc-Behaviour.version>0.4.4-SNAPSHOT</Embedded-MontiArc-Behaviour.version>
         <Math.version>0.4.4-SNAPSHOT</Math.version>
         <MathOpt.version>0.4.4-SNAPSHOT</MathOpt.version>
-        <CNNArch.version>0.5.0-SNAPSHOT</CNNArch.version>
+        <CNNArch.version>0.4.4-SNAPSHOT</CNNArch.version>
 
         <!-- .. SE-Libraries .................................................. -->
         <monticore.version>5.0.1</monticore.version>
