@@ -1,17 +1,13 @@
 # TCP communication protocol
 
-The TCP communication is used between the Simulator and 
+TODO put in the simulation wiki
 
-- the program on the VCG directly in *Server Mode*,
-- the DDC-server in *DDC-mode.
-
-![Simulation-VCG communication path](VCG-overview.svg)
+The TCP communication is used between the Simulator and the program on the VCG directly in *Server Mode*,
 
 ## Communication sequence
 
 - Connect
 - Simulation sends "PACKET_INIT" with "TimeMode" config string.
-- Simulation sends "PACKET_REF_ID" with the DDC reference id. (Only used by the DDC-server/ ddc mode)
 - Server responds with "DynamicInterface" string. (PACKET_INTERFACE)
 
 ### Simulation cycles for *measured mode*

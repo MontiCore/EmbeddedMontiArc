@@ -5,7 +5,6 @@ if [ -z "$1" ] || [ "$1" == "--help" ]; then
     echo "    ./build_local.sh 'folder'"
     echo "Description:"
     echo "    Builds the project for the local architecture. "
-    echo "    Note: cannot have dependencies on libddc."
     exit 0
 fi
 

@@ -21,8 +21,6 @@ start.bat or ./start.sh
 
 ## Running a program
 
-### TCP Mode
-
 ```bash
 # 2-way port forwarding (from your localhost to that of the raspberry to that of the VCG)
 ./connect.sh <port>
@@ -31,38 +29,9 @@ start.bat or ./start.sh
 # Attach to the container
 lxcattach appcont
 # Run the program
-/data/pdata/programs/<program> server <port>
+/data/pdata/programs/<program> <port>
 ctrl+c to stop
 ctrl+d to leave containers/shells
-```
-
-### DDC Mode
-
-Needs 2 programs running on the VCG: `ddcserver` (outside the image) and your program.
-
-Running the `ddcserver`:
-
-```bash
-# 2-way port forwarding (from your localhost to that of the raspberry to that of the VCG)
-./connect.sh <port>
-# In the raspberry shell
-./connect.sh <port> <vcg*>
-# Run the DDC server (already on the VCG)
-/data/pdata/ddcserver <port>
-ctrl+c to stop
-```
-
-Running the program:
-
-```bash
-# (Normal connect to the VCG)
-ssh <lab>
-ssg <vcg*>
-# Attach to the container
-lxcattach appcont
-# Run the program
-/data/pdata/programs/<program> ddc <reference_id>
-ctrl+c to stop
 ```
 
 ### Stuck container
@@ -88,18 +57,15 @@ To connect the simulation with the VCG, make sure there is a `VCG` component in 
         "port": <port>
     },
     "time": "measured",
-    "cycle_duration": [0,100000000],
-    "ref_id": 16384
+    "cycle_duration": [0,100000000]
 }
 ```
 
 Where `<port>` is the same port used in the `connect` script and program calls. `"host"` should be your localhost (maybe you need `"localhost"` instead of the IPv6 localhost `"::1"`).
 
-> **Note**: `"ref_id"` is only used for the DDC mode, and can currently **only be specified in decimal**, whereas all the ids seen on the VCG (inclusive for the `<program> ddc <reference_id>) are specified in **hexadecimal**. ([Quick link to convert HEX to DEC](https://www.binaryhexconverter.com/hex-to-decimal-converter)).
-
 ## Running in TCP-mode locally
 
-If your code has no dependencies to `libddc`, you can build and run in TCP mode locally.
+You can build and run in TCP mode locally.
 
 ```bash
 # Build the project for your computer
@@ -111,8 +77,6 @@ build_local.bat or ./build_local.sh
 Then just start a simulation with the same VCG properties in the scenario as specified above. (This works transparently since in both case the program is available on the localhost, with port forwarding in the case of the VCG).
 
 ## EMA Workflow
-
-> **Note**: The DDC-mode adapter generation is currently not implemented for EMA.
 
 Part of the following workflow might be changed to the *stream test* maven plugin at some point.
 
@@ -138,7 +102,7 @@ Make sure that the path/version to the EMA...2CPP project are set in `config`.
 ./start.sh
 # In the container
 ./ema_build.sh <project_folder>
-# The server/ddc adapter is then name '<OUTPUT_NAME>Adapter'
+# The server adapter is then name '<OUTPUT_NAME>Adapter'
 # In a shell with the SSH setup
 ./ema_upload.sh <project_folder> <vcg*>
 ```

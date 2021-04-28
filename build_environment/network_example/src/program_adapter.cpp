@@ -7,9 +7,6 @@
 #include <ctime>
 #include <cmath>
 #include "json.h"
-#ifdef USE_DDC
-#include "ddc_mode.h"
-#endif
 
 using namespace std;
 
@@ -56,11 +53,6 @@ int main(int argc, char** argv) {
             single_session_server(argv[2], simulation_session, running);
             return 0;
         }
-        #ifdef USE_DDC
-        else if (cmd.compare("ddc") == 0) {
-            return ddc_mode(argv[2], running);
-        }
-        #endif
     }
     
     usage(argv[0]);
@@ -74,10 +66,6 @@ void signal_handler(int signal) {
 void usage(char *app_name) {
     cout << "Usage:" << endl;
     cout << "  " << app_name << " server <port>" << endl;
-    #ifdef USE_DDC
-    cout << "or" << endl;
-    cout << "  " << app_name << " ddc <reference_id>" << endl;
-    #endif
 }
 
 

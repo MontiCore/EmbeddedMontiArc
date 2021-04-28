@@ -7,7 +7,7 @@ if [%Help%] == [1] (
     echo Usage:
     echo     build_local.bat 'folder'
     echo Description:
-    echo     Builds the project for the local architecture. Note: cannot have dependencies on libddc
+    echo     Builds the project for the local architecture.
     exit /B 0
 )
 
