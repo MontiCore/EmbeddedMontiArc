@@ -1,5 +1,6 @@
 package de.monticore.lang.monticar.generator.cpp.dynamic_interface;
 
+import de.monticore.lang.monticar.generator.cpp.dynamic_interface.ProgramInterfaceResolver.SocketInfo;
 import de.rwth.montisim.commons.dynamicinterface.*;
 
 public class BinarySerializationGenerator extends SerializationGenerator {
@@ -11,6 +12,45 @@ public class BinarySerializationGenerator extends SerializationGenerator {
 
     String getType() {
         return "Binary";
+    }
+
+    boolean isJson() {
+        return false;
+    }
+
+    void generateSocketSetter(PortInformation portInfo) {
+        SocketInfo sockInf = gen.interfaceResolver.getSocketInfo(portInfo);
+        int indent = BASE_INDENT+1;
+        // std::string ip = br.read_str();
+        b.a(indent, "auto ip = reader.read_str();");
+        b.a(indent, "auto id = get_socket_id(ip, %d);", sockInf.array_length);
+        b.a(indent, "if (id < 0) return;");
+        b.a(indent, "auto &target = program_instance.%s[id];", sockInf.input_name);
+        generateSetter(((SimplePacketType) portInfo.data_type).getPayloadType(), BASE_INDENT+1, 1, "target");
+
+    }
+
+    void generateSocketGetter(PortInformation portInfo) {
+        SocketInfo sockInf = gen.interfaceResolver.getSocketInfo(portInfo);
+        int indent = BASE_INDENT+1;
+
+        b.a(indent, "static int id = 0;");
+        b.a(indent, "if (id >= %d) {", sockInf.is_bc ? 1 : sockInf.array_length);
+        b.a(indent, "    id = 0;");
+        b.a(indent, "    return;");
+        b.a(indent, "}");
+
+        if (sockInf.is_bc) {
+            b.a(indent, "writer.write_str(N_TO_N_BROADCAST_ADDR); // Write address");
+            b.a(indent, "auto &target = program_instance.%s;", sockInf.output_name);
+        } else {
+            b.a(indent, "writer.write_str(N_TO_N_PREFIX + std::to_string(id+1)); // Write address");
+            b.a(indent, "auto &target = program_instance.%s[id];", sockInf.output_name);
+        }
+
+        generateGetter(((SimplePacketType) portInfo.data_type).getPayloadType(), BASE_INDENT+1, 1, "target");
+
+        b.a(indent, "++id;");
     }
 
     protected void generateSetter(DataType type, int indent, int depth, String varReference){
@@ -115,6 +155,7 @@ public class BinarySerializationGenerator extends SerializationGenerator {
                 case N:
                 case N1:
                 b.a(indent, "writer.write_u32(%s);", varReference);
+                break;
                 case BOOLEAN:
                 b.a(indent, "writer.write_u8(%s ? 1 : 0);", varReference);
                     break;

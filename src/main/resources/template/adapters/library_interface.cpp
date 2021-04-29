@@ -28,7 +28,7 @@ EXPORT const char* DI__get_port(int i, int is_json) {
         auto payload_size = bw.buffer.position() - 4;
         bw.buffer.go_to(0);
         bw.write_u32(payload_size);
-        return bw.buffer.buffer;
+        return bw.buffer.get_buffer();
     } else {
         JsonWriter writer {autopilot::buffer};
         autopilot::get_port_json(i, writer);

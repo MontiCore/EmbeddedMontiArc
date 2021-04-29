@@ -191,7 +191,7 @@ void SimulationSession::send_outputs() {
                 } else {
                     autopilot::get_port_binary(i, packet.bw);
                 }
-                if (!packet.has_payload()) break;
+                if (packet.buffer.position() == 5) break;
                 packet.send(socket);
                 if (!autopilot::IS_SOCKET[i]) break;
             } while(true);

@@ -27,10 +27,11 @@ public abstract class SerializationGenerator {
 
         int i = 0;
         for (PortInformation portInfo : gen.interfaceResolver.programInterface.ports){
-            if (portInfo.direction == PortDirection.INPUT){
-                setPortCases.add(generateSetPortCase(i, portInfo));
-            } else {
+            if (portInfo.isOutput()) {
                 getPortCases.add(generateGetPortCase(i, portInfo));
+            }
+            if (portInfo.isInput()) {
+                setPortCases.add(generateSetPortCase(i, portInfo));
             }
             ++i;
         }
@@ -46,18 +47,9 @@ public abstract class SerializationGenerator {
         b.a(BASE_INDENT, "case %d: { // %s", id, portInfo.name);
 
         if (portInfo.port_type == PortType.DATA) {
-
             generateSetter(portInfo.data_type, BASE_INDENT+1, 1, "program_instance."+portInfo.name);
-            
         } else {
-
-            SocketInfo sockInf = gen.interfaceResolver.getSocketInfo(portInfo);
-            int indent = BASE_INDENT+1;
-            b.a(indent, "auto id = get_socket_id(br, %d);", sockInf.array_length);
-            b.a(indent, "if (id < 0) return;");
-            b.a(indent, "auto &target = program_instance.%s[id];", sockInf.input_name);
-            generateSetter(((SimplePacketType) portInfo.data_type).getPayloadType(), BASE_INDENT+1, 1, "target");
-
+            generateSocketSetter(portInfo);
         }
 
         b.a(BASE_INDENT, "} break;");
@@ -70,36 +62,10 @@ public abstract class SerializationGenerator {
         b.a(BASE_INDENT, "case %d: { // %s", id, portInfo.name);
 
         if (portInfo.port_type == PortType.DATA) {
-
             generateGetter(portInfo.data_type, BASE_INDENT+1, 1, "program_instance."+portInfo.name);
-
         } else {
-            SocketInfo sockInf = gen.interfaceResolver.getSocketInfo(portInfo);
-            int indent = BASE_INDENT+1;
-
-            if (sockInf.is_bc) {
-                b.a(indent, "static bool sent = false;");
-                b.a(indent, "if (sent) {", sockInf.array_length);
-                b.a(indent, "    sent = false;");
-                b.a(indent, "    return;");
-                b.a(indent, "}", sockInf.array_length);
-                b.a(indent, "writer.write_str(N_TO_N_BROADCAST_ADDR); // Write address");
-                b.a(indent, "auto &target = program_instance.%s;", sockInf.output_name);
-                b.a(indent, "sent = true;");
-            } else {
-                b.a(indent, "static int id = 0;");
-                b.a(indent, "if (id >= %d) {", sockInf.array_length);
-                b.a(indent, "    id = 0;");
-                b.a(indent, "    return;");
-                b.a(indent, "}", sockInf.array_length);
-                b.a(indent, "writer.write_str(N_TO_N_PREFIX + std::to_string(id+1)); // Write address");
-                b.a(indent, "auto &target = program_instance.%s[id];", sockInf.output_name);
-                b.a(indent, "++id;");
-            }
-            generateGetter(((SimplePacketType) portInfo.data_type).getPayloadType(), BASE_INDENT+1, 1, "target");
-
+            generateSocketGetter(portInfo);
         }
-
 
         b.a(BASE_INDENT, "} break;");
         return b.getContent();
@@ -107,5 +73,8 @@ public abstract class SerializationGenerator {
 
     protected abstract void generateSetter(DataType type, int indent, int depth, String varReference);
     protected abstract void generateGetter(DataType type, int indent, int depth, String varReference);
+    abstract void generateSocketGetter(PortInformation portInfo);
+    abstract void generateSocketSetter(PortInformation portInfo);
     abstract String getType();
+    abstract boolean isJson(); // Not ideal
 }
