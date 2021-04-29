@@ -15,7 +15,7 @@ void close_sock(int sock);
 
 class Socket {
     int socket;
-    int max_msg_size;
+    int64_t max_msg_size;
 public:
     Socket(int socket) : socket(socket) {
         get_max_msg_size();
@@ -44,11 +44,11 @@ struct PacketReader {
     PacketReader(DynamicBuffer &buffer, const Socket &socket) : buffer(buffer), id(-1), size(0), socket(socket) {}
     void receive();
     BinaryReader getReader() {
-        return {buffer.buffer+3, payload_size()};
+        return {buffer.get_buffer()+3, payload_size()};
     }
     const char* getPayload() {
-        buffer.buffer[size] = '\0';
-        return buffer.buffer + 3;
+        buffer.get_buffer()[size] = '\0';
+        return buffer.get_buffer() + 3;
     }
     
     int payload_size() {

@@ -1,8 +1,7 @@
 #include "buffer.h"
 #include <iostream>
 
-int get_socket_id(BinaryReader &br, int max_count) {
-    std::string ip = br.read_str();
+int get_socket_id(const std::string &ip, int max_count) {
     if (ip.find("2::") != 0) {
         std::cerr << "Unsupported IP: '"<< ip << "' (only supports 'N-to-N' IPs with '2::' prefix)" << std::endl;
     }
@@ -18,7 +17,7 @@ void DynamicBuffer::check_size(int size) {
     if (size >= buffer_size) {
         int32_t new_size = ((size / START_BUFFER_SIZE) + 1) * START_BUFFER_SIZE;
         char *new_buff = new char[new_size];
-        for (int32_t i = 0; i < buffer_size; ++i){
+        for (int32_t i = 0; i < pos; ++i){
             new_buff[i] = buffer[i];
         }
         delete[] buffer;
@@ -33,7 +32,7 @@ uint64_t BinaryReader::read_u64() {
     uint64_t t = 0;
     for (int i = 0; i < 8; ++i) {
         t <<= 8;
-        t |= ((uint8_t*)pos)[i];
+        t |= ((uint8_t*)(pos))[i];
     }
     pos += 8;
     return t;
@@ -96,7 +95,7 @@ void BinaryWriter::write_u16(uint16_t value) {
     ((uint8_t*)pos)[1] = (uint8_t) value;
 }
 void BinaryWriter::write_u8(uint8_t value) {
-    auto pos = buffer.push_slot(2);
+    auto pos = buffer.push_slot(1);
     *((uint8_t*)pos) = value;
 }
 void BinaryWriter::write_f64(double value) {

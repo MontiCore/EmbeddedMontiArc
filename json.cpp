@@ -12,8 +12,6 @@
 
 char JsonWriter::LOCAL_BUFFER[JsonWriter::LOCAL_BUFFER_SIZE];
 
-
-
 void JsonWriter::start_object() {
     separate();
     if (format) offset += TAB;

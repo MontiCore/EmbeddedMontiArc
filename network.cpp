@@ -84,11 +84,11 @@ void PacketReader::receive() {
     //cout << "Waiting for packet header " << endl;
     id = -1;
     size = 0;
-    BinaryReader br = {buffer.buffer, 3};
+    BinaryReader br = {buffer.get_buffer(), 3};
 
     buffer.reserve(3);
     size = 3;
-    socket.read_s(buffer.buffer, 3);
+    socket.read_s(buffer.get_buffer(), 3);
     id = br.read_u8();
     auto length = br.read_u16();
     //cout << "Got packet header: id=" << id << ", size=" << length << endl;
@@ -97,7 +97,7 @@ void PacketReader::receive() {
     buffer.reserve(size);
 
     // Read data
-    socket.read_s(buffer.buffer+3, length);
+    socket.read_s(buffer.get_buffer()+3, length);
 }
 
 
@@ -107,7 +107,7 @@ void PacketWriter::send(const Socket &socket) {
     auto payload_size = size-3;
     buffer.go_to(1);
     bw.write_u16(payload_size);
-    socket.write_s(buffer.buffer, size);
+    socket.write_s(buffer.get_buffer(), size);
 }
 
 
