@@ -58,5 +58,5 @@ TestEMADLMavenPlugin:
   script:
   - mv /mxnet/build/libmxnet.so /mxnet/build/libmxnet.a /usr/lib/
   - cd emadl-maven-plugin
-  - mvn emadl:train -s settings.xml
+  - mvn dependency:resolve emadl:train -s settings.xml
 

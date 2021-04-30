@@ -1,8 +1,8 @@
 /* (c) https://github.com/MontiCore/monticore */
 package calculator;
-conforms to dltag.DataPathTagSchema;
+conforms to artifacttag.DatasetArtifactTagSchema;
 
 tags NeuronalNetwork {
- tag Network with DataPath = {path = src/main/resources/training_data, type = HDF5};
+ tag Network with DatasetArtifact = {artifact = de.monticore.lang.monticar.datasets:mnist:1, type = HDF5};
 }
 
