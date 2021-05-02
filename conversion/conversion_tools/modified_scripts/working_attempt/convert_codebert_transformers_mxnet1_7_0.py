@@ -124,7 +124,7 @@ def get_gluon_model_arch(hf_cfg, ctx):
         'num_heads': 12,
         'dropout': 0.1,
         'output_attention': False,
-        'output_all_encodings': True,
+        'output_all_encodings': False,
         'activation': 'gelu',
         'layer_norm_eps': 1e-5,
         'vocab_size': hf_cfg.vocab_size,
@@ -161,8 +161,9 @@ def get_gluon_model_arch(hf_cfg, ctx):
         use_pooler=hyper_params['use_pooler']
     )
 
-    gluon_model._output_all_encodings = True
-    gluon_model.encoder._output_all_encodings = True
+    # not sure if this is necessary with output_all_encodings passed above
+    # gluon_model._output_all_encodings = True
+    # gluon_model.encoder._output_all_encodings = True
     gluon_model.initialize(ctx=ctx) # unsure if it should be init with normal
     gluon_model.hybridize()
 
@@ -259,12 +260,21 @@ def test_model(hf_model, hf_tokenizer, gluon_model, gpu):
     hf_input_ids = torch.from_numpy(input_ids).cpu()
     hf_model.eval()
 
-    # gl_all_hiddens shape is (num_layers, batch_size, seq_length, hidden_size)
-    gl_all_hiddens, gl_pooled = gluon_model(
-        gl_input_ids, 
-        token_types=gl_token_types, 
-        valid_length=gl_valid_length
-    )
+    if gluon_model.encoder._output_all_encodings:
+        # gl_all_hiddens shape is (num_layers, batch_size, seq_length, hidden_size)
+        gl_all_hiddens, gl_pooled = gluon_model(
+            gl_input_ids, 
+            token_types=gl_token_types, 
+            valid_length=gl_valid_length
+        )
+    else:
+        gl_pooled = gluon_model(
+            gl_input_ids, 
+            token_types=gl_token_types, 
+            valid_length=gl_valid_length
+        )
+        print(gl_pooled[0])
+        print(gl_pooled[1])
 
     # create attention mask for hf model
     hf_valid_length = np.zeros((batch_size, seq_length))
