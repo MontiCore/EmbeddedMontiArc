@@ -1,7 +1,7 @@
 /* (c) https://github.com/MontiCore/monticore */
 package de.monticore.lang.monticar.semantics.solver.analytic.z3;
 
-import afu.org.checkerframework.checker.igj.qual.I;
+
 import de.monticore.lang.embeddedmontiarc.embeddedmontiarcmath._symboltable.math.symbols.*;
 import de.monticore.lang.embeddedmontiarc.embeddedmontiarcmath._symboltable.math.visitor.EMAMMathExpressionSymbolVisitor;
 import de.monticore.lang.math._symboltable.MathForLoopHeadSymbol;
