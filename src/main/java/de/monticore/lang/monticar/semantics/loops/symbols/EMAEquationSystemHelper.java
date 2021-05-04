@@ -16,7 +16,6 @@ import de.monticore.lang.monticar.semantics.loops.analyze.EquationSystemType;
 import de.monticore.lang.monticar.semantics.loops.analyze.SpecificationConverter;
 import de.monticore.lang.monticar.semantics.loops.symbols.semiexplicit.*;
 import de.se_rwth.commons.logging.Log;
-import org.checkerframework.checker.units.qual.A;
 import org.jscience.mathematics.number.Rational;
 
 import java.util.*;
