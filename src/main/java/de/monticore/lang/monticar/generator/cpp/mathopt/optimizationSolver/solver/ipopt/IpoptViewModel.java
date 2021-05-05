@@ -348,7 +348,6 @@ public class IpoptViewModel extends SolverViewModel {
     public String getVariableInitialization(MathValueSymbol variable){
         String value = "0";
         if(variable.isValueExpression()){
-            //value = variable.getValue().getTextualRepresentation();
             MathExpressionSymbol sym = variable.getValue();
             if(sym != null) {
                 MathNameExpressionSymbol mneSym = (MathNameExpressionSymbol) sym;
