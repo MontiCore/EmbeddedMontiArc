@@ -32,7 +32,7 @@ component SteeringAngleCalculator{
 
      end
 
-     Q orientedDistance = distance;
+     Q(1:10) orientedDistance = distance;
      Q angleTowardsTrajectory = atan(orientedDistance / 2);
      Q orientationOfTrajectory;
 

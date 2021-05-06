@@ -6,6 +6,7 @@ import de.monticore.lang.embeddedmontiarc.embeddedmontiarc._symboltable.instance
 import de.monticore.lang.monticar.generator.AbstractSymtabTest;
 import de.monticore.lang.monticar.generator.cpp.GeneratorCPP;
 import de.monticore.lang.tagging._symboltable.TaggingResolver;
+import org.junit.Ignore;
 import org.junit.Test;
 
 import java.io.File;
@@ -21,7 +22,7 @@ import static org.junit.Assert.assertNotNull;
 public class GeneratorEMAMOpt2CMakeTest extends AbstractSymtabTest {
 
     protected static List<File> doGenerateModel(String fullModelName) throws IOException {
-        TaggingResolver symtab = createSymTabAndTaggingResolver("src/test/resources/mathopt");
+        TaggingResolver symtab = createSymTabAndTaggingResolver("src/test/resources/");
         EMAComponentInstanceSymbol componentInstanceSymbol = symtab.<EMAComponentInstanceSymbol>resolve(fullModelName, EMAComponentInstanceSymbol.KIND).orElse(null);
         assertNotNull(componentInstanceSymbol);
         GeneratorCPP generator = new GeneratorCPP();
@@ -74,10 +75,6 @@ public class GeneratorEMAMOpt2CMakeTest extends AbstractSymtabTest {
         List<File> files = doGenerateModel("de.rwth.monticar.optimization.forLoopConditionsTest");
     }
 
-    @Test
-    public void existingOptimizationVariableCMakeTest() throws IOException {
-        List<File> files = doGenerateModel("de.rwth.monticar.optimization.existingOptimizationVariableTest");
-    }
 
     @Test
     public void matrixSumMinimization1Test() throws IOException {

@@ -7,6 +7,7 @@ import de.monticore.lang.monticar.generator.AbstractSymtabTest;
 import de.monticore.lang.monticar.generator.cpp.GeneratorCPP;
 import de.monticore.lang.monticar.generator.cpp.mathopt.optimizationSolver.solver.Solver;
 import de.monticore.lang.tagging._symboltable.TaggingResolver;
+import org.junit.Ignore;
 import org.junit.Test;
 
 import java.io.File;
@@ -19,6 +20,7 @@ import static org.junit.Assert.assertNotNull;
  * Test class for Cplex solver
  *
  */
+@Ignore
 public class GeneratorCplexSolverTest extends AbstractSymtabTest {
 
     /**
