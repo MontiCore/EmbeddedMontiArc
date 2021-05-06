@@ -14,7 +14,7 @@ component HS71{
 
     implementation Math{
         minimize
-            Q^{4} x
+            Q^{4} x;
         in
             Q y = x(1) * x(4) * (x(1) + x(2) + x(3)) + x(3);
         subject to
