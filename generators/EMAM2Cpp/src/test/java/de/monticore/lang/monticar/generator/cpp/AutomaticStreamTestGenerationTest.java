@@ -26,6 +26,7 @@ import static org.junit.Assert.assertNotNull;
  * To understand how automatic test generation works, examine the tests in this class.
  *
  */
+@Ignore
 public class AutomaticStreamTestGenerationTest extends AbstractSymtabTest {
     @BeforeClass
     public static void setUp() {

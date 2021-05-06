@@ -1,8 +1,14 @@
 /* (c) https://github.com/MontiCore/monticore */
 package de.monticore.lang.monticar.generator.cpp.mathopt.optimizationSolver.problem;
 
+import de.monticore.lang.math._symboltable.MathVariableDeclarationSymbol;
+import de.monticore.lang.math._symboltable.expression.MathExpressionSymbol;
+import de.monticore.lang.math._symboltable.expression.MathValueSymbol;
+import de.monticore.lang.mathopt._symboltable.MathOptimizationConditionSymbol;
 import de.monticore.lang.mathopt._symboltable.MathOptimizationType;
 
+import java.util.ArrayList;
+import java.util.List;
 import java.util.Vector;
 
 /**
@@ -27,15 +33,12 @@ public class Problem {
      */
     private int n;
 
-    /**
-     * name of the optimization variable
-     */
-    private String optimizationVariableName;
+    private List<MathValueSymbol> optimizationVariables = new ArrayList<>();
+    private List<MathValueSymbol> independentOptVariables = new ArrayList<>();
 
-    /**
-     * data type of the optimization variable
-     */
-    private String optimizationVariableType;
+    private List<MathOptimizationConditionSymbol> constraintFunctions = new ArrayList<>();
+
+    private MathExpressionSymbol stepSize;
 
     /**
      * dimensions of the optimization variable
@@ -45,12 +48,12 @@ public class Problem {
     /**
      * variable which contains the objective value
      */
-    private String objectiveValueVariable;
+    private MathValueSymbol objectiveValueVariable;
 
     /**
      * objective function
      */
-    private String objectiveFunction;
+    private MathExpressionSymbol objectiveFunction;
 
     // getter setter
 
@@ -61,7 +64,15 @@ public class Problem {
     public void setId(int id) {
         this.id = id;
         if (id <= 0) {
-            this.id = this.hashCode();
+            //builtin hashcode introduces problems for code-testing
+            // (each java execution may yield a different value)
+            //this.id = this.hashCode();
+            String objVarName = getObjectiveValueVariable().getName();
+            this.id=0;
+            int arr[] = objVarName.chars().toArray();
+            for (int i = 0; i<arr.length;i++){
+                this.id += arr[i] + i * 256;
+            }
         }
     }
 
@@ -73,36 +84,36 @@ public class Problem {
         this.n = n;
     }
 
-    public String getOptimizationVariableName() {
-        return optimizationVariableName;
+    public List<MathValueSymbol> getOptimizationVariables() {
+        return optimizationVariables;
     }
 
-    public void setOptimizationVariableName(String optimizationVariableName) {
-        this.optimizationVariableName = optimizationVariableName;
+    public void setOptimizationVariables(List<MathValueSymbol> optimizationVariables) {
+        this.optimizationVariables = optimizationVariables;
     }
 
-    public String getObjectiveValueVariable() {
+    public List<MathValueSymbol> getIndependentOptVariables() {
+        return independentOptVariables;
+    }
+
+    public void setIndependentVariables(List<MathValueSymbol> independentOptVariables) {
+        this.independentOptVariables = independentOptVariables;
+    }
+
+    public MathValueSymbol getObjectiveValueVariable() {
         return objectiveValueVariable;
     }
 
-    public void setObjectiveValueVariable(String objectiveValueVariable) {
+    public void setObjectiveValueVariable(MathValueSymbol objectiveValueVariable) {
         this.objectiveValueVariable = objectiveValueVariable;
     }
 
-    public String getObjectiveFunction() {
+    public MathExpressionSymbol getObjectiveFunction() {
         return objectiveFunction;
     }
 
-    public void setObjectiveFunction(String objectiveFunction) {
+    public void setObjectiveFunction(MathExpressionSymbol objectiveFunction) {
         this.objectiveFunction = objectiveFunction;
-    }
-
-    public String getOptimizationVariableType() {
-        return optimizationVariableType;
-    }
-
-    public void setOptimizationVariableType(String optimizationVariableType) {
-        this.optimizationVariableType = optimizationVariableType;
     }
 
     public Vector<Integer> getOptimizationVariableDimensions() {
@@ -121,6 +132,14 @@ public class Problem {
         this.optimizationProblemType = optimizationProblemType;
     }
 
+    public MathExpressionSymbol getStepSize() {
+        return stepSize;
+    }
+
+    public void setStepSize(MathExpressionSymbol stepSize) {
+        this.stepSize = stepSize;
+    }
+
     /**
      * Default value if no lower bound is set
      */
@@ -133,10 +152,7 @@ public class Problem {
      * number of constraints in function g
      */
     private int m;
-    /**
-     * function g: R^n -> R^m
-     */
-    private Vector<String> constraintFunctions = new Vector<>();
+
     /**
      * lower bound of x
      */
@@ -172,13 +188,14 @@ public class Problem {
         this.m = m;
     }
 
-    public Vector<String> getConstraintFunctions() {
+    public List<MathOptimizationConditionSymbol> getConstraintFunctions() {
         return constraintFunctions;
     }
 
-    public void setConstraintFunctions(Vector<String> constraintFunctions) {
+    public void setConstraintFunctions(List<MathOptimizationConditionSymbol> constraintFunctions) {
         this.constraintFunctions = constraintFunctions;
     }
+
 
     public Vector<String> getxL() {
         return xL;

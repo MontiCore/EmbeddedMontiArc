@@ -4,6 +4,7 @@ package de.monticore.lang.monticar.generator.cmake;
 import de.monticore.lang.embeddedmontiarc.embeddedmontiarc._symboltable.instanceStructure.EMAComponentInstanceSymbol;
 import de.monticore.lang.monticar.generator.AbstractSymtabTest;
 import de.monticore.lang.monticar.generator.cpp.GeneratorCPP;
+import de.monticore.lang.monticar.generator.cpp.GeneratorCppCli;
 import de.monticore.lang.tagging._symboltable.TaggingResolver;
 import de.se_rwth.commons.logging.Log;
 import org.junit.Before;
@@ -13,8 +14,10 @@ import java.io.File;
 import java.io.IOException;
 import java.nio.file.Paths;
 import java.util.ArrayList;
+import java.util.Arrays;
 import java.util.List;
 
+import static junit.framework.TestCase.assertTrue;
 import static org.junit.Assert.assertNotNull;
 
 /**
@@ -110,5 +113,6 @@ public class GenerateCMakeTest extends AbstractSymtabTest {
     //     String restPath = "cmake/test/math/FloatDivisionTest/";
     //     testCMakeFilesEqual(files, restPath);
     // }
+
 
 }

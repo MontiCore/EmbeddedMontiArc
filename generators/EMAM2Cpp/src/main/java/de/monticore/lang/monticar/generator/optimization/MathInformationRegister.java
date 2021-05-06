@@ -38,7 +38,7 @@ public class MathInformationRegister {
     }
 
     public int getAmountRows(String name) {
-        return getAmount(name, 1);
+        return getAmount(name, 0);
     }
 
     public int getAmountRows(String name, MathMatrixAccessOperatorSymbol mathMatrixAccessOperatorSymbol) {
@@ -49,10 +49,11 @@ public class MathInformationRegister {
             secondDoubleDot = mathMatrixAccessOperatorSymbol.getMathMatrixAccessSymbols().get(1).isDoubleDot();
         }
 
-        if (firstDoubleDot)
+        //Check "doubleDots" !!!
+        if (secondDoubleDot)
             result = 1;
         else {
-            result = getAmount(name, 1);
+            result = getAmount(name, 0);
         }
         return result;
     }
@@ -90,9 +91,9 @@ public class MathInformationRegister {
         int result = 0;
         if (mathValueSymbol != null) {
             String numberString = mathValueSymbol.getType().getDimensions().get(dimension).getTextualRepresentation();
-            //Log.info(name, "Name:");
-            //Log.info(mathValueSymbol.getType().getDimensions().get(0).getTextualRepresentation(), "getAmount");
-            //Log.info(mathValueSymbol.getType().getDimensions().get(1).getTextualRepresentation(), "getAmount");
+            Log.info(name, "Name:");
+            Log.info(mathValueSymbol.getType().getDimensions().get(0).getTextualRepresentation(), "getAmount");
+            Log.info(mathValueSymbol.getType().getDimensions().get(1).getTextualRepresentation(), "getAmount");
             try {
                 result = Integer.valueOf(numberString);
             } catch (Exception ex) {
@@ -102,9 +103,9 @@ public class MathInformationRegister {
             Variable var = getVariable(name);
             if (var != null) {
                 try {
-                    //Log.info(name, "Name:");
-                    //Log.info(var.getDimensionalInformation().get(0), "getAmount");
-                    //Log.info(var.getDimensionalInformation().get(1), "getAmount");
+                    Log.info(name, "Name:");
+                    Log.info(var.getDimensionalInformation().get(0), "getAmount");
+                    Log.info(var.getDimensionalInformation().get(1), "getAmount");
 
                     result = Integer.valueOf(var.getDimensionalInformation().get(dimension));
                 } catch (Exception ex) {
@@ -119,7 +120,7 @@ public class MathInformationRegister {
     }
 
     public int getAmountColumns(String name) {
-        return getAmount(name, 0);
+        return getAmount(name, 1);
     }
 
     public int getAmountColumns(String name, MathMatrixAccessOperatorSymbol mathMatrixAccessOperatorSymbol) {
@@ -129,10 +130,10 @@ public class MathInformationRegister {
             firstDoubleDot = mathMatrixAccessOperatorSymbol.getMathMatrixAccessSymbols().get(0).isDoubleDot();
             secondDoubleDot = mathMatrixAccessOperatorSymbol.getMathMatrixAccessSymbols().get(1).isDoubleDot();
         }
-        if (secondDoubleDot)
+        if (firstDoubleDot)
             result = 1;
         else {
-            result = getAmount(name, 0);
+            result = getAmount(name, 1);
         }
         return result;
     }

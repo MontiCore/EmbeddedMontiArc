@@ -1,4 +1,3 @@
-/* (c) https://github.com/MontiCore/monticore */
 #ifndef OPTIMIZER_SIMPLESCALARMULTIPLICATION2
 #define OPTIMIZER_SIMPLESCALARMULTIPLICATION2
 #ifndef M_PI
@@ -19,7 +18,7 @@ matOut=Matrix(10,200);
 }
 void execute()
 {
-matOut = mat1*mat2*factor;
+matOut = mat1*(mat2*factor);
 }
 
 };

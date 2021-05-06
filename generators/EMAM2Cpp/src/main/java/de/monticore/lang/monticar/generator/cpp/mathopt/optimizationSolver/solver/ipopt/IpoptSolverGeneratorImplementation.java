@@ -3,6 +3,8 @@ package de.monticore.lang.monticar.generator.cpp.mathopt.optimizationSolver.solv
 
 import de.monticore.lang.monticar.generator.FileContent;
 import de.monticore.lang.monticar.generator.Generator;
+import de.monticore.lang.monticar.generator.Variable;
+import de.monticore.lang.monticar.generator.cmake.CMakeConfig;
 import de.monticore.lang.monticar.generator.cmake.CMakeFindModule;
 import de.monticore.lang.monticar.generator.cpp.EMAMBluePrintCPP;
 import de.monticore.lang.monticar.generator.cpp.GeneratorCPP;
@@ -60,6 +62,7 @@ public class IpoptSolverGeneratorImplementation implements NLPSolverGeneratorImp
     @Override
     public String generateSolverCode(Problem optimizationProblem, List<FileContent> auxillaryFiles, EMAMBluePrintCPP bluePrint) {
         String result = "";
+        //optimizationProblem.
 //        GeneratorEMAMOpt2CPP generator = (GeneratorEMAMOpt2CPP) bluePrint.getGenerator();
         GeneratorCPP generator = (GeneratorCPP) bluePrint.getGenerator();
         if ((optimizationProblem instanceof NLPProblem) || (optimizationProblem instanceof DNLPProblem)) {
@@ -72,20 +75,9 @@ public class IpoptSolverGeneratorImplementation implements NLPSolverGeneratorImp
                 options.put("Retape", "true");
             vm.setOptions(options);
             // set execute command
-            vm.setKnownVariablesFromBluePrint(bluePrint);
-            String knownVariables = ", ";
-            for (String s : vm.getKnownVariables()) {
-                knownVariables += s + ", ";
-            }
-            if (knownVariables.length() >= 2) {
-                knownVariables = knownVariables.substring(0, knownVariables.length() - 2);
-            }
-            String objVar = vm.getObjectiveVariableName();
-            if (objVar.isEmpty())
-                objVar = "objectiveValue" + optimizationProblem.getId();
-            result = String.format("%s::solveOptimizationProblemIpOpt(%s, %s%s);\n", vm.getCallSolverName(), vm.getOptimizationVariableName(), objVar, knownVariables);
+            vm.setExternalVariablesFromBluePrint(bluePrint);
+            result = String.format("%s::solveOptimizationProblemIpOpt(%s);\n", vm.getCallSolverName(),vm.getIpoptSolverFunctionCallParameters());
             // generate templates by view model
-            vm.resolveIpoptNameConflicts();
             generateIpoptTemplates(vm, auxillaryFiles);
             necessaryIncludes.add(vm.getCallSolverName());
             addCMakeDependenciesToGenerator(bluePrint);
@@ -137,12 +129,12 @@ public class IpoptSolverGeneratorImplementation implements NLPSolverGeneratorImp
     public List<CMakeFindModule> getCMakeDependencies() {
         CMakeFindModule findCPPAD = new CMakeFindModule("CPPAD", "cppad/ipopt/solve.hpp", "", new ArrayList<String>(), new ArrayList<String>(), new ArrayList(), new ArrayList(), new ArrayList(), true, false, true);
         CMakeFindModule findIPOpt = new CMakeFindModule("Ipopt", "coin/IpNLP.hpp", "ipopt", new ArrayList<String>(), new ArrayList<String>(), new ArrayList(), new ArrayList(), new ArrayList(), true, true, true);
-        CMakeFindModule findCoinMumps = new CMakeFindModule("CoinMumps", "", "coinmumps", new ArrayList<String>(), new ArrayList<String>(), new ArrayList(), new ArrayList(), new ArrayList(), false, true, true);
-        CMakeFindModule findCoinLapack = new CMakeFindModule("CoinLapack", "", "coinlapack", new ArrayList<String>(), new ArrayList<String>(), new ArrayList(), new ArrayList(), new ArrayList(), false, true, true);
-        CMakeFindModule findCoinBlas = new CMakeFindModule("CoinBlas", "", "coinblas", new ArrayList<String>(), new ArrayList<String>(), new ArrayList(), new ArrayList(), new ArrayList(), false, true, true);
-        CMakeFindModule findCoinMetis = new CMakeFindModule("CoinMetis", "", "coinmetis", new ArrayList<String>(), new ArrayList<String>(), new ArrayList(), new ArrayList(), new ArrayList(), false, true, true);
-        CMakeFindModule findGfortran = new CMakeFindModule("GFortran", "", "gfortran", new ArrayList<String>(), new ArrayList<String>(), new ArrayList(), new ArrayList(), new ArrayList(), false, true, true);
-        return Arrays.asList(findCPPAD, findIPOpt, findCoinMumps, findCoinLapack, findCoinBlas, findCoinMetis, findGfortran);
+        //CMakeFindModule findCoinMumps = new CMakeFindModule("CoinMumps", "", "coinmumps", new ArrayList<String>(), new ArrayList<String>(), new ArrayList(), new ArrayList(), new ArrayList(), false, true, true);
+        //CMakeFindModule findCoinLapack = new CMakeFindModule("CoinLapack", "", "coinlapack", new ArrayList<String>(), new ArrayList<String>(), new ArrayList(), new ArrayList(), new ArrayList(), false, true, true);
+        //CMakeFindModule findCoinBlas = new CMakeFindModule("CoinBlas", "", "coinblas", new ArrayList<String>(), new ArrayList<String>(), new ArrayList(), new ArrayList(), new ArrayList(), false, true, true);
+        //CMakeFindModule findCoinMetis = new CMakeFindModule("CoinMetis", "", "coinmetis", new ArrayList<String>(), new ArrayList<String>(), new ArrayList(), new ArrayList(), new ArrayList(), false, true, true);
+        //CMakeFindModule findGfortran = new CMakeFindModule("GFortran", "", "gfortran", new ArrayList<String>(), new ArrayList<String>(), new ArrayList(), new ArrayList(), new ArrayList(), false, true, true);
+        return Arrays.asList(findCPPAD, findIPOpt);
     }
 
 }
