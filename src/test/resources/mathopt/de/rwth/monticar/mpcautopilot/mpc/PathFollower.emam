@@ -37,8 +37,7 @@ component PathFollower {
             Q(-10:200km/h)  velocity            = currentVelocity;
 
             
-            angle(n+1)              == angle(n) + 1 / (velocity(n) * mpc_steering(n) * dT); 
-            //fg[V_ANGLE + (V_VAR * (n+1))] = vars[V_ANGLE + (V_VAR * (n))] ... 
+            angle(n+1)              == angle(n) + 1 / (velocity(n) * mpc_steering(n) * dT);
             velocity(n+1)           == velocity(n) + mpc_acceleration(n) * dT;
             trajectoryDistance(n+1) == trajectoryDistance(n) + sin(angle(n)) * velocity(n);
         end
