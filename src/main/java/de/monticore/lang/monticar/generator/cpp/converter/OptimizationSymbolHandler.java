@@ -2,6 +2,7 @@
 package de.monticore.lang.monticar.generator.cpp.converter;
 
 import de.monticore.lang.math._symboltable.expression.MathExpressionSymbol;
+import de.monticore.lang.math._symboltable.expression.MathValueSymbol;
 import de.monticore.lang.math._symboltable.matrix.MathMatrixAccessOperatorSymbol;
 import de.monticore.lang.math._symboltable.matrix.MathMatrixAccessSymbol;
 import de.monticore.lang.math._symboltable.matrix.MathMatrixArithmeticValueSymbol;
@@ -12,6 +13,7 @@ import de.monticore.lang.monticar.generator.cpp.converter.ExecuteMethodGenerator
 import de.monticore.lang.monticar.generator.cpp.converter.OptimizationSolverConverter;
 import de.se_rwth.commons.logging.Log;
 
+import java.util.ArrayList;
 import java.util.List;
 
 /**
@@ -23,6 +25,9 @@ public class OptimizationSymbolHandler extends BaseExecuteMethodGeneratorHandler
     // fields
     private String currentOptimizationVariableName = "x";
     private String currentOptimizationVariableMatrixType = "ADMat";
+
+    //Todo:In Progress:
+    private List<MathValueSymbol> optimizationVariables = new ArrayList<>();
 
     @Override
     protected boolean canHandleSymbol(MathExpressionSymbol symbol) {
@@ -90,20 +95,29 @@ public class OptimizationSymbolHandler extends BaseExecuteMethodGeneratorHandler
         for (MathMatrixAccessOperatorSymbol vec : matVal.getVectors()) {
             for (MathMatrixAccessSymbol elem : vec.getMathMatrixAccessSymbols()) {
                 String textRep = elem.getTextualRepresentation();
-                if (textRep.contentEquals(getCurrentOptimizationVariableName()) || textRep.contains(getCurrentOptimizationVariableName() + "("))
-                    return true;
+                for (String varName : getCurrentOptimizationVariableNames())
+                    if (textRep.contentEquals(varName) || textRep.contains(varName + "("))
+                        return true;
             }
         }
         return result;
     }
 
-    public String getCurrentOptimizationVariableName() {
-        return currentOptimizationVariableName;
+    public List<String> getCurrentOptimizationVariableNames() {
+        List<String> varNames = new ArrayList<>();
+        for (MathValueSymbol var : optimizationVariables){
+            varNames.add(var.getName());
+        }
+        return varNames;
     }
 
-    public void setCurrentOptimizationVariableName(String currentOptimizationVariableName) {
-        this.currentOptimizationVariableName = currentOptimizationVariableName;
+    public void setOptimizationVariables(List<MathValueSymbol> optimizationVariables) {
+        this.optimizationVariables = optimizationVariables;
     }
+
+    //public void setCurrentOptimizationVariableName(String currentOptimizationVariableName) {
+    //    this.currentOptimizationVariableName = currentOptimizationVariableName;
+    //}
 
     public String getCurrentOptimizationVariableMatrixType() {
         return currentOptimizationVariableMatrixType;

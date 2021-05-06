@@ -12,6 +12,7 @@ component MatrixModifier{
 
 
     implementation Math{
+        //(mat1*(mat2*mat3))*(mat4*mat5);
         Q^{1000, 1000} h1 = mat1 * mat2; // 100 x 100 mit 10 k Ops
         Q^{1000, 10000} h2 = mat3 * mat4; // 100 x 1000 mit 100k Ops
         Q^{1000, 10000} h3 = h1 * h2; // 100 x 1000 mit 1M Ops

@@ -1,6 +1,11 @@
 /* (c) https://github.com/MontiCore/monticore */
 package de.monticore.lang.monticar.generator.cpp.mathopt.optimizationSolver.solver.template;
 
+
+import de.monticore.lang.math._symboltable.expression.MathExpressionSymbol;
+import de.monticore.lang.math._symboltable.expression.MathValueExpressionSymbol;
+import de.monticore.lang.math._symboltable.expression.MathValueSymbol;
+import de.monticore.lang.mathopt._symboltable.MathOptimizationConditionSymbol;
 import de.monticore.lang.mathopt._symboltable.MathOptimizationType;
 import de.monticore.lang.monticar.generator.Variable;
 import de.monticore.lang.monticar.generator.cpp.EMAMBluePrintCPP;
@@ -13,47 +18,41 @@ public abstract class SolverViewModel extends ViewModelBase {
 
     private String id;
 
-    /**
-     * Name of the generated solver execution class name
-     */
-    private String callSolverName;
+    /* Variables which must be set in constructor */
 
     private MathOptimizationType optimizationProblemType;
 
-    /**
-     * Name of the optimization variable
-     */
-    private String optimizationVariableName;
+    private MathExpressionSymbol stepSize;
 
-    /**
-     * Data type of the optimization variable
-     */
-    private String optimizationVariableType;
+    private MathValueSymbol objectiveVariable;
+    private MathExpressionSymbol objectiveFunction;
 
-    /**
-     * Dimensions of the optimization variable
-     */
-    private Vector<Integer> optimizationVariableDimensions;
+    private List<MathValueSymbol> optimizationVariables;
+    private List<MathValueSymbol> independentVariables;
 
+    private List<MathOptimizationConditionSymbol> constraintFunctions;
+
+    //additional constraints on single optimization variable matrix elements which can not be evaluated static
+    private Vector<String> xMatrixElementConstraints; //Rewrite?
+
+    /* Variables not contained in Problem class, set after object creation */
+    private String callSolverName;
+    private EMAMBluePrintCPP mathBluePrint;
+    private HashSet<String> options = new LinkedHashSet<>();
+
+    /* Derived Variables / getters */
+        //private Vector<Integer> optimizationVariableDimensions;
+        //private int numberOptimizationVariables;
+        //private int numberIndependentVariables;
+        //private int numberConstraints;
+
+    private List<MathValueSymbol> emamVariables = new ArrayList<>();
+
+    /* ?? */
     /**
      * For automatic differentiation a active type is required
      */
     private String optimizationVariableTypeActive;
-
-    /**
-     * Name of the final objective value variable
-     */
-    private String objectiveVariableName;
-
-    /**
-     * Number of variables from x
-     */
-    private int numberVariables;
-
-    /**
-     * Number of constraints
-     */
-    private int numberConstraints;
 
     /**
      * Lower bound for x
@@ -76,36 +75,12 @@ public abstract class SolverViewModel extends ViewModelBase {
     private Vector<String> gU;
 
     /**
-     * additional constraints on single optimization variable matrix elements which can not be evaluated static
-     */
-    private Vector<String> xMatrixElementConstraints;
-
-    /**
      * starting point of the iteration for x
      */
     private Vector<Double> initX;
 
-    /**
-     * objective function, x and obj_value are resavated for optimization variable and objective value
-     */
-    private String objectiveFunction;
 
-    /**
-     * list of constraints
-     */
-    private Vector<String> constraintFunctions;
 
-    /**
-     * all variables from EMAM workspace
-     */
-    private HashSet<String> knownVariables = new LinkedHashSet<>();
-
-    /**
-     * all variables with declaration type from EMAM workspace
-     */
-    private HashSet<String> knownVariablesWithType = new LinkedHashSet<>();
-
-    private HashSet<String> options = new LinkedHashSet<>();
 
     // constructor
 
@@ -116,152 +91,86 @@ public abstract class SolverViewModel extends ViewModelBase {
      */
     public SolverViewModel(Problem problem) {
         this.optimizationProblemType = problem.getOptimizationProblemType();
-        this.numberVariables = problem.getN();
-        this.numberConstraints = problem.getM();
+        //this.numberVariables = problem.getN();
+        //this.numberConstraints = problem.getM();
+        this.optimizationVariables = problem.getOptimizationVariables();
+
+        this.independentVariables = problem.getIndependentOptVariables();
         this.constraintFunctions = problem.getConstraintFunctions();
+        this.objectiveVariable = problem.getObjectiveValueVariable();
+        this.objectiveFunction = problem.getObjectiveFunction();
+
+        this.stepSize = problem.getStepSize();
+
+        //legacy
         this.gL = problem.getgL();
         this.gU = problem.getgU();
         this.xL = problem.getxL();
         this.xU = problem.getxU();
         this.xMatrixElementConstraints = problem.getXMatrixElementConstraints();
-        this.objectiveFunction = problem.getObjectiveFunction();
-        this.optimizationVariableName = problem.getOptimizationVariableName();
-        setOptimizationVariableType(problem.getOptimizationVariableType());
-        this.objectiveVariableName = problem.getObjectiveValueVariable();
-        this.optimizationVariableDimensions = problem.getOptimizationVariableDimensions();
-        id = Integer.toString(problem.getId());
+
+        //this.optimizationVariableDimensions = problem.getOptimizationVariableDimensions();
+        this.id = Integer.toString(problem.getId());
 
         this.initX = calculateInitialX();
     }
 
-    // getter setter methods
+    /* Get methods for Problem associated variables */
 
-    private static String replaceVariableInExpr(String expr, String var, String replacementVar) {
-        String result = expr;
+    public MathValueSymbol getObjectiveVariable() { return objectiveVariable; }
 
-        String sepVar1 = "" + var + "";
-        String sepVar2 = "" + var + "[";
+    public MathExpressionSymbol getObjectiveFunction() { return objectiveFunction; }
 
-        String sepRepVar1 = "" + replacementVar + "";
-        String sepRepVar2 = "" + replacementVar + "[";
+    public List<MathValueSymbol> getOptimizationVariables() { return optimizationVariables; }
 
-        result = result.replace(sepVar1, sepRepVar1);
-        result = result.replace(sepVar2, sepRepVar2);
-        return result;
-    }
+    public List<MathValueSymbol> getIndependentVariables() { return independentVariables; }
 
-    public String getCallSolverName() {
-        return callSolverName;
-    }
+    public List<MathOptimizationConditionSymbol> getConstraintFunctions() { return constraintFunctions;  }
 
-    public void setCallSolverName(String callSolverName) {
-        this.callSolverName = callSolverName;
-    }
-
-    public String getOptimizationVariableName() {
-        return optimizationVariableName;
-    }
-
-    public void setOptimizationVariableName(String optimizationVariableName) {
-        this.optimizationVariableName = optimizationVariableName;
-    }
-
-    public String getObjectiveVariableName() {
-        return objectiveVariableName;
-    }
-
-    public void setObjectiveVariableName(String objectiveVariableName) {
-        this.objectiveVariableName = objectiveVariableName;
-    }
-
-    public int getNumberVariables() {
-        return numberVariables;
-    }
-
-    public void setNumberVariables(int numberVariables) {
-        this.numberVariables = numberVariables;
-    }
-
-    public int getNumberConstraints() {
-        return numberConstraints;
-    }
-
-    public void setNumberConstraints(int numberConstraints) {
-        this.numberConstraints = numberConstraints;
-    }
-
-    public List<String> getxL() {
-        return xL;
-    }
-
-    public void setxL(Vector<String> xL) {
-        this.xL = xL;
-    }
-
-    public List<String> getxU() {
-        return xU;
-    }
-
-    public void setxU(Vector<String> xU) {
-        this.xU = xU;
-    }
-
-    public List<String> getgL() {
-        return gL;
-    }
-
-    public void setgL(Vector<String> gL) {
-        this.gL = gL;
-    }
-
-    public List<String> getgU() {
-        return gU;
-    }
-
-    public void setgU(Vector<String> gU) {
-        this.gU = gU;
-    }
-
-    public List<Double> getInitX() {
-        return initX;
-    }
-
-    public void setInitX(Vector<Double> initX) {
-        this.initX = initX;
-    }
-
-    public String getObjectiveFunction() {
-        return objectiveFunction;
-    }
-
-    public void setObjectiveFunction(String objectiveFunction) {
-        this.objectiveFunction = objectiveFunction;
-    }
-
-    public Vector<String> getConstraintFunctions() {
-        return constraintFunctions;
-    }
-
-    public void setConstraintFunctions(Vector<String> constraintFunctions) {
-        this.constraintFunctions = constraintFunctions;
-    }
-
-    public String getOptimizationVariableType() {
-        return optimizationVariableType;
-    }
+    public List<MathValueSymbol> getEmamVariables() { return emamVariables; }
 
     public String getId() {
         return id;
     }
 
-    public void setId(String id) {
-        this.id = id;
+    public MathExpressionSymbol getStepSize() { return stepSize; }
+
+    /* Get and Set methods for other variables */
+
+    public String getCallSolverName() { return callSolverName; }
+    public void setCallSolverName(String callSolverName) { this.callSolverName = callSolverName; }
+
+
+    /* Derived values */
+
+    public Boolean hasObjectiveVariable() {
+        return objectiveVariable != null;
     }
 
-    // methods
+    public String getObjectiveVariableName() {
+        if(objectiveVariable != null) {
+            return objectiveVariable.getName();
+        }else{
+            return "y";
+        }
+    }
 
-    public void setOptimizationVariableType(String optimizationVariableType) {
-        this.optimizationVariableType = optimizationVariableType;
+    public int getNumberIndependentVariables(){
+        return independentVariables.size();
+    }
+
+    public int getNumberOptimizationVariables(){ return optimizationVariables.size(); }
+
+    public int getNumberVariables() {
+        return getNumberIndependentVariables() + getNumberOptimizationVariables();
+    }
+
+    public int getNumberConstraints() {
+        return constraintFunctions.size();
+    }
+
+    public String getObjectiveFunctionStr(){
+        return this.objectiveFunction.getTextualRepresentation();
     }
 
     /**
@@ -279,71 +188,25 @@ public abstract class SolverViewModel extends ViewModelBase {
     }
 
     protected void replaceVariable(String var, String replacementVar) {
+        // Necessary?
+        /*
         objectiveFunction = replaceVariableInExpr(objectiveFunction, var, replacementVar);
         for (int i = 0; i < constraintFunctions.size(); i++) {
             constraintFunctions.set(i, replaceVariableInExpr(constraintFunctions.get(i), var, replacementVar));
-        }
+        }*/
     }
 
-    protected boolean containsVariable(String variable) {
-        Boolean result = false;
-        if (exprContainsVar(objectiveFunction, variable)) {
-            result = true;
-        }
-        for (String s : constraintFunctions) {
-            if (exprContainsVar(s, variable)) {
-                result = true;
-            }
-        }
-        return result;
-    }
-
-    private boolean exprContainsVar(String expr, String variable) {
-
-        String sepVar1 = "" + variable + "";
-        String sepVar2 = "" + variable + "[";
-
-        Boolean matches1 = expr.contains(sepVar1);
-        Boolean matches2 = expr.contains(sepVar2);
-
-        return matches1 || matches2;
-    }
-
-    protected String findRelpacementVariable(String variable) {
-        String replacementVar = variable;
-        while (containsVariable(replacementVar)) {
-            replacementVar += "Tmp";
-        }
-        return replacementVar;
-    }
 
     public String getOptimizationVariableTypeActive() {
         return optimizationVariableTypeActive;
     }
 
-    public HashSet<String> getKnownVariables() {
-        return knownVariables;
-    }
-
-    public HashSet<String> getKnownVariablesWithType() {
-        return knownVariablesWithType;
-    }
-
-    public void setKnownVariablesFromBluePrint(EMAMBluePrintCPP bluePrint) {
-        List<Variable> variables = bluePrint.getMathInformationRegister().getVariables();
-        variables.addAll(bluePrint.getVariables());
-        for (Variable v : variables) {
-            String name = v.getNameTargetLanguageFormat();
-            String type = v.getVariableType().getTypeNameTargetLanguage();
-            if ((!name.contentEquals(optimizationVariableName)) && (!name.contentEquals(objectiveVariableName)) && (!v.isForLoopVariable()) && (!knownVariables.contains(name))) {
-                knownVariables.add(name);
-                knownVariablesWithType.add(String.format("%s %s", type, name));
-            }
-        }
-    }
-
-    public Vector<Integer> getOptimizationVariableDimensions() {
-        return optimizationVariableDimensions;
+    //Obsolete, Template engine already incorporates indexes
+    public void setKnownVariablesWithNumbers() {
+        /*List<String>  knownVariables = this.getKnownVariablesAsArray();
+        for (int i = 0; i < knownVariables.size(); i++){
+            knownVariablesWithNumbers.add(new NumberedVariable(knownVariables.get(i),i));
+        }*/
     }
 
     public MathOptimizationType getOptimizationProblemType() {

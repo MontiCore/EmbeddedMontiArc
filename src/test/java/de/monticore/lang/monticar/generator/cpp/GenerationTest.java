@@ -527,6 +527,7 @@ public class GenerationTest extends AbstractSymtabTest {
         testFilesAreEqual(files, restPath);
     }
 
+    @Ignore
     @Test
     public void testMathUnitBothOptimizations() throws IOException {
         ThreadingOptimizer.resetID();
