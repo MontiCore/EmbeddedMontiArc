@@ -7,7 +7,7 @@
 
   <groupId>de.monticore.lang.monticar</groupId>
   <artifactId>embedded-montiarc-math-emam2someip-generator</artifactId>
-  <version>1.4-SNAPSHOT</version>
+  <version>1.5-SNAPSHOT</version>
 
   <name>emam2someip</name>
 
@@ -18,7 +18,7 @@
 
     <!-- .. SE-Libraries .................................................. -->
     <se-commons.version>1.7.7</se-commons.version>
-    <Embedded-montiarc-math-rosmsg-generator.version>0.1.4-SNAPSHOT</Embedded-montiarc-math-rosmsg-generator.version>
+    <Embedded-montiarc-math-rosmsg-generator.version>0.1.5-SNAPSHOT</Embedded-montiarc-math-rosmsg-generator.version>
 
     <!-- .. Libraries .................................................. -->
     <guava.version>18.0</guava.version>
