@@ -6,13 +6,13 @@
     <groupId>de.monticore.lang.monticar.utilities</groupId>
     <artifactId>maven-streamtest</artifactId>
     <packaging>maven-plugin</packaging>
-    <version>0.0.21-SNAPSHOT</version>
+    <version>0.0.22-SNAPSHOT</version>
 
     <name>maven-package Streamtest Mojo</name>
     <url>http://maven.apache.org</url>
 
     <properties>
-        <EMAM2Middleware.version>0.1.0-SNAPSHOT</EMAM2Middleware.version>
+        <EMAM2Middleware.version>0.1.1-SNAPSHOT</EMAM2Middleware.version>
         <!--misc-->
         <project.build.sourceEncoding>UTF-8</project.build.sourceEncoding>
     </properties>
