@@ -10,6 +10,8 @@ import de.monticore.lang.monticar.generator.rosmsg.GeneratorRosMsg;
 import de.monticore.lang.monticar.generator.rosmsg.RosMsg;
 import de.se_rwth.commons.logging.Log;
 
+import java.util.Collection;
+import java.util.List;
 import java.util.Objects;
 
 public class RosHelper {
@@ -18,23 +20,31 @@ public class RosHelper {
 
 
     public static void fixRosConnectionSymbols(EMAComponentInstanceSymbol componentInstanceSymbol, boolean ros2mode) {
+        Collection<EMAConnectorInstanceSymbol> x = componentInstanceSymbol.getConnectorInstances();
+        x.toString();
         componentInstanceSymbol.getConnectorInstances().stream()
-                .filter(connectorSymbol -> connectorSymbol.getSourcePort().isRosPort() && connectorSymbol.getTargetPort().isRosPort())
                 .forEach(connectorSymbol -> {
-                    if (Objects.equals(connectorSymbol.getSourcePort().getComponentInstance(), componentInstanceSymbol)) {
-                        //In port of supercomp
-                        inferRosConnectionIfPossible(connectorSymbol);
-                        generateRosConnectionIfPossible(connectorSymbol, ros2mode);
-                    } else if (Objects.equals(connectorSymbol.getTargetPort().getComponentInstance(), componentInstanceSymbol)) {
-                        //out port of supercomp
-                        inferRosConnectionIfPossible(connectorSymbol);
-                        generateRosConnectionIfPossible(connectorSymbol, ros2mode);
-                    } else {
-                        //In between subcomps
-                        inferRosConnectionIfPossible(connectorSymbol);
-                        generateRosConnectionIfPossible(connectorSymbol, ros2mode);
+                    if(connectorSymbol.getSourcePort()!=null || connectorSymbol.getTargetPort()!=null) {
+                        if (connectorSymbol.getSourcePort().isRosPort() && connectorSymbol.getTargetPort().isRosPort()) {
+                            if (Objects.equals(connectorSymbol.getSourcePort().getComponentInstance(), componentInstanceSymbol)) {
+                                //In port of supercomp
+                                inferRosConnectionIfPossible(connectorSymbol);
+                                generateRosConnectionIfPossible(connectorSymbol, ros2mode);
+                            } else if (Objects.equals(connectorSymbol.getTargetPort().getComponentInstance(), componentInstanceSymbol)) {
+                                //out port of supercomp
+                                inferRosConnectionIfPossible(connectorSymbol);
+                                generateRosConnectionIfPossible(connectorSymbol, ros2mode);
+                            } else {
+                                //In between subcomps
+                                inferRosConnectionIfPossible(connectorSymbol);
+                                generateRosConnectionIfPossible(connectorSymbol, ros2mode);
+                            }
+                        }
+                    }else {
+                        Log.error("RosHelper: Component "+connectorSymbol.getFullName()+
+                                " has no port satisfying "+connectorSymbol.getSource()+
+                                " or "+ connectorSymbol.getTarget());
                     }
-
                 });
     }
 
