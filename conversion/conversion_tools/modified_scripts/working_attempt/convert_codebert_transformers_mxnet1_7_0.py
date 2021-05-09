@@ -55,7 +55,6 @@ import re
 import sys
 import json
 import shutil
-import logging
 import argparse
 import pprint as pp
 
@@ -110,12 +109,12 @@ class RoBERTaModelWPooler(BERTModel):
 def parse_args():
     parser = argparse.ArgumentParser(description='Convert the huggingface CodeBERT Model to Gluon.')
     parser.add_argument('--save_dir', type=str, default=None,
-                        help='Directory path to save the converted model.')
-    parser.add_argument('--gpu', type=int, default=None,
-                        help='The single gpu to run mxnet, (e.g. --gpu 0) the default device is cpu.')
+        help='Directory path to save the converted model.')
+    parser.add_argument('--test', type=int, default=None,
+        help='If the model should be tested for equivalence after conversion, outputs the test model')
     return parser.parse_args()
 
-def get_gluon_model_arch(hf_cfg, ctx):
+def get_gluon_model_arch(hf_cfg, ctx, args):
     hyper_params = {
         'num_layers': 12,
         'units': 768,
@@ -124,7 +123,7 @@ def get_gluon_model_arch(hf_cfg, ctx):
         'num_heads': 12,
         'dropout': 0.1,
         'output_attention': False,
-        'output_all_encodings': False,
+        'output_all_encodings': True if args.test else False,
         'activation': 'gelu',
         'layer_norm_eps': 1e-5,
         'vocab_size': hf_cfg.vocab_size,
@@ -161,31 +160,25 @@ def get_gluon_model_arch(hf_cfg, ctx):
         use_pooler=hyper_params['use_pooler']
     )
 
-    # not sure if this is necessary with output_all_encodings passed above
-    # gluon_model._output_all_encodings = True
-    # gluon_model.encoder._output_all_encodings = True
     gluon_model.initialize(ctx=ctx) # unsure if it should be init with normal
     gluon_model.hybridize()
 
     return gluon_model
 
-def convert_params(hf_model, hf_tokenizer, hf_cfg, ctx):
-    print('converting params')
+def convert_params(hf_model, hf_tokenizer, hf_cfg, args):
+    print('Converting Parameters...')
     # use nlp.model.get_model('roberta_12_768_12', dataset_name='openwebtext_ccnews_stories_books_cased', use_decoder=False) and look at its
     # source to get an idea of how to initialize a blank model you can use
     #
     # the function used is here
     # https://github.com/dmlc/gluon-nlp/blob/14559518a75081469bfba14150ded2dc97c13902/src/gluonnlp/model/bert.py#L1459
     #
-    
-    gluon_model = get_gluon_model_arch(hf_cfg, ctx)
-    # print(gluon_model)
+    ctx = mx.cpu()
+    gluon_model = get_gluon_model_arch(hf_cfg, ctx, args)
     gluon_params = gluon_model.collect_params()
     hf_params = hf_model.state_dict()
-    # print(hf_model)
 
     num_layers = hf_cfg.num_hidden_layers
-
     for layer_id in range(num_layers):
         hf_prefix = 'encoder.layer.{}.'.format(layer_id)
         hf_atten_prefix = hf_prefix + 'attention.self.'
@@ -240,9 +233,9 @@ def convert_params(hf_model, hf_tokenizer, hf_cfg, ctx):
 def arr_to_gl(arr):
     return mx.nd.array(arr.cpu().numpy())
 
-def test_model(hf_model, hf_tokenizer, gluon_model, gpu):
-    print('testing model')
-    ctx = mx.gpu(gpu) if gpu is not None else mx.cpu()
+def test_model(hf_model, hf_tokenizer, gluon_model, args):
+    print('Performing a short model test...')
+    ctx = mx.cpu()
     batch_size = 3
     seq_length = 32
     vocab_size = hf_model.config.vocab_size
@@ -250,7 +243,8 @@ def test_model(hf_model, hf_tokenizer, gluon_model, gpu):
     input_ids = np.random.randint(padding_id + 1, vocab_size, (batch_size, seq_length))
     valid_length = np.random.randint(seq_length // 2, seq_length, (batch_size,))
 
-    for i in range(batch_size):  # add padding, not sure if necessary for hf codebert
+    # add padding, not sure if necessary for hf codebert
+    for i in range(batch_size):  
         input_ids[i, valid_length[i]:] = padding_id
 
     gl_input_ids = mx.nd.array(input_ids)
@@ -260,49 +254,51 @@ def test_model(hf_model, hf_tokenizer, gluon_model, gpu):
     hf_input_ids = torch.from_numpy(input_ids).cpu()
     hf_model.eval()
 
-    if gluon_model.encoder._output_all_encodings:
-        # gl_all_hiddens shape is (num_layers, batch_size, seq_length, hidden_size)
-        gl_all_hiddens, gl_pooled = gluon_model(
-            gl_input_ids, 
-            token_types=gl_token_types, 
-            valid_length=gl_valid_length
-        )
-    else:
-        gl_pooled = gluon_model(
-            gl_input_ids, 
-            token_types=gl_token_types, 
-            valid_length=gl_valid_length
-        )
-        print(gl_pooled[0])
-        print(gl_pooled[1])
+    #gl_all_hiddens, gl_pooled
+    gl_outs = gluon_model(
+        gl_input_ids, 
+        token_types=gl_token_types, 
+        valid_length=gl_valid_length
+    )
 
-    # create attention mask for hf model
-    hf_valid_length = np.zeros((batch_size, seq_length))
-    for i in range(batch_size):
-        hf_valid_length[i][:valid_length[i]] = 1
-    hf_valid_length = torch.from_numpy(hf_valid_length)
+    if args.test:
+        print('Performing a long model test...')
+        gl_all_hiddens, gl_pooled = gl_outs
 
-    hf_outputs = hf_model(hf_input_ids, attention_mask=hf_valid_length, output_hidden_states=True)
-    # (num_layers + 1, batch_size, seq_length, hidden_size)
-    hf_all_hiddens = hf_outputs['hidden_states'][1:]
-    hf_pooled = hf_outputs['pooler_output']
+        # create attention mask for hf model
+        hf_valid_length = np.zeros((batch_size, seq_length))
+        for i in range(batch_size):
+            hf_valid_length[i][:valid_length[i]] = 1
+        hf_valid_length = torch.from_numpy(hf_valid_length)
 
-    # check pooling output
-    # assert_allclose(gl_pooled.asnumpy(), hf_pooled.detach().cpu().numpy(), 1E-3, 1E-3)
+        hf_outputs = hf_model(hf_input_ids, attention_mask=hf_valid_length, output_hidden_states=True)
+        # (num_layers + 1, batch_size, seq_length, hidden_size)
+        hf_all_hiddens = hf_outputs['hidden_states'][1:]
+        hf_pooled = hf_outputs['pooler_output']
 
-    # checking all_encodings_outputs
-    # num_layers = hf_model.config.num_hidden_layers
-    # for i in range(num_layers + 1):
-    #     gl_hidden = gl_all_hiddens[i].asnumpy()
-    #     hf_hidden = hf_all_hiddens[i]
-    #     hf_hidden = hf_hidden.detach().cpu().numpy()
-    #     for j in range(batch_size):
-    #         assert_allclose(
-    #             gl_hidden[j, :valid_length[j], :],
-    #             hf_hidden[j, :valid_length[j], :],
-    #             1E-3,
-    #             1E-3
-    #         )
+        # check pooling output
+        assert_allclose(gl_pooled.asnumpy(), hf_pooled.detach().cpu().numpy(), 1E-3, 1E-3)
+
+        # checking all_encodings_outputs
+        num_layers = hf_model.config.num_hidden_layers
+        for i in range(num_layers + 1):
+            gl_hidden = gl_all_hiddens[i].asnumpy()
+            hf_hidden = hf_all_hiddens[i]
+            hf_hidden = hf_hidden.detach().cpu().numpy()
+            for j in range(batch_size):
+                assert_allclose(
+                    gl_hidden[j, :valid_length[j], :],
+                    hf_hidden[j, :valid_length[j], :],
+                    1E-3,
+                    1E-3
+                )
+
+
+def export_model(save_dir, gluon_model):
+    gluon_model.encoder.output_all_encodings = False
+    gluon_model.export(os.path.join(save_dir, 'codebert'))
+    print('Exported the CodeBERT model to {}'.format(os.path.join(save_dir)))
+
 
 def convert_huggingface_model(args):
     if not args.save_dir:
@@ -317,15 +313,13 @@ def convert_huggingface_model(args):
     hf_model.save_pretrained(args.save_dir)
     hf_tokenizer.save_pretrained(args.save_dir)
 
-    ctx = mx.gpu(args.gpu) if args.gpu is not None else mx.cpu()
-    gluon_model = convert_params(hf_model, hf_tokenizer, hf_model.config, ctx)
+    gluon_model = convert_params(hf_model, hf_tokenizer, hf_model.config, args)
     
-    # test currently not passing 
-    test_model(hf_model, hf_tokenizer, gluon_model, args.gpu)
+    # test currently not passing
+    test_model(hf_model, hf_tokenizer, gluon_model, args)
 
-    gluon_model.export(os.path.join(args.save_dir, 'codebert'))
-    logging.info('Exported the CodeBERT model to {}'.format(os.path.join(args.save_dir)))
-    logging.info('Conversion finished!')
+    export_model(args.save_dir, gluon_model)
+    print('Conversion finished!')
 
 if __name__ == '__main__':
     args = parse_args()
