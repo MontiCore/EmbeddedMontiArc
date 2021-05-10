@@ -18,7 +18,7 @@
 
     <groupId>de.monticore.lang.monticar</groupId>
     <artifactId>embedded-montiarc-deeplearning</artifactId>
-    <version>0.5.0-SNAPSHOT</version>
+    <version>0.4.6-SNAPSHOT</version>
 
     <!-- == PROJECT DEPENDENCIES ============================================= -->
 
@@ -27,12 +27,12 @@
         <!-- .. EMA-Libraries ................................................. -->
         <Common-MontiCar.version>0.4.4-SNAPSHOT</Common-MontiCar.version>
         <Embedded-MontiArc.version>0.4.4-SNAPSHOT</Embedded-MontiArc.version>
-        <Embedded-MontiArc-Math.version>0.4.4-SNAPSHOT</Embedded-MontiArc-Math.version>
+        <Embedded-MontiArc-Math.version>0.4.5-SNAPSHOT</Embedded-MontiArc-Math.version>
         <Embedded-MontiArc-Dynamics.version>0.4.4-SNAPSHOT</Embedded-MontiArc-Dynamics.version>
         <Embedded-MontiArc-Behaviour.version>0.4.4-SNAPSHOT</Embedded-MontiArc-Behaviour.version>
         <Math.version>0.4.4-SNAPSHOT</Math.version>
-        <MathOpt.version>0.4.4-SNAPSHOT</MathOpt.version>
-        <CNNArch.version>0.4.4-SNAPSHOT</CNNArch.version>
+        <MathOpt.version>0.4.6-SNAPSHOT</MathOpt.version>
+        <CNNArch.version>0.4.5-SNAPSHOT</CNNArch.version>
 
         <!-- .. SE-Libraries .................................................. -->
         <monticore.version>5.0.1</monticore.version>
