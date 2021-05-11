@@ -241,12 +241,11 @@ public class LayerSymbol extends ArchitectureElementSymbol {
     @Override
     public List<ArchTypeSymbol> computeOutputTypes() {
         if (getResolvedThis().isPresent()) {
-            if (getResolvedThis().get() == this) {
-                return ((PredefinedLayerDeclaration) getDeclaration()).computeOutputTypes(getInputTypes(), this, VariableSymbol.Member.NONE);
+            if (getResolvedThis().get() == this && getDeclaration() instanceof LayerComputeOutputTypes) {
+                return ((LayerComputeOutputTypes) getDeclaration()).computeOutputTypes(getInputTypes(), this, VariableSymbol.Member.NONE);
             }
             else {
                 return ((ArchitectureElementSymbol) getResolvedThis().get()).getOutputTypes();
-
             }
         }
         else {
@@ -257,8 +256,9 @@ public class LayerSymbol extends ArchitectureElementSymbol {
     @Override
     public void checkInput() {
         if (getResolvedThis().isPresent()){
-            if (getResolvedThis().get() == this){
-                ((PredefinedLayerDeclaration) getDeclaration()).checkInput(getInputTypes(), this, VariableSymbol.Member.NONE);
+            if (getResolvedThis().get() == this && (getDeclaration() instanceof PredefinedLayerDeclaration)) {
+                    ((PredefinedLayerDeclaration) getDeclaration()).checkInput(getInputTypes(), this, VariableSymbol.Member.NONE);
+            } else if (getDeclaration() instanceof CustomLayerDeclaration){
             }
             else {
                 ((ArchitectureElementSymbol) getResolvedThis().get()).checkInput();
