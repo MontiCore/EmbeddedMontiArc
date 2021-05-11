@@ -160,6 +160,9 @@ In order to introduce a new predefined layer, the following steps are necessary:
 *  If the layer uses newly introduced arguments, a get() method for these arguments must be implemented in the CNNArch2X project, in the class "ArchitectureElementData".
 *  Finally, the class must be implemented for the respective backend, e.g. by adding a corresponding .ftl file to the "elements" folder in CNNArch2Gluon, or similarly for other backends.
 
+## Introducing Custom Layers 
+It is also possible to add custom layers which are not predefined in the specific backend which is used. For the different backends the approach may differ. For now the method only works for Gluon backend and a short guide on how to use it can be found in the CNNArch2Gluon readme file --> https://git.rwth-aachen.de/monticore/EmbeddedMontiArc/generators/CNNArch2Gluon/-/blob/ba_kisov/README.md#using-custom-layers
+
 ## Structural Arguments
 Structural arguments are special arguments which can be set for each layer and which do not correspond to a layer parameter. 
 The three structural arguments are "?", "->" and "|". The conditional argument "?" is a boolean. 
