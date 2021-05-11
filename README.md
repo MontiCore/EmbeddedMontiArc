@@ -25,13 +25,16 @@ In order to visualize attention from an attention network, the data from this la
 * Add __init__.py file to the custom_layers folder and include a method in it to enable the usage of "from custom_layers import * " statement
 * Place your custom layer python file inside the custom_layers folder (for the appropriate backend) and include the three functions in its class as shown in the example below
 ```
-# A method to return a dictionary with
+    # A method to return a dictionary with
     # the parameters of the layer as keys and their data type as value
+
     def get_parameters(self):
         return {'alpha': int, 'ones': int}
 
+
     # A method to print a dictionary with
     # the parameters of the layer as keys and their data type as value
+
     def print_parameters(self):
         print({'alpha': 'int', 'ones': 'int'})
 
@@ -40,6 +43,7 @@ In order to visualize attention from an attention network, the data from this la
     # the output dimensions of this layer and print a 5-element tuple with the output dimensions and
     # min max value in the form (channel1, height1, width1, min1, max1), (channels2, ...)
     # input_dimension_array = [(channels1, height1, width1), (channels2, height2, width2), ...]
+    
     def compute_output_types(self, alpha, ones, input_dimension_array):
         channels1 = input_dimension_array[0][0]
         height1 = input_dimension_array[0][1]
