@@ -26,17 +26,43 @@ import java.util.*;
 public class EMADLLanguage extends EmbeddingModelingLanguage {
 
     public static final String FILE_ENDING = "emadl";
+    private String customFilesPath = "";
+    private String backend = "";
 
     public static final EmbeddedMontiArcDynamicLanguage HOST_LANGUAGE = new EmbeddedMontiArcDynamicLanguage();
     public static final CNNArchLanguage CNNARCH_LANGUAGE = new CNNArchLanguage();
     public static final MathOptLanguage MATH_LANGUAGE = new MathOptLanguage();
-
 
     public EMADLLanguage() {
         super("Embedded MontiArc Deep Learning Language",
                 FILE_ENDING,
                 HOST_LANGUAGE,
                 Arrays.asList(CNNARCH_LANGUAGE, MATH_LANGUAGE));
+    }
+
+    public EMADLLanguage(String customFilesPath, String backend) {
+        super("Embedded MontiArc Deep Learning Language",
+                FILE_ENDING,
+                HOST_LANGUAGE,
+                Arrays.asList(CNNARCH_LANGUAGE, MATH_LANGUAGE));
+        setBackend(backend);
+        setCustomFilesPath(customFilesPath);
+    }
+
+    private void setBackend(String backend){
+        this.backend = backend;
+    }
+
+    public String getBackend(){
+        return this.backend;
+    }
+
+    private void setCustomFilesPath(String customPythonFilesPath){
+        this.customFilesPath = customPythonFilesPath;
+    }
+
+    public String getCustomFilesPath(){
+        return this.customFilesPath;
     }
 
 
@@ -66,7 +92,7 @@ public class EMADLLanguage extends EmbeddingModelingLanguage {
     @Override
     public Optional<EMADLSymbolTableCreator> getSymbolTableCreator(ResolvingConfiguration resolvingConfiguration, MutableScope enclosingScope) {
         return Optional.of(new EMADLSymbolTableCreator(
-                resolvingConfiguration, enclosingScope));
+                resolvingConfiguration, enclosingScope,getCustomFilesPath(), getBackend()));
     }
 
 }
