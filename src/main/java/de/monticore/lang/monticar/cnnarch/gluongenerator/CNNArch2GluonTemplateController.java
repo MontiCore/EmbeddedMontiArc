@@ -30,6 +30,12 @@ public class CNNArch2GluonTemplateController extends CNNArchTemplateController {
         ftlContext.put(TEMPLATE_CONTROLLER_KEY, this);
         ftlContext.put(ELEMENT_DATA_KEY, getCurrentElement());
         ftlContext.put(NET_DEFINITION_MODE_KEY, netDefinitionMode.toString());
+
+        if (this.getDataElement().getElement() instanceof LayerSymbol){
+            if(((LayerSymbol) (this.getDataElement().getElement())).getDeclaration() instanceof CustomLayerDeclaration){
+                templatePath = relativePath + "CustomLayer" + FTL_FILE_ENDING;
+            }
+        }
         getTemplateConfiguration().processTemplate(ftlContext, templatePath, writer);
     }
 

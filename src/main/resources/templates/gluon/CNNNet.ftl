@@ -5,7 +5,13 @@ import math
 import os
 import abc
 import warnings
+import sys
 from mxnet import gluon, nd
+
+<#if tc.architecture.customPyFilesPath??>
+sys.path.insert(1, '${tc.architecture.customPyFilesPath}')
+from custom_layers import *
+</#if>
 
 
 class ZScoreNormalization(gluon.HybridBlock):
@@ -557,6 +563,8 @@ ${tc.include(networkInstruction.body, elements?index, "FORWARD_FUNCTION")}
 
 </#list>
 
+
+
 class Net_${networkInstruction?index}(gluon.HybridBlock):
     def __init__(self, data_mean=None, data_std=None, mx_context=None, **kwargs):
         super(Net_${networkInstruction?index}, self).__init__(**kwargs)
@@ -578,6 +586,7 @@ class Net_${networkInstruction?index}(gluon.HybridBlock):
 ${tc.include(networkInstruction.body, "ARCHITECTURE_DEFINITION")}
 </#if>    
             pass
+
 
     def hybrid_forward(self, F, ${tc.join(tc.getStreamInputNames(networkInstruction.body, false), ", ")}):
 <#if networkInstruction.body.episodicSubNetworks?has_content>

@@ -11,6 +11,7 @@ if __name__ == "__main__":
     logger.addHandler(handler)
 
     fullConfig_creator = CNNCreator_fullConfig.CNNCreator_fullConfig()
+    fullConfig_creator.validate_parameters()
     fullConfig_loader = CNNDataLoader_fullConfig.CNNDataLoader_fullConfig()
     fullConfig_trainer = CNNSupervisedTrainer_fullConfig.CNNSupervisedTrainer_fullConfig(
         fullConfig_loader,

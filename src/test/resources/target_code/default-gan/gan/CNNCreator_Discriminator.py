@@ -4,6 +4,7 @@ import os
 import shutil
 import warnings
 import inspect
+import sys
 
 from CNNNet_Discriminator import Net_0
 
@@ -186,3 +187,7 @@ class CNNCreator_Discriminator:
         output_domains = (float,0.0,1.0,)
         outputs["dis_"] = output_domains + (output_dimensions,)
         return outputs
+
+    def validate_parameters(self):
+
+            pass

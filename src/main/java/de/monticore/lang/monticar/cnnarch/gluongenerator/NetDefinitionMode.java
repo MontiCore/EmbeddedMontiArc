@@ -7,7 +7,8 @@ package de.monticore.lang.monticar.cnnarch.gluongenerator;
 public enum NetDefinitionMode {
     ARCHITECTURE_DEFINITION,
     PREDICTION_PARAMETER,
-    FORWARD_FUNCTION;
+    FORWARD_FUNCTION,
+    PARAMETER_VALIDATION;
 
     public static NetDefinitionMode fromString(final String netDefinitionMode) {
         switch(netDefinitionMode) {
@@ -17,6 +18,8 @@ public enum NetDefinitionMode {
                 return FORWARD_FUNCTION;
             case "PREDICTION_PARAMETER":
                 return PREDICTION_PARAMETER;
+            case "PARAMETER_VALIDATION":
+                return PARAMETER_VALIDATION;
             default:
                 throw new IllegalArgumentException("Unknown Net Definition Mode");
         }
