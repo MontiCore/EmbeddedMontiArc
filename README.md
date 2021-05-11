@@ -16,12 +16,14 @@ In order to visualize attention from an attention network, the data from this la
 ## Using Custom Layers
 
 * Create a directory with following structure somewhere in your system :
+<pre>
 
 +-- custom_files
      +-- python
            +-- gluon
                 +-- custom_layers
 
+</pre>
 * Add __init__.py file to the custom_layers folder and include a method in it to enable the usage of "from custom_layers import * " statement
 * Place your custom layer python file inside the custom_layers folder (for the appropriate backend) and include the three functions in its class as shown in the example
 * Use the custom layer inside the model with the same name as the file and the class inside is called
