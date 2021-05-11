@@ -12,3 +12,16 @@ In order to visualize attention from an attention network, the data from this la
                ...
 `, the data in this layer will be saved until the end of the network iteration.
 2.  In order to make the network return the saved data, the networks name must be added to the 'AllAttentionModels' class in this project. Furthermore, the layer must either be named `attention`, or the CNNNet.ftl template has to be adjusted to return differently named layers.
+
+#Using Custom Layers
+* Create a directory with following structure somewhere in your system :
+
++-- custom_files
+     +-- python
+           +-- gluon
+                +-- custom_layers
+
+* Add __init__.py file to the custom_layers folder and include a method in it to enable the usage of "from custom_layers import * " statement
+* Place your custom layer python file inside the custom_layers folder (for the appropriate backend) and include the three functions in its class as shown in the example
+* Use the custom layer inside the model with the same name as the file and the class inside is called
+* When you use the script or directly use the EMADL2CPP generator to start generation code and training your model add the "-cfp" command line argument followed by the path to the custom_files folder
