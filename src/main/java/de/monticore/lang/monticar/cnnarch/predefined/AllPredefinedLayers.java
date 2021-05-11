@@ -10,7 +10,9 @@ package de.monticore.lang.monticar.cnnarch.predefined;
 
 import de.monticore.lang.monticar.cnnarch._symboltable.LayerDeclarationSymbol;
 import de.monticore.lang.monticar.cnnarch._symboltable.UnrollDeclarationSymbol;
+import jline.internal.Nullable;
 
+import java.io.IOException;
 import java.util.Arrays;
 import java.util.List;
 import java.util.ArrayList;
@@ -57,6 +59,7 @@ public class AllPredefinedLayers {
     public static final String RESHAPE_NAME = "Reshape";
     public static final String DOT_PRODUCT_SELF_ATTENTION_NAME = "DotProductSelfAttention";
     public static final String LOAD_NETWORK_NAME = "LoadNetwork";
+    public static final String CUSTOM_LAYER = "CustomLayer";
 
     //replay layers
     public static final String LARGE_MEMORY_NAME = "LargeMemory";
@@ -65,6 +68,8 @@ public class AllPredefinedLayers {
 
 
     //predefined argument names
+    public static final String CUSTOM_PARAMETERS = "parameters";
+    public static final String CUSTOM_NAME = "customname";
     public static final String KERNEL_NAME = "kernel";
     public static final String CHANNELS_NAME = "channels";
     public static final String STRIDE_NAME = "stride";
@@ -194,6 +199,7 @@ public class AllPredefinedLayers {
                 DotProductSelfAttention.create(),
                 LargeMemory.create(),
                 EpisodicMemory.create());
+
     }
 
     public static List<UnrollDeclarationSymbol> createUnrollList(){
