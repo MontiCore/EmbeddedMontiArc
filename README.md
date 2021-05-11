@@ -26,14 +26,14 @@ In order to visualize attention from an attention network, the data from this la
 * Place your custom layer python file inside the custom_layers folder (for the appropriate backend) and include the three functions in its class as shown in the example below
 ```
     # A method to return a dictionary with
-    # the parameters of the layer as keys and their data type as value
+    # the names of the parameters of the layer (string) as keys and their data type (data type object) as value
 
     def get_parameters(self):
         return {'alpha': int, 'ones': int}
 
 
     # A method to print a dictionary with
-    # the parameters of the layer as keys and their data type as value
+    # the names of the parameters of the layer (string) as keys and their data type (string) as value
 
     def print_parameters(self):
         print({'alpha': 'int', 'ones': 'int'})
