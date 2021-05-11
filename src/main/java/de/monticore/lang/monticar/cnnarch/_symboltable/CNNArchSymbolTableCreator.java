@@ -19,7 +19,13 @@ import de.monticore.lang.monticar.cnnarch.predefined.AllPredefinedVariables;
 import de.monticore.symboltable.*;
 import de.se_rwth.commons.Names;
 import de.se_rwth.commons.logging.Log;
+import jline.internal.Nullable;
+import org.apache.commons.lang3.SystemUtils;
 
+import java.io.BufferedReader;
+import java.io.File;
+import java.io.IOException;
+import java.io.InputStreamReader;
 import java.util.*;
 
 public class CNNArchSymbolTableCreator extends de.monticore.symboltable.CommonSymbolTableCreator
@@ -29,6 +35,8 @@ public class CNNArchSymbolTableCreator extends de.monticore.symboltable.CommonSy
 
     private MathSymbolTableCreator mathSTC;
     private ArchitectureSymbol architecture;
+    private String backend;
+    private String customFilesPath = "";
 
 
     public CNNArchSymbolTableCreator(final ResolvingConfiguration resolvingConfig,
@@ -38,8 +46,28 @@ public class CNNArchSymbolTableCreator extends de.monticore.symboltable.CommonSy
     }
 
     public CNNArchSymbolTableCreator(final ResolvingConfiguration resolvingConfig,
+                                     final MutableScope enclosingScope,
+                                     String customFilesPath,
+                                     String backend) {
+        super(resolvingConfig, enclosingScope);
+        setBackend(backend);
+        setCustomFilesPath(customFilesPath);
+        initSuperSTC(resolvingConfig);
+    }
+
+    public CNNArchSymbolTableCreator(final ResolvingConfiguration resolvingConfig,
                                      final Deque<MutableScope> scopeStack) {
         super(resolvingConfig, scopeStack);
+        initSuperSTC(resolvingConfig);
+    }
+
+    public CNNArchSymbolTableCreator(final ResolvingConfiguration resolvingConfig,
+                                     final Deque<MutableScope> scopeStack,
+                                     String customFilesPath,
+                                     String backend) {
+        super(resolvingConfig, scopeStack);
+        setBackend(backend);
+        setCustomFilesPath(customFilesPath);
         initSuperSTC(resolvingConfig);
     }
 
@@ -63,6 +91,20 @@ public class CNNArchSymbolTableCreator extends de.monticore.symboltable.CommonSy
         Log.errorIfNull(rootNode, "0xA7004_650 Error by creating of the CNNArchSymbolTableCreatorTOP symbol table: top ast node is null");
         rootNode.accept(realThis);
         return getFirstCreatedScope();
+    }
+
+    private void setBackend(String backend){
+        this.backend = backend;
+    }
+
+    public String getBackend(){ return this.backend; }
+
+    private void setCustomFilesPath(String customPythonFilesPath){
+        this.customFilesPath = customPythonFilesPath;
+    }
+
+    public String getCustomFilesPath(){
+        return this.customFilesPath;
     }
 
     private CNNArchVisitor realThis = this;
@@ -125,11 +167,15 @@ public class CNNArchSymbolTableCreator extends de.monticore.symboltable.CommonSy
 
     public void visit(final ASTArchitecture node) {
         architecture = new ArchitectureSymbol();
-
+        
         addToScopeAndLinkWithNode(architecture, node);
 
         createPredefinedConstants();
         createPredefinedLayers();
+        if(!getCustomFilesPath().equals("")) {
+            createCustomPythonLayers();
+            createCustomCPPLayers();
+        }
     }
 
     public void endVisit(final ASTArchitecture node) {
@@ -157,6 +203,7 @@ public class CNNArchSymbolTableCreator extends de.monticore.symboltable.CommonSy
     }
 
     private void createPredefinedLayers(){
+        
         for (LayerDeclarationSymbol sym : AllPredefinedLayers.createList()){
             addToScope(sym);
         }
@@ -164,6 +211,47 @@ public class CNNArchSymbolTableCreator extends de.monticore.symboltable.CommonSy
             addToScope(sym);
         }
     }
+
+    private void createCustomPythonLayers() {
+        String[] pyFiles = null;
+        File customFilesPath = new File(getCustomFilesPath() + "python/" + getBackend() + "/custom_layers/");
+        if (customFilesPath.exists() && customFilesPath.isDirectory()) {
+            pyFiles = customFilesPath.list();
+        }
+
+        if (pyFiles != null) {
+            for (int index = 0; index < pyFiles.length; index++) {
+                if (pyFiles[index].equals("__init__.py") || !(pyFiles[index].endsWith(".py"))) {
+                    continue;
+                }
+                String nameWithoutExtension = pyFiles[index].substring(0, pyFiles[index].length() - 3);
+                CustomPythonLayerDeclaration declaration = new CustomPythonLayerDeclaration(nameWithoutExtension, customFilesPath, "python");
+                declaration.setParameters(declaration.extractParametersFromFile());
+                addToScope(declaration);
+            }
+        }
+    }
+
+    private void createCustomCPPLayers() {
+        String[] cppFiles = null;
+        File customFilesPath = new File(getCustomFilesPath() + "cpp/custom_layers/");
+        if (customFilesPath.exists() && customFilesPath.isDirectory()) {
+            cppFiles = customFilesPath.list();
+        }
+
+        if (cppFiles != null) {
+            for (int index = 0; index < cppFiles.length; index++) {
+                if (!(cppFiles[index].endsWith(".cpp"))) {
+                    continue;
+                }
+                String nameWithoutExtension = cppFiles[index].substring(0, cppFiles[index].length() - 4);
+                CustomCPPLayerDeclaration declaration = new CustomCPPLayerDeclaration(nameWithoutExtension, customFilesPath, "cpp");
+                declaration.setParameters(declaration.extractParametersFromFile());
+                addToScope(declaration);
+            }
+        }
+    }
+
 
     @Override
     public void endVisit(ASTArchitectureParameter node) {

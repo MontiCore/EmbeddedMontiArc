@@ -21,7 +21,7 @@ import java.util.Optional;
 import java.util.function.BinaryOperator;
 import java.util.stream.Stream;
 
-abstract public class PredefinedLayerDeclaration extends LayerDeclarationSymbol {
+abstract public class PredefinedLayerDeclaration extends LayerDeclarationSymbol implements LayerComputeOutputTypes{
 
     public PredefinedLayerDeclaration(String name) {
         super(name);
@@ -55,9 +55,7 @@ abstract public class PredefinedLayerDeclaration extends LayerDeclarationSymbol 
      * layer call determines the types, not the use of the (already generated) output of the layer.
      * tl;dr: Always use LayerSymbol's input types (layer.getInputTypes()) unless you know what you do.
      */
-    abstract public List<ArchTypeSymbol> computeOutputTypes(List<ArchTypeSymbol> inputTypes,
-                                                            LayerSymbol layer,
-                                                            VariableSymbol.Member member);
+
 
     abstract public void checkInput(List<ArchTypeSymbol> inputTypes,
                                     LayerSymbol layer,

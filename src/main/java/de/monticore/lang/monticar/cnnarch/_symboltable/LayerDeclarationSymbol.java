@@ -76,6 +76,10 @@ public class LayerDeclarationSymbol extends CommonScopeSpanningSymbol {
         return false;
     }
 
+    public boolean isCustom(){
+        return false;
+    }
+
     public Optional<ParameterSymbol> getParameter(String name) {
         Optional<ParameterSymbol> res = Optional.empty();
         for (ParameterSymbol parameter : getParameters()){
@@ -90,7 +94,7 @@ public class LayerDeclarationSymbol extends CommonScopeSpanningSymbol {
     public ArchitectureElementSymbol call(LayerSymbol layer) throws ArchResolveException{
         checkForSequence(layer.getArguments());
 
-        if (isPredefined()){
+        if (isPredefined() || isCustom()){
             return layer;
         }
         else {

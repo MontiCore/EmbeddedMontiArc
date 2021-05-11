@@ -36,6 +36,8 @@ public class ArchitectureSymbol extends CommonScopeSpanningSymbol {
     private String dataPath;
     private String weightsPath;
     private String componentName;
+    //attribute for the path for custom python files
+    private String customPyFilesPath;
 
     public ArchitectureSymbol() {
         super("", KIND);
@@ -125,6 +127,10 @@ public class ArchitectureSymbol extends CommonScopeSpanningSymbol {
         return getSpannedScope().resolveLocally(UnrollDeclarationSymbol.KIND);
     }
 
+    public void setCustomPyFilesPath(String customPyFilesPath) { this.customPyFilesPath = customPyFilesPath; }
+
+    public String getCustomPyFilesPath() { return customPyFilesPath; }
+
     public void resolve() {
         for (NetworkInstructionSymbol networkInstruction : getNetworkInstructions()) {
             networkInstruction.checkIfResolvable();
@@ -189,6 +195,7 @@ public class ArchitectureSymbol extends CommonScopeSpanningSymbol {
         for (UnrollDeclarationSymbol unrollDeclaration : AllPredefinedLayers.createUnrollList()){
             copy.getSpannedScope().getAsMutableScope().add(unrollDeclaration);
         }
+
 
         for (LayerDeclarationSymbol layerDeclaration : getLayerDeclarations()){
             if (!layerDeclaration.isPredefined()) {
