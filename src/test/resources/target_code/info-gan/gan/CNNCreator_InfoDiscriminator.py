@@ -4,6 +4,7 @@ import os
 import shutil
 import warnings
 import inspect
+import sys
 
 from CNNNet_InfoDiscriminator import Net_0
 
@@ -189,3 +190,7 @@ class CNNCreator_InfoDiscriminator:
         output_domains = (float,0.0,float('inf'),)
         outputs["features_"] = output_domains + (output_dimensions,)
         return outputs
+
+    def validate_parameters(self):
+
+            pass

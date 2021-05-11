@@ -4,6 +4,7 @@ import os
 import shutil
 import warnings
 import inspect
+import sys
 
 from CNNNet_EpisodicMemoryNetwork import Net_0
 
@@ -187,3 +188,7 @@ class CNNCreator_EpisodicMemoryNetwork:
         output_domains = (float,0.0,1.0,)
         outputs["softmax_"] = output_domains + (output_dimensions,)
         return outputs
+
+    def validate_parameters(self):
+
+            pass
