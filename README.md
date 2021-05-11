@@ -53,4 +53,4 @@ In order to visualize attention from an attention network, the data from this la
         print([(channels1, height1, width1, min1, max1)])
 ```
 * Use the custom layer inside the model with the same name as the file and the class inside is called
-* When you use the script or directly use the EMADL2CPP generator to start generation code and training your model add the "-cfp" command line argument followed by the path to the custom_files folder
+* When you use the script or directly use the EMADL2CPP generator to start generating code and training your model add the "-cfp" command line argument followed by the path to the custom_files folder
