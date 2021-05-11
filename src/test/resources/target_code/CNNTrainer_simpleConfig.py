@@ -11,6 +11,7 @@ if __name__ == "__main__":
     logger.addHandler(handler)
 
     simpleConfig_creator = CNNCreator_simpleConfig.CNNCreator_simpleConfig()
+    simpleConfig_creator.validate_parameters()
     simpleConfig_loader = CNNDataLoader_simpleConfig.CNNDataLoader_simpleConfig()
     simpleConfig_trainer = CNNSupervisedTrainer_simpleConfig.CNNSupervisedTrainer_simpleConfig(
         simpleConfig_loader,
