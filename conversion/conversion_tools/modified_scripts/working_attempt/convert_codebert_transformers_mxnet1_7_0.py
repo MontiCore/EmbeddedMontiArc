@@ -66,8 +66,8 @@ import torch
 import transformers
 from gluonnlp.model import BERTEncoder, BERTModel
 
-class RoBERTaModelWPooler(BERTModel):
-    # analogous to gluonnlp 0.10.0 nlp.model.RobertaModel but it allows use_pooler and defaults to True
+class RoBERTaModelWPoolerTest(BERTModel):
+# analogous to gluonnlp 0.10.0 nlp.model.RobertaModel but it allows use_pooler and use_token_type_embed
     def __init__(self, 
         encoder, 
         vocab_size=None,
@@ -84,7 +84,7 @@ class RoBERTaModelWPooler(BERTModel):
         prefix=None, 
         params=None
     ):
-        super(RoBERTaModelWPooler, self).__init__(
+        super(RoBERTaModelWPoolerTest, self).__init__(
             encoder, 
             vocab_size=vocab_size,
             token_type_vocab_size=token_type_vocab_size, 
@@ -102,17 +102,25 @@ class RoBERTaModelWPooler(BERTModel):
         )
 
     def __call__(self, inputs, token_types=None, valid_length=None, masked_positions=None):
-        return super(RoBERTaModelWPooler, self).__call__(
+        return super(RoBERTaModelWPoolerTest, self).__call__(
             inputs, token_types=token_types, valid_length=valid_length,
             masked_positions=masked_positions
         )
+
+class RoBERTaModelWPooler(RoBERTaModelWPoolerTest):
+    def hybrid_forward(self, F, inputs, token_types, valid_length=None, masked_positions=None):
+        # only return the last output (pooler output) to make compatible with EMADL LoadNetwork layer
+        outputs = super(RoBERTaModelWPooler, self).hybrid_forward(
+            F, inputs, token_types, valid_length=valid_length, masked_positions=masked_positions
+        )
+        return outputs[-1]
 
 def parse_args():
     parser = argparse.ArgumentParser(description='Convert the huggingface CodeBERT Model to Gluon.')
     parser.add_argument('--save_dir', type=str, default=None,
         help='Directory path to save the converted model.')
     parser.add_argument('--test', action='store_true',
-        help='If the model should be tested for equivalence after conversion, outputs the test model')
+        help='If the model should be tested for equivalence after conversion, no model is output')
     return parser.parse_args()
 
 def get_gluon_model_arch(hf_cfg, ctx, args):
@@ -145,7 +153,7 @@ def get_gluon_model_arch(hf_cfg, ctx, args):
         'use_decoder': False,
         'use_classifier': False,
         'use_token_type_embed': True,
-        'prefix': None,
+        'prefix': "robertamodelwpooler0_",
         'params': None
     }
 
@@ -166,22 +174,40 @@ def get_gluon_model_arch(hf_cfg, ctx, args):
         layer_norm_eps=enc_hyper_params['layer_norm_eps']
     )
 
-    gluon_model = RoBERTaModelWPooler(
-        encoder=gluon_encoder, 
-        vocab_size=hyper_params['vocab_size'],
-        token_type_vocab_size=hyper_params['token_type_vocab_size'],
-        units=hyper_params['units'],
-        embed_size=hyper_params['embed_size'],
-        embed_initializer=hyper_params['embed_initializer'],
-        word_embed=hyper_params['word_embed'],
-        token_type_embed=hyper_params['token_type_embed'],
-        use_pooler=hyper_params['use_pooler'],
-        use_decoder=hyper_params['use_decoder'],
-        use_classifier=hyper_params['use_classifier'],
-        use_token_type_embed=hyper_params['use_token_type_embed'],
-        prefix=hyper_params['prefix'],
-        params=hyper_params['params']
-    )
+    if args.test:
+        gluon_model = RoBERTaModelWPoolerTest(
+            encoder=gluon_encoder, 
+            vocab_size=hyper_params['vocab_size'],
+            token_type_vocab_size=hyper_params['token_type_vocab_size'],
+            units=hyper_params['units'],
+            embed_size=hyper_params['embed_size'],
+            embed_initializer=hyper_params['embed_initializer'],
+            word_embed=hyper_params['word_embed'],
+            token_type_embed=hyper_params['token_type_embed'],
+            use_pooler=hyper_params['use_pooler'],
+            use_decoder=hyper_params['use_decoder'],
+            use_classifier=hyper_params['use_classifier'],
+            use_token_type_embed=hyper_params['use_token_type_embed'],
+            prefix=hyper_params['prefix'],
+            params=hyper_params['params']
+        )
+    else:
+        gluon_model = RoBERTaModelWPooler(
+            encoder=gluon_encoder, 
+            vocab_size=hyper_params['vocab_size'],
+            token_type_vocab_size=hyper_params['token_type_vocab_size'],
+            units=hyper_params['units'],
+            embed_size=hyper_params['embed_size'],
+            embed_initializer=hyper_params['embed_initializer'],
+            word_embed=hyper_params['word_embed'],
+            token_type_embed=hyper_params['token_type_embed'],
+            use_pooler=hyper_params['use_pooler'],
+            use_decoder=hyper_params['use_decoder'],
+            use_classifier=hyper_params['use_classifier'],
+            use_token_type_embed=hyper_params['use_token_type_embed'],
+            prefix=hyper_params['prefix'],
+            params=hyper_params['params']
+        )
 
     gluon_model.initialize(ctx=ctx) # unsure if it should be init with normal
     gluon_model.hybridize()
@@ -230,6 +256,8 @@ def convert_params(hf_model, hf_tokenizer, hf_cfg, args):
             hf_name = hf_prefix + hf_suffix
             gl_name = gl_prefix + gl_suffix
             gluon_params[gl_name].set_data(arr_to_gl(hf_params[hf_name]))
+
+
 
     for hf_name, gl_name in [
         ('embeddings.word_embeddings.weight', 'robertamodelwpooler0_word_embed_embedding0_weight'),
@@ -331,17 +359,17 @@ def convert_huggingface_model(args):
     # load and save huggingface model
     hf_tokenizer = transformers.RobertaTokenizer.from_pretrained("microsoft/codebert-base")
     hf_model = transformers.RobertaModel.from_pretrained("microsoft/codebert-base")
-    
-    hf_model.save_pretrained(args.save_dir)
-    hf_tokenizer.save_pretrained(args.save_dir)
 
     gluon_model = convert_params(hf_model, hf_tokenizer, hf_model.config, args)
     
     # test currently not passing
     test_model(hf_model, hf_tokenizer, gluon_model, args)
 
-    export_model(args.save_dir, gluon_model)
     print('Conversion finished!')
+    if not args.test:
+        export_model(args.save_dir, gluon_model)
+    else:
+        print('Testing finished!')
 
 if __name__ == '__main__':
     args = parse_args()
