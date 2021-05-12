@@ -33,7 +33,7 @@ public class CustomPythonLayerDeclaration extends CustomLayerDeclaration{
         try {
             String callingPrintMethod = "import " + getName() + "; temp=" + getName() + "." + getName() + "(); temp.print_parameters()";
             if (SystemUtils.IS_OS_WINDOWS == false) {
-                printParametersOfLayer = "python3 -c '" + callingPrintMethod + "'";
+                printParametersOfLayer = "python -c '" + callingPrintMethod + "'";
                 terminal = "/bin/bash";
                 com = "-c";
             } else {
@@ -225,7 +225,7 @@ public class CustomPythonLayerDeclaration extends CustomLayerDeclaration{
         String com = "";
         String callingPrintMethod = "import " + this.getName() + "; temp=" + this.getName() + "." + this.getName() + "(); temp.compute_output_types(" + parametersOfLayer + computeOutputPython + ")";
         if (SystemUtils.IS_OS_WINDOWS == false) {
-            printOutputDimensions = "python3 -c '" + callingPrintMethod + "'";
+            printOutputDimensions = "python -c '" + callingPrintMethod + "'";
             terminal = "/bin/bash";
             com = "-c";
         } else {
