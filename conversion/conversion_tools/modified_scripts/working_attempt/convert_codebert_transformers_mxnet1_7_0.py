@@ -75,13 +75,14 @@ class RoBERTaModelWPooler(BERTModel):
         units=None,
         embed_size=None, 
         embed_initializer=None,
-        word_embed=None, 
-        use_decoder=True, 
-        use_token_type_embed=True, 
-        token_type_embed=None, 
+        word_embed=None,
+        token_type_embed=None,
+        use_pooler=None,
+        use_decoder=None,
+        use_classifier=None,
+        use_token_type_embed=None, 
         prefix=None, 
-        params=None, 
-        use_pooler=True
+        params=None
     ):
         super(RoBERTaModelWPooler, self).__init__(
             encoder, 
@@ -90,11 +91,11 @@ class RoBERTaModelWPooler(BERTModel):
             units=units,
             embed_size=embed_size,
             embed_initializer=embed_initializer,
-            word_embed=word_embed, 
+            word_embed=word_embed,
             token_type_embed=token_type_embed,
-            use_pooler=use_pooler, 
+            use_pooler=use_pooler,
             use_decoder=use_decoder,
-            use_classifier=False, 
+            use_classifier=use_classifier, 
             use_token_type_embed=use_token_type_embed,
             prefix=prefix, 
             params=params
@@ -110,12 +111,12 @@ def parse_args():
     parser = argparse.ArgumentParser(description='Convert the huggingface CodeBERT Model to Gluon.')
     parser.add_argument('--save_dir', type=str, default=None,
         help='Directory path to save the converted model.')
-    parser.add_argument('--test', type=int, default=None,
+    parser.add_argument('--test', action='store_true',
         help='If the model should be tested for equivalence after conversion, outputs the test model')
     return parser.parse_args()
 
 def get_gluon_model_arch(hf_cfg, ctx, args):
-    hyper_params = {
+    enc_hyper_params = {
         'num_layers': 12,
         'units': 768,
         'hidden_size': 3072,
@@ -124,45 +125,66 @@ def get_gluon_model_arch(hf_cfg, ctx, args):
         'dropout': 0.1,
         'output_attention': False,
         'output_all_encodings': True if args.test else False,
+        'weight_initializer': None,
+        'bias_initializer': 'zeros',
+        'prefix': None,
+        'params': None,
         'activation': 'gelu',
-        'layer_norm_eps': 1e-5,
+        'layer_norm_eps': 1e-5
+    }
+
+    hyper_params = {
         'vocab_size': hf_cfg.vocab_size,
-        'embed_size': 768,
-        'word_embed': None,
-        'use_decoder': False,
-        'use_token_type_embed': True,
         'token_type_vocab_size': 1,
-        'use_pooler': True
+        'units': 768,
+        'embed_size': 768,
+        'embed_initializer': None,
+        'word_embed': None,
+        'token_type_embed': None,
+        'use_pooler': True,
+        'use_decoder': False,
+        'use_classifier': False,
+        'use_token_type_embed': True,
+        'prefix': None,
+        'params': None
     }
 
     gluon_encoder = BERTEncoder(
-        num_layers=hyper_params['num_layers'],
-        units=hyper_params['units'],
-        hidden_size=hyper_params['hidden_size'],
-        max_length=hyper_params['max_length'],
-        num_heads=hyper_params['num_heads'],
-        dropout=hyper_params['dropout'],
-        output_attention=hyper_params['output_attention'],
-        output_all_encodings=hyper_params['output_all_encodings'],
-        activation=hyper_params['activation'],
-        layer_norm_eps=hyper_params['layer_norm_eps']
+        num_layers=enc_hyper_params['num_layers'],
+        units=enc_hyper_params['units'],
+        hidden_size=enc_hyper_params['hidden_size'],
+        max_length=enc_hyper_params['max_length'],
+        num_heads=enc_hyper_params['num_heads'],
+        dropout=enc_hyper_params['dropout'],
+        output_attention=enc_hyper_params['output_attention'],
+        output_all_encodings=enc_hyper_params['output_all_encodings'],
+        weight_initializer=enc_hyper_params['weight_initializer'],
+        bias_initializer=enc_hyper_params['bias_initializer'],
+        prefix=enc_hyper_params['prefix'],
+        params=enc_hyper_params['params'],
+        activation=enc_hyper_params['activation'],
+        layer_norm_eps=enc_hyper_params['layer_norm_eps']
     )
 
     gluon_model = RoBERTaModelWPooler(
         encoder=gluon_encoder, 
         vocab_size=hyper_params['vocab_size'],
+        token_type_vocab_size=hyper_params['token_type_vocab_size'],
         units=hyper_params['units'],
         embed_size=hyper_params['embed_size'],
+        embed_initializer=hyper_params['embed_initializer'],
         word_embed=hyper_params['word_embed'],
+        token_type_embed=hyper_params['token_type_embed'],
+        use_pooler=hyper_params['use_pooler'],
         use_decoder=hyper_params['use_decoder'],
+        use_classifier=hyper_params['use_classifier'],
         use_token_type_embed=hyper_params['use_token_type_embed'],
-        token_type_vocab_size=hyper_params['token_type_vocab_size'],
-        use_pooler=hyper_params['use_pooler']
+        prefix=hyper_params['prefix'],
+        params=hyper_params['params']
     )
 
     gluon_model.initialize(ctx=ctx) # unsure if it should be init with normal
     gluon_model.hybridize()
-
     return gluon_model
 
 def convert_params(hf_model, hf_tokenizer, hf_cfg, args):
