@@ -59,6 +59,7 @@ import argparse
 import pprint as pp
 
 import mxnet as mx
+from mxnet.gluon.block import HybridBlock
 import numpy as np
 from numpy.testing import assert_allclose
 
@@ -108,8 +109,21 @@ class RoBERTaModelWPoolerTest(BERTModel):
         )
 
 class RoBERTaModelWPooler(RoBERTaModelWPoolerTest):
+    # def __call__(self, inputs, token_types=None, valid_length=None, masked_positions=None):
+    #     # reshape the inputs from (n,1) to (n,) for compatibility with LoadNetwork
+    #     print(valid_length)
+    #     valid_length = valid_length.reshape(valid_length.shape[0])
+    #     print(valid_length)
+    #     return super(RoBERTaModelWPoolerTest, self).__call__(
+    #         inputs, token_types=token_types, valid_length=valid_length,
+    #         masked_positions=masked_positions
+    #     )
+
     def hybrid_forward(self, F, inputs, token_types, valid_length=None, masked_positions=None):
         # only return the last output (pooler output) to make compatible with EMADL LoadNetwork layer
+        index = mx.symbol.Variable('index')
+        newShape = mx.symbol.pick(valid_length.shape_array(), index)
+        valid_length = mx.symbol.reshape(valid_length, shape=newShape)
         outputs = super(RoBERTaModelWPooler, self).hybrid_forward(
             F, inputs, token_types, valid_length=valid_length, masked_positions=masked_positions
         )
@@ -308,7 +322,7 @@ def test_model(hf_model, hf_tokenizer, gluon_model, args):
     gl_outs = gluon_model(
         gl_input_ids, 
         token_types=gl_token_types, 
-        valid_length=gl_valid_length
+        valid_length=gl_valid_length #.reshape(gl_valid_length.shape[0], 1)
     )
 
     if args.test:
