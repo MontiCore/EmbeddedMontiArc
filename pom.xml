@@ -21,7 +21,6 @@
     <artifactId>cnn-arch</artifactId>
     <version>0.4.7-SNAPSHOT</version>
 
-
     <!-- == PROJECT DEPENDENCIES ============================================= -->
 
     <properties>
