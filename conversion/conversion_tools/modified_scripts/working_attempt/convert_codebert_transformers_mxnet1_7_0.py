@@ -120,13 +120,12 @@ class RoBERTaModelWPooler(RoBERTaModelWPoolerTest):
     #     )
 
     def hybrid_forward(self, F, inputs, token_types, valid_length=None, masked_positions=None):
-        # only return the last output (pooler output) to make compatible with EMADL LoadNetwork layer
-        index = mx.symbol.Variable('index')
-        newShape = mx.symbol.pick(valid_length.shape_array(), index)
-        valid_length = mx.symbol.reshape(valid_length, shape=newShape)
+        # remove single dim entries from the valid_length input, needed for compatibility with EMADL LoadNetwork layer
+        valid_length = mx.symbol.squeeze(valid_length)
         outputs = super(RoBERTaModelWPooler, self).hybrid_forward(
             F, inputs, token_types, valid_length=valid_length, masked_positions=masked_positions
         )
+        # only return the last output (pooler output) to make compatible with EMADL LoadNetwork layer
         return outputs[-1]
 
 def parse_args():
@@ -321,8 +320,9 @@ def test_model(hf_model, hf_tokenizer, gluon_model, args):
     #gl_all_hiddens, gl_pooled
     gl_outs = gluon_model(
         gl_input_ids, 
-        token_types=gl_token_types, 
-        valid_length=gl_valid_length #.reshape(gl_valid_length.shape[0], 1)
+        token_types=gl_token_types,
+        # reshape the inputs from (n,) to (n,1) to mock LoadNetwork layer inputs in EMADL
+        valid_length=gl_valid_length.reshape(gl_valid_length.shape[0], 1)
     )
 
     if args.test:
