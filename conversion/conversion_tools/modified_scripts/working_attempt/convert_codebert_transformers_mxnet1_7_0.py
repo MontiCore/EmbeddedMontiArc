@@ -109,16 +109,6 @@ class RoBERTaModelWPoolerTest(BERTModel):
         )
 
 class RoBERTaModelWPooler(RoBERTaModelWPoolerTest):
-    # def __call__(self, inputs, token_types=None, valid_length=None, masked_positions=None):
-    #     # reshape the inputs from (n,1) to (n,) for compatibility with LoadNetwork
-    #     print(valid_length)
-    #     valid_length = valid_length.reshape(valid_length.shape[0])
-    #     print(valid_length)
-    #     return super(RoBERTaModelWPoolerTest, self).__call__(
-    #         inputs, token_types=token_types, valid_length=valid_length,
-    #         masked_positions=masked_positions
-    #     )
-
     def hybrid_forward(self, F, inputs, token_types, valid_length=None, masked_positions=None):
         # remove single dim entries from the valid_length input, needed for compatibility with EMADL LoadNetwork layer
         valid_length = mx.symbol.squeeze(valid_length)
