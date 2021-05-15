@@ -116,6 +116,11 @@ public class StreamTestMojoBase extends AbstractMojo {
     public String getPathToPython() {return pathToPython;}
     public void setPathToPython(String pathToPython){this.pathToPython = pathToPython;}
 
+    @Parameter(defaultValue = "")
+    protected String customFilesPath;
+    public String getCustomFilesPath() {return customFilesPath;}
+    public void setCustomFilesPath(String customFilesPath){this.customFilesPath = customFilesPath;}
+
     @Parameter(defaultValue = "VGG16")
     protected String rootModel;
     public String getRootModel() { return rootModel;}
@@ -253,6 +258,7 @@ public class StreamTestMojoBase extends AbstractMojo {
         stmb.trainingNeeded = trainingNeeded;
         stmb.pathToPython = pathToPython;
         stmb.rootModel = rootModel;
+        stmb.customFilesPath = customFilesPath;
 
         stmb.setLog(getLog());
 
