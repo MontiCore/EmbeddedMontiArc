@@ -60,8 +60,8 @@ public class AllPredefinedLayers {
     public static final String DOT_PRODUCT_SELF_ATTENTION_NAME = "DotProductSelfAttention";
     public static final String LOAD_NETWORK_NAME = "LoadNetwork";
     public static final String CUSTOM_LAYER = "CustomLayer";
-    public static final String CONVOLUTION3D_NAME = "3DConvolution";
-    public static final String UP_CONVOLUTION3D_NAME = "3DConvolution";
+    public static final String CONVOLUTION3D_NAME = "Convolution3D";
+    public static final String UP_CONVOLUTION3D_NAME = "UpConvolution3D";
 
     //replay layers
     public static final String LARGE_MEMORY_NAME = "LargeMemory";
