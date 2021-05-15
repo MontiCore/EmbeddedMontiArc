@@ -4,7 +4,7 @@ set(CMAKE_DEPENDS_LANGUAGES
   )
 # The set of files for implicit dependencies of each language:
 set(CMAKE_DEPENDS_CHECK_CXX
-  "/home/julian/Documents/MontiCore/mnistcalculator/gluon-cpp/target/cNNCalculator_connector.cpp" "/home/julian/Documents/MontiCore/mnistcalculator/gluon-cpp/build/target/CMakeFiles/cNNCalculator_connector.dir/cNNCalculator_connector.cpp.o"
+  "/home/drakeman/mnistcalculator/gluon-cpp/target/cNNCalculator_connector.cpp" "/home/drakeman/mnistcalculator/gluon-cpp/build/target/CMakeFiles/cNNCalculator_connector.dir/cNNCalculator_connector.cpp.o"
   )
 set(CMAKE_CXX_COMPILER_ID "GNU")
 

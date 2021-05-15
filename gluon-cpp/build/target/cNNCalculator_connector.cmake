@@ -4,7 +4,7 @@ if("${CMAKE_MAJOR_VERSION}.${CMAKE_MINOR_VERSION}" LESS 2.5)
    message(FATAL_ERROR "CMake >= 2.6.0 required")
 endif()
 cmake_policy(PUSH)
-cmake_policy(VERSION 2.6)
+cmake_policy(VERSION 2.6...3.17)
 #----------------------------------------------------------------
 # Generated CMake target import file.
 #----------------------------------------------------------------
@@ -45,7 +45,7 @@ unset(_expectedTargets)
 add_library(cNNCalculator_connector STATIC IMPORTED)
 
 set_target_properties(cNNCalculator_connector PROPERTIES
-  INTERFACE_INCLUDE_DIRECTORIES "/home/julian/Documents/MontiCore/mnistcalculator/gluon-cpp/target;/usr/include"
+  INTERFACE_INCLUDE_DIRECTORIES "/home/drakeman/mnistcalculator/gluon-cpp/target;/usr/include"
   INTERFACE_LINK_LIBRARIES "/usr/lib/x86_64-linux-gnu/libarmadillo.so;mxnet"
 )
 
@@ -53,7 +53,7 @@ set_target_properties(cNNCalculator_connector PROPERTIES
 set_property(TARGET cNNCalculator_connector APPEND PROPERTY IMPORTED_CONFIGURATIONS NOCONFIG)
 set_target_properties(cNNCalculator_connector PROPERTIES
   IMPORTED_LINK_INTERFACE_LANGUAGES_NOCONFIG "CXX"
-  IMPORTED_LOCATION_NOCONFIG "/home/julian/Documents/MontiCore/mnistcalculator/gluon-cpp/build/target/libcNNCalculator_connector.a"
+  IMPORTED_LOCATION_NOCONFIG "/home/drakeman/mnistcalculator/gluon-cpp/build/target/libcNNCalculator_connector.a"
   )
 
 # This file does not depend on other imported targets which have

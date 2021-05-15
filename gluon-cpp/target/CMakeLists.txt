@@ -12,8 +12,10 @@ set(INCLUDE_DIRS ${INCLUDE_DIRS} ${Armadillo_INCLUDE_DIRS})
 set(LIBS ${LIBS} ${Armadillo_LIBRARIES})
 
 
-# additional commands
+# additional library linkage
 set(LIBS ${LIBS} mxnet)
+
+# additional commands
 
 # create static library
 include_directories(${INCLUDE_DIRS})
