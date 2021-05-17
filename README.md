@@ -159,6 +159,7 @@ In order to introduce a new predefined layer, the following steps are necessary:
 *  The name of the layer and its arguments (if they are new) have to be added to the AllPredefinedLayers class in the "predefined" folder. The "create()" method for the new layer must be called in AllPredefinedLayers.
 *  If the layer uses newly introduced arguments, a get() method for these arguments must be implemented in the CNNArch2X project, in the class "ArchitectureElementData".
 *  Finally, the class must be implemented for the respective backend, e.g. by adding a corresponding .ftl file to the "elements" folder in CNNArch2Gluon, or similarly for other backends.
+*  For Gluon, the new layer has to be added to the CNNArch2GluonLayerSupportChecker.java file in CNNArch2Gluon.
 
 ## Introducing Custom Layers 
 It is also possible to add custom layers which are not predefined in the specific backend which is used. For the different backends the approach may differ. For now the method only works for Gluon backend and a short guide on how to use it can be found in the CNNArch2Gluon readme file --> https://git.rwth-aachen.de/monticore/EmbeddedMontiArc/generators/CNNArch2Gluon/-/blob/ba_kisov/README.md#using-custom-layers
