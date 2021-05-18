@@ -68,6 +68,7 @@ TestMNISTwithCustomLayer:
   - . ~/.bashrc
   - python --version
   - python3 --version
+  - which python
   - mv /mxnet/build/libmxnet.so /mxnet/build/libmxnet.a /usr/lib/
   - cd mnist-custom-layer
   - mvn dependency:resolve emadl:train -s settings.xml
