@@ -9,6 +9,8 @@ public class TrainingConfiguration {
 
   private File pathToPython;
 
+  private File customFilesPath;
+
   private File pathToProject;
 
   private File pathToTest;
@@ -21,6 +23,10 @@ public class TrainingConfiguration {
 
   public File getPathToPython() {
     return pathToPython;
+  }
+
+  public File getCustomFilesPath(){
+    return customFilesPath;
   }
 
   public File getPathToProject() {

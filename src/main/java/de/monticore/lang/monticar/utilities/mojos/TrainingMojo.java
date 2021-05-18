@@ -23,7 +23,7 @@ public class TrainingMojo extends TrainingConfigMojo {
         plugin(
             groupId("de.monticore.lang.monticar.utilities"),
             artifactId("maven-streamtest"),
-            version("0.0.21-SNAPSHOT")
+            version("0.0.23-SNAPSHOT")
         ),
         goal("streamtest-generator"),
         configuration(getConfigElements().toArray(new Element[0])),
@@ -52,6 +52,8 @@ public class TrainingMojo extends TrainingConfigMojo {
       elements.add(element(name("pathToPython"), trainingConfig.getPathToPython().getAbsolutePath()));
     if (trainingConfig.getGenerator() != null)
       elements.add(element(name("generator"), trainingConfig.getGenerator().name()));
+    if (trainingConfig.getCustomFilesPath() != null)
+      elements.add(element(name("customFilesPath"), trainingConfig.getCustomFilesPath().getAbsolutePath()));
     return elements;
   }
 
