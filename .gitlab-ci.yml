@@ -67,6 +67,7 @@ TestMNISTwithCustomLayer:
   - echo 'alias python='\''/usr/bin/python3'\''' >> ~/.bashrc
   - . ~/.bashrc
   - python --version
+  - python3 --version
   - mv /mxnet/build/libmxnet.so /mxnet/build/libmxnet.a /usr/lib/
   - cd mnist-custom-layer
   - mvn dependency:resolve emadl:train -s settings.xml
