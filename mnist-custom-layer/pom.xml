@@ -33,6 +33,7 @@
                     <training>
                         <backend>GLUON</backend>
                         <customFilesPath>src/main</customFilesPath>
+                        <pathToPython>/usr/bin/python3</pathToPython>
                         <modelToTrain>calculator.Connector</modelToTrain>
                         <pathToProject>src/main/emadl</pathToProject>
                         <pathToTest>src/main/emadl</pathToTest>
