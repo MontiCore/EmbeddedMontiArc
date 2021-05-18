@@ -237,6 +237,11 @@ public class StreamTestGeneratorMojo extends StreamTestMojoBase {
             }
 
             EMADLGenerator emadlGenerator = new EMADLGenerator(this.backend);
+
+            if(this.getCustomFilesPath() != null){
+                emadlGenerator.setCustomFilesPath(this.getCustomFilesPath());
+            }
+
             GeneratorCPP generatorCPP = emadlGenerator.getEmamGen();
             //GeneratorCPP generatorCPP = new GeneratorCPP();
             generatorCPP.setModelsDirPath(Paths.get(this.getPathTmpOutEMAM()));
