@@ -66,6 +66,7 @@ TestMNISTwithCustomLayer:
   script:
   - echo 'alias python='\''/usr/bin/python3'\''' >> ~/.bashrc
   - . ~/.bashrc
+  - echo $PYTHONPATH
   - python --version
   - python3 --version
   - which python
