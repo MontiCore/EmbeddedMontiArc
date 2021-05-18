@@ -1,5 +1,3 @@
-#!/usr/bin/python3
-
 import mxnet as mx
 from mxnet import gluon, util
 
