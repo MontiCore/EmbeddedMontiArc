@@ -70,7 +70,7 @@ TestMNISTwithCustomLayer:
   - python --version
   - python3 --version
   - which python
-  - alias python=python3
+  - alias python=/urs/bin/python3
   - python --version
   - python3 --version
   - which python
