@@ -51,15 +51,10 @@
 # next steps, look at distilbert and encoder._collect_params_with_prefix() and compare to huggingface
 
 import os
-import re
-import sys
-import json
-import shutil
 import argparse
 import pprint as pp
 
 import mxnet as mx
-from mxnet.gluon.block import HybridBlock
 import numpy as np
 from numpy.testing import assert_allclose
 
@@ -111,7 +106,7 @@ class RoBERTaModelWPoolerTest(BERTModel):
 class RoBERTaModelWPooler(RoBERTaModelWPoolerTest):
     def hybrid_forward(self, F, inputs, token_types, valid_length=None, masked_positions=None):
         # remove single dim entries from the valid_length input, needed for compatibility with EMADL LoadNetwork layer
-        valid_length = mx.symbol.squeeze(valid_length)
+        valid_length = mx.symbol.squeeze(valid_length) # [[5], [6], ...] -> [5, 6, ....]
         outputs = super(RoBERTaModelWPooler, self).hybrid_forward(
             F, inputs, token_types, valid_length=valid_length, masked_positions=masked_positions
         )
@@ -126,7 +121,7 @@ def parse_args():
         help='If the model should be tested for equivalence after conversion, no model is output')
     return parser.parse_args()
 
-def get_gluon_model_arch(hf_cfg, ctx, args):
+def get_gluon_model_arch(hf_cfg, ctx, test):
     enc_hyper_params = {
         'num_layers': 12,
         'units': 768,
@@ -135,7 +130,7 @@ def get_gluon_model_arch(hf_cfg, ctx, args):
         'num_heads': 12,
         'dropout': 0.1,
         'output_attention': False,
-        'output_all_encodings': True if args.test else False,
+        'output_all_encodings': True if test else False,
         'weight_initializer': None,
         'bias_initializer': 'zeros',
         'prefix': None,
@@ -177,7 +172,7 @@ def get_gluon_model_arch(hf_cfg, ctx, args):
         layer_norm_eps=enc_hyper_params['layer_norm_eps']
     )
 
-    if args.test:
+    if test:
         gluon_model = RoBERTaModelWPoolerTest(
             encoder=gluon_encoder, 
             vocab_size=hyper_params['vocab_size'],
@@ -216,7 +211,7 @@ def get_gluon_model_arch(hf_cfg, ctx, args):
     gluon_model.hybridize()
     return gluon_model
 
-def convert_params(hf_model, hf_tokenizer, hf_cfg, args):
+def convert_params(hf_model, hf_tokenizer, hf_cfg, test):
     print('Converting Parameters...')
     # use nlp.model.get_model('roberta_12_768_12', dataset_name='openwebtext_ccnews_stories_books_cased', use_decoder=False) and look at its
     # source to get an idea of how to initialize a blank model you can use
@@ -225,7 +220,7 @@ def convert_params(hf_model, hf_tokenizer, hf_cfg, args):
     # https://github.com/dmlc/gluon-nlp/blob/14559518a75081469bfba14150ded2dc97c13902/src/gluonnlp/model/bert.py#L1459
     #
     ctx = mx.cpu()
-    gluon_model = get_gluon_model_arch(hf_cfg, ctx, args)
+    gluon_model = get_gluon_model_arch(hf_cfg, ctx, test)
     gluon_params = gluon_model.collect_params()
     hf_params = hf_model.state_dict()
 
@@ -279,14 +274,14 @@ def convert_params(hf_model, hf_tokenizer, hf_cfg, args):
     hf_wo_pad = arr_to_gl(hf_params[hf_pos_embed_name])[padding_idx + 1:, :]
     gluon_params[gl_pos_embed_name].set_data(hf_wo_pad)
     
-    print(gluon_model.collect_params())
-    pp.pprint(list(zip(list(hf_params.keys()), [hf_params[k].shape for k in hf_params.keys()])))
+    #print(gluon_model.collect_params())
+    #pp.pprint(list(zip(list(hf_params.keys()), [hf_params[k].shape for k in hf_params.keys()])))
     return gluon_model
 
 def arr_to_gl(arr):
     return mx.nd.array(arr.cpu().numpy())
 
-def test_model(hf_model, hf_tokenizer, gluon_model, args):
+def test_model(hf_model, hf_tokenizer, gluon_model, test):
     print('Performing a short model test...')
     ctx = mx.cpu()
     batch_size = 3
@@ -312,10 +307,10 @@ def test_model(hf_model, hf_tokenizer, gluon_model, args):
         gl_input_ids, 
         token_types=gl_token_types,
         # reshape the inputs from (n,) to (n,1) to mock LoadNetwork layer inputs in EMADL
-        valid_length=gl_valid_length.reshape(gl_valid_length.shape[0], 1)
+        valid_length=gl_valid_length if test else gl_valid_length.reshape(gl_valid_length.shape[0], 1) 
     )
 
-    if args.test:
+    if test:
         print('Performing a long model test...')
         gl_all_hiddens, gl_pooled = gl_outs
 
@@ -354,21 +349,23 @@ def export_model(save_dir, gluon_model):
     print('Exported the CodeBERT model to {}'.format(os.path.join(save_dir)))
 
 
-def convert_huggingface_model(args):
+def get_hf_model_and_tok():
+    hf_tokenizer = transformers.RobertaTokenizer.from_pretrained("microsoft/codebert-base")
+    hf_model = transformers.RobertaModel.from_pretrained("microsoft/codebert-base")
+    return hf_model, hf_tokenizer
+
+def convert_huggingface_model():
+    hf_model, hf_tokenizer = get_hf_model_and_tok()
+    return convert_params(hf_model, hf_tokenizer, hf_model.config, False)
+
+def convert_and_export(args):
     if not args.save_dir:
         args.save_dir = os.path.basename('./codebert_gluon')
     if not os.path.exists(args.save_dir):
         os.makedirs(args.save_dir)
-
-    # load and save huggingface model
-    hf_tokenizer = transformers.RobertaTokenizer.from_pretrained("microsoft/codebert-base")
-    hf_model = transformers.RobertaModel.from_pretrained("microsoft/codebert-base")
-
-    gluon_model = convert_params(hf_model, hf_tokenizer, hf_model.config, args)
-    
-    # test currently not passing
-    test_model(hf_model, hf_tokenizer, gluon_model, args)
-
+    hf_model, hf_tokenizer = get_hf_model_and_tok()
+    gluon_model = convert_params(hf_model, hf_tokenizer, hf_model.config, args.test)
+    test_model(hf_model, hf_tokenizer, gluon_model, args.test)
     print('Conversion finished!')
     if not args.test:
         export_model(args.save_dir, gluon_model)
@@ -376,5 +373,4 @@ def convert_huggingface_model(args):
         print('Testing finished!')
 
 if __name__ == '__main__':
-    args = parse_args()
-    convert_huggingface_model(args)
+    convert_and_export(parse_args())
