@@ -1,22 +1,22 @@
 /* (c) https://github.com/MontiCore/monticore */
 package de.monticore.lang.monticar.cnnarch.tensorflowgenerator;
 
-import de.monticore.lang.monticar.cnntrain._symboltable.NNArchitectureSymbol;
-import de.se_rwth.commons.logging.Finding;
+import de.monticore.lang.monticar.cnnarch.generator.GenerationAbortedException;
 import de.se_rwth.commons.logging.Log;
 import freemarker.template.TemplateException;
 import org.junit.Before;
-import org.junit.Ignore;
 import org.junit.Rule;
 import org.junit.Test;
+import org.junit.contrib.java.lang.system.ExpectedSystemExit;
 
 import java.io.IOException;
 import java.nio.file.Path;
 import java.nio.file.Paths;
-import java.util.*;
-import org.junit.contrib.java.lang.system.ExpectedSystemExit;
+import java.util.Arrays;
+
+import static junit.framework.Assert.assertEquals;
+import static junit.framework.Assert.fail;
 import static junit.framework.TestCase.assertTrue;
-import static org.mockito.Mockito.mock;
 
 public class GenerationTest extends AbstractSymtabTest {
 
@@ -96,7 +96,7 @@ public class GenerationTest extends AbstractSymtabTest {
         CNNArch2TensorflowCli.main(args);
         assertTrue(Log.getFindings().isEmpty());
     }
-    
+
     @Test
     public void testMultipleStreams() throws IOException, TemplateException {
         Log.getFindings().clear();
@@ -105,9 +105,8 @@ public class GenerationTest extends AbstractSymtabTest {
         assertTrue(Log.getFindings().isEmpty());
     }
 
-
     @Test
-    public void testSimpleCfgGeneration() throws IOException {
+    public void testSimpleCfgGeneration() {
         Log.getFindings().clear();
         Path modelPath = Paths.get("src/test/resources/valid_tests");
         CNNTrain2Tensorflow trainGenerator = new CNNTrain2Tensorflow();
@@ -121,7 +120,7 @@ public class GenerationTest extends AbstractSymtabTest {
     }
 
     @Test
-    public void testEmptyCfgGeneration() throws IOException {
+    public void testEmptyCfgGeneration() {
         Log.getFindings().clear();
         Path modelPath = Paths.get("src/test/resources/valid_tests");
         CNNTrain2Tensorflow trainGenerator = new CNNTrain2Tensorflow();
@@ -134,6 +133,34 @@ public class GenerationTest extends AbstractSymtabTest {
                 Arrays.asList("CNNTrainer_emptyConfig.py"));
     }
 
+    @Test
+    public void testGenerationWithoutTrainingConfigurationFails() {
+        Log.getFindings().clear();
+        Path modelPath = Paths.get("src/test/resources/valid_tests");
+
+        try {
+            CNNTrain2Tensorflow trainGenerator = new CNNTrain2Tensorflow();
+            trainGenerator.generate(modelPath, "ModelWithoutTrainingConfiguration");
+            fail("A RuntimeException should have been thrown!");
+        } catch (RuntimeException e) {
+            assertEquals(1, Log.getErrorCount());
+            assertEquals("Could not resolve training configuration for model 'ModelWithoutTrainingConfiguration'.", e.getMessage());
+        }
+    }
+
+    @Test
+    public void testSchemaIsCheckedBeforeGenerationStarts() {
+        Log.getFindings().clear();
+        Path modelPath = Paths.get("src/test/resources/valid_tests");
+
+        try {
+            CNNTrain2Tensorflow trainGenerator = new CNNTrain2Tensorflow();
+            trainGenerator.generate(modelPath, "InvalidSchemaDefinition");
+            fail("A GenerationAbortedException should have been thrown!");
+        } catch (GenerationAbortedException e) {
+            assertEquals("Generation aborted due to errors in the training configuration.", e.getMessage());
+        }
+    }
 
     @Test
     public void testCMakeGeneration() {
@@ -155,5 +182,4 @@ public class GenerationTest extends AbstractSymtabTest {
                 Paths.get("./src/test/resources/target_code/cmake"),
                 Arrays.asList("FindArmadillo.cmake"));
     }
-
 }
