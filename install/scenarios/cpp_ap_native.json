@@ -1,10 +1,11 @@
 {
-    "name": "EMAM_native",
+    "name": "cppautopilot_native",
     "map_name": "aachen",
     "cars": [
         {
-            "name": "EMAMTestVehicle",
-            "start_pos": [ 0, 0 ],
+            "name": "TestVehicle",
+            "start_pos": [ -123.09, 21.64 ],
+            "start_orientation": -30.0,
             "task": {
                 "goals": [
                     {
@@ -68,15 +69,14 @@
                 {
                     "type": "computer",
                     "name": "Computer",
-                    "software_name": "TestEMAMAP_lib",
+                    "software_name": "cppautopilot_zigzag_lib",
                     "backend": {
                         "type": "direct"
                     },
                     "time_model": {
                         "type": "constant"
                     },
-                    "cycle_duration": [0,10000000],
-                    "json_data_exchange": false
+                    "cycle_duration": [0,10000000]
                 }
             ]
         }

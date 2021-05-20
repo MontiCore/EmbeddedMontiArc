@@ -1,11 +1,10 @@
 {
-    "name": "cppautopilot_native",
+    "name": "cppautopilot",
     "map_name": "aachen",
     "cars": [
         {
             "name": "TestVehicle",
-            "start_pos": [ -123.09, 21.64 ],
-            "start_orientation": -30.0,
+            "start_pos": [ 0, 0 ],
             "task": {
                 "goals": [
                     {
@@ -69,14 +68,22 @@
                 {
                     "type": "computer",
                     "name": "Computer",
-                    "software_name": "cppautopilotzigzag",
+                    "software_name": "cppautopilot_zigzag_lib",
                     "backend": {
-                        "type": "direct"
+                        "type": "emu",
+                        "os": "auto"
                     },
                     "time_model": {
-                        "type": "constant"
-                    },
-                    "cycle_duration": [0,10000000]
+                        "type": "models",
+                        "cpu_frequency": 4000000000,
+                        "memory_frequency": 2500000000,
+                        "caches": [
+                            {"type": "I", "level": 1, "size": 262144, "read_ticks": 4, "write_ticks": 4},
+                            {"type": "D", "level": 1, "size": 262144, "read_ticks": 4, "write_ticks": 4},
+                            {"type": "shared", "level": 2, "size": 2097152, "read_ticks": 6, "write_ticks": 6},
+                            {"type": "shared", "level": 3, "size": 12582912, "read_ticks": 40, "write_ticks": 40}
+                        ]
+                    }
                 }
             ]
         }

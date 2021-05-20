@@ -67,7 +67,7 @@
                 { "type": "navigation" },
                 {
                     "type": "computer",
-                    "software_name": "TestEMAMAP",
+                    "software_name": "TestEMAMAP_gcc_lib",
                     "backend": {
                         "type": "emu",
                         "os": "auto"

@@ -1,5 +1,5 @@
 {
-    "name": "EMAM_native",
+    "name": "EMAM_emu",
     "map_name": "aachen",
     "cars": [
         {
@@ -68,15 +68,16 @@
                 {
                     "type": "computer",
                     "name": "Computer",
-                    "software_name": "TestEMAMAP_lib",
+                    "software_name": "TestEMAMAP_gcc_lib",
                     "backend": {
-                        "type": "direct"
+                        "type": "emu",
+                        "os": "auto"
                     },
                     "time_model": {
                         "type": "constant"
                     },
                     "cycle_duration": [0,10000000],
-                    "json_data_exchange": false
+                    "json_data_exchange": true
                 }
             ]
         }

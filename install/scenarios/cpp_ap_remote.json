@@ -71,13 +71,13 @@
                     "backend": {
                         "type": "tcp",
                         "host": "::1",
-                        "port": 4567,
-                        "ref_id": 16384
+                        "port": 4567
                     },
                     "time_model": {
                         "type": "measured"
                     },
-                    "cycle_duration": [0,10000000]
+                    "cycle_duration": [0,10000000],
+                    "json_data_exchange": false
                 }
             ]
         }
