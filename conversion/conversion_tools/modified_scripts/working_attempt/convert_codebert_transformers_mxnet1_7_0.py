@@ -342,12 +342,10 @@ def test_model(hf_model, hf_tokenizer, gluon_model, test):
                     1E-3
                 )
 
-
 def export_model(save_dir, gluon_model):
     gluon_model.encoder.output_all_encodings = False
     gluon_model.export(os.path.join(save_dir, 'codebert'))
     print('Exported the CodeBERT model to {}'.format(os.path.join(save_dir)))
-
 
 def get_hf_model_and_tok():
     hf_tokenizer = transformers.RobertaTokenizer.from_pretrained("microsoft/codebert-base")
