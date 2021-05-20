@@ -84,7 +84,7 @@ public class SpeedLimitService extends EEComponent {
      * @return array of speed limits (with a length of trajectoryLength - 1)
      */
     public double[] fetchUpperSpeedLimits() {
-        double[] maxSpeedArr = new double[trajectoryLength - 1];
+        double[] maxSpeedArr = new double[Navigation.TRAJ_ARRAY_LENGTH - 1];
         for (int i=0; i < trajectoryLength - 1; i++){
             maxSpeedArr[i] = -1;
         }
