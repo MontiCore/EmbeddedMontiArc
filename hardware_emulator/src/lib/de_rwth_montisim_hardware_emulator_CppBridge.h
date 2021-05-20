@@ -17,14 +17,6 @@ JNIEXPORT jstring JNICALL Java_de_rwth_montisim_hardware_1emulator_CppBridge_get
 
 /*
  * Class:     de_rwth_montisim_hardware_emulator_CppBridge
- * Method:    enableJavaLogging
- * Signature: ()V
- */
-JNIEXPORT void JNICALL Java_de_rwth_montisim_hardware_1emulator_CppBridge_enableJavaLogging
-  (JNIEnv *, jclass);
-
-/*
- * Class:     de_rwth_montisim_hardware_emulator_CppBridge
  * Method:    initManager
  * Signature: (Ljava/lang/String;)V
  */
@@ -65,18 +57,34 @@ JNIEXPORT jstring JNICALL Java_de_rwth_montisim_hardware_1emulator_CppBridge_get
 
 /*
  * Class:     de_rwth_montisim_hardware_emulator_CppBridge
- * Method:    setPort
+ * Method:    setPortJson
  * Signature: (IILjava/lang/String;)V
  */
-JNIEXPORT void JNICALL Java_de_rwth_montisim_hardware_1emulator_CppBridge_setPort
+JNIEXPORT void JNICALL Java_de_rwth_montisim_hardware_1emulator_CppBridge_setPortJson
   (JNIEnv *, jclass, jint, jint, jstring);
 
 /*
  * Class:     de_rwth_montisim_hardware_emulator_CppBridge
- * Method:    getPort
+ * Method:    getPortJson
  * Signature: (II)Ljava/lang/String;
  */
-JNIEXPORT jstring JNICALL Java_de_rwth_montisim_hardware_1emulator_CppBridge_getPort
+JNIEXPORT jstring JNICALL Java_de_rwth_montisim_hardware_1emulator_CppBridge_getPortJson
+  (JNIEnv *, jclass, jint, jint);
+
+/*
+ * Class:     de_rwth_montisim_hardware_emulator_CppBridge
+ * Method:    setPortBinary
+ * Signature: (II[B)V
+ */
+JNIEXPORT void JNICALL Java_de_rwth_montisim_hardware_1emulator_CppBridge_setPortBinary
+  (JNIEnv *, jclass, jint, jint, jbyteArray);
+
+/*
+ * Class:     de_rwth_montisim_hardware_emulator_CppBridge
+ * Method:    getPortBinary
+ * Signature: (II)[B
+ */
+JNIEXPORT jbyteArray JNICALL Java_de_rwth_montisim_hardware_1emulator_CppBridge_getPortBinary
   (JNIEnv *, jclass, jint, jint);
 
 /*

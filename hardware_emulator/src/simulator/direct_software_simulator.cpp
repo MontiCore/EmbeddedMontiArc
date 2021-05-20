@@ -16,7 +16,7 @@ void DirectProgramInterface::load(Library &software){
     real_get_port = (DirectProgramInterface::GetPortFunc)software.get_function( FUNC_NAME_GET_PORT );
 }
 
-void DirectSoftwareSimulator::init_simulator(const json& config, const FS::Directory& software_folder)
+void DirectSoftwareSimulator::init_simulator(const json& config, const fs::path& software_folder)
 {
     software.init(software_path);
 
@@ -26,7 +26,7 @@ void DirectSoftwareSimulator::init_simulator(const json& config, const FS::Direc
 
     program_interface = std::unique_ptr<ProgramInterface>(prog_interface);
 
-    Log::info << Log::tag << "Initiated software in direct mode: " << program_name << "\n";
+    Log::info.log_tag("Initiated software in direct mode: %s", program_name.c_str());
 }
 
 void DirectSoftwareSimulator::start_timer()

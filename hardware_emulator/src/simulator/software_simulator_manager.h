@@ -2,13 +2,13 @@
  * (c) https://github.com/MontiCore/monticore
  */
 #pragma once
-#include "software_simulator.h"
+#include "simulator/software_simulator.h"
 #include <list>
 #include "utility/utility.h"
 #include "json.hpp"
 using json = nlohmann::json;
 
-static constexpr auto VERSION = "2.0.5";
+static constexpr auto VERSION = "2.0.11";
 
 /*
     The EmulatorManager is used to allocate and interact with autopilot emualtors.
@@ -20,12 +20,10 @@ struct SoftwareSimulatorManager {
 	std::vector<std::unique_ptr<SoftwareSimulator>> simulators;
     uint simulator_count;
     
-    //std::list<fs::directory_entry> entries;
-    std::list<FS::File> available_softwares;
+    std::list<fs::path> available_softwares;
     std::string available_softwares_string;
     uint available_threads = 0;
-    //fs::path path;
-    FS::Directory softwares_folder;
+    fs::path softwares_folder;
     
     
     std::string error_msg;

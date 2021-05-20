@@ -3,9 +3,8 @@
  */
 #include "software_simulator_manager.h"
 
-#include "hardware_emulator.h"
-#include "direct_software_simulator.h"
-#include "utility/config.h"
+#include "simulator/hardware_emulator.h"
+#include "simulator/direct_software_simulator.h"
 #include <thread>
 #include <clocale>
 
@@ -14,7 +13,6 @@ SoftwareSimulatorManager SoftwareSimulatorManager::instance;
 
 SoftwareSimulatorManager::SoftwareSimulatorManager()
 {
-    softwares_folder = FS::current_directory();
     available_threads = std::thread::hardware_concurrency();
     simulator_count = 0;
     setlocale(LC_ALL, "C");
@@ -28,30 +26,32 @@ void SoftwareSimulatorManager::init(const json& config) {
     available_softwares_string = "";
     
     //path = fs::current_path();
-    softwares_folder = FS::current_directory();
+    softwares_folder = fs::current_path();
 
     if (config.is_object()) {
         if (config.contains("softwares_folder")) {
             auto& entry = config["softwares_folder"];
             if (entry.is_string()) {
-                softwares_folder = FS::Directory(entry.get<std::string>());
-                if (!softwares_folder.is_absolute()) softwares_folder = (FS::current_directory() + softwares_folder).canonical();
+                softwares_folder = fs::path(entry.get<std::string>());
+                if (!softwares_folder.is_absolute()) softwares_folder = (fs::current_path() / softwares_folder).lexically_normal();
             }
         }
     }
 
-    Log::info << Log::tag << "softwares_folder: " << softwares_folder.to_string() << "\n";
-    
-    for ( const auto &file : softwares_folder.get_files()) {
-        //std::cout << p << "\t" << p.filename() << "\t" << ext/*p.extension()*/ << std::endl;
-        auto extension = file.get_extension();
-        if (extension.compare( ".so" ) == 0 || extension.compare( ".dll" ) == 0 ) {
-            available_softwares.emplace_back( file );
-            if ( available_softwares_string.size() > 0 )
+    Log::info.log_tag("softwares_folder: %s", softwares_folder.string().c_str());
+
+    for (const auto& subpath : fs::recursive_directory_iterator(softwares_folder)) {
+        if (fs::is_directory(subpath)) continue;
+        auto p = subpath.path();
+        auto extension = p.extension();
+        if (extension.compare(".so") == 0 || extension.compare(".dll") == 0) {
+            available_softwares.emplace_back(p);
+            if (available_softwares_string.size() > 0)
                 available_softwares_string += ';';
-            available_softwares_string += file.get_name();
+            available_softwares_string += p.stem().string();
         }
     }
+    
 }
 
 int SoftwareSimulatorManager::alloc_simulator( const json& config) {
@@ -103,7 +103,7 @@ json SoftwareSimulatorManager::query(const json& query) {
         if (key.compare("get_error_msg") == 0) output["error_msg"] = error_msg;
         else if (key.compare("get_available_autopilots") == 0) output["available_autopilots"] = available_softwares_string;
         else if (key.compare("get_available_threads") == 0) output["available_threads"] = available_threads;
-        else if (key.compare("get_softwares_folder") == 0) output["softwares_folder"] = softwares_folder.to_string();
+        else if (key.compare("get_softwares_folder") == 0) output["softwares_folder"] = softwares_folder.string();
         else output["unknown_query"].push_back(key);
     }
 

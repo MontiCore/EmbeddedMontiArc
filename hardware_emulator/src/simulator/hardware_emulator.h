@@ -9,8 +9,6 @@
 #include "utility/utility.h"
 #include "computer/computer.h"
 
-#include "utility/config.h"
-
 #include <unordered_map>
 
 struct SoftwareSimulatorManager;
@@ -30,8 +28,8 @@ struct EmulatedProgramInterface : public ProgramInterface {
     void load();
     
     const char* get_interface();
-    void set_port(int i, const char* data);
-    const char* get_port(int i);
+    void set_port(int i, const char* data, int is_json);
+    const char* get_port(int i, int is_json);
     
     void init();
     void execute(double delta_sec);
@@ -78,8 +76,8 @@ struct HardwareEmulator : public SoftwareSimulator {
     
     json query_simulator(const json& query);
     
-    void init_simulator(const json& config, const FS::Directory& software_folder);
-    void resolve_autopilot_os(const FS::Directory& software_folder );
+    void init_simulator(const json& config, const fs::path& software_folder);
+    void resolve_autopilot_os(const fs::path& software_folder );
 
     void start_timer();
     ulong get_timer_micro();

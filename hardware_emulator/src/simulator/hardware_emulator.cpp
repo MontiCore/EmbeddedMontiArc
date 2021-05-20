@@ -4,7 +4,7 @@
 #include "hardware_emulator.h"
 #include "os_windows/os_windows.h"
 #include "os_linux/os_linux.h"
-#include "software_simulator_manager.h"
+#include "buffer.h"
 
 using namespace std;
 
@@ -27,26 +27,45 @@ void EmulatedProgramInterface::load() {
 
 const char* EmulatedProgramInterface::get_interface() {
     computer.call(addr_get_interface, FUNC_NAME_GET_INTERFACE);
-    return computer.memory.read_str( computer.func_call->get_return_64() );
+    return computer.memory.read_str( computer.os->get_return_64() );
 }
-void EmulatedProgramInterface::set_port(int i, const char* data) {
+void EmulatedProgramInterface::set_port(int i, const char* data, int is_json) {
     auto addr = computer.memory.exchange_section->address_range.start_address;
-    computer.memory.write_str(addr, data);
-    computer.func_call->set_param1_32(i);
-    computer.func_call->set_param2_64(addr);
+    if (is_json) {
+        computer.memory.write_str(addr, data);
+    }
+    else {
+        BinaryReader br(data, 4);
+        auto size = br.read_u32();
+        computer.memory.write_memory(addr, size + 4, (void*)data);
+    }
+
+    computer.os->set_param1_32(i);
+    computer.os->set_param2_64(addr);
+    computer.os->set_param3_32(is_json);
     computer.call(addr_set_port, FUNC_NAME_SET_PORT);
 }
-const char* EmulatedProgramInterface::get_port(int i) {
-    computer.func_call->set_param1_32(i);
+const char* EmulatedProgramInterface::get_port(int i, int is_json) {
+    computer.os->set_param1_32(i);
+    computer.os->set_param2_32(is_json);
     computer.call(addr_get_port, FUNC_NAME_GET_PORT);
-    return computer.memory.read_str( computer.func_call->get_return_64() );
+    auto ret = computer.os->get_return_64();
+    if (is_json) {
+        return computer.memory.read_str(ret);
+    } else {
+
+        auto buff = computer.memory.read_memory(ret, 4);
+        BinaryReader br((const char*)buff, 4);
+        auto size = br.read_u32();
+        return (char*)computer.memory.read_memory(ret, size + 4);
+    }
 }
 
 void EmulatedProgramInterface::init() {
     computer.call(addr_init, FUNC_NAME_INIT);
 }
 void EmulatedProgramInterface::execute(double delta_sec) {
-    computer.func_call->set_param1_double(delta_sec);
+    computer.os->set_param1_double(delta_sec);
     computer.call(addr_exec, FUNC_NAME_EXECUTE);
 }
 
@@ -66,7 +85,7 @@ json HardwareEmulator::query_simulator(const json& query) {
     return output;
 }
 
-void HardwareEmulator::init_simulator(const json& config, const FS::Directory& software_folder) {
+void HardwareEmulator::init_simulator(const json& config, const fs::path& software_folder) {
     //Setup default configuration values.
     debug_time = false;
     os_name = "";
@@ -88,7 +107,7 @@ void HardwareEmulator::init_simulator(const json& config, const FS::Directory& s
                     if (json_get(time_model_config, "memory_frequency", mem_f)) computer.time.set_memory_frequency(mem_f);
                     cache_settings.handle_config(time_model_config);
                 }
-                else Log::err << "Unknown Time Model\n";
+                else Log::err.log_tag("Unknown Time Model");
             }
         }
     }
@@ -114,11 +133,11 @@ void HardwareEmulator::init_simulator(const json& config, const FS::Directory& s
 
     program_interface = std::unique_ptr<ProgramInterface>(prog_interface);
 
-    Log::info << Log::tag << "Initiated software \"" << program_name <<  "\" in emulated mode, os: " << os_name << "\n";
+    Log::info.log_tag("Initiated software \"%s\" in emulated mode, os: %s", program_name.c_str(), os_name.c_str());
 }
 
-void HardwareEmulator::resolve_autopilot_os( const FS::Directory& software_folder ) {
-    auto ext = software_path.get_extension();
+void HardwareEmulator::resolve_autopilot_os( const fs::path& software_folder ) {
+    auto ext = software_path.extension().string();
     // If an extension is specified for the Software -> get corresponding OS
     if (ext.size() > 0){
         if ( ext.compare( ".dll" ) == 0 )
@@ -131,12 +150,14 @@ void HardwareEmulator::resolve_autopilot_os( const FS::Directory& software_folde
     if ( os_name.size() == 0 || os_name.compare("auto") == 0) {
         bool found = false;
         //Check existing autopilots with this name
-        for ( const auto &file : software_folder.get_files()) {
-            if ( file.get_name().compare( program_name ) == 0 ) {
+        for (const auto& subpath : fs::recursive_directory_iterator(software_folder)) {
+            if (subpath.is_directory()) continue;
+            fs::path file = subpath;
+            if (file.stem().compare(program_name) == 0) {
                 found = true;
-                if ( file.get_extension().compare( ".dll" ) == 0 )
+                if (file.extension().compare(".dll") == 0)
                     os_name = "windows";
-                else if ( file.get_extension().compare( ".so" ) == 0 )
+                else if (file.extension().compare(".so") == 0)
                     os_name = "linux";
                 break;
             }
@@ -153,13 +174,13 @@ void HardwareEmulator::resolve_autopilot_os( const FS::Directory& software_folde
 
     bool os_mistmatch = false;
     if (os_name.compare("windows") == 0) {
-        computer.set_os(new OS::Windows());
+        computer.set_os(new OS::Windows(computer.func_call_windows));
         if (Library::type != Library::OsType::WINDOWS) {
             os_mistmatch = true;
         }
     }
     else if (os_name.compare("linux") == 0) {
-        computer.set_os(new OS::Linux());
+        computer.set_os(new OS::Linux(computer.func_call_linux));
         if (Library::type != Library::OsType::LINUX) {
             os_mistmatch = true;
         }
@@ -205,7 +226,7 @@ void HardwareEmulator::parse_flags(const json& config) {
     if (!flags.is_array()) return;
     for (auto& e : flags) {
         if (!e.is_string()) {
-            Log::err << Log::tag << "Invalid flag: " << e.dump() << "\n";
+            Log::err.log_tag("Invalid flag: %s", e.dump().c_str());
         }
         auto flag = e.get<std::string>();
         if (flag.compare("p_mem") == 0) computer.debug.d_mem = true;
@@ -216,7 +237,7 @@ void HardwareEmulator::parse_flags(const json& config) {
         else if (flag.compare("p_code") == 0) computer.debug.d_code = true;
         else if (flag.compare("p_call") == 0) computer.debug.d_call = true;
         else if (flag.compare("p_time") == 0) debug_time = true;
-        else Log::err << Log::tag << "Unknown flag: " << flag << "\n";
+        else Log::err.log_tag("Unknown flag: %s", flag.c_str());
     }
 }
 
