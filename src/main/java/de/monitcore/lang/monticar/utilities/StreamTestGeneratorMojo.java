@@ -243,7 +243,7 @@ public class StreamTestGeneratorMojo extends StreamTestMojoBase {
             }
 
             if(this.getPathToPython() != null) {
-                emadlGenerator.setPythonPath(getPathToPython());
+                emadlGenerator.setPythonPath(this.getPathToPython());
             }
 
 
