@@ -20,8 +20,15 @@ import java.util.List;
 
 public class CustomPythonLayerDeclaration extends CustomLayerDeclaration{
 
-    public CustomPythonLayerDeclaration(String name, File customPythonFilePath, String language) {
+    private String pythonPath = "";
+
+    public CustomPythonLayerDeclaration(String name, File customPythonFilePath, String pythonPath, String language) {
         super(name, customPythonFilePath, language);
+        if(pythonPath == ""){
+            this.pythonPath = "python";
+        } else {
+            this.pythonPath = pythonPath;
+        }
     }
 
     //extracting parameters by taking the information from the python file of the layer
@@ -33,15 +40,15 @@ public class CustomPythonLayerDeclaration extends CustomLayerDeclaration{
         try {
             String callingPrintMethod = "import " + getName() + "; temp=" + getName() + "." + getName() + "(); temp.print_parameters()";
             if (SystemUtils.IS_OS_WINDOWS == false) {
-                printParametersOfLayer = "python -c '" + callingPrintMethod + "'";
+                printParametersOfLayer = this.pythonPath + " -c '" + callingPrintMethod + "'";
                 terminal = "/bin/bash";
                 com = "-c";
             } else {
-                printParametersOfLayer = "python -c \"" + callingPrintMethod + "\"";
+                printParametersOfLayer = this.pythonPath + " -c \"" + callingPrintMethod + "\"";
                 terminal = "cmd.exe";
                 com = "/c";
             }
-            Process process = Runtime.getRuntime().exec(new String[]{terminal, com, printParametersOfLayer}, null, getCustomFilePath());
+            Process process = Runtime.getRuntime().exec(new String[]{terminal, com, printParametersOfLayer},null, getCustomFilePath());
 
             String line = null;
             ArrayList<String> hold = new ArrayList<>();
@@ -263,7 +270,7 @@ public class CustomPythonLayerDeclaration extends CustomLayerDeclaration{
     }
 
     public CustomPythonLayerDeclaration deepCopy() {
-        CustomPythonLayerDeclaration copy = new CustomPythonLayerDeclaration(getName(), getCustomFilePath(), getLanguage());
+        CustomPythonLayerDeclaration copy = new CustomPythonLayerDeclaration(getName(), getCustomFilePath(), this.pythonPath, getLanguage());
         if (getAstNode().isPresent()){
             copy.setAstNode(getAstNode().get());
         }
