@@ -9,7 +9,7 @@
     Implementation of the effect of various system functions for Windows that are required
     by the autopilots.
 */
-struct WindowsCalls {
+struct WindowsSystemCalls {
     //Registering function
     static void add_windows_calls( SystemCalls &sys_calls, OS::Windows &windows );
     
@@ -36,6 +36,10 @@ struct WindowsCalls {
     static bool memcpy( Computer &computer );
     static bool acos( Computer &computer );
     static bool localeconv(Computer& computer);
+    static bool memset(Computer& computer);
+    static bool MultiByteToWideChar(Computer& computer);
+    static bool ___lc_codepage_func(Computer& computer);
+    
 };
 
 

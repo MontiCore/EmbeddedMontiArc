@@ -31,7 +31,7 @@ namespace OS {
         
         ElfLoader() : sys_calls( nullptr ), mem( nullptr ), loaded( false ), symbols( nullptr ), section_pos(0) {}
         
-        void init(const FS::File& file, SystemCalls &sys_calls, Memory &mem, Symbols &symbols );
+        void init(const fs::path& file, SystemCalls &sys_calls, Memory &mem, Symbols &symbols );
         
         void elf_main( Computer &computer );
         

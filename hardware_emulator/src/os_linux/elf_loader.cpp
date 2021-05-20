@@ -7,18 +7,18 @@
 
 using namespace std;
 
-void OS::ElfLoader::init(const FS::File& fn, SystemCalls &sys_calls, Memory &mem, Symbols &symbols ) {
+void OS::ElfLoader::init(const fs::path& fn, SystemCalls &sys_calls, Memory &mem, Symbols &symbols ) {
     loaded = false;
     this->sys_calls = &sys_calls;
     this->mem = &mem;
     this->symbols = &symbols;
-    file_name = fn.get_full_name();
+    file_name = fn.filename().string();
     
     module_name = "SYSTEM";
     
     FileReader fr;
     if ( !fr.open( fn ) )
-        throw_error(Error::hardware_emu_software_load_error("[ElfLoader] Could not find software program: " + fn.as_system_path()));
+        throw_error(Error::hardware_emu_software_load_error("[ElfLoader] Could not find software program: " + fn.string()));
     
     
     fr.read( elf.data );

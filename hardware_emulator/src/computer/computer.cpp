@@ -87,7 +87,6 @@ void Computer::cb_code( ulong addr, uint size ) {
 }
 
 void Computer::cb_mem( MemAccess type, ulong addr, uint size, slong value ) {
-    uint sec_id = memory.section_lookup[MemoryRange( addr, 1 )];
     ulong time = mem_model.handle_access( type, addr );
     debug.debug_mem( type, addr, size, value, time );
 }
@@ -149,7 +148,7 @@ void CacheSettings::handle_config(const json& settings) {
             if (type.compare("shared") == 0) cache->type = CacheType::SHARED;
             else if (type.compare("I") == 0) cache->type = CacheType::I;
             else if (type.compare("D") == 0) cache->type = CacheType::D;
-            else Log::err << Log::tag << "Unknown Cache Type: " << type << "\n";
+            else Log::err.log_tag("Unknown Cache Type: %s", type.c_str());
         }
         json_get(c, "level", cache->level);
         json_get(c, "size", cache->size);

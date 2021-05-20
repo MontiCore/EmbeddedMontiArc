@@ -24,6 +24,11 @@ struct JNIEnvironment {
     jmethodID java_lang_int_constructor = 0;
     jmethodID java_lang_int_intValue_method = 0;
 
+    
+    jclass cppbridge_class = 0;
+    jmethodID cppbridge_log_method = 0;
+
+
     static void resolve_class(JNIEnv* jni, jclass& global_class_ref, const char* class_name);
     static void resolve_method(JNIEnv* jni, jclass class_ref, jmethodID& method, const char* method_name, const char* method_signature);
     static void resolve_static_method(JNIEnv* jni, jclass class_ref, jmethodID& method, const char* method_name, const char* method_signature);

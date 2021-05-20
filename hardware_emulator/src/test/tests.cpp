@@ -3,11 +3,10 @@
  */
 #include "tests.h"
 #include "utility/dll_interface.h"
-#include "software_simulator_manager.h"
-#include "hardware_emulator.h"
+#include "simulator/software_simulator_manager.h"
+#include "simulator/hardware_emulator.h"
 #include "os_windows/os_windows.h"
 #include "os_linux/os_linux.h"
-#include "utility/config.h"
 #include "os_linux/elf.h"
 #include "utility/utility.h"
 
@@ -33,9 +32,9 @@ void test_simple_sample( OS::OS *os, bool windows ) {
     //computer.debug.d_reg_update = true;
     //computer.debug.d_syscalls = true;
     //computer.debug.d_call = true;
-    Log::debug << "add(2,3):\n";
+    Log::debug.log_tag("add(2,3):\n");
     auto res = interf.add( 2, 3 );
-    Log::debug << "Result=" << res << "\n";
+    Log::debug.log_tag("Result=%d\n", res);
 }
 
 
@@ -60,7 +59,7 @@ void test_funccalling_sample( OS::OS *os ) {
     
     computer.init();
     computer.set_os( os );
-    computer.os->load_file(FS::File("sample_functioncalling"));
+    computer.os->load_file(fs::path("sample_functioncalling"));
         
     auto &section = computer.memory.sys_section;
     auto &section_stack = computer.memory.sys_section_stack;
@@ -174,7 +173,7 @@ void test_syscall_sample( OS::OS *os ) {
     computer.debug.d_mem = true;
     computer.debug.d_reg_update = true;
     computer.debug.d_syscalls = true;*/
-    Log::debug << "test_method()\n";
+    Log::debug.log_tag("test_method()\n");
     interf.test_method();
     
 }
@@ -234,7 +233,7 @@ void test_hardware_manager_querries() {
 }
 
 int second = false;
-void test_autopilot(const char* config_str){
+void test_autopilot(const char* config_str, bool is_emu){
     auto config = json::parse(config_str);
     SoftwareSimulatorManager manager;
     manager.init(json());
@@ -243,35 +242,37 @@ void test_autopilot(const char* config_str){
     auto &simulator = *(manager.simulators[id].get());
     auto &prog = *(simulator.program_interface.get());
 
-    auto &computer = ((HardwareEmulator*) manager.simulators[id].get())->computer;
-    computer.debug.debug = true;
-    //computer.debug.d_code = true;
-    //computer.debug.d_mem = true;
-    //computer.debug.d_reg_update = true;
-    // computer.debug.d_syscalls = true;
-    // computer.debug.d_call = true;
-    // computer.debug.d_unsupported_syscalls = true;
+    if (is_emu) {
+        auto &computer = ((HardwareEmulator*) manager.simulators[id].get())->computer;
+        computer.debug.debug = true;
+        //computer.debug.d_code = true;
+        //computer.debug.d_mem = true;
+        //computer.debug.d_reg_update = true;
+        computer.debug.d_syscalls = true;
+        computer.debug.d_call = true;
+        computer.debug.d_unsupported_syscalls = true;
+    }
 
 
-    prog.set_port(0, "5.6");
-    prog.set_port(1, "[0.0,0.0]");
-    prog.set_port(2, "0.0");
+    prog.set_port(0, "5.6", 1);
+    prog.set_port(1, "[0.0,0.0]", 1);
+    prog.set_port(2, "0.0", 1);
     // computer.debug.d_code = true;
     // computer.debug.d_mem = true;
     // computer.debug.d_reg_update = true;
-    prog.set_port(3, "[3,0.0,1.0,2.0]");
-    prog.set_port(4, "[3,0.0,0.0,-1.0]");
+    prog.set_port(3, "[3,0.0,1.0,2.0]", 1);
+    prog.set_port(4, "[3,0.0,0.0,-1.0]", 1);
 
     prog.execute(0.1);
 
     
-    std::string steering = prog.get_port(5);
-    std::string gas = prog.get_port(6);
-    std::string brakes = prog.get_port(7);
+    std::string gas = prog.get_port(5, 1);
+    std::string steering = prog.get_port(6, 1);
+    std::string brakes = prog.get_port(7, 1);
     
 
-    Log::debug << "Result (raw strings): [gas=" << gas << ", steering=" << steering << ", brakes=" << brakes << "]\n";
-    Log::debug << "Result (parsed):      [gas=" << std::stod(gas) << ", steering=" << std::stod(steering) << ", brakes=" << std::stod(brakes) << "]\n";
+    Log::debug.log_tag("Result (raw strings): [gas=%s, steering=%s, brakes=%s]\n", gas.c_str(), steering.c_str(), brakes.c_str());
+    Log::debug.log_tag("Result (parsed):      [gas=%LF, steering=%LF, brakes=%LF]\n", std::stod(gas), std::stod(steering), std::stod(brakes));
     //Log::debug << "Time: " << simulator.computer.time.micro_time << "us " << simulator.computer.time.pico_time << "ps\n";
 }
 
@@ -282,7 +283,7 @@ void test_autopilot_native() {
   "name": "UnnamedComponent",
   "connected_to": [],
   "priority": {},
-  "software_name": "cppautopilotzigzag",
+  "software_name": "cppautopilot_zigzag_lib",
   "backend": {
     "type": "direct"
   },
@@ -331,13 +332,13 @@ void test_autopilot_native() {
   ],
   "debug_flags": []
 }
-    )");
+    )", false);
 }
 
 void test_autopilot_emu_windows() {
     test_autopilot(R"(
     {
-        "software_name": "cppautopilotzigzag",
+        "software_name": "cppautopilot_zigzag_lib",
         "backend": {
             "type": "emu",
             "os": "windows"
@@ -355,7 +356,7 @@ void test_autopilot_emu_windows() {
         },
         "debug_flags": ["p_unsupported_syscalls"]
     }
-    )");
+    )", true);
 }
 void test_autopilot_emu_linux() {
     test_autopilot(R"(
@@ -364,7 +365,7 @@ void test_autopilot_emu_linux() {
   "name": "UnnamedComponent",
   "connected_to": [],
   "priority": {},
-  "software_name": "cppautopilotzigzag",
+  "software_name": "cppautopilot_zigzag_lib",
   "backend": {
     "type": "emu",
     "os": "linux"
@@ -414,13 +415,13 @@ void test_autopilot_emu_linux() {
   ],
   "debug_flags": []
 }
-    )");
+    )", true);
 }
 
 void test_linux_elf_info() {
     FileReader fr;
-    if (!fr.open(FS::File("cppautopilotzigzag.so")))
-        throw_error("Could not open cppautopilotzigzag.so");
+    if (!fr.open(fs::path("cppautopilot_zigzag_lib.so")))
+        throw_error("Could not open cppautopilot_zigzag_lib.so");
     
     ElfFile elf;
     fr.read( elf.data );

@@ -9,7 +9,7 @@
     If a new unregistered function calls is necessary for the functionning of the autopilot,
     it has to be implemented and registered here.
 */
-struct LinuxCalls {
+struct LinuxSystemCalls {
 
     //Registering function.
     static void add_linux_calls( SystemCalls &sys_calls );

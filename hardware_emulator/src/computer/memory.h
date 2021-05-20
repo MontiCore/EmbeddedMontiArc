@@ -40,7 +40,13 @@ struct MemoryRange {
     
     //Used for range sorting
     bool operator<( const MemoryRange &other ) const {
-        return start_address + ( ulong )size <= other.start_address;
+        if (size == 0) {
+            if (other.contains(start_address)) return false;
+        }
+        else if (other.size == 0) {
+            if (contains(other.start_address)) return false;
+        }
+        return start_address < other.start_address;
     }
 };
 
@@ -167,8 +173,8 @@ struct MemorySection {
     
     void init_annotations();
     
-    void print_address_info( ulong virtual_address );
-    void print_annotation( ulong virtual_address );
+    void print_address_info( ulong virtual_address, char* buffer, int buffer_size);
+    void print_annotation( ulong virtual_address, char* buffer, int buffer_size);
     
 };
 
@@ -246,8 +252,8 @@ struct Memory {
                                 bool write );
     MemorySection *get_section( ulong virtual_address );
     
-    void print_address_info( ulong virtual_address );
-    void print_annotation( ulong virtual_address );
+    void print_address_info( ulong virtual_address, char* buffer, int buffer_size);
+    void print_annotation( ulong virtual_address, char* buffer, int buffer_size);
     
     wchar_t *read_wstr( ulong address );
     char *read_wstr_as_str( ulong address );

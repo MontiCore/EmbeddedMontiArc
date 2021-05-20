@@ -74,9 +74,7 @@ void Registers::print_registers() {
     char buff[128];
     for ( auto i : urange( 22 ) ) {
         uc_reg_read( static_cast<uc_engine *>( internal_uc ), Registers::regs_id[i], &reg );
-        Log::reg << "      ";
-        sprintf( buff,  "%16s   ", Registers::regs_names[i] );
-        Log::reg << buff << to_hex( reg ) << "\n";
+        Log::reg.log("      %16s   %s", Registers::regs_names[i], to_hex(reg).c_str());
     }
 }
 
@@ -90,10 +88,7 @@ void Registers::print_changed_registers() {
         if ( Registers::regs_id[i] == UC_X86_REG_RIP && ( regs_old[i] != 0 ) )
             continue;
         if ( regs[i] != regs_old[i] ) {
-            Log::reg << "      ";
-            sprintf( buff, "%16s   ", Registers::regs_names[i] );
-            Log::reg << buff;
-            Log::new_val << to_hex( regs[i] ) << "\n";
+            Log::new_val.log("      %16s   %s", Registers::regs_names[i], to_hex(regs[i]).c_str());
         }
     }
     for ( auto i : urange( 22 ) )

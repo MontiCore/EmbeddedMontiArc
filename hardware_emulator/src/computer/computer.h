@@ -11,8 +11,9 @@
 #include "symbols.h"
 #include "os.h"
 #include "caching.h"
-#include "utility/config.h"
 #include "json.hpp"
+#include "os_windows/windows_fast_call.h"
+#include "os_linux/linux_fast_call.h"
 using json = nlohmann::json;
 
 
@@ -62,7 +63,8 @@ struct Computer {
         CodeDecoder decoder;
         
         std::unique_ptr<OS::OS> os;
-        std::unique_ptr<FunctionCalling> func_call;
+        OS::WindowsFastCall func_call_windows;
+        OS::LinuxFastCall func_call_linux;
         
         ComputerDebug debug;
         
@@ -72,7 +74,7 @@ struct Computer {
         
         MemoryRange io_slot;
         
-        Computer() : internal( nullptr ) {}
+        Computer() : internal( nullptr ), func_call_windows(registers), func_call_linux(registers) {}
         ~Computer() {
             drop();
         }

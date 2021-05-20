@@ -27,22 +27,22 @@ int main( int argc, char **argv ) {
     int test_id = 1;
     bool fault = false;
     for ( auto &tc : test_cases ) {
-        Log::white << "Testing " << tc.name << "\n";
+        Log::white.log("Testing %s", tc.name);
         try {
             tc.func();
         }
         catch (std::exception & e) {
-            Log::err << "Test failed:\n\t" << e.what() << "\n";
+            Log::err.log_tag("Test failed:\n\t%s", e.what());
             fault = true;
             continue;
         }
         ++test_id;
-        Log::test << "Test succeeded\n\n";
+        Log::test.log("Test succeeded\n");
     }
     if (fault) {
-        Log::err << Log::tag << "Error occured in tests...\n";
+        Log::err.log_tag("Error occured in tests...");
         return -1;
     }
-    Log::test << "All " << ( test_id - 1 ) << " tests complete\n";
+    Log::test.log("All %d tests complete", (test_id - 1));
     return fault ? -1 : 0;
 }
