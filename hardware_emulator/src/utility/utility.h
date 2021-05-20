@@ -6,7 +6,6 @@
 #include <exception>
 #include <string>
 #include <sstream>
-#include <iostream>
 #include <fstream>
 #include <memory>
 #include <cstring>
@@ -14,8 +13,12 @@
 #include <list>
 #include <vector>
 #include <chrono>
+#include <stdarg.h>
+#include <filesystem>
+
 #include "json.hpp"
 using json = nlohmann::json;
+namespace fs = std::filesystem;
 
 namespace Utility {
 
@@ -77,23 +80,8 @@ extern ulong BIT_MASKS[65];
 */
 
 struct AssertionFailureException : public std::exception {
-    AssertionFailureException( const char *expression, const char *file, int line,
-                               const char *message ) {
-        std::ostringstream outputStream;
-        
-        std::string message_string( message );
-        if ( !message_string.empty() )
-            outputStream << message_string << ": ";
-            
-        std::string expressionString = expression;
-        if ( expressionString == "false" || expressionString == "0" || expressionString == "FALSE" )
-            outputStream << "Unreachable code assertion";
-        else
-            outputStream << "Assertion '" << expression << "'";
-            
-        outputStream << " failed in file '" << file << "' line " << line;
-        std::cerr << outputStream.str() << std::endl;
-    }
+    AssertionFailureException(const char* expression, const char* file, int line,
+        const char* message);
 };
 
 // Assert that EXPRESSION evaluates to true, otherwise raise AssertionFailureException with associated MESSAGE
@@ -558,95 +546,6 @@ namespace STR {
     bool is_basic_letter(const char& c);
 }
 
-struct FileReader;
-struct Library;
-
-/*
-    Replacement of some FileSystem functionnalities for compatibility.
-*/
-namespace FS {
-
-    struct DirectoryContent;
-    struct File;
-    /*
-        Represents a directory (NOT A FILE).
-        Only a relative directory can be appended (+ operator) to another directory.
-        get_name() returns the name of the directory.
-        to_string() returns the path of the directory.
-        get_contents() / get_files() / get_directories() list the contents of the directory.
-    */
-    struct Directory {
-        Directory(const std::string& path);
-        Directory() : path("") {}
-        bool is_absolute() const;
-        Directory canonical() const;
-        bool exists() const;
-        bool mkdir() const;
-        DirectoryContent get_contents() const;
-        std::vector<File> get_files() const;
-        std::vector<Directory> get_directories() const;
-        std::string get_name() const;
-        std::string to_string() const;
-        std::string as_system_path() const;
-    private:
-        const std::string& get_path() const {
-            return path;
-        }
-        std::string path;
-        friend Directory operator+(const Directory& folder, const Directory& folder2);
-        friend void fill_directories_files(const Directory& directory, std::vector<Directory>* directories, std::vector<File>* files);
-        friend struct File;
-        friend struct FileSystemTests;
-    };
-
-    /*
-        Represents a File Path.
-        The path of the file is separated into the "folder" Directory.
-        get_full_name() returns the file name with extension.
-        get_name() returns the file name without extension.
-        to_string() returns the generic file path (not system specific, using '/' delimiter).
-    */
-    struct File {
-        Directory folder;
-        File(const Directory& folder, const std::string& name);
-        File(const std::string& folder, const std::string& name);
-        File(const std::string& name);
-        File() : ext_pos(0) {}
-        const std::string& get_full_name() const {
-            return name;
-        }
-        std::string get_extension() const {
-            return name.substr(ext_pos, std::string::npos);
-        }
-        std::string get_name() const {
-            return name.substr(0, ext_pos);
-        }
-        bool exists() const;
-
-        std::string to_string() const;
-        std::string as_system_path() const;
-    private:
-        std::string name;
-        uint ext_pos;
-        friend File operator+(const Directory& folder, const File& file);
-        friend struct ::FileReader;
-        friend struct ::Library;
-    };
-
-    struct DirectoryContent {
-        //Files and Directories are relative to the containing directory
-        std::vector<File> files;
-        std::vector<Directory> directories;
-    };
-
-    File operator+(const Directory& folder, const File& file);
-    Directory operator+(const Directory& folder, const Directory& folder2);
-
-    Directory current_directory();
-
-
-
-}
 
 /*
     The FileReader struct provides helper functions to open a file, verify that it was correctly opened and dump its content into an
@@ -656,8 +555,8 @@ namespace FS {
 */
 struct FileReader {
     std::ifstream       file;
-    bool open(const FS::File& file_path) {
-        file = std::ifstream(file_path.as_system_path(), std::ios::in | std::ios::binary | std::ios::ate );
+    bool open(const fs::path& file_path) {
+        file = std::ifstream(file_path, std::ios::in | std::ios::binary | std::ios::ate );
         return file.is_open();
     }
     
@@ -711,6 +610,12 @@ inline std::string to_hex( ulong val, uchar size = 16, bool prefix = false ) {
     }
     return buff;
 }
+
+
+
+
+
+
 /*
     The log struct can be used to print preformatted output to the console.
     The different LogStreams available have different prefixes and colors.
@@ -721,28 +626,76 @@ inline std::string to_hex( ulong val, uchar size = 16, bool prefix = false ) {
     Log::err << Log::tag << "An error occured\n";
 */
 namespace Log {
+
+
+    struct OStreamTarget {
+        virtual void print(const char* str, ConsoleColor color, const char* name) = 0;
+
+        virtual ~OStreamTarget() {}
+    };
+
+    extern std::unique_ptr<OStreamTarget> output_stream;
+
+    struct STDOutput : public OStreamTarget {
+
+        void print(const char* str, ConsoleColor color, const char* name) {
+            uconsole.set_color( color );
+            printf("%s", str);
+        }
+    };
+    constexpr int LARGE_BUFFER_SIZE = 4096;
+    extern char LARGE_BUFFER[LARGE_BUFFER_SIZE];
+
     struct TagStruct {};
     extern TagStruct tag;
+    struct PostStruct {};
+    extern PostStruct post;
     class LogStream {
-            ConsoleColor color;
-            const char *tag;
+            std::stringstream ss;
         public:
+            ConsoleColor const color;
+            const char* const tag;
+            const char* const name;
             bool hide;
-            LogStream( ConsoleColor color, const char *tag ) : color( color ), tag( tag ), hide( false ) {}
-            LogStream &operator<<( const TagStruct &param ) {
-                if ( hide )
-                    return *this;
-                uconsole.set_color( color );
-                printf( "%-7s", tag );
-                return *this;
+            LogStream( ConsoleColor color, const char *tag, const char *name ) : color( color ), tag( tag ), name(name), hide( false ) {}
+            // LogStream &operator<<( const TagStruct &param ) {
+            //     if ( hide )
+            //         return *this;
+            //     uconsole.set_color( color );
+            //     printf( "%-7s", tag );
+            //     return *this;
+            // }
+            // template<typename T>
+            // LogStream &operator<<( const T &param ) {
+            //     if ( hide )
+            //         return *this;
+            //     ss << param;
+            //     return *this;
+            // }
+            // LogStream &operator<<( const PostStruct &p ) {
+            //     if ( hide )
+            //         return *this;
+            //     auto res = ss.str();
+            //     output_stream->print(res.c_str(), color, name);
+            //     ss.str("");
+            //     ss.clear();
+            //     return *this;
+            // }
+
+            void log(const char *format, ...) {
+                va_list args;
+                va_start(args, format);
+                vsnprintf(LARGE_BUFFER, LARGE_BUFFER_SIZE, format, args);
+                va_end(args);
+                output_stream->print(LARGE_BUFFER, color, name);
             }
-            template<typename T>
-            LogStream &operator<<( const T &param ) {
-                if ( hide )
-                    return *this;
-                uconsole.set_color( color );
-                std::cout << param;
-                return *this;
+            void log_tag(const char* format, ...) {
+                auto count = snprintf(LARGE_BUFFER, LARGE_BUFFER_SIZE, "%-7s", tag);
+                va_list args;
+                va_start(args, format);
+                vsnprintf(LARGE_BUFFER+ count, LARGE_BUFFER_SIZE- count, format, args);
+                va_end(args);
+                output_stream->print(LARGE_BUFFER, color, name);
             }
     };
     
@@ -853,7 +806,7 @@ struct Library {
     #endif
     void *handle;
     Library() : handle( nullptr ) {}
-    void init( const FS::File &file ); //No extension
+    void init( const fs::path &file ); //No extension
     bool loaded() {
         return handle != nullptr;
     }
