@@ -64,6 +64,7 @@ TestMNISTwithCustomLayer:
   stage: linux
   image: registry.git.rwth-aachen.de/monticore/embeddedmontiarc/generators/emadl2cpp/dockerimages/mxnet170:v0.0.1
   script:
+  - shopt -s expand_aliases
   - echo 'alias python='\''/usr/bin/python3'\''' >> ~/.bashrc
   - . ~/.bashrc
   - cat ~/.bashrc
@@ -72,7 +73,6 @@ TestMNISTwithCustomLayer:
   - python3 --version
   - which python
   - which python3
-  - shopt -s expand_aliases
   - alias python=/usr/bin/python3
   - python --version
   - python3 --version
