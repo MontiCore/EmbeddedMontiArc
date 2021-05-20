@@ -79,7 +79,14 @@ public class VectorType extends DataType {
 
         Object o[] = new Object[size];
         int i = 0;
+        boolean first = true;
         for (ValueType t : j.streamArray()) {
+            if (first) {
+                first = false;
+                long givenSize = j.getLong();
+                if (givenSize != size) throw new ParsingException("Size given in serialized VectorType array does not match the expected vector length.");
+                continue;
+            }
             if (i >= size)
                 throw new ParsingException("Too much entries in Array serialization.");
             o[i] = base_type.fromJson(j, context);
@@ -103,9 +110,10 @@ public class VectorType extends DataType {
         }
 
         Object arr[] = (Object[]) o;
-        j.startArray();
         if (arr.length != size)
             throw new IllegalArgumentException("Array length does not match its ArrayType length");
+        j.startArray();
+        j.writeValue(size);
         for (Object oi : arr) {
             base_type.toJson(j, oi, context);
         }
@@ -168,6 +176,6 @@ public class VectorType extends DataType {
             }
             res += "]";
             return new ArrayList<String>(Arrays.asList(res));
-        } else return new ArrayList<String>(Arrays.asList("Unimplemented toString()"));
+        } else return new ArrayList<String>(Arrays.asList("Unimplemented VectorType.toString() for array type "+array_c.getSimpleName()));
     }
 }

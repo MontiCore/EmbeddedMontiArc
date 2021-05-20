@@ -18,9 +18,6 @@ import de.rwth.montisim.commons.utils.json.JsonTraverser.*;
 public abstract class Json {
     public static final String K_TYPE = "type";
 
-    // JsonWriter w;
-    // JsonTraverser t;
-
     protected Json() {
     }
 

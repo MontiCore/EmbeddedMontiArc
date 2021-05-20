@@ -17,8 +17,6 @@ import java.util.Iterator;
  * The the current tag name or current attribute key/value can be read and processed.
  */
 public class XmlTraverser {
-    //TODO create iterator objects for tags and attributes
-    //TODO create Exception object to store position of error in file
     //TODO check EOF checking
 
     char[] data;

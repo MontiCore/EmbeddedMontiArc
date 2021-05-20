@@ -102,6 +102,6 @@ public class EnumType extends DataType {
 
     @Override
     public List<String> toString(Object o) {
-        return new ArrayList<String>(Arrays.asList("Unimplemented toString()"));
+        return new ArrayList<String>(Arrays.asList((String)o));
     }
 }
