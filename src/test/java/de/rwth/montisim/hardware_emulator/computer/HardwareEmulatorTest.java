@@ -20,9 +20,20 @@ public class HardwareEmulatorTest {
     }
 
     @Test
-    public void native_test() throws Exception {
+    public void native_test_json() throws Exception {
         ComputerProperties config = new ComputerProperties();
-        config.software_name = "autopilots/cppautopilot";
+        config.software_name = "autopilots/cppautopilot_zigzag_lib";
+        //config.software_name = "src/test/resources/autopilots/cppautopilot";
+        config.backend = new ComputerProperties.Direct();
+        config.time_model = new HardwareTimeModel();
+        config.json_data_exchange = true;
+        test_software(config);
+    }
+
+    @Test
+    public void native_test_binary() throws Exception {
+        ComputerProperties config = new ComputerProperties();
+        config.software_name = "autopilots/cppautopilot_zigzag_lib";
         //config.software_name = "src/test/resources/autopilots/cppautopilot";
         config.backend = new ComputerProperties.Direct();
         config.time_model = new HardwareTimeModel();
@@ -30,9 +41,21 @@ public class HardwareEmulatorTest {
     }
 
     @Test
-    public void emu_test_windows() throws Exception {
+    public void emu_test_windows_json() throws Exception {
         ComputerProperties config = new ComputerProperties();
-        config.software_name = "autopilots/cppautopilot";
+        config.software_name = "autopilots/cppautopilot_zigzag_lib";
+        ComputerProperties.HardwareEmulator backend = new ComputerProperties.HardwareEmulator();
+        backend.os = OS.WINDOWS;
+        config.backend = backend;
+        config.time_model = new HardwareTimeModel();
+        config.json_data_exchange = true;
+        test_software(config);
+    }
+
+    @Test
+    public void emu_test_windows_binary() throws Exception {
+        ComputerProperties config = new ComputerProperties();
+        config.software_name = "autopilots/cppautopilot_zigzag_lib";
         ComputerProperties.HardwareEmulator backend = new ComputerProperties.HardwareEmulator();
         backend.os = OS.WINDOWS;
         config.backend = backend;
@@ -41,9 +64,24 @@ public class HardwareEmulatorTest {
     }
 
     @Test
-    public void emu_test_linux() throws Exception {
+    public void emu_test_linux_json() throws Exception {
         ComputerProperties config = new ComputerProperties();
-        config.software_name = "autopilots/cppautopilot";
+        config.software_name = "autopilots/cppautopilot_zigzag_lib";
+        ComputerProperties.HardwareEmulator backend = new ComputerProperties.HardwareEmulator();
+        backend.os = OS.LINUX;
+        config.backend = backend;
+        config.time_model = new HardwareTimeModel();
+        config.debug_flags.add("p_syscalls");
+        config.debug_flags.add("p_unsupported_syscalls");
+        config.debug_flags.add("p_call");
+        config.json_data_exchange = true;
+        test_software(config);
+    }
+
+    @Test
+    public void emu_test_linux_binary() throws Exception {
+        ComputerProperties config = new ComputerProperties();
+        config.software_name = "autopilots/cppautopilot_zigzag_lib";
         ComputerProperties.HardwareEmulator backend = new ComputerProperties.HardwareEmulator();
         backend.os = OS.LINUX;
         config.backend = backend;
@@ -69,13 +107,11 @@ public class HardwareEmulatorTest {
 
         backend.measuredCycle(portData, 0.1);
 
-        Double steering = (Double)portData[5];
-        Double gas = (Double)portData[6];
+        Double gas = (Double)portData[5];
+        Double steering = (Double)portData[6];
         Double brakes = (Double)portData[7];
 
-        Logger.getGlobal().info("Result (raw strings): [gas=" + gas + ", steering=" + steering + ", brakes=" + brakes + "]");
-
-        Logger.getGlobal().info("Result (parsed):      [gas=" + gas + ", steering=" + steering + ", brakes=" + brakes + "]");
+        Logger.getGlobal().info("Result: [gas=" + gas + ", steering=" + steering + ", brakes=" + brakes + "]");
         backend.clean();
     }
 }

@@ -3,6 +3,10 @@
  */
 package de.rwth.montisim.hardware_emulator.computer;
 
+import java.io.ByteArrayInputStream;
+import java.io.ByteArrayOutputStream;
+import java.io.DataInputStream;
+import java.io.DataOutputStream;
 import java.io.IOException;
 import java.time.Duration;
 
@@ -23,6 +27,9 @@ public class HardwareEmulatorBackend implements ComputerBackend {
     ProgramInterface program;
     transient JsonWriter writer = new JsonWriter(false);
     transient JsonTraverser traverser = new JsonTraverser();
+    ByteArrayOutputStream bout = new ByteArrayOutputStream();
+    DataOutputStream out = new DataOutputStream(bout);
+    boolean json_data_exchange = false;
 
     protected HardwareEmulatorBackend(ComputerProperties properties)
             throws HardwareEmulatorException, SerializationException {
@@ -31,6 +38,7 @@ public class HardwareEmulatorBackend implements ComputerBackend {
         String interface_description = CppBridge.getInterface(id);
         program = Json.instantiateFromJson(interface_description, ProgramInterface.class);
         if (!program.isVersionValid()) throw new IllegalArgumentException("Program '"+program.name+"' uses an outdated version of the DynamicInterface. ('"+program.version+"' instead of '"+ProgramInterface.CURRENT_VERSION+"')");
+        this.json_data_exchange = properties.json_data_exchange;
     }
 
     @Override
@@ -49,20 +57,29 @@ public class HardwareEmulatorBackend implements ComputerBackend {
                     if (port.port_type == PortType.SOCKET) {
                         SocketQueues sq = (SocketQueues)portData[i];
                         for (Object o : sq.in) {
-                            writer.init();
-                            port.data_type.toJson(writer, o, null);
-                            String res = writer.getString();
-                            //System.out.println("  " +res);
-                            CppBridge.setPort(id, i, res); // Must correctly add to queue
+                            if (json_data_exchange) {
+                                writer.init();
+                                port.data_type.toJson(writer, o, null);
+                                CppBridge.setPortJson(id, i, writer.getString()); // Must correctly add to queue
+                            } else {
+                                bout.reset();
+                                out.writeInt(0); // Fill 4 bytes with zero: the cpp_bridge.cpp fills it with the length of the rest after (avoids reallocating and copying the data)
+                                port.data_type.toBinary(out, o);
+                                CppBridge.setPortBinary(id, i, bout.toByteArray());
+                            }
                         }
                         sq.in.clear();
                     } else {
                         if (portData[i] != null) {
-                            writer.init();
-                            port.data_type.toJson(writer, portData[i], null);
-                            String res = writer.getString();
-                            //System.out.println("  " +res);
-                            CppBridge.setPort(id, i, res);
+                            if (json_data_exchange) {
+                                writer.init();
+                                port.data_type.toJson(writer, portData[i], null);
+                                CppBridge.setPortJson(id, i, writer.getString()); // Must correctly add to queue
+                            } else {
+                                bout.reset();
+                                port.data_type.toBinary(out, portData[i]);
+                                CppBridge.setPortBinary(id, i, bout.toByteArray());
+                            }
                         }
                     }
                 }
@@ -85,17 +102,28 @@ public class HardwareEmulatorBackend implements ComputerBackend {
                         SocketQueues sq = (SocketQueues)portData[i];
                         sq.out.clear();
                         while (true) {
-                            String data = CppBridge.getPort(id, i); // Assumes 'getPort()' pulls from the queue until returning "".
-                            if (data.length() == 0) break;
-                            traverser.init(data);
-                            Object msg = p.data_type.fromJson(traverser, null);
-                            sq.out.add(msg);
+                            if (json_data_exchange) {
+                                String data = CppBridge.getPortJson(id, i);
+                                if (data.length() == 0) break;
+                                traverser.init(data);
+                                sq.out.add(p.data_type.fromJson(traverser, null));
+                            } else {
+                                byte[] data = CppBridge.getPortBinary(id, i);
+                                if (data.length == 0) break; // No data
+                                DataInputStream din = new DataInputStream(new ByteArrayInputStream(data));
+                                sq.out.add(p.data_type.fromBinary(din));
+                            }
                         }
                     } else {
-                        String data = CppBridge.getPort(id, i);
-                        traverser.init(data);
-                        Object msg = p.data_type.fromJson(traverser, null);
-                        portData[i] = msg;
+                        if (json_data_exchange) {
+                            String data = CppBridge.getPortJson(id, i);
+                            traverser.init(data);
+                            portData[i] = p.data_type.fromJson(traverser, null);
+                        } else {
+                            byte[] data = CppBridge.getPortBinary(id, i);
+                            DataInputStream din = new DataInputStream(new ByteArrayInputStream(data));
+                            portData[i] = p.data_type.fromBinary(din);
+                        }
                     }
                 }
                 ++i;
