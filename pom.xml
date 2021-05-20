@@ -10,11 +10,11 @@
 
     <groupId>montisim</groupId>
     <artifactId>hardware_emulator</artifactId>
-    <version>2.0.8</version>
+    <version>2.0.11</version>
 
 
     <properties>
-        <simulation.version>3.1.6</simulation.version>
+        <simulation.version>3.1.10</simulation.version>
 
 
         <wagon.provider.version>2.6</wagon.provider.version>
