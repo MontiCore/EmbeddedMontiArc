@@ -71,6 +71,7 @@ TestMNISTwithCustomLayer:
   - python --version
   - python3 --version
   - which python
+  - which python3
   - shopt -s expand_aliases
   - alias python=/urs/bin/python3
   - python --version
