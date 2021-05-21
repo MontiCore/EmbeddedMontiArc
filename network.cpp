@@ -21,10 +21,10 @@
 
 #include <sys/socket.h>
 #include <sys/types.h>
-#include <sys/socket.h>
 #include <netdb.h>
 #include <unistd.h>
 #include <arpa/inet.h>
+#include <netinet/tcp.h>
 
 #endif
 
@@ -32,6 +32,7 @@ using namespace std;
 
 void *get_in_addr(struct sockaddr *sa);
 
+#ifdef IS_WIN
 void Socket::get_max_msg_size() {
     DWORD target = 0;
     int size = sizeof(DWORD);
@@ -40,6 +41,19 @@ void Socket::get_max_msg_size() {
     }
     max_msg_size = target;
 }
+#else
+void Socket::get_max_msg_size() {
+    // TODO the max segment length is not the max message length? => remove max tcp header-trailer length?
+    // int64_t target = 0;
+    // socklen_t size = sizeof(int64_t);
+    // if (getsockopt(socket, IPPROTO_TCP, TCP_MAXSEG, (char*)&target, &size) != 0) {
+    //     NetworkException::throw_network_err("Error getting the max packet length");
+    // }
+
+    // TCP on linux has no max size?
+    max_msg_size = INT64_MAX;
+}
+#endif
 
 void Socket::write_s(char *buffer, int count) const {
     while (count > max_msg_size) {

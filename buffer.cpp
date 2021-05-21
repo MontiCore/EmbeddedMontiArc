@@ -1,5 +1,6 @@
 #include "buffer.h"
 #include <iostream>
+#include <cstring>
 
 int get_socket_id(const std::string &ip, int max_count) {
     if (ip.find("2::") != 0) {
@@ -105,5 +106,5 @@ void BinaryWriter::write_f64(double value) {
 void BinaryWriter::write_str(const std::string &str) {
     int size = str.size() + 1; // Include terminating char
     auto pos = buffer.push_slot(size);
-    memcpy(pos, str.c_str(), size);
+    ::memcpy(pos, str.c_str(), size);
 }
