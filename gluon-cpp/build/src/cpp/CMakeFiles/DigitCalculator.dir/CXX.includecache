@@ -296,11 +296,11 @@ CNNPredictor_cNNCalculator_connector_predictor6.h
 CNNTranslator.h
 ../target/CNNTranslator.h
 
-/home/julian/Documents/MontiCore/mnistcalculator/gluon-cpp/src/cpp/DigitCalculator.cpp
+/home/drakeman/mnistcalculator/gluon-cpp/src/cpp/DigitCalculator.cpp
 CNNTranslator.h
-/home/julian/Documents/MontiCore/mnistcalculator/gluon-cpp/src/cpp/CNNTranslator.h
+/home/drakeman/mnistcalculator/gluon-cpp/src/cpp/CNNTranslator.h
 cNNCalculator_connector.h
-/home/julian/Documents/MontiCore/mnistcalculator/gluon-cpp/src/cpp/cNNCalculator_connector.h
+/home/drakeman/mnistcalculator/gluon-cpp/src/cpp/cNNCalculator_connector.h
 opencv2/core/core.hpp
 -
 opencv2/highgui/highgui.hpp

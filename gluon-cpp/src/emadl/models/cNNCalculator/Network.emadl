@@ -17,7 +17,6 @@ component Network<Z(2:oo) classes = 10>{
         conv(kernel=5, channels=50, stride=2) ->
         FullyConnected(units=500) ->
         Relu() ->
-		
         Dropout() ->
         FullyConnected(units=classes) ->
         Softmax() ->

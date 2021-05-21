@@ -1,5 +1,6 @@
 import logging
 import mxnet as mx
+
 import CNNCreator_cNNCalculator_connector_predictor4
 import CNNDataLoader_cNNCalculator_connector_predictor4
 import CNNSupervisedTrainer_cNNCalculator_connector_predictor4
@@ -11,6 +12,7 @@ if __name__ == "__main__":
     logger.addHandler(handler)
 
     cNNCalculator_connector_predictor4_creator = CNNCreator_cNNCalculator_connector_predictor4.CNNCreator_cNNCalculator_connector_predictor4()
+    cNNCalculator_connector_predictor4_creator.validate_parameters()
     cNNCalculator_connector_predictor4_loader = CNNDataLoader_cNNCalculator_connector_predictor4.CNNDataLoader_cNNCalculator_connector_predictor4()
     cNNCalculator_connector_predictor4_trainer = CNNSupervisedTrainer_cNNCalculator_connector_predictor4.CNNSupervisedTrainer_cNNCalculator_connector_predictor4(
         cNNCalculator_connector_predictor4_loader,

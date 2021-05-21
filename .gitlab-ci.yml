@@ -60,3 +60,25 @@ TestEMADLMavenPlugin:
   - cd emadl-maven-plugin
   - mvn dependency:resolve emadl:train -s settings.xml
 
+TestMNISTwithCustomLayer:
+  stage: linux
+  image: registry.git.rwth-aachen.de/monticore/embeddedmontiarc/generators/emadl2cpp/dockerimages/mxnet170:v0.0.1
+  script:
+  - shopt -s expand_aliases
+  - echo 'alias python='\''/usr/bin/python3'\''' >> ~/.bashrc
+  - . ~/.bashrc
+  - cat ~/.bashrc
+  - echo $PYTHONPATH
+  - python --version
+  - python3 --version
+  - which python
+  - which python3
+  - alias python=/usr/bin/python3
+  - python --version
+  - python3 --version
+  - which python
+  - type -a python
+  - mv /mxnet/build/libmxnet.so /mxnet/build/libmxnet.a /usr/lib/
+  - cd mnist-custom-layer
+  - mvn dependency:resolve emadl:train -s settings.xml
+

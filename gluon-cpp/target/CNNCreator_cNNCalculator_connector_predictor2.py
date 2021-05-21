@@ -4,6 +4,10 @@ import os
 import shutil
 import warnings
 import inspect
+import sys
+
+sys.path.insert(1, '/home/drakeman/mnistcalculator/gluon-cpp/src/python/gluon')
+from custom_layers import *
 
 from CNNNet_cNNCalculator_connector_predictor2 import Net_0
 
@@ -170,6 +174,9 @@ class CNNCreator_cNNCalculator_connector_predictor2:
         for i, network in self.networks.items():
             network.export(self._model_dir_ + self._model_prefix_ + "_" + str(i), epoch=0)
 
+    def setWeightInitializer(self, initializer):
+        self.weight_initializer = initializer
+
     def getInputs(self):
         inputs = {}
         input_dimensions = (1,28,28,)
@@ -183,3 +190,7 @@ class CNNCreator_cNNCalculator_connector_predictor2:
         output_domains = (float,0.0,1.0,)
         outputs["softmax_"] = output_domains + (output_dimensions,)
         return outputs
+
+    def validate_parameters(self):
+
+        pass

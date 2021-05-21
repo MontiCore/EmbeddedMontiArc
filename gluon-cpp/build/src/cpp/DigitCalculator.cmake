@@ -4,7 +4,7 @@ if("${CMAKE_MAJOR_VERSION}.${CMAKE_MINOR_VERSION}" LESS 2.5)
    message(FATAL_ERROR "CMake >= 2.6.0 required")
 endif()
 cmake_policy(PUSH)
-cmake_policy(VERSION 2.6)
+cmake_policy(VERSION 2.6...3.17)
 #----------------------------------------------------------------
 # Generated CMake target import file.
 #----------------------------------------------------------------
@@ -45,13 +45,13 @@ unset(_expectedTargets)
 add_executable(DigitCalculator IMPORTED)
 
 set_target_properties(DigitCalculator PROPERTIES
-  INTERFACE_INCLUDE_DIRECTORIES "/home/julian/Documents/MontiCore/mnistcalculator/gluon-cpp/src/cpp"
+  INTERFACE_INCLUDE_DIRECTORIES "/home/drakeman/mnistcalculator/gluon-cpp/src/cpp"
 )
 
 # Import target "DigitCalculator" for configuration ""
 set_property(TARGET DigitCalculator APPEND PROPERTY IMPORTED_CONFIGURATIONS NOCONFIG)
 set_target_properties(DigitCalculator PROPERTIES
-  IMPORTED_LOCATION_NOCONFIG "/home/julian/Documents/MontiCore/mnistcalculator/gluon-cpp/build/src/cpp/DigitCalculator"
+  IMPORTED_LOCATION_NOCONFIG "/home/drakeman/mnistcalculator/gluon-cpp/build/src/cpp/DigitCalculator"
   )
 
 # This file does not depend on other imported targets which have
