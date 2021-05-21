@@ -5,6 +5,10 @@
 #include <stdint.h>
 #include "utility/utility.h"
 
+/*
+    These structs & enums are based on what is defined in the linux "elf.h" header (/usr/include/elf.h)
+*/
+
 struct ValueName {
     uint32_t value;
     const char *name;
@@ -474,9 +478,12 @@ enum class ElfDynType {
     DT_DEBUG    = 21,
     DT_TEXTREL  = 22,
     DT_JMPREL   = 23,
-    DT_ENCODING = 32,
+    DT_INIT_ARRAY = 25,		/* Array with addresses of init fct */
+    DT_FINI_ARRAY = 26,	/* Array with addresses of fini fct */
+    DT_INIT_ARRAYSZ	= 27,		/* Size in bytes of DT_INIT_ARRAY */
+    DT_FINI_ARRAYSZ	= 28,		/* Size in bytes of DT_FINI_ARRAY */
+    DT_ENCODING = 32
 };
-
 
 struct Elf32_Dyn {
     Elf32_Sword d_tag;
@@ -492,6 +499,10 @@ struct Elf64_Dyn {
         Elf64_Xword d_val;
         Elf64_Addr d_ptr;
     } d_un;
+
+    ElfDynType get_type() {
+        return static_cast<ElfDynType>( d_tag );
+    }
 };
 
 

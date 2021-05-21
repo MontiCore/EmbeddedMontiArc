@@ -25,6 +25,8 @@ namespace OS {
         SystemCalls *sys_calls;
         Symbols *symbols;
         Memory *mem;
+        uint64_t init_address = 0;
+        std::vector<uint64_t> init_array_addresses;
         
 		std::vector<SectionInfo> sections;
         uint section_pos;

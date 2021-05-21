@@ -35,12 +35,13 @@ void OS::ElfLoader::init(const fs::path& fn, SystemCalls &sys_calls, Memory &mem
         for ( auto &seg : elf.ph64 )
             if ( seg.get_type() == ElfSegType::PT_LOAD )
                 seg_count++;
+        //entry_point_address = elf.header64().e_entry;
     }
     else {
         for ( auto &seg : elf.ph32 )
             if ( seg.get_type() == ElfSegType::PT_LOAD )
                 seg_count++;
-                
+        //entry_point_address = elf.header32().e_entry;
     }
     sections.resize( seg_count );
     section_pos = 0;
@@ -137,6 +138,39 @@ void OS::ElfLoader::init(const fs::path& fn, SystemCalls &sys_calls, Memory &mem
                 }
             }
         }
+
+        // load dynamic section for initialization functions
+        Elf64_Dyn *dt_init_entry = nullptr;
+        Elf64_Dyn *dt_init_array_entry = nullptr;
+        Elf64_Dyn *dt_init_array_size_entry = nullptr;
+        for ( auto &sh : elf.sh64 ) {
+            if ( sh.get_type() == ElfSecType::SHT_DYNAMIC) {
+                auto dyn_table = elf.get_section_as_table<Elf64_Dyn>( sh );
+                
+                for ( auto &dyn_entry : dyn_table ) {
+                    auto t = dyn_entry.get_type();
+                    if (t == ElfDynType::DT_INIT) {
+                        dt_init_entry = &dyn_entry;
+                    } else if (t == ElfDynType::DT_INIT_ARRAY) {
+                        dt_init_array_entry = &dyn_entry;
+                    } else if (t == ElfDynType::DT_INIT_ARRAYSZ) {
+                        dt_init_array_size_entry = &dyn_entry;
+                    }
+                }
+            }
+        }
+
+        if (dt_init_entry) {
+            init_address = dt_init_entry->d_un.d_ptr;
+        }
+
+        if (dt_init_array_entry && dt_init_array_size_entry) {
+            auto jm = dt_init_array_size_entry->d_un.d_val / sizeof (Elf64_Addr);
+
+            auto addrs = (Elf64_Addr *) (dt_init_array_entry->d_un.d_ptr + addr_diff);
+            for (auto j = 0; j < jm; ++j)
+                init_array_addresses.push_back(addrs[j]);
+        }
     }
     else {
         //TODO
@@ -149,9 +183,19 @@ void OS::ElfLoader::init(const fs::path& fn, SystemCalls &sys_calls, Memory &mem
 
 void OS::ElfLoader::elf_main( Computer &computer ) {
     throw_assert( loaded, "ElfLoader::elf_main() on uninitialized ElfLoader." );
-    auto init = symbols->get_symbol( "_init" );
-    if ( init.type == Symbols::Symbol::Type::EXPORT )
-        computer.call( init.addr, "_init" );
-    else
-        throw_error(Error::hardware_emu_software_load_error("[ElfLoader] Could not locate _init function of ELF."));
+    computer.debug.d_code = true;// TEMP
+    computer.debug.d_mem = true;// TEMP
+    computer.debug.d_reg_update = true;// TEMP
+    computer.call( entry_point_address, "ELF ENTRY POINT" );
+    computer.debug.d_code = false;// TEMP
+    computer.debug.d_mem = false;// TEMP
+    computer.debug.d_reg_update = false;// TEMP
+    // auto init = symbols->get_symbol( "_init" );
+    // if ( init.type == Symbols::Symbol::Type::EXPORT ) {
+    //     //computer.call( init.addr, "_init" );
+    //     computer.call( entry_point_address, "ELF ENTRY POINT" );
+        
+    // }
+    // else
+    //     throw_error(Error::hardware_emu_software_load_error("[ElfLoader] Could not locate _init function of ELF."));
 }
