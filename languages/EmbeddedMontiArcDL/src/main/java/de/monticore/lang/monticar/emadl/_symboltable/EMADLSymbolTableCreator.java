@@ -47,9 +47,9 @@ public class EMADLSymbolTableCreator extends de.monticore.symboltable.CommonSymb
 
     public EMADLSymbolTableCreator(
             final ResolvingConfiguration resolvingConfig, final MutableScope enclosingScope,
-            String customFilesPath, String backend) {
+            String customFilesPath, String pythonPath, String backend) {
         super(resolvingConfig, enclosingScope);
-        initSuperSTC(resolvingConfig, customFilesPath, backend);
+        initSuperSTC(resolvingConfig, customFilesPath, pythonPath, backend);
     }
 
     public EMADLSymbolTableCreator(final ResolvingConfiguration resolvingConfig, final Deque<MutableScope> scopeStack) {
@@ -58,9 +58,9 @@ public class EMADLSymbolTableCreator extends de.monticore.symboltable.CommonSymb
     }
 
     public EMADLSymbolTableCreator(final ResolvingConfiguration resolvingConfig, final Deque<MutableScope> scopeStack,
-                                   String customFilesPath, String backend) {
+                                   String customFilesPath, String pythonPath, String backend) {
         super(resolvingConfig, scopeStack);
-        initSuperSTC(resolvingConfig, customFilesPath, backend);
+        initSuperSTC(resolvingConfig, customFilesPath, pythonPath, backend);
     }
 
     private void initSuperSTC(final ResolvingConfiguration resolvingConfig) {
@@ -90,8 +90,8 @@ public class EMADLSymbolTableCreator extends de.monticore.symboltable.CommonSymb
         visitor.setCommon2Visitor(emamSTC);
     }
 
-    private void initSuperSTC(final ResolvingConfiguration resolvingConfig, String customFilesPath, String backend) {
-        this.cnnArchSTC = new CNNArchSymbolTableCreator(resolvingConfig, scopeStack, customFilesPath, backend);
+    private void initSuperSTC(final ResolvingConfiguration resolvingConfig, String customFilesPath, String pythonPath, String backend) {
+        this.cnnArchSTC = new CNNArchSymbolTableCreator(resolvingConfig, scopeStack, customFilesPath, pythonPath, backend);
         this.emamSTC = new EmbeddedMontiArcMathSymbolTableCreatorTOP(resolvingConfig, scopeStack);
         this.mathOptSTC = new MathOptSymbolTableCreator(resolvingConfig, scopeStack);
         this.emadSTC = new ModifiedEMADynamicSymbolTableCreator(resolvingConfig, scopeStack);
