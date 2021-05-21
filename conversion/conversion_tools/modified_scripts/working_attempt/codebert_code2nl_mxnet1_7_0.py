@@ -1,9 +1,58 @@
+# original call to script
+# cd code2nl
+
+# lang=php #programming language
+# lr=5e-5
+# batch_size=64
+# beam_size=10
+# source_length=256
+# target_length=128
+# data_dir=../data/code2nl/CodeSearchNet
+# output_dir=model/$lang
+# train_file=$data_dir/$lang/train.jsonl
+# dev_file=$data_dir/$lang/valid.jsonl
+# eval_steps=1000 #400 for ruby, 600 for javascript, 1000 for others
+# train_steps=50000 #20000 for ruby, 30000 for javascript, 50000 for others
+# pretrained_model=microsoft/codebert-base #Roberta: roberta-base
+
+# python run.py --do_train --do_eval --model_type roberta --model_name_or_path $pretrained_model --train_filename $train_file --dev_filename $dev_file --output_dir $output_dir --max_source_length $source_length --max_target_length $target_length --beam_size $beam_size --train_batch_size $batch_size --eval_batch_size $batch_size --learning_rate $lr --train_steps $train_steps --eval_steps $eval_steps 
+
+# codebert roberta config
+
+# RobertaConfig {
+#   "architectures": [
+#     "RobertaModel"
+#   ],
+#   "attention_probs_dropout_prob": 0.1,
+#   "bos_token_id": 0,
+#   "eos_token_id": 2,
+#   "gradient_checkpointing": false,
+#   "hidden_act": "gelu",
+#   "hidden_dropout_prob": 0.1,
+#   "hidden_size": 768,
+#   "initializer_range": 0.02,
+#   "intermediate_size": 3072,
+#   "layer_norm_eps": 1e-05,
+#   "max_position_embeddings": 514,
+#   "model_type": "roberta",
+#   "num_attention_heads": 12,
+#   "num_hidden_layers": 12,
+#   "output_past": true,
+#   "pad_token_id": 1,
+#   "position_embedding_type": "absolute",
+#   "transformers_version": "4.2.1",
+#   "type_vocab_size": 1,
+#   "use_cache": true,
+#   "vocab_size": 50265
+# }
+
 from .convert_codebert_transformers_mxnet1_7_0 import convert_huggingface_model
 from gluonnlp.model.transformer import TransformerDecoder
 from mxnet.gluon.block import Block
 import mxnet.gluon.nn as nn
 import mxnet as mx
 import gluonnlp as nlp
+import argparse
 
 class Seq2Seq(Block):
     def __init__(
@@ -27,7 +76,7 @@ class Seq2Seq(Block):
     
     def create_target_mask(self, target_ids, valid_length):
         target_mask = mx.nd.zeros_like(target_ids)
-        for mask, len in enumerate(zip(target_mask, valid_length)):
+        for mask, len in zip(target_mask, valid_length):
             mask[0:len] = 1
         return target_mask
 
@@ -59,38 +108,60 @@ class Seq2Seq(Block):
             loss = loss_fct(shift_logits.reshape(-1, shift_logits.shape(-1))[active_loss],
                             shift_labels.reshape(-1)[active_loss])
 
-            outputs = loss,loss*active_loss.sum(),active_loss.sum()
-            return outputs
+            #outputs = loss,loss*active_loss.sum(),active_loss.sum()
+            return loss
         else:
             #Predict 
             preds=[]       
-            zero=torch.cuda.LongTensor(1).fill_(0)     
-            for i in range(source_ids.shape[0]):
-                context=encoder_output[:,i:i+1]
-                context_mask=source_mask[i:i+1,:]
-                beam = Beam(self.beam_size,self.sos_id,self.eos_id)
-                input_ids=beam.getCurrentState()
-                context=context.repeat(1, self.beam_size,1)
-                context_mask=context_mask.repeat(self.beam_size,1)
-                for _ in range(self.max_length): 
-                    if beam.done():
-                        break
-                    attn_mask=-1e4 *(1-self.bias[:input_ids.shape[1],:input_ids.shape[1]])
-                    tgt_embeddings = self.encoder.embeddings(input_ids).permute([1,0,2]).contiguous()
-                    out = self.decoder(tgt_embeddings,context,tgt_mask=attn_mask,memory_key_padding_mask=(1-context_mask).bool())
-                    out = torch.tanh(self.dense(out))
-                    hidden_states=out.permute([1,0,2]).contiguous()[:,-1,:]
-                    out = self.lsm(self.lm_head(hidden_states)).data
-                    beam.advance(out)
-                    input_ids.data.copy_(input_ids.data.index_select(0, beam.getCurrentOrigin()))
-                    input_ids=torch.cat((input_ids,beam.getCurrentState()),-1)
-                hyp= beam.getHyp(beam.getFinal())
-                pred=beam.buildTargetTokens(hyp)[:self.beam_size]
-                pred=[torch.cat([x.view(-1) for x in p]+[zero]*(self.max_length-len(p))).view(1,-1) for p in pred]
-                preds.append(torch.cat(pred,0).unsqueeze(0))
+            # zero=torch.cuda.LongTensor(1).fill_(0)     
+            # for i in range(source_ids.shape[0]):
+            #     context=encoder_output[:,i:i+1]
+            #     context_mask=source_mask[i:i+1,:]
+            #     beam = Beam(self.beam_size,self.sos_id,self.eos_id)
+            #     input_ids=beam.getCurrentState()
+            #     context=context.repeat(1, self.beam_size,1)
+            #     context_mask=context_mask.repeat(self.beam_size,1)
+            #     for _ in range(self.max_length): 
+            #         if beam.done():
+            #             break
+            #         attn_mask=-1e4 *(1-self.bias[:input_ids.shape[1],:input_ids.shape[1]])
+            #         tgt_embeddings = self.encoder.embeddings(input_ids).permute([1,0,2]).contiguous()
+            #         out = self.decoder(tgt_embeddings,context,tgt_mask=attn_mask,memory_key_padding_mask=(1-context_mask).bool())
+            #         out = torch.tanh(self.dense(out))
+            #         hidden_states=out.permute([1,0,2]).contiguous()[:,-1,:]
+            #         out = self.lsm(self.lm_head(hidden_states)).data
+            #         beam.advance(out)
+            #         input_ids.data.copy_(input_ids.data.index_select(0, beam.getCurrentOrigin()))
+            #         input_ids=torch.cat((input_ids,beam.getCurrentState()),-1)
+            #     hyp= beam.getHyp(beam.getFinal())
+            #     pred=beam.buildTargetTokens(hyp)[:self.beam_size]
+            #     pred=[torch.cat([x.view(-1) for x in p]+[zero]*(self.max_length-len(p))).view(1,-1) for p in pred]
+            #     preds.append(torch.cat(pred,0).unsqueeze(0))
                 
-            preds=torch.cat(preds,0)                
-            return preds
+            # preds=torch.cat(preds,0)                
+            # return preds
 
 
-nlp.model.transformer.TransformerDecoder()
+def train_model():
+    encoder = convert_huggingface_model()
+    decoder_hyper_params = {
+        attention_cell: 'multi_head',
+        num_layers: 6,
+        units: ,
+        hidden_size: 768,
+        num_heads: 12,
+
+
+    }
+    decoder = nlp.model.transformer.TransformerDecoder(
+        attention_cell='multi_head', num_layers=2, units=128, hidden_size=2048,
+        max_length=50, num_heads=4, scaled=True, scale_embed=True, norm_inputs=True,
+        dropout=0.0, use_residual=True, output_attention=False, weight_initializer=None,
+        bias_initializer='zeros', prefix=None, params=None
+    )
+
+
+if __name__ == '__main__':
+    args = parse_args()
+    if args.train:
+        train_model()
