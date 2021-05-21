@@ -70,14 +70,17 @@ public class AdapterGenerator {
         addFileDependencySharedCpp("json.cpp");
         addFileDependencySharedCpp("printf.h");
         addFileDependencySharedCpp("printf.cpp");
+        addFileDependencySharedCpp("err_out/err_out.h");
+        addFileDependencySharedCpp("err_out/standalone_err_out.cpp");
 
         // TODO "intermediate target" with serialization code ?
         cmake.addCMakeCommandEnd("# A static library around the root EMA component with JSON/Binary serialization functions.");
-        cmake.addCMakeCommandEnd("add_library("+targetNameWithSerialization+" STATIC program.cpp buffer.cpp json.cpp printf.cpp)");
+        cmake.addCMakeCommandEnd("add_library("+targetNameWithSerialization+" STATIC program.cpp buffer.cpp json.cpp printf.cpp err_out/standalone_err_out.cpp)");
         cmake.addCMakeCommandEnd("target_include_directories("+targetNameWithSerialization+" PUBLIC ${INCLUDE_DIRS} ${CMAKE_CURRENT_SOURCE_DIR})");
         //cmake.addCMakeCommandEnd("target_link_libraries("+targetNameWithSerialization+" PUBLIC ${LIBS} -static-libgcc -static-libstdc++)");
         cmake.addCMakeCommandEnd("target_link_libraries("+targetNameWithSerialization+" PRIVATE ${LIBS})");
         cmake.addCMakeCommandEnd("target_compile_features("+targetNameWithSerialization+" PUBLIC cxx_std_11)");
+        cmake.addCMakeCommandEnd("set_target_properties("+targetNameWithSerialization+" PROPERTIES LINKER_LANGUAGE CXX POSITION_INDEPENDENT_CODE ON)");
         cmake.addCMakeCommandEnd("");
         cmake.addCMakeCommandEnd("");
 
@@ -110,6 +113,9 @@ public class AdapterGenerator {
             cmake.addCMakeCommandEnd("# ServerAdapter for the EMA component");
             cmake.addCMakeCommandEnd("add_executable("+targetNameServer+" server_adapter.cpp network.cpp)");
             cmake.addCMakeCommandEnd("target_link_libraries("+targetNameServer+" PUBLIC "+targetNameWithSerialization+")");
+            cmake.addCMakeCommandEnd("if (CMAKE_HOST_WIN32)");
+            cmake.addCMakeCommandEnd("    target_link_libraries("+targetNameServer+" PUBLIC ws2_32)");
+            cmake.addCMakeCommandEnd("endif()");
             cmake.addCMakeCommandEnd("");
         }
 

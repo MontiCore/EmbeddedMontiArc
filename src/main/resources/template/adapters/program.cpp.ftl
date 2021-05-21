@@ -2,6 +2,7 @@
 #include "./${mainModelName}.h"
 
 #include <exception>
+#include "err_out/err_out.h"
 
 static constexpr auto N_TO_N_BROADCAST_ADDR = "ff02::2";
 static constexpr auto N_TO_N_PREFIX = "2::";

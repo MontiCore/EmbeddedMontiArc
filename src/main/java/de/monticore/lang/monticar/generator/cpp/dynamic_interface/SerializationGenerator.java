@@ -4,9 +4,7 @@ import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.List;
 
-import de.monticore.lang.monticar.generator.cpp.dynamic_interface.ProgramInterfaceResolver.SocketInfo;
 import de.rwth.montisim.commons.dynamicinterface.*;
-import de.rwth.montisim.commons.dynamicinterface.PortInformation.PortDirection;
 import de.rwth.montisim.commons.dynamicinterface.PortInformation.PortType;
 import de.rwth.montisim.commons.utils.json.SerializationException;
 

@@ -82,7 +82,8 @@ void SimulationSession::run() {
             reset = false;
             packet_in.receive();
             if (packet_in.id == PACKET_INIT){
-                init(packet_in.getReader());
+                auto br = packet_in.getReader();
+                init(br);
             } else {
                 throw AdapterException("Expected INIT packet, but got: id=" + to_string(packet_in.id) + " length=" + to_string(packet_in.size));
             }
@@ -110,9 +111,10 @@ void SimulationSession::run() {
                             is_json_comm = true;
                             autopilot::set_port_json(packet_in.getReader().read_u16(), packet_in.getPayload()+2);
                             break;
-                        case PACKET_RUN_CYCLE:
-                            run_cycle(packet_in.getReader());
-                            break;
+                        case PACKET_RUN_CYCLE: {
+                            auto br = packet_in.getReader();
+                            run_cycle(br);
+                        } break;
                         case PACKET_REF_ID: // Ignore in direct server mode
                             break;
                         default:

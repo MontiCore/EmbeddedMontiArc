@@ -25,7 +25,7 @@ public class JsonSerializationGenerator extends SerializationGenerator {
         b.a(indent, "auto it = as.begin();");
         b.a(indent, "auto end = as.end();");
         b.a(indent, "if (!(it != end)) {");
-        b.a(indent, "    cerr << \"Expected IP entry in array\" << endl;");
+        b.a(indent, "    throw_error(\"ParsingError\", \"Expected IP entry in array\");");
         b.a(indent, "    break;");
         b.a(indent, "}");
         b.a(indent, "auto ip = reader.get_string().get_json_string();");
@@ -34,7 +34,7 @@ public class JsonSerializationGenerator extends SerializationGenerator {
         b.a(indent, "auto &target = program_instance.%s[id];", sockInf.input_name);
         b.a(indent, "++it;");
         b.a(indent, "if (!(it != end)) {");
-        b.a(indent, "    cerr << \"Expected IP entry in array\" << endl;");
+        b.a(indent, "    throw_error(\"ParsingError\", \"Expected IP entry in array\");");
         b.a(indent, "    break;");
         b.a(indent, "}");
         generateSetter(((SimplePacketType) portInfo.data_type).getPayloadType(), indent, 1, "target");
@@ -79,13 +79,13 @@ public class JsonSerializationGenerator extends SerializationGenerator {
                 case N: {
                     String varName = String.format("res%d", depth);
                     b.a(indent, "auto %s = reader.get_long();",           varName);
-                    b.a(indent, "if (%s < 0) { %s = 0; } //TODO as error?",  varName, varName);
+                    b.a(indent, "if (%s < 0) { %s = 0; throw_error(\"ParsingError\", \"Received negative natural number (N).\"); }",  varName, varName);
                     b.a(indent, "%s = %s;",                                  varReference, varName);
                 } break;
                 case N1: {
                     String varName = String.format("res%d", depth);
                     b.a(indent, "auto %s = reader.get_long();",           varName);
-                    b.a(indent, "if (%s < 1) { %s = 0; } //TODO as error?",  varName, varName);
+                    b.a(indent, "if (%s < 1) { %s = 0; throw_error(\"ParsingError\", \"Received natural number <= 0 (N1).\");}",  varName, varName);
                     b.a(indent, "%s = %s;",                                  varReference, varName);
                 } break;
                 case C: {
@@ -93,10 +93,10 @@ public class JsonSerializationGenerator extends SerializationGenerator {
                     b.a(indent, "int %s = 0;",                                   i);
                     b.a(indent, "for (auto t : reader.stream_array()) {"      );
                     b.a(indent, "    if (%s == 0) %s = reader.get_double();", i, varReference);
-                    b.a(indent, "    else if (%s == 1) {} // TODO UPDATE\n",     i); // TODO handle correct Complex native type
-                    b.a(indent, "    else {} // TODO error?"                     );
+                    b.a(indent, "    else if (%s == 1) {throw_error(\"ParsingError\", \"Unimplemented complex number\");}\n",     i); // TODO handle correct Complex native type
+                    b.a(indent, "    else { throw_error(\"ParsingError\", \"Too much entries in the received complex number JSON serialization.\"); }"                     );
                     b.a(indent, "    ++%s;",                                     i);
-                    b.a(indent, "} if (%s < 2) {} // TODO error?",               i);
+                    b.a(indent, "} if (%s < 2) { throw_error(\"ParsingError\", \"Missing entries in the received complex number JSON serialization.\"); }",               i);
                 } break;
                 case BOOLEAN:
                 b.a(indent, "%s = reader.get_bool();", varReference);
@@ -108,18 +108,18 @@ public class JsonSerializationGenerator extends SerializationGenerator {
                     b.a(indent, "int %s = 0;",                                       i);
                     b.a(indent, "for (auto t : reader.stream_array()) {"          );
                     b.a(indent, "    if (%s < 2) %s(%s) = reader.get_double();",  i, varReference, i);
-                    b.a(indent, "    else {} // TODO error?"                         );
+                    b.a(indent, "    else { throw_error(\"ParsingError\", \"Too much entries in the received VEC2 JSON serialization.\"); }");
                     b.a(indent, "    ++%s;",                                         i);
-                    b.a(indent, "} if (%s < 2) {} // TODO error?",                   i);
+                    b.a(indent, "} if (%s < 2) { throw_error(\"ParsingError\", \"Missing entries in the received VEC2 JSON serialization.\"); }", i);
                 } break;
                 case VEC3: {
                     String i = String.format("i%d", depth);
                     b.a(indent, "int %s = 0;",                                       i);
                     b.a(indent, "for (auto t : reader.stream_array()) {"          );
                     b.a(indent, "    if (%s < 3) %s(%s) = reader.get_double();",  i, varReference, i);
-                    b.a(indent, "    else {} // TODO error?"                         );
+                    b.a(indent, "    else { throw_error(\"ParsingError\", \"Too much entries in the received VEC3 JSON serialization.\"); }");
                     b.a(indent, "    ++%s;",                                         i);
-                    b.a(indent, "} if (%s < 3) {} // TODO error?",                   i);
+                    b.a(indent, "} if (%s < 3) { throw_error(\"ParsingError\", \"Missing entries in the received VEC3 JSON serialization.\"); }",i);
                 } break;
                 default:
                     throw new IllegalArgumentException("Missing case");
@@ -129,15 +129,21 @@ public class JsonSerializationGenerator extends SerializationGenerator {
             int newIndent = indent + 1;
             int size = vt.getSize();
             String i = String.format("i%d", depth);
+            String first = String.format("first%d", depth);
             String ref = String.format("res%d", depth);
 
             b.a(indent, "int %s = 0;",                                   i);
+            b.a(indent, "bool %s = true;",                               first);
             b.a(indent, "for (auto t : reader.stream_array()) {"      );
-            b.a(indent, "    if (%s >= %d) { break; /*TODO error?*/}",   i, size);
+            b.a(indent, "    if (%s) {", first);
+            b.a(indent, "        %s = false;", first);
+            b.a(indent, "        if (reader.get_long() != %s) { throw_error(\"ParsingError\", \"Size given in serialized VectorType array does not match the expected vector length.\"); break; }", size);
+            b.a(indent, "        continue;");
+            b.a(indent, "    } else if (%s >= %d) { throw_error(\"ParsingError\", \"Too much entries in the received Vector JSON serialization.\"); break; }",   i, size);
             b.a(indent, "    auto &%s = %s(%s);",                        ref, varReference, i);
             generateSetter(vt.getBaseType(), newIndent, depth+1, ref);
             b.a(indent, "    ++%s;",                                     i);
-            b.a(indent, "} if (%s < %d) {} // TODO error?",              i, size);
+            b.a(indent, "} if (%s < %d) { throw_error(\"ParsingError\", \"Missing entries in the received Vector JSON serialization.\"); }", i, size);
         } else if (type instanceof MatrixType) {
             MatrixType vt = (MatrixType)type;
             int newIndent = indent + 2;
@@ -150,16 +156,16 @@ public class JsonSerializationGenerator extends SerializationGenerator {
             
             b.a(indent, "int %s = 0;",                                       i);
             b.a(indent, "for (auto t : reader.stream_array()) {"          );
-            b.a(indent, "    if (%s >= %d) { break; /*TODO error?*/}",       i, rows);
+            b.a(indent, "    if (%s >= %d) { throw_error(\"ParsingError\", \"Too much rows in the received Matrix JSON serialization.\"); break; }",       i, rows);
             b.a(indent, "    int %s = 0;",                                   j);
             b.a(indent, "    for (auto u : reader.stream_array()) {"      );
-            b.a(indent, "        if (%s >= %d) { break; /*TODO error?*/}",   j, cols);
+            b.a(indent, "        if (%s >= %d) { throw_error(\"ParsingError\", \"Too much columns in the received Matrix JSON serialization.\"); break; }",   j, cols);
             b.a(indent, "        auto &%s = %s(%s, %s);",                    ref, varReference, i, j);
             generateSetter(vt.getBaseType(), newIndent, depth+1, ref);
             b.a(indent, "        ++%s;",                                     j);
-            b.a(indent, "    } if (%s < %d) {} // TODO error?",              j, cols);
+            b.a(indent, "    } if (%s < %d) { throw_error(\"ParsingError\", \"Missing entries in a column of the received Matrix JSON serialization.\"); } ", j, cols);
             b.a(indent, "    ++%s;",                                         i);
-            b.a(indent, "} if (%s < %d) {} // TODO error?",                  i, cols);
+            b.a(indent, "} if (%s < %d) {throw_error(\"ParsingError\", \"Missing rows in the received Matrix JSON serialization.\");}",                  i, cols);
 
         } else if (type instanceof DynVectorType) {
             System.out.println("Unimplemented: DynVectorType set_port case.");
@@ -182,11 +188,11 @@ public class JsonSerializationGenerator extends SerializationGenerator {
             
                 b.a(indent, "if (%s != %s) {",           it, end);
                 generateSetter(st.getFieldType(i), newIndent, depth+1, String.format("%s.%s", varReference, fieldName));
-                b.a(indent, "    %s++;",                 it);
-                b.a(indent, "} else {/*TODO error?*/}"   );
+                b.a(indent, "    ++%s;",                 it);
+                b.a(indent, "} else { throw_error(\"ParsingError\", \"Missing entries in the received Struct JSON serialization.\"); }"   );
             }
 
-            b.a(indent, "if (%s != %s) {/*TODO error?*/}", it, end);
+            b.a(indent, "if (%s != %s) { throw_error(\"ParsingError\", \"Too much entries in the received Struct JSON serialization.\"); }", it, end);
 
         } else if (type instanceof EnumType) {
             EnumType et = (EnumType)type;
@@ -207,7 +213,7 @@ public class JsonSerializationGenerator extends SerializationGenerator {
                 elseS = "else ";
             }
 
-            b.a(indent, "else {/*TODO error?*/}");
+            b.a(indent, "else { throw_error(\"ParsingError\", \"Unknown ENUM variant received in the JSON serialization.\"); }");
 
         } else {
             throw new IllegalArgumentException("Missing case");
@@ -258,6 +264,7 @@ public class JsonSerializationGenerator extends SerializationGenerator {
             String ref = String.format("res%d", depth);
 
             b.a(indent, "writer.start_array();"              );
+            b.a(indent, "writer.write_value(%s);",           size);
             b.a(indent, "for (int %s=0; %s < %d; ++%s) {",   i, i, size, i);
             b.a(indent, "    auto &%s = %s(%s);",            ref, varReference, i);
             generateGetter(vt.getBaseType(), newIndent, depth+1, ref);
@@ -285,7 +292,7 @@ public class JsonSerializationGenerator extends SerializationGenerator {
             b.a(indent, "}"                                      );
             b.a(indent, "writer.end_array();"                    );
 
-        }else if (type instanceof DynVectorType) {
+        } else if (type instanceof DynVectorType) {
             System.out.println("Unimplemented: DynVectorType get_port case.");
             //throw new IllegalArgumentException("Unimplemented");
         } else if (type instanceof StructType) {
