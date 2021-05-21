@@ -37,6 +37,7 @@ public class CNNArchSymbolTableCreator extends de.monticore.symboltable.CommonSy
     private ArchitectureSymbol architecture;
     private String backend;
     private String customFilesPath = "";
+    private String pythonPath = "";
 
 
     public CNNArchSymbolTableCreator(final ResolvingConfiguration resolvingConfig,
@@ -48,9 +49,11 @@ public class CNNArchSymbolTableCreator extends de.monticore.symboltable.CommonSy
     public CNNArchSymbolTableCreator(final ResolvingConfiguration resolvingConfig,
                                      final MutableScope enclosingScope,
                                      String customFilesPath,
+                                     String pythonPath,
                                      String backend) {
         super(resolvingConfig, enclosingScope);
         setBackend(backend);
+        setPythonPath(pythonPath);
         setCustomFilesPath(customFilesPath);
         initSuperSTC(resolvingConfig);
     }
@@ -64,9 +67,11 @@ public class CNNArchSymbolTableCreator extends de.monticore.symboltable.CommonSy
     public CNNArchSymbolTableCreator(final ResolvingConfiguration resolvingConfig,
                                      final Deque<MutableScope> scopeStack,
                                      String customFilesPath,
+                                     String pythonPath,
                                      String backend) {
         super(resolvingConfig, scopeStack);
         setBackend(backend);
+        setPythonPath(pythonPath);
         setCustomFilesPath(customFilesPath);
         initSuperSTC(resolvingConfig);
     }
@@ -106,6 +111,10 @@ public class CNNArchSymbolTableCreator extends de.monticore.symboltable.CommonSy
     public String getCustomFilesPath(){
         return this.customFilesPath;
     }
+
+    private void setPythonPath (String pythonPath){ this.pythonPath = pythonPath; }
+
+    public String getPythonPath (){ return this.pythonPath; }
 
     private CNNArchVisitor realThis = this;
 
@@ -225,7 +234,7 @@ public class CNNArchSymbolTableCreator extends de.monticore.symboltable.CommonSy
                     continue;
                 }
                 String nameWithoutExtension = pyFiles[index].substring(0, pyFiles[index].length() - 3);
-                CustomPythonLayerDeclaration declaration = new CustomPythonLayerDeclaration(nameWithoutExtension, customFilesPath, "python");
+                CustomPythonLayerDeclaration declaration = new CustomPythonLayerDeclaration(nameWithoutExtension, customFilesPath, pythonPath, "python");
                 declaration.setParameters(declaration.extractParametersFromFile());
                 addToScope(declaration);
             }
