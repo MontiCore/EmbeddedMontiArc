@@ -232,11 +232,11 @@ public class CustomPythonLayerDeclaration extends CustomLayerDeclaration{
         String com = "";
         String callingPrintMethod = "import " + this.getName() + "; temp=" + this.getName() + "." + this.getName() + "(); temp.compute_output_types(" + parametersOfLayer + computeOutputPython + ")";
         if (SystemUtils.IS_OS_WINDOWS == false) {
-            printOutputDimensions = "python -c '" + callingPrintMethod + "'";
+            printOutputDimensions = this.pythonPath + " -c '" + callingPrintMethod + "'";
             terminal = "/bin/bash";
             com = "-c";
         } else {
-            printOutputDimensions = "python -c \"" + callingPrintMethod + "\"";
+            printOutputDimensions = this.pythonPath + " -c \"" + callingPrintMethod + "\"";
             terminal = "cmd.exe";
             com = "/c";
         }
