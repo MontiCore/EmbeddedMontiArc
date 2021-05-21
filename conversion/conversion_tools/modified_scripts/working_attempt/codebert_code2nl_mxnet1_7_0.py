@@ -147,12 +147,13 @@ def train_model():
     decoder_hyper_params = {
         attention_cell: 'multi_head',
         num_layers: 6,
-        units: ,
-        hidden_size: 768,
+        units: 768,
+        hidden_size: 2048,
         num_heads: 12,
-
-
+        norm_inputs: False,
+        use_residual: True, # line 
     }
+    #gluon TransformerDecoder does a positional encoding before input, does codebert do the same thing?
     decoder = nlp.model.transformer.TransformerDecoder(
         attention_cell='multi_head', num_layers=2, units=128, hidden_size=2048,
         max_length=50, num_heads=4, scaled=True, scale_embed=True, norm_inputs=True,
