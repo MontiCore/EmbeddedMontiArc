@@ -61,7 +61,7 @@ void ComputerDebug::debug_mem_err( MemAccess type, MemAccessError err, ulong add
     char addr_info[256];
     memory->print_address_info(addr, addr_info, 256);
     if (type == MemAccess::WRITE) {
-        Log::err.log_tag("Invalid memory %s at %s with value %ill of size %ul %s", 
+        Log::err.log_tag("Invalid memory %s at %s with value %lli of size %lu %s", 
             (type == MemAccess::READ ? "read" : type == MemAccess::WRITE ? "write" : "fetch"),
             to_hex(addr, 16, true).c_str(),
             val,
@@ -70,7 +70,7 @@ void ComputerDebug::debug_mem_err( MemAccess type, MemAccessError err, ulong add
         );
     }
     else {
-        Log::err.log_tag("Invalid memory %s at %s of size %ul %s",
+        Log::err.log_tag("Invalid memory %s at %s of size %lu %s",
             (type == MemAccess::READ ? "read" : type == MemAccess::WRITE ? "write" : "fetch"),
             to_hex(addr, 16, true).c_str(),
             size,

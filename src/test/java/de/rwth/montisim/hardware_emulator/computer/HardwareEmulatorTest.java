@@ -71,7 +71,7 @@ public class HardwareEmulatorTest {
         backend.os = OS.LINUX;
         config.backend = backend;
         config.time_model = new HardwareTimeModel();
-        config.debug_flags.add("p_syscalls");
+        //config.debug_flags.add("p_syscalls");
         config.debug_flags.add("p_unsupported_syscalls");
         config.debug_flags.add("p_call");
         config.json_data_exchange = true;
@@ -86,7 +86,7 @@ public class HardwareEmulatorTest {
         backend.os = OS.LINUX;
         config.backend = backend;
         config.time_model = new HardwareTimeModel();
-        config.debug_flags.add("p_syscalls");
+        //config.debug_flags.add("p_syscalls");
         config.debug_flags.add("p_unsupported_syscalls");
         config.debug_flags.add("p_call");
         test_software(config);

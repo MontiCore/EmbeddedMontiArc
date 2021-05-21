@@ -261,7 +261,9 @@ std::string get_last_error_str() {
 
 
 void Library::init( const fs::path &file  ) {
-    auto name = file.as_system_path() + ".so";
+    auto new_file = file;
+    new_file += fs::path(".so");
+    auto name = new_file.string();
     handle = dlopen( name.c_str(), RTLD_NOW );
     if (!loaded())
         throw_system_error("dlopen() error opening "+name+": "+ dlerror());

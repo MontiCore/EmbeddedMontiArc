@@ -35,7 +35,7 @@ target_link_libraries(hardware_emulator PUBLIC Zydis unicorn_static pe-parser-li
 if (CMAKE_HOST_WIN32)
   target_link_libraries(hardware_emulator PUBLIC Dbghelp Shlwapi)
 elseif(CMAKE_HOST_UNIX)
-  target_link_libraries(hardware_emulator PUBLIC dl)
+  target_link_libraries(hardware_emulator PUBLIC dl stdc++fs)
 endif()
 target_compile_features(hardware_emulator PUBLIC cxx_std_17)
 target_compile_definitions(hardware_emulator PUBLIC _CRT_SECURE_NO_WARNINGS)
@@ -105,7 +105,10 @@ src/os_linux/linux_fast_call.h
 
 src/timetable/skylake.table
 )
-target_sources(hardware_emulator PRIVATE ${hardware_emulator_SOURCES})
+set(hardware_emulator_EXTERNAL_SOURCES
+  ${SHARED_CPP}/buffer.cpp
+)
+target_sources(hardware_emulator PRIVATE ${hardware_emulator_SOURCES} ${hardware_emulator_EXTERNAL_SOURCES})
 
 
 
@@ -143,10 +146,7 @@ set(hardware_emulator_lib_SOURCES
   src/lib/jni_interface.cpp
   src/lib/cpp_bridge.cpp
 )
-set(hardware_emulator_lib_EXTERN_SOURCES
-  ${SHARED_CPP}/buffer.cpp
-)
-target_sources(hardware_emulator_lib PRIVATE ${hardware_emulator_lib_SOURCES} ${hardware_emulator_lib_EXTERN_SOURCES})
+target_sources(hardware_emulator_lib PRIVATE ${hardware_emulator_lib_SOURCES})
 
 if ( CMAKE_COMPILER_IS_GNUCC )
   target_compile_options(hardware_emulator_lib PRIVATE

@@ -38,5 +38,6 @@ echo [SCRIPT] Updating cppautopilotzigzag sample...
 cd cppautopilotzigzag
 call make.bat
 echo [SCRIPT] Copying cppautopilotzigzag sample...
-move "cppautopilotzigzag.dll" "..\..\hardware_emulator\bin\cppautopilotzigzag.dll"
+move "cppautopilot_zigzag_lib.dll" "..\..\hardware_emulator\bin\cppautopilot_zigzag_lib.dll"
+move "cppautopilot_zigzag_lib.dll" "..\..\src\test\resources\autopilots\cppautopilot_zigzag_lib.dll"
 cd ..

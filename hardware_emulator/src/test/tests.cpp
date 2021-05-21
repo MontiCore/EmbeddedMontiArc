@@ -16,10 +16,7 @@
     samples/simple/
     depending of the os type
 */
-void test_simple_sample( OS::OS *os, bool windows ) {
-    Computer computer;
-    computer.init();
-    computer.set_os( os );
+void test_simple_sample( Computer &computer, bool windows ) {
     
     
     ADD_DLL::Interface interf;
@@ -48,7 +45,7 @@ void test_simple_sample( OS::OS *os, bool windows ) {
         The test compares and validates the results by computing the content of the functions
         using the algorithms from samples/funccalling/algorithm.h
 */
-void test_funccalling_sample( OS::OS *os ) {
+void test_funccalling_sample_windows() {
     Computer computer;
     computer.debug.debug = false;
     computer.debug.d_code = false;
@@ -58,7 +55,7 @@ void test_funccalling_sample( OS::OS *os ) {
     computer.debug.d_syscalls = false;
     
     computer.init();
-    computer.set_os( os );
+    computer.set_os( new OS::Windows(computer.func_call_windows) );
     computer.os->load_file(fs::path("sample_functioncalling"));
         
     auto &section = computer.memory.sys_section;
@@ -70,9 +67,9 @@ void test_funccalling_sample( OS::OS *os ) {
     if (func_##FUNC_NAME .type == Symbols::Symbol::Type::NONE ) { \
         throw_error(std::string("Could not find function symbol for " #FUNC_NAME "\n")); \
     } \
-    computer.func_call->set_params_##PARAM_TYPE (__VA_ARGS__); \
+    computer.func_call_windows.set_params_##PARAM_TYPE (__VA_ARGS__); \
     computer.call(func_##FUNC_NAME .addr, #FUNC_NAME); \
-    auto res_##FUNC_NAME = computer.func_call->get_return_##PARAM_TYPE(); \
+    auto res_##FUNC_NAME = computer.func_call_windows.get_return_##PARAM_TYPE(); \
     auto verify_##FUNC_NAME = combine< COMBINE_TYPE >(__VA_ARGS__); \
     if ( res_##FUNC_NAME != verify_##FUNC_NAME) { \
         throw_error(std::string("Error verifying " #FUNC_NAME ":\nResult: ") + std::to_string(res_##FUNC_NAME) + " != Verify: " + std::to_string(verify_##FUNC_NAME)); \
@@ -117,10 +114,104 @@ void test_funccalling_sample( OS::OS *os ) {
     } \
     PARAM_TYPE local_array_##FUNC_NAME [5] = { 17, 20, 12, 7, 8 }; \
     computer.memory.write_memory(buffer_slot.start_address, 5 * sizeof( PARAM_TYPE ), (uchar *)local_array_##FUNC_NAME ); \
-    computer.func_call->set_param1_64(buffer_slot.start_address); \
-    computer.func_call->set_param2_32(5); \
+    computer.func_call_windows.set_param1_64(buffer_slot.start_address); \
+    computer.func_call_windows.set_param2_32(5); \
     computer.call(func_##FUNC_NAME .addr, #FUNC_NAME); \
-    auto res_##FUNC_NAME = computer.func_call->get_return_##PARAM_NAME(); \
+    auto res_##FUNC_NAME = computer.func_call_windows.get_return_##PARAM_NAME(); \
+    auto verify_##FUNC_NAME = combine_array< PARAM_TYPE >(local_array_##FUNC_NAME , 5); \
+    if ( res_##FUNC_NAME != verify_##FUNC_NAME) { \
+        throw_error(std::string("Error verifying " #FUNC_NAME ":\nResult: ") + std::to_string(res_##FUNC_NAME) + " != Verify: " + std::to_string(verify_##FUNC_NAME)); \
+    }
+    TEST_ARRAY_FUNCCALL( double_array, double, double );
+    TEST_ARRAY_FUNCCALL( float_array, float, float );
+    TEST_ARRAY_FUNCCALL( int_array, 32, int32_t );
+    TEST_ARRAY_FUNCCALL( long_array, 64, int64_t );
+    TEST_ARRAY_FUNCCALL( char_array, char, char );
+    
+#undef TEST_ARRAY_FUNCCALL
+}
+
+/*
+        Tests the emulation of the functions from
+        samples/funccalling/
+        depending of the os type
+
+        The test compares and validates the results by computing the content of the functions
+        using the algorithms from samples/funccalling/algorithm.h
+*/
+void test_funccalling_sample_linux() {
+    Computer computer;
+    computer.debug.debug = false;
+    computer.debug.d_code = false;
+    computer.debug.d_mem = false;
+    computer.debug.d_regs = false;
+    computer.debug.d_reg_update = false;
+    computer.debug.d_syscalls = false;
+    
+    computer.init();
+    computer.set_os( new OS::Linux(computer.func_call_linux) );
+    computer.os->load_file(fs::path("sample_functioncalling"));
+        
+    auto &section = computer.memory.sys_section;
+    auto &section_stack = computer.memory.sys_section_stack;
+    auto buffer_slot = section_stack.get_annotated( 1024, "Port Exchange buffer", Annotation::Type::OBJECT );
+    
+#define TEST_FUNCCALL(FUNC_NAME, PARAM_TYPE, COMBINE_TYPE, ...) \
+    auto func_##FUNC_NAME = computer.symbols.get_symbol( #FUNC_NAME ); \
+    if (func_##FUNC_NAME .type == Symbols::Symbol::Type::NONE ) { \
+        throw_error(std::string("Could not find function symbol for " #FUNC_NAME "\n")); \
+    } \
+    computer.func_call_linux.set_params_##PARAM_TYPE (__VA_ARGS__); \
+    computer.call(func_##FUNC_NAME .addr, #FUNC_NAME); \
+    auto res_##FUNC_NAME = computer.func_call_linux.get_return_##PARAM_TYPE(); \
+    auto verify_##FUNC_NAME = combine< COMBINE_TYPE >(__VA_ARGS__); \
+    if ( res_##FUNC_NAME != verify_##FUNC_NAME) { \
+        throw_error(std::string("Error verifying " #FUNC_NAME ":\nResult: ") + std::to_string(res_##FUNC_NAME) + " != Verify: " + std::to_string(verify_##FUNC_NAME)); \
+    }
+
+    
+    
+    TEST_FUNCCALL( int_one, 32, int32_t, 24 );
+    TEST_FUNCCALL( int_two, 32, int32_t, 24, 13 );
+    TEST_FUNCCALL( int_three, 32, int32_t, 24, 13, 11 );
+    TEST_FUNCCALL( int_four, 32, int32_t, 24, 13, 11, 31 );
+    /* computer.debug.debug = true;
+    computer.debug.d_code = true;
+    computer.debug.d_mem = true;
+    computer.debug.d_reg_update = true;
+    computer.debug.d_syscalls = true; */
+    
+    TEST_FUNCCALL( long_one, 64, int64_t, 24 );
+    TEST_FUNCCALL( long_two, 64, int64_t, 24, 13 );
+    TEST_FUNCCALL( long_three, 64, int64_t, 24, 13, 11 );
+    TEST_FUNCCALL( long_four, 64, int64_t, 24, 13, 11, 31 );
+    
+    
+    TEST_FUNCCALL( float_one, float, float, 24 );
+    
+    
+    TEST_FUNCCALL( float_two, float, float, 24, 13 );
+    TEST_FUNCCALL( float_three, float, float, 24, 13, 11 );
+    TEST_FUNCCALL( float_four, float, float, 24, 13, 11, 31 );
+    
+    TEST_FUNCCALL( double_one, double, double, 24 );
+    TEST_FUNCCALL( double_two, double, double, 24, 13 );
+    TEST_FUNCCALL( double_three, double, double, 24, 13, 11 );
+    TEST_FUNCCALL( double_four, double, double, 24, 13, 11, 31 );
+    
+#undef TEST_FUNCCALL
+    
+#define TEST_ARRAY_FUNCCALL(FUNC_NAME, PARAM_NAME, PARAM_TYPE) \
+    auto func_##FUNC_NAME = computer.symbols.get_symbol( #FUNC_NAME ); \
+    if (func_##FUNC_NAME .type == Symbols::Symbol::Type::NONE ) { \
+        throw_error(std::string("Could not find function symbol for " #FUNC_NAME "\n")); \
+    } \
+    PARAM_TYPE local_array_##FUNC_NAME [5] = { 17, 20, 12, 7, 8 }; \
+    computer.memory.write_memory(buffer_slot.start_address, 5 * sizeof( PARAM_TYPE ), (uchar *)local_array_##FUNC_NAME ); \
+    computer.func_call_linux.set_param1_64(buffer_slot.start_address); \
+    computer.func_call_linux.set_param2_32(5); \
+    computer.call(func_##FUNC_NAME .addr, #FUNC_NAME); \
+    auto res_##FUNC_NAME = computer.func_call_linux.get_return_##PARAM_NAME(); \
     auto verify_##FUNC_NAME = combine_array< PARAM_TYPE >(local_array_##FUNC_NAME , 5); \
     if ( res_##FUNC_NAME != verify_##FUNC_NAME) { \
         throw_error(std::string("Error verifying " #FUNC_NAME ":\nResult: ") + std::to_string(res_##FUNC_NAME) + " != Verify: " + std::to_string(verify_##FUNC_NAME)); \
@@ -136,15 +227,13 @@ void test_funccalling_sample( OS::OS *os ) {
 
 
 
-
 /*
     Tests the emulation of the functions from
     samples/syscall_dll/sample_syscall.dll
     samples/syscall_so/sample_syscall.so
     depending of the os type
 */
-void test_syscall_sample( OS::OS *os ) {
-    Computer computer;
+void test_syscall_sample( Computer &computer ) {
     computer.debug.debug = false;
     computer.debug.d_code = false;
     computer.debug.d_mem = false;
@@ -159,9 +248,6 @@ void test_syscall_sample( OS::OS *os ) {
     computer.debug.d_reg_update = false;
     computer.debug.d_syscalls = true;*/
     
-    computer.init();
-        
-    computer.set_os( os );
     
     
     
@@ -180,15 +266,22 @@ void test_syscall_sample( OS::OS *os ) {
 
 
 void test_simple_dll() {
-    test_simple_sample(new OS::Windows(), true);
+
+    Computer computer;
+    computer.init();
+    computer.set_os( new OS::Windows(computer.func_call_windows) );
+    test_simple_sample(computer, true);
 }
 
 void test_funccalling_dll() {
-    test_funccalling_sample( new OS::Windows() );
+    test_funccalling_sample_windows();
 }
 
 void test_syscall_dll() {
-    test_syscall_sample( new OS::Windows() );
+    Computer computer;
+    computer.init();
+    computer.set_os( new OS::Windows(computer.func_call_windows) );
+    test_syscall_sample( computer );
 }
 
 void test_hardware_manager_querries() {
@@ -432,13 +525,20 @@ void test_linux_elf_info() {
 }
 
 void test_simple_elf() {
-    test_simple_sample( new OS::Linux(), false );
+
+    Computer computer;
+    computer.init();
+    computer.set_os( new OS::Linux(computer.func_call_linux) );
+    test_simple_sample( computer, false );
 }
 
 void test_funccalling_elf() {
-    test_funccalling_sample( new OS::Linux() );
+    test_funccalling_sample_linux( );
 }
 
 void test_syscall_elf() {
-    test_syscall_sample( new OS::Linux() );
+    Computer computer;
+    computer.init();
+    computer.set_os( new OS::Linux(computer.func_call_linux) );
+    test_syscall_sample( computer );
 }
