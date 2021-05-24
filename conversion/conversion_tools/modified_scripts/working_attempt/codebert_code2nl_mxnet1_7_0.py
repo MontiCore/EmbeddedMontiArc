@@ -144,21 +144,47 @@ class Seq2Seq(Block):
 
 def train_model():
     encoder = convert_huggingface_model()
-    decoder_hyper_params = {
+    # compiled by looking at the torch decoder
+    decoder_hparam = {
         attention_cell: 'multi_head',
         num_layers: 6,
         units: 768,
         hidden_size: 2048,
+        max_length: 50,
         num_heads: 12,
+        scaled: True,
+        scale_embed: False,
         norm_inputs: False,
-        use_residual: True, # line 
+        # this is slightly different thand torch, because an additional dropout before decoder layers is added
+        # the TransformerDecoderLayers also have 3 separate dropout layers and gluon only has 1?
+        dropout: 0.1, 
+        use_residual: True, 
+        output_attention: False, 
+        weight_initializer: None,
+        bias_initializer: 'zeros',
+        prefix: None,
+        params: None
     }
-    #gluon TransformerDecoder does a positional encoding before input, does codebert do the same thing?
+    # gluon TransformerDecoder does a positional encoding before input, does codebert do the same thing?
+    # gluonnlp might not do it if position_weight is none?
+    # torch model constructs the ffn in the forward call, gluon uses a custom layer for it PositionwiseFFN
     decoder = nlp.model.transformer.TransformerDecoder(
-        attention_cell='multi_head', num_layers=2, units=128, hidden_size=2048,
-        max_length=50, num_heads=4, scaled=True, scale_embed=True, norm_inputs=True,
-        dropout=0.0, use_residual=True, output_attention=False, weight_initializer=None,
-        bias_initializer='zeros', prefix=None, params=None
+        attention_cell=decoder_hparam['attention_cell'], 
+        num_layers=decoder_hparam['num_layers'], 
+        units=decoder_hparam['units'], 
+        hidden_size=decoder_hparam['hidden_size'],
+        max_length=decoder_hparam['max_length'], 
+        num_heads=decoder_hparam['num_heads'], 
+        scaled=decoder_hparam['scaled'], 
+        scale_embed=decoder_hparam['scale_embed'], 
+        norm_inputs=decoder_hparam['norm_inputs'],
+        dropout=decoder_hparam['dropout'], 
+        use_residual=decoder_hparam['use_residual'], 
+        output_attention=decoder_hparam['output_attention'], 
+        weight_initializer=decoder_hparam['weight_initializer'],
+        bias_initializer=decoder_hparam['bias_initializer'], 
+        prefix=decoder_hparam['prefix'], 
+        params=decoder_hparam['prefix']
     )
 
 
