@@ -146,24 +146,24 @@ def train_model():
     encoder = convert_huggingface_model()
     # compiled by looking at the torch decoder
     decoder_hparam = {
-        attention_cell: 'multi_head',
-        num_layers: 6,
-        units: 768,
-        hidden_size: 2048,
-        max_length: 50,
-        num_heads: 12,
-        scaled: True,
-        scale_embed: False,
-        norm_inputs: False,
+        'attention_cell': 'multi_head',
+        'num_layers': 6,
+        'units': 768,
+        'hidden_size': 2048,
+        'max_length': 50,
+        'num_heads': 12,
+        'scaled': True,
+        'scale_embed': False,
+        'norm_inputs': False,
         # this is slightly different thand torch, because an additional dropout before decoder layers is added
         # the TransformerDecoderLayers also have 3 separate dropout layers and gluon only has 1?
-        dropout: 0.1, 
-        use_residual: True, 
-        output_attention: False, 
-        weight_initializer: None,
-        bias_initializer: 'zeros',
-        prefix: None,
-        params: None
+        'dropout': 0.1, 
+        'use_residual': True, 
+        'output_attention': False, 
+        'weight_initializer': None,
+        'bias_initializer': 'zeros',
+        'prefix': None,
+        'params': None
     }
     # gluon TransformerDecoder does a positional encoding before input, does codebert do the same thing?
     # gluonnlp might not do it if position_weight is none?
