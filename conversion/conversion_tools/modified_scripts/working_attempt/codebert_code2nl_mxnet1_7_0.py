@@ -144,7 +144,7 @@ class Seq2Seq(Block):
 
 def train_model():
     encoder = convert_huggingface_model()
-    # compiled by looking at the torch decoder
+    # put together by looking at the torch decoder
     decoder_hparam = {
         'attention_cell': 'multi_head',
         'num_layers': 6,
@@ -185,6 +185,25 @@ def train_model():
         bias_initializer=decoder_hparam['bias_initializer'], 
         prefix=decoder_hparam['prefix'], 
         params=decoder_hparam['prefix']
+    )
+    seq2seq_hparams = {
+        'encoder': encoder,
+        'decoder': decoder,
+        'hidden_size': 768,
+        'beam_size': 10,
+        'max_target_length': 128,
+        'sos_id': 0,
+        'eos_id': 2
+    }
+    model = Seq2Seq(
+        # params taken from cmd line args in codebert repo and roberta config
+        seq2seq_hparams['encoder'], 
+        seq2seq_hparams['decoder'],
+        hidden_size=seq2seq_hparams['hidden_size'], 
+        beam_size=seq2seq_hparams['beam_size'], 
+        max_length=seq2seq_hparams['max_target_length'], 
+        sos_id=seq2seq_hparams['sos_id'],
+        eos_id=seq2seq_hparams['eos_id'] 
     )
 
 
