@@ -114,10 +114,7 @@ def get_training_data(filename, limit):
     source_masks = np.array([f.source_mask for f in train_features], dtype=np.int64)
     target_ids = np.array([f.target_ids for f in train_features], dtype=np.int64)
     target_masks = np.array([f.target_mask for f in train_features], dtype=np.int64)    
-    print(source_ids[:10])
-    print(source_masks[:10])
-    print(target_ids[:10])
-    print(target_masks[:10])
+
     return {
         'source_ids': source_ids, 
         'source_masks': source_masks, 
