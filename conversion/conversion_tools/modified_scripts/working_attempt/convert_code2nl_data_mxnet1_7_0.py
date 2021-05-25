@@ -1,26 +1,14 @@
-# coding=utf-8
-# Copyright 2018 The Google AI Language Team Authors and The HuggingFace Inc. team.
-# Copyright (c) 2018, NVIDIA CORPORATION.  All rights reserved.
-#
-# Licensed under the Apache License, Version 2.0 (the "License");
-# you may not use this file except in compliance with the License.
-# You may obtain a copy of the License at
-#
-#     http://www.apache.org/licenses/LICENSE-2.0
-#
-# Unless required by applicable law or agreed to in writing, software
-# distributed under the License is distributed on an "AS IS" BASIS,
-# WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
-# See the License for the specific language governing permissions and
-# limitations under the License.
-
 # extracted and adapted from the original run.py script for codebert code2nl
 # to work with mxnet/gluon/gluonnlp
 
 import json
+from numpy.lib.utils import source
 from transformers.models.roberta import RobertaTokenizer
 import mxnet as mx
 import numpy as np
+import h5py
+import argparse
+import os
 
 
 class Example(object):
@@ -50,11 +38,13 @@ class InputFeatures(object):
         self.source_mask = source_mask
         self.target_mask = target_mask
 
-def read_examples(filename):
+def read_examples(filename, limit=500):
     """Read examples from filename."""
     examples=[]
     with open(filename,encoding="utf-8") as f:
         for idx, line in enumerate(f):
+            if idx >= limit:
+                break
             line=line.strip()
             js=json.loads(line)
             if 'idx' not in js:
@@ -107,22 +97,51 @@ def convert_examples_to_features(examples, tokenizer, max_source_length, max_tar
         )
     return features
 
-def get_training_data_h5():
+def get_training_data(filename, limit):
     data_params = {
         'max_source_length': 256,
         'max_target_length': 128,
-        'train_filename': ''
     }
     tokenizer = RobertaTokenizer.from_pretrained('microsoft/codebert-base')
-    train_examples = read_examples(data_params['train_filename'])
+    train_examples = read_examples(filename, limit=limit)
     train_features = convert_examples_to_features(
         train_examples, tokenizer,
         data_params['max_source_length'],
         data_params['max_target_length'],
         stage='train'
     )
-    all_source_ids = mx.nd.array([f.source_ids for f in train_features], dtype=np.int64)
-    all_source_mask = mx.nd.array([f.source_mask for f in train_features], dtype=np.int64)
-    all_target_ids = mx.nd.array([f.target_ids for f in train_features], dtype=np.int64)
-    all_target_mask = mx.nd.array([f.target_mask for f in train_features], dtype=np.int64)    
-    # train_data = TensorDataset(all_source_ids,all_source_mask,all_target_ids,all_target_mask)
+    source_ids = np.array([f.source_ids for f in train_features], dtype=np.int64)
+    source_masks = np.array([f.source_mask for f in train_features], dtype=np.int64)
+    target_ids = np.array([f.target_ids for f in train_features], dtype=np.int64)
+    target_masks = np.array([f.target_mask for f in train_features], dtype=np.int64)    
+    print(source_ids[:10])
+    print(source_masks[:10])
+    print(target_ids[:10])
+    print(target_masks[:10])
+    return {
+        'source_ids': source_ids, 
+        'source_masks': source_masks, 
+        'target_ids': target_ids, 
+        'target_masks': target_masks
+    }
+
+def write_dataset_to_disk(training_data, savedir):
+    if not os.path.exists(savedir):
+        os.makedirs(savedir)
+    f = h5py.File(savedir + '/train.h5', 'w')
+    for k, v in training_data.items():
+        f.create_dataset(k, data=v)
+
+def parse_args():
+    parser = argparse.ArgumentParser()
+    parser.add_argument("--limit", default=500, type=int,
+        help="The maximum number of examples to be extracted and saved")
+    parser.add_argument("--save_dir", default='./codebert_gluon/data', 
+        help="The path where the training data should be saved")
+    parser.add_argument("--train_data", help="The file where the unprocessed training data is.")
+    return parser.parse_args()
+
+if __name__ == '__main__':
+    args = parse_args()
+    data = get_training_data(args.train_data, args.limit)
+    write_dataset_to_disk(data, args.save_dir)
