@@ -10,7 +10,6 @@ import h5py
 import argparse
 import os
 
-
 class Example(object):
     """A single training/test example."""
     def __init__(self,

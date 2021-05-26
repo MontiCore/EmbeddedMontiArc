@@ -53,6 +53,7 @@ import mxnet.gluon.nn as nn
 import mxnet as mx
 import gluonnlp as nlp
 import argparse
+import h5py
 
 class Seq2Seq(Block):
     def __init__(
@@ -142,8 +143,7 @@ class Seq2Seq(Block):
             # return preds
 
 
-def train_model():
-    encoder = convert_huggingface_model()
+def get_decoder():
     # put together by looking at the torch decoder
     decoder_hparam = {
         'attention_cell': 'multi_head',
@@ -186,6 +186,9 @@ def train_model():
         prefix=decoder_hparam['prefix'], 
         params=decoder_hparam['prefix']
     )
+    return decoder
+
+def get_seq2seq(encoder, decoder):
     seq2seq_hparams = {
         'encoder': encoder,
         'decoder': decoder,
@@ -195,7 +198,7 @@ def train_model():
         'sos_id': 0,
         'eos_id': 2
     }
-    model = Seq2Seq(
+    seq2seq = Seq2Seq(
         # params taken from cmd line args in codebert repo and roberta config
         seq2seq_hparams['encoder'], 
         seq2seq_hparams['decoder'],
@@ -205,9 +208,44 @@ def train_model():
         sos_id=seq2seq_hparams['sos_id'],
         eos_id=seq2seq_hparams['eos_id'] 
     )
+    return seq2seq
 
+def get_training_data(filename):
+    file = h5py.File(filename, 'r')
+
+def get_trainer():
+    mx.gluon.Trainer
+
+def train_model(epochs, filename):
+    encoder = convert_huggingface_model()
+    decoder = get_decoder()
+    seq2seq = get_seq2seq(encoder, decoder)
+    train_data = get_training_data(filename)
+    
+    seq2seq.initialize()
+
+    # note this is different than the codebert optimizer in two ways
+    # 1. differences in calculation, as stated in the BERTAdam optimizer doc
+    # 2. it doesn't appear to be able to exclude certain parameters from the optimizer
+    # which is done in the codebert code2nl's optimizer. TODO for now.
+
+
+    # lr is defined in the call to run codebert, epsilon is left as default in the run script, beta1 and 2 are the pytorch default
+    optimizer = nlp.optimizer.BERTAdam(learning_rate=5e-5, beta1=0.9, beta2=0.999, epsilon=1e-8)
+    trainer = mx.gluon.Trainer(seq2seq.collect_params(), optimizer=optimizer)
+
+
+def parse_args():
+    parser = argparse.ArgumentParser()
+    parser.add_argument('--train', action='store_true', default=True, 
+        help='The path where the training data should be saved')
+    parser.add_argument("--epochs", default=1, type=int,
+        help="The number of epochs for training")
+    parser.add_argument('--train_data', 
+        help='The .h5 file where the processed training data is.')
+    return parser.parse_args()
 
 if __name__ == '__main__':
     args = parse_args()
     if args.train:
-        train_model()
+        train_model(args.epochs, args.train_data)
