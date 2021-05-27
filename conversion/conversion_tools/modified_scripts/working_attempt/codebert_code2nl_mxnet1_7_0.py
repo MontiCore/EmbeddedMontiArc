@@ -46,6 +46,7 @@
 #   "vocab_size": 50265
 # }
 
+from mxnet.ndarray.gen_op import batch_dot
 from .convert_codebert_transformers_mxnet1_7_0 import convert_huggingface_model
 from gluonnlp.model.transformer import TransformerDecoder
 from mxnet.gluon.block import Block
@@ -83,34 +84,17 @@ class Seq2Seq(Block):
 
     def forward(self, input_ids=None, input_valid_length=None, target_ids=None, target_valid_length=None):   
         input_token_types = mx.nd.zeros_like(input_ids)
-        encoder_output = self.encoder(input_ids, input_token_types, input_valid_length)
-        #encoder_output = outputs[0].permute([1,0,2]).contiguous()
+        encoder_output = self.encoder(input_ids, input_token_types, input_valid_length) # we don't permute like in the code2nl model, that okay? TODO
+        #encoder_output = outputs[0].permute([1,0,2]).contiguous() not sure how to do
         if target_ids is not None:  
-            #attn_mask=-1e4 *(1-self.bias[:target_ids.shape[1],:target_ids.shape[1]]) no option to pass this in gluonnlp
+            #attn_mask=-1e4 *(1-self.bias[:target_ids.shape[1],:target_ids.shape[1]]) no option to pass this in gluonnlp TODO
             # could try subclassing the Decoder and change the hybrid_forward function.
             tgt_embeddings = self.encoder.word_embed(target_ids)
-            #tgt_embeddings = self.encoder.embeddings(target_ids).permute([1,0,2]).contiguous()
             states = self.decoder.init_state_from_encoder(encoder_output, input_valid_length)
             out = self.decoder(tgt_embeddings, states, valid_length=target_valid_length)
             hidden_states = mx.gluon.nn.Activation('tanh')(self.dense(out))
-            #hidden_states = torch.tanh(self.dense(out)).permute([1,0,2]).contiguous()
             lm_logits = self.lm_head(hidden_states)
-            target_mask = self.create_target_mask(target_ids, target_valid_length)
-            # Shift so that tokens < n predict n
-            active_loss = target_mask[..., 1:].asnumpy().reshape(-1) != 0
-            #active_loss = target_mask[..., 1:].ne(0).view(-1) == 1
-            shift_logits = lm_logits[..., :-1, :]#.contiguous()
-            shift_labels = target_ids[..., 1:]#.contiguous()
-            # Flatten the tokens
-            # loss_fct = nn.CrossEntropyLoss(ignore_index=-1)
-            # still need to include equivalent to ignore_index? are the losses equivalent?
-            # from_logits flag?
-            loss_fct = mx.gluon.loss.SoftmaxCrossEntropyLoss()
-            loss = loss_fct(shift_logits.reshape(-1, shift_logits.shape(-1))[active_loss],
-                            shift_labels.reshape(-1)[active_loss])
-
-            #outputs = loss,loss*active_loss.sum(),active_loss.sum()
-            return loss
+            return lm_logits
         else:
             #Predict 
             preds=[]       
@@ -210,17 +194,28 @@ def get_seq2seq(encoder, decoder):
     )
     return seq2seq
 
-def get_training_data(filename):
+def get_data_iterator(inputs, outputs, shuffle, batch_size, filename):
+    # similar to what is done in the CNNArch2Gluon generated data loader
     file = h5py.File(filename, 'r')
+    input_dict = {}
+    output_dict = {}
+    for k in inputs:
+        input_dict[k] = file[k]
+    for k in outputs:
+        output_dict[k] = file[k]
+    data_iterator = mx.io.NDArrayIter(
+        inputs=input_dict, outputs=output_dict, shuffle=shuffle, batch_size=batch_size)
+    return data_iterator
+    
+    
 
-def get_trainer():
-    mx.gluon.Trainer
-
-def train_model(epochs, filename):
+def train_model(epochs, batch_size, filename):
     encoder = convert_huggingface_model()
     decoder = get_decoder()
     seq2seq = get_seq2seq(encoder, decoder)
-    train_data = get_training_data(filename)
+    train_data = get_data_iterator(
+        ['source_ids', 'source_masks'], ['target_ids', 'target_masks'],
+        True, batch_size, filename)
     
     seq2seq.initialize()
 
@@ -233,6 +228,22 @@ def train_model(epochs, filename):
     # lr is defined in the call to run codebert, epsilon is left as default in the run script, beta1 and 2 are the pytorch default
     optimizer = nlp.optimizer.BERTAdam(learning_rate=5e-5, beta1=0.9, beta2=0.999, epsilon=1e-8)
     trainer = mx.gluon.Trainer(seq2seq.collect_params(), optimizer=optimizer)
+
+    # target_mask = self.create_target_mask(target_ids, target_valid_length)
+    # # Shift so that tokens < n predict n
+    # active_loss = target_mask[..., 1:].asnumpy().reshape(-1) != 0
+    # #active_loss = target_mask[..., 1:].ne(0).view(-1) == 1
+    # shift_logits = lm_logits[..., :-1, :]#.contiguous()
+    # shift_labels = target_ids[..., 1:]#.contiguous()
+    # # Flatten the tokens
+    # # loss_fct = nn.CrossEntropyLoss(ignore_index=-1)
+    # # still need to include equivalent to ignore_index? are the losses equivalent?
+    # # from_logits flag?
+    # loss_fct = mx.gluon.loss.SoftmaxCrossEntropyLoss()
+    # loss = loss_fct(shift_logits.reshape(-1, shift_logits.shape(-1))[active_loss],
+    #                 shift_labels.reshape(-1)[active_loss])
+
+    # #outputs = loss,loss*active_loss.sum(),active_loss.sum()
 
 
 def parse_args():
