@@ -255,13 +255,23 @@ abstract public class PredefinedLayerDeclaration extends LayerDeclarationSymbol 
         int kernelHeight = method.getIntTupleValue(AllPredefinedLayers.KERNEL_NAME).get().get(1);
         int kernelWidth = method.getIntTupleValue(AllPredefinedLayers.KERNEL_NAME).get().get(2);
         int kernelDepth = method.getIntTupleValue(AllPredefinedLayers.KERNEL_NAME).get().get(0);
+
         int inputHeight = inputType.getHeight();
         int inputWidth = inputType.getWidth();
         int inputDepth = inputType.getDepth();
 
-        int outputWidth = (inputWidth + strideWidth - 1) / strideWidth;
-        int outputHeight = (inputHeight + strideWidth - 1) / strideHeight;
-        int outputDepth = (inputDepth + strideDepth - 1) / strideDepth;
+        int outputWidth;
+        int outputHeight;
+        int outputDepth;
+        if (inputWidth < kernelWidth || inputHeight < kernelHeight || inputDepth < kernelDepth) {
+            outputWidth = 0;
+            outputHeight = 0;
+            outputDepth = 0;
+        } else {
+            outputWidth = (inputWidth + strideWidth - 1) / strideWidth;
+            outputHeight = (inputHeight + strideWidth - 1) / strideHeight;
+            outputDepth = (inputDepth + strideDepth - 1) / strideDepth;
+        }
 
         return Collections.singletonList(new ArchTypeSymbol.Builder()
                 .height(outputHeight)
@@ -273,12 +283,14 @@ abstract public class PredefinedLayerDeclaration extends LayerDeclarationSymbol 
     }
 
     private static List<ArchTypeSymbol> computeOutputShapeWithValidPadding3D(ArchTypeSymbol inputType, LayerSymbol method, int channels) {
+<<<<<<< HEAD
         int strideHeight = method.getIntTupleValue(AllPredefinedLayers.STRIDE_NAME).get().get(1);
         int strideWidth = method.getIntTupleValue(AllPredefinedLayers.STRIDE_NAME).get().get(2);
         int strideDepth = method.getIntTupleValue(AllPredefinedLayers.STRIDE_NAME).get().get(0);
         int kernelHeight = method.getIntTupleValue(AllPredefinedLayers.KERNEL_NAME).get().get(1);
         int kernelWidth = method.getIntTupleValue(AllPredefinedLayers.KERNEL_NAME).get().get(2);
         int kernelDepth = method.getIntTupleValue(AllPredefinedLayers.KERNEL_NAME).get().get(0);
+
         int inputHeight = inputType.getHeight();
         int inputWidth = inputType.getWidth();
         int inputDepth = inputType.getDepth();
@@ -309,6 +321,7 @@ abstract public class PredefinedLayerDeclaration extends LayerDeclarationSymbol 
         int strideHeight = method.getIntTupleValue(AllPredefinedLayers.STRIDE_NAME).get().get(1);
         int strideWidth = method.getIntTupleValue(AllPredefinedLayers.STRIDE_NAME).get().get(2);
         int strideDepth = method.getIntTupleValue(AllPredefinedLayers.STRIDE_NAME).get().get(0);
+
         int inputHeight = inputType.getHeight();
         int inputWidth = inputType.getWidth();
         int inputDepth = inputType.getDepth();
@@ -343,6 +356,7 @@ abstract public class PredefinedLayerDeclaration extends LayerDeclarationSymbol 
         int kernelHeight = method.getIntTupleValue(AllPredefinedLayers.KERNEL_NAME).get().get(1);
         int kernelWidth = method.getIntTupleValue(AllPredefinedLayers.KERNEL_NAME).get().get(2);
         int kernelDepth = method.getIntTupleValue(AllPredefinedLayers.KERNEL_NAME).get().get(0);
+
         int inputHeight = inputType.getHeight();
         int inputWidth = inputType.getWidth();
         int inputDepth = inputType.getDepth();
