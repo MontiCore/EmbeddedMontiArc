@@ -193,7 +193,9 @@ public enum Constraints {
             if (optString.isPresent()){
                 if (optString.get().equals(AllPredefinedLayers.PADDING_VALID)
                         || optString.get().equals(AllPredefinedLayers.PADDING_SAME)
-                        || optString.get().equals(AllPredefinedLayers.PADDING_NO_LOSS)){
+                        || optString.get().equals(AllPredefinedLayers.PADDING_NO_LOSS)
+                        || optString.get().equals(AllPredefinedLayers.PADDING_VALID3D)
+                        || optString.get().equals(AllPredefinedLayers.PADDING_SAME3D)){
                     return true;
                 }
             }
