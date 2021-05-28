@@ -147,6 +147,8 @@ public class AllPredefinedLayers {
     public static final String PADDING_VALID = "valid";
     public static final String PADDING_SAME = "same";
     public static final String PADDING_NO_LOSS = "no_loss";
+    public static final String PADDING_VALID3D = "valid3d";
+    public static final String PADDING_SAME3D = "same3d";
     public static final String POOL_MAX = "max";
     public static final String POOL_AVG = "avg";
     public static final String RANDOM = "random";
