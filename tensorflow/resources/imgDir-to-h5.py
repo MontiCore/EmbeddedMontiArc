@@ -1,3 +1,4 @@
+# (c) https://github.com/MontiCore/monticore  
 from __future__ import print_function
 from __future__ import division
 import h5py

@@ -1,3 +1,4 @@
+/* (c) https://github.com/MontiCore/monticore */
 #include "cNNCalculator_connector.h"
 #include "CNNTranslator.h"
 #include <opencv2/core/core.hpp>

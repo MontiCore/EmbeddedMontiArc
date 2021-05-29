@@ -1,3 +1,4 @@
+# (c) https://github.com/MontiCore/monticore  
 # Install script for directory: /home/julian/Documents/mnistcalculator/tensorflow/src/cpp
 
 # Set the install prefix

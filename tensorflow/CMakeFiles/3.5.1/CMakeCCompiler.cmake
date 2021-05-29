@@ -1,3 +1,4 @@
+# (c) https://github.com/MontiCore/monticore  
 set(CMAKE_C_COMPILER "/usr/bin/cc")
 set(CMAKE_C_COMPILER_ARG1 "")
 set(CMAKE_C_COMPILER_ID "GNU")

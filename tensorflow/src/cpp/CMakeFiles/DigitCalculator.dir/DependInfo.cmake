@@ -1,3 +1,4 @@
+# (c) https://github.com/MontiCore/monticore  
 # The set of languages for which implicit dependencies are needed:
 set(CMAKE_DEPENDS_LANGUAGES
   "CXX"

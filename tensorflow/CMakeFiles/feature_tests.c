@@ -1,3 +1,4 @@
+/* (c) https://github.com/MontiCore/monticore */
 
   const char features[] = {"\n"
 "C_FEATURE:"

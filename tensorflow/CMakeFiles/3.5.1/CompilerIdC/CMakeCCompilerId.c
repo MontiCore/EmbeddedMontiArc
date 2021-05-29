@@ -1,3 +1,4 @@
+/* (c) https://github.com/MontiCore/monticore */
 #ifdef __cplusplus
 # error "A C++ compiler has been selected for C."
 #endif

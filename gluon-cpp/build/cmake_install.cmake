@@ -1,3 +1,4 @@
+# (c) https://github.com/MontiCore/monticore  
 # Install script for directory: /home/drakeman/mnistcalculator/gluon-cpp
 
 # Set the install prefix

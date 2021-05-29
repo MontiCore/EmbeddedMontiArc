@@ -1,3 +1,4 @@
+# (c) https://github.com/MontiCore/monticore  
 file(REMOVE_RECURSE
   "CMakeFiles/DigitCalculator.dir/DigitCalculator.cpp.o"
   "DigitCalculator.pdb"
