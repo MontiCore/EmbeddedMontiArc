@@ -1,3 +1,4 @@
+/* (c) https://github.com/MontiCore/monticore */
 package model;
 conforms to nfp.TagLatencyTagSchema;
 tags TagLatency for oeffentlicher_Demonstrator_FAS_v04.dEMO_FAS.dEMO_FAS.subsystem.dEMO_FAS.dEMO_FAS_Funktion.brakeAssistant {
