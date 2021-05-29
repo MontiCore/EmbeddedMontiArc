@@ -1,4 +1,5 @@
 winpty docker run \
+# (c) https://github.com/MontiCore/monticore  
 -it \
 --rm \
 --name carlacomponents \

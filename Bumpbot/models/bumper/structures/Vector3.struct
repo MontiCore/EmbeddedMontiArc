@@ -1,3 +1,4 @@
+/* (c) https://github.com/MontiCore/monticore */
 package bumper.structures;
 
 struct Vector3{
