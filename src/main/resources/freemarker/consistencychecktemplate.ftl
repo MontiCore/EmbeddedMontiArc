@@ -1,3 +1,4 @@
+<#-- (c) https://github.com/MontiCore/monticore -->
 <#--
 constant declarations: (pattern: portName -> z3 constant name)
     port -> port

@@ -1,3 +1,4 @@
+/* (c) https://github.com/MontiCore/monticore */
 package de.monticore.lang.embeddedmontiarcdynamic.consistencychecks.templatebuilder;
 
 import de.monticore.lang.embeddedmontiarcdynamic.consistencychecks.templatebuilder.helper.EventBodyClashDetector;
