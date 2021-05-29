@@ -1,3 +1,4 @@
+/* (c) https://github.com/MontiCore/monticore */
 package de.monticore.lang.embeddedmontiarcdynamic.consistencychecks;
 
 import de.monticore.lang.embeddedmontiarcdynamic.consistencychecks.outputparser.OutputParser;
