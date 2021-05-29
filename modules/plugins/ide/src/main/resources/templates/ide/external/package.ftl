@@ -1,3 +1,4 @@
+<#-- (c) https://github.com/MontiCore/monticore -->
 ${tc.signature("package", "allPackages")}
 <#assign name = package.getName().get()?replace("-common", "")>
 <#assign version = package.getVersion().get()>

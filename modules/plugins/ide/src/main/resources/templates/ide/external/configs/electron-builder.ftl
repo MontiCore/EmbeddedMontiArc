@@ -1,3 +1,4 @@
+<#-- (c) https://github.com/MontiCore/monticore -->
 ${tc.signature("ide", "package")}
 <#assign name = ide.getName()>
 <#assign appId = package.getName().get()?replace("/", ".")?replace("@", "")>

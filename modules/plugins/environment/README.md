@@ -1,3 +1,4 @@
+<!-- (c) https://github.com/MontiCore/monticore -->
 # Environment Contribution Language Plugin
 
 ## Description

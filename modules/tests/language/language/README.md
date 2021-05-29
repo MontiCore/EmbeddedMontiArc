@@ -1,3 +1,4 @@
+<!-- (c) https://github.com/MontiCore/monticore -->
 # Language Language Test (Deprecated)
 
 ## Description

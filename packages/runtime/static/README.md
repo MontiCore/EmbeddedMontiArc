@@ -1,3 +1,4 @@
+<!-- (c) https://github.com/MontiCore/monticore -->
 # Static Runtime (Deprecated)
 
 ## Description
