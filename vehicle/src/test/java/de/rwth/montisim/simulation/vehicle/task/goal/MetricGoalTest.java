@@ -1,3 +1,4 @@
+/* (c) https://github.com/MontiCore/monticore */
 package de.rwth.montisim.simulation.vehicle.task.goal;
 
 import de.rwth.montisim.commons.physicalvalue.PhysicalValueRegistry;

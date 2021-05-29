@@ -1,3 +1,4 @@
+/* (c) https://github.com/MontiCore/monticore */
 package de.rwth.montisim.simulation;
 
 import de.rwth.montisim.commons.TypedCommons;

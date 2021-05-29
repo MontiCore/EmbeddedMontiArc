@@ -1,3 +1,4 @@
+/* (c) https://github.com/MontiCore/monticore */
 package de.rwth.montisim.simulation.vehicle.navigation;
 
 import de.rwth.montisim.commons.utils.BuildContext;
