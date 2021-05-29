@@ -1,3 +1,4 @@
+/* (c) https://github.com/MontiCore/monticore */
 package middleware.mqtt;
 conforms to middleware.mqtt.MqttToEmamTagSchema;
 
