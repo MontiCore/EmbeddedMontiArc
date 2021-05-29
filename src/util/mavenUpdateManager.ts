@@ -1,3 +1,4 @@
+/* (c) https://github.com/MontiCore/monticore */
 import { MavenUpdater } from "./mavenUpdater";
 import { Logger, getLogger } from "log4js";
 import * as vscode from 'vscode';

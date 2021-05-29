@@ -1,3 +1,4 @@
+/* (c) https://github.com/MontiCore/monticore */
 import CircularBuffer from "circularbuffer";
 
 export class ChunkBuffer extends CircularBuffer<String>{

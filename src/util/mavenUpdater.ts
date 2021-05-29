@@ -1,3 +1,4 @@
+/* (c) https://github.com/MontiCore/monticore */
 import { spawn, SpawnOptions } from 'child_process';
 import { Logger, getLogger } from 'log4js';
 import { ChunkBuffer } from './chunkBuffer';
