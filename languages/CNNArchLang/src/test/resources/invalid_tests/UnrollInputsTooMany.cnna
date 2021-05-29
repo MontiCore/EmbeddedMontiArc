@@ -1,3 +1,4 @@
+/* (c) https://github.com/MontiCore/monticore */
 architecture UnrollInputsTooMany{
     def input Q(0:1)^{4} in
     def output Q(0:1)^{4} out[2]
