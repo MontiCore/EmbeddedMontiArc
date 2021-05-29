@@ -1,3 +1,4 @@
+<#-- (c) https://github.com/MontiCore/monticore -->
         #Just an "Identity" layer with the appropriate output name, as if softmax is required it is generated from the Softmax.ftl template        
         ${element.name} = tf.keras.layers.Lambda(lambda x: x, name="${element.name}")(${element.inputs[0]})
         output_names.append("${element.name}")

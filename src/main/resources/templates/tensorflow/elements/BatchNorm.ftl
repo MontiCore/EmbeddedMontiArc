@@ -1,3 +1,4 @@
+<#-- (c) https://github.com/MontiCore/monticore -->
         ${element.name} = tf.keras.layers.BatchNormalization(beta_regularizer=self._regularizer_,
                                                              gamma_regularizer=self._regularizer_,
                                                              beta_constraint=self._weight_constraint_,

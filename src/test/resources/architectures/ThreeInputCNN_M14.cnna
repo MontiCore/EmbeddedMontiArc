@@ -1,3 +1,4 @@
+/* (c) https://github.com/MontiCore/monticore */
 architecture ThreeInputCNN_M14(img_height=200, img_width=300, img_channels=3, classes=3){
     /*CNN used for flower grading. Model 14 of the paper.
      *Title: Multi-Input Convolutional Neural Network for Flower Grading

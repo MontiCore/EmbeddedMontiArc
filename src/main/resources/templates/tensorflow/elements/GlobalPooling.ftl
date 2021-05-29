@@ -1,3 +1,4 @@
+<#-- (c) https://github.com/MontiCore/monticore -->
 <#if element.poolType == "max">
         ${element.name} = tf.keras.layers.GlobalAvgPool2D(data_format = "channels_last", name="${element.name}")(${element.inputs[0]})
 <#elseif element.poolType == "avg">

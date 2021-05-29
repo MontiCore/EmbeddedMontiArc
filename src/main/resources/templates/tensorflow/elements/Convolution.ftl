@@ -1,3 +1,4 @@
+<#-- (c) https://github.com/MontiCore/monticore -->
 <#if element.padding??>
         <#assign paddingTupel = tc.join(element.padding, ",")>
         <#if paddingTupel == "0,-1,0,0,0,0,0,0">

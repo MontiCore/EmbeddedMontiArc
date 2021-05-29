@@ -1,3 +1,4 @@
+/* (c) https://github.com/MontiCore/monticore */
 architecture SimpleNetworkLinear(inputs=10, classes=2){
     def input Q(-oo:+oo)^{inputs} in1
     def output Q(-oo:oo)^{classes} out1

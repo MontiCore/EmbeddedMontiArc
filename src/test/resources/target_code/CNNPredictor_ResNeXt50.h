@@ -1,3 +1,4 @@
+/* (c) https://github.com/MontiCore/monticore */
 #ifndef CNNPREDICTOR_RESNEXT50
 #define CNNPREDICTOR_RESNEXT50
 
