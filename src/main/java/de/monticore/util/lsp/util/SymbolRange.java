@@ -1,3 +1,4 @@
+/* (c) https://github.com/MontiCore/monticore */
 package de.monticore.util.lsp.util;
 
 import de.monticore.symboltable.Symbol;
