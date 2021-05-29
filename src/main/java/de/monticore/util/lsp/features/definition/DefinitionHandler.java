@@ -1,3 +1,4 @@
+/* (c) https://github.com/MontiCore/monticore */
 package de.monticore.util.lsp.features.definition;
 
 import org.eclipse.lsp4j.Location;
