@@ -1,3 +1,4 @@
+/* (c) https://github.com/MontiCore/monticore */
 package de.rwth.wei.modeling.autopilot.intersectionService;
 
 dynamic component If_nonstopplatoon2array{

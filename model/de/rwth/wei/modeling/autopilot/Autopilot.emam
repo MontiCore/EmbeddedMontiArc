@@ -1,3 +1,4 @@
+/* (c) https://github.com/MontiCore/monticore */
 package de.rwth.wei.modeling.autopilot;
 import  de.rwth.wei.modeling.autopilot.messagestruct.*;
 import  de.rwth.wei.modeling.autopilot.messagegenerate.*;

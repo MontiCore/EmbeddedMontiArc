@@ -1,3 +1,4 @@
+/* (c) https://github.com/MontiCore/monticore */
 sim Scenario10 {
     sim_duration 4h;
     
