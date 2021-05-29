@@ -1,3 +1,4 @@
+/* (c) https://github.com/MontiCore/monticore */
 component Oeffentlicher_Demonstrator_FAS_v04{
 
   component Daimler_v4_oeffentlicher_Demonstrator_FAS_v04_dEMO_FAS_1_dEMO_FAS_2_subsystem_dEMO_FAS_3_dEMO_FAS_Funktion_brakeAssistant_brake_Booster_constant_1{
