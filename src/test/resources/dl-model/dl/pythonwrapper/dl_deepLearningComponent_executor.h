@@ -1,3 +1,4 @@
+/* (c) https://github.com/MontiCore/monticore */
 #ifndef _DL_DEEPLEARNINGCOMPONENT_EXECUTOR_H_
 #define _DL_DEEPLEARNINGCOMPONENT_EXECUTOR_H_
 #include "armadillo"

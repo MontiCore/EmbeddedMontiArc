@@ -1,3 +1,4 @@
+/* (c) https://github.com/MontiCore/monticore */
 #include "test_noInputComponent_executor.h"
 
 void test_noInputComponent_executor::init() {

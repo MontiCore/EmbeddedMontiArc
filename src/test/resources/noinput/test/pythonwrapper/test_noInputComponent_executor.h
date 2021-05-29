@@ -1,3 +1,4 @@
+/* (c) https://github.com/MontiCore/monticore */
 #ifndef _TEST_NOINPUTCOMPONENT_EXECUTOR_H_
 #define _TEST_NOINPUTCOMPONENT_EXECUTOR_H_
 #include "armadillo"
