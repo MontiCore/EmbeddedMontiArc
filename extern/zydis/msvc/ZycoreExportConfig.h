@@ -1,3 +1,4 @@
+/* (c) https://github.com/MontiCore/monticore */
 
 #ifndef ZYCORE_EXPORT_H
 #define ZYCORE_EXPORT_H

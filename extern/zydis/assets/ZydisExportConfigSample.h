@@ -1,3 +1,4 @@
+/* (c) https://github.com/MontiCore/monticore */
 
 #ifndef ZYDIS_EXPORT_H
 #define ZYDIS_EXPORT_H

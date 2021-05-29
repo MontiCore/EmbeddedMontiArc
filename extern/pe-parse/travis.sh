@@ -1,4 +1,5 @@
 #!/usr/bin/env bash
+# (c) https://github.com/MontiCore/monticore  
 
 main() {
   if [ $# -ne 2 ] ; then
