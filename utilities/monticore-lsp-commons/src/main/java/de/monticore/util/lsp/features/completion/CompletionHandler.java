@@ -1,3 +1,4 @@
+/* (c) https://github.com/MontiCore/monticore */
 package de.monticore.util.lsp.features.completion;
 
 import org.eclipse.lsp4j.CompletionItem;

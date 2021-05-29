@@ -1,3 +1,4 @@
+/* (c) https://github.com/MontiCore/monticore */
 package de.monticore.util.lsp.features.definition;
 
 import de.monticore.ast.ASTNode;
