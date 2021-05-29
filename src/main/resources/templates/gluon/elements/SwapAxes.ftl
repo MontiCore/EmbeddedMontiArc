@@ -1,3 +1,4 @@
+<#-- (c) https://github.com/MontiCore/monticore -->
 <#assign input = element.inputs[0]>
 <#assign dim1 = (element.axes[0] + 1)?c>
 <#assign dim2 = (element.axes[1] + 1)?c>

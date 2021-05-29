@@ -1,3 +1,4 @@
+/* (c) https://github.com/MontiCore/monticore */
 architecture InfoQNetwork {
     def input Q(-oo:oo)^{1024} features
     def output Q(-1:1)^{10} c1

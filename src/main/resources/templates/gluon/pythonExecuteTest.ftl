@@ -1,3 +1,4 @@
+<#-- (c) https://github.com/MontiCore/monticore -->
                     labels = [batch.label[i].as_in_context(mx_context[0]) for i in range(${tc.architectureOutputs?size?c})]
 <#list tc.architectureInputs as input_name>
                     ${input_name} = batch.data[${input_name?index}].as_in_context(mx_context[0])

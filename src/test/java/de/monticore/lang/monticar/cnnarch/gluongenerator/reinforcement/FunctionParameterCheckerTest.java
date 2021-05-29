@@ -1,3 +1,4 @@
+/* (c) https://github.com/MontiCore/monticore */
 package de.monticore.lang.monticar.cnnarch.gluongenerator.reinforcement;
 
 import com.google.common.collect.ImmutableMap;

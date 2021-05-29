@@ -1,3 +1,4 @@
+<#-- (c) https://github.com/MontiCore/monticore -->
                     if save_attention_image == "True":
                         if not eval_train:
                             import matplotlib
