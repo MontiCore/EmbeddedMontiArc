@@ -1,3 +1,4 @@
+/* (c) https://github.com/MontiCore/monticore */
 #include "CNNTranslator.h"
 #include "translator_rNNsearch.h"
 

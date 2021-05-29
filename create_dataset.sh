@@ -1,4 +1,5 @@
 #!/bin/sh
+# (c) https://github.com/MontiCore/monticore  
 cd resources
 python download_data.py
 python create_data_h5.py
