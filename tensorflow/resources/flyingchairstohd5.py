@@ -1,3 +1,4 @@
+# (c) https://github.com/MontiCore/monticore  
 #!/usr/share/python3
 
 # Authors: Tim Schupp & Julian Steinsberger-Duehrssen

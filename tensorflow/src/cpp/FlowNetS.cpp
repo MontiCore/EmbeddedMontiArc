@@ -1,3 +1,4 @@
+/* (c) https://github.com/MontiCore/monticore */
 #include <armadillo>
 #include "flowNetS_network.h"
 #include "CNNTranslator.h"
