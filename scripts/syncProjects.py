@@ -1,3 +1,4 @@
+# (c) https://github.com/MontiCore/monticore  
 def syncProjects(gl, group, gitlabToken):
     subgroups = group.subgroups
     for g in subgroups.list(all=True):
