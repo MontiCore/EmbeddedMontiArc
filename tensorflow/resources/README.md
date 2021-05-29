@@ -1,3 +1,4 @@
+<!-- (c) https://github.com/MontiCore/monticore -->
 # Udacity Data generation
 
 - This readme describes the geration of the test and train sets we used. 

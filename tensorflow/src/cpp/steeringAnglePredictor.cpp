@@ -1,3 +1,4 @@
+/* (c) https://github.com/MontiCore/monticore */
 #include <opencv2/core.hpp>
 #include <opencv2/hdf.hpp>
 #include <iostream>

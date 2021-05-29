@@ -1,3 +1,4 @@
+# (c) https://github.com/MontiCore/monticore  
 import os, os.path
 import glob
 import csv
