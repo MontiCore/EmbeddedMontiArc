@@ -1,3 +1,4 @@
+<!-- (c) https://github.com/MontiCore/monticore -->
 # Commons
 
 This repository includes the interfaces and general functionality for the other repositories.
