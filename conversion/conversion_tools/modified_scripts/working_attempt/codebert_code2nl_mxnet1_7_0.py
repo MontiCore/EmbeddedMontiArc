@@ -46,10 +46,12 @@
 #   "vocab_size": 50265
 # }
 
+from matplotlib.pyplot import eventplot
 from mxnet.ndarray.gen_op import batch_dot
 from .convert_codebert_transformers_mxnet1_7_0 import convert_huggingface_model
 from gluonnlp.model.transformer import TransformerDecoder
 from mxnet.gluon.block import Block
+from mxnet import gluon
 import mxnet.gluon.nn as nn
 import mxnet as mx
 import gluonnlp as nlp
@@ -206,19 +208,17 @@ def get_data_iterator(inputs, outputs, shuffle, batch_size, filename):
     data_iterator = mx.io.NDArrayIter(
         inputs=input_dict, outputs=output_dict, shuffle=shuffle, batch_size=batch_size)
     return data_iterator
-    
-    
 
 def train_model(epochs, batch_size, filename):
+    ctx = mx.cpu()
     encoder = convert_huggingface_model()
     decoder = get_decoder()
     seq2seq = get_seq2seq(encoder, decoder)
     train_data = get_data_iterator(
         ['source_ids', 'source_masks'], ['target_ids', 'target_masks'],
         True, batch_size, filename)
-    
     seq2seq.initialize()
-
+    loss = mx.gluon.loss.SoftmaxCrossEntropyLoss() # TODO parameters? e.g. sparse_label
     # note this is different than the codebert optimizer in two ways
     # 1. differences in calculation, as stated in the BERTAdam optimizer doc
     # 2. it doesn't appear to be able to exclude certain parameters from the optimizer
@@ -229,6 +229,24 @@ def train_model(epochs, batch_size, filename):
     optimizer = nlp.optimizer.BERTAdam(learning_rate=5e-5, beta1=0.9, beta2=0.999, epsilon=1e-8)
     trainer = mx.gluon.Trainer(seq2seq.collect_params(), optimizer=optimizer)
 
+    for epoch in range(epochs):
+        for batch in enumerate(train_data):
+            with mx.autograd.record():
+                source_ids = gluon.utils.split_and_load(batch.data[0], ctx_list=ctx, even_split=False)
+                source_masks = gluon.utils.split_and_load(batch.data[1], ctx_list=ctx, even_split=False)
+                target_ids = gluon.utils.split_and_load(batch.label[0], ctx_list=ctx, even_split=False)
+                target_masks = gluon.utils.split_and_load(batch.label[1], ctx_list=ctx, even_split=False)
+                lm_logits = seq2seq(source_ids, source_masks, target_ids, target_masks)
+                # drop the start of sentence mask tokens? - mb
+                active_loss = target_masks[..., 1:].asnumpy().reshape(-1) != 0
+                shift_labels = target_ids[..., 1:]
+                # Shift so that tokens < n predict n
+                shift_logits = lm_logits[..., :-1, :]
+                X = shift_logits.reshape(-1, shift_logits.shape(-1))[active_loss]
+                y = shift_labels.reshape(-1)[active_loss]
+                l = loss(X, y)
+                l.backward()
+                trainer.step(batch_size)
     # target_mask = self.create_target_mask(target_ids, target_valid_length)
     # # Shift so that tokens < n predict n
     # active_loss = target_mask[..., 1:].asnumpy().reshape(-1) != 0
