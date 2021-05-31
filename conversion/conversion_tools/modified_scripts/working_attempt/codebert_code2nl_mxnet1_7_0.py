@@ -46,9 +46,7 @@
 #   "vocab_size": 50265
 # }
 
-from matplotlib.pyplot import eventplot
-from mxnet.ndarray.gen_op import batch_dot
-from .convert_codebert_transformers_mxnet1_7_0 import convert_huggingface_model
+from convert_codebert_transformers_mxnet1_7_0 import convert_huggingface_model
 from gluonnlp.model.transformer import TransformerDecoder
 from mxnet.gluon.block import Block
 from mxnet import gluon
@@ -69,10 +67,10 @@ class Seq2Seq(Block):
             self.encoder = encoder
             self.decoder = decoder
             self.bias = mx.ndarray.linalg.extracttrian(mx.nd.ones((2048,2048)))
-            self.dense = nn.Dense(hidden_size, hidden_size)
+            self.dense = nn.Dense(hidden_size, activation='tanh')
             # tie the lm_head and word_embed params together not sure if this is the correct way to do it
-            self.lm_head = nn.Dense(hidden_size, hidden_size, use_bias=False, params=encoder.word_embed.params)
-            self.lsm = mx.npx.log_softmax(axis=-1) # axis = -1 the same as dim = -1?
+            self.lm_head = nn.Dense(hidden_size, use_bias=False, params=encoder.word_embed.params)
+            #self.lsm = mx.npx.log_softmax(axis=-1) # axis = -1 the same as dim = -1? used for prediction part TODO
             self.beam_size=beam_size
             self.max_length=max_length
             self.sos_id=sos_id
@@ -86,15 +84,17 @@ class Seq2Seq(Block):
 
     def forward(self, input_ids=None, input_valid_length=None, target_ids=None, target_valid_length=None):   
         input_token_types = mx.nd.zeros_like(input_ids)
+        print(input_valid_length)
         encoder_output = self.encoder(input_ids, input_token_types, input_valid_length) # we don't permute like in the code2nl model, that okay? TODO
         #encoder_output = outputs[0].permute([1,0,2]).contiguous() not sure how to do
+        print(target_valid_length)
         if target_ids is not None:  
             #attn_mask=-1e4 *(1-self.bias[:target_ids.shape[1],:target_ids.shape[1]]) no option to pass this in gluonnlp TODO
             # could try subclassing the Decoder and change the hybrid_forward function.
             tgt_embeddings = self.encoder.word_embed(target_ids)
             states = self.decoder.init_state_from_encoder(encoder_output, input_valid_length)
             out = self.decoder(tgt_embeddings, states, valid_length=target_valid_length)
-            hidden_states = mx.gluon.nn.Activation('tanh')(self.dense(out))
+            hidden_states = self.dense(out)
             lm_logits = self.lm_head(hidden_states)
             return lm_logits
         else:
@@ -206,11 +206,11 @@ def get_data_iterator(inputs, outputs, shuffle, batch_size, filename):
     for k in outputs:
         output_dict[k] = file[k]
     data_iterator = mx.io.NDArrayIter(
-        inputs=input_dict, outputs=output_dict, shuffle=shuffle, batch_size=batch_size)
+        data=input_dict, label=output_dict, shuffle=shuffle, batch_size=batch_size)
     return data_iterator
 
 def train_model(epochs, batch_size, filename):
-    ctx = mx.cpu()
+    ctx = [mx.cpu()]
     encoder = convert_huggingface_model()
     decoder = get_decoder()
     seq2seq = get_seq2seq(encoder, decoder)
@@ -230,12 +230,12 @@ def train_model(epochs, batch_size, filename):
     trainer = mx.gluon.Trainer(seq2seq.collect_params(), optimizer=optimizer)
 
     for epoch in range(epochs):
-        for batch in enumerate(train_data):
+        for batch in train_data:
             with mx.autograd.record():
-                source_ids = gluon.utils.split_and_load(batch.data[0], ctx_list=ctx, even_split=False)
-                source_masks = gluon.utils.split_and_load(batch.data[1], ctx_list=ctx, even_split=False)
-                target_ids = gluon.utils.split_and_load(batch.label[0], ctx_list=ctx, even_split=False)
-                target_masks = gluon.utils.split_and_load(batch.label[1], ctx_list=ctx, even_split=False)
+                source_ids = gluon.utils.split_and_load(batch.data[0], ctx_list=ctx, even_split=False)[0]
+                source_masks = gluon.utils.split_and_load(batch.data[1], ctx_list=ctx, even_split=False)[0]
+                target_ids = gluon.utils.split_and_load(batch.label[0], ctx_list=ctx, even_split=False)[0]
+                target_masks = gluon.utils.split_and_load(batch.label[1], ctx_list=ctx, even_split=False)[0]
                 lm_logits = seq2seq(source_ids, source_masks, target_ids, target_masks)
                 # drop the start of sentence mask tokens? - mb
                 active_loss = target_masks[..., 1:].asnumpy().reshape(-1) != 0
@@ -270,11 +270,13 @@ def parse_args():
         help='The path where the training data should be saved')
     parser.add_argument("--epochs", default=1, type=int,
         help="The number of epochs for training")
-    parser.add_argument('--train_data', 
+    parser.add_argument('--train_data', default=None, type=str,
         help='The .h5 file where the processed training data is.')
+    parser.add_argument("--batch_size", default=8, type=int,
+        help="Batch size for training")
     return parser.parse_args()
 
 if __name__ == '__main__':
     args = parse_args()
     if args.train:
-        train_model(args.epochs, args.train_data)
+        train_model(args.epochs, args.batch_size, args.train_data)
