@@ -39,7 +39,7 @@ stages:
 
 linux_build:
   stage: build
-  image: registry.hub.docker.com/rikorose/gcc-cmake:10
+  image: registry.git.rwth-aachen.de/monticore/embeddedmontiarc/simulators/hardware_emulator/gcc-cmake-maven
   before_script:
   # - apt update
   # - apt --assume-yes install make
@@ -60,7 +60,7 @@ linux_build:
 
 linux_test:
   stage: test
-  image: gcc:11
+  image: registry.git.rwth-aachen.de/monticore/embeddedmontiarc/simulators/hardware_emulator/gcc-cmake-maven
   script:
     - mv hardware_emulator/build/hardware-emulator-test hardware_emulator/bin/hardware-emulator-test
     - cd hardware_emulator/bin
@@ -70,7 +70,7 @@ linux_test:
 
 linux_maven_master:
   stage: maven
-  image: maven:3-jdk-8
+  image: registry.git.rwth-aachen.de/monticore/embeddedmontiarc/simulators/hardware_emulator/gcc-cmake-maven
   before_script:
   - scripts/unix/before_script.sh
   script: 
@@ -84,7 +84,7 @@ linux_maven_master:
 
 linux_maven_branch:
   stage: maven
-  image: maven:3-jdk-8
+  image: registry.git.rwth-aachen.de/monticore/embeddedmontiarc/simulators/hardware_emulator/gcc-cmake-maven
   before_script:
   - scripts/unix/before_script.sh
   script: 
