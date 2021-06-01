@@ -39,14 +39,15 @@ stages:
 
 linux_build:
   stage: build
-  image: maven:3-jdk-8
+  image: rikorose/gcc-cmake:10
   before_script:
-  - apt update
-  - apt --assume-yes install make
-  - apt --assume-yes install python
-  - apt --assume-yes install g++
-  - apt --assume-yes install cmake
+  # - apt update
+  # - apt --assume-yes install make
+  # - apt --assume-yes install python
+  # - apt --assume-yes install g++
+  # - apt --assume-yes install cmake
   - g++ --version
+  - cmake --version
   
   script:
   #- scripts/unix/build_dependencies.sh
@@ -59,7 +60,7 @@ linux_build:
 
 linux_test:
   stage: test
-  image: maven:3-jdk-8
+  image: rikorose/gcc-cmake:10
   script:
     - mv hardware_emulator/build/hardware-emulator-test hardware_emulator/bin/hardware-emulator-test
     - cd hardware_emulator/bin
