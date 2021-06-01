@@ -2,7 +2,9 @@
 # (c) https://github.com/MontiCore/monticore
 #
 
-
+# In order to update the 'shared_cpp' submodule
+variables:
+  GIT_SUBMODULE_STRATEGY: recursive
 
 
 
