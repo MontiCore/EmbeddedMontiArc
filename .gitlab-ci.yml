@@ -39,7 +39,7 @@ stages:
 
 linux_build:
   stage: build
-  image: gcc:11
+  image: registry.hub.docker.com/rikorose/gcc-cmake:10
   before_script:
   # - apt update
   # - apt --assume-yes install make
