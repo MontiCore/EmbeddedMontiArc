@@ -1,23 +1,39 @@
 # Hardware Emulator
 
-- Dynamic Interface
-- SoftwareSimulator
-- HardwareEmulator
-- Controller
+Make sure to clone this repository recursively!
 
+```bash
+git clone --recursive https://git.rwth-aachen.de/monticore/EmbeddedMontiArc/simulators/hardware_emulator
+```
+
+If you already have the cloned repository without the sub-module, you can add it with:
+
+```bash
+git submodule update --init
+```
+
+## Resources
+
+Some links useful for the development of this project:
+
+- [https://wiki.osdev.org/Main_Page](https://wiki.osdev.org/Main_Page)
+- [https://www.agner.org/optimize/](https://www.agner.org/optimize/)
+
+---
 
 ## Overview
+
 This project allows to run **EmbeddedMontiArc** models that have a **DynamicInterface** and let them communicate with the MontiSim simulation. It allows the time evaluation of the model execution using a parametric computer model.
 
-## Resource for processor modelling
-[https://www.agner.org/optimize/](https://www.agner.org/optimize/)
 
 ## Building
+
 The project contains a **C++ CMake project** and a **Maven project**. 
 The C++ project contains the logic of the Hardware Emulator.
 The Maven project takes this C++ library and wraps it in a Jar alongside its Java Interfaces. The resulting Jar is avaiable as dependency in the **nexus**.
 
 ### C++ Project
+
 To compile the C++ project (under the [hardware_emulator](hardware_emulator) folder), use the `build_emulator` script for your system (located in the [scripts](scripts) folder).
 
 > For Visual Studio, the script has to be started inside the Visual Studio **Developer Command Prompt**.
@@ -36,19 +52,18 @@ Simply use the `mvn install` command in the main directory to compile the maven 
 
 ### C++ dependencies
 
-The libraries required by the C++ project are pre-compiled under [hardware_emulator/libs](hardware_emulator/libs). They can be recompiled using the `build_dependencies` scripts.
+The libraries required by the C++ project are included and built by the CMake of the hardware_emulator.
 
-> *(For MinGW, the [Unicorn](unicorn) library has to be compiled under MSYS.)*
-
+Under Linux, the unicorn library is actually just wrapped in a CMake interface. On changes it has to be built using its make script.
 
 ## Test
 
 The `hardware-emulator-test` can be executed in the hardware_emulator/bin folder locally to test the emulation of sample programs and a basic autopilot emulation.
 
-
 ## Usage
 
 To use the Hardware Emulator inside another Maven project add the following dependency to the `pom.xml`:
+
 ```xml
 <dependency>
     <groupId>montisim</groupId>
@@ -56,7 +71,12 @@ To use the Hardware Emulator inside another Maven project add the following depe
     <version>${montisim.hardware_emulator.version}</version>
 </dependency>
 ```
+
 Where `montisim.hardware_emulator.version` specifies the artifact version.
+
+---
+
+# Outdated documentation
 
 The main interface for a simulator is [SoftwareSimulator](src/main/java/de/rwth/monticore/EmbeddedMontiArc/simulators/hardware_emulator/interfaces/SoftwareSimulator.java).
 
