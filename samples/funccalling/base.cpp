@@ -74,3 +74,29 @@ EXPORT int64_t long_array(int64_t*a, int s){
 EXPORT char char_array(char*a, int s){
     return combine_array<char>(a,s);
 }
+
+EXPORT int32_t test_long_function() {
+
+}
+
+EXPORT int32_t test_long_function_intern() {
+    int a = 19 * 2;
+    a += 4;
+    auto res = MultiByteToWideChar_TEST(a, a+1, (const char*)(a+2), a+3, (uint16_t *)(a+4), a+5);
+    res -= 321;
+    return res;
+}
+
+EXPORT int32_t MultiByteToWideChar_TEST(
+    uint32_t CodePage, uint32_t dwFlags, 
+    const char* lpMultiByteStr, int32_t cbMultiByte,
+    uint16_t *lpWideCharStr, int32_t cchWideChar
+) {
+    int32_t res = CodePage * 2;
+    res += dwFlags * 3;
+    res += (int32_t)lpMultiByteStr * 4;
+    res += cbMultiByte * 5;
+    res += (int32_t)lpWideCharStr * 6;
+    res += cchWideChar * 7;
+    return res;
+}
