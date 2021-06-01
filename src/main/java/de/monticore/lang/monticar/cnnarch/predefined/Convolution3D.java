@@ -48,7 +48,7 @@ public class Convolution3D extends PredefinedLayerDeclaration {
                 new ParameterSymbol.Builder()
                         .name(AllPredefinedLayers.STRIDE_NAME)
                         .constraints(Constraints.INTEGER_TUPLE, Constraints.POSITIVE)
-                        .defaultValue(Arrays.asList(1, 1))
+                        .defaultValue(Arrays.asList(1, 1, 1))
                         .build(),
                 new ParameterSymbol.Builder()
                         .name(AllPredefinedLayers.NOBIAS_NAME)
@@ -58,7 +58,7 @@ public class Convolution3D extends PredefinedLayerDeclaration {
                 new ParameterSymbol.Builder()
                         .name(AllPredefinedLayers.PADDING_NAME)
                         .constraints(Constraints.PADDING_TYPE)
-                        .defaultValue(AllPredefinedLayers.PADDING_SAME)
+                        .defaultValue(AllPredefinedLayers.PADDING_SAME3D)
                         .build(),
                 new ParameterSymbol.Builder()
                         .name(AllPredefinedLayers.GROUPS_NAME)
