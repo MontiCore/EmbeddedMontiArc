@@ -85,6 +85,8 @@ class Seq2Seq(Block):
     def forward(self, input_ids=None, input_valid_length=None, target_ids=None, target_valid_length=None):   
         input_token_types = mx.nd.zeros_like(input_ids)
         print(input_valid_length)
+        print(input_ids)
+        print(input_token_types)
         encoder_output = self.encoder(input_ids, input_token_types, input_valid_length) # we don't permute like in the code2nl model, that okay? TODO
         #encoder_output = outputs[0].permute([1,0,2]).contiguous() not sure how to do
         print(target_valid_length)
@@ -209,14 +211,18 @@ def get_data_iterator(inputs, outputs, shuffle, batch_size, filename):
         data=input_dict, label=output_dict, shuffle=shuffle, batch_size=batch_size)
     return data_iterator
 
-def train_model(epochs, batch_size, filename):
+def load_codebert_encoder_block(symbolFile, weightFile, context):
+    inputNames = ['data0', 'data1', 'data2']
+    return gluon.nn.SymbolBlock.imports(symbolFile, inputNames, weightFile, ctx=context)
+
+def train_model(args):
     ctx = [mx.cpu()]
-    encoder = convert_huggingface_model()
+    encoder = load_codebert_encoder_block(args.symbol_file, args.weight_file, ctx)
     decoder = get_decoder()
     seq2seq = get_seq2seq(encoder, decoder)
     train_data = get_data_iterator(
         ['source_ids', 'source_masks'], ['target_ids', 'target_masks'],
-        True, batch_size, filename)
+        True, args.batch_size, args.train_data)
     seq2seq.initialize()
     loss = mx.gluon.loss.SoftmaxCrossEntropyLoss() # TODO parameters? e.g. sparse_label
     # note this is different than the codebert optimizer in two ways
@@ -229,7 +235,7 @@ def train_model(epochs, batch_size, filename):
     optimizer = nlp.optimizer.BERTAdam(learning_rate=5e-5, beta1=0.9, beta2=0.999, epsilon=1e-8)
     trainer = mx.gluon.Trainer(seq2seq.collect_params(), optimizer=optimizer)
 
-    for epoch in range(epochs):
+    for epoch in range(args.epochs):
         for batch in train_data:
             with mx.autograd.record():
                 source_ids = gluon.utils.split_and_load(batch.data[0], ctx_list=ctx, even_split=False)[0]
@@ -246,7 +252,7 @@ def train_model(epochs, batch_size, filename):
                 y = shift_labels.reshape(-1)[active_loss]
                 l = loss(X, y)
                 l.backward()
-                trainer.step(batch_size)
+                trainer.step(args.batch_size)
     # target_mask = self.create_target_mask(target_ids, target_valid_length)
     # # Shift so that tokens < n predict n
     # active_loss = target_mask[..., 1:].asnumpy().reshape(-1) != 0
@@ -274,9 +280,13 @@ def parse_args():
         help='The .h5 file where the processed training data is.')
     parser.add_argument("--batch_size", default=8, type=int,
         help="Batch size for training")
+    parser.add_argument("--symbol_file", default='./codebert_gluon/codebert-symbol.json', type=str,
+        help="Symbol file from the pretrained model output by the conversion script")
+    parser.add_argument("--weight_file", default='./codebert_gluon/codebert-0000.params', type=str,
+        help="Weight file from the pretrained model output by the conversion script")
     return parser.parse_args()
 
 if __name__ == '__main__':
     args = parse_args()
     if args.train:
-        train_model(args.epochs, args.batch_size, args.train_data)
+        train_model(args)
