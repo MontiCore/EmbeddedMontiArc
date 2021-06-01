@@ -25,7 +25,13 @@ void LinuxSystemCalls::add_linux_calls( SystemCalls &sys_calls ) {
     sys_calls.add_syscall( SysCall( "memcpy", mod, memcpy ), reason );
     sys_calls.add_syscall( SysCall( "memset", mod, memset ), reason );
     sys_calls.add_syscall( SysCall( "strtoll", mod, strtoll ), reason );
-    sys_calls.add_syscall( SysCall( "strtod", mod, strtod ), reason );
+    sys_calls.add_syscall( SysCall( "strtod", mod, strtod ), reason ); 
+    sys_calls.add_syscall(SysCall("gettext", mod, [](Computer& c) {
+        // char * gettext (const char * msgid);
+        // => return msgid
+        c.func_call_linux.set_return_64(c.func_call_linux.get_param1_64());
+        return true;
+    }), reason);
 }
 
 bool LinuxSystemCalls::malloc( Computer &computer ) {

@@ -9,7 +9,7 @@
 #include "os_linux/os_linux.h"
 #include "os_linux/elf.h"
 #include "utility/utility.h"
-
+#include <iostream>
 
 /*
     Tests the emulation of the functions from
@@ -21,14 +21,15 @@ void test_simple_sample( Computer &computer, bool windows ) {
     
     ADD_DLL::Interface interf;
     interf.init(computer, windows);
-        
-    //computer.debug.debug = true;
+
+    computer.debug.debug = true;
     //computer.debug.d_code = true;
     //computer.debug.d_mem = true;
     ////computer.debug.d_regs = false;
     //computer.debug.d_reg_update = true;
     //computer.debug.d_syscalls = true;
-    //computer.debug.d_call = true;
+    computer.debug.d_call = true;
+    computer.debug.d_unsupported_syscalls = true;
     Log::debug.log_tag("add(2,3):\n");
     auto res = interf.add( 2, 3 );
     Log::debug.log_tag("Result=%d\n", res);
@@ -81,11 +82,7 @@ void test_funccalling_sample_windows() {
     TEST_FUNCCALL( int_two, 32, int32_t, 24, 13 );
     TEST_FUNCCALL( int_three, 32, int32_t, 24, 13, 11 );
     TEST_FUNCCALL( int_four, 32, int32_t, 24, 13, 11, 31 );
-    /* computer.debug.debug = true;
-    computer.debug.d_code = true;
-    computer.debug.d_mem = true;
-    computer.debug.d_reg_update = true;
-    computer.debug.d_syscalls = true; */
+    
     
     TEST_FUNCCALL( long_one, 64, int64_t, 24 );
     TEST_FUNCCALL( long_two, 64, int64_t, 24, 13 );
@@ -129,6 +126,21 @@ void test_funccalling_sample_windows() {
     TEST_ARRAY_FUNCCALL( char_array, char, char );
     
 #undef TEST_ARRAY_FUNCCALL
+
+    /*computer.debug.debug = true;
+    computer.debug.d_code = true;*/
+    //computer.debug.d_mem = true;
+    //computer.debug.d_reg_update = true;
+    /*computer.debug.d_syscalls = true;
+    computer.debug.d_call = true;*/
+
+    auto func_test_long_function_intern = computer.symbols.get_symbol("test_long_function_intern"); \
+    if (func_test_long_function_intern.type == Symbols::Symbol::Type::NONE ) { \
+        throw_error(std::string("Could not find function symbol for 'test_long_function_intern'\n"));
+    }
+    computer.call(func_test_long_function_intern.addr, "test_long_function_intern"); \
+    auto res_test_long_function_intern = computer.func_call_windows.get_return_32();
+    std::cout << "res_test_long_function_intern= " << res_test_long_function_intern << std::endl;
 }
 
 /*
@@ -341,18 +353,15 @@ void test_autopilot(const char* config_str, bool is_emu){
         //computer.debug.d_code = true;
         //computer.debug.d_mem = true;
         //computer.debug.d_reg_update = true;
-        computer.debug.d_syscalls = true;
+        //computer.debug.d_syscalls = true;
         computer.debug.d_call = true;
-        computer.debug.d_unsupported_syscalls = true;
+        //computer.debug.d_unsupported_syscalls = true;
     }
 
 
     prog.set_port(0, "5.6", 1);
     prog.set_port(1, "[0.0,0.0]", 1);
     prog.set_port(2, "0.0", 1);
-    // computer.debug.d_code = true;
-    // computer.debug.d_mem = true;
-    // computer.debug.d_reg_update = true;
     prog.set_port(3, "[3,0.0,1.0,2.0]", 1);
     prog.set_port(4, "[3,0.0,0.0,-1.0]", 1);
 
@@ -506,7 +515,89 @@ void test_autopilot_emu_linux() {
     0,
     20000000
   ],
-  "debug_flags": []
+  "debug_flags": ["p_unsupported_syscalls", "p_call"]
+}
+    )", true);
+}
+void test_ema_autopilot_emu_windows() {
+    test_autopilot(R"(
+    {
+        "software_name": "ema_autopilot_lib",
+        "backend": {
+            "type": "emu",
+            "os": "windows"
+        },
+        "time_model": {
+            "type": "models",
+            "cpu_frequency": 4000000000,
+            "memory_frequency": 2500000000,
+            "caches": [
+                {"type": "I", "level": 1, "size": 262144, "read_ticks": 4, "write_ticks": 4},
+                {"type": "D", "level": 1, "size": 262144, "read_ticks": 4, "write_ticks": 4},
+                {"type": "shared", "level": 2, "size": 2097152, "read_ticks": 6, "write_ticks": 6},
+                {"type": "shared", "level": 3, "size": 12582912, "read_ticks": 40, "write_ticks": 40}
+            ]
+        },
+        "debug_flags": ["p_unsupported_syscalls", "p_call" ]
+    }
+    )", true);
+}
+void test_ema_autopilot_emu_linux() {
+    test_autopilot(R"(
+    {
+  "type": "computer",
+  "name": "UnnamedComponent",
+  "connected_to": [],
+  "priority": {},
+  "software_name": "ema_autopilot_lib",
+  "backend": {
+    "type": "emu",
+    "os": "linux"
+  },
+  "time_model": {
+    "type": "models",
+    "cpu_frequency": 4000000000,
+    "memory_frequency": 2500000000,
+    "caches": [
+      {
+        "type": "I",
+        "level": 1,
+        "size": 262144,
+        "read_ticks": 4,
+        "write_ticks": 4,
+        "line_length": 64
+      },
+      {
+        "type": "D",
+        "level": 1,
+        "size": 262144,
+        "read_ticks": 4,
+        "write_ticks": 4,
+        "line_length": 64
+      },
+      {
+        "type": "shared",
+        "level": 2,
+        "size": 2097152,
+        "read_ticks": 6,
+        "write_ticks": 6,
+        "line_length": 64
+      },
+      {
+        "type": "shared",
+        "level": 3,
+        "size": 12582912,
+        "read_ticks": 40,
+        "write_ticks": 40,
+        "line_length": 64
+      }
+    ]
+  },
+  "cycle_duration": [
+    0,
+    20000000
+  ],
+  "debug_flags": ["p_call", "p_syscalls"]
 }
     )", true);
 }

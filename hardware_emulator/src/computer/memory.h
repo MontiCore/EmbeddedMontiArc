@@ -219,7 +219,7 @@ struct SectionStack {
     invalidates the data from the previous call.
 */
 struct Memory {
-    static constexpr ulong BUFFER_SIZE = 4096;
+    static constexpr ulong BUFFER_START_SIZE = 4096;
     static constexpr ulong MAX_BUFFER_SIZE = 1048576;
     void *internal_uc;
     ulong page_size;
@@ -245,8 +245,18 @@ struct Memory {
     void *read_memory( ulong address, ulong size );
     void write_memory( ulong address, ulong size, void *data );
     
-    void *read_memory( MemoryRange range );
-    void write_memory( MemoryRange range, void *data );
+    inline void* read_memory(MemoryRange range) {
+        return read_memory(range.start_address, range.size);
+    }
+    inline void write_memory(MemoryRange range, void* data) {
+        write_memory(range.start_address, range.size, data);
+    }
+
+
+    void write_memory_buffer(ulong address, ulong size);
+    inline void write_memory_buffer(MemoryRange range) {
+        write_memory_buffer(range.start_address, range.size);
+    }
     
     MemorySection &new_section( MemoryRange range, const std::string &name, const std::string &module, bool exec, bool read,
                                 bool write );

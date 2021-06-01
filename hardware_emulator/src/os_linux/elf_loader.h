@@ -26,7 +26,8 @@ namespace OS {
         Symbols *symbols;
         Memory *mem;
         uint64_t init_address = 0;
-        std::vector<uint64_t> init_array_addresses;
+        Elf64_Dyn *dt_init_array_entry = nullptr;
+        Elf64_Dyn *dt_init_array_size_entry = nullptr;
         
 		std::vector<SectionInfo> sections;
         uint section_pos;

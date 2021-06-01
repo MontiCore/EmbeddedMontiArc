@@ -197,7 +197,7 @@ uint64_t SectionStack::get_8byte_slot() {
 
 
 void Memory::init( void *uc ) {
-    buffer.resize( BUFFER_SIZE );
+    buffer.resize( BUFFER_START_SIZE );
     this->internal_uc = uc;
     section_count = 0;
     uc_query( static_cast<uc_engine *>( internal_uc ), UC_QUERY_PAGE_SIZE, &page_size );
@@ -215,8 +215,10 @@ void Memory::init( void *uc ) {
 
 
 void *Memory::read_memory( ulong address, ulong size ) {
-    if ( size > BUFFER_SIZE )
-        size = BUFFER_SIZE;
+    if (size >= buffer.size()) {
+        int32_t new_size = ((size / BUFFER_START_SIZE) + 1) * BUFFER_START_SIZE;
+        buffer.resize(new_size);
+    }
     if ( uc_mem_read( static_cast<uc_engine *>( internal_uc ), address, buffer.data(), size ) ) {
         Log::err.log_tag("Error reading from memory at address %llu with size %llu", address, size);
         buffer[0] = 0;
@@ -225,20 +227,23 @@ void *Memory::read_memory( ulong address, ulong size ) {
 }
 
 void Memory::write_memory( ulong address, ulong size, void *data ) {
-    auto s = size > BUFFER_SIZE ? BUFFER_SIZE : size;
+    if (size >= buffer.size()) {
+        int32_t new_size = ((size / BUFFER_START_SIZE) + 1) * BUFFER_START_SIZE;
+        buffer.resize(new_size);
+    }
     uchar *ptr = ( uchar * )data;
-    for ( uint i : urange( ( uint )s ) )
+    for ( uint i : urange( ( uint )size) )
         buffer[i] = ptr[i];
-    if ( uc_mem_write( static_cast<uc_engine *>( internal_uc ), address, buffer.data(), s ) )
+    if ( uc_mem_write( static_cast<uc_engine *>( internal_uc ), address, buffer.data(), size) )
         Log::err.log_tag("Error writing to memory at address %llu with size %llu", address, size);
 }
 
-void *Memory::read_memory( MemoryRange range ) {
-    return read_memory( range.start_address, range.size );
-}
 
-void Memory::write_memory( MemoryRange range, void *data ) {
-    write_memory( range.start_address, range.size, data );
+
+void Memory::write_memory_buffer(ulong address, ulong size)
+{
+    if (uc_mem_write(static_cast<uc_engine*>(internal_uc), address, buffer.data(), size))
+        Log::err.log_tag("Error writing to memory at address %llu with size %llu", address, size);
 }
 
 
@@ -284,7 +289,7 @@ void MemorySection::print_annotation( ulong virtual_address, char* buffer, int b
             if (note.base != virtual_address) {
                 auto sign = note.base < virtual_address ? "" : "-";
                 auto val = note.base < virtual_address ? (virtual_address - note.base) : (note.base - virtual_address);
-                snprintf(buffer, buffer_size, "(%s[%s%lu])", note.name.c_str(), sign, val);
+                snprintf(buffer, buffer_size, "(%s[%s%Iu])", note.name.c_str(), sign, val);
             }
             else {
                 snprintf(buffer, buffer_size, "(%s)", note.name.c_str());
@@ -310,24 +315,28 @@ void Memory::print_annotation( ulong virtual_address, char* buffer, int buffer_s
 
 
 wchar_t *Memory::read_wstr( ulong address ) {
+    auto buff_size = buffer.size();
     uint size = 0;
-    wchar_t c;
+    wchar_t* target = (wchar_t* )buffer.data();
     do {
-        if ( uc_mem_read( static_cast<uc_engine *>( internal_uc ), address + size, buffer.data() + size, 2 ) ) {
+        if ( uc_mem_read( static_cast<uc_engine *>( internal_uc ), address + size, target, 2 ) ) {
             Log::err.log_tag("Error reading wstr at address %llu", address);
-            size = 2;
+            *target = 0;
             break;
         }
-        c = *( wchar_t * )( buffer.data() + size );
+        ++target;
         size += 2;
-    } while ( c != 0 && size < BUFFER_SIZE );
-    
-    if ( size >= BUFFER_SIZE )
-        *( wchar_t * )( buffer.data() + ( size - 2 ) ) = 0;
+        if (size >= buff_size) {
+            buff_size += BUFFER_START_SIZE;
+            buffer.resize(buff_size);
+        }
+    } while ( *target != 0 && size < MAX_BUFFER_SIZE);
+    *target = 0;
     return ( wchar_t * )buffer.data();
 }
 
 char *Memory::read_wstr_as_str( ulong address ) {
+    throw_assert(false, "TODO correct");
     auto name_str = read_wstr( address );
     ulong p = 0;
     wchar_t next;
@@ -345,7 +354,7 @@ char *Memory::read_str( ulong address ) {
     auto buff_size = buffer.size();
     do {
         if (size >= buff_size){
-            buff_size += BUFFER_SIZE;
+            buff_size += BUFFER_START_SIZE;
             buffer.resize(buff_size);
         }
         if ( uc_mem_read( static_cast<uc_engine *>( internal_uc ), address + size, buffer.data() + size, 1 ) ) {

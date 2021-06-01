@@ -640,7 +640,7 @@ namespace Log {
 
         void print(const char* str, ConsoleColor color, const char* name) {
             uconsole.set_color( color );
-            printf("%s", str);
+            printf("%s\n", str);
         }
     };
     constexpr int LARGE_BUFFER_SIZE = 4096;

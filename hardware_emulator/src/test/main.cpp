@@ -17,6 +17,8 @@ TestCase test_cases[] = {
     TestCase( "Autopilot Native", test_autopilot_native ),
     TestCase( "Autopilot EMU Windows", test_autopilot_emu_windows ),
     TestCase( "Autopilot EMU Linux", test_autopilot_emu_linux ),
+    TestCase("EMA Autopilot EMU Windows", test_ema_autopilot_emu_windows),
+    TestCase("EMA Autopilot EMU Linux", test_ema_autopilot_emu_linux),
 };
 
 

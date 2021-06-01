@@ -41,5 +41,7 @@ namespace OS {
         virtual void set_param3_32(uint p) = 0;
         virtual void set_param1_double(double p) = 0;
         virtual void set_return_64(ulong r) = 0;
+
+        virtual bool uses_shadow_space() = 0;
     };
 }

@@ -73,8 +73,12 @@ struct Computer {
         
         
         MemoryRange io_slot;
+
+        bool uses_shadow_space = false;
+        ulong walk_table_pos = 0;
+        ulong walk_table_end = 0;
         
-        Computer() : internal( nullptr ), func_call_windows(registers), func_call_linux(registers) {}
+        Computer() : internal( nullptr ), func_call_windows(registers, memory), func_call_linux(registers) {}
         ~Computer() {
             drop();
         }
@@ -87,6 +91,10 @@ struct Computer {
         }
         
         void call( ulong address, const char *name );
+        // When making a callback to a virtual function inside a syscall hook
+        void call_inside(ulong address, ulong return_addr);
+        // Call in the AFTER syscall callback to cleanup the stack if needed
+        void call_inside_after();
         
         void set_os( OS::OS *os );
         

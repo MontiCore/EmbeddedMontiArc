@@ -482,7 +482,9 @@ enum class ElfDynType {
     DT_FINI_ARRAY = 26,	/* Array with addresses of fini fct */
     DT_INIT_ARRAYSZ	= 27,		/* Size in bytes of DT_INIT_ARRAY */
     DT_FINI_ARRAYSZ	= 28,		/* Size in bytes of DT_FINI_ARRAY */
-    DT_ENCODING = 32
+    //DT_ENCODING = 32 // Also 32 ??
+    DT_PREINIT_ARRAY = 32,		/* Array with addresses of preinit fct*/
+    DT_PREINIT_ARRAYSZ = 33		/* size in bytes of DT_PREINIT_ARRAY */
 };
 
 struct Elf32_Dyn {

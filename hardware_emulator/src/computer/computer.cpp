@@ -55,15 +55,44 @@ void Computer::drop() {
 void Computer::call( ulong address, const char *name ) {
     debug.debug_call( address, name );
     stopped = false;
+
+    if (uses_shadow_space) {
+        auto rsp = registers.get_rsp();
+        registers.set_rsp(rsp - 32);
+    }
+
     stack.push_long( exit_code_addr );
     internal->err = uc_emu_start( internal->uc, address, 0xFFFFFFFFFFFFFFFF, 0, 0 );
     if (internal->err)
         throw_error(std::string("Software emulation error: (call to uc_emu_start() ): \n\t")+ unicorn_error());
+    if (uses_shadow_space) {
+        auto rsp = registers.get_rsp();
+        registers.set_rsp(rsp + 32);
+    }
+}
+
+void Computer::call_inside(ulong address, ulong return_addr)
+{
+    if (uses_shadow_space) {
+        auto rsp = registers.get_rsp();
+        registers.set_rsp(rsp - 32);
+    }
+    stack.push_long(return_addr);
+    stack.push_long(address); // Just push the target address since 'sys_calls.handle_call()' always pops the next RIP address from the stack
+}
+
+void Computer::call_inside_after()
+{
+    if (uses_shadow_space) {
+        auto rsp = registers.get_rsp();
+        registers.set_rsp(rsp + 32);
+    }
 }
 
 void Computer::set_os( OS::OS *os ) {
     this->os = std::unique_ptr<OS::OS>( os );
     os->init( *this );
+    uses_shadow_space = os->uses_shadow_space();
 }
 
 ulong Computer::add_symbol_handle(const char* name)

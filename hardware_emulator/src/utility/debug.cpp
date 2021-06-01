@@ -96,7 +96,7 @@ void ComputerDebug::debug_mem( MemAccess type, ulong addr, uint size, slong val,
     memory->print_address_info(addr, addr_info, 256);
     if (type == MemAccess::WRITE) {
         Log::info.log("%-7s%s   %s                                             time: %llu.%lluns     %s",
-            tag, to_hex(addr).c_str(), to_hex(val).c_str(), time / 1000, time % 1000);
+            tag, to_hex(addr).c_str(), to_hex(val).c_str(), time / 1000, time % 1000, addr_info);
     }
     else {
         //Print memory content

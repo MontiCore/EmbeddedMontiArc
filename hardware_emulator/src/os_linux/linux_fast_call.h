@@ -14,6 +14,9 @@ namespace OS {
     
         For floating-point arguments, they are placed inside the XMM0, XMM1, XMM2, ... registers.
         The return value is in the XMM0 register.
+
+        For details see https://en.wikipedia.org/wiki/X86_calling_conventions
+        Under the "System V AMD64 ABI" section.
     */
     struct LinuxFastCall {
         Registers &registers;

@@ -50,6 +50,9 @@ struct SystemCalls {
     
 	std::vector<SysCall> sys_calls;
     uint sys_call_pos;
+
+    ulong after_pthread_once_function = 0;
+    ulong after_initterm = 0;
     
     SystemCalls() : section( nullptr ), computer( nullptr ), sys_call_pos(0) {}
     

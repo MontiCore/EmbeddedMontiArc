@@ -30,3 +30,5 @@ void test_syscall_elf();
 void test_autopilot_native();
 void test_autopilot_emu_windows();
 void test_autopilot_emu_linux();
+void test_ema_autopilot_emu_windows();
+void test_ema_autopilot_emu_linux();

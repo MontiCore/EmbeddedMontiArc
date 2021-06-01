@@ -4,6 +4,7 @@
 #pragma once
 
 #include "computer/registers.h"
+#include "computer/memory.h"
 
 namespace OS {
     /*
@@ -15,9 +16,13 @@ namespace OS {
     
         For floating-point arguments, they are placed inside the XMM0, XMM1, XMM2, ... registers.
         The return value is in the XMM0 register.
+
+        For details see https://en.wikipedia.org/wiki/X86_calling_conventions
+        Under the "Microsoft x64 calling convention" section.
     */
     struct WindowsFastCall {
         Registers &registers;
+        Memory& mem;
         
         //Caller
         inline void set_params_64(ulong p1) {
@@ -158,6 +163,15 @@ namespace OS {
             return (char)registers.get_rax();
         }
 
+        inline void* get_param_after_4_raw(int i) {
+            throw_assert(i >= 5, "get_param_after_4() with invalid index");
+            auto rsp = registers.get_rsp();
+            // Lookup the arguments that were pushed on the stack before the shadow space and the return address pushed by 'call'
+            //auto addr = rsp + 0x28 + ((ulong)(i-5) * 0x8);
+            // By luck the offset matches i without subtraction
+            auto addr = rsp + ((ulong)i * 0x8);
+            return mem.read_memory(addr, 8);
+        }
 
         //Callee
         inline ulong get_param1_64() {
@@ -172,6 +186,15 @@ namespace OS {
         inline ulong get_param4_64() {
             return registers.get_r9();
         }
+        /**
+            // only for i >= 5
+            i = 5 => get param 5
+            i = 6 => get param 6
+        */
+        inline ulong get_param_after_4_64(int i) {
+            return *((ulong*)get_param_after_4_raw(i));
+        }
+
         inline uint get_param1_32() {
             return (uint)registers.get_rcx();
         }
@@ -184,6 +207,15 @@ namespace OS {
         inline uint get_param4_32() {
             return (uint)registers.get_r9();
         }
+        /**
+            // only for i >= 5
+            i = 5 => get param 5
+            i = 6 => get param 6
+        */
+        inline uint get_param_after_4_32(int i) {
+            return *((uint*)get_param_after_4_raw(i));
+        }
+
         inline double get_param1_double() {
             return registers.get_xmm0();
         }
@@ -218,7 +250,7 @@ namespace OS {
             registers.set_xmm0(r);
         }
         
-        WindowsFastCall( Registers &registers ) : registers( registers ) {}
+        WindowsFastCall( Registers &registers, Memory &mem ) : registers( registers ), mem(mem) {}
     };
     
 }

@@ -41,5 +41,9 @@ namespace OS {
         void set_param3_32(uint p);
         void set_param1_double(double p);
         void set_return_64(ulong r);
+
+        bool uses_shadow_space() {
+            return false;
+        }
     };
 }
