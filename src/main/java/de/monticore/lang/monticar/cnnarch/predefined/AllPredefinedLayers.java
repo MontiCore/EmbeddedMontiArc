@@ -62,6 +62,7 @@ public class AllPredefinedLayers {
     public static final String CUSTOM_LAYER = "CustomLayer";
     public static final String CONVOLUTION3D_NAME = "Convolution3D";
     public static final String UP_CONVOLUTION3D_NAME = "UpConvolution3D";
+    public static final String RESHAPE3D_NAME = "Reshape3D";
 
 
     //replay layers
@@ -205,8 +206,8 @@ public class AllPredefinedLayers {
                 LargeMemory.create(),
                 EpisodicMemory.create(),
                 Convolution3D.create(),
-                UpConvolution3D.create());
-
+                UpConvolution3D.create(),
+                Reshape3D.create());
     }
 
     public static List<UnrollDeclarationSymbol> createUnrollList(){
