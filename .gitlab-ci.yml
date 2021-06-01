@@ -39,7 +39,7 @@ stages:
 
 linux_build:
   stage: build
-  image: rikorose/gcc-cmake:10
+  image: gcc:11
   before_script:
   # - apt update
   # - apt --assume-yes install make
@@ -60,7 +60,7 @@ linux_build:
 
 linux_test:
   stage: test
-  image: rikorose/gcc-cmake:10
+  image: gcc:11
   script:
     - mv hardware_emulator/build/hardware-emulator-test hardware_emulator/bin/hardware-emulator-test
     - cd hardware_emulator/bin
