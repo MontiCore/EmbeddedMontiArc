@@ -48,7 +48,7 @@
 
 from convert_codebert_transformers_mxnet1_7_0 import convert_huggingface_model
 from gluonnlp.model.transformer import TransformerDecoder
-from mxnet.gluon.block import Block
+from mxnet.gluon.block import HybridBlock
 from mxnet import gluon
 import mxnet.gluon.nn as nn
 import mxnet as mx
@@ -56,7 +56,7 @@ import gluonnlp as nlp
 import argparse
 import h5py
 
-class Seq2Seq(Block):
+class Seq2Seq(HybridBlock):
     def __init__(
             self, encoder, decoder, 
             hidden_size=None, beam_size=None, 
@@ -81,6 +81,21 @@ class Seq2Seq(Block):
         for mask, len in zip(target_mask, valid_length):
             mask[0:len] = 1
         return target_mask
+
+    def extract_word_embed_subnet(self, bertenc_prefix, roberta_prefix):
+        # we need access to the word embedding part of the RoBERTaModel, 
+        # which cant be directly accessed with mxnets symbol api
+        # so we have to costruct a new subnet from the symbols
+        # in the pretrained network we pass as the encoder part of the seq2seq model
+        encoder = self.encoder
+        # symbolFile = symbolFile = './codebert_gluon/codebert-symbol.json'
+        # sym = mx.sym.load(symbolFile)
+        # data0 = mx.sym.var('data0')
+        # output = sym.get_internals()['bertencoder0_layernorm0_layernorm0_output'] # end of the word embedding part of the model
+        # block = mx.gluon.SymbolBlock(inputs=data0, outputs=output)
+        # block.load_parameters('codebert_gluon/codebert-0000.params', ctx=mx.cpu(), allow_extra=True) # load weights into symbolblock
+        # TODO finish this, make word_embed subnet for getting the word embeddings of the target sequence in forward
+
 
     def forward(self, input_ids=None, input_valid_length=None, target_ids=None, target_valid_length=None):   
         input_token_types = mx.nd.zeros_like(input_ids)
