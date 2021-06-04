@@ -70,7 +70,8 @@ class Seq2Seq(HybridBlock):
             self.bias = mx.ndarray.linalg.extracttrian(mx.nd.ones((2048,2048)))
             self.dense = nn.Dense(hidden_size, activation='tanh')
             # tie the lm_head and word_embed params together not sure if this is the correct way to do it
-            self.lm_head = nn.Dense(hidden_size, use_bias=False, params=encoder.word_embed.params)
+            # TODO maybe embedding params object is in dictionary and this is referencing all the params of the embedding layers?
+            self.lm_head = nn.Dense(hidden_size, use_bias=False, params=embedding.params)
             #self.lsm = mx.npx.log_softmax(axis=-1) # axis = -1 the same as dim = -1? used for prediction part TODO
             self.beam_size=beam_size
             self.max_length=max_length
@@ -83,15 +84,10 @@ class Seq2Seq(HybridBlock):
             mask[0:len] = 1
         return target_mask
 
-
     def forward(self, input_ids=None, input_valid_length=None, target_ids=None, target_valid_length=None):   
         input_token_types = mx.nd.zeros_like(input_ids)
-        print(input_valid_length)
-        print(input_ids)
-        print(input_token_types)
         encoder_output = self.encoder(input_ids, input_token_types, input_valid_length) # we don't permute like in the code2nl model, that okay? TODO
         #encoder_output = outputs[0].permute([1,0,2]).contiguous() not sure how to do
-        print(target_valid_length)
         if target_ids is not None:  
             #attn_mask=-1e4 *(1-self.bias[:target_ids.shape[1],:target_ids.shape[1]]) no option to pass this in gluonnlp TODO
             # could try subclassing the Decoder and change the hybrid_forward function.
@@ -225,10 +221,10 @@ def get_word_embed_subnet(symbol_file, weight_file, ctx):
     # so we have to costruct a new subnet from the symbols
     # in the pretrained network we pass as the encoder part of the seq2seq model
     sym = mx.sym.load(symbol_file)
-    inputs = mx.sym.var('data0')
+    inputs = [mx.sym.var('data0'), mx.sym.var('data1'), mx.sym.var('data2')]
     outputs = sym.get_internals()['bertencoder0_layernorm0_layernorm0_output'] # end of the word embedding part of the model
     block = mx.gluon.SymbolBlock(inputs=inputs, outputs=outputs)
-    block.load_parameters(weight_file, ctx=ctx, allow_extra=True) # load weights into symbolblock
+    block.load_parameters(weight_file, ctx=ctx, ignore_extra=True) # load weights into symbolblock
     return block
 
 def train_model(args):
@@ -237,6 +233,8 @@ def train_model(args):
     decoder = get_decoder()
     embedding = get_word_embed_subnet(args.symbol_file, args.weight_file, ctx)
     seq2seq = get_seq2seq(encoder, decoder, embedding)
+    seq2seq.collect_params().initialize(force_reinit=False, ctx=ctx)
+    seq2seq.hybridize()
     train_data = get_data_iterator(
         ['source_ids', 'source_masks'], ['target_ids', 'target_masks'],
         True, args.batch_size, args.train_data)
