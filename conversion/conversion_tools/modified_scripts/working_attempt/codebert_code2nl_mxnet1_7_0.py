@@ -58,7 +58,7 @@ import h5py
 
 class Seq2Seq(HybridBlock):
     def __init__(
-            self, encoder, decoder, 
+            self, encoder, decoder, embedding,
             hidden_size=None, beam_size=None, 
             max_length=None, sos_id=None, 
             eos_id=None, prefix=None, params=None
@@ -66,6 +66,7 @@ class Seq2Seq(HybridBlock):
             super().__init__(prefix=prefix, params=params)
             self.encoder = encoder
             self.decoder = decoder
+            self.embedding = embedding
             self.bias = mx.ndarray.linalg.extracttrian(mx.nd.ones((2048,2048)))
             self.dense = nn.Dense(hidden_size, activation='tanh')
             # tie the lm_head and word_embed params together not sure if this is the correct way to do it
@@ -82,20 +83,6 @@ class Seq2Seq(HybridBlock):
             mask[0:len] = 1
         return target_mask
 
-    def extract_word_embed_subnet(self, bertenc_prefix, roberta_prefix):
-        # we need access to the word embedding part of the RoBERTaModel, 
-        # which cant be directly accessed with mxnets symbol api
-        # so we have to costruct a new subnet from the symbols
-        # in the pretrained network we pass as the encoder part of the seq2seq model
-        encoder = self.encoder
-        # symbolFile = symbolFile = './codebert_gluon/codebert-symbol.json'
-        # sym = mx.sym.load(symbolFile)
-        # data0 = mx.sym.var('data0')
-        # output = sym.get_internals()['bertencoder0_layernorm0_layernorm0_output'] # end of the word embedding part of the model
-        # block = mx.gluon.SymbolBlock(inputs=data0, outputs=output)
-        # block.load_parameters('codebert_gluon/codebert-0000.params', ctx=mx.cpu(), allow_extra=True) # load weights into symbolblock
-        # TODO finish this, make word_embed subnet for getting the word embeddings of the target sequence in forward
-
 
     def forward(self, input_ids=None, input_valid_length=None, target_ids=None, target_valid_length=None):   
         input_token_types = mx.nd.zeros_like(input_ids)
@@ -108,7 +95,7 @@ class Seq2Seq(HybridBlock):
         if target_ids is not None:  
             #attn_mask=-1e4 *(1-self.bias[:target_ids.shape[1],:target_ids.shape[1]]) no option to pass this in gluonnlp TODO
             # could try subclassing the Decoder and change the hybrid_forward function.
-            tgt_embeddings = self.encoder.word_embed(target_ids)
+            tgt_embeddings = self.embedding(target_ids)
             states = self.decoder.init_state_from_encoder(encoder_output, input_valid_length)
             out = self.decoder(tgt_embeddings, states, valid_length=target_valid_length)
             hidden_states = self.dense(out)
@@ -191,10 +178,11 @@ def get_decoder():
     )
     return decoder
 
-def get_seq2seq(encoder, decoder):
+def get_seq2seq(encoder, decoder, embedding):
     seq2seq_hparams = {
         'encoder': encoder,
         'decoder': decoder,
+        'embedding': embedding,
         'hidden_size': 768,
         'beam_size': 10,
         'max_target_length': 128,
@@ -205,6 +193,7 @@ def get_seq2seq(encoder, decoder):
         # params taken from cmd line args in codebert repo and roberta config
         seq2seq_hparams['encoder'], 
         seq2seq_hparams['decoder'],
+        seq2seq_hparams['embedding'],
         hidden_size=seq2seq_hparams['hidden_size'], 
         beam_size=seq2seq_hparams['beam_size'], 
         max_length=seq2seq_hparams['max_target_length'], 
@@ -230,11 +219,24 @@ def load_codebert_encoder_block(symbolFile, weightFile, context):
     inputNames = ['data0', 'data1', 'data2']
     return gluon.nn.SymbolBlock.imports(symbolFile, inputNames, weightFile, ctx=context)
 
+def get_word_embed_subnet(symbol_file, weight_file, ctx):
+    # we need access to the word embedding part of the RoBERTaModel, 
+    # which cant be directly accessed with mxnets symbol api (through the encoder SymbolBlock)
+    # so we have to costruct a new subnet from the symbols
+    # in the pretrained network we pass as the encoder part of the seq2seq model
+    sym = mx.sym.load(symbol_file)
+    inputs = mx.sym.var('data0')
+    outputs = sym.get_internals()['bertencoder0_layernorm0_layernorm0_output'] # end of the word embedding part of the model
+    block = mx.gluon.SymbolBlock(inputs=inputs, outputs=outputs)
+    block.load_parameters(weight_file, ctx=ctx, allow_extra=True) # load weights into symbolblock
+    return block
+
 def train_model(args):
     ctx = [mx.cpu()]
     encoder = load_codebert_encoder_block(args.symbol_file, args.weight_file, ctx)
     decoder = get_decoder()
-    seq2seq = get_seq2seq(encoder, decoder)
+    embedding = get_word_embed_subnet(args.symbol_file, args.weight_file, ctx)
+    seq2seq = get_seq2seq(encoder, decoder, embedding)
     train_data = get_data_iterator(
         ['source_ids', 'source_masks'], ['target_ids', 'target_masks'],
         True, args.batch_size, args.train_data)
