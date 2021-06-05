@@ -23,7 +23,7 @@ public class Convolution3D extends PredefinedLayerDeclaration {
     @Override
     public List<ArchTypeSymbol> computeOutputTypes(List<ArchTypeSymbol> inputTypes, LayerSymbol layer, VariableSymbol.Member member) {
         //     TODO check here
-        return computeConvAndPoolOutputShape(layer.getInputTypes().get(0),
+        return computeConvAndPoolOutputShape3D(layer.getInputTypes().get(0),
                 layer,
                 layer.getIntValue(AllPredefinedLayers.CHANNELS_NAME).get());
     }
@@ -31,7 +31,7 @@ public class Convolution3D extends PredefinedLayerDeclaration {
     @Override
     public void checkInput(List<ArchTypeSymbol> inputTypes, LayerSymbol layer, VariableSymbol.Member member) {
         errorIfInputSizeIsNotOne(inputTypes, layer);
-        errorIfInputSmallerThanKernel(inputTypes, layer);
+        errorIfInputSmallerThanKernel3D(inputTypes, layer);
     }
 
     public static Convolution3D create(){
