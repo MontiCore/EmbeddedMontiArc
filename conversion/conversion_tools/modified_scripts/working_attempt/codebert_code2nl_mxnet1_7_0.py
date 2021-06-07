@@ -59,7 +59,7 @@ import h5py
 class Seq2Seq(HybridBlock):
     def __init__(
             self, encoder, decoder, embedding,
-            hidden_size=None, beam_size=None, 
+            vocab_size=None, hidden_size=None, beam_size=None, 
             max_length=None, sos_id=None, 
             eos_id=None, prefix=None, params=None
         ):
@@ -68,16 +68,24 @@ class Seq2Seq(HybridBlock):
             self.decoder = decoder
             self.embedding = embedding
             self.bias = mx.ndarray.linalg.extracttrian(mx.nd.ones((2048,2048)))
-            self.dense = nn.Dense(hidden_size, activation='tanh')
+            self.dense = nn.Dense(hidden_size, in_units=hidden_size, activation='tanh')
             # tie the lm_head and word_embed params together not sure if this is the correct way to do it
             # TODO maybe embedding params object is in dictionary and this is referencing all the params of the embedding layers?
-            self.lm_head = nn.Dense(hidden_size, use_bias=False, params=embedding.params)
+            self.lm_head = self.get_lm_head(vocab_size, hidden_size)
             #self.lsm = mx.npx.log_softmax(axis=-1) # axis = -1 the same as dim = -1? used for prediction part TODO
             self.beam_size=beam_size
             self.max_length=max_length
             self.sos_id=sos_id
             self.eos_id=eos_id
     
+    def get_lm_head(self, vocab_size, hidden_size):
+        # using params=.. in the Dense constructor doesnt seem to work, so we have to set the weights manually?
+        # TODO after setting the weight should we use params= in the lm_head constructor to make them update automatically?
+        lm_head = nn.Dense(vocab_size, in_units=hidden_size, use_bias=False)
+        lm_head.collect_params()['weight'].set_data(
+            self.encoder.collect_params()['robertamodelwpooler0_word_embed_embedding0_weight'].data())
+        return lm_head
+
     def create_target_mask(self, target_ids, valid_length):
         target_mask = mx.nd.zeros_like(target_ids)
         for mask, len in zip(target_mask, valid_length):
@@ -180,6 +188,7 @@ def get_seq2seq(encoder, decoder, embedding):
         'decoder': decoder,
         'embedding': embedding,
         'hidden_size': 768,
+        'vocab_size': 50265, # TODO correct vocab size? or should it be -2/+2?
         'beam_size': 10,
         'max_target_length': 128,
         'sos_id': 0,
@@ -190,7 +199,8 @@ def get_seq2seq(encoder, decoder, embedding):
         seq2seq_hparams['encoder'], 
         seq2seq_hparams['decoder'],
         seq2seq_hparams['embedding'],
-        hidden_size=seq2seq_hparams['hidden_size'], 
+        hidden_size=seq2seq_hparams['hidden_size'],
+        vocab_size=seq2seq_hparams['vocab_size'],
         beam_size=seq2seq_hparams['beam_size'], 
         max_length=seq2seq_hparams['max_target_length'], 
         sos_id=seq2seq_hparams['sos_id'],
@@ -218,14 +228,24 @@ def load_codebert_encoder_block(symbolFile, weightFile, context):
 def get_word_embed_subnet(symbol_file, weight_file, ctx):
     # we need access to the word embedding part of the RoBERTaModel, 
     # which cant be directly accessed with mxnets symbol api (through the encoder SymbolBlock)
-    # so we have to costruct a new subnet from the symbols
+    # so we have to costruct a new subnet from the symbols up to the layer norm
     # in the pretrained network we pass as the encoder part of the seq2seq model
     sym = mx.sym.load(symbol_file)
     inputs = [mx.sym.var('data0'), mx.sym.var('data1'), mx.sym.var('data2')]
     outputs = sym.get_internals()['bertencoder0_layernorm0_layernorm0_output'] # end of the word embedding part of the model
     block = mx.gluon.SymbolBlock(inputs=inputs, outputs=outputs)
     block.load_parameters(weight_file, ctx=ctx, ignore_extra=True) # load weights into symbolblock
+    # TODO do we need to permute the outputs to (1, 0, 2)?
     return block
+
+def get_word_embed_weights(symbol_file, weight_file, ctx):
+    # the lm_head layer needs to have the same embedding 'weights' as the embedding layer 
+    sym = mx.sym.load(symbol_file)
+    inputs = mx.sym.var('data0') #dummy input to return the weight array
+    outputs = sym.get_internals()['robertamodelwpooler0_word_embed_embedding0_weight'] # end of the word embedding part of the model
+    block = mx.gluon.SymbolBlock(inputs=inputs, outputs=outputs)
+    block.load_parameters(weight_file, ctx=ctx, ignore_extra=True) # load weights into symbolblock
+    return block(mx.nd.array([])) #dummy input to return the weight array TODO is there a cleaner way to do this?
 
 def train_model(args):
     ctx = [mx.cpu()]
