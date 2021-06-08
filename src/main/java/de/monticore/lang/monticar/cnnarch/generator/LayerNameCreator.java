@@ -46,11 +46,15 @@ public class LayerNameCreator {
                 } else {
                     return stage;
                 }
-            }else if (architectureElement.isArtificial()) {
-                return add(architectureElement,stage,streamIndices);
             }else{
                 ArchitectureElementSymbol resolvedElement = (ArchitectureElementSymbol) architectureElement.getResolvedThis().get();
-                return name(resolvedElement, stage, streamIndices);
+                int final_stage = name(resolvedElement, stage, streamIndices);
+
+                if (architectureElement.isArtificial()){
+                    // if the element is artificial the name needs to be added
+                    final_stage = add(architectureElement,final_stage,streamIndices);
+                }
+                return final_stage;
             }
         }
     }
