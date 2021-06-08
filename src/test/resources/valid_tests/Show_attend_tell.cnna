@@ -1,3 +1,4 @@
+/* (c) https://github.com/MontiCore/monticore */
 architecture Show_attend_tell{
     def input Z(0:255)^{3,224,224} images
     def output Z(0:37758)^{1} target[25]

@@ -1,3 +1,4 @@
+/* (c) https://github.com/MontiCore/monticore */
 architecture RNNtest(max_length=50, vocabulary_size=30000, hidden_size=1000){
     def input Q(0:1)^{vocabulary_size} source
     def output Q(0:1)^{vocabulary_size} target[5]

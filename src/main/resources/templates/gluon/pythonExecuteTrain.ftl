@@ -1,3 +1,4 @@
+<#-- (c) https://github.com/MontiCore/monticore -->
                     labels = [gluon.utils.split_and_load(batch.label[i], ctx_list=mx_context, even_split=False) for i in range(${tc.architectureOutputs?size?c})]
 
 <#list tc.architectureInputs as input_name>
