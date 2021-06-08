@@ -17,7 +17,7 @@
 
     <!-- .. SE-Libraries .................................................. -->
 
-      <CNNArch.version>0.4.6-SNAPSHOT</CNNArch.version>
+      <CNNArch.version>0.4.7-SNAPSHOT</CNNArch.version>
       <CNNTrain.version>0.4.5-SNAPSHOT</CNNTrain.version>
       <embedded-montiarc-math-generator>0.4.8</embedded-montiarc-math-generator>
     
