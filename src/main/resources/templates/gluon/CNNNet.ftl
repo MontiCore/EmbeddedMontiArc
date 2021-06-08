@@ -5,11 +5,12 @@ import math
 import os
 import abc
 import warnings
+import sys
 from mxnet import gluon, nd
-<#list tc.architecture.networkInstructions as networkInstruction>
-${tc.include(networkInstruction.body, "ARTIFICICIAL_ARCH_CLASS")}
-</#list>
-
+<#if tc.architecture.customPyFilesPath??>
+sys.path.insert(1, '${tc.architecture.customPyFilesPath}')
+from custom_layers import *
+</#if>
 
 class ZScoreNormalization(gluon.HybridBlock):
     def __init__(self, data_mean, data_std, **kwargs):
@@ -521,6 +522,10 @@ class EpisodicMemory(EpisodicReplayMemoryInterface):
             elif key.startswith("labels_"):
                 self.label_memory.append(mem_dict[key])
 
+# Generation of the artificial blocks for the Streams below
+<#list tc.architecture.networkInstructions as networkInstruction>
+    ${tc.include(networkInstruction.body, "ARTIFICICIAL_ARCH_CLASS")}
+</#list>
 
 <#list tc.architecture.networkInstructions as networkInstruction>
 #Stream ${networkInstruction?index}
@@ -581,6 +586,7 @@ class Net_${networkInstruction?index}(gluon.HybridBlock):
 ${tc.include(networkInstruction.body, "ARCHITECTURE_DEFINITION")}
 </#if>    
             pass
+
 
     def hybrid_forward(self, F, ${tc.join(tc.getStreamInputNames(networkInstruction.body, false), ", ")}):
 <#if networkInstruction.body.episodicSubNetworks?has_content>
