@@ -1,3 +1,4 @@
+<#-- (c) https://github.com/MontiCore/monticore -->
 <#list tc.architecture.networkInstructions as networkInstruction>
 <#if networkInstruction.body.episodicSubNetworks?has_content>
 <#if !visitedEpisodicExecuteTrain??>

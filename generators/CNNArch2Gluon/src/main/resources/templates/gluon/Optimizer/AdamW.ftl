@@ -1,3 +1,4 @@
+<#-- (c) https://github.com/MontiCore/monticore -->
 import os
 import numpy as np
 import mxnet as mx
