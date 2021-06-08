@@ -9,7 +9,7 @@
 
   <groupId>de.monticore.lang.monticar</groupId>
   <artifactId>cnnarch-generator</artifactId>
-  <version>0.4.7-SNAPSHOT</version>
+  <version>0.4.8-SNAPSHOT</version>
 
   <!-- == PROJECT DEPENDENCIES ============================================= -->
 
@@ -17,7 +17,7 @@
 
     <!-- .. SE-Libraries .................................................. -->
 
-      <CNNArch.version>0.4.6-SNAPSHOT</CNNArch.version>
+      <CNNArch.version>0.4.7-SNAPSHOT</CNNArch.version>
       <CNNTrain.version>0.4.5-SNAPSHOT</CNNTrain.version>
       <embedded-montiarc-math-generator>0.4.7</embedded-montiarc-math-generator>
     
