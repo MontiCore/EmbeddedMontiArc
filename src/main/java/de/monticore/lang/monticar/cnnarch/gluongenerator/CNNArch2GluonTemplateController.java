@@ -16,7 +16,7 @@ import java.util.regex.Pattern;
 
 public class CNNArch2GluonTemplateController extends CNNArchTemplateController {
     public static final String NET_DEFINITION_MODE_KEY = "mode";
-
+    public List<String> worked_list = new ArrayList<String>();
     public CNNArch2GluonTemplateController(ArchitectureSymbol architecture,
                                            TemplateConfiguration templateConfiguration) {
         super(architecture, templateConfiguration);
@@ -70,7 +70,10 @@ public class CNNArch2GluonTemplateController extends CNNArchTemplateController {
         }else if(layer.isArtificial()){
             if(netDefinitionMode.equals(NetDefinitionMode.ARTIFICIAL_ARCH_CLASS)){
                 layer.setArtificial(false);
-                include(TEMPLATE_ELEMENTS_DIR_PATH,"ArtificialArchClass",writer,netDefinitionMode);
+                if (!this.worked_list.contains(layer.getName())) {
+                    include(TEMPLATE_ELEMENTS_DIR_PATH, "ArtificialArchClass", writer, netDefinitionMode);
+                    this.worked_list.add(layer.getName());
+                }
                 layer.setArtificial(true);
             }else {
                 include(TEMPLATE_ELEMENTS_DIR_PATH, "ArtificialArch", writer, netDefinitionMode);
