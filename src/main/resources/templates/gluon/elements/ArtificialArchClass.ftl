@@ -3,9 +3,9 @@
 <#assign name = element.element.name>
 <#assign args = element.element.arguments>
 
-class artificial_layer_${name}(gluon.HyrbidBlock):
-    def __init__(self, <#list args as arg>${arg}, </#list>, **kwargs):
-        super(artificial_layer_${name}, self).__init__(**kwargs)
+class architecture_defined_block_${name}(gluon.HyrbidBlock):
+    def __init__(self, **kwargs):
+        super(architecture_defined_block_${name}, self).__init__(**kwargs)
         with self.name_scope():
 ${tc.include(element.element,"ARCHITECTURE_DEFINITION")}
             pass
