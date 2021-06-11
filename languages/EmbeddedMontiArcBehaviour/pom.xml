@@ -28,7 +28,7 @@
     <!-- .. Libraries .................................................. -->
     <guava.version>25.1-jre</guava.version>
     <junit.version>4.13.1</junit.version>
-    <logback.version>1.1.2</logback.version>
+    <logback.version>1.2.0</logback.version>
 
     <!-- .. Plugins ....................................................... -->
     <monticore.plugin>5.0.1</monticore.plugin>
