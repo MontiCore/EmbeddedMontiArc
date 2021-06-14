@@ -34,11 +34,11 @@ class BERTEncoder(HybridBlock, Seq2SeqEncoder):
         self._layer_norm_eps = layer_norm_eps
 
         with self.name_scope():
-            if dropout:
-                self.dropout_layer = nn.Dropout(rate=dropout)
-            self.layer_norm = nn.LayerNorm(in_channels=units, epsilon=self._layer_norm_eps)
-            self.position_weight = self.params.get('position_weight', shape=(max_length, units),
-                                                   init=weight_initializer)
+            # if dropout:
+            #     self.dropout_layer = nn.Dropout(rate=dropout)
+            # self.layer_norm = nn.LayerNorm(in_channels=units, epsilon=self._layer_norm_eps)
+            # self.position_weight = self.params.get('position_weight', shape=(max_length, units),
+            #                                        init=weight_initializer)
             self.transformer_cells = nn.HybridSequential()
             for i in range(num_layers):
                 cell = BERTEncoderCell(
@@ -73,13 +73,13 @@ class BERTEncoder(HybridBlock, Seq2SeqEncoder):
         else:
             states.append(steps)
 
-        # positional encoding
-        positional_embed = F.Embedding(steps, position_weight, self._max_length, self._units)
-        inputs = F.broadcast_add(inputs, F.expand_dims(positional_embed, axis=1))
+        # # positional encoding
+        # positional_embed = F.Embedding(steps, position_weight, self._max_length, self._units)
+        # inputs = F.broadcast_add(inputs, F.expand_dims(positional_embed, axis=1))
 
-        if self._dropout:
-            inputs = self.dropout_layer(inputs)
-        inputs = self.layer_norm(inputs)
+        # if self._dropout:
+        #     inputs = self.dropout_layer(inputs)
+        # inputs = self.layer_norm(inputs)
         outputs = inputs
 
         all_encodings_outputs = []
