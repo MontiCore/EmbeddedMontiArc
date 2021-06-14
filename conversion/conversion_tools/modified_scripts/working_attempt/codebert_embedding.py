@@ -177,7 +177,6 @@ class BERTEmbedding(HybridBlock):
             token_type_vocab_size=None, 
             embed_size=None
         ):
-
             self._max_length = max_length
             self._units = units
 

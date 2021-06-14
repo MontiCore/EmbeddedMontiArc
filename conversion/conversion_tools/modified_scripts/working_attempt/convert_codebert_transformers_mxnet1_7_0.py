@@ -60,7 +60,7 @@ from numpy.testing import assert_allclose
 
 import torch
 import transformers
-from gluonnlp.model import BERTEncoder, BERTModel
+from codebert_embedding.py import BERTEmbedding, BERTEncoder, BERTModel
 
 class RoBERTaModelWPoolerTest(BERTModel):
 # analogous to gluonnlp 0.10.0 nlp.model.RobertaModel but it allows use_pooler and use_token_type_embed
@@ -206,10 +206,24 @@ def get_gluon_model_arch(hf_cfg, ctx, test):
             prefix=hyper_params['prefix'],
             params=hyper_params['params']
         )
-
-    gluon_model.initialize(ctx=ctx) # unsure if it should be init with normal
+    
+    gluon_embedding = BERTEmbedding(
+        units=enc_hyper_params['units'],  
+        max_length=enc_hyper_params['max_length'],
+        dropout=enc_hyper_params['dropout'],
+        initializer=enc_hyper_params['initializer'],
+        layer_norm_eps=enc_hyper_params['layer_norm_eps'],
+        vocab_size=hyper_params['vocab_size'], 
+        token_type_vocab_size=hyper_params['token_type_vocab_size'], 
+        embed_size=hyper_params['embed_size']
+    )
+    
+    gluon_model.initialize(ctx=ctx)
+    gluon_embedding.initialize() # unsure if it should be init with normal
     gluon_model.hybridize()
-    return gluon_model
+    gluon_embedding.hybridize()
+    
+    return gluon_model, gluon_embedding
 
 def convert_params(hf_model, hf_tokenizer, hf_cfg, test):
     print('Converting Parameters...')
@@ -220,8 +234,9 @@ def convert_params(hf_model, hf_tokenizer, hf_cfg, test):
     # https://github.com/dmlc/gluon-nlp/blob/14559518a75081469bfba14150ded2dc97c13902/src/gluonnlp/model/bert.py#L1459
     #
     ctx = mx.cpu()
-    gluon_model = get_gluon_model_arch(hf_cfg, ctx, test)
-    gluon_params = gluon_model.collect_params()
+    gluon_model, gluon_embedding = get_gluon_model_arch(hf_cfg, ctx, test)
+    gluon_model_params = gluon_model.collect_params()
+    gluon_embedding_params = gluon_embedding.collect_params()
     hf_params = hf_model.state_dict()
 
     num_layers = hf_cfg.num_hidden_layers
@@ -256,7 +271,7 @@ def convert_params(hf_model, hf_tokenizer, hf_cfg, test):
             gluon_params[gl_name].set_data(arr_to_gl(hf_params[hf_name]))
 
 
-
+    # TODO change weights here to use new BERTembedding
     for hf_name, gl_name in [
         ('embeddings.word_embeddings.weight', 'robertamodelwpooler0_word_embed_embedding0_weight'),
         ('embeddings.token_type_embeddings.weight', 'robertamodelwpooler0_token_type_embed_embedding0_weight'),
