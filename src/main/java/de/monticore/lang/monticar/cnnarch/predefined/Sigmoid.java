@@ -25,13 +25,27 @@ public class Sigmoid extends PredefinedLayerDeclaration {
 
     @Override
     public List<ArchTypeSymbol> computeOutputTypes(List<ArchTypeSymbol> inputTypes, LayerSymbol layer, VariableSymbol.Member member) {
-        return Collections.singletonList(
-                new ArchTypeSymbol.Builder()
-                        .channels(layer.getInputTypes().get(0).getChannels())
-                        .height(layer.getInputTypes().get(0).getHeight())
-                        .width(layer.getInputTypes().get(0).getWidth())
-                        .elementType("0", "1")
-                        .build());
+        Integer test = new Integer(inputTypes.get(0).getDepthIndex());
+        System.out.println("Depth Index in Sigmoid is: " + test.toString());
+        if (inputTypes.get(0).getDepthIndex() == -1) {
+            return Collections.singletonList(
+                    new ArchTypeSymbol.Builder()
+                            .channels(layer.getInputTypes().get(0).getChannels())
+                            .height(layer.getInputTypes().get(0).getHeight())
+                            .width(layer.getInputTypes().get(0).getWidth())
+                            .elementType("0", "oo")
+                            .build());
+        }
+        else {
+            return Collections.singletonList(
+                    new ArchTypeSymbol.Builder()
+                            .channels(layer.getInputTypes().get(0).getChannels())
+                            .height(layer.getInputTypes().get(0).getHeight())
+                            .width(layer.getInputTypes().get(0).getWidth())
+                            .depth(layer.getInputTypes().get(0).getDepth())
+                            .elementType("0", "oo")
+                            .build());
+        }
     }
 
     @Override

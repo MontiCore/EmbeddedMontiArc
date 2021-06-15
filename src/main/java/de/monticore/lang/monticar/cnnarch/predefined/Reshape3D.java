@@ -52,11 +52,14 @@ public class Reshape3D extends PredefinedLayerDeclaration {
         }
 
         int totalSize = layer.getInputTypes().get(0).getChannels() * layer.getInputTypes().get(0).getHeight() * layer.getInputTypes().get(0).getWidth() * layer.getInputTypes().get(0).getDepth();
-        int newTotalSize = shape.stream().reduce(1, (x, y, z) -> x * y * z);
+        int newTotalSize = shape.stream().reduce(1, (x, y) -> x * y);
 
         if (totalSize != newTotalSize && newTotalSize != 0) {
+            Integer nts = new Integer(newTotalSize);
+            Integer ts = new Integer(totalSize);
             Log.error("0" + ErrorCodes.INVALID_ELEMENT_INPUT_SHAPE + "The input of Reshape layer cannot be reshaped to the given shape. "
-                    + "Source and target shape have a different amount of total values", layer.getSourcePosition());
+                    + "Source and target shape have a different amount of total values "
+                    + " newTotalSize = " + nts.toString() + " and totalSize = " + ts.toString(), layer.getSourcePosition());
         }
 
         if (newTotalSize != 0) {

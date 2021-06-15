@@ -30,7 +30,7 @@ public class Reshape extends PredefinedLayerDeclaration {
         int channels = -1;
         int height = -1;
         int width = -1;
-
+        int depth = -1;
 
         if (shape.size() >= 3) {
             width = shape.get(2);

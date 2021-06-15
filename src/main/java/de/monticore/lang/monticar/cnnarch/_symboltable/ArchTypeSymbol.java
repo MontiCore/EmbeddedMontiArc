@@ -94,8 +94,8 @@ public class ArchTypeSymbol extends CommonSymbol {
         return depthIndex;
     }
     
-    public void setDepthIndex(int depthIndex){
-        this.depthIndex = depthIndex;
+    public void setDepthIndex(int depthIndexi){
+        this.depthIndex = depthIndexi;
     }
 //END NEW
     public ArchSimpleExpressionSymbol getHeightSymbol() {
@@ -122,6 +122,7 @@ public class ArchTypeSymbol extends CommonSymbol {
 //NEW
     public ArchSimpleExpressionSymbol getDepthSymbol() {
         if (getDepthIndex() == -1){
+            java.lang.System.out.println("Depth Index is -1");
             return ArchSimpleExpressionSymbol.of(1);
         }
         return getDimensionSymbols().get(getDepthIndex());
@@ -161,7 +162,7 @@ public class ArchTypeSymbol extends CommonSymbol {
     }
 
     public List<Integer> getDimensions(){
-        List<Integer> dimensionList = new ArrayList<>(4);
+        List<Integer> dimensionList = new ArrayList<>();
         for (ArchSimpleExpressionSymbol exp : getDimensionSymbols()){
             dimensionList.add(exp.getIntValue().get());
         }
@@ -241,6 +242,7 @@ public class ArchTypeSymbol extends CommonSymbol {
         copy.setWidthIndex(getWidthIndex());
         copy.setChannelIndex(getChannelIndex());
         copy.setHeightIndex(getHeightIndex());
+        copy.setDepthIndex(getDepthIndex());
         List<ArchSimpleExpressionSymbol> dimensionCopies = new ArrayList<>();
         for (ArchSimpleExpressionSymbol dimension : getDimensionSymbols()){
             dimensionCopies.add(dimension.preResolveDeepCopy());
@@ -250,11 +252,17 @@ public class ArchTypeSymbol extends CommonSymbol {
         return copy;
     }
 
+    public void printDimensions(){
+        for (ArchSimpleExpressionSymbol dimension : getDimensionSymbols()){
+            System.out.println("From Dimension list: " + dimension.getTextualRepresentation());
+        }
+    }
+
     public static class Builder{
         private int height = 1;
         private int width = 1;
         private int channels = 1;
-        private int depth = 0;
+        private int depth = 1;
         private ASTElementType domain = null;
 
         public Builder height(int height){
@@ -301,8 +309,21 @@ public class ArchTypeSymbol extends CommonSymbol {
             sym.setChannelIndex(0);
             sym.setHeightIndex(1);
             sym.setWidthIndex(2);
-            sym.setDepthIndex(3);
-            sym.setDimensions(Arrays.asList(channels, height, width, depth));
+
+            Integer test = new Integer(this.depth);
+            Integer test2 = new Integer(sym.getDepth());
+            System.out.println("Depth in builder is: " + test.toString() + " and depth is: " + test2.toString());
+            if (this.depth != 1){
+                sym.setHeightIndex(2);
+                sym.setWidthIndex(3);
+                sym.setDepthIndex(1);
+                sym.setDimensions(Arrays.asList(channels, depth, height, width)); //Dimensions are in this order for mxnet
+                sym.printDimensions();
+            }
+
+            else {
+                sym.setDimensions(Arrays.asList(channels, height, width));
+            }
 
             if (domain == null){
                 domain = new ASTElementType();
@@ -311,5 +332,6 @@ public class ArchTypeSymbol extends CommonSymbol {
             sym.setDomain(domain);
             return sym;
         }
+        
     }
 }
