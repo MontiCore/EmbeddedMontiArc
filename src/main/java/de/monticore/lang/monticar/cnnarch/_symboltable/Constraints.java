@@ -204,8 +204,9 @@ public enum Constraints {
         @Override
         protected String msgString() {
             return AllPredefinedLayers.PADDING_VALID + ", "
-                    + AllPredefinedLayers.PADDING_SAME + " or "
-                    + AllPredefinedLayers.PADDING_NO_LOSS;
+                    + AllPredefinedLayers.PADDING_SAME + ",  "
+                    + AllPredefinedLayers.PADDING_NO_LOSS + " or "
+                    + AllPredefinedLayers.PADDING_SAME3D;
         }
     },
     TRANSPADDING_TYPE {
@@ -214,7 +215,9 @@ public enum Constraints {
             Optional<String> optString= exp.getStringValue();
             if (optString.isPresent()){
                 if (optString.get().equals(AllPredefinedLayers.PADDING_VALID)
-                        || optString.get().equals(AllPredefinedLayers.PADDING_SAME)) {
+                        || optString.get().equals(AllPredefinedLayers.PADDING_VALID3D)
+                        || optString.get().equals(AllPredefinedLayers.PADDING_SAME)
+                        || optString.get().equals(AllPredefinedLayers.PADDING_SAME3D)) {
                     return true;
                 }
             }
@@ -222,8 +225,10 @@ public enum Constraints {
         }
         @Override
         protected String msgString() {
-            return AllPredefinedLayers.PADDING_VALID + "or "
-                    + AllPredefinedLayers.PADDING_SAME;
+            return AllPredefinedLayers.PADDING_VALID + ", "
+                    + AllPredefinedLayers.PADDING_SAME + " or "
+                    + AllPredefinedLayers.PADDING_SAME3D + " or "
+                    + AllPredefinedLayers.PADDING_VALID3D;
         }
     },
     POOL_TYPE {
