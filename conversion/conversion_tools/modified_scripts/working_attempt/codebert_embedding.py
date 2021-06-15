@@ -187,6 +187,9 @@ class BERTEmbedding(HybridBlock):
             with self.name_scope():
                 self.dropout_layer = nn.Dropout(rate=dropout)
                 self.layer_norm = nn.LayerNorm(in_channels=units, epsilon=layer_norm_eps)
+                self.position_weight = self.params.get(
+                    'position_weight', shape=(max_length, units),
+                    init=weight_initializer)
             self.word_embed = self._get_embed(
                 vocab_size, embed_size,
                 embed_initializer, 'word_embed_')

@@ -147,7 +147,7 @@ def get_gluon_model_arch(hf_cfg, ctx, test):
         'embed_initializer': None,
         'word_embed': None,
         'token_type_embed': None,
-        'use_pooler': True,
+        'use_pooler': False,
         'use_decoder': False,
         'use_classifier': False,
         'use_token_type_embed': True,
@@ -253,7 +253,7 @@ def convert_params(hf_model, hf_tokenizer, hf_cfg, test):
         ]:
             gl_name = gl_qkv_prefix + name.format('_')
             hf_name = hf_atten_prefix + name.format('.') 
-            gluon_params[gl_name].set_data(arr_to_gl(hf_params[hf_name]))
+            gluon_model_params[gl_name].set_data(arr_to_gl(hf_params[hf_name]))
 
         for hf_suffix, gl_suffix in [
             ('attention.output.dense.weight', '_proj_weight'),
@@ -269,7 +269,7 @@ def convert_params(hf_model, hf_tokenizer, hf_cfg, test):
         ]:
             hf_name = hf_prefix + hf_suffix
             gl_name = gl_prefix + gl_suffix
-            gluon_params[gl_name].set_data(arr_to_gl(hf_params[hf_name]))
+            gluon_model_params[gl_name].set_data(arr_to_gl(hf_params[hf_name]))
 
 
     # TODO change weights here to use new BERTembedding
@@ -286,11 +286,11 @@ def convert_params(hf_model, hf_tokenizer, hf_cfg, test):
     hf_pos_embed_name = 'embeddings.position_embeddings.weight'
     gl_pos_embed_name = 'bertembedding0_position_weight'
     hf_wo_pad = arr_to_gl(hf_params[hf_pos_embed_name])[padding_idx + 1:, :]
-    gluon_params[gl_pos_embed_name].set_data(hf_wo_pad)
+    gluon_embedding_params[gl_pos_embed_name].set_data(hf_wo_pad)
     
     #print(gluon_model.collect_params())
     #pp.pprint(list(zip(list(hf_params.keys()), [hf_params[k].shape for k in hf_params.keys()])))
-    return gluon_model
+    return gluon_model, gluon_embedding
 
 def arr_to_gl(arr):
     return mx.nd.array(arr.cpu().numpy())
@@ -376,8 +376,8 @@ def convert_and_export(args):
     if not os.path.exists(args.save_dir):
         os.makedirs(args.save_dir)
     hf_model, hf_tokenizer = get_hf_model_and_tok()
-    gluon_model = convert_params(hf_model, hf_tokenizer, hf_model.config, args.test)
-    test_model(hf_model, hf_tokenizer, gluon_model, args.test)
+    gluon_model, gluon_embedding = convert_params(hf_model, hf_tokenizer, hf_model.config, args.test)
+    test_model(hf_model, hf_tokenizer, gluon_model, gluon_embedding, args.test)
     print('Conversion finished!')
     if not args.test:
         export_model(args.save_dir, gluon_model)
