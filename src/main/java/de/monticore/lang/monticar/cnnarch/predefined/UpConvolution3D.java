@@ -21,7 +21,7 @@ public class UpConvolution3D extends PredefinedLayerDeclaration {
 
     @Override
     public List<ArchTypeSymbol> computeOutputTypes(List<ArchTypeSymbol> inputTypes, LayerSymbol layer, VariableSymbol.Member member) {
-        return computeUpConvOutputShape(inputTypes.get(0),
+        return computeUpConvOutputShape(layer.getInputTypes().get(0),
                 layer,
                 layer.getIntValue(AllPredefinedLayers.CHANNELS_NAME).get());
     }
