@@ -1,5 +1,7 @@
 import mxnet as mx
 from mxnet.gluon import HybridBlock, nn
+from gluonnlp.model.seq2seq_encoder_decoder import Seq2SeqEncoder
+from gluonnlp.model.bert import BERTEncoderCell
 
 class BERTEncoder(HybridBlock, Seq2SeqEncoder):
     def __init__(self, *, num_layers=2, units=512, hidden_size=2048,
@@ -20,8 +22,6 @@ class BERTEncoder(HybridBlock, Seq2SeqEncoder):
         self._layer_norm_eps = layer_norm_eps
 
         with self.name_scope():
-            # self.position_weight = self.params.get('position_weight', shape=(max_length, units),
-            #                                        init=weight_initializer)
             self.transformer_cells = nn.HybridSequential()
             for i in range(num_layers):
                 cell = BERTEncoderCell(
@@ -171,12 +171,16 @@ class BERTEmbedding(HybridBlock):
             units=None,  
             max_length=None,
             dropout=None,
-            initializer=None,
+            weight_initializer=None, # not used at the moment
             layer_norm_eps=None,
             vocab_size=None, 
             token_type_vocab_size=None, 
-            embed_size=None
+            embed_size=None,
+            embed_initializer=None,
+            prefix=None,
+            params=None
         ):
+            super(BERTEmbedding, self).__init__(prefix=prefix, params=params)
             self._max_length = max_length
             self._units = units
 
@@ -185,10 +189,10 @@ class BERTEmbedding(HybridBlock):
                 self.layer_norm = nn.LayerNorm(in_channels=units, epsilon=layer_norm_eps)
             self.word_embed = self._get_embed(
                 vocab_size, embed_size,
-                initializer, 'word_embed_')
+                embed_initializer, 'word_embed_')
             self.token_type_embed = self._get_embed(
                 token_type_vocab_size,
-                embed_size, initializer,
+                embed_size, embed_initializer,
                 'token_type_embed_')
 
     def hybrid_forward(self, F, inputs, token_types, position_weight=None):
@@ -210,10 +214,10 @@ class BERTEmbedding(HybridBlock):
     
     def _get_embed(self, vocab_size, embed_size, initializer, prefix):
         """ Construct an embedding block. """
-            with self.name_scope():
-                embed = nn.HybridSequential(prefix=prefix)
-                with embed.name_scope():
-                    embed.add(nn.Embedding(input_dim=vocab_size, output_dim=embed_size,
-                                           weight_initializer=initializer))
+        with self.name_scope():
+            embed = nn.HybridSequential(prefix=prefix)
+            with embed.name_scope():
+                embed.add(nn.Embedding(input_dim=vocab_size, output_dim=embed_size,
+                                        weight_initializer=initializer))
         assert isinstance(embed, HybridBlock)
         return embed

@@ -60,7 +60,7 @@ from numpy.testing import assert_allclose
 
 import torch
 import transformers
-from codebert_embedding.py import BERTEmbedding, BERTEncoder, BERTModel
+from codebert_embedding import BERTEmbedding, BERTEncoder, BERTModel
 
 class RoBERTaModelWPoolerTest(BERTModel):
 # analogous to gluonnlp 0.10.0 nlp.model.RobertaModel but it allows use_pooler and use_token_type_embed
@@ -211,11 +211,12 @@ def get_gluon_model_arch(hf_cfg, ctx, test):
         units=enc_hyper_params['units'],  
         max_length=enc_hyper_params['max_length'],
         dropout=enc_hyper_params['dropout'],
-        initializer=enc_hyper_params['initializer'],
+        weight_initializer=enc_hyper_params['weight_initializer'],
         layer_norm_eps=enc_hyper_params['layer_norm_eps'],
         vocab_size=hyper_params['vocab_size'], 
         token_type_vocab_size=hyper_params['token_type_vocab_size'], 
-        embed_size=hyper_params['embed_size']
+        embed_size=hyper_params['embed_size'],
+        embed_initializer=hyper_params['embed_initializer']
     )
     
     gluon_model.initialize(ctx=ctx)
@@ -273,19 +274,17 @@ def convert_params(hf_model, hf_tokenizer, hf_cfg, test):
 
     # TODO change weights here to use new BERTembedding
     for hf_name, gl_name in [
-        ('embeddings.word_embeddings.weight', 'robertamodelwpooler0_word_embed_embedding0_weight'),
-        ('embeddings.token_type_embeddings.weight', 'robertamodelwpooler0_token_type_embed_embedding0_weight'),
-        ('embeddings.LayerNorm.weight', 'bertencoder0_layernorm0_gamma'),
-        ('embeddings.LayerNorm.bias', 'bertencoder0_layernorm0_beta'),
-        ('pooler.dense.weight', 'robertamodelwpooler0_pooler_weight'),
-        ('pooler.dense.bias', 'robertamodelwpooler0_pooler_bias')
+        ('embeddings.word_embeddings.weight', 'bertembedding0_word_embed_embedding0_weight'),
+        ('embeddings.token_type_embeddings.weight', 'bertembedding0_token_type_embed_embedding0_weight'),
+        ('embeddings.LayerNorm.weight', 'bertembedding0_layernorm0_gamma'),
+        ('embeddings.LayerNorm.bias', 'bertembedding0_layernorm0_beta')
     ]:
-        gluon_params[gl_name].set_data(arr_to_gl(hf_params[hf_name]))
+        gluon_embedding_params[gl_name].set_data(arr_to_gl(hf_params[hf_name]))
 
     # position embed weight
     padding_idx = hf_tokenizer.pad_token_id
     hf_pos_embed_name = 'embeddings.position_embeddings.weight'
-    gl_pos_embed_name = 'bertencoder0_position_weight'
+    gl_pos_embed_name = 'bertembedding0_position_weight'
     hf_wo_pad = arr_to_gl(hf_params[hf_pos_embed_name])[padding_idx + 1:, :]
     gluon_params[gl_pos_embed_name].set_data(hf_wo_pad)
     
@@ -296,7 +295,7 @@ def convert_params(hf_model, hf_tokenizer, hf_cfg, test):
 def arr_to_gl(arr):
     return mx.nd.array(arr.cpu().numpy())
 
-def test_model(hf_model, hf_tokenizer, gluon_model, test):
+def test_model(hf_model, hf_tokenizer, gluon_embedding, gluon_model, test):
     print('Performing a short model test...')
     ctx = mx.cpu()
     batch_size = 3
@@ -316,10 +315,10 @@ def test_model(hf_model, hf_tokenizer, gluon_model, test):
 
     hf_input_ids = torch.from_numpy(input_ids).cpu()
     hf_model.eval()
-
+    gl_embeds = gluon_embedding(gl_input_ids, gl_token_types)
     #gl_all_hiddens, gl_pooled
     gl_outs = gluon_model(
-        gl_input_ids, 
+        gl_embds, 
         token_types=gl_token_types,
         # reshape the inputs from (n,) to (n,1) to mock LoadNetwork layer inputs in EMADL
         valid_length=gl_valid_length if test else gl_valid_length.reshape(gl_valid_length.shape[0], 1) 
@@ -327,7 +326,7 @@ def test_model(hf_model, hf_tokenizer, gluon_model, test):
 
     if test:
         print('Performing a long model test...')
-        gl_all_hiddens, gl_pooled = gl_outs
+        gl_all_hiddens = gl_outs
 
         # create attention mask for hf model
         hf_valid_length = np.zeros((batch_size, seq_length))
