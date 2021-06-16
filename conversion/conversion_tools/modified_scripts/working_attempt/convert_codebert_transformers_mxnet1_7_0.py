@@ -220,7 +220,7 @@ def get_gluon_model_arch(hf_cfg, ctx, test):
     )
     
     gluon_model.initialize(ctx=ctx)
-    gluon_embedding.initialize() # unsure if it should be init with normal
+    gluon_embedding.initialize(ctx=ctx) # unsure if it should be init with normal
     gluon_model.hybridize()
     gluon_embedding.hybridize()
     
@@ -295,7 +295,7 @@ def convert_params(hf_model, hf_tokenizer, hf_cfg, test):
 def arr_to_gl(arr):
     return mx.nd.array(arr.cpu().numpy())
 
-def test_model(hf_model, hf_tokenizer, gluon_embedding, gluon_model, test):
+def test_model(hf_model, hf_tokenizer, gluon_model, gluon_embedding, test):
     print('Performing a short model test...')
     ctx = mx.cpu()
     batch_size = 3
@@ -318,8 +318,8 @@ def test_model(hf_model, hf_tokenizer, gluon_embedding, gluon_model, test):
     gl_embeds = gluon_embedding(gl_input_ids, gl_token_types)
     #gl_all_hiddens, gl_pooled
     gl_outs = gluon_model(
-        gl_embds, 
-        token_types=gl_token_types,
+        gl_embeds, 
+        gl_token_types,
         # reshape the inputs from (n,) to (n,1) to mock LoadNetwork layer inputs in EMADL
         valid_length=gl_valid_length if test else gl_valid_length.reshape(gl_valid_length.shape[0], 1) 
     )

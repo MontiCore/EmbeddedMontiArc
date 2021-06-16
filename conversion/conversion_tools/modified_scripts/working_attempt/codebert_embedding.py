@@ -94,22 +94,6 @@ class BERTModel(HybridBlock):
         self._units = units
         self.encoder = encoder
 
-        if self._use_pooler:
-            # Construct pooler
-            self.pooler = self._get_pooler(units, 'pooler_')
-
-    def _get_pooler(self, units, prefix):
-        """ Construct pooler.
-
-        The pooler slices and projects the hidden output of first token
-        in the sequence for segment level classification.
-
-        """
-        with self.name_scope():
-            pooler = nn.Dense(units=units, flatten=False, activation='tanh',
-                              prefix=prefix)
-        return pooler
-
     def __call__(self, inputs, token_types, valid_length=None, masked_positions=None):
         # pylint: disable=dangerous-default-value, arguments-differ
         """Generate the representation given the inputs.
