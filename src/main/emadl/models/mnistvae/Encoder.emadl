@@ -1,0 +1,33 @@
+package mnistvae;
+
+component Encoder{
+    ports in Z(0:255)^{1,28,28} x,
+          out Q(-oo:oo)^{2} z_mu,
+          out Q(-oo:oo)^{2} z_log_sigma;
+
+    implementation CNN {
+        def conv(filter, channels, stride){
+            Convolution(kernel=(filter,filter), channels=channels, stride=(stride,stride)) ->
+            Relu()
+        }
+
+        x ->
+        Reshape(shape=(1,28,28)) ->
+        conv(filter=3, channels=32, stride=2) ->
+        conv(filter=3, channels=64, stride=2) ->
+        Convolution(kernel=(3,3),channels=64) ->
+        FullyConnected(units=4) -> 
+        Split(n=2) ->
+        (
+            [0] ->
+            FullyConnected(units=2) ->
+            Sigmoid() ->
+            z_log_sigma
+            |
+            [1] ->
+            FullyConnected(units=2) ->
+            Sigmoid() ->
+            z_mu
+        );
+    }
+}

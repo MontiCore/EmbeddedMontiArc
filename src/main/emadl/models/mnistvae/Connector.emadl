@@ -1,0 +1,29 @@
+/* (c) https://github.com/MontiCore/monticore */
+package mnistvae;
+
+component Connector{
+    ports in Q(0:1)^{100} data,
+          in Q(-oo:oo)^{2} eps,
+          out Z(0:255)^{1, 28, 28} res,
+          out Q(-oo:oo) loss;
+
+    instance Encoder encoder;
+    instance Decoder decoder;
+    instance Sampling<2> sa;
+    instance Loss loss;
+
+    connect data -> encoder.x;
+
+    connect eps -> sa.eps;
+    connect encoder.z_mu -> sa.mu;
+    connect encoder.z_log_sigma -> sa.log_sigma;
+    
+    connect sa.z -> decoder.z;
+    connect decoder.z_decoded -> res;
+
+    connect encoder.z_mu -> loss.mu;
+    connect encoder.z_log_sigma -> loss.log_sigma;
+    connect data -> loss.x;
+    connect decoder.z_decoded -> loss.z_decoded;
+    connect loss.loss -> loss;
+}

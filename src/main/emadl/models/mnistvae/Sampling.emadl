@@ -1,0 +1,12 @@
+package mnistvae;
+
+component Sampling<Z(0:oo) n=1>{
+    ports in Q^{n} mu,
+          in Q^{n} log_sigma,
+          in Q^{n} eps,
+          out Q^{n} z;
+
+    implementation Math{
+        z = mu + exp(log_sigma) * eps;
+    }
+}
