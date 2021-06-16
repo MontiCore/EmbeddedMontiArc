@@ -5,8 +5,13 @@ configuration Decoder{
 	eval_train:false
      normalize:false
      context:cpu
+     encoder: mnistvae.Encoder
      load_checkpoint:false
 	loss: l2
+     loss:vae_loss{
+          recon_loss:l2
+          latent_loss:KL
+     }
      optimizer:adam{
           learning_rate:0.00003
 	     weight_decay:0.01
