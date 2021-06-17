@@ -87,29 +87,25 @@ class BERTModel(HybridBlock):
                  word_embed=None, token_type_embed=None, use_pooler=True, use_decoder=True,
                  use_classifier=True, use_token_type_embed=True, prefix=None, params=None):
         super().__init__(prefix=prefix, params=params)
-        self._use_decoder = use_decoder
-        self._use_classifier = use_classifier
-        self._use_pooler = use_pooler
-        self._use_token_type_embed = use_token_type_embed
         self._units = units
         self.encoder = encoder
 
-    def __call__(self, inputs, token_types, valid_length=None, masked_positions=None):
+    def __call__(self, inputs, valid_length=None, masked_positions=None):
         # pylint: disable=dangerous-default-value, arguments-differ
         """Generate the representation given the inputs.
 
         This is used in training or fine-tuning a BERT model.
         """
-        return super().__call__(inputs, token_types, valid_length, masked_positions)
+        return super().__call__(inputs, valid_length, masked_positions)
 
-    def hybrid_forward(self, F, inputs, token_types, valid_length=None, masked_positions=None):
+    def hybrid_forward(self, F, inputs, valid_length=None, masked_positions=None):
         # pylint: disable=arguments-differ
         """Generate the representation given the inputs.
 
         This is used in training or fine-tuning a BERT model.
         """
         outputs = []
-        seq_out, attention_out = self._encode_sequence(inputs, token_types, valid_length)
+        seq_out, attention_out = self._encode_sequence(inputs, valid_length)
         outputs.append(seq_out)
 
         if self.encoder._output_all_encodings:
@@ -121,16 +117,9 @@ class BERTModel(HybridBlock):
         if attention_out:
             outputs.append(attention_out)
 
-        if self._use_pooler:
-            pooled_out = self._apply_pooling(output)
-            outputs.append(pooled_out)
-            if self._use_classifier:
-                next_sentence_classifier_out = self.classifier(pooled_out)
-                outputs.append(next_sentence_classifier_out)
-
         return tuple(outputs) if len(outputs) > 1 else outputs[0]
 
-    def _encode_sequence(self, inputs, token_types, valid_length=None):
+    def _encode_sequence(self, inputs, valid_length=None):
         # encoding
         outputs, additional_outputs = self.encoder(inputs, valid_length=valid_length)
         # (seq_len, batch, C) -> (batch, seq_len, C)
@@ -140,16 +129,6 @@ class BERTModel(HybridBlock):
             outputs = outputs.transpose((1, 0, 2))
         return outputs, additional_outputs
 
-    def _apply_pooling(self, sequence):
-        """Generate the representation given the inputs.
-
-        This is used for pre-training or fine-tuning a BERT model.
-        """
-        outputs = sequence.slice(begin=(0, 0, 0), end=(None, 1, None))
-        outputs = outputs.reshape(shape=(-1, self._units))
-        return self.pooler(outputs)
-
-    
 class BERTEmbedding(HybridBlock):
     def __init__(self, 
             units=None,  

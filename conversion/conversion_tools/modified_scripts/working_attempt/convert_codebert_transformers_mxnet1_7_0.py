@@ -97,18 +97,18 @@ class RoBERTaModelWPoolerTest(BERTModel):
             params=params
         )
 
-    def __call__(self, inputs, token_types=None, valid_length=None, masked_positions=None):
+    def __call__(self, inputs, valid_length=None, masked_positions=None):
         return super(RoBERTaModelWPoolerTest, self).__call__(
-            inputs, token_types=token_types, valid_length=valid_length,
+            inputs, valid_length=valid_length,
             masked_positions=masked_positions
         )
 
 class RoBERTaModelWPooler(RoBERTaModelWPoolerTest):
-    def hybrid_forward(self, F, inputs, token_types, valid_length=None, masked_positions=None):
+    def hybrid_forward(self, F, inputs, valid_length=None, masked_positions=None):
         # remove single dim entries from the valid_length input, needed for compatibility with EMADL LoadNetwork layer
         valid_length = mx.symbol.squeeze(valid_length) # [[5], [6], ...] -> [5, 6, ....]
         outputs = super(RoBERTaModelWPooler, self).hybrid_forward(
-            F, inputs, token_types, valid_length=valid_length, masked_positions=masked_positions
+            F, inputs, valid_length=valid_length, masked_positions=masked_positions
         )
         # only return the last output (pooler output) to make compatible with EMADL LoadNetwork layer
         return outputs[-1]
@@ -318,8 +318,7 @@ def test_model(hf_model, hf_tokenizer, gluon_model, gluon_embedding, test):
     gl_embeds = gluon_embedding(gl_input_ids, gl_token_types)
     #gl_all_hiddens, gl_pooled
     gl_outs = gluon_model(
-        gl_embeds, 
-        gl_token_types,
+        gl_embeds,
         # reshape the inputs from (n,) to (n,1) to mock LoadNetwork layer inputs in EMADL
         valid_length=gl_valid_length if test else gl_valid_length.reshape(gl_valid_length.shape[0], 1) 
     )
@@ -337,10 +336,6 @@ def test_model(hf_model, hf_tokenizer, gluon_model, gluon_embedding, test):
         hf_outputs = hf_model(hf_input_ids, attention_mask=hf_valid_length, output_hidden_states=True)
         # (num_layers + 1, batch_size, seq_length, hidden_size)
         hf_all_hiddens = hf_outputs['hidden_states'][1:]
-        hf_pooled = hf_outputs['pooler_output']
-
-        # check pooling output
-        assert_allclose(gl_pooled.asnumpy(), hf_pooled.detach().cpu().numpy(), 1E-3, 1E-3)
 
         # checking all_encodings_outputs
         num_layers = hf_model.config.num_hidden_layers
