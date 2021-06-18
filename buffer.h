@@ -20,9 +20,9 @@ struct DynamicBuffer {
         append((char) c);
     }
     void append(const char c) {
+        check_size(pos);
         buffer[pos] = c;
         ++pos;
-        check_size(pos);
     }
     void append(const char* str) {
         while (*str){
