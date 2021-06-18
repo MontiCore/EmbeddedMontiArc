@@ -19,6 +19,7 @@ extern "C" {
 
 using throw_func = void (*)(const char* type, const char* message);
 using print_func = void (*)(const char* message);
+using set_functions_func = void (*)(throw_func throw_error_ptr, print_func print_cout_ptr, print_func print_cerr_ptr);
 
 extern throw_func throw_error;
 extern print_func print_cout;
