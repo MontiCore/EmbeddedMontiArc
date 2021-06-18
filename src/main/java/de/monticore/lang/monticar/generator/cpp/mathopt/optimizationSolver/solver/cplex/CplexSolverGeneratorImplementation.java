@@ -53,7 +53,9 @@ public class CplexSolverGeneratorImplementation implements QPSolverGeneratorImpl
 
     @Override
     public String generateSolverCode(Problem optimizationProblem, List<FileContent> auxillaryFiles, EMAMBluePrintCPP bluePrint) {
+        /* ToDo: Fix after Ipopt works
         String result = "";
+
         GeneratorCPP generator = (GeneratorCPP) bluePrint.getGenerator();
         if ((optimizationProblem instanceof QPProblem) || (optimizationProblem instanceof MIQPProblem)) {
             // create view model from problem class
@@ -79,7 +81,8 @@ public class CplexSolverGeneratorImplementation implements QPSolverGeneratorImpl
         } else {
             Log.error(String.format("CPLEX can not solve problemes of type %s", optimizationProblem.getClass().toString()));
         }
-        return result;
+        return result;*/
+        return "";
     }
 
     @Override

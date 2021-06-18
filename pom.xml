@@ -17,12 +17,12 @@
     <properties>
 
         <!-- .. EMA-Libraries ................................................. -->
-        <EmbeddedMontiArc-executionSemantics.version>0.4.4-SNAPSHOT</EmbeddedMontiArc-executionSemantics.version>
+        <EmbeddedMontiArc-executionSemantics.version>0.4.5-SNAPSHOT</EmbeddedMontiArc-executionSemantics.version>
 
         <!-- .. Libraries .................................................. -->
         <guava.version>25.1-jre</guava.version>
         <junit.version>4.13.1</junit.version>
-        <logback.version>1.1.2</logback.version>
+        <logback.version>1.2.0</logback.version>
         <jscience.version>4.3.1</jscience.version>
 
         <!-- .. Plugins ....................................................... -->
@@ -30,7 +30,7 @@
         <compiler.plugin>3.8.0</compiler.plugin>
         <source.plugin>2.4</source.plugin>
         <shade.plugin>2.4.3</shade.plugin>
-        <jacoco.plugin>0.8.1</jacoco.plugin>
+        <jacoco.plugin>0.8.4</jacoco.plugin>
 
         <!-- Classifiers -->
         <grammars.classifier>grammars</grammars.classifier>
