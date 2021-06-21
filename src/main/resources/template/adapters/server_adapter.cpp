@@ -6,6 +6,8 @@
 
 #include "json.h"
 #include "program.h"
+#include "err_out.h"
+#include "standard_err_out.h"
 
 #if defined _WIN32 || defined _WIN64
 #define IS_WIN
@@ -37,6 +39,9 @@ int main(int argc, char** argv) {
         exit(1);
     }
 #endif
+
+    // Use the "standard_err_out.h" functions for errors and messages from the autopilot
+    ERR_OUT_set_functions(ERR_OUT_standard_throw_error, ERR_OUT_standard_print_cout, ERR_OUT_standard_print_cerr);
 
     if (argc == 2) {
         session_server(argv[1], simulation_session, running);

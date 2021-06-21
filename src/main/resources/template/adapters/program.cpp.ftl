@@ -1,8 +1,8 @@
 #include "program.h"
+#include <inttypes.h>
 #include "./${mainModelName}.h"
 
-#include <exception>
-#include "err_out/err_out.h"
+#include "err_out.h"
 
 static constexpr auto N_TO_N_BROADCAST_ADDR = "ff02::2";
 static constexpr auto N_TO_N_PREFIX = "2::";
@@ -12,38 +12,34 @@ DynamicBuffer buffer;
 
 ${mainModelName} program_instance;
 
-void set_port_json(int i, const char* data) {
+void set_port_json(int32_t i, const char* data) {
     JsonTraverser reader{data};
     switch(i){
 <#list setPortJsonCases as i>${i}</#list>
         default:
-            cerr << "Invalid output port ID: '"<< i << "'" << endl;
-            throw std::exception();
+            throw_error("PortIO", "[set_port_json()] Invalid input port ID: '%PRIi32'");
     }
 }
-void get_port_json(int i, JsonWriter &writer) {
+void get_port_json(int32_t i, JsonWriter &writer) {
     switch (i){
 <#list getPortJsonCases as i>${i}</#list>
         default:
-            cerr << "Invalid output port ID: '"<< i << "'" << endl;
-            throw std::exception();
+            throw_error("PortIO", "[get_port_json()] Invalid output port ID: '%PRIi32'");
     }
 }
 
-void set_port_binary(int i, BinaryReader &reader) {
+void set_port_binary(int32_t i, BinaryReader &reader) {
     switch (i){
 <#list setPortBinaryCases as i>${i}</#list>
         default:
-            cerr << "Invalid output port ID: '"<< i << "'" << endl;
-            throw std::exception();
+            throw_error("PortIO", "[set_port_binary()] Invalid output port ID: '%PRIi32'");
     }
 }
-void get_port_binary(int i, BinaryWriter &writer) {
+void get_port_binary(int32_t i, BinaryWriter &writer) {
     switch (i){
 <#list getPortBinaryCases as i>${i}</#list>
         default:
-            cerr << "Invalid output port ID: '"<< i << "'" << endl;
-            throw std::exception();
+            throw_error("PortIO", "[get_port_binary()] Invalid output port ID: '%PRIi32'");
     }
 }
 
@@ -61,7 +57,7 @@ void execute(double delta_sec) {
     program_instance.execute();
 }
 
-const int PORT_COUNT = ${portCount};
+const int32_t PORT_COUNT = ${portCount};
 
 const bool IS_SOCKET[] = {
     ${isSocket}

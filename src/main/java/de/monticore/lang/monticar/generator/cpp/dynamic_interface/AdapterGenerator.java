@@ -70,12 +70,12 @@ public class AdapterGenerator {
         addFileDependencySharedCpp("json.cpp");
         addFileDependencySharedCpp("printf.h");
         addFileDependencySharedCpp("printf.cpp");
-        addFileDependencySharedCpp("err_out/err_out.h");
-        addFileDependencySharedCpp("err_out/standalone_err_out.cpp");
+        addFileDependencySharedCpp("err_out.h");
+        addFileDependencySharedCpp("err_out.cpp");
 
         // TODO "intermediate target" with serialization code ?
         cmake.addCMakeCommandEnd("# A static library around the root EMA component with JSON/Binary serialization functions.");
-        cmake.addCMakeCommandEnd("add_library("+targetNameWithSerialization+" STATIC program.cpp buffer.cpp json.cpp printf.cpp err_out/standalone_err_out.cpp)");
+        cmake.addCMakeCommandEnd("add_library("+targetNameWithSerialization+" STATIC program.cpp buffer.cpp json.cpp printf.cpp err_out.cpp)");
         cmake.addCMakeCommandEnd("target_include_directories("+targetNameWithSerialization+" PUBLIC ${INCLUDE_DIRS} ${CMAKE_CURRENT_SOURCE_DIR})");
         //cmake.addCMakeCommandEnd("target_link_libraries("+targetNameWithSerialization+" PUBLIC ${LIBS} -static-libgcc -static-libstdc++)");
         cmake.addCMakeCommandEnd("target_link_libraries("+targetNameWithSerialization+" PRIVATE ${LIBS})");
@@ -107,11 +107,13 @@ public class AdapterGenerator {
             addFileDependencySharedCpp("network.cpp");
             addFileDependencySharedCpp("tcp_protocol.h");
             addFileDependencyOwnCpp("server_adapter.h");
+            addFileDependencySharedCpp("standard_err_out.h");
+            addFileDependencySharedCpp("standard_err_out.cpp");
             addFileDependencyOwnCpp("server_adapter.cpp");
 
             // create adapter executable
             cmake.addCMakeCommandEnd("# ServerAdapter for the EMA component");
-            cmake.addCMakeCommandEnd("add_executable("+targetNameServer+" server_adapter.cpp network.cpp)");
+            cmake.addCMakeCommandEnd("add_executable("+targetNameServer+" server_adapter.cpp network.cpp standard_err_out.cpp)");
             cmake.addCMakeCommandEnd("target_link_libraries("+targetNameServer+" PUBLIC "+targetNameWithSerialization+")");
             cmake.addCMakeCommandEnd("if (CMAKE_HOST_WIN32)");
             cmake.addCMakeCommandEnd("    target_link_libraries("+targetNameServer+" PUBLIC ws2_32)");
