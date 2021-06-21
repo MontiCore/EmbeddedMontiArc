@@ -6,7 +6,7 @@
 
 // Used for "snprintf" target
 constexpr int32_t LOCAL_BUFFER_SIZE = 4096;
-char LOCAL_BUFFER[LOCAL_BUFFER_SIZE];
+extern char LOCAL_BUFFER[LOCAL_BUFFER_SIZE];
 
 struct DynamicBuffer {
 
