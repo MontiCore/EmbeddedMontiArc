@@ -1,0 +1,5 @@
+MODEL_DIR=model
+MODEL_NAME=de.rwth.connectedcars.TestAutoPilot
+OUTPUT_NAME=EmaAutopilot
+DLL_DIR=D:\EmbededMontiArc\basic-simulator\install\autopilots
+BUILD_CONFIG=Release

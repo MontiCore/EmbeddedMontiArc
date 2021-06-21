@@ -1,0 +1,15 @@
+package de.rwth.connectedcars.communication.scenarios;
+
+import de.rwth.connectedcars.communication.packets.*;
+
+component EmergencyCorridor {
+    ports
+        //in SubjectPacket ec_bc_in[6],
+        in SubjectPacket ec_in[6],
+        in B ec_updated_in[6],
+
+        out SubjectPacket ec_bc_out,
+        out B ec_updated_bc_out;
+
+    
+}

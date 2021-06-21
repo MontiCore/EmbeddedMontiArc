@@ -1,0 +1,17 @@
+package de.rwth.connectedcars.movement;
+
+component KMH2MPS {
+
+  port 
+      in  Q (-oo km/h : oo km/h) currentVelKMH,
+      
+      out Q (-oo m/s : oo m/s)  currentVelMPS;
+      
+  implementation Math{
+  
+    currentVelMPS = currentVelKMH / 3.6;
+  
+  }
+  
+}
+      

@@ -1,0 +1,18 @@
+package de.rwth.connectedcars.communication.scenarios;
+
+import de.rwth.connectedcars.communication.packets.*;
+
+component Platooning {
+    ports
+        in PlatoonPacket plat_bc_in[6],
+        in B plat_updated_bc_in[6],
+        in PlatoonPacket plat_in[6],
+        in B plat_updated_in[6],
+
+        out B plat_updated_bc_out,
+        out PlatoonPacket plat_bc_out,
+        out B plat_updated_out[6],
+        out PlatoonPacket plat_out[6];
+
+    
+}

@@ -1,0 +1,60 @@
+package de.rwth.connectedcars.navigation;
+
+component NavigationController {
+
+  port
+      in  N (0 : 10)                     traj_length,
+      in  Q (-oo m : oo m) ^ 10          traj_x,
+      in  Q (-oo m : oo m) ^ 10          traj_y,
+      in  Q (-oo m : oo m) ^ 2           current_pos,
+      in  Q (0 : 180)                    critTurnAngle,
+      in  Q (0 m : oo m)                 distance2mid,
+      in  Q (0 m/s : oo m/s) ^ 9         maxVelocity,
+
+      out Q (-oo m : oo m)               nextDirection_x,
+      out Q (-oo m : oo m)               nextDirection_y,
+      out Q (0 m : oo m)                 dist2critAngle, //driving distance to next turn with critical turning angle
+      out Q (0 m : oo m)                 lowSpeedLimitDist,
+      out Q (0 m/s : oo m/s)             lowerSpeedLimit,
+      out Q (-180 : 180)                 nextTurnAngle;
+      
+  instance Pathkeeper path;
+  instance PathOffset offset;
+  instance TurnDistance turn;
+  instance SpeedLimitChange speed;
+  
+  connect traj_length          -> offset.traj_length;
+  connect traj_x               -> offset.traj_x;
+  connect traj_y               -> offset.traj_y;
+  connect distance2mid         -> offset.distance2mid;
+  
+  connect traj_length          -> path.traj_length;
+  connect offset.traj_off_x    -> path.traj_x;
+  connect offset.traj_off_y    -> path.traj_y;
+  connect current_pos          -> path.current_pos;
+  
+  connect path.driveToSegment  -> turn.driveToSegment;
+  connect path.nextDirection_x -> turn.nextDirection_x;
+  connect path.nextDirection_y -> turn.nextDirection_y;
+  connect path.closestPointX   -> turn.closestPointX;
+  connect path.closestPointY   -> turn.closestPointY;
+  connect offset.traj_off_x    -> turn.traj_x;
+  connect offset.traj_off_y    -> turn.traj_y;
+  connect traj_length          -> turn.traj_length;
+  connect critTurnAngle        -> turn.critTurnAngle;
+  
+  connect traj_length          -> speed.traj_length;
+  connect traj_x               -> speed.traj_x;
+  connect traj_y               -> speed.traj_y;
+  connect maxVelocity          -> speed.upper_speed_limit;
+  connect current_pos          -> speed.current_pos;
+  
+  
+  connect path.nextDirection_x -> nextDirection_x;
+  connect path.nextDirection_y -> nextDirection_y;
+  connect turn.nextTurnAngle   -> nextTurnAngle;
+  connect turn.dist2critAngle  -> dist2critAngle;
+  connect speed.tempDist       -> lowSpeedLimitDist;
+  connect speed.newSpeed       -> lowerSpeedLimit;
+  
+}

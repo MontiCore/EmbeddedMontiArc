@@ -1,0 +1,19 @@
+package de.rwth.connectedcars.communication;
+
+import de.rwth.connectedcars.communication.packets.*;
+
+component DistanceCalculator {
+    ports
+        in  Q(-oo m : 0.01 m : oo m) position1X,
+        in  Q(-oo m : 0.01 m : oo m) position1Y,
+        in  Q(-oo m : 0.01 m : oo m) position2X,
+        in  Q(-oo m : 0.01 m : oo m) position2Y,
+        
+        out Q(0 m : 0.01 m : oo m)   distance;
+        
+    implementation Math {
+        Q(-oo m : 0.01 m : oo m) x = position1X - position2X;
+        Q(-oo m : 0.01 m : oo m) y = position1Y - position2Y;
+        distance = sqrt(x*x + y*y);
+    }
+}

@@ -1,0 +1,32 @@
+package de.rwth.connectedcars.movement;
+
+component PID {
+
+  port
+      in  Q (-oo : oo)  error,
+      in  Q (0 : oo)    kP,
+      in  Q (0 : oo)    kD,
+      in  Q (0 : oo)    kI,
+      
+      out Q (-oo : oo)  controlValue;
+      
+  implementation Math{
+    Q refreshRate; //time between 2 computations
+    static Q lastError = 0;
+    static Q integralU = 0; //integral value
+    Q derivativeU = 0;
+    static Q firstIteration = 1;
+    
+    refreshRate = 0.1; 
+    integralU = integralU + (refreshRate * error);
+    
+    if firstIteration == 0
+       derivativeU = (error - lastError) / refreshRate;
+    end
+    
+    controlValue = (kP * error) + (kI * integralU) + (kD * derivativeU);
+    lastError = error;
+    firstIteration = 0;
+  }
+
+}  
