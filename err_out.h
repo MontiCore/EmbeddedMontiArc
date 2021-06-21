@@ -21,11 +21,15 @@ using throw_func = void (*)(const char* type, const char* message);
 using print_func = void (*)(const char* message);
 using set_functions_func = void (*)(throw_func throw_error_ptr, print_func print_cout_ptr, print_func print_cerr_ptr);
 
-extern throw_func throw_error;
-extern print_func print_cout;
-extern print_func print_cerr;
+extern throw_func ERR_OUT_throw_error;
+extern print_func ERR_OUT_print_cout;
+extern print_func ERR_OUT_print_cerr;
 
 void ERR_OUT_set_functions(throw_func throw_error_ptr, print_func print_cout_ptr, print_func print_cerr_ptr);
+
+void throw_error(const char *type, const char *msg_format, ...);
+void print_cout(const char *msg_format, ...);
+void print_cerr(const char *msg_format, ...);
 
 #ifdef __cplusplus
 }

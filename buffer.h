@@ -1,7 +1,12 @@
 #pragma once
 #include <stdint.h>
 #include <string>
-#include <exception>
+
+
+
+// Used for "snprintf" target
+constexpr int32_t LOCAL_BUFFER_SIZE = 4096;
+char LOCAL_BUFFER[LOCAL_BUFFER_SIZE];
 
 struct DynamicBuffer {
 
@@ -107,6 +112,7 @@ struct BinaryWriter {
     void write_str(const std::string &str);
 };
 
+#ifdef NO_ERR_OUT
 
 class BufferException : public std::exception {
     std::string description;
@@ -119,4 +125,6 @@ public:
     }
 };
 
-int get_socket_id(const std::string &ip, int max_count);
+#endif
+
+int get_socket_id(const std::string &ip, int32_t max_count);

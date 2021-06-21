@@ -4,15 +4,12 @@
 #pragma once
 
 #include <string>
-#include <exception>
+//#include <exception>
 #include <stdint.h>
 #include "buffer.h"
 
 
 struct JsonWriter {
-    // Used for "snprintf" target
-    static constexpr int32_t LOCAL_BUFFER_SIZE = 1024;
-    static char LOCAL_BUFFER[LOCAL_BUFFER_SIZE];
 
     static constexpr int32_t TAB = 2;
 
@@ -126,15 +123,15 @@ struct StringRef {
     }
 };
 
-class ParsingException : public std::exception {
-    const char *msg;
-public:
-    ParsingException(const char *msg) : msg(msg) {}
-    virtual const char* what() const throw()
-    {
-        return msg;
-    }
-};
+// class ParsingException : public std::exception {
+//     const char *msg;
+// public:
+//     ParsingException(const char *msg) : msg(msg) {}
+//     virtual const char* what() const throw()
+//     {
+//         return msg;
+//     }
+// };
 
 enum class ValueType {
     OBJECT, ARRAY, STRING, NUMBER, BOOLEAN, UNKNOWN
@@ -216,6 +213,8 @@ struct JsonTraverser {
 
     void expect_valid_integer(int64_t l);
 
+    void parsing_exception(const char *msg_format, ...);
+
 private:
 
     //const char *data;
@@ -224,6 +223,8 @@ private:
     ValueType current_type;
     char c;
     bool last_bool;
+    int32_t line;
+    const char* line_start;
 
 
     void get_value_type();
@@ -259,7 +260,14 @@ private:
         return c == ' ' || c == '\n' || c == '\r' || c == '\t';
     }
     void next_char() {
-        if (c != '\0') c = *(++pos);
+        if (c == '\0') return;
+        if (c != '\n') {
+            c = *(++pos);
+        } else {
+            ++line;
+            c = *(++pos);
+            line_start = pos;
+        }
     }
     // Must make sure it is in range
     void goto_char(const char *target) {

@@ -1,14 +1,29 @@
 #include "buffer.h"
+#ifdef NO_ERR_OUT
 #include <iostream>
+#endif
 #include <cstring>
+#include <inttypes.h>
+#include "err_out.h"
 
-int get_socket_id(const std::string &ip, int max_count) {
+
+char LOCAL_BUFFER[LOCAL_BUFFER_SIZE];
+
+int get_socket_id(const std::string &ip, int32_t max_count) {
     if (ip.find("2::") != 0) {
+#ifdef NO_ERR_OUT
         std::cerr << "Unsupported IP: '"<< ip << "' (only supports 'N-to-N' IPs with '2::' prefix)" << std::endl;
+#else
+        print_cerr("Unsupported IP: '%s' (only supports 'N-to-N' IPs with '2::' prefix)", ip.c_str());
+#endif
     }
-    int id = strtol(ip.c_str()+3, nullptr, 10)-1;
+    int32_t id = strtol(ip.c_str()+3, nullptr, 10)-1;
     if (id >= max_count) {
+#ifdef NO_ERR_OUT
         std::cerr << "'N-to-N' IP '" << ip << "' outside of range [1:"<< (max_count) << "]. Ignoring packet." << std::endl;
+#else
+        print_cerr("Id '%PRIi32' of 'N-to-N' IP '%s' outside of range [1:%PRIi32]. Ignoring packet.", ip.c_str(), max_count);
+#endif
         return -1;
     }
     return id;
@@ -62,7 +77,13 @@ double BinaryReader::read_f64() {
     return *((double*)&t);
 }
 std::string BinaryReader::read_str() {
-    if (pos >= end) throw BufferException("str read past buffer content.");
+    if (pos >= end) {
+#ifdef NO_ERR_OUT
+        throw BufferException("str read past buffer content.");
+#else
+        throw_error("BinaryReader", "str read past buffer content.");
+#endif
+    }
     auto start = pos;
     while (pos < end && *pos != '\0') ++pos;
     ++pos; // Go after '\0'
@@ -70,7 +91,13 @@ std::string BinaryReader::read_str() {
 }
 
 void BinaryReader::check_range(int bytes, const char* type) {
-    if (pos + bytes > end) throw BufferException(std::string(type) + " read past buffer content.");
+    if (pos + bytes > end) {
+#ifdef NO_ERR_OUT
+        throw BufferException(std::string(type) + " read past buffer content.");
+#else
+        throw_error("BinaryReader", "%s read past buffer content.", type);
+#endif
+    }
 }
 
 
