@@ -17,8 +17,8 @@ void ERR_OUT_standard_throw_error(const char* type, const char* message) {
     throw StandaloneException(type, message);
 }
 void ERR_OUT_standard_print_cout(const char *message) {
-    std::cout << message;
+    std::cout << message << std::endl;
 }
 void ERR_OUT_standard_print_cerr(const char *message) {
-    std::cerr << message;
+    std::cerr << message << std::endl;
 }

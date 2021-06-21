@@ -87,6 +87,11 @@ struct vec2 {
     explicit operator vec2<A>() const {
         return vec2<A>( ( A )x, ( A )y );
     }
+
+    T &operator[](size_t i) {
+        if (i == 1) return y;
+        return x;
+    }
 };
 
 using vec2i8 = vec2<i8>;
