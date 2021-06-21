@@ -1,3 +1,7 @@
+====
+    (c) https://github.com/MontiCore/monticore
+====
+
 readelf --wide -s "D:\EmbededMontiArc\basic-simulator\install\autopilots\EmaAutopilot_lib.so"
 
 Symbol table '.dynsym' contains 4573 entries:

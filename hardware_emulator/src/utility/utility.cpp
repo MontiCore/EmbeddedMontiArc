@@ -214,6 +214,7 @@ Log::LogStream Log::new_val( ConsoleColor::DARK_YELLOW, "[NEW]", "debug_new" );
 Log::LogStream Log::note( ConsoleColor::PINK, "[N]", "note" );
 Log::LogStream Log::white( ConsoleColor::WHITE, "", "info" );
 Log::LogStream Log::test( ConsoleColor::GREEN, "", "test" );
+Log::LogStream Log::ap(ConsoleColor::DARK_YELLOW, "[AP]", "autopilot");
 
 std::unique_ptr<Log::OStreamTarget> Log::output_stream = std::make_unique<Log::STDOutput>();
 
@@ -231,11 +232,11 @@ void Library::init(const fs::path& file) {
         throw_lasterr("Cannot open dll " + name);
 }
 
-void *Library::get_function( const char *name ) {
+void *Library::get_function( const char *name, bool optional ) {
     if (!loaded())
         throw_error("Library::get_function() on unloaded library.");
     auto res = GetProcAddress((HMODULE)handle, name);
-    if (res == nullptr)
+    if (res == nullptr && !optional)
         throw_lasterr("GetProcAddress(" + std::string(name) + ")");
     return res;
 }
@@ -269,7 +270,7 @@ void Library::init( const fs::path &file  ) {
         throw_system_error("dlopen() error opening "+name+": "+ dlerror());
 }
 
-void *Library::get_function( const char *name ) {
+void *Library::get_function( const char *name, bool optional ) {
     if ( loaded() )
         return dlsym( handle, name );
     return nullptr;

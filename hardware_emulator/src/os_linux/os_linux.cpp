@@ -28,6 +28,11 @@ namespace OS {
         func_call.set_param1_32(p);
     }
 
+    void Linux::set_param1_64(ulong p)
+    {
+        func_call.set_param1_64(p);
+    }
+
     void Linux::set_param2_32(uint p)
     {
         func_call.set_param2_32(p);
@@ -43,6 +48,11 @@ namespace OS {
         func_call.set_param3_32(p);
     }
 
+    void Linux::set_param3_64(ulong p)
+    {
+        func_call.set_param3_64(p);
+    }
+
     void Linux::set_param1_double(double p)
     {
         func_call.set_param1_double(p);
@@ -52,8 +62,16 @@ namespace OS {
     {
         func_call.set_return_64(r);
     }
-    
-    
+
+    ulong Linux::get_param1_64()
+    {
+        return func_call.get_param1_64();
+    }
+
+    ulong Linux::get_param2_64()
+    {
+        return func_call.get_param2_64();
+    }
     
     
     

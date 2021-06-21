@@ -1,3 +1,6 @@
+/**
+ * (c) https://github.com/MontiCore/monticore
+ */
 /* Run initializers for newly loaded objects.
    Copyright (C) 1995-2018 Free Software Foundation, Inc.
    This file is part of the GNU C Library.

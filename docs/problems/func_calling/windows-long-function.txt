@@ -1,3 +1,7 @@
+====
+    (c) https://github.com/MontiCore/monticore
+====
+
 [CALL] test_long_function_intern() at 0000000334C2175A
                    RAX   000000000000000D
                    RDX   000000000000000D

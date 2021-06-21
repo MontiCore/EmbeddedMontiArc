@@ -18,11 +18,25 @@ uint64_t EmulatedProgramInterface::resolve( const char *name ) {
 
 
 void EmulatedProgramInterface::load() {
+    auto sym = computer.symbols.get_symbol( FUNC_NAME_ERR_OUT_SET_FUNCTIONS );
+    if ( sym.type == Symbols::Symbol::Type::EXPORT ) {
+        addr_get_functions = sym.addr;
+    } else {
+        Log::err.log(ERR_OUT_MISSING_WARNING);
+    }
     addr_get_interface = resolve(FUNC_NAME_GET_INTERFACE);
     addr_set_port = resolve(FUNC_NAME_SET_PORT);
     addr_get_port = resolve(FUNC_NAME_GET_PORT);
     addr_init = resolve(FUNC_NAME_INIT);
     addr_exec = resolve(FUNC_NAME_EXECUTE);
+}
+
+void EmulatedProgramInterface::set_functions(uint64_t throw_error_ptr, uint64_t print_cout_ptr, uint64_t print_cerr_ptr)
+{
+    computer.os->set_param1_64(throw_error_ptr);
+    computer.os->set_param2_64(print_cout_ptr);
+    computer.os->set_param3_64(print_cerr_ptr);
+    computer.call(addr_get_functions, FUNC_NAME_ERR_OUT_SET_FUNCTIONS);
 }
 
 const char* EmulatedProgramInterface::get_interface() {
@@ -128,6 +142,8 @@ void HardwareEmulator::init_simulator(const json& config, const fs::path& softwa
     
     EmulatedProgramInterface* prog_interface = new EmulatedProgramInterface(computer);
     prog_interface->load();
+    if (prog_interface->addr_get_functions != 0)
+        prog_interface->set_functions(computer.throw_error_addr, computer.print_cout_addr, computer.print_cerr_addr);
     prog_interface->init();
     computer.time.reset();
 

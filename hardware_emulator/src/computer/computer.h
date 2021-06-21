@@ -77,6 +77,10 @@ struct Computer {
         bool uses_shadow_space = false;
         ulong walk_table_pos = 0;
         ulong walk_table_end = 0;
+
+        ulong throw_error_addr = 0;
+        ulong print_cout_addr = 0;
+        ulong print_cerr_addr = 0;
         
         Computer() : internal( nullptr ), func_call_windows(registers, memory), func_call_linux(registers) {}
         ~Computer() {
@@ -118,11 +122,11 @@ struct Computer {
         void cb_mem( MemAccess type, ulong addr, uint size, slong value );
         void cb_mem_err( MemAccess type, MemAccessError err, ulong addr, uint size, slong value );
         
-        static bool exit_callback( Computer &inter );
-        
         InternalComputer *internal = nullptr;
         ulong exit_code_addr = 0;
         bool stopped = false;
+        bool did_throw = false;
+        std::string autopilot_throw_msg;
 
         const char* unicorn_error();
 };

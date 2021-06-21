@@ -1,3 +1,6 @@
+/**
+ * (c) https://github.com/MontiCore/monticore
+ */
 /* Data structure for communication from the run-time dynamic linker for
    loaded ELF shared objects.
    Copyright (C) 1995-2018 Free Software Foundation, Inc.

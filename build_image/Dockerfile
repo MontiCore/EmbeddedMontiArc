@@ -1,3 +1,7 @@
+#
+# (c) https://github.com/MontiCore/monticore
+#
+
 FROM debian
 
 ENV DEBIAN_FRONTEND noninteractive

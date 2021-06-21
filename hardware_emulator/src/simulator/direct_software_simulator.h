@@ -3,6 +3,7 @@
  */
 #pragma once
 
+#include "err_out.h"
 #include "software_simulator.h"
 #include "utility/utility.h"
 
@@ -17,6 +18,7 @@ struct DirectProgramInterface : public ProgramInterface {
     GetPortFunc real_get_port = nullptr;
     InitFunc real_init = nullptr;
     ExecFunc real_exec = nullptr;
+    set_functions_func real_set_functions;
 
     void load(Library &software);
     

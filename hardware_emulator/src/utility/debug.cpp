@@ -12,7 +12,7 @@ void ComputerDebug::init( Memory &mem, Registers &regs, CodeDecoder &decoder ) {
 }
 
 void ComputerDebug::debug_syscall( SysCall &sys_call, ulong id ) {
-    if ( !debug || !d_syscalls )
+    if ( !syscalls() )
         return;
 
     Log::sys.log_tag("%s sys_call: %llu %s!%s", sys_call.supported() ? "Supported" : "Unsupported", id, sys_call.module.c_str(), sys_call.name.c_str());

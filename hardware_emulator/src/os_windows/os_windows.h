@@ -51,11 +51,16 @@ namespace OS {
 
         ulong get_return_64();
         void set_param1_32(uint p);
+        void set_param1_64(ulong p);
         void set_param2_32(uint p);
         void set_param2_64(ulong p);
         void set_param3_32(uint p);
+        void set_param3_64(ulong p);
         void set_param1_double(double p);
+
         void set_return_64(ulong r);
+        ulong get_param1_64();
+        ulong get_param2_64();
 
         bool uses_shadow_space() {
             return true;

@@ -9,6 +9,8 @@
 #include "json.hpp"
 using json = nlohmann::json;
 
+
+
 struct SoftwareSimulatorManager;
 
 
@@ -19,6 +21,8 @@ enum class TimeModel {
 };
 
 struct ProgramInterface {
+    static constexpr const char* ERR_OUT_MISSING_WARNING = "[Warning] Cannot find the ERR_OUT_set_functions() function in the program. Programs should use 'err_out.h' and 'err_out.cpp' for logging and errors.";
+    static constexpr const char* FUNC_NAME_ERR_OUT_SET_FUNCTIONS = "ERR_OUT_set_functions";
     static constexpr const char *FUNC_NAME_GET_INTERFACE = "DI__get_interface";
     static constexpr const char *FUNC_NAME_SET_PORT = "DI__set_port";
     static constexpr const char *FUNC_NAME_GET_PORT = "DI__get_port";
@@ -41,6 +45,9 @@ struct SoftwareSimulator {
     virtual void start_timer() = 0;
     virtual ulong get_timer_micro() = 0;
     json query(const json& query);
+    // Returns '-1' if not found
+    int get_port_id(std::string& name);
+    int get_port_id_expected(std::string& name);
     
     virtual ~SoftwareSimulator() {}
 protected:
@@ -49,6 +56,8 @@ protected:
     
     fs::path software_path;
     std::string program_name;
+
+    std::unordered_map<std::string, int> port_id;
 
     //Methods that must be implemented by the Simulator instance
     virtual json query_simulator(const json& query) = 0;

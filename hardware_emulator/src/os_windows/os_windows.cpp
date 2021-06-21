@@ -301,6 +301,11 @@ void OS::Windows::set_param1_32(uint p)
     func_call.set_param1_32(p);
 }
 
+void OS::Windows::set_param1_64(ulong p)
+{
+    func_call.set_param1_64(p);
+}
+
 void OS::Windows::set_param2_32(uint p)
 {
     func_call.set_param2_32(p);
@@ -316,6 +321,11 @@ void OS::Windows::set_param3_32(uint p)
     func_call.set_param3_32(p);
 }
 
+void OS::Windows::set_param3_64(ulong p)
+{
+    func_call.set_param3_64(p);
+}
+
 void OS::Windows::set_param1_double(double p)
 {
     func_call.set_param1_double(p);
@@ -324,4 +334,14 @@ void OS::Windows::set_param1_double(double p)
 void OS::Windows::set_return_64(ulong r)
 {
     func_call.set_return_64(r);
+}
+
+ulong OS::Windows::get_param1_64()
+{
+    return func_call.get_param1_64();
+}
+
+ulong OS::Windows::get_param2_64()
+{
+    return func_call.get_param2_64();
 }

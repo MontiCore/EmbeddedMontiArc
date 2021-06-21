@@ -1,3 +1,6 @@
+/**
+ * (c) https://github.com/MontiCore/monticore
+ */
 /* This file defines standard ELF types, structures, and macros.
    Copyright (C) 1995-2018 Free Software Foundation, Inc.
    This file is part of the GNU C Library.

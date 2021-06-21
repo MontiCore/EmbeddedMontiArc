@@ -1,3 +1,7 @@
+====
+    (c) https://github.com/MontiCore/monticore
+====
+
  readelf --wide -r "D:\EmbededMontiArc\basic-simulator\install\autopilots\EmaAutopilot_lib.so"
 
 Relocation section '.rela.dyn' at offset 0x608a0 contains 3240 entries:

@@ -658,29 +658,6 @@ namespace Log {
             const char* const name;
             bool hide;
             LogStream( ConsoleColor color, const char *tag, const char *name ) : color( color ), tag( tag ), name(name), hide( false ) {}
-            // LogStream &operator<<( const TagStruct &param ) {
-            //     if ( hide )
-            //         return *this;
-            //     uconsole.set_color( color );
-            //     printf( "%-7s", tag );
-            //     return *this;
-            // }
-            // template<typename T>
-            // LogStream &operator<<( const T &param ) {
-            //     if ( hide )
-            //         return *this;
-            //     ss << param;
-            //     return *this;
-            // }
-            // LogStream &operator<<( const PostStruct &p ) {
-            //     if ( hide )
-            //         return *this;
-            //     auto res = ss.str();
-            //     output_stream->print(res.c_str(), color, name);
-            //     ss.str("");
-            //     ss.clear();
-            //     return *this;
-            // }
 
             void log(const char *format, ...) {
                 va_list args;
@@ -705,6 +682,7 @@ namespace Log {
     extern LogStream note;
     extern LogStream assert;
     extern LogStream test;
+    extern LogStream ap; // For output from the autopilot
 
         
     extern LogStream sys;
@@ -811,7 +789,7 @@ struct Library {
         return handle != nullptr;
     }
     
-    void *get_function( const char *name );
+    void *get_function( const char *name, bool optional = false );
     
     ~Library();
 };

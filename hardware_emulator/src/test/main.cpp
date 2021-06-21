@@ -3,7 +3,9 @@
  */
 #include "tests.h"
 #include "utility/utility.h"
+#include <iostream>
 
+bool do_debug = false;
 
 TestCase test_cases[] = {
     TestCase( "Simple DLL", test_simple_dll ),
@@ -14,9 +16,10 @@ TestCase test_cases[] = {
     TestCase( "Simple ELF", test_simple_elf ),
     TestCase( "Function Calling ELF", test_funccalling_elf ),
     TestCase( "Syscall ELF", test_syscall_elf ),
-    TestCase( "Autopilot Native", test_autopilot_native ),
-    TestCase( "Autopilot EMU Windows", test_autopilot_emu_windows ),
-    TestCase( "Autopilot EMU Linux", test_autopilot_emu_linux ),
+    TestCase( "ZigZag Autopilot Native", test_zigzag_autopilot_native ),
+    TestCase( "ZigZag Autopilot EMU Windows", test_zigzag_autopilot_emu_windows ),
+    TestCase( "ZigZag Autopilot EMU Linux", test_zigzag_autopilot_emu_linux ),
+    TestCase("EMA Autopilot Native", test_ema_autopilot_native),
     TestCase("EMA Autopilot EMU Windows", test_ema_autopilot_emu_windows),
     TestCase("EMA Autopilot EMU Linux", test_ema_autopilot_emu_linux),
 };
@@ -26,6 +29,11 @@ TestCase test_cases[] = {
 
 int main( int argc, char **argv ) {
     //ConsoleColor::Console::test_color();
+    if (argc > 1 && argv[1] == std::string("debug")) {
+        std::cout << "Enabling debug output" << std::endl;
+        do_debug = true;
+    }
+
     int test_id = 1;
     bool fault = false;
     for ( auto &tc : test_cases ) {
@@ -34,12 +42,12 @@ int main( int argc, char **argv ) {
             tc.func();
         }
         catch (std::exception & e) {
-            Log::err.log_tag("Test failed:\n\t%s", e.what());
+            Log::err.log_tag("Test failed:\n\t%s\n\n", e.what());
             fault = true;
             continue;
         }
         ++test_id;
-        Log::test.log("Test succeeded\n");
+        Log::test.log("Test succeeded\n\n\n");
     }
     if (fault) {
         Log::err.log_tag("Error occured in tests...");

@@ -38,7 +38,7 @@ elseif(CMAKE_HOST_UNIX)
   target_link_libraries(hardware_emulator PUBLIC dl stdc++fs)
 endif()
 target_compile_features(hardware_emulator PUBLIC cxx_std_17)
-target_compile_definitions(hardware_emulator PUBLIC _CRT_SECURE_NO_WARNINGS)
+target_compile_definitions(hardware_emulator PUBLIC _CRT_SECURE_NO_WARNINGS NO_ERR_OUT)
 if ( CMAKE_COMPILER_IS_GNUCC )
   target_compile_options(hardware_emulator PRIVATE
     -fPIC

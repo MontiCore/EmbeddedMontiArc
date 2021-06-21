@@ -16,6 +16,7 @@ struct SoftwareSimulatorManager;
 struct EmulatedProgramInterface : public ProgramInterface {
     Computer &computer;
 
+    uint64_t addr_get_functions = 0;
     uint64_t addr_get_interface = 0;
     uint64_t addr_set_port = 0;
     uint64_t addr_get_port = 0;
@@ -27,6 +28,7 @@ struct EmulatedProgramInterface : public ProgramInterface {
     uint64_t resolve( const char *name );
     void load();
     
+    void set_functions(uint64_t throw_error_ptr, uint64_t print_cout_ptr, uint64_t print_cerr_ptr);
     const char* get_interface();
     void set_port(int i, const char* data, int is_json);
     const char* get_port(int i, int is_json);
