@@ -195,23 +195,24 @@ void OS::ElfLoader::elf_main( Computer &computer ) {
     
     computer.call( init_address, ".init section call" );
 
-    if (dt_init_array_entry && dt_init_array_size_entry) {
+    // TODO temporarily removed, but be fixed
+    // if (dt_init_array_entry && dt_init_array_size_entry) {
 
-        if ( elf.is_64bit ) {
-            auto addrs = (Elf64_Addr *) (dt_init_array_entry->d_un.d_ptr); // !! virtual address
-            auto res = (Elf64_Addr *) computer.memory.read_memory(MemoryRange((ulong)addrs, dt_init_array_size_entry->d_un.d_val));
-            auto jm = dt_init_array_size_entry->d_un.d_val / sizeof (Elf64_Addr);
-            for (auto j = 0; j < jm; ++j) {
-                auto addr = res[j];
-                if (addr != 0 && addr != -1) {
-                    computer.call(addr, ".init_array section call" );
-                }
-            }
-        } else {
-            throw_assert( false, "TODO" );
-        }
+    //     if ( elf.is_64bit ) {
+    //         auto addrs = (Elf64_Addr *) (dt_init_array_entry->d_un.d_ptr); // !! virtual address
+    //         auto res = (Elf64_Addr *) computer.memory.read_memory(MemoryRange((ulong)addrs, dt_init_array_size_entry->d_un.d_val));
+    //         auto jm = dt_init_array_size_entry->d_un.d_val / sizeof (Elf64_Addr);
+    //         for (auto j = 0; j < jm; ++j) {
+    //             auto addr = res[j];
+    //             if (addr != 0 && addr != -1) {
+    //                 computer.call(addr, ".init_array section call" );
+    //             }
+    //         }
+    //     } else {
+    //         throw_assert( false, "TODO" );
+    //     }
 
-    }
+    // }
 
     computer.debug.d_code = false;// TEMP
     computer.debug.d_mem = false;// TEMP
