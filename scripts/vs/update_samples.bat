@@ -33,11 +33,3 @@ call make.bat
 echo [SCRIPT] Copying syscall sample...
 move "sample_syscall.dll" "..\..\hardware_emulator\bin\sample_syscall.dll"
 cd ..
-
-echo [SCRIPT] Updating cppautopilotzigzag sample...
-cd cppautopilotzigzag
-call make.bat
-echo [SCRIPT] Copying cppautopilotzigzag sample...
-move "cppautopilot_zigzag_lib.dll" "..\..\hardware_emulator\bin\cppautopilot_zigzag_lib.dll"
-move "cppautopilot_zigzag_lib.dll" "..\..\src\test\resources\autopilots\cppautopilot_zigzag_lib.dll"
-cd ..

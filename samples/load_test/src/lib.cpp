@@ -1,3 +1,6 @@
+/**
+ * (c) https://github.com/MontiCore/monticore
+ */
 #include "lib.h"
 #include <iostream>
 
