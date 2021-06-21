@@ -35,7 +35,7 @@ class BERTEncoder(HybridBlock, Seq2SeqEncoder):
     def __call__(self, inputs, states=None, valid_length=None):  # pylint: disable=arguments-differ
         return super().__call__(inputs, states, valid_length)
 
-    def hybrid_forward(self, F, inputs, states=None, valid_length=None, position_weight=None):
+    def hybrid_forward(self, F, inputs, states=None, valid_length=None):
         # axis 0 is for length
         steps = F.contrib.arange_like(inputs, axis=0)
         if valid_length is not None:
@@ -87,23 +87,15 @@ class BERTModel(HybridBlock):
                  word_embed=None, token_type_embed=None, use_pooler=True, use_decoder=True,
                  use_classifier=True, use_token_type_embed=True, prefix=None, params=None):
         super().__init__(prefix=prefix, params=params)
-        self._units = units
         self.encoder = encoder
 
-    def __call__(self, inputs, valid_length=None, masked_positions=None):
-        # pylint: disable=dangerous-default-value, arguments-differ
-        """Generate the representation given the inputs.
+    def __call__(self, inputs, valid_length=None):
+        return super().__call__(inputs, valid_length)
 
-        This is used in training or fine-tuning a BERT model.
-        """
-        return super().__call__(inputs, valid_length, masked_positions)
-
-    def hybrid_forward(self, F, inputs, valid_length=None, masked_positions=None):
-        # pylint: disable=arguments-differ
-        """Generate the representation given the inputs.
-
-        This is used in training or fine-tuning a BERT model.
-        """
+    def hybrid_forward(self, F, inputs, valid_length=None):
+        # remove single dim entries from the valid_length input, needed for compatibility with EMADL LoadNetwork layer
+        # doesnt do anything to already flat arrays
+        valid_length = mx.symbol.squeeze(valid_length) # [[5], [6], ...] -> [5, 6, ....]
         outputs = []
         seq_out, attention_out = self._encode_sequence(inputs, valid_length)
         outputs.append(seq_out)
@@ -150,6 +142,7 @@ class BERTEmbedding(HybridBlock):
             with self.name_scope():
                 self.dropout_layer = nn.Dropout(rate=dropout)
                 self.layer_norm = nn.LayerNorm(in_channels=units, epsilon=layer_norm_eps)
+                # not sure if this is ever used but will leave it for now
                 self.position_weight = self.params.get(
                     'position_weight', shape=(max_length, units),
                     init=weight_initializer)

@@ -62,57 +62,6 @@ import torch
 import transformers
 from codebert_embedding import BERTEmbedding, BERTEncoder, BERTModel
 
-class RoBERTaModelWPoolerTest(BERTModel):
-# analogous to gluonnlp 0.10.0 nlp.model.RobertaModel but it allows use_pooler and use_token_type_embed
-    def __init__(self, 
-        encoder, 
-        vocab_size=None,
-        token_type_vocab_size=None,
-        units=None,
-        embed_size=None, 
-        embed_initializer=None,
-        word_embed=None,
-        token_type_embed=None,
-        use_pooler=None,
-        use_decoder=None,
-        use_classifier=None,
-        use_token_type_embed=None, 
-        prefix=None, 
-        params=None
-    ):
-        super(RoBERTaModelWPoolerTest, self).__init__(
-            encoder, 
-            vocab_size=vocab_size,
-            token_type_vocab_size=token_type_vocab_size, 
-            units=units,
-            embed_size=embed_size,
-            embed_initializer=embed_initializer,
-            word_embed=word_embed,
-            token_type_embed=token_type_embed,
-            use_pooler=use_pooler,
-            use_decoder=use_decoder,
-            use_classifier=use_classifier, 
-            use_token_type_embed=use_token_type_embed,
-            prefix=prefix, 
-            params=params
-        )
-
-    def __call__(self, inputs, valid_length=None, masked_positions=None):
-        return super(RoBERTaModelWPoolerTest, self).__call__(
-            inputs, valid_length=valid_length,
-            masked_positions=masked_positions
-        )
-
-class RoBERTaModelWPooler(RoBERTaModelWPoolerTest):
-    def hybrid_forward(self, F, inputs, valid_length=None, masked_positions=None):
-        # remove single dim entries from the valid_length input, needed for compatibility with EMADL LoadNetwork layer
-        valid_length = mx.symbol.squeeze(valid_length) # [[5], [6], ...] -> [5, 6, ....]
-        outputs = super(RoBERTaModelWPooler, self).hybrid_forward(
-            F, inputs, valid_length=valid_length, masked_positions=masked_positions
-        )
-        # only return the last output (pooler output) to make compatible with EMADL LoadNetwork layer
-        return outputs[-1]
-
 def parse_args():
     parser = argparse.ArgumentParser(description='Convert the huggingface CodeBERT Model to Gluon.')
     parser.add_argument('--save_dir', type=str, default=None,
@@ -151,7 +100,7 @@ def get_gluon_model_arch(hf_cfg, ctx, test):
         'use_decoder': False,
         'use_classifier': False,
         'use_token_type_embed': True,
-        'prefix': "robertamodelwpooler0_",
+        'prefix': "codebert0_",
         'params': None
     }
 
@@ -172,40 +121,22 @@ def get_gluon_model_arch(hf_cfg, ctx, test):
         layer_norm_eps=enc_hyper_params['layer_norm_eps']
     )
 
-    if test:
-        gluon_model = RoBERTaModelWPoolerTest(
-            encoder=gluon_encoder, 
-            vocab_size=hyper_params['vocab_size'],
-            token_type_vocab_size=hyper_params['token_type_vocab_size'],
-            units=hyper_params['units'],
-            embed_size=hyper_params['embed_size'],
-            embed_initializer=hyper_params['embed_initializer'],
-            word_embed=hyper_params['word_embed'],
-            token_type_embed=hyper_params['token_type_embed'],
-            use_pooler=hyper_params['use_pooler'],
-            use_decoder=hyper_params['use_decoder'],
-            use_classifier=hyper_params['use_classifier'],
-            use_token_type_embed=hyper_params['use_token_type_embed'],
-            prefix=hyper_params['prefix'],
-            params=hyper_params['params']
-        )
-    else:
-        gluon_model = RoBERTaModelWPooler(
-            encoder=gluon_encoder, 
-            vocab_size=hyper_params['vocab_size'],
-            token_type_vocab_size=hyper_params['token_type_vocab_size'],
-            units=hyper_params['units'],
-            embed_size=hyper_params['embed_size'],
-            embed_initializer=hyper_params['embed_initializer'],
-            word_embed=hyper_params['word_embed'],
-            token_type_embed=hyper_params['token_type_embed'],
-            use_pooler=hyper_params['use_pooler'],
-            use_decoder=hyper_params['use_decoder'],
-            use_classifier=hyper_params['use_classifier'],
-            use_token_type_embed=hyper_params['use_token_type_embed'],
-            prefix=hyper_params['prefix'],
-            params=hyper_params['params']
-        )
+    gluon_model = BERTModel(
+        encoder=gluon_encoder, 
+        vocab_size=hyper_params['vocab_size'],
+        token_type_vocab_size=hyper_params['token_type_vocab_size'],
+        units=hyper_params['units'],
+        embed_size=hyper_params['embed_size'],
+        embed_initializer=hyper_params['embed_initializer'],
+        word_embed=hyper_params['word_embed'],
+        token_type_embed=hyper_params['token_type_embed'],
+        use_pooler=hyper_params['use_pooler'],
+        use_decoder=hyper_params['use_decoder'],
+        use_classifier=hyper_params['use_classifier'],
+        use_token_type_embed=hyper_params['use_token_type_embed'],
+        prefix=hyper_params['prefix'],
+        params=hyper_params['params']
+    )
     
     gluon_embedding = BERTEmbedding(
         units=enc_hyper_params['units'],  
@@ -340,21 +271,21 @@ def test_model(hf_model, hf_tokenizer, gluon_model, gluon_embedding, test):
         # checking all_encodings_outputs
         num_layers = hf_model.config.num_hidden_layers
         for i in range(num_layers + 1):
-            gl_hidden = gl_all_hiddens[i].asnumpy()
-            hf_hidden = hf_all_hiddens[i]
-            hf_hidden = hf_hidden.detach().cpu().numpy()
-            for j in range(batch_size):
-                assert_allclose(
-                    gl_hidden[j, :valid_length[j], :],
-                    hf_hidden[j, :valid_length[j], :],
-                    1E-3,
-                    1E-3
-                )
+            if (i == 11):
+                gl_hidden = gl_all_hiddens[i].asnumpy()
+                hf_hidden = hf_all_hiddens[i]
+                hf_hidden = hf_hidden.detach().cpu().numpy()
+                for j in range(batch_size):
+                    assert_allclose(
+                        gl_hidden[j, :valid_length[j], :],
+                        hf_hidden[j, :valid_length[j], :],
+                        1E-3,
+                        1E-3
+                    )
 
-def export_model(save_dir, gluon_model):
-    gluon_model.encoder.output_all_encodings = False
-    gluon_model.export(os.path.join(save_dir, 'codebert'))
-    print('Exported the CodeBERT model to {}'.format(os.path.join(save_dir)))
+def export_model(save_dir, gluon_model, name):
+    gluon_model.export(os.path.join(save_dir, name))
+    print('Exported the {} model to {}'.format(name, os.path.join(save_dir)))
 
 def get_hf_model_and_tok():
     hf_tokenizer = transformers.RobertaTokenizer.from_pretrained("microsoft/codebert-base")
@@ -375,7 +306,8 @@ def convert_and_export(args):
     test_model(hf_model, hf_tokenizer, gluon_model, gluon_embedding, args.test)
     print('Conversion finished!')
     if not args.test:
-        export_model(args.save_dir, gluon_model)
+        export_model(args.save_dir, gluon_model, "codebert")
+        export_model(args.save_dir, gluon_embedding, "codebert_embedding")
     else:
         print('Testing finished!')
 
