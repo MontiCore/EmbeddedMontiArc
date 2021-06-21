@@ -58,15 +58,15 @@ import h5py
 
 class Seq2Seq(HybridBlock):
     def __init__(
-            self, encoder, decoder, embedding,
+            self, embedding, encoder, decoder,
             vocab_size=None, hidden_size=None, beam_size=None, 
             max_length=None, sos_id=None, 
             eos_id=None, prefix=None, params=None
         ):
             super().__init__(prefix=prefix, params=params)
+            self.embedding = embedding
             self.encoder = encoder
             self.decoder = decoder
-            self.embedding = embedding
             self.bias = mx.ndarray.linalg.extracttrian(mx.nd.ones((2048,2048)))
             self.dense = nn.Dense(hidden_size, in_units=hidden_size, activation='tanh')
             # tie the lm_head and word_embed params together not sure if this is the correct way to do it
@@ -82,8 +82,11 @@ class Seq2Seq(HybridBlock):
         # using params=.. in the Dense constructor doesnt seem to work, so we have to set the weights manually?
         # TODO after setting the weight should we use params= in the lm_head constructor to make them update automatically?
         lm_head = nn.Dense(vocab_size, in_units=hidden_size, use_bias=False)
-        lm_head.collect_params()['weight'].set_data(
+        lm_head.initialize()
+        print(lm_head.collect_params())
+        lm_head.collect_params()['dense1_weight'].set_data(
             self.encoder.collect_params()['robertamodelwpooler0_word_embed_embedding0_weight'].data())
+        print(lm_head.collect_params())
         return lm_head
 
     def create_target_mask(self, target_ids, valid_length):
@@ -182,11 +185,11 @@ def get_decoder():
     )
     return decoder
 
-def get_seq2seq(encoder, decoder, embedding):
+def get_seq2seq(embedding, encoder, decoder,):
     seq2seq_hparams = {
+        'embedding': embedding,
         'encoder': encoder,
         'decoder': decoder,
-        'embedding': embedding,
         'hidden_size': 768,
         'vocab_size': 50265, # TODO correct vocab size? or should it be -2/+2?
         'beam_size': 10,
@@ -196,9 +199,9 @@ def get_seq2seq(encoder, decoder, embedding):
     }
     seq2seq = Seq2Seq(
         # params taken from cmd line args in codebert repo and roberta config
+        seq2seq_hparams['embedding'],
         seq2seq_hparams['encoder'], 
         seq2seq_hparams['decoder'],
-        seq2seq_hparams['embedding'],
         hidden_size=seq2seq_hparams['hidden_size'],
         vocab_size=seq2seq_hparams['vocab_size'],
         beam_size=seq2seq_hparams['beam_size'], 
@@ -221,38 +224,20 @@ def get_data_iterator(inputs, outputs, shuffle, batch_size, filename):
         data=input_dict, label=output_dict, shuffle=shuffle, batch_size=batch_size)
     return data_iterator
 
-def load_codebert_encoder_block(symbolFile, weightFile, context):
+def load_codebert_encoder_block(symbol_file, weight_file, context):
+    inputNames = ['data0', 'data1']
+    return gluon.nn.SymbolBlock.imports(symbol_file, input_names, weight_file, ctx=context)
+
+def load_codebert_embed_block(symbol_file, weight_file, context):
     inputNames = ['data0', 'data1', 'data2']
-    return gluon.nn.SymbolBlock.imports(symbolFile, inputNames, weightFile, ctx=context)
-
-def get_word_embed_subnet(symbol_file, weight_file, ctx):
-    # we need access to the word embedding part of the RoBERTaModel, 
-    # which cant be directly accessed with mxnets symbol api (through the encoder SymbolBlock)
-    # so we have to costruct a new subnet from the symbols up to the layer norm
-    # in the pretrained network we pass as the encoder part of the seq2seq model
-    sym = mx.sym.load(symbol_file)
-    inputs = [mx.sym.var('data0'), mx.sym.var('data1'), mx.sym.var('data2')]
-    outputs = sym.get_internals()['bertencoder0_layernorm0_layernorm0_output'] # end of the word embedding part of the model
-    block = mx.gluon.SymbolBlock(inputs=inputs, outputs=outputs)
-    block.load_parameters(weight_file, ctx=ctx, ignore_extra=True) # load weights into symbolblock
-    # TODO do we need to permute the outputs to (1, 0, 2)?
-    return block
-
-def get_word_embed_weights(symbol_file, weight_file, ctx):
-    # the lm_head layer needs to have the same embedding 'weights' as the embedding layer 
-    sym = mx.sym.load(symbol_file)
-    inputs = mx.sym.var('data0') #dummy input to return the weight array
-    outputs = sym.get_internals()['robertamodelwpooler0_word_embed_embedding0_weight'] # end of the word embedding part of the model
-    block = mx.gluon.SymbolBlock(inputs=inputs, outputs=outputs)
-    block.load_parameters(weight_file, ctx=ctx, ignore_extra=True) # load weights into symbolblock
-    return block(mx.nd.array([])) #dummy input to return the weight array TODO is there a cleaner way to do this?
+    return gluon.nn.SymbolBlock.imports(symbol_file, input_names, weight_file, ctx=context)
 
 def train_model(args):
     ctx = [mx.cpu()]
+    embedding = load_codebert_embed_block(args.embed_symbol_file, args.embed_weight_file, ctx)
     encoder = load_codebert_encoder_block(args.symbol_file, args.weight_file, ctx)
     decoder = get_decoder()
-    embedding = get_word_embed_subnet(args.symbol_file, args.weight_file, ctx)
-    seq2seq = get_seq2seq(encoder, decoder, embedding)
+    seq2seq = get_seq2seq(embedding, encoder, decoder)
     seq2seq.collect_params().initialize(force_reinit=False, ctx=ctx)
     seq2seq.hybridize()
     train_data = get_data_iterator(
@@ -319,6 +304,10 @@ def parse_args():
         help="Symbol file from the pretrained model output by the conversion script")
     parser.add_argument("--weight_file", default='./codebert_gluon/codebert-0000.params', type=str,
         help="Weight file from the pretrained model output by the conversion script")
+    parser.add_argument("--embed_symbol_file", default='./codebert_gluon/codebert_embedding-symbol.json', type=str,
+        help="Symbol file from the pretrained embed output by the conversion script")
+    parser.add_argument("--embed_weight_file", default='./codebert_gluon/codebert_embedding-0000.params', type=str,
+        help="Weight file from the pretrained embed output by the conversion script")
     return parser.parse_args()
 
 if __name__ == '__main__':
