@@ -22,7 +22,7 @@ int get_socket_id(const std::string &ip, int32_t max_count) {
 #ifdef NO_ERR_OUT
         std::cerr << "'N-to-N' IP '" << ip << "' outside of range [1:"<< (max_count) << "]. Ignoring packet." << std::endl;
 #else
-        print_cerr("Id '%PRIi32' of 'N-to-N' IP '%s' outside of range [1:%PRIi32]. Ignoring packet.", ip.c_str(), max_count);
+        print_cerr("Id '%" PRIi32 "' of 'N-to-N' IP '%s' outside of range [1:%" PRIi32 "]. Ignoring packet.", ip.c_str(), max_count);
 #endif
         return -1;
     }

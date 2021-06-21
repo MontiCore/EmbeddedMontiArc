@@ -280,7 +280,7 @@ void JsonTraverser::parsing_exception(const char *msg_format, ...) {
             break;
         }
     }
-    snprintf(LOCAL_BUFFER+written, LOCAL_BUFFER_SIZE-written, "\n  at [Line %PRIi32] %s %.*s[>]%.*s %s", line, dots_before, before_length, context_before, after_length, pos, dots_after);
+    snprintf(LOCAL_BUFFER+written, LOCAL_BUFFER_SIZE-written, "\n  at [Line %" PRIi32 "] %s %.*s[>]%.*s %s", line, dots_before, before_length, context_before, after_length, pos, dots_after);
     ERR_OUT_throw_error("JsonParsingException",LOCAL_BUFFER);
 }
 
@@ -385,7 +385,7 @@ int64_t JsonTraverser::get_long() {
 
 void JsonTraverser::expect_valid_integer(int64_t l) {
     if (l > (int64_t) INT32_MAX || l < (int64_t) INT32_MIN)
-        parsing_exception("The int64_t '%PRIi64' doesn't fit in an int32_t", l);
+        parsing_exception("The int64_t '%" PRIi64 "' doesn't fit in an int32_t", l);
 }
 
 void JsonTraverser::get_value_type() {

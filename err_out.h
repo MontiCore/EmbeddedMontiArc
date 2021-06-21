@@ -27,9 +27,11 @@ extern print_func ERR_OUT_print_cerr;
 
 void ERR_OUT_set_functions(throw_func throw_error_ptr, print_func print_cout_ptr, print_func print_cerr_ptr);
 
+#ifndef NO_ERR_OUT
 void throw_error(const char *type, const char *msg_format, ...);
 void print_cout(const char *msg_format, ...);
 void print_cerr(const char *msg_format, ...);
+#endif
 
 #ifdef __cplusplus
 }
