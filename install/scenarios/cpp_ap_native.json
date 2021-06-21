@@ -69,7 +69,7 @@
                 {
                     "type": "computer",
                     "name": "Computer",
-                    "software_name": "cppautopilot_zigzag_lib",
+                    "software_name": "zigzag_autopilot_lib",
                     "backend": {
                         "type": "direct"
                     },

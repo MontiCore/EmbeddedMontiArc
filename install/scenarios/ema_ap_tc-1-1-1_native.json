@@ -80,14 +80,14 @@
                 {
                     "type": "computer",
                     "name": "Computer",
-                    "software_name": "EmaAutopilot_lib",
+                    "software_name": "ema_autopilot_lib",
                     "backend": {
                         "type": "direct"
                     },
                     "time_model": {
                         "type": "constant"
                     },
-                    "cycle_duration": [0,10000000],
+                    "cycle_duration": [0,100000000],
                     "json_data_exchange": true
                 }
             ]
