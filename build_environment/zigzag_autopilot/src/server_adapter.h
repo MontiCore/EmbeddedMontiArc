@@ -1,35 +1,42 @@
 #pragma once
-#include "autopilot.h"
-//#include "program_interface.h"
+
 #include <string>
 #include <iostream>
 #include <chrono>
+
 #include "network.h"
 #include "tcp_protocol.h"
 
-#define PROGRAM_INTERFACE_TYPE "dynamic"
-#define PROGRAM_PORT_COUNT 12
-extern const char* PROGRAM_INTERFACE;
+
+using HRClock = std::chrono::high_resolution_clock;
+using TimePoint = HRClock::time_point;
+using duration = std::chrono::duration<double>;
+
+
+
+enum TimeMode {
+    REALTIME,
+    MEASURED
+};
 
 void usage(char *app_name);
-
-
 void simulation_session(int socket);
+
+// Used as singleton
 struct SimulationSession {
     TimeMode time_mode = MEASURED;
     Socket socket;
-    Autopilot autopilot;
+    bool is_json_comm = false;
     
     SimulationSession(int socket) : socket(socket) {}
 
     void run();
-    void init(PacketReader &init_packet);
+    void init(BinaryReader &init_packet);
 
-    void set_input(PacketReader &input_packet);
-    void run_cycle(PacketReader &run_packet);
-    void send_output(int port_id);
+    void run_cycle(BinaryReader &run_packet);
+    void send_outputs();
+    void send_socket_outputs(int port_id);
     void send_time(double time);
-    void send_ping();
 };
 
 
