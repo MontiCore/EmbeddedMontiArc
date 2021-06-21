@@ -23,7 +23,7 @@ cd $1
 
 OUTPUT_DIR=target/cpp
 
-java -cp $EMADL_TO_CPP_JAR de.monticore.lang.monticar.emadl.generator.EMADLGeneratorCli \
+java -jar $EMADL_TO_CPP_JAR \
   --models-dir=$MODEL_DIR \
   --root-model=$MODEL_NAME \
   --output-dir=$OUTPUT_DIR \
@@ -31,7 +31,7 @@ java -cp $EMADL_TO_CPP_JAR de.monticore.lang.monticar.emadl.generator.EMADLGener
   --flag-generate-cmake \
   --armadillo-import \
   --tcp-adapter \
-  --output-name=$OUTPUT_NAME
-# --dyn-interface \
+  --output-name=$OUTPUT_NAME \
+  --library-interface 
 
 popd

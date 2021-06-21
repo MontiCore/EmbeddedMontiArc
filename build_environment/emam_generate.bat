@@ -26,7 +26,7 @@ set OUTPUT_DIR=target/cpp
 
 @echo on
 
-java -cp %EMAM_TO_CPP_JAR% de.monticore.lang.monticar.generator.cpp.GeneratorCppCli ^
+call java -jar %EMAM_TO_CPP_JAR% ^
   --models-dir=%MODEL_DIR% ^
   --root-model=%MODEL_NAME% ^
   --output-dir=%OUTPUT_DIR% ^
