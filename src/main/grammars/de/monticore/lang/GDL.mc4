@@ -2,6 +2,14 @@ package de.monticore.lang;
 
 grammar GDL extends de.monticore.literals.MCCommonLiterals {
 
-  Game = StringLiteral;
+    Game = GameExpression*;
+
+    interface GameRelation;
+
+    GameExpression implements GameRelation =
+        "(" handle:GameString component:GameRelation*  ")";
+      
+
+    GameString implements GameRelation = Name;
   
 }
