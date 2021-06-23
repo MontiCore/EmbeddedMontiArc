@@ -164,9 +164,6 @@ int MultiByteToWideChar(
 
 ERROR_INSUFFICIENT_BUFFER = 122L
 */
-        if (computer.debug.unsupported_syscalls()) {
-            Log::err.log_tag("Autopilot is calling MultiByteToWideChar.");
-        }
         auto code_page = computer.func_call_windows.get_param1_32();
         auto dwFlags = computer.func_call_windows.get_param2_32();
         auto lpMultiByteStr = computer.func_call_windows.get_param3_64();
@@ -202,6 +199,7 @@ ERROR_INSUFFICIENT_BUFFER = 122L
         }
         else {
             //res = MultiByteToWideChar(code_page, dwFlags, source, cbMultiByte, nullptr, 0);
+            Log::err.log_tag("Unsupported MultiByteToWideChar case.");
         }
 
         computer.func_call_windows.set_return_64(res);
