@@ -46,8 +46,8 @@ struct SoftwareSimulator {
     virtual ulong get_timer_micro() = 0;
     json query(const json& query);
     // Returns '-1' if not found
-    int get_port_id(std::string& name);
-    int get_port_id_expected(std::string& name);
+    int get_port_id(const std::string& name) const;
+    int get_port_id_expected(const std::string& name) const;
     
     virtual ~SoftwareSimulator() {}
 protected:

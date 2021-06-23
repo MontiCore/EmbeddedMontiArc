@@ -5,6 +5,7 @@
 #include <unicorn/unicorn.h>
 #include "computer/computer_layout.h"
 #include "computer/registers.h"
+#include <inttypes.h>
 
 #ifdef min
 #undef min
@@ -289,7 +290,7 @@ void MemorySection::print_annotation( ulong virtual_address, char* buffer, int b
             if (note.base != virtual_address) {
                 auto sign = note.base < virtual_address ? "" : "-";
                 auto val = note.base < virtual_address ? (virtual_address - note.base) : (note.base - virtual_address);
-                snprintf(buffer, buffer_size, "(%s[%s%Iu])", note.name.c_str(), sign, val);
+                snprintf(buffer, buffer_size, "(%s[%s%" PRIu64 "])", note.name.c_str(), sign, val);
             }
             else {
                 snprintf(buffer, buffer_size, "(%s)", note.name.c_str());

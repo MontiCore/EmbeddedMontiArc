@@ -47,16 +47,16 @@ json SoftwareSimulator::query(const json& query)
     return query_simulator(query);
 }
 
-int SoftwareSimulator::get_port_id(std::string& name)
+int SoftwareSimulator::get_port_id(const std::string& name) const
 {
-    auto& e = port_id.find(name);
+    const auto& e = port_id.find(name);
     if (e != port_id.end()) return e->second;
     return -1;
 }
 
-int SoftwareSimulator::get_port_id_expected(std::string& name)
+int SoftwareSimulator::get_port_id_expected(const std::string& name) const
 {
-    auto& e = port_id.find(name);
+    const auto& e = port_id.find(name);
     if (e != port_id.end()) return e->second;
     throw_error("Could not get port_id for port '" + name + "'.");
 }

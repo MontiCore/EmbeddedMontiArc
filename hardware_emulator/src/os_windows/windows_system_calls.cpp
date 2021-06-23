@@ -4,7 +4,7 @@
 #include "os_windows/windows_system_calls.h"
 #include <cmath>
 
-#include <Windows.h>
+//#include <Windows.h>
 
 using namespace std;
 
@@ -164,6 +164,9 @@ int MultiByteToWideChar(
 
 ERROR_INSUFFICIENT_BUFFER = 122L
 */
+        if (computer.debug.unsupported_syscalls()) {
+            Log::err.log_tag("Autopilot is calling MultiByteToWideChar.");
+        }
         auto code_page = computer.func_call_windows.get_param1_32();
         auto dwFlags = computer.func_call_windows.get_param2_32();
         auto lpMultiByteStr = computer.func_call_windows.get_param3_64();
@@ -186,10 +189,11 @@ ERROR_INSUFFICIENT_BUFFER = 122L
             Log::sys.log_tag("MultiByteToWideChar(%u, %u, %s, %u, %s, %u)", code_page, dwFlags, to_hex(lpMultiByteStr).c_str(), cbMultiByte, to_hex(lpWideCharStr).c_str(), cchWideChar);
             Log::sys.log_tag("    with lpMultiByteStr=\"%s\"", source);
         }*/
-        int res;
+        int res = 0;
         if (cchWideChar > 0) {
             std::vector<wchar_t> buff(cchWideChar);
-            res = MultiByteToWideChar(code_page, dwFlags, source, cbMultiByte, buff.data(), cchWideChar);
+            res = std::mbtowc(buff.data(), source, cbMultiByte);
+            //res = MultiByteToWideChar(code_page, dwFlags, source, cbMultiByte, buff.data(), cchWideChar);
             //throw_assert(res == 0, "MultiByteToWideChar error");
             if (res == 0) {
                 //throw_lasterr("MultiByteToWideChar");
@@ -197,7 +201,7 @@ ERROR_INSUFFICIENT_BUFFER = 122L
             computer.memory.write_memory(lpWideCharStr, cchWideChar * 2, buff.data());
         }
         else {
-            res = MultiByteToWideChar(code_page, dwFlags, source, cbMultiByte, nullptr, 0);
+            //res = MultiByteToWideChar(code_page, dwFlags, source, cbMultiByte, nullptr, 0);
         }
 
         computer.func_call_windows.set_return_64(res);
@@ -229,7 +233,7 @@ int WideCharToMultiByte(
 
         auto input_str = computer.memory.read_wstr(lpWideCharStr);
 
-        if (computer.debug.syscalls()) {
+        if (computer.debug.unsupported_syscalls()) {
             Log::sys.log_tag("MultiByteToWideChar(%u, %u, %s, %u, %s, %u, %s, %s)", 
                 code_page, dwFlags, 
                 to_hex(lpMultiByteStr).c_str(), cbMultiByte, 
