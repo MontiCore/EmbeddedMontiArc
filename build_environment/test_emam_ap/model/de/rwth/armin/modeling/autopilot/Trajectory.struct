@@ -1,8 +1,0 @@
-
-package de.rwth.armin.modeling.autopilot;
-
-struct Trajectory { 
-    Z length;
-    Q^10 x;
-    Q^10 y;
-}
