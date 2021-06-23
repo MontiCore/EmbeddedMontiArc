@@ -1,4 +1,6 @@
 target/
 build/
 local_build/
+local_Debug/
+local_Release/
 gcc_build/

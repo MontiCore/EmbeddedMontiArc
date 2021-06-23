@@ -2,8 +2,12 @@ cmake_minimum_required(VERSION 3.15)
 
 project(zigzag_autopilot)
 
-set(SHARED_CPP_DIR $ENV{SHARED_CPP_PATH})
-
+message(STATUS "SHARED_CPP_DIR=${SHARED_CPP_DIR}")
+if(SHARED_CPP_DIR)
+    message( STATUS "Found SHARED_CPP directory: ${SHARED_CPP_DIR}")
+else()
+    message( FATAL_ERROR "This project requires the SHARED_CPP project. Specify using -DSHARED_CPP_DIR=path/to/shared_cpp" )
+endif()
 
 
 list(APPEND AUTOPILOT_FILES
