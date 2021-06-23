@@ -68,6 +68,10 @@ def parse_args():
         help='Directory path to save the converted model.')
     parser.add_argument('--test', action='store_true',
         help='If the model should be tested for equivalence after conversion, no model is output')
+    parser.add_argument("--batch_size", default=8, type=int,
+        help="Batch size for training")
+    parser.add_argument("--seq_length", default=256, type=int,
+        help="Length of the input sequences")
     return parser.parse_args()
 
 def get_gluon_model_arch(hf_cfg, ctx, test):
@@ -215,7 +219,7 @@ def convert_params(hf_model, hf_tokenizer, hf_cfg, test):
     # position embed weight
     padding_idx = hf_tokenizer.pad_token_id
     hf_pos_embed_name = 'embeddings.position_embeddings.weight'
-    gl_pos_embed_name = 'bertembedding0_position_weight'
+    gl_pos_embed_name = 'bertembedding0_position_embed_embedding0_weight'
     hf_wo_pad = arr_to_gl(hf_params[hf_pos_embed_name])[padding_idx + 1:, :]
     gluon_embedding_params[gl_pos_embed_name].set_data(hf_wo_pad)
     
@@ -226,11 +230,10 @@ def convert_params(hf_model, hf_tokenizer, hf_cfg, test):
 def arr_to_gl(arr):
     return mx.nd.array(arr.cpu().numpy())
 
-def test_model(hf_model, hf_tokenizer, gluon_model, gluon_embedding, test):
+def test_model(hf_model, hf_tokenizer, gluon_model, gluon_embedding, args):
     print('Performing a short model test...')
+    test, batch_size, seq_length = args.test, args.batch_size, args.seq_length
     ctx = mx.cpu()
-    batch_size = 3
-    seq_length = 32
     vocab_size = hf_model.config.vocab_size
     padding_id = hf_tokenizer.pad_token_id
     input_ids = np.random.randint(padding_id + 1, vocab_size, (batch_size, seq_length))
@@ -303,7 +306,7 @@ def convert_and_export(args):
         os.makedirs(args.save_dir)
     hf_model, hf_tokenizer = get_hf_model_and_tok()
     gluon_model, gluon_embedding = convert_params(hf_model, hf_tokenizer, hf_model.config, args.test)
-    test_model(hf_model, hf_tokenizer, gluon_model, gluon_embedding, args.test)
+    test_model(hf_model, hf_tokenizer, gluon_model, gluon_embedding, args)
     print('Conversion finished!')
     if not args.test:
         export_model(args.save_dir, gluon_model, "codebert")
