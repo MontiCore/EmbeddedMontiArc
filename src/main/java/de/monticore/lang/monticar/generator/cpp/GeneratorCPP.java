@@ -14,7 +14,7 @@ import de.monticore.lang.monticar.generator.cmake.CMakeFindModule;
 import de.monticore.lang.monticar.generator.cpp.Dynamics.DynamicHelper;
 import de.monticore.lang.monticar.generator.cpp.Dynamics.EventPortValueCheck;
 import de.monticore.lang.monticar.generator.cpp.converter.*;
-import de.monticore.lang.monticar.generator.cpp.dynamic_interface.DynamicInterfaceGenerator;
+import de.monticore.lang.monticar.generator.cpp.dynamic_interface.AdapterGenerator;
 import de.monticore.lang.monticar.generator.cpp.loopSolver.CPPEquationSystemHelper;
 import de.monticore.lang.monticar.generator.cpp.loopSolver.EquationSystemComponentInstanceSymbol;
 import de.monticore.lang.monticar.generator.cpp.loopSolver.NumericSolverOptions;
@@ -49,9 +49,8 @@ public class GeneratorCPP implements EMAMGenerator {
     public static GeneratorCPP currentInstance;
     private Path modelsDirPath;
     private boolean isGenerateTests = false;
-    private boolean genDynamicInterface = false;
+    private boolean genLibraryInterface = false;
     private boolean genServerAdapter = false;
-    private boolean genDDCAdapter = false;
     private boolean importArmadillo = false;
     private String outputName = "";
     private boolean isGenerateServerWrapper = false;
@@ -391,16 +390,15 @@ public class GeneratorCPP implements EMAMGenerator {
 
 
     public void generateAdapters(List<FileContent> fileContents, EMAComponentInstanceSymbol component) {
-        if (genDynamicInterface || genServerAdapter || genDDCAdapter) {
+        if (genLibraryInterface || genServerAdapter) {
             try {
                 fileContents.addAll(
-                    new DynamicInterfaceGenerator(
+                    new AdapterGenerator(
                         component,
                         cMakeConfig,
                         outputName,
-                        genDynamicInterface,
-                        genServerAdapter,
-                        genDDCAdapter
+                        genLibraryInterface,
+                        genServerAdapter
                     ).getFiles()
                 );
             } catch (SerializationException | IOException e) {
@@ -541,8 +539,8 @@ public class GeneratorCPP implements EMAMGenerator {
         isGenerateTests = generateTests;
     }
 
-    public boolean isGenerateDynamicInterface() {
-        return genDynamicInterface;
+    public boolean isGenerateLibraryInterface() {
+        return genLibraryInterface;
     }
 
     public void setImportArmadillo(boolean doImport) {
@@ -553,8 +551,8 @@ public class GeneratorCPP implements EMAMGenerator {
         return importArmadillo;
     }
 
-    public void setGenerateDynamicInterface(boolean gen) {
-        genDynamicInterface = gen;
+    public void setGenerateLibraryInterface(boolean gen) {
+        genLibraryInterface = gen;
     }
 
     public boolean isGenerateServerAdapter() {
@@ -563,14 +561,6 @@ public class GeneratorCPP implements EMAMGenerator {
 
     public void setGenerateServerAdapter(boolean gen) {
         genServerAdapter = gen;
-    }
-
-    public boolean isGenerateDDCAdapter() {
-        return genDDCAdapter;
-    }
-
-    public void setGenerateDDCAdapter(boolean gen) {
-        genDDCAdapter = gen;
     }
 
     public void setOutputName(String name) {

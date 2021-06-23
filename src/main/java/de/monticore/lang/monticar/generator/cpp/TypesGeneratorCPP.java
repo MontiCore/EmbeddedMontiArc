@@ -41,7 +41,7 @@ public final class TypesGeneratorCPP {
         } else if (s instanceof EnumDeclarationSymbol) {
             processEnum((EnumDeclarationSymbol) s);
         } else {
-            Log.warn("unknown type symbol: " + s.getFullName());
+            //Log.warn("unknown type symbol: " + s.getFullName());
         }
     }
 

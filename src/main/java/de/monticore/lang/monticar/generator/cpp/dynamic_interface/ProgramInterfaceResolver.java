@@ -1,7 +1,5 @@
 package de.monticore.lang.monticar.generator.cpp.dynamic_interface;
 
-import java.io.IOException;
-import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.HashSet;
 import java.util.List;
@@ -12,6 +10,7 @@ import de.rwth.montisim.commons.dynamicinterface.PortInformation.PortDirection;
 import de.rwth.montisim.commons.dynamicinterface.PortInformation.PortType;
 import de.rwth.montisim.commons.utils.json.Json;
 import de.rwth.montisim.commons.utils.json.SerializationException;
+import de.monticore.lang.monticar.generator.cpp.GeneralHelperMethods;
 import de.monticore.ast.ASTNode;
 import de.monticore.expressionsbasis._ast.ASTExpression;
 import de.monticore.javaclassexpressions._ast.ASTNameExpression;
@@ -20,10 +19,6 @@ import de.monticore.lang.embeddedmontiarc.embeddedmontiarc._symboltable.instance
 import de.monticore.lang.math._ast.ASTNumberExpression;
 import de.monticore.lang.math._symboltable.expression.MathExpressionSymbol;
 import de.monticore.lang.monticar.common2._ast.ASTCommonMatrixType;
-import de.monticore.lang.monticar.generator.FileContent;
-import de.monticore.lang.monticar.generator.cmake.CMakeConfig;
-import de.monticore.lang.monticar.generator.cpp.FileUtil;
-import de.monticore.lang.monticar.generator.cpp.GeneralHelperMethods;
 import de.monticore.lang.monticar.struct._ast.ASTStruct;
 import de.monticore.lang.monticar.struct._ast.ASTStructFieldDefinition;
 import de.monticore.lang.monticar.ts.MCTypeSymbol;
@@ -33,109 +28,26 @@ import de.monticore.lang.monticar.types2._ast.ASTElementType;
 import de.monticore.numberunit._ast.ASTNumberWithUnit;
 import de.monticore.types.types._ast.ASTType;
 
-/*
-    Generates the CPP files necessary to build the 'DynamicInterface'
 
-    DISCLAIMER: Do not assume the use of the EmbeddedMontiArc framework here is optimal, someone with experience in
-    the EMA suite should verify how the different types and symbols are resolved.
-*/
-public class DynamicInterfaceGenerator {
+/**
+ * This class reads the main (root) EMA component and fills a ProgramInterface structure corresponding to the ports of the component.
+ * 
+ * DISCLAIMER: Do not assume the use of the EmbeddedMontiArc framework here is optimal, someone with experience in
+ * the EMA suite should verify how the different types and symbols are resolved.
+ * 
+ * TODO maybe this should be read from the blueprint structure?
+ */
+public class ProgramInterfaceResolver {
     public static String SOCK_IN_SUFFIX = "_socket_in";
     public static String SOCK_OUT_SUFFIX = "_socket_out";
     public static String SOCK_BC_IN_SUFFIX = "_socket_bc_in";
     public static String SOCK_BC_OUT_SUFFIX = "_socket_bc_out";
-    
-    HashSet<String> cppFileDependencies = new HashSet<>();
-    List<FileContent> files = new ArrayList<>();
 
-    String componentName;
     ProgramInterface programInterface;
+    String componentName;
     String progInterfaceString;
-    JsonCommunication dyn;
-    TcpCommunication tcp;
-    DDCCommunication ddc;
-
-
-
-    public DynamicInterfaceGenerator(
-        EMAComponentInstanceSymbol componentSymbol, 
-        CMakeConfig cmake,
-        String outputName,
-        boolean genDynamicInterface, 
-        boolean genServer, 
-        boolean genDDC
-    ) throws SerializationException, IOException {
-        // Read the ProgramInterface from the model
-        resolve(componentSymbol);
-        progInterfaceString = Json.toJson(programInterface);
-
-        // Generate the files
-        if (genDynamicInterface) {
-            dyn = new JsonCommunication(this);
-            files.addAll(dyn.generate());
-        }
-        if (genServer || genDDC) {
-            tcp = new TcpCommunication(this);
-            files.addAll(tcp.generate(genDDC));
-        }
-        if (genDDC) {
-            ddc = new DDCCommunication(this);
-            files.addAll(ddc.generate());
-        }
-        // Add the common file dependencies
-        for (String f : cppFileDependencies) {
-            files.add(FileUtil.getResourceAsFile("/template/dynamic_interface/"+f, f));
-        }
-
-        if (outputName.length() == 0) outputName = componentSymbol.getName();
-
-        // Generate the CMake
-        if (genDynamicInterface) {
-            dyn.addCMake(cmake, outputName);
-        }
-        if (genServer || genDDC) {
-            String targetName = outputName+"Adapter";
-            HashSet<String> sources = new HashSet<>();
-            HashSet<String> libs = new HashSet<>();
-
-            tcp.getSources(sources);
-            tcp.getLibs(libs);
-            
-            if (genDDC) {
-                ddc.getSources(sources);
-                ddc.getLibs(libs);
-            }
-
-            String sourceFiles = "";
-            for (String s : sources) sourceFiles += s + ' ';
-
-            // create adapter executable
-            cmake.addCMakeCommandEnd("# Server (TCP) / DDC adapter");
-            cmake.addCMakeCommandEnd("add_executable("+targetName+" "+sourceFiles+")");
-            if (!libs.isEmpty()) {
-                String libList = "";
-                for (String l : libs) libList += l + ' ';
-                cmake.addCMakeCommandEnd("target_link_libraries("+targetName+" PUBLIC "+libs+")");
-            }
-            cmake.addCMakeCommandEnd("target_link_libraries("+targetName+" PUBLIC ${LIBS})");
-            cmake.addCMakeCommandEnd("target_compile_features("+targetName+" PUBLIC cxx_std_11)");
-            cmake.addCMakeCommandEnd("");
-        }
-    }
-
-    public List<FileContent> getFiles() {
-        return files;
-    }
-
-    public void addCppFileDependency(String name) {
-        cppFileDependencies.add(name);
-    }
-
     
-
-
-
-    void resolve(EMAComponentInstanceSymbol componentSymbol){
+    void resolve(EMAComponentInstanceSymbol componentSymbol) throws SerializationException {
         programInterface = new ProgramInterface();
         programInterface.name = componentSymbol.getName();
         programInterface.version = ProgramInterface.CURRENT_VERSION;
@@ -211,6 +123,7 @@ public class DynamicInterfaceGenerator {
             }
         }
 
+        progInterfaceString = Json.toJson(programInterface);
     }
 
 
@@ -504,5 +417,4 @@ public class DynamicInterfaceGenerator {
         System.out.println("Missing DataType conversion: "+typeName);
         return BasicType.EMPTY;
     }
-
 }
