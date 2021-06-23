@@ -19,11 +19,21 @@ public class HardwareEmulatorTest {
         TypedHardwareEmu.registerTypedHardwareEmu();
     }
 
+    static final String ZIGZAG_AP_PATH = "autopilots/zigzag_autopilot_lib";
+    static final String EMA_AP_PATH = "autopilots/ema_autopilot_lib";
+
     @Test
-    public void native_test_json() throws Exception {
+    public void zigzag_autopilot_native_json() throws Exception {
+        perform_native_json(ZIGZAG_AP_PATH)
+    }
+    @Test
+    public void ema_autopilot_native_json() throws Exception {
+        perform_native_json(EMA_AP_PATH)
+    }
+
+    private void perform_native_json(String autopilot_path) throws Exception {
         ComputerProperties config = new ComputerProperties();
-        config.software_name = "autopilots/cppautopilot_zigzag_lib";
-        //config.software_name = "src/test/resources/autopilots/cppautopilot";
+        config.software_name = autopilot_path;
         config.backend = new ComputerProperties.Direct();
         config.time_model = new HardwareTimeModel();
         config.json_data_exchange = true;
@@ -31,19 +41,25 @@ public class HardwareEmulatorTest {
     }
 
     @Test
-    public void native_test_binary() throws Exception {
+    public void zigzag_autopilot_native_binary() throws Exception {
+        perform_native_binary(ZIGZAG_AP_PATH)
+    }
+    @Test
+    public void ema_autopilot_native_binary() throws Exception {
+        perform_native_binary(EMA_AP_PATH)
+    }
+
+    public void perform_native_binary(String autopilot_path) throws Exception {
         ComputerProperties config = new ComputerProperties();
-        config.software_name = "autopilots/cppautopilot_zigzag_lib";
-        //config.software_name = "src/test/resources/autopilots/cppautopilot";
+        config.software_name = autopilot_path;
         config.backend = new ComputerProperties.Direct();
         config.time_model = new HardwareTimeModel();
         test_software(config);
     }
 
-    @Test
-    public void emu_test_windows_json() throws Exception {
+    public void perform_emu_windows_json(String autopilot_path) throws Exception {
         ComputerProperties config = new ComputerProperties();
-        config.software_name = "autopilots/cppautopilot_zigzag_lib";
+        config.software_name = autopilot_path;
         ComputerProperties.HardwareEmulator backend = new ComputerProperties.HardwareEmulator();
         backend.os = OS.WINDOWS;
         config.backend = backend;
@@ -52,10 +68,9 @@ public class HardwareEmulatorTest {
         test_software(config);
     }
 
-    @Test
-    public void emu_test_windows_binary() throws Exception {
+    public void perform_emu_windows_binary(String autopilot_path) throws Exception {
         ComputerProperties config = new ComputerProperties();
-        config.software_name = "autopilots/cppautopilot_zigzag_lib";
+        config.software_name = autopilot_path;
         ComputerProperties.HardwareEmulator backend = new ComputerProperties.HardwareEmulator();
         backend.os = OS.WINDOWS;
         config.backend = backend;
@@ -63,10 +78,9 @@ public class HardwareEmulatorTest {
         test_software(config);
     }
 
-    @Test
-    public void emu_test_linux_json() throws Exception {
+    public void perform_emu_linux_json(String autopilot_path) throws Exception {
         ComputerProperties config = new ComputerProperties();
-        config.software_name = "autopilots/cppautopilot_zigzag_lib";
+        config.software_name = autopilot_path;
         ComputerProperties.HardwareEmulator backend = new ComputerProperties.HardwareEmulator();
         backend.os = OS.LINUX;
         config.backend = backend;
@@ -78,10 +92,9 @@ public class HardwareEmulatorTest {
         test_software(config);
     }
 
-    @Test
-    public void emu_test_linux_binary() throws Exception {
+    public void perform_emu_linux_binary(String autopilot_path) throws Exception {
         ComputerProperties config = new ComputerProperties();
-        config.software_name = "autopilots/cppautopilot_zigzag_lib";
+        config.software_name = autopilot_path;
         ComputerProperties.HardwareEmulator backend = new ComputerProperties.HardwareEmulator();
         backend.os = OS.LINUX;
         config.backend = backend;
