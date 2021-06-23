@@ -6,6 +6,7 @@ message(STATUS "SHARED_CPP_DIR=${SHARED_CPP_DIR}")
 if(SHARED_CPP_DIR)
     message( STATUS "Found SHARED_CPP directory: ${SHARED_CPP_DIR}")
 else()
+    message(STATUS "SHARED_CPP_DIR=${SHARED_CPP_DIR}")
     message( FATAL_ERROR "This project requires the SHARED_CPP project. Specify using -DSHARED_CPP_DIR=path/to/shared_cpp" )
 endif()
 
