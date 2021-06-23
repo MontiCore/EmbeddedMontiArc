@@ -83,7 +83,8 @@
                             {"type": "shared", "level": 2, "size": 2097152, "read_ticks": 6, "write_ticks": 6},
                             {"type": "shared", "level": 3, "size": 12582912, "read_ticks": 40, "write_ticks": 40}
                         ]
-                    }
+                    },
+                    "json_data_exchange": false
                 }
             ]
         }
