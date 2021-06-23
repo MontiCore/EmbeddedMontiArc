@@ -97,7 +97,6 @@ public class ArchTypeSymbol extends CommonSymbol {
     public void setDepthIndex(int depthIndex){
         this.depthIndex = depthIndex;
         
-    }
 //END NEW
     public ArchSimpleExpressionSymbol getHeightSymbol() {
         if (getHeightIndex() == -1){
