@@ -18,12 +18,8 @@ public final class AllTemplates {
     private static final Template TESTS_MAIN_ENTRY;
     private static final Template STRUCT;
     private static final Template ENUM;
-    public static final Template DYNAMIC_INTERFACE_CPP;
-    public static final Template DYNAMIC_INTERFACE_H;
-    public static final Template TCP_ADAPTER_CPP;
-    public static final Template TCP_ADAPTER_H;
-    public static final Template DDC_ADAPTER_CPP;
-    public static final Template DDC_ADAPTER_ADAPTER_H;
+    public static final Template ADAPTER_PROGRAM_CPP;
+    public static final Template ADAPTER_PROGRAM_H;
     private static final Template SERVER_WRAPPER;
 
     private static final Template DYNAMICS_EVENT_PortValueCheker;
@@ -44,12 +40,8 @@ public final class AllTemplates {
             TESTS_MAIN_ENTRY = conf.getTemplate("/test/TestsMainEntry.ftl");
             STRUCT = conf.getTemplate("/type/Struct.ftl");
             ENUM = conf.getTemplate("/type/Enum.ftl");
-            DYNAMIC_INTERFACE_CPP = conf.getTemplate("/dynamic_interface/dynamic_interface.cpp.ftl");
-            DYNAMIC_INTERFACE_H = conf.getTemplate("/dynamic_interface/dynamic_interface.h.ftl");
-            TCP_ADAPTER_CPP = conf.getTemplate("/dynamic_interface/server_adapter.cpp.ftl");
-            TCP_ADAPTER_H = conf.getTemplate("/dynamic_interface/server_adapter.h.ftl");
-            DDC_ADAPTER_CPP = conf.getTemplate("/dynamic_interface/ddc_adapter.cpp.ftl");
-            DDC_ADAPTER_ADAPTER_H = conf.getTemplate("/dynamic_interface/ddc_adapter.h.ftl");
+            ADAPTER_PROGRAM_CPP = conf.getTemplate("/adapters/program.cpp.ftl");
+            ADAPTER_PROGRAM_H = conf.getTemplate("/adapters/program.h.ftl");
             SERVER_WRAPPER = conf.getTemplate("/serverwrapper/ServerWrapper.ftl");
             DYNAMICS_EVENT_PortValueCheker = conf.getTemplate("/dynamics/events_port_value_check_h.ftl");
             DYNAMICS_EVENT_DynamicHelper = conf.getTemplate("/dynamics/dynamic_port_request_connect_helper_h.ftl");

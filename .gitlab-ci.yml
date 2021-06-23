@@ -1,3 +1,7 @@
+# In order to update the 'shared_cpp' submodule
+variables:
+  GIT_SUBMODULE_STRATEGY: recursive
+
 stages:
   - linux
   #- windows
