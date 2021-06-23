@@ -106,9 +106,9 @@ public final class GeneratorCppCli {
             .build();
 
 
-    public static final Option OPTION_FLAG_DYNAMIC_INTERFACE = Option.builder("di")
-            .longOpt("dyn-interface")
-            .desc("Enable autopilot adapter generation")
+    public static final Option OPTION_FLAG_LIBRARY_INTERFACE = Option.builder()
+            .longOpt("library-interface")
+            .desc("Enables the autopilot library-adapter generation")
             .hasArg(false)
             .required(false)
             .build();
@@ -116,13 +116,6 @@ public final class GeneratorCppCli {
     public static final Option OPTION_FLAG_GEN_TCP_SERVER = Option.builder("tcp")
             .longOpt("tcp-adapter")
             .desc("Generate the TCP-Server adapter for the model")
-            .hasArg(false)
-            .required(false)
-            .build();
-
-    public static final Option OPTION_FLAG_GEN_DDC_ADAPTER = Option.builder("ddc")
-            .longOpt("ddc-adapter")
-            .desc("Generate the DDC adapter for the model")
             .hasArg(false)
             .required(false)
             .build();
@@ -266,10 +259,9 @@ public final class GeneratorCppCli {
         options.addOption(OPTION_FLAG_TESTS);
         options.addOption(OPTION_FLAG_ARMADILLO);
         options.addOption(OPTION_IMPORT_ARMADILLO);
-        options.addOption(OPTION_FLAG_DYNAMIC_INTERFACE);
+        options.addOption(OPTION_FLAG_LIBRARY_INTERFACE);
         options.addOption(OPTION_OUTPUT_NAME);
         options.addOption(OPTION_FLAG_GEN_TCP_SERVER);
-        options.addOption(OPTION_FLAG_GEN_DDC_ADAPTER);
         options.addOption(OPTION_FLAG_CHECK_MODEL_DIR);
         options.addOption(OPTION_FLAG_SERVER_WRAPPER);
         options.addOption(OPTION_FLAG_ALGEBRAIC);
@@ -321,9 +313,8 @@ public final class GeneratorCppCli {
         }
         g.setCheckModelDir(cliArgs.hasOption(OPTION_FLAG_CHECK_MODEL_DIR.getLongOpt()));
         g.setGenerateServerWrapper(cliArgs.hasOption(OPTION_FLAG_SERVER_WRAPPER.getLongOpt()));
-        g.setGenerateDynamicInterface(cliArgs.hasOption(OPTION_FLAG_DYNAMIC_INTERFACE.getLongOpt()));
+        g.setGenerateLibraryInterface(cliArgs.hasOption(OPTION_FLAG_LIBRARY_INTERFACE.getLongOpt()));
         g.setGenerateServerAdapter(cliArgs.hasOption(OPTION_FLAG_GEN_TCP_SERVER.getLongOpt()));
-        g.setGenerateDDCAdapter(cliArgs.hasOption(OPTION_FLAG_GEN_DDC_ADAPTER.getLongOpt()));
         g.setOutputName(cliArgs.getOptionValue(OPTION_OUTPUT_NAME.getOpt()));
 
         g.setUseAlgebraicOptimizations(cliArgs.hasOption(OPTION_FLAG_ALGEBRAIC.getLongOpt()));
