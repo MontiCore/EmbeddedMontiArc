@@ -85,7 +85,7 @@ class Seq2Seq(HybridBlock):
         lm_head.initialize()
         print(lm_head.collect_params())
         lm_head.collect_params()['dense1_weight'].set_data(
-            self.encoder.collect_params()['robertamodelwpooler0_word_embed_embedding0_weight'].data())
+            self.embedding.collect_params()['bertembedding0_word_embed_embedding0_weight'].data())
         print(lm_head.collect_params())
         return lm_head
 
@@ -97,12 +97,13 @@ class Seq2Seq(HybridBlock):
 
     def forward(self, input_ids=None, input_valid_length=None, target_ids=None, target_valid_length=None):   
         input_token_types = mx.nd.zeros_like(input_ids)
-        encoder_output = self.encoder(input_ids, input_token_types, input_valid_length) # we don't permute like in the code2nl model, that okay? TODO
+        embed_output = self.embedding(input_ids, input_token_types)
+        encoder_output = self.encoder(embed_output, input_valid_length) # we don't permute like in the code2nl model, that okay? TODO
         #encoder_output = outputs[0].permute([1,0,2]).contiguous() not sure how to do
         if target_ids is not None:  
             #attn_mask=-1e4 *(1-self.bias[:target_ids.shape[1],:target_ids.shape[1]]) no option to pass this in gluonnlp TODO
             # could try subclassing the Decoder and change the hybrid_forward function.
-            tgt_embeddings = self.embedding(target_ids)
+            tgt_embeddings = self.embedding(target_ids, mx.nd.zeros(target_ids.shape[0], target_ids.shape[1]))
             states = self.decoder.init_state_from_encoder(encoder_output, input_valid_length)
             out = self.decoder(tgt_embeddings, states, valid_length=target_valid_length)
             hidden_states = self.dense(out)
@@ -224,18 +225,14 @@ def get_data_iterator(inputs, outputs, shuffle, batch_size, filename):
         data=input_dict, label=output_dict, shuffle=shuffle, batch_size=batch_size)
     return data_iterator
 
-def load_codebert_encoder_block(symbol_file, weight_file, context):
-    inputNames = ['data0', 'data1']
-    return gluon.nn.SymbolBlock.imports(symbol_file, input_names, weight_file, ctx=context)
-
-def load_codebert_embed_block(symbol_file, weight_file, context):
-    inputNames = ['data0', 'data1', 'data2']
+def load_codebert_block(symbol_file, weight_file, context):
+    input_names = ['data0', 'data1']
     return gluon.nn.SymbolBlock.imports(symbol_file, input_names, weight_file, ctx=context)
 
 def train_model(args):
     ctx = [mx.cpu()]
-    embedding = load_codebert_embed_block(args.embed_symbol_file, args.embed_weight_file, ctx)
-    encoder = load_codebert_encoder_block(args.symbol_file, args.weight_file, ctx)
+    embedding = load_codebert_block(args.embed_symbol_file, args.embed_weight_file, ctx)
+    encoder = load_codebert_block(args.symbol_file, args.weight_file, ctx)
     decoder = get_decoder()
     seq2seq = get_seq2seq(embedding, encoder, decoder)
     seq2seq.collect_params().initialize(force_reinit=False, ctx=ctx)

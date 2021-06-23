@@ -219,7 +219,7 @@ def convert_params(hf_model, hf_tokenizer, hf_cfg, test):
     # position embed weight
     padding_idx = hf_tokenizer.pad_token_id
     hf_pos_embed_name = 'embeddings.position_embeddings.weight'
-    gl_pos_embed_name = 'bertembedding0_position_embed_embedding0_weight'
+    gl_pos_embed_name = 'bertembedding0_position_weight'
     hf_wo_pad = arr_to_gl(hf_params[hf_pos_embed_name])[padding_idx + 1:, :]
     gluon_embedding_params[gl_pos_embed_name].set_data(hf_wo_pad)
     

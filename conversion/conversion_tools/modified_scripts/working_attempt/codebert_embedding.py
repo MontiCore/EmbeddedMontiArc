@@ -142,9 +142,9 @@ class BERTEmbedding(HybridBlock):
             with self.name_scope():
                 self.dropout_layer = nn.Dropout(rate=dropout)
                 self.layer_norm = nn.LayerNorm(in_channels=units, epsilon=layer_norm_eps)
-            self.position_embed = self._get_embed(
-                max_length, units,
-                embed_initializer, 'position_embed_')
+                self.position_weight = self.params.get(
+                    'position_weight', shape=(max_length, units),
+                    init=weight_initializer)
             self.word_embed = self._get_embed(
                 vocab_size, embed_size,
                 embed_initializer, 'word_embed_')
@@ -153,7 +153,7 @@ class BERTEmbedding(HybridBlock):
                 embed_size, embed_initializer,
                 'token_type_embed_')
 
-    def hybrid_forward(self, F, inputs, token_types):
+    def hybrid_forward(self, F, inputs, token_types, position_weight=None):
         # embedding
         embedding = self.word_embed(inputs)
         type_embedding = self.token_type_embed(token_types)
@@ -162,7 +162,7 @@ class BERTEmbedding(HybridBlock):
         embedding = embedding.transpose((1, 0, 2))
 
         steps = F.contrib.arange_like(embedding, axis=0)
-        positional_embed = self.position_embed(steps)
+        positional_embed = F.Embedding(steps, position_weight, self._max_length, self._units)
         embedding = F.broadcast_add(embedding, F.expand_dims(positional_embed, axis=1))
 
         embedding = self.dropout_layer(embedding)
@@ -171,7 +171,6 @@ class BERTEmbedding(HybridBlock):
         return embedding
     
     def _get_embed(self, vocab_size, embed_size, initializer, prefix):
-        """ Construct an embedding block. """
         with self.name_scope():
             embed = nn.HybridSequential(prefix=prefix)
             with embed.name_scope():
