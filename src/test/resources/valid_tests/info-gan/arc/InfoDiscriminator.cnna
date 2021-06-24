@@ -1,3 +1,4 @@
+/* (c) https://github.com/MontiCore/monticore */
 architecture InfoDiscriminator {
     def input Q(-1:1)^{1,64,64} data
     def output Q(-oo:oo)^{1024} features

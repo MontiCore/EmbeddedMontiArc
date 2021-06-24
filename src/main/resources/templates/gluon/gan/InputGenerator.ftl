@@ -1,3 +1,4 @@
+<#-- (c) https://github.com/MontiCore/monticore -->
         gen_inputs = self._net_creator_gen.getInputs()
         dis_inputs = self._net_creator_dis.getInputs()
 

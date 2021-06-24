@@ -1,3 +1,4 @@
+/* (c) https://github.com/MontiCore/monticore */
 architecture InfoGAN {
     def input Q(-1:1)^{100} noise
     def output Q(-1:1)^{1,64,64} data

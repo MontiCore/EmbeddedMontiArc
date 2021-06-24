@@ -1,3 +1,4 @@
+/* (c) https://github.com/MontiCore/monticore */
 #ifndef CNNLAOPTIMIZER_EMPTYCONFIG
 #define CNNLAOPTIMIZER_EMPTYCONFIG
 

@@ -1,3 +1,4 @@
+/* (c) https://github.com/MontiCore/monticore */
 #ifndef CNNPREDICTOR_MULTIPLESTREAMS
 #define CNNPREDICTOR_MULTIPLESTREAMS
 
