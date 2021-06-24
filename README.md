@@ -1,3 +1,4 @@
+<!-- (c) https://github.com/MontiCore/monticore -->
 # Hardware Emulator
 
 Make sure to clone this repository recursively!
