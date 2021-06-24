@@ -8,7 +8,6 @@ import java.util.logging.Logger;
 import org.junit.Test;
 
 import de.rwth.montisim.commons.utils.Vec2;
-import de.rwth.montisim.commons.utils.json.Json;
 import de.rwth.montisim.hardware_emulator.CppBridge;
 import de.rwth.montisim.hardware_emulator.TypedHardwareEmu;
 import de.rwth.montisim.hardware_emulator.computer.ComputerProperties.HardwareTimeModel;
@@ -24,12 +23,12 @@ public class HardwareEmulatorTest {
 
     @Test
     public void zigzag_autopilot_native_json() throws Exception {
-        perform_native_json(ZIGZAG_AP_PATH)
+        perform_native_json(ZIGZAG_AP_PATH);
     }
-    @Test
-    public void ema_autopilot_native_json() throws Exception {
-        perform_native_json(EMA_AP_PATH)
-    }
+    // @Test
+    // public void ema_autopilot_native_json() throws Exception {
+    //     perform_native_json(EMA_AP_PATH);
+    // }
 
     private void perform_native_json(String autopilot_path) throws Exception {
         ComputerProperties config = new ComputerProperties();
@@ -42,12 +41,12 @@ public class HardwareEmulatorTest {
 
     @Test
     public void zigzag_autopilot_native_binary() throws Exception {
-        perform_native_binary(ZIGZAG_AP_PATH)
+        perform_native_binary(ZIGZAG_AP_PATH);
     }
-    @Test
-    public void ema_autopilot_native_binary() throws Exception {
-        perform_native_binary(EMA_AP_PATH)
-    }
+    // @Test
+    // public void ema_autopilot_native_binary() throws Exception {
+    //     perform_native_binary(EMA_AP_PATH);
+    // }
 
     public void perform_native_binary(String autopilot_path) throws Exception {
         ComputerProperties config = new ComputerProperties();
@@ -56,6 +55,15 @@ public class HardwareEmulatorTest {
         config.time_model = new HardwareTimeModel();
         test_software(config);
     }
+    
+    @Test
+    public void zigzag_autopilot_emu_windows_json() throws Exception {
+        perform_emu_windows_json(ZIGZAG_AP_PATH);
+    }
+    // @Test
+    // public void ema_autopilot_emu_windows_json() throws Exception {
+    //     perform_emu_windows_json(EMA_AP_PATH);
+    // }
 
     public void perform_emu_windows_json(String autopilot_path) throws Exception {
         ComputerProperties config = new ComputerProperties();
@@ -67,6 +75,15 @@ public class HardwareEmulatorTest {
         config.json_data_exchange = true;
         test_software(config);
     }
+    
+    @Test
+    public void zigzag_autopilot_emu_windows_binary() throws Exception {
+        perform_emu_windows_binary(ZIGZAG_AP_PATH);
+    }
+    // @Test
+    // public void ema_autopilot_emu_windows_binary() throws Exception {
+    //     perform_emu_windows_binary(EMA_AP_PATH);
+    // }
 
     public void perform_emu_windows_binary(String autopilot_path) throws Exception {
         ComputerProperties config = new ComputerProperties();
@@ -77,6 +94,16 @@ public class HardwareEmulatorTest {
         config.time_model = new HardwareTimeModel();
         test_software(config);
     }
+
+    
+    @Test
+    public void zigzag_autopilot_emu_linux_json() throws Exception {
+        perform_emu_linux_json(ZIGZAG_AP_PATH);
+    }
+    // @Test
+    // public void ema_autopilot_emu_linux_json() throws Exception {
+    //     perform_emu_linux_json(EMA_AP_PATH);
+    // }
 
     public void perform_emu_linux_json(String autopilot_path) throws Exception {
         ComputerProperties config = new ComputerProperties();
@@ -91,6 +118,15 @@ public class HardwareEmulatorTest {
         config.json_data_exchange = true;
         test_software(config);
     }
+    
+    @Test
+    public void zigzag_autopilot_emu_linux_binary() throws Exception {
+        perform_emu_linux_binary(ZIGZAG_AP_PATH);
+    }
+    // @Test
+    // public void ema_autopilot_emu_linux_binary() throws Exception {
+    //     perform_emu_linux_binary(EMA_AP_PATH);
+    // }
 
     public void perform_emu_linux_binary(String autopilot_path) throws Exception {
         ComputerProperties config = new ComputerProperties();
