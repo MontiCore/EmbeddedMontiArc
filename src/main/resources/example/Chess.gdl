@@ -1,0 +1,84 @@
+// Chess:
+
+// Roles
+
+(role white)
+(role black)
+
+// Initial State
+
+(init (field a 1 R))
+(init (field a 2 P))
+(init (field a 3 _))
+(init (field a 4 _))
+(init (field a 5 _))
+(init (field a 6 _))
+(init (field a 7 p))
+(init (field a 8 r))
+
+(init (field b 1 N))
+(init (field b 2 P))
+(init (field b 3 _))
+(init (field b 4 _))
+(init (field b 5 _))
+(init (field b 6 _))
+(init (field b 7 p))
+(init (field b 8 n))
+
+(init (field c 1 B))
+(init (field c 2 P))
+(init (field c 3 _))
+(init (field c 4 _))
+(init (field c 5 _))
+(init (field c 6 _))
+(init (field c 7 p))
+(init (field c 8 b))
+
+(init (field d 1 Q))
+(init (field d 2 P))
+(init (field d 3 _))
+(init (field d 4 _))
+(init (field d 5 _))
+(init (field d 6 _))
+(init (field d 7 p))
+(init (field d 8 q))
+
+(init (field e 1 K))
+(init (field e 2 P))
+(init (field e 3 _))
+(init (field e 4 _))
+(init (field e 5 _))
+(init (field e 6 _))
+(init (field e 7 p))
+(init (field e 8 k))
+
+(init (field f 1 B))
+(init (field f 2 P))
+(init (field f 3 _))
+(init (field f 4 _))
+(init (field f 5 _))
+(init (field f 6 _))
+(init (field f 7 p))
+(init (field f 8 b))
+
+(init (field g 1 N))
+(init (field g 2 P))
+(init (field g 3 _))
+(init (field g 4 _))
+(init (field g 5 _))
+(init (field g 6 _))
+(init (field g 7 p))
+(init (field g 8 n))
+
+(init (field h 1 R))
+(init (field h 2 P))
+(init (field h 3 _))
+(init (field h 4 _))
+(init (field h 5 _))
+(init (field h 6 _))
+(init (field h 7 p))
+(init (field h 8 r))
+
+(init (control white))
+
+
