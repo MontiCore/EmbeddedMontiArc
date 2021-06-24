@@ -78,8 +78,8 @@ linux_maven_master:
   - mvn -Dorg.slf4j.simpleLogger.log.org.apache.maven.cli.transfer.Slf4jMavenTransferListener=warn -B  clean deploy --settings settings.xml
   only:
   - master
-  dependencies:
-    - linux_build
+#  dependencies:
+#    - linux_build
 #    - windows_build
 
 linux_maven_branch:
