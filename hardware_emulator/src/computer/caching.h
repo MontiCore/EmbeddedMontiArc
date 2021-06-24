@@ -34,7 +34,7 @@ struct NWayAssociativeCache : public MemoryAccessInterface {
     ulong write(ulong address);
 
     inline ulong* get_tags_buffer(int id) {
-        return tags.data() + (id * N);
+        return tags.data() + ((ulong)id * N);
     }
 
     inline ulong get_set(ulong addr) {

@@ -35,18 +35,16 @@ struct ComputerDebug {
     
 	std::vector<char> buffer;
     
-    bool debug;
-    bool d_code;
-    bool d_mem;
-    bool d_regs;
-    bool d_syscalls;
-    bool d_unsupported_syscalls;
-    bool d_reg_update;
-    bool d_call;
+    bool debug = false;
+    bool d_code = false;
+    bool d_mem = false;
+    bool d_regs = false;
+    bool d_syscalls = false;
+    bool d_unsupported_syscalls = false;
+    bool d_reg_update = false;
+    bool d_call = false;
     
-    ComputerDebug() : memory( nullptr ), registers( nullptr ), buffer( BUFFER_SIZE ), debug( false ), d_code( true ),
-        d_mem( true ), d_unsupported_syscalls( true ),
-        d_regs( false ), d_syscalls( true ), d_call( true ), d_reg_update( true ), decoder( nullptr ), formatter() {}
+    ComputerDebug() : memory( nullptr ), registers( nullptr ), buffer( BUFFER_SIZE ), decoder( nullptr ), formatter() {}
         
     void init( Memory &mem, Registers &regs, CodeDecoder &decoder );
     

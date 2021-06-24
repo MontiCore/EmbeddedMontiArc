@@ -22,7 +22,7 @@ void SystemCalls::handle_call( ulong addr ) {
     //Use memory annotation system to find external procedure.
     auto note_ptr = section->annotations.get_annotation( addr );
     if ( note_ptr == nullptr || note_ptr->type != Annotation::Type::FUNC ) {
-        Log::err << Log::tag << "Instruction pointer at invalid system call address" << "\n";
+        Log::err.log_tag("Instruction pointer at invalid system call address");
         //Execution will stop and return an error since the syscall section does not allow code execution.
         return;
     }
@@ -32,7 +32,7 @@ void SystemCalls::handle_call( ulong addr ) {
     if ( !call.supported() || !call.callback( *computer ) ) {
         if ( computer->debug.unsupported_syscalls() )
             computer->debug.debug_unsupp_syscall( call );
-        computer->func_call->set_return_64( 0 ); //No external syscall registered or syscall error.
+        computer->os->set_return_64( 0 ); //No external syscall registered or syscall error.
     }
     
     if ( !computer->was_stopped() ) { //Do not change stack and instruction pointers if exit() was called on the unicorn engine (it cancels uc_emu_stop())

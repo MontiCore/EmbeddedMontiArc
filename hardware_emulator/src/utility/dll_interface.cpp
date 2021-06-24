@@ -15,15 +15,16 @@ void add_symbol( uint64_t &target, const std::string &name, Computer &computer )
 
 void ADD_DLL::Interface::init( Computer &computer, bool windows ) {
     TestProgramInterface::init( computer );
-    computer.os->load_file(FS::File("sample_simple"));
+    computer.os->load_file(fs::path("sample_simple"));
     addresses.resize( FUNCTION_COUNT );
     add_symbol(addresses[ADD], windows ? "add" : "add", computer);
 }
 
 int ADD_DLL::Interface::add( int a, int b ) {
-    computer->func_call->set_params_32( *( ( uint32_t * )&a ), *( ( uint32_t * )&b ) );
+    computer->os->set_param1_32(*((uint32_t*)&a));
+    computer->os->set_param2_32(*((uint32_t*)&b));
     computer->call(addresses[ADD], "add");
-    auto res = computer->func_call->get_return_32();
+    auto res = (uint) computer->os->get_return_64();
     return *( ( int * ) & ( res ) );
 }
 
@@ -31,7 +32,7 @@ int ADD_DLL::Interface::add( int a, int b ) {
 
 void LOADED_DLL::Interface::init( Computer &computer ) {
     TestProgramInterface::init( computer );
-    computer.os->load_file(FS::File("sample_syscall"));
+    computer.os->load_file(fs::path("sample_syscall"));
     addresses.resize( FUNCTION_COUNT );
     add_symbol(addresses[TEST_METHOD], "test_method", computer);
 }

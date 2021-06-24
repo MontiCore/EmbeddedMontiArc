@@ -1,4 +1,3 @@
-# (c) https://github.com/MontiCore/monticore  
 if (MSVC)
   list(APPEND DEFAULT_CXX_FLAGS /W4 /analyze)
 

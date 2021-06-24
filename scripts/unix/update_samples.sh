@@ -35,9 +35,10 @@ popd
 
 print "Updating cppautopilotzigzag sample..."
 pushd cppautopilotzigzag
-make
+./make.sh
 print "Copying cppautopilotzigzag sample..."
-cp "cppautopilotzigzag.so" "../../hardware_emulator/bin/"
+cp "cppautopilot_zigzag_lib.so" "../../hardware_emulator/bin/"
+cp "cppautopilot_zigzag_lib.so" "../../src/test/resources/autopilots/"
 popd
 
 popd

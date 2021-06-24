@@ -11,13 +11,20 @@ import de.rwth.montisim.commons.dynamicinterface.*;
 import de.rwth.montisim.commons.dynamicinterface.PortInformation.PortType;
 import de.rwth.montisim.commons.utils.*;
 import de.rwth.montisim.commons.utils.json.Json;
+import de.rwth.montisim.commons.utils.json.JsonTraverser;
+import de.rwth.montisim.commons.utils.json.JsonWriter;
+import de.rwth.montisim.commons.utils.json.SerializationException;
 import de.rwth.montisim.hardware_emulator.TypedHardwareEmu;
 import de.rwth.montisim.hardware_emulator.computer.Computer.SocketQueues;
 import de.rwth.montisim.hardware_emulator.computer.ComputerProperties.*;
 
 public class TCPBackend implements ComputerBackend {
+    // SEE https://git.rwth-aachen.de/monticore/EmbeddedMontiArc/simulators/simulation/-/wikis/dev-docs/concepts/TCP-protocol
+
+    // TODO: more robust protocol (ex: FIRST packet exchange: VERSION of this protocol)
     public static final String TIME_MODE_REALTIME = "realtime";
     public static final String TIME_MODE_MEASURED = "measured";
+    public static final String TIME_MODE_HARDWARE = "hardware";
     public static final int PACKET_END = 0; // The simulator is closing the connection after
     public static final int PACKET_ERROR = 1; // As payload: An error message
     public static final int PACKET_INIT = 2; // As payload: TimeMode string ("measured" or "realtime")
@@ -25,12 +32,17 @@ public class TCPBackend implements ComputerBackend {
     // Payload for INPUT and OUTPUT packets:
     // uint16_t: Port ID (as defined in the DynamicInterface -> Order of appearance)
     // Type dependent payload
-    public static final int PACKET_INPUT = 4;
-    public static final int PACKET_OUTPUT = 5;
+    public static final int PACKET_INPUT_BINARY = 4;
+    public static final int PACKET_OUTPUT_BINARY = 5;
     public static final int PACKET_RUN_CYCLE = 6; // Payload: double: delta_sec
     public static final int PACKET_TIME = 7; // Payload: double: seconds
     public static final int PACKET_REF_ID = 8; // Payload: uint32_t: reference id for the DDC exchange
     public static final int PACKET_PING = 9; // No Payload
+    public static final int PACKET_EMU_ID = 10; // Payload: byte with ID for the new remote emulator. The emulator expects PACKET_CONFIG as response. This is sent before the PACKET_INTERFACE
+    public static final int PACKET_CONFIG = 11; // Payload: JSON string, response to PACKET_REQUEST_CONFIG
+    public static final int PACKET_RECONNECT = 12; // Payload: Emulator ID (byte), sent to remote hardware_emulator. Expects remote emulator to respond with PACKET_INTERFACE.
+    public static final int PACKET_INPUT_JSON = 13;
+    public static final int PACKET_OUTPUT_JSON = 14;
 
     // Small main() to test the protocol
     public static void main(String[] args) throws Exception {
@@ -39,7 +51,7 @@ public class TCPBackend implements ComputerBackend {
         TCP tcp = new TCP();
         tcp.host = "::1";
         tcp.port = 4567;
-        TCPBackend client = new TCPBackend(tcp, new MeasuredTime());
+        TCPBackend client = new TCPBackend(tcp, null, new MeasuredTime());
 
         ProgramInterface interf = client.getInterface();
 
@@ -75,13 +87,18 @@ public class TCPBackend implements ComputerBackend {
 
     Socket cs;
     TCP tcpProperties;
+    ComputerProperties properties;
     BufferedReader in;
     DataOutputStream out;
     DataInputStream din;
 
     ProgramInterface interf;
 
-    public TCPBackend(TCP tcpProperties, TimeModel timeModel) throws Exception {
+    transient JsonWriter writer = new JsonWriter(false);
+    transient JsonTraverser traverser = new JsonTraverser();
+
+    public TCPBackend(TCP tcpProperties, ComputerProperties properties, TimeModel timeModel) throws Exception {
+        this.properties = properties;
         this.tcpProperties = tcpProperties;
         
         String timeMode;
@@ -91,33 +108,52 @@ public class TCPBackend implements ComputerBackend {
         } else if (timeModel instanceof Realtime) {
             timeMode = TIME_MODE_REALTIME;
         } else if (timeModel instanceof HardwareTimeModel) {
-            throw new IllegalArgumentException("The TCPBackend does not support the HardwareTimeModel.");
+            timeMode = TIME_MODE_HARDWARE;
+            //throw new IllegalArgumentException("The TCPBackend does not support the HardwareTimeModel.");
         } else throw new IllegalArgumentException("Unknown TimeMode");
         
         cs = new Socket(tcpProperties.host, tcpProperties.port);
-        System.out.println("VCG: started TCPClient with host " + tcpProperties.host + " on port "
+        System.out.println("Computer: started TCPBackend with host " + tcpProperties.host + " on port "
                 + Integer.toString(tcpProperties.port));
         in = new BufferedReader(new InputStreamReader(cs.getInputStream()));
         din = new DataInputStream(cs.getInputStream());
         out = new DataOutputStream(cs.getOutputStream());
 
-        // Send Init packet
-        // System.out.println("Sending INIT packet");
-        sendPacket(PACKET_INIT, timeMode);
-        sendPacket(PACKET_REF_ID, tcpProperties.ref_id);
+        if (tcpProperties.emu_id >= 0) {
+            // Special case: Reconnect to remote hardware_emulator
+            sendPacketByte(PACKET_RECONNECT, tcpProperties.emu_id);
+        } else {
 
+            // Send Init packet
+            // System.out.println("Sending INIT packet");
+            sendPacket(PACKET_INIT, timeMode);
+            sendPacket(PACKET_REF_ID, tcpProperties.ref_id);
+
+        }
+
+        
         // Get "ProgramInterface" packet
         // System.out.println("Waiting for INTERFACE packet");
-        Packet p = getPacket();
-        switch (p.id) {
-            case PACKET_ERROR:
-                throw new IllegalStateException("Error on VCG: " + new String(p.data));
-            case PACKET_INTERFACE:
-                this.interf = Json.instantiateFromJson(new String(p.data), ProgramInterface.class);
-                break;
-            default:
-                throw new IllegalStateException("Unexpected packet with id=" + p.id);
-        }
+        boolean repeat;
+        do {
+            repeat = false;
+            Packet p = getPacket();
+            switch (p.id) {
+                case PACKET_ERROR:
+                    throw new IllegalStateException("Error on Remote Computer: " + new String(p.data));
+                case PACKET_INTERFACE:
+                    this.interf = Json.instantiateFromJson(new String(p.data), ProgramInterface.class);
+                    break;
+                case PACKET_EMU_ID: // The remote is a hardware_emulator -> Respond with the configuration
+                    DataInputStream is = new DataInputStream(new ByteArrayInputStream(p.data));
+                    this.tcpProperties.emu_id = is.readByte();
+                    sendPacket(PACKET_CONFIG, Json.toJson(properties));
+                    repeat = true;
+                    break;
+                default:
+                    throw new IllegalStateException("Unexpected packet with id=" + p.id);
+            }
+        } while (repeat);
     }
     
     @Override
@@ -126,11 +162,20 @@ public class TCPBackend implements ComputerBackend {
     }
 
     private void sendInputPacket(int portId, byte[] bytes) throws IOException {
-        out.writeByte(PACKET_INPUT);
+        out.writeByte(PACKET_INPUT_BINARY);
         int payloadLength = bytes.length + 2;
         out.writeShort(payloadLength);
         out.writeShort(portId);
         out.write(bytes);
+        out.flush();
+    }
+    private void sendInputPacket(int portId, String jsonPayload) throws IOException {
+        out.writeByte(PACKET_INPUT_JSON);
+        int payloadLength = jsonPayload.length() + 3;
+        out.writeShort(payloadLength);
+        out.writeShort(portId);
+        out.write(jsonPayload.getBytes());
+        out.writeByte('\0');
         out.flush();
     }
 
@@ -146,6 +191,12 @@ public class TCPBackend implements ComputerBackend {
         out.writeByte(packetId);
         out.writeShort(4);
         out.writeInt(val);
+        out.flush();
+    }
+    private void sendPacketByte(int packetId, int val) throws IOException {
+        out.writeByte(packetId);
+        out.writeShort(1);
+        out.writeByte(val);
         out.flush();
     }
 
@@ -183,7 +234,7 @@ public class TCPBackend implements ComputerBackend {
 
 
     @Override
-    public Duration measuredCycle(Object[] portData, double deltaSec) throws IOException {
+    public Duration measuredCycle(Object[] portData, double deltaSec) throws Exception {
         // Send inputs
         int i = 0;
         for (PortInformation port : interf.ports) {
@@ -192,19 +243,32 @@ public class TCPBackend implements ComputerBackend {
                     SocketQueues sq = (SocketQueues)portData[i];
                     for (Object o : sq.in) {
                         // System.out.println("Sending INPUT for "+port.name +": "+portData[i]);
-                        ByteArrayOutputStream os = new ByteArrayOutputStream();
-                        DataOutputStream os2 = new DataOutputStream(os);
-                        port.data_type.toBinary(os2, o);
-                        sendInputPacket(i, os.toByteArray());
+                        if (properties.json_data_exchange) {
+                            writer.init();
+                            port.data_type.toJson(writer, o, null);
+                            sendInputPacket(i, writer.getString());
+                        } else {
+                            ByteArrayOutputStream os = new ByteArrayOutputStream();
+                            DataOutputStream os2 = new DataOutputStream(os);
+                            port.data_type.toBinary(os2, o);
+                            sendInputPacket(i, os.toByteArray());
+                        }
                     }
                     sq.in.clear();
                 } else {
                     if (portData[i] != null) {
                         // System.out.println("Sending INPUT for "+port.name +": "+portData[i]);
-                        ByteArrayOutputStream os = new ByteArrayOutputStream();
-                        DataOutputStream os2 = new DataOutputStream(os);
-                        port.data_type.toBinary(os2, portData[i]);
-                        sendInputPacket(i, os.toByteArray());
+                        if (properties.json_data_exchange) {
+                            writer.init();
+                            port.data_type.toJson(writer, portData[i], null);
+                            sendInputPacket(i, writer.getString());
+                        } else {
+                            ByteArrayOutputStream os = new ByteArrayOutputStream();
+                            DataOutputStream os2 = new DataOutputStream(os);
+                            port.data_type.toBinary(os2, portData[i]);
+                            sendInputPacket(i, os.toByteArray());
+                        }
+                        
                     }
                 }
             }
@@ -236,7 +300,7 @@ public class TCPBackend implements ComputerBackend {
                     throw new IllegalStateException("Error on VCG: " + new String(p.data));
                 case PACKET_TIME:
                     return Time.durationFromSeconds(new DataInputStream(new ByteArrayInputStream(p.data)).readDouble());
-                case PACKET_OUTPUT:
+                case PACKET_OUTPUT_BINARY: {
                     DataInputStream is = new DataInputStream(new ByteArrayInputStream(p.data));
                     int portId = is.readShort();
                     PortInformation port = interf.ports.elementAt(portId);
@@ -250,7 +314,24 @@ public class TCPBackend implements ComputerBackend {
                     } else {
                         portData[portId] = res;
                     }
-                    break;
+                } break;
+                case PACKET_OUTPUT_JSON: {
+                    DataInputStream is = new DataInputStream(new ByteArrayInputStream(p.data));
+                    int portId = is.readShort();
+                    PortInformation port = interf.ports.elementAt(portId);
+                    if (!port.isOutput())
+                        throw new IllegalArgumentException(
+                                "Received output packet for port " + port.name + " (but it is an INPUT port)");
+                    String data = new String(p.data, 2, p.data.length - 2);
+                    traverser.init(data);
+                    Object res = port.data_type.fromJson(traverser, null);
+                    if (port.port_type == PortType.SOCKET) {
+                        SocketQueues sq = (SocketQueues)portData[portId];
+                        sq.out.add(res);
+                    } else {
+                        portData[portId] = res;
+                    }
+                } break;
                 default:
                     throw new IllegalArgumentException("Unexpected packet with id=" + p.id);
             }

@@ -3,22 +3,23 @@
  */
 #include "elf_loader.h"
 #include <unordered_map>
+#include <iostream> //TEMP
 
 
 using namespace std;
 
-void OS::ElfLoader::init(const FS::File& fn, SystemCalls &sys_calls, Memory &mem, Symbols &symbols ) {
+void OS::ElfLoader::init(const fs::path& fn, SystemCalls &sys_calls, Memory &mem, Symbols &symbols ) {
     loaded = false;
     this->sys_calls = &sys_calls;
     this->mem = &mem;
     this->symbols = &symbols;
-    file_name = fn.get_full_name();
+    file_name = fn.filename().string();
     
     module_name = "SYSTEM";
     
     FileReader fr;
     if ( !fr.open( fn ) )
-        throw_error(Error::hardware_emu_software_load_error("[ElfLoader] Could not find software program: " + fn.as_system_path()));
+        throw_error(Error::hardware_emu_software_load_error("[ElfLoader] Could not find software program: " + fn.string()));
     
     
     fr.read( elf.data );
@@ -35,12 +36,13 @@ void OS::ElfLoader::init(const FS::File& fn, SystemCalls &sys_calls, Memory &mem
         for ( auto &seg : elf.ph64 )
             if ( seg.get_type() == ElfSegType::PT_LOAD )
                 seg_count++;
+        //entry_point_address = elf.header64().e_entry;
     }
     else {
         for ( auto &seg : elf.ph32 )
             if ( seg.get_type() == ElfSegType::PT_LOAD )
                 seg_count++;
-                
+        //entry_point_address = elf.header32().e_entry;
     }
     sections.resize( seg_count );
     section_pos = 0;
@@ -93,10 +95,15 @@ void OS::ElfLoader::init(const FS::File& fn, SystemCalls &sys_calls, Memory &mem
                 }
             }
         }
+
+        auto& section_string_table_section = elf.sh64[elf.header64().e_shstrndx];
+        auto section_string_table = elf.get_section_as_table<char>(section_string_table_section);
         
         //Log::info << "Resolving imports\n";
         for ( auto &sh : elf.sh64 ) {
             if ( sh.get_type() == ElfSecType::SHT_RELA ) {
+                std::string table_name = section_string_table.begin() + sh.sh_name;
+                cout << "Reloc section name: " << table_name << endl;
                 //Relocation table
                 auto rela = elf.get_section_as_table<Elf64_Rela>( sh );
                 
@@ -128,15 +135,47 @@ void OS::ElfLoader::init(const FS::File& fn, SystemCalls &sys_calls, Memory &mem
                         //Log::info << "Reloc Object: ";
                         auto &s = sym[r.get_sym_raw()];
                         std::string name = sym_str.begin() + s.st_name;
+                        if (name == "_ZNSt6locale18_S_initialize_onceEv") {
+                            int a = 0;
+                        }
                         
                         auto sym = symbols.get_symbol( name );
-                        if ( sym.type == Symbols::Symbol::Type::OBJECT )
+                        if ( sym.type == Symbols::Symbol::Type::OBJECT || sym.type == Symbols::Symbol::Type::EXPORT)
                             mem.write_long_word( r.r_offset, sym.addr );
-                        //else Log::err << Log::tag << "Un-relocatable Object " << name << "\n";
+                        else cerr << "Un-relocatable Object " << name << "\n";
                     }
                 }
             }
         }
+
+        Elf64_Dyn *dt_init_entry = nullptr;
+        // load dynamic section for initialization functions
+        // All the following contain VIRTUAL addresses
+        for ( auto &sh : elf.sh64 ) {
+            if ( sh.get_type() == ElfSecType::SHT_DYNAMIC) {
+                if (!sh.has_flag(ElfSecFlags::SHF_ALLOC)) {
+                    std::cerr << "Expected ALLOC flag" << std::endl;
+                }
+                auto dyn_table = elf.get_section_as_table<Elf64_Dyn>( sh );
+                
+                for ( auto &dyn_entry : dyn_table ) {
+                    auto t = dyn_entry.get_type();
+                    if (t == ElfDynType::DT_INIT) {
+                        dt_init_entry = &dyn_entry;
+                    } else if (t == ElfDynType::DT_INIT_ARRAY) {
+                        dt_init_array_entry = &dyn_entry;
+                    } else if (t == ElfDynType::DT_INIT_ARRAYSZ) {
+                        dt_init_array_size_entry = &dyn_entry;
+                    }
+                }
+            }
+        }
+
+        if (dt_init_entry) {
+            init_address = dt_init_entry->d_un.d_ptr;
+        }
+
+        
     }
     else {
         //TODO
@@ -149,9 +188,41 @@ void OS::ElfLoader::init(const FS::File& fn, SystemCalls &sys_calls, Memory &mem
 
 void OS::ElfLoader::elf_main( Computer &computer ) {
     throw_assert( loaded, "ElfLoader::elf_main() on uninitialized ElfLoader." );
-    auto init = symbols->get_symbol( "_init" );
-    if ( init.type == Symbols::Symbol::Type::EXPORT )
-        computer.call( init.addr, "_init" );
-    else
-        throw_error(Error::hardware_emu_software_load_error("[ElfLoader] Could not locate _init function of ELF."));
+    //computer.debug.d_code = true;// TEMP
+    //computer.debug.d_mem = true;// TEMP
+    //computer.debug.d_reg_update = true;// TEMP
+
+    
+    computer.call( init_address, ".init section call" );
+
+    // TODO temporarily removed, but be fixed
+    // if (dt_init_array_entry && dt_init_array_size_entry) {
+
+    //     if ( elf.is_64bit ) {
+    //         auto addrs = (Elf64_Addr *) (dt_init_array_entry->d_un.d_ptr); // !! virtual address
+    //         auto res = (Elf64_Addr *) computer.memory.read_memory(MemoryRange((ulong)addrs, dt_init_array_size_entry->d_un.d_val));
+    //         auto jm = dt_init_array_size_entry->d_un.d_val / sizeof (Elf64_Addr);
+    //         for (auto j = 0; j < jm; ++j) {
+    //             auto addr = res[j];
+    //             if (addr != 0 && addr != -1) {
+    //                 computer.call(addr, ".init_array section call" );
+    //             }
+    //         }
+    //     } else {
+    //         throw_assert( false, "TODO" );
+    //     }
+
+    // }
+
+    computer.debug.d_code = false;// TEMP
+    computer.debug.d_mem = false;// TEMP
+    computer.debug.d_reg_update = false;// TEMP
+    // auto init = symbols->get_symbol( "_init" );
+    // if ( init.type == Symbols::Symbol::Type::EXPORT ) {
+    //     //computer.call( init.addr, "_init" );
+    //     computer.call( entry_point_address, "ELF ENTRY POINT" );
+        
+    // }
+    // else
+    //     throw_error(Error::hardware_emu_software_load_error("[ElfLoader] Could not locate _init function of ELF."));
 }

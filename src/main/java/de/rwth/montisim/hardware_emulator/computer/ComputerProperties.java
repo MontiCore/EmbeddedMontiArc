@@ -29,6 +29,8 @@ public class ComputerProperties extends EEComponentProperties {
     public Duration cycle_duration = Duration.ofMillis(20);
     public Vector<String> debug_flags = new Vector<>();
 
+    public boolean json_data_exchange = false; // Set this to exchange autopilot port data with JSON instead of binary (use only to debug)
+
     static public interface Backend {
     }
 
@@ -36,7 +38,7 @@ public class ComputerProperties extends EEComponentProperties {
     // the Autopilot library (DLL/SO/...) is loaded directly by the OS.
     @Typed("direct")
     static public class Direct implements Backend {
-
+        TCP remote = null;
     }
 
     // The Autopilot is loaded in a Virtual Computer (can load autopilots
@@ -52,6 +54,7 @@ public class ComputerProperties extends EEComponentProperties {
         }
 
         public OS os = OS.AUTO;
+        TCP remote = null; // If set, the computer component will connect to the hardware_emulator through the TCP protocol
     }
 
     @Typed("tcp")
@@ -59,6 +62,7 @@ public class ComputerProperties extends EEComponentProperties {
         public String host;
         public int port;
         public int ref_id = 0;
+        public int emu_id = -1; // Ignore, this is used by the TCPBackend connected to a remote hardware_emulator to track the EMULATOR id.
     }
 
     static public interface TimeModel {
@@ -77,7 +81,7 @@ public class ComputerProperties extends EEComponentProperties {
     static public class ConstantTime implements TimeModel {
     }
 
-    // Only supported by the 'HardwareEmulator' backen in 'HARDWARE_EMULATOR' mode
+    // Only supported by the 'HardwareEmulator' backend in 'HARDWARE_EMULATOR' mode
     @Typed("models")
     static public class HardwareTimeModel implements TimeModel {
         public long cpu_frequency = 4000000000L;

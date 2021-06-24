@@ -63,17 +63,17 @@ int iter_symbols( void *data, std::string &str_name, uint32_t &value, int16_t &s
 }
 
 //File without extension
-void OS::DllLoader::init(const FS::File& fn, SystemCalls &sys_calls, Memory &mem, Symbols &symbols ) {
+void OS::DllLoader::init(const fs::path& fn, SystemCalls &sys_calls, Memory &mem, Symbols &symbols ) {
     drop();
     
     this->sys_calls = &sys_calls;
     this->mem = &mem;
     this->symbols = &symbols;
-    file_name = fn.get_full_name();
+    file_name = fn.filename().string();
     
     FileReader fr;
     if ( !fr.open(fn) )
-        throw_error(Error::hardware_emu_software_load_error("[DllLoader] Could not find software program: " + fn.to_string()));
+        throw_error(Error::hardware_emu_software_load_error("[DllLoader] Could not find software program: " + fn.string()));
     
     fr.read( file );
     pe = ParsePEFromMemory( file.data(), (unsigned long) file.size() );
@@ -109,7 +109,7 @@ void OS::DllLoader::drop() {
 
 void OS::DllLoader::dll_main( Computer &computer ) {
     throw_assert( loaded(), "DllLoader::dll_main() on uninitialized DllLoader." );
-    computer.func_call->set_params_64( 0x18C, 1, 0x10C ); //DLL_PROCESS_ATTACH
+    func_call.set_params_64( 0x18C, 1, 0x10C ); //DLL_PROCESS_ATTACH
     computer.call( info.base_address + info.entry_point, "dll_main" );
 }
 

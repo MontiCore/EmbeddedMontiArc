@@ -1,4 +1,3 @@
-/* (c) https://github.com/MontiCore/monticore */
 /***************************************************************************************************
 
   Zyan Disassembler Engine (Zydis)

@@ -1,4 +1,3 @@
-<!-- (c) https://github.com/MontiCore/monticore -->
 ## Readme
 
 This directory contains MSVC project files to build Zydis and the included tools and examples.

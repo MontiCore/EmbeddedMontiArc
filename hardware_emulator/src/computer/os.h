@@ -30,7 +30,24 @@ namespace OS {
         }
         
         //File without extension
-        virtual void load_file(const FS::File& file) = 0;
+        virtual void load_file(const fs::path& file) = 0;
         virtual ~OS() {}
+
+        // Os-independent function calling methods => map to the corresponding function-calling standard (LinuxFastCall or WindowsFastCall)
+        virtual ulong get_return_64() = 0;
+        virtual void set_param1_32(uint p) = 0;
+        virtual void set_param1_64(ulong p) = 0;
+        virtual void set_param2_32(uint p) = 0;
+        virtual void set_param2_64(ulong p) = 0;
+        virtual void set_param3_32(uint p) = 0;
+        virtual void set_param3_64(ulong p) = 0;
+        virtual void set_param1_double(double p) = 0;
+
+        virtual void set_return_64(ulong r) = 0;
+        virtual ulong get_param1_64() = 0;
+        virtual ulong get_param2_64() = 0;
+
+
+        virtual bool uses_shadow_space() = 0;
     };
 }

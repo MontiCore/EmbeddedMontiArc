@@ -40,7 +40,13 @@ struct MemoryRange {
     
     //Used for range sorting
     bool operator<( const MemoryRange &other ) const {
-        return start_address + ( ulong )size <= other.start_address;
+        if (size == 0) {
+            if (other.contains(start_address)) return false;
+        }
+        else if (other.size == 0) {
+            if (contains(other.start_address)) return false;
+        }
+        return start_address < other.start_address;
     }
 };
 
@@ -167,8 +173,8 @@ struct MemorySection {
     
     void init_annotations();
     
-    void print_address_info( ulong virtual_address );
-    void print_annotation( ulong virtual_address );
+    void print_address_info( ulong virtual_address, char* buffer, int buffer_size);
+    void print_annotation( ulong virtual_address, char* buffer, int buffer_size);
     
 };
 
@@ -213,7 +219,7 @@ struct SectionStack {
     invalidates the data from the previous call.
 */
 struct Memory {
-    static constexpr ulong BUFFER_SIZE = 4096;
+    static constexpr ulong BUFFER_START_SIZE = 4096;
     static constexpr ulong MAX_BUFFER_SIZE = 1048576;
     void *internal_uc;
     ulong page_size;
@@ -239,15 +245,25 @@ struct Memory {
     void *read_memory( ulong address, ulong size );
     void write_memory( ulong address, ulong size, void *data );
     
-    void *read_memory( MemoryRange range );
-    void write_memory( MemoryRange range, void *data );
+    inline void* read_memory(MemoryRange range) {
+        return read_memory(range.start_address, range.size);
+    }
+    inline void write_memory(MemoryRange range, void* data) {
+        write_memory(range.start_address, range.size, data);
+    }
+
+
+    void write_memory_buffer(ulong address, ulong size);
+    inline void write_memory_buffer(MemoryRange range) {
+        write_memory_buffer(range.start_address, range.size);
+    }
     
     MemorySection &new_section( MemoryRange range, const std::string &name, const std::string &module, bool exec, bool read,
                                 bool write );
     MemorySection *get_section( ulong virtual_address );
     
-    void print_address_info( ulong virtual_address );
-    void print_annotation( ulong virtual_address );
+    void print_address_info( ulong virtual_address, char* buffer, int buffer_size);
+    void print_annotation( ulong virtual_address, char* buffer, int buffer_size);
     
     wchar_t *read_wstr( ulong address );
     char *read_wstr_as_str( ulong address );

@@ -3,6 +3,8 @@
  */
 #pragma once
 
+extern bool do_debug;
+
 struct TestCase {
     const char *name;
     void( *func )();
@@ -27,6 +29,10 @@ void test_funccalling_elf();
 
 void test_syscall_elf();
 
-void test_autopilot_native();
-void test_autopilot_emu_windows();
-void test_autopilot_emu_linux();
+void test_zigzag_autopilot_native();
+void test_zigzag_autopilot_emu_windows();
+void test_zigzag_autopilot_emu_linux();
+
+void test_ema_autopilot_native();
+void test_ema_autopilot_emu_windows();
+void test_ema_autopilot_emu_linux();

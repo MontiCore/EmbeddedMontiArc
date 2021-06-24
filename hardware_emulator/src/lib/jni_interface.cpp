@@ -57,6 +57,18 @@ JNI_OnUnload(JavaVM* vm, void* reserved) {
 
 JNIEnvironment JNIEnvironment::instance;
 
+struct JNIOutput : public Log::OStreamTarget {
+    JNIEnv* jni;
+    jclass cppbridge_class;
+    jmethodID cppbridge_log_method;
+
+    JNIOutput(JNIEnv* jni, jclass cppbridge_class, jmethodID cppbridge_log_method) : jni(jni), cppbridge_class(cppbridge_class), cppbridge_log_method(cppbridge_log_method) {}
+
+    void print(const char* str, ConsoleColor color, const char* name) {
+        jni->CallStaticVoidMethod(cppbridge_class, cppbridge_log_method, jni->NewStringUTF(str));
+    }
+};
+
 void JNIEnvironment::init(JNIEnv* jni)
 {
     resolve_class(jni, java_lang_double_class, "java/lang/Double");
@@ -66,6 +78,11 @@ void JNIEnvironment::init(JNIEnv* jni)
     resolve_class(jni, java_lang_int_class, "java/lang/Integer");
     resolve_method(jni, java_lang_int_class, java_lang_int_constructor, CONSTRUCTOR_NAME, "(I)V");
     resolve_method(jni, java_lang_int_class, java_lang_int_intValue_method, "intValue", "()I");
+
+    resolve_class(jni, cppbridge_class, "de/rwth/montisim/hardware_emulator/CppBridge");
+    resolve_static_method(jni, cppbridge_class, cppbridge_log_method, "log", "(Ljava/lang/String;)V");
+
+    Log::output_stream = std::make_unique<JNIOutput>(jni, cppbridge_class, cppbridge_log_method);
 }
 
 void JNIEnvironment::drop(JNIEnv* jni)
@@ -100,6 +117,7 @@ void JNIEnvironment::resolve_static_method(JNIEnv* jni, jclass class_ref, jmetho
 
 jint JNIEnvironment::throw_exception(JNIEnv* env, const char* message)
 {
+    //std::cout << "Native exception: " << message << std::endl;
     jclass exClass = env->FindClass("de/rwth/montisim/hardware_emulator/HardwareEmulatorException");
     if (exClass != NULL) {
         return env->ThrowNew(exClass, message);
