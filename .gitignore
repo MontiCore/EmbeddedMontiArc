@@ -10,6 +10,7 @@
 *.pyc
 *.DS_Store
 install/hardware_emulator_lib.dll
+install/hardware_emulator_lib.so
 install/basic-simulator.jar
 dependency-reduced-pom.xml
 .vscode/
