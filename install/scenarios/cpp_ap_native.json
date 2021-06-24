@@ -69,13 +69,14 @@
                 {
                     "type": "computer",
                     "name": "Computer",
-                    "software_name": "cppautopilotzigzag",
+                    "software_name": "zigzag_autopilot_lib",
                     "backend": {
                         "type": "direct"
                     },
                     "time_model": {
                         "type": "constant"
                     },
+                    "json_data_exchange": false,
                     "cycle_duration": [0,10000000]
                 }
             ]

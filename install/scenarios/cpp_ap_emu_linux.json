@@ -1,0 +1,92 @@
+{
+    "name": "cppautopilot",
+    "map_name": "aachen",
+    "cars": [
+        {
+            "name": "TestVehicle",
+            "start_pos": [ 0, 0 ],
+            "task": {
+                "goals": [
+                    {
+                        "type": "path",
+                        "ltl_operator": "eventually",
+                        "path": [ [-63.83, -171.96] ],
+                        "range": 5
+                    }
+                ]
+            },
+            "components": [
+                { 
+                    "type": "constant_bus",
+                    "connected_to": [
+                        "SteeringActuator",
+                        "BrakingActuator",
+                        "GasActuator",
+                        "TrueVelocitySensor",
+                        "TruePositionSensor",
+                        "TrueCompassSensor",
+                        "Navigation",
+                        "Computer"
+                    ]
+                },
+                {
+                    "type": "actuator",
+                    "name": "SteeringActuator",
+                    "physical_value_name": "steering",
+                    "change_rate": 60.0,
+                    "sensor": { "type": "sensor" }
+                },
+                {
+                    "type": "actuator",
+                    "name": "BrakingActuator",
+                    "physical_value_name": "braking",
+                    "change_rate": 10.0,
+                    "sensor": { "type": "sensor" }
+                },
+                {
+                    "type": "actuator",
+                    "name": "GasActuator",
+                    "physical_value_name": "gas",
+                    "sensor": { "type": "sensor" }
+                },
+                {
+                    "type": "sensor",
+                    "name": "TrueVelocitySensor",
+                    "physical_value_name": "true_velocity"
+                },
+                {
+                    "type": "sensor",
+                    "name": "TruePositionSensor",
+                    "physical_value_name": "true_position"
+                },
+                {
+                    "type": "sensor",
+                    "name": "TrueCompassSensor",
+                    "physical_value_name": "true_compass"
+                },
+                { "type": "navigation" },
+                {
+                    "type": "computer",
+                    "name": "Computer",
+                    "software_name": "zigzag_autopilot_lib",
+                    "backend": {
+                        "type": "emu",
+                        "os": "linux"
+                    },
+                    "time_model": {
+                        "type": "models",
+                        "cpu_frequency": 4000000000,
+                        "memory_frequency": 2500000000,
+                        "caches": [
+                            {"type": "I", "level": 1, "size": 262144, "read_ticks": 4, "write_ticks": 4},
+                            {"type": "D", "level": 1, "size": 262144, "read_ticks": 4, "write_ticks": 4},
+                            {"type": "shared", "level": 2, "size": 2097152, "read_ticks": 6, "write_ticks": 6},
+                            {"type": "shared", "level": 3, "size": 12582912, "read_ticks": 40, "write_ticks": 40}
+                        ]
+                    },
+                    "json_data_exchange": false
+                }
+            ]
+        }
+    ]
+}
