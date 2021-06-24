@@ -3,11 +3,11 @@
  */
 #include "de_rwth_montisim_hardware_emulator_CppBridge.h"
 #include "jni_interface.h"
-#include "software_simulator_manager.h"
+#include "simulator/software_simulator_manager.h"
+#include "buffer.h"
 
 
-
-
+DynamicBuffer buff; // This buffer is shared between all "setPortBinary" calls => native calls are not thread safe anymore
 
 
 /*
@@ -28,15 +28,6 @@ JNIEXPORT jstring JNICALL Java_de_rwth_montisim_hardware_1emulator_CppBridge_get
     return jni->NewStringUTF(VERSION);
 }
 
-/*
- * Class:     de_rwth_montisim_hardware_emulator_CppBridge
- * Method:    enableJavaLogging
- * Signature: ()V
- */
-JNIEXPORT void JNICALL Java_de_rwth_montisim_hardware_1emulator_CppBridge_enableJavaLogging
-(JNIEnv*, jclass) {
-    // TODO
-}
 
 
 /*
@@ -132,14 +123,14 @@ JNIEXPORT jstring JNICALL Java_de_rwth_montisim_hardware_1emulator_CppBridge_get
 
 /*
  * Class:     de_rwth_montisim_hardware_emulator_CppBridge
- * Method:    setPort
+ * Method:    setPortJson
  * Signature: (IILjava/lang/String;)V
  */
-JNIEXPORT void JNICALL Java_de_rwth_montisim_hardware_1emulator_CppBridge_setPort
+JNIEXPORT void JNICALL Java_de_rwth_montisim_hardware_1emulator_CppBridge_setPortJson
 (JNIEnv* jni, jclass, jint id, jint i, jstring data) {
     try {
         auto data_str = jni->GetStringUTFChars(data, 0);
-        SoftwareSimulatorManager::instance.simulators[id]->program_interface->set_port(i, data_str);
+        SoftwareSimulatorManager::instance.simulators[id]->program_interface->set_port(i, data_str, 1);
         jni->ReleaseStringUTFChars(data, data_str);
     }
     catch (std::exception & e) {
@@ -147,17 +138,58 @@ JNIEXPORT void JNICALL Java_de_rwth_montisim_hardware_1emulator_CppBridge_setPor
     }
 }
 
+/*
+ * Class:     de_rwth_montisim_hardware_emulator_CppBridge
+ * Method:    getPortJson
+ * Signature: (II)Ljava/lang/String;
+ */
+JNIEXPORT jstring JNICALL Java_de_rwth_montisim_hardware_1emulator_CppBridge_getPortJson
+(JNIEnv* jni, jclass, jint id, jint i) {
+    try {
+        auto res = SoftwareSimulatorManager::instance.simulators[id]->program_interface->get_port(i, 1);
+        return jni->NewStringUTF(res);
+    }
+    catch (std::exception & e) {
+        JNIEnvironment::throw_exception(jni, e.what());
+    }
+    return nullptr;
+}
 
 /*
  * Class:     de_rwth_montisim_hardware_emulator_CppBridge
- * Method:    getPort
- * Signature: (II)Ljava/lang/String;
+ * Method:    setPortBinary
+ * Signature: (II[B)V
  */
-JNIEXPORT jstring JNICALL Java_de_rwth_montisim_hardware_1emulator_CppBridge_getPort
+JNIEXPORT void JNICALL Java_de_rwth_montisim_hardware_1emulator_CppBridge_setPortBinary
+(JNIEnv* jni, jclass, jint id, jint i, jbyteArray arr) {
+    try {
+        buff.reset();
+        BinaryWriter bw = { buff };
+        auto length = jni->GetArrayLength(arr);
+        bw.write_u32(length);
+        buff.reserve(length + 4);
+        jni->GetByteArrayRegion(arr, 0, length, (jbyte*)(buff.get_buffer() + 4));
+        SoftwareSimulatorManager::instance.simulators[id]->program_interface->set_port(i, buff.get_buffer(), 0);
+    }
+    catch (std::exception & e) {
+        JNIEnvironment::throw_exception(jni, e.what());
+    }
+}
+
+/*
+ * Class:     de_rwth_montisim_hardware_emulator_CppBridge
+ * Method:    getPortBinary
+ * Signature: (II)[B
+ */
+JNIEXPORT jbyteArray JNICALL Java_de_rwth_montisim_hardware_1emulator_CppBridge_getPortBinary
 (JNIEnv* jni, jclass, jint id, jint i) {
     try {
-        auto res = SoftwareSimulatorManager::instance.simulators[id]->program_interface->get_port(i);
-        return jni->NewStringUTF(res);
+        auto res = SoftwareSimulatorManager::instance.simulators[id]->program_interface->get_port(i, 0);
+        BinaryReader br = {res, 4};
+        auto len = br.read_u32();
+        auto byte_arr = jni->NewByteArray(len);
+        jni->SetByteArrayRegion(byte_arr, 0, len, (const jbyte*)(res+4));
+        return byte_arr;
     }
     catch (std::exception & e) {
         JNIEnvironment::throw_exception(jni, e.what());

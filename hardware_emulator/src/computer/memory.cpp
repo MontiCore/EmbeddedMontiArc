@@ -5,8 +5,7 @@
 #include <unicorn/unicorn.h>
 #include "computer/computer_layout.h"
 #include "computer/registers.h"
-
-#include <iostream>
+#include <inttypes.h>
 
 #ifdef min
 #undef min
@@ -99,9 +98,13 @@ bool MemorySection::init( MemoryRange address_range, std::string const &name, st
     auto err = uc_mem_map( static_cast<uc_engine *>( internal_uc ), this->address_range.start_address,
                            this->address_range.size, prot );
     if ( err ) {
-        Log::err << Log::tag << "Error mapping emulator memory!\n";
-        if ( err == UC_ERR_ARG )
-            Log::err << Log::tag << "\tAlignment Error\n\n";
+        
+        if (err == UC_ERR_ARG) {
+            Log::err.log_tag("Error mapping emulator memory! => Alignment Error");
+        }
+        else {
+            Log::err.log_tag("Error mapping emulator memory!");
+        }
         return false;
     }
     return true;
@@ -113,7 +116,7 @@ bool MemorySection::upload( MemoryRange range, char *data ) {
     throw_assert( address_range.get_local_index( range.start_address ) + range.size <= address_range.size,
                   "MemorySection::upload() outside section." );
     if ( uc_mem_write( static_cast<uc_engine *>( internal_uc ), range.start_address, data, range.size ) ) {
-        Log::err << Log::tag << "Failed to write emulation code to memory, quit!\n";
+        Log::err.log_tag("Failed to write emulation code to memory, quit!");
         return false;
     }
     return true;
@@ -160,7 +163,7 @@ MemoryRange SectionStack::get_annotated( uint size, const std::string &name, Ann
     if ( mem->has_annotations() )
         mem->annotations.add_annotation( r, Annotation( name, type ) );
     else
-        Log::err << Log::tag << "get_annotated() on section with no annotations\n";
+        Log::err.log_tag("get_annotated() on section with no annotations");
         
     /*Utility::color_mem_write();
     std::cout << "Added Symbol: " << mod << "!" << name;
@@ -180,7 +183,7 @@ uint64_t SectionStack::get_annotated_8byte( const std::string &name, Annotation:
     if ( mem->has_annotations() )
         mem->annotations.add_annotation( r, Annotation( name, type, param ) );
     else
-        Log::err << Log::tag << "get_annotated_8byte() on section with no annotations\n";
+        Log::err.log_tag("get_annotated_8byte() on section with no annotations");
     return r;
 }
 uint64_t SectionStack::get_8byte_slot() {
@@ -195,7 +198,7 @@ uint64_t SectionStack::get_8byte_slot() {
 
 
 void Memory::init( void *uc ) {
-    buffer.resize( BUFFER_SIZE );
+    buffer.resize( BUFFER_START_SIZE );
     this->internal_uc = uc;
     section_count = 0;
     uc_query( static_cast<uc_engine *>( internal_uc ), UC_QUERY_PAGE_SIZE, &page_size );
@@ -213,30 +216,35 @@ void Memory::init( void *uc ) {
 
 
 void *Memory::read_memory( ulong address, ulong size ) {
-    if ( size > BUFFER_SIZE )
-        size = BUFFER_SIZE;
+    if (size >= buffer.size()) {
+        int32_t new_size = ((size / BUFFER_START_SIZE) + 1) * BUFFER_START_SIZE;
+        buffer.resize(new_size);
+    }
     if ( uc_mem_read( static_cast<uc_engine *>( internal_uc ), address, buffer.data(), size ) ) {
-        Log::err << Log::tag << "Error reading from memory at address " << address << " with size " << size << "\n";
+        Log::err.log_tag("Error reading from memory at address %llu with size %llu", address, size);
         buffer[0] = 0;
     }
     return buffer.data();
 }
 
 void Memory::write_memory( ulong address, ulong size, void *data ) {
-    auto s = size > BUFFER_SIZE ? BUFFER_SIZE : size;
+    if (size >= buffer.size()) {
+        int32_t new_size = ((size / BUFFER_START_SIZE) + 1) * BUFFER_START_SIZE;
+        buffer.resize(new_size);
+    }
     uchar *ptr = ( uchar * )data;
-    for ( uint i : urange( ( uint )s ) )
+    for ( uint i : urange( ( uint )size) )
         buffer[i] = ptr[i];
-    if ( uc_mem_write( static_cast<uc_engine *>( internal_uc ), address, buffer.data(), s ) )
-        Log::err << Log::tag << "Error writing to memory at address " << address << " with size " << size << "\n";
+    if ( uc_mem_write( static_cast<uc_engine *>( internal_uc ), address, buffer.data(), size) )
+        Log::err.log_tag("Error writing to memory at address %llu with size %llu", address, size);
 }
 
-void *Memory::read_memory( MemoryRange range ) {
-    return read_memory( range.start_address, range.size );
-}
 
-void Memory::write_memory( MemoryRange range, void *data ) {
-    write_memory( range.start_address, range.size, data );
+
+void Memory::write_memory_buffer(ulong address, ulong size)
+{
+    if (uc_mem_write(static_cast<uc_engine*>(internal_uc), address, buffer.data(), size))
+        Log::err.log_tag("Error writing to memory at address %llu with size %llu", address, size);
 }
 
 
@@ -254,80 +262,82 @@ MemorySection &Memory::new_section( MemoryRange range, const std::string &name, 
 }
 
 MemorySection *Memory::get_section( ulong virtual_address ) {
-    auto res = section_lookup.find( MemoryRange( virtual_address, 1 ) );
+    auto res = section_lookup.find( MemoryRange( virtual_address, 0 ) );
     if ( res != section_lookup.end() )
         return sections[res->second].get();
     return nullptr;
 }
 
-void MemorySection::print_address_info( ulong virtual_address ) {
+void MemorySection::print_address_info( ulong virtual_address, char* buffer, int buffer_size) {
     auto file_address = address_to_file( virtual_address );
-    Log::info << "[";
-    Log::note << mod;
-    Log::info << ":";
-    Log::note << name;
-    if ( file_address != virtual_address )
-        Log::white << "F:" << to_hex( file_address, 16, true );
-    Log::info << "] ";
-    print_annotation( virtual_address );
+    int printed = 0;
+    if (file_address != virtual_address) {
+        printed = snprintf(buffer, buffer_size, "[%s:%s F:%s] ", mod.c_str(), name.c_str(), to_hex(file_address, 16, true).c_str());
+    }
+    else {
+        printed = snprintf(buffer, buffer_size, "[%s:%s] ", mod.c_str(), name.c_str());
+    }
+    if (printed > 0)
+        print_annotation( virtual_address, buffer+printed, buffer_size -printed );
 }
 
-void MemorySection::print_annotation( ulong virtual_address ) {
+void MemorySection::print_annotation( ulong virtual_address, char* buffer, int buffer_size) {
+    buffer[0] = '\0';
     if ( has_annotations() ) {
         auto note_ptr = annotations.get_annotation( virtual_address );
         if ( note_ptr ) {
             auto &note = *note_ptr;
-            Log::info << "(";
-            Log::note << note.name;
             if (note.base != virtual_address) {
-                if (note.base < virtual_address) {
-                    //Log::info << "[" << to_hex( virtual_address - note.base, 0 ) << "]";
-                    Log::info << "[" << (virtual_address - note.base) << "]";
-                }
-                else {
-                    Log::info << "[-" << (note.base - virtual_address) << "]";
-                }
+                auto sign = note.base < virtual_address ? "" : "-";
+                auto val = note.base < virtual_address ? (virtual_address - note.base) : (note.base - virtual_address);
+                snprintf(buffer, buffer_size, "(%s[%s%" PRIu64 "])", note.name.c_str(), sign, val);
             }
-            Log::info << ") ";
+            else {
+                snprintf(buffer, buffer_size, "(%s)", note.name.c_str());
+            }
         }
     }
 }
 
-void Memory::print_address_info( ulong  virtual_address ) {
+void Memory::print_address_info( ulong  virtual_address, char* buffer, int buffer_size ) {
     auto sec_ptr = get_section( virtual_address );
     if ( sec_ptr )
-        sec_ptr->print_address_info( virtual_address );
+        sec_ptr->print_address_info( virtual_address, buffer, buffer_size );
     else
-        Log::info << "[NON-ALLOCATED] ";
+        sprintf(buffer, "[NON-ALLOCATED] ");
 }
 
-void Memory::print_annotation( ulong virtual_address ) {
+void Memory::print_annotation( ulong virtual_address, char* buffer, int buffer_size) {
     auto sec_ptr = get_section( virtual_address );
     if ( sec_ptr )
-        sec_ptr->print_annotation( virtual_address );
+        sec_ptr->print_annotation( virtual_address, buffer, buffer_size);
 }
 
 
 
 wchar_t *Memory::read_wstr( ulong address ) {
+    auto buff_size = buffer.size();
     uint size = 0;
-    wchar_t c;
+    wchar_t* target = (wchar_t* )buffer.data();
     do {
-        if ( uc_mem_read( static_cast<uc_engine *>( internal_uc ), address + size, buffer.data() + size, 2 ) ) {
-            Log::err << Log::tag << "Error reading wstr at address " << address << "\n";
-            size = 2;
+        if ( uc_mem_read( static_cast<uc_engine *>( internal_uc ), address + size, target, 2 ) ) {
+            Log::err.log_tag("Error reading wstr at address %llu", address);
+            *target = 0;
             break;
         }
-        c = *( wchar_t * )( buffer.data() + size );
+        ++target;
         size += 2;
-    } while ( c != 0 && size < BUFFER_SIZE );
-    
-    if ( size >= BUFFER_SIZE )
-        *( wchar_t * )( buffer.data() + ( size - 2 ) ) = 0;
+        if (size >= buff_size) {
+            buff_size += BUFFER_START_SIZE;
+            buffer.resize(buff_size);
+        }
+    } while ( *target != 0 && size < MAX_BUFFER_SIZE);
+    *target = 0;
     return ( wchar_t * )buffer.data();
 }
 
 char *Memory::read_wstr_as_str( ulong address ) {
+    throw_assert(false, "TODO correct");
     auto name_str = read_wstr( address );
     ulong p = 0;
     wchar_t next;
@@ -345,11 +355,11 @@ char *Memory::read_str( ulong address ) {
     auto buff_size = buffer.size();
     do {
         if (size >= buff_size){
-            buff_size += BUFFER_SIZE;
+            buff_size += BUFFER_START_SIZE;
             buffer.resize(buff_size);
         }
         if ( uc_mem_read( static_cast<uc_engine *>( internal_uc ), address + size, buffer.data() + size, 1 ) ) {
-            Log::err << Log::tag << "Error reading str at address " << address << "\n";
+            Log::err.log_tag("Error reading str at address %llu", address);
             buffer[size] = 0;
             break;
         }
@@ -368,7 +378,7 @@ void Memory::write_str( ulong address, std::string const &text ) {
         buff[i] = text[i];
     buff[size] = 0;
     if ( uc_mem_write( static_cast<uc_engine *>( internal_uc ), address, buff, size + 1LL ) )
-        Log::err << Log::tag << "Error writing str at address " << address << "\n";
+        Log::err.log_tag("Error writing str at address %llu", address);
 }
 
 void Memory::write_wstr( ulong address, std::string const &text ) {
@@ -381,13 +391,13 @@ void Memory::write_wstr( ulong address, std::string const &text ) {
     }
     buff[size] = 0;
     if ( uc_mem_write( static_cast<uc_engine *>( internal_uc ), address, buff, ( size + 1LL ) * sizeof( wchar_t ) ) )
-        Log::err << Log::tag << "Error writing wstr at address " << address << "\n";
+        Log::err.log_tag("Error writing wstr at address %llu", address);
 }
 
 void Memory::write_long_word( ulong address, ulong value ) {
     Utility::write_uint64_t( ( char * )buffer.data(), value );
     if ( uc_mem_write( static_cast<uc_engine *>( internal_uc ), address, buffer.data(), 8 ) != UC_ERR_OK )
-        Log::err << Log::tag << "Error writing long\n";
+        Log::err.log_tag("Error writing long");
 }
 
 

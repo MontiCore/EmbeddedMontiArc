@@ -39,7 +39,32 @@ void Computer::init() {
     uc_hook_add( internal->uc, &internal->trace2, UC_HOOK_MEM_VALID, ( void * )Computer::hook_mem, this, 1, 0 );
     uc_hook_add( internal->uc, &internal->trace3, UC_HOOK_MEM_INVALID, ( void * )Computer::hook_mem_err, this, 1, 0 );
     
-    exit_code_addr = sys_calls.add_syscall( SysCall( "exit", "SYSTEM", exit_callback ), "Computer" );
+    exit_code_addr = sys_calls.add_syscall(SysCall("exit", "EMU", [](Computer& computer) {
+        computer.exit_emulation();
+        return true;
+    }), "Computer" );
+    throw_error_addr = sys_calls.add_syscall(SysCall("EMU_throw_error", "EMU", [](Computer& computer) {
+        auto type_str_addr = computer.os->get_param1_64();
+        auto msg_str_addr = computer.os->get_param2_64();
+        std::string type_str = computer.memory.read_str(type_str_addr);
+        auto msg_str = computer.memory.read_str(msg_str_addr);
+        computer.autopilot_throw_msg = "[" + type_str + "] " + msg_str;
+        computer.did_throw = true;
+        computer.exit_emulation();
+        return true;
+    }), "Computer");
+    print_cout_addr = sys_calls.add_syscall(SysCall("EMU_print_cout", "EMU", [](Computer& computer) {
+        auto msg_str_addr = computer.os->get_param1_64();
+        auto msg_str = computer.memory.read_str(msg_str_addr);
+        Log::ap.log_tag("[cout] %s", msg_str);
+        return true;
+    }), "Computer");
+    print_cerr_addr = sys_calls.add_syscall(SysCall("EMU_print_cerr", "EMU", [](Computer& computer) {
+        auto msg_str_addr = computer.os->get_param1_64();
+        auto msg_str = computer.memory.read_str(msg_str_addr);
+        Log::ap.log_tag("[cerr] %s", msg_str);
+        return true;
+    }), "Computer");
 }
 
 void Computer::drop() {
@@ -55,15 +80,48 @@ void Computer::drop() {
 void Computer::call( ulong address, const char *name ) {
     debug.debug_call( address, name );
     stopped = false;
+    did_throw = false;
+
+    if (uses_shadow_space) {
+        auto rsp = registers.get_rsp();
+        registers.set_rsp(rsp - 32);
+    }
+
     stack.push_long( exit_code_addr );
     internal->err = uc_emu_start( internal->uc, address, 0xFFFFFFFFFFFFFFFF, 0, 0 );
     if (internal->err)
         throw_error(std::string("Software emulation error: (call to uc_emu_start() ): \n\t")+ unicorn_error());
+    if (uses_shadow_space) {
+        auto rsp = registers.get_rsp();
+        registers.set_rsp(rsp + 32);
+    }
+    if (did_throw) {
+        throw_error("Throw called in autopilot: " + autopilot_throw_msg);
+    }
+}
+
+void Computer::call_inside(ulong address, ulong return_addr)
+{
+    if (uses_shadow_space) {
+        auto rsp = registers.get_rsp();
+        registers.set_rsp(rsp - 32);
+    }
+    stack.push_long(return_addr);
+    stack.push_long(address); // Just push the target address since 'sys_calls.handle_call()' always pops the next RIP address from the stack
+}
+
+void Computer::call_inside_after()
+{
+    if (uses_shadow_space) {
+        auto rsp = registers.get_rsp();
+        registers.set_rsp(rsp + 32);
+    }
 }
 
 void Computer::set_os( OS::OS *os ) {
     this->os = std::unique_ptr<OS::OS>( os );
     os->init( *this );
+    uses_shadow_space = os->uses_shadow_space();
 }
 
 ulong Computer::add_symbol_handle(const char* name)
@@ -87,7 +145,6 @@ void Computer::cb_code( ulong addr, uint size ) {
 }
 
 void Computer::cb_mem( MemAccess type, ulong addr, uint size, slong value ) {
-    uint sec_id = memory.section_lookup[MemoryRange( addr, 1 )];
     ulong time = mem_model.handle_access( type, addr );
     debug.debug_mem( type, addr, size, value, time );
 }
@@ -114,11 +171,6 @@ bool Computer::hook_mem_err( void *uc, uint type, ulong addr, uint size, slong v
     return false;
 }
 
-
-bool Computer::exit_callback( Computer &inter ) {
-    inter.exit_emulation();
-    return true;
-}
 
 const char* Computer::unicorn_error()
 {
@@ -149,7 +201,7 @@ void CacheSettings::handle_config(const json& settings) {
             if (type.compare("shared") == 0) cache->type = CacheType::SHARED;
             else if (type.compare("I") == 0) cache->type = CacheType::I;
             else if (type.compare("D") == 0) cache->type = CacheType::D;
-            else Log::err << Log::tag << "Unknown Cache Type: " << type << "\n";
+            else Log::err.log_tag("Unknown Cache Type: %s", type.c_str());
         }
         json_get(c, "level", cache->level);
         json_get(c, "size", cache->size);

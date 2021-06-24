@@ -15,6 +15,9 @@ add_subdirectory("${ROOT_DIR}/extern/zydis" zydis)
 add_subdirectory("${ROOT_DIR}/extern/pe-parse/pe-parser-library" pe-parse)
 add_subdirectory("${ROOT_DIR}/extern/unicorn" unicorn)
 
+# Do not use as CMake sub-project => Keep flexibility in what to include and compile
+set(SHARED_CPP "${ROOT_DIR}/extern/shared_cpp")
+
 
 
 
@@ -27,15 +30,15 @@ add_subdirectory("${ROOT_DIR}/extern/unicorn" unicorn)
 # HARDWARE EMULATOR
 add_library(hardware_emulator STATIC)
 
-target_include_directories(hardware_emulator PUBLIC src ../extern/json)
+target_include_directories(hardware_emulator PUBLIC src "../extern/json" "${SHARED_CPP}")
 target_link_libraries(hardware_emulator PUBLIC Zydis unicorn_static pe-parser-library)
 if (CMAKE_HOST_WIN32)
   target_link_libraries(hardware_emulator PUBLIC Dbghelp Shlwapi)
 elseif(CMAKE_HOST_UNIX)
-  target_link_libraries(hardware_emulator PUBLIC dl)
+  target_link_libraries(hardware_emulator PUBLIC dl stdc++fs)
 endif()
 target_compile_features(hardware_emulator PUBLIC cxx_std_17)
-target_compile_definitions(hardware_emulator PUBLIC _CRT_SECURE_NO_WARNINGS)
+target_compile_definitions(hardware_emulator PUBLIC _CRT_SECURE_NO_WARNINGS NO_ERR_OUT)
 if ( CMAKE_COMPILER_IS_GNUCC )
   target_compile_options(hardware_emulator PRIVATE
     -fPIC
@@ -46,21 +49,19 @@ if ( CMAKE_COMPILER_IS_GNUCC )
 endif()
 
 set(hardware_emulator_SOURCES
-src/software_simulator_manager.h
-src/software_simulator_manager.cpp
-src/software_simulator.h
-src/software_simulator.cpp
-src/hardware_emulator.h
-src/hardware_emulator.cpp
-src/direct_software_simulator.h
-src/direct_software_simulator.cpp
+src/simulator/software_simulator_manager.h
+src/simulator/software_simulator_manager.cpp
+src/simulator/software_simulator.h
+src/simulator/software_simulator.cpp
+src/simulator/hardware_emulator.h
+src/simulator/hardware_emulator.cpp
+src/simulator/direct_software_simulator.h
+src/simulator/direct_software_simulator.cpp
 
 src/utility/debug.h
 src/utility/debug.cpp
 src/utility/utility.h
 src/utility/utility.cpp
-src/utility/config.h
-src/utility/config.cpp
 src/utility/dll_interface.h
 src/utility/dll_interface.cpp
 
@@ -88,8 +89,9 @@ src/os_windows/dll_loader.h
 src/os_windows/dll_loader.cpp
 src/os_windows/os_windows.h
 src/os_windows/os_windows.cpp
-src/os_windows/windows_calls.h
-src/os_windows/windows_calls.cpp
+src/os_windows/windows_system_calls.h
+src/os_windows/windows_system_calls.cpp
+src/os_windows/windows_fast_call.h
 
 src/os_linux/elf.h
 src/os_linux/elf.cpp
@@ -97,12 +99,16 @@ src/os_linux/elf_loader.h
 src/os_linux/elf_loader.cpp
 src/os_linux/os_linux.h
 src/os_linux/os_linux.cpp
-src/os_linux/linux_calls.h
-src/os_linux/linux_calls.cpp
+src/os_linux/linux_system_calls.h
+src/os_linux/linux_system_calls.cpp
+src/os_linux/linux_fast_call.h
 
 src/timetable/skylake.table
 )
-target_sources(hardware_emulator PRIVATE ${hardware_emulator_SOURCES})
+set(hardware_emulator_EXTERNAL_SOURCES
+  ${SHARED_CPP}/buffer.cpp
+)
+target_sources(hardware_emulator PRIVATE ${hardware_emulator_SOURCES} ${hardware_emulator_EXTERNAL_SOURCES})
 
 
 
@@ -173,6 +179,24 @@ target_sources(hardware_emulator_test PRIVATE ${hardware_emulator_test_SOURCES})
 
 
 
+# HARDWARE EMULATOR SERVER
+add_executable(hardware_emulator_server)
+
+target_link_libraries(hardware_emulator_server PRIVATE hardware_emulator)
+set_target_properties(hardware_emulator_server PROPERTIES VS_DEBUGGER_WORKING_DIRECTORY "${CMAKE_CURRENT_SOURCE_DIR}/bin")
+set(hardware_emulator_server_SOURCES
+  src/server/server.cpp
+)
+set(hardware_emulator_server_EXTERN_SOURCES
+  ${SHARED_CPP}/network.cpp
+  ${SHARED_CPP}/buffer.cpp
+)
+target_sources(hardware_emulator_server PRIVATE ${hardware_emulator_server_SOURCES} ${hardware_emulator_server_EXTERN_SOURCES})
+
+
+
+
+
 
 
 
@@ -180,7 +204,7 @@ target_sources(hardware_emulator_test PRIVATE ${hardware_emulator_test_SOURCES})
 source_group(
   TREE "${CMAKE_CURRENT_SOURCE_DIR}/src"
   PREFIX "src"
-  FILES ${hardware_emulator_SOURCES} ${hardware_emulator_lib_SOURCES} ${hardware_emulator_test_SOURCES}
+  FILES ${hardware_emulator_SOURCES} ${hardware_emulator_lib_SOURCES} ${hardware_emulator_test_SOURCES} ${hardware_emulator_server_SOURCES}
 )
 
 

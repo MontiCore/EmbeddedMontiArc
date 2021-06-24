@@ -1,0 +1,108 @@
+====
+    (c) https://github.com/MontiCore/monticore
+====
+
+
+test_long_function_intern():
+    push rbp                                // Save old RBP => rsp -= 8
+    mov rbp, rsp                            // Save rsp to RBP
+    sub rsp, 0x40                           // Move rsp up
+    mov dword ptr [rbp-0x04], 0x26          
+    add dword ptr [rbp-0x04], 0x04          
+    mov eax, [rbp-0x04]                     
+    lea edx, [rax+0x05]                     
+    mov eax, [rbp-0x04]                     
+    add eax, 0x04                           
+    cdqe                                    
+    mov r8, rax                             
+    mov eax, [rbp-0x04]                     
+    lea ecx, [rax+0x03]                     
+    mov eax, [rbp-0x04]                     
+    add eax, 0x02                           
+    cdqe                                    
+    mov r11, rax          
+
+    // r10d = a + 1                  
+    mov eax, [rbp-0x04]                     
+    add eax, 0x01                           
+    mov r10d, eax    
+
+    // Set args                       
+    mov eax, [rbp-0x04]                     
+    mov [rsp+0x28], edx                     // arg 6 = edx
+    mov [rsp+0x20], r8                      // arg 5 = r8
+    mov r9d, ecx                            // arg 4 = ecx
+    mov r8, r11                             // arg 3 = r11
+    mov edx, r10d                           // arg 2 = r10d = a + 1
+    mov ecx, eax                            // arg 1 = a
+    call 0x0000000334C217C7
+
+
+MultiByteToWideChar_TEST():     
+    push rbp                                // Save old RBP => rsp -= 8
+    mov rbp, rsp                            // Save rsp to RBP
+    sub rsp, 0x10                           // Move rsp up
+
+    mov [rbp+0x10], ecx                     // Save args on stack
+    mov [rbp+0x18], edx                     
+    mov [rbp+0x20], r8                      
+    mov [rbp+0x28], r9d                     
+
+    // int32_t res = CodePage * 2;
+    mov eax, [rbp+0x10]                     
+    add eax, eax                            
+    mov [rbp-0x04], eax                     // Save res to [rbp-0x04]
+
+    // res += dwFlags * 3;
+    mov edx, [rbp+0x18]                     
+    mov eax, edx                            
+    add eax, eax                            
+    add edx, eax                            
+    mov eax, [rbp-0x04]                     
+    add eax, edx                            
+    mov [rbp-0x04], eax
+
+    // res += (int32_t)lpMultiByteStr * 4;
+    mov rax, [rbp+0x20]                     
+    shl eax, 0x02                           
+    add [rbp-0x04], eax     
+
+    // res += cbMultiByte * 5;
+    mov edx, [rbp+0x28]                     
+    mov eax, edx                            
+    shl eax, 0x02                           
+    add eax, edx                            
+    add [rbp-0x04], eax          
+    
+    // res += (int32_t)lpWideCharStr * 6;           
+    mov rax, [rbp+0x30]                     
+    mov edx, eax                            
+    mov eax, edx                            
+    add eax, eax                            
+    add eax, edx                            
+    add eax, eax                            
+    add [rbp-0x04], eax     
+
+    // res += cchWideChar * 7;               
+    mov edx, [rbp+0x38]                     
+    mov eax, edx                            
+    shl eax, 0x03                           
+    sub eax, edx                            
+    add [rbp-0x04], eax         
+
+    // return res            
+    mov eax, [rbp-0x04]                     
+
+    add rsp, 0x10                           // Move rsp down
+    pop rbp                                 // Reset old RBP => rsp += 8
+    ret                                     // Pops the code ptr from the stack
+
+
+
+    mov [rbp-0x08], eax                     // Write return value to stack
+    sub dword ptr [rbp-0x08], 0x141         // Subtract 0x141 from return value (on stack)
+    mov eax, [rbp-0x08]                     // Put it back in EAX (as return value of this function)
+
+    add rsp, 0x40                           // Move rsp down
+    pop rbp                                 // Reset old RBP => rsp += 8
+    ret                                     

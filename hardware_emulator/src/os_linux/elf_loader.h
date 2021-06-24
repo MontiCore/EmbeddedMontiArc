@@ -25,13 +25,16 @@ namespace OS {
         SystemCalls *sys_calls;
         Symbols *symbols;
         Memory *mem;
+        uint64_t init_address = 0;
+        Elf64_Dyn *dt_init_array_entry = nullptr;
+        Elf64_Dyn *dt_init_array_size_entry = nullptr;
         
 		std::vector<SectionInfo> sections;
         uint section_pos;
         
         ElfLoader() : sys_calls( nullptr ), mem( nullptr ), loaded( false ), symbols( nullptr ), section_pos(0) {}
         
-        void init(const FS::File& file, SystemCalls &sys_calls, Memory &mem, Symbols &symbols );
+        void init(const fs::path& file, SystemCalls &sys_calls, Memory &mem, Symbols &symbols );
         
         void elf_main( Computer &computer );
         

@@ -52,7 +52,6 @@ public class CppBridge {
     }
 
     static public native String getVersion();
-    static public native void enableJavaLogging();
 
     static private native void initManager(String config) throws HardwareEmulatorException;
     static public native String queryManager(String msg) throws HardwareEmulatorException;
@@ -62,8 +61,10 @@ public class CppBridge {
     static public native void freeSimulator(int id) throws HardwareEmulatorException;
 
     static public native String getInterface(int id);
-    static public native void setPort(int id, int i, String data) throws HardwareEmulatorException;
-    static public native String getPort(int id, int i) throws HardwareEmulatorException;
+    static public native void setPortJson(int id, int i, String data) throws HardwareEmulatorException;
+    static public native String getPortJson(int id, int i) throws HardwareEmulatorException;
+    static public native void setPortBinary(int id, int i, byte[] data) throws HardwareEmulatorException;
+    static public native byte[] getPortBinary(int id, int i) throws HardwareEmulatorException;
 
     static public native void startTimer(int id) throws HardwareEmulatorException;
     static public native long getTimerMicrosec(int id) throws HardwareEmulatorException;

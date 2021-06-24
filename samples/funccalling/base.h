@@ -49,4 +49,26 @@ extern "C" {
     EXPORT int32_t int_array(int32_t*, int);
     EXPORT int64_t long_array(int64_t*, int);
     EXPORT char char_array(char*, int);
+
+    // MultiByteToWideChar from the system
+    EXPORT int32_t test_long_function();
+    // Calls MultiByteToWideChar_TEST
+    // Performs the call to the long function internally in order to checkout how it is compiled.
+    EXPORT int32_t test_long_function_intern();
+
+/*
+    int MultiByteToWideChar(
+        UINT                              CodePage,
+        DWORD                             dwFlags,
+        _In_NLS_string_(cbMultiByte)LPCCH lpMultiByteStr,
+        int                               cbMultiByte,
+        LPWSTR                            lpWideCharStr,
+        int                               cchWideChar
+    );
+*/
+    EXPORT int32_t MultiByteToWideChar_TEST(
+        uint32_t CodePage, uint32_t dwFlags, 
+        const char* lpMultiByteStr, int32_t cbMultiByte,
+        uint16_t *lpWideCharStr, int32_t cchWideChar
+        );
 }

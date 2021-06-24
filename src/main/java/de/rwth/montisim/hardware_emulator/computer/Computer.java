@@ -3,7 +3,6 @@
  */
 package de.rwth.montisim.hardware_emulator.computer;
 
-import java.io.IOException;
 import java.time.Duration;
 import java.time.Instant;
 import java.util.ArrayList;
@@ -23,7 +22,6 @@ import de.rwth.montisim.commons.simulation.Destroyer;
 import de.rwth.montisim.commons.simulation.Inspectable;
 import de.rwth.montisim.commons.utils.Time;
 import de.rwth.montisim.commons.utils.json.Json;
-import de.rwth.montisim.commons.utils.json.SerializationException;
 import de.rwth.montisim.hardware_emulator.computer.ComputerProperties.*;
 import de.rwth.montisim.simulation.eesimulator.EEComponent;
 import de.rwth.montisim.simulation.eesimulator.EESystem;
@@ -83,9 +81,19 @@ public class Computer extends EEComponent implements Inspectable {
         this.properties = properties;
 
         if (properties.backend instanceof TCP) {
-            backend = new TCPBackend((TCP) properties.backend, properties.time_model);
-        } else if (properties.backend instanceof Direct || properties.backend instanceof HardwareEmulator) {
-            backend = new HardwareEmulatorBackend(properties);
+            backend = new TCPBackend((TCP) properties.backend, properties, properties.time_model);
+        } else if (properties.backend instanceof Direct) {
+            if (((Direct)properties.backend).remote != null) {
+                backend = new TCPBackend(((Direct)properties.backend).remote, properties, properties.time_model);
+            } else {
+                backend = new HardwareEmulatorBackend(properties);
+            }
+        } else if (properties.backend instanceof HardwareEmulator) {
+            if (((HardwareEmulator)properties.backend).remote != null) {
+                backend = new TCPBackend(((HardwareEmulator)properties.backend).remote, properties, properties.time_model);
+            } else {
+                backend = new HardwareEmulatorBackend(properties);
+            }
         } else throw new IllegalArgumentException("Missing case");
 
         program = backend.getInterface();
@@ -121,7 +129,7 @@ public class Computer extends EEComponent implements Inspectable {
         } else if (type == ExecuteEvent.type) {
             try {
                 execute(event.getEventTime());
-            } catch (HardwareEmulatorException | IOException | SerializationException e) {
+            } catch (Exception e) {
                 e.printStackTrace();
                 throw new IllegalArgumentException(e.getMessage());
             }
@@ -151,7 +159,7 @@ public class Computer extends EEComponent implements Inspectable {
         }
     }
 
-    protected void execute(Instant time) throws HardwareEmulatorException, IOException, SerializationException {
+    protected void execute(Instant time) throws Exception {
         double delta_sec = 0;
         if (lastExec != null) {
             Duration dt = Duration.between(lastExec, time);

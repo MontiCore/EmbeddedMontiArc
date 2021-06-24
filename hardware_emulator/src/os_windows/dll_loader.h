@@ -9,6 +9,7 @@
 #include "computer/computer.h"
 #include "computer/os.h"
 #include "computer/symbols.h"
+#include "windows_fast_call.h"
 
 namespace OS {
 
@@ -30,6 +31,7 @@ namespace OS {
         SystemCalls *sys_calls;
         Symbols *symbols;
         Memory *mem;
+        WindowsFastCall &func_call;
         
         struct DLLInfo {
             ulong base_address = 0;
@@ -47,13 +49,13 @@ namespace OS {
 		std::vector<SectionInfo> sections;
         uint section_pos = 0;
         
-        DllLoader() : pe( nullptr ), sys_calls( nullptr ), mem( nullptr ), symbols( nullptr ) {}
+        DllLoader(WindowsFastCall& func_call) : pe( nullptr ), sys_calls( nullptr ), mem( nullptr ), symbols( nullptr ), func_call(func_call) {}
         ~DllLoader() {
             drop();
         }
         
         //File without extension
-        void init(const FS::File& file, SystemCalls &sys_calls, Memory &mem, Symbols &symbols );
+        void init(const fs::path& file, SystemCalls &sys_calls, Memory &mem, Symbols &symbols );
         void drop();
         bool loaded() {
             return pe != nullptr;

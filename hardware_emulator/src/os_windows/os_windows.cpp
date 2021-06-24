@@ -4,11 +4,12 @@
 #include "os_windows/os_windows.h"
 //#include "computer/computer_layout.h"
 #include <unicorn/unicorn.h>
-#include "windows_calls.h"
+#include "windows_system_calls.h"
+#include <iostream>
 
 
-void OS::Windows::load_file(const FS::File& file) {
-    dll.init(FS::File(file.folder, file.get_name() + ".dll"), computer->sys_calls, computer->memory, computer->symbols);
+void OS::Windows::load_file(const fs::path& file) {
+    dll.init(file.parent_path() / (file.stem().string() + ".dll"), computer->sys_calls, computer->memory, computer->symbols);
     dll.dll_main(*computer);
 }
 
@@ -27,8 +28,7 @@ void OS::Windows::init( Computer &computer ) {
     setup_locale();
     computer.add_symbol_handle("msvcrt.dll");
     
-    WindowsCalls::add_windows_calls( computer.sys_calls, *this );
-    computer.func_call = std::unique_ptr<FunctionCalling>( new WindowsFastCall( computer.registers ) );
+    WindowsSystemCalls::add_windows_calls( computer.sys_calls, *this );
 }
 
 
@@ -291,206 +291,57 @@ ulong OS::Windows::upload_system_string(const std::string& str, const char* desc
     return str_slot.start_address;
 }
 
+ulong OS::Windows::get_return_64()
+{
+    return func_call.get_return_64();
+}
 
+void OS::Windows::set_param1_32(uint p)
+{
+    func_call.set_param1_32(p);
+}
 
-namespace OS {
+void OS::Windows::set_param1_64(ulong p)
+{
+    func_call.set_param1_64(p);
+}
 
-    //Caller
-    void WindowsFastCall::set_params_64( ulong p1 ) {
-        set_param1_64( p1 );
-    }
-    void WindowsFastCall::set_params_64( ulong p1, ulong p2 ) {
-        set_param1_64( p1 );
-        set_param2_64( p2 );
-    }
-    void WindowsFastCall::set_params_64( ulong p1, ulong p2, ulong p3 ) {
-        set_param1_64( p1 );
-        set_param2_64( p2 );
-        set_param3_64( p3 );
-    }
-    void WindowsFastCall::set_params_64( ulong p1, ulong p2, ulong p3, ulong p4 ) {
-        set_param1_64( p1 );
-        set_param2_64( p2 );
-        set_param3_64( p3 );
-        set_param4_64( p4 );
-    }
-    void WindowsFastCall::set_params_32( uint p1 ) {
-        set_param1_32( p1 );
-    }
-    void WindowsFastCall::set_params_32( uint p1, uint p2 ) {
-        set_param1_32( p1 );
-        set_param2_32( p2 );
-    }
-    void WindowsFastCall::set_params_32( uint p1, uint p2, uint p3 ) {
-        set_param1_32( p1 );
-        set_param2_32( p2 );
-        set_param3_32( p3 );
-    }
-    void WindowsFastCall::set_params_32( uint p1, uint p2, uint p3, uint p4 ) {
-        set_param1_32( p1 );
-        set_param2_32( p2 );
-        set_param3_32( p3 );
-        set_param4_32( p4 );
-    }
-    void WindowsFastCall::set_params_double( double p1 ) {
-        set_param1_double( p1 );
-    }
-    void WindowsFastCall::set_params_double( double p1, double p2 ) {
-        set_param1_double( p1 );
-        set_param2_double( p2 );
-    }
-    void WindowsFastCall::set_params_double( double p1, double p2, double p3 ) {
-        set_param1_double( p1 );
-        set_param2_double( p2 );
-        set_param3_double( p3 );
-    }
-    void WindowsFastCall::set_params_double( double p1, double p2, double p3, double p4 ) {
-        set_param1_double( p1 );
-        set_param2_double( p2 );
-        set_param3_double( p3 );
-        set_param4_double( p4 );
-    }
-    void WindowsFastCall::set_params_float( float p1 ) {
-        set_param1_float( p1 );
-    }
-    void WindowsFastCall::set_params_float( float p1, float p2 ) {
-        set_param1_float( p1 );
-        set_param2_float( p2 );
-    }
-    void WindowsFastCall::set_params_float( float p1, float p2, float p3 ) {
-        set_param1_float( p1 );
-        set_param2_float( p2 );
-        set_param3_float( p3 );
-    }
-    void WindowsFastCall::set_params_float( float p1, float p2, float p3, float p4 ) {
-        set_param1_float( p1 );
-        set_param2_float( p2 );
-        set_param3_float( p3 );
-        set_param4_float( p4 );
-    }
-    void WindowsFastCall::set_param1_64( ulong p ) {
-        registers.set_rcx( p );
-    }
-    void WindowsFastCall::set_param2_64( ulong p ) {
-        registers.set_rdx( p );
-    }
-    void WindowsFastCall::set_param3_64( ulong p ) {
-        registers.set_r8( p );
-    }
-    void WindowsFastCall::set_param4_64( ulong p ) {
-        registers.set_r9( p );
-    }
-    void WindowsFastCall::set_param1_32( uint p ) {
-        registers.set_rcx( p );
-    }
-    void WindowsFastCall::set_param2_32( uint p ) {
-        registers.set_rdx( p );
-    }
-    void WindowsFastCall::set_param3_32( uint p ) {
-        registers.set_r8( p );
-    }
-    void WindowsFastCall::set_param4_32( uint p ) {
-        registers.set_r9( p );
-    }
-    void WindowsFastCall::set_param1_double( double p ) {
-        registers.set_xmm0( p );
-    }
-    void WindowsFastCall::set_param2_double( double p ) {
-        registers.set_xmm1( p );
-    }
-    void WindowsFastCall::set_param3_double( double p ) {
-        registers.set_xmm2( p );
-    }
-    void WindowsFastCall::set_param4_double( double p ) {
-        registers.set_xmm3( p );
-    }
-    void WindowsFastCall::set_param1_float( float p ) {
-        registers.set_xmm0_f( p );
-    }
-    void WindowsFastCall::set_param2_float( float p ) {
-        registers.set_xmm1_f( p );
-    }
-    void WindowsFastCall::set_param3_float( float p ) {
-        registers.set_xmm2_f( p );
-    }
-    void WindowsFastCall::set_param4_float( float p ) {
-        registers.set_xmm3_f( p );
-    }
-    ulong WindowsFastCall::get_return_64() {
-        return registers.get_rax();
-    }
-    uint WindowsFastCall::get_return_32() {
-        return ( uint )registers.get_rax();
-    }
-    double WindowsFastCall::get_return_double() {
-        return registers.get_xmm0();
-    }
-    
-    float WindowsFastCall::get_return_float() {
-        return registers.get_xmm0_f();
-    }
-    
-    char WindowsFastCall::get_return_char() {
-        return ( char )registers.get_rax();
-    }
-    
-    
-    //Callee
-    ulong WindowsFastCall::get_param1_64() {
-        return registers.get_rcx();
-    }
-    ulong WindowsFastCall::get_param2_64() {
-        return registers.get_rdx();
-    }
-    ulong WindowsFastCall::get_param3_64() {
-        return registers.get_r8();
-    }
-    ulong WindowsFastCall::get_param4_64() {
-        return registers.get_r9();
-    }
-    uint WindowsFastCall::get_param1_32() {
-        return ( uint )registers.get_rcx();
-    }
-    uint WindowsFastCall::get_param2_32() {
-        return ( uint )registers.get_rdx();
-    }
-    uint WindowsFastCall::get_param3_32() {
-        return ( uint )registers.get_r8();
-    }
-    uint WindowsFastCall::get_param4_32() {
-        return ( uint )registers.get_r9();
-    }
-    double WindowsFastCall::get_param1_double() {
-        return registers.get_xmm0();
-    }
-    double WindowsFastCall::get_param2_double() {
-        return registers.get_xmm1();
-    }
-    double WindowsFastCall::get_param3_double() {
-        return registers.get_xmm2();
-    }
-    double WindowsFastCall::get_param4_double() {
-        return registers.get_xmm3();
-    }
-    float WindowsFastCall::get_param1_float() {
-        return registers.get_xmm0_f();
-    }
-    float WindowsFastCall::get_param2_float() {
-        return registers.get_xmm1_f();
-    }
-    float WindowsFastCall::get_param3_float() {
-        return registers.get_xmm2_f();
-    }
-    float WindowsFastCall::get_param4_float() {
-        return registers.get_xmm3_f();
-    }
-    void WindowsFastCall::set_return_64( ulong r ) {
-        registers.set_rax( r );
-    }
-    void WindowsFastCall::set_return_32( uint r ) {
-        registers.set_rax( r );
-    }
-    void WindowsFastCall::set_return_double( double r ) {
-        registers.set_xmm0( r );
-    }
+void OS::Windows::set_param2_32(uint p)
+{
+    func_call.set_param2_32(p);
+}
+
+void OS::Windows::set_param2_64(ulong p)
+{
+    func_call.set_param2_64(p);
+}
+
+void OS::Windows::set_param3_32(uint p)
+{
+    func_call.set_param3_32(p);
+}
+
+void OS::Windows::set_param3_64(ulong p)
+{
+    func_call.set_param3_64(p);
+}
+
+void OS::Windows::set_param1_double(double p)
+{
+    func_call.set_param1_double(p);
+}
+
+void OS::Windows::set_return_64(ulong r)
+{
+    func_call.set_return_64(r);
+}
+
+ulong OS::Windows::get_param1_64()
+{
+    return func_call.get_param1_64();
+}
+
+ulong OS::Windows::get_param2_64()
+{
+    return func_call.get_param2_64();
 }
