@@ -7,78 +7,335 @@
 
 // Initial State
 
-(init (field a 1 R))
-(init (field a 2 P))
-(init (field a 3 _))
-(init (field a 4 _))
-(init (field a 5 _))
-(init (field a 6 _))
-(init (field a 7 p))
-(init (field a 8 r))
+(init (field a 1 white_rook))
+(init (field b 1 white_knight))
+(init (field c 1 white_bishop))
+(init (field d 1 white_queen))
+(init (field e 1 white_king))
+(init (field f 1 white_bishop))
+(init (field g 1 white_knight))
+(init (field h 1 white_rook))
 
-(init (field b 1 N))
-(init (field b 2 P))
-(init (field b 3 _))
-(init (field b 4 _))
-(init (field b 5 _))
-(init (field b 6 _))
-(init (field b 7 p))
-(init (field b 8 n))
+(init (field a 2 white_pawn))
+(init (field b 2 white_pawn))
+(init (field c 2 white_pawn))
+(init (field d 2 white_pawn))
+(init (field e 2 white_pawn))
+(init (field f 2 white_pawn))
+(init (field g 2 white_pawn))
+(init (field h 2 white_pawn))
 
-(init (field c 1 B))
-(init (field c 2 P))
-(init (field c 3 _))
-(init (field c 4 _))
-(init (field c 5 _))
-(init (field c 6 _))
-(init (field c 7 p))
-(init (field c 8 b))
+(init (field a 3 blank))
+(init (field b 3 blank))
+(init (field c 3 blank))
+(init (field d 3 blank))
+(init (field e 3 blank))
+(init (field f 3 blank))
+(init (field g 3 blank))
+(init (field h 3 blank))
 
-(init (field d 1 Q))
-(init (field d 2 P))
-(init (field d 3 _))
-(init (field d 4 _))
-(init (field d 5 _))
-(init (field d 6 _))
-(init (field d 7 p))
-(init (field d 8 q))
+(init (field a 4 blank))
+(init (field b 4 blank))
+(init (field c 4 blank))
+(init (field d 4 blank))
+(init (field e 4 blank))
+(init (field f 4 blank))
+(init (field g 4 blank))
+(init (field h 4 blank))
 
-(init (field e 1 K))
-(init (field e 2 P))
-(init (field e 3 _))
-(init (field e 4 _))
-(init (field e 5 _))
-(init (field e 6 _))
-(init (field e 7 p))
-(init (field e 8 k))
+(init (field a 5 blank))
+(init (field b 5 blank))
+(init (field c 5 blank))
+(init (field d 5 blank))
+(init (field e 5 blank))
+(init (field f 5 blank))
+(init (field g 5 blank))
+(init (field h 5 blank))
 
-(init (field f 1 B))
-(init (field f 2 P))
-(init (field f 3 _))
-(init (field f 4 _))
-(init (field f 5 _))
-(init (field f 6 _))
-(init (field f 7 p))
-(init (field f 8 b))
+(init (field a 6 blank))
+(init (field b 6 blank))
+(init (field c 6 blank))
+(init (field d 6 blank))
+(init (field e 6 blank))
+(init (field f 6 blank))
+(init (field g 6 blank))
+(init (field h 6 blank))
 
-(init (field g 1 N))
-(init (field g 2 P))
-(init (field g 3 _))
-(init (field g 4 _))
-(init (field g 5 _))
-(init (field g 6 _))
-(init (field g 7 p))
-(init (field g 8 n))
+(init (field a 7 black_pawn))
+(init (field b 7 black_pawn))
+(init (field c 7 black_pawn))
+(init (field d 7 black_pawn))
+(init (field e 7 black_pawn))
+(init (field f 7 black_pawn))
+(init (field g 7 black_pawn))
+(init (field h 7 black_pawn))
 
-(init (field h 1 R))
-(init (field h 2 P))
-(init (field h 3 _))
-(init (field h 4 _))
-(init (field h 5 _))
-(init (field h 6 _))
-(init (field h 7 p))
-(init (field h 8 r))
+(init (field a 8 black_rook))
+(init (field b 8 black_knight))
+(init (field c 8 black_bishop))
+(init (field d 8 black_queen))
+(init (field e 8 black_king))
+(init (field f 8 black_bishop))
+(init (field g 8 black_knight))
+(init (field h 8 black_rook))
 
 (init (control white))
 
+// Move figure on field with move command
+// Copy ?fig from ?x ?y to ?col ?row
+(<= (next (field ?col ?row ?fig))
+    (does ?player (move ?fig ?x ?y ?col ?row)))
 
+// Delete ?fig from ?col ?row with move from ?col ?row
+(<= (next (field ?col ?row blank))
+    (does ?player (move ?fig ?col ?row ?x ?y)))
+
+// Define legal moves
+
+(<= (legal ?player (move ?colored_fig ?col ?row ?x ?y))
+    (true (control ?player))
+    (isPlayer ?colored_fig ?player)
+    (isFigure ?colored_fig ?figure)
+    (isLegalMove ?figure ?player ?col ?row ?x ?y)
+    
+)
+
+
+// --------------
+// Help functions
+// --------------
+
+// Match legal move to figure
+
+// Black Pawn
+// ----- ----
+
+// moves 1
+(<= (isLegalMove pawn black ?col ?row ?col ?y)
+    (true (field ?col ?row black_pawn))
+    (true (field ?col ?y blank))
+    (isNextRow ?y ?row)
+)
+// moves 2
+(<= (isLegalMove pawn black ?col 7 ?col 5)
+    (true (field ?col 7 black_pawn))
+    (true (field ?col 6 blank))
+    (true (field ?col 5 blank))
+)
+
+// White Pawn
+// ----- ----
+
+// moves 1
+(<= (isLegalMove pawn white ?col ?row ?col ?y)
+    (true (field ?col ?row white_pawn))
+    (true (field ?col ?y blank))
+    (isNextRow ?row ?y)
+)
+// moves 2
+(<= (isLegalMove pawn white ?col 2 ?col 4)
+    (true (field ?col 2 white_pawn))
+    (true (field ?col 3 blank))
+    (true (field ?col 4 blank))
+)
+
+// Bishop
+// ------
+
+// move to blank
+(<= (isLegalMove bishop ?player ?col ?row ?x ?y)
+    // get color fig for bishop and player
+    (isPlayer ?color_fig ?player)
+    (isFigure ?color_fig bishop)
+    // bishop occupies field (col, row)
+    (true (cell ?col ?row ?color_fig))
+    // bishop occupies field (col, row)
+    (true (cell ?x ?y blank))
+    (isDiagonalCross ?col ?row ?x ?y)
+)
+
+// Knight
+(<= (isLegalMove knight ?player ?col ?row ?x ?y)
+    
+)
+
+// Rook
+(<= (isLegalMove rook ?player ?col ?row ?x ?y)
+
+)
+
+// Queen
+(<= (isLegalMove queen ?player ?col ?row ?x ?y)
+
+)
+
+// King
+(<= (isLegalMove king ?player ?col ?row ?x ?y)
+    
+)
+
+
+// Player Figure occupies Field
+(<= (isFigureOnField ?player ?figure ?color_fig ?col ?row)
+    // get color fig for figure and player
+    (isPlayer ?color_fig ?player)
+    (isFigure ?color_fig ?figure)
+    // figure occupies field (col, row)
+    (true (cell ?col ?row ?color_fig))
+)
+
+// Diagonal Cross until blocked
+(<= (isDiagonalCross ?a ?b ?x ?y)
+    (isDiagonalTopLeft ?a ?b ?x ?y)
+)
+(<= (isDiagonalCross ?a ?b ?x ?y)
+    (isDiagonalTopRight ?a ?b ?x ?y)
+)
+(<= (isDiagonalCross ?a ?b ?x ?y)
+    (isDiagonalBottomLeft ?a ?b ?x ?y)
+)
+(<= (isDiagonalCross ?a ?b ?x ?y)
+    (isDiagonalBottomRight ?a ?b ?x ?y)
+)
+
+// true, if cell (x,y) lies on diagonal with origin (a,b) and cells between are blank
+
+(<= (isDiagonalTopLeft ?a ?b ?x ?y)
+    (isNextDiagonalCellTopLeft ?a ?b ?x ?y)
+)
+(<= (isDiagonalTopLeft ?a ?b ?x ?y)
+    (isNextDiagonalCellTopLeft ?a ?b ?r ?s)
+    (__isDiagonalTopLeft ?r ?s ?x ?y)
+)
+(<= (__isDiagonalTopLeft ?a ?b ?x ?y)
+    (isNextDiagonalCellTopLeft ?a ?b ?r ?s)
+    (true (cell ?a ?b blank))
+    (__isDiagonalTopLeft ?r ?s ?x ?y)
+)
+
+
+(<= (isDiagonalTopRight ?a ?b ?x ?y)
+    (isNextDiagonalCellTopRight ?a ?b ?x ?y)
+)
+(<= (isDiagonalTopRight ?a ?b ?x ?y)
+    (isNextDiagonalCellTopRight ?a ?b ?r ?s)
+    (__isDiagonalTopRight ?r ?s ?x ?y)
+)
+(<= (__isDiagonalTopRight ?a ?b ?x ?y)
+    (isNextDiagonalCellTopRight ?a ?b ?r ?s)
+    (true (cell ?a ?b blank))
+    (__isDiagonalTopRight ?r ?s ?x ?y)
+)
+
+
+(<= (isDiagonalBottomLeft ?a ?b ?x ?y)
+    (isNextDiagonalCellBottomLeft ?a ?b ?x ?y)
+)
+(<= (isDiagonalBottomLeft ?a ?b ?x ?y)
+    (isNextDiagonalCellBottomLeft ?a ?b ?r ?s)
+    (__isDiagonalBottomLeft ?r ?s ?x ?y)
+)
+(<= (__isDiagonalBottomLeft ?a ?b ?x ?y)
+    (isNextDiagonalCellBottomLeft ?a ?b ?r ?s)
+    (true (cell ?a ?b blank))
+    (__isDiagonalBottomLeft ?r ?s ?x ?y)
+)
+
+
+(<= (isDiagonalBottomRight ?a ?b ?x ?y)
+    (isNextDiagonalCellBottomRight ?a ?b ?x ?y)
+)
+(<= (isDiagonalBottomRight ?a ?b ?x ?y)
+    (isNextDiagonalCellBottomRight ?a ?b ?r ?s)
+    (__isDiagonalBottomRight ?r ?s ?x ?y)
+)
+(<= (__isDiagonalBottomRight ?a ?b ?x ?y)
+    (isNextDiagonalCellBottomRight ?a ?b ?r ?s)
+    (true (cell ?a ?b blank))
+    (__isDiagonalBottomRight ?r ?s ?x ?y)
+)
+
+
+// Diagonal Single Cell Order
+(<= (isNextDiagonalCellTopLeft ?a ?b ?x ?y)
+    (isNextRow ?a ?x)
+    (isNextCol ?y ?b)
+)
+
+(<= (isNextDiagonalCellTopRight ?a ?b ?x ?y)
+    (isNextRow ?a ?x)
+    (isNextCol ?b ?y)
+)
+
+(<= (isNextDiagonalCellBottomLeft ?a ?b ?x ?y)
+    (isNextRow ?x ?a)
+    (isNextCol ?y ?b)
+)
+
+(<= (isNextDiagonalCellBottomRight ?a ?b ?x ?y)
+    (isNextRow ?x ?a)
+    (isNextCol ?b ?y)
+)
+
+// ---------
+// Constants
+// ---------
+
+(isOpponent white black)
+(isOpponent black white)
+
+// Match distinct colored figures to player and figure type
+
+(isPlayer black_pawn black)
+(isFigure black_pawn pawn)
+
+(isPlayer black_bishop black)
+(isFigure black_bishop bishop)
+
+(isPlayer black_knight black)
+(isFigure black_knight knight)
+
+(isPlayer black_rook black)
+(isFigure black_rook rook)
+
+(isPlayer black_queen black)
+(isFigure black_queen queen)
+
+(isPlayer black_king black)
+(isFigure black_king king)
+
+(isPlayer white_pawn white)
+(isFigure white_pawn pawn)
+
+(isPlayer white_bishop white)
+(isFigure white_bishop bishop)
+
+(isPlayer white_knight white)
+(isFigure white_knight knight)
+
+(isPlayer white_rook white)
+(isFigure white_rook rook)
+
+(isPlayer white_queen white)
+(isFigure white_queen queen)
+
+(isPlayer white_king white)
+(isFigure white_king king)
+
+// Row Order
+(isNextRow 1 2)
+(isNextRow 2 3)
+(isNextRow 3 4)
+(isNextRow 4 5)
+(isNextRow 5 6)
+(isNextRow 6 7)
+(isNextRow 7 8)
+
+// Col Order
+(isNextCol a b)
+(isNextCol b c)
+(isNextCol c d)
+(isNextCol d e)
+(isNextCol e f)
+(isNextCol f g)
+(isNextCol g h)
