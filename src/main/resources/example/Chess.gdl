@@ -84,23 +84,22 @@
 (init (control white))
 
 // Move figure on field with move command
-// Copy ?fig from ?x ?y to ?col ?row
-(<= (next (field ?col ?row ?fig))
-    (does ?player (move ?fig ?x ?y ?col ?row))
+// Copy ?fig from ?start_col ?start_row to ?dest_col ?dest_row
+(<= (next (field ?dest_col ?dest_row ?fig))
+    (does ?player (move ?fig ?start_col ?start_row ?dest_col ?dest_row))
 )
 
 // Delete ?fig from ?col ?row with move from ?col ?row
-(<= (next (field ?col ?row blank))
-    (does ?player (move ?fig ?col ?row ?x ?y))
+(<= (next (field ?start_col ?start_row blank))
+    (does ?player (move ?fig ?start_col ?start_row ?dest_col ?dest_row))
 )
 
 // Define legal moves
 
-(<= (legal ?player (move ?colored_fig ?col ?row ?x ?y))
+(<= (legal ?player (move ?color_fig ?start_col ?start_row ?dest_col ?dest_row))
     (true (control ?player))
-    (isPlayer ?colored_fig ?player)
-    (isFigure ?colored_fig ?figure)
-    (isLegalMove ?figure ?player ?col ?row ?x ?y)
+    (isFigureOnField ?player ?figure ?color_fig ?start_col ?start_row)
+    (isLegalMove ?figure ?player ?start_col ?start_row ?dest_col ?dest_row)
 )
 
 
@@ -114,174 +113,169 @@
 // ----- ----
 
 // moves 1
-(<= (isLegalMove pawn black ?col ?row ?col ?y)
-    (true (field ?col ?row black_pawn))
-    (true (field ?col ?y blank))
-    (isNextRow ?y ?row)
+(<= (isLegalMove pawn black ?start_col ?start_row ?start_col ?dest_row)
+    (true (field ?start_col ?start_row black_pawn))
+    (true (field ?start_col ?dest_row blank))
+    (isNextRow ?dest_row ?start_row)
 )
 // moves 2
-(<= (isLegalMove pawn black ?col 7 ?col 5)
-    (true (field ?col 7 black_pawn))
-    (true (field ?col 6 blank))
-    (true (field ?col 5 blank))
+(<= (isLegalMove pawn black ?start_col 7 ?start_col 5)
+    (true (field ?start_col 7 black_pawn))
+    (true (field ?start_col 6 blank))
+    (true (field ?start_col 5 blank))
 )
 
 // White Pawn
 // ----- ----
 
 // moves 1
-(<= (isLegalMove pawn white ?col ?row ?col ?y)
-    (true (field ?col ?row white_pawn))
-    (true (field ?col ?y blank))
-    (isNextRow ?row ?y)
+(<= (isLegalMove pawn white ?start_col ?start_row ?start_col ?dest_row)
+    (true (field ?start_col ?start_row white_pawn))
+    (true (field ?start_col ?dest_row blank))
+    (isNextRow ?start_row ?dest_row)
 )
 // moves 2
-(<= (isLegalMove pawn white ?col 2 ?col 4)
-    (true (field ?col 2 white_pawn))
-    (true (field ?col 3 blank))
-    (true (field ?col 4 blank))
+(<= (isLegalMove pawn white ?start_col 2 ?start_col 4)
+    (true (field ?start_col 2 white_pawn))
+    (true (field ?start_col 3 blank))
+    (true (field ?start_col 4 blank))
 )
 
 // Bishop
 // ------
 
 // move to blank
-(<= (isLegalMove bishop ?player ?col ?row ?x ?y)
-    (isFigureOnField ?player bishop ?color_fig ?col ?row)
+(<= (isLegalMove bishop ?player ?start_col ?start_row ?dest_col ?dest_row)
     // bishop occupies field (col, row)
-    (true (cell ?x ?y blank))
-    (isDiagonalCross ?col ?row ?x ?y)
+    (true (cell ?dest_col ?dest_row blank))
+    (isDiagonalCross ?start_col ?start_row ?dest_col ?dest_row)
 )
 
 // Knight
 // ------
 
-(<= (isLegalMove knight ?player ?col ?row ?x ?y)
-    (isFigureOnField ?player knight ?color_fig ?col ?row)
-    (isLegalKnightMove ?col ?row ?x ?y)
-    (true (cell ?x ?y blank))
+(<= (isLegalMove knight ?player ?start_col ?start_row ?dest_col ?dest_row)
+    (isLegalKnightMove ?start_col ?start_row ?dest_col ?dest_row)
+    (true (cell ?dest_col ?dest_row blank))
 )
 
 // All Knight Move possibilities on board
 // 2xTop 1xLeft
-(<= (isLegalKnightMove ?col ?row ?x ?y)
-    (isNextRow ?row ?pre_y)
-    (isNextRow ?pre_y ?y)
-    (isNextCol ?x ?col)
+(<= (isLegalKnightMove ?start_col ?start_row ?dest_col ?dest_row)
+    (isNextRow ?start_row ?pre_dest_row)
+    (isNextRow ?pre_dest_row ?dest_row)
+    (isNextCol ?dest_col ?start_col)
 )
 // 2xTop 1xRight
-(<= (isLegalKnightMove ?col ?row ?x ?y)
-    (isNextRow ?row ?pre_y)
-    (isNextRow ?pre_y ?y)
-    (isNextCol ?col ?x)
+(<= (isLegalKnightMove ?start_col ?start_row ?dest_col ?dest_row)
+    (isNextRow ?start_row ?pre_dest_row)
+    (isNextRow ?pre_dest_row ?dest_row)
+    (isNextCol ?start_col ?dest_col)
 )
 // 2xBottom 1xLeft
-(<= (isLegalKnightMove ?col ?row ?x ?y)
-    (isNextRow ?pre_y ?row)
-    (isNextRow ?row ?y)
-    (isNextCol ?x ?col)
+(<= (isLegalKnightMove ?start_col ?start_row ?dest_col ?dest_row)
+    (isNextRow ?pre_dest_row ?start_row)
+    (isNextRow ?start_row ?dest_row)
+    (isNextCol ?dest_col ?start_col)
 )
 // 2xBottom 1xRight
-(<= (isLegalKnightMove ?col ?row ?x ?y)
-    (isNextRow ?pre_y ?row)
-    (isNextRow ?y ?pre_y)
-    (isNextCol ?col ?x)
+(<= (isLegalKnightMove ?start_col ?start_row ?dest_col ?dest_row)
+    (isNextRow ?pre_dest_row ?start_row)
+    (isNextRow ?dest_row ?pre_dest_row)
+    (isNextCol ?start_col ?dest_col)
 )
 // 2xLeft 1xTop
-(<= (isLegalKnightMove ?col ?row ?x ?y)
-    (isNextCol ?x ?pre_x)
-    (isNextCol ?pre_x ?col)
-    (isNextRow ?row ?y)
+(<= (isLegalKnightMove ?start_col ?start_row ?dest_col ?dest_row)
+    (isNextCol ?dest_col ?pre_dest_col)
+    (isNextCol ?pre_dest_col ?start_col)
+    (isNextRow ?start_row ?dest_row)
 )
 // 2xLeft 1xBottom
-(<= (isLegalKnightMove ?col ?row ?x ?y)
+(<= (isLegalKnightMove ?start_col ?start_row ?dest_col ?dest_row)
 
-    (isNextCol ?x ?pre_x)
-    (isNextCol ?pre_x ?col)
-    (isNextRow ?y ?row)
+    (isNextCol ?dest_col ?pre_dest_col)
+    (isNextCol ?pre_dest_col ?start_col)
+    (isNextRow ?dest_row ?start_row)
 )
 // 2xRight 1xTop
-(<= (isLegalKnightMove ?col ?row ?x ?y)
-    (isNextCol ?pre_x ?x)
-    (isNextCol ?col ?pre_x)
-    (isNextRow ?row ?y)
+(<= (isLegalKnightMove ?start_col ?start_row ?dest_col ?dest_row)
+    (isNextCol ?pre_dest_col ?dest_col)
+    (isNextCol ?start_col ?pre_dest_col)
+    (isNextRow ?start_row ?dest_row)
 )
 // 2xRight 1xBottom
-(<= (isLegalKnightMove ?col ?row ?x ?y)
-    (isNextCol ?pre_x ?x)
-    (isNextCol ?col ?pre_x)
-    (isNextRow ?row ?y)
+(<= (isLegalKnightMove ?start_col ?start_row ?dest_col ?dest_row)
+    (isNextCol ?pre_dest_col ?dest_col)
+    (isNextCol ?start_col ?pre_dest_col)
+    (isNextRow ?start_row ?dest_row)
 )
 
 
 // Rook
 // ----
 
-(<= (isLegalMove rook ?player ?col ?row ?x ?y)
-    (isFigureOnField ?player rook ?color_fig ?col ?row)
-    (true (cell ?x ?y blank))
-    (isLineCross ?col ?row ?x ?y)
+(<= (isLegalMove rook ?player ?start_col ?start_row ?dest_col ?dest_row)
+    (true (cell ?dest_col ?dest_row blank))
+    (isLineCross ?start_col ?start_row ?dest_col ?dest_row)
 )
 
 // Queen
 // -----
 
-(<= (isLegalMove queen ?player ?col ?row ?x ?y)
-    (isFigureOnField ?player queen ?color_fig ?col ?row)
-    (true (cell ?x ?y blank))
-    (isLegalQueenMove ?col ?row ?x ?y)
+(<= (isLegalMove queen ?player ?start_col ?start_row ?dest_col ?dest_row)
+    (true (cell ?dest_col ?dest_row blank))
+    (isLegalQueenMove ?start_col ?start_row ?dest_col ?dest_row)
 )
 
 // All possible queen moves
-(<= (isLegalQueenMove ?col ?row ?x ?y)
-    (isLineCross ?col ?row ?x ?y)
+(<= (isLegalQueenMove ?start_col ?start_row ?dest_col ?dest_row)
+    (isLineCross ?start_col ?start_row ?dest_col ?dest_row)
 )
-(<= (isLegalQueenMove ?col ?row ?x ?y)
-    (isDiagonalCross ?col ?row ?x ?y)
+(<= (isLegalQueenMove ?start_col ?start_row ?dest_col ?dest_row)
+    (isDiagonalCross ?start_col ?start_row ?dest_col ?dest_row)
 )
 
 
 // King
 // ----
 
-(<= (isLegalMove king ?player ?col ?row ?x ?y)
-    (isFigureOnField ?player king ?color_fig ?col ?row)
-    (true (cell ?x ?y blank))
-    (isLegalKingMove ?col ?row ?x ?y)
+(<= (isLegalMove king ?player ?start_col ?start_row ?dest_col ?dest_row)
+    (true (cell ?dest_col ?dest_row blank))
+    (isLegalKingMove ?start_col ?start_row ?dest_col ?dest_row)
 )
 
 // All possible king moves
 // Top
-(<= (isLegalKingMove ?col ?row ?x ?y)
-    (isNextRow ?row ?y)
+(<= (isLegalKingMove ?start_col ?start_row ?dest_col ?dest_row)
+    (isNextRow ?start_row ?dest_row)
 )
 // Bottom
-(<= (isLegalKingMove ?col ?row ?x ?y)
-    (isNextRow ?y ?row)
+(<= (isLegalKingMove ?start_col ?start_row ?dest_col ?dest_row)
+    (isNextRow ?dest_row ?start_row)
 )
 // Left
-(<= (isLegalKingMove ?col ?row ?x ?y)
-    (isNextCol ?x ?col)
+(<= (isLegalKingMove ?start_col ?start_row ?dest_col ?dest_row)
+    (isNextCol ?dest_col ?start_col)
 )
 // Right
-(<= (isLegalKingMove ?col ?row ?x ?y)
-    (isNextCol ?col ?x)
+(<= (isLegalKingMove ?start_col ?start_row ?dest_col ?dest_row)
+    (isNextCol ?start_col ?dest_col)
 )
 // Top Left
-(<= (isLegalKingMove ?col ?row ?x ?y)
-    (isNextDiagonalCellTopLeft ?col ?row ?x ?y)
+(<= (isLegalKingMove ?start_col ?start_row ?dest_col ?dest_row)
+    (isNextDiagonalCellTopLeft ?start_col ?start_row ?dest_col ?dest_row)
 )
 // Top Right
-(<= (isLegalKingMove ?col ?row ?x ?y)
-    (isNextDiagonalCellTopRight ?col ?row ?x ?y)
+(<= (isLegalKingMove ?start_col ?start_row ?dest_col ?dest_row)
+    (isNextDiagonalCellTopRight ?start_col ?start_row ?dest_col ?dest_row)
 )
 // Bottom Left
-(<= (isLegalKingMove ?col ?row ?x ?y)
-    (isNextDiagonalCellBottomLeft ?col ?row ?x ?y)
+(<= (isLegalKingMove ?start_col ?start_row ?dest_col ?dest_row)
+    (isNextDiagonalCellBottomLeft ?start_col ?start_row ?dest_col ?dest_row)
 )
 // Bottom Right
-(<= (isLegalKingMove ?col ?row ?x ?y)
-    (isNextDiagonalCellBottomRight ?col ?row ?x ?y)
+(<= (isLegalKingMove ?start_col ?start_row ?dest_col ?dest_row)
+    (isNextDiagonalCellBottomRight ?start_col ?start_row ?dest_col ?dest_row)
 )
 
 // Player Figure occupies Field
@@ -378,108 +372,108 @@
 )
 
 // Diagonal Cross until blocked
-(<= (isDiagonalCross ?a ?b ?x ?y)
-    (isDiagonalTopLeft ?a ?b ?x ?y)
+(<= (isDiagonalCross ?start_col ?start_row ?dest_col ?dest_row)
+    (isDiagonalTopLeft ?start_col ?start_row ?dest_col ?dest_row)
 )
-(<= (isDiagonalCross ?a ?b ?x ?y)
-    (isDiagonalTopRight ?a ?b ?x ?y)
+(<= (isDiagonalCross ?start_col ?start_row ?dest_col ?dest_row)
+    (isDiagonalTopRight ?start_col ?start_row ?dest_col ?dest_row)
 )
-(<= (isDiagonalCross ?a ?b ?x ?y)
-    (isDiagonalBottomLeft ?a ?b ?x ?y)
+(<= (isDiagonalCross ?start_col ?start_row ?dest_col ?dest_row)
+    (isDiagonalBottomLeft ?start_col ?start_row ?dest_col ?dest_row)
 )
-(<= (isDiagonalCross ?a ?b ?x ?y)
-    (isDiagonalBottomRight ?a ?b ?x ?y)
+(<= (isDiagonalCross ?start_col ?start_row ?dest_col ?dest_row)
+    (isDiagonalBottomRight ?start_col ?start_row ?dest_col ?dest_row)
 )
 
 // isDiagonalTopLeft
 // true, if cell (x,y) lies on diagonal with origin (a,b) and cells between are blank
-(<= (isDiagonalTopLeft ?a ?b ?x ?y)
-    (isNextDiagonalCellTopLeft ?a ?b ?x ?y)
+(<= (isDiagonalTopLeft ?start_col ?start_row ?dest_col ?dest_row)
+    (isNextDiagonalCellTopLeft ?start_col ?start_row ?dest_col ?dest_row)
 )
-(<= (isDiagonalTopLeft ?a ?b ?x ?y)
-    (__isDiagonalTopLeft ?a ?b ?x ?y)
+(<= (isDiagonalTopLeft ?start_col ?start_row ?dest_col ?dest_row)
+    (__isDiagonalTopLeft ?start_col ?start_row ?dest_col ?dest_row)
 )
 
-(<= (__isDiagonalTopLeft ?a ?b ?x ?y)
-    (isNextDiagonalCellTopLeft ?a ?b ?x ?y)
+(<= (__isDiagonalTopLeft ?start_col ?start_row ?dest_col ?dest_row)
+    (isNextDiagonalCellTopLeft ?start_col ?start_row ?dest_col ?dest_row)
 )
-(<= (__isDiagonalTopLeft ?a ?b ?x ?y)
-    (isNextDiagonalCellTopLeft ?a ?b ?r ?s)
+(<= (__isDiagonalTopLeft ?start_col ?start_row ?dest_col ?dest_row)
+    (isNextDiagonalCellTopLeft ?start_col ?start_row ?r ?s)
     (true (cell ?r ?s blank))
-    (__isDiagonalTopLeft ?r ?s ?x ?y)
+    (__isDiagonalTopLeft ?r ?s ?dest_col ?dest_row)
 )
 
 // isDiagonalTopRight
-(<= (isDiagonalTopRight ?a ?b ?x ?y)
-    (isNextDiagonalCellTopRight ?a ?b ?x ?y)
+(<= (isDiagonalTopRight ?start_col ?start_row ?dest_col ?dest_row)
+    (isNextDiagonalCellTopRight ?start_col ?start_row ?dest_col ?dest_row)
 )
-(<= (isDiagonalTopRight ?a ?b ?x ?y)
-    (__isDiagonalTopRight ?a ?b ?x ?y)
+(<= (isDiagonalTopRight ?start_col ?start_row ?dest_col ?dest_row)
+    (__isDiagonalTopRight ?start_col ?start_row ?dest_col ?dest_row)
 )
 
-(<= (__isDiagonalTopRight ?a ?b ?x ?y)
-    (isNextDiagonalCellTopRight ?a ?b ?x ?y)
+(<= (__isDiagonalTopRight ?start_col ?start_row ?dest_col ?dest_row)
+    (isNextDiagonalCellTopRight ?start_col ?start_row ?dest_col ?dest_row)
 )
-(<= (__isDiagonalTopRight ?a ?b ?x ?y)
-    (isNextDiagonalCellTopRight ?a ?b ?r ?s)
+(<= (__isDiagonalTopRight ?start_col ?start_row ?dest_col ?dest_row)
+    (isNextDiagonalCellTopRight ?start_col ?start_row ?r ?s)
     (true (cell ?r ?s blank))
-    (__isDiagonalTopRight ?r ?s ?x ?y)
+    (__isDiagonalTopRight ?r ?s ?dest_col ?dest_row)
 )
 
 // isDiagonalBottomLeft
-(<= (isDiagonalBottomLeft ?a ?b ?x ?y)
-    (isNextDiagonalCellBottomLeft ?a ?b ?x ?y)
+(<= (isDiagonalBottomLeft ?start_col ?start_row ?dest_col ?dest_row)
+    (isNextDiagonalCellBottomLeft ?start_col ?start_row ?dest_col ?dest_row)
 )
-(<= (isDiagonalBottomLeft ?a ?b ?x ?y)
-    (__isDiagonalBottomLeft ?a ?b ?x ?y)
+(<= (isDiagonalBottomLeft ?start_col ?start_row ?dest_col ?dest_row)
+    (__isDiagonalBottomLeft ?start_col ?start_row ?dest_col ?dest_row)
 )
 
-(<= (__isDiagonalBottomLeft ?a ?b ?x ?y)
-    (isNextDiagonalCellBottomLeft ?a ?b ?x ?y)
+(<= (__isDiagonalBottomLeft ?start_col ?start_row ?dest_col ?dest_row)
+    (isNextDiagonalCellBottomLeft ?start_col ?start_row ?dest_col ?dest_row)
 )
-(<= (__isDiagonalBottomLeft ?a ?b ?x ?y)
-    (isNextDiagonalCellBottomLeft ?a ?b ?r ?s)
+(<= (__isDiagonalBottomLeft ?start_col ?start_row ?dest_col ?dest_row)
+    (isNextDiagonalCellBottomLeft ?start_col ?start_row ?r ?s)
     (true (cell ?r ?s blank))
-    (__isDiagonalBottomLeft ?r ?s ?x ?y)
+    (__isDiagonalBottomLeft ?r ?s ?dest_col ?dest_row)
 )
 
 // isDiagonalBottomRight
-(<= (isDiagonalBottomRight ?a ?b ?x ?y)
-    (isNextDiagonalCellBottomRight ?a ?b ?x ?y)
+(<= (isDiagonalBottomRight ?start_col ?start_row ?dest_col ?dest_row)
+    (isNextDiagonalCellBottomRight ?start_col ?start_row ?dest_col ?dest_row)
 )
-(<= (isDiagonalBottomRight ?a ?b ?x ?y)
-    (__isDiagonalBottomRight ?a ?b ?x ?y)
+(<= (isDiagonalBottomRight ?start_col ?start_row ?dest_col ?dest_row)
+    (__isDiagonalBottomRight ?start_col ?start_row ?dest_col ?dest_row)
 )
 
-(<= (__isDiagonalBottomRight ?a ?b ?x ?y)
-    (isNextDiagonalCellBottomRight ?a ?b ?x ?y)
+(<= (__isDiagonalBottomRight ?start_col ?start_row ?dest_col ?dest_row)
+    (isNextDiagonalCellBottomRight ?start_col ?start_row ?dest_col ?dest_row)
 )
-(<= (__isDiagonalBottomRight ?a ?b ?x ?y)
-    (isNextDiagonalCellBottomRight ?a ?b ?r ?s)
+(<= (__isDiagonalBottomRight ?start_col ?start_row ?dest_col ?dest_row)
+    (isNextDiagonalCellBottomRight ?start_col ?start_row ?r ?s)
     (true (cell ?r ?s blank))
-    (__isDiagonalBottomRight ?r ?s ?x ?y)
+    (__isDiagonalBottomRight ?r ?s ?dest_col ?dest_row)
 )
 
 
 // Diagonal Single Cell Order
-(<= (isNextDiagonalCellTopLeft ?a ?b ?x ?y)
-    (isNextRow ?a ?x)
-    (isNextCol ?y ?b)
+(<= (isNextDiagonalCellTopLeft ?start_col ?start_row ?dest_col ?dest_row)
+    (isNextRow ?start_col ?dest_col)
+    (isNextCol ?dest_row ?start_row)
 )
 
-(<= (isNextDiagonalCellTopRight ?a ?b ?x ?y)
-    (isNextRow ?a ?x)
-    (isNextCol ?b ?y)
+(<= (isNextDiagonalCellTopRight ?start_col ?start_row ?dest_col ?dest_row)
+    (isNextRow ?start_col ?dest_col)
+    (isNextCol ?start_row ?dest_row)
 )
 
-(<= (isNextDiagonalCellBottomLeft ?a ?b ?x ?y)
-    (isNextRow ?x ?a)
-    (isNextCol ?y ?b)
+(<= (isNextDiagonalCellBottomLeft ?start_col ?start_row ?dest_col ?dest_row)
+    (isNextRow ?dest_col ?start_col)
+    (isNextCol ?dest_row ?start_row)
 )
 
-(<= (isNextDiagonalCellBottomRight ?a ?b ?x ?y)
-    (isNextRow ?x ?a)
-    (isNextCol ?b ?y)
+(<= (isNextDiagonalCellBottomRight ?start_col ?start_row ?dest_col ?dest_row)
+    (isNextRow ?dest_col ?start_col)
+    (isNextCol ?start_row ?dest_row)
 )
 
 
