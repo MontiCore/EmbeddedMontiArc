@@ -165,8 +165,9 @@ abstract public class PredefinedLayerDeclaration extends LayerDeclarationSymbol 
                     Integer iheight = new Integer(inputHeight);
                     Integer iwidth = new Integer(inputWidth);
                     Integer idepth = new Integer(inputDepth);
+                    Integer channel = new Integer(inputTypes.get(0).getChannels());
                     Log.warn("The input resolution is smaller than the kernel. " + height.toString() + " " + width.toString() + " " + depth.toString() + " " + iheight.toString() + " " + iwidth.toString() + " " + idepth.toString() + " " +
-                                    "This results in an output resolution of 1x1. " + "Depth Index is: " + depthI.toString() + " " +
+                                    "This results in an output resolution of 1x1. " + "Depth Index is: " + depthI.toString() + " " + "Channel is: " + channel.toString() + " " +
                                     "If this warning appears multiple times, consider changing your architecture"
                             , layer.getSourcePosition());
                 }

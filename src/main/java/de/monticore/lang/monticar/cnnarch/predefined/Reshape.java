@@ -53,7 +53,7 @@ public class Reshape extends PredefinedLayerDeclaration {
                 Log.error("0" + ErrorCodes.ILLEGAL_PARAMETER_VALUE + "\"Shape\" argument needs to contain at least one entry"
                         , layer.getSourcePosition());
             }
-
+        }
         int totalSize = layer.getInputTypes().get(0).getChannels() * layer.getInputTypes().get(0).getHeight() * layer.getInputTypes().get(0).getWidth() * layer.getInputTypes().get(0).getDepth();
         int newTotalSize = shape.stream().reduce(1, (x, y) -> x * y);
 
