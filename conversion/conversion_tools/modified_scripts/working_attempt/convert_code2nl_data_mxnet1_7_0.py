@@ -2,9 +2,7 @@
 # to work with mxnet/gluon/gluonnlp
 
 import json
-from numpy.lib.utils import source
 from transformers.models.roberta import RobertaTokenizer
-import mxnet as mx
 import numpy as np
 import h5py
 import argparse
@@ -38,6 +36,7 @@ class InputFeatures(object):
         self.target_mask = target_mask
 
 def read_examples(filename, limit=500):
+    print('Reading training data...')
     """Read examples from filename."""
     examples=[]
     with open(filename,encoding="utf-8") as f:
@@ -62,6 +61,7 @@ def read_examples(filename, limit=500):
     return examples
 
 def convert_examples_to_features(examples, tokenizer, max_source_length, max_target_length, stage=None):
+    print('Converting examples to features...')
     features = []
     for example_index, example in enumerate(examples):
         #source
@@ -100,6 +100,7 @@ def get_training_data(filename, limit):
         'max_source_length': 256,
         'max_target_length': 128,
     }
+    print('Getting pretrained tokenizer...')
     tokenizer = RobertaTokenizer.from_pretrained('microsoft/codebert-base')
     train_examples = read_examples(filename, limit=limit)
     train_features = convert_examples_to_features(
@@ -121,6 +122,7 @@ def get_training_data(filename, limit):
     }
 
 def write_dataset_to_disk(training_data, savedir):
+    print('Writing data to {} ...'.format(savedir + '/train.h5'))
     if not os.path.exists(savedir):
         os.makedirs(savedir)
     f = h5py.File(savedir + '/train.h5', 'w')
@@ -133,7 +135,8 @@ def parse_args():
         help="The maximum number of examples to be extracted and saved")
     parser.add_argument("--save_dir", default='./codebert_gluon/data', 
         help="The path where the training data should be saved")
-    parser.add_argument("--train_data", help="The file where the unprocessed training data is.")
+    parser.add_argument("--train_data", default='/home/makua/Documents/Datasets/CodeSearchNet/java/train.jsonl',
+        help="The file where the unprocessed training data is, can be found on the codebert github")
     return parser.parse_args()
 
 if __name__ == '__main__':
