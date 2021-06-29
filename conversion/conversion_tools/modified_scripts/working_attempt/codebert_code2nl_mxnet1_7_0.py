@@ -46,11 +46,9 @@
 #   "vocab_size": 50265
 # }
 
-from convert_codebert_transformers_mxnet1_7_0 import convert_huggingface_model
-from gluonnlp.model.transformer import TransformerDecoder
-from mxnet.gluon.block import HybridBlock
 from mxnet import gluon
-import mxnet.gluon.nn as nn
+from gluonnlp.model.transformer import TransformerDecoder
+from codebert_models import Seq2Seq
 import mxnet as mx
 import gluonnlp as nlp
 import argparse
@@ -81,7 +79,7 @@ def get_decoder():
     # gluon TransformerDecoder does a positional encoding before input, does codebert do the same thing?
     # gluonnlp might not do it if position_weight is none?
     # torch model constructs the ffn in the forward call, gluon uses a custom layer for it PositionwiseFFN
-    decoder = nlp.model.transformer.TransformerDecoder(
+    decoder = TransformerDecoder(
         attention_cell=decoder_hparam['attention_cell'], 
         num_layers=decoder_hparam['num_layers'], 
         units=decoder_hparam['units'], 

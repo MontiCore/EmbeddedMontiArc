@@ -60,7 +60,7 @@ from numpy.testing import assert_allclose
 
 import torch
 import transformers
-from codebert_embedding import BERTEmbedding, BERTEncoder, BERTModel
+from codebert_models import BERTEmbedding, BERTEncoder, BERTModel
 
 def parse_args():
     parser = argparse.ArgumentParser(description='Convert the huggingface CodeBERT Model to Gluon.')
