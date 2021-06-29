@@ -33,7 +33,7 @@ public class GDLTool {
     final ASTGame ast = parse(model);
     Log.info(model + " parsed successfully!", GDLTool.class.getName());
 
-    System.out.println(printGame(ast));
+    //System.out.println(printGame(ast));
 
     // setup the symbol table
     // IAutomataArtifactScope modelTopScope = createSymbolTable(ast);
@@ -72,7 +72,7 @@ public class GDLTool {
     // System.out.println(pp.getResult());
   }
 
-  public static String printGame(ASTGame game) {
+  /*public static String printGame(ASTGame game) {
     StringBuilder builder = new StringBuilder();
     for (ASTGameExpression expr: game.getGameExpressionList()) {
       builder.append(printGameExpression(expr) + "\n");

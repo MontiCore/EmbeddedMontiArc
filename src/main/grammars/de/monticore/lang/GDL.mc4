@@ -4,12 +4,18 @@ grammar GDL extends de.monticore.literals.MCCommonLiterals {
 
     Game = GameExpression*;
 
-    interface GameRelation;
+    GameExpression = Comment | "(" (Role | Init | GameStateUpdate | LegalMove | Terminal | Goal | HelpFunction) ")" | Fact;
+    
+    Comment = "//" Literal*;
+    Role = "role " Name ; 
+    Init = "init " Fact; 
+    GameStateUpdate = "<= (next" Fact ")" Fact* ("(does " (Name | Var) Fact ")")? Fact*; 
+    LegalMove = "<= (legal" (Var | Name) (Fact | "noop") ")" Fact* ;
+    Terminal = "<= terminal" Fact;
+    Goal = "<= (goal " (Var | Name) Digits* ")" Fact*;
+    HelpFunction = "<=" ("(" (Name | Var | Digits)* ")" | Name) Fact*;
 
-    GameExpression implements GameRelation =
-        "(" handle:GameString component:GameRelation*  ")";
-      
-
-    GameString implements GameRelation = Name;
+    Fact = ("(" ((Name | Digits | Var)* | ("true (" | "not (") (Name | Digits | Var)* ")") ")") | Name;
+    Var = "?"Name;
   
 }
