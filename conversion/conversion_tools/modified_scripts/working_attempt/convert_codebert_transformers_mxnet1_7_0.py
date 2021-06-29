@@ -64,7 +64,7 @@ from codebert_models import BERTEmbedding, BERTEncoder, BERTModel
 
 def parse_args():
     parser = argparse.ArgumentParser(description='Convert the huggingface CodeBERT Model to Gluon.')
-    parser.add_argument('--save_dir', type=str, default=None,
+    parser.add_argument('--save_dir', type=str, default='./codebert_gluon',
         help='Directory path to save the converted model.')
     parser.add_argument('--test', action='store_true',
         help='If the model should be tested for equivalence after conversion, no model is output')
@@ -256,6 +256,7 @@ def test_model(hf_model, hf_tokenizer, gluon_model, gluon_embedding, args):
         # reshape the inputs from (n,) to (n,1) to mock LoadNetwork layer inputs in EMADL
         valid_length=gl_valid_length if test else gl_valid_length.reshape(gl_valid_length.shape[0], 1) 
     )
+    print(gl_outs)
 
     if test:
         print('Performing a long model test...')
@@ -287,8 +288,8 @@ def test_model(hf_model, hf_tokenizer, gluon_model, gluon_embedding, args):
                     )
 
 def export_model(save_dir, gluon_model, name):
+    print('Exporting the {} model to {} ...'.format(name, os.path.join(save_dir)))
     gluon_model.export(os.path.join(save_dir, name))
-    print('Exported the {} model to {}'.format(name, os.path.join(save_dir)))
 
 def get_hf_model_and_tok():
     hf_tokenizer = transformers.RobertaTokenizer.from_pretrained("microsoft/codebert-base")
@@ -300,8 +301,6 @@ def convert_huggingface_model():
     return convert_params(hf_model, hf_tokenizer, hf_model.config, False)
 
 def convert_and_export(args):
-    if not args.save_dir:
-        args.save_dir = os.path.basename('./codebert_gluon')
     if not os.path.exists(args.save_dir):
         os.makedirs(args.save_dir)
     hf_model, hf_tokenizer = get_hf_model_and_tok()

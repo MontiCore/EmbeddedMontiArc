@@ -54,7 +54,7 @@ import gluonnlp as nlp
 import argparse
 import h5py
 
-def get_decoder():
+def get_decoder(batch_size, seq_len, tgt_seq_len, embed_size):
     # put together by looking at the torch decoder
     decoder_hparam = {
         'attention_cell': 'multi_head',
@@ -97,6 +97,20 @@ def get_decoder():
         prefix=decoder_hparam['prefix'], 
         params=decoder_hparam['prefix']
     )
+    decoder.initialize()
+    decoder.hybridize()
+
+    # TODO do first pass through decoder here to initialize shapes
+    inputs = mx.nd.zeros((batch_size, tgt_seq_len, embed_size))
+    # encoder out shape (batch_size, seq_len, embed_size)
+    enc_out = mx.nd.zeros(batch_size, seq_len, embed_size)
+    enc_valid = mx.nd.ones((batch_size, seq_len))
+    states = decoder.init_state_from_encoder(enc_out, encoder_valid_length=enc_valid)
+    tgt_valid = mx.nd.ones((batch_size, tgt_seq_len))
+
+    decoder(inputs, states, tgt_valid)
+
+
     return decoder
 
 def get_seq2seq(embedding, encoder, decoder,):
@@ -146,7 +160,7 @@ def train_model(args):
     ctx = [mx.cpu()]
     embedding = load_codebert_block(args.embed_symbol_file, args.embed_weight_file, ctx)
     encoder = load_codebert_block(args.symbol_file, args.weight_file, ctx)
-    decoder = get_decoder()
+    decoder = get_decoder(args.batch_size, args.seq_len, tgt_seq_len, embed_size)
     seq2seq = get_seq2seq(embedding, encoder, decoder)
     seq2seq.collect_params().initialize(force_reinit=False, ctx=ctx)
     seq2seq.hybridize()
@@ -206,7 +220,7 @@ def parse_args():
         help='The path where the training data should be saved')
     parser.add_argument("--epochs", default=1, type=int,
         help="The number of epochs for training")
-    parser.add_argument('--train_data', default=None, type=str,
+    parser.add_argument('--train_data', default='./codebert_gluon/data/train.h5', type=str,
         help='The .h5 file where the processed training data is.')
     parser.add_argument("--batch_size", default=8, type=int,
         help="Batch size for training")

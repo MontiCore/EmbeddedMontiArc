@@ -227,9 +227,12 @@ class Seq2Seq(HybridBlock):
             #attn_mask=-1e4 *(1-self.bias[:target_ids.shape[1],:target_ids.shape[1]]) no option to pass this in gluonnlp TODO
             # could try subclassing the Decoder and change the hybrid_forward function.
             target_token_types = mx.nd.zeros_like(target_ids)
-            tgt_embeddings = self.embedding(target_ids, target_token_types)
+            # transpose so we have (batch size, target seq length, embed dims)
+            tgt_embeddings = self.embedding(target_ids, target_token_types).transpose((1, 0, 2))
             states = self.decoder.init_state_from_encoder(encoder_output, input_valid_length)
-            out = self.decoder(tgt_embeddings, states, valid_length=target_valid_length)
+            # TODO do we need to set position weight to something for decoder?
+            # target_valid_length fails when it is a named parameter for some reason, so we just pass as the third
+            out = self.decoder(tgt_embeddings, states, target_valid_length)
             hidden_states = self.dense(out)
             lm_logits = self.lm_head(hidden_states)
             return lm_logits
