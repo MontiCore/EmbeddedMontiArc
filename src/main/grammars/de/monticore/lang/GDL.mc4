@@ -15,7 +15,7 @@ grammar GDL extends de.monticore.literals.MCCommonLiterals {
     Goal = "<= (goal " (Var | Name) Digits* ")" Fact*;
     HelpFunction = "<=" ("(" (Name | Var | Digits)* ")" | Name) Fact*;
 
-    Fact = ("(" ((Name | Digits | Var)* | ("true (" | "not (") (Name | Digits | Var)* ")") ")") | Name;
+    Fact = ("(" ( "distinct " (Name | Digits | Var)* | (Name | Digits | Var)* | ("true (" | "not (") (Name | Digits | Var)* ")") ")") | Name;
     Var = "?"Name;
   
 }
