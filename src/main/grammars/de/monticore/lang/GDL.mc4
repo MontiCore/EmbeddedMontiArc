@@ -21,6 +21,7 @@ grammar GDL extends de.monticore.literals.MCCommonLiterals {
     GameNext implements GameType = "next";
     GameTrue implements GameType = "true";
     GameLegal implements GameType = "legal";
+    GameDoes implements GameType = "does";
     GameNot implements GameType = "not";
     GameDistinct implements GameType = "distinct";
     GameGoal implements GameType = "goal";
