@@ -80,19 +80,23 @@ def get_decoder():
     )
     decoder.initialize()
     decoder.hybridize()
-
-    # # TODO do first pass through decoder here to initialize shapes
-    # inputs = mx.nd.zeros((batch_size, tgt_seq_len, embed_size))
-    # # encoder out shape (batch_size, seq_len, embed_size)
-    # enc_out = mx.nd.zeros(batch_size, seq_len, embed_size)
-    # enc_valid = mx.nd.ones((batch_size, seq_len))
-    # states = decoder.init_state_from_encoder(enc_out, encoder_valid_length=enc_valid)
-    # tgt_valid = mx.nd.ones((batch_size, tgt_seq_len))
-    # decoder(inputs, states, tgt_valid)
+    train_hparams = hp.get_training_params()
+    batch_size = train_hparams['batch_size']
+    tgt_seq_len = train_hparams['max_target_length']
+    seq_len = train_hparams['max_source_length']
+    embed_size = hp.get_bert_hparams()['embed_size']
+    # TODO do first pass through decoder here to initialize shapes
+    inputs = mx.nd.zeros((batch_size, tgt_seq_len, embed_size))
+    # encoder out shape (batch_size, seq_len, embed_size)
+    enc_out = mx.nd.zeros(batch_size, seq_len, embed_size)
+    enc_valid = mx.nd.ones((batch_size, seq_len))
+    states = decoder.init_state_from_encoder(enc_out, encoder_valid_length=enc_valid)
+    tgt_valid = mx.nd.ones((batch_size, tgt_seq_len))
+    decoder(inputs, states, tgt_valid)
 
     return decoder
 
-def get_seq2seq(embedding, encoder, decoder, args):
+def get_seq2seq(embedding, encoder, decoder):
     seq2seq_hparams = hp.get_seq2seq_hparams()
     training_params = hp.get_training_hparams()
     seq2seq = Seq2Seq(
@@ -128,8 +132,8 @@ def train_model(args):
     ctx = [mx.cpu()]
     embedding = load_codebert_block(args.embed_symbol_file, args.embed_weight_file, ctx)
     encoder = load_codebert_block(args.symbol_file, args.weight_file, ctx)
-    decoder = get_decoder(args.batch_size, args.seq_len, tgt_seq_len, embed_size)
-    seq2seq = get_seq2seq(embedding, encoder, decoder, args)
+    decoder = get_decoder()
+    seq2seq = get_seq2seq(embedding, encoder, decoder)
     seq2seq.collect_params().initialize(force_reinit=False, ctx=ctx)
     seq2seq.hybridize()
     train_data = get_data_iterator(
