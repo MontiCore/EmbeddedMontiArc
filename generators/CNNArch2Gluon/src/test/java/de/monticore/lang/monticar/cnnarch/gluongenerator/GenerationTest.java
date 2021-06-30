@@ -15,10 +15,10 @@ import java.nio.file.Paths;
 import java.util.*;
 import org.junit.contrib.java.lang.system.ExpectedSystemExit;
 
-import static java.sql.DriverManager.println;
+//import static java.sql.DriverManager.println;
 import static junit.framework.TestCase.assertTrue;
 import static org.mockito.Mockito.mock;
-import static sun.misc.Version.print;
+//import static sun.misc.Version.print;
 
 public class GenerationTest extends AbstractSymtabTest {
     private RewardFunctionSourceGenerator rewardFunctionSourceGenerator;
