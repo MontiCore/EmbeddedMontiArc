@@ -1,4 +1,3 @@
-# (c) https://github.com/MontiCore/monticore  
 from caffe2.python import workspace, core, model_helper, brew, optimizer
 from caffe2.python.predictor import mobile_exporter
 from caffe2.proto import caffe2_pb2
