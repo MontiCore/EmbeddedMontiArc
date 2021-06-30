@@ -1,4 +1,3 @@
-/* (c) https://github.com/MontiCore/monticore */
 #ifndef CNNPREDICTOR_THREEINPUTCNN_M14
 #define CNNPREDICTOR_THREEINPUTCNN_M14
 
