@@ -49,91 +49,59 @@
 from mxnet import gluon
 from gluonnlp.model.transformer import TransformerDecoder
 from codebert_models import Seq2Seq
+import codebert_hyper_params as hp
 import mxnet as mx
 import gluonnlp as nlp
 import argparse
 import h5py
 
-def get_decoder(batch_size, seq_len, tgt_seq_len, embed_size):
-    # put together by looking at the torch decoder
-    decoder_hparam = {
-        'attention_cell': 'multi_head',
-        'num_layers': 6,
-        'units': 768,
-        'hidden_size': 2048,
-        'max_length': 50,
-        'num_heads': 12,
-        'scaled': True,
-        'scale_embed': False,
-        'norm_inputs': False,
-        # this is slightly different thand torch, because an additional dropout before decoder layers is added
-        # the TransformerDecoderLayers also have 3 separate dropout layers and gluon only has 1?
-        'dropout': 0.1, 
-        'use_residual': True, 
-        'output_attention': False, 
-        'weight_initializer': None,
-        'bias_initializer': 'zeros',
-        'prefix': None,
-        'params': None
-    }
+def get_decoder():
+    decoder_hparams = hp.get_decoder_hparams()
     # gluon TransformerDecoder does a positional encoding before input, does codebert do the same thing?
     # gluonnlp might not do it if position_weight is none?
     # torch model constructs the ffn in the forward call, gluon uses a custom layer for it PositionwiseFFN
     decoder = TransformerDecoder(
-        attention_cell=decoder_hparam['attention_cell'], 
-        num_layers=decoder_hparam['num_layers'], 
-        units=decoder_hparam['units'], 
-        hidden_size=decoder_hparam['hidden_size'],
-        max_length=decoder_hparam['max_length'], 
-        num_heads=decoder_hparam['num_heads'], 
-        scaled=decoder_hparam['scaled'], 
-        scale_embed=decoder_hparam['scale_embed'], 
-        norm_inputs=decoder_hparam['norm_inputs'],
-        dropout=decoder_hparam['dropout'], 
-        use_residual=decoder_hparam['use_residual'], 
-        output_attention=decoder_hparam['output_attention'], 
-        weight_initializer=decoder_hparam['weight_initializer'],
-        bias_initializer=decoder_hparam['bias_initializer'], 
-        prefix=decoder_hparam['prefix'], 
-        params=decoder_hparam['prefix']
+        attention_cell=decoder_hparams['attention_cell'], 
+        num_layers=decoder_hparams['num_layers'], 
+        units=decoder_hparams['units'], 
+        hidden_size=decoder_hparams['hidden_size'],
+        max_length=decoder_hparams['max_length'], 
+        num_heads=decoder_hparams['num_heads'], 
+        scaled=decoder_hparams['scaled'], 
+        scale_embed=decoder_hparams['scale_embed'], 
+        norm_inputs=decoder_hparams['norm_inputs'],
+        dropout=decoder_hparams['dropout'], 
+        use_residual=decoder_hparams['use_residual'], 
+        output_attention=decoder_hparams['output_attention'], 
+        weight_initializer=decoder_hparams['weight_initializer'],
+        bias_initializer=decoder_hparams['bias_initializer'], 
+        prefix=decoder_hparams['prefix'], 
+        params=decoder_hparams['prefix']
     )
     decoder.initialize()
     decoder.hybridize()
 
-    # TODO do first pass through decoder here to initialize shapes
-    inputs = mx.nd.zeros((batch_size, tgt_seq_len, embed_size))
-    # encoder out shape (batch_size, seq_len, embed_size)
-    enc_out = mx.nd.zeros(batch_size, seq_len, embed_size)
-    enc_valid = mx.nd.ones((batch_size, seq_len))
-    states = decoder.init_state_from_encoder(enc_out, encoder_valid_length=enc_valid)
-    tgt_valid = mx.nd.ones((batch_size, tgt_seq_len))
-
-    decoder(inputs, states, tgt_valid)
-
+    # # TODO do first pass through decoder here to initialize shapes
+    # inputs = mx.nd.zeros((batch_size, tgt_seq_len, embed_size))
+    # # encoder out shape (batch_size, seq_len, embed_size)
+    # enc_out = mx.nd.zeros(batch_size, seq_len, embed_size)
+    # enc_valid = mx.nd.ones((batch_size, seq_len))
+    # states = decoder.init_state_from_encoder(enc_out, encoder_valid_length=enc_valid)
+    # tgt_valid = mx.nd.ones((batch_size, tgt_seq_len))
+    # decoder(inputs, states, tgt_valid)
 
     return decoder
 
-def get_seq2seq(embedding, encoder, decoder,):
-    seq2seq_hparams = {
-        'embedding': embedding,
-        'encoder': encoder,
-        'decoder': decoder,
-        'hidden_size': 768,
-        'vocab_size': 50265, # TODO correct vocab size? or should it be -2/+2?
-        'beam_size': 10,
-        'max_target_length': 128,
-        'sos_id': 0,
-        'eos_id': 2
-    }
+def get_seq2seq(embedding, encoder, decoder, args):
+    seq2seq_hparams = hp.get_seq2seq_hparams()
+    training_params = hp.get_training_hparams()
     seq2seq = Seq2Seq(
         # params taken from cmd line args in codebert repo and roberta config
-        seq2seq_hparams['embedding'],
-        seq2seq_hparams['encoder'], 
-        seq2seq_hparams['decoder'],
+        embedding, encoder, decoder,
         hidden_size=seq2seq_hparams['hidden_size'],
         vocab_size=seq2seq_hparams['vocab_size'],
-        beam_size=seq2seq_hparams['beam_size'], 
-        max_length=seq2seq_hparams['max_target_length'], 
+        beam_size=training_params['beam_size'], 
+        max_length=training_params['max_target_length'], 
         sos_id=seq2seq_hparams['sos_id'],
         eos_id=seq2seq_hparams['eos_id'] 
     )
@@ -161,7 +129,7 @@ def train_model(args):
     embedding = load_codebert_block(args.embed_symbol_file, args.embed_weight_file, ctx)
     encoder = load_codebert_block(args.symbol_file, args.weight_file, ctx)
     decoder = get_decoder(args.batch_size, args.seq_len, tgt_seq_len, embed_size)
-    seq2seq = get_seq2seq(embedding, encoder, decoder)
+    seq2seq = get_seq2seq(embedding, encoder, decoder, args)
     seq2seq.collect_params().initialize(force_reinit=False, ctx=ctx)
     seq2seq.hybridize()
     train_data = get_data_iterator(
@@ -217,13 +185,9 @@ def train_model(args):
 def parse_args():
     parser = argparse.ArgumentParser()
     parser.add_argument('--train', action='store_true', default=True, 
-        help='The path where the training data should be saved')
-    parser.add_argument("--epochs", default=1, type=int,
-        help="The number of epochs for training")
+        help='If the script should be run in training mode or not') # TODO change/remove this?
     parser.add_argument('--train_data', default='./codebert_gluon/data/train.h5', type=str,
         help='The .h5 file where the processed training data is.')
-    parser.add_argument("--batch_size", default=8, type=int,
-        help="Batch size for training")
     parser.add_argument("--symbol_file", default='./codebert_gluon/codebert-symbol.json', type=str,
         help="Symbol file from the pretrained model output by the conversion script")
     parser.add_argument("--weight_file", default='./codebert_gluon/codebert-0000.params', type=str,

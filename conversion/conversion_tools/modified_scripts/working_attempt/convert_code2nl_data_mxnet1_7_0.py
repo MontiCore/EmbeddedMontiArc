@@ -7,6 +7,7 @@ import numpy as np
 import h5py
 import argparse
 import os
+import codebert_hyper_params as hp
 
 class Example(object):
     """A single training/test example."""
@@ -95,14 +96,11 @@ def convert_examples_to_features(examples, tokenizer, max_source_length, max_tar
         )
     return features
 
-def get_training_data(filename, limit):
-    data_params = {
-        'max_source_length': 256,
-        'max_target_length': 128,
-    }
+def get_training_data(filename):
+    data_params = hp.get_training_hparams()
     print('Getting pretrained tokenizer...')
     tokenizer = RobertaTokenizer.from_pretrained('microsoft/codebert-base')
-    train_examples = read_examples(filename, limit=limit)
+    train_examples = read_examples(filename, limit=data_params['limit_samples'])
     train_features = convert_examples_to_features(
         train_examples, tokenizer,
         data_params['max_source_length'],
@@ -131,8 +129,6 @@ def write_dataset_to_disk(training_data, savedir):
 
 def parse_args():
     parser = argparse.ArgumentParser()
-    parser.add_argument("--limit", default=500, type=int,
-        help="The maximum number of examples to be extracted and saved")
     parser.add_argument("--save_dir", default='./codebert_gluon/data', 
         help="The path where the training data should be saved")
     parser.add_argument("--train_data", default='/home/makua/Documents/Datasets/CodeSearchNet/java/train.jsonl',
@@ -141,5 +137,5 @@ def parse_args():
 
 if __name__ == '__main__':
     args = parse_args()
-    data = get_training_data(args.train_data, args.limit)
+    data = get_training_data(args.train_data)
     write_dataset_to_disk(data, args.save_dir)

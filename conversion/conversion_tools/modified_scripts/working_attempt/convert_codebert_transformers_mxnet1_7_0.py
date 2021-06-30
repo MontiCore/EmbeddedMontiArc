@@ -61,6 +61,7 @@ from numpy.testing import assert_allclose
 import torch
 import transformers
 from codebert_models import BERTEmbedding, BERTEncoder, BERTModel
+import codebert_hyper_params as hp
 
 def parse_args():
     parser = argparse.ArgumentParser(description='Convert the huggingface CodeBERT Model to Gluon.')
@@ -75,39 +76,9 @@ def parse_args():
     return parser.parse_args()
 
 def get_gluon_model_arch(hf_cfg, ctx, test):
-    enc_hyper_params = {
-        'num_layers': 12,
-        'units': 768,
-        'hidden_size': 3072,
-        'max_length': 512,
-        'num_heads': 12,
-        'dropout': 0.1,
-        'output_attention': False,
-        'output_all_encodings': True if test else False,
-        'weight_initializer': None,
-        'bias_initializer': 'zeros',
-        'prefix': None,
-        'params': None,
-        'activation': 'gelu',
-        'layer_norm_eps': 1e-5
-    }
-
-    hyper_params = {
-        'vocab_size': hf_cfg.vocab_size,
-        'token_type_vocab_size': 1,
-        'units': 768,
-        'embed_size': 768,
-        'embed_initializer': None,
-        'word_embed': None,
-        'token_type_embed': None,
-        'use_pooler': False,
-        'use_decoder': False,
-        'use_classifier': False,
-        'use_token_type_embed': True,
-        'prefix': "codebert0_",
-        'params': None
-    }
-
+    enc_hyper_params = hp.get_bertenc_hparams(test)
+    hyper_params = hp.get_bert_hparams()
+    
     gluon_encoder = BERTEncoder(
         num_layers=enc_hyper_params['num_layers'],
         units=enc_hyper_params['units'],
@@ -233,7 +204,6 @@ def arr_to_gl(arr):
 def test_model(hf_model, hf_tokenizer, gluon_model, gluon_embedding, args):
     print('Performing a short model test...')
     test, batch_size, seq_length = args.test, args.batch_size, args.seq_length
-    ctx = mx.cpu()
     vocab_size = hf_model.config.vocab_size
     padding_id = hf_tokenizer.pad_token_id
     input_ids = np.random.randint(padding_id + 1, vocab_size, (batch_size, seq_length))
@@ -256,7 +226,6 @@ def test_model(hf_model, hf_tokenizer, gluon_model, gluon_embedding, args):
         # reshape the inputs from (n,) to (n,1) to mock LoadNetwork layer inputs in EMADL
         valid_length=gl_valid_length if test else gl_valid_length.reshape(gl_valid_length.shape[0], 1) 
     )
-    print(gl_outs)
 
     if test:
         print('Performing a long model test...')
