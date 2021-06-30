@@ -1,4 +1,3 @@
-/* (c) https://github.com/MontiCore/monticore */
 #ifndef CNNLAOPTIMIZER_REINFORCEMENTCONFIG3
 #define CNNLAOPTIMIZER_REINFORCEMENTCONFIG3
 
