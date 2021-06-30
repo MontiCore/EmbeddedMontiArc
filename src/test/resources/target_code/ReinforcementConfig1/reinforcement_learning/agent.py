@@ -1,4 +1,3 @@
-# (c) https://github.com/MontiCore/monticore  
 import mxnet as mx
 import numpy as np
 import time
