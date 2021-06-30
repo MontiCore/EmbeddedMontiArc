@@ -1,4 +1,3 @@
-/* (c) https://github.com/MontiCore/monticore */
 #ifndef CNNPREDICTOR_CIFARCLASSIFIERNETWORK
 #define CNNPREDICTOR_CIFARCLASSIFIERNETWORK
 
