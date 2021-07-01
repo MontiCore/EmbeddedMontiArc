@@ -11,7 +11,7 @@ import java.util.Optional;
 import org.antlr.v4.runtime.RecognitionException;
 import org.junit.Test;
 
-import de.monticore.lang.gdl._ast.ASTGDLDocument;
+import de.monticore.lang.gdl.GDLTool;
 
 public class GDLToolTest {
   
@@ -20,7 +20,7 @@ public class GDLToolTest {
     Path model = Paths.get("src/test/resources/gdl/Comment.gdl");
     GDLParser parser = new GDLParser();
     
-    Optional<ASTGDLDocument> gdlDoc = parser.parse(model.toString());
+    Optional<ASTGame> gdlDoc = parser.parse(model.toString());
     assertFalse(parser.hasErrors());
     assertTrue(gdlDoc.isPresent());
   }
