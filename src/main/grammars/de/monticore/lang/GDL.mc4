@@ -1,37 +1,30 @@
 package de.monticore.lang;
 
 grammar GDL extends de.monticore.literals.MCCommonLiterals {
-    
+
     Game = GameExpression*;
 
-    interface GameExpression;
-    interface GameParameter;
-    interface GameOperator;
+    GameExpression implements GameRelation = "(" type:GameType arguments:GameRelation* ")";
 
-    GameToken implements GameParameter = "?"token:Name;
-    GameValue implements GameParameter = value:Name | value:Digits;
+    Comment extends GameExpression implements GameType = SL_COMMENT;
 
-    GameFunctionName = Name;
+    interface GameRelation;
+    interface GameType;
 
-    Comment implements GameExpression = SL_COMMENT;
+    GameToken implements GameRelation = "?"token:Name;
+    GameValue implements GameRelation = value:Name | value:Digits;
 
-    GameRoleExpression implements GameExpression = "(" "role" value:GameValue ")";
-    GameInitExpression implements GameExpression = "(" "init" state:GameConstantExpression ")";
-    GameConstantExpression implements GameExpression = "(" name:GameFunctionName arguments:GameValue* ")";
-    GameTerminalExpression implements GameExpression = "(" "<=" "terminal" conditions:GameCondition* ")";
-    GameInferenceExpression implements GameExpression = "(" "<=" head:GameInnerExpression conditions:GameCondition* ")";
-
-    interface GameCondition;
-
-    GameInnerExpression implements GameCondition = "(" name:GameFunctionName arguments:GameParameter* ")";
-    GameSimpleInnerExpression extends GameInnerExpression = name:GameFunctionName;
-    GameNextExpression extends GameInnerExpression = "(" "next" "(" name:GameFunctionName arguments:GameParameter* ")" ")";
-    GameLegalExpression extends GameInnerExpression = "(" "legal" role:GameParameter (("(" name:GameFunctionName arguments:GameParameter* ")") | "noop") ")";
-    GameOperatorExpression implements GameCondition = "(" operator:GameOperator expression:GameInnerExpression ")";
-    GameDistinctCondition implements GameCondition = "(" "distinct" arguments:GameParameter* ")";
-
-    GameTrueOperator implements GameOperator = "true";
-    GameNotOperator implements GameOperator = "not";
-    GameDoesOperator implements GameOperator = "does" param:GameParameter;
-
+    GameRole implements GameType = "role";
+    GameInit implements GameType = "init";
+    GameTerminal implements GameType = "<= terminal";
+    GameInference implements GameType = "<=";
+    GameNext implements GameType = "next";
+    GameTrue implements GameType = "true";
+    GameLegal implements GameType = "legal";
+    GameDoes implements GameType = "does";
+    GameNot implements GameType = "not";
+    GameDistinct implements GameType = "distinct";
+    GameGoal implements GameType = "goal";
+    GameFunction implements GameType = function:Name;
+  
 }
