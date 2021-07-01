@@ -82,6 +82,7 @@ dependencies {
     implementation "org.assertj:assertj-core:3.7.0"
     implementation "commons-cli:commons-cli:$commons_cli_version"
     implementation 'org.apache.commons:commons-lang3:3.0'
+    implementation 'org.sosy-lab:java-smt:3.9.0-1-g304079c2'
     testImplementation "junit:junit:$junit_version"
 }
 
