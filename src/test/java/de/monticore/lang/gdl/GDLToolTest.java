@@ -18,7 +18,7 @@ public class GDLToolTest {
   @Test
   public void testComment() throws RecognitionException, IOException {
     Path model = Paths.get("src/test/resources/gdl/Comment.gdl");
-    GDLParser parser = new GDLParser();
+    GDLTool parser = new GDLTool();
     
     Optional<ASTGame> gdlDoc = parser.parse(model.toString());
     assertFalse(parser.hasErrors());
