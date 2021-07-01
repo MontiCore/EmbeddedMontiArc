@@ -16,24 +16,13 @@ import de.monticore.lang.gdl._ast.ASTGDLDocument;
 public class GDLToolTest {
   
   @Test
-  public void blankTest() throws RecognitionException, IOException {
-    // Path model = Paths.get("src/test/resources/gdl/parser/basic.gdl");
-    // GDLParser parser = new GDLParser();
+  public void testComment() throws RecognitionException, IOException {
+    Path model = Paths.get("src/test/resources/gdl/Comment.gdl");
+    GDLParser parser = new GDLParser();
     
-    // Optional<ASTGDLDocument> gdlDoc = parser.parse(model.toString());
-    // assertFalse(parser.hasErrors());
-    // assertTrue(gdlDoc.isPresent());
-    assertTrue(true)
+    Optional<ASTGDLDocument> gdlDoc = parser.parse(model.toString());
+    assertFalse(parser.hasErrors());
+    assertTrue(gdlDoc.isPresent());
   }
-  
-  @Test
-  public void failingTest() throws RecognitionException, IOException {
-    // Path model = Paths.get("src/test/resources/gdl/parser/basic.gdl");
-    // GDLParser parser = new GDLParser();
-    
-    // Optional<ASTGDLDocument> gdlDoc = parser.parse(model.toString());
-    // assertFalse(parser.hasErrors());
-    // assertTrue(gdlDoc.isPresent());
-    assertTrue(false)
-  }
+
 }
