@@ -11,8 +11,6 @@ import java.util.Optional;
 import org.antlr.v4.runtime.RecognitionException;
 import org.junit.Test;
 
-import de.monticore.lang.gdl._ast.ASTGDLDocument;
-
 public class GDLToolTest {
   
   @Test
@@ -23,7 +21,7 @@ public class GDLToolTest {
     // Optional<ASTGDLDocument> gdlDoc = parser.parse(model.toString());
     // assertFalse(parser.hasErrors());
     // assertTrue(gdlDoc.isPresent());
-    assertTrue(true)
+    assertTrue(true);
   }
   
   @Test
@@ -34,6 +32,6 @@ public class GDLToolTest {
     // Optional<ASTGDLDocument> gdlDoc = parser.parse(model.toString());
     // assertFalse(parser.hasErrors());
     // assertTrue(gdlDoc.isPresent());
-    assertTrue(false)
+    assertTrue(false);
   }
 }
