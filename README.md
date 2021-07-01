@@ -11,3 +11,7 @@ import de.monticore.lang.gdl.*;
 GDLTool tool = new GDLTool();
 tool.main(new String[]{"test.gdl"});
 ```
+Oder einfach:
+```bash
+java --class-path "target/libs/GDL-7.1.0-SNAPSHOT.jar;target/libs/GDL-cli.jar" de.monticore.lang.gdl.GDLInterpreter "src/main/resources/example/Chess.gdl"
+```
