@@ -79,21 +79,19 @@ def get_decoder():
         params=decoder_hparams['prefix']
     )
     decoder.initialize()
-    decoder.hybridize()
-    train_hparams = hp.get_training_params()
+    train_hparams = hp.get_training_hparams()
     batch_size = train_hparams['batch_size']
     tgt_seq_len = train_hparams['max_target_length']
     seq_len = train_hparams['max_source_length']
     embed_size = hp.get_bert_hparams()['embed_size']
     # TODO do first pass through decoder here to initialize shapes
-    inputs = mx.nd.zeros((batch_size, tgt_seq_len, embed_size))
     # encoder out shape (batch_size, seq_len, embed_size)
-    enc_out = mx.nd.zeros(batch_size, seq_len, embed_size)
-    enc_valid = mx.nd.ones((batch_size, seq_len))
+    tgt_embed = mx.nd.zeros((batch_size, tgt_seq_len, embed_size))
+    enc_out = mx.nd.zeros((batch_size, seq_len, embed_size))
+    enc_valid = mx.nd.ones((batch_size, ))
     states = decoder.init_state_from_encoder(enc_out, encoder_valid_length=enc_valid)
-    tgt_valid = mx.nd.ones((batch_size, tgt_seq_len))
-    decoder(inputs, states, tgt_valid)
-
+    tgt_valid = mx.nd.ones((batch_size, )) # should be something like [21, 43, 11, 233, 13, ...] when not dummy inputs
+    decoder(tgt_embed, states, tgt_valid)
     return decoder
 
 def get_seq2seq(embedding, encoder, decoder):
@@ -129,6 +127,9 @@ def load_codebert_block(symbol_file, weight_file, context):
     return gluon.nn.SymbolBlock.imports(symbol_file, input_names, weight_file, ctx=context)
 
 def train_model(args):
+    train_hparams = hp.get_training_hparams()
+    batch_size = train_hparams['batch_size']
+    epochs = train_hparams['epochs']
     ctx = [mx.cpu()]
     embedding = load_codebert_block(args.embed_symbol_file, args.embed_weight_file, ctx)
     encoder = load_codebert_block(args.symbol_file, args.weight_file, ctx)
@@ -138,7 +139,7 @@ def train_model(args):
     seq2seq.hybridize()
     train_data = get_data_iterator(
         ['source_ids', 'source_masks'], ['target_ids', 'target_masks'],
-        True, args.batch_size, args.train_data)
+        True, batch_size, args.train_data)
     seq2seq.initialize()
     loss = mx.gluon.loss.SoftmaxCrossEntropyLoss() # TODO parameters? e.g. sparse_label
     # note this is different than the codebert optimizer in two ways
@@ -151,7 +152,7 @@ def train_model(args):
     optimizer = nlp.optimizer.BERTAdam(learning_rate=5e-5, beta1=0.9, beta2=0.999, epsilon=1e-8)
     trainer = mx.gluon.Trainer(seq2seq.collect_params(), optimizer=optimizer)
 
-    for epoch in range(args.epochs):
+    for epoch in range(epochs):
         for batch in train_data:
             with mx.autograd.record():
                 source_ids = gluon.utils.split_and_load(batch.data[0], ctx_list=ctx, even_split=False)[0]
@@ -168,7 +169,7 @@ def train_model(args):
                 y = shift_labels.reshape(-1)[active_loss]
                 l = loss(X, y)
                 l.backward()
-                trainer.step(args.batch_size)
+                trainer.step(batch_size)
     # target_mask = self.create_target_mask(target_ids, target_valid_length)
     # # Shift so that tokens < n predict n
     # active_loss = target_mask[..., 1:].asnumpy().reshape(-1) != 0
