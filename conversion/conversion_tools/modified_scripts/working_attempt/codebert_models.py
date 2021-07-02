@@ -230,9 +230,12 @@ class Seq2Seq(HybridBlock):
             # transpose so we have (batch size, target seq length, embed dims)
             tgt_embeddings = self.embedding(target_ids, target_token_types).transpose((1, 0, 2))
             states = self.decoder.init_state_from_encoder(encoder_output, input_valid_length)
+            print(input_valid_length)
+            print(target_valid_length)
             # TODO do we need to set position weight to something for decoder?
             # target_valid_length fails when it is a named parameter for some reason, so we just pass as the third
             out = self.decoder(tgt_embeddings, states, target_valid_length)
+            print(out)
             hidden_states = self.dense(out)
             lm_logits = self.lm_head(hidden_states)
             return lm_logits

@@ -80,10 +80,9 @@ def convert_examples_to_features(examples, tokenizer, max_source_length, max_tar
             target_tokens = tokenizer.tokenize(example.target)[:max_target_length-2]
         target_tokens = [tokenizer.cls_token]+target_tokens+[tokenizer.sep_token]            
         target_ids = tokenizer.convert_tokens_to_ids(target_tokens)
-        target_mask = [1] *len(target_ids)
+        target_mask = len(target_tokens)
         padding_length = max_target_length - len(target_ids)
         target_ids+=[tokenizer.pad_token_id]*padding_length
-        target_mask+=[0]*padding_length
        
         features.append(
             InputFeatures(
