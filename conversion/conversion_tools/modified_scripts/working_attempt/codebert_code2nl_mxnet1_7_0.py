@@ -165,11 +165,12 @@ def train_model(args):
                 shift_labels = target_ids[..., 1:]
                 # Shift so that tokens < n predict n
                 shift_logits = lm_logits[..., :-1, :]
-                X = shift_logits.reshape(-1, shift_logits.shape(-1))[active_loss]
+                newDim = shift_logits.shape[-1]
+                X = shift_logits.reshape(-1, newDim)[active_loss]
                 y = shift_labels.reshape(-1)[active_loss]
                 l = loss(X, y)
-                l.backward()
-                trainer.step(batch_size)
+            l.backward()
+            trainer.step(batch_size)
     # target_mask = self.create_target_mask(target_ids, target_valid_length)
     # # Shift so that tokens < n predict n
     # active_loss = target_mask[..., 1:].asnumpy().reshape(-1) != 0

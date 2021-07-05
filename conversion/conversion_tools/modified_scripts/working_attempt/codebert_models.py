@@ -222,7 +222,7 @@ class Seq2Seq(HybridBlock):
     def forward(self, input_ids=None, input_valid_length=None, target_ids=None, target_valid_length=None):   
         input_token_types = mx.nd.zeros_like(input_ids)
         embed_output = self.embedding(input_ids, input_token_types)
-        encoder_output = self.encoder(embed_output, input_valid_length) # we don't permute like in the code2nl model, that okay? TODO
+        encoder_output = self.encoder(embed_output, input_valid_length) # we don't permute like in the code2nl model, that okay? TODO shape 8x256x768
         #encoder_output = outputs[0].permute([1,0,2]).contiguous() not sure how to do
         if target_ids is not None:  
             #attn_mask=-1e4 *(1-self.bias[:target_ids.shape[1],:target_ids.shape[1]]) no option to pass this in gluonnlp TODO
@@ -233,40 +233,39 @@ class Seq2Seq(HybridBlock):
             states = self.decoder.init_state_from_encoder(encoder_output, input_valid_length)
             # TODO do we need to set position weight to something for decoder?
             # target_valid_length fails when it is a named parameter for some reason, so we just pass as the third
-            out, states, _ = self.decoder(tgt_embeddings, states, target_valid_length)
+            out, _, _ = self.decoder(tgt_embeddings, states, target_valid_length)
             # (8,128,768) -> transpose -> (128,8,768) -> reshape -> (1024,768)
-            out = out.transpose((1, 0, 2)).reshape(-1, self.hidden_size)
-            hidden_states = self.dense(out)
+            hidden_states = self.dense(out.transpose((1, 0, 2)).reshape(-1, self.hidden_size))
             # TODO do we need to reshape back to original dimensions here?
             lm_logits = self.lm_head(hidden_states)
             return lm_logits
         else:
             #Predict 
             preds=[]       
-            # zero=torch.cuda.LongTensor(1).fill_(0)     
-            # for i in range(source_ids.shape[0]):
-            #     context=encoder_output[:,i:i+1]
-            #     context_mask=source_mask[i:i+1,:]
-            #     beam = Beam(self.beam_size,self.sos_id,self.eos_id)
-            #     input_ids=beam.getCurrentState()
-            #     context=context.repeat(1, self.beam_size,1)
-            #     context_mask=context_mask.repeat(self.beam_size,1)
-            #     for _ in range(self.max_length): 
-            #         if beam.done():
-            #             break
-            #         attn_mask=-1e4 *(1-self.bias[:input_ids.shape[1],:input_ids.shape[1]])
-            #         tgt_embeddings = self.encoder.embeddings(input_ids).permute([1,0,2]).contiguous()
-            #         out = self.decoder(tgt_embeddings,context,tgt_mask=attn_mask,memory_key_padding_mask=(1-context_mask).bool())
-            #         out = torch.tanh(self.dense(out))
-            #         hidden_states=out.permute([1,0,2]).contiguous()[:,-1,:]
-            #         out = self.lsm(self.lm_head(hidden_states)).data
-            #         beam.advance(out)
-            #         input_ids.data.copy_(input_ids.data.index_select(0, beam.getCurrentOrigin()))
-            #         input_ids=torch.cat((input_ids,beam.getCurrentState()),-1)
-            #     hyp= beam.getHyp(beam.getFinal())
-            #     pred=beam.buildTargetTokens(hyp)[:self.beam_size]
-            #     pred=[torch.cat([x.view(-1) for x in p]+[zero]*(self.max_length-len(p))).view(1,-1) for p in pred]
-            #     preds.append(torch.cat(pred,0).unsqueeze(0))
+            zero=torch.cuda.LongTensor(1).fill_(0)     
+            for i in range(source_ids.shape[0]):
+                context=encoder_output[:,i:i+1]
+                context_mask=source_mask[i:i+1,:]
+                beam = Beam(self.beam_size,self.sos_id,self.eos_id)
+                input_ids=beam.getCurrentState()
+                context=context.repeat(1, self.beam_size,1)
+                context_mask=context_mask.repeat(self.beam_size,1)
+                for _ in range(self.max_length): 
+                    if beam.done():
+                        break
+                    attn_mask=-1e4 *(1-self.bias[:input_ids.shape[1],:input_ids.shape[1]])
+                    tgt_embeddings = self.encoder.embeddings(input_ids).permute([1,0,2]).contiguous()
+                    out = self.decoder(tgt_embeddings,context,tgt_mask=attn_mask,memory_key_padding_mask=(1-context_mask).bool())
+                    out = torch.tanh(self.dense(out))
+                    hidden_states=out.permute([1,0,2]).contiguous()[:,-1,:]
+                    out = self.lsm(self.lm_head(hidden_states)).data
+                    beam.advance(out)
+                    input_ids.data.copy_(input_ids.data.index_select(0, beam.getCurrentOrigin()))
+                    input_ids=torch.cat((input_ids,beam.getCurrentState()),-1)
+                hyp= beam.getHyp(beam.getFinal())
+                pred=beam.buildTargetTokens(hyp)[:self.beam_size]
+                pred=[torch.cat([x.view(-1) for x in p]+[zero]*(self.max_length-len(p))).view(1,-1) for p in pred]
+                preds.append(torch.cat(pred,0).unsqueeze(0))
                 
-            # preds=torch.cat(preds,0)                
-            # return preds
+            preds=torch.cat(preds,0)                
+            return preds
