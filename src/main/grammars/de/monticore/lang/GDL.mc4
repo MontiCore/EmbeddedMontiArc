@@ -6,6 +6,10 @@ grammar GDL extends de.monticore.literals.MCCommonLiterals {
 
     GameExpression implements GameRelation = "(" type:GameType arguments:GameRelation* ")";
 
+    symbol GameFunctionDefinition extends GameExpression = "(" GameInference head:GameFunctionHead body:GameExpression* ")";
+
+    GameFunctionHead = "(" name:Name parameters:GameRelation* ")";
+
     Comment extends GameExpression implements GameType = SL_COMMENT;
 
     interface GameRelation;
@@ -25,6 +29,6 @@ grammar GDL extends de.monticore.literals.MCCommonLiterals {
     GameNot implements GameType = "not";
     GameDistinct implements GameType = "distinct";
     GameGoal implements GameType = "goal";
-    GameFunction implements GameType = function:Name;
+    GameFunction implements GameType = function:Name@GameFunctionDefinition;
   
 }
