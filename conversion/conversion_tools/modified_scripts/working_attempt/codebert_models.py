@@ -320,8 +320,8 @@ class Beam(object):
                     beamLk[i] = -1e20
         else:
             beamLk = wordLk[0]
-        flatBeamLk = beamLk.view(-1)
-        bestScores, bestScoresId = flatBeamLk.topk(self.size, 0, True, True)
+        flatBeamLk = beamLk.reshape(-1)
+        bestScores, bestScoresId = flatBeamLk.topk(k=self.size, axis=0, ret_typ='both')
 
         self.scores = bestScores
 
@@ -332,7 +332,7 @@ class Beam(object):
         self.nextYs.append((bestScoresId - prevK * numWords))
 
 
-        for i in range(self.nextYs[-1].size(0)):
+        for i in range(self.nextYs[-1].shape[0]):
             if self.nextYs[-1][i] == self._eos:
                 s = self.scores[i]
                 self.finished.append((s, len(self.nextYs) - 1, i))
