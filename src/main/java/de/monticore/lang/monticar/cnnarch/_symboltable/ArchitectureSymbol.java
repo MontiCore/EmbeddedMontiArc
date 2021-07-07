@@ -36,6 +36,7 @@ public class ArchitectureSymbol extends CommonScopeSpanningSymbol {
     private String dataPath;
     private String weightsPath;
     private String componentName;
+    private boolean AdaNet = false;
     //attribute for the path for custom python files
     private String customPyFilesPath;
 
@@ -50,13 +51,20 @@ public class ArchitectureSymbol extends CommonScopeSpanningSymbol {
     public void setLayerVariableDeclarations(List<LayerVariableDeclarationSymbol> layerVariableDeclarations) {
         this.layerVariableDeclarations = layerVariableDeclarations;
     }
-
+    public boolean containsAdaNet(){
+        return this.AdaNet;
+    }
     public List<NetworkInstructionSymbol> getNetworkInstructions() {
         return networkInstructions;
     }
 
     public void setNetworkInstructions(List<NetworkInstructionSymbol> networkInstructions) {
         this.networkInstructions = networkInstructions;
+
+        // if one of the network instructions contains an AdaNet layer the AdaNet flag is set to true
+        for(NetworkInstructionSymbol networkInstruction:networkInstructions){
+            this.AdaNet = this.AdaNet | networkInstruction.containsAdaNet();
+        }
     }
 
     public List<SerialCompositeElementSymbol> getStreams() {
