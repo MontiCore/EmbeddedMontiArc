@@ -8,7 +8,9 @@ public enum NetDefinitionMode {
     ARCHITECTURE_DEFINITION,
     PREDICTION_PARAMETER,
     FORWARD_FUNCTION,
-    ARTIFICIAL_ARCH_CLASS;
+    PARAMETER_VALIDATION,
+    ARTIFICIAL_ARCH_CLASS,
+    ADANET_CONSTRUCTION;
 
     public static NetDefinitionMode fromString(final String netDefinitionMode) {
         switch(netDefinitionMode) {
@@ -18,10 +20,13 @@ public enum NetDefinitionMode {
                 return FORWARD_FUNCTION;
             case "PREDICTION_PARAMETER":
                 return PREDICTION_PARAMETER;
-            case "ARTIFICICIAL_ARCH_CLASS":
+            case "PARAMETER_VALIDATION":
+                return PARAMETER_VALIDATION;
+            case "ARTIFICIAL_ARCH_CLASS":
                 return ARTIFICIAL_ARCH_CLASS;
+            case "ADANET_CONSTRUCTION":
+                return ADANET_CONSTRUCTION;
             default:
-
                 throw new IllegalArgumentException("Unknown Net Definition Mode");
         }
     }
