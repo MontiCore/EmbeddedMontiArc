@@ -170,48 +170,7 @@ public class AdaNet extends PredefinedLayerDeclaration {
         }
 
         LayerSymbol block = blockBuilder.build();
-        /**
-        ArchitectureElementSymbol input = null;
-        ArchitectureElementSymbol output = null;
-        ArchitectureElementSymbol previous = null;
-        switch (target) {
-            // set input &| output elements
-            case AllPredefinedLayers.In:
-                // if there is an Input block defined the input of the AdaNet layer is the input of this block
-                if (block.isArtificial()) {
-                    //ToDo: this check may be obsolete
-                    input = layer.getInputElement().get();
-                }
-                //output = ((AdaNet) layer.getDeclaration()).getBlock(AllPredefinedLayers.Block).get();
-                //block.setOutputElement(layer.getInputElement().get());
-                break;
-            case AllPredefinedLayers.Block:
-                previous = ((AdaNet) layer.getDeclaration()).getBlock(AllPredefinedLayers.In).get();
-                //prevOutput = ((AdaNet) layer.getDeclaration()).getBlock(AllPredefinedLayers.Out).get();
-                //block.setOutputElement(this.getOut().get());
-                //block.setInputElement(this.getIn().get());
-                break;
-            case AllPredefinedLayers.Out:
-                previous = ((AdaNet) layer.getDeclaration()).getBlock(AllPredefinedLayers.Block).get();
-                //input = ((AdaNet) layer.getDeclaration()).getBlock(AllPredefinedLayers.Block).get();
-                if (block.isArtificial()) {
-                    //ToDo: this check may be obsolete
-                    output = layer.getOutputElement().get();
-                }
-                break;
 
-        }
-        if (input != null) {
-            block.setInputElement(input);
-        }
-        if (previous != null) {
-            previous.setOutputElement(block);
-            block.setInputElement(previous);
-        }
-        if (output != null) {
-            block.setOutputElement(output);
-        }
-        **/
         block.setEnclosingScope(this.getSpannedScope());
         setBlock(target, Optional.of(block));
     }
@@ -239,11 +198,7 @@ public class AdaNet extends PredefinedLayerDeclaration {
 
         }
         connectAdaNet();
-        // build the passed block
 
-        //getBlock(AllPredefinedLayers.Block).get().setArtificial(true);
-        //getBlock(AllPredefinedLayers.Out).get().setArtificial(true);
-        //getBlock(AllPredefinedLayers.In).get().setArtificial(true);
         try {
             getBlock(AllPredefinedLayers.Block).get().resolve();
             getBlock(AllPredefinedLayers.Out).get().resolve();
