@@ -80,7 +80,6 @@ public class LayerNameCreator {
                 endStage = name(subElement, endStage, streamIndices);
             } else if (subElement.getName().equals(AllPredefinedLayers.AdaNet_Name)) {
                 // name outBlock
-
                 endStage = nameAdaNetBlock(AllPredefinedLayers.Out,subElement,endStage,streamIndices);
                 // name inBlock
                 endStage = nameAdaNetBlock(AllPredefinedLayers.In,subElement,endStage,streamIndices);
