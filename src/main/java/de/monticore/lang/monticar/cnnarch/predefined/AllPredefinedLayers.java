@@ -105,6 +105,8 @@ public class AllPredefinedLayers {
 
     //Parameter AdaNet
     public static final String Block = "block";
+    public static final String In = "inBlock";
+    public static final String Out = "outBlock";
 
     //parameters LoadNetwork layer
     public static final String NETWORK_DIR_NAME = "networkDir";
@@ -206,7 +208,52 @@ public class AllPredefinedLayers {
         );
 
     }
+    public static List<String> nameList(){
+        List<String> names = new ArrayList<>(Arrays.asList(
+        FULLY_CONNECTED_NAME,
+        CONVOLUTION_NAME ,
+        UP_CONVOLUTION_NAME,
+        SOFTMAX_NAME,
+        SIGMOID_NAME,
+        TANH_NAME,
+        RELU_NAME,
+        LEAKY_RELU_NAME,
+        DROPOUT_NAME,
+        POOLING_NAME,
+        GLOBAL_POOLING_NAME,
+        LRN_NAME,
+        BATCHNORM_NAME,
+        LAYERNORM_NAME,
+        SPLIT_NAME,
+        GET_NAME,
+        ADD_NAME,
+        CONCATENATE_NAME,
+        FLATTEN_NAME,
+        ONE_HOT_NAME,
+        BEAMSEARCH_NAME,
+        GREEDYSEARCH_NAME,
+        RNN_NAME,
+        LSTM_NAME,
+        GRU_NAME,
+        EMBEDDING_NAME,
+        IMG_RESIZE_NAME,
+        ARG_MAX_NAME,
+        DOT_NAME,
+        REPEAT_NAME,
+        SQUEEZE_NAME,
+        REDUCE_SUM_NAME,
+        EXPAND_DIMS_NAME,
+        BROADCAST_MULTIPLY_NAME,
+        SWAPAXES_NAME,
+        BROADCAST_ADD_NAME,
+        RESHAPE_NAME,
+        DOT_PRODUCT_SELF_ATTENTION_NAME,
+        LOAD_NETWORK_NAME,
+        AdaNet_Name
+        ));
 
+        return names;
+    }
     public static List<UnrollDeclarationSymbol> createUnrollList(){
         return Arrays.asList(
                 GreedySearch.create(),
