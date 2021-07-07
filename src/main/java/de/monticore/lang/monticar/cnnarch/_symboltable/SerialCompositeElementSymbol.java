@@ -8,16 +8,22 @@
 /* (c) https://github.com/MontiCore/monticore */
 package de.monticore.lang.monticar.cnnarch._symboltable;
 
+import de.monticore.lang.monticar.cnnarch.predefined.AllPredefinedLayers;
+
 import java.util.*;
 
 public class SerialCompositeElementSymbol extends CompositeElementSymbol {
 
     protected List<List<ArchitectureElementSymbol>> episodicSubNetworks = new ArrayList<>(new ArrayList<>());
     protected boolean anyEpisodicLocalAdaptation = false;
-
+    protected boolean AdaNet = false; // true if architecture contains an AdaNet Layer
     protected void setElements(List<ArchitectureElementSymbol> elements) {
         ArchitectureElementSymbol previous = null;
         for (ArchitectureElementSymbol current : elements){
+            if(current.getName().equals(AllPredefinedLayers.AdaNet_Name)){
+                // check if the current layer is an AdaNet layer
+                this.AdaNet = true;
+            }
             if (previous != null){
                 current.setInputElement(previous);
                 previous.setOutputElement(current);
@@ -34,7 +40,9 @@ public class SerialCompositeElementSymbol extends CompositeElementSymbol {
         }
         this.elements = elements;
     }
-
+    public boolean containsAdaNet(){
+        return this.AdaNet;
+    }
     protected void setEpisodicSubNetworks(List<List<ArchitectureElementSymbol>> episodicSubNetworks){
         for (List<ArchitectureElementSymbol> subElements: episodicSubNetworks){
             ArchitectureElementSymbol previous = null;
