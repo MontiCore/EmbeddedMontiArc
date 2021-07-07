@@ -2,11 +2,7 @@
 package de.monticore.lang.monticar.cnnarch.generator;
 
 import de.monticore.lang.monticar.cnnarch._symboltable.*;
-import de.monticore.lang.monticar.cnnarch.predefined.Convolution;
-import de.monticore.lang.monticar.cnnarch.predefined.FullyConnected;
-import de.monticore.lang.monticar.cnnarch.predefined.Pooling;
-import de.monticore.lang.monticar.cnnarch.predefined.LargeMemory;
-import de.monticore.lang.monticar.cnnarch.predefined.EpisodicMemory;
+import de.monticore.lang.monticar.cnnarch.predefined.*;
 
 import java.util.*;
 
@@ -14,7 +10,7 @@ public class LayerNameCreator {
 
     private Map<ArchitectureElementSymbol, String> elementToName = new HashMap<>();
     private Set<String> names = new HashSet<>();
-
+    //List<String> artifical_layer = new ArrayList<String>(); // name list for the defined layers within cnnarch
     public LayerNameCreator(ArchitectureSymbol architecture) {
         int stage = 1;
         for (NetworkInstructionSymbol networkInstruction : architecture.getNetworkInstructions()) {
@@ -62,7 +58,31 @@ public class LayerNameCreator {
     protected int nameSerialComposite(SerialCompositeElementSymbol compositeElement, int stage, List<Integer> streamIndices){
         int endStage = stage;
         for (ArchitectureElementSymbol subElement : compositeElement.getElements()){
-            endStage = name(subElement, endStage, streamIndices);
+            if (subElement.isArtificial()) {
+                endStage = name(subElement, endStage, streamIndices);
+            }else if(subElement.getName().equals(AllPredefinedLayers.AdaNet_Name)){
+                ArchitectureElementSymbol currentBlock;
+
+                // get OutBlock and name it
+                currentBlock = ((AdaNet)((LayerSymbol) subElement).getDeclaration()).getBlock(AllPredefinedLayers.Out).get();
+                if(currentBlock.isArtificial()){
+                    endStage = name(currentBlock,endStage,streamIndices);
+                }
+                // get inBlock and name it
+                currentBlock = ((AdaNet)((LayerSymbol) subElement).getDeclaration()).getBlock(AllPredefinedLayers.In).get();
+                if(currentBlock.isArtificial()){
+                    endStage = name(currentBlock,endStage,streamIndices);
+                }
+                // get buildingBlock and name it
+                currentBlock = ((AdaNet)((LayerSymbol) subElement).getDeclaration()).getBlock(AllPredefinedLayers.Block).get();
+                if(currentBlock.isArtificial()){
+                    endStage = name(currentBlock,endStage,streamIndices);
+                }
+
+                endStage = name(subElement,endStage,streamIndices);
+            }else{
+                endStage = name(subElement, endStage, streamIndices);
+            }
         }
         for (List<ArchitectureElementSymbol> subNetwork : compositeElement.getEpisodicSubNetworks()){
             for (ArchitectureElementSymbol subElement : subNetwork){
