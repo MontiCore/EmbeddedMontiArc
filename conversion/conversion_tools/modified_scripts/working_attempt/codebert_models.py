@@ -213,21 +213,21 @@ class Seq2Seq(HybridBlock):
         print(lm_head.collect_params())
         return lm_head
 
-    def create_target_mask(self, target_ids, valid_length):
-        target_mask = mx.nd.zeros_like(target_ids)
-        for mask, len in zip(target_mask, valid_length):
+    def valid_length_to_mask(self, input_ids, valid_length):
+        input_mask = mx.nd.zeros_like(input_ids)
+        for mask, len in zip(input_mask, valid_length):
             mask[0:len] = 1
-        return target_mask
+        return input_mask
 
     def forward(self, input_ids=None, input_valid_length=None, target_ids=None, target_valid_length=None):   
         input_token_types = mx.nd.zeros_like(input_ids)
+        target_token_types = mx.nd.zeros_like(target_ids)
         embed_output = self.embedding(input_ids, input_token_types)
         encoder_output = self.encoder(embed_output, input_valid_length) # we don't permute like in the code2nl model, that okay? TODO shape 8x256x768
         #encoder_output = outputs[0].permute([1,0,2]).contiguous() not sure how to do
         if target_ids is not None:  
             #attn_mask=-1e4 *(1-self.bias[:target_ids.shape[1],:target_ids.shape[1]]) no option to pass this in gluonnlp TODO
             # could try subclassing the Decoder and change the hybrid_forward function.
-            target_token_types = mx.nd.zeros_like(target_ids)
             # transpose so we have (batch size, target seq length, embed dims)
             tgt_embeddings = self.embedding(target_ids, target_token_types).transpose((1, 0, 2))
             states = self.decoder.init_state_from_encoder(encoder_output, input_valid_length)
@@ -241,20 +241,23 @@ class Seq2Seq(HybridBlock):
             return lm_logits
         else:
             #Predict 
+            input_mask = self.valid_length_to_mask(input_ids, input_valid_length)
             preds=[]       
-            zero=torch.cuda.LongTensor(1).fill_(0)     
-            for i in range(source_ids.shape[0]):
-                context=encoder_output[:,i:i+1]
-                context_mask=source_mask[i:i+1,:]
+            zero=mx.nd.zeros(1, dtype='int64')
+            for i in range(input_ids.shape[0]):
+                context = encoder_output[:,i:i+1]
+                context_mask = input_mask[i:i+1,:]
                 beam = Beam(self.beam_size,self.sos_id,self.eos_id)
-                input_ids=beam.getCurrentState()
-                context=context.repeat(1, self.beam_size,1)
-                context_mask=context_mask.repeat(self.beam_size,1)
+                input_ids = beam.getCurrentState()
+                input_token_types = mx.nd.zeros_like(input_ids)
+                context = context.tile((1, self.beam_size, 1))
+                context_mask = context_mask.tile((self.beam_size,1))
                 for _ in range(self.max_length): 
                     if beam.done():
                         break
-                    attn_mask=-1e4 *(1-self.bias[:input_ids.shape[1],:input_ids.shape[1]])
-                    tgt_embeddings = self.encoder.embeddings(input_ids).permute([1,0,2]).contiguous()
+                    # still not sure how important this is, we cant really use it in our decoder?
+                    # attn_mask=-1e4 *(1-self.bias[:input_ids.shape[1],:input_ids.shape[1]])
+                    tgt_embeddings = self.embedding(input_ids, input_token_types).transpose((1, 0, 2))
                     out = self.decoder(tgt_embeddings,context,tgt_mask=attn_mask,memory_key_padding_mask=(1-context_mask).bool())
                     out = torch.tanh(self.dense(out))
                     hidden_states=out.permute([1,0,2]).contiguous()[:,-1,:]
