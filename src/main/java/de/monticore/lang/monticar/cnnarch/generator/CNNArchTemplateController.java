@@ -103,6 +103,10 @@ public abstract class CNNArchTemplateController {
         this.nameManager = new LayerNameCreator(architecture);
     }
 
+    public boolean containsAdaNet(){
+        return this.architecture.containsAdaNet();
+    }
+
     public String getName(ArchitectureElementSymbol layer){
         return nameManager.getName(layer);
     }
