@@ -115,6 +115,11 @@ public class Interpreter {
             }
         }
 
+        Log.println("const: " + constantState.getConstraint() + "\n");
+        Log.println("state: " + volatileState.getConstraint() + "\n\n");
+
+        Log.println(constValueMap.toString());
+
         moveConstraint = bmgr.makeTrue();
 
         return this;
@@ -137,15 +142,21 @@ public class Interpreter {
     // START
 
     private void test() {
-        String functionName = "isLegalMove";
+        // String functionName = "isLegalMove";
+        // List<IntegerFormula> parameterMappings = List.of(
+        //     imgr.makeNumber(getConstRepresentation("pawn")),
+        //     imgr.makeNumber(getConstRepresentation("white")),
+        //     imgr.makeNumber(getConstRepresentation("a")),
+        //     imgr.makeNumber(getConstRepresentation("2")),
+        //     imgr.makeNumber(getConstRepresentation("a")),
+        //     imgr.makeNumber(getConstRepresentation("4"))
+        // );
+        String functionName = "f1";
         List<IntegerFormula> parameterMappings = List.of(
-            imgr.makeNumber(getConstRepresentation("pawn")),
-            imgr.makeNumber(getConstRepresentation("white")),
-            imgr.makeNumber(getConstRepresentation("a")),
-            imgr.makeNumber(getConstRepresentation("2")),
-            imgr.makeNumber(getConstRepresentation("a")),
-            imgr.makeVariable("pos")
+            imgr.makeNumber(getConstRepresentation("1"))
         );
+
+
         BooleanFormula gigaMegaFormula = buildFunctionConstraint(functionName, parameterMappings);
 
         System.out.println("SAT:" + checkSatisfiable(gigaMegaFormula));
@@ -164,7 +175,7 @@ public class Interpreter {
             if (!unsat) {
                 Model model = prover.getModel();
 
-                System.out.println("MODEL FOR POS:" + constValueMap.getKey(((BigInteger) model.evaluate(imgr.makeVariable("pos"))).intValue()));
+                // System.out.println("MODEL FOR POS:" + constValueMap.getKey(((BigInteger) model.evaluate(imgr.makeVariable("pos"))).intValue()));
             }
 
             prover.close();
@@ -258,8 +269,19 @@ public class Interpreter {
                     bodyFormula = bmgr.and(bodyFormula, buildExpression(bodyExpression, functionName, recursionDepth));
                 }
 
+
+                BooleanFormula temp = bodyFormula;
+                if (currentIsNegated) {
+                    temp = bmgr.not(temp);
+                }
+                
+                boolean satisfiable = checkSatisfiable(rootFunctionFormula, temp, previousStageFormula);
+
+                Log.println("overload: " + bodyFormula  + "\n");
+                Log.println("satisfiable: " + satisfiable  + "\n");
+
                 // add to current function calls
-                allFunctionBodys.put(functionDefinition, new ImmutablePair<>(bodyFormula, recursiveExpressions));
+                if (satisfiable) allFunctionBodys.put(functionDefinition, new ImmutablePair<>(bodyFormula, recursiveExpressions));
             }
 
             // build formula (function overload = or expression)
@@ -298,6 +320,7 @@ public class Interpreter {
                 }
             } else {
                 // is not satisfiable -> no overload is satisfiable -> abort recursion?
+                rootFunctionFormula = bmgr.and(rootFunctionFormula, functionOverloadFormula);
             }
 
         }
@@ -407,7 +430,7 @@ public class Interpreter {
             BooleanFormula result = bmgr.makeTrue();
             for (int i = 0; i < parameters.size(); i++) {
                 IntegerFormula param = getRepresentation(parameters.get(i), functionName, recursionDepth);
-                IntegerFormula gameStateArgument = imgr.makeVariable(gameStateName + "_arg_const_" + i);
+                IntegerFormula gameStateArgument = imgr.makeVariable(gameStateName + "_arg_constant_" + i);
 
                 // map parameter to matching argument
                 result = bmgr.and(result, imgr.equal(param, gameStateArgument));
