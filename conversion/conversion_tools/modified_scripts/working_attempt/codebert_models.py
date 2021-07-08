@@ -219,18 +219,18 @@ class Seq2Seq(HybridBlock):
             mask[0:len] = 1
         return input_mask
 
-    def forward(self, input_ids=None, input_valid_length=None, target_ids=None, target_valid_length=None):   
-        input_token_types = mx.nd.zeros_like(input_ids)
+    def forward(self, source_ids=None, source_valid_length=None, target_ids=None, target_valid_length=None):   
+        source_token_types = mx.nd.zeros_like(source_ids)
         target_token_types = mx.nd.zeros_like(target_ids)
-        embed_output = self.embedding(input_ids, input_token_types)
-        encoder_output = self.encoder(embed_output, input_valid_length) # we don't permute like in the code2nl model, that okay? TODO shape 8x256x768
+        embed_output = self.embedding(source_ids, source_token_types)
+        encoder_output = self.encoder(embed_output, source_valid_length) # we don't permute like in the code2nl model, that okay? TODO shape 8x256x768
         #encoder_output = outputs[0].permute([1,0,2]).contiguous() not sure how to do
-        if target_ids is not None:  
+        if target_ids is not None:
             #attn_mask=-1e4 *(1-self.bias[:target_ids.shape[1],:target_ids.shape[1]]) no option to pass this in gluonnlp TODO
             # could try subclassing the Decoder and change the hybrid_forward function.
             # transpose so we have (batch size, target seq length, embed dims)
             tgt_embeddings = self.embedding(target_ids, target_token_types).transpose((1, 0, 2))
-            states = self.decoder.init_state_from_encoder(encoder_output, input_valid_length)
+            states = self.decoder.init_state_from_encoder(encoder_output, source_valid_length)
             # TODO do we need to set position weight to something for decoder?
             # target_valid_length fails when it is a named parameter for some reason, so we just pass as the third
             out, _, _ = self.decoder(tgt_embeddings, states, target_valid_length)
@@ -241,15 +241,17 @@ class Seq2Seq(HybridBlock):
             return lm_logits
         else:
             #Predict 
-            input_mask = self.valid_length_to_mask(input_ids, input_valid_length)
+            source_mask = self.valid_length_to_mask(source_ids, source_valid_length)
             preds=[]       
             zero=mx.nd.zeros(1, dtype='int64')
-            for i in range(input_ids.shape[0]):
+            for i in range(source_ids.shape[0]):
                 context = encoder_output[:,i:i+1]
-                context_mask = input_mask[i:i+1,:]
-                beam = Beam(self.beam_size,self.sos_id,self.eos_id)
+                context_valid_len = source_valid_length[i:i+1,:]
+                context_mask = source_mask[i:i+1,:]
+                beam = Beam(self.beam_size, self.sos_id, self.eos_id)
                 input_ids = beam.getCurrentState()
                 input_token_types = mx.nd.zeros_like(input_ids)
+                input_valid_length = # TODO not sure what to use here, does the beam add padding?
                 context = context.tile((1, self.beam_size, 1))
                 context_mask = context_mask.tile((self.beam_size,1))
                 for _ in range(self.max_length): 
@@ -259,6 +261,8 @@ class Seq2Seq(HybridBlock):
                     # attn_mask=-1e4 *(1-self.bias[:input_ids.shape[1],:input_ids.shape[1]])
                     tgt_embeddings = self.embedding(input_ids, input_token_types).transpose((1, 0, 2))
                     out = self.decoder(tgt_embeddings,context,tgt_mask=attn_mask,memory_key_padding_mask=(1-context_mask).bool())
+                    states = self.decoder.init_state_from_encoder(context, context_valid_len)
+                    out, _, _ = self.decoder(tgt_embeddings, states, input_valid_length)
                     out = torch.tanh(self.dense(out))
                     hidden_states=out.permute([1,0,2]).contiguous()[:,-1,:]
                     out = self.lsm(self.lm_head(hidden_states)).data
