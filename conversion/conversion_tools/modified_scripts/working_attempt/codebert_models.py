@@ -196,7 +196,6 @@ class Seq2Seq(HybridBlock):
             # tie the lm_head and word_embed params together not sure if this is the correct way to do it
             # TODO maybe embedding params object is in dictionary and this is referencing all the params of the embedding layers?
             self.lm_head = self.get_lm_head(vocab_size, hidden_size)
-            #self.lsm = mx.npx.log_softmax(axis=-1) # axis = -1 the same as dim = -1? used for prediction part TODO
             self.beam_size=beam_size
             self.max_length=max_length
             self.sos_id=sos_id
@@ -251,7 +250,7 @@ class Seq2Seq(HybridBlock):
                 beam = Beam(self.beam_size, self.sos_id, self.eos_id)
                 input_ids = beam.getCurrentState()
                 input_token_types = mx.nd.zeros_like(input_ids)
-                input_valid_length = # TODO not sure what to use here, does the beam add padding?
+                input_valid_length = mx.nd.ones_like(input_ids) # TODO should we use anything other than ones here? only if the beam adds padding
                 context = context.tile((1, self.beam_size, 1))
                 context_mask = context_mask.tile((self.beam_size,1))
                 for _ in range(self.max_length): 
@@ -260,21 +259,22 @@ class Seq2Seq(HybridBlock):
                     # still not sure how important this is, we cant really use it in our decoder?
                     # attn_mask=-1e4 *(1-self.bias[:input_ids.shape[1],:input_ids.shape[1]])
                     tgt_embeddings = self.embedding(input_ids, input_token_types).transpose((1, 0, 2))
-                    out = self.decoder(tgt_embeddings,context,tgt_mask=attn_mask,memory_key_padding_mask=(1-context_mask).bool())
                     states = self.decoder.init_state_from_encoder(context, context_valid_len)
                     out, _, _ = self.decoder(tgt_embeddings, states, input_valid_length)
-                    out = torch.tanh(self.dense(out))
-                    hidden_states=out.permute([1,0,2]).contiguous()[:,-1,:]
-                    out = self.lsm(self.lm_head(hidden_states)).data
+                    hidden_states = self.dense(out.transpose((1, 0, 2)).reshape(-1, self.hidden_size))
+                    # hidden_states=out.permute([1,0,2]).contiguous()[:,-1,:]
+                    lm_logits = self.lm_head(hidden_states)
+                    out = mx.nd.log_softmax(lm_logits, axis=-1)
                     beam.advance(out)
-                    input_ids.data.copy_(input_ids.data.index_select(0, beam.getCurrentOrigin()))
-                    input_ids=torch.cat((input_ids,beam.getCurrentState()),-1)
-                hyp= beam.getHyp(beam.getFinal())
-                pred=beam.buildTargetTokens(hyp)[:self.beam_size]
-                pred=[torch.cat([x.view(-1) for x in p]+[zero]*(self.max_length-len(p))).view(1,-1) for p in pred]
-                preds.append(torch.cat(pred,0).unsqueeze(0))
+                    input_ids.copyto(input_ids.pick(beam.getCurrentOrigin(), 0))
+                    input_ids = mx.nd.concat(input_ids, beam.getCurrentState(), dim=-1)
+                hyp = beam.getHyp(beam.getFinal())
+                pred = beam.buildTargetTokens(hyp)[:self.beam_size]
+                # pred = [torch.cat([x.view(-1) for x in p]+[zero]*(self.max_length-len(p))).view(1,-1) for p in pred]
+                pred = [mx.nd.concat(*([x.reshape(-1) for x in p]+[zero]*(self.max_length-len(p))), dim=-1).reshape(1,-1) for p in pred]
+                preds.append(mx.nd.concat(*pred, dim=0).expand_dims(0))
                 
-            preds=torch.cat(preds,0)                
+            preds = mx.nd.concat(*preds, dim=0)                
             return preds
 
 
