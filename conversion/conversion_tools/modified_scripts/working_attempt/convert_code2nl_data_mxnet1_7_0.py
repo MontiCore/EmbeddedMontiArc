@@ -37,7 +37,7 @@ class InputFeatures(object):
         self.target_mask = target_mask
 
 def read_examples(filename, limit=500):
-    print('Reading training data...')
+    print('Reading {} data...'.format(filename))
     """Read examples from filename."""
     examples=[]
     with open(filename,encoding="utf-8") as f:
@@ -61,6 +61,7 @@ def read_examples(filename, limit=500):
             )
     return examples
 
+# TODO reuse the code block in here to create a new func
 def convert_examples_to_features(examples, tokenizer, max_source_length, max_target_length, stage=None):
     print('Converting examples to features...')
     features = []
@@ -75,14 +76,15 @@ def convert_examples_to_features(examples, tokenizer, max_source_length, max_tar
  
         #target
         if stage=="test":
-            target_tokens = tokenizer.tokenize("None")
+            target_mask = None
+            target_ids = None
         else:
             target_tokens = tokenizer.tokenize(example.target)[:max_target_length-2]
-        target_tokens = [tokenizer.cls_token]+target_tokens+[tokenizer.sep_token]            
-        target_ids = tokenizer.convert_tokens_to_ids(target_tokens)
-        target_mask = len(target_tokens)
-        padding_length = max_target_length - len(target_ids)
-        target_ids+=[tokenizer.pad_token_id]*padding_length
+            target_tokens = [tokenizer.cls_token]+target_tokens+[tokenizer.sep_token]      
+            target_ids = tokenizer.convert_tokens_to_ids(target_tokens)
+            target_mask = len(target_tokens)
+            padding_length = max_target_length - len(target_ids)
+            target_ids+=[tokenizer.pad_token_id]*padding_length
        
         features.append(
             InputFeatures(
@@ -95,46 +97,56 @@ def convert_examples_to_features(examples, tokenizer, max_source_length, max_tar
         )
     return features
 
-def get_training_data(filename):
+def get_stage_data(stage, tokenizer, datadir):
+    datafile = '{}/{}.jsonl'.format(datadir, stage)
     data_params = hp.get_training_hparams()
-    print('Getting pretrained tokenizer...')
-    tokenizer = RobertaTokenizer.from_pretrained('microsoft/codebert-base')
-    train_examples = read_examples(filename, limit=data_params['limit_samples'])
-    train_features = convert_examples_to_features(
-        train_examples, tokenizer,
+    stage_examples = read_examples(datafile, limit=data_params['limit_samples'])
+    stage_features = convert_examples_to_features(
+        stage_examples, tokenizer,
         data_params['max_source_length'],
         data_params['max_target_length'],
-        stage='train'
+        stage=stage
     )
-    source_ids = np.array([f.source_ids for f in train_features], dtype=np.int64)
-    source_masks = np.array([f.source_mask for f in train_features], dtype=np.int64)
-    target_ids = np.array([f.target_ids for f in train_features], dtype=np.int64)
-    target_masks = np.array([f.target_mask for f in train_features], dtype=np.int64)    
+    source_ids = np.array([f.source_ids for f in stage_features], dtype=np.int64)
+    source_masks = np.array([f.source_mask for f in stage_features], dtype=np.int64)
+    
+    if stage == 'test':
+        return {
+            'source_ids': source_ids, 
+            'source_masks': source_masks, 
+        }
+    else:
+        target_ids = np.array([f.target_ids for f in stage_features], dtype=np.int64)
+        target_masks = np.array([f.target_mask for f in stage_features], dtype=np.int64)    
+        return {
+            'source_ids': source_ids, 
+            'source_masks': source_masks, 
+            'target_ids': target_ids, 
+            'target_masks': target_masks
+        }
 
-    return {
-        'source_ids': source_ids, 
-        'source_masks': source_masks, 
-        'target_ids': target_ids, 
-        'target_masks': target_masks
-    }
-
-def write_dataset_to_disk(training_data, savedir):
-    print('Writing data to {} ...'.format(savedir + '/train.h5'))
+def write_dataset_to_disk(stage, data, savedir):
+    datafile = '{}/{}.h5'.format(savedir, stage)
+    print('Writing {} data to {} ...'.format(stage, datafile))
     if not os.path.exists(savedir):
         os.makedirs(savedir)
-    f = h5py.File(savedir + '/train.h5', 'w')
-    for k, v in training_data.items():
+    f = h5py.File(datafile, 'w')
+    for k, v in data.items():
         f.create_dataset(k, data=v)
 
 def parse_args():
     parser = argparse.ArgumentParser()
     parser.add_argument("--save_dir", default='./codebert_gluon/data', 
-        help="The path where the training data should be saved")
-    parser.add_argument("--train_data", default='/home/makua/Documents/Datasets/CodeSearchNet/java/train.jsonl',
-        help="The file where the unprocessed training data is, can be found on the codebert github")
+        help="The path where the processed training data should be saved")
+    parser.add_argument("--data_dir", default='/home/makua/Documents/Datasets/CodeSearchNet/java/',
+        help="The folder where the unprocessed data is, can be found on the codebert github")
     return parser.parse_args()
 
 if __name__ == '__main__':
     args = parse_args()
-    data = get_training_data(args.train_data)
-    write_dataset_to_disk(data, args.save_dir)
+    stages = ['train', 'valid', 'test']
+    print('Getting pretrained tokenizer...')
+    tokenizer = RobertaTokenizer.from_pretrained('microsoft/codebert-base')
+    for stage in stages:
+        data = get_stage_data(stage, tokenizer, args.data_dir)
+        write_dataset_to_disk(stage, data, args.save_dir)
