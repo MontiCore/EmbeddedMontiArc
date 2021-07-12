@@ -126,6 +126,13 @@ def load_codebert_block(symbol_file, weight_file, context):
     input_names = ['data0', 'data1']
     return gluon.nn.SymbolBlock.imports(symbol_file, input_names, weight_file, ctx=context)
 
+def get_seqs_from_batch(batch, ctx):
+    source_ids = gluon.utils.split_and_load(batch.data[0], ctx_list=ctx, even_split=False)[0]
+    source_masks = gluon.utils.split_and_load(batch.data[1], ctx_list=ctx, even_split=False)[0]
+    target_ids = gluon.utils.split_and_load(batch.label[0], ctx_list=ctx, even_split=False)[0]
+    target_masks = gluon.utils.split_and_load(batch.label[1], ctx_list=ctx, even_split=False)[0]
+    return source_ids, source_masks, target_ids, target_masks
+
 def train_model(args):
     train_hparams = hp.get_training_hparams()
     batch_size = train_hparams['batch_size']
@@ -137,9 +144,10 @@ def train_model(args):
     seq2seq = get_seq2seq(embedding, encoder, decoder)
     seq2seq.collect_params().initialize(force_reinit=False, ctx=ctx)
     seq2seq.hybridize()
+    train_file = '{}/{}'.format(args.data_dir, 'train.h5')
     train_data = get_data_iterator(
         ['source_ids', 'source_masks'], ['target_ids', 'target_masks'],
-        True, batch_size, args.train_data)
+        True, batch_size, train_file)
     seq2seq.initialize()
     loss = mx.gluon.loss.SoftmaxCrossEntropyLoss() # TODO parameters? e.g. sparse_label
     # note this is different than the codebert optimizer in two ways
@@ -155,10 +163,7 @@ def train_model(args):
     for epoch in range(epochs):
         for batch in train_data:
             with mx.autograd.record():
-                source_ids = gluon.utils.split_and_load(batch.data[0], ctx_list=ctx, even_split=False)[0]
-                source_masks = gluon.utils.split_and_load(batch.data[1], ctx_list=ctx, even_split=False)[0]
-                target_ids = gluon.utils.split_and_load(batch.label[0], ctx_list=ctx, even_split=False)[0]
-                target_masks = gluon.utils.split_and_load(batch.label[1], ctx_list=ctx, even_split=False)[0]
+                source_ids, source_masks, target_ids, target_masks = get_seqs_from_batch(batch, ctx)
                 lm_logits = seq2seq(source_ids, source_masks, target_ids, target_masks)
                 # drop the start of sentence mask tokens? - mb
                 active_loss = target_masks[..., 1:].asnumpy().reshape(-1) != 0
@@ -186,14 +191,32 @@ def train_model(args):
     #                 shift_labels.reshape(-1)[active_loss])
 
     # #outputs = loss,loss*active_loss.sum(),active_loss.sum()
+    return seq2seq
 
+def test_model(file_name, seq2seq, args):
+    train_hparams = hp.get_training_hparams()
+    batch_size = train_hparams['batch_size']
+    ctx = [mx.cpu()]
+    test_file = '{}/{}'.format(args.data_dir, file_name)
+    test_data = get_data_iterator(
+        ['source_ids', 'source_masks'], ['target_ids', 'target_masks'],
+        True, batch_size, test_file)
+    preds = []
+    for batch in test_data:
+        source_ids, source_masks, target_ids, _ = get_seqs_from_batch(batch, ctx)
+        pred = seq2seq(source_ids, source_masks)
+        preds.append((pred, target_ids))
+    return preds
+
+def write_preds_to_disk(preds):
+    return None
 
 def parse_args():
     parser = argparse.ArgumentParser()
     parser.add_argument('--train', action='store_true', default=True, 
         help='If the script should be run in training mode or not') # TODO change/remove this?
-    parser.add_argument('--train_data', default='./codebert_gluon/data/train.h5', type=str,
-        help='The .h5 file where the processed training data is.')
+    parser.add_argument('--data_dir', default='./codebert_gluon/data', type=str,
+        help='The folder where the processed training, validation and test data is.')
     parser.add_argument("--symbol_file", default='./codebert_gluon/codebert-symbol.json', type=str,
         help="Symbol file from the pretrained model output by the conversion script")
     parser.add_argument("--weight_file", default='./codebert_gluon/codebert-0000.params', type=str,
@@ -202,9 +225,14 @@ def parse_args():
         help="Symbol file from the pretrained embed output by the conversion script")
     parser.add_argument("--embed_weight_file", default='./codebert_gluon/codebert_embedding-0000.params', type=str,
         help="Weight file from the pretrained embed output by the conversion script")
+    parser.add_argument("--test_output", default='./codebert_gluon/test', type=str,
+        help="The directory where the model test data is saved")
     return parser.parse_args()
 
 if __name__ == '__main__':
     args = parse_args()
     if args.train:
-        train_model(args)
+        model = train_model(args)
+        test1 = test_model('test.h5', model, args)
+        test2 = test_model('valid.h5', model, args)
+        write_preds_to_disk(test1)

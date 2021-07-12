@@ -274,7 +274,7 @@ class Seq2Seq(HybridBlock):
                 pred = [mx.nd.concat(*([x.reshape(-1) for x in p]+[zero]*(self.max_length-len(p))), dim=-1).reshape(1,-1) for p in pred]
                 preds.append(mx.nd.concat(*pred, dim=0).expand_dims(0))
                 
-            preds = mx.nd.concat(*preds, dim=0)                
+            preds = mx.nd.concat(*preds, dim=0)
             return preds
 
 
