@@ -54,6 +54,7 @@ import mxnet as mx
 import gluonnlp as nlp
 import argparse
 import h5py
+import os
 
 def get_decoder():
     decoder_hparams = hp.get_decoder_hparams()
@@ -208,8 +209,30 @@ def test_model(file_name, seq2seq, args):
         preds.append((pred, target_ids))
     return preds
 
-def write_preds_to_disk(preds):
-    return None
+def write_preds_to_disk(preds, data_name, args):
+    pred_fname = "test_{}.output".format(data_name)
+    gold_fname = "test_{}.gold".format(data_name)
+    path1 = os.path.join(args.output_dir,"test_{}.output".format(str(idx)))
+    path2 = os.path.join(args.output_dir,"test_{}.gold".format(str(idx)))
+    with open(path1, 'w') as f, open(path2,'w') as f1:
+        for ref,gold in zip(p,eval_examples):
+            predictions.append(str(gold.idx)+'\t'+ref)
+            f.write(str(gold.idx)+'\t'+ref+'\n')
+            f1.write(str(gold.idx)+'\t'+gold.target+'\n')       
+
+# we need a tokenizer to quanitify
+def format_for_bleu(outputs):
+    formatted_pred = []
+    formatted_actual = []
+    for idx, (pred, actual) in enumerate(outputs):
+        pred_text = ""
+        actual_text = "" 
+        formatted_pred.append(str(idx)+'\t'+pred_text)
+        formatted_actual.append(str(idx)+'\t'+actual_text)
+    return formatted_pred, formatted_actual
+
+def compute_bleu(res):
+    
 
 def parse_args():
     parser = argparse.ArgumentParser()
@@ -225,14 +248,17 @@ def parse_args():
         help="Symbol file from the pretrained embed output by the conversion script")
     parser.add_argument("--embed_weight_file", default='./codebert_gluon/codebert_embedding-0000.params', type=str,
         help="Weight file from the pretrained embed output by the conversion script")
-    parser.add_argument("--test_output", default='./codebert_gluon/test', type=str,
-        help="The directory where the model test data is saved")
+    parser.add_argument("--test_dir", default='./codebert_gluon/test', type=str,
+        help="The directory where the model test data output is saved")
     return parser.parse_args()
 
 if __name__ == '__main__':
     args = parse_args()
     if args.train:
         model = train_model(args)
-        test1 = test_model('test.h5', model, args)
-        test2 = test_model('valid.h5', model, args)
-        write_preds_to_disk(test1)
+        res_test = test_model('test.h5', model, args)
+        res_valid = test_model('valid.h5', model, args)
+        res_test = format_for_bleu(res_test)
+        res_valid = format_for_bleu(res_valid)
+        compute_bleu(res_test)
+        compute_bleu(res_valid)
