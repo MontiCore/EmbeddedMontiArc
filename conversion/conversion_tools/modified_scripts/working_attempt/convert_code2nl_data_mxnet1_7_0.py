@@ -73,18 +73,13 @@ def convert_examples_to_features(examples, tokenizer, max_source_length, max_tar
         source_mask = len(source_tokens)
         padding_length = max_source_length - len(source_ids)
         source_ids+=[tokenizer.pad_token_id]*padding_length
- 
         #target
-        if stage=="test":
-            target_mask = None
-            target_ids = None
-        else:
-            target_tokens = tokenizer.tokenize(example.target)[:max_target_length-2]
-            target_tokens = [tokenizer.cls_token]+target_tokens+[tokenizer.sep_token]      
-            target_ids = tokenizer.convert_tokens_to_ids(target_tokens)
-            target_mask = len(target_tokens)
-            padding_length = max_target_length - len(target_ids)
-            target_ids+=[tokenizer.pad_token_id]*padding_length
+        target_tokens = tokenizer.tokenize(example.target)[:max_target_length-2]
+        target_tokens = [tokenizer.cls_token]+target_tokens+[tokenizer.sep_token]      
+        target_ids = tokenizer.convert_tokens_to_ids(target_tokens)
+        target_mask = len(target_tokens)
+        padding_length = max_target_length - len(target_ids)
+        target_ids+=[tokenizer.pad_token_id]*padding_length
        
         features.append(
             InputFeatures(
@@ -109,21 +104,14 @@ def get_stage_data(stage, tokenizer, datadir):
     )
     source_ids = np.array([f.source_ids for f in stage_features], dtype=np.int64)
     source_masks = np.array([f.source_mask for f in stage_features], dtype=np.int64)
-    
-    if stage == 'test':
-        return {
-            'source_ids': source_ids, 
-            'source_masks': source_masks, 
-        }
-    else:
-        target_ids = np.array([f.target_ids for f in stage_features], dtype=np.int64)
-        target_masks = np.array([f.target_mask for f in stage_features], dtype=np.int64)    
-        return {
-            'source_ids': source_ids, 
-            'source_masks': source_masks, 
-            'target_ids': target_ids, 
-            'target_masks': target_masks
-        }
+    target_ids = np.array([f.target_ids for f in stage_features], dtype=np.int64)
+    target_masks = np.array([f.target_mask for f in stage_features], dtype=np.int64)    
+    return {
+        'source_ids': source_ids, 
+        'source_masks': source_masks, 
+        'target_ids': target_ids, 
+        'target_masks': target_masks
+    }
 
 def write_dataset_to_disk(stage, data, savedir):
     datafile = '{}/{}.h5'.format(savedir, stage)
@@ -138,7 +126,7 @@ def parse_args():
     parser = argparse.ArgumentParser()
     parser.add_argument("--save_dir", default='./codebert_gluon/data', 
         help="The path where the processed training data should be saved")
-    parser.add_argument("--data_dir", default='/home/makua/Documents/Datasets/CodeSearchNet/java/',
+    parser.add_argument("--data_dir", default='/home/makua/Documents/Datasets/CodeSearchNet/java',
         help="The folder where the unprocessed data is, can be found on the codebert github")
     return parser.parse_args()
 
