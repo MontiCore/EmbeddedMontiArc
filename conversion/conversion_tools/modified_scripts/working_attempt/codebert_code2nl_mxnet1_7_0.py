@@ -50,11 +50,11 @@ from mxnet import gluon
 from gluonnlp.model.transformer import TransformerDecoder
 from codebert_models import Seq2Seq
 import codebert_hyper_params as hp
+import codebert_code2nl_bleu as bleu
 import mxnet as mx
 import gluonnlp as nlp
 import argparse
 import h5py
-import os
 
 def get_decoder():
     decoder_hparams = hp.get_decoder_hparams()
@@ -209,30 +209,22 @@ def test_model(file_name, seq2seq, args):
         preds.append((pred, target_ids))
     return preds
 
-def write_preds_to_disk(preds, data_name, args):
-    pred_fname = "test_{}.output".format(data_name)
-    gold_fname = "test_{}.gold".format(data_name)
-    path1 = os.path.join(args.output_dir,"test_{}.output".format(str(idx)))
-    path2 = os.path.join(args.output_dir,"test_{}.gold".format(str(idx)))
-    with open(path1, 'w') as f, open(path2,'w') as f1:
-        for ref,gold in zip(p,eval_examples):
-            predictions.append(str(gold.idx)+'\t'+ref)
-            f.write(str(gold.idx)+'\t'+ref+'\n')
-            f1.write(str(gold.idx)+'\t'+gold.target+'\n')       
-
 # we need a tokenizer to quanitify
-def format_for_bleu(outputs):
+def format_for_bleu(tokenizer, outputs):
     formatted_pred = []
     formatted_actual = []
     for idx, (pred, actual) in enumerate(outputs):
-        pred_text = ""
-        actual_text = "" 
+        pred_text = tokenizer.decode(pred, clean_up_tokenization_spaces=False)
+        actual_text = tokenizer.decode(actual, clean_up_tokenization_spaces=False)
         formatted_pred.append(str(idx)+'\t'+pred_text)
         formatted_actual.append(str(idx)+'\t'+actual_text)
     return formatted_pred, formatted_actual
 
 def compute_bleu(res):
-    
+    pred, actual = res
+    actual_map, pred_map = bleu.computeMaps(pred, actual) 
+    score = round(bleu.bleuFromMaps(actual_map, pred_map)[0], 2)
+    print('{} = {}'.format('Bleu-4 Score', str(score)))
 
 def parse_args():
     parser = argparse.ArgumentParser()

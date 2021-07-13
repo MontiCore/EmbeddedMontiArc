@@ -156,10 +156,9 @@ def bleu(refs,  candidate, ground=0, smooth=1):
 def splitPuncts(line):
   return ' '.join(re.findall(r"[\w]+|[^\s\w]", line))
 
-def computeMaps(predictions, goldfile):
+def computeMaps(predictions, gf):
   predictionMap = {}
   goldMap = {}
-  gf = open(goldfile, 'r')
 
   for row in predictions:
     cols = row.strip().split('\t')
@@ -179,7 +178,6 @@ def computeMaps(predictions, goldfile):
   sys.stderr.write('Total: ' + str(len(goldMap)) + '\n')
   return (goldMap, predictionMap)
 
-
 #m1 is the reference map
 #m2 is the prediction map
 def bleuFromMaps(m1, m2):
@@ -192,12 +190,3 @@ def bleuFromMaps(m1, m2):
       score = [ score[i] + bl[i] for i in range(0, len(bl))]
       num += 1
   return [s * 100.0 / num for s in score]
-
-if __name__ == '__main__':
-  reference_file = sys.argv[1]
-  predictions = []
-  for row in sys.stdin:
-    predictions.append(row)
-  (goldMap, predictionMap) = computeMaps(predictions, reference_file) 
-  print (bleuFromMaps(goldMap, predictionMap)[0])
-
