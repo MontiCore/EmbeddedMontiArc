@@ -68,7 +68,7 @@ def get_training_hparams():
     return {
         'max_source_length': 256,
         'max_target_length': 128,
-        'limit_samples': 500,
+        'limit_samples': 10,
         'epochs': 1,
         'batch_size': 8,
         'beam_size':10

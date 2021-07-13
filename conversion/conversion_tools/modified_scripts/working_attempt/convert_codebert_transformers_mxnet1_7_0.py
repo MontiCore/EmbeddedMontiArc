@@ -65,7 +65,7 @@ import codebert_hyper_params as hp
 
 def parse_args():
     parser = argparse.ArgumentParser(description='Convert the huggingface CodeBERT Model to Gluon.')
-    parser.add_argument('--save_dir', type=str, default='./codebert_gluon',
+    parser.add_argument('--save_dir', type=str, default='./codebert_gluon/model',
         help='Directory path to save the converted model.')
     parser.add_argument('--test', action='store_true',
         help='If the model should be tested for equivalence after conversion, no model is output')

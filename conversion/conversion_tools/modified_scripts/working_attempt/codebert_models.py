@@ -214,17 +214,18 @@ class Seq2Seq(HybridBlock):
 
     def valid_length_to_mask(self, input_ids, valid_length):
         input_mask = mx.nd.zeros_like(input_ids)
-        for mask, len in zip(input_mask, valid_length):
-            mask[0:len] = 1
+        np_valid_len = valid_length.asnumpy()
+        for i in range(len(input_ids)):
+            input_mask[i][0:np_valid_len[i]] = 1
         return input_mask
 
     def forward(self, source_ids=None, source_valid_length=None, target_ids=None, target_valid_length=None):   
         source_token_types = mx.nd.zeros_like(source_ids)
-        target_token_types = mx.nd.zeros_like(target_ids)
         embed_output = self.embedding(source_ids, source_token_types)
         encoder_output = self.encoder(embed_output, source_valid_length) # we don't permute like in the code2nl model, that okay? TODO shape 8x256x768
         #encoder_output = outputs[0].permute([1,0,2]).contiguous() not sure how to do
         if target_ids is not None:
+            target_token_types = mx.nd.zeros_like(target_ids)
             #attn_mask=-1e4 *(1-self.bias[:target_ids.shape[1],:target_ids.shape[1]]) no option to pass this in gluonnlp TODO
             # could try subclassing the Decoder and change the hybrid_forward function.
             # transpose so we have (batch size, target seq length, embed dims)
@@ -239,7 +240,7 @@ class Seq2Seq(HybridBlock):
             lm_logits = self.lm_head(hidden_states)
             return lm_logits
         else:
-            #Predict 
+            #Predict
             source_mask = self.valid_length_to_mask(source_ids, source_valid_length)
             preds=[]       
             zero=mx.nd.zeros(1, dtype='int64')
