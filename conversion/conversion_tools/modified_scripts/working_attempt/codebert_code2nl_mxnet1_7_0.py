@@ -213,9 +213,16 @@ def test_model(file_name, seq2seq, args):
 def format_for_bleu(tokenizer, outputs):
     formatted_pred = []
     formatted_actual = []
-    for idx, (pred, actual) in enumerate(outputs):
-        pred_text = tokenizer.decode(pred, clean_up_tokenization_spaces=False)
-        actual_text = tokenizer.decode(actual, clean_up_tokenization_spaces=False)
+    for idx, (preds, actuals) in enumerate(outputs):
+        new_preds = []
+        # TODO is this removing spaces or padding? was in the original script
+        for pred in preds:
+            pred = list(pred)
+            if 0 in pred:
+                pred = pred[:pred.index(0)]
+            new_preds.append(pred)
+        pred_text = tokenizer.decode(new_preds, clean_up_tokenization_spaces=False)
+        actual_text = tokenizer.decode(actuals, clean_up_tokenization_spaces=False)
         formatted_pred.append(str(idx)+'\t'+pred_text)
         formatted_actual.append(str(idx)+'\t'+actual_text)
     return formatted_pred, formatted_actual
@@ -232,16 +239,14 @@ def parse_args():
         help='If the script should be run in training mode or not') # TODO change/remove this?
     parser.add_argument('--data_dir', default='./codebert_gluon/data', type=str,
         help='The folder where the processed training, validation and test data is.')
-    parser.add_argument("--symbol_file", default='./codebert_gluon/codebert-symbol.json', type=str,
+    parser.add_argument("--symbol_file", default='./codebert_gluon/model/codebert-symbol.json', type=str,
         help="Symbol file from the pretrained model output by the conversion script")
-    parser.add_argument("--weight_file", default='./codebert_gluon/codebert-0000.params', type=str,
+    parser.add_argument("--weight_file", default='./codebert_gluon/model/codebert-0000.params', type=str,
         help="Weight file from the pretrained model output by the conversion script")
-    parser.add_argument("--embed_symbol_file", default='./codebert_gluon/codebert_embedding-symbol.json', type=str,
+    parser.add_argument("--embed_symbol_file", default='./codebert_gluon/model/codebert_embedding-symbol.json', type=str,
         help="Symbol file from the pretrained embed output by the conversion script")
-    parser.add_argument("--embed_weight_file", default='./codebert_gluon/codebert_embedding-0000.params', type=str,
+    parser.add_argument("--embed_weight_file", default='./codebert_gluon/model/codebert_embedding-0000.params', type=str,
         help="Weight file from the pretrained embed output by the conversion script")
-    parser.add_argument("--test_dir", default='./codebert_gluon/test', type=str,
-        help="The directory where the model test data output is saved")
     return parser.parse_args()
 
 if __name__ == '__main__':

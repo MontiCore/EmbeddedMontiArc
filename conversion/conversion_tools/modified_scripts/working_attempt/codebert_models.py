@@ -1,4 +1,5 @@
 import mxnet as mx
+import numpy as np
 from mxnet.gluon import HybridBlock, nn
 from gluonnlp.model.seq2seq_encoder_decoder import Seq2SeqEncoder
 from gluonnlp.model.bert import BERTEncoderCell
@@ -214,7 +215,7 @@ class Seq2Seq(HybridBlock):
 
     def valid_length_to_mask(self, input_ids, valid_length):
         input_mask = mx.nd.zeros_like(input_ids)
-        np_valid_len = valid_length.asnumpy()
+        np_valid_len = valid_length.asnumpy().astype(np.int32)
         for i in range(len(input_ids)):
             input_mask[i][0:np_valid_len[i]] = 1
         return input_mask
@@ -244,16 +245,21 @@ class Seq2Seq(HybridBlock):
             source_mask = self.valid_length_to_mask(source_ids, source_valid_length)
             preds=[]       
             zero=mx.nd.zeros(1, dtype='int64')
+            # interate accross sequences in batch
             for i in range(source_ids.shape[0]):
-                context = encoder_output[:,i:i+1]
-                context_valid_len = source_valid_length[i:i+1,:]
+                # shape is (batch_size, seq_len, embed_size), we want the ith sequence
+                context = encoder_output[i:i+1,:]
+                context_valid_len = source_valid_length[i:i+1]
                 context_mask = source_mask[i:i+1,:]
+                print(encoder_output)
+                print(context)
+                print(context_mask)
                 beam = Beam(self.beam_size, self.sos_id, self.eos_id)
                 input_ids = beam.getCurrentState()
                 input_token_types = mx.nd.zeros_like(input_ids)
                 input_valid_length = mx.nd.ones_like(input_ids) # TODO should we use anything other than ones here? only if the beam adds padding
                 context = context.tile((1, self.beam_size, 1))
-                context_mask = context_mask.tile((self.beam_size,1))
+                context_mask = context_mask.tile((self.beam_size, 1))
                 for _ in range(self.max_length): 
                     if beam.done():
                         break
@@ -261,6 +267,11 @@ class Seq2Seq(HybridBlock):
                     # attn_mask=-1e4 *(1-self.bias[:input_ids.shape[1],:input_ids.shape[1]])
                     tgt_embeddings = self.embedding(input_ids, input_token_types).transpose((1, 0, 2))
                     states = self.decoder.init_state_from_encoder(context, context_valid_len)
+                    # print(tgt_embeddings)
+                    # print(20*"*")
+                    # print(states)
+                    # print(20*"*")
+                    # print(input_valid_length)
                     out, _, _ = self.decoder(tgt_embeddings, states, input_valid_length)
                     hidden_states = self.dense(out.transpose((1, 0, 2)).reshape(-1, self.hidden_size))
                     # hidden_states=out.permute([1,0,2]).contiguous()[:,-1,:]
@@ -287,7 +298,7 @@ class Beam(object):
         # The backpointers at each time-step.
         self.prevKs = []
         # The outputs at each time-step.
-        self.nextYs = [mx.nd.array(size, dtype='int64')]
+        self.nextYs = [mx.nd.zeros(size, dtype='int64')]
         self.nextYs[0][0] = sos
         # Has EOS topped the beam yet.
         self._eos = eos
