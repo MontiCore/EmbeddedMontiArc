@@ -251,14 +251,15 @@ class Seq2Seq(HybridBlock):
                 context = encoder_output[i:i+1,:]
                 context_valid_len = source_valid_length[i:i+1]
                 context_mask = source_mask[i:i+1,:]
-                print(encoder_output)
-                print(context)
-                print(context_mask)
+                # print(encoder_output)
+                # print(context)
+                # print(context_mask)
                 beam = Beam(self.beam_size, self.sos_id, self.eos_id)
                 input_ids = beam.getCurrentState()
                 input_token_types = mx.nd.zeros_like(input_ids)
-                input_valid_length = mx.nd.ones_like(input_ids) # TODO should we use anything other than ones here? only if the beam adds padding
-                context = context.tile((1, self.beam_size, 1))
+                input_valid_length = mx.nd.ones(input_ids.shape[0]) # TODO should we use anything other than ones here? only if the beam adds padding
+                context = context.tile((self.beam_size, 1, 1))
+                #print(context)
                 context_mask = context_mask.tile((self.beam_size, 1))
                 for _ in range(self.max_length): 
                     if beam.done():
@@ -267,11 +268,17 @@ class Seq2Seq(HybridBlock):
                     # attn_mask=-1e4 *(1-self.bias[:input_ids.shape[1],:input_ids.shape[1]])
                     tgt_embeddings = self.embedding(input_ids, input_token_types).transpose((1, 0, 2))
                     states = self.decoder.init_state_from_encoder(context, context_valid_len)
-                    # print(tgt_embeddings)
-                    # print(20*"*")
-                    # print(states)
-                    # print(20*"*")
-                    # print(input_valid_length)
+                    #print(input_ids)
+                    print(50*"*")
+                    print(tgt_embeddings)
+                    print(50*"*")
+                    print(states)
+                    print(50*"*")
+                    print(input_ids)
+                    print(50*"*")
+                    print(input_valid_length)
+                    print(50*"*")
+                    print(context_valid_len)
                     out, _, _ = self.decoder(tgt_embeddings, states, input_valid_length)
                     hidden_states = self.dense(out.transpose((1, 0, 2)).reshape(-1, self.hidden_size))
                     # hidden_states=out.permute([1,0,2]).contiguous()[:,-1,:]
