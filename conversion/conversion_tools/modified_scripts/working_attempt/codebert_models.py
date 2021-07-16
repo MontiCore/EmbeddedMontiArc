@@ -260,7 +260,8 @@ class Seq2Seq(HybridBlock):
                 input_valid_length = mx.nd.ones(input_ids.shape[0]) # TODO should we use anything other than ones here? only if the beam adds padding
                 context = context.tile((self.beam_size, 1, 1))
                 #print(context)
-                context_mask = context_mask.tile((self.beam_size, 1))
+                context_mask = context_mask.tile((self.beam_size, 1)) # TODO unused, delete
+                context_valid_len = context_valid_len.tile((self.beam_size))
                 for _ in range(self.max_length): 
                     if beam.done():
                         break
@@ -269,15 +270,17 @@ class Seq2Seq(HybridBlock):
                     tgt_embeddings = self.embedding(input_ids, input_token_types).transpose((1, 0, 2))
                     states = self.decoder.init_state_from_encoder(context, context_valid_len)
                     #print(input_ids)
-                    print(50*"*")
+                    print(50*"*" + "tgt_embed")
                     print(tgt_embeddings)
-                    print(50*"*")
+                    print(50*"*" + "states")
                     print(states)
-                    print(50*"*")
+                    print(50*"*" + "input_ids")
                     print(input_ids)
-                    print(50*"*")
+                    print(50*"*" + "input_valid_len")
                     print(input_valid_length)
-                    print(50*"*")
+                    print(50*"*" + "context")
+                    print(context)
+                    print(50*"*" + "context_valid_len")
                     print(context_valid_len)
                     out, _, _ = self.decoder(tgt_embeddings, states, input_valid_length)
                     hidden_states = self.dense(out.transpose((1, 0, 2)).reshape(-1, self.hidden_size))
