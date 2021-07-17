@@ -288,7 +288,9 @@ class Seq2Seq(HybridBlock):
                     lm_logits = self.lm_head(hidden_states)
                     out = mx.nd.log_softmax(lm_logits, axis=-1)
                     beam.advance(out)
-                    input_ids.copyto(input_ids.pick(beam.getCurrentOrigin(), 0))
+                    print(beam.getCurrentOrigin())
+                    print(input_ids)
+                    input_ids.pick(beam.getCurrentOrigin(), 0).copyto(input_ids) # TODO fix pick, works strangely and not the same as torch
                     input_ids = mx.nd.concat(input_ids, beam.getCurrentState(), dim=-1)
                 hyp = beam.getHyp(beam.getFinal())
                 pred = beam.buildTargetTokens(hyp)[:self.beam_size]
@@ -356,7 +358,7 @@ class Beam(object):
 
         # bestScoresId is flattened beam x word array, so calculate which
         # word and beam each score came from
-        prevK = bestScoresId // numWords
+        prevK = (bestScoresId / numWords).floor() # TODO replaced // with / and floor, they should be the same? because mxnet doesnt have //
         self.prevKs.append(prevK)
         self.nextYs.append((bestScoresId - prevK * numWords))
 
