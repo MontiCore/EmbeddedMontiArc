@@ -18,6 +18,7 @@ public abstract class ArchitectureElementSymbol extends ResolvableSymbol {
     private ArchitectureElementSymbol outputElement = null;
     private List<ArchTypeSymbol> outputTypes = null;
     private boolean artificial = false;
+    private boolean AdaNet = false; // it is true if the archtiecture contains an AdaNet Layer
     protected ArchitectureElementSymbol(String name) {
         super(name, KIND);
     }
@@ -33,7 +34,8 @@ public abstract class ArchitectureElementSymbol extends ResolvableSymbol {
     public void setArtificial(boolean artificial) {
         this.artificial = artificial;
     }
-
+    public boolean containsAdaNet(){return this.AdaNet;}
+    public void setAdaNet(boolean adaNet){this.AdaNet = adaNet;}
     @Override
     public ArchitectureElementScope getSpannedScope() {
         return (ArchitectureElementScope) super.getSpannedScope();
@@ -116,7 +118,7 @@ public abstract class ArchitectureElementSymbol extends ResolvableSymbol {
         if (getInputElement().isPresent()){
             List<ArchitectureElementSymbol> inputElements = new ArrayList<>();
 
-            if(getInputElement().get().isArtificial()){
+            if(getInputElement().get().isArtificial() && this.containsAdaNet()){
                 inputElements.add(getInputElement().get());
             }else {
                 for (ArchitectureElementSymbol element : getInputElement().get().getLastAtomicElements()) {
