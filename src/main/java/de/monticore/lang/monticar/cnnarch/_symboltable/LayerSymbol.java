@@ -28,6 +28,11 @@ public class LayerSymbol extends ArchitectureElementSymbol {
         super(name);
     }
 
+    @Override
+    public void setAdaNet(boolean adaNet) {
+        super.setAdaNet(adaNet);
+    }
+
     public LayerDeclarationSymbol getDeclaration() {
         if (declaration == null){
             Collection<LayerDeclarationSymbol> declarationCollection = getEnclosingScope().resolveMany(getName(), LayerDeclarationSymbol.KIND);
