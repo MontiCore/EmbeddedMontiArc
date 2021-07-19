@@ -49,6 +49,11 @@ public abstract class CompositeElementSymbol extends ArchitectureElementSymbol {
     }
 
     @Override
+    public boolean containsAdaNet() {
+        return super.containsAdaNet();
+    }
+    public void setAdaNet(boolean adaNet){super.setAdaNet(adaNet);}
+    @Override
     protected void resolveExpressions() throws ArchResolveException {
         for (ArchitectureElementSymbol element : getElements()){
             element.resolveExpressions();
