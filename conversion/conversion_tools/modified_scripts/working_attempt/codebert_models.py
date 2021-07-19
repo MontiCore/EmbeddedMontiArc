@@ -262,14 +262,14 @@ class Seq2Seq(HybridBlock):
                 #print(context)
                 context_mask = context_mask.tile((self.beam_size, 1)) # TODO unused, delete
                 context_valid_len = context_valid_len.tile((self.beam_size))
-                for _ in range(self.max_length): 
+                states = self.decoder.init_state_from_encoder(context, context_valid_len)
+                for i in range(self.max_length): 
                     if beam.done():
                         break
                     # still not sure how important this is, we cant really use it in our decoder?
                     # attn_mask=-1e4 *(1-self.bias[:input_ids.shape[1],:input_ids.shape[1]])
                     tgt_embeddings = self.embedding(input_ids, input_token_types).transpose((1, 0, 2))
-                    states = self.decoder.init_state_from_encoder(context, context_valid_len)
-                    #print(input_ids)
+                    print(input_ids)
                     print(50*"*" + "tgt_embed")
                     print(tgt_embeddings)
                     print(50*"*" + "states")
@@ -282,16 +282,16 @@ class Seq2Seq(HybridBlock):
                     print(context)
                     print(50*"*" + "context_valid_len")
                     print(context_valid_len)
-                    out, _, _ = self.decoder(tgt_embeddings, states, input_valid_length)
+                    out, states, _ = self.decoder(tgt_embeddings, states, input_valid_length)
                     hidden_states = self.dense(out.transpose((1, 0, 2)).reshape(-1, self.hidden_size))
                     # hidden_states=out.permute([1,0,2]).contiguous()[:,-1,:]
                     lm_logits = self.lm_head(hidden_states)
                     out = mx.nd.log_softmax(lm_logits, axis=-1)
                     beam.advance(out)
-                    print(beam.getCurrentOrigin())
-                    print(input_ids)
-                    input_ids.pick(beam.getCurrentOrigin(), 0).copyto(input_ids) # TODO fix pick, works strangely and not the same as torch
+                    input_ids.take(beam.getCurrentOrigin(), 0).copyto(input_ids)
                     input_ids = mx.nd.concat(input_ids, beam.getCurrentState(), dim=-1)
+                    input_token_types = mx.nd.zeros_like(input_ids)
+                    input_valid_length += 1
                 hyp = beam.getHyp(beam.getFinal())
                 pred = beam.buildTargetTokens(hyp)[:self.beam_size]
                 # pred = [torch.cat([x.view(-1) for x in p]+[zero]*(self.max_length-len(p))).view(1,-1) for p in pred]
@@ -320,7 +320,7 @@ class Beam(object):
 
     def getCurrentState(self):
         "Get the outputs for the current timestep."
-        batch = mx.nd.array(self.nextYs[-1]).reshape(-1, 1)
+        batch = mx.nd.array(self.nextYs[-1], dtype='int64').reshape(-1, 1)
         return batch
 
     def getCurrentOrigin(self):
