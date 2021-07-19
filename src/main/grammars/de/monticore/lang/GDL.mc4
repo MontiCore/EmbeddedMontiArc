@@ -4,18 +4,31 @@ grammar GDL extends de.monticore.literals.MCCommonLiterals {
 
     Game = GameExpression*;
 
-    GameExpression = Comment | "(" (Role | Init | GameStateUpdate | LegalMove | Terminal | Goal | HelpFunction) ")" | Fact;
-    
-    Comment = "//" Literal*;
-    Role = "role " Name ; 
-    Init = "init " Fact; 
-    GameStateUpdate = "<= (next" Fact ")" Fact* ("(does " (Name | Var) Fact ")")? Fact*; 
-    LegalMove = "<= (legal" (Var | Name) (Fact | "noop") ")" Fact* ;
-    Terminal = "<= terminal" Fact;
-    Goal = "<= (goal " (Var | Name) Digits* ")" Fact*;
-    HelpFunction = "<=" ("(" (Name | Var | Digits)* ")" | Name) Fact*;
+    GameExpression implements GameRelation = "(" type:GameType arguments:GameRelation* ")";
 
-    Fact = ("(" ( "distinct " (Name | Digits | Var)* | (Name | Digits | Var)* | ("true (" | "not (") (Name | Digits | Var)* ")") ")") | Name;
-    Var = "?"Name;
+    symbol GameFunctionDefinition extends GameExpression = "(" GameInference head:GameFunctionHead body:GameExpression* ")";
+
+    GameFunctionHead = "(" name:Name parameters:GameRelation* ")";
+
+    Comment extends GameExpression implements GameType = SL_COMMENT;
+
+    interface GameRelation;
+    interface GameType;
+
+    GameToken implements GameRelation = "?"token:Name;
+    GameValue implements GameRelation = value:Name | value:Digits;
+
+    GameRole implements GameType = "role";
+    GameInit implements GameType = "init";
+    GameTerminal implements GameType = "<= terminal";
+    GameInference implements GameType = "<=";
+    GameNext implements GameType = "next";
+    GameTrue implements GameType = "true";
+    GameLegal implements GameType = "legal";
+    GameDoes implements GameType = "does";
+    GameNot implements GameType = "not";
+    GameDistinct implements GameType = "distinct";
+    GameGoal implements GameType = "goal";
+    GameFunction implements GameType = function:Name@GameFunctionDefinition;
   
 }

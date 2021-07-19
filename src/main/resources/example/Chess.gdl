@@ -190,7 +190,7 @@
 // moves to blank
 (<= (isLegalMove bishop ?player ?start_col ?start_row ?dest_col ?dest_row)
     // bishop occupies field (col, row)
-    (true (cell ?dest_col ?dest_row blank))
+    (true (field ?dest_col ?dest_row blank))
     (isDiagonalCross ?start_col ?start_row ?dest_col ?dest_row)
 )
 // captures
@@ -205,7 +205,7 @@
 
 // moves to blank
 (<= (isLegalMove knight ?player ?start_col ?start_row ?dest_col ?dest_row)
-    (true (cell ?dest_col ?dest_row blank))
+    (true (field ?dest_col ?dest_row blank))
     (isLegalKnightMove ?start_col ?start_row ?dest_col ?dest_row)
 )
 // captures
@@ -272,7 +272,7 @@
 
 // moves to blank
 (<= (isLegalMove rook ?player ?start_col ?start_row ?dest_col ?dest_row)
-    (true (cell ?dest_col ?dest_row blank))
+    (true (field ?dest_col ?dest_row blank))
     (isLineCross ?start_col ?start_row ?dest_col ?dest_row)
 )
 
@@ -288,7 +288,7 @@
 
 // moves to blank
 (<= (isLegalMove queen ?player ?start_col ?start_row ?dest_col ?dest_row)
-    (true (cell ?dest_col ?dest_row blank))
+    (true (field ?dest_col ?dest_row blank))
     (isLegalQueenMove ?start_col ?start_row ?dest_col ?dest_row)
 )
 
@@ -315,7 +315,7 @@
 
 // moves to blank
 (<= (isLegalMove king ?player ?start_col ?start_row ?dest_col ?dest_row)
-    (true (cell ?dest_col ?dest_row blank))
+    (true (field ?dest_col ?dest_row blank))
     (isLegalKingMove ?start_col ?start_row ?dest_col ?dest_row)
 )
 
@@ -367,7 +367,8 @@
     (isPlayer ?color_fig ?player)
     (isFigure ?color_fig ?figure)
     // figure occupies field (col, row)
-    (true (cell ?col ?row ?color_fig))
+    (true (field ?col ?row ?color_fig))
+    (distinct ?color_fig blank)
 )
 
 // Line Cross
@@ -397,7 +398,7 @@
 )
 (<= (__isLineTop ?start_col ?start_row ?start_col ?dest_row)
     (isNextRow ?start_row ?start_row_succ)
-    (true (cell ?start_col ?start_row blank))
+    (true (field ?start_col ?start_row blank))
     (__isLineTop ?start_col ?start_row_succ ?start_col ?dest_row)
 )
 
@@ -415,7 +416,7 @@
 )
 (<= (__isLineBottom ?start_col ?start_row ?start_col ?dest_row)
     (isNextRow ?start_row ?start_row_succ)
-    (true (cell ?start_col ?start_row blank))
+    (true (field ?start_col ?start_row blank))
     (__isLineBottom ?start_col ?start_row_succ ?start_col ?dest_row)
 )
 
@@ -424,7 +425,7 @@
     (isNextCol ?start_col ?dest_col)
 )
 (<= (isLineRight ?start_col ?start_row ?dest_col ?start_row)
-    (__isLineRight ?start_col ?start_row ?dest_col ?start_row))
+    (__isLineRight ?start_col ?start_row ?dest_col ?start_row)
 )
 
 (<= (__isLineRight ?start_col ?start_row ?dest_col ?start_row)
@@ -432,17 +433,17 @@
 )
 (<= (__isLineRight ?start_col ?start_row ?dest_col ?start_row)
     (isNextCol ?start_col ?start_col_succ)
-    (true (cell ?start_col_succ ?start_row blank))
+    (true (field ?start_col_succ ?start_row blank))
     (__isLineRight ?start_col_succ ?start_row ?dest_col ?start_row)
 )
 
 // Line to Left
 // Swap start col and dest col (mirror play field on y-axis)
-(<= (isLineLeft  ?dest_col ?start_row ?start_col ?start_row)
+(<= (isLineLeft ?dest_col ?start_row ?start_col ?start_row)
     (isNextCol ?start_col ?dest_col)
 )
 (<= (isLineLeft ?dest_col ?start_row ?start_col ?start_row)
-    (__isLineLeft ?start_col ?start_row ?dest_col ?start_row))
+    (__isLineLeft ?start_col ?start_row ?dest_col ?start_row)
 )
 
 (<= (__isLineLeft ?start_col ?start_row ?dest_col ?start_row)
@@ -450,7 +451,7 @@
 )
 (<= (__isLineLeft ?start_col ?start_row ?dest_col ?start_row)
     (isNextCol ?start_col ?start_col_succ)
-    (true (cell ?start_col_succ ?start_row blank))
+    (true (field ?start_col_succ ?start_row blank))
     (__isLineLeft ?start_col_succ ?start_row ?dest_col ?start_row)
 )
 
@@ -469,7 +470,7 @@
 )
 
 // isDiagonalTopLeft
-// true, if cell (x,y) lies on diagonal with origin (a,b) and cells between are blank
+// true, if field (x,y) lies on diagonal with origin (a,b) and fields between are blank
 (<= (isDiagonalTopLeft ?start_col ?start_row ?dest_col ?dest_row)
     (isNextDiagonalCellTopLeft ?start_col ?start_row ?dest_col ?dest_row)
 )
@@ -482,7 +483,7 @@
 )
 (<= (__isDiagonalTopLeft ?start_col ?start_row ?dest_col ?dest_row)
     (isNextDiagonalCellTopLeft ?start_col ?start_row ?r ?s)
-    (true (cell ?r ?s blank))
+    (true (field ?r ?s blank))
     (__isDiagonalTopLeft ?r ?s ?dest_col ?dest_row)
 )
 
@@ -499,7 +500,7 @@
 )
 (<= (__isDiagonalTopRight ?start_col ?start_row ?dest_col ?dest_row)
     (isNextDiagonalCellTopRight ?start_col ?start_row ?r ?s)
-    (true (cell ?r ?s blank))
+    (true (field ?r ?s blank))
     (__isDiagonalTopRight ?r ?s ?dest_col ?dest_row)
 )
 
@@ -516,7 +517,7 @@
 )
 (<= (__isDiagonalBottomLeft ?start_col ?start_row ?dest_col ?dest_row)
     (isNextDiagonalCellBottomLeft ?start_col ?start_row ?r ?s)
-    (true (cell ?r ?s blank))
+    (true (field ?r ?s blank))
     (__isDiagonalBottomLeft ?r ?s ?dest_col ?dest_row)
 )
 
@@ -533,7 +534,7 @@
 )
 (<= (__isDiagonalBottomRight ?start_col ?start_row ?dest_col ?dest_row)
     (isNextDiagonalCellBottomRight ?start_col ?start_row ?r ?s)
-    (true (cell ?r ?s blank))
+    (true (field ?r ?s blank))
     (__isDiagonalBottomRight ?r ?s ?dest_col ?dest_row)
 )
 
