@@ -1,8 +1,10 @@
+
 package de.monticore.lang.monticar.cnnarch.predefined;
 
 import de.monticore.lang.monticar.cnnarch._symboltable.*;
 import de.monticore.symboltable.Symbol;
 import org.apache.commons.math3.geometry.spherical.oned.Arc;
+import org.checkerframework.checker.units.qual.A;
 import sun.reflect.generics.reflectiveObjects.NotImplementedException;
 
 import java.security.InvalidParameterException;
@@ -132,21 +134,54 @@ public class AdaNet extends PredefinedLayerDeclaration {
                 return getIn_name();
             case AllPredefinedLayers.Out:
                 return getOut_name();
-            default:
+           default:
                 return Optional.empty();
         }
     }
+    private void connectBlock(ArchitectureElementSymbol block,LayerSymbol layer, ArchitectureElementSymbol input, ArchitectureElementSymbol output){
+        block.setInputElement(input);
+        block.setOutputElement(output);
+        if(block.isArtificial()){
+            connectBlock(block,layer);
+        }
+    }
+    private void connectBlock(ArchitectureElementSymbol block, LayerSymbol layer) {
+        ArchitectureElementSymbol input = layer.getInputElement().get();
+        ArchitectureElementSymbol output = layer.getOutputElement().get();
 
+        if (block.isArtificial()) {
+            for (List<ArchitectureElementSymbol> subNetwork : ((LayerSymbol) block).getDeclaration().getBody().getEpisodicSubNetworks()) {
+                ArchitectureElementSymbol previous = null;
+                for (ArchitectureElementSymbol lay : subNetwork) {
+                    if (previous == null) { // check if lay is the first element in the list
+                        lay.setInputElement(input);
+                    } else {
+                        lay.setInputElement(previous);
+                        previous.setOutputElement(lay);
+                    }
+                    if(lay.equals(subNetwork.get(subNetwork.size()-1))){ // check if lay is the last element
+                        lay.setOutputElement(output);
+                    }
+                    if(lay.isArtificial()){
+                        connectBlock(lay,(LayerSymbol) block);
+                    }
+                }
+            }
+        }else{
+            block.setInputElement(input);
+            block.setOutputElement(output);
+        }
 
-    private void connectAdaNet() {
+    }
+
+    private void connectAdaNet(LayerSymbol Ada) {
         ArchitectureElementSymbol input = this.getBlock(AllPredefinedLayers.In).get();
         ArchitectureElementSymbol output = this.getBlock(AllPredefinedLayers.Out).get();
         ArchitectureElementSymbol block = this.getBlock(AllPredefinedLayers.Block).get();
 
-        input.setOutputElement(block);
-        block.setInputElement(input);
-        block.setOutputElement(output);
-        output.setInputElement(block);
+        connectBlock(input,Ada,Ada.getInputElement().get(),block);
+        connectBlock(block,Ada,input,output);
+        connectBlock(output,Ada,block,Ada.getOutputElement().get());
     }
 
     private void buildBlock(String target, LayerSymbol layer) {
@@ -180,6 +215,7 @@ public class AdaNet extends PredefinedLayerDeclaration {
         this.setBlock_name(layer.getStringValue(AllPredefinedLayers.Block)); // get Argument Value of block parameter
         this.setIn_name(layer.getStringValue(AllPredefinedLayers.In));       // get Argument Value of block parameter
         this.setOut_name(layer.getStringValue(AllPredefinedLayers.Out));     // get Argument Value of block parameter
+        // TODO: Warum geht es nur wenn als Block ein def übergeben wird im .emadl ??
 
         if (!this.getEnclosingScope().getLocalSymbols().containsKey(this.getBlock_name())) {
             //ToDo: check if passed dev names are present in scope else print error!!!
@@ -187,17 +223,22 @@ public class AdaNet extends PredefinedLayerDeclaration {
 
         if (!getName(AllPredefinedLayers.In).get().equals("default")) { //passed Parameter is not the default value
             buildBlock(AllPredefinedLayers.In, layer);
+
         } else {
             setBlock(AllPredefinedLayers.In, layer.getInputElement());
         }
+
         buildBlock(AllPredefinedLayers.Block, layer);
+
+
         if (!getName(AllPredefinedLayers.Out).get().equals("default")) { //passed Parameter is not the default value
             buildBlock(AllPredefinedLayers.Out, layer);
+
         } else {
             setBlock(AllPredefinedLayers.Out, layer.getOutputElement());
 
         }
-        connectAdaNet();
+        connectAdaNet(layer);
 
         try {
             getBlock(AllPredefinedLayers.Block).get().resolve();
