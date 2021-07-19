@@ -523,13 +523,11 @@ class EpisodicMemory(EpisodicReplayMemoryInterface):
                 self.label_memory.append(mem_dict[key])
 
 
-
 # Generation of the artificial blocks for the Streams below
 <#if tc.containsAdaNet()>
 from mxnet.gluon import nn, HybridBlock
 from numpy import log, product
 from mxnet.ndarray import zeros
-
 <#list tc.architecture.networkInstructions as networkInstruction>
 ${tc.include(networkInstruction.body, "ADANET_CONSTRUCTION")}
 </#list>
