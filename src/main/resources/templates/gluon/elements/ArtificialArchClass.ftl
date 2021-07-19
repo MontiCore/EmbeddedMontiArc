@@ -11,6 +11,3 @@ class architecture_defined_block_${name}(gluon.HybridBlock):
         ${tc.include(element.element,"FORWARD_FUNCTION")}
         return <#list element.element.getLastAtomicElements() as el><#if el?index ==0>${tc.getName(el)}<#else>,tc.getName(el)</#if></#list>
 </#if>
-
-
-
