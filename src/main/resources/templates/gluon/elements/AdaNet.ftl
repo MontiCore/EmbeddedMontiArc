@@ -1,14 +1,5 @@
 <#assign input = element.inputs[0]>
-
-
-<#if mode == "ARCHITECTURE_DEFINITION">
-            self.${element.name} = AdaNet(block=${element.element.getDeclaration().getBlock("block").get().getName()}, in = buff, out = bufff)
-            ${element.element.getDeclaration().getBlock("block").get().getName()}
-<#elseif mode == "FORWARD_FUNCTION">
-        ${element.name} = self.${element.name}(${input})
-
-
-<#elseif mode == "ADANET_CONSTRUCTION">
+<#if mode == "ADANET_CONSTRUCTION">
 <#assign outBlock = element.element.getDeclaration().getBlock("outBlock").get()>
 <#assign inBlock = element.element.getDeclaration().getBlock("inBlock").get()>
 <#assign Block = element.element.getDeclaration().getBlock("block").get()>
@@ -276,14 +267,14 @@ class Model(HybridBlock):
         # result = res_list.mean()
         # TODO: implement find weights for each candidate
 
-         return result
+        return result
 
     def add_op(self, op: CandidateHull, out_op, training=False):
-    """
-    add a new operation to the model,
-    save the name of the operation in self.op_names,
-    save the approximated rademacher complexity of the added candidate
-    """
+        """
+        add a new operation to the model,
+        save the name of the operation in self.op_names,
+        save the approximated rademacher complexity of the added candidate
+        """
         name = op.name_
         self.__setattr__(name, op)  # register operation as child
         self.op_names.append(name)
@@ -308,7 +299,6 @@ class Model(HybridBlock):
         del self.candidate_complexities[name]
         # self.out_op = self.buf
         delattr(self, 'buf')
-
     def get_candidate_complexity(self):
         mean_complexity = zeros(len(self.op_names))
         for i, name in enumerate(self.op_names):
