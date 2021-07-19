@@ -69,23 +69,25 @@ public class CNNArch2GluonTemplateController extends CNNArchTemplateController {
     public void include(LayerSymbol layer, Writer writer, NetDefinitionMode netDefinitionMode){
         ArchitectureElementData previousElement = getCurrentElement();
         setCurrentElement(layer);
-
-        if (layer.isAtomic()){
+        if(layer.getName().equals(AllPredefinedLayers.AdaNet_Name)&& netDefinitionMode.equals(NetDefinitionMode.ADANET_CONSTRUCTION)){
+            // construct the AdaNet Layer
+            include(TEMPLATE_ELEMENTS_DIR_PATH,"AdaNet",writer,netDefinitionMode);
+        }else if(layer.isAtomic()){
             String templateName = layer.getDeclaration().getName();
             include(TEMPLATE_ELEMENTS_DIR_PATH, templateName, writer, netDefinitionMode);
-        }else if(layer.isArtificial()){
+        }else if(layer.isArtificial() && this.containsAdaNet()){
             if(netDefinitionMode.equals(NetDefinitionMode.ARTIFICIAL_ARCH_CLASS)){
+                boolean originalArtificialState = layer.isArtificial();
                 layer.setArtificial(false);
-                if (!this.worked_list.contains(layer.getName())) {
+                if (!this.worked_list.contains(layer.getName())){
                     include(TEMPLATE_ELEMENTS_DIR_PATH, "ArtificialArchClass", writer, netDefinitionMode);
                     this.worked_list.add(layer.getName());
                 }
-                layer.setArtificial(true);
+                layer.setArtificial(originalArtificialState);
             }else {
                 include(TEMPLATE_ELEMENTS_DIR_PATH, "ArtificialArch", writer, netDefinitionMode);
             }
-        }
-        else {
+        }else{
             include((ArchitectureElementSymbol) layer.getResolvedThis().get(), writer, netDefinitionMode);
         }
 
