@@ -158,7 +158,7 @@ class BuildingBlock(HybridBlock):
     def __init__(self,
         b=20,
         <#if Block.isArtificial()>
-        operation = ${tc.include(Block,"ARCHITECTURE_DEFINITION")},
+        operation = ${tc.include(Block,"ADANET_CONSTRUCTION")},
         <#else>
         operation = DefaultBlock
         </#if>
@@ -272,13 +272,11 @@ class Model(HybridBlock):
         # reshape res_list, so that the batch_axis is again at the first index
         shape = (res_list.shape[1], res_list.shape[0])  # , res_list.shape[2])
         res_list = res_list.reshape(shape)
-
         result = self.out_op(res_list)
-
         # result = res_list.mean()
         # TODO: implement find weights for each candidate
 
-    return result
+         return result
 
     def add_op(self, op: CandidateHull, out_op, training=False):
     """
