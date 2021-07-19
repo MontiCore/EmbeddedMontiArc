@@ -16,13 +16,13 @@ public class SerialCompositeElementSymbol extends CompositeElementSymbol {
 
     protected List<List<ArchitectureElementSymbol>> episodicSubNetworks = new ArrayList<>(new ArrayList<>());
     protected boolean anyEpisodicLocalAdaptation = false;
-    protected boolean AdaNet = false; // true if architecture contains an AdaNet Layer
     protected void setElements(List<ArchitectureElementSymbol> elements) {
         ArchitectureElementSymbol previous = null;
         for (ArchitectureElementSymbol current : elements){
+            // set the AdaNet Flag to true if current is a AdaNet Layer
             if(current.getName().equals(AllPredefinedLayers.AdaNet_Name)){
                 // check if the current layer is an AdaNet layer
-                this.AdaNet = true;
+                this.setAdaNet(true);
             }
             if(previous != null){
                 current.setInputElement(previous);
@@ -41,8 +41,7 @@ public class SerialCompositeElementSymbol extends CompositeElementSymbol {
         this.elements = elements;
     }
     public boolean containsAdaNet(){
-        return this.AdaNet;
-    }
+        return super.containsAdaNet();}
     protected void setEpisodicSubNetworks(List<List<ArchitectureElementSymbol>> episodicSubNetworks){
         for (List<ArchitectureElementSymbol> subElements: episodicSubNetworks){
             ArchitectureElementSymbol previous = null;
