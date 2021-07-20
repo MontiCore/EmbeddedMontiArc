@@ -529,9 +529,8 @@ from mxnet.gluon import nn, HybridBlock
 from numpy import log, product
 from mxnet.ndarray import zeros
 <#list tc.architecture.networkInstructions as networkInstruction>
-# ${networkInstruction.body.containsAdaNet()?string("True","False")}
+<#if networkInstruction.body.containsAdaNet()>
 ${tc.include(networkInstruction.body, "ADANET_CONSTRUCTION")}
-
 #class Model(HybridBlock): THIS IS THE ORIGINAL NAME, MUST BE RENAMED IN THE OTHER PARTS
 class Net_${networkInstruction?index}(gluon.HybridBlock):
     """
@@ -611,6 +610,7 @@ class Net_${networkInstruction?index}(gluon.HybridBlock):
         for i, name in enumerate(self.op_names):
             mean_complexity[i] = self.candidate_complexities[name]
         return mean_complexity
+</#if>
 </#list>
 <#else>
 <#list tc.architecture.networkInstructions as networkInstruction>
