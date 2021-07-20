@@ -23,6 +23,7 @@ public class SerialCompositeElementSymbol extends CompositeElementSymbol {
             if(current.getName().equals(AllPredefinedLayers.AdaNet_Name)){
                 // check if the current layer is an AdaNet layer
                 this.setAdaNet(true);
+                this.setAdaLayer(current);
             }
             if(previous != null){
                 current.setInputElement(previous);
