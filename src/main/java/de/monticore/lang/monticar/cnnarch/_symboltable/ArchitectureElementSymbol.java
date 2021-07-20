@@ -19,6 +19,7 @@ public abstract class ArchitectureElementSymbol extends ResolvableSymbol {
     private List<ArchTypeSymbol> outputTypes = null;
     private boolean artificial = false;
     private boolean AdaNet = false; // it is true if the archtiecture contains an AdaNet Layer
+    private Optional<ArchitectureElementSymbol> adaLayer= Optional.empty();
     protected ArchitectureElementSymbol(String name) {
         super(name, KIND);
     }
@@ -30,7 +31,10 @@ public abstract class ArchitectureElementSymbol extends ResolvableSymbol {
     public boolean isArtificial(){
         return this.artificial;
     }
-
+    public void setAdaLayer(ArchitectureElementSymbol adaLayer){this.adaLayer = Optional.of(adaLayer);}
+    public Optional<ArchitectureElementSymbol> getAdaLayer() {
+        return this.adaLayer;
+    }
     public void setArtificial(boolean artificial) {
         this.artificial = artificial;
     }
