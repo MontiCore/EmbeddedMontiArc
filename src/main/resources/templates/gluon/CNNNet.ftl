@@ -529,7 +529,88 @@ from mxnet.gluon import nn, HybridBlock
 from numpy import log, product
 from mxnet.ndarray import zeros
 <#list tc.architecture.networkInstructions as networkInstruction>
+# ${networkInstruction.body.containsAdaNet()?string("True","False")}
 ${tc.include(networkInstruction.body, "ADANET_CONSTRUCTION")}
+
+#class Model(HybridBlock): THIS IS THE ORIGINAL NAME, MUST BE RENAMED IN THE OTHER PARTS
+class Net_${networkInstruction?index}(gluon.HybridBlock):
+    """
+    the whole model with its operations
+    """
+
+    def __init__(self, **kwargs):
+        super(Net_${networkInstruction?index}, self).__init__(**kwargs)
+        self.op_names = []  # list that holds the name of the added operations
+        self.candidate_complexities = {}
+        self.name_ = 'model'
+        self.out = AdaOut
+        self.output = None  # insert here the custom block
+        self.out_op = None
+        self.AdaNet = True
+        self.AdaOut = AdaOut
+        self.Builder = Builder
+        self.CandidateHull = CandidateHull
+        self.BuildingBlock = BuildingBlock
+
+    def hybrid_forward(self, F, x, *args, **kwargs):
+
+        op_count = len(self.op_names)
+        res_list = None
+        for i, name in enumerate(self.op_names):
+            res = self.__getattribute__(name)(x)
+
+        shape = tuple([op_count] + list(res.shape))
+        if res_list is None:
+            res_list = zeros(shape=shape)
+
+        F.elemwise_add(lhs=res, rhs=zeros(shape=res.shape), out=res_list[i])
+        # print(f'op iterator {i}')
+
+        # reshape res_list, so that the batch_axis is again at the first index
+        shape = (res_list.shape[1], res_list.shape[0])  # , res_list.shape[2])
+        res_list = res_list.reshape(shape)
+        result = self.out_op(res_list)
+        # result = res_list.mean()
+        # TODO: implement find weights for each candidate
+
+        return result
+
+    def add_op(self, op: CandidateHull, out_op, training=False):
+        """
+        add a new operation to the model,
+        save the name of the operation in self.op_names,
+        save the approximated rademacher complexity of the added candidate
+        """
+        name = op.name_
+        self.__setattr__(name, op)  # register operation as child
+        self.op_names.append(name)
+        self.candidate_complexities[name] = op.get_complexity()  # get approximation of candidates rade complexity
+
+        if training:
+            if hasattr(self, 'buf'):
+                raise UserWarning('old operation is still in the model, call del_op first with not removed operation')
+            self.buf = self.out_op
+            self.out_op = out_op
+        else:
+            # assinging the trained output block
+            self.out_op = out_op
+
+    def del_op(self, op: CandidateHull):
+        """
+        remove the operation with the name "name" and all its added data
+        """
+        name = op.name_
+        delattr(self, name)
+        self.op_names.remove(name)
+        del self.candidate_complexities[name]
+        # self.out_op = self.buf
+        delattr(self, 'buf')
+
+    def get_candidate_complexity(self):
+        mean_complexity = zeros(len(self.op_names))
+        for i, name in enumerate(self.op_names):
+            mean_complexity[i] = self.candidate_complexities[name]
+        return mean_complexity
 </#list>
 <#else>
 <#list tc.architecture.networkInstructions as networkInstruction>
@@ -539,6 +620,7 @@ class EpisodicSubNet_${elements?index}(gluon.HybridBlock):
 <#if elements?index == 0 >
     def __init__(self, data_mean=None, data_std=None, mx_context=None, **kwargs):
         super(EpisodicSubNet_${elements?index}, self).__init__(**kwargs)
+        self.AdaNet=False
         with self.name_scope():
 ${tc.include(networkInstruction.body, elements?index, "ARCHITECTURE_DEFINITION")}
     
