@@ -3,6 +3,7 @@ package de.monticore.lang.gdl;
 import static org.junit.Assert.assertFalse;
 import static org.junit.Assert.assertTrue;
 
+import de.monticore.lang.gdl._ast.ASTGame;
 import de.monticore.lang.gdl._parser.GDLParser;
 import java.io.IOException;
 import java.nio.file.Path;
@@ -11,7 +12,7 @@ import java.util.Optional;
 import org.antlr.v4.runtime.RecognitionException;
 import org.junit.Test;
 
-public class GDLToolTest {
+public class GDLCoCosTest {
   
   @Test
   public void testGameStateUpdate() throws RecognitionException, IOException {
