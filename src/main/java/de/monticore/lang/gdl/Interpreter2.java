@@ -473,17 +473,17 @@ public class Interpreter2 {
     }
 
     private void test() {
-        String functionName = "f1";
+        String functionName = "legal";
         List<IntegerFormula> parameterMappings = List.of(
-            // imgr.makeNumber(getIntegerValue("white")),
+            imgr.makeNumber(getIntegerValue("white")),
             // imgr.makeVariable("player"),
-            // imgr.makeVariable("color_fig"),
-            // imgr.makeVariable("start_col"),
-            // imgr.makeVariable("start_row"),
-            // imgr.makeVariable("dest_col"),
-            // imgr.makeVariable("dest_row")
-            imgr.makeNumber(getIntegerValue("1")),
-            imgr.makeNumber(getIntegerValue("2"))
+            imgr.makeVariable("color_fig"),
+            imgr.makeVariable("start_col"),
+            imgr.makeVariable("start_row"),
+            imgr.makeVariable("dest_col"),
+            imgr.makeVariable("dest_row")
+            // imgr.makeNumber(getIntegerValue("1")),
+            // imgr.makeNumber(getIntegerValue("2"))
         );
         System.out.println(getAllModels(functionName, parameterMappings));
     }
