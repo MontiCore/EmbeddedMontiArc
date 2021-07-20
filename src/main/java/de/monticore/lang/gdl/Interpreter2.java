@@ -162,15 +162,8 @@ public class Interpreter2 {
             allFunctionDefinitions = allFuncDefSymbols.stream().map(symbol -> symbol.getAstNode()).collect(Collectors.toList());
         }
 
-        System.out.println(functionScope + path);
-        // System.out.println(recursionDepth + "\t" + functionScope);
-        // System.out.println("\t" + allFunctionDefinitions.size());
-        // System.out.println("\t" + isNegated);
-        // System.out.println("\t" + path);
-        // System.out.println("\t" + parameters);
+        // System.out.println(path + ": " + functionScope);
 
-        // all overloads in one formula
-        // BooleanFormula allOverloadsFormula = bmgr.makeFalse();
         BooleanFormula allOverloadsFormula = bmgr.makeFalse();
 
         for (int overloadId = 0; overloadId < allFunctionDefinitions.size(); overloadId++) {
@@ -189,10 +182,13 @@ public class Interpreter2 {
                 ASTGameExpression bodyExpression = body.get(bodyExpressionId);
                 BooleanFormula bodyFormula = buildBodyExpression(bodyExpression, bodyExpressionId, overloadPath, functionScope, parameters, recursionDepth, path, isNegated, bmgr.and(upperFormula, overloadFormula));
 
+                // System.out.println("back in " + path + ": " + functionScope);
+
                 overloadFormula = bmgr.and(overloadFormula, bodyFormula);
                 // check satisfiability
                 // stop as soon as not satisfiable
                 if (checkSatisfiable(upperFormula, overloadFormula) == isNegated) {
+                    // System.out.println("Body not satisfiable!");
                     break;
                 }
             }
@@ -202,7 +198,7 @@ public class Interpreter2 {
             // check satisfiability
             // stop as soon as satisfiable
             if (checkSatisfiable(upperFormula, allOverloadsFormula) != isNegated) {
-                System.out.println("overload true:\t" + functionScope + "\tBody Size: " + body.size());
+                // System.out.println("overload true:\t" + functionScope + "\tBody Size: " + body.size());
                 break;
             }
         }
@@ -348,7 +344,7 @@ public class Interpreter2 {
         if (parameter instanceof ASTGameValue) {
             return imgr.makeNumber(getIntegerValue(((ASTGameValue) parameter).getValue()));
         } else if (parameter instanceof ASTGameToken) {
-            return imgr.makeVariable(recursionDepth + "_func_var" + path + "_" + functionScope + "_" + ((ASTGameToken) parameter).getToken());
+            return imgr.makeVariable(recursionDepth + "_func_var_" + path + "_" + functionScope + "_" + ((ASTGameToken) parameter).getToken());
         } else {
             throw new IllegalStateException("ILLEGAL STATE: Parameter must be a value or a token!");
         }
@@ -387,9 +383,9 @@ public class Interpreter2 {
         
         boolean satisfiable;
         do {
-            BooleanFormula formula = buildFunction(function, args, 0, "", false, bmgr.makeTrue());
+            BooleanFormula formula = buildFunction(function, args, 0, function, false, bmgr.makeTrue());
             ProverEnvironment prover = context.newProverEnvironment(ProverOptions.GENERATE_MODELS);
-            System.out.println("Model Constraint: " + modelConstraint);
+            System.out.println(formula);
 
             try {
                 prover.addConstraint(formula);
@@ -409,9 +405,12 @@ public class Interpreter2 {
                         assignments.add(value);
                         if (value != null) {
                             modelFormula = bmgr.and(modelFormula, imgr.equal(arg, imgr.makeNumber(getIntegerValue(value))));
+                        } else {
+                            System.out.println("Model: Unknown Variable assigned!");
                         }
                     }
     
+                    System.out.println("Model: " + assignments);
                     allModels.add(assignments);
                     modelConstraint = bmgr.and(bmgr.not(modelFormula), modelConstraint);
                     model.close();
@@ -447,11 +446,7 @@ public class Interpreter2 {
         args.addAll(
             move.getArguments().stream().map(arg -> imgr.makeNumber(getIntegerValue(arg))).collect(Collectors.toList())
         );
-        BooleanFormula formula = buildFunction("legal", args, 0, "", false, bmgr.makeTrue());
-
-        System.out.println(constValueMap);
-        System.out.println();
-        System.out.println(formula);
+        BooleanFormula formula = buildFunction("legal", args, 0, "legal", false, bmgr.makeTrue());
 
         return checkSatisfiable(formula);
     }
@@ -478,13 +473,17 @@ public class Interpreter2 {
     }
 
     private void test() {
-        String functionName = "add";
+        String functionName = "f1";
         List<IntegerFormula> parameterMappings = List.of(
-            imgr.makeNumber(getIntegerValue("44")),
-            imgr.makeNumber(getIntegerValue("2")),
-            // imgr.makeNumber(getIntegerValue("3"))
-            imgr.makeVariable("z")
-            // imgr.makeVariable("3")
+            // imgr.makeNumber(getIntegerValue("white")),
+            // imgr.makeVariable("player"),
+            // imgr.makeVariable("color_fig"),
+            // imgr.makeVariable("start_col"),
+            // imgr.makeVariable("start_row"),
+            // imgr.makeVariable("dest_col"),
+            // imgr.makeVariable("dest_row")
+            imgr.makeNumber(getIntegerValue("1")),
+            imgr.makeNumber(getIntegerValue("2"))
         );
         System.out.println(getAllModels(functionName, parameterMappings));
     }
