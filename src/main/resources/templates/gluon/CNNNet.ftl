@@ -521,10 +521,8 @@ class EpisodicMemory(EpisodicReplayMemoryInterface):
                 self.value_memory.append(mem_dict[key])
             elif key.startswith("labels_"):
                 self.label_memory.append(mem_dict[key])
-
-
-# Generation of the artificial blocks for the Streams below
 <#if tc.containsAdaNet()>
+# Generation of the artificial blocks for the Streams below
 from mxnet.gluon import nn, HybridBlock
 from numpy import log, product
 from mxnet.ndarray import zeros
