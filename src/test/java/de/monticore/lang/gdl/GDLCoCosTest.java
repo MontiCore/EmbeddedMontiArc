@@ -14,8 +14,8 @@ import org.junit.Test;
 public class GDLToolTest {
   
   @Test
-  public void testComment() throws RecognitionException, IOException {
-    Path model = Paths.get("src/test/resources/gdl/Comment.gdl");
+  public void testGameStateUpdate() throws RecognitionException, IOException {
+    Path model = Paths.get("src/test/resources/gdl/cocos/GameStateUpdate.gdl");
     GDLTool parser = new GDLTool();
     GDLParser parser = GDLMill.parser();
     Optional<ASTGame> gdlDoc = parser.parse(model);
@@ -23,15 +23,4 @@ public class GDLToolTest {
     assertFalse(parser.hasErrors());
     assertTrue(gdlDoc.isPresent());
   }
-  
-  // @Test
-  // public void failingTest() throws RecognitionException, IOException {
-  //   // Path model = Paths.get("src/test/resources/gdl/parser/basic.gdl");
-  //   // GDLParser parser = new GDLParser();
-    
-  //   // Optional<ASTGDLDocument> gdlDoc = parser.parse(model.toString());
-  //   // assertFalse(parser.hasErrors());
-  //   // assertTrue(gdlDoc.isPresent());
-  //   assertTrue(false);
-  // }
 }
