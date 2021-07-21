@@ -16,7 +16,7 @@ ${tc.include(inBlock,"ARTIFICIAL_ARCH_CLASS")}
 </#if>
 ${tc.include(outBlock,"ARTIFICIAL_ARCH_CLASS")}
 <#if !Block.isArtificial()>
-class DefaultBlock(HybridBlock):
+class DefaultBlock(gluon.HybridBlock):
     """"
         default Building Block
     """
@@ -29,7 +29,7 @@ class DefaultBlock(HybridBlock):
         x = self.ag(x)
         return x
 </#if>
-class CandidateHull(HybridBlock):
+class CandidateHull(gluon.HybridBlock):
     """
         the hull which holds the stacked building blocks and is potentially added to the model
     """
@@ -43,7 +43,7 @@ class CandidateHull(HybridBlock):
         **kwargs):
 
         super(CandidateHull, self).__init__(**kwargs)
-        assert issubclass(output, HybridBlock), f'output should inherit from {HybridBlock} got {output}'
+        assert issubclass(output, gluon.HybridBlock), f'output should inherit from {gluon.HybridBlock} got {output}'
         self.name_ = name
         self.names = []
         self.stack = stack
@@ -103,13 +103,13 @@ class CandidateHull(HybridBlock):
             x = self.out(x)
 
         return x
-class AdaOut(HybridBlock):
+class AdaOut(gluon.HybridBlock):
     def __init__(self, op_nums=1, classes=1, softmax=True, dtype='float32', flatten=True, weight_initializer=None,
         **kwargs):
         super(AdaOut, self).__init__(**kwargs)
         self._flatten = flatten
         self.data_shape = <#list element.element.outputTypes as type>(${tc.join(type.dimensions, ",")})</#list>
-        classes = np.prod(list(self.data_shape))
+        classes = prod(list(self.data_shape))
         with self.name_scope():
             self.softmax = softmax
             self.op_nums = op_nums
@@ -142,7 +142,7 @@ class AdaOut(HybridBlock):
         # ToDO: add trainling output block that gets after the AdaNet
         return re
 
-class BuildingBlock(HybridBlock):
+class BuildingBlock(gluon.HybridBlock):
     """
         the essential building block which gets stacked
     """
