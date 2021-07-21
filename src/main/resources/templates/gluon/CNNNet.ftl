@@ -560,13 +560,14 @@ class Net_${networkInstruction?index}(gluon.HybridBlock):
         if res_list is None:
             res_list = zeros(shape=shape)
 
-        F.elemwise_add(lhs=res, rhs=zeros(shape=res.shape), out=res_list[i])
-        # print(f'op iterator {i}')
+            F.elemwise_add(lhs=res, rhs=zeros(shape=res.shape), out=res_list[i])
+            # print(f'op iterator {i}')
 
         # reshape res_list, so that the batch_axis is again at the first index
         shape = (res_list.shape[1], res_list.shape[0])  # , res_list.shape[2])
         res_list = res_list.reshape(shape)
         result = self.out_op(res_list)
+
         # result = res_list.mean()
         # TODO: implement find weights for each candidate
 
