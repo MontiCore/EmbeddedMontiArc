@@ -539,7 +539,7 @@ class Net_${networkInstruction?index}(gluon.HybridBlock):
         super(Net_${networkInstruction?index}, self).__init__(**kwargs)
         self.op_names = []  # list that holds the name of the added operations
         self.candidate_complexities = {}
-        self.name_ = 'model'
+        self.name_ = 'Net_${networkInstruction?index}'
         self.out = AdaOut
         self.output = None  # insert here the custom block
         self.out_op = None
