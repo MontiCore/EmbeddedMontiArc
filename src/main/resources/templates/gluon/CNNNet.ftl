@@ -7,6 +7,11 @@ import abc
 import warnings
 import sys
 from mxnet import gluon, nd
+<#if tc.containsAdaNet()>
+from mxnet.gluon import nn, HybridBlock
+from numpy import log, product,prod
+from mxnet.ndarray import zeros
+</#if>
 <#if tc.architecture.customPyFilesPath??>
 sys.path.insert(1, '${tc.architecture.customPyFilesPath}')
 from custom_layers import *
@@ -529,7 +534,7 @@ from mxnet.ndarray import zeros
 <#list tc.architecture.networkInstructions as networkInstruction>
 <#if networkInstruction.body.containsAdaNet()>
 ${tc.include(networkInstruction.body, "ADANET_CONSTRUCTION")}
-#class Model(HybridBlock): THIS IS THE ORIGINAL NAME, MUST BE RENAMED IN THE OTHER PARTS
+#class Model(gluon.HybridBlock): THIS IS THE ORIGINAL NAME, MUST BE RENAMED IN THE OTHER PARTS
 class Net_${networkInstruction?index}(gluon.HybridBlock):
     """
     the whole model with its operations
@@ -555,10 +560,9 @@ class Net_${networkInstruction?index}(gluon.HybridBlock):
         res_list = None
         for i, name in enumerate(self.op_names):
             res = self.__getattribute__(name)(x)
-
-        shape = tuple([op_count] + list(res.shape))
-        if res_list is None:
-            res_list = zeros(shape=shape)
+            if res_list is None:
+                shape = tuple([op_count] + list(res.shape))
+                res_list = zeros(shape=shape)
 
             F.elemwise_add(lhs=res, rhs=zeros(shape=res.shape), out=res_list[i])
             # print(f'op iterator {i}')
