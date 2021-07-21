@@ -10,6 +10,10 @@ import math
 import sys
 import inspect
 from mxnet import gluon, autograd, nd
+<#if tc.containsAdaNet()>
+from mxnet.gluon.loss import Loss, SigmoidBCELoss
+from mxnet.ndarray import add, concatenate
+</#if>
 try:
     import AdamW
 except:
@@ -287,13 +291,309 @@ class BLEU(mx.metric.EvalMetric):
 
         return new_list
 
+<#if tc.containsAdaNet()>
+def objective_function(model, data, loss, gamma=.0001) -> float:
+    """
+    :param model:
+    :param trainer:
+    :param data:
+    :param loss:
+    :param gamma:
+    :return:
+    """
+    data.reset()
+    err_list = []
+    for batch_i, batch in enumerate(data):
+        pred = model(batch.data[0])
+        error = loss(pred, batch.label[0])
+        err_list.append(error)
+    err = concatenate(err_list)
+    c_complexities = model.get_candidate_complexity()
+    c_complexities = c_complexities.reshape((1, c_complexities.shape[0]))
+    complexity_reg = model.out_op(c_complexities) * gamma
 
+    objective = add(err.mean(), complexity_reg)
+
+    return objective
+
+
+def calculate_l1(params: dict) -> float:
+    """
+    calculate the L1 Norm on the weights of the passed model
+    """
+    parameter = params
+    l1 = None
+    for key in parameter:
+        if 'weight' in key:
+            if l1 is None:
+                l1 = parameter[key].data().abs().sum()
+            else:
+                l1 = add(l1, parameter[key].data().abs().sum())
+    return l1
+
+
+class CandidateTrainingloss(Loss):
+    def __init__(self,
+                 weight=None,
+                 candidate=None,
+                 loss=SigmoidBCELoss,
+                 batch_axis=0,
+                 alpha=.07,
+                 beta=0.0001,
+                 gamma=.0001,
+                 **kwargs):
+        """
+        loss function which is used to train each candidate
+
+        :param  loss, can be any (binary) loss function, to the result a regularization term is
+        added which consists of  complexity of the candidate and the L1-Norm applied
+        to the candidate weights
+        """
+        super(CandidateTrainingloss, self).__init__(weight, batch_axis, **kwargs)
+        self.a = alpha
+        self.b = beta
+        self.g = gamma
+        self.coreLoss = loss  # in template, the loss function is passed initialized!!!!
+
+        self.model = candidate  # candidate to be trained
+
+    # noinspection PyMethodOverriding
+    def hybrid_forward(self, F, x, label, *args, **kwargs):
+        l1 = calculate_l1(self.model.collect_params()) * self.g
+
+        # calculate regularization term reg
+        # reg = (alpha*r)+beta , r = rademacher complexity approximation
+        rade_term = F.add(F.multiply(self.a, self.model.approximate_rade()), self.b)
+
+        reg_term = F.multiply(rade_term, l1)
+
+        # save the regularization term, since it is needed in the calculation of the objective function
+        self.model.update_complexity(reg_term)
+
+        # calculate the actual loss and add the regularization term
+        return F.add(self.coreLoss(x, label), reg_term)
+
+class AdaLoss(Loss):
+    """
+    objective function of the whole model
+    """
+
+    def __init__(self, weight=None, model=None, loss=SigmoidBCELoss, loss_args=(True,), batch_axis=0, gamma=.0001,
+                 **kwargs):
+        super(AdaLoss, self).__init__(weight, batch_axis, **kwargs)
+
+        self.g = gamma  # weight for the complexity regularization the greater the heavier the penalty
+        self.coreLoss = loss
+        self.model = model
+
+    def hybrid_forward(self, F, x, label):
+        c_complexities = self.model.get_candidate_complexity()  # get candidate complexities
+        c_complexities = c_complexities.reshape((1, c_complexities.shape[0]))
+        # maybe shape issues
+        # weight the complexities corresponding to candidate weight
+        l1 = calculate_l1(self.model.out_op.collect_params())
+        complexity_reg = self.model.out_op(c_complexities) * self.g
+
+        label = F.reshape(label, x.shape)
+
+        weight_reg = F.power(F.subtract(F.ones(l1.shape), l1), 2)
+        out = F.add(complexity_reg, self.coreLoss(x, label))
+        reg_out = F.add(out, weight_reg)
+
+        return reg_out
+
+
+def train_candidate(train_data, candidate, epochs: int, batch_size: int) -> None:
+    trainer = gluon.Trainer(candidate.collect_params(), 'adam', {'learning_rate': 0.1, 'wd': 0})
+    loss = CandidateTrainingloss(candidate=candidate)
+    train_data = mx.gluon.data.DataLoader(train_data, batch_size=batch_size, shuffle=True)
+
+    for epoch in range(epochs):
+        for x, label in train_data:
+            with autograd.record():  # train the candidate
+                pred = candidate(x)
+                error = loss(pred, label)
+            error.backward()
+            trainer.step(x.shape[0])
+
+def fitComponent(trainIter: mx.io.NDArrayIter, trainer: mx.gluon.Trainer, epochs: int, component: gluon.HybridBlock,
+                 loss_class: gluon.loss, loss_params: dict) -> None:
+    """
+    function trains a component of the generated model.
+    expects a compoment, a trainern instance with corresponding parameters.
+
+    """
+    loss = loss_class(**loss_params)
+    for epoch in range(epochs):
+        trainIter.reset()
+        for batch_i, batch in enumerate(trainIter):
+            with autograd.record():
+                data = batch.data[0]
+                label = batch.label[0]
+                pred = component(data)
+                error = loss(pred, label)
+            error.backward()
+            trainer.step(data.shape[0], ignore_stale_grad=True)
+
+def fitComponent(trainIter: mx.io.NDArrayIter, trainer: mx.gluon.Trainer, epochs: int, component: gluon.HybridBlock,
+                 loss_class: gluon.loss, loss_params: dict) -> None:
+    """
+    function trains a component of the generated model.
+    expects a compoment, a trainern instance with corresponding parameters.
+
+    """
+    loss = loss_class(**loss_params)
+    for epoch in range(epochs):
+        trainIter.reset()
+        for batch_i, batch in enumerate(trainIter):
+            with autograd.record():
+                data = batch.data[0]
+                label = batch.label[0]
+                pred = component(data)
+                error = loss(pred, label)
+            error.backward()
+            trainer.step(data.shape[0], ignore_stale_grad=True)
+
+
+def get_trainer(optimizer: str, parameters: dict, optimizer_params: dict) -> mx.gluon.Trainer:
+    if optimizer == 'Adamw':
+        trainer = mx.gluon.Trainer(parameters, AdamW.AdamW(**optimizer_params), )
+    else:
+        trainer = mx.gluon.Trainer(parameters, optimizer, optimizer_params)
+    return trainer
+
+def fit(model: Model,
+        loss,
+        optimizer: str,
+        epochs: int,
+        optimizer_params: dict,
+        dataLoader,
+        shuffle_data: bool,
+        preprocessing: bool,
+        T=100,
+        batch_size=10,
+        ctx=None,
+        logging=None
+        ) -> gluon.HybridBlock:
+    cg = model.Builder()
+    AdaOut = model.AdaOut
+    model_score = None
+
+    if ctx is None:
+        ctx = mx.gpu() if mx.context.num_gpus() else mx.cpu()
+
+    model.initialize(ctx=ctx)
+
+    if preprocessing:
+        preproc_lib = "CNNPreprocessor_${tc.fileNameWithoutEnding?keep_after("CNNSupervisedTrainer_")}_executor"
+        train_iter, test_iter, data_mean, data_std, train_images, test_images = dataLoader.load_preprocessed_data(
+            batch_size, preproc_lib, shuffle_data)
+    else:
+        train_iter, test_iter, data_mean, data_std, train_images, test_images = dataLoader.load_data(batch_size,
+                                                                                                     shuffle_data)
+
+    for rnd in range(T):
+        c0, c1 = cg.get_candidates()
+        c0.initialize(ctx=ctx)
+        c1.initialize(ctx=ctx)
+        c0.hybridize()
+        c1.hybridize()
+        # TODO: check for weight decay should be off
+
+        # train candidates
+        c0_trainer = get_trainer(optimizer, c0.collect_params(), optimizer_params)
+        fitComponent(trainIter=train_iter, trainer=c0_trainer, epochs=epochs, component=c0,
+                     loss_class=CandidateTrainingloss, loss_params={'loss': loss, 'candidate': c0})
+
+        c1_trainer = get_trainer(optimizer, c1.collect_params(), optimizer_params)
+        fitComponent(trainIter=train_iter, trainer=c1_trainer, epochs=epochs, component=c1,
+                     loss_class=CandidateTrainingloss, loss_params={'loss': loss, 'candidate': c1})
+
+        op_count = len(model.op_names)
+        if model.out_op is not None:
+            # save the current model output weights
+            # in case the generation is done this is used to restore the old weights
+            model.out_op.save_parameters('./model_weights.txt')
+
+        # create output operation for each candidate
+        # ToDo pass loss function to AdaOut
+        c0_out = AdaOut(op_nums=op_count + 1)
+        c1_out = AdaOut(op_nums=op_count + 1)
+
+        c0_out.initialize()
+        c1_out.initialize()
+
+        c0_out.hybridize()
+        c1_out.hybridize()
+
+        if model.op_names:
+            current_params = model.out_op.collect_params()
+
+        # add candidate 0 and its output block to the model
+        model.add_op(c0, c0_out, training=True)
+
+        # get trainer for candidate 0 output
+        c0_out_trainer = get_trainer(optimizer, model.out_op.collect_params(), optimizer_params)
+
+        # train output for candidate 0
+        fitComponent(trainIter=train_iter, trainer=c0_out_trainer, epochs=epochs, component=model)
+
+        # calculate the score with candidate 0 added to the model
+        c0_score = objective_function(model=model, data=train_iter, loss=loss)
+
+        # remove candidate 0 from the model
+        model.del_op(c0)
+
+        # add candidate 1 and its output block to the model
+        model.add_op(c1, c1_out, training=True)
+
+        # get trainer for candidate 1 output
+        c1_out_trainer = get_trainer(optimizer=optimizer, parameters=model.out_op.collect_params(),
+                                     optimizer_params=optimizer_params)
+        # train output for candidate 1
+        fitComponent(trainIter=train_iter, trainer=c1_out_trainer, epochs=epochs, component=model)
+
+        # calculate score with candidate 1 added to the model
+        c1_score = objective_function(model=model, data=train_iter, loss=loss)
+
+        # remove candidate from the model
+        model.del_op(c1)
+
+        # decide which candidate yields the best improvement
+        next_c, next_score, next_oo = (c0, c0_score, c0_out) if c0_score <= c1_score else (c1, c1_score, c1_out)
+
+        if model_score is None:
+            model.add_op(next_c, next_oo)
+            model_score = next_score
+        else:
+            if next_score < model_score:
+                model.add_op(next_c, next_oo)
+                model_score = next_score
+            else:
+                if model.out_op is not None:
+                    # ToDo: pass loss
+                    model.out_op = AdaOut(op_count)
+
+                    # restore previous model weights
+                    model.out_op.load_parameters('./model_weights.txt', ctx=ctx)
+                print(
+                    f'abort in Round {rnd} scores:: c0:{c0_score.asscalar()[0][0]} c1:{c1_score.asscalar()[0][0]}')
+                break
+
+        cg.update()
+        print(
+            f'Round:{rnd} c1:{c1_score.asnumpy()[0][0]}, c0:{c0_score.asnumpy()[0][0]} ,'
+            f'selected:{next_c.name_} model score:{model_score.asnumpy()[0][0]}')
+    return model
+
+</#if>
 
 class ${tc.fileNameWithoutEnding}:
     def __init__(self, data_loader, net_constructor):
         self._data_loader = data_loader
         self._net_creator = net_constructor
         self._networks = {}
+        self.AdaNet = ${tc.containsAdaNet()?string('True','False')}
 
     def train(self, batch_size=64,
               num_epoch=10,
@@ -422,7 +722,17 @@ class ${tc.fileNameWithoutEnding}:
             loss_function = LogCoshLoss()
         else:
             logging.error("Invalid loss parameter.")
-        
+<#if tc.containsAdaNet()>
+        assert self._networks[0].AdaNet, "passed model is not an AdaNet model"
+        model = fit(cg=self._network[0].Builder,
+                model= self._networks[0],
+                train_data = self._data_loader,
+                T=100,
+                batch_size=batch_size,
+                ctx=mx_context[0],
+                )
+        #put here the AdaNet logic
+</#if>
         loss_function.hybridize()
         
 <#list tc.architecture.networkInstructions as networkInstruction>    
