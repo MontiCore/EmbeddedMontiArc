@@ -464,8 +464,8 @@ def get_trainer(optimizer: str, parameters: dict, optimizer_params: dict) -> mx.
         trainer = mx.gluon.Trainer(parameters, optimizer, optimizer_params)
     return trainer
 
-def fit(model: Model,
-        loss,
+def fit(model: gluon.HybridBlock,
+        loss:gluon.loss.Loss,
         optimizer: str,
         epochs: int,
         optimizer_params: dict,
@@ -493,14 +493,14 @@ def fit(model: Model,
     else:
         train_iter, test_iter, data_mean, data_std, train_images, test_images = dataLoader.load_data(batch_size,
                                                                                                      shuffle_data)
-
+    logging.info('started AdaNet Generation')
     for rnd in range(T):
         c0, c1 = cg.get_candidates()
         c0.initialize(ctx=ctx)
         c1.initialize(ctx=ctx)
         c0.hybridize()
         c1.hybridize()
-        # TODO: check for weight decay should be off
+        # TODO: check for weight decay, should be off
 
         # train candidates
         c0_trainer = get_trainer(optimizer, c0.collect_params(), optimizer_params)
@@ -583,9 +583,8 @@ def fit(model: Model,
                 break
 
         cg.update()
-        print(
-            f'Round:{rnd} c1:{c1_score.asnumpy()[0][0]}, c0:{c0_score.asnumpy()[0][0]} ,'
-            f'selected:{next_c.name_} model score:{model_score.asnumpy()[0][0]}')
+    logging.info(f'Round:{rnd} c1:{c1_score.asnumpy()[0][0]}, c0:{c0_score.asnumpy()[0][0]} ,'
+        f'selected:{next_c.name_} model score:{model_score.asnumpy()[0][0]}')
     return model
 
 </#if>
@@ -724,18 +723,21 @@ class ${tc.fileNameWithoutEnding}:
             loss_function = LogCoshLoss()
         else:
             logging.error("Invalid loss parameter.")
+        loss_function.hybridize()
 <#if tc.containsAdaNet()>
         assert self._networks[0].AdaNet, "passed model is not an AdaNet model"
-        model = fit(cg=self._network[0].Builder,
-                model= self._networks[0],
-                train_data = self._data_loader,
-                T=100,
-                batch_size=batch_size,
-                ctx=mx_context[0],
+        model = fit(model= self._networks[0],
+                    loss=loss,
+                    optimizer=optimizer,
+                    epochs=num_epoch,
+                    dataLoader = self._data_loader,
+                    T=100,
+                    batch_size=batch_size,
+                    ctx=mx_context[0],
+                    logging=logging
                 )
         #put here the AdaNet logic
 </#if>
-        loss_function.hybridize()
         
 <#list tc.architecture.networkInstructions as networkInstruction>    
 <#if networkInstruction.body.episodicSubNetworks?has_content>
