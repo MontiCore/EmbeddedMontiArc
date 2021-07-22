@@ -21,7 +21,7 @@ public class Move {
 
     public static Move createMoveFromLine(String line) {
         if (!line.matches("[a-zA-z0-9]+ \\(move ([a-zA-z0-9])+( [a-zA-z0-9]+)*\\)")) {
-            System.out.println("Wrong move");
+            System.out.println("Move format wrong");
             return null;
         }
 

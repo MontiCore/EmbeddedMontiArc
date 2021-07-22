@@ -3,9 +3,11 @@ package de.monticore.lang.gdl;
 import java.io.IOException;
 import java.math.BigInteger;
 import java.util.ArrayList;
+import java.util.LinkedList;
 import java.util.List;
 import java.util.Scanner;
 import java.util.stream.Collectors;
+import java.util.stream.IntStream;
 
 import org.apache.commons.collections4.BidiMap;
 import org.apache.commons.collections4.bidimap.DualTreeBidiMap;
@@ -32,6 +34,7 @@ import de.monticore.lang.gdl._ast.ASTGame;
 import de.monticore.lang.gdl._ast.ASTGameDistinct;
 import de.monticore.lang.gdl._ast.ASTGameDoes;
 import de.monticore.lang.gdl._ast.ASTGameExpression;
+import de.monticore.lang.gdl._ast.ASTGameExpressionBuilder;
 import de.monticore.lang.gdl._ast.ASTGameFunction;
 import de.monticore.lang.gdl._ast.ASTGameFunctionBuilder;
 import de.monticore.lang.gdl._ast.ASTGameFunctionDefinition;
@@ -41,14 +44,17 @@ import de.monticore.lang.gdl._ast.ASTGameInference;
 import de.monticore.lang.gdl._ast.ASTGameInferenceBuilder;
 import de.monticore.lang.gdl._ast.ASTGameInit;
 import de.monticore.lang.gdl._ast.ASTGameLegal;
+import de.monticore.lang.gdl._ast.ASTGameNext;
 import de.monticore.lang.gdl._ast.ASTGameNot;
 import de.monticore.lang.gdl._ast.ASTGameRelation;
 import de.monticore.lang.gdl._ast.ASTGameToken;
 import de.monticore.lang.gdl._ast.ASTGameTrue;
 import de.monticore.lang.gdl._ast.ASTGameType;
 import de.monticore.lang.gdl._ast.ASTGameValue;
+import de.monticore.lang.gdl._ast.ASTGameValueBuilder;
 import de.monticore.lang.gdl._symboltable.GameFunctionDefinitionSymbol;
 import de.monticore.lang.gdl._symboltable.IGDLArtifactScope;
+import de.monticore.lang.gdl.chess.ChessGUI;
 import de.se_rwth.commons.logging.Log;
 
 public class Interpreter2 {
@@ -66,6 +72,7 @@ public class Interpreter2 {
 
     private List<ASTGameExpression> gameState, constantDefinitions;
     private List<ASTGameFunctionDefinition> legalDefinitions;
+    private List<ASTGameFunctionDefinition> nextDefinitions;
 
     public Interpreter2(ASTGame game, IGDLArtifactScope scope) {
         this.game = game;
@@ -89,6 +96,7 @@ public class Interpreter2 {
 
         initGameState();
         initLegalDefinitions();
+        initNextDefinitions();
 
         return this;
     }
@@ -140,10 +148,49 @@ public class Interpreter2 {
                 .collect(Collectors.toList());
     }
 
+    private void initNextDefinitions() {
+        nextDefinitions = game.getGameExpressionList()
+                .stream()
+                .filter(expr -> expr.getType() instanceof ASTGameInference)
+                .filter(expr -> ((ASTGameExpression) expr.getArguments(0)).getType() instanceof ASTGameNext)
+                .map(expr -> {
+                    ASTGameExpression nextExpression = (ASTGameExpression) expr.getArguments(0);
+                    ASTGameExpression funcExpression = (ASTGameExpression) nextExpression.getArguments(0);
+
+                    ASTGameValue funcParam = new ASTGameValueBuilder()
+                        .setValue(((ASTGameFunction) funcExpression.getType()).getFunction())
+                        .build();
+
+                    List<ASTGameExpression> body = expr.getArgumentsList()
+                            .stream()
+                            .skip(1)
+                            .map(rel -> (ASTGameExpression) rel)
+                            .collect(Collectors.toList());
+                    
+                    ASTGameFunctionDefinition nextDef = new ASTGameFunctionDefinitionBuilder()
+                            .setGameInference(
+                                new ASTGameInferenceBuilder()
+                                        .build()
+                            )
+                            .setHead(
+                                new ASTGameFunctionHeadBuilder()
+                                        .setName("next")
+                                        .addParameters(funcParam)
+                                        .addAllParameters(funcExpression.getArgumentsList())
+                                        .build()
+                            )
+                            .addAllBody(body)
+                            .build();
+                    
+                    return nextDef;
+                })
+                .collect(Collectors.toList());
+    }
+
     private BooleanFormula buildFunction(String functionScope, List<IntegerFormula> parameters, int recursionDepth, String path, boolean isNegated, BooleanFormula upperFormula) {
         // figure out if function, legal, state or const call
         boolean isFunction = !scope.getGameFunctionDefinitionSymbols().get(functionScope).isEmpty();
-        if (isFunction || functionScope.equals("legal")) {
+        if (isFunction || functionScope.equals("legal") || functionScope.equals("next")) {
             // function
             return buildFunctionExpression(functionScope, parameters, recursionDepth, path, isNegated, upperFormula);
         } else {
@@ -157,6 +204,8 @@ public class Interpreter2 {
         List<ASTGameFunctionDefinition> allFunctionDefinitions;
         if (functionScope.equals("legal")) {
             allFunctionDefinitions = legalDefinitions;
+        } else if (functionScope.equals("next")) {
+            allFunctionDefinitions = nextDefinitions;
         } else {
             List<GameFunctionDefinitionSymbol> allFuncDefSymbols = scope.getGameFunctionDefinitionSymbols().get(functionScope);
             allFunctionDefinitions = allFuncDefSymbols.stream().map(symbol -> symbol.getAstNode()).collect(Collectors.toList());
@@ -173,6 +222,11 @@ public class Interpreter2 {
 
             // map arguments
             List<ASTGameRelation> arguments = overload.getHead().getParametersList();
+
+            if (arguments.size() != parameters.size()) {
+                continue;
+            }
+
             BooleanFormula argumentMap = mapParametersToArguments(parameters, arguments, functionScope, recursionDepth, overloadPath);
             overloadFormula = bmgr.and(overloadFormula, argumentMap);
 
@@ -385,12 +439,15 @@ public class Interpreter2 {
         do {
             BooleanFormula formula = buildFunction(function, args, 0, function, false, bmgr.makeTrue());
             ProverEnvironment prover = context.newProverEnvironment(ProverOptions.GENERATE_MODELS);
-            System.out.println(formula);
 
             try {
+                // prover.addConstraint(formula);
+                // prover.addConstraint(modelConstraint);
+                // prover.addConstraint(moveConstraint);
+                formula = bmgr.and(formula, modelConstraint);
+                formula = bmgr.and(formula, moveConstraint);
                 prover.addConstraint(formula);
-                prover.addConstraint(modelConstraint);
-                prover.addConstraint(moveConstraint);
+                // System.out.println(formula);
                 
                 satisfiable = !prover.isUnsat();
 
@@ -410,7 +467,7 @@ public class Interpreter2 {
                         }
                     }
     
-                    System.out.println("Model: " + assignments);
+                    // System.out.println("Model: " + assignments);
                     allModels.add(assignments);
                     modelConstraint = bmgr.and(bmgr.not(modelFormula), modelConstraint);
                     model.close();
@@ -451,39 +508,77 @@ public class Interpreter2 {
         return checkSatisfiable(formula);
     }
 
+    private void updateGameState() {
+        List<List<String>> allStates = new LinkedList<>();
+        List<Integer> distinctNextOverloadLengths = nextDefinitions.stream()
+            .map(func -> func.getHead().getParametersList().size())
+            .distinct()
+            .collect(Collectors.toList());
+
+        for (int overloadLength : distinctNextOverloadLengths) {
+            // call function next
+            String function = "next";
+            // create parameters
+            List<IntegerFormula> args = IntStream
+                .range(0, overloadLength)
+                .mapToObj(i -> "next_arg_" + i)
+                .map(s -> imgr.makeVariable(s))
+                .collect(Collectors.toList());
+
+            // calculate models
+            allStates.addAll(getAllModels(function, args));
+        }
+
+        // reformat strings to game state tuples
+        gameState = allStates.stream()
+            .map(tuple -> {
+                ASTGameFunction type = new ASTGameFunctionBuilder().setFunction(tuple.get(0)).build();
+
+                return new ASTGameExpressionBuilder()
+                    .setType(type)
+                    .addAllArguments(
+                        tuple.stream()
+                            .skip(1)
+                            .map(s -> new ASTGameValueBuilder().setValue(s).build())
+                            .collect(Collectors.toList())
+                    )
+                    .build();
+            })
+            .collect(Collectors.toList());
+    }
+
     public List<ASTGameExpression> interpret(String line) {
         Move move = Move.createMoveFromLine(line);
         if (move == null) {
-            System.out.println("Move is illegal");
+            // System.out.println("Move is illegal");
             return null;
         }
         return interpret(move);
     }
 
     public List<ASTGameExpression> interpret(Move move) {
-        setMove(null);
         setMove(move);
         if (isLegal(move)) {
-            System.out.println("Legal");
-
-            return null;
+            updateGameState();
+            return gameState;
         }
-        System.out.println("Illegal");
         return null;
     }
 
+    public List<ASTGameExpression> getGameState() {
+        return gameState;
+    }
+
     private void test() {
-        String functionName = "legal";
+        Move move = Move.createMoveFromLine("white (move white_pawn f 2 f 4)");
+        setMove(move);
+
+        String functionName = "next";
         List<IntegerFormula> parameterMappings = List.of(
-            imgr.makeNumber(getIntegerValue("white")),
-            // imgr.makeVariable("player"),
-            imgr.makeVariable("color_fig"),
-            imgr.makeVariable("start_col"),
-            imgr.makeVariable("start_row"),
-            imgr.makeVariable("dest_col"),
-            imgr.makeVariable("dest_row")
-            // imgr.makeNumber(getIntegerValue("1")),
-            // imgr.makeNumber(getIntegerValue("2"))
+            imgr.makeVariable("f_name"),
+            imgr.makeVariable("f_col"),
+            imgr.makeVariable("f_row"),
+            imgr.makeVariable("f_fig")
         );
         System.out.println(getAllModels(functionName, parameterMappings));
     }
@@ -501,14 +596,25 @@ public class Interpreter2 {
         final IGDLArtifactScope scope = GDLInterpreter.createSymbolTable(ast);
 
         Interpreter2 interpreter = new Interpreter2(ast, scope).init();
-        interpreter.test();
+        // interpreter.test();
 
-        Scanner s = new Scanner(System.in);
-        String line;
-        while (!(line = s.nextLine()).equals("/exit") && line != null) {
-            interpreter.interpret(line);
-        }
-        s.close();
+        new ChessGUI(interpreter);
+
+        // List<ASTGameExpression> nextState = interpreter.getGameState();
+        // System.out.println(nextState);
+
+        // Scanner s = new Scanner(System.in);
+        // String line;
+        // while (!(line = s.nextLine()).equals("/exit") && line != null) {
+        //     nextState = interpreter.interpret(line);
+
+        //     if (nextState == null) {
+        //         System.out.println("Move was illegal!");
+        //     } else {
+        //         System.out.println(nextState);
+        //     }
+        // }
+        // s.close();
     }
 
 }

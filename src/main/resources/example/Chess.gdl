@@ -102,11 +102,27 @@
 
 // Copy all untouched fields
 (<= (next (field ?any_col ?any_row ?colored_fig))
-    (does ?player (move ?colored_fig ?start_col ?start_row ?dest_col ?dest_row))
+    (does ?player (move ?any_colored_fig ?start_col ?start_row ?dest_col ?dest_row))
+    (true (field ?any_col ?any_row ?colored_fig))
+    (distinct ?any_row ?start_row)
+    (distinct ?any_row ?dest_row)
+)
+(<= (next (field ?any_col ?any_row ?colored_fig))
+    (does ?player (move ?any_colored_fig ?start_col ?start_row ?dest_col ?dest_row))
     (true (field ?any_col ?any_row ?colored_fig))
     (distinct ?any_col ?start_col)
     (distinct ?any_col ?dest_col)
+)
+(<= (next (field ?any_col ?any_row ?colored_fig))
+    (does ?player (move ?any_colored_fig ?start_col ?start_row ?dest_col ?dest_row))
+    (true (field ?any_col ?any_row ?colored_fig))
     (distinct ?any_row ?start_row)
+    (distinct ?any_col ?dest_col)
+)
+(<= (next (field ?any_col ?any_row ?colored_fig))
+    (does ?player (move ?any_colored_fig ?start_col ?start_row ?dest_col ?dest_row))
+    (true (field ?any_col ?any_row ?colored_fig))
+    (distinct ?any_col ?start_col)
     (distinct ?any_row ?dest_row)
 )
 
@@ -228,10 +244,10 @@
     (isNextRow ?pre_dest_row ?dest_row)
     (isNextCol ?start_col ?dest_col)
 )
-// 2xBottom 1xLeft
+// 2xBottom 1xRight
 (<= (isLegalKnightMove ?start_col ?start_row ?dest_col ?dest_row)
     (isNextRow ?pre_dest_row ?start_row)
-    (isNextRow ?start_row ?dest_row)
+    (isNextRow ?dest_row ?pre_dest_row)
     (isNextCol ?dest_col ?start_col)
 )
 // 2xBottom 1xRight
