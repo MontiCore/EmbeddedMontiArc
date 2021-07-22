@@ -15,12 +15,13 @@ from custom_layers import *
 </#if>
 
 <#list tc.architecture.networkInstructions as networkInstruction>
-from CNNNet_${tc.fullArchitectureName} import Net_${networkInstruction?index}
-</#list>
 <#if tc.containsAdaNet()>
-
 from CNNNet_${tc.fullArchitectureName} import Net_${networkInstruction?index},DataClass
+<#else>
+from CNNNet_${tc.fullArchitectureName} import Net_${networkInstruction?index}
 </#if>
+</#list>
+
 class ${tc.fileNameWithoutEnding}:
     _model_dir_ = "model/${tc.componentName}/"
     _model_prefix_ = "model"
