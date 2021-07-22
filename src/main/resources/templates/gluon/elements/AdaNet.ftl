@@ -75,9 +75,9 @@ class CandidateHull(gluon.HybridBlock):
         """
         if self.rade is None:
             oc = 0
-        for name in self.names:
-            oc += self.__getattribute__(name).count_nodes()
-        self.rade = log(oc)
+            for name in self.names:
+                oc += self.__getattribute__(name).count_nodes()
+            self.rade = log(oc)
 
         return self.rade
 
@@ -132,7 +132,8 @@ class AdaOut(gluon.HybridBlock):
     def hybrid_forward(self, F, x, weight, bias=None):
         if self.softmax:
             weight = F.softmax(weight)
-            # fc = F.npx.fully_connected if is_np_array() else F.FullyConnected
+
+        # fc = F.npx.fully_connected if is_np_array() else F.FullyConnected
         fc = F.FullyConnected
         act = fc(x, weight, bias, no_bias=bias is None, num_hidden=self.classes,
             flatten=self._flatten, name='fwd')
