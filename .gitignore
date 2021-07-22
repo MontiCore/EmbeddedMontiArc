@@ -9,3 +9,4 @@ target/
 /.gradle/
 /bin/
 .vsls.json
+output.txt

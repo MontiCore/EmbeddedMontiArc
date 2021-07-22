@@ -1,0 +1,7 @@
+(<= (f1 ?x ?y)
+    (succ ?x ?y)
+)
+(succ 0 1)
+(succ 1 2)
+(succ 2 3)
+(succ 3 4)
