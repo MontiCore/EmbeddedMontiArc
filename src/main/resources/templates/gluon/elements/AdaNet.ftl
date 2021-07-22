@@ -38,7 +38,17 @@ class CandidateHull(gluon.HybridBlock):
         stack: int,
         name: str,
         output=None,
+        <#if outBlock.isArtificial()>
+        output_shape =<#list outBlock.outputTypes as type>(${tc.join(type.dimensions, ",")})</#list>,
+        <#else>
+        output_shape =None,
+        </#if>
         input=None,
+        <#if inBlock.isArtificial()>
+        input_shape =<#list inBlock.outputTypes as type>(${tc.join(type.dimensions, ",")})</#list>,
+        <#else>
+        input_shape =None,
+        </#if>
         block_args=None,
         **kwargs):
 
@@ -215,10 +225,10 @@ class Builder:
         c0_name = f'can0r{self.round}'
         c1_name = f'can1r{self.round}'
 
-        c0 = CandidateHull(name=c0_name, output=self.output, stack=self.pre_stack,
-        block_args=self.block_params)
-        c1 = CandidateHull(name=c1_name, output=self.output, stack=self.pre_stack + 1,
-        block_args=self.block_params)
+        c0 = CandidateHull(name=c0_name,input=self.input, output=self.output, stack=self.pre_stack,
+            block_args=self.block_params)
+        c1 = CandidateHull(name=c1_name,input=self.input, output=self.output, stack=self.pre_stack + 1,
+            block_args=self.block_params)
 
         self.step += 1
         return c0, c1
