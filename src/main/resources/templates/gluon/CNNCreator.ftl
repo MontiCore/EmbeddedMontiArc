@@ -17,7 +17,10 @@ from custom_layers import *
 <#list tc.architecture.networkInstructions as networkInstruction>
 from CNNNet_${tc.fullArchitectureName} import Net_${networkInstruction?index}
 </#list>
+<#if tc.containsAdaNet()>
 
+from CNNNet_${tc.fullArchitectureName} import Net_${networkInstruction?index},DataClass
+</#if>
 class ${tc.fileNameWithoutEnding}:
     _model_dir_ = "model/${tc.componentName}/"
     _model_prefix_ = "model"
@@ -175,6 +178,7 @@ class ${tc.fileNameWithoutEnding}:
 <#list tc.architecture.networkInstructions as networkInstruction>
         <#if tc.containsAdaNet()>
         self.networks[${networkInstruction?index}] = Net_${networkInstruction?index}(prefix="")
+        self.dataClass = DataCLass()
         <#else>
         self.networks[${networkInstruction?index}] = Net_${networkInstruction?index}(data_mean=data_mean, data_std=data_std, mx_context=context, prefix="")
         </#if>
