@@ -26,8 +26,7 @@ class DefaultBlock(gluon.HybridBlock):
         self.ag = nn.Dense(units=units, activation=activation)
 
     def hybrid_forward(self, F, x):
-        x = self.ag(x)
-        return x
+        return self.ag(x)
 </#if>
 class CandidateHull(gluon.HybridBlock):
     """
@@ -38,22 +37,12 @@ class CandidateHull(gluon.HybridBlock):
         stack: int,
         name: str,
         output=None,
-        <#if outBlock.isArtificial()>
-        output_shape =<#list outBlock.outputTypes as type>(${tc.join(type.dimensions, ",")})</#list>,
-        <#else>
-        output_shape =None,
-        </#if>
-        input=None,
-        <#if inBlock.isArtificial()>
-        input_shape =<#list inBlock.outputTypes as type>(${tc.join(type.dimensions, ",")})</#list>,
-        <#else>
-        input_shape =None,
-        </#if>
+        inBlock=None,
         block_args=None,
         **kwargs):
 
         super(CandidateHull, self).__init__(**kwargs)
-        assert issubclass(output, gluon.HybridBlock), f'output should inherit from {gluon.HybridBlock} got {output}'
+        # assert issubclass(type(output), gluon.HybridBlock), f'output should inherit from {gluon.HybridBlock} got {type(output)}'
         self.name_ = name
         self.names = []
         self.stack = stack
@@ -70,8 +59,8 @@ class CandidateHull(gluon.HybridBlock):
             self.names.append(name)
 
         self.body = body
-        if input:
-            self.input = input()
+        if inBlock:
+            self.input = inBlock()
         else:
             self.input = None
         if output:
@@ -113,59 +102,17 @@ class CandidateHull(gluon.HybridBlock):
             x = self.out(x)
 
         return x
-class AdaOut(gluon.HybridBlock):
-    def __init__(self, op_nums=1, classes=1, softmax=True, dtype='float32', flatten=True, weight_initializer=None,
-        **kwargs):
-        super(AdaOut, self).__init__(**kwargs)
-        self._flatten = flatten
-        self.data_shape = <#list element.element.outputTypes as type>(${tc.join(type.dimensions, ",")})</#list>
-        classes = prod(list(self.data_shape))
-        with self.name_scope():
-            self.softmax = softmax
-            self.op_nums = op_nums
-            self.classes = classes
-            self.weight = self.params.get('weight',
-                shape=(classes, op_nums),
-                init=weight_initializer,
-                dtype=dtype,
-                allow_deferred_init=True)
-        self.act = None
-
-    def __repr__(self):
-        s = '{name}({layout}, {act})'
-        shape = self.weight.shape
-        return s.format(name=self.__class__.__name__,
-            act=self.act if self.act else 'linear',
-            layout='{0} -> {1}'.format(shape[1] if shape[1] else None, shape[0]))
-
-    # noinspection PyMethodOverriding
-    def hybrid_forward(self, F, x, weight, bias=None):
-        if self.softmax:
-            weight = F.softmax(weight)
-
-        # fc = F.npx.fully_connected if is_np_array() else F.FullyConnected
-        fc = F.FullyConnected
-        act = fc(x, weight, bias, no_bias=bias is None, num_hidden=self.classes,
-            flatten=self._flatten, name='fwd')
-        re = F.reshape(act,shape=self.data_shape)# add shape of output
-        # ToDo: reshape the output to the correct output shape
-
-        # ToDO: add trainling output block that gets after the AdaNet
-        return re
 
 class BuildingBlock(gluon.HybridBlock):
     """
         the essential building block which gets stacked
     """
     def __init__(self,
-        b=20,
         <#if Block.isArtificial()>
         operation = ${tc.include(Block,"ADANET_CONSTRUCTION")},
         <#else>
-        operation = DefaultBlock
+        operation = DefaultBlock,
         </#if>
-        #operation=None,  # ToDo: put here the Block construction
-        op_args=None,
         **kwargs):
 
         super(BuildingBlock, self).__init__(**kwargs)
