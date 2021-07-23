@@ -11,8 +11,10 @@ import java.util.List;
 
 import javax.swing.BorderFactory;
 import javax.swing.JButton;
+import javax.swing.JDialog;
 import javax.swing.JFrame;
 import javax.swing.JLabel;
+import javax.swing.JOptionPane;
 import javax.swing.JPanel;
 
 import de.monticore.lang.gdl.Interpreter;
@@ -246,8 +248,8 @@ public class ChessGUI {
         if (nextState != null) {
             updateGameState(nextState);
         } else {
-            System.out.println("Move was not legal! Move:");
-            System.out.println("\t" + move);
+            String message = "Move was not legal! Move:\n\t" + move;
+            JOptionPane.showMessageDialog(frame, message, "Illegal Move", JOptionPane.WARNING_MESSAGE);
         }
     }
 
