@@ -11,7 +11,6 @@ import java.util.List;
 
 import javax.swing.BorderFactory;
 import javax.swing.JButton;
-import javax.swing.JDialog;
 import javax.swing.JFrame;
 import javax.swing.JLabel;
 import javax.swing.JOptionPane;
@@ -59,7 +58,7 @@ public class ChessGUI {
         fieldGrid = new JPanel();
         GridLayout layout = new GridLayout(8, 8);
         fieldGrid.setLayout(layout);
-        fieldGrid.setPreferredSize(new Dimension(1000, 1000));
+        fieldGrid.setPreferredSize(new Dimension(900, 900));
 
         fields = new String[8][8];
         fieldButtons = new JButton[8][8];
