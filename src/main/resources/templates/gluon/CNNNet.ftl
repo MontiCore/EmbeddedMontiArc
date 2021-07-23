@@ -570,11 +570,10 @@ class Net_${networkInstruction?index}(gluon.HybridBlock):
             mean_complexity[i] = self.candidate_complexities[name]
         return mean_complexity
 
-class DataClass():
+class DataClass_${networkInstruction?index}:
     """
     the whole model with its operations
     """
-
     def __init__(self, **kwargs):
         self.op_names = []  # list that holds the name of the added operations
         self.candidate_complexities = {}

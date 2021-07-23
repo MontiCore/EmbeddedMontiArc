@@ -14,7 +14,7 @@ from custom_layers import *
 
 <#list tc.architecture.networkInstructions as networkInstruction>
 <#if tc.containsAdaNet()>
-from CNNNet_${tc.fullArchitectureName} import Net_${networkInstruction?index},DataClass
+from CNNNet_${tc.fullArchitectureName} import Net_${networkInstruction?index},DataClass_${networkInstruction?index}
 <#else>
 from CNNNet_${tc.fullArchitectureName} import Net_${networkInstruction?index}
 </#if>
@@ -176,8 +176,8 @@ class ${tc.fileNameWithoutEnding}:
     def construct(self, context, data_mean=None, data_std=None):
 <#list tc.architecture.networkInstructions as networkInstruction>
         <#if tc.containsAdaNet()>
-        self.networks[${networkInstruction?index}] = Net_${networkInstruction?index}(prefix="")
-        self.dataClass = DataCLass()
+        self.networks[${networkInstruction?index}] = Net_${networkInstruction?index}(prefix="",operations=None)
+        self.dataClass = DataClass_${networkInstruction?index}()
         <#else>
         self.networks[${networkInstruction?index}] = Net_${networkInstruction?index}(data_mean=data_mean, data_std=data_std, mx_context=context, prefix="")
         </#if>
