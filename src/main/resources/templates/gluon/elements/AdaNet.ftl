@@ -37,7 +37,17 @@ class CandidateHull(gluon.HybridBlock):
         stack: int,
         name: str,
         output=None,
+        <#if outBlock.isArtificial()>
+        output_shape =<#list outBlock.outputTypes as type>(${tc.join(type.dimensions, ",")})</#list>,
+        <#else>
+        output_shape =None,
+        </#if>
         inBlock=None,
+        <#if inBlock.isArtificial()>
+        input_shape =<#list inBlock.outputTypes as type>(${tc.join(type.dimensions, ",")})</#list>,
+        <#else>
+        input_shape =None,
+        </#if>
         block_args=None,
         **kwargs):
 
