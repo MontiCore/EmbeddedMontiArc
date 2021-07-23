@@ -55,6 +55,7 @@ import de.monticore.lang.gdl._ast.ASTGameValueBuilder;
 import de.monticore.lang.gdl._symboltable.GameFunctionDefinitionSymbol;
 import de.monticore.lang.gdl._symboltable.IGDLArtifactScope;
 import de.monticore.lang.gdl.chess.ChessGUI;
+import de.monticore.lang.gdl.cli.GDLCLI;
 import de.se_rwth.commons.logging.Log;
 
 public class Interpreter2 {
@@ -404,7 +405,7 @@ public class Interpreter2 {
         }
     }
 
-    private Integer getIntegerValue(String constValue) {
+    public Integer getIntegerValue(String constValue) {
         Integer constInt;
         if ((constInt = constValueMap.get(constValue)) != null) {
             return constInt;
@@ -432,7 +433,7 @@ public class Interpreter2 {
         return false;
     }
 
-    private List<List<String>> getAllModels(String function, List<IntegerFormula> args) {
+    public List<List<String>> getAllModels(String function, List<IntegerFormula> args) {
         List<List<String>> allModels = new ArrayList<>();
         
         boolean satisfiable;
@@ -569,6 +570,14 @@ public class Interpreter2 {
         return gameState;
     }
 
+    public IntegerFormulaManager getImgr() {
+        return imgr;
+    }
+
+    public BooleanFormulaManager getBmgr() {
+        return bmgr;
+    }
+
     private void test() {
         Move move = Move.createMoveFromLine("white (move white_pawn f 2 f 4)");
         setMove(move);
@@ -598,7 +607,8 @@ public class Interpreter2 {
         Interpreter2 interpreter = new Interpreter2(ast, scope).init();
         // interpreter.test();
 
-        new ChessGUI(interpreter);
+        // new ChessGUI(interpreter);
+        new GDLCLI(interpreter).run();
 
         // List<ASTGameExpression> nextState = interpreter.getGameState();
         // System.out.println(nextState);
