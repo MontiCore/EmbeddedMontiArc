@@ -15,7 +15,7 @@ import javax.swing.JFrame;
 import javax.swing.JLabel;
 import javax.swing.JPanel;
 
-import de.monticore.lang.gdl.Interpreter2;
+import de.monticore.lang.gdl.Interpreter;
 import de.monticore.lang.gdl._ast.ASTGameExpression;
 import de.monticore.lang.gdl._ast.ASTGameFunction;
 import de.monticore.lang.gdl._ast.ASTGameValue;
@@ -32,7 +32,7 @@ public class ChessGUI {
     private final Color error = new Color(0xDC143C);
     
     private final JFrame frame;
-    private final Interpreter2 interpreter;
+    private final Interpreter interpreter;
 
     private String[][] fields;
     private String control;
@@ -47,10 +47,10 @@ public class ChessGUI {
     private boolean isSelected;
     private int selectX, selectY;
 
-    public ChessGUI(Interpreter2 interpreter) {
+    public ChessGUI(Interpreter interpreter) {
         this.frame = new JFrame("Chess");
         frame.setLayout(new BorderLayout());
-        frame.setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
+        frame.setDefaultCloseOperation(JFrame.DISPOSE_ON_CLOSE);
 
         this.interpreter = interpreter;
 
@@ -66,7 +66,7 @@ public class ChessGUI {
                 final int x = i;
                 final int y = j;
 
-                fields[i][j] = "blank";
+                fields[i][j] = null;
                 fieldButtons[i][j] = new JButton(i + ", " + j) {
                     @Override
                     public void paint(Graphics g) {
@@ -74,11 +74,11 @@ public class ChessGUI {
                         g.setColor(Color.BLACK);
                         if (y == 0) {
                             String sX = "" + (char) (x + 97);
-                            g.drawString(sX, getWidth()/2 - 2, getHeight() - 20);
+                            g.drawString(sX, getWidth() - 14, getHeight() - 5);
                         }
                         if (x == 0) {
                             String sY = "" + (y + 1);
-                            g.drawString(sY, 5, getHeight()/2);
+                            g.drawString(sY, 5, 20);
                         }
                     }
                 };
@@ -120,12 +120,8 @@ public class ChessGUI {
     private void updateGameState(List<ASTGameExpression> gameState) {
         clearAll();
 
-        System.out.println("New Game State (" + gameState.size() + "):");
-
         gameState.forEach(exp -> {
             String identifier = ((ASTGameFunction) exp.getType()).getFunction();
-
-            System.out.println("\t" + exp);
 
             switch (identifier) {
                 case "field":

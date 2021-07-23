@@ -6,14 +6,14 @@ import java.util.Scanner;
 
 import org.sosy_lab.java_smt.api.NumeralFormula.IntegerFormula;
 
-import de.monticore.lang.gdl.Interpreter2;
+import de.monticore.lang.gdl.Interpreter;
 import de.monticore.lang.gdl._ast.ASTGameExpression;
 
 public class GDLCLI implements Runnable {
     
-    private final Interpreter2 interpreter;
+    private final Interpreter interpreter;
 
-    public GDLCLI(Interpreter2 interpreter) {
+    public GDLCLI(Interpreter interpreter) {
         this.interpreter = interpreter;
     }
 
@@ -23,7 +23,17 @@ public class GDLCLI implements Runnable {
     }
 
     private void printHelp() {
-
+        String help = 
+            "Usage:\n" +
+            "  {player} (move [args])" + "\t" + "Do a game move\n" + 
+            "\n" +
+            "Additional functions:\n" +
+            "  /help" + "\t\t\t\t" + "Show the CLI usage\n" +
+            "  /exit" + "\t\t\t\t" + "Exit the CLI\n" +
+            "  /state" + "\t\t\t" + "Print the current game state\n" +
+            "  /eval {func} [const | ?token]" + "\t" + "Calculate all models for a Function {func} with the given Arguments\n" +
+            "";
+        System.out.print(help);
     }
 
     private void evaluate(String line) {
@@ -53,15 +63,22 @@ public class GDLCLI implements Runnable {
         Scanner s = new Scanner(System.in);
         String line;
         while (!(line = s.nextLine()).equals("/exit") && line != null) {
-            if (line.startsWith("/eval ") || line.startsWith("/evaluate ")) {
-                evaluate(line);
-            } else if (line.startsWith("/state")) {
-                printGameState();
+            if (line.startsWith("/")) {
+                if (line.startsWith("/eval ") || line.startsWith("/evaluate ")) {
+                    evaluate(line);
+                } else if (line.startsWith("/state")) {
+                    printGameState();
+                } else if (line.startsWith("/help")) {
+                    printHelp();
+                } else {
+                    System.out.println("Unknown command: " + line);
+                    printHelp();
+                }
             } else {
                 List<ASTGameExpression> nextState = interpreter.interpret(line);
 
                 if (nextState == null) {
-                    System.out.println("Move was illegal!");
+                    System.out.println("Move was illegal! Type /help for usage");
                 } else {
                     System.out.println(nextState);
                 }
