@@ -544,7 +544,7 @@ class Net_${networkInstruction?index}(gluon.HybridBlock):
         with self.name_scope():
             if operations is None:
                 operations={'dummy':nn.Dense(units = 10)}
-            self.data_shape = <#list networkInstruction.body.outputTypes as type>(${tc.join(type.dimensions, ",")})</#list>
+            self.data_shape = <#list networkInstruction.body.getAdaLayer().get().outputTypes as type>(${tc.join(type.dimensions, ",")})</#list>
             self.classes = prod(list(self.data_shape))
 
             for name,operation in operations.items():
