@@ -29,6 +29,7 @@ class ${tc.fileNameWithoutEnding}:
     def __init__(self):
         self.weight_initializer = mx.init.Normal()
         self.networks = {}
+        self.dataClass = {}
 <#if (tc.weightsPath)??>
         self._weights_dir_ = "${tc.weightsPath}/"
 <#else>
@@ -179,7 +180,7 @@ class ${tc.fileNameWithoutEnding}:
 <#list tc.architecture.networkInstructions as networkInstruction>
         <#if tc.containsAdaNet()>
         self.networks[${networkInstruction?index}] = Net_${networkInstruction?index}(prefix="",operations=None)
-        self.dataClass = DataClass_${networkInstruction?index}()
+        self.dataClass[${networkInstruction?index}] = DataClass_${networkInstruction?index}()
         <#else>
         self.networks[${networkInstruction?index}] = Net_${networkInstruction?index}(data_mean=data_mean, data_std=data_std, mx_context=context, prefix="")
         </#if>
