@@ -48,6 +48,7 @@ class CandidateHull(gluon.HybridBlock):
         <#else>
         input_shape =None,
         </#if>
+        model_shape = <#list Block.outputTypes as type>(${tc.join(type.dimensions, ",")})</#list>,
         block_args=None,
         **kwargs):
 
@@ -58,25 +59,30 @@ class CandidateHull(gluon.HybridBlock):
         self.stack = stack
         self.rade = None
         self.complexity = None
-        if block_args is None:
-            body = {name + f'{i}': BuildingBlock() for i in range(self.stack)}
-        else:
-            body = {name + f'{i}': BuildingBlock(**block_args) for i in range(self.stack)}
+        with self.name_scope():
+            self.output_shape = output_shape
+            self.input_shape = input_shape
+            self.model_shape = model_shape
+            self.classes = prod(list(self.model_shape))
+            if block_args is None:
+                body = {name + f'{i}': BuildingBlock() for i in range(self.stack)}
+            else:
+                body = {name + f'{i}': BuildingBlock(**block_args) for i in range(self.stack)}
 
-        for name in body:  # add a new operation to the candidate
-            val = body[name]
-            self.__setattr__(name=name, value=val)
-            self.names.append(name)
-
-        self.body = body
-        if inBlock:
-            self.input = inBlock()
-        else:
-            self.input = None
-        if output:
-            self.out = output()
-        else:
-            self.out = None
+            for name in body:  # add a new operation to the candidate
+                val = body[name]
+                self.__setattr__(name=name, value=val)
+                self.names.append(name)
+            self.finalOut = nn.Dense(units=self.classes, activation=None, flatten=False)
+            self.body = body
+            if inBlock:
+                self.input = inBlock()
+            else:
+                self.input = None
+            if output:
+                self.out = output()
+            else:
+                self.out = None
 
     def approximate_rade(self):
         """
@@ -110,8 +116,9 @@ class CandidateHull(gluon.HybridBlock):
 
         if self.out:
             x = self.out(x)
+        x = self.finalOut(x)
 
-        return x
+        return F.reshape(x,shape = self.model_shape)
 
 class BuildingBlock(gluon.HybridBlock):
     """
