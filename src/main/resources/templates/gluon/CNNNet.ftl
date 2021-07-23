@@ -579,8 +579,6 @@ class DataClass():
         self.op_names = []  # list that holds the name of the added operations
         self.candidate_complexities = {}
         self.name_ = 'Net_${networkInstruction?index}'
-        self.output = None  # insert here the custom block
-        self.out_op = None
         self.AdaNet = True
         self.Builder = Builder
         self.CandidateHull = CandidateHull
