@@ -165,7 +165,7 @@ class Builder:
     the object which generates the new candidates
     """
 
-    def __init__(self, output=None, params=None):
+    def __init__(self):
         self.round = 0
         <#if outBlock.isArtificial()>
         self.output = ${tc.include(outBlock,"ADANET_CONSTRUCTION")}
@@ -179,7 +179,7 @@ class Builder:
         </#if>
         self.pre_stack = 1
         self.step = 0
-        self.block_params = params
+        self.block_params = None
 
     def get_candidates(self):
         """
