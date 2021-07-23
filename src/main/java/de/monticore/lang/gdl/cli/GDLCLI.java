@@ -55,6 +55,8 @@ public class GDLCLI implements Runnable {
         while (!(line = s.nextLine()).equals("/exit") && line != null) {
             if (line.startsWith("/eval ") || line.startsWith("/evaluate ")) {
                 evaluate(line);
+            } else if (line.startsWith("/state")) {
+                printGameState();
             } else {
                 List<ASTGameExpression> nextState = interpreter.interpret(line);
 

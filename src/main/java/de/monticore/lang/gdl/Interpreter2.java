@@ -594,7 +594,7 @@ public class Interpreter2 {
 
 
     public static void main(String[] args) throws Exception {
-        if (args.length != 1) {
+        if (args.length < 1) {
             Log.error("Specify exactly one model file.");
             return;
         }
@@ -604,11 +604,13 @@ public class Interpreter2 {
         final ASTGame ast = GDLInterpreter.parse(modelFileName);
         final IGDLArtifactScope scope = GDLInterpreter.createSymbolTable(ast);
 
-        Interpreter2 interpreter = new Interpreter2(ast, scope).init();
+        final Interpreter2 interpreter = new Interpreter2(ast, scope).init();
         // interpreter.test();
 
-        // new ChessGUI(interpreter);
-        new GDLCLI(interpreter).run();
+        new Thread(new GDLCLI(interpreter)).start();
+        if (args.length > 1 && (args[1].toLowerCase().startsWith("--chess-gui") || (args[1].toLowerCase().startsWith("-cg")))) {
+            new ChessGUI(interpreter);
+        }
 
         // List<ASTGameExpression> nextState = interpreter.getGameState();
         // System.out.println(nextState);
