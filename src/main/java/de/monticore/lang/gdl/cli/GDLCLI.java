@@ -58,8 +58,23 @@ public class GDLCLI implements Runnable {
         }
     }
 
+    private void printWelcome() {
+        String welcome = "Welcome to the GDL Interpreter!";
+        System.out.println(welcome);
+    }
+
+    private void printExit() {
+        System.out.println("Goodbye!");
+    }
+
     @Override
     public void run() {
+        printWelcome();
+        printHelp();
+
+        System.out.println("");
+        System.out.print("> ");
+
         Scanner s = new Scanner(System.in);
         String line;
         while (!(line = s.nextLine()).equals("/exit") && line != null) {
@@ -83,8 +98,11 @@ public class GDLCLI implements Runnable {
                     System.out.println(nextState);
                 }
             }
+            System.out.print("> ");
         }
+        printExit();
         s.close();
+        System.exit(0);
     }
 
 }
