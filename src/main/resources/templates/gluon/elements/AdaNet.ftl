@@ -189,9 +189,9 @@ class Builder:
         c0_name = f'can0r{self.round}'
         c1_name = f'can1r{self.round}'
 
-        c0 = CandidateHull(name=c0_name,input=self.input, output=self.output, stack=self.pre_stack,
+        c0 = CandidateHull(name=c0_name, stack=self.pre_stack,
             block_args=self.block_params)
-        c1 = CandidateHull(name=c1_name,input=self.input, output=self.output, stack=self.pre_stack + 1,
+        c1 = CandidateHull(name=c1_name, stack=self.pre_stack + 1,
             block_args=self.block_params)
 
         self.step += 1
