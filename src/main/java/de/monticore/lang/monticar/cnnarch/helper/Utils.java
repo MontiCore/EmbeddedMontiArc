@@ -10,6 +10,7 @@ package de.monticore.lang.monticar.cnnarch.helper;
 
 import de.monticore.lang.math._symboltable.expression.*;
 import de.monticore.lang.monticar.cnnarch._symboltable.TupleExpressionSymbol;
+import de.monticore.lang.monticar.cnnarch.predefined.AllPredefinedLayers;
 import de.monticore.lang.monticar.ranges._ast.ASTRange;
 import de.monticore.lang.monticar.types2._ast.ASTElementType;
 import de.monticore.symboltable.Scope;
@@ -224,7 +225,43 @@ public class Utils {
 
         return contains(firstType.getRange(), secondType.getRange());
     }
+    // Checks if firstType contains secondType
+    public static boolean contains(ASTElementType firstType, ASTElementType secondType,String layerName){
+        if (firstType.isBoolean()) {
+            if (!secondType.isBoolean()) {
+                return false;
+            }
+        }
 
+        if (firstType.isNaturalNumber()) {
+            if (secondType.isWholeNumber() || secondType.isRational() || secondType.isComplex()) {
+                return false;
+            }
+        }
+
+        if (firstType.isWholeNumber()) {
+            if (secondType.isRational() || secondType.isComplex()) {
+                return false;
+            }
+        }
+
+        if (firstType.isRational()) {
+            if (secondType.isComplex()) {
+                return false;
+            }
+        }
+
+        if (firstType.isPresentRange()) {
+            if (!secondType.isPresentRange()) {
+                return false;
+            }
+        }
+        else {
+            return true;
+        }
+
+        return contains(firstType.getRange(), secondType.getRange(),layerName);
+    }
     public static boolean contains(ASTRange firstRange, ASTRange secondRange) {
         if (!firstRange.hasNoLowerLimit() && secondRange.hasNoLowerLimit()) {
             return false;
@@ -242,6 +279,39 @@ public class Utils {
             return false;
         }
 
+        if (firstRange.isPresentStep()){
+            if (!secondRange.isPresentStep()) {
+                return false;
+            }
+        }
+        else {
+            return true;
+        }
+
+        if (!firstRange.getStepValue().equals(secondRange.getStepValue())){
+            return false;
+        }
+
+        // TODO: Check for different step sizes; too complex and not necessary for current use
+
+        return true;
+    }
+    public static boolean contains(ASTRange firstRange, ASTRange secondRange,String name) {
+        if(!name.equals(AllPredefinedLayers.AdaNet_Name)) {
+            if (!firstRange.hasNoLowerLimit() && secondRange.hasNoLowerLimit()) {
+                return false;
+            }
+
+            if (!firstRange.hasNoUpperLimit() && secondRange.hasNoUpperLimit()) {
+                return false;
+            }
+            if (!firstRange.hasNoUpperLimit() && firstRange.getEndValue().compareTo(secondRange.getEndValue()) < 0){
+                return false;
+            }
+        }
+        if (!firstRange.hasNoLowerLimit() && firstRange.getStartValue().compareTo(secondRange.getStartValue()) > 0) {
+            return false;
+        }
         if (firstRange.isPresentStep()){
             if (!secondRange.isPresentStep()) {
                 return false;
