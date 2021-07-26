@@ -294,7 +294,7 @@ class BLEU(mx.metric.EvalMetric):
         return new_list
 
 <#if tc.containsAdaNet()>
-def objective_function(model, data, loss, gamma=.0001) -> float:
+def objective_function(model, data, loss, gamma=.0000001) -> float:
     """
     :param model:
     :param trainer:
@@ -307,16 +307,19 @@ def objective_function(model, data, loss, gamma=.0001) -> float:
     err_list = []
     for batch_i, batch in enumerate(data):
         pred = model(batch.data[0])
-        error = loss(pred, batch.label[0])
+        label = batch.label[0]
+        label = nd.reshape(label,shape=pred.shape)
+        error = loss(pred, label)
         err_list.append(error)
     err = concatenate(err_list)
     c_complexities = model.get_candidate_complexity()
-    c_complexities = c_complexities.reshape((1, c_complexities.shape[0]))
-    complexity_reg = model.out_op(c_complexities) * gamma
+    c_complexities = c_complexities.reshape((1, c_complexities.shape[0]))* gamma
+    #complexity_reg = model.out(c_complexities)
 
-    objective = add(err.mean(), complexity_reg)
+    #objective = add(err.mean(), complexity_reg)
+    objective = add(err.mean(), c_complexities)
 
-    return objective
+    return objective[0][0]
 
 
 def calculate_l1(params: dict) -> float:
@@ -343,6 +346,7 @@ class CandidateTrainingloss(Loss):
                  alpha=.07,
                  beta=0.0001,
                  gamma=.0001,
+                logging=None,
                  **kwargs):
         """
         loss function which is used to train each candidate
@@ -356,7 +360,7 @@ class CandidateTrainingloss(Loss):
         self.b = beta
         self.g = gamma
         self.coreLoss = loss  # in template, the loss function is passed initialized!!!!
-
+        self.logging=logging
         self.model = candidate  # candidate to be trained
 
     # noinspection PyMethodOverriding
@@ -366,60 +370,45 @@ class CandidateTrainingloss(Loss):
         # calculate regularization term reg
         # reg = (alpha*r)+beta , r = rademacher complexity approximation
         rade_term = F.add(F.multiply(self.a, self.model.approximate_rade()), self.b)
-
         reg_term = F.multiply(rade_term, l1)
 
         # save the regularization term, since it is needed in the calculation of the objective function
         self.model.update_complexity(reg_term)
 
         # calculate the actual loss and add the regularization term
-        return F.add(self.coreLoss(x, label), reg_term)
+        l = self.coreLoss(x, label)
+        ad = F.multiply(F.ones(l.shape),reg_term)
+        #res = F.add(self.coreLoss(x, label), reg_term)
+        res = F.add(l,ad)
+        return x
 
 class AdaLoss(Loss):
     """
     objective function of the whole model
     """
 
-    def __init__(self, weight=None, model=None, loss=SigmoidBCELoss, loss_args=(True,), batch_axis=0, gamma=.0001,
+    def __init__(self, weight=None, model=None, loss=SigmoidBCELoss, loss_args=(True,), batch_axis=0, lamb=.0001,beta=.0001,
                  **kwargs):
         super(AdaLoss, self).__init__(weight, batch_axis, **kwargs)
 
-        self.g = gamma  # weight for the complexity regularization the greater the heavier the penalty
         self.coreLoss = loss
         self.model = model
+        self.c_complexities = self.model.get_candidate_complexity()  # get candidate complexities
+        #self.l1 = calculate_l1(self.model.out.collect_params())
+        self.lamb = lamb
+        self.beta = beta
 
     def hybrid_forward(self, F, x, label):
-        c_complexities = self.model.get_candidate_complexity()  # get candidate complexities
-        c_complexities = c_complexities.reshape((1, c_complexities.shape[0]))
-        # maybe shape issues
-        # weight the complexities corresponding to candidate weight
-        l1 = calculate_l1(self.model.out_op.collect_params())
-        complexity_reg = self.model.out_op(c_complexities) * self.g
+        cl = self.coreLoss(x,label)
 
-        label = F.reshape(label, x.shape)
+        #ccomp = self.c_complexities
+        l1 = calculate_l1(self.model.out.collect_params())
+        reg_term = F.sum(((self.lamb * self.c_complexities)+ self.beta)*l1)
 
-        weight_reg = F.power(F.subtract(F.ones(l1.shape), l1), 2)
-        out = F.add(complexity_reg, self.coreLoss(x, label))
-        reg_out = F.add(out, weight_reg)
-
-        return reg_out
-
-
-def train_candidate(train_data, candidate, epochs: int, batch_size: int) -> None:
-    trainer = gluon.Trainer(candidate.collect_params(), 'adam', {'learning_rate': 0.1, 'wd': 0})
-    loss = CandidateTrainingloss(candidate=candidate)
-    train_data = mx.gluon.data.DataLoader(train_data, batch_size=batch_size, shuffle=True)
-
-    for epoch in range(epochs):
-        for x, label in train_data:
-            with autograd.record():  # train the candidate
-                pred = candidate(x)
-                error = loss(pred, label)
-            error.backward()
-            trainer.step(x.shape[0])
+        return F.add(cl,reg_term)
 
 def fitComponent(trainIter: mx.io.NDArrayIter, trainer: mx.gluon.Trainer, epochs: int, component: gluon.HybridBlock,
-                 loss_class: gluon.loss, loss_params: dict) -> None:
+                 loss_class: gluon.loss, loss_params: dict,logging=None) -> None:
     """
     function trains a component of the generated model.
     expects a compoment, a trainern instance with corresponding parameters.
@@ -433,31 +422,14 @@ def fitComponent(trainIter: mx.io.NDArrayIter, trainer: mx.gluon.Trainer, epochs
                 data = batch.data[0]
                 label = batch.label[0]
                 pred = component(data)
-                error = loss(pred, label)
-            error.backward()
-            trainer.step(data.shape[0], ignore_stale_grad=True)
-
-def fitComponent(trainIter: mx.io.NDArrayIter, trainer: mx.gluon.Trainer, epochs: int, component: gluon.HybridBlock,
-                 loss_class: gluon.loss, loss_params: dict) -> None:
-    """
-    function trains a component of the generated model.
-    expects a compoment, a trainern instance with corresponding parameters.
-
-    """
-    loss = loss_class(**loss_params)
-    for epoch in range(epochs):
-        trainIter.reset()
-        for batch_i, batch in enumerate(trainIter):
-            with autograd.record():
-                data = batch.data[0]
-                label = batch.label[0]
-                pred = component(data)
+                label = nd.reshape(label,shape=pred.shape)
                 error = loss(pred, label)
             error.backward()
             trainer.step(data.shape[0], ignore_stale_grad=True)
 
 
 def get_trainer(optimizer: str, parameters: dict, optimizer_params: dict) -> mx.gluon.Trainer:
+    # gluon.Trainer doesnt take a ctx
     if optimizer == 'Adamw':
         trainer = mx.gluon.Trainer(parameters, AdamW.AdamW(**optimizer_params), )
     else:
@@ -470,6 +442,7 @@ def fit(model: gluon.HybridBlock,
         epochs: int,
         optimizer_params: dict,
         dataLoader,
+        dataClass,
         shuffle_data: bool,
         preprocessing: bool,
         T=100,
@@ -477,10 +450,12 @@ def fit(model: gluon.HybridBlock,
         ctx=None,
         logging=None
         ) -> gluon.HybridBlock:
-    cg = model.Builder()
-    AdaOut = model.AdaOut
+    logging.info("AdaNet: starting ...")
+    cg = dataClass.Builder()
+    model_template = dataClass.model_template
+    model_operations = {}
     model_score = None
-
+    model = model_template(model_operations)
     if ctx is None:
         ctx = mx.gpu() if mx.context.num_gpus() else mx.cpu()
 
@@ -493,98 +468,85 @@ def fit(model: gluon.HybridBlock,
     else:
         train_iter, test_iter, data_mean, data_std, train_images, test_images = dataLoader.load_data(batch_size,
                                                                                                      shuffle_data)
-    logging.info('started AdaNet Generation')
+
     for rnd in range(T):
+        work_op = model_operations.copy()
+
+        # get new candidates
         c0, c1 = cg.get_candidates()
         c0.initialize(ctx=ctx)
         c1.initialize(ctx=ctx)
         c0.hybridize()
         c1.hybridize()
-        # TODO: check for weight decay, should be off
 
-        # train candidates
+
+        # train candidate 0
         c0_trainer = get_trainer(optimizer, c0.collect_params(), optimizer_params)
         fitComponent(trainIter=train_iter, trainer=c0_trainer, epochs=epochs, component=c0,
-                     loss_class=CandidateTrainingloss, loss_params={'loss': loss, 'candidate': c0})
+                     loss_class=CandidateTrainingloss, loss_params={'loss': loss, 'candidate': c0,'logging':logging},logging=logging)
 
+        # train candidate 1
         c1_trainer = get_trainer(optimizer, c1.collect_params(), optimizer_params)
         fitComponent(trainIter=train_iter, trainer=c1_trainer, epochs=epochs, component=c1,
-                     loss_class=CandidateTrainingloss, loss_params={'loss': loss, 'candidate': c1})
+                    loss_class=CandidateTrainingloss, loss_params={'loss': loss, 'candidate': c1})
 
-        op_count = len(model.op_names)
-        if model.out_op is not None:
-            # save the current model output weights
-            # in case the generation is done this is used to restore the old weights
-            model.out_op.save_parameters('./model_weights.txt')
+        # create model with candidate 0 added -> c0_model
+        c0_work_op = model_operations.copy()
+        c0_work_op[c0.name] = c0
 
-        # create output operation for each candidate
-        # ToDo pass loss function to AdaOut
-        c0_out = AdaOut(op_nums=op_count + 1)
-        c1_out = AdaOut(op_nums=op_count + 1)
+        c0_model = model_template(operations = c0_work_op)
+        c0_model.out.initialize(ctx=ctx)
+        c0_model.hybridize()
 
-        c0_out.initialize()
-        c1_out.initialize()
+        # create model with candidate 1 added -> c1_model
+        c1_work_op = model_operations.copy()
+        c1_work_op[c1.name] = c1
 
-        c0_out.hybridize()
-        c1_out.hybridize()
+        c1_model = model_template(operations = c1_work_op)
+        c1_model.out.initialize(ctx=ctx)
+        c1_model.hybridize()
 
-        if model.op_names:
-            current_params = model.out_op.collect_params()
+        #logging.info(f"{len([x for x in c1_work_op.keys()])}")
 
-        # add candidate 0 and its output block to the model
-        model.add_op(c0, c0_out, training=True)
+        # train c0_model
+        c0_out_trainer = get_trainer(optimizer, c0_model.out.collect_params(), optimizer_params)
+        fitComponent(trainIter=train_iter, trainer=c0_out_trainer, epochs=epochs, component=c0_model,
+                    loss_class=AdaLoss, loss_params={'loss': loss, 'model': c0_model})
 
-        # get trainer for candidate 0 output
-        c0_out_trainer = get_trainer(optimizer, model.out_op.collect_params(), optimizer_params)
+        # train c1_model
+        c1_out_trainer = get_trainer(optimizer, c1_model.out.collect_params(), optimizer_params)
+        fitComponent(trainIter=train_iter, trainer=c1_out_trainer, epochs=epochs, component=c1_model,
+                    loss_class=AdaLoss, loss_params={'loss': loss, 'model': c1_model})
 
-        # train output for candidate 0
-        fitComponent(trainIter=train_iter, trainer=c0_out_trainer, epochs=epochs, component=model)
+        c0_score = objective_function(model=c1_model, data=train_iter, loss=loss)
 
-        # calculate the score with candidate 0 added to the model
-        c0_score = objective_function(model=model, data=train_iter, loss=loss)
+        c1_score = objective_function(model=c1_model, data=train_iter, loss=loss)
 
-        # remove candidate 0 from the model
-        model.del_op(c0)
+        #logging.info(c0_model.get_candidate_complexity())
 
-        # add candidate 1 and its output block to the model
-        model.add_op(c1, c1_out, training=True)
-
-        # get trainer for candidate 1 output
-        c1_out_trainer = get_trainer(optimizer=optimizer, parameters=model.out_op.collect_params(),
-                                     optimizer_params=optimizer_params)
-        # train output for candidate 1
-        fitComponent(trainIter=train_iter, trainer=c1_out_trainer, epochs=epochs, component=model)
-
-        # calculate score with candidate 1 added to the model
-        c1_score = objective_function(model=model, data=train_iter, loss=loss)
-
-        # remove candidate from the model
-        model.del_op(c1)
+        logging.info(c0_score.shape)
+        logging.info(type(c0_score))
+        logging.info(nd.to_dlpack_for_read(c0_score-c1_score))
+        check = nd.greater_equal(c0_score, c1_score)
 
         # decide which candidate yields the best improvement
-        next_c, next_score, next_oo = (c0, c0_score, c0_out) if c0_score <= c1_score else (c1, c1_score, c1_out)
+        model, operation,score = (c0_model,c0,c0_score) if check else (c1_model,c1,c1_score)
 
         if model_score is None:
-            model.add_op(next_c, next_oo)
-            model_score = next_score
+            model_score = score
         else:
-            if next_score < model_score:
-                model.add_op(next_c, next_oo)
-                model_score = next_score
+            # if the new score is better than the old one continue else return current model
+            if score <= model_score:
+                model_score = score
             else:
-                if model.out_op is not None:
-                    # ToDo: pass loss
-                    model.out_op = AdaOut(op_count)
+                logging.info("AdaNet: abort in Round {}/{}".format(rnd+1,T))
+                # this is not a finally trained model!!
+                return model_template(operations=model_operations)
 
-                    # restore previous model weights
-                    model.out_op.load_parameters('./model_weights.txt', ctx=ctx)
-                print(
-                    f'abort in Round {rnd} scores:: c0:{c0_score.asscalar()[0][0]} c1:{c1_score.asscalar()[0][0]}')
-                break
-
+        model_operations[operation.name] = operation
         cg.update()
-    logging.info(f'Round:{rnd} c1:{c1_score.asnumpy()[0][0]}, c0:{c0_score.asnumpy()[0][0]} ,'
-        f'selected:{next_c.name_} model score:{model_score.asnumpy()[0][0]}')
+        logging.info('AdaNet:round: {}/{} finished'.format(rnd+1,T))
+
     return model
 
 </#if>
@@ -593,6 +555,7 @@ class ${tc.fileNameWithoutEnding}:
     def __init__(self, data_loader, net_constructor):
         self._data_loader = data_loader
         self._net_creator = net_constructor
+        self._dataClass = net_constructor.dataClass
         self._networks = {}
         self.AdaNet = ${tc.containsAdaNet()?string('True','False')}
 
@@ -724,21 +687,27 @@ class ${tc.fileNameWithoutEnding}:
         else:
             logging.error("Invalid loss parameter.")
         loss_function.hybridize()
+<#list tc.architecture.networkInstructions as networkInstruction>
 <#if tc.containsAdaNet()>
-        assert self._networks[0].AdaNet, "passed model is not an AdaNet model"
-        model = fit(model= self._networks[0],
-                    loss=loss,
+        assert self._networks[${networkInstruction?index}].AdaNet, "passed model is not an AdaNet model"
+        self._networks[${networkInstruction?index}] = fit(model= self._networks[${networkInstruction?index}],
+                    loss=loss_function,
                     optimizer=optimizer,
                     epochs=num_epoch,
+                    optimizer_params = optimizer_params,
                     dataLoader = self._data_loader,
+                    dataClass = self._dataClass[${networkInstruction?index}],
+                    shuffle_data=shuffle_data,
+                    preprocessing=preprocessing,
                     T=100,
                     batch_size=batch_size,
                     ctx=mx_context[0],
                     logging=logging
                 )
+        logging.info(self._networks[0])
         #put here the AdaNet logic
 </#if>
-        
+</#list>
 <#list tc.architecture.networkInstructions as networkInstruction>    
 <#if networkInstruction.body.episodicSubNetworks?has_content>
 <#assign episodicReplayVisited = true>
