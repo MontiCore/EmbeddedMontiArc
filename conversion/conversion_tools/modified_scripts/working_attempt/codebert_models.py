@@ -269,22 +269,24 @@ class Seq2Seq(HybridBlock):
                     # still not sure how important this is, we cant really use it in our decoder?
                     # attn_mask=-1e4 *(1-self.bias[:input_ids.shape[1],:input_ids.shape[1]])
                     tgt_embeddings = self.embedding(input_ids, input_token_types).transpose((1, 0, 2))
-                    print(input_ids)
-                    print(50*"*" + "tgt_embed")
-                    print(tgt_embeddings)
-                    print(50*"*" + "states")
-                    print(states)
-                    print(50*"*" + "input_ids")
-                    print(input_ids)
-                    print(50*"*" + "input_valid_len")
-                    print(input_valid_length)
-                    print(50*"*" + "context")
-                    print(context)
-                    print(50*"*" + "context_valid_len")
-                    print(context_valid_len)
+                    # print(50*"*" + "tgt_embed")
+                    # print(tgt_embeddings)
+                    # print(50*"*" + "states")
+                    # print(states)
+                    # print(50*"*" + "input_ids")
+                    # print(input_ids)
+                    # print(50*"*" + "input_valid_len")
+                    # print(input_valid_length)
+                    # print(50*"*" + "context")
+                    # print(context)
+                    # print(50*"*" + "context_valid_len")
+                    # print(context_valid_len)
                     out, states, _ = self.decoder(tgt_embeddings, states, input_valid_length)
-                    hidden_states = self.dense(out.transpose((1, 0, 2)).reshape(-1, self.hidden_size))
-                    # hidden_states=out.permute([1,0,2]).contiguous()[:,-1,:]
+                     # combine first two dims to pass through dense layer
+                    hidden_states = self.dense(out.reshape(-1, self.hidden_size))
+                    # recreate first two dims and take last word in sequence
+                    # we dont have to transpose here because our output is already the desired format of (beam_size, seq_len, embed_size)
+                    hidden_states = out.reshape(self.beam_size, -1, self.hidden_size)[:,-1,:] 
                     lm_logits = self.lm_head(hidden_states)
                     out = mx.nd.log_softmax(lm_logits, axis=-1)
                     beam.advance(out)
@@ -343,6 +345,10 @@ class Beam(object):
 
         # Sum the previous scores.
         if len(self.prevKs) > 0:
+            print(50*"*" + "scores")
+            print(self.scores)
+            print(50*"*" + "wordLk")
+            print(wordLk)
             beamLk = wordLk + self.scores.expand_dims(1).broadcast_like(wordLk)
 
             # Don't let EOS have children.
