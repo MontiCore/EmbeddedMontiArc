@@ -540,16 +540,19 @@ class Net_${networkInstruction?index}(gluon.HybridBlock):
         super(Net_${networkInstruction?index},self).__init__(**kwargs)
         self.AdaNet = True
         self.op_names = []
-
+        self.candidate_complexities = {}
         with self.name_scope():
-            if operations is None:
-                operations={'dummy':nn.Dense(units = 10)}
+            #if operations is None:
+            #    operations={'dummy':nn.Dense(units = 10)}
             self.data_shape = <#list networkInstruction.body.getAdaLayer().get().outputTypes as type>(${tc.join(type.dimensions, ",")})</#list>
             self.classes = prod(list(self.data_shape))
-
-            for name,operation in operations.items():
-                self.__setattr__(name,operation)
-                self.op_names.append(name)
+            if operations is None:
+                operations={'dummy':nn.Dense(units = 10)}
+            else:
+                for name,operation in operations.items():
+                    self.__setattr__(name,operation)
+                    self.op_names.append(name)
+                    self.candidate_complexities[name] = operation.get_complexity()
             self.out = nn.Dense(units=self.classes,activation=None,flatten=False)
 
     def hybrid_forward(self,F,x):
