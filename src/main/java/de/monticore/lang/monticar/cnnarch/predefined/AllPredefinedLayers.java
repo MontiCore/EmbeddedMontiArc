@@ -173,7 +173,7 @@ public class AllPredefinedLayers {
                 Sigmoid.create(),
                 Tanh.create(),
                 Relu.create(),
-				LeakyRelu.create(),
+                LeakyRelu.create(),
                 Dropout.create(),
                 Flatten.create(),
                 Pooling.create(),
