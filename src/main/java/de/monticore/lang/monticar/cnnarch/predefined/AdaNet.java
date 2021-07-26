@@ -213,8 +213,8 @@ public class AdaNet extends PredefinedLayerDeclaration {
     @Override
     public List<ArchTypeSymbol> computeOutputTypes(List<ArchTypeSymbol> inputTypes, LayerSymbol layer, VariableSymbol.Member member) {
         this.setBlock_name(layer.getStringValue(AllPredefinedLayers.Block)); // get Argument Value of block parameter
-        this.setIn_name(layer.getStringValue(AllPredefinedLayers.In));       // get Argument Value of block parameter
-        this.setOut_name(layer.getStringValue(AllPredefinedLayers.Out));     // get Argument Value of block parameter
+        this.setIn_name(layer.getStringValue(AllPredefinedLayers.In));       // get Argument Value of In parameter
+        this.setOut_name(layer.getStringValue(AllPredefinedLayers.Out));     // get Argument Value of Out parameter
         // TODO: Warum geht es nur wenn als Block ein def übergeben wird im .emadl ??
 
         if (!this.getEnclosingScope().getLocalSymbols().containsKey(this.getBlock_name())) {
@@ -250,7 +250,6 @@ public class AdaNet extends PredefinedLayerDeclaration {
             System.exit(255);
         }
 
-        // ToDo: AdaNet not supported by current backend error
         return ((LayerSymbol) this.getBlock(AllPredefinedLayers.Block).get()).computeOutputTypes();
     }
 
