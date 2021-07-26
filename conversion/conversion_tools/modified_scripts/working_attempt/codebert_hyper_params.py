@@ -71,5 +71,5 @@ def get_training_hparams():
         'limit_samples': 10,
         'epochs': 1,
         'batch_size': 8,
-        'beam_size':3
+        'beam_size':2
     }
