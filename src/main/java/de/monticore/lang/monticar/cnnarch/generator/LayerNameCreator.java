@@ -57,12 +57,15 @@ public class LayerNameCreator {
         }
     }
     protected int nameAdaNetBlock(String target,ArchitectureElementSymbol subElement,int endStage, List<Integer> streamIndices){
-        ArchitectureElementSymbol  currentBlock = ((AdaNet) ((LayerSymbol) subElement).getDeclaration()).getBlock(target).get();
-        if (currentBlock.isArtificial()) {
-            boolean oldState = currentBlock.containsAdaNet();
-            currentBlock.setAdaNet(true);
-            endStage = name(currentBlock, endStage, streamIndices);
-            currentBlock.setAdaNet(oldState);
+
+        Optional<ArchitectureElementSymbol>  currentBlock = ((AdaNet) ((LayerSymbol) subElement).getDeclaration()).getBlock(target);
+        if(currentBlock.isPresent()) {
+            if (currentBlock.get().isArtificial()) {
+                boolean oldState = currentBlock.get().containsAdaNet();
+                currentBlock.get().setAdaNet(true);
+                endStage = name(currentBlock.get(), endStage, streamIndices);
+                currentBlock.get().setAdaNet(oldState);
+            }
         }
         return endStage;
     }
@@ -73,6 +76,7 @@ public class LayerNameCreator {
                 endStage = name(subElement, endStage, streamIndices);
             } else if (subElement.getName().equals(AllPredefinedLayers.AdaNet_Name)) {
                 // name outBlock
+
                 endStage = nameAdaNetBlock(AllPredefinedLayers.Out,subElement,endStage,streamIndices);
                 // name inBlock
                 endStage = nameAdaNetBlock(AllPredefinedLayers.In,subElement,endStage,streamIndices);
