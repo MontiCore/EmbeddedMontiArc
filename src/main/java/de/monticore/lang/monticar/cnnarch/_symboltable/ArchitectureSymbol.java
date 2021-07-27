@@ -17,6 +17,7 @@
 
 package de.monticore.lang.monticar.cnnarch._symboltable;
 
+import de.monticore.lang.monticar.cnnarch.helper.ErrorCodes;
 import de.monticore.lang.monticar.cnnarch.helper.Utils;
 import de.monticore.lang.monticar.cnnarch.predefined.AllPredefinedLayers;
 import de.monticore.lang.monticar.cnnarch.predefined.AllPredefinedVariables;
@@ -24,12 +25,9 @@ import de.monticore.lang.monticar.cnnarch._cocos.CheckLayerPathParameter;
 import de.monticore.symboltable.CommonScopeSpanningSymbol;
 import de.monticore.symboltable.Scope;
 import de.monticore.symboltable.Symbol;
-import de.monticore.lang.monticar.cnnarch._symboltable.MalformedAdaNetArchitecture;
-import org.apache.commons.math3.ml.neuralnet.Network;
 
-import java.lang.RuntimeException;
-import java.lang.NullPointerException;
 import java.util.*;
+import de.se_rwth.commons.logging.Log;
 
 public class ArchitectureSymbol extends CommonScopeSpanningSymbol {
 
@@ -67,14 +65,16 @@ public class ArchitectureSymbol extends CommonScopeSpanningSymbol {
         return networkInstructions;
     }
 
-    private void checkForAdaNetCount(List<NetworkInstructionSymbol> networkInstructions)throws MalformedAdaNetArchitecture{
+    private void checkForAdaNetCount(List<NetworkInstructionSymbol> networkInstructions){
         for(NetworkInstructionSymbol networkInstruction:networkInstructions){
             int adacount = 0;
             for(ArchitectureElementSymbol layer:networkInstruction.getBody().getElements()){
                 adacount += layer.getName().equals(AllPredefinedLayers.AdaNet_Name)?1:0;
             }
             if(adacount >1){
-                throw new MalformedAdaNetArchitecture(String.format("AdaNet must not contain more than 1 AdaNet Layer, found %d ",adacount));
+                 String msg = "0" + ErrorCodes.TOO_MANY_ADANET_LAYER + String.format(" an architecture using AdaNet must not contain more than 1 AdaNet Layer, found %d",adacount);
+                Log.error(msg);
+
             }
         }
     }
