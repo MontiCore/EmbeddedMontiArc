@@ -107,6 +107,8 @@ public class AllPredefinedLayers {
     public static final String Block = "block";
     public static final String In = "inBlock";
     public static final String Out = "outBlock";
+    public static final Integer DEFAULT_UNITS = 20;
+    public static final String DEFAULT_BLOCK = "default_block";
 
     //parameters LoadNetwork layer
     public static final String NETWORK_DIR_NAME = "networkDir";
