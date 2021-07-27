@@ -48,6 +48,7 @@
 
 from mxnet import gluon
 from gluonnlp.model.transformer import TransformerDecoder
+from transformers.models.roberta import RobertaTokenizer
 from codebert_models import Seq2Seq
 import codebert_hyper_params as hp
 import codebert_code2nl_bleu as bleu
@@ -121,6 +122,10 @@ def get_data_iterator(inputs, outputs, shuffle, batch_size, filename):
         output_dict[k] = file[k]
     data_iterator = mx.io.NDArrayIter(
         data=input_dict, label=output_dict, shuffle=shuffle, batch_size=batch_size)
+    # for idx, batch in enumerate(data_iterator):
+    #     print(idx)
+    #     print(batch.data[0].asnumpy())
+    #     print(batch.data[0].shape)
     return data_iterator
 
 def load_codebert_block(symbol_file, weight_file, context):
@@ -203,7 +208,8 @@ def test_model(file_name, seq2seq, args):
         ['source_ids', 'source_masks'], ['target_ids', 'target_masks'],
         True, batch_size, test_file)
     preds = []
-    for batch in test_data:
+    for idx, batch in enumerate(test_data):
+        print('Test batch {}'.format(str(idx)))
         source_ids, source_masks, target_ids, _ = get_seqs_from_batch(batch, ctx)
         pred = seq2seq(source_ids, source_masks)
         preds.append((pred, target_ids))
@@ -255,7 +261,8 @@ if __name__ == '__main__':
         model = train_model(args)
         res_test = test_model('test.h5', model, args)
         res_valid = test_model('valid.h5', model, args)
-        res_test = format_for_bleu(res_test)
-        res_valid = format_for_bleu(res_valid)
+        tokenizer = RobertaTokenizer.from_pretrained('microsoft/codebert-base')
+        res_test = format_for_bleu(tokenizer, res_test)
+        res_valid = format_for_bleu(tokenizer, res_valid)
         compute_bleu(res_test)
         compute_bleu(res_valid)

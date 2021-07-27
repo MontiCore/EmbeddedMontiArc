@@ -63,7 +63,7 @@ def read_examples(filename, limit=500):
 
 # TODO reuse the code block in here to create a new func
 def convert_examples_to_features(examples, tokenizer, max_source_length, max_target_length, stage=None):
-    print('Converting examples to features...')
+    print('Converting {} examples to features...'.format(str(len(examples))))
     features = []
     for example_index, example in enumerate(examples):
         #source
