@@ -1,20 +1,24 @@
 <#assign input = element.inputs[0]>
 <#if mode == "ADANET_CONSTRUCTION">
-<#assign outBlock = element.element.getDeclaration().getBlock("outBlock").get()>
-<#assign inBlock = element.element.getDeclaration().getBlock("inBlock").get()>
+<#assign outBlock = element.element.getDeclaration().getBlock("outBlock")>
+<#assign inBlock = element.element.getDeclaration().getBlock("inBlock")>
 <#assign Block = element.element.getDeclaration().getBlock("block").get()>
 <#if Block.isArtificial()>
 #BuildingBlock
 </#if>
 ${tc.include(Block,"ARTIFICIAL_ARCH_CLASS")}
-<#if inBlock.isArtificial()>
+<#if inBlock.isPresent()>
 #inputBlock
+<#if inBlock.get().isArtifical()>
+${tc.include(inBlock.get(),"ARTIFICIAL_ARCH_CLASS")}
 </#if>
-${tc.include(inBlock,"ARTIFICIAL_ARCH_CLASS")}
-<#if outBlock.isArtificial()>
+</#if>
+<#if outBlock.isPresent()>
+<#if outBlock.get().isArtificial()>
 #outputBlock
+${tc.include(outBlock.get(),"ARTIFICIAL_ARCH_CLASS")}
 </#if>
-${tc.include(outBlock,"ARTIFICIAL_ARCH_CLASS")}
+</#if>
 <#if !Block.isArtificial()>
 class DefaultBlock(gluon.HybridBlock):
     """"
@@ -37,16 +41,24 @@ class CandidateHull(gluon.HybridBlock):
         stack: int,
         name: str,
         output=None,
-        <#if outBlock.isArtificial()>
-        output_shape =<#list outBlock.outputTypes as type>(${tc.join(type.dimensions, ",")})</#list>,
+        <#if outBlock.isPresent()>
+        <#if outBlock.get().isArtificial()>
+        output_shape =<#list outBlock.get().outputTypes as type>(${tc.join(type.dimensions, ",")})</#list>,
         <#else>
-        output_shape =None,
+        output_shape = None,
+        </#if>
+         <#else>
+        output_shape = None
         </#if>
         inBlock=None,
-        <#if inBlock.isArtificial()>
-        input_shape =<#list inBlock.outputTypes as type>(${tc.join(type.dimensions, ",")})</#list>,
+        <#if inBlock.isPresent()>
+        <#if inBlock.get().isArtificial()>
+        input_shape =<#list inBlock.get().outputTypes as type>(${tc.join(type.dimensions, ",")})</#list>,
         <#else>
-        input_shape =None,
+        input_shape = None,
+        </#if>
+        <#else>
+        input_shape = None
         </#if>
         model_shape = <#list Block.outputTypes as type>(${tc.join(type.dimensions, ",")})</#list>,
         block_args=None,
@@ -167,13 +179,21 @@ class Builder:
 
     def __init__(self):
         self.round = 0
-        <#if outBlock.isArtificial()>
-        self.output = ${tc.include(outBlock,"ADANET_CONSTRUCTION")}
+        <#if outBlock.isPresent()>
+        <#if outBlock.get().isArtificial()>
+        self.output = ${tc.include(outBlock.get(),"ADANET_CONSTRUCTION")}
         <#else>
         self.output = None
         </#if>
-        <#if inBlock.isArtificial()>
-        self.input = ${tc.include(inBlock,"ADANET_CONSTRUCTION")}
+        <#else>
+        self.output = None
+        </#if>
+        <#if inBlock.isPresent()>
+        <#if inBlock.get().isArtificial()>
+        self.input = ${tc.include(inBlock.get(),"ADANET_CONSTRUCTION")}
+        <#else>
+        self.input = None
+        </#if>
         <#else>
         self.input = None
         </#if>
