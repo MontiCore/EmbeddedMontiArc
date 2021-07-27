@@ -75,7 +75,6 @@ public class FullyConnected extends PredefinedLayerDeclaration {
                 new ParameterSymbol.Builder()
                         .name(AllPredefinedLayers.UNITS_NAME)
                         .constraints(Constraints.INTEGER, Constraints.POSITIVE)
-                        .defaultValue(50)
                         .build(),
                 new ParameterSymbol.Builder()
                         .name(AllPredefinedLayers.NOBIAS_NAME)
