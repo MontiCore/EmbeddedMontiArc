@@ -45,4 +45,5 @@ public class ErrorCodes {
     public static final String UNROLL_INPUTS_TOO_MANY = "x02384";
     public static final String UNROLL_OUTPUTS_TOO_MANY = "x02385";
     public static final String ADANET_TOO_MANY_ADANET_LAYER = "xADA01";
+    public static final String ADANET_ILLEGAL_ARCH = "xADA02";
 }
