@@ -44,6 +44,6 @@ public class ErrorCodes {
     public static final String OUTPUT_WRITTEN_TO_MULTIPLE_TIMES = "x04836";
     public static final String UNROLL_INPUTS_TOO_MANY = "x02384";
     public static final String UNROLL_OUTPUTS_TOO_MANY = "x02385";
-    public static final String MALFORMED_ADANET_ARCH = "xADA01";
-    public static final String TOO_MANY_ADANET_LAYER = "xADA02";
+    public static final String ADANET_NO_BLOCK_PASSED = "xADA01";
+    public static final String ADANET_TOO_MANY_ADANET_LAYER = "xADA02";
 }
