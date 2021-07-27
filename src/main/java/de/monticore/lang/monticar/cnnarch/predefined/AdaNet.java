@@ -193,13 +193,29 @@ public class AdaNet extends PredefinedLayerDeclaration {
     }
 
     private void connectAdaNet(LayerSymbol Ada) {
-        ArchitectureElementSymbol input = this.getBlock(AllPredefinedLayers.In).get();
-        ArchitectureElementSymbol output = this.getBlock(AllPredefinedLayers.Out).get();
+        Optional<ArchitectureElementSymbol> input = Optional.empty();
+        Optional<ArchitectureElementSymbol> output = Optional.empty();
+
+        if (this.getBlock(AllPredefinedLayers.In).isPresent()) {
+            input = this.getBlock(AllPredefinedLayers.In);
+        }
+        if (this.getBlock(AllPredefinedLayers.Out).isPresent()) {
+            output = this.getBlock(AllPredefinedLayers.Out);
+        }
         ArchitectureElementSymbol block = this.getBlock(AllPredefinedLayers.Block).get();
 
-        connectBlock(input, Ada, Ada.getInputElement().get(), block);
-        connectBlock(block, Ada, input, output);
-        connectBlock(output, Ada, block, Ada.getOutputElement().get());
+        input.ifPresent(architectureElementSymbol -> connectBlock(architectureElementSymbol, Ada, Ada.getInputElement().get(), block));
+        if (input.isPresent()) {
+            connectBlock(input.get(), Ada, Ada.getInputElement().get(), block);
+        } else {
+            input = Ada.getInputElement();
+        }
+        if (output.isPresent()) {
+            connectBlock(output.get(), Ada, block, Ada.getOutputElement().get());
+        } else {
+            output = Ada.getOutputElement();
+        }
+        connectBlock(block, Ada, input.get(), output.get());
     }
 
     private void buildBlock(String target, LayerSymbol layer) {
@@ -216,7 +232,7 @@ public class AdaNet extends PredefinedLayerDeclaration {
             ArgumentSymbol.Builder argBuilder = new ArgumentSymbol.Builder();
             List<ArgumentSymbol> args = new ArrayList<>();
             for (ParameterSymbol param : declaration.getParameters()) {
-                // if no Block parameter is passed defualt to a FullyConnected Layer
+                // if no Block parameter is passed default to a FullyConnected Layer
                 // and set the a default Value
                 ArgumentSymbol arg;
                 if (param.getName().equals(AllPredefinedLayers.UNITS_NAME)
@@ -252,43 +268,52 @@ public class AdaNet extends PredefinedLayerDeclaration {
         if (!getName(AllPredefinedLayers.In).get().equals(AllPredefinedLayers.DEFAULT_BLOCK)) { //passed Parameter is not the default value
             buildBlock(AllPredefinedLayers.In, layer);
 
-        } else {
-            setBlock(AllPredefinedLayers.In, layer.getInputElement());
         }
-        if(!getName(AllPredefinedLayers.Block).get().equals(AllPredefinedLayers.DEFAULT_BLOCK)){
-            buildBlock(AllPredefinedLayers.Block, layer);
-        }else{
-            String msg = "0" + ErrorCodes.MALFORMED_ADANET_ARCH + " no building Block passed for AdaNet Layer";
-            Log.error(msg);
+        if (getName(AllPredefinedLayers.Block).get().equals(AllPredefinedLayers.DEFAULT_BLOCK)) {
+            // if no block is passed set the value to FullyConnected will throw error later
+            this.setBlock_name(Optional.of(AllPredefinedLayers.FULLY_CONNECTED_NAME));
         }
-
+        buildBlock(AllPredefinedLayers.Block, layer);
 
 
         if (!getName(AllPredefinedLayers.Out).get().equals(AllPredefinedLayers.DEFAULT_BLOCK)) { //passed Parameter is not the default value
             buildBlock(AllPredefinedLayers.Out, layer);
 
-        } else {
-            setBlock(AllPredefinedLayers.Out, layer.getOutputElement());
-
         }
         connectAdaNet(layer);
 
-        try {
-            getBlock(AllPredefinedLayers.Block).get().resolve();
-            getBlock(AllPredefinedLayers.Out).get().resolve();
-            getBlock(AllPredefinedLayers.In).get().resolve();
-            layer.resolve();
-        } catch (Exception e) {
-            System.out.println(e);
-            System.exit(255);
-        }
 
+        getBlock(AllPredefinedLayers.Block).ifPresent(toSolve -> {
+            try {
+                toSolve.resolve();
+            } catch (ArchResolveException e) {
+                e.printStackTrace();
+            }
+        });
+        getBlock(AllPredefinedLayers.In).ifPresent(toSolve -> {
+            try {
+                toSolve.resolve();
+            } catch (ArchResolveException e) {
+                e.printStackTrace();
+            }
+        });
+        getBlock(AllPredefinedLayers.Out).ifPresent(toSolve -> {
+            try {
+                toSolve.resolve();
+            } catch (ArchResolveException e) {
+                e.printStackTrace();
+            }
+        });
+        try {
+            layer.resolve();
+        }catch(ArchResolveException e){
+            e.printStackTrace();
+        }
         return ((LayerSymbol) this.getBlock(AllPredefinedLayers.Block).get()).computeOutputTypes();
     }
 
     public static AdaNet create() {
         AdaNet declaration = new AdaNet();
-
         List<ParameterSymbol> parameters = new ArrayList<>(Arrays.asList(
                 new ParameterSymbol
                         .Builder()
