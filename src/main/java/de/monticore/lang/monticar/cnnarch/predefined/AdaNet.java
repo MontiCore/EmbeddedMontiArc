@@ -1,14 +1,30 @@
+/**
+ *
+ * (c) https://github.com/MontiCore/monticore
+ *
+ * The license generally applicable for this project
+ * can be found under https://github.com/MontiCore/monticore.
+ */
+/**
+ * (c) https://github.com/MontiCore/monticore
+ * <p>
+ * The license generally applicable for this project
+ * can be found under https://github.com/MontiCore/monticore.
+ */
 
 package de.monticore.lang.monticar.cnnarch.predefined;
 
 import de.monticore.lang.monticar.cnnarch._symboltable.*;
+import de.monticore.lang.monticar.cnnarch.helper.ErrorCodes;
 import de.monticore.symboltable.Symbol;
 import org.apache.commons.math3.geometry.spherical.oned.Arc;
 import org.checkerframework.checker.units.qual.A;
 import sun.reflect.generics.reflectiveObjects.NotImplementedException;
-
+import de.se_rwth.commons.logging.Log;
 import java.security.InvalidParameterException;
 import java.util.*;
+
+import static de.monticore.lang.monticar.cnnarch.helper.ErrorCodes.MISSING_VAR_VALUE;
 
 public class AdaNet extends PredefinedLayerDeclaration {
     private Optional<String> block_name;
@@ -134,17 +150,19 @@ public class AdaNet extends PredefinedLayerDeclaration {
                 return getIn_name();
             case AllPredefinedLayers.Out:
                 return getOut_name();
-           default:
+            default:
                 return Optional.empty();
         }
     }
-    private void connectBlock(ArchitectureElementSymbol block,LayerSymbol layer, ArchitectureElementSymbol input, ArchitectureElementSymbol output){
+
+    private void connectBlock(ArchitectureElementSymbol block, LayerSymbol layer, ArchitectureElementSymbol input, ArchitectureElementSymbol output) {
         block.setInputElement(input);
         block.setOutputElement(output);
-        if(block.isArtificial()){
-            connectBlock(block,layer);
+        if (block.isArtificial()) {
+            connectBlock(block, layer);
         }
     }
+
     private void connectBlock(ArchitectureElementSymbol block, LayerSymbol layer) {
         ArchitectureElementSymbol input = layer.getInputElement().get();
         ArchitectureElementSymbol output = layer.getOutputElement().get();
@@ -159,15 +177,15 @@ public class AdaNet extends PredefinedLayerDeclaration {
                         lay.setInputElement(previous);
                         previous.setOutputElement(lay);
                     }
-                    if(lay.equals(subNetwork.get(subNetwork.size()-1))){ // check if lay is the last element
+                    if (lay.equals(subNetwork.get(subNetwork.size() - 1))) { // check if lay is the last element
                         lay.setOutputElement(output);
                     }
-                    if(lay.isArtificial()){
-                        connectBlock(lay,(LayerSymbol) block);
+                    if (lay.isArtificial()) {
+                        connectBlock(lay, (LayerSymbol) block);
                     }
                 }
             }
-        }else{
+        } else {
             block.setInputElement(input);
             block.setOutputElement(output);
         }
@@ -179,9 +197,9 @@ public class AdaNet extends PredefinedLayerDeclaration {
         ArchitectureElementSymbol output = this.getBlock(AllPredefinedLayers.Out).get();
         ArchitectureElementSymbol block = this.getBlock(AllPredefinedLayers.Block).get();
 
-        connectBlock(input,Ada,Ada.getInputElement().get(),block);
-        connectBlock(block,Ada,input,output);
-        connectBlock(output,Ada,block,Ada.getOutputElement().get());
+        connectBlock(input, Ada, Ada.getInputElement().get(), block);
+        connectBlock(block, Ada, input, output);
+        connectBlock(output, Ada, block, Ada.getOutputElement().get());
     }
 
     private void buildBlock(String target, LayerSymbol layer) {
@@ -198,7 +216,17 @@ public class AdaNet extends PredefinedLayerDeclaration {
             ArgumentSymbol.Builder argBuilder = new ArgumentSymbol.Builder();
             List<ArgumentSymbol> args = new ArrayList<>();
             for (ParameterSymbol param : declaration.getParameters()) {
-                ArgumentSymbol arg = argBuilder.parameter(param.getName()).parameter(param).value(param.getExpression()).build();
+                // if no Block parameter is passed defualt to a FullyConnected Layer
+                // and set the a default Value
+                ArgumentSymbol arg;
+                if (param.getName().equals(AllPredefinedLayers.UNITS_NAME)
+                        && target.equals(AllPredefinedLayers.Block)
+                        && declaration.getName().equals(AllPredefinedLayers.FULLY_CONNECTED_NAME)
+                ) {
+                    arg = argBuilder.parameter(param.getName()).parameter(param).value(ArchSimpleExpressionSymbol.of(AllPredefinedLayers.DEFAULT_UNITS)).build();
+                } else {
+                    arg = argBuilder.parameter(param.getName()).parameter(param).value(param.getExpression()).build();
+                }
                 args.add(arg);
             }
             blockBuilder.arguments(args);
@@ -221,17 +249,22 @@ public class AdaNet extends PredefinedLayerDeclaration {
             //ToDo: check if passed dev names are present in scope else print error!!!
         }
 
-        if (!getName(AllPredefinedLayers.In).get().equals("default")) { //passed Parameter is not the default value
+        if (!getName(AllPredefinedLayers.In).get().equals(AllPredefinedLayers.DEFAULT_BLOCK)) { //passed Parameter is not the default value
             buildBlock(AllPredefinedLayers.In, layer);
 
         } else {
             setBlock(AllPredefinedLayers.In, layer.getInputElement());
         }
+        if(!getName(AllPredefinedLayers.Block).get().equals(AllPredefinedLayers.DEFAULT_BLOCK)){
+            buildBlock(AllPredefinedLayers.Block, layer);
+        }else{
+            String msg = "0" + ErrorCodes.MALFORMED_ADANET_ARCH + " no building Block passed for AdaNet Layer";
+            Log.error(msg);
+        }
 
-        buildBlock(AllPredefinedLayers.Block, layer);
 
 
-        if (!getName(AllPredefinedLayers.Out).get().equals("default")) { //passed Parameter is not the default value
+        if (!getName(AllPredefinedLayers.Out).get().equals(AllPredefinedLayers.DEFAULT_BLOCK)) { //passed Parameter is not the default value
             buildBlock(AllPredefinedLayers.Out, layer);
 
         } else {
@@ -260,17 +293,18 @@ public class AdaNet extends PredefinedLayerDeclaration {
                 new ParameterSymbol
                         .Builder()
                         .name(AllPredefinedLayers.Block)
-                        .defaultValue(AllPredefinedLayers.FULLY_CONNECTED_NAME)
+                        //.defaultValue(AllPredefinedLayers.FULLY_CONNECTED_NAME)
+                        .defaultValue(AllPredefinedLayers.DEFAULT_BLOCK)
                         .build(),
                 new ParameterSymbol
                         .Builder()
                         .name(AllPredefinedLayers.In)
-                        .defaultValue("default")
+                        .defaultValue(AllPredefinedLayers.DEFAULT_BLOCK)
                         .build(),
                 new ParameterSymbol
                         .Builder()
                         .name(AllPredefinedLayers.Out)
-                        .defaultValue("default")
+                        .defaultValue(AllPredefinedLayers.DEFAULT_BLOCK)
                         .build()
         )
         );
