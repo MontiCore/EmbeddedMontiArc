@@ -298,6 +298,7 @@ public class Utils {
     }
     public static boolean contains(ASTRange firstRange, ASTRange secondRange,String name) {
         if(!name.equals(AllPredefinedLayers.AdaNet_Name)) {
+            // skip these because components created by adanet don't have these fields
             if (!firstRange.hasNoLowerLimit() && secondRange.hasNoLowerLimit()) {
                 return false;
             }
@@ -308,9 +309,10 @@ public class Utils {
             if (!firstRange.hasNoUpperLimit() && firstRange.getEndValue().compareTo(secondRange.getEndValue()) < 0){
                 return false;
             }
-        }
-        if (!firstRange.hasNoLowerLimit() && firstRange.getStartValue().compareTo(secondRange.getStartValue()) > 0) {
-            return false;
+
+            if (!firstRange.hasNoLowerLimit() && firstRange.getStartValue().compareTo(secondRange.getStartValue()) > 0) {
+                return false;
+            }
         }
         if (firstRange.isPresentStep()){
             if (!secondRange.isPresentStep()) {
