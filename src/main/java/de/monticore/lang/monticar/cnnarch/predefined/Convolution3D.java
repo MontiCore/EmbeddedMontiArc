@@ -57,7 +57,7 @@ public class Convolution3D extends PredefinedLayerDeclaration {
                         .build(),
                 new ParameterSymbol.Builder()
                         .name(AllPredefinedLayers.PADDING_NAME)
-                        .constraints(Constraints.PADDING_TYPE)
+                        .constraints(Constraints.PADDING_TYPE3D) //3D Padding Type also allows Tupels
                         .defaultValue(AllPredefinedLayers.PADDING_SAME3D)
                         .build(),
                 new ParameterSymbol.Builder()

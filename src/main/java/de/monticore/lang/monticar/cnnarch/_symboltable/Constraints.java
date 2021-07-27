@@ -193,9 +193,7 @@ public enum Constraints {
             if (optString.isPresent()){
                 if (optString.get().equals(AllPredefinedLayers.PADDING_VALID)
                         || optString.get().equals(AllPredefinedLayers.PADDING_SAME)
-                        || optString.get().equals(AllPredefinedLayers.PADDING_NO_LOSS)
-                        || optString.get().equals(AllPredefinedLayers.PADDING_VALID3D)
-                        || optString.get().equals(AllPredefinedLayers.PADDING_SAME3D)){
+                        || optString.get().equals(AllPredefinedLayers.PADDING_NO_LOSS)){
                     return true;
                 }
             }
@@ -205,8 +203,7 @@ public enum Constraints {
         protected String msgString() {
             return AllPredefinedLayers.PADDING_VALID + ", "
                     + AllPredefinedLayers.PADDING_SAME + ",  "
-                    + AllPredefinedLayers.PADDING_NO_LOSS + " or "
-                    + AllPredefinedLayers.PADDING_SAME3D;
+                    + AllPredefinedLayers.PADDING_NO_LOSS;
         }
     },
     TRANSPADDING_TYPE {
@@ -215,9 +212,7 @@ public enum Constraints {
             Optional<String> optString= exp.getStringValue();
             if (optString.isPresent()){
                 if (optString.get().equals(AllPredefinedLayers.PADDING_VALID)
-                        || optString.get().equals(AllPredefinedLayers.PADDING_VALID3D)
-                        || optString.get().equals(AllPredefinedLayers.PADDING_SAME)
-                        || optString.get().equals(AllPredefinedLayers.PADDING_SAME3D)) {
+                        || optString.get().equals(AllPredefinedLayers.PADDING_SAME)) {
                     return true;
                 }
             }
@@ -226,11 +221,51 @@ public enum Constraints {
         @Override
         protected String msgString() {
             return AllPredefinedLayers.PADDING_VALID + ", "
-                    + AllPredefinedLayers.PADDING_SAME + " or "
-                    + AllPredefinedLayers.PADDING_SAME3D + " or "
-                    + AllPredefinedLayers.PADDING_VALID3D;
+                    + AllPredefinedLayers.PADDING_SAME;
         }
     },
+    PADDING_TYPE3D {
+        @Override
+        public boolean isValid(ArchSimpleExpressionSymbol exp) {
+            Optional<String> optString= exp.getStringValue();
+            if (optString.isPresent()){
+                if (optString.get().equals(AllPredefinedLayers.PADDING_VALID)
+                        || optString.get().equals(AllPredefinedLayers.PADDING_VALID3D)
+                        || optString.get().equals(AllPredefinedLayers.PADDING_SAME3D)
+                        || optString.get().equals(AllPredefinedLayers.PADDING_SIMPLE3D)){
+                    return true;
+                }
+            }
+            return false || exp.isIntTuple().get();
+        }
+        @Override
+        protected String msgString() {
+            return AllPredefinedLayers.PADDING_VALID3D + ", "
+                    + AllPredefinedLayers.PADDING_SAME3D + ",  "
+                    + AllPredefinedLayers.PADDING_NO_LOSS + " or "
+                    + AllPredefinedLayers.PADDING_SIMPLE3D;
+        }
+    },
+    TRANSPADDING_TYPE3D {
+        @Override
+        public boolean isValid(ArchSimpleExpressionSymbol exp) {
+            Optional<String> optString= exp.getStringValue();
+            if (optString.isPresent()){
+                if (optString.get().equals(AllPredefinedLayers.PADDING_VALID3D)
+                        || optString.get().equals(AllPredefinedLayers.PADDING_SAME3D)
+                        || optString.get().equals(AllPredefinedLayers.PADDING_SIMPLE3D)){
+                    return true;
+                }
+            }
+            return false || exp.isIntTuple().get();
+        }
+        @Override
+        protected String msgString() {
+            return AllPredefinedLayers.PADDING_VALID3D + ", "
+                    + AllPredefinedLayers.PADDING_SAME3D + " or "
+                    + AllPredefinedLayers.PADDING_SIMPLE3D;
+        }
+        },
     POOL_TYPE {
         @Override
         public boolean isValid(ArchSimpleExpressionSymbol exp) {

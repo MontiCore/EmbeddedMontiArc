@@ -54,7 +54,7 @@ public class UpConvolution3D extends PredefinedLayerDeclaration {
                         .build(),
                 new ParameterSymbol.Builder()
                         .name(AllPredefinedLayers.TRANSPADDING_NAME)
-                        .constraints(Constraints.TRANSPADDING_TYPE)
+                        .constraints(Constraints.TRANSPADDING_TYPE3D)
                         .defaultValue(AllPredefinedLayers.PADDING_SAME3D)
                         .build(),
                 new ParameterSymbol.Builder()

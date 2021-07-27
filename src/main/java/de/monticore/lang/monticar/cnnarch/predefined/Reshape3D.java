@@ -32,24 +32,18 @@ public class Reshape3D extends PredefinedLayerDeclaration {
         int width = -1;
         int depth = -1;
 
-        if (shape.size() >= 4) {
-            width = shape.get(3);
-        }
+        
+        width = shape.get(3);
 
-        if (shape.size() >= 3) {
-            height = shape.get(2);
-        }
+        height = shape.get(2);
 
-        if (shape.size() >=2) {
-            depth = shape.get(1);
-        }
+        depth = shape.get(1);
 
-        if (shape.size() >= 1) {
-            channels = shape.get(0);
-        } else {
+        channels = shape.get(0);
+        /* else {
             Log.error("0" + ErrorCodes.ILLEGAL_PARAMETER_VALUE + "\"Shape\" argument needs to contain at least one entry"
                     , layer.getSourcePosition());
-        }
+        }*/
 
         int totalSize = layer.getInputTypes().get(0).getChannels() * layer.getInputTypes().get(0).getHeight() * layer.getInputTypes().get(0).getWidth() * layer.getInputTypes().get(0).getDepth();
         int newTotalSize = shape.stream().reduce(1, (x, y) -> x * y);

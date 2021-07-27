@@ -22,8 +22,6 @@ public class LeakyRelu extends PredefinedLayerDeclaration {
 
     @Override
     public List<ArchTypeSymbol> computeOutputTypes(List<ArchTypeSymbol> inputTypes, LayerSymbol layer, VariableSymbol.Member member) {
-        Integer test = new Integer(inputTypes.get(0).getDepthIndex());
-        System.out.println("Depth Index in LeakyRelu is: " + test.toString());
         if (inputTypes.get(0).getDepthIndex() == -1) {
             return Collections.singletonList(
                     new ArchTypeSymbol.Builder()

@@ -166,8 +166,8 @@ abstract public class PredefinedLayerDeclaration extends LayerDeclarationSymbol 
                     Integer iwidth = new Integer(inputWidth);
                     Integer idepth = new Integer(inputDepth);
                     Integer channel = new Integer(inputTypes.get(0).getChannels());
-                    Log.warn("The input resolution is smaller than the kernel. " + height.toString() + " " + width.toString() + " " + depth.toString() + " " + iheight.toString() + " " + iwidth.toString() + " " + idepth.toString() + " " +
-                                    "This results in an output resolution of 1x1. " + "Depth Index is: " + depthI.toString() + " " + "Channel is: " + channel.toString() + " " +
+                    Log.warn("The input resolution is smaller than the kernel. " + " " +
+                                    "This results in an output resolution of 1x1. " + " " +
                                     "If this warning appears multiple times, consider changing your architecture"
                             , layer.getSourcePosition());
                 }
@@ -196,7 +196,7 @@ abstract public class PredefinedLayerDeclaration extends LayerDeclarationSymbol 
                     Integer width = new Integer(kernelWidth);
                     Integer iheight = new Integer(inputHeight);
                     Integer iwidth = new Integer(inputWidth);
-                    Log.warn("The input resolution is smaller than the kernel. " + height.toString() + " " + width.toString() + " "  + iheight.toString() + " " + iwidth.toString() + " " +
+                    Log.warn("The input resolution is smaller than the kernel. " + " " +
                                     "This results in an output resolution of 1x1. " +
                                     "If this warning appears multiple times, consider changing your architecture"
                             , layer.getSourcePosition());
@@ -206,37 +206,49 @@ abstract public class PredefinedLayerDeclaration extends LayerDeclarationSymbol 
     }
 
 
-    //output type function for convolution and pooling
+    //output type function for convolution and poolingee
     protected static List<ArchTypeSymbol> computeConvAndPoolOutputShape(ArchTypeSymbol inputType, LayerSymbol method, int channels) {
-        String borderModeSetting = method.getStringValue(AllPredefinedLayers.PADDING_NAME).get();
-        if (borderModeSetting.equals(AllPredefinedLayers.PADDING_SAME)) {
-            return computeOutputShapeWithSamePadding(inputType, method, channels);
-        } else if (borderModeSetting.equals(AllPredefinedLayers.PADDING_VALID)) {
-            return computeOutputShapeWithValidPadding(inputType, method, channels);
-        } else if (borderModeSetting.equals(AllPredefinedLayers.PADDING_NO_LOSS)) {
-            return computeOutputShapeWithNoLossPadding(inputType, method, channels);
-        } else if (borderModeSetting.equals(AllPredefinedLayers.PADDING_SAME3D)){ //Add 3D PADDING CASES
-            return computeOutputShapeWithSamePadding3D(inputType, method, channels);
-        } else if (borderModeSetting.equals(AllPredefinedLayers.PADDING_VALID3D)){
-            return computeOutputShapeWithValidPadding3D (inputType, method, channels);
+        if (method.getIntTupleValue(AllPredefinedLayers.PADDING_NAME).isPresent()){ //If the Padding is given in Tuple
+            return computeOutputShapeWithTupelPadding3D(inputType, method, channels);
         } else {
-            throw new IllegalStateException("border_mode is " + borderModeSetting + ". This should never happen.");
+            String borderModeSetting = method.getStringValue(AllPredefinedLayers.PADDING_NAME).get();
+            if (borderModeSetting.equals(AllPredefinedLayers.PADDING_SAME)) {
+                return computeOutputShapeWithSamePadding(inputType, method, channels);
+            } else if (borderModeSetting.equals(AllPredefinedLayers.PADDING_VALID)) {
+                return computeOutputShapeWithValidPadding(inputType, method, channels);
+            } else if (borderModeSetting.equals(AllPredefinedLayers.PADDING_NO_LOSS)) {
+                return computeOutputShapeWithNoLossPadding(inputType, method, channels);
+            } else if (borderModeSetting.equals(AllPredefinedLayers.PADDING_SAME3D)){ //Add 3D PADDING CASES
+                return computeOutputShapeWithSamePadding3D(inputType, method, channels);
+            } else if (borderModeSetting.equals(AllPredefinedLayers.PADDING_VALID3D)){
+                return computeOutputShapeWithValidPadding3D (inputType, method, channels);
+            } else if (borderModeSetting.equals(AllPredefinedLayers.PADDING_SIMPLE3D)){
+                return computeOutputShapeWithSimplePadding3D (inputType, method, channels);
+            } else {
+                throw new IllegalStateException("border_mode is " + borderModeSetting + ". This should never happen.");
+            }
         }
     }
 
     //output type function for transposed convolution
     protected static List<ArchTypeSymbol> computeUpConvOutputShape(ArchTypeSymbol inputType, LayerSymbol method, int channels) {
-        String borderModeSetting = method.getStringValue(AllPredefinedLayers.TRANSPADDING_NAME).get();
-        if (borderModeSetting.equals(AllPredefinedLayers.PADDING_SAME)) {
-            return computeUpConvOutputShapeWithSamePadding(inputType, method, channels);
-        } else if (borderModeSetting.equals(AllPredefinedLayers.PADDING_VALID)) {
-            return computeUpConvOutputShapeWithValidPadding(inputType, method, channels);
-        } else if (borderModeSetting.equals(AllPredefinedLayers.PADDING_SAME3D)){ //Add 3D PADDING CASES
-            return computeUpConvOutputShapeWithSamePadding3D(inputType, method, channels);
-        } else if (borderModeSetting.equals(AllPredefinedLayers.PADDING_VALID3D)){
-            return computeUpConvOutputShapeWithValidPadding3D (inputType, method, channels);
+        if (method.getIntTupleValue(AllPredefinedLayers.TRANSPADDING_NAME).isPresent()){ //If the Padding is given in Tuple
+            return computeUpOutputShapeWithTupelPadding3D(inputType, method, channels);
         } else {
-            throw new IllegalStateException("border_mode is " + borderModeSetting + ". This should never happen.");
+            String borderModeSetting = method.getStringValue(AllPredefinedLayers.TRANSPADDING_NAME).get();
+            if (borderModeSetting.equals(AllPredefinedLayers.PADDING_SAME)) {
+                return computeUpConvOutputShapeWithSamePadding(inputType, method, channels);
+            } else if (borderModeSetting.equals(AllPredefinedLayers.PADDING_VALID)) {
+                return computeUpConvOutputShapeWithValidPadding(inputType, method, channels);
+            } else if (borderModeSetting.equals(AllPredefinedLayers.PADDING_SAME3D)){ //Add 3D PADDING CASES
+                return computeUpConvOutputShapeWithSamePadding3D(inputType, method, channels);
+            } else if (borderModeSetting.equals(AllPredefinedLayers.PADDING_VALID3D)){
+                return computeUpConvOutputShapeWithValidPadding3D (inputType, method, channels);
+            } else if (borderModeSetting.equals(AllPredefinedLayers.PADDING_SIMPLE3D)){
+                return computeUpConvOutputShapeWithSimplePadding3D (inputType, method, channels);
+            } else {
+                throw new IllegalStateException("border_mode is " + borderModeSetting + ". This should never happen.");
+            }
         }
     }
 
@@ -248,7 +260,8 @@ abstract public class PredefinedLayerDeclaration extends LayerDeclarationSymbol 
         }
         layer.setIntValue(AllPredefinedLayers.SIZE_NAME, outputChannels);
     }
-//NEW
+
+    //Same padding should result in the output shape having the same size as the input shape
     private static List<ArchTypeSymbol> computeOutputShapeWithSamePadding3D(ArchTypeSymbol inputType, LayerSymbol method, int channels){
         int strideHeight = method.getIntTupleValue(AllPredefinedLayers.STRIDE_NAME).get().get(1);
         int strideWidth = method.getIntTupleValue(AllPredefinedLayers.STRIDE_NAME).get().get(2);
@@ -262,7 +275,7 @@ abstract public class PredefinedLayerDeclaration extends LayerDeclarationSymbol 
         int inputDepth = inputType.getDepth();
 
         int outputWidth = (inputWidth + strideWidth - 1) / strideWidth;
-        int outputHeight = (inputHeight + strideWidth - 1) / strideHeight;
+        int outputHeight = (inputHeight + strideHeight - 1) / strideHeight;
         int outputDepth = (inputDepth + strideDepth - 1) / strideDepth;
 
         return Collections.singletonList(new ArchTypeSymbol.Builder()
@@ -274,6 +287,7 @@ abstract public class PredefinedLayerDeclaration extends LayerDeclarationSymbol 
                 .build());
     }
 
+    //Padding of size (0,0,0)
     private static List<ArchTypeSymbol> computeOutputShapeWithValidPadding3D(ArchTypeSymbol inputType, LayerSymbol method, int channels) {
         int strideHeight = method.getIntTupleValue(AllPredefinedLayers.STRIDE_NAME).get().get(1);
         int strideWidth = method.getIntTupleValue(AllPredefinedLayers.STRIDE_NAME).get().get(2);
@@ -294,9 +308,9 @@ abstract public class PredefinedLayerDeclaration extends LayerDeclarationSymbol 
             outputHeight = 0;
             outputDepth = 0;
         } else {
-            outputWidth = 1 + (inputWidth - kernelWidth) / strideWidth;
-            outputHeight = 1 + (inputHeight - kernelHeight) / strideHeight;
-            outputDepth = 1 + (inputDepth - kernelDepth) / strideDepth;
+            outputWidth = 1 + ((inputWidth - kernelWidth) / strideWidth);
+            outputHeight = 1 + ((inputHeight - kernelHeight) / strideHeight);
+            outputDepth = 1 + ((inputDepth - kernelDepth) / strideDepth);
         }
 
         return Collections.singletonList(new ArchTypeSymbol.Builder()
@@ -308,10 +322,81 @@ abstract public class PredefinedLayerDeclaration extends LayerDeclarationSymbol 
                 .build());
     }
 
+    //Padding of size (1,1,1)
+    private static List<ArchTypeSymbol> computeOutputShapeWithSimplePadding3D(ArchTypeSymbol inputType, LayerSymbol method, int channels){
+        int strideHeight = method.getIntTupleValue(AllPredefinedLayers.STRIDE_NAME).get().get(1);
+        int strideWidth = method.getIntTupleValue(AllPredefinedLayers.STRIDE_NAME).get().get(2);
+        int strideDepth = method.getIntTupleValue(AllPredefinedLayers.STRIDE_NAME).get().get(0);
+        int kernelHeight = method.getIntTupleValue(AllPredefinedLayers.KERNEL_NAME).get().get(1);
+        int kernelWidth = method.getIntTupleValue(AllPredefinedLayers.KERNEL_NAME).get().get(2);
+        int kernelDepth = method.getIntTupleValue(AllPredefinedLayers.KERNEL_NAME).get().get(0);
+
+        int inputHeight = inputType.getHeight();
+        int inputWidth = inputType.getWidth();
+        int inputDepth = inputType.getDepth();
+
+        int pad = 1;
+
+        int outputWidth;
+        int outputHeight;
+        int outputDepth;
+
+        if (inputWidth + 2*pad < kernelWidth || inputHeight + 2*pad < kernelHeight || inputDepth + 2*pad < kernelDepth) {
+            outputWidth = 0;
+            outputHeight = 0;
+            outputDepth = 0;
+        } else {
+            outputWidth = 1 + ((inputWidth - kernelWidth + 2* pad) / strideWidth);
+            outputHeight = 1 + ((inputHeight - kernelHeight + 2* pad) / strideHeight);
+            outputDepth = 1 + ((inputDepth - kernelDepth + 2* pad) / strideDepth);
+        }
+
+        return Collections.singletonList(new ArchTypeSymbol.Builder()
+                .height(outputHeight)
+                .width(outputWidth)
+                .depth(outputDepth)
+                .channels(channels)
+                .elementType("-oo", "oo")
+                .build());
+    }
+
+    private static List<ArchTypeSymbol> computeOutputShapeWithTupelPadding3D(ArchTypeSymbol inputType, LayerSymbol method, int channels){
+        int strideHeight = method.getIntTupleValue(AllPredefinedLayers.STRIDE_NAME).get().get(1);
+        int strideWidth = method.getIntTupleValue(AllPredefinedLayers.STRIDE_NAME).get().get(2);
+        int strideDepth = method.getIntTupleValue(AllPredefinedLayers.STRIDE_NAME).get().get(0);
+        int kernelHeight = method.getIntTupleValue(AllPredefinedLayers.KERNEL_NAME).get().get(1);
+        int kernelWidth = method.getIntTupleValue(AllPredefinedLayers.KERNEL_NAME).get().get(2);
+        int kernelDepth = method.getIntTupleValue(AllPredefinedLayers.KERNEL_NAME).get().get(0);
+
+        int paddingHeight = method.getIntTupleValue(AllPredefinedLayers.PADDING_NAME).get().get(1);
+        int paddingWidth = method.getIntTupleValue(AllPredefinedLayers.PADDING_NAME).get().get(2);
+        int paddingDepth = method.getIntTupleValue(AllPredefinedLayers.PADDING_NAME).get().get(0);
+
+        int inputHeight = inputType.getHeight();
+        int inputWidth = inputType.getWidth();
+        int inputDepth = inputType.getDepth();
+
+        int outputWidth = 1 + ((inputWidth - kernelWidth + 2*paddingWidth) / strideWidth);
+        int outputHeight = 1 + ((inputHeight - kernelHeight + 2*paddingHeight) / strideHeight);
+        int outputDepth = 1 + ((inputDepth - kernelDepth + 2*paddingDepth) / strideDepth);
+
+        return Collections.singletonList(new ArchTypeSymbol.Builder()
+                .height(outputHeight)
+                .width(outputWidth)
+                .depth(outputDepth)
+                .channels(channels)
+                .elementType("-oo", "oo")
+                .build());
+    }
+
+
     private static List<ArchTypeSymbol> computeUpConvOutputShapeWithSamePadding3D(ArchTypeSymbol inputType, LayerSymbol method, int channels){
         int strideHeight = method.getIntTupleValue(AllPredefinedLayers.STRIDE_NAME).get().get(1);
         int strideWidth = method.getIntTupleValue(AllPredefinedLayers.STRIDE_NAME).get().get(2);
         int strideDepth = method.getIntTupleValue(AllPredefinedLayers.STRIDE_NAME).get().get(0);
+        int kernelHeight = method.getIntTupleValue(AllPredefinedLayers.KERNEL_NAME).get().get(1);
+        int kernelWidth = method.getIntTupleValue(AllPredefinedLayers.KERNEL_NAME).get().get(2);
+        int kernelDepth = method.getIntTupleValue(AllPredefinedLayers.KERNEL_NAME).get().get(0);
 
         int inputHeight = inputType.getHeight();
         int inputWidth = inputType.getWidth();
@@ -320,13 +405,10 @@ abstract public class PredefinedLayerDeclaration extends LayerDeclarationSymbol 
         int outputWidth;
         int outputHeight;
         int outputDepth;
-
-        //Integer iDepth = new Integer(inputDepth);
-        //Integer stride = new Integer(strideDepth);
-
-        outputWidth = inputWidth * strideWidth;
-        outputHeight = inputHeight * strideHeight;
-        outputDepth = inputDepth * strideDepth;
+        
+        outputWidth = strideWidth*inputWidth;
+        outputHeight = strideHeight*inputHeight;
+        outputDepth = strideDepth*inputDepth;
 
         //Integer oDepth = new Integer(outputDepth);
         //System.out.println("In computeUpConvShape: " + iDepth.toString() + " " + stride.toString() + " " + oDepth.toString());
@@ -356,9 +438,12 @@ abstract public class PredefinedLayerDeclaration extends LayerDeclarationSymbol 
         int outputHeight;
         int outputDepth;
 
-        outputWidth = (inputWidth - 1) * strideWidth + kernelWidth;
-        outputHeight = (inputHeight - 1) * strideHeight + kernelHeight;
-        outputDepth = (inputDepth - 1) * strideDepth + kernelDepth;
+        //TEMPORARY
+        int pad = 0;
+
+        outputWidth = (inputWidth - 1) * strideWidth + kernelWidth - 2*pad;
+        outputHeight = (inputHeight - 1) * strideHeight + kernelHeight - 2*pad;
+        outputDepth = (inputDepth - 1) * strideDepth + kernelDepth - 2*pad;
 
         return Collections.singletonList(new ArchTypeSymbol.Builder()
                 .height(outputHeight)
@@ -369,7 +454,65 @@ abstract public class PredefinedLayerDeclaration extends LayerDeclarationSymbol 
                 .build());
     }
 
-//END NEW
+    private static List<ArchTypeSymbol> computeUpConvOutputShapeWithSimplePadding3D(ArchTypeSymbol inputType, LayerSymbol method, int channels){
+        int strideHeight = method.getIntTupleValue(AllPredefinedLayers.STRIDE_NAME).get().get(1);
+        int strideWidth = method.getIntTupleValue(AllPredefinedLayers.STRIDE_NAME).get().get(2);
+        int strideDepth = method.getIntTupleValue(AllPredefinedLayers.STRIDE_NAME).get().get(0);
+        int kernelHeight = method.getIntTupleValue(AllPredefinedLayers.KERNEL_NAME).get().get(1);
+        int kernelWidth = method.getIntTupleValue(AllPredefinedLayers.KERNEL_NAME).get().get(2);
+        int kernelDepth = method.getIntTupleValue(AllPredefinedLayers.KERNEL_NAME).get().get(0);
+
+        int inputHeight = inputType.getHeight();
+        int inputWidth = inputType.getWidth();
+        int inputDepth = inputType.getDepth();
+
+        int outputWidth;
+        int outputHeight;
+        int outputDepth;
+
+        int pad = 1;
+
+        outputWidth = (inputWidth - 1) * strideWidth + kernelWidth - 2*pad;
+        outputHeight = (inputHeight - 1) * strideHeight + kernelHeight - 2*pad;
+        outputDepth = (inputDepth - 1) * strideDepth + kernelDepth - 2*pad;
+
+        return Collections.singletonList(new ArchTypeSymbol.Builder()
+                .height(outputHeight)
+                .width(outputWidth)
+                .depth(outputDepth)
+                .channels(channels)
+                .elementType("-oo", "oo")
+                .build());
+    }
+
+    private static List<ArchTypeSymbol> computeUpOutputShapeWithTupelPadding3D(ArchTypeSymbol inputType, LayerSymbol method, int channels){
+        int strideHeight = method.getIntTupleValue(AllPredefinedLayers.STRIDE_NAME).get().get(1);
+        int strideWidth = method.getIntTupleValue(AllPredefinedLayers.STRIDE_NAME).get().get(2);
+        int strideDepth = method.getIntTupleValue(AllPredefinedLayers.STRIDE_NAME).get().get(0);
+        int kernelHeight = method.getIntTupleValue(AllPredefinedLayers.KERNEL_NAME).get().get(1);
+        int kernelWidth = method.getIntTupleValue(AllPredefinedLayers.KERNEL_NAME).get().get(2);
+        int kernelDepth = method.getIntTupleValue(AllPredefinedLayers.KERNEL_NAME).get().get(0);
+
+        int paddingHeight = method.getIntTupleValue(AllPredefinedLayers.TRANSPADDING_NAME).get().get(1);
+        int paddingWidth = method.getIntTupleValue(AllPredefinedLayers.TRANSPADDING_NAME).get().get(2);
+        int paddingDepth = method.getIntTupleValue(AllPredefinedLayers.TRANSPADDING_NAME).get().get(0);
+
+        int inputHeight = inputType.getHeight();
+        int inputWidth = inputType.getWidth();
+        int inputDepth = inputType.getDepth();
+
+        int outputWidth = (inputWidth - 1) * strideWidth + kernelWidth - 2*paddingWidth;
+        int outputHeight = (inputHeight - 1) * strideHeight + kernelHeight - 2*paddingHeight;
+        int outputDepth = (inputDepth - 1) * strideDepth + kernelDepth - 2*paddingDepth;
+
+        return Collections.singletonList(new ArchTypeSymbol.Builder()
+                .height(outputHeight)
+                .width(outputWidth)
+                .depth(outputDepth)
+                .channels(channels)
+                .elementType("-oo", "oo")
+                .build()); 
+    }
 
 
     //padding with border_mode=valid, no padding
