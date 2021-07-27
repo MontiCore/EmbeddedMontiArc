@@ -62,7 +62,8 @@ public class CNNArchCocos {
                 .addCoCo(new CheckConstants())
                 .addCoCo(new CheckLargeMemoryLayer())
                 .addCoCo(new CheckEpisodicMemoryLayer())
-                .addCoCo(new CheckUnrollInputsOutputsTooMany());
+                .addCoCo(new CheckUnrollInputsOutputsTooMany())
+                .addCoCo(new CheckAdaNetMalFormedArchitecture());
     }
 
     //checks cocos based on symbols before the resolve method of the ArchitectureSymbol is called
