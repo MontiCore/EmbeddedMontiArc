@@ -48,7 +48,7 @@ class CandidateHull(gluon.HybridBlock):
         output_shape = None,
         </#if>
          <#else>
-        output_shape = None
+        output_shape = None,
         </#if>
         inBlock=None,
         <#if inBlock.isPresent()>
@@ -58,7 +58,7 @@ class CandidateHull(gluon.HybridBlock):
         input_shape = None,
         </#if>
         <#else>
-        input_shape = None
+        input_shape = None,
         </#if>
         model_shape = <#list Block.outputTypes as type>(${tc.join(type.dimensions, ",")})</#list>,
         block_args=None,
