@@ -308,9 +308,6 @@ public class ArchTypeSymbol extends CommonSymbol {
             sym.setChannelIndex(0);
             sym.setHeightIndex(1);
             sym.setWidthIndex(2);
-
-            Integer test = new Integer(this.depth);
-            Integer test2 = new Integer(sym.getDepth());
             
             if (this.depth != 0){
                 sym.setHeightIndex(2);
