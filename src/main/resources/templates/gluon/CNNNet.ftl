@@ -597,7 +597,6 @@ class EpisodicSubNet_${elements?index}(gluon.HybridBlock):
 <#if elements?index == 0 >
     def __init__(self, data_mean=None, data_std=None, mx_context=None, **kwargs):
         super(EpisodicSubNet_${elements?index}, self).__init__(**kwargs)
-        self.AdaNet=False
         with self.name_scope():
 ${tc.include(networkInstruction.body, elements?index, "ARCHITECTURE_DEFINITION")}
     
