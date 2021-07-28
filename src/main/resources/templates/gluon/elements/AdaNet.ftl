@@ -9,7 +9,7 @@
 ${tc.include(Block,"ARTIFICIAL_ARCH_CLASS")}
 <#if inBlock.isPresent()>
 #inputBlock
-<#if inBlock.get().isArtifical()>
+<#if inBlock.get().isArtificial()>
 ${tc.include(inBlock.get(),"ARTIFICIAL_ARCH_CLASS")}
 </#if>
 </#if>
