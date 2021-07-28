@@ -27,7 +27,9 @@ class ${tc.fileNameWithoutEnding}:
     def __init__(self):
         self.weight_initializer = mx.init.Normal()
         self.networks = {}
+        <#if tc.containsAdaNet()>
         self.dataClass = {}
+        </#if>
 <#if (tc.weightsPath)??>
         self._weights_dir_ = "${tc.weightsPath}/"
 <#else>
