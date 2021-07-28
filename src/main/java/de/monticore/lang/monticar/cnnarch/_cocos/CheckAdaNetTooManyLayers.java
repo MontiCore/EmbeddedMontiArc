@@ -17,7 +17,6 @@ public class CheckAdaNetTooManyLayers extends CNNArchSymbolCoCo {
 
     @Override
     public void check(ArchitectureSymbol architecture) {
-        //ArchitectureSymbol architecture = node.getEnclosingScope().<ArchitectureSymbol>resolve("", ArchitectureSymbol.KIND).get();
         for (NetworkInstructionSymbol networkInstruction : architecture.getNetworkInstructions()) {
             int adacount = 0;
             boolean noBlock = false;
