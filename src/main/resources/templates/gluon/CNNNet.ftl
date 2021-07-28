@@ -544,8 +544,8 @@ class Net_${networkInstruction?index}(gluon.HybridBlock):
         with self.name_scope():
             #if operations is None:
             #    operations={'dummy':nn.Dense(units = 10)}
-            self.data_shape = <#list networkInstruction.body.getAdaLayer().get().outputTypes as type>(${tc.join(type.dimensions, ",")})</#list>
-            self.classes = prod(list(self.data_shape))
+            self.data_shape = ${tc.getDefinedOutputDimension()}
+            self.classes = int(prod(list(self.data_shape)))
             if operations is None:
                 operations={'dummy':nn.Dense(units = 10)}
             else:
@@ -555,16 +555,15 @@ class Net_${networkInstruction?index}(gluon.HybridBlock):
                     self.candidate_complexities[name] = operation.get_complexity()
             self.out = nn.Dense(units=self.classes,activation=None,flatten=False)
 
-    def hybrid_forward(self,F,x):
+    def hybrid_forward(self, F, x):
         res_list = []
         for name in self.op_names:
             res_list.append(self.__getattribute__(name)(x))
         if not res_list:
             res_list = [F.identity(x)]
         res = tuple(res_list)
-        y = F.concat(*res,dim=1)
+        y = F.concat(*res, dim=1)
         y = self.out(y)
-        y = F.reshape(y,shape = self.data_shape)
         return y
 
     def get_candidate_complexity(self):

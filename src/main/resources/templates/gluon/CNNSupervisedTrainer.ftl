@@ -399,6 +399,7 @@ class AdaLoss(Loss):
         reg_term = F.sum(((self.lamb * self.c_complexities) + self.beta) * l1)
         return F.add(cl, reg_term)
 
+
 def fitComponent(trainIter: mx.io.NDArrayIter, trainer: mx.gluon.Trainer, epochs: int, component: gluon.HybridBlock,
                  loss_class: gluon.loss, loss_params: dict) -> None:
     """
@@ -426,6 +427,7 @@ def get_trainer(optimizer: str, parameters: dict, optimizer_params: dict) -> mx.
     else:
         trainer = mx.gluon.Trainer(parameters, optimizer, optimizer_params)
     return trainer
+
 
 def fit(loss: gluon.loss.Loss,
         optimizer: str,
@@ -470,8 +472,7 @@ def fit(loss: gluon.loss.Loss,
         # train candidate 0
         c0_trainer = get_trainer(optimizer, c0.collect_params(), optimizer_params)
         fitComponent(trainIter=train_iter, trainer=c0_trainer, epochs=epochs, component=c0,
-                     loss_class=CandidateTrainingloss, loss_params={'loss': loss, 'candidate': c0, 'logging': logging},
-                     logging=logging)
+                     loss_class=CandidateTrainingloss, loss_params={'loss': loss, 'candidate': c0})
 
         # train candidate 1
         c1_trainer = get_trainer(optimizer, c1.collect_params(), optimizer_params)
@@ -531,8 +532,8 @@ def fit(loss: gluon.loss.Loss,
         model_operations[operation.name] = operation
         cg.update()
         round_msg = 'AdaNet:round: {}/{} finished,'.format(rnd + 1, T)
-        score_msg = 'current model score:{:.5f} improvement {:.5f}%'.format(model_score.asscalar(),
-                                                                             (1-(model_score / old_score).asscalar())*100)
+        improvement = (1 - (model_score / old_score).asscalar()) * 100
+        score_msg = 'current model score:{:.5f} improvement {:.5f}%'.format(model_score.asscalar(), improvement)
         logging.info(round_msg + score_msg)
 
     return model

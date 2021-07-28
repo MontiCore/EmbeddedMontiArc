@@ -129,8 +129,7 @@ class CandidateHull(gluon.HybridBlock):
         if self.out:
             x = self.out(x)
         x = self.finalOut(x)
-
-        return F.reshape(x,shape = self.model_shape)
+        return x
 
 class BuildingBlock(gluon.HybridBlock):
     """
