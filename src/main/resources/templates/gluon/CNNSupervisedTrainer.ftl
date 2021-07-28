@@ -306,15 +306,12 @@ def objective_function(model, data, loss, gamma=.0000001) -> float:
     for batch_i, batch in enumerate(data):
         pred = model(batch.data[0])
         label = batch.label[0]
-        label = nd.reshape(label,shape=pred.shape)
         error = loss(pred, label)
         err_list.append(error)
     err = concatenate(err_list)
     c_complexities = model.get_candidate_complexity()
-    c_complexities = c_complexities.reshape((1, c_complexities.shape[0]))* gamma
-    #complexity_reg = model.out(c_complexities)
+    c_complexities = c_complexities.reshape((1, c_complexities.shape[0])) * gamma
 
-    #objective = add(err.mean(), complexity_reg)
     objective = add(err.mean(), c_complexities)
 
     return objective[0][0]
@@ -344,7 +341,6 @@ class CandidateTrainingloss(Loss):
                  alpha=.07,
                  beta=0.0001,
                  gamma=.0001,
-                logging=None,
                  **kwargs):
         """
         loss function which is used to train each candidate
@@ -358,7 +354,6 @@ class CandidateTrainingloss(Loss):
         self.b = beta
         self.g = gamma
         self.coreLoss = loss  # in template, the loss function is passed initialized!!!!
-        self.logging=logging
         self.model = candidate  # candidate to be trained
 
     # noinspection PyMethodOverriding
@@ -375,38 +370,37 @@ class CandidateTrainingloss(Loss):
 
         # calculate the actual loss and add the regularization term
         l = self.coreLoss(x, label)
-        ad = F.multiply(F.ones(l.shape),reg_term)
-        #res = F.add(self.coreLoss(x, label), reg_term)
-        res = F.add(l,ad)
-        return x
+        ad = F.multiply(F.ones(l.shape), reg_term)
+
+        res = F.add(l, ad)
+
+        return res
+
 
 class AdaLoss(Loss):
     """
     objective function of the whole model
     """
 
-    def __init__(self, weight=None, model=None, loss=SigmoidBCELoss, loss_args=(True,), batch_axis=0, lamb=.0001,beta=.0001,
+    def __init__(self, weight=None, model=None, loss=SigmoidBCELoss, loss_args=(True,), batch_axis=0, lamb=0.0001,
+                 beta=.0001,
                  **kwargs):
         super(AdaLoss, self).__init__(weight, batch_axis, **kwargs)
 
         self.coreLoss = loss
         self.model = model
         self.c_complexities = self.model.get_candidate_complexity()  # get candidate complexities
-        #self.l1 = calculate_l1(self.model.out.collect_params())
         self.lamb = lamb
         self.beta = beta
 
     def hybrid_forward(self, F, x, label):
-        cl = self.coreLoss(x,label)
-
-        #ccomp = self.c_complexities
+        cl = self.coreLoss(x, label)
         l1 = calculate_l1(self.model.out.collect_params())
-        reg_term = F.sum(((self.lamb * self.c_complexities)+ self.beta)*l1)
-
-        return F.add(cl,reg_term)
+        reg_term = F.sum(((self.lamb * self.c_complexities) + self.beta) * l1)
+        return F.add(cl, reg_term)
 
 def fitComponent(trainIter: mx.io.NDArrayIter, trainer: mx.gluon.Trainer, epochs: int, component: gluon.HybridBlock,
-                 loss_class: gluon.loss, loss_params: dict,logging=None) -> None:
+                 loss_class: gluon.loss, loss_params: dict) -> None:
     """
     function trains a component of the generated model.
     expects a compoment, a trainern instance with corresponding parameters.
@@ -420,7 +414,6 @@ def fitComponent(trainIter: mx.io.NDArrayIter, trainer: mx.gluon.Trainer, epochs
                 data = batch.data[0]
                 label = batch.label[0]
                 pred = component(data)
-                label = nd.reshape(label,shape=pred.shape)
                 error = loss(pred, label)
             error.backward()
             trainer.step(data.shape[0], ignore_stale_grad=True)
@@ -434,8 +427,7 @@ def get_trainer(optimizer: str, parameters: dict, optimizer_params: dict) -> mx.
         trainer = mx.gluon.Trainer(parameters, optimizer, optimizer_params)
     return trainer
 
-def fit(model: gluon.HybridBlock,
-        loss:gluon.loss.Loss,
+def fit(loss: gluon.loss.Loss,
         optimizer: str,
         epochs: int,
         optimizer_params: dict,
@@ -468,8 +460,6 @@ def fit(model: gluon.HybridBlock,
                                                                                                      shuffle_data)
 
     for rnd in range(T):
-        work_op = model_operations.copy()
-
         # get new candidates
         c0, c1 = cg.get_candidates()
         c0.initialize(ctx=ctx)
@@ -477,22 +467,22 @@ def fit(model: gluon.HybridBlock,
         c0.hybridize()
         c1.hybridize()
 
-
         # train candidate 0
         c0_trainer = get_trainer(optimizer, c0.collect_params(), optimizer_params)
         fitComponent(trainIter=train_iter, trainer=c0_trainer, epochs=epochs, component=c0,
-                     loss_class=CandidateTrainingloss, loss_params={'loss': loss, 'candidate': c0,'logging':logging},logging=logging)
+                     loss_class=CandidateTrainingloss, loss_params={'loss': loss, 'candidate': c0, 'logging': logging},
+                     logging=logging)
 
         # train candidate 1
         c1_trainer = get_trainer(optimizer, c1.collect_params(), optimizer_params)
         fitComponent(trainIter=train_iter, trainer=c1_trainer, epochs=epochs, component=c1,
-                    loss_class=CandidateTrainingloss, loss_params={'loss': loss, 'candidate': c1})
+                     loss_class=CandidateTrainingloss, loss_params={'loss': loss, 'candidate': c1})
 
         # create model with candidate 0 added -> c0_model
         c0_work_op = model_operations.copy()
         c0_work_op[c0.name] = c0
 
-        c0_model = model_template(operations = c0_work_op)
+        c0_model = model_template(operations=c0_work_op)
         c0_model.out.initialize(ctx=ctx)
         c0_model.hybridize()
 
@@ -500,50 +490,50 @@ def fit(model: gluon.HybridBlock,
         c1_work_op = model_operations.copy()
         c1_work_op[c1.name] = c1
 
-        c1_model = model_template(operations = c1_work_op)
+        c1_model = model_template(operations=c1_work_op)
         c1_model.out.initialize(ctx=ctx)
         c1_model.hybridize()
-
-        #logging.info(f"{len([x for x in c1_work_op.keys()])}")
 
         # train c0_model
         c0_out_trainer = get_trainer(optimizer, c0_model.out.collect_params(), optimizer_params)
         fitComponent(trainIter=train_iter, trainer=c0_out_trainer, epochs=epochs, component=c0_model,
-                    loss_class=AdaLoss, loss_params={'loss': loss, 'model': c0_model})
+                     loss_class=AdaLoss, loss_params={'loss': loss, 'model': c0_model})
 
         # train c1_model
         c1_out_trainer = get_trainer(optimizer, c1_model.out.collect_params(), optimizer_params)
         fitComponent(trainIter=train_iter, trainer=c1_out_trainer, epochs=epochs, component=c1_model,
-                    loss_class=AdaLoss, loss_params={'loss': loss, 'model': c1_model})
+                     loss_class=AdaLoss, loss_params={'loss': loss, 'model': c1_model})
 
         c0_score = objective_function(model=c1_model, data=train_iter, loss=loss)
 
         c1_score = objective_function(model=c1_model, data=train_iter, loss=loss)
 
-        #logging.info(c0_model.get_candidate_complexity())
-
-        logging.info(c0_score.shape)
-        logging.info(type(c0_score))
-        logging.info(nd.to_dlpack_for_read(c0_score-c1_score))
         check = nd.greater_equal(c0_score, c1_score)
 
         # decide which candidate yields the best improvement
-        model, operation,score = (c0_model,c0,c0_score) if check else (c1_model,c1,c1_score)
+        model, operation, score = (c0_model, c0, c0_score) if check else (c1_model, c1, c1_score)
 
         if model_score is None:
             model_score = score
+            old_score = nd.array(model_score)
         else:
             # if the new score is better than the old one continue else return current model
             if score <= model_score:
-                model_score = score
+                old_score = nd.array(model_score)
+                model_score = nd.array(score)
             else:
-                logging.info("AdaNet: abort in Round {}/{}".format(rnd+1,T))
+                logging.info("AdaNet: abort in Round {}/{}".format(rnd + 1, T))
                 # this is not a finally trained model!!
-                return model_template(operations=model_operations)
+                model = model_template(operations=model_operations)
+                model.initialize(ctx=ctx)
+                return model
 
         model_operations[operation.name] = operation
         cg.update()
-        logging.info('AdaNet:round: {}/{} finished'.format(rnd+1,T))
+        round_msg = 'AdaNet:round: {}/{} finished,'.format(rnd + 1, T)
+        score_msg = 'current model score:{:.5f} improvement {:.5f}%'.format(model_score.asscalar(),
+                                                                             (1-(model_score / old_score).asscalar())*100)
+        logging.info(round_msg + score_msg)
 
     return model
 
@@ -692,7 +682,7 @@ class ${tc.fileNameWithoutEnding}:
 <#list tc.architecture.networkInstructions as networkInstruction>
 
         assert self._networks[${networkInstruction?index}].AdaNet, "passed model is not an AdaNet model"
-        self._networks[${networkInstruction?index}] = fit(model= self._networks[${networkInstruction?index}],
+        self._networks[${networkInstruction?index}] = fit(
                     loss=loss_function,
                     optimizer=optimizer,
                     epochs=num_epoch,
