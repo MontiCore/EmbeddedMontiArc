@@ -21,6 +21,16 @@ public class CNNArch2GluonTemplateController extends CNNArchTemplateController {
                                            TemplateConfiguration templateConfiguration) {
         super(architecture, templateConfiguration);
     }
+    public String getDefinedOutputDimension(){
+        // function calculates the output shape as defined in the .emadl, used for AdaNet layer
+        ArchTypeSymbol types = ((IODeclarationSymbol)this.getArchitecture().getOutputs().get(0).getDeclaration()).getType();
+        StringBuilder stringBuilder = new StringBuilder();
+        stringBuilder.append("(");
+        types.getDimensions().forEach(elem->stringBuilder.append(elem).append(','));
+        stringBuilder.append(")");
+
+        return stringBuilder.toString();
+    }
 
 
     public void include(String relativePath, String templateWithoutFileEnding, Writer writer, NetDefinitionMode netDefinitionMode){
