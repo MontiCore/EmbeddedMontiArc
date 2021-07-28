@@ -65,25 +65,10 @@ public class ArchitectureSymbol extends CommonScopeSpanningSymbol {
         return networkInstructions;
     }
 
-    private void checkForAdaNetCount(List<NetworkInstructionSymbol> networkInstructions){
-        for(NetworkInstructionSymbol networkInstruction:networkInstructions){
-            int adacount = 0;
-            for(ArchitectureElementSymbol layer:networkInstruction.getBody().getElements()){
-                adacount += layer.getName().equals(AllPredefinedLayers.AdaNet_Name)?1:0;
-            }
-
-            if(adacount >1){
-                 String msg = "0" + ErrorCodes.ADANET_TOO_MANY_ADANET_LAYER + String.format(" an architecture using AdaNet must not contain more than 1 AdaNet Layer, found %d",adacount);
-                Log.error(msg);
-
-            }
-        }
-    }
     public void setNetworkInstructions(List<NetworkInstructionSymbol> networkInstructions)   {
         this.networkInstructions = networkInstructions;
 
         // if one of the network instructions contains an AdaNet layer the AdaNet flag is set to true
-        //checkForAdaNetCount(networkInstructions);
         for (NetworkInstructionSymbol networkInstruction : networkInstructions) {
             this.AdaNet = this.AdaNet | networkInstruction.containsAdaNet();
         }
