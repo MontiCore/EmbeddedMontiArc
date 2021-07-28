@@ -60,7 +60,7 @@ class CandidateHull(gluon.HybridBlock):
         <#else>
         input_shape = None,
         </#if>
-        model_shape = <#list Block.outputTypes as type>(${tc.join(type.dimensions, ",")})</#list>,
+        model_shape = ${tc.getDefinedOutputDimension()},
         block_args=None,
         **kwargs):
 
