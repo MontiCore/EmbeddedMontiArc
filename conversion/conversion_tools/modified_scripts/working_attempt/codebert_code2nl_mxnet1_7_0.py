@@ -217,21 +217,24 @@ def test_model(file_name, seq2seq, args):
 
 # we need a tokenizer to quanitify
 def format_for_bleu(tokenizer, outputs):
-    formatted_pred = []
-    formatted_actual = []
+    formatted_preds = []
+    formatted_actuals = []
+    # go through batch outputs
     for idx, (preds, actuals) in enumerate(outputs):
         new_preds = []
         # TODO is this removing spaces or padding? was in the original script
+        # go through sequences
         for pred in preds:
-            pred = list(pred)
-            if 0 in pred:
-                pred = pred[:pred.index(0)]
-            new_preds.append(pred)
-        pred_text = tokenizer.decode(new_preds, clean_up_tokenization_spaces=False)
-        actual_text = tokenizer.decode(actuals, clean_up_tokenization_spaces=False)
-        formatted_pred.append(str(idx)+'\t'+pred_text)
-        formatted_actual.append(str(idx)+'\t'+actual_text)
-    return formatted_pred, formatted_actual
+            t = pred[0].asnumpy().tolist()
+            if 0 in t:
+                t = t[:t.index(0)]
+            print(t)
+            print(actuals)
+            pred_text = tokenizer.decode(t, clean_up_tokenization_spaces=False)
+            actual_text = tokenizer.decode(actuals, clean_up_tokenization_spaces=False)
+            formatted_preds.append(str(idx)+'\t'+pred_text)
+            formatted_actuals.append(str(idx)+'\t'+actual_text)
+    return formatted_preds, formatted_actuals
 
 def compute_bleu(res):
     pred, actual = res
