@@ -691,7 +691,7 @@ class ${tc.fileNameWithoutEnding}:
         loss_function.hybridize()
 <#if tc.containsAdaNet()>
 <#list tc.architecture.networkInstructions as networkInstruction>
-
+<#if networkInstruction.containsAdaNet()>
         assert self._networks[${networkInstruction?index}].AdaNet, "passed model is not an AdaNet model"
         self._networks[${networkInstruction?index}] = fit(
                     loss=loss_function,
@@ -709,6 +709,7 @@ class ${tc.fileNameWithoutEnding}:
                 )
         logging.info(self._networks[0])
         #put here the AdaNet logic
+</#if>
 </#list>
 </#if>
 <#list tc.architecture.networkInstructions as networkInstruction>    
