@@ -485,6 +485,8 @@ def fit(loss: gluon.loss.Loss,
 
         c0_model = model_template(operations=c0_work_op)
         c0_model.out.initialize(ctx=ctx)
+        if c0_model.finalout:
+            c0_model.finalout.initialize(ctx=ctx)
         c0_model.hybridize()
 
         # create model with candidate 1 added -> c1_model
@@ -493,15 +495,21 @@ def fit(loss: gluon.loss.Loss,
 
         c1_model = model_template(operations=c1_work_op)
         c1_model.out.initialize(ctx=ctx)
+        if c1_model.finalout:
+            c1_model.finalout.initialize(ctx=ctx)
         c1_model.hybridize()
 
         # train c0_model
-        c0_out_trainer = get_trainer(optimizer, c0_model.out.collect_params(), optimizer_params)
+        params = c0_model.out.collect_params()
+        params.update(c0_model.finalout.collect_params())
+        c0_out_trainer = get_trainer(optimizer, params, optimizer_params)
         fitComponent(trainIter=train_iter, trainer=c0_out_trainer, epochs=epochs, component=c0_model,
                      loss_class=AdaLoss, loss_params={'loss': loss, 'model': c0_model})
 
         # train c1_model
-        c1_out_trainer = get_trainer(optimizer, c1_model.out.collect_params(), optimizer_params)
+        params = c1_model.out.collect_params()
+        params.update(c1_model.finalout.collect_params())
+        c1_out_trainer = get_trainer(optimizer, params, optimizer_params)
         fitComponent(trainIter=train_iter, trainer=c1_out_trainer, epochs=epochs, component=c1_model,
                      loss_class=AdaLoss, loss_params={'loss': loss, 'model': c1_model})
 
