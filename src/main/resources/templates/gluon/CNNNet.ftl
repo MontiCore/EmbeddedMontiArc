@@ -535,13 +535,21 @@ from mxnet.ndarray import zeros
 <#if networkInstruction.body.containsAdaNet()>
 ${tc.include(networkInstruction.body, "ADANET_CONSTRUCTION")}
 #class Model(gluon.HybridBlock): THIS IS THE ORIGINAL NAME, MUST BE RENAMED IN THE OTHER PARTS
+
 class Net_${networkInstruction?index}(gluon.HybridBlock):
     def __init__(self,operations:dict,**kwargs):
         super(Net_${networkInstruction?index},self).__init__(**kwargs)
         self.AdaNet = True
         self.op_names = []
         self.candidate_complexities = {}
+        <#assign outblock = networkInstruction.body.getElements()[1].getDeclaration().getBlock("outBlock")>
         with self.name_scope():
+            <#if outblock.isPresent()>
+            self.fout = ${tc.include(outblock.get(),"ADANET_CONSTRUCTION")}
+            <#else>
+            self.fout = None
+            </#if>
+            self.finalout = None
             #if operations is None:
             #    operations={'dummy':nn.Dense(units = 10)}
             self.data_shape = ${tc.getDefinedOutputDimension()}
@@ -554,6 +562,8 @@ class Net_${networkInstruction?index}(gluon.HybridBlock):
                     self.op_names.append(name)
                     self.candidate_complexities[name] = operation.get_complexity()
             self.out = nn.Dense(units=self.classes,activation=None,flatten=False)
+            if self.fout:
+                self.finalout = self.fout()
 
     def hybrid_forward(self, F, x):
         res_list = []
@@ -564,6 +574,8 @@ class Net_${networkInstruction?index}(gluon.HybridBlock):
         res = tuple(res_list)
         y = F.concat(*res, dim=1)
         y = self.out(y)
+        if self.finalout:
+            y = self.finalout(y)
         return y
 
     def get_candidate_complexity(self):
