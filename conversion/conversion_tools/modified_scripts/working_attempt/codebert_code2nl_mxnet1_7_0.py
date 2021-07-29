@@ -57,7 +57,7 @@ import gluonnlp as nlp
 import argparse
 import h5py
 
-def get_decoder():
+def get_decoder(test_run):
     decoder_hparams = hp.get_decoder_hparams()
     # gluon TransformerDecoder does a positional encoding before input, does codebert do the same thing?
     # gluonnlp might not do it if position_weight is none?
@@ -81,7 +81,7 @@ def get_decoder():
         params=decoder_hparams['prefix']
     )
     decoder.initialize()
-    train_hparams = hp.get_training_hparams()
+    train_hparams = hp.get_training_hparams(test_run)
     batch_size = train_hparams['batch_size']
     tgt_seq_len = train_hparams['max_target_length']
     seq_len = train_hparams['max_source_length']
@@ -96,9 +96,9 @@ def get_decoder():
     decoder(tgt_embed, states, tgt_valid)
     return decoder
 
-def get_seq2seq(embedding, encoder, decoder):
+def get_seq2seq(embedding, encoder, decoder, test_run):
     seq2seq_hparams = hp.get_seq2seq_hparams()
-    training_params = hp.get_training_hparams()
+    training_params = hp.get_training_hparams(test_run)
     seq2seq = Seq2Seq(
         # params taken from cmd line args in codebert repo and roberta config
         embedding, encoder, decoder,
@@ -140,14 +140,14 @@ def get_seqs_from_batch(batch, ctx):
     return source_ids, source_masks, target_ids, target_masks
 
 def train_model(args):
-    train_hparams = hp.get_training_hparams()
+    train_hparams = hp.get_training_hparams(args.test_run)
     batch_size = train_hparams['batch_size']
     train_steps = train_hparams['train_steps']
     ctx = [mx.cpu()]
     embedding = load_codebert_block(args.embed_symbol_file, args.embed_weight_file, ctx)
     encoder = load_codebert_block(args.symbol_file, args.weight_file, ctx)
-    decoder = get_decoder()
-    seq2seq = get_seq2seq(embedding, encoder, decoder)
+    decoder = get_decoder(args.test_run)
+    seq2seq = get_seq2seq(embedding, encoder, decoder, args.test_run)
     seq2seq.collect_params().initialize(force_reinit=False, ctx=ctx)
     seq2seq.hybridize()
     train_file = '{}/{}'.format(args.data_dir, 'train.h5')
@@ -202,16 +202,17 @@ def train_model(args):
     return seq2seq
 
 def test_model(file_name, seq2seq, args):
-    train_hparams = hp.get_training_hparams()
+    print('Testing with {}...'.format(file_name))
+    train_hparams = hp.get_training_hparams(args.test_run)
     batch_size = train_hparams['batch_size']
     ctx = [mx.cpu()]
     test_file = '{}/{}'.format(args.data_dir, file_name)
-    test_data = get_data_iterator(
+    _, test_data = get_data_iterator(
         ['source_ids', 'source_masks'], ['target_ids', 'target_masks'],
         True, batch_size, test_file)
     preds = []
     for idx, batch in enumerate(test_data):
-        print('Test batch {}'.format(str(idx)))
+        print('batch {}'.format(str(idx)))
         source_ids, source_masks, target_ids, _ = get_seqs_from_batch(batch, ctx)
         pred = seq2seq(source_ids, source_masks)
         preds.append((pred, target_ids))
@@ -233,8 +234,6 @@ def format_for_bleu(tokenizer, outputs):
             # TODO is this removing spaces or padding? was in the original script
             if 0 in t:
                 t = t[:t.index(0)]
-            print(t)
-            print(actuals[idx])
             pred_text = tokenizer.decode(t, clean_up_tokenization_spaces=False)
             actual_text = tokenizer.decode(actual, clean_up_tokenization_spaces=False)
             formatted_preds.append(str(counter)+'\t'+pred_text)
@@ -242,7 +241,8 @@ def format_for_bleu(tokenizer, outputs):
             counter += 1
     return formatted_preds, formatted_actuals
 
-def compute_bleu(res):
+def compute_bleu(file_name, res):
+    print('Computing Bleu for {}...'.format(file_name))
     pred, actual = res
     actual_map, pred_map = bleu.computeMaps(pred, actual) 
     score = round(bleu.bleuFromMaps(actual_map, pred_map)[0], 2)
@@ -251,7 +251,7 @@ def compute_bleu(res):
 def parse_args():
     parser = argparse.ArgumentParser()
     parser.add_argument('--test_run', action='store_true', default=True, 
-        help='Run the training and testing on a very small subset of the data') # TODO change/remove this?
+        help='Run the training and testing on a very small subset of the data')
     parser.add_argument('--data_dir', default='./codebert_gluon/data', type=str,
         help='The folder where the processed training, validation and test data is.')
     parser.add_argument("--symbol_file", default='./codebert_gluon/model/codebert-symbol.json', type=str,
@@ -272,5 +272,5 @@ if __name__ == '__main__':
     tokenizer = RobertaTokenizer.from_pretrained('microsoft/codebert-base')
     res_test = format_for_bleu(tokenizer, res_test)
     res_valid = format_for_bleu(tokenizer, res_valid)
-    compute_bleu(res_test)
-    compute_bleu(res_valid)
+    compute_bleu('test.h5', res_test)
+    compute_bleu('valid.h5', res_valid)

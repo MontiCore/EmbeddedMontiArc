@@ -95,7 +95,7 @@ def convert_examples_to_features(examples, tokenizer, max_source_length, max_tar
 def get_stage_data(stage, tokenizer, args):
     datafile = '{}/{}.jsonl'.format(args.data_dir, stage)
     data_params = hp.get_training_hparams(args.test_run)
-    stage_limit = 'limit_{}_samples'.format(stage)
+    stage_limit = data_params['limit_{}_samples'.format(stage)]
     stage_examples = read_examples(datafile, limit=stage_limit)
     stage_features = convert_examples_to_features(
         stage_examples, tokenizer,
@@ -116,7 +116,7 @@ def get_stage_data(stage, tokenizer, args):
 
 def write_dataset_to_disk(stage, data, savedir):
     datafile = '{}/{}.h5'.format(savedir, stage)
-    print('Writing {} data to {} ...'.format(stage, datafile))
+    print('Writing {} data to {}...'.format(stage, datafile))
     if not os.path.exists(savedir):
         os.makedirs(savedir)
     f = h5py.File(datafile, 'w')
@@ -125,6 +125,8 @@ def write_dataset_to_disk(stage, data, savedir):
 
 def parse_args():
     parser = argparse.ArgumentParser()
+    parser.add_argument('--test_run', action='store_true', default=True, 
+        help='Output the data for a test run of the model')
     parser.add_argument("--save_dir", default='./codebert_gluon/data', 
         help="The path where the processed training data should be saved")
     parser.add_argument("--data_dir", default='/home/makua/Documents/Datasets/CodeSearchNet/java',
@@ -134,6 +136,8 @@ def parse_args():
 if __name__ == '__main__':
     args = parse_args()
     stages = ['train', 'valid', 'test']
+    if args.test_run:
+        print('Exporting data for test run of model...')
     print('Getting pretrained tokenizer...')
     tokenizer = RobertaTokenizer.from_pretrained('microsoft/codebert-base')
     for stage in stages:
