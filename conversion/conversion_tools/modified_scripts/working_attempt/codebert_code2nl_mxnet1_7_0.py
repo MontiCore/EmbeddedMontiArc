@@ -126,7 +126,7 @@ def get_data_iterator(inputs, outputs, shuffle, batch_size, filename):
     #     print(idx)
     #     print(batch.data[0].asnumpy())
     #     print(batch.data[0].shape)
-    return data_iterator
+    return len(input_dict), data_iterator
 
 def load_codebert_block(symbol_file, weight_file, context):
     input_names = ['data0', 'data1']
@@ -142,7 +142,7 @@ def get_seqs_from_batch(batch, ctx):
 def train_model(args):
     train_hparams = hp.get_training_hparams()
     batch_size = train_hparams['batch_size']
-    epochs = train_hparams['epochs']
+    train_steps = train_hparams['train_steps']
     ctx = [mx.cpu()]
     embedding = load_codebert_block(args.embed_symbol_file, args.embed_weight_file, ctx)
     encoder = load_codebert_block(args.symbol_file, args.weight_file, ctx)
@@ -151,9 +151,11 @@ def train_model(args):
     seq2seq.collect_params().initialize(force_reinit=False, ctx=ctx)
     seq2seq.hybridize()
     train_file = '{}/{}'.format(args.data_dir, 'train.h5')
-    train_data = get_data_iterator(
+    # TODO should we get a new iterator after every epoch?
+    num_samples, train_data = get_data_iterator(
         ['source_ids', 'source_masks'], ['target_ids', 'target_masks'],
         True, batch_size, train_file)
+    epochs = train_steps * batch_size // num_samples
     seq2seq.initialize()
     loss = mx.gluon.loss.SoftmaxCrossEntropyLoss() # TODO parameters? e.g. sparse_label
     # note this is different than the codebert optimizer in two ways
@@ -220,20 +222,24 @@ def format_for_bleu(tokenizer, outputs):
     formatted_preds = []
     formatted_actuals = []
     # go through batch outputs
-    for idx, (preds, actuals) in enumerate(outputs):
+    counter = 0
+    for preds, actuals in outputs:
         new_preds = []
-        # TODO is this removing spaces or padding? was in the original script
-        # go through sequences
-        for pred in preds:
+        # go through sequences in batch
+        for idx, pred in enumerate(preds):
+            actual = actuals[idx].asnumpy().tolist()
+            # TODO not sure why we take the first entry, maybe this is the best beam?
             t = pred[0].asnumpy().tolist()
+            # TODO is this removing spaces or padding? was in the original script
             if 0 in t:
                 t = t[:t.index(0)]
             print(t)
-            print(actuals)
+            print(actuals[idx])
             pred_text = tokenizer.decode(t, clean_up_tokenization_spaces=False)
-            actual_text = tokenizer.decode(actuals, clean_up_tokenization_spaces=False)
-            formatted_preds.append(str(idx)+'\t'+pred_text)
-            formatted_actuals.append(str(idx)+'\t'+actual_text)
+            actual_text = tokenizer.decode(actual, clean_up_tokenization_spaces=False)
+            formatted_preds.append(str(counter)+'\t'+pred_text)
+            formatted_actuals.append(str(counter)+'\t'+actual_text)
+            counter += 1
     return formatted_preds, formatted_actuals
 
 def compute_bleu(res):
@@ -244,8 +250,8 @@ def compute_bleu(res):
 
 def parse_args():
     parser = argparse.ArgumentParser()
-    parser.add_argument('--train', action='store_true', default=True, 
-        help='If the script should be run in training mode or not') # TODO change/remove this?
+    parser.add_argument('--test_run', action='store_true', default=True, 
+        help='Run the training and testing on a very small subset of the data') # TODO change/remove this?
     parser.add_argument('--data_dir', default='./codebert_gluon/data', type=str,
         help='The folder where the processed training, validation and test data is.')
     parser.add_argument("--symbol_file", default='./codebert_gluon/model/codebert-symbol.json', type=str,
@@ -260,12 +266,11 @@ def parse_args():
 
 if __name__ == '__main__':
     args = parse_args()
-    if args.train:
-        model = train_model(args)
-        res_test = test_model('test.h5', model, args)
-        res_valid = test_model('valid.h5', model, args)
-        tokenizer = RobertaTokenizer.from_pretrained('microsoft/codebert-base')
-        res_test = format_for_bleu(tokenizer, res_test)
-        res_valid = format_for_bleu(tokenizer, res_valid)
-        compute_bleu(res_test)
-        compute_bleu(res_valid)
+    model = train_model(args)
+    res_test = test_model('test.h5', model, args)
+    res_valid = test_model('valid.h5', model, args)
+    tokenizer = RobertaTokenizer.from_pretrained('microsoft/codebert-base')
+    res_test = format_for_bleu(tokenizer, res_test)
+    res_valid = format_for_bleu(tokenizer, res_valid)
+    compute_bleu(res_test)
+    compute_bleu(res_valid)

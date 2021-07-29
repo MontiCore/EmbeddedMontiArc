@@ -36,13 +36,13 @@ class InputFeatures(object):
         self.source_mask = source_mask
         self.target_mask = target_mask
 
-def read_examples(filename, limit=500):
+def read_examples(filename, limit):
     print('Reading {} data...'.format(filename))
     """Read examples from filename."""
     examples=[]
     with open(filename,encoding="utf-8") as f:
         for idx, line in enumerate(f):
-            if idx >= limit:
+            if limit > 0 and idx >= limit:
                 break
             line=line.strip()
             js=json.loads(line)
@@ -92,10 +92,11 @@ def convert_examples_to_features(examples, tokenizer, max_source_length, max_tar
         )
     return features
 
-def get_stage_data(stage, tokenizer, datadir):
-    datafile = '{}/{}.jsonl'.format(datadir, stage)
-    data_params = hp.get_training_hparams()
-    stage_examples = read_examples(datafile, limit=data_params['limit_samples'])
+def get_stage_data(stage, tokenizer, args):
+    datafile = '{}/{}.jsonl'.format(args.data_dir, stage)
+    data_params = hp.get_training_hparams(args.test_run)
+    stage_limit = 'limit_{}_samples'.format(stage)
+    stage_examples = read_examples(datafile, limit=stage_limit)
     stage_features = convert_examples_to_features(
         stage_examples, tokenizer,
         data_params['max_source_length'],
@@ -136,5 +137,5 @@ if __name__ == '__main__':
     print('Getting pretrained tokenizer...')
     tokenizer = RobertaTokenizer.from_pretrained('microsoft/codebert-base')
     for stage in stages:
-        data = get_stage_data(stage, tokenizer, args.data_dir)
+        data = get_stage_data(stage, tokenizer, args)
         write_dataset_to_disk(stage, data, args.save_dir)

@@ -64,12 +64,26 @@ def get_seq2seq_hparams():
         'eos_id': 2
     }
 
-def get_training_hparams():
-    return {
-        'max_source_length': 256,
-        'max_target_length': 128,
-        'limit_samples': 10,
-        'epochs': 1,
-        'batch_size': 8,
-        'beam_size':2
-    }
+def get_training_hparams(test_run):
+    if test_run:
+        return {
+            'max_source_length': 32,
+            'max_target_length': 16,
+            'limit_train_samples': 32,
+            'limit_valid_samples': 8,
+            'limit_test_samples': 8,
+            'train_steps': 4,
+            'batch_size': 8,
+            'beam_size':2
+        }
+    else:
+        return {
+            'max_source_length': 256,
+            'max_target_length': 128,
+            'limit_train_samples': -1,
+            'limit_valid_samples': -1,
+            'limit_test_samples': -1,
+            'train_steps': 50000,
+            'batch_size': 8,
+            'beam_size':2
+        }
