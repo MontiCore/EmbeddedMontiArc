@@ -306,15 +306,14 @@ def objective_function(model, data, loss, gamma=.0000001) -> float:
     data.reset()
     err_list = []
     for batch_i, batch in enumerate(data):
-        pred = model(batch.data[0])
+        pred = model(batch.data[0])[0][0]
         label = batch.label[0]
         error = loss(pred, label)
         err_list.append(error)
     err = concatenate(err_list)
     c_complexities = model.get_candidate_complexity()
-    c_complexities = c_complexities.reshape((1, c_complexities.shape[0])) * gamma
-
-    objective = add(err.mean(), c_complexities)
+    c_complexities = c_complexities * gamma
+    objective = err.mean()+ c_complexities.mean()
 
     return objective[0][0]
 
@@ -403,12 +402,13 @@ class AdaLoss(Loss):
 
 
 def fitComponent(trainIter: mx.io.NDArrayIter, trainer: mx.gluon.Trainer, epochs: int, component: gluon.HybridBlock,
-                 loss_class: gluon.loss, loss_params: dict) -> None:
+                 loss_class: gluon.loss, loss_params: dict,model_flag:bool) -> None:
     """
     function trains a component of the generated model.
     expects a compoment, a trainern instance with corresponding parameters.
 
     """
+
     loss = loss_class(**loss_params)
     for epoch in range(epochs):
         trainIter.reset()
@@ -416,7 +416,10 @@ def fitComponent(trainIter: mx.io.NDArrayIter, trainer: mx.gluon.Trainer, epochs
             with autograd.record():
                 data = batch.data[0]
                 label = batch.label[0]
-                pred = component(data)
+                if model_flag:
+                    pred = component(data)[0][0]
+                else:
+                    pred = component(data)
                 error = loss(pred, label)
             error.backward()
             trainer.step(data.shape[0], ignore_stale_grad=True)
@@ -445,11 +448,11 @@ def fit(loss: gluon.loss.Loss,
         logging=None
         ) -> gluon.HybridBlock:
     logging.info("AdaNet: starting ...")
-    cg = dataClass.Builder()
+    cg = dataClass.Builder(batch_size=batch_size)
     model_template = dataClass.model_template
     model_operations = {}
     model_score = None
-    model = model_template(model_operations)
+    model = model_template(model_operations, batch_size=batch_size)
     if ctx is None:
         ctx = mx.gpu() if mx.context.num_gpus() else mx.cpu()
 
@@ -474,18 +477,18 @@ def fit(loss: gluon.loss.Loss,
         # train candidate 0
         c0_trainer = get_trainer(optimizer, c0.collect_params(), optimizer_params)
         fitComponent(trainIter=train_iter, trainer=c0_trainer, epochs=epochs, component=c0,
-                     loss_class=CandidateTrainingloss, loss_params={'loss': loss, 'candidate': c0})
+                     loss_class=CandidateTrainingloss, loss_params={'loss': loss, 'candidate': c0},model_flag=False)
 
         # train candidate 1
         c1_trainer = get_trainer(optimizer, c1.collect_params(), optimizer_params)
         fitComponent(trainIter=train_iter, trainer=c1_trainer, epochs=epochs, component=c1,
-                     loss_class=CandidateTrainingloss, loss_params={'loss': loss, 'candidate': c1})
+                     loss_class=CandidateTrainingloss, loss_params={'loss': loss, 'candidate': c1},model_flag=False)
 
         # create model with candidate 0 added -> c0_model
         c0_work_op = model_operations.copy()
         c0_work_op[c0.name] = c0
 
-        c0_model = model_template(operations=c0_work_op)
+        c0_model = model_template(operations=c0_work_op, batch_size=batch_size)
         c0_model.out.initialize(ctx=ctx)
         if c0_model.finalout:
             c0_model.finalout.initialize(ctx=ctx)
@@ -495,7 +498,7 @@ def fit(loss: gluon.loss.Loss,
         c1_work_op = model_operations.copy()
         c1_work_op[c1.name] = c1
 
-        c1_model = model_template(operations=c1_work_op)
+        c1_model = model_template(operations=c1_work_op, batch_size=batch_size)
         c1_model.out.initialize(ctx=ctx)
         if c1_model.finalout:
             c1_model.finalout.initialize(ctx=ctx)
@@ -506,14 +509,14 @@ def fit(loss: gluon.loss.Loss,
         params.update(c0_model.finalout.collect_params())
         c0_out_trainer = get_trainer(optimizer, params, optimizer_params)
         fitComponent(trainIter=train_iter, trainer=c0_out_trainer, epochs=epochs, component=c0_model,
-                     loss_class=AdaLoss, loss_params={'loss': loss, 'model': c0_model})
+                     loss_class=AdaLoss, loss_params={'loss': loss, 'model': c0_model},model_flag=True)
 
         # train c1_model
         params = c1_model.out.collect_params()
         params.update(c1_model.finalout.collect_params())
         c1_out_trainer = get_trainer(optimizer, params, optimizer_params)
         fitComponent(trainIter=train_iter, trainer=c1_out_trainer, epochs=epochs, component=c1_model,
-                     loss_class=AdaLoss, loss_params={'loss': loss, 'model': c1_model})
+                     loss_class=AdaLoss, loss_params={'loss': loss, 'model': c1_model},model_flag=True)
 
         c0_score = objective_function(model=c1_model, data=train_iter, loss=loss)
 
@@ -535,8 +538,9 @@ def fit(loss: gluon.loss.Loss,
             else:
                 logging.info("AdaNet: abort in Round {}/{}".format(rnd + 1, T))
                 # this is not a finally trained model!!
-                model = model_template(operations=model_operations)
-                model.initialize(ctx=ctx)
+                model = model_template(operations=model_operations, generation=False, batch_size=batch_size)
+                model.hybridize()
+                model.initialize(ctx=ctx, force_reinit=True)
                 return model
 
         model_operations[operation.name] = operation
@@ -708,8 +712,18 @@ class ${tc.fileNameWithoutEnding}:
                     logging=logging
                 )
         logging.info(self._networks[0])
-        #put here the AdaNet logic
+        if optimizer == "adamw":
+            trainers = [mx.gluon.Trainer(network.collect_params(), AdamW.AdamW(**optimizer_params)) for network in self._networks.values() if len(network.collect_params().values()) != 0]
+        else:
+            trainers = [mx.gluon.Trainer(network.collect_params(), optimizer, optimizer_params) for network in self._networks.values() if len(network.collect_params().values()) != 0]
+
 </#if>
+        # update trainers
+        if optimizer == "adamw":
+            trainers = [mx.gluon.Trainer(network.collect_params(), AdamW.AdamW(**optimizer_params)) for network in self._networks.values() if len(network.collect_params().values()) != 0]
+        else:
+            trainers = [mx.gluon.Trainer(network.collect_params(), optimizer, optimizer_params) for network in self._networks.values() if len(network.collect_params().values()) != 0]
+
 </#list>
 </#if>
 <#list tc.architecture.networkInstructions as networkInstruction>    

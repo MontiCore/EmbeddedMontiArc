@@ -62,6 +62,7 @@ class CandidateHull(gluon.HybridBlock):
         </#if>
         model_shape = ${tc.getDefinedOutputDimension()},
         block_args=None,
+        batch_size=None,
         **kwargs):
 
         super(CandidateHull, self).__init__(**kwargs)
@@ -72,6 +73,7 @@ class CandidateHull(gluon.HybridBlock):
         self.rade = None
         self.complexity = None
         with self.name_scope():
+            self.batch_size = batch_size
             self.output_shape = output_shape
             self.input_shape = input_shape
             self.model_shape = model_shape
@@ -129,6 +131,7 @@ class CandidateHull(gluon.HybridBlock):
         if self.out:
             x = self.out(x)
         x = self.finalOut(x)
+
         return x
 
 class BuildingBlock(gluon.HybridBlock):
@@ -171,12 +174,14 @@ class BuildingBlock(gluon.HybridBlock):
 
     def hybrid_forward(self, F, x, *args, **kwargs):
         return self.operation(x)
+
+
 class Builder:
     """
     the object which generates the new candidates
     """
 
-    def __init__(self):
+    def __init__(self,batch_size):
         self.round = 0
         <#if outBlock.isPresent()>
         <#if outBlock.get().isArtificial()>
@@ -196,6 +201,7 @@ class Builder:
         <#else>
         self.input = None
         </#if>
+        self.batch_size = batch_size
         self.pre_stack = 1
         self.step = 0
         self.block_params = None
@@ -209,9 +215,9 @@ class Builder:
         c1_name = f'can1r{self.round}'
 
         c0 = CandidateHull(name=c0_name, stack=self.pre_stack,
-            block_args=self.block_params)
+            block_args=self.block_params,batch_size=self.batch_size)
         c1 = CandidateHull(name=c1_name, stack=self.pre_stack + 1,
-            block_args=self.block_params)
+            block_args=self.block_params,batch_size=self.batch_size)
 
         self.step += 1
         return c0, c1
