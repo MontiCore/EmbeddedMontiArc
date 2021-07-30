@@ -537,13 +537,15 @@ ${tc.include(networkInstruction.body, "ADANET_CONSTRUCTION")}
 #class Model(gluon.HybridBlock): THIS IS THE ORIGINAL NAME, MUST BE RENAMED IN THE OTHER PARTS
 
 class Net_${networkInstruction?index}(gluon.HybridBlock):
-    def __init__(self,operations:dict,**kwargs):
+    def __init__(self,operations:dict,batch_size:int,generation=True,**kwargs):
         super(Net_${networkInstruction?index},self).__init__(**kwargs)
         self.AdaNet = True
         self.op_names = []
+        self.generation = generation,
         self.candidate_complexities = {}
         <#assign outblock = networkInstruction.body.getElements()[1].getDeclaration().getBlock("outBlock")>
         with self.name_scope():
+            self.batch_size=batch_size
             <#if outblock.isPresent()>
             self.fout = ${tc.include(outblock.get(),"ADANET_CONSTRUCTION")}
             <#else>
@@ -576,6 +578,7 @@ class Net_${networkInstruction?index}(gluon.HybridBlock):
         y = self.out(y)
         if self.finalout:
             y = self.finalout(y)
+        y = F.reshape(y,(1,1,self.batch_size,*self.data_shape))
         return y
 
     def get_candidate_complexity(self):
