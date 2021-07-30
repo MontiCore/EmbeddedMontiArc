@@ -162,6 +162,13 @@ def train_model(args):
     # lr is defined in the call to run codebert, epsilon is left as default in the run script, beta1 and 2 are the pytorch default
     optimizer = nlp.optimizer.BERTAdam(learning_rate=5e-5, beta1=0.9, beta2=0.999, epsilon=1e-8)
     trainer = mx.gluon.Trainer(seq2seq.collect_params(), optimizer=optimizer)
+    if (args.test_run):
+        print('Doing test run with subset of data...')
+    else:
+        print('Training full model, make sure you exported the correct data!')
+    print('Training steps {}'.format(train_steps))
+    print('Batch size {}'.format(batch_size))
+    print('Num samples {}'.format(num_samples))
     print('Training model...')
     for epoch in range(epochs):
         for bid, batch in enumerate(train_data):
@@ -249,7 +256,7 @@ def compute_bleu(file_name, res):
 
 def parse_args():
     parser = argparse.ArgumentParser()
-    parser.add_argument('--test_run', action='store_true', default=True, 
+    parser.add_argument('--test_run', action='store_true', 
         help='Run the training and testing on a very small subset of the data')
     parser.add_argument('--data_dir', default='./codebert_gluon/data', type=str,
         help='The folder where the processed training, validation and test data is.')

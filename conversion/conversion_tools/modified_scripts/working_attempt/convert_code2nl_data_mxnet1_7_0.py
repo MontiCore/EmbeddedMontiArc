@@ -125,7 +125,7 @@ def write_dataset_to_disk(stage, data, savedir):
 
 def parse_args():
     parser = argparse.ArgumentParser()
-    parser.add_argument('--test_run', action='store_true', default=True, 
+    parser.add_argument('--test_run', action='store_true', default=False, 
         help='Output the data for a test run of the model')
     parser.add_argument("--save_dir", default='./codebert_gluon/data', 
         help="The path where the processed training data should be saved")
