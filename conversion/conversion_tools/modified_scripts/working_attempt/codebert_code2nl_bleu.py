@@ -175,7 +175,6 @@ def computeMaps(predictions, gf):
         goldMap[rid] = []
       goldMap[rid].append(splitPuncts(pred.strip().lower()))
 
-  sys.stderr.write('Total: ' + str(len(goldMap)) + '\n')
   return (goldMap, predictionMap)
 
 #m1 is the reference map

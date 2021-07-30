@@ -257,7 +257,7 @@ def test_model(hf_model, hf_tokenizer, gluon_model, gluon_embedding, args):
                     )
 
 def export_model(save_dir, gluon_model, name):
-    print('Exporting the {} model to {} ...'.format(name, os.path.join(save_dir)))
+    print('Exporting the {} model to {}...'.format(name, os.path.join(save_dir)))
     gluon_model.export(os.path.join(save_dir, name))
 
 def get_hf_model_and_tok():

@@ -122,11 +122,7 @@ def get_data_iterator(inputs, outputs, shuffle, batch_size, filename):
         output_dict[k] = file[k]
     data_iterator = mx.io.NDArrayIter(
         data=input_dict, label=output_dict, shuffle=shuffle, batch_size=batch_size)
-    # for idx, batch in enumerate(data_iterator):
-    #     print(idx)
-    #     print(batch.data[0].asnumpy())
-    #     print(batch.data[0].shape)
-    return len(input_dict), data_iterator
+    return len(input_dict[inputs[0]]), data_iterator
 
 def load_codebert_block(symbol_file, weight_file, context):
     input_names = ['data0', 'data1']
@@ -155,7 +151,7 @@ def train_model(args):
     num_samples, train_data = get_data_iterator(
         ['source_ids', 'source_masks'], ['target_ids', 'target_masks'],
         True, batch_size, train_file)
-    epochs = train_steps * batch_size // num_samples
+    epochs = (train_steps * batch_size) // num_samples
     seq2seq.initialize()
     loss = mx.gluon.loss.SoftmaxCrossEntropyLoss() # TODO parameters? e.g. sparse_label
     # note this is different than the codebert optimizer in two ways
@@ -163,13 +159,12 @@ def train_model(args):
     # 2. it doesn't appear to be able to exclude certain parameters from the optimizer
     # which is done in the codebert code2nl's optimizer. TODO for now.
 
-
     # lr is defined in the call to run codebert, epsilon is left as default in the run script, beta1 and 2 are the pytorch default
     optimizer = nlp.optimizer.BERTAdam(learning_rate=5e-5, beta1=0.9, beta2=0.999, epsilon=1e-8)
     trainer = mx.gluon.Trainer(seq2seq.collect_params(), optimizer=optimizer)
-
+    print('Training model...')
     for epoch in range(epochs):
-        for batch in train_data:
+        for bid, batch in enumerate(train_data):
             with mx.autograd.record():
                 source_ids, source_masks, target_ids, target_masks = get_seqs_from_batch(batch, ctx)
                 lm_logits = seq2seq(source_ids, source_masks, target_ids, target_masks)
@@ -182,6 +177,9 @@ def train_model(args):
                 X = shift_logits.reshape(-1, newDim)[active_loss]
                 y = shift_labels.reshape(-1)[active_loss]
                 l = loss(X, y)
+                print('Epoch {}/{} Batch {}/{} Loss {}'.format(
+                    epoch+1, epochs, bid+1, num_samples//batch_size, l.mean().asscalar()
+                ))
             l.backward()
             trainer.step(batch_size)
     # target_mask = self.create_target_mask(target_ids, target_valid_length)
@@ -207,12 +205,14 @@ def test_model(file_name, seq2seq, args):
     batch_size = train_hparams['batch_size']
     ctx = [mx.cpu()]
     test_file = '{}/{}'.format(args.data_dir, file_name)
-    _, test_data = get_data_iterator(
+    num_samples, test_data = get_data_iterator(
         ['source_ids', 'source_masks'], ['target_ids', 'target_masks'],
         True, batch_size, test_file)
     preds = []
-    for idx, batch in enumerate(test_data):
-        print('batch {}'.format(str(idx)))
+    for bid, batch in enumerate(test_data):
+        print('Batch {}/{}'.format(
+            bid+1, num_samples//batch_size
+        ))
         source_ids, source_masks, target_ids, _ = get_seqs_from_batch(batch, ctx)
         pred = seq2seq(source_ids, source_masks)
         preds.append((pred, target_ids))
@@ -242,11 +242,10 @@ def format_for_bleu(tokenizer, outputs):
     return formatted_preds, formatted_actuals
 
 def compute_bleu(file_name, res):
-    print('Computing Bleu for {}...'.format(file_name))
     pred, actual = res
     actual_map, pred_map = bleu.computeMaps(pred, actual) 
     score = round(bleu.bleuFromMaps(actual_map, pred_map)[0], 2)
-    print('{} = {}'.format('Bleu-4 Score', str(score)))
+    print('{} {}'.format('Bleu-4 Score', str(score)))
 
 def parse_args():
     parser = argparse.ArgumentParser()
@@ -266,11 +265,17 @@ def parse_args():
 
 if __name__ == '__main__':
     args = parse_args()
+
     model = train_model(args)
-    res_test = test_model('test.h5', model, args)
-    res_valid = test_model('valid.h5', model, args)
     tokenizer = RobertaTokenizer.from_pretrained('microsoft/codebert-base')
+
+    res_test = test_model('test.h5', model, args)
     res_test = format_for_bleu(tokenizer, res_test)
-    res_valid = format_for_bleu(tokenizer, res_valid)
     compute_bleu('test.h5', res_test)
+
+    res_valid = test_model('valid.h5', model, args)
+    res_valid = format_for_bleu(tokenizer, res_valid)
     compute_bleu('valid.h5', res_valid)
+
+
+
