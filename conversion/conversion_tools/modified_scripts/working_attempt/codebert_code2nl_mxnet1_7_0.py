@@ -171,6 +171,8 @@ def train_model(args):
     print('Num samples {}'.format(num_samples))
     print('Training model...')
     for epoch in range(epochs):
+        # TODO left off here: you probably have to create the iterator again for every epoch, because
+        # it will be at last element for the next epoch?
         for bid, batch in enumerate(train_data):
             with mx.autograd.record():
                 source_ids, source_masks, target_ids, target_masks = get_seqs_from_batch(batch, ctx)
