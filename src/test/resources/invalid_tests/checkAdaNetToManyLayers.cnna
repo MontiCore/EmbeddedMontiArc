@@ -1,15 +1,10 @@
 /* (c) https://github.com/MontiCore/monticore */
-architecture tooManyAdaNetLayer(classes=10){
+architecture checkAdaNetToManyLayers(){
     def input Z(0:255)^{1, 28, 28} data
-    def output Q(0:1)^{classes} softmax
-    def conv(channels=20, kernel=1, stride=1){
-            Convolution(kernel=(kernel,kernel),channels=channels) ->
-            Relu() ->
-            Pooling(pool_type="max", kernel=(2,2), stride=(stride,stride))
-    }
+    def output Q(0:1)^{10} softmax
+
     data ->
-    AdaNet(block = "conv")->
+    AdaNet()->
     AdaNet()->
     softmax;
-
 }
