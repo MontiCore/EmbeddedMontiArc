@@ -69,12 +69,12 @@ def get_training_hparams(test_run):
         return {
             'max_source_length': 32,
             'max_target_length': 16,
-            'limit_train_samples': 32,
-            'limit_valid_samples': 8,
-            'limit_test_samples': 8,
-            'train_steps': 4,
+            'limit_train_samples': 128,
+            'limit_valid_samples': 64,
+            'limit_test_samples': 64,
+            'train_steps': 16,
             'batch_size': 8,
-            'beam_size':2
+            'beam_size': 10
         }
     else:
         return {
@@ -84,6 +84,6 @@ def get_training_hparams(test_run):
             'limit_valid_samples': -1,
             'limit_test_samples': -1,
             'train_steps': 50000,
-            'batch_size': 8,
-            'beam_size':2
+            'batch_size': 64,
+            'beam_size': 10
         }
