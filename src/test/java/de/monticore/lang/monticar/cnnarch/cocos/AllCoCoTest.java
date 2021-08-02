@@ -132,25 +132,27 @@ public class AllCoCoTest extends AbstractCoCoTest {
                 "invalid_tests", "WrongArgument",
                 new ExpectedErrorInfo(4, ErrorCodes.UNKNOWN_ARGUMENT, ErrorCodes.MISSING_ARGUMENT));
     }
-    /**
+
     @Test
-    public void testAdaHetToManyLayer(){
-        checkInvalid(new CNNArchSymbolCoCoChecker().addCoCo(new CheckAdaNetTooManyLayers()),
+    public void testAdaNetToManyLayer(){
+        checkInvalid(
+                new CNNArchCoCoChecker(),
+                new CNNArchSymbolCoCoChecker().addCoCo(new CheckAdaNetTooManyLayers()),
                 new CNNArchSymbolCoCoChecker(),
-                new CNNArchSymbolCoCoChecker(),
-                "invalid_tests", "checkAdaNet",
+                "invalid_tests", "checkAdaNetToManyLayers",
                 new ExpectedErrorInfo(1, ErrorCodes.ADANET_TOO_MANY_ADANET_LAYER));
     }
 
     @Test
-    public void testNoBlockPassed(){
-        checkInvalid(new CNNArchCoCoChecker().addCoCo(new CheckAdaNetNoBlockPassed()),
+    public void testAdaIllegalArch(){
+        checkInvalid(
+                new CNNArchCoCoChecker(),
                 new CNNArchSymbolCoCoChecker(),
-                new CNNArchSymbolCoCoChecker(),
-                "invalid_tests", "checkAdaNet",
-                new ExpectedErrorInfo(1,ErrorCodes.ADANET_NO_BLOCK_PASSED));
+                new CNNArchSymbolCoCoChecker().addCoCo(new CheckAdaNetMalFormedArchitecture()),
+                "invalid_tests", "checkAdaNetIllegalArch",
+                new ExpectedErrorInfo(1, ErrorCodes.ADANET_ILLEGAL_ARCH));
     }
-     **/
+
     @Test
     public void testInvalidRecursion(){
         checkInvalid(new CNNArchCoCoChecker().addCoCo(new CheckLayerRecursion()),
