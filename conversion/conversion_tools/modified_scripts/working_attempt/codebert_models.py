@@ -185,7 +185,8 @@ class Seq2Seq(HybridBlock):
             self, embedding, encoder, decoder,
             vocab_size=None, hidden_size=None, beam_size=None, 
             max_length=None, sos_id=None, 
-            eos_id=None, prefix=None, params=None
+            eos_id=None, prefix=None, params=None,
+            compare_mode=False
         ):
             super().__init__(prefix=prefix, params=params)
             self.embedding = embedding
@@ -201,6 +202,7 @@ class Seq2Seq(HybridBlock):
             self.max_length=max_length
             self.sos_id=sos_id
             self.eos_id=eos_id
+            self.compare_mode = compare_mode
     
     def get_lm_head(self, vocab_size, hidden_size):
         # using params=.. in the Dense constructor doesnt seem to work, so we have to set the weights manually?
@@ -288,7 +290,9 @@ class Seq2Seq(HybridBlock):
                 preds.append(mx.nd.concat(*pred, dim=0).expand_dims(0))
                 
             preds = mx.nd.concat(*preds, dim=0)
-            return preds, output_probs
+            if self.compare_mode:
+                return preds, output_probs
+            return preds
 
 class Beam(object):
     def __init__(self, size, sos, eos):

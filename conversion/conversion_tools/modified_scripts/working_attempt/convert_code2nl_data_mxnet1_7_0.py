@@ -92,9 +92,9 @@ def convert_examples_to_features(examples, tokenizer, max_source_length, max_tar
         )
     return features
 
-def get_stage_data(stage, tokenizer, args):
-    datafile = '{}/{}.jsonl'.format(args.data_dir, stage)
-    data_params = hp.get_training_hparams(args.test_run)
+def get_stage_data(stage, tokenizer, data_dir, test_run):
+    datafile = '{}/{}.jsonl'.format(data_dir, stage)
+    data_params = hp.get_training_hparams(test_run)
     stage_limit = data_params['limit_{}_samples'.format(stage)]
     stage_examples = read_examples(datafile, limit=stage_limit)
     stage_features = convert_examples_to_features(
@@ -141,5 +141,5 @@ if __name__ == '__main__':
     print('Getting pretrained tokenizer...')
     tokenizer = RobertaTokenizer.from_pretrained('microsoft/codebert-base')
     for stage in stages:
-        data = get_stage_data(stage, tokenizer, args)
+        data = get_stage_data(stage, tokenizer, args.data_dir, args.test_run)
         write_dataset_to_disk(stage, data, args.save_dir)
