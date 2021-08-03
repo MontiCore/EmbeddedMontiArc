@@ -63,7 +63,8 @@ class Seq2Seq(nn.Module):
             attn_mask=-1e4 *(1-self.bias[:target_ids.shape[1],:target_ids.shape[1]])
             tgt_embeddings = self.encoder.embeddings(target_ids).permute([1,0,2]).contiguous()
             out = self.decoder(tgt_embeddings,encoder_output,tgt_mask=attn_mask,memory_key_padding_mask=(1-source_mask).bool())
-            hidden_states = torch.tanh(self.dense(out)).permute([1,0,2]).contiguous()
+            dense_out = self.dense(out)
+            hidden_states = torch.tanh(dense_out).permute([1,0,2]).contiguous()
             lm_logits = self.lm_head(hidden_states)
 
             # drop the start of sentence mask tokens? - mb
@@ -77,11 +78,6 @@ class Seq2Seq(nn.Module):
             x = shift_logits.view(-1, shift_logits.size(-1))[active_loss]
             y = shift_labels.view(-1)[active_loss]
             
-            print(f"{active_loss}  {active_loss.size()}")
-            print(f"{shift_logits} {shift_logits.size()}")
-            print(f"{shift_labels} {shift_labels.size()}")
-            print(f"{x} {x.size()}")
-            print(f"{y} {y.size()}")
             loss = loss_fct(x, y)
 
             outputs = loss,loss*active_loss.sum(),active_loss.sum()
@@ -89,7 +85,9 @@ class Seq2Seq(nn.Module):
         else:
             #Predict 
             preds=[]       
-            zero=torch.cuda.LongTensor(1).fill_(0)     
+            #zero=torch.cuda.LongTensor(1).fill_(0) only gpu TODO changed by makua
+            output_probs = [] # TODO added by makua to compare models
+            zero = torch.LongTensor(1).fill_(0)  
             for i in range(source_ids.shape[0]):
                 context=encoder_output[:,i:i+1]
                 context_mask=source_mask[i:i+1,:]
@@ -104,25 +102,29 @@ class Seq2Seq(nn.Module):
                     tgt_embeddings = self.encoder.embeddings(input_ids).permute([1,0,2]).contiguous()
                     out = self.decoder(tgt_embeddings,context,tgt_mask=attn_mask,memory_key_padding_mask=(1-context_mask).bool())
                     out = torch.tanh(self.dense(out))
-                    hidden_states=out.permute([1,0,2]).contiguous()[:,-1,:]
+                    # (max_len, beam_size, embed_size) -> (beam_size, max_len, embed_size)
+                    hidden_states=out.permute([1,0,2]).contiguous()[:,-1,:] 
                     out = self.lsm(self.lm_head(hidden_states)).data
+                    output_probs.append(out) # TODO added by makua to compare models
                     beam.advance(out)
                     input_ids.data.copy_(input_ids.data.index_select(0, beam.getCurrentOrigin()))
                     input_ids=torch.cat((input_ids,beam.getCurrentState()),-1)
+
                 hyp= beam.getHyp(beam.getFinal())
                 pred=beam.buildTargetTokens(hyp)[:self.beam_size]
                 pred=[torch.cat([x.view(-1) for x in p]+[zero]*(self.max_length-len(p))).view(1,-1) for p in pred]
                 preds.append(torch.cat(pred,0).unsqueeze(0))
                 
-            preds=torch.cat(preds,0)                
-            return preds   
+            preds=torch.cat(preds,0)            
+            return preds, output_probs #TODO changed by makua, returns output probs to compare models
         
         
 
 class Beam(object):
     def __init__(self, size,sos,eos):
         self.size = size
-        self.tt = torch.cuda
+        #self.tt = torch.cuda only gpu TODO changed by makua to train on cpu
+        self.tt = torch
         # The score for each translation on the beam.
         self.scores = self.tt.FloatTensor(size).zero_()
         # The backpointers at each time-step.
