@@ -131,6 +131,7 @@
     (true (control ?player))
     (isFigureOnField ?player ?figure ?color_fig ?start_col ?start_row)
     (isLegalMove ?figure ?player ?start_col ?start_row ?dest_col ?dest_row)
+    (not (isInCheckAfterMove ?player ?start_col ?start_row ?dest_col ?dest_row))
 )
 
 
@@ -205,12 +206,13 @@
 
 // moves to blank
 (<= (isLegalMove bishop ?player ?start_col ?start_row ?dest_col ?dest_row)
-    // bishop occupies field (col, row)
+    (isFigureOnField ?player bishop ?any_fig ?start_col ?start_row)
     (true (field ?dest_col ?dest_row blank))
     (isDiagonalCross ?start_col ?start_row ?dest_col ?dest_row)
 )
 // captures
 (<= (isLegalMove bishop ?player ?start_col ?start_row ?dest_col ?dest_row)
+    (isFigureOnField ?player bishop ?any_fig ?start_col ?start_row)
     (isOpponent ?player ?opponent)
     (isFigureOnField ?opponent ?figure ?color_fig ?dest_col ?dest_row)
     (isDiagonalCross ?start_col ?start_row ?dest_col ?dest_row)
@@ -221,11 +223,13 @@
 
 // moves to blank
 (<= (isLegalMove knight ?player ?start_col ?start_row ?dest_col ?dest_row)
+    (isFigureOnField ?player knight ?any_fig ?start_col ?start_row)
     (true (field ?dest_col ?dest_row blank))
     (isLegalKnightMove ?start_col ?start_row ?dest_col ?dest_row)
 )
 // captures
 (<= (isLegalMove knight ?player ?start_col ?start_row ?dest_col ?dest_row)
+    (isFigureOnField ?player knight ?any_fig ?start_col ?start_row)
     (isOpponent ?player ?opponent)
     (isFigureOnField ?opponent ?figure ?color_fig ?dest_col ?dest_row)
     (isLegalKnightMove ?start_col ?start_row ?dest_col ?dest_row)
@@ -264,7 +268,6 @@
 )
 // 2xLeft 1xBottom
 (<= (isLegalKnightMove ?start_col ?start_row ?dest_col ?dest_row)
-
     (isNextCol ?dest_col ?pre_dest_col)
     (isNextCol ?pre_dest_col ?start_col)
     (isNextRow ?dest_row ?start_row)
@@ -288,12 +291,14 @@
 
 // moves to blank
 (<= (isLegalMove rook ?player ?start_col ?start_row ?dest_col ?dest_row)
+    (isFigureOnField ?player rook ?any_fig ?start_col ?start_row)
     (true (field ?dest_col ?dest_row blank))
     (isLineCross ?start_col ?start_row ?dest_col ?dest_row)
 )
 
 // captures
 (<= (isLegalMove rook ?player ?start_col ?start_row ?dest_col ?dest_row)
+    (isFigureOnField ?player rook ?any_fig ?start_col ?start_row)
     (isOpponent ?player ?opponent)
     (isFigureOnField ?opponent ?figure ?color_fig ?dest_col ?dest_row)
     (isLineCross ?start_col ?start_row ?dest_col ?dest_row)
@@ -304,12 +309,14 @@
 
 // moves to blank
 (<= (isLegalMove queen ?player ?start_col ?start_row ?dest_col ?dest_row)
+    (isFigureOnField ?player queen ?any_fig ?start_col ?start_row)
     (true (field ?dest_col ?dest_row blank))
     (isLegalQueenMove ?start_col ?start_row ?dest_col ?dest_row)
 )
 
 // captures
 (<= (isLegalMove queen ?player ?start_col ?start_row ?dest_col ?dest_row)
+    (isFigureOnField ?player queen ?any_fig ?start_col ?start_row)
     (isOpponent ?player ?opponent)
     (isFigureOnField ?opponent ?figure ?color_fig ?dest_col ?dest_row)
     (isLegalQueenMove ?start_col ?start_row ?dest_col ?dest_row)
@@ -331,12 +338,14 @@
 
 // moves to blank
 (<= (isLegalMove king ?player ?start_col ?start_row ?dest_col ?dest_row)
+    (isFigureOnField ?player king ?color_fig ?start_col ?start_row)
     (true (field ?dest_col ?dest_row blank))
     (isLegalKingMove ?start_col ?start_row ?dest_col ?dest_row)
 )
 
 // captures
 (<= (isLegalMove king ?player ?start_col ?start_row ?dest_col ?dest_row)
+    (isFigureOnField ?player king ?color_fig ?start_col ?start_row)
     (isOpponent ?player ?opponent)
     (isFigureOnField ?opponent ?figure ?color_fig ?dest_col ?dest_row)
     (isLegalKingMove ?start_col ?start_row ?dest_col ?dest_row)
@@ -376,6 +385,274 @@
     (isNextDiagonalCellBottomRight ?start_col ?start_row ?dest_col ?dest_row)
 )
 
+
+// Check-checks
+// ----- -----
+
+(<= (notIsInCheckAfterMove ?player ?start_col ?start_row ?dest_col ?dest_row)
+    (not (isInCheckAfterMove ?player ?start_col ?start_row ?dest_col ?dest_row))
+)
+
+// Player is in check
+(<= (isPlayerInCheck ?player)
+    (isOpponent ?player ?opponent)
+    (isFigureOnField ?player king ?king_color_fig ?king_col ?king_row)
+    (isLegalMove ?any_fig ?opponent ?any_col ?any_row ?king_col ?king_row)
+)
+
+// Player is in check after move (illegal)
+(<= (isInCheckAfterMove ?player ?start_col ?start_row ?dest_col ?dest_row)
+    (isOpponent ?player ?opponent)
+    (isFigureOnFieldFuture ?player king ?king_color_fig ?king_col ?king_row ?start_col ?start_row ?dest_col ?dest_row)
+    (isFigureOnFieldFuture ?opponent ?figure ?color_fig ?future_start_col ?future_start_row ?start_col ?start_row ?dest_col ?dest_row)
+    (isFutureThreat ?figure ?opponent ?future_start_col ?future_start_row ?king_col ?king_row ?start_col ?start_row ?dest_col ?dest_row)
+)
+
+// Future Threats
+// ------ -------
+
+// START
+// START
+// START
+// START
+// START
+// START
+// START
+
+// Black Pawn
+// ----- ----
+// threats left
+(<= (isFutureThreat pawn black ?start_col ?start_row ?dest_col ?dest_row ?ignore_col ?ignore_row ?block_col ?block_row)
+    (isFigureOnFieldFuture black pawn black_pawn ?start_col ?start_row ?ignore_col ?ignore_row ?block_col ?block_row)
+    (isNextRow ?dest_row ?start_row)
+    (isNextCol ?dest_col ?start_col)
+)
+// threats right
+(<= (isFutureThreat pawn black ?start_col ?start_row ?dest_col ?dest_row ?ignore_col ?ignore_row ?block_col ?block_row)
+    (isFigureOnFieldFuture black pawn black_pawn ?start_col ?start_row ?ignore_col ?ignore_row ?block_col ?block_row)
+    (isNextRow ?dest_row ?start_row)
+    (isNextCol ?start_col ?dest_col)
+)
+
+// White Pawn
+// ----- ----
+// threats left
+(<= (isFutureThreat pawn white ?start_col ?start_row ?dest_col ?dest_row ?ignore_col ?ignore_row ?block_col ?block_row)
+    (isFigureOnFieldFuture white pawn white_pawn ?start_col ?start_row ?ignore_col ?ignore_row ?block_col ?block_row)
+    (isNextRow ?start_row ?dest_row)
+    (isNextCol ?dest_col ?start_col)
+)
+// threats right
+(<= (isFutureThreat pawn white ?start_col ?start_row ?dest_col ?dest_row ?ignore_col ?ignore_row ?block_col ?block_row)
+    (isFigureOnFieldFuture white pawn white_pawn ?start_col ?start_row ?ignore_col ?ignore_row ?block_col ?block_row)
+    (isNextRow ?start_row ?dest_row)
+    (isNextCol ?start_col ?dest_col)
+)
+
+// // Bishop
+// // ------
+// (<= (isFutureThreat bishop ?player ?start_col ?start_row ?dest_col ?dest_row ?ignore_col ?ignore_row ?block_col ?block_row)
+//     (isFigureOnFieldFuture ?player bishop ?color_fig ?start_col ?start_row ?ignore_col ?ignore_row ?block_col ?block_row)
+//     (isDiagonalCrossFuture ?start_col ?start_row ?dest_col ?dest_row ?ignore_col ?ignore_row ?block_col ?block_row)
+// )
+
+// // Knight
+// // ------
+// (<= (isFutureThreat knight ?player ?start_col ?start_row ?dest_col ?dest_row ?ignore_col ?ignore_row ?block_col ?block_row)
+//     (isFigureOnFieldFuture ?player knight ?color_fig ?start_col ?start_row ?ignore_col ?ignore_row ?block_col ?block_row)
+//     (isLegalKnightMove ?start_col ?start_row ?dest_col ?dest_row)
+// )
+
+// // Rook
+// // ----
+// (<= (isFutureThreat rook ?player ?start_col ?start_row ?dest_col ?dest_row ?ignore_col ?ignore_row ?block_col ?block_row)
+//     (isFigureOnFieldFuture ?player rook ?color_fig ?start_col ?start_row ?ignore_col ?ignore_row ?block_col ?block_row)
+//     (isLineCrossFuture ?start_col ?start_row ?dest_col ?dest_row ?ignore_col ?ignore_row ?block_col ?block_row)
+// )
+
+// // Queen
+// // -----
+// (<= (isFutureThreat queen ?player ?start_col ?start_row ?dest_col ?dest_row ?ignore_col ?ignore_row ?block_col ?block_row)
+//     (isFigureOnFieldFuture ?player queen ?color_fig ?start_col ?start_row ?ignore_col ?ignore_row ?block_col ?block_row)
+//     (isQueenThreatFuture ?start_col ?start_row ?dest_col ?dest_row ?ignore_col ?ignore_row ?block_col ?block_row)
+// )
+// // All future queen threats
+// (<= (isQueenThreatFuture ?start_col ?start_row ?dest_col ?dest_row ?ignore_col ?ignore_row ?block_col ?block_row)
+//     (isLineCrossFuture ?start_col ?start_row ?dest_col ?dest_row ?ignore_col ?ignore_row ?block_col ?block_row)
+// )
+// (<= (isQueenThreatFuture ?start_col ?start_row ?dest_col ?dest_row ?ignore_col ?ignore_row ?block_col ?block_row)
+//     (isDiagonalCrossFuture ?start_col ?start_row ?dest_col ?dest_row ?ignore_col ?ignore_row ?block_col ?block_row)
+// )
+
+// // King
+// // ----
+// (<= (isFutureThreat king ?player ?start_col ?start_row ?dest_col ?dest_row ?ignore_col ?ignore_row ?block_col ?block_row)
+//     (isFigureOnFieldFuture ?player king ?color_fig ?start_col ?start_row ?ignore_col ?ignore_row ?block_col ?block_row)
+//     (isLegalKingMove ?start_col ?start_row ?dest_col ?dest_row)
+// )
+
+// Future Util
+// ------ ----
+
+// Current player figure moved from ?ignore to ?block
+// TODO: special moves
+(<= (isFigureOnFieldFuture ?player ?figure ?color_fig ?block_col ?block_row ?ignore_col ?ignore_row ?block_col ?block_row)
+    (isFigureOnField ?player ?figure ?color_fig ?ignore_col ?ignore_row)
+)
+(<= (isFigureOnFieldFuture ?player ?figure ?color_fig ?col ?row ?ignore_col ?ignore_row ?block_col ?block_row)
+    (distinct ?col ?ignore_col)
+    (distinct ?row ?block_row)
+    (isFigureOnField ?player ?figure ?color_fig ?col ?row)
+)
+(<= (isFigureOnFieldFuture ?player ?figure ?color_fig ?col ?row ?ignore_col ?ignore_row ?block_col ?block_row)
+    (distinct ?row ?ignore_row)
+    (distinct ?col ?block_col)
+    (isFigureOnField ?player ?figure ?color_fig ?col ?row)
+)
+
+(<= (isFieldBlankFuture ?ignore_col ?ignore_row ?ignore_col ?ignore_row ?block_col ?block_row)
+)
+(<= (isFieldBlankFuture ?col ?row ?ignore_col ?ignore_row ?block_col ?block_row)
+    (distinct ?col ?block_col)
+    (true (field ?col ?row ?blank))
+)
+(<= (isFieldBlankFuture ?col ?row ?ignore_col ?ignore_row ?block_col ?block_row)
+    (distinct ?row ?block_row)
+    (true (field ?col ?row ?blank))
+)
+
+// STRUCTURES
+// STRUCTURES
+// STRUCTURES
+// STRUCTURES
+// STRUCTURES
+// STRUCTURES
+// STRUCTURES
+// STRUCTURES
+// STRUCTURES
+// STRUCTURES
+// STRUCTURES
+
+// Future Line Cross
+(<= (isLineCrossFuture ?start_col ?start_row ?start_col ?dest_row ?ignore_col ?ignore_row ?block_col ?block_row)
+    (isLineTopFuture ?start_col ?start_row ?start_col ?dest_row ?ignore_col ?ignore_row ?block_col ?block_row)
+)
+(<= (isLineCrossFuture ?start_col ?start_row ?start_col ?dest_row ?ignore_col ?ignore_row ?block_col ?block_row)
+    (isLineBottomFuture ?start_col ?start_row ?start_col ?dest_row ?ignore_col ?ignore_row ?block_col ?block_row)
+)
+(<= (isLineCrossFuture ?start_col ?start_row ?dest_col ?start_row ?ignore_col ?ignore_row ?block_col ?block_row)
+    (isLineLeftFuture ?start_col ?start_row ?dest_col ?start_row ?ignore_col ?ignore_row ?block_col ?block_row)
+)
+(<= (isLineCrossFuture ?start_col ?start_row ?dest_col ?start_row ?ignore_col ?ignore_row ?block_col ?block_row)
+    (isLineRightFuture ?start_col ?start_row ?dest_col ?start_row ?ignore_col ?ignore_row ?block_col ?block_row)
+)
+
+// Future Line to Top
+(<= (isLineTopFuture ?start_col ?start_row ?start_col ?dest_row ?ignore_col ?ignore_row ?block_col ?block_row)
+    (isNextRow ?start_row ?dest_row)
+)
+(<= (isLineTopFuture ?start_col ?start_row ?start_col ?dest_row ?ignore_col ?ignore_row ?block_col ?block_row)
+    (isNextRow ?start_row ?start_row_succ)
+    (isFieldBlankFuture ?start_col ?start_row_succ ?ignore_col ?ignore_row ?block_col ?block_row)
+    (isLineTopFuture ?start_col ?start_row_succ ?start_col ?dest_row ?ignore_col ?ignore_row ?block_col ?block_row)
+)
+
+// Future Line to Bottom
+(<= (isLineBottomFuture ?start_col ?start_row ?start_col ?dest_row ?ignore_col ?ignore_row ?block_col ?block_row)
+    (isNextRow ?dest_row ?start_row)
+)
+(<= (isLineBottomFuture ?start_col ?start_row ?start_col ?dest_row ?ignore_col ?ignore_row ?block_col ?block_row)
+    (isNextRow ?start_row_pred ?start_row)
+    (isFieldBlankFuture ?start_col ?start_row_pred ?ignore_col ?ignore_row ?block_col ?block_row)
+    (isLineBottomFuture ?start_col ?start_row_pred ?start_col ?dest_row ?ignore_col ?ignore_row ?block_col ?block_row)
+)
+
+// Future Line to Right
+(<= (isLineRightFuture ?start_col ?start_row ?dest_col ?start_row ?ignore_col ?ignore_row ?block_col ?block_row)
+    (isNextCol ?start_col ?dest_col)
+)
+(<= (isLineRightFuture ?start_col ?start_row ?dest_col ?start_row ?ignore_col ?ignore_row ?block_col ?block_row)
+    (isNextCol ?start_col ?start_col_succ)
+    (isFieldBlankFuture ?start_col_succ ?start_row ?ignore_col ?ignore_row ?block_col ?block_row)
+    (isLineRightFuture ?start_col_succ ?start_row ?dest_col ?start_row ?ignore_col ?ignore_row ?block_col ?block_row)
+)
+
+// Future Line to Left
+(<= (isLineLeftFuture ?start_col ?start_row ?dest_col ?start_row ?ignore_col ?ignore_row ?block_col ?block_row)
+    (isNextCol ?dest_col ?start_col)
+)
+(<= (isLineLeftFuture ?start_col ?start_row ?dest_col ?start_row ?ignore_col ?ignore_row ?block_col ?block_row)
+    (isNextCol ?start_col_pred ?start_col)
+    (isFieldBlankFuture ?start_col_pred ?start_row ?ignore_col ?ignore_row ?block_col ?block_row)
+    (isLineLeftFuture ?start_col_pred ?start_row ?dest_col ?start_row ?ignore_col ?ignore_row ?block_col ?block_row)
+)
+
+
+// Future Diagonal Cross until blocked
+(<= (isDiagonalCrossFuture ?start_col ?start_row ?dest_col ?dest_row ?ignore_col ?ignore_row ?block_col ?block_row)
+    (isDiagonalTopLeftFuture ?start_col ?start_row ?dest_col ?dest_row ?ignore_col ?ignore_row ?block_col ?block_row)
+)
+(<= (isDiagonalCrossFuture ?start_col ?start_row ?dest_col ?dest_row ?ignore_col ?ignore_row ?block_col ?block_row)
+    (isDiagonalTopRightFuture ?start_col ?start_row ?dest_col ?dest_row ?ignore_col ?ignore_row ?block_col ?block_row)
+)
+(<= (isDiagonalCrossFuture ?start_col ?start_row ?dest_col ?dest_row ?ignore_col ?ignore_row ?block_col ?block_row)
+    (isDiagonalBottomLeftFuture ?start_col ?start_row ?dest_col ?dest_row ?ignore_col ?ignore_row ?block_col ?block_row)
+)
+(<= (isDiagonalCrossFuture ?start_col ?start_row ?dest_col ?dest_row ?ignore_col ?ignore_row ?block_col ?block_row)
+    (isDiagonalBottomRightFuture ?start_col ?start_row ?dest_col ?dest_row ?ignore_col ?ignore_row ?block_col ?block_row)
+)
+
+// Future isDiagonalTopLeft
+(<= (isDiagonalTopLeftFuture ?start_col ?start_row ?dest_col ?dest_row ?ignore_col ?ignore_row ?block_col ?block_row)
+    (isNextDiagonalCellTopLeft ?start_col ?start_row ?dest_col ?dest_row)
+)
+(<= (isDiagonalTopLeftFuture ?start_col ?start_row ?dest_col ?dest_row ?ignore_col ?ignore_row ?block_col ?block_row)
+    (isNextDiagonalCellTopLeft ?start_col ?start_row ?start_col_succ ?start_row_succ)
+    (isFieldBlankFuture ?start_col_succ ?start_row_succ ?ignore_col ?ignore_row ?block_col ?block_row)
+    (isDiagonalTopLeftFuture ?start_col_succ ?start_row_succ ?dest_col ?dest_row ?ignore_col ?ignore_row ?block_col ?block_row)
+)
+
+// Future isDiagonalTopRight
+(<= (isDiagonalTopRightFuture ?start_col ?start_row ?dest_col ?dest_row ?ignore_col ?ignore_row ?block_col ?block_row)
+    (isNextDiagonalCellTopRight ?start_col ?start_row ?dest_col ?dest_row)
+)
+(<= (isDiagonalTopRightFuture ?start_col ?start_row ?dest_col ?dest_row ?ignore_col ?ignore_row ?block_col ?block_row)
+    (isNextDiagonalCellTopRight ?start_col ?start_row ?start_col_succ ?start_row_succ)
+    (isFieldBlankFuture ?start_col_succ ?start_row_succ ?ignore_col ?ignore_row ?block_col ?block_row)
+    (isDiagonalTopRightFuture ?start_col_succ ?start_row_succ ?dest_col ?dest_row ?ignore_col ?ignore_row ?block_col ?block_row)
+)
+
+// Future isDiagonalBottomLeft
+(<= (isDiagonalBottomLeftFuture ?start_col ?start_row ?dest_col ?dest_row ?ignore_col ?ignore_row ?block_col ?block_row)
+    (isNextDiagonalCellBottomLeft ?start_col ?start_row ?dest_col ?dest_row)
+)
+(<= (isDiagonalBottomLeftFuture ?start_col ?start_row ?dest_col ?dest_row ?ignore_col ?ignore_row ?block_col ?block_row)
+    (isNextDiagonalCellBottomLeft ?start_col ?start_row ?start_col_succ ?start_row_succ)
+    (isFieldBlankFuture ?start_col_succ ?start_row_succ ?ignore_col ?ignore_row ?block_col ?block_row)
+    (isDiagonalBottomLeftFuture ?start_col_succ ?start_row_succ ?dest_col ?dest_row ?ignore_col ?ignore_row ?block_col ?block_row)
+)
+
+// Future isDiagonalBottomRight
+(<= (isDiagonalBottomRightFuture ?start_col ?start_row ?dest_col ?dest_row ?ignore_col ?ignore_row ?block_col ?block_row)
+    (isNextDiagonalCellBottomRight ?start_col ?start_row ?dest_col ?dest_row)
+)
+(<= (isDiagonalBottomRightFuture ?start_col ?start_row ?dest_col ?dest_row ?ignore_col ?ignore_row ?block_col ?block_row)
+    (isNextDiagonalCellBottomRight ?start_col ?start_row ?start_col_succ ?start_row_succ)
+    (isFieldBlankFuture ?start_col_succ ?start_row_succ ?ignore_col ?ignore_row ?block_col ?block_row)
+    (isDiagonalBottomRightFuture ?start_col_succ ?start_row_succ ?dest_col ?dest_row ?ignore_col ?ignore_row ?block_col ?block_row)
+)
+
+// END
+// END
+// END
+// END
+// END
+// END
+// END
+
+
+// Util
+// ----
 
 // Player Figure occupies Field
 (<= (isFigureOnField ?player ?figure ?color_fig ?col ?row)
