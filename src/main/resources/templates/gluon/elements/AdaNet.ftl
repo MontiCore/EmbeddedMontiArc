@@ -64,6 +64,7 @@ class CandidateHull(gluon.HybridBlock):
         model_shape = ${tc.getDefinedOutputDimension()},
         block_args=None,
         batch_size=None,
+        rade_aprox=sqrt,
         **kwargs):
 
         super(CandidateHull, self).__init__(**kwargs)
@@ -72,6 +73,8 @@ class CandidateHull(gluon.HybridBlock):
         self.stack = stack
         self.rade = None
         self.complexity = None
+        self.node_count = None
+        self.rade_aprox = rade_aprox
         with self.name_scope():
             self.batch_size = batch_size
             self.output_shape = output_shape
@@ -99,19 +102,23 @@ class CandidateHull(gluon.HybridBlock):
             else:
                 self.out = None
             self.finalOut = nn.Dense(units=self.classes, activation=None, flatten=False)
-    def approximate_rade(self):
+    def approximate_rade(self)->float:
         """
             approximate the rademacher complexity by the natural logarithm of the number of nodes within the candidate
         """
         if self.rade is None:
+            self.rade = self.rade_aprox(self.count_nodes())
+
+        return self.rade
+    def count_nodes(self)->int:
+        if self.node_count is None:
             oc = 0
             for name in self.names:
                 oc += self.__getattribute__(name).count_nodes()
-            self.rade = sqrt(oc)
+            self.node_count = oc
+        return self.node_count
 
-        return self.rade
-
-    def get_complexity(self):
+    def get_complexity(self)->float:
         """
             returns the complexity calculated by the training loss function
             (alpha * r + beta)* ||w||_L1
@@ -119,7 +126,7 @@ class CandidateHull(gluon.HybridBlock):
         """
         return self.complexity
 
-    def update_complexity(self, complexity):
+    def update_complexity(self, complexity)->None:
         self.complexity = complexity
 
     def hybrid_forward(self, F, x, *args, **kwargs):
