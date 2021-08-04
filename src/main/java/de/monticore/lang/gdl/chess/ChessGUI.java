@@ -16,7 +16,9 @@ import javax.swing.JLabel;
 import javax.swing.JOptionPane;
 import javax.swing.JPanel;
 
+import de.monticore.lang.gdl.Command;
 import de.monticore.lang.gdl.Interpreter;
+import de.monticore.lang.gdl.Prolog;
 import de.monticore.lang.gdl._ast.ASTGameExpression;
 import de.monticore.lang.gdl._ast.ASTGameFunction;
 import de.monticore.lang.gdl._ast.ASTGameValue;
@@ -33,7 +35,7 @@ public class ChessGUI {
     private final Color error = new Color(0xDC143C);
     
     private final JFrame frame;
-    private final Interpreter interpreter;
+    private final Prolog interpreter;
 
     private String[][] fields;
     private String control;
@@ -48,7 +50,7 @@ public class ChessGUI {
     private boolean isSelected;
     private int selectX, selectY;
 
-    public ChessGUI(Interpreter interpreter) {
+    public ChessGUI(Prolog interpreter) {
         this.frame = new JFrame("Chess");
         frame.setLayout(new BorderLayout());
         frame.setDefaultCloseOperation(JFrame.DISPOSE_ON_CLOSE);
@@ -118,24 +120,24 @@ public class ChessGUI {
         frame.setVisible(true);
     }
 
-    private void updateGameState(List<ASTGameExpression> gameState) {
+    private void updateGameState(List<List<String>> gameState) {
         clearAll();
 
         gameState.forEach(exp -> {
-            String identifier = ((ASTGameFunction) exp.getType()).getFunction();
+            String identifier = exp.get(0);
 
             switch (identifier) {
                 case "field":
-                    String sX = ((ASTGameValue) exp.getArguments(0)).getValue();
-                    String sY = ((ASTGameValue) exp.getArguments(1)).getValue();
-                    String figure = ((ASTGameValue) exp.getArguments(2)).getValue();
+                    String sX = exp.get(1);
+                    String sY = exp.get(2);
+                    String figure = exp.get(3);
                     int x = sX.charAt(0) - 97;
                     int y = Integer.valueOf(sY) - 1;
                     setFigureOnField(x, y, figure);
                     break;
 
                 case "control":
-                    control = ((ASTGameValue) exp.getArguments(0)).getValue();
+                    control = exp.get(1);
                     setControlLabel(control);
                     break;
             }
@@ -243,7 +245,7 @@ public class ChessGUI {
         
         String move = String.format("%s (move %s %s %s %s %s)", player, figure, sX, sY, sTX, sTY);
 
-        List<ASTGameExpression> nextState = interpreter.interpret(move);
+        List<List<String>> nextState = interpreter.input(Command.createMoveFromLine(move));
         if (nextState != null) {
             updateGameState(nextState);
         } else {

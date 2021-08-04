@@ -1,0 +1,11 @@
+All output:
+set_prolog_flag(answer_write_options,[max_depth(0)]).
+
+Next function:
+setof((A,B,C,D), function_next(A,B,C,D), Models).
+
+Legal function:
+function_legal(...).
+
+Input for move:
+input(value_white, value_move, value_white_knight, value_b, value_1, value_a, value_3).

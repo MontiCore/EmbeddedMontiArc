@@ -49,12 +49,12 @@ public class GDLInterpreter {
         // Parse model to ast
         String modelFileName = args[0];
         final ASTGame ast = GDLInterpreter.parse(modelFileName);
-        final IGDLArtifactScope scope = GDLInterpreter.createSymbolTable(ast);
+        // final IGDLArtifactScope scope = GDLInterpreter.createSymbolTable(ast);
 
-        final Interpreter interpreter = new Interpreter(ast, scope).init();
+        final Prolog interpreter = new Prolog(ast).init();
 
         if (cli) {
-            new Thread(new GDLCLI(interpreter)).start();
+            // new Thread(new GDLCLI(interpreter)).start();
         }
         if (chessGui) {
             new ChessGUI(interpreter);

@@ -479,7 +479,7 @@ public class Interpreter {
         return allModels;
     }
 
-    private void setMove(Move move) {
+    private void setMove(Command move) {
         if (move == null) {
             moveConstraint = bmgr.makeTrue();
             return;
@@ -492,7 +492,7 @@ public class Interpreter {
         }
     }
 
-    private boolean isLegal(Move move) {
+    private boolean isLegal(Command move) {
         List<IntegerFormula> args = new ArrayList<>(move.getArguments().size() + 1);
         args.add(imgr.makeNumber(getIntegerValue(move.getPlayer())));
         args.addAll(
@@ -543,7 +543,7 @@ public class Interpreter {
     }
 
     public List<ASTGameExpression> interpret(String line) {
-        Move move = Move.createMoveFromLine(line);
+        Command move = Command.createMoveFromLine(line);
         if (move == null) {
             // System.out.println("Move is illegal");
             return null;
@@ -551,7 +551,7 @@ public class Interpreter {
         return interpret(move);
     }
 
-    public List<ASTGameExpression> interpret(Move move) {
+    public List<ASTGameExpression> interpret(Command move) {
         setMove(move);
         if (isLegal(move)) {
             updateGameState();
