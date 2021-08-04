@@ -163,20 +163,15 @@ class BuildingBlock(gluon.HybridBlock):
         self.oc = None
 
     def count_nodes(self):
-        if self.node_count is None:
-            oc = 0
-            params = self.collect_params()
-            for el in params:
-                if 'weight' in el:
-                    # shape = (a,b,.....,z)
-                    # count = a*b*...*z
-                    shape = params[el].shape
-                    if shape[0] == 0:
-                        # shape[0] is 0 if weights are not initialized
-                        shape[0] = 1
-                    oc += product(params[el].shape)
+        oc = 0
+        params = self.collect_params()
+        for el in params:
+            if 'bias' in el:
+                # each node in a layer has a bias parameter
+                # => number of nodes = number of bias
+                oc += params[el].shape[0]
 
-            self.node_count = oc
+        self.node_count = oc
 
         return self.node_count
 
