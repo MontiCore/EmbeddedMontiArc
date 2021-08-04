@@ -27,7 +27,8 @@ class DefaultBlock(gluon.HybridBlock):
 
     def __init__(self, units=20, activation='relu', **kwargs):
         super(DefaultBlock, self).__init__(**kwargs)
-        self.ag = nn.Dense(units=units, activation=activation)
+        with self.name_scope():
+            self.ag = nn.Dense(units=units, activation=activation)
 
     def hybrid_forward(self, F, x):
         return self.ag(x)
@@ -50,7 +51,7 @@ class CandidateHull(gluon.HybridBlock):
          <#else>
         output_shape = None,
         </#if>
-        inBlock=None,
+        input=None,
         <#if inBlock.isPresent()>
         <#if inBlock.get().isArtificial()>
         input_shape =<#list inBlock.get().outputTypes as type>(${tc.join(type.dimensions, ",")})</#list>,
@@ -66,7 +67,6 @@ class CandidateHull(gluon.HybridBlock):
         **kwargs):
 
         super(CandidateHull, self).__init__(**kwargs)
-        # assert issubclass(type(output), gluon.HybridBlock), f'output should inherit from {gluon.HybridBlock} got {type(output)}'
         self.name_ = name
         self.names = []
         self.stack = stack
@@ -78,6 +78,10 @@ class CandidateHull(gluon.HybridBlock):
             self.input_shape = input_shape
             self.model_shape = model_shape
             self.classes = prod(list(self.model_shape))
+            if input:
+                self.input = input()
+            else:
+                self.input = None
             if block_args is None:
                 body = {name + f'{i}': BuildingBlock() for i in range(self.stack)}
             else:
@@ -87,17 +91,14 @@ class CandidateHull(gluon.HybridBlock):
                 val = body[name]
                 self.__setattr__(name=name, value=val)
                 self.names.append(name)
-            self.finalOut = nn.Dense(units=self.classes, activation=None, flatten=False)
+
             self.body = body
-            if inBlock:
-                self.input = inBlock()
-            else:
-                self.input = None
+
             if output:
                 self.out = output()
             else:
                 self.out = None
-
+            self.finalOut = nn.Dense(units=self.classes, activation=None, flatten=False)
     def approximate_rade(self):
         """
             approximate the rademacher complexity by the natural logarithm of the number of nodes within the candidate
@@ -106,7 +107,7 @@ class CandidateHull(gluon.HybridBlock):
             oc = 0
             for name in self.names:
                 oc += self.__getattribute__(name).count_nodes()
-            self.rade = log(oc)
+            self.rade = sqrt(oc)
 
         return self.rade
 
@@ -205,8 +206,7 @@ class Builder:
         self.pre_stack = 1
         self.step = 0
         self.block_params = None
-
-    def get_candidates(self):
+    def get_candidates(self)->dict:
         """
         :returns tuple of two candidate networks the first is of the same size as the previous the the other is depth+1
         """
@@ -214,13 +214,14 @@ class Builder:
         c0_name = f'can0r{self.round}'
         c1_name = f'can1r{self.round}'
 
-        c0 = CandidateHull(name=c0_name, stack=self.pre_stack,
+        c0 = CandidateHull(name=c0_name,input=self.input,output=self.output, stack=self.pre_stack,
             block_args=self.block_params,batch_size=self.batch_size)
-        c1 = CandidateHull(name=c1_name, stack=self.pre_stack + 1,
+        c1 = CandidateHull(name=c1_name,input=self.input,output=self.output ,stack=self.pre_stack + 1,
             block_args=self.block_params,batch_size=self.batch_size)
 
         self.step += 1
-        return c0, c1
+
+        return {c0.name_:c0, c1.name_:c1}
 
     def update(self, up=1):
         """

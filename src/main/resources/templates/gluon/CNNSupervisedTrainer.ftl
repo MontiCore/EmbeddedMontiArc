@@ -294,7 +294,7 @@ class BLEU(mx.metric.EvalMetric):
         return new_list
 
 <#if tc.containsAdaNet()>
-def objective_function(model, data, loss, gamma=.0000001) -> float:
+def objective_function(model, data, loss, gamma=.0001) -> float:
     """
     :param model:
     :param trainer:
@@ -383,11 +383,11 @@ class AdaLoss(Loss):
     objective function of the whole model
     """
 
-    def __init__(self, weight=None, model=None, loss=SigmoidBCELoss, loss_args=(True,), batch_axis=0, lamb=0.0001,
+    def __init__(self, weight=None, model=None, loss=SigmoidBCELoss, loss_args=(True,), batch_axis=0, lamb=0.0001,gamma=.0001,
                  beta=.0001,
                  **kwargs):
         super(AdaLoss, self).__init__(weight, batch_axis, **kwargs)
-
+        self.g = gamma
         self.coreLoss = loss
         self.model = model
         self.c_complexities = self.model.get_candidate_complexity()  # get candidate complexities
@@ -396,13 +396,13 @@ class AdaLoss(Loss):
 
     def hybrid_forward(self, F, x, label):
         cl = self.coreLoss(x, label)
-        l1 = calculate_l1(self.model.out.collect_params())
+        l1 = calculate_l1(self.model.out.collect_params())*self.g
         reg_term = F.sum(((self.lamb * self.c_complexities) + self.beta) * l1)
         return F.add(cl, reg_term)
 
 
 def fitComponent(trainIter: mx.io.NDArrayIter, trainer: mx.gluon.Trainer, epochs: int, component: gluon.HybridBlock,
-                 loss_class: gluon.loss, loss_params: dict,model_flag:bool) -> None:
+                 loss_class: gluon.loss, loss_params: dict,model_flag:bool,batch_size:int,log_period=100) -> None:
     """
     function trains a component of the generated model.
     expects a compoment, a trainern instance with corresponding parameters.
@@ -424,11 +424,28 @@ def fitComponent(trainIter: mx.io.NDArrayIter, trainer: mx.gluon.Trainer, epochs
             error.backward()
             trainer.step(data.shape[0], ignore_stale_grad=True)
 
+            if batch_i%log_period==0:
+                loss_avg = error.mean().asscalar()
+                logging.info("Epoch[%d] Batch[%d] training a %s avgLoss: %.5f" % (epoch, batch_i,'model'if model_flag else 'candidate',loss_avg))
+
+def train_candidate(candidate,epochs:int,optimizer:str,optimizer_params:dict,trainIter,loss:Loss,batch_size:int)->None:
+    candidate_trainer = get_trainer(optimizer,candidate.collect_params(),optimizer_params)
+    fitComponent(trainIter=trainIter, trainer=candidate_trainer, epochs=epochs, component=candidate,
+        loss_class=CandidateTrainingloss, loss_params={'loss': loss, 'candidate': candidate},model_flag=False,batch_size=batch_size)
+
+def train_model(candidate,epochs:int,optimizer:str,optimizer_params:dict,trainIter,loss:Loss,batch_size:int)->None:
+    params = candidate.out.collect_params()
+    if candidate.finalout is not None:
+        params.update(candidate.finalout.collect_params())
+    model_trainer = get_trainer(optimizer, params, optimizer_params)
+    fitComponent(trainIter=trainIter, trainer=model_trainer, epochs=epochs, component=candidate,
+        loss_class=AdaLoss, loss_params={'loss': loss, 'model': candidate},model_flag=True,batch_size=batch_size)
+
 
 def get_trainer(optimizer: str, parameters: dict, optimizer_params: dict) -> mx.gluon.Trainer:
     # gluon.Trainer doesnt take a ctx
     if optimizer == 'Adamw':
-        trainer = mx.gluon.Trainer(parameters, AdamW.AdamW(**optimizer_params), )
+        trainer = mx.gluon.Trainer(parameters, AdamW.AdamW(**optimizer_params) )
     else:
         trainer = mx.gluon.Trainer(parameters, optimizer, optimizer_params)
     return trainer
@@ -447,7 +464,7 @@ def fit(loss: gluon.loss.Loss,
         ctx=None,
         logging=None
         ) -> gluon.HybridBlock:
-    logging.info("AdaNet: starting ...")
+    logging.info(f"AdaNet: starting epochs:{epochs} batch_size:{batch_size} ...")
     cg = dataClass.Builder(batch_size=batch_size)
     model_template = dataClass.model_template
     model_operations = {}
@@ -468,64 +485,45 @@ def fit(loss: gluon.loss.Loss,
 
     for rnd in range(T):
         # get new candidates
-        c0, c1 = cg.get_candidates()
-        c0.initialize(ctx=ctx)
-        c1.initialize(ctx=ctx)
-        c0.hybridize()
-        c1.hybridize()
+        candidates = cg.get_candidates()
+        model_data = {}
+        for name,candidate in candidates.items():
+            logging.info(f"working on candidate {name}")
+            model_eval = {}
+            candidate.initialize(ctx=ctx)
+            candidate.hybridize()
+            train_candidate(candidate,epochs,optimizer,optimizer_params,train_iter,loss,batch_size=batch_size)
+            model_name = name+ '_model'
 
-        # train candidate 0
-        c0_trainer = get_trainer(optimizer, c0.collect_params(), optimizer_params)
-        fitComponent(trainIter=train_iter, trainer=c0_trainer, epochs=epochs, component=c0,
-                     loss_class=CandidateTrainingloss, loss_params={'loss': loss, 'candidate': c0},model_flag=False)
+            # add the current candidate as operation
+            candidate_op = model_operations.copy()
+            candidate_op[name] = candidate
 
-        # train candidate 1
-        c1_trainer = get_trainer(optimizer, c1.collect_params(), optimizer_params)
-        fitComponent(trainIter=train_iter, trainer=c1_trainer, epochs=epochs, component=c1,
-                     loss_class=CandidateTrainingloss, loss_params={'loss': loss, 'candidate': c1},model_flag=False)
+            # create new model
+            candidate_model = model_template(operations=candidate_op,batch_size=batch_size)
 
-        # create model with candidate 0 added -> c0_model
-        c0_work_op = model_operations.copy()
-        c0_work_op[c0.name] = c0
+            candidate_model.out.initialize(ctx=ctx)
+            if candidate_model.finalout:
+                candidate_model.finalout.initialize(ctx=ctx)
+            candidate_model.hybridize()
 
-        c0_model = model_template(operations=c0_work_op, batch_size=batch_size)
-        c0_model.out.initialize(ctx=ctx)
-        if c0_model.finalout:
-            c0_model.finalout.initialize(ctx=ctx)
-        c0_model.hybridize()
+            train_model(candidate_model,epochs,optimizer,optimizer_params,train_iter,loss,batch_size=batch_size)
+            model_eval['model'] = candidate_model
+            model_eval['score'] = objective_function(model=candidate_model, data=train_iter, loss=loss)
+            model_eval['operation'] = candidate
+            model_data[model_name] = model_eval
 
-        # create model with candidate 1 added -> c1_model
-        c1_work_op = model_operations.copy()
-        c1_work_op[c1.name] = c1
-
-        c1_model = model_template(operations=c1_work_op, batch_size=batch_size)
-        c1_model.out.initialize(ctx=ctx)
-        if c1_model.finalout:
-            c1_model.finalout.initialize(ctx=ctx)
-        c1_model.hybridize()
-
-        # train c0_model
-        params = c0_model.out.collect_params()
-        params.update(c0_model.finalout.collect_params())
-        c0_out_trainer = get_trainer(optimizer, params, optimizer_params)
-        fitComponent(trainIter=train_iter, trainer=c0_out_trainer, epochs=epochs, component=c0_model,
-                     loss_class=AdaLoss, loss_params={'loss': loss, 'model': c0_model},model_flag=True)
-
-        # train c1_model
-        params = c1_model.out.collect_params()
-        params.update(c1_model.finalout.collect_params())
-        c1_out_trainer = get_trainer(optimizer, params, optimizer_params)
-        fitComponent(trainIter=train_iter, trainer=c1_out_trainer, epochs=epochs, component=c1_model,
-                     loss_class=AdaLoss, loss_params={'loss': loss, 'model': c1_model},model_flag=True)
-
-        c0_score = objective_function(model=c1_model, data=train_iter, loss=loss)
-
-        c1_score = objective_function(model=c1_model, data=train_iter, loss=loss)
-
-        check = nd.greater_equal(c0_score, c1_score)
-
-        # decide which candidate yields the best improvement
-        model, operation, score = (c0_model, c0, c0_score) if check else (c1_model, c1, c1_score)
+        min_name = None
+        min_score = None
+        for name in model_data:
+            score = model_data[name]['score']
+            if min_score is None:
+                min_score = score
+                min_name = name
+            elif min_score > score:
+                min_name = name
+                min_score = score
+        model,operation,score = model_data[min_name]['model'],model_data[min_name]['operation'],model_data[min_name]['score']
 
         if model_score is None:
             model_score = score

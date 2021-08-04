@@ -9,7 +9,7 @@ import sys
 from mxnet import gluon, nd
 <#if tc.containsAdaNet()>
 from mxnet.gluon import nn, HybridBlock
-from numpy import log, product,prod
+from numpy import log, product,prod,sqrt
 from mxnet.ndarray import zeros,zeros_like
 </#if>
 <#if tc.architecture.customPyFilesPath??>
@@ -563,9 +563,10 @@ class Net_${networkInstruction?index}(gluon.HybridBlock):
                     self.__setattr__(name,operation)
                     self.op_names.append(name)
                     self.candidate_complexities[name] = operation.get_complexity()
-            self.out = nn.Dense(units=self.classes,activation=None,flatten=False)
+            self.out = nn.Dense(units=self.classes,activation=None,flatten=True)
             if self.fout:
                 self.finalout = self.fout()
+                pass
 
     def hybrid_forward(self, F, x):
         res_list = []
