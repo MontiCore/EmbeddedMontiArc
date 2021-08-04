@@ -567,6 +567,11 @@ class Net_${networkInstruction?index}(gluon.HybridBlock):
             if self.fout:
                 self.finalout = self.fout()
                 pass
+    def get_node_count(self)->int:
+        count = 0
+        for name in self.op_names:
+            count += self.__getattribute__(name).count_nodes()
+        return count
 
     def hybrid_forward(self, F, x):
         res_list = []
