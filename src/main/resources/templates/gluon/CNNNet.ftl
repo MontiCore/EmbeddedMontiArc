@@ -565,10 +565,10 @@ class Net_${networkInstruction?index}(gluon.HybridBlock):
                     self.candidate_complexities[name] = operation.get_complexity()
             self.out = nn.Dense(units=self.classes,activation=None,flatten=True)
             if self.fout:
-                self.finalout = self.fout()
+                #self.finalout = self.fout()
                 pass
     def get_node_count(self)->int:
-        count = 0
+        count = self.classes
         for name in self.op_names:
             count += self.__getattribute__(name).count_nodes()
         return count
