@@ -123,6 +123,18 @@ def write_dataset_to_disk(stage, data, savedir):
     for k, v in data.items():
         f.create_dataset(k, data=v)
 
+def get_data_iterator(inputs, outputs, shuffle, batch_size, loaded_dict):
+    # similar to what is done in the CNNArch2Gluon generated data loader
+    input_dict = {}
+    output_dict = {}
+    for k in inputs:
+        input_dict[k] = loaded_dict[k]
+    for k in outputs:
+        output_dict[k] = loaded_dict[k]
+    data_iterator = mx.io.NDArrayIter(
+        data=input_dict, label=output_dict, shuffle=shuffle, batch_size=batch_size)
+    return len(input_dict[inputs[0]]), data_iterator
+
 def parse_args():
     parser = argparse.ArgumentParser()
     parser.add_argument('--test_run', action='store_true', default=False, 

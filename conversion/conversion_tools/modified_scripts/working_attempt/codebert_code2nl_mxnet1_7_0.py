@@ -52,6 +52,7 @@ from transformers.models.roberta import RobertaTokenizer
 from codebert_models import Seq2Seq
 import codebert_hyper_params as hp
 import codebert_code2nl_bleu as bleu
+import convert_code2nl_data_mxnet1_7_0 as conv
 import mxnet as mx
 import gluonnlp as nlp
 import argparse
@@ -111,19 +112,6 @@ def get_seq2seq(embedding, encoder, decoder, test_run):
     )
     return seq2seq
 
-def get_data_iterator(inputs, outputs, shuffle, batch_size, filename):
-    # similar to what is done in the CNNArch2Gluon generated data loader
-    file = h5py.File(filename, 'r')
-    input_dict = {}
-    output_dict = {}
-    for k in inputs:
-        input_dict[k] = file[k]
-    for k in outputs:
-        output_dict[k] = file[k]
-    data_iterator = mx.io.NDArrayIter(
-        data=input_dict, label=output_dict, shuffle=shuffle, batch_size=batch_size)
-    return len(input_dict[inputs[0]]), data_iterator
-
 def load_codebert_block(symbol_file, weight_file, context):
     input_names = ['data0', 'data1']
     return gluon.nn.SymbolBlock.imports(symbol_file, input_names, weight_file, ctx=context)
@@ -148,9 +136,9 @@ def train_model(args):
     seq2seq.hybridize()
     train_file = '{}/{}'.format(args.data_dir, 'train.h5')
     # TODO should we get a new iterator after every epoch?
-    num_samples, train_data = get_data_iterator(
+    num_samples, train_data = conv.get_data_iterator(
         ['source_ids', 'source_masks'], ['target_ids', 'target_masks'],
-        True, batch_size, train_file)
+        True, batch_size, h5py.File(train_file, 'r'))
     epochs = (train_steps * batch_size) // num_samples
     seq2seq.initialize()
     loss = mx.gluon.loss.SoftmaxCrossEntropyLoss() # TODO parameters? e.g. sparse_label
@@ -171,9 +159,6 @@ def train_model(args):
     print('Num samples {}'.format(num_samples))
     print('Training model...')
     for epoch in range(epochs):
-        _, train_data = get_data_iterator(
-            ['source_ids', 'source_masks'], ['target_ids', 'target_masks'],
-        True, batch_size, train_file)
         for bid, batch in enumerate(train_data):
             with mx.autograd.record():
                 source_ids, source_masks, target_ids, target_masks = get_seqs_from_batch(batch, ctx)
@@ -192,6 +177,9 @@ def train_model(args):
                 ))
             l.backward()
             trainer.step(batch_size)
+        _, train_data = conv.get_data_iterator(
+            ['source_ids', 'source_masks'], ['target_ids', 'target_masks'],
+        True, batch_size, h5py.File(train_file, 'r'))
     # target_mask = self.create_target_mask(target_ids, target_valid_length)
     # # Shift so that tokens < n predict n
     # active_loss = target_mask[..., 1:].asnumpy().reshape(-1) != 0
@@ -215,9 +203,9 @@ def test_model(file_name, seq2seq, args):
     batch_size = train_hparams['batch_size']
     ctx = [mx.cpu()]
     test_file = '{}/{}'.format(args.data_dir, file_name)
-    num_samples, test_data = get_data_iterator(
+    num_samples, test_data = conv.get_data_iterator(
         ['source_ids', 'source_masks'], ['target_ids', 'target_masks'],
-        True, batch_size, test_file)
+        True, batch_size, h5py.File(test_file, 'r'))
     preds = []
     for bid, batch in enumerate(test_data):
         print('Batch {}/{}'.format(
