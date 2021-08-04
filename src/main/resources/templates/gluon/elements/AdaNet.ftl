@@ -213,8 +213,8 @@ class Builder:
         :returns tuple of two candidate networks the first is of the same size as the previous the the other is depth+1
         """
 
-        c0_name = f'can0r{self.round}'
-        c1_name = f'can1r{self.round}'
+        c0_name = f'candidate0round{self.round}'
+        c1_name = f'candidate1round{self.round}'
 
         c0 = CandidateHull(name=c0_name,input=self.input,output=self.output, stack=self.pre_stack,
             block_args=self.block_params,batch_size=self.batch_size)
