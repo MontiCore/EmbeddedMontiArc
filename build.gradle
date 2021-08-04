@@ -68,9 +68,6 @@ repositories {
         // credentials.password mavenPassword
       url repo
     }
-    flatDir {
-        dirs 'libs'
-    }
 }
 
 dependencies {
@@ -88,9 +85,6 @@ dependencies {
     implementation 'org.sosy-lab:java-smt:3.9.0-1-g304079c2'
     implementation 'org.apache.commons:commons-collections4:4.1'
     testImplementation "junit:junit:$junit_version"
-    implementation name: 'packages-jpl-7.6.1'
-    implementation name: 'packages-jpl-7.6.1-javadoc'
-    implementation name: 'packages-jpl-7.6.1-sources'
 }
 
 /* ============================================================ */
