@@ -212,7 +212,13 @@ class Builder:
         """
         :returns tuple of two candidate networks the first is of the same size as the previous the the other is depth+1
         """
-
+        candidates = {}
+        for i in range(self.pre_stack+1):
+            name = f'candidate{i}round{self.round}'
+            candidate = CandidateHull(name=name,input=self.input,output=self.output, stack=i+1,
+                block_args=self.block_params,batch_size=self.batch_size)
+            candidates.setdefault(name,candidate)
+        """
         c0_name = f'candidate0round{self.round}'
         c1_name = f'candidate1round{self.round}'
 
@@ -224,7 +230,9 @@ class Builder:
         self.step += 1
 
         return {c0.name_:c0, c1.name_:c1}
+        """
 
+        return candidates
     def update(self, up=1):
         """
         :param up, increases the stack height by up
