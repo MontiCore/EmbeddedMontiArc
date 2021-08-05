@@ -67,6 +67,8 @@ def get_seq2seq_hparams():
 def get_training_hparams(test_run):
     if test_run:
         return {
+            'learning_rate': 5e-5,
+            'adam_epsilon': 1e-8,
             'max_source_length': 32,
             'max_target_length': 16,
             'limit_train_samples': 128,
@@ -78,6 +80,8 @@ def get_training_hparams(test_run):
         }
     else:
         return {
+            'learning_rate': 5e-5,
+            'adam_epsilon': 1e-8,
             'max_source_length': 256,
             'max_target_length': 128,
             'limit_train_samples': -1,

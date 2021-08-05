@@ -152,7 +152,12 @@ def train_model(args):
     # which is done in the codebert code2nl's optimizer. TODO for now.
 
     # lr is defined in the call to run codebert, epsilon is left as default in the run script, beta1 and 2 are the pytorch default
-    optimizer = nlp.optimizer.BERTAdam(learning_rate=5e-5, beta1=0.9, beta2=0.999, epsilon=1e-8)
+    optimizer = nlp.optimizer.BERTAdam(
+        learning_rate = train_hparams['learning_rate'], 
+        beta1 = 0.9, 
+        beta2 = 0.999, 
+        epsilon = train_hparams['adam_epsilon']
+    )
     trainer = mx.gluon.Trainer(seq2seq.collect_params(), optimizer=optimizer)
     if (args.test_run):
         print('Doing test run with subset of data...')

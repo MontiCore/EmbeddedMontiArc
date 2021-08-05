@@ -5,10 +5,11 @@ import convert_code2nl_data_mxnet1_7_0 as conv
 import codebert_code2nl_mxnet1_7_0 as mxrun
 import codebert_hyper_params as hyp
 
-from transformers.models.roberta import RobertaTokenizer
-
+from transformers import (AdamW, get_linear_schedule_with_warmup,
+                          RobertaConfig, RobertaModel, RobertaTokenizer)
 import argparse
 import torch.nn as nn
+from itertools import cycle
 
 def parse_args():
     parser = argparse.ArgumentParser()
@@ -67,6 +68,51 @@ def get_pt_seq2seq():
                   sos_id=tokenizer.cls_token_id, eos_id=tokenizer.sep_token_id)
     return model
 
+def train_pt_model(pt_seq2seq, pt_train, pt_test):
+    param_dict = hyp.get_training_hparams(True)
+    no_decay = ['bias', 'LayerNorm.weight']
+    device = torch.device('cpu')
+    optimizer_grouped_parameters = [
+        {'params': [
+            p for n, p in pt_seq2seq.named_parameters() 
+            if not any(nd in n for nd in no_decay)
+        ], 'weight_decay': args.weight_decay},
+        {'params': [
+            p for n, p in pt_seq2seq.named_parameters() 
+            if any(nd in n for nd in no_decay)
+        ], 'weight_decay': 0.0}
+    ]
+    optimizer = AdamW(
+        optimizer_grouped_parameters, 
+        lr=param_dict['learning_rate'], 
+        eps=param_dict['adam_epsilon']
+    )
+    scheduler = get_linear_schedule_with_warmup(
+        optimizer, num_warmup_steps=0,
+        num_training_steps=param_dict['train_steps']
+    )
+    seq2seq.train()
+    pt_train_iter = cycle(pt_train)
+    steps_done, cumul_loss = 0, 0
+    for step in range(param_dict['train_steps']):
+        batch = next(train_dataloader)
+        batch = tuple(t.to(device) for t in batch)
+        source_ids, source_mask, target_ids, target_mask = batch
+        loss, _, _ = seq2seq(
+            source_ids = source_ids,
+            source_mask = source_mask,
+            target_ids = target_ids,
+            target_mask = target_mask
+        )
+        cumul_loss += loss.item()
+        train_loss = round(cumul_loss/(steps_done+1), 4)
+        steps_done += 1
+        loss.backward()
+        optimizer.step()
+        optimizer.zero_grad()
+        scheduler.step()
+
+
 if __name__ == '__main__':
     args = parse_args()
     pt_train = get_pytorch_dataloader(args.data_dir, 'dev', 'train.jsonl')
@@ -78,3 +124,5 @@ if __name__ == '__main__':
         [mx.cpu()], True
     )
     pt_seq2seq = get_pt_seq2seq()
+    train_pt_model(pt_seq2seq, pt_train, pt_test)
+    
