@@ -1,18 +1,27 @@
 import codebert_models as mxmod
 import codebert_code2nl.model as ptmod
-import convert_code2nl_data_mxnet1_7_0 as conv
 import codebert_code2nl.run as ptrun
+import convert_code2nl_data_mxnet1_7_0 as conv
+import codebert_code2nl_mxnet1_7_0 as mxrun
 import codebert_hyper_params as hyp
 
 from transformers.models.roberta import RobertaTokenizer
 
 import argparse
+import torch.nn as nn
 
 def parse_args():
     parser = argparse.ArgumentParser()
     parser.add_argument("--data_dir", default='/home/makua/Documents/Datasets/CodeSearchNet/java',
         help="The folder where some training data in the format for the pytorch model is")
-
+    parser.add_argument("--symbol_file", default='./codebert_gluon/model/codebert-symbol.json', type=str,
+        help="Symbol file from the pretrained mxnet model output by the conversion script")
+    parser.add_argument("--weight_file", default='./codebert_gluon/model/codebert-0000.params', type=str,
+        help="Weight file from the pretrained mxnet model output by the conversion script")
+    parser.add_argument("--embed_symbol_file", default='./codebert_gluon/model/codebert_embedding-symbol.json', type=str,
+        help="Symbol file from the pretrained mxnet embed output by the conversion script")
+    parser.add_argument("--embed_weight_file", default='./codebert_gluon/model/codebert_embedding-0000.params', type=str,
+        help="Weight file from the pretrained mxnet embed output by the conversion script")
 
 def to_pytorch_tensor_ds(features):
     all_source_ids = torch.tensor([f.source_ids for f in eval_features], dtype=torch.long)
@@ -45,8 +54,27 @@ def get_mxnet_data(data_dir):
         False, batch_size, test_data)
     return train_iter, test_iter
 
+def get_pt_seq2seq():
+    param_dict = hyp.get_training_hparams(True)
+    config_class, model_class, tokenizer_class = RobertaConfig, RobertaModel, RobertaTokenizer
+    config = config_class.from_pretrained('microsoft/codebert-base')
+    tokenizer = tokenizer_class.from_pretrained('microsoft/codebert-base')
+    encoder = model_class.from_pretrained('microsoft/codebert-base', config=config)    
+    decoder_layer = nn.TransformerDecoderLayer(d_model=config.hidden_size, nhead=config.num_attention_heads)
+    decoder = nn.TransformerDecoder(decoder_layer, num_layers=6)
+    model = ptmod.Seq2Seq(encoder=encoder, decoder=decoder, config=config,
+                  beam_size=param_dict['beam_size'], max_length=param_dict['max_target_length'],
+                  sos_id=tokenizer.cls_token_id, eos_id=tokenizer.sep_token_id)
+    return model
+
 if __name__ == '__main__':
     args = parse_args()
     pt_train = get_pytorch_dataloader(args.data_dir, 'dev', 'train.jsonl')
     pt_test = get_pytorch_dataloader(args.data_dir, 'test', 'test.jsonl')
     mx_train, mx_test = get_mxnet_data(args.data_dir)
+    mx_seq2seq = get_seq2seq(
+        args.symbol_file, args.weight_file, 
+        args.embed_symbol_file, args.embed_weight_file, 
+        [mx.cpu()], True
+    )
+    pt_seq2seq = get_pt_seq2seq()

@@ -97,7 +97,10 @@ def get_decoder(test_run):
     decoder(tgt_embed, states, tgt_valid)
     return decoder
 
-def get_seq2seq(embedding, encoder, decoder, test_run):
+def get_seq2seq(sym_file, wt_file, esym_file, ewt_file, ctx, test_run):
+    embedding = load_codebert_block(esym_file, ewt_file, ctx)
+    encoder = load_codebert_block(sym_file, wt_file, ctx)
+    decoder = get_decoder(test_run)
     seq2seq_hparams = hp.get_seq2seq_hparams()
     training_params = hp.get_training_hparams(test_run)
     seq2seq = Seq2Seq(
@@ -128,10 +131,11 @@ def train_model(args):
     batch_size = train_hparams['batch_size']
     train_steps = train_hparams['train_steps']
     ctx = [mx.cpu()]
-    embedding = load_codebert_block(args.embed_symbol_file, args.embed_weight_file, ctx)
-    encoder = load_codebert_block(args.symbol_file, args.weight_file, ctx)
-    decoder = get_decoder(args.test_run)
-    seq2seq = get_seq2seq(embedding, encoder, decoder, args.test_run)
+    seq2seq = get_seq2seq(
+        args.symbol_file, args.weight_file, 
+        args.embed_symbol_file, args.embed_weight_file, 
+        ctx, args.test_run
+    )
     seq2seq.collect_params().initialize(force_reinit=False, ctx=ctx)
     seq2seq.hybridize()
     train_file = '{}/{}'.format(args.data_dir, 'train.h5')
