@@ -13,8 +13,7 @@ DataType *parse_struct_type(JsonTraverser &j, ObjectIterator &it, ObjectIterator
 DataType *parse_simple_packet_type(JsonTraverser &j, ObjectIterator &it, ObjectIterator &end);
 
 void parse_interface(const char* interface, ProgramInterface &target) {
-    JsonTraverser j;
-    j.init(interface);
+    JsonTraverser j{interface};
 
     for (auto e : j.stream_object()) {
         if (e.equals("name")) {
@@ -54,6 +53,10 @@ void parse_interface(const char* interface, ProgramInterface &target) {
                         port.allows_multiple_inputs = j.get_bool();
                     } else if (e2.equals("optional")) {
                         port.optional = j.get_bool();
+                    } else if (e2.equals("tags")) {
+                        for (auto e : j.stream_array()) {
+                            port.tags.emplace_back(j.get_string().get_json_string());
+                        }
                     } else {
                         throw ProgramInterfaceException("Unknown 'PortInformation' json entry: " + e2.get_json_string());
                     }
@@ -175,12 +178,9 @@ DataType *parse_struct_type(JsonTraverser &j, ObjectIterator &it, ObjectIterator
         auto e = *it;
         if (e.equals("name")) {
             type->name = j.get_string().get_json_string();
-        } else if (e.equals("field_names")) {
-            for (auto t : j.stream_array()) {
-                type->field_names.push_back(j.get_string().get_json_string());
-            }
-        } else if (e.equals("field_types")) {
-            for (auto t : j.stream_array()) {
+        } else if (e.equals("fields")) {
+            for (auto t : j.stream_object()) {
+                type->field_names.push_back(t.get_json_string());
                 type->field_types.emplace_back(parse_type(j));
             }
         } else {

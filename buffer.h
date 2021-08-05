@@ -110,6 +110,7 @@ struct BinaryWriter {
     void write_u8(uint8_t value);
     void write_f64(double value);
     void write_str(const std::string &str);
+    void write_bytes(const char* data, uint32_t length);
 };
 
 #ifdef NO_ERR_OUT

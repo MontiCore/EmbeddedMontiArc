@@ -119,6 +119,7 @@ struct PortInformation {
     PortDirection dir;
     bool allows_multiple_inputs;
     bool optional;
+    std::vector<std::string> tags;
 
     bool is_input() {
         return dir == INPUT || dir == IO;

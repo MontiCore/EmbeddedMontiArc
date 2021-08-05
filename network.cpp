@@ -247,7 +247,7 @@ void session_server(char *port, void (*session_func)(int socket), bool &run_flag
 
 
 #ifdef IS_WIN
-string get_last_error_str() {
+string get_last_error_str_net() {
     TCHAR buff[1024];
     DWORD dw = GetLastError();
 

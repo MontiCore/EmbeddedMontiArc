@@ -78,7 +78,7 @@ struct PacketWriter {
 
 
 
-std::string get_last_error_str();
+std::string get_last_error_str_net();
 std::string get_last_wsa_error_str();
 
 
@@ -87,10 +87,10 @@ class NetworkException : public std::exception {
 public:
     NetworkException(const std::string& description) : description("NetworkException:\n\t" + description) {}
     static NetworkException last_err() {
-        return NetworkException(get_last_error_str());
+        return NetworkException(get_last_error_str_net());
     }
     static NetworkException last_err(const std::string& context) {
-        return NetworkException(context + ".\n\t\tLast Error: " + get_last_error_str());
+        return NetworkException(context + ".\n\t\tLast Error: " + get_last_error_str_net());
     }
     static void throw_network_err(const std::string& context);
 

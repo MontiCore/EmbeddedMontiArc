@@ -135,3 +135,9 @@ void BinaryWriter::write_str(const std::string &str) {
     auto pos = buffer.push_slot(size);
     ::memcpy(pos, str.c_str(), size);
 }
+
+void BinaryWriter::write_bytes(const char* data, uint32_t length)
+{
+    auto pos = buffer.push_slot(length);
+    ::memcpy(pos, data, length);
+}
