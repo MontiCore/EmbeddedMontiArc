@@ -9,7 +9,7 @@
 using namespace std;
 
 
-uint64_t EmulatedProgramInterface::resolve( const char *name ) {
+uint64_t EmulatedProgramFunctions::resolve( const char *name ) {
     auto sym = computer.symbols.get_symbol( name );
     if ( sym.type != Symbols::Symbol::Type::EXPORT )
         throw_error(Error::hardware_emu_software_load_error("Could not resolve function " + std::string(name)));
@@ -17,7 +17,7 @@ uint64_t EmulatedProgramInterface::resolve( const char *name ) {
 }
 
 
-void EmulatedProgramInterface::load() {
+void EmulatedProgramFunctions::load() {
     auto sym = computer.symbols.get_symbol( FUNC_NAME_ERR_OUT_SET_FUNCTIONS );
     if ( sym.type == Symbols::Symbol::Type::EXPORT ) {
         addr_get_functions = sym.addr;
@@ -31,7 +31,7 @@ void EmulatedProgramInterface::load() {
     addr_exec = resolve(FUNC_NAME_EXECUTE);
 }
 
-void EmulatedProgramInterface::set_functions(uint64_t throw_error_ptr, uint64_t print_cout_ptr, uint64_t print_cerr_ptr)
+void EmulatedProgramFunctions::set_functions(uint64_t throw_error_ptr, uint64_t print_cout_ptr, uint64_t print_cerr_ptr)
 {
     computer.os->set_param1_64(throw_error_ptr);
     computer.os->set_param2_64(print_cout_ptr);
@@ -39,11 +39,11 @@ void EmulatedProgramInterface::set_functions(uint64_t throw_error_ptr, uint64_t 
     computer.call(addr_get_functions, FUNC_NAME_ERR_OUT_SET_FUNCTIONS);
 }
 
-const char* EmulatedProgramInterface::get_interface() {
+const char* EmulatedProgramFunctions::get_interface() {
     computer.call(addr_get_interface, FUNC_NAME_GET_INTERFACE);
     return computer.memory.read_str( computer.os->get_return_64() );
 }
-void EmulatedProgramInterface::set_port(int i, const char* data, int is_json) {
+void EmulatedProgramFunctions::set_port(int i, const char* data, int is_json) {
     auto addr = computer.memory.exchange_section->address_range.start_address;
     if (is_json) {
         computer.memory.write_str(addr, data);
@@ -59,7 +59,7 @@ void EmulatedProgramInterface::set_port(int i, const char* data, int is_json) {
     computer.os->set_param3_32(is_json);
     computer.call(addr_set_port, FUNC_NAME_SET_PORT);
 }
-const char* EmulatedProgramInterface::get_port(int i, int is_json) {
+const char* EmulatedProgramFunctions::get_port(int i, int is_json) {
     computer.os->set_param1_32(i);
     computer.os->set_param2_32(is_json);
     computer.call(addr_get_port, FUNC_NAME_GET_PORT);
@@ -75,10 +75,10 @@ const char* EmulatedProgramInterface::get_port(int i, int is_json) {
     }
 }
 
-void EmulatedProgramInterface::init() {
+void EmulatedProgramFunctions::init() {
     computer.call(addr_init, FUNC_NAME_INIT);
 }
-void EmulatedProgramInterface::execute(double delta_sec) {
+void EmulatedProgramFunctions::execute(double delta_sec) {
     computer.os->set_param1_double(delta_sec);
     computer.call(addr_exec, FUNC_NAME_EXECUTE);
 }
@@ -140,14 +140,14 @@ void HardwareEmulator::init_simulator(const json& config, const fs::path& softwa
 
     // Load the Program interface
     
-    EmulatedProgramInterface* prog_interface = new EmulatedProgramInterface(computer);
-    prog_interface->load();
-    if (prog_interface->addr_get_functions != 0)
-        prog_interface->set_functions(computer.throw_error_addr, computer.print_cout_addr, computer.print_cerr_addr);
-    prog_interface->init();
+    EmulatedProgramFunctions* prog_functions = new EmulatedProgramFunctions(computer);
+    prog_functions->load();
+    if (prog_functions->addr_get_functions != 0)
+        prog_functions->set_functions(computer.throw_error_addr, computer.print_cout_addr, computer.print_cerr_addr);
+    prog_functions->init();
     computer.time.reset();
 
-    program_interface = std::unique_ptr<ProgramInterface>(prog_interface);
+    program_functions = std::unique_ptr<ProgramFunctions>(prog_functions);
 
     Log::info.log_tag("Initiated software \"%s\" in emulated mode, os: %s", program_name.c_str(), os_name.c_str());
 }

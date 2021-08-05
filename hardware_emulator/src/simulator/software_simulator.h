@@ -7,6 +7,7 @@
 #include <unordered_map>
 #include "utility/utility.h"
 #include "json.hpp"
+#include "program_interface.h"
 using json = nlohmann::json;
 
 
@@ -20,7 +21,7 @@ enum class TimeModel {
     TIME_MODELS
 };
 
-struct ProgramInterface {
+struct ProgramFunctions {
     static constexpr const char* ERR_OUT_MISSING_WARNING = "[Warning] Cannot find the ERR_OUT_set_functions() function in the program. Programs should use 'err_out.h' and 'err_out.cpp' for logging and errors.";
     static constexpr const char* FUNC_NAME_ERR_OUT_SET_FUNCTIONS = "ERR_OUT_set_functions";
     static constexpr const char *FUNC_NAME_GET_INTERFACE = "DI__get_interface";
@@ -34,11 +35,19 @@ struct ProgramInterface {
     
     virtual void init() = 0;
     virtual void execute(double delta_sec) = 0;
-    virtual ~ProgramInterface() {}
+    virtual ~ProgramFunctions() {}
 };
 
 struct SoftwareSimulator {
-    std::unique_ptr<ProgramInterface> program_interface;
+
+    static SoftwareSimulator* alloc(const json& config, fs::path &softwares_folder);
+    static void ERR_OUT_throw_error(const char* type, const char* message);
+    static void ERR_OUT_print_cout(const char* message);
+    static void ERR_OUT_print_cerr(const char* message);
+
+    std::unique_ptr<ProgramFunctions> program_functions;
+    std::string interface_string;
+    ProgramInterface program_interface;
 
     void init(const json& config, const fs::path& software_folder);
 
@@ -63,3 +72,4 @@ protected:
     virtual json query_simulator(const json& query) = 0;
     virtual void init_simulator(const json& config, const fs::path& software_folder) = 0;
 };
+

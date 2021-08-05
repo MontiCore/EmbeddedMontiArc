@@ -62,7 +62,7 @@ public class ComputerProperties extends EEComponentProperties {
         public String host;
         public int port;
         public int ref_id = 0;
-        public int emu_id = -1; // Ignore, this is used by the TCPBackend connected to a remote hardware_emulator to track the EMULATOR id.
+        public int emu_id = 0; // Ignore, this is used by the TCPBackend connected to a remote hardware_emulator to track the EMULATOR id.
     }
 
     static public interface TimeModel {

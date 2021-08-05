@@ -346,7 +346,7 @@ void test_zigzag_autopilot(const char* config_str, bool is_emu){
 
     auto id = manager.alloc_simulator(config);
     auto &simulator = *(manager.simulators[id].get());
-    auto &prog = *(simulator.program_interface.get());
+    auto &prog = *(simulator.program_functions.get());
 
     if (is_emu) {
         auto& computer = ((HardwareEmulator*)manager.simulators[id].get())->computer;
@@ -405,7 +405,7 @@ void test_ema_autopilot(const char* config_str, bool is_emu) {
 
     auto id = manager.alloc_simulator(config);
     auto& simulator = *(manager.simulators[id].get());
-    auto& prog = *(simulator.program_interface.get());
+    auto& prog = *(simulator.program_functions.get());
 
     if (is_emu) {
         auto& computer = ((HardwareEmulator*)manager.simulators[id].get())->computer;

@@ -13,7 +13,6 @@ import de.rwth.montisim.commons.utils.*;
 import de.rwth.montisim.commons.utils.json.Json;
 import de.rwth.montisim.commons.utils.json.JsonTraverser;
 import de.rwth.montisim.commons.utils.json.JsonWriter;
-import de.rwth.montisim.commons.utils.json.SerializationException;
 import de.rwth.montisim.hardware_emulator.TypedHardwareEmu;
 import de.rwth.montisim.hardware_emulator.computer.Computer.SocketQueues;
 import de.rwth.montisim.hardware_emulator.computer.ComputerProperties.*;
@@ -38,11 +37,13 @@ public class TCPBackend implements ComputerBackend {
     public static final int PACKET_TIME = 7; // Payload: double: seconds
     public static final int PACKET_REF_ID = 8; // Payload: uint32_t: reference id for the DDC exchange
     public static final int PACKET_PING = 9; // No Payload
-    public static final int PACKET_EMU_ID = 10; // Payload: byte with ID for the new remote emulator. The emulator expects PACKET_CONFIG as response. This is sent before the PACKET_INTERFACE
+    public static final int PACKET_REQUEST_CONFIG = 10; // No Payload
     public static final int PACKET_CONFIG = 11; // Payload: JSON string, response to PACKET_REQUEST_CONFIG
-    public static final int PACKET_RECONNECT = 12; // Payload: Emulator ID (byte), sent to remote hardware_emulator. Expects remote emulator to respond with PACKET_INTERFACE.
     public static final int PACKET_INPUT_JSON = 13;
     public static final int PACKET_OUTPUT_JSON = 14;
+    public static final int PACKET_SUSPEND = 15; // No Payload
+    public static final int PACKET_EMU_ID = 16; // Payload: emulator token
+    public static final int PACKET_RECONNECT = 17; // Payload: emulator token
 
     // Small main() to test the protocol
     public static void main(String[] args) throws Exception {
@@ -75,7 +76,7 @@ public class TCPBackend implements ComputerBackend {
             long start = System.nanoTime();
             client.sendPacket(PACKET_PING);
             // client.sendPacket(PACKET_PING, 42);
-            Packet p = client.getPacket();
+            client.getPacket();
             long end = System.nanoTime();
             // System.out.println("PING: " + Double.toString((end-start)*0.000001)+ "ms
             // (Packet: "+p.id+", payload: "+p.data.length+")");
@@ -119,9 +120,9 @@ public class TCPBackend implements ComputerBackend {
         din = new DataInputStream(cs.getInputStream());
         out = new DataOutputStream(cs.getOutputStream());
 
-        if (tcpProperties.emu_id >= 0) {
+        if (tcpProperties.emu_id != 0) {
             // Special case: Reconnect to remote hardware_emulator
-            sendPacketByte(PACKET_RECONNECT, tcpProperties.emu_id);
+            sendPacketInt(PACKET_RECONNECT, tcpProperties.emu_id);
         } else {
 
             // Send Init packet
@@ -144,9 +145,7 @@ public class TCPBackend implements ComputerBackend {
                 case PACKET_INTERFACE:
                     this.interf = Json.instantiateFromJson(new String(p.data), ProgramInterface.class);
                     break;
-                case PACKET_EMU_ID: // The remote is a hardware_emulator -> Respond with the configuration
-                    DataInputStream is = new DataInputStream(new ByteArrayInputStream(p.data));
-                    this.tcpProperties.emu_id = is.readByte();
+                case PACKET_REQUEST_CONFIG: // The remote is a hardware_emulator -> Respond with the configuration
                     sendPacket(PACKET_CONFIG, Json.toJson(properties));
                     repeat = true;
                     break;
@@ -155,82 +154,29 @@ public class TCPBackend implements ComputerBackend {
             }
         } while (repeat);
     }
+
+    public void suspend() throws IOException {
+        sendPacket(PACKET_SUSPEND);
+        // Wait for PACKET_EMU_ID
+        Packet p = getPacket();
+        switch (p.id) {
+            case PACKET_ERROR:
+                throw new IllegalStateException("Error on Remote Computer: " + new String(p.data));
+            case PACKET_EMU_ID: {
+                DataInputStream is = new DataInputStream(new ByteArrayInputStream(p.data));
+                this.tcpProperties.emu_id = is.readInt();
+            } break;
+            default:
+                throw new IllegalStateException("Unexpected packet with id=" + p.id);
+        }
+        closeConnection();
+    }
     
     @Override
     public ProgramInterface getInterface() {
         return this.interf;
     }
 
-    private void sendInputPacket(int portId, byte[] bytes) throws IOException {
-        out.writeByte(PACKET_INPUT_BINARY);
-        int payloadLength = bytes.length + 2;
-        out.writeShort(payloadLength);
-        out.writeShort(portId);
-        out.write(bytes);
-        out.flush();
-    }
-    private void sendInputPacket(int portId, String jsonPayload) throws IOException {
-        out.writeByte(PACKET_INPUT_JSON);
-        int payloadLength = jsonPayload.length() + 3;
-        out.writeShort(payloadLength);
-        out.writeShort(portId);
-        out.write(jsonPayload.getBytes());
-        out.writeByte('\0');
-        out.flush();
-    }
-
-    private void sendPacket(int packetId, byte[] bytes) throws IOException {
-        out.writeByte(packetId);
-        int payloadLength = bytes.length;
-        out.writeShort(payloadLength);
-        out.write(bytes);
-        out.flush();
-    }
-
-    private void sendPacket(int packetId, int val) throws IOException {
-        out.writeByte(packetId);
-        out.writeShort(4);
-        out.writeInt(val);
-        out.flush();
-    }
-    private void sendPacketByte(int packetId, int val) throws IOException {
-        out.writeByte(packetId);
-        out.writeShort(1);
-        out.writeByte(val);
-        out.flush();
-    }
-
-    private void sendPacket(int packetId, String str) throws IOException {
-        out.writeByte(packetId);
-        int payloadLength = str.length() + 1;
-        out.writeShort(payloadLength);
-        out.write(str.getBytes());
-        out.writeByte('\0');
-        out.flush();
-    }
-
-    // No payload
-    private void sendPacket(int packetId) throws IOException {
-        out.writeByte(packetId);
-        out.writeShort(1);
-        out.writeByte(0); // Pad to 4 bytes or the message doesn't seem to be sent directly
-        out.flush();
-    }
-
-    private Packet getPacket() throws IOException {
-        int id = din.readByte();
-        int length = din.readShort();
-        // byte[] data = din.readNBytes(length);
-        // Apparently readNBytes() is only in new versions => Emulate
-        byte[] data = new byte[length];
-        for (int i = 0; i < length; ++i) {
-            data[i] = din.readByte();
-        }
-        // System.out.println("Received packet: id="+id + ", length="+length+",
-        // bytes="+new String(data));
-        // System.out.println("Received packet: id="+id + ", length="+length);
-        return new Packet(id, data);
-    }
 
 
     @Override
@@ -276,10 +222,7 @@ public class TCPBackend implements ComputerBackend {
         }
         // Request execution
         // System.out.println("Sending RUN_CYCLE");
-        out.writeByte(PACKET_RUN_CYCLE);
-        out.writeShort(8);
-        out.writeDouble(deltaSec);
-        out.flush();
+        sendPacket(PACKET_RUN_CYCLE, deltaSec);
         // Receive outputs & exec time
         // System.out.println("Waiting for responses");
         i = 0;
@@ -293,8 +236,8 @@ public class TCPBackend implements ComputerBackend {
             ++i;
         }
 
-        Packet p = getPacket();
         while (true) {
+            Packet p = getPacket();
             switch (p.id) {
                 case PACKET_ERROR:
                     throw new IllegalStateException("Error on VCG: " + new String(p.data));
@@ -335,14 +278,96 @@ public class TCPBackend implements ComputerBackend {
                 default:
                     throw new IllegalArgumentException("Unexpected packet with id=" + p.id);
             }
-            p = getPacket();
         }
+    }
+
+    
+
+    private void sendInputPacket(int portId, byte[] bytes) throws IOException {
+        out.writeByte(PACKET_INPUT_BINARY);
+        int payloadLength = bytes.length + 2;
+        out.writeShort(payloadLength);
+        out.writeShort(portId);
+        out.write(bytes);
+        out.flush();
+    }
+    private void sendInputPacket(int portId, String jsonPayload) throws IOException {
+        out.writeByte(PACKET_INPUT_JSON);
+        int payloadLength = jsonPayload.length() + 3;
+        out.writeShort(payloadLength);
+        out.writeShort(portId);
+        out.write(jsonPayload.getBytes());
+        out.writeByte('\0');
+        out.flush();
+    }
+
+    private void sendPacket(int packetId, byte[] bytes) throws IOException {
+        out.writeByte(packetId);
+        int payloadLength = bytes.length;
+        out.writeShort(payloadLength);
+        out.write(bytes);
+        out.flush();
+    }
+
+    private void sendPacket(int packetId, int val) throws IOException {
+        out.writeByte(packetId);
+        out.writeShort(4);
+        out.writeInt(val);
+        out.flush();
+    }
+    private void sendPacketInt(int packetId, int val) throws IOException {
+        out.writeByte(packetId);
+        out.writeShort(4);
+        out.writeInt(val);
+        out.flush();
+    }
+    private void sendPacket(int packetId, double val) throws IOException {
+        out.writeByte(packetId);
+        out.writeShort(8);
+        out.writeDouble(val);
+        out.flush();
+    }
+
+    private void sendPacket(int packetId, String str) throws IOException {
+        out.writeByte(packetId);
+        int payloadLength = str.length() + 1;
+        out.writeShort(payloadLength);
+        out.write(str.getBytes());
+        out.writeByte('\0');
+        out.flush();
+    }
+
+    // No payload
+    private void sendPacket(int packetId) throws IOException {
+        out.writeByte(packetId);
+        out.writeShort(1);
+        out.writeByte(0); // Pad to 4 bytes or the message doesn't seem to be sent directly
+        out.flush();
+    }
+    
+    private Packet getPacket() throws IOException {
+        int id = din.readByte();
+        int length = din.readShort();
+        // byte[] data = din.readNBytes(length);
+        // Apparently readNBytes() is only in new versions => Emulate
+        byte[] data = new byte[length];
+        for (int i = 0; i < length; ++i) {
+            data[i] = din.readByte();
+        }
+        // System.out.println("Received packet: id="+id + ", length="+length+",
+        // bytes="+new String(data));
+        // System.out.println("Received packet: id="+id + ", length="+length);
+        return new Packet(id, data);
+    }
+
+    protected void closeConnection() throws IOException {
+        if (cs != null) cs.close();
+        cs = null;
     }
 
     @Override
     protected void finalize() throws Throwable {
-        if (cs != null)
-            cs.close();
+        closeConnection();
     }
 
     static class Packet {
@@ -359,8 +384,7 @@ public class TCPBackend implements ComputerBackend {
     public void destroy() {
         try {
             sendPacket(PACKET_END);
-            if (cs != null) cs.close();
-            cs = null;
+            closeConnection();
         } catch (IOException e) {
             e.printStackTrace();
         }

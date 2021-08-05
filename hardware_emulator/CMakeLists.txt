@@ -107,6 +107,10 @@ src/timetable/skylake.table
 )
 set(hardware_emulator_EXTERNAL_SOURCES
   ${SHARED_CPP}/buffer.cpp
+  ${SHARED_CPP}/program_interface.cpp
+  ${SHARED_CPP}/json.cpp
+  ${SHARED_CPP}/printf.cpp
+  ${SHARED_CPP}/err_out.cpp
 )
 target_sources(hardware_emulator PRIVATE ${hardware_emulator_SOURCES} ${hardware_emulator_EXTERNAL_SOURCES})
 
@@ -189,7 +193,6 @@ set(hardware_emulator_server_SOURCES
 )
 set(hardware_emulator_server_EXTERN_SOURCES
   ${SHARED_CPP}/network.cpp
-  ${SHARED_CPP}/buffer.cpp
 )
 target_sources(hardware_emulator_server PRIVATE ${hardware_emulator_server_SOURCES} ${hardware_emulator_server_EXTERN_SOURCES})
 

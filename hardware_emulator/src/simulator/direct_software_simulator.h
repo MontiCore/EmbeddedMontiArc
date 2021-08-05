@@ -7,7 +7,7 @@
 #include "software_simulator.h"
 #include "utility/utility.h"
 
-struct DirectProgramInterface : public ProgramInterface {
+struct DirectProgramFunctions : public ProgramFunctions {
     using GetInterfaceFunc = const char*(*)(void);
     using SetPortFunc = void(*)(int,const char*,int);
     using GetPortFunc = const char*(*)(int,int);

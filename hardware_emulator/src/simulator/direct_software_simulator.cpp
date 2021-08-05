@@ -31,25 +31,25 @@ json DirectSoftwareSimulator::query_simulator(const json& query)
     return std::string();
 }
 
-void DirectProgramInterface::load(Library &software){
+void DirectProgramFunctions::load(Library &software){
     real_set_functions = (set_functions_func)software.get_function(FUNC_NAME_ERR_OUT_SET_FUNCTIONS, true);
-    real_init = (DirectProgramInterface::InitFunc)software.get_function( FUNC_NAME_INIT );
-    real_exec = (DirectProgramInterface::ExecFunc)software.get_function( FUNC_NAME_EXECUTE );
-    real_get_interface = (DirectProgramInterface::GetInterfaceFunc)software.get_function( FUNC_NAME_GET_INTERFACE );
-    real_set_port = (DirectProgramInterface::SetPortFunc)software.get_function( FUNC_NAME_SET_PORT );
-    real_get_port = (DirectProgramInterface::GetPortFunc)software.get_function( FUNC_NAME_GET_PORT );
+    real_init = (DirectProgramFunctions::InitFunc)software.get_function( FUNC_NAME_INIT );
+    real_exec = (DirectProgramFunctions::ExecFunc)software.get_function( FUNC_NAME_EXECUTE );
+    real_get_interface = (DirectProgramFunctions::GetInterfaceFunc)software.get_function( FUNC_NAME_GET_INTERFACE );
+    real_set_port = (DirectProgramFunctions::SetPortFunc)software.get_function( FUNC_NAME_SET_PORT );
+    real_get_port = (DirectProgramFunctions::GetPortFunc)software.get_function( FUNC_NAME_GET_PORT );
 }
 
 void DirectSoftwareSimulator::init_simulator(const json& config, const fs::path& software_folder)
 {
     software.init(software_path);
 
-    DirectProgramInterface* prog_interface = new DirectProgramInterface();
-    prog_interface->load(software);
-    if (prog_interface->real_set_functions != nullptr) prog_interface->real_set_functions(ERR_OUT_native_throw_error, ERR_OUT_native_print_cout, ERR_OUT_native_print_cerr);
-    prog_interface->init();
+    DirectProgramFunctions* prog_functions = new DirectProgramFunctions();
+    prog_functions->load(software);
+    if (prog_functions->real_set_functions != nullptr) prog_functions->real_set_functions(ERR_OUT_native_throw_error, ERR_OUT_native_print_cout, ERR_OUT_native_print_cerr);
+    prog_functions->init();
 
-    program_interface = std::unique_ptr<ProgramInterface>(prog_interface);
+    program_functions = std::unique_ptr<ProgramFunctions>(prog_functions);
 
     Log::info.log_tag("Initiated software in direct mode: %s", program_name.c_str());
 }
