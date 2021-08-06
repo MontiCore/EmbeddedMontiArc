@@ -1,3 +1,4 @@
+/* (c) https://github.com/MontiCore/monticore */
 #ifndef CNNPREDICTOR_ALEXNET
 #define CNNPREDICTOR_ALEXNET
 

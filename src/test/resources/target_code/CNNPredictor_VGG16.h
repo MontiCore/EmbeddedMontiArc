@@ -1,3 +1,4 @@
+/* (c) https://github.com/MontiCore/monticore */
 #ifndef CNNPREDICTOR_VGG16
 #define CNNPREDICTOR_VGG16
 
