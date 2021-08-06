@@ -54,7 +54,7 @@ public class GDLInterpreter {
         final Prolog interpreter = new Prolog(ast).init();
 
         if (cli) {
-            // new Thread(new GDLCLI(interpreter)).start();
+            new Thread(new GDLCLI(interpreter)).start();
         }
         if (chessGui) {
             new ChessGUI(interpreter);

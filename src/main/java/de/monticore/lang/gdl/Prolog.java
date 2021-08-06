@@ -15,14 +15,20 @@ import java.util.stream.Collectors;
 import de.monticore.lang.gdl._ast.ASTGame;
 import de.monticore.lang.gdl._ast.ASTGameExpression;
 import de.monticore.lang.gdl._ast.ASTGameFunction;
+import de.monticore.lang.gdl._ast.ASTGameFunctionDefinition;
+import de.monticore.lang.gdl._ast.ASTGameFunctionHead;
+import de.monticore.lang.gdl._ast.ASTGameGoal;
 import de.monticore.lang.gdl._ast.ASTGameInference;
 import de.monticore.lang.gdl._ast.ASTGameInit;
 import de.monticore.lang.gdl._ast.ASTGameNext;
+import de.monticore.lang.gdl._ast.ASTGameTerminal;
 import de.monticore.lang.gdl.visitors.PrologPrinter;
 
 public class Prolog {
 
-    private Semaphore initSemaphore = new Semaphore(0);
+    private Semaphore initSemaphore;
+    private int initTrueCounter;
+
     private BufferedOutputStream out;
     private OutputStreamWriter writer;
     private BufferedInputStream in, err;
@@ -30,24 +36,29 @@ public class Prolog {
 
     private Thread printIn, printErr;
 
-    private int initTrueCounter;
-
     private final ASTGame game;
 
+    private Set<FunctionSignature> functionSignatures;
     private Set<FunctionSignature> statesSignatures;
     private Set<FunctionSignature> nextSignatures;
+
+    private boolean hasTerminal;
 
     private List<String> currentEvaluation = null;
     private Semaphore evalSemaphore;
 
     public Prolog(ASTGame game) {
         this.game = game;
-        initTrueCounter = 0;
+        functionSignatures = new HashSet<>();
         statesSignatures = new HashSet<>();
         nextSignatures = new HashSet<>();
+        hasTerminal = false;
     }
 
     public Prolog init() throws Exception {
+        initSemaphore = new Semaphore(0);
+        initTrueCounter = 0;
+
         prologProcess = Runtime.getRuntime().exec("swipl");
         out = new BufferedOutputStream(prologProcess.getOutputStream());
         writer = new OutputStreamWriter(out);
@@ -87,13 +98,14 @@ public class Prolog {
         printIn.start();
         printErr.start();
 
-        String stateDynamics = initStatesSet();
+        initFunctionSet();
         initNextSet();
+
+        String stateDynamics = initStatesSet();
         
         PrologPrinter printer = new PrologPrinter();
         game.accept(printer.getTraverser());
         String prologProgram = printer.getContent();
-
 
         writer.write("[user].\n");
         writer.write(stateDynamics);
@@ -111,8 +123,8 @@ public class Prolog {
     private class FunctionSignature {
         private final String functionName;
         private final int arity;
-        private FunctionSignature(String state, int arity) {
-            this.functionName = state;
+        private FunctionSignature(String functionName, int arity) {
+            this.functionName = functionName;
             this.arity = arity;
         }
         @Override
@@ -126,6 +138,10 @@ public class Prolog {
         @Override
         public int hashCode() {
             return (functionName + "?" + arity).hashCode();
+        }
+        @Override
+        public String toString() {
+            return functionName + "/" + arity;
         }
     }
 
@@ -148,6 +164,38 @@ public class Prolog {
         return sb.toString();
     }
 
+    private void initFunctionSet() {
+        game.getGameExpressionList()
+            .forEach(expr -> {
+                if (expr instanceof ASTGameFunctionDefinition) {
+                    ASTGameFunctionHead head = ((ASTGameFunctionDefinition) expr).getHead();
+                    String functionName = head.getName();
+                    int arity = head.getParametersList().size();
+
+                    FunctionSignature signature = new FunctionSignature(functionName, arity);
+                    functionSignatures.add(signature);
+                } else if (expr.getType() instanceof ASTGameFunction) {
+                    String functionName = ((ASTGameFunction) expr.getType()).getFunction();
+                    int arity = expr.getArgumentsList().size();
+
+                    FunctionSignature signature = new FunctionSignature(functionName, arity);
+                    functionSignatures.add(signature);
+                } else if (expr.getType() instanceof ASTGameInference) {
+                    ASTGameExpression head = (ASTGameExpression) expr.getArguments(0);
+                    if (head.getType() instanceof ASTGameGoal) {
+                        String functionName = "goal";
+                        int arity = head.getArgumentsList().size();
+
+                        FunctionSignature signature = new FunctionSignature(functionName, arity);
+                        functionSignatures.add(signature);
+                    }
+                } else if (expr.getType() instanceof ASTGameTerminal) {
+                    functionSignatures.add(new FunctionSignature("terminal", 0));
+                    hasTerminal = true;
+                }
+            });
+    }
+
     private void initNextSet() {
         game.getGameExpressionList()
             .forEach(expression -> {
@@ -164,7 +212,36 @@ public class Prolog {
             });
     }
 
-    public List<List<String>> getAllModels(String functionName, int arity) {
+    public List<List<String>> getAllModels(String function) {
+        Set<FunctionSignature> signatures = functionSignatures
+            .stream()
+            .filter(signature -> signature.functionName.equals(function))
+            .collect(Collectors.toSet());
+
+        if (signatures.isEmpty()) {
+            return null;
+        }
+
+        List<List<String>> allResults = new ArrayList<>();
+        for (FunctionSignature signature : signatures) {
+            List<List<String>> result = getAllModels("function_" + signature.functionName, signature.arity);
+            if (result != null) {
+                allResults.addAll(result);
+            }
+        }
+        allResults = allResults
+            .stream().map(
+                l -> l.stream().map(s -> s.substring(6)).collect(Collectors.toList())
+            ).filter(
+                l -> l.stream().filter(s -> s.length() == 0).count() == 0
+            ).collect(Collectors.toList());
+        return allResults;
+    }
+
+    private List<List<String>> getAllModels(String functionName, int arity) {
+        if (arity < 1) {
+            return null;
+        }
         StringBuilder sb = new StringBuilder();
 
         StringBuilder tupleBuilder = new StringBuilder();
@@ -202,46 +279,6 @@ public class Prolog {
 
         return results;
     }
-
-    // public List<List<String>> getAllModels(String functionName, List<String> arguments, List<String> tokens) {
-    //     int arity = arguments.size();
-    //     StringBuilder sb = new StringBuilder();
-
-    //     StringBuilder tupleBuilder = new StringBuilder();
-    //     tupleBuilder.append("(");
-    //     for (int i = 0; i < arity; i++) {
-    //         tupleBuilder.append("X").append(i);
-    //         if (i + 1 < arity) {
-    //             tupleBuilder.append(", ");
-    //         }
-    //     }
-    //     tupleBuilder.append(")");
-
-    //     sb.append("setof(").append(tupleBuilder.toString()).append(", ");
-    //     sb.append(functionName).append(tupleBuilder.toString()).append(", ");
-    //     sb.append("Models).\n");
-
-    //     String command = sb.toString();
-
-    //     String result = execute(command);
-    //     result = result.substring(10, result.length() - 2);
-
-    //     List<List<String>> results = new LinkedList<>();
-
-    //     if (arity > 1) {
-    //         String[] tuples = result.split("\\(");
-    //         for (int i = 1; i < tuples.length; i++) {
-    //             String current = tuples[i].split("\\)")[0];
-    //             String[] elements = current.split(",");
-    //             results.add(List.of(elements));
-    //         }
-    //     } else {
-    //         String[] tuples = result.split(", ");
-    //         results.add(List.of(tuples));
-    //     }
-
-    //     return results;
-    // }
 
     private void retractAllStates() {
         StringBuilder sb = new StringBuilder();
@@ -287,7 +324,7 @@ public class Prolog {
     }
 
     private void readIn(String line) {
-        System.out.println("> " + line);
+        // System.out.println("| " + line);
         if (line.equals("true.")) {
             initTrueCounter++;
             if (initTrueCounter == 2) {
@@ -305,7 +342,7 @@ public class Prolog {
         // System.out.println("! " + line);
     }
 
-    private boolean checkLegal(Command command) {
+    private boolean isLegal(Command command) {
         StringBuilder legalBuilder = new StringBuilder();
 
         legalBuilder.append("setof(_,");
@@ -365,7 +402,14 @@ public class Prolog {
         execute(commandBuilder.toString());
     }
 
-    public List<List<String>> input(Command command) {
+    public List<List<String>> interpret(String line) {
+        return interpret(Command.createMoveFromLine(line));
+    }
+
+    public List<List<String>> interpret(Command command) {
+        if (command == null) {
+            return null;
+        }
         StringBuilder inputBuilder = new StringBuilder();
 
         inputBuilder.append("input(");
@@ -388,7 +432,7 @@ public class Prolog {
 
         List<List<String>> allResults = null;
 
-        if (checkLegal(command)) {
+        if (isLegal(command)) {
             allResults = new LinkedList<>();
             for (FunctionSignature next : nextSignatures) {
                 List<List<String>> models = getAllModels(next.functionName, next.arity);
@@ -434,14 +478,15 @@ public class Prolog {
         return allResults;
     }
 
-    public static void main(String[] args) throws Exception {
-        // build game prolog
-        ASTGame game = GDLInterpreter.parse(args[0]);
-        Prolog p = new Prolog(game).init();
-        System.out.println("initialized");
+    public boolean isTerminal() {
+        if (!hasTerminal) {
+            return false;
+        }
+        String command = "setof(_,function_terminal(),_).\n";
+        String result = execute(command);
+        boolean legal = result.trim().equals("true.");
 
-        Command command = Command.createMoveFromLine("white (move white_pawn a 2 a 5)");
-        System.out.println(p.input(command));
+        return legal;
     }
 
 }

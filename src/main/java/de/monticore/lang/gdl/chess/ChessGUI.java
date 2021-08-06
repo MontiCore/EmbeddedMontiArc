@@ -245,7 +245,7 @@ public class ChessGUI {
         
         String move = String.format("%s (move %s %s %s %s %s)", player, figure, sX, sY, sTX, sTY);
 
-        List<List<String>> nextState = interpreter.input(Command.createMoveFromLine(move));
+        List<List<String>> nextState = interpreter.interpret(Command.createMoveFromLine(move));
         if (nextState != null) {
             updateGameState(nextState);
         } else {

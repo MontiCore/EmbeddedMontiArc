@@ -2,7 +2,6 @@ package de.monticore.lang.gdl.visitors;
 
 import java.util.LinkedList;
 import java.util.List;
-import java.util.stream.Collectors;
 
 import de.monticore.lang.gdl.GDLMill;
 import de.monticore.lang.gdl._ast.ASTGameDistinct;
@@ -91,6 +90,14 @@ public class PrologPrinter extends IndentPrinter implements GDLVisitor2, MCCommo
 
     public void visit(ASTGameDoes node) {
         print("input");
+    }
+
+    public void visit(ASTGameTerminal node) {
+        print("function_terminal");
+    }
+
+    public void visit(ASTGameGoal node) {
+        print("function_goal");
     }
 
     private boolean isInFunctionDefinition = false;
@@ -250,7 +257,82 @@ public class PrologPrinter extends IndentPrinter implements GDLVisitor2, MCCommo
                     isInFunctionDefinition = false;
                     println(".");
                     unindent();
+                } else if (headType instanceof ASTGameGoal) {
+                    headType.accept(getTraverser());
+                    
+                    print("(");
+
+                    for (int i = 0; i < head.getArgumentsList().size(); i++) {
+                        head.getArguments(i).accept(getTraverser());
+
+                        if (i + 1 < head.getArgumentsList().size()) {
+                            print(", ");
+                        }
+                    }
+
+                    println(") :-");
+                    indent();
+
+                    List<ASTGameExpression> distinctExpressions = new LinkedList<>();
+
+                    isInFunctionDefinition = true;
+                    for (int i = 1; i < node.getArgumentsList().size(); i++) {
+                        ASTGameExpression bodyExpression = (ASTGameExpression) node.getArguments(i);
+                        if (bodyExpression.getType() instanceof ASTGameDistinct) {
+                            distinctExpressions.add(bodyExpression);
+                            continue;
+                        }
+                        bodyExpression.accept(getTraverser());
+
+                        if (i + 1 < node.getArgumentsList().size() || !distinctExpressions.isEmpty()) {
+                            println(",");
+                        }
+                    }
+                    for (int i = 0; i < distinctExpressions.size(); i++) {
+                        distinctExpressions.get(i).accept(getTraverser());
+
+                        if (i + 1 < distinctExpressions.size()) {
+                            println(",");
+                        }
+                    }
+
+                    isInFunctionDefinition = false;
+                    println(".");
+                    unindent();
                 }
+            } else if (type instanceof ASTGameTerminal) {
+                type.accept(getTraverser());
+
+                println("() :-");
+                indent();
+
+                List<ASTGameExpression> distinctExpressions = new LinkedList<>();
+
+                isInFunctionDefinition = true;
+                for (int i = 0; i < node.getArgumentsList().size(); i++) {
+                    ASTGameExpression bodyExpression = (ASTGameExpression) node.getArguments(i);
+                    if (bodyExpression.getType() instanceof ASTGameDistinct) {
+                        distinctExpressions.add(bodyExpression);
+                        continue;
+                    }
+                    bodyExpression.accept(getTraverser());
+
+                    if (i + 1 < node.getArgumentsList().size() || !distinctExpressions.isEmpty()) {
+                        println(",");
+                    }
+                }
+                for (int i = 0; i < distinctExpressions.size(); i++) {
+                    distinctExpressions.get(i).accept(getTraverser());
+
+                    if (i + 1 < distinctExpressions.size()) {
+                        println(",");
+                    }
+                }
+
+                isInFunctionDefinition = false;
+                println(".");
+                unindent();
+
             } else {
                 type.accept(getTraverser());
                 print("(");
