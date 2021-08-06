@@ -14,8 +14,9 @@ before_script:
   # - apt-add-repository -y ppa:swi-prolog/stable
   - echo "deb http://ppa.launchpad.net/swi-prolog/stable/ubuntu $(cat /etc/os-release | grep -oP -m 1 "VERSION_CODENAME=\K\w+") main" | tee -a /etc/apt/sources.list
   - echo "deb-src http://ppa.launchpad.net/swi-prolog/stable/ubuntu $(cat /etc/os-release | grep -oP -m 1 "VERSION_CODENAME=\K\w+") main" | tee -a /etc/apt/sources.list
-  - apt-get update --allow-unauthenticated -qq
-  - apt-get install --allow-unauthenticated -y -qq swi-prolog
+  - apt-key adv --keyserver keyserver.ubuntu.com --recv-keys EF8406856DBFCA18
+  - apt-get update -qq
+  - apt-get install -y -qq swi-prolog
 
 
 build:
