@@ -18,10 +18,6 @@ import javax.swing.JPanel;
 
 import de.monticore.lang.gdl.Command;
 import de.monticore.lang.gdl.Interpreter;
-import de.monticore.lang.gdl.Prolog;
-import de.monticore.lang.gdl._ast.ASTGameExpression;
-import de.monticore.lang.gdl._ast.ASTGameFunction;
-import de.monticore.lang.gdl._ast.ASTGameValue;
 
 public class ChessGUI {
 
@@ -35,7 +31,7 @@ public class ChessGUI {
     private final Color error = new Color(0xDC143C);
     
     private final JFrame frame;
-    private final Prolog interpreter;
+    private final Interpreter interpreter;
 
     private String[][] fields;
     private String control;
@@ -50,7 +46,7 @@ public class ChessGUI {
     private boolean isSelected;
     private int selectX, selectY;
 
-    public ChessGUI(Prolog interpreter) {
+    public ChessGUI(Interpreter interpreter) {
         this.frame = new JFrame("Chess");
         frame.setLayout(new BorderLayout());
         frame.setDefaultCloseOperation(JFrame.DISPOSE_ON_CLOSE);

@@ -51,7 +51,7 @@ public class GDLInterpreter {
         final ASTGame ast = GDLInterpreter.parse(modelFileName);
         // final IGDLArtifactScope scope = GDLInterpreter.createSymbolTable(ast);
 
-        final Prolog interpreter = new Prolog(ast).init();
+        final Interpreter interpreter = new Interpreter(ast).init();
 
         if (cli) {
             new Thread(new GDLCLI(interpreter)).start();

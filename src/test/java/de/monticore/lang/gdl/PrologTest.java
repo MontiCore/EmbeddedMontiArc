@@ -12,7 +12,7 @@ public class PrologTest {
     public void testInit() {
         ASTGame game = GDLInterpreter.parse("src/main/resources/example/TicTacToe.gdl");
         try {
-            new Prolog(game).init();
+            new Interpreter(game).init();
             assertTrue(true);
         } catch (Exception e) {
             e.printStackTrace();

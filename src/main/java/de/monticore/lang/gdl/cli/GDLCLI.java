@@ -3,13 +3,13 @@ package de.monticore.lang.gdl.cli;
 import java.util.List;
 import java.util.Scanner;
 
-import de.monticore.lang.gdl.Prolog;
+import de.monticore.lang.gdl.Interpreter;
 
 public class GDLCLI implements Runnable {
     
-    private final Prolog interpreter;
+    private final Interpreter interpreter;
 
-    public GDLCLI(Prolog interpreter) {
+    public GDLCLI(Interpreter interpreter) {
         this.interpreter = interpreter;
     }
 

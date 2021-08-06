@@ -9,9 +9,6 @@ stages:
 
 before_script:
   - export GRADLE_USER_HOME=`pwd`/.gradle
-  # - apt-get update -qq
-  # - apt-get install -y software-properties-common
-  # - apt-add-repository -y ppa:swi-prolog/stable
   - apt-get update
   - apt-get install -y gnupg2
   - echo "deb http://ppa.launchpad.net/swi-prolog/stable/ubuntu $(cat /etc/os-release | grep -oP -m 1 "VERSION_CODENAME=\K\w+") main" | tee -a /etc/apt/sources.list
