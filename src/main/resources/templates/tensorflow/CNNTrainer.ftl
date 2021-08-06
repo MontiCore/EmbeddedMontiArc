@@ -1,4 +1,6 @@
 <#-- (c) https://github.com/MontiCore/monticore -->
+<#-- So that the license is in the generated file: -->
+# (c) https://github.com/MontiCore/monticore
 import logging
 <#list configurations as config>
 import CNNCreator_${config.instanceName}
