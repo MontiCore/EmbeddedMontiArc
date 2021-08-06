@@ -9,9 +9,11 @@ stages:
 
 before_script:
   - export GRADLE_USER_HOME=`pwd`/.gradle
-  - apt-get update -qq
-  - apt-get install -y software-properties-common
-  - apt-add-repository -y ppa:swi-prolog/stable
+  # - apt-get update -qq
+  # - apt-get install -y software-properties-common
+  # - apt-add-repository -y ppa:swi-prolog/stable
+  - echo "deb http://ppa.launchpad.net/swi-prolog/stable/ubuntu $(lsb_release -cs) main" | tee -a /etc/apt/sources.list
+  - echo "deb-src http://ppa.launchpad.net/swi-prolog/stable/ubuntu $(lsb_release -cs) main" | tee -a /etc/apt/sources.list
   - apt-get update -qq
   - apt-get install -y -qq swi-prolog
 
