@@ -1,4 +1,6 @@
 <#-- (c) https://github.com/MontiCore/monticore -->
+<#-- So that the license is in the generated file: -->
+# (c) https://github.com/MontiCore/monticore
 import mxnet as mx
 import numpy as np
 import time

@@ -1,3 +1,4 @@
+/* (c) https://github.com/MontiCore/monticore */
 #ifndef CNNLAOPTIMIZER_TD3CONFIG
 #define CNNLAOPTIMIZER_TD3CONFIG
 
