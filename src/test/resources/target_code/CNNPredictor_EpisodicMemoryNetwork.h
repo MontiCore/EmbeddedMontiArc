@@ -1,3 +1,4 @@
+/* (c) https://github.com/MontiCore/monticore */
 #ifndef CNNPREDICTOR_EPISODICMEMORYNETWORK
 #define CNNPREDICTOR_EPISODICMEMORYNETWORK
 

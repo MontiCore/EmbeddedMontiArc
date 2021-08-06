@@ -1,4 +1,6 @@
 <#-- (c) https://github.com/MontiCore/monticore -->
+<#-- So that the license is in the generated file: -->
+/* (c) https://github.com/MontiCore/monticore */
 <#list configurations as config>
 #ifndef CNNLAOPTIMIZER_${config.instanceName?upper_case}
 #define CNNLAOPTIMIZER_${config.instanceName?upper_case}
