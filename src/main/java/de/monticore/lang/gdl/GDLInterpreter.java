@@ -16,6 +16,7 @@ import de.monticore.lang.gdl._visitor.GDLTraverser;
 import de.monticore.lang.gdl.chess.ChessGUI;
 import de.monticore.lang.gdl.cli.GDLCLI;
 import de.se_rwth.commons.logging.Log;
+import de.monticore.lang.gdl._cocos.*;
 
 public class GDLInterpreter {
 
@@ -49,6 +50,9 @@ public class GDLInterpreter {
         // Parse model to ast
         String modelFileName = args[0];
         final ASTGame ast = GDLInterpreter.parse(modelFileName);
+        GDLCoCoChecker checker = new GDLCoCoChecker();
+        checker.addCoCo(new ASTGameExpressionCoCo());
+        checker.checkAll(ast);
         // final IGDLArtifactScope scope = GDLInterpreter.createSymbolTable(ast);
 
         final Interpreter interpreter = new Interpreter(ast).init();
