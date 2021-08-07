@@ -8,6 +8,7 @@ import h5py
 import argparse
 import os
 import codebert_hyper_params as hp
+import mxnet as mx
 
 class Example(object):
     """A single training/test example."""
