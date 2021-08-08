@@ -44,7 +44,7 @@ public class ArchitectureSymbol extends CommonScopeSpanningSymbol {
     private boolean AdaNet = false;
     //attribute for the path for custom python files
     private String customPyFilesPath;
-
+    private String adaNetUtils = "./src/main/resources/AdaNet/";
     public ArchitectureSymbol() {
         super("", KIND);
     }
@@ -56,7 +56,7 @@ public class ArchitectureSymbol extends CommonScopeSpanningSymbol {
     public void setLayerVariableDeclarations(List<LayerVariableDeclarationSymbol> layerVariableDeclarations) {
         this.layerVariableDeclarations = layerVariableDeclarations;
     }
-
+    public String getAdaNetUtils(){return  this.adaNetUtils;}
     public boolean containsAdaNet() {
         return this.AdaNet;
     }
