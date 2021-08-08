@@ -181,7 +181,7 @@ class ${tc.fileNameWithoutEnding}:
     def construct(self, context, data_mean=None, data_std=None):
 <#list tc.architecture.networkInstructions as networkInstruction>
         <#if tc.containsAdaNet()>
-        self.networks[${networkInstruction?index}] = Net_${networkInstruction?index}(prefix="",operations=None,batch_size=1)
+        self.networks[${networkInstruction?index}] = Net_${networkInstruction?index}()
         self.dataClass[${networkInstruction?index}] = DataClass_${networkInstruction?index}()
         <#else>
         self.networks[${networkInstruction?index}] = Net_${networkInstruction?index}(data_mean=data_mean, data_std=data_std, mx_context=context, prefix="")

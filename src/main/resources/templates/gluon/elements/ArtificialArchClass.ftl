@@ -2,9 +2,9 @@
 <#assign name = element.element.name>
 <#assign args = element.element.arguments>
 <#if mode == "ARTIFICIAL_ARCH_CLASS">
-class architecture_defined_block_${name}(gluon.HybridBlock):
+class ${name}(gluon.HybridBlock):
     def __init__(self, **kwargs):
-        super(architecture_defined_block_${name}, self).__init__(**kwargs)
+        super(${name}, self).__init__(**kwargs)
         with self.name_scope():
 ${tc.include(element.element,"ARCHITECTURE_DEFINITION")}
 
