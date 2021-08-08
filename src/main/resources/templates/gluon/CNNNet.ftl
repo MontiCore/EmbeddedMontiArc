@@ -610,8 +610,8 @@ class DataClass_${networkInstruction?index}:
         self.block = None
         </#if>
         #self.block = ${tc.include(block.get(),"ADANET_CONSTRUCTION")}
+        self.model_shape = ${tc.getDefinedOutputDimension()}
         self.BuildingBlock = BuildingBlock
-        self.output_shape = self.CandidateHull(name='getOutputShape',stack=0).output_shape
         self.model_template = Net_${networkInstruction?index}
 </#if>
 </#list>
