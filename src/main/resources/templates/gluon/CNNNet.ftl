@@ -534,7 +534,7 @@ from mxnet.gluon import nn
 ${tc.include(networkInstruction.body, "ADANET_CONSTRUCTION")}
 <#assign outblock = networkInstruction.body.getElements()[1].getDeclaration().getBlock("outBlock")>
 <#assign block = networkInstruction.body.getElements()[1].getDeclaration().getBlock("block")>
-<#assign inblock = networkInstruction.body.getElements()[1].getDeclaration().getBlock("outBlock")>
+<#assign inblock = networkInstruction.body.getElements()[1].getDeclaration().getBlock("inBlock")>
 class Net_${networkInstruction?index}(gluon.HybridBlock):
     # this is a dummy network during the AdaNet generation it gets overridden
     # it is only here so many if tags in the .ftl files can be avoided
@@ -549,13 +549,9 @@ class Net_${networkInstruction?index}(gluon.HybridBlock):
 
 class DataClass_${networkInstruction?index}:
     """
-    the whole model with its operations
+        this object holds all the necessary information for AdaNet
     """
     def __init__(self, **kwargs):
-        self.op_names = []  # list that holds the name of the added operations
-        self.candidate_complexities = {}
-        self.name_ = 'Net_${networkInstruction?index}'
-        self.AdaNet = True
         <#if outblock.isPresent()>
         self.outBlock = ${tc.include(outblock.get(),"ADANET_CONSTRUCTION")}
         <#else>
@@ -571,10 +567,7 @@ class DataClass_${networkInstruction?index}:
         <#else>
         self.block = None
         </#if>
-        #self.block = ${tc.include(block.get(),"ADANET_CONSTRUCTION")}
         self.model_shape = ${tc.getDefinedOutputDimension()}
-        #self.BuildingBlock = BuildingBlock
-        #self.model_template = Net_${networkInstruction?index}
 </#if>
 </#list>
 <#else>
