@@ -18,10 +18,7 @@ from mxnet.gluon.loss import Loss, SigmoidBCELoss
 from mxnet.ndarray import add, concatenate
 sys.path.insert(1, '${tc.architecture.getAdaNetUtils()}')
 #${tc.architecture.getAdaNetUtils()}
-import adaNetUtils
-from adaNetUtils import objective_function,calculate_l1,CandidateTrainingloss,AdaLoss,train_candidate,train_model,get_trainer
 from adanet import fit
-#TODO move adanet Classes Builder,candaita etc in own package
 </#if>
 try:
     import AdamW
@@ -691,11 +688,7 @@ class ${tc.fileNameWithoutEnding}:
                     epochs=num_epoch,
                     optimizer_params = optimizer_params,
                     train_iter = train_iter,
-                    dataLoader = self._data_loader,
-                    dataClass = self._dataClass[${networkInstruction?index}],
-                    shuffle_data=shuffle_data,
-                    preprocessing=preprocessing,
-                    T=100,
+                    data_class = self._dataClass[${networkInstruction?index}],
                     batch_size=batch_size,
                     ctx=mx_context[0],
                     logging=logging
