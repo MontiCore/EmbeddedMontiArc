@@ -140,10 +140,10 @@ def train_model(args):
     seq2seq.hybridize()
     train_file = '{}/{}'.format(args.data_dir, 'train.h5')
     # TODO should we get a new iterator after every epoch?
-    num_samples, train_data = conv.get_data_iterator(
+    train_data = conv.get_data_iterator(
         ['source_ids', 'source_masks'], ['target_ids', 'target_masks'],
         True, batch_size, h5py.File(train_file, 'r'))
-    epochs = (train_steps * batch_size) // num_samples
+    epochs = (train_steps * batch_size) // train_data.num_data
     seq2seq.initialize()
     loss = mx.gluon.loss.SoftmaxCrossEntropyLoss() # TODO parameters? e.g. sparse_label
     # note this is different than the codebert optimizer in two ways
@@ -165,7 +165,7 @@ def train_model(args):
         print('Training full model, make sure you exported the correct data!')
     print('Training steps {}'.format(train_steps))
     print('Batch size {}'.format(batch_size))
-    print('Num samples {}'.format(num_samples))
+    print('Num samples {}'.format(train_data.num_data))
     print('Training model...')
     for epoch in range(epochs):
         for bid, batch in enumerate(train_data):
@@ -182,13 +182,11 @@ def train_model(args):
                 y = shift_labels.reshape(-1)[active_loss]
                 l = loss(X, y)
                 print('Epoch {}/{} Batch {}/{} Loss {}'.format(
-                    epoch+1, epochs, bid+1, num_samples//batch_size, l.mean().asscalar()
+                    epoch+1, epochs, bid+1, train_data.num_data//batch_size, l.mean().asscalar()
                 ))
             l.backward()
             trainer.step(batch_size)
-        _, train_data = conv.get_data_iterator(
-            ['source_ids', 'source_masks'], ['target_ids', 'target_masks'],
-        True, batch_size, h5py.File(train_file, 'r'))
+        train_data.reset()
     # target_mask = self.create_target_mask(target_ids, target_valid_length)
     # # Shift so that tokens < n predict n
     # active_loss = target_mask[..., 1:].asnumpy().reshape(-1) != 0
@@ -212,13 +210,13 @@ def test_model(file_name, seq2seq, args):
     batch_size = train_hparams['batch_size']
     ctx = [mx.cpu()]
     test_file = '{}/{}'.format(args.data_dir, file_name)
-    num_samples, test_data = conv.get_data_iterator(
+    test_data = conv.get_data_iterator(
         ['source_ids', 'source_masks'], ['target_ids', 'target_masks'],
         True, batch_size, h5py.File(test_file, 'r'))
     preds = []
     for bid, batch in enumerate(test_data):
         print('Batch {}/{}'.format(
-            bid+1, num_samples//batch_size
+            bid+1, test_data.num_data//batch_size
         ))
         source_ids, source_masks, target_ids, _ = get_seqs_from_batch(batch, ctx)
         pred = seq2seq(source_ids, source_masks)
