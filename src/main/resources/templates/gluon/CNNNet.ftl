@@ -528,60 +528,24 @@ class EpisodicMemory(EpisodicReplayMemoryInterface):
                 self.label_memory.append(mem_dict[key])
 <#if tc.containsAdaNet()>
 # Generation of the artificial blocks for the Streams below
-from mxnet.gluon import nn, HybridBlock
-from numpy import log, product
-from mxnet.ndarray import zeros
+from mxnet.gluon import nn
 <#list tc.architecture.networkInstructions as networkInstruction>
 <#if networkInstruction.body.containsAdaNet()>
 ${tc.include(networkInstruction.body, "ADANET_CONSTRUCTION")}
-#class Model(gluon.HybridBlock): THIS IS THE ORIGINAL NAME, MUST BE RENAMED IN THE OTHER PARTS
 <#assign outblock = networkInstruction.body.getElements()[1].getDeclaration().getBlock("outBlock")>
 <#assign block = networkInstruction.body.getElements()[1].getDeclaration().getBlock("block")>
 <#assign inblock = networkInstruction.body.getElements()[1].getDeclaration().getBlock("outBlock")>
 class Net_${networkInstruction?index}(gluon.HybridBlock):
-    def __init__(self,operations:dict,batch_size:int,generation=True,**kwargs):
+    # this is a dummy network during the AdaNet generation it gets overridden
+    # it is only here so many if tags in the .ftl files can be avoided
+    def __init__(self,**kwargs):
         super(Net_${networkInstruction?index},self).__init__(**kwargs)
-        self.AdaNet = True
-        self.op_names = []
-        self.generation = generation,
-        self.candidate_complexities = {}
-
         with self.name_scope():
-            self.batch_size=batch_size
-            self.data_shape = ${tc.getDefinedOutputDimension()}
-            self.classes = int(prod(list(self.data_shape)))
-            if operations is None:
-                operations={'dummy':nn.Dense(units = 10)}
-            else:
-                for name,operation in operations.items():
-                    self.__setattr__(name,operation)
-                    self.op_names.append(name)
-                    self.candidate_complexities[name] = operation.get_complexity()
-            self.out = nn.Dense(units=self.classes,activation=None,flatten=True)
+            self.AdaNet = True
+            self.dummy = nn.Dense(units=1)
 
-    def get_node_count(self)->int:
-        count = self.classes
-        for name in self.op_names:
-            count += self.__getattribute__(name).count_nodes()
-        return count
-
-    def hybrid_forward(self, F, x):
-        res_list = []
-        for name in self.op_names:
-            res_list.append(self.__getattribute__(name)(x))
-        if not res_list:
-            res_list = [F.identity(x)]
-        res = tuple(res_list)
-        y = F.concat(*res, dim=1)
-        y = self.out(y)
-        y = F.reshape(y,(1,1,self.batch_size,*self.data_shape))
-        return y
-
-    def get_candidate_complexity(self):
-        mean_complexity = zeros(len(self.op_names))
-        for i, name in enumerate(self.op_names):
-            mean_complexity[i] = self.candidate_complexities[name]
-        return mean_complexity
+    def hybrid_forward(self,F,x):
+        return self.dummy(x)
 
 class DataClass_${networkInstruction?index}:
     """
@@ -592,8 +556,6 @@ class DataClass_${networkInstruction?index}:
         self.candidate_complexities = {}
         self.name_ = 'Net_${networkInstruction?index}'
         self.AdaNet = True
-        self.Builder = Builder
-        self.CandidateHull = CandidateHull
         <#if outblock.isPresent()>
         self.outBlock = ${tc.include(outblock.get(),"ADANET_CONSTRUCTION")}
         <#else>
@@ -611,8 +573,8 @@ class DataClass_${networkInstruction?index}:
         </#if>
         #self.block = ${tc.include(block.get(),"ADANET_CONSTRUCTION")}
         self.model_shape = ${tc.getDefinedOutputDimension()}
-        self.BuildingBlock = BuildingBlock
-        self.model_template = Net_${networkInstruction?index}
+        #self.BuildingBlock = BuildingBlock
+        #self.model_template = Net_${networkInstruction?index}
 </#if>
 </#list>
 <#else>

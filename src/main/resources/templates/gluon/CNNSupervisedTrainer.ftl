@@ -18,6 +18,7 @@ sys.path.insert(1, '${tc.architecture.getAdaNetUtils()}')
 #${tc.architecture.getAdaNetUtils()}
 import adaNetUtils
 from adaNetUtils import objective_function,calculate_l1,CandidateTrainingloss,AdaLoss,train_candidate,train_model,get_trainer
+from adanet import fit
 #TODO move adanet Classes Builder,candaita etc in own package
 </#if>
 try:
@@ -297,7 +298,7 @@ class BLEU(mx.metric.EvalMetric):
 
         return new_list
 
-<#if tc.containsAdaNet()>
+<#if tc.containsAdaNet() && false>
 """
 def objective_function(model, data, loss, gamma=.1) -> float:
 
@@ -433,7 +434,7 @@ def get_trainer(optimizer: str, parameters: dict, optimizer_params: dict) -> mx.
     else:
         trainer = mx.gluon.Trainer(parameters, optimizer, optimizer_params)
     return trainer
-"""
+
 
 def fit(loss: gluon.loss.Loss,
         optimizer: str,
@@ -450,6 +451,7 @@ def fit(loss: gluon.loss.Loss,
         ) -> gluon.HybridBlock:
     logging.info(f"AdaNet: starting with {epochs} epochs and batch_size:{batch_size} ...")
     cg = dataClass.Builder(batch_size=batch_size)
+
     model_template = dataClass.model_template
     model_operations = {}
     model_score = None
@@ -535,7 +537,7 @@ def fit(loss: gluon.loss.Loss,
         logging.info(round_msg + score_msg)
 
     return model
-
+"""
 </#if>
 
 class ${tc.fileNameWithoutEnding}:
@@ -686,6 +688,7 @@ class ${tc.fileNameWithoutEnding}:
                     optimizer=optimizer,
                     epochs=num_epoch,
                     optimizer_params = optimizer_params,
+                    train_iter = train_iter,
                     dataLoader = self._data_loader,
                     dataClass = self._dataClass[${networkInstruction?index}],
                     shuffle_data=shuffle_data,
@@ -697,19 +700,12 @@ class ${tc.fileNameWithoutEnding}:
                 )
         logging.info(self._networks[${networkInstruction?index}])
         logging.info(f"node count: {self._networks[${networkInstruction?index}].get_node_count()}")
-
-        if optimizer == "adamw":
-            trainers = [mx.gluon.Trainer(network.collect_params(), AdamW.AdamW(**optimizer_params)) for network in self._networks.values() if len(network.collect_params().values()) != 0]
-        else:
-            trainers = [mx.gluon.Trainer(network.collect_params(), optimizer, optimizer_params) for network in self._networks.values() if len(network.collect_params().values()) != 0]
-
 </#if>
         # update trainers
         if optimizer == "adamw":
             trainers = [mx.gluon.Trainer(network.collect_params(), AdamW.AdamW(**optimizer_params)) for network in self._networks.values() if len(network.collect_params().values()) != 0]
         else:
             trainers = [mx.gluon.Trainer(network.collect_params(), optimizer, optimizer_params) for network in self._networks.values() if len(network.collect_params().values()) != 0]
-
 </#list>
 </#if>
 <#list tc.architecture.networkInstructions as networkInstruction>    
