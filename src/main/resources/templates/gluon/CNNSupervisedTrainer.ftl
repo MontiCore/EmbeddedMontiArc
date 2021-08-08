@@ -16,6 +16,11 @@ from mxnet import gluon, autograd, nd
 from typing import List
 from mxnet.gluon.loss import Loss, SigmoidBCELoss
 from mxnet.ndarray import add, concatenate
+sys.path.insert(1, '${tc.architecture.getAdaNetUtils()}')
+#${tc.architecture.getAdaNetUtils()}
+import adaNetUtils
+from adaNetUtils import objective_function,calculate_l1,CandidateTrainingloss,AdaLoss,train_candidate,train_model,get_trainer
+#TODO move adanet Classes Builder,candaita etc in own package
 </#if>
 try:
     import AdamW
@@ -295,15 +300,9 @@ class BLEU(mx.metric.EvalMetric):
         return new_list
 
 <#if tc.containsAdaNet()>
+"""
 def objective_function(model, data, loss, gamma=.1) -> float:
-    """
-    :param model:
-    :param trainer:
-    :param data:
-    :param loss:
-    :param gamma:
-    :return:
-    """
+
     data.reset()
     err_list = []
     for batch_i, batch in enumerate(data):
@@ -318,11 +317,8 @@ def objective_function(model, data, loss, gamma=.1) -> float:
 
     return objective[0][0]
 
-
 def calculate_l1(params: dict) -> float:
-    """
-    calculate the L1 Norm on the weights of the passed model
-    """
+
     parameter = params
     l1 = None
     for key in parameter:
@@ -332,7 +328,6 @@ def calculate_l1(params: dict) -> float:
             else:
                 l1 = add(l1, parameter[key].data().abs().sum())
     return l1
-
 
 class CandidateTrainingloss(Loss):
     def __init__(self,
@@ -344,13 +339,7 @@ class CandidateTrainingloss(Loss):
                  beta=0.0001,
                  gamma=.1,
                  **kwargs):
-        """
-        loss function which is used to train each candidate
 
-        :param  loss, can be any (binary) loss function, to the result a regularization term is
-        added which consists of  complexity of the candidate and the L1-Norm applied
-        to the candidate weights
-        """
         super(CandidateTrainingloss, self).__init__(weight, batch_axis, **kwargs)
 
         self.a = alpha # weight for the rade macher approximation
@@ -382,9 +371,7 @@ class CandidateTrainingloss(Loss):
 
 
 class AdaLoss(Loss):
-    """
-    objective function of the whole model
-    """
+
 
     def __init__(self, weight=None, model=None, loss=SigmoidBCELoss, loss_args=(True,), batch_axis=0, lamb=0.0001,gamma=.1,
                  beta=.0001,
@@ -406,11 +393,7 @@ class AdaLoss(Loss):
 
 def fitComponent(trainIter: mx.io.NDArrayIter, trainer: mx.gluon.Trainer, epochs: int, component: gluon.HybridBlock,
                  loss_class: gluon.loss, loss_params: dict,model_flag:bool,batch_size:int,log_period=100) -> List[float]:
-    """
-    function trains a component of the generated model.
-    expects a compoment, a trainern instance with corresponding parameters.
 
-    """
     loss_list = []
     loss = loss_class(**loss_params)
     for epoch in range(epochs):
@@ -440,8 +423,6 @@ def train_candidate(candidate,epochs:int,optimizer:str,optimizer_params:dict,tra
 
 def train_model(candidate,epochs:int,optimizer:str,optimizer_params:dict,trainIter,loss:Loss,batch_size:int)->List[float]:
     params = candidate.out.collect_params()
-    if candidate.finalout is not None:
-        params.update(candidate.finalout.collect_params())
     model_trainer = get_trainer(optimizer, params, optimizer_params)
     return fitComponent(trainIter=trainIter, trainer=model_trainer, epochs=epochs, component=candidate,
         loss_class=AdaLoss, loss_params={'loss': loss, 'model': candidate},model_flag=True,batch_size=batch_size)
@@ -454,7 +435,7 @@ def get_trainer(optimizer: str, parameters: dict, optimizer_params: dict) -> mx.
     else:
         trainer = mx.gluon.Trainer(parameters, optimizer, optimizer_params)
     return trainer
-
+"""
 
 def fit(loss: gluon.loss.Loss,
         optimizer: str,
@@ -508,8 +489,7 @@ def fit(loss: gluon.loss.Loss,
             candidate_model = model_template(operations=candidate_op,batch_size=batch_size)
 
             candidate_model.out.initialize(ctx=ctx)
-            if candidate_model.finalout:
-                candidate_model.finalout.initialize(ctx=ctx)
+
             candidate_model.hybridize()
 
             model_loss = train_model(candidate_model,epochs,optimizer,optimizer_params,train_iter,loss,batch_size=batch_size)
