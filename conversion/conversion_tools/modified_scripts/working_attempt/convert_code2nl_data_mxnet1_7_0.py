@@ -134,7 +134,7 @@ def get_data_iterator(inputs, outputs, shuffle, batch_size, loaded_dict):
         output_dict[k] = loaded_dict[k]
     data_iterator = mx.io.NDArrayIter(
         data=input_dict, label=output_dict, shuffle=shuffle, batch_size=batch_size)
-    return len(input_dict[inputs[0]]), data_iterator
+    return data_iterator
 
 def parse_args():
     parser = argparse.ArgumentParser()

@@ -74,7 +74,7 @@ def get_pt_seq2seq():
                   sos_id=tokenizer.cls_token_id, eos_id=tokenizer.sep_token_id)
     return model
 
-def train_pt_model(pt_seq2seq, pt_train, pt_test, weight_decay):
+def train_pt_model(pt_seq2seq, pt_train, weight_decay):
     param_dict = hyp.get_training_hparams(True)
     no_decay = ['bias', 'LayerNorm.weight']
     device = torch.device('cpu')
@@ -133,5 +133,6 @@ if __name__ == '__main__':
         [mx.cpu()], True
     )
     pt_seq2seq = get_pt_seq2seq()
-    train_pt_model(pt_seq2seq, pt_train, pt_test, 0.0)
+    train_pt_model(pt_seq2seq, pt_train, 0.0)
+    train_mx_model(mx_seq2seq, mx_train)
     
