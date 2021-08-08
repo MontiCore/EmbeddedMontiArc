@@ -535,7 +535,9 @@ from mxnet.ndarray import zeros
 <#if networkInstruction.body.containsAdaNet()>
 ${tc.include(networkInstruction.body, "ADANET_CONSTRUCTION")}
 #class Model(gluon.HybridBlock): THIS IS THE ORIGINAL NAME, MUST BE RENAMED IN THE OTHER PARTS
-
+<#assign outblock = networkInstruction.body.getElements()[1].getDeclaration().getBlock("outBlock")>
+<#assign block = networkInstruction.body.getElements()[1].getDeclaration().getBlock("block")>
+<#assign inblock = networkInstruction.body.getElements()[1].getDeclaration().getBlock("outBlock")>
 class Net_${networkInstruction?index}(gluon.HybridBlock):
     def __init__(self,operations:dict,batch_size:int,generation=True,**kwargs):
         super(Net_${networkInstruction?index},self).__init__(**kwargs)
@@ -543,17 +545,9 @@ class Net_${networkInstruction?index}(gluon.HybridBlock):
         self.op_names = []
         self.generation = generation,
         self.candidate_complexities = {}
-        <#assign outblock = networkInstruction.body.getElements()[1].getDeclaration().getBlock("outBlock")>
+
         with self.name_scope():
             self.batch_size=batch_size
-            <#if outblock.isPresent()>
-            self.fout = ${tc.include(outblock.get(),"ADANET_CONSTRUCTION")}
-            <#else>
-            self.fout = None
-            </#if>
-            self.finalout = None
-            #if operations is None:
-            #    operations={'dummy':nn.Dense(units = 10)}
             self.data_shape = ${tc.getDefinedOutputDimension()}
             self.classes = int(prod(list(self.data_shape)))
             if operations is None:
@@ -564,9 +558,7 @@ class Net_${networkInstruction?index}(gluon.HybridBlock):
                     self.op_names.append(name)
                     self.candidate_complexities[name] = operation.get_complexity()
             self.out = nn.Dense(units=self.classes,activation=None,flatten=True)
-            if self.fout:
-                #self.finalout = self.fout()
-                pass
+
     def get_node_count(self)->int:
         count = self.classes
         for name in self.op_names:
@@ -582,8 +574,6 @@ class Net_${networkInstruction?index}(gluon.HybridBlock):
         res = tuple(res_list)
         y = F.concat(*res, dim=1)
         y = self.out(y)
-        if self.finalout:
-            y = self.finalout(y)
         y = F.reshape(y,(1,1,self.batch_size,*self.data_shape))
         return y
 
@@ -604,6 +594,22 @@ class DataClass_${networkInstruction?index}:
         self.AdaNet = True
         self.Builder = Builder
         self.CandidateHull = CandidateHull
+        <#if outblock.isPresent()>
+        self.outBlock = ${tc.include(outblock.get(),"ADANET_CONSTRUCTION")}
+        <#else>
+        self.outBlock = None
+        </#if>
+        <#if inblock.isPresent()>
+        self.inBlock = ${tc.include(inblock.get(),"ADANET_CONSTRUCTION")}
+        <#else>
+        self.inBlock = None
+        </#if>
+        <#if block.isPresent()>
+        self.block = ${tc.include(block.get(),"ADANET_CONSTRUCTION")}
+        <#else>
+        self.block = None
+        </#if>
+        #self.block = ${tc.include(block.get(),"ADANET_CONSTRUCTION")}
         self.BuildingBlock = BuildingBlock
         self.output_shape = self.CandidateHull(name='getOutputShape',stack=0).output_shape
         self.model_template = Net_${networkInstruction?index}

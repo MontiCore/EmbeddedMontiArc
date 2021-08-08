@@ -208,6 +208,9 @@ class Builder:
         self.pre_stack = 1
         self.step = 0
         self.block_params = None
+        self.trainIterator = None
+        self.candidateHistory = {} # dictionary of already trained candidates
+
     def get_candidates(self)->dict:
         """
         :returns tuple of two candidate networks the first is of the same size as the previous the the other is depth+1
@@ -217,20 +220,9 @@ class Builder:
             name = f'candidate{i}round{self.round}'
             candidate = CandidateHull(name=name,input=self.input,output=self.output, stack=i+1,
                 block_args=self.block_params,batch_size=self.batch_size)
+            # TODO train candidate here
             candidates.setdefault(name,candidate)
-        """
-        c0_name = f'candidate0round{self.round}'
-        c1_name = f'candidate1round{self.round}'
 
-        c0 = CandidateHull(name=c0_name,input=self.input,output=self.output, stack=self.pre_stack,
-            block_args=self.block_params,batch_size=self.batch_size)
-        c1 = CandidateHull(name=c1_name,input=self.input,output=self.output ,stack=self.pre_stack + 1,
-            block_args=self.block_params,batch_size=self.batch_size)
-
-        self.step += 1
-
-        return {c0.name_:c0, c1.name_:c1}
-        """
 
         return candidates
     def update(self, up=1):
