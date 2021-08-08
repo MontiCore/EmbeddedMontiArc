@@ -297,6 +297,8 @@ class BLEU(mx.metric.EvalMetric):
 
         return new_list
 
+
+
 class ${tc.fileNameWithoutEnding}:
     def __init__(self, data_loader, net_constructor):
         self._data_loader = data_loader
@@ -435,6 +437,7 @@ class ${tc.fileNameWithoutEnding}:
             loss_function = LogCoshLoss()
         else:
             logging.error("Invalid loss parameter.")
+
         loss_function.hybridize()
 <#if tc.containsAdaNet()>
 <#list tc.architecture.networkInstructions as networkInstruction>
