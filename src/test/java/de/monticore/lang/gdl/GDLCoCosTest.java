@@ -4,6 +4,7 @@ import static org.junit.Assert.assertFalse;
 import static org.junit.Assert.assertTrue;
 
 import de.monticore.lang.gdl._ast.ASTGame;
+import de.monticore.lang.gdl._cocos.*;
 import de.monticore.lang.gdl._parser.GDLParser;
 import java.io.IOException;
 import java.nio.file.Path;
@@ -22,5 +23,9 @@ public class GDLCoCosTest {
 
     assertFalse(parser.hasErrors());
     assertTrue(gdlDoc.isPresent());
+
+    GDLCoCoChecker checker = new GDLCoCoChecker();
+    checker.addCoCo(new ASTGameExpressionCoCo());
+    checker.checkAll(gdlDoc.get());
   }
 }
