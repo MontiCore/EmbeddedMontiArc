@@ -65,7 +65,7 @@ public class LayerNameCreator {
 
         Optional<ArchitectureElementSymbol>  currentBlock = ((AdaNet) ((LayerSymbol) subElement).getDeclaration()).getBlock(target);
         if(currentBlock.isPresent()) {
-            if (currentBlock.get().isArtificial()) {
+            if (currentBlock.get().isArtificial() || target.equals(AllPredefinedLayers.Block)) {
                 boolean oldState = currentBlock.get().containsAdaNet();
                 currentBlock.get().setAdaNet(true);
                 endStage = name(currentBlock.get(), endStage, streamIndices);
