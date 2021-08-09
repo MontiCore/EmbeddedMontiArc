@@ -532,8 +532,7 @@ class EpisodicMemory(EpisodicReplayMemoryInterface):
             elif key.startswith("labels_"):
                 self.label_memory.append(mem_dict[key])
 <#if tc.containsAdaNet()>
-# Generation of the artificial blocks for the Streams below
-from mxnet.gluon import nn
+# Blocks needed for AdaNet are generated below
 <#list tc.architecture.networkInstructions as networkInstruction>
 <#if networkInstruction.body.containsAdaNet()>
 ${tc.include(networkInstruction.body, "ADANET_CONSTRUCTION")}
@@ -552,31 +551,23 @@ class Net_${networkInstruction?index}(gluon.HybridBlock):
     def hybrid_forward(self,F,x):
         return self.dummy(x)
 
-class DataClass_${networkInstruction?index}:
-
-    """
-        this object holds all the necessary information for AdaNet
-    """
-    def __init__(self, **kwargs):
-        FullyConnected = AdaNetConfig.DEFAULT_BLOCK.value
-        <#if outblock.isPresent()>
-        self.outBlock = ${outblock.get().name}
-        <#else>
-        self.outBlock = None
-        </#if>
-        <#if inblock.isPresent()>
-        self.inBlock = ${inblock.get().name}
-        <#else>
-        self.inBlock = None
-        </#if>
-        <#if block.isPresent()>
-        self.block = ${block.get().name}
-        if self.block is AdaNetConfig.DEFAULT_BLOCK.value:
-            self.block = CoreAdaNet.DefaultBuildingBlock
-        <#else>
-        self.block = None
-        </#if>
-        self.model_shape = ${tc.getDefinedOutputDimension()}
+DataClass_${networkInstruction?index} = CoreAdaNet.DataClass(
+    <#if outblock.isPresent()>
+        outBlock = ${outblock.get().name},
+    <#else>
+        outBlock = None,
+    </#if>
+    <#if inblock.isPresent()>
+        inBlock = ${inblock.get().name},
+    <#else>
+        inBlock = None,
+    </#if>
+    <#if block.isPresent()>
+        block = ${block.get().name},
+    <#else>
+        block = None,
+    </#if>
+        model_shape = ${tc.getDefinedOutputDimension()})
 </#if>
 </#list>
 <#else>

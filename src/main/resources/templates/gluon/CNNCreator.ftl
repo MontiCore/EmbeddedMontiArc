@@ -182,7 +182,7 @@ class ${tc.fileNameWithoutEnding}:
 <#list tc.architecture.networkInstructions as networkInstruction>
         <#if tc.containsAdaNet()>
         self.networks[${networkInstruction?index}] = Net_${networkInstruction?index}()
-        self.dataClass[${networkInstruction?index}] = DataClass_${networkInstruction?index}()
+        self.dataClass[${networkInstruction?index}] = DataClass_${networkInstruction?index}
         <#else>
         self.networks[${networkInstruction?index}] = Net_${networkInstruction?index}(data_mean=data_mean, data_std=data_std, mx_context=context, prefix="")
         </#if>
