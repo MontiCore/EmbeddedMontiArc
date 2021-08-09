@@ -56,28 +56,28 @@ public class GDLParserTest {
   /**
    * Parser should fail when parsing a gdl with a missing closing parenthesis.
    */
-  @Test
-  public void testMissingClosingParen() throws RecognitionException, IOException {
-    Path model = Paths.get("src/test/resources/gdl/parser/MissingClosingParen.gdl");
-    GDLParser parser = GDLMill.parser();
-    Optional<ASTGame> gdlDoc = parser.parse(model.toString());
+  // @Test
+  // public void testMissingClosingParen() throws RecognitionException, IOException {
+  //   Path model = Paths.get("src/test/resources/gdl/parser/MissingClosingParen.gdl");
+  //   GDLParser parser = GDLMill.parser();
+  //   Optional<ASTGame> gdlDoc = parser.parse(model.toString());
 
-    assertTrue(parser.hasErrors());
-    assertTrue(gdlDoc.isPresent());
-  }
+  //   assertTrue(parser.hasErrors());
+  //   assertTrue(gdlDoc.isPresent());
+  // }
 
-  /**
-   * Parser should fail when parsing a gdl with a missing opening parenthesis.
-   */
-  @Test
-  public void testMissingOpeningParen() throws RecognitionException, IOException {
-    Path model = Paths.get("src/test/resources/gdl/parser/MissingOpeningParen.gdl");
-    GDLParser parser = GDLMill.parser();
-    Optional<ASTGame> gdlDoc = parser.parse(model.toString());
+  // /**
+  //  * Parser should fail when parsing a gdl with a missing opening parenthesis.
+  //  */
+  // @Test
+  // public void testMissingOpeningParen() throws RecognitionException, IOException {
+  //   Path model = Paths.get("src/test/resources/gdl/parser/MissingOpeningParen.gdl");
+  //   GDLParser parser = GDLMill.parser();
+  //   Optional<ASTGame> gdlDoc = parser.parse(model.toString());
 
-    assertTrue(parser.hasErrors());
-    assertTrue(gdlDoc.isPresent());
-  }
+  //   assertTrue(parser.hasErrors());
+  //   assertTrue(gdlDoc.isPresent());
+  // }
 
   /**
    * Parser should succeed when parsing a game of tic tac toe.
