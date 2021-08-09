@@ -204,7 +204,6 @@ public class AdaNet extends PredefinedLayerDeclaration {
         }
         ArchitectureElementSymbol block = this.getBlock(AllPredefinedLayers.Block).get();
 
-        input.ifPresent(architectureElementSymbol -> connectBlock(architectureElementSymbol, Ada, Ada.getInputElement().get(), block));
         if (input.isPresent()) {
             connectBlock(input.get(), Ada, Ada.getInputElement().get(), block);
         } else {
