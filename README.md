@@ -318,6 +318,24 @@ component Network<Z(2:oo) classes = 10>{
 ```
 This design will cause an Error, if one wants to have an operation to be inplace before the AdaNet Layer it is expected to be
 wrapped within a Constructed Layer!
+#### Example 4 malformed design
+```
+/* (c) https://github.com/MontiCore/monticore */
+package cNNCalculator;
+
+component Network<Z(2:oo) classes = 10>{
+    ports in Z(0:255)^{1, 28, 28} data,
+         out Q(0:1)^{classes} softmax;
+
+    implementation CNN {
+        data -> 
+        AdaNet()->
+        AdaNet()->
+        softmax;
+    }
+}
+```
+This will also create an Error
 ## Structural Arguments
 Structural arguments are special arguments which can be set for each layer and which do not correspond to a layer parameter. 
 The three structural arguments are "?", "->" and "|". The conditional argument "?" is a boolean. 
