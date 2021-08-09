@@ -166,9 +166,9 @@ It is also possible to add custom layers which are not predefined in the specifi
 ## AdaNet Layer & Usage
 The AdaNet Layer AdaNet provides to a way to generate a size optimised network architecture.
 It has three optional arguments: 
-- inBlock
-- block 
-- outBlock
+- inBlock : str
+- block : str
+- outBlock : str
 
 Each argument expects a string as input. If used, the string has to be a name of a constructed layer if used. 
 AdaNet will create and train several candidates and build an ensemble network from those candidates. Which candidates are 
