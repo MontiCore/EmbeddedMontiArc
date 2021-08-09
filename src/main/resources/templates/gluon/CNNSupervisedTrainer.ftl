@@ -309,7 +309,6 @@ class ${tc.fileNameWithoutEnding}:
         </#if>
         self._networks = {}
 
-
     def train(self, batch_size=64,
               num_epoch=10,
               eval_metric='acc',
