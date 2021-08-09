@@ -196,7 +196,7 @@ will fail, the correct a correct design could look like this:
 ### Generated Model EMADL representation
 After the final model is found the algorithm generates an emadl representation. If needed the AdaNet layer call can be
 replaced by this representation.
-####Example
+#### Example
 Given the following design
 ```
 /* (c) https://github.com/MontiCore/monticore */
@@ -242,14 +242,14 @@ component Network<Z(2:oo) classes = 10>{
 In this example only one candidate was added to the model. The double FullyConnected layer at the and are given by the
 algorithm and is explained in more detail in the corresponding thesis.
 
-###Default Block
+### Default Block
 The default building block is a HyrbidBlock equivalent to the design below
 ```
 FullyConnected(units=20)->
 Relu()
 ```
-###Examples
-####Example 1 no arguments passed
+### Examples
+#### Example 1 no arguments passed
 ```
 /* (c) https://github.com/MontiCore/monticore */
 package cNNCalculator;
@@ -265,7 +265,7 @@ component Network<Z(2:oo) classes = 10>{
     }
 }
 ```
-####Example 2 inBlock & outBlock passed
+#### Example 2 inBlock & outBlock passed
 ```
 /* (c) https://github.com/MontiCore/monticore */
 package cNNCalculator;
@@ -299,7 +299,7 @@ As result the algorithm will design a model consisting of parallel candidates wh
   Relu()->
   outOp()
 ```
-####Example 3 malformed design
+#### Example 3 malformed design
 ```
 /* (c) https://github.com/MontiCore/monticore */
 package cNNCalculator;
