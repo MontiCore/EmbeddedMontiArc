@@ -11,6 +11,7 @@ from transformers import (AdamW, get_linear_schedule_with_warmup,
 import argparse
 import torch
 import mxnet as mx
+import gluonnlp as nlp
 from torch.utils.data import DataLoader, SequentialSampler, TensorDataset
 from itertools import cycle
 from collections import namedtuple
@@ -53,10 +54,10 @@ def get_mxnet_data(data_dir):
     stages = ['train', 'test']
     train_data = conv.get_stage_data('train', tokenizer, data_dir, True)
     test_data = conv.get_stage_data('test', tokenizer, data_dir, True)
-    num_samples, train_iter = conv.get_data_iterator(
+    train_iter = conv.get_data_iterator(
         ['source_ids', 'source_masks'], ['target_ids', 'target_masks'],
         False, param_dict['batch_size'], train_data)
-    _, test_iter = conv.get_data_iterator(
+    test_iter = conv.get_data_iterator(
         ['source_ids', 'source_masks'], ['target_ids', 'target_masks'],
         False, param_dict['batch_size'], test_data)
     return train_iter, test_iter
@@ -118,6 +119,69 @@ def train_pt_model(pt_seq2seq, pt_train, weight_decay):
         optimizer.step()
         optimizer.zero_grad()
         scheduler.step()
+
+def train_mx_model(mx_seq2seq, mx_train):
+    train_hparams = hyp.get_training_hparams(True)
+    batch_size = train_hparams['batch_size']
+    train_steps = train_hparams['train_steps']
+    ctx = [mx.cpu()]
+    mx_seq2seq.collect_params().initialize(force_reinit=False, ctx=ctx)
+    mx_seq2seq.hybridize()
+    epochs = (train_steps * batch_size) // mx_train.num_data
+    loss = mx.gluon.loss.SoftmaxCrossEntropyLoss() # TODO parameters? e.g. sparse_label
+    # note this is different than the codebert optimizer in two ways
+    # 1. differences in calculation, as stated in the BERTAdam optimizer doc
+    # 2. it doesn't appear to be able to exclude certain parameters from the optimizer
+    # which is done in the codebert code2nl's optimizer. TODO for now.
+
+    # lr is defined in the call to run codebert, epsilon is left as default in the run script, beta1 and 2 are the pytorch default
+    optimizer = nlp.optimizer.BERTAdam(
+        learning_rate = train_hparams['learning_rate'], 
+        beta1 = 0.9, 
+        beta2 = 0.999, 
+        epsilon = train_hparams['adam_epsilon']
+    )
+    trainer = mx.gluon.Trainer(mx_seq2seq.collect_params(), optimizer=optimizer)
+    print('Doing test run with subset of data...')
+    print('Training steps {}'.format(train_steps))
+    print('Batch size {}'.format(batch_size))
+    print('Num samples {}'.format(mx_train.num_data))
+    print('Training model...')
+    for epoch in range(epochs):
+        for bid, batch in enumerate(mx_train):
+            with mx.autograd.record():
+                source_ids, source_masks, target_ids, target_masks = mxrun.get_seqs_from_batch(batch, ctx)
+                lm_logits = mx_seq2seq(source_ids, source_masks, target_ids, target_masks)
+                # drop the start of sentence mask tokens? - mb
+                active_loss = target_masks[..., 1:].asnumpy().reshape(-1) != 0
+                shift_labels = target_ids[..., 1:]
+                # Shift so that tokens < n predict n
+                shift_logits = lm_logits[..., :-1, :]
+                newDim = shift_logits.shape[-1]
+                X = shift_logits.reshape(-1, newDim)[active_loss]
+                y = shift_labels.reshape(-1)[active_loss]
+                l = loss(X, y)
+                print('Epoch {}/{} Batch {}/{} Loss {}'.format(
+                    epoch+1, epochs, bid+1, mx_train.num_data//batch_size, l.mean().asscalar()
+                ))
+            l.backward()
+            trainer.step(batch_size)
+        mx_train.reset()
+    # target_mask = self.create_target_mask(target_ids, target_valid_length)
+    # # Shift so that tokens < n predict n
+    # active_loss = target_mask[..., 1:].asnumpy().reshape(-1) != 0
+    # #active_loss = target_mask[..., 1:].ne(0).view(-1) == 1
+    # shift_logits = lm_logits[..., :-1, :]#.contiguous()
+    # shift_labels = target_ids[..., 1:]#.contiguous()
+    # # Flatten the tokens
+    # # loss_fct = nn.CrossEntropyLoss(ignore_index=-1)
+    # # still need to include equivalent to ignore_index? are the losses equivalent?
+    # # from_logits flag?
+    # loss_fct = mx.gluon.loss.SoftmaxCrossEntropyLoss()
+    # loss = loss_fct(shift_logits.reshape(-1, shift_logits.shape(-1))[active_loss],
+    #                 shift_labels.reshape(-1)[active_loss])
+
+    # #outputs = loss,loss*active_loss.sum(),active_loss.sum()
 
 if __name__ == '__main__':
     args = parse_args()

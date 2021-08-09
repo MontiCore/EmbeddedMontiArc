@@ -144,7 +144,6 @@ def train_model(args):
         ['source_ids', 'source_masks'], ['target_ids', 'target_masks'],
         True, batch_size, h5py.File(train_file, 'r'))
     epochs = (train_steps * batch_size) // train_data.num_data
-    seq2seq.initialize()
     loss = mx.gluon.loss.SoftmaxCrossEntropyLoss() # TODO parameters? e.g. sparse_label
     # note this is different than the codebert optimizer in two ways
     # 1. differences in calculation, as stated in the BERTAdam optimizer doc
