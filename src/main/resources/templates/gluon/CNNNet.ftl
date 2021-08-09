@@ -13,6 +13,8 @@ from mxnet import gluon, nd
 from mxnet.gluon import nn, HybridBlock
 from numpy import log, product,prod,sqrt
 from mxnet.ndarray import zeros,zeros_like
+sys.path.insert(1, '${tc.architecture.getAdaNetUtils()}')
+from AdaNetConfig import AdaNetConfig
 </#if>
 <#if tc.architecture.customPyFilesPath??>
 sys.path.insert(1, '${tc.architecture.customPyFilesPath}')
@@ -550,22 +552,24 @@ class Net_${networkInstruction?index}(gluon.HybridBlock):
         return self.dummy(x)
 
 class DataClass_${networkInstruction?index}:
+
     """
         this object holds all the necessary information for AdaNet
     """
     def __init__(self, **kwargs):
+        FullyConnected = AdaNetConfig.DEFAULT_BLOCK.value
         <#if outblock.isPresent()>
-        self.outBlock = ${tc.include(outblock.get(),"ADANET_CONSTRUCTION")}
+        self.outBlock = ${outblock.get().name}
         <#else>
         self.outBlock = None
         </#if>
         <#if inblock.isPresent()>
-        self.inBlock = ${tc.include(inblock.get(),"ADANET_CONSTRUCTION")}
+        self.inBlock = ${inblock.get().name}
         <#else>
         self.inBlock = None
         </#if>
         <#if block.isPresent()>
-        self.block = ${tc.include(block.get(),"ADANET_CONSTRUCTION")}
+        self.block = ${block.get().name}
         <#else>
         self.block = None
         </#if>

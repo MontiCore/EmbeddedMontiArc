@@ -88,8 +88,6 @@ public class CNNArch2GluonTemplateController extends CNNArchTemplateController {
                     this.worked_list.add(layer.getName());
                 }
                 layer.setArtificial(originalArtificialState);
-            }else {
-                include(TEMPLATE_ELEMENTS_DIR_PATH, "ArtificialArch", writer, netDefinitionMode);
             }
         }else{
             include((ArchitectureElementSymbol) layer.getResolvedThis().get(), writer, netDefinitionMode);
