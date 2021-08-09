@@ -1,6 +1,6 @@
 # (c) https://github.com/MontiCore/monticore
 
-image: registry.git.rwth-aachen.de/monticore/container-registry/gradle:6.8.2-jdk8
+image: gradle:6.9.0-jdk11
 
 stages:
   - build
@@ -9,6 +9,13 @@ stages:
 
 before_script:
   - export GRADLE_USER_HOME=`pwd`/.gradle
+  - apt-get update
+  - apt-get install -y gnupg2
+  - echo "deb http://ppa.launchpad.net/swi-prolog/stable/ubuntu $(cat /etc/os-release | grep -oP -m 1 "VERSION_CODENAME=\K\w+") main" | tee -a /etc/apt/sources.list
+  - echo "deb-src http://ppa.launchpad.net/swi-prolog/stable/ubuntu $(cat /etc/os-release | grep -oP -m 1 "VERSION_CODENAME=\K\w+") main" | tee -a /etc/apt/sources.list
+  - apt-key adv --keyserver keyserver.ubuntu.com --recv-keys EF8406856DBFCA18
+  - apt-get update
+  - apt-get install -y swi-prolog
 
 
 build:

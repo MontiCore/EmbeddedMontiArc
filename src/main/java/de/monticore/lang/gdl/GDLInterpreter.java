@@ -1,107 +1,77 @@
 package de.monticore.lang.gdl;
 
 import java.io.IOException;
-import java.math.BigInteger;
-import java.util.ArrayList;
-import java.util.List;
-import java.util.Map; 
 import java.util.Optional;
-import java.util.Scanner;
-import java.util.TreeMap;
+import java.util.Set;
 import java.util.stream.Collectors;
 
 import org.antlr.v4.runtime.RecognitionException;
-import org.apache.commons.collections4.BidiMap;
-import org.apache.commons.collections4.bidimap.DualTreeBidiMap;
-import org.sosy_lab.common.ShutdownManager;
-import org.sosy_lab.common.configuration.Configuration;
-import org.sosy_lab.common.configuration.InvalidConfigurationException;
-import org.sosy_lab.common.log.BasicLogManager;
-import org.sosy_lab.common.log.LogManager;
-import org.sosy_lab.java_smt.SolverContextFactory;
-import org.sosy_lab.java_smt.SolverContextFactory.Solvers;
-import org.sosy_lab.java_smt.api.BooleanFormula;
-import org.sosy_lab.java_smt.api.BooleanFormulaManager;
-import org.sosy_lab.java_smt.api.IntegerFormulaManager;
-import org.sosy_lab.java_smt.api.Model;
-import org.sosy_lab.java_smt.api.ProverEnvironment;
-import org.sosy_lab.java_smt.api.SolverContext;
-import org.sosy_lab.java_smt.api.SolverException;
-import org.sosy_lab.java_smt.api.Model.ValueAssignment;
-import org.sosy_lab.java_smt.api.NumeralFormula.IntegerFormula;
-import org.sosy_lab.java_smt.api.SolverContext.ProverOptions;
 
 import de.monticore.lang.gdl._ast.ASTGame;
-import de.monticore.lang.gdl._ast.ASTGameExpression;
-import de.monticore.lang.gdl._ast.ASTGameFunction;
-import de.monticore.lang.gdl._ast.ASTGameInit;
-import de.monticore.lang.gdl._ast.ASTGameValue;
 import de.monticore.lang.gdl._parser.GDLParser;
 import de.monticore.lang.gdl._symboltable.GDLScopesGenitor;
 import de.monticore.lang.gdl._symboltable.IGDLArtifactScope;
 import de.monticore.lang.gdl._symboltable.IGDLGlobalScope;
 import de.monticore.lang.gdl._visitor.GDLTraverser;
+import de.monticore.lang.gdl.chess.ChessGUI;
+import de.monticore.lang.gdl.cli.GDLCLI;
 import de.se_rwth.commons.logging.Log;
+import de.monticore.lang.gdl._cocos.*;
 
 public class GDLInterpreter {
 
-    public static void main(String[] args) throws IOException, InvalidConfigurationException, InterruptedException, SolverException {
-        if (args.length != 1) {
+    public static void main(String[] args) throws Exception {
+        if (args.length < 1) {
             Log.error("Specify exactly one model file.");
+            return;
+        }
+
+        Set<String> commands = Set.of(args).stream().filter(arg -> !arg.equals(args[0])).collect(Collectors.toSet());
+
+        boolean chessGui = false;
+        boolean cli = true;
+
+        boolean error = false;
+        for (String command : commands) {
+            if (command.equals("--chess-gui") || command.equals("-cg")) {
+                chessGui = true;
+            } else if (command.equals("--no-cli") || command.equals("-nc")) {
+                cli = false;
+            } else {
+                Log.error("Unknown command: " + command);
+                error = true;
+            }
+        }
+        if (error) {
+            printHelp();
             return;
         }
 
         // Parse model to ast
         String modelFileName = args[0];
-        final ASTGame ast = parse(modelFileName);
-        final IGDLArtifactScope scope = createSymbolTable(ast);
+        final ASTGame ast = GDLInterpreter.parse(modelFileName);
+        GDLCoCoChecker checker = new GDLCoCoChecker();
+        checker.addCoCo(new ASTGameExpressionCoCo());
+        checker.checkAll(ast);
+        // final IGDLArtifactScope scope = GDLInterpreter.createSymbolTable(ast);
 
-        final Interpreter interpreter = new Interpreter(ast, scope).init();
-        
-        // System.out.println(scope.getGameFunctionDefinitionSymbols());
-        // System.out.println(scope.getGameFunctionDefinitionSymbols().get("isLegalMove").get(0).getAstNode());
+        final Interpreter interpreter = new Interpreter(ast).init();
 
-        // Initialize SAT Solver objects
-        
-
-        // Generate prover environment
-        // ProverEnvironment prover = context.newProverEnvironment(ProverOptions.GENERATE_MODELS);
-        // prover.addConstraint(volatileState.getConstraint());
-        // prover.addConstraint(constantState.getConstraint());
-
-
-        // boolean isUnsat = prover.isUnsat();
-        // if (isUnsat) {
-        //     System.out.println("UNSAT");
-        // } else {
-        //     // generate model
-        //     Model model = prover.getModel();
-
-        //     // sort value assignments by name
-        //     List<ValueAssignment> valueAssignments = model.asList()
-        //         .stream()
-        //         .sorted((a, b) -> a.getName().compareTo(b.getName()))
-        //         .collect(Collectors.toList());
-
-        //     // print all value assignments
-        //     for (ValueAssignment va : valueAssignments) {
-        //         String argName = va.getName();
-        //         // Reverse lookup int assignment for value name
-        //         String argValue = constValueMap.getKey(((BigInteger) va.getValue()).intValue());
-        //         Log.println(String.format("%s = %s", argName, argValue));
-        //     }
-        // }
-        
-        // REMOVE LATER
-        interpreter.interpret("");
-
-
-        Scanner s = new Scanner(System.in);
-        String line;
-        while (!(line = s.nextLine()).equals("/exit") && line != null) {
-            interpreter.interpret(line);
+        if (cli) {
+            new Thread(new GDLCLI(interpreter)).start();
         }
-        s.close();
+        if (chessGui) {
+            new ChessGUI(interpreter);
+        }
+    }
+
+    private static void printHelp() {
+        String help = 
+            "Usage:\n" +
+            "  -cg, --chess-gui" + "\t" + "Start with a Chess GUI\n" +
+            "  -nc, --no-cli" + "\t" + "Disable the CLI\n" +
+            "";
+        System.out.print(help);
     }
 
     /**
@@ -145,44 +115,5 @@ public class GDLInterpreter {
         gs.addSubScope(scope);
         return scope;
     }
-    
-    // public static void example() throws InvalidConfigurationException, InterruptedException, SolverException {
-    //     Configuration config = Configuration.defaultConfiguration();
-    //     LogManager logger = BasicLogManager.create(config);
-    //     ShutdownManager shutdown = ShutdownManager.create();
-
-    //     SolverContext context = SolverContextFactory.createSolverContext(config, logger, shutdown.getNotifier(),
-    //             Solvers.SMTINTERPOL);
-
-    //     ArrayFormulaManager amgr = context.getFormulaManager().getArrayFormulaManager();
-    //     IntegerFormulaManager imgr = context.getFormulaManager().getIntegerFormulaManager();
-    //     BooleanFormulaManager bmgr = context.getFormulaManager().getBooleanFormulaManager();
-
-    //     IntegerFormula x = imgr.makeVariable("x");
-    //     IntegerFormula y = imgr.makeVariable("y");
-    //     IntegerFormula one = imgr.makeNumber(1);
-    //     IntegerFormula two = imgr.makeNumber(2);
-
-    //     BooleanFormula f = imgr.equal(x, one);
-    //     BooleanFormula g = imgr.equal(y, two);
-    //     BooleanFormula prop = bmgr.and(f, g);
-
-    //     ProverEnvironment prover = context.newProverEnvironment(ProverOptions.GENERATE_MODELS);
-    //     prover.addConstraint(imgr.equal(x, y));
-
-    //     boolean isUnsat = prover.isUnsat();
-    //     if (isUnsat) {
-    //         System.out.println("UNSAT");
-    //     } else {
-    //         Model model = prover.getModel();
-    //         System.out.printf("SAT with x = %s, y = %s\n", model.evaluate(x), model.evaluate(y));
-    //         System.out.println(model.evaluate(prop));
-
-    //         for (ValueAssignment va : prover.getModelAssignments()) {
-    //             System.out.println(va);
-    //         }
-
-    //     }
-    // }
 
 }

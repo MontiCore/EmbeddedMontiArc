@@ -1,32 +1,72 @@
-(<= (legal ?player (move ?x ?y ?z))
+(<= (legal mult (move ?x ?y ?z))
+    (mult ?x ?y ?z)
+)
+(<= (legal add (move ?x ?y ?z))
     (add ?x ?y ?z)
 )
-
-(<= (l ?x ?y ?z)
-    (c 1 2)
-    (not (l ?p ?z ?q))
+(<= (legal minus (move ?x ?y ?z))
+    (minus ?x ?y ?z)
+)
+(<= (legal div (move ?x ?y ?z))
+    (div ?x ?y ?z)
 )
 
-(<= (f1 ?x ?t)
-    (c 2 2)
-)
-(<= (f1 ?x ?t)
-    (f2 ?y ?t)
-)
-(<= (f2 ?x ?t)
-    (c ?x ?t)
-)
-
-(c 1 2)
-(c 2 3)
-
-(<= (add ?x ?y ?x)
-    (succ ?y 1)
+(<= (add ?x 0 ?x)
 )
 (<= (add ?x ?y ?z)
     (succ ?a ?y)
     (succ ?b ?z)
     (add ?x ?a ?b)
+)
+
+(<= (f1 ?x ?y)
+    (succ ?x ?y)
+)
+(succ 0 1)
+(succ 1 2)
+(succ 2 3)
+(succ 3 4)
+
+(<= (minus ?a ?b ?c)
+    (add ?b ?c ?a)
+)
+
+(<= (mult 0 ?a 0)
+)
+
+(<= (mult ?x ?y ?z)
+    (succ ?_x ?x)
+    (mult ?_x ?y ?_z)
+    (add ?_z ?y ?z)
+)
+
+// not allowed
+(<= (div ?a 0 ?c)
+    (not (succ 1 2))
+)
+
+// divided by 1
+(<= (div ?a 1 ?a)
+)
+
+// (0 divided by anything) = 0
+(<= (div 0 ?b 0) 
+)
+
+// if a = b
+(<= (div ?a ?a 1)
+)
+
+// if b > a
+(<= (div ?a ?b 0)
+    (add ?a ?k ?b)
+)
+
+// every other case
+(<= (div ?a ?b ?c)
+    (minus ?a ?b ?a2)
+    (succ ?c2 ?c)
+    (div ?a2 ?b ?c2)
 )
 
 (succ 0 1)
