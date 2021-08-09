@@ -9,7 +9,6 @@
 package de.monticore.lang.monticar.cnnarch._symboltable;
 
 import de.monticore.lang.monticar.cnnarch.predefined.AllPredefinedLayers;
-
 import java.util.*;
 
 public class SerialCompositeElementSymbol extends CompositeElementSymbol {
