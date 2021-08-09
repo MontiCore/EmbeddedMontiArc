@@ -15,6 +15,7 @@ from numpy import log, product,prod,sqrt
 from mxnet.ndarray import zeros,zeros_like
 sys.path.insert(1, '${tc.architecture.getAdaNetUtils()}')
 from AdaNetConfig import AdaNetConfig
+import CoreAdaNet
 </#if>
 <#if tc.architecture.customPyFilesPath??>
 sys.path.insert(1, '${tc.architecture.customPyFilesPath}')
@@ -570,6 +571,8 @@ class DataClass_${networkInstruction?index}:
         </#if>
         <#if block.isPresent()>
         self.block = ${block.get().name}
+        if self.block is AdaNetConfig.DEFAULT_BLOCK.value:
+            self.block = CoreAdaNet.DefaultBuildingBlock
         <#else>
         self.block = None
         </#if>
