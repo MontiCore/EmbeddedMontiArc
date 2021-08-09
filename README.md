@@ -164,7 +164,10 @@ In order to introduce a new predefined layer, the following steps are necessary:
 ## Introducing Custom Layers 
 It is also possible to add custom layers which are not predefined in the specific backend which is used. For the different backends the approach may differ. For now the method only works for Gluon backend and a short guide on how to use it can be found in the CNNArch2Gluon readme file --> https://git.rwth-aachen.de/monticore/EmbeddedMontiArc/generators/CNNArch2Gluon/-/blob/ba_kisov/README.md#using-custom-layers
 ## AdaNet Layer & Usage
-The AdaNet Layer AdaNet provides to a way to generate a size optimised network architecture.
+The AdaNet Layer AdaNet provides to a way to generate a size optimised network architecture. The implemented algorithm is based 
+on [4].
+### How To
+The generation process can be simply invoked by adding using the layer syntax ```AdaNet()```
 It has three optional arguments: 
 - inBlock : str
 - block : str
@@ -860,3 +863,4 @@ All predefined methods start with a capital letter and all constructed methods h
   [1] Cyprien De Masson, Sebastian Ruder, Lingpeng Kong and Dani Yogatama, "Episodic Memory in Lifelong Language Learning", Proc. NeurIPS, 2019 \
   [2] Guillaume Lample, Alexandre Sablayrolles, Marc’Aurelio Ranzato, Ludovic Denoyer and Hervé Jégou, "Large memory layers with product keys", Proc. NeurIPS, Dec. 2019. \
   [3] Ashish Vaswani, Noam Shazeer, Niki Parmar, Jakob Uszkoreit, Llion Jones, Aidan N Gomez, Lukasz Kaiser and Illia Polosukhin, "Attention is all you need", Proc. NeurIPS, 2017
+  [4] Corinna Cortes, Xavi Gonzalvo, Vitaly Kuznetsov, Mehryar Mohri, Scott Yang , "AdaNet: Adaptive Structural Learning of Artificial Neural Networks"
