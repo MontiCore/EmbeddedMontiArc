@@ -550,7 +550,7 @@ class Net_${networkInstruction?index}(gluon.HybridBlock):
 
     def hybrid_forward(self,F,x):
         return self.dummy(x)
-
+FullyConnected = AdaNetConfig.DEFAULT_BLOCK.value
 DataClass_${networkInstruction?index} = CoreAdaNet.DataClass(
     <#if outblock.isPresent()>
         outBlock = ${outblock.get().name},
