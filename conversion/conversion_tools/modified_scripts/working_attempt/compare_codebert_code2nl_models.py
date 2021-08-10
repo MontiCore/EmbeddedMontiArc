@@ -167,24 +167,21 @@ def train_mx_model(mx_seq2seq, mx_train):
             l.backward()
             trainer.step(batch_size)
         mx_train.reset()
-    # target_mask = self.create_target_mask(target_ids, target_valid_length)
-    # # Shift so that tokens < n predict n
-    # active_loss = target_mask[..., 1:].asnumpy().reshape(-1) != 0
-    # #active_loss = target_mask[..., 1:].ne(0).view(-1) == 1
-    # shift_logits = lm_logits[..., :-1, :]#.contiguous()
-    # shift_labels = target_ids[..., 1:]#.contiguous()
-    # # Flatten the tokens
-    # # loss_fct = nn.CrossEntropyLoss(ignore_index=-1)
-    # # still need to include equivalent to ignore_index? are the losses equivalent?
-    # # from_logits flag?
-    # loss_fct = mx.gluon.loss.SoftmaxCrossEntropyLoss()
-    # loss = loss_fct(shift_logits.reshape(-1, shift_logits.shape(-1))[active_loss],
-    #                 shift_labels.reshape(-1)[active_loss])
 
-    # #outputs = loss,loss*active_loss.sum(),active_loss.sum()
+def tandem_test_models(pt_seq2seq, mx_seq2seq, pt_test, mx_test, mx_ctx):
+    pt_test_iter = cycle(pt_test)
+    num_batches = mx_test.num_data // mx_test.batch_size
+    for _ in range(num_batches):
+        mx_batch = mx_test.next()
+        pt_batch = next(pt_test_iter)
+        mx_sids, mx_smasks, mx_tids, mx_tmasks = mxrun.get_seqs_from_batch(mx_batch, mx_ctx)
+        pt_sids, pt_smasks, pt_tids, pt_tmask = pt_batch
+        print(pt_sids[0])
+        print(mx_sids[0])
 
 if __name__ == '__main__':
     args = parse_args()
+    mx_ctx = [mx.cpu()]
     param_dict = hyp.get_training_hparams(True)
     pt_train = get_pytorch_dataloader(
         args.data_dir, 'dev', 'train.jsonl', param_dict['limit_train_samples'])
@@ -194,9 +191,9 @@ if __name__ == '__main__':
     mx_seq2seq = mxrun.get_seq2seq(
         args.symbol_file, args.weight_file, 
         args.embed_symbol_file, args.embed_weight_file, 
-        [mx.cpu()], True
+        mx_ctx, True
     )
     pt_seq2seq = get_pt_seq2seq()
     train_pt_model(pt_seq2seq, pt_train, 0.0)
     train_mx_model(mx_seq2seq, mx_train)
-    
+    tandem_test_models(pt_seq2seq, mx_seq2seq, pt_test, mx_test, mx_ctx)
