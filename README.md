@@ -163,22 +163,81 @@ In order to introduce a new predefined layer, the following steps are necessary:
 
 ## Introducing Custom Layers 
 It is also possible to add custom layers which are not predefined in the specific backend which is used. For the different backends the approach may differ. For now the method only works for Gluon backend and a short guide on how to use it can be found in the CNNArch2Gluon readme file --> https://git.rwth-aachen.de/monticore/EmbeddedMontiArc/generators/CNNArch2Gluon/-/blob/ba_kisov/README.md#using-custom-layers
+
+## Structural Arguments
+Structural arguments are special arguments which can be set for each layer and which do not correspond to a layer parameter. 
+The three structural arguments are "?", "->" and "|". The conditional argument "?" is a boolean. 
+It does nothing if it is true and it removes the layer completely if it is false. 
+This argument is only useful for layer construction. 
+The other two structural arguments are non-negative integers which repeat the layer *x* number of times where *x* is equal to their value. 
+The layer operator between each repetition has the same symbol as the argument.
+
+Assuming `a` is a method without required arguments, 
+then `a(-> = 3)->` is equal to `a()->a()->a()->`, 
+`a(| = 3)->` is equal to `(a() | a() | a())->` and 
+`a(-> = 3, | = 2)->` is equal to `(a()->a()->a() | a()->a()->a())->`. 
+
+## Argument Sequences
+Argument sequences can be used instead of regular arguments to declare that a layer should be repeated with the values of the given sequence. 
+The operator between these so stacked layers is also given by the sequence. 
+Other arguments that only have a single value are neutral to the repetition 
+which means that the single value will be repeated an arbitrary number of times without having an influence on the number of repetitions.
+
+The following are valid sequences: `[1->2->3->4]`, `[true | false]`, `{[1 | 3->2]`, `[ |2->3]` and `[1->..->4]`. 
+All values in these examples could also be replaced by variable names or arithmetic or logical expressions. 
+The last sequence is defined as a range and equal to the first one. A range in CNNArch is closed which means the start and end value are both in the sequence. 
+Moreover, a range has always a step size of +1. Thus, the range `[0|..|-4]` would be empty. 
+The data flow operators can be used both in the same argument sequence in which case a single parallelization block is created. 
+A parallel group in this block can be empty, which is why `[ |2->3]` is a valid sequence. 
+If a method contains multiple argument sequences, the language will try to combine them by expanding the smaller one and will throw an error at model creation if this fails.
+Let `m` be a layer with parameters `a`, `b` and `c`, then the expression `m(a=[3->2],b=1)` is equal to `m(a=3,b=1)->m(a=2,b=1)`. 
+Furthermore, the line `m(a=[5->3],b=[3|4|2],c=2)->` is equal to:
+```
+(
+    m(a=5, b=3, c=2) ->
+    m(a=3, b=3, c=2)
+|
+    m(a=5, b=4, c=2) ->
+    m(a=3, b=4, c=2)
+|
+    m(a=5, b=2, c=2) ->
+    m(a=3, b=2, c=2)
+) ->
+```
+And `m(a=[|5|3->4], b=[|1|2], c=2)` is equal to: 
+```
+(
+
+|
+    m(a=5, b=1, c=2)
+|
+    m(a=3, b=2, c=2) ->
+    m(a=4, b=2, c=2)
+) ->
+```
+However, `m(a=[5->3], b=[2|4->6], c=2)->` and `m(a=[5->3], b=[2->4->6], c=2)->` would fail because it is not possible to expand *a* such that it is the same size as *b*.
+
+## Expressions
+This language supports the basic arithmetic operators "+", "-", "\*", "/", the logical operators "&&", "||", the comparison operators "==", "!=", "<", ">", "<=", ">=" 
+and the constants `true` and `false`. 
+At the moment, it is sometimes necessary to use parentheses around an expression to avoid a parsing error. 
+For example, the line `someMethod(booleanArg = (1!=1))` does not parse without the parentheses around `1!=1`.
 ## AdaNet Layer & Usage
-The AdaNet Layer AdaNet provides to a way to generate a size optimised network architecture. The implemented algorithm is based 
+The AdaNet Layer AdaNet provides to a way to generate a size optimised network architecture. The implemented algorithm is based
 on [4].
 ### How To
 The generation process can be simply invoked by adding using the layer syntax ```AdaNet()```
-It has three optional arguments: 
+It has three optional arguments:
 - inBlock : str
 - block : str
 - outBlock : str
 
-Each argument expects a string as input. If used, the string has to be a name of a constructed layer if used. 
-AdaNet will create and train several candidates and build an ensemble network from those candidates. Which candidates are 
+Each argument expects a string as input. If used, the string has to be a name of a constructed layer if used.
+AdaNet will create and train several candidates and build an ensemble network from those candidates. Which candidates are
 added to model depends on the models performance and size.
 If a Constructed Layer is passed to inBlock this layer will be mapped to a gluon.HybridBlock and is the first operation of each
-candidate. Similar with the parameter outBlock the resulting HybridBlock will be second to  last in a candidate. 
-It is followed by a Dense Layer to ensure the correct output of a candidate. 
+candidate. Similar with the parameter outBlock the resulting HybridBlock will be second to  last in a candidate.
+It is followed by a Dense Layer to ensure the correct output of a candidate.
 
 The ConstructedLayers passed to the AdaNet layer need to callable without any parameters.
 The layer
@@ -188,14 +247,14 @@ The layer
     FUllyConnected(units=secondunits)
   }
 ```
-will fail, the correct a correct design could look like this:
+will fail, the a correct design could look like this:
 ```
   def conv(firstunits=20,secondunits=10){
     FullyConnected(units=firstunits)->
     FUllyConnected(units=secondunits)
   }
 ```
-
+also the constructed layers can be nested if needed. They will be morphed into one block and passed to AdaNet.
 ### Generated Model EMADL representation
 After the final model is found the algorithm generates an emadl representation. If needed the AdaNet layer call can be
 replaced by this representation.
@@ -339,65 +398,6 @@ component Network<Z(2:oo) classes = 10>{
 }
 ```
 This will also create an Error
-## Structural Arguments
-Structural arguments are special arguments which can be set for each layer and which do not correspond to a layer parameter. 
-The three structural arguments are "?", "->" and "|". The conditional argument "?" is a boolean. 
-It does nothing if it is true and it removes the layer completely if it is false. 
-This argument is only useful for layer construction. 
-The other two structural arguments are non-negative integers which repeat the layer *x* number of times where *x* is equal to their value. 
-The layer operator between each repetition has the same symbol as the argument.
-
-Assuming `a` is a method without required arguments, 
-then `a(-> = 3)->` is equal to `a()->a()->a()->`, 
-`a(| = 3)->` is equal to `(a() | a() | a())->` and 
-`a(-> = 3, | = 2)->` is equal to `(a()->a()->a() | a()->a()->a())->`. 
-
-## Argument Sequences
-Argument sequences can be used instead of regular arguments to declare that a layer should be repeated with the values of the given sequence. 
-The operator between these so stacked layers is also given by the sequence. 
-Other arguments that only have a single value are neutral to the repetition 
-which means that the single value will be repeated an arbitrary number of times without having an influence on the number of repetitions.
-
-The following are valid sequences: `[1->2->3->4]`, `[true | false]`, `{[1 | 3->2]`, `[ |2->3]` and `[1->..->4]`. 
-All values in these examples could also be replaced by variable names or arithmetic or logical expressions. 
-The last sequence is defined as a range and equal to the first one. A range in CNNArch is closed which means the start and end value are both in the sequence. 
-Moreover, a range has always a step size of +1. Thus, the range `[0|..|-4]` would be empty. 
-The data flow operators can be used both in the same argument sequence in which case a single parallelization block is created. 
-A parallel group in this block can be empty, which is why `[ |2->3]` is a valid sequence. 
-If a method contains multiple argument sequences, the language will try to combine them by expanding the smaller one and will throw an error at model creation if this fails.
-Let `m` be a layer with parameters `a`, `b` and `c`, then the expression `m(a=[3->2],b=1)` is equal to `m(a=3,b=1)->m(a=2,b=1)`. 
-Furthermore, the line `m(a=[5->3],b=[3|4|2],c=2)->` is equal to:
-```
-(
-    m(a=5, b=3, c=2) ->
-    m(a=3, b=3, c=2)
-|
-    m(a=5, b=4, c=2) ->
-    m(a=3, b=4, c=2)
-|
-    m(a=5, b=2, c=2) ->
-    m(a=3, b=2, c=2)
-) ->
-```
-And `m(a=[|5|3->4], b=[|1|2], c=2)` is equal to: 
-```
-(
-
-|
-    m(a=5, b=1, c=2)
-|
-    m(a=3, b=2, c=2) ->
-    m(a=4, b=2, c=2)
-) ->
-```
-However, `m(a=[5->3], b=[2|4->6], c=2)->` and `m(a=[5->3], b=[2->4->6], c=2)->` would fail because it is not possible to expand *a* such that it is the same size as *b*.
-
-## Expressions
-This language supports the basic arithmetic operators "+", "-", "\*", "/", the logical operators "&&", "||", the comparison operators "==", "!=", "<", ">", "<=", ">=" 
-and the constants `true` and `false`. 
-At the moment, it is sometimes necessary to use parentheses around an expression to avoid a parsing error. 
-For example, the line `someMethod(booleanArg = (1!=1))` does not parse without the parentheses around `1!=1`.
-
 ## Advanced Examples
 This version of Alexnet, which uses method construction, argument sequences and special arguments, is identical to the one in the section Basic Structure.
 ```
