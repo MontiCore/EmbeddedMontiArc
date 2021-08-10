@@ -301,7 +301,7 @@ component Network<Z(2:oo) classes = 10>{
     }
 }
 ```
-In this example only one candidate was added to the model. The double FullyConnected layer at the and are given by the
+In this example only one candidate was added to the model. The double FullyConnected layer at the end are given by the
 algorithm and is explained in more detail in the corresponding thesis.
 
 ### Default Block
