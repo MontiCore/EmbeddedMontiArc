@@ -863,4 +863,4 @@ All predefined methods start with a capital letter and all constructed methods h
   [1] Cyprien De Masson, Sebastian Ruder, Lingpeng Kong and Dani Yogatama, "Episodic Memory in Lifelong Language Learning", Proc. NeurIPS, 2019 \
   [2] Guillaume Lample, Alexandre Sablayrolles, Marc’Aurelio Ranzato, Ludovic Denoyer and Hervé Jégou, "Large memory layers with product keys", Proc. NeurIPS, Dec. 2019. \
   [3] Ashish Vaswani, Noam Shazeer, Niki Parmar, Jakob Uszkoreit, Llion Jones, Aidan N Gomez, Lukasz Kaiser and Illia Polosukhin, "Attention is all you need", Proc. NeurIPS, 2017 \
-  [4] Corinna Cortes, Xavi Gonzalvo, Vitaly Kuznetsov, Mehryar Mohri, Scott Yang , "AdaNet: Adaptive Structural Learning of Artificial Neural Networks"
+  [4] Corinna Cortes, Xavi Gonzalvo, Vitaly Kuznetsov, Mehryar Mohri, Scott Yang , "AdaNet: Adaptive Structural Learning of Artificial Neural Networks" 2017
