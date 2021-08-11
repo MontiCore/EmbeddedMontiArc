@@ -72,7 +72,7 @@ def get_pt_seq2seq():
     decoder = torch.nn.TransformerDecoder(decoder_layer, num_layers=6)
     model = ptmod.Seq2Seq(encoder=encoder, decoder=decoder, config=config,
                   beam_size=param_dict['beam_size'], max_length=param_dict['max_target_length'],
-                  sos_id=tokenizer.cls_token_id, eos_id=tokenizer.sep_token_id)
+                  sos_id=tokenizer.cls_token_id, eos_id=tokenizer.sep_token_id, compare_mode=True)
     return model
 
 def train_pt_model(pt_seq2seq, pt_train, weight_decay):
@@ -168,17 +168,30 @@ def train_mx_model(mx_seq2seq, mx_train):
             trainer.step(batch_size)
         mx_train.reset()
 
+def compare_preds(pt_preds, mx_preds):
+    return None
+
 def tandem_test_models(pt_seq2seq, mx_seq2seq, pt_test, mx_test, mx_ctx):
     pt_test_iter = cycle(pt_test)
     num_batches = mx_test.num_data // mx_test.batch_size
+    pt_preds = []
+    pt_probs = []
+    mx_probs = []
+    mx_preds = []
     for _ in range(num_batches):
         mx_batch = mx_test.next()
         pt_batch = next(pt_test_iter)
-        mx_sids, mx_smasks, mx_tids, mx_tmasks = mxrun.get_seqs_from_batch(mx_batch, mx_ctx)
-        pt_sids, pt_smasks, pt_tids, pt_tmask = pt_batch
-        print(pt_sids[0])
-        print(mx_sids[0])
-
+        mx_sids, mx_smasks, _, _ = mxrun.get_seqs_from_batch(mx_batch, mx_ctx)
+        pt_sids, pt_smasks, _, _ = pt_batch
+        pt_pred, pt_prob = pt_seq2seq(pt_sids, pt_smasks)
+        mx_pred, mx_prob = mx_seq2seq(mx_sids, mx_smasks)
+        compare_preds(pt_pred, mx_pred)
+        pt_preds.append(pt_pred)
+        pt_probs.append(pt_prob)
+        mx_preds.append(mx_pred)
+        mx_probs.append(mx_prob)
+        print(pt_prob[0][0])
+        print(mx_prob[0][0])
 if __name__ == '__main__':
     args = parse_args()
     mx_ctx = [mx.cpu()]
@@ -191,7 +204,7 @@ if __name__ == '__main__':
     mx_seq2seq = mxrun.get_seq2seq(
         args.symbol_file, args.weight_file, 
         args.embed_symbol_file, args.embed_weight_file, 
-        mx_ctx, True
+        mx_ctx, True, True
     )
     pt_seq2seq = get_pt_seq2seq()
     train_pt_model(pt_seq2seq, pt_train, 0.0)

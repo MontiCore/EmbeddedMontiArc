@@ -97,7 +97,7 @@ def get_decoder(test_run):
     decoder(tgt_embed, states, tgt_valid)
     return decoder
 
-def get_seq2seq(sym_file, wt_file, esym_file, ewt_file, ctx, test_run):
+def get_seq2seq(sym_file, wt_file, esym_file, ewt_file, ctx, test_run, compare_mode):
     embedding = load_codebert_block(esym_file, ewt_file, ctx)
     encoder = load_codebert_block(sym_file, wt_file, ctx)
     decoder = get_decoder(test_run)
@@ -111,7 +111,8 @@ def get_seq2seq(sym_file, wt_file, esym_file, ewt_file, ctx, test_run):
         beam_size=training_params['beam_size'], 
         max_length=training_params['max_target_length'], 
         sos_id=seq2seq_hparams['sos_id'],
-        eos_id=seq2seq_hparams['eos_id'] 
+        eos_id=seq2seq_hparams['eos_id'], 
+        compare_mode=compare_mode
     )
     return seq2seq
 
@@ -134,7 +135,7 @@ def train_model(args):
     seq2seq = get_seq2seq(
         args.symbol_file, args.weight_file, 
         args.embed_symbol_file, args.embed_weight_file, 
-        ctx, args.test_run
+        ctx, args.test_run, False
     )
     seq2seq.collect_params().initialize(force_reinit=False, ctx=ctx)
     seq2seq.hybridize()

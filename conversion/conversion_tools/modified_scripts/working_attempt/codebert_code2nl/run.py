@@ -28,7 +28,8 @@ using a masked language modeling (MLM) loss.
 
 import os
 import sys
-import bleu
+from . import bleu
+from .model import Seq2Seq
 import pickle
 import torch
 import json
@@ -39,7 +40,7 @@ import numpy as np
 from io import open
 from itertools import cycle
 import torch.nn as nn
-from model import Seq2Seq
+
 from tqdm import tqdm, trange
 from torch.utils.data import DataLoader, Dataset, SequentialSampler, RandomSampler,TensorDataset
 from torch.utils.data.distributed import DistributedSampler
