@@ -25,7 +25,7 @@ public class GDLInterpreter {
             return;
         }
 
-        Set<String> commands = Set.of(args).stream().filter(arg -> !arg.equals(args[0])).collect(Collectors.toSet());
+        Set<String> commands = Set.of(args).stream().skip(1).collect(Collectors.toSet());
 
         boolean chessGui = false;
         boolean cli = true;
