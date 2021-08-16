@@ -45,6 +45,8 @@ sourceSets {
         java.srcDir "$projectDir/src/test/java"
         resources.srcDir "$projectDir/src/test/resources"
     }
+
+    sourceSets.main.resources { srcDirs = ["$projectDir/src/main/java"]; exclude "**/*.java" }
 }
 buildDir = file("$projectDir/target")
 

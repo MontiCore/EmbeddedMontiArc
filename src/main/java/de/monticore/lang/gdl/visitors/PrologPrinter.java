@@ -137,6 +137,20 @@ public class PrologPrinter extends IndentPrinter implements GDLVisitor2, MCCommo
                     }
                 }
                 print(")");
+            // } else if (type instanceof ASTGameLegal) {
+            //     type.accept(getTraverser());
+            //     print("(");
+            //     node.getArguments(0).accept(getTraverser());
+
+            //     ASTGameExpression innerExpression = (ASTGameExpression) node.getArguments(1);
+            //     print(",");
+            //     innerExpression.getType().accept(getTraverser());
+            //     for (int i = 0; i < innerExpression.getArgumentsList().size(); i++) {
+            //         print(", ");
+            //         innerExpression.getArguments(i).accept(getTraverser());
+            //     }
+            //     print(")");
+
             } else {
                 type.accept(getTraverser());
                 print("(");
@@ -363,6 +377,12 @@ public class PrologPrinter extends IndentPrinter implements GDLVisitor2, MCCommo
             }
         }
         print(")");
+
+        if (node.getBodyList().size() == 0) {
+            println(".");
+            return;
+        }
+
         println(" :-");
         indent();
         

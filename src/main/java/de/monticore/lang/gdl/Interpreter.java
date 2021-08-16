@@ -107,6 +107,8 @@ public class Interpreter {
         game.accept(printer.getTraverser());
         String prologProgram = printer.getContent();
 
+        System.out.println(prologProgram);
+
         writer.write("[user].\n");
         writer.write(stateDynamics);
         writer.write(prologProgram);
@@ -339,7 +341,7 @@ public class Interpreter {
     }
 
     private void readErr(String line) {
-        // System.out.println("! " + line);
+        System.out.println("! " + line);
     }
 
     private boolean isLegal(Command command) {
