@@ -140,5 +140,23 @@ public class GDLCoCosTest {
     checker.addCoCo(new ASTGameExpressionCoCo());
     checker.checkAll(gdlDoc.get());
   }
-  
+
+  @Test
+  public void testFailInferenceWithTooFewArguments() throws RecognitionException, IOException {
+    Path model = Paths.get("src/test/resources/gdl/cocos/FailInferenceWithTooFewArguments.gdl");
+    GDLParser parser = GDLMill.parser();
+    Optional<ASTGame> gdlDoc = parser.parse(model.toString());
+
+    assertFalse(parser.hasErrors());
+    assertTrue(gdlDoc.isPresent());
+    
+    try {
+      GDLCoCoChecker checker = new GDLCoCoChecker();
+      checker.addCoCo(new ASTGameExpressionCoCo());
+      checker.checkAll(gdlDoc.get());
+    } catch (Exception e) {
+      e.printStackTrace();
+      assertTrue(false);
+    }
+  }
 }
