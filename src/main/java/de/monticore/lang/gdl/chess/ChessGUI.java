@@ -12,7 +12,7 @@ import java.io.IOException;
 import java.util.List;
 
 import javax.imageio.ImageIO;
-import javax.swing.BorderFactory;
+// import javax.swing.BorderFactory;
 import javax.swing.ImageIcon;
 import javax.swing.JButton;
 import javax.swing.JFrame;
@@ -202,49 +202,49 @@ public class ChessGUI {
         return error;
     }
 
-    private static String textForFigure(String figure) {
-        String text = "???";
+    // private static String textForFigure(String figure) {
+    //     String text = "???";
 
-        if (figure != null) {
-            switch(figure) {
-                case "blank":
-                    text = "";
-                    break;
+    //     if (figure != null) {
+    //         switch(figure) {
+    //             case "blank":
+    //                 text = "";
+    //                 break;
 
-                case "white_pawn":
-                case "black_pawn":
-                    text = "PAWN";
-                    break;
+    //             case "white_pawn":
+    //             case "black_pawn":
+    //                 text = "PAWN";
+    //                 break;
                     
-                case "white_knight":
-                case "black_knight":
-                    text = "KNIGHT";
-                    break;
+    //             case "white_knight":
+    //             case "black_knight":
+    //                 text = "KNIGHT";
+    //                 break;
                     
-                case "white_bishop":
-                case "black_bishop":
-                    text = "BISHOP";
-                    break;
+    //             case "white_bishop":
+    //             case "black_bishop":
+    //                 text = "BISHOP";
+    //                 break;
                     
-                case "white_rook":
-                case "black_rook":
-                    text = "ROOK";
-                    break;
+    //             case "white_rook":
+    //             case "black_rook":
+    //                 text = "ROOK";
+    //                 break;
                     
-                case "white_king":
-                case "black_king":
-                    text = "KING";
-                    break;
+    //             case "white_king":
+    //             case "black_king":
+    //                 text = "KING";
+    //                 break;
                     
-                case "white_queen":
-                case "black_queen":
-                    text = "QUEEN";
-                    break;
-            }
-        }
+    //             case "white_queen":
+    //             case "black_queen":
+    //                 text = "QUEEN";
+    //                 break;
+    //         }
+    //     }
 
-        return text;
-    }
+    //     return text;
+    // }
 
     private static ImageIcon iconForFigure(String figure) {
         if (figure == null) {
