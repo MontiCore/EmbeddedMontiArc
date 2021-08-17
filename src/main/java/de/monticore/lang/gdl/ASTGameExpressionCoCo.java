@@ -109,9 +109,9 @@ public class ASTGameExpressionCoCo implements GDLASTGameExpressionCoCo {
 			if(!(node.getArguments(0) instanceof ASTGameFunction || node.getArguments(0) instanceof ASTGameExpression)) {
 				Log.error("GameNot argument must be of type GameFunction or GameExpression");
 			}
-			if(node.getArguments(0) instanceof ASTGameExpression && !(((ASTGameExpression)node.getArguments(0)).getType() instanceof ASTGameFunction)) {
-				Log.error("First argument of the GameNot argument tuple must be of type GameFunction");
-			}
+			// if(node.getArguments(0) instanceof ASTGameExpression && !(((ASTGameExpression)node.getArguments(0)).getType() instanceof ASTGameFunction)) {
+			// 	Log.error("First argument of the GameNot argument tuple must be of type GameFunction");
+			// }
 		}
 
 		if (node.getType() instanceof ASTGameDistinct) {
