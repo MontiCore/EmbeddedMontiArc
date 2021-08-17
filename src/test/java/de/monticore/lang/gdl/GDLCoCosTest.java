@@ -14,9 +14,15 @@ import java.nio.file.Paths;
 import java.util.Optional;
 import org.antlr.v4.runtime.RecognitionException;
 import org.junit.BeforeClass;
+import org.junit.Before;
 import org.junit.Test;
 
 public class GDLCoCosTest {
+
+  @Before
+  public void clear() {
+    Log.clearFindings();
+  }
 
   @BeforeClass
   public static void beforeClass() throws Exception {
@@ -158,12 +164,9 @@ public class GDLCoCosTest {
     assertFalse(parser.hasErrors());
     assertTrue(gdlDoc.isPresent());
     
-    try {
-      GDLCoCoChecker checker = new GDLCoCoChecker();
-      checker.addCoCo(new ASTGameExpressionCoCo());
-      checker.checkAll(gdlDoc.get());
-    } catch (Exception e) {
-      assertTrue(true);
-    }
+    GDLCoCoChecker checker = new GDLCoCoChecker();
+    checker.addCoCo(new ASTGameExpressionCoCo());
+    checker.checkAll(gdlDoc.get());
+    assertEquals(1, Log.getErrorCount());
   }
 }
