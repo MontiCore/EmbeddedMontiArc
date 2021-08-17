@@ -1,3 +1,5 @@
+src/main/resources/example/Chess.gdl
+
 STATE
 (field a 1 white_rook)
 (field b 1 white_knight)
@@ -361,4 +363,7 @@ STATE
 (castle black short allowed)
 (castle black long allowed)
 (enPassant none)
+GOAL
+(goal white 0)
+(goal black 100)
 

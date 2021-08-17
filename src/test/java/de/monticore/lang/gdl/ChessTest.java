@@ -4,13 +4,11 @@ import static org.junit.Assert.assertEquals;
 import static org.junit.Assert.assertTrue;
 
 import java.io.File;
-import java.io.FileReader;
 import java.nio.file.Files;
 import java.util.Iterator;
 import java.util.LinkedList;
 import java.util.List;
 import java.util.stream.Collectors;
-import java.util.stream.Stream;
 
 import com.google.common.collect.Ordering;
 
@@ -20,7 +18,7 @@ public class ChessTest {
 
     @Test
     public void TestMatches() {
-        File testDir = new File("src/test/resources/chess-test-matches/");
+        File testDir = new File("src/test/resources/test-matches/");
         for (File testFile : testDir.listFiles()) {
             List<Object> input = new LinkedList<>();
             String fileName = testFile.getName();
@@ -33,10 +31,14 @@ public class ChessTest {
                 boolean isInCommand = false;
                 boolean isInState = false;
                 List<String> states = new LinkedList<>();
+                String name = null;
+                if (lines.hasNext()) {
+                    name = lines.next();
+                }
                 while (lines.hasNext()) {
                     String line = lines.next();
 
-                    if (line.equals("COMMAND")) {
+                    if (line.equals("COMMAND") || line.equals("GOAL")) {
                         if (isInState) {
                             input.add(states);
                             states = new LinkedList<>();
@@ -59,7 +61,7 @@ public class ChessTest {
                     input.add(states);
                 }
 
-                Interpreter interpreter = new Interpreter(GDLInterpreter.parse("src/main/resources/example/Chess.gdl"))
+                Interpreter interpreter = new Interpreter(GDLInterpreter.parse(name))
                         .init();
 
                 int moveCounter = 0;
@@ -94,9 +96,34 @@ public class ChessTest {
                                     interpreterState.get(i));
                         }
                     } else if (object instanceof String) {
-                        lastMove = (String) object;
-                        interpreter.interpret(lastMove);
-                        moveCounter++;
+                        String asString = (String) object;
+                        if (asString.startsWith("(goal")) {
+                            List<List<String>> goals = interpreter.getAllModels("goal");
+                            if (goals != null) {
+                                List<String> goalsFormatted = new LinkedList<>();
+                                for (List<String> goal : goals) {
+                                    StringBuilder sb = new StringBuilder();
+                                    sb.append("(goal ");
+
+                                    for (int i = 0; i < goal.size(); i++) {
+                                        sb.append(goal.get(i));
+                                        if (i + 1 < goal.size()) {
+                                            sb.append(" ");
+                                        }
+                                    }
+                                    sb.append(")");
+
+                                    goalsFormatted.add(sb.toString());
+                                }
+
+                                assertTrue(fileName + ": Goal Wrong!", goalsFormatted.contains(asString));
+                            }
+
+                        } else {
+                            lastMove = (String) object;
+                            interpreter.interpret(lastMove);
+                            moveCounter++;
+                        }
                     }
                 }
             } catch (Exception e) {
