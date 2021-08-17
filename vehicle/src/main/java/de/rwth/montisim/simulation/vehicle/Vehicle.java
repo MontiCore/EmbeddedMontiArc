@@ -11,10 +11,9 @@ import de.rwth.montisim.simulation.eesimulator.EESystem;
 import de.rwth.montisim.simulation.vehicle.physicalvalues.*;
 import de.rwth.montisim.simulation.vehicle.physicsmodel.PhysicsModel;
 import de.rwth.montisim.simulation.vehicle.powertrain.PowerTrain;
-import de.rwth.montisim.simulation.vehicle.powertrain.electrical.ElectricalPowerTrain;
 import de.rwth.montisim.simulation.vehicle.task.Task;
 
-public class Vehicle extends SimulationObject implements Updatable, Destroyable, TaskRunner, BuildObject {
+public class Vehicle extends SimulationObject implements Updatable, Destroyable, TaskRunner, BuildObject, Poppable {
     public static final String CONTEXT_KEY = "vehicle";
     public static final boolean SERIALIZE_FORMATTED = true;
 
@@ -27,6 +26,7 @@ public class Vehicle extends SimulationObject implements Updatable, Destroyable,
     public transient final PhysicalValueRegistry physicalValues = new PhysicalValueRegistry();
     public transient final Updater updater = new Updater();
     public transient final Destroyer destroyer = new Destroyer();
+    public transient final Popper popper = new Popper();
 
     public Task task; // Task with no goals => always succeeds
 
@@ -54,23 +54,17 @@ public class Vehicle extends SimulationObject implements Updatable, Destroyable,
         simulator.registerTaskRunner(this, this);
     }
 
-    @Override
-    public void destroy() {
-        destroyer.applyDestroy();
-    }
 
     @Override
     public TaskStatus status() {
         return task.status();
     }
 
-    protected void addPhysicalValues() {
-        if ( powerTrain instanceof ElectricalPowerTrain  ) {
-            physicalValues.addPhysicalValue(new BatteryLevel( ((ElectricalPowerTrain) powerTrain).battery));
-        }
+    protected void registerPhysicalValues() {
         physicalValues.addPhysicalValue(new TrueCompass(physicalObject));
         physicalValues.addPhysicalValue(new TrueVelocity(physicalObject));
         physicalValues.addPhysicalValue(new TruePosition(physicalObject));
+        powerTrain.registerPhysicalValues(physicalValues);
     }
 
     public static final String K_CONFIG = "config";
@@ -100,6 +94,17 @@ public class Vehicle extends SimulationObject implements Updatable, Destroyable,
     @Override
     public String getKey() {
         return CONTEXT_KEY;
+    }
+
+    
+    @Override
+    public void destroy() {
+        destroyer.applyDestroy();
+    }
+    
+    @Override
+    public void pop() {
+        popper.performPop();
     }
 
 }

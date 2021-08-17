@@ -10,6 +10,7 @@ import de.rwth.montisim.commons.eventsimulation.DiscreteEventSimulator;
 import de.rwth.montisim.commons.map.Pathfinding;
 import de.rwth.montisim.commons.simulation.*;
 import de.rwth.montisim.commons.utils.BuildContext;
+import de.rwth.montisim.commons.utils.json.SerializationException;
 import de.rwth.montisim.simulation.eecomponents.simple_network.SimulatorModule;
 import de.rwth.montisim.simulation.eecomponents.vehicleconfigs.DefaultVehicleConfig;
 import de.rwth.montisim.simulation.environment.osmmap.OsmMap;
@@ -72,6 +73,16 @@ public class Simulator implements ISimulator, Updatable {
         return vehicles.values();
     }
 
+    /**
+     * Deserializes and removes the vehicle from the simulation.
+     */
+    public String popVehicle(Vehicle v) throws SerializationException {
+        v.pop();
+        String state = v.stateToJson();
+        removeSimulationObject(v);
+        return state;
+    }
+
     public void removeSimulationObject(SimulationObject obj) {
         SimulatorState state = (SimulatorState) obj.state;
 
@@ -117,6 +128,8 @@ public class Simulator implements ISimulator, Updatable {
      * @return SUCCEEDED if all tasks succeeded, FAILED if timeout and RUNNING else.
      */
     public TaskStatus status() {
+        // TODO handle failures in tasks (early stop parameter?)
+        // -> use 'any running ?' logic
         if (timeout) {
             return TaskStatus.FAILED;
         }

@@ -1,6 +1,8 @@
 /* (c) https://github.com/MontiCore/monticore */
 package de.rwth.montisim.simulation.vehicle.powertrain.electrical;
 
+import de.rwth.montisim.commons.physicalvalue.PhysicalValueRegistry;
+import de.rwth.montisim.simulation.vehicle.physicalvalues.BatteryLevel;
 import de.rwth.montisim.simulation.vehicle.powertrain.PowerTrain;
 import de.rwth.montisim.simulation.vehicle.powertrain.electrical.battery.*;
 import de.rwth.montisim.simulation.vehicle.powertrain.electrical.motor.ElectricMotor;
@@ -31,5 +33,10 @@ public class ElectricalPowerTrain extends PowerTrain {
         return electricalPTProperties.transmission_ratio;
     }
 
+    @Override
+    public void registerPhysicalValues(PhysicalValueRegistry physicalValues){
+        super.registerPhysicalValues(physicalValues);
+        physicalValues.addPhysicalValue(new BatteryLevel(battery));
+    }
     
 }

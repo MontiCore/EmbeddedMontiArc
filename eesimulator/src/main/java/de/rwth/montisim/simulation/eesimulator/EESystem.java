@@ -33,6 +33,7 @@ import de.rwth.montisim.simulation.eesimulator.sensor.Sensor;
  */
 public class EESystem implements CustomJson, BuildObject {
     public static final String CONTEXT_KEY = "eesystem";
+    public static final String COMPONENT_POPPER_CONTEXT_KEY = "component_popper";
     public static final String COMPONENT_UPDATER_CONTEXT_KEY = "component_updater";
     public static final String COMPONENT_DESTROYER_CONTEXT_KEY = "component_destroyer";
     //public static final String START_TIME_CONTEXT_KEY = "start_time";
