@@ -33,7 +33,26 @@ public class GDLCoCosTest {
   @Test
   public void testAccept() throws RecognitionException, IOException {
 
-    String[] models = { "AcceptDistinct" }; 
+    String[] models = {
+        "AcceptDistinct",
+        "AcceptDistinctWithToken",
+        "AcceptDistinctWithValueAndToken",
+        "AcceptDistinctWithValue",
+        "AcceptDoesWithToken",
+        "AcceptDoesWithValue",
+        "AcceptFunction",
+        "AcceptGoal",
+        "AcceptInference",
+        "AcceptInit",
+        "AcceptLegal",
+        "AcceptNext",
+        "AcceptNot",
+        "AcceptNotWithExpression",
+        "AcceptNotWithFunction",
+        "AcceptRole",
+        "AcceptTerminal",
+        "AcceptTrue"
+    };
     for(String name:models ){
       Path model = Paths.get("src/test/resources/gdl/cocos/"+name+".gdl");
       GDLParser parser = GDLMill.parser();
