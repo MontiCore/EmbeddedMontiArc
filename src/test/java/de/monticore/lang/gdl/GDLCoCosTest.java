@@ -6,6 +6,8 @@ import static org.junit.Assert.assertTrue;
 import de.monticore.lang.gdl._ast.ASTGame;
 import de.monticore.lang.gdl._cocos.*;
 import de.monticore.lang.gdl._parser.GDLParser;
+import de.se_rwth.commons.logging.Log;
+import de.se_rwth.commons.logging.LogStub;
 import java.io.IOException;
 import java.nio.file.Path;
 import java.nio.file.Paths;
@@ -14,7 +16,12 @@ import org.antlr.v4.runtime.RecognitionException;
 import org.junit.Test;
 
 public class GDLCoCosTest {
-  
+
+  @BeforeClass
+  public static void beforeClass() throws Exception {
+    LogStub.init();
+  }
+
   @Test
   public void testAcceptDistinct() throws RecognitionException, IOException {
     Path model = Paths.get("src/test/resources/gdl/cocos/AcceptDistinct.gdl");
