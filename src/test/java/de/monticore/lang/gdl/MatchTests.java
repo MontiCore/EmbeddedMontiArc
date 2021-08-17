@@ -14,7 +14,7 @@ import com.google.common.collect.Ordering;
 
 import org.junit.Test;
 
-public class ChessTest {
+public class MatchTests {
 
     @Test
     public void TestMatches() {
