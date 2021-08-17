@@ -35,7 +35,7 @@ public class GDLCoCosTest {
 
     String[] models = { "AcceptDistinct" }; 
     for(String name:models ){
-      Path model = Paths.get("src/test/resources/gdl/cocos/"+name+"gdl");
+      Path model = Paths.get("src/test/resources/gdl/cocos/"+name+".gdl");
       GDLParser parser = GDLMill.parser();
       Optional<ASTGame> gdlDoc = parser.parse(model.toString());
 
