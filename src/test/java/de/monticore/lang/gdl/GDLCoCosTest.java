@@ -128,6 +128,7 @@ public class GDLCoCosTest {
       GDLCoCoChecker checker = new GDLCoCoChecker();
       checker.addCoCo(new ASTGameExpressionCoCo());
       checker.checkAll(gdlDoc.get());
+      System.out.println(name)
       assertTrue(Log.getErrorCount() > 0);
     }
   }
