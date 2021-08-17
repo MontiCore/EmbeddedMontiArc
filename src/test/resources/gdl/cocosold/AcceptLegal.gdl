@@ -1,0 +1,1 @@
+(legal ?player (mark ?x ?y))
