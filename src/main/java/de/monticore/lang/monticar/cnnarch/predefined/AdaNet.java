@@ -217,7 +217,7 @@ public class AdaNet extends PredefinedLayerDeclaration {
         connectBlock(block, Ada, input.get(), output.get());
     }
 
-    private void buildBlock(String target, LayerSymbol layer) {
+    private void buildBlock(String target) {
         // builds the block inBlock,outBlock or BuildingBlock
         String blockName = getName(target).get();
 
@@ -259,15 +259,15 @@ public class AdaNet extends PredefinedLayerDeclaration {
         this.setIn_name(layer.getStringValue(AllPredefinedLayers.In));       // get Argument Value of In parameter
         this.setOut_name(layer.getStringValue(AllPredefinedLayers.Out));     // get Argument Value of Out parameter
 
-        if (!getName(AllPredefinedLayers.In).get().equals(AllPredefinedLayers.DEFAULT_BLOCK)&& !getEnclosingScope().getLocalSymbols().containsKey(getName(AllPredefinedLayers.In).get())) { //passed Parameter is not the default value
-            buildBlock(AllPredefinedLayers.In, layer);
+        if (!getName(AllPredefinedLayers.In).get().equals(AllPredefinedLayers.DEFAULT_BLOCK) || getEnclosingScope().getLocalSymbols().containsKey(getName(AllPredefinedLayers.In).get())) { //passed Parameter is not the default value
+            buildBlock(AllPredefinedLayers.In);
         }
         if (getName(AllPredefinedLayers.Block).get().equals(AllPredefinedLayers.DEFAULT_BLOCK) && !getEnclosingScope().getLocalSymbols().containsKey(getName(AllPredefinedLayers.Block).get())) {
             this.setBlock_name(Optional.of(AllPredefinedLayers.FULLY_CONNECTED_NAME));
         }
-        buildBlock(AllPredefinedLayers.Block, layer);
-        if (!getName(AllPredefinedLayers.Out).get().equals(AllPredefinedLayers.DEFAULT_BLOCK)&& !getEnclosingScope().getLocalSymbols().containsKey(getName(AllPredefinedLayers.Out).get())) { //passed Parameter is not the default value
-            buildBlock(AllPredefinedLayers.Out, layer);
+        buildBlock(AllPredefinedLayers.Block);
+        if (!getName(AllPredefinedLayers.Out).get().equals(AllPredefinedLayers.DEFAULT_BLOCK) || getEnclosingScope().getLocalSymbols().containsKey(getName(AllPredefinedLayers.Out).get())) { //passed Parameter is not the default value
+            buildBlock(AllPredefinedLayers.Out);
         }
         connectAdaNet(layer);
         getBlock(AllPredefinedLayers.Block).ifPresent(toSolve -> {
@@ -296,7 +296,11 @@ public class AdaNet extends PredefinedLayerDeclaration {
         }catch(ArchResolveException e){
             e.printStackTrace();
         }
-        return ((LayerSymbol) this.getBlock(AllPredefinedLayers.Block).get()).computeOutputTypes();
+        if(this.getBlock(AllPredefinedLayers.Out).isPresent()){
+            return ((LayerSymbol) this.getBlock(AllPredefinedLayers.Out).get()).computeOutputTypes();
+        }else {
+            return ((LayerSymbol) this.getBlock(AllPredefinedLayers.Block).get()).computeOutputTypes();
+        }
     }
 
     public static AdaNet create() {
