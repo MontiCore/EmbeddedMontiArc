@@ -16,20 +16,6 @@ import org.junit.Test;
 public class GDLCoCosTest {
   
   @Test
-  public void testGameStateUpdate() throws RecognitionException, IOException {
-    Path model = Paths.get("src/test/resources/gdl/cocos/GameStateUpdate.gdl");
-    GDLParser parser = GDLMill.parser();
-    Optional<ASTGame> gdlDoc = parser.parse(model.toString());
-
-    assertFalse(parser.hasErrors());
-    assertTrue(gdlDoc.isPresent());
-
-    GDLCoCoChecker checker = new GDLCoCoChecker();
-    checker.addCoCo(new ASTGameExpressionCoCo());
-    checker.checkAll(gdlDoc.get());
-  }
-  
-  @Test
   public void testAcceptDistinct() throws RecognitionException, IOException {
     Path model = Paths.get("src/test/resources/gdl/cocos/AcceptDistinct.gdl");
     GDLParser parser = GDLMill.parser();
