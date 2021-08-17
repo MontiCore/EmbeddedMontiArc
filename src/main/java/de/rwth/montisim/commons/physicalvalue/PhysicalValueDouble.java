@@ -1,3 +1,4 @@
+/* (c) https://github.com/MontiCore/monticore */
 package de.rwth.montisim.commons.physicalvalue;
 
 import de.rwth.montisim.commons.dynamicinterface.BasicType;
