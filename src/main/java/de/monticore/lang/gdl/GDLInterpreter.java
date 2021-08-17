@@ -2,7 +2,7 @@ package de.monticore.lang.gdl;
 
 import java.io.IOException;
 import java.util.Optional;
-import java.util.Set;
+import java.util.List;
 import java.util.stream.Collectors;
 
 import org.antlr.v4.runtime.RecognitionException;
@@ -26,15 +26,21 @@ public class GDLInterpreter {
             return;
         }
 
-        Set<String> commands = Set.of(args).stream().filter(arg -> !arg.equals(args[0])).collect(Collectors.toSet());
+        List<String> commands = List.of(args).stream().filter(arg -> !arg.equals(args[0])).collect(Collectors.toList());
 
-        boolean chessGui = true;
+        boolean chessGui = false;
         boolean cli = true;
+        int windowSize = 950;
 
         boolean error = false;
-        for (String command : commands) {
+        for (int i = 0; i < commands.size(); i++) {
+            String command = commands.get(i);
             if (command.equals("--chess-gui") || command.equals("-cg")) {
                 chessGui = true;
+                if (i + 1 < commands.size() && commands.get(i + 1).matches("[0-9]+")) {
+                    windowSize = Integer.parseInt(commands.get(i + 1));
+                    i++;
+                }
             } else if (command.equals("--no-cli") || command.equals("-nc")) {
                 cli = false;
             } else {
@@ -61,7 +67,7 @@ public class GDLInterpreter {
             new Thread(new GDLCLI(interpreter)).start();
         }
         if (chessGui) {
-            new ChessGUI(interpreter);
+            new ChessGUI(interpreter, windowSize);
         }
     }
 

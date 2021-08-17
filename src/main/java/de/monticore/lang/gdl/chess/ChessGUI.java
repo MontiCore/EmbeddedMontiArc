@@ -12,7 +12,6 @@ import java.io.IOException;
 import java.util.List;
 
 import javax.imageio.ImageIO;
-// import javax.swing.BorderFactory;
 import javax.swing.ImageIcon;
 import javax.swing.JButton;
 import javax.swing.JFrame;
@@ -25,29 +24,8 @@ import de.monticore.lang.gdl.Interpreter;
 
 public class ChessGUI {
 
-    private static ImageIcon black_king, black_queen, black_rook, black_knight, black_bishop, black_pawn;
-    private static ImageIcon white_king, white_queen, white_rook, white_knight, white_bishop, white_pawn;
-
-    static {
-        final int size = 1200/8;
-        try {
-            black_king = new ImageIcon(ImageIO.read(ChessGUI.class.getResource("figures/black_king.png")).getScaledInstance(size, size, Image.SCALE_SMOOTH));
-            black_queen = new ImageIcon(ImageIO.read(ChessGUI.class.getResource("figures/black_queen.png")).getScaledInstance(size, size, Image.SCALE_SMOOTH));
-            black_rook = new ImageIcon(ImageIO.read(ChessGUI.class.getResource("figures/black_rook.png")).getScaledInstance(size, size, Image.SCALE_SMOOTH));
-            black_knight = new ImageIcon(ImageIO.read(ChessGUI.class.getResource("figures/black_knight.png")).getScaledInstance(size, size, Image.SCALE_SMOOTH));
-            black_bishop = new ImageIcon(ImageIO.read(ChessGUI.class.getResource("figures/black_bishop.png")).getScaledInstance(size, size, Image.SCALE_SMOOTH));
-            black_pawn = new ImageIcon(ImageIO.read(ChessGUI.class.getResource("figures/black_pawn.png")).getScaledInstance(size, size, Image.SCALE_SMOOTH));
-
-            white_king = new ImageIcon(ImageIO.read(ChessGUI.class.getResource("figures/white_king.png")).getScaledInstance(size, size, Image.SCALE_SMOOTH));
-            white_queen = new ImageIcon(ImageIO.read(ChessGUI.class.getResource("figures/white_queen.png")).getScaledInstance(size, size, Image.SCALE_SMOOTH));
-            white_rook = new ImageIcon(ImageIO.read(ChessGUI.class.getResource("figures/white_rook.png")).getScaledInstance(size, size, Image.SCALE_SMOOTH));
-            white_knight = new ImageIcon(ImageIO.read(ChessGUI.class.getResource("figures/white_knight.png")).getScaledInstance(size, size, Image.SCALE_SMOOTH));
-            white_bishop = new ImageIcon(ImageIO.read(ChessGUI.class.getResource("figures/white_bishop.png")).getScaledInstance(size, size, Image.SCALE_SMOOTH));
-            white_pawn = new ImageIcon(ImageIO.read(ChessGUI.class.getResource("figures/white_pawn.png")).getScaledInstance(size, size, Image.SCALE_SMOOTH));
-        } catch (IOException e) {
-            e.printStackTrace();
-        }
-    }
+    private ImageIcon black_king, black_queen, black_rook, black_knight, black_bishop, black_pawn;
+    private ImageIcon white_king, white_queen, white_rook, white_knight, white_bishop, white_pawn;
 
     private final Color light = new Color(0xc7ddf2);
     private final Color dark = new Color(0x407fb7);
@@ -74,7 +52,9 @@ public class ChessGUI {
     private boolean isSelected;
     private int selectX, selectY;
 
-    public ChessGUI(Interpreter interpreter) {
+    public ChessGUI(Interpreter interpreter, int windowSize) {
+        initIcons(windowSize);
+
         this.frame = new JFrame("Chess");
         frame.setLayout(new BorderLayout());
         frame.setDefaultCloseOperation(JFrame.DISPOSE_ON_CLOSE);
@@ -84,7 +64,7 @@ public class ChessGUI {
         fieldGrid = new JPanel();
         GridLayout layout = new GridLayout(8, 8);
         fieldGrid.setLayout(layout);
-        fieldGrid.setPreferredSize(new Dimension(1200, 1200));
+        fieldGrid.setPreferredSize(new Dimension(windowSize, windowSize));
 
         fields = new String[8][8];
         fieldButtons = new JButton[8][8];
@@ -143,6 +123,27 @@ public class ChessGUI {
         frame.setResizable(false);
         frame.pack();
         frame.setVisible(true);
+    }
+
+    private void initIcons(int windowSize) {
+        final int size = windowSize/8;
+        try {
+            black_king = new ImageIcon(ImageIO.read(ChessGUI.class.getResource("figures/black_king.png")).getScaledInstance(size, size, Image.SCALE_SMOOTH));
+            black_queen = new ImageIcon(ImageIO.read(ChessGUI.class.getResource("figures/black_queen.png")).getScaledInstance(size, size, Image.SCALE_SMOOTH));
+            black_rook = new ImageIcon(ImageIO.read(ChessGUI.class.getResource("figures/black_rook.png")).getScaledInstance(size, size, Image.SCALE_SMOOTH));
+            black_knight = new ImageIcon(ImageIO.read(ChessGUI.class.getResource("figures/black_knight.png")).getScaledInstance(size, size, Image.SCALE_SMOOTH));
+            black_bishop = new ImageIcon(ImageIO.read(ChessGUI.class.getResource("figures/black_bishop.png")).getScaledInstance(size, size, Image.SCALE_SMOOTH));
+            black_pawn = new ImageIcon(ImageIO.read(ChessGUI.class.getResource("figures/black_pawn.png")).getScaledInstance(size, size, Image.SCALE_SMOOTH));
+
+            white_king = new ImageIcon(ImageIO.read(ChessGUI.class.getResource("figures/white_king.png")).getScaledInstance(size, size, Image.SCALE_SMOOTH));
+            white_queen = new ImageIcon(ImageIO.read(ChessGUI.class.getResource("figures/white_queen.png")).getScaledInstance(size, size, Image.SCALE_SMOOTH));
+            white_rook = new ImageIcon(ImageIO.read(ChessGUI.class.getResource("figures/white_rook.png")).getScaledInstance(size, size, Image.SCALE_SMOOTH));
+            white_knight = new ImageIcon(ImageIO.read(ChessGUI.class.getResource("figures/white_knight.png")).getScaledInstance(size, size, Image.SCALE_SMOOTH));
+            white_bishop = new ImageIcon(ImageIO.read(ChessGUI.class.getResource("figures/white_bishop.png")).getScaledInstance(size, size, Image.SCALE_SMOOTH));
+            white_pawn = new ImageIcon(ImageIO.read(ChessGUI.class.getResource("figures/white_pawn.png")).getScaledInstance(size, size, Image.SCALE_SMOOTH));
+        } catch (IOException e) {
+            e.printStackTrace();
+        }
     }
 
     private void updateGameState(List<List<String>> gameState) {
@@ -246,7 +247,7 @@ public class ChessGUI {
     //     return text;
     // }
 
-    private static ImageIcon iconForFigure(String figure) {
+    private ImageIcon iconForFigure(String figure) {
         if (figure == null) {
             return null;
         }

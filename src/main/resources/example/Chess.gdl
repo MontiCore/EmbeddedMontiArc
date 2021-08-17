@@ -149,6 +149,10 @@
     (does black (move black_rook h 8 ?dest_col ?dest_row))
 )
 
+(<= (next (castle ?color ?dir disallowed))
+    (true (castle ?color ?dir disallowed))
+)
+
 
 // Move figure on field with move command
 // Copy ?fig from ?start_col ?start_row to ?dest_col ?dest_row
@@ -361,6 +365,7 @@
     (true (field g 1 blank))
     (true (field h 1 white_rook))
     (true (castle white short allowed))
+    (not (isLegalMove ?any_fig black ?any_col ?any_row f 1))
 )
 // white castle long
 (<= (isLegalCastleLong white_king e 1 c 1)
@@ -369,6 +374,7 @@
     (true (field b 1 blank))
     (true (field a 1 white_rook))
     (true (castle white long allowed))
+    (not (isLegalMove ?any_fig black ?any_col ?any_row d 1))
 )
 
 // black castle short
@@ -377,6 +383,7 @@
     (true (field g 8 blank))
     (true (field h 8 black_rook))
     (true (castle black short allowed))
+    (not (isLegalMove ?any_fig white ?any_col ?any_row f 8))
 )
 // black castle long
 (<= (isLegalCastleLong black_king e 8 c 8)
@@ -385,6 +392,7 @@
     (true (field b 8 blank))
     (true (field a 8 black_rook))
     (true (castle black long allowed))
+    (not (isLegalMove ?any_fig white ?any_col ?any_row d 8))
 )
 
 
