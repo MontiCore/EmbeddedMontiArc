@@ -258,30 +258,18 @@ public class AdaNet extends PredefinedLayerDeclaration {
         this.setBlock_name(layer.getStringValue(AllPredefinedLayers.Block)); // get Argument Value of block parameter
         this.setIn_name(layer.getStringValue(AllPredefinedLayers.In));       // get Argument Value of In parameter
         this.setOut_name(layer.getStringValue(AllPredefinedLayers.Out));     // get Argument Value of Out parameter
-        // TODO: Warum geht es nur wenn als Block ein def übergeben wird im .emadl ??
 
-        if (!this.getEnclosingScope().getLocalSymbols().containsKey(this.getBlock_name())) {
-            //ToDo: check if passed dev names are present in scope else print error!!!
-        }
-
-        if (!getName(AllPredefinedLayers.In).get().equals(AllPredefinedLayers.DEFAULT_BLOCK)) { //passed Parameter is not the default value
+        if (!getName(AllPredefinedLayers.In).get().equals(AllPredefinedLayers.DEFAULT_BLOCK)&& !getEnclosingScope().getLocalSymbols().containsKey(getName(AllPredefinedLayers.In).get())) { //passed Parameter is not the default value
             buildBlock(AllPredefinedLayers.In, layer);
-
         }
-        if (getName(AllPredefinedLayers.Block).get().equals(AllPredefinedLayers.DEFAULT_BLOCK)) {
-            // if no block is passed set the value to FullyConnected will throw error later
+        if (getName(AllPredefinedLayers.Block).get().equals(AllPredefinedLayers.DEFAULT_BLOCK) && !getEnclosingScope().getLocalSymbols().containsKey(getName(AllPredefinedLayers.Block).get())) {
             this.setBlock_name(Optional.of(AllPredefinedLayers.FULLY_CONNECTED_NAME));
         }
         buildBlock(AllPredefinedLayers.Block, layer);
-
-
-        if (!getName(AllPredefinedLayers.Out).get().equals(AllPredefinedLayers.DEFAULT_BLOCK)) { //passed Parameter is not the default value
+        if (!getName(AllPredefinedLayers.Out).get().equals(AllPredefinedLayers.DEFAULT_BLOCK)&& !getEnclosingScope().getLocalSymbols().containsKey(getName(AllPredefinedLayers.Out).get())) { //passed Parameter is not the default value
             buildBlock(AllPredefinedLayers.Out, layer);
-
         }
         connectAdaNet(layer);
-
-
         getBlock(AllPredefinedLayers.Block).ifPresent(toSolve -> {
             try {
                 toSolve.resolve();
