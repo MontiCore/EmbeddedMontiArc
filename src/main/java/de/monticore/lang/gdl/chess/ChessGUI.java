@@ -7,9 +7,13 @@ import java.awt.FlowLayout;
 import java.awt.Font;
 import java.awt.Graphics;
 import java.awt.GridLayout;
+import java.awt.Image;
+import java.io.IOException;
 import java.util.List;
 
-import javax.swing.BorderFactory;
+import javax.imageio.ImageIO;
+// import javax.swing.BorderFactory;
+import javax.swing.ImageIcon;
 import javax.swing.JButton;
 import javax.swing.JFrame;
 import javax.swing.JLabel;
@@ -21,9 +25,33 @@ import de.monticore.lang.gdl.Interpreter;
 
 public class ChessGUI {
 
-    private final Color light = new Color(0x38a2bc);
-    private final Color dark = new Color(0x396ABB);
-    private final Color selected = new Color(0xE464CC);
+    private static ImageIcon black_king, black_queen, black_rook, black_knight, black_bishop, black_pawn;
+    private static ImageIcon white_king, white_queen, white_rook, white_knight, white_bishop, white_pawn;
+
+    static {
+        final int size = 1200/8;
+        try {
+            black_king = new ImageIcon(ImageIO.read(ChessGUI.class.getResource("figures/black_king.png")).getScaledInstance(size, size, Image.SCALE_SMOOTH));
+            black_queen = new ImageIcon(ImageIO.read(ChessGUI.class.getResource("figures/black_queen.png")).getScaledInstance(size, size, Image.SCALE_SMOOTH));
+            black_rook = new ImageIcon(ImageIO.read(ChessGUI.class.getResource("figures/black_rook.png")).getScaledInstance(size, size, Image.SCALE_SMOOTH));
+            black_knight = new ImageIcon(ImageIO.read(ChessGUI.class.getResource("figures/black_knight.png")).getScaledInstance(size, size, Image.SCALE_SMOOTH));
+            black_bishop = new ImageIcon(ImageIO.read(ChessGUI.class.getResource("figures/black_bishop.png")).getScaledInstance(size, size, Image.SCALE_SMOOTH));
+            black_pawn = new ImageIcon(ImageIO.read(ChessGUI.class.getResource("figures/black_pawn.png")).getScaledInstance(size, size, Image.SCALE_SMOOTH));
+
+            white_king = new ImageIcon(ImageIO.read(ChessGUI.class.getResource("figures/white_king.png")).getScaledInstance(size, size, Image.SCALE_SMOOTH));
+            white_queen = new ImageIcon(ImageIO.read(ChessGUI.class.getResource("figures/white_queen.png")).getScaledInstance(size, size, Image.SCALE_SMOOTH));
+            white_rook = new ImageIcon(ImageIO.read(ChessGUI.class.getResource("figures/white_rook.png")).getScaledInstance(size, size, Image.SCALE_SMOOTH));
+            white_knight = new ImageIcon(ImageIO.read(ChessGUI.class.getResource("figures/white_knight.png")).getScaledInstance(size, size, Image.SCALE_SMOOTH));
+            white_bishop = new ImageIcon(ImageIO.read(ChessGUI.class.getResource("figures/white_bishop.png")).getScaledInstance(size, size, Image.SCALE_SMOOTH));
+            white_pawn = new ImageIcon(ImageIO.read(ChessGUI.class.getResource("figures/white_pawn.png")).getScaledInstance(size, size, Image.SCALE_SMOOTH));
+        } catch (IOException e) {
+            e.printStackTrace();
+        }
+    }
+
+    private final Color light = new Color(0xc7ddf2);
+    private final Color dark = new Color(0x407fb7);
+    private final Color selected = new Color(0xF6F669);
     
     private final Color white = new Color(0xFFFFFF);
     private final Color black = new Color(0x000000);
@@ -56,7 +84,7 @@ public class ChessGUI {
         fieldGrid = new JPanel();
         GridLayout layout = new GridLayout(8, 8);
         fieldGrid.setLayout(layout);
-        fieldGrid.setPreferredSize(new Dimension(900, 900));
+        fieldGrid.setPreferredSize(new Dimension(1200, 1200));
 
         fields = new String[8][8];
         fieldButtons = new JButton[8][8];
@@ -66,7 +94,7 @@ public class ChessGUI {
                 final int y = j;
 
                 fields[i][j] = null;
-                fieldButtons[i][j] = new JButton(i + ", " + j) {
+                fieldButtons[i][j] = new JButton() {
                     @Override
                     public void paint(Graphics g) {
                         super.paint(g);
@@ -81,9 +109,10 @@ public class ChessGUI {
                         }
                     }
                 };
-                fieldButtons[i][j].setBackground(i % 2 == j % 2 ? light : dark);
+                fieldButtons[i][j].setBackground(i % 2 == j % 2 ? dark : light);
                 fieldButtons[i][j].setFont(fieldButtons[i][j].getFont().deriveFont(18.f).deriveFont(Font.BOLD));
-                fieldButtons[i][j].setBorder(BorderFactory.createLineBorder(Color.BLACK));
+                // fieldButtons[i][j].setBorder(BorderFactory.createLineBorder(Color.BLACK));
+                fieldButtons[i][j].setBorder(null);
 
                 fieldButtons[i][j].addActionListener(e -> {
                     select(x, y);
@@ -155,7 +184,8 @@ public class ChessGUI {
 
     private void setFigureOnField(int x, int y, String figure) {
         fields[x][y] = figure;
-        fieldButtons[x][y].setText(textForFigure(figure));
+        // fieldButtons[x][y].setText(textForFigure(figure));
+        fieldButtons[x][y].setIcon(iconForFigure(figure));
         fieldButtons[x][y].setForeground(colorForFigure(figure));
     }
 
@@ -172,48 +202,104 @@ public class ChessGUI {
         return error;
     }
 
-    private String textForFigure(String figure) {
-        String text = "???";
+    // private static String textForFigure(String figure) {
+    //     String text = "???";
 
-        if (figure != null) {
-            switch(figure) {
-                case "blank":
-                    text = "";
-                    break;
+    //     if (figure != null) {
+    //         switch(figure) {
+    //             case "blank":
+    //                 text = "";
+    //                 break;
 
-                case "white_pawn":
-                case "black_pawn":
-                    text = "PAWN";
-                    break;
+    //             case "white_pawn":
+    //             case "black_pawn":
+    //                 text = "PAWN";
+    //                 break;
                     
-                case "white_knight":
-                case "black_knight":
-                    text = "KNIGHT";
-                    break;
+    //             case "white_knight":
+    //             case "black_knight":
+    //                 text = "KNIGHT";
+    //                 break;
                     
-                case "white_bishop":
-                case "black_bishop":
-                    text = "BISHOP";
-                    break;
+    //             case "white_bishop":
+    //             case "black_bishop":
+    //                 text = "BISHOP";
+    //                 break;
                     
-                case "white_rook":
-                case "black_rook":
-                    text = "ROOK";
-                    break;
+    //             case "white_rook":
+    //             case "black_rook":
+    //                 text = "ROOK";
+    //                 break;
                     
-                case "white_king":
-                case "black_king":
-                    text = "KING";
-                    break;
+    //             case "white_king":
+    //             case "black_king":
+    //                 text = "KING";
+    //                 break;
                     
-                case "white_queen":
-                case "black_queen":
-                    text = "QUEEN";
-                    break;
-            }
+    //             case "white_queen":
+    //             case "black_queen":
+    //                 text = "QUEEN";
+    //                 break;
+    //         }
+    //     }
+
+    //     return text;
+    // }
+
+    private static ImageIcon iconForFigure(String figure) {
+        if (figure == null) {
+            return null;
         }
 
-        return text;
+        ImageIcon icon = null;
+        switch(figure) {
+            case "blank":
+                break;
+
+            case "white_pawn":
+                icon = white_pawn;
+                break;
+            case "black_pawn":
+                icon = black_pawn;
+                break;
+                
+            case "white_knight":
+                icon = white_knight;
+                break;
+            case "black_knight":
+                icon = black_knight;
+                break;
+                
+            case "white_bishop":
+                icon = white_bishop;
+                break;
+            case "black_bishop":
+                icon = black_bishop;
+                break;
+                
+            case "white_rook":
+                icon = white_rook;
+                break;
+            case "black_rook":
+                icon = black_rook;
+                break;
+                
+            case "white_king":
+                icon = white_king;
+                break;
+            case "black_king":
+                icon = black_king;
+                break;
+                
+            case "white_queen":
+                icon = white_queen;
+                break;
+            case "black_queen":
+                icon = black_queen;
+                break;
+        }
+
+        return icon;
     }
 
     private void select(int x, int y) {
@@ -224,11 +310,11 @@ public class ChessGUI {
             selectY = y;
         } else if (isSelected && x == selectX && y == selectY) {
             isSelected = false;
-            fieldButtons[x][y].setBackground(x % 2 == y % 2 ? light : dark);
+            fieldButtons[x][y].setBackground(x % 2 == y % 2 ? dark : light);
         } else {
             move(control, selectX, selectY, x, y);
             isSelected = false;
-            fieldButtons[selectX][selectY].setBackground(selectX % 2 == selectY % 2 ? light : dark);
+            fieldButtons[selectX][selectY].setBackground(selectX % 2 == selectY % 2 ? dark : light);
         }
     }
 
@@ -244,6 +330,22 @@ public class ChessGUI {
         List<List<String>> nextState = interpreter.interpret(Command.createMoveFromLine(move));
         if (nextState != null) {
             updateGameState(nextState);
+
+            if (interpreter.isTerminal()) {
+                List<List<String>> goals = interpreter.getAllModels("goal");
+                if (goals != null) {
+                    StringBuilder sb = new StringBuilder();
+                    for (List<String> goal : goals) {
+                        if (goal.size() == 2) {
+                            sb.append(String.format("\tPlayer %s achieved %s points.\n", goal.get(0), goal.get(1)));
+                        } else {
+                            sb.append("\t" + goal);
+                        }
+                    }
+                    JOptionPane.showMessageDialog(frame, sb.toString(), "Game Over!", JOptionPane.INFORMATION_MESSAGE);
+                    System.exit(0);
+                }
+            }
         } else {
             String message = "Move was not legal! Move:\n\t" + move;
             JOptionPane.showMessageDialog(frame, message, "Illegal Move", JOptionPane.WARNING_MESSAGE);

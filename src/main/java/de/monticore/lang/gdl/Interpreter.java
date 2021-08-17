@@ -107,6 +107,8 @@ public class Interpreter {
         game.accept(printer.getTraverser());
         String prologProgram = printer.getContent();
 
+        // System.out.println(prologProgram);
+
         writer.write("[user].\n");
         writer.write(stateDynamics);
         writer.write(prologProgram);

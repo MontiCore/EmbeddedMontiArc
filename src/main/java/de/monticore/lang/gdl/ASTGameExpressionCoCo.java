@@ -11,9 +11,10 @@ public class ASTGameExpressionCoCo implements GDLASTGameExpressionCoCo {
 			if(node.getArgumentsList().size() != 1) {
 				Log.error("GameRole definition got too much arguments");
 			}
-			if(!(node.getArguments(0) instanceof ASTGameValue)) {
-				Log.error("GameRole definition argument must be of type GameValue");
-			}
+			// only on root
+			// if(!(node.getArguments(0) instanceof ASTGameValue)) {
+			// Log.error("GameRole definition argument must be of type GameValue");
+			// }
 		}
 
 		if (node.getType() instanceof ASTGameInit) {
@@ -126,7 +127,7 @@ public class ASTGameExpressionCoCo implements GDLASTGameExpressionCoCo {
 			if(node.getArgumentsList().size() != 2) {
 				Log.error("GameGoal definition must have exactly two arguments");
 			}
-			if(!(node.getArguments(0) instanceof ASTGameValue && node.getArguments(1) instanceof ASTGameValue)) {
+			if(!(node.getArguments(0) instanceof ASTGameToken && node.getArguments(1) instanceof ASTGameValue)) {
 				Log.error("GameGoal arguments must be of type GameValue");
 			}
 		}
