@@ -28,4 +28,131 @@ public class GDLCoCosTest {
     checker.addCoCo(new ASTGameExpressionCoCo());
     checker.checkAll(gdlDoc.get());
   }
+  
+  @Test
+  public void testAcceptDistinct() throws RecognitionException, IOException {
+    Path model = Paths.get("src/test/resources/gdl/cocos/AcceptDistinct.gdl");
+    GDLParser parser = GDLMill.parser();
+    Optional<ASTGame> gdlDoc = parser.parse(model.toString());
+
+    assertFalse(parser.hasErrors());
+    assertTrue(gdlDoc.isPresent());
+
+    GDLCoCoChecker checker = new GDLCoCoChecker();
+    checker.addCoCo(new ASTGameExpressionCoCo());
+    checker.checkAll(gdlDoc.get());
+  }
+  
+  @Test
+  public void testAcceptDoes() throws RecognitionException, IOException {
+    Path model = Paths.get("src/test/resources/gdl/cocos/AcceptDoes.gdl");
+    GDLParser parser = GDLMill.parser();
+    Optional<ASTGame> gdlDoc = parser.parse(model.toString());
+
+    assertFalse(parser.hasErrors());
+    assertTrue(gdlDoc.isPresent());
+
+    GDLCoCoChecker checker = new GDLCoCoChecker();
+    checker.addCoCo(new ASTGameExpressionCoCo());
+    checker.checkAll(gdlDoc.get());
+  }
+  
+  @Test
+  public void testAcceptGoal() throws RecognitionException, IOException {
+    Path model = Paths.get("src/test/resources/gdl/cocos/AcceptGoal.gdl");
+    GDLParser parser = GDLMill.parser();
+    Optional<ASTGame> gdlDoc = parser.parse(model.toString());
+
+    assertFalse(parser.hasErrors());
+    assertTrue(gdlDoc.isPresent());
+
+    GDLCoCoChecker checker = new GDLCoCoChecker();
+    checker.addCoCo(new ASTGameExpressionCoCo());
+    checker.checkAll(gdlDoc.get());
+  }
+  
+  @Test
+  public void testAcceptInit() throws RecognitionException, IOException {
+    Path model = Paths.get("src/test/resources/gdl/cocos/AcceptInit.gdl");
+    GDLParser parser = GDLMill.parser();
+    Optional<ASTGame> gdlDoc = parser.parse(model.toString());
+
+    assertFalse(parser.hasErrors());
+    assertTrue(gdlDoc.isPresent());
+
+    GDLCoCoChecker checker = new GDLCoCoChecker();
+    checker.addCoCo(new ASTGameExpressionCoCo());
+    checker.checkAll(gdlDoc.get());
+  }
+  
+  @Test
+  public void testAcceptLegal() throws RecognitionException, IOException {
+    Path model = Paths.get("src/test/resources/gdl/cocos/AcceptLegal.gdl");
+    GDLParser parser = GDLMill.parser();
+    Optional<ASTGame> gdlDoc = parser.parse(model.toString());
+
+    assertFalse(parser.hasErrors());
+    assertTrue(gdlDoc.isPresent());
+
+    GDLCoCoChecker checker = new GDLCoCoChecker();
+    checker.addCoCo(new ASTGameExpressionCoCo());
+    checker.checkAll(gdlDoc.get());
+  }
+   
+  @Test
+  public void testAcceptNext() throws RecognitionException, IOException {
+    Path model = Paths.get("src/test/resources/gdl/cocos/AcceptNext.gdl");
+    GDLParser parser = GDLMill.parser();
+    Optional<ASTGame> gdlDoc = parser.parse(model.toString());
+
+    assertFalse(parser.hasErrors());
+    assertTrue(gdlDoc.isPresent());
+
+    GDLCoCoChecker checker = new GDLCoCoChecker();
+    checker.addCoCo(new ASTGameExpressionCoCo());
+    checker.checkAll(gdlDoc.get());
+  }
+  
+  @Test
+  public void testAcceptNot() throws RecognitionException, IOException {
+    Path model = Paths.get("src/test/resources/gdl/cocos/AcceptNot.gdl");
+    GDLParser parser = GDLMill.parser();
+    Optional<ASTGame> gdlDoc = parser.parse(model.toString());
+
+    assertFalse(parser.hasErrors());
+    assertTrue(gdlDoc.isPresent());
+
+    GDLCoCoChecker checker = new GDLCoCoChecker();
+    checker.addCoCo(new ASTGameExpressionCoCo());
+    checker.checkAll(gdlDoc.get());
+  }
+  
+  @Test
+  public void testAcceptRole() throws RecognitionException, IOException {
+    Path model = Paths.get("src/test/resources/gdl/cocos/AcceptRole.gdl");
+    GDLParser parser = GDLMill.parser();
+    Optional<ASTGame> gdlDoc = parser.parse(model.toString());
+
+    assertFalse(parser.hasErrors());
+    assertTrue(gdlDoc.isPresent());
+
+    GDLCoCoChecker checker = new GDLCoCoChecker();
+    checker.addCoCo(new ASTGameExpressionCoCo());
+    checker.checkAll(gdlDoc.get());
+  }
+  
+  @Test
+  public void testAcceptTerminal() throws RecognitionException, IOException {
+    Path model = Paths.get("src/test/resources/gdl/cocos/AcceptTerminal.gdl");
+    GDLParser parser = GDLMill.parser();
+    Optional<ASTGame> gdlDoc = parser.parse(model.toString());
+
+    assertFalse(parser.hasErrors());
+    assertTrue(gdlDoc.isPresent());
+
+    GDLCoCoChecker checker = new GDLCoCoChecker();
+    checker.addCoCo(new ASTGameExpressionCoCo());
+    checker.checkAll(gdlDoc.get());
+  }
+  
 }
