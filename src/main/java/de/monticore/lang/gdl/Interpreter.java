@@ -40,10 +40,6 @@ public class Interpreter {
 
     public Interpreter(ASTGame game) {
         this.game = game;
-        functionSignatures = new HashSet<>();
-        statesSignatures = new HashSet<>();
-        nextSignatures = new HashSet<>();
-        hasTerminal = false;
     }
 
     public Interpreter init() throws Exception {
@@ -96,6 +92,7 @@ public class Interpreter {
         statesSignatures = printer.getStatesSignatures();
         functionSignatures = printer.getFunctionSignatures();
         nextSignatures = printer.getNextSignatures();
+        hasTerminal = printer.hasTerminal();
 
         // System.out.println(prologProgram);
 
