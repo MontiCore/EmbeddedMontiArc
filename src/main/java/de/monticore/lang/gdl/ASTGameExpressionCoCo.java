@@ -82,7 +82,7 @@ public class ASTGameExpressionCoCo implements GDLASTGameExpressionCoCo {
 			if(node.getArgumentsList().size() >= 2 && !(node.getArguments(1) instanceof ASTGameExpression)) {
 				Log.error("The second GameLegal definition argument must be of type GameExpression");
 			}
-			if(node.getArgumentsList().size() >= 2 && !( ((ASTGameExpression)node.getArguments(1)).getType() instanceof ASTGameFunction)) {
+			if(node.getArgumentsList().size() >= 2 && (node.getArguments(1) instanceof ASTGameExpression)) && !( ((ASTGameExpression)node.getArguments(1)).getType() instanceof ASTGameFunction)) {
 				Log.error("First argument of the GameLegal argument tuple must be of type GameFunction");
 			}
 		}
