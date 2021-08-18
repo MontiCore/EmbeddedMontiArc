@@ -118,7 +118,7 @@ public class ASTGameExpressionCoCo implements GDLASTGameExpressionCoCo {
 			if(node.getArgumentsList().size() != 2) {
 				Log.error("GameDistinct definition must have exactly two arguments");
 			}
-			if(node.getArgumentsList().size() >= 0 && !(node.getArguments(0) instanceof ASTGameToken || node.getArguments(0) instanceof ASTGameValue && node.getArguments(1) instanceof ASTGameToken || node.getArguments(1) instanceof ASTGameValue)) {
+			if(node.getArgumentsList().size() >= 1 && !(node.getArguments(0) instanceof ASTGameToken || node.getArguments(0) instanceof ASTGameValue && node.getArguments(1) instanceof ASTGameToken || node.getArguments(1) instanceof ASTGameValue)) {
 				Log.error("GameDistinct arguments must be of type GameToken or GameValue");
 			}
 		}
