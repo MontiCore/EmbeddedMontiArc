@@ -83,7 +83,7 @@ public class GDLCoCosTest {
         "FailDoesWithTooManyArguments",
         "FailDoesWithWrongArgumentTypeOfSecondArgument",
         "FailDoesWithWrongFirstArgumentType",
-        // "FailDoesWithWrongSecondArgumentType",
+        "FailDoesWithWrongSecondArgumentType",
         "FailFunction",
         "FailGoalWithNoArguments",
         "FailGoalWithTooFewArguments",
