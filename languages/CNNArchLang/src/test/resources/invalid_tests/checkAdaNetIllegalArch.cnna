@@ -1,0 +1,10 @@
+/* (c) https://github.com/MontiCore/monticore */
+architecture checkAdaNetIllegalArch(){
+    def input Z(0:255)^{1, 28, 28} data
+    def output Q(0:1)^{10} softmax
+
+    data ->
+    FullyConnected(units=10)->
+    AdaNet()->
+    softmax;
+}

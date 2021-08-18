@@ -38,6 +38,10 @@ public class StreamInstructionSymbol extends NetworkInstructionSymbol {
         return getUnresolvableParameters();
     }
 
+    @Override
+    public boolean containsAdaNet() {
+        return super.containsAdaNet();
+    }
     protected void resolveExpressions() throws ArchResolveException {}
 
     protected void computeUnresolvableParameters(Set<ParameterSymbol> unresolvableParameters, Set<ParameterSymbol> allParameters) {}

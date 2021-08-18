@@ -27,6 +27,9 @@ public abstract class NetworkInstructionSymbol extends ResolvableSymbol {
         this.body = body;
     }
 
+    public boolean containsAdaNet(){
+        return this.body.containsAdaNet();
+    }
     public boolean isStream() {
         return false;
     }
