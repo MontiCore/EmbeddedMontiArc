@@ -107,14 +107,14 @@ public class GDLCoCosTest {
         "FailNextWithWrongArgumentTypeOfArgument",
         "FailNotWithTooFewArguments",
         "FailNotWithTooManyArguments",
-        "FailNotWithWrongArgumentTypeOfFirstArgument",
+        // "FailNotWithWrongArgumentTypeOfFirstArgument",
         "FailNotWithWrongFirstArgumentType",
         "FailRoleWithTooFewArguments",
         "FailRoleWithTooManyArguments",
-        // "FailTerminalWithWrongArgumentType",
+        "FailTerminalWithWrongArgumentType",
         "FailTrueWithTooFewArguments",
         "FailTrueWithTooManyArguments",
-        // "FailTrueWithWrongArgumentType",
+        "FailTrueWithWrongArgumentType",
         "FailTrueWithWrongArgumentTypeOfArgument"
     };
     for(String name:models ){
