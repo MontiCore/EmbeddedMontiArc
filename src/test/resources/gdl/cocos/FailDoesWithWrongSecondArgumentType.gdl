@@ -1,1 +1,1 @@
-(does ?player ?test)
+(does ?player (?test))
