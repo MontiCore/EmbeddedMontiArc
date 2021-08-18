@@ -1,2 +1,4 @@
-(<= first (second))
-(not first)
+(<= open (true (cell ?x ?y b)))
+
+(<= terminal
+  (not open))
