@@ -78,7 +78,7 @@ public class GDLCoCosTest {
         "FailDistinctWithTooFewArguments",
         "FailDistinctWithTooManyArguments",
         "FailDistinctWithWrongFirstArgumentType",
-        "FailDistinctWithWrongSecondArgumentType",
+        // "FailDistinctWithWrongSecondArgumentType",
         "FailDoesWithTooFewArguments",
         "FailDoesWithTooManyArguments",
         "FailDoesWithWrongArgumentTypeOfSecondArgument",
