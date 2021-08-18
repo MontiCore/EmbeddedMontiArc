@@ -13,15 +13,6 @@ import java.util.concurrent.Semaphore;
 import java.util.stream.Collectors;
 
 import de.monticore.lang.gdl._ast.ASTGame;
-import de.monticore.lang.gdl._ast.ASTGameExpression;
-import de.monticore.lang.gdl._ast.ASTGameFunction;
-import de.monticore.lang.gdl._ast.ASTGameFunctionDefinition;
-import de.monticore.lang.gdl._ast.ASTGameFunctionHead;
-import de.monticore.lang.gdl._ast.ASTGameGoal;
-import de.monticore.lang.gdl._ast.ASTGameInference;
-import de.monticore.lang.gdl._ast.ASTGameInit;
-import de.monticore.lang.gdl._ast.ASTGameNext;
-import de.monticore.lang.gdl._ast.ASTGameTerminal;
 import de.monticore.lang.gdl.visitors.PrologPrinter;
 
 public class Interpreter {
@@ -98,14 +89,13 @@ public class Interpreter {
         printIn.start();
         printErr.start();
 
-        initFunctionSet();
-        initNextSet();
-
-        String stateDynamics = initStatesSet();
-        
         PrologPrinter printer = new PrologPrinter();
         game.accept(printer.getTraverser());
         String prologProgram = printer.getContent();
+        String stateDynamics = printer.getStateDynamics();
+        statesSignatures = printer.getStatesSignatures();
+        functionSignatures = printer.getFunctionSignatures();
+        nextSignatures = printer.getNextSignatures();
 
         // System.out.println(prologProgram);
 
@@ -120,98 +110,6 @@ public class Interpreter {
         initSemaphore.acquire();
 
         return this;
-    }
-
-    private class FunctionSignature {
-        private final String functionName;
-        private final int arity;
-        private FunctionSignature(String functionName, int arity) {
-            this.functionName = functionName;
-            this.arity = arity;
-        }
-        @Override
-        public boolean equals(Object obj) {
-            if (obj instanceof FunctionSignature) {
-                FunctionSignature fs = (FunctionSignature) obj;
-                return this.functionName.equals(fs.functionName) && this.arity == fs.arity;
-            }
-            return super.equals(obj);
-        }
-        @Override
-        public int hashCode() {
-            return (functionName + "?" + arity).hashCode();
-        }
-        @Override
-        public String toString() {
-            return functionName + "/" + arity;
-        }
-    }
-
-    private String initStatesSet() {
-        game.getGameExpressionList()
-            .forEach(expression -> {
-                if (expression.getType() instanceof ASTGameInit) {
-                    ASTGameExpression innerExpression = (ASTGameExpression) expression.getArguments(0);
-                    String state = ((ASTGameFunction)innerExpression.getType()).getFunction();
-                    int arity = innerExpression.getArgumentsList().size();
-                    FunctionSignature s = new FunctionSignature(state, arity);
-                    statesSignatures.add(s);
-                }
-            });
-
-        StringBuilder sb = new StringBuilder();
-        for (FunctionSignature s : statesSignatures) {
-            sb.append(":- dynamic state_function_" + s.functionName + "/" + s.arity + ".\n");
-        }
-        return sb.toString();
-    }
-
-    private void initFunctionSet() {
-        game.getGameExpressionList()
-            .forEach(expr -> {
-                if (expr instanceof ASTGameFunctionDefinition) {
-                    ASTGameFunctionHead head = ((ASTGameFunctionDefinition) expr).getHead();
-                    String functionName = head.getName();
-                    int arity = head.getParametersList().size();
-
-                    FunctionSignature signature = new FunctionSignature(functionName, arity);
-                    functionSignatures.add(signature);
-                } else if (expr.getType() instanceof ASTGameFunction) {
-                    String functionName = ((ASTGameFunction) expr.getType()).getFunction();
-                    int arity = expr.getArgumentsList().size();
-
-                    FunctionSignature signature = new FunctionSignature(functionName, arity);
-                    functionSignatures.add(signature);
-                } else if (expr.getType() instanceof ASTGameInference) {
-                    ASTGameExpression head = (ASTGameExpression) expr.getArguments(0);
-                    if (head.getType() instanceof ASTGameGoal) {
-                        String functionName = "goal";
-                        int arity = head.getArgumentsList().size();
-
-                        FunctionSignature signature = new FunctionSignature(functionName, arity);
-                        functionSignatures.add(signature);
-                    }
-                } else if (expr.getType() instanceof ASTGameTerminal) {
-                    functionSignatures.add(new FunctionSignature("terminal", 0));
-                    hasTerminal = true;
-                }
-            });
-    }
-
-    private void initNextSet() {
-        game.getGameExpressionList()
-            .forEach(expression -> {
-                if (expression.getType() instanceof ASTGameInference) {
-                    ASTGameExpression innerExpression = (ASTGameExpression) expression.getArguments(0);
-                    if (innerExpression.getType() instanceof ASTGameNext) {
-                        ASTGameExpression astParameters = (ASTGameExpression) innerExpression.getArguments(0);
-                        String functionName = "function_next";
-                        int arity = astParameters.getArgumentsList().size() + 1;
-                        FunctionSignature s = new FunctionSignature(functionName, arity);
-                        nextSignatures.add(s);
-                    }
-                }
-            });
     }
 
     public List<List<String>> getAllModels(String function) {
