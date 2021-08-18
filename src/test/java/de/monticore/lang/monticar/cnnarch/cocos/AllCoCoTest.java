@@ -40,7 +40,6 @@ public class AllCoCoTest extends AbstractCoCoTest {
         checkValid("architectures", "ThreeInputCNN_M14");
         checkValid("architectures", "VGG16");
         checkValid("architectures", "ShowAttendTell");
-
         checkValid("valid_tests", "ArgumentSequenceTest");
         checkValid("valid_tests", "Fixed_Alexnet");
         checkValid("valid_tests", "Fixed_ThreeInputCNN_M14");
@@ -132,6 +131,26 @@ public class AllCoCoTest extends AbstractCoCoTest {
                 new CNNArchSymbolCoCoChecker(),
                 "invalid_tests", "WrongArgument",
                 new ExpectedErrorInfo(4, ErrorCodes.UNKNOWN_ARGUMENT, ErrorCodes.MISSING_ARGUMENT));
+    }
+
+    @Test
+    public void testAdaNetToManyLayer(){
+        checkInvalid(
+                new CNNArchCoCoChecker(),
+                new CNNArchSymbolCoCoChecker().addCoCo(new CheckAdaNetTooManyLayers()),
+                new CNNArchSymbolCoCoChecker(),
+                "invalid_tests", "checkAdaNetToManyLayers",
+                new ExpectedErrorInfo(1, ErrorCodes.ADANET_TOO_MANY_ADANET_LAYER));
+    }
+
+    @Test
+    public void testAdaIllegalArch(){
+        checkInvalid(
+                new CNNArchCoCoChecker(),
+                new CNNArchSymbolCoCoChecker(),
+                new CNNArchSymbolCoCoChecker().addCoCo(new CheckAdaNetMalFormedArchitecture()),
+                "invalid_tests", "checkAdaNetIllegalArch",
+                new ExpectedErrorInfo(1, ErrorCodes.ADANET_ILLEGAL_ARCH));
     }
 
     @Test

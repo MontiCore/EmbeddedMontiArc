@@ -222,7 +222,182 @@ This language supports the basic arithmetic operators "+", "-", "\*", "/", the l
 and the constants `true` and `false`. 
 At the moment, it is sometimes necessary to use parentheses around an expression to avoid a parsing error. 
 For example, the line `someMethod(booleanArg = (1!=1))` does not parse without the parentheses around `1!=1`.
+## AdaNet Layer & Usage
+The AdaNet Layer AdaNet provides to a way to generate a size optimised network architecture. The implemented algorithm is based
+on [4].
+### How To
+The generation process can be simply invoked by adding using the layer syntax ```AdaNet()```
+It has three optional arguments:
+- inBlock : str
+- block : str
+- outBlock : str
 
+Each argument expects a string as input. If used, the string has to be a name of a constructed layer if used.
+AdaNet will create and train several candidates and build an ensemble network from those candidates. Which candidates are
+added to model depends on the models performance and size.
+If a Constructed Layer is passed to inBlock this layer will be mapped to a gluon.HybridBlock and is the first operation of each
+candidate. Similar with the parameter outBlock the resulting HybridBlock will be second to  last in a candidate.
+It is followed by a Dense Layer to ensure the correct output of a candidate.
+
+The ConstructedLayers passed to the AdaNet layer need to callable without any parameters.
+The layer
+```
+  def conv(firstunits,secondunits=10){
+    FullyConnected(units=firstunits)->
+    FUllyConnected(units=secondunits)
+  }
+```
+will fail, the a correct design could look like this:
+```
+  def conv(firstunits=20,secondunits=10){
+    FullyConnected(units=firstunits)->
+    FUllyConnected(units=secondunits)
+  }
+```
+also the constructed layers can be nested if needed. They will be morphed into one block and passed to AdaNet.
+### Generated Model EMADL representation
+After the final model is found the algorithm generates an emadl representation. If needed the AdaNet layer call can be
+replaced by this representation.
+#### Example
+Given the following design
+```
+/* (c) https://github.com/MontiCore/monticore */
+package cNNCalculator;
+
+component Network<Z(2:oo) classes = 10>{
+    ports in Z(0:255)^{1, 28, 28} data,
+         out Q(0:1)^{classes} softmax;
+
+    implementation CNN {
+        data ->    
+        AdaNet()->
+        softmax;
+    }
+}
+```
+we assume that the algorithm printed the following representation:
+```
+  FullyConnected(units=20)->
+  Relu()->
+  FullyConnected(units=10)->
+  FullyConnected(units=10)->
+```
+The replace the AdaNet call with this representation as follows
+```
+/* (c) https://github.com/MontiCore/monticore */
+package cNNCalculator;
+
+component Network<Z(2:oo) classes = 10>{
+    ports in Z(0:255)^{1, 28, 28} data,
+         out Q(0:1)^{classes} softmax;
+
+    implementation CNN {
+        data ->    
+        FullyConnected(units=20)->
+        Relu()->
+        FullyConnected(units=10)->
+        FullyConnected(units=10)->
+        softmax;
+    }
+}
+```
+In this example only one candidate was added to the model. The double FullyConnected layer at the end are given by the
+algorithm and is explained in more detail in the corresponding thesis.
+
+### Default Block
+The default building block is a HyrbidBlock equivalent to the design below
+```
+FullyConnected(units=20)->
+Relu()
+```
+### Examples
+#### Example 1 no arguments passed
+```
+/* (c) https://github.com/MontiCore/monticore */
+package cNNCalculator;
+
+component Network<Z(2:oo) classes = 10>{
+    ports in Z(0:255)^{1, 28, 28} data,
+         out Q(0:1)^{classes} softmax;
+
+    implementation CNN {
+        data ->    
+        AdaNet()->
+        softmax;
+    }
+}
+```
+#### Example 2 inBlock & outBlock passed
+```
+/* (c) https://github.com/MontiCore/monticore */
+package cNNCalculator;
+
+component Network<Z(2:oo) classes = 10>{
+    ports in Z(0:255)^{1, 28, 28} data,
+         out Q(0:1)^{classes} softmax;
+    def inOP(){
+      FullyConnected(units=20)->
+      Relu()
+    }
+    def outOP(){
+      Dropout()->
+      FullyConnected(units=10)
+    }
+    implementation CNN {
+        data ->    
+        AdaNet()->
+        softmax;
+    }
+}
+```
+As result the algorithm will design a model consisting of parallel candidates which have the following design:
+```
+  inOP()->
+  FullyConnected(units=20)->
+  Relu()->
+  FullyConnected(units=20)->
+  Relu()->
+  FullyConnected(units=20)->
+  Relu()->
+  outOp()
+```
+#### Example 3 malformed design
+```
+/* (c) https://github.com/MontiCore/monticore */
+package cNNCalculator;
+
+component Network<Z(2:oo) classes = 10>{
+    ports in Z(0:255)^{1, 28, 28} data,
+         out Q(0:1)^{classes} softmax;
+
+    implementation CNN {
+        data -> 
+        FullyConnected(units=10)->
+        AdaNet()->
+        softmax;
+    }
+}
+```
+This design will cause an Error, if one wants to have an operation to be inplace before the AdaNet Layer it is expected to be
+wrapped within a Constructed Layer!
+#### Example 4 malformed design
+```
+/* (c) https://github.com/MontiCore/monticore */
+package cNNCalculator;
+
+component Network<Z(2:oo) classes = 10>{
+    ports in Z(0:255)^{1, 28, 28} data,
+         out Q(0:1)^{classes} softmax;
+
+    implementation CNN {
+        data -> 
+        AdaNet()->
+        AdaNet()->
+        softmax;
+    }
+}
+```
+This will also create an Error
 ## Advanced Examples
 This version of Alexnet, which uses method construction, argument sequences and special arguments, is identical to the one in the section Basic Structure.
 ```
@@ -687,4 +862,5 @@ All predefined methods start with a capital letter and all constructed methods h
 
   [1] Cyprien De Masson, Sebastian Ruder, Lingpeng Kong and Dani Yogatama, "Episodic Memory in Lifelong Language Learning", Proc. NeurIPS, 2019 \
   [2] Guillaume Lample, Alexandre Sablayrolles, Marc’Aurelio Ranzato, Ludovic Denoyer and Hervé Jégou, "Large memory layers with product keys", Proc. NeurIPS, Dec. 2019. \
-  [3] Ashish Vaswani, Noam Shazeer, Niki Parmar, Jakob Uszkoreit, Llion Jones, Aidan N Gomez, Lukasz Kaiser and Illia Polosukhin, "Attention is all you need", Proc. NeurIPS, 2017
+  [3] Ashish Vaswani, Noam Shazeer, Niki Parmar, Jakob Uszkoreit, Llion Jones, Aidan N Gomez, Lukasz Kaiser and Illia Polosukhin, "Attention is all you need", Proc. NeurIPS, 2017 \
+  [4] Corinna Cortes, Xavi Gonzalvo, Vitaly Kuznetsov, Mehryar Mohri, Scott Yang , "AdaNet: Adaptive Structural Learning of Artificial Neural Networks" 2017

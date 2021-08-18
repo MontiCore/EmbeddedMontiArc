@@ -450,8 +450,14 @@ public class VariableSymbol extends ArchitectureElementSymbol {
                     } else {
                         ASTElementType inputType = getInputTypes().get(0).getDomain();
                         ASTElementType outputType = ioDeclaration.getType().getDomain();
+                        boolean error;
+                        if(getInputElement().isPresent()){
+                            error = !Utils.contains(outputType, inputType,getInputElement().get().getName());
+                        }else{
+                            error = !Utils.contains(outputType, inputType);
+                        }
 
-                        if (!Utils.contains(outputType, inputType)) {
+                        if (error) {
                             Log.error("0" + ErrorCodes.INVALID_ELEMENT_INPUT_DOMAIN + " " +
                                     "The declared output type of '" + name + "' does not match with the actual type. " +
                                     "Declared type: " + outputType.getName() + ". " +
