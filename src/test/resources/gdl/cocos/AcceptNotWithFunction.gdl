@@ -1,6 +1,3 @@
-(init (cell 1 1 b))
+(<= open ((true (control x))))
 
-(<= open (true (cell ?x ?y b)))
-
-(<= terminal
-  (not open))
+(<= terminal (not open))
