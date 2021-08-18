@@ -1,1 +1,1 @@
-(distinct (test) 1)
+(distinct true 1)
