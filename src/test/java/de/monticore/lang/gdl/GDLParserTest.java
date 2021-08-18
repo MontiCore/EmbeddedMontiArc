@@ -63,7 +63,7 @@ public class GDLParserTest {
     Optional<ASTGame> gdlDoc = parser.parse(model.toString());
 
     assertTrue(parser.hasErrors());
-    assertTrue(gdlDoc.isPresent());
+    assertFalse(gdlDoc.isPresent());
   }
 
   /**
@@ -76,7 +76,7 @@ public class GDLParserTest {
     Optional<ASTGame> gdlDoc = parser.parse(model.toString());
 
     assertTrue(parser.hasErrors());
-    assertTrue(gdlDoc.isPresent());
+    assertFalse(gdlDoc.isPresent());
   }
 
   // /**
@@ -89,7 +89,7 @@ public class GDLParserTest {
     Optional<ASTGame> gdlDoc = parser.parse(model.toString());
 
     assertTrue(parser.hasErrors());
-    assertTrue(gdlDoc.isPresent());
+    assertFalse(gdlDoc.isPresent());
   }
 
   /**
