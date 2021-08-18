@@ -17,6 +17,7 @@ import org.junit.Test;
 public class MatchTests {
 
     @Test
+    @SuppressWarnings("unchecked")
     public void TestMatches() {
         File testDir = new File("src/test/resources/test-matches/");
         for (File testFile : testDir.listFiles()) {
