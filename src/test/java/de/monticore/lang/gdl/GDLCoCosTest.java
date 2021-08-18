@@ -114,7 +114,7 @@ public class GDLCoCosTest {
         // "FailTerminalWithWrongArgumentType",
         "FailTrueWithTooFewArguments",
         "FailTrueWithTooManyArguments",
-        "FailTrueWithWrongArgumentType",
+        // "FailTrueWithWrongArgumentType",
         "FailTrueWithWrongArgumentTypeOfArgument"
     };
     for(String name:models ){
