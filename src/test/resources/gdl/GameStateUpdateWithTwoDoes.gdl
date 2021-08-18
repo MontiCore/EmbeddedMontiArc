@@ -1,4 +1,0 @@
-(<= (next (first second))
-    (does (first second))
-    (does (first second))
-)
