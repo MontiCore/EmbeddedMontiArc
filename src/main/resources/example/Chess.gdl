@@ -88,6 +88,21 @@
 (init (castle black short allowed))
 (init (castle white short allowed))
 
+(init (enPassant none))
+
+// en passant
+(<= (next (enPassant ?col))
+    (does white (move white_pawn ?col 2 ?col 4))
+)
+(<= (next (enPassant ?col))
+    (does black (move black_pawn ?col 7 ?col 5))
+)
+(<= (next (enPassant none))
+    (not (does black (move black_pawn ?col 7 ?col 5)))
+    (not (does white (move white_pawn ?col 2 ?col 4)))
+)
+
+
 // Give control to opponent
 (<= (next (control ?opponent))
     (true (control ?player))
@@ -134,6 +149,10 @@
     (does black (move black_rook h 8 ?dest_col ?dest_row))
 )
 
+(<= (next (castle ?color ?dir disallowed))
+    (true (castle ?color ?dir disallowed))
+)
+
 
 // Move figure on field with move command
 // Copy ?fig from ?start_col ?start_row to ?dest_col ?dest_row
@@ -164,6 +183,7 @@
     (distinct ?any_row ?start_row)
     (distinct ?any_row ?dest_row)
     (not (isPartOfCastleMove ?any_colored_fig ?start_col ?start_row ?dest_col ?dest_row ?any_col ?any_row))
+    (not (isCapturedByEnPassant ?any_colored_fig ?start_col ?start_row ?dest_col ?dest_row ?any_col ?any_row))
 )
 (<= (next (field ?any_col ?any_row ?colored_fig))
     (does ?player (move ?any_colored_fig ?start_col ?start_row ?dest_col ?dest_row))
@@ -171,6 +191,7 @@
     (distinct ?any_col ?start_col)
     (distinct ?any_col ?dest_col)
     (not (isPartOfCastleMove ?any_colored_fig ?start_col ?start_row ?dest_col ?dest_row ?any_col ?any_row))
+    (not (isCapturedByEnPassant ?any_colored_fig ?start_col ?start_row ?dest_col ?dest_row ?any_col ?any_row))
 )
 (<= (next (field ?any_col ?any_row ?colored_fig))
     (does ?player (move ?any_colored_fig ?start_col ?start_row ?dest_col ?dest_row))
@@ -178,6 +199,7 @@
     (distinct ?any_row ?start_row)
     (distinct ?any_col ?dest_col)
     (not (isPartOfCastleMove ?any_colored_fig ?start_col ?start_row ?dest_col ?dest_row ?any_col ?any_row))
+    (not (isCapturedByEnPassant ?any_colored_fig ?start_col ?start_row ?dest_col ?dest_row ?any_col ?any_row))
 )
 (<= (next (field ?any_col ?any_row ?colored_fig))
     (does ?player (move ?any_colored_fig ?start_col ?start_row ?dest_col ?dest_row))
@@ -185,6 +207,13 @@
     (distinct ?any_col ?start_col)
     (distinct ?any_row ?dest_row)
     (not (isPartOfCastleMove ?any_colored_fig ?start_col ?start_row ?dest_col ?dest_row ?any_col ?any_row))
+    (not (isCapturedByEnPassant ?any_colored_fig ?start_col ?start_row ?dest_col ?dest_row ?any_col ?any_row))
+)
+
+// en passant blank
+(<= (next (field ?any_col ?any_row blank))
+    (does ?player (move ?any_colored_fig ?start_col ?start_row ?dest_col ?dest_row))
+    (isCapturedByEnPassant ?any_colored_fig ?start_col ?start_row ?dest_col ?dest_row ?any_col ?any_row)
 )
 
 // build next castle move
@@ -264,6 +293,14 @@
 // --------------
 // Help functions
 // --------------
+(<= (isCapturedByEnPassant white_pawn ?start_col 5 ?dest_col 6 ?dest_col 5)
+    (true (enPassant ?dest_col))
+    (isFigureOnField black pawn black_pawn ?dest_col 5)
+)
+(<= (isCapturedByEnPassant black_pawn ?start_col 4 ?dest_col 3 ?dest_col 4)
+    (true (enPassant ?dest_col))
+    (isFigureOnField white pawn white_pawn ?dest_col 4)
+)
 
 (<= (isPartOfCastleMove white_king e 1 g 1 f 1)
     (isLegalCastleShort white_king e 1 g 1)
@@ -328,6 +365,7 @@
     (true (field g 1 blank))
     (true (field h 1 white_rook))
     (true (castle white short allowed))
+    (not (isLegalMove ?any_fig black ?any_col ?any_row f 1))
 )
 // white castle long
 (<= (isLegalCastleLong white_king e 1 c 1)
@@ -336,6 +374,7 @@
     (true (field b 1 blank))
     (true (field a 1 white_rook))
     (true (castle white long allowed))
+    (not (isLegalMove ?any_fig black ?any_col ?any_row d 1))
 )
 
 // black castle short
@@ -344,6 +383,7 @@
     (true (field g 8 blank))
     (true (field h 8 black_rook))
     (true (castle black short allowed))
+    (not (isLegalMove ?any_fig white ?any_col ?any_row f 8))
 )
 // black castle long
 (<= (isLegalCastleLong black_king e 8 c 8)
@@ -352,6 +392,7 @@
     (true (field b 8 blank))
     (true (field a 8 black_rook))
     (true (castle black long allowed))
+    (not (isLegalMove ?any_fig white ?any_col ?any_row d 8))
 )
 
 
@@ -386,6 +427,18 @@
     (isNextRow ?dest_row ?start_row)
     (isNextCol ?start_col ?dest_col)
 )
+// en passant capture right
+(<= (isLegalMove pawn black ?start_col 4 ?dest_col 3)
+    (true (field ?start_col 4 black_pawn))
+    (true (enPassant ?dest_col))
+    (isNextCol ?start_col ?dest_col)
+)
+// en passant capture left
+(<= (isLegalMove pawn black ?start_col 4 ?dest_col 3)
+    (true (field ?start_col 4 black_pawn))
+    (true (enPassant ?dest_col))
+    (isNextCol ?dest_col ?start_col)
+)
 
 // White Pawn
 // ----- ----
@@ -415,6 +468,18 @@
     (isFigureOnField black ?figure ?color_fig ?dest_col ?dest_row)
     (isNextRow ?start_row ?dest_row)
     (isNextCol ?start_col ?dest_col)
+)
+// en passant capture right
+(<= (isLegalMove pawn white ?start_col 5 ?dest_col 6)
+    (true (field ?start_col 5 white_pawn))
+    (true (enPassant ?dest_col))
+    (isNextCol ?start_col ?dest_col)
+)
+// en passant capture left
+(<= (isLegalMove pawn white ?start_col 5 ?dest_col 6)
+    (true (field ?start_col 5 white_pawn))
+    (true (enPassant ?dest_col))
+    (isNextCol ?dest_col ?start_col)
 )
 
 // Bishop

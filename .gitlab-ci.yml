@@ -5,7 +5,7 @@ image: gradle:6.9.0-jdk11
 stages:
   - build
   # - deploy
-  - check
+  # - check
 
 before_script:
   - export GRADLE_USER_HOME=`pwd`/.gradle
@@ -45,15 +45,15 @@ build:
 #       - develop
 
 
-checkMDLinks:
-  stage: check
-  dependencies:
-    - build
-  script:
-    - "curl --location --header \"PRIVATE-TOKEN: $secibuildtoken\" \"https://git.rwth-aachen.de/api/v4/projects/monticore%2Fmdlinkchecker/jobs/artifacts/master/raw/target/libs/MDLinkCheckerCLI.jar?job=build\" --output MDLinkCheckerCLI.jar"
-    - "url=https://git.rwth-aachen.de/se-student/ss21/labs/GDL/-/tree/develop"
-    - "linkCheckRes=$(java -jar MDLinkCheckerCLI.jar -url $url -t $secibuildtoken -p)"
-    - "echo \"$linkCheckRes\""
-    - "if [[ $linkCheckRes == *\"ERROR\"* ]]; then exit 1; fi"
-  only:
-    - develop
+# checkMDLinks:
+#   stage: check
+#   dependencies:
+#     - build
+#   script:
+#     - "curl --location --header \"PRIVATE-TOKEN: $secibuildtoken\" \"https://git.rwth-aachen.de/api/v4/projects/monticore%2Fmdlinkchecker/jobs/artifacts/master/raw/target/libs/MDLinkCheckerCLI.jar?job=build\" --output MDLinkCheckerCLI.jar"
+#     - "url=https://git.rwth-aachen.de/se-student/ss21/labs/GDL/-/tree/develop"
+#     - "linkCheckRes=$(java -jar MDLinkCheckerCLI.jar -url $url -t $secibuildtoken -p)"
+#     - "echo \"$linkCheckRes\""
+#     - "if [[ $linkCheckRes == *\"ERROR\"* ]]; then exit 1; fi"
+#   only:
+#     - develop
