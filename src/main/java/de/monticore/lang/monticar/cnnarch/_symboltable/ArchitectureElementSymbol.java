@@ -17,7 +17,9 @@ public abstract class ArchitectureElementSymbol extends ResolvableSymbol {
     private ArchitectureElementSymbol inputElement = null;
     private ArchitectureElementSymbol outputElement = null;
     private List<ArchTypeSymbol> outputTypes = null;
-
+    private boolean artificial = false;
+    private boolean AdaNet = false; // it is true if the archtiecture contains an AdaNet Layer
+    private Optional<ArchitectureElementSymbol> adaLayer= Optional.empty();
     protected ArchitectureElementSymbol(String name) {
         super(name, KIND);
     }
@@ -26,7 +28,18 @@ public abstract class ArchitectureElementSymbol extends ResolvableSymbol {
     protected ArchitectureElementScope createSpannedScope() {
         return new ArchitectureElementScope();
     }
-
+    public boolean isArtificial(){
+        return this.artificial;
+    }
+    public void setAdaLayer(ArchitectureElementSymbol adaLayer){this.adaLayer = Optional.of(adaLayer);}
+    public Optional<ArchitectureElementSymbol> getAdaLayer() {
+        return this.adaLayer;
+    }
+    public void setArtificial(boolean artificial) {
+        this.artificial = artificial;
+    }
+    public boolean containsAdaNet(){return this.AdaNet;}
+    public void setAdaNet(boolean adaNet){this.AdaNet = adaNet;}
     @Override
     public ArchitectureElementScope getSpannedScope() {
         return (ArchitectureElementScope) super.getSpannedScope();
@@ -108,12 +121,16 @@ public abstract class ArchitectureElementSymbol extends ResolvableSymbol {
     public List<ArchitectureElementSymbol> getPrevious(){
         if (getInputElement().isPresent()){
             List<ArchitectureElementSymbol> inputElements = new ArrayList<>();
-            for (ArchitectureElementSymbol element : getInputElement().get().getLastAtomicElements()){
-                if (element.getMaxSerialLength().get() == 0){
-                    inputElements.addAll(element.getPrevious());
-                }
-                else {
-                    inputElements.add(element);
+
+            if(getInputElement().get().isArtificial() && this.containsAdaNet()){
+                inputElements.add(getInputElement().get());
+            }else {
+                for (ArchitectureElementSymbol element : getInputElement().get().getLastAtomicElements()) {
+                    if (element.getMaxSerialLength().get() == 0) {
+                        inputElements.addAll(element.getPrevious());
+                    } else {
+                        inputElements.add(element);
+                    }
                 }
             }
             return inputElements;
