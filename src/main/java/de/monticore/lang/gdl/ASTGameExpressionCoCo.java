@@ -9,7 +9,7 @@ public class ASTGameExpressionCoCo implements GDLASTGameExpressionCoCo {
 	public void check(ASTGameExpression node) {
 		if (node.getType() instanceof ASTGameRole) {
 			if(node.getArgumentsList().size() != 1) {
-				Log.error("GameRole definition got too much arguments");
+				Log.error("GameRole definition got too many arguments");
 			}
 			// only on root
 			// if(!(node.getArguments(0) instanceof ASTGameValue)) {
@@ -19,7 +19,7 @@ public class ASTGameExpressionCoCo implements GDLASTGameExpressionCoCo {
 
 		if (node.getType() instanceof ASTGameInit) {
 			if(node.getArgumentsList().size() != 1) {
-				Log.error("GameInit definition got too much arguments");
+				Log.error("GameInit definition got too many arguments");
 			}
 			if(node.getArgumentsList().size() >= 1 && !(node.getArguments(0) instanceof ASTGameExpression)) {
 				Log.error("GameInit definition argument must be of type GameExpression");
@@ -50,7 +50,7 @@ public class ASTGameExpressionCoCo implements GDLASTGameExpressionCoCo {
 
 		if (node.getType() instanceof ASTGameNext) {
 			if(node.getArgumentsList().size() != 1) {
-				Log.error("GameNext definition got too much arguments");
+				Log.error("GameNext definition got too many arguments");
 			}
 			if(node.getArgumentsList().size() >= 1 && !(node.getArguments(0) instanceof ASTGameExpression)) {
 				Log.error("GameNext definition argument must be of type GameExpression");
@@ -62,7 +62,7 @@ public class ASTGameExpressionCoCo implements GDLASTGameExpressionCoCo {
 
 		if (node.getType() instanceof ASTGameTrue) {
 			if(node.getArgumentsList().size() != 1) {
-				Log.error("GameTrue definition got too much arguments");
+				Log.error("GameTrue definition got too many arguments");
 			}
 			if(node.getArgumentsList().size() >= 1 && !(node.getArguments(0) instanceof ASTGameExpression)) {
 				Log.error("GameTrue definition argument must be of type GameExpression");
