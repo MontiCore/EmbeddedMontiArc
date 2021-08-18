@@ -1,1 +1,1 @@
-(not ((goal ?player 100)))
+(not (goal ?player 100))

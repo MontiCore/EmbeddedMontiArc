@@ -21,7 +21,7 @@ before_script:
 build:
   stage: build
   script:
-    - "gradle build $GRADLE_OPT $ARGS1"
+    - "gradle build $GRADLE_OPT $ARGS1 --info"
   artifacts:
     paths:
       - "target/"

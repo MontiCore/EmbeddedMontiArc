@@ -1,1 +1,1 @@
-(goal ?player test)
+(goal ?player ?test)

@@ -1,1 +1,1 @@
-(legal ?player test)
+(legal ?player ?test)
