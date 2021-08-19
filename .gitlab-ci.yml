@@ -66,8 +66,6 @@ TestMnistWithAdaNet:
   script:
     - mv /mxnet/build/libmxnet.so /mxnet/build/libmxnet.a /usr/lib/
     - cd AdaNet
-    - python --version
-    - python3 --version
     - mvn dependency:resolve emadl:train -s settings.xml
 
 TestMNISTwithCustomLayer:
