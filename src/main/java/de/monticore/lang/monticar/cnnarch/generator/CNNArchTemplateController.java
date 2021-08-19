@@ -103,6 +103,9 @@ public abstract class CNNArchTemplateController {
         this.nameManager = new LayerNameCreator(architecture);
     }
 
+    public boolean containsAdaNet(){
+        return this.architecture.containsAdaNet();
+    }
     public String getName(ArchitectureElementSymbol layer){
         return nameManager.getName(layer);
     }
@@ -127,7 +130,9 @@ public abstract class CNNArchTemplateController {
         List<String> inputNames = new ArrayList<>();
 
         for (ArchitectureElementSymbol input : layer.getPrevious()) {
-            if (input.getOutputTypes().size() == 1) {
+            if(input.isArtificial()){
+                inputNames.add(getName(input));
+            }else if (input.getOutputTypes().size() == 1) {
                 inputNames.add(getName(input));
             } else {
                 for (int i = 0; i < input.getOutputTypes().size(); i++) {
