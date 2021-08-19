@@ -7,7 +7,8 @@ import de.monticore.lang.monticar.cnnarch.predefined.FullyConnected;
 import de.monticore.lang.monticar.cnnarch.predefined.Pooling;
 import de.monticore.lang.monticar.cnnarch.predefined.LargeMemory;
 import de.monticore.lang.monticar.cnnarch.predefined.EpisodicMemory;
-
+import de.monticore.lang.monticar.cnnarch.predefined.AdaNet;
+import de.monticore.lang.monticar.cnnarch.predefined.AllPredefinedLayers;
 import java.util.*;
 
 public class LayerNameCreator {
@@ -40,26 +41,60 @@ public class LayerNameCreator {
         } else if (architectureElement instanceof ParallelCompositeElementSymbol) {
             return nameParallelComposite((ParallelCompositeElementSymbol) architectureElement, stage, streamIndices);
         } else {
-            if (architectureElement.isAtomic()) {
-                if (architectureElement.getMaxSerialLength().get() > 0){
+            boolean noAdaNet = !architectureElement.containsAdaNet();
+            // flag which is true if there is no AdaNet inside the architecture
+            if (architectureElement.isAtomic() && (!architectureElement.isArtificial() || noAdaNet)) {
+                if (architectureElement.getMaxSerialLength().get() > 0) {
                     return add(architectureElement, stage, streamIndices);
                 } else {
                     return stage;
                 }
             } else {
                 ArchitectureElementSymbol resolvedElement = (ArchitectureElementSymbol) architectureElement.getResolvedThis().get();
-                return name(resolvedElement, stage, streamIndices);
+                int final_stage = name(resolvedElement, stage, streamIndices);
+
+                if (architectureElement.isArtificial() && !noAdaNet) {
+                    // if the element is artificial the name needs to be added only if an adaNet layer is present
+                    final_stage = add(architectureElement, final_stage, streamIndices);
+                }
+                return final_stage;
             }
         }
     }
+    protected int nameAdaNetBlock(String target,ArchitectureElementSymbol subElement,int endStage, List<Integer> streamIndices){
 
-    protected int nameSerialComposite(SerialCompositeElementSymbol compositeElement, int stage, List<Integer> streamIndices){
-        int endStage = stage;
-        for (ArchitectureElementSymbol subElement : compositeElement.getElements()){
-            endStage = name(subElement, endStage, streamIndices);
+        Optional<ArchitectureElementSymbol>  currentBlock = ((AdaNet) ((LayerSymbol) subElement).getDeclaration()).getBlock(target);
+        if(currentBlock.isPresent()) {
+            if (currentBlock.get().isArtificial() || target.equals(AllPredefinedLayers.Block)) {
+                boolean oldState = currentBlock.get().containsAdaNet();
+                currentBlock.get().setAdaNet(true);
+                endStage = name(currentBlock.get(), endStage, streamIndices);
+                currentBlock.get().setAdaNet(oldState);
+            }
         }
-        for (List<ArchitectureElementSymbol> subNetwork : compositeElement.getEpisodicSubNetworks()){
-            for (ArchitectureElementSymbol subElement : subNetwork){
+        return endStage;
+    }
+    protected int nameSerialComposite(SerialCompositeElementSymbol compositeElement, int stage, List<Integer> streamIndices) {
+        int endStage = stage;
+        for (ArchitectureElementSymbol subElement : compositeElement.getElements()) {
+            if (subElement.isArtificial() && compositeElement.containsAdaNet()) {
+                endStage = name(subElement, endStage, streamIndices);
+            } else if (subElement.getName().equals(AllPredefinedLayers.AdaNet_Name)) {
+                // name outBlock
+                endStage = nameAdaNetBlock(AllPredefinedLayers.Out,subElement,endStage,streamIndices);
+                // name inBlock
+                endStage = nameAdaNetBlock(AllPredefinedLayers.In,subElement,endStage,streamIndices);
+                // name buildBlock
+                endStage = nameAdaNetBlock(AllPredefinedLayers.Block,subElement,endStage,streamIndices);
+
+                endStage = name(subElement, endStage, streamIndices);
+            } else {
+                endStage = name(subElement, endStage, streamIndices);
+            }
+        }
+
+        for (List<ArchitectureElementSymbol> subNetwork : compositeElement.getEpisodicSubNetworks()) {
+            for (ArchitectureElementSymbol subElement : subNetwork) {
                 endStage = name(subElement, endStage, streamIndices);
             }
         }
