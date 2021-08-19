@@ -6,13 +6,20 @@ component Network<Z(2:oo) classes = 10>{
          out Q(0:1)^{classes} softmax;
 
     implementation CNN {
-	def conv(channels=20, kernel=5, stride=2){
+        def conv(channels, kernel=1, stride=1){
             Convolution(kernel=(kernel,kernel),channels=channels) ->
-            Relu()         
+            Relu() ->
+            Pooling(pool_type="max", kernel=(2,2), stride=(stride,stride))
         }
 
-	data ->
-	AdaNet(block="conv")->
+        data ->
+        conv(kernel=5, channels=20, stride=2) ->
+        conv(kernel=5, channels=50, stride=2) ->
+        FullyConnected(units=500) ->
+        Relu() ->
+        Dropout() ->
+        FullyConnected(units=classes) ->
+        Softmax() ->
         softmax;
     }
 }
