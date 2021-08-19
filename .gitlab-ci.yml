@@ -40,6 +40,7 @@ MqttIntegrationJob:
   dependencies:
     - CompileJobLinux
   script:
+    - chmod 770 ./src/test/bash/integrationTestMqtt.sh
     - ./src/test/bash/integrationTestMqtt.sh
 
 RosIntegrationJob:
@@ -56,6 +57,7 @@ SomeIPIntegrationJob:
   dependencies:
     - CompileJobLinux
   script:
+  - chmod 770 ./src/test/bash/integrationTestSomeIP.sh
   - ./src/test/bash/integrationTestSomeIP.sh
 
 Ros2IntegrationJob:
