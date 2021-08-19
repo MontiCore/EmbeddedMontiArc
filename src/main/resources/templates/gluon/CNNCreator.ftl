@@ -15,7 +15,11 @@ from custom_layers import *
 </#if>
 
 <#list tc.architecture.networkInstructions as networkInstruction>
+<#if tc.containsAdaNet()>
+from CNNNet_${tc.fullArchitectureName} import Net_${networkInstruction?index},DataClass_${networkInstruction?index}
+<#else>
 from CNNNet_${tc.fullArchitectureName} import Net_${networkInstruction?index}
+</#if>
 </#list>
 
 class ${tc.fileNameWithoutEnding}:
@@ -25,6 +29,9 @@ class ${tc.fileNameWithoutEnding}:
     def __init__(self):
         self.weight_initializer = mx.init.Normal()
         self.networks = {}
+        <#if tc.containsAdaNet()>
+        self.dataClass = {}
+        </#if>
 <#if (tc.weightsPath)??>
         self._weights_dir_ = "${tc.weightsPath}/"
 <#else>
@@ -173,7 +180,12 @@ class ${tc.fileNameWithoutEnding}:
 
     def construct(self, context, data_mean=None, data_std=None):
 <#list tc.architecture.networkInstructions as networkInstruction>
+        <#if tc.containsAdaNet()>
+        self.networks[${networkInstruction?index}] = Net_${networkInstruction?index}()
+        self.dataClass[${networkInstruction?index}] = DataClass_${networkInstruction?index}
+        <#else>
         self.networks[${networkInstruction?index}] = Net_${networkInstruction?index}(data_mean=data_mean, data_std=data_std, mx_context=context, prefix="")
+        </#if>
         with warnings.catch_warnings():
             warnings.simplefilter("ignore")
             self.networks[${networkInstruction?index}].collect_params().initialize(self.weight_initializer, force_reinit=False, ctx=context)

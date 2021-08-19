@@ -16,12 +16,21 @@ import java.util.regex.Pattern;
 
 public class CNNArch2GluonTemplateController extends CNNArchTemplateController {
     public static final String NET_DEFINITION_MODE_KEY = "mode";
-
+    public List<String> worked_list = new ArrayList<String>();
     public CNNArch2GluonTemplateController(ArchitectureSymbol architecture,
                                            TemplateConfiguration templateConfiguration) {
         super(architecture, templateConfiguration);
     }
+    public String getDefinedOutputDimension(){
+        // function calculates the output shape as defined in the .emadl, used for AdaNet layer
+        ArchTypeSymbol types = ((IODeclarationSymbol)this.getArchitecture().getOutputs().get(0).getDeclaration()).getType();
+        StringBuilder stringBuilder = new StringBuilder();
+        stringBuilder.append("(");
+        types.getDimensions().forEach(elem->stringBuilder.append(elem).append(','));
+        stringBuilder.append(")");
 
+        return stringBuilder.toString();
+    }
 
 
     public void include(String relativePath, String templateWithoutFileEnding, Writer writer, NetDefinitionMode netDefinitionMode){
@@ -30,12 +39,6 @@ public class CNNArch2GluonTemplateController extends CNNArchTemplateController {
         ftlContext.put(TEMPLATE_CONTROLLER_KEY, this);
         ftlContext.put(ELEMENT_DATA_KEY, getCurrentElement());
         ftlContext.put(NET_DEFINITION_MODE_KEY, netDefinitionMode.toString());
-
-        if (this.getDataElement().getElement() instanceof LayerSymbol){
-            if(((LayerSymbol) (this.getDataElement().getElement())).getDeclaration() instanceof CustomLayerDeclaration){
-                templatePath = relativePath + "CustomLayer" + FTL_FILE_ENDING;
-            }
-        }
         getTemplateConfiguration().processTemplate(ftlContext, templatePath, writer);
     }
 
@@ -70,12 +73,25 @@ public class CNNArch2GluonTemplateController extends CNNArchTemplateController {
     public void include(LayerSymbol layer, Writer writer, NetDefinitionMode netDefinitionMode){
         ArchitectureElementData previousElement = getCurrentElement();
         setCurrentElement(layer);
-
-        if (layer.isAtomic()){
+        if(layer.getName().equals(AllPredefinedLayers.AdaNet_Name)&& netDefinitionMode.equals(NetDefinitionMode.ADANET_CONSTRUCTION)){
+            // construct the AdaNet Layer
+            include(TEMPLATE_ELEMENTS_DIR_PATH,"AdaNet",writer,netDefinitionMode);
+        }else if(layer.isAtomic()){
             String templateName = layer.getDeclaration().getName();
             include(TEMPLATE_ELEMENTS_DIR_PATH, templateName, writer, netDefinitionMode);
-        }
-        else {
+        }else if(layer.isArtificial() && this.containsAdaNet()){
+            if(netDefinitionMode.equals(NetDefinitionMode.ARTIFICIAL_ARCH_CLASS)){
+                boolean originalArtificialState = layer.isArtificial();
+                layer.setArtificial(false);
+                if (!this.worked_list.contains(layer.getName())){
+                    include(TEMPLATE_ELEMENTS_DIR_PATH, "ArtificialArchClass", writer, netDefinitionMode);
+                    this.worked_list.add(layer.getName());
+                }
+                layer.setArtificial(originalArtificialState);
+            }else{
+                include((ArchitectureElementSymbol) layer.getResolvedThis().get(), writer, netDefinitionMode);
+            }
+        }else{
             include((ArchitectureElementSymbol) layer.getResolvedThis().get(), writer, netDefinitionMode);
         }
 
