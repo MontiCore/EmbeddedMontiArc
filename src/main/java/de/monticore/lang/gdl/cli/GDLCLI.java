@@ -34,7 +34,7 @@ public class GDLCLI implements Runnable {
 
     private void evaluate(String expression) {
         String[] args = expression.split(" ");
-        if (args.length >= 2) {
+        if (args.length > 2) {
             printHelp();
             return;
         }
