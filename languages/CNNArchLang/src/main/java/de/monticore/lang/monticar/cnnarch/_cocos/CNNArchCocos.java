@@ -73,8 +73,8 @@ public class CNNArchCocos {
                 .addCoCo(new CheckVariableName())
                 .addCoCo(new CheckArgmaxLayer())
                 .addCoCo(new CheckExpressions())
-                .addCoCo(new CheckAdaNetTooManyLayers())
-                .addCoCo(new CheckAdaNetPathToFilesExists());
+                .addCoCo(new CheckAdaNetTooManyLayers());
+                //.addCoCo(new CheckAdaNetPathToFilesExists())
     }
 
     //checks all normal cocos
