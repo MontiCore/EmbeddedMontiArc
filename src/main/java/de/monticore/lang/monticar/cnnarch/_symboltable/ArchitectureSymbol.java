@@ -40,7 +40,7 @@ public class ArchitectureSymbol extends CommonScopeSpanningSymbol {
     //attribute for the path for custom python files
     private String customPyFilesPath;
     // path to the AdaNet python files, can be changed EMADL2CPP by changing the value in the EMADL2CPP generator
-    private String adaNetUtils = "/AdaNet/";
+    private String adaNetUtils = "./src/main/resources/AdaNet/";
     public ArchitectureSymbol() {
         super("", KIND);
     }
