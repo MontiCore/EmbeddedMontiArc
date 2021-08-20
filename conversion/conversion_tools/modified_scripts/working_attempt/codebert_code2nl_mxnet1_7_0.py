@@ -160,13 +160,13 @@ def train_model(args):
     )
     trainer = mx.gluon.Trainer(seq2seq.collect_params(), optimizer=optimizer)
     if (args.test_run):
-        print('Doing test run with subset of data...')
+        print('Doing test run with subset of data...', flush=True)
     else:
-        print('Training full model, make sure you exported the correct data!')
-    print('Training steps {}'.format(train_steps))
-    print('Batch size {}'.format(batch_size))
-    print('Num samples {}'.format(train_data.num_data))
-    print('Training model...')
+        print('Training full model, make sure you exported the correct data!', flush=True)
+    print('Training steps {}'.format(train_steps), flush=True)
+    print('Batch size {}'.format(batch_size), flush=True)
+    print('Num samples {}'.format(train_data.num_data), flush=True)
+    print('Training model...', flush=True)
     for epoch in range(epochs):
         for bid, batch in enumerate(train_data):
             with mx.autograd.record():
@@ -183,7 +183,7 @@ def train_model(args):
                 l = loss(X, y)
                 print('Epoch {}/{} Batch {}/{} Loss {}'.format(
                     epoch+1, epochs, bid+1, train_data.num_data//batch_size, l.mean().asscalar()
-                ))
+                ), flush=True)
             l.backward()
             trainer.step(batch_size)
         train_data.reset()
@@ -205,7 +205,7 @@ def train_model(args):
     return seq2seq
 
 def test_model(file_name, seq2seq, args):
-    print('Testing with {}...'.format(file_name))
+    print('Testing with {}...'.format(file_name), flush=True)
     train_hparams = hp.get_training_hparams(args.test_run)
     batch_size = train_hparams['batch_size']
     ctx = [mx.cpu()]
@@ -217,7 +217,7 @@ def test_model(file_name, seq2seq, args):
     for bid, batch in enumerate(test_data):
         print('Batch {}/{}'.format(
             bid+1, test_data.num_data//batch_size
-        ))
+        ), flush=True)
         source_ids, source_masks, target_ids, _ = get_seqs_from_batch(batch, ctx)
         pred = seq2seq(source_ids, source_masks)
         preds.append((pred, target_ids))
@@ -250,7 +250,7 @@ def compute_bleu(file_name, res):
     pred, actual = res
     actual_map, pred_map = bleu.computeMaps(pred, actual) 
     score = round(bleu.bleuFromMaps(actual_map, pred_map)[0], 2)
-    print('{} {}'.format('Bleu-4 Score', str(score)))
+    print('{} {}'.format('Bleu-4 Score', str(score)), flush=True)
 
 def parse_args():
     parser = argparse.ArgumentParser()
