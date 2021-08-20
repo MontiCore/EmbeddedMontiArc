@@ -146,7 +146,6 @@ abstract public class PredefinedLayerDeclaration extends LayerDeclarationSymbol 
             int inputWidth = inputTypes.get(0).getWidth();
             int inputDepth = inputTypes.get(0).getDepth();
             Integer depthI = new Integer(inputTypes.get(0).getDepthIndex());
-            //System.out.println("Depth Index is: " + depthI.toString() + " in PredefinedLayerDecl");
 
             int kernelHeight = layer.getIntTupleValue(AllPredefinedLayers.KERNEL_NAME).get().get(1);
             int kernelWidth = layer.getIntTupleValue(AllPredefinedLayers.KERNEL_NAME).get().get(2);

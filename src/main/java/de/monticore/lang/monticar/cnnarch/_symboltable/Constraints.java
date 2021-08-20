@@ -265,7 +265,7 @@ public enum Constraints {
                     + AllPredefinedLayers.PADDING_SAME3D + " or "
                     + AllPredefinedLayers.PADDING_SIMPLE3D;
         }
-        },
+    },
     POOL_TYPE {
         @Override
         public boolean isValid(ArchSimpleExpressionSymbol exp) {
