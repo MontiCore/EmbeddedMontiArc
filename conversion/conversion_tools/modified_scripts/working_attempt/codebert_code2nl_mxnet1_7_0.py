@@ -121,17 +121,16 @@ def load_codebert_block(symbol_file, weight_file, context):
     return gluon.nn.SymbolBlock.imports(symbol_file, input_names, weight_file, ctx=context)
 
 def get_seqs_from_batch(batch, ctx):
-    source_ids = gluon.utils.split_and_load(batch.data[0], ctx_list=ctx, even_split=False)[0]
-    source_masks = gluon.utils.split_and_load(batch.data[1], ctx_list=ctx, even_split=False)[0]
-    target_ids = gluon.utils.split_and_load(batch.label[0], ctx_list=ctx, even_split=False)[0]
-    target_masks = gluon.utils.split_and_load(batch.label[1], ctx_list=ctx, even_split=False)[0]
+    source_ids = gluon.utils.split_and_load(batch.data[0], ctx_list=ctx, even_split=False)
+    source_masks = gluon.utils.split_and_load(batch.data[1], ctx_list=ctx, even_split=False)
+    target_ids = gluon.utils.split_and_load(batch.label[0], ctx_list=ctx, even_split=False)
+    target_masks = gluon.utils.split_and_load(batch.label[1], ctx_list=ctx, even_split=False)
     return source_ids, source_masks, target_ids, target_masks
 
-def train_model(args):
+def train_model(ctx, args):
     train_hparams = hp.get_training_hparams(args.test_run)
     batch_size = train_hparams['batch_size']
     train_steps = train_hparams['train_steps']
-    ctx = [mx.cpu()]
     seq2seq = get_seq2seq(
         args.symbol_file, args.weight_file, 
         args.embed_symbol_file, args.embed_weight_file, 
@@ -168,23 +167,29 @@ def train_model(args):
     print('Num samples {}'.format(train_data.num_data), flush=True)
     print('Training model...', flush=True)
     for epoch in range(epochs):
+        total_loss = 0
         for bid, batch in enumerate(train_data):
-            with mx.autograd.record():
-                source_ids, source_masks, target_ids, target_masks = get_seqs_from_batch(batch, ctx)
-                lm_logits = seq2seq(source_ids, source_masks, target_ids, target_masks)
-                # drop the start of sentence mask tokens? - mb
-                active_loss = target_masks[..., 1:].asnumpy().reshape(-1) != 0
-                shift_labels = target_ids[..., 1:]
-                # Shift so that tokens < n predict n
-                shift_logits = lm_logits[..., :-1, :]
-                newDim = shift_logits.shape[-1]
-                X = shift_logits.reshape(-1, newDim)[active_loss]
-                y = shift_labels.reshape(-1)[active_loss]
-                l = loss(X, y)
-                print('Epoch {}/{} Batch {}/{} Loss {}'.format(
-                    epoch+1, epochs, bid+1, train_data.num_data//batch_size, l.mean().asscalar()
-                ), flush=True)
-            l.backward()
+            source_ids, source_masks, target_ids, target_masks = get_seqs_from_batch(batch, ctx)
+            losses = []
+            for s_id, s_msk, tgt_id, tgt_msk in zip(source_ids, source_masks, target_ids, target_masks):
+                with mx.autograd.record():
+                    lm_logits = seq2seq(s_id, s_msk, tgt_id, tgt_msk)
+                    # drop the start of sentence mask tokens? - mb
+                    active_loss = tgt_msk[..., 1:].asnumpy().reshape(-1) != 0
+                    shift_labels = tgt_id[..., 1:]
+                    # Shift so that tokens < n predict n
+                    shift_logits = lm_logits[..., :-1, :]
+                    newDim = shift_logits.shape[-1]
+                    X = shift_logits.reshape(-1, newDim)[active_loss]
+                    y = shift_labels.reshape(-1)[active_loss]
+                    losses.append(loss(X, y))
+                for l in losses:
+                    l.backward()
+            total_loss += sum([l.sum().asscalar() for l in losses])
+            batch_loss = total_loss/len(source_ids)/(bid+1)
+            print('Epoch {}/{} Batch {}/{} Loss {}'.format(
+                epoch+1, epochs, bid+1, train_data.num_data//batch_size, batch_loss
+            ), flush=True)
             trainer.step(batch_size)
         train_data.reset()
     # target_mask = self.create_target_mask(target_ids, target_valid_length)
@@ -204,7 +209,7 @@ def train_model(args):
     # #outputs = loss,loss*active_loss.sum(),active_loss.sum()
     return seq2seq
 
-def test_model(file_name, seq2seq, args):
+def test_model(file_name, seq2seq, ctx, args):
     print('Testing with {}...'.format(file_name), flush=True)
     train_hparams = hp.get_training_hparams(args.test_run)
     batch_size = train_hparams['batch_size']
@@ -219,8 +224,9 @@ def test_model(file_name, seq2seq, args):
             bid+1, test_data.num_data//batch_size
         ), flush=True)
         source_ids, source_masks, target_ids, _ = get_seqs_from_batch(batch, ctx)
-        pred = seq2seq(source_ids, source_masks)
-        preds.append((pred, target_ids))
+        for s_id, s_msk, tgt_id in zip(source_ids, source_masks, target_ids):
+            pred = seq2seq(s_id, s_msk)
+            preds.append((pred, tgt_id))
     return preds
 
 # we need a tokenizer to quanitify
@@ -266,19 +272,26 @@ def parse_args():
         help="Symbol file from the pretrained embed output by the conversion script")
     parser.add_argument("--embed_weight_file", default='./codebert_gluon/model/codebert_embedding-0000.params', type=str,
         help="Weight file from the pretrained embed output by the conversion script")
+    parser.add_argument("--num_gpus", default=2, type=int,
+        help="Number of gpus to train on, set to 0 for cpu training")
     return parser.parse_args()
 
 if __name__ == '__main__':
     args = parse_args()
 
-    model = train_model(args)
+    if args.num_gpus < 1:
+        ctx = [mx.cpu()]
+    else:
+        ctx = [mx.gpu(i) for i in range(args.num_gpus)]
+
+    model = train_model(ctx, args)
     tokenizer = RobertaTokenizer.from_pretrained('microsoft/codebert-base')
 
-    res_test = test_model('test.h5', model, args)
+    res_test = test_model('test.h5', model, ctx, args)
     res_test = format_for_bleu(tokenizer, res_test)
     compute_bleu('test.h5', res_test)
 
-    res_valid = test_model('valid.h5', model, args)
+    res_valid = test_model('valid.h5', model, ctx, args)
     res_valid = format_for_bleu(tokenizer, res_valid)
     compute_bleu('valid.h5', res_valid)
 
