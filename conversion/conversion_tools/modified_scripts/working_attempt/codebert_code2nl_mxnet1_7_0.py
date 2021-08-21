@@ -58,7 +58,7 @@ import gluonnlp as nlp
 import argparse
 import h5py
 
-def get_decoder(test_run):
+def get_decoder(test_run, ctx):
     decoder_hparams = hp.get_decoder_hparams()
     # gluon TransformerDecoder does a positional encoding before input, does codebert do the same thing?
     # gluonnlp might not do it if position_weight is none?
@@ -81,7 +81,7 @@ def get_decoder(test_run):
         prefix=decoder_hparams['prefix'], 
         params=decoder_hparams['prefix']
     )
-    decoder.initialize()
+    decoder.initialize(ctx=ctx)
     train_hparams = hp.get_training_hparams(test_run)
     batch_size = train_hparams['batch_size']
     tgt_seq_len = train_hparams['max_target_length']
@@ -100,7 +100,7 @@ def get_decoder(test_run):
 def get_seq2seq(sym_file, wt_file, esym_file, ewt_file, ctx, test_run, compare_mode):
     embedding = load_codebert_block(esym_file, ewt_file, ctx)
     encoder = load_codebert_block(sym_file, wt_file, ctx)
-    decoder = get_decoder(test_run)
+    decoder = get_decoder(test_run, ctx)
     seq2seq_hparams = hp.get_seq2seq_hparams()
     training_params = hp.get_training_hparams(test_run)
     seq2seq = Seq2Seq(

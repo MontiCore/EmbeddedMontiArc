@@ -3,6 +3,7 @@ import numpy as np
 from mxnet.gluon import HybridBlock, nn
 from gluonnlp.model.seq2seq_encoder_decoder import Seq2SeqEncoder
 from gluonnlp.model.bert import BERTEncoderCell
+from mxnet.gluon.block import initializer
 
 class BERTEncoder(HybridBlock, Seq2SeqEncoder):
     def __init__(self, *, num_layers=2, units=512, hidden_size=2048,
@@ -197,23 +198,18 @@ class Seq2Seq(HybridBlock):
             self.dense = nn.Dense(hidden_size, in_units=hidden_size, activation='tanh')
             # tie the lm_head and word_embed params together not sure if this is the correct way to do it
             # TODO maybe embedding params object is in dictionary and this is referencing all the params of the embedding layers?
-            self.lm_head = self.get_lm_head(vocab_size, hidden_size)
+            self.lm_head = nn.Dense(vocab_size, in_units=hidden_size, use_bias=False)
             self.beam_size=beam_size
             self.max_length=max_length
             self.sos_id=sos_id
             self.eos_id=eos_id
             self.compare_mode = compare_mode
     
-    def get_lm_head(self, vocab_size, hidden_size):
-        # using params=.. in the Dense constructor doesnt seem to work, so we have to set the weights manually?
-        # TODO after setting the weight should we use params= in the lm_head constructor to make them update automatically?
-        lm_head = nn.Dense(vocab_size, in_units=hidden_size, use_bias=False)
-        lm_head.initialize()
-        print(lm_head.collect_params())
-        lm_head.collect_params()['dense1_weight'].set_data(
+    def initialize(self, init=initializer.Uniform(), ctx=None, verbose=False):
+        self.collect_params().initialize(init, ctx, verbose, force_reinit)
+        # tie weights of lm head and embedding layer, done in torch script too
+        self.lm_head.collect_params()['dense1_weight'].set_data(
             self.embedding.collect_params()['bertembedding0_word_embed_embedding0_weight'].data())
-        print(lm_head.collect_params())
-        return lm_head
 
     def valid_length_to_mask(self, input_ids, valid_length):
         input_mask = mx.nd.zeros_like(input_ids)
