@@ -213,7 +213,6 @@ def test_model(file_name, seq2seq, ctx, args):
     print('Testing with {}...'.format(file_name), flush=True)
     train_hparams = hp.get_training_hparams(args.test_run)
     batch_size = train_hparams['batch_size']
-    ctx = [mx.cpu()]
     test_file = '{}/{}'.format(args.data_dir, file_name)
     test_data = conv.get_data_iterator(
         ['source_ids', 'source_masks'], ['target_ids', 'target_masks'],
