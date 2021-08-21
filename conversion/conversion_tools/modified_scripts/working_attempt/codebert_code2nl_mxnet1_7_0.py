@@ -186,6 +186,8 @@ def train_model(ctx, args):
                         losses.append(l)
                 for l in losses:
                     l.backward()
+                for l in losses:
+                    l.wait_to_read()
             total_loss += sum([l.sum().asscalar() for l in losses])
             batch_loss = total_loss/len(source_ids)/(bid+1)
             print('Epoch {}/{} Batch {}/{} Loss {}'.format(
