@@ -89,11 +89,11 @@ def get_decoder(test_run, ctx):
     embed_size = hp.get_bert_hparams()['embed_size']
     # TODO do first pass through decoder here to initialize shapes
     # encoder out shape (batch_size, seq_len, embed_size)
-    tgt_embed = mx.nd.zeros((batch_size, tgt_seq_len, embed_size), ctx=ctx)
-    enc_out = mx.nd.zeros((batch_size, seq_len, embed_size), ctx=ctx)
-    enc_valid = mx.nd.ones((batch_size, ), ctx=ctx)
+    tgt_embed = mx.nd.zeros((batch_size, tgt_seq_len, embed_size), ctx=ctx[0])
+    enc_out = mx.nd.zeros((batch_size, seq_len, embed_size), ctx=ctx[0])
+    enc_valid = mx.nd.ones((batch_size, ), ctx=ctx[0])
     states = decoder.init_state_from_encoder(enc_out, encoder_valid_length=enc_valid)
-    tgt_valid = mx.nd.ones((batch_size, ),ctx=ctx) # should be something like [21, 43, 11, 233, 13, ...] when not dummy inputs
+    tgt_valid = mx.nd.ones((batch_size, ),ctx=ctx[0]) # should be something like [21, 43, 11, 233, 13, ...] when not dummy inputs
     decoder(tgt_embed, states, tgt_valid)
     return decoder
 
