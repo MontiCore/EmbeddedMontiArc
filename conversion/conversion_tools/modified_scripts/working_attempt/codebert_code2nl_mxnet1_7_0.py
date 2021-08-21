@@ -182,9 +182,10 @@ def train_model(ctx, args):
                     newDim = shift_logits.shape[-1]
                     X = shift_logits.reshape(-1, newDim)[active_loss]
                     y = shift_labels.reshape(-1)[active_loss]
-                    losses.append(loss(X, y))
-                for l in losses:
-                    l.backward()
+                    l = loss(X, y)
+                    losses.append(l)
+                    for l in losses:
+                        l.backward()
             total_loss += sum([l.sum().asscalar() for l in losses])
             batch_loss = total_loss/len(source_ids)/(bid+1)
             print('Epoch {}/{} Batch {}/{} Loss {}'.format(
