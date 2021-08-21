@@ -81,20 +81,20 @@ def get_decoder(test_run, ctx):
         prefix=decoder_hparams['prefix'], 
         params=decoder_hparams['prefix']
     )
-    decoder.initialize(ctx=ctx)
-    train_hparams = hp.get_training_hparams(test_run)
-    batch_size = train_hparams['batch_size']
-    tgt_seq_len = train_hparams['max_target_length']
-    seq_len = train_hparams['max_source_length']
-    embed_size = hp.get_bert_hparams()['embed_size']
-    # TODO do first pass through decoder here to initialize shapes
-    # encoder out shape (batch_size, seq_len, embed_size)
-    tgt_embed = mx.nd.zeros((batch_size, tgt_seq_len, embed_size), ctx=ctx[0])
-    enc_out = mx.nd.zeros((batch_size, seq_len, embed_size), ctx=ctx[0])
-    enc_valid = mx.nd.ones((batch_size, ), ctx=ctx[0])
-    states = decoder.init_state_from_encoder(enc_out, encoder_valid_length=enc_valid)
-    tgt_valid = mx.nd.ones((batch_size, ),ctx=ctx[0]) # should be something like [21, 43, 11, 233, 13, ...] when not dummy inputs
-    decoder(tgt_embed, states, tgt_valid)
+    # decoder.initialize(ctx=ctx)
+    # train_hparams = hp.get_training_hparams(test_run)
+    # batch_size = train_hparams['batch_size']
+    # tgt_seq_len = train_hparams['max_target_length']
+    # seq_len = train_hparams['max_source_length']
+    # embed_size = hp.get_bert_hparams()['embed_size']
+    # # TODO do first pass through decoder here to initialize shapes
+    # # encoder out shape (batch_size, seq_len, embed_size)
+    # tgt_embed = mx.nd.zeros((batch_size, tgt_seq_len, embed_size), ctx=ctx[0])
+    # enc_out = mx.nd.zeros((batch_size, seq_len, embed_size), ctx=ctx[0])
+    # enc_valid = mx.nd.ones((batch_size, ), ctx=ctx[0])
+    # states = decoder.init_state_from_encoder(enc_out, encoder_valid_length=enc_valid)
+    # tgt_valid = mx.nd.ones((batch_size, ),ctx=ctx[0]) # should be something like [21, 43, 11, 233, 13, ...] when not dummy inputs
+    # decoder(tgt_embed, states, tgt_valid)
     return decoder
 
 def get_seq2seq(sym_file, wt_file, esym_file, ewt_file, ctx, test_run, compare_mode):
