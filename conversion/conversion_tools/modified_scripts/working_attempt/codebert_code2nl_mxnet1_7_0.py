@@ -170,22 +170,22 @@ def train_model(ctx, args):
         total_loss = 0
         for bid, batch in enumerate(train_data):
             source_ids, source_masks, target_ids, target_masks = get_seqs_from_batch(batch, ctx)
-            losses = []
-            for s_id, s_msk, tgt_id, tgt_msk in zip(source_ids, source_masks, target_ids, target_masks):
-                with mx.autograd.record():
-                    lm_logits = seq2seq(s_id, s_msk, tgt_id, tgt_msk)
-                    # drop the start of sentence mask tokens? - mb
-                    active_loss = tgt_msk[..., 1:].asnumpy().reshape(-1) != 0
-                    shift_labels = tgt_id[..., 1:]
-                    # Shift so that tokens < n predict n
-                    shift_logits = lm_logits[..., :-1, :]
-                    newDim = shift_logits.shape[-1]
-                    X = shift_logits.reshape(-1, newDim)[active_loss]
-                    y = shift_labels.reshape(-1)[active_loss]
-                    l = loss(X, y)
-                    losses.append(l)
-                    for l in losses:
-                        l.backward()
+            with mx.autograd.record():
+                losses = []
+                for s_id, s_msk, tgt_id, tgt_msk in zip(source_ids, source_masks, target_ids, target_masks):
+                        lm_logits = seq2seq(s_id, s_msk, tgt_id, tgt_msk)
+                        # drop the start of sentence mask tokens? - mb
+                        active_loss = tgt_msk[..., 1:].asnumpy().reshape(-1) != 0
+                        shift_labels = tgt_id[..., 1:]
+                        # Shift so that tokens < n predict n
+                        shift_logits = lm_logits[..., :-1, :]
+                        newDim = shift_logits.shape[-1]
+                        X = shift_logits.reshape(-1, newDim)[active_loss]
+                        y = shift_labels.reshape(-1)[active_loss]
+                        l = loss(X, y)
+                        losses.append(l)
+                for l in losses:
+                    l.backward()
             total_loss += sum([l.sum().asscalar() for l in losses])
             batch_loss = total_loss/len(source_ids)/(bid+1)
             print('Epoch {}/{} Batch {}/{} Loss {}'.format(
