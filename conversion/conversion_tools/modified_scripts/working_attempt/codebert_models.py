@@ -210,7 +210,7 @@ class Seq2Seq(HybridBlock):
         # tie weights of lm head and embedding layer, done in torch script too
         self.lm_head.collect_params()['dense1_weight'].set_data(
             self.embedding.collect_params()['bertembedding0_word_embed_embedding0_weight'].data())
-        self.collect_params().reset_ctx(ctx)
+        self.ctx = ctx
 
     def valid_length_to_mask(self, input_ids, valid_length):
         input_mask = mx.nd.zeros_like(input_ids)
@@ -225,8 +225,9 @@ class Seq2Seq(HybridBlock):
         encoder_output = self.encoder(embed_output, source_valid_length) # we don't permute like in the code2nl model, that okay? TODO shape 8x256x768
         #encoder_output = outputs[0].permute([1,0,2]).contiguous() not sure how to do
         if target_ids is not None:
-            print(mx.current_context())
             target_token_types = mx.nd.zeros_like(target_ids)
+            print("tgt_ids " + str(target_token_types.ctx))
+            print("tgt_tkn_types " + str(target_token_types.ctx))
             #attn_mask=-1e4 *(1-self.bias[:target_ids.shape[1],:target_ids.shape[1]]) no option to pass this in gluonnlp TODO
             # could try subclassing the Decoder and change the hybrid_forward function.
             # transpose so we have (batch size, target seq length, embed dims)
@@ -241,7 +242,6 @@ class Seq2Seq(HybridBlock):
             lm_logits = self.lm_head(hidden_states)
             return lm_logits
         else:
-            print(mx.current_context())
             #Predict
             source_mask = self.valid_length_to_mask(source_ids, source_valid_length)
             preds=[]
@@ -266,6 +266,8 @@ class Seq2Seq(HybridBlock):
                         break
                     # still not sure how important this is, we cant really use it in our decoder?
                     # attn_mask=-1e4 *(1-self.bias[:input_ids.shape[1],:input_ids.shape[1]])
+                    print("inp_ids " + str(input_ids.ctx))
+                    print("inp_tkn_types " + str(input_token_types.ctx))
                     tgt_embeddings = self.embedding(input_ids, input_token_types).transpose((1, 0, 2))
                     out, states, _ = self.decoder(tgt_embeddings, states, input_valid_length)
                      # combine first two dims to pass through dense layer
