@@ -210,7 +210,6 @@ class Seq2Seq(HybridBlock):
         # tie weights of lm head and embedding layer, done in torch script too
         embed = self.embedding.collect_params()['bertembedding0_word_embed_embedding0_weight'].data(ctx=ctx[0])
         self.lm_head.collect_params()['dense1_weight'].set_data(embed)
-        self.ctx_list = ctx
 
     def valid_length_to_mask(self, input_ids, valid_length):
         input_mask = mx.nd.zeros_like(input_ids)
@@ -241,20 +240,21 @@ class Seq2Seq(HybridBlock):
             return lm_logits
         else:
             #Predict
+            input_ctx = source_ids.ctx
             source_mask = self.valid_length_to_mask(source_ids, source_valid_length)
             preds=[]
             output_probs = []       
-            zero = mx.nd.zeros(1, dtype='int64', ctx=self.ctx_list[0])
+            zero = mx.nd.zeros(1, dtype='int64', ctx=input_ctx)
             # interate accross sequences in batch
             for i in range(source_ids.shape[0]):
                 # shape is (batch_size, seq_len, embed_size), we want the ith sequence
                 context = encoder_output[i:i+1,:]
                 context_valid_len = source_valid_length[i:i+1]
                 context_mask = source_mask[i:i+1,:]
-                beam = Beam(self.beam_size, self.sos_id, self.eos_id, self.ctx_list[0])
+                beam = Beam(self.beam_size, self.sos_id, self.eos_id, input_ctx)
                 input_ids = beam.getCurrentState()
                 input_token_types = mx.nd.zeros_like(input_ids)
-                input_valid_length = mx.nd.ones(input_ids.shape[0], ctx=self.ctx_list[0]) # TODO should we use anything other than ones here? only if the beam adds padding
+                input_valid_length = mx.nd.ones(input_ids.shape[0], ctx=input_ctx) # TODO should we use anything other than ones here? only if the beam adds padding
                 context = context.tile((self.beam_size, 1, 1))
                 context_mask = context_mask.tile((self.beam_size, 1)) # TODO unused, delete
                 context_valid_len = context_valid_len.tile((self.beam_size))
