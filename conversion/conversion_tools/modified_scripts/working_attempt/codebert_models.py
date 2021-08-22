@@ -206,11 +206,11 @@ class Seq2Seq(HybridBlock):
             self.compare_mode = compare_mode
     
     def initialize(self, init=initializer.Uniform(), ctx=None, verbose=False):
-        self.collect_params().initialize(init, ctx, verbose, force_reinit)
+        self.collect_params().initialize(init, ctx, verbose, force_reinit=False)
         # tie weights of lm head and embedding layer, done in torch script too
         self.lm_head.collect_params()['dense1_weight'].set_data(
             self.embedding.collect_params()['bertembedding0_word_embed_embedding0_weight'].data())
-        self.ctx = ctx
+        self.ctx_list = ctx
 
     def valid_length_to_mask(self, input_ids, valid_length):
         input_mask = mx.nd.zeros_like(input_ids)
@@ -226,8 +226,6 @@ class Seq2Seq(HybridBlock):
         #encoder_output = outputs[0].permute([1,0,2]).contiguous() not sure how to do
         if target_ids is not None:
             target_token_types = mx.nd.zeros_like(target_ids)
-            print("tgt_ids " + str(target_token_types.ctx))
-            print("tgt_tkn_types " + str(target_token_types.ctx))
             #attn_mask=-1e4 *(1-self.bias[:target_ids.shape[1],:target_ids.shape[1]]) no option to pass this in gluonnlp TODO
             # could try subclassing the Decoder and change the hybrid_forward function.
             # transpose so we have (batch size, target seq length, embed dims)
@@ -246,17 +244,17 @@ class Seq2Seq(HybridBlock):
             source_mask = self.valid_length_to_mask(source_ids, source_valid_length)
             preds=[]
             output_probs = []       
-            zero = mx.nd.zeros(1, dtype='int64')
+            zero = mx.nd.zeros(1, dtype='int64', ctx=self.ctx_list[0])
             # interate accross sequences in batch
             for i in range(source_ids.shape[0]):
                 # shape is (batch_size, seq_len, embed_size), we want the ith sequence
                 context = encoder_output[i:i+1,:]
                 context_valid_len = source_valid_length[i:i+1]
                 context_mask = source_mask[i:i+1,:]
-                beam = Beam(self.beam_size, self.sos_id, self.eos_id)
+                beam = Beam(self.beam_size, self.sos_id, self.eos_id, self.ctx_list[0])
                 input_ids = beam.getCurrentState()
                 input_token_types = mx.nd.zeros_like(input_ids)
-                input_valid_length = mx.nd.ones(input_ids.shape[0]) # TODO should we use anything other than ones here? only if the beam adds padding
+                input_valid_length = mx.nd.ones(input_ids.shape[0], ctx=self.ctx_list[0]) # TODO should we use anything other than ones here? only if the beam adds padding
                 context = context.tile((self.beam_size, 1, 1))
                 context_mask = context_mask.tile((self.beam_size, 1)) # TODO unused, delete
                 context_valid_len = context_valid_len.tile((self.beam_size))
@@ -266,8 +264,6 @@ class Seq2Seq(HybridBlock):
                         break
                     # still not sure how important this is, we cant really use it in our decoder?
                     # attn_mask=-1e4 *(1-self.bias[:input_ids.shape[1],:input_ids.shape[1]])
-                    print("inp_ids " + str(input_ids.ctx))
-                    print("inp_tkn_types " + str(input_token_types.ctx))
                     tgt_embeddings = self.embedding(input_ids, input_token_types).transpose((1, 0, 2))
                     out, states, _ = self.decoder(tgt_embeddings, states, input_valid_length)
                      # combine first two dims to pass through dense layer
@@ -296,24 +292,25 @@ class Seq2Seq(HybridBlock):
             return preds
 
 class Beam(object):
-    def __init__(self, size, sos, eos):
+    def __init__(self, size, sos, eos, ctx):
         self.size = size
         # The score for each translation on the beam.
-        self.scores = mx.nd.zeros(size)
+        self.scores = mx.nd.zeros(size, ctx=ctx)
         # The backpointers at each time-step.
         self.prevKs = []
         # The outputs at each time-step.
-        self.nextYs = [mx.nd.zeros(size, dtype='int64')]
+        self.nextYs = [mx.nd.zeros(size, dtype='int64', ctx=ctx)]
         self.nextYs[0][0] = sos
         # Has EOS topped the beam yet.
         self._eos = eos
         self.eosTop = False
         # Time and k pair for finished.
         self.finished = []
+        self.ctx = ctx
 
     def getCurrentState(self):
         "Get the outputs for the current timestep."
-        batch = mx.nd.array(self.nextYs[-1], dtype='int64').reshape(-1, 1)
+        batch = mx.nd.array(self.nextYs[-1], dtype='int64', ctx=self.ctx).reshape(-1, 1)
         return batch
 
     def getCurrentOrigin(self):

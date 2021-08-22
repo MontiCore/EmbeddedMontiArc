@@ -136,7 +136,7 @@ def train_model(ctx, args):
         args.embed_symbol_file, args.embed_weight_file, 
         ctx, args.test_run, False
     )
-    seq2seq.collect_params().initialize(force_reinit=False, ctx=ctx)
+    seq2seq.initialize(ctx=ctx)
     seq2seq.hybridize()
     train_file = '{}/{}'.format(args.data_dir, 'train.h5')
     # TODO should we get a new iterator after every epoch?
