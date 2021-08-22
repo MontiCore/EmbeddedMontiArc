@@ -50,6 +50,7 @@ from mxnet import gluon
 from gluonnlp.model.transformer import TransformerDecoder
 from transformers.models.roberta import RobertaTokenizer
 from codebert_models import Seq2Seq
+from cnnarch2gluon_adamw import AdamW
 import codebert_hyper_params as hp
 import codebert_code2nl_bleu as bleu
 import convert_code2nl_data_mxnet1_7_0 as conv
@@ -151,7 +152,7 @@ def train_model(ctx, args):
     # which is done in the codebert code2nl's optimizer. TODO for now.
 
     # lr is defined in the call to run codebert, epsilon is left as default in the run script, beta1 and 2 are the pytorch default
-    optimizer = nlp.optimizer.BERTAdam(
+    optimizer = AdamW(
         learning_rate = train_hparams['learning_rate'], 
         beta1 = 0.9, 
         beta2 = 0.999, 
