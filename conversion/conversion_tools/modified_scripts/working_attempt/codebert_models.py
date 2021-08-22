@@ -208,8 +208,9 @@ class Seq2Seq(HybridBlock):
     def initialize(self, init=initializer.Uniform(), ctx=None, verbose=False):
         self.collect_params().initialize(init, ctx, verbose, force_reinit=False)
         # tie weights of lm head and embedding layer, done in torch script too
-        self.lm_head.collect_params()['dense1_weight'].set_data(
-            self.embedding.collect_params()['bertembedding0_word_embed_embedding0_weight'].data())
+        embed = self.embedding.collect_params()['bertembedding0_word_embed_embedding0_weight'].data()
+        print(embed.ctx)
+        self.lm_head.collect_params()['dense1_weight'].set_data(embed)
         self.ctx_list = ctx
 
     def valid_length_to_mask(self, input_ids, valid_length):
