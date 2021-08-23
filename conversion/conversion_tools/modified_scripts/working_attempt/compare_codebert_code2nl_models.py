@@ -10,6 +10,8 @@ from transformers import (AdamW, get_linear_schedule_with_warmup,
                           
 import argparse
 import torch
+import random
+import numpy as np
 import mxnet as mx
 import gluonnlp as nlp
 from torch.utils.data import DataLoader, SequentialSampler, TensorDataset
@@ -119,23 +121,20 @@ def train_pt_model(pt_seq2seq, pt_train, weight_decay):
         optimizer.step()
         optimizer.zero_grad()
         scheduler.step()
+    return pt_seq2seq
 
 def train_mx_model(mx_seq2seq, mx_train):
     train_hparams = hyp.get_training_hparams(True)
     batch_size = train_hparams['batch_size']
     train_steps = train_hparams['train_steps']
     ctx = [mx.cpu()]
-    mx_seq2seq.collect_params().initialize(force_reinit=False, ctx=ctx)
+    mx_seq2seq.initialize(ctx=ctx)
     mx_seq2seq.hybridize()
     epochs = (train_steps * batch_size) // mx_train.num_data
-    loss = mx.gluon.loss.SoftmaxCrossEntropyLoss() # TODO parameters? e.g. sparse_label
-    # note this is different than the codebert optimizer in two ways
-    # 1. differences in calculation, as stated in the BERTAdam optimizer doc
-    # 2. it doesn't appear to be able to exclude certain parameters from the optimizer
-    # which is done in the codebert code2nl's optimizer. TODO for now.
+    loss = mx.gluon.loss.SoftmaxCrossEntropyLoss()
 
     # lr is defined in the call to run codebert, epsilon is left as default in the run script, beta1 and 2 are the pytorch default
-    optimizer = nlp.optimizer.BERTAdam(
+    optimizer = AdamW(
         learning_rate = train_hparams['learning_rate'], 
         beta1 = 0.9, 
         beta2 = 0.999, 
@@ -172,6 +171,7 @@ def compare_preds(pt_preds, mx_preds):
     return None
 
 def tandem_test_models(pt_seq2seq, mx_seq2seq, pt_test, mx_test, mx_ctx):
+    pt_seq2seq.eval()
     pt_test_iter = cycle(pt_test)
     num_batches = mx_test.num_data // mx_test.batch_size
     pt_preds = []
@@ -181,19 +181,30 @@ def tandem_test_models(pt_seq2seq, mx_seq2seq, pt_test, mx_test, mx_ctx):
     for _ in range(num_batches):
         mx_batch = mx_test.next()
         pt_batch = next(pt_test_iter)
-        mx_sids, mx_smasks, _, _ = mxrun.get_seqs_from_batch(mx_batch, mx_ctx)
         pt_sids, pt_smasks, _, _ = pt_batch
+        mx_sids, mx_smasks, _, _ = mxrun.get_seqs_from_batch(mx_batch, mx_ctx)
+        for s_id, s_msk in zip(mx_sids, mx_smasks):
+            mx_pred, mx_prob = mx_seq2seq(s_id, s_msk)
+            mx_preds.append(mx_pred)
+            mx_probs.append(mx_prob)
+        
+
         pt_pred, pt_prob = pt_seq2seq(pt_sids, pt_smasks)
-        mx_pred, mx_prob = mx_seq2seq(mx_sids, mx_smasks)
-        compare_preds(pt_pred, mx_pred)
         pt_preds.append(pt_pred)
         pt_probs.append(pt_prob)
-        mx_preds.append(mx_pred)
-        mx_probs.append(mx_prob)
         print(pt_prob[0][0])
         print(mx_prob[0][0])
+
+def set_seed():
+    seed = 42
+    random.seed(seed)
+    np.random.seed(seed)
+    torch.manual_seed(seed)
+    mx.random.seed(seed)
+
 if __name__ == '__main__':
     args = parse_args()
+    set_seed()
     mx_ctx = [mx.cpu()]
     param_dict = hyp.get_training_hparams(True)
     pt_train = get_pytorch_dataloader(
@@ -207,6 +218,6 @@ if __name__ == '__main__':
         mx_ctx, True, True
     )
     pt_seq2seq = get_pt_seq2seq()
-    train_pt_model(pt_seq2seq, pt_train, 0.0)
-    train_mx_model(mx_seq2seq, mx_train)
+    pt_seq2seq = train_pt_model(pt_seq2seq, pt_train, 0.0)
+    mx_seq2seq = mxrun.train_model(mx_seq2seq, mx_train, mx_ctx, True)
     tandem_test_models(pt_seq2seq, mx_seq2seq, pt_test, mx_test, mx_ctx)

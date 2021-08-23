@@ -82,20 +82,6 @@ def get_decoder(test_run, ctx):
         prefix=decoder_hparams['prefix'], 
         params=decoder_hparams['prefix']
     )
-    # decoder.initialize(ctx=ctx)
-    # train_hparams = hp.get_training_hparams(test_run)
-    # batch_size = train_hparams['batch_size']
-    # tgt_seq_len = train_hparams['max_target_length']
-    # seq_len = train_hparams['max_source_length']
-    # embed_size = hp.get_bert_hparams()['embed_size']
-    # # TODO do first pass through decoder here to initialize shapes
-    # # encoder out shape (batch_size, seq_len, embed_size)
-    # tgt_embed = mx.nd.zeros((batch_size, tgt_seq_len, embed_size), ctx=ctx[0])
-    # enc_out = mx.nd.zeros((batch_size, seq_len, embed_size), ctx=ctx[0])
-    # enc_valid = mx.nd.ones((batch_size, ), ctx=ctx[0])
-    # states = decoder.init_state_from_encoder(enc_out, encoder_valid_length=enc_valid)
-    # tgt_valid = mx.nd.ones((batch_size, ),ctx=ctx[0]) # should be something like [21, 43, 11, 233, 13, ...] when not dummy inputs
-    # decoder(tgt_embed, states, tgt_valid)
     return decoder
 
 def get_seq2seq(sym_file, wt_file, esym_file, ewt_file, ctx, test_run, compare_mode):
@@ -128,22 +114,12 @@ def get_seqs_from_batch(batch, ctx):
     target_masks = gluon.utils.split_and_load(batch.label[1], ctx_list=ctx, even_split=False)
     return source_ids, source_masks, target_ids, target_masks
 
-def train_model(ctx, args):
-    train_hparams = hp.get_training_hparams(args.test_run)
+def train_model(seq2seq, train_data, ctx, test_run):
+    train_hparams = hp.get_training_hparams(test_run)
     batch_size = train_hparams['batch_size']
     train_steps = train_hparams['train_steps']
-    seq2seq = get_seq2seq(
-        args.symbol_file, args.weight_file, 
-        args.embed_symbol_file, args.embed_weight_file, 
-        ctx, args.test_run, False
-    )
     seq2seq.initialize(ctx=ctx)
     seq2seq.hybridize()
-    train_file = '{}/{}'.format(args.data_dir, 'train.h5')
-    # TODO should we get a new iterator after every epoch?
-    train_data = conv.get_data_iterator(
-        ['source_ids', 'source_masks'], ['target_ids', 'target_masks'],
-        True, batch_size, h5py.File(train_file, 'r'))
     epochs = (train_steps * batch_size) // train_data.num_data
     loss = mx.gluon.loss.SoftmaxCrossEntropyLoss() # TODO parameters? e.g. sparse_label
     # note this is different than the codebert optimizer
@@ -157,7 +133,7 @@ def train_model(ctx, args):
         epsilon = train_hparams['adam_epsilon']
     )
     trainer = mx.gluon.Trainer(seq2seq.collect_params(), optimizer=optimizer)
-    if (args.test_run):
+    if (test_run):
         print('Doing test run with subset of data...', flush=True)
     else:
         print('Training full model, make sure you exported the correct data!', flush=True)
@@ -194,21 +170,6 @@ def train_model(ctx, args):
             ), flush=True)
             trainer.step(batch_size)
         train_data.reset()
-    # target_mask = self.create_target_mask(target_ids, target_valid_length)
-    # # Shift so that tokens < n predict n
-    # active_loss = target_mask[..., 1:].asnumpy().reshape(-1) != 0
-    # #active_loss = target_mask[..., 1:].ne(0).view(-1) == 1
-    # shift_logits = lm_logits[..., :-1, :]#.contiguous()
-    # shift_labels = target_ids[..., 1:]#.contiguous()
-    # # Flatten the tokens
-    # # loss_fct = nn.CrossEntropyLoss(ignore_index=-1)
-    # # still need to include equivalent to ignore_index? are the losses equivalent?
-    # # from_logits flag?
-    # loss_fct = mx.gluon.loss.SoftmaxCrossEntropyLoss()
-    # loss = loss_fct(shift_logits.reshape(-1, shift_logits.shape(-1))[active_loss],
-    #                 shift_labels.reshape(-1)[active_loss])
-
-    # #outputs = loss,loss*active_loss.sum(),active_loss.sum()
     return seq2seq
 
 def test_model(file_name, seq2seq, ctx, args):
@@ -285,7 +246,19 @@ if __name__ == '__main__':
     else:
         ctx = [mx.gpu(i) for i in range(args.num_gpus)]
 
-    model = train_model(ctx, args)
+    train_file = '{}/{}'.format(args.data_dir, 'train.h5')
+    # TODO should we get a new iterator after every epoch?
+    train_data = conv.get_data_iterator(
+        ['source_ids', 'source_masks'], ['target_ids', 'target_masks'],
+        True, batch_size, h5py.File(train_file, 'r'))
+
+    seq2seq = get_seq2seq(
+        args.symbol_file, args.weight_file, 
+        args.embed_symbol_file, args.embed_weight_file, 
+        ctx, args.test_run, False
+    )
+
+    model = train_model(seq2seq, train_data, ctx, args.test_run)
     tokenizer = RobertaTokenizer.from_pretrained('microsoft/codebert-base')
 
     res_test = test_model('test.h5', model, ctx, args)
