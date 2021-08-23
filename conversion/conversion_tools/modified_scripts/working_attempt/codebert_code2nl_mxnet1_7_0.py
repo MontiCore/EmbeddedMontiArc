@@ -47,7 +47,7 @@
 # }
 
 from mxnet import gluon
-from gluonnlp.model.transformer import TransformerDecoder
+from codebert_models import TransformerDecoder
 from transformers.models.roberta import RobertaTokenizer
 from codebert_models import Seq2Seq
 from cnnarch2gluon_adamw import AdamW
@@ -146,11 +146,9 @@ def train_model(ctx, args):
         True, batch_size, h5py.File(train_file, 'r'))
     epochs = (train_steps * batch_size) // train_data.num_data
     loss = mx.gluon.loss.SoftmaxCrossEntropyLoss() # TODO parameters? e.g. sparse_label
-    # note this is different than the codebert optimizer in two ways
-    # 1. differences in calculation, as stated in the BERTAdam optimizer doc
-    # 2. it doesn't appear to be able to exclude certain parameters from the optimizer
+    # note this is different than the codebert optimizer
+    # 1. it doesn't appear to be able to exclude certain parameters from the optimizer
     # which is done in the codebert code2nl's optimizer. TODO for now.
-
     # lr is defined in the call to run codebert, epsilon is left as default in the run script, beta1 and 2 are the pytorch default
     optimizer = AdamW(
         learning_rate = train_hparams['learning_rate'], 
@@ -297,6 +295,3 @@ if __name__ == '__main__':
     res_valid = test_model('valid.h5', model, ctx, args)
     res_valid = format_for_bleu(tokenizer, res_valid)
     compute_bleu('valid.h5', res_valid)
-
-
-
