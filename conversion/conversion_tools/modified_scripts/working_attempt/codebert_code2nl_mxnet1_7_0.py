@@ -246,11 +246,12 @@ if __name__ == '__main__':
     else:
         ctx = [mx.gpu(i) for i in range(args.num_gpus)]
 
+    train_hparams = hp.get_training_hparams(args.test_run)
     train_file = '{}/{}'.format(args.data_dir, 'train.h5')
     # TODO should we get a new iterator after every epoch?
     train_data = conv.get_data_iterator(
         ['source_ids', 'source_masks'], ['target_ids', 'target_masks'],
-        True, batch_size, h5py.File(train_file, 'r'))
+        True, train_hparams['batch_size'], h5py.File(train_file, 'r'))
 
     seq2seq = get_seq2seq(
         args.symbol_file, args.weight_file, 
