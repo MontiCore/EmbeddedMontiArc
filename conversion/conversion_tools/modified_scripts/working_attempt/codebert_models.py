@@ -234,10 +234,14 @@ class Seq2Seq(HybridBlock):
             # TODO do we need to set position weight to something for decoder?
             # target_valid_length fails when it is a named parameter for some reason, so we just pass as the third
             out, _, _ = self.decoder(tgt_embeddings, states, target_valid_length)
+            # if 8 batch size, 128 target length, 765 embed size, 50265 vocab size
             # (8,128,768) -> transpose -> (128,8,768) -> reshape -> (1024,768)
             hidden_states = self.dense(out.transpose((1, 0, 2)).reshape(-1, self.hidden_size))
             # TODO do we need to reshape back to original dimensions here?
+            # (1024,768) -> (1024, 50265)
             lm_logits = self.lm_head(hidden_states)
+            # reshape back to original dimensions -> (128, 8, 50265) -> (8, 128, 50265)
+            lm_logits = lm_logits.reshape(self.max_length, -1, lm_logits.shape[-1]).transpose((1, 0, 2))
             return lm_logits
         else:
             #Predict
