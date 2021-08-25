@@ -196,8 +196,11 @@ def train_model(seq2seq, train_data, ctx, test_run):
                     l.backward()
                 for l in losses:
                     l.wait_to_read()
-            total_loss += sum([l.sum().asscalar() for l in losses])
-            batch_loss = total_loss/len(source_ids)/(bid+1)
+            # torch script loss func outputs the mean of the batch torch_loss(X,y) == mxnet_loss(X,y).mean()
+            # we sum over the losses on each device and then divide that by the current step or batch number
+            # TODO with multiple devices e.g. 2 gpus do we need to divinde total_loss by num_gpus?
+            total_loss += sum([l.mean().asscalar() for l in losses])
+            batch_loss = total_loss/(bid+1)
             print('Epoch {}/{} Batch {}/{} Loss {}'.format(
                 epoch+1, epochs, bid+1, train_data.num_data//batch_size, batch_loss
             ), flush=True)
