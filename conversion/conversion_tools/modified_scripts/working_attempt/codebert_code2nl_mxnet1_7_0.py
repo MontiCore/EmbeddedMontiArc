@@ -56,6 +56,7 @@ import codebert_code2nl_bleu as bleu
 import convert_code2nl_data_mxnet1_7_0 as conv
 import mxnet as mx
 import gluonnlp as nlp
+import numpy as np
 import argparse
 import h5py
 
@@ -114,10 +115,23 @@ def get_seqs_from_batch(batch, ctx):
     target_masks = gluon.utils.split_and_load(batch.label[1], ctx_list=ctx, even_split=False)
     return source_ids, source_masks, target_ids, target_masks
 
+def valid_lengths_to_ones(masks, max_length):
+    new_masks = []
+    int_masks = masks.asnumpy().astype(np.int32)
+    for length in int_masks:
+        ones = np.ones(length).astype(np.int32).tolist()
+        if max_length > length:
+            zeros = np.zeros(max_length-length).astype(np.int32).tolist()
+            new_masks.append(ones + zeros)
+        else: 
+            new_masks.append(ones)
+    return mx.nd.array(new_masks)
+
 def train_model(seq2seq, train_data, ctx, test_run):
     train_hparams = hp.get_training_hparams(test_run)
     batch_size = train_hparams['batch_size']
     train_steps = train_hparams['train_steps']
+    max_target_length = train_hparams['max_target_length']
     seq2seq.initialize(ctx=ctx)
     seq2seq.hybridize()
     epochs = (train_steps * batch_size) // train_data.num_data
@@ -149,14 +163,33 @@ def train_model(seq2seq, train_data, ctx, test_run):
                 losses = []
                 for s_id, s_msk, tgt_id, tgt_msk in zip(source_ids, source_masks, target_ids, target_masks):
                         lm_logits = seq2seq(s_id, s_msk, tgt_id, tgt_msk)
+                        print(50*"*" + "lm_logits")
+                        print(lm_logits)
+                        print(50*"*" + "tgt_mask")
+                        print(tgt_msk)
+                        print(50*"*" + "target_ids")
+                        print(tgt_id)
                         # drop the start of sentence mask tokens? - mb
-                        active_loss = tgt_msk[..., 1:].asnumpy().reshape(-1) != 0
+                        loss_tgt_mask = valid_lengths_to_ones(tgt_msk, max_target_length)
+                        print(50*"*" + "loss_tgt_mask")
+                        print(loss_tgt_mask)
+                        active_loss = loss_tgt_mask[..., 1:].reshape(-1)
                         shift_labels = tgt_id[..., 1:]
+                        print(50*"*"+ "active_loss")
+                        print(active_loss)
+                        print(50*"*"+ "shift_labels")
+                        print(shift_labels)
                         # Shift so that tokens < n predict n
                         shift_logits = lm_logits[..., :-1, :]
+                        print(50*"*" + "shift_logits")
+                        print(shift_logits)
                         newDim = shift_logits.shape[-1]
-                        X = shift_logits.reshape(-1, newDim)[active_loss]
-                        y = shift_labels.reshape(-1)[active_loss]
+                        X = mx.nd.contrib.boolean_mask(shift_logits.reshape(-1, newDim), active_loss)
+                        y = mx.nd.contrib.boolean_mask(shift_labels.reshape(-1), active_loss)
+                        print(50*"*"+ "X")
+                        print(X)
+                        print(50*"*"+ "y")
+                        print(y)
                         l = loss(X, y)
                         losses.append(l)
                 for l in losses:

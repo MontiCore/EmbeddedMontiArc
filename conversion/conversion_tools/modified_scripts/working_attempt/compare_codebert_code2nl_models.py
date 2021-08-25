@@ -108,7 +108,7 @@ def train_pt_model(pt_seq2seq, pt_train, weight_decay):
         batch = next(pt_train_iter)
         batch = tuple(t.to(device) for t in batch)
         source_ids, source_mask, target_ids, target_mask = batch
-        lm_logits,loss, _, _ = pt_seq2seq(
+        loss, _, _ = pt_seq2seq(
             source_ids = source_ids,
             source_mask = source_mask,
             target_ids = target_ids,
