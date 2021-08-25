@@ -108,7 +108,7 @@ def train_pt_model(pt_seq2seq, pt_train, weight_decay):
         batch = next(pt_train_iter)
         batch = tuple(t.to(device) for t in batch)
         source_ids, source_mask, target_ids, target_mask = batch
-        loss, _, _ = pt_seq2seq(
+        lm_logits,loss, _, _ = pt_seq2seq(
             source_ids = source_ids,
             source_mask = source_mask,
             target_ids = target_ids,
@@ -116,56 +116,13 @@ def train_pt_model(pt_seq2seq, pt_train, weight_decay):
         )
         cumul_loss += loss.item()
         train_loss = round(cumul_loss/(steps_done+1), 4)
+
         steps_done += 1
         loss.backward()
         optimizer.step()
         optimizer.zero_grad()
         scheduler.step()
     return pt_seq2seq
-
-def train_mx_model(mx_seq2seq, mx_train):
-    train_hparams = hyp.get_training_hparams(True)
-    batch_size = train_hparams['batch_size']
-    train_steps = train_hparams['train_steps']
-    ctx = [mx.cpu()]
-    mx_seq2seq.initialize(ctx=ctx)
-    mx_seq2seq.hybridize()
-    epochs = (train_steps * batch_size) // mx_train.num_data
-    loss = mx.gluon.loss.SoftmaxCrossEntropyLoss()
-
-    # lr is defined in the call to run codebert, epsilon is left as default in the run script, beta1 and 2 are the pytorch default
-    optimizer = AdamW(
-        learning_rate = train_hparams['learning_rate'], 
-        beta1 = 0.9, 
-        beta2 = 0.999, 
-        epsilon = train_hparams['adam_epsilon']
-    )
-    trainer = mx.gluon.Trainer(mx_seq2seq.collect_params(), optimizer=optimizer)
-    print('Doing test run with subset of data...')
-    print('Training steps {}'.format(train_steps))
-    print('Batch size {}'.format(batch_size))
-    print('Num samples {}'.format(mx_train.num_data))
-    print('Training model...')
-    for epoch in range(epochs):
-        for bid, batch in enumerate(mx_train):
-            with mx.autograd.record():
-                source_ids, source_masks, target_ids, target_masks = mxrun.get_seqs_from_batch(batch, ctx)
-                lm_logits = mx_seq2seq(source_ids, source_masks, target_ids, target_masks)
-                # drop the start of sentence mask tokens? - mb
-                active_loss = target_masks[..., 1:].asnumpy().reshape(-1) != 0
-                shift_labels = target_ids[..., 1:]
-                # Shift so that tokens < n predict n
-                shift_logits = lm_logits[..., :-1, :]
-                newDim = shift_logits.shape[-1]
-                X = shift_logits.reshape(-1, newDim)[active_loss]
-                y = shift_labels.reshape(-1)[active_loss]
-                l = loss(X, y)
-                print('Epoch {}/{} Batch {}/{} Loss {}'.format(
-                    epoch+1, epochs, bid+1, mx_train.num_data//batch_size, l.mean().asscalar()
-                ))
-            l.backward()
-            trainer.step(batch_size)
-        mx_train.reset()
 
 def compare_preds(pt_preds, mx_preds):
     return None
@@ -220,4 +177,7 @@ if __name__ == '__main__':
     pt_seq2seq = get_pt_seq2seq()
     pt_seq2seq = train_pt_model(pt_seq2seq, pt_train, 0.0)
     mx_seq2seq = mxrun.train_model(mx_seq2seq, mx_train, mx_ctx, True)
-    tandem_test_models(pt_seq2seq, mx_seq2seq, pt_test, mx_test, mx_ctx)
+    # print(all_lm_logits_pt[0])
+    # print(all_lm_logits_pt[0].shape)
+    # print(all_lm_logits_mx[0])
+    #tandem_test_models(pt_seq2seq, mx_seq2seq, pt_test, mx_test, mx_ctx)
