@@ -10,6 +10,8 @@ import de.monticore.lang.monticar.generator.FileContent;
 import de.monticore.lang.monticar.generator.cmake.CMakeConfig;
 import de.monticore.lang.monticar.generator.cmake.CMakeFindModule;
 import de.monticore.lang.tagging._symboltable.TaggingResolver;
+import de.monticore.symboltable.CommonSymbol;
+import de.monticore.lang.monticar.cnnarch.gluongenerator.reinforcement.CNNArch2GluonTemplateController;
 
 import java.util.*;
 
@@ -25,7 +27,7 @@ public class CNNArch2Gluon extends CNNArchGenerator {
     //check cocos with CNNArchCocos.checkAll(architecture) before calling this method.
     @Override
     public List<FileContent> generateStrings(TaggingResolver taggingResolver, ArchitectureSymbol architecture){
-        if(architecture != null && architecture.getFullName() != null) {
+        if(architecture != null && ((CommonSymbol)architecture).getFullName() != null) {
             cMakeConfig.getCMakeListsViewModel().setCompName(architecture.getFullName().replace('.', '_').replace('[', '_').replace(']', '_'));
         }
 
@@ -72,6 +74,9 @@ public class CNNArch2Gluon extends CNNArchGenerator {
         fileContents.add(temp);
 
         temp = controller.process("CNNGanTrainer", Target.PYTHON);
+        fileContents.add(temp);
+
+        temp = controller.process("CNNAutoencoderTrainer", Target.PYTHON);
         fileContents.add(temp);
 
         temp = controller.process("execute", Target.CPP);
