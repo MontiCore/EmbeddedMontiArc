@@ -270,7 +270,7 @@ class Seq2Seq(HybridBlock):
                     # still not sure how important this is, we cant really use it in our decoder?
                     # attn_mask=-1e4 *(1-self.bias[:input_ids.shape[1],:input_ids.shape[1]])
                     tgt_embeddings = self.embedding(input_ids, input_token_types).transpose((1, 0, 2))
-                    out, states, _ = self.decoder(tgt_embeddings, states, input_valid_length)
+                    out, _, _ = self.decoder(tgt_embeddings, states, input_valid_length)
                      # combine first two dims to pass through dense layer
                     hidden_states = self.dense(out.reshape(-1, self.hidden_size))
                     # recreate first two dims and take last word in sequence
