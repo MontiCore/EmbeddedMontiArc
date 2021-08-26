@@ -115,7 +115,7 @@ def get_seqs_from_batch(batch, ctx):
     target_masks = gluon.utils.split_and_load(batch.label[1], ctx_list=ctx, even_split=False)
     return source_ids, source_masks, target_ids, target_masks
 
-def valid_lengths_to_ones(masks, max_length):
+def valid_lengths_to_ones(masks, max_length, ctx):
     new_masks = []
     int_masks = masks.asnumpy().astype(np.int32)
     for length in int_masks:
@@ -125,7 +125,7 @@ def valid_lengths_to_ones(masks, max_length):
             new_masks.append(ones + zeros)
         else: 
             new_masks.append(ones)
-    return mx.nd.array(new_masks)
+    return mx.nd.array(new_masks, ctx=ctx)
 
 def train_model(seq2seq, train_data, ctx, test_run):
     train_hparams = hp.get_training_hparams(test_run)
@@ -170,7 +170,7 @@ def train_model(seq2seq, train_data, ctx, test_run):
                         print(50*"*" + "target_ids")
                         print(tgt_id)
                         # drop the start of sentence mask tokens? - mb
-                        loss_tgt_mask = valid_lengths_to_ones(tgt_msk, max_target_length)
+                        loss_tgt_mask = valid_lengths_to_ones(tgt_msk, max_target_length, lm_logits.ctx)
                         print(50*"*" + "loss_tgt_mask")
                         print(loss_tgt_mask)
                         active_loss = loss_tgt_mask[..., 1:].reshape(-1)
