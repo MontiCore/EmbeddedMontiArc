@@ -22,6 +22,8 @@ extern "C" {
 EXPORT const char* DI__get_interface();
 
 EXPORT void DI__set_port(int i, const char* data, int is_json);
+// For "Socket" type ports: returns data as long as there is data in the queue
+// When empty: returns the empty string ("") or an empty binary payload (size 0)
 EXPORT const char* DI__get_port(int i, int is_json);
 
 EXPORT void DI__init();

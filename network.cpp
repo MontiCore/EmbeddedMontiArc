@@ -21,10 +21,10 @@
 
 #include <sys/socket.h>
 #include <sys/types.h>
-#include <sys/socket.h>
 #include <netdb.h>
 #include <unistd.h>
 #include <arpa/inet.h>
+#include <netinet/tcp.h>
 
 #endif
 
@@ -32,8 +32,44 @@ using namespace std;
 
 void *get_in_addr(struct sockaddr *sa);
 
+#ifdef IS_WIN
+void Socket::get_max_msg_size() {
+    DWORD target = 0;
+    int size = sizeof(DWORD);
+    if (getsockopt(socket, SOL_SOCKET, SO_MAX_MSG_SIZE, (char*)&target, &size) != 0) {
+        NetworkException::throw_network_err("Error getting the max packet length");
+    }
+    max_msg_size = target;
+}
+#else
+void Socket::get_max_msg_size() {
+    // TODO the max segment length is not the max message length? => remove max tcp header-trailer length?
+    // int64_t target = 0;
+    // socklen_t size = sizeof(int64_t);
+    // if (getsockopt(socket, IPPROTO_TCP, TCP_MAXSEG, (char*)&target, &size) != 0) {
+    //     NetworkException::throw_network_err("Error getting the max packet length");
+    // }
+
+    // TCP on linux has no max size?
+    max_msg_size = INT64_MAX;
+}
+#endif
+
 void Socket::write_s(char *buffer, int count) const {
-    TODO handle too long packets; // https://docs.microsoft.com/en-us/windows/win32/api/winsock2/nf-winsock2-send
+    while (count > max_msg_size) {
+        auto res = ::send(socket, buffer, max_msg_size, 0);
+        if (res != max_msg_size) {
+            auto msg = "Could not write " + to_string(max_msg_size) + " bytes";
+            if (res < 0) {
+                NetworkException::throw_network_err(msg);
+            } else {
+                throw NetworkException(msg);
+            }
+        }
+        buffer += max_msg_size;
+        count -= max_msg_size;
+    }
+    if (count <= 0) return;
     auto res = ::send(socket, buffer, count, 0);
     if (res != count) {
         auto msg = "Could not write " + to_string(count) + " bytes";
@@ -58,126 +94,35 @@ void Socket::read_s(char *buffer, int count) const {
 
 
 // Reads the packet from the socket and sets the reader to the start of the payload
-PacketReader::PacketReader(char *buffer, int buffer_size, const Socket &socket) : packet(buffer, buffer_size), pos(buffer) {
+void PacketReader::receive() {
     //cout << "Waiting for packet header " << endl;
-    packet.size = 3;
-    socket.read_s(packet.buffer, 3);
-    packet.id = read_u8();
-    auto length = read_u16();
+    id = -1;
+    size = 0;
+    BinaryReader br = {buffer.get_buffer(), 3};
+
+    buffer.reserve(3);
+    size = 3;
+    socket.read_s(buffer.get_buffer(), 3);
+    id = br.read_u8();
+    auto length = br.read_u16();
     //cout << "Got packet header: id=" << id << ", size=" << length << endl;
 
-    packet.size = length + 3;
-    if (packet.size > packet.buffer_size) throw NetworkException("Packet (id=" + to_string(packet.id) + ") payload too big for buffer: " + to_string(length) + " > " + to_string(packet.buffer_size - 3));
+    size = length + 3;
+    buffer.reserve(size);
 
     // Read data
-    socket.read_s(pos, length);
+    socket.read_s(buffer.get_buffer()+3, length);
 }
-
-uint64_t PacketReader::read_u64() {
-    check_range(8, "u64");
-    uint64_t t = 0;
-    for (int i = 0; i < 8; ++i) {
-        t <<= 8;
-        t |= ((uint8_t*)pos)[i];
-    }
-    pos += 8;
-    return t;
-}
-uint32_t PacketReader::read_u32() {
-    check_range(4, "u32");
-    auto buff = (uint8_t*)pos;
-    pos += 4;
-    return (((uint32_t)buff[0]) << 24) | (((uint32_t)buff[1]) << 16) | (((uint32_t)buff[2]) << 8) | (uint32_t)buff[3];
-}
-uint16_t PacketReader::read_u16() {
-    check_range(2, "u16");
-    auto buff = (uint8_t*)pos;
-    pos += 2;
-    return (((uint16_t)buff[0]) << 8) | (uint16_t)buff[1];
-}
-uint8_t PacketReader::read_u8() {
-    check_range(1, "u8");
-    auto buff = (uint8_t*)pos;
-    pos += 1;
-    return *buff;
-}
-double PacketReader::read_f64() {
-    check_range(8, "f64");
-    auto t = read_u64();
-    return *((double*)&t);
-}
-std::string PacketReader::read_str() {
-    auto max_pos = packet.buffer + packet.buffer_size;
-    if (pos >= max_pos) throw NetworkException("str read past packet payload.");
-    auto start = pos;
-    while (pos < max_pos && *pos != '\0') ++pos;
-    ++pos; // Go after '\0'
-    return string(start, pos-start-1);
-}
-
-void PacketReader::check_range(int bytes, const char* type) {
-    if (size() + bytes > packet.size) throw NetworkException(string(type) + " read past packet payload (packet: id="+to_string(packet.id)+" payload_length="+to_string(packet.size-3)+")");
-}
-
-
 
 
 
 void PacketWriter::send(const Socket &socket) {
-    // Packet id and payload are already in 'buffer'
-    auto payload = payload_size();
-    packet.size = size();
-    pos = packet.buffer + 1;
-    write_u16(payload);
-    socket.write_s(packet.buffer, packet.size);
+    int size = buffer.position();
+    auto payload_size = size-3;
+    buffer.go_to(1);
+    bw.write_u16(payload_size);
+    socket.write_s(buffer.get_buffer(), size);
 }
-
-
-void PacketWriter::write_u64(uint64_t value) {
-    check_range(8, "u64");
-    for (int i = 0; i < 8; ++i) {
-        ((uint8_t*)pos)[7-i] = value & 0xFF;
-        value >>= 8;
-    }
-    pos += 8;
-}
-void PacketWriter::write_u32(uint32_t value) {
-    check_range(4, "u32");
-    ((uint8_t*)pos)[0] = value >> 24;
-    ((uint8_t*)pos)[1] = value >> 16;
-    ((uint8_t*)pos)[2] = value >> 8;
-    ((uint8_t*)pos)[3] = value;
-    pos += 4;
-}
-void PacketWriter::write_u16(uint16_t value) {
-    check_range(2, "u16");
-    ((uint8_t*)pos)[0] = (uint8_t) (value >> 8);
-    ((uint8_t*)pos)[1] = (uint8_t) value;
-    pos += 2;
-}
-void PacketWriter::write_u8(uint8_t value) {
-    check_range(1, "u8");
-    *((uint8_t*)pos) = value;
-    pos += 1;
-}
-void PacketWriter::write_f64(double value) {
-    check_range(8, "f64");
-    uint64_t t = *((uint64_t*)&value);
-    write_u64(t);
-}
-void PacketWriter::write_str(const string &str) {
-    int size = str.size() + 1; // Include terminating char
-    check_range(size, "str");
-    memcpy(pos, str.c_str(), size);
-    pos += size;
-}
-void PacketWriter::check_range(int bytes, const char* type) {
-    if (size() + bytes > packet.buffer_size) throw NetworkException(string(type) + " write past buffer size (packet: id="+to_string(packet.id)+")");
-}
-
-
-
-
 
 
 
@@ -302,7 +247,7 @@ void session_server(char *port, void (*session_func)(int socket), bool &run_flag
 
 
 #ifdef IS_WIN
-string get_last_error_str() {
+string get_last_error_str_net() {
     TCHAR buff[1024];
     DWORD dw = GetLastError();
 

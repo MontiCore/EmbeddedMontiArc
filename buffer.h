@@ -1,22 +1,23 @@
 #pragma once
 #include <stdint.h>
 #include <string>
-#include <exception>
+
+
+
+// Used for "snprintf" target
+constexpr int32_t LOCAL_BUFFER_SIZE = 4096;
+extern char LOCAL_BUFFER[LOCAL_BUFFER_SIZE];
 
 struct DynamicBuffer {
-    static constexpr int32_t START_BUFFER_SIZE = 1024;
-    char *buffer = nullptr;
-    char* pos = nullptr;
-    int32_t buffer_size = 0;
 
     DynamicBuffer() {
         buffer = new char[START_BUFFER_SIZE];
         buffer_size = START_BUFFER_SIZE;
-        reset();
+        pos = 0;
     }
 
     void reset() {
-        pos = buffer;
+        pos = 0;
     }
 
     
@@ -24,9 +25,9 @@ struct DynamicBuffer {
         append((char) c);
     }
     void append(const char c) {
-        *pos = c;
+        check_size(pos);
+        buffer[pos] = c;
         ++pos;
-        check_size(position());
     }
     void append(const char* str) {
         while (*str){
@@ -36,28 +37,33 @@ struct DynamicBuffer {
 
     // Must be a valid index
     void go_to(int index) {
-        this->pos = buffer + index;
+        this->pos = index;
     }
 
     const char *as_terminated_string() {
-        *pos = '\0';
+        buffer[pos] = '\0';
         return buffer;
     }
 
     // Returns the current position in the buffer and increases its content (pos) by "bytes"
     char *push_slot(int bytes) {
         auto t = pos;
-        pos += bytes;
-        check_size(position());
-        return t;
+        auto new_pos = pos+bytes;
+        check_size(new_pos);
+        pos = new_pos;
+        return buffer+t;
     }
 
     int position() {
-        return pos-buffer;
+        return pos;
     }
 
     void reserve(int size) {
         check_size(size);
+    }
+
+    char *get_buffer() {
+        return buffer;
     }
 
     ~DynamicBuffer(){
@@ -65,6 +71,12 @@ struct DynamicBuffer {
     }
 
 private:
+
+    static constexpr int32_t START_BUFFER_SIZE = 1024;
+    char *buffer;
+    int32_t pos;
+    int32_t buffer_size;
+
     void check_size(int size);
 
 };
@@ -98,8 +110,10 @@ struct BinaryWriter {
     void write_u8(uint8_t value);
     void write_f64(double value);
     void write_str(const std::string &str);
+    void write_bytes(const char* data, uint32_t length);
 };
 
+#ifdef NO_ERR_OUT
 
 class BufferException : public std::exception {
     std::string description;
@@ -112,3 +126,6 @@ public:
     }
 };
 
+#endif
+
+int get_socket_id(const std::string &ip, int32_t max_count);

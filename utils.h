@@ -4,6 +4,7 @@
 #pragma once
 
 #include <cstdint>
+#include <string>
 
 using i8 = int8_t;
 using i16 = int16_t;
@@ -86,6 +87,11 @@ struct vec2 {
     template<typename A>
     explicit operator vec2<A>() const {
         return vec2<A>( ( A )x, ( A )y );
+    }
+
+    T &operator[](size_t i) {
+        if (i == 1) return y;
+        return x;
     }
 };
 

@@ -3,22 +3,27 @@
  */
 #include "json.h"
 
-//#include <cstdio>
+#include <stdarg.h>
 #include <math.h>
 #include <cctype>
 #include <limits>
 #include <sstream>
+#include <inttypes.h>
+
 #include "printf.h"
-//#include <float.h>
+#include "err_out.h"
 
 
-char JsonWriter::LOCAL_BUFFER[JsonWriter::LOCAL_BUFFER_SIZE];
-
-JsonWriter::JsonWriter(DynamicBuffer &buffer) : buffer(buffer) {
-    offset = 0;
-    has_elem = false;
-    has_key = true;
-    buffer.reset();
+const char* get_type_name(ValueType type) {
+    switch(type) {
+        case ValueType::OBJECT: return "Object";
+        case ValueType::ARRAY: return "Array";
+        case ValueType::STRING: return "String";
+        case ValueType::NUMBER: return "Number";
+        case ValueType::BOOLEAN: return "Boolean";
+        case ValueType::UNKNOWN: return "Unknown";
+    }
+    return "";
 }
 
 
@@ -204,7 +209,9 @@ ObjectIterator& ObjectIterator::operator++() {
 }
 StringRef ObjectIterator::operator*() {
     // Get key
-    if (traverser.current_type != ValueType::STRING) throw ParsingException("Parsing exception: Expected a string as key");
+    if (traverser.current_type != ValueType::STRING) {
+        traverser.parsing_exception("Expected a string as key when iterating object entries.");
+    }
     auto key = traverser.get_string();
     last_elem_pos = traverser.pos; // Track traversal
     return key;
@@ -246,7 +253,36 @@ bool ArrayIterator::operator!=( const ArrayIterator& other ) {
 
 
 
-
+void JsonTraverser::parsing_exception(const char *msg_format, ...) {
+    va_list args;
+    va_start(args, msg_format);
+    auto written = vsnprintf(LOCAL_BUFFER, LOCAL_BUFFER_SIZE, msg_format, args);
+    va_end(args);
+    if (written > LOCAL_BUFFER_SIZE) written = LOCAL_BUFFER_SIZE;
+    // Print "    at [Line 6] ... some_json ..."
+    int32_t pos_in_line = pos - line_start;
+    const char *dots_before = "";
+    const char *dots_after = "";
+    int32_t before_length = pos_in_line;
+    auto context_before = line_start;
+    if (pos_in_line > 30) {
+        dots_before = "...";
+        before_length = 30;
+        context_before = pos - 30;
+    }
+    int32_t after_length = 0;
+    auto test = pos;
+    while (*test != '\0' && *test != '\n') {
+        ++after_length;
+        ++test;
+        if (after_length >= 50) {
+            dots_after = "...";
+            break;
+        }
+    }
+    snprintf(LOCAL_BUFFER+written, LOCAL_BUFFER_SIZE-written, "\n  at [Line %" PRIi32 "] %s %.*s[>]%.*s %s", line, dots_before, before_length, context_before, after_length, pos, dots_after);
+    ERR_OUT_throw_error("JsonParsingException",LOCAL_BUFFER);
+}
 
 
 
@@ -257,6 +293,8 @@ JsonTraverser::JsonTraverser(const char *data) {
     pos = data;
     c = *pos;
     depth = 0;
+    line = 1;
+    line_start = data;
     goto_next_value();
 }
 
@@ -269,8 +307,9 @@ bool JsonTraverser::is_empty(){
 }
 
 ObjectStream JsonTraverser::stream_object() {
-    // TODO
-    if (current_type != ValueType::OBJECT) throw ParsingException("Parsing exception: tried to read object but got wrong type.");
+    if (current_type != ValueType::OBJECT) {
+        parsing_exception("Tried to stream an Object but got type %s.", get_type_name(current_type));
+    }
     next_char(); // Move after '{'
     depth++;
     int32_t iteration_depth = depth;
@@ -280,7 +319,9 @@ ObjectStream JsonTraverser::stream_object() {
 
 ArrayStream JsonTraverser::stream_array() {
     // TODO
-    if (current_type != ValueType::ARRAY) throw ParsingException("Parsing exception: tried to read array but got wrong type.");
+    if (current_type != ValueType::ARRAY) {
+        parsing_exception("Tried to stream an Array but got type %s.", get_type_name(current_type));
+    }
     next_char(); // Move after '['
     depth++;
     int32_t iteration_depth = depth;
@@ -289,7 +330,9 @@ ArrayStream JsonTraverser::stream_array() {
 }
 
 bool JsonTraverser::get_bool() {
-    if (current_type != ValueType::BOOLEAN) throw ParsingException("Parsing exception: tried to read bool but got wrong type.");
+    if (current_type != ValueType::BOOLEAN) {
+        parsing_exception("Tried to read a Boolean but got type %s.", get_type_name(current_type));
+    }
     skip_bool();
     goto_next_value();
     return last_bool;
@@ -297,7 +340,9 @@ bool JsonTraverser::get_bool() {
 
 
 StringRef JsonTraverser::get_string() {
-    if (current_type != ValueType::STRING) throw ParsingException("Parsing exception: tried to read string but got wrong type.");
+    if (current_type != ValueType::STRING) {
+        parsing_exception("Tried to read a String but got type %s.", get_type_name(current_type));
+    }
     auto start = pos +1;
     skip_string();
     auto end = pos - 1;
@@ -322,13 +367,15 @@ double JsonTraverser::get_double() {
         if (s.equals("Infinity"))
             return std::numeric_limits<double>::infinity();
     }
-    throw ParsingException("Parsing exception: tried to read double but got wrong type.");
+    parsing_exception("Tried to read a Double but got type %s.", get_type_name(current_type));
 }
 
 
 
 int64_t JsonTraverser::get_long() {
-    if (current_type != ValueType::NUMBER) throw ParsingException("Parsing exception: tried to read int64_t but got wrong type.");
+    if (current_type != ValueType::NUMBER) {
+        parsing_exception("Tried to read a Long but got type %s.", get_type_name(current_type));
+    }
     char *end;
     auto res = strtoll(pos, &end, 10);
     goto_char(end);
@@ -338,7 +385,7 @@ int64_t JsonTraverser::get_long() {
 
 void JsonTraverser::expect_valid_integer(int64_t l) {
     if (l > (int64_t) INT32_MAX || l < (int64_t) INT32_MIN)
-        throw ParsingException("Parsing exception: The int64_t doesn't fit in an int32_t");
+        parsing_exception("The int64_t '%" PRIi64 "' doesn't fit in an int32_t", l);
 }
 
 void JsonTraverser::get_value_type() {
@@ -425,12 +472,12 @@ void JsonTraverser::skip_long() {
     if (c == '-')
         next_char();
     if (c < '0' || c > '9')
-        throw ParsingException("Parsing exception: Expected digit in long");
+        parsing_exception("Expected digit in long (got '%c').", c);
     do {
         next_char();
     } while (c >= '0' && c <= '9');
     if (!is_next_whitespace() && c != ',' && c != ']' && c != '}')
-        throw ParsingException("Parsing exception: Unexpected character in long");
+        parsing_exception("Unexpected character in Long: '%c'.", c);
     current_type = ValueType::UNKNOWN;
 }
 
@@ -448,7 +495,7 @@ void JsonTraverser::skip_string() {
         next_char();
     }
     if (c == '\0')
-        throw ParsingException("Parsing exception: Missing closing string delimiter");
+        parsing_exception("Missing closing string delimiter");
     next_char();
     current_type = ValueType::UNKNOWN;
 }
@@ -457,11 +504,11 @@ void JsonTraverser::skip_bool() {
     if (c == 't' || c == 'T') {
         last_bool = true;
         if (!is_true())
-            throw ParsingException("Parsing exception: Unexpected value for boolean");
+            parsing_exception("Unexpected value for boolean");
     } else {
         last_bool = false;
         if (!is_false())
-            throw ParsingException("Parsing exception: Unexpected value for boolean");
+            parsing_exception("Unexpected value for boolean");
     }
     current_type = ValueType::UNKNOWN;
 }
