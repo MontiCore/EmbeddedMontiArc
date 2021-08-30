@@ -17,23 +17,13 @@
 
 extern "C" {
 
-// These are the functions that any autopilot must implement in order to be loaded and executed by the hardware_emulator
+// See https://git.rwth-aachen.de/monticore/EmbeddedMontiArc/simulators/simulation/-/wikis/dev-docs/concepts/Library-Interface
 
-// These are wrappers around the "autopilot interface functions" (program.h)
-// These are simpler entry points so that the hardware_emulator can more easily communicate with the autopilot
-// (Simple pure C types & simple function calling standards) 
-
-// Returns The JSON string of the DynamicInterface
 EXPORT const char* DI__get_interface();
 
-// Port data-exchange functions
-// If is_json != 0, the data is a JSON string
-// Else the data is binary: First 4 bytes of data -> size of the rest
-// Same for the returned data from DI__get_port()
 EXPORT void DI__set_port(int i, const char* data, int is_json);
 EXPORT const char* DI__get_port(int i, int is_json);
 
-// Methods
 EXPORT void DI__init();
 EXPORT void DI__execute(double delta_sec);
 
