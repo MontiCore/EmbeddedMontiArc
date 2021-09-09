@@ -59,10 +59,14 @@ public class AllPredefinedLayers {
     public static final String RESHAPE_NAME = "Reshape";
     public static final String DOT_PRODUCT_SELF_ATTENTION_NAME = "DotProductSelfAttention";
     public static final String LOAD_NETWORK_NAME = "LoadNetwork";
+<<<<<<< HEAD
     public static final String CUSTOM_LAYER = "CustomLayer";
     public static final String CONVOLUTION3D_NAME = "Convolution3D";
     public static final String UP_CONVOLUTION3D_NAME = "UpConvolution3D";
 
+=======
+    public static final String AdaNet_Name = "AdaNet"; //AdaNet layer
+>>>>>>> master
 
     //replay layers
     public static final String LARGE_MEMORY_NAME = "LargeMemory";
@@ -105,6 +109,13 @@ public class AllPredefinedLayers {
     public static final String BEAMSEARCH_WIDTH_NAME = "width";
     public static final String SHAPE_NAME = "shape";
     public static final String RNN_DROPOUT_NAME = "dropout";
+
+    //Parameter AdaNet
+    public static final String Block = "block";
+    public static final String In = "inBlock";
+    public static final String Out = "outBlock";
+    public static final Integer DEFAULT_UNITS = 20;
+    public static final String DEFAULT_BLOCK = "default_block";
 
     //parameters LoadNetwork layer
     public static final String NETWORK_DIR_NAME = "networkDir";
@@ -205,8 +216,13 @@ public class AllPredefinedLayers {
                 DotProductSelfAttention.create(),
                 LargeMemory.create(),
                 EpisodicMemory.create(),
+<<<<<<< HEAD
                 Convolution3D.create(),
                 UpConvolution3D.create());
+=======
+                AdaNet.create());
+
+>>>>>>> master
     }
 
     public static List<UnrollDeclarationSymbol> createUnrollList(){
