@@ -73,41 +73,40 @@ public class FullyConnected extends PredefinedLayerDeclaration {
                         .width(units)
                         .elementType("-oo", "oo")
                         .build());
-            }
-        } else { //3D Cases
-            if (inputType.getWidth() == 1) {
-                if (inputType.getHeight() == 1) {
-                    if (inputType.getDepth() == 1){
-                            return Collections.singletonList(new ArchTypeSymbol.Builder()
-                                .channels(units)
-                                .height(1)
-                                .width(1)
-                                .depth(1)
-                                .elementType("-oo", "oo")
-                                .build());
+            }   else { //3D Cases
+                    if (inputType.getWidth() == 1) {
+                        if (inputType.getHeight() == 1) {
+                            if (inputType.getDepth() == 1){
+                                    return Collections.singletonList(new ArchTypeSymbol.Builder()
+                                        .channels(units)
+                                        .height(1)
+                                        .width(1)
+                                        .depth(1)
+                                        .elementType("-oo", "oo")
+                                        .build());
+                            }   return Collections.singletonList(new ArchTypeSymbol.Builder()
+                                    .channels(inputType.getChannels())
+                                    .height(1)
+                                    .width(1)
+                                    .depth(units)
+                                    .elementType("-oo", "oo")
+                                    .build());
+                        }   return Collections.singletonList(new ArchTypeSymbol.Builder()
+                                    .channels(inputType.getChannels())
+                                    .height(units)
+                                    .width(1)
+                                    .depth(inputType.getDepth())
+                                    .elementType("-oo", "oo")
+                                    .build());
                     }   return Collections.singletonList(new ArchTypeSymbol.Builder()
                             .channels(inputType.getChannels())
-                            .height(1)
-                            .width(1)
-                            .depth(units)
-                            .elementType("-oo", "oo")
-                            .build());
-                }   return Collections.singletonList(new ArchTypeSymbol.Builder()
-                            .channels(inputType.getChannels())
-                            .height(units)
-                            .width(1)
+                            .height(inputType.getHeight())
+                            .width(units)
                             .depth(inputType.getDepth())
                             .elementType("-oo", "oo")
                             .build());
-            }   return Collections.singletonList(new ArchTypeSymbol.Builder()
-                    .channels(inputType.getChannels())
-                    .height(inputType.getHeight())
-                    .width(units)
-                    .depth(inputType.getDepth())
-                    .elementType("-oo", "oo")
-                    .build());
-            }
-        }
+                    }
+                }
     }
 
     @Override
