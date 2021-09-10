@@ -1,0 +1,10 @@
+architecture SimpleNetworkLinear(inputs=80, classes=2){
+    def input Q(-oo:+oo)^{inputs} in1
+    def output Q(-oo:oo)^{classes} out1
+    
+    in1 ->
+    Reshape(shape=(10,2,2,2)) ->
+    UpConvolution3D(kernel=(2,2,2), channels=10 , stride = (1,1,1), padding=(1,1,1)) ->
+    FullyConnected(units=classes, no_bias=true) ->
+    out1;
+}
