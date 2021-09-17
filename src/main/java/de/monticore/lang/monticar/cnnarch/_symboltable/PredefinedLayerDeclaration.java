@@ -130,7 +130,7 @@ abstract public class PredefinedLayerDeclaration extends LayerDeclarationSymbol 
             }
         }
     }
-//NEW
+
     protected void errorIfInputDepthIsInvalid(List<ArchTypeSymbol> inputTypes, LayerSymbol layer, int depth){
         for (ArchTypeSymbol inputType : inputTypes) {
             if (inputType.getDepth() != depth){
@@ -173,7 +173,6 @@ abstract public class PredefinedLayerDeclaration extends LayerDeclarationSymbol 
             } 
         }
     }
-//END NEW
 
     //check input for convolution and pooling
     protected static void errorIfInputSmallerThanKernel(List<ArchTypeSymbol> inputTypes, LayerSymbol layer) {
