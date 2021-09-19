@@ -10,7 +10,7 @@
 
     <groupId>de.monticore.lang.monticar</groupId>
     <artifactId>embedded-montiarc-math-middleware-generator</artifactId>
-    <version>0.1.1-SNAPSHOT</version>
+    <version>0.1.2-SNAPSHOT</version>
 
 
     <!-- == PROJECT DEPENDENCIES ============================================= -->
@@ -24,7 +24,7 @@
         <EMADL2CPP.version>0.5.2-SNAPSHOT</EMADL2CPP.version>
         <SOMEIP.version>1.5-SNAPSHOT</SOMEIP.version>
         <MQTT.version>1.7-SNAPSHOT</MQTT.version>
-        <embedded-montiarc-component-clustering.version>0.0.4-SNAPSHOT</embedded-montiarc-component-clustering.version>
+        <embedded-montiarc-component-clustering.version>0.0.5-SNAPSHOT</embedded-montiarc-component-clustering.version>
 
         <!-- .. Libraries .................................................. -->
         <guava.version>18.0</guava.version>
