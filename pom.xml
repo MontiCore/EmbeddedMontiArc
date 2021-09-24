@@ -131,7 +131,7 @@
             <plugin>
                 <groupId>de.monticore.lang.monticar.utilities</groupId>
                 <artifactId>maven-streamtest</artifactId>
-                <version>0.0.21-SNAPSHOT</version>
+                <version>0.0.23-SNAPSHOT</version>
             </plugin>
         </plugins>
     </build>
