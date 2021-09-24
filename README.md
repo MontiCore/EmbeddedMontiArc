@@ -548,7 +548,7 @@ All predefined methods start with a capital letter and all constructed methods h
   
 * **Convolution(kernel, channels, stride=(1,1), padding="same", no_bias=false)**
 
-  Creates a convolutional layer. Currently, only 2D convolutions are allowed
+  Creates a convolutional layer.
     
   * **kernel** (integer tuple > 0, required): convolution kernel size: (height, width).
   * **channels** (integer > 0, required): number of convolution filters and number of output channels.
@@ -774,7 +774,7 @@ All predefined methods start with a capital letter and all constructed methods h
 
 * **UpConvolution(kernel, channels, stride=(1,1), no_bias=false, padding="same")**
 
-  Creates a up convolutional layer (also known as transposed convolution ). Is currently only supported in the tesnsorflow backend.
+  Creates a up convolutional layer (also known as transposed convolution ).
     
   * **kernel** (integer tuple > 0, required): convolution kernel size: (height, width).
   * **channels** (integer > 0, required): number of up convolution filters and number of output channels.
@@ -782,6 +782,26 @@ All predefined methods start with a capital letter and all constructed methods h
   * **padding** ({"valid", "same", "no_loss"}, optional, default="same"): One of "valid", "same" or "no_loss". "valid" means no padding. "same"   results in padding the input such that the output has the same length as the original input divided by the stride (rounded up). "no_loss" results in minimal padding such that each input is used by at least one filter (identical to "valid" if *stride* equals 1).
   * **no_bias** (boolean, optional, default=false): Whether to disable the bias parameter.
     
+* **Convolution3D(kernel, channels, stride=(1,1,1), padding="same3d", no_bias=false)**
+
+  Creates a convolutional layer for 3 dimension.
+    
+  * **kernel** (integer tuple > 0, required): convolution kernel size: (height, width, depth).
+  * **channels** (integer > 0, required): number of convolution filters and number of output channels.
+  * **stride** (integer tuple > 0, optional, default=(1,1,1)): convolution stride: (height, width, depth).
+  * **padding** ({"valid", "same", "no_loss"}, optional, default="same3d"): One of "valid3d", "same3d" or "simple3d". "valid" means no padding. "same"   results in padding the input such that the output has the same length as the original input divided by the stride (rounded up). "simple3d" results constant padding of size 1 (same as (1,1,1). Convolution3D also accepts tuples of form (height, widht, depth) as input.
+  * **no_bias** (boolean, optional, default=false): Whether to disable the bias parameter.
+
+* **UpConvolution3D(kernel, channels, stride=(1,1,1), padding="same3d", no_bias=false)**
+
+  Creates a transposed convolutional layer for 3 dimensional data
+    
+  * **kernel** (integer tuple > 0, required): convolution kernel size: (height, width, depth).
+  * **channels** (integer > 0, required): number of convolution filters and number of output channels.
+  * **stride** (integer tuple > 0, optional, default=(1,1,1)): convolution stride: (height, width, depth).
+  * **padding** ({"valid", "same", "no_loss"}, optional, default="same3d"): One of "valid3d", "same3d" or "simple3d". "valid" means no padding. "same"   results in padding the input such that the output has the same length as the original input divided by the stride (rounded up). "simple3d" results constant padding of size 1 (same as (1,1,1). UpConvolution3D also accepts tuples of form (height, widht, depth) as input.
+  * **no_bias** (boolean, optional, default=false): Whether to disable the bias parameter.
+
     
 * **EpisodicMemory(replayMemoryStoreProb=1, maxStoredSamples=-1, memoryReplacementStrategy="replace_oldest", useReplay=true, replayInterval, replayBatchSize=-1, replaySteps, replayGradientSteps=1, useLocalAdaption=true, localAdaptionGradientSteps=1, localAdaptionK=1, queryNetDir=-1, queryNetPrefix=-1, queryNetNumInputs=1)**
 
