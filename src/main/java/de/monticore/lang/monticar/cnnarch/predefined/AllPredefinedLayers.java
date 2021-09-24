@@ -59,6 +59,10 @@ public class AllPredefinedLayers {
     public static final String RESHAPE_NAME = "Reshape";
     public static final String DOT_PRODUCT_SELF_ATTENTION_NAME = "DotProductSelfAttention";
     public static final String LOAD_NETWORK_NAME = "LoadNetwork";
+    public static final String CUSTOM_LAYER = "CustomLayer";
+    public static final String CONVOLUTION3D_NAME = "Convolution3D";
+    public static final String UP_CONVOLUTION3D_NAME = "UpConvolution3D";
+
     public static final String AdaNet_Name = "AdaNet"; //AdaNet layer
 
     //replay layers
@@ -151,6 +155,9 @@ public class AllPredefinedLayers {
     public static final String PADDING_VALID = "valid";
     public static final String PADDING_SAME = "same";
     public static final String PADDING_NO_LOSS = "no_loss";
+    public static final String PADDING_VALID3D = "valid3d";
+    public static final String PADDING_SAME3D = "same3d";
+    public static final String PADDING_SIMPLE3D = "simple3d";
     public static final String POOL_MAX = "max";
     public static final String POOL_AVG = "avg";
     public static final String RANDOM = "random";
@@ -206,6 +213,8 @@ public class AllPredefinedLayers {
                 DotProductSelfAttention.create(),
                 LargeMemory.create(),
                 EpisodicMemory.create(),
+                Convolution3D.create(),
+                UpConvolution3D.create(),
                 AdaNet.create());
 
     }

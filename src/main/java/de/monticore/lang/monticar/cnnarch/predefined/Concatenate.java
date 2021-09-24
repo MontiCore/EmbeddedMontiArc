@@ -29,6 +29,9 @@ public class Concatenate extends PredefinedLayerDeclaration {
         int channels = layer.getInputTypes().get(0).getChannels();
         int height = layer.getInputTypes().get(0).getHeight();
         int width = layer.getInputTypes().get(0).getWidth();
+        if (inputTypes.get(0).getDepthIndex() > -1) {
+            int depth = layer.getInputTypes().get(0).getDepth();
+        }
 
         int axis = layer.getIntValue(AllPredefinedLayers.AXIS_NAME).get();
 
@@ -50,13 +53,24 @@ public class Concatenate extends PredefinedLayerDeclaration {
                 width += inputShape.getWidth();
             }
         }
-
-        return Collections.singletonList(new ArchTypeSymbol.Builder()
-                .channels(channels)
-                .height(height)
-                .width(width)
-                .elementType(range.get(0), range.get(1))
-                .build());
+        if (inputTypes.get(0).getDepthIndex() > -1) {
+            return Collections.singletonList(
+                    new ArchTypeSymbol.Builder()
+                        .channels(layer.getInputTypes().get(0).getChannels())
+                        .height(layer.getInputTypes().get(0).getHeight())
+                        .width(layer.getInputTypes().get(0).getWidth())
+                        .depth(layer.getInputTypes().get(0).getDepth())
+                        .elementType(range.get(0), range.get(1))
+                        .build());
+        } else {
+            return Collections.singletonList(
+                    new ArchTypeSymbol.Builder()
+                        .channels(channels)
+                        .height(height)
+                        .width(width)
+                        .elementType(range.get(0), range.get(1))
+                        .build());
+        }
     }
 
     @Override
