@@ -112,7 +112,7 @@ public:
             loadComponent(loss_json_path, loss_param_path, loss_symbol, loss_param_map);
         }
         else {
-            std::cerr << "Can't open the file. Please check if " << file_prefix << "_loss-symbol.json" << exists". \n";
+            std::cerr << "Can't open the file. Please check if " << file_prefix << "_loss-symbol.json" << "exists. \n";
         }
 
         NDArray::WaitAll();
