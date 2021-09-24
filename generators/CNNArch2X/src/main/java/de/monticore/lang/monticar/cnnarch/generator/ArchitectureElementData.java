@@ -314,14 +314,27 @@ public class ArchitectureElementData {
     @Nullable
     public List<Integer> getPadding(){
 
-    	String pad = ((LayerSymbol) getElement()).getStringValue(AllPredefinedLayers.PADDING_NAME).get();
+        if (getLayerSymbol().getIntTupleValue(AllPredefinedLayers.PADDING_NAME).isPresent()){
+            return Arrays.asList(getLayerSymbol().getIntTupleValue(AllPredefinedLayers.PADDING_NAME).get().get(0),
+                                getLayerSymbol().getIntTupleValue(AllPredefinedLayers.PADDING_NAME).get().get(1),
+                                getLayerSymbol().getIntTupleValue(AllPredefinedLayers.PADDING_NAME).get().get(2));
+        } else {
 
-        if(pad.equals("same")){
-            return getPadding(getLayerSymbol()); //The padding calculated here is only used in the gluon/ mxnet backend, in the tensorlflow one it is interpreted as "same"
-        }else if(pad.equals("valid")){
-            return Arrays.asList(0,-1,0,0,0,0,0,0);
-        }else{ //"no loss"
-            return Arrays.asList(0,0,-1,0,0,0,0,0);
+            String pad = ((LayerSymbol) getElement()).getStringValue(AllPredefinedLayers.PADDING_NAME).get();
+
+            if(pad.equals("same")){
+                return getPadding(getLayerSymbol()); //The padding calculated here is only used in the gluon/ mxnet backend, in the tensorlflow one it is interpreted as "same"
+            }else if(pad.equals("valid")){
+                return Arrays.asList(0,-1,0,0,0,0,0,0);
+            }else if(pad.equals("same3d")){ //Three Dimensional Cases
+                return getPadding3D(getLayerSymbol());
+            }else if(pad.equals("valid3d")){
+                return Arrays.asList(0,0,0);
+            }else if(pad.equals("simple3d")){
+                return Arrays.asList(1,1,1);
+            }else{ //"no loss"
+                return Arrays.asList(0,0,-1,0,0,0,0,0);
+            }
         }
     }
 
@@ -349,15 +362,81 @@ public class ArchitectureElementData {
         return Arrays.asList(0,0,0,0,topPad,bottomPad,leftPad,rightPad);
     }
 
+    //NEW
+    @Nullable
+    public List<Integer> getPadding3D(LayerSymbol layer){
+        List<Integer> kernel = layer.getIntTupleValue(AllPredefinedLayers.KERNEL_NAME).get();
+        List<Integer> stride = layer.getIntTupleValue(AllPredefinedLayers.STRIDE_NAME).get();
+        ArchTypeSymbol inputType = layer.getInputTypes().get(0);
+        ArchTypeSymbol outputType = layer.getOutputTypes().get(0);
+
+        int heightWithPad = kernel.get(1) + stride.get(1)*(outputType.getHeight() - 1);
+        int widthWithPad = kernel.get(2) + stride.get(2)*(outputType.getWidth() - 1);
+        int depthWithPad = kernel.get(0) + stride.get(0)*(outputType.getDepth() - 1);
+        int heightPad = Math.max(0, heightWithPad - inputType.getHeight());
+        int widthPad = Math.max(0, widthWithPad - inputType.getWidth());
+        int depthPad = Math.max(0, depthWithPad - inputType.getDepth());
+
+        int topPad = (int)Math.ceil(heightPad / 2.0);
+        int bottomPad = (int)Math.floor(heightPad / 2.0);
+        int leftPad = (int)Math.ceil(widthPad / 2.0);
+        int rightPad = (int)Math.floor(widthPad / 2.0);
+        int frontPad = (int)Math.ceil(depthPad / 2.0);
+        int backPad = (int)Math.floor(depthPad / 2.0);
+
+        if (topPad == 0 && bottomPad == 0 && leftPad == 0 && rightPad == 0 && frontPad == 0 && backPad == 0){
+            return null;
+        }
+
+        return Arrays.asList(frontPad,topPad,leftPad);
+    }
+
+    @Nullable
+    public List<Integer> getTransPadding3D(LayerSymbol layer) {
+        List<Integer> kernel = layer.getIntTupleValue(AllPredefinedLayers.KERNEL_NAME).get();
+        List<Integer> stride = layer.getIntTupleValue(AllPredefinedLayers.STRIDE_NAME).get();
+        ArchTypeSymbol inputType = layer.getInputTypes().get(0);
+        ArchTypeSymbol outputType = layer.getOutputTypes().get(0);
+
+        int heightPad = (stride.get(1) - 1)*inputType.getHeight() - stride.get(1) + kernel.get(1);
+        int widthPad = (stride.get(2) - 1) *inputType.getHeight() - stride.get(1) +  kernel.get(2);
+        int depthPad = (stride.get(0) - 1)*inputType.getHeight() - stride.get(1) +  kernel.get(0);
+
+        int topPad = (int) Math.ceil(heightPad / 2.0);
+        int bottomPad = (int) Math.floor(heightPad / 2.0);
+        int leftPad = (int) Math.ceil(widthPad / 2.0);
+        int rightPad = (int) Math.floor(widthPad / 2.0);
+        int frontPad = (int)Math.ceil(depthPad / 2.0);
+        int backPad = (int)Math.floor(depthPad / 2.0);
+        
+        Integer toPrint = new Integer(heightPad);
+        System.out.println(toPrint.toString());
+        /*if (topPad == 0 && bottomPad == 0 && leftPad == 0 && rightPad == 0){
+            return null;
+        }*/
+        //return Arrays.asList(0, 0, 0);
+        return Arrays.asList(frontPad, topPad, leftPad);
+    }
+
     @Nullable
     public List<Integer> getTransPadding(){
+        if (getLayerSymbol().getIntTupleValue(AllPredefinedLayers.TRANSPADDING_NAME).isPresent()){
+            return Arrays.asList(getLayerSymbol().getIntTupleValue(AllPredefinedLayers.TRANSPADDING_NAME).get().get(0),
+                                getLayerSymbol().getIntTupleValue(AllPredefinedLayers.TRANSPADDING_NAME).get().get(1),
+                                getLayerSymbol().getIntTupleValue(AllPredefinedLayers.TRANSPADDING_NAME).get().get(2));
+        } else {
 
-        String pad = ((LayerSymbol) getElement()).getStringValue(AllPredefinedLayers.TRANSPADDING_NAME).get();
+            String pad = ((LayerSymbol) getElement()).getStringValue(AllPredefinedLayers.TRANSPADDING_NAME).get();
 
-        if(pad.equals("same")){
-            return getTransPadding(getLayerSymbol()); //The padding calculated here is only used in the gluon/ mxnet backend, in the tensorlflow one it is interpreted as "same"
-        } else {  // padding valid
-            return Arrays.asList(0,0);
+            if(pad.equals("simple3d")){
+                return Arrays.asList(1,1,1); //The padding calculated here is only used in the gluon/ mxnet backend, in the tensorlflow one it is interpreted as "same"
+            } else if(pad.equals("same3d")){
+                return getTransPadding3D(getLayerSymbol());
+            } else if(pad.equals("valid3d")){
+                return Arrays.asList(0,0,0);
+            } else {
+                return Arrays.asList(0,0);
+            }
         }
     }
 
