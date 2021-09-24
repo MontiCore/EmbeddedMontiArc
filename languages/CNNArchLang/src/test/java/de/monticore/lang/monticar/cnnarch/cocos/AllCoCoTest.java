@@ -58,6 +58,7 @@ public class AllCoCoTest extends AbstractCoCoTest {
         checkValid("valid_tests", "RNNtest");
         checkValid("valid_tests", "EpisodicMemoryNetwork");
         checkValid("valid_tests", "LargeMemoryNetwork");
+        checkValid("valid_tests", "Small3DGan");
     }
 
     @Test
