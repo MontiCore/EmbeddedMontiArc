@@ -123,4 +123,11 @@
     ${output.name}<#if output.arrayAccess.isPresent()>[${output.arrayAccess.get().intValue.get()?c}]</#if> = CNNTranslator::translateToCube(${tc.getNameAsArray(tc.getName(output))}, std::vector<size_t> {${shape[0]?c}, ${shape[1]?c}, ${shape[2]?c}});
 </#if>
 </#if>
+<#if shape?size == 4>
+<#if (output.ioDeclaration.type.domain.isNaturalNumber() || output.ioDeclaration.type.domain.isWholeNumber())>
+    ${output.name}<#if output.arrayAccess.isPresent()>[${output.arrayAccess.get().intValue.get()?c}]</#if> = CNNTranslator::translateToIntCube(${tc.getNameAsArray(tc.getName(output))}, std::vector<size_t> {${shape[1]?c}, ${shape[2]?c}, ${shape[3]?c}});
+<#else>
+    ${output.name}<#if output.arrayAccess.isPresent()>[${output.arrayAccess.get().intValue.get()?c}]</#if> = CNNTranslator::translateToCube(${tc.getNameAsArray(tc.getName(output))}, std::vector<size_t> {${shape[1]?c}, ${shape[2]?c}, ${shape[3]?c}});
+</#if>
+</#if>
 </#list>
