@@ -144,6 +144,8 @@ public class TypeConverter {
             }
         } else if (dimensionElements.size() == 3) {
             variableType = new VariableType("CommonCubeType", getCubeAccessString(type), MathConverter.curBackend.getIncludeHeaderName());
+        } else if (dimensionElements.size() == 4) {
+            variableType = new VariableType("CommonCubeType", getCubeAccessString(type), MathConverter.curBackend.getIncludeHeaderName());
         } else {
             variableType = new VariableType("CommonMatrixType", getMatAccessString(type), MathConverter.curBackend.getIncludeHeaderName());
         }
