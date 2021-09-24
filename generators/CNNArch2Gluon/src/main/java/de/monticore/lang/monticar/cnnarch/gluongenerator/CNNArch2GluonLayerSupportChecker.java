@@ -46,6 +46,8 @@ public class CNNArch2GluonLayerSupportChecker extends LayerSupportChecker {
         supportedLayerList.add(AllPredefinedLayers.DOT_PRODUCT_SELF_ATTENTION_NAME);
         supportedLayerList.add(AllPredefinedLayers.LOAD_NETWORK_NAME);
         supportedLayerList.add(AllPredefinedLayers.LAYERNORM_NAME);
+        supportedLayerList.add(AllPredefinedLayers.UP_CONVOLUTION3D_NAME);
+        supportedLayerList.add(AllPredefinedLayers.CONVOLUTION3D_NAME);
         supportedLayerList.add(AllPredefinedLayers.AdaNet_Name);
     }
 
