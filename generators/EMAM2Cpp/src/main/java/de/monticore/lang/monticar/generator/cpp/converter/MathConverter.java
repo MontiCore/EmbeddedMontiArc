@@ -137,6 +137,10 @@ public class MathConverter {
         }
     }
 
+    public static String get4DCubeTypeInitLine(Variable v, EMAMBluePrintCPP bluePrint) {
+        return String.format("%s = %s(%s, %s, %s);\n", MathInformationRegister.getVariableInitName(v, bluePrint), curBackend.getCubeTypeName(), v.getDimensionalInformation().get(1), v.getDimensionalInformation().get(2), v.getDimensionalInformation().get(3));
+    }
+
     public static String getCubeTypeInitLine(Variable v, EMAMBluePrintCPP bluePrint) {
         return String.format("%s = %s(%s, %s, %s);\n", MathInformationRegister.getVariableInitName(v, bluePrint), curBackend.getCubeTypeName(), v.getDimensionalInformation().get(0), v.getDimensionalInformation().get(1), v.getDimensionalInformation().get(2));
     }
@@ -171,6 +175,8 @@ public class MathConverter {
             initLine = MathConverter.getRowVectorInitLine(v, bluePrint);
         } else if (v.getVariableType().getTypeNameTargetLanguage().equals(MathConverter.curBackend.getColumnVectorTypeName())) {
             initLine = MathConverter.getColumnVectorInitLine(v, bluePrint);
+        } else if (v.getVariableType().getTypeNameTargetLanguage().equals(MathConverter.curBackend.getCubeTypeName()) && v.getDimensionalInformation().size() == 4) {
+            initLine = MathConverter.get4DCubeTypeInitLine(v, bluePrint);
         } else if (v.getVariableType().getTypeNameTargetLanguage().equals(MathConverter.curBackend.getCubeTypeName())) {
             initLine = MathConverter.getCubeTypeInitLine(v, bluePrint);
         } else if (v.getVariableType().getTypeNameTargetLanguage().equals(MathConverter.curBackend.getCubeUnsignedCharName())) {
