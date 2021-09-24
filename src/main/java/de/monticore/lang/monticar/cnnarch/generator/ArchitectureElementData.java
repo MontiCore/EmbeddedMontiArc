@@ -434,6 +434,8 @@ public class ArchitectureElementData {
                 return getTransPadding3D(getLayerSymbol());
             } else if(pad.equals("valid3d")){
                 return Arrays.asList(0,0,0);
+            } else if(pad.equals("same")){
+                return getTransPadding(getLayerSymbol());
             } else {
                 return Arrays.asList(0,0);
             }
