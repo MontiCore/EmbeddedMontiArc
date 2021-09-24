@@ -548,7 +548,7 @@ All predefined methods start with a capital letter and all constructed methods h
   
 * **Convolution(kernel, channels, stride=(1,1), padding="same", no_bias=false)**
 
-  Creates a convolutional layer. Currently, only 2D convolutions are allowed
+  Creates a convolutional layer.
     
   * **kernel** (integer tuple > 0, required): convolution kernel size: (height, width).
   * **channels** (integer > 0, required): number of convolution filters and number of output channels.
@@ -774,7 +774,7 @@ All predefined methods start with a capital letter and all constructed methods h
 
 * **UpConvolution(kernel, channels, stride=(1,1), no_bias=false, padding="same")**
 
-  Creates a up convolutional layer (also known as transposed convolution ). Is currently only supported in the tesnsorflow backend.
+  Creates a up convolutional layer (also known as transposed convolution ).
     
   * **kernel** (integer tuple > 0, required): convolution kernel size: (height, width).
   * **channels** (integer > 0, required): number of up convolution filters and number of output channels.
@@ -784,7 +784,7 @@ All predefined methods start with a capital letter and all constructed methods h
     
 * **Convolution3D(kernel, channels, stride=(1,1,1), padding="same3d", no_bias=false)**
 
-  Creates a convolutional layer. Currently, only 2D convolutions are allowed
+  Creates a convolutional layer for 3 dimension.
     
   * **kernel** (integer tuple > 0, required): convolution kernel size: (height, width, depth).
   * **channels** (integer > 0, required): number of convolution filters and number of output channels.
@@ -794,7 +794,7 @@ All predefined methods start with a capital letter and all constructed methods h
 
 * **UpConvolution3D(kernel, channels, stride=(1,1,1), padding="same3d", no_bias=false)**
 
-  Creates a convolutional layer. Currently, only 2D convolutions are allowed
+  Creates a transposed convolutional layer for 3 dimensional data
     
   * **kernel** (integer tuple > 0, required): convolution kernel size: (height, width, depth).
   * **channels** (integer > 0, required): number of convolution filters and number of output channels.
