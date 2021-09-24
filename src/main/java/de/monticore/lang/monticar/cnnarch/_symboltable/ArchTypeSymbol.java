@@ -28,6 +28,7 @@ public class ArchTypeSymbol extends CommonSymbol {
     private int channelIndex = -1;
     private int heightIndex = -1;
     private int widthIndex = -1;
+    private int depthIndex = -1; 
     private List<ArchSimpleExpressionSymbol> dimensions = new ArrayList<>();
 
     public ArchTypeSymbol() {
@@ -88,7 +89,15 @@ public class ArchTypeSymbol extends CommonSymbol {
     public void setChannelIndex(int channelIndex) {
         this.channelIndex = channelIndex;
     }
-
+//NEW
+    public int getDepthIndex(){
+        return depthIndex;
+    }
+    
+    public void setDepthIndex(int depthIndex){
+        this.depthIndex = depthIndex;
+    }
+//END NEW
     public ArchSimpleExpressionSymbol getHeightSymbol() {
         if (getHeightIndex() == -1){
             return ArchSimpleExpressionSymbol.of(1);
@@ -109,6 +118,19 @@ public class ArchTypeSymbol extends CommonSymbol {
         }
         return getDimensionSymbols().get(getChannelIndex());
     }
+
+//NEW
+    public ArchSimpleExpressionSymbol getDepthSymbol() {
+        if (getDepthIndex() == -1){
+            return ArchSimpleExpressionSymbol.of(1);
+        }
+        return getDimensionSymbols().get(getDepthIndex());
+    }
+
+    public Integer getDepth(){
+        return getDepthSymbol().getIntValue().get();
+    }
+//END NEW
 
     public Integer getWidth(){
         return getWidthSymbol().getIntValue().get();
@@ -139,7 +161,7 @@ public class ArchTypeSymbol extends CommonSymbol {
     }
 
     public List<Integer> getDimensions(){
-        List<Integer> dimensionList = new ArrayList<>(3);
+        List<Integer> dimensionList = new ArrayList<>();
         for (ArchSimpleExpressionSymbol exp : getDimensionSymbols()){
             dimensionList.add(exp.getIntValue().get());
         }
@@ -219,6 +241,7 @@ public class ArchTypeSymbol extends CommonSymbol {
         copy.setWidthIndex(getWidthIndex());
         copy.setChannelIndex(getChannelIndex());
         copy.setHeightIndex(getHeightIndex());
+        copy.setDepthIndex(getDepthIndex());
         List<ArchSimpleExpressionSymbol> dimensionCopies = new ArrayList<>();
         for (ArchSimpleExpressionSymbol dimension : getDimensionSymbols()){
             dimensionCopies.add(dimension.preResolveDeepCopy());
@@ -228,10 +251,17 @@ public class ArchTypeSymbol extends CommonSymbol {
         return copy;
     }
 
+    public void printDimensions(){
+        for (ArchSimpleExpressionSymbol dimension : getDimensionSymbols()){
+            //System.out.println("From Dimension list: " + dimension.getTextualRepresentation());
+        }
+    }
+
     public static class Builder{
         private int height = 1;
         private int width = 1;
         private int channels = 1;
+        private int depth = 0;
         private ASTElementType domain = null;
 
         public Builder height(int height){
@@ -244,6 +274,10 @@ public class ArchTypeSymbol extends CommonSymbol {
         }
         public Builder channels(int channels){
             this.channels = channels;
+            return this;
+        }
+        public Builder depth(int depth){
+            this.depth = depth;
             return this;
         }
         public Builder elementType(ASTElementType domain){
@@ -274,7 +308,18 @@ public class ArchTypeSymbol extends CommonSymbol {
             sym.setChannelIndex(0);
             sym.setHeightIndex(1);
             sym.setWidthIndex(2);
-            sym.setDimensions(Arrays.asList(channels, height, width));
+            
+            if (this.depth != 0){
+                sym.setHeightIndex(2);
+                sym.setWidthIndex(3);
+                sym.setDepthIndex(1);
+                sym.setDimensions(Arrays.asList(channels, depth, height, width)); //Dimensions are in this order for mxnet
+                //sym.printDimensions();
+            }
+
+            else {
+                sym.setDimensions(Arrays.asList(channels, height, width));
+            }
 
             if (domain == null){
                 domain = new ASTElementType();
@@ -283,5 +328,6 @@ public class ArchTypeSymbol extends CommonSymbol {
             sym.setDomain(domain);
             return sym;
         }
+        
     }
 }

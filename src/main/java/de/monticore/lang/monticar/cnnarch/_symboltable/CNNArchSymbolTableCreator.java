@@ -294,29 +294,37 @@ public class CNNArchSymbolTableCreator extends de.monticore.symboltable.CommonSy
         ArchTypeSymbol sym = new ArchTypeSymbol();
         addToScopeAndLinkWithNode(sym, ast);
     }
-
+//NEW
     @Override
     public void endVisit(ASTArchType node) {
         ArchTypeSymbol sym = (ArchTypeSymbol) node.getSymbolOpt().get();
         List<ASTArchSimpleExpression> astDimensions = node.getShape().getDimensionsList();
-
+        Integer size = new Integer(astDimensions.size());
+        java.lang.System.out.println("Size of astDimension is: " + size.toString());
         if (astDimensions.size() >= 1){
             sym.setChannelIndex(0);
         }
         if (astDimensions.size() >= 2){
+            java.lang.System.out.println("Setting Height Index in CNNArchSymbolTable");
             sym.setHeightIndex(1);
         }
         if (astDimensions.size() >= 3){
             sym.setWidthIndex(2);
         }
-        List<ArchSimpleExpressionSymbol> dimensionList = new ArrayList<>(3);
+        if (astDimensions.size() >= 4){
+            java.lang.System.out.println("Setting Depth Index to 1 in CNNArchSymbolTable");
+            sym.setDepthIndex(1);
+            sym.setHeightIndex(2);
+            sym.setWidthIndex(3);
+        }
+        List<ArchSimpleExpressionSymbol> dimensionList = new ArrayList<>(4);
         for (ASTArchSimpleExpression astExp : astDimensions){
             dimensionList.add((ArchSimpleExpressionSymbol) astExp.getSymbolOpt().get());
         }
         sym.setDimensionSymbols(dimensionList);
         sym.setDomain(node.getElementType());
     }
-
+//END NEW
     @Override
     public void visit(ASTLayerDeclaration ast) {
         LayerDeclarationSymbol layerDeclaration = new LayerDeclarationSymbol(ast.getName());

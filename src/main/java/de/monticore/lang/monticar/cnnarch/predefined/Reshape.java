@@ -30,24 +30,31 @@ public class Reshape extends PredefinedLayerDeclaration {
         int channels = -1;
         int height = -1;
         int width = -1;
-
-
-        if (shape.size() >= 3) {
-            width = shape.get(2);
-        }
-
-        if (shape.size() >= 2) {
-            height = shape.get(1);
-        }
-
-        if (shape.size() >= 1) {
-            channels = shape.get(0);
+        int depth = -1;
+        
+        if (shape.size() >= 4) {
+             depth = shape.get(1);
+             height = shape.get(2);
+             width = shape.get(3);
+             channels = shape.get(0);
         } else {
-            Log.error("0" + ErrorCodes.ILLEGAL_PARAMETER_VALUE + "\"Shape\" argument needs to contain at least one entry"
-                    , layer.getSourcePosition());
-        }
+        
+            if (shape.size() >= 3) {
+                width = shape.get(2);
+            }
 
-        int totalSize = layer.getInputTypes().get(0).getChannels() * layer.getInputTypes().get(0).getHeight() * layer.getInputTypes().get(0).getWidth();
+            if (shape.size() >= 2) {
+                height = shape.get(1);
+            }
+
+            if (shape.size() >= 1) {
+                channels = shape.get(0);
+            } else {
+                Log.error("0" + ErrorCodes.ILLEGAL_PARAMETER_VALUE + "\"Shape\" argument needs to contain at least one entry"
+                        , layer.getSourcePosition());
+            }
+        }
+        int totalSize = layer.getInputTypes().get(0).getChannels() * layer.getInputTypes().get(0).getHeight() * layer.getInputTypes().get(0).getWidth() * layer.getInputTypes().get(0).getDepth();
         int newTotalSize = shape.stream().reduce(1, (x, y) -> x * y);
 
         if (totalSize != newTotalSize && newTotalSize != 0) {
@@ -56,8 +63,16 @@ public class Reshape extends PredefinedLayerDeclaration {
         }
 
         if (newTotalSize != 0) {
-
-            if (width != -1) {
+            if (depth != -1) {
+                return Collections.singletonList(
+                        new ArchTypeSymbol.Builder()
+                                .channels(channels)
+                                .height(height)
+                                .width(width)
+                                .depth(depth)
+                                .elementType(layer.getInputTypes().get(0).getDomain())
+                                .build());
+            } else if (width != -1) {
                 return Collections.singletonList(
                         new ArchTypeSymbol.Builder()
                                 .channels(channels)
