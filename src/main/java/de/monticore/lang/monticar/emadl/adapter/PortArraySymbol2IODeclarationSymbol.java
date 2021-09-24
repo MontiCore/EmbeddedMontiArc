@@ -40,15 +40,23 @@ public class PortArraySymbol2IODeclarationSymbol extends IODeclarationSymbol
 
         ArchTypeSymbol type = new ArchTypeSymbol();
         List<ArchSimpleExpressionSymbol> shape = getShape(ps);
-        if (shape.size() >= 1){
+        if (shape.size() >= 4){
             type.setChannelIndex(0);
+            type.setDepthIndex(1);
+            type.setHeightIndex(2);
+            type.setWidthIndex(3);
+        } else {
+            if (shape.size() >= 1){
+                type.setChannelIndex(0);
+            }
+            if (shape.size() >= 2){
+                type.setHeightIndex(1);
+            }
+            if (shape.size() >= 3){
+                type.setWidthIndex(2);
+            }
         }
-        if (shape.size() >= 2){
-            type.setHeightIndex(1);
-        }
-        if (shape.size() >= 3){
-            type.setWidthIndex(2);
-        }
+        
         type.setDomain(getElementType(ps));
         type.setDimensionSymbols(shape);
 
