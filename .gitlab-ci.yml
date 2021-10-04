@@ -15,7 +15,7 @@ MasterDeployJobLinux:
   stage: linux
   image: registry.git.rwth-aachen.de/monticore/embeddedmontiarc/applications/carlacomponents/ros-maven
   script:
-    - mvn -Dorg.slf4j.simpleLogger.log.org.apache.maven.cli.transfer.Slf4jMavenTransferListener=warn -B clean deploy --s settings.xml
+    - mvn -Dorg.slf4j.simpleLogger.log.org.apache.maven.cli.transfer.Slf4jMavenTransferListener=warn -B clean deploy --settings settings.xml
   only:
     - master
   except:
