@@ -15,8 +15,8 @@
     <properties>
 
         <!-- .. EMA-Libraries ................................................. -->
-        <emadl.version>0.4.4-SNAPSHOT</emadl.version>
-        <embedded-montiarc-math.version>0.4.4-SNAPSHOT</embedded-montiarc-math.version>
+        <emadl.version>0.4.6-SNAPSHOT</emadl.version>
+        <embedded-montiarc-math.version>0.4.8-SNAPSHOT</embedded-montiarc-math.version>
 
         <!-- .. SE-Libraries .................................................. -->
         <se-commons.version>1.7.7</se-commons.version>
