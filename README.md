@@ -75,7 +75,7 @@ The training is done within a single script. It starts the ROS master node as we
    ```
 
 ### Execution
-With the execution script, a trained agent is executed. For this, the `target/agent/src/de_rwth_montisim_agent_master/cpp/model` folder has to be copied to `target/bin`. Within the model folder, the used parameter file in `model/de.rwth.montisim.agent.network.AutopilotQNet has to be named model_0_newest-0000.params` and the json file has to be named `model_0_newest-symbol.json`.
+With the execution script, a trained agent is executed. For this, the `target/agent/src/de_rwth_montisim_agent_master/cpp/model` folder has to be copied to `target/bin`. Within the model folder, the used parameter file in `model/de.rwth.montisim.agent.network.AutopilotQNet` has to be named `model_0_newest-0000.params` and the json file has to be named `model_0_newest-symbol.json`.
 The script starts the GUI of the simulation. By clicking on the checkboxes at the bottom left, the settings can be chosen before simulation. Then, choose a reinforcement learning scenario. The script executes `./agent -t 100` and therefore executes the agent every 100ms, since one step of the simulator simulates 100ms.
 
     ./execute.sh
