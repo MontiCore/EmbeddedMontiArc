@@ -20,8 +20,9 @@ class ${tc.fileNameWithoutEnding}:
     _model_dir_ = "model/${tc.componentName}/"
     _model_prefix_ = "model"
 
-    def __init__(self):
+    def __init__(self, batch_size=None):
         self.weight_initializer = mx.init.Normal()
+        self.batch_size = batch_size
         self.networks = {}
 <#if (tc.weightsPath)??>
         self._weights_dir_ = "${tc.weightsPath}/"
@@ -171,7 +172,7 @@ class ${tc.fileNameWithoutEnding}:
 
     def construct(self, context, data_mean=None, data_std=None):
 <#list tc.architecture.networkInstructions as networkInstruction>
-        self.networks[${networkInstruction?index}] = Net_${networkInstruction?index}(data_mean=data_mean, data_std=data_std, mx_context=context, prefix="")
+        self.networks[${networkInstruction?index}] = Net_${networkInstruction?index}(data_mean=data_mean, data_std=data_std, mx_context=context, prefix="", batch_size=self.batch_size)
         with warnings.catch_warnings():
             warnings.simplefilter("ignore")
             self.networks[${networkInstruction?index}].collect_params().initialize(self.weight_initializer, force_reinit=False, ctx=context)

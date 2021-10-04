@@ -1,6 +1,7 @@
 /* (c) https://github.com/MontiCore/monticore */
 configuration InfoGAN {
-    learning_method: gan
+    learning_method: generative_model
+    gm_algorithm: gan
     discriminator_name: arc.Discriminator
     qnet_name: arc.QNetwork
     num_epoch: 10

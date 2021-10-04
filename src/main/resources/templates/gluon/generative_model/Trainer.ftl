@@ -14,9 +14,9 @@ import CNNCreator_${config.instanceName}
 import CNNDataLoader_${config.instanceName}
 import CNNGanTrainer_${config.instanceName}
 
-from ${ganFrameworkModule}.CNNCreator_${discriminatorInstanceName} import CNNCreator_${discriminatorInstanceName}
+from ${generativeModelLearningFrameworkModule}.CNNCreator_${netInstanceName} import CNNCreator_${netInstanceName}
 <#if (qNetworkInstanceName)??>
-from ${ganFrameworkModule}.CNNCreator_${qNetworkInstanceName} import CNNCreator_${qNetworkInstanceName}
+from ${generativeModelLearningFrameworkModule}.CNNCreator_${qNetworkInstanceName} import CNNCreator_${qNetworkInstanceName}
 </#if>
 
 if __name__ == "__main__":
@@ -27,9 +27,9 @@ if __name__ == "__main__":
     logger.addHandler(handler)
 
     data_loader = CNNDataLoader_${config.instanceName}.CNNDataLoader_${config.instanceName}()
-
+    <#if gmAlgorithm.equals("gan")>
     gen_creator = CNNCreator_${config.instanceName}.CNNCreator_${config.instanceName}()
-    dis_creator = CNNCreator_${discriminatorInstanceName}()
+    dis_creator = CNNCreator_${netInstanceName}()
     <#if (qNetworkInstanceName)??>
     qnet_creator = CNNCreator_${qNetworkInstanceName}()
     </#if>
@@ -42,10 +42,29 @@ if __name__ == "__main__":
         qnet_creator
         </#if>
     )
+    <#else>
+    encoder_creator = CNNCreator_${netInstanceName}(batch_size=${(config.batchSize)!None})
+    decoder_creator = CNNCreator_${config.instanceName}.CNNCreator_${config.instanceName}()
+    ${config.instanceName}_trainer = CNNAutoencoderTrainer_${config.instanceName}.CNNGanTrainer_${config.instanceName}(
+    data_loader,
+    encoder_creator,
+    decoder_creator,
+    )
+    </#if>
 
     ${config.instanceName}_trainer.train(
 <#if (config.batchSize)??>
         batch_size=${config.batchSize},
+</#if>
+<#if (config.configuration.loss)??>
+        loss='${config.lossName}',
+    <#if (config.lossParams)??>
+        loss_params={
+        <#list config.lossParams?keys as param>
+            '${param}': ${config.lossParams[param]}<#sep>,
+        </#list>
+        },
+    </#if>
 </#if>
 <#if (config.numEpoch)??>
         num_epoch=${config.numEpoch},
@@ -75,13 +94,6 @@ if __name__ == "__main__":
             '${param}': ${config.optimizerParams[param]}<#sep>,
 </#list>
         },
-</#if>
-<#if (config.configuration.criticOptimizer)??>
-        discriminator_optimizer= '${config.criticOptimizerName}',
-        discriminator_optimizer_params= {
-<#list config.criticOptimizerParams?keys as param>
-            '${param}': ${config.criticOptimizerParams[param]}<#sep>,
-</#list>},
 </#if>
 <#if (config.constraintDistributions)??>
 <#assign map = (config.constraintDistributions)>

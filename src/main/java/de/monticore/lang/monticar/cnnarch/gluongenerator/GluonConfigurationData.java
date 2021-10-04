@@ -1,10 +1,10 @@
 /* (c) https://github.com/MontiCore/monticore */
 package de.monticore.lang.monticar.cnnarch.gluongenerator;
 
-import de.monticore.lang.monticar.cnnarch.gluongenerator.reinforcement.RewardFunctionParameterAdapter;
 import de.monticore.lang.monticar.cnnarch.generator.ConfigurationData;
 import de.monticore.lang.monticar.cnntrain._symboltable.*;
 import de.monticore.lang.monticar.cnntrain.annotations.Range;
+import de.monticore.lang.monticar.cnnarch.gluongenerator.reinforcement.RewardFunctionParameterAdapter;
 
 import static de.monticore.lang.monticar.cnntrain.helper.ConfigEntryNameConstants.*;
 
@@ -28,9 +28,9 @@ public class GluonConfigurationData extends ConfigurationData {
                 && retrieveConfigurationEntryValueByKey(LEARNING_METHOD).equals(LearningMethod.REINFORCEMENT);
     }
 
-    public Boolean isGan() {
+    public Boolean isGenerativeModelLearning() {
         return configurationContainsKey(LEARNING_METHOD)
-                && retrieveConfigurationEntryValueByKey(LEARNING_METHOD).equals(LearningMethod.GAN);
+                && retrieveConfigurationEntryValueByKey(LEARNING_METHOD).equals(LearningMethod.GENERATIVE);
     }
     public Integer getNumEpisodes() {
         return !configurationContainsKey(NUM_EPISODES)
@@ -118,6 +118,13 @@ public class GluonConfigurationData extends ConfigurationData {
         }
         return !configurationContainsKey(RL_ALGORITHM)
             ? RLAlgorithm.DQN : (RLAlgorithm)retrieveConfigurationEntryValueByKey(RL_ALGORITHM);
+    }
+
+    public GMAlgorithm getGMAlgorithm() {
+        if (!isGenerativeModelLearning()) {
+            return null;
+        }
+        return (GMAlgorithm) retrieveConfigurationEntryValueByKey(GM_ALGORTIHM);
     }
 
     public String getInputNameOfTrainedArchitecture() {

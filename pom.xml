@@ -9,7 +9,7 @@
 
   <groupId>de.monticore.lang.monticar</groupId>
   <artifactId>cnnarch-gluon-generator</artifactId>
-  <version>0.4.7-SNAPSHOT</version>
+  <version>0.6.0-SNAPSHOT</version>
 
   <!-- == PROJECT DEPENDENCIES ============================================= -->
 
@@ -17,7 +17,7 @@
 
     <!-- .. SE-Libraries .................................................. -->
 
-      <CNNArch2X.version>0.4.7-SNAPSHOT</CNNArch2X.version>
+      <CNNArch2X.version>0.5.0-SNAPSHOT</CNNArch2X.version>
       <EMADL2PythonWrapper.version>0.0.3-SNAPSHOT</EMADL2PythonWrapper.version>
 
         <!-- .. Libraries .................................................. -->
@@ -105,7 +105,16 @@
             <artifactId>jscience</artifactId>
             <version>${jscience.version}</version>
         </dependency>
-
+        <dependency>
+            <groupId>de.monticore.lang.monticar</groupId>
+            <artifactId>cnn-arch</artifactId>
+            <version>0.5.0-SNAPSHOT</version>
+        </dependency>
+        <dependency>
+            <groupId>de.monticore.lang.monticar</groupId>
+            <artifactId>cnn-train</artifactId>
+            <version>0.6.0-SNAPSHOT</version>
+        </dependency>
     </dependencies>
 
 

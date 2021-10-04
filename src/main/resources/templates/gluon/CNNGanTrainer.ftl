@@ -243,7 +243,7 @@ class ${tc.fileNameWithoutEnding}:
 
         metric_dis = mx.metric.create(eval_metric)
         metric_gen = mx.metric.create(eval_metric)
-        <#include "gan/InputGenerator.ftl">
+        <#include "generative_model/gan/InputGenerator.ftl">
 
         tic = None
 
