@@ -1,11 +1,13 @@
 /* (c) https://github.com/MontiCore/monticore */
-package de.monticore.lang.monticar.cnnarch.gluongenerator;
+package de.monticore.lang.monticar.cnnarch.gluongenerator.reinforcement;
 
 import de.monticore.lang.monticar.cnnarch.generator.ArchitectureElementData;
 import de.monticore.lang.monticar.cnnarch.generator.CNNArchTemplateController;
 
 import de.monticore.lang.monticar.cnnarch._symboltable.*;
 import de.monticore.lang.monticar.cnnarch.generator.TemplateConfiguration;
+import de.monticore.lang.monticar.cnnarch.gluongenerator.AllAttentionModels;
+import de.monticore.lang.monticar.cnnarch.gluongenerator.NetDefinitionMode;
 import de.monticore.lang.monticar.cnnarch.predefined.AllPredefinedLayers;
 import de.monticore.lang.monticar.types2._ast.ASTElementType;
 
