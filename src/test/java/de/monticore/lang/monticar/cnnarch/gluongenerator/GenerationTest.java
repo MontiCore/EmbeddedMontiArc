@@ -1,12 +1,17 @@
 /* (c) https://github.com/MontiCore/monticore */
 package de.monticore.lang.monticar.cnnarch.gluongenerator;
 
+import de.monticore.lang.monticar.cnnarch.gluongenerator.AbstractSymtabTest;
+import de.monticore.lang.monticar.cnnarch.gluongenerator.CNNArch2Gluon;
+import de.monticore.lang.monticar.cnnarch.gluongenerator.CNNArch2GluonCli;
+import de.monticore.lang.monticar.cnnarch.gluongenerator.CNNTrain2Gluon;
 import de.monticore.lang.monticar.cnnarch.gluongenerator.reinforcement.RewardFunctionSourceGenerator;
 import de.monticore.lang.monticar.cnnarch.gluongenerator.util.NNArchitectureMockFactory;
 import de.monticore.lang.monticar.cnntrain._symboltable.NNArchitectureSymbol;
 import de.se_rwth.commons.logging.Finding;
 import de.se_rwth.commons.logging.Log;
 import freemarker.template.TemplateException;
+
 import org.junit.*;
 
 import java.io.IOException;
@@ -15,10 +20,8 @@ import java.nio.file.Paths;
 import java.util.*;
 import org.junit.contrib.java.lang.system.ExpectedSystemExit;
 
-import static java.sql.DriverManager.println;
 import static junit.framework.TestCase.assertTrue;
 import static org.mockito.Mockito.mock;
-import static sun.misc.Version.print;
 
 public class GenerationTest extends AbstractSymtabTest {
     private RewardFunctionSourceGenerator rewardFunctionSourceGenerator;
@@ -248,6 +251,22 @@ public class GenerationTest extends AbstractSymtabTest {
     }
 
     @Test
+    public void testVAETestCnfGeneration() throws IOException {
+        Log.getFindings().clear();
+        Path modelPath = Paths.get("src/test/resources/valid_tests/vae.arc");
+        CNNTrain2Gluon trainGenerator = new CNNTrain2Gluon(rewardFunctionSourceGenerator);
+        trainGenerator.generate(modelPath, "VAETestNet");
+
+        assertTrue(Log.getFindings().isEmpty());
+        checkFilesAreEqual(
+                Paths.get("./target/generated-sources-cnnarch"),
+                Paths.get("./src/test/resources/target_code"),
+                Arrays.asList(
+                        "CNNTrainer_vaeTest.py",
+                        "CNNLAOptimizer_vaeTest.h"));
+    }
+
+    @Test
     public void testReinforcementConfig2() {
         // given
         Log.getFindings().clear();
@@ -473,5 +492,33 @@ public class GenerationTest extends AbstractSymtabTest {
                         "CNNLAOptimizer_infoGAN.h"
                 )
         );
+    }
+
+    @Test
+    public void testVAETestNetGeneration() throws IOException, TemplateException {
+
+        Log.getFindings().clear();
+        Path modelPath = Paths.get("src/test/resources/valid_tests/vae");
+        CNNTrain2Gluon trainGenerator = new CNNTrain2Gluon(rewardFunctionSourceGenerator);
+        NNArchitectureSymbol encoderArchitecture = NNArchitectureMockFactory.createArchitectureSymbolByCNNArchModel(
+                Paths.get("./src/test/resources/valid_tests/vae/arc"), "Encoder");
+        NNArchitectureSymbol decoderArchitecture = NNArchitectureMockFactory.createArchitectureSymbolByCNNArchModel(
+                Paths.get("./src/test/resources/valid_tests/vae/arc"), "Decoder");
+
+        trainGenerator.generate(modelPath, "Decoder", decoderArchitecture, encoderArchitecture);
+
+        //String[] args = {"-m", "src/test/resources/architectures/valid_tests/vae/arc", "-r", "Decoder", "-o", "./target/generated-sources-cnnarch/"};
+        //CNNArch2GluonCli.main(args);
+        assertTrue(Log.getFindings().stream().noneMatch(Finding::isError));
+
+        checkFilesAreEqual(
+                Paths.get("target/generated-sources-cnnarch"),
+                Paths.get("src/test/resources/target_code"),
+                Arrays.asList(
+                        "CNNAutoencoder_decoder.py",
+                        "CNNCreator_decoder.py",
+                        "CNNCreator_Encoder.py",
+                        "CNNNet_decoder.py",
+                        "CNNNet_Encoder.py"));
     }
 }

@@ -1,0 +1,9 @@
+architecture Decoder{
+    def input Z(0:255)^{2} sample
+    def output Q(-oo:oo)^{784} res
+
+    sample ->
+    FullyConnected(units=400) ->
+    FullyConnected(units=784) ->
+    res;
+}

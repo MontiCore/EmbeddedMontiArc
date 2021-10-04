@@ -1,0 +1,22 @@
+architecture Encoder{
+    def input Z(0:255)^{1,28,28} data
+    def output Q(-oo:oo)^{2} z_mean
+    def output Q(-oo:oo)^{2} z_logvar
+    def output Q(-oo:oo)^{2} z
+
+    data ->
+    FullyConnected(units=400) ->
+    FullyConnected(units=4) ->
+    Split(n=2) ->
+    (
+        [0] ->
+        Sigmoid() ->
+        z_mean
+        |
+        [1] ->
+        Sigmoid() ->
+        z_logvar
+    ) ->
+    Reparametrize() ->
+    z;
+}

@@ -1,0 +1,12 @@
+/* (c) https://github.com/MontiCore/monticore */
+configuration Decoder{
+     learning_method: generative_model
+     gm_algorithm: vae
+     encoder_name: arc.Encoder
+     num_epoch:10
+     batch_size:32
+     normalize:false
+     context:cpu
+     load_checkpoint:false
+	 loss: gaussian_vae_loss
+}
