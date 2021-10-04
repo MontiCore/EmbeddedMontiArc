@@ -46,7 +46,7 @@
             <repositories>
                 <repository>
                     <id>se-nexus</id>
-                    <url>https://nexus.se.rwth-aachen.de/content/groups/public</url>
+                    <url>https://nexus.se.rwth-aachen.de/content/groups/public/</url>
                     <releases><enabled>true</enabled> </releases>
                     <snapshots><enabled>true</enabled> </snapshots>
                 </repository>
@@ -72,7 +72,7 @@
                 </pluginRepository>
                 <pluginRepository>
                     <id>se-nexus</id>
-                    <url>https://nexus.se.rwth-aachen.de/content/groups/public</url>
+                    <url>https://nexus.se.rwth-aachen.de/content/groups/public/</url>
                     <releases><enabled>true</enabled> </releases>
                     <snapshots><enabled>true</enabled> </snapshots>
                 </pluginRepository>
