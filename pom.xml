@@ -12,7 +12,7 @@
     <url>http://maven.apache.org</url>
 
     <properties>
-        <EMAM2Middleware.version>0.1.1-SNAPSHOT</EMAM2Middleware.version>
+        <EMAM2Middleware.version>0.1.2-SNAPSHOT</EMAM2Middleware.version>
         <EMADLGenerator.version>0.5.2-SNAPSHOT</EMADLGenerator.version>
         <!--misc-->
         <project.build.sourceEncoding>UTF-8</project.build.sourceEncoding>
