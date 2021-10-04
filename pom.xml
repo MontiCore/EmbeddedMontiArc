@@ -26,6 +26,7 @@
 
         <!-- USE THIS VARIABLE TO SET THE VERSION OF THIS PROJECT AND ALL SUB PROJECTS -->
         <revision>3.1.10</revision>
+        <projectversion>${revision}</projectversion>
 
         <!-- USE THESE TO SET THE VERSIONS OF THE DEPENDENCIES FOR ALL THE SUB-PROJECTS -->
         <commons.version>2.0.17</commons.version>
@@ -60,6 +61,25 @@
             <artifactId>commons</artifactId>
             <version>${commons.version}</version>
         </dependency>
+
+         <dependency>
+            <groupId>org.ros.rosjava_core</groupId>
+            <artifactId>rosjava</artifactId>
+            <version>0.3.6</version>
+        </dependency>
+        
+        <dependency>
+            <groupId>org.ros.rosjava_bootstrap</groupId>
+            <artifactId>message_generation</artifactId>
+            <version>0.3.3</version>
+        </dependency>
+
+        <dependency>
+            <groupId>org.ros.rosjava_messages</groupId>
+            <artifactId>std_msgs</artifactId>
+            <version>0.5.11</version>
+        </dependency> 
+
 
         <!-- Apache Commons Math3 as math library -->
         <!-- <dependency>
@@ -234,6 +254,11 @@
                 </executions>
             </plugin>
 
+            <plugin>
+          <artifactId>maven-project-info-reports-plugin</artifactId>
+          <version>3.0.0</version>
+        </plugin>
+       
             
         </plugins>
     </build>
@@ -255,5 +280,18 @@
             <name>SE-Nexus repository</name>
             <url>https://nexus.se.rwth-aachen.de/content/groups/public</url>
         </repository>
+
+        <repository>
+            <id>rosjava_mvn_repo</id>
+            <name>ROSJava repo</name>
+            <url>https://github.com/rosjava/rosjava_mvn_repo/raw/master/</url>
+        </repository>
+
+        <repository>
+            <id>jfrog</id>
+            <name>JFrog repository</name>
+            <url>https://repo.jfrog.org/artifactory/libs-releases</url>
+        </repository>
+
     </repositories>
 </project>

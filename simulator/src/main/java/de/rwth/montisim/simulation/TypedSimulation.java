@@ -5,6 +5,7 @@ import de.rwth.montisim.commons.TypedCommons;
 import de.rwth.montisim.commons.utils.json.Json;
 import de.rwth.montisim.simulation.eecomponents.autopilots.JavaAutopilotProperties;
 import de.rwth.montisim.simulation.eecomponents.autopilots.TestAutopilotProperties;
+import de.rwth.montisim.simulation.eecomponents.autopilots.RLAutopilotProperties;
 import de.rwth.montisim.simulation.eecomponents.simple_network.SCGProperties;
 import de.rwth.montisim.simulation.eecomponents.simple_network.SimpleNetworkProperties;
 import de.rwth.montisim.simulation.eesimulator.actuator.ActuatorProperties;
@@ -29,6 +30,7 @@ public class TypedSimulation {
         TypedCommons.registerTypedCommons();
         Json.registerType(JavaAutopilotProperties.class);
         Json.registerType(TestAutopilotProperties.class);
+        Json.registerType(RLAutopilotProperties.class);
         Json.registerType(SCGProperties.class);
         Json.registerType(ActuatorProperties.class);
         Json.registerType(BridgeProperties.class);
