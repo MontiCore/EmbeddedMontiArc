@@ -566,8 +566,9 @@ ${tc.include(networkInstruction.body, elements?index, "FORWARD_FUNCTION")}
 
 
 class Net_${networkInstruction?index}(gluon.HybridBlock):
-    def __init__(self, data_mean=None, data_std=None, mx_context=None, **kwargs):
+    def __init__(self, data_mean=None, data_std=None, mx_context=None, batch_size=None **kwargs):
         super(Net_${networkInstruction?index}, self).__init__(**kwargs)
+        self.loss_param_val = []
         with self.name_scope():
 <#if networkInstruction.body.episodicSubNetworks?has_content>
 <#list networkInstruction.body.episodicSubNetworks as elements>
