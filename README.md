@@ -59,7 +59,7 @@ MontiSim:
     cd basic-simulator
     mvn clean install -s settings.xml
     ```
-**FOR DEVELOPERS:** When using the standard maven version for Ubuntu 16.04: When installing the simulation project manually, the revision variable which takes care of assigning the correct version number does not work properly. So that the correct versions are used, use the [mavenFix.py](https://git.rwth-aachen.de/monticore/EmbeddedMontiArc/applications/reinforcement_learning/coopmontisimautopilot/additional_files/mavenFix.py) file. Replace the version variable with the correct version. The version is then updated to the standard path to the montisim project ($HOME/.m2/repository/montisim)
+**FOR DEVELOPERS:** When using the standard maven version for Ubuntu 16.04: When installing the simulation project manually, the revision variable which takes care of assigning the correct version number does not work properly. So that the correct versions are used, use the [mavenFix.py](https://git.rwth-aachen.de/monticore/EmbeddedMontiArc/applications/reinforcement_learning/coopmontisimautopilot/-/blob/main/additional_files/mavenFix.py) file. Replace the version variable with the correct version. The version is then updated to the standard path to the montisim project ($HOME/.m2/repository/montisim)
     
 ## Generate,Train and Execute
 ### Generation
@@ -116,7 +116,7 @@ When using the **decentralized** approach, addtional states are appended to the 
 When using the **centralized** approach, the states of all vehicles are appended to each other, resulting in one large state. The same is done for the actions. Since the minimal state is chosen in Autopilot3, the state has dimension stateLength(vehicle 1) + stateLength(vehicle 2) = 25 + 25 = 50. The action array has dimension action(vehicle 1) + action(vehicle 2) = 3 + 3 = 6.
 
 ## Singularity Container
-A Singularity Container can be used for generating, training and executing of MontiSim and its agents. The definition file of that container can be found [here](https://git.rwth-aachen.de/monticore/EmbeddedMontiArc/applications/reinforcement_learning/coopmontisimautopilot/additional_files/RLContainerNew.def). To use this Container locally, first install singularity ([installation guide](https://sylabs.io/guides/3.7/user-guide/quick_start.html#quick-installation-steps)). Then install the container with the following command (this might take a while): 
+A Singularity Container can be used for generating, training and executing of MontiSim and its agents. The definition file of that container can be found [here](https://git.rwth-aachen.de/monticore/EmbeddedMontiArc/applications/reinforcement_learning/coopmontisimautopilot/-/blob/main/additional_files/RLContainerNew.def). To use this Container locally, first install singularity ([installation guide](https://sylabs.io/guides/3.7/user-guide/quick_start.html#quick-installation-steps)). Then install the container with the following command (this might take a while): 
 
     sudo singularity build --sandbox PATH_TO_INSTALLATION_TARGET PATH_TO_DEFINITION_FILE_FOLDER/RLContainerNew.def
 
