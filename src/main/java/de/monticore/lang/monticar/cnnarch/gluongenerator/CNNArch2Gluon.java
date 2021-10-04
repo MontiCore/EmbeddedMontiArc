@@ -60,6 +60,15 @@ public class CNNArch2Gluon extends CNNArchGenerator {
         temp = controller.process("CNNCreator", Target.PYTHON);
         fileContents.add(temp);
 
+        temp = controller.process("CNNSupervisedTrainer", Target.PYTHON);
+        fileContents.add(temp);
+
+        temp = controller.process("CNNGanTrainer", Target.PYTHON);
+        fileContents.add(temp);
+
+        temp = controller.process("CNNAutoencoderTrainer", Target.PYTHON);
+        fileContents.add(temp);
+
         return fileContents;
     }
 
@@ -68,15 +77,6 @@ public class CNNArch2Gluon extends CNNArchGenerator {
         FileContent temp;
 
         temp = controller.process("CNNPredictor", Target.CPP);
-        fileContents.add(temp);
-
-        temp = controller.process("CNNSupervisedTrainer", Target.PYTHON);
-        fileContents.add(temp);
-
-        temp = controller.process("CNNGanTrainer", Target.PYTHON);
-        fileContents.add(temp);
-
-        temp = controller.process("CNNAutoencoderTrainer", Target.PYTHON);
         fileContents.add(temp);
 
         temp = controller.process("execute", Target.CPP);
