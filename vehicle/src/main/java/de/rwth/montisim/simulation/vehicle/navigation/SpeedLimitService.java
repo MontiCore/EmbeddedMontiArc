@@ -16,6 +16,7 @@ import de.rwth.montisim.simulation.environment.world.elements.Way;
 import de.rwth.montisim.simulation.vehicle.lidar.Lidar;
 
 import java.time.Instant;
+import java.util.Arrays;
 import java.util.Optional;
 import java.util.Vector;
 
@@ -32,6 +33,7 @@ public class SpeedLimitService extends EEComponent {
     private double[] trajectoryX = null;
     private double[] trajectoryY = null;
     private int trajectoryLength = 0;
+    private double[] currentSpeedLimits = null;
 
     //input ports
     transient int   trajectoryXMsg,
@@ -120,6 +122,7 @@ public class SpeedLimitService extends EEComponent {
                 }
             }
         }
+        currentSpeedLimits = maxSpeedArr;
         return maxSpeedArr;
     }
 
@@ -172,6 +175,28 @@ public class SpeedLimitService extends EEComponent {
     }
 
     /**
+     * @param index the position of the desired speed limit within the speed limit array
+     * @return entry of speed limit array at given index
+     * */
+    public double getSpeedLimit(int index){
+        if(currentSpeedLimits == null) return -1.0;
+        if(index >= currentSpeedLimits.length) return -2.0;
+        return currentSpeedLimits[index];
+    }
+
+    /**
+     * @return array containing currently available speed limits
+     * */
+    public double[] getSpeedLimits(){
+        if(currentSpeedLimits == null){
+            double[] temp = new double[Navigation.TRAJ_ARRAY_LENGTH -1];
+            Arrays.fill(temp, -1.0);
+            return temp;
+        }
+        return currentSpeedLimits;
+    }
+
+    /**
      * PointInformation
      * It provides information about a specific point from the world.
      */
@@ -192,4 +217,5 @@ public class SpeedLimitService extends EEComponent {
          */
         public Vector<Way> ways = new Vector<>();
     }
+
 }
