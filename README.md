@@ -100,7 +100,7 @@ State:
 |23| currentCompass | Angle, that the vehicle is facing|
 |24| currentVelocity | Velocity of the vehicle|
 |25 (optional) | currentSpeedLimit| current speed limit of the street|
-|26/25 to 34/33 (optional)| Values of different LIDAR sensors|
+|26/25 to 34/33 (optional)| lidarSensors| Values of different LIDAR sensors|
 
 Action:
 | **Index** | **Name** | **Range** | **Description** |
