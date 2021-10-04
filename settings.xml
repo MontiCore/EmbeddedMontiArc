@@ -32,11 +32,11 @@
   </servers>
 
   <mirrors>
-    <mirror>
+    <!--<mirror>
       <id>se-nexus</id>
       <mirrorOf>external:*</mirrorOf>
       <url>https://nexus.se.rwth-aachen.de/content/groups/public</url>
-    </mirror>	 
+    </mirror> -->
   </mirrors>
- 
+
 </settings>
