@@ -106,8 +106,8 @@ Action:
 | **Index** | **Name** | **Range** | **Description** |
 |-----------|----------|-----------|-----------------|
 |0|throttle|[-1,1]|Control throttle of the car. -1 equals no throttle, 1 equals full throttle|
-|0|braking|[-1,1]|Control brakes of the car. -1 equals no braking, 1 equals full braking|
-|0|steering|[-1,1]|Control steering of the car. -1 equals full right steering, 1 equals full left steering|
+|1|braking|[-1,1]|Control brakes of the car. -1 equals no braking, 1 equals full braking|
+|2|steering|[-1,1]|Control steering of the car. -1 equals full right steering, 1 equals full left steering|
 
 Since the minimal state is chosen in Autopilot1, the state has dimension 25, and the action dimension 3.
 
