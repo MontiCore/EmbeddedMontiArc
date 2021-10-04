@@ -1,16 +1,16 @@
 stages:
 - linux
 
-  TestBuild:
-    stage: linux
-    image: registry.git.rwth-aachen.de/monticore/embeddedmontiarc/applications/reinforcement_learning/cartpole/emadl-rl-mxnet:latest
-    script:
-        - cd Autopilot1
-        - ./install.sh
-        - cd ..
-        - cd Autopilot2
-        - ./install.sh
-        - cd ..
-        - cd Autopilot3
-        - ./install.sh
-        - cd ..
+TestBuild:
+  stage: linux
+  image: registry.git.rwth-aachen.de/monticore/embeddedmontiarc/applications/reinforcement_learning/cartpole/emadl-rl-mxnet:latest
+  script:
+    - cd Autopilot1
+    - ./install.sh
+    - cd ..
+    - cd Autopilot2
+    - ./install.sh
+    - cd ..
+    - cd Autopilot3
+    - ./install.sh
+    - cd ..
