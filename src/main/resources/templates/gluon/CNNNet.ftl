@@ -1,4 +1,6 @@
 <#-- (c) https://github.com/MontiCore/monticore -->
+<#-- So that the license is in the generated file: -->
+# (c) https://github.com/MontiCore/monticore
 import mxnet as mx
 import numpy as np
 import math
@@ -7,12 +9,18 @@ import abc
 import warnings
 import sys
 from mxnet import gluon, nd
-
+<#if tc.containsAdaNet()>
+from mxnet.gluon import nn, HybridBlock
+from numpy import log, product,prod,sqrt
+from mxnet.ndarray import zeros,zeros_like
+sys.path.insert(1, '${tc.architecture.getAdaNetUtils()}')
+from AdaNetConfig import AdaNetConfig
+import CoreAdaNet
+</#if>
 <#if tc.architecture.customPyFilesPath??>
 sys.path.insert(1, '${tc.architecture.customPyFilesPath}')
 from custom_layers import *
 </#if>
-
 
 class ZScoreNormalization(gluon.HybridBlock):
     def __init__(self, data_mean, data_std, **kwargs):
@@ -523,8 +531,46 @@ class EpisodicMemory(EpisodicReplayMemoryInterface):
                 self.value_memory.append(mem_dict[key])
             elif key.startswith("labels_"):
                 self.label_memory.append(mem_dict[key])
+<#if tc.containsAdaNet()>
+# Blocks needed for AdaNet are generated below
+<#list tc.architecture.networkInstructions as networkInstruction>
+<#if networkInstruction.body.containsAdaNet()>
+${tc.include(networkInstruction.body, "ADANET_CONSTRUCTION")}
+<#assign outblock = networkInstruction.body.getElements()[1].getDeclaration().getBlock("outBlock")>
+<#assign block = networkInstruction.body.getElements()[1].getDeclaration().getBlock("block")>
+<#assign inblock = networkInstruction.body.getElements()[1].getDeclaration().getBlock("inBlock")>
+class Net_${networkInstruction?index}(gluon.HybridBlock):
+    # this is a dummy network during the AdaNet generation it gets overridden
+    # it is only here so many if tags in the .ftl files can be avoided
+    def __init__(self,**kwargs):
+        super(Net_${networkInstruction?index},self).__init__(**kwargs)
+        with self.name_scope():
+            self.AdaNet = True
+            self.dummy = nn.Dense(units=1)
 
-
+    def hybrid_forward(self,F,x):
+        return self.dummy(x)
+FullyConnected = AdaNetConfig.DEFAULT_BLOCK.value
+DataClass_${networkInstruction?index} = CoreAdaNet.DataClass(
+    <#if outblock.isPresent()>
+        outBlock = ${outblock.get().name},
+    <#else>
+        outBlock = None,
+    </#if>
+    <#if inblock.isPresent()>
+        inBlock = ${inblock.get().name},
+    <#else>
+        inBlock = None,
+    </#if>
+    <#if block.isPresent()>
+        block = ${block.get().name},
+    <#else>
+        block = None,
+    </#if>
+        model_shape = ${tc.getDefinedOutputDimension()})
+</#if>
+</#list>
+<#else>
 <#list tc.architecture.networkInstructions as networkInstruction>
 #Stream ${networkInstruction?index}
 <#list networkInstruction.body.episodicSubNetworks as elements>
@@ -562,8 +608,6 @@ ${tc.include(networkInstruction.body, elements?index, "FORWARD_FUNCTION")}
 </#if>
 
 </#list>
-
-
 
 class Net_${networkInstruction?index}(gluon.HybridBlock):
     def __init__(self, data_mean=None, data_std=None, mx_context=None, batch_size=None **kwargs):
@@ -608,4 +652,4 @@ ${tc.include(networkInstruction.body, "FORWARD_FUNCTION")}
 </#if>
 </#if>
 </#list>
-
+</#if>

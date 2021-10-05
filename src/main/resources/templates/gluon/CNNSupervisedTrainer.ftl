@@ -1,4 +1,6 @@
 <#-- (c) https://github.com/MontiCore/monticore -->
+<#-- So that the license is in the generated file: -->
+# (c) https://github.com/MontiCore/monticore
 import mxnet as mx
 import logging
 import numpy as np
@@ -10,6 +12,14 @@ import math
 import sys
 import inspect
 from mxnet import gluon, autograd, nd
+<#if tc.containsAdaNet()>
+from typing import List
+from mxnet.gluon.loss import Loss, SigmoidBCELoss
+from mxnet.ndarray import add, concatenate
+sys.path.insert(1, '${tc.architecture.getAdaNetUtils()}')
+#${tc.architecture.getAdaNetUtils()}
+from adanet import fit
+</#if>
 try:
     import AdamW
 except:
@@ -293,6 +303,10 @@ class ${tc.fileNameWithoutEnding}:
     def __init__(self, data_loader, net_constructor):
         self._data_loader = data_loader
         self._net_creator = net_constructor
+        <#if tc.containsAdaNet()>
+        self._dataClass = net_constructor.dataClass
+        self.AdaNet = ${tc.containsAdaNet()?string('True','False')}
+        </#if>
         self._networks = {}
 
     def train(self, batch_size=64,
@@ -422,9 +436,33 @@ class ${tc.fileNameWithoutEnding}:
             loss_function = LogCoshLoss()
         else:
             logging.error("Invalid loss parameter.")
-        
+
         loss_function.hybridize()
-        
+<#if tc.containsAdaNet()>
+<#list tc.architecture.networkInstructions as networkInstruction>
+<#if networkInstruction.containsAdaNet()>
+        assert self._networks[${networkInstruction?index}].AdaNet, "passed model is not an AdaNet model"
+        self._networks[${networkInstruction?index}] = fit(
+                    loss=loss_function,
+                    optimizer=optimizer,
+                    epochs=num_epoch,
+                    optimizer_params = optimizer_params,
+                    train_iter = train_iter,
+                    data_class = self._dataClass[${networkInstruction?index}],
+                    batch_size=batch_size,
+                    ctx=mx_context[0],
+                    logging=logging
+                )
+        logging.info(self._networks[${networkInstruction?index}])
+        logging.info(f"node count: {self._networks[${networkInstruction?index}].get_node_count()}")
+</#if>
+        # update trainers
+        if optimizer == "adamw":
+            trainers = [mx.gluon.Trainer(network.collect_params(), AdamW.AdamW(**optimizer_params)) for network in self._networks.values() if len(network.collect_params().values()) != 0]
+        else:
+            trainers = [mx.gluon.Trainer(network.collect_params(), optimizer, optimizer_params) for network in self._networks.values() if len(network.collect_params().values()) != 0]
+</#list>
+</#if>
 <#list tc.architecture.networkInstructions as networkInstruction>    
 <#if networkInstruction.body.episodicSubNetworks?has_content>
 <#assign episodicReplayVisited = true>

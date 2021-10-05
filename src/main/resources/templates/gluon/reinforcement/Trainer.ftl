@@ -1,4 +1,6 @@
 <#-- (c) https://github.com/MontiCore/monticore -->
+<#-- So that the license is in the generated file: -->
+# (c) https://github.com/MontiCore/monticore
 <#setting number_format="computer">
 <#assign config = configurations[0]>
 <#assign rlAgentType=config.rlAlgorithm?switch("dqn", "DqnAgent", "ddpg", "DdpgAgent", "td3", "TwinDelayedDdpgAgent")>
