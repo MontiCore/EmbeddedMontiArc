@@ -26,9 +26,10 @@ class ${tc.fileNameWithoutEnding}:
     _model_dir_ = "model/${tc.componentName}/"
     _model_prefix_ = "model"
 
-    def __init__(self):
+    def __init__(self,batch_size=None):
         self.weight_initializer = mx.init.Normal()
         self.networks = {}
+        self.batch_size = batch_size
         <#if tc.containsAdaNet()>
         self.dataClass = {}
         </#if>
@@ -178,13 +179,13 @@ class ${tc.fileNameWithoutEnding}:
                 else:
                     logging.info("No pretrained weights available at: " + self._weights_dir_ + param_file)
 
-    def construct(self, context, data_mean=None, data_std=None):
+    def construct(self, context, data_mean=None, data_std=None, batch_size=batch_size):
 <#list tc.architecture.networkInstructions as networkInstruction>
         <#if tc.containsAdaNet()>
         self.networks[${networkInstruction?index}] = Net_${networkInstruction?index}()
         self.dataClass[${networkInstruction?index}] = DataClass_${networkInstruction?index}
         <#else>
-        self.networks[${networkInstruction?index}] = Net_${networkInstruction?index}(data_mean=data_mean, data_std=data_std, mx_context=context, prefix="")
+        self.networks[${networkInstruction?index}] = Net_${networkInstruction?index}(data_mean=data_mean, data_std=data_std, mx_context=context, prefix="", batch_size=self.batch_size)
         </#if>
         with warnings.catch_warnings():
             warnings.simplefilter("ignore")
