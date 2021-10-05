@@ -10,10 +10,12 @@ package de.monticore.lang.monticar.cnnarch.predefined;
 
 import de.monticore.lang.monticar.cnnarch._symboltable.LayerDeclarationSymbol;
 import de.monticore.lang.monticar.cnnarch._symboltable.UnrollDeclarationSymbol;
+import jline.internal.Nullable;
 
-import java.util.ArrayList;
+import java.io.IOException;
 import java.util.Arrays;
 import java.util.List;
+import java.util.ArrayList;
 
 public class AllPredefinedLayers {
 
@@ -59,6 +61,10 @@ public class AllPredefinedLayers {
     public static final String DOT_PRODUCT_SELF_ATTENTION_NAME = "DotProductSelfAttention";
     public static final String LOAD_NETWORK_NAME = "LoadNetwork";
     public static final String CUSTOM_LAYER = "CustomLayer";
+    public static final String CONVOLUTION3D_NAME = "Convolution3D";
+    public static final String UP_CONVOLUTION3D_NAME = "UpConvolution3D";
+
+    public static final String AdaNet_Name = "AdaNet"; //AdaNet layer
 
     //replay layers
     public static final String LARGE_MEMORY_NAME = "LargeMemory";
@@ -102,6 +108,13 @@ public class AllPredefinedLayers {
     public static final String SHAPE_NAME = "shape";
     public static final String RNN_DROPOUT_NAME = "dropout";
 
+    //Parameter AdaNet
+    public static final String Block = "block";
+    public static final String In = "inBlock";
+    public static final String Out = "outBlock";
+    public static final Integer DEFAULT_UNITS = 20;
+    public static final String DEFAULT_BLOCK = "default_block";
+
     //parameters LoadNetwork layer
     public static final String NETWORK_DIR_NAME = "networkDir";
     public static final String NETWORK_PREFIX_NAME = "networkPrefix";
@@ -143,6 +156,9 @@ public class AllPredefinedLayers {
     public static final String PADDING_VALID = "valid";
     public static final String PADDING_SAME = "same";
     public static final String PADDING_NO_LOSS = "no_loss";
+    public static final String PADDING_VALID3D = "valid3d";
+    public static final String PADDING_SAME3D = "same3d";
+    public static final String PADDING_SIMPLE3D = "simple3d";
     public static final String POOL_MAX = "max";
     public static final String POOL_AVG = "avg";
     public static final String RANDOM = "random";
@@ -198,7 +214,9 @@ public class AllPredefinedLayers {
                 DotProductSelfAttention.create(),
                 LargeMemory.create(),
                 EpisodicMemory.create(),
-                Reparametrize.create());
+                Convolution3D.create(),
+                UpConvolution3D.create(),
+                AdaNet.create());
 
     }
 

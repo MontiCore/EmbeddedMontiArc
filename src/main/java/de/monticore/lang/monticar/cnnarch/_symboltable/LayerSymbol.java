@@ -28,6 +28,11 @@ public class LayerSymbol extends ArchitectureElementSymbol {
         super(name);
     }
 
+    @Override
+    public void setAdaNet(boolean adaNet) {
+        super.setAdaNet(adaNet);
+    }
+
     public LayerDeclarationSymbol getDeclaration() {
         if (declaration == null){
             Collection<LayerDeclarationSymbol> declarationCollection = getEnclosingScope().resolveMany(getName(), LayerDeclarationSymbol.KIND);
@@ -37,14 +42,13 @@ public class LayerSymbol extends ArchitectureElementSymbol {
         }
         return declaration;
     }
-
     @Override
     public boolean isResolvable() {
         return super.isResolvable() && getDeclaration() != null;
     }
-
     private void setDeclaration(LayerDeclarationSymbol declaration) {
         this.declaration = declaration;
+        this.setArtificial(this.declaration.getBody()!=null);
     }
 
     public List<ArgumentSymbol> getArguments() {
