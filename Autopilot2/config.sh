@@ -1,0 +1,6 @@
+PROJECT_ROOT="$(pwd)"
+BINARY="target/bin"
+GENERATOR_PATH="bin/embedded-montiarc-math-middleware-generator-0.0.33-SNAPSHOT-jar-with-dependencies.jar"
+AGENT_BUILD="target/agent/build"
+SIMULATOR_PATH="$HOME/basic-simulator/install"
+SCENARIO_PATH="scenarios/rl_autopilot2cars.json"
