@@ -10,12 +10,10 @@ package de.monticore.lang.monticar.cnnarch.predefined;
 
 import de.monticore.lang.monticar.cnnarch._symboltable.LayerDeclarationSymbol;
 import de.monticore.lang.monticar.cnnarch._symboltable.UnrollDeclarationSymbol;
-import jline.internal.Nullable;
 
-import java.io.IOException;
+import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.List;
-import java.util.ArrayList;
 
 public class AllPredefinedLayers {
 
@@ -38,6 +36,7 @@ public class AllPredefinedLayers {
     public static final String GET_NAME = "Get";
     public static final String ADD_NAME = "Add";
     public static final String CONCATENATE_NAME = "Concatenate";
+    public static final String REPARAMETRIZE_NAME = "Reparametrize";
     public static final String FLATTEN_NAME = "Flatten";
     public static final String ONE_HOT_NAME = "OneHot";
     public static final String BEAMSEARCH_NAME = "BeamSearch";
@@ -198,7 +197,8 @@ public class AllPredefinedLayers {
                 LoadNetwork.create(),
                 DotProductSelfAttention.create(),
                 LargeMemory.create(),
-                EpisodicMemory.create());
+                EpisodicMemory.create(),
+                Reparametrize.create());
 
     }
 

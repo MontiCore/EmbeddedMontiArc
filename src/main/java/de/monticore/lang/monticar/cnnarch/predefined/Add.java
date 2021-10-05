@@ -20,8 +20,16 @@ import java.util.List;
 
 public class Add extends PredefinedLayerDeclaration {
 
+    protected final String name;
+
     private Add() {
         super(AllPredefinedLayers.ADD_NAME);
+        this.name = AllPredefinedLayers.ADD_NAME;
+    }
+
+    protected Add(String name) {
+        super(name);
+        this.name = name;
     }
 
     @Override
@@ -40,7 +48,7 @@ public class Add extends PredefinedLayerDeclaration {
     public void checkInput(List<ArchTypeSymbol> inputTypes, LayerSymbol layer, VariableSymbol.Member member) {
         errorIfInputIsEmpty(inputTypes, layer);
         if (inputTypes.size() == 1){
-            Log.warn("Add layer has only one input stream. Layer can be removed." , layer.getSourcePosition());
+            Log.warn(this.name + " layer has only one input stream. Layer can be removed." , layer.getSourcePosition());
         }
         else if (inputTypes.size() > 1){
             List<Integer> heightList = new ArrayList<>();
