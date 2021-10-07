@@ -207,7 +207,15 @@ class Seq2Seq(HybridBlock):
             self.compare_mode = compare_mode
     
     def initialize(self, init=initializer.Uniform(), ctx=None, verbose=False):
-        self.collect_params().initialize(init, ctx, verbose, force_reinit=False)
+        # only initialize new params, not the ones from pretrained model
+        # param._data none check taken from Parameter initialize method
+        if verbose:
+            init.set_verbosity(verbose=verbose)
+        for _, param in self.collect_params().items():
+            if param._data is None:
+                param.initialize(init, ctx, force_reinit=False)
+        
+        # self.collect_params().initialize(init, ctx, verbose, force_reinit=False)
         # tie weights of lm head and embedding layer, done in torch script too
         embed = self.embedding.collect_params()['bertembedding0_word_embed_embedding0_weight'].data(ctx=ctx[0])
         self.lm_head.collect_params()['dense1_weight'].set_data(embed)
@@ -226,7 +234,6 @@ class Seq2Seq(HybridBlock):
         #encoder_output = outputs[0].permute([1,0,2]).contiguous() not sure how to do
         if target_ids is not None:
             target_token_types = mx.nd.zeros_like(target_ids)
-            #attn_mask=-1e4 *(1-self.bias[:target_ids.shape[1],:target_ids.shape[1]]) no option to pass this in gluonnlp TODO
             # could try subclassing the Decoder and change the hybrid_forward function.
             # transpose so we have (batch size, target seq length, embed dims)
             tgt_embeddings = self.embedding(target_ids, target_token_types).transpose((1, 0, 2))
