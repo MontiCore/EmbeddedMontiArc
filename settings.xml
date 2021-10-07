@@ -26,12 +26,58 @@
     </server>
   </servers>
 
-  <mirrors>
+    <mirrors>
     <mirror>
       <id>se-nexus</id>
       <mirrorOf>external:*</mirrorOf>
       <url>https://nexus.se.rwth-aachen.de/content/groups/public</url>
-    </mirror>	 
+    </mirror>
+    <mirror>
+      <id>rosjava_mvn_repo</id>
+      <mirrorOf>rosjava_mvn</mirrorOf>
+      <url>https://github.com/rosjava/rosjava_mvn_repo/raw/master/</url>
+    </mirror>
+    <mirror> 
+      <id>jfrog_repo</id>
+      <mirrorOf>jfrog</mirrorOf>
+      <url>https://repo.jfrog.org/artifactory/libs-releases</url>
+    </mirror>
   </mirrors>
- 
+  
+  <profiles>
+    <profile>
+      <id>se-nexus</id>
+      <repositories>
+        <repository>
+          <id>central</id>
+          <url>http://central</url>
+          <releases><enabled /></releases>
+          <snapshots><enabled /></snapshots>
+        </repository>
+        <repository>
+          <id>rosjava_mvn</id>
+          <name>Public Rosjava repository</name>
+          <url>https://github.com/rosjava/rosjava_mvn_repo/raw/master</url>
+        </repository>
+        <repository>
+          <id>jfrog</id>
+          <name>JFrog repository</name>
+          <url>https://repo.jfrog.org/artifactory/libs-releases</url>
+        </repository>
+      </repositories>
+      <pluginRepositories>
+        <pluginRepository>
+          <id>central</id>
+          <url>http://central</url>
+          <releases><enabled /></releases>
+          <snapshots><enabled /></snapshots>
+        </pluginRepository>
+      </pluginRepositories>
+    </profile>
+  </profiles>
+
+  <activeProfiles>
+    <activeProfile>se-nexus</activeProfile>
+  </activeProfiles>
+
 </settings>

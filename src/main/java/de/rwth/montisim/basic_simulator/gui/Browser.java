@@ -38,6 +38,9 @@ public class Browser extends JFrame implements TreeSelectionListener {
     DefaultMutableTreeNode tree_root;
     DefaultTreeModel tree_model;
     Category default_category;
+    boolean distributed = false;
+    boolean randomize = false;
+    boolean play = true;
 
     HashMap<TreeNode, Category> node_category = new HashMap<>();
     HashMap<String, DefaultMutableTreeNode> categories = new HashMap<>();
@@ -94,6 +97,7 @@ public class Browser extends JFrame implements TreeSelectionListener {
         
 
         JPanel interm = new JPanel();
+        Box box = Box.createVerticalBox();
 
         JCheckBox checkBox1 = new JCheckBox("Antialiasing", UIInfo.antialiasing);        
         checkBox1.addItemListener(new ItemListener() {
@@ -103,7 +107,8 @@ public class Browser extends JFrame implements TreeSelectionListener {
             }           
         });
         checkBox1.setBackground(Color.WHITE);
-        interm.add(checkBox1);
+        //interm.add(checkBox1);
+        box.add(checkBox1);
 
         JCheckBox checkBox2 = new JCheckBox("Show Road Segments", UIInfo.showSegments);        
         checkBox2.addItemListener(new ItemListener() {
@@ -113,9 +118,39 @@ public class Browser extends JFrame implements TreeSelectionListener {
             }           
         });
         checkBox2.setBackground(Color.WHITE);
-        interm.add(checkBox2);
+        //interm.add(checkBox2);
+        box.add(checkBox2);
+
+        JCheckBox checkBox5 = new JCheckBox("Use decentralized reinforcement learning");
+        checkBox5.addItemListener(new ItemListener() {
+            public void itemStateChanged(ItemEvent e) {
+                distributed = e.getStateChange() == 1;
+            }
+        });
+        checkBox5.setBackground(Color.WHITE);
+        box.add(checkBox5);
+
+        JCheckBox checkBox6 = new JCheckBox("Use randomization for reinforcement learning");
+        checkBox6.addItemListener(new ItemListener() {
+            public void itemStateChanged(ItemEvent e) {
+                randomize = e.getStateChange() == 1;
+            }
+        });
+        checkBox6.setBackground(Color.WHITE);
+        box.add(checkBox6);
+
+        JCheckBox checkBox7 = new JCheckBox("Start RL-simulator in training mode");
+        checkBox7.addItemListener(new ItemListener() {
+            public void itemStateChanged(ItemEvent e) {
+                play = e.getStateChange() == 1;
+                play = !play;
+            }
+        });
+        checkBox7.setBackground(Color.WHITE);
+        box.add(checkBox7);
 
         interm.setBackground(Color.WHITE);
+        interm.add(box);
         JPanel optionPanel = new JPanel();
         optionPanel.setLayout(new BoxLayout(optionPanel, BoxLayout.Y_AXIS));
         optionPanel.setBorder(paneBorder);
@@ -221,6 +256,11 @@ public class Browser extends JFrame implements TreeSelectionListener {
                     if (vis != null){
                         new_vis = vis;
                         new_elem = (Category.Elem) node.getUserObject();
+                    }
+                    if (category.type.id.equals("scenarios")) {
+                        ((ScenarioVis) new_vis).distributed = distributed;
+                        ((ScenarioVis) new_vis).randomize = randomize;
+                        ((ScenarioVis) new_vis).play = play;
                     }
                 }
             }
