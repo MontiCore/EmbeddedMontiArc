@@ -1,0 +1,63 @@
+ # (c) https://github.com/MontiCore/monticore
+stages:
+  - docker
+  - jar
+  - linux
+  
+buildDockerMxNet180:
+  stage: docker
+  tags:
+  - shell
+  script:
+  - docker login registry.git.rwth-aachen.de -u m1ndbr34ker -p zPge_-otSoWREc4NAc3y
+  - cd Gluon/.test/docker
+  - docker build -t registry.git.rwth-aachen.de/monticore/embeddedmontiarc/applications/gans/3d-gan/mxnet180 .
+  - docker push registry.git.rwth-aachen.de/monticore/embeddedmontiarc/applications/gans/3d-gan/mxnet180
+  only:
+    changes:
+    - Gluon/.test/docker/*
+ 
+Train3D-GAN:
+  stage: linux
+  image: registry.git.rwth-aachen.de/monticore/embeddedmontiarc/applications/gans/mnist-infogan/gans_mxnet:latest
+  script:
+  - mv /mxnet/build/libmxnet.so /mxnet/build/libmxnet.a /usr/lib/
+  - cd Training
+  - mvn dependency:resolve emadl:train -s settings.xml
+  except:
+    changes:
+    - README.md
+ 
+ 
+deploy-pretrained:
+  stage: linux
+  image: maven:3.6-jdk-8
+  script:
+  - cd Pre-Trained
+  - mvn emadl:deploy-pretrained -s settings.xml
+  except:
+    changes:
+    - README.md
+
+
+install-pretrained:
+  stage: linux
+  image: maven:3.6-jdk-8
+  script:
+  - cd Pre-Trained
+  - mvn emadl:install-pretrained -s settings.xml
+  except:
+    changes:
+    - README.md
+  
+TestWithJar:
+  stage: jar
+  image: registry.git.rwth-aachen.de/monticore/embeddedmontiarc/applications/gans/3d-gan/mxnet180:latest
+  script:
+  - cd Gluon/.test 
+  - chmod +x build.sh
+  - ./build.sh
+  except:
+    changes:
+    - README.md
+
