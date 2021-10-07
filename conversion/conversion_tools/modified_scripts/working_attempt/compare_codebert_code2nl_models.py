@@ -107,6 +107,7 @@ def train_pt_model(pt_seq2seq, pt_train, weight_decay):
     for step in range(param_dict['train_steps']):
         batch = next(pt_train_iter)
         batch = tuple(t.to(device) for t in batch)
+        print(batch)
         source_ids, source_mask, target_ids, target_mask = batch
         loss, _, _ = pt_seq2seq(
             source_ids = source_ids,
@@ -116,7 +117,7 @@ def train_pt_model(pt_seq2seq, pt_train, weight_decay):
         )
         cumul_loss += loss.item()
         train_loss = round(cumul_loss/(steps_done+1), 4)
-
+        print(train_loss)
         steps_done += 1
         loss.backward()
         optimizer.step()
@@ -145,12 +146,13 @@ def tandem_test_models(pt_seq2seq, mx_seq2seq, pt_test, mx_test, mx_ctx):
             mx_preds.append(mx_pred)
             mx_probs.append(mx_prob)
         
-
-        pt_pred, pt_prob = pt_seq2seq(pt_sids, pt_smasks)
+        pt_seq2seq.eval()
+        with torch.no_grad():
+            pt_pred, pt_prob = pt_seq2seq(pt_sids, pt_smasks)
+        # print(pt_pred)
+        # print(mx_pred)
         pt_preds.append(pt_pred)
         pt_probs.append(pt_prob)
-        print(pt_prob[0][0])
-        print(mx_prob[0][0])
 
 def set_seed():
     seed = 42
@@ -180,4 +182,4 @@ if __name__ == '__main__':
     # print(all_lm_logits_pt[0])
     # print(all_lm_logits_pt[0].shape)
     # print(all_lm_logits_mx[0])
-    #tandem_test_models(pt_seq2seq, mx_seq2seq, pt_test, mx_test, mx_ctx)
+    tandem_test_models(pt_seq2seq, mx_seq2seq, pt_test, mx_test, mx_ctx)
