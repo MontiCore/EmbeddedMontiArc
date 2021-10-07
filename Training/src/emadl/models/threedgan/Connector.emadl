@@ -1,0 +1,12 @@
+/* (c) https://github.com/MontiCore/monticore */
+package threedgan;
+
+component Connector {
+	ports in Q(0:1)^{200} noise,
+		  out Q(0:1)^{1,32,32,32} aerial;
+	
+	instance Generator translator;
+
+	connect noise -> translator.noise;
+	connect translator.data -> aerial;
+}
