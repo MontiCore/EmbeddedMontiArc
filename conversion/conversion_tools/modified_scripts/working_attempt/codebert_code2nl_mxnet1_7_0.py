@@ -136,9 +136,6 @@ def train_model(seq2seq, train_data, ctx, test_run):
     seq2seq.hybridize()
     epochs = (train_steps * batch_size) // train_data.num_data
     loss = mx.gluon.loss.SoftmaxCrossEntropyLoss() # TODO parameters? e.g. sparse_label
-    # note this is different than the codebert optimizer
-    # 1. it doesn't appear to be able to exclude certain parameters from the optimizer
-    # which is done in the codebert code2nl's optimizer. TODO for now.
     # lr is defined in the call to run codebert, epsilon is left as default in the run script, beta1 and 2 are the pytorch default
     optimizer = AdamW(
         learning_rate = train_hparams['learning_rate'], 
@@ -155,6 +152,7 @@ def train_model(seq2seq, train_data, ctx, test_run):
     print('Batch size {}'.format(batch_size), flush=True)
     print('Num samples {}'.format(train_data.num_data), flush=True)
     print('Training model...', flush=True)
+    all_shift_logits = []
     for epoch in range(epochs):
         total_loss = 0
         for bid, batch in enumerate(train_data):
@@ -175,14 +173,18 @@ def train_model(seq2seq, train_data, ctx, test_run):
                         # print(loss_tgt_mask)
                         active_loss = loss_tgt_mask[..., 1:].reshape(-1)
                         shift_labels = tgt_id[..., 1:]
-                        # print(50*"*"+ "active_loss")
-                        # print(active_loss)
+                        print(50*"*"+ "active_loss")
+                        print(active_loss)
                         # print(50*"*"+ "shift_labels")
                         # print(shift_labels)
                         # Shift so that tokens < n predict n
+                        # shape is (batch_size, target_seq_len, vocab_size)
+                        # so for every batch, and every word in each batch
+                        # we have unnormalized probablilities of next word (50265 words)
                         shift_logits = lm_logits[..., :-1, :]
                         # print(50*"*" + "shift_logits")
                         # print(shift_logits)
+                        all_shift_logits.append(shift_logits)
                         newDim = shift_logits.shape[-1]
                         X = mx.nd.contrib.boolean_mask(shift_logits.reshape(-1, newDim), active_loss)
                         y = mx.nd.contrib.boolean_mask(shift_labels.reshape(-1), active_loss)
@@ -206,7 +208,7 @@ def train_model(seq2seq, train_data, ctx, test_run):
             ), flush=True)
             trainer.step(batch_size)
         train_data.reset()
-    return seq2seq
+    return seq2seq, all_shift_logits
 
 def test_model(file_name, seq2seq, ctx, args):
     print('Testing with {}...'.format(file_name), flush=True)

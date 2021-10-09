@@ -78,6 +78,9 @@ class Seq2Seq(nn.Module):
             shift_labels = target_ids[..., 1:].contiguous()
             # Shift so that tokens < n predict n
             shift_logits = lm_logits[..., :-1, :].contiguous()
+            # print(50*"*" + "shift_logits")
+            # print(shift_logits)
+            # print(shift_logits.shape)
             # Flatten the tokens
             loss_fct = nn.CrossEntropyLoss(ignore_index=-1)
             
@@ -86,7 +89,7 @@ class Seq2Seq(nn.Module):
             
             loss = loss_fct(x, y)
 
-            outputs = loss,loss*active_loss.sum(),active_loss.sum()
+            outputs = loss,loss*active_loss.sum(),active_loss.sum(), shift_logits
             return outputs
         else:
             #Predict 

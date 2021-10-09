@@ -257,7 +257,7 @@ class Seq2Seq(HybridBlock):
             preds=[]
             output_probs = []       
             zero = mx.nd.zeros(1, dtype='int64', ctx=input_ctx)
-            # interate accross sequences in batch
+            # iterate accross sequences in batch
             for i in range(source_ids.shape[0]):
                 # shape is (batch_size, seq_len, embed_size), we want the ith sequence
                 context = encoder_output[i:i+1,:]

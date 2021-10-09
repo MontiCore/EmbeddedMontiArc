@@ -104,17 +104,19 @@ def train_pt_model(pt_seq2seq, pt_train, weight_decay):
     pt_seq2seq.train()
     pt_train_iter = cycle(pt_train)
     steps_done, cumul_loss = 0, 0
+    all_shift_logits = []
     for step in range(param_dict['train_steps']):
         batch = next(pt_train_iter)
         batch = tuple(t.to(device) for t in batch)
         print(batch)
         source_ids, source_mask, target_ids, target_mask = batch
-        loss, _, _ = pt_seq2seq(
+        loss, _, _, shift_logits = pt_seq2seq(
             source_ids = source_ids,
             source_mask = source_mask,
             target_ids = target_ids,
             target_mask = target_mask
         )
+        all_shift_logits.append(shift_logits)
         cumul_loss += loss.item()
         train_loss = round(cumul_loss/(steps_done+1), 4)
         print(train_loss)
@@ -123,7 +125,7 @@ def train_pt_model(pt_seq2seq, pt_train, weight_decay):
         optimizer.step()
         optimizer.zero_grad()
         scheduler.step()
-    return pt_seq2seq
+    return pt_seq2seq, all_shift_logits
 
 def compare_preds(pt_preds, mx_preds):
     return None
@@ -161,6 +163,23 @@ def set_seed():
     torch.manual_seed(seed)
     mx.random.seed(seed)
 
+def verify_training_similar(pt_logits, mx_logits):
+    # look at last batch in array (so weights updated with previous examples)
+    pt_last = pt_logits[-1]
+    mx_last = mx_logits[-1]
+    for pt_batch, mx_batch in zip(pt_last, mx_last):
+        for pt_word, mx_word in zip(pt_batch, mx_batch):
+            pt_np = pt_word.detach().numpy()
+            mx_np = mx_word.asnumpy()
+            distance = np.linalg.norm(pt_np - mx_np)
+            max_pos_pt = np.argmax(pt_np)
+            max_pos_mx = np.argmax(mx_np)
+            print("Distance: {}, Max Pos Pt: {}, Max Pos Mx: {}".format(distance, max_pos_pt, max_pos_mx))
+        # print(pta.shape)
+        # print(mxa.shape)
+
+
+
 if __name__ == '__main__':
     args = parse_args()
     set_seed()
@@ -177,8 +196,9 @@ if __name__ == '__main__':
         mx_ctx, True, True
     )
     pt_seq2seq = get_pt_seq2seq()
-    pt_seq2seq = train_pt_model(pt_seq2seq, pt_train, 0.0)
-    mx_seq2seq = mxrun.train_model(mx_seq2seq, mx_train, mx_ctx, True)
+    pt_seq2seq, pt_logits = train_pt_model(pt_seq2seq, pt_train, 0.0)
+    mx_seq2seq, mx_logits = mxrun.train_model(mx_seq2seq, mx_train, mx_ctx, True)
+    verify_training_similar(pt_logits, mx_logits)
     # print(all_lm_logits_pt[0])
     # print(all_lm_logits_pt[0].shape)
     # print(all_lm_logits_mx[0])
