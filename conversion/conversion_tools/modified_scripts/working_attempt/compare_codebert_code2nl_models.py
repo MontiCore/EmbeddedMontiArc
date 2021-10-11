@@ -79,10 +79,9 @@ def get_pt_seq2seq():
                   sos_id=tokenizer.cls_token_id, eos_id=tokenizer.sep_token_id, compare_mode=True)
     return model
 
-def train_pt_model(pt_seq2seq, pt_train, weight_decay):
+def train_pt_model(pt_seq2seq, pt_train, weight_decay, device):
     param_dict = hyp.get_training_hparams(True)
     no_decay = ['bias', 'LayerNorm.weight']
-    device = torch.device("cuda" if torch.cuda.is_available() else "cpu")
     pt_seq2seq.to(device)
     # the model doesnt use weight decay but we will leave this for now
     optimizer_grouped_parameters = [
@@ -133,7 +132,7 @@ def train_pt_model(pt_seq2seq, pt_train, weight_decay):
 def compare_preds(pt_preds, mx_preds):
     return None
 
-def tandem_test_models(pt_seq2seq, mx_seq2seq, pt_test, mx_test, mx_ctx):
+def tandem_test_models(pt_seq2seq, mx_seq2seq, pt_test, mx_test, mx_ctx, pt_device):
     pt_seq2seq.eval()
     pt_test_iter = cycle(pt_test)
     num_batches = mx_test.num_data // mx_test.batch_size
@@ -144,6 +143,7 @@ def tandem_test_models(pt_seq2seq, mx_seq2seq, pt_test, mx_test, mx_ctx):
     for _ in range(num_batches):
         mx_batch = mx_test.next()
         pt_batch = next(pt_test_iter)
+        pt_batch.to(pt_device)
         pt_sids, pt_smasks, _, _ = pt_batch
         mx_sids, mx_smasks, _, _ = mxrun.get_seqs_from_batch(mx_batch, mx_ctx)
         for s_id, s_msk in zip(mx_sids, mx_smasks):
@@ -192,6 +192,7 @@ if __name__ == '__main__':
         mx_ctx = [mx.cpu()]
     else:
         mx_ctx = [mx.gpu(i) for i in range(args.num_gpus)]
+    pt_device = torch.device("cuda" if torch.cuda.is_available() else "cpu")
 
     param_dict = hyp.get_training_hparams(True)
     pt_train = get_pytorch_dataloader(
@@ -205,10 +206,10 @@ if __name__ == '__main__':
         mx_ctx, True, True
     )
     pt_seq2seq = get_pt_seq2seq()
-    pt_seq2seq, pt_logits = train_pt_model(pt_seq2seq, pt_train, 0.0)
+    pt_seq2seq, pt_logits = train_pt_model(pt_seq2seq, pt_train, 0.0, pt_device)
     mx_seq2seq, mx_logits = mxrun.train_model(mx_seq2seq, mx_train, mx_ctx, True)
     verify_training_similar(pt_logits, mx_logits)
     # print(all_lm_logits_pt[0])
     # print(all_lm_logits_pt[0].shape)
     # print(all_lm_logits_mx[0])
-    tandem_test_models(pt_seq2seq, mx_seq2seq, pt_test, mx_test, mx_ctx)
+    tandem_test_models(pt_seq2seq, mx_seq2seq, pt_test, mx_test, mx_ctx, pt_device)
