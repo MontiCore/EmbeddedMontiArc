@@ -95,7 +95,7 @@ class Seq2Seq(nn.Module):
             #Predict 
             preds=[]
             if torch.cuda.is_available():
-                zero=torch.cuda.LongTensor(1).fill_(0) #only gpu TODO changed by makua
+                zero = torch.cuda.LongTensor(1).fill_(0) #only gpu TODO changed by makua
             else:
                 zero = torch.LongTensor(1).fill_(0)  
             output_probs = [] # TODO added by makua to compare models
@@ -136,7 +136,10 @@ class Beam(object):
     def __init__(self, size,sos,eos):
         self.size = size
         #self.tt = torch.cuda only gpu TODO changed by makua to train on cpu
-        self.tt = torch
+        if torch.cuda.is_available():
+            self.tt = torch.cuda
+        else:
+            self.tt = torch
         # The score for each translation on the beam.
         self.scores = self.tt.FloatTensor(size).zero_()
         # The backpointers at each time-step.
