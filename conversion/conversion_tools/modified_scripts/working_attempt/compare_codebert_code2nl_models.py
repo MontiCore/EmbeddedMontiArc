@@ -83,6 +83,7 @@ def train_pt_model(pt_seq2seq, pt_train, weight_decay):
     param_dict = hyp.get_training_hparams(True)
     no_decay = ['bias', 'LayerNorm.weight']
     device = torch.device("cuda" if torch.cuda.is_available() else "cpu")
+    pt_seq2seq.to(device)
     # the model doesnt use weight decay but we will leave this for now
     optimizer_grouped_parameters = [
         {'params': [
