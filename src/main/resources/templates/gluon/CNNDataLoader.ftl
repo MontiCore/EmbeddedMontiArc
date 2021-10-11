@@ -25,10 +25,26 @@ class ${tc.fileNameWithoutEnding}:
         data_std = {}
         train_images = {}
 
-        for input_name in self._input_names_:
+        for input_name in self._input_names_: 
             train_data[input_name] = train_h5[input_name]
-            data_mean[input_name + '_'] = nd.array(train_h5[input_name][:].mean(axis=0))
-            data_std[input_name + '_'] = nd.array(train_h5[input_name][:].std(axis=0) + 1e-5)
+            train_dataset = train_h5[input_name]
+            train_dataset_shape = train_data[input_name].shape
+            # slize_size limits the memory cosumption, by only loading slizes of size <500MB into memory
+            slize_size = min(train_dataset_shape[0] - 1, int(500e6 / (train_h5[input_name][0].size * train_h5[input_name][0].itemsize)))
+            num_slizes = max(1, int(train_h5[input_name].shape[0] / slize_size))
+            mean = np.zeros(train_dataset_shape[1: ])
+            std = np.zeros(train_dataset_shape[1: ])
+            
+            for i in range(int(train_dataset_shape[0] / slize_size)):
+                mean += train_dataset[i * slize_size: (i + 1) * slize_size].mean(axis=0) / num_slizes
+                std += train_dataset[i * slize_size: (i + 1) * slize_size].std(axis=0) / num_slizes
+            if slize_size > train_dataset_shape[0] - 1:
+                mean += train_dataset[num_slizes * slize_size: ].mean(axis=0) / (slize_size - num_slizes % slize_size)
+                std += train_dataset[num_slizes * slize_size: ].std(axis=0) / (slize_size - num_slizes % slize_size)
+            std += 1e-5
+
+            data_mean[input_name + '_'] = nd.array(mean)
+            data_std[input_name + '_'] = nd.array(std)
 
             if 'images' in train_h5:
                 train_images = train_h5['images']
