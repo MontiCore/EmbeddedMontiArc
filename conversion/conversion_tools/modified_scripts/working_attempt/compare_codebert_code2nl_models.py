@@ -30,6 +30,8 @@ def parse_args():
         help="Symbol file from the pretrained mxnet embed output by the conversion script")
     parser.add_argument("--embed_weight_file", default='./codebert_gluon/model/codebert_embedding-0000.params', type=str,
         help="Weight file from the pretrained mxnet embed output by the conversion script")
+    parser.add_argument("--num_gpus", default=2, type=int,
+        help="Number of gpus to train on, set to 0 for cpu training")
     return parser.parse_args()
 
 def to_pytorch_tensor_ds(features):
@@ -80,7 +82,7 @@ def get_pt_seq2seq():
 def train_pt_model(pt_seq2seq, pt_train, weight_decay):
     param_dict = hyp.get_training_hparams(True)
     no_decay = ['bias', 'LayerNorm.weight']
-    device = torch.device('cpu')
+    device = torch.device("cuda" if torch.cuda.is_available() else "cpu")
     # the model doesnt use weight decay but we will leave this for now
     optimizer_grouped_parameters = [
         {'params': [
@@ -156,11 +158,13 @@ def tandem_test_models(pt_seq2seq, mx_seq2seq, pt_test, mx_test, mx_ctx):
         pt_preds.append(pt_pred)
         pt_probs.append(pt_prob)
 
-def set_seed():
+def set_seed(num_gpu):
     seed = 42
     random.seed(seed)
     np.random.seed(seed)
     torch.manual_seed(seed)
+    if num_gpu > 0:
+        torch.cuda.manual_seed_all(seed)
     mx.random.seed(seed)
 
 def verify_training_similar(pt_logits, mx_logits):
@@ -182,8 +186,12 @@ def verify_training_similar(pt_logits, mx_logits):
 
 if __name__ == '__main__':
     args = parse_args()
-    set_seed()
-    mx_ctx = [mx.cpu()]
+    set_seed(args.num_gpus)
+    if args.num_gpus < 1:
+        mx_ctx = [mx.cpu()]
+    else:
+        mx_ctx = [mx.gpu(i) for i in range(args.num_gpus)]
+
     param_dict = hyp.get_training_hparams(True)
     pt_train = get_pytorch_dataloader(
         args.data_dir, 'dev', 'train.jsonl', param_dict['limit_train_samples'])
