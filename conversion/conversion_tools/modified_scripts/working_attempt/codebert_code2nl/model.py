@@ -93,10 +93,12 @@ class Seq2Seq(nn.Module):
             return outputs
         else:
             #Predict 
-            preds=[]       
-            #zero=torch.cuda.LongTensor(1).fill_(0) only gpu TODO changed by makua
+            preds=[]
+            if torch.cuda.is_available():
+                zero=torch.cuda.LongTensor(1).fill_(0) #only gpu TODO changed by makua
+            else:
+                zero = torch.LongTensor(1).fill_(0)  
             output_probs = [] # TODO added by makua to compare models
-            zero = torch.LongTensor(1).fill_(0)  
             for i in range(source_ids.shape[0]):
                 context=encoder_output[:,i:i+1]
                 context_mask=source_mask[i:i+1,:]
