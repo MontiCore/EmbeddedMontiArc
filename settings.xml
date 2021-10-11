@@ -58,7 +58,7 @@
                 </repository>
                 <repository>
                     <id>icm</id>
-                    <url>http://maven.icm.edu.pl/artifactory/repo/</url>
+                    <url>https://bio.informatik.uni-jena.de/repository/libs-release-oss/</url>
                     <releases><enabled /></releases>
                     <snapshots><enabled /></snapshots>
                 </repository>
@@ -80,13 +80,6 @@
         </profile>
     </profiles>
     
-    <mirrors>
-      <mirror>
-      <id>internal-repository</id>
-     <name>Maven Repository Manager running on https://repo1.maven.org/maven2</name>
-     <url>https://repo1.maven.org/maven2</url>
-    <mirrorOf>*</mirrorOf>
-   </mirror></mirrors>
     <activeProfiles>
         <activeProfile>se-nexus</activeProfile>
     </activeProfiles>
