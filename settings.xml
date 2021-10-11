@@ -59,7 +59,6 @@
                 <repository>
                     <id>icm</id>
                     <url>http://maven.icm.edu.pl/artifactory/repo/</url>
-                    <blocked>false</blocked>
                     <releases><enabled /></releases>
                     <snapshots><enabled /></snapshots>
                 </repository>
