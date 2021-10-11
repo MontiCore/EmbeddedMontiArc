@@ -174,7 +174,7 @@ def verify_training_similar(pt_logits, mx_logits):
     mx_last = mx_logits[-1]
     for pt_batch, mx_batch in zip(pt_last, mx_last):
         for pt_word, mx_word in zip(pt_batch, mx_batch):
-            pt_np = pt_word.detach().numpy()
+            pt_np = pt_word.cpu().detach().numpy()
             mx_np = mx_word.asnumpy()
             distance = np.linalg.norm(pt_np - mx_np)
             max_pos_pt = np.argmax(pt_np)

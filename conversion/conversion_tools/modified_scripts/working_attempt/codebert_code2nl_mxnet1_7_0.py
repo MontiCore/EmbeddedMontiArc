@@ -173,8 +173,8 @@ def train_model(seq2seq, train_data, ctx, test_run):
                         # print(loss_tgt_mask)
                         active_loss = loss_tgt_mask[..., 1:].reshape(-1)
                         shift_labels = tgt_id[..., 1:]
-                        print(50*"*"+ "active_loss")
-                        print(active_loss)
+                        # print(50*"*"+ "active_loss")
+                        # print(active_loss)
                         # print(50*"*"+ "shift_labels")
                         # print(shift_labels)
                         # Shift so that tokens < n predict n
