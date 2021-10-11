@@ -12,7 +12,14 @@
 
     <proxies>
     </proxies>
-
+    <mirrors>
+      <mirror>
+        <id>insecure-repo</id>
+        <mirrorOf>external:http:*</mirrorOf>
+        <url>http://www.ebi.ac.uk/intact/maven/nexus/content/repositories/ebi-repo/</url>
+        <blocked>false</blocked>
+      </mirror>
+    </mirrors>
     <servers>
         <server>
             <id>se-nexus</id>
