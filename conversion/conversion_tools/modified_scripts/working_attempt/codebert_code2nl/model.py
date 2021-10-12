@@ -141,6 +141,7 @@ class Beam(object):
             self.tt = torch.cuda
         else:
             self.tt = torch
+        self.device = device
         # The score for each translation on the beam.
         self.scores = self.tt.FloatTensor(size).zero_().to(device)
         # The backpointers at each time-step.
@@ -157,7 +158,7 @@ class Beam(object):
 
     def getCurrentState(self):
         "Get the outputs for the current timestep."
-        batch = self.tt.LongTensor(self.nextYs[-1]).view(-1, 1).to(device)
+        batch = self.tt.LongTensor(self.nextYs[-1]).view(-1, 1).to(self.device)
         return batch
 
     def getCurrentOrigin(self):
