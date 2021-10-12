@@ -143,7 +143,7 @@ def tandem_test_models(pt_seq2seq, mx_seq2seq, pt_test, mx_test, mx_ctx, pt_devi
     for _ in range(num_batches):
         mx_batch = mx_test.next()
         pt_batch = next(pt_test_iter)
-        pt_batch.to(pt_device)
+        pt_batch = tuple(t.to(device) for t in pt_batch)
         pt_sids, pt_smasks, _, _ = pt_batch
         mx_sids, mx_smasks, _, _ = mxrun.get_seqs_from_batch(mx_batch, mx_ctx)
         for s_id, s_msk in zip(mx_sids, mx_smasks):
@@ -151,7 +151,7 @@ def tandem_test_models(pt_seq2seq, mx_seq2seq, pt_test, mx_test, mx_ctx, pt_devi
             mx_preds.append(mx_pred)
             mx_probs.append(mx_prob)
         
-        pt_seq2seq.eval()
+        pt_seq2seq.to(pt_sids.device)
         with torch.no_grad():
             pt_pred, pt_prob = pt_seq2seq(pt_sids, pt_smasks)
         # print(pt_pred)

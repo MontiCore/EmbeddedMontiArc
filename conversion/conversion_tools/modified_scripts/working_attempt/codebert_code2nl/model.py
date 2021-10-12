@@ -97,12 +97,13 @@ class Seq2Seq(nn.Module):
             if torch.cuda.is_available():
                 zero = torch.cuda.LongTensor(1).fill_(0) #only gpu TODO changed by makua
             else:
-                zero = torch.LongTensor(1).fill_(0)  
+                zero = torch.LongTensor(1).fill_(0)
+            zero.to(source_ids.device)  
             output_probs = [] # TODO added by makua to compare models
             for i in range(source_ids.shape[0]):
                 context=encoder_output[:,i:i+1]
                 context_mask=source_mask[i:i+1,:]
-                beam = Beam(self.beam_size,self.sos_id,self.eos_id)
+                beam = Beam(self.beam_size,self.sos_id,self.eos_id, source_ids.device))
                 input_ids=beam.getCurrentState()
                 context=context.repeat(1, self.beam_size,1)
                 context_mask=context_mask.repeat(self.beam_size,1)
@@ -133,7 +134,7 @@ class Seq2Seq(nn.Module):
         
 
 class Beam(object):
-    def __init__(self, size,sos,eos):
+    def __init__(self, size, sos, eos, device):
         self.size = size
         #self.tt = torch.cuda only gpu TODO changed by makua to train on cpu
         if torch.cuda.is_available():
@@ -141,12 +142,12 @@ class Beam(object):
         else:
             self.tt = torch
         # The score for each translation on the beam.
-        self.scores = self.tt.FloatTensor(size).zero_()
+        self.scores = self.tt.FloatTensor(size).zero_().to(device)
         # The backpointers at each time-step.
         self.prevKs = []
         # The outputs at each time-step.
         self.nextYs = [self.tt.LongTensor(size)
-                       .fill_(0)]
+                       .fill_(0).to(device)]
         self.nextYs[0][0] = sos
         # Has EOS topped the beam yet.
         self._eos = eos
@@ -156,7 +157,7 @@ class Beam(object):
 
     def getCurrentState(self):
         "Get the outputs for the current timestep."
-        batch = self.tt.LongTensor(self.nextYs[-1]).view(-1, 1)
+        batch = self.tt.LongTensor(self.nextYs[-1]).view(-1, 1).to(device)
         return batch
 
     def getCurrentOrigin(self):
