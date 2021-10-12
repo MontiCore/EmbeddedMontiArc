@@ -2,6 +2,7 @@
 stages:
   - linux
   - page
+  - trigger_apps
 
 BranchJobLinux:
   stage: linux
@@ -24,6 +25,16 @@ MasterDeployJobLinux:
       - .gitlab-ci.yml
       - .gitignore
       - README.md
+
+trigger-mnistcalc:
+  stage: trigger_apps
+  allow_failure: true
+  trigger:
+    project: monticore/EmbeddedMontiArc/applications/MNISTCalculator
+    branch: master
+  only:
+    - master
+
 
 pages:
   stage: page
