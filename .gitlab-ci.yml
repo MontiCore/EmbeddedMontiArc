@@ -1,6 +1,7 @@
 # (c) https://github.com/MontiCore/monticore  
 stages:
 - linux
+- trigger_apps
 #- windows
 
 
@@ -15,6 +16,16 @@ masterJobLinux:
     changes:
     - .gitlab-ci.yml
     - README.md
+
+trigger-project:
+  stage: trigger_apps
+  allow_failure: true
+  trigger:
+    project: monticore/EmbeddedMontiArc/utilities/emadl-maven-plugin
+    branch: master
+  only:
+    - master
+
 
 BranchJobLinux:
   stage: linux
