@@ -103,7 +103,7 @@ class Seq2Seq(nn.Module):
             for i in range(source_ids.shape[0]):
                 context=encoder_output[:,i:i+1]
                 context_mask=source_mask[i:i+1,:]
-                beam = Beam(self.beam_size,self.sos_id,self.eos_id, source_ids.device))
+                beam = Beam(self.beam_size,self.sos_id,self.eos_id, source_ids.device)
                 input_ids=beam.getCurrentState()
                 context=context.repeat(1, self.beam_size,1)
                 context_mask=context_mask.repeat(self.beam_size,1)
