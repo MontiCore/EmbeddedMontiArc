@@ -79,10 +79,9 @@ def get_pt_seq2seq():
                   sos_id=tokenizer.cls_token_id, eos_id=tokenizer.sep_token_id, compare_mode=True)
     return model
 
-def train_pt_model(pt_seq2seq, pt_train, weight_decay, device):
+def train_pt_model(pt_seq2seq, pt_train, weight_decay, device, num_gpus):
     param_dict = hyp.get_training_hparams(True)
     no_decay = ['bias', 'LayerNorm.weight']
-    pt_seq2seq.to(device)
     # the model doesnt use weight decay but we will leave this for now
     optimizer_grouped_parameters = [
         {'params': [
@@ -106,19 +105,18 @@ def train_pt_model(pt_seq2seq, pt_train, weight_decay, device):
     pt_seq2seq.train()
     pt_train_iter = cycle(pt_train)
     steps_done, cumul_loss = 0, 0
-    all_shift_logits = []
     for step in range(param_dict['train_steps']):
         batch = next(pt_train_iter)
         batch = tuple(t.to(device) for t in batch)
-        print(batch)
         source_ids, source_mask, target_ids, target_mask = batch
-        loss, _, _, shift_logits = pt_seq2seq(
+        loss, _, _, = pt_seq2seq(
             source_ids = source_ids,
             source_mask = source_mask,
             target_ids = target_ids,
             target_mask = target_mask
         )
-        all_shift_logits.append(shift_logits)
+        if args.num_gpus > 1:
+            loss = loss.mean()
         cumul_loss += loss.item()
         train_loss = round(cumul_loss/(steps_done+1), 4)
         print(train_loss)
@@ -199,7 +197,9 @@ if __name__ == '__main__':
     pt_test = get_pytorch_dataloader(
         args.data_dir, 'test', 'test.jsonl', param_dict['limit_test_samples'])
     pt_seq2seq = get_pt_seq2seq()
-    pt_seq2seq, pt_logits = train_pt_model(pt_seq2seq, pt_train, 0.0, pt_device)
+    pt_seq2seq.to(pt_device)
+    pt_seq2seq = torch.nn.DataParallel(pt_seq2seq)
+    pt_seq2seq, pt_logits = train_pt_model(pt_seq2seq, pt_train, 0.0, pt_device, args.num_gpus)
     pt_preds, pt_probs = test_pt_model(pt_seq2seq, pt_test, pt_device)
 
 

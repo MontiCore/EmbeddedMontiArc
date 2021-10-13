@@ -89,13 +89,13 @@ class Seq2Seq(nn.Module):
             
             loss = loss_fct(x, y)
 
-            outputs = loss,loss*active_loss.sum(),active_loss.sum(), shift_logits
+            outputs = loss,loss*active_loss.sum(),active_loss.sum()
             return outputs
         else:
             #Predict 
             preds=[]
             if torch.cuda.is_available():
-                zero = torch.cuda.LongTensor(1).fill_(0).to(source_ids.device) #only gpu TODO changed by makua
+                zero = torch.cuda.LongTensor(1).fill_(0) #only gpu TODO changed by makua
             else:
                 zero = torch.LongTensor(1).fill_(0)
             output_probs = [] # TODO added by makua to compare models
@@ -133,21 +133,20 @@ class Seq2Seq(nn.Module):
         
 
 class Beam(object):
-    def __init__(self, size, sos, eos, device):
+    def __init__(self, size, sos, eos):
         self.size = size
         #self.tt = torch.cuda only gpu TODO changed by makua to train on cpu
         if torch.cuda.is_available():
             self.tt = torch.cuda
         else:
             self.tt = torch
-        self.device = device
         # The score for each translation on the beam.
-        self.scores = self.tt.FloatTensor(size).zero_().to(device)
+        self.scores = self.tt.FloatTensor(size).zero_()
         # The backpointers at each time-step.
         self.prevKs = []
         # The outputs at each time-step.
         self.nextYs = [self.tt.LongTensor(size)
-                       .fill_(0).to(device)]
+                       .fill_(0)]
         self.nextYs[0][0] = sos
         # Has EOS topped the beam yet.
         self._eos = eos
@@ -157,7 +156,7 @@ class Beam(object):
 
     def getCurrentState(self):
         "Get the outputs for the current timestep."
-        batch = self.tt.LongTensor(self.nextYs[-1]).view(-1, 1).to(self.device)
+        batch = self.tt.LongTensor(self.nextYs[-1]).view(-1, 1)
         return batch
 
     def getCurrentOrigin(self):
