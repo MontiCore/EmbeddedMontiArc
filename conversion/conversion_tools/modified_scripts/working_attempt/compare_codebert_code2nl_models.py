@@ -125,7 +125,7 @@ def train_pt_model(pt_seq2seq, pt_train, weight_decay, device, num_gpus):
         optimizer.step()
         optimizer.zero_grad()
         scheduler.step()
-    return pt_seq2seq, all_shift_logits
+    return pt_seq2seq
 
 def compare_preds(pt_preds, mx_preds):
     return None
@@ -201,7 +201,6 @@ if __name__ == '__main__':
     pt_seq2seq = torch.nn.DataParallel(pt_seq2seq)
     pt_seq2seq, pt_logits = train_pt_model(pt_seq2seq, pt_train, 0.0, pt_device, args.num_gpus)
     pt_preds, pt_probs = test_pt_model(pt_seq2seq, pt_test, pt_device)
-
 
     if args.num_gpus < 1:
         mx_ctx = [mx.cpu()]
