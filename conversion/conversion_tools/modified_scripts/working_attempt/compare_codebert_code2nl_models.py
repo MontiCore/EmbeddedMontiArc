@@ -116,6 +116,7 @@ def train_pt_model(pt_seq2seq, pt_train, weight_decay, device, num_gpus):
             target_ids = target_ids,
             target_mask = target_mask
         )
+        shift_logits = shift_logits.cpu()
         all_shift_logits.append(shift_logits)
         if args.num_gpus > 1:
             loss = loss.mean()

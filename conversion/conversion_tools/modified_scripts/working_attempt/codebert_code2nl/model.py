@@ -89,7 +89,7 @@ class Seq2Seq(nn.Module):
             
             loss = loss_fct(x, y)
 
-            outputs = loss,loss*active_loss.sum(),active_loss.sum(), shift_logits.cpu()
+            outputs = loss,loss*active_loss.sum(),active_loss.sum(), shift_logits
             return outputs
         else:
             #Predict 
@@ -102,7 +102,7 @@ class Seq2Seq(nn.Module):
             for i in range(source_ids.shape[0]):
                 context=encoder_output[:,i:i+1]
                 context_mask=source_mask[i:i+1,:]
-                beam = Beam(self.beam_size,self.sos_id,self.eos_id, source_ids.device)
+                beam = Beam(self.beam_size,self.sos_id,self.eos_id)
                 input_ids=beam.getCurrentState()
                 context=context.repeat(1, self.beam_size,1)
                 context_mask=context_mask.repeat(self.beam_size,1)
