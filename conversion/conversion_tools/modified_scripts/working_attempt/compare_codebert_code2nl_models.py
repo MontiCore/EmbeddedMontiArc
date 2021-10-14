@@ -187,12 +187,7 @@ def verify_training_similar(pt_logits, mx_logits):
         # print(pta.shape)
         # print(mxa.shape)
 
-
-
-if __name__ == '__main__':
-    args = parse_args()
-    set_seed(args.num_gpus)
-
+def train_and_test_pt_model(args):
     pt_device = torch.device("cuda" if torch.cuda.is_available() else "cpu")
     param_dict = hyp.get_training_hparams(True)
     pt_train = get_pytorch_dataloader(
@@ -204,7 +199,9 @@ if __name__ == '__main__':
     pt_seq2seq = torch.nn.DataParallel(pt_seq2seq)
     pt_seq2seq, pt_logits = train_pt_model(pt_seq2seq, pt_train, 0.0, pt_device, args.num_gpus)
     pt_preds, pt_probs = test_pt_model(pt_seq2seq, pt_test, pt_device)
+    return pt_logits
 
+def train_and_test_mx_model(args):
     if args.num_gpus < 1:
         mx_ctx = [mx.cpu()]
     else:
@@ -217,5 +214,11 @@ if __name__ == '__main__':
     )
     mx_seq2seq, mx_logits = mxrun.train_model(mx_seq2seq, mx_train, mx_ctx, True)
     mx_preds, mx_probs = test_mx_model(mx_seq2seq, mx_test, mx_ctx)
+    return mx_logits
 
+if __name__ == '__main__':
+    args = parse_args()
+    set_seed(args.num_gpus)
+    pt_logits = train_and_test_pt_model(args)
+    mx_logits = train_and_test_mx_model(args)
     verify_training_similar(pt_logits, mx_logits)
