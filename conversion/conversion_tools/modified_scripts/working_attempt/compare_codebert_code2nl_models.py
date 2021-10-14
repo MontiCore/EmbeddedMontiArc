@@ -105,16 +105,18 @@ def train_pt_model(pt_seq2seq, pt_train, weight_decay, device, num_gpus):
     pt_seq2seq.train()
     pt_train_iter = cycle(pt_train)
     steps_done, cumul_loss = 0, 0
+    all_shift_logits = []
     for step in range(param_dict['train_steps']):
         batch = next(pt_train_iter)
         batch = tuple(t.to(device) for t in batch)
         source_ids, source_mask, target_ids, target_mask = batch
-        loss, _, _, = pt_seq2seq(
+        loss, _, _, shift_logits = pt_seq2seq(
             source_ids = source_ids,
             source_mask = source_mask,
             target_ids = target_ids,
             target_mask = target_mask
         )
+        all_shift_logits.append(shift_logits)
         if args.num_gpus > 1:
             loss = loss.mean()
         cumul_loss += loss.item()
@@ -125,7 +127,7 @@ def train_pt_model(pt_seq2seq, pt_train, weight_decay, device, num_gpus):
         optimizer.step()
         optimizer.zero_grad()
         scheduler.step()
-    return pt_seq2seq
+    return pt_seq2seq, all_shift_logits
 
 def compare_preds(pt_preds, mx_preds):
     return None
