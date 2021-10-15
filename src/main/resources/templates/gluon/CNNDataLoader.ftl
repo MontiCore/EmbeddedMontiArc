@@ -29,7 +29,6 @@ class ${tc.fileNameWithoutEnding}:
             train_data[input_name] = train_h5[input_name]
             train_dataset = train_h5[input_name]
             train_dataset_shape = train_data[input_name].shape
-
             # slice_size limits the memory consumption, by only loading slices of size <500MB into memory
             slice_size = min(train_dataset_shape[0] - 1, int(500e6 / (train_h5[input_name][0].size * \
                 train_h5[input_name][0].itemsize)))
