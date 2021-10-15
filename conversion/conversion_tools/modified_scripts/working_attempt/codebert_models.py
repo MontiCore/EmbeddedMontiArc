@@ -297,7 +297,7 @@ class Seq2Seq(HybridBlock):
                 preds.append(mx.nd.concat(*pred, dim=0).expand_dims(0))
                 
             preds = mx.nd.concat(*preds, dim=0)
-            return preds, output_probs
+            return preds, output_probs.copyto(mx.cpu()).detach()
 
 class Beam(object):
     def __init__(self, size, sos, eos, ctx):
