@@ -150,19 +150,6 @@ def test_pt_model(pt_seq2seq, pt_test, pt_device):
         pt_probs.append(pt_prob)
     return pt_preds, pt_probs
 
-def test_mx_model(mx_seq2seq, mx_test, mx_ctx):
-    num_batches = mx_test.num_data // mx_test.batch_size
-    mx_probs = []
-    mx_preds = []
-    for _ in range(num_batches):
-        mx_batch = mx_test.next()
-        mx_sids, mx_smasks, _, _ = mxrun.get_seqs_from_batch(mx_batch, mx_ctx)
-        for s_id, s_msk in zip(mx_sids, mx_smasks):
-            mx_pred, mx_prob = mx_seq2seq(s_id, s_msk)
-            mx_preds.append(mx_pred)
-            mx_probs.append(mx_prob)
-    return mx_preds, mx_probs
-
 def set_seed(num_gpu):
     seed = 42
     random.seed(seed)
@@ -213,7 +200,8 @@ def train_and_test_mx_model(args):
         mx_ctx, True
     )
     mx_seq2seq, mx_logits = mxrun.train_model(mx_seq2seq, mx_train, mx_ctx, True)
-    mx_preds, mx_probs = test_mx_model(mx_seq2seq, mx_test, mx_ctx)
+    #TODO mx_preds are (pred, tgt_id tuples!)
+    mx_preds, mx_probs = mxrun.test_model_w_data(mx_seq2seq, mx_test, mx_ctx, True)
     return mx_logits
 
 if __name__ == '__main__':

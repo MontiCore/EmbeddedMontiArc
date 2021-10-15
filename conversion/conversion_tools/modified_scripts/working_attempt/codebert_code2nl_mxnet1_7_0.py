@@ -209,23 +209,29 @@ def train_model(seq2seq, train_data, ctx, test_run):
         train_data.reset()
     return seq2seq, all_shift_logits
 
+def test_model_w_data(seq2seq, test_data, ctx, test_run):
+    print('Testing with Model...', flush=True)
+    train_hparams = hp.get_training_hparams(test_run)
+    batch_size = train_hparams['batch_size']
+    num_batches = test_data.num_data//batch_size
+    preds = []
+    probs = []
+    for bid, batch in enumerate(test_data):
+        print('Test Batch {}/{}'.format(bid+1, num_batches), flush=True)
+        source_ids, source_masks, target_ids, _ = get_seqs_from_batch(batch, ctx)
+        for s_id, s_msk, tgt_id in zip(source_ids, source_masks, target_ids):
+            pred, prob = seq2seq(s_id, s_msk)
+            preds.append((pred, tgt_id.copyto(mx.cpu()).detach()))
+            probs.append(prob)
+    return preds, probs
+
 def test_model(file_name, seq2seq, ctx, args):
     print('Testing with {}...'.format(file_name), flush=True)
-    train_hparams = hp.get_training_hparams(args.test_run)
-    batch_size = train_hparams['batch_size']
     test_file = '{}/{}'.format(args.data_dir, file_name)
     test_data = conv.get_data_iterator(
         ['source_ids', 'source_masks'], ['target_ids', 'target_masks'],
         True, batch_size, h5py.File(test_file, 'r'))
-    preds = []
-    for bid, batch in enumerate(test_data):
-        print('Batch {}/{}'.format(
-            bid+1, test_data.num_data//batch_size
-        ), flush=True)
-        source_ids, source_masks, target_ids, _ = get_seqs_from_batch(batch, ctx)
-        for s_id, s_msk, tgt_id in zip(source_ids, source_masks, target_ids):
-            pred, _ = seq2seq(s_id, s_msk)
-            preds.append((pred, tgt_id))
+    preds, _ = test_model_w_data(seq2seq, test_data, ctx, args.test_run)
     return preds
 
 # we need a tokenizer to quanitify
