@@ -19,10 +19,12 @@ buildDockerMxNet180:
  
 Train3D-GAN:
   stage: linux
-  image: registry.git.rwth-aachen.de/monticore/embeddedmontiarc/applications/gans/mnist-infogan/gans_mxnet:latest
+  image: registry.git.rwth-aachen.de/monticore/embeddedmontiarc/generators/emadl2cpp/dockerimages/mxnet170:v0.0.1
+  allow_failure: true
   script:
   - mv /mxnet/build/libmxnet.so /mxnet/build/libmxnet.a /usr/lib/
   - cd Training
+  - export PYTHONPATH="/builds/monticore/EmbeddedMontiArc/applications/gans/3d-gan/Training/target/tmp/cpp/threedgan.Connector/gan/"
   - mvn dependency:resolve emadl:train -s settings.xml
   except:
     changes:
@@ -31,10 +33,10 @@ Train3D-GAN:
  
 deploy-pretrained:
   stage: linux
-  image: maven:3.6-jdk-8
+  image: registry.git.rwth-aachen.de/monticore/embeddedmontiarc/generators/emadl2cpp/dockerimages/mxnet170:v0.0.1
   script:
   - cd Pre-Trained
-  - mvn emadl:deploy-pretrained -s settings.xml
+  - mvn dependency:resolve emadl:deploy-pretrained -s ./settings.xml
   except:
     changes:
     - README.md
@@ -42,10 +44,10 @@ deploy-pretrained:
 
 install-pretrained:
   stage: linux
-  image: maven:3.6-jdk-8
+  image: registry.git.rwth-aachen.de/monticore/embeddedmontiarc/generators/emadl2cpp/dockerimages/mxnet170:v0.0.1
   script:
   - cd Pre-Trained
-  - mvn emadl:install-pretrained -s settings.xml
+  - mvn dependency:resolve emadl:install-pretrained -s ./settings.xml
   except:
     changes:
     - README.md
@@ -53,6 +55,7 @@ install-pretrained:
 TestWithJar:
   stage: jar
   image: registry.git.rwth-aachen.de/monticore/embeddedmontiarc/applications/gans/3d-gan/mxnet180:latest
+  allow_failure: true
   script:
   - cd Gluon/.test 
   - chmod +x build.sh
