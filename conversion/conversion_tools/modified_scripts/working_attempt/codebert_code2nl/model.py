@@ -29,7 +29,6 @@ class Seq2Seq(nn.Module):
         encoder, decoder, 
         config,beam_size=None, max_length=None, 
         sos_id=None, eos_id=None,
-        compare_mode=False
     ):
         super(Seq2Seq, self).__init__()
         self.encoder = encoder
@@ -45,7 +44,6 @@ class Seq2Seq(nn.Module):
         self.max_length=max_length
         self.sos_id=sos_id
         self.eos_id=eos_id
-        self.compare_mode = compare_mode
         
     def _tie_or_clone_weights(self, first_module, second_module):
         """ Tie or clone module weights depending of weither we are using TorchScript or not
@@ -127,11 +125,9 @@ class Seq2Seq(nn.Module):
                 preds.append(torch.cat(pred,0).unsqueeze(0))
                 
             preds=torch.cat(preds,0)
-            if self.compare_mode: #TODO changed by makua, returns output probs to compare models
-                return preds, output_probs
-            return preds
+            #TODO changed by makua, returns output probs to compare models
+            return preds, output_probs
         
-
 class Beam(object):
     def __init__(self, size, sos, eos):
         self.size = size

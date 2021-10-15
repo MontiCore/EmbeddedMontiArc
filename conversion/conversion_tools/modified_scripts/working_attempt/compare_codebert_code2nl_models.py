@@ -76,7 +76,7 @@ def get_pt_seq2seq():
     decoder = torch.nn.TransformerDecoder(decoder_layer, num_layers=6)
     model = ptmod.Seq2Seq(encoder=encoder, decoder=decoder, config=config,
                   beam_size=param_dict['beam_size'], max_length=param_dict['max_target_length'],
-                  sos_id=tokenizer.cls_token_id, eos_id=tokenizer.sep_token_id, compare_mode=True)
+                  sos_id=tokenizer.cls_token_id, eos_id=tokenizer.sep_token_id)
     return model
 
 def train_pt_model(pt_seq2seq, pt_train, weight_decay, device, num_gpus):

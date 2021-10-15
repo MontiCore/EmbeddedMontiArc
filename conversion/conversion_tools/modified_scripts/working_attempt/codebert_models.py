@@ -187,8 +187,7 @@ class Seq2Seq(HybridBlock):
             self, embedding, encoder, decoder,
             vocab_size=None, hidden_size=None, beam_size=None, 
             max_length=None, sos_id=None, 
-            eos_id=None, prefix=None, params=None,
-            compare_mode=False
+            eos_id=None, prefix=None, params=None
         ):
             super().__init__(prefix=prefix, params=params)
             self.embedding = embedding
@@ -204,7 +203,6 @@ class Seq2Seq(HybridBlock):
             self.max_length=max_length
             self.sos_id=sos_id
             self.eos_id=eos_id
-            self.compare_mode = compare_mode
     
     def initialize(self, init=initializer.Uniform(), ctx=None, verbose=False):
         # only initialize new params, not the ones from pretrained model
@@ -299,9 +297,7 @@ class Seq2Seq(HybridBlock):
                 preds.append(mx.nd.concat(*pred, dim=0).expand_dims(0))
                 
             preds = mx.nd.concat(*preds, dim=0)
-            if self.compare_mode:
-                return preds, output_probs
-            return preds
+            return preds, output_probs
 
 class Beam(object):
     def __init__(self, size, sos, eos, ctx):

@@ -85,7 +85,7 @@ def get_decoder(test_run, ctx):
     )
     return decoder
 
-def get_seq2seq(sym_file, wt_file, esym_file, ewt_file, ctx, test_run, compare_mode):
+def get_seq2seq(sym_file, wt_file, esym_file, ewt_file, ctx, test_run):
     embedding = load_codebert_block(esym_file, ewt_file, ctx)
     encoder = load_codebert_block(sym_file, wt_file, ctx)
     decoder = get_decoder(test_run, ctx)
@@ -99,8 +99,7 @@ def get_seq2seq(sym_file, wt_file, esym_file, ewt_file, ctx, test_run, compare_m
         beam_size=training_params['beam_size'], 
         max_length=training_params['max_target_length'], 
         sos_id=seq2seq_hparams['sos_id'],
-        eos_id=seq2seq_hparams['eos_id'], 
-        compare_mode=compare_mode
+        eos_id=seq2seq_hparams['eos_id']
     )
     return seq2seq
 
@@ -225,7 +224,7 @@ def test_model(file_name, seq2seq, ctx, args):
         ), flush=True)
         source_ids, source_masks, target_ids, _ = get_seqs_from_batch(batch, ctx)
         for s_id, s_msk, tgt_id in zip(source_ids, source_masks, target_ids):
-            pred = seq2seq(s_id, s_msk)
+            pred, _ = seq2seq(s_id, s_msk)
             preds.append((pred, tgt_id))
     return preds
 
