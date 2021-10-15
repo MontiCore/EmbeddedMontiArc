@@ -35,6 +35,15 @@ trigger-mnistcalc:
   only:
     - master
 
+trigger-3d-gan:
+  stage: trigger_apps
+  allow_failure: true
+  trigger:
+    project: monticore/EmbeddedMontiArc/applications/gans/3d-gan
+    branch: master
+  only:
+    - master
+
 
 pages:
   stage: page
