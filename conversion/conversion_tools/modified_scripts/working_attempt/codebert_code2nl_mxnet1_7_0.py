@@ -184,7 +184,7 @@ def train_model(seq2seq, train_data, ctx, test_run):
                         shift_logits = lm_logits[..., :-1, :]
                         # print(50*"*" + "shift_logits")
                         # print(shift_logits)
-                        all_shift_logits.append(shift_logits)
+                        all_shift_logits.append(shift_logits.copyto(mx.cpu()).detach())
                         newDim = shift_logits.shape[-1]
                         X = mx.nd.contrib.boolean_mask(shift_logits.reshape(-1, newDim), active_loss)
                         y = mx.nd.contrib.boolean_mask(shift_labels.reshape(-1), active_loss)

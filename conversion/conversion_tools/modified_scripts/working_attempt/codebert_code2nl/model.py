@@ -89,7 +89,7 @@ class Seq2Seq(nn.Module):
             
             loss = loss_fct(x, y)
 
-            outputs = loss,loss*active_loss.sum(),active_loss.sum(), shift_logits
+            outputs = loss,loss*active_loss.sum(),active_loss.sum(), shift_logits.detach()
             return outputs
         else:
             #Predict 

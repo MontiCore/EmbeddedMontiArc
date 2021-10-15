@@ -220,5 +220,6 @@ if __name__ == '__main__':
     args = parse_args()
     set_seed(args.num_gpus)
     pt_logits = train_and_test_pt_model(args)
+    torch.cuda.empty_cache()
     mx_logits = train_and_test_mx_model(args)
     verify_training_similar(pt_logits, mx_logits)
