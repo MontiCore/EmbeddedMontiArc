@@ -5,7 +5,6 @@ import de.monticore.lang.monticar.cnntrain.annotations.RewardFunctionParameter;
 import de.monticore.lang.monticar.generator.pythonwrapper.symbolservices.data.ComponentPortInformation;
 import de.monticore.lang.monticar.generator.pythonwrapper.symbolservices.data.EmadlType;
 import de.monticore.lang.monticar.generator.pythonwrapper.symbolservices.data.PortVariable;
-import jdk.nashorn.internal.runtime.options.Option;
 
 import java.util.List;
 import java.util.Optional;
