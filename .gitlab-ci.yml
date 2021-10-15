@@ -26,9 +26,7 @@ Train3D-GAN:
   - cd Training
   - export PYTHONPATH="/builds/monticore/EmbeddedMontiArc/applications/gans/3d-gan/Training/target/tmp/cpp/threedgan.Connector/gan/"
   - mvn dependency:resolve emadl:train -s settings.xml
-  except:
-    changes:
-    - README.md
+
  
  
 deploy-pretrained:
@@ -37,9 +35,8 @@ deploy-pretrained:
   script:
   - cd Pre-Trained
   - mvn dependency:resolve emadl:deploy-pretrained -s ./settings.xml
-  except:
-    changes:
-    - README.md
+  only:
+  - master
 
 
 install-pretrained:
@@ -49,8 +46,7 @@ install-pretrained:
   - cd Pre-Trained
   - mvn dependency:resolve emadl:install-pretrained -s ./settings.xml
   except:
-    changes:
-    - README.md
+  - master
   
 TestWithJar:
   stage: jar
@@ -60,7 +56,5 @@ TestWithJar:
   - cd Gluon/.test 
   - chmod +x build.sh
   - ./build.sh
-  except:
-    changes:
-    - README.md
+
 
