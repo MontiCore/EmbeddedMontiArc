@@ -283,7 +283,7 @@ class Seq2Seq(HybridBlock):
                     hidden_states = out.reshape(self.beam_size, -1, self.hidden_size)[:,-1,:] 
                     lm_logits = self.lm_head(hidden_states)
                     out = mx.nd.log_softmax(lm_logits, axis=-1)
-                    output_probs.append(out)
+                    output_probs.append(out.copyto(mx.cpu()).detach())
                     beam.advance(out)
                     input_ids.take(beam.getCurrentOrigin(), 0).copyto(input_ids)
                     input_ids = mx.nd.concat(input_ids, beam.getCurrentState(), dim=-1)
@@ -297,7 +297,7 @@ class Seq2Seq(HybridBlock):
                 preds.append(mx.nd.concat(*pred, dim=0).expand_dims(0))
                 
             preds = mx.nd.concat(*preds, dim=0)
-            return preds, output_probs.copyto(mx.cpu()).detach()
+            return preds, output_probs
 
 class Beam(object):
     def __init__(self, size, sos, eos, ctx):
