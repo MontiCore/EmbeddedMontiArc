@@ -210,7 +210,7 @@ def train_and_test_mx_model(args):
     mx_seq2seq = mxrun.get_seq2seq(
         args.symbol_file, args.weight_file, 
         args.embed_symbol_file, args.embed_weight_file, 
-        mx_ctx, True, True
+        mx_ctx, True
     )
     mx_seq2seq, mx_logits = mxrun.train_model(mx_seq2seq, mx_train, mx_ctx, True)
     mx_preds, mx_probs = test_mx_model(mx_seq2seq, mx_test, mx_ctx)
