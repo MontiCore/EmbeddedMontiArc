@@ -152,6 +152,7 @@ def train_model(seq2seq, train_data, ctx, test_run):
     print('Num samples {}'.format(train_data.num_data), flush=True)
     print('Training model...', flush=True)
     all_shift_logits = []
+    batch_losses = []
     for epoch in range(epochs):
         total_loss = 0
         for bid, batch in enumerate(train_data):
@@ -202,12 +203,13 @@ def train_model(seq2seq, train_data, ctx, test_run):
             # TODO with multiple devices e.g. 2 gpus do we need to divinde total_loss by num_gpus?
             total_loss += sum([l.mean().asscalar() for l in losses])
             batch_loss = total_loss/(bid+1)
+            batch_losses.append(batch_loss)
             print('Epoch {}/{} Batch {}/{} Loss {}'.format(
                 epoch+1, epochs, bid+1, train_data.num_data//batch_size, batch_loss
             ), flush=True)
             trainer.step(batch_size)
         train_data.reset()
-    return seq2seq, all_shift_logits
+    return seq2seq, all_shift_logits, batch_losses
 
 def test_model_w_data(seq2seq, test_data, ctx, test_run):
     print('Testing with Model...', flush=True)

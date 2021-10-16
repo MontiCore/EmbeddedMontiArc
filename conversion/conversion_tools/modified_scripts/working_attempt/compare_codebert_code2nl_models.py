@@ -9,6 +9,7 @@ from transformers import (AdamW, get_linear_schedule_with_warmup,
                           RobertaConfig, RobertaModel, RobertaTokenizer)
                           
 import argparse
+import math
 import torch
 import random
 import numpy as np
@@ -106,6 +107,7 @@ def train_pt_model(pt_seq2seq, pt_train, weight_decay, device, num_gpus):
     pt_train_iter = cycle(pt_train)
     steps_done, cumul_loss = 0, 0
     all_shift_logits = []
+    losses = []
     for step in range(param_dict['train_steps']):
         batch = next(pt_train_iter)
         batch = tuple(t.to(device) for t in batch)
@@ -122,13 +124,14 @@ def train_pt_model(pt_seq2seq, pt_train, weight_decay, device, num_gpus):
             loss = loss.mean()
         cumul_loss += loss.item()
         train_loss = round(cumul_loss/(steps_done+1), 4)
+        losses.append(train_loss)
         print(train_loss)
         steps_done += 1
         loss.backward()
         optimizer.step()
         optimizer.zero_grad()
         scheduler.step()
-    return pt_seq2seq, all_shift_logits
+    return pt_seq2seq, all_shift_logits, losses
 
 def compare_preds(pt_preds, mx_preds):
     return None
@@ -160,19 +163,29 @@ def set_seed(num_gpu):
     mx.random.seed(seed)
 
 def verify_training_similar(pt_logits, mx_logits):
-    # look at last batch in array (so weights updated with previous examples)
-    pt_last = pt_logits[-1]
-    mx_last = mx_logits[-1]
-    for pt_batch, mx_batch in zip(pt_last, mx_last):
-        for pt_word, mx_word in zip(pt_batch, mx_batch):
-            pt_np = pt_word.cpu().detach().numpy()
-            mx_np = mx_word.asnumpy()
-            distance = np.linalg.norm(pt_np - mx_np)
-            max_pos_pt = np.argmax(pt_np)
-            max_pos_mx = np.argmax(mx_np)
-            print("Distance: {}, Max Pos Pt: {}, Max Pos Mx: {}".format(distance, max_pos_pt, max_pos_mx))
-        # print(pta.shape)
-        # print(mxa.shape)
+    # look at last batches in array (so weights updated with previous examples)
+    take_perc = 0.1
+    drop_n = math.floor((1-take_perc)*len(pt_logits))
+    print("Comparing the last {} batches out of {}".format(len(pt_logits) - drop_n - 1, len(pt_logits)))
+    pt_last = pt_logits[drop_n:]
+    mx_last = mx_logits[drop_n:]
+    # iterate through pairs of (batch_size, target_seq_len - 1, vocab_size)
+    max_posis_pt = []
+    max_posis_mx = []
+    distances = []
+    for pt_out, mx_out in zip(pt_last, mx_last):
+        for pt_batch, mx_batch in zip(pt_out, mx_out):
+            for pt_word, mx_word in zip(pt_batch, mx_batch):
+                pt_np = pt_word.cpu().detach().numpy()
+                mx_np = mx_word.asnumpy()
+                distance = np.linalg.norm(pt_np - mx_np)
+                distances.append(distance)
+                max_pos_pt = np.argmax(pt_np)
+                max_pos_mx = np.argmax(mx_np)
+                max_posis_pt.append(max_pos_pt)
+                max_posis_mx.append(max_pos_mx)
+                print("Distance: {}, Max Pos Pt: {}, Max Pos Mx: {}".format(distance, max_pos_pt, max_pos_mx))
+    return max_posis_pt, max_posis_mx, distances
 
 def train_and_test_pt_model(args):
     pt_device = torch.device("cuda" if torch.cuda.is_available() else "cpu")
@@ -184,7 +197,7 @@ def train_and_test_pt_model(args):
     pt_seq2seq = get_pt_seq2seq()
     pt_seq2seq.to(pt_device)
     pt_seq2seq = torch.nn.DataParallel(pt_seq2seq)
-    pt_seq2seq, pt_logits = train_pt_model(pt_seq2seq, pt_train, 0.0, pt_device, args.num_gpus)
+    pt_seq2seq, pt_logits, losses = train_pt_model(pt_seq2seq, pt_train, 0.0, pt_device, args.num_gpus)
     pt_preds, pt_probs = test_pt_model(pt_seq2seq, pt_test, pt_device)
     return pt_logits
 
@@ -199,7 +212,7 @@ def train_and_test_mx_model(args):
         args.embed_symbol_file, args.embed_weight_file, 
         mx_ctx, True
     )
-    mx_seq2seq, mx_logits = mxrun.train_model(mx_seq2seq, mx_train, mx_ctx, True)
+    mx_seq2seq, mx_logits, losses = mxrun.train_model(mx_seq2seq, mx_train, mx_ctx, True)
     #TODO mx_preds are (pred, tgt_id tuples!)
     mx_preds, mx_probs = mxrun.test_model_w_data(mx_seq2seq, mx_test, mx_ctx, True)
     return mx_logits
@@ -210,4 +223,4 @@ if __name__ == '__main__':
     pt_logits = train_and_test_pt_model(args)
     torch.cuda.empty_cache()
     mx_logits = train_and_test_mx_model(args)
-    verify_training_similar(pt_logits, mx_logits)
+    max_posis_pt, max_posis_mx, distances = verify_training_similar(pt_logits, mx_logits)
