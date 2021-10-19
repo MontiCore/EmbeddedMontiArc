@@ -1,7 +1,7 @@
-package de.rwth.montisim.simulation.vehicle.lidar;
+package de.rwth.montisim.simulation.eecomponents.lidar;
 
 import de.rwth.montisim.commons.dynamicinterface.PortInformation;
-import de.rwth.montisim.commons.physicalvalue.PhysicalValueDouble;
+import de.rwth.montisim.simulation.commons.physicalvalue.PhysicalValueDouble;
 import de.rwth.montisim.commons.utils.*;
 import de.rwth.montisim.simulation.eesimulator.EEComponent;
 import de.rwth.montisim.simulation.eesimulator.EESystem;
@@ -10,7 +10,6 @@ import de.rwth.montisim.simulation.eesimulator.message.Message;
 import de.rwth.montisim.simulation.environment.world.World;
 import de.rwth.montisim.simulation.environment.world.elements.Building;
 import de.rwth.montisim.simulation.vehicle.Vehicle;
-import de.rwth.montisim.simulation.vehicle.VehicleProperties;
 import de.rwth.montisim.simulation.vehicle.physicalvalues.TrueCompass;
 import de.rwth.montisim.simulation.vehicle.physicalvalues.TruePosition;
 
@@ -54,7 +53,7 @@ public class Lidar extends EEComponent {
             int corners = building.boundary.size();
             for (int i=0; i < corners; i++) {
                 //Line line = getLineBetweenPoints(building.boundary.elementAt(i), building.boundary.elementAt(i%corners));
-                edges.add(new Edge(building.boundary.elementAt(i), building.boundary.elementAt((i+1)%corners)));
+                edges.add(new Edge(building.boundary.get(i), building.boundary.get((i+1)%corners)));
             }
         }
 
@@ -125,7 +124,8 @@ public class Lidar extends EEComponent {
      */
     public double computeShortestDistance(Vec2 rayStart, Vec2 rayDirection) {
         double shortestDistance = Double.MAX_VALUE, currentDistance = 0;
-        Vec2 currentIntersection = null, nearestIntersection = null;
+        Vec2 currentIntersection = null;
+        //, nearestIntersection = null;
         double edgeScalar;
 
         for (Edge edge : edges) {
@@ -141,7 +141,7 @@ public class Lidar extends EEComponent {
                     currentDistance = currentIntersection.distance(rayStart);
                     if (currentDistance < shortestDistance) {
                         shortestDistance = currentDistance;
-                        nearestIntersection = currentIntersection;
+                        //nearestIntersection = currentIntersection;
                     }
                 }
             }

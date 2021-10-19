@@ -1,4 +1,4 @@
-package de.rwth.montisim.simulation.vehicle.lidar;
+package de.rwth.montisim.simulation.eecomponents.lidar;
 
 import de.rwth.montisim.commons.utils.Vec2;
 import de.rwth.montisim.commons.utils.Vec3;
@@ -6,7 +6,6 @@ import de.rwth.montisim.simulation.eesimulator.EESystem;
 import de.rwth.montisim.simulation.environment.world.World;
 import de.rwth.montisim.simulation.environment.world.elements.Building;
 import de.rwth.montisim.simulation.vehicle.Vehicle;
-import de.rwth.montisim.simulation.vehicle.VehicleProperties;
 import org.junit.Assert;
 import org.junit.Test;
 
@@ -17,7 +16,7 @@ public class LidarTest {
     @Test
     public void computeShortestDistanceTest() {
         World world = new World("Stub");
-        Building building = new Building("Testbuilding","Testtype", 20d, 3);
+        Building building = new Building("Testbuilding", 0, "Testtype", 20d, 3);
         building.boundary.add(new Vec3(-30,80,0));
         building.boundary.add(new Vec3(-30,50,0));
         building.boundary.add(new Vec3(10,50,0));

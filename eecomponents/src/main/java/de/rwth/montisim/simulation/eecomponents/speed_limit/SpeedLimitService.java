@@ -1,9 +1,8 @@
-package de.rwth.montisim.simulation.vehicle.navigation;
+package de.rwth.montisim.simulation.eecomponents.speed_limit;
 
 import de.rwth.montisim.commons.dynamicinterface.BasicType;
 import de.rwth.montisim.commons.dynamicinterface.PortInformation;
 import de.rwth.montisim.commons.dynamicinterface.VectorType;
-import de.rwth.montisim.commons.utils.UMath;
 import de.rwth.montisim.commons.utils.Vec3;
 import de.rwth.montisim.simulation.eesimulator.EEComponent;
 import de.rwth.montisim.simulation.eesimulator.EESystem;
@@ -12,7 +11,7 @@ import de.rwth.montisim.simulation.eesimulator.message.Message;
 import de.rwth.montisim.simulation.environment.world.World;
 import de.rwth.montisim.simulation.environment.world.elements.Node;
 import de.rwth.montisim.simulation.environment.world.elements.Way;
-import de.rwth.montisim.simulation.vehicle.lidar.Lidar;
+import de.rwth.montisim.simulation.vehicle.navigation.Navigation;
 
 import java.time.Instant;
 import java.util.Optional;
@@ -70,7 +69,7 @@ public class SpeedLimitService extends EEComponent {
     }
 
     /**
-     * Main compute method of this component. It is executed each time a trajetory is received.
+     * Main compute method of this component. It is executed each time a trajectory is received.
      * @param time the event time of the last trajectoryY event
      */
     private void compute(Instant time) {

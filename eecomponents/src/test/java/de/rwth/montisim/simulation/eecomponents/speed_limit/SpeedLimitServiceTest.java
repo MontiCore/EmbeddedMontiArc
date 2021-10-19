@@ -1,32 +1,25 @@
-package de.rwth.montisim.simulation.vehicle.navigation;
+package de.rwth.montisim.simulation.eecomponents.speed_limit;
 
 import de.rwth.montisim.commons.dynamicinterface.BasicType;
-import de.rwth.montisim.commons.dynamicinterface.DataType;
 import de.rwth.montisim.commons.dynamicinterface.VectorType;
 import de.rwth.montisim.commons.eventsimulation.DiscreteEventSimulator;
 import de.rwth.montisim.commons.utils.BuildContext;
-import de.rwth.montisim.commons.utils.Vec2;
 import de.rwth.montisim.commons.utils.Vec3;
+import de.rwth.montisim.simulation.eecomponents.lidar.Lidar;
 import de.rwth.montisim.simulation.eesimulator.EESystem;
 import de.rwth.montisim.simulation.eesimulator.events.MessageReceiveEvent;
 import de.rwth.montisim.simulation.eesimulator.exceptions.EEMessageTypeException;
 import de.rwth.montisim.simulation.eesimulator.message.Message;
 import de.rwth.montisim.simulation.eesimulator.message.MessageInformation;
 import de.rwth.montisim.simulation.environment.world.World;
-import de.rwth.montisim.simulation.environment.world.elements.Building;
 import de.rwth.montisim.simulation.environment.world.elements.Node;
 import de.rwth.montisim.simulation.environment.world.elements.Way;
-import de.rwth.montisim.simulation.vehicle.lidar.Lidar;
-import de.rwth.montisim.simulation.vehicle.lidar.LidarProperties;
+
 import org.junit.Assert;
 import org.junit.Test;
 
 import java.time.Instant;
-import java.util.HashMap;
-import java.util.Map;
-import java.util.Vector;
 
-import static org.mockito.ArgumentMatchers.*;
 import static org.mockito.Mockito.*;
 
 public class SpeedLimitServiceTest {

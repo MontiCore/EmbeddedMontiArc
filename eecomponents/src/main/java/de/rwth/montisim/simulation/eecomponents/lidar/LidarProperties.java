@@ -1,4 +1,4 @@
-package de.rwth.montisim.simulation.vehicle.lidar;
+package de.rwth.montisim.simulation.eecomponents.lidar;
 
 import de.rwth.montisim.commons.utils.BuildContext;
 import de.rwth.montisim.commons.utils.json.Typed;

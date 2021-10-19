@@ -1,4 +1,4 @@
-package de.rwth.montisim.simulation.vehicle.navigation;
+package de.rwth.montisim.simulation.eecomponents.speed_limit;
 
 import de.rwth.montisim.commons.utils.BuildContext;
 import de.rwth.montisim.commons.utils.json.Typed;
