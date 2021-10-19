@@ -8,6 +8,7 @@
 #include <unordered_map>
 #include <atomic>
 #include <random>
+#include <mutex>
 #include "network.h"
 #include "tcp_protocol.h"
 #include "simulator/hardware_emulator.h"
@@ -48,10 +49,9 @@ struct EmulatorSession {
     std::atomic<bool> running;
     bool json_data_exchange = false;
     std::unique_ptr<SoftwareSimulator> simulator;
-    std::random_device dev{};
-    std::mt19937 gen{ dev() };
+    std::mt19937 gen;
 
-    EmulatorSession() {
+    EmulatorSession(int seed) : gen(seed) {
         running.store(false);
     }
 
@@ -85,6 +85,7 @@ using SessionPtr = std::unique_ptr<EmulatorSession>;
 std::vector<SessionPtr> session_pool;
 
 std::unordered_map<uint32_t, std::unique_ptr<SoftwareSimulator>> saved_simulators;
+std::mutex saved_simulators_mutex;
 
 bool server_running = true;
 
@@ -144,10 +145,13 @@ int main(int argc, char** argv) {
     return 0;
 }
 
+std::random_device main_dev{};
+std::mt19937 main_gen{ main_dev() };
 
 void session_callback(int socket) {
+    auto seed = main_gen();
     for (auto& s : session_pool) {
-        if (!s) s = std::make_unique<EmulatorSession>();
+        if (!s) s = std::make_unique<EmulatorSession>(seed);
         if (!s->running.load()) {
             // Found a free slot, start the thread
             s->init(socket);
@@ -301,11 +305,14 @@ void EmulatorSession::init(PacketReader&packet_in)
 void EmulatorSession::reconnect(PacketReader &packet_in)
 {
     auto token = packet_in.getReader().read_u32();
-    auto res = saved_simulators.find(token);
-    if (res == saved_simulators.end()) throw ServerException("Could not restore emulator with token: "+std::to_string(token));
+    {
+        std::lock_guard<std::mutex> guard(saved_simulators_mutex);
+        auto res = saved_simulators.find(token);
+        if (res == saved_simulators.end()) throw ServerException("Could not restore emulator with token: "+std::to_string(token));
 
-    simulator = std::unique_ptr<SoftwareSimulator>(res->second.release());
-    saved_simulators.erase(res);
+        simulator = std::unique_ptr<SoftwareSimulator>(res->second.release());
+        saved_simulators.erase(res);
+    }
 
     // Send interface
     PacketWriter packet_interface(buffer, PACKET_INTERFACE);
@@ -316,12 +323,15 @@ void EmulatorSession::reconnect(PacketReader &packet_in)
 void EmulatorSession::suspend()
 {
     auto token = 0;
-    do {
-        token = gen();
-    } while (token == 0 || saved_simulators.find(token) != saved_simulators.end());
+    {
+        std::lock_guard<std::mutex> guard(saved_simulators_mutex);
+        do {
+            token = gen();
+        } while (token == 0 || saved_simulators.find(token) != saved_simulators.end());
 
 
-    saved_simulators.emplace(token, simulator.release());
+        saved_simulators.emplace(token, simulator.release());
+    }
 
     // Send token
     PacketWriter packet_interface(buffer, PACKET_EMU_ID);
