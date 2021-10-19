@@ -330,6 +330,7 @@ public class PathfindingImpl implements Pathfinding {
         // Add all completely traversed segments
         do {
             lastEdgeID = vertexPredecessorEdge[s.startNodeID];
+            if(lastEdgeID == -1) return new Path(0);
             s = world.getWaySegment(lastEdgeID);
             if (lastEdgeID == startRef.roadSegmentID || lastEdgeID == startRef.reverseId) break; // Reached start segment
             inc = s.pointsStart < s.pointsEnd ? -1 : 1;

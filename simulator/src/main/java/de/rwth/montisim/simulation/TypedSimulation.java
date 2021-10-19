@@ -1,3 +1,4 @@
+/* (c) https://github.com/MontiCore/monticore */
 package de.rwth.montisim.simulation;
 
 import de.rwth.montisim.commons.TypedCommons;
@@ -28,6 +29,7 @@ public class TypedSimulation {
         TypedCommons.registerTypedCommons();
         Json.registerType(JavaAutopilotProperties.class);
         Json.registerType(TestAutopilotProperties.class);
+        Json.registerType(RLAutopilotProperties.class);
         Json.registerType(SCGProperties.class);
         Json.registerType(ActuatorProperties.class);
         Json.registerType(BridgeProperties.class);

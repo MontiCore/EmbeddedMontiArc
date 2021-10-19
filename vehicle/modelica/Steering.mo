@@ -1,3 +1,4 @@
+// (c) https://github.com/MontiCore/monticore 
 model Steering
 //Types for all Models
   type Time=Real(unit="s");

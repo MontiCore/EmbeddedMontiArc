@@ -32,6 +32,7 @@ public class Lidar extends EEComponent {
     private transient int trueCompassMsg;
 
     private transient List<Integer> lidarMsg = Arrays.asList(0,0,0,0,0,0,0,0);
+    private double[] lidarInfo;
 
     private double angleDeg;
     public static final List<String> LIDAR_MSG = Arrays.asList("front_right_lidar", "front_left_lidar",
@@ -63,6 +64,7 @@ public class Lidar extends EEComponent {
         for (int i=0; i<lidarMsg.size(); i++ ){
             this.lidarMsg.set(i, addPort(PortInformation.newOptionalOutputDataPort(LIDAR_MSG.get(i), PhysicalValueDouble.TYPE)));
         }
+        lidarInfo = new double[lidarMsg.size()];
     }
     @Override
     protected void receive(MessageReceiveEvent msgRecvEvent) {
@@ -110,6 +112,7 @@ public class Lidar extends EEComponent {
 
         for (int i=0; i<lidarMsg.size(); i++){
             double distance = computeShortestDistance(truePosition.add(positionOffset.get(i)), orientationOffset.get(i));
+            lidarInfo[i] = distance;
             sendMessage(time, lidarMsg.get(i), distance);
         }
         
@@ -157,6 +160,29 @@ public class Lidar extends EEComponent {
      */
     private double determinant2x2(Vec2 a, Vec2 b){
         return a.x*b.y - a.y*b.x;
+    }
+
+    /**
+     * @return lidar values sent in last message
+     */
+    public double[] getLidarValues(){
+        return lidarInfo;
+    }
+
+    /**
+     * Getter method for specific lidar value
+     * @param index index of desired value
+     * @return lidar value at index
+     */
+    public double getLidarValue(int index){
+        return lidarInfo[index];
+    }
+
+    /**
+     * @return length of lidar messages
+     */
+    public int getMessageLength(){
+        return lidarMsg.size();
     }
 
     /**

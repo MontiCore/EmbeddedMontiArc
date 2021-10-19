@@ -1,3 +1,4 @@
+/* (c) https://github.com/MontiCore/monticore */
 package de.rwth.montisim.simulation.vehicle.task.metric;
 
 import de.rwth.montisim.simulation.commons.physicalvalue.PhysicalValue;

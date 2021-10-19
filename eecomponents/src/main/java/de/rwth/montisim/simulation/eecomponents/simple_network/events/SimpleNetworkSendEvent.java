@@ -1,3 +1,4 @@
+/* (c) https://github.com/MontiCore/monticore */
 package de.rwth.montisim.simulation.eecomponents.simple_network.events;
 
 import java.time.Instant;

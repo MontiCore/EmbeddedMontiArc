@@ -87,13 +87,18 @@ public class Viewer2D extends JPanel implements MouseInputListener, MouseWheelLi
             viewMatrix = computeViewMatrix();
             invViewMatrix = computeInvViewMatrix();
         }
-
-        for (Renderer r : renderers){
+        //Iterator<Renderer> iter = renderers.iterator();
+        List<Renderer> copy = new ArrayList<>(renderers);
+        for (Renderer r : copy){
+        //while(iter.hasNext()){
+            if(renderers.contains(r)){
             if (dirty || r.dirty){
                 r.computeGeometry(viewMatrix);
                 r.dirty = false;
             }
             r.draw(g2);
+            }
+            else{return;}
         }
 
         if (dirty) dirty = false;

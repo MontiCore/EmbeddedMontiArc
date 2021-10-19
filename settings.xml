@@ -38,6 +38,16 @@
             <mirrorOf>topobyte</mirrorOf>
             <url>http://mvn.topobyte.de/</url>
         </mirror>
+        <mirror>
+            <id>rosjava_mvn_repo</id>
+            <mirrorOf>rosjava_mvn</mirrorOf>
+            <url>https://github.com/rosjava/rosjava_mvn_repo/raw/master/</url>
+        </mirror>
+        <mirror> 
+            <id>jfrog_repo</id>
+            <mirrorOf>jfrog</mirrorOf>
+            <url>https://repo.jfrog.org/artifactory/libs-releases</url>
+        </mirror>
     </mirrors>
 
     <profiles>
@@ -114,6 +124,18 @@
                         <enabled>true</enabled>
                     </snapshots>
                 </repository>
+
+                <repository>
+                    <id>rosjava_mvn</id>
+                    <name>Public Rosjava repository</name>
+                    <url>https://github.com/rosjava/rosjava_mvn_repo/raw/master</url>
+                </repository>
+                <repository>
+                    <id>jfrog</id>
+                    <name>JFrog repository</name>
+                    <url>https://repo.jfrog.org/artifactory/libs-releases</url>
+                </repository>
+
 
             </repositories>
             

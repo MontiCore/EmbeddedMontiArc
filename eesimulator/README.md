@@ -1,3 +1,4 @@
+<!-- (c) https://github.com/MontiCore/monticore -->
 # Bus
 
 This part of the project includes the classes for the simulation of diffrent buses. 

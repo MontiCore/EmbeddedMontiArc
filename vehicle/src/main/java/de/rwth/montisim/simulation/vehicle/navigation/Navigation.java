@@ -253,4 +253,9 @@ public class Navigation extends EEComponent {
         return targets;
     }
 
+    public int getCurrentPathIndex(Vec2 currentPosition) {
+        if (!currentPos.isPresent()) return -1;
+        if (!currentPath.isPresent()) return -1;
+        return getNearestSegment(currentPosition);
+    }
 }
