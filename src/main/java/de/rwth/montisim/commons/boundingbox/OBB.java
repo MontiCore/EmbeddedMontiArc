@@ -5,54 +5,39 @@ import de.rwth.montisim.commons.utils.Mat3;
 import de.rwth.montisim.commons.utils.Vec3;
 import de.rwth.montisim.commons.utils.json.Typed;
 
-//@JsonSubtype("obb") or @JsonTyped("obb") ?
-//@JsonObject
 @Typed("obb")
 public class OBB implements BoundingBox {
     //public static final String TYPE_NAME = "obb";
     public Vec3 offset = new Vec3(); // Offset from center of mass
-    public Vec3 half_extent = new Vec3();
-    public Mat3 axes = new Mat3();
+    public Vec3 half_extent = new Vec3(); // Half extent in every axis direction (positive and negative)
+    public Mat3 axes = new Mat3(); // Normalized axes
 
-    // @Override
-    // public void toJson(JsonWriter j) {
-    //     j.startObject();
-    //     j.write("type", TYPE_NAME);
-    //     j.writeKey("offset");
-    //     offset.toJson(j);
-    //     j.writeKey("half_extent");
-    //     half_extent.toJson(j);
-    //     j.writeKey("axes");
-    //     axes.toJson(j);
-    //     j.endObject();
-    // }
+    public Vec3 pos = new Vec3(); // World position
+    public Mat3 world_space_half_axes = new Mat3();
 
-    // @Override
-    // public void fromJson(JsonTraverser j) {
-    //     fromJson(j, j.streamObject());
-    // }
 
-    // @Override
-    // public void fromJson(JsonTraverser j, ObjectIterable it) {
-    //     boolean a = false, b = false, c = false;
-    //     for (Entry e : it) {
-    //         if (e.key.equals("offset")) {
-    //             offset.fromJson(j);
-    //             a = true;
-    //         } else if (e.key.equals("half_extent")) {
-    //             half_extent.fromJson(j);
-    //             b = true;
-    //         } else if (e.key.equals("axes")) {
-    //             axes.fromJson(j);
-    //             c = true;
-    //         } else
-    //             j.unexpected(e);
-    //     }
-    //     if (!a)
-    //         j.expected("offset");
-    //     if (!b)
-    //         j.expected("half_extent");
-    //     if (!c)
-    //         j.expected("axes");
-    // }
+    @Override
+    public boolean collidesWith(BoundingBox other) {
+        return other.collidesWith(this);
+    }
+    @Override
+    public boolean collidesWith(AABB other) {
+        throw new UnimplementedCollisionException("OBB-AABB");
+    }
+    @Override
+    public boolean collidesWith(OBB other) {
+        return CollisionTests.collides(this, other, new Vec3(), new Vec3());
+    }
+    @Override
+    public boolean collidesWith(ConvexHull other) {
+        return CollisionTests.collides(this, other);
+    }
+    @Override
+    public boolean collidesWith(Union other) {
+        for (BoundingBox bb : other.boundingBoxes) {
+            if (bb.collidesWith(this)) return true;
+        }
+        return false;
+    }
+
 }

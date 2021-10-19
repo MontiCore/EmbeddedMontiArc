@@ -22,7 +22,7 @@ public class DynamicObject extends StaticObject {
     }
 
     public String toString() {
-        return "{name: " + name + ", type: " + desc + ", mass: " + mass + ", pos: " + pos + ", vel: " + velocity + "}";
+        return "{name: " + name + ", type: " + type + ", mass: " + mass + ", pos: " + pos + ", vel: " + velocity + "}";
     }
 
 }

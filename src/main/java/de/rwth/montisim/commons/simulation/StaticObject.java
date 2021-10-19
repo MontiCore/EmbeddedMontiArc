@@ -3,6 +3,7 @@ package de.rwth.montisim.commons.simulation;
 
 import java.util.Optional;
 
+import de.rwth.montisim.commons.boundingbox.AABB;
 import de.rwth.montisim.commons.boundingbox.BoundingBox;
 import de.rwth.montisim.commons.utils.Mat3;
 import de.rwth.montisim.commons.utils.Vec3;
@@ -16,21 +17,23 @@ import de.rwth.montisim.commons.utils.json.Typed;
 public class StaticObject {
     //public static final String TYPE = "static";
     public transient String name;
-    public transient String desc;
+    public transient String type;
     public Vec3 pos;
     public Mat3 rotation;
     public Optional<BoundingBox> bbox;
+    public Optional<AABB> worldSpaceAABB;
 
-    public StaticObject(String desc) {
+    public StaticObject(String type) {
         this.name = "unknown";
-        this.desc = desc;
+        this.type = type;
         this.pos = new Vec3();
         this.rotation = Mat3.unit();
         this.bbox = Optional.empty();
+        this.worldSpaceAABB = Optional.empty();
     }
 
     public String toString() {
-        return "{name: " + name + ", desc: " + desc + ", pos: " + pos + "}";
+        return "{name: " + name + ", type: " + type + ", pos: " + pos + "}";
     }
 
 }

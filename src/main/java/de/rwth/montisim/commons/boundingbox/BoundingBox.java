@@ -2,22 +2,13 @@
 package de.rwth.montisim.commons.boundingbox;
 
 public interface BoundingBox {
-    // void fromJson(JsonTraverser j, ObjectIterable it);
-
-    // public static BoundingBox buildFromJson(JsonTraverser j){
-    //     Pair<String, ObjectIterable> p = j.getStructureType();
-    //     BoundingBox bbox = getBoundingBoxFromType(p.getKey());
-    //     bbox.fromJson(j, p.getValue());
-    //     return bbox;
-    // }
-
-    // public static BoundingBox getBoundingBoxFromType(String type){
-    //     if (type.equals(OBB.TYPE_NAME)){
-    //         return new OBB();
-    //     } else if (type.equals(AABB.TYPE_NAME)){
-    //         return new AABB();
-    //     } else if (type.equals(Sphere.TYPE_NAME)){
-    //         return new Sphere();
-    //     } else throw new IllegalArgumentException("Unknown BoundingBox type: "+type);
-    // }
+    
+    // These methods are intended to be used when the type of the bounding boxes is not known
+    // If it is, one can save a virtual function call by directly use the functions in 'CollisionTests'
+    // If one type is known, prefer using 'unknownType.collidesWith(knownType)'
+    boolean collidesWith(BoundingBox other);
+    boolean collidesWith(AABB other);
+    boolean collidesWith(OBB other);
+    boolean collidesWith(ConvexHull other);
+    boolean collidesWith(Union other);
 }

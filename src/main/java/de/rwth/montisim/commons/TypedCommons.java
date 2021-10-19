@@ -10,7 +10,6 @@ public abstract class TypedCommons {
     public static void registerTypedCommons() {
         Json.registerType(AABB.class);
         Json.registerType(OBB.class);
-        Json.registerType(Sphere.class);
         Json.registerType(BasicType.class);
         Json.registerType(DynVectorType.class);
         Json.registerType(EnumType.class);

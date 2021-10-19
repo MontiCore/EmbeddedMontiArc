@@ -174,11 +174,6 @@ public class Vec3 {
         return new Vec2(this.x, this.y);
     }
 
-    public void toVec2(Vec2 target) {
-        target.x = x;
-        target.y = y;
-    }
-
     public Vec3 clone() {
         return new Vec3(this.x, this.y, this.z);
     }
