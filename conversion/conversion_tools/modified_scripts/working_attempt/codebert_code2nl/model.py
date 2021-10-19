@@ -62,6 +62,7 @@ class Seq2Seq(nn.Module):
         
     def forward(self, source_ids=None,source_mask=None,target_ids=None,target_mask=None,args=None):   
         outputs = self.encoder(source_ids, attention_mask=source_mask)
+        #TODO makua, outputs is [last_hidden_state, pooler_output] dict, outputs[0] is last_hidden_state with shape (batch_size, input_seq_len, embedding_size)
         encoder_output = outputs[0].permute([1,0,2]).contiguous()
         if target_ids is not None:  
             attn_mask=-1e4 *(1-self.bias[:target_ids.shape[1],:target_ids.shape[1]])
