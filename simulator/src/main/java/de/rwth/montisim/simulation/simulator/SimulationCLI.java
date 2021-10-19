@@ -3,7 +3,7 @@ package de.rwth.montisim.simulation.simulator;
 import java.io.File;
 
 import de.rwth.montisim.commons.map.Pathfinding;
-import de.rwth.montisim.commons.simulation.TaskStatus;
+import de.rwth.montisim.simulation.commons.TaskStatus;
 import de.rwth.montisim.simulation.environment.osmmap.OsmMap;
 import de.rwth.montisim.simulation.environment.osmmap.OsmToWorldLoader;
 import de.rwth.montisim.simulation.environment.pathfinding.PathfindingImpl;

@@ -3,11 +3,13 @@ package de.rwth.montisim.simulation.vehicle.physicalvalues;
 
 import de.rwth.montisim.commons.dynamicinterface.BasicType;
 import de.rwth.montisim.commons.dynamicinterface.DataType;
-import de.rwth.montisim.commons.physicalvalue.PhysicalValue;
-import de.rwth.montisim.commons.physicalvalue.PhysicalValueDouble;
 import de.rwth.montisim.commons.simulation.*;
 import de.rwth.montisim.commons.utils.UMath;
 import de.rwth.montisim.commons.utils.Vec2;
+
+import de.rwth.montisim.simulation.commons.*;
+import de.rwth.montisim.simulation.commons.physicalvalue.PhysicalValue;
+import de.rwth.montisim.simulation.commons.physicalvalue.PhysicalValueDouble;
 
 public class TruePosition extends PhysicalValue {
     public static final DataType TYPE = BasicType.VEC2;

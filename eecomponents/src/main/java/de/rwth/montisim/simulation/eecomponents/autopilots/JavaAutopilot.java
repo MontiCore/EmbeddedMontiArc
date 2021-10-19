@@ -7,20 +7,20 @@ import java.util.*;
 
 import de.rwth.montisim.commons.dynamicinterface.BasicType;
 import de.rwth.montisim.commons.dynamicinterface.PortInformation;
-import de.rwth.montisim.commons.physicalvalue.PhysicalValueDouble;
-import de.rwth.montisim.commons.simulation.Inspectable;
+import de.rwth.montisim.simulation.commons.physicalvalue.PhysicalValueDouble;
+import de.rwth.montisim.simulation.commons.Inspectable;
 import de.rwth.montisim.commons.utils.Geometry;
 import de.rwth.montisim.commons.utils.IPM;
 import de.rwth.montisim.commons.utils.Time;
 import de.rwth.montisim.commons.utils.Vec2;
 import de.rwth.montisim.simulation.eesimulator.actuator.Actuator;
+import de.rwth.montisim.simulation.eecomponents.lidar.Lidar;
+import de.rwth.montisim.simulation.eecomponents.speed_limit.SpeedLimitService;
 import de.rwth.montisim.simulation.eesimulator.EEComponent;
 import de.rwth.montisim.simulation.eesimulator.EESystem;
 import de.rwth.montisim.simulation.eesimulator.events.MessageReceiveEvent;
 import de.rwth.montisim.simulation.eesimulator.message.Message;
-import de.rwth.montisim.simulation.vehicle.lidar.Lidar;
 import de.rwth.montisim.simulation.vehicle.navigation.Navigation;
-import de.rwth.montisim.simulation.vehicle.navigation.SpeedLimitService;
 import de.rwth.montisim.simulation.vehicle.physicalvalues.BatteryLevel;
 import de.rwth.montisim.simulation.vehicle.physicalvalues.TrueCompass;
 import de.rwth.montisim.simulation.vehicle.physicalvalues.TruePosition;
@@ -55,8 +55,8 @@ public class JavaAutopilot extends EEComponent implements Inspectable {
     public double currentVelocity = 0;
     public Vec2 currentPosition = null;
     public double currentCompass = Double.NaN;
-    public double batteryLevel = 0;
-    public List<Double> lidarSensors = Arrays.asList(0.0,0.0,0.0,0.0,0.0,0.0,0.0,0.0);
+    public double batteryLevel = 0; // Unused
+    public List<Double> lidarSensors = Arrays.asList(0.0,0.0,0.0,0.0,0.0,0.0,0.0,0.0); // Unused
 
     double newTrajX[] = null;
     public int newTrajLength = 0;
@@ -64,7 +64,7 @@ public class JavaAutopilot extends EEComponent implements Inspectable {
     public double trajX[] = null;
     public double trajY[] = null;
 
-    public double upperSpeedLimitArr[] = null;
+    public double upperSpeedLimitArr[] = null; // Unused
 
     public double currentGas = 0;
     public double currentSteering = 0;

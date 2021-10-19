@@ -1,7 +1,7 @@
 package de.rwth.montisim.simulation.vehicle.task.goal;
 
-import de.rwth.montisim.commons.physicalvalue.PhysicalValueRegistry;
-import de.rwth.montisim.commons.simulation.TaskStatus;
+import de.rwth.montisim.simulation.commons.physicalvalue.PhysicalValueRegistry;
+import de.rwth.montisim.simulation.commons.TaskStatus;
 import de.rwth.montisim.commons.utils.Comparator;
 import de.rwth.montisim.simulation.vehicle.Vehicle;
 import de.rwth.montisim.simulation.vehicle.physicalvalues.TrueVelocity;

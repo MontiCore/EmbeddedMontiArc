@@ -5,8 +5,8 @@ import static org.mockito.Mockito.*;
 
 import java.util.Optional;
 
-import de.rwth.montisim.commons.simulation.DynamicObject;
-import de.rwth.montisim.commons.simulation.TaskStatus;
+import de.rwth.montisim.simulation.commons.DynamicObject;
+import de.rwth.montisim.simulation.commons.TaskStatus;
 import de.rwth.montisim.commons.utils.Vec3;
 import de.rwth.montisim.simulation.vehicle.Vehicle;
 import de.rwth.montisim.simulation.vehicle.navigation.Navigation;

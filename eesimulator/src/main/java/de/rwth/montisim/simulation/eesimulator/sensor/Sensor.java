@@ -1,7 +1,7 @@
 /* (c) https://github.com/MontiCore/monticore */
 package de.rwth.montisim.simulation.eesimulator.sensor;
 
-import de.rwth.montisim.commons.physicalvalue.PhysicalValue;
+import de.rwth.montisim.simulation.commons.physicalvalue.PhysicalValue;
 import de.rwth.montisim.commons.simulation.TimeUpdate;
 import de.rwth.montisim.commons.simulation.Updatable;
 import de.rwth.montisim.commons.simulation.Updater;

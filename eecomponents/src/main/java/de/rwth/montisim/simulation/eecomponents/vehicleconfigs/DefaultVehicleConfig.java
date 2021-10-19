@@ -2,12 +2,12 @@
 package de.rwth.montisim.simulation.eecomponents.vehicleconfigs;
 
 import de.rwth.montisim.simulation.eecomponents.autopilots.JavaAutopilotProperties;
+import de.rwth.montisim.simulation.eecomponents.lidar.LidarProperties;
+import de.rwth.montisim.simulation.eecomponents.speed_limit.SpeedLimitServiceProperties;
 import de.rwth.montisim.simulation.eesimulator.bus.constant.ConstantBusProperties;
 import de.rwth.montisim.simulation.eesimulator.sensor.SensorProperties;
 import de.rwth.montisim.simulation.vehicle.VehicleProperties;
-import de.rwth.montisim.simulation.vehicle.lidar.LidarProperties;
 import de.rwth.montisim.simulation.vehicle.navigation.NavigationProperties;
-import de.rwth.montisim.simulation.vehicle.navigation.SpeedLimitServiceProperties;
 import de.rwth.montisim.simulation.vehicle.physicalvalues.*;
 import de.rwth.montisim.simulation.vehicle.physicsmodel.rigidbody.RigidbodyPhysicsProperties;
 import de.rwth.montisim.simulation.vehicle.powertrain.electrical.ElectricalPTProperties;

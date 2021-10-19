@@ -1,6 +1,6 @@
 package de.rwth.montisim.simulation.vehicle.physicalvalues;
 
-import de.rwth.montisim.commons.physicalvalue.PhysicalValueDouble;
+import de.rwth.montisim.simulation.commons.physicalvalue.PhysicalValueDouble;
 import de.rwth.montisim.simulation.vehicle.powertrain.electrical.battery.Battery;
 
 /**

@@ -9,7 +9,6 @@ import de.rwth.montisim.commons.utils.Time;
 import de.rwth.montisim.simulation.eesimulator.actuator.Actuator;
 import de.rwth.montisim.simulation.eesimulator.*;
 import de.rwth.montisim.simulation.eesimulator.events.MessageReceiveEvent;
-import de.rwth.montisim.simulation.eesimulator.exceptions.EEMessageTypeException;
 import de.rwth.montisim.simulation.eesimulator.message.*;
 import de.rwth.montisim.simulation.eecomponents.autopilots.TestAutopilotProperties.Mode;
 import de.rwth.montisim.simulation.vehicle.physicalvalues.TrueVelocity;
