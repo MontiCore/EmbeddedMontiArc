@@ -7,6 +7,7 @@ import java.time.Duration;
 import java.util.Vector;
 
 import de.rwth.montisim.commons.simulation.Destroyer;
+import de.rwth.montisim.simulation.commons.Popper;
 import de.rwth.montisim.commons.utils.BuildContext;
 import de.rwth.montisim.commons.utils.json.JsonEntry;
 import de.rwth.montisim.commons.utils.json.Typed;
@@ -23,9 +24,7 @@ public class ComputerProperties extends EEComponentProperties {
     public String software_name;
     public Backend backend = new HardwareEmulator();
     public TimeModel time_model = new ConstantTime();
-    // The maximum update speed at which the computer should run.
-    // (Will not run more than 'cycle_duration' even if the measured time is
-    // smaller.)
+    // The maximum update speed/minimum cycle time at which the computer should run. (Will not run faster than 'cycle_duration' even if the measured time is smaller.)
     public Duration cycle_duration = Duration.ofMillis(20);
     public Vector<String> debug_flags = new Vector<>();
 
@@ -62,7 +61,7 @@ public class ComputerProperties extends EEComponentProperties {
         public String host;
         public int port;
         public int ref_id = 0;
-        public int emu_id = 0; // Ignore, this is used by the TCPBackend connected to a remote hardware_emulator to track the EMULATOR id.
+        public long emu_id = 0; // Ignore, this is used by the TCPBackend connected to a remote hardware_emulator to track the EMULATOR id.
     }
 
     static public interface TimeModel {
@@ -157,7 +156,8 @@ public class ComputerProperties extends EEComponentProperties {
     public EEComponent build(EESystem eesystem, BuildContext context) throws EEMessageTypeException {
         try {
             Destroyer destroyer = context.getObject(EESystem.COMPONENT_DESTROYER_CONTEXT_KEY);
-            return new Computer(this, eesystem, destroyer);
+            Popper popper = context.getObject(EESystem.COMPONENT_POPPER_CONTEXT_KEY);
+            return new Computer(this, eesystem, destroyer, popper);
         } catch (Exception e) {
             e.printStackTrace();
             throw new IllegalArgumentException(e.getMessage());

@@ -10,49 +10,21 @@ import java.util.HashMap;
 import java.util.List;
 import java.util.Vector;
 
-import de.rwth.montisim.commons.dynamicinterface.BasicType;
-import de.rwth.montisim.commons.dynamicinterface.PortInformation;
-import de.rwth.montisim.commons.dynamicinterface.ProgramInterface;
-import de.rwth.montisim.commons.dynamicinterface.VectorType;
-import de.rwth.montisim.commons.dynamicinterface.PortInformation.PortDirection;
-import de.rwth.montisim.commons.dynamicinterface.PortInformation.PortType;
+import de.rwth.montisim.commons.dynamicinterface.*;
+import de.rwth.montisim.commons.dynamicinterface.PortInformation.*;
 import de.rwth.montisim.commons.eventsimulation.DiscreteEvent;
 import de.rwth.montisim.commons.eventsimulation.exceptions.UnexpectedEventException;
-import de.rwth.montisim.commons.simulation.Destroyer;
-import de.rwth.montisim.commons.simulation.Inspectable;
+import de.rwth.montisim.commons.simulation.*;
+import de.rwth.montisim.simulation.commons.*;
 import de.rwth.montisim.commons.utils.Time;
 import de.rwth.montisim.commons.utils.json.Json;
 import de.rwth.montisim.hardware_emulator.computer.ComputerProperties.*;
-import de.rwth.montisim.simulation.eesimulator.EEComponent;
-import de.rwth.montisim.simulation.eesimulator.EESystem;
-import de.rwth.montisim.simulation.eesimulator.events.ExecuteEvent;
-import de.rwth.montisim.simulation.eesimulator.events.MessageReceiveEvent;
-import de.rwth.montisim.simulation.eesimulator.events.MessageSendEvent;
+import de.rwth.montisim.simulation.eesimulator.*;
+import de.rwth.montisim.simulation.eesimulator.events.*;
 import de.rwth.montisim.simulation.eesimulator.message.Message;
 
 public class Computer extends EEComponent implements Inspectable {
 
- // To generate the "basic interface" string
-    public static void main(String[] args) throws Exception {
-        ProgramInterface basicInterface = new ProgramInterface();
-        basicInterface.name = "basic_interface";
-        basicInterface.version = "1.0";
-        VectorType trajType = new VectorType(BasicType.Q, 10);
-        basicInterface.ports.add(PortInformation.newRequiredInputDataPort("true_velocity", BasicType.Q, false));
-        basicInterface.ports.add(PortInformation.newRequiredInputDataPort("true_position", BasicType.VEC2, false));
-        basicInterface.ports.add(PortInformation.newRequiredInputDataPort("true_compass", BasicType.Q, false));
-        basicInterface.ports.add(PortInformation.newRequiredInputDataPort("trajectory_length", BasicType.N, false));
-        basicInterface.ports.add(PortInformation.newRequiredInputDataPort("trajectory_x", trajType, false));
-        basicInterface.ports.add(PortInformation.newRequiredInputDataPort("trajectory_y", trajType, false));
-        basicInterface.ports.add(PortInformation.newRequiredInputDataPort("steering", BasicType.Q, false));
-        basicInterface.ports.add(PortInformation.newRequiredInputDataPort("gas", BasicType.Q, false));
-        basicInterface.ports.add(PortInformation.newRequiredInputDataPort("braking", BasicType.Q, false));
-        basicInterface.ports.add(PortInformation.newRequiredOutputDataPort("set_steering", BasicType.Q));
-        basicInterface.ports.add(PortInformation.newRequiredOutputDataPort("set_gas", BasicType.Q));
-        basicInterface.ports.add(PortInformation.newRequiredOutputDataPort("set_braking", BasicType.Q));
-
-        System.out.println(Json.toJson(basicInterface));
-    }
 
 
     public static class SocketQueues {
@@ -76,7 +48,7 @@ public class Computer extends EEComponent implements Inspectable {
 
     transient final ComputerBackend backend;
 
-    public Computer(ComputerProperties properties, EESystem eesystem, Destroyer destroyer) throws Exception {
+    public Computer(ComputerProperties properties, EESystem eesystem, Destroyer destroyer, Popper popper) throws Exception {
         super(properties, eesystem);
         this.properties = properties;
 
@@ -98,6 +70,7 @@ public class Computer extends EEComponent implements Inspectable {
 
         program = backend.getInterface();
         destroyer.addDestroyable(backend);
+        popper.addPoppable(backend);
 
         this.constantTime = properties.time_model instanceof ConstantTime;
         this.realTime = properties.time_model instanceof Realtime;
@@ -266,5 +239,29 @@ public class Computer extends EEComponent implements Inspectable {
         }
         return entries;
     }
+
+
+    
+ // To generate the "basic interface" string
+ public static void main(String[] args) throws Exception {
+    ProgramInterface basicInterface = new ProgramInterface();
+    basicInterface.name = "basic_interface";
+    basicInterface.version = "1.0";
+    VectorType trajType = new VectorType(BasicType.Q, 10);
+    basicInterface.ports.add(PortInformation.newRequiredInputDataPort("true_velocity", BasicType.Q, false));
+    basicInterface.ports.add(PortInformation.newRequiredInputDataPort("true_position", BasicType.VEC2, false));
+    basicInterface.ports.add(PortInformation.newRequiredInputDataPort("true_compass", BasicType.Q, false));
+    basicInterface.ports.add(PortInformation.newRequiredInputDataPort("trajectory_length", BasicType.N, false));
+    basicInterface.ports.add(PortInformation.newRequiredInputDataPort("trajectory_x", trajType, false));
+    basicInterface.ports.add(PortInformation.newRequiredInputDataPort("trajectory_y", trajType, false));
+    basicInterface.ports.add(PortInformation.newRequiredInputDataPort("steering", BasicType.Q, false));
+    basicInterface.ports.add(PortInformation.newRequiredInputDataPort("gas", BasicType.Q, false));
+    basicInterface.ports.add(PortInformation.newRequiredInputDataPort("braking", BasicType.Q, false));
+    basicInterface.ports.add(PortInformation.newRequiredOutputDataPort("set_steering", BasicType.Q));
+    basicInterface.ports.add(PortInformation.newRequiredOutputDataPort("set_gas", BasicType.Q));
+    basicInterface.ports.add(PortInformation.newRequiredOutputDataPort("set_braking", BasicType.Q));
+
+    System.out.println(Json.toJson(basicInterface));
+}
 
 }
