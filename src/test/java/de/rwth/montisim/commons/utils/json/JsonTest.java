@@ -10,7 +10,6 @@ import org.junit.Assert;
 import org.junit.Test;
 
 import de.rwth.montisim.commons.dynamicinterface.DataType;
-import de.rwth.montisim.commons.simulation.DynamicObject;
 import de.rwth.montisim.commons.utils.json.JsonTraverser.Entry;
 import de.rwth.montisim.commons.utils.json.JsonTraverser.ValueType;
 
@@ -104,11 +103,11 @@ public class JsonTest {
         //     System.out.println(ann.toString());
         // }
         
-        System.out.println("DynamicObject fields");
-        for(Field f : DynamicObject.class.getDeclaredFields()){
-            if(!Modifier.isStatic(f.getModifiers()))
-                System.out.println(f.toString());
-        }
+        // System.out.println("DynamicObject fields");
+        // for(Field f : DynamicObject.class.getDeclaredFields()){
+        //     if(!Modifier.isStatic(f.getModifiers()))
+        //         System.out.println(f.toString());
+        // }
     }
 
     public void traverse(String data) throws IOException {
