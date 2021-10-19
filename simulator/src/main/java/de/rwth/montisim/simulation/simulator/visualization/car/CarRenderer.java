@@ -5,13 +5,14 @@ import java.awt.*;
 import java.text.*;
 import java.util.*;
 import java.util.List;
-import java.util.stream.Collectors;
-
 import javax.swing.JMenuItem;
 
+import de.rwth.montisim.simulation.commons.boundingbox.AABB;
+import de.rwth.montisim.simulation.commons.boundingbox.OBB;
 import de.rwth.montisim.commons.map.Path;
-import de.rwth.montisim.commons.simulation.DynamicObject;
-import de.rwth.montisim.commons.simulation.Inspectable;
+import de.rwth.montisim.simulation.commons.DynamicObject;
+import de.rwth.montisim.simulation.commons.Inspectable;
+import de.rwth.montisim.simulation.commons.StaticObject;
 import de.rwth.montisim.commons.utils.*;
 import de.rwth.montisim.simulation.eesimulator.EEComponent;
 import de.rwth.montisim.simulation.simulator.visualization.ui.Renderer;
@@ -24,6 +25,7 @@ public class CarRenderer extends Renderer {
     private static final DecimalFormat posFormat = new DecimalFormat("##0.00",
             DecimalFormatSymbols.getInstance(Locale.ENGLISH));
     public static final Color CAR_COLOR = new Color(47,141,235);//= new Color(204,163,122); // new Color(239, 81, 38);
+    public static final Color CAR_COLLISION_COLOR = new Color(237,126,42);//= new Color(204,163,122); // new Color(239, 81, 38);
     public static final Color LINE_COLOR = Color.BLACK; // new Color(122,130,129); // new Color(50, 50, 255);
     public static final Color FULL_GAS_COLOR = new Color(25, 255, 0);
     public static final Color FULL_REVERSE_COLOR = new Color(180, 200, 255);
@@ -66,6 +68,9 @@ public class CarRenderer extends Renderer {
     
     final List<Polyline> pathLines = new ArrayList<>();
     final List<Polyline> trajectoryLines = new ArrayList<>();
+    private final List<Polyline> aabbLines = new ArrayList<>();
+    private final Polyline aabbContour = new Polyline(5, UIInfo.AABB_COLOR);
+    private final Polyline obbLines[] = new Polyline[] {new Polyline(2, UIInfo.OOB_X_COLOR), new Polyline(2, UIInfo.OOB_Y_COLOR), new Polyline(2, UIInfo.OOB_Z_COLOR)};
 
 
     Vec3 light1 = new Vec3(10,5,10);
@@ -78,9 +83,24 @@ public class CarRenderer extends Renderer {
     Mat3 m1 = new Mat3();
     Vec3 color = new Vec3(CAR_COLOR.getRed()/255d,CAR_COLOR.getGreen()/255d,CAR_COLOR.getBlue()/255d);
 
-    public CarRenderer() {}
+    public CarRenderer() {
+        initGeom();
+    }
     public CarRenderer(Vehicle car, Vec3 size){
         setCar(car, size);
+        initGeom();
+    }
+
+    public void initGeom() {
+        aabbLines.add(aabbContour);
+        for (int i = 0; i < 5; ++i) {
+            aabbContour.points[i] = new Vec3();
+        }
+        for (int i = 0; i < 3; ++i) {
+            aabbLines.add(obbLines[i]);
+            obbLines[i].points[0] = new Vec3();
+            obbLines[i].points[1] = new Vec3();
+        }
     }
 
     public void setCar(Vehicle vehicle){
@@ -119,6 +139,7 @@ public class CarRenderer extends Renderer {
         if (UIInfo.drawPlannedTrajectory) {
             drawLines(g, trajectoryLines);
         }
+        faces[5].color = car.get().staticCollisions.size() > 0 ? CAR_COLLISION_COLOR: CAR_COLOR;
         for (int i = 0; i < 6; ++i){
             if (visible[i]){
                 Polygonn p = faces[i];
@@ -126,7 +147,7 @@ public class CarRenderer extends Renderer {
                 g.fill(p.p);
             }
         }
-        if (UIInfo.drawActuators){
+        if (UIInfo.drawActuators) {
             g.setColor(steeringLine.color);
             g.setStroke(steeringLine.stroke);
             g.drawPolyline(steeringLine.x,steeringLine.y,steeringLine.x.length);
@@ -137,6 +158,9 @@ public class CarRenderer extends Renderer {
             width = (int) Math.round(brakeCircle[1].x - brakeCircle[0].x);
             g.setColor(brakeColor);
             g.fillOval((int) brakeCircle[0].x, (int) brakeCircle[0].y, width, width);
+        }
+        if (UIInfo.showAABBs) {
+            drawLines(g, aabbLines);
         }
     }
 
@@ -192,6 +216,29 @@ public class CarRenderer extends Renderer {
             computeSteeringLine(viewMatrix);
             computeGasCircle(viewMatrix);
             computeBrakeCircle(viewMatrix);
+        }
+
+        if (UIInfo.showAABBs) {
+            AABB b = vehicle.physicalObject.worldSpaceAABB.get();
+            aabbContour.points[0].set(b.min.x, b.min.y, 1.0);
+            aabbContour.points[1].set(b.max.x, b.min.y, 1.0);
+            aabbContour.points[2].set(b.max.x, b.max.y, 1.0);
+            aabbContour.points[3].set(b.min.x, b.max.y, 1.0);
+            aabbContour.points[4].set(b.min.x, b.min.y, 1.0);
+
+            OBB b2 = (OBB)vehicle.physicalObject.bbox.get();
+            double x = b2.pos.x;
+            double y = b2.pos.y;
+            for (i = 0; i < 3; ++i) {
+                obbLines[i].points[0].set(x,y,1.0);
+                obbLines[i].points[1].set(
+                    x+b2.world_space_half_axes.at(0, i),
+                    y+b2.world_space_half_axes.at(1, i),
+                    1.0
+                );
+                
+            }
+            computeLineGeometry(viewMatrix, aabbLines);
         }
 
         if (UIInfo.drawPlannedPath || UIInfo.drawPlannedTrajectory) {
@@ -336,19 +383,26 @@ public class CarRenderer extends Renderer {
         List<String> baseInfo = new ArrayList<>();
         baseInfo.add("Car '"+rb.name+"' velocity: " + posFormat.format(rb.velocity.magnitude()*3.6));
         baseInfo.add("  pos: "+posFormat.format(rb.pos.x) + " : "+posFormat.format(rb.pos.y));
+        
+        for (Vehicle col : car.get().vehicleCollisions) {
+            baseInfo.add("Vehicle Collision: "+col.properties.vehicleName);
+        }
+        for (StaticObject col : car.get().staticCollisions) {
+            baseInfo.add("Static Collision: "+col.name);
+        }
+
         if (UIInfo.inspectAutopilots) {
-            List<Inspectable> aps = car.get().eesystem.componentTable.stream()
+            car.get().eesystem.componentTable.stream()
                 .filter(c -> (c instanceof Inspectable))
                 .map(c -> ((Inspectable) c))
                 .filter(c -> c.getType().equals("autopilot"))
-                .collect(Collectors.toList());
-            for (Inspectable ins : aps) {
-                baseInfo.add("  Autopilot: "+ins.getName());
-                List<String> entries = ins.getEntries();
-                for (String e : entries){
-                    baseInfo.add("    "+e);
-                }
-            }
+                .forEach(i -> {
+                    baseInfo.add("  Autopilot: "+i.getName());
+                    List<String> entries = i.getEntries();
+                    for (String e : entries){
+                        baseInfo.add("    "+e);
+                    }
+                });
         }
         return baseInfo;
     }

@@ -49,12 +49,12 @@ public class EESystem implements CustomJson, BuildObject {
     public final Vector<EEComponent> componentTable = new Vector<>();
     private final Vector<Integer> componentPriority = new Vector<>();
     private final HashMap<String, EEComponent> componentsByName = new HashMap<>();
-    /** All registered EEComponents */
-    public final List<EEComponent> components = new Vector<>();
+    /** All "Client" Components (non-bus & non-bridge) */
+    //public final List<EEComponent> components = new Vector<>();
     /** All registered Bridges */
-    public final List<Bridge> bridges = new Vector<>();
+    //public final List<Bridge> bridges = new Vector<>();
     /** All registered Buses */
-    public final List<Bus> buses = new Vector<>();
+    //public final List<Bus> buses = new Vector<>();
     private final List<PortTagUser> tagUsers = new Vector<>();
 
     private final HashMap<String, Integer> msgIdMap = new HashMap<>();
@@ -131,13 +131,13 @@ public class EESystem implements CustomJson, BuildObject {
         componentTable.add(comp);
         componentPriority.add(priority.isPresent() ? priority.get() : 0);
         componentsByName.put(comp.properties.name, comp);
-        if (comp instanceof Bridge) {
-            bridges.add((Bridge) comp);
-        } else if (comp instanceof Bus) {
-            buses.add((Bus) comp);
-        } else {
-            components.add((EEComponent) comp);
-        }
+        // if (comp instanceof Bridge) {
+        //     bridges.add((Bridge) comp);
+        // } else if (comp instanceof Bus) {
+        //     buses.add((Bus) comp);
+        // } else {
+        //     components.add(comp);
+        // }
         if (comp instanceof PortTagUser) {
             tagUsers.add((PortTagUser)comp);
         }

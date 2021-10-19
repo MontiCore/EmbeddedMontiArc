@@ -3,7 +3,8 @@ package de.rwth.montisim.simulation.vehicle.physicsmodel.rigidbody;
 
 import java.util.Optional;
 
-import de.rwth.montisim.commons.boundingbox.*;
+import de.rwth.montisim.simulation.commons.boundingbox.*;
+import de.rwth.montisim.simulation.commons.*;
 import de.rwth.montisim.commons.simulation.*;
 import de.rwth.montisim.commons.utils.*;
 import de.rwth.montisim.commons.utils.json.FieldSelect;
@@ -24,6 +25,7 @@ public class RigidbodyPhysics implements PhysicsModel {
 
     public final Rigidbody rb;
     public final OBB bbox;
+    public final AABB worldAABB;
 
     // TEMP information variables
     final double wheel_radius_inv;
@@ -69,6 +71,7 @@ public class RigidbodyPhysics implements PhysicsModel {
     private final Mat3 B = new Mat3();
     private final Mat3 A = new Mat3();
     private final Mat3 A_i = new Mat3();
+    private final Vec3 halfAxesAbs = new Vec3();
 
     // TEMP for ground collision
     private final Vec3 ground_normal = new Vec3(0, 0, 1);
@@ -85,10 +88,13 @@ public class RigidbodyPhysics implements PhysicsModel {
         Vec3 size = new Vec3(p.body.length, p.body.width, p.body.height);
         this.bbox = new OBB();
         this.bbox.axes.setUnit();
+        this.worldAABB = new AABB();
         IPM.multiplyTo(this.bbox.half_extent, size, 0.5);
 
         this.rb = new Rigidbody("RigidbodyCar");
         this.rb.bbox = Optional.of(bbox);
+        bbox.pos = rb.pos;
+        this.rb.worldSpaceAABB = Optional.of(worldAABB);
         this.rb.mass = p.body.mass;
         setInertiaFromBox(p.body.mass, size);
         rb.updateVars();
@@ -130,6 +136,32 @@ public class RigidbodyPhysics implements PhysicsModel {
         addWheelForces(timeUpdate.deltaSeconds);
         rb.symplecticEuler(timeUpdate.deltaSeconds);
         computeEnergy(timeUpdate.deltaSeconds);
+        updateHitboxes();
+    }
+
+    public void updateHitboxes() {
+        // Update bbox
+        IPM.multiplyTo(bbox.world_space_half_axes, rb.rotation, bbox.axes);
+        IPM.multiply(bbox.world_space_half_axes.col1, bbox.half_extent.x);
+        IPM.multiply(bbox.world_space_half_axes.col2, bbox.half_extent.y);
+        IPM.multiply(bbox.world_space_half_axes.col3, bbox.half_extent.z);
+
+        // Update AABB
+        halfAxesAbs.x = 
+            Math.abs(bbox.world_space_half_axes.col1.x)
+            + Math.abs(bbox.world_space_half_axes.col2.x)
+            + Math.abs(bbox.world_space_half_axes.col3.x);
+        halfAxesAbs.y = 
+            Math.abs(bbox.world_space_half_axes.col1.y)
+            + Math.abs(bbox.world_space_half_axes.col2.y)
+            + Math.abs(bbox.world_space_half_axes.col3.y);
+        halfAxesAbs.z = 
+            Math.abs(bbox.world_space_half_axes.col1.z)
+            + Math.abs(bbox.world_space_half_axes.col2.z)
+            + Math.abs(bbox.world_space_half_axes.col3.z);
+
+        IPM.addTo(worldAABB.max, rb.pos, halfAxesAbs);
+        IPM.subtractTo(worldAABB.min, rb.pos, halfAxesAbs);
     }
 
     // Responsible for computing collisions between the vehicle and any static world
@@ -175,7 +207,7 @@ public class RigidbodyPhysics implements PhysicsModel {
             IPM.normalize(front_vec);
 
             for (int lr = -1; lr <= 1; lr += 2) {
-                boolean left = lr == 1;
+                //boolean left = lr == 1;
                 int index = getWheelIndex(fb, lr);
                 if (!wheel_contact[index])
                     continue;
@@ -255,9 +287,9 @@ public class RigidbodyPhysics implements PhysicsModel {
         return ((fb + 1) >> 1) + (((lr + 1) >> 1) << 1);
     }
 
-    private int getWheelIndex(boolean front, boolean left) {
-        return (front ? 1 : 0) + (left ? 2 : 0);
-    }
+    // private int getWheelIndex(boolean front, boolean left) {
+    //     return (front ? 1 : 0) + (left ? 2 : 0);
+    // }
 
     /**
      * @return The steering angle in RADIANS
@@ -416,6 +448,7 @@ public class RigidbodyPhysics implements PhysicsModel {
         rb.rotation.col2.set(side_vec);
         rb.rotation.col3.set(a);
         rb.updateVars();
+        updateHitboxes();
     }
 
     @Override

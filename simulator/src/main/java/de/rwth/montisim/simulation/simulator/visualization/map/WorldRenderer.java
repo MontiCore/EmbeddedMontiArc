@@ -10,6 +10,7 @@ import java.util.List;
 import java.util.concurrent.ThreadLocalRandom;
 
 import de.rwth.montisim.commons.utils.*;
+import de.rwth.montisim.commons.utils.PolygonConvexer.Edge;
 import de.rwth.montisim.simulation.environment.world.World;
 import de.rwth.montisim.simulation.environment.world.elements.*;
 import de.rwth.montisim.simulation.simulator.visualization.ui.*;
@@ -37,12 +38,22 @@ public class WorldRenderer extends Renderer {
     public static final Color BUILDING_COLOR_MAX_HEIGHT = new Color(222, 238, 244);
     public static final float MAX_HEIGHT = 20;
     public static final float SEGMENT_OFFSET = -0.2f; // Positive is to the left in segment direction
+    public static final Color SEPARATING_LINE_COLOR = new Color(99, 150, 226);
+    public static final Color BUILDING_OUTLINE_COLOR = new Color(94, 106, 124);
+    
+    
 
     public World world;
     private final List<Polyline> roads = new ArrayList<>();
+    private boolean segmentsLoaded = false;
     private final List<Polyline> roadSegments = new ArrayList<>();
     private final List<Polygonn> area_roads = new ArrayList<>();
     private final List<Polygonn> buildings = new ArrayList<>();
+    private boolean buildingDebugLoaded = false;
+    private final List<Polyline> buildingOutlines = new ArrayList<>();
+    private final List<Polyline> buildingSeparatingEdges = new ArrayList<>();
+    private boolean buildingAABBsLoaded = false;
+    private final List<Polyline> buildingAABBs = new ArrayList<>();
 
     final Coordinates coords = new Coordinates();
 
@@ -55,7 +66,6 @@ public class WorldRenderer extends Renderer {
         this.world = world;
         constructRoads();
         constructBuildings();
-        constructSegments();
     }
 
     private void constructRoads() {
@@ -135,6 +145,7 @@ public class WorldRenderer extends Renderer {
                 }
             }
         }
+        segmentsLoaded = true;
     }
 
     private void constructBuildings() {
@@ -153,13 +164,64 @@ public class WorldRenderer extends Renderer {
         }
     }
 
+    private void constructBuildingDebug() {
+        for (Building b : world.buildings) {
+            for (Edge e : b.separatingEdges) {
+                Polyline l = new Polyline(2, SEPARATING_LINE_COLOR);
+                l.points[0] = new Vec3(e.p1.x, e.p1.y, 1.0);
+                l.points[1] = new Vec3(e.p2.x, e.p2.y, 1.0);
+                buildingSeparatingEdges.add(l);
+            }
+
+            int size = b.boundary.size();
+            if (size >= 3) {
+                double h = Math.max(b.height, b.levels * 3);
+                Polyline p = new Polyline(size+1, lerp(BUILDING_OUTLINE_COLOR, BUILDING_COLOR_MAX_HEIGHT, h / MAX_HEIGHT));
+                int i = 0;
+                for (Vec3 ip : b.boundary) {
+                    p.points[i] = new Vec3(ip.x, ip.y, 1); // Transform to extended 2D coordinates
+                    ++i;
+                }
+                Vec3 ip = b.boundary.get(0);
+                p.points[i] = new Vec3(ip.x, ip.y, 1);
+                buildingOutlines.add(p);
+            }
+        }
+        buildingDebugLoaded = true;
+    }
+
+    private void constructBuildingAABBs() {
+        for (Building b : world.buildings) {
+            Polyline aabb = new Polyline(5, UIInfo.AABB_COLOR);
+            aabb.points[0] = new Vec3(b.buildingAABB.min.x, b.buildingAABB.min.y, 1.0);
+            aabb.points[1] = new Vec3(b.buildingAABB.max.x, b.buildingAABB.min.y, 1.0);
+            aabb.points[2] = new Vec3(b.buildingAABB.max.x, b.buildingAABB.max.y, 1.0);
+            aabb.points[3] = new Vec3(b.buildingAABB.min.x, b.buildingAABB.max.y, 1.0);
+            aabb.points[4] = new Vec3(b.buildingAABB.min.x, b.buildingAABB.min.y, 1.0);
+            buildingAABBs.add(aabb);
+        }
+        buildingAABBsLoaded = true;
+    }
+
     // Call when screen/view-matrix changed
     @Override
     public void computeGeometry(Mat3 viewMatrix) {
         computeLineGeometry(viewMatrix, roads);
-        computeLineGeometry(viewMatrix, roadSegments);
+        if (UIInfo.showSegments) {
+            if (!segmentsLoaded) constructSegments();
+            computeLineGeometry(viewMatrix, roadSegments);
+        }
         computePolygonGeometry(viewMatrix, buildings);
         computePolygonGeometry(viewMatrix, area_roads);
+        if (UIInfo.showBuildingDebug) {
+            if (!buildingDebugLoaded) constructBuildingDebug();
+            computeLineGeometry(viewMatrix, buildingOutlines);
+            computeLineGeometry(viewMatrix, buildingSeparatingEdges);
+        }
+        if (UIInfo.showAABBs) {
+            if (!buildingAABBsLoaded) constructBuildingAABBs();
+            computeLineGeometry(viewMatrix, buildingAABBs);
+        }
     }
 
     // Call when redraw necessary
@@ -170,6 +232,13 @@ public class WorldRenderer extends Renderer {
         drawPolygons(g, buildings);
         if (UIInfo.showSegments)
             drawLines(g, roadSegments);
+        if (UIInfo.showBuildingDebug) {
+            drawLines(g, buildingOutlines);
+            drawLines(g, buildingSeparatingEdges);
+        }
+        if (UIInfo.showAABBs) {
+            drawLines(g, buildingAABBs);
+        }
     }
 
     @Override

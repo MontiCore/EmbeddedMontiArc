@@ -79,7 +79,7 @@ public class DebugVisualizer extends JFrame {
     public static World generateSimpleWorld(){
         World world = new World("SimpleTestWorld");
 
-        Building bd = new Building("TestBuilding", "Test", 10, 3);
+        Building bd = new Building("TestBuilding", 0, "Test", 10, 3);
         bd.boundary.add(new Vec3(-1, -5, 0));
         bd.boundary.add(new Vec3(-1, 10, 0));
         bd.boundary.add(new Vec3(-10, 10, 0));
