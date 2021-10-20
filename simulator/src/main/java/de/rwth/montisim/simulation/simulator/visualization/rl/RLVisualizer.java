@@ -1,12 +1,8 @@
 package de.rwth.montisim.simulation.simulator.visualization.rl;
 
 import de.rwth.montisim.commons.map.Pathfinding;
-import de.rwth.montisim.commons.simulation.TaskStatus;
-import de.rwth.montisim.commons.simulation.TimeUpdate;
 import de.rwth.montisim.commons.utils.IPM;
 import de.rwth.montisim.commons.utils.Vec2;
-import de.rwth.montisim.commons.utils.json.SerializationException;
-import de.rwth.montisim.simulation.environment.pathfinding.PathfindingImpl;
 import de.rwth.montisim.simulation.environment.osmmap.*;
 import de.rwth.montisim.simulation.environment.world.World;
 import de.rwth.montisim.simulation.simulator.RLSimulationHandler;
@@ -16,27 +12,19 @@ import de.rwth.montisim.simulation.simulator.visualization.car.CarRenderer;
 import de.rwth.montisim.simulation.simulator.visualization.map.PathfinderRenderer;
 import de.rwth.montisim.simulation.simulator.visualization.map.WorldRenderer;
 import de.rwth.montisim.simulation.simulator.visualization.ui.Control;
-import de.rwth.montisim.simulation.simulator.visualization.ui.SimulationRunner;
-import de.rwth.montisim.simulation.simulator.visualization.ui.UIInfo;
 import de.rwth.montisim.simulation.simulator.visualization.ui.Viewer2D;
 import de.rwth.montisim.simulation.vehicle.Vehicle;
 
 import javax.swing.*;
-import java.awt.Color;
 import java.awt.Dimension;
-import java.awt.FlowLayout;
-import java.awt.event.*;
-import java.awt.BorderLayout;
-import java.io.File;
 import java.time.*;
 import java.util.ArrayList;
 import java.util.Collection;
 import java.util.List;
- 
-import org.ros.exception.RosRuntimeException;
+import java.util.stream.Collectors;
+
 import org.ros.node.DefaultNodeMainExecutor;
 import org.ros.node.NodeConfiguration;
-import org.ros.node.NodeMain;
 import org.ros.node.NodeMainExecutor;
 
 // Reinforcement learning version of ScenarioVis
@@ -95,7 +83,7 @@ public class RLVisualizer{
         viewer.addRenderer(new PathfinderRenderer(pathfinding));
 
         // Init CarRenderers and find view for all Vehicles
-        Collection<Vehicle> vehicles = rlSimulationHandler.getSim().getVehicles();
+        Collection<Vehicle> vehicles = rlSimulationHandler.getSim().getVehicles().collect(Collectors.toList());
         setView(vehicles);
         for (Vehicle v : vehicles) {
             CarRenderer cr = new CarRenderer();

@@ -1,15 +1,13 @@
 package de.rwth.montisim.simulation.simulator;
 
-import de.rwth.montisim.commons.physicalvalue.*;
+import de.rwth.montisim.simulation.commons.physicalvalue.*;
 import de.rwth.montisim.commons.utils.IPM;
 import de.rwth.montisim.commons.utils.Vec2;
-import de.rwth.montisim.simulation.eesimulator.EEComponent;
 import de.rwth.montisim.simulation.vehicle.navigation.Navigation;
-import de.rwth.montisim.simulation.vehicle.navigation.SpeedLimitService;
+import de.rwth.montisim.simulation.eecomponents.speed_limit.SpeedLimitService;
 import de.rwth.montisim.simulation.vehicle.physicalvalues.*;
 import de.rwth.montisim.simulation.vehicle.Vehicle;
 
-import java.util.Optional;
 
 // This class is responsible for the reward calculation in 
 // reinforcement learning scenarios
