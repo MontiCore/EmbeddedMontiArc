@@ -4,14 +4,17 @@ package de.rwth.montisim.simulation.simulator.visualization.ui;
 import java.awt.*;
 import java.util.List;
 import javax.swing.JMenuItem;
-import de.rwth.montisim.commons.utils.*;
+
+import de.rwth.montisim.commons.utils.Mat3;
+import de.rwth.montisim.commons.utils.Vec2;
+import de.rwth.montisim.commons.utils.Vec3;
 
 public abstract class Renderer {
     public static final Stroke DEFAULT_STROKE = new BasicStroke();
     public static final Color DEFAULT_COLOR = new Color(0, 0, 0);
 
     public boolean dirty = true;
-    public abstract void draw(Graphics2D g);
+    public abstract void draw(Graphics2D g); 
     public abstract void computeGeometry(Mat3 viewMatrix);
     // return "" if nothing to show
     public abstract List<String> getInfo();
@@ -26,7 +29,7 @@ public abstract class Renderer {
      * The 'x' & 'y' arrays contains the points in *Screen Space* for the current
      * viewMatrix.
      */
-    protected static class Polyline{
+    protected static class Polyline {
         public Vec3 points[];
         public int x[];
         public int y[];

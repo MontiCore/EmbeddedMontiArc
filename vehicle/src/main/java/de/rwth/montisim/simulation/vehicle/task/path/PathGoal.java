@@ -1,7 +1,7 @@
 /* (c) https://github.com/MontiCore/monticore */
 package de.rwth.montisim.simulation.vehicle.task.path;
 
-import de.rwth.montisim.commons.simulation.TaskStatus;
+import de.rwth.montisim.simulation.commons.TaskStatus;
 import de.rwth.montisim.commons.utils.Vec2;
 import de.rwth.montisim.commons.utils.Vec3;
 import de.rwth.montisim.simulation.vehicle.Vehicle;

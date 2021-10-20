@@ -10,7 +10,7 @@ import de.rwth.montisim.commons.eventsimulation.DiscreteEvent;
 import de.rwth.montisim.commons.eventsimulation.DiscreteEventSimulator;
 import de.rwth.montisim.commons.eventsimulation.EventTarget;
 import de.rwth.montisim.commons.eventsimulation.exceptions.UnexpectedEventException;
-import de.rwth.montisim.commons.simulation.StaticObject;
+import de.rwth.montisim.simulation.commons.StaticObject;
 import de.rwth.montisim.commons.utils.Pair;
 import de.rwth.montisim.simulation.eecomponents.simple_network.events.*;
 
@@ -58,7 +58,7 @@ public class SimpleNetwork implements EventTarget, SimulatorModule {
             msgTypes.put(msgName, new Pair<>(msgType, addr));
         } else {
             if (!prev.getKey().equals(msgType)) {
-                SimpleNetworkNodeInfo prevNode = ipToNode.get(prev.getValue().getClass());
+                SimpleNetworkNodeInfo prevNode = ipToNode.get(prev.getValue().getString());
                 SimpleNetworkNodeInfo newNode = ipToNode.get(addr.getString());
                 throw new IllegalArgumentException(
                     "Network Msg type error: Node "+newNode.nodeName + " registered msg '"+msgName+"' with type '"+msgType

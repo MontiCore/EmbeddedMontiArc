@@ -3,7 +3,7 @@ package de.rwth.montisim.simulation.simulator;
 
 import java.time.Instant;
 
-import de.rwth.montisim.commons.simulation.TaskStatus;
+import de.rwth.montisim.simulation.commons.TaskStatus;
 import de.rwth.montisim.commons.simulation.TimeUpdate;
 
 public class SimulationLoop {

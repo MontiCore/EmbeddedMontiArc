@@ -135,17 +135,25 @@ public class OsmToWorldLoader {
         String levelsTag = way.getTag(osmMap.TAG.BUILDING_LEVELS);
 
         Building b = new Building(
-            nameTag !=null ? nameTag : "", 
+            nameTag !=null ? nameTag : "",
+            way.osmID,
             type.equals(osmMap.VALUE_YES.str) ? "" : type, 
             parseHeight(heightTag), 
             parseLevels(levelsTag)
         );
 
         // Add boundary
+        Vec3 lastP = null;
         for (int nid : way.nodesLocalID){
             Vec3 p = nodePoint[nid];
-            if (p != null) b.boundary.add(p);
+            if (p == null) continue;
+            if (lastP != null && p.distance(lastP) < 0.001) continue; // Ensure no points are too close to each other
+            b.boundary.add(p);
+            lastP = p;
         }
+        // Remove last point if it is the same as the first
+        if (b.boundary.size() >= 2 && b.boundary.get(0).distance(b.boundary.get(b.boundary.size()-1)) < 0.001) b.boundary.remove(b.boundary.size()-1);
+
         world.buildings.add(b);
     }
 

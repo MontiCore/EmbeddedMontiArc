@@ -1,7 +1,7 @@
 /* (c) https://github.com/MontiCore/monticore */
 package de.rwth.montisim.simulation.vehicle.physicsmodel.rigidbody;
 
-import de.rwth.montisim.commons.simulation.DynamicObject;
+import de.rwth.montisim.simulation.commons.DynamicObject;
 import de.rwth.montisim.commons.utils.*;
 
 /**

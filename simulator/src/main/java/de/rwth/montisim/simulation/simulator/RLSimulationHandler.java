@@ -2,23 +2,18 @@ package de.rwth.montisim.simulation.simulator;
 
 import de.rwth.montisim.commons.map.Path;
 import de.rwth.montisim.commons.map.Pathfinding;
-import de.rwth.montisim.commons.simulation.TaskStatus;
 import de.rwth.montisim.commons.simulation.TimeUpdate;
-import de.rwth.montisim.commons.utils.Coordinates;
 import de.rwth.montisim.commons.utils.IPM;
-import de.rwth.montisim.commons.utils.json.SerializationException;
 import de.rwth.montisim.commons.utils.Vec2;
+import de.rwth.montisim.simulation.commons.TaskStatus;
 import de.rwth.montisim.simulation.eecomponents.autopilots.*;
+import de.rwth.montisim.simulation.eecomponents.lidar.Lidar;
+import de.rwth.montisim.simulation.eecomponents.speed_limit.SpeedLimitService;
 import de.rwth.montisim.simulation.environment.osmmap.*;
-import de.rwth.montisim.simulation.environment.pathfinding.PathfindingImpl;
 import de.rwth.montisim.simulation.environment.world.World;
-import de.rwth.montisim.simulation.simulator.SimulationConfig;
-import de.rwth.montisim.simulation.simulator.Simulator;
 import de.rwth.montisim.simulation.simulator.visualization.rl.RLVisualizer;
-import de.rwth.montisim.simulation.vehicle.lidar.Lidar;
 import de.rwth.montisim.simulation.vehicle.navigation.*;
 import de.rwth.montisim.simulation.vehicle.physicalvalues.*;
-import de.rwth.montisim.simulation.vehicle.task.metric.MetricGoalProperties;
 import de.rwth.montisim.simulation.vehicle.task.path.PathGoalProperties;
 import de.rwth.montisim.simulation.vehicle.task.TaskProperties;
 import de.rwth.montisim.simulation.vehicle.Vehicle;
@@ -29,22 +24,14 @@ import org.ros.namespace.GraphName;
 import org.ros.node.AbstractNodeMain;
 import org.ros.node.ConnectedNode;
 import org.ros.node.Node;
-import org.ros.node.NodeMain;
 import org.ros.node.NodeMainExecutor;
-import org.ros.node.DefaultNodeMainExecutor;
 import org.ros.node.topic.Subscriber;
 import org.ros.node.topic.Publisher;
 
-import java.awt.event.*;
-import java.io.File;
 import java.lang.Double;
 import java.lang.Thread;
-import java.time.Duration;
 import java.time.Instant;
-import java.util.ArrayList;
-import java.util.Collection;
 import java.util.ConcurrentModificationException;
-import java.util.List;
 import java.util.Optional;
 import java.util.Random;
 
@@ -241,9 +228,7 @@ public class RLSimulationHandler extends AbstractNodeMain{
             viz.clearRenderer();
         }
         simulator = config.build(world, pathfinding, map);
-        Collection<Vehicle> vehicles;
-        vehicles = simulator.getVehicles();
-        vehiclesArray = vehicles.toArray(new Vehicle[0]); 
+        vehiclesArray = (Vehicle[]) simulator.getVehicles().toArray();
         if(viz != null){
             viz.simTime = simulationTime;
             viz.setup();

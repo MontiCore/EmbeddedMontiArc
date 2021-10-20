@@ -1,8 +1,8 @@
 /* (c) https://github.com/MontiCore/monticore */
 package de.rwth.montisim.simulation.vehicle.physicalvalues;
 
-import de.rwth.montisim.commons.physicalvalue.PhysicalValueDouble;
-import de.rwth.montisim.commons.simulation.*;
+import de.rwth.montisim.simulation.commons.physicalvalue.PhysicalValueDouble;
+import de.rwth.montisim.simulation.commons.*;
 import de.rwth.montisim.commons.utils.IPM;
 
 /**

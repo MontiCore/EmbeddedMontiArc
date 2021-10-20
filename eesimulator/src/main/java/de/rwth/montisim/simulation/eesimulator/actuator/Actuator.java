@@ -5,7 +5,7 @@ import java.util.logging.Logger;
 
 import de.rwth.montisim.commons.dynamicinterface.BasicType;
 import de.rwth.montisim.commons.dynamicinterface.PortInformation;
-import de.rwth.montisim.commons.physicalvalue.PhysicalValueDouble;
+import de.rwth.montisim.simulation.commons.physicalvalue.PhysicalValueDouble;
 import de.rwth.montisim.commons.simulation.TimeUpdate;
 import de.rwth.montisim.commons.simulation.Updatable;
 import de.rwth.montisim.commons.simulation.Updater;

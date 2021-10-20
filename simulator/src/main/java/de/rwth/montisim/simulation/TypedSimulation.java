@@ -3,11 +3,10 @@ package de.rwth.montisim.simulation;
 
 import de.rwth.montisim.commons.TypedCommons;
 import de.rwth.montisim.commons.utils.json.Json;
-import de.rwth.montisim.simulation.eecomponents.autopilots.JavaAutopilotProperties;
-import de.rwth.montisim.simulation.eecomponents.autopilots.TestAutopilotProperties;
-import de.rwth.montisim.simulation.eecomponents.autopilots.RLAutopilotProperties;
-import de.rwth.montisim.simulation.eecomponents.simple_network.SCGProperties;
-import de.rwth.montisim.simulation.eecomponents.simple_network.SimpleNetworkProperties;
+import de.rwth.montisim.simulation.eecomponents.autopilots.*;
+import de.rwth.montisim.simulation.eecomponents.lidar.LidarProperties;
+import de.rwth.montisim.simulation.eecomponents.simple_network.*;
+import de.rwth.montisim.simulation.eecomponents.speed_limit.SpeedLimitServiceProperties;
 import de.rwth.montisim.simulation.eesimulator.actuator.ActuatorProperties;
 import de.rwth.montisim.simulation.eesimulator.bridge.BridgeProperties;
 import de.rwth.montisim.simulation.eesimulator.bus.can.CANProperties;
@@ -17,13 +16,13 @@ import de.rwth.montisim.simulation.eesimulator.events.MessageReceiveEvent.Messag
 import de.rwth.montisim.simulation.eesimulator.events.MessageSendEvent.MessageSendEventData;
 import de.rwth.montisim.simulation.eesimulator.sensor.SensorProperties;
 import de.rwth.montisim.simulation.eesimulator.testcomponents.TestCompProperties;
-import de.rwth.montisim.simulation.vehicle.lidar.LidarProperties;
 import de.rwth.montisim.simulation.vehicle.navigation.NavigationProperties;
-import de.rwth.montisim.simulation.vehicle.navigation.SpeedLimitServiceProperties;
 import de.rwth.montisim.simulation.vehicle.physicsmodel.rigidbody.RigidbodyPhysicsProperties;
 import de.rwth.montisim.simulation.vehicle.powertrain.electrical.ElectricalPTProperties;
 import de.rwth.montisim.simulation.vehicle.task.metric.MetricGoalProperties;
 import de.rwth.montisim.simulation.vehicle.task.path.PathGoalProperties;
+import de.rwth.montisim.simulation.commons.boundingbox.*;
+import de.rwth.montisim.simulation.commons.*;
 
 public class TypedSimulation {
     public static void registerTypedSimulation() {
@@ -49,5 +48,9 @@ public class TypedSimulation {
         Json.registerType(MetricGoalProperties.class);
         Json.registerType(PathGoalProperties.class);
         Json.registerType(SimpleNetworkProperties.class);
+        Json.registerType(AABB.class);
+        Json.registerType(OBB.class);
+        Json.registerType(DynamicObject.class);
+        Json.registerType(StaticObject.class);
     }
 }

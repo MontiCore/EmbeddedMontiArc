@@ -1,7 +1,7 @@
 /* (c) https://github.com/MontiCore/monticore */
 package de.rwth.montisim.simulation.eecomponents.simple_network;
 
-import de.rwth.montisim.commons.simulation.StaticObject;
+import de.rwth.montisim.simulation.commons.StaticObject;
 
 public class SimpleNetworkNodeInfo {
     public String nodeName;

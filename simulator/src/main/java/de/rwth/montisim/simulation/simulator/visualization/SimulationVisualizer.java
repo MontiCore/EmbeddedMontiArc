@@ -11,7 +11,7 @@ import java.time.*;
 import java.util.Optional;
 
 import de.rwth.montisim.commons.map.Pathfinding;
-import de.rwth.montisim.commons.simulation.TaskStatus;
+import de.rwth.montisim.simulation.commons.TaskStatus;
 import de.rwth.montisim.commons.simulation.TimeUpdate;
 import de.rwth.montisim.commons.utils.*;
 import de.rwth.montisim.commons.utils.json.Json;

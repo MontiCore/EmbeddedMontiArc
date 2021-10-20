@@ -160,13 +160,12 @@ public class VehicleProperties {
 
         // Create PowerTrain
         target.powerTrain = powertrain.build();
-        target.powerTrain.registerPhysicalValues(target.physicalValues);
 
         // Create PhysicsModel
         target.physicsModel = physics.build(target.powerTrain, target.properties);
         target.physicalObject = target.physicsModel.getPhysicalObject();
 
-        target.addPhysicalValues();
+        target.registerPhysicalValues();
 
         target.physicalObject.name = vehicleName;
 
@@ -174,6 +173,7 @@ public class VehicleProperties {
         compContext.addObject(target.physicalValues);
         compContext.addObject(target.updater, EESystem.COMPONENT_UPDATER_CONTEXT_KEY);
         compContext.addObject(target.destroyer, EESystem.COMPONENT_DESTROYER_CONTEXT_KEY);
+        compContext.addObject(target.popper, EESystem.COMPONENT_POPPER_CONTEXT_KEY);
         compContext.addObject(target.eesystem.getMsgPrioComp());
         compContext.addObject(target);
         

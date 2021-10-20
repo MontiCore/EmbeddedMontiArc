@@ -32,7 +32,7 @@
 
     <!-- PROJECT DEPENDENCIES -->
     <dependencies>
-        <dependency>
+        <!-- <dependency>
             <groupId>montisim</groupId>
             <artifactId>eesimulator</artifactId>
             <version>${revision}</version>
@@ -46,7 +46,7 @@
             <groupId>montisim</groupId>
             <artifactId>vehicle</artifactId>
             <version>${revision}</version>
-        </dependency>
+        </dependency> -->
         <dependency>
             <groupId>montisim</groupId>
             <artifactId>eecomponents</artifactId>

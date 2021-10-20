@@ -4,7 +4,7 @@ package de.rwth.montisim.simulation.eesimulator.sensor;
 import java.time.Instant;
 
 import de.rwth.montisim.commons.dynamicinterface.PortInformation;
-import de.rwth.montisim.commons.physicalvalue.PhysicalValue;
+import de.rwth.montisim.simulation.commons.physicalvalue.PhysicalValue;
 import de.rwth.montisim.commons.simulation.TimeUpdate;
 import de.rwth.montisim.commons.simulation.Updatable;
 import de.rwth.montisim.simulation.eesimulator.EEComponent;

@@ -1,9 +1,9 @@
 /* (c) https://github.com/MontiCore/monticore */
 package de.rwth.montisim.simulation.vehicle.task.metric;
 
-import de.rwth.montisim.commons.physicalvalue.PhysicalValue;
-import de.rwth.montisim.commons.physicalvalue.PhysicalValueDouble;
-import de.rwth.montisim.commons.simulation.TaskStatus;
+import de.rwth.montisim.simulation.commons.physicalvalue.PhysicalValue;
+import de.rwth.montisim.simulation.commons.physicalvalue.PhysicalValueDouble;
+import de.rwth.montisim.simulation.commons.TaskStatus;
 import de.rwth.montisim.simulation.vehicle.Vehicle;
 import de.rwth.montisim.simulation.vehicle.task.Goal;
 

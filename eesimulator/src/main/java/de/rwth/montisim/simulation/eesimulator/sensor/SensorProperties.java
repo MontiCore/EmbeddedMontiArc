@@ -3,8 +3,8 @@ package de.rwth.montisim.simulation.eesimulator.sensor;
 
 import java.time.Duration;
 
-import de.rwth.montisim.commons.physicalvalue.PhysicalValue;
-import de.rwth.montisim.commons.physicalvalue.PhysicalValueRegistry;
+import de.rwth.montisim.simulation.commons.physicalvalue.PhysicalValue;
+import de.rwth.montisim.simulation.commons.physicalvalue.PhysicalValueRegistry;
 import de.rwth.montisim.commons.simulation.Updater;
 import de.rwth.montisim.commons.utils.BuildContext;
 import de.rwth.montisim.commons.utils.json.Typed;

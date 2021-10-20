@@ -1,7 +1,7 @@
 /* (c) https://github.com/MontiCore/monticore */
 package de.rwth.montisim.simulation.vehicle.powertrain;
 
-import de.rwth.montisim.commons.physicalvalue.*;
+import de.rwth.montisim.simulation.commons.physicalvalue.*;
 import de.rwth.montisim.commons.utils.json.JsonEntry;
 import de.rwth.montisim.simulation.eesimulator.EESystem;
 import de.rwth.montisim.simulation.eesimulator.actuator.Actuator;

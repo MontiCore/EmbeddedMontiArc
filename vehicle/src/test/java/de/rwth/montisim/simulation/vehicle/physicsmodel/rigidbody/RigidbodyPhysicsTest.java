@@ -2,7 +2,6 @@
 package de.rwth.montisim.simulation.vehicle.physicsmodel.rigidbody;
 
 import java.time.*;
-import java.util.logging.Logger;
 
 import org.junit.*;
 
@@ -33,7 +32,7 @@ public class RigidbodyPhysicsTest {
         powerTrain.brakingValue.set(0.0);
         powerTrain.steeringValue.set(0.0);
 
-        long ST = System.nanoTime();
+        //long ST = System.nanoTime();
         TimeUpdate tu = new TimeUpdate(Instant.EPOCH, Duration.ofMillis(10)); // Don't update absolute time -> physics should only use deltas
         for (int i = 0; i < 1000; ++i){
             physics.update(tu);
