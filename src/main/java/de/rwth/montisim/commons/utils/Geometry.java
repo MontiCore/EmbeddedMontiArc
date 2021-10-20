@@ -1,7 +1,7 @@
 /* (c) https://github.com/MontiCore/monticore */
 package de.rwth.montisim.commons.utils;
 
-import org.apache.commons.math3.linear.RealVector;
+//import org.apache.commons.math3.linear.RealVector;
 
 /**
  * Geometry related utils.
@@ -27,12 +27,12 @@ public final class Geometry {
                 new Vec3(0, 0, 1));
     }
 
-    public static Vec3 vec3from(RealVector v) {
-        return new Vec3(v.getEntry(0), v.getEntry(1), v.getEntry(2));
-    }
+    // public static Vec3 vec3from(RealVector v) {
+    //     return new Vec3(v.getEntry(0), v.getEntry(1), v.getEntry(2));
+    // }
 
-    public static Vec2 vec2from(RealVector v) {
-        return new Vec2(v.getEntry(0), v.getEntry(1));
-    }
+    // public static Vec2 vec2from(RealVector v) {
+    //     return new Vec2(v.getEntry(0), v.getEntry(1));
+    // }
 
 }

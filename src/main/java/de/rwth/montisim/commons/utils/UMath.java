@@ -1,13 +1,13 @@
 /* (c) https://github.com/MontiCore/monticore */
 package de.rwth.montisim.commons.utils;
 
-import org.apache.commons.math3.random.RandomDataGenerator;
+
+//import org.apache.commons.math3.random.RandomDataGenerator;
 
 /**
  * Math related utility functions: Random numbers, minimization, maximization, ...
  */
 public class UMath {
-    private static final RandomDataGenerator random = new RandomDataGenerator();
     
     public static final double METERS_PER_SEC_TO_KMH = 3.6;
     public static final double KMH_TO_METERS_PER_SEC = 1/3.6;
@@ -24,8 +24,8 @@ public class UMath {
             return lower;
         }
         final int l = Math.min(lower, upper);
-        final int u = Math.max(lower, upper);
-        return random.nextInt(l, u);
+        final int u = Math.max(lower, upper)+1;
+        return ((int) (Math.random() * (u - l))) + l;
     }
 
     /// Returns a random int between 0 and upper (included)
@@ -45,8 +45,8 @@ public class UMath {
             return lower;
         }
         final long l = Math.min(lower, upper);
-        final long u = Math.max(lower, upper);
-        return random.nextLong(l, u);
+        final long u = Math.max(lower, upper)+1;
+        return ((long) (Math.random() * (u - l))) + l;
     }
 
     /// Returns a random long between 0 and upper (included)
@@ -54,14 +54,14 @@ public class UMath {
         return randomLong(0, upper);
     }
     
-    /// Random number between 'lower' and 'upper' (both included)
+    /// Random number between 'lower' and 'upper' ('upper' excluded)
     public static double randomDouble(final double lower, final double upper) {
         if (lower == upper) {
             return lower;
         }
         final double l = Math.min(lower, upper);
         final double u = Math.max(lower, upper);
-        return random.nextUniform(l, u);
+        return Math.random() * (u - l) + l;
     }
 
     /// Random number between 0 and |upper| (both included)
