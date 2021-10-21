@@ -1,0 +1,55 @@
+package agent.network;
+
+component Reward {
+	ports
+		in Q^{14} affordance,
+		in B isTerminal,
+		out Q reward;
+
+	implementation Math {
+		Q speed = affordance(14) * 30;
+		Q angle = affordance(1) * 5 - 2.5;
+		Q trackWidth = 0;
+		Q trackPos = 2;
+		Q toL = affordance(2);
+		Q toR = affordance(4);
+		Q toLL = affordance(7);
+		Q toRR = affordance(10);
+
+
+		if speed < 0
+			speed = 0;
+		end
+		
+		if toLL >= 0.1 || toRR <= 0.9
+			trackWidth = toLL + toRR;
+			trackPos = 2 * toLL / trackWidth - 1;
+			reward = speed * (cos(angle) - sin(angle) - 2 * abs(trackPos));
+		else
+			trackWidth = toL + toR;
+			trackPos = 2 * toL / trackWidth - 1;
+			
+			reward = speed * (cos(angle) - sin(angle) - 2 * 0.5
+			
+			);
+		end
+
+		if speed > 10
+			reward = reward * 0.5;
+		end
+
+		if speed < 1
+			reward = -50;
+		end
+
+		if abs(trackPos) > 1.0
+			reward = -200;
+		end
+
+		if speed <= 0
+			reward = -200;
+		end
+
+	}
+}
+
