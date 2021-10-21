@@ -1,0 +1,8 @@
+{
+    "modelsDir": "src/",
+    "outputDir": "target/agentComponent",
+    "rootModel":"agent.torcsAgent",
+    "generators": ["emadlcpp", "roscpp"],
+    "emadlBackend": "GLUON"
+}
+

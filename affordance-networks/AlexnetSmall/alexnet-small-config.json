@@ -1,0 +1,7 @@
+{
+    "modelsDir": "src/models",
+    "outputDir": "../../target/alexnet-small",
+    "rootModel":"alexnetSmall",
+    "generators": ["emadlcpp"],
+    "emadlBackend": "GLUON"
+}

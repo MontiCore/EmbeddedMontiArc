@@ -1,0 +1,16 @@
+package cv;
+
+import cv.nn.SenetSmall;
+import cv.nn.AlexnetSmall;
+import cv.nn.ResnetSmall;
+
+component AffordanceComponent {
+	ports
+		in Z(0:255)^{3, 64, 64} vision,
+		out Q(0:1)^{14} affordance;
+
+	instance AlexnetSmall net;
+
+	connect vision -> net.data;
+	connect net.predictions -> affordance;
+}
