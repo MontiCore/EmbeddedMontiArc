@@ -13,7 +13,7 @@
 
 struct SoftwareSimulatorManager;
 
-struct EmulatedProgramInterface : public ProgramInterface {
+struct EmulatedProgramFunctions : public ProgramFunctions {
     Computer &computer;
 
     uint64_t addr_get_functions = 0;
@@ -23,7 +23,7 @@ struct EmulatedProgramInterface : public ProgramInterface {
     uint64_t addr_init = 0;
     uint64_t addr_exec = 0;
 
-    EmulatedProgramInterface(Computer &computer) : computer(computer) {}
+    EmulatedProgramFunctions(Computer &computer) : computer(computer) {}
 
     uint64_t resolve( const char *name );
     void load();

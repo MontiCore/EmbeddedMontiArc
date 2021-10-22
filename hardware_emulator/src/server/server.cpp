@@ -5,7 +5,10 @@
 #include <iostream>
 #include <thread>
 #include <vector>
+#include <unordered_map>
 #include <atomic>
+#include <random>
+#include <mutex>
 #include "network.h"
 #include "tcp_protocol.h"
 #include "simulator/hardware_emulator.h"
@@ -40,42 +43,51 @@ void usage(char* app_name);
 void signal_handler(int signal);
 void session_callback(int socket);
 
-// Options
-int BUFFER_SIZE = 4096;
-int MAX_THREADS = 32;
-
-// -------
-
 struct EmulatorSession {
-    std::thread session_thread;
-    std::vector<char> buffer;
-    int socket;
-    std::atomic<bool> done;
+    DynamicBuffer buffer;
+    int socket = 0;
+    std::atomic<bool> running;
     bool json_data_exchange = false;
+    std::unique_ptr<SoftwareSimulator> simulator;
+    std::mt19937 gen;
 
-    EmulatorSession(int buff_size, int socket) : socket(socket) {
-        buffer.assign(buff_size, '\0');
-        done.store(false);
+    EmulatorSession(int seed) : gen(seed) {
+        running.store(false);
+    }
+
+    void init(int socket) {
+        running.store(true);
+        this->socket = socket;
     }
 
     // Run the session
     void session();
 
-    void init(PacketReader packet_in);
-    void reconnect(PacketReader packet_in);
+    void init(PacketReader&packet_in);
+    void reconnect(PacketReader &packet_in);
 
-    void set_input_json(PacketReader packet_in);
-    void set_input_binary(PacketReader packet_in);
-    void run_cycle(PacketReader packet_in);
+    void suspend();
+
+    void set_input_json(PacketReader &packet_in);
+    void set_input_binary(PacketReader &packet_in);
+    void run_cycle(PacketReader &packet_in);
 };
 
+
+// Options
+int MAX_THREADS = 8;
+
+// -------
+
+
+DynamicBuffer server_buffer;
 using SessionPtr = std::unique_ptr<EmulatorSession>;
-std::vector<SessionPtr> sessions;
-int session_count = 0;
+std::vector<SessionPtr> session_pool;
 
-std::vector<std::unique_ptr<SoftwareSimulator>> simulators;
+std::unordered_map<uint32_t, std::unique_ptr<SoftwareSimulator>> saved_simulators;
+std::mutex saved_simulators_mutex;
 
-bool running = true;
+bool server_running = true;
 
 
 /*
@@ -102,6 +114,7 @@ int main(int argc, char** argv) {
         usage(argv[0]);
         return 0;
     }
+    ERR_OUT_set_functions(SoftwareSimulator::ERR_OUT_throw_error, SoftwareSimulator::ERR_OUT_print_cout, SoftwareSimulator::ERR_OUT_print_cerr);
 
     for (int i = 2; i < argc; ++i) {
         std::string param = argv[i];
@@ -112,13 +125,6 @@ int main(int argc, char** argv) {
                 return -1;
             }
             MAX_THREADS = std::stol(argv[i]);
-        } else if (param == "--buffer-size" || param == "-b") {
-            ++i;
-            if (i >= argc) {
-                std::cerr << "Missing argument for param " << param << std::endl;
-                return -1;
-            }
-            BUFFER_SIZE = std::stol(argv[i]);
         }
         else {
             std::cerr << "Unknown param: " << param << std::endl;
@@ -126,53 +132,48 @@ int main(int argc, char** argv) {
         }
     }
 
+    session_pool.resize(MAX_THREADS);
 
-    auto port = argv[2];
-    session_server(port, session_callback, running);
+    auto port = argv[1];
+    try {
+        session_server(port, session_callback, server_running);
+    }
+    catch (std::exception & e) {
+        std::cout << e.what() << std::endl;
+    }
 
     return 0;
 }
 
-/*
-    Gets called when a new connection is made to the server:
-    - Check if thread limit reached + clean up old sessions if needed
-    - Create the session thread
-*/
+std::random_device main_dev{};
+std::mt19937 main_gen{ main_dev() };
+
 void session_callback(int socket) {
-    if (session_count >= MAX_THREADS) {
-        // Try to clear done sessions
-        for (auto& s : sessions) {
-            if (s->done.load()) {
-                s->session_thread.join();
-                s.reset();
-                --session_count;
-            }
-        }
-    }
-    if (session_count >= MAX_THREADS) {
-        std::cerr << "MAX allowed sessions (threads) reached... ignoring new connection" << std::endl;
-        close_sock(socket);
-        return;
-    }
-
-    ++session_count;
-
-    auto sess = new EmulatorSession(BUFFER_SIZE, socket);
-    // Starts the new session
-    sess->session_thread = std::thread(&EmulatorSession::session, sess);
-
-    for (auto& s : sessions) {
-        if (!s.operator bool()) {
-            s = SessionPtr(sess);
+    auto seed = main_gen();
+    for (auto& s : session_pool) {
+        if (!s) s = std::make_unique<EmulatorSession>(seed);
+        if (!s->running.load()) {
+            // Found a free slot, start the thread
+            s->init(socket);
+            std::thread(&EmulatorSession::session, s.get()).detach();
             return;
         }
     }
-    sessions.push_back(SessionPtr(sess));
+    // Did not find a free slot
+    try {
+        PacketWriter packet(server_buffer, PACKET_ERROR);
+        packet.bw.write_str("MAX allowed sessions (threads) reached: " + std::to_string(MAX_THREADS) + ", ignoring new connection");
+        packet.send(socket);
+    }
+    catch (const std::exception & e2) {
+        std::cerr << "Could not send error to simulator:\n\t" << e2.what() << std::endl;
+    }
+    close_sock(socket);
+    return;
 }
 
-
 void signal_handler(int signal) {
-    running = false;
+    server_running = false;
 }
 
 void usage(char* app_name) {
@@ -180,7 +181,6 @@ void usage(char* app_name) {
     std::cout << "  " << app_name << " <port> [options]" << std::endl;
     std::cout << "Options:" << std::endl;
     std::cout << "  --max-threads or -t <number>" << std::endl;
-    std::cout << "  --buffer-size or -b <bytes> (default 4096)" << std::endl;
 }
 
 
@@ -198,43 +198,48 @@ void usage(char* app_name) {
     - Wait for data (INPUT) and RUN_CYCLE packets
 */
 void EmulatorSession::session() {
+    PacketReader packet_in(buffer, socket);
     try {
-        while (true) {
-            PacketReader packet_in1(buffer, socket);
-            if (packet_in1.packet.id == PACKET_INIT) {
-                init(packet_in1);
+        packet_in.receive();
+        if (packet_in.id == PACKET_INIT) {
+            init(packet_in);
+        }
+        else if (packet_in.id == PACKET_RECONNECT) {
+            reconnect(packet_in);
+        }
+        else {
+            throw ServerException("Expected INIT packet, but got: id=" + std::to_string(packet_in.id) + " length=" + std::to_string(packet_in.size));
+        }
+        bool loop = true;
+        while (loop) {
+            packet_in.receive();
+            if (packet_in.id < 0) break;
+            switch (packet_in.id) {
+            case PACKET_END:
+                std::cout << "Ending connection." << std::endl;
+                loop = false;
+                break;
+            case PACKET_INIT:
+                throw ServerException("Received second INIT packet.");
+                break;
+            case PACKET_INPUT_JSON:
+                set_input_json(packet_in);
+                break;
+            case PACKET_INPUT_BINARY:
+                set_input_binary(packet_in);
+                break;
+            case PACKET_RUN_CYCLE:
+                run_cycle(packet_in);
+                break;
+            case PACKET_SUSPEND:
+                suspend();
+                loop = false;
+                break;
+            default:
+                throw ServerException("Unknown packet: id=" + std::to_string(packet_in.id) + " length=" + std::to_string(packet_in.size));
             }
-            else if (packet_in1.packet.id == PACKET_RECONNECT) {
-                reconnect(packet_in1);
-            }
-            else {
-                throw ServerException("Expected INIT packet, but got: id=" + std::to_string(packet_in1.packet.id) + " length=" + std::to_string(packet_in1.packet.size));
-            }
-            PacketReader packet_in(buffer, socket);
-            while (packet_in.packet.id >= 0) {
-                switch (packet_in.packet.id) {
-                case PACKET_END:
-                    std::cout << "Ending connection." << std::endl;
-                    return;
-                case PACKET_INIT:
-                    throw ServerException("Received second INIT packet.");
-                    break;
-                case PACKET_INPUT_JSON:
-                    set_input_json(packet_in);
-                    break;
-                case PACKET_INPUT_BINARY:
-                    set_input_binary(packet_in);
-                    break;
-                case PACKET_RUN_CYCLE:
-                    run_cycle(packet_in);
-                    break;
-                default:
-                    throw ServerException("Unknown packet: id=" + std::to_string(packet_in.packet.id) + " length=" + std::to_string(packet_in.packet.size));
-                }
-                if (!running) {
-                    break;
-                }
-                packet_in = PacketReader(buffer, socket);
+            if (!server_running) {
+                break;
             }
         }
     }
@@ -245,7 +250,7 @@ void EmulatorSession::session() {
         // Try sending the error to the simulator
         try {
             PacketWriter packet(buffer, PACKET_ERROR);
-            packet.write_str(msg);
+            packet.bw.write_str(msg);
             packet.send(socket);
         }
         catch (const std::exception & e2) {
@@ -253,89 +258,143 @@ void EmulatorSession::session() {
         }
     }
 
-
-
     // Clean up
+    simulator.reset();
     close_sock(socket);
     socket = 0;
-    done.store(true);
+    running.store(false);
 }
 
-/*
-    INIT:
-    - Allocate new emulator slot
-    - Send back ID
-    - Get config -> load emulator (& autopilot)
-    - Send back DynamicInterface
-*/
-void EmulatorSession::init(PacketReader packet_in)
+void EmulatorSession::init(PacketReader&packet_in)
 {
-    TODO handle remote autopilot;
-    int id = TODO alloc slot;
-
-    // Send back ID
-    PacketWriter packet(buffer, PACKET_EMU_ID);
-    packet.write_u8(id);
+    // Send PACKET_REQUEST_CONFIG
+    PacketWriter packet(buffer, PACKET_REQUEST_CONFIG);
     packet.send(socket);
 
-    // Get config
-    PacketReader packet_in(buffer, socket);
-    if (packet_in.packet.id != PACKET_CONFIG)
-        throw ServerException("Expected CONFIG packet, but got: id=" + std::to_string(packet_in.packet.id) + " length=" + std::to_string(packet_in.packet.size));
-        
-    auto config = json::parse(packet_in.read_str());
+    // Get CONFIG, ignore PACKET_REF_ID
+    json config;
+    bool repeat;
+    do {
+        repeat = false;
+        packet_in.receive();
+        switch (packet_in.id) {
+        case PACKET_CONFIG:
+            config = json::parse(packet_in.getReader().read_str());
+            break;
+        case PACKET_REF_ID:
+            repeat = true;
+            break;
+        default:
+            throw ServerException("Expected CONFIG packet, but got: id=" + std::to_string(packet_in.id) + " length=" + std::to_string(packet_in.size));
+        }
+    } while (repeat);
 
-    std::unique_ptr<SoftwareSimulator> simulator;
-    if (!config.contains("backend")) throw_error("SoftwareSimulatorManager: Missing 'backend' entry in config.");
-    auto backend = config["backend"];
-    if (!backend.is_object()) throw_error("SoftwareSimulatorManager: 'backend' is not a JSON object.");
-    if (!backend.contains("type")) throw_error("SoftwareSimulatorManager: 'backend' config has no 'type' entry.");
-    std::string simulator_mode = backend["type"].get<std::string>();
-
-    //Check simulator mode
-    if (simulator_mode.compare("direct") == 0) {
-        simulator = std::unique_ptr<SoftwareSimulator>(new DirectSoftwareSimulator());
-    }
-    else if (simulator_mode.compare("emu") == 0) {
-        simulator = std::unique_ptr<SoftwareSimulator>(new HardwareEmulator());
-    }
-    else
-        throw_error("SoftwareSimulatorManager: Config exception: unknown simulator mode: " + simulator_mode);
-
-    //Initialize simulator
-    simulator->init(config, softwares_folder);
+    auto softwares_folder = fs::current_path();
+    simulator = std::unique_ptr<SoftwareSimulator>(SoftwareSimulator::alloc(config, softwares_folder));
 
     // Send interface
-    PacketWriter packet2(buffer, PACKET_EMU_ID);
-    packet2.write_str(simulator->program_interface->get_interface());
-    packet2.send(socket);
-
-    simulators[id] = std::move(simulator);
+    PacketWriter packet_interface(buffer, PACKET_INTERFACE);
+    packet_interface.bw.write_str(simulator->program_functions->get_interface());
+    packet_interface.send(socket);
 }
 
 /*
     - Retake ownership of the emulator at received ID
-    - Error if already removed
     - Re-send dynamic-interface
 */
-void EmulatorSession::reconnect(PacketReader packet_in)
+void EmulatorSession::reconnect(PacketReader &packet_in)
 {
-    TODO;
+    auto token = packet_in.getReader().read_u32();
+    {
+        std::lock_guard<std::mutex> guard(saved_simulators_mutex);
+        auto res = saved_simulators.find(token);
+        if (res == saved_simulators.end()) throw ServerException("Could not restore emulator with token: "+std::to_string(token));
+
+        simulator = std::unique_ptr<SoftwareSimulator>(res->second.release());
+        saved_simulators.erase(res);
+    }
+
+    // Send interface
+    PacketWriter packet_interface(buffer, PACKET_INTERFACE);
+    packet_interface.bw.write_str(simulator->program_functions->get_interface());
+    packet_interface.send(socket);
 }
 
-void EmulatorSession::set_input_json(PacketReader packet_in)
+void EmulatorSession::suspend()
+{
+    auto token = 0;
+    {
+        std::lock_guard<std::mutex> guard(saved_simulators_mutex);
+        do {
+            token = gen();
+        } while (token == 0 || saved_simulators.find(token) != saved_simulators.end());
+
+
+        saved_simulators.emplace(token, simulator.release());
+    }
+
+    // Send token
+    PacketWriter packet_interface(buffer, PACKET_EMU_ID);
+    packet_interface.bw.write_u32(token);
+    packet_interface.send(socket);
+}
+
+void EmulatorSession::set_input_json(PacketReader &packet_in)
 {
     json_data_exchange = true;
-    TODO;
+    simulator->program_functions->set_port(packet_in.getReader().read_u16(), packet_in.getPayload() + 2, 1);
 }
 
-void EmulatorSession::set_input_binary(PacketReader packet_in)
+void EmulatorSession::set_input_binary(PacketReader &packet_in)
 {
     json_data_exchange = false;
-    TODO;
+    auto port_id = packet_in.getReader().read_u16();
+    // Buffer contains: entire packet = id + size + port_id + binary payload
+    //                                  1    2      2         size-2
+    // set_port() expects a binary buffer: size + binary payload
+    //                                     4      size
+    // Thus highjack the existing buffer to keep the binary payload in place
+    auto new_buffer = packet_in.buffer.get_buffer() + 1;
+    packet_in.buffer.go_to(1);
+    BinaryWriter bw{ packet_in.buffer };
+    bw.write_u32(packet_in.size-5);
+    simulator->program_functions->set_port(port_id, new_buffer, 0);
 }
 
-void EmulatorSession::run_cycle(PacketReader packet_in)
+void EmulatorSession::run_cycle(PacketReader &packet_in)
 {
-    TODO;
+    auto delta_secs = packet_in.getReader().read_f64();
+
+    simulator->start_timer();
+    simulator->program_functions->execute(delta_secs);
+    auto duration = simulator->get_timer_micro() * 0.000001;
+
+    for (int i = 0; i < simulator->program_interface.ports.size(); ++i) {
+        auto& p = simulator->program_interface.ports[i];
+        if (p.is_output()) {
+            do {
+                PacketWriter packet(buffer, json_data_exchange ? PACKET_OUTPUT_JSON : PACKET_OUTPUT_BINARY); // Packet ID
+                packet.bw.write_u16(i); // Port ID
+                if (json_data_exchange) {
+                    auto res = simulator->program_functions->get_port(i, 1);
+                    if (res[0] == '\0') break;
+                    packet.bw.write_str(res);
+                }
+                else {
+                    auto res = simulator->program_functions->get_port(i, 0);
+                    BinaryReader br = { res, 4 };
+                    auto len = br.read_u32();
+                    if (len == 0) break;
+                    packet.bw.write_bytes(res+4, len);
+                }
+                packet.send(socket);
+                if (p.port_type != PortType::SOCKET) break;
+            } while (true);
+        }
+    }
+
+    PacketWriter packet_interface(buffer, PACKET_TIME);
+    packet_interface.bw.write_f64(duration);
+    packet_interface.send(socket);
+
 }

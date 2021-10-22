@@ -2,6 +2,32 @@
  * (c) https://github.com/MontiCore/monticore
  */
 #include "software_simulator.h"
+#include "hardware_emulator.h"
+#include "direct_software_simulator.h"
+
+SoftwareSimulator* SoftwareSimulator::alloc(const json& config, fs::path& softwares_folder)
+{
+    SoftwareSimulator *simulator = nullptr;
+    if (!config.contains("backend")) throw_error("SoftwareSimulatorManager: Missing 'backend' entry in config.");
+    auto backend = config["backend"];
+    if (!backend.is_object()) throw_error("SoftwareSimulatorManager: 'backend' is not a JSON object.");
+    if (!backend.contains("type")) throw_error("SoftwareSimulatorManager: 'backend' config has no 'type' entry.");
+    std::string simulator_mode = backend["type"].get<std::string>();
+
+    //Check simulator mode
+    if (simulator_mode.compare("direct") == 0) {
+        simulator = new DirectSoftwareSimulator();
+    }
+    else if (simulator_mode.compare("emu") == 0) {
+        simulator = new HardwareEmulator();
+    }
+    else
+        throw_error("SoftwareSimulatorManager: Config exception: unknown simulator mode: " + simulator_mode);
+
+    //Initialize simulator
+    simulator->init(config, softwares_folder);
+    return simulator;
+}
 
 void SoftwareSimulator::init(const json& config, const fs::path& software_folder)
 {
@@ -17,27 +43,16 @@ void SoftwareSimulator::init(const json& config, const fs::path& software_folder
 
     init_simulator(config, software_folder);
 
-    auto interface_json = json::parse(program_interface->get_interface());
+    interface_string = program_functions->get_interface();
+    parse_interface(interface_string.c_str(), program_interface);
+
     std::string expected_version = "2.0";
-    if (!interface_json.contains("version")) throw_error("could not get 'version' entry in program interface.");
-    auto& v = interface_json["version"];
-    if (!v.is_string()) throw_error("Expected string for 'version' entry in program interface.");
-    auto version = v.get<std::string>();
-    if (version != expected_version) throw_error("Expected version '" + expected_version + "' for program interface but got version '" +  version+ "'.");
+    if (program_interface.version != expected_version) throw_error("Expected version '" + expected_version + "' for program interface but got version '" + program_interface.version + "'.");
 
-    if (!interface_json.contains("ports")) throw_error("could not get 'ports' entry in program interface.");
-    auto& ports = interface_json["ports"];
-    if (!ports.is_array()) throw_error("Expected array for 'ports' entry in program interface.");
+    for (int i = 0; i < program_interface.ports.size(); ++i) {
+        port_id[program_interface.ports[i].name] = i;
+    }
 
-    int pid = 0;
-    for (auto& e : ports) {
-        if (!e.is_object()) throw_error("Expected object type for entries in the 'ports' array of the program interface.");
-        if (!e.contains("name")) throw_error("Expected 'name' entry in 'ports' entry of the program interface");
-        auto& n = e["name"];
-        if (!n.is_string()) throw_error("Expected string type for 'name' entry in 'ports' entry of the program interface");
-        port_id[n.get<std::string>()] = pid;
-        ++pid;
-    } 
 }
 
 
@@ -59,4 +74,15 @@ int SoftwareSimulator::get_port_id_expected(const std::string& name) const
     const auto& e = port_id.find(name);
     if (e != port_id.end()) return e->second;
     throw_error("Could not get port_id for port '" + name + "'.");
+}
+
+
+void SoftwareSimulator::ERR_OUT_throw_error(const char* type, const char* message) {
+    throw_error(message);
+}
+void SoftwareSimulator::ERR_OUT_print_cout(const char* message) {
+    Log::info.log_tag("%s", message);
+}
+void SoftwareSimulator::ERR_OUT_print_cerr(const char* message) {
+    Log::err.log_tag("%s", message);
 }

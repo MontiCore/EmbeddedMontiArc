@@ -55,26 +55,8 @@ void SoftwareSimulatorManager::init(const json& config) {
 }
 
 int SoftwareSimulatorManager::alloc_simulator( const json& config) {
-    std::unique_ptr<SoftwareSimulator> simulator;
-    if (!config.contains("backend")) throw_error("SoftwareSimulatorManager: Missing 'backend' entry in config.");
-    auto backend = config["backend"];
-    if (!backend.is_object()) throw_error("SoftwareSimulatorManager: 'backend' is not a JSON object.");
-    if (!backend.contains("type")) throw_error("SoftwareSimulatorManager: 'backend' config has no 'type' entry.");
-    std::string simulator_mode = backend["type"].get<std::string>();
+    std::unique_ptr<SoftwareSimulator> simulator(SoftwareSimulator::alloc(config, softwares_folder));
     
-    //Check simulator mode
-    if (simulator_mode.compare("direct") == 0) {
-        simulator = std::unique_ptr<SoftwareSimulator>(new DirectSoftwareSimulator());
-    }
-    else if (simulator_mode.compare("emu") == 0) {
-        simulator = std::unique_ptr<SoftwareSimulator>(new HardwareEmulator());
-    }
-    else
-        throw_error("SoftwareSimulatorManager: Config exception: unknown simulator mode: " + simulator_mode);
-
-    //Initialize simulator
-    simulator->init(config, softwares_folder);
-
     //Get id and store simulator
     if ( simulator_count >= simulators.size() )
         simulators.resize( simulators.size() + 5 );

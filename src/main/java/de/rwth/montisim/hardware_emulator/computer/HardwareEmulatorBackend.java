@@ -156,4 +156,9 @@ public class HardwareEmulatorBackend implements ComputerBackend {
         }
     }
 
+    @Override
+    public void pop() {
+        throw new IllegalArgumentException("Tried to pop a vehicle using a local hardware-emulator: this is not supported.");
+    }
+
 }

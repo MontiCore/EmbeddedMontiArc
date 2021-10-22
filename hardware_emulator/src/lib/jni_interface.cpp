@@ -6,6 +6,8 @@
 #include <exception>
 #include <iostream>
 #include "utility/utility.h"
+#include "simulator/software_simulator.h"
+#include "err_out.h"
 
 //Called by Java when the Library is loaded,
 //Used to initialized the global references to standard objects
@@ -26,6 +28,8 @@ JNI_OnLoad(JavaVM* vm, void* reserved) {
         std::cout << "GetEnv: version not supported" << std::endl;
     }
     JNIEnvironment::instance.init(jni);
+
+    ERR_OUT_set_functions(SoftwareSimulator::ERR_OUT_throw_error, SoftwareSimulator::ERR_OUT_print_cout, SoftwareSimulator::ERR_OUT_print_cerr);
     //std::cout << "JNI_OnLoad() called" << std::endl;
     //TODO DetachCurrentThread
     return JNI_VERSION_1_6;

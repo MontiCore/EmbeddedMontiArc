@@ -8,7 +8,7 @@
 #include "json.hpp"
 using json = nlohmann::json;
 
-static constexpr auto VERSION = "2.0.11";
+static constexpr auto VERSION = "2.0.13";
 
 /*
     The EmulatorManager is used to allocate and interact with autopilot emualtors.
