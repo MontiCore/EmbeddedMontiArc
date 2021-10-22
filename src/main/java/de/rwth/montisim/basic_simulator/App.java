@@ -5,11 +5,19 @@ package de.rwth.montisim.basic_simulator;
 
 import de.rwth.montisim.basic_simulator.filesystem.FileSystem;
 import de.rwth.montisim.basic_simulator.gui.Browser;
+import de.rwth.montisim.commons.map.Pathfinding;
 import de.rwth.montisim.commons.utils.LibraryService;
 import de.rwth.montisim.hardware_emulator.CppBridge;
 import de.rwth.montisim.hardware_emulator.TypedHardwareEmu;
+import de.rwth.montisim.simulation.environment.osmmap.OsmMap;
+import de.rwth.montisim.simulation.environment.osmmap.OsmToWorldLoader;
+import de.rwth.montisim.simulation.environment.pathfinding.PathfindingImpl;
+import de.rwth.montisim.simulation.environment.world.World;
 import de.rwth.montisim.simulation.simulator.*;
 import de.rwth.montisim.simulation.simulator.visualization.ui.UIInfo;
+
+import java.io.File;
+import java.io.IOException;
 
 import javax.swing.*;
 
@@ -20,22 +28,130 @@ public class App
     {
         TypedHardwareEmu.registerTypedHardwareEmu();
         initUISettings();
-        CppBridge.init("{\"softwares_folder\": \"autopilots\"}");
 
-        if (args.length > 0){
-            // CLI Mode (no UI)
-            String scenario_name = args[0];
-            System.out.println("Starting simulation with scenario: " + scenario_name);
-            SimulationCLI.runSimulationFromFile(scenario_name);
+        try {
 
-        } else {
-
+            CppBridge.init("{\"softwares_folder\": \"autopilots\"}");
             FileSystem fileSystem = new FileSystem(LibraryService.getWorkingDirectory());
+            
+            String scenario_name = null;
+            boolean reinforcement_learning = false;
+            boolean decentralized = false;
+            boolean randomize = false;
+            boolean play = false;
+
+            if(args.length > 0){
+                if(args.length == 1 && (args[0].equals("-h") || args[0].equals("--help"))){
+                    //print argument help for every cli option
+                    System.out.println("usage: ./run.sh [options]\n");
+                    System.out.println("Options:");
+                    System.out.printf(" %-30s %-20s\n", "-d,--decentralized" ,"Use decentralized mode. Only relevant for Reinforcement Learning");
+                    System.out.printf(" %-30s %-20s\n", "-h,--help" ,"Display help information");
+                    System.out.printf(" %-30s %-20s\n", "-rl,--reinforcement_learning" ,"Use simulator for Reinforcement Learning");
+                    System.out.printf(" %-30s %-20s\n", "-s,--scenario <arg>" ,"Relative path to executed scenario");
+                    System.out.printf(" %-30s %-20s\n", "-r,--randomize" ,"Randomize the scenarios. Only relevant for Reinforcement Learning");
+                    System.out.printf(" %-30s %-20s\n", "-p,--play" ,"Use the simulator for playing and not training of an RL agent. Only relevant for Reinforcement Learning");
+                    System.out.println("");
+                    return;
+                }
+                for(int i = 0; i<args.length; i++){
+                    if(args[i].equals("-rl") || args[i].equals("--reinforcement_learning")){
+                        reinforcement_learning = true;
+                    }
+
+                    if(args[i].equals("-s") || args[i].equals("--scenario")){
+                        if(scenario_name != null){
+                            System.out.println("Please give only one scenario. Use '--help' for more information.");
+                            System.exit(-1);
+                            return;
+                        }
+                        if(i+1 >= args.length){
+                            System.out.println("Please provide a scenario. Use '--help' for more information.");
+                            System.exit(-1);
+                            return;
+                        }
+                        scenario_name = args[i+1];
+                    }
+
+                    if(args[i].equals("-d") || args[i].equals("--decentralized")){
+                        decentralized = true;
+                    }
+
+                    if(args[i].equals("-r") || args[i].equals("--randomize")){
+                        randomize = true;
+                    }
+
+                    if(args[i].equals("-p") || args[i].equals("--play")){
+                        play = true;
+                    }
+
+                }
+                if(scenario_name == null){
+                    System.out.println("Please provide a scenario.");
+                    System.exit(-1);
+                    return;
+                }
+                if(reinforcement_learning){
+                    System.out.print("\nStarting reinforcement learning simulation with scenario: " + scenario_name + ".");
+                    System.out.println(" Currently used settings:");
+                    if(decentralized){
+                        System.out.print("Decentralized mode.\n");
+                    }
+                    else{
+                        System.out.print("Centralized mode. \n");
+                    }
+                    if(randomize){
+                        System.out.println("Scenario randomization active");
+                    }
+                    else{
+                        System.out.println("Scenario randomization inactive");
+                    }
+                    if(play){
+                        System.out.println("Using PLAY mode");
+                    }
+                    else{
+                        System.out.println("Using training mode");
+                    }
+                    runRLSimulation(scenario_name, decentralized, randomize, play);
+                }
+                else{
+                    System.out.println("Starting simulation with scenario: " + scenario_name);
+                    SimulationCLI.runSimulationFromFile(scenario_name);
+                }
+                return;
+            }
+
             new Browser(fileSystem);
             fileSystem.check_updates(); //Infinite loop until gui calls System.exit()
-    
+        } catch (IOException e) {
+            e.printStackTrace();
+        } catch (Exception e) {
+            e.printStackTrace();
         }
 
+    }
+
+
+
+
+    protected static void runRLSimulation(String path, boolean distributed, boolean randomize, boolean play){
+        try {
+            File scenarioFile = new File(path);
+            SimulationConfig config = SimulationConfig.fromFile(scenarioFile);
+            File mapPath = new File(config.map_name + ".osm");
+            OsmMap map = new OsmMap(config.map_name, mapPath);
+            World world = new OsmToWorldLoader(map).getWorld();
+            Pathfinding pathfinding = new PathfindingImpl(world);
+            Simulator simulator = config.build(world, pathfinding, map);
+
+            //Run Simulation
+            RLSimulationInit simInit = new RLSimulationInit(config, world, pathfinding, map);
+            simInit.setRLSettings(distributed, randomize, play);
+            simInit.init();
+        } catch (Exception e1) {
+            e1.printStackTrace();
+            return;
+        }
     }
 
     
@@ -64,8 +180,9 @@ public class App
         } catch (ClassNotFoundException ex) {
             ex.printStackTrace();
         }
-    }
 
+
+    }
 
     protected static ImageIcon createImageIcon(String path) {
         java.net.URL imgURL = App.class.getResource(path);

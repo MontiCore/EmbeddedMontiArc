@@ -23,6 +23,7 @@ import de.rwth.montisim.simulation.simulator.visualization.ui.SimulationRunner;
 import de.rwth.montisim.simulation.simulator.visualization.ui.UIInfo;
 import de.rwth.montisim.simulation.simulator.visualization.ui.Viewer2D;
 import de.rwth.montisim.simulation.vehicle.Vehicle;
+import de.rwth.montisim.simulation.simulator.visualization.rl.RLVisualizer;
 
 import javax.swing.*;
 import java.awt.Color;
@@ -36,13 +37,14 @@ import java.util.ArrayList;
 import java.util.Collection;
 import java.util.List;
 import java.util.stream.Collectors;
-
+ 
 public class ScenarioVis extends SimVis implements SimulationRunner {
-    private static final long serialVersionUID = 7903217594061845406L;
+    private static final  long serialVersionUID = 7903217594061845406L;
 
     final FileSystem fileSystem;
     String current_scenario = "";
     JLabel scenario_name;
+    JPanel topPanel;
 
     Control control;
     Viewer2D viewer;
@@ -53,6 +55,9 @@ public class ScenarioVis extends SimVis implements SimulationRunner {
     World world;
     OsmMap map;
     Pathfinding pathfinding;
+    boolean distributed = false;
+    boolean randomize = false;
+    boolean play = false;
 
     final long PHYSICS_TICK_DURATION_MS = 10;
     final long TICK_NANO = PHYSICS_TICK_DURATION_MS * 1000000;
@@ -97,7 +102,15 @@ public class ScenarioVis extends SimVis implements SimulationRunner {
             e1.printStackTrace();
             return;
         }
-        simulator = simConfig.build(world, pathfinding, map);
+        if(current_scenario.charAt(0) == 'r' && current_scenario.charAt(1) == 'l'){
+            topPanel.remove(control);
+            RLVisualizer viz = new RLVisualizer(world, map, pathfinding, simConfig, viewer, simConfig.start_time);
+            viz.init(distributed, randomize, play);
+            return;
+        }
+        else{
+            simulator = simConfig.build(world, pathfinding, map);
+        }
 
         // Setup visualizer
 
@@ -117,6 +130,7 @@ public class ScenarioVis extends SimVis implements SimulationRunner {
 
         viewer.repaint();
     }
+
 
     void setView(Collection<Vehicle> vehicles) {
         Vec2 avg_pos = new Vec2(0, 0);
@@ -191,7 +205,7 @@ public class ScenarioVis extends SimVis implements SimulationRunner {
         control = new Control(Control.Mode.SIMULATION, Instant.EPOCH, this, Duration.ofMillis(PHYSICS_TICK_DURATION_MS), 30, 3);
         control.setBackground(Color.WHITE);
 
-        JPanel topPanel = new JPanel();
+        topPanel = new JPanel();
         topPanel.setLayout(new BoxLayout(topPanel, BoxLayout.Y_AXIS));
         topPanel.setBorder(Browser.paneBorder);
         topPanel.add(control);
