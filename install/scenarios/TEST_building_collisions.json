@@ -1,13 +1,11 @@
 {
-    "name": "rl_autopilot",
+    "name": "java_autopilot",
     "map_name": "aachen",
-    "max_duration": [60,0],
-    "tick_duration": [0,10000000],
     "cars": [
         {
             "name": "Car1",
-            "start_pos": [ -123.09, 21.64 ],
-            "start_orientation": -30.0,
+            "start_pos": [ -117.54, 67.15 ],
+            "start_orientation": 30.0,
             "task": {
                 "goals": [
                     {
@@ -29,7 +27,7 @@
                         "TruePositionSensor",
                         "TrueCompassSensor",
                         "Navigation",
-                        "RLAutopilot"
+                        "JavaAutopilot"
                     ]
                 },
                 {
@@ -69,16 +67,16 @@
                 },
                 { "type": "navigation" },
                 {
-                    "type": "rl_autopilot",
-                    "name": "RLAutopilot",
+                    "type": "java_autopilot",
+                    "name": "JavaAutopilot",
                     "maxVehicleAccel": 7.460690450979396
                 }
             ]
         },
         {
             "name": "Car2",
-            "start_pos": [ -123.09, 21.64 ],
-            "start_orientation": -30.0,
+            "start_pos": [ -70.16, 105.11 ],
+            "start_orientation": -120.0,
             "task": {
                 "goals": [
                     {
@@ -100,7 +98,7 @@
                         "TruePositionSensor",
                         "TrueCompassSensor",
                         "Navigation",
-                        "RLAutopilot"
+                        "JavaAutopilot"
                     ]
                 },
                 {
@@ -140,8 +138,8 @@
                 },
                 { "type": "navigation" },
                 {
-                    "type": "rl_autopilot",
-                    "name": "RLAutopilot",
+                    "type": "java_autopilot",
+                    "name": "JavaAutopilot",
                     "maxVehicleAccel": 7.460690450979396
                 }
             ]

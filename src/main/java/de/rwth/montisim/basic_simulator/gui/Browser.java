@@ -83,8 +83,10 @@ public class Browser extends JFrame implements TreeSelectionListener {
         current_vis = null;
         default_category = new_category(Category.CategoryType.NONE, new DefaultVis());
         new_category(Category.CategoryType.AUTOPILOTS, null);
-        new_category(Category.CategoryType.MAPS, new MapVis(file_system));
-        new_category(Category.CategoryType.SCENARIOS, new ScenarioVis(file_system));
+        MapVis mapVis = new MapVis(file_system);
+        new_category(Category.CategoryType.MAPS, mapVis);
+        ScenarioVis scenarioVis = new ScenarioVis(file_system);
+        new_category(Category.CategoryType.SCENARIOS, scenarioVis);
         new_category(Category.CategoryType.RESULTS, new ResultVis(file_system));
         new_category(Category.CategoryType.SIMULATIONS, new SimulationVis());
 
@@ -99,55 +101,39 @@ public class Browser extends JFrame implements TreeSelectionListener {
         JPanel interm = new JPanel();
         Box box = Box.createVerticalBox();
 
-        JCheckBox checkBox1 = new JCheckBox("Antialiasing", UIInfo.antialiasing);        
-        checkBox1.addItemListener(new ItemListener() {
-            public void itemStateChanged(ItemEvent e) {         
-                UIInfo.antialiasing = e.getStateChange() == 1;
-                repaint();
-            }           
+        addOption(box, "Antialiasing", UIInfo.antialiasing, e -> {
+            UIInfo.antialiasing = e.getStateChange() == 1;
+            repaint();
         });
-        checkBox1.setBackground(Color.WHITE);
-        //interm.add(checkBox1);
-        box.add(checkBox1);
+        addOption(box, "Road Segments", UIInfo.showSegments, e -> {
+            UIInfo.showSegments = e.getStateChange() == 1;
+            scenarioVis.viewer.setDirty();
+            mapVis.viewer.setDirty();
+            repaint();           
+        });
+        addOption(box, "Building Debug", UIInfo.showBuildingDebug, e -> {
+            UIInfo.showBuildingDebug = e.getStateChange() == 1;
+            scenarioVis.viewer.setDirty();
+            mapVis.viewer.setDirty();
+            repaint();         
+        });
+        addOption(box, "AABBs", UIInfo.showAABBs, e -> {
+            UIInfo.showAABBs = e.getStateChange() == 1;
+            scenarioVis.viewer.setDirty();
+            mapVis.viewer.setDirty();
+            repaint();  
+        });
 
-        JCheckBox checkBox2 = new JCheckBox("Show Road Segments", UIInfo.showSegments);        
-        checkBox2.addItemListener(new ItemListener() {
-            public void itemStateChanged(ItemEvent e) {         
-                UIInfo.showSegments = e.getStateChange() == 1;
-                repaint();
-            }           
+        addOption(box, "Use decentralized reinforcement learning", false, e -> {
+            distributed = e.getStateChange() == 1;
         });
-        checkBox2.setBackground(Color.WHITE);
-        //interm.add(checkBox2);
-        box.add(checkBox2);
+        addOption(box, "Use randomization for reinforcement learning", false, e -> {
+            randomize = e.getStateChange() == 1;
+        });
+        addOption(box, "Start RL-simulator in training mode", false, e -> {
+            play = e.getStateChange() == 0;
+        });
 
-        JCheckBox checkBox5 = new JCheckBox("Use decentralized reinforcement learning");
-        checkBox5.addItemListener(new ItemListener() {
-            public void itemStateChanged(ItemEvent e) {
-                distributed = e.getStateChange() == 1;
-            }
-        });
-        checkBox5.setBackground(Color.WHITE);
-        box.add(checkBox5);
-
-        JCheckBox checkBox6 = new JCheckBox("Use randomization for reinforcement learning");
-        checkBox6.addItemListener(new ItemListener() {
-            public void itemStateChanged(ItemEvent e) {
-                randomize = e.getStateChange() == 1;
-            }
-        });
-        checkBox6.setBackground(Color.WHITE);
-        box.add(checkBox6);
-
-        JCheckBox checkBox7 = new JCheckBox("Start RL-simulator in training mode");
-        checkBox7.addItemListener(new ItemListener() {
-            public void itemStateChanged(ItemEvent e) {
-                play = e.getStateChange() == 1;
-                play = !play;
-            }
-        });
-        checkBox7.setBackground(Color.WHITE);
-        box.add(checkBox7);
 
         interm.setBackground(Color.WHITE);
         interm.add(box);
@@ -167,6 +153,13 @@ public class Browser extends JFrame implements TreeSelectionListener {
 
         setExtendedState(getExtendedState() | JFrame.MAXIMIZED_BOTH);
         setVisible(true); //making the frame visible
+    }
+
+    private void addOption(Box box, String name, boolean defaultValue, ItemListener il) {
+        JCheckBox checkBox = new JCheckBox(name, defaultValue);
+        checkBox.addItemListener(il);
+        checkBox.setBackground(Color.WHITE);
+        box.add(checkBox);
     }
 
     public void expand_all(){

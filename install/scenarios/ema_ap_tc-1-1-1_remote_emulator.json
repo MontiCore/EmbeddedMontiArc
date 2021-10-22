@@ -82,13 +82,18 @@
                     "name": "Computer",
                     "software_name": "ema_autopilot_lib",
                     "backend": {
-                        "type": "direct"
+                        "type": "direct",
+                        "remote": {
+                            "type": "tcp",
+                            "host": "::1",
+                            "port": 4567
+                        }
                     },
                     "time_model": {
                         "type": "constant"
                     },
                     "cycle_duration": [0,100000000],
-                    "json_data_exchange": false
+                    "json_data_exchange": true
                 }
             ]
         }

@@ -35,7 +35,7 @@
                     "type": "actuator",
                     "name": "SteeringActuator",
                     "physical_value_name": "steering",
-                    "change_rate": 60.0,
+                    "change_rate": 100.0,
                     "sensor": { "type": "sensor" }
                 },
                 {
@@ -67,6 +67,9 @@
                     "physical_value_name": "true_compass"
                 },
                 { "type": "navigation" },
+                { "type": "speed_limit" },
+                { "type": "lidar" },
+                { "type": "simple_communication_gateway" },
                 {
                     "type": "rl_autopilot",
                     "name": "RLAutopilot",
