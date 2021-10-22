@@ -5,7 +5,7 @@ package de.rwth.montisim.basic_simulator.gui;
 
 import de.rwth.montisim.basic_simulator.filesystem.FileSystem;
 import de.rwth.montisim.commons.map.Pathfinding;
-import de.rwth.montisim.commons.simulation.TaskStatus;
+import de.rwth.montisim.simulation.commons.TaskStatus;
 import de.rwth.montisim.commons.simulation.TimeUpdate;
 import de.rwth.montisim.commons.utils.IPM;
 import de.rwth.montisim.commons.utils.Vec2;
@@ -35,6 +35,7 @@ import java.time.*;
 import java.util.ArrayList;
 import java.util.Collection;
 import java.util.List;
+import java.util.stream.Collectors;
 
 public class ScenarioVis extends SimVis implements SimulationRunner {
     private static final long serialVersionUID = 7903217594061845406L;
@@ -104,7 +105,7 @@ public class ScenarioVis extends SimVis implements SimulationRunner {
         viewer.addRenderer(new PathfinderRenderer(pathfinding));
 
         // Init CarRenderers and find view for all Vehicles
-        Collection<Vehicle> vehicles = simulator.getVehicles();
+        Collection<Vehicle> vehicles = simulator.getVehicles().collect(Collectors.toCollection(ArrayList::new));
         setView(vehicles);
 
         for (Vehicle v : vehicles) {

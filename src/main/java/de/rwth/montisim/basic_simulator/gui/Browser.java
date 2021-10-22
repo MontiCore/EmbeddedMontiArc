@@ -80,8 +80,10 @@ public class Browser extends JFrame implements TreeSelectionListener {
         current_vis = null;
         default_category = new_category(Category.CategoryType.NONE, new DefaultVis());
         new_category(Category.CategoryType.AUTOPILOTS, null);
-        new_category(Category.CategoryType.MAPS, new MapVis(file_system));
-        new_category(Category.CategoryType.SCENARIOS, new ScenarioVis(file_system));
+        MapVis mapVis = new MapVis(file_system);
+        new_category(Category.CategoryType.MAPS, mapVis);
+        ScenarioVis scenarioVis = new ScenarioVis(file_system);
+        new_category(Category.CategoryType.SCENARIOS, scenarioVis);
         new_category(Category.CategoryType.RESULTS, new ResultVis(file_system));
         new_category(Category.CategoryType.SIMULATIONS, new SimulationVis());
 
@@ -105,15 +107,42 @@ public class Browser extends JFrame implements TreeSelectionListener {
         checkBox1.setBackground(Color.WHITE);
         interm.add(checkBox1);
 
-        JCheckBox checkBox2 = new JCheckBox("Show Road Segments", UIInfo.showSegments);        
+        JCheckBox checkBox2 = new JCheckBox("Road Segments", UIInfo.showSegments);        
         checkBox2.addItemListener(new ItemListener() {
             public void itemStateChanged(ItemEvent e) {         
                 UIInfo.showSegments = e.getStateChange() == 1;
+                scenarioVis.viewer.setDirty();
+                mapVis.viewer.setDirty();
                 repaint();
             }           
         });
         checkBox2.setBackground(Color.WHITE);
         interm.add(checkBox2);
+
+        JCheckBox checkBox3 = new JCheckBox("Building Debug", UIInfo.showBuildingDebug);        
+        checkBox3.addItemListener(new ItemListener() {
+            public void itemStateChanged(ItemEvent e) {         
+                UIInfo.showBuildingDebug = e.getStateChange() == 1;
+                scenarioVis.viewer.setDirty();
+                mapVis.viewer.setDirty();
+                repaint();
+            }           
+        });
+        checkBox3.setBackground(Color.WHITE);
+        interm.add(checkBox3);
+        
+
+        JCheckBox checkBox4 = new JCheckBox("AABBs", UIInfo.showAABBs);        
+        checkBox4.addItemListener(new ItemListener() {
+            public void itemStateChanged(ItemEvent e) {         
+                UIInfo.showAABBs = e.getStateChange() == 1;
+                scenarioVis.viewer.setDirty();
+                mapVis.viewer.setDirty();
+                repaint();
+            }           
+        });
+        checkBox4.setBackground(Color.WHITE);
+        interm.add(checkBox4);
 
         interm.setBackground(Color.WHITE);
         JPanel optionPanel = new JPanel();
