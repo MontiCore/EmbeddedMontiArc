@@ -48,9 +48,9 @@ public class ArtifactCreatorTest {
     String tempDirectory = "target";
     String jarName = "dataset";
 
-    String jarFileName = ArtifactCreator.createJarFileName(tempDirectory, jarName);
+    String jarFileName = ArtifactCreator.createJarFileName(tempDirectory, jarName).replace('\\', '/');
 
-    String expected = System.getProperty("user.dir") + "/target/dataset.jar";
+    String expected = System.getProperty("user.dir").replace('\\', '/') + "/target/dataset.jar";
     assertEquals(expected, jarFileName);
   }
 
