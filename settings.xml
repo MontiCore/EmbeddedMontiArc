@@ -12,7 +12,7 @@
 
     <proxies>
     </proxies>
-
+    
     <servers>
         <server>
             <id>se-nexus</id>
@@ -46,7 +46,7 @@
             <repositories>
                 <repository>
                     <id>se-nexus</id>
-                    <url>https://nexus.se.rwth-aachen.de/content/groups/public</url>
+                    <url>https://nexus.se.rwth-aachen.de/content/groups/public/</url>
                     <releases><enabled>true</enabled> </releases>
                     <snapshots><enabled>true</enabled> </snapshots>
                 </repository>
@@ -58,7 +58,7 @@
                 </repository>
                 <repository>
                     <id>icm</id>
-                    <url>http://maven.icm.edu.pl/artifactory/repo/</url>
+                    <url>https://bio.informatik.uni-jena.de/repository/libs-release-oss/</url>
                     <releases><enabled /></releases>
                     <snapshots><enabled /></snapshots>
                 </repository>
@@ -72,14 +72,14 @@
                 </pluginRepository>
                 <pluginRepository>
                     <id>se-nexus</id>
-                    <url>https://nexus.se.rwth-aachen.de/content/groups/public</url>
+                    <url>https://nexus.se.rwth-aachen.de/content/groups/public/</url>
                     <releases><enabled>true</enabled> </releases>
                     <snapshots><enabled>true</enabled> </snapshots>
                 </pluginRepository>
             </pluginRepositories>
         </profile>
     </profiles>
-
+    
     <activeProfiles>
         <activeProfile>se-nexus</activeProfile>
     </activeProfiles>
