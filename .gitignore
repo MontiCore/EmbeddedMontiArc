@@ -8,3 +8,8 @@ log/
 target/
 
 TrainingMojoA.java
+
+.classpath
+.project
+.settings/
+.vscode/

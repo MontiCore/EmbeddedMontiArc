@@ -11,7 +11,7 @@
 
     <groupId>de.monticore.lang.monticar.utilities</groupId>
     <artifactId>emadl-maven-plugin</artifactId>
-    <version>0.0.4-SNAPSHOT</version>
+    <version>0.0.5-SNAPSHOT</version>
     <packaging>maven-plugin</packaging>
 
     <name>Process Automation of EMADL Projects</name>
@@ -20,6 +20,8 @@
 
     <properties>
         <MavenStreamTest.version>0.0.24-SNAPSHOT</MavenStreamTest.version>
+        
+        <montisim.hardware_emulator.version>2.0.12</montisim.hardware_emulator.version>
 
 
         <maven.compiler.target>1.8</maven.compiler.target>
@@ -77,6 +79,12 @@
             <artifactId>mojo-executor</artifactId>
             <version>2.3.1</version>
         </dependency>
+        
+        <dependency>
+            <groupId>montisim</groupId>
+            <artifactId>hardware_emulator</artifactId>
+            <version>${montisim.hardware_emulator.version}</version>
+        </dependency>
 
         <!-- TEST LIBRARIES -->
         <dependency>
@@ -131,11 +139,11 @@
                     </dependency>
                 </dependencies>
             </plugin>
-            <plugin>
+            <!-- <plugin>
                 <groupId>de.monticore.lang.monticar.utilities</groupId>
                 <artifactId>maven-streamtest</artifactId>
                 <version>0.0.21-SNAPSHOT</version>
-            </plugin>
+            </plugin> -->
         </plugins>
     </build>
 
