@@ -1,31 +1,36 @@
 <!-- (c) https://github.com/MontiCore/monticore -->
 # Hardware Emulator
 
+## >> [Link to the MontiSim Documentation (Wiki)](https://git.rwth-aachen.de/monticore/EmbeddedMontiArc/simulators/simulation/-/wikis/home)  <<
+
+The Issues for MontiSim are tracked in the [simulation project](https://git.rwth-aachen.de/monticore/EmbeddedMontiArc/simulators/simulation/-/boards/8343).
+
+## Usage
+
+To use the different sub-project as maven dependency, add the following to your pom's `<dependencies>`:
+
+```xml
+<dependency>
+    <groupId>montisim</groupId>
+    <artifactId>hardware_emulator</artifactId>
+    <version>${version}</version>
+</dependency>
+```
+
+## Developing
+
 Make sure to clone this repository recursively!
 
 ```bash
 git clone --recursive https://git.rwth-aachen.de/monticore/EmbeddedMontiArc/simulators/hardware_emulator
-```
-
-If you already have the cloned repository without the sub-module, you can add it with:
-
-```bash
+# If you already have the cloned repository without the sub-module, you can add it with:
 git submodule update --init
 ```
 
-## Resources
-
-Some links useful for the development of this project:
-
-- [https://wiki.osdev.org/Main_Page](https://wiki.osdev.org/Main_Page)
-- [https://www.agner.org/optimize/](https://www.agner.org/optimize/)
-
----
 
 ## Overview
 
 This project allows to run **EmbeddedMontiArc** models that have a **DynamicInterface** and let them communicate with the MontiSim simulation. It allows the time evaluation of the model execution using a parametric computer model.
-
 
 ## Building
 
@@ -61,23 +66,16 @@ Under Linux, the unicorn library is actually just wrapped in a CMake interface. 
 
 The `hardware-emulator-test` can be executed in the hardware_emulator/bin folder locally to test the emulation of sample programs and a basic autopilot emulation.
 
-## Usage
+## Resources
 
-To use the Hardware Emulator inside another Maven project add the following dependency to the `pom.xml`:
+Some links useful for the development of this project:
 
-```xml
-<dependency>
-    <groupId>montisim</groupId>
-    <artifactId>hardware_emulator</artifactId>
-    <version>${montisim.hardware_emulator.version}</version>
-</dependency>
-```
-
-Where `montisim.hardware_emulator.version` specifies the artifact version.
+- [https://wiki.osdev.org/Main_Page](https://wiki.osdev.org/Main_Page)
+- [https://www.agner.org/optimize/](https://www.agner.org/optimize/)
 
 ---
 
-# Outdated documentation
+# Outdated documentation, TODO update and put in the 'simulation wiki'
 
 The main interface for a simulator is [SoftwareSimulator](src/main/java/de/rwth/monticore/EmbeddedMontiArc/simulators/hardware_emulator/interfaces/SoftwareSimulator.java).
 
@@ -97,14 +95,6 @@ The main idea is to discover the name and types of the ports (performed by the `
 
 The templated `PortSimple` and `PortArray` implementations already define how the port communicates with the Java simulator (through JNI), but how the port data is given to the software is depending on how the software is loaded (as native library or in the Computer emulation), which is specified in the variants `Port...Emu` and `Port...Direct`.
 
-
-
-
-
-
-# TODO Adapt
-
-# Dev Documentation
 
 ## Emulator configuration
 
