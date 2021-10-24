@@ -75,8 +75,8 @@ public class Computer extends EEComponent implements Inspectable {
         this.constantTime = properties.time_model instanceof ConstantTime;
         this.realTime = properties.time_model instanceof Realtime;
 
-        System.out.println("ProgramInterface:");
-        System.out.println(program.toString());
+        //System.out.println("ProgramInterface:");
+        //System.out.println(program.toString());
 
         
         int i = 0;
