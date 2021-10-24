@@ -25,11 +25,11 @@
     <properties>
 
         <!-- USE THIS VARIABLE TO SET THE VERSION OF THIS PROJECT AND ALL SUB PROJECTS -->
-        <revision>3.3.0</revision>
+        <revision>3.3.1</revision>
         <projectversion>${revision}</projectversion>
 
         <!-- USE THESE TO SET THE VERSIONS OF THE DEPENDENCIES FOR ALL THE SUB-PROJECTS -->
-        <commons.version>2.1.2</commons.version>
+        <commons.version>2.1.3</commons.version>
         <controller.version>1.1.0</controller.version>
 
         <assembly.plugin>2.5.4</assembly.plugin>

@@ -1,6 +1,7 @@
 package de.rwth.montisim.simulation.simulator;
 
 import java.io.File;
+import java.nio.file.Paths;
 
 import de.rwth.montisim.commons.map.Pathfinding;
 import de.rwth.montisim.simulation.commons.TaskStatus;
@@ -16,30 +17,25 @@ public class SimulationCLI {
      * Make sure the necessary Types for the JSON system are registered (TypedSimulation/TypedHardwareEmu)
      * and that the CppBridge is initialized if the hardware-emulator is used locally
      */
-    public static void runSimulationFromFile(String path){
-        try {
-            // Create simulator from scenario file
-            File scenarioFile = new File(path);
-            SimulationConfig config = SimulationConfig.fromFile(scenarioFile);
-            File mapPath = new File(config.map_name + ".osm");
-            OsmMap map = new OsmMap(config.map_name, mapPath);
-            World world = new OsmToWorldLoader(map).getWorld();
-            Pathfinding pathfinding = new PathfindingImpl(world);
-            Simulator simulator = config.build(world, pathfinding, map);
+    public static TaskStatus runSimulationFromFile(String path, String mapsFolder) throws Exception {
+        // Create simulator from scenario file
+        File scenarioFile = new File(path);
+        SimulationConfig config = SimulationConfig.fromFile(scenarioFile);
+        File mapPath = Paths.get(mapsFolder, config.map_name + ".osm").toFile();
+        OsmMap map = new OsmMap(config.map_name, mapPath);
+        World world = new OsmToWorldLoader(map).getWorld();
+        Pathfinding pathfinding = new PathfindingImpl(world);
+        Simulator simulator = config.build(world, pathfinding, map);
 
-            // Run simulation
-            SimulationLoop simLoop = new SimulationLoop(simulator, config);
-            TaskStatus res = simLoop.run();
-            if (res == TaskStatus.SUCCEEDED) {
-                // TODO: output formatted JSON for the simulation results ?
-                System.out.println("Simulation SUCCEEDED.");
-            } else {
-                System.out.println("Simulation FAILED.");
-                System.exit(-1);
-            }
-        } catch (Exception e1) {
-            e1.printStackTrace();
-            return;
+        // Run simulation
+        SimulationLoop simLoop = new SimulationLoop(simulator, config);
+        TaskStatus res = simLoop.run();
+        if (res == TaskStatus.SUCCEEDED) {
+            // TODO: output formatted JSON for the simulation results ?
+            System.out.println("Simulation SUCCEEDED.");
+        } else {
+            System.out.println("Simulation FAILED.");
         }
+        return res;
     }
 }

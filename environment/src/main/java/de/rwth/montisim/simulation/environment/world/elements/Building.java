@@ -5,7 +5,6 @@ import java.util.ArrayList;
 import java.util.List;
 import java.util.Optional;
 
-import de.rwth.montisim.commons.simulation.*;
 import de.rwth.montisim.commons.utils.*;
 import de.rwth.montisim.commons.utils.PolygonConvexer.ConversionError;
 import de.rwth.montisim.commons.utils.PolygonConvexer.Edge;
