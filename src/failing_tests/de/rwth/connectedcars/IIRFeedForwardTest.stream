@@ -1,0 +1,7 @@
+package de.rwth.connectedcars.iir;
+
+stream IIRFeedForwardTest for IIRFeedForward_TestWrapper {
+    x: 5 tick 8 tick 13 tick 7;
+
+    out1: 5 tick 18 tick 44 tick 77;
+}

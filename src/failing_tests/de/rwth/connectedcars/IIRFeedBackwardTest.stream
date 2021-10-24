@@ -1,0 +1,7 @@
+package de.rwth.connectedcars.iir;
+
+stream IIRFeedBackwardTest for IIRFeedBackward_TestWrapper {
+    in1: 5 tick 5 tick 5 tick 5;
+    
+    y: 5 tick 10 tick 25 tick 65;
+}
