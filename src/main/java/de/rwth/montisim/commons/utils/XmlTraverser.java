@@ -38,17 +38,15 @@ public class XmlTraverser {
 
     public XmlTraverser fromFile(File f) throws FileNotFoundException, IOException{
         data = null;
-        if (f.exists()) {
-            FileReader fr;
-            fr = new FileReader(f);
-            BufferedReader br = new BufferedReader(fr);
+        FileReader fr;
+        fr = new FileReader(f);
+        BufferedReader br = new BufferedReader(fr);
 
-            int size = (int) f.length();
-            data = new char[size];
+        int size = (int) f.length();
+        data = new char[size];
 
-            br.read(data);
-            br.close();
-        }
+        br.read(data);
+        br.close();
         resetTraverser();
         return this;
     }
