@@ -13,23 +13,51 @@ import org.apache.maven.plugin.MojoFailureException;
 import org.apache.maven.plugins.annotations.Mojo;
 import org.apache.maven.plugins.annotations.Parameter;
 
+import de.rwth.montisim.hardware_emulator.CppBridge;
+import de.rwth.montisim.hardware_emulator.TypedHardwareEmu;
+import de.rwth.montisim.simulation.commons.TaskStatus;
 import de.rwth.montisim.simulation.simulator.SimulationCLI;
 
+/**
+ * Runs the (autopilot) EMA model in MontiSim based on a list of scenarios.
+ */
 @Mojo(name = "simulate")
 public class SimulationMojo extends AbstractMojo {
-    
+
+    static {
+        TypedHardwareEmu.registerTypedHardwareEmu();
+    }
+    /**
+     * The path to a scenarios folder.
+     * All scenarios in the folder will be executed.
+     */
     @Parameter(defaultValue = "scenarios")
     private String scenarioFolder;
+    /**
+     * The path to the maps used by the scenarios.
+     */
+    @Parameter(defaultValue = "maps")
+    private String mapsFolder;
+    /**
+     * The path to the folder containing the compiled *library adapter* of the EMA model.
+     */
+    @Parameter(defaultValue = "autopilots")
+    private String autopilotsFolder;
 
     @Override
     public void execute() throws MojoExecutionException, MojoFailureException {
         try {
+            boolean anyFailed = false;
+            CppBridge.init("{\"softwares_folder\": \""+autopilotsFolder+"\"}");
             Set<Path> scenarios = listFilesUsingFilesList(Path.of(scenarioFolder));
             for (Path p : scenarios) {
-                SimulationCLI.runSimulationFromFile(p.toString());
+                getLog().info("Simulating scenario: "+p.toString());
+                TaskStatus res = SimulationCLI.runSimulationFromFile(p.toString(), mapsFolder);
+                if (res != TaskStatus.SUCCEEDED) anyFailed = true;
             }
-        } catch (IOException e) {
-            throw new MojoExecutionException("Error getting the scenario files", e);
+            if (anyFailed) throw new MojoExecutionException("Some simulations failed.");
+        } catch (Exception e) {
+            throw new MojoFailureException("Error: ", e);
         }
     }
     
