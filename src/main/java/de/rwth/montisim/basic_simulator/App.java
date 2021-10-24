@@ -9,6 +9,7 @@ import de.rwth.montisim.commons.map.Pathfinding;
 import de.rwth.montisim.commons.utils.LibraryService;
 import de.rwth.montisim.hardware_emulator.CppBridge;
 import de.rwth.montisim.hardware_emulator.TypedHardwareEmu;
+import de.rwth.montisim.simulation.commons.TaskStatus;
 import de.rwth.montisim.simulation.environment.osmmap.OsmMap;
 import de.rwth.montisim.simulation.environment.osmmap.OsmToWorldLoader;
 import de.rwth.montisim.simulation.environment.pathfinding.PathfindingImpl;
@@ -39,14 +40,16 @@ public class App
             boolean decentralized = false;
             boolean randomize = false;
             boolean play = false;
+            String maps_folder = ".";
 
             if(args.length > 0){
                 if(args.length == 1 && (args[0].equals("-h") || args[0].equals("--help"))){
                     //print argument help for every cli option
                     System.out.println("usage: ./run.sh [options]\n");
                     System.out.println("Options:");
-                    System.out.printf(" %-30s %-20s\n", "-d,--decentralized" ,"Use decentralized mode. Only relevant for Reinforcement Learning");
                     System.out.printf(" %-30s %-20s\n", "-h,--help" ,"Display help information");
+                    System.out.printf(" %-30s %-20s\n", "-m,--maps <folder>" ,"Specify the maps folder");
+                    System.out.printf(" %-30s %-20s\n", "-d,--decentralized" ,"Use decentralized mode. Only relevant for Reinforcement Learning");
                     System.out.printf(" %-30s %-20s\n", "-rl,--reinforcement_learning" ,"Use simulator for Reinforcement Learning");
                     System.out.printf(" %-30s %-20s\n", "-s,--scenario <arg>" ,"Relative path to executed scenario");
                     System.out.printf(" %-30s %-20s\n", "-r,--randomize" ,"Randomize the scenarios. Only relevant for Reinforcement Learning");
@@ -70,7 +73,18 @@ public class App
                             System.exit(-1);
                             return;
                         }
-                        scenario_name = args[i+1];
+                        ++i;
+                        scenario_name = args[i];
+                    }
+                    
+                    if(args[i].equals("-m") || args[i].equals("--maps")){
+                        if(i+1 >= args.length){
+                            System.out.println("Please provide a maps folder path.");
+                            System.exit(-1);
+                            return;
+                        }
+                        ++i;
+                        maps_folder = args[i];
                     }
 
                     if(args[i].equals("-d") || args[i].equals("--decentralized")){
@@ -116,7 +130,9 @@ public class App
                 }
                 else{
                     System.out.println("Starting simulation with scenario: " + scenario_name);
-                    SimulationCLI.runSimulationFromFile(scenario_name);
+                    TaskStatus res = SimulationCLI.runSimulationFromFile(scenario_name, maps_folder);
+                    if (res != TaskStatus.SUCCEEDED) 
+                        System.exit(-1);
                 }
                 return;
             }
