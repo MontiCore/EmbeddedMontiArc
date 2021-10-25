@@ -180,6 +180,23 @@ public class StreamTestMojoBase extends AbstractMojo {
     public char getForcedTraining(){return forcedTraining;}
     public void setForcedTraining(char forcedTraining){this.forcedTraining = forcedTraining;}
 
+    
+    @Parameter(defaultValue = "false")
+    protected boolean importArmadillo = false;
+    public boolean getImportArdmadillo() {
+        return importArmadillo;
+    }
+    @Parameter(defaultValue = "false")
+    protected boolean generateServerAdapter = false;
+    public boolean getGenerateServerAdapter() {
+        return generateServerAdapter;
+    }
+    @Parameter(defaultValue = "false")
+    protected boolean generateLibraryInterface = false;
+    public boolean getGenerateLibraryInterface() {
+        return generateLibraryInterface;
+    }
+
     //</editor-fold>
 
     //<editor-fold desc="Properties">
@@ -259,6 +276,9 @@ public class StreamTestMojoBase extends AbstractMojo {
         stmb.pathToPython = pathToPython;
         stmb.rootModel = rootModel;
         stmb.customFilesPath = customFilesPath;
+        stmb.importArmadillo = importArmadillo;
+        stmb.generateLibraryInterface = generateLibraryInterface;
+        stmb.generateServerAdapter = generateServerAdapter;
 
         stmb.setLog(getLog());
 

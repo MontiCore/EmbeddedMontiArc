@@ -1,7 +1,6 @@
 /* (c) https://github.com/MontiCore/monticore */
 package de.monitcore.lang.monticar.utilities.tools;
 
-import javax.xml.bind.DatatypeConverter;
 import java.io.IOException;
 import java.nio.file.Files;
 import java.nio.file.Path;
@@ -9,11 +8,21 @@ import java.nio.file.Paths;
 import java.security.MessageDigest;
 import java.security.NoSuchAlgorithmException;
 import java.util.List;
-import java.util.Map;
 
 
 
 public class ChecksumChecker {
+    // From https://stackoverflow.com/questions/9655181/how-to-convert-a-byte-array-to-a-hex-string-in-java
+    private static final char[] HEX_ARRAY = "0123456789ABCDEF".toCharArray();
+    public static String bytesToHex(byte[] bytes) {
+        char[] hexChars = new char[bytes.length * 2];
+        for (int j = 0; j < bytes.length; j++) {
+            int v = bytes[j] & 0xFF;
+            hexChars[j * 2] = HEX_ARRAY[v >>> 4];
+            hexChars[j * 2 + 1] = HEX_ARRAY[v & 0x0F];
+        }
+        return new String(hexChars);
+    }
 
     protected static MessageDigest messageDigestInstance;
     protected static MessageDigest md5;
@@ -47,7 +56,7 @@ public class ChecksumChecker {
 
 
         byte[] digest = messageDigestInstance.digest();
-        return DatatypeConverter.printHexBinary(digest).toUpperCase();
+        return bytesToHex(digest);
     }
 
 
@@ -59,18 +68,7 @@ public class ChecksumChecker {
         md5.update(Files.readAllBytes(wiki_path));
 
         byte[] digest = md5.digest();
-        return DatatypeConverter.printHexBinary(digest).toUpperCase();
-/*
-        List<String> lines = Files.readAllLines(wiki_path);
-        StringBuilder sb = new StringBuilder();
-        for (String line : lines) {
-            sb.append(line);
-        }
-        String content = sb.toString();
-        content = content.replace("\r", "");
-        content = content.replace("\n", "");
-
-        return getChecksumForStringMD5(content);*/
+        return bytesToHex(digest);
     }
 
     public static String getChecksumForStringMD5(String s){
@@ -78,22 +76,11 @@ public class ChecksumChecker {
         md5.update(s.getBytes());
 
         byte[] digest = md5.digest();
-        return DatatypeConverter.printHexBinary(digest).toUpperCase();
+        return bytesToHex(digest);
     }
 
     public static boolean checkFile(String filePath, String checksum) throws IOException {
         return getChecksumForFileSHA256(filePath).equalsIgnoreCase(checksum);
     }
 
-    public static void checkFilesWithAssert(Map<String,String> fileChecksums) throws IOException {
-        for (Map.Entry<String,String> entry:fileChecksums.entrySet()) {
-            String checksum = getChecksumForFileSHA256(entry.getKey());
-/*
-            TestCase.assertTrue(
-                    "File "+entry.getKey()+" is not correct! (expected: "+entry.getValue()+", value: "+checksum+")",
-                    checksum.equalsIgnoreCase(entry.getValue())
-            );
-            */
-        }
-    }
 }

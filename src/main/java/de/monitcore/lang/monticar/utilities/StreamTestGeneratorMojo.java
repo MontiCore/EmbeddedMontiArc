@@ -246,11 +246,13 @@ public class StreamTestGeneratorMojo extends StreamTestMojoBase {
                 emadlGenerator.setPythonPath(this.getPathToPython());
             }
 
-
             GeneratorCPP generatorCPP = emadlGenerator.getEmamGen();
             //GeneratorCPP generatorCPP = new GeneratorCPP();
             generatorCPP.setModelsDirPath(Paths.get(this.getPathTmpOutEMAM()));
 
+            generatorCPP.setImportArmadillo(getImportArdmadillo());
+            generatorCPP.setGenerateServerAdapter(getGenerateServerAdapter());
+            generatorCPP.setGenerateLibraryInterface(getGenerateLibraryInterface());
             generatorCPP.useArmadilloBackend();
             generatorCPP.setGenerationTargetPath(Paths.get(this.getPathTmpOutCPP(),cs.getFullName()).toString());
             generatorCPP.setGenerateMainClass(true);
