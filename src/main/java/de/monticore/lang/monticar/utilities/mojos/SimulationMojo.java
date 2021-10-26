@@ -3,6 +3,8 @@ package de.monticore.lang.monticar.utilities.mojos;
 import java.io.IOException;
 import java.nio.file.Files;
 import java.nio.file.Path;
+import java.nio.file.Paths;
+
 import java.util.Set;
 import java.util.stream.Stream;
 import java.util.stream.Collectors;
