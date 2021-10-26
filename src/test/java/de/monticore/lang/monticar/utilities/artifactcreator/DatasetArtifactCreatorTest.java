@@ -83,8 +83,8 @@ public class DatasetArtifactCreatorTest {
     assertEquals(2, datasetLocations.size());
 
     List<String> jarLocations = new LinkedList<String>() {{add(datasetLocations.get(0).getJarLocation()); add(datasetLocations.get(1).getJarLocation());}};
-    assertTrue(jarLocations.stream().anyMatch(l -> StringUtils.equals(l, "training_data/train.h5")));
-    assertTrue(jarLocations.stream().anyMatch(l -> StringUtils.equals(l, "training_data/test.h5")));
+    assertTrue(jarLocations.stream().anyMatch(l -> StringUtils.equals(l.replace('\\', '/'), "training_data/train.h5")));
+    assertTrue(jarLocations.stream().anyMatch(l -> StringUtils.equals(l.replace('\\', '/'), "training_data/test.h5")));
   }
 
 

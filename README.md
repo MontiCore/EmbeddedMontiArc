@@ -49,3 +49,7 @@ project such that they can be reused.
 Some examples of how to define the configurations for a certain goal can be found in the [Wiki](https://git.rwth-aachen.de/monticore/EmbeddedMontiArc/utilities/emadl-maven-plugin/-/wikis/Configuration-Eamples) page.
 
 Further examples can be found in the [MNISTCalculator](https://git.rwth-aachen.de/monticore/EmbeddedMontiArc/applications/mnistcalculator) and [BERTSentimentAnalyzer ](https://git.rwth-aachen.de/monticore/EmbeddedMontiArc/applications/bertsentimentanalyzer) evaluation projects. 
+
+## Dependency Graph of this project
+
+![Dependency graph](dependency-graph.svg)

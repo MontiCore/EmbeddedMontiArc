@@ -84,8 +84,8 @@ public class ModelArtifactCreatorTest {
     List<FileLocation> fileLocations = ModelArtifactCreator.getFileLocations(modelPath, emadlParser);
 
     assertEquals(1, fileLocations.size());
-    assertEquals(modelPath.getAbsolutePath() + "/ArgMax.emadl", fileLocations.get(0).getSourceLocation());
-    assertEquals("utils/ArgMax.emadl", fileLocations.get(0).getJarLocation());
+    assertEquals(modelPath.getAbsolutePath().replace('\\', '/') + "/ArgMax.emadl", fileLocations.get(0).getSourceLocation().replace('\\', '/'));
+    assertEquals("utils/ArgMax.emadl", fileLocations.get(0).getJarLocation().replace('\\', '/'));
   }
 
   @Test
@@ -102,12 +102,12 @@ public class ModelArtifactCreatorTest {
     List<FileLocation> fileLocations = ModelArtifactCreator.getFileLocations(modelPath, emadlParser);
 
     assertEquals(3, fileLocations.size());
-    assertEquals(utilsDirectory.getAbsolutePath() + "/ArgMax.emadl", fileLocations.get(0).getSourceLocation());
-    assertEquals("classifier/utils/ArgMax.emadl", fileLocations.get(0).getJarLocation());
-    assertEquals(networkEMADL.getAbsolutePath(), fileLocations.get(1).getSourceLocation());
-    assertEquals("classifier/Network.emadl", fileLocations.get(1).getJarLocation());
-    assertEquals(networkCNNT.getAbsolutePath(), fileLocations.get(2).getSourceLocation());
-    assertEquals("classifier/Network.cnnt", fileLocations.get(2).getJarLocation());
+    assertEquals(utilsDirectory.getAbsolutePath().replace('\\', '/') + "/ArgMax.emadl", fileLocations.get(0).getSourceLocation().replace('\\', '/'));
+    assertEquals("classifier/utils/ArgMax.emadl", fileLocations.get(0).getJarLocation().replace('\\', '/'));
+    assertEquals(networkEMADL.getAbsolutePath().replace('\\', '/'), fileLocations.get(1).getSourceLocation().replace('\\', '/'));
+    assertEquals("classifier/Network.emadl", fileLocations.get(1).getJarLocation().replace('\\', '/'));
+    assertEquals(networkCNNT.getAbsolutePath().replace('\\', '/'), fileLocations.get(2).getSourceLocation().replace('\\', '/'));
+    assertEquals("classifier/Network.cnnt", fileLocations.get(2).getJarLocation().replace('\\', '/'));
   }
 
   @Test
@@ -123,7 +123,7 @@ public class ModelArtifactCreatorTest {
     packageList.add("utils");
 
     String packagePath = ModelArtifactCreator.getPackagePath(packageList);
-    assertEquals("classifier/utils/", packagePath);
+    assertEquals("classifier/utils/", packagePath.replace('\\', '/'));
   }
 
   private static void assertThrowsException(Exception expectedException, StorageInformation storageInformation) {
