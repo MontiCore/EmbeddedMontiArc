@@ -49,7 +49,7 @@ public class SimulationMojo extends AbstractMojo {
         try {
             boolean anyFailed = false;
             CppBridge.init("{\"softwares_folder\": \""+autopilotsFolder+"\"}");
-            Set<Path> scenarios = listFilesUsingFilesList(Path.of(scenarioFolder));
+            Set<Path> scenarios = listFilesUsingFilesList(Paths.get(scenarioFolder));
             for (Path p : scenarios) {
                 getLog().info("Simulating scenario: "+p.toString());
                 TaskStatus res = SimulationCLI.runSimulationFromFile(p.toString(), mapsFolder);
