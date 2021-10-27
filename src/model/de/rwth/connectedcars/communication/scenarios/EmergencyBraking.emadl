@@ -1,0 +1,131 @@
+package de.rwth.connectedcars.communication.scenarios;
+
+import de.rwth.connectedcars.communication.packets.StatePacket;
+import de.rwth.connectedcars.communication.*;
+
+component EmergencyBraking {
+    port 
+        in  B		                            state_updated_in[6],
+        in  StatePacket                         state_in[6],
+        in  StatePacket							state_out,
+        out B		                            emergency_braking;
+        
+    // no direct access to struct members allowed inside a connect statement, 
+    // so a wrapper like this is necessary
+    component StatePacketWrapper {
+		port
+			in  StatePacket 					state,
+			out Q(-oo m : 0.01 m : oo m) 		positionX,
+			out Q(-oo m : 0.01 m : oo m) 		positionY,
+			out Q(0.0 m/s : 0.01 m/s : oo m/s)	velocity,
+			out Q(-oo : 0.001 : oo)				heading;
+			
+		implementation Math {
+			positionX = state.positionX;
+			positionY = state.positionY;
+			velocity = state.velocity;
+			heading = state.heading;
+		}
+	}
+        
+    instance StatePacketWrapper spw1;
+    instance StatePacketWrapper spw2;
+    instance StatePacketWrapper spw3;
+    instance StatePacketWrapper spw4;
+    instance StatePacketWrapper spw5;
+    instance StatePacketWrapper spw6;
+    instance StatePacketWrapper spwOut;
+    //instance DistanceCalculator distance[6];  // currently not working, issue was created
+    instance DistanceCalculator distance1;
+    instance DistanceCalculator distance2;
+    instance DistanceCalculator distance3;
+    instance DistanceCalculator distance4;
+    instance DistanceCalculator distance5;
+    instance DistanceCalculator distance6;
+    //instance DirectionCalculator direction[6];  // currently not working, issue was created
+    instance DirectionCalculator direction1;
+    instance DirectionCalculator direction2;
+    instance DirectionCalculator direction3;
+    instance DirectionCalculator direction4;
+    instance DirectionCalculator direction5;
+    instance DirectionCalculator direction6;
+    instance DistanceEvaluator evaluator;
+    
+    connect state_updated_in[:] -> evaluator.state_updated_in[:];
+    connect state_in[:] -> evaluator.state_in[:];
+    connect state_out -> evaluator.own_state;
+    
+    connect state_out -> spwOut.state;
+    connect state_in[1] -> spw1.state;
+    connect state_in[2] -> spw2.state;
+    connect state_in[3] -> spw3.state;
+    connect state_in[4] -> spw4.state;
+    connect state_in[5] -> spw5.state;
+    connect state_in[6] -> spw6.state;
+    
+    // connections for DistanceCalculators
+    connect spwOut.positionX -> distance1.position1X;
+    connect spwOut.positionY -> distance1.position1Y;
+    connect spw1.positionX -> distance1.position2X;
+    connect spw1.positionY -> distance1.position2Y;
+    connect distance1.distance -> evaluator.distance[1];
+    connect spwOut.positionX -> distance2.position1X;
+    connect spwOut.positionY -> distance2.position1Y;
+    connect spw2.positionX -> distance2.position2X;
+    connect spw2.positionY -> distance2.position2Y;
+    connect distance2.distance -> evaluator.distance[2];
+    connect spwOut.positionX -> distance3.position1X;
+    connect spwOut.positionY -> distance3.position1Y;
+    connect spw3.positionX -> distance3.position2X;
+    connect spw3.positionY -> distance3.position2Y;
+    connect distance3.distance -> evaluator.distance[3];
+    connect spwOut.positionX -> distance4.position1X;
+    connect spwOut.positionY -> distance4.position1Y;
+    connect spw4.positionX -> distance4.position2X;
+    connect spw4.positionY -> distance4.position2Y;
+    connect distance4.distance -> evaluator.distance[4];
+    connect spwOut.positionX -> distance5.position1X;
+    connect spwOut.positionY -> distance5.position1Y;
+    connect spw5.positionX -> distance5.position2X;
+    connect spw5.positionY -> distance5.position2Y;
+    connect distance5.distance -> evaluator.distance[5];
+    connect spwOut.positionX -> distance6.position1X;
+    connect spwOut.positionY -> distance6.position1Y;
+    connect spw6.positionX -> distance6.position2X;
+    connect spw6.positionY -> distance6.position2Y;
+    connect distance6.distance -> evaluator.distance[6];
+    
+    // connections for DirectionCalculators
+    connect spwOut.positionX -> direction1.position1X;
+    connect spwOut.positionY -> direction1.position1Y;
+    connect spw1.positionX -> direction1.position2X;
+    connect spw1.positionY -> direction1.position2Y;
+    connect direction1.direction -> evaluator.direction[1];
+    connect spwOut.positionX -> direction2.position1X;
+    connect spwOut.positionY -> direction2.position1Y;
+    connect spw2.positionX -> direction2.position2X;
+    connect spw2.positionY -> direction2.position2Y;
+    connect direction2.direction -> evaluator.direction[2];
+    connect spwOut.positionX -> direction3.position1X;
+    connect spwOut.positionY -> direction3.position1Y;
+    connect spw3.positionX -> direction3.position2X;
+    connect spw3.positionY -> direction3.position2Y;
+    connect direction3.direction -> evaluator.direction[3];
+    connect spwOut.positionX -> direction4.position1X;
+    connect spwOut.positionY -> direction4.position1Y;
+    connect spw4.positionX -> direction4.position2X;
+    connect spw4.positionY -> direction4.position2Y;
+    connect direction4.direction -> evaluator.direction[4];
+    connect spwOut.positionX -> direction5.position1X;
+    connect spwOut.positionY -> direction5.position1Y;
+    connect spw5.positionX -> direction5.position2X;
+    connect spw5.positionY -> direction5.position2Y;
+    connect direction5.direction -> evaluator.direction[5];
+    connect spwOut.positionX -> direction6.position1X;
+    connect spwOut.positionY -> direction6.position1Y;
+    connect spw6.positionX -> direction6.position2X;
+    connect spw6.positionY -> direction6.position2Y;
+    connect direction6.direction -> evaluator.direction[6];
+    
+    connect evaluator.brake_recommendation -> emergency_braking;
+}

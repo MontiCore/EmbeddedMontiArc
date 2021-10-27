@@ -1,0 +1,6 @@
+package de.rwth.connectedcars.communication.packets;
+
+struct SwitchingLanePacket {
+    Subject subject;
+    (1 : oo) laneIndex;  // usage of type N leads to error, issue created
+}

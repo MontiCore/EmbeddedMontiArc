@@ -1,0 +1,9 @@
+package de.rwth.connectedcars.communication;
+
+stream DirectionCalculatorTest for DirectionCalculator {
+    position1X: 0 m tick 0 m;
+    position1Y: 0 m tick 0 m;
+    position2X: 1 m tick 0 m;
+    position2Y: 1 m tick 1 m;
+    direction: 45 tick 90;
+}

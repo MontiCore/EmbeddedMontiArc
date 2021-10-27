@@ -1,0 +1,22 @@
+package de.rwth.connectedcars.communication;
+
+import de.rwth.connectedcars.communication.packets.StatePacket;
+
+component DirectionCalculator {
+	port
+		in  Q(-oo m : 0.01 m : oo m)  		position1X,
+		in  Q(-oo m : 0.01 m : oo m)  		position1Y,
+		in  Q(-oo m : 0.01 m : oo m)  		position2X,
+		in  Q(-oo m : 0.01 m : oo m)  		position2Y,
+		
+		out Q(-oo : 0.001 : oo)			    direction;
+		
+	implementation Math {
+		Q beta = 0.0;
+		beta = atan2(position2Y - position1Y, position2X - position1X); 
+		if beta > M_PI
+			beta = beta - (2 * M_PI);
+		end
+		direction = (beta / M_PI) * 180;
+	}
+}

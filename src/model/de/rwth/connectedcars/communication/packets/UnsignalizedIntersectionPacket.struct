@@ -1,0 +1,9 @@
+package de.rwth.connectedcars.communication.packets;
+
+struct UnsignalizedIntersectionPacket  {
+    Subject subject;
+    Q intersectionPositionX;
+    Q intersectionPositionY;
+    Q intendedDirection;
+    Q currentDistanceToIntersection;
+}

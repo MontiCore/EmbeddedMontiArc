@@ -1,0 +1,6 @@
+package de.rwth.connectedcars.communication.packets;
+
+struct PricePacket {
+    Subject subject;
+    Q price;
+}

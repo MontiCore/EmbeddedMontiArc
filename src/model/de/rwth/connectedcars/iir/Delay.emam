@@ -1,0 +1,13 @@
+package de.rwth.connectedcars.iir;
+
+component Delay {
+    ports
+        in Q a,
+        out Q b;
+        
+    implementation Math {
+        static Q oldVal = 0;
+        b = oldVal;
+        oldVal = a;
+    }
+}

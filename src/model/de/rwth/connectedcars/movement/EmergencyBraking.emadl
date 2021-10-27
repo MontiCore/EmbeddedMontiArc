@@ -1,0 +1,21 @@
+package de.rwth.connectedcars.movement;
+
+component EmergencyBraking {
+	port
+		in  B emergencyBraking,
+		in  Q gasResIn,
+		in  Q brakeResIn,
+		
+		out Q gasResOut,
+		out Q brakeResOut;
+		
+	implementation Math {
+		if emergencyBraking
+			gasResOut = 0;
+			brakeResOut = 1;
+		else
+			gasResOut = gasResIn;
+			brakeResOut = brakeResIn;
+		end
+	}
+}

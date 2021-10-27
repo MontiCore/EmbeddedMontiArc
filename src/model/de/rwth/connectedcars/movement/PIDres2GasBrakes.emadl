@@ -1,0 +1,33 @@
+package de.rwth.connectedcars.movement;
+
+component PIDres2GasBrakes {
+
+  port 
+      in  Q (-oo : oo) controlValue,
+      
+      out Q (-0.5 : 1) gasRes,
+      out Q (0 : 1)    brakeRes;
+      
+  implementation Math{
+    if controlValue < 0
+        gasRes = 0;
+
+        if controlValue < -1
+            brakeRes = 1;
+        else
+            brakeRes = -controlValue;
+        end
+
+    else
+        brakeRes = 0;
+
+        if controlValue > 1
+            gasRes = 1;
+        else
+            gasRes = controlValue;
+        end
+        
+    end
+  }
+  
+}  

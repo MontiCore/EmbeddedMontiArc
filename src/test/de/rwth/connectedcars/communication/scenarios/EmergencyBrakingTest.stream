@@ -1,0 +1,43 @@
+package de.rwth.connectedcars.communication.scenarios;
+
+stream EmergencyBrakingTest for EmergencyBraking_TestWrapper {
+
+	upd1: true;
+	upd2: false;
+	upd3: false;
+	upd4: false;
+	upd5: false;
+	upd6: false;
+	
+	stoX: 0 m;
+	stoY: 0 m;
+	stoH: 90;
+	stoV: 10 m/s;
+	
+	sti1X: 0 m;
+	sti1Y: 10 m;
+	sti1H: -90;
+	sti1V: 10 m/s;
+	sti2X: 0 m;
+	sti2Y: 0 m;
+	sti2H: 0;
+	sti2V: 0 m/s;
+	sti3X: 0 m;
+	sti3Y: 0 m;
+	sti3H: 0;
+	sti3V: 0 m/s;
+	sti4X: 0 m;
+	sti4Y: 0 m;
+	sti4H: 0;
+	sti4V: 0 m/s;
+	sti5X: 0 m;
+	sti5Y: 0 m;
+	sti5H: 0;
+	sti5V: 0 m/s;
+	sti6X: 0 m;
+	sti6Y: 0 m;
+	sti6H: 0;
+	sti6V: 0 m/s;
+	
+	emergency: true;
+}
