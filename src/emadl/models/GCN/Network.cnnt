@@ -1,7 +1,0 @@
-/* (c) https://github.com/MontiCore/monticore */
-configuration Network{
-    num_epoch:200
-    batch_size:1
-    context:cpu
-    optimizer:sgd
-}

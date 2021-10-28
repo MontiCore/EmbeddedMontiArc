@@ -1,0 +1,18 @@
+/* (c) https://github.com/MontiCore/monticore */
+configuration Network{
+     num_epoch:10
+     batch_size:1
+     normalize:false
+     context:cpu
+     eval_metric:accuracy_ignore_label
+     load_checkpoint:false
+     loss:softmax_cross_entropy{
+        sparse_label:false
+     }
+     optimizer:adam{
+         learning_rate:0.1
+         learning_rate_decay:0.95
+         step_size:1
+         weight_decay:0.0
+     }
+}

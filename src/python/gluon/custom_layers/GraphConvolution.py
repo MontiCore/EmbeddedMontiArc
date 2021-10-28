@@ -1,34 +1,30 @@
 import mxnet as mx
-from mxnet import gluon
-from mxnet.gluon import nn
+from mxnet import gluon, nd, util
+from mxnet.gluon import HybridBlock, nn
 
 
-class GraphConvolution(gluon.HybridBlock):
-    def __init__(self, input_dim, output_dim, adjacency, **kwargs):
+class GraphConvolution(HybridBlock):
+    def __init__(self, input_dim=1433, output_dim=7, **kwargs):
         super(GraphConvolution, self).__init__(**kwargs)
-        with self.name_scope():
-            self.weight = self.params.get('weight', init=mx.init.Uniform(), shape=(input_dim, output_dim))
-            self.adjacency = adjacency
-            self.input_dim = input_dim
-            self.output_dim = output_dim
+        self.weight = self.params.get('weight', init=mx.init.Uniform(), shape=(input_dim, output_dim))
+        self.input_dim = input_dim
+        self.output_dim = output_dim
 
-    def hybrid_forward(self, F, x, *args, **kwargs):
-        x = mx.np.matmul(x, self.weight.data())
-        x = mx.np.matmul(self.adjacency, x)
+    def hybrid_forward(self, F, adjacency, features, weight, *args, **kwargs):
+        x = F.batch_dot(adjacency, features)
+        x = F.dot(x, weight)
         return x
 
     def get_parameters(self):
-        # return {'weight': self.params.get('weight').dtype}
-        return {'input_dim': int, 'output_dim': int, 'adjacency': int}
+        return {'input_dim': int, 'output_dim': int, 'weight': self.weight.dtype}
 
     def print_parameters(self):
-        print({'input_dim': int, 'output_dim': int, 'adjacency': int})
+        print({'input_dim': int, 'output_dim': int, 'weight': self.weight.dtype})
 
-    def compute_output_types(self, input_dim, output_dim, adjacency, input_dimension_array):
-        channels1 = input_dimension_array[0][0]
-        height1 = input_dimension_array[0][1]
-        width1 = input_dimension_array[0][2]
+    def compute_output_types(self, input_dim, output_dim, input_dimension_array):
+        channels1 = 1
+        height1 = 2708
+        width1 = output_dim
         min1 = 0
         max1 = 'oo'
         print([(channels1, height1, width1, min1, max1)])
-
