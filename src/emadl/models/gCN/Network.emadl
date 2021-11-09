@@ -18,7 +18,7 @@ component Network{
         GraphConvolution(input_dim=1433, output_dim=16) ->
         actone;
 
-        (dummy.output| actone.output -> Reshape(shape=(2708, 16))) ->
+        (dummy.output | actone.output -> Reshape(shape=(2708, 16))) ->
         GraphConvolution(input_dim=16, output_dim=7) ->
         predictions;
     }

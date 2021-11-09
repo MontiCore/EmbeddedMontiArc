@@ -8,8 +8,10 @@ import sys
 
 def encode_onehot(labels):
     classes = set(labels)
-    classes_dict = {c: np.identity(len(classes))[i, :] for i, c in enumerate(classes)}
+    # classes_dict = {c: np.identity(len(classes))[i, :] for i, c in enumerate(classes)}
+    classes_dict = {c: i for i, c in enumerate(classes)}
     labels_onehot = np.array(list(map(classes_dict.get, labels)), dtype=np.int32)
+    print(labels_onehot)
     return labels_onehot
 
 
@@ -62,13 +64,14 @@ if __name__ == "__main__":
     adj_matrix, feat_matrix, labels = load_data("cora/", "cora")
     adj_matrix = adj_matrix.todense()
     feat_matrix = feat_matrix.todense()
+    # labels = np.expand_dims(labels, axis=1)
     nodes = feat_matrix.shape[0]
     features = feat_matrix.shape[1]
-    classes = labels.shape[1]
+    # classes = labels.shape[1]
 
     adj_matrix = np.broadcast_to(adj_matrix, (2, nodes, nodes))
     feat_matrix = np.broadcast_to(feat_matrix, (2, nodes, features))
-    labels = np.broadcast_to(labels, (2, nodes, classes))
+    labels = np.broadcast_to(labels, (2, nodes))
 
     print("Feature matrix shape: ", feat_matrix.shape)
     print("Adjacency matrix shape: ", adj_matrix.shape)
@@ -77,11 +80,16 @@ if __name__ == "__main__":
     with h5py.File("training_data/train.h5", "w") as ofile:
         in_feat_dset = ofile.create_dataset(in_feat, data=feat_matrix)
         in_adj_dset = ofile.create_dataset(in_adj, data=adj_matrix)
+        train_mask = np.append(np.ones(140, dtype=np.int32), (np.zeros(nodes-140, dtype=np.int32)), 0)
+        print("Train Mask shape: ", train_mask.shape)
+        train_labels = labels * train_mask
+        print("Train Labels shape: ", train_labels.shape)
         out_pred_dset = ofile.create_dataset(out_pred + "_label", data=labels)
     with h5py.File("training_data/test.h5", "w") as ofile:
         in_feat_dset = ofile.create_dataset(in_feat, data=feat_matrix)
         in_adj_dset = ofile.create_dataset(in_adj, data=adj_matrix)
+        test_mask = np.append((np.zeros(nodes-1000, dtype=np.int32)), np.ones(1000, dtype=np.int32), 0)
+        print("Test Mask shape: ", test_mask.shape)
+        test_labels = labels * test_mask
+        print("Test Labels shape: ", test_labels.shape)
         out_pred_dset = ofile.create_dataset(out_pred + "_label", data=labels)
-
-
-
