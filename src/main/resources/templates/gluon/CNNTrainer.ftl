@@ -57,7 +57,7 @@ if __name__ == "__main__":
         shuffle_data=${config.shuffleData?string("True","False")},
     </#if>
     <#if (config.argmaxAxis)??>
-            argmax_axis=${config.argmaxAxis},
+        argmax_axis=${config.argmaxAxis},
     </#if>
     <#if (config.clipGlobalGradNorm)??>
         clip_global_grad_norm=${config.clipGlobalGradNorm},
@@ -72,7 +72,7 @@ if __name__ == "__main__":
         train_mask=${config.trainMask},
     </#if>
     <#if (config.testMask)??>
-            test_mask=${config.testMask},
+        test_mask=${config.testMask},
     </#if>
     <#if (config.evalMetric)??>
         eval_metric='${config.evalMetricName}',
