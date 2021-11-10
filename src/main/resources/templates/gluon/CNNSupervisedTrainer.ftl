@@ -74,6 +74,28 @@ class SoftmaxCrossEntropyLossIgnoreIndices(gluon.loss.Loss):
             loss = F.broadcast_mul(loss, F.logical_not(F.broadcast_equal(F.argmax(pred, axis=1), F.ones_like(F.argmax(pred, axis=1))*i) * F.broadcast_equal(F.argmax(pred, axis=1), label)))
         return loss.mean(axis=self._batch_axis, exclude=True)
 
+class SoftmaxCrossEntropyLossMasked(gluon.loss.Loss):
+    def __init__(self, axis=-1, mask=None, sparse_label=True, from_logits=False, weight=None, batch_axis=0, **kwargs):
+        super(SoftmaxCrossEntropyLossMasked, self).__init__(weight, batch_axis, **kwargs)
+        self._axis = axis
+        self._sparse_label = sparse_label
+        self._from_logits = from_logits
+        self._mask = mask
+
+    def hybrid_forward(self, F, pred, label, sample_weight=None):
+        log_softmax = F.log_softmax
+        pick = F.pick
+        if not self._from_logits:
+            pred = log_softmax(pred, self._axis)
+        if self._sparse_label:
+            loss = -pick(pred, label, axis=self._axis, keepdims=True)
+        else:
+            label = gluon.loss._reshape_like(F, label, pred)
+            loss = -(pred * label).sum(axis=self._axis, keepdims=True)
+        # Masking
+        loss = F.slice(loss, begin=(None, self._mask[0]), end=(None, self._mask[1]))
+        return loss.mean(axis=self._batch_axis, exclude=True)
+
 class DiceLoss(gluon.loss.Loss):
     def __init__(self, axis=-1, sparse_label=True, from_logits=False, weight=None,
                  batch_axis=0, **kwargs):
@@ -177,6 +199,35 @@ class ACCURACY_IGNORE_LABEL(mx.metric.EvalMetric):
 
             correct = mx.nd.sum( (label == pred_label) * (label != self.ignore_label) ).asscalar()
             total = mx.nd.sum( (label != self.ignore_label) ).asscalar()
+
+            self.sum_metric += correct
+            self.num_inst += total
+
+@mx.metric.register
+class ACCURACY_MASKED(mx.metric.EvalMetric):
+
+    def __init__(self, axis=1, mask=None, name='accuracy_masked',
+                 output_names=None, label_names=None):
+        super(ACCURACY_MASKED, self).__init__(
+            name, axis=axis,
+            output_names=output_names, label_names=label_names)
+        self.axis = axis
+        self.mask = mask
+
+    def update(self, labels, preds):
+        mx.metric.check_label_shapes(labels, preds)
+
+        for label, pred_label in zip(labels, preds):
+            if pred_label.shape != label.shape:
+                pred_label = mx.nd.argmax(pred_label, axis=self.axis, keepdims=True)
+            label = label.astype('int32')
+            pred_label = pred_label.astype('int32').as_in_context(label.context)
+
+            mx.metric.check_label_shapes(label, pred_label)
+            label = mx.nd.slice(label, begin=(None, self.mask[0]), end=(None, self.mask[1]))
+            pred_label = mx.nd.slice(pred_label, begin=(None, self.mask[0]), end=(None, self.mask[1]))
+            correct = mx.nd.sum(mx.nd.equal(label, pred_label)).asscalar()
+            total = mx.nd.sum(mx.nd.ones_like(label)).asscalar()
 
             self.sum_metric += correct
             self.num_inst += total
@@ -328,7 +379,10 @@ class ${tc.fileNameWithoutEnding}:
               normalize=True,
               shuffle_data=False,
               clip_global_grad_norm=None,
-              preprocessing = False):
+              preprocessing=False,
+              argmax_axis=1,
+              train_mask=None,
+              test_mask=None):
         num_pus = 1
         if context == 'gpu':
             num_pus = mx.context.num_gpus()
@@ -404,6 +458,9 @@ class ${tc.fileNameWithoutEnding}:
         elif loss == 'softmax_cross_entropy_ignore_indices':
             fromLogits = loss_params['from_logits'] if 'from_logits' in loss_params else False
             loss_function = SoftmaxCrossEntropyLossIgnoreIndices(axis=loss_axis, ignore_indices=ignore_indices, from_logits=fromLogits, sparse_label=sparseLabel, batch_axis=batch_axis)
+        elif loss == 'softmax_cross_entropy_masked':
+            fromLogits = loss_params['from_logits'] if 'from_logits' in loss_params else False
+            loss_function = SoftmaxCrossEntropyLossMasked(axis=loss_axis, mask=train_mask, from_logits=fromLogits, sparse_label=sparseLabel, batch_axis=batch_axis)
         elif loss == 'sigmoid_binary_cross_entropy':
             loss_function = mx.gluon.loss.SigmoidBinaryCrossEntropyLoss()
         elif loss == 'cross_entropy':
@@ -513,6 +570,9 @@ class ${tc.fileNameWithoutEnding}:
 
             loss_total = 0
             train_iter.reset()
+            if train_mask != None:
+                loss_function = SoftmaxCrossEntropyLossMasked(axis=loss_axis, mask=train_mask, from_logits=fromLogits, sparse_label=sparseLabel, batch_axis=batch_axis)
+                loss_function.hybridize()
             for batch_i, batch in enumerate(train_iter):
                 
 <#include "pythonEpisodicExecuteTrain.ftl">
@@ -595,7 +655,10 @@ class ${tc.fileNameWithoutEnding}:
             if eval_train:
                 train_iter.batch_size = single_pu_batch_size
                 train_iter.reset()
-                metric = mx.metric.create(eval_metric, **eval_metric_params)
+                if train_mask != None:
+                    metric = mx.metric.create(eval_metric, mask=train_mask, **eval_metric_params)
+                else:
+                    metric = mx.metric.create(eval_metric, **eval_metric_params)
                 for batch_i, batch in enumerate(train_iter):
 
 <#if episodicReplayVisited?? && anyEpisodicLocalAdaptation && !containsUnrollNetwork>
@@ -604,7 +667,7 @@ class ${tc.fileNameWithoutEnding}:
                         predictions = []
                         for output_name in outputs:
                             if mx.nd.shape_array(mx.nd.squeeze(output_name)).size > 1:
-                                predictions.append(mx.nd.argmax(output_name, axis=1))
+                                predictions.append(mx.nd.argmax(output_name, axis=argmax_axis))
                             else:
                                 predictions.append(output_name)
 
@@ -620,7 +683,7 @@ class ${tc.fileNameWithoutEnding}:
                     predictions = []
                     for output_name in outputs:
                         if mx.nd.shape_array(mx.nd.squeeze(output_name)).size > 1:
-                            predictions.append(mx.nd.argmax(output_name, axis=1))
+                            predictions.append(mx.nd.argmax(output_name, axis=argmax_axis))
                         else:
                             predictions.append(output_name)
 
@@ -636,7 +699,13 @@ class ${tc.fileNameWithoutEnding}:
     
             test_iter.batch_size = single_pu_batch_size
             test_iter.reset()
-            metric = mx.metric.create(eval_metric, **eval_metric_params)
+            if test_mask != None:
+                loss_function = SoftmaxCrossEntropyLossMasked(axis=loss_axis, mask=test_mask, from_logits=fromLogits, sparse_label=sparseLabel, batch_axis=batch_axis)
+                loss_function.hybridize()
+                metric = mx.metric.create(eval_metric, mask=test_mask, **eval_metric_params)
+            else:
+                metric = mx.metric.create(eval_metric, **eval_metric_params)
+
             for batch_i, batch in enumerate(test_iter):
                 if True: <#-- Fix indentation -->
                                                    
@@ -653,7 +722,7 @@ class ${tc.fileNameWithoutEnding}:
                         predictions = []
                         for output_name in outputs:
                             if mx.nd.shape_array(mx.nd.squeeze(output_name)).size > 1:
-                                predictions.append(mx.nd.argmax(output_name, axis=1))
+                                predictions.append(mx.nd.argmax(output_name, axis=argmax_axis))
                             else:
                                 predictions.append(output_name)
 
@@ -678,7 +747,7 @@ class ${tc.fileNameWithoutEnding}:
                 predictions = []
                 for output_name in outputs:
                     if mx.nd.shape_array(mx.nd.squeeze(output_name)).size > 1:
-                        predictions.append(mx.nd.argmax(output_name, axis=1))
+                        predictions.append(mx.nd.argmax(output_name, axis=argmax_axis))
                     else:
                         predictions.append(output_name)
 
