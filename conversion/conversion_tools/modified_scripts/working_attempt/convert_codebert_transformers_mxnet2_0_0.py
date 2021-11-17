@@ -79,7 +79,7 @@ def convert_config(hf_cfg, cfg):
     cfg.MODEL.num_layers = hf_cfg.num_hidden_layers
     cfg.MODEL.pos_embed_type = 'learned' # unsure about this
     cfg.MODEL.activation = hf_cfg.hidden_act # unsure about this
-    cfg.MODEL.pooler_activation = 'tanh' # not sure where to source this in the hf config
+    cfg.MODEL.pooler_activation = 'tanh' # not sure where to source this in the hf config TODO remove
     cfg.MODEL.layer_norm_eps = hf_cfg.layer_norm_eps
     cfg.MODEL.hidden_dropout_prob = hf_cfg.hidden_dropout_prob
     cfg.MODEL.attention_dropout_prob = hf_cfg.attention_probs_dropout_prob # unsure about this
@@ -218,9 +218,6 @@ def convert_huggingface_model(args):
     hf_model.embeddings.token_type_embeddings.weight.data = torch.zeros_like(
         hf_model.embeddings.token_type_embeddings.weight
     )
-    
-    hf_model.save_pretrained(args.save_dir)
-    hf_tokenizer.save_pretrained(args.save_dir)
 
     gluon_cfg = convert_config(hf_model.config, RobertaModel.get_cfg().clone())
 
