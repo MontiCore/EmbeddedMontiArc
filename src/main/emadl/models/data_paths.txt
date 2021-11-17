@@ -1,2 +1,1 @@
-mnistvae.Encoder resources/training_data
-mnistvae.Decoder mnistvae.Encoder
+mnistvae.Decoder resources/training_data

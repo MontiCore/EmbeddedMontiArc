@@ -1,0 +1,28 @@
+package customloss;
+
+component Encoder{
+    ports in Q(0:255)^{1,28,28} data,
+          out Q(-oo:oo)^{2} mean,
+          out Q(-oo:oo)^{2} logvar,
+          out Q(-oo:oo)^{2} bn;
+
+    implementation CNN {
+        data ->
+        FullyConnected(units=400) ->
+        FullyConnected(units=4) ->
+        Split(n=2) ->
+        (
+            [0] ->
+            Sigmoid() ->
+            mean ->
+            LossParam()
+            |
+            [1] ->
+            Sigmoid() ->
+            logvar ->
+            LossParam()
+        ) ->
+        Reparametrize() ->
+        bn;
+    }
+}

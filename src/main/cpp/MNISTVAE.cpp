@@ -1,9 +1,10 @@
 /* (c) https://github.com/MontiCore/monticore */
-#include "CNNTranslator.h"
-#include "MNISTVAE.h"
+#include <CNNTranslator.h>
+#include "mnistvae_connector.h"
 #include <opencv2/core/core.hpp>
 #include <opencv2/highgui/highgui.hpp>
 #include <opencv2/imgproc/imgproc.hpp>
+#include <opencv2/opencv.hpp>
 
 #include <armadillo>
 #include <string> //Check if it can be removed
@@ -14,9 +15,9 @@
 
 int main(int argc, char* argv[]) {
     
-	std::cout << argc << std::endl;
+	//std::cout << argc << std::endl;
 
-    //mnistvae_connector connector;
+    mnistvae_connector connector;
     connector.init();
 
 	int genSeed = std::stoi(argv[1]);
@@ -25,25 +26,30 @@ int main(int argc, char* argv[]) {
 	generator.seed(genSeed);
 	std::normal_distribution<double> distribution(0.0,1.0);
 
-	connector.eps = distribution(generator)
+    colvec data(2);
 
-    vector<float> data(100);
-
-	for(size_t i=0; i < 100; i++){
+	for(size_t i=0; i < 2; i++){
 		data[i] = distribution(generator);
 	}
 
-	connector.noise = conv_to< arma::Cube<double> >::from( CNNTranslator::translateToCube(data, 
-				vector<size_t> {1, 28, 28}) );
+	connector.data = data;
 
     connector.execute();
 
+    arma::cube img_result_cube = (connector.res + 1) * 127.5;
 
-	//for x in range(0, width -1, GRID_SIZE):
-    //	cv::line(img, (x, 0), (x, height), (255, 0, 0), 1, 1)
+    vector<float> img_vec = CNNTranslator::translate(img_result_cube);
 
-	//cv::imshow('Hehe', img)
-	//cv::waitKey(0)
+    cv::Mat result_img_cv = cv::Mat(img_vec, false);
+    result_img_cv = result_img_cv.reshape(1, 28);
+    cv::resize(result_img_cv, result_img_cv, cv::Size(), 16, 16, cv::INTER_LINEAR);
+    result_img_cv.convertTo(result_img_cv, CV_8UC3);
+
+    cv::namedWindow("MNIST");
+    cv::imshow("MNIST", result_img_cv);
+    cv::waitKey(0);
+    cv::destroyWindow("MNIST");
+
 
 
     return 0;

@@ -1,0 +1,23 @@
+/* (c) https://github.com/MontiCore/monticore */
+configuration Decoder{
+     learning_method: generativemodel{
+        type: gan
+     }
+     encoder_name: mnistvae.Encoder
+     qnetwork_name:
+     num_epoch:10
+     batch_size:32
+	 eval_train:false
+     normalize:false
+     context:cpu
+     load_checkpoint:false
+	 loss: vae_loss {
+	    recon_loss : bce/ mse / bce_fixxed / mse_fixxed
+	    klloss : [(z,"standard_gaussian",lamda1),(),...]
+	 }
+
+     optimizer:adam{
+          learning_rate:0.00003
+	     weight_decay:0.01
+     }
+}

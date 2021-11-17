@@ -1,0 +1,147 @@
+{
+  "nodes": [
+    {
+      "op": "null", 
+      "name": "data", 
+      "inputs": []
+    }, 
+    {
+      "op": "Flatten", 
+      "name": "flatten0_flatten0", 
+      "inputs": [[0, 0, 0]]
+    }, 
+    {
+      "op": "null", 
+      "name": "dense0_weight", 
+      "attrs": {
+        "__dtype__": "0", 
+        "__lr_mult__": "1.0", 
+        "__shape__": "(400, 0)", 
+        "__storage_type__": "0", 
+        "__wd_mult__": "1.0"
+      }, 
+      "inputs": []
+    }, 
+    {
+      "op": "null", 
+      "name": "dense0_bias", 
+      "attrs": {
+        "__dtype__": "0", 
+        "__init__": "zeros", 
+        "__lr_mult__": "1.0", 
+        "__shape__": "(400,)", 
+        "__storage_type__": "0", 
+        "__wd_mult__": "1.0"
+      }, 
+      "inputs": []
+    }, 
+    {
+      "op": "FullyConnected", 
+      "name": "dense0_fwd", 
+      "attrs": {
+        "flatten": "True", 
+        "no_bias": "False", 
+        "num_hidden": "400"
+      }, 
+      "inputs": [[1, 0, 0], [2, 0, 0], [3, 0, 0]]
+    }, 
+    {
+      "op": "null", 
+      "name": "dense1_weight", 
+      "attrs": {
+        "__dtype__": "0", 
+        "__lr_mult__": "1.0", 
+        "__shape__": "(4, 0)", 
+        "__storage_type__": "0", 
+        "__wd_mult__": "1.0"
+      }, 
+      "inputs": []
+    }, 
+    {
+      "op": "null", 
+      "name": "dense1_bias", 
+      "attrs": {
+        "__dtype__": "0", 
+        "__init__": "zeros", 
+        "__lr_mult__": "1.0", 
+        "__shape__": "(4,)", 
+        "__storage_type__": "0", 
+        "__wd_mult__": "1.0"
+      }, 
+      "inputs": []
+    }, 
+    {
+      "op": "FullyConnected", 
+      "name": "dense1_fwd", 
+      "attrs": {
+        "flatten": "True", 
+        "no_bias": "False", 
+        "num_hidden": "4"
+      }, 
+      "inputs": [[4, 0, 0], [5, 0, 0], [6, 0, 0]]
+    }, 
+    {
+      "op": "SliceChannel", 
+      "name": "split0", 
+      "attrs": {
+        "axis": "1", 
+        "num_outputs": "2"
+      }, 
+      "inputs": [[7, 0, 0]]
+    }, 
+    {
+      "op": "Activation", 
+      "name": "sigmoid0_fwd", 
+      "attrs": {"act_type": "sigmoid"}, 
+      "inputs": [[8, 0, 0]]
+    }, 
+    {
+      "op": "Activation", 
+      "name": "sigmoid1_fwd", 
+      "attrs": {"act_type": "sigmoid"}, 
+      "inputs": [[8, 1, 0]]
+    }, 
+    {
+      "op": "_random_normal", 
+      "name": "reparametrize0_random_normal0", 
+      "attrs": {"shape": "(200, 2)"}, 
+      "inputs": []
+    }, 
+    {
+      "op": "elemwise_mul", 
+      "name": "reparametrize0__mul0", 
+      "inputs": [[10, 0, 0], [11, 0, 0]]
+    }, 
+    {
+      "op": "elemwise_add", 
+      "name": "reparametrize0__plus0", 
+      "inputs": [[9, 0, 0], [12, 0, 0]]
+    }, 
+    {
+      "op": "_copy", 
+      "name": "identity0", 
+      "inputs": [[13, 0, 0]]
+    }
+  ], 
+  "arg_nodes": [0, 2, 3, 5, 6], 
+  "node_row_ptr": [
+    0, 
+    1, 
+    2, 
+    3, 
+    4, 
+    5, 
+    6, 
+    7, 
+    8, 
+    10, 
+    11, 
+    12, 
+    13, 
+    14, 
+    15, 
+    16
+  ], 
+  "heads": [[14, 0, 0], [9, 0, 0], [10, 0, 0]], 
+  "attrs": {"mxnet_version": ["int", 10700]}
+}

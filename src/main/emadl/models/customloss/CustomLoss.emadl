@@ -1,0 +1,14 @@
+package customloss;
+
+component CustomLoss{
+    ports in Q(0:1)^{1,28,28} data,
+          in Q(0:1)^{1,28,28} pred,
+          in Q(-oo:oo)^{2} mean,
+          in Q(-oo:oo)^{2} logvar,
+          out Q(-oo:oo) loss;
+
+    implementation Math {
+        KL = 0.5 * sum( 1 + logvar - mean^2 - exp(logvar) )
+        recon = sum( (data-pred)^2) )
+        loss = -recon-KL
+    }

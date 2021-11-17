@@ -1,0 +1,11 @@
+/snap/clion/169/bin/cmake/linux/bin/cmake -DCMAKE_BUILD_TYPE=Debug -DCMAKE_DEPENDS_USE_COMPILER=FALSE -G "CodeBlocks - Unix Makefiles" /home/asmeta/wrk/vae/mnist-vae
+CMake Error at CMakeLists.txt:6 (add_subdirectory):
+  The source directory
+
+    /home/asmeta/wrk/vae/mnist-vae/target
+
+  does not contain a CMakeLists.txt file.
+
+
+-- Configuring incomplete, errors occurred!
+See also "/home/asmeta/wrk/vae/mnist-vae/cmake-build-debug/CMakeFiles/CMakeOutput.log".

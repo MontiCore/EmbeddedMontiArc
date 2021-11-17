@@ -1,0 +1,175 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<CodeBlocks_project_file>
+	<FileVersion major="1" minor="6"/>
+	<Project>
+		<Option title="default"/>
+		<Option makefile_is_custom="1"/>
+		<Option compiler="gcc"/>
+		<Option virtualFolders="CMake Files\;CMake Files\src\;CMake Files\src\main\;CMake Files\src\main\cpp\;CMake Files\..\;CMake Files\..\..\;CMake Files\..\..\..\;CMake Files\..\..\..\..\;CMake Files\..\..\..\..\..\;CMake Files\..\..\..\..\..\usr\;CMake Files\..\..\..\..\..\usr\local\;CMake Files\..\..\..\..\..\usr\local\lib\;CMake Files\..\..\..\..\..\usr\local\lib\cmake\;CMake Files\..\..\..\..\..\usr\local\lib\cmake\opencv4\;CMake Files\target\;CMake Files\target\cmake\;"/>
+		<Build>
+			<Target title="all">
+				<Option working_dir="/home/asmeta/wrk/vae/mnist-vae/cmake-build-debug"/>
+				<Option type="4"/>
+				<MakeCommands>
+					<Build command="/usr/bin/make -j4 -f &quot;/home/asmeta/wrk/vae/mnist-vae/cmake-build-debug/Makefile&quot;  VERBOSE=1 all"/>
+					<CompileFile command="/usr/bin/make -j4 -f &quot;/home/asmeta/wrk/vae/mnist-vae/cmake-build-debug/Makefile&quot;  VERBOSE=1 &quot;$file&quot;"/>
+					<Clean command="/usr/bin/make -j4 -f &quot;/home/asmeta/wrk/vae/mnist-vae/cmake-build-debug/Makefile&quot;  VERBOSE=1 clean"/>
+					<DistClean command="/usr/bin/make -j4 -f &quot;/home/asmeta/wrk/vae/mnist-vae/cmake-build-debug/Makefile&quot;  VERBOSE=1 clean"/>
+				</MakeCommands>
+			</Target>
+			<Target title="rebuild_cache">
+				<Option working_dir="/home/asmeta/wrk/vae/mnist-vae/cmake-build-debug"/>
+				<Option type="4"/>
+				<MakeCommands>
+					<Build command="/usr/bin/make -j4 -f &quot;/home/asmeta/wrk/vae/mnist-vae/cmake-build-debug/Makefile&quot;  VERBOSE=1 rebuild_cache"/>
+					<CompileFile command="/usr/bin/make -j4 -f &quot;/home/asmeta/wrk/vae/mnist-vae/cmake-build-debug/Makefile&quot;  VERBOSE=1 &quot;$file&quot;"/>
+					<Clean command="/usr/bin/make -j4 -f &quot;/home/asmeta/wrk/vae/mnist-vae/cmake-build-debug/Makefile&quot;  VERBOSE=1 clean"/>
+					<DistClean command="/usr/bin/make -j4 -f &quot;/home/asmeta/wrk/vae/mnist-vae/cmake-build-debug/Makefile&quot;  VERBOSE=1 clean"/>
+				</MakeCommands>
+			</Target>
+			<Target title="edit_cache">
+				<Option working_dir="/home/asmeta/wrk/vae/mnist-vae/cmake-build-debug"/>
+				<Option type="4"/>
+				<MakeCommands>
+					<Build command="/usr/bin/make -j4 -f &quot;/home/asmeta/wrk/vae/mnist-vae/cmake-build-debug/Makefile&quot;  VERBOSE=1 edit_cache"/>
+					<CompileFile command="/usr/bin/make -j4 -f &quot;/home/asmeta/wrk/vae/mnist-vae/cmake-build-debug/Makefile&quot;  VERBOSE=1 &quot;$file&quot;"/>
+					<Clean command="/usr/bin/make -j4 -f &quot;/home/asmeta/wrk/vae/mnist-vae/cmake-build-debug/Makefile&quot;  VERBOSE=1 clean"/>
+					<DistClean command="/usr/bin/make -j4 -f &quot;/home/asmeta/wrk/vae/mnist-vae/cmake-build-debug/Makefile&quot;  VERBOSE=1 clean"/>
+				</MakeCommands>
+			</Target>
+			<Target title="MNISTVAE">
+				<Option output="/home/asmeta/wrk/vae/mnist-vae/cmake-build-debug/src/main/cpp/MNISTVAE" prefix_auto="0" extension_auto="0"/>
+				<Option working_dir="/home/asmeta/wrk/vae/mnist-vae/cmake-build-debug/src/main/cpp"/>
+				<Option object_output="./"/>
+				<Option type="1"/>
+				<Option compiler="gcc"/>
+				<Compiler>
+					<Add directory="/home/asmeta/wrk/vae/mnist-vae/src/main/cpp"/>
+					<Add directory="/home/asmeta/wrk/vae/mnist-vae/target"/>
+					<Add directory="/usr/local/include/opencv4"/>
+					<Add directory="/usr/include/c++/7"/>
+					<Add directory="/usr/include/x86_64-linux-gnu/c++/7"/>
+					<Add directory="/usr/include/c++/7/backward"/>
+					<Add directory="/usr/lib/gcc/x86_64-linux-gnu/7/include"/>
+					<Add directory="/usr/local/include"/>
+					<Add directory="/usr/lib/gcc/x86_64-linux-gnu/7/include-fixed"/>
+					<Add directory="/usr/include/x86_64-linux-gnu"/>
+					<Add directory="/usr/include"/>
+				</Compiler>
+				<MakeCommands>
+					<Build command="/usr/bin/make -j4 -f &quot;/home/asmeta/wrk/vae/mnist-vae/cmake-build-debug/src/main/cpp/Makefile&quot;  VERBOSE=1 MNISTVAE"/>
+					<CompileFile command="/usr/bin/make -j4 -f &quot;/home/asmeta/wrk/vae/mnist-vae/cmake-build-debug/src/main/cpp/Makefile&quot;  VERBOSE=1 &quot;$file&quot;"/>
+					<Clean command="/usr/bin/make -j4 -f &quot;/home/asmeta/wrk/vae/mnist-vae/cmake-build-debug/src/main/cpp/Makefile&quot;  VERBOSE=1 clean"/>
+					<DistClean command="/usr/bin/make -j4 -f &quot;/home/asmeta/wrk/vae/mnist-vae/cmake-build-debug/src/main/cpp/Makefile&quot;  VERBOSE=1 clean"/>
+				</MakeCommands>
+			</Target>
+			<Target title="MNISTVAE/fast">
+				<Option output="/home/asmeta/wrk/vae/mnist-vae/cmake-build-debug/src/main/cpp/MNISTVAE" prefix_auto="0" extension_auto="0"/>
+				<Option working_dir="/home/asmeta/wrk/vae/mnist-vae/cmake-build-debug/src/main/cpp"/>
+				<Option object_output="./"/>
+				<Option type="1"/>
+				<Option compiler="gcc"/>
+				<Compiler>
+					<Add directory="/home/asmeta/wrk/vae/mnist-vae/src/main/cpp"/>
+					<Add directory="/home/asmeta/wrk/vae/mnist-vae/target"/>
+					<Add directory="/usr/local/include/opencv4"/>
+					<Add directory="/usr/include/c++/7"/>
+					<Add directory="/usr/include/x86_64-linux-gnu/c++/7"/>
+					<Add directory="/usr/include/c++/7/backward"/>
+					<Add directory="/usr/lib/gcc/x86_64-linux-gnu/7/include"/>
+					<Add directory="/usr/local/include"/>
+					<Add directory="/usr/lib/gcc/x86_64-linux-gnu/7/include-fixed"/>
+					<Add directory="/usr/include/x86_64-linux-gnu"/>
+					<Add directory="/usr/include"/>
+				</Compiler>
+				<MakeCommands>
+					<Build command="/usr/bin/make -j4 -f &quot;/home/asmeta/wrk/vae/mnist-vae/cmake-build-debug/src/main/cpp/Makefile&quot;  VERBOSE=1 MNISTVAE/fast"/>
+					<CompileFile command="/usr/bin/make -j4 -f &quot;/home/asmeta/wrk/vae/mnist-vae/cmake-build-debug/src/main/cpp/Makefile&quot;  VERBOSE=1 &quot;$file&quot;"/>
+					<Clean command="/usr/bin/make -j4 -f &quot;/home/asmeta/wrk/vae/mnist-vae/cmake-build-debug/src/main/cpp/Makefile&quot;  VERBOSE=1 clean"/>
+					<DistClean command="/usr/bin/make -j4 -f &quot;/home/asmeta/wrk/vae/mnist-vae/cmake-build-debug/src/main/cpp/Makefile&quot;  VERBOSE=1 clean"/>
+				</MakeCommands>
+			</Target>
+			<Target title="mnistvae_connector">
+				<Option output="/home/asmeta/wrk/vae/mnist-vae/cmake-build-debug/target/libmnistvae_connector.a" prefix_auto="0" extension_auto="0"/>
+				<Option working_dir="/home/asmeta/wrk/vae/mnist-vae/cmake-build-debug/target"/>
+				<Option object_output="./"/>
+				<Option type="2"/>
+				<Option compiler="gcc"/>
+				<Compiler>
+					<Add directory="/home/asmeta/wrk/vae/mnist-vae/target"/>
+					<Add directory="/usr/include/c++/7"/>
+					<Add directory="/usr/include/x86_64-linux-gnu/c++/7"/>
+					<Add directory="/usr/include/c++/7/backward"/>
+					<Add directory="/usr/lib/gcc/x86_64-linux-gnu/7/include"/>
+					<Add directory="/usr/local/include"/>
+					<Add directory="/usr/lib/gcc/x86_64-linux-gnu/7/include-fixed"/>
+					<Add directory="/usr/include/x86_64-linux-gnu"/>
+					<Add directory="/usr/include"/>
+				</Compiler>
+				<MakeCommands>
+					<Build command="/usr/bin/make -j4 -f &quot;/home/asmeta/wrk/vae/mnist-vae/cmake-build-debug/target/Makefile&quot;  VERBOSE=1 mnistvae_connector"/>
+					<CompileFile command="/usr/bin/make -j4 -f &quot;/home/asmeta/wrk/vae/mnist-vae/cmake-build-debug/target/Makefile&quot;  VERBOSE=1 &quot;$file&quot;"/>
+					<Clean command="/usr/bin/make -j4 -f &quot;/home/asmeta/wrk/vae/mnist-vae/cmake-build-debug/target/Makefile&quot;  VERBOSE=1 clean"/>
+					<DistClean command="/usr/bin/make -j4 -f &quot;/home/asmeta/wrk/vae/mnist-vae/cmake-build-debug/target/Makefile&quot;  VERBOSE=1 clean"/>
+				</MakeCommands>
+			</Target>
+			<Target title="mnistvae_connector/fast">
+				<Option output="/home/asmeta/wrk/vae/mnist-vae/cmake-build-debug/target/libmnistvae_connector.a" prefix_auto="0" extension_auto="0"/>
+				<Option working_dir="/home/asmeta/wrk/vae/mnist-vae/cmake-build-debug/target"/>
+				<Option object_output="./"/>
+				<Option type="2"/>
+				<Option compiler="gcc"/>
+				<Compiler>
+					<Add directory="/home/asmeta/wrk/vae/mnist-vae/target"/>
+					<Add directory="/usr/include/c++/7"/>
+					<Add directory="/usr/include/x86_64-linux-gnu/c++/7"/>
+					<Add directory="/usr/include/c++/7/backward"/>
+					<Add directory="/usr/lib/gcc/x86_64-linux-gnu/7/include"/>
+					<Add directory="/usr/local/include"/>
+					<Add directory="/usr/lib/gcc/x86_64-linux-gnu/7/include-fixed"/>
+					<Add directory="/usr/include/x86_64-linux-gnu"/>
+					<Add directory="/usr/include"/>
+				</Compiler>
+				<MakeCommands>
+					<Build command="/usr/bin/make -j4 -f &quot;/home/asmeta/wrk/vae/mnist-vae/cmake-build-debug/target/Makefile&quot;  VERBOSE=1 mnistvae_connector/fast"/>
+					<CompileFile command="/usr/bin/make -j4 -f &quot;/home/asmeta/wrk/vae/mnist-vae/cmake-build-debug/target/Makefile&quot;  VERBOSE=1 &quot;$file&quot;"/>
+					<Clean command="/usr/bin/make -j4 -f &quot;/home/asmeta/wrk/vae/mnist-vae/cmake-build-debug/target/Makefile&quot;  VERBOSE=1 clean"/>
+					<DistClean command="/usr/bin/make -j4 -f &quot;/home/asmeta/wrk/vae/mnist-vae/cmake-build-debug/target/Makefile&quot;  VERBOSE=1 clean"/>
+				</MakeCommands>
+			</Target>
+		</Build>
+		<Unit filename="/home/asmeta/wrk/vae/mnist-vae/src/main/cpp/MNISTVAE.cpp">
+			<Option target="MNISTVAE"/>
+		</Unit>
+		<Unit filename="/home/asmeta/wrk/vae/mnist-vae/target/mnistvae_connector.cpp">
+			<Option target="mnistvae_connector"/>
+		</Unit>
+		<Unit filename="/home/asmeta/wrk/vae/mnist-vae/target/mnistvae_connector.h">
+			<Option target="mnistvae_connector"/>
+		</Unit>
+		<Unit filename="/home/asmeta/wrk/vae/mnist-vae/CMakeLists.txt">
+			<Option virtualFolder="CMake Files\"/>
+		</Unit>
+		<Unit filename="/home/asmeta/wrk/vae/mnist-vae/src/main/cpp/CMakeLists.txt">
+			<Option virtualFolder="CMake Files\src\main\cpp\"/>
+		</Unit>
+		<Unit filename="/home/asmeta/wrk/vae/mnist-vae/../../../../../usr/local/lib/cmake/opencv4/OpenCVConfig-version.cmake">
+			<Option virtualFolder="CMake Files\..\..\..\..\..\usr\local\lib\cmake\opencv4\"/>
+		</Unit>
+		<Unit filename="/home/asmeta/wrk/vae/mnist-vae/../../../../../usr/local/lib/cmake/opencv4/OpenCVConfig.cmake">
+			<Option virtualFolder="CMake Files\..\..\..\..\..\usr\local\lib\cmake\opencv4\"/>
+		</Unit>
+		<Unit filename="/home/asmeta/wrk/vae/mnist-vae/../../../../../usr/local/lib/cmake/opencv4/OpenCVModules-release.cmake">
+			<Option virtualFolder="CMake Files\..\..\..\..\..\usr\local\lib\cmake\opencv4\"/>
+		</Unit>
+		<Unit filename="/home/asmeta/wrk/vae/mnist-vae/../../../../../usr/local/lib/cmake/opencv4/OpenCVModules.cmake">
+			<Option virtualFolder="CMake Files\..\..\..\..\..\usr\local\lib\cmake\opencv4\"/>
+		</Unit>
+		<Unit filename="/home/asmeta/wrk/vae/mnist-vae/target/CMakeLists.txt">
+			<Option virtualFolder="CMake Files\target\"/>
+		</Unit>
+		<Unit filename="/home/asmeta/wrk/vae/mnist-vae/target/cmake/FindArmadillo.cmake">
+			<Option virtualFolder="CMake Files\target\cmake\"/>
+		</Unit>
+	</Project>
+</CodeBlocks_project_file>

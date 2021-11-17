@@ -1,16 +1,25 @@
 package mnistvae;
 
 component Decoder{
-    ports in Q(-oo:oo)^{2} z,
-          out Q(-oo:oo)^{1,28,28} z_decoded;
+    ports in Q(-oo:oo)^{8} data,
+          out Q(-oo:oo)^{1,28,28} softmax;
 
-    implementation CNN {    
-        z ->
-        FullyConnected(units=3136) ->
-        Reshape(shape=(64,7,7)) ->
-        UpConvolution(kernel=(3,3), channels=64, stride=(2,2)) ->
-        UpConvolution(kernel=(3,3), channels=32, stride=(2,2)) ->
-        UpConvolution(kernel=(3,3), channels=1, stride=(2,2)) ->
-        z_decoded;
+    implementation CNN {
+        data ->
+        FullyConnected(units=24) ->
+        FullyConnected(units=49) ->
+        Reshape(shape=(1,7,7)) ->
+        UpConvolution(channels=64,kernel=(4,4),stride=(2,2),padding="same") ->
+        Relu() ->
+        Dropout() ->
+        UpConvolution(channels=64,kernel=(4,4),stride=(2,2),padding="same") ->
+        Relu() ->
+        Dropout() ->
+        UpConvolution(channels=64,kernel=(4,4),stride=(2,2),padding="same") ->
+        Flatten() ->
+        FullyConnected(units=784) ->
+        Reshape(shape=(1,28,28)) ->
+        Sigmoid() ->
+        softmax;
     }
 }
