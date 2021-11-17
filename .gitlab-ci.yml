@@ -1,0 +1,23 @@
+# (c) https://github.com/MontiCore/monticore
+stages:
+  - docker
+  - jar
+  - linux
+  
+
+TestJarVAE:
+  stage: jar
+  image: registry.git.rwth-aachen.de/monticore/embeddedmontiarc/generators/emadl2cpp/dockerimages/mxnet170:v0.0.1
+  allow_failure: true
+  script:
+      - mv /mxnet/build/libmxnet.so /mxnet/build/libmxnet.a /usr/lib/
+      - ./build.sh
+
+
+TestApplicationVAE:
+    stage: linux
+    image: registry.git.rwth-aachen.de/monticore/embeddedmontiarc/generators/emadl2cpp/dockerimages/mxnet170:v0.0.1
+    allow_failure: true
+    script:
+        - mv /mxnet/build/libmxnet.so /mxnet/build/libmxnet.a /usr/lib/
+        - python3 mnistVAE.py
