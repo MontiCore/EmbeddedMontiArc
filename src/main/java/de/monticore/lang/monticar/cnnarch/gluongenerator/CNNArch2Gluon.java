@@ -13,6 +13,7 @@ import de.monticore.lang.tagging._symboltable.TaggingResolver;
 import de.monticore.symboltable.CommonSymbol;
 import de.monticore.lang.monticar.cnnarch.gluongenerator.reinforcement.CNNArch2GluonTemplateController;
 
+import java.io.File;
 import java.util.*;
 
 public class CNNArch2Gluon extends CNNArchGenerator {
@@ -60,21 +61,21 @@ public class CNNArch2Gluon extends CNNArchGenerator {
         temp = controller.process("CNNCreator", Target.PYTHON);
         fileContents.add(temp);
 
-        temp = controller.process("CNNSupervisedTrainer", Target.PYTHON);
-        fileContents.add(temp);
-
-        temp = controller.process("CNNGanTrainer", Target.PYTHON);
-        fileContents.add(temp);
-
-        temp = controller.process("CNNAutoencoderTrainer", Target.PYTHON);
-        fileContents.add(temp);
-
         return fileContents;
     }
 
     private List<FileContent> compileCppFiles(CNNArch2GluonTemplateController controller) {
         List<FileContent> fileContents = new ArrayList<>();
         FileContent temp;
+
+        temp = controller.process("CNNAutoencoderTrainer", Target.PYTHON);
+        fileContents.add(temp);
+
+        temp = controller.process("CNNGanTrainer", Target.PYTHON);
+        fileContents.add(temp);
+
+        temp = controller.process("CNNSupervisedTrainer", Target.PYTHON);
+        fileContents.add(temp);
 
         temp = controller.process("CNNPredictor", Target.CPP);
         fileContents.add(temp);

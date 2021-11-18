@@ -524,6 +524,60 @@ class EpisodicMemory(EpisodicReplayMemoryInterface):
             elif key.startswith("labels_"):
                 self.label_memory.append(mem_dict[key])
 
+class Reparameterize(gluon.HybridBlock):
+    def __init__(self, shape, pdf="normal", **kwargs):
+        super(Reparameterize, self).__init__(**kwargs)
+        self.sample_shape = shape
+        self.batch_size = shape[0]
+        self.latent_dim = shape[1]
+        self.method = method
+        self.pdf = pdf
+        self.pdf_params = pdf_params
+
+    def hybrid_forward(self, F, x):
+        sample = None
+
+        if self.pdf == "normal":
+            eps = F.random_normal(shape=self.sample_shape)
+            sample = x[0] + x[1] * eps
+
+        return sample
+
+class VectorQuantize(gluon.HybridBlock):
+    def __init__(self, num_embeddings, embedding_dim, shape, total_feature_maps_size, ema=True, **kwargs):
+        super(VectorQuantize,self).__init__(**kwargs)
+        self.embedding_dim = embedding_dim
+        self.num_embeddings = num_embeddings
+        self.input_shape = shape
+        self.size = total_feature_maps_size / embedding_dim
+
+        # Initialize Embeddings
+        embeddings = gluon.nn.Embedding(self.num_embeddings, self.embedding_dim)
+        # Get embedding weights
+        embeddingIndexing = mx.ndarray.transpose(mx.ndarray.arange(self.num_embeddings))
+
+        with self.name_scope():
+            self.embedding = embeddings(embeddingIndexing)
+
+    def hybrid_forward(self, F, x):
+        # Flatten the inputs keeping and `embedding_dim` intact.
+        flattened = F.reshape(x, shape=(-1,self.embedding_dim))
+
+        # Get best representation
+        a = F.broadcast_axis(F.sum(flattened ** 2, axis=1, keepdims=True), axis=1, size=self.num_embeddings)
+        b = F.sum(F.broadcast_axis(F.expand_dims(self.embedding ** 2,axis=0),axis=0,size=self.size), axis=2)
+
+        distances = a + b - 2 * F.dot(flattened, F.transpose(self.embedding))
+
+        encoding_indices = F.argmin(distances, axis=1)
+        encodings = F.one_hot(encoding_indices, self.num_embeddings)
+
+        # Quantize and unflatten
+        quantized = F.dot(encodings, self.embedding).reshape(self.input_shape)
+
+        # Straight-through estimator.
+        quantized = x + F.stop_gradient(quantized - x)
+        return quantized
 
 <#list tc.architecture.networkInstructions as networkInstruction>
 #Stream ${networkInstruction?index}
@@ -566,9 +620,8 @@ ${tc.include(networkInstruction.body, elements?index, "FORWARD_FUNCTION")}
 
 
 class Net_${networkInstruction?index}(gluon.HybridBlock):
-    def __init__(self, data_mean=None, data_std=None, mx_context=None, batch_size=None **kwargs):
+    def __init__(self, data_mean=None, data_std=None, mx_context=None, batch_size=None, **kwargs):
         super(Net_${networkInstruction?index}, self).__init__(**kwargs)
-        self.loss_param_val = []
         with self.name_scope():
 <#if networkInstruction.body.episodicSubNetworks?has_content>
 <#list networkInstruction.body.episodicSubNetworks as elements>
@@ -589,7 +642,7 @@ ${tc.include(networkInstruction.body, "ARCHITECTURE_DEFINITION")}
             pass
 
 
-    def hybrid_forward(self, F, ${tc.join(tc.getStreamInputNames(networkInstruction.body, false), ", ")}):
+    def hybrid_forward(self, F, ${tc.join(tc.getStreamInputNames(networkInstruction.body, false), ", ")}, labels=None):
 <#if networkInstruction.body.episodicSubNetworks?has_content>
 <#list networkInstruction.body.episodicSubNetworks as elements>
 <#if elements?index == 0>
@@ -603,6 +656,8 @@ ${tc.include(networkInstruction.body, "ARCHITECTURE_DEFINITION")}
 ${tc.include(networkInstruction.body, "FORWARD_FUNCTION")}
 <#if tc.isAttentionNetwork() && networkInstruction.isUnroll() >
         return [[${tc.join(tc.getStreamOutputNames(networkInstruction.body, false), ", ")}], [attention_output_]]
+<#elseif networkInstruction.body.hasLossParameterizingElements()>
+        return [[${tc.join(tc.getStreamOutputNames(networkInstruction.body, false), ", ")}], loss_params]
 <#else>
         return [[${tc.join(tc.getStreamOutputNames(networkInstruction.body, false), ", ")}]]
 </#if>

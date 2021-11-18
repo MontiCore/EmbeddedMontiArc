@@ -11,27 +11,55 @@ import matplotlib.pyplot as plt
 from mxnet import nd, autograd, gluon
 from mxnet.gluon import nn
 
-class GaussianVAELoss(gluon.loss.Loss):
-    def __init__(self, weight=None, batch_axis=0, batch_size=1, model_ctx=mx.cpu(), **kwargs):
+class VAELoss(gluon.loss.Loss):
+    def __init__(self, weight=None, batch_axis=0, batch_size=1, kl_loss_weight=1, loss_ctx_list=[], model_ctx=mx.cpu(), **kwargs):
         super(VAELoss, self).__init__(weight,batch_axis,**kwargs)
         self.soft_zero = 1e-10
         self.batch_size = batch_size
-        self.output = None
-        self.mu = None
+        self.kl_weight = kl_loss_weight
         self.model_ctx = model_ctx
+        self.loss_ctx_list = loss_ctx_list
 
-    def hybrid_forward(self, F, pred, label, data, mean, std):
-        x = data
-        y = pred[0]
-        mu = mean
-        logvar = std
+    def hybrid_forward(self, F, pred, data, loss_param_list=None):
+        loss = 0
+        if len(self.loss_ctx_list) != 0:
+            for i in range(len(self.loss_ctx_list)):
+                dict = self.loss_ctx_list[i]
+                loss_params = loss_param_list[i]
+                val_dict = dict["values"]
+                if dict["loss"] == "kl_div_loss":
+                    pdf = val_dict["pdf"]
+                    loss = - self.kl_loss(F, pdf, loss_params, self.kl_weight)
+                elif dict["loss"] == "quantization_loss":
+                    encoding = loss_params[0]
+                    quantization = loss_params[1]
+                    commitment_weight = val_dict['beta']
 
-        KL = 0.5 * F.sum(1 + logvar - mu * mu - F.exp(logvar), axis=1)
-        BCE = F.sum(x * F.log(y + self.soft_zero) + (1 - x) * F.log(1 - y + self.soft_zero), axis=1)
-        loss = -BCE - KL
+                    # Calculate vector quantization loss
+                    commitment_loss = self.commitment_weight * F.mean((F.stop_gradient(quantization) - encoding) ** 2, axis=0, exclude=True)
+                    codebook_loss = F.mean((quantization - F.stop_gradient(encoding)) ** 2, axis=0, exclude=True)
+                    loss = commitment_loss + codebook_loss
+
+        bce = - F.sum(data * F.log(pred + self.soft_zero) + (1 - data) * F.log(1 - pred + self.soft_zero), axis=0, exclude=True)
+        loss = bce + loss
         return loss
 
-class CNNAutoencoderTrainer_mnistvae_connector_dec:
+    def kl_loss(self, F, pdf,  params, weight=1):
+        kl = 0
+
+        if pdf == "normal":
+            mu = params[0]
+            logvar = params[1]
+            kl = 0.5 * F.sum(1 + logvar - mu * mu - F.exp(logvar), axis=0, exclude=True)
+
+        return kl
+
+<#assign networkInstruction = tc.architecture.networkInstructions[0]>
+<#if tc.architecture.getAuxiliaryArchitecture()??>
+<#assign auxNetworkInstruction = tc.architecture.getAuxiliaryArchitecture().networkInstructions[0]>
+</#if>
+
+class CNNAutoencoderTrainer:
     def __init__(self, data_loader, encoder_net_constructor, decoder_net_constructor):
         self._data_loader = data_loader
         self._enc_creator = encoder_net_constructor
@@ -39,30 +67,91 @@ class CNNAutoencoderTrainer_mnistvae_connector_dec:
 
     def train(self, batch_size=64,
               num_epoch=10,
-              eval_metric='acc',
-              eval_metric_params={},
               optimizer='adam',
               optimizer_params=(('learning_rate', 0.001),),
-              log_period=50,
-              clip_global_grad_norm=None,
-              print_images = False):
+              load_checkpoint=True,
+              preprocessing=False,
+              context='cpu',
+              checkpoint_period=5,
+              normalize=True,
+              loss='gaussiam_vae_loss',
+              log_period = 50,
+              labeled_training=False,
+              label_classes=10,
+              kl_loss_weight=1,
+              print_images=False):
         num_pus = 1
-        mx_context = [mx.cpu()]
+        if context == 'gpu': #TODO (Multi-) GPU not tested yet
+            num_pus = mx.context.num_gpus()
+            if num_pus >= 1:
+                if num_pus == 1:
+                    mx_context = [mx.gpu(0)]
+                else:
+                    mx_context = [mx.gpu(i) for i in range(num_pus)]
+            else:
+                logging.error("Context argument is '" + context + "'. But no gpu is present in the system.")
+        elif context == 'cpu':
+            mx_context = [mx.cpu()]
+        else:
+            logging.error("Context argument is '" + context + "'. Only 'cpu' and 'gpu are valid arguments'.")
         single_pu_batch_size = int(batch_size / num_pus)
         begin_epoch = 0
-        train_iter, test_iter, train_data, test_data = self._data_loader.load_data(batch_size)
 
-        self._enc_creator.construct(context=mx_context,train_data=train_data)
-        self._dec_creator.construct(context=mx_context, train_data=train_data)
+        if print_images:
+            try:
+                os.mkdir('images')
+            except OSError:
+                print("Creation of the image directory 'target/images' failed")
+
+        if preprocessing:
+            preproc_lib = "CNNPreprocessor_${tc.fileNameWithoutEnding?keep_after("CNNAutoencoderTrainer_")}_executor"
+            train_iter, test_iter, data_mean, data_std, _, _ = self._data_loader.load_preprocessed_data(batch_size, preproc_lib)
+        else:
+            train_iter, test_iter, data_mean, data_std, _, _ = self._data_loader.load_data(batch_size)
+
+        if 'weight_decay' in optimizer_params:
+            optimizer_params['wd'] = optimizer_params['weight_decay']
+            del optimizer_params['weight_decay']
+        if 'learning_rate_decay' in optimizer_params:
+            min_learning_rate = 1e-08
+            if 'learning_rate_minimum' in optimizer_params:
+                min_learning_rate = optimizer_params['learning_rate_minimum']
+                del optimizer_params['learning_rate_minimum']
+            optimizer_params['lr_scheduler'] = mx.lr_scheduler.FactorScheduler(
+                                                  optimizer_params['step_size'],
+                                                  factor=optimizer_params['learning_rate_decay'],
+                                                  stop_factor_lr=min_learning_rate)
+            del optimizer_params['step_size']
+            del optimizer_params['learning_rate_decay']
+
+        self._enc_creator.construct(context=mx_context)
+        self._dec_creator.construct(context=mx_context)
         encoder_nets = self._enc_creator.networks
         decoder_nets = self._dec_creator.networks
+
+        loss_ctx_list = []
+
+        <#if networkInstruction.body.hasLossParameterizingElements() >loss_ctx_list.append(encoder_nets[0].loss_ctx_dict)</#if>
+        <#if tc.architecture.getAuxiliaryArchitecture()??>
+        <#if auxNetworkInstruction.body.hasLossParameterizingElements() >loss_ctx_list.append(decoder_nets[0].loss_ctx_dict)</#if>
+        </#if>
+
 
         enc_trainers = [mx.gluon.Trainer(network.collect_params(), optimizer, optimizer_params) for network in
                     encoder_nets.values() if len(network.collect_params().values()) != 0]
         dec_trainers = [mx.gluon.Trainer(network.collect_params(), optimizer, optimizer_params) for network in
                     decoder_nets.values() if len(network.collect_params().values()) != 0]
 
-        loss_function = GaussianVAELoss(batch_size=batch_size)
+        if loss == "customloss":
+            try:
+                import customloss
+                loss_function = customloss.Loss(batch_size=batch_size, kl_loss_weight=kl_loss_weight, loss_ctx_list=loss_ctx_list)
+            except ImportError:
+                logging.info("No customloss directory found. Using default loss function instead. )
+                loss_function = VAELoss(batch_size=batch_size, kl_loss_weight=kl_loss_weight, loss_ctx_list=loss_ctx_list)
+        else:
+            loss_function = VAELoss(batch_size=batch_size, kl_loss_weight=kl_loss_weight, loss_ctx_list=loss_ctx_list)
+
         loss_function.hybridize()
 
         tic = None
@@ -86,26 +175,52 @@ class CNNAutoencoderTrainer_mnistvae_connector_dec:
 
             for batch_i, batch in enumerate(train_iter):
 
+                loss_param_list = []
+
                 with autograd.record():
-                    labels = batch.label[0].as_in_context(mx_context[0])
+
                     data_ = batch.data[0].as_in_context(mx_context[0])
 
-                    nd.waitall()
                     lossList = []
                     for i in range(num_pus):
                         lossList.append([])
 
-                    nd.waitall()
-                    latent_space_ = encoder_nets[0](data_)[0][0]
-                    feature_mean, feature_logstd_sq = encoder_nets[0].latent_space_param_val
-                    nd.waitall()
-                    res_ = decoder_nets[0](latent_space_)
+                    if labeled_training:
+                        labels = batch.label[0].as_in_context(mx_context[0])
+                        labelsoh = mx.nd.one_hot(labels,label_classes)
 
-                    #tc.architecture.isLatentSpaceExisting() in template
-                    [lossList[i].append(loss_function(res_[0],labels,data_,feature_mean,feature_logstd_sq)) for i in range(num_pus)]
+                        <#--<#list tc.architecture.networkInstructions as networkInstruction> -->
+                        nd.waitall()
+                        feature_vec<#if networkInstruction.body.hasLossParameterizingElements() >, loss_params_enc</#if> = encoder_nets[0](data_,labelsoh) <#--${networkInstruction?index} -->
+                        <#if networkInstruction.body.hasLossParameterizingElements() >loss_param_list.append(loss_params_enc)</#if>
+                        encoding_ = feature_vec[0]<#if networkInstruction.body.hasLossParameterizingElements()><#else>[0]</#if>
 
-                    #Otherwise
-                    #[lossList[i].append(loss_function(res_[0], labels, data_)) for i in range(num_pus)]
+                        <#if tc.architecture.getAuxiliaryArchitecture()??>
+                        <#-- <#list tc.architecture.getAuxiliaryArchitecture().networkInstructions as networkInstruction> -->
+                        nd.waitall()
+                        res_<#if auxNetworkInstruction.body.hasLossParameterizingElements() >, loss_params_dec</#if> = decoder_nets[0](encoding_,labelsoh) <#--${networkInstruction?index} -->
+                        <#if auxNetworkInstruction.body.hasLossParameterizingElements() >loss_param_list.append(loss_params_dec)</#if>
+                        <#--</#list> -->
+                        pred_ = res_[0]<#if auxNetworkInstruction.body.hasLossParameterizingElements()><#else>[0]</#if>
+                        [lossList[i].append(loss_function(pred_, data_, loss_param_list)) for i in range(num_pus)]
+                        </#if>
+                    else:
+                        nd.waitall()
+                        feature_vec<#if networkInstruction.body.hasLossParameterizingElements() >, loss_params_enc</#if> = encoder_nets[0](data_) <#--${networkInstruction?index} -->
+                        <#if networkInstruction.body.hasLossParameterizingElements() >loss_param_list.append(loss_params_enc)</#if>
+                        encoding_ = feature_vec[0]<#if networkInstruction.body.hasLossParameterizingElements()><#else>[0]</#if>
+                        <#--</#list> -->
+
+                        <#if tc.architecture.getAuxiliaryArchitecture()??>
+                        <#-- <#list tc.architecture.getAuxiliaryArchitecture().networkInstructions as networkInstruction> -->
+                        nd.waitall()
+                        res_<#if auxNetworkInstruction.body.hasLossParameterizingElements() >, loss_params_dec</#if> = decoder_nets[0](encoding_) <#--${networkInstruction?index} -->
+                        <#if auxNetworkInstruction.body.hasLossParameterizingElements() >loss_param_list.append(loss_params_dec)</#if>
+                        <#--</#list> -->
+                        pred_ = res_[0]<#if auxNetworkInstruction.body.hasLossParameterizingElements()><#else>[0]</#if>
+                        [lossList[i].append(loss_function(pred_, data_, loss_param_list)) for i in range(num_pus)]
+                        </#if>
+
 
                     losses = [0] * num_pus
                     for i in range(num_pus):
@@ -157,31 +272,51 @@ class CNNAutoencoderTrainer_mnistvae_connector_dec:
 
 
             for batch_i, batch in enumerate(test_iter):
-                labels = batch.label[0].as_in_context(mx_context[0])
+
+                loss_param_list = []
+
                 data_ = batch.data[0].as_in_context(mx_context[0])
 
-                nd.waitall()
                 lossList = []
                 for i in range(num_pus):
                     lossList.append([])
 
-                ls_label_list.append(labels.copy())
 
-                latent_space_ = encoder_nets[0](data_)[0][0]
+                if labeled_training:
+                    labels = batch.label[0].as_in_context(mx_context[0])
+                    labelsoh = mx.nd.one_hot(labels,label_classes)
+                    ls_label_list.append(labels.copy())
+                <#--<#list tc.architecture.networkInstructions as networkInstruction> -->
+                    nd.waitall()
+                    feature_vec<#if networkInstruction.body.hasLossParameterizingElements() >, loss_params_enc</#if> = encoder_nets[0](data_,labelsoh) <#--${networkInstruction?index} -->
+                    <#if networkInstruction.body.hasLossParameterizingElements() >loss_param_list.append(loss_params_enc)</#if>
+                    encoding_ = feature_vec[0]<#if networkInstruction.body.hasLossParameterizingElements()><#else>[0]</#if>
 
+                    <#if tc.architecture.getAuxiliaryArchitecture()??>
+                    <#-- <#list tc.architecture.getAuxiliaryArchitecture().networkInstructions as networkInstruction> -->
+                    nd.waitall()
+                    res_<#if auxNetworkInstruction.body.hasLossParameterizingElements() >, loss_params_dec</#if> = decoder_nets[0](encoding_,labelsoh) <#--${networkInstruction?index} -->
+                    <#if auxNetworkInstruction.body.hasLossParameterizingElements() >loss_param_list.append(loss_params_dec)</#if>
+                    <#--</#list> -->
+                    pred_ = res_[0]<#if auxNetworkInstruction.body.hasLossParameterizingElements()><#else>[0]</#if>
+                    [lossList[i].append(loss_function(pred_, data_, loss_param_list)) for i in range(num_pus)]
+                    </#if>
+                else:
+                    nd.waitall()
+                    feature_vec<#if networkInstruction.body.hasLossParameterizingElements() >, loss_params_enc</#if> = encoder_nets[0](data_) <#--${networkInstruction?index} -->
+                    <#if networkInstruction.body.hasLossParameterizingElements() >loss_param_list.append(loss_params_enc)</#if>
+                    encoding_ = feature_vec[0]<#if networkInstruction.body.hasLossParameterizingElements()><#else>[0]</#if>
+                <#--</#list> -->
 
-                nd.waitall()
-                latent_space_ = encoder_nets[0](data_)[0][0]
-                feature_mean, feature_logstd_sq = encoder_nets[0].loss_param_val
-                ls_output_list.append(feature_mean.copy())
-                nd.waitall()
-                res_ = decoder_nets[0](latent_space_)
-
-                # tc.architecture.isLatentSpaceExisting() in template
-                [lossList[i].append(loss_function(res_[0], labels, data_, feature_mean, feature_logstd_sq)) for i in range(num_pus)]
-
-                # otherwise
-                    #[lossList[i].append(loss_function(res_[0], labels, data_)) for i in range(num_pus)]
+                    <#if tc.architecture.getAuxiliaryArchitecture()??>
+                    <#-- <#list tc.architecture.getAuxiliaryArchitecture().networkInstructions as networkInstruction> -->
+                    nd.waitall()
+                    res_<#if auxNetworkInstruction.body.hasLossParameterizingElements() >, loss_params_dec</#if> = decoder_nets[0](encoding_) <#--${networkInstruction?index} -->
+                    <#if auxNetworkInstruction.body.hasLossParameterizingElements() >loss_param_list.append(loss_params_dec)</#if>
+                    <#--</#list> -->
+                    pred_ = res_[0]<#if auxNetworkInstruction.body.hasLossParameterizingElements()><#else>[0]</#if>
+                    [lossList[i].append(loss_function(pred_, data_, loss_param_list)) for i in range(num_pus)]
+                    </#if>
 
                 losses = [0] * num_pus
                 for i in range(num_pus):
@@ -204,37 +339,38 @@ class CNNAutoencoderTrainer_mnistvae_connector_dec:
                 train_lost_list.append(global_loss_train)
                 test_lost_list.append(global_loss_test)
 
+                #Reconstructions
+                filename = 'test_reconstruction_%06d%06d.png' % (epoch, batch_i)
+                fig = plt.figure()
+                ax = fig.add_subplot(1, 2, 1)
+                plt.imshow(data_[0].squeeze(0).asnumpy())
+                ax.set_title('Original')
+                ax = fig.add_subplot(1, 2, 2)
+                plt.imshow(pred_[0].squeeze(0).asnumpy())
+                ax.set_title('Reconstruction')
+                plt.tight_layout()
+                plt.savefig('images/' + filename)
+                plt.close()
+
         if print_images:
-
-
-        if print_images:
-            #Scatter Plot
-            ls_outputs = mx.np.vstack(ls_output_list[0].as_np_ndarray())
-            ls_labels = mx.np.hstack(ls_label_list[0].as_np_ndarray())
-
-            filename = 'scatter_plot_%06d%06d.png' % (epoch, batch_i)
-            fig, ax = plt.subplots()
-            image = ax.scatter(ls_outputs[:, 0], ls_outputs[:, 1], c=ls_labels, alpha=0.5, cmap='Paired')
-            ax.set_title(r'scatter plot of $\mu$')
-            ax.axis('equal')
-            fig.colorbar(image, ax=ax)
-            plt.tight_layout()
-            plt.savefig(filename)
-            plt.show()
-            plt.close()
-
             #Loss plot
             batch_x = np.linspace(1, num_epoch, len(train_lost_list))
             filename = 'loss_graph.png'
             plt.plot(batch_x, np.array(train_lost_list))
             plt.plot(batch_x, np.array(test_lost_list))
             plt.legend(['Train loss', 'Validation Loss'])
-            plt.savefig(filename)
+            plt.savefig('images/' + filename)
 
+        for i, network in encoder_nets.items():
+            network.save_parameters(self.encoder_parameter_path(i) + '-' + str((num_epoch-1) + begin_epoch).zfill(4) + '.params')
+            network.export(self.encoder_parameter_path(i) + '_newest', epoch=0)
 
         for i, network in decoder_nets.items():
             network.save_parameters(self.decoder_parameter_path(i) + '-' + str((num_epoch-1) + begin_epoch).zfill(4) + '.params')
             network.export(self.decoder_parameter_path(i) + '_newest', epoch=0)
+
+    def encoder_parameter_path(self, index):
+        return self._enc_creator._model_dir_ + self._enc_creator._model_prefix_ + '_' + str(index)
 
     def decoder_parameter_path(self, index):
         return self._dec_creator._model_dir_ + self._dec_creator._model_prefix_ + '_' + str(index)

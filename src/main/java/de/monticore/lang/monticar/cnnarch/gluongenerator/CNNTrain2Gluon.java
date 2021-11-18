@@ -90,6 +90,9 @@ public class CNNTrain2Gluon extends CNNTrainGenerator {
         ConfigurationSymbol configurationSymbol = this.getConfigurationSymbol(modelsDirPath, rootModelName);
         configurationSymbol.setTrainedArchitecture(trainedArchitecture);
         configurationSymbol.setSupportNetwork(supportNetwork);
+        ArchitectureSymbol supportNet = ((ArchitectureAdapter) supportNetwork).getArchitectureSymbol();
+        ArchitectureSymbol trainedArchitectureSymbol = ((ArchitectureAdapter) trainedArchitecture).getArchitectureSymbol();
+        supportNet.setAuxiliaryArchitecture(trainedArchitectureSymbol);
         this.setRootProjectModelsDir(modelsDirPath.toString());
         generateFilesFromConfigurationSymbol(configurationSymbol);
     }
@@ -114,7 +117,7 @@ public class CNNTrain2Gluon extends CNNTrainGenerator {
     @Override
     public List<FileContent> generateStrings(ConfigurationSymbol configuration) {
         TemplateConfiguration templateConfiguration = new GluonTemplateConfiguration();
-        GluonConfigurationData configData = new GluonConfigurationData(configuration, getInstanceName());
+        GluonConfigurationData configData = new GluonConfigurationData(configuration, getInstanceName());//, getJointTrainedInstanceNames());
         List<ConfigurationData> configDataList = new ArrayList<>();
         configDataList.add(configData);
 
@@ -148,6 +151,7 @@ public class CNNTrain2Gluon extends CNNTrainGenerator {
             final String trainerName = "CNNTrainer_" + getInstanceName();
             final GMAlgorithm algorithm = configData.getGMAlgorithm();
             String tempdirectory = "/";
+            Boolean generatePythonFilesOnly = true;
 
             de.monticore.lang.monticar.cnnarch.gluongenerator.CNNArch2Gluon gluonGenerator = new de.monticore.lang.monticar.cnnarch.gluongenerator.CNNArch2Gluon();
             gluonGenerator.setGenerationTargetPath(
@@ -158,8 +162,7 @@ public class CNNTrain2Gluon extends CNNTrainGenerator {
                     Log.error("No architecture model for discriminator available but is required for chosen " +
                             "GAN");
                 }
-
-                tempdirectory = "/gan";
+                tempdirectory = "gan";
 
                 if (configuration.hasQNetwork()) {
                     NNArchitectureSymbol genericQArchitectureSymbol = configuration.getQNetwork().get();
@@ -174,7 +177,7 @@ public class CNNTrain2Gluon extends CNNTrainGenerator {
                             qCreatorName.indexOf('_') + 1, qCreatorName.lastIndexOf(".py"));
 
                     fileContents.addAll(qArchitectureFileContents.stream()
-                            .map(k -> new FileContent(k.getFileContent(), GM_LEARNING_FRAMEWORK_MODULE + "/gan/" + k.getFileName()))
+                            .map(k -> new FileContent(k.getFileContent(), GM_LEARNING_FRAMEWORK_MODULE + "/" + k.getFileName()))
                             .collect(Collectors.toList()));
 
                     ftlContext.put("qNetworkInstanceName", qNetworkInstanceName);
@@ -183,12 +186,16 @@ public class CNNTrain2Gluon extends CNNTrainGenerator {
             } else if (algorithm.equals(GMAlgorithm.VAE)) {
                 if (!configuration.getSupportNetwork().isPresent()) {
                     Log.error("No architecture model for encoder found but is required for chosen " +
-                            "autoencoder learning configuration");
+                            "vae learning configuration");
                 }
+                tempdirectory = "vae";
+                generatePythonFilesOnly = false;
 
-                tempdirectory = "/vae";
+
+                //String cnnPredictorTemplateContent = templateConfiguration.processTemplate(ftlContext, "CNNPredictor.ftl");
+                //fileContents.add(new FileContent(cnnPredictorTemplateContent, "CNNPredictor_" + getInstanceName() + ".h"));
             }
-            final String subdirectory = tempdirectory;
+            final String subdirectory = "/" + tempdirectory;
 
             NNArchitectureSymbol genericNetArchitectureSymbol = configuration.getSupportNetwork().get();
 
@@ -196,26 +203,32 @@ public class CNNTrain2Gluon extends CNNTrainGenerator {
                     = ((ArchitectureAdapter) genericNetArchitectureSymbol).getArchitectureSymbol();
 
             List<FileContent> netArchitectureFileContents
-                    = gluonGenerator.generateStringsAllowMultipleIO(netArchitectureSymbol, true);
+                    = gluonGenerator.generateStringsAllowMultipleIO(netArchitectureSymbol, generatePythonFilesOnly);
+
+            //final String mainTraningContent = templateConfiguration.processTemplate(,"CNNAutoencoderTrainer.ftl");
+            //fileContents.add(new FileContent(mainTraningContent, "CNNAutoencoderTrainer_" + netArchitectureSymbol.getName() + "_" +
+            //                                                    netArchitectureSymbol.getAuxiliaryArchitecture().getName() + ".py"));
 
             final String netCreatorName = netArchitectureFileContents.get(0).getFileName();
             final String netInstanceName = netCreatorName.substring(
                     netCreatorName.indexOf('_') + 1, netCreatorName.lastIndexOf(".py"));
 
             fileContents.addAll(netArchitectureFileContents.stream()
-                    .map(k -> new FileContent(k.getFileContent(), GM_LEARNING_FRAMEWORK_MODULE + subdirectory + "/" + k.getFileName()))
+                    .map(k -> new FileContent(k.getFileContent(),  k.getFileName())) // GM_LEARNING_FRAMEWORK_MODULE + "/" +
                     .collect(Collectors.toList()));
 
             ftlContext.put("netInstanceName", netInstanceName);
             ftlContext.put("gmAlgorithm", algorithm);
-            ftlContext.put("generativeModelLearningFrameworkModule", GM_LEARNING_FRAMEWORK_MODULE );
+            ftlContext.put("generativeModelLearningFrameworkModule", ""); //GM_LEARNING_FRAMEWORK_MODULE
             ftlContext.put("trainerName", trainerName);
 
             final String trainerContent = templateConfiguration.processTemplate(ftlContext, GM_LEARNING_FRAMEWORK_MODULE+"/Trainer.ftl");
             fileContents.add(new FileContent(trainerContent, trainerName + ".py"));
 
             final String initContent = "";
-            fileContents.add(new FileContent(initContent, GM_LEARNING_FRAMEWORK_MODULE + subdirectory + "/__init__.py"));
+            fileContents.add(new FileContent(initContent, GM_LEARNING_FRAMEWORK_MODULE +  "/__init__.py"));
+
+
 
         } else if (configData.isReinforcementLearning()) {
             final String trainerName = "CNNTrainer_" + getInstanceName();
