@@ -9,7 +9,13 @@
             <#include "OutputShape.ftl">
 
 <#elseif mode == "FORWARD_FUNCTION">
+
+    <#if (element.inputs[1])??>
+        ${element.name} = self.${element.name}(${tc.join(element.inputs, ", ")})
+    <#else>
         ${element.name} = self.${element.name}(${input})
+    </#if>
+
 
 <#elseif mode == "PARAMETER_VALIDATION">
     <#if element.element.arguments?has_content>
