@@ -56,4 +56,37 @@ public class SymtabTest extends AbstractSymtabTest {
         a.getArchitecture().getStreams().get(0).getOutputTypes();
     }
 
+    @Test
+    public void testAdd(){
+        Scope symTab = createSymTab("src/test/resources/architectures");
+        CNNArchCompilationUnitSymbol a = symTab.<CNNArchCompilationUnitSymbol>resolve(
+                "Add",
+                CNNArchCompilationUnitSymbol.KIND).orElse(null);
+        assertNotNull(a);
+        a.resolve();
+        a.getArchitecture().getStreams().get(0).getOutputTypes();
+    }
+
+    @Test
+    public void testVAE_Encoder(){
+        Scope symTab = createSymTab("src/test/resources/architectures");
+        CNNArchCompilationUnitSymbol a = symTab.<CNNArchCompilationUnitSymbol>resolve(
+                "VAE_Encoder",
+                CNNArchCompilationUnitSymbol.KIND).orElse(null);
+        assertNotNull(a);
+        a.resolve();
+        a.getArchitecture().getStreams().get(0).getOutputTypes();
+    }
+
+    @Test
+    public void testVQVAE_Decoder(){
+        Scope symTab = createSymTab("src/test/resources/architectures");
+        CNNArchCompilationUnitSymbol a = symTab.<CNNArchCompilationUnitSymbol>resolve(
+                "VQVAE_Decoder",
+                CNNArchCompilationUnitSymbol.KIND).orElse(null);
+        assertNotNull(a);
+        a.resolve();
+        a.getArchitecture().getStreams().get(0).getOutputTypes();
+    }
+
 }
