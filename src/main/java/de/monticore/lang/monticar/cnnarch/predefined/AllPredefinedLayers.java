@@ -10,12 +10,10 @@ package de.monticore.lang.monticar.cnnarch.predefined;
 
 import de.monticore.lang.monticar.cnnarch._symboltable.LayerDeclarationSymbol;
 import de.monticore.lang.monticar.cnnarch._symboltable.UnrollDeclarationSymbol;
-import jline.internal.Nullable;
 
-import java.io.IOException;
+import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.List;
-import java.util.ArrayList;
 
 public class AllPredefinedLayers {
 
@@ -38,7 +36,7 @@ public class AllPredefinedLayers {
     public static final String GET_NAME = "Get";
     public static final String ADD_NAME = "Add";
     public static final String CONCATENATE_NAME = "Concatenate";
-    public static final String REPARAMETRIZE_NAME = "Reparametrize";
+    public static final String REPARAMETERIZE_NAME = "Reparameterize";
     public static final String FLATTEN_NAME = "Flatten";
     public static final String ONE_HOT_NAME = "OneHot";
     public static final String BEAMSEARCH_NAME = "BeamSearch";
@@ -63,6 +61,8 @@ public class AllPredefinedLayers {
     public static final String CUSTOM_LAYER = "CustomLayer";
     public static final String CONVOLUTION3D_NAME = "Convolution3D";
     public static final String UP_CONVOLUTION3D_NAME = "UpConvolution3D";
+    public static final String VECTOR_QUANTIZE_NAME = "VectorQuantize";
+    public static final String CONCAT_LABELS_NAME = "ConcatLabels";
 
     public static final String AdaNet_Name = "AdaNet"; //AdaNet layer
 
@@ -115,6 +115,10 @@ public class AllPredefinedLayers {
     public static final Integer DEFAULT_UNITS = 20;
     public static final String DEFAULT_BLOCK = "default_block";
 
+    //VAE Parameters
+    public static final String NUM_EMBEDDINGS_NAME = "num_embeddings";
+    public static final String EMA_NAME = "ema";
+
     //parameters LoadNetwork layer
     public static final String NETWORK_DIR_NAME = "networkDir";
     public static final String NETWORK_PREFIX_NAME = "networkPrefix";
@@ -164,6 +168,11 @@ public class AllPredefinedLayers {
     public static final String RANDOM = "random";
     public static final String REPLACE_OLDEST = "replace_oldest";
     public static final String NO_REPLACEMENT = "no_replacement";
+
+    // String values for Reparametrization Layer
+    public static final String PDF_NAME = "pdf";
+    public static final String PDF_NORMAL = "normal";
+    public static final String PDF_DIRICHLET = "dirichlet";
 	
 	//possible activation values for the querry network in the memory layer
 	public static final String MEMORY_ACTIVATION_LINEAR = "linear";
@@ -172,6 +181,15 @@ public class AllPredefinedLayers {
 	public static final String MEMORY_ACTIVATION_SIGMOID = "sigmoid";
 	public static final String MEMORY_ACTIVATION_SOFTRELU = "softrelu";
     public static final String MEMORY_ACTIVATION_SOFTSIGN = "softsign";
+
+
+    public static List<String> getLossParameterizingLayers() {
+        return Arrays.asList(
+                REPARAMETERIZE_NAME,
+                VECTOR_QUANTIZE_NAME
+        );
+    }
+
 
     //list with all predefined layers
     public static List<LayerDeclarationSymbol> createList(){
@@ -216,7 +234,10 @@ public class AllPredefinedLayers {
                 EpisodicMemory.create(),
                 Convolution3D.create(),
                 UpConvolution3D.create(),
-                AdaNet.create());
+                AdaNet.create(),
+                Reparameterize.create(),
+                VectorQuantize.create(),
+                ConcatLabels.create());
 
     }
 
