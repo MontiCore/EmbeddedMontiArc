@@ -1,0 +1,22 @@
+/* (c) https://github.com/MontiCore/monticore */
+
+package gCN;
+
+component Network{
+    ports in Q(0:1)^{2708, 2708} adjacency,
+        in Q(0:1)^{2708, 1433} features,
+        out Q(0:oo)^{2708, 7} predictions;
+
+    implementation CNN {
+        layer Relu() layerOne;
+
+        (adjacency | features) ->
+        GraphConvolution(input_dim=1433, output_dim=16, node_size=2708) ->
+        Reshape(shape=(2708, 16)) ->
+        layerOne;
+
+        (adjacency | layerOne.output) ->
+        GraphConvolution(input_dim=16, output_dim=7, node_size=2708) ->
+        predictions;
+    }
+}
