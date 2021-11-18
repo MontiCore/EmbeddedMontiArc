@@ -12,20 +12,37 @@ import time
 import shutil
 from mxnet import gluon, autograd, nd
 
-import CNNCreator_${config.instanceName}
 import CNNDataLoader_${config.instanceName}
+<#if gmAlgorithm.equals("gan")>
+import CNNCreator_${config.instanceName}
 import CNNGanTrainer_${config.instanceName}
-
 from ${generativeModelLearningFrameworkModule}.CNNCreator_${netInstanceName} import CNNCreator_${netInstanceName}
 <#if (qNetworkInstanceName)??>
 from ${generativeModelLearningFrameworkModule}.CNNCreator_${qNetworkInstanceName} import CNNCreator_${qNetworkInstanceName}
 </#if>
+<#else>
+<#if (netInstanceName)??>
+import CNNAutoencoderTrainer_${netInstanceName}
+import CNNCreator_${config.instanceName}
+from CNNCreator_${netInstanceName} import CNNCreator_${netInstanceName}
+<#else>
+import CNNAutoencoderTrainer_${config.instanceName}
+<#list config.jointTrainingInstanceNames as ins>
+from CNNCreator_${ins} import CNNCreator_${ins}
+</#list>
+</#if>
+</#if>
+
+
 
 if __name__ == "__main__":
 
     logging.basicConfig(level=logging.DEBUG)
     logger = logging.getLogger()
     handler = logging.FileHandler("train.log", "w", encoding=None, delay="true")
+    logger.addHandler(handler)
+    logging.getLogger('matplotlib.font_manager').disabled = True
+    logging.getLogger('matplotlib.colorbar').disabled = True
     logger.addHandler(handler)
 
     data_loader = CNNDataLoader_${config.instanceName}.CNNDataLoader_${config.instanceName}()
@@ -46,8 +63,8 @@ if __name__ == "__main__":
     )
     <#else>
     encoder_creator = CNNCreator_${netInstanceName}(batch_size=${(config.batchSize)!None})
-    decoder_creator = CNNCreator_${config.instanceName}.CNNCreator_${config.instanceName}()
-    ${config.instanceName}_trainer = CNNAutoencoderTrainer_${config.instanceName}.CNNGanTrainer_${config.instanceName}(
+    decoder_creator = CNNCreator_${config.instanceName}.CNNCreator_${config.instanceName}(batch_size=${(config.batchSize)!None})
+    ${config.instanceName}_trainer = CNNAutoencoderTrainer_${netInstanceName}.CNNAutoencoderTrainer(
     data_loader,
     encoder_creator,
     decoder_creator,
@@ -96,6 +113,9 @@ if __name__ == "__main__":
             '${param}': ${config.optimizerParams[param]}<#sep>,
 </#list>
         },
+</#if>
+<#if (config.network_loss_params)??>
+        network_loss_params=[<#list config.network_loss_params as value>${value}<#sep>,</#list>],
 </#if>
 <#if (config.constraintDistributions)??>
 <#assign map = (config.constraintDistributions)>

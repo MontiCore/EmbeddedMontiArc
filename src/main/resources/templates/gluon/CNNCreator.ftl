@@ -1,6 +1,5 @@
 <#-- (c) https://github.com/MontiCore/monticore -->
-<#-- So that the license is in the generated file: -->
-# (c) https://github.com/MontiCore/monticore
+from __future__ import absolute_import
 import mxnet as mx
 import logging
 import os
@@ -15,24 +14,17 @@ from custom_layers import *
 </#if>
 
 <#list tc.architecture.networkInstructions as networkInstruction>
-<#if tc.containsAdaNet()>
-from CNNNet_${tc.fullArchitectureName} import Net_${networkInstruction?index},DataClass_${networkInstruction?index}
-<#else>
 from CNNNet_${tc.fullArchitectureName} import Net_${networkInstruction?index}
-</#if>
 </#list>
 
 class ${tc.fileNameWithoutEnding}:
     _model_dir_ = "model/${tc.componentName}/"
     _model_prefix_ = "model"
 
-    def __init__(self,batch_size=None):
+    def __init__(self, batch_size=None):
         self.weight_initializer = mx.init.Normal()
-        self.networks = {}
         self.batch_size = batch_size
-        <#if tc.containsAdaNet()>
-        self.dataClass = {}
-        </#if>
+        self.networks = {}
 <#if (tc.weightsPath)??>
         self._weights_dir_ = "${tc.weightsPath}/"
 <#else>
@@ -179,19 +171,14 @@ class ${tc.fileNameWithoutEnding}:
                 else:
                     logging.info("No pretrained weights available at: " + self._weights_dir_ + param_file)
 
-    def construct(self, context, data_mean=None, data_std=None, batch_size=batch_size):
+    def construct(self, context, data_mean=None, data_std=None):
 <#list tc.architecture.networkInstructions as networkInstruction>
-        <#if tc.containsAdaNet()>
-        self.networks[${networkInstruction?index}] = Net_${networkInstruction?index}()
-        self.dataClass[${networkInstruction?index}] = DataClass_${networkInstruction?index}
-        <#else>
         self.networks[${networkInstruction?index}] = Net_${networkInstruction?index}(data_mean=data_mean, data_std=data_std, mx_context=context, prefix="", batch_size=self.batch_size)
-        </#if>
         with warnings.catch_warnings():
             warnings.simplefilter("ignore")
             self.networks[${networkInstruction?index}].collect_params().initialize(self.weight_initializer, force_reinit=False, ctx=context)
         self.networks[${networkInstruction?index}].hybridize()
-        self.networks[${networkInstruction?index}](<#list tc.getStreamInputDimensions(networkInstruction.body) as dimensions><#if tc.cutDimensions(dimensions)[tc.cutDimensions(dimensions)?size-1] == "1" && tc.cutDimensions(dimensions)?size != 1>mx.nd.zeros((${tc.join(tc.cutDimensions(dimensions), ",")},), ctx=context[0])<#else>mx.nd.zeros((1, ${tc.join(tc.cutDimensions(dimensions), ",")},), ctx=context[0])</#if><#sep>, </#list>)
+        self.networks[${networkInstruction?index}](<#list tc.getStreamInputDimensions(networkInstruction.body) as dimensions><#if tc.cutDimensions(dimensions)[tc.cutDimensions(dimensions)?size-1] == "1" && tc.cutDimensions(dimensions)?size != 1>mx.nd.zeros((${tc.join(tc.cutDimensions(dimensions), ",")},), ctx=context[0])<#else>mx.nd.zeros((self.batch_size, ${tc.join(tc.cutDimensions(dimensions), ",")},), ctx=context[0])</#if><#sep>, </#list>)
 <#if networkInstruction.body.episodicSubNetworks?has_content>
         self.networks[0].episodicsubnet0_(<#list tc.getStreamInputDimensions(networkInstruction.body) as dimensions><#if tc.cutDimensions(dimensions)[tc.cutDimensions(dimensions)?size-1] == "1" && tc.cutDimensions(dimensions)?size != 1>mx.nd.zeros((${tc.join(tc.cutDimensions(dimensions), ",")},), ctx=context[0])<#else>mx.nd.zeros((1, ${tc.join(tc.cutDimensions(dimensions), ",")},), ctx=context[0])</#if><#sep>, </#list>)
 </#if>

@@ -11,8 +11,8 @@ import static de.monticore.lang.monticar.cnntrain.helper.ConfigEntryNameConstant
 import java.util.*;
 
 public class GluonConfigurationData extends ConfigurationData {
-    public GluonConfigurationData(ConfigurationSymbol configuration, String instanceName) {
-        super(configuration, instanceName);
+    public GluonConfigurationData(ConfigurationSymbol configuration, String instanceName){//, List<String> jointTrainingInstanceNames) {
+        super(configuration, instanceName);//, jointTrainingInstanceNames);
     }
 
     public Boolean isSupervisedLearning() {

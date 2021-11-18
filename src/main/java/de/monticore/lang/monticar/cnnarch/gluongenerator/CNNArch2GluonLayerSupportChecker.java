@@ -7,7 +7,7 @@ import de.monticore.lang.monticar.cnnarch.generator.LayerSupportChecker;
 public class CNNArch2GluonLayerSupportChecker extends LayerSupportChecker {
 
     public CNNArch2GluonLayerSupportChecker() {
-        supportedLayerList.add(AllPredefinedLayers.REPARAMETRIZE_NAME);
+        supportedLayerList.add(AllPredefinedLayers.REPARAMETERIZE_NAME);
         supportedLayerList.add(AllPredefinedLayers.FULLY_CONNECTED_NAME);
         supportedLayerList.add(AllPredefinedLayers.CONVOLUTION_NAME);
         supportedLayerList.add(AllPredefinedLayers.UP_CONVOLUTION_NAME);
@@ -43,13 +43,12 @@ public class CNNArch2GluonLayerSupportChecker extends LayerSupportChecker {
         supportedLayerList.add(AllPredefinedLayers.RESHAPE_NAME);
         // supportedLayerList.add(AllPredefinedLayers.CROP_NAME);
         supportedLayerList.add(AllPredefinedLayers.LARGE_MEMORY_NAME);
-        supportedLayerList.add(AllPredefinedLayers.EPISODIC_MEMORY_NAME);
+		supportedLayerList.add(AllPredefinedLayers.EPISODIC_MEMORY_NAME);
         supportedLayerList.add(AllPredefinedLayers.DOT_PRODUCT_SELF_ATTENTION_NAME);
         supportedLayerList.add(AllPredefinedLayers.LOAD_NETWORK_NAME);
         supportedLayerList.add(AllPredefinedLayers.LAYERNORM_NAME);
-        supportedLayerList.add(AllPredefinedLayers.UP_CONVOLUTION3D_NAME);
-        supportedLayerList.add(AllPredefinedLayers.CONVOLUTION3D_NAME);
-        supportedLayerList.add(AllPredefinedLayers.AdaNet_Name);
+        supportedLayerList.add(AllPredefinedLayers.VECTOR_QUANTIZE_NAME);
+        supportedLayerList.add(AllPredefinedLayers.CONCAT_LABELS_NAME);
     }
 
 }

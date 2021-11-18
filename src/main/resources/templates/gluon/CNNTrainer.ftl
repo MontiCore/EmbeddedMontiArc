@@ -53,8 +53,17 @@ if __name__ == "__main__":
 <#if (config.normalize)??>
         normalize=${config.normalize?string("True","False")},
 </#if>
+<#if (config.labeledTraining)??>
+        labeled_training=${config.labeledTraining},
+</#if>
+<#if (config.labelClasses)??>
+        label_classes=${config.labelClasses},
+</#if>
+<#if (config.klLossWeight)??>
+        kl_loss_weight=${config.klLossWeight},
+</#if>
 <#if (config.shuffleData)??>
-        shuffle_data=${config.shuffleData?string("True","False")},
+    shuffle_data=${config.shuffleData?string("True","False")},
 </#if>
 <#if (config.clipGlobalGradNorm)??>
         clip_global_grad_norm=${config.clipGlobalGradNorm},
