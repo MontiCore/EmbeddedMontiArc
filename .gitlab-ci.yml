@@ -6,7 +6,7 @@ stages:
   - build
 #  - test
   - report
-#  - deploy
+  - deploy
 
 variables:
   # This will supress any download for dependencies and plugins or upload messages which would clutter the console log.
