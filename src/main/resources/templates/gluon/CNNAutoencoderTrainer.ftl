@@ -74,7 +74,7 @@ class CNNAutoencoderTrainer:
               context='cpu',
               checkpoint_period=5,
               normalize=True,
-              loss='gaussiam_vae_loss',
+              loss='',
               log_period = 50,
               labeled_training=False,
               label_classes=10,
@@ -123,6 +123,23 @@ class CNNAutoencoderTrainer:
                                                   stop_factor_lr=min_learning_rate)
             del optimizer_params['step_size']
             del optimizer_params['learning_rate_decay']
+
+        if normalize:
+            self._net_creator.construct(context=mx_context, data_mean=data_mean, data_std=data_std)
+        else:
+            self._net_creator.construct(context=mx_context)
+
+        begin_epoch = 0
+        if load_checkpoint:
+            begin_epoch = self._enc_creator.load(mx_context)
+        elif load_pretrained:
+            self._enc_creator.load_pretrained_weights(mx_context)
+            self._dec_creator.load_pretrained_weights(mx_context)
+        else:
+            if os.path.isdir(self._enc_creator._model_dir_):
+                shutil.rmtree(self._enc_creator._model_dir_)
+            if os.path.isdir(self._dec_creator._model_dir_):
+                shutil.rmtree(self._dec_creator._model_dir_)
 
         self._enc_creator.construct(context=mx_context)
         self._dec_creator.construct(context=mx_context)
@@ -334,6 +351,12 @@ class CNNAutoencoderTrainer:
 
             logging.info("Epoch[%d], Train loss: %f, Validation loss: %f" % (
                 epoch, global_loss_train, global_loss_test))
+
+            if (epoch+1) % checkpoint_period == 0:
+                for i, network in encoder_nets.items():
+                    network.save_parameters(self.parameter_path(i) + '-' + str(epoch).zfill(4) + '.params')
+                for i, network in decoder_nets.items():
+                    network.save_parameters(self.parameter_path(i) + '-' + str(epoch).zfill(4) + '.params')
 
             if print_images:
                 train_lost_list.append(global_loss_train)
