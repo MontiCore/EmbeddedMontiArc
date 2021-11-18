@@ -1,6 +1,4 @@
 <#-- (c) https://github.com/MontiCore/monticore -->
-<#-- So that the license is in the generated file: -->
-# (c) https://github.com/MontiCore/monticore
 import mxnet as mx
 import logging
 import os
@@ -178,13 +176,13 @@ class ${tc.fileNameWithoutEnding}:
                 else:
                     logging.info("No pretrained weights available at: " + self._weights_dir_ + param_file)
 
-    def construct(self, context, data_mean=None, data_std=None):
+    def construct(self, context, batch_size=None, data_mean=None, data_std=None):
 <#list tc.architecture.networkInstructions as networkInstruction>
         <#if tc.containsAdaNet()>
         self.networks[${networkInstruction?index}] = Net_${networkInstruction?index}()
         self.dataClass[${networkInstruction?index}] = DataClass_${networkInstruction?index}
         <#else>
-        self.networks[${networkInstruction?index}] = Net_${networkInstruction?index}(data_mean=data_mean, data_std=data_std, mx_context=context, prefix="")
+        self.networks[${networkInstruction?index}] = Net_${networkInstruction?index}(batch_size=batch_size, data_mean=data_mean, data_std=data_std, mx_context=context, prefix="")
         </#if>
         with warnings.catch_warnings():
             warnings.simplefilter("ignore")

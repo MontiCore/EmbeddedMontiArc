@@ -9,4 +9,5 @@ configuration Decoder{
      context:cpu
      load_checkpoint:false
 	 loss: gaussian_vae_loss
+	 network_loss_params : [ "mean", "var" ]
 }
