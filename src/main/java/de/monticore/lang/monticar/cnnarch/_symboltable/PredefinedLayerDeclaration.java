@@ -11,13 +11,11 @@ package de.monticore.lang.monticar.cnnarch._symboltable;
 import de.monticore.lang.monticar.cnnarch.helper.ErrorCodes;
 import de.monticore.lang.monticar.cnnarch.predefined.AllPredefinedLayers;
 import de.monticore.lang.monticar.ranges._ast.ASTRange;
+import de.se_rwth.commons.Joiners;
 import de.se_rwth.commons.logging.Log;
 import org.jscience.mathematics.number.Rational;
 
-import java.util.Arrays;
-import java.util.Collections;
-import java.util.List;
-import java.util.Optional;
+import java.util.*;
 import java.util.function.BinaryOperator;
 import java.util.stream.Stream;
 
@@ -174,6 +172,43 @@ abstract public class PredefinedLayerDeclaration extends LayerDeclarationSymbol 
         }
     }
 
+    /**
+     *  Check if Inputs of Layer have the same shape
+     */
+    protected static enum HandlingSingleInputs {
+        ALLOWED, IGNORED, RESTRICTED
+    }
+    protected static void errorIfMultipleInputShapesAreNotEqual(List<ArchTypeSymbol> inputTypes, LayerSymbol layer, HandlingSingleInputs handling) {
+        if (inputTypes.size() == 1){
+            if (handling == HandlingSingleInputs.IGNORED) {
+                Log.warn(layer.getName() + " layer has only one input stream. Layer can be removed.", layer.getSourcePosition());
+            } else if (handling == HandlingSingleInputs.RESTRICTED){
+                Log.error(layer.getName() + " layer has only one input stream.", layer.getSourcePosition());
+            }
+        }
+        else if (inputTypes.size() > 1){
+            List<Integer> heightList = new ArrayList<>();
+            List<Integer> widthList = new ArrayList<>();
+            List<Integer> channelsList = new ArrayList<>();
+            for (ArchTypeSymbol shape : inputTypes){
+                heightList.add(shape.getHeight());
+                widthList.add(shape.getWidth());
+                channelsList.add(shape.getChannels());
+            }
+            int countEqualHeights = (int)heightList.stream().distinct().count();
+            int countEqualWidths = (int)widthList.stream().distinct().count();
+            int countEqualNumberOfChannels = (int)channelsList.stream().distinct().count();
+            if (countEqualHeights != 1 || countEqualWidths != 1 || countEqualNumberOfChannels != 1){
+                Log.error("0" + ErrorCodes.INVALID_ELEMENT_INPUT_SHAPE + " Invalid layer input. " +
+                                "Shapes of all input streams must be equal. " +
+                                "Input heights: " + Joiners.COMMA.join(heightList) + ". " +
+                                "Input widths: " + Joiners.COMMA.join(widthList) + ". " +
+                                "Number of input channels: " + Joiners.COMMA.join(channelsList) + ". "
+                        , layer.getSourcePosition());
+            }
+        }
+    }
+
     //check input for convolution and pooling
     protected static void errorIfInputSmallerThanKernel(List<ArchTypeSymbol> inputTypes, LayerSymbol layer) {
         if (!inputTypes.isEmpty()) {
@@ -200,6 +235,19 @@ abstract public class PredefinedLayerDeclaration extends LayerDeclarationSymbol 
                             , layer.getSourcePosition());
                 }
             } 
+        }
+    }
+
+    protected static void errorIfInputNotFlattened(List<ArchTypeSymbol> inputTypes, LayerSymbol layer) {
+        if (!inputTypes.isEmpty()) {
+            for (ArchTypeSymbol inputType : layer.getInputTypes()) {
+                int height = inputType.getHeight();
+                int width = inputType.getWidth();
+                if (height != 1 || width != 1) {
+                    Log.error("0" + ErrorCodes.INVALID_ELEMENT_INPUT_SHAPE + " Invalid layer input." +
+                            " Input layer must be flat, consider using a 'Flatten()' layer.", layer.getSourcePosition());
+                }
+            }
         }
     }
 
