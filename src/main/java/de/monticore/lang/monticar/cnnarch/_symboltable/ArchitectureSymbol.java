@@ -11,18 +11,18 @@
 
 package de.monticore.lang.monticar.cnnarch._symboltable;
 
+import de.monticore.lang.monticar.cnnarch._cocos.CheckLayerPathParameter;
 import de.monticore.lang.monticar.cnnarch.helper.Utils;
 import de.monticore.lang.monticar.cnnarch.predefined.AllPredefinedLayers;
 import de.monticore.lang.monticar.cnnarch.predefined.AllPredefinedVariables;
-import de.monticore.lang.monticar.cnnarch._cocos.CheckLayerPathParameter;
 import de.monticore.symboltable.CommonScopeSpanningSymbol;
 import de.monticore.symboltable.Scope;
 import de.monticore.symboltable.Symbol;
-import org.apache.commons.math3.ml.neuralnet.Network;
 
-import java.lang.RuntimeException;
-import java.lang.NullPointerException;
-import java.util.*;
+import java.util.ArrayList;
+import java.util.Collection;
+import java.util.HashMap;
+import java.util.List;
 
 public class ArchitectureSymbol extends CommonScopeSpanningSymbol {
 
@@ -36,6 +36,7 @@ public class ArchitectureSymbol extends CommonScopeSpanningSymbol {
     private String dataPath;
     private String weightsPath;
     private String componentName;
+    private ArchitectureSymbol auxiliaryArchitecture;
     private boolean AdaNet = false;
     //attribute for the path for custom python files
     private String customPyFilesPath;
@@ -52,6 +53,14 @@ public class ArchitectureSymbol extends CommonScopeSpanningSymbol {
     public void setLayerVariableDeclarations(List<LayerVariableDeclarationSymbol> layerVariableDeclarations) {
         this.layerVariableDeclarations = layerVariableDeclarations;
     }
+    public void setAuxiliaryArchitecture(ArchitectureSymbol auxiliaryArchitecture){
+        this.auxiliaryArchitecture = auxiliaryArchitecture;
+    }
+
+    public ArchitectureSymbol getAuxiliaryArchitecture(){
+        return this.auxiliaryArchitecture;
+    }
+
     public String getAdaNetUtils(){return this.adaNetUtils;}
     public void setAdaNetUtils(String adaNetUtils){this.adaNetUtils=adaNetUtils;}
     public boolean containsAdaNet() {
