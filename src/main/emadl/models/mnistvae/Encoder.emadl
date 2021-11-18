@@ -6,16 +6,12 @@ component Encoder{
 
     implementation CNN {
         data ->
-        Convolution(channels=64,kernel=(4,4),stride=(2,2),padding="same") ->
+        FullyConnected(units=400) ->
         Relu() ->
         Dropout() ->
-        Convolution(channels=64,kernel=(4,4),stride=(2,2),padding="same") ->
+        FullyConnected(units=400) ->
         Relu() ->
         Dropout() ->
-        Convolution(channels=64,kernel=(4,4),stride=(2,2),padding="same") ->
-        Relu() ->
-        Dropout() ->
-        Flatten() ->
         FullyConnected(units=16) ->
         Split(n=2) ->
         (
@@ -23,7 +19,7 @@ component Encoder{
         |
             [1] /* log variance squared */
         ) ->
-        Reparametrize() ->
+        Reparameterize() ->
         z;
     }
 }

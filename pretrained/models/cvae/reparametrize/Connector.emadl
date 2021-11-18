@@ -1,0 +1,15 @@
+/* (c) https://github.com/MontiCore/monticore */
+package mnistvae;
+
+component Reparametrize{
+    ports in Q(-oo:oo)^{2} alpha,
+          out Q(-oo:oo)^{784} res;
+
+    instance Laplace lp
+    instance GaussianSample g
+
+    connect mean -> lp.mean;
+    connect lp.z_mean -> g.mean
+    connect dec.softmax-> res;
+
+}

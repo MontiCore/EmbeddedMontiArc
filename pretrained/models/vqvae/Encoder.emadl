@@ -1,0 +1,16 @@
+package mnistvae;
+
+component Encoder{
+    ports in Q(-oo:oo)^{784} data,
+          out Q(-oo:oo)^{2} softmax;
+
+    implementation CNN {
+
+
+        data ->
+        Reshape(shape=(1,28,28)) ->
+        FullyConnected(units=400) ->
+        FullyConnected(units=4) ->
+        z;
+    }
+}

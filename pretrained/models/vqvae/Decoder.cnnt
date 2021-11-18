@@ -1,0 +1,20 @@
+/* (c) https://github.com/MontiCore/monticore */
+configuration Decoder{
+     learning_method: generative_model
+     gm_algorithm: vae
+
+     encoder_name: mnistvae.Encoder
+     num_epoch:1
+     batch_size:200
+     normalize:false
+     context:cpu
+     load_checkpoint:false
+	 loss: gaussian_vae_loss
+     network_loss_params : ["mean", "loss"]
+     print_images: true
+
+     optimizer:adam{
+          learning_rate:0.003
+	     weight_decay:0.01
+     }
+}

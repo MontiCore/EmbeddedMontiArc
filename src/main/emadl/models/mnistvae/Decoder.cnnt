@@ -4,16 +4,15 @@ configuration Decoder{
      gm_algorithm: vae
 
      encoder_name: mnistvae.Encoder
-     num_epoch:1
-     batch_size:200
-     normalize:false
+     num_epoch:20
+     batch_size:300
      context:cpu
-     load_checkpoint:false
-	 loss: gaussian_vae_loss
-     network_loss_params : ["mean", "loss"]
      print_images: true
+     kl_loss_weight:1
+     labeled_training: false
+     label_classes: 10
 
-     optimizer:adam{
+     optimizer: adam{
           learning_rate:0.003
 	     weight_decay:0.01
      }

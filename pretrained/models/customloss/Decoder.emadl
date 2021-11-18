@@ -1,0 +1,13 @@
+package customloss;
+
+component Decoder{
+    ports in Z(0:255)^{2} sample,
+          out Q(-oo:oo)^{1,28,28} res;
+
+    implementation CNN {
+        sample ->
+        FullyConnected(units=400) ->
+        FullyConnected(units=784) ->
+        res;
+    }
+}
