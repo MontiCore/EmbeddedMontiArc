@@ -4,7 +4,7 @@ configuration Decoder{
      gm_algorithm: vae
 
      encoder_name: mnistvae.Encoder
-     num_epoch:20
+     num_epoch:1
      batch_size:300
      context:cpu
      print_images: true
