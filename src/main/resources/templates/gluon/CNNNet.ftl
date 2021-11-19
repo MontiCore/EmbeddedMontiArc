@@ -552,28 +552,26 @@ class VectorQuantize(gluon.HybridBlock):
         self.size = total_feature_maps_size / embedding_dim
 
         # Initialize Embeddings
-        embeddings = gluon.nn.Embedding(self.num_embeddings, self.embedding_dim)
-        # Get embedding weights
-        embeddingIndexing = mx.ndarray.transpose(mx.ndarray.arange(self.num_embeddings))
-
-        with self.name_scope():
-            self.embedding = embeddings(embeddingIndexing)
+        self.embeddings = gluon.nn.Embedding(self.num_embeddings, self.embedding_dim)
 
     def hybrid_forward(self, F, x):
         # Flatten the inputs keeping and `embedding_dim` intact.
         flattened = F.reshape(x, shape=(-1,self.embedding_dim))
 
+        embeddingIndexing = F.transpose(F.arange(self.num_embeddings))
+        embedding = self.embeddings(embeddingIndexing)
+
         # Get best representation
         a = F.broadcast_axis(F.sum(flattened ** 2, axis=1, keepdims=True), axis=1, size=self.num_embeddings)
-        b = F.sum(F.broadcast_axis(F.expand_dims(self.embedding ** 2,axis=0),axis=0,size=self.size), axis=2)
+        b = F.sum(F.broadcast_axis(F.expand_dims(embedding ** 2,axis=0),axis=0,size=self.size), axis=2)
 
-        distances = a + b - 2 * F.dot(flattened, F.transpose(self.embedding))
+        distances = a + b - 2 * F.dot(flattened, F.transpose(embedding))
 
         encoding_indices = F.argmin(distances, axis=1)
         encodings = F.one_hot(encoding_indices, self.num_embeddings)
 
         # Quantize and unflatten
-        quantized = F.dot(encodings, self.embedding).reshape(self.input_shape)
+        quantized = F.dot(encodings, embedding).reshape(self.input_shape)
 
         # Straight-through estimator.
         quantized = x + F.stop_gradient(quantized - x)
