@@ -44,6 +44,24 @@ trigger-3d-gan:
   only:
     - master
 
+trigger-mnist-vae:
+  stage: trigger_apps
+  allow_failure: true
+  trigger:
+    project: monticore/EmbeddedMontiArc/applications/vaes/mnist-vae
+    branch: master
+  only:
+    - master
+
+trigger-cvae:
+  stage: trigger_apps
+  allow_failure: true
+  trigger:
+    project: monticore/EmbeddedMontiArc/applications/vaes/cvae
+    branch: master
+  only:
+    - master
+
 
 pages:
   stage: page
