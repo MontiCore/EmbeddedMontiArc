@@ -1,2 +1,0 @@
-/usr/bin/ar qc libmnistvae_connector.a CMakeFiles/mnistvae_connector.dir/mnistvae_connector.cpp.o
-/usr/bin/ranlib libmnistvae_connector.a
