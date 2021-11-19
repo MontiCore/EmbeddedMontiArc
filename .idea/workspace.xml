@@ -13,59 +13,9 @@
   </component>
   <component name="ChangeListManager">
     <list default="true" id="4f845328-01ce-4096-9f7b-4f8a4ee27d10" name="Default Changelist" comment="">
-      <change beforePath="$PROJECT_DIR$/.gitignore" beforeDir="false" afterPath="$PROJECT_DIR$/.gitignore" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/.idea/workspace.xml" beforeDir="false" afterPath="$PROJECT_DIR$/.idea/workspace.xml" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/build.sh" beforeDir="false" afterPath="$PROJECT_DIR$/build.sh" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/build/CMakeCache.txt" beforeDir="false" afterPath="$PROJECT_DIR$/build/CMakeCache.txt" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/build/CMakeFiles/CMakeDirectoryInformation.cmake" beforeDir="false" />
       <change beforePath="$PROJECT_DIR$/build/CMakeFiles/CMakeOutput.log" beforeDir="false" afterPath="$PROJECT_DIR$/build/CMakeFiles/CMakeOutput.log" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/build/CMakeFiles/Makefile.cmake" beforeDir="false" />
-      <change beforePath="$PROJECT_DIR$/build/CMakeFiles/Makefile2" beforeDir="false" />
-      <change beforePath="$PROJECT_DIR$/build/CMakeFiles/TargetDirectories.txt" beforeDir="false" />
-      <change beforePath="$PROJECT_DIR$/build/CMakeFiles/progress.marks" beforeDir="false" />
-      <change beforePath="$PROJECT_DIR$/build/Makefile" beforeDir="false" />
-      <change beforePath="$PROJECT_DIR$/build/cmake_install.cmake" beforeDir="false" />
-      <change beforePath="$PROJECT_DIR$/build/src/main/cpp/CMakeFiles/CMakeDirectoryInformation.cmake" beforeDir="false" />
-      <change beforePath="$PROJECT_DIR$/build/src/main/cpp/CMakeFiles/MNISTVAE.dir/DependInfo.cmake" beforeDir="false" />
-      <change beforePath="$PROJECT_DIR$/build/src/main/cpp/CMakeFiles/MNISTVAE.dir/MNISTVAE.cpp.o" beforeDir="false" />
-      <change beforePath="$PROJECT_DIR$/build/src/main/cpp/CMakeFiles/MNISTVAE.dir/MNISTVAE.cpp.o.d" beforeDir="false" />
-      <change beforePath="$PROJECT_DIR$/build/src/main/cpp/CMakeFiles/MNISTVAE.dir/build.make" beforeDir="false" />
-      <change beforePath="$PROJECT_DIR$/build/src/main/cpp/CMakeFiles/MNISTVAE.dir/cmake_clean.cmake" beforeDir="false" />
-      <change beforePath="$PROJECT_DIR$/build/src/main/cpp/CMakeFiles/MNISTVAE.dir/compiler_depend.make" beforeDir="false" />
-      <change beforePath="$PROJECT_DIR$/build/src/main/cpp/CMakeFiles/MNISTVAE.dir/compiler_depend.ts" beforeDir="false" />
-      <change beforePath="$PROJECT_DIR$/build/src/main/cpp/CMakeFiles/MNISTVAE.dir/depend.make" beforeDir="false" />
-      <change beforePath="$PROJECT_DIR$/build/src/main/cpp/CMakeFiles/MNISTVAE.dir/flags.make" beforeDir="false" />
-      <change beforePath="$PROJECT_DIR$/build/src/main/cpp/CMakeFiles/MNISTVAE.dir/link.txt" beforeDir="false" />
-      <change beforePath="$PROJECT_DIR$/build/src/main/cpp/CMakeFiles/MNISTVAE.dir/progress.make" beforeDir="false" />
-      <change beforePath="$PROJECT_DIR$/build/src/main/cpp/CMakeFiles/progress.marks" beforeDir="false" />
-      <change beforePath="$PROJECT_DIR$/build/src/main/cpp/MNISTVAE" beforeDir="false" />
-      <change beforePath="$PROJECT_DIR$/build/src/main/cpp/MNISTVAE.cmake" beforeDir="false" />
-      <change beforePath="$PROJECT_DIR$/build/src/main/cpp/Makefile" beforeDir="false" />
-      <change beforePath="$PROJECT_DIR$/build/src/main/cpp/cmake_install.cmake" beforeDir="false" />
-      <change beforePath="$PROJECT_DIR$/build/target/CMakeFiles/CMakeDirectoryInformation.cmake" beforeDir="false" />
-      <change beforePath="$PROJECT_DIR$/build/target/CMakeFiles/mnistvae_connector.dir/DependInfo.cmake" beforeDir="false" />
-      <change beforePath="$PROJECT_DIR$/build/target/CMakeFiles/mnistvae_connector.dir/build.make" beforeDir="false" />
-      <change beforePath="$PROJECT_DIR$/build/target/CMakeFiles/mnistvae_connector.dir/cmake_clean.cmake" beforeDir="false" />
-      <change beforePath="$PROJECT_DIR$/build/target/CMakeFiles/mnistvae_connector.dir/cmake_clean_target.cmake" beforeDir="false" />
-      <change beforePath="$PROJECT_DIR$/build/target/CMakeFiles/mnistvae_connector.dir/compiler_depend.make" beforeDir="false" />
-      <change beforePath="$PROJECT_DIR$/build/target/CMakeFiles/mnistvae_connector.dir/compiler_depend.ts" beforeDir="false" />
-      <change beforePath="$PROJECT_DIR$/build/target/CMakeFiles/mnistvae_connector.dir/depend.make" beforeDir="false" />
-      <change beforePath="$PROJECT_DIR$/build/target/CMakeFiles/mnistvae_connector.dir/flags.make" beforeDir="false" />
-      <change beforePath="$PROJECT_DIR$/build/target/CMakeFiles/mnistvae_connector.dir/link.txt" beforeDir="false" />
-      <change beforePath="$PROJECT_DIR$/build/target/CMakeFiles/mnistvae_connector.dir/mnistvae_connector.cpp.o" beforeDir="false" />
-      <change beforePath="$PROJECT_DIR$/build/target/CMakeFiles/mnistvae_connector.dir/mnistvae_connector.cpp.o.d" beforeDir="false" />
-      <change beforePath="$PROJECT_DIR$/build/target/CMakeFiles/mnistvae_connector.dir/progress.make" beforeDir="false" />
-      <change beforePath="$PROJECT_DIR$/build/target/CMakeFiles/progress.marks" beforeDir="false" />
-      <change beforePath="$PROJECT_DIR$/build/target/Makefile" beforeDir="false" />
-      <change beforePath="$PROJECT_DIR$/build/target/cmake_install.cmake" beforeDir="false" />
-      <change beforePath="$PROJECT_DIR$/build/target/libmnistvae_connector.a" beforeDir="false" />
-      <change beforePath="$PROJECT_DIR$/build/target/mnistvae_connector.cmake" beforeDir="false" />
-      <change beforePath="$PROJECT_DIR$/src/main/emadl/models/cvae/Encoder.emadl" beforeDir="false" afterPath="$PROJECT_DIR$/src/main/emadl/models/cvae/Encoder.emadl" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/src/main/emadl/models/data_paths.txt" beforeDir="false" afterPath="$PROJECT_DIR$/src/main/emadl/models/data_paths.txt" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/src/main/emadl/models/vqvae/Connector.emadl" beforeDir="false" afterPath="$PROJECT_DIR$/src/main/emadl/models/vqvae/Connector.emadl" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/src/main/emadl/models/vqvae/Decoder.cnnt" beforeDir="false" afterPath="$PROJECT_DIR$/src/main/emadl/models/vqvae/Decoder.cnnt" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/src/main/emadl/models/vqvae/Decoder.emadl" beforeDir="false" afterPath="$PROJECT_DIR$/src/main/emadl/models/vqvae/Decoder.emadl" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/src/main/emadl/models/vqvae/Encoder.emadl" beforeDir="false" afterPath="$PROJECT_DIR$/src/main/emadl/models/vqvae/Encoder.emadl" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/src/main/emadl/data_paths.txt" beforeDir="false" afterPath="$PROJECT_DIR$/src/main/emadl/data_paths.txt" afterDir="false" />
     </list>
     <option name="SHOW_DIALOG" value="false" />
     <option name="HIGHLIGHT_CONFLICTS" value="true" />
@@ -110,16 +60,12 @@
   </component>
   <component name="HighlightingSettingsPerFile">
     <setting file="file://$PROJECT_DIR$/model/mnistvae.Decoder/model_0-symbol.json" root0="FORCE_HIGHLIGHTING" />
-    <setting file="file://$PROJECT_DIR$/src/main/emadl/models/mnistvae/Connector.emadl" root0="FORCE_HIGHLIGHTING" />
-    <setting file="file://$PROJECT_DIR$/src/main/emadl/models/mnistvae/Decoder.cnnt" root0="FORCE_HIGHLIGHTING" />
     <setting file="file://$USER_HOME$/.cache/JetBrains/PyCharm2021.1/remote_sources/-84142897/125375885/mxnet/base.py" root0="SKIP_INSPECTION" />
     <setting file="file:///mxnet/src/operator/tensor/elemwise_binary_broadcast_op.h" root0="FORCE_HIGHLIGHTING" />
     <setting file="file://$PROJECT_DIR$/src/main/cpp/CMakeLists.txt" root0="FORCE_HIGHLIGHTING" />
     <setting file="file://$PROJECT_DIR$/model/model_0-symbol.json" root0="FORCE_HIGHLIGHTING" />
     <setting file="file://$USER_HOME$/.local/lib/python3.6/site-packages/mxnet/gluon/block.py" root0="FORCE_HIGHLIGHTING" />
     <setting file="file://$USER_HOME$/.cache/JetBrains/PyCharm2021.1/remote_sources/-84142897/125375885/mxnet/gluon/block.py" root0="SKIP_INSPECTION" />
-    <setting file="file://$PROJECT_DIR$/src/main/emadl/models/mnistvae/Encoder.emadl" root0="FORCE_HIGHLIGHTING" />
-    <setting file="file://$PROJECT_DIR$/src/main/emadl/models/mnistvae/Decoder.emadl" root0="FORCE_HIGHLIGHTING" />
     <setting file="file://$USER_HOME$/.cache/JetBrains/PyCharm2021.2/remote_sources/2047353132/125375885/mxnet/gluon/block.py" root0="FORCE_HIGHLIGHTING" />
     <setting file="file://$PROJECT_DIR$/CMakeLists.txt" root0="FORCE_HIGHLIGHTING" />
     <setting file="file://$PROJECT_DIR$/src/main/cpp/MNISTVAE.cpp" root0="FORCE_HIGHLIGHTING" />
@@ -412,7 +358,7 @@
       <workItem from="1636841259702" duration="599000" />
       <workItem from="1637150642408" duration="9072000" />
       <workItem from="1637321342196" duration="5559000" />
-      <workItem from="1637334501722" duration="882000" />
+      <workItem from="1637334501722" duration="1544000" />
     </task>
     <servers />
   </component>
@@ -483,11 +429,6 @@
           <url>file://$PROJECT_DIR$/test/target/CNNAutoencoderTrainer_mnistvae_connector_dec.py</url>
           <line>42</line>
           <option name="timeStamp" value="277" />
-        </line-breakpoint>
-        <line-breakpoint enabled="true" type="python-line">
-          <url>file://$PROJECT_DIR$/target/CNNNet_vqvae_connector_dec.py</url>
-          <line>576</line>
-          <option name="timeStamp" value="278" />
         </line-breakpoint>
         <line-breakpoint enabled="true" type="python-line">
           <url>file://$PROJECT_DIR$/mnistVAE.py</url>

@@ -1,1 +1,1 @@
-vqvae.Decoder resources/training_data
+mnistvae.Decoder resources/training_data
