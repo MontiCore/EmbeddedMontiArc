@@ -89,7 +89,15 @@ public class CNNTrain2Gluon extends CNNTrainGenerator {
                          NNArchitectureSymbol supportNetwork) {
         ConfigurationSymbol configurationSymbol = this.getConfigurationSymbol(modelsDirPath, rootModelName);
         configurationSymbol.setTrainedArchitecture(trainedArchitecture);
-        configurationSymbol.setSupportNetwork(supportNetwork);
+        if (configurationSymbol.isGenerativeModelLearningMethod()){
+            if (configurationSymbol.getGmAlgorithm().get() == GMAlgorithm.VAE){
+                configurationSymbol.setEncoderNetwork(supportNetwork);
+            } else if (configurationSymbol.getGmAlgorithm().get() == GMAlgorithm.GAN){
+                configurationSymbol.setDiscriminatorNetwork(supportNetwork);
+            }
+        } else if (configurationSymbol.isReinforcementLearningMethod()){
+            configurationSymbol.setCriticNetwork(supportNetwork);
+        }
         ArchitectureSymbol supportNet = ((ArchitectureAdapter) supportNetwork).getArchitectureSymbol();
         ArchitectureSymbol trainedArchitectureSymbol = ((ArchitectureAdapter) trainedArchitecture).getArchitectureSymbol();
         supportNet.setAuxiliaryArchitecture(trainedArchitectureSymbol);
@@ -104,7 +112,7 @@ public class CNNTrain2Gluon extends CNNTrainGenerator {
                          NNArchitectureSymbol qNetwork) {
         ConfigurationSymbol configurationSymbol = this.getConfigurationSymbol(modelsDirPath, rootModelName);
         configurationSymbol.setTrainedArchitecture(trainedArchitecture);
-        configurationSymbol.setSupportNetwork(discriminatorNetwork);
+        configurationSymbol.setDiscriminatorNetwork(discriminatorNetwork);
         configurationSymbol.setQNetwork(qNetwork);
         this.setRootProjectModelsDir(modelsDirPath.toString());
         generateFilesFromConfigurationSymbol(configurationSymbol);
@@ -152,13 +160,14 @@ public class CNNTrain2Gluon extends CNNTrainGenerator {
             final GMAlgorithm algorithm = configData.getGMAlgorithm();
             String tempdirectory = "/";
             Boolean generatePythonFilesOnly = true;
+            NNArchitectureSymbol genericNetArchitectureSymbol = null;
 
             de.monticore.lang.monticar.cnnarch.gluongenerator.CNNArch2Gluon gluonGenerator = new de.monticore.lang.monticar.cnnarch.gluongenerator.CNNArch2Gluon();
             gluonGenerator.setGenerationTargetPath(
                     Paths.get(getGenerationTargetPath(), GM_LEARNING_FRAMEWORK_MODULE).toString());
 
             if (algorithm.equals(GMAlgorithm.GAN)) {
-                if (!configuration.getSupportNetwork().isPresent()) {
+                if (!configuration.getDiscriminatorNetwork().isPresent()) {
                     Log.error("No architecture model for discriminator available but is required for chosen " +
                             "GAN");
                 }
@@ -183,21 +192,21 @@ public class CNNTrain2Gluon extends CNNTrainGenerator {
                     ftlContext.put("qNetworkInstanceName", qNetworkInstanceName);
                 }
 
+                genericNetArchitectureSymbol = configuration.getDiscriminatorNetwork().get();
+
             } else if (algorithm.equals(GMAlgorithm.VAE)) {
-                if (!configuration.getSupportNetwork().isPresent()) {
+                if (!configuration.getEncoderNetwork().isPresent()) {
                     Log.error("No architecture model for encoder found but is required for chosen " +
                             "vae learning configuration");
                 }
                 tempdirectory = "vae";
                 generatePythonFilesOnly = false;
 
-
-                //String cnnPredictorTemplateContent = templateConfiguration.processTemplate(ftlContext, "CNNPredictor.ftl");
-                //fileContents.add(new FileContent(cnnPredictorTemplateContent, "CNNPredictor_" + getInstanceName() + ".h"));
+                genericNetArchitectureSymbol = configuration.getEncoderNetwork().get();
             }
             final String subdirectory = "/" + tempdirectory;
 
-            NNArchitectureSymbol genericNetArchitectureSymbol = configuration.getSupportNetwork().get();
+
 
             ArchitectureSymbol netArchitectureSymbol
                     = ((ArchitectureAdapter) genericNetArchitectureSymbol).getArchitectureSymbol();
@@ -237,11 +246,11 @@ public class CNNTrain2Gluon extends CNNTrainGenerator {
             if (rlAlgorithm.equals(RLAlgorithm.DDPG)
                     || rlAlgorithm.equals(RLAlgorithm.TD3)) {
 
-                if (!configuration.getSupportNetwork().isPresent()) {
+                if (!configuration.getCritic().isPresent()) {
                     Log.error("No architecture model for critic available but is required for chosen " +
                             "actor-critic algorithm");
                 }
-                NNArchitectureSymbol genericArchitectureSymbol = configuration.getSupportNetwork().get();
+                NNArchitectureSymbol genericArchitectureSymbol = configuration.getCritic().get();
                 ArchitectureSymbol architectureSymbol
                         = ((ArchitectureAdapter) genericArchitectureSymbol).getArchitectureSymbol();
 
