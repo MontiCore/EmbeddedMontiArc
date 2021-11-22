@@ -53,30 +53,17 @@ public abstract class CNNTrainGenerator {
         setInstanceName(rootModelName);
 
         URL schemasResource = getClass().getClassLoader().getResource(ROOT_SCHEMA_MODEL_PATH);
-        try {
-            String path = getClass().getProtectionDomain().getCodeSource().getLocation()
-                    .toURI().getPath();
-            System.out.println("path:");
-            System.out.println(path);
-        } catch (URISyntaxException e) {
-            e.printStackTrace();
-        }
-        System.out.println("urls:");
         System.out.println(schemasResource);
         List<SchemaDefinitionSymbol> schemaDefinitionSymbols;
         try {
             assert schemasResource != null;
             FileSystem fileSystem = initFileSystem(schemasResource.toURI());
-            System.out.println("fileSystem:");
-            System.out.println(fileSystem);
             Path path = fileSystem.getPath(schemasResource.getPath());
             ModelPath modelPath = new ModelPath(path);
-            System.out.println("modelPath:");
-            System.out.println(modelPath);
+
             SchemaDefinitionSymbol schema = resolveSchemaDefinition(ROOT_SCHEMA, modelPath);
             SchemaLangCoCoChecker checkerWithAllCoCos = SchemaLangCocoFactory.getCheckerWithAllCoCos();
             checkerWithAllCoCos.checkAll(schema.getSchemaDefinitionNode().get());
-
             schemaDefinitionSymbols = SchemaLangValidator.resolveSchemaHierarchy(schema, configuration, modelPath);
             List<SchemaViolation> schemaViolations = SchemaLangValidator.validateConfiguration(schemaDefinitionSymbols, configuration);
             if (!schemaViolations.isEmpty()) {
@@ -97,13 +84,11 @@ public abstract class CNNTrainGenerator {
     private FileSystem initFileSystem(URI uri) throws IOException {
         try {
             FileSystem aDefault = FileSystems.getDefault();
-            System.out.println("Returning default");
             return aDefault;
         } catch(Exception e) {
             Map<String, String> env = new HashMap<>();
             env.put("create", "true");
             FileSystem fileSystem = FileSystems.newFileSystem(uri, env);
-            System.out.println("Returning not default");
             return fileSystem;
         }
     }
