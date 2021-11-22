@@ -79,7 +79,6 @@ def convert_config(hf_cfg, cfg):
     cfg.MODEL.num_layers = hf_cfg.num_hidden_layers
     cfg.MODEL.pos_embed_type = 'learned' # unsure about this
     cfg.MODEL.activation = hf_cfg.hidden_act # unsure about this
-    cfg.MODEL.pooler_activation = 'tanh' # not sure where to source this in the hf config TODO remove
     cfg.MODEL.layer_norm_eps = hf_cfg.layer_norm_eps
     cfg.MODEL.hidden_dropout_prob = hf_cfg.hidden_dropout_prob
     cfg.MODEL.attention_dropout_prob = hf_cfg.attention_probs_dropout_prob # unsure about this
@@ -94,8 +93,7 @@ def convert_config(hf_cfg, cfg):
 
 def convert_params(hf_model, hf_tokenizer, gluon_cfg, ctx):
     print('converting params')
-    # TODO not sure if we need the pooling layer for our purposes?
-    gluon_model = RobertaModel.from_cfg(gluon_cfg, use_pooler=True)
+    gluon_model = RobertaModel.from_cfg(gluon_cfg, use_pooler=False)
     # output all hidden states for testing
     gluon_model._output_all_encodings = True
     gluon_model.encoder._output_all_encodings = True
@@ -179,7 +177,7 @@ def test_model(hf_model, hf_tokenizer, gluon_model, gpu):
     hf_input_ids = torch.from_numpy(input_ids).cpu()
     hf_model.eval()
 
-    gl_all_hiddens, gl_pooled = gluon_model(gl_input_ids, gl_valid_length)
+    gl_all_hiddens = gluon_model(gl_input_ids, gl_valid_length)
 
     # create attention mask for hf model
     hf_valid_length = np.zeros((batch_size, seq_length))
