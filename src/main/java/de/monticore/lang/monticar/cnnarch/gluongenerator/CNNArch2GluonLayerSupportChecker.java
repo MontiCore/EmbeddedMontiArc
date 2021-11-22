@@ -48,7 +48,6 @@ public class CNNArch2GluonLayerSupportChecker extends LayerSupportChecker {
         supportedLayerList.add(AllPredefinedLayers.LOAD_NETWORK_NAME);
         supportedLayerList.add(AllPredefinedLayers.LAYERNORM_NAME);
         supportedLayerList.add(AllPredefinedLayers.VECTOR_QUANTIZE_NAME);
-        supportedLayerList.add(AllPredefinedLayers.CONCAT_LABELS_NAME);
     }
 
 }

@@ -530,9 +530,7 @@ class Reparameterize(gluon.HybridBlock):
         self.sample_shape = shape
         self.batch_size = shape[0]
         self.latent_dim = shape[1]
-        self.method = method
         self.pdf = pdf
-        self.pdf_params = pdf_params
 
     def hybrid_forward(self, F, x):
         sample = None
@@ -549,7 +547,7 @@ class VectorQuantize(gluon.HybridBlock):
         self.embedding_dim = embedding_dim
         self.num_embeddings = num_embeddings
         self.input_shape = shape
-        self.size = total_feature_maps_size / embedding_dim
+        self.size = int(total_feature_maps_size / embedding_dim)
 
         # Initialize Embeddings
         self.embeddings = gluon.nn.Embedding(self.num_embeddings, self.embedding_dim)
@@ -640,7 +638,7 @@ ${tc.include(networkInstruction.body, "ARCHITECTURE_DEFINITION")}
             pass
 
 
-    def hybrid_forward(self, F, ${tc.join(tc.getStreamInputNames(networkInstruction.body, false), ", ")}, labels=None):
+    def hybrid_forward(self, F, ${tc.join(tc.getStreamInputNames(networkInstruction.body, false), ", ")}):
 <#if networkInstruction.body.episodicSubNetworks?has_content>
 <#list networkInstruction.body.episodicSubNetworks as elements>
 <#if elements?index == 0>

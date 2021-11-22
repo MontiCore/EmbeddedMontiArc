@@ -231,3 +231,55 @@ class ${tc.fileNameWithoutEnding}:
         else:
             logging.error("Data loading failure. File '" + os.path.abspath(train_path) + "' does not exist.")
             sys.exit(1)
+
+    def load_vae_data(self, batch_size, shuffle=False, use_labels=False):
+        train_h5, test_h5 = self.load_h5_files()
+
+        train_data = {}
+        data_mean = {}
+        data_std = {}
+        train_images = {}
+
+        input_name = self._input_names_[0]
+        train_data[input_name] = train_h5[input_name]
+        data_mean[input_name + '_'] = nd.array(train_h5[input_name][:].mean(axis=0))
+        data_std[input_name + '_'] = nd.array(train_h5[input_name][:].std(axis=0) + 1e-5)
+
+        if 'images' in train_h5:
+            train_images = train_h5['images']
+
+        train_label = {}
+        index = 0
+        if use_labels:
+            label_name = self._input_names_[1]
+            train_label[index] = train_h5[label_name]
+            index += 1
+
+        train_iter = mx.io.NDArrayIter(data=train_data,
+                                        label=train_label,
+                                        batch_size=batch_size,
+                                        shuffle=shuffle)
+
+        test_iter = None
+
+        if test_h5 != None:
+            test_data = {}
+            test_images = {}
+            input_name = self._input_names_[0]
+            test_data[input_name] = test_h5[input_name]
+
+            if 'images' in test_h5:
+                test_images = test_h5['images']
+
+            test_label = {}
+            index = 0
+            if use_labels:
+                label_name = self._input_names_[1]
+                test_label[index] = test_h5[label_name]
+                index += 1
+
+            test_iter = mx.io.NDArrayIter(data=test_data,
+                                          label=test_label,
+                                          batch_size=batch_size)
+
+        return train_iter, test_iter, data_mean, data_std, train_images, test_images
