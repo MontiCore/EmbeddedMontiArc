@@ -56,25 +56,25 @@ if __name__ == "__main__":
     ArchLogger.set_logger_name(agent_name)
     ArchLogger.set_output_level(ArchLogger.INFO)
 
-<#if config.environment.environment == "gym">
-    env = ${rlFrameworkModule}.environment.GymEnvironment(<#if config.environment.name??>'${config.environment.name}'<#else>'CartPole-v0'</#if>)
+<#if config.environment?? && config.environmentName == "gym">
+    env = ${rlFrameworkModule}.environment.GymEnvironment(<#if config.environmentParameters['name']??>'${config.environmentParameters['name']}'<#else>'CartPole-v0'</#if>)
 <#else>
     env_params = {
         'ros_node_name': '${config.instanceName}TrainerNode',
-<#if config.environment.state_topic??>
-        'state_topic': '${config.environment.state_topic}',
+<#if config.environment?? && config.environmentParameters['state']??>
+        'state_topic': '${config.environmentParameters['state']}',
 </#if>
-<#if config.environment.action_topic??>
-        'action_topic': '${config.environment.action_topic}',
+<#if config.environment?? && config.environmentParameters['action']??>
+        'action_topic': '${config.environmentParameters['action']}',
 </#if>
-<#if config.environment.reset_topic??>
-        'reset_topic': '${config.environment.reset_topic}',
+<#if config.environment?? && config.environmentParameters['reset']??>
+        'reset_topic': '${config.environmentParameters['reset']}',
 </#if>
-<#if config.environment.terminal_state_topic??>
-        'terminal_state_topic': '${config.environment.terminal_state_topic}',
+<#if config.environment?? && config.environmentParameters['terminal']??>
+        'terminal_state_topic': '${config.environmentParameters['terminal']}',
 </#if>
-<#if config.environment.reward_topic??>
-        'reward_topic': '${config.environment.reward_topic}',
+<#if config.environment?? && config.environmentParameters['reward']??>
+        'reward_topic': '${config.environmentParameters['reward']}',
 </#if>
     }
     env = ${rlFrameworkModule}.environment.RosEnvironment(**env_params)
