@@ -6,21 +6,26 @@
 <#else>
         'use_fix_target': False,
 </#if>
-<#if (config.configuration.loss)??>
+<#if (config.loss)??>
         'loss_function': '${config.lossName}',
-<#if (config.lossParams)??>
+<#if (config.lossParameters)??>
         'loss_params': {
-<#list config.lossParams?keys as param>
-            '${param}': ${config.lossParams[param]}<#sep>,
+<#list config.lossParameters?keys as param>
+            '${param}': ${config.lossParameters[param]}<#sep>,
 </#list>
 },
 </#if>
 </#if>
-<#if (config.configuration.optimizer)??>
+<#if (config.optimizer)??>
         'optimizer': '${config.optimizerName}',
         'optimizer_params': {
-<#list config.optimizerParams?keys as param>
-            '${param}': ${config.optimizerParams[param]}<#sep>,
+<#list config.optimizerParameters?keys as param>
+                <#assign paramName = param>
+                <#assign paramValue = config.optimizerParameters[param]>
+                <#if param == "learning_rate_policy">
+                        <#assign paramValue = "'${paramValue}'">
+                </#if>
+                '${paramName}': ${paramValue}<#sep>,
 </#list>
         },
 </#if>

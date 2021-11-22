@@ -12,6 +12,7 @@ import time
 import shutil
 from mxnet import gluon, autograd, nd
 
+import CNNCreator_${config.instanceName}
 import CNNDataLoader_${config.instanceName}
 <#if gmAlgorithm.equals("gan")>
 import CNNCreator_${config.instanceName}
@@ -106,16 +107,20 @@ if __name__ == "__main__":
 <#if (config.evalMetric)??>
         eval_metric='${config.evalMetric}',
 </#if>
-<#if (config.configuration.optimizer)??>
+<#if (config.optimizer)??>
         optimizer='${config.optimizerName}',
         optimizer_params={
-<#list config.optimizerParams?keys as param>
-            '${param}': ${config.optimizerParams[param]}<#sep>,
+<#list config.optimizerParameters?keys as param>
+            '${param}': ${config.optimizerParameters[param]}<#sep>,
 </#list>
         },
 </#if>
-<#if (config.network_loss_params)??>
-        network_loss_params=[<#list config.network_loss_params as value>${value}<#sep>,</#list>],
+<#if (config.discriminatorOptimizer)??>
+        discriminator_optimizer= '${config.discriminatorOptimizerName}',
+        discriminator_optimizer_params= {
+<#list config.discriminatorOptimizerParameters?keys as param>
+            '${param}': ${config.discriminatorOptimizerParameters[param]}<#sep>,
+</#list>},
 </#if>
 <#if (config.constraintDistributions)??>
 <#assign map = (config.constraintDistributions)>
@@ -148,13 +153,13 @@ if __name__ == "__main__":
         },
 </#if>
 <#if (config.noiseDistribution)??>
-        noise_distribution = '${config.noiseDistribution.name}',
+        noise_distribution = '${config.noiseDistributionName}',
         noise_distribution_params = {
-<#if (config.noiseDistribution.mean_value)??>
-            'mean_value': ${config.noiseDistribution.mean_value},
+<#if (config.noiseDistributionParameters['mean_value'])??>
+            'mean_value': ${config.noiseDistributionParameters['mean_value']},
 </#if>
-<#if (config.noiseDistribution.spread_value)??>
-            'spread_value': ${config.noiseDistribution.spread_value}
+<#if (config.noiseDistributionParameters['spread_value'])??>
+            'spread_value': ${config.noiseDistributionParameters['spread_value']}
 </#if>
      },
 </#if>

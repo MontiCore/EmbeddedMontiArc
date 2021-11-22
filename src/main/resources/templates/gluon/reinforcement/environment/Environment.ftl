@@ -8,17 +8,17 @@ import logging
 logging.basicConfig(level=logging.INFO)
 logger = logging.getLogger(__name__)
 <#if config.hasRewardFunction() >
-import ${config.rewardFunctionName}_executor
+import ${config.rewardFunctionComponentName}_executor
 
 class RewardFunction(object):
     def __init__(self):
-        self.__reward_wrapper = ${config.rewardFunctionName}_executor.${config.rewardFunctionName}_executor()
+        self.__reward_wrapper = ${config.rewardFunctionComponentName}_executor.${config.rewardFunctionComponentName}_executor()
         self.__reward_wrapper.init()
 
     def reward(self, state, terminal):
         s = state.astype('${config.rewardFunctionStateParameter.dtype}')
         t = bool(terminal)
-        inp = ${config.rewardFunctionName}_executor.${config.rewardFunctionName}_input()
+        inp = ${config.rewardFunctionComponentName}_executor.${config.rewardFunctionComponentName}_input()
         inp.${config.rewardFunctionStateParameter.name} = s
         inp.${config.rewardFunctionTerminalParameter.name} = t
         output = self.__reward_wrapper.execute(inp)
@@ -49,7 +49,7 @@ class Environment:
     def close(self):
         pass
 
-<#if config.environment.environment == "gym">
+<#if config.environment?? && config.environmentName == "gym">
 import gym
 class GymEnvironment(Environment):
     def __init__(self, env_name, **kwargs):

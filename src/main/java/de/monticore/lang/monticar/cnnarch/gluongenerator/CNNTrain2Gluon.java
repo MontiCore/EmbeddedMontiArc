@@ -1,6 +1,8 @@
 /* (c) https://github.com/MontiCore/monticore */
 package de.monticore.lang.monticar.cnnarch.gluongenerator;
 
+import com.google.common.base.Splitter;
+import com.google.common.collect.Lists;
 import com.google.common.collect.Maps;
 import de.monticore.lang.embeddedmontiarc.embeddedmontiarc._symboltable.instanceStructure.EMAComponentInstanceSymbol;
 import de.monticore.lang.monticar.cnnarch._symboltable.ArchitectureSymbol;
@@ -8,9 +10,15 @@ import de.monticore.lang.monticar.cnnarch.generator.ConfigurationData;
 
 import de.monticore.lang.monticar.cnnarch.generator.CNNTrainGenerator;
 import de.monticore.lang.monticar.cnnarch.generator.TemplateConfiguration;
-import de.monticore.lang.monticar.cnntrain._symboltable.*;
+import de.monticore.lang.monticar.cnnarch.generator.annotations.ArchitectureAdapter;
+import de.monticore.lang.monticar.cnnarch.generator.annotations.NNArchitecture;
+import de.monticore.lang.monticar.cnnarch.generator.reinforcement.FunctionParameterChecker;
+import de.monticore.lang.monticar.cnnarch.generator.reinforcement.RewardFunctionParameterAdapter;
+import de.monticore.lang.monticar.cnnarch.generator.reinforcement.RewardFunctionSourceGenerator;
+import de.monticore.lang.monticar.cnnarch.generator.training.RlAlgorithm;
+import de.monticore.lang.monticar.cnnarch.generator.training.TrainingComponentsContainer;
+import de.monticore.lang.monticar.cnnarch.generator.training.TrainingConfiguration;
 import de.monticore.lang.monticar.generator.FileContent;
-import de.monticore.lang.monticar.generator.cpp.GeneratorCPP;
 import de.monticore.lang.monticar.generator.pythonwrapper.GeneratorPythonWrapperStandaloneApi;
 import de.monticore.lang.monticar.generator.pythonwrapper.symbolservices.data.ComponentPortInformation;
 import de.monticore.lang.tagging._symboltable.TaggingResolver;
@@ -27,156 +35,143 @@ import java.nio.charset.StandardCharsets;
 import java.nio.file.Files;
 import java.nio.file.Path;
 import java.nio.file.Paths;
-import java.util.*;
+import java.util.ArrayList;
+import java.util.List;
+import java.util.Map;
+import java.util.Optional;
 import java.util.stream.Collectors;
 
+import static de.monticore.lang.monticar.cnnarch.generator.training.TrainingParameterConstants.OPTIMIZER_ADAMW;
+
 public class CNNTrain2Gluon extends CNNTrainGenerator {
+
     private static final String REINFORCEMENT_LEARNING_FRAMEWORK_MODULE = "reinforcement_learning";
     private static final String GM_LEARNING_FRAMEWORK_MODULE = "generative_model";
 
     private final RewardFunctionSourceGenerator rewardFunctionSourceGenerator;
     private String rootProjectModelsDir;
 
-    public Optional<String> getRootProjectModelsDir() {
-        return Optional.ofNullable(rootProjectModelsDir);
-    }
-
-    public void setRootProjectModelsDir(String rootProjectModelsDir) {
-        this.rootProjectModelsDir = rootProjectModelsDir;
+    public static void main(String[] args) {
+        ClassLoader loader = CNNTrain2Gluon.class.getClassLoader();
+        System.out.println(loader.getResource("de/monticore/lang/monticar/cnnarch/gluongenerator/CNNTrain2Gluon.class"));
     }
 
     public CNNTrain2Gluon(RewardFunctionSourceGenerator rewardFunctionSourceGenerator) {
-        trainParamSupportChecker = new CNNArch2GluonTrainParamSupportChecker();
-
+        super(new CNNArch2GluonTrainParamSupportChecker());
         this.rewardFunctionSourceGenerator = rewardFunctionSourceGenerator;
     }
 
     @Override
-    public ConfigurationSymbol getConfigurationSymbol(Path modelsDirPath, String rootModelName) {
-        ConfigurationSymbol configurationSymbol = super.getConfigurationSymbol(modelsDirPath, rootModelName);
-        return configurationSymbol;
-    }
-
-    @Override
     public void generate(Path modelsDirPath, String rootModelName) {
-        ConfigurationSymbol configuration = this.getConfigurationSymbol(modelsDirPath, rootModelName);
+        TrainingConfiguration trainingConfiguration = createTrainingConfiguration(modelsDirPath, rootModelName);
 
-        if (configuration.getLearningMethod().equals(LearningMethod.REINFORCEMENT)) {
-            throw new IllegalStateException("Cannot call generate of reinforcement configuration without specifying " +
-                    "the trained architecture");
+        TrainingComponentsContainer trainingComponentsContainer = new TrainingComponentsContainer();
+        GluonConfigurationData configurationData = new GluonConfigurationData(trainingConfiguration, trainingComponentsContainer, getInstanceName());
+        if (configurationData.isReinforcementLearning()) {
+            throw new IllegalStateException("Cannot call generate of reinforcement configuration without specifying the trained architecture");
         }
-
-        generateFilesFromConfigurationSymbol(configuration);
+        generateFilesFromConfigurationSymbol(trainingConfiguration, trainingComponentsContainer);
     }
 
-    private void generateFilesFromConfigurationSymbol(ConfigurationSymbol configuration) {
-        List<FileContent> fileContents = this.generateStrings(configuration);
-        GeneratorCPP genCPP = new GeneratorCPP();
-        genCPP.setGenerationTargetPath(this.getGenerationTargetPath());
-
-        try {
-            for (FileContent fileContent : fileContents) {
-                genCPP.generateFile(fileContent);
-            }
-        } catch (IOException var8) {
-            Log.error("CNNTrainer file could not be generated" + var8.getMessage());
-        }
-    }
-
-    public void generate(Path modelsDirPath,
-                         String rootModelName,
-                         NNArchitectureSymbol trainedArchitecture,
-                         NNArchitectureSymbol supportNetwork) {
-        ConfigurationSymbol configurationSymbol = this.getConfigurationSymbol(modelsDirPath, rootModelName);
-        configurationSymbol.setTrainedArchitecture(trainedArchitecture);
-        if (configurationSymbol.isGenerativeModelLearningMethod()){
-            if (configurationSymbol.getGmAlgorithm().get() == GMAlgorithm.VAE){
-                configurationSymbol.setEncoderNetwork(supportNetwork);
-            } else if (configurationSymbol.getGmAlgorithm().get() == GMAlgorithm.GAN){
-                configurationSymbol.setDiscriminatorNetwork(supportNetwork);
-            }
-        } else if (configurationSymbol.isReinforcementLearningMethod()){
-            configurationSymbol.setCriticNetwork(supportNetwork);
-        }
-        ArchitectureSymbol supportNet = ((ArchitectureAdapter) supportNetwork).getArchitectureSymbol();
-        ArchitectureSymbol trainedArchitectureSymbol = ((ArchitectureAdapter) trainedArchitecture).getArchitectureSymbol();
-        supportNet.setAuxiliaryArchitecture(trainedArchitectureSymbol);
-        this.setRootProjectModelsDir(modelsDirPath.toString());
-        generateFilesFromConfigurationSymbol(configurationSymbol);
-    }
-
-    public void generate(Path modelsDirPath,
-                         String rootModelName,
-                         NNArchitectureSymbol trainedArchitecture,
-                         NNArchitectureSymbol discriminatorNetwork,
-                         NNArchitectureSymbol qNetwork) {
-        ConfigurationSymbol configurationSymbol = this.getConfigurationSymbol(modelsDirPath, rootModelName);
-        configurationSymbol.setTrainedArchitecture(trainedArchitecture);
-        configurationSymbol.setDiscriminatorNetwork(discriminatorNetwork);
-        configurationSymbol.setQNetwork(qNetwork);
-        this.setRootProjectModelsDir(modelsDirPath.toString());
-        generateFilesFromConfigurationSymbol(configurationSymbol);
-    }
-
-    public void generate(Path modelsDirPath, String rootModelName, NNArchitectureSymbol trainedArchitecture) {
+    public void generate(Path modelsDirPath, String rootModelName, ArchitectureAdapter trainedArchitecture) {
         generate(modelsDirPath, rootModelName, trainedArchitecture, null);
     }
 
-    @Override
-    public List<FileContent> generateStrings(ConfigurationSymbol configuration) {
-        TemplateConfiguration templateConfiguration = new GluonTemplateConfiguration();
-        GluonConfigurationData configData = new GluonConfigurationData(configuration, getInstanceName());//, getJointTrainedInstanceNames());
-        List<ConfigurationData> configDataList = new ArrayList<>();
-        configDataList.add(configData);
+    public void generate(Path modelsDirPath, String rootModelName, ArchitectureAdapter trainedArchitecture,
+                         ArchitectureAdapter criticNetwork) {
+        TrainingConfiguration trainingConfiguration = createTrainingConfiguration(modelsDirPath, rootModelName);
 
+        TrainingComponentsContainer trainingComponentsContainer = new TrainingComponentsContainer();
+        trainingComponentsContainer.setTrainedArchitecture(trainingConfiguration, trainedArchitecture);
+        if (criticNetwork != null) {
+            trainingComponentsContainer.setCriticNetwork(criticNetwork);
+        }
+
+        setRootProjectModelsDir(modelsDirPath.toString());
+        generateFilesFromConfigurationSymbol(trainingConfiguration, trainingComponentsContainer);
+    }
+
+    public void generate(Path modelsDirPath, String rootModelName, ArchitectureAdapter trainedArchitecture, ArchitectureAdapter discriminatorNetwork, ArchitectureAdapter qNetwork) {
+        TrainingConfiguration trainingConfiguration = createTrainingConfiguration(modelsDirPath, rootModelName);
+
+        TrainingComponentsContainer trainingComponentsContainer = new TrainingComponentsContainer();
+        trainingComponentsContainer.setTrainedArchitecture(trainingConfiguration, trainedArchitecture);
+        trainingComponentsContainer.setDiscriminatorNetwork(discriminatorNetwork);
+        if (qNetwork != null) {
+            trainingComponentsContainer.setQNetwork(qNetwork);
+        }
+
+        setRootProjectModelsDir(modelsDirPath.toString());
+        generateFilesFromConfigurationSymbol(trainingConfiguration, trainingComponentsContainer);
+    }
+
+    @Override
+    public List<FileContent> generateStrings(TrainingConfiguration trainingConfiguration, TrainingComponentsContainer trainingComponentsContainer) {
+        validateConfiguration(trainingConfiguration, trainingComponentsContainer);
+
+        TemplateConfiguration templateConfiguration = new GluonTemplateConfiguration();
+        GluonConfigurationData configurationData = new GluonConfigurationData(trainingConfiguration,
+                trainingComponentsContainer, getInstanceName());
+
+        List<GluonConfigurationData> configDataList = Lists.newArrayList(configurationData);
         Map<String, Object> ftlContext = Maps.newHashMap();
         ftlContext.put("configurations", configDataList);
 
         List<FileContent> fileContents = new ArrayList<>();
-
-        //Context Information and Optimizer for local adaption during prediction for replay memory layer (the second only applicaple for supervised learning)
+        //Context Information and Optimizer for local adaption during prediction for replay memory layer (the second only applicable for supervised learning)
         String cnnTrainLAOptimizerTemplateContent = templateConfiguration.processTemplate(ftlContext, "CNNLAOptimizer.ftl");
         fileContents.add(new FileContent(cnnTrainLAOptimizerTemplateContent, "CNNLAOptimizer_" + getInstanceName() + ".h"));
 
-        //AdamW optimizer if used for training
-        if(configuration.getOptimizer() != null) {
-            String optimizerName = configuration.getOptimizer().getName();
-            Optional<OptimizerSymbol> criticOptimizer = configuration.getCriticOptimizer();
+        // AdamW optimizer if used for training
+        if(trainingConfiguration.hasOptimizer()) {
+            String optimizerName = trainingConfiguration.getOptimizerName().get();
+
             String criticOptimizerName = "";
-            if (criticOptimizer.isPresent()) {
-                criticOptimizerName = criticOptimizer.get().getName();
+            if (trainingConfiguration.hasCriticOptimizer()) {
+                criticOptimizerName = trainingConfiguration.getCriticOptimizerName().get();
             }
-            if (optimizerName.equals("adamw") || criticOptimizerName.equals("adamw")) {
+
+            if (optimizerName.equals(OPTIMIZER_ADAMW) || criticOptimizerName.equals(OPTIMIZER_ADAMW)) {
                 String adamWContent = templateConfiguration.processTemplate(ftlContext, "Optimizer/AdamW.ftl");
                 fileContents.add(new FileContent(adamWContent, "AdamW.py"));
             }
         }
 
-        if (configData.isSupervisedLearning()) {
+        if (trainingConfiguration.isSupervisedLearning()) {
             String cnnTrainTrainerTemplateContent = templateConfiguration.processTemplate(ftlContext, "CNNTrainer.ftl");
             fileContents.add(new FileContent(cnnTrainTrainerTemplateContent, "CNNTrainer_" + getInstanceName() + ".py"));
-        } else if (configData.isGenerativeModelLearning()) {
+
+        } else if (trainingConfiguration.isGanLearning()) {
+
             final String trainerName = "CNNTrainer_" + getInstanceName();
-            final GMAlgorithm algorithm = configData.getGMAlgorithm();
-            String tempdirectory = "/";
-            Boolean generatePythonFilesOnly = true;
-            NNArchitectureSymbol genericNetArchitectureSymbol = null;
+            Optional<ArchitectureAdapter> discriminatorNetworkOpt = trainingComponentsContainer.getDiscriminatorNetwork();
+            if (!discriminatorNetworkOpt.isPresent()) {
+                Log.error("No architecture model for discriminator available but is required for chosen " +
+                        "GAN");
+            }
 
-            de.monticore.lang.monticar.cnnarch.gluongenerator.CNNArch2Gluon gluonGenerator = new de.monticore.lang.monticar.cnnarch.gluongenerator.CNNArch2Gluon();
+            ArchitectureAdapter genericArchitectureSymbol = discriminatorNetworkOpt.get();
+            ArchitectureSymbol disArchitectureSymbol = genericArchitectureSymbol.getArchitectureSymbol();
+
+            CNNArch2Gluon gluonGenerator = new CNNArch2Gluon();
             gluonGenerator.setGenerationTargetPath(
-                    Paths.get(getGenerationTargetPath(), GM_LEARNING_FRAMEWORK_MODULE).toString());
+                    Paths.get(getGenerationTargetPath(), GAN_LEARNING_FRAMEWORK_MODULE).toString());
 
-            if (algorithm.equals(GMAlgorithm.GAN)) {
-                if (!configuration.getDiscriminatorNetwork().isPresent()) {
-                    Log.error("No architecture model for discriminator available but is required for chosen " +
-                            "GAN");
-                }
-                tempdirectory = "gan";
+            List<FileContent> disArchitectureFileContents
+                    = gluonGenerator.generateStringsAllowMultipleIO(disArchitectureSymbol, true);
 
-                if (configuration.hasQNetwork()) {
-                    NNArchitectureSymbol genericQArchitectureSymbol = configuration.getQNetwork().get();
-                    ArchitectureSymbol qArchitectureSymbol
-                            = ((ArchitectureAdapter) genericQArchitectureSymbol).getArchitectureSymbol();
+            final String disCreatorName = disArchitectureFileContents.get(0).getFileName();
+            final String discriminatorInstanceName = disCreatorName.substring(
+                    disCreatorName.indexOf('_') + 1, disCreatorName.lastIndexOf(".py"));
+
+            fileContents.addAll(disArchitectureFileContents.stream()
+                    .map(k -> new FileContent(k.getFileContent(), GAN_LEARNING_FRAMEWORK_MODULE + "/" + k.getFileName()))
+                    .collect(Collectors.toList()));
+
+            Optional<ArchitectureAdapter> qNetworkOpt = trainingComponentsContainer.getQNetwork();
+            if (qNetworkOpt.isPresent()) {
+                ArchitectureAdapter genericQArchitectureSymbol = qNetworkOpt.get();
+                ArchitectureSymbol qArchitectureSymbol = genericQArchitectureSymbol.getArchitectureSymbol();
 
                     List<FileContent> qArchitectureFileContents
                             = gluonGenerator.generateStringsAllowMultipleIO(qArchitectureSymbol, true);
@@ -238,23 +233,26 @@ public class CNNTrain2Gluon extends CNNTrainGenerator {
             fileContents.add(new FileContent(initContent, GM_LEARNING_FRAMEWORK_MODULE +  "/__init__.py"));
 
 
+            final String ganTrainerContent = templateConfiguration.processTemplate(ftlContext, "gan/Trainer.ftl");
+            fileContents.add(new FileContent(ganTrainerContent, trainerName + ".py"));
 
-        } else if (configData.isReinforcementLearning()) {
+        } else if (trainingConfiguration.isReinforcementLearning()) {
             final String trainerName = "CNNTrainer_" + getInstanceName();
-            final RLAlgorithm rlAlgorithm = configData.getRlAlgorithm();
+            final Optional<RlAlgorithm> rlAlgorithmOpt = trainingConfiguration.getRlAlgorithm();
+//            if (!rlAlgorithmOpt.isPresent()) {
+//                throw new GenerationAbortedException("Reinforcement learning algorithm must be defined in a reinforcement learning scenario");
+//            }
 
-            if (rlAlgorithm.equals(RLAlgorithm.DDPG)
-                    || rlAlgorithm.equals(RLAlgorithm.TD3)) {
-
-                if (!configuration.getCritic().isPresent()) {
+            if (rlAlgorithmOpt.isPresent() && (rlAlgorithmOpt.get().equals(RlAlgorithm.DDPG) || rlAlgorithmOpt.get().equals(RlAlgorithm.TD3))) {
+                Optional<ArchitectureAdapter> criticNetworkOpt = trainingComponentsContainer.getCriticNetwork();
+                if (!criticNetworkOpt.isPresent()) {
                     Log.error("No architecture model for critic available but is required for chosen " +
                             "actor-critic algorithm");
                 }
-                NNArchitectureSymbol genericArchitectureSymbol = configuration.getCritic().get();
-                ArchitectureSymbol architectureSymbol
-                        = ((ArchitectureAdapter) genericArchitectureSymbol).getArchitectureSymbol();
+                ArchitectureAdapter genericArchitectureSymbol = criticNetworkOpt.get();
+                ArchitectureSymbol architectureSymbol = genericArchitectureSymbol.getArchitectureSymbol();
 
-                de.monticore.lang.monticar.cnnarch.gluongenerator.CNNArch2Gluon gluonGenerator = new CNNArch2Gluon();
+                CNNArch2Gluon gluonGenerator = new CNNArch2Gluon();
                 gluonGenerator.setGenerationTargetPath(
                         Paths.get(getGenerationTargetPath(), REINFORCEMENT_LEARNING_FRAMEWORK_MODULE).toString());
                 List<FileContent> architectureFileContents
@@ -273,19 +271,19 @@ public class CNNTrain2Gluon extends CNNTrainGenerator {
             }
 
             // Generate Reward function if necessary
-            if (configuration.getRlRewardFunction().isPresent()) {
-                if (configuration.getTrainedArchitecture().isPresent()) {
-                    generateRewardFunction(configuration.getTrainedArchitecture().get(),
-                            configuration.getRlRewardFunction().get(), Paths.get(rootProjectModelsDir));
+            if (trainingConfiguration.hasRewardFunction()) {
+                Optional<ArchitectureAdapter> trainedArchitectureOpt = trainingComponentsContainer.getTrainedArchitecture();
+                if (trainedArchitectureOpt.isPresent()) {
+                    Optional<String> rewardFunctionName = trainingConfiguration.getRewardFunctionName();
+                    generateRewardFunction(trainedArchitectureOpt.get(), rewardFunctionName.get(), trainingComponentsContainer, Paths.get(rootProjectModelsDir));
                 } else {
                     Log.error("No architecture model for the trained neural network but is required for " +
                             "reinforcement learning configuration.");
                 }
-
             }
 
             ftlContext.put("trainerName", trainerName);
-            List<FileContent> rlFrameworkContentMap = constructReinforcementLearningFramework(templateConfiguration, ftlContext, rlAlgorithm);
+            List<FileContent> rlFrameworkContentMap = constructReinforcementLearningFramework(templateConfiguration, ftlContext);
             fileContents.addAll(rlFrameworkContentMap);
 
             final String reinforcementTrainerContent = templateConfiguration.processTemplate(ftlContext, "reinforcement/Trainer.ftl");
@@ -294,16 +292,22 @@ public class CNNTrain2Gluon extends CNNTrainGenerator {
             final String startTrainerScriptContent = templateConfiguration.processTemplate(ftlContext, "reinforcement/StartTrainer.ftl");
             fileContents.add(new FileContent(startTrainerScriptContent, "start_training.sh"));
         }
+
         return fileContents;
     }
 
-    private void generateRewardFunction(NNArchitectureSymbol trainedArchitecture,
-                                        RewardFunctionSymbol rewardFunctionSymbol, Path modelsDirPath) {
+    public Optional<String> getRootProjectModelsDir() {
+        return Optional.ofNullable(rootProjectModelsDir);
+    }
+
+    public void setRootProjectModelsDir(String rootProjectModelsDir) {
+        this.rootProjectModelsDir = rootProjectModelsDir;
+    }
+
+    private void generateRewardFunction(NNArchitecture trainedArchitecture, String rewardFunctionName,
+                                        TrainingComponentsContainer trainingComponentsContainer, Path modelsDirPath) {
+
         GeneratorPythonWrapperStandaloneApi pythonWrapperApi = new GeneratorPythonWrapperStandaloneApi();
-
-        List<String> fullNameOfComponent = rewardFunctionSymbol.getRewardFunctionComponentName();
-
-        String rewardFunctionRootModel = String.join(".", fullNameOfComponent);
         String rewardFunctionOutputPath = Paths.get(this.getGenerationTargetPath(), "reward").toString();
 
         if (!getRootProjectModelsDir().isPresent()) {
@@ -313,9 +317,10 @@ public class CNNTrain2Gluon extends CNNTrainGenerator {
         final TaggingResolver taggingResolver
                 = rewardFunctionSourceGenerator.createTaggingResolver(getRootProjectModelsDir().get());
         final EMAComponentInstanceSymbol emaSymbol
-                = rewardFunctionSourceGenerator.resolveSymbol(taggingResolver, rewardFunctionRootModel);
+                = rewardFunctionSourceGenerator.resolveSymbol(taggingResolver, rewardFunctionName);
         rewardFunctionSourceGenerator.generate(emaSymbol, taggingResolver, rewardFunctionOutputPath);
-        fixArmadilloEmamGenerationOfFile(Paths.get(rewardFunctionOutputPath, String.join("_", fullNameOfComponent) + ".h"));
+        List<String> rewardFunctionNameComponents = Splitter.on(".").splitToList(rewardFunctionName);
+        fixArmadilloEmamGenerationOfFile(Paths.get(rewardFunctionOutputPath, String.join("_", rewardFunctionNameComponents) + ".h"));
 
         String pythonWrapperOutputPath = Paths.get(rewardFunctionOutputPath, "pylib").toString();
 
@@ -332,7 +337,7 @@ public class CNNTrain2Gluon extends CNNTrainGenerator {
         }
         RewardFunctionParameterAdapter functionParameter = new RewardFunctionParameterAdapter(componentPortInformation);
         new FunctionParameterChecker().check(functionParameter, trainedArchitecture);
-        rewardFunctionSymbol.setRewardFunctionParameter(functionParameter);
+        trainingComponentsContainer.setRewardFunctionParameter(functionParameter);
     }
 
     private void fixArmadilloEmamGenerationOfFile(Path pathToBrokenFile) {
@@ -349,10 +354,9 @@ public class CNNTrain2Gluon extends CNNTrainGenerator {
         }
     }
 
-    private List<FileContent> constructReinforcementLearningFramework(
-            final TemplateConfiguration templateConfiguration,
-            final Map<String, Object> ftlContext,
-            RLAlgorithm rlAlgorithm) {
+    private List<FileContent> constructReinforcementLearningFramework(final TemplateConfiguration templateConfiguration,
+                                                                              final Map<String, Object> ftlContext) {
+
         List<FileContent> fileContents = new ArrayList<>();
         ftlContext.put("rlFrameworkModule", REINFORCEMENT_LEARNING_FRAMEWORK_MODULE);
 

@@ -2,7 +2,9 @@
 package de.monticore.lang.monticar.cnnarch.gluongenerator.preprocessing;
 
 import com.google.common.collect.Lists;
-import de.monticore.lang.monticar.cnnarch.gluongenerator.reinforcement.RewardFunctionParameterAdapter;
+import de.monticore.lang.monticar.cnnarch.generator.preprocessing.PreprocessingComponentParameterAdapter;
+import de.monticore.lang.monticar.cnnarch.generator.preprocessing.PreprocessingPortChecker;
+import de.monticore.lang.monticar.cnnarch.generator.reinforcement.RewardFunctionParameterAdapter;
 import de.monticore.lang.monticar.generator.pythonwrapper.symbolservices.data.ComponentPortInformation;
 import de.monticore.lang.monticar.generator.pythonwrapper.symbolservices.data.EmadlType;
 import de.monticore.lang.monticar.generator.pythonwrapper.symbolservices.data.PortDirection;
@@ -16,7 +18,6 @@ import java.util.List;
 
 import static org.junit.Assert.assertEquals;
 import static org.junit.Assert.assertTrue;
-import static org.mockito.Mockito.mock;
 
 public class PreprocessingParameterCheckerTest {
     private static final PortVariable INPUT1_PORT = PortVariable.primitiveVariableFrom("port1", EmadlType.Q,

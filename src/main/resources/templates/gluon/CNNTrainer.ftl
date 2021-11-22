@@ -26,88 +26,79 @@ if __name__ == "__main__":
     )
 
     ${config.instanceName}_trainer.train(
-<#if (config.batchSize)??>
+    <#if (config.batchSize)??>
         batch_size=${config.batchSize},
-</#if>
-<#if (config.numEpoch)??>
+    </#if>
+    <#if (config.numEpoch)??>
         num_epoch=${config.numEpoch},
-</#if>
-<#if (config.loadCheckpoint)??>
+    </#if>
+    <#if (config.loadCheckpoint)??>
         load_checkpoint=${config.loadCheckpoint?string("True","False")},
-</#if>
-<#if (config.checkpointPeriod)??>
+    </#if>
+    <#if (config.checkpointPeriod)??>
         checkpoint_period=${config.checkpointPeriod},
-</#if>
-<#if (config.logPeriod)??>
+    </#if>
+    <#if (config.logPeriod)??>
         log_period=${config.logPeriod},
-</#if>
-<#if (config.loadPretrained)??>
-        load_pretrained="${config.loadPretrained?string("True","False")}",
-</#if>
-<#if (config.context)??>
+    </#if>
+    <#if (config.loadPretrained)??>
+        load_pretrained=${config.loadPretrained?string("True","False")},
+    </#if>
+    <#if (config.context)??>
         context='${config.context}',
-</#if>
-<#if (config.preprocessor)??>
+    </#if>
+    <#if (config.preprocessor)??>
         preprocessing=${config.preprocessor?string("True","False")},
-</#if>
-<#if (config.normalize)??>
+    </#if>
+    <#if (config.normalize)??>
         normalize=${config.normalize?string("True","False")},
-</#if>
-<#if (config.labeledTraining)??>
-        labeled_training=${config.labeledTraining},
-</#if>
-<#if (config.labelClasses)??>
-        label_classes=${config.labelClasses},
-</#if>
-<#if (config.klLossWeight)??>
-        kl_loss_weight=${config.klLossWeight},
-</#if>
-<#if (config.shuffleData)??>
+    </#if>
+    <#if (config.shuffleData)??>
     shuffle_data=${config.shuffleData?string("True","False")},
-</#if>
-<#if (config.clipGlobalGradNorm)??>
+    </#if>
+    <#if (config.clipGlobalGradNorm)??>
         clip_global_grad_norm=${config.clipGlobalGradNorm},
-</#if>
-<#if (config.useTeacherForcing)??>
+    </#if>
+    <#if (config.useTeacherForcing)??>
         use_teacher_forcing='${config.useTeacherForcing?string("True","False")}',
-</#if>
-<#if (config.saveAttentionImage)??>
+    </#if>
+    <#if (config.saveAttentionImage)??>
         save_attention_image='${config.saveAttentionImage?string("True","False")}',
-</#if>
-<#if (config.evalMetric)??>
-        eval_metric='${config.evalMetric.name}',
+    </#if>
+    <#if (config.evalMetric)??>
+        eval_metric='${config.evalMetricName}',
         eval_metric_params={
-<#if (config.evalMetric.exclude)??>
-            'exclude': [<#list config.evalMetric.exclude as value>${value}<#sep>, </#list>],
-</#if>
-<#if (config.evalMetric.axis)??>
-            'axis': ${config.evalMetric.axis},
-</#if>
-<#if (config.evalMetric.metric_ignore_label)??>
-            'metric_ignore_label': ${config.evalMetric.metric_ignore_label},
-</#if>
+        <#if (config.evalMetricParameters)??>
+        <#list config.evalMetricParameters?keys as param>
+            '${param}': ${config.evalMetricParameters[param]}<#sep>,
+        </#list>
+        </#if>
         },
-</#if>
-<#if (config.evalTrain)??>
+    </#if>
+    <#if (config.evalTrain)??>
         eval_train=${config.evalTrain?string("True","False")},
-</#if>
-<#if (config.configuration.loss)??>
+    </#if>
+    <#if (config.loss)??>
         loss='${config.lossName}',
-<#if (config.lossParams)??>
-        loss_params={
-<#list config.lossParams?keys as param>
-            '${param}': ${config.lossParams[param]}<#sep>,
-</#list>
+        <#if (config.lossParameters)??>
+            loss_params={
+            <#list config.lossParameters?keys as param>
+                '${param}': ${config.lossParameters[param]}<#sep>,
+            </#list>
 },
-</#if>
-</#if>
-<#if (config.configuration.optimizer)??>
+        </#if>
+    </#if>
+    <#if (config.optimizer)??>
         optimizer='${config.optimizerName}',
         optimizer_params={
-<#list config.optimizerParams?keys as param>
-            '${param}': ${config.optimizerParams[param]}<#sep>,
-</#list>
-}
-</#if>
+        <#list config.optimizerParameters?keys as param>
+            <#assign paramName = param>
+            <#assign paramValue = config.optimizerParameters[param]>
+            <#if param == "learning_rate_policy">
+                <#assign paramValue = "'${paramValue}'">
+            </#if>
+            '${paramName}': ${paramValue}<#sep>,
+        </#list>}
+    </#if>
     )
 </#list>
