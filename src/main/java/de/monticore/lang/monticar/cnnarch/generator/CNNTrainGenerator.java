@@ -1,7 +1,6 @@
 /* (c) https://github.com/MontiCore/monticore */
 package de.monticore.lang.monticar.cnnarch.generator;
 
-import com.google.common.io.Resources;
 import conflang._cocos.ConfLangCoCoChecker;
 import conflang._cocos.ConfLangCocoFactory;
 import conflang._symboltable.ConfLangLanguage;
@@ -29,7 +28,6 @@ import java.io.IOException;
 import java.net.URI;
 import java.net.URISyntaxException;
 import java.net.URL;
-import java.nio.charset.StandardCharsets;
 import java.nio.file.FileSystem;
 import java.nio.file.FileSystems;
 import java.nio.file.Path;
@@ -64,7 +62,6 @@ public abstract class CNNTrainGenerator {
         System.out.println(schemasResource);
         List<SchemaDefinitionSymbol> schemaDefinitionSymbols;
         try {
-            String content = Resources.toString(url, StandardCharsets.UTF_8);
             assert schemasResource != null;
             FileSystem fileSystem = initFileSystem(schemasResource.toURI());
             System.out.println("fileSystem:");
