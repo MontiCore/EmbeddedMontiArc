@@ -25,13 +25,11 @@ import schemalang.validation.Violation;
 import schemalang.validation.exception.SchemaLangException;
 
 import java.io.IOException;
+import java.net.URI;
 import java.net.URISyntaxException;
 import java.net.URL;
-import java.nio.file.Path;
-import java.nio.file.Paths;
-import java.util.Collection;
-import java.util.List;
-import java.util.Optional;
+import java.nio.file.*;
+import java.util.*;
 
 import static de.monticore.lang.monticar.cnnarch.generator.validation.Constants.ROOT_SCHEMA;
 import static de.monticore.lang.monticar.cnnarch.generator.validation.Constants.ROOT_SCHEMA_MODEL_PATH;
@@ -55,6 +53,7 @@ public abstract class CNNTrainGenerator {
         List<SchemaDefinitionSymbol> schemaDefinitionSymbols;
         try {
             assert schemasResource != null;
+            FileSystem fileSystem = initFileSystem(schemasResource.toURI());
             Path path = Paths.get(schemasResource.toURI());
             ModelPath modelPath = new ModelPath(path);
             SchemaDefinitionSymbol schema = resolveSchemaDefinition(ROOT_SCHEMA, modelPath);
@@ -72,8 +71,18 @@ public abstract class CNNTrainGenerator {
         } catch (URISyntaxException e) {
             throw new RuntimeException(String.format("Generation aborted, since there the path '%s' is not valid.",
                 schemasResource.toString()));
+        } catch (IOException e) {
+            throw new RuntimeException(String.format("Generation aborted. File system could not be created."), e);
         }
         return TrainingConfiguration.create(configuration, schemaDefinitionSymbols);
+    }
+
+    private FileSystem initFileSystem(URI uri) throws IOException {
+        try {
+            return FileSystems.getDefault();
+        } catch(Exception e) {
+            return FileSystems.newFileSystem(uri, Collections.emptyMap());
+        }
     }
 
     private ConfigurationSymbol resolveTrainingConfiguration(Path modelsDirPath, String rootModelName) {
