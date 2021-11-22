@@ -25,25 +25,27 @@ private:
 public:
     explicit CNNLAOptimizer_${config.instanceName}(){
     
-<#if (config.configuration.optimizer)??>
+<#if (config.optimizer)??>
 <#if config.optimizerName == "adamw">
         optimizerHandle = OptimizerRegistry::Find("adam");    
 <#else>    
         optimizerHandle = OptimizerRegistry::Find("${config.optimizerName}");
 </#if> 
-<#list config.optimizerParams?keys as param>
+<#list config.optimizerParameters?keys as param>
 <#if param == "learning_rate">
-        optimizerHandle->SetParam("lr", ${config.optimizerParams[param]});
+        optimizerHandle->SetParam("lr", ${config.optimizerParameters[param]});
 <#elseif param == "weight_decay">
-        optimizerHandle->SetParam("wd", ${config.optimizerParams[param]});
+        optimizerHandle->SetParam("wd", ${config.optimizerParameters[param]});
+<#elseif param == "learning_rate_policy">
+    optimizerHandle->SetParam("learning_rate_policy", '${config.optimizerParameters[param]}');
 <#elseif param == "learning_rate_decay">
-<#assign learningRateDecay = config.optimizerParams[param]>
+<#assign learningRateDecay = config.optimizerParameters[param]>
 <#elseif param == "learning_rate_minimum">
-<#assign minLearningRate = config.optimizerParams[param]> 
+<#assign minLearningRate = config.optimizerParameters[param]>
 <#elseif param == "step_size">
-<#assign stepSize = config.optimizerParams[param]>     
+<#assign stepSize = config.optimizerParameters[param]>
 <#else>
-        optimizerHandle->SetParam("${param}", ${config.optimizerParams[param]});
+        optimizerHandle->SetParam("${param}", ${config.optimizerParameters[param]});
 </#if>
 </#list>
 <#if (learningRateDecay)?? && (stepSize)??>
@@ -52,7 +54,70 @@ public:
 </#if>
         std::unique_ptr<LRScheduler> lrScheduler(new FactorScheduler(${stepSize}, ${learningRateDecay}, ${minLearningRate}));
         optimizerHandle->SetLRScheduler(std::move(lrScheduler));
-</#if>    
+</#if>
+<#elseif (config.actorOptimizer)??>
+<#if config.actorOptimizerName == "adamw">
+        optimizerHandle = OptimizerRegistry::Find("adam");
+<#else>
+        optimizerHandle = OptimizerRegistry::Find("${config.actorOptimizerName}");
+</#if>
+<#list config.actorOptimizerParameters?keys as param>
+<#if param == "learning_rate">
+        optimizerHandle->SetParam("lr", ${config.actorOptimizerParameters[param]});
+<#elseif param == "weight_decay">
+        optimizerHandle->SetParam("wd", ${config.actorOptimizerParameters[param]});
+<#elseif param == "learning_rate_policy">
+    optimizerHandle->SetParam("learning_rate_policy", '${config.actorOptimizerParameters[param]}');
+<#elseif param == "learning_rate_decay">
+<#assign learningRateDecay = config.actorOptimizerParameters[param]>
+<#elseif param == "learning_rate_minimum">
+<#assign minLearningRate = config.actorOptimizerParameters[param]>
+<#elseif param == "step_size">
+<#assign stepSize = config.actorOptimizerParameters[param]>
+<#else>
+        optimizerHandle->SetParam("${param}", ${config.actorOptimizerParameters[param]});
+</#if>
+</#list>
+<#if (learningRateDecay)?? && (stepSize)??>
+<#if !(minLearningRate)??>
+<#assign minLearningRate = "1e-08">
+</#if>
+        std::unique_ptr<LRScheduler> lrScheduler(new FactorScheduler(${stepSize}, ${learningRateDecay}, ${minLearningRate}));
+        optimizerHandle->SetLRScheduler(std::move(lrScheduler));
+</#if>
+<#elseif (config.criticOptimizer)??>
+<#if config.criticOptimizerName == "adamw">
+        optimizerHandle = OptimizerRegistry::Find("adam");
+<#else>
+        optimizerHandle = OptimizerRegistry::Find("${config.criticOptimizerName}");
+</#if>
+<#list config.criticOptimizerParameters?keys as param>
+<#if param == "learning_rate">
+        optimizerHandle->SetParam("lr", ${config.criticOptimizerParameters[param]});
+<#elseif param == "weight_decay">
+        optimizerHandle->SetParam("wd", ${config.criticOptimizerParameters[param]});
+<#elseif param == "learning_rate_policy">
+    optimizerHandle->SetParam("learning_rate_policy", '${config.criticOptimizerParameters[param]}');
+<#elseif param == "learning_rate_decay">
+<#assign learningRateDecay = config.criticOptimizerParameters[param]>
+<#elseif param == "learning_rate_minimum">
+<#assign minLearningRate = config.criticOptimizerParameters[param]>
+<#elseif param == "step_size">
+<#assign stepSize = config.criticOptimizerParameters[param]>
+<#else>
+        optimizerHandle->SetParam("${param}", ${config.criticOptimizerParameters[param]});
+</#if>
+</#list>
+<#if (learningRateDecay)?? && (stepSize)??>
+<#if !(minLearningRate)??>
+<#assign minLearningRate = "1e-08">
+</#if>
+        std::unique_ptr<LRScheduler> lrScheduler(new FactorScheduler(${stepSize}, ${learningRateDecay}, ${minLearningRate}));
+        optimizerHandle->SetLRScheduler(std::move(lrScheduler));
+</#if>
+
+
+
 <#else>
        optimizerHandle = OptimizerRegistry::Find("adam"); 
        optimizerHandle->SetParam("lr", 0.001);

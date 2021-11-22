@@ -3,7 +3,9 @@ package de.monticore.lang.monticar.cnnarch.gluongenerator.reinforcement;
 
 import com.google.common.collect.ImmutableMap;
 import com.google.common.collect.Lists;
-import de.monticore.lang.monticar.cnntrain._symboltable.NNArchitectureSymbol;
+import de.monticore.lang.monticar.cnnarch.generator.annotations.NNArchitecture;
+import de.monticore.lang.monticar.cnnarch.generator.reinforcement.FunctionParameterChecker;
+import de.monticore.lang.monticar.cnnarch.generator.reinforcement.RewardFunctionParameterAdapter;
 import de.monticore.lang.monticar.generator.pythonwrapper.symbolservices.data.ComponentPortInformation;
 import de.monticore.lang.monticar.generator.pythonwrapper.symbolservices.data.EmadlType;
 import de.monticore.lang.monticar.generator.pythonwrapper.symbolservices.data.PortDirection;
@@ -14,9 +16,9 @@ import org.junit.Before;
 import org.junit.Test;
 
 import java.util.List;
-import java.util.Map;
 
-import static org.junit.Assert.*;
+import static org.junit.Assert.assertEquals;
+import static org.junit.Assert.assertTrue;
 import static org.mockito.Mockito.mock;
 import static org.mockito.Mockito.when;
 
@@ -34,8 +36,8 @@ public class FunctionParameterCheckerTest {
 
     @Before
     public void setup() {
-       Log.getFindings().clear();
-       Log.enableFailQuick(false);
+        Log.getFindings().clear();
+        Log.enableFailQuick(false);
     }
 
     @Test
@@ -102,8 +104,8 @@ public class FunctionParameterCheckerTest {
     public void invalidRewardStateUnequalToTrainedArchitectureState1() {
         // given
         RewardFunctionParameterAdapter adapter = getValidRewardAdapter();
-        NNArchitectureSymbol trainedArchitectureWithDifferenDimension = getTrainedArchitectureWithStateDimensions(
-            Lists.newArrayList(6));
+        NNArchitecture trainedArchitectureWithDifferenDimension = getTrainedArchitectureWithStateDimensions(
+                Lists.newArrayList(6));
 
         // when
         uut.check(adapter, trainedArchitectureWithDifferenDimension);
@@ -116,8 +118,8 @@ public class FunctionParameterCheckerTest {
     public void invalidRewardStateUnequalToTrainedArchitectureState2() {
         // given
         RewardFunctionParameterAdapter adapter = getValidRewardAdapter();
-        NNArchitectureSymbol trainedArchitectureWithDifferenDimension = getTrainedArchitectureWithStateDimensions(
-            Lists.newArrayList(3, 8));
+        NNArchitecture trainedArchitectureWithDifferenDimension = getTrainedArchitectureWithStateDimensions(
+                Lists.newArrayList(3, 8));
 
         // when
         uut.check(adapter, trainedArchitectureWithDifferenDimension);
@@ -130,8 +132,8 @@ public class FunctionParameterCheckerTest {
     public void invalidRewardStateUnequalToTrainedArchitectureState3() {
         // given
         RewardFunctionParameterAdapter adapter = getValidRewardAdapter();
-        NNArchitectureSymbol trainedArchitectureWithDifferenDimension = getTrainedArchitectureWithStateDimensions(
-            Lists.newArrayList(2,4,3));
+        NNArchitecture trainedArchitectureWithDifferenDimension = getTrainedArchitectureWithStateDimensions(
+                Lists.newArrayList(2,4,3));
 
         // when
         uut.check(adapter, trainedArchitectureWithDifferenDimension);
@@ -144,17 +146,17 @@ public class FunctionParameterCheckerTest {
         ComponentPortInformation componentPortInformation = new ComponentPortInformation(COMPONENT_NAME);
         componentPortInformation.addAllInputs(getValidInputPortVariables());
         List<PortVariable> outputs = Lists.newArrayList(PortVariable.multidimensionalVariableFrom(
-        "output", EmadlType.Q, PortDirection.OUTPUT, Lists.newArrayList(2,2)));
+                "output", EmadlType.Q, PortDirection.OUTPUT, Lists.newArrayList(2,2)));
         componentPortInformation.addAllOutputs(outputs);
         return new RewardFunctionParameterAdapter(componentPortInformation);
     }
 
     private RewardFunctionParameterAdapter getComponentWithTwoQInputs() {
         ComponentPortInformation componentPortInformation
-            = new ComponentPortInformation(COMPONENT_NAME);
+                = new ComponentPortInformation(COMPONENT_NAME);
         List<PortVariable> inputs = Lists.newArrayList(STATE_PORT,
-            PortVariable.multidimensionalVariableFrom("input2", EmadlType.Q, PortDirection.INPUT,
-                Lists.newArrayList(2,3,2)));
+                PortVariable.multidimensionalVariableFrom("input2", EmadlType.Q, PortDirection.INPUT,
+                        Lists.newArrayList(2,3,2)));
         componentPortInformation.addAllInputs(inputs);
         componentPortInformation.addAllOutputs(getValidOutputPorts());
         return new RewardFunctionParameterAdapter(componentPortInformation);
@@ -162,7 +164,7 @@ public class FunctionParameterCheckerTest {
 
     private RewardFunctionParameterAdapter getComponentWithTwoOutputs() {
         ComponentPortInformation componentPortInformation
-            = new ComponentPortInformation(COMPONENT_NAME);
+                = new ComponentPortInformation(COMPONENT_NAME);
         componentPortInformation.addAllInputs(getValidInputPortVariables());
         List<PortVariable> outputs = getValidOutputPorts();
         outputs.add(PortVariable.primitiveVariableFrom("output2", EmadlType.B, PortDirection.OUTPUT));
@@ -172,7 +174,7 @@ public class FunctionParameterCheckerTest {
 
     private RewardFunctionParameterAdapter getComponentWithOneInput() {
         ComponentPortInformation componentPortInformation
-            = new ComponentPortInformation(COMPONENT_NAME);
+                = new ComponentPortInformation(COMPONENT_NAME);
         componentPortInformation.addAllInputs(Lists.newArrayList(STATE_PORT));
         componentPortInformation.addAllOutputs(getValidOutputPorts());
         return new RewardFunctionParameterAdapter(componentPortInformation);
@@ -180,7 +182,7 @@ public class FunctionParameterCheckerTest {
 
     private RewardFunctionParameterAdapter getValidRewardAdapter() {
         ComponentPortInformation componentPortInformation
-            = new ComponentPortInformation(COMPONENT_NAME);
+                = new ComponentPortInformation(COMPONENT_NAME);
         componentPortInformation.addAllInputs(getValidInputPortVariables());
         componentPortInformation.addAllOutputs(getValidOutputPorts());
         return new RewardFunctionParameterAdapter(componentPortInformation);
@@ -194,23 +196,23 @@ public class FunctionParameterCheckerTest {
         return Lists.newArrayList(STATE_PORT, TERMINAL_PORT);
     }
 
-    private NNArchitectureSymbol getValidTrainedArchitecture() {
-        NNArchitectureSymbol nnArchitectureSymbol = mock(NNArchitectureSymbol.class);
+    private NNArchitecture getValidTrainedArchitecture() {
+        NNArchitecture nnArchitectureSymbol = mock(NNArchitecture.class);
         final String stateInputName = "stateInput";
         when(nnArchitectureSymbol.getInputs()).thenReturn(Lists.newArrayList(stateInputName));
         when(nnArchitectureSymbol.getDimensions()).thenReturn(ImmutableMap.<String, List<Integer>>builder()
-            .put(stateInputName, STATE_DIMENSIONS)
-            .build());
+                .put(stateInputName, STATE_DIMENSIONS)
+                .build());
         return nnArchitectureSymbol;
     }
 
-    private NNArchitectureSymbol getTrainedArchitectureWithStateDimensions(final List<Integer> dimensions) {
-        NNArchitectureSymbol nnArchitectureSymbol = mock(NNArchitectureSymbol.class);
+    private NNArchitecture getTrainedArchitectureWithStateDimensions(final List<Integer> dimensions) {
+        NNArchitecture nnArchitectureSymbol = mock(NNArchitecture.class);
         final String stateInputName = "stateInput";
         when(nnArchitectureSymbol.getInputs()).thenReturn(Lists.newArrayList(stateInputName));
         when(nnArchitectureSymbol.getDimensions()).thenReturn(ImmutableMap.<String, List<Integer>>builder()
-            .put(stateInputName, dimensions)
-            .build());
+                .put(stateInputName, dimensions)
+                .build());
         return nnArchitectureSymbol;
     }
 }
