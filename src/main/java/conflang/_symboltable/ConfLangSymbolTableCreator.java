@@ -3,9 +3,9 @@ package conflang._symboltable;
 import com.google.common.base.Joiner;
 import com.google.common.collect.Lists;
 import com.google.common.collect.Maps;
-import conflang._ast.ASTConfigurationEntry;
 import conflang._ast.ASTConfLangCompilationUnit;
 import conflang._ast.ASTConfiguration;
+import conflang._ast.ASTConfigurationEntry;
 import conflang._ast.ASTNestedConfigurationEntry;
 import conflang._cocos.ConfLangCoCoChecker;
 import conflang._cocos.ConfLangCocoFactory;
@@ -18,7 +18,6 @@ import de.monticore.symboltable.*;
 import de.monticore.types.types._ast.ASTImportStatement;
 import de.se_rwth.commons.Names;
 import de.se_rwth.commons.logging.Log;
-import org.apache.commons.lang3.StringUtils;
 
 import java.util.*;
 
@@ -48,7 +47,6 @@ public class ConfLangSymbolTableCreator extends ConfLangSymbolTableCreatorTOP {
     @Override
     public void visit(ASTConfLangCompilationUnit compilationUnit) {
         super.visit(compilationUnit);
-        // checker.checkAll(compilationUnit);
 
         Optional<? extends MutableScope> mutableScope = currentScope();
         mutableScope.ifPresent(scope -> globalScope = (GlobalScope) scope);
@@ -91,7 +89,6 @@ public class ConfLangSymbolTableCreator extends ConfLangSymbolTableCreatorTOP {
         super.visit(node);
         ASTQualifiedName qualifiedName = node.getValue();
         List<String> partsList = qualifiedName.getPartList();
-        partsList.set(partsList.size() - 1, StringUtils.capitalize(partsList.get(partsList.size() - 1)));
         String value = Joiner.on('.').join(partsList);
         setSymbolValue(node, value);
     }
