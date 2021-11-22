@@ -28,8 +28,14 @@ import java.io.IOException;
 import java.net.URI;
 import java.net.URISyntaxException;
 import java.net.URL;
-import java.nio.file.*;
-import java.util.*;
+import java.nio.file.FileSystem;
+import java.nio.file.FileSystems;
+import java.nio.file.Path;
+import java.nio.file.Paths;
+import java.util.Collection;
+import java.util.Collections;
+import java.util.List;
+import java.util.Optional;
 
 import static de.monticore.lang.monticar.cnnarch.generator.validation.Constants.ROOT_SCHEMA;
 import static de.monticore.lang.monticar.cnnarch.generator.validation.Constants.ROOT_SCHEMA_MODEL_PATH;
@@ -50,11 +56,17 @@ public abstract class CNNTrainGenerator {
         setInstanceName(rootModelName);
 
         URL schemasResource = getClass().getClassLoader().getResource(ROOT_SCHEMA_MODEL_PATH);
+        URL url = getClass().getResource(ROOT_SCHEMA_MODEL_PATH + ROOT_SCHEMA);
+        System.out.println("urls:");
+        System.out.println(url);
+        System.out.println(schemasResource);
         List<SchemaDefinitionSymbol> schemaDefinitionSymbols;
         try {
             assert schemasResource != null;
             FileSystem fileSystem = initFileSystem(schemasResource.toURI());
-            Path path = Paths.get(schemasResource.toURI());
+            System.out.println("fileSystem:");
+            System.out.println(fileSystem);
+            Path path = fileSystem.getPath(schemasResource.getPath());
             ModelPath modelPath = new ModelPath(path);
             SchemaDefinitionSymbol schema = resolveSchemaDefinition(ROOT_SCHEMA, modelPath);
             SchemaLangCoCoChecker checkerWithAllCoCos = SchemaLangCocoFactory.getCheckerWithAllCoCos();
