@@ -1,46 +1,43 @@
 /* (c) https://github.com/MontiCore/monticore */
 package de.monticore.lang.monticar.cnnarch.mxnetgenerator;
 
-import de.monticore.io.paths.ModelPath;
+import com.google.common.collect.Lists;
 import de.monticore.lang.monticar.cnnarch.generator.CNNTrainGenerator;
-import de.monticore.lang.monticar.cnnarch.generator.ConfigurationData;
 import de.monticore.lang.monticar.cnnarch.generator.TemplateConfiguration;
-import de.monticore.lang.monticar.cnntrain._symboltable.ConfigurationSymbol;
+import de.monticore.lang.monticar.cnnarch.generator.training.TrainingComponentsContainer;
+import de.monticore.lang.monticar.cnnarch.generator.training.TrainingConfiguration;
 import de.monticore.lang.monticar.generator.FileContent;
-import de.monticore.lang.monticar.generator.cpp.GeneratorCPP;
-import de.se_rwth.commons.logging.Log;
 
 import java.nio.file.Path;
-import java.io.IOException;
-import java.util.*;
+import java.util.ArrayList;
+import java.util.Collections;
+import java.util.List;
+import java.util.Map;
 
 public class CNNTrain2MxNet extends CNNTrainGenerator {
 
     public CNNTrain2MxNet() {
-        trainParamSupportChecker = new CNNArch2MxNetTrainParamSupportChecker();
+        super(new CNNArch2MxNetTrainParamSupportChecker());
     }
 
     @Override
     public void generate(Path modelsDirPath, String rootModelName) {
-        ConfigurationSymbol configuration = getConfigurationSymbol(modelsDirPath, rootModelName);
-        List<FileContent> fileContents = generateStrings(configuration);
-        GeneratorCPP genCPP = new GeneratorCPP();
-        genCPP.setGenerationTargetPath(getGenerationTargetPath());
-        try {
-            for (FileContent fileContent : fileContents){
-                genCPP.generateFile(fileContent);
-            }
-        } catch (IOException e) {
-            Log.error("CNNTrainer file could not be generated" + e.getMessage());
+        TrainingConfiguration trainingConfiguration = createTrainingConfiguration(modelsDirPath, rootModelName);
+        MXNetConfigurationData configurationData = new MXNetConfigurationData(trainingConfiguration,
+                new TrainingComponentsContainer(), getInstanceName(), new CNNArch2MxNetTrainParamSupportChecker());
+        if (configurationData.isReinforcementLearning()) {
+            throw new IllegalStateException("Cannot call generate of reinforcement configuration without specifying " +
+                    "the trained architecture");
         }
+        generateFilesFromConfigurationSymbol(trainingConfiguration, new TrainingComponentsContainer());
     }
 
     @Override
-    public List<FileContent>  generateStrings(ConfigurationSymbol configuration) {
+    public List<FileContent> generateStrings(TrainingConfiguration trainingConfiguration, TrainingComponentsContainer trainingComponentsContainer) {
         TemplateConfiguration templateConfiguration = new MxNetTemplateConfiguration();
-        ConfigurationData configData = new ConfigurationData(configuration, getInstanceName());
-        List<ConfigurationData> configDataList = new ArrayList<>();
-        configDataList.add(configData);
+        MXNetConfigurationData configData = new MXNetConfigurationData(trainingConfiguration,
+                trainingComponentsContainer, getInstanceName(), new CNNArch2MxNetTrainParamSupportChecker());
+        List<MXNetConfigurationData> configDataList = Lists.newArrayList(configData);
         Map<String, Object> ftlContext = Collections.singletonMap("configurations", configDataList);
 
         String templateContent = templateConfiguration.processTemplate(ftlContext, "CNNTrainer.ftl");
