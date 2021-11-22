@@ -1,20 +1,23 @@
 /* (c) https://github.com/MontiCore/monticore */
 package de.monticore.lang.monticar.cnnarch.caffe2generator;
 
+import de.monticore.lang.monticar.cnnarch.generator.GenerationAbortedException;
 import de.se_rwth.commons.logging.Log;
 import freemarker.template.TemplateException;
 import org.apache.commons.cli.ParseException;
 import org.junit.Before;
 import org.junit.Rule;
 import org.junit.Test;
+import org.junit.contrib.java.lang.system.Assertion;
+import org.junit.contrib.java.lang.system.ExpectedSystemExit;
 
 import java.io.IOException;
 import java.nio.file.Path;
 import java.nio.file.Paths;
-import java.util.*;
+import java.util.Arrays;
 
-import org.junit.contrib.java.lang.system.Assertion;
-import org.junit.contrib.java.lang.system.ExpectedSystemExit;
+import static junit.framework.Assert.assertEquals;
+import static junit.framework.Assert.fail;
 import static junit.framework.TestCase.assertTrue;
 
 public class GenerationTest extends AbstractSymtabTest{
@@ -34,7 +37,6 @@ public class GenerationTest extends AbstractSymtabTest{
         String[] args = {"-m", "src/test/resources/architectures", "-r", "LeNet", "-o", "./target/generated-sources-cnnarch/"};
         CNNArch2Caffe2Cli.main(args);
         assertTrue(Log.getFindings().isEmpty());
-
         checkFilesAreEqual(
                 Paths.get("./target/generated-sources-cnnarch"),
                 Paths.get("./src/test/resources/target_code"),
@@ -76,7 +78,6 @@ public class GenerationTest extends AbstractSymtabTest{
         String[] args = {"-m", "src/test/resources/architectures", "-r", "VGG16", "-o", "./target/generated-sources-cnnarch/"};
         CNNArch2Caffe2Cli.main(args);
         assertTrue(Log.getFindings().isEmpty());
-
         checkFilesAreEqual(
                 Paths.get("./target/generated-sources-cnnarch"),
                 Paths.get("./src/test/resources/target_code"),
@@ -223,4 +224,32 @@ public class GenerationTest extends AbstractSymtabTest{
         CNNArch2Caffe2Cli.main(args);
     }
 
+    @Test
+    public void testGenerationWithoutTrainingConfigurationFails() {
+        Log.getFindings().clear();
+        Path modelPath = Paths.get("src/test/resources/valid_tests");
+
+        try {
+            CNNTrain2Caffe2 trainGenerator = new CNNTrain2Caffe2();
+            trainGenerator.generate(modelPath, "ModelWithoutTrainingConfiguration");
+            fail("A RuntimeException should have been thrown!");
+        } catch (RuntimeException e) {
+            assertEquals(1, Log.getErrorCount());
+            assertEquals("Could not resolve training configuration for model 'ModelWithoutTrainingConfiguration'.", e.getMessage());
+        }
+    }
+
+    @Test
+    public void testSchemaIsCheckedBeforeGenerationStarts() {
+        Log.getFindings().clear();
+        Path modelPath = Paths.get("src/test/resources/valid_tests");
+
+        try {
+            CNNTrain2Caffe2 trainGenerator = new CNNTrain2Caffe2();
+            trainGenerator.generate(modelPath, "InvalidSchemaDefinition");
+            fail("A GenerationAbortedException should have been thrown!");
+        } catch (GenerationAbortedException e) {
+            assertEquals("Generation aborted due to errors in the training configuration.", e.getMessage());
+        }
+    }
 }
