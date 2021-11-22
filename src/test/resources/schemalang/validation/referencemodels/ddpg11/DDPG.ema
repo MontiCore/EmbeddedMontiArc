@@ -1,0 +1,32 @@
+/* (c) https://github.com/MontiCore/monticore */
+package ddpg11;
+
+component DDPG {
+
+    component Environment {
+        ports out T state,
+              out B terminal,
+              in U action,
+              in B reset;
+    }
+
+    component Actor {
+        ports in T state,
+              out U action;
+    }
+
+     component Critic {
+        ports in T state,
+              in U action,
+              out Q qvalue;
+    }
+
+    instance Actor actor;
+    instance Critic critic;
+    instance Environment environment;
+
+    connect actor.action -> critic.action;
+    connect actor.action -> environment.action;
+    connect environment.state -> critic.state;
+    connect environment.state -> actor.state;
+}

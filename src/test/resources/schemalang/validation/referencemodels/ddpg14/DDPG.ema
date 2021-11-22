@@ -1,0 +1,21 @@
+/* (c) https://github.com/MontiCore/monticore */
+package ddpg14;
+
+component DDPG {
+
+    component Actor {
+        ports in T input_actor,
+              out U output_actor;
+    }
+
+    component Critic {
+        ports in U input_critic,
+              out T output_critic;
+    }
+
+    instance Actor actor;
+    instance Critic critic;
+
+    connect actor.output_actor -> critic.input_critic;
+    connect critic.output_critic -> actor.input_actor;
+}

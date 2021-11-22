@@ -1,0 +1,48 @@
+/* (c) https://github.com/MontiCore/monticore */
+
+grammar SchemaLang extends SchemaTypes {
+
+    SchemaLangCompilationUnit =
+            ("package" package:(Name& || ".")+ ";")?
+            ImportStatement* SchemaDefinition;
+
+    symbol scope SchemaDefinition =
+        "schema" name:Name SchemaExtendUsage?
+        "{" ReferenceModel? SchemaMember* "}";
+
+    SchemaExtendUsage =
+        "extends" superSchema:(QualifiedName || ",")+;
+
+    /**
+     * Common interface symbol of all schema members.
+     */
+    interface symbol SchemaMember = name:Name;
+
+    /**
+     * A constant value within a schema definition, e.g. an enum constant.
+     */
+    symbol SchemaConstant = name:Name;
+
+    /**
+     * Production rules for schema properties. SchemaLang supports two kinds of properties: 'basic' properties and enum properties.
+     */
+    symbol TypedDeclaration implements SchemaMember = name:Name ("=" initial:SignedLiteral)? ":" type:SchemaType [required:"!"]?;
+
+    symbol scope EnumeratedDeclaration implements SchemaMember =
+        name:Name ("=" initial:SignedLiteral)? ":" "enum" [required:"!"]? "{" enums:(SchemaConstant || ",")* ";" "}";
+
+    symbol scope ComplexPropertyDefinition implements SchemaMember = [override:"override"]?
+        name:Name "{" ComplexPropertyValues (SchemaMember | ComplexPropertyValueDefinition)* "}";
+
+    ComplexPropertyValues = "values" ":" values:(SchemaConstant || ",")+ ";";
+
+    symbol scope ComplexPropertyValueDefinition = "define" name:Name "{" SchemaMember+ "}";
+
+    symbol SchemaLink = name:Name schemaLinkReference:SchemaLinkReference?;
+    SchemaLinkReference = "->" schema:TypelessLiteral;
+    symbol scope NestedSchemaEnumLinkDefinition implements SchemaMember =
+        name:Name ("=" initial:SignedLiteral)? ":" "schema" "{" links:(SchemaLink || ",")* ";" "}";
+
+    symbol ReferenceModel = name:"reference-model" ":" referenceModel:(QualifiedName || ",")+;
+    symbol RequiresRule implements SchemaMember = name:Name "requires" dependencies:(Name || ",")+;
+}
