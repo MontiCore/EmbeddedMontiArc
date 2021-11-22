@@ -4,6 +4,7 @@ stages:
 #- windows
 - linux
 - trigger
+#- deploy
 
 githubjob:
   image: maven:3-jdk-8
@@ -68,6 +69,12 @@ BranchJobLinux:
     - .gitignore
     - .gitlab-ci.yml
 
+#deploy:
+#  stage: deploy
+#  image: maven:3-jdk-8
+#  script:
+#    - "mvn -Dorg.slf4j.simpleLogger.log.org.apache.maven.cli.transfer.Slf4jMavenTransferListener=warn -B  clean deploy --settings settings.xml"
+
 trigger-emadl:
   stage: trigger
   trigger:
@@ -75,5 +82,3 @@ trigger-emadl:
     branch: master
   only:
   - master
-
-

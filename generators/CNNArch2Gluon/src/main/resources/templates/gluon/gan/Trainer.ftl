@@ -70,19 +70,19 @@ if __name__ == "__main__":
 <#if (config.evalMetric)??>
         eval_metric='${config.evalMetric}',
 </#if>
-<#if (config.configuration.optimizer)??>
+<#if (config.optimizer)??>
         optimizer='${config.optimizerName}',
         optimizer_params={
-<#list config.optimizerParams?keys as param>
-            '${param}': ${config.optimizerParams[param]}<#sep>,
+<#list config.optimizerParameters?keys as param>
+            '${param}': ${config.optimizerParameters[param]}<#sep>,
 </#list>
         },
 </#if>
-<#if (config.configuration.criticOptimizer)??>
-        discriminator_optimizer= '${config.criticOptimizerName}',
+<#if (config.discriminatorOptimizer)??>
+        discriminator_optimizer= '${config.discriminatorOptimizerName}',
         discriminator_optimizer_params= {
-<#list config.criticOptimizerParams?keys as param>
-            '${param}': ${config.criticOptimizerParams[param]}<#sep>,
+<#list config.discriminatorOptimizerParameters?keys as param>
+            '${param}': ${config.discriminatorOptimizerParameters[param]}<#sep>,
 </#list>},
 </#if>
 <#if (config.constraintDistributions)??>
@@ -116,13 +116,13 @@ if __name__ == "__main__":
         },
 </#if>
 <#if (config.noiseDistribution)??>
-        noise_distribution = '${config.noiseDistribution.name}',
+        noise_distribution = '${config.noiseDistributionName}',
         noise_distribution_params = {
-<#if (config.noiseDistribution.mean_value)??>
-            'mean_value': ${config.noiseDistribution.mean_value},
+<#if (config.noiseDistributionParameters['mean_value'])??>
+            'mean_value': ${config.noiseDistributionParameters['mean_value']},
 </#if>
-<#if (config.noiseDistribution.spread_value)??>
-            'spread_value': ${config.noiseDistribution.spread_value}
+<#if (config.noiseDistributionParameters['spread_value'])??>
+            'spread_value': ${config.noiseDistributionParameters['spread_value']}
 </#if>
      },
 </#if>
