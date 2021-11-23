@@ -70,7 +70,7 @@
             <repositories>
                 <repository>
                     <id>central</id>
-                    <url>http://central</url>
+                    <url>https://repo1.maven.org/maven2/</url>
                     <releases>
                         <enabled />
                     </releases>
@@ -124,13 +124,6 @@
                     <id>rosjava_mvn</id>
                     <name>Public Rosjava repository</name>
                     <url>https://github.com/rosjava/rosjava_mvn_repo</url>
-                </repository>
-
-                <repository>
-                    <id>icm</id>
-                    <url>https://bio.informatik.uni-jena.de/repository/libs-release-oss/</url>
-                    <releases><enabled /></releases>
-                    <snapshots><enabled /></snapshots>
                 </repository>
             </repositories>
             
