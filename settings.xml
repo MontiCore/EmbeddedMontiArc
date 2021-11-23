@@ -43,6 +43,11 @@
             <mirrorOf>rosjava_mvn</mirrorOf>
             <url>https://github.com/rosjava/rosjava_mvn_repo/raw/master/</url>
         </mirror>
+        <mirror>
+            <id>central</id>
+            <mirrorOf>central</mirrorOf>
+            <url>http://maven.icm.edu.pl/artifactory/repo/</url>
+        </mirror>
     </mirrors>
 
     <profiles>
