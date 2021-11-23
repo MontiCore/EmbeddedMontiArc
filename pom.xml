@@ -259,11 +259,5 @@
             <url>https://github.com/rosjava/rosjava_mvn_repo/raw/master/</url>
         </repository>
 
-        <repository>
-            <id>jfrog</id>
-            <name>JFrog repository</name>
-            <url>https://repo.jfrog.org/artifactory/libs-releases</url>
-        </repository>
-
     </repositories>
 </project>

@@ -43,11 +43,6 @@
             <mirrorOf>rosjava_mvn</mirrorOf>
             <url>https://github.com/rosjava/rosjava_mvn_repo/raw/master/</url>
         </mirror>
-        <mirror> 
-            <id>jfrog_repo</id>
-            <mirrorOf>jfrog</mirrorOf>
-            <url>https://repo.jfrog.org/artifactory/libs-releases</url>
-        </mirror>
     </mirrors>
 
     <profiles>
@@ -128,15 +123,8 @@
                 <repository>
                     <id>rosjava_mvn</id>
                     <name>Public Rosjava repository</name>
-                    <url>https://github.com/rosjava/rosjava_mvn_repo/raw/master</url>
+                    <url>https://github.com/rosjava/rosjava_mvn_repo</url>
                 </repository>
-                <repository>
-                    <id>jfrog</id>
-                    <name>JFrog repository</name>
-                    <url>https://repo.jfrog.org/artifactory/libs-releases</url>
-                </repository>
-
-
             </repositories>
             
             <pluginRepositories>
