@@ -30,7 +30,7 @@
         <mirror>
             <id>icm-repository</id>
             <mirrorOf>icm</mirrorOf>
-            <url>http://maven.icm.edu.pl/artifactory/repo/</url>
+            <url>https://bio.informatik.uni-jena.de/repository/libs-release-oss/</url>
         </mirror>
     </mirrors>
 
@@ -65,7 +65,7 @@
                 </repository>
                 <repository>
                     <id>icm</id>
-                    <url>http://maven.icm.edu.pl/artifactory/repo/</url>
+                    <url>https://bio.informatik.uni-jena.de/repository/libs-release-oss/</url>
                     <releases><enabled /></releases>
                     <snapshots><enabled /></snapshots>
                 </repository>
