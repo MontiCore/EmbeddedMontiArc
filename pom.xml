@@ -260,10 +260,15 @@
         </repository>
 
         <repository>
-            <id>jfrog</id>
-            <name>JFrog repository</name>
-            <url>https://repo.jfrog.org/artifactory/libs-releases</url>
+            <id>central</id>
+            <name>Central Repository</name>
+            <url>https://repo1.maven.org/maven2/</url>
         </repository>
 
+        <repository>
+            <id>spring</id>
+            <name>Spring Repository</name>
+            <url>https://repo.spring.io/libs-release/</url>
+        </repository>
     </repositories>
 </project>
