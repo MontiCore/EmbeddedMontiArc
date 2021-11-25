@@ -95,7 +95,7 @@ public class ModelArtifactCreatorTest {
 
     File utilsDirectory = new File(getClass().getClassLoader().getResource("emadl/classifier/utils").getFile());
     File networkEMADL = new File(getClass().getClassLoader().getResource("emadl/classifier/Network.emadl").getFile());
-    File networkCNNT = new File(getClass().getClassLoader().getResource("emadl/classifier/Network.cnnt").getFile());
+    File networkCNNT = new File(getClass().getClassLoader().getResource("emadl/classifier/Network.conf").getFile());
     File[] files = new File[] {utilsDirectory, networkEMADL, networkCNNT};
 
     when(modelPath.listFiles()).thenReturn(files);
@@ -107,7 +107,7 @@ public class ModelArtifactCreatorTest {
     assertEquals(networkEMADL.getAbsolutePath().replace('\\', '/'), fileLocations.get(1).getSourceLocation().replace('\\', '/'));
     assertEquals("classifier/Network.emadl", fileLocations.get(1).getJarLocation().replace('\\', '/'));
     assertEquals(networkCNNT.getAbsolutePath().replace('\\', '/'), fileLocations.get(2).getSourceLocation().replace('\\', '/'));
-    assertEquals("classifier/Network.cnnt", fileLocations.get(2).getJarLocation().replace('\\', '/'));
+    assertEquals("classifier/Network.conf", fileLocations.get(2).getJarLocation().replace('\\', '/'));
   }
 
   @Test
