@@ -90,6 +90,30 @@
                     </execution>
                 </executions>
             </plugin>
+            
+            <!-- Source Jar Configuration -->
+            <plugin>
+                <groupId>org.apache.maven.plugins</groupId>
+                <artifactId>maven-source-plugin</artifactId>
+                <version>${source.plugin}</version>
+                <executions>
+                    <execution>
+                        <id>create source jar</id>
+                        <phase>package</phase>
+                        <goals>
+                            <goal>jar-no-fork</goal>
+                        </goals>
+                        <configuration>
+                            <excludeResources>false</excludeResources>
+                            <includes>
+                                <include>**/*.java</include>
+                                <include>**/*.ftl</include>
+                            </includes>
+                        </configuration>
+                    </execution>
+                </executions>
+            </plugin>
+
 
         </plugins>
     </build>
