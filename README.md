@@ -22,6 +22,9 @@
 
 <br/>
 
+## Note for devs
+When you change the version of the maven-streamtest dependency, please also update it in the [training mojo](https://git.rwth-aachen.de/monticore/EmbeddedMontiArc/utilities/emadl-maven-plugin/-/blob/master/src/main/java/de/monticore/lang/monticar/utilities/mojos/TrainingMojo.java)!
+
 ## Describtion
 The **EMADL Maven Plugin** provides custom goals to package and deploy or install various aspects of an **E**mbedded**M**onti**A**rc 
 **D**eep **L**earning project as a JAR file. The files that can be packaged and deployed are:
