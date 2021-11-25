@@ -67,7 +67,7 @@ public class ModelArtifactCreator extends ArtifactCreator {
   }
 
   private static FileLocation createCNNTFileLocation(String packagePath, File model) {
-    File cnntFile = new File(String.format("%s%s", FilenameUtils.removeExtension(model.getAbsolutePath()), ".cnnt"));
+    File cnntFile = new File(String.format("%s%s", FilenameUtils.removeExtension(model.getAbsolutePath()), ".conf"));
     if (!cnntFile.exists()) {
       return null;
     }
@@ -84,4 +84,3 @@ public class ModelArtifactCreator extends ArtifactCreator {
   }
 
 }
-
