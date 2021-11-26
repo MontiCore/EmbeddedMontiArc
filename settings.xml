@@ -1,5 +1,10 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <!--
+
+    (c) https://github.com/MontiCore/monticore
+
+-->
+<!--
     (c) https://github.com/MontiCore/monticore
 -->
 <settings xmlns="http://maven.apache.org/SETTINGS/1.0.0" 
@@ -144,16 +149,6 @@
             </repositories>
             
             <pluginRepositories>
-                <pluginRepository>
-                    <id>central</id>
-                    <url>http://central</url>
-                    <releases>
-                        <enabled />
-                    </releases>
-                    <snapshots>
-                        <enabled />
-                    </snapshots>
-                </pluginRepository>
                 <pluginRepository>
                     <id>central</id>
                     <url>https://repo1.maven.org/maven2</url>
