@@ -83,6 +83,12 @@
             </repositories>
             <pluginRepositories>
                 <pluginRepository>
+                    <id>se-nexus</id>
+                    <url>https://nexus.se.rwth-aachen.de/content/groups/public</url>
+                    <releases><enabled>true</enabled> </releases>
+                    <snapshots><enabled>true</enabled> </snapshots>
+                </pluginRepository>
+                <pluginRepository>
                     <id>central</id>
                     <url>https://repo.maven.apache.org/maven2/</url>
                     <releases><enabled /></releases>
