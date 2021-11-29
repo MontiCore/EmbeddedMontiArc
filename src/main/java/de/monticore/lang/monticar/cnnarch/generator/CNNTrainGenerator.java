@@ -60,6 +60,7 @@ public abstract class CNNTrainGenerator {
             FileSystem fileSystem = initFileSystem(schemasResource.toURI());
             Path path = fileSystem.getPath(schemasResource.getPath());
             ModelPath modelPath = new ModelPath(path);
+            System.out.println(String.format("Model path for schema resolution: %s", modelPath.toString()));
 
             SchemaDefinitionSymbol schema = resolveSchemaDefinition(ROOT_SCHEMA, modelPath);
             SchemaLangCoCoChecker checkerWithAllCoCos = SchemaLangCocoFactory.getCheckerWithAllCoCos();
