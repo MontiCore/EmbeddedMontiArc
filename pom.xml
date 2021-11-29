@@ -14,6 +14,7 @@
     <properties>
         <EMAM2Middleware.version>0.1.2-SNAPSHOT</EMAM2Middleware.version>
         <EMADLGenerator.version>0.5.3-SNAPSHOT</EMADLGenerator.version>
+        <cnnarch-generator.version>0.4.10-SNAPSHOT</cnnarch-generator.version>
         <source.plugin>2.4</source.plugin>
         <!--misc-->
         <project.build.sourceEncoding>UTF-8</project.build.sourceEncoding>
@@ -114,8 +115,31 @@
                     </execution>
                 </executions>
             </plugin>
-
-
+            <plugin>
+                <artifactId>maven-dependency-plugin</artifactId>
+                <version>2.8</version>
+                <executions>
+                    <execution>
+                        <phase>compile</phase>
+                        <goals>
+                            <goal>unpack</goal>
+                        </goals>
+                        <configuration>
+                            <artifactItems>
+                                <artifactItem>
+                                    <groupId>de.monticore.lang.monticar</groupId>
+                                    <artifactId>cnnarch-generator</artifactId>
+                                    <version>${cnnarch-generator.version}</version>
+                                    <type>jar</type>
+                                    <overWrite>true</overWrite>
+                                    <outputDirectory>${project.build.directory}/classes</outputDirectory>
+                                    <includes>schemas/**/*.*</includes>
+                                </artifactItem>
+                            </artifactItems>
+                        </configuration>
+                    </execution>
+                </executions>
+            </plugin>
         </plugins>
     </build>
 
