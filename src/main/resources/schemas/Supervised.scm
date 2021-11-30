@@ -17,4 +17,5 @@ schema Supervised extends General {
     save_attention_image: B
     eval_metric: eval_metric_type
     loss: loss_type
+    onnx_export: B
 }

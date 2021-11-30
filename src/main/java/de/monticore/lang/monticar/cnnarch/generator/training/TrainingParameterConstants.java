@@ -48,6 +48,7 @@ public class TrainingParameterConstants {
     public static final String OPTIMIZER = "optimizer";
     public static final String ACTOR_OPTIMIZER = "actor_optimizer";
     public static final String CRITIC_OPTIMIZER = "critic_optimizer";
+    public static final String ONNX_EXPORT = "onnx_export";
 
     // Reinforcement
     public static final String REWARD_FUNCTION = "reward";
