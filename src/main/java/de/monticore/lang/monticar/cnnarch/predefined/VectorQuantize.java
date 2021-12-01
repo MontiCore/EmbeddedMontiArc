@@ -41,11 +41,6 @@ public class VectorQuantize extends PredefinedLayerDeclaration {
                         .constraints(Constraints.INTEGER, Constraints.POSITIVE)
                         .build(),
                 new ParameterSymbol.Builder()
-                        .name(AllPredefinedLayers.EMA_NAME)
-                        .constraints(Constraints.BOOLEAN)
-                        .defaultValue(true)
-                        .build(),
-                new ParameterSymbol.Builder()
                         .name(AllPredefinedLayers.BETA_NAME)
                         .constraints(Constraints.NUMBER)
                         .defaultValue(0.25)

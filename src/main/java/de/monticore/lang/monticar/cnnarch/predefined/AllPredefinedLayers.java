@@ -62,7 +62,6 @@ public class AllPredefinedLayers {
     public static final String CONVOLUTION3D_NAME = "Convolution3D";
     public static final String UP_CONVOLUTION3D_NAME = "UpConvolution3D";
     public static final String VECTOR_QUANTIZE_NAME = "VectorQuantize";
-    public static final String CONCAT_LABELS_NAME = "ConcatLabels";
 
     public static final String AdaNet_Name = "AdaNet"; //AdaNet layer
 
@@ -236,8 +235,7 @@ public class AllPredefinedLayers {
                 UpConvolution3D.create(),
                 AdaNet.create(),
                 Reparameterize.create(),
-                VectorQuantize.create(),
-                ConcatLabels.create());
+                VectorQuantize.create());
 
     }
 

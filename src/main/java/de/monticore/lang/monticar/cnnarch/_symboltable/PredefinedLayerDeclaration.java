@@ -172,12 +172,19 @@ abstract public class PredefinedLayerDeclaration extends LayerDeclarationSymbol 
         }
     }
 
-    /**
-     *  Check if Inputs of Layer have the same shape
-     */
     protected static enum HandlingSingleInputs {
         ALLOWED, IGNORED, RESTRICTED
     }
+
+    /**
+     * Check if Inputs of Layer have the same shape
+     * @param inputTypes: List of input Types
+     * @param layer: curremt Layer
+     * @param handling: HandlingSingleInputs Enum Value, either ALLOWED, IGNORED or RESTRICTED
+     * ALLOWED will skip the Check if there are only one Input.
+     * IGNORED will print a message that the Layer is redundant, but the Input may still be passed
+     * RESTRICTED will throw an error. This indicates that the Layer does not allow
+     */
     protected static void errorIfMultipleInputShapesAreNotEqual(List<ArchTypeSymbol> inputTypes, LayerSymbol layer, HandlingSingleInputs handling) {
         if (inputTypes.size() == 1){
             if (handling == HandlingSingleInputs.IGNORED) {
@@ -205,6 +212,19 @@ abstract public class PredefinedLayerDeclaration extends LayerDeclarationSymbol 
                                 "Input widths: " + Joiners.COMMA.join(widthList) + ". " +
                                 "Number of input channels: " + Joiners.COMMA.join(channelsList) + ". "
                         , layer.getSourcePosition());
+            }
+        }
+    }
+
+    protected static void errorIfInputNotFlattened(List<ArchTypeSymbol> inputTypes, LayerSymbol layer) {
+        if (!inputTypes.isEmpty()) {
+            for (ArchTypeSymbol inputType : layer.getInputTypes()) {
+                int height = inputType.getHeight();
+                int width = inputType.getWidth();
+                if (height != 1 || width != 1) {
+                    Log.error("0" + ErrorCodes.INVALID_ELEMENT_INPUT_SHAPE + " Invalid layer input." +
+                            " Input layer must be flat, consider using a 'Flatten()' layer.", layer.getSourcePosition());
+                }
             }
         }
     }
@@ -237,20 +257,6 @@ abstract public class PredefinedLayerDeclaration extends LayerDeclarationSymbol 
             } 
         }
     }
-
-    protected static void errorIfInputNotFlattened(List<ArchTypeSymbol> inputTypes, LayerSymbol layer) {
-        if (!inputTypes.isEmpty()) {
-            for (ArchTypeSymbol inputType : layer.getInputTypes()) {
-                int height = inputType.getHeight();
-                int width = inputType.getWidth();
-                if (height != 1 || width != 1) {
-                    Log.error("0" + ErrorCodes.INVALID_ELEMENT_INPUT_SHAPE + " Invalid layer input." +
-                            " Input layer must be flat, consider using a 'Flatten()' layer.", layer.getSourcePosition());
-                }
-            }
-        }
-    }
-
 
     //output type function for convolution and poolingee
     protected static List<ArchTypeSymbol> computeConvAndPoolOutputShape(ArchTypeSymbol inputType, LayerSymbol method, int channels) {
