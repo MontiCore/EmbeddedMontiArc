@@ -17,8 +17,6 @@ import de.se_rwth.commons.logging.Log;
 public class CNNArchCocos {
 
     public static void checkAll(ArchitectureSymbol architecture){
-        Log.getFindings().clear();
-        Log.enableFailQuick(false);
         ASTCNNArchNode node = (ASTCNNArchNode) architecture.getAstNode().get();
         int findings = Log.getFindings().size();
         createASTChecker().checkAll(node);
