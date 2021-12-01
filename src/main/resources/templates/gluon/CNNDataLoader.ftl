@@ -232,51 +232,65 @@ class ${tc.fileNameWithoutEnding}:
             logging.error("Data loading failure. File '" + os.path.abspath(train_path) + "' does not exist.")
             sys.exit(1)
 
-    def load_vae_data(self, batch_size, shuffle=False, use_labels=False):
+    def load_vae_data(self, batch_size, shuffle=False, label_ports=[]):
         train_h5, test_h5 = self.load_h5_files()
 
         train_data = {}
         data_mean = {}
         data_std = {}
         train_images = {}
+        train_label = {}
 
-        input_name = self._input_names_[0]
-        train_data[input_name] = train_h5[input_name]
-        data_mean[input_name + '_'] = nd.array(train_h5[input_name][:].mean(axis=0))
-        data_std[input_name + '_'] = nd.array(train_h5[input_name][:].std(axis=0) + 1e-5)
+        for input_name in self._input_names_:
+            if input_name not in label_ports:
+                train_data[input_name] = train_h5[input_name]
+                train_dataset = train_h5[input_name]
+                train_dataset_shape = train_data[input_name].shape
+                # slice_size limits the memory consumption, by only loading slices of size <500MB into memory
+                slice_size = min(train_dataset_shape[0] - 1, int(500e6 / (train_h5[input_name][0].size * \
+                train_h5[input_name][0].itemsize)))
+                num_slices = max(1, int(train_h5[input_name].shape[0] / slice_size))
+                mean = np.zeros(train_dataset_shape[1:])
+                std = np.zeros(train_dataset_shape[1:])
+
+                for i in range(int(train_dataset_shape[0] / slice_size)):
+                    mean += train_dataset[i * slice_size: (i + 1) * slice_size].mean(axis=0) / num_slices
+                    std += train_dataset[i * slice_size: (i + 1) * slice_size].std(axis=0) / num_slices
+                if slice_size > train_dataset_shape[0] - 1:
+                    mean += train_dataset[num_slices * slice_size:].mean(axis=0) / (
+                    slice_size - num_slices % slice_size)
+                    std += train_dataset[num_slices * slice_size:].std(axis=0) / (slice_size - num_slices % slice_size)
+                std += 1e-5
+
+                data_mean[input_name + '_'] = nd.array(mean)
+                data_std[input_name + '_'] = nd.array(std)
+            else:
+                train_label[input_name] = train_h5[input_name]
 
         if 'images' in train_h5:
             train_images = train_h5['images']
 
-        train_label = {}
-        index = 0
-        if use_labels:
-            label_name = self._input_names_[1]
-            train_label[index] = train_h5[label_name]
-            index += 1
-
         train_iter = mx.io.NDArrayIter(data=train_data,
-                                        label=train_label,
-                                        batch_size=batch_size,
-                                        shuffle=shuffle)
+                                       label=train_label,
+                                       batch_size=batch_size,
+                                       shuffle=shuffle)
 
         test_iter = None
 
         if test_h5 != None:
             test_data = {}
+            test_label = {}
             test_images = {}
-            input_name = self._input_names_[0]
-            test_data[input_name] = test_h5[input_name]
+            for input_name in self._input_names_:
+                if input_name not in label_ports:
+                    test_data[input_name] = test_h5[input_name]
+                else:
+                    test_label[input_name] = test_h5[input_name]
+
 
             if 'images' in test_h5:
                 test_images = test_h5['images']
 
-            test_label = {}
-            index = 0
-            if use_labels:
-                label_name = self._input_names_[1]
-                test_label[index] = test_h5[label_name]
-                index += 1
 
             test_iter = mx.io.NDArrayIter(data=test_data,
                                           label=test_label,
