@@ -21,18 +21,20 @@ public class CNNTrain2Caffe2 extends CNNTrainGenerator {
 
     @Override
     public void generate(Path modelsDirPath, String rootModelName) {
-        TrainingConfiguration trainingConfiguration = createTrainingConfiguration(modelsDirPath, rootModelName);
+        TrainingConfiguration trainingConfiguration = createTrainingConfiguration(modelsDirPath, rootModelName, null);
         Caffee2ConfigurationData configurationData = new Caffee2ConfigurationData(trainingConfiguration,
                 new TrainingComponentsContainer(), getInstanceName(), new CNNArch2Caffe2TrainParamSupportChecker());
         if (configurationData.isReinforcementLearning()) {
             throw new IllegalStateException("Cannot call generate of reinforcement configuration without specifying " +
                     "the trained architecture");
         }
-        generateFilesFromConfigurationSymbol(trainingConfiguration, new TrainingComponentsContainer());
+        generateFilesFromConfigurationSymbol(trainingConfiguration, new TrainingComponentsContainer(), null);
     }
 
     @Override
-    public List<FileContent> generateStrings(TrainingConfiguration trainingConfiguration, TrainingComponentsContainer trainingComponentsContainer) {
+    public List<FileContent> generateStrings(TrainingConfiguration trainingConfiguration,
+                                             TrainingComponentsContainer trainingComponentsContainer,
+                                             Path outputPath) {
         Caffee2ConfigurationData configData = new Caffee2ConfigurationData(trainingConfiguration,
                 trainingComponentsContainer, getInstanceName(), new CNNArch2Caffe2TrainParamSupportChecker());
         List<Caffee2ConfigurationData> configDataList = Lists.newArrayList(configData);
