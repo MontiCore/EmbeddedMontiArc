@@ -232,7 +232,7 @@ class ${tc.fileNameWithoutEnding}:
             logging.error("Data loading failure. File '" + os.path.abspath(train_path) + "' does not exist.")
             sys.exit(1)
 
-    def load_vae_data(self, batch_size, shuffle=False, label_ports=[]):
+    def load_vae_data(self, batch_size, shuffle=False, label_port=""):
         train_h5, test_h5 = self.load_h5_files()
 
         train_data = {}
@@ -242,7 +242,9 @@ class ${tc.fileNameWithoutEnding}:
         train_label = {}
 
         for input_name in self._input_names_:
-            if input_name not in label_ports:
+            if input_name == label_port:
+                train_label[input_name] = train_h5[input_name]
+            else:
                 train_data[input_name] = train_h5[input_name]
                 train_dataset = train_h5[input_name]
                 train_dataset_shape = train_data[input_name].shape
@@ -264,8 +266,6 @@ class ${tc.fileNameWithoutEnding}:
 
                 data_mean[input_name + '_'] = nd.array(mean)
                 data_std[input_name + '_'] = nd.array(std)
-            else:
-                train_label[input_name] = train_h5[input_name]
 
         if 'images' in train_h5:
             train_images = train_h5['images']
@@ -282,11 +282,10 @@ class ${tc.fileNameWithoutEnding}:
             test_label = {}
             test_images = {}
             for input_name in self._input_names_:
-                if input_name not in label_ports:
-                    test_data[input_name] = test_h5[input_name]
-                else:
+                if input_name == label_port:
                     test_label[input_name] = test_h5[input_name]
-
+                else:
+                    test_data[input_name] = test_h5[input_name]
 
             if 'images' in test_h5:
                 test_images = test_h5['images']
