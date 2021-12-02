@@ -472,7 +472,6 @@ public class GenerationTest extends AbstractSymtabTest {
                 )
         );
     }
-}
 
 
     @Test
@@ -481,17 +480,14 @@ public class GenerationTest extends AbstractSymtabTest {
         Log.getFindings().clear();
         Path modelPath = Paths.get("src/test/resources/valid_tests/vae");
         CNNTrain2Gluon trainGenerator = new CNNTrain2Gluon(rewardFunctionSourceGenerator);
-        NNArchitectureSymbol encoderArchitecture = NNArchitectureMockFactory.createArchitectureSymbolByCNNArchModel(
+        ArchitectureAdapter encoderArchitecture = NNArchitectureMockFactory.createArchitectureSymbolByCNNArchModel(
                 Paths.get("./src/test/resources/valid_tests/vae/arc"), "Encoder");
-        NNArchitectureSymbol decoderArchitecture = NNArchitectureMockFactory.createArchitectureSymbolByCNNArchModel(
+        ArchitectureAdapter decoderArchitecture = NNArchitectureMockFactory.createArchitectureSymbolByCNNArchModel(
                 Paths.get("./src/test/resources/valid_tests/vae/arc"), "Decoder");
 
         trainGenerator.generate(modelPath, "Decoder", decoderArchitecture, encoderArchitecture);
 
-        //String[] args = {"-m", "src/test/resources/architectures/valid_tests", "-r", "vae.Decoder", "-o", "./target/generated-sources-cnnarch/"};
-        //CNNArch2GluonCli.main(args);
         assertTrue(Log.getFindings().stream().noneMatch(Finding::isError));
-
         checkFilesAreEqual(
                 Paths.get("target/generated-sources-cnnarch"),
                 Paths.get("src/test/resources/target_code"),
@@ -509,15 +505,13 @@ public class GenerationTest extends AbstractSymtabTest {
         Log.getFindings().clear();
         Path modelPath = Paths.get("src/test/resources/valid_tests/vae");
         CNNTrain2Gluon trainGenerator = new CNNTrain2Gluon(rewardFunctionSourceGenerator);
-        NNArchitectureSymbol encoderArchitecture = NNArchitectureMockFactory.createArchitectureSymbolByCNNArchModel(
+        ArchitectureAdapter encoderArchitecture = NNArchitectureMockFactory.createArchitectureSymbolByCNNArchModel(
                 Paths.get("./src/test/resources/valid_tests/vae/arc"), "Encoder");
-        NNArchitectureSymbol decoderArchitecture = NNArchitectureMockFactory.createArchitectureSymbolByCNNArchModel(
+        ArchitectureAdapter decoderArchitecture = NNArchitectureMockFactory.createArchitectureSymbolByCNNArchModel(
                 Paths.get("./src/test/resources/valid_tests/vae/arc"), "VQDecoder");
 
         trainGenerator.generate(modelPath, "VQDecoder", decoderArchitecture, encoderArchitecture);
 
-        //String[] args = {"-m", "src/test/resources/architectures/valid_tests", "-r", "vae.Decoder", "-o", "./target/generated-sources-cnnarch/"};
-        //CNNArch2GluonCli.main(args);
         assertTrue(Log.getFindings().stream().noneMatch(Finding::isError));
 
         checkFilesAreEqual(

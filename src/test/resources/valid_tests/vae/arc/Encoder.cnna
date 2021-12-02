@@ -17,6 +17,6 @@ architecture Encoder{
         Sigmoid() ->
         z_logvar
     ) ->
-    Reparametrize() ->
+    Reparameterize() ->
     z;
 }

@@ -14,24 +14,17 @@ from mxnet import gluon, autograd, nd
 
 import CNNCreator_${config.instanceName}
 import CNNDataLoader_${config.instanceName}
-<#if gmAlgorithm.equals("gan")>
+<#if learningMethod == "gan">
 import CNNCreator_${config.instanceName}
 import CNNGanTrainer_${config.instanceName}
-from ${generativeModelLearningFrameworkModule}.CNNCreator_${netInstanceName} import CNNCreator_${netInstanceName}
+from ${ganFrameworkModule}.CNNCreator_${discriminatorInstanceName} import CNNCreator_${discriminatorInstanceName}
 <#if (qNetworkInstanceName)??>
-from ${generativeModelLearningFrameworkModule}.CNNCreator_${qNetworkInstanceName} import CNNCreator_${qNetworkInstanceName}
+from ${ganFrameworkModule}.CNNCreator_${qNetworkInstanceName} import CNNCreator_${qNetworkInstanceName}
 </#if>
-<#else>
-<#if (netInstanceName)??>
-import CNNAutoencoderTrainer_${netInstanceName}
+<#elseif learningMethod == "vae">
+import CNNAutoencoderTrainer_${encoderInstanceName}
 import CNNCreator_${config.instanceName}
-from CNNCreator_${netInstanceName} import CNNCreator_${netInstanceName}
-<#else>
-import CNNAutoencoderTrainer_${config.instanceName}
-<#list config.jointTrainingInstanceNames as ins>
-from CNNCreator_${ins} import CNNCreator_${ins}
-</#list>
-</#if>
+from CNNCreator_${encoderInstanceName} import CNNCreator_${encoderInstanceName}
 </#if>
 
 
@@ -47,9 +40,9 @@ if __name__ == "__main__":
     logger.addHandler(handler)
 
     data_loader = CNNDataLoader_${config.instanceName}.CNNDataLoader_${config.instanceName}()
-    <#if gmAlgorithm.equals("gan")>
+    <#if learningMethod == "gan">
     gen_creator = CNNCreator_${config.instanceName}.CNNCreator_${config.instanceName}()
-    dis_creator = CNNCreator_${netInstanceName}()
+    dis_creator = CNNCreator_${discriminatorInstanceName}()
     <#if (qNetworkInstanceName)??>
     qnet_creator = CNNCreator_${qNetworkInstanceName}()
     </#if>
@@ -62,10 +55,10 @@ if __name__ == "__main__":
         qnet_creator
         </#if>
     )
-    <#else>
-    encoder_creator = CNNCreator_${netInstanceName}(batch_size=${(config.batchSize)!None})
-    decoder_creator = CNNCreator_${config.instanceName}.CNNCreator_${config.instanceName}(batch_size=${(config.batchSize)!None})
-    ${config.instanceName}_trainer = CNNAutoencoderTrainer_${netInstanceName}.CNNAutoencoderTrainer(
+    <#elseif learningMethod == "vae">
+    encoder_creator = CNNCreator_${encoderInstanceName}()
+    decoder_creator = CNNCreator_${config.instanceName}.CNNCreator_${config.instanceName}()
+    ${config.instanceName}_trainer = CNNAutoencoderTrainer_${encoderInstanceName}.CNNAutoencoderTrainer(
     data_loader,
     encoder_creator,
     decoder_creator,
@@ -183,6 +176,12 @@ if __name__ == "__main__":
 </#if>
 <#if (config.logPeriod)??>
         log_period=${config.logPeriod},
+</#if>
+<#if (config.labelPort)??>
+    label_port='${config.labelPort}',
+</#if>
+<#if (config.klLossWeight)??>
+    kl_loss_weight=${config.getKlLossWeight()},
 </#if>
 <#if (config.printImages)??>
         print_images=${config.printImages?string("True","False")},
