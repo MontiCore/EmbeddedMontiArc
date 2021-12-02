@@ -31,10 +31,8 @@ import java.net.URL;
 import java.nio.file.FileSystem;
 import java.nio.file.FileSystems;
 import java.nio.file.Path;
-import java.nio.file.Paths;
 import java.util.*;
 
-import static de.monticore.lang.monticar.cnnarch.generator.validation.Constants.ROOT_SCHEMA;
 import static de.monticore.lang.monticar.cnnarch.generator.validation.Constants.ROOT_SCHEMA_MODEL_PATH;
 
 public abstract class CNNTrainGenerator {
@@ -48,21 +46,24 @@ public abstract class CNNTrainGenerator {
         this.trainParamSupportChecker = trainParamSupportChecker;
     }
 
-    public TrainingConfiguration createTrainingConfiguration(Path modelsDirPath, String rootModelName) {
+    public TrainingConfiguration createTrainingConfiguration(Path modelsDirPath, String rootModelName,
+                                                             Path outputPath) {
         ConfigurationSymbol configuration = resolveTrainingConfiguration(modelsDirPath, rootModelName);
         setInstanceName(rootModelName);
 
         URL schemasResource = getClass().getClassLoader().getResource(ROOT_SCHEMA_MODEL_PATH);
-        System.out.println(schemasResource);
         List<SchemaDefinitionSymbol> schemaDefinitionSymbols;
         try {
             assert schemasResource != null;
             FileSystem fileSystem = initFileSystem(schemasResource.toURI());
             Path path = fileSystem.getPath(schemasResource.getPath());
+            if (outputPath != null) {
+                path = outputPath.resolve(ROOT_SCHEMA_MODEL_PATH);
+            }
             ModelPath modelPath = new ModelPath(path);
             System.out.println(String.format("Model path for schema resolution: %s", modelPath.toString()));
 
-            SchemaDefinitionSymbol schema = resolveSchemaDefinition(ROOT_SCHEMA, modelPath);
+            SchemaDefinitionSymbol schema = resolveSchemaDefinition("General", modelPath);
             SchemaLangCoCoChecker checkerWithAllCoCos = SchemaLangCocoFactory.getCheckerWithAllCoCos();
             checkerWithAllCoCos.checkAll(schema.getSchemaDefinitionNode().get());
             schemaDefinitionSymbols = SchemaLangValidator.resolveSchemaHierarchy(schema, configuration, modelPath);
@@ -71,13 +72,9 @@ public abstract class CNNTrainGenerator {
                 logViolations(schemaViolations);
                 throw new GenerationAbortedException("Generation aborted due to errors in the training configuration.");
             }
-        } catch (SchemaLangException e) {
+        } catch (SchemaLangException | URISyntaxException | IOException e) {
+            Log.error(e.getMessage(), e);
             throw new GenerationAbortedException("Generation aborted due to errors in the training configuration.");
-        } catch (URISyntaxException e) {
-            throw new RuntimeException(String.format("Generation aborted, since there the path '%s' is not valid.",
-                schemasResource.toString()));
-        } catch (IOException e) {
-            throw new RuntimeException(String.format("Generation aborted. File system could not be created."), e);
         }
         return TrainingConfiguration.create(configuration, schemaDefinitionSymbols);
     }
@@ -123,7 +120,7 @@ public abstract class CNNTrainGenerator {
                 SchemaDefinitionSymbol.KIND);
 
         if (!compilationUnit.isPresent()) {
-            String message = String.format("Could not resolve schema definition for model '%s'.", rootModelName);
+            String message = String.format("Could not resolve schema definition for model '%s' in model path '%s'.", rootModelName, modelPath);
             Log.error(message);
             throw new RuntimeException(message);
         }
@@ -134,22 +131,32 @@ public abstract class CNNTrainGenerator {
         return schemaDefinitionSymbol;
     }
 
-    protected void validateConfiguration(TrainingConfiguration trainingConfiguration, TrainingComponentsContainer trainingComponentsContainer) {
+    protected void validateConfiguration(TrainingConfiguration trainingConfiguration,
+                                         TrainingComponentsContainer trainingComponentsContainer,
+                                         Path outputPath) {
 
-        URL schemasResource = getClass().getClassLoader().getResource("schemas/");
+        URL schemasResource = getClass().getClassLoader().getResource(ROOT_SCHEMA_MODEL_PATH);
         try {
             assert schemasResource != null;
-            Path path = Paths.get(schemasResource.toURI());
-            Collection<Violation> violations = SchemaLangValidator.validate(trainingConfiguration.getConfigurationSymbol(), ROOT_SCHEMA,
+            FileSystem fileSystem = initFileSystem(schemasResource.toURI());
+            Path path = fileSystem.getPath(schemasResource.getPath());
+            if (outputPath != null) {
+                path = outputPath.resolve(ROOT_SCHEMA_MODEL_PATH);
+            }
+            Collection<Violation> violations = SchemaLangValidator.validate(
+                    trainingConfiguration.getConfigurationSymbol(), "General",
                     trainingComponentsContainer.getArchitectureComponents(), new ModelPath(path));
             if (!violations.isEmpty()) {
                 logViolations(violations);
                 throw new GenerationAbortedException("Generation aborted due to errors in the training configuration.");
             }
         } catch (SchemaLangException e) {
+            Log.error(e.getMessage(), e);
             throw new GenerationAbortedException("Generation aborted due to errors in the training configuration.");
         } catch (URISyntaxException e) {
             throw new RuntimeException(String.format("Generation aborted, since there the path '%s' is not valid.", schemasResource.toString()));
+        } catch (IOException e) {
+            e.printStackTrace();
         }
     }
 
@@ -166,9 +173,11 @@ public abstract class CNNTrainGenerator {
         }
     }
 
-    protected void generateFilesFromConfigurationSymbol(TrainingConfiguration trainingConfiguration, TrainingComponentsContainer trainingComponentsContainer) {
+    protected void generateFilesFromConfigurationSymbol(TrainingConfiguration trainingConfiguration,
+                                                        TrainingComponentsContainer trainingComponentsContainer,
+                                                        Path outputPath) {
 
-        List<FileContent> fileContents = generateStrings(trainingConfiguration, trainingComponentsContainer);
+        List<FileContent> fileContents = generateStrings(trainingConfiguration, trainingComponentsContainer, outputPath);
         GeneratorCPP genCPP = new GeneratorCPP();
         genCPP.setGenerationTargetPath(getGenerationTargetPath());
 
@@ -210,5 +219,7 @@ public abstract class CNNTrainGenerator {
     public abstract void generate(Path modelsDirPath, String rootModelNames);
 
     //check cocos with CNNTrainCocos.checkAll(configuration) before calling this method.
-    public abstract List<FileContent> generateStrings(TrainingConfiguration trainingConfiguration, TrainingComponentsContainer trainingComponentsContainer);
+    public abstract List<FileContent> generateStrings(TrainingConfiguration trainingConfiguration,
+                                                      TrainingComponentsContainer trainingComponentsContainer,
+                                                      Path outputPath);
 }
