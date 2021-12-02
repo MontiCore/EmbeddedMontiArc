@@ -22,18 +22,20 @@ public class CNNTrain2MxNet extends CNNTrainGenerator {
 
     @Override
     public void generate(Path modelsDirPath, String rootModelName) {
-        TrainingConfiguration trainingConfiguration = createTrainingConfiguration(modelsDirPath, rootModelName);
+        TrainingConfiguration trainingConfiguration = createTrainingConfiguration(modelsDirPath, rootModelName, null);
         MXNetConfigurationData configurationData = new MXNetConfigurationData(trainingConfiguration,
                 new TrainingComponentsContainer(), getInstanceName(), new CNNArch2MxNetTrainParamSupportChecker());
         if (configurationData.isReinforcementLearning()) {
             throw new IllegalStateException("Cannot call generate of reinforcement configuration without specifying " +
                     "the trained architecture");
         }
-        generateFilesFromConfigurationSymbol(trainingConfiguration, new TrainingComponentsContainer());
+        generateFilesFromConfigurationSymbol(trainingConfiguration, new TrainingComponentsContainer(), null);
     }
 
     @Override
-    public List<FileContent> generateStrings(TrainingConfiguration trainingConfiguration, TrainingComponentsContainer trainingComponentsContainer) {
+    public List<FileContent> generateStrings(TrainingConfiguration trainingConfiguration,
+                                             TrainingComponentsContainer trainingComponentsContainer,
+                                             Path outputPath) {
         TemplateConfiguration templateConfiguration = new MxNetTemplateConfiguration();
         MXNetConfigurationData configData = new MXNetConfigurationData(trainingConfiguration,
                 trainingComponentsContainer, getInstanceName(), new CNNArch2MxNetTrainParamSupportChecker());
