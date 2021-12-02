@@ -44,7 +44,7 @@ class VAELoss(gluon.loss.Loss):
         #bce = - F.sum(data * F.log(pred + self.soft_zero) + (1 - data) * F.log(1 - pred + self.soft_zero), axis=0, exclude=True)
         reconstruction_loss = self.reconstruction_loss(pred, data)
         loss = reconstruction_loss + loss
-        return loss
+        return [loss, reconstruction_loss]
 
     def kl_loss(self, F, pdf,  params, weight=1):
         kl = 0
@@ -77,7 +77,7 @@ class CNNAutoencoderTrainer:
               load_pretrained=False,
               normalize=False,
               log_period = 50,
-              label_ports=[],
+              label_port="",
               kl_loss_weight=1,
               print_images=False):
         num_pus = 1
@@ -125,11 +125,11 @@ class CNNAutoencoderTrainer:
             del optimizer_params['learning_rate_decay']
 
         if normalize:
-            self._enc_creator.construct(context=mx_context, data_mean=data_mean, data_std=data_std)
-            self._dec_creator.construct(context=mx_context, data_mean=data_mean, data_std=data_std)
+            self._enc_creator.construct(context=mx_context, batch_size=batch_size, data_mean=data_mean, data_std=data_std)
+            self._dec_creator.construct(context=mx_context, batch_size=batch_size, data_mean=data_mean, data_std=data_std)
         else:
-            self._enc_creator.construct(context=mx_context)
-            self._dec_creator.construct(context=mx_context)
+            self._enc_creator.construct(context=mx_context, batch_size=batch_size)
+            self._dec_creator.construct(context=mx_context, batch_size=batch_size)
 
         begin_epoch = 0
         if load_checkpoint:
@@ -181,6 +181,7 @@ class CNNAutoencoderTrainer:
 
         for epoch in range(begin_epoch, begin_epoch + num_epoch):
             global_loss_train = 0.0
+            global_reconloss = 0.0
             train_batches = 0
 
             loss_total = 0
@@ -191,7 +192,7 @@ class CNNAutoencoderTrainer:
                 with autograd.record():
                     indexed_labels = 0
                     <#list tc.architectureInputs as inputName>
-                    if "${inputName?keep_before_last("_")}" in label_ports:
+                    if "${inputName?keep_before_last("_")}" == label_port:
                         label_ = gluon.utils.split_and_load(batch.label[indexed_labels], ctx_list=mx_context, even_split=False)
                         indexed_labels += 1
                         ${inputName} = [mx.nd.one_hot(label_[i], ${tc.architectureInputSymbols[inputName?index].ioDeclaration.type.dimensions[0]?c}) for i in range(num_pus)]
@@ -201,10 +202,12 @@ class CNNAutoencoderTrainer:
 
                     lossList = []
                     loss_param_list = []
+                    reconstruction_losses = []
 
                     for i in range(num_pus):
                         lossList.append([])
                         loss_param_list.append([])
+                        reconstruction_losses.append([])
 
                     nd.waitall()
                     for i in range(num_pus):
@@ -220,18 +223,29 @@ class CNNAutoencoderTrainer:
                         pred_[i] = res_[0]<#if auxNetworkInstruction.body.hasLossParameterizingElements()><#else>[0]</#if>
                     </#if>
 
-                    [lossList[i].append(loss_function(pred_[i], data_[i], loss_param_list[i])) for i in range(num_pus)]
+                    nd.waitall()
+                    for i in range(num_pus):
+                        elbo, reconstruction_loss = loss_function(pred_[i], data_[i], loss_param_list[i]))
+                        lossList[i].append(elbo)
+                        reconstruction_losses[i].append(reconstruction_loss)
 
 
                     losses = [0] * num_pus
+                    reconLosses = [0] * num_pus
                     for i in range(num_pus):
                         for element in lossList[i]:
                             losses[i] = losses[i] + element
+                        for element in reconstruction_losses[i]:
+                            reconLosses[i] = losses[i] + element
 
                 for loss in losses:
                     loss.backward()
                     loss_total += loss.sum().asscalar()
                     global_loss_train += loss.sum().asscalar()
+
+                for loss in reconLosses:
+                    loss_total += loss.sum().asscalar()
+                    global_reconloss += loss.sum().asscalar()
 
                 train_batches += 1
 
@@ -252,7 +266,7 @@ class CNNAutoencoderTrainer:
                         loss_avg = loss_total / (batch_size * log_period)
                         loss_total = 0
 
-                        logging.info("Epoch[%d] Batch[%d] Speed: %.2f samples/sec Average Loss: %.5f" % (
+                        logging.info("Epoch[%d] Batch[%d] Speed: %.2f samples/sec Average ELBO Loss: %.5f, Reconstruction Loss: %.5f" % (
                         epoch, batch_i, speed, loss_avg))
 
                         avg_speed += speed
@@ -262,6 +276,7 @@ class CNNAutoencoderTrainer:
 
 
             global_loss_train /= (train_batches * batch_size)
+            global_reconloss /= (train_batches * batch_size)
 
             tic = None
 
@@ -276,7 +291,7 @@ class CNNAutoencoderTrainer:
 
                 indexed_labels = 0
                 <#list tc.architectureInputs as inputName>
-                if "${inputName?keep_before_last("_")}" in label_ports:
+                if "${inputName?keep_before_last("_")}" == label_port:
                     label_ = gluon.utils.split_and_load(batch.label[indexed_labels], ctx_list=mx_context, even_split=False)
                     indexed_labels += 1
                     ${inputName} = [mx.nd.one_hot(label_[i], ${tc.architectureInputSymbols[inputName?index].ioDeclaration.type.dimensions[0]?c}) for i in range(num_pus)]
@@ -286,10 +301,12 @@ class CNNAutoencoderTrainer:
 
                 lossList = []
                 loss_param_list = []
+                reconstruction_losses = []
 
                 for i in range(num_pus):
                     lossList.append([])
                     loss_param_list.append([])
+                    reconstruction_losses.append([])
 
                 nd.waitall()
                 for i in range(num_pus):
@@ -305,24 +322,32 @@ class CNNAutoencoderTrainer:
                     pred_[i] = res_[0]<#if auxNetworkInstruction.body.hasLossParameterizingElements()><#else>[0]</#if>
                     </#if>
 
-                [lossList[i].append(loss_function(pred_[i], data_[i], loss_param_list[i])) for i in range(num_pus)]
+                nd.waitall()
+                for i in range(num_pus):
+                    elbo, reconstruction_loss = loss_function(pred_[i], data_[i], loss_param_list[i]))
+                    lossList[i].append(elbo)
+                    reconstruction_losses[i].append(reconstruction_loss)
 
                 losses = [0] * num_pus
+                reconLosses = [0] * num_pus
                 for i in range(num_pus):
                     for element in lossList[i]:
                         losses[i] = losses[i] + element
+                    for element in reconstruction_losses[i]:
+                        reconLosses[i] = reconLosses[i] + element
 
                 for loss in losses:
                     global_loss_test += loss.sum().asscalar()
-
-                global_loss_test += loss.sum().asscalar()
+                for loss in reconLosses[i]:
+                    global_reconLoss_test += loss.sum().asscalar()
 
                 test_batches += 1
 
             global_loss_test /= (test_batches * single_pu_batch_size)
+            global_reconLoss_test /= (test_batches * single_pu_batch_size)
 
-            logging.info("Epoch[%d], Train loss: %f, Validation loss: %f" % (
-                epoch, global_loss_train, global_loss_test))
+            logging.info("Epoch[%d], Train Loss: %f, Validation Loss: %f, Reconstruction Loss: %f" % (
+                epoch, global_loss_train, global_loss_test, global_reconLoss))
 
             if (epoch+1) % checkpoint_period == 0:
                 for i, network in encoder_nets.items():
