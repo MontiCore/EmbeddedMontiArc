@@ -1,0 +1,16 @@
+Creating 'images' directory.
+Epoch[0] Batch[50] Speed: 3151.34 samples/sec Average ELBO Loss: 77.24881, Reconstruction Loss: 75.58620
+Epoch[0] Batch[100] Speed: 3153.69 samples/sec Average ELBO Loss: 49.54238, Reconstruction Loss: 49.43575
+Epoch[0] Batch[150] Speed: 3140.29 samples/sec Average ELBO Loss: 47.23541, Reconstruction Loss: 47.14422
+Epoch[0] Batch[200] Speed: 3173.95 samples/sec Average ELBO Loss: 46.82836, Reconstruction Loss: 46.73224
+Epoch[0], Epoch Train Loss: 53.376653, Validation Loss: 46.943052, Epoch Reconstruction Loss: 52.963355
+Epoch[1] Batch[50] Speed: 3155.22 samples/sec Average ELBO Loss: 47.46498, Reconstruction Loss: 47.31950
+Epoch[1] Batch[100] Speed: 3163.21 samples/sec Average ELBO Loss: 46.41234, Reconstruction Loss: 46.21198
+Epoch[1] Batch[150] Speed: 3109.77 samples/sec Average ELBO Loss: 44.46306, Reconstruction Loss: 44.18307
+Epoch[1] Batch[200] Speed: 3161.71 samples/sec Average ELBO Loss: 43.52201, Reconstruction Loss: 43.21949
+Epoch[1], Epoch Train Loss: 44.867872, Validation Loss: 41.139422, Epoch Reconstruction Loss: 44.615016
+Epoch[2] Batch[50] Speed: 3149.46 samples/sec Average ELBO Loss: 43.40408, Reconstruction Loss: 43.00912
+Epoch[2] Batch[100] Speed: 3100.65 samples/sec Average ELBO Loss: 42.88505, Reconstruction Loss: 42.47507
+Epoch[2] Batch[150] Speed: 3109.91 samples/sec Average ELBO Loss: 42.06205, Reconstruction Loss: 41.62813
+Epoch[2] Batch[200] Speed: 3108.41 samples/sec Average ELBO Loss: 42.01998, Reconstruction Loss: 41.58232
+Epoch[2], Epoch Train Loss: 42.297623, Validation Loss: 39.626945, Epoch Reconstruction Loss: 41.869278

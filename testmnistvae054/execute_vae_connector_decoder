@@ -1,0 +1,8 @@
+    vector<float> encoding_ = CNNTranslator::translate(encoding);
+
+    vector<float> data_(1 * 28 * 28);
+
+
+    _predictor_0_.predict(encoding_, data_);
+
+    data = CNNTranslator::translateToCube(data_, std::vector<size_t> {1, 28, 28});
