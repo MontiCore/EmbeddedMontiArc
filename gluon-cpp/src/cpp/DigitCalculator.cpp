@@ -66,7 +66,7 @@ int main(int argc, char* argv[]) {
 
     connector.execute();
 
-    int classIndex = (int)connector.res;
+    int classIndex = connector.res;
     std::cout << "== SUM: " << classIndex << std::endl;
 
     return 0;
