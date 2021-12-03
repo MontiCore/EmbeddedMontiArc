@@ -66,7 +66,7 @@ int main(int argc, char* argv[]) {
 
     connector.execute();
 
-    std::cout << "== SUM: " << onnector.res << std::endl;
+    std::cout << "== SUM: " << connector.res << std::endl;
 
     return 0;
 }
