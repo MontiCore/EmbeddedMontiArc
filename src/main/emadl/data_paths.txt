@@ -1,2 +1,0 @@
-gCN.Network src/main/resources/training_data_cora
-gCN.Citeseer src/main/resources/training_data_citeseer
