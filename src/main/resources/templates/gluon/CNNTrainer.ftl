@@ -69,10 +69,10 @@ if __name__ == "__main__":
         save_attention_image='${config.saveAttentionImage?string("True","False")}',
     </#if>
     <#if (config.trainMask)??>
-        train_mask=${config.trainMask},
+        train_mask=[<#list config.trainMask as t>${t}<#if t?has_next>, </#if></#list>],
     </#if>
     <#if (config.testMask)??>
-        test_mask=${config.testMask},
+        test_mask=[<#list config.testMask as t>${t}<#if t?has_next>, </#if></#list>],
     </#if>
     <#if (config.evalMetric)??>
         eval_metric='${config.evalMetricName}',
