@@ -15,6 +15,18 @@
 
     <servers>
         <server>
+          <id>gitlab-maven</id>
+          <configuration>
+          <httpHeaders>
+            <property>
+              <name>Deploy-Token</name>
+              <value>kbteaFBxwgwn5dZZ6CzU</value>
+            </property>
+           </httpHeaders>
+          </configuration>
+    </server>
+>
+        <server>
             <id>se-nexus</id>
             <username>cibuild</username>
             <password>${env.cibuild}</password>
@@ -25,19 +37,6 @@
             <username>travisbuilduser</username>
             <password>${env.travisbuilduserpassword}</password>
         </server>
-
-        <server>
-            <id>gitlab-maven</id>
-            <configuration>
-                <httpHeaders>
-                    <property>
-                        <name>Deploy-Token</name>
-                        <value>KJkmCZosey-A8XBES2Fy</value>
-                    </property>
-                </httpHeaders>
-            </configuration>
-        </server>
-
     </servers>
 
     <!--<mirrors>
