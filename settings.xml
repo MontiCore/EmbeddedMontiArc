@@ -18,25 +18,20 @@
           <id>gitlab-maven</id>
           <configuration>
           <httpHeaders>
-            <property>
-              <name>Deploy-Token</name>
-              <value>kbteaFBxwgwn5dZZ6CzU</value>
-            </property>
-           </httpHeaders>
-          </configuration>
+             <property>
+               <name>Deploy-Token</name>
+               <value>kbteaFBxwgwn5dZZ6CzU</value>
+             </property>
+        </httpHeaders>
+      </configuration>
     </server>
->
         <server>
             <id>se-nexus</id>
             <username>cibuild</username>
             <password>${env.cibuild}</password>
         </server>
 
-        <server>
-            <id>github</id>
-            <username>travisbuilduser</username>
-            <password>${env.travisbuilduserpassword}</password>
-        </server>
+
     </servers>
 
     <!--<mirrors>
