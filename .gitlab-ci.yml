@@ -62,6 +62,15 @@ trigger-cvae:
   only:
     - master
 
+trigger-sentiment:
+  stage: trigger_apps
+  allow_failure: true
+  trigger:
+    project: monticore/EmbeddedMontiArc/applications/bertsentimentanalyzer
+    branch: master
+  only:
+    - master
+
 
 pages:
   stage: page
