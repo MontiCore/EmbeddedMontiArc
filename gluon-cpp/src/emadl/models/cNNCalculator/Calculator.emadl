@@ -23,12 +23,12 @@ component Calculator {
         instance Add add;
         
 
-        connect in1_1 -> number1_hundreds.inputVector;
-        connect in1_2 -> number1_tens.inputVector;
-        connect in1_3 -> number1_ones.inputVector;
-        connect in2_1 -> number2_hundreds.inputVector;
-        connect in2_2 -> number2_tens.inputVector;
-        connect in2_3 -> number2_ones.inputVector;
+        connect in1_1 -> number1hundreds.inputVector;
+        connect in1_2 -> number1tens.inputVector;
+        connect in1_3 -> number1ones.inputVector;
+        connect in2_1 -> number2hundreds.inputVector;
+        connect in2_2 -> number2tens.inputVector;
+        connect in2_3 -> number2ones.inputVector;
 
         connect number1ones.maxIndex -> c1.ones;
         connect number1tens.maxIndex -> c1.tens;
