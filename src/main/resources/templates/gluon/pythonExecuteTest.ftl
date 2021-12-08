@@ -1,7 +1,11 @@
 <#-- (c) https://github.com/MontiCore/monticore -->
                     labels = [batch.label[i].as_in_context(mx_context[0]) for i in range(${tc.architectureOutputs?size?c})]
+<#assign input_index = 0>
 <#list tc.architectureInputs as input_name>
-                    ${input_name} = batch.data[${input_name?index}].as_in_context(mx_context[0])
+<#if input_name?index == tc.architectureInputs?seq_index_of(input_name)>
+                    ${input_name} = batch.data[${input_index}].as_in_context(mx_context[0])
+<#assign input_index++>
+</#if>
 </#list>
 
 <#if tc.architectureOutputSymbols?size gt 1>
