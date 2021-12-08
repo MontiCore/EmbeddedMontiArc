@@ -11,7 +11,7 @@ import importlib
 from mxnet import nd
 
 class ${tc.fileNameWithoutEnding}:
-    _input_names_ = [<#list tc.architectureInputs as inputName>'${inputName?keep_before_last("_")}'<#sep>, </#list>]
+    _input_names_ = [<#list tc.architectureInputs as inputName><#if inputName?index == tc.architectureInputs?seq_index_of(inputName)>'${inputName?keep_before_last("_")}'<#sep>, </#if></#list>]
     _output_names_ = [${tc.join(tc.architectureOutputs, ",", "'", "label'")}]
 
     def __init__(self):
@@ -25,10 +25,10 @@ class ${tc.fileNameWithoutEnding}:
         data_std = {}
         train_images = {}
 
-        for input_name in self._input_names_: 
-            train_data[input_name] = train_h5[input_name]
+        for input_name in self._input_names_:
+            train_data["input"+str(self._input_names_.index(input_name))] = train_h5[input_name]
             train_dataset = train_h5[input_name]
-            train_dataset_shape = train_data[input_name].shape
+            train_dataset_shape = train_data["input"+str(self._input_names_.index(input_name))].shape
             # slice_size limits the memory consumption, by only loading slices of size <500MB into memory
             slice_size = min(train_dataset_shape[0] - 1, int(500e6 / (train_h5[input_name][0].size * \
                 train_h5[input_name][0].itemsize)))
@@ -67,7 +67,7 @@ class ${tc.fileNameWithoutEnding}:
             test_data = {}
             test_images = {}
             for input_name in self._input_names_:
-                test_data[input_name] = test_h5[input_name]
+                test_data["input"+str(self._input_names_.index(input_name))] = test_h5[input_name]
 
                 if 'images' in test_h5:
                     test_images = test_h5['images']
@@ -107,7 +107,7 @@ class ${tc.fileNameWithoutEnding}:
                 cur_shape = (train_len,) + getattr(shape_output, input_name + "_out").shape
             else:
                 cur_shape = (train_len, 1)
-            train_data[input_name] = mx.nd.zeros(cur_shape)
+            train_data["input"+str(self._input_names_.index(input_name))] = mx.nd.zeros(cur_shape)
         for output_name in self._output_names_:
             if type(getattr(shape_output, output_name + "_out")) == nd.array:
                 cur_shape = (train_len,) + getattr(shape_output, output_name + "_out").shape
@@ -118,13 +118,13 @@ class ${tc.fileNameWithoutEnding}:
         for i in range(train_len):
             output = self.preprocess_data(instance, inp, i, train_h5)
             for input_name in self._input_names_:
-                train_data[input_name][i] = getattr(output, input_name + "_out")
+                train_data["input"+str(self._input_names_.index(input_name))][i] = getattr(output, input_name + "_out")
             for output_name in self._output_names_:
                 train_label[output_name][i] = getattr(shape_output, output_name + "_out")
 
         for input_name in self._input_names_:
-            data_mean[input_name + '_'] = nd.array(train_data[input_name][:].mean(axis=0))
-            data_std[input_name + '_'] = nd.array(train_data[input_name][:].asnumpy().std(axis=0) + 1e-5)
+            data_mean[input_name + '_'] = nd.array(train_data["input"+str(self._input_names_.index(input_name))][:].mean(axis=0))
+            data_std[input_name + '_'] = nd.array(train_data["input"+str(self._input_names_.index(input_name))][:].asnumpy().std(axis=0) + 1e-5)
 
         if 'images' in train_h5:
             train_images = train_h5['images']
@@ -145,7 +145,7 @@ class ${tc.fileNameWithoutEnding}:
                 cur_shape = (test_len,) + getattr(shape_output, input_name + "_out").shape
             else:
                 cur_shape = (test_len, 1)
-            test_data[input_name] = mx.nd.zeros(cur_shape)
+            test_data["input"+str(self._input_names_.index(input_name))] = mx.nd.zeros(cur_shape)
         for output_name in self._output_names_:
             if type(getattr(shape_output, output_name + "_out")) == nd.array:
                 cur_shape = (test_len,) + getattr(shape_output, output_name + "_out").shape
@@ -156,7 +156,7 @@ class ${tc.fileNameWithoutEnding}:
         for i in range(test_len):
             output = self.preprocess_data(instance, inp, i, test_h5)
             for input_name in self._input_names_:
-                test_data[input_name][i] = getattr(output, input_name + "_out")
+                test_data["input"+str(self._input_names_.index(input_name))][i] = getattr(output, input_name + "_out")
             for output_name in self._output_names_:
                 test_label[output_name][i] = getattr(shape_output, output_name + "_out")
 
