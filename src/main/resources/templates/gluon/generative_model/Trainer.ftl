@@ -23,7 +23,6 @@ from ${ganFrameworkModule}.CNNCreator_${qNetworkInstanceName} import CNNCreator_
 </#if>
 <#elseif learningMethod == "vae">
 import CNNAutoencoderTrainer_${encoderInstanceName}
-import CNNCreator_${config.instanceName}
 from CNNCreator_${encoderInstanceName} import CNNCreator_${encoderInstanceName}
 </#if>
 
@@ -177,11 +176,11 @@ if __name__ == "__main__":
 <#if (config.logPeriod)??>
         log_period=${config.logPeriod},
 </#if>
-<#if (config.labelPort)??>
-    label_port='${config.labelPort}',
+<#if (config.reconLossName)??>
+        reconstruction_loss='${config.reconLossName}',
 </#if>
 <#if (config.klLossWeight)??>
-    kl_loss_weight=${config.getKlLossWeight()},
+        kl_loss_weight=${config.klLossWeight},
 </#if>
 <#if (config.printImages)??>
         print_images=${config.printImages?string("True","False")},

@@ -528,45 +528,45 @@ class Reparameterize(gluon.HybridBlock):
     def __init__(self, shape, pdf="normal", **kwargs):
         super(Reparameterize, self).__init__(**kwargs)
         self.sample_shape = shape
-        self.batch_size = shape[0]
-        self.latent_dim = shape[1]
+        self.latent_dim = shape[0]
         self.pdf = pdf
 
     def hybrid_forward(self, F, x):
         sample = None
 
         if self.pdf == "normal":
-            eps = F.random_normal(shape=self.sample_shape)
+            eps = F.random_normal(shape=(-1,self.latent_dim))
             sample = x[0] + x[1] * eps
 
         return sample
 
 class VectorQuantize(gluon.HybridBlock):
-    def __init__(self, num_embeddings, embedding_dim, input_shape, total_feature_maps_size, **kwargs):
+    def __init__(self, batch_size, num_embeddings, embedding_dim, input_shape, total_feature_maps_size, **kwargs):
         super(VectorQuantize,self).__init__(**kwargs)
         self.embedding_dim = embedding_dim
         self.num_embeddings = num_embeddings
         self.input_shape = input_shape
+        self.batch_size = batch_size
         self.size = int(total_feature_maps_size / embedding_dim)
 
         # Codebook
         self.embeddings = self.params.get('embeddings', shape=(num_embeddings,embedding_dim), init=mx.init.Uniform())
 
-    def hybrid_forward(self, F, x):
+    def hybrid_forward(self, F, x, *args, **params):
         # Flatten the inputs keeping and `embedding_dim` intact.
-        flattened = F.reshape(x, shape=(-1,self.embedding_dim))
+        flattened = F.reshape(x, shape=(-1, self.embedding_dim))
 
         # Get best representation
         a = F.broadcast_axis(F.sum(flattened ** 2, axis=1, keepdims=True), axis=1, size=self.num_embeddings)
-        b = F.sum(F.broadcast_axis(F.expand_dims(self.embeddings ** 2,axis=0),axis=0,size=self.size), axis=2)
+        b = F.sum(F.broadcast_axis(F.expand_dims(self.embeddings.var() ** 2,axis=0),axis=0,size=self.size), axis=2)
 
-        distances = a + b - 2 * F.dot(flattened, F.transpose(self.embeddings))
+        distances = a + b - 2 * F.dot(flattened, F.transpose(self.embeddings.var()))
 
         encoding_indices = F.argmin(distances, axis=1)
         encodings = F.one_hot(encoding_indices, self.num_embeddings)
 
         # Quantize and unflatten
-        quantized = F.dot(encodings, self.embeddings).reshape(self.input_shape)
+        quantized = F.dot(encodings, self.embeddings.var()).reshape(self.input_shape)
 
         # Straight-through estimator.
         quantized = x + F.stop_gradient(quantized - x)

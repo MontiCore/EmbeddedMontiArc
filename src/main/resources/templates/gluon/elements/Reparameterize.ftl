@@ -1,9 +1,9 @@
 <#-- (c) https://github.com/MontiCore/monticore -->
 <#if mode == "ARCHITECTURE_DEFINITION">
-            self.${element.name} = Reparameterize(shape=(batch_size, <#list element.element.outputTypes as type>${type.dimensions[0]}</#list>), pdf='${element.pdf}',)
+            self.${element.name} = Reparameterize(shape=(<#list element.element.outputTypes as type>${type.dimensions[0]}</#list>,), pdf='${element.pdf}',)
             self.loss_ctx_dict = { "loss":"kl_div_loss",<#-- for later if any other metrics than KL are known-->
                                     "values": { "pdf":'${element.pdf}',
-                                                "shape": (batch_size, <#list element.element.outputTypes as type>${type.dimensions[0]}</#list>)}}
+                                                "shape": (<#list element.element.outputTypes as type>${type.dimensions[0]}</#list>,)}}
 </#if>
 <#if mode == "FORWARD_FUNCTION">
         ${element.name} = self.${element.name}([${tc.join(element.inputs, ", ")}])
