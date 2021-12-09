@@ -28,7 +28,7 @@
                         <version>1</version>
                     </datasetToStore>
                     <datasetToStore>
-                        <path>datasets/vae/mnist</path>
+                        <path>datasets/vae/vae.mnist</path>
                         <artifactId>vae.mnist</artifactId>
                         <groupId>de.monticore.lang.monticar.datasets</groupId>
                         <version>1</version>
