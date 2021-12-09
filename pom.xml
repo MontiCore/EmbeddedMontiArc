@@ -6,7 +6,7 @@
 
     <groupId>de.monticore.lang.monticar.utils</groupId>
     <artifactId>datasets</artifactId>
-    <version>0.0.1</version>
+    <version>0.0.2</version>
 
     <properties>
         <java.version>1.8</java.version>
@@ -19,11 +19,17 @@
             <plugin>
                 <groupId>de.monticore.lang.monticar.utilities</groupId>
                 <artifactId>emadl-maven-plugin</artifactId>
-                <version>0.0.1-SNAPSHOT</version>
+                <version>0.0.3-SNAPSHOT</version>
                 <configuration>
                     <datasetToStore>
                         <path>datasets/mnist/</path>
                         <artifactId>mnist</artifactId>
+                        <groupId>de.monticore.lang.monticar.datasets</groupId>
+                        <version>1</version>
+                    </datasetToStore>
+                    <datasetToStore>
+                        <path>datasets/vae/mnist</path>
+                        <artifactId>vae.mnist</artifactId>
                         <groupId>de.monticore.lang.monticar.datasets</groupId>
                         <version>1</version>
                     </datasetToStore>
