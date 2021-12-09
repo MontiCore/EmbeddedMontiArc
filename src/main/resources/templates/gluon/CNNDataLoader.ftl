@@ -189,7 +189,7 @@ class ${tc.fileNameWithoutEnding}:
             setattr(input_wrapper, output_name, data)
         return instance_wrapper.execute(input_wrapper)
 
-    def load_h5_files(self):
+    def load_h5_files(self, learning_method=""):
         train_h5 = None
         test_h5 = None
         train_path = self._data_dir + "train.h5"
@@ -204,11 +204,12 @@ class ${tc.fileNameWithoutEnding}:
                                   + "'" + input_name + "'")
                     sys.exit(1)
 
-            for output_name in self._output_names_:
-                if not output_name in train_h5:
-                    logging.error("The HDF5 file '" + os.path.abspath(train_path) + "' has to contain the dataset "
-                                  + "'" + output_name + "'")
-                    sys.exit(1)
+            if learning_method != "vae":
+                for output_name in self._output_names_:
+                    if not output_name in train_h5:
+                        logging.error("The HDF5 file '" + os.path.abspath(train_path) + "' has to contain the dataset "
+                                      + "'" + output_name + "'")
+                        sys.exit(1)
 
             if os.path.isfile(test_path):
                 test_h5 = h5py.File(test_path, 'r')
@@ -219,11 +220,12 @@ class ${tc.fileNameWithoutEnding}:
                                       + "'" + input_name + "'")
                         sys.exit(1)
 
-                for output_name in self._output_names_:
-                    if not output_name in test_h5:
-                        logging.error("The HDF5 file '" + os.path.abspath(test_path) + "' has to contain the dataset "
-                                      + "'" + output_name + "'")
-                        sys.exit(1)
+                if learning_method != "vae":
+                    for output_name in self._output_names_:
+                        if not output_name in test_h5:
+                            logging.error("The HDF5 file '" + os.path.abspath(test_path) + "' has to contain the dataset "
+                                          + "'" + output_name + "'")
+                            sys.exit(1)
             else:
                 logging.warning("Couldn't load test set. File '" + os.path.abspath(test_path) + "' does not exist.")
 
@@ -232,8 +234,9 @@ class ${tc.fileNameWithoutEnding}:
             logging.error("Data loading failure. File '" + os.path.abspath(train_path) + "' does not exist.")
             sys.exit(1)
 
-    def load_vae_data(self, batch_size, shuffle=False, label_port=""):
-        train_h5, test_h5 = self.load_h5_files()
+    def load_vae_data(self, batch_size, shuffle=False, input_names=[] ):
+        self._input_names_ = input_names
+        train_h5, test_h5 = self.load_h5_files(learning_method="vae")
 
         train_data = {}
         data_mean = {}
@@ -242,7 +245,7 @@ class ${tc.fileNameWithoutEnding}:
         train_label = {}
 
         for input_name in self._input_names_:
-            if input_name == label_port:
+            if input_name == "label":
                 train_label[input_name] = train_h5[input_name]
             else:
                 train_data[input_name] = train_h5[input_name]
@@ -282,7 +285,7 @@ class ${tc.fileNameWithoutEnding}:
             test_label = {}
             test_images = {}
             for input_name in self._input_names_:
-                if input_name == label_port:
+                if input_name == "label":
                     test_label[input_name] = test_h5[input_name]
                 else:
                     test_data[input_name] = test_h5[input_name]

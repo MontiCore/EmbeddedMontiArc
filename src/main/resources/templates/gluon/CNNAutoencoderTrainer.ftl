@@ -12,25 +12,25 @@ from mxnet import nd, autograd, gluon
 from mxnet.gluon import nn
 
 class VAELoss(gluon.loss.Loss):
-    def __init__(self, weight=None, batch_axis=0, batch_size=1, kl_loss_weight=1, loss_ctx_list=[], model_ctx=mx.cpu(), **kwargs):
+    def __init__(self, weight=None, batch_axis=0, recon_loss='mse', kl_loss_weight=1, loss_ctx_list=[], **kwargs):
         super(VAELoss, self).__init__(weight,batch_axis,**kwargs)
         self.soft_zero = 1e-10
-        self.batch_size = batch_size
         self.kl_weight = kl_loss_weight
-        self.model_ctx = model_ctx
         self.loss_ctx_list = loss_ctx_list
-        self.reconstruction_loss = gluon.loss.L2Loss()
+        self.recon_loss = recon_loss
 
     def hybrid_forward(self, F, pred, data, loss_param_list=None):
-        regulaizer_loss = 0
+        x = data
+        y = pred
+        loss = 0
         if len(self.loss_ctx_list) != 0:
             for i in range(len(self.loss_ctx_list)):
                 dict = self.loss_ctx_list[i]
-                loss_params = loss_param_list[i]
+                loss_params = loss_param_list#[i]
                 val_dict = dict["values"]
                 if dict["loss"] == "kl_div_loss":
                     pdf = val_dict["pdf"]
-                    regulaizer_loss = self.kl_loss(F, pdf, loss_params, self.kl_weight)
+                    loss = self.kl_loss(F, pdf, loss_params, self.kl_weight) + loss
                 elif dict["loss"] == "quantization_loss":
                     encoding = loss_params[0]
                     quantization = loss_params[1]
@@ -39,20 +39,21 @@ class VAELoss(gluon.loss.Loss):
                     # Calculate vector quantization loss
                     commitment_loss = commitment_weight * F.mean((F.stop_gradient(quantization) - encoding) ** 2, axis=0, exclude=True)
                     codebook_loss = F.mean((quantization - F.stop_gradient(encoding)) ** 2, axis=0, exclude=True)
-                    regulaizer_loss = commitment_loss + codebook_loss
+                    loss = commitment_loss + codebook_loss + loss
 
-        #bce = - F.sum(data * F.log(pred + self.soft_zero) + (1 - data) * F.log(1 - pred + self.soft_zero), axis=0, exclude=True)
-        reconstruction_loss = self.reconstruction_loss(pred, data)
+        if self.recon_loss == "bce":
+            reconstruction_loss = - F.sum(x * F.log(y + self.soft_zero) + (1 - x) * F.log(1 - y + self.soft_zero),  axis=0, exclude=True)
+        elif self.recon_loss == "mse":
+            reconstruction_loss = F.sum((x - y)**2,  axis=0, exclude=True)
         loss = reconstruction_loss + loss
         return [loss, reconstruction_loss]
 
-    def kl_loss(self, F, pdf,  params, weight=1):
+    def kl_loss(self, F, pdf, params, weight=1):
         kl = 0
-
         if pdf == "normal":
             mu = params[0]
             logvar = params[1]
-            kl = 0.5 * F.sum(1 + logvar - mu * mu - F.exp(logvar), axis=0, exclude=True)
+            kl = weight * 0.5 * F.sum(1 + logvar - mu * mu - F.exp(logvar), axis=0, exclude=True)
 
         return kl
 
@@ -73,13 +74,15 @@ class CNNAutoencoderTrainer:
               optimizer_params=(('learning_rate', 0.001),),
               load_checkpoint=False,
               context='cpu',
+              reconstruction_loss='mse',
+              preprocessing=False,
               checkpoint_period=5,
               load_pretrained=False,
               normalize=False,
               log_period = 50,
-              label_port="",
               kl_loss_weight=1,
               print_images=False):
+        preprocessing = False #TODO to be added - create an additional load_vae_data for preprocessing
         num_pus = 1
         if context == 'gpu': # TODO (Multi-) GPU training on VAEs not tested yet
             num_pus = mx.context.num_gpus()
@@ -98,16 +101,16 @@ class CNNAutoencoderTrainer:
 
         if print_images:
             try:
-                os.path.isdir('images')
-            except:
-                logging.info("Creating 'images' directory.")
-                try:
+                logging.info("Creating 'images' directory...")
+                if not os.path.isdir('images'):
                     os.mkdir('images')
-                except OSError:
-                    logging.error("Creation of the 'images' directory failed.")
+                else:
+                    logging.info("'images' directory already exists.")
+            except:
+                logging.error("Creation of the 'images' directory failed.")
 
-
-        train_iter, test_iter, data_mean, data_std, _, _ = self._data_loader.load_vae_data(batch_size=batch_size,use_labels=labeled_training)
+        input_names = [<#list tc.architecture.getInputs() as inputName> "${inputName}"<#sep>,</#list>]
+        train_iter, test_iter, data_mean, data_std, _, _ = self._data_loader.load_vae_data(batch_size=batch_size, input_names=input_names)
 
         if 'weight_decay' in optimizer_params:
             optimizer_params['wd'] = optimizer_params['weight_decay']
@@ -124,14 +127,8 @@ class CNNAutoencoderTrainer:
             del optimizer_params['step_size']
             del optimizer_params['learning_rate_decay']
 
-        if normalize:
-            self._enc_creator.construct(context=mx_context, batch_size=batch_size, data_mean=data_mean, data_std=data_std)
-            self._dec_creator.construct(context=mx_context, batch_size=batch_size, data_mean=data_mean, data_std=data_std)
-        else:
-            self._enc_creator.construct(context=mx_context, batch_size=batch_size)
-            self._dec_creator.construct(context=mx_context, batch_size=batch_size)
-
         begin_epoch = 0
+
         if load_checkpoint:
             begin_epoch = self._enc_creator.load(mx_context)
         elif load_pretrained:
@@ -142,6 +139,13 @@ class CNNAutoencoderTrainer:
                 shutil.rmtree(self._enc_creator._model_dir_)
             if os.path.isdir(self._dec_creator._model_dir_):
                 shutil.rmtree(self._dec_creator._model_dir_)
+
+        if normalize:
+            self._enc_creator.construct(context=mx_context, batch_size=batch_size, data_mean=data_mean, data_std=data_std)
+            self._dec_creator.construct(context=mx_context, batch_size=batch_size, data_mean=data_mean, data_std=data_std)
+        else:
+            self._enc_creator.construct(context=mx_context, batch_size=batch_size)
+            self._dec_creator.construct(context=mx_context, batch_size=batch_size)
 
         encoder_nets = self._enc_creator.networks
         decoder_nets = self._dec_creator.networks
@@ -159,15 +163,8 @@ class CNNAutoencoderTrainer:
         dec_trainers = [mx.gluon.Trainer(network.collect_params(), optimizer, optimizer_params) for network in
                     decoder_nets.values() if len(network.collect_params().values()) != 0]
 
-        if loss == "customloss":
-            try:
-                import customloss
-                loss_function = customloss.Loss(batch_size=batch_size, kl_loss_weight=kl_loss_weight, loss_ctx_list=loss_ctx_list)
-            except ImportError:
-                logging.info("No customloss directory found. Using default loss function instead.")
-                loss_function = VAELoss(batch_size=batch_size, kl_loss_weight=kl_loss_weight, loss_ctx_list=loss_ctx_list)
-        else:
-            loss_function = VAELoss(batch_size=batch_size, kl_loss_weight=kl_loss_weight, loss_ctx_list=loss_ctx_list)
+
+        loss_function = VAELoss(recon_loss=reconstruction_loss, kl_loss_weight=kl_loss_weight, loss_ctx_list=loss_ctx_list)
 
         loss_function.hybridize()
 
@@ -185,6 +182,7 @@ class CNNAutoencoderTrainer:
             train_batches = 0
 
             loss_total = 0
+            recon_total = 0
             train_iter.reset()
 
             for batch_i, batch in enumerate(train_iter):
@@ -192,7 +190,7 @@ class CNNAutoencoderTrainer:
                 with autograd.record():
                     indexed_labels = 0
                     <#list tc.architectureInputs as inputName>
-                    if "${inputName?keep_before_last("_")}" == label_port:
+                    if "${inputName?keep_before_last("_")}" == "label":
                         label_ = gluon.utils.split_and_load(batch.label[indexed_labels], ctx_list=mx_context, even_split=False)
                         indexed_labels += 1
                         ${inputName} = [mx.nd.one_hot(label_[i], ${tc.architectureInputSymbols[inputName?index].ioDeclaration.type.dimensions[0]?c}) for i in range(num_pus)]
@@ -203,11 +201,15 @@ class CNNAutoencoderTrainer:
                     lossList = []
                     loss_param_list = []
                     reconstruction_losses = []
+                    encoding_ = []
+                    pred_= []
 
                     for i in range(num_pus):
                         lossList.append([])
                         loss_param_list.append([])
                         reconstruction_losses.append([])
+                        encoding_.append([])
+                        pred_.append([])
 
                     nd.waitall()
                     for i in range(num_pus):
@@ -218,14 +220,14 @@ class CNNAutoencoderTrainer:
                     <#if tc.architecture.getAuxiliaryArchitecture()??>
                     nd.waitall()
                     for i in range(num_pus):
-                        res_<#if auxNetworkInstruction.body.hasLossParameterizingElements() >, loss_params_dec</#if> = decoder_nets[0](<#list tc.architecture.getAuxiliaryArchitecture().getInputs() as inputName> ${inputName}[i]<#sep>, </#list>)
+                        res_<#if auxNetworkInstruction.body.hasLossParameterizingElements() >, loss_params_dec</#if> = decoder_nets[0](<#list tc.architecture.getAuxiliaryArchitecture().getInputs() as inputName> ${inputName}_[i]<#sep>, </#list>)
                         <#if auxNetworkInstruction.body.hasLossParameterizingElements() >loss_param_list[i].append(loss_params_dec)</#if>
                         pred_[i] = res_[0]<#if auxNetworkInstruction.body.hasLossParameterizingElements()><#else>[0]</#if>
                     </#if>
 
                     nd.waitall()
                     for i in range(num_pus):
-                        elbo, reconstruction_loss = loss_function(pred_[i], data_[i], loss_param_list[i]))
+                        elbo, reconstruction_loss = loss_function(pred_[i], data_[i], loss_param_list[i])
                         lossList[i].append(elbo)
                         reconstruction_losses[i].append(reconstruction_loss)
 
@@ -235,8 +237,8 @@ class CNNAutoencoderTrainer:
                     for i in range(num_pus):
                         for element in lossList[i]:
                             losses[i] = losses[i] + element
-                        for element in reconstruction_losses[i]:
-                            reconLosses[i] = losses[i] + element
+                        for r in reconstruction_losses[i]:
+                            reconLosses[i] = reconLosses[i] + r
 
                 for loss in losses:
                     loss.backward()
@@ -244,7 +246,7 @@ class CNNAutoencoderTrainer:
                     global_loss_train += loss.sum().asscalar()
 
                 for loss in reconLosses:
-                    loss_total += loss.sum().asscalar()
+                    recon_total += loss.sum().asscalar()
                     global_reconloss += loss.sum().asscalar()
 
                 train_batches += 1
@@ -264,10 +266,12 @@ class CNNAutoencoderTrainer:
                             speed = float("inf")
 
                         loss_avg = loss_total / (batch_size * log_period)
+                        recon_avg = recon_total / (batch_size * log_period)
                         loss_total = 0
+                        recon_total = 0
 
                         logging.info("Epoch[%d] Batch[%d] Speed: %.2f samples/sec Average ELBO Loss: %.5f, Reconstruction Loss: %.5f" % (
-                        epoch, batch_i, speed, loss_avg))
+                        epoch, batch_i, speed, loss_avg, recon_avg))
 
                         avg_speed += speed
                         n += 1
@@ -291,7 +295,7 @@ class CNNAutoencoderTrainer:
 
                 indexed_labels = 0
                 <#list tc.architectureInputs as inputName>
-                if "${inputName?keep_before_last("_")}" == label_port:
+                if "${inputName?keep_before_last("_")}" == "label":
                     label_ = gluon.utils.split_and_load(batch.label[indexed_labels], ctx_list=mx_context, even_split=False)
                     indexed_labels += 1
                     ${inputName} = [mx.nd.one_hot(label_[i], ${tc.architectureInputSymbols[inputName?index].ioDeclaration.type.dimensions[0]?c}) for i in range(num_pus)]
@@ -301,12 +305,14 @@ class CNNAutoencoderTrainer:
 
                 lossList = []
                 loss_param_list = []
-                reconstruction_losses = []
+                encoding_ = []
+                pred_= []
 
                 for i in range(num_pus):
                     lossList.append([])
                     loss_param_list.append([])
-                    reconstruction_losses.append([])
+                    encoding_.append([])
+                    pred_.append([])
 
                 nd.waitall()
                 for i in range(num_pus):
@@ -317,37 +323,30 @@ class CNNAutoencoderTrainer:
                 <#if tc.architecture.getAuxiliaryArchitecture()??>
                 nd.waitall()
                 for i in range(num_pus):
-                    res_<#if auxNetworkInstruction.body.hasLossParameterizingElements() >, loss_params_dec</#if> = decoder_nets[0](<#list tc.architecture.getAuxiliaryArchitecture().getInputs() as inputName> ${inputName}[i]<#sep>, </#list>)
+                    res_<#if auxNetworkInstruction.body.hasLossParameterizingElements() >, loss_params_dec</#if> = decoder_nets[0](<#list tc.architecture.getAuxiliaryArchitecture().getInputs() as inputName> ${inputName}_[i]<#sep>, </#list>)
                     <#if auxNetworkInstruction.body.hasLossParameterizingElements() >loss_param_list[i].append(loss_params_dec)</#if>
                     pred_[i] = res_[0]<#if auxNetworkInstruction.body.hasLossParameterizingElements()><#else>[0]</#if>
                     </#if>
 
                 nd.waitall()
                 for i in range(num_pus):
-                    elbo, reconstruction_loss = loss_function(pred_[i], data_[i], loss_param_list[i]))
+                    elbo, reconstruction_loss = loss_function(pred_[i], data_[i], loss_param_list[i])
                     lossList[i].append(elbo)
-                    reconstruction_losses[i].append(reconstruction_loss)
 
                 losses = [0] * num_pus
-                reconLosses = [0] * num_pus
                 for i in range(num_pus):
                     for element in lossList[i]:
                         losses[i] = losses[i] + element
-                    for element in reconstruction_losses[i]:
-                        reconLosses[i] = reconLosses[i] + element
 
                 for loss in losses:
                     global_loss_test += loss.sum().asscalar()
-                for loss in reconLosses[i]:
-                    global_reconLoss_test += loss.sum().asscalar()
 
                 test_batches += 1
 
             global_loss_test /= (test_batches * single_pu_batch_size)
-            global_reconLoss_test /= (test_batches * single_pu_batch_size)
 
-            logging.info("Epoch[%d], Train Loss: %f, Validation Loss: %f, Reconstruction Loss: %f" % (
-                epoch, global_loss_train, global_loss_test, global_reconLoss))
+            logging.info("Epoch[%d], Epoch Train Loss: %f, Validation Loss: %f, Epoch Reconstruction Loss: %f" % (
+                epoch, global_loss_train, global_loss_test, global_reconloss))
 
             if (epoch+1) % checkpoint_period == 0:
                 for i, network in encoder_nets.items():
@@ -376,28 +375,29 @@ class CNNAutoencoderTrainer:
                     logging.info("Could not print reconstruction images.")
 
         if print_images:
-            try:
-                #Loss plot
-                batch_x = np.linspace(1, num_epoch, len(train_lost_list))
-                filename = 'loss_graph.png'
-                plt.plot(batch_x, np.array(train_lost_list))
-                plt.plot(batch_x, np.array(test_lost_list))
-                plt.legend(['Train loss', 'Validation Loss'])
-                plt.savefig('images/' + filename)
-            except:
-                logging.info("Could not print loss plot image.")
+            if num_epoch != 1:
+                try:
+                    #Loss plot
+                    batch_x = np.linspace(1, num_epoch, len(train_lost_list))
+                    filename = 'loss_graph.png'
+                    plt.plot(batch_x, np.array(train_lost_list))
+                    plt.plot(batch_x, np.array(test_lost_list))
+                    plt.legend(['Train loss', 'Validation Loss'])
+                    plt.savefig('images/' + filename)
+                except:
+                    logging.info("Could not print loss plot image.")
 
         for i, network in encoder_nets.items():
             if network.save_specific_params_list:
                 for name, param_dic in network.save_specific_params_list:
-                    param_dic.save(sel.encoder_parameter_path(i) + '-' + name + '-' + str((num_epoch-1) + begin_epoch).zfill(4) + 'params'
+                    param_dic.save(self.encoder_parameter_path(i) + '-' + name + '-' + str((num_epoch-1) + begin_epoch).zfill(4) + 'params')
             network.save_parameters(self.encoder_parameter_path(i) + '-' + str((num_epoch-1) + begin_epoch).zfill(4) + '.params')
             network.export(self.encoder_parameter_path(i) + '_newest', epoch=0)
 
         for i, network in decoder_nets.items():
             if network.save_specific_params_list:
                 for name, param_dic in network.save_specific_params_list:
-                    param_dic.save(sel.encoder_parameter_path(i) + '-' + name + '-' + str((num_epoch-1) + begin_epoch).zfill(4) + 'params'
+                    param_dic.save(self.encoder_parameter_path(i) + '-' + name + '-' + str((num_epoch-1) + begin_epoch).zfill(4) + 'params')
             network.save_parameters(self.decoder_parameter_path(i) + '-' + str((num_epoch-1) + begin_epoch).zfill(4) + '.params')
             network.export(self.decoder_parameter_path(i) + '_newest', epoch=0)
 
