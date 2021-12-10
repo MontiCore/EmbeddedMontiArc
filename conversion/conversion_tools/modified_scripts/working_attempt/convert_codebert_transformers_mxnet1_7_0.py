@@ -75,7 +75,7 @@ def parse_args():
         help="Length of the input sequences")
     return parser.parse_args()
 
-def get_gluon_model_arch(hf_cfg, ctx, test):
+def get_gluon_model(hf_cfg, ctx, test):
     enc_hyper_params = hp.get_bertenc_hparams(test)
     hyper_params = hp.get_bert_hparams()
     
@@ -141,7 +141,7 @@ def convert_params(hf_model, hf_tokenizer, hf_cfg, test):
     # https://github.com/dmlc/gluon-nlp/blob/14559518a75081469bfba14150ded2dc97c13902/src/gluonnlp/model/bert.py#L1459
     #
     ctx = mx.cpu()
-    gluon_model, gluon_embedding = get_gluon_model_arch(hf_cfg, ctx, test)
+    gluon_model, gluon_embedding = get_gluon_model(hf_cfg, ctx, test)
     gluon_model_params = gluon_model.collect_params()
     gluon_embedding_params = gluon_embedding.collect_params()
     hf_params = hf_model.state_dict()

@@ -81,7 +81,7 @@ def get_decoder(test_run, ctx):
         weight_initializer=decoder_hparams['weight_initializer'],
         bias_initializer=decoder_hparams['bias_initializer'], 
         prefix=decoder_hparams['prefix'], 
-        params=decoder_hparams['prefix']
+        params=decoder_hparams['params']
     )
     return decoder
 
