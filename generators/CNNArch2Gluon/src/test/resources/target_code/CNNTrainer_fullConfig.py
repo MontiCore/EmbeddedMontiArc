@@ -48,5 +48,5 @@ if __name__ == "__main__":
             'learning_rate_minimum': 1.0E-5,
             'learning_rate_policy': 'step',
             'learning_rate': 0.001,
-            'step_size': 1000}
+            'step_size': 1000},
     )

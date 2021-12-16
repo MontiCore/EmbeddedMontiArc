@@ -5,6 +5,9 @@
 <#assign outputShape = tc.join(element.outputShape, ",")>
 <#if mode == "ARCHITECTURE_DEFINITION">
             lastEpoch = 0
+            symbolFile = None
+            weightFile = None
+            onnxFile = None
             for file in os.listdir("${networkDir}"):
                 if "${networkPrefix}" in file and ".json" in file:
                     symbolFile = file
@@ -16,20 +19,41 @@
                         lastEpoch = epoch
                         weightFile = file
 
+                if "${networkPrefix}" in file and ".onnx" in file:
+                    onnxFile = file
+
 <#if numInputs == "1">
             inputNames = ["data"]      
-            zeroInputs = [nd.zeros(<#if element.element.inputTypes[0].dimensions[0] == 1 && tc.cutDimensionsInteger(element.element.inputTypes[0].dimensions)?size != 1>(${tc.join(element.element.inputTypes[0].dimensions?reverse, ",")})<#else>(1,${tc.join(element.element.inputTypes[0].dimensions?reverse, ",")})</#if>, ctx=mx_context[0])]
+            zeroInputs = [nd.zeros((1,${tc.join(element.element.inputTypes[0].dimensions, ",")}), ctx=mx_context[0])]
 <#else>
             inputNames = []
             zeroInputs = []
 <#list element.element.inputTypes as inType>
             inputNames.append("data" + str(${inType?index}))
-            zeroInputs.append(nd.zeros(<#if inType.dimensions[0] == 1 && tc.cutDimensionsInteger(inType.dimensions)?size != 1>(${tc.join(tc.cutDimensionsInteger(inType.dimensions)?reverse, ",")})<#else>(1,${tc.join(tc.cutDimensionsInteger(inType.dimensions)?reverse, ",")})</#if>, ctx=mx_context[0]))
+            zeroInputs.append(nd.zeros((1,${tc.join(tc.cutDimensionsInteger(inType.dimensions), ",")}), ctx=mx_context[0]))
 </#list>
 </#if>
             with warnings.catch_warnings():
                 warnings.simplefilter("ignore")
-                self.${element.name} = gluon.nn.SymbolBlock.imports("${networkDir}/" + symbolFile, inputNames, "${networkDir}/" + weightFile, ctx=mx_context)
+                if symbolFile and weightFile:
+                    self.${element.name} = gluon.nn.SymbolBlock.imports("${networkDir}/" + symbolFile, inputNames, "${networkDir}/" + weightFile, ctx=mx_context)
+                elif onnxFile:
+                    from mxnet.contrib import onnx as onnx_mxnet
+                    <#--  Works but how inputNames are defined here?  -->
+                    <#--  self.${element.name} = onnx_mxnet.import_to_gluon("${networkDir}/" + onnxFile, ctx=mx_context)  -->
+                    sym, arg_params, aux_params = onnx_mxnet.import_model("${networkDir}/" + onnxFile)
+                    inputSymVars = [mx.sym.var(inputName) for inputName in inputNames]
+                    self.${element.name} = gluon.nn.SymbolBlock(outputs=sym, inputs=inputSymVars)
+                    net_params = self.${element.name}.collect_params()
+                    for param in arg_params:
+                        if param in net_params:
+                            net_params[param]._load_init(arg_params[param], ctx=mx_context)
+                    for param in aux_params:
+                        if param in net_params:
+                            net_params[param]._load_init(aux_params[param], ctx=mx_context)
+                else:
+                    raise FileNotFoundError("Model files were not found in '${networkDir}'.")
+
             self.${element.name}out_shape = self.${element.name}(*zeroInputs).shape
             if self.${element.name}out_shape != (1,${outputShape}):
                 outputSize=1
