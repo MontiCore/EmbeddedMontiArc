@@ -534,6 +534,9 @@ class Net_0(gluon.HybridBlock):
                 self.input_normalization_data_ = NoNormalization()
 
             lastEpoch = 0
+            symbolFile = None
+            weightFile = None
+            onnxFile = None
             for file in os.listdir("pretrained"):
                 if "network_name-" in file and ".json" in file:
                     symbolFile = file
@@ -545,11 +548,30 @@ class Net_0(gluon.HybridBlock):
                         lastEpoch = epoch
                         weightFile = file
 
+                if "network_name-" in file and ".onnx" in file:
+                    onnxFile = file
+
             inputNames = ["data"]      
             zeroInputs = [nd.zeros((1,128), ctx=mx_context[0])]
             with warnings.catch_warnings():
                 warnings.simplefilter("ignore")
-                self.loadnetwork1_ = gluon.nn.SymbolBlock.imports("pretrained/" + symbolFile, inputNames, "pretrained/" + weightFile, ctx=mx_context)
+                if symbolFile and weightFile:
+                    self.loadnetwork1_ = gluon.nn.SymbolBlock.imports("pretrained/" + symbolFile, inputNames, "pretrained/" + weightFile, ctx=mx_context)
+                elif onnxFile:
+                    from mxnet.contrib import onnx as onnx_mxnet
+                    sym, arg_params, aux_params = onnx_mxnet.import_model("pretrained/" + onnxFile)
+                    inputSymVars = [mx.sym.var(inputName) for inputName in inputNames]
+                    self.loadnetwork1_ = gluon.nn.SymbolBlock(outputs=sym, inputs=inputSymVars)
+                    net_params = self.loadnetwork1_.collect_params()
+                    for param in arg_params:
+                        if param in net_params:
+                            net_params[param]._load_init(arg_params[param], ctx=mx_context)
+                    for param in aux_params:
+                        if param in net_params:
+                            net_params[param]._load_init(aux_params[param], ctx=mx_context)
+                else:
+                    raise FileNotFoundError("Model files were not found in 'pretrained'.")
+
             self.loadnetwork1_out_shape = self.loadnetwork1_(*zeroInputs).shape
             if self.loadnetwork1_out_shape != (1,1,768):
                 outputSize=1
