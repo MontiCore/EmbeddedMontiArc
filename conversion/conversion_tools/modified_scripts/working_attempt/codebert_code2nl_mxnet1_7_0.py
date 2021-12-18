@@ -192,16 +192,17 @@ def train_model(seq2seq, train_data, ctx, test_run):
                         # print(X)
                         # print(50*"*"+ "y")
                         # print(y)
-                        l = loss(X, y)
+                        # mean loss output because torch_loss(X,y) == mxnet_loss(X,y).mean()
+                        l = loss(X, y).mean()
+                        # append to list to later take average over different gpu outputs
                         losses.append(l)
+                # average over the gpu slices like in the pytorch script, not sure if better way
                 for l in losses:
                     l.backward()
-                for l in losses:
-                    l.wait_to_read()
             # torch script loss func outputs the mean of the batch torch_loss(X,y) == mxnet_loss(X,y).mean()
             # we sum over the losses on each device and then divide that by the current step or batch number
             # TODO with multiple devices e.g. 2 gpus do we need to divinde total_loss by num_gpus?
-            total_loss += sum([l.mean().asscalar() for l in losses])
+            total_loss += sum([l.asscalar() for l in losses])
             batch_loss = total_loss/(bid+1)
             batch_losses.append(batch_loss)
             print('Epoch {}/{} Batch {}/{} Loss {}'.format(
@@ -226,15 +227,6 @@ def test_model_w_data(seq2seq, test_data, ctx, test_run):
             preds.append((pred, tgt_id.copyto(mx.cpu()).detach()))
             probs.append(prob)
     return preds, probs
-
-def test_model(file_name, seq2seq, ctx, args):
-    print('Testing with {}...'.format(file_name), flush=True)
-    test_file = '{}/{}'.format(args.data_dir, file_name)
-    test_data = conv.get_data_iterator(
-        ['source_ids', 'source_masks'], ['target_ids', 'target_masks'],
-        True, batch_size, h5py.File(test_file, 'r'))
-    preds, _ = test_model_w_data(seq2seq, test_data, ctx, args.test_run)
-    return preds
 
 # we need a tokenizer to quanitify
 def format_for_bleu(tokenizer, outputs):
@@ -265,6 +257,14 @@ def compute_bleu(file_name, res):
     score = round(bleu.bleuFromMaps(actual_map, pred_map)[0], 2)
     print('{} {}'.format('Bleu-4 Score', str(score)), flush=True)
 
+def get_data(args, fname):
+    train_hparams = hp.get_training_hparams(args.test_run)
+    data_file = '{}/{}'.format(args.data_dir, fname)
+    data_iter = conv.get_data_iterator(
+        ['source_ids', 'source_masks'], ['target_ids', 'target_masks'],
+        True, train_hparams['batch_size'], h5py.File(data_file, 'r'))
+    return data_iter
+
 def parse_args():
     parser = argparse.ArgumentParser()
     parser.add_argument('--test_run', action='store_true', 
@@ -291,26 +291,17 @@ if __name__ == '__main__':
     else:
         ctx = [mx.gpu(i) for i in range(args.num_gpus)]
 
-    train_hparams = hp.get_training_hparams(args.test_run)
-    train_file = '{}/{}'.format(args.data_dir, 'train.h5')
-    # TODO should we get a new iterator after every epoch?
-    train_data = conv.get_data_iterator(
-        ['source_ids', 'source_masks'], ['target_ids', 'target_masks'],
-        True, train_hparams['batch_size'], h5py.File(train_file, 'r'))
-
     seq2seq = get_seq2seq(
         args.symbol_file, args.weight_file, 
         args.embed_symbol_file, args.embed_weight_file, 
-        ctx, args.test_run, False
+        ctx, args.test_run
     )
 
-    model = train_model(seq2seq, train_data, ctx, args.test_run)
+    train_data = get_data(args, 'train.h5')
+    model,_,_  = train_model(seq2seq, train_data, ctx, args.test_run)
     tokenizer = RobertaTokenizer.from_pretrained('microsoft/codebert-base')
 
-    res_test = test_model('test.h5', model, ctx, args)
-    res_test = format_for_bleu(tokenizer, res_test)
-    compute_bleu('test.h5', res_test)
-
-    res_valid = test_model('valid.h5', model, ctx, args)
-    res_valid = format_for_bleu(tokenizer, res_valid)
-    compute_bleu('valid.h5', res_valid)
+    test_data = get_data(args, 'test.h5')
+    preds,_ = test_model_w_data(model, test_data, ctx, args.test_run)
+    formatted = format_for_bleu(tokenizer, preds)
+    compute_bleu('test.h5', formatted)
