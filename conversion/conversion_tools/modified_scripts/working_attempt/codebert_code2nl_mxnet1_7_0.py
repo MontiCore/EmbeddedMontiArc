@@ -51,6 +51,7 @@ from codebert_models import TransformerDecoder
 from transformers.models.roberta import RobertaTokenizer
 from codebert_models import Seq2Seq
 from cnnarch2gluon_adamw import AdamW
+from itertools import cycle
 import codebert_hyper_params as hp
 import codebert_code2nl_bleu as bleu
 import convert_code2nl_data_mxnet1_7_0 as conv
@@ -133,7 +134,6 @@ def train_model(seq2seq, train_data, ctx, test_run):
     max_target_length = train_hparams['max_target_length']
     seq2seq.initialize(ctx=ctx)
     seq2seq.hybridize()
-    epochs = (train_steps * batch_size) // train_data.num_data
     loss = mx.gluon.loss.SoftmaxCrossEntropyLoss() # TODO parameters? e.g. sparse_label
     # lr is defined in the call to run codebert, epsilon is left as default in the run script, beta1 and 2 are the pytorch default
     optimizer = AdamW(
@@ -153,63 +153,63 @@ def train_model(seq2seq, train_data, ctx, test_run):
     print('Training model...', flush=True)
     all_shift_logits = []
     batch_losses = []
-    for epoch in range(epochs):
-        total_loss = 0
-        for bid, batch in enumerate(train_data):
-            source_ids, source_masks, target_ids, target_masks = get_seqs_from_batch(batch, ctx)
-            with mx.autograd.record():
-                losses = []
-                for s_id, s_msk, tgt_id, tgt_msk in zip(source_ids, source_masks, target_ids, target_masks):
-                        lm_logits = seq2seq(s_id, s_msk, tgt_id, tgt_msk)
-                        # print(50*"*" + "lm_logits")
-                        # print(lm_logits)
-                        # print(50*"*" + "tgt_mask")
-                        # print(tgt_msk)
-                        # print(50*"*" + "target_ids")
-                        # print(tgt_id)
-                        # drop the start of sentence mask tokens? - mb
-                        loss_tgt_mask = valid_lengths_to_ones(tgt_msk, max_target_length, lm_logits.ctx)
-                        # print(50*"*" + "loss_tgt_mask")
-                        # print(loss_tgt_mask)
-                        active_loss = loss_tgt_mask[..., 1:].reshape(-1)
-                        shift_labels = tgt_id[..., 1:]
-                        # print(50*"*"+ "active_loss")
-                        # print(active_loss)
-                        # print(50*"*"+ "shift_labels")
-                        # print(shift_labels)
-                        # Shift so that tokens < n predict n
-                        # shape is (batch_size, target_seq_len, vocab_size)
-                        # so for every batch, and every word in each batch
-                        # we have unnormalized probablilities of next word (50265 words)
-                        shift_logits = lm_logits[..., :-1, :]
-                        # print(50*"*" + "shift_logits")
-                        # print(shift_logits)
-                        all_shift_logits.append(shift_logits.copyto(mx.cpu()).detach())
-                        newDim = shift_logits.shape[-1]
-                        X = mx.nd.contrib.boolean_mask(shift_logits.reshape(-1, newDim), active_loss)
-                        y = mx.nd.contrib.boolean_mask(shift_labels.reshape(-1), active_loss)
-                        # print(50*"*"+ "X")
-                        # print(X)
-                        # print(50*"*"+ "y")
-                        # print(y)
-                        # mean loss output because torch_loss(X,y) == mxnet_loss(X,y).mean()
-                        l = loss(X, y).mean()
-                        # append to list to later take average over different gpu outputs
-                        losses.append(l)
-                # average over the gpu slices like in the pytorch script, not sure if better way
-                for l in losses:
-                    l.backward()
-            # torch script loss func outputs the mean of the batch torch_loss(X,y) == mxnet_loss(X,y).mean()
-            # we sum over the losses on each device and then divide that by the current step or batch number
-            # TODO with multiple devices e.g. 2 gpus do we need to divinde total_loss by num_gpus?
-            total_loss += sum([l.asscalar() for l in losses])
-            batch_loss = total_loss/(bid+1)
-            batch_losses.append(batch_loss)
-            print('Epoch {}/{} Batch {}/{} Loss {}'.format(
-                epoch+1, epochs, bid+1, train_data.num_data//batch_size, batch_loss
-            ), flush=True)
-            trainer.step(batch_size)
-        train_data.reset()
+    total_loss = 0
+    train_data = cycle(train_data)
+    for bid in range(train_steps):
+        batch = next(train_data)
+        source_ids, source_masks, target_ids, target_masks = get_seqs_from_batch(batch, ctx)
+        with mx.autograd.record():
+            losses = []
+            for s_id, s_msk, tgt_id, tgt_msk in zip(source_ids, source_masks, target_ids, target_masks):
+                    lm_logits = seq2seq(s_id, s_msk, tgt_id, tgt_msk)
+                    # print(50*"*" + "lm_logits")
+                    # print(lm_logits)
+                    # print(50*"*" + "tgt_mask")
+                    # print(tgt_msk)
+                    # print(50*"*" + "target_ids")
+                    # print(tgt_id)
+                    # drop the start of sentence mask tokens? - mb
+                    loss_tgt_mask = valid_lengths_to_ones(tgt_msk, max_target_length, lm_logits.ctx)
+                    # print(50*"*" + "loss_tgt_mask")
+                    # print(loss_tgt_mask)
+                    active_loss = loss_tgt_mask[..., 1:].reshape(-1)
+                    shift_labels = tgt_id[..., 1:]
+                    # print(50*"*"+ "active_loss")
+                    # print(active_loss)
+                    # print(50*"*"+ "shift_labels")
+                    # print(shift_labels)
+                    # Shift so that tokens < n predict n
+                    # shape is (batch_size, target_seq_len, vocab_size)
+                    # so for every batch, and every word in each batch
+                    # we have unnormalized probablilities of next word (50265 words)
+                    shift_logits = lm_logits[..., :-1, :]
+                    # print(50*"*" + "shift_logits")
+                    # print(shift_logits)
+                    all_shift_logits.append(shift_logits.copyto(mx.cpu()).detach())
+                    newDim = shift_logits.shape[-1]
+                    X = mx.nd.contrib.boolean_mask(shift_logits.reshape(-1, newDim), active_loss)
+                    y = mx.nd.contrib.boolean_mask(shift_labels.reshape(-1), active_loss)
+                    # print(50*"*"+ "X")
+                    # print(X)
+                    # print(50*"*"+ "y")
+                    # print(y)
+                    # mean loss output because torch_loss(X,y) == mxnet_loss(X,y).mean()
+                    l = loss(X, y).mean()
+                    # append to list to later take average over different gpu outputs
+                    losses.append(l)
+            # average over the gpu slices like in the pytorch script, not sure if better way
+            for l in losses:
+                l.backward()
+        # torch script loss func outputs the mean of the batch torch_loss(X,y) == mxnet_loss(X,y).mean()
+        # we sum over the losses on each device and then divide that by the current step or batch number
+        # TODO with multiple devices e.g. 2 gpus do we need to divinde total_loss by num_gpus?
+        total_loss += sum([l.asscalar() for l in losses])
+        batch_loss = total_loss/(bid+1)
+        batch_losses.append(batch_loss)
+        print('Train Batch {}/{} Loss {}'.format(
+            bid+1, train_steps, batch_loss
+        ), flush=True)
+        trainer.step(batch_size)
     return seq2seq, all_shift_logits, batch_losses
 
 def test_model_w_data(seq2seq, test_data, ctx, test_run):
@@ -219,7 +219,8 @@ def test_model_w_data(seq2seq, test_data, ctx, test_run):
     num_batches = test_data.num_data//batch_size
     preds = []
     probs = []
-    for bid, batch in enumerate(test_data):
+    for bid in range(num_batches):
+        batch = next(test_data)
         print('Test Batch {}/{}'.format(bid+1, num_batches), flush=True)
         source_ids, source_masks, target_ids, _ = get_seqs_from_batch(batch, ctx)
         for s_id, s_msk, tgt_id in zip(source_ids, source_masks, target_ids):
