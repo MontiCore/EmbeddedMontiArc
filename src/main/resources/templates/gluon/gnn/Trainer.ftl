@@ -7,7 +7,7 @@ import mxnet as mx
 <#list configurations as config>
 import CNNCreator_${config.instanceName}
 import CNNDataLoader_${config.instanceName}
-import CNNSupervisedTrainer_${config.instanceName}
+import CNNGnnSupervisedTrainer_${config.instanceName}
 </#list>
 
 if __name__ == "__main__":
@@ -20,7 +20,7 @@ if __name__ == "__main__":
     ${config.instanceName}_creator = CNNCreator_${config.instanceName}.CNNCreator_${config.instanceName}()
     ${config.instanceName}_creator.validate_parameters()
     ${config.instanceName}_loader = CNNDataLoader_${config.instanceName}.CNNDataLoader_${config.instanceName}()
-    ${config.instanceName}_trainer = CNNSupervisedTrainer_${config.instanceName}.CNNSupervisedTrainer_${config.instanceName}(
+    ${config.instanceName}_trainer = CNNGnnSupervisedTrainer_${config.instanceName}.CNNGnnSupervisedTrainer_${config.instanceName}(
         ${config.instanceName}_loader,
         ${config.instanceName}_creator
     )

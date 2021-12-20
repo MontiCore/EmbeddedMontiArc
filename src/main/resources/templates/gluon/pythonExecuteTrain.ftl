@@ -2,7 +2,7 @@
                     labels = [gluon.utils.split_and_load(batch.label[i], ctx_list=mx_context, even_split=False) for i in range(${tc.architectureOutputs?size?c})]
 <#assign input_index = 0>
 <#list tc.architectureInputs as input_name>
-<#if input_name?index == tc.architectureInputs?seq_index_of(input_name)>
+<#if input_name?index == tc.architectureInputs?seq_index_of(input_name) && input_name != "graph_">
                     ${input_name} = gluon.utils.split_and_load(batch.data[${input_index}], ctx_list=mx_context, even_split=False)
 <#assign input_index++>
 </#if>
@@ -64,8 +64,12 @@
                     ${outputName} = [net_ret[i][0][${outputName?index}] for i in range(num_pus)]
 </#list>
 <#list tc.getStreamOutputNames(networkInstruction.body, true) as outputName>
-<#if tc.getNameWithoutIndex(outputName) == tc.outputName>         
-                    [lossList[i].append(loss_function(${outputName}[i], labels[${tc.getIndex(outputName, true)}][i])) for i in range(num_pus)]
+<#if tc.getNameWithoutIndex(outputName) == tc.outputName>
+                    if use_dgl:
+                        train_samples = graph_.ndata['train_mask'].sum().asscalar()
+                        [lossList[i].append(loss_function(${outputName}[i], mx.nd.squeeze(labels[${tc.getIndex(outputName, true)}][i]), mx.nd.expand_dims(graph_.ndata['train_mask'], 1)).sum() / train_samples) for i in range(num_pus)]
+                    else:
+                        [lossList[i].append(loss_function(${outputName}[i], labels[${tc.getIndex(outputName, true)}][i])) for i in range(num_pus)]
 </#if>
 </#list>
 

@@ -17,6 +17,10 @@ sys.path.insert(1, '${tc.architecture.getAdaNetUtils()}')
 from AdaNetConfig import AdaNetConfig
 import CoreAdaNet
 </#if>
+<#assign firstInput = tc.architectureInputs[0]>
+<#if (firstInput == 'graph')??>
+from dgl.nn.mxnet import *
+</#if>
 <#if tc.architecture.customPyFilesPath??>
 sys.path.insert(1, '${tc.architecture.customPyFilesPath}')
 from custom_layers import *
@@ -50,12 +54,19 @@ class Padding(gluon.HybridBlock):
             constant_value=0)
         return x
 
-
+<#if (firstInput == 'graph')??>
+class NoNormalization(gluon.Block):
+<#else>
 class NoNormalization(gluon.HybridBlock):
+</#if>
     def __init__(self, **kwargs):
         super(NoNormalization, self).__init__(**kwargs)
 
+<#if (firstInput == 'graph')??>
+    def forward(self, x):
+<#else>
     def hybrid_forward(self, F, x):
+</#if>
         return x
 
 
@@ -608,8 +619,11 @@ ${tc.include(networkInstruction.body, elements?index, "FORWARD_FUNCTION")}
 </#if>
 
 </#list>
-
+<#if (firstInput == 'graph')??>
+class Net_${networkInstruction?index}(gluon.Block):
+<#else>
 class Net_${networkInstruction?index}(gluon.HybridBlock):
+</#if>
     def __init__(self, data_mean=None, data_std=None, mx_context=None, **kwargs):
         super(Net_${networkInstruction?index}, self).__init__(**kwargs)
         with self.name_scope():
@@ -628,11 +642,14 @@ class Net_${networkInstruction?index}(gluon.HybridBlock):
 </#list>
 <#else>
 ${tc.include(networkInstruction.body, "ARCHITECTURE_DEFINITION")}
-</#if>    
+</#if>
             pass
 
-
+<#if (firstInput == 'graph')??>
+    def forward(self, ${tc.join(tc.getStreamInputNames(networkInstruction.body, false), ", ")}):
+<#else>
     def hybrid_forward(self, F, ${tc.join(tc.getStreamInputNames(networkInstruction.body, false), ", ")}):
+</#if>
 <#if networkInstruction.body.episodicSubNetworks?has_content>
 <#list networkInstruction.body.episodicSubNetworks as elements>
 <#if elements?index == 0>
