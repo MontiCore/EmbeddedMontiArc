@@ -32,6 +32,7 @@ void LinuxSystemCalls::add_linux_calls( SystemCalls &sys_calls ) {
         c.func_call_linux.set_return_64(c.func_call_linux.get_param1_64());
         return true;
     }), reason);
+
 }
 
 bool LinuxSystemCalls::malloc( Computer &computer ) {

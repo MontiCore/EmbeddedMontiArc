@@ -3,6 +3,7 @@
  */
 package de.rwth.montisim.hardware_emulator.computer;
 
+
 import java.time.Duration;
 import java.time.Instant;
 import java.util.ArrayList;
@@ -22,6 +23,7 @@ import de.rwth.montisim.hardware_emulator.computer.ComputerProperties.*;
 import de.rwth.montisim.simulation.eesimulator.*;
 import de.rwth.montisim.simulation.eesimulator.events.*;
 import de.rwth.montisim.simulation.eesimulator.message.Message;
+
 
 public class Computer extends EEComponent implements Inspectable {
 

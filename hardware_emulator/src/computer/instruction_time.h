@@ -6,6 +6,8 @@
 #include <Zydis/Zydis.h>
 #include "memory.h"
 
+
+
 /*
     This structure presents the evaluated computer time.
 
@@ -24,7 +26,7 @@ struct ComputerTime {
     ulong cpu_tick_time_pico;
     ulong memory_frequency;
     ulong memory_tick_time_pico;
-    
+
     ComputerTime() : micro_time( 0 ), pico_time( 0 ),
         use_time( false ) {
         set_cpu_frequency( 1000000 );
@@ -102,6 +104,7 @@ struct MemoryTime : public MemoryAccessInterface {
             return write_time;
         }
         MemoryTime() : read_time( 1000000 ), write_time( 2000000 ) {}
+        MemoryTime(ulong read_time, ulong write_time): read_time(read_time), write_time(write_time) {}
         void init( ComputerTime &time, uint read_cas, uint write_cas ) {
             this->read_time = read_cas * time.memory_tick_time_pico;
             this->write_time = write_cas * time.memory_tick_time_pico;
@@ -136,12 +139,20 @@ struct MemoryModel {
         
     public:
         MemoryTime base_time;
-        
+
+        uint get_layer_count() {
+            return mem_layer_count;
+        }
+
         void register_memory_layer( MemoryAccessInterface *layer ) {
             memory_layers[mem_layer_count++] = std::unique_ptr<MemoryAccessInterface>( layer );
         }
+
+        MemoryAccessInterface* get_memory_layer(int idx) {
+            if (idx < mem_layer_count) return memory_layers[idx].get();
+            else return nullptr;
+        }
         
-        //Use these functions to link memory access interfaces from furthest to nearest (L3 -> L1 cache)
         void add_common_interface( MemoryAccessInterface *mem_access ) {
             register_memory_layer( mem_access );
             mem_access->underlying_memory = data_memory;
@@ -175,6 +186,8 @@ struct ComputerTime;
     look up a tick (cycle) count that is added to the ComputerTime component using the CPU-tick=>time conversion.
 */
 struct CodeDecoder {
+    static constexpr uint BUFFER_SIZE = 0x400;
+
     Memory *memory;
     ComputerTime *computer_time;
     ZydisDecoder decoder;
@@ -182,14 +195,27 @@ struct CodeDecoder {
     uint length;
     bool succeeded;
     ZydisDecodedInstruction instruction;
+    ZydisFormatter formatter;
+
+    std::vector<char> buffer;
+    std::vector<std::string> operands_types;
+    std::vector<std::string> operands;
+
+    CodeDecoder() : computer_time( nullptr ), memory( nullptr ), code( nullptr ), length(0), instruction(), succeeded(false), decoder(),
+                    formatter(), buffer(BUFFER_SIZE){}
     
-    CodeDecoder() : computer_time( nullptr ), memory( nullptr ), code( nullptr ), length(0), instruction(), succeeded(false), decoder(){}
-    
-    void init( Memory &memory, ComputerTime &computer_time );
+    void init( Memory &memory, ComputerTime &computer_time);
     
     /*
         tick_time must be set to the evaluated tick count.
         returns true if the instruction had no entry in the used time table.
     */
     bool handle_instruction( ulong addr, uint size, ulong &tick_count );
+
+private:
+    int resolve_latency(ulong addr);
+    int get_latency(int idx);
+    uint count_operands();
+    void resolve_operands(uint operands_count);
+    std::vector<uint> get_agner_indexes(std::string& mnemonic);
 };

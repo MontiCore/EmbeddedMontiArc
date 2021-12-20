@@ -28,6 +28,6 @@ namespace ComputerLayout {
     constexpr ulong STACK_MAX_SIZE = 0x100000;
     //Virtual heap section.
     constexpr ulong HEAP_ADDRESS = STACK_ADDRESS + STACK_MAX_SIZE + STACK_BOUNDARY;
-    constexpr ulong HEAP_SIZE = 0x10000;
+    constexpr ulong HEAP_SIZE = 0x100000;
     constexpr ulong HEAP_MAX_SIZE = 0x100000;
 }

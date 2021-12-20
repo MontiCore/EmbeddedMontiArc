@@ -253,7 +253,12 @@ void HardwareEmulator::parse_flags(const json& config) {
         else if (flag.compare("p_code") == 0) computer.debug.d_code = true;
         else if (flag.compare("p_call") == 0) computer.debug.d_call = true;
         else if (flag.compare("p_time") == 0) debug_time = true;
+        else if (flag.compare("p_instruction_operands") == 0) computer.debug.d_instruction_operands = true;
+        else if (flag.compare("p_operands_details") == 0) computer.debug.d_operands_details = true;
+        else if (flag.compare("p_cache_hit_ratio") == 0) computer.debug.d_cache_hit_ratio = true;
+        else if (flag.compare("p_mem_access") == 0) computer.debug.d_mem_access = true;
         else Log::err.log_tag("Unknown flag: %s", flag.c_str());
     }
 }
+//TODO: test the debug flag with java scenario
 

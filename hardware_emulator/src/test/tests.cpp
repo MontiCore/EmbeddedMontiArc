@@ -169,7 +169,7 @@ void test_funccalling_sample_linux() {
     computer.init();
     computer.set_os( new OS::Linux(computer.func_call_linux) );
     computer.os->load_file(fs::path("sample_functioncalling"));
-        
+
     auto &section = computer.memory.sys_section;
     auto &section_stack = computer.memory.sys_section_stack;
     auto buffer_slot = section_stack.get_annotated( 1024, "Port Exchange buffer", Annotation::Type::OBJECT );
@@ -479,32 +479,28 @@ void test_zigzag_autopilot_native() {
         "level": 1,
         "size": 262144,
         "read_ticks": 4,
-        "write_ticks": 4,
-        "line_length": 64
+        "write_ticks": 4
       },
       {
         "type": "D",
         "level": 1,
         "size": 262144,
         "read_ticks": 4,
-        "write_ticks": 4,
-        "line_length": 64
+        "write_ticks": 4
       },
       {
         "type": "shared",
         "level": 2,
         "size": 2097152,
         "read_ticks": 6,
-        "write_ticks": 6,
-        "line_length": 64
+        "write_ticks": 6
       },
       {
         "type": "shared",
         "level": 3,
-        "size": 12582912,
+        "size": 16777216,
         "read_ticks": 40,
-        "write_ticks": 40,
-        "line_length": 64
+        "write_ticks": 40
       }
     ]
   },
@@ -533,7 +529,7 @@ void test_zigzag_autopilot_emu_windows() {
                 {"type": "I", "level": 1, "size": 262144, "read_ticks": 4, "write_ticks": 4},
                 {"type": "D", "level": 1, "size": 262144, "read_ticks": 4, "write_ticks": 4},
                 {"type": "shared", "level": 2, "size": 2097152, "read_ticks": 6, "write_ticks": 6},
-                {"type": "shared", "level": 3, "size": 12582912, "read_ticks": 40, "write_ticks": 40}
+                {"type": "shared", "level": 3, "size": 16777216, "read_ticks": 40, "write_ticks": 40}
             ]
         },
         "debug_flags": ["p_unsupported_syscalls"]
@@ -562,32 +558,28 @@ void test_zigzag_autopilot_emu_linux() {
         "level": 1,
         "size": 262144,
         "read_ticks": 4,
-        "write_ticks": 4,
-        "line_length": 64
+        "write_ticks": 4
       },
       {
         "type": "D",
         "level": 1,
         "size": 262144,
         "read_ticks": 4,
-        "write_ticks": 4,
-        "line_length": 64
+        "write_ticks": 4
       },
       {
         "type": "shared",
         "level": 2,
         "size": 2097152,
         "read_ticks": 6,
-        "write_ticks": 6,
-        "line_length": 64
+        "write_ticks": 6
       },
       {
         "type": "shared",
         "level": 3,
-        "size": 12582912,
+        "size": 16777216,
         "read_ticks": 40,
-        "write_ticks": 40,
-        "line_length": 64
+        "write_ticks": 40
       }
     ]
   },
@@ -622,32 +614,28 @@ void test_ema_autopilot_native() {
         "level": 1,
         "size": 262144,
         "read_ticks": 4,
-        "write_ticks": 4,
-        "line_length": 64
+        "write_ticks": 4
       },
       {
         "type": "D",
         "level": 1,
         "size": 262144,
         "read_ticks": 4,
-        "write_ticks": 4,
-        "line_length": 64
+        "write_ticks": 4
       },
       {
         "type": "shared",
         "level": 2,
         "size": 2097152,
         "read_ticks": 6,
-        "write_ticks": 6,
-        "line_length": 64
+        "write_ticks": 6
       },
       {
         "type": "shared",
         "level": 3,
-        "size": 12582912,
+        "size": 16777216,
         "read_ticks": 40,
-        "write_ticks": 40,
-        "line_length": 64
+        "write_ticks": 40
       }
     ]
   },
@@ -676,7 +664,7 @@ void test_ema_autopilot_emu_windows() {
                 {"type": "I", "level": 1, "size": 262144, "read_ticks": 4, "write_ticks": 4},
                 {"type": "D", "level": 1, "size": 262144, "read_ticks": 4, "write_ticks": 4},
                 {"type": "shared", "level": 2, "size": 2097152, "read_ticks": 6, "write_ticks": 6},
-                {"type": "shared", "level": 3, "size": 12582912, "read_ticks": 40, "write_ticks": 40}
+                {"type": "shared", "level": 3, "size": 16777216, "read_ticks": 40, "write_ticks": 40}
             ]
         },
         "debug_flags": ["p_unsupported_syscalls", "p_call" ]
@@ -705,32 +693,28 @@ void test_ema_autopilot_emu_linux() {
         "level": 1,
         "size": 262144,
         "read_ticks": 4,
-        "write_ticks": 4,
-        "line_length": 64
+        "write_ticks": 4
       },
       {
         "type": "D",
         "level": 1,
         "size": 262144,
         "read_ticks": 4,
-        "write_ticks": 4,
-        "line_length": 64
+        "write_ticks": 4
       },
       {
         "type": "shared",
         "level": 2,
         "size": 2097152,
         "read_ticks": 6,
-        "write_ticks": 6,
-        "line_length": 64
+        "write_ticks": 6
       },
       {
         "type": "shared",
         "level": 3,
-        "size": 12582912,
+        "size": 16777216,
         "read_ticks": 40,
-        "write_ticks": 40,
-        "line_length": 64
+        "write_ticks": 40
       }
     ]
   },

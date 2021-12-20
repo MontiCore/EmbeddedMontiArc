@@ -89,10 +89,10 @@ public class ComputerProperties extends EEComponentProperties {
 
         public HardwareTimeModel() {
             // Setup default Cache Config
-            caches.add(new CacheProperties(CacheType.I, 1, 262144, 4, 4));
-            caches.add(new CacheProperties(CacheType.D, 1, 262144, 4, 4));
-            caches.add(new CacheProperties(CacheType.SHARED, 2, 2097152, 6, 6));
-            caches.add(new CacheProperties(CacheType.SHARED, 3, 12582912, 40, 40));
+            caches.add(new CacheProperties(CacheType.I, 1, 8, 262144, 4, 4));
+            caches.add(new CacheProperties(CacheType.D, 1, 8, 262144, 4, 4));
+            caches.add(new CacheProperties(CacheType.SHARED, 2, 8, 2097152, 6, 6));
+            caches.add(new CacheProperties(CacheType.SHARED, 3, 8, 16777216, 40, 40));
         }
     }
 
@@ -104,6 +104,7 @@ public class ComputerProperties extends EEComponentProperties {
     static public class CacheProperties {
         public CacheType type;
         public int level;
+        public int way_count = 8;
         public long size; // Cache Size in bytes
         public long read_ticks; // Number of CPU cycles for a read action
         public long write_ticks; // Number of CPU cycles for a write action
@@ -112,9 +113,10 @@ public class ComputerProperties extends EEComponentProperties {
         public CacheProperties() {
         }
 
-        public CacheProperties(CacheType type, int level, long size, long read_ticks, long write_ticks) {
+        public CacheProperties(CacheType type, int level, int way_count, long size, long read_ticks, long write_ticks) {
             this.type = type;
             this.level = level;
+            this.way_count = way_count;
             this.size = size;
             this.read_ticks = read_ticks;
             this.write_ticks = write_ticks;
@@ -135,6 +137,10 @@ public class ComputerProperties extends EEComponentProperties {
         public static final String PRINT_FUNCTION_CALLS = "p_call"; // Prints calls from the outside to the emulated
                                                                     // program
         public static final String PRINT_TIME = "p_time"; // Prints the evaluated time
+        public static final String PRINT_INSTRUCTION_OPERANDS = "p_instruction_operands"; // Prints operands of instructions 
+        public static final String PRINT_OPERANDS_DETAILS = "p_operands_details"; // Prints detailed information for operands
+        public static final String PRINT_CACHE_HIT_RATIO = "p_cache_hit_ratio"; // Prints cache access/hit/miss information
+        public static final String PRINT_MEM_ACCESS = "p_mem_access"; // Prints access information of each memory access
         public static final String TEST_REAL = "test_real"; // Load the Autopilot as DIRECT library in parallel and
                                                             // verify that the outputs of the emulated version match the
                                                             // real one.

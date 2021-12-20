@@ -683,6 +683,9 @@ uc_err uc_mem_regions(uc_engine *uc, uc_mem_region **regions, uint32_t *count);
 UNICORN_EXPORT
 uc_err uc_context_alloc(uc_engine *uc, uc_context **context);
 
+UNICORN_EXPORT
+uc_err uc_set_nr_cores(uc_engine *uc);
+
 /*
  Free the memory allocated by uc_context_alloc & uc_mem_regions.
 

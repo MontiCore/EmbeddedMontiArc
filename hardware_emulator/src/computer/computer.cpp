@@ -19,10 +19,8 @@ void Computer::init() {
         internal->uc = nullptr;
         throw_error(Error::hardware_emu_init_error(std::string("uc_open(): ") + unicorn_error()));
     }
-    
-    
+
     decoder.init( memory, time );
-    
     memory.init( internal->uc );
     registers.init( internal->uc );
     
@@ -98,6 +96,8 @@ void Computer::call( ulong address, const char *name ) {
     if (did_throw) {
         throw_error("Throw called in autopilot: " + autopilot_throw_msg);
     }
+
+    debug.debug_cache_hit_ratio(&mem_model);
 }
 
 void Computer::call_inside(ulong address, ulong return_addr)
@@ -137,16 +137,23 @@ void Computer::cb_code( ulong addr, uint size ) {
     else {
         ulong ticks;
         bool no_val = decoder.handle_instruction( addr, size, ticks );
-        auto m_time = mem_model.handle_access( MemAccess::FETCH, addr );
-        debug.debug_code( addr, size, ticks, time.cpu_tick_time_pico * ticks + m_time );
+        auto m_time = mem_model.handle_access( MemAccess::FETCH, addr ); // compute memory access time for fetching instruction
+        auto latency = ticks * time.cpu_tick_time_pico + m_time; // add instruction latency and memory access latency to the total execution time
+        time.add_pico_time( latency );
+
+        debug.debug_code( addr, size, ticks, latency );
+        debug.debug_memory_access(&mem_model);
+        debug.debug_instruction_operands();
         if ( no_val )
             debug.debug_code_noval( addr, size );
     }
 }
 
 void Computer::cb_mem( MemAccess type, ulong addr, uint size, slong value ) {
-    ulong time = mem_model.handle_access( type, addr );
-    debug.debug_mem( type, addr, size, value, time );
+    ulong m_time = mem_model.handle_access( type, addr );
+    time.add_pico_time(m_time);
+    debug.debug_mem( type, addr, size, value, m_time );
+    debug.debug_memory_access(&mem_model);
 }
 
 void Computer::cb_mem_err( MemAccess type, MemAccessError err, ulong addr, uint size, slong value ) {
@@ -156,6 +163,7 @@ void Computer::cb_mem_err( MemAccess type, MemAccessError err, ulong addr, uint 
 
 
 
+// size of the instruction to be executed
 void Computer::hook_code( void *uc, ulong addr, uint size, void *data ) {
     static_cast<Computer *>( data )->cb_code( addr, size );
 }
@@ -185,8 +193,8 @@ void Computer::exit_emulation() {
 
 
 
-MemoryAccessInterface *setup_cache( Computer &computer, CacheSettings::Cache &cache ) {
-    return new NWayAssociativeCache(2, cache.size, cache.line_length, cache.read_ticks, cache.write_ticks, computer.time);
+MemoryAccessInterface *setup_cache( Computer &computer, CacheSettings::Cache &cache, std::string type ) {
+    return new NWayAssociativeCache(cache.level, type, cache.way_count, cache.size, cache.line_length, cache.read_ticks, cache.write_ticks, computer.time);
 }
 
 void CacheSettings::handle_config(const json& settings) {
@@ -207,7 +215,8 @@ void CacheSettings::handle_config(const json& settings) {
         json_get(c, "size", cache->size);
         json_get(c, "read_ticks", cache->read_ticks);
         json_get(c, "write_ticks", cache->write_ticks);
-        json_get(c, "line_length", cache->line_length);
+        if (!json_get(c, "way_count", cache->way_count)) cache->way_count = 8;
+        if (!json_get(c, "line_length", cache->line_length)) cache->line_length = 64;
         cache->used = true;
         caches.emplace_back(cache);
     } 
@@ -215,24 +224,32 @@ void CacheSettings::handle_config(const json& settings) {
 
 void CacheSettings::setup_computer( Computer &computer ) {
     std::vector<Cache*> cache_list(caches.size());
+
     for (auto i : range(caches.size())){
         cache_list[i] = caches[i].get();
     }
+
     std::sort(cache_list.begin(), cache_list.end(), [](Cache* a, Cache* b) { return a->level > b->level;});
     for (auto cp : cache_list) {
         switch (cp->type)
         {
         case CacheType::SHARED:
-            computer.mem_model.add_common_interface( setup_cache( computer, *cp ) );
+            computer.mem_model.add_common_interface( setup_cache( computer, *cp , "S" ) );
             break;
         case CacheType::D:
-            computer.mem_model.add_data_interface( setup_cache( computer, *cp ) );
+            computer.mem_model.add_data_interface( setup_cache( computer, *cp, "D" ) );
             break;
         case CacheType::I:
-            computer.mem_model.add_instruction_interface( setup_cache( computer, *cp ) );
+            computer.mem_model.add_instruction_interface( setup_cache( computer, *cp, "I") );
             break;
         default:
             break;
         }
+    }
+
+    // connect Last Level Cache with RAM
+    NWayAssociativeCache* last_level_cache = dynamic_cast<NWayAssociativeCache*>(computer.mem_model.get_memory_layer(0));
+    if (last_level_cache != nullptr) {
+        last_level_cache->set_underlying_memory(new MemoryTime(66, 66));
     }
 }
