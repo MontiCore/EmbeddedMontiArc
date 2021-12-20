@@ -5,8 +5,8 @@ project(hardware_emulator)
 set(ROOT_DIR "${CMAKE_CURRENT_SOURCE_DIR}/..")
 
 #Required Packages
+# require when using JNI
 find_package(JNI REQUIRED)
-
 
 set(ZYDIS_BUILD_TOOLS OFF)
 set(ZYDIS_BUILD_EXAMPLES OFF)
@@ -24,6 +24,7 @@ set(SHARED_CPP "${ROOT_DIR}/extern/shared_cpp")
 
 
 
+message("CMakeLists.txt of hard_emu")
 
 
 
@@ -128,7 +129,6 @@ target_sources(hardware_emulator PRIVATE ${hardware_emulator_SOURCES} ${hardware
 
 
 
-
 # HARDWARE EMULATOR LIB (Used as Native Java Library)
 add_library(hardware_emulator_lib SHARED)
 
@@ -184,6 +184,7 @@ target_sources(hardware_emulator_test PRIVATE ${hardware_emulator_test_SOURCES})
 
 
 # HARDWARE EMULATOR SERVER
+#[[
 add_executable(hardware_emulator_server)
 
 target_link_libraries(hardware_emulator_server PRIVATE hardware_emulator)
@@ -195,7 +196,7 @@ set(hardware_emulator_server_EXTERN_SOURCES
   ${SHARED_CPP}/network.cpp
 )
 target_sources(hardware_emulator_server PRIVATE ${hardware_emulator_server_SOURCES} ${hardware_emulator_server_EXTERN_SOURCES})
-
+]]
 
 
 
@@ -209,15 +210,5 @@ source_group(
   PREFIX "src"
   FILES ${hardware_emulator_SOURCES} ${hardware_emulator_lib_SOURCES} ${hardware_emulator_test_SOURCES} ${hardware_emulator_server_SOURCES}
 )
-
-
-# TODO:
-# Check how to include the following in Zydis's CMakeLists
-
-# if ( CMAKE_COMPILER_IS_GNUCC )
-#   target_include_directories(hardware_emulator PUBLIC ../zydis/gnucc)
-# elseif( MSVC )
-#   target_include_directories(hardware_emulator PUBLIC ../zydis/msvc)
-# endif()
 
 

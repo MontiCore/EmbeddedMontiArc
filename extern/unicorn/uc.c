@@ -1258,7 +1258,6 @@ uc_err uc_context_alloc(uc_engine *uc, uc_context **context)
     }
 }
 
-UNICORN_EXPORT
 uc_err uc_free(void *mem)
 {
     g_free(mem);

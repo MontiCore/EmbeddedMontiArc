@@ -214,9 +214,6 @@ void OS::ElfLoader::elf_main( Computer &computer ) {
 
     // }
 
-    computer.debug.d_code = false;// TEMP
-    computer.debug.d_mem = false;// TEMP
-    computer.debug.d_reg_update = false;// TEMP
     // auto init = symbols->get_symbol( "_init" );
     // if ( init.type == Symbols::Symbol::Type::EXPORT ) {
     //     //computer.call( init.addr, "_init" );

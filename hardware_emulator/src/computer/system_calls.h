@@ -10,6 +10,7 @@ struct Computer;
 struct SysCall;
 struct ComputerDebug;
 
+// function pointer
 using SystemCallback = bool( * )( Computer &computer );
 
 

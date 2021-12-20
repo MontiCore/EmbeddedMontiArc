@@ -71,7 +71,8 @@ using ulong = uint64_t;
 #define             setFlagHigh(var, flag)  var |= static_cast<ulong>(flag)
 #define             setFlagLow(var, flag)   var &= ~(static_cast<ulong>(flag))
 
-extern ulong BIT_MASKS[65];
+// array of 0b1, 0b11, 0b111, ... , 0b111...111
+extern unsigned int long long BIT_MASKS[65];
 
 
 
@@ -690,6 +691,9 @@ namespace Log {
     extern LogStream mem_write;
     extern LogStream mem_fetch;
     extern LogStream code;
+    extern LogStream instruction_operands;
+    extern LogStream cache_hit_ratio;
+    extern LogStream mem_access;
     extern LogStream reg;
     extern LogStream new_val;
     extern LogStream white;
@@ -804,6 +808,7 @@ inline T abs_t( const T &val ) {
 
 
 
+bool json_get(const json& j, const char* entry, bool& target);
 bool json_get(const json& j, const char* entry, int& target);
 bool json_get(const json& j, const char* entry, uint& target);
 bool json_get(const json& j, const char* entry, ulong& target);

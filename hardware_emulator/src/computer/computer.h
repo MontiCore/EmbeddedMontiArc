@@ -3,6 +3,7 @@
  */
 #pragma once
 #include "memory.h"
+#include "caching.h"
 #include "registers.h"
 #include "utility/debug.h"
 #include "system_calls.h"
@@ -10,7 +11,6 @@
 #include "instruction_time.h"
 #include "symbols.h"
 #include "os.h"
-#include "caching.h"
 #include "json.hpp"
 #include "os_windows/windows_fast_call.h"
 #include "os_linux/linux_fast_call.h"
@@ -18,7 +18,6 @@ using json = nlohmann::json;
 
 
 struct InternalComputer;
-
 
 
 /**
@@ -65,14 +64,15 @@ struct Computer {
         std::unique_ptr<OS::OS> os;
         OS::WindowsFastCall func_call_windows;
         OS::LinuxFastCall func_call_linux;
-        
+
         ComputerDebug debug;
         
         ComputerTime time;
+        // represents the memory hierarchy
         MemoryModel mem_model;
         
-        
         MemoryRange io_slot;
+
 
         bool uses_shadow_space = false;
         ulong walk_table_pos = 0;
@@ -132,6 +132,7 @@ struct Computer {
 };
 
 
+
 /*
     CacheSettings is used to configure the cache layout of the computer.
     Replace the IL1, DL1, L2 and L3 members with Cache objects to enable and configure the given cache level.
@@ -150,6 +151,7 @@ struct CacheSettings {
     struct Cache {
         CacheType type;
         int level;
+        int way_count;
         bool used;
         //Pico second times
         uint write_ticks;

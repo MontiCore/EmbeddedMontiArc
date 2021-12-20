@@ -473,6 +473,7 @@ bool VirtualHeap::alloc( ulong size, ulong &address ) {
     uint pos = 0;
     ulong count = 0;
     do {
+        // search free pos
         if ( free_map[( uint )pos] )
             count = 0;
         else

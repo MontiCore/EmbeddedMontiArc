@@ -209,6 +209,9 @@ Log::LogStream Log::mem_read( ConsoleColor::BLUE, "[R]", "debug_mem_read" );
 Log::LogStream Log::mem_write( ConsoleColor::LIGHT_BLUE, "[W]", "debug_mem_write" );
 Log::LogStream Log::mem_fetch( ConsoleColor::PINK, "[F]", "debug_mem_fetch" );
 Log::LogStream Log::code( ConsoleColor::GREEN, "[C]", "debug_code" );
+Log::LogStream Log::instruction_operands( ConsoleColor::GREEN,"[O]", "debug_instruction");
+Log::LogStream Log::cache_hit_ratio( ConsoleColor::DARK_YELLOW, "[CACHE]", "debug_cache_hit_ratio");
+Log::LogStream Log::mem_access( ConsoleColor::DARK_YELLOW, "[M]", "debug_mem_access");
 Log::LogStream Log::reg( ConsoleColor::DARK_GRAY, "[REG]", "debug_register" );
 Log::LogStream Log::new_val( ConsoleColor::DARK_YELLOW, "[NEW]", "debug_new" );
 Log::LogStream Log::note( ConsoleColor::PINK, "[N]", "note" );
@@ -359,6 +362,13 @@ std::string Error::direct_sim_software_load_error(const std::string& description
 }
 
 
+bool json_get(const json& j, const char* entry, bool& target) {
+    if (!j.contains(entry)) return false;
+    auto& e = j[entry];
+    if (!e.is_boolean()) return false;
+    target = e.get<int>();
+    return true;
+}
 bool json_get(const json& j, const char* entry, int& target) {
     if (!j.contains(entry)) return false;
     auto& e = j[entry];
@@ -392,7 +402,7 @@ bool json_get(const json& j, const char* entry, std::string& target) {
 
 
 
-ulong BIT_MASKS[65] = {
+unsigned int long long BIT_MASKS[65] = {
     0x0LL,
     0x1LL, 0x3LL, 0x7LL, 0xfLL,
     0x1fLL, 0x3fLL, 0x7fLL, 0xffLL,
