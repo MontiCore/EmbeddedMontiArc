@@ -127,7 +127,7 @@ def valid_lengths_to_ones(masks, max_length, ctx):
             new_masks.append(ones)
     return mx.nd.array(new_masks, ctx=ctx)
 
-def train_model(seq2seq, train_data, ctx, test_run):
+def train_model(seq2seq, train_data, ctx, test_run, num_gpus):
     train_hparams = hp.get_training_hparams(test_run)
     batch_size = train_hparams['batch_size']
     train_steps = train_hparams['train_steps']
@@ -197,14 +197,14 @@ def train_model(seq2seq, train_data, ctx, test_run):
                     l = loss(X, y).mean()
                     # append to list to later take average over different gpu outputs
                     losses.append(l)
-            # average over the gpu slices like in the pytorch script, not sure if better way
+            # cant average over the gpu slices like in the pytorch script, not sure if better way
             for l in losses:
                 l.backward()
         # torch script loss func outputs the mean of the batch torch_loss(X,y) == mxnet_loss(X,y).mean()
         # we sum over the losses on each device and then divide that by the current step or batch number
         # TODO with multiple devices e.g. 2 gpus do we need to divinde total_loss by num_gpus?
         total_loss += sum([l.asscalar() for l in losses])
-        batch_loss = total_loss/(bid+1)
+        batch_loss = (total_loss/max(1, num_gpus))/(bid+1)
         batch_losses.append(batch_loss)
         print('Train Batch {}/{} Loss {}'.format(
             bid+1, train_steps, batch_loss
@@ -299,7 +299,7 @@ if __name__ == '__main__':
     )
 
     train_data = get_data(args, 'train.h5')
-    model,_,_  = train_model(seq2seq, train_data, ctx, args.test_run)
+    model,_,_  = train_model(seq2seq, train_data, ctx, args.test_run, args.num_gpus)
     tokenizer = RobertaTokenizer.from_pretrained('microsoft/codebert-base')
 
     test_data = get_data(args, 'test.h5')
