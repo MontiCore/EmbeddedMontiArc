@@ -1,0 +1,19 @@
+/* (c) https://github.com/MontiCore/monticore */
+package cNNCalculator;
+
+component Network<Z(2:oo) classes = 10>{
+    ports in Z(0:255)^{1, 28, 28} data,
+         out Q(0:1)^{classes} softmax;
+
+    implementation CNN {
+        data ->
+        LoadNetwork(
+            networkDir="./", 
+            networkPrefix="model_0-", 
+            numInputs=1, 
+            outputShape=10
+        ) -> 
+        softmax ->
+		softmax;
+    }
+}
