@@ -294,7 +294,7 @@ class CNNSupervisedTrainer_RNNtest:
         elif loss == 'l2':
             loss_function = mx.gluon.loss.L2Loss()
         elif loss == 'l1':
-            loss_function = mx.gluon.loss.L2Loss()
+            loss_function = mx.gluon.loss.L1Loss()
         elif loss == 'huber':
             rho = loss_params['rho'] if 'rho' in loss_params else 1
             loss_function = mx.gluon.loss.HuberLoss(rho=rho)
