@@ -10,15 +10,18 @@ if [ ! -f $MXNET_FOLDER/libmxnet.so ]; then
     exit 1
 fi
 
+cd ./gluon-pretrained
 rm -rf ./target
-java -jar ../embedded-montiarc-emadl-generator-0.5.3-SNAPSHOT-jar-with-dependencies.jar -m ./gluon-pretrained/src/emadl/models/ -r cNNCalculator.Connector -o target -b GLUON -p /usr/bin/python3
+rm -rf ./model
+java -jar ../../embedded-montiarc-emadl-generator-0.5.3-SNAPSHOT-jar-with-dependencies.jar -m ./src/emadl/models/ -r cNNCalculator.Connector -o target -b GLUON -p /usr/bin/python3
 
-cp ./model/cNNCalculator.Network/model_0_newest.onnx ./model_0-0000.onnx
+cp ./model/cNNCalculator.Network/model_0_newest.onnx ../model_0-0000.onnx
 
+cd ../gluon-load
 rm -rf ./target
-java -jar ../embedded-montiarc-emadl-generator-0.5.3-SNAPSHOT-jar-with-dependencies.jar -m ./gluon-load/src/emadl/models/ -r cNNCalculator.Connector -o ./gluon-load/target -b GLUON -p /usr/bin/python3
+rm -rf ./model
+java -jar ../../embedded-montiarc-emadl-generator-0.5.3-SNAPSHOT-jar-with-dependencies.jar -m ./src/emadl/models/ -r cNNCalculator.Connector -o target -b GLUON -p /usr/bin/python3
 
-cd ./gluon-load
 rm -rf build
 mkdir build && cd build
 
