@@ -45,6 +45,35 @@ class CrossEntropyLoss(gluon.loss.Loss):
         loss = gluon.loss._apply_weighting(F, loss, self._weight, sample_weight)
         return F.mean(loss, axis=self._batch_axis, exclude=True)
 
+class SoftmaxCrossEntropyLossNoBatches(gluon.loss.Loss):
+    def __init__(self, axis=-1, sparse_label=True, from_logits=False, weight=None, **kwargs):
+        super(SoftmaxCrossEntropyLossNoBatches, self).__init__(weight, **kwargs)
+        self._axis = axis
+        self._sparse_label = sparse_label
+        self._from_logits = from_logits
+
+    def hybrid_forward(self, F, pred, label, sample_weight=None):
+        if mx.is_np_array():
+            log_softmax = F.npx.log_softmax
+            pick = F.npx.pick
+        else:
+            log_softmax = F.log_softmax
+            pick = F.pick
+        if not self._from_logits:
+            pred = log_softmax(pred, self._axis)
+        if self._sparse_label:
+            loss = -pick(pred, label, axis=self._axis, keepdims=True)
+        else:
+            label = mx._reshape_like(F, label, pred)
+            loss = -(pred * label).sum(axis=self._axis, keepdims=True)
+            loss = mx._apply_weighting(F, loss, self._weight, sample_weight)
+        if mx.is_np_array():
+            if F is mx.ndarray:
+                return loss.mean(axis=tuple(range(1, loss.ndim)))
+            else:
+                return F.npx.batch_flatten(loss).mean(axis=1)
+        else:
+            return loss.mean()
 
 class SoftmaxCrossEntropyLossMasked(gluon.loss.Loss):
     def __init__(self, axis=-1, mask=None, sparse_label=True, from_logits=False, weight=None, batch_axis=0, **kwargs):
@@ -65,7 +94,7 @@ class SoftmaxCrossEntropyLossMasked(gluon.loss.Loss):
             label = gluon.loss._reshape_like(F, label, pred)
             loss = -(pred * label).sum(axis=self._axis, keepdims=True)
         # Masking
-        loss = F.slice(loss, begin=(None, self._mask[0]), end=(None, self._mask[1]))
+        loss = F.slice(loss, begin=(self._mask[0]), end=(self._mask[1]))
         return loss.mean(axis=self._batch_axis, exclude=True)
 
 
@@ -90,8 +119,8 @@ class ACCURACY_MASKED(mx.metric.EvalMetric):
             pred_label = pred_label.astype('int32').as_in_context(label.context)
 
             mx.metric.check_label_shapes(label, pred_label)
-            label = mx.nd.slice(label, begin=(None, self.mask[0]), end=(None, self.mask[1]))
-            pred_label = mx.nd.slice(pred_label, begin=(None, self.mask[0]), end=(None, self.mask[1]))
+            label = mx.nd.slice(label, begin=(self.mask[0]), end=(self.mask[1]))
+            pred_label = mx.nd.slice(pred_label, begin=(self.mask[0]), end=(self.mask[1]))
             correct = mx.nd.sum(mx.nd.equal(label, pred_label)).asscalar()
             total = mx.nd.sum(mx.nd.ones_like(label)).asscalar()
 
@@ -125,6 +154,7 @@ class ACCURACY_DGL(mx.metric.EvalMetric):
         self.sum_metric += correct
         self.num_inst += total
 
+# TODO update classname
 class ${tc.fileNameWithoutEnding}:
     def __init__(self, data_loader, net_constructor):
         self._data_loader = data_loader
@@ -173,13 +203,13 @@ class ${tc.fileNameWithoutEnding}:
             mx_context = [mx.cpu()]
         else:
             logging.error("Context argument is '" + context + "'. Only 'cpu' and 'gpu are valid arguments'.")
-        single_pu_batch_size = int(batch_size/num_pus)
+        # single_pu_batch_size = int(batch_size/num_pus)
 
         if preprocessing:
             preproc_lib = "CNNPreprocessor_${tc.fileNameWithoutEnding?keep_after("CNNSupervisedTrainer_")}_executor"
             train_iter, test_iter, data_mean, data_std, train_images, test_images = self._data_loader.load_preprocessed_data(batch_size, preproc_lib, shuffle_data)
         else:
-            train_iter, test_iter, graph_, data_mean, data_std, train_images, test_images = self._data_loader.load_data(batch_size, shuffle_data)
+            data, graph, data_mean, data_std = self._data_loader.load_data()
 
         if 'weight_decay' in optimizer_params:
             optimizer_params['wd'] = optimizer_params['weight_decay']
@@ -197,9 +227,9 @@ class ${tc.fileNameWithoutEnding}:
             del optimizer_params['learning_rate_decay']
 
         if normalize:
-            self._net_creator.construct(context=mx_context, data_mean=data_mean, data_std=data_std)
+            self._net_creator.construct(context=mx_context, data_mean=data_mean, data_std=data_std, graph=graph)
         else:
-            self._net_creator.construct(context=mx_context)
+            self._net_creator.construct(context=mx_context, graph=graph)
 
         begin_epoch = 0
         if load_checkpoint:
@@ -223,9 +253,7 @@ class ${tc.fileNameWithoutEnding}:
         else:
             trainers = [mx.gluon.Trainer(network.collect_params(), optimizer, optimizer_params) for network in self._networks.values() if len(network.collect_params().values()) != 0]
 
-        margin = loss_params['margin'] if 'margin' in loss_params else 1.0
         sparseLabel = loss_params['sparse_label'] if 'sparse_label' in loss_params else True
-        ignore_indices = [loss_params['ignore_indices']] if 'ignore_indices' in loss_params else []
         loss_axis = loss_params['loss_axis'] if 'loss_axis' in loss_params else -1
         batch_axis = loss_params['batch_axis'] if 'batch_axis' in loss_params else 0
         if loss == 'softmax_cross_entropy':
@@ -240,8 +268,10 @@ class ${tc.fileNameWithoutEnding}:
             logging.error("Invalid loss parameter.")
 
         loss_function.hybridize()
+        print("If nothing gets printed after this remove tc.containsAdaNet()")
 <#if tc.containsAdaNet()>
-<#list tc.architecture.networkInstructions as networkInstruction>
+        print("Do not remove tc.containsAdaNet()")
+    <#list tc.architecture.networkInstructions as networkInstruction>
 <#if networkInstruction.containsAdaNet()>
         assert self._networks[${networkInstruction?index}].AdaNet, "passed model is not an AdaNet model"
         self._networks[${networkInstruction?index}] = fit(
@@ -269,73 +299,44 @@ class ${tc.fileNameWithoutEnding}:
 <#if networkInstruction.body.episodicSubNetworks?has_content>
 <#assign episodicReplayVisited = true>
 </#if>
-</#list>    
-
-<#if episodicReplayVisited??>
-        #Episodic memory Replay
-        episodic_layers = {}
-        episodic_store_buffer = {}
-        episodic_query_networks = {}
-        store_prob = {}
-<#list tc.architecture.networkInstructions as networkInstruction>
-        episodic_layers[${networkInstruction?index}] = []
-        episodic_store_buffer[${networkInstruction?index}] = []
-        episodic_query_networks[${networkInstruction?index}] = []
-        store_prob[${networkInstruction?index}] = []
-<#list networkInstruction.body.episodicSubNetworks as elements>
-<#if elements?index != 0>
-        sub_net = self._networks[${networkInstruction?index}].episodic_sub_nets[${elements?index - 1}]
-        layer = [param for param in inspect.getmembers(sub_net, lambda x: not(inspect.isroutine(x))) if param[0].startswith("memory")][0][1]
-        episodic_layers[0].append(layer)
-        episodic_store_buffer[${networkInstruction?index}].append([])
-        episodic_query_networks[0].append(episodic_layers[0][-1].get_query_network(mx_context))
-        store_prob[${networkInstruction?index}].append(nd.array([1-episodic_layers[0][-1].store_prob, episodic_layers[0][-1].store_prob], ctx=mx.cpu()))                                                                                  
-</#if>
 </#list>
-</#list>
-        # Episodic memory local adaptation
-        local_adaptation_loss_function = LocalAdaptationLoss(lamb=0.001)
-</#if>
-
         tic = None
-
         avg_speed = 0
         n = 0
     
         for epoch in range(begin_epoch, begin_epoch + num_epoch):
             if shuffle_data:
+                # Preprocessing currently not supported
                 if preprocessing:
                     preproc_lib = "CNNPreprocessor_${tc.fileNameWithoutEnding?keep_after("CNNSupervisedTrainer_")}_executor"
                     train_iter, test_iter, data_mean, data_std, train_images, test_images = self._data_loader.load_preprocessed_data(batch_size, preproc_lib, shuffle_data)
                 else:
-                    train_iter, test_iter, graph_, data_mean, data_std, train_images, test_images = self._data_loader.load_data(batch_size, shuffle_data)
+                    data, graph, label, data_mean, data_std = self._data_loader.load_data()
 
             global_loss_train = 0.0
-            train_batches = 0
+            data.reset()
 
             loss_total = 0
-            train_iter.reset()
-            if train_mask != None:
-                loss_function = SoftmaxCrossEntropyLossMasked(axis=loss_axis, mask=train_mask, from_logits=fromLogits, sparse_label=sparseLabel, batch_axis=batch_axis)
-                loss_function.hybridize()
-            for batch_i, batch in enumerate(train_iter):
-                
-<#include "pythonEpisodicExecuteTrain.ftl">
-                                 
+<#if !(tc.architecture.useDgl)>
+            loss_function = SoftmaxCrossEntropyLossMasked(axis=loss_axis, mask=train_mask, from_logits=fromLogits, sparse_label=sparseLabel, batch_axis=batch_axis)
+            loss_function.hybridize()
+</#if>
+            for batch_i, batch in enumerate(data):
+                data_index = 0
                 with autograd.record():
-<#include "pythonExecuteTrain.ftl">
+<#include "gnnExecute.ftl">
+
+
 
                     losses = [0]*num_pus
                     for i in range(num_pus):
                         for element in lossList[i]:
                             losses[i] = losses[i] + element
 
-                for loss in losses: 
+                for loss in losses:
                     loss.backward()
                     loss_total += loss.sum().asscalar()
                     global_loss_train += loss.sum().asscalar()
-
-                train_batches += 1
 
                 if clip_global_grad_norm:
                     grads = []
@@ -347,37 +348,26 @@ class ${tc.fileNameWithoutEnding}:
 
                 for trainer in trainers:
                     trainer.step(batch_size)
-    
-<#if episodicReplayVisited??>                                                  
-                #storing samples for episodic replay
-                for net_i in range(len(self._networks)):
-                    for layer_i, layer in enumerate(episodic_layers[net_i]):
-                        layer.store_samples(episodic_store_buffer[net_i][layer_i], labels, episodic_query_networks[net_i][layer_i], store_prob[net_i][layer_i], mx_context)
 
-</#if>
                 if tic is None:
                     tic = time.time()
                 else:
-                    if batch_i % log_period == 0:
-                        try:
-                            speed = log_period * batch_size / (time.time() - tic)
-                        except ZeroDivisionError:
-                            speed = float("inf")
+                    try:
+                        speed = log_period * batch_size / (time.time() - tic)
+                    except ZeroDivisionError:
+                        speed = float("inf")
 
-                        loss_avg = loss_total / (batch_size * log_period)
-                        loss_total = 0
+                    loss_total = 0
 
-                        logging.info("Epoch[%d] Batch[%d] Speed: %.2f samples/sec Loss: %.5f" % (epoch, batch_i, speed, loss_avg))
-                        # logging does not work when importing dgl right now
-                        if use_dgl:
-                            print("Epoch[%d] Batch[%d] Speed: %.2f samples/sec Loss: %.5f" % (epoch, batch_i, speed, loss_avg))
+                    logging.info("Epoch[%d] Speed: %.2f samples/sec Loss: %.5f" % (epoch, speed, loss_total))
+<#if tc.architecture.useDgl>
+                    # logging does not work when importing dgl right now
+                    print("Epoch[%d] Speed: %.2f samples/sec Loss: %.5f" % (epoch, speed, loss_total))
+</#if>
+                    avg_speed += speed
+                    n += 1
 
-                        avg_speed += speed
-                        n += 1
-    
-                        tic = time.time()
-
-            global_loss_train /= (train_batches * batch_size)
+                    tic = time.time()
 
             tic = None
 <#assign containsUnrollNetwork = false>
@@ -390,159 +380,44 @@ class ${tc.fileNameWithoutEnding}:
 <#assign anyEpisodicLocalAdaptation = true>
 </#if>
 </#list>
-    
-<#if episodicReplayVisited?? && anyEpisodicLocalAdaptation>                          
-            params = {}
-            for key in self._networks:
-                paramDict = self._networks[key].collect_params()
-                params[key] = {}
-                for param in paramDict:
-                    params[key][param] = paramDict[param].data(ctx=mx_context[0]).copy()
-</#if>
-    
-            if eval_train:
-                train_iter.batch_size = single_pu_batch_size
-                train_iter.reset()
-                if train_mask != None:
-                    metric = mx.metric.create(eval_metric, mask=train_mask, **eval_metric_params)
-                else:
-                    metric = mx.metric.create(eval_metric, **eval_metric_params)
-                for batch_i, batch in enumerate(train_iter):
-
-<#if episodicReplayVisited?? && anyEpisodicLocalAdaptation && !containsUnrollNetwork>
-<#include "pythonExecuteTest.ftl">
-
-                        predictions = []
-                        for output_name in outputs:
-                            if mx.nd.shape_array(mx.nd.squeeze(output_name)).size > 1:
-                                predictions.append(mx.nd.argmax(output_name, axis=argmax_axis))
-                            else:
-                                predictions.append(output_name)
-
-                        if use_dgl:
-                            metric.update(preds=predictions[0], labels=mx.nd.squeeze(labels[0]), mask=graph_.ndata['train_mask'])
-                        else:
-                            metric.update(preds=predictions, labels=[labels[j][local_adaptation_batch_i] for j in range(len(labels))])
-<#list tc.architecture.networkInstructions as networkInstruction>    
-                self._networks[${networkInstruction?index}].collect_params().load_dict(params[${networkInstruction?index}], ctx=mx_context[0])
-</#list>      
+<#if !(tc.architecture.useDgl)>
+            metric = mx.metric.create(eval_metric, mask=test_mask, **eval_metric_params)
 <#else>
-<#include "pythonExecuteTest.ftl">
-    
-<#include "saveAttentionImageTrain.ftl">
-
-                    predictions = []
-                    for output_name in outputs:
-                        if mx.nd.shape_array(mx.nd.squeeze(output_name)).size > 1:
-                            predictions.append(mx.nd.argmax(output_name, axis=argmax_axis))
-                        else:
-                            predictions.append(output_name)
-                    if use_dgl:
-                        metric.update(preds=predictions[0], labels=mx.nd.squeeze(labels[0]), mask=graph_.ndata['train_mask'])
-                    else:
-                        metric.update(preds=predictions, labels=[labels[j] for j in range(len(labels))])
+            metric = mx.metric.create(eval_metric, **eval_metric_params)
 </#if>
 
-                train_metric_score = metric.get()[1]
-            else:
-                train_metric_score = 0
-
-            global_loss_test = 0.0
-            test_batches = 0
-    
-            test_iter.batch_size = single_pu_batch_size
-            test_iter.reset()
-            if test_mask != None:
-                loss_function = SoftmaxCrossEntropyLossMasked(axis=loss_axis, mask=test_mask, from_logits=fromLogits, sparse_label=sparseLabel, batch_axis=batch_axis)
-                loss_function.hybridize()
-                metric = mx.metric.create(eval_metric, mask=test_mask, **eval_metric_params)
-            else:
-                metric = mx.metric.create(eval_metric, **eval_metric_params)
-
-            for batch_i, batch in enumerate(test_iter):
-                if True: <#-- Fix indentation -->
-                                                   
-<#if episodicReplayVisited?? && anyEpisodicLocalAdaptation && !containsUnrollNetwork>
-<#include "pythonExecuteTest.ftl">
-    
-                        loss = 0
-                        for element in lossList:
-                            loss = loss + element
-                        global_loss_test += loss.sum().asscalar()
-
-                        test_batches += 1
-                
-                        predictions = []
-                        for output_name in outputs:
-                            if mx.nd.shape_array(mx.nd.squeeze(output_name)).size > 1:
-                                predictions.append(mx.nd.argmax(output_name, axis=argmax_axis))
-                            else:
-                                predictions.append(output_name)
-                        if use_dgl:
-                            metric.update(preds=predictions[0], labels=mx.nd.squeeze(labels[0]), mask=graph_.ndata['test_mask'])
-                        else:
-                            metric.update(preds=predictions, labels=[labels[j][local_adaptation_batch_i] for j in range(len(labels))])
-<#list tc.architecture.networkInstructions as networkInstruction>    
-                self._networks[${networkInstruction?index}].collect_params().load_dict(params[${networkInstruction?index}], ctx=mx_context[0])
-</#list>
-            global_loss_test /= (test_batches)    
-<#else>
-<#include "pythonExecuteTest.ftl">
-
-<#include "saveAttentionImageTest.ftl">
-
-                loss = 0
-                for element in lossList:
-                    loss = loss + element
-
-                global_loss_test += loss.sum().asscalar()
-
-                test_batches += 1
-
-                predictions = []
-                for output_name in outputs:
-                    if mx.nd.shape_array(mx.nd.squeeze(output_name)).size > 1:
-                        predictions.append(mx.nd.argmax(output_name, axis=argmax_axis))
-                    else:
-                        predictions.append(output_name)
-                if use_dgl:
-                    metric.update(preds=predictions[0], labels=mx.nd.squeeze(labels[0]), mask=graph_.ndata['test_mask'])
+            predictions = []
+            for output_name in outputs:
+                if mx.nd.shape_array(mx.nd.squeeze(output_name)).size > 1:
+                    predictions.append(mx.nd.argmax(output_name, axis=argmax_axis))
                 else:
-                    metric.update(preds=predictions, labels=[labels[j] for j in range(len(labels))])
-
-            global_loss_test /= (test_batches * single_pu_batch_size)
+                    predictions.append(output_name)
+<#if tc.architecture.useDgl>
+            metric.update(preds=predictions[0], labels=mx.nd.squeeze(labels[0][0]), mask=graph.ndata['test_mask'])
+<#else>
+            metric.update(preds=predictions[0], labels=mx.nd.squeeze(labels[0][0]))
 </#if>
             test_metric_name = metric.get()[0]
             test_metric_score = metric.get()[1]
+            # global_loss_train /= batches
 
             metric_file = open(self._net_creator._model_dir_ + 'metric.txt', 'w')
             metric_file.write(test_metric_name + " " + str(test_metric_score))
             metric_file.close()
 
-            logging.info("Epoch[%d] Train metric: %f, Test metric: %f, Train loss: %f, Test loss: %f" % (epoch, train_metric_score, test_metric_score, global_loss_train, global_loss_test))
-            # when importing dgl logging does not work right now
-            if use_dgl:
-                print("Epoch[%d] Train metric: %f, Test metric: %f, Train loss: %f, Test loss: %f" % (epoch, train_metric_score, test_metric_score, global_loss_train, global_loss_test))
-
+            logging.info("Epoch[%d] Test metric: %f, Train loss: %f" % (epoch, test_metric_score, global_loss_train))
+<#if tc.architecture.useDgl>
+            print("Epoch[%d] Test metric: %f, Train loss: %f" % (epoch, test_metric_score, global_loss_train))
+</#if>
             if (epoch+1) % checkpoint_period == 0:
                 for i, network in self._networks.items():
                     network.save_parameters(self.parameter_path(i) + '-' + str(epoch).zfill(4) + '.params')
-                    if hasattr(network, 'episodic_sub_nets'):
-                        for j, net in enumerate(network.episodic_sub_nets):
-                            episodic_layers[i][j].save_memory(self.parameter_path(i) + "_episodic_memory_sub_net_" + str(j + 1) + "-" + str(epoch).zfill(4))
 
         for i, network in self._networks.items():
             network.save_parameters(self.parameter_path(i) + '-' + str((num_epoch-1) + begin_epoch).zfill(4) + '.params')
-            if not use_dgl:
-                network.export(self.parameter_path(i) + '_newest', epoch=0)
-            
-            if hasattr(network, 'episodic_sub_nets'):
-                network.episodicsubnet0_.export(self.parameter_path(i) + '_newest_episodic_sub_net_' + str(0), epoch=0)
-                for j, net in enumerate(network.episodic_sub_nets):
-                    net.export(self.parameter_path(i) + '_newest_episodic_sub_net_' + str(j+1), epoch=0)
-                    episodic_query_networks[i][j].export(self.parameter_path(i) + '_newest_episodic_query_net_' + str(j+1), epoch=0)
-                    episodic_layers[i][j].save_memory(self.parameter_path(i) + "_episodic_memory_sub_net_" + str(j + 1) + "-" + str((num_epoch - 1) + begin_epoch).zfill(4))
-                    episodic_layers[i][j].save_memory(self.parameter_path(i) + "_newest_episodic_memory_sub_net_" + str(j + 1) + "-0000")
+<#if !(tc.architecture.useDgl)>
+            network.export(self.parameter_path(i) + '_newest', epoch=0)
+</#if>
             loss_function.export(self.parameter_path(i) + '_newest_loss', epoch=0)
 
     def parameter_path(self, index):
