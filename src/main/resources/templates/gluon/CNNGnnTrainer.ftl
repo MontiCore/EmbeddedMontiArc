@@ -5,8 +5,8 @@ import logging
 import mxnet as mx
 
 <#list configurations as config>
-import CNNCreator_${config.instanceName}
-import CNNDataLoader_${config.instanceName}
+import CNNGnnCreator_${config.instanceName}
+import CNNGnnDataLoader_${config.instanceName}
 import CNNGnnSupervisedTrainer_${config.instanceName}
 </#list>
 
@@ -17,9 +17,9 @@ if __name__ == "__main__":
     logger.addHandler(handler)
 
 <#list configurations as config>
-    ${config.instanceName}_creator = CNNCreator_${config.instanceName}.CNNCreator_${config.instanceName}()
+    ${config.instanceName}_creator = CNNGnnCreator_${config.instanceName}.CNNGnnCreator_${config.instanceName}()
     ${config.instanceName}_creator.validate_parameters()
-    ${config.instanceName}_loader = CNNDataLoader_${config.instanceName}.CNNDataLoader_${config.instanceName}()
+    ${config.instanceName}_loader = CNNGnnDataLoader_${config.instanceName}.CNNGnnDataLoader_${config.instanceName}()
     ${config.instanceName}_trainer = CNNGnnSupervisedTrainer_${config.instanceName}.CNNGnnSupervisedTrainer_${config.instanceName}(
         ${config.instanceName}_loader,
         ${config.instanceName}_creator
