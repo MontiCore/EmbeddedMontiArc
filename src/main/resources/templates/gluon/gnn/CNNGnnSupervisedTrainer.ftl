@@ -11,8 +11,11 @@ import pickle
 import math
 import sys
 import inspect
+import h5py
+import importlib
 <#if tc.architecture.useDgl>
 import dgl
+from dgl.data.utils import load_graphs
 </#if>
 from mxnet import gluon, autograd, nd
 <#if tc.containsAdaNet()>
@@ -155,7 +158,7 @@ class ACCURACY_DGL(mx.metric.EvalMetric):
         self.num_inst += total
 
 # TODO update classname
-class ${tc.fileNameWithoutEnding}:
+class CNNGnnSupervisedTrainer:
     def __init__(self, data_loader, net_constructor):
         self._data_loader = data_loader
         self._net_creator = net_constructor

@@ -3,6 +3,9 @@
 # (c) https://github.com/MontiCore/monticore
 import logging
 import mxnet as mx
+import sys
+sys.path.append('./gnn')
+sys.path.append('./target/gnn')
 
 <#list configurations as config>
 import CNNGnnCreator_${config.instanceName}
@@ -17,10 +20,10 @@ if __name__ == "__main__":
     logger.addHandler(handler)
 
 <#list configurations as config>
-    ${config.instanceName}_creator = CNNGnnCreator_${config.instanceName}.CNNGnnCreator_${config.instanceName}()
+    ${config.instanceName}_creator = CNNGnnCreator_${config.instanceName}.CNNGnnCreator()
     ${config.instanceName}_creator.validate_parameters()
-    ${config.instanceName}_loader = CNNGnnDataLoader_${config.instanceName}.CNNGnnDataLoader_${config.instanceName}()
-    ${config.instanceName}_trainer = CNNGnnSupervisedTrainer_${config.instanceName}.CNNGnnSupervisedTrainer_${config.instanceName}(
+    ${config.instanceName}_loader = CNNGnnDataLoader_${config.instanceName}.CNNGnnDataLoader()
+    ${config.instanceName}_trainer = CNNGnnSupervisedTrainer_${config.instanceName}.CNNGnnSupervisedTrainer(
         ${config.instanceName}_loader,
         ${config.instanceName}_creator
     )

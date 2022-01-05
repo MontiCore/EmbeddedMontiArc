@@ -22,7 +22,7 @@ from CNNGnnNet_${tc.fullArchitectureName} import Net_${networkInstruction?index}
 </#list>
 
 # TODO update classname
-class ${tc.fileNameWithoutEnding}:
+class CNNGnnCreator:
     _model_dir_ = "model/${tc.componentName}/"
     _model_prefix_ = "model"
 

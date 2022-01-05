@@ -14,7 +14,7 @@ from dgl.data.utils import load_graphs
 </#if>
 from mxnet import nd
 # TODO Class name
-class ${tc.fileNameWithoutEnding}:
+class CNNGnnDataLoader:
     _input_names_ = [<#list tc.architectureInputs as inputName><#if inputName?index == tc.architectureInputs?seq_index_of(inputName)>'${inputName?keep_before_last("_")}'<#sep>, </#if></#list>]
     _output_names_ = [${tc.join(tc.architectureOutputs, ",", "'", "label'")}]
 
