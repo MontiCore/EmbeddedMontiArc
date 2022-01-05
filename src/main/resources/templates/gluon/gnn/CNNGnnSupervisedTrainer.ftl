@@ -11,11 +11,8 @@ import pickle
 import math
 import sys
 import inspect
-import h5py
-import importlib
 <#if tc.architecture.useDgl>
 import dgl
-from dgl.data.utils import load_graphs
 </#if>
 from mxnet import gluon, autograd, nd
 <#if tc.containsAdaNet()>
@@ -47,36 +44,6 @@ class CrossEntropyLoss(gluon.loss.Loss):
             loss = -F.sum(pred * label, axis=self._axis, keepdims=True)
         loss = gluon.loss._apply_weighting(F, loss, self._weight, sample_weight)
         return F.mean(loss, axis=self._batch_axis, exclude=True)
-
-class SoftmaxCrossEntropyLossNoBatches(gluon.loss.Loss):
-    def __init__(self, axis=-1, sparse_label=True, from_logits=False, weight=None, **kwargs):
-        super(SoftmaxCrossEntropyLossNoBatches, self).__init__(weight, **kwargs)
-        self._axis = axis
-        self._sparse_label = sparse_label
-        self._from_logits = from_logits
-
-    def hybrid_forward(self, F, pred, label, sample_weight=None):
-        if mx.is_np_array():
-            log_softmax = F.npx.log_softmax
-            pick = F.npx.pick
-        else:
-            log_softmax = F.log_softmax
-            pick = F.pick
-        if not self._from_logits:
-            pred = log_softmax(pred, self._axis)
-        if self._sparse_label:
-            loss = -pick(pred, label, axis=self._axis, keepdims=True)
-        else:
-            label = mx._reshape_like(F, label, pred)
-            loss = -(pred * label).sum(axis=self._axis, keepdims=True)
-            loss = mx._apply_weighting(F, loss, self._weight, sample_weight)
-        if mx.is_np_array():
-            if F is mx.ndarray:
-                return loss.mean(axis=tuple(range(1, loss.ndim)))
-            else:
-                return F.npx.batch_flatten(loss).mean(axis=1)
-        else:
-            return loss.mean()
 
 class SoftmaxCrossEntropyLossMasked(gluon.loss.Loss):
     def __init__(self, axis=-1, mask=None, sparse_label=True, from_logits=False, weight=None, batch_axis=0, **kwargs):
@@ -162,10 +129,6 @@ class CNNGnnSupervisedTrainer:
     def __init__(self, data_loader, net_constructor):
         self._data_loader = data_loader
         self._net_creator = net_constructor
-        <#if tc.containsAdaNet()>
-        self._dataClass = net_constructor.dataClass
-        self.AdaNet = ${tc.containsAdaNet()?string('True','False')}
-        </#if>
         self._networks = {}
 
     def train(self, batch_size=64,
@@ -208,11 +171,7 @@ class CNNGnnSupervisedTrainer:
             logging.error("Context argument is '" + context + "'. Only 'cpu' and 'gpu are valid arguments'.")
         # single_pu_batch_size = int(batch_size/num_pus)
 
-        if preprocessing:
-            preproc_lib = "CNNPreprocessor_${tc.fileNameWithoutEnding?keep_after("CNNSupervisedTrainer_")}_executor"
-            train_iter, test_iter, data_mean, data_std, train_images, test_images = self._data_loader.load_preprocessed_data(batch_size, preproc_lib, shuffle_data)
-        else:
-            data, graph, data_mean, data_std = self._data_loader.load_data()
+        data, graph, data_mean, data_std = self._data_loader.load_data()
 
         if 'weight_decay' in optimizer_params:
             optimizer_params['wd'] = optimizer_params['weight_decay']
@@ -272,53 +231,24 @@ class CNNGnnSupervisedTrainer:
 
         loss_function.hybridize()
         print("If nothing gets printed after this remove tc.containsAdaNet()")
-<#if tc.containsAdaNet()>
-        print("Do not remove tc.containsAdaNet()")
-    <#list tc.architecture.networkInstructions as networkInstruction>
-<#if networkInstruction.containsAdaNet()>
-        assert self._networks[${networkInstruction?index}].AdaNet, "passed model is not an AdaNet model"
-        self._networks[${networkInstruction?index}] = fit(
-                    loss=loss_function,
-                    optimizer=optimizer,
-                    epochs=num_epoch,
-                    optimizer_params = optimizer_params,
-                    train_iter = train_iter,
-                    data_class = self._dataClass[${networkInstruction?index}],
-                    batch_size=batch_size,
-                    ctx=mx_context[0],
-                    logging=logging
-                )
-        logging.info(self._networks[${networkInstruction?index}])
-        logging.info(f"node count: {self._networks[${networkInstruction?index}].get_node_count()}")
-</#if>
         # update trainers
         if optimizer == "adamw":
             trainers = [mx.gluon.Trainer(network.collect_params(), AdamW.AdamW(**optimizer_params)) for network in self._networks.values() if len(network.collect_params().values()) != 0]
         else:
             trainers = [mx.gluon.Trainer(network.collect_params(), optimizer, optimizer_params) for network in self._networks.values() if len(network.collect_params().values()) != 0]
-</#list>
-</#if>
-<#list tc.architecture.networkInstructions as networkInstruction>    
-<#if networkInstruction.body.episodicSubNetworks?has_content>
-<#assign episodicReplayVisited = true>
-</#if>
-</#list>
+
         tic = None
         avg_speed = 0
         n = 0
     
         for epoch in range(begin_epoch, begin_epoch + num_epoch):
             if shuffle_data:
-                # Preprocessing currently not supported
-                if preprocessing:
-                    preproc_lib = "CNNPreprocessor_${tc.fileNameWithoutEnding?keep_after("CNNSupervisedTrainer_")}_executor"
-                    train_iter, test_iter, data_mean, data_std, train_images, test_images = self._data_loader.load_preprocessed_data(batch_size, preproc_lib, shuffle_data)
-                else:
-                    data, graph, label, data_mean, data_std = self._data_loader.load_data()
+                data, graph, label, data_mean, data_std = self._data_loader.load_data()
 
             global_loss_train = 0.0
+            batches = 0
             data.reset()
-
+            outputs = []
             loss_total = 0
 <#if !(tc.architecture.useDgl)>
             loss_function = SoftmaxCrossEntropyLossMasked(axis=loss_axis, mask=train_mask, from_logits=fromLogits, sparse_label=sparseLabel, batch_axis=batch_axis)
@@ -329,13 +259,12 @@ class CNNGnnSupervisedTrainer:
                 with autograd.record():
 <#include "gnnExecute.ftl">
 
-
-
                     losses = [0]*num_pus
                     for i in range(num_pus):
                         for element in lossList[i]:
                             losses[i] = losses[i] + element
 
+                batches += 1
                 for loss in losses:
                     loss.backward()
                     loss_total += loss.sum().asscalar()
@@ -402,7 +331,7 @@ class CNNGnnSupervisedTrainer:
 </#if>
             test_metric_name = metric.get()[0]
             test_metric_score = metric.get()[1]
-            # global_loss_train /= batches
+            global_loss_train /= batches
 
             metric_file = open(self._net_creator._model_dir_ + 'metric.txt', 'w')
             metric_file.write(test_metric_name + " " + str(test_metric_score))

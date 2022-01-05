@@ -14,14 +14,9 @@ from custom_layers import *
 </#if>
 
 <#list tc.architecture.networkInstructions as networkInstruction>
-<#if tc.containsAdaNet()>
-from CNNGnnNet_${tc.fullArchitectureName} import Net_${networkInstruction?index},DataClass_${networkInstruction?index}
-<#else>
 from CNNGnnNet_${tc.fullArchitectureName} import Net_${networkInstruction?index}
-</#if>
 </#list>
 
-# TODO update classname
 class CNNGnnCreator:
     _model_dir_ = "model/${tc.componentName}/"
     _model_prefix_ = "model"
@@ -29,9 +24,6 @@ class CNNGnnCreator:
     def __init__(self):
         self.weight_initializer = mx.init.Normal()
         self.networks = {}
-        <#if tc.containsAdaNet()>
-        self.dataClass = {}
-        </#if>
 <#if (tc.weightsPath)??>
         self._weights_dir_ = "${tc.weightsPath}/"
 <#else>
@@ -180,12 +172,7 @@ class CNNGnnCreator:
 
     def construct(self, context, data_mean=None, data_std=None, graph=None):
 <#list tc.architecture.networkInstructions as networkInstruction>
-        <#if tc.containsAdaNet()>
-        self.networks[${networkInstruction?index}] = Net_${networkInstruction?index}()
-        self.dataClass[${networkInstruction?index}] = DataClass_${networkInstruction?index}
-        <#else>
         self.networks[${networkInstruction?index}] = Net_${networkInstruction?index}(data_mean=data_mean, data_std=data_std, mx_context=context, prefix="")
-        </#if>
         with warnings.catch_warnings():
             warnings.simplefilter("ignore")
             self.networks[${networkInstruction?index}].collect_params().initialize(self.weight_initializer, force_reinit=False, ctx=context)
@@ -200,9 +187,6 @@ class CNNGnnCreator:
                       as dimensions><#if tc.cutDimensions(dimensions)[tc.cutDimensions(dimensions)?size-1] == "1" &&
                       tc.cutDimensions(dimensions)?size != 1>mx.nd.squeeze(mx.nd.zeros((${tc.join(tc.cutDimensions(dimensions), ",")},),
                       ctx=context[0]))<#else>mx.nd.squeeze(mx.nd.zeros((1, ${tc.join(tc.cutDimensions(dimensions), ",")},), ctx=context[0]))</#if><#sep>, </#list>)
-</#if>
-<#if networkInstruction.body.episodicSubNetworks?has_content>
-        self.networks[0].episodicsubnet0_(<#list tc.getStreamInputDimensions(networkInstruction.body) as dimensions><#if tc.cutDimensions(dimensions)[tc.cutDimensions(dimensions)?size-1] == "1" && tc.cutDimensions(dimensions)?size != 1>mx.nd.zeros((${tc.join(tc.cutDimensions(dimensions), ",")},), ctx=context[0])<#else>mx.nd.zeros((1, ${tc.join(tc.cutDimensions(dimensions), ",")},), ctx=context[0])</#if><#sep>, </#list>)
 </#if>
 </#list>
 

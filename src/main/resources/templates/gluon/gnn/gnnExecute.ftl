@@ -1,5 +1,4 @@
     <#-- (c) https://github.com/MontiCore/monticore -->
-                    # labels = [label[i] for i in range(${tc.architectureOutputs?size?c})]
                     labels = [gluon.utils.split_and_load(batch.label[i], ctx_list=mx_context, even_split=False) for i in range(1)]
 
 <#list tc.architectureInputs as input_name>
@@ -12,7 +11,6 @@
 </#if>
 </#if>
 </#list>
-                    outputs = []
 <#if tc.architectureOutputSymbols?size gt 1>
 <#assign outputName = tc.getNameWithoutIndex(tc.getName(tc.architectureOutputSymbols[0]))>
                     ${outputName} = [[mx.nd.zeros((${tc.join(tc.architectureOutputSymbols[0].ioDeclaration.type.dimensions, ", ")},), ctx=context) for context in mx_context] for i in range(${tc.architectureOutputs?size?c})]

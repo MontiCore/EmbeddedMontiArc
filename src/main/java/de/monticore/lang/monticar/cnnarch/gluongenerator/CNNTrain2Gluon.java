@@ -140,10 +140,6 @@ public class CNNTrain2Gluon extends CNNTrainGenerator {
             if (networkTypeOpt.isPresent() && (networkTypeOpt.get().equals(NetworkType.GNN))) {
                 String gnnTrainerTemplateContent = templateConfiguration.processTemplate(ftlContext, "gnn/CNNGnnTrainer.ftl");
                 fileContents.add(new FileContent(gnnTrainerTemplateContent, "CNNTrainer_" + getInstanceName() + ".py"));
-                /*
-                String gnnSupervisedTrainerTemplateContent = templateConfiguration.processTemplate(ftlContext, "gnn/CNNGnnSupervisedTrainer.ftl");
-                fileContents.add(new FileContent(gnnSupervisedTrainerTemplateContent, "CNNGnnSupervisedTrainer_" + getInstanceName() + ".py"));
-                 */
             }
             else {
                 String cnnTrainTrainerTemplateContent = templateConfiguration.processTemplate(ftlContext, "CNNTrainer.ftl");
