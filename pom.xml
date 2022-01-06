@@ -9,6 +9,7 @@
     <version>0.0.1</version>
 
     <properties>
+        <embedded-montiarc-emadl-generator.version>0.5.4-SNAPSHOT</embedded-montiarc-emadl-generator.version>
         <java.version>1.8</java.version>
         <project.build.sourceEncoding>UTF-8</project.build.sourceEncoding>
         <project.reporting.outputEncoding>UTF-8</project.reporting.outputEncoding>
@@ -25,9 +26,10 @@
                         <backend>GLUON</backend>
                         <customFilesPath>src/main</customFilesPath>
                         <pathToPython>/usr/bin/python3</pathToPython>
-                        <modelToTrain>gCN.Network</modelToTrain>
+                        <modelToTrain>gCN.DGLNetwork</modelToTrain>
                         <pathToProject>src/main/emadl</pathToProject>
                         <pathToTest>src/main/emadl</pathToTest>
+                        <useDgl>y</useDgl>
                     </training>
                 </configuration>
            </plugin>

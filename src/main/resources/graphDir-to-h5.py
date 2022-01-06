@@ -67,9 +67,9 @@ if __name__ == "__main__":
     nodes = feat_matrix.shape[0]
     features = feat_matrix.shape[1]
 
-    adj_matrix = np.broadcast_to(adj_matrix, (2, nodes, nodes))
-    feat_matrix = np.broadcast_to(feat_matrix, (2, nodes, features))
-    labels = np.broadcast_to(labels, (2, nodes))
+    adj_matrix = np.broadcast_to(adj_matrix, (1, nodes, nodes))
+    feat_matrix = np.broadcast_to(feat_matrix, (1, nodes, features))
+    labels = np.broadcast_to(labels, (1, nodes))
 
     print("Feature matrix shape: ", feat_matrix.shape)
     print("Adjacency matrix shape: ", adj_matrix.shape)

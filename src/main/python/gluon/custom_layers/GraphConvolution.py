@@ -12,7 +12,7 @@ class GraphConvolution(HybridBlock):
         self.node_size = node_size
 
     def hybrid_forward(self, F, adjacency, features, weight, *args, **kwargs):
-        x = F.batch_dot(adjacency, features)
+        x = F.dot(adjacency, features)
         x = F.dot(x, weight)
         return x
 
