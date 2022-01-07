@@ -320,7 +320,8 @@ class CNNGnnSupervisedTrainer:
 
             predictions = []
             for output_name in outputs:
-                if mx.nd.shape_array(mx.nd.squeeze(output_name)).size > 1:
+                output_name = mx.nd.squeeze(output_name)
+                if mx.nd.shape_array(output_name).size > 1:
                     predictions.append(mx.nd.argmax(output_name, axis=argmax_axis))
                 else:
                     predictions.append(output_name)

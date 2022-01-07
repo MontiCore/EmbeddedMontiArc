@@ -65,9 +65,9 @@
 
 <#if tc.architecture.useDgl>
                     train_samples = graph.ndata['train_mask'].sum().asscalar()
-                    [lossList[i].append(loss_function(${outputName}[i], mx.nd.squeeze(labels[${tc.getIndex(outputName, true)}][i]), mx.nd.expand_dims(graph.ndata['train_mask'], 1)).sum() / train_samples) for i in range(num_pus)]
+                    [lossList[i].append(loss_function(mx.nd.squeeze(${outputName}[i]), mx.nd.squeeze(labels[${tc.getIndex(outputName, true)}][i]), mx.nd.expand_dims(graph.ndata['train_mask'], 1)).sum() / train_samples) for i in range(num_pus)]
 <#else>
-                    [lossList[i].append(loss_function(${outputName}[i], mx.nd.squeeze(labels[${tc.getIndex(outputName, true)}][i]))) for i in range(num_pus)]
+                    [lossList[i].append(loss_function(mx.nd.squeeze(${outputName}[i]), mx.nd.squeeze(labels[${tc.getIndex(outputName, true)}][i]))) for i in range(num_pus)]
 </#if>
 </#if>
 </#list>

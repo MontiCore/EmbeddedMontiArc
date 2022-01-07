@@ -181,12 +181,12 @@ class CNNGnnCreator:
         self.networks[${networkInstruction?index}](<#list tc.getStreamInputDimensions(networkInstruction.body)
                       as dimensions><#if dimensions?index==0>graph<#elseif tc.cutDimensions(dimensions)[tc.cutDimensions(dimensions)?size-1] == "1" &&
                       tc.cutDimensions(dimensions)?size != 1>mx.nd.squeeze(mx.nd.zeros((${tc.join(tc.cutDimensions(dimensions), ",")},),
-                      ctx=context[0]))<#else>mx.nd.squeeze(mx.nd.zeros((1, ${tc.join(tc.cutDimensions(dimensions), ",")},), ctx=context[0]))</#if><#sep>, </#list>)
+                      ctx=context[0]))<#else>mx.nd.squeeze(mx.nd.zeros((${tc.join(tc.cutDimensions(dimensions), ",")},), ctx=context[0]))</#if><#sep>, </#list>)
 <#else>
         self.networks[${networkInstruction?index}](<#list tc.getStreamInputDimensions(networkInstruction.body)
                       as dimensions><#if tc.cutDimensions(dimensions)[tc.cutDimensions(dimensions)?size-1] == "1" &&
                       tc.cutDimensions(dimensions)?size != 1>mx.nd.squeeze(mx.nd.zeros((${tc.join(tc.cutDimensions(dimensions), ",")},),
-                      ctx=context[0]))<#else>mx.nd.squeeze(mx.nd.zeros((1, ${tc.join(tc.cutDimensions(dimensions), ",")},), ctx=context[0]))</#if><#sep>, </#list>)
+                      ctx=context[0]))<#else>mx.nd.squeeze(mx.nd.zeros((${tc.join(tc.cutDimensions(dimensions), ",")},), ctx=context[0]))</#if><#sep>, </#list>)
 </#if>
 </#list>
 

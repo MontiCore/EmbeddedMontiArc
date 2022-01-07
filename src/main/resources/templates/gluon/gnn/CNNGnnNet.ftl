@@ -11,7 +11,7 @@ import sys
 from mxnet import gluon, nd
 <#if tc.architecture.useDgl>
 # Add dgl layers here
-from dgl.nn.mxnet import GraphConv
+from dgl.nn.mxnet import GraphConv, GATConv
 </#if>
 <#if tc.architecture.customPyFilesPath??>
 sys.path.insert(1, '${tc.architecture.customPyFilesPath}')
