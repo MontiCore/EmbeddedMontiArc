@@ -1,1 +1,1 @@
-cNNCalculator.Network gluon-load/resources/training_data
+cNNCalculator.Network resources/training_data

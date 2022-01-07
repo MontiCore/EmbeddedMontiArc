@@ -1,5 +1,5 @@
 <!-- (c) https://github.com/MontiCore/monticore -->
-# Calculator MXNET
+# Calculator TENSORFLOW
 
 
 ## Prerequisites

@@ -1,1 +1,1 @@
-cNNCalculator.Network /mnistcalculator/tensorflow/resources/training_data
+cNNCalculator.Network resources/training_data
