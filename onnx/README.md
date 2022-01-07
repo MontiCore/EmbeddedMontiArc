@@ -1,10 +1,12 @@
 <!-- (c) https://github.com/MontiCore/monticore -->
-# Calculator TENSORFLOW
+# Calculator TENSORFLOW-ONNX-GLUON
 
+In this folder demonstration of sharing model between tensorflow and mxnet frameworks.
+During the run, the MNISTCalculator model will be trained in tensorflow backend and then exported to mxnet backend via ONNX.
 
 ## Prerequisites
 1. Ubuntu Linux 16.04 LTS or 18.04 LTS (experimental)
-2. Deep Learning Framework **Tensorlfow**
+2. Deep Learning Frameworks **Tensorlfow** and **MXNet**
 3. Armadillo (at least armadillo version 6.600 must be used) [Official instructions at Armadillo Website](http://arma.sourceforge.net/download.html).
 4. OpenCV
 
@@ -16,7 +18,7 @@ Generate and build the code for the EMADL model by executing:
 bash build.sh
 ```
 
-Finally, run the calculator as follows:
+Finally, go to `gluon-load` folder run the calculator as follows:
 ```
 ./build/src/cpp/DigitCalculator resources/images/1.png resources/images/2.png resources/images/3.png resources/images/4.png resources/images/5.png resources/images/6.png
 ```
