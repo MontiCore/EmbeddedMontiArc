@@ -2,7 +2,7 @@
                     labels = [batch.label[i].as_in_context(mx_context[0]) for i in range(${tc.architectureOutputs?size?c})]
 <#assign input_index = 0>
 <#list tc.architectureInputs as input_name>
-<#if input_name?index == tc.architectureInputs?seq_index_of(input_name) && input_name != "graph_">
+<#if input_name?index == tc.architectureInputs?seq_index_of(input_name)>
                     ${input_name} = batch.data[${input_index}].as_in_context(mx_context[0])
 <#assign input_index++>
 </#if>
@@ -175,10 +175,7 @@
                         ${outputName} = net_ret[0][${outputName?index}]
 <#if tc.getNameWithoutIndex(outputName) == tc.outputName>
                         outputs.append(${outputName})
-                        if use_dgl:
-                            lossList.append(loss_function(${outputName}, mx.nd.squeeze(labels[${tc.getIndex(outputName, true)}][local_adaptation_batch_i]), mx.nd.expand_dims(graph_.ndata['train_mask'], 1)))
-                        else:
-                            lossList.append(loss_function(${outputName}, labels[${tc.getIndex(outputName, true)}][local_adaptation_batch_i]))
+                        lossList.append(loss_function(${outputName}, labels[${tc.getIndex(outputName, true)}][local_adaptation_batch_i]))
 <#if tc.endsWithArgmax(networkInstruction.body)>
                         ${outputName} = mx.nd.argmax(${outputName}, axis=1).expand_dims(1)
 </#if>
@@ -190,10 +187,7 @@
                     ${outputName} = net_ret[0][${outputName?index}]
 <#if tc.getNameWithoutIndex(outputName) == tc.outputName>
                     outputs.append(${outputName})
-                    if use_dgl:
-                        lossList.append(loss_function(${outputName}, mx.nd.squeeze(labels[${tc.getIndex(outputName, true)}]), mx.nd.expand_dims(graph_.ndata['train_mask'], 1)))
-                    else:
-                        lossList.append(loss_function(${outputName}, labels[${tc.getIndex(outputName, true)}]))
+                    lossList.append(loss_function(${outputName}, labels[${tc.getIndex(outputName, true)}]))
 <#if tc.endsWithArgmax(networkInstruction.body)>
                     ${outputName} = mx.nd.argmax(${outputName}, axis=1).expand_dims(1)
 </#if>

@@ -8,11 +8,6 @@ import logging
 import sys
 import numpy as np
 import importlib
-<#assign firstInput = tc.architectureInputs[0]>
-<#if (firstInput == 'graph')??>
-import dgl
-from dgl.data.utils import load_graphs
-</#if>
 from mxnet import nd
 
 class ${tc.fileNameWithoutEnding}:
@@ -24,7 +19,6 @@ class ${tc.fileNameWithoutEnding}:
 
     def load_data(self, batch_size, shuffle=False):
         train_h5, test_h5 = self.load_h5_files()
-        graph = None
 
         train_data = {}
         data_mean = {}
@@ -32,36 +26,29 @@ class ${tc.fileNameWithoutEnding}:
         train_images = {}
 
         for input_name in self._input_names_:
-            if input_name != 'graph':
-                train_data["input"+str(self._input_names_.index(input_name))] = train_h5[input_name]
-                train_dataset = train_h5[input_name]
-                train_dataset_shape = train_data["input"+str(self._input_names_.index(input_name))].shape
-                # slice_size limits the memory consumption, by only loading slices of size <500MB into memory
-                slice_size = min(train_dataset_shape[0] - 1, int(500e6 / (train_h5[input_name][0].size * \
-                    train_h5[input_name][0].itemsize)))
-                num_slices = max(1, int(train_h5[input_name].shape[0] / slice_size))
-                mean = np.zeros(train_dataset_shape[1: ])
-                std = np.zeros(train_dataset_shape[1: ])
+            train_data["input"+str(self._input_names_.index(input_name))] = train_h5[input_name]
+            train_dataset = train_h5[input_name]
+            train_dataset_shape = train_data["input"+str(self._input_names_.index(input_name))].shape
+            # slice_size limits the memory consumption, by only loading slices of size <500MB into memory
+            slice_size = min(train_dataset_shape[0] - 1, int(500e6 / (train_h5[input_name][0].size * \
+                train_h5[input_name][0].itemsize)))
+            num_slices = max(1, int(train_h5[input_name].shape[0] / slice_size))
+            mean = np.zeros(train_dataset_shape[1: ])
+            std = np.zeros(train_dataset_shape[1: ])
 
-                for i in range(int(train_dataset_shape[0] / slice_size)):
-                    mean += train_dataset[i * slice_size: (i + 1) * slice_size].mean(axis=0) / num_slices
-                    std += train_dataset[i * slice_size: (i + 1) * slice_size].std(axis=0) / num_slices
-                if slice_size > train_dataset_shape[0] - 1:
-                    mean += train_dataset[num_slices * slice_size: ].mean(axis=0) / (slice_size - num_slices % slice_size)
-                    std += train_dataset[num_slices * slice_size: ].std(axis=0) / (slice_size - num_slices % slice_size)
-                std += 1e-5
+            for i in range(int(train_dataset_shape[0] / slice_size)):
+                mean += train_dataset[i * slice_size: (i + 1) * slice_size].mean(axis=0) / num_slices
+                std += train_dataset[i * slice_size: (i + 1) * slice_size].std(axis=0) / num_slices
+            if slice_size > train_dataset_shape[0] - 1:
+                mean += train_dataset[num_slices * slice_size: ].mean(axis=0) / (slice_size - num_slices % slice_size)
+                std += train_dataset[num_slices * slice_size: ].std(axis=0) / (slice_size - num_slices % slice_size)
+            std += 1e-5
 
-                data_mean[input_name + '_'] = nd.array(mean)
-                data_std[input_name + '_'] = nd.array(std)
+            data_mean[input_name + '_'] = nd.array(mean)
+            data_std[input_name + '_'] = nd.array(std)
 
-                if 'images' in train_h5:
-                    train_images = train_h5['images']
-<#if (firstInput == 'graph')??>
-            else:
-                graph_path = self._data_dir + "graph"
-                graph, _ = load_graphs(graph_path)
-                graph = graph[0]
-</#if>
+            if 'images' in train_h5:
+                train_images = train_h5['images']
 
         train_label = {}
         index = 0
@@ -80,11 +67,10 @@ class ${tc.fileNameWithoutEnding}:
             test_data = {}
             test_images = {}
             for input_name in self._input_names_:
-                if input_name != 'graph':
-                    test_data["input"+str(self._input_names_.index(input_name))] = test_h5[input_name]
+                test_data["input"+str(self._input_names_.index(input_name))] = test_h5[input_name]
 
-                    if 'images' in test_h5:
-                        test_images = test_h5['images']
+                if 'images' in test_h5:
+                    test_images = test_h5['images']
 
             test_label = {}
             index = 0
@@ -96,7 +82,7 @@ class ${tc.fileNameWithoutEnding}:
                                           label=test_label,
                                           batch_size=batch_size)
 
-        return train_iter, test_iter, graph, data_mean, data_std, train_images, test_images
+        return train_iter, test_iter, data_mean, data_std, train_images, test_images
 
     def load_preprocessed_data(self, batch_size, preproc_lib, shuffle=False):
         train_h5, test_h5 = self.load_h5_files()
@@ -213,7 +199,7 @@ class ${tc.fileNameWithoutEnding}:
             train_h5 = h5py.File(train_path, 'r')
 
             for input_name in self._input_names_:
-                if (not input_name in train_h5) and input_name != 'graph':
+                if not input_name in train_h5:
                     logging.error("The HDF5 file '" + os.path.abspath(train_path) + "' has to contain the dataset "
                                   + "'" + input_name + "'")
                     sys.exit(1)
@@ -228,7 +214,7 @@ class ${tc.fileNameWithoutEnding}:
                 test_h5 = h5py.File(test_path, 'r')
 
                 for input_name in self._input_names_:
-                    if (not input_name in test_h5) and input_name != 'graph':
+                    if not input_name in test_h5:
                         logging.error("The HDF5 file '" + os.path.abspath(test_path) + "' has to contain the dataset "
                                       + "'" + input_name + "'")
                         sys.exit(1)

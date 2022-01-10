@@ -56,12 +56,6 @@ if __name__ == "__main__":
     <#if (config.shuffleData)??>
         shuffle_data=${config.shuffleData?string("True","False")},
     </#if>
-    <#if (config.argmaxAxis)??>
-        argmax_axis=${config.argmaxAxis},
-    </#if>
-    <#if (config.useDgl)??>
-        use_dgl='${config.useDgl?string("True","False")}',
-    </#if>
     <#if (config.clipGlobalGradNorm)??>
         clip_global_grad_norm=${config.clipGlobalGradNorm},
     </#if>
@@ -70,12 +64,6 @@ if __name__ == "__main__":
     </#if>
     <#if (config.saveAttentionImage)??>
         save_attention_image='${config.saveAttentionImage?string("True","False")}',
-    </#if>
-    <#if (config.trainMask)??>
-        train_mask=[<#list config.trainMask as t>${t}<#if t?has_next>, </#if></#list>],
-    </#if>
-    <#if (config.testMask)??>
-        test_mask=[<#list config.testMask as t>${t}<#if t?has_next>, </#if></#list>],
     </#if>
     <#if (config.evalMetric)??>
         eval_metric='${config.evalMetricName}',
@@ -110,7 +98,10 @@ if __name__ == "__main__":
                 <#assign paramValue = "'${paramValue}'">
             </#if>
             '${paramName}': ${paramValue}<#sep>,
-        </#list>}
+        </#list>},
+    </#if>
+    <#if (config.onnxExport)??>
+        onnx_export=${config.onnxExport?string("True","False")},
     </#if>
     )
 </#list>
