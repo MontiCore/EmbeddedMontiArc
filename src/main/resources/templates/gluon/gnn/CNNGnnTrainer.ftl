@@ -4,13 +4,11 @@
 import logging
 import mxnet as mx
 import sys
-sys.path.append('./gnn')
-sys.path.append('./target/gnn')
 
 <#list configurations as config>
-import CNNGnnCreator_${config.instanceName}
-import CNNGnnDataLoader_${config.instanceName}
-import CNNGnnSupervisedTrainer_${config.instanceName}
+from gnn import CNNGnnCreator_${config.instanceName}
+from gnn import CNNGnnDataLoader_${config.instanceName}
+from gnn import CNNGnnSupervisedTrainer_${config.instanceName}
 </#list>
 
 if __name__ == "__main__":

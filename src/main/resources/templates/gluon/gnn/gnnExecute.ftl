@@ -34,25 +34,6 @@
                         lossList.append([])
 
 <#list tc.architecture.networkInstructions as networkInstruction>
-<#if networkInstruction.isUnroll()>
-                    for j in range(num_pus):
-                        for i in range(1, ${tc.getBeamSearchMaxLength(networkInstruction)}):
-                            ${tc.join(tc.getUnrollOutputNames(networkInstruction, "i"), "[j], ")}[j] = self._networks[${networkInstruction?index}](${tc.join(tc.getUnrollInputNames(networkInstruction, "i"), "[j], ")}[j])[0]
-<#list tc.getUnrollOutputNames(networkInstruction, "i") as outputName>
-<#if tc.getNameWithoutIndex(outputName) == tc.outputName>
-                            lossList[j].append(loss_function(${outputName}[j], labels[${tc.getIndex(outputName, true)}][j]))
-</#if>
-</#list>
-<#list tc.getUnrollOutputNames(networkInstruction, "i") as outputName>
-<#if tc.getNameWithoutIndex(outputName) == tc.outputName>
-<#if tc.endsWithArgmax(networkInstruction.body)>
-                            ${outputName}[j] = mx.nd.argmax(${outputName}[j], axis=1).expand_dims(1)
-</#if>
-                            if use_teacher_forcing == "True":
-                                ${outputName}[j] = mx.nd.expand_dims(labels[${tc.getIndex(outputName, true)}][j], axis=1)
-</#if>
-</#list>
-<#else>
                     net_ret = [self._networks[${networkInstruction?index}](${tc.join(tc.getStreamInputNames(networkInstruction.body, true), "[i], ")}[i]) for i in range(num_pus)]
 
 <#list tc.getStreamOutputNames(networkInstruction.body, true) as outputName>
@@ -79,5 +60,4 @@
 </#if>
 </#if>
 </#list>
-</#if>
 </#list>
