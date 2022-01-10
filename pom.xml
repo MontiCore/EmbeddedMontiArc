@@ -19,7 +19,7 @@
             <plugin>
                 <groupId>de.monticore.lang.monticar.utilities</groupId>
                 <artifactId>emadl-maven-plugin</artifactId>
-                <version>0.0.1-SNAPSHOT</version>
+                <version>0.0.5-SNAPSHOT</version>
                 <configuration>
                     <datasetToStore>
                         <path>datasets/mnist/</path>
@@ -35,21 +35,19 @@
 
     <repositories>
         <repository>
-            <id>gitlab-maven</id>
-            <url>https://git.rwth-aachen.de/api/v4/projects/57999/packages/maven</url>
+          <id>gitlab-maven</id>
+          <url>${env.CI_API_V4_URL}/projects/${env.CI_PROJECT_ID}/packages/maven</url>
         </repository>
-    </repositories>
-    <distributionManagement>
+      </repositories>
+      <distributionManagement>
         <repository>
-            <id>gitlab-maven</id>
-            <url>https://git.rwth-aachen.de/api/v4/projects/57999/packages/maven</url>
+          <id>gitlab-maven</id>
+          <url>${CI_API_V4_URL}/projects/${env.CI_PROJECT_ID}/packages/maven</url>
         </repository>
         <snapshotRepository>
-            <id>gitlab-maven</id>
-            <url>https://git.rwth-aachen.de/api/v4/projects/57999/packages/maven</url>
+          <id>gitlab-maven</id>
+          <url>${CI_API_V4_URL}/projects/${env.CI_PROJECT_ID}/packages/maven</url>
         </snapshotRepository>
-    </distributionManagement>
-
+      </distributionManagement>
 
 </project>
-
