@@ -5,7 +5,7 @@ import Loss;
 schema Supervised extends General {
 
     batch_size: N1
-    num_epoch: N1
+    num_epoch: N
     normalize: B
     checkpoint_period = 5: N
     preprocessing_name: component
