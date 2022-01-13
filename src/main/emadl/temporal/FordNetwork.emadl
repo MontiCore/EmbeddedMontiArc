@@ -1,0 +1,22 @@
+/* (c) https://github.com/MontiCore/monticore */
+
+package temporal;
+
+component FordNetwork{
+    ports in Q(0:1)^{433, 433} graph,
+        in Q(0:1)^{433, 21} features,
+        out Q(-oo:oo)^{150} predictions;
+
+    implementation CNN {
+        layer GraphConv(input_dim=21, output_dim=16, nodes=433) gc;
+
+        (graph | features) ->
+        gc;
+
+        (graph | gc.output) ->
+        GraphAvgPool() ->
+        Relu() ->
+        FullyConnected(units=150, flatten=false) ->
+        predictions;
+    }
+}
