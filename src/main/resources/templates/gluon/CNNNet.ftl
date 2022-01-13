@@ -9,6 +9,10 @@ import abc
 import warnings
 import sys
 from mxnet import gluon, nd
+<#if tc.architecture.useDgl>
+# Add dgl layers here
+from dgl.nn import GraphConv, GATConv, AvgPooling
+</#if>
 <#if tc.containsAdaNet()>
 from mxnet.gluon import nn, HybridBlock
 from numpy import log, product,prod,sqrt
@@ -50,14 +54,21 @@ class Padding(gluon.HybridBlock):
             constant_value=0)
         return x
 
-
+<#if !(tc.architecture.useDgl)>
 class NoNormalization(gluon.HybridBlock):
     def __init__(self, **kwargs):
         super(NoNormalization, self).__init__(**kwargs)
 
     def hybrid_forward(self, F, x):
         return x
+<#else>
+class NoNormalization(gluon.Block):
+    def __init__(self, **kwargs):
+        super(NoNormalization, self).__init__(**kwargs)
 
+    def forward(self, x):
+        return x
+</#if>
 
 class Reshape(gluon.HybridBlock):
     def __init__(self, shape, **kwargs):
@@ -608,7 +619,7 @@ ${tc.include(networkInstruction.body, elements?index, "FORWARD_FUNCTION")}
 </#if>
 
 </#list>
-
+<#if !(tc.architecture.useDgl)>
 class Net_${networkInstruction?index}(gluon.HybridBlock):
     def __init__(self, data_mean=None, data_std=None, mx_context=None, **kwargs):
         super(Net_${networkInstruction?index}, self).__init__(**kwargs)
@@ -649,6 +660,18 @@ ${tc.include(networkInstruction.body, "FORWARD_FUNCTION")}
 <#else>
         return [[${tc.join(tc.getStreamOutputNames(networkInstruction.body, false), ", ")}]]
 </#if>
+</#if>
+<#else>
+class Net_${networkInstruction?index}(gluon.Block):
+    def __init__(self, data_mean=None, data_std=None, mx_context=None, **kwargs):
+        super(Net_${networkInstruction?index}, self).__init__(**kwargs)
+        with self.name_scope():
+${tc.include(networkInstruction.body, "ARCHITECTURE_DEFINITION")}
+            pass
+
+    def forward(self, ${tc.join(tc.getStreamInputNames(networkInstruction.body, false), ", ")}):
+${tc.include(networkInstruction.body, "FORWARD_FUNCTION")}
+        return [[${tc.join(tc.getStreamOutputNames(networkInstruction.body, false), ", ")}]]
 </#if>
 </#list>
 </#if>

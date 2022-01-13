@@ -12,6 +12,9 @@ import math
 import sys
 import inspect
 from mxnet import gluon, autograd, nd
+<#if tc.architecture.useDgl>
+import dgl
+</#if>
 <#if tc.containsAdaNet()>
 from typing import List
 from mxnet.gluon.loss import Loss, SigmoidBCELoss
@@ -329,6 +332,7 @@ class ${tc.fileNameWithoutEnding}:
               shuffle_data=False,
               clip_global_grad_norm=None,
               preprocessing=False,
+              multi_graph=False,
               onnx_export=False):
         num_pus = 1
         if context == 'gpu':
@@ -350,7 +354,7 @@ class ${tc.fileNameWithoutEnding}:
             preproc_lib = "CNNPreprocessor_${tc.fileNameWithoutEnding?keep_after("CNNSupervisedTrainer_")}_executor"
             train_iter, test_iter, data_mean, data_std, train_images, test_images = self._data_loader.load_preprocessed_data(batch_size, preproc_lib, shuffle_data)
         else:
-            train_iter, test_iter, data_mean, data_std, train_images, test_images = self._data_loader.load_data(batch_size, shuffle_data)
+            train_iter, test_iter, data_mean, data_std, train_images, test_images, train_graph, test_graph = self._data_loader.load_data(batch_size, shuffle_data, multi_graph)
 
         if 'weight_decay' in optimizer_params:
             optimizer_params['wd'] = optimizer_params['weight_decay']
@@ -505,9 +509,9 @@ class ${tc.fileNameWithoutEnding}:
             if shuffle_data:
                 if preprocessing:
                     preproc_lib = "CNNPreprocessor_${tc.fileNameWithoutEnding?keep_after("CNNSupervisedTrainer_")}_executor"
-                    train_iter, test_iter, data_mean, data_std, train_images, test_images = self._data_loader.load_preprocessed_data(batch_size, preproc_lib, shuffle_data)
+                    train_iter, test_iter, data_mean, data_std, train_images, test_images, train_graph, test_graph = self._data_loader.load_preprocessed_data(batch_size, preproc_lib, shuffle_data)
                 else:
-                    train_iter, test_iter, data_mean, data_std, train_images, test_images = self._data_loader.load_data(batch_size, shuffle_data)
+                    train_iter, test_iter, data_mean, data_std, train_images, test_images, train_graph, test_graph = self._data_loader.load_data(batch_size, shuffle_data, multi_graph)
 
             global_loss_train = 0.0
             train_batches = 0
@@ -562,7 +566,9 @@ class ${tc.fileNameWithoutEnding}:
 
                         loss_avg = loss_total / (batch_size * log_period)
                         loss_total = 0
-
+<#if tc.architecture.useDgl>
+                        print("Epoch[%d] Batch[%d] Speed: %.2f samples/sec Loss: %.5f" % (epoch, batch_i, speed, loss_avg))
+</#if>
                         logging.info("Epoch[%d] Batch[%d] Speed: %.2f samples/sec Loss: %.5f" % (epoch, batch_i, speed, loss_avg))
                         
                         avg_speed += speed
@@ -693,7 +699,9 @@ class ${tc.fileNameWithoutEnding}:
             metric_file = open(self._net_creator._model_dir_ + 'metric.txt', 'w')
             metric_file.write(test_metric_name + " " + str(test_metric_score))
             metric_file.close()
-
+<#if tc.architecture.useDgl>
+            print("Epoch[%d] Train metric: %f, Test metric: %f, Train loss: %f, Test loss: %f" % (epoch, train_metric_score, test_metric_score, global_loss_train, global_loss_test))
+</#if>
             logging.info("Epoch[%d] Train metric: %f, Test metric: %f, Train loss: %f, Test loss: %f" % (epoch, train_metric_score, test_metric_score, global_loss_train, global_loss_test))
 
             if (epoch+1) % checkpoint_period == 0:
@@ -707,8 +715,9 @@ class ${tc.fileNameWithoutEnding}:
 
         for i, network in self._networks.items():
             network.save_parameters(self.parameter_path(i) + '-' + str((num_epoch-1) + begin_epoch).zfill(4) + '.params')
+<#if !(tc.architecture.useDgl)>
             network.export(self.parameter_path(i) + '_newest', epoch=0)
-
+</#if>
             if onnx_export:
                 from mxnet.contrib import onnx as onnx_mxnet
                 input_shapes = [(1,) + d.shape[1:] for _, d in test_iter.data]

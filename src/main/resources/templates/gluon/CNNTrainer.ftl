@@ -65,6 +65,9 @@ if __name__ == "__main__":
     <#if (config.saveAttentionImage)??>
         save_attention_image='${config.saveAttentionImage?string("True","False")}',
     </#if>
+    <#if (config.multiGraph)??>
+        multi_graph='${config.multiGraph?string("True","False")}',
+    </#if>
     <#if (config.evalMetric)??>
         eval_metric='${config.evalMetricName}',
         eval_metric_params={
