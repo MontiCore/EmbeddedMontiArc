@@ -862,6 +862,7 @@ All predefined methods start with a capital letter and all constructed methods h
   * **outputShape** (integer tuple > 0, reqiured): The expected shape of the output. If the network does not provide this shape, it it will be transformed with a dense layer and a reshape.
   * **trainable** (boolean, optional, default=true): whether weights of the imported model must be updated during the training.
 
+
 ## Predefined Unroll Types
 * **GreedySearch(max_length)**
 
