@@ -860,7 +860,7 @@ All predefined methods start with a capital letter and all constructed methods h
   * **networkPrefix** (string, required): name of the network to load. This is a prefix of the file names, e.g. for Gluon there willl be two files (symbol and params) wich start with networkName- (the prefix would be networkName- with the -) followed by epoch number (param file) and file endings.
   * **numInputs** (integer > 0, required): number of inputs the loaded network expects.
   * **outputShape** (integer tuple > 0, reqiured): The expected shape of the output. If the network does not provide this shape, it it will be transformed with a dense layer and a reshape.
-
+  * **trainable** (boolean, optional, default=true): whether weights of the imported model must be updated during the training.
 
 ## Predefined Unroll Types
 * **GreedySearch(max_length)**
