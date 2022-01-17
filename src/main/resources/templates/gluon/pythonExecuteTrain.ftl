@@ -19,12 +19,13 @@
                     if multi_graph:
                         ${input_name} = [graph_[0].ndata['${input_name}']]
                     else:
-                        ${input_name} = gluon.utils.split_and_load(batch.data[${input_index}], ctx_list=mx_context, even_split=False)
+                        ${input_name} = gluon.utils.split_and_load(batch.data[${input_index}], ctx_list=mx_context, even_split=False)[0]
+<#assign input_index++>
 </#if>
 <#else>
                     ${input_name} = gluon.utils.split_and_load(batch.data[${input_index}], ctx_list=mx_context, even_split=False)
-</#if>
 <#assign input_index++>
+</#if>
 </#if>
 </#list>
 

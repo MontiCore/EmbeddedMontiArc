@@ -11,7 +11,7 @@ import sys
 from mxnet import gluon, nd
 <#if tc.architecture.useDgl>
 # Add dgl layers here
-from dgl.nn import GraphConv, GATConv, AvgPooling
+from dgl.nn import GraphConv, GATConv, AvgPooling, SumPooling
 </#if>
 <#if tc.containsAdaNet()>
 from mxnet.gluon import nn, HybridBlock

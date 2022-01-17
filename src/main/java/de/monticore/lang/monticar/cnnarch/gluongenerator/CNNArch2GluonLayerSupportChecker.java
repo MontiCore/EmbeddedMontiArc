@@ -51,6 +51,7 @@ public class CNNArch2GluonLayerSupportChecker extends LayerSupportChecker {
         supportedLayerList.add(AllPredefinedLayers.GRAPH_CONV_NAME);
         supportedLayerList.add(AllPredefinedLayers.GAT_CONV_NAME);
         supportedLayerList.add(AllPredefinedLayers.GRAPH_AVG_POOL_NAME);
+        supportedLayerList.add(AllPredefinedLayers.GRAPH_SUM_POOL_NAME);
         supportedLayerList.add(AllPredefinedLayers.AdaNet_Name);
     }
 

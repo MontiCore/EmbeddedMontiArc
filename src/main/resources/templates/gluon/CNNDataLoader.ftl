@@ -37,7 +37,7 @@ class ${tc.fileNameWithoutEnding}:
                 train_dataset = train_h5[input_name]
                 train_dataset_shape = train_data["input"+str(self._input_names_.index(input_name))].shape
                 # slice_size limits the memory consumption, by only loading slices of size <500MB into memory
-                slice_size = min(train_dataset_shape[0] - 1, int(500e6 / (train_h5[input_name][0].size * \
+                slice_size = min(max(train_dataset_shape[0] - 1, 1), int(500e6 / (train_h5[input_name][0].size * \
                     train_h5[input_name][0].itemsize)))
                 num_slices = max(1, int(train_h5[input_name].shape[0] / slice_size))
                 mean = np.zeros(train_dataset_shape[1: ])
