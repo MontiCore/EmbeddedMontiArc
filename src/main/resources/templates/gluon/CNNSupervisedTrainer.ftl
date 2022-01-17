@@ -184,6 +184,28 @@ class ACCURACY_IGNORE_LABEL(mx.metric.EvalMetric):
             self.sum_metric += correct
             self.num_inst += total
 
+
+@mx.metric.register
+class ACCURACY_DGL(mx.metric.EvalMetric):
+    def __init__(self, axis=1, name='accuracy_dgl', output_names=None, label_names=None):
+        super(ACCURACY_DGL, self).__init__(name, axis=axis, output_names=output_names, label_names=label_names)
+        self.axis = axis
+
+    def update(self, labels, preds, mask):
+        mx.metric.check_label_shapes(labels, preds)
+        if preds.shape != labels.shape:
+            preds = mx.nd.argmax(preds, axis=self.axis, keepdims=True)
+        labels = labels.astype('int32')
+        preds = preds.astype('int32').as_in_context(labels.context)
+        mask = mask.astype('int32').as_in_context(labels.context)
+        mx.metric.check_label_shapes(labels, preds)
+
+        correct = ((preds == labels)*mask).sum().asscalar()
+        total = mask.sum().asscalar()
+        self.sum_metric += correct
+        self.num_inst += total
+
+
 @mx.metric.register
 class BLEU(mx.metric.EvalMetric):
     N = 4
@@ -645,8 +667,12 @@ class ${tc.fileNameWithoutEnding}:
             test_iter.reset()
             metric = mx.metric.create(eval_metric, **eval_metric_params)
             for batch_i, batch in enumerate(test_iter):
+<#if tc.architecture.useDgl>
+                if multi_graph:
+<#else>
                 if True: <#-- Fix indentation -->
-                                                   
+</#if>
+
 <#if episodicReplayVisited?? && anyEpisodicLocalAdaptation && !containsUnrollNetwork>
 <#include "pythonExecuteTest.ftl">
     
@@ -675,11 +701,17 @@ class ${tc.fileNameWithoutEnding}:
 <#include "saveAttentionImageTest.ftl">
 
                 loss = 0
+<#if tc.architecture.useDgl>
+                if multi_graph:
+                    for element in lossList:
+                        loss = loss + element
+                    global_loss_test += loss.sum().asscalar()
+<#else>
                 for element in lossList:
                     loss = loss + element
 
                 global_loss_test += loss.sum().asscalar()
-
+</#if>
                 test_batches += 1
 
                 predictions = []
@@ -688,9 +720,14 @@ class ${tc.fileNameWithoutEnding}:
                         predictions.append(mx.nd.argmax(output_name, axis=1))
                     else:
                         predictions.append(output_name)
-
+<#if tc.architecture.useDgl>
+                if not multi_graph:
+                    metric.update(preds=predictions[0], labels=mx.nd.squeeze(labels[0][0]), mask=graph_[0].ndata['test_mask'])
+                else:
+                    metric.update(preds=predictions, labels=[labels[j] for j in range(len(labels))])
+<#else>
                 metric.update(preds=predictions, labels=[labels[j] for j in range(len(labels))])
-
+</#if>
             global_loss_test /= (test_batches * single_pu_batch_size)
 </#if>
             test_metric_name = metric.get()[0]

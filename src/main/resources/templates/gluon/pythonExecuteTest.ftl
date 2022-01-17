@@ -1,9 +1,8 @@
 <#-- (c) https://github.com/MontiCore/monticore -->
-                    if not multi_graph:
-                        labels = [batch.label[i].as_in_context(mx_context[0]) for i in range(${tc.architectureOutputs?size?c})]
-                    else:
+                    if multi_graph:
                         labels = [batch.data[0].as_in_context(mx_context[0])]
-
+                    else:
+                        labels = [batch.label[i].as_in_context(mx_context[0]) for i in range(${tc.architectureOutputs?size?c})]
 <#assign input_index = 0>
 <#list tc.architectureInputs as input_name>
 <#if input_name?index == tc.architectureInputs?seq_index_of(input_name)>
