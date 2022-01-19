@@ -8,15 +8,15 @@ component FordNetwork{
         out Q(-oo:oo)^{150} predictions;
 
     implementation CNN {
-        layer GraphConv(input_dim=21, output_dim=16, nodes=433) gc;
+        layer GraphConv(input_dim=21, output_dim=16, nodes=433) gc1;
 
         (graph | features) ->
-        gc;
+        gc1;
 
-        (graph | gc.output) ->
-        GraphAvgPool() ->
+        (graph | gc1.output -> Relu()) ->
+        GraphSumPool() ->
+        FullyConnected(units=150) ->
         Relu() ->
-        FullyConnected(units=150, flatten=false) ->
         predictions;
     }
 }

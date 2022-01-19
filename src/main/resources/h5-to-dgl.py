@@ -20,7 +20,8 @@ def load_h5_files(data_path):
 def preprocess(data, sample_size):
     adjacency = data['adjacency'][:]
     features = data['features'][:]
-    features = np.reshape(features, (sample_size, 433, 21))
+    features = np.swapaxes(features, 1, 2)
+    feature_debug = features
     features = mx.nd.array(features)
     label = data['predictions_label'][:]
     sample_number = 0
@@ -31,6 +32,8 @@ def preprocess(data, sample_size):
         graph_list.append(dgl.add_self_loop(graph_sample))
         feature_sample = features[sample_number]
         feature_sample = feature_sample[0:graph_list[sample_number].num_nodes()]
+        feature_sample = mx.nd.flatten(feature_sample)
+        numpy_debug = feature_sample.asnumpy()
         graph_list[sample_number].ndata['features_'] = feature_sample
         sample_number += 1
     return graph_list, label

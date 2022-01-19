@@ -12,7 +12,6 @@ component Network{
 
         (adjacency | features) ->
         GraphConvolution(input_dim=1433, output_dim=16, node_size=2708) ->
-        Reshape(shape=(2708, 16)) ->
         layerOne;
 
         (adjacency | layerOne.output) ->
