@@ -1,6 +1,7 @@
 # (c) https://github.com/MontiCore/monticore
 import logging
 import mxnet as mx
+
 import CNNCreator_simpleConfig
 import CNNDataLoader_simpleConfig
 import CNNSupervisedTrainer_simpleConfig
@@ -26,5 +27,5 @@ if __name__ == "__main__":
         loss='cross_entropy',
         optimizer='adam',
         optimizer_params={
-            'learning_rate': 0.001}
+            'learning_rate': 0.001},
     )
