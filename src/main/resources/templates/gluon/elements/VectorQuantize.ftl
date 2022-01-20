@@ -11,11 +11,11 @@
                                                   total_feature_maps_size=int(batch_size*<#list element.element.outputTypes as type>${tc.join(type.dimensions, "*")}</#list>))
             self.loss_ctx_dict = {"loss": "quantization_loss",
                                   "values": { "beta":${beta},}}
-            self.save_specific_params_list.append((self.${element.name}.name,self.${element.name}.collect_params()))
+
 
 <#elseif mode == "FORWARD_FUNCTION">
         ${element.name} = self.${element.name}(${input})
-        loss_params = []
         loss_params.append(${input})
         loss_params.append(${element.name})
+        self.save_specific_params_list.append((self.${element.name}.name,self.${element.name}.collect_params()))
 </#if>

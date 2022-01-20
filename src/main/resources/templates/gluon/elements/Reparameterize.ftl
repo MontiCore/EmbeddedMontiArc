@@ -7,7 +7,6 @@
 </#if>
 <#if mode == "FORWARD_FUNCTION">
         ${element.name} = self.${element.name}([${tc.join(element.inputs, ", ")}])
-        loss_params = []
         <#list element.inputs as input>
         loss_params.append(${input})
         </#list>

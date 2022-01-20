@@ -541,12 +541,11 @@ class Reparameterize(gluon.HybridBlock):
         return sample
 
 class VectorQuantize(gluon.HybridBlock):
-    def __init__(self, batch_size, num_embeddings, embedding_dim, input_shape, total_feature_maps_size, **kwargs):
+    def __init__(self,batch_size, num_embeddings, embedding_dim, input_shape, total_feature_maps_size, **kwargs):
         super(VectorQuantize,self).__init__(**kwargs)
         self.embedding_dim = embedding_dim
         self.num_embeddings = num_embeddings
         self.input_shape = input_shape
-        self.batch_size = batch_size
         self.size = int(total_feature_maps_size / embedding_dim)
 
         # Codebook
@@ -568,8 +567,6 @@ class VectorQuantize(gluon.HybridBlock):
         # Quantize and unflatten
         quantized = F.dot(encodings, self.embeddings.var()).reshape(self.input_shape)
 
-        # Straight-through estimator.
-        quantized = x + F.stop_gradient(quantized - x)
         return quantized
 
 <#list tc.architecture.networkInstructions as networkInstruction>
@@ -637,6 +634,7 @@ ${tc.include(networkInstruction.body, "ARCHITECTURE_DEFINITION")}
 
 
     def hybrid_forward(self, F, ${tc.join(tc.getStreamInputNames(networkInstruction.body, false), ", ")}):
+        loss_params = []
 <#if networkInstruction.body.episodicSubNetworks?has_content>
 <#list networkInstruction.body.episodicSubNetworks as elements>
 <#if elements?index == 0>
