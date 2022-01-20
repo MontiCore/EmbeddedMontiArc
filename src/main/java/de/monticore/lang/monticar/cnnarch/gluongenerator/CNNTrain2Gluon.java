@@ -57,14 +57,14 @@ public class CNNTrain2Gluon extends CNNTrainGenerator {
 
     @Override
     public void generate(Path modelsDirPath, String rootModelName) {
-        TrainingConfiguration trainingConfiguration = createTrainingConfiguration(modelsDirPath, rootModelName);
+        TrainingConfiguration trainingConfiguration = createTrainingConfiguration(modelsDirPath, rootModelName, null);
 
         TrainingComponentsContainer trainingComponentsContainer = new TrainingComponentsContainer();
         GluonConfigurationData configurationData = new GluonConfigurationData(trainingConfiguration, trainingComponentsContainer, getInstanceName());
         if (configurationData.isReinforcementLearning()) {
             throw new IllegalStateException("Cannot call generate of reinforcement configuration without specifying the trained architecture");
         }
-        generateFilesFromConfigurationSymbol(trainingConfiguration, trainingComponentsContainer);
+        generateFilesFromConfigurationSymbol(trainingConfiguration, trainingComponentsContainer, null);
     }
 
     public void generate(Path modelsDirPath, String rootModelName, ArchitectureAdapter trainedArchitecture) {
@@ -73,7 +73,7 @@ public class CNNTrain2Gluon extends CNNTrainGenerator {
 
     public void generate(Path modelsDirPath, String rootModelName, ArchitectureAdapter trainedArchitecture,
                          ArchitectureAdapter supportNetwork) {
-        TrainingConfiguration trainingConfiguration = createTrainingConfiguration(modelsDirPath, rootModelName);
+        TrainingConfiguration trainingConfiguration = createTrainingConfiguration(modelsDirPath, rootModelName, null);
 
         TrainingComponentsContainer trainingComponentsContainer = new TrainingComponentsContainer();
         trainingComponentsContainer.setTrainedArchitecture(trainingConfiguration, trainedArchitecture);
@@ -86,11 +86,11 @@ public class CNNTrain2Gluon extends CNNTrainGenerator {
         }
 
         setRootProjectModelsDir(modelsDirPath.toString());
-        generateFilesFromConfigurationSymbol(trainingConfiguration, trainingComponentsContainer);
+        generateFilesFromConfigurationSymbol(trainingConfiguration, trainingComponentsContainer, null);
     }
 
     public void generate(Path modelsDirPath, String rootModelName, ArchitectureAdapter trainedArchitecture, ArchitectureAdapter discriminatorNetwork, ArchitectureAdapter qNetwork) {
-        TrainingConfiguration trainingConfiguration = createTrainingConfiguration(modelsDirPath, rootModelName);
+        TrainingConfiguration trainingConfiguration = createTrainingConfiguration(modelsDirPath, rootModelName, null);
 
         TrainingComponentsContainer trainingComponentsContainer = new TrainingComponentsContainer();
         trainingComponentsContainer.setTrainedArchitecture(trainingConfiguration, trainedArchitecture);
@@ -100,12 +100,14 @@ public class CNNTrain2Gluon extends CNNTrainGenerator {
         }
 
         setRootProjectModelsDir(modelsDirPath.toString());
-        generateFilesFromConfigurationSymbol(trainingConfiguration, trainingComponentsContainer);
+        generateFilesFromConfigurationSymbol(trainingConfiguration, trainingComponentsContainer, null);
     }
 
     @Override
-    public List<FileContent> generateStrings(TrainingConfiguration trainingConfiguration, TrainingComponentsContainer trainingComponentsContainer) {
-        validateConfiguration(trainingConfiguration, trainingComponentsContainer);
+    public List<FileContent> generateStrings(TrainingConfiguration trainingConfiguration,
+                                             TrainingComponentsContainer trainingComponentsContainer,
+                                             Path outputPath) {
+        validateConfiguration(trainingConfiguration, trainingComponentsContainer, outputPath);
 
         TemplateConfiguration templateConfiguration = new GluonTemplateConfiguration();
         GluonConfigurationData configurationData = new GluonConfigurationData(trainingConfiguration,
@@ -352,7 +354,7 @@ public class CNNTrain2Gluon extends CNNTrainGenerator {
     }
 
     private List<FileContent> constructReinforcementLearningFramework(final TemplateConfiguration templateConfiguration,
-                                                                      final Map<String, Object> ftlContext) {
+                                                                              final Map<String, Object> ftlContext) {
 
         List<FileContent> fileContents = new ArrayList<>();
         ftlContext.put("rlFrameworkModule", REINFORCEMENT_LEARNING_FRAMEWORK_MODULE);

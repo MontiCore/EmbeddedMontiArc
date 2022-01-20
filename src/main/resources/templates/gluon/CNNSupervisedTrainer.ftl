@@ -328,7 +328,8 @@ class ${tc.fileNameWithoutEnding}:
               normalize=True,
               shuffle_data=False,
               clip_global_grad_norm=None,
-              preprocessing = False):
+              preprocessing=False,
+              onnx_export=False):
         num_pus = 1
         if context == 'gpu':
             num_pus = mx.context.num_gpus()
@@ -418,7 +419,7 @@ class ${tc.fileNameWithoutEnding}:
         elif loss == 'l2':
             loss_function = mx.gluon.loss.L2Loss()
         elif loss == 'l1':
-            loss_function = mx.gluon.loss.L2Loss()
+            loss_function = mx.gluon.loss.L1Loss()
         elif loss == 'huber':
             rho = loss_params['rho'] if 'rho' in loss_params else 1
             loss_function = mx.gluon.loss.HuberLoss(rho=rho)
@@ -698,14 +699,23 @@ class ${tc.fileNameWithoutEnding}:
             if (epoch+1) % checkpoint_period == 0:
                 for i, network in self._networks.items():
                     network.save_parameters(self.parameter_path(i) + '-' + str(epoch).zfill(4) + '.params')
+<#if episodicReplayVisited??>
                     if hasattr(network, 'episodic_sub_nets'):
                         for j, net in enumerate(network.episodic_sub_nets):
                             episodic_layers[i][j].save_memory(self.parameter_path(i) + "_episodic_memory_sub_net_" + str(j + 1) + "-" + str(epoch).zfill(4))
+</#if>
 
         for i, network in self._networks.items():
             network.save_parameters(self.parameter_path(i) + '-' + str((num_epoch-1) + begin_epoch).zfill(4) + '.params')
             network.export(self.parameter_path(i) + '_newest', epoch=0)
-            
+
+            if onnx_export:
+                from mxnet.contrib import onnx as onnx_mxnet
+                input_shapes = [(1,) + d.shape[1:] for _, d in test_iter.data]
+                model_path = self.parameter_path(i) + '_newest'
+                onnx_mxnet.export_model(model_path+'-symbol.json', model_path+'-0000.params', input_shapes, np.float32, model_path+'.onnx')
+
+<#if episodicReplayVisited??>  
             if hasattr(network, 'episodic_sub_nets'):
                 network.episodicsubnet0_.export(self.parameter_path(i) + '_newest_episodic_sub_net_' + str(0), epoch=0)
                 for j, net in enumerate(network.episodic_sub_nets):
@@ -713,6 +723,7 @@ class ${tc.fileNameWithoutEnding}:
                     episodic_query_networks[i][j].export(self.parameter_path(i) + '_newest_episodic_query_net_' + str(j+1), epoch=0)
                     episodic_layers[i][j].save_memory(self.parameter_path(i) + "_episodic_memory_sub_net_" + str(j + 1) + "-" + str((num_epoch - 1) + begin_epoch).zfill(4))
                     episodic_layers[i][j].save_memory(self.parameter_path(i) + "_newest_episodic_memory_sub_net_" + str(j + 1) + "-0000")
+</#if>
             loss_function.export(self.parameter_path(i) + '_newest_loss', epoch=0)
 
     def parameter_path(self, index):

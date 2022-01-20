@@ -98,7 +98,10 @@ if __name__ == "__main__":
                 <#assign paramValue = "'${paramValue}'">
             </#if>
             '${paramName}': ${paramValue}<#sep>,
-        </#list>}
+        </#list>},
+    </#if>
+    <#if (config.onnxExport)??>
+        onnx_export=${config.onnxExport?string("True","False")},
     </#if>
     )
 </#list>
