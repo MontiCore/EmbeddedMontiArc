@@ -20,15 +20,11 @@ public class VectorQuantize extends PredefinedLayerDeclaration {
 
     @Override
     public List<ArchTypeSymbol> computeOutputTypes(List<ArchTypeSymbol> inputTypes, LayerSymbol layer, VariableSymbol.Member member) {
-        int channels = layer.getInputTypes().get(0).getChannels();
-        int height = layer.getInputTypes().get(0).getHeight();
-        int width = layer.getInputTypes().get(0).getWidth();
-
         return Collections.singletonList(new ArchTypeSymbol.Builder()
-                .channels(channels)
-                .height(height)
-                .width(width)
-                .elementType("-oo","oo")
+                .channels(layer.getInputTypes().get(0).getChannels())
+                .height(layer.getInputTypes().get(0).getHeight())
+                .width(layer.getInputTypes().get(0).getWidth())
+                .elementType("-oo", "oo")
                 .build());
     }
 
