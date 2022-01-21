@@ -1,7 +1,6 @@
 # (c) https://github.com/MontiCore/monticore
 import logging
 import mxnet as mx
-
 import CNNCreator_fullConfig
 import CNNDataLoader_fullConfig
 import CNNSupervisedTrainer_fullConfig
@@ -38,16 +37,16 @@ if __name__ == "__main__":
         optimizer='rmsprop',
         optimizer_params={
             'weight_decay': 0.01,
-                    'centered': True,
-                    'gamma2': 0.9,
-                    'gamma1': 0.9,
-                    'clip_weights': 10.0,
-                    'learning_rate_decay': 0.9,
-                    'epsilon': 1.0E-6,
-                    'rescale_grad': 1.1,
-                    'clip_gradient': 10.0,
-                    'learning_rate_minimum': 1.0E-5,
-                    'learning_rate_policy': 'step',
-                    'learning_rate': 0.001,
-                    'step_size': 1000},
+            'centered': True,
+            'gamma2': 0.9,
+            'gamma1': 0.9,
+            'clip_weights': 10.0,
+            'learning_rate_decay': 0.9,
+            'epsilon': 1.0E-6,
+            'rescale_grad': 1.1,
+            'clip_gradient': 10.0,
+            'learning_rate_minimum': 1.0E-5,
+            'learning_rate_policy': 'step',
+            'learning_rate': 0.001,
+            'step_size': 1000},
     )

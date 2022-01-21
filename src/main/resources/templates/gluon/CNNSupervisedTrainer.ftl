@@ -492,7 +492,6 @@ class ${tc.fileNameWithoutEnding}:
             trainers = [mx.gluon.Trainer(network.collect_params(), optimizer, optimizer_params) for network in self._networks.values() if len(network.collect_params().values()) != 0]
 </#list>
 </#if>
-
 <#list tc.architecture.networkInstructions as networkInstruction>
 <#if networkInstruction.body.episodicSubNetworks?has_content>
 <#assign episodicReplayVisited = true>
@@ -534,7 +533,7 @@ class ${tc.fileNameWithoutEnding}:
             if shuffle_data:
                 if preprocessing:
                     preproc_lib = "CNNPreprocessor_${tc.fileNameWithoutEnding?keep_after("CNNSupervisedTrainer_")}_executor"
-                    train_iter, test_iter, data_mean, data_std, train_images, test_images, train_graph, test_graph = self._data_loader.load_preprocessed_data(batch_size, preproc_lib, shuffle_data)
+                    train_iter, test_iter, data_mean, data_std, train_images, test_images = self._data_loader.load_preprocessed_data(batch_size, preproc_lib, shuffle_data)
                 else:
                     train_iter, test_iter, data_mean, data_std, train_images, test_images, train_graph, test_graph = self._data_loader.load_data(batch_size, shuffle_data, multi_graph)
 
@@ -761,7 +760,7 @@ class ${tc.fileNameWithoutEnding}:
                 model_path = self.parameter_path(i) + '_newest'
                 onnx_mxnet.export_model(model_path+'-symbol.json', model_path+'-0000.params', input_shapes, np.float32, model_path+'.onnx')
 
-<#if episodicReplayVisited??>  
+<#if episodicReplayVisited??>
             if hasattr(network, 'episodic_sub_nets'):
                 network.episodicsubnet0_.export(self.parameter_path(i) + '_newest_episodic_sub_net_' + str(0), epoch=0)
                 for j, net in enumerate(network.episodic_sub_nets):

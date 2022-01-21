@@ -448,9 +448,9 @@ class CNNSupervisedTrainer_LoadNetworkTest:
             loss_function = LogCoshLoss()
         else:
             logging.error("Invalid loss parameter.")
-
+        
         loss_function.hybridize()
-
+        
 
 
         tic = None
@@ -462,7 +462,7 @@ class CNNSupervisedTrainer_LoadNetworkTest:
             if shuffle_data:
                 if preprocessing:
                     preproc_lib = "CNNPreprocessor_LoadNetworkTest_executor"
-                    train_iter, test_iter, data_mean, data_std, train_images, test_images, train_graph, test_graph = self._data_loader.load_preprocessed_data(batch_size, preproc_lib, shuffle_data)
+                    train_iter, test_iter, data_mean, data_std, train_images, test_images = self._data_loader.load_preprocessed_data(batch_size, preproc_lib, shuffle_data)
                 else:
                     train_iter, test_iter, data_mean, data_std, train_images, test_images, train_graph, test_graph = self._data_loader.load_data(batch_size, shuffle_data, multi_graph)
 
@@ -534,6 +534,7 @@ class CNNSupervisedTrainer_LoadNetworkTest:
 
                         loss_avg = loss_total / (batch_size * log_period)
                         loss_total = 0
+
                         logging.info("Epoch[%d] Batch[%d] Speed: %.2f samples/sec Loss: %.5f" % (epoch, batch_i, speed, loss_avg))
                         
                         avg_speed += speed
@@ -612,7 +613,6 @@ class CNNSupervisedTrainer_LoadNetworkTest:
                             os.makedirs(target_dir)
                         plt.savefig(target_dir + '/attention_train.png')
                         plt.close()
-
                     predictions = []
                     for output_name in outputs:
                         if mx.nd.shape_array(mx.nd.squeeze(output_name)).size > 1:
@@ -633,7 +633,7 @@ class CNNSupervisedTrainer_LoadNetworkTest:
             test_iter.reset()
             metric = mx.metric.create(eval_metric, **eval_metric_params)
             for batch_i, batch in enumerate(test_iter):
-                if test_mask == None: 
+                if test_mask == None:
 
                     if multi_graph:
                         labels = [batch.data[0].as_in_context(mx_context[0])]
@@ -696,7 +696,6 @@ class CNNSupervisedTrainer_LoadNetworkTest:
                             os.makedirs(target_dir)
                         plt.savefig(target_dir + '/attention_test.png')
                         plt.close()
-
                 loss = 0
                 if test_mask == None or multi_graph:
                     for element in lossList:
@@ -716,12 +715,14 @@ class CNNSupervisedTrainer_LoadNetworkTest:
                 else:
                     metric.update(preds=predictions, labels=[labels[j] for j in range(len(labels))])
             global_loss_test /= (test_batches * single_pu_batch_size)
+
             test_metric_name = metric.get()[0]
             test_metric_score = metric.get()[1]
 
             metric_file = open(self._net_creator._model_dir_ + 'metric.txt', 'w')
             metric_file.write(test_metric_name + " " + str(test_metric_score))
             metric_file.close()
+
             logging.info("Epoch[%d] Train metric: %f, Test metric: %f, Train loss: %f, Test loss: %f" % (epoch, train_metric_score, test_metric_score, global_loss_train, global_loss_test))
 
             if (epoch+1) % checkpoint_period == 0:
@@ -731,6 +732,7 @@ class CNNSupervisedTrainer_LoadNetworkTest:
         for i, network in self._networks.items():
             network.save_parameters(self.parameter_path(i) + '-' + str((num_epoch-1) + begin_epoch).zfill(4) + '.params')
             network.export(self.parameter_path(i) + '_newest', epoch=0)
+            
             if onnx_export:
                 from mxnet.contrib import onnx as onnx_mxnet
                 input_shapes = [(1,) + d.shape[1:] for _, d in test_iter.data]
