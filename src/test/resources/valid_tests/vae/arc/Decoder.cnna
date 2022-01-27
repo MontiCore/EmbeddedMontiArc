@@ -1,9 +1,9 @@
 architecture Decoder{
-    def input Z(0:255)^{2} sample
-    def output Q(-oo:oo)^{784} res
+    def input Z(0:255)^{2} encoding
+    def output Q(-oo:oo)^{784} data
 
-    sample ->
+    encoding ->
     FullyConnected(units=400) ->
     FullyConnected(units=784) ->
-    res;
+    data;
 }

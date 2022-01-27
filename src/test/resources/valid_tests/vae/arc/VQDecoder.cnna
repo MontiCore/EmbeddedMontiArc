@@ -1,8 +1,0 @@
-architecture VQDecoder{
-    def input Q(-oo:oo)^{1,28,28} sample
-    def output Q(-oo:oo)^{1,28,28} res
-
-    sample ->
-    VectorQuantize(num_embeddings=64) ->
-    res;
-}

@@ -1,22 +1,17 @@
 architecture Encoder{
-    def input Z(0:255)^{1,28,28} data
-    def output Q(-oo:oo)^{2} z_mean
-    def output Q(-oo:oo)^{2} z_logvar
-    def output Q(-oo:oo)^{2} z
+    def input Q(-oo:oo)^{1,28,28} data
+    def output Q(-oo:oo)^{2} encoding
 
     data ->
+    VectorQuantize(num_embeddings=64,beta=0.25) ->
     FullyConnected(units=400) ->
     FullyConnected(units=4) ->
     Split(n=2) ->
     (
-        [0] ->
-        Sigmoid() ->
-        z_mean
+        [0]
         |
-        [1] ->
-        Sigmoid() ->
-        z_logvar
+        [1]
     ) ->
-    Reparameterize() ->
-    z;
+    Reparameterize(pdf="normal") ->
+    encoding;
 }
