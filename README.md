@@ -805,7 +805,7 @@ All predefined methods start with a capital letter and all constructed methods h
 
 * **Reparameterize(pdf="normal")**
 
-  Must be used inorder to model VAEs, $\beta$-VAEs and Conditional VAEs. Applies the Reparameterization Trick and samples a Code from the approximating Distribution.
+  Must be used inorder to model VAEs, β-VAEs and Conditional VAEs. Applies the Reparameterization Trick and samples a Code from the approximating Distribution.
 
   * **pdf** ({"normal"}, optional, default="normal"):
     * normal: Takes in 2 Datastreams and applies the Reparameterization Trick for a normal distribution.
