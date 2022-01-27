@@ -12,7 +12,7 @@ architecture VAELayers{
         |
         [1]
     ) ->
-    Reparameterize(pdf=normal) ->
+    Reparameterize(pdf="normal") ->
     FullyConnected(units=400) ->
     FullyConnected(units=784) ->
     Reshape(shape=(1,28,28)) ->
