@@ -802,6 +802,23 @@ All predefined methods start with a capital letter and all constructed methods h
   * **padding** ({"valid", "same", "no_loss"}, optional, default="same3d"): One of "valid3d", "same3d" or "simple3d". "valid" means no padding. "same"   results in padding the input such that the output has the same length as the original input divided by the stride (rounded up). "simple3d" results constant padding of size 1 (same as (1,1,1). UpConvolution3D also accepts tuples of form (height, widht, depth) as input.
   * **no_bias** (boolean, optional, default=false): Whether to disable the bias parameter.
 
+
+* **Reparameterize(pdf="normal")**
+
+  Must be used inorder to model VAEs, $\beta$-VAEs and Conditional VAEs. Applies the Reparameterization Trick and samples a Code from the approximating Distribution.
+
+  * **pdf** ({"normal"}, optional, default="normal"):
+    * normal: Takes in 2 Datastreams and applies the Reparameterization Trick for a normal distribution.
+
+
+* **VectorQuantize(num_embeddings,beta=0.25)**
+
+  Must be used inorder to model VQ-VAEs. Use this layer to quantize the pixels of incoming feature maps with a vector from the codebook.
+
+  * **num_embeddings** (integer > 0, required): Number of vectors within the codebook.
+  * **beta**: (float, optional, default=0.25): Commitment cost factor that weights the commitment term of the VQ-VAE Loss function. "We found the resulting algorithm to be
+    quite robust to β, as the results did not vary for values of β ranging from 0.1 to 2.0" [van den Oord et al. 2017]
+
     
 * **EpisodicMemory(replayMemoryStoreProb=1, maxStoredSamples=-1, memoryReplacementStrategy="replace_oldest", useReplay=true, replayInterval, replayBatchSize=-1, replaySteps, replayGradientSteps=1, useLocalAdaption=true, localAdaptionGradientSteps=1, localAdaptionK=1, queryNetDir=-1, queryNetPrefix=-1, queryNetNumInputs=1)**
 
