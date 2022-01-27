@@ -6,6 +6,7 @@ import os
 import sys
 import logging
 import dgl
+import matplotlib.pyplot as plt
 
 
 def load_h5_files(data_path):
@@ -17,26 +18,37 @@ def load_h5_files(data_path):
         sys.exit(1)
 
 
-def preprocess(data, sample_size):
+def show_plot(data):
+    x = range(0, len(data))
+    y = data
+    plt.title("Line graph")
+    plt.xlabel("X axis")
+    plt.ylabel("Y axis")
+    plt.plot(x, y, color="green")
+    plt.show()
+
+
+def preprocess(data):
     adjacency = data['adjacency'][:]
     features = data['features'][:]
+    graph_data = data['data'][:]
     features = np.swapaxes(features, 1, 2)
-    feature_debug = features
     features = mx.nd.array(features)
     label = data['predictions_label'][:]
     sample_number = 0
     graph_list = []
     for sample in adjacency:
+        #if (sample_number % batch_size) == 0:
+            #show_plot(label[sample_number])
         src, dst = np.nonzero(sample)
         graph_sample = dgl.graph((src, dst))
         graph_list.append(dgl.add_self_loop(graph_sample))
         feature_sample = features[sample_number]
         feature_sample = feature_sample[0:graph_list[sample_number].num_nodes()]
         feature_sample = mx.nd.flatten(feature_sample)
-        numpy_debug = feature_sample.asnumpy()
         graph_list[sample_number].ndata['features_'] = feature_sample
         sample_number += 1
-    return graph_list, label
+    return graph_list, label, graph_data
 
 
 def print_data(data):
@@ -45,22 +57,28 @@ def print_data(data):
 
 
 if __name__ == "__main__":
+
     train_data = load_h5_files("./training_data_ford/train_gnn.h5")
     print_data(train_data)
-    train_graph, train_label = preprocess(train_data, 357)
+    # 357 samples
+    train_graph, train_label, train_graph_data = preprocess(train_data)
 
     test_data = load_h5_files("./training_data_ford/test_gnn.h5")
     print_data(test_data)
-    test_graph, test_label = preprocess(test_data, 40)
+    # 40 samples
+    test_graph, test_label, test_graph_data = preprocess(test_data)
 
     # Save Train data
     dgl.save_graphs("training_data_ford/train_graph", train_graph)
     train_data.close()
     with h5py.File("training_data_ford/train.h5", "w") as ofile:
         train_label = ofile.create_dataset('predictions_label', data=train_label)
+        train_graph_data = ofile.create_dataset('graph_data', data=train_graph_data)
 
     # Save Test data
     dgl.save_graphs("./training_data_ford/test_graph", test_graph)
     test_data.close()
     with h5py.File("training_data_ford/test.h5", "w") as ofile:
         test_label = ofile.create_dataset('predictions_label', data=test_label)
+        test_graph_data = ofile.create_dataset('graph_data', data=test_graph_data)
+
