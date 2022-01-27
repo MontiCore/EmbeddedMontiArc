@@ -3,7 +3,7 @@ package cNNCalculator;
 
 component Network<Z(2:oo) classes = 10>{
     ports in Z(0:255)^{1, 28, 28} data,
-         out Q(0:1)^{classes} softmax;
+         out Q(-oo:oo)^{classes} softmax;
 
     implementation CNN {
         data ->
@@ -11,7 +11,8 @@ component Network<Z(2:oo) classes = 10>{
             networkDir="../", 
             networkPrefix="model_0-", 
             numInputs=1, 
-            outputShape=10
+            outputShape=10,
+            trainable=true
         ) -> 
         softmax ->
 		softmax;
