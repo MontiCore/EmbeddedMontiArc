@@ -1,9 +1,9 @@
 <#-- (c) https://github.com/MontiCore/monticore -->
-                    if multi_graph:
-                        labels = [gluon.utils.split_and_load(batch.data[0], ctx_list=mx_context, even_split=False)]
-                    else:
-                        labels = [gluon.utils.split_and_load(batch.label[i], ctx_list=mx_context, even_split=False) for i in range(${tc.architectureOutputs?size?c})]
+                    labels = [gluon.utils.split_and_load(batch.label[i], ctx_list=mx_context, even_split=False) for i in range(${tc.architectureOutputs?size?c})]
 <#assign input_index = 0>
+<#if tc.architecture.useDgl>
+                    train_data_index = 0
+</#if>
 <#list tc.architectureInputs as input_name>
 <#if input_name?index == tc.architectureInputs?seq_index_of(input_name)>
 <#if tc.architecture.useDgl>
@@ -17,7 +17,11 @@
                         ${input_name} = train_graph
 <#else>
                     if multi_graph:
-                        ${input_name} = [graph_[0].ndata['${input_name}']]
+                        if '${input_name}' in graph_[0].ndata:
+                            ${input_name} = [graph_[0].ndata['${input_name}']]
+                        else:
+                            ${input_name} = gluon.utils.split_and_load(batch.data[train_data_index], ctx_list=mx_context, even_split=False)
+                            train_data_index += 1
                     else:
                         ${input_name} = gluon.utils.split_and_load(batch.data[${input_index}], ctx_list=mx_context, even_split=False)[0]
 <#assign input_index++>

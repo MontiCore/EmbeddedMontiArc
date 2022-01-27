@@ -1,9 +1,9 @@
 <#-- (c) https://github.com/MontiCore/monticore -->
-                    if multi_graph:
-                        labels = [batch.data[0].as_in_context(mx_context[0])]
-                    else:
-                        labels = [batch.label[i].as_in_context(mx_context[0]) for i in range(${tc.architectureOutputs?size?c})]
+                    labels = [batch.label[i].as_in_context(mx_context[0]) for i in range(${tc.architectureOutputs?size?c})]
 <#assign input_index = 0>
+<#if tc.architecture.useDgl>
+                    test_input_index = 0
+</#if>
 <#list tc.architectureInputs as input_name>
 <#if input_name?index == tc.architectureInputs?seq_index_of(input_name)>
 <#if tc.architecture.useDgl>
@@ -13,7 +13,11 @@
                     else:
                         ${input_name} = dgl.batch(test_graph[batch_size*test_batches:batch_size*(test_batches+1)])
 <#else>
-                    ${input_name} = graph_.ndata['${input_name}']
+                    if '${input_name}' in graph_.ndata:
+                        ${input_name} = graph_.ndata['${input_name}']
+                    else:
+                        ${input_name} = batch.data[test_input_index].as_in_context(mx_context[0])
+                        test_input_index += 1
 </#if>
 <#else>
                     ${input_name} = batch.data[${input_index}].as_in_context(mx_context[0])

@@ -74,7 +74,9 @@ class ${tc.fileNameWithoutEnding}:
                                            batch_size=batch_size,
                                            shuffle=shuffle)
         else:
-            train_iter = mx.io.NDArrayIter(data=train_label, batch_size=batch_size, last_batch_handle='discard')
+            if len(train_data) == 0:
+                train_data = train_label
+            train_iter = mx.io.NDArrayIter(data=train_data, label=train_label, batch_size=batch_size, last_batch_handle='discard')
         test_iter = None
 
         if test_h5 != None:
@@ -101,7 +103,9 @@ class ${tc.fileNameWithoutEnding}:
                                               label=test_label,
                                               batch_size=batch_size)
             else:
-                test_iter = mx.io.NDArrayIter(data=test_label, batch_size=batch_size, last_batch_handle='discard')
+                if len(test_data) == 0:
+                    test_label = test_data
+                test_iter = mx.io.NDArrayIter(data=test_data, label=test_label, batch_size=batch_size, last_batch_handle='discard')
         return train_iter, test_iter, data_mean, data_std, train_images, test_images, train_graph, test_graph
 
     def load_preprocessed_data(self, batch_size, preproc_lib, shuffle=False):
