@@ -13,21 +13,21 @@ fi
 # cd ./gluon-pretrained
 # rm -rf ./target
 # rm -rf ./model
-# java -jar ../embedded-montiarc-emadl-generator-0.5.3-SNAPSHOT-jar-with-dependencies.jar -m ./src/emadl/models/ -r cNNCalculator.Connector -o target -b GLUON -p /usr/bin/python3
+# java -jar ../embedded-montiarc-emadl-generator-0.5.5-SNAPSHOT-jar-with-dependencies.jar -m ./src/emadl/models/ -r cNNCalculator.Connector -o target -b GLUON -p /usr/bin/python3
 
 # cp ./model/cNNCalculator.Network/model_0_newest.onnx ../model_0-0000.onnx
 
 cd ./tensorflow-pretrained
 rm -rf ./target
 rm -rf ./model
-java -jar ../embedded-montiarc-emadl-generator-0.5.3-SNAPSHOT-jar-with-dependencies.jar -m ./src/emadl/models/ -r cNNCalculator.Connector -o target -b TENSORFLOW -c n -p /usr/bin/python3
+java -jar ../embedded-montiarc-emadl-generator-0.5.5-SNAPSHOT-jar-with-dependencies.jar -m ./src/emadl/models/ -r cNNCalculator.Connector -o target -b TENSORFLOW -c n -p /usr/bin/python3
 
 cp ./model/cNNCalculator.Network/model.onnx ../model_0-0000.onnx
 
 cd ../gluon-load
 rm -rf ./target
 rm -rf ./model
-java -jar ../embedded-montiarc-emadl-generator-0.5.3-SNAPSHOT-jar-with-dependencies.jar -m ./src/emadl/models/ -r cNNCalculator.Connector -o target -b GLUON -p /usr/bin/python3
+java -jar ../embedded-montiarc-emadl-generator-0.5.5-SNAPSHOT-jar-with-dependencies.jar -m ./src/emadl/models/ -r cNNCalculator.Connector -o target -b GLUON -p /usr/bin/python3
 
 rm -rf build
 mkdir build && cd build
