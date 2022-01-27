@@ -634,7 +634,9 @@ ${tc.include(networkInstruction.body, "ARCHITECTURE_DEFINITION")}
 
 
     def hybrid_forward(self, F, ${tc.join(tc.getStreamInputNames(networkInstruction.body, false), ", ")}):
+<#if networkInstruction.body.hasLossParameterizingElements()>
         loss_params = []
+</#if>
 <#if networkInstruction.body.episodicSubNetworks?has_content>
 <#list networkInstruction.body.episodicSubNetworks as elements>
 <#if elements?index == 0>
