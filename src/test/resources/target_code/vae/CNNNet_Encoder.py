@@ -576,53 +576,41 @@ class Net_0(gluon.HybridBlock):
             self.save_specific_params_list = []
             if data_mean:
                 assert(data_std)
-                self.input_normalization_data_0_ = ZScoreNormalization(data_mean=data_mean['data_0_'],
-                                                                               data_std=data_std['data_0_'])
+                self.input_normalization_data_ = ZScoreNormalization(data_mean=data_mean['data_'],
+                                                                               data_std=data_std['data_'])
             else:
-                self.input_normalization_data_0_ = NoNormalization()
+                self.input_normalization_data_ = NoNormalization()
 
-            self.fc1_ = gluon.nn.Dense(units=4, use_bias=False, flatten=True)
-            # fc1_, output shape: {[4,1,1]}
+            self.fc1_ = gluon.nn.Dense(units=400, use_bias=True, flatten=True)
+            # fc1_, output shape: {[400,1,1]}
 
-
-            pass
-
-
-    def hybrid_forward(self, F, data_0_):
-        data_0_ = self.input_normalization_data_0_(data_0_)
-        fc1_ = self.fc1_(data_0_)
-        softmax1_ = F.softmax(fc1_, axis=-1)
-        pred_0_ = F.identity(softmax1_)
-
-        return [[pred_0_]]
-#Stream 1
-
-
-
-class Net_1(gluon.HybridBlock):
-    def __init__(self, data_mean=None, data_std=None, mx_context=None, batch_size=None, **kwargs):
-        super(Net_1, self).__init__(**kwargs)
-        with self.name_scope():
-            self.save_specific_params_list = []
-            if data_mean:
-                assert(data_std)
-                self.input_normalization_data_1_ = ZScoreNormalization(data_mean=data_mean['data_1_'],
-                                                                               data_std=data_std['data_1_'])
-            else:
-                self.input_normalization_data_1_ = NoNormalization()
-
-            self.fc2_ = gluon.nn.Dense(units=4, use_bias=False, flatten=True)
+            self.fc2_ = gluon.nn.Dense(units=4, use_bias=True, flatten=True)
             # fc2_, output shape: {[4,1,1]}
 
 
+            self.reparameterize4_ = Reparameterize(shape=(2,), pdf='normal',)
+            self.loss_ctx_dict = { "loss":"kl_div_loss",
+                                    "values": { "pdf":'normal',
+                                                "shape": (2,)}}
+
+
             pass
 
 
-    def hybrid_forward(self, F, data_1_):
-        data_1_ = self.input_normalization_data_1_(data_1_)
-        fc2_ = self.fc2_(data_1_)
-        softmax2_ = F.softmax(fc2_, axis=-1)
-        pred_1_ = F.identity(softmax2_)
+    def hybrid_forward(self, F, data_):
+        loss_params = []
+        data_ = self.input_normalization_data_(data_)
+        fc1_ = self.fc1_(data_)
+        fc2_ = self.fc2_(fc1_)
 
-        return [[pred_1_]]
+        split2_ = F.split(fc2_, axis=1, num_outputs=2)
+        get3_1_ = split2_[0]
+        get3_2_ = split2_[1]
+        reparameterize4_ = self.reparameterize4_([get3_1_, get3_2_])
+        loss_params.append(get3_1_)
+        loss_params.append(get3_2_)
+
+        encoding_ = F.identity(reparameterize4_)
+
+        return [[encoding_], loss_params]
 

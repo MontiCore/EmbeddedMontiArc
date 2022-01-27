@@ -576,53 +576,33 @@ class Net_0(gluon.HybridBlock):
             self.save_specific_params_list = []
             if data_mean:
                 assert(data_std)
-                self.input_normalization_data_0_ = ZScoreNormalization(data_mean=data_mean['data_0_'],
-                                                                               data_std=data_std['data_0_'])
+                self.input_normalization_data_ = ZScoreNormalization(data_mean=data_mean['data_'],
+                                                                               data_std=data_std['data_'])
             else:
-                self.input_normalization_data_0_ = NoNormalization()
+                self.input_normalization_data_ = NoNormalization()
 
-            self.fc1_ = gluon.nn.Dense(units=4, use_bias=False, flatten=True)
-            # fc1_, output shape: {[4,1,1]}
+
+            self.vectorquantize1_ = VectorQuantize(batch_size=batch_size,
+                                                  num_embeddings=64,
+                                                  embedding_dim=1,
+                                                  input_shape=(batch_size,1,28,28),
+                                                  total_feature_maps_size=int(batch_size*1*28*28))
+            self.loss_ctx_dict = {"loss": "quantization_loss",
+                                  "values": { "beta":0.25,}}
+
 
 
             pass
 
 
-    def hybrid_forward(self, F, data_0_):
-        data_0_ = self.input_normalization_data_0_(data_0_)
-        fc1_ = self.fc1_(data_0_)
-        softmax1_ = F.softmax(fc1_, axis=-1)
-        pred_0_ = F.identity(softmax1_)
+    def hybrid_forward(self, F, data_):
+        loss_params = []
+        data_ = self.input_normalization_data_(data_)
+        vectorquantize1_ = self.vectorquantize1_(data_)
+        loss_params.append(data_)
+        loss_params.append(vectorquantize1_)
+        self.save_specific_params_list.append((self.vectorquantize1_.name,self.vectorquantize1_.collect_params()))
+        encoding_ = F.identity(vectorquantize1_)
 
-        return [[pred_0_]]
-#Stream 1
-
-
-
-class Net_1(gluon.HybridBlock):
-    def __init__(self, data_mean=None, data_std=None, mx_context=None, batch_size=None, **kwargs):
-        super(Net_1, self).__init__(**kwargs)
-        with self.name_scope():
-            self.save_specific_params_list = []
-            if data_mean:
-                assert(data_std)
-                self.input_normalization_data_1_ = ZScoreNormalization(data_mean=data_mean['data_1_'],
-                                                                               data_std=data_std['data_1_'])
-            else:
-                self.input_normalization_data_1_ = NoNormalization()
-
-            self.fc2_ = gluon.nn.Dense(units=4, use_bias=False, flatten=True)
-            # fc2_, output shape: {[4,1,1]}
-
-
-            pass
-
-
-    def hybrid_forward(self, F, data_1_):
-        data_1_ = self.input_normalization_data_1_(data_1_)
-        fc2_ = self.fc2_(data_1_)
-        softmax2_ = F.softmax(fc2_, axis=-1)
-        pred_1_ = F.identity(softmax2_)
-
-        return [[pred_1_]]
+        return [[encoding_], loss_params]
 

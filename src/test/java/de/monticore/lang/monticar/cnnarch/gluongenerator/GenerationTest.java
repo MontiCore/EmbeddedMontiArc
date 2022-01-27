@@ -241,21 +241,6 @@ public class GenerationTest extends AbstractSymtabTest {
     }
 
     @Test
-    public void testVAETestCnfGeneration() throws IOException {
-        Path modelPath = Paths.get("src/test/resources/valid_tests/vae.arc");
-        CNNTrain2Gluon trainGenerator = new CNNTrain2Gluon(rewardFunctionSourceGenerator);
-        trainGenerator.generate(modelPath, "VAETestNet");
-
-        assertTrue(Log.getFindings().isEmpty());
-        checkFilesAreEqual(
-                Paths.get("./target/generated-sources-cnnarch"),
-                Paths.get("./src/test/resources/target_code"),
-                Arrays.asList(
-                        "CNNTrainer_vaeTest.py",
-                        "CNNLAOptimizer_vaeTest.h"));
-    }
-
-    @Test
     public void testReinforcementConfig2() {
         Path modelPath = Paths.get("src/test/resources/valid_tests");
         CNNTrain2Gluon trainGenerator = new CNNTrain2Gluon(rewardFunctionSourceGenerator);
@@ -487,43 +472,41 @@ public class GenerationTest extends AbstractSymtabTest {
         trainGenerator.generate(modelPath, "Decoder", decoderArchitecture, encoderArchitecture);
 
         assertTrue(Log.getFindings().stream().noneMatch(Finding::isError));
-        /*checkFilesAreEqual(
+        checkFilesAreEqual(
                 Paths.get("target/generated-sources-cnnarch"),
-                Paths.get("src/test/resources/target_code"),
+                Paths.get("src/test/resources/target_code/vae"),
                 Arrays.asList(
-                        "CNNAutoencoder_decoder.py",
-                        "CNNCreator_decoder.py",
+                        "CNNAutoencoderTrainer_Encoder.py",
                         "CNNCreator_Encoder.py",
-                        "CNNNet_decoder.py",
-                        "CNNNet_Encoder.py"));
+                        "CNNNet_Encoder.py",
+                        "CNNTrainer_decoder.py"));
 
-         */
     }
 
     @Test
     public void testVQVAETestNetGeneration() throws IOException, TemplateException {
 
         Log.getFindings().clear();
-        Path modelPath = Paths.get("src/test/resources/valid_tests/vae");
+        Path modelPath = Paths.get("src/test/resources/valid_tests/vqvae");
         CNNTrain2Gluon trainGenerator = new CNNTrain2Gluon(rewardFunctionSourceGenerator);
         ArchitectureAdapter encoderArchitecture = NNArchitectureMockFactory.createArchitectureSymbolByCNNArchModel(
-                Paths.get("./src/test/resources/valid_tests/vae/arc"), "Encoder");
+                Paths.get("./src/test/resources/valid_tests/vqvae/arc"), "Encoder");
         ArchitectureAdapter decoderArchitecture = NNArchitectureMockFactory.createArchitectureSymbolByCNNArchModel(
-                Paths.get("./src/test/resources/valid_tests/vae/arc"), "VQDecoder");
+                Paths.get("./src/test/resources/valid_tests/vqvae/arc"), "Decoder");
 
-        trainGenerator.generate(modelPath, "VQDecoder", decoderArchitecture, encoderArchitecture);
+        trainGenerator.generate(modelPath, "Decoder", decoderArchitecture, encoderArchitecture);
 
         assertTrue(Log.getFindings().stream().noneMatch(Finding::isError));
-
-        /*checkFilesAreEqual(
+        checkFilesAreEqual(
                 Paths.get("target/generated-sources-cnnarch"),
-                Paths.get("src/test/resources/target_code"),
+                Paths.get("src/test/resources/target_code/vqvae"),
                 Arrays.asList(
-                        "CNNAutoencoder_decoder.py",
-                        "CNNCreator_decoder.py",
-                        "CNNNet_decoder.py"));
+                        "CNNAutoencoderTrainer_Encoder.py",
+                        "CNNCreator_Encoder.py",
+                        "CNNNet_Encoder.py",
+                        "CNNTrainer_decoder.py"));
 
-         */
+
     }
 
 
