@@ -14,6 +14,15 @@
         <project.reporting.outputEncoding>UTF-8</project.reporting.outputEncoding>
     </properties>
 
+    <dependencies>
+        <dependency>
+            <groupId>de.monticore.lang.monticar.datasets</groupId>
+            <artifactId>ford</artifactId>
+            <version>1</version>
+            <classifier>dataset</classifier>
+        </dependency>
+    </dependencies>
+
     <build>
         <plugins>
             <plugin>
@@ -34,5 +43,22 @@
            </plugin>
         </plugins>
     </build>
+    <repositories>
+      <repository>
+        <id>gitlab-maven</id>
+        <url>https://git.rwth-aachen.de/api/v4/projects/57999/packages/maven</url>
+      </repository>
+    </repositories>
 
+    <distributionManagement>
+      <repository>
+        <id>gitlab-maven</id>
+        <url>https://git.rwth-aachen.de/api/v4/projects/57999/packages/maven</url>
+      </repository>
+
+      <snapshotRepository>
+        <id>gitlab-maven</id>
+        <url>https://git.rwth-aachen.de/api/v4/projects/57999/packages/maven</url>
+      </snapshotRepository>
+    </distributionManagement>
 </project>
