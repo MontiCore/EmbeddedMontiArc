@@ -13,104 +13,11 @@
   </component>
   <component name="ChangeListManager">
     <list default="true" id="4f845328-01ce-4096-9f7b-4f8a4ee27d10" name="Default Changelist" comment="Add test project for HPC">
-      <change beforePath="$PROJECT_DIR$/beta-vae/pre-trained/model/vae.Decoder/model_0-0000.params" beforeDir="false" />
-      <change beforePath="$PROJECT_DIR$/beta-vae/pre-trained/model/vae.Decoder/model_0-0004.params" beforeDir="false" />
-      <change beforePath="$PROJECT_DIR$/beta-vae/pre-trained/model/vae.Decoder/model_0-0009.params" beforeDir="false" />
-      <change beforePath="$PROJECT_DIR$/beta-vae/pre-trained/model/vae.Decoder/model_0-0014.params" beforeDir="false" />
-      <change beforePath="$PROJECT_DIR$/beta-vae/pre-trained/model/vae.Decoder/model_0-symbol.json" beforeDir="false" />
-      <change beforePath="$PROJECT_DIR$/beta-vae/pre-trained/model/vae.Encoder/model_0-0000.params" beforeDir="false" />
-      <change beforePath="$PROJECT_DIR$/beta-vae/pre-trained/model/vae.Encoder/model_0-0004.params" beforeDir="false" />
-      <change beforePath="$PROJECT_DIR$/beta-vae/pre-trained/model/vae.Encoder/model_0-0009.params" beforeDir="false" />
-      <change beforePath="$PROJECT_DIR$/beta-vae/pre-trained/model/vae.Encoder/model_0-0014.params" beforeDir="false" />
-      <change beforePath="$PROJECT_DIR$/beta-vae/pre-trained/model/vae.Encoder/model_0-symbol.json" beforeDir="false" />
-      <change beforePath="$PROJECT_DIR$/conditional-vae/pre-trained/model/cvae.Decoder/model_0-0000.params" beforeDir="false" />
-      <change beforePath="$PROJECT_DIR$/conditional-vae/pre-trained/model/cvae.Decoder/model_0-0004.params" beforeDir="false" />
-      <change beforePath="$PROJECT_DIR$/conditional-vae/pre-trained/model/cvae.Decoder/model_0-0009.params" beforeDir="false" />
-      <change beforePath="$PROJECT_DIR$/conditional-vae/pre-trained/model/cvae.Decoder/model_0-0014.params" beforeDir="false" />
-      <change beforePath="$PROJECT_DIR$/conditional-vae/pre-trained/model/cvae.Decoder/model_0-symbol.json" beforeDir="false" />
-      <change beforePath="$PROJECT_DIR$/conditional-vae/pre-trained/model/cvae.Encoder/model_0-0000.params" beforeDir="false" />
-      <change beforePath="$PROJECT_DIR$/conditional-vae/pre-trained/model/cvae.Encoder/model_0-0004.params" beforeDir="false" />
-      <change beforePath="$PROJECT_DIR$/conditional-vae/pre-trained/model/cvae.Encoder/model_0-0009.params" beforeDir="false" />
-      <change beforePath="$PROJECT_DIR$/conditional-vae/pre-trained/model/cvae.Encoder/model_0-0014.params" beforeDir="false" />
-      <change beforePath="$PROJECT_DIR$/conditional-vae/pre-trained/model/cvae.Encoder/model_0-symbol.json" beforeDir="false" />
-      <change beforePath="$PROJECT_DIR$/standard-vae/pre-trained/model/vae.Decoder/model_0-0000.params" beforeDir="false" />
-      <change beforePath="$PROJECT_DIR$/standard-vae/pre-trained/model/vae.Decoder/model_0-0004.params" beforeDir="false" />
-      <change beforePath="$PROJECT_DIR$/standard-vae/pre-trained/model/vae.Decoder/model_0-0009.params" beforeDir="false" />
-      <change beforePath="$PROJECT_DIR$/standard-vae/pre-trained/model/vae.Decoder/model_0-0014.params" beforeDir="false" />
-      <change beforePath="$PROJECT_DIR$/standard-vae/pre-trained/model/vae.Decoder/model_0-symbol.json" beforeDir="false" />
-      <change beforePath="$PROJECT_DIR$/standard-vae/pre-trained/model/vae.Encoder/model_0-0000.params" beforeDir="false" />
-      <change beforePath="$PROJECT_DIR$/standard-vae/pre-trained/model/vae.Encoder/model_0-0004.params" beforeDir="false" />
-      <change beforePath="$PROJECT_DIR$/standard-vae/pre-trained/model/vae.Encoder/model_0-0009.params" beforeDir="false" />
-      <change beforePath="$PROJECT_DIR$/standard-vae/pre-trained/model/vae.Encoder/model_0-0014.params" beforeDir="false" />
-      <change beforePath="$PROJECT_DIR$/standard-vae/pre-trained/model/vae.Encoder/model_0-symbol.json" beforeDir="false" />
-      <change beforePath="$PROJECT_DIR$/standard-vae/target/basiclibrary/de/monticore/lang/monticar/semantics/library/arithmetic/Add.emam" beforeDir="false" />
-      <change beforePath="$PROJECT_DIR$/standard-vae/target/basiclibrary/de/monticore/lang/monticar/semantics/library/arithmetic/Constant.emam" beforeDir="false" />
-      <change beforePath="$PROJECT_DIR$/standard-vae/target/basiclibrary/de/monticore/lang/monticar/semantics/library/arithmetic/Division.emam" beforeDir="false" />
-      <change beforePath="$PROJECT_DIR$/standard-vae/target/basiclibrary/de/monticore/lang/monticar/semantics/library/arithmetic/Gain.emam" beforeDir="false" />
-      <change beforePath="$PROJECT_DIR$/standard-vae/target/basiclibrary/de/monticore/lang/monticar/semantics/library/arithmetic/Max.emam" beforeDir="false" />
-      <change beforePath="$PROJECT_DIR$/standard-vae/target/basiclibrary/de/monticore/lang/monticar/semantics/library/arithmetic/Min.emam" beforeDir="false" />
-      <change beforePath="$PROJECT_DIR$/standard-vae/target/basiclibrary/de/monticore/lang/monticar/semantics/library/arithmetic/Mod.emam" beforeDir="false" />
-      <change beforePath="$PROJECT_DIR$/standard-vae/target/basiclibrary/de/monticore/lang/monticar/semantics/library/arithmetic/Multiplication.emam" beforeDir="false" />
-      <change beforePath="$PROJECT_DIR$/standard-vae/target/basiclibrary/de/monticore/lang/monticar/semantics/library/arithmetic/Saturation.emam" beforeDir="false" />
-      <change beforePath="$PROJECT_DIR$/standard-vae/target/basiclibrary/de/monticore/lang/monticar/semantics/library/arithmetic/Subtract.emam" beforeDir="false" />
-      <change beforePath="$PROJECT_DIR$/standard-vae/target/basiclibrary/de/monticore/lang/monticar/semantics/library/basicLibrary/Delay.emam" beforeDir="false" />
-      <change beforePath="$PROJECT_DIR$/standard-vae/target/basiclibrary/de/monticore/lang/monticar/semantics/library/basicLibrary/LookUp.emam" beforeDir="false" />
-      <change beforePath="$PROJECT_DIR$/standard-vae/target/basiclibrary/de/monticore/lang/monticar/semantics/library/differential/Derivative.emam" beforeDir="false" />
-      <change beforePath="$PROJECT_DIR$/standard-vae/target/basiclibrary/de/monticore/lang/monticar/semantics/library/differential/Integrator.emam" beforeDir="false" />
-      <change beforePath="$PROJECT_DIR$/standard-vae/target/basiclibrary/de/monticore/lang/monticar/semantics/library/logic/And.emam" beforeDir="false" />
-      <change beforePath="$PROJECT_DIR$/standard-vae/target/basiclibrary/de/monticore/lang/monticar/semantics/library/logic/Equals.emam" beforeDir="false" />
-      <change beforePath="$PROJECT_DIR$/standard-vae/target/basiclibrary/de/monticore/lang/monticar/semantics/library/logic/Greater.emam" beforeDir="false" />
-      <change beforePath="$PROJECT_DIR$/standard-vae/target/basiclibrary/de/monticore/lang/monticar/semantics/library/logic/GreaterEquals.emam" beforeDir="false" />
-      <change beforePath="$PROJECT_DIR$/standard-vae/target/basiclibrary/de/monticore/lang/monticar/semantics/library/logic/Less.emam" beforeDir="false" />
-      <change beforePath="$PROJECT_DIR$/standard-vae/target/basiclibrary/de/monticore/lang/monticar/semantics/library/logic/LessEquals.emam" beforeDir="false" />
-      <change beforePath="$PROJECT_DIR$/standard-vae/target/basiclibrary/de/monticore/lang/monticar/semantics/library/logic/Not.emam" beforeDir="false" />
-      <change beforePath="$PROJECT_DIR$/standard-vae/target/basiclibrary/de/monticore/lang/monticar/semantics/library/logic/Or.emam" beforeDir="false" />
-      <change beforePath="$PROJECT_DIR$/standard-vae/target/basiclibrary/de/monticore/lang/monticar/semantics/library/logic/Switch.emam" beforeDir="false" />
-      <change beforePath="$PROJECT_DIR$/standard-vae/target/tmp/cpp/vae.Connector/AdaNet/AdaNetConfig.py" beforeDir="false" />
-      <change beforePath="$PROJECT_DIR$/standard-vae/target/tmp/cpp/vae.Connector/AdaNet/AdaNetDefault.py" beforeDir="false" />
-      <change beforePath="$PROJECT_DIR$/standard-vae/target/tmp/cpp/vae.Connector/AdaNet/CoreAdaNet.py" beforeDir="false" />
-      <change beforePath="$PROJECT_DIR$/standard-vae/target/tmp/cpp/vae.Connector/AdaNet/adaNetUtils.py" beforeDir="false" />
-      <change beforePath="$PROJECT_DIR$/standard-vae/target/tmp/cpp/vae.Connector/AdaNet/adanet.py" beforeDir="false" />
-      <change beforePath="$PROJECT_DIR$/standard-vae/target/tmp/cpp/vae.Connector/CMakeLists.txt" beforeDir="false" />
-      <change beforePath="$PROJECT_DIR$/standard-vae/target/tmp/cpp/vae.Connector/HelperA.h" beforeDir="false" />
-      <change beforePath="$PROJECT_DIR$/standard-vae/target/tmp/cpp/vae.Connector/cmake/FindArmadillo.cmake" beforeDir="false" />
-      <change beforePath="$PROJECT_DIR$/standard-vae/target/tmp/cpp/vae.Connector/main.cpp" beforeDir="false" />
-      <change beforePath="$PROJECT_DIR$/standard-vae/target/tmp/cpp/vae.Connector/reporting/existingComponents.txt" beforeDir="false" />
-      <change beforePath="$PROJECT_DIR$/standard-vae/target/tmp/cpp/vae.Connector/reporting/existingStreams.txt" beforeDir="false" />
-      <change beforePath="$PROJECT_DIR$/standard-vae/target/tmp/cpp/vae.Connector/reporting/testComponents.txt" beforeDir="false" />
-      <change beforePath="$PROJECT_DIR$/standard-vae/target/tmp/cpp/vae.Connector/schemas/DDPG.scm" beforeDir="false" />
-      <change beforePath="$PROJECT_DIR$/standard-vae/target/tmp/cpp/vae.Connector/schemas/DQN.scm" beforeDir="false" />
-      <change beforePath="$PROJECT_DIR$/standard-vae/target/tmp/cpp/vae.Connector/schemas/Environment.scm" beforeDir="false" />
-      <change beforePath="$PROJECT_DIR$/standard-vae/target/tmp/cpp/vae.Connector/schemas/EvalMetric.scm" beforeDir="false" />
-      <change beforePath="$PROJECT_DIR$/standard-vae/target/tmp/cpp/vae.Connector/schemas/GAN.scm" beforeDir="false" />
-      <change beforePath="$PROJECT_DIR$/standard-vae/target/tmp/cpp/vae.Connector/schemas/General.scm" beforeDir="false" />
-      <change beforePath="$PROJECT_DIR$/standard-vae/target/tmp/cpp/vae.Connector/schemas/Loss.scm" beforeDir="false" />
-      <change beforePath="$PROJECT_DIR$/standard-vae/target/tmp/cpp/vae.Connector/schemas/NoiseDistribution.scm" beforeDir="false" />
-      <change beforePath="$PROJECT_DIR$/standard-vae/target/tmp/cpp/vae.Connector/schemas/Optimizer.scm" beforeDir="false" />
-      <change beforePath="$PROJECT_DIR$/standard-vae/target/tmp/cpp/vae.Connector/schemas/Reinforcement.scm" beforeDir="false" />
-      <change beforePath="$PROJECT_DIR$/standard-vae/target/tmp/cpp/vae.Connector/schemas/ReplayMemory.scm" beforeDir="false" />
-      <change beforePath="$PROJECT_DIR$/standard-vae/target/tmp/cpp/vae.Connector/schemas/Supervised.scm" beforeDir="false" />
-      <change beforePath="$PROJECT_DIR$/standard-vae/target/tmp/cpp/vae.Connector/schemas/TD3.scm" beforeDir="false" />
-      <change beforePath="$PROJECT_DIR$/standard-vae/target/tmp/cpp/vae.Connector/test/tests_main.cpp" beforeDir="false" />
-      <change beforePath="$PROJECT_DIR$/standard-vae/target/tmp/cpp/vae.Connector/vae_connector.cpp" beforeDir="false" />
-      <change beforePath="$PROJECT_DIR$/standard-vae/target/tmp/cpp/vae.Connector/vae_connector.h" beforeDir="false" />
-      <change beforePath="$PROJECT_DIR$/standard-vae/target/tmp/cpp/vae.Connector/vae_connector_decoder.h" beforeDir="false" />
-      <change beforePath="$PROJECT_DIR$/standard-vae/target/tmp/emam/vae/Connector.emadl" beforeDir="false" />
-      <change beforePath="$PROJECT_DIR$/standard-vae/target/tmp/emam/vae/Decoder.conf" beforeDir="false" />
-      <change beforePath="$PROJECT_DIR$/standard-vae/target/tmp/emam/vae/Decoder.emadl" beforeDir="false" />
-      <change beforePath="$PROJECT_DIR$/standard-vae/target/tmp/emam/vae/Decoder.tag" beforeDir="false" />
-      <change beforePath="$PROJECT_DIR$/standard-vae/target/tmp/emam/vae/Encoder.emadl" beforeDir="false" />
-      <change beforePath="$PROJECT_DIR$/standard-vae/target/tmp/mojo/streamtest-generator.log" beforeDir="false" />
-      <change beforePath="$PROJECT_DIR$/vq-vae/pre-trained/model/vqvae.Decoder/model_0-0000.params" beforeDir="false" />
-      <change beforePath="$PROJECT_DIR$/vq-vae/pre-trained/model/vqvae.Decoder/model_0-0004.params" beforeDir="false" />
-      <change beforePath="$PROJECT_DIR$/vq-vae/pre-trained/model/vqvae.Decoder/model_0-0009.params" beforeDir="false" />
-      <change beforePath="$PROJECT_DIR$/vq-vae/pre-trained/model/vqvae.Decoder/model_0-0014.params" beforeDir="false" />
-      <change beforePath="$PROJECT_DIR$/vq-vae/pre-trained/model/vqvae.Decoder/model_0-symbol.json" beforeDir="false" />
-      <change beforePath="$PROJECT_DIR$/vq-vae/pre-trained/model/vqvae.Encoder/model_0-0000.params" beforeDir="false" />
-      <change beforePath="$PROJECT_DIR$/vq-vae/pre-trained/model/vqvae.Encoder/model_0-0004.params" beforeDir="false" />
-      <change beforePath="$PROJECT_DIR$/vq-vae/pre-trained/model/vqvae.Encoder/model_0-0009.params" beforeDir="false" />
-      <change beforePath="$PROJECT_DIR$/vq-vae/pre-trained/model/vqvae.Encoder/model_0-0014.params" beforeDir="false" />
-      <change beforePath="$PROJECT_DIR$/vq-vae/pre-trained/model/vqvae.Encoder/model_0-symbol.json" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/.idea/workspace.xml" beforeDir="false" afterPath="$PROJECT_DIR$/.idea/workspace.xml" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/beta-vae/training/src/main/emadl/bvae/Decoder.conf" beforeDir="false" afterPath="$PROJECT_DIR$/beta-vae/training/src/main/emadl/bvae/Decoder.conf" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/conditional-vae/training/src/main/emadl/cvae/Decoder.conf" beforeDir="false" afterPath="$PROJECT_DIR$/conditional-vae/training/src/main/emadl/cvae/Decoder.conf" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/standard-vae/training/src/main/emadl/vae/Decoder.conf" beforeDir="false" afterPath="$PROJECT_DIR$/standard-vae/training/src/main/emadl/vae/Decoder.conf" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/vq-vae/training/src/main/emadl/vqvae/Decoder.conf" beforeDir="false" afterPath="$PROJECT_DIR$/vq-vae/training/src/main/emadl/vqvae/Decoder.conf" afterDir="false" />
     </list>
     <option name="SHOW_DIALOG" value="false" />
     <option name="HIGHLIGHT_CONFLICTS" value="true" />
@@ -447,7 +354,7 @@
       <workItem from="1638452559335" duration="595000" />
       <workItem from="1638527152374" duration="3006000" />
       <workItem from="1643286123359" duration="3807000" />
-      <workItem from="1643461471180" duration="8543000" />
+      <workItem from="1643461471180" duration="8811000" />
     </task>
     <task id="LOCAL-00001" summary="Add test project for HPC">
       <created>1638527405190</created>
