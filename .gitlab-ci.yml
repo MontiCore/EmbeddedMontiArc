@@ -1,31 +1,76 @@
 # (c) https://github.com/MontiCore/monticore
 stages:
-  - docker
-  - jar
-  - linux
-  
+  - build
+  - test
 
-TestJarVAE:
-  stage: jar
-  image: registry.git.rwth-aachen.de/monticore/embeddedmontiarc/generators/emadl2cpp/dockerimages/mxnet170:v0.0.1
-  allow_failure: true
-  script:
-    - mv /mxnet/build/libmxnet.so /mxnet/build/libmxnet.a /usr/lib/
-    - ./build.sh
-
-
-TestApplicationVAE:
-  stage: linux
-  image: registry.git.rwth-aachen.de/monticore/embeddedmontiarc/generators/emadl2cpp/dockerimages/mxnet170:v0.0.1
-  allow_failure: true
-  script:
-    - mv /mxnet/build/libmxnet.so /mxnet/build/libmxnet.a /usr/lib/
-    - python3 mnistVAE.py
-
-TestEMADLMavenPlugin:
-  stage: linux
+TestBuildVAE:
+  stage: build
   image: registry.git.rwth-aachen.de/monticore/embeddedmontiarc/generators/emadl2cpp/dockerimages/mxnet170:v0.0.1
   allow_failure: true
   script:
   - mv /mxnet/build/libmxnet.so /mxnet/build/libmxnet.a /usr/lib/
+  - cd standard-vae
   - mvn dependency:resolve emadl:train -s settings.xml
+
+TestBuildBetaVAE:
+  stage: build
+  image: registry.git.rwth-aachen.de/monticore/embeddedmontiarc/generators/emadl2cpp/dockerimages/mxnet170:v0.0.1
+  allow_failure: true
+  script:
+  - mv /mxnet/build/libmxnet.so /mxnet/build/libmxnet.a /usr/lib/
+  - cd beta-vae
+  - mvn dependency:resolve emadl:train -s settings.xml
+
+TestBuildCVAE:
+  stage: build
+  image: registry.git.rwth-aachen.de/monticore/embeddedmontiarc/generators/emadl2cpp/dockerimages/mxnet170:v0.0.1
+  allow_failure: true
+  script:
+  - mv /mxnet/build/libmxnet.so /mxnet/build/libmxnet.a /usr/lib/
+  - cd conditional-vae
+  - mvn dependency:resolve emadl:train -s settings.xml
+
+TestBuildVQVAE:
+  stage: build
+  image: registry.git.rwth-aachen.de/monticore/embeddedmontiarc/generators/emadl2cpp/dockerimages/mxnet170:v0.0.1
+  allow_failure: true
+  script:
+  - mv /mxnet/build/libmxnet.so /mxnet/build/libmxnet.a /usr/lib/
+  - cd vq-vae
+  - mvn dependency:resolve emadl:train -s settings.xml
+
+TestPretrainedVAE:
+  stage: test
+  image: registry.git.rwth-aachen.de/monticore/embeddedmontiarc/generators/emadl2cpp/dockerimages/mxnet170:v0.0.1
+  allow_failure: true
+  script:
+    - mv /mxnet/build/libmxnet.so /mxnet/build/libmxnet.a /usr/lib/
+    - cd standard-vae/pre-trained
+    - python3 mnistVAE.py
+
+TestPretrainedBetaVAE:
+  stage: test
+  image: registry.git.rwth-aachen.de/monticore/embeddedmontiarc/generators/emadl2cpp/dockerimages/mxnet170:v0.0.1
+  allow_failure: true
+  script:
+    - mv /mxnet/build/libmxnet.so /mxnet/build/libmxnet.a /usr/lib/
+    - cd beta-vae/pre-trained
+    - python3 mnistVAE.py
+
+TestPretrainedCVAE:
+  stage: test
+  image: registry.git.rwth-aachen.de/monticore/embeddedmontiarc/generators/emadl2cpp/dockerimages/mxnet170:v0.0.1
+  allow_failure: true
+  script:
+    - mv /mxnet/build/libmxnet.so /mxnet/build/libmxnet.a /usr/lib/
+    - cd conditional-vae/pre-trained
+    - python3 mnistVAE.py
+
+TestPretrainedVQVAE:
+  stage: test
+  image: registry.git.rwth-aachen.de/monticore/embeddedmontiarc/generators/emadl2cpp/dockerimages/mxnet170:v0.0.1
+  allow_failure: true
+  script:
+    - mv /mxnet/build/libmxnet.so /mxnet/build/libmxnet.a /usr/lib/
+    - cd vq-vae/pre-trained
+    - python3 mnistVAE.py

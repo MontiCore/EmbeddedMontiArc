@@ -1,0 +1,16 @@
+/* (c) https://github.com/MontiCore/monticore */
+package de.monticore.lang.monticar.semantics.library.logic;
+
+component Or<T,N1 n=2> {
+	port 
+		in B input[n],
+		out B output;
+
+	implementation Math{
+	    T outVal=input(1);
+	    for i=1:n
+	        outVal=or(outVal,input(i));
+	    end
+	    output=outVal;
+	}
+}

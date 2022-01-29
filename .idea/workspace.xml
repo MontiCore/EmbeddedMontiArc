@@ -12,8 +12,290 @@
     </configurations>
   </component>
   <component name="ChangeListManager">
-    <list default="true" id="4f845328-01ce-4096-9f7b-4f8a4ee27d10" name="Default Changelist" comment="">
+    <list default="true" id="4f845328-01ce-4096-9f7b-4f8a4ee27d10" name="Default Changelist" comment="Add test project for HPC">
+      <change afterPath="$PROJECT_DIR$/.idea/misc.xml" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/.idea/mnist-vae.iml" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/.idea/modules.xml" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/beta-vae/pom.xml" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/beta-vae/pre-trained/model/vae.Decoder/model_0-0000.params" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/beta-vae/pre-trained/model/vae.Decoder/model_0-0004.params" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/beta-vae/pre-trained/model/vae.Decoder/model_0-0009.params" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/beta-vae/pre-trained/model/vae.Decoder/model_0-0014.params" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/beta-vae/pre-trained/model/vae.Decoder/model_0_newest-0015.params" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/beta-vae/pre-trained/model/vae.Encoder/model_0-0000.params" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/beta-vae/pre-trained/model/vae.Encoder/model_0-0004.params" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/beta-vae/pre-trained/model/vae.Encoder/model_0-0009.params" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/beta-vae/pre-trained/model/vae.Encoder/model_0-0014.params" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/beta-vae/pre-trained/model/vae.Encoder/model_0_newest-0015.params" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/beta-vae/settings.xml" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/beta-vae/training/src/main/emadl/bvae/Connector.emadl" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/beta-vae/training/src/main/emadl/bvae/Decoder.tag" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/conditional-vae/pom.xml" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/conditional-vae/pre-trained/mnistVAE.py" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/conditional-vae/pre-trained/model/cvae.Decoder/model_0-0000.params" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/conditional-vae/pre-trained/model/cvae.Decoder/model_0-0004.params" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/conditional-vae/pre-trained/model/cvae.Decoder/model_0-0009.params" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/conditional-vae/pre-trained/model/cvae.Decoder/model_0-0014.params" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/conditional-vae/pre-trained/model/cvae.Decoder/model_0-symbol.json" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/conditional-vae/pre-trained/model/cvae.Decoder/model_0_newest-0015.params" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/conditional-vae/pre-trained/model/cvae.Decoder/model_0_newest-symbol.json" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/conditional-vae/pre-trained/model/cvae.Encoder/model_0-0000.params" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/conditional-vae/pre-trained/model/cvae.Encoder/model_0-0004.params" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/conditional-vae/pre-trained/model/cvae.Encoder/model_0-0009.params" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/conditional-vae/pre-trained/model/cvae.Encoder/model_0-0014.params" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/conditional-vae/pre-trained/model/cvae.Encoder/model_0_newest-0015.params" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/conditional-vae/pre-trained/model/cvae.Encoder/model_0_newest-symbol.json" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/conditional-vae/settings.xml" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/conditional-vae/training/src/main/emadl/cvae/Connector.emadl" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/conditional-vae/training/src/main/emadl/cvae/Decoder.conf" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/conditional-vae/training/src/main/emadl/cvae/Decoder.emadl" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/conditional-vae/training/src/main/emadl/cvae/Decoder.tag" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/conditional-vae/training/src/main/emadl/cvae/Encoder.emadl" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/standard-vae/gluon/src/main/emadl/vae/Connector.emadl" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/standard-vae/gluon/src/main/emadl/vae/Decoder.conf" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/standard-vae/gluon/src/main/emadl/vae/Decoder.emadl" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/standard-vae/gluon/src/main/emadl/vae/Decoder.tag" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/standard-vae/gluon/src/main/emadl/vae/Encoder.emadl" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/standard-vae/pom.xml" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/standard-vae/pre-trained/mnistVAE.py" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/standard-vae/pre-trained/model/vae.Decoder/model_0-0000.params" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/standard-vae/pre-trained/model/vae.Decoder/model_0-0004.params" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/standard-vae/pre-trained/model/vae.Decoder/model_0-0009.params" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/standard-vae/pre-trained/model/vae.Decoder/model_0-0014.params" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/standard-vae/pre-trained/model/vae.Decoder/model_0-symbol.json" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/standard-vae/pre-trained/model/vae.Decoder/model_0_newest-0015.params" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/standard-vae/pre-trained/model/vae.Decoder/model_0_newest-symbol.json" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/standard-vae/pre-trained/model/vae.Encoder/model_0-0000.params" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/standard-vae/pre-trained/model/vae.Encoder/model_0-0004.params" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/standard-vae/pre-trained/model/vae.Encoder/model_0-0009.params" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/standard-vae/pre-trained/model/vae.Encoder/model_0-0014.params" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/standard-vae/pre-trained/model/vae.Encoder/model_0-symbol.json" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/standard-vae/pre-trained/model/vae.Encoder/model_0_newest-0015.params" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/standard-vae/pre-trained/model/vae.Encoder/model_0_newest-symbol.json" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/standard-vae/settings.xml" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/standard-vae/target/basiclibrary/de/monticore/lang/monticar/semantics/library/arithmetic/Add.emam" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/standard-vae/target/basiclibrary/de/monticore/lang/monticar/semantics/library/arithmetic/Constant.emam" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/standard-vae/target/basiclibrary/de/monticore/lang/monticar/semantics/library/arithmetic/Division.emam" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/standard-vae/target/basiclibrary/de/monticore/lang/monticar/semantics/library/arithmetic/Gain.emam" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/standard-vae/target/basiclibrary/de/monticore/lang/monticar/semantics/library/arithmetic/Max.emam" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/standard-vae/target/basiclibrary/de/monticore/lang/monticar/semantics/library/arithmetic/Min.emam" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/standard-vae/target/basiclibrary/de/monticore/lang/monticar/semantics/library/arithmetic/Mod.emam" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/standard-vae/target/basiclibrary/de/monticore/lang/monticar/semantics/library/arithmetic/Multiplication.emam" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/standard-vae/target/basiclibrary/de/monticore/lang/monticar/semantics/library/arithmetic/Saturation.emam" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/standard-vae/target/basiclibrary/de/monticore/lang/monticar/semantics/library/arithmetic/Subtract.emam" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/standard-vae/target/basiclibrary/de/monticore/lang/monticar/semantics/library/basicLibrary/Delay.emam" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/standard-vae/target/basiclibrary/de/monticore/lang/monticar/semantics/library/basicLibrary/LookUp.emam" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/standard-vae/target/basiclibrary/de/monticore/lang/monticar/semantics/library/differential/Derivative.emam" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/standard-vae/target/basiclibrary/de/monticore/lang/monticar/semantics/library/differential/Integrator.emam" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/standard-vae/target/basiclibrary/de/monticore/lang/monticar/semantics/library/logic/And.emam" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/standard-vae/target/basiclibrary/de/monticore/lang/monticar/semantics/library/logic/Equals.emam" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/standard-vae/target/basiclibrary/de/monticore/lang/monticar/semantics/library/logic/Greater.emam" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/standard-vae/target/basiclibrary/de/monticore/lang/monticar/semantics/library/logic/GreaterEquals.emam" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/standard-vae/target/basiclibrary/de/monticore/lang/monticar/semantics/library/logic/Less.emam" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/standard-vae/target/basiclibrary/de/monticore/lang/monticar/semantics/library/logic/LessEquals.emam" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/standard-vae/target/basiclibrary/de/monticore/lang/monticar/semantics/library/logic/Not.emam" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/standard-vae/target/basiclibrary/de/monticore/lang/monticar/semantics/library/logic/Or.emam" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/standard-vae/target/basiclibrary/de/monticore/lang/monticar/semantics/library/logic/Switch.emam" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/standard-vae/target/tmp/cpp/vae.Connector/AdaNet/AdaNetConfig.py" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/standard-vae/target/tmp/cpp/vae.Connector/AdaNet/AdaNetDefault.py" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/standard-vae/target/tmp/cpp/vae.Connector/AdaNet/CoreAdaNet.py" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/standard-vae/target/tmp/cpp/vae.Connector/AdaNet/adaNetUtils.py" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/standard-vae/target/tmp/cpp/vae.Connector/AdaNet/adanet.py" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/standard-vae/target/tmp/cpp/vae.Connector/cmake/FindArmadillo.cmake" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/standard-vae/target/tmp/cpp/vae.Connector/main.cpp" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/standard-vae/target/tmp/cpp/vae.Connector/reporting/existingComponents.txt" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/standard-vae/target/tmp/cpp/vae.Connector/reporting/existingStreams.txt" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/standard-vae/target/tmp/cpp/vae.Connector/reporting/testComponents.txt" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/standard-vae/target/tmp/cpp/vae.Connector/schemas/DDPG.scm" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/standard-vae/target/tmp/cpp/vae.Connector/schemas/DQN.scm" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/standard-vae/target/tmp/cpp/vae.Connector/schemas/Environment.scm" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/standard-vae/target/tmp/cpp/vae.Connector/schemas/EvalMetric.scm" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/standard-vae/target/tmp/cpp/vae.Connector/schemas/GAN.scm" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/standard-vae/target/tmp/cpp/vae.Connector/schemas/General.scm" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/standard-vae/target/tmp/cpp/vae.Connector/schemas/Loss.scm" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/standard-vae/target/tmp/cpp/vae.Connector/schemas/NoiseDistribution.scm" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/standard-vae/target/tmp/cpp/vae.Connector/schemas/Optimizer.scm" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/standard-vae/target/tmp/cpp/vae.Connector/schemas/Reinforcement.scm" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/standard-vae/target/tmp/cpp/vae.Connector/schemas/ReplayMemory.scm" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/standard-vae/target/tmp/cpp/vae.Connector/schemas/Supervised.scm" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/standard-vae/target/tmp/cpp/vae.Connector/schemas/TD3.scm" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/standard-vae/target/tmp/cpp/vae.Connector/test/tests_main.cpp" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/standard-vae/target/tmp/cpp/vae.Connector/vae_connector_decoder.h" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/standard-vae/target/tmp/emam/vae/Connector.emadl" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/standard-vae/target/tmp/emam/vae/Decoder.conf" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/standard-vae/target/tmp/emam/vae/Decoder.emadl" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/standard-vae/target/tmp/emam/vae/Decoder.tag" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/standard-vae/target/tmp/emam/vae/Encoder.emadl" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/standard-vae/target/tmp/mojo/streamtest-generator.log" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/standard-vae/training/src/main/emadl/vae/Connector.emadl" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/standard-vae/training/src/main/emadl/vae/Decoder.conf" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/standard-vae/training/src/main/emadl/vae/Decoder.emadl" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/standard-vae/training/src/main/emadl/vae/Decoder.tag" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/standard-vae/training/src/main/emadl/vae/Encoder.emadl" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/vq-vae/pre-trained/mnistVAE.py" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/vq-vae/pre-trained/model/vqvae.Decoder/model_0-0000.params" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/vq-vae/pre-trained/model/vqvae.Decoder/model_0-0004.params" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/vq-vae/pre-trained/model/vqvae.Decoder/model_0-0009.params" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/vq-vae/pre-trained/model/vqvae.Decoder/model_0-0014.params" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/vq-vae/pre-trained/model/vqvae.Decoder/model_0-symbol.json" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/vq-vae/pre-trained/model/vqvae.Decoder/model_0_newest-0015.params" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/vq-vae/pre-trained/model/vqvae.Decoder/model_0_newest-symbol.json" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/vq-vae/pre-trained/model/vqvae.Encoder/model_0-0000.params" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/vq-vae/pre-trained/model/vqvae.Encoder/model_0-0004.params" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/vq-vae/pre-trained/model/vqvae.Encoder/model_0-0009.params" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/vq-vae/pre-trained/model/vqvae.Encoder/model_0-0014.params" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/vq-vae/pre-trained/model/vqvae.Encoder/model_0-symbol.json" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/vq-vae/pre-trained/model/vqvae.Encoder/model_0-vectorquantize0-0014.params" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/vq-vae/pre-trained/model/vqvae.Encoder/model_0_newest-0015.params" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/vq-vae/pre-trained/model/vqvae.Encoder/model_0_newest-symbol.json" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/vq-vae/settings.xml" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/vq-vae/training/src/main/emadl/vqvae/Connector.emadl" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/vq-vae/training/src/main/emadl/vqvae/Decoder.conf" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/vq-vae/training/src/main/emadl/vqvae/Decoder.emadl" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/vq-vae/training/src/main/emadl/vqvae/Decoder.tag" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/vq-vae/training/src/main/emadl/vqvae/Encoder.emadl" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/.gitignore" beforeDir="false" afterPath="$PROJECT_DIR$/.gitignore" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/.gitlab-ci.yml" beforeDir="false" afterPath="$PROJECT_DIR$/.gitlab-ci.yml" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/.idea/workspace.xml" beforeDir="false" afterPath="$PROJECT_DIR$/.idea/workspace.xml" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/CMakeLists.txt" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/README.md" beforeDir="false" afterPath="$PROJECT_DIR$/README.md" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/build.sh" beforeDir="false" afterPath="$PROJECT_DIR$/standard-vae/gluon/build.sh" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/build/CMakeCache.txt" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/build/CMakeFiles/3.21.4/CMakeCCompiler.cmake" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/build/CMakeFiles/3.21.4/CMakeCXXCompiler.cmake" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/build/CMakeFiles/3.21.4/CMakeDetermineCompilerABI_C.bin" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/build/CMakeFiles/3.21.4/CMakeDetermineCompilerABI_CXX.bin" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/build/CMakeFiles/3.21.4/CMakeSystem.cmake" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/build/CMakeFiles/3.21.4/CompilerIdC/CMakeCCompilerId.c" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/build/CMakeFiles/3.21.4/CompilerIdC/a.out" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/build/CMakeFiles/3.21.4/CompilerIdCXX/CMakeCXXCompilerId.cpp" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/build/CMakeFiles/3.21.4/CompilerIdCXX/a.out" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/build/CMakeFiles/CMakeOutput.log" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/build/CMakeFiles/cmake.check_cache" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/docker/Dockerfile" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/docker/armadillo-9.600.6.zip" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/embedded-montiarc-emadl-generator-0.6.0-SNAPSHOT-jar-with-dependencies.jar" beforeDir="false" afterPath="$PROJECT_DIR$/standard-vae/gluon/embedded-montiarc-emadl-generator-0.5.4-SNAPSHOT-jar-with-dependencies.jar" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/generated_digits.png" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/images/loss_graph.png" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/images/test_reconstruction_000000000033.png" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/images/test_reconstruction_000000000049.png" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/images/test_reconstruction_000001000033.png" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/images/test_reconstruction_000001000049.png" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/images/test_reconstruction_000002000033.png" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/images/test_reconstruction_000002000049.png" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/images/test_reconstruction_000003000033.png" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/images/test_reconstruction_000003000049.png" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/images/test_reconstruction_000004000033.png" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/images/test_reconstruction_000004000049.png" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/images/test_reconstruction_000005000033.png" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/images/test_reconstruction_000005000049.png" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/images/test_reconstruction_000006000033.png" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/images/test_reconstruction_000006000049.png" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/images/test_reconstruction_000007000033.png" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/images/test_reconstruction_000007000049.png" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/images/test_reconstruction_000008000033.png" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/images/test_reconstruction_000008000049.png" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/images/test_reconstruction_000009000033.png" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/images/test_reconstruction_000009000049.png" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/images/test_reconstruction_000010000033.png" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/images/test_reconstruction_000011000033.png" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/images/test_reconstruction_000012000033.png" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/images/test_reconstruction_000013000033.png" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/images/test_reconstruction_000014000033.png" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/images/test_reconstruction_000015000033.png" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/images/test_reconstruction_000016000033.png" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/images/test_reconstruction_000017000033.png" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/images/test_reconstruction_000018000033.png" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/images/test_reconstruction_000019000033.png" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/mnistVAE.py" beforeDir="false" afterPath="$PROJECT_DIR$/beta-vae/pre-trained/mnistVAE.py" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/model/mnistVAE.py" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/model/mnistvae.Decoder/model_0-0000.params" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/model/mnistvae.Decoder/model_0-0009.params" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/model/mnistvae.Decoder/model_0-0019.params" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/model/mnistvae.Decoder/model_0-symbol.json" beforeDir="false" afterPath="$PROJECT_DIR$/beta-vae/pre-trained/model/vae.Decoder/model_0-symbol.json" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/model/mnistvae.Decoder/model_0_newest-0000.params" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/model/mnistvae.Decoder/model_0_newest-symbol.json" beforeDir="false" afterPath="$PROJECT_DIR$/beta-vae/pre-trained/model/vae.Decoder/model_0_newest-symbol.json" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/model/mnistvae.Encoder/model_0-0000.params" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/model/mnistvae.Encoder/model_0-0009.params" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/model/mnistvae.Encoder/model_0-0019.params" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/model/mnistvae.Encoder/model_0-symbol.json" beforeDir="false" afterPath="$PROJECT_DIR$/beta-vae/pre-trained/model/vae.Encoder/model_0-symbol.json" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/model/mnistvae.Encoder/model_0_newest-0000.params" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/model/mnistvae.Encoder/model_0_newest-symbol.json" beforeDir="false" afterPath="$PROJECT_DIR$/beta-vae/pre-trained/model/vae.Encoder/model_0_newest-symbol.json" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/model/model_0-0000.params" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/model/model_0-symbol.json" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/model/model_0_newest-0000.params" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/model/model_0_newest-symbol.json" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/model/vqvae.Encoder/model_0-0000.params" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/model/vqvae.Encoder/model_0-symbol.json" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/pom.xml" beforeDir="false" afterPath="$PROJECT_DIR$/vq-vae/pom.xml" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/pretrained/generated_digits.png" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/pretrained/models/customloss/Connector.emadl" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/pretrained/models/customloss/CustomLoss.emadl" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/pretrained/models/customloss/Decoder.cnnt" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/pretrained/models/customloss/Decoder.emadl" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/pretrained/models/customloss/Encoder.emadl" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/pretrained/models/customloss/build.sh" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/pretrained/models/cvae/Connector.emadl" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/pretrained/models/cvae/Decoder.cnnt" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/pretrained/models/cvae/Decoder.emadl" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/pretrained/models/cvae/Encoder.emadl" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/pretrained/models/cvae/reparametrize/Connector.emadl" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/pretrained/models/data_paths.txt" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/pretrained/models/mnistvae/Connector.emadl" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/pretrained/models/mnistvae/Decoder.cnnt" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/pretrained/models/mnistvae/Decoder.emadl" beforeDir="false" afterPath="$PROJECT_DIR$/beta-vae/training/src/main/emadl/bvae/Decoder.emadl" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/pretrained/models/mnistvae/Encoder.emadl" beforeDir="false" afterPath="$PROJECT_DIR$/beta-vae/training/src/main/emadl/bvae/Encoder.emadl" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/pretrained/models/vqvae/Connector.emadl" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/pretrained/models/vqvae/Decoder.cnnt" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/pretrained/models/vqvae/Decoder.emadl" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/pretrained/models/vqvae/Encoder.emadl" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/pretrained/models/vqvae/VAE.emadl" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/pretrained/pretrained-0000.params" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/pretrained/pretrained-0010.params" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/pretrained/pretrained-symbol.json" beforeDir="false" afterPath="$PROJECT_DIR$/conditional-vae/pre-trained/model/cvae.Encoder/model_0-symbol.json" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/pretrained/pretrained.params" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/resources/resources/training_data/test.h5" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/resources/resources/training_data/train.h5" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/resources/training_data/test.h5" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/resources/training_data/train.h5" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/settings.xml" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/src/main/cpp/CMakeLists.txt" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/src/main/cpp/MNISTVAE.cpp" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/src/main/emadl/data_paths.txt" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/src/main/emadl/mnistvae/Connector.emadl" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/src/main/emadl/mnistvae/Decoder.cnnt" beforeDir="false" afterPath="$PROJECT_DIR$/beta-vae/training/src/main/emadl/bvae/Decoder.conf" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/src/main/emadl/mnistvae/Decoder.emadl" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/src/main/emadl/mnistvae/Encoder.emadl" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/testmnistvae054/CMakeLists.txt" beforeDir="false" afterPath="$PROJECT_DIR$/standard-vae/target/tmp/cpp/vae.Connector/CMakeLists.txt" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/testmnistvae054/CNNAutoencoderTrainer_vae_connector_decoder.py" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/testmnistvae054/CNNAutoencoderTrainer_vae_encoder.py" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/testmnistvae054/CNNCreator_vae_connector_decoder.py" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/testmnistvae054/CNNCreator_vae_encoder.py" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/testmnistvae054/CNNDataLoader_vae_connector_decoder.py" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/testmnistvae054/CNNGanTrainer_vae_connector_decoder.py" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/testmnistvae054/CNNGanTrainer_vae_encoder.py" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/testmnistvae054/CNNLAOptimizer_vae_connector_decoder.h" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/testmnistvae054/CNNModelLoader.h" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/testmnistvae054/CNNNet_vae_connector_decoder.py" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/testmnistvae054/CNNNet_vae_encoder.py" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/testmnistvae054/CNNPredictor_vae_connector_decoder.h" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/testmnistvae054/CNNPredictor_vae_encoder.h" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/testmnistvae054/CNNSupervisedTrainer_vae_connector_decoder.py" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/testmnistvae054/CNNSupervisedTrainer_vae_encoder.py" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/testmnistvae054/CNNTrainer_vae_connector_decoder.py" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/testmnistvae054/CNNTranslator.h" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/testmnistvae054/HelperA.h" beforeDir="false" afterPath="$PROJECT_DIR$/standard-vae/target/tmp/cpp/vae.Connector/HelperA.h" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/testmnistvae054/execute_vae_connector_decoder" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/testmnistvae054/execute_vae_encoder" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/testmnistvae054/resources/resources/training_data/test.h5" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/testmnistvae054/resources/resources/training_data/train.h5" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/testmnistvae054/resources/training_data/test.h5" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/testmnistvae054/resources/training_data/train.h5" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/testmnistvae054/train.log" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/testmnistvae054/vae_connector.cpp" beforeDir="false" afterPath="$PROJECT_DIR$/standard-vae/target/tmp/cpp/vae.Connector/vae_connector.cpp" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/testmnistvae054/vae_connector.h" beforeDir="false" afterPath="$PROJECT_DIR$/standard-vae/target/tmp/cpp/vae.Connector/vae_connector.h" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/testmnistvae054/vae_connector_decoder.h" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/train.log" beforeDir="false" />
     </list>
     <option name="SHOW_DIALOG" value="false" />
     <option name="HIGHLIGHT_CONFLICTS" value="true" />
@@ -57,17 +339,14 @@
     </file-type-list>
   </component>
   <component name="HighlightingSettingsPerFile">
-    <setting file="file://$PROJECT_DIR$/model/mnistvae.Decoder/model_0-symbol.json" root0="FORCE_HIGHLIGHTING" />
-    <setting file="file:///mxnet/src/operator/tensor/elemwise_binary_broadcast_op.h" root0="FORCE_HIGHLIGHTING" />
-    <setting file="file://$PROJECT_DIR$/src/main/cpp/CMakeLists.txt" root0="FORCE_HIGHLIGHTING" />
-    <setting file="file://$PROJECT_DIR$/model/model_0-symbol.json" root0="FORCE_HIGHLIGHTING" />
     <setting file="file://$USER_HOME$/.local/lib/python3.6/site-packages/mxnet/gluon/block.py" root0="FORCE_HIGHLIGHTING" />
+    <setting file="file:///mxnet/src/operator/tensor/elemwise_binary_broadcast_op.h" root0="FORCE_HIGHLIGHTING" />
     <setting file="file://$USER_HOME$/.cache/JetBrains/PyCharm2021.1/remote_sources/-84142897/125375885/mxnet/gluon/block.py" root0="SKIP_INSPECTION" />
     <setting file="file://$USER_HOME$/.cache/JetBrains/PyCharm2021.2/remote_sources/2047353132/125375885/mxnet/gluon/block.py" root0="FORCE_HIGHLIGHTING" />
-    <setting file="file://$PROJECT_DIR$/CMakeLists.txt" root0="FORCE_HIGHLIGHTING" />
     <setting file="file://$USER_HOME$/.cache/JetBrains/PyCharm2021.1/remote_sources/-84142897/125375885/mxnet/base.py" root0="SKIP_INSPECTION" />
-    <setting file="file://$PROJECT_DIR$/src/main/cpp/MNISTVAE.cpp" root0="FORCE_HIGHLIGHTING" />
-    <setting file="file://$PROJECT_DIR$/build.sh" root0="FORCE_HIGHLIGHTING" />
+  </component>
+  <component name="MarkdownSettingsMigration">
+    <option name="stateVersion" value="1" />
   </component>
   <component name="ProjectId" id="1vAxxFkwV9IwlbXvY2ZG5bPtyEl" />
   <component name="ProjectLevelVcsManager" settingsEditedManually="true" />
@@ -83,7 +362,7 @@
     <property name="cf.first.check.clang-format" value="false" />
     <property name="cidr.known.project.marker" value="true" />
     <property name="cmake.loaded.for.project" value="true" />
-    <property name="last_opened_file_path" value="$PROJECT_DIR$" />
+    <property name="last_opened_file_path" value="$PROJECT_DIR$/vq-vae/pre-trained" />
     <property name="settings.editor.selected.configurable" value="com.jetbrains.python.configuration.PyActiveSdkModuleConfigurable" />
     <property name="settings.editor.splitter.proportion" value="0.32093933" />
   </component>
@@ -92,18 +371,18 @@
   </component>
   <component name="RecentsManager">
     <key name="CopyFile.RECENT_KEYS">
-      <recent name="$PROJECT_DIR$/target" />
-      <recent name="$PROJECT_DIR$/pretrained" />
-      <recent name="$PROJECT_DIR$/test/target" />
-      <recent name="$PROJECT_DIR$" />
-      <recent name="$PROJECT_DIR$/../cvae" />
+      <recent name="$PROJECT_DIR$/vq-vae/pre-trained" />
+      <recent name="$PROJECT_DIR$/standard-vae/gluon" />
+      <recent name="$PROJECT_DIR$/StandardVAE/Pre-Trained" />
+      <recent name="$PROJECT_DIR$/ConditionalVAE/Pre-Trained" />
+      <recent name="$PROJECT_DIR$/beta-VAE/Pre-Trained" />
     </key>
     <key name="MoveFile.RECENT_KEYS">
+      <recent name="$PROJECT_DIR$" />
       <recent name="$PROJECT_DIR$/model" />
       <recent name="$PROJECT_DIR$/model/mnistvae.Decoder" />
       <recent name="$PROJECT_DIR$/resources/resources" />
       <recent name="$PROJECT_DIR$/target/resources/training_data" />
-      <recent name="$PROJECT_DIR$/kl_experiments" />
     </key>
   </component>
   <component name="RunDashboard">
@@ -113,7 +392,7 @@
       </set>
     </option>
   </component>
-  <component name="RunManager" selected="Python.mnistVAE">
+  <component name="RunManager" selected="Python.mnistVAE (2)">
     <configuration default="true" type="GradleAppRunConfiguration" factoryName="Application" REDIRECT_INPUT="false" ELEVATE="false" USE_EXTERNAL_CONSOLE="false" PASS_PARENT_ENVS_2="true">
       <method v="2">
         <option name="com.jetbrains.cidr.cpp.gradle.execution.GradleNativeBuildBeforeRunTaskProvider$BuildBeforeRunTask" enabled="true" />
@@ -128,50 +407,6 @@
       <method v="2">
         <option name="com.jetbrains.cidr.execution.CidrBuildBeforeRunTaskProvider$BuildBeforeRunTask" enabled="true" />
       </method>
-    </configuration>
-    <configuration name="CNNTrainer_mnistvae_connector_dec (1)" type="PythonConfigurationType" factoryName="Python" temporary="true" nameIsGenerated="true">
-      <module name="cvae" />
-      <option name="INTERPRETER_OPTIONS" value="" />
-      <option name="PARENT_ENVS" value="true" />
-      <envs>
-        <env name="PYTHONUNBUFFERED" value="1" />
-      </envs>
-      <option name="SDK_HOME" value="" />
-      <option name="WORKING_DIRECTORY" value="$PROJECT_DIR$/../cvae/target" />
-      <option name="IS_MODULE_SDK" value="true" />
-      <option name="ADD_CONTENT_ROOTS" value="true" />
-      <option name="ADD_SOURCE_ROOTS" value="true" />
-      <EXTENSION ID="PythonCoverageRunConfigurationExtension" runner="coverage.py" />
-      <option name="SCRIPT_NAME" value="$PROJECT_DIR$/../cvae/target/CNNTrainer_mnistvae_connector_dec.py" />
-      <option name="PARAMETERS" value="" />
-      <option name="SHOW_COMMAND_LINE" value="true" />
-      <option name="EMULATE_TERMINAL" value="false" />
-      <option name="MODULE_MODE" value="false" />
-      <option name="REDIRECT_INPUT" value="false" />
-      <option name="INPUT_FILE" value="" />
-      <method v="2" />
-    </configuration>
-    <configuration name="CNNTrainer_mnistvae_connector_dec" type="PythonConfigurationType" factoryName="Python" temporary="true" nameIsGenerated="true">
-      <module name="mnist-vae" />
-      <option name="INTERPRETER_OPTIONS" value="" />
-      <option name="PARENT_ENVS" value="true" />
-      <envs>
-        <env name="PYTHONUNBUFFERED" value="1" />
-      </envs>
-      <option name="SDK_HOME" value="" />
-      <option name="WORKING_DIRECTORY" value="$PROJECT_DIR$/test/target" />
-      <option name="IS_MODULE_SDK" value="true" />
-      <option name="ADD_CONTENT_ROOTS" value="true" />
-      <option name="ADD_SOURCE_ROOTS" value="true" />
-      <EXTENSION ID="PythonCoverageRunConfigurationExtension" runner="coverage.py" />
-      <option name="SCRIPT_NAME" value="$PROJECT_DIR$/test/target/CNNTrainer_mnistvae_connector_dec.py" />
-      <option name="PARAMETERS" value="" />
-      <option name="SHOW_COMMAND_LINE" value="true" />
-      <option name="EMULATE_TERMINAL" value="false" />
-      <option name="MODULE_MODE" value="false" />
-      <option name="REDIRECT_INPUT" value="false" />
-      <option name="INPUT_FILE" value="" />
-      <method v="2" />
     </configuration>
     <configuration name="CNNTrainer_vqvae_connector_dec" type="PythonConfigurationType" factoryName="Python" temporary="true" nameIsGenerated="true">
       <option name="INTERPRETER_OPTIONS" value="" />
@@ -217,20 +452,55 @@
       <option name="INPUT_FILE" value="" />
       <method v="2" />
     </configuration>
-    <configuration name="mnistVAE (2)" type="PythonConfigurationType" factoryName="Python" temporary="true" nameIsGenerated="true">
-      <module name="cvae" />
+    <configuration name="mnistVAE (1)" type="PythonConfigurationType" factoryName="Python" temporary="true" nameIsGenerated="true">
+      <module name="mnist-vae" />
       <option name="INTERPRETER_OPTIONS" value="" />
       <option name="PARENT_ENVS" value="true" />
-      <envs>
-        <env name="PYTHONUNBUFFERED" value="1" />
-      </envs>
       <option name="SDK_HOME" value="" />
-      <option name="WORKING_DIRECTORY" value="$PROJECT_DIR$/../cvae" />
+      <option name="WORKING_DIRECTORY" value="$PROJECT_DIR$/beta-vae/pre-trained" />
       <option name="IS_MODULE_SDK" value="true" />
       <option name="ADD_CONTENT_ROOTS" value="true" />
       <option name="ADD_SOURCE_ROOTS" value="true" />
       <EXTENSION ID="PythonCoverageRunConfigurationExtension" runner="coverage.py" />
-      <option name="SCRIPT_NAME" value="$PROJECT_DIR$/../cvae/mnistVAE.py" />
+      <option name="SCRIPT_NAME" value="$PROJECT_DIR$/beta-vae/pre-trained/mnistVAE.py" />
+      <option name="PARAMETERS" value="" />
+      <option name="SHOW_COMMAND_LINE" value="true" />
+      <option name="EMULATE_TERMINAL" value="false" />
+      <option name="MODULE_MODE" value="false" />
+      <option name="REDIRECT_INPUT" value="false" />
+      <option name="INPUT_FILE" value="" />
+      <method v="2" />
+    </configuration>
+    <configuration name="mnistVAE (2)" type="PythonConfigurationType" factoryName="Python" temporary="true" nameIsGenerated="true">
+      <module name="mnist-vae" />
+      <option name="INTERPRETER_OPTIONS" value="" />
+      <option name="PARENT_ENVS" value="true" />
+      <option name="SDK_HOME" value="" />
+      <option name="WORKING_DIRECTORY" value="$PROJECT_DIR$/vq-vae/pre-trained" />
+      <option name="IS_MODULE_SDK" value="true" />
+      <option name="ADD_CONTENT_ROOTS" value="true" />
+      <option name="ADD_SOURCE_ROOTS" value="true" />
+      <EXTENSION ID="PythonCoverageRunConfigurationExtension" runner="coverage.py" />
+      <option name="SCRIPT_NAME" value="$PROJECT_DIR$/vq-vae/pre-trained/mnistVAE.py" />
+      <option name="PARAMETERS" value="" />
+      <option name="SHOW_COMMAND_LINE" value="true" />
+      <option name="EMULATE_TERMINAL" value="false" />
+      <option name="MODULE_MODE" value="false" />
+      <option name="REDIRECT_INPUT" value="false" />
+      <option name="INPUT_FILE" value="" />
+      <method v="2" />
+    </configuration>
+    <configuration name="mnistVAE (3)" type="PythonConfigurationType" factoryName="Python" temporary="true" nameIsGenerated="true">
+      <module name="mnist-vae" />
+      <option name="INTERPRETER_OPTIONS" value="" />
+      <option name="PARENT_ENVS" value="true" />
+      <option name="SDK_HOME" value="" />
+      <option name="WORKING_DIRECTORY" value="$PROJECT_DIR$/conditional-vae/pre-trained" />
+      <option name="IS_MODULE_SDK" value="true" />
+      <option name="ADD_CONTENT_ROOTS" value="true" />
+      <option name="ADD_SOURCE_ROOTS" value="true" />
+      <EXTENSION ID="PythonCoverageRunConfigurationExtension" runner="coverage.py" />
+      <option name="SCRIPT_NAME" value="$PROJECT_DIR$/conditional-vae/pre-trained/mnistVAE.py" />
       <option name="PARAMETERS" value="" />
       <option name="SHOW_COMMAND_LINE" value="true" />
       <option name="EMULATE_TERMINAL" value="false" />
@@ -262,21 +532,19 @@
       <method v="2" />
     </configuration>
     <list>
-      <item itemvalue="CMake Application.MNISTVAE" />
-      <item itemvalue="CMake Application.mnistvae_connector" />
-      <item itemvalue="Python.CNNTrainer_mnistvae_connector_dec (1)" />
-      <item itemvalue="Python.mnistVAE (2)" />
-      <item itemvalue="Python.CNNTrainer_mnistvae_connector_dec" />
       <item itemvalue="Python.CNNTrainer_vqvae_connector_dec" />
       <item itemvalue="Python.mnistVAE" />
+      <item itemvalue="Python.mnistVAE (1)" />
+      <item itemvalue="Python.mnistVAE (3)" />
+      <item itemvalue="Python.mnistVAE (2)" />
     </list>
     <recent_temporary>
       <list>
+        <item itemvalue="Python.mnistVAE (2)" />
+        <item itemvalue="Python.mnistVAE (3)" />
+        <item itemvalue="Python.mnistVAE (1)" />
         <item itemvalue="Python.mnistVAE" />
         <item itemvalue="Python.CNNTrainer_vqvae_connector_dec" />
-        <item itemvalue="Python.CNNTrainer_mnistvae_connector_dec" />
-        <item itemvalue="Python.mnistVAE (2)" />
-        <item itemvalue="Python.CNNTrainer_mnistvae_connector_dec (1)" />
       </list>
     </recent_temporary>
   </component>
@@ -362,7 +630,18 @@
       <workItem from="1637349950272" duration="634000" />
       <workItem from="1637363106505" duration="12000" />
       <workItem from="1638452559335" duration="595000" />
+      <workItem from="1638527152374" duration="3006000" />
+      <workItem from="1643286123359" duration="3807000" />
+      <workItem from="1643461471180" duration="8189000" />
     </task>
+    <task id="LOCAL-00001" summary="Add test project for HPC">
+      <created>1638527405190</created>
+      <option name="number" value="00001" />
+      <option name="presentableId" value="LOCAL-00001" />
+      <option name="project" value="LOCAL" />
+      <updated>1638527405190</updated>
+    </task>
+    <option name="localTasksCounter" value="2" />
     <servers />
   </component>
   <component name="TypeScriptGeneratedFilesManager">
@@ -378,6 +657,10 @@
         </entry>
       </map>
     </option>
+  </component>
+  <component name="VcsManagerConfiguration">
+    <MESSAGE value="Add test project for HPC" />
+    <option name="LAST_COMMIT_MESSAGE" value="Add test project for HPC" />
   </component>
   <component name="XDebuggerManager">
     <breakpoint-manager>
@@ -432,11 +715,6 @@
           <line>42</line>
           <option name="timeStamp" value="277" />
         </line-breakpoint>
-        <line-breakpoint enabled="true" type="python-line">
-          <url>file://$PROJECT_DIR$/mnistVAE.py</url>
-          <line>32</line>
-          <option name="timeStamp" value="279" />
-        </line-breakpoint>
       </breakpoints>
       <breakpoints-defaults>
         <breakpoint type="python-line" />
@@ -456,5 +734,9 @@
         <watch expression="canvas" />
       </configuration>
     </watches-manager>
+  </component>
+  <component name="com.intellij.coverage.CoverageDataManagerImpl">
+    <SUITE FILE_PATH="coverage/mnist_vae$mnistVAE__2_.coverage" NAME="mnistVAE (2) Coverage Results" MODIFIED="1643478193715" SOURCE_PROVIDER="com.intellij.coverage.DefaultCoverageFileProvider" RUNNER="coverage.py" COVERAGE_BY_TEST_ENABLED="true" COVERAGE_TRACING_ENABLED="false" WORKING_DIRECTORY="$PROJECT_DIR$/vq-vae/pre-trained" />
+    <SUITE FILE_PATH="coverage/mnist_vae$mnistVAE.coverage" NAME="mnistVAE Coverage Results" MODIFIED="1638531824883" SOURCE_PROVIDER="com.intellij.coverage.DefaultCoverageFileProvider" RUNNER="coverage.py" COVERAGE_BY_TEST_ENABLED="true" COVERAGE_TRACING_ENABLED="false" WORKING_DIRECTORY="$PROJECT_DIR$" />
   </component>
 </project>

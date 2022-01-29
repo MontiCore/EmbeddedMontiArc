@@ -1,1 +1,0 @@
-mnistvae.Decoder resources/training_data

@@ -1,0 +1,2096 @@
+[info] streamtest-generator : [2022-01-29 19:46:28.443] Execution necessary: Hashfiles not found.
+[info] StreamTestGeneratorMojo : StreamTestGeneratorMojo
+[info] streamtest-generator : [2022-01-29 19:46:29.159] Cocos Check:
+[info] streamtest-generator : [2022-01-29 19:46:29.165]  - vae/Decoder.emadl
+[trace]  : START resolveDownMany("vae.Decoder", "de.monticore.lang.embeddedmontiarc.embeddedmontiarc._symboltable.ComponentKind") in scope "Optional.empty". Found #0 (local)
+[trace]  : END resolveDownMany("vae.Decoder", "de.monticore.lang.embeddedmontiarc.embeddedmontiarc._symboltable.ComponentKind") in scope "Optional.empty". Found #0
+[debug] ModelingLanguageModelLoader : Start parsing model Location: file:/home/asmeta/wrk/vae/mnist-vae/standard-vae/training/src/main/emadl/vae/Decoder.emadl Package: vae/Decoder.emadl.
+[debug] ModelingLanguageModelLoader : Parsed model Location: file:/home/asmeta/wrk/vae/mnist-vae/standard-vae/training/src/main/emadl/vae/Decoder.emadl Package: vae/Decoder.emadl successfully.
+[debug] EMADLModelLoader : Start creation of symbol table for model "vae.Decoder".
+[debug] EmbeddedMontiArcSymbolTableCreator : Building Symboltable for Component: Decoder
+[debug] CommonScope : No resolver found for symbol targetKind "de.monticore.lang.monticar.ts.MCTypeSymbolKind" in scope "Optional[Decoder]"
+[debug] CommonScope : No resolver found for symbol targetKind "de.monticore.lang.monticar.ts.MCAttributeSymbolKind" in scope "Optional[Decoder]"
+[debug] CommonScope : No resolver found for symbol targetKind "de.monticore.symboltable.SymbolKind" in scope "Optional[Decoder]"
+[debug] CommonScope : No resolver found for symbol targetKind "de.monticore.symboltable.SymbolKind" in scope "Optional[Decoder]"
+[debug] CommonScope : No resolver found for symbol targetKind "de.monticore.symboltable.SymbolKind" in scope "Optional[Decoder]"
+[debug] CommonScope : No resolver found for symbol targetKind "de.monticore.symboltable.SymbolKind" in scope "Optional[Decoder]"
+[debug] CommonScope : No resolver found for symbol targetKind "de.monticore.lang.embeddedmontiarc.embeddedmontiarc._symboltable.ComponentKind" in scope "Optional[Decoder]"
+[debug] CommonScope : No resolver found for symbol targetKind "de.monticore.symboltable.SymbolKind" in scope "Optional[Decoder]"
+[debug] CommonScope : No resolver found for symbol targetKind "de.monticore.symboltable.SymbolKind" in scope "Optional[Decoder]"
+[debug] ComponentPreGeneric : package vae;
+component Decoder {
+}
+
+[debug] CommonScope : No resolver found for symbol targetKind "de.monticore.lang.monticar.ts.MCTypeSymbolKind" in scope "Optional[Decoder]"
+[debug] CommonScope : No resolver found for symbol targetKind "de.monticore.lang.monticar.ts.MCAttributeSymbolKind" in scope "Optional[Decoder]"
+[debug] CommonScope : No resolver found for symbol targetKind "de.monticore.symboltable.SymbolKind" in scope "Optional[Decoder]"
+[debug] CommonScope : No resolver found for symbol targetKind "de.monticore.symboltable.SymbolKind" in scope "Optional[Decoder]"
+[debug] CommonScope : No resolver found for symbol targetKind "de.monticore.symboltable.SymbolKind" in scope "Optional[Decoder]"
+[debug] CommonScope : No resolver found for symbol targetKind "de.monticore.symboltable.SymbolKind" in scope "Optional[Decoder]"
+[debug] CommonScope : No resolver found for symbol targetKind "de.monticore.lang.embeddedmontiarc.embeddedmontiarc._symboltable.ComponentKind" in scope "Optional[Decoder]"
+[debug] CommonScope : No resolver found for symbol targetKind "de.monticore.symboltable.SymbolKind" in scope "Optional[Decoder]"
+[debug] CommonScope : No resolver found for symbol targetKind "de.monticore.symboltable.SymbolKind" in scope "Optional[Decoder]"
+[debug] ComponentPostGeneric : package vae;
+component Decoder {
+}
+
+[debug] CommonScope : No resolver found for symbol targetKind "de.monticore.lang.monticar.ts.MCTypeSymbolKind" in scope "Optional[Decoder]"
+[debug] CommonScope : No resolver found for symbol targetKind "de.monticore.lang.monticar.ts.MCAttributeSymbolKind" in scope "Optional[Decoder]"
+[debug] CommonScope : No resolver found for symbol targetKind "de.monticore.symboltable.SymbolKind" in scope "Optional[Decoder]"
+[debug] CommonScope : No resolver found for symbol targetKind "de.monticore.symboltable.SymbolKind" in scope "Optional[Decoder]"
+[debug] CommonScope : No resolver found for symbol targetKind "de.monticore.symboltable.SymbolKind" in scope "Optional[Decoder]"
+[debug] CommonScope : No resolver found for symbol targetKind "de.monticore.symboltable.SymbolKind" in scope "Optional[Decoder]"
+[debug] CommonScope : No resolver found for symbol targetKind "de.monticore.lang.embeddedmontiarc.embeddedmontiarc._symboltable.ComponentKind" in scope "Optional[Decoder]"
+[debug] CommonScope : No resolver found for symbol targetKind "de.monticore.symboltable.SymbolKind" in scope "Optional[Decoder]"
+[debug] CommonScope : No resolver found for symbol targetKind "de.monticore.symboltable.SymbolKind" in scope "Optional[Decoder]"
+[debug] ComponentPreParam : package vae;
+component Decoder {
+}
+
+[debug] CommonScope : No resolver found for symbol targetKind "de.monticore.lang.monticar.ts.MCTypeSymbolKind" in scope "Optional[Decoder]"
+[debug] CommonScope : No resolver found for symbol targetKind "de.monticore.lang.monticar.ts.MCAttributeSymbolKind" in scope "Optional[Decoder]"
+[debug] CommonScope : No resolver found for symbol targetKind "de.monticore.symboltable.SymbolKind" in scope "Optional[Decoder]"
+[debug] CommonScope : No resolver found for symbol targetKind "de.monticore.symboltable.SymbolKind" in scope "Optional[Decoder]"
+[debug] CommonScope : No resolver found for symbol targetKind "de.monticore.symboltable.SymbolKind" in scope "Optional[Decoder]"
+[debug] CommonScope : No resolver found for symbol targetKind "de.monticore.symboltable.SymbolKind" in scope "Optional[Decoder]"
+[debug] CommonScope : No resolver found for symbol targetKind "de.monticore.lang.embeddedmontiarc.embeddedmontiarc._symboltable.ComponentKind" in scope "Optional[Decoder]"
+[debug] CommonScope : No resolver found for symbol targetKind "de.monticore.symboltable.SymbolKind" in scope "Optional[Decoder]"
+[debug] CommonScope : No resolver found for symbol targetKind "de.monticore.symboltable.SymbolKind" in scope "Optional[Decoder]"
+[debug] ComponentPostParam : package vae;
+component Decoder {
+}
+
+[trace]  : START resolveDownMany("vae.Decoder", "de.monticore.lang.embeddedmontiarc.embeddedmontiarc._symboltable.ComponentKind") in scope "Optional.empty". Found #0 (local)
+[debug] CommonScope : The symbol Decoder has already been resolved.
+[trace]  : START resolveDownMany("Decoder", "de.monticore.lang.embeddedmontiarc.embeddedmontiarc._symboltable.ComponentKind") in scope "Optional[Decoder]". Found #1 (local)
+[trace]  : END resolveDownMany("Decoder", "de.monticore.lang.embeddedmontiarc.embeddedmontiarc._symboltable.ComponentKind") in scope "Optional[Decoder]". Found #1
+[trace]  : END resolveDownMany("vae.Decoder", "de.monticore.lang.embeddedmontiarc.embeddedmontiarc._symboltable.ComponentKind") in scope "Optional.empty". Found #1
+[debug] info : encoding de.monticore.lang.monticar.common2._ast.ASTCommonMatrixType@8077c97
+[debug] info : data de.monticore.lang.monticar.common2._ast.ASTCommonMatrixType@7aae1170
+[debug] SymbolTableCreator: : endVisit of vae.Decoder
+[trace]  : START resolveDownMany("vae.decoder", "de.monticore.symboltable.SymbolKind") in scope "Optional[Decoder]". Found #0 (local)
+[trace]  : END resolveDownMany("vae.decoder", "de.monticore.symboltable.SymbolKind") in scope "Optional[Decoder]". Found #0
+[debug] SymbolReference : Load full information of 'Decoder' (Kind de.monticore.lang.embeddedmontiarc.embeddedmontiarc._symboltable.ComponentKind).
+[debug] CommonScope : The symbol Decoder has already been resolved.
+[debug] SymbolReference : Loaded full information of 'Decoder' successfully.
+[debug] SymbolReference : Load full information of 'Decoder' (Kind de.monticore.lang.embeddedmontiarc.embeddedmontiarc._symboltable.ComponentKind).
+[debug] CommonScope : The symbol Decoder has already been resolved.
+[debug] SymbolReference : Loaded full information of 'Decoder' successfully.
+[debug] EMAPortArraySymbol  : data
+[debug] set NameSizeDependsOn to: : null
+[debug] EMAPortArraySymbol  : encoding
+[debug] set NameSizeDependsOn to: : null
+[debug] CommonSymbolReference : Full information of 'Decoder' already loaded. Use cached version.
+[debug] CommonSymbolReference : Full information of 'Decoder' already loaded. Use cached version.
+[debug] exchangeGenerics inst : package vae;
+component /*instance*/ decoder {
+  ports
+    in CommonMatrixType encoding,
+    out CommonMatrixType data;
+}
+
+[debug] Fixing Wrong Ports : See next lines
+[debug] CommonSymbolReference : Full information of 'Decoder' already loaded. Use cached version.
+[debug] build end sym : package vae;
+component /*instance*/ decoder {
+  ports
+    in CommonMatrixType encoding,
+    out CommonMatrixType data;
+}
+
+[debug] EMADLModelLoader : Created symbol table for model "vae.Decoder".
+[trace]  : START resolveDownMany("vae.Decoder", "de.monticore.lang.embeddedmontiarc.embeddedmontiarc._symboltable.ComponentKind") in scope "Optional.empty". Found #0 (local)
+[debug] CommonScope : The symbol Decoder has already been resolved.
+[trace]  : START resolveDownMany("Decoder", "de.monticore.lang.embeddedmontiarc.embeddedmontiarc._symboltable.ComponentKind") in scope "Optional[Decoder]". Found #1 (local)
+[trace]  : END resolveDownMany("Decoder", "de.monticore.lang.embeddedmontiarc.embeddedmontiarc._symboltable.ComponentKind") in scope "Optional[Decoder]". Found #1
+[trace]  : END resolveDownMany("vae.Decoder", "de.monticore.lang.embeddedmontiarc.embeddedmontiarc._symboltable.ComponentKind") in scope "Optional.empty". Found #1
+[info] streamtest-generator : [2022-01-29 19:46:39.694]    -> parsed & resolved
+[info] streamtest-generator : [2022-01-29 19:46:39.695]  - vae/Encoder.emadl
+[trace]  : START resolveDownMany("vae.Encoder", "de.monticore.lang.embeddedmontiarc.embeddedmontiarc._symboltable.ComponentKind") in scope "Optional.empty". Found #0 (local)
+[trace]  : START resolveDownMany("Encoder", "de.monticore.lang.embeddedmontiarc.embeddedmontiarc._symboltable.ComponentKind") in scope "Optional[Decoder]". Found #0 (local)
+[trace]  : END resolveDownMany("Encoder", "de.monticore.lang.embeddedmontiarc.embeddedmontiarc._symboltable.ComponentKind") in scope "Optional[Decoder]". Found #0
+[trace]  : END resolveDownMany("vae.Encoder", "de.monticore.lang.embeddedmontiarc.embeddedmontiarc._symboltable.ComponentKind") in scope "Optional.empty". Found #0
+[debug] ModelingLanguageModelLoader : Start parsing model Location: file:/home/asmeta/wrk/vae/mnist-vae/standard-vae/training/src/main/emadl/vae/Encoder.emadl Package: vae/Encoder.emadl.
+[debug] ModelingLanguageModelLoader : Parsed model Location: file:/home/asmeta/wrk/vae/mnist-vae/standard-vae/training/src/main/emadl/vae/Encoder.emadl Package: vae/Encoder.emadl successfully.
+[debug] EMADLModelLoader : Start creation of symbol table for model "vae.Encoder".
+[debug] EmbeddedMontiArcSymbolTableCreator : Building Symboltable for Component: Encoder
+[debug] CommonScope : No resolver found for symbol targetKind "de.monticore.lang.monticar.ts.MCTypeSymbolKind" in scope "Optional[Encoder]"
+[debug] CommonScope : No resolver found for symbol targetKind "de.monticore.lang.monticar.ts.MCAttributeSymbolKind" in scope "Optional[Encoder]"
+[debug] CommonScope : No resolver found for symbol targetKind "de.monticore.symboltable.SymbolKind" in scope "Optional[Encoder]"
+[debug] CommonScope : No resolver found for symbol targetKind "de.monticore.symboltable.SymbolKind" in scope "Optional[Encoder]"
+[debug] CommonScope : No resolver found for symbol targetKind "de.monticore.symboltable.SymbolKind" in scope "Optional[Encoder]"
+[debug] CommonScope : No resolver found for symbol targetKind "de.monticore.symboltable.SymbolKind" in scope "Optional[Encoder]"
+[debug] CommonScope : No resolver found for symbol targetKind "de.monticore.lang.embeddedmontiarc.embeddedmontiarc._symboltable.ComponentKind" in scope "Optional[Encoder]"
+[debug] CommonScope : No resolver found for symbol targetKind "de.monticore.symboltable.SymbolKind" in scope "Optional[Encoder]"
+[debug] CommonScope : No resolver found for symbol targetKind "de.monticore.symboltable.SymbolKind" in scope "Optional[Encoder]"
+[debug] ComponentPreGeneric : package vae;
+component Encoder {
+}
+
+[debug] CommonScope : No resolver found for symbol targetKind "de.monticore.lang.monticar.ts.MCTypeSymbolKind" in scope "Optional[Encoder]"
+[debug] CommonScope : No resolver found for symbol targetKind "de.monticore.lang.monticar.ts.MCAttributeSymbolKind" in scope "Optional[Encoder]"
+[debug] CommonScope : No resolver found for symbol targetKind "de.monticore.symboltable.SymbolKind" in scope "Optional[Encoder]"
+[debug] CommonScope : No resolver found for symbol targetKind "de.monticore.symboltable.SymbolKind" in scope "Optional[Encoder]"
+[debug] CommonScope : No resolver found for symbol targetKind "de.monticore.symboltable.SymbolKind" in scope "Optional[Encoder]"
+[debug] CommonScope : No resolver found for symbol targetKind "de.monticore.symboltable.SymbolKind" in scope "Optional[Encoder]"
+[debug] CommonScope : No resolver found for symbol targetKind "de.monticore.lang.embeddedmontiarc.embeddedmontiarc._symboltable.ComponentKind" in scope "Optional[Encoder]"
+[debug] CommonScope : No resolver found for symbol targetKind "de.monticore.symboltable.SymbolKind" in scope "Optional[Encoder]"
+[debug] CommonScope : No resolver found for symbol targetKind "de.monticore.symboltable.SymbolKind" in scope "Optional[Encoder]"
+[debug] ComponentPostGeneric : package vae;
+component Encoder {
+}
+
+[debug] CommonScope : No resolver found for symbol targetKind "de.monticore.lang.monticar.ts.MCTypeSymbolKind" in scope "Optional[Encoder]"
+[debug] CommonScope : No resolver found for symbol targetKind "de.monticore.lang.monticar.ts.MCAttributeSymbolKind" in scope "Optional[Encoder]"
+[debug] CommonScope : No resolver found for symbol targetKind "de.monticore.symboltable.SymbolKind" in scope "Optional[Encoder]"
+[debug] CommonScope : No resolver found for symbol targetKind "de.monticore.symboltable.SymbolKind" in scope "Optional[Encoder]"
+[debug] CommonScope : No resolver found for symbol targetKind "de.monticore.symboltable.SymbolKind" in scope "Optional[Encoder]"
+[debug] CommonScope : No resolver found for symbol targetKind "de.monticore.symboltable.SymbolKind" in scope "Optional[Encoder]"
+[debug] CommonScope : No resolver found for symbol targetKind "de.monticore.lang.embeddedmontiarc.embeddedmontiarc._symboltable.ComponentKind" in scope "Optional[Encoder]"
+[debug] CommonScope : No resolver found for symbol targetKind "de.monticore.symboltable.SymbolKind" in scope "Optional[Encoder]"
+[debug] CommonScope : No resolver found for symbol targetKind "de.monticore.symboltable.SymbolKind" in scope "Optional[Encoder]"
+[debug] ComponentPreParam : package vae;
+component Encoder {
+}
+
+[debug] CommonScope : No resolver found for symbol targetKind "de.monticore.lang.monticar.ts.MCTypeSymbolKind" in scope "Optional[Encoder]"
+[debug] CommonScope : No resolver found for symbol targetKind "de.monticore.lang.monticar.ts.MCAttributeSymbolKind" in scope "Optional[Encoder]"
+[debug] CommonScope : No resolver found for symbol targetKind "de.monticore.symboltable.SymbolKind" in scope "Optional[Encoder]"
+[debug] CommonScope : No resolver found for symbol targetKind "de.monticore.symboltable.SymbolKind" in scope "Optional[Encoder]"
+[debug] CommonScope : No resolver found for symbol targetKind "de.monticore.symboltable.SymbolKind" in scope "Optional[Encoder]"
+[debug] CommonScope : No resolver found for symbol targetKind "de.monticore.symboltable.SymbolKind" in scope "Optional[Encoder]"
+[debug] CommonScope : No resolver found for symbol targetKind "de.monticore.lang.embeddedmontiarc.embeddedmontiarc._symboltable.ComponentKind" in scope "Optional[Encoder]"
+[debug] CommonScope : No resolver found for symbol targetKind "de.monticore.symboltable.SymbolKind" in scope "Optional[Encoder]"
+[debug] CommonScope : No resolver found for symbol targetKind "de.monticore.symboltable.SymbolKind" in scope "Optional[Encoder]"
+[debug] ComponentPostParam : package vae;
+component Encoder {
+}
+
+[trace]  : START resolveDownMany("vae.Encoder", "de.monticore.lang.embeddedmontiarc.embeddedmontiarc._symboltable.ComponentKind") in scope "Optional.empty". Found #0 (local)
+[trace]  : START resolveDownMany("Encoder", "de.monticore.lang.embeddedmontiarc.embeddedmontiarc._symboltable.ComponentKind") in scope "Optional[Decoder]". Found #0 (local)
+[trace]  : END resolveDownMany("Encoder", "de.monticore.lang.embeddedmontiarc.embeddedmontiarc._symboltable.ComponentKind") in scope "Optional[Decoder]". Found #0
+[debug] CommonScope : The symbol Encoder has already been resolved.
+[trace]  : START resolveDownMany("Encoder", "de.monticore.lang.embeddedmontiarc.embeddedmontiarc._symboltable.ComponentKind") in scope "Optional[Encoder]". Found #1 (local)
+[trace]  : END resolveDownMany("Encoder", "de.monticore.lang.embeddedmontiarc.embeddedmontiarc._symboltable.ComponentKind") in scope "Optional[Encoder]". Found #1
+[trace]  : END resolveDownMany("vae.Encoder", "de.monticore.lang.embeddedmontiarc.embeddedmontiarc._symboltable.ComponentKind") in scope "Optional.empty". Found #1
+[debug] info : data de.monticore.lang.monticar.common2._ast.ASTCommonMatrixType@6598caab
+[debug] info : encoding de.monticore.lang.monticar.common2._ast.ASTCommonMatrixType@47f2c722
+[debug] SymbolTableCreator: : endVisit of vae.Encoder
+[trace]  : START resolveDownMany("vae.encoder", "de.monticore.symboltable.SymbolKind") in scope "Optional[Encoder]". Found #0 (local)
+[trace]  : END resolveDownMany("vae.encoder", "de.monticore.symboltable.SymbolKind") in scope "Optional[Encoder]". Found #0
+[debug] SymbolReference : Load full information of 'Encoder' (Kind de.monticore.lang.embeddedmontiarc.embeddedmontiarc._symboltable.ComponentKind).
+[debug] CommonScope : The symbol Encoder has already been resolved.
+[debug] SymbolReference : Loaded full information of 'Encoder' successfully.
+[debug] SymbolReference : Load full information of 'Encoder' (Kind de.monticore.lang.embeddedmontiarc.embeddedmontiarc._symboltable.ComponentKind).
+[debug] CommonScope : The symbol Encoder has already been resolved.
+[debug] SymbolReference : Loaded full information of 'Encoder' successfully.
+[debug] EMAPortArraySymbol  : data
+[debug] set NameSizeDependsOn to: : null
+[debug] EMAPortArraySymbol  : encoding
+[debug] set NameSizeDependsOn to: : null
+[debug] CommonSymbolReference : Full information of 'Encoder' already loaded. Use cached version.
+[debug] CommonSymbolReference : Full information of 'Encoder' already loaded. Use cached version.
+[debug] exchangeGenerics inst : package vae;
+component /*instance*/ encoder {
+  ports
+    in CommonMatrixType data,
+    out CommonMatrixType encoding;
+}
+
+[debug] Fixing Wrong Ports : See next lines
+[debug] CommonSymbolReference : Full information of 'Encoder' already loaded. Use cached version.
+[debug] build end sym : package vae;
+component /*instance*/ encoder {
+  ports
+    in CommonMatrixType data,
+    out CommonMatrixType encoding;
+}
+
+[debug] EMADLModelLoader : Created symbol table for model "vae.Encoder".
+[trace]  : START resolveDownMany("vae.Encoder", "de.monticore.lang.embeddedmontiarc.embeddedmontiarc._symboltable.ComponentKind") in scope "Optional.empty". Found #0 (local)
+[trace]  : START resolveDownMany("Encoder", "de.monticore.lang.embeddedmontiarc.embeddedmontiarc._symboltable.ComponentKind") in scope "Optional[Decoder]". Found #0 (local)
+[trace]  : END resolveDownMany("Encoder", "de.monticore.lang.embeddedmontiarc.embeddedmontiarc._symboltable.ComponentKind") in scope "Optional[Decoder]". Found #0
+[debug] CommonScope : The symbol Encoder has already been resolved.
+[trace]  : START resolveDownMany("Encoder", "de.monticore.lang.embeddedmontiarc.embeddedmontiarc._symboltable.ComponentKind") in scope "Optional[Encoder]". Found #1 (local)
+[trace]  : END resolveDownMany("Encoder", "de.monticore.lang.embeddedmontiarc.embeddedmontiarc._symboltable.ComponentKind") in scope "Optional[Encoder]". Found #1
+[trace]  : END resolveDownMany("vae.Encoder", "de.monticore.lang.embeddedmontiarc.embeddedmontiarc._symboltable.ComponentKind") in scope "Optional.empty". Found #1
+[info] streamtest-generator : [2022-01-29 19:46:39.835]    -> parsed & resolved
+[info] streamtest-generator : [2022-01-29 19:46:39.835]  - vae/Connector.emadl
+[trace]  : START resolveDownMany("vae.Connector", "de.monticore.lang.embeddedmontiarc.embeddedmontiarc._symboltable.ComponentKind") in scope "Optional.empty". Found #0 (local)
+[trace]  : START resolveDownMany("Connector", "de.monticore.lang.embeddedmontiarc.embeddedmontiarc._symboltable.ComponentKind") in scope "Optional[Decoder]". Found #0 (local)
+[trace]  : END resolveDownMany("Connector", "de.monticore.lang.embeddedmontiarc.embeddedmontiarc._symboltable.ComponentKind") in scope "Optional[Decoder]". Found #0
+[trace]  : START resolveDownMany("Connector", "de.monticore.lang.embeddedmontiarc.embeddedmontiarc._symboltable.ComponentKind") in scope "Optional[Encoder]". Found #0 (local)
+[trace]  : END resolveDownMany("Connector", "de.monticore.lang.embeddedmontiarc.embeddedmontiarc._symboltable.ComponentKind") in scope "Optional[Encoder]". Found #0
+[trace]  : END resolveDownMany("vae.Connector", "de.monticore.lang.embeddedmontiarc.embeddedmontiarc._symboltable.ComponentKind") in scope "Optional.empty". Found #0
+[debug] ModelingLanguageModelLoader : Start parsing model Location: file:/home/asmeta/wrk/vae/mnist-vae/standard-vae/training/src/main/emadl/vae/Connector.emadl Package: vae/Connector.emadl.
+[debug] ModelingLanguageModelLoader : Parsed model Location: file:/home/asmeta/wrk/vae/mnist-vae/standard-vae/training/src/main/emadl/vae/Connector.emadl Package: vae/Connector.emadl successfully.
+[debug] EMADLModelLoader : Start creation of symbol table for model "vae.Connector".
+[debug] EmbeddedMontiArcSymbolTableCreator : Building Symboltable for Component: Connector
+[debug] CommonScope : No resolver found for symbol targetKind "de.monticore.lang.monticar.ts.MCTypeSymbolKind" in scope "Optional[Connector]"
+[debug] CommonScope : No resolver found for symbol targetKind "de.monticore.lang.monticar.ts.MCAttributeSymbolKind" in scope "Optional[Connector]"
+[debug] CommonScope : No resolver found for symbol targetKind "de.monticore.symboltable.SymbolKind" in scope "Optional[Connector]"
+[debug] CommonScope : No resolver found for symbol targetKind "de.monticore.symboltable.SymbolKind" in scope "Optional[Connector]"
+[debug] CommonScope : No resolver found for symbol targetKind "de.monticore.symboltable.SymbolKind" in scope "Optional[Connector]"
+[debug] CommonScope : No resolver found for symbol targetKind "de.monticore.symboltable.SymbolKind" in scope "Optional[Connector]"
+[debug] CommonScope : No resolver found for symbol targetKind "de.monticore.lang.embeddedmontiarc.embeddedmontiarc._symboltable.ComponentKind" in scope "Optional[Connector]"
+[debug] CommonScope : No resolver found for symbol targetKind "de.monticore.symboltable.SymbolKind" in scope "Optional[Connector]"
+[debug] CommonScope : No resolver found for symbol targetKind "de.monticore.symboltable.SymbolKind" in scope "Optional[Connector]"
+[debug] ComponentPreGeneric : package vae;
+component Connector {
+}
+
+[debug] CommonScope : No resolver found for symbol targetKind "de.monticore.lang.monticar.ts.MCTypeSymbolKind" in scope "Optional[Connector]"
+[debug] CommonScope : No resolver found for symbol targetKind "de.monticore.lang.monticar.ts.MCAttributeSymbolKind" in scope "Optional[Connector]"
+[debug] CommonScope : No resolver found for symbol targetKind "de.monticore.symboltable.SymbolKind" in scope "Optional[Connector]"
+[debug] CommonScope : No resolver found for symbol targetKind "de.monticore.symboltable.SymbolKind" in scope "Optional[Connector]"
+[debug] CommonScope : No resolver found for symbol targetKind "de.monticore.symboltable.SymbolKind" in scope "Optional[Connector]"
+[debug] CommonScope : No resolver found for symbol targetKind "de.monticore.symboltable.SymbolKind" in scope "Optional[Connector]"
+[debug] CommonScope : No resolver found for symbol targetKind "de.monticore.lang.embeddedmontiarc.embeddedmontiarc._symboltable.ComponentKind" in scope "Optional[Connector]"
+[debug] CommonScope : No resolver found for symbol targetKind "de.monticore.symboltable.SymbolKind" in scope "Optional[Connector]"
+[debug] CommonScope : No resolver found for symbol targetKind "de.monticore.symboltable.SymbolKind" in scope "Optional[Connector]"
+[debug] ComponentPostGeneric : package vae;
+component Connector {
+}
+
+[debug] CommonScope : No resolver found for symbol targetKind "de.monticore.lang.monticar.ts.MCTypeSymbolKind" in scope "Optional[Connector]"
+[debug] CommonScope : No resolver found for symbol targetKind "de.monticore.lang.monticar.ts.MCAttributeSymbolKind" in scope "Optional[Connector]"
+[debug] CommonScope : No resolver found for symbol targetKind "de.monticore.symboltable.SymbolKind" in scope "Optional[Connector]"
+[debug] CommonScope : No resolver found for symbol targetKind "de.monticore.symboltable.SymbolKind" in scope "Optional[Connector]"
+[debug] CommonScope : No resolver found for symbol targetKind "de.monticore.symboltable.SymbolKind" in scope "Optional[Connector]"
+[debug] CommonScope : No resolver found for symbol targetKind "de.monticore.symboltable.SymbolKind" in scope "Optional[Connector]"
+[debug] CommonScope : No resolver found for symbol targetKind "de.monticore.lang.embeddedmontiarc.embeddedmontiarc._symboltable.ComponentKind" in scope "Optional[Connector]"
+[debug] CommonScope : No resolver found for symbol targetKind "de.monticore.symboltable.SymbolKind" in scope "Optional[Connector]"
+[debug] CommonScope : No resolver found for symbol targetKind "de.monticore.symboltable.SymbolKind" in scope "Optional[Connector]"
+[debug] ComponentPreParam : package vae;
+component Connector {
+}
+
+[debug] CommonScope : No resolver found for symbol targetKind "de.monticore.lang.monticar.ts.MCTypeSymbolKind" in scope "Optional[Connector]"
+[debug] CommonScope : No resolver found for symbol targetKind "de.monticore.lang.monticar.ts.MCAttributeSymbolKind" in scope "Optional[Connector]"
+[debug] CommonScope : No resolver found for symbol targetKind "de.monticore.symboltable.SymbolKind" in scope "Optional[Connector]"
+[debug] CommonScope : No resolver found for symbol targetKind "de.monticore.symboltable.SymbolKind" in scope "Optional[Connector]"
+[debug] CommonScope : No resolver found for symbol targetKind "de.monticore.symboltable.SymbolKind" in scope "Optional[Connector]"
+[debug] CommonScope : No resolver found for symbol targetKind "de.monticore.symboltable.SymbolKind" in scope "Optional[Connector]"
+[debug] CommonScope : No resolver found for symbol targetKind "de.monticore.lang.embeddedmontiarc.embeddedmontiarc._symboltable.ComponentKind" in scope "Optional[Connector]"
+[debug] CommonScope : No resolver found for symbol targetKind "de.monticore.symboltable.SymbolKind" in scope "Optional[Connector]"
+[debug] CommonScope : No resolver found for symbol targetKind "de.monticore.symboltable.SymbolKind" in scope "Optional[Connector]"
+[debug] ComponentPostParam : package vae;
+component Connector {
+}
+
+[trace]  : START resolveDownMany("vae.Connector", "de.monticore.lang.embeddedmontiarc.embeddedmontiarc._symboltable.ComponentKind") in scope "Optional.empty". Found #0 (local)
+[trace]  : START resolveDownMany("Connector", "de.monticore.lang.embeddedmontiarc.embeddedmontiarc._symboltable.ComponentKind") in scope "Optional[Decoder]". Found #0 (local)
+[trace]  : END resolveDownMany("Connector", "de.monticore.lang.embeddedmontiarc.embeddedmontiarc._symboltable.ComponentKind") in scope "Optional[Decoder]". Found #0
+[trace]  : START resolveDownMany("Connector", "de.monticore.lang.embeddedmontiarc.embeddedmontiarc._symboltable.ComponentKind") in scope "Optional[Encoder]". Found #0 (local)
+[trace]  : END resolveDownMany("Connector", "de.monticore.lang.embeddedmontiarc.embeddedmontiarc._symboltable.ComponentKind") in scope "Optional[Encoder]". Found #0
+[debug] CommonScope : The symbol Connector has already been resolved.
+[trace]  : START resolveDownMany("Connector", "de.monticore.lang.embeddedmontiarc.embeddedmontiarc._symboltable.ComponentKind") in scope "Optional[Connector]". Found #1 (local)
+[trace]  : END resolveDownMany("Connector", "de.monticore.lang.embeddedmontiarc.embeddedmontiarc._symboltable.ComponentKind") in scope "Optional[Connector]". Found #1
+[trace]  : END resolveDownMany("vae.Connector", "de.monticore.lang.embeddedmontiarc.embeddedmontiarc._symboltable.ComponentKind") in scope "Optional.empty". Found #1
+[debug] info : data de.monticore.lang.monticar.common2._ast.ASTCommonMatrixType@4c6bba7d
+[debug] info : res de.monticore.lang.monticar.common2._ast.ASTCommonMatrixType@41e8d917
+[debug] Type : de.monticore.types.types._ast.ASTSimpleReferenceType@2ae5bd34
+[debug] referencedCompName : Decoder
+[debug] Scope : {=[, , , , , , , ], data=[in CommonMatrixType data], res=[out CommonMatrixType res]}
+[debug] SymbolReference : Load full information of 'Decoder' (Kind de.monticore.lang.embeddedmontiarc.embeddedmontiarc._symboltable.ComponentKind).
+[trace] CommonQualifiedNamesCalculator : Potential qualified names for "Decoder": [Decoder, vae.Decoder]
+[trace]  : START resolveDownMany("Decoder", "de.monticore.lang.embeddedmontiarc.embeddedmontiarc._symboltable.ComponentKind") in scope "Optional.empty". Found #0 (local)
+[trace]  : END resolveDownMany("Decoder", "de.monticore.lang.embeddedmontiarc.embeddedmontiarc._symboltable.ComponentKind") in scope "Optional.empty". Found #0
+[trace]  : START resolveDownMany("Decoder", "de.monticore.lang.embeddedmontiarc.embeddedmontiarc._symboltable.ComponentKind") in scope "Optional.empty". Found #0 (local)
+[trace]  : END resolveDownMany("Decoder", "de.monticore.lang.embeddedmontiarc.embeddedmontiarc._symboltable.ComponentKind") in scope "Optional.empty". Found #0
+[trace]  : START resolveDownMany("vae.Decoder", "de.monticore.lang.embeddedmontiarc.embeddedmontiarc._symboltable.ComponentKind") in scope "Optional.empty". Found #0 (local)
+[debug] CommonScope : The symbol Decoder has already been resolved.
+[trace]  : START resolveDownMany("Decoder", "de.monticore.lang.embeddedmontiarc.embeddedmontiarc._symboltable.ComponentKind") in scope "Optional[Decoder]". Found #1 (local)
+[trace]  : END resolveDownMany("Decoder", "de.monticore.lang.embeddedmontiarc.embeddedmontiarc._symboltable.ComponentKind") in scope "Optional[Decoder]". Found #1
+[trace]  : START resolveDownMany("Decoder", "de.monticore.lang.embeddedmontiarc.embeddedmontiarc._symboltable.ComponentKind") in scope "Optional[Encoder]". Found #0 (local)
+[trace]  : END resolveDownMany("Decoder", "de.monticore.lang.embeddedmontiarc.embeddedmontiarc._symboltable.ComponentKind") in scope "Optional[Encoder]". Found #0
+[trace]  : START resolveDownMany("Decoder", "de.monticore.lang.embeddedmontiarc.embeddedmontiarc._symboltable.ComponentKind") in scope "Optional[Connector]". Found #0 (local)
+[trace]  : END resolveDownMany("Decoder", "de.monticore.lang.embeddedmontiarc.embeddedmontiarc._symboltable.ComponentKind") in scope "Optional[Connector]". Found #0
+[trace]  : END resolveDownMany("vae.Decoder", "de.monticore.lang.embeddedmontiarc.embeddedmontiarc._symboltable.ComponentKind") in scope "Optional.empty". Found #1
+[debug] SymbolReference : Loaded full information of 'Decoder' successfully.
+[debug] info : Loading resolution declarationSymbols
+[debug] SymbolReference : Load full information of 'Decoder' (Kind de.monticore.lang.embeddedmontiarc.embeddedmontiarc._symboltable.ComponentKind).
+[trace] CommonQualifiedNamesCalculator : Potential qualified names for "Decoder": [Decoder, vae.Decoder]
+[trace]  : START resolveDownMany("Decoder", "de.monticore.lang.embeddedmontiarc.embeddedmontiarc._symboltable.ComponentKind") in scope "Optional.empty". Found #0 (local)
+[trace]  : END resolveDownMany("Decoder", "de.monticore.lang.embeddedmontiarc.embeddedmontiarc._symboltable.ComponentKind") in scope "Optional.empty". Found #0
+[debug] GlobalScope : Already tried to load model for 'Decoder'. If model exists, continue with cached version.
+[debug] GlobalScope : Already tried to load model for 'Decoder'. If model exists, continue with cached version.
+[trace]  : START resolveDownMany("Decoder", "de.monticore.lang.embeddedmontiarc.embeddedmontiarc._symboltable.ComponentKind") in scope "Optional.empty". Found #0 (local)
+[trace]  : END resolveDownMany("Decoder", "de.monticore.lang.embeddedmontiarc.embeddedmontiarc._symboltable.ComponentKind") in scope "Optional.empty". Found #0
+[trace]  : START resolveDownMany("vae.Decoder", "de.monticore.lang.embeddedmontiarc.embeddedmontiarc._symboltable.ComponentKind") in scope "Optional.empty". Found #0 (local)
+[debug] CommonScope : The symbol Decoder has already been resolved.
+[trace]  : START resolveDownMany("Decoder", "de.monticore.lang.embeddedmontiarc.embeddedmontiarc._symboltable.ComponentKind") in scope "Optional[Decoder]". Found #1 (local)
+[trace]  : END resolveDownMany("Decoder", "de.monticore.lang.embeddedmontiarc.embeddedmontiarc._symboltable.ComponentKind") in scope "Optional[Decoder]". Found #1
+[trace]  : START resolveDownMany("Decoder", "de.monticore.lang.embeddedmontiarc.embeddedmontiarc._symboltable.ComponentKind") in scope "Optional[Encoder]". Found #0 (local)
+[trace]  : END resolveDownMany("Decoder", "de.monticore.lang.embeddedmontiarc.embeddedmontiarc._symboltable.ComponentKind") in scope "Optional[Encoder]". Found #0
+[trace]  : START resolveDownMany("Decoder", "de.monticore.lang.embeddedmontiarc.embeddedmontiarc._symboltable.ComponentKind") in scope "Optional[Connector]". Found #0 (local)
+[trace]  : END resolveDownMany("Decoder", "de.monticore.lang.embeddedmontiarc.embeddedmontiarc._symboltable.ComponentKind") in scope "Optional[Connector]". Found #0
+[trace]  : END resolveDownMany("vae.Decoder", "de.monticore.lang.embeddedmontiarc.embeddedmontiarc._symboltable.ComponentKind") in scope "Optional.empty". Found #1
+[debug] SymbolReference : Loaded full information of 'Decoder' successfully.
+[debug] CommonSymbolReference : Full information of 'Decoder' already loaded. Use cached version.
+[debug] CommonSymbolReference : Full information of 'Decoder' already loaded. Use cached version.
+[debug] CommonSymbolReference : Full information of 'Decoder' already loaded. Use cached version.
+[debug] Pre Handle Size: : de.monticore.types.types._ast.ASTSimpleReferenceType@2ae5bd34
+[debug] CommonSymbolReference : Full information of 'Decoder' already loaded. Use cached version.
+[debug] Test : Decoder decoder
+[debug] SubComponentInstance Scope : {}
+[info] CompInst : 
+[info] Added InstanceInformation : ComponentName: decoder  de.monticore.lang.embeddedmontiarcdynamic.embeddedmontiarcdynamic._ast.ASTSubComponentInstance@57c6feea
+[debug] created SubComponentInstance: : decoder
+[debug] PortArray : No PortArrayName was specified
+[debug] CompNameParts : portName: de.monticore.lang.monticar.common2._ast.ASTQualifiedNameWithArray@3b57f915 1
+[debug] PortNameParts : 1
+[info] SourcePorts : 1
+[debug] PortArray : No PortArrayName was specified
+[debug] CompNameParts : portName: de.monticore.lang.monticar.common2._ast.ASTQualifiedNameWithArray@39c7fb0b 1
+[debug] PortNameParts : 1
+[info] target : decoder.encoding
+[info] source : data
+[info] TARGETNAME SET TO : decoder.encoding
+[debug] PortArray : No PortArrayName was specified
+[debug] CompNameParts : portName: de.monticore.lang.monticar.common2._ast.ASTQualifiedNameWithArray@17884d 1
+[debug] PortNameParts : 1
+[info] SourcePorts : 1
+[debug] PortArray : No PortArrayName was specified
+[debug] CompNameParts : portName: de.monticore.lang.monticar.common2._ast.ASTQualifiedNameWithArray@68e24e7 1
+[debug] PortNameParts : 1
+[info] target : res
+[info] source : decoder.data
+[info] TARGETNAME SET TO : res
+[debug] SymbolTableCreator: : endVisit of vae.Connector
+[trace]  : START resolveDownMany("vae.connector", "de.monticore.symboltable.SymbolKind") in scope "Optional[Connector]". Found #0 (local)
+[trace]  : END resolveDownMany("vae.connector", "de.monticore.symboltable.SymbolKind") in scope "Optional[Connector]". Found #0
+[debug] SymbolReference : Load full information of 'Connector' (Kind de.monticore.lang.embeddedmontiarc.embeddedmontiarc._symboltable.ComponentKind).
+[debug] CommonScope : The symbol Connector has already been resolved.
+[debug] SymbolReference : Loaded full information of 'Connector' successfully.
+[debug] SymbolReference : Load full information of 'Connector' (Kind de.monticore.lang.embeddedmontiarc.embeddedmontiarc._symboltable.ComponentKind).
+[debug] CommonScope : The symbol Connector has already been resolved.
+[debug] SymbolReference : Loaded full information of 'Connector' successfully.
+[info] Building Connector: : data -> decoder.encoding
+[info] Building Connector: : decoder.data -> res
+[debug] CommonSymbolReference : Full information of 'Decoder' already loaded. Use cached version.
+[info] Important: : 0
+[debug] CommonSymbolReference : Full information of 'Decoder' already loaded. Use cached version.
+[debug] ComponentInstance CreateInstance PreSub : Decoder decoder
+[debug] CommonSymbolReference : Full information of 'Decoder' already loaded. Use cached version.
+[debug] CommonSymbolReference : Full information of 'Decoder' already loaded. Use cached version.
+[debug] CommonSymbolReference : Full information of 'Decoder' already loaded. Use cached version.
+[debug] SymbolReference : Load full information of 'Decoder' (Kind de.monticore.lang.embeddedmontiarc.embeddedmontiarc._symboltable.ComponentKind).
+[debug] CommonScope : The symbol Decoder has already been resolved.
+[debug] SymbolReference : Loaded full information of 'Decoder' successfully.
+[debug] SymbolReference : Load full information of 'Decoder' (Kind de.monticore.lang.embeddedmontiarc.embeddedmontiarc._symboltable.ComponentKind).
+[debug] CommonScope : The symbol Decoder has already been resolved.
+[debug] SymbolReference : Loaded full information of 'Decoder' successfully.
+[debug] CommonSymbolReference : Full information of 'Decoder' already loaded. Use cached version.
+[debug] CommonSymbolReference : Full information of 'Decoder' already loaded. Use cached version.
+[debug] EMAPortArraySymbol  : data
+[debug] set NameSizeDependsOn to: : null
+[debug] EMAPortArraySymbol  : encoding
+[debug] set NameSizeDependsOn to: : null
+[debug] CommonSymbolReference : Full information of 'Decoder' already loaded. Use cached version.
+[debug] CommonSymbolReference : Full information of 'Decoder' already loaded. Use cached version.
+[debug] exchangeGenerics inst : package vae;
+component /*instance*/ decoder {
+  ports
+    in CommonMatrixType encoding,
+    out CommonMatrixType data;
+}
+
+[debug] Fixing Wrong Ports : See next lines
+[debug] CommonSymbolReference : Full information of 'Decoder' already loaded. Use cached version.
+[debug] build end sym : package vae;
+component /*instance*/ decoder {
+  ports
+    in CommonMatrixType encoding,
+    out CommonMatrixType data;
+}
+
+[debug] InstanceInformation: : -1
+[debug] CommonSymbolReference : Full information of 'Decoder' already loaded. Use cached version.
+[debug] ComponentInstance CreateInstance PostSub : Decoder decoder
+[debug] EMAPortArraySymbol  : res
+[debug] set NameSizeDependsOn to: : null
+[debug] EMAPortArraySymbol  : data
+[debug] set NameSizeDependsOn to: : null
+[debug] CommonSymbolReference : Full information of 'Connector' already loaded. Use cached version.
+[trace] CommonQualifiedNamesCalculator : Potential qualified names for "": [, vae.]
+[trace]  : START resolveDownMany("", "de.monticore.lang.monticar.cnnarch._symboltable.ArchitectureKind") in scope "Optional.empty". Found #0 (local)
+[trace]  : END resolveDownMany("", "de.monticore.lang.monticar.cnnarch._symboltable.ArchitectureKind") in scope "Optional.empty". Found #0
+[trace]  : START resolveDownMany("", "de.monticore.lang.monticar.cnnarch._symboltable.ArchitectureKind") in scope "Optional.empty". Found #0 (local)
+[trace]  : END resolveDownMany("", "de.monticore.lang.monticar.cnnarch._symboltable.ArchitectureKind") in scope "Optional.empty". Found #0
+[trace]  : START resolveDownMany("vae.", "de.monticore.lang.monticar.cnnarch._symboltable.ArchitectureKind") in scope "Optional.empty". Found #0 (local)
+[trace]  : START resolveDownMany("", "de.monticore.lang.monticar.cnnarch._symboltable.ArchitectureKind") in scope "Optional[Decoder]". Found #0 (local)
+[trace]  : END resolveDownMany("", "de.monticore.lang.monticar.cnnarch._symboltable.ArchitectureKind") in scope "Optional[Decoder]". Found #0
+[trace]  : START resolveDownMany("", "de.monticore.lang.monticar.cnnarch._symboltable.ArchitectureKind") in scope "Optional[Encoder]". Found #0 (local)
+[trace]  : END resolveDownMany("", "de.monticore.lang.monticar.cnnarch._symboltable.ArchitectureKind") in scope "Optional[Encoder]". Found #0
+[trace]  : START resolveDownMany("", "de.monticore.lang.monticar.cnnarch._symboltable.ArchitectureKind") in scope "Optional[Connector]". Found #0 (local)
+[trace]  : END resolveDownMany("", "de.monticore.lang.monticar.cnnarch._symboltable.ArchitectureKind") in scope "Optional[Connector]". Found #0
+[trace]  : END resolveDownMany("vae.", "de.monticore.lang.monticar.cnnarch._symboltable.ArchitectureKind") in scope "Optional.empty". Found #0
+[trace]  : START resolveDownMany("vae.", "de.monticore.lang.monticar.cnnarch._symboltable.ArchitectureKind") in scope "Optional.empty". Found #0 (local)
+[trace]  : START resolveDownMany("", "de.monticore.lang.monticar.cnnarch._symboltable.ArchitectureKind") in scope "Optional[Decoder]". Found #0 (local)
+[trace]  : END resolveDownMany("", "de.monticore.lang.monticar.cnnarch._symboltable.ArchitectureKind") in scope "Optional[Decoder]". Found #0
+[trace]  : START resolveDownMany("", "de.monticore.lang.monticar.cnnarch._symboltable.ArchitectureKind") in scope "Optional[Encoder]". Found #0 (local)
+[trace]  : END resolveDownMany("", "de.monticore.lang.monticar.cnnarch._symboltable.ArchitectureKind") in scope "Optional[Encoder]". Found #0
+[trace]  : START resolveDownMany("", "de.monticore.lang.monticar.cnnarch._symboltable.ArchitectureKind") in scope "Optional[Connector]". Found #0 (local)
+[trace]  : END resolveDownMany("", "de.monticore.lang.monticar.cnnarch._symboltable.ArchitectureKind") in scope "Optional[Connector]". Found #0
+[trace]  : END resolveDownMany("vae.", "de.monticore.lang.monticar.cnnarch._symboltable.ArchitectureKind") in scope "Optional.empty". Found #0
+[debug] CommonSymbolReference : Full information of 'Connector' already loaded. Use cached version.
+[debug] CommonSymbolReference : Full information of 'Decoder' already loaded. Use cached version.
+[debug] exchangeGenerics inst : package vae;
+component /*instance*/ connector {
+  ports
+    in CommonMatrixType data,
+    out CommonMatrixType res;
+  component /*instance*/ decoder {
+    ports
+      in CommonMatrixType encoding,
+      out CommonMatrixType data;
+  }
+  connect decoder.data -> res;
+  connect data -> decoder.encoding;
+}
+
+[debug] CommonSymbolReference : Full information of 'Decoder' already loaded. Use cached version.
+[debug] ComponentType : component Decoder {
+  ports
+    in CommonMatrixType encoding,
+    out CommonMatrixType data;
+}
+
+[debug] FormalTypeParameters : []
+[debug] CommonSymbolReference : Full information of 'Decoder' already loaded. Use cached version.
+[debug] exchangeGenerics inst : package vae;
+component /*instance*/ decoder {
+  ports
+    in CommonMatrixType encoding,
+    out CommonMatrixType data;
+}
+
+[debug] Fixing Wrong Ports : See next lines
+[debug] Fixing Wrong Ports : See next lines
+[debug] CommonSymbolReference : Full information of 'Connector' already loaded. Use cached version.
+[debug] CommonSymbolReference : Full information of 'Decoder' already loaded. Use cached version.
+[debug] build end sym : package vae;
+component /*instance*/ connector {
+  ports
+    in CommonMatrixType data,
+    out CommonMatrixType res;
+  component /*instance*/ decoder {
+    ports
+      in CommonMatrixType encoding,
+      out CommonMatrixType data;
+  }
+  connect decoder.data -> res;
+  connect data -> decoder.encoding;
+}
+
+[debug] EMADLModelLoader : Created symbol table for model "vae.Connector".
+[trace]  : START resolveDownMany("vae.Connector", "de.monticore.lang.embeddedmontiarc.embeddedmontiarc._symboltable.ComponentKind") in scope "Optional.empty". Found #0 (local)
+[trace]  : START resolveDownMany("Connector", "de.monticore.lang.embeddedmontiarc.embeddedmontiarc._symboltable.ComponentKind") in scope "Optional[Decoder]". Found #0 (local)
+[trace]  : END resolveDownMany("Connector", "de.monticore.lang.embeddedmontiarc.embeddedmontiarc._symboltable.ComponentKind") in scope "Optional[Decoder]". Found #0
+[trace]  : START resolveDownMany("Connector", "de.monticore.lang.embeddedmontiarc.embeddedmontiarc._symboltable.ComponentKind") in scope "Optional[Encoder]". Found #0 (local)
+[trace]  : END resolveDownMany("Connector", "de.monticore.lang.embeddedmontiarc.embeddedmontiarc._symboltable.ComponentKind") in scope "Optional[Encoder]". Found #0
+[debug] CommonScope : The symbol Connector has already been resolved.
+[trace]  : START resolveDownMany("Connector", "de.monticore.lang.embeddedmontiarc.embeddedmontiarc._symboltable.ComponentKind") in scope "Optional[Connector]". Found #1 (local)
+[trace]  : END resolveDownMany("Connector", "de.monticore.lang.embeddedmontiarc.embeddedmontiarc._symboltable.ComponentKind") in scope "Optional[Connector]". Found #1
+[trace]  : END resolveDownMany("vae.Connector", "de.monticore.lang.embeddedmontiarc.embeddedmontiarc._symboltable.ComponentKind") in scope "Optional.empty". Found #1
+[info] streamtest-generator : [2022-01-29 19:46:39.956]    -> parsed & resolved
+[info] streamtest-generator : [2022-01-29 19:46:40.002] Searching components (with wrapper) with streamtests.
+[info] streamtest-generator : [2022-01-29 19:46:40.003]  - vae.Connector
+[warn] [2022-01-29 19:46:40.003]    -> No streamtest found for vae.Connector
+[trace]  : START resolveDownMany("vae.Connector", "de.monticore.lang.embeddedmontiarc.embeddedmontiarc._symboltable.ComponentKind") in scope "Optional.empty". Found #0 (local)
+[trace]  : START resolveDownMany("Connector", "de.monticore.lang.embeddedmontiarc.embeddedmontiarc._symboltable.ComponentKind") in scope "Optional[Decoder]". Found #0 (local)
+[trace]  : END resolveDownMany("Connector", "de.monticore.lang.embeddedmontiarc.embeddedmontiarc._symboltable.ComponentKind") in scope "Optional[Decoder]". Found #0
+[trace]  : START resolveDownMany("Connector", "de.monticore.lang.embeddedmontiarc.embeddedmontiarc._symboltable.ComponentKind") in scope "Optional[Encoder]". Found #0 (local)
+[trace]  : END resolveDownMany("Connector", "de.monticore.lang.embeddedmontiarc.embeddedmontiarc._symboltable.ComponentKind") in scope "Optional[Encoder]". Found #0
+[debug] CommonScope : The symbol Connector has already been resolved.
+[trace]  : START resolveDownMany("Connector", "de.monticore.lang.embeddedmontiarc.embeddedmontiarc._symboltable.ComponentKind") in scope "Optional[Connector]". Found #1 (local)
+[trace]  : END resolveDownMany("Connector", "de.monticore.lang.embeddedmontiarc.embeddedmontiarc._symboltable.ComponentKind") in scope "Optional[Connector]". Found #1
+[trace]  : END resolveDownMany("vae.Connector", "de.monticore.lang.embeddedmontiarc.embeddedmontiarc._symboltable.ComponentKind") in scope "Optional.empty". Found #1
+[info] streamtest-generator : [2022-01-29 19:46:40.034]  - vae.Encoder
+[warn] [2022-01-29 19:46:40.035]    -> No streamtest found for vae.Encoder
+[info] streamtest-generator : [2022-01-29 19:46:40.035]  - vae.Decoder
+[warn] [2022-01-29 19:46:40.035]    -> No streamtest found for vae.Decoder
+[info] streamtest-generator : [2022-01-29 19:46:40.036] Generate CPP:
+[info] streamtest-generator : [2022-01-29 19:46:40.036]  - vae.Connector = vae.connector
+[trace]  : START resolveDownMany("vae.connector", "de.monticore.symboltable.SymbolKind") in scope "Optional.empty". Found #0 (local)
+[trace]  : START resolveDownMany("connector", "de.monticore.symboltable.SymbolKind") in scope "Optional[Decoder]". Found #0 (local)
+[trace]  : END resolveDownMany("connector", "de.monticore.symboltable.SymbolKind") in scope "Optional[Decoder]". Found #0
+[trace]  : START resolveDownMany("connector", "de.monticore.symboltable.SymbolKind") in scope "Optional[Encoder]". Found #0 (local)
+[trace]  : END resolveDownMany("connector", "de.monticore.symboltable.SymbolKind") in scope "Optional[Encoder]". Found #0
+[debug] CommonScope : The symbol connector has already been resolved.
+[trace]  : START resolveDownMany("connector", "de.monticore.symboltable.SymbolKind") in scope "Optional[Connector]". Found #1 (local)
+[trace]  : END resolveDownMany("connector", "de.monticore.symboltable.SymbolKind") in scope "Optional[Connector]". Found #1
+[trace]  : END resolveDownMany("vae.connector", "de.monticore.symboltable.SymbolKind") in scope "Optional.empty". Found #1
+[trace] CommonQualifiedNamesCalculator : Potential qualified names for "MathStatements": [MathStatements, vae.MathStatements]
+[trace]  : START resolveDownMany("MathStatements", "de.monticore.symboltable.SymbolKind") in scope "Optional.empty". Found #0 (local)
+[trace]  : END resolveDownMany("MathStatements", "de.monticore.symboltable.SymbolKind") in scope "Optional.empty". Found #0
+[trace]  : START resolveDownMany("MathStatements", "de.monticore.symboltable.SymbolKind") in scope "Optional.empty". Found #0 (local)
+[trace]  : END resolveDownMany("MathStatements", "de.monticore.symboltable.SymbolKind") in scope "Optional.empty". Found #0
+[trace]  : START resolveDownMany("vae.MathStatements", "de.monticore.symboltable.SymbolKind") in scope "Optional.empty". Found #0 (local)
+[trace]  : START resolveDownMany("MathStatements", "de.monticore.symboltable.SymbolKind") in scope "Optional[Decoder]". Found #0 (local)
+[trace]  : END resolveDownMany("MathStatements", "de.monticore.symboltable.SymbolKind") in scope "Optional[Decoder]". Found #0
+[trace]  : START resolveDownMany("MathStatements", "de.monticore.symboltable.SymbolKind") in scope "Optional[Encoder]". Found #0 (local)
+[trace]  : END resolveDownMany("MathStatements", "de.monticore.symboltable.SymbolKind") in scope "Optional[Encoder]". Found #0
+[trace]  : START resolveDownMany("MathStatements", "de.monticore.symboltable.SymbolKind") in scope "Optional[Connector]". Found #0 (local)
+[trace]  : END resolveDownMany("MathStatements", "de.monticore.symboltable.SymbolKind") in scope "Optional[Connector]". Found #0
+[trace]  : END resolveDownMany("vae.MathStatements", "de.monticore.symboltable.SymbolKind") in scope "Optional.empty". Found #0
+[trace]  : START resolveDownMany("vae.MathStatements", "de.monticore.symboltable.SymbolKind") in scope "Optional.empty". Found #0 (local)
+[trace]  : START resolveDownMany("MathStatements", "de.monticore.symboltable.SymbolKind") in scope "Optional[Decoder]". Found #0 (local)
+[trace]  : END resolveDownMany("MathStatements", "de.monticore.symboltable.SymbolKind") in scope "Optional[Decoder]". Found #0
+[trace]  : START resolveDownMany("MathStatements", "de.monticore.symboltable.SymbolKind") in scope "Optional[Encoder]". Found #0 (local)
+[trace]  : END resolveDownMany("MathStatements", "de.monticore.symboltable.SymbolKind") in scope "Optional[Encoder]". Found #0
+[trace]  : START resolveDownMany("MathStatements", "de.monticore.symboltable.SymbolKind") in scope "Optional[Connector]". Found #0 (local)
+[trace]  : END resolveDownMany("MathStatements", "de.monticore.symboltable.SymbolKind") in scope "Optional[Connector]". Found #0
+[trace]  : END resolveDownMany("vae.MathStatements", "de.monticore.symboltable.SymbolKind") in scope "Optional.empty". Found #0
+[trace]  : START resolveDownMany("vae.Connector.MathStatements", "de.monticore.symboltable.SymbolKind") in scope "Optional.empty". Found #0 (local)
+[trace]  : START resolveDownMany("Connector.MathStatements", "de.monticore.symboltable.SymbolKind") in scope "Optional[Decoder]". Found #0 (local)
+[trace]  : END resolveDownMany("Connector.MathStatements", "de.monticore.symboltable.SymbolKind") in scope "Optional[Decoder]". Found #0
+[trace]  : START resolveDownMany("Connector.MathStatements", "de.monticore.symboltable.SymbolKind") in scope "Optional[Encoder]". Found #0 (local)
+[trace]  : END resolveDownMany("Connector.MathStatements", "de.monticore.symboltable.SymbolKind") in scope "Optional[Encoder]". Found #0
+[trace]  : START resolveDownMany("Connector.MathStatements", "de.monticore.symboltable.SymbolKind") in scope "Optional[Connector]". Found #0 (local)
+[trace]  : START resolveDownMany("MathStatements", "de.monticore.symboltable.SymbolKind") in scope "Optional[Connector]". Found #0 (local)
+[trace]  : END resolveDownMany("MathStatements", "de.monticore.symboltable.SymbolKind") in scope "Optional[Connector]". Found #0
+[trace]  : END resolveDownMany("Connector.MathStatements", "de.monticore.symboltable.SymbolKind") in scope "Optional[Connector]". Found #0
+[trace]  : END resolveDownMany("vae.Connector.MathStatements", "de.monticore.symboltable.SymbolKind") in scope "Optional.empty". Found #0
+[trace]  : START resolveDownMany("vae.Connector.MathStatements", "de.monticore.symboltable.SymbolKind") in scope "Optional.empty". Found #0 (local)
+[trace]  : START resolveDownMany("Connector.MathStatements", "de.monticore.symboltable.SymbolKind") in scope "Optional[Decoder]". Found #0 (local)
+[trace]  : END resolveDownMany("Connector.MathStatements", "de.monticore.symboltable.SymbolKind") in scope "Optional[Decoder]". Found #0
+[trace]  : START resolveDownMany("Connector.MathStatements", "de.monticore.symboltable.SymbolKind") in scope "Optional[Encoder]". Found #0 (local)
+[trace]  : END resolveDownMany("Connector.MathStatements", "de.monticore.symboltable.SymbolKind") in scope "Optional[Encoder]". Found #0
+[trace]  : START resolveDownMany("Connector.MathStatements", "de.monticore.symboltable.SymbolKind") in scope "Optional[Connector]". Found #0 (local)
+[trace]  : START resolveDownMany("MathStatements", "de.monticore.symboltable.SymbolKind") in scope "Optional[Connector]". Found #0 (local)
+[trace]  : END resolveDownMany("MathStatements", "de.monticore.symboltable.SymbolKind") in scope "Optional[Connector]". Found #0
+[trace]  : END resolveDownMany("Connector.MathStatements", "de.monticore.symboltable.SymbolKind") in scope "Optional[Connector]". Found #0
+[trace]  : END resolveDownMany("vae.Connector.MathStatements", "de.monticore.symboltable.SymbolKind") in scope "Optional.empty". Found #0
+[debug] CommonSymbolReference : Full information of 'Connector' already loaded. Use cached version.
+[trace]  : START resolveDownMany("vae.Connector.MathStatements", "de.monticore.symboltable.SymbolKind") in scope "Optional.empty". Found #0 (local)
+[trace]  : START resolveDownMany("Connector.MathStatements", "de.monticore.symboltable.SymbolKind") in scope "Optional[Decoder]". Found #0 (local)
+[trace]  : END resolveDownMany("Connector.MathStatements", "de.monticore.symboltable.SymbolKind") in scope "Optional[Decoder]". Found #0
+[trace]  : START resolveDownMany("Connector.MathStatements", "de.monticore.symboltable.SymbolKind") in scope "Optional[Encoder]". Found #0 (local)
+[trace]  : END resolveDownMany("Connector.MathStatements", "de.monticore.symboltable.SymbolKind") in scope "Optional[Encoder]". Found #0
+[trace]  : START resolveDownMany("Connector.MathStatements", "de.monticore.symboltable.SymbolKind") in scope "Optional[Connector]". Found #0 (local)
+[trace]  : START resolveDownMany("MathStatements", "de.monticore.symboltable.SymbolKind") in scope "Optional[Connector]". Found #0 (local)
+[trace]  : END resolveDownMany("MathStatements", "de.monticore.symboltable.SymbolKind") in scope "Optional[Connector]". Found #0
+[trace]  : END resolveDownMany("Connector.MathStatements", "de.monticore.symboltable.SymbolKind") in scope "Optional[Connector]". Found #0
+[trace]  : END resolveDownMany("vae.Connector.MathStatements", "de.monticore.symboltable.SymbolKind") in scope "Optional.empty". Found #0
+[trace]  : START resolveDownMany("vae.Connector.MathStatements", "de.monticore.symboltable.SymbolKind") in scope "Optional.empty". Found #0 (local)
+[trace]  : START resolveDownMany("Connector.MathStatements", "de.monticore.symboltable.SymbolKind") in scope "Optional[Decoder]". Found #0 (local)
+[trace]  : END resolveDownMany("Connector.MathStatements", "de.monticore.symboltable.SymbolKind") in scope "Optional[Decoder]". Found #0
+[trace]  : START resolveDownMany("Connector.MathStatements", "de.monticore.symboltable.SymbolKind") in scope "Optional[Encoder]". Found #0 (local)
+[trace]  : END resolveDownMany("Connector.MathStatements", "de.monticore.symboltable.SymbolKind") in scope "Optional[Encoder]". Found #0
+[trace]  : START resolveDownMany("Connector.MathStatements", "de.monticore.symboltable.SymbolKind") in scope "Optional[Connector]". Found #0 (local)
+[trace]  : START resolveDownMany("MathStatements", "de.monticore.symboltable.SymbolKind") in scope "Optional[Connector]". Found #0 (local)
+[trace]  : END resolveDownMany("MathStatements", "de.monticore.symboltable.SymbolKind") in scope "Optional[Connector]". Found #0
+[trace]  : END resolveDownMany("Connector.MathStatements", "de.monticore.symboltable.SymbolKind") in scope "Optional[Connector]". Found #0
+[trace]  : END resolveDownMany("vae.Connector.MathStatements", "de.monticore.symboltable.SymbolKind") in scope "Optional.empty". Found #0
+[info] MathSymbol: : Could not resolve vae.Connector.MathStatements
+[trace] CommonQualifiedNamesCalculator : Potential qualified names for "MathStatements": [MathStatements, vae.MathStatements]
+[trace]  : START resolveDownMany("MathStatements", "de.monticore.symboltable.SymbolKind") in scope "Optional.empty". Found #0 (local)
+[trace]  : END resolveDownMany("MathStatements", "de.monticore.symboltable.SymbolKind") in scope "Optional.empty". Found #0
+[trace]  : START resolveDownMany("MathStatements", "de.monticore.symboltable.SymbolKind") in scope "Optional.empty". Found #0 (local)
+[trace]  : END resolveDownMany("MathStatements", "de.monticore.symboltable.SymbolKind") in scope "Optional.empty". Found #0
+[trace]  : START resolveDownMany("vae.MathStatements", "de.monticore.symboltable.SymbolKind") in scope "Optional.empty". Found #0 (local)
+[trace]  : START resolveDownMany("MathStatements", "de.monticore.symboltable.SymbolKind") in scope "Optional[Decoder]". Found #0 (local)
+[trace]  : END resolveDownMany("MathStatements", "de.monticore.symboltable.SymbolKind") in scope "Optional[Decoder]". Found #0
+[trace]  : START resolveDownMany("MathStatements", "de.monticore.symboltable.SymbolKind") in scope "Optional[Encoder]". Found #0 (local)
+[trace]  : END resolveDownMany("MathStatements", "de.monticore.symboltable.SymbolKind") in scope "Optional[Encoder]". Found #0
+[trace]  : START resolveDownMany("MathStatements", "de.monticore.symboltable.SymbolKind") in scope "Optional[Connector]". Found #0 (local)
+[trace]  : END resolveDownMany("MathStatements", "de.monticore.symboltable.SymbolKind") in scope "Optional[Connector]". Found #0
+[trace]  : END resolveDownMany("vae.MathStatements", "de.monticore.symboltable.SymbolKind") in scope "Optional.empty". Found #0
+[trace]  : START resolveDownMany("vae.MathStatements", "de.monticore.symboltable.SymbolKind") in scope "Optional.empty". Found #0 (local)
+[trace]  : START resolveDownMany("MathStatements", "de.monticore.symboltable.SymbolKind") in scope "Optional[Decoder]". Found #0 (local)
+[trace]  : END resolveDownMany("MathStatements", "de.monticore.symboltable.SymbolKind") in scope "Optional[Decoder]". Found #0
+[trace]  : START resolveDownMany("MathStatements", "de.monticore.symboltable.SymbolKind") in scope "Optional[Encoder]". Found #0 (local)
+[trace]  : END resolveDownMany("MathStatements", "de.monticore.symboltable.SymbolKind") in scope "Optional[Encoder]". Found #0
+[trace]  : START resolveDownMany("MathStatements", "de.monticore.symboltable.SymbolKind") in scope "Optional[Connector]". Found #0 (local)
+[trace]  : END resolveDownMany("MathStatements", "de.monticore.symboltable.SymbolKind") in scope "Optional[Connector]". Found #0
+[trace]  : END resolveDownMany("vae.MathStatements", "de.monticore.symboltable.SymbolKind") in scope "Optional.empty". Found #0
+[trace]  : START resolveDownMany("vae.connector.Decoder.MathStatements", "de.monticore.symboltable.SymbolKind") in scope "Optional.empty". Found #0 (local)
+[trace]  : START resolveDownMany("connector.Decoder.MathStatements", "de.monticore.symboltable.SymbolKind") in scope "Optional[Decoder]". Found #0 (local)
+[trace]  : END resolveDownMany("connector.Decoder.MathStatements", "de.monticore.symboltable.SymbolKind") in scope "Optional[Decoder]". Found #0
+[trace]  : START resolveDownMany("connector.Decoder.MathStatements", "de.monticore.symboltable.SymbolKind") in scope "Optional[Encoder]". Found #0 (local)
+[trace]  : END resolveDownMany("connector.Decoder.MathStatements", "de.monticore.symboltable.SymbolKind") in scope "Optional[Encoder]". Found #0
+[trace]  : START resolveDownMany("connector.Decoder.MathStatements", "de.monticore.symboltable.SymbolKind") in scope "Optional[Connector]". Found #0 (local)
+[trace]  : START resolveDownMany("Decoder.MathStatements", "de.monticore.symboltable.SymbolKind") in scope "Optional[connector]". Found #0 (local)
+[trace]  : END resolveDownMany("Decoder.MathStatements", "de.monticore.symboltable.SymbolKind") in scope "Optional[connector]". Found #0
+[trace]  : END resolveDownMany("connector.Decoder.MathStatements", "de.monticore.symboltable.SymbolKind") in scope "Optional[Connector]". Found #0
+[trace]  : END resolveDownMany("vae.connector.Decoder.MathStatements", "de.monticore.symboltable.SymbolKind") in scope "Optional.empty". Found #0
+[trace]  : START resolveDownMany("vae.connector.Decoder.MathStatements", "de.monticore.symboltable.SymbolKind") in scope "Optional.empty". Found #0 (local)
+[trace]  : START resolveDownMany("connector.Decoder.MathStatements", "de.monticore.symboltable.SymbolKind") in scope "Optional[Decoder]". Found #0 (local)
+[trace]  : END resolveDownMany("connector.Decoder.MathStatements", "de.monticore.symboltable.SymbolKind") in scope "Optional[Decoder]". Found #0
+[trace]  : START resolveDownMany("connector.Decoder.MathStatements", "de.monticore.symboltable.SymbolKind") in scope "Optional[Encoder]". Found #0 (local)
+[trace]  : END resolveDownMany("connector.Decoder.MathStatements", "de.monticore.symboltable.SymbolKind") in scope "Optional[Encoder]". Found #0
+[trace]  : START resolveDownMany("connector.Decoder.MathStatements", "de.monticore.symboltable.SymbolKind") in scope "Optional[Connector]". Found #0 (local)
+[trace]  : START resolveDownMany("Decoder.MathStatements", "de.monticore.symboltable.SymbolKind") in scope "Optional[connector]". Found #0 (local)
+[trace]  : END resolveDownMany("Decoder.MathStatements", "de.monticore.symboltable.SymbolKind") in scope "Optional[connector]". Found #0
+[trace]  : END resolveDownMany("connector.Decoder.MathStatements", "de.monticore.symboltable.SymbolKind") in scope "Optional[Connector]". Found #0
+[trace]  : END resolveDownMany("vae.connector.Decoder.MathStatements", "de.monticore.symboltable.SymbolKind") in scope "Optional.empty". Found #0
+[debug] CommonSymbolReference : Full information of 'Decoder' already loaded. Use cached version.
+[trace]  : START resolveDownMany("vae.Decoder.MathStatements", "de.monticore.symboltable.SymbolKind") in scope "Optional.empty". Found #0 (local)
+[trace]  : START resolveDownMany("Decoder.MathStatements", "de.monticore.symboltable.SymbolKind") in scope "Optional[Decoder]". Found #0 (local)
+[trace]  : START resolveDownMany("MathStatements", "de.monticore.symboltable.SymbolKind") in scope "Optional[Decoder]". Found #0 (local)
+[trace]  : END resolveDownMany("MathStatements", "de.monticore.symboltable.SymbolKind") in scope "Optional[Decoder]". Found #0
+[trace]  : END resolveDownMany("Decoder.MathStatements", "de.monticore.symboltable.SymbolKind") in scope "Optional[Decoder]". Found #0
+[trace]  : START resolveDownMany("Decoder.MathStatements", "de.monticore.symboltable.SymbolKind") in scope "Optional[Encoder]". Found #0 (local)
+[trace]  : END resolveDownMany("Decoder.MathStatements", "de.monticore.symboltable.SymbolKind") in scope "Optional[Encoder]". Found #0
+[trace]  : START resolveDownMany("Decoder.MathStatements", "de.monticore.symboltable.SymbolKind") in scope "Optional[Connector]". Found #0 (local)
+[trace]  : END resolveDownMany("Decoder.MathStatements", "de.monticore.symboltable.SymbolKind") in scope "Optional[Connector]". Found #0
+[trace]  : END resolveDownMany("vae.Decoder.MathStatements", "de.monticore.symboltable.SymbolKind") in scope "Optional.empty". Found #0
+[trace]  : START resolveDownMany("vae.Decoder.MathStatements", "de.monticore.symboltable.SymbolKind") in scope "Optional.empty". Found #0 (local)
+[trace]  : START resolveDownMany("Decoder.MathStatements", "de.monticore.symboltable.SymbolKind") in scope "Optional[Decoder]". Found #0 (local)
+[trace]  : START resolveDownMany("MathStatements", "de.monticore.symboltable.SymbolKind") in scope "Optional[Decoder]". Found #0 (local)
+[trace]  : END resolveDownMany("MathStatements", "de.monticore.symboltable.SymbolKind") in scope "Optional[Decoder]". Found #0
+[trace]  : END resolveDownMany("Decoder.MathStatements", "de.monticore.symboltable.SymbolKind") in scope "Optional[Decoder]". Found #0
+[trace]  : START resolveDownMany("Decoder.MathStatements", "de.monticore.symboltable.SymbolKind") in scope "Optional[Encoder]". Found #0 (local)
+[trace]  : END resolveDownMany("Decoder.MathStatements", "de.monticore.symboltable.SymbolKind") in scope "Optional[Encoder]". Found #0
+[trace]  : START resolveDownMany("Decoder.MathStatements", "de.monticore.symboltable.SymbolKind") in scope "Optional[Connector]". Found #0 (local)
+[trace]  : END resolveDownMany("Decoder.MathStatements", "de.monticore.symboltable.SymbolKind") in scope "Optional[Connector]". Found #0
+[trace]  : END resolveDownMany("vae.Decoder.MathStatements", "de.monticore.symboltable.SymbolKind") in scope "Optional.empty". Found #0
+[info] MathSymbol: : Could not resolve vae.Decoder.MathStatements
+[debug] CommonScope : The symbol data has already been resolved.
+[debug] CommonScope : The symbol data has already been resolved.
+[trace] CommonQualifiedNamesCalculator : Potential qualified names for "vae.connector.decoder.data": [vae.connector.decoder.data]
+[trace]  : START resolveDownMany("vae.connector.decoder.data", "de.monticore.symboltable.SymbolKind") in scope "Optional.empty". Found #0 (local)
+[trace]  : START resolveDownMany("connector.decoder.data", "de.monticore.symboltable.SymbolKind") in scope "Optional[Decoder]". Found #0 (local)
+[trace]  : END resolveDownMany("connector.decoder.data", "de.monticore.symboltable.SymbolKind") in scope "Optional[Decoder]". Found #0
+[trace]  : START resolveDownMany("connector.decoder.data", "de.monticore.symboltable.SymbolKind") in scope "Optional[Encoder]". Found #0 (local)
+[trace]  : END resolveDownMany("connector.decoder.data", "de.monticore.symboltable.SymbolKind") in scope "Optional[Encoder]". Found #0
+[trace]  : START resolveDownMany("connector.decoder.data", "de.monticore.symboltable.SymbolKind") in scope "Optional[Connector]". Found #0 (local)
+[trace]  : START resolveDownMany("decoder.data", "de.monticore.symboltable.SymbolKind") in scope "Optional[connector]". Found #0 (local)
+[debug] CommonScope : The symbol data has already been resolved.
+[trace]  : START resolveDownMany("data", "de.monticore.symboltable.SymbolKind") in scope "Optional[decoder]". Found #1 (local)
+[trace]  : END resolveDownMany("data", "de.monticore.symboltable.SymbolKind") in scope "Optional[decoder]". Found #1
+[trace]  : END resolveDownMany("decoder.data", "de.monticore.symboltable.SymbolKind") in scope "Optional[connector]". Found #1
+[trace]  : END resolveDownMany("connector.decoder.data", "de.monticore.symboltable.SymbolKind") in scope "Optional[Connector]". Found #1
+[trace]  : END resolveDownMany("vae.connector.decoder.data", "de.monticore.symboltable.SymbolKind") in scope "Optional.empty". Found #1
+[debug] CommonScope : The symbol data has already been resolved.
+[trace] CommonQualifiedNamesCalculator : Potential qualified names for "MathStatements": [MathStatements, vae.MathStatements]
+[trace]  : START resolveDownMany("MathStatements", "de.monticore.symboltable.SymbolKind") in scope "Optional.empty". Found #0 (local)
+[trace]  : END resolveDownMany("MathStatements", "de.monticore.symboltable.SymbolKind") in scope "Optional.empty". Found #0
+[trace]  : START resolveDownMany("MathStatements", "de.monticore.symboltable.SymbolKind") in scope "Optional.empty". Found #0 (local)
+[trace]  : END resolveDownMany("MathStatements", "de.monticore.symboltable.SymbolKind") in scope "Optional.empty". Found #0
+[trace]  : START resolveDownMany("vae.MathStatements", "de.monticore.symboltable.SymbolKind") in scope "Optional.empty". Found #0 (local)
+[trace]  : START resolveDownMany("MathStatements", "de.monticore.symboltable.SymbolKind") in scope "Optional[Decoder]". Found #0 (local)
+[trace]  : END resolveDownMany("MathStatements", "de.monticore.symboltable.SymbolKind") in scope "Optional[Decoder]". Found #0
+[trace]  : START resolveDownMany("MathStatements", "de.monticore.symboltable.SymbolKind") in scope "Optional[Encoder]". Found #0 (local)
+[trace]  : END resolveDownMany("MathStatements", "de.monticore.symboltable.SymbolKind") in scope "Optional[Encoder]". Found #0
+[trace]  : START resolveDownMany("MathStatements", "de.monticore.symboltable.SymbolKind") in scope "Optional[Connector]". Found #0 (local)
+[trace]  : END resolveDownMany("MathStatements", "de.monticore.symboltable.SymbolKind") in scope "Optional[Connector]". Found #0
+[trace]  : END resolveDownMany("vae.MathStatements", "de.monticore.symboltable.SymbolKind") in scope "Optional.empty". Found #0
+[trace]  : START resolveDownMany("vae.MathStatements", "de.monticore.symboltable.SymbolKind") in scope "Optional.empty". Found #0 (local)
+[trace]  : START resolveDownMany("MathStatements", "de.monticore.symboltable.SymbolKind") in scope "Optional[Decoder]". Found #0 (local)
+[trace]  : END resolveDownMany("MathStatements", "de.monticore.symboltable.SymbolKind") in scope "Optional[Decoder]". Found #0
+[trace]  : START resolveDownMany("MathStatements", "de.monticore.symboltable.SymbolKind") in scope "Optional[Encoder]". Found #0 (local)
+[trace]  : END resolveDownMany("MathStatements", "de.monticore.symboltable.SymbolKind") in scope "Optional[Encoder]". Found #0
+[trace]  : START resolveDownMany("MathStatements", "de.monticore.symboltable.SymbolKind") in scope "Optional[Connector]". Found #0 (local)
+[trace]  : END resolveDownMany("MathStatements", "de.monticore.symboltable.SymbolKind") in scope "Optional[Connector]". Found #0
+[trace]  : END resolveDownMany("vae.MathStatements", "de.monticore.symboltable.SymbolKind") in scope "Optional.empty". Found #0
+[trace]  : START resolveDownMany("vae.connector.Decoder.MathStatements", "de.monticore.symboltable.SymbolKind") in scope "Optional.empty". Found #0 (local)
+[trace]  : START resolveDownMany("connector.Decoder.MathStatements", "de.monticore.symboltable.SymbolKind") in scope "Optional[Decoder]". Found #0 (local)
+[trace]  : END resolveDownMany("connector.Decoder.MathStatements", "de.monticore.symboltable.SymbolKind") in scope "Optional[Decoder]". Found #0
+[trace]  : START resolveDownMany("connector.Decoder.MathStatements", "de.monticore.symboltable.SymbolKind") in scope "Optional[Encoder]". Found #0 (local)
+[trace]  : END resolveDownMany("connector.Decoder.MathStatements", "de.monticore.symboltable.SymbolKind") in scope "Optional[Encoder]". Found #0
+[trace]  : START resolveDownMany("connector.Decoder.MathStatements", "de.monticore.symboltable.SymbolKind") in scope "Optional[Connector]". Found #0 (local)
+[trace]  : START resolveDownMany("Decoder.MathStatements", "de.monticore.symboltable.SymbolKind") in scope "Optional[connector]". Found #0 (local)
+[trace]  : END resolveDownMany("Decoder.MathStatements", "de.monticore.symboltable.SymbolKind") in scope "Optional[connector]". Found #0
+[trace]  : END resolveDownMany("connector.Decoder.MathStatements", "de.monticore.symboltable.SymbolKind") in scope "Optional[Connector]". Found #0
+[trace]  : END resolveDownMany("vae.connector.Decoder.MathStatements", "de.monticore.symboltable.SymbolKind") in scope "Optional.empty". Found #0
+[trace]  : START resolveDownMany("vae.connector.Decoder.MathStatements", "de.monticore.symboltable.SymbolKind") in scope "Optional.empty". Found #0 (local)
+[trace]  : START resolveDownMany("connector.Decoder.MathStatements", "de.monticore.symboltable.SymbolKind") in scope "Optional[Decoder]". Found #0 (local)
+[trace]  : END resolveDownMany("connector.Decoder.MathStatements", "de.monticore.symboltable.SymbolKind") in scope "Optional[Decoder]". Found #0
+[trace]  : START resolveDownMany("connector.Decoder.MathStatements", "de.monticore.symboltable.SymbolKind") in scope "Optional[Encoder]". Found #0 (local)
+[trace]  : END resolveDownMany("connector.Decoder.MathStatements", "de.monticore.symboltable.SymbolKind") in scope "Optional[Encoder]". Found #0
+[trace]  : START resolveDownMany("connector.Decoder.MathStatements", "de.monticore.symboltable.SymbolKind") in scope "Optional[Connector]". Found #0 (local)
+[trace]  : START resolveDownMany("Decoder.MathStatements", "de.monticore.symboltable.SymbolKind") in scope "Optional[connector]". Found #0 (local)
+[trace]  : END resolveDownMany("Decoder.MathStatements", "de.monticore.symboltable.SymbolKind") in scope "Optional[connector]". Found #0
+[trace]  : END resolveDownMany("connector.Decoder.MathStatements", "de.monticore.symboltable.SymbolKind") in scope "Optional[Connector]". Found #0
+[trace]  : END resolveDownMany("vae.connector.Decoder.MathStatements", "de.monticore.symboltable.SymbolKind") in scope "Optional.empty". Found #0
+[debug] CommonSymbolReference : Full information of 'Decoder' already loaded. Use cached version.
+[trace]  : START resolveDownMany("vae.Decoder.MathStatements", "de.monticore.symboltable.SymbolKind") in scope "Optional.empty". Found #0 (local)
+[trace]  : START resolveDownMany("Decoder.MathStatements", "de.monticore.symboltable.SymbolKind") in scope "Optional[Decoder]". Found #0 (local)
+[trace]  : START resolveDownMany("MathStatements", "de.monticore.symboltable.SymbolKind") in scope "Optional[Decoder]". Found #0 (local)
+[trace]  : END resolveDownMany("MathStatements", "de.monticore.symboltable.SymbolKind") in scope "Optional[Decoder]". Found #0
+[trace]  : END resolveDownMany("Decoder.MathStatements", "de.monticore.symboltable.SymbolKind") in scope "Optional[Decoder]". Found #0
+[trace]  : START resolveDownMany("Decoder.MathStatements", "de.monticore.symboltable.SymbolKind") in scope "Optional[Encoder]". Found #0 (local)
+[trace]  : END resolveDownMany("Decoder.MathStatements", "de.monticore.symboltable.SymbolKind") in scope "Optional[Encoder]". Found #0
+[trace]  : START resolveDownMany("Decoder.MathStatements", "de.monticore.symboltable.SymbolKind") in scope "Optional[Connector]". Found #0 (local)
+[trace]  : END resolveDownMany("Decoder.MathStatements", "de.monticore.symboltable.SymbolKind") in scope "Optional[Connector]". Found #0
+[trace]  : END resolveDownMany("vae.Decoder.MathStatements", "de.monticore.symboltable.SymbolKind") in scope "Optional.empty". Found #0
+[trace]  : START resolveDownMany("vae.Decoder.MathStatements", "de.monticore.symboltable.SymbolKind") in scope "Optional.empty". Found #0 (local)
+[trace]  : START resolveDownMany("Decoder.MathStatements", "de.monticore.symboltable.SymbolKind") in scope "Optional[Decoder]". Found #0 (local)
+[trace]  : START resolveDownMany("MathStatements", "de.monticore.symboltable.SymbolKind") in scope "Optional[Decoder]". Found #0 (local)
+[trace]  : END resolveDownMany("MathStatements", "de.monticore.symboltable.SymbolKind") in scope "Optional[Decoder]". Found #0
+[trace]  : END resolveDownMany("Decoder.MathStatements", "de.monticore.symboltable.SymbolKind") in scope "Optional[Decoder]". Found #0
+[trace]  : START resolveDownMany("Decoder.MathStatements", "de.monticore.symboltable.SymbolKind") in scope "Optional[Encoder]". Found #0 (local)
+[trace]  : END resolveDownMany("Decoder.MathStatements", "de.monticore.symboltable.SymbolKind") in scope "Optional[Encoder]". Found #0
+[trace]  : START resolveDownMany("Decoder.MathStatements", "de.monticore.symboltable.SymbolKind") in scope "Optional[Connector]". Found #0 (local)
+[trace]  : END resolveDownMany("Decoder.MathStatements", "de.monticore.symboltable.SymbolKind") in scope "Optional[Connector]". Found #0
+[trace]  : END resolveDownMany("vae.Decoder.MathStatements", "de.monticore.symboltable.SymbolKind") in scope "Optional.empty". Found #0
+[info] MathSymbol: : Could not resolve vae.Decoder.MathStatements
+[debug] CommonSymbolReference : Full information of 'Decoder' already loaded. Use cached version.
+[info] Current Symbol(size:1): : package vae;
+component /*instance*/ decoder {
+  ports
+    in CommonMatrixType encoding,
+    out CommonMatrixType data;
+}
+
+[info] HasInstanceInformation: : decoder
+[info] Added DimInfo: : encoding 2
+[info] addVariable : v: encoding
+[debug] PortConverter : EMAVAR: encoding targetType:colvec isArray:false
+[info] Added DimInfo: : data 1
+[info] Added DimInfo: : data 28
+[info] Added DimInfo: : data 28
+[info] addVariable : v: data
+[debug] PortConverter : EMAVAR: data targetType:cube isArray:false
+[info] generateInitNonStaticVariable : v: encoding
+[info] generateInitNonStaticVariable : v: data
+[info] initBluePrintCreate: : Variable: encoding
+[info] initBluePrintCreate: : Variable: data
+[info] initBluePrintExtension: : Variable: encoding
+[info] initBluePrintExtension: : Variable: data
+[info] beforRes: : void init()
+{
+
+[info] afterRes: : void init()
+{
+encoding=colvec(2);
+
+[info] beforRes: : void init()
+{
+encoding=colvec(2);
+
+[info] afterRes: : void init()
+{
+encoding=colvec(2);
+data = cube(1, 28, 28);
+
+[info] Before RESSSS: : #ifndef VAE_CONNECTOR_DECODER
+#define VAE_CONNECTOR_DECODER
+#ifndef M_PI
+#define M_PI 3.14159265358979323846
+#endif
+#include "armadillo"
+using namespace arma;
+class vae_connector_decoder{
+public:
+colvec encoding;
+cube data;
+void init()
+{
+encoding=colvec(2);
+data = cube(1, 28, 28);
+}
+void execute()
+{
+}
+
+};
+#endif
+
+[trace] CommonQualifiedNamesCalculator : Potential qualified names for "MathStatements": [MathStatements, vae.MathStatements]
+[trace]  : START resolveDownMany("MathStatements", "de.monticore.symboltable.SymbolKind") in scope "Optional.empty". Found #0 (local)
+[trace]  : END resolveDownMany("MathStatements", "de.monticore.symboltable.SymbolKind") in scope "Optional.empty". Found #0
+[trace]  : START resolveDownMany("MathStatements", "de.monticore.symboltable.SymbolKind") in scope "Optional.empty". Found #0 (local)
+[trace]  : END resolveDownMany("MathStatements", "de.monticore.symboltable.SymbolKind") in scope "Optional.empty". Found #0
+[trace]  : START resolveDownMany("vae.MathStatements", "de.monticore.symboltable.SymbolKind") in scope "Optional.empty". Found #0 (local)
+[trace]  : START resolveDownMany("MathStatements", "de.monticore.symboltable.SymbolKind") in scope "Optional[Decoder]". Found #0 (local)
+[trace]  : END resolveDownMany("MathStatements", "de.monticore.symboltable.SymbolKind") in scope "Optional[Decoder]". Found #0
+[trace]  : START resolveDownMany("MathStatements", "de.monticore.symboltable.SymbolKind") in scope "Optional[Encoder]". Found #0 (local)
+[trace]  : END resolveDownMany("MathStatements", "de.monticore.symboltable.SymbolKind") in scope "Optional[Encoder]". Found #0
+[trace]  : START resolveDownMany("MathStatements", "de.monticore.symboltable.SymbolKind") in scope "Optional[Connector]". Found #0 (local)
+[trace]  : END resolveDownMany("MathStatements", "de.monticore.symboltable.SymbolKind") in scope "Optional[Connector]". Found #0
+[trace]  : END resolveDownMany("vae.MathStatements", "de.monticore.symboltable.SymbolKind") in scope "Optional.empty". Found #0
+[trace]  : START resolveDownMany("vae.MathStatements", "de.monticore.symboltable.SymbolKind") in scope "Optional.empty". Found #0 (local)
+[trace]  : START resolveDownMany("MathStatements", "de.monticore.symboltable.SymbolKind") in scope "Optional[Decoder]". Found #0 (local)
+[trace]  : END resolveDownMany("MathStatements", "de.monticore.symboltable.SymbolKind") in scope "Optional[Decoder]". Found #0
+[trace]  : START resolveDownMany("MathStatements", "de.monticore.symboltable.SymbolKind") in scope "Optional[Encoder]". Found #0 (local)
+[trace]  : END resolveDownMany("MathStatements", "de.monticore.symboltable.SymbolKind") in scope "Optional[Encoder]". Found #0
+[trace]  : START resolveDownMany("MathStatements", "de.monticore.symboltable.SymbolKind") in scope "Optional[Connector]". Found #0 (local)
+[trace]  : END resolveDownMany("MathStatements", "de.monticore.symboltable.SymbolKind") in scope "Optional[Connector]". Found #0
+[trace]  : END resolveDownMany("vae.MathStatements", "de.monticore.symboltable.SymbolKind") in scope "Optional.empty". Found #0
+[trace]  : START resolveDownMany("vae.Connector.MathStatements", "de.monticore.symboltable.SymbolKind") in scope "Optional.empty". Found #0 (local)
+[trace]  : START resolveDownMany("Connector.MathStatements", "de.monticore.symboltable.SymbolKind") in scope "Optional[Decoder]". Found #0 (local)
+[trace]  : END resolveDownMany("Connector.MathStatements", "de.monticore.symboltable.SymbolKind") in scope "Optional[Decoder]". Found #0
+[trace]  : START resolveDownMany("Connector.MathStatements", "de.monticore.symboltable.SymbolKind") in scope "Optional[Encoder]". Found #0 (local)
+[trace]  : END resolveDownMany("Connector.MathStatements", "de.monticore.symboltable.SymbolKind") in scope "Optional[Encoder]". Found #0
+[trace]  : START resolveDownMany("Connector.MathStatements", "de.monticore.symboltable.SymbolKind") in scope "Optional[Connector]". Found #0 (local)
+[trace]  : START resolveDownMany("MathStatements", "de.monticore.symboltable.SymbolKind") in scope "Optional[Connector]". Found #0 (local)
+[trace]  : END resolveDownMany("MathStatements", "de.monticore.symboltable.SymbolKind") in scope "Optional[Connector]". Found #0
+[trace]  : END resolveDownMany("Connector.MathStatements", "de.monticore.symboltable.SymbolKind") in scope "Optional[Connector]". Found #0
+[trace]  : END resolveDownMany("vae.Connector.MathStatements", "de.monticore.symboltable.SymbolKind") in scope "Optional.empty". Found #0
+[trace]  : START resolveDownMany("vae.Connector.MathStatements", "de.monticore.symboltable.SymbolKind") in scope "Optional.empty". Found #0 (local)
+[trace]  : START resolveDownMany("Connector.MathStatements", "de.monticore.symboltable.SymbolKind") in scope "Optional[Decoder]". Found #0 (local)
+[trace]  : END resolveDownMany("Connector.MathStatements", "de.monticore.symboltable.SymbolKind") in scope "Optional[Decoder]". Found #0
+[trace]  : START resolveDownMany("Connector.MathStatements", "de.monticore.symboltable.SymbolKind") in scope "Optional[Encoder]". Found #0 (local)
+[trace]  : END resolveDownMany("Connector.MathStatements", "de.monticore.symboltable.SymbolKind") in scope "Optional[Encoder]". Found #0
+[trace]  : START resolveDownMany("Connector.MathStatements", "de.monticore.symboltable.SymbolKind") in scope "Optional[Connector]". Found #0 (local)
+[trace]  : START resolveDownMany("MathStatements", "de.monticore.symboltable.SymbolKind") in scope "Optional[Connector]". Found #0 (local)
+[trace]  : END resolveDownMany("MathStatements", "de.monticore.symboltable.SymbolKind") in scope "Optional[Connector]". Found #0
+[trace]  : END resolveDownMany("Connector.MathStatements", "de.monticore.symboltable.SymbolKind") in scope "Optional[Connector]". Found #0
+[trace]  : END resolveDownMany("vae.Connector.MathStatements", "de.monticore.symboltable.SymbolKind") in scope "Optional.empty". Found #0
+[debug] CommonSymbolReference : Full information of 'Connector' already loaded. Use cached version.
+[trace]  : START resolveDownMany("vae.Connector.MathStatements", "de.monticore.symboltable.SymbolKind") in scope "Optional.empty". Found #0 (local)
+[trace]  : START resolveDownMany("Connector.MathStatements", "de.monticore.symboltable.SymbolKind") in scope "Optional[Decoder]". Found #0 (local)
+[trace]  : END resolveDownMany("Connector.MathStatements", "de.monticore.symboltable.SymbolKind") in scope "Optional[Decoder]". Found #0
+[trace]  : START resolveDownMany("Connector.MathStatements", "de.monticore.symboltable.SymbolKind") in scope "Optional[Encoder]". Found #0 (local)
+[trace]  : END resolveDownMany("Connector.MathStatements", "de.monticore.symboltable.SymbolKind") in scope "Optional[Encoder]". Found #0
+[trace]  : START resolveDownMany("Connector.MathStatements", "de.monticore.symboltable.SymbolKind") in scope "Optional[Connector]". Found #0 (local)
+[trace]  : START resolveDownMany("MathStatements", "de.monticore.symboltable.SymbolKind") in scope "Optional[Connector]". Found #0 (local)
+[trace]  : END resolveDownMany("MathStatements", "de.monticore.symboltable.SymbolKind") in scope "Optional[Connector]". Found #0
+[trace]  : END resolveDownMany("Connector.MathStatements", "de.monticore.symboltable.SymbolKind") in scope "Optional[Connector]". Found #0
+[trace]  : END resolveDownMany("vae.Connector.MathStatements", "de.monticore.symboltable.SymbolKind") in scope "Optional.empty". Found #0
+[trace]  : START resolveDownMany("vae.Connector.MathStatements", "de.monticore.symboltable.SymbolKind") in scope "Optional.empty". Found #0 (local)
+[trace]  : START resolveDownMany("Connector.MathStatements", "de.monticore.symboltable.SymbolKind") in scope "Optional[Decoder]". Found #0 (local)
+[trace]  : END resolveDownMany("Connector.MathStatements", "de.monticore.symboltable.SymbolKind") in scope "Optional[Decoder]". Found #0
+[trace]  : START resolveDownMany("Connector.MathStatements", "de.monticore.symboltable.SymbolKind") in scope "Optional[Encoder]". Found #0 (local)
+[trace]  : END resolveDownMany("Connector.MathStatements", "de.monticore.symboltable.SymbolKind") in scope "Optional[Encoder]". Found #0
+[trace]  : START resolveDownMany("Connector.MathStatements", "de.monticore.symboltable.SymbolKind") in scope "Optional[Connector]". Found #0 (local)
+[trace]  : START resolveDownMany("MathStatements", "de.monticore.symboltable.SymbolKind") in scope "Optional[Connector]". Found #0 (local)
+[trace]  : END resolveDownMany("MathStatements", "de.monticore.symboltable.SymbolKind") in scope "Optional[Connector]". Found #0
+[trace]  : END resolveDownMany("Connector.MathStatements", "de.monticore.symboltable.SymbolKind") in scope "Optional[Connector]". Found #0
+[trace]  : END resolveDownMany("vae.Connector.MathStatements", "de.monticore.symboltable.SymbolKind") in scope "Optional.empty". Found #0
+[info] MathSymbol: : Could not resolve vae.Connector.MathStatements
+[debug] CommonSymbolReference : Full information of 'Connector' already loaded. Use cached version.
+[debug] CommonSymbolReference : Full information of 'Decoder' already loaded. Use cached version.
+[info] Current Symbol(size:1): : package vae;
+component /*instance*/ connector {
+  ports
+    in CommonMatrixType data,
+    out CommonMatrixType res;
+  component /*instance*/ decoder {
+    ports
+      in CommonMatrixType encoding,
+      out CommonMatrixType data;
+  }
+  connect decoder.data -> res;
+  connect data -> decoder.encoding;
+}
+
+[info] Added DimInfo: : data 2
+[info] addVariable : v: data
+[debug] PortConverter : EMAVAR: data targetType:colvec isArray:false
+[info] Added DimInfo: : res 1
+[info] Added DimInfo: : res 28
+[info] Added DimInfo: : res 28
+[info] addVariable : v: res
+[debug] PortConverter : EMAVAR: res targetType:cube isArray:false
+[debug] CommonSymbolReference : Full information of 'Connector' already loaded. Use cached version.
+[debug] CommonSymbolReference : Full information of 'Decoder' already loaded. Use cached version.
+[info] Parent: : package vae;
+component /*instance*/ connector {
+  ports
+    in CommonMatrixType data,
+    out CommonMatrixType res;
+  component /*instance*/ decoder {
+    ports
+      in CommonMatrixType encoding,
+      out CommonMatrixType data;
+  }
+  connect decoder.data -> res;
+  connect data -> decoder.encoding;
+}
+
+[debug] CommonSymbolReference : Full information of 'Decoder' already loaded. Use cached version.
+[info] Instance: : package vae;
+component /*instance*/ decoder {
+  ports
+    in CommonMatrixType encoding,
+    out CommonMatrixType data;
+}
+
+[debug] CommonScope : The symbol decoder has already been resolved.
+[debug] CommonSymbolReference : Full information of 'Decoder' already loaded. Use cached version.
+[info] generateInitNonStaticVariable : v: data
+[info] generateInitNonStaticVariable : v: res
+[info] initBluePrintCreate: : Variable: data
+[info] initBluePrintCreate: : Variable: res
+[info] initBluePrintCreate: : Variable: decoder
+[debug] CommonScope : The symbol res has already been resolved.
+[trace] CommonQualifiedNamesCalculator : Potential qualified names for "vae.connector.decoder.data": [vae.connector.decoder.data]
+[trace]  : START resolveDownMany("vae.connector.decoder.data", "de.monticore.symboltable.SymbolKind") in scope "Optional.empty". Found #0 (local)
+[trace]  : START resolveDownMany("connector.decoder.data", "de.monticore.symboltable.SymbolKind") in scope "Optional[Decoder]". Found #0 (local)
+[trace]  : END resolveDownMany("connector.decoder.data", "de.monticore.symboltable.SymbolKind") in scope "Optional[Decoder]". Found #0
+[trace]  : START resolveDownMany("connector.decoder.data", "de.monticore.symboltable.SymbolKind") in scope "Optional[Encoder]". Found #0 (local)
+[trace]  : END resolveDownMany("connector.decoder.data", "de.monticore.symboltable.SymbolKind") in scope "Optional[Encoder]". Found #0
+[trace]  : START resolveDownMany("connector.decoder.data", "de.monticore.symboltable.SymbolKind") in scope "Optional[Connector]". Found #0 (local)
+[trace]  : START resolveDownMany("decoder.data", "de.monticore.symboltable.SymbolKind") in scope "Optional[connector]". Found #0 (local)
+[debug] CommonScope : The symbol data has already been resolved.
+[trace]  : START resolveDownMany("data", "de.monticore.symboltable.SymbolKind") in scope "Optional[decoder]". Found #1 (local)
+[trace]  : END resolveDownMany("data", "de.monticore.symboltable.SymbolKind") in scope "Optional[decoder]". Found #1
+[trace]  : END resolveDownMany("decoder.data", "de.monticore.symboltable.SymbolKind") in scope "Optional[connector]". Found #1
+[trace]  : END resolveDownMany("connector.decoder.data", "de.monticore.symboltable.SymbolKind") in scope "Optional[Connector]". Found #1
+[trace]  : END resolveDownMany("vae.connector.decoder.data", "de.monticore.symboltable.SymbolKind") in scope "Optional.empty". Found #1
+[trace] CommonQualifiedNamesCalculator : Potential qualified names for "vae.connector.decoder.data": [vae.connector.decoder.data]
+[trace]  : START resolveDownMany("vae.connector.decoder.data", "de.monticore.symboltable.SymbolKind") in scope "Optional.empty". Found #0 (local)
+[trace]  : START resolveDownMany("connector.decoder.data", "de.monticore.symboltable.SymbolKind") in scope "Optional[Decoder]". Found #0 (local)
+[trace]  : END resolveDownMany("connector.decoder.data", "de.monticore.symboltable.SymbolKind") in scope "Optional[Decoder]". Found #0
+[trace]  : START resolveDownMany("connector.decoder.data", "de.monticore.symboltable.SymbolKind") in scope "Optional[Encoder]". Found #0 (local)
+[trace]  : END resolveDownMany("connector.decoder.data", "de.monticore.symboltable.SymbolKind") in scope "Optional[Encoder]". Found #0
+[trace]  : START resolveDownMany("connector.decoder.data", "de.monticore.symboltable.SymbolKind") in scope "Optional[Connector]". Found #0 (local)
+[trace]  : START resolveDownMany("decoder.data", "de.monticore.symboltable.SymbolKind") in scope "Optional[connector]". Found #0 (local)
+[debug] CommonScope : The symbol data has already been resolved.
+[trace]  : START resolveDownMany("data", "de.monticore.symboltable.SymbolKind") in scope "Optional[decoder]". Found #1 (local)
+[trace]  : END resolveDownMany("data", "de.monticore.symboltable.SymbolKind") in scope "Optional[decoder]". Found #1
+[trace]  : END resolveDownMany("decoder.data", "de.monticore.symboltable.SymbolKind") in scope "Optional[connector]". Found #1
+[trace]  : END resolveDownMany("connector.decoder.data", "de.monticore.symboltable.SymbolKind") in scope "Optional[Connector]". Found #1
+[trace]  : END resolveDownMany("vae.connector.decoder.data", "de.monticore.symboltable.SymbolKind") in scope "Optional.empty". Found #1
+[trace] CommonQualifiedNamesCalculator : Potential qualified names for "vae.connector.decoder.data": [vae.connector.decoder.data]
+[trace]  : START resolveDownMany("vae.connector.decoder.data", "de.monticore.symboltable.SymbolKind") in scope "Optional.empty". Found #0 (local)
+[trace]  : START resolveDownMany("connector.decoder.data", "de.monticore.symboltable.SymbolKind") in scope "Optional[Decoder]". Found #0 (local)
+[trace]  : END resolveDownMany("connector.decoder.data", "de.monticore.symboltable.SymbolKind") in scope "Optional[Decoder]". Found #0
+[trace]  : START resolveDownMany("connector.decoder.data", "de.monticore.symboltable.SymbolKind") in scope "Optional[Encoder]". Found #0 (local)
+[trace]  : END resolveDownMany("connector.decoder.data", "de.monticore.symboltable.SymbolKind") in scope "Optional[Encoder]". Found #0
+[trace]  : START resolveDownMany("connector.decoder.data", "de.monticore.symboltable.SymbolKind") in scope "Optional[Connector]". Found #0 (local)
+[trace]  : START resolveDownMany("decoder.data", "de.monticore.symboltable.SymbolKind") in scope "Optional[connector]". Found #0 (local)
+[debug] CommonScope : The symbol data has already been resolved.
+[trace]  : START resolveDownMany("data", "de.monticore.symboltable.SymbolKind") in scope "Optional[decoder]". Found #1 (local)
+[trace]  : END resolveDownMany("data", "de.monticore.symboltable.SymbolKind") in scope "Optional[decoder]". Found #1
+[trace]  : END resolveDownMany("decoder.data", "de.monticore.symboltable.SymbolKind") in scope "Optional[connector]". Found #1
+[trace]  : END resolveDownMany("connector.decoder.data", "de.monticore.symboltable.SymbolKind") in scope "Optional[Connector]". Found #1
+[trace]  : END resolveDownMany("vae.connector.decoder.data", "de.monticore.symboltable.SymbolKind") in scope "Optional.empty". Found #1
+[debug] CommonScope : The symbol data has already been resolved.
+[trace] CommonQualifiedNamesCalculator : Potential qualified names for "vae.connector.decoder.encoding": [vae.connector.decoder.encoding]
+[trace]  : START resolveDownMany("vae.connector.decoder.encoding", "de.monticore.symboltable.SymbolKind") in scope "Optional.empty". Found #0 (local)
+[trace]  : START resolveDownMany("connector.decoder.encoding", "de.monticore.symboltable.SymbolKind") in scope "Optional[Decoder]". Found #0 (local)
+[trace]  : END resolveDownMany("connector.decoder.encoding", "de.monticore.symboltable.SymbolKind") in scope "Optional[Decoder]". Found #0
+[trace]  : START resolveDownMany("connector.decoder.encoding", "de.monticore.symboltable.SymbolKind") in scope "Optional[Encoder]". Found #0 (local)
+[trace]  : END resolveDownMany("connector.decoder.encoding", "de.monticore.symboltable.SymbolKind") in scope "Optional[Encoder]". Found #0
+[trace]  : START resolveDownMany("connector.decoder.encoding", "de.monticore.symboltable.SymbolKind") in scope "Optional[Connector]". Found #0 (local)
+[trace]  : START resolveDownMany("decoder.encoding", "de.monticore.symboltable.SymbolKind") in scope "Optional[connector]". Found #0 (local)
+[debug] CommonScope : The symbol encoding has already been resolved.
+[trace]  : START resolveDownMany("encoding", "de.monticore.symboltable.SymbolKind") in scope "Optional[decoder]". Found #1 (local)
+[trace]  : END resolveDownMany("encoding", "de.monticore.symboltable.SymbolKind") in scope "Optional[decoder]". Found #1
+[trace]  : END resolveDownMany("decoder.encoding", "de.monticore.symboltable.SymbolKind") in scope "Optional[connector]". Found #1
+[trace]  : END resolveDownMany("connector.decoder.encoding", "de.monticore.symboltable.SymbolKind") in scope "Optional[Connector]". Found #1
+[trace]  : END resolveDownMany("vae.connector.decoder.encoding", "de.monticore.symboltable.SymbolKind") in scope "Optional.empty". Found #1
+[debug] CommonScope : The symbol data has already been resolved.
+[trace] CommonQualifiedNamesCalculator : Potential qualified names for "vae.connector.decoder.encoding": [vae.connector.decoder.encoding]
+[trace]  : START resolveDownMany("vae.connector.decoder.encoding", "de.monticore.symboltable.SymbolKind") in scope "Optional.empty". Found #0 (local)
+[trace]  : START resolveDownMany("connector.decoder.encoding", "de.monticore.symboltable.SymbolKind") in scope "Optional[Decoder]". Found #0 (local)
+[trace]  : END resolveDownMany("connector.decoder.encoding", "de.monticore.symboltable.SymbolKind") in scope "Optional[Decoder]". Found #0
+[trace]  : START resolveDownMany("connector.decoder.encoding", "de.monticore.symboltable.SymbolKind") in scope "Optional[Encoder]". Found #0 (local)
+[trace]  : END resolveDownMany("connector.decoder.encoding", "de.monticore.symboltable.SymbolKind") in scope "Optional[Encoder]". Found #0
+[trace]  : START resolveDownMany("connector.decoder.encoding", "de.monticore.symboltable.SymbolKind") in scope "Optional[Connector]". Found #0 (local)
+[trace]  : START resolveDownMany("decoder.encoding", "de.monticore.symboltable.SymbolKind") in scope "Optional[connector]". Found #0 (local)
+[debug] CommonScope : The symbol encoding has already been resolved.
+[trace]  : START resolveDownMany("encoding", "de.monticore.symboltable.SymbolKind") in scope "Optional[decoder]". Found #1 (local)
+[trace]  : END resolveDownMany("encoding", "de.monticore.symboltable.SymbolKind") in scope "Optional[decoder]". Found #1
+[trace]  : END resolveDownMany("decoder.encoding", "de.monticore.symboltable.SymbolKind") in scope "Optional[connector]". Found #1
+[trace]  : END resolveDownMany("connector.decoder.encoding", "de.monticore.symboltable.SymbolKind") in scope "Optional[Connector]". Found #1
+[trace]  : END resolveDownMany("vae.connector.decoder.encoding", "de.monticore.symboltable.SymbolKind") in scope "Optional.empty". Found #1
+[debug] CommonScope : The symbol data has already been resolved.
+[trace] CommonQualifiedNamesCalculator : Potential qualified names for "vae.connector.decoder.encoding": [vae.connector.decoder.encoding]
+[trace]  : START resolveDownMany("vae.connector.decoder.encoding", "de.monticore.symboltable.SymbolKind") in scope "Optional.empty". Found #0 (local)
+[trace]  : START resolveDownMany("connector.decoder.encoding", "de.monticore.symboltable.SymbolKind") in scope "Optional[Decoder]". Found #0 (local)
+[trace]  : END resolveDownMany("connector.decoder.encoding", "de.monticore.symboltable.SymbolKind") in scope "Optional[Decoder]". Found #0
+[trace]  : START resolveDownMany("connector.decoder.encoding", "de.monticore.symboltable.SymbolKind") in scope "Optional[Encoder]". Found #0 (local)
+[trace]  : END resolveDownMany("connector.decoder.encoding", "de.monticore.symboltable.SymbolKind") in scope "Optional[Encoder]". Found #0
+[trace]  : START resolveDownMany("connector.decoder.encoding", "de.monticore.symboltable.SymbolKind") in scope "Optional[Connector]". Found #0 (local)
+[trace]  : START resolveDownMany("decoder.encoding", "de.monticore.symboltable.SymbolKind") in scope "Optional[connector]". Found #0 (local)
+[debug] CommonScope : The symbol encoding has already been resolved.
+[trace]  : START resolveDownMany("encoding", "de.monticore.symboltable.SymbolKind") in scope "Optional[decoder]". Found #1 (local)
+[trace]  : END resolveDownMany("encoding", "de.monticore.symboltable.SymbolKind") in scope "Optional[decoder]". Found #1
+[trace]  : END resolveDownMany("decoder.encoding", "de.monticore.symboltable.SymbolKind") in scope "Optional[connector]". Found #1
+[trace]  : END resolveDownMany("connector.decoder.encoding", "de.monticore.symboltable.SymbolKind") in scope "Optional[Connector]". Found #1
+[trace]  : END resolveDownMany("vae.connector.decoder.encoding", "de.monticore.symboltable.SymbolKind") in scope "Optional.empty". Found #1
+[info] Added DimInfo: : data 2
+[info] addVariable : v: data
+[debug] PortConverter : EMAVAR: data targetType:colvec isArray:false
+[info] Added DimInfo: : decoder.encoding 2
+[info] addVariable : v: decoder.encoding
+[debug] PortConverter : EMAVAR: decoder.encoding targetType:colvec isArray:false
+[info] Variable Info: : v1: data v2: decoder.encoding
+[info] Variable Info: : v1: data v2: decoder.encoding
+[info] Added DimInfo: : decoder.data 1
+[info] Added DimInfo: : decoder.data 28
+[info] Added DimInfo: : decoder.data 28
+[info] addVariable : v: decoder.data
+[debug] PortConverter : EMAVAR: decoder.data targetType:cube isArray:false
+[info] Added DimInfo: : res 1
+[info] Added DimInfo: : res 28
+[info] Added DimInfo: : res 28
+[info] addVariable : v: res
+[debug] PortConverter : EMAVAR: res targetType:cube isArray:false
+[info] Variable Info: : v1: decoder.data v2: res
+[info] Variable Info: : v1: decoder.data v2: res
+[info] initBluePrintExtension: : Variable: data
+[info] initBluePrintExtension: : Variable: res
+[info] initBluePrintExtension: : Variable: decoder
+[info] beforRes: : void init()
+{
+
+[info] afterRes: : void init()
+{
+data=colvec(2);
+
+[info] beforRes: : void init()
+{
+data=colvec(2);
+
+[info] afterRes: : void init()
+{
+data=colvec(2);
+res = cube(1, 28, 28);
+
+[info] beforRes: : void init()
+{
+data=colvec(2);
+res = cube(1, 28, 28);
+
+[info] afterRes: : void init()
+{
+data=colvec(2);
+res = cube(1, 28, 28);
+decoder.init();
+
+[info] Instruction: : v1: decoder.encodingv2: data
+[info] beforRes: : void execute()
+{
+
+[info] Array False Method: : var1: decoder.encoding var2: data
+[info] ResultString: : decoder.encoding = data;
+
+[info] afterRes: : void execute()
+{
+decoder.encoding = data;
+
+[info] beforRes: : void execute()
+{
+decoder.encoding = data;
+
+[info] afterRes: : void execute()
+{
+decoder.encoding = data;
+decoder.execute();
+
+[info] Instruction: : v1: resv2: decoder.data
+[info] beforRes: : void execute()
+{
+decoder.encoding = data;
+decoder.execute();
+
+[info] Array False Method: : var1: res var2: decoder.data
+[info] ResultString: : res = decoder.data;
+
+[info] afterRes: : void execute()
+{
+decoder.encoding = data;
+decoder.execute();
+res = decoder.data;
+
+[info] Before RESSSS: : #ifndef VAE_CONNECTOR
+#define VAE_CONNECTOR
+#ifndef M_PI
+#define M_PI 3.14159265358979323846
+#endif
+#include "armadillo"
+#include "vae_connector_decoder.h"
+using namespace arma;
+class vae_connector{
+public:
+colvec data;
+cube res;
+vae_connector_decoder decoder;
+void init()
+{
+data=colvec(2);
+res = cube(1, 28, 28);
+decoder.init();
+}
+void execute()
+{
+decoder.encoding = data;
+decoder.execute();
+res = decoder.data;
+}
+
+};
+#endif
+
+[debug] CommonSymbolReference : Full information of 'Decoder' already loaded. Use cached version.
+[debug] CommonSymbolReference : Full information of 'Connector' already loaded. Use cached version.
+[info] FileCreation: : HelperA.h
+[info] FileCreation: : main.cpp
+[info] FileCreation: : vae_connector_decoder.h
+[info] FileCreation: : HelperA.h
+[info] FileCreation: : main.cpp
+[info] FileCreation: : HelperA.h
+[info] FileCreation: : main.cpp
+[info] FileCreation: : vae_connector.h
+[info] FileCreation: : HelperA.h
+[info] FileCreation: : main.cpp
+[info] FileCreation: : tests_main.cpp
+[info] FileCreation: : existingStreams.txt
+[info] FileCreation: : existingComponents.txt
+[info] FileCreation: : testComponents.txt
+[info] FileCreation: : CMakeLists.txt
+[info] FileCreation: : vae_connector.cpp
+[info] FileCreation: : FindArmadillo.cmake
+[info] streamtest-generator : [2022-01-29 19:46:41.189]    -> Success
+[trace]  : START resolveDownMany("vae.Connector", "de.monticore.lang.embeddedmontiarc.embeddedmontiarc._symboltable.ComponentKind") in scope "Optional.empty". Found #0 (local)
+[trace]  : END resolveDownMany("vae.Connector", "de.monticore.lang.embeddedmontiarc.embeddedmontiarc._symboltable.ComponentKind") in scope "Optional.empty". Found #0
+[debug] ModelingLanguageModelLoader : Start parsing model Location: file:/home/asmeta/wrk/vae/mnist-vae/standard-vae/training/src/main/emadl/vae/Connector.emadl Package: vae/Connector.emadl.
+[debug] ModelingLanguageModelLoader : Parsed model Location: file:/home/asmeta/wrk/vae/mnist-vae/standard-vae/training/src/main/emadl/vae/Connector.emadl Package: vae/Connector.emadl successfully.
+[debug] EMADLModelLoader : Start creation of symbol table for model "vae.Connector".
+[debug] EmbeddedMontiArcSymbolTableCreator : Building Symboltable for Component: Connector
+[debug] CommonScope : No resolver found for symbol targetKind "de.monticore.lang.monticar.ts.MCTypeSymbolKind" in scope "Optional[Connector]"
+[debug] CommonScope : No resolver found for symbol targetKind "de.monticore.lang.monticar.ts.MCAttributeSymbolKind" in scope "Optional[Connector]"
+[debug] CommonScope : No resolver found for symbol targetKind "de.monticore.symboltable.SymbolKind" in scope "Optional[Connector]"
+[debug] CommonScope : No resolver found for symbol targetKind "de.monticore.symboltable.SymbolKind" in scope "Optional[Connector]"
+[debug] CommonScope : No resolver found for symbol targetKind "de.monticore.symboltable.SymbolKind" in scope "Optional[Connector]"
+[debug] CommonScope : No resolver found for symbol targetKind "de.monticore.symboltable.SymbolKind" in scope "Optional[Connector]"
+[debug] CommonScope : No resolver found for symbol targetKind "de.monticore.lang.embeddedmontiarc.embeddedmontiarc._symboltable.ComponentKind" in scope "Optional[Connector]"
+[debug] CommonScope : No resolver found for symbol targetKind "de.monticore.symboltable.SymbolKind" in scope "Optional[Connector]"
+[debug] CommonScope : No resolver found for symbol targetKind "de.monticore.symboltable.SymbolKind" in scope "Optional[Connector]"
+[debug] ComponentPreGeneric : package vae;
+component Connector {
+}
+
+[debug] CommonScope : No resolver found for symbol targetKind "de.monticore.lang.monticar.ts.MCTypeSymbolKind" in scope "Optional[Connector]"
+[debug] CommonScope : No resolver found for symbol targetKind "de.monticore.lang.monticar.ts.MCAttributeSymbolKind" in scope "Optional[Connector]"
+[debug] CommonScope : No resolver found for symbol targetKind "de.monticore.symboltable.SymbolKind" in scope "Optional[Connector]"
+[debug] CommonScope : No resolver found for symbol targetKind "de.monticore.symboltable.SymbolKind" in scope "Optional[Connector]"
+[debug] CommonScope : No resolver found for symbol targetKind "de.monticore.symboltable.SymbolKind" in scope "Optional[Connector]"
+[debug] CommonScope : No resolver found for symbol targetKind "de.monticore.symboltable.SymbolKind" in scope "Optional[Connector]"
+[debug] CommonScope : No resolver found for symbol targetKind "de.monticore.lang.embeddedmontiarc.embeddedmontiarc._symboltable.ComponentKind" in scope "Optional[Connector]"
+[debug] CommonScope : No resolver found for symbol targetKind "de.monticore.symboltable.SymbolKind" in scope "Optional[Connector]"
+[debug] CommonScope : No resolver found for symbol targetKind "de.monticore.symboltable.SymbolKind" in scope "Optional[Connector]"
+[debug] ComponentPostGeneric : package vae;
+component Connector {
+}
+
+[debug] CommonScope : No resolver found for symbol targetKind "de.monticore.lang.monticar.ts.MCTypeSymbolKind" in scope "Optional[Connector]"
+[debug] CommonScope : No resolver found for symbol targetKind "de.monticore.lang.monticar.ts.MCAttributeSymbolKind" in scope "Optional[Connector]"
+[debug] CommonScope : No resolver found for symbol targetKind "de.monticore.symboltable.SymbolKind" in scope "Optional[Connector]"
+[debug] CommonScope : No resolver found for symbol targetKind "de.monticore.symboltable.SymbolKind" in scope "Optional[Connector]"
+[debug] CommonScope : No resolver found for symbol targetKind "de.monticore.symboltable.SymbolKind" in scope "Optional[Connector]"
+[debug] CommonScope : No resolver found for symbol targetKind "de.monticore.symboltable.SymbolKind" in scope "Optional[Connector]"
+[debug] CommonScope : No resolver found for symbol targetKind "de.monticore.lang.embeddedmontiarc.embeddedmontiarc._symboltable.ComponentKind" in scope "Optional[Connector]"
+[debug] CommonScope : No resolver found for symbol targetKind "de.monticore.symboltable.SymbolKind" in scope "Optional[Connector]"
+[debug] CommonScope : No resolver found for symbol targetKind "de.monticore.symboltable.SymbolKind" in scope "Optional[Connector]"
+[debug] ComponentPreParam : package vae;
+component Connector {
+}
+
+[debug] CommonScope : No resolver found for symbol targetKind "de.monticore.lang.monticar.ts.MCTypeSymbolKind" in scope "Optional[Connector]"
+[debug] CommonScope : No resolver found for symbol targetKind "de.monticore.lang.monticar.ts.MCAttributeSymbolKind" in scope "Optional[Connector]"
+[debug] CommonScope : No resolver found for symbol targetKind "de.monticore.symboltable.SymbolKind" in scope "Optional[Connector]"
+[debug] CommonScope : No resolver found for symbol targetKind "de.monticore.symboltable.SymbolKind" in scope "Optional[Connector]"
+[debug] CommonScope : No resolver found for symbol targetKind "de.monticore.symboltable.SymbolKind" in scope "Optional[Connector]"
+[debug] CommonScope : No resolver found for symbol targetKind "de.monticore.symboltable.SymbolKind" in scope "Optional[Connector]"
+[debug] CommonScope : No resolver found for symbol targetKind "de.monticore.lang.embeddedmontiarc.embeddedmontiarc._symboltable.ComponentKind" in scope "Optional[Connector]"
+[debug] CommonScope : No resolver found for symbol targetKind "de.monticore.symboltable.SymbolKind" in scope "Optional[Connector]"
+[debug] CommonScope : No resolver found for symbol targetKind "de.monticore.symboltable.SymbolKind" in scope "Optional[Connector]"
+[debug] ComponentPostParam : package vae;
+component Connector {
+}
+
+[trace]  : START resolveDownMany("vae.Connector", "de.monticore.lang.embeddedmontiarc.embeddedmontiarc._symboltable.ComponentKind") in scope "Optional.empty". Found #0 (local)
+[debug] CommonScope : The symbol Connector has already been resolved.
+[trace]  : START resolveDownMany("Connector", "de.monticore.lang.embeddedmontiarc.embeddedmontiarc._symboltable.ComponentKind") in scope "Optional[Connector]". Found #1 (local)
+[trace]  : END resolveDownMany("Connector", "de.monticore.lang.embeddedmontiarc.embeddedmontiarc._symboltable.ComponentKind") in scope "Optional[Connector]". Found #1
+[trace]  : END resolveDownMany("vae.Connector", "de.monticore.lang.embeddedmontiarc.embeddedmontiarc._symboltable.ComponentKind") in scope "Optional.empty". Found #1
+[debug] info : data de.monticore.lang.monticar.common2._ast.ASTCommonMatrixType@26f5e45d
+[debug] info : res de.monticore.lang.monticar.common2._ast.ASTCommonMatrixType@704c3bdf
+[debug] Type : de.monticore.types.types._ast.ASTSimpleReferenceType@37986daf
+[debug] referencedCompName : Decoder
+[debug] Scope : {=[, , , , , , , ], data=[in CommonMatrixType data], res=[out CommonMatrixType res]}
+[debug] SymbolReference : Load full information of 'Decoder' (Kind de.monticore.lang.embeddedmontiarc.embeddedmontiarc._symboltable.ComponentKind).
+[trace] CommonQualifiedNamesCalculator : Potential qualified names for "Decoder": [Decoder, vae.Decoder]
+[trace]  : START resolveDownMany("Decoder", "de.monticore.lang.embeddedmontiarc.embeddedmontiarc._symboltable.ComponentKind") in scope "Optional.empty". Found #0 (local)
+[trace]  : END resolveDownMany("Decoder", "de.monticore.lang.embeddedmontiarc.embeddedmontiarc._symboltable.ComponentKind") in scope "Optional.empty". Found #0
+[trace]  : START resolveDownMany("Decoder", "de.monticore.lang.embeddedmontiarc.embeddedmontiarc._symboltable.ComponentKind") in scope "Optional.empty". Found #0 (local)
+[trace]  : END resolveDownMany("Decoder", "de.monticore.lang.embeddedmontiarc.embeddedmontiarc._symboltable.ComponentKind") in scope "Optional.empty". Found #0
+[trace]  : START resolveDownMany("vae.Decoder", "de.monticore.lang.embeddedmontiarc.embeddedmontiarc._symboltable.ComponentKind") in scope "Optional.empty". Found #0 (local)
+[trace]  : START resolveDownMany("Decoder", "de.monticore.lang.embeddedmontiarc.embeddedmontiarc._symboltable.ComponentKind") in scope "Optional[Connector]". Found #0 (local)
+[trace]  : END resolveDownMany("Decoder", "de.monticore.lang.embeddedmontiarc.embeddedmontiarc._symboltable.ComponentKind") in scope "Optional[Connector]". Found #0
+[trace]  : END resolveDownMany("vae.Decoder", "de.monticore.lang.embeddedmontiarc.embeddedmontiarc._symboltable.ComponentKind") in scope "Optional.empty". Found #0
+[debug] ModelingLanguageModelLoader : Start parsing model Location: file:/home/asmeta/wrk/vae/mnist-vae/standard-vae/training/src/main/emadl/vae/Decoder.emadl Package: vae/Decoder.emadl.
+[debug] ModelingLanguageModelLoader : Parsed model Location: file:/home/asmeta/wrk/vae/mnist-vae/standard-vae/training/src/main/emadl/vae/Decoder.emadl Package: vae/Decoder.emadl successfully.
+[debug] EMADLModelLoader : Start creation of symbol table for model "vae.Decoder".
+[debug] EmbeddedMontiArcSymbolTableCreator : Building Symboltable for Component: Decoder
+[debug] CommonScope : No resolver found for symbol targetKind "de.monticore.lang.monticar.ts.MCTypeSymbolKind" in scope "Optional[Decoder]"
+[debug] CommonScope : No resolver found for symbol targetKind "de.monticore.lang.monticar.ts.MCAttributeSymbolKind" in scope "Optional[Decoder]"
+[debug] CommonScope : No resolver found for symbol targetKind "de.monticore.symboltable.SymbolKind" in scope "Optional[Decoder]"
+[debug] CommonScope : No resolver found for symbol targetKind "de.monticore.symboltable.SymbolKind" in scope "Optional[Decoder]"
+[debug] CommonScope : No resolver found for symbol targetKind "de.monticore.symboltable.SymbolKind" in scope "Optional[Decoder]"
+[debug] CommonScope : No resolver found for symbol targetKind "de.monticore.symboltable.SymbolKind" in scope "Optional[Decoder]"
+[debug] CommonScope : No resolver found for symbol targetKind "de.monticore.lang.embeddedmontiarc.embeddedmontiarc._symboltable.ComponentKind" in scope "Optional[Decoder]"
+[debug] CommonScope : No resolver found for symbol targetKind "de.monticore.symboltable.SymbolKind" in scope "Optional[Decoder]"
+[debug] CommonScope : No resolver found for symbol targetKind "de.monticore.symboltable.SymbolKind" in scope "Optional[Decoder]"
+[debug] ComponentPreGeneric : package vae;
+component Decoder {
+}
+
+[debug] CommonScope : No resolver found for symbol targetKind "de.monticore.lang.monticar.ts.MCTypeSymbolKind" in scope "Optional[Decoder]"
+[debug] CommonScope : No resolver found for symbol targetKind "de.monticore.lang.monticar.ts.MCAttributeSymbolKind" in scope "Optional[Decoder]"
+[debug] CommonScope : No resolver found for symbol targetKind "de.monticore.symboltable.SymbolKind" in scope "Optional[Decoder]"
+[debug] CommonScope : No resolver found for symbol targetKind "de.monticore.symboltable.SymbolKind" in scope "Optional[Decoder]"
+[debug] CommonScope : No resolver found for symbol targetKind "de.monticore.symboltable.SymbolKind" in scope "Optional[Decoder]"
+[debug] CommonScope : No resolver found for symbol targetKind "de.monticore.symboltable.SymbolKind" in scope "Optional[Decoder]"
+[debug] CommonScope : No resolver found for symbol targetKind "de.monticore.lang.embeddedmontiarc.embeddedmontiarc._symboltable.ComponentKind" in scope "Optional[Decoder]"
+[debug] CommonScope : No resolver found for symbol targetKind "de.monticore.symboltable.SymbolKind" in scope "Optional[Decoder]"
+[debug] CommonScope : No resolver found for symbol targetKind "de.monticore.symboltable.SymbolKind" in scope "Optional[Decoder]"
+[debug] ComponentPostGeneric : package vae;
+component Decoder {
+}
+
+[debug] CommonScope : No resolver found for symbol targetKind "de.monticore.lang.monticar.ts.MCTypeSymbolKind" in scope "Optional[Decoder]"
+[debug] CommonScope : No resolver found for symbol targetKind "de.monticore.lang.monticar.ts.MCAttributeSymbolKind" in scope "Optional[Decoder]"
+[debug] CommonScope : No resolver found for symbol targetKind "de.monticore.symboltable.SymbolKind" in scope "Optional[Decoder]"
+[debug] CommonScope : No resolver found for symbol targetKind "de.monticore.symboltable.SymbolKind" in scope "Optional[Decoder]"
+[debug] CommonScope : No resolver found for symbol targetKind "de.monticore.symboltable.SymbolKind" in scope "Optional[Decoder]"
+[debug] CommonScope : No resolver found for symbol targetKind "de.monticore.symboltable.SymbolKind" in scope "Optional[Decoder]"
+[debug] CommonScope : No resolver found for symbol targetKind "de.monticore.lang.embeddedmontiarc.embeddedmontiarc._symboltable.ComponentKind" in scope "Optional[Decoder]"
+[debug] CommonScope : No resolver found for symbol targetKind "de.monticore.symboltable.SymbolKind" in scope "Optional[Decoder]"
+[debug] CommonScope : No resolver found for symbol targetKind "de.monticore.symboltable.SymbolKind" in scope "Optional[Decoder]"
+[debug] ComponentPreParam : package vae;
+component Decoder {
+}
+
+[debug] CommonScope : No resolver found for symbol targetKind "de.monticore.lang.monticar.ts.MCTypeSymbolKind" in scope "Optional[Decoder]"
+[debug] CommonScope : No resolver found for symbol targetKind "de.monticore.lang.monticar.ts.MCAttributeSymbolKind" in scope "Optional[Decoder]"
+[debug] CommonScope : No resolver found for symbol targetKind "de.monticore.symboltable.SymbolKind" in scope "Optional[Decoder]"
+[debug] CommonScope : No resolver found for symbol targetKind "de.monticore.symboltable.SymbolKind" in scope "Optional[Decoder]"
+[debug] CommonScope : No resolver found for symbol targetKind "de.monticore.symboltable.SymbolKind" in scope "Optional[Decoder]"
+[debug] CommonScope : No resolver found for symbol targetKind "de.monticore.symboltable.SymbolKind" in scope "Optional[Decoder]"
+[debug] CommonScope : No resolver found for symbol targetKind "de.monticore.lang.embeddedmontiarc.embeddedmontiarc._symboltable.ComponentKind" in scope "Optional[Decoder]"
+[debug] CommonScope : No resolver found for symbol targetKind "de.monticore.symboltable.SymbolKind" in scope "Optional[Decoder]"
+[debug] CommonScope : No resolver found for symbol targetKind "de.monticore.symboltable.SymbolKind" in scope "Optional[Decoder]"
+[debug] ComponentPostParam : package vae;
+component Decoder {
+}
+
+[trace]  : START resolveDownMany("vae.Decoder", "de.monticore.lang.embeddedmontiarc.embeddedmontiarc._symboltable.ComponentKind") in scope "Optional.empty". Found #0 (local)
+[trace]  : START resolveDownMany("Decoder", "de.monticore.lang.embeddedmontiarc.embeddedmontiarc._symboltable.ComponentKind") in scope "Optional[Connector]". Found #0 (local)
+[trace]  : END resolveDownMany("Decoder", "de.monticore.lang.embeddedmontiarc.embeddedmontiarc._symboltable.ComponentKind") in scope "Optional[Connector]". Found #0
+[debug] CommonScope : The symbol Decoder has already been resolved.
+[trace]  : START resolveDownMany("Decoder", "de.monticore.lang.embeddedmontiarc.embeddedmontiarc._symboltable.ComponentKind") in scope "Optional[Decoder]". Found #1 (local)
+[trace]  : END resolveDownMany("Decoder", "de.monticore.lang.embeddedmontiarc.embeddedmontiarc._symboltable.ComponentKind") in scope "Optional[Decoder]". Found #1
+[trace]  : END resolveDownMany("vae.Decoder", "de.monticore.lang.embeddedmontiarc.embeddedmontiarc._symboltable.ComponentKind") in scope "Optional.empty". Found #1
+[debug] info : encoding de.monticore.lang.monticar.common2._ast.ASTCommonMatrixType@605eb072
+[debug] info : data de.monticore.lang.monticar.common2._ast.ASTCommonMatrixType@7a0f06ad
+[debug] SymbolTableCreator: : endVisit of vae.Decoder
+[trace]  : START resolveDownMany("vae.decoder", "de.monticore.symboltable.SymbolKind") in scope "Optional[Decoder]". Found #0 (local)
+[trace]  : END resolveDownMany("vae.decoder", "de.monticore.symboltable.SymbolKind") in scope "Optional[Decoder]". Found #0
+[debug] SymbolReference : Load full information of 'Decoder' (Kind de.monticore.lang.embeddedmontiarc.embeddedmontiarc._symboltable.ComponentKind).
+[debug] CommonScope : The symbol Decoder has already been resolved.
+[debug] SymbolReference : Loaded full information of 'Decoder' successfully.
+[debug] SymbolReference : Load full information of 'Decoder' (Kind de.monticore.lang.embeddedmontiarc.embeddedmontiarc._symboltable.ComponentKind).
+[debug] CommonScope : The symbol Decoder has already been resolved.
+[debug] SymbolReference : Loaded full information of 'Decoder' successfully.
+[debug] EMAPortArraySymbol  : data
+[debug] set NameSizeDependsOn to: : null
+[debug] EMAPortArraySymbol  : encoding
+[debug] set NameSizeDependsOn to: : null
+[debug] CommonSymbolReference : Full information of 'Decoder' already loaded. Use cached version.
+[debug] CommonSymbolReference : Full information of 'Decoder' already loaded. Use cached version.
+[debug] exchangeGenerics inst : package vae;
+component /*instance*/ decoder {
+  ports
+    in CommonMatrixType encoding,
+    out CommonMatrixType data;
+}
+
+[debug] Fixing Wrong Ports : See next lines
+[debug] CommonSymbolReference : Full information of 'Decoder' already loaded. Use cached version.
+[debug] build end sym : package vae;
+component /*instance*/ decoder {
+  ports
+    in CommonMatrixType encoding,
+    out CommonMatrixType data;
+}
+
+[debug] EMADLModelLoader : Created symbol table for model "vae.Decoder".
+[trace]  : START resolveDownMany("vae.Decoder", "de.monticore.lang.embeddedmontiarc.embeddedmontiarc._symboltable.ComponentKind") in scope "Optional.empty". Found #0 (local)
+[trace]  : START resolveDownMany("Decoder", "de.monticore.lang.embeddedmontiarc.embeddedmontiarc._symboltable.ComponentKind") in scope "Optional[Connector]". Found #0 (local)
+[trace]  : END resolveDownMany("Decoder", "de.monticore.lang.embeddedmontiarc.embeddedmontiarc._symboltable.ComponentKind") in scope "Optional[Connector]". Found #0
+[debug] CommonScope : The symbol Decoder has already been resolved.
+[trace]  : START resolveDownMany("Decoder", "de.monticore.lang.embeddedmontiarc.embeddedmontiarc._symboltable.ComponentKind") in scope "Optional[Decoder]". Found #1 (local)
+[trace]  : END resolveDownMany("Decoder", "de.monticore.lang.embeddedmontiarc.embeddedmontiarc._symboltable.ComponentKind") in scope "Optional[Decoder]". Found #1
+[trace]  : END resolveDownMany("vae.Decoder", "de.monticore.lang.embeddedmontiarc.embeddedmontiarc._symboltable.ComponentKind") in scope "Optional.empty". Found #1
+[debug] SymbolReference : Loaded full information of 'Decoder' successfully.
+[debug] info : Loading resolution declarationSymbols
+[debug] SymbolReference : Load full information of 'Decoder' (Kind de.monticore.lang.embeddedmontiarc.embeddedmontiarc._symboltable.ComponentKind).
+[trace] CommonQualifiedNamesCalculator : Potential qualified names for "Decoder": [Decoder, vae.Decoder]
+[trace]  : START resolveDownMany("Decoder", "de.monticore.lang.embeddedmontiarc.embeddedmontiarc._symboltable.ComponentKind") in scope "Optional.empty". Found #0 (local)
+[trace]  : END resolveDownMany("Decoder", "de.monticore.lang.embeddedmontiarc.embeddedmontiarc._symboltable.ComponentKind") in scope "Optional.empty". Found #0
+[debug] GlobalScope : Already tried to load model for 'Decoder'. If model exists, continue with cached version.
+[debug] GlobalScope : Already tried to load model for 'Decoder'. If model exists, continue with cached version.
+[trace]  : START resolveDownMany("Decoder", "de.monticore.lang.embeddedmontiarc.embeddedmontiarc._symboltable.ComponentKind") in scope "Optional.empty". Found #0 (local)
+[trace]  : END resolveDownMany("Decoder", "de.monticore.lang.embeddedmontiarc.embeddedmontiarc._symboltable.ComponentKind") in scope "Optional.empty". Found #0
+[trace]  : START resolveDownMany("vae.Decoder", "de.monticore.lang.embeddedmontiarc.embeddedmontiarc._symboltable.ComponentKind") in scope "Optional.empty". Found #0 (local)
+[trace]  : START resolveDownMany("Decoder", "de.monticore.lang.embeddedmontiarc.embeddedmontiarc._symboltable.ComponentKind") in scope "Optional[Connector]". Found #0 (local)
+[trace]  : END resolveDownMany("Decoder", "de.monticore.lang.embeddedmontiarc.embeddedmontiarc._symboltable.ComponentKind") in scope "Optional[Connector]". Found #0
+[debug] CommonScope : The symbol Decoder has already been resolved.
+[trace]  : START resolveDownMany("Decoder", "de.monticore.lang.embeddedmontiarc.embeddedmontiarc._symboltable.ComponentKind") in scope "Optional[Decoder]". Found #1 (local)
+[trace]  : END resolveDownMany("Decoder", "de.monticore.lang.embeddedmontiarc.embeddedmontiarc._symboltable.ComponentKind") in scope "Optional[Decoder]". Found #1
+[trace]  : END resolveDownMany("vae.Decoder", "de.monticore.lang.embeddedmontiarc.embeddedmontiarc._symboltable.ComponentKind") in scope "Optional.empty". Found #1
+[debug] SymbolReference : Loaded full information of 'Decoder' successfully.
+[debug] CommonSymbolReference : Full information of 'Decoder' already loaded. Use cached version.
+[debug] CommonSymbolReference : Full information of 'Decoder' already loaded. Use cached version.
+[debug] CommonSymbolReference : Full information of 'Decoder' already loaded. Use cached version.
+[debug] Pre Handle Size: : de.monticore.types.types._ast.ASTSimpleReferenceType@37986daf
+[debug] CommonSymbolReference : Full information of 'Decoder' already loaded. Use cached version.
+[debug] Test : Decoder decoder
+[debug] SubComponentInstance Scope : {}
+[info] CompInst : 
+[info] Added InstanceInformation : ComponentName: decoder  de.monticore.lang.embeddedmontiarcdynamic.embeddedmontiarcdynamic._ast.ASTSubComponentInstance@51de5efa
+[debug] created SubComponentInstance: : decoder
+[debug] PortArray : No PortArrayName was specified
+[debug] CompNameParts : portName: de.monticore.lang.monticar.common2._ast.ASTQualifiedNameWithArray@30228de7 1
+[debug] PortNameParts : 1
+[info] SourcePorts : 1
+[debug] PortArray : No PortArrayName was specified
+[debug] CompNameParts : portName: de.monticore.lang.monticar.common2._ast.ASTQualifiedNameWithArray@28bd5015 1
+[debug] PortNameParts : 1
+[info] target : decoder.encoding
+[info] source : data
+[info] TARGETNAME SET TO : decoder.encoding
+[debug] PortArray : No PortArrayName was specified
+[debug] CompNameParts : portName: de.monticore.lang.monticar.common2._ast.ASTQualifiedNameWithArray@2e159116 1
+[debug] PortNameParts : 1
+[info] SourcePorts : 1
+[debug] PortArray : No PortArrayName was specified
+[debug] CompNameParts : portName: de.monticore.lang.monticar.common2._ast.ASTQualifiedNameWithArray@d1f23a0 1
+[debug] PortNameParts : 1
+[info] target : res
+[info] source : decoder.data
+[info] TARGETNAME SET TO : res
+[debug] SymbolTableCreator: : endVisit of vae.Connector
+[trace]  : START resolveDownMany("vae.connector", "de.monticore.symboltable.SymbolKind") in scope "Optional[Connector]". Found #0 (local)
+[trace]  : END resolveDownMany("vae.connector", "de.monticore.symboltable.SymbolKind") in scope "Optional[Connector]". Found #0
+[debug] SymbolReference : Load full information of 'Connector' (Kind de.monticore.lang.embeddedmontiarc.embeddedmontiarc._symboltable.ComponentKind).
+[debug] CommonScope : The symbol Connector has already been resolved.
+[debug] SymbolReference : Loaded full information of 'Connector' successfully.
+[debug] SymbolReference : Load full information of 'Connector' (Kind de.monticore.lang.embeddedmontiarc.embeddedmontiarc._symboltable.ComponentKind).
+[debug] CommonScope : The symbol Connector has already been resolved.
+[debug] SymbolReference : Loaded full information of 'Connector' successfully.
+[info] Building Connector: : data -> decoder.encoding
+[info] Building Connector: : decoder.data -> res
+[debug] CommonSymbolReference : Full information of 'Decoder' already loaded. Use cached version.
+[info] Important: : 0
+[debug] CommonSymbolReference : Full information of 'Decoder' already loaded. Use cached version.
+[debug] ComponentInstance CreateInstance PreSub : Decoder decoder
+[debug] CommonSymbolReference : Full information of 'Decoder' already loaded. Use cached version.
+[debug] CommonSymbolReference : Full information of 'Decoder' already loaded. Use cached version.
+[debug] CommonSymbolReference : Full information of 'Decoder' already loaded. Use cached version.
+[debug] SymbolReference : Load full information of 'Decoder' (Kind de.monticore.lang.embeddedmontiarc.embeddedmontiarc._symboltable.ComponentKind).
+[debug] CommonScope : The symbol Decoder has already been resolved.
+[debug] SymbolReference : Loaded full information of 'Decoder' successfully.
+[debug] SymbolReference : Load full information of 'Decoder' (Kind de.monticore.lang.embeddedmontiarc.embeddedmontiarc._symboltable.ComponentKind).
+[debug] CommonScope : The symbol Decoder has already been resolved.
+[debug] SymbolReference : Loaded full information of 'Decoder' successfully.
+[debug] CommonSymbolReference : Full information of 'Decoder' already loaded. Use cached version.
+[debug] CommonSymbolReference : Full information of 'Decoder' already loaded. Use cached version.
+[debug] EMAPortArraySymbol  : data
+[debug] set NameSizeDependsOn to: : null
+[debug] EMAPortArraySymbol  : encoding
+[debug] set NameSizeDependsOn to: : null
+[debug] CommonSymbolReference : Full information of 'Decoder' already loaded. Use cached version.
+[debug] CommonSymbolReference : Full information of 'Decoder' already loaded. Use cached version.
+[debug] exchangeGenerics inst : package vae;
+component /*instance*/ decoder {
+  ports
+    in CommonMatrixType encoding,
+    out CommonMatrixType data;
+}
+
+[debug] Fixing Wrong Ports : See next lines
+[debug] CommonSymbolReference : Full information of 'Decoder' already loaded. Use cached version.
+[debug] build end sym : package vae;
+component /*instance*/ decoder {
+  ports
+    in CommonMatrixType encoding,
+    out CommonMatrixType data;
+}
+
+[debug] InstanceInformation: : -1
+[debug] CommonSymbolReference : Full information of 'Decoder' already loaded. Use cached version.
+[debug] ComponentInstance CreateInstance PostSub : Decoder decoder
+[debug] EMAPortArraySymbol  : res
+[debug] set NameSizeDependsOn to: : null
+[debug] EMAPortArraySymbol  : data
+[debug] set NameSizeDependsOn to: : null
+[debug] CommonSymbolReference : Full information of 'Connector' already loaded. Use cached version.
+[trace] CommonQualifiedNamesCalculator : Potential qualified names for "": [, vae.]
+[trace]  : START resolveDownMany("", "de.monticore.lang.monticar.cnnarch._symboltable.ArchitectureKind") in scope "Optional.empty". Found #0 (local)
+[trace]  : END resolveDownMany("", "de.monticore.lang.monticar.cnnarch._symboltable.ArchitectureKind") in scope "Optional.empty". Found #0
+[trace]  : START resolveDownMany("", "de.monticore.lang.monticar.cnnarch._symboltable.ArchitectureKind") in scope "Optional.empty". Found #0 (local)
+[trace]  : END resolveDownMany("", "de.monticore.lang.monticar.cnnarch._symboltable.ArchitectureKind") in scope "Optional.empty". Found #0
+[trace]  : START resolveDownMany("vae.", "de.monticore.lang.monticar.cnnarch._symboltable.ArchitectureKind") in scope "Optional.empty". Found #0 (local)
+[trace]  : START resolveDownMany("", "de.monticore.lang.monticar.cnnarch._symboltable.ArchitectureKind") in scope "Optional[Connector]". Found #0 (local)
+[trace]  : END resolveDownMany("", "de.monticore.lang.monticar.cnnarch._symboltable.ArchitectureKind") in scope "Optional[Connector]". Found #0
+[trace]  : START resolveDownMany("", "de.monticore.lang.monticar.cnnarch._symboltable.ArchitectureKind") in scope "Optional[Decoder]". Found #0 (local)
+[trace]  : END resolveDownMany("", "de.monticore.lang.monticar.cnnarch._symboltable.ArchitectureKind") in scope "Optional[Decoder]". Found #0
+[trace]  : END resolveDownMany("vae.", "de.monticore.lang.monticar.cnnarch._symboltable.ArchitectureKind") in scope "Optional.empty". Found #0
+[trace]  : START resolveDownMany("vae.", "de.monticore.lang.monticar.cnnarch._symboltable.ArchitectureKind") in scope "Optional.empty". Found #0 (local)
+[trace]  : START resolveDownMany("", "de.monticore.lang.monticar.cnnarch._symboltable.ArchitectureKind") in scope "Optional[Connector]". Found #0 (local)
+[trace]  : END resolveDownMany("", "de.monticore.lang.monticar.cnnarch._symboltable.ArchitectureKind") in scope "Optional[Connector]". Found #0
+[trace]  : START resolveDownMany("", "de.monticore.lang.monticar.cnnarch._symboltable.ArchitectureKind") in scope "Optional[Decoder]". Found #0 (local)
+[trace]  : END resolveDownMany("", "de.monticore.lang.monticar.cnnarch._symboltable.ArchitectureKind") in scope "Optional[Decoder]". Found #0
+[trace]  : END resolveDownMany("vae.", "de.monticore.lang.monticar.cnnarch._symboltable.ArchitectureKind") in scope "Optional.empty". Found #0
+[debug] CommonSymbolReference : Full information of 'Connector' already loaded. Use cached version.
+[debug] CommonSymbolReference : Full information of 'Decoder' already loaded. Use cached version.
+[debug] exchangeGenerics inst : package vae;
+component /*instance*/ connector {
+  ports
+    in CommonMatrixType data,
+    out CommonMatrixType res;
+  component /*instance*/ decoder {
+    ports
+      in CommonMatrixType encoding,
+      out CommonMatrixType data;
+  }
+  connect decoder.data -> res;
+  connect data -> decoder.encoding;
+}
+
+[debug] CommonSymbolReference : Full information of 'Decoder' already loaded. Use cached version.
+[debug] ComponentType : component Decoder {
+  ports
+    in CommonMatrixType encoding,
+    out CommonMatrixType data;
+}
+
+[debug] FormalTypeParameters : []
+[debug] CommonSymbolReference : Full information of 'Decoder' already loaded. Use cached version.
+[debug] exchangeGenerics inst : package vae;
+component /*instance*/ decoder {
+  ports
+    in CommonMatrixType encoding,
+    out CommonMatrixType data;
+}
+
+[debug] Fixing Wrong Ports : See next lines
+[debug] Fixing Wrong Ports : See next lines
+[debug] CommonSymbolReference : Full information of 'Connector' already loaded. Use cached version.
+[debug] CommonSymbolReference : Full information of 'Decoder' already loaded. Use cached version.
+[debug] build end sym : package vae;
+component /*instance*/ connector {
+  ports
+    in CommonMatrixType data,
+    out CommonMatrixType res;
+  component /*instance*/ decoder {
+    ports
+      in CommonMatrixType encoding,
+      out CommonMatrixType data;
+  }
+  connect decoder.data -> res;
+  connect data -> decoder.encoding;
+}
+
+[debug] EMADLModelLoader : Created symbol table for model "vae.Connector".
+[trace]  : START resolveDownMany("vae.Connector", "de.monticore.lang.embeddedmontiarc.embeddedmontiarc._symboltable.ComponentKind") in scope "Optional.empty". Found #0 (local)
+[debug] CommonScope : The symbol Connector has already been resolved.
+[trace]  : START resolveDownMany("Connector", "de.monticore.lang.embeddedmontiarc.embeddedmontiarc._symboltable.ComponentKind") in scope "Optional[Connector]". Found #1 (local)
+[trace]  : END resolveDownMany("Connector", "de.monticore.lang.embeddedmontiarc.embeddedmontiarc._symboltable.ComponentKind") in scope "Optional[Connector]". Found #1
+[trace]  : START resolveDownMany("Connector", "de.monticore.lang.embeddedmontiarc.embeddedmontiarc._symboltable.ComponentKind") in scope "Optional[Decoder]". Found #0 (local)
+[trace]  : END resolveDownMany("Connector", "de.monticore.lang.embeddedmontiarc.embeddedmontiarc._symboltable.ComponentKind") in scope "Optional[Decoder]". Found #0
+[trace]  : END resolveDownMany("vae.Connector", "de.monticore.lang.embeddedmontiarc.embeddedmontiarc._symboltable.ComponentKind") in scope "Optional.empty". Found #1
+[debug] CommonScope : The symbol connector has already been resolved.
+[trace] CommonQualifiedNamesCalculator : Potential qualified names for "MathStatements": [MathStatements, vae.MathStatements]
+[trace]  : START resolveDownMany("MathStatements", "de.monticore.symboltable.SymbolKind") in scope "Optional.empty". Found #0 (local)
+[trace]  : END resolveDownMany("MathStatements", "de.monticore.symboltable.SymbolKind") in scope "Optional.empty". Found #0
+[trace]  : START resolveDownMany("MathStatements", "de.monticore.symboltable.SymbolKind") in scope "Optional.empty". Found #0 (local)
+[trace]  : END resolveDownMany("MathStatements", "de.monticore.symboltable.SymbolKind") in scope "Optional.empty". Found #0
+[trace]  : START resolveDownMany("vae.MathStatements", "de.monticore.symboltable.SymbolKind") in scope "Optional.empty". Found #0 (local)
+[trace]  : START resolveDownMany("MathStatements", "de.monticore.symboltable.SymbolKind") in scope "Optional[Connector]". Found #0 (local)
+[trace]  : END resolveDownMany("MathStatements", "de.monticore.symboltable.SymbolKind") in scope "Optional[Connector]". Found #0
+[trace]  : START resolveDownMany("MathStatements", "de.monticore.symboltable.SymbolKind") in scope "Optional[Decoder]". Found #0 (local)
+[trace]  : END resolveDownMany("MathStatements", "de.monticore.symboltable.SymbolKind") in scope "Optional[Decoder]". Found #0
+[trace]  : END resolveDownMany("vae.MathStatements", "de.monticore.symboltable.SymbolKind") in scope "Optional.empty". Found #0
+[trace]  : START resolveDownMany("vae.MathStatements", "de.monticore.symboltable.SymbolKind") in scope "Optional.empty". Found #0 (local)
+[trace]  : START resolveDownMany("MathStatements", "de.monticore.symboltable.SymbolKind") in scope "Optional[Connector]". Found #0 (local)
+[trace]  : END resolveDownMany("MathStatements", "de.monticore.symboltable.SymbolKind") in scope "Optional[Connector]". Found #0
+[trace]  : START resolveDownMany("MathStatements", "de.monticore.symboltable.SymbolKind") in scope "Optional[Decoder]". Found #0 (local)
+[trace]  : END resolveDownMany("MathStatements", "de.monticore.symboltable.SymbolKind") in scope "Optional[Decoder]". Found #0
+[trace]  : END resolveDownMany("vae.MathStatements", "de.monticore.symboltable.SymbolKind") in scope "Optional.empty". Found #0
+[trace]  : START resolveDownMany("vae.Connector.MathStatements", "de.monticore.symboltable.SymbolKind") in scope "Optional.empty". Found #0 (local)
+[trace]  : START resolveDownMany("Connector.MathStatements", "de.monticore.symboltable.SymbolKind") in scope "Optional[Connector]". Found #0 (local)
+[trace]  : START resolveDownMany("MathStatements", "de.monticore.symboltable.SymbolKind") in scope "Optional[Connector]". Found #0 (local)
+[trace]  : END resolveDownMany("MathStatements", "de.monticore.symboltable.SymbolKind") in scope "Optional[Connector]". Found #0
+[trace]  : END resolveDownMany("Connector.MathStatements", "de.monticore.symboltable.SymbolKind") in scope "Optional[Connector]". Found #0
+[trace]  : START resolveDownMany("Connector.MathStatements", "de.monticore.symboltable.SymbolKind") in scope "Optional[Decoder]". Found #0 (local)
+[trace]  : END resolveDownMany("Connector.MathStatements", "de.monticore.symboltable.SymbolKind") in scope "Optional[Decoder]". Found #0
+[trace]  : END resolveDownMany("vae.Connector.MathStatements", "de.monticore.symboltable.SymbolKind") in scope "Optional.empty". Found #0
+[trace]  : START resolveDownMany("vae.Connector.MathStatements", "de.monticore.symboltable.SymbolKind") in scope "Optional.empty". Found #0 (local)
+[trace]  : START resolveDownMany("Connector.MathStatements", "de.monticore.symboltable.SymbolKind") in scope "Optional[Connector]". Found #0 (local)
+[trace]  : START resolveDownMany("MathStatements", "de.monticore.symboltable.SymbolKind") in scope "Optional[Connector]". Found #0 (local)
+[trace]  : END resolveDownMany("MathStatements", "de.monticore.symboltable.SymbolKind") in scope "Optional[Connector]". Found #0
+[trace]  : END resolveDownMany("Connector.MathStatements", "de.monticore.symboltable.SymbolKind") in scope "Optional[Connector]". Found #0
+[trace]  : START resolveDownMany("Connector.MathStatements", "de.monticore.symboltable.SymbolKind") in scope "Optional[Decoder]". Found #0 (local)
+[trace]  : END resolveDownMany("Connector.MathStatements", "de.monticore.symboltable.SymbolKind") in scope "Optional[Decoder]". Found #0
+[trace]  : END resolveDownMany("vae.Connector.MathStatements", "de.monticore.symboltable.SymbolKind") in scope "Optional.empty". Found #0
+[debug] CommonSymbolReference : Full information of 'Connector' already loaded. Use cached version.
+[trace]  : START resolveDownMany("vae.Connector.MathStatements", "de.monticore.symboltable.SymbolKind") in scope "Optional.empty". Found #0 (local)
+[trace]  : START resolveDownMany("Connector.MathStatements", "de.monticore.symboltable.SymbolKind") in scope "Optional[Connector]". Found #0 (local)
+[trace]  : START resolveDownMany("MathStatements", "de.monticore.symboltable.SymbolKind") in scope "Optional[Connector]". Found #0 (local)
+[trace]  : END resolveDownMany("MathStatements", "de.monticore.symboltable.SymbolKind") in scope "Optional[Connector]". Found #0
+[trace]  : END resolveDownMany("Connector.MathStatements", "de.monticore.symboltable.SymbolKind") in scope "Optional[Connector]". Found #0
+[trace]  : START resolveDownMany("Connector.MathStatements", "de.monticore.symboltable.SymbolKind") in scope "Optional[Decoder]". Found #0 (local)
+[trace]  : END resolveDownMany("Connector.MathStatements", "de.monticore.symboltable.SymbolKind") in scope "Optional[Decoder]". Found #0
+[trace]  : END resolveDownMany("vae.Connector.MathStatements", "de.monticore.symboltable.SymbolKind") in scope "Optional.empty". Found #0
+[trace]  : START resolveDownMany("vae.Connector.MathStatements", "de.monticore.symboltable.SymbolKind") in scope "Optional.empty". Found #0 (local)
+[trace]  : START resolveDownMany("Connector.MathStatements", "de.monticore.symboltable.SymbolKind") in scope "Optional[Connector]". Found #0 (local)
+[trace]  : START resolveDownMany("MathStatements", "de.monticore.symboltable.SymbolKind") in scope "Optional[Connector]". Found #0 (local)
+[trace]  : END resolveDownMany("MathStatements", "de.monticore.symboltable.SymbolKind") in scope "Optional[Connector]". Found #0
+[trace]  : END resolveDownMany("Connector.MathStatements", "de.monticore.symboltable.SymbolKind") in scope "Optional[Connector]". Found #0
+[trace]  : START resolveDownMany("Connector.MathStatements", "de.monticore.symboltable.SymbolKind") in scope "Optional[Decoder]". Found #0 (local)
+[trace]  : END resolveDownMany("Connector.MathStatements", "de.monticore.symboltable.SymbolKind") in scope "Optional[Decoder]". Found #0
+[trace]  : END resolveDownMany("vae.Connector.MathStatements", "de.monticore.symboltable.SymbolKind") in scope "Optional.empty". Found #0
+[info] MathSymbol: : Could not resolve vae.Connector.MathStatements
+[trace] CommonQualifiedNamesCalculator : Potential qualified names for "MathStatements": [MathStatements, vae.MathStatements]
+[trace]  : START resolveDownMany("MathStatements", "de.monticore.symboltable.SymbolKind") in scope "Optional.empty". Found #0 (local)
+[trace]  : END resolveDownMany("MathStatements", "de.monticore.symboltable.SymbolKind") in scope "Optional.empty". Found #0
+[trace]  : START resolveDownMany("MathStatements", "de.monticore.symboltable.SymbolKind") in scope "Optional.empty". Found #0 (local)
+[trace]  : END resolveDownMany("MathStatements", "de.monticore.symboltable.SymbolKind") in scope "Optional.empty". Found #0
+[trace]  : START resolveDownMany("vae.MathStatements", "de.monticore.symboltable.SymbolKind") in scope "Optional.empty". Found #0 (local)
+[trace]  : START resolveDownMany("MathStatements", "de.monticore.symboltable.SymbolKind") in scope "Optional[Connector]". Found #0 (local)
+[trace]  : END resolveDownMany("MathStatements", "de.monticore.symboltable.SymbolKind") in scope "Optional[Connector]". Found #0
+[trace]  : START resolveDownMany("MathStatements", "de.monticore.symboltable.SymbolKind") in scope "Optional[Decoder]". Found #0 (local)
+[trace]  : END resolveDownMany("MathStatements", "de.monticore.symboltable.SymbolKind") in scope "Optional[Decoder]". Found #0
+[trace]  : END resolveDownMany("vae.MathStatements", "de.monticore.symboltable.SymbolKind") in scope "Optional.empty". Found #0
+[trace]  : START resolveDownMany("vae.MathStatements", "de.monticore.symboltable.SymbolKind") in scope "Optional.empty". Found #0 (local)
+[trace]  : START resolveDownMany("MathStatements", "de.monticore.symboltable.SymbolKind") in scope "Optional[Connector]". Found #0 (local)
+[trace]  : END resolveDownMany("MathStatements", "de.monticore.symboltable.SymbolKind") in scope "Optional[Connector]". Found #0
+[trace]  : START resolveDownMany("MathStatements", "de.monticore.symboltable.SymbolKind") in scope "Optional[Decoder]". Found #0 (local)
+[trace]  : END resolveDownMany("MathStatements", "de.monticore.symboltable.SymbolKind") in scope "Optional[Decoder]". Found #0
+[trace]  : END resolveDownMany("vae.MathStatements", "de.monticore.symboltable.SymbolKind") in scope "Optional.empty". Found #0
+[trace]  : START resolveDownMany("vae.connector.Decoder.MathStatements", "de.monticore.symboltable.SymbolKind") in scope "Optional.empty". Found #0 (local)
+[trace]  : START resolveDownMany("connector.Decoder.MathStatements", "de.monticore.symboltable.SymbolKind") in scope "Optional[Connector]". Found #0 (local)
+[trace]  : START resolveDownMany("Decoder.MathStatements", "de.monticore.symboltable.SymbolKind") in scope "Optional[connector]". Found #0 (local)
+[trace]  : END resolveDownMany("Decoder.MathStatements", "de.monticore.symboltable.SymbolKind") in scope "Optional[connector]". Found #0
+[trace]  : END resolveDownMany("connector.Decoder.MathStatements", "de.monticore.symboltable.SymbolKind") in scope "Optional[Connector]". Found #0
+[trace]  : START resolveDownMany("connector.Decoder.MathStatements", "de.monticore.symboltable.SymbolKind") in scope "Optional[Decoder]". Found #0 (local)
+[trace]  : END resolveDownMany("connector.Decoder.MathStatements", "de.monticore.symboltable.SymbolKind") in scope "Optional[Decoder]". Found #0
+[trace]  : END resolveDownMany("vae.connector.Decoder.MathStatements", "de.monticore.symboltable.SymbolKind") in scope "Optional.empty". Found #0
+[trace]  : START resolveDownMany("vae.connector.Decoder.MathStatements", "de.monticore.symboltable.SymbolKind") in scope "Optional.empty". Found #0 (local)
+[trace]  : START resolveDownMany("connector.Decoder.MathStatements", "de.monticore.symboltable.SymbolKind") in scope "Optional[Connector]". Found #0 (local)
+[trace]  : START resolveDownMany("Decoder.MathStatements", "de.monticore.symboltable.SymbolKind") in scope "Optional[connector]". Found #0 (local)
+[trace]  : END resolveDownMany("Decoder.MathStatements", "de.monticore.symboltable.SymbolKind") in scope "Optional[connector]". Found #0
+[trace]  : END resolveDownMany("connector.Decoder.MathStatements", "de.monticore.symboltable.SymbolKind") in scope "Optional[Connector]". Found #0
+[trace]  : START resolveDownMany("connector.Decoder.MathStatements", "de.monticore.symboltable.SymbolKind") in scope "Optional[Decoder]". Found #0 (local)
+[trace]  : END resolveDownMany("connector.Decoder.MathStatements", "de.monticore.symboltable.SymbolKind") in scope "Optional[Decoder]". Found #0
+[trace]  : END resolveDownMany("vae.connector.Decoder.MathStatements", "de.monticore.symboltable.SymbolKind") in scope "Optional.empty". Found #0
+[debug] CommonSymbolReference : Full information of 'Decoder' already loaded. Use cached version.
+[trace]  : START resolveDownMany("vae.Decoder.MathStatements", "de.monticore.symboltable.SymbolKind") in scope "Optional.empty". Found #0 (local)
+[trace]  : START resolveDownMany("Decoder.MathStatements", "de.monticore.symboltable.SymbolKind") in scope "Optional[Connector]". Found #0 (local)
+[trace]  : END resolveDownMany("Decoder.MathStatements", "de.monticore.symboltable.SymbolKind") in scope "Optional[Connector]". Found #0
+[trace]  : START resolveDownMany("Decoder.MathStatements", "de.monticore.symboltable.SymbolKind") in scope "Optional[Decoder]". Found #0 (local)
+[trace]  : START resolveDownMany("MathStatements", "de.monticore.symboltable.SymbolKind") in scope "Optional[Decoder]". Found #0 (local)
+[trace]  : END resolveDownMany("MathStatements", "de.monticore.symboltable.SymbolKind") in scope "Optional[Decoder]". Found #0
+[trace]  : END resolveDownMany("Decoder.MathStatements", "de.monticore.symboltable.SymbolKind") in scope "Optional[Decoder]". Found #0
+[trace]  : END resolveDownMany("vae.Decoder.MathStatements", "de.monticore.symboltable.SymbolKind") in scope "Optional.empty". Found #0
+[trace]  : START resolveDownMany("vae.Decoder.MathStatements", "de.monticore.symboltable.SymbolKind") in scope "Optional.empty". Found #0 (local)
+[trace]  : START resolveDownMany("Decoder.MathStatements", "de.monticore.symboltable.SymbolKind") in scope "Optional[Connector]". Found #0 (local)
+[trace]  : END resolveDownMany("Decoder.MathStatements", "de.monticore.symboltable.SymbolKind") in scope "Optional[Connector]". Found #0
+[trace]  : START resolveDownMany("Decoder.MathStatements", "de.monticore.symboltable.SymbolKind") in scope "Optional[Decoder]". Found #0 (local)
+[trace]  : START resolveDownMany("MathStatements", "de.monticore.symboltable.SymbolKind") in scope "Optional[Decoder]". Found #0 (local)
+[trace]  : END resolveDownMany("MathStatements", "de.monticore.symboltable.SymbolKind") in scope "Optional[Decoder]". Found #0
+[trace]  : END resolveDownMany("Decoder.MathStatements", "de.monticore.symboltable.SymbolKind") in scope "Optional[Decoder]". Found #0
+[trace]  : END resolveDownMany("vae.Decoder.MathStatements", "de.monticore.symboltable.SymbolKind") in scope "Optional.empty". Found #0
+[info] MathSymbol: : Could not resolve vae.Decoder.MathStatements
+[debug] CommonScope : The symbol data has already been resolved.
+[debug] CommonScope : The symbol data has already been resolved.
+[trace] CommonQualifiedNamesCalculator : Potential qualified names for "vae.connector.decoder.data": [vae.connector.decoder.data]
+[trace]  : START resolveDownMany("vae.connector.decoder.data", "de.monticore.symboltable.SymbolKind") in scope "Optional.empty". Found #0 (local)
+[trace]  : START resolveDownMany("connector.decoder.data", "de.monticore.symboltable.SymbolKind") in scope "Optional[Connector]". Found #0 (local)
+[trace]  : START resolveDownMany("decoder.data", "de.monticore.symboltable.SymbolKind") in scope "Optional[connector]". Found #0 (local)
+[debug] CommonScope : The symbol data has already been resolved.
+[trace]  : START resolveDownMany("data", "de.monticore.symboltable.SymbolKind") in scope "Optional[decoder]". Found #1 (local)
+[trace]  : END resolveDownMany("data", "de.monticore.symboltable.SymbolKind") in scope "Optional[decoder]". Found #1
+[trace]  : END resolveDownMany("decoder.data", "de.monticore.symboltable.SymbolKind") in scope "Optional[connector]". Found #1
+[trace]  : END resolveDownMany("connector.decoder.data", "de.monticore.symboltable.SymbolKind") in scope "Optional[Connector]". Found #1
+[trace]  : START resolveDownMany("connector.decoder.data", "de.monticore.symboltable.SymbolKind") in scope "Optional[Decoder]". Found #0 (local)
+[trace]  : END resolveDownMany("connector.decoder.data", "de.monticore.symboltable.SymbolKind") in scope "Optional[Decoder]". Found #0
+[trace]  : END resolveDownMany("vae.connector.decoder.data", "de.monticore.symboltable.SymbolKind") in scope "Optional.empty". Found #1
+[debug] CommonScope : The symbol data has already been resolved.
+[debug] CommonSymbolReference : Full information of 'Connector' already loaded. Use cached version.
+[trace] CommonQualifiedNamesCalculator : Potential qualified names for "": [, vae.]
+[trace]  : START resolveDownMany("", "de.monticore.lang.monticar.cnnarch._symboltable.ArchitectureKind") in scope "Optional.empty". Found #0 (local)
+[trace]  : END resolveDownMany("", "de.monticore.lang.monticar.cnnarch._symboltable.ArchitectureKind") in scope "Optional.empty". Found #0
+[trace]  : START resolveDownMany("", "de.monticore.lang.monticar.cnnarch._symboltable.ArchitectureKind") in scope "Optional.empty". Found #0 (local)
+[trace]  : END resolveDownMany("", "de.monticore.lang.monticar.cnnarch._symboltable.ArchitectureKind") in scope "Optional.empty". Found #0
+[trace]  : START resolveDownMany("vae.", "de.monticore.lang.monticar.cnnarch._symboltable.ArchitectureKind") in scope "Optional.empty". Found #0 (local)
+[trace]  : START resolveDownMany("", "de.monticore.lang.monticar.cnnarch._symboltable.ArchitectureKind") in scope "Optional[Connector]". Found #0 (local)
+[trace]  : END resolveDownMany("", "de.monticore.lang.monticar.cnnarch._symboltable.ArchitectureKind") in scope "Optional[Connector]". Found #0
+[trace]  : START resolveDownMany("", "de.monticore.lang.monticar.cnnarch._symboltable.ArchitectureKind") in scope "Optional[Decoder]". Found #0 (local)
+[trace]  : END resolveDownMany("", "de.monticore.lang.monticar.cnnarch._symboltable.ArchitectureKind") in scope "Optional[Decoder]". Found #0
+[trace]  : END resolveDownMany("vae.", "de.monticore.lang.monticar.cnnarch._symboltable.ArchitectureKind") in scope "Optional.empty". Found #0
+[trace]  : START resolveDownMany("vae.", "de.monticore.lang.monticar.cnnarch._symboltable.ArchitectureKind") in scope "Optional.empty". Found #0 (local)
+[trace]  : START resolveDownMany("", "de.monticore.lang.monticar.cnnarch._symboltable.ArchitectureKind") in scope "Optional[Connector]". Found #0 (local)
+[trace]  : END resolveDownMany("", "de.monticore.lang.monticar.cnnarch._symboltable.ArchitectureKind") in scope "Optional[Connector]". Found #0
+[trace]  : START resolveDownMany("", "de.monticore.lang.monticar.cnnarch._symboltable.ArchitectureKind") in scope "Optional[Decoder]". Found #0 (local)
+[trace]  : END resolveDownMany("", "de.monticore.lang.monticar.cnnarch._symboltable.ArchitectureKind") in scope "Optional[Decoder]". Found #0
+[trace]  : END resolveDownMany("vae.", "de.monticore.lang.monticar.cnnarch._symboltable.ArchitectureKind") in scope "Optional.empty". Found #0
+[trace] CommonQualifiedNamesCalculator : Potential qualified names for "MathStatements": [MathStatements, vae.MathStatements]
+[trace]  : START resolveDownMany("MathStatements", "de.monticore.symboltable.SymbolKind") in scope "Optional.empty". Found #0 (local)
+[trace]  : END resolveDownMany("MathStatements", "de.monticore.symboltable.SymbolKind") in scope "Optional.empty". Found #0
+[trace]  : START resolveDownMany("MathStatements", "de.monticore.symboltable.SymbolKind") in scope "Optional.empty". Found #0 (local)
+[trace]  : END resolveDownMany("MathStatements", "de.monticore.symboltable.SymbolKind") in scope "Optional.empty". Found #0
+[trace]  : START resolveDownMany("vae.MathStatements", "de.monticore.symboltable.SymbolKind") in scope "Optional.empty". Found #0 (local)
+[trace]  : START resolveDownMany("MathStatements", "de.monticore.symboltable.SymbolKind") in scope "Optional[Connector]". Found #0 (local)
+[trace]  : END resolveDownMany("MathStatements", "de.monticore.symboltable.SymbolKind") in scope "Optional[Connector]". Found #0
+[trace]  : START resolveDownMany("MathStatements", "de.monticore.symboltable.SymbolKind") in scope "Optional[Decoder]". Found #0 (local)
+[trace]  : END resolveDownMany("MathStatements", "de.monticore.symboltable.SymbolKind") in scope "Optional[Decoder]". Found #0
+[trace]  : END resolveDownMany("vae.MathStatements", "de.monticore.symboltable.SymbolKind") in scope "Optional.empty". Found #0
+[trace]  : START resolveDownMany("vae.MathStatements", "de.monticore.symboltable.SymbolKind") in scope "Optional.empty". Found #0 (local)
+[trace]  : START resolveDownMany("MathStatements", "de.monticore.symboltable.SymbolKind") in scope "Optional[Connector]". Found #0 (local)
+[trace]  : END resolveDownMany("MathStatements", "de.monticore.symboltable.SymbolKind") in scope "Optional[Connector]". Found #0
+[trace]  : START resolveDownMany("MathStatements", "de.monticore.symboltable.SymbolKind") in scope "Optional[Decoder]". Found #0 (local)
+[trace]  : END resolveDownMany("MathStatements", "de.monticore.symboltable.SymbolKind") in scope "Optional[Decoder]". Found #0
+[trace]  : END resolveDownMany("vae.MathStatements", "de.monticore.symboltable.SymbolKind") in scope "Optional.empty". Found #0
+[trace] CommonQualifiedNamesCalculator : Potential qualified names for "": [, vae.]
+[trace]  : START resolveDownMany("", "de.monticore.lang.monticar.cnnarch._symboltable.ArchitectureKind") in scope "Optional.empty". Found #0 (local)
+[trace]  : END resolveDownMany("", "de.monticore.lang.monticar.cnnarch._symboltable.ArchitectureKind") in scope "Optional.empty". Found #0
+[trace]  : START resolveDownMany("", "de.monticore.lang.monticar.cnnarch._symboltable.ArchitectureKind") in scope "Optional.empty". Found #0 (local)
+[trace]  : END resolveDownMany("", "de.monticore.lang.monticar.cnnarch._symboltable.ArchitectureKind") in scope "Optional.empty". Found #0
+[trace]  : START resolveDownMany("vae.", "de.monticore.lang.monticar.cnnarch._symboltable.ArchitectureKind") in scope "Optional.empty". Found #0 (local)
+[trace]  : START resolveDownMany("", "de.monticore.lang.monticar.cnnarch._symboltable.ArchitectureKind") in scope "Optional[Connector]". Found #0 (local)
+[trace]  : END resolveDownMany("", "de.monticore.lang.monticar.cnnarch._symboltable.ArchitectureKind") in scope "Optional[Connector]". Found #0
+[trace]  : START resolveDownMany("", "de.monticore.lang.monticar.cnnarch._symboltable.ArchitectureKind") in scope "Optional[Decoder]". Found #0 (local)
+[trace]  : END resolveDownMany("", "de.monticore.lang.monticar.cnnarch._symboltable.ArchitectureKind") in scope "Optional[Decoder]". Found #0
+[trace]  : END resolveDownMany("vae.", "de.monticore.lang.monticar.cnnarch._symboltable.ArchitectureKind") in scope "Optional.empty". Found #0
+[trace]  : START resolveDownMany("vae.", "de.monticore.lang.monticar.cnnarch._symboltable.ArchitectureKind") in scope "Optional.empty". Found #0 (local)
+[trace]  : START resolveDownMany("", "de.monticore.lang.monticar.cnnarch._symboltable.ArchitectureKind") in scope "Optional[Connector]". Found #0 (local)
+[trace]  : END resolveDownMany("", "de.monticore.lang.monticar.cnnarch._symboltable.ArchitectureKind") in scope "Optional[Connector]". Found #0
+[trace]  : START resolveDownMany("", "de.monticore.lang.monticar.cnnarch._symboltable.ArchitectureKind") in scope "Optional[Decoder]". Found #0 (local)
+[trace]  : END resolveDownMany("", "de.monticore.lang.monticar.cnnarch._symboltable.ArchitectureKind") in scope "Optional[Decoder]". Found #0
+[trace]  : END resolveDownMany("vae.", "de.monticore.lang.monticar.cnnarch._symboltable.ArchitectureKind") in scope "Optional.empty". Found #0
+[debug] CommonSymbolReference : Full information of 'Connector' already loaded. Use cached version.
+[debug] CommonSymbolReference : Full information of 'Decoder' already loaded. Use cached version.
+[info] Current Symbol(size:1): : package vae;
+component /*instance*/ connector {
+  ports
+    in CommonMatrixType data,
+    out CommonMatrixType res;
+  component /*instance*/ decoder {
+    ports
+      in CommonMatrixType encoding,
+      out CommonMatrixType data;
+  }
+  connect decoder.data -> res;
+  connect data -> decoder.encoding;
+}
+
+[info] Added DimInfo: : data 2
+[info] addVariable : v: data
+[debug] PortConverter : EMAVAR: data targetType:colvec isArray:false
+[info] Added DimInfo: : res 1
+[info] Added DimInfo: : res 28
+[info] Added DimInfo: : res 28
+[info] addVariable : v: res
+[debug] PortConverter : EMAVAR: res targetType:cube isArray:false
+[debug] CommonSymbolReference : Full information of 'Connector' already loaded. Use cached version.
+[debug] CommonSymbolReference : Full information of 'Decoder' already loaded. Use cached version.
+[info] Parent: : package vae;
+component /*instance*/ connector {
+  ports
+    in CommonMatrixType data,
+    out CommonMatrixType res;
+  component /*instance*/ decoder {
+    ports
+      in CommonMatrixType encoding,
+      out CommonMatrixType data;
+  }
+  connect decoder.data -> res;
+  connect data -> decoder.encoding;
+}
+
+[debug] CommonSymbolReference : Full information of 'Decoder' already loaded. Use cached version.
+[info] Instance: : package vae;
+component /*instance*/ decoder {
+  ports
+    in CommonMatrixType encoding,
+    out CommonMatrixType data;
+}
+
+[debug] CommonScope : The symbol decoder has already been resolved.
+[debug] CommonSymbolReference : Full information of 'Decoder' already loaded. Use cached version.
+[info] generateInitNonStaticVariable : v: data
+[info] generateInitNonStaticVariable : v: res
+[info] initBluePrintCreate: : Variable: data
+[info] initBluePrintCreate: : Variable: res
+[info] initBluePrintCreate: : Variable: decoder
+[debug] CommonScope : The symbol res has already been resolved.
+[trace] CommonQualifiedNamesCalculator : Potential qualified names for "vae.connector.decoder.data": [vae.connector.decoder.data]
+[trace]  : START resolveDownMany("vae.connector.decoder.data", "de.monticore.symboltable.SymbolKind") in scope "Optional.empty". Found #0 (local)
+[trace]  : START resolveDownMany("connector.decoder.data", "de.monticore.symboltable.SymbolKind") in scope "Optional[Connector]". Found #0 (local)
+[trace]  : START resolveDownMany("decoder.data", "de.monticore.symboltable.SymbolKind") in scope "Optional[connector]". Found #0 (local)
+[debug] CommonScope : The symbol data has already been resolved.
+[trace]  : START resolveDownMany("data", "de.monticore.symboltable.SymbolKind") in scope "Optional[decoder]". Found #1 (local)
+[trace]  : END resolveDownMany("data", "de.monticore.symboltable.SymbolKind") in scope "Optional[decoder]". Found #1
+[trace]  : END resolveDownMany("decoder.data", "de.monticore.symboltable.SymbolKind") in scope "Optional[connector]". Found #1
+[trace]  : END resolveDownMany("connector.decoder.data", "de.monticore.symboltable.SymbolKind") in scope "Optional[Connector]". Found #1
+[trace]  : START resolveDownMany("connector.decoder.data", "de.monticore.symboltable.SymbolKind") in scope "Optional[Decoder]". Found #0 (local)
+[trace]  : END resolveDownMany("connector.decoder.data", "de.monticore.symboltable.SymbolKind") in scope "Optional[Decoder]". Found #0
+[trace]  : END resolveDownMany("vae.connector.decoder.data", "de.monticore.symboltable.SymbolKind") in scope "Optional.empty". Found #1
+[trace] CommonQualifiedNamesCalculator : Potential qualified names for "vae.connector.decoder.data": [vae.connector.decoder.data]
+[trace]  : START resolveDownMany("vae.connector.decoder.data", "de.monticore.symboltable.SymbolKind") in scope "Optional.empty". Found #0 (local)
+[trace]  : START resolveDownMany("connector.decoder.data", "de.monticore.symboltable.SymbolKind") in scope "Optional[Connector]". Found #0 (local)
+[trace]  : START resolveDownMany("decoder.data", "de.monticore.symboltable.SymbolKind") in scope "Optional[connector]". Found #0 (local)
+[debug] CommonScope : The symbol data has already been resolved.
+[trace]  : START resolveDownMany("data", "de.monticore.symboltable.SymbolKind") in scope "Optional[decoder]". Found #1 (local)
+[trace]  : END resolveDownMany("data", "de.monticore.symboltable.SymbolKind") in scope "Optional[decoder]". Found #1
+[trace]  : END resolveDownMany("decoder.data", "de.monticore.symboltable.SymbolKind") in scope "Optional[connector]". Found #1
+[trace]  : END resolveDownMany("connector.decoder.data", "de.monticore.symboltable.SymbolKind") in scope "Optional[Connector]". Found #1
+[trace]  : START resolveDownMany("connector.decoder.data", "de.monticore.symboltable.SymbolKind") in scope "Optional[Decoder]". Found #0 (local)
+[trace]  : END resolveDownMany("connector.decoder.data", "de.monticore.symboltable.SymbolKind") in scope "Optional[Decoder]". Found #0
+[trace]  : END resolveDownMany("vae.connector.decoder.data", "de.monticore.symboltable.SymbolKind") in scope "Optional.empty". Found #1
+[trace] CommonQualifiedNamesCalculator : Potential qualified names for "vae.connector.decoder.data": [vae.connector.decoder.data]
+[trace]  : START resolveDownMany("vae.connector.decoder.data", "de.monticore.symboltable.SymbolKind") in scope "Optional.empty". Found #0 (local)
+[trace]  : START resolveDownMany("connector.decoder.data", "de.monticore.symboltable.SymbolKind") in scope "Optional[Connector]". Found #0 (local)
+[trace]  : START resolveDownMany("decoder.data", "de.monticore.symboltable.SymbolKind") in scope "Optional[connector]". Found #0 (local)
+[debug] CommonScope : The symbol data has already been resolved.
+[trace]  : START resolveDownMany("data", "de.monticore.symboltable.SymbolKind") in scope "Optional[decoder]". Found #1 (local)
+[trace]  : END resolveDownMany("data", "de.monticore.symboltable.SymbolKind") in scope "Optional[decoder]". Found #1
+[trace]  : END resolveDownMany("decoder.data", "de.monticore.symboltable.SymbolKind") in scope "Optional[connector]". Found #1
+[trace]  : END resolveDownMany("connector.decoder.data", "de.monticore.symboltable.SymbolKind") in scope "Optional[Connector]". Found #1
+[trace]  : START resolveDownMany("connector.decoder.data", "de.monticore.symboltable.SymbolKind") in scope "Optional[Decoder]". Found #0 (local)
+[trace]  : END resolveDownMany("connector.decoder.data", "de.monticore.symboltable.SymbolKind") in scope "Optional[Decoder]". Found #0
+[trace]  : END resolveDownMany("vae.connector.decoder.data", "de.monticore.symboltable.SymbolKind") in scope "Optional.empty". Found #1
+[debug] CommonScope : The symbol data has already been resolved.
+[trace] CommonQualifiedNamesCalculator : Potential qualified names for "vae.connector.decoder.encoding": [vae.connector.decoder.encoding]
+[trace]  : START resolveDownMany("vae.connector.decoder.encoding", "de.monticore.symboltable.SymbolKind") in scope "Optional.empty". Found #0 (local)
+[trace]  : START resolveDownMany("connector.decoder.encoding", "de.monticore.symboltable.SymbolKind") in scope "Optional[Connector]". Found #0 (local)
+[trace]  : START resolveDownMany("decoder.encoding", "de.monticore.symboltable.SymbolKind") in scope "Optional[connector]". Found #0 (local)
+[debug] CommonScope : The symbol encoding has already been resolved.
+[trace]  : START resolveDownMany("encoding", "de.monticore.symboltable.SymbolKind") in scope "Optional[decoder]". Found #1 (local)
+[trace]  : END resolveDownMany("encoding", "de.monticore.symboltable.SymbolKind") in scope "Optional[decoder]". Found #1
+[trace]  : END resolveDownMany("decoder.encoding", "de.monticore.symboltable.SymbolKind") in scope "Optional[connector]". Found #1
+[trace]  : END resolveDownMany("connector.decoder.encoding", "de.monticore.symboltable.SymbolKind") in scope "Optional[Connector]". Found #1
+[trace]  : START resolveDownMany("connector.decoder.encoding", "de.monticore.symboltable.SymbolKind") in scope "Optional[Decoder]". Found #0 (local)
+[trace]  : END resolveDownMany("connector.decoder.encoding", "de.monticore.symboltable.SymbolKind") in scope "Optional[Decoder]". Found #0
+[trace]  : END resolveDownMany("vae.connector.decoder.encoding", "de.monticore.symboltable.SymbolKind") in scope "Optional.empty". Found #1
+[debug] CommonScope : The symbol data has already been resolved.
+[trace] CommonQualifiedNamesCalculator : Potential qualified names for "vae.connector.decoder.encoding": [vae.connector.decoder.encoding]
+[trace]  : START resolveDownMany("vae.connector.decoder.encoding", "de.monticore.symboltable.SymbolKind") in scope "Optional.empty". Found #0 (local)
+[trace]  : START resolveDownMany("connector.decoder.encoding", "de.monticore.symboltable.SymbolKind") in scope "Optional[Connector]". Found #0 (local)
+[trace]  : START resolveDownMany("decoder.encoding", "de.monticore.symboltable.SymbolKind") in scope "Optional[connector]". Found #0 (local)
+[debug] CommonScope : The symbol encoding has already been resolved.
+[trace]  : START resolveDownMany("encoding", "de.monticore.symboltable.SymbolKind") in scope "Optional[decoder]". Found #1 (local)
+[trace]  : END resolveDownMany("encoding", "de.monticore.symboltable.SymbolKind") in scope "Optional[decoder]". Found #1
+[trace]  : END resolveDownMany("decoder.encoding", "de.monticore.symboltable.SymbolKind") in scope "Optional[connector]". Found #1
+[trace]  : END resolveDownMany("connector.decoder.encoding", "de.monticore.symboltable.SymbolKind") in scope "Optional[Connector]". Found #1
+[trace]  : START resolveDownMany("connector.decoder.encoding", "de.monticore.symboltable.SymbolKind") in scope "Optional[Decoder]". Found #0 (local)
+[trace]  : END resolveDownMany("connector.decoder.encoding", "de.monticore.symboltable.SymbolKind") in scope "Optional[Decoder]". Found #0
+[trace]  : END resolveDownMany("vae.connector.decoder.encoding", "de.monticore.symboltable.SymbolKind") in scope "Optional.empty". Found #1
+[debug] CommonScope : The symbol data has already been resolved.
+[trace] CommonQualifiedNamesCalculator : Potential qualified names for "vae.connector.decoder.encoding": [vae.connector.decoder.encoding]
+[trace]  : START resolveDownMany("vae.connector.decoder.encoding", "de.monticore.symboltable.SymbolKind") in scope "Optional.empty". Found #0 (local)
+[trace]  : START resolveDownMany("connector.decoder.encoding", "de.monticore.symboltable.SymbolKind") in scope "Optional[Connector]". Found #0 (local)
+[trace]  : START resolveDownMany("decoder.encoding", "de.monticore.symboltable.SymbolKind") in scope "Optional[connector]". Found #0 (local)
+[debug] CommonScope : The symbol encoding has already been resolved.
+[trace]  : START resolveDownMany("encoding", "de.monticore.symboltable.SymbolKind") in scope "Optional[decoder]". Found #1 (local)
+[trace]  : END resolveDownMany("encoding", "de.monticore.symboltable.SymbolKind") in scope "Optional[decoder]". Found #1
+[trace]  : END resolveDownMany("decoder.encoding", "de.monticore.symboltable.SymbolKind") in scope "Optional[connector]". Found #1
+[trace]  : END resolveDownMany("connector.decoder.encoding", "de.monticore.symboltable.SymbolKind") in scope "Optional[Connector]". Found #1
+[trace]  : START resolveDownMany("connector.decoder.encoding", "de.monticore.symboltable.SymbolKind") in scope "Optional[Decoder]". Found #0 (local)
+[trace]  : END resolveDownMany("connector.decoder.encoding", "de.monticore.symboltable.SymbolKind") in scope "Optional[Decoder]". Found #0
+[trace]  : END resolveDownMany("vae.connector.decoder.encoding", "de.monticore.symboltable.SymbolKind") in scope "Optional.empty". Found #1
+[info] Added DimInfo: : data 2
+[info] addVariable : v: data
+[debug] PortConverter : EMAVAR: data targetType:colvec isArray:false
+[info] Added DimInfo: : decoder.encoding 2
+[info] addVariable : v: decoder.encoding
+[debug] PortConverter : EMAVAR: decoder.encoding targetType:colvec isArray:false
+[info] Variable Info: : v1: data v2: decoder.encoding
+[info] Variable Info: : v1: data v2: decoder.encoding
+[info] Added DimInfo: : decoder.data 1
+[info] Added DimInfo: : decoder.data 28
+[info] Added DimInfo: : decoder.data 28
+[info] addVariable : v: decoder.data
+[debug] PortConverter : EMAVAR: decoder.data targetType:cube isArray:false
+[info] Added DimInfo: : res 1
+[info] Added DimInfo: : res 28
+[info] Added DimInfo: : res 28
+[info] addVariable : v: res
+[debug] PortConverter : EMAVAR: res targetType:cube isArray:false
+[info] Variable Info: : v1: decoder.data v2: res
+[info] Variable Info: : v1: decoder.data v2: res
+[info] initBluePrintExtension: : Variable: data
+[info] initBluePrintExtension: : Variable: res
+[info] initBluePrintExtension: : Variable: decoder
+[info] beforRes: : void init()
+{
+
+[info] afterRes: : void init()
+{
+data=colvec(2);
+
+[info] beforRes: : void init()
+{
+data=colvec(2);
+
+[info] afterRes: : void init()
+{
+data=colvec(2);
+res = cube(1, 28, 28);
+
+[info] beforRes: : void init()
+{
+data=colvec(2);
+res = cube(1, 28, 28);
+
+[info] afterRes: : void init()
+{
+data=colvec(2);
+res = cube(1, 28, 28);
+decoder.init();
+
+[info] Instruction: : v1: decoder.encodingv2: data
+[info] beforRes: : void execute()
+{
+
+[info] Array False Method: : var1: decoder.encoding var2: data
+[info] ResultString: : decoder.encoding = data;
+
+[info] afterRes: : void execute()
+{
+decoder.encoding = data;
+
+[info] beforRes: : void execute()
+{
+decoder.encoding = data;
+
+[info] afterRes: : void execute()
+{
+decoder.encoding = data;
+decoder.execute();
+
+[info] Instruction: : v1: resv2: decoder.data
+[info] beforRes: : void execute()
+{
+decoder.encoding = data;
+decoder.execute();
+
+[info] Array False Method: : var1: res var2: decoder.data
+[info] ResultString: : res = decoder.data;
+
+[info] afterRes: : void execute()
+{
+decoder.encoding = data;
+decoder.execute();
+res = decoder.data;
+
+[info] Before RESSSS: : #ifndef VAE_CONNECTOR
+#define VAE_CONNECTOR
+#ifndef M_PI
+#define M_PI 3.14159265358979323846
+#endif
+#include "armadillo"
+#include "vae_connector_decoder.h"
+using namespace arma;
+class vae_connector{
+public:
+colvec data;
+cube res;
+vae_connector_decoder decoder;
+void init()
+{
+data=colvec(2);
+res = cube(1, 28, 28);
+decoder.init();
+}
+void execute()
+{
+decoder.encoding = data;
+decoder.execute();
+res = decoder.data;
+}
+
+};
+#endif
+
+[debug] CommonSymbolReference : Full information of 'Decoder' already loaded. Use cached version.
+[trace] CommonQualifiedNamesCalculator : Potential qualified names for "MathStatements": [MathStatements, vae.MathStatements]
+[trace]  : START resolveDownMany("MathStatements", "de.monticore.symboltable.SymbolKind") in scope "Optional.empty". Found #0 (local)
+[trace]  : END resolveDownMany("MathStatements", "de.monticore.symboltable.SymbolKind") in scope "Optional.empty". Found #0
+[trace]  : START resolveDownMany("MathStatements", "de.monticore.symboltable.SymbolKind") in scope "Optional.empty". Found #0 (local)
+[trace]  : END resolveDownMany("MathStatements", "de.monticore.symboltable.SymbolKind") in scope "Optional.empty". Found #0
+[trace]  : START resolveDownMany("vae.MathStatements", "de.monticore.symboltable.SymbolKind") in scope "Optional.empty". Found #0 (local)
+[trace]  : START resolveDownMany("MathStatements", "de.monticore.symboltable.SymbolKind") in scope "Optional[Connector]". Found #0 (local)
+[trace]  : END resolveDownMany("MathStatements", "de.monticore.symboltable.SymbolKind") in scope "Optional[Connector]". Found #0
+[trace]  : START resolveDownMany("MathStatements", "de.monticore.symboltable.SymbolKind") in scope "Optional[Decoder]". Found #0 (local)
+[trace]  : END resolveDownMany("MathStatements", "de.monticore.symboltable.SymbolKind") in scope "Optional[Decoder]". Found #0
+[trace]  : END resolveDownMany("vae.MathStatements", "de.monticore.symboltable.SymbolKind") in scope "Optional.empty". Found #0
+[trace]  : START resolveDownMany("vae.MathStatements", "de.monticore.symboltable.SymbolKind") in scope "Optional.empty". Found #0 (local)
+[trace]  : START resolveDownMany("MathStatements", "de.monticore.symboltable.SymbolKind") in scope "Optional[Connector]". Found #0 (local)
+[trace]  : END resolveDownMany("MathStatements", "de.monticore.symboltable.SymbolKind") in scope "Optional[Connector]". Found #0
+[trace]  : START resolveDownMany("MathStatements", "de.monticore.symboltable.SymbolKind") in scope "Optional[Decoder]". Found #0 (local)
+[trace]  : END resolveDownMany("MathStatements", "de.monticore.symboltable.SymbolKind") in scope "Optional[Decoder]". Found #0
+[trace]  : END resolveDownMany("vae.MathStatements", "de.monticore.symboltable.SymbolKind") in scope "Optional.empty". Found #0
+[debug] CommonSymbolReference : Full information of 'Connector' already loaded. Use cached version.
+[trace]  : START resolveDownMany("vae.Decoder", "de.monticore.symboltable.SymbolKind") in scope "Optional.empty". Found #0 (local)
+[trace]  : START resolveDownMany("Decoder", "de.monticore.symboltable.SymbolKind") in scope "Optional[Connector]". Found #0 (local)
+[trace]  : END resolveDownMany("Decoder", "de.monticore.symboltable.SymbolKind") in scope "Optional[Connector]". Found #0
+[trace]  : START resolveDownMany("Decoder", "de.monticore.symboltable.SymbolKind") in scope "Optional[Decoder]". Found #0 (local)
+[trace]  : END resolveDownMany("Decoder", "de.monticore.symboltable.SymbolKind") in scope "Optional[Decoder]". Found #0
+[trace]  : END resolveDownMany("vae.Decoder", "de.monticore.symboltable.SymbolKind") in scope "Optional.empty". Found #0
+[trace]  : START resolveDownMany("vae.Decoder", "de.monticore.symboltable.SymbolKind") in scope "Optional.empty". Found #0 (local)
+[trace]  : START resolveDownMany("Decoder", "de.monticore.symboltable.SymbolKind") in scope "Optional[Connector]". Found #0 (local)
+[trace]  : END resolveDownMany("Decoder", "de.monticore.symboltable.SymbolKind") in scope "Optional[Connector]". Found #0
+[trace]  : START resolveDownMany("Decoder", "de.monticore.symboltable.SymbolKind") in scope "Optional[Decoder]". Found #0 (local)
+[trace]  : END resolveDownMany("Decoder", "de.monticore.symboltable.SymbolKind") in scope "Optional[Decoder]". Found #0
+[trace]  : END resolveDownMany("vae.Decoder", "de.monticore.symboltable.SymbolKind") in scope "Optional.empty". Found #0
+[trace]  : START resolveDownMany("vae.Decoder", "de.monticore.lang.embeddedmontiarc.embeddedmontiarc._symboltable.ComponentKind") in scope "Optional.empty". Found #0 (local)
+[trace]  : START resolveDownMany("Decoder", "de.monticore.lang.embeddedmontiarc.embeddedmontiarc._symboltable.ComponentKind") in scope "Optional[Connector]". Found #0 (local)
+[trace]  : END resolveDownMany("Decoder", "de.monticore.lang.embeddedmontiarc.embeddedmontiarc._symboltable.ComponentKind") in scope "Optional[Connector]". Found #0
+[debug] CommonScope : The symbol Decoder has already been resolved.
+[trace]  : START resolveDownMany("Decoder", "de.monticore.lang.embeddedmontiarc.embeddedmontiarc._symboltable.ComponentKind") in scope "Optional[Decoder]". Found #1 (local)
+[trace]  : END resolveDownMany("Decoder", "de.monticore.lang.embeddedmontiarc.embeddedmontiarc._symboltable.ComponentKind") in scope "Optional[Decoder]". Found #1
+[trace]  : END resolveDownMany("vae.Decoder", "de.monticore.lang.embeddedmontiarc.embeddedmontiarc._symboltable.ComponentKind") in scope "Optional.empty". Found #1
+[warn] Tagging info for DatasetArtifact symbol was found, ignoring data_paths.txt: /home/asmeta/.m2/repository/de/monticore/lang/monticar/datasets/vae-mnist/1/vae-mnist-1-dataset/training_data
+[info] EMADLGenerator : No weights path definition found in /home/asmeta/wrk/vae/mnist-vae/standard-vae/training/src/main/emadl/weights_paths.txt: No pretrained weights will be loaded.
+[debug] CommonSymbolReference : Full information of 'Connector' already loaded. Use cached version.
+[debug] CommonSymbolReference : Full information of 'Connector' already loaded. Use cached version.
+[debug] CommonSymbolReference : Full information of 'Decoder' already loaded. Use cached version.
+[info] Current Symbol(size:1): : package vae;
+component /*instance*/ decoder {
+  ports
+    in CommonMatrixType encoding,
+    out CommonMatrixType data;
+}
+
+[info] HasInstanceInformation: : decoder
+[info] Added DimInfo: : encoding 2
+[info] addVariable : v: encoding
+[debug] PortConverter : EMAVAR: encoding targetType:colvec isArray:false
+[info] Added DimInfo: : data 1
+[info] Added DimInfo: : data 28
+[info] Added DimInfo: : data 28
+[info] addVariable : v: data
+[debug] PortConverter : EMAVAR: data targetType:cube isArray:false
+[info] generateInitNonStaticVariable : v: encoding
+[info] generateInitNonStaticVariable : v: data
+[info] initBluePrintCreate: : Variable: encoding
+[info] initBluePrintCreate: : Variable: data
+[info] initBluePrintExtension: : Variable: encoding
+[info] initBluePrintExtension: : Variable: data
+[info] beforRes: : void init()
+{
+
+[info] afterRes: : void init()
+{
+encoding=colvec(2);
+
+[info] beforRes: : void init()
+{
+encoding=colvec(2);
+
+[info] afterRes: : void init()
+{
+encoding=colvec(2);
+data = cube(1, 28, 28);
+
+[info] Before RESSSS: : #ifndef VAE_CONNECTOR_DECODER
+#define VAE_CONNECTOR_DECODER
+#ifndef M_PI
+#define M_PI 3.14159265358979323846
+#endif
+#include "armadillo"
+using namespace arma;
+class vae_connector_decoder{
+public:
+colvec encoding;
+cube data;
+void init()
+{
+encoding=colvec(2);
+data = cube(1, 28, 28);
+}
+void execute()
+{
+}
+
+};
+#endif
+
+[debug] CommonSymbolReference : Full information of 'Connector' already loaded. Use cached version.
+[debug] CommonSymbolReference : Full information of 'Connector' already loaded. Use cached version.
+[trace] CommonQualifiedNamesCalculator : Potential qualified names for "": [, vae.]
+[trace]  : START resolveDownMany("", "de.monticore.lang.monticar.cnnarch._symboltable.ArchitectureKind") in scope "Optional.empty". Found #0 (local)
+[trace]  : END resolveDownMany("", "de.monticore.lang.monticar.cnnarch._symboltable.ArchitectureKind") in scope "Optional.empty". Found #0
+[trace]  : START resolveDownMany("", "de.monticore.lang.monticar.cnnarch._symboltable.ArchitectureKind") in scope "Optional.empty". Found #0 (local)
+[trace]  : END resolveDownMany("", "de.monticore.lang.monticar.cnnarch._symboltable.ArchitectureKind") in scope "Optional.empty". Found #0
+[trace]  : START resolveDownMany("vae.", "de.monticore.lang.monticar.cnnarch._symboltable.ArchitectureKind") in scope "Optional.empty". Found #0 (local)
+[trace]  : START resolveDownMany("", "de.monticore.lang.monticar.cnnarch._symboltable.ArchitectureKind") in scope "Optional[Connector]". Found #0 (local)
+[trace]  : END resolveDownMany("", "de.monticore.lang.monticar.cnnarch._symboltable.ArchitectureKind") in scope "Optional[Connector]". Found #0
+[trace]  : START resolveDownMany("", "de.monticore.lang.monticar.cnnarch._symboltable.ArchitectureKind") in scope "Optional[Decoder]". Found #0 (local)
+[trace]  : END resolveDownMany("", "de.monticore.lang.monticar.cnnarch._symboltable.ArchitectureKind") in scope "Optional[Decoder]". Found #0
+[trace]  : END resolveDownMany("vae.", "de.monticore.lang.monticar.cnnarch._symboltable.ArchitectureKind") in scope "Optional.empty". Found #0
+[trace]  : START resolveDownMany("vae.", "de.monticore.lang.monticar.cnnarch._symboltable.ArchitectureKind") in scope "Optional.empty". Found #0 (local)
+[trace]  : START resolveDownMany("", "de.monticore.lang.monticar.cnnarch._symboltable.ArchitectureKind") in scope "Optional[Connector]". Found #0 (local)
+[trace]  : END resolveDownMany("", "de.monticore.lang.monticar.cnnarch._symboltable.ArchitectureKind") in scope "Optional[Connector]". Found #0
+[trace]  : START resolveDownMany("", "de.monticore.lang.monticar.cnnarch._symboltable.ArchitectureKind") in scope "Optional[Decoder]". Found #0 (local)
+[trace]  : END resolveDownMany("", "de.monticore.lang.monticar.cnnarch._symboltable.ArchitectureKind") in scope "Optional[Decoder]". Found #0
+[trace]  : END resolveDownMany("vae.", "de.monticore.lang.monticar.cnnarch._symboltable.ArchitectureKind") in scope "Optional.empty". Found #0
+[debug] CommonSymbolReference : Full information of 'Decoder' already loaded. Use cached version.
+[trace]  : START resolveDownMany("Decoder", "conflang._symboltable.ConfigurationKind") in scope "Optional.empty". Found #0 (local)
+[trace]  : END resolveDownMany("Decoder", "conflang._symboltable.ConfigurationKind") in scope "Optional.empty". Found #0
+[debug] ModelingLanguageModelLoader : Start parsing model Location: file:/home/asmeta/wrk/vae/mnist-vae/standard-vae/training/src/main/emadl/vae/Decoder.conf Package: Decoder.conf.
+[debug] ModelingLanguageModelLoader : Parsed model Location: file:/home/asmeta/wrk/vae/mnist-vae/standard-vae/training/src/main/emadl/vae/Decoder.conf Package: Decoder.conf successfully.
+[debug] ConfLangModelLoader : Start creation of symbol table for model "Decoder".
+[debug] ConfLangModelLoader : Created symbol table for model "Decoder".
+[trace]  : START resolveDownMany("Decoder", "conflang._symboltable.ConfigurationKind") in scope "Optional.empty". Found #0 (local)
+[trace]  : START resolveDownMany("Decoder", "conflang._symboltable.ConfigurationKind") in scope "Optional[Decoder]". Found #1 (local)
+[trace]  : END resolveDownMany("Decoder", "conflang._symboltable.ConfigurationKind") in scope "Optional[Decoder]". Found #1
+[trace]  : END resolveDownMany("Decoder", "conflang._symboltable.ConfigurationKind") in scope "Optional.empty". Found #1
+[trace]  : START resolveDownMany("General", "schemalang._symboltable.SchemaDefinitionKind") in scope "Optional.empty". Found #0 (local)
+[trace]  : END resolveDownMany("General", "schemalang._symboltable.SchemaDefinitionKind") in scope "Optional.empty". Found #0
+[debug] ModelingLanguageModelLoader : Start parsing model Location: file:/home/asmeta/wrk/vae/mnist-vae/standard-vae/target/tmp/cpp/vae.Connector/schemas/General.scm Package: General.scm.
+[debug] ModelingLanguageModelLoader : Parsed model Location: file:/home/asmeta/wrk/vae/mnist-vae/standard-vae/target/tmp/cpp/vae.Connector/schemas/General.scm Package: General.scm successfully.
+[debug] SchemaLangModelLoader : Start creation of symbol table for model "General".
+[trace]  : START resolveDownMany("Optimizer", "schemalang._symboltable.SchemaDefinitionKind") in scope "Optional.empty". Found #0 (local)
+[trace]  : END resolveDownMany("Optimizer", "schemalang._symboltable.SchemaDefinitionKind") in scope "Optional.empty". Found #0
+[debug] ModelingLanguageModelLoader : Start parsing model Location: file:/home/asmeta/wrk/vae/mnist-vae/standard-vae/target/tmp/cpp/vae.Connector/schemas/Optimizer.scm Package: Optimizer.scm.
+[debug] ModelingLanguageModelLoader : Parsed model Location: file:/home/asmeta/wrk/vae/mnist-vae/standard-vae/target/tmp/cpp/vae.Connector/schemas/Optimizer.scm Package: Optimizer.scm successfully.
+[debug] SchemaLangModelLoader : Start creation of symbol table for model "Optimizer".
+[debug] SchemaLangModelLoader : Created symbol table for model "Optimizer".
+[trace]  : START resolveDownMany("Optimizer", "schemalang._symboltable.SchemaDefinitionKind") in scope "Optional.empty". Found #0 (local)
+[trace]  : START resolveDownMany("Optimizer", "schemalang._symboltable.SchemaDefinitionKind") in scope "Optional[Optimizer]". Found #1 (local)
+[trace]  : END resolveDownMany("Optimizer", "schemalang._symboltable.SchemaDefinitionKind") in scope "Optional[Optimizer]". Found #1
+[trace]  : END resolveDownMany("Optimizer", "schemalang._symboltable.SchemaDefinitionKind") in scope "Optional.empty". Found #1
+[debug] SchemaLangModelLoader : Created symbol table for model "General".
+[trace]  : START resolveDownMany("General", "schemalang._symboltable.SchemaDefinitionKind") in scope "Optional.empty". Found #0 (local)
+[trace]  : START resolveDownMany("General", "schemalang._symboltable.SchemaDefinitionKind") in scope "Optional[Optimizer]". Found #0 (local)
+[trace]  : END resolveDownMany("General", "schemalang._symboltable.SchemaDefinitionKind") in scope "Optional[Optimizer]". Found #0
+[trace]  : START resolveDownMany("General", "schemalang._symboltable.SchemaDefinitionKind") in scope "Optional[General]". Found #1 (local)
+[trace]  : END resolveDownMany("General", "schemalang._symboltable.SchemaDefinitionKind") in scope "Optional[General]". Found #1
+[trace]  : END resolveDownMany("General", "schemalang._symboltable.SchemaDefinitionKind") in scope "Optional.empty". Found #1
+[trace] CommonQualifiedNamesCalculator : Potential qualified names for "optimizer_type": [optimizer_type]
+[trace]  : START resolveDownMany("optimizer_type", "schemalang._symboltable.ComplexPropertyDefinitionKind") in scope "Optional.empty". Found #0 (local)
+[trace]  : START resolveDownMany("optimizer_type", "schemalang._symboltable.ComplexPropertyDefinitionKind") in scope "Optional[Optimizer]". Found #0 (local)
+[trace]  : END resolveDownMany("optimizer_type", "schemalang._symboltable.ComplexPropertyDefinitionKind") in scope "Optional[Optimizer]". Found #0
+[trace]  : START resolveDownMany("optimizer_type", "schemalang._symboltable.ComplexPropertyDefinitionKind") in scope "Optional[General]". Found #0 (local)
+[trace]  : END resolveDownMany("optimizer_type", "schemalang._symboltable.ComplexPropertyDefinitionKind") in scope "Optional[General]". Found #0
+[trace]  : END resolveDownMany("optimizer_type", "schemalang._symboltable.ComplexPropertyDefinitionKind") in scope "Optional.empty". Found #0
+[trace]  : START resolveDownMany("optimizer_type", "schemalang._symboltable.ComplexPropertyDefinitionKind") in scope "Optional.empty". Found #0 (local)
+[trace]  : START resolveDownMany("optimizer_type", "schemalang._symboltable.ComplexPropertyDefinitionKind") in scope "Optional[Optimizer]". Found #0 (local)
+[trace]  : END resolveDownMany("optimizer_type", "schemalang._symboltable.ComplexPropertyDefinitionKind") in scope "Optional[Optimizer]". Found #0
+[trace]  : START resolveDownMany("optimizer_type", "schemalang._symboltable.ComplexPropertyDefinitionKind") in scope "Optional[General]". Found #0 (local)
+[trace]  : END resolveDownMany("optimizer_type", "schemalang._symboltable.ComplexPropertyDefinitionKind") in scope "Optional[General]". Found #0
+[trace]  : END resolveDownMany("optimizer_type", "schemalang._symboltable.ComplexPropertyDefinitionKind") in scope "Optional.empty". Found #0
+[trace] CommonQualifiedNamesCalculator : Potential qualified names for "optimizer_type": [optimizer_type]
+[trace]  : START resolveDownMany("optimizer_type", "schemalang._symboltable.ComplexPropertyDefinitionKind") in scope "Optional.empty". Found #0 (local)
+[trace]  : START resolveDownMany("optimizer_type", "schemalang._symboltable.ComplexPropertyDefinitionKind") in scope "Optional[Optimizer]". Found #0 (local)
+[trace]  : END resolveDownMany("optimizer_type", "schemalang._symboltable.ComplexPropertyDefinitionKind") in scope "Optional[Optimizer]". Found #0
+[trace]  : START resolveDownMany("optimizer_type", "schemalang._symboltable.ComplexPropertyDefinitionKind") in scope "Optional[General]". Found #0 (local)
+[trace]  : END resolveDownMany("optimizer_type", "schemalang._symboltable.ComplexPropertyDefinitionKind") in scope "Optional[General]". Found #0
+[trace]  : END resolveDownMany("optimizer_type", "schemalang._symboltable.ComplexPropertyDefinitionKind") in scope "Optional.empty". Found #0
+[debug] GlobalScope : Already tried to load model for 'optimizer_type'. If model exists, continue with cached version.
+[trace]  : START resolveDownMany("optimizer_type", "schemalang._symboltable.ComplexPropertyDefinitionKind") in scope "Optional.empty". Found #0 (local)
+[trace]  : START resolveDownMany("optimizer_type", "schemalang._symboltable.ComplexPropertyDefinitionKind") in scope "Optional[Optimizer]". Found #0 (local)
+[trace]  : END resolveDownMany("optimizer_type", "schemalang._symboltable.ComplexPropertyDefinitionKind") in scope "Optional[Optimizer]". Found #0
+[trace]  : START resolveDownMany("optimizer_type", "schemalang._symboltable.ComplexPropertyDefinitionKind") in scope "Optional[General]". Found #0 (local)
+[trace]  : END resolveDownMany("optimizer_type", "schemalang._symboltable.ComplexPropertyDefinitionKind") in scope "Optional[General]". Found #0
+[trace]  : END resolveDownMany("optimizer_type", "schemalang._symboltable.ComplexPropertyDefinitionKind") in scope "Optional.empty". Found #0
+[trace]  : START resolveDownMany("vae", "schemalang._symboltable.SchemaDefinitionKind") in scope "Optional.empty". Found #0 (local)
+[trace]  : END resolveDownMany("vae", "schemalang._symboltable.SchemaDefinitionKind") in scope "Optional.empty". Found #0
+[trace]  : START resolveDownMany("vae", "schemalang._symboltable.SchemaDefinitionKind") in scope "Optional.empty". Found #0 (local)
+[trace]  : END resolveDownMany("vae", "schemalang._symboltable.SchemaDefinitionKind") in scope "Optional.empty". Found #0
+[error] Validation aborted: no schema link defined for parameter value 'vae'.
