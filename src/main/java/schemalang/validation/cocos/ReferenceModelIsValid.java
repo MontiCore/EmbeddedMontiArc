@@ -529,17 +529,20 @@ public class ReferenceModelIsValid {
             BigDecimal startValueInput = rangeInput.getStartValue();
             BigDecimal endValueOutput = rangeOutput.getEndValue();
             BigDecimal endValueInput = rangeInput.getEndValue();
-            if (!startValueOutput.equals(startValueInput)
-                    || !endValueOutput.equals(endValueInput)) {
-                EMAPortSymbol sourcePort = connector.getSourcePort();
-                EMAComponentSymbol sourcePortComponent = sourcePort.getComponent();
-                EMAPortSymbol targetPort = connector.getTargetPort();
-                EMAComponentSymbol targetPortComponent = targetPort.getComponent();
-                String errorMessage = String.format(ERROR_MSG_TA_11C, sourcePortComponent.getName(),
-                        targetPortComponent.getName(), connector);
-                violations.add(Violation.create(ERROR_CODE_TA_11C, errorMessage));
-                if (logError) {
-                    Log.error(ERROR_CODE_TA_11C.concat(errorMessage));
+            if (!((startValueOutput == null && startValueInput == null)
+                    || (endValueOutput == null && endValueInput == null))) {
+                if (!startValueOutput.equals(startValueInput)
+                        || ! endValueOutput.equals(endValueInput)) {
+                    EMAPortSymbol sourcePort = connector.getSourcePort();
+                    EMAComponentSymbol sourcePortComponent = sourcePort.getComponent();
+                    EMAPortSymbol targetPort = connector.getTargetPort();
+                    EMAComponentSymbol targetPortComponent = targetPort.getComponent();
+                    String errorMessage = String.format(ERROR_MSG_TA_11C, sourcePortComponent.getName(),
+                            targetPortComponent.getName(), connector);
+                    violations.add(Violation.create(ERROR_CODE_TA_11C, errorMessage));
+                    if (logError) {
+                        Log.error(ERROR_CODE_TA_11C.concat(errorMessage));
+                    }
                 }
             }
         }
