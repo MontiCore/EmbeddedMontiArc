@@ -74,6 +74,39 @@ public class ReferenceModelValidatorTest extends AbstractTest {
     }
 
     @Test
+    public void testVAEMatchingPortRange() {
+
+        /* Arrange */
+        ASTConfiguration configuration =
+                parseConfiguration("src/test/resources/conflang/VAE.conf");
+        createEMASymbolTable(configuration);
+
+        ASTSchemaLangCompilationUnit parsedModel =
+                parse("src/test/resources/schemalang/validation/referencemodels/VAE.scm");
+        createSymbolTable2(parsedModel, modelPath);
+        ASTSchemaDefinition schemaDefinition = parsedModel.getSchemaDefinition();
+
+        ASTComponent encoderComponent = parseEMAComponent("src/test/resources/ema/vae/Encoder.ema");
+        createEMASymbolTable(encoderComponent);
+        ASTComponent decoderComponent = parseEMAComponent("src/test/resources/ema/vae/Decoder.ema");
+        createEMASymbolTable(decoderComponent);
+
+        HashMap<String, ArchitectureComponent> componentMap = Maps.newHashMap();
+        componentMap.put("encoder", MappingUtils.createArchitectureComponent(
+                (EMAComponentSymbol) encoderComponent.getSymbol()));
+        componentMap.put("decoder", MappingUtils.createArchitectureComponent(
+                (EMAComponentSymbol) decoderComponent.getSymbol()));
+
+        /* Act */
+        Collection<ReferenceModelViolation> violations = ReferenceModelValidator.validate(
+                schemaDefinition.getSchemaDefinitionSymbol(), configuration.getConfigurationSymbol(), componentMap);
+
+        /* Assert */
+        assertNotNull(violations);
+        assertTrue(violations.isEmpty());
+    }
+
+    @Test
     public void connectorsWithIncompatiblePorts() {
 
         /* Arrange */
