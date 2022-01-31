@@ -34,7 +34,7 @@ public class DatasetArtifactCreator extends ArtifactCreator {
       String datasetName = dataset.getName();
 
       // IF dataset is a h5 file
-      if (datasetName.matches(".*\\.h5$")) {
+      if (datasetName.matches(".*\\.h5$") || datasetName.matches("(.*)graph")) {
         FileLocation fileLocation = new FileLocation();
         fileLocation.setJarLocation(String.format("training_data%s%s", File.separator, dataset.getName()));
         fileLocation.setSourceLocation((new File(datasetPath, dataset.getName()).getAbsolutePath()));
