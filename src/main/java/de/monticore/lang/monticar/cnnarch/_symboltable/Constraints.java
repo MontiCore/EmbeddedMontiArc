@@ -393,6 +393,25 @@ public enum Constraints {
         public String msgString() {
             return "an axis between 0 and 1";
         }
+    },
+    REPARAMETERIZE_PDFS {
+        @Override
+        public boolean isValid(ArchSimpleExpressionSymbol exp) {
+            Optional<String> optString= exp.getStringValue();
+            if (optString.isPresent()){
+                if ( optString.get().equals(AllPredefinedLayers.PDF_NORMAL)){
+                        //|| optString.get().equals(AllPredefinedLayers.PDF_DIRICHLET)){
+                    return true;
+                }
+            }
+            return false;
+        }
+        @Override
+        protected String msgString() {
+            return AllPredefinedLayers.PDF_NORMAL; //+ " or "
+                    //+ AllPredefinedLayers.PDF_DIRICHLET;
+
+        }
     };
 
     protected abstract boolean isValid(ArchSimpleExpressionSymbol exp);
