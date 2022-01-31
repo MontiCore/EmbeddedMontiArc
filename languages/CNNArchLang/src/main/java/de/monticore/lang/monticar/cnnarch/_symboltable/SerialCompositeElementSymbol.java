@@ -9,12 +9,18 @@
 package de.monticore.lang.monticar.cnnarch._symboltable;
 
 import de.monticore.lang.monticar.cnnarch.predefined.AllPredefinedLayers;
-import java.util.*;
+
+import java.util.ArrayList;
+import java.util.Collections;
+import java.util.List;
+import java.util.Optional;
 
 public class SerialCompositeElementSymbol extends CompositeElementSymbol {
 
     protected List<List<ArchitectureElementSymbol>> episodicSubNetworks = new ArrayList<>(new ArrayList<>());
     protected boolean anyEpisodicLocalAdaptation = false;
+    protected boolean lossParameterizingElements = false;
+
     protected void setElements(List<ArchitectureElementSymbol> elements) {
         ArchitectureElementSymbol previous = null;
         for (ArchitectureElementSymbol current : elements){
@@ -23,6 +29,10 @@ public class SerialCompositeElementSymbol extends CompositeElementSymbol {
                 // check if the current layer is an AdaNet layer
                 this.setAdaNet(true);
                 this.setAdaLayer(current);
+            }
+            if(AllPredefinedLayers.getLossParameterizingLayers().contains(current.getName())){
+                // check if architecture has loss parametrizing layers
+                lossParameterizingElements = true;
             }
             if(previous != null){
                 current.setInputElement(previous);
@@ -71,6 +81,8 @@ public class SerialCompositeElementSymbol extends CompositeElementSymbol {
     protected void setAnyEpisodicLocalAdaptation(boolean value) { anyEpisodicLocalAdaptation = value; }
 
     public boolean getAnyEpisodicLocalAdaptation() { return anyEpisodicLocalAdaptation; }
+
+    public boolean hasLossParameterizingElements() { return lossParameterizingElements; }
 
     @Override
     public void setInputElement(ArchitectureElementSymbol inputElement) {

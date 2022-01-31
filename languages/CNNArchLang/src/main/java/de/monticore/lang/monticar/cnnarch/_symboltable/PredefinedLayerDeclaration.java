@@ -11,13 +11,11 @@ package de.monticore.lang.monticar.cnnarch._symboltable;
 import de.monticore.lang.monticar.cnnarch.helper.ErrorCodes;
 import de.monticore.lang.monticar.cnnarch.predefined.AllPredefinedLayers;
 import de.monticore.lang.monticar.ranges._ast.ASTRange;
+import de.se_rwth.commons.Joiners;
 import de.se_rwth.commons.logging.Log;
 import org.jscience.mathematics.number.Rational;
 
-import java.util.Arrays;
-import java.util.Collections;
-import java.util.List;
-import java.util.Optional;
+import java.util.*;
 import java.util.function.BinaryOperator;
 import java.util.stream.Stream;
 
@@ -174,6 +172,63 @@ abstract public class PredefinedLayerDeclaration extends LayerDeclarationSymbol 
         }
     }
 
+    protected static enum HandlingSingleInputs {
+        ALLOWED, IGNORED, RESTRICTED
+    }
+
+    /**
+     * Check if Inputs of Layer have the same shape
+     * @param inputTypes: List of input Types
+     * @param layer: curremt Layer
+     * @param handling: HandlingSingleInputs Enum Value, either ALLOWED, IGNORED or RESTRICTED
+     * ALLOWED will skip the Check if there are only one Input.
+     * IGNORED will print a message that the Layer is redundant, but the Input may still be passed
+     * RESTRICTED will throw an error. This indicates that the Layer does not allow
+     */
+    protected static void errorIfMultipleInputShapesAreNotEqual(List<ArchTypeSymbol> inputTypes, LayerSymbol layer, HandlingSingleInputs handling) {
+        if (inputTypes.size() == 1){
+            if (handling == HandlingSingleInputs.IGNORED) {
+                Log.warn(layer.getName() + " layer has only one input stream. Layer can be removed.", layer.getSourcePosition());
+            } else if (handling == HandlingSingleInputs.RESTRICTED){
+                Log.error(layer.getName() + " layer has only one input stream.", layer.getSourcePosition());
+            }
+        }
+        else if (inputTypes.size() > 1){
+            List<Integer> heightList = new ArrayList<>();
+            List<Integer> widthList = new ArrayList<>();
+            List<Integer> channelsList = new ArrayList<>();
+            for (ArchTypeSymbol shape : inputTypes){
+                heightList.add(shape.getHeight());
+                widthList.add(shape.getWidth());
+                channelsList.add(shape.getChannels());
+            }
+            int countEqualHeights = (int)heightList.stream().distinct().count();
+            int countEqualWidths = (int)widthList.stream().distinct().count();
+            int countEqualNumberOfChannels = (int)channelsList.stream().distinct().count();
+            if (countEqualHeights != 1 || countEqualWidths != 1 || countEqualNumberOfChannels != 1){
+                Log.error("0" + ErrorCodes.INVALID_ELEMENT_INPUT_SHAPE + " Invalid layer input. " +
+                                "Shapes of all input streams must be equal. " +
+                                "Input heights: " + Joiners.COMMA.join(heightList) + ". " +
+                                "Input widths: " + Joiners.COMMA.join(widthList) + ". " +
+                                "Number of input channels: " + Joiners.COMMA.join(channelsList) + ". "
+                        , layer.getSourcePosition());
+            }
+        }
+    }
+
+    protected static void errorIfInputNotFlattened(List<ArchTypeSymbol> inputTypes, LayerSymbol layer) {
+        if (!inputTypes.isEmpty()) {
+            for (ArchTypeSymbol inputType : layer.getInputTypes()) {
+                int height = inputType.getHeight();
+                int width = inputType.getWidth();
+                if (height != 1 || width != 1) {
+                    Log.error("0" + ErrorCodes.INVALID_ELEMENT_INPUT_SHAPE + " Invalid layer input." +
+                            " Input layer must be flat, consider using a 'Flatten()' layer.", layer.getSourcePosition());
+                }
+            }
+        }
+    }
+
     //check input for convolution and pooling
     protected static void errorIfInputSmallerThanKernel(List<ArchTypeSymbol> inputTypes, LayerSymbol layer) {
         if (!inputTypes.isEmpty()) {
@@ -202,7 +257,6 @@ abstract public class PredefinedLayerDeclaration extends LayerDeclarationSymbol 
             } 
         }
     }
-
 
     //output type function for convolution and poolingee
     protected static List<ArchTypeSymbol> computeConvAndPoolOutputShape(ArchTypeSymbol inputType, LayerSymbol method, int channels) {

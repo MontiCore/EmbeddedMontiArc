@@ -56,4 +56,17 @@ public class SymtabTest extends AbstractSymtabTest {
         a.getArchitecture().getStreams().get(0).getOutputTypes();
     }
 
+
+    @Test
+    public void testVAELayers(){
+        Scope symTab = createSymTab("src/test/resources/architectures");
+        CNNArchCompilationUnitSymbol a = symTab.<CNNArchCompilationUnitSymbol>resolve(
+                "VAELayers",
+                CNNArchCompilationUnitSymbol.KIND).orElse(null);
+        assertNotNull(a);
+        a.resolve();
+        a.getArchitecture().getStreams().get(0).getOutputTypes();
+    }
+
+
 }
