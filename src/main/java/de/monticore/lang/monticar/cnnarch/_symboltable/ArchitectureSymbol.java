@@ -40,6 +40,7 @@ public class ArchitectureSymbol extends CommonScopeSpanningSymbol {
     private boolean AdaNet = false;
     //attribute for the path for custom python files
     private String customPyFilesPath;
+    private boolean useDgl;
     // path to the AdaNet python files, can be changed EMADL2CPP by changing the value in the EMADL2CPP generator
     private String adaNetUtils = "./src/main/resources/AdaNet/";
     public ArchitectureSymbol() {
@@ -150,6 +151,10 @@ public class ArchitectureSymbol extends CommonScopeSpanningSymbol {
     public void setCustomPyFilesPath(String customPyFilesPath) { this.customPyFilesPath = customPyFilesPath; }
 
     public String getCustomPyFilesPath() { return customPyFilesPath; }
+
+    public void setUseDgl(boolean useDgl) { this.useDgl = useDgl; }
+
+    public boolean getUseDgl() { return useDgl; }
 
     public void resolve() {
         for (NetworkInstructionSymbol networkInstruction : getNetworkInstructions()) {
