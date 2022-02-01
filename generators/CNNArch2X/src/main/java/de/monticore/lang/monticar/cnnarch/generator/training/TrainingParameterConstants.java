@@ -15,6 +15,7 @@ public class TrainingParameterConstants {
     public static final String SUPERVISED = "supervised";
     public static final String REINFORCEMENT = "reinforcement";
     public static final String GAN = "gan";
+    public static final String VAE = "vae";
 
     /*
      * Optimizers
@@ -110,4 +111,9 @@ public class TrainingParameterConstants {
     public static final String GENERATOR_LOSS_WEIGHT = "generator_loss_weight";
     public static final String DISCRIMINATOR_LOSS_WEIGHT = "discriminator_loss_weight";
     public static final String PRINT_IMAGES = "print_images";
+
+    public static final String ENCODER = "encoder";
+    public static final String DECODER = "decoder";
+    public static final String KL_LOSS_WEIGHT = "kl_loss_weight";
+    public static final String RECON_LOSS = "reconstruction_loss";
 }
