@@ -70,6 +70,11 @@ public class AllPredefinedLayers {
     public static final String EPISODIC_MEMORY_NAME = "EpisodicMemory";
     public static final List<String> EPISODIC_REPLAY_LAYER_NAMES = new ArrayList<String>(Arrays.asList(EPISODIC_MEMORY_NAME));
 
+    //DGL layers
+    public static final String GRAPH_CONV_NAME = "GraphConv";
+    public static final String GAT_CONV_NAME = "GATConv";
+    public static final String GRAPH_AVG_POOL_NAME = "GraphAvgPool";
+    public static final String GRAPH_SUM_POOL_NAME = "GraphSumPool";
 
     //predefined argument names
     public static final String CUSTOM_PARAMETERS = "parameters";
@@ -155,6 +160,9 @@ public class AllPredefinedLayers {
 	public static final String NUM_HEADS_NAME = "numHeads";
 	public static final String VALUES_DIM_NAME = "valuesDim";
 
+    //parameters for dgl layers
+    public static final String NODES_NAME = "nodes";
+
     //possible String values
     public static final String PADDING_VALID = "valid";
     public static final String PADDING_SAME = "same";
@@ -172,7 +180,7 @@ public class AllPredefinedLayers {
     public static final String PDF_NAME = "pdf";
     public static final String PDF_NORMAL = "normal";
     public static final String PDF_DIRICHLET = "dirichlet";
-	
+
 	//possible activation values for the querry network in the memory layer
 	public static final String MEMORY_ACTIVATION_LINEAR = "linear";
 	public static final String MEMORY_ACTIVATION_RELU = "relu";
@@ -233,6 +241,10 @@ public class AllPredefinedLayers {
                 EpisodicMemory.create(),
                 Convolution3D.create(),
                 UpConvolution3D.create(),
+                GraphConv.create(),
+                GATConv.create(),
+                GraphAvgPool.create(),
+                GraphSumPool.create(),
                 AdaNet.create(),
                 Reparameterize.create(),
                 VectorQuantize.create());
