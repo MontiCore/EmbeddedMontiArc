@@ -4,7 +4,8 @@ public enum LearningMethod {
 
     SUPERVISED("supervised"),
     REINFORCEMENT("reinforcement"),
-    GAN("gan");
+    GAN("gan"),
+    VAE("vae");
 
     String method;
 

@@ -39,6 +39,10 @@ public abstract class ConfigurationData {
         return trainingConfiguration.isGanLearning();
     }
 
+    public Boolean isVaeLearning() {
+        return trainingConfiguration.isVaeLearning();
+    }
+
     public Boolean isReinforcementLearning() {
         return trainingConfiguration.isReinforcementLearning();
     }
@@ -71,6 +75,16 @@ public abstract class ConfigurationData {
     public Boolean getLoadPretrained() {
         Optional<Boolean> loadPretrainedOpt = trainingConfiguration.getLoadPretrained();
         return loadPretrainedOpt.orElse(null);
+    }
+
+    public Double getKlLossWeight() {
+        Optional<Double> klLossWeightOpt = trainingConfiguration.getKlLossWeight();
+        return klLossWeightOpt.orElse(null);
+    }
+
+    public String getReconLossName() {
+        Optional<String> reconLossNameOpt = trainingConfiguration.getReconLossName();
+        return reconLossNameOpt.orElse(null);
     }
 
     // COMPARE WITH CNNTRAIN IMPLEMENTATION IN GluonConfigurationData

@@ -7,10 +7,7 @@ import conflang._symboltable.ConfigurationEntrySymbol;
 import conflang._symboltable.NestedConfigurationEntrySymbol;
 import schemalang._symboltable.SchemaDefinitionSymbol;
 
-import java.util.Collection;
-import java.util.List;
-import java.util.Map;
-import java.util.Optional;
+import java.util.*;
 
 import static de.monticore.lang.monticar.cnnarch.generator.training.TrainingParameterConstants.*;
 
@@ -81,6 +78,15 @@ public class TrainingConfiguration {
         }
         LearningMethod learningMethod = learningMethodOpt.get();
         return LearningMethod.GAN.equals(learningMethod);
+    }
+
+    public boolean isVaeLearning() {
+        Optional<LearningMethod> learningMethodOpt = getLearningMethod();
+        if (!learningMethodOpt.isPresent()) {
+            return false; // Not correct here to return false..
+        }
+        LearningMethod learningMethod = learningMethodOpt.get();
+        return LearningMethod.VAE.equals(learningMethod);
     }
 
     public boolean isReinforcementLearning() {
@@ -349,6 +355,20 @@ public class TrainingConfiguration {
         return getObjectParameterParameters(DISCRIMINATOR_OPTIMIZER);
     }
 
+    public Boolean hasEncoderName() {
+        return hasParameter(ENCODER);
+    }
+
+    public Optional<String> getEncoderName() {
+        return getObjectParameterValue(ENCODER);
+    }
+
+    public Optional<String> getReconLossName() {
+        return getObjectParameterValue(RECON_LOSS);
+    }
+
+    public Optional<Double> getKlLossWeight() { return getParameterValue(KL_LOSS_WEIGHT); }
+
     public boolean hasStrategy() {
         return hasParameter(STRATEGY);
     }
@@ -509,4 +529,5 @@ public class TrainingConfiguration {
         }
         return keyValues;
     }
+
 }

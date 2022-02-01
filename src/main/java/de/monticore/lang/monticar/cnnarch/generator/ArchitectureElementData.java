@@ -90,6 +90,10 @@ public class ArchitectureElementData {
         return getLayerSymbol().getIntTupleValue(AllPredefinedLayers.STRIDE_NAME).get();
     }
 
+    public String getPdf() { return getLayerSymbol().getStringValue(AllPredefinedLayers.PDF_NAME).get(); }
+
+    public int getNumEmbeddings() { return getLayerSymbol().getIntValue(AllPredefinedLayers.NUM_EMBEDDINGS_NAME).get();
+}
     public int getGroups(){
         return getLayerSymbol().getIntValue(AllPredefinedLayers.GROUPS_NAME).get();
     }

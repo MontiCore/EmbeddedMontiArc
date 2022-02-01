@@ -4,7 +4,7 @@ import Optimizer;
 schema General {
 
     learning_method = supervised: schema {
-        supervised, reinforcement, gan;
+        supervised, reinforcement, gan, vae;
     }
 
     context: enum {
