@@ -6,6 +6,7 @@ import com.google.common.collect.Maps;
 import de.monticore.lang.monticar.cnnarch.generator.annotations.ArchitectureAdapter;
 import de.monticore.lang.monticar.cnnarch.generator.annotations.Range;
 import de.monticore.lang.monticar.cnnarch.generator.training.RlAlgorithm;
+import de.monticore.lang.monticar.cnnarch.generator.training.NetworkType;
 import de.monticore.lang.monticar.cnnarch.generator.training.TrainingComponentsContainer;
 import de.monticore.lang.monticar.cnnarch.generator.training.TrainingConfiguration;
 
@@ -96,6 +97,21 @@ public abstract class ConfigurationData {
     public Boolean getNormalize() {
         Optional<Boolean> normalizeOpt = trainingConfiguration.getNormalize();
         return normalizeOpt.orElse(null);
+    }
+
+    public Boolean getMultiGraph() {
+        Optional<Boolean> multiGraphOpt = trainingConfiguration.getMultiGraph();
+        return multiGraphOpt.orElse(null);
+    }
+
+    public List<Integer> getTrainMask() {
+        Optional<List<Integer>> trainMaskOpt = trainingConfiguration.getTrainMask();
+        return trainMaskOpt.orElse(null);
+    }
+
+    public List<Integer> getTestMask() {
+        Optional<List<Integer>> testMaskOpt = trainingConfiguration.getTestMask();
+        return testMaskOpt.orElse(null);
     }
 
     public Boolean getShuffleData() {
@@ -377,6 +393,16 @@ public abstract class ConfigurationData {
             return TD3;
         }
         return DQN;
+    }
+
+    public String getNetworkType() {
+        Optional<NetworkType> networkTypeOpt = trainingConfiguration.getNetworkType();
+
+        NetworkType networkType = networkTypeOpt.get();
+        if (networkType.equals(NetworkType.GNN)) {
+            return GNN;
+        }
+        return null;
     }
 
 //    protected Object getDefaultValueOrElse(String parameterKey, Object elseValue) {
