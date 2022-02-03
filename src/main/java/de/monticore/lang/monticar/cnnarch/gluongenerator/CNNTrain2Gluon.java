@@ -73,13 +73,17 @@ public class CNNTrain2Gluon extends CNNTrainGenerator {
     }
 
     public void generate(Path modelsDirPath, String rootModelName, ArchitectureAdapter trainedArchitecture,
-                         ArchitectureAdapter criticNetwork) {
+                         ArchitectureAdapter supportNetwork) {
         TrainingConfiguration trainingConfiguration = createTrainingConfiguration(modelsDirPath, rootModelName, null);
 
         TrainingComponentsContainer trainingComponentsContainer = new TrainingComponentsContainer();
         trainingComponentsContainer.setTrainedArchitecture(trainingConfiguration, trainedArchitecture);
-        if (criticNetwork != null) {
-            trainingComponentsContainer.setCriticNetwork(criticNetwork);
+        if (supportNetwork != null) {
+            if (trainingConfiguration.isReinforcementLearning()) {
+                trainingComponentsContainer.setCriticNetwork(supportNetwork);
+            } else if (trainingConfiguration.isVaeLearning()) {
+                trainingComponentsContainer.setEncoderNetwork(supportNetwork);
+            }
         }
 
         setRootProjectModelsDir(modelsDirPath.toString());
@@ -188,13 +192,51 @@ public class CNNTrain2Gluon extends CNNTrainGenerator {
 
             ftlContext.put("ganFrameworkModule", GAN_LEARNING_FRAMEWORK_MODULE);
             ftlContext.put("discriminatorInstanceName", discriminatorInstanceName);
-            ftlContext.put("trainerName", trainerName);
+            ftlContext.put("learningMethod", "gan");
+            ftlContext.put("trainerName", trainerName);  //GANs and VAEs share the same Trainer.ftl
 
             final String initContent = "";
             fileContents.add(new FileContent(initContent, GAN_LEARNING_FRAMEWORK_MODULE + "/__init__.py"));
 
-            final String ganTrainerContent = templateConfiguration.processTemplate(ftlContext, "gan/Trainer.ftl");
+            final String ganTrainerContent = templateConfiguration.processTemplate(ftlContext, "generative_model/Trainer.ftl");
             fileContents.add(new FileContent(ganTrainerContent, trainerName + ".py"));
+
+        } else if (trainingConfiguration.isVaeLearning()) {
+
+            final String trainerName = "CNNTrainer_" + getInstanceName();
+            Optional<ArchitectureAdapter> encoderNetworkOpt = trainingComponentsContainer.getEncoderNetwork();
+            if (!encoderNetworkOpt.isPresent()) {
+                Log.error("No architecture model for encoder available but is required for chosen " +
+                        "VAE");
+            }
+
+            ArchitectureAdapter genericArchitectureSymbol = encoderNetworkOpt.get();
+            ArchitectureSymbol encoderArchitectureSymbol = genericArchitectureSymbol.getArchitectureSymbol();
+
+            CNNArch2Gluon gluonGenerator = new CNNArch2Gluon();
+            gluonGenerator.setGenerationTargetPath(
+                    Paths.get(getGenerationTargetPath(), "").toString());
+
+            List<FileContent> encoderArchitectureFileContents
+                    = gluonGenerator.generateStringsAllowMultipleIO(encoderArchitectureSymbol, false);
+
+            final String encoderCreatorName = encoderArchitectureFileContents.get(0).getFileName();
+            final String encoderInstanceName = encoderCreatorName.substring(
+                    encoderCreatorName.indexOf('_') + 1, encoderCreatorName.lastIndexOf(".py"));
+
+            fileContents.addAll(encoderArchitectureFileContents.stream()
+                    .map(k -> new FileContent(k.getFileContent(), k.getFileName()))
+                    .collect(Collectors.toList()));
+
+            ftlContext.put("encoderInstanceName", encoderInstanceName);
+            ftlContext.put("trainerName", trainerName);
+            ftlContext.put("learningMethod", "vae"); //GANs and VAEs share the same Trainer.ftl
+
+            //final String initContent = "";
+            //fileContents.add(new FileContent(initContent, "__init__.py"));
+
+            final String vaeTrainerContent = templateConfiguration.processTemplate(ftlContext, "generative_model/Trainer.ftl");
+            fileContents.add(new FileContent(vaeTrainerContent, trainerName + ".py"));
 
         } else if (trainingConfiguration.isReinforcementLearning()) {
             final String trainerName = "CNNTrainer_" + getInstanceName();

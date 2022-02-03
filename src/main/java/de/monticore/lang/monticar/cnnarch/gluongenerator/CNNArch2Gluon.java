@@ -10,7 +10,10 @@ import de.monticore.lang.monticar.generator.FileContent;
 import de.monticore.lang.monticar.generator.cmake.CMakeConfig;
 import de.monticore.lang.monticar.generator.cmake.CMakeFindModule;
 import de.monticore.lang.tagging._symboltable.TaggingResolver;
+import de.monticore.symboltable.CommonSymbol;
+import de.monticore.lang.monticar.cnnarch.gluongenerator.reinforcement.CNNArch2GluonTemplateController;
 
+import java.io.File;
 import java.util.*;
 
 public class CNNArch2Gluon extends CNNArchGenerator {
@@ -25,7 +28,7 @@ public class CNNArch2Gluon extends CNNArchGenerator {
     //check cocos with CNNArchCocos.checkAll(architecture) before calling this method.
     @Override
     public List<FileContent> generateStrings(TaggingResolver taggingResolver, ArchitectureSymbol architecture){
-        if(architecture != null && architecture.getFullName() != null) {
+        if(architecture != null && ((CommonSymbol)architecture).getFullName() != null) {
             cMakeConfig.getCMakeListsViewModel().setCompName(architecture.getFullName().replace('.', '_').replace('[', '_').replace(']', '_'));
         }
 
@@ -50,11 +53,9 @@ public class CNNArch2Gluon extends CNNArchGenerator {
         temp = controller.process("CNNNet", Target.PYTHON);
         fileContents.add(temp);
 
-
         if (architecture.getDataPath() != null) {
             temp = controller.process("CNNDataLoader", Target.PYTHON);
             fileContents.add(temp);
-
         }
 
         temp = controller.process("CNNCreator", Target.PYTHON);
@@ -67,14 +68,16 @@ public class CNNArch2Gluon extends CNNArchGenerator {
         List<FileContent> fileContents = new ArrayList<>();
         FileContent temp;
 
-        temp = controller.process("CNNPredictor", Target.CPP);
+        temp = controller.process("CNNAutoencoderTrainer", Target.PYTHON);
+        fileContents.add(temp);
+
+        temp = controller.process("CNNGanTrainer", Target.PYTHON);
         fileContents.add(temp);
 
         temp = controller.process("CNNSupervisedTrainer", Target.PYTHON);
         fileContents.add(temp);
 
-
-        temp = controller.process("CNNGanTrainer", Target.PYTHON);
+        temp = controller.process("CNNPredictor", Target.CPP);
         fileContents.add(temp);
 
         temp = controller.process("execute", Target.CPP);

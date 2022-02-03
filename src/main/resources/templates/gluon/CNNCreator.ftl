@@ -1,5 +1,4 @@
 <#-- (c) https://github.com/MontiCore/monticore -->
-<#-- So that the license is in the generated file: -->
 # (c) https://github.com/MontiCore/monticore
 import mxnet as mx
 import logging
@@ -178,23 +177,23 @@ class ${tc.fileNameWithoutEnding}:
                 else:
                     logging.info("No pretrained weights available at: " + self._weights_dir_ + param_file)
 
-    def construct(self, context, data_mean=None, data_std=None):
+    def construct(self, context, batch_size=1, data_mean=None, data_std=None):
 <#list tc.architecture.networkInstructions as networkInstruction>
         <#if tc.containsAdaNet()>
         self.networks[${networkInstruction?index}] = Net_${networkInstruction?index}()
         self.dataClass[${networkInstruction?index}] = DataClass_${networkInstruction?index}
         <#else>
-        self.networks[${networkInstruction?index}] = Net_${networkInstruction?index}(data_mean=data_mean, data_std=data_std, mx_context=context, prefix="")
+        self.networks[${networkInstruction?index}] = Net_${networkInstruction?index}(batch_size=batch_size, data_mean=data_mean, data_std=data_std, mx_context=context, prefix="")
         </#if>
         with warnings.catch_warnings():
             warnings.simplefilter("ignore")
             self.networks[${networkInstruction?index}].collect_params().initialize(self.weight_initializer, force_reinit=False, ctx=context)
         self.networks[${networkInstruction?index}].hybridize()
 <#if !(tc.architecture.useDgl)>
-        self.networks[${networkInstruction?index}](<#list tc.getStreamInputDimensions(networkInstruction.body) as dimensions><#if tc.cutDimensions(dimensions)[tc.cutDimensions(dimensions)?size-1] == "1" && tc.cutDimensions(dimensions)?size != 1>mx.nd.zeros((${tc.join(tc.cutDimensions(dimensions), ",")},), ctx=context[0])<#else>mx.nd.zeros((1, ${tc.join(tc.cutDimensions(dimensions), ",")},), ctx=context[0])</#if><#sep>, </#list>)
+        self.networks[${networkInstruction?index}](<#list tc.getStreamInputDimensions(networkInstruction.body) as dimensions><#if tc.cutDimensions(dimensions)[tc.cutDimensions(dimensions)?size-1] == "1" && tc.cutDimensions(dimensions)?size != 1>mx.nd.zeros((${tc.join(tc.cutDimensions(dimensions), ",")},), ctx=context[0])<#else>mx.nd.zeros((batch_size, ${tc.join(tc.cutDimensions(dimensions), ",")},), ctx=context[0])</#if><#sep>, </#list>)
 </#if>
 <#if networkInstruction.body.episodicSubNetworks?has_content>
-        self.networks[0].episodicsubnet0_(<#list tc.getStreamInputDimensions(networkInstruction.body) as dimensions><#if tc.cutDimensions(dimensions)[tc.cutDimensions(dimensions)?size-1] == "1" && tc.cutDimensions(dimensions)?size != 1>mx.nd.zeros((${tc.join(tc.cutDimensions(dimensions), ",")},), ctx=context[0])<#else>mx.nd.zeros((1, ${tc.join(tc.cutDimensions(dimensions), ",")},), ctx=context[0])</#if><#sep>, </#list>)
+        self.networks[0].episodicsubnet0_(<#list tc.getStreamInputDimensions(networkInstruction.body) as dimensions><#if tc.cutDimensions(dimensions)[tc.cutDimensions(dimensions)?size-1] == "1" && tc.cutDimensions(dimensions)?size != 1>mx.nd.zeros((${tc.join(tc.cutDimensions(dimensions), ",")},), ctx=context[0])<#else>mx.nd.zeros((batch_size, ${tc.join(tc.cutDimensions(dimensions), ",")},), ctx=context[0])</#if><#sep>, </#list>)
 </#if>
 </#list>
 

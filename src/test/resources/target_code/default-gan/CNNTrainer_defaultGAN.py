@@ -1,4 +1,5 @@
 # (c) https://github.com/MontiCore/monticore
+
 import mxnet as mx
 import logging
 import os
@@ -9,9 +10,11 @@ from mxnet import gluon, autograd, nd
 
 import CNNCreator_defaultGAN
 import CNNDataLoader_defaultGAN
+import CNNCreator_defaultGAN
 import CNNGanTrainer_defaultGAN
-
 from gan.CNNCreator_Discriminator import CNNCreator_Discriminator
+
+
 
 if __name__ == "__main__":
 
@@ -19,9 +22,11 @@ if __name__ == "__main__":
     logger = logging.getLogger()
     handler = logging.FileHandler("train.log", "w", encoding=None, delay="true")
     logger.addHandler(handler)
+    logging.getLogger('matplotlib.font_manager').disabled = True
+    logging.getLogger('matplotlib.colorbar').disabled = True
+    logger.addHandler(handler)
 
     data_loader = CNNDataLoader_defaultGAN.CNNDataLoader_defaultGAN()
-
     gen_creator = CNNCreator_defaultGAN.CNNCreator_defaultGAN()
     dis_creator = CNNCreator_Discriminator()
 
