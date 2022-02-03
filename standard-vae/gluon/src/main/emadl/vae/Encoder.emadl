@@ -19,7 +19,7 @@ component Encoder{
         (
             [0] /* mean */
         |
-            [1] /* log squared std */
+            [1] /* standard deviation */
         ) ->
         Reparameterize() ->
         encoding;
