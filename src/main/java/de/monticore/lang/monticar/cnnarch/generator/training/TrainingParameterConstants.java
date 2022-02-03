@@ -42,6 +42,7 @@ public class TrainingParameterConstants {
     public static final String NORMALIZE = "normalize";
     public static final String CONTEXT = "context";
     public static final String SHUFFLE_DATA = "shuffle_data";
+
     public static final String CLIP_GLOBAL_GRAD_NORM = "clip_global_grad_norm";
     public static final String USE_TEACHER_FORCING = "use_teacher_forcing";
     public static final String SAVE_ATTENTION_IMAGE = "save_attention_image";
@@ -56,6 +57,12 @@ public class TrainingParameterConstants {
     public static final String DQN = "dqn";
     public static final String DDPG = "ddpg";
     public static final String TD3 = "td3";
+
+    public static final String MULTI_GRAPH = "multi_graph";
+    public static final String TRAIN_MASK = "train_mask";
+    public static final String TEST_MASK = "test_mask";
+    public static final String GNN = "gnn";
+    public static final String NETWORK_TYPE = "network_type";
 
     public static final String LEARNING_METHOD = "learning_method";
     public static final String EVAL_METRIC = "eval_metric";

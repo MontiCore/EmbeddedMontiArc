@@ -314,7 +314,11 @@ public class ArchitectureElementData {
     public int getValuesDim(){
         return getLayerSymbol().getIntValue(AllPredefinedLayers.VALUES_DIM_NAME).get();
     }
-    
+
+    public int getNodes(){
+        return getLayerSymbol().getIntValue(AllPredefinedLayers.NODES_NAME).get();
+    }
+
     @Nullable
     public List<Integer> getPadding(){
 

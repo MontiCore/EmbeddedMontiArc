@@ -107,6 +107,15 @@ public class TrainingConfiguration {
         return Optional.of(RlAlgorithm.rlAlgorithm(rlAlgorithm));
     }
 
+    public Optional<NetworkType> getNetworkType() {
+        Optional<ConfigurationEntry> networkTypeOpt = configurationSymbol.getConfigurationEntry(NETWORK_TYPE);
+        if (!networkTypeOpt.isPresent()) {
+            return Optional.empty();
+        }
+        String networkType = (String) networkTypeOpt.get().getValue();
+        return Optional.of(NetworkType.networkType(networkType));
+    }
+
     public Optional<Integer> getBatchSize() {
         return getParameterValue(BATCH_SIZE);
     }
@@ -141,6 +150,18 @@ public class TrainingConfiguration {
 
     public Optional<Boolean> getShuffleData() {
         return getParameterValue(SHUFFLE_DATA);
+    }
+
+    public Optional<Boolean> getMultiGraph() {
+        return getParameterValue(MULTI_GRAPH);
+    }
+
+    public Optional<List<Integer>> getTrainMask() {
+        return getParameterValue(TRAIN_MASK);
+    }
+
+    public Optional<List<Integer>> getTestMask() {
+        return getParameterValue(TEST_MASK);
     }
 
     public Optional<Double> getClipGlobalGradNorm() {
