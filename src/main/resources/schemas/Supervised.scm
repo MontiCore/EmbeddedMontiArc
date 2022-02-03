@@ -4,6 +4,10 @@ import Loss;
 
 schema Supervised extends General {
 
+    network_type: schema {
+        gnn;
+    }
+
     batch_size: N1
     num_epoch: N1
     normalize: B
