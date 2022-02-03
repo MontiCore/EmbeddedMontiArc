@@ -1,6 +1,10 @@
 /* (c) https://github.com/MontiCore/monticore */
 package de.monticore.lang.monticar.cnnarch.gluongenerator;
 
+import de.monticore.lang.monticar.cnnarch.gluongenerator.AbstractSymtabTest;
+import de.monticore.lang.monticar.cnnarch.gluongenerator.CNNArch2Gluon;
+import de.monticore.lang.monticar.cnnarch.gluongenerator.CNNArch2GluonCli;
+import de.monticore.lang.monticar.cnnarch.gluongenerator.CNNTrain2Gluon;
 import de.monticore.lang.monticar.cnnarch.generator.GenerationAbortedException;
 import de.monticore.lang.monticar.cnnarch.generator.annotations.ArchitectureAdapter;
 import de.monticore.lang.monticar.cnnarch.generator.reinforcement.RewardFunctionSourceGenerator;
@@ -453,6 +457,59 @@ public class GenerationTest extends AbstractSymtabTest {
         );
     }
 
+
+    @Test
+    public void testVAETestNetGeneration() throws IOException, TemplateException {
+
+        Log.getFindings().clear();
+        Path modelPath = Paths.get("src/test/resources/valid_tests/vae");
+        CNNTrain2Gluon trainGenerator = new CNNTrain2Gluon(rewardFunctionSourceGenerator);
+        ArchitectureAdapter encoderArchitecture = NNArchitectureMockFactory.createArchitectureSymbolByCNNArchModel(
+                Paths.get("./src/test/resources/valid_tests/vae/arc"), "Encoder");
+        ArchitectureAdapter decoderArchitecture = NNArchitectureMockFactory.createArchitectureSymbolByCNNArchModel(
+                Paths.get("./src/test/resources/valid_tests/vae/arc"), "Decoder");
+
+        trainGenerator.generate(modelPath, "Decoder", decoderArchitecture, encoderArchitecture);
+
+        assertTrue(Log.getFindings().stream().noneMatch(Finding::isError));
+        checkFilesAreEqual(
+                Paths.get("target/generated-sources-cnnarch"),
+                Paths.get("src/test/resources/target_code/vae"),
+                Arrays.asList(
+                        "CNNAutoencoderTrainer_Encoder.py",
+                        "CNNCreator_Encoder.py",
+                        "CNNNet_Encoder.py",
+                        "CNNTrainer_decoder.py"));
+
+    }
+
+    @Test
+    public void testVQVAETestNetGeneration() throws IOException, TemplateException {
+
+        Log.getFindings().clear();
+        Path modelPath = Paths.get("src/test/resources/valid_tests/vqvae");
+        CNNTrain2Gluon trainGenerator = new CNNTrain2Gluon(rewardFunctionSourceGenerator);
+        ArchitectureAdapter encoderArchitecture = NNArchitectureMockFactory.createArchitectureSymbolByCNNArchModel(
+                Paths.get("./src/test/resources/valid_tests/vqvae/arc"), "Encoder");
+        ArchitectureAdapter decoderArchitecture = NNArchitectureMockFactory.createArchitectureSymbolByCNNArchModel(
+                Paths.get("./src/test/resources/valid_tests/vqvae/arc"), "Decoder");
+
+        trainGenerator.generate(modelPath, "Decoder", decoderArchitecture, encoderArchitecture);
+
+        assertTrue(Log.getFindings().stream().noneMatch(Finding::isError));
+        checkFilesAreEqual(
+                Paths.get("target/generated-sources-cnnarch"),
+                Paths.get("src/test/resources/target_code/vqvae"),
+                Arrays.asList(
+                        "CNNAutoencoderTrainer_Encoder.py",
+                        "CNNCreator_Encoder.py",
+                        "CNNNet_Encoder.py",
+                        "CNNTrainer_decoder.py"));
+
+
+    }
+
+
     @Test
     public void testGenerationWithoutTrainingConfigurationFails() {
         Path modelPath = Paths.get("src/test/resources/valid_tests");
@@ -645,3 +702,5 @@ public class GenerationTest extends AbstractSymtabTest {
         return findings.stream().anyMatch(finding -> finding.isError() && finding.getMsg().equals(message));
     }
 }
+
+

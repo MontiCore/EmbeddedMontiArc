@@ -1,11 +1,14 @@
 /* (c) https://github.com/MontiCore/monticore */
-package de.monticore.lang.monticar.cnnarch.gluongenerator;
+package de.monticore.lang.monticar.cnnarch.gluongenerator.reinforcement;
 
+import de.monticore.generating.templateengine.TemplateController;
 import de.monticore.lang.monticar.cnnarch.generator.ArchitectureElementData;
 import de.monticore.lang.monticar.cnnarch.generator.CNNArchTemplateController;
 
 import de.monticore.lang.monticar.cnnarch._symboltable.*;
 import de.monticore.lang.monticar.cnnarch.generator.TemplateConfiguration;
+import de.monticore.lang.monticar.cnnarch.gluongenerator.AllAttentionModels;
+import de.monticore.lang.monticar.cnnarch.gluongenerator.NetDefinitionMode;
 import de.monticore.lang.monticar.cnnarch.predefined.AllPredefinedLayers;
 import de.monticore.lang.monticar.types2._ast.ASTElementType;
 
@@ -86,7 +89,7 @@ public class CNNArch2GluonTemplateController extends CNNArchTemplateController {
         }else if(layer.isAtomic()){
             String templateName = layer.getDeclaration().getName();
             include(TEMPLATE_ELEMENTS_DIR_PATH, templateName, writer, netDefinitionMode);
-        }else if(layer.isArtificial() && this.containsAdaNet()){
+        }else if(layer.isArtificial()){
             if(netDefinitionMode.equals(NetDefinitionMode.ARTIFICIAL_ARCH_CLASS)){
                 boolean originalArtificialState = layer.isArtificial();
                 layer.setArtificial(false);

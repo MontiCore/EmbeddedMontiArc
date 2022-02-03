@@ -354,9 +354,9 @@ class CNNSupervisedTrainer_LoadNetworkTest:
             del optimizer_params['learning_rate_decay']
 
         if normalize:
-            self._net_creator.construct(context=mx_context, data_mean=data_mean, data_std=data_std)
+            self._net_creator.construct(context=mx_context, batch_size=batch_size, data_mean=data_mean, data_std=data_std)
         else:
-            self._net_creator.construct(context=mx_context)
+            self._net_creator.construct(context=mx_context, batch_size=batch_size)
 
         begin_epoch = 0
         if load_checkpoint:
@@ -423,9 +423,8 @@ class CNNSupervisedTrainer_LoadNetworkTest:
             loss_function = LogCoshLoss()
         else:
             logging.error("Invalid loss parameter.")
-        
+
         loss_function.hybridize()
-        
 
 
         tic = None
@@ -451,7 +450,6 @@ class CNNSupervisedTrainer_LoadNetworkTest:
                                  
                 with autograd.record():
                     labels = [gluon.utils.split_and_load(batch.label[i], ctx_list=mx_context, even_split=False) for i in range(1)]
-
                     data_ = gluon.utils.split_and_load(batch.data[0], ctx_list=mx_context, even_split=False)
 
                     softmax_ = [mx.nd.zeros((single_pu_batch_size, 33,), ctx=context) for context in mx_context]
@@ -577,6 +575,7 @@ class CNNSupervisedTrainer_LoadNetworkTest:
                             os.makedirs(target_dir)
                         plt.savefig(target_dir + '/attention_train.png')
                         plt.close()
+
                     predictions = []
                     for output_name in outputs:
                         if mx.nd.shape_array(mx.nd.squeeze(output_name)).size > 1:
@@ -657,6 +656,7 @@ class CNNSupervisedTrainer_LoadNetworkTest:
                             os.makedirs(target_dir)
                         plt.savefig(target_dir + '/attention_test.png')
                         plt.close()
+
                 loss = 0
                 for element in lossList:
                     loss = loss + element
@@ -675,7 +675,6 @@ class CNNSupervisedTrainer_LoadNetworkTest:
                 metric.update(preds=predictions, labels=[labels[j] for j in range(len(labels))])
 
             global_loss_test /= (test_batches * single_pu_batch_size)
-
             test_metric_name = metric.get()[0]
             test_metric_score = metric.get()[1]
 
@@ -692,7 +691,7 @@ class CNNSupervisedTrainer_LoadNetworkTest:
         for i, network in self._networks.items():
             network.save_parameters(self.parameter_path(i) + '-' + str((num_epoch-1) + begin_epoch).zfill(4) + '.params')
             network.export(self.parameter_path(i) + '_newest', epoch=0)
-            
+
             if onnx_export:
                 from mxnet.contrib import onnx as onnx_mxnet
                 input_shapes = [(1,) + d.shape[1:] for _, d in test_iter.data]

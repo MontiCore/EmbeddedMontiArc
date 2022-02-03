@@ -7,6 +7,7 @@ import warnings
 import inspect
 import sys
 
+
 from CNNNet_EpisodicMemoryNetwork import Net_0
 
 class CNNCreator_EpisodicMemoryNetwork:
@@ -158,14 +159,14 @@ class CNNCreator_EpisodicMemoryNetwork:
                 else:
                     logging.info("No pretrained weights available at: " + self._weights_dir_ + param_file)
 
-    def construct(self, context, data_mean=None, data_std=None):
-        self.networks[0] = Net_0(data_mean=data_mean, data_std=data_std, mx_context=context, prefix="")
+    def construct(self, context, batch_size=1, data_mean=None, data_std=None):
+        self.networks[0] = Net_0(batch_size=batch_size, data_mean=data_mean, data_std=data_std, mx_context=context, prefix="")
         with warnings.catch_warnings():
             warnings.simplefilter("ignore")
             self.networks[0].collect_params().initialize(self.weight_initializer, force_reinit=False, ctx=context)
         self.networks[0].hybridize()
-        self.networks[0](mx.nd.zeros((1, 128,), ctx=context[0]))
-        self.networks[0].episodicsubnet0_(mx.nd.zeros((1, 128,), ctx=context[0]))
+        self.networks[0](mx.nd.zeros((batch_size, 128,), ctx=context[0]))
+        self.networks[0].episodicsubnet0_(mx.nd.zeros((batch_size, 128,), ctx=context[0]))
 
         if not os.path.exists(self._model_dir_):
             os.makedirs(self._model_dir_)
@@ -192,4 +193,4 @@ class CNNCreator_EpisodicMemoryNetwork:
 
     def validate_parameters(self):
 
-            pass
+        pass

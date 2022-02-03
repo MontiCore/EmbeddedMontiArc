@@ -14,12 +14,19 @@ from mxnet import gluon, autograd, nd
 
 import CNNCreator_${config.instanceName}
 import CNNDataLoader_${config.instanceName}
+<#if learningMethod == "gan">
+import CNNCreator_${config.instanceName}
 import CNNGanTrainer_${config.instanceName}
-
 from ${ganFrameworkModule}.CNNCreator_${discriminatorInstanceName} import CNNCreator_${discriminatorInstanceName}
 <#if (qNetworkInstanceName)??>
 from ${ganFrameworkModule}.CNNCreator_${qNetworkInstanceName} import CNNCreator_${qNetworkInstanceName}
 </#if>
+<#elseif learningMethod == "vae">
+import CNNAutoencoderTrainer_${encoderInstanceName}
+from CNNCreator_${encoderInstanceName} import CNNCreator_${encoderInstanceName}
+</#if>
+
+
 
 if __name__ == "__main__":
 
@@ -27,9 +34,12 @@ if __name__ == "__main__":
     logger = logging.getLogger()
     handler = logging.FileHandler("train.log", "w", encoding=None, delay="true")
     logger.addHandler(handler)
+    logging.getLogger('matplotlib.font_manager').disabled = True
+    logging.getLogger('matplotlib.colorbar').disabled = True
+    logger.addHandler(handler)
 
     data_loader = CNNDataLoader_${config.instanceName}.CNNDataLoader_${config.instanceName}()
-
+    <#if learningMethod == "gan">
     gen_creator = CNNCreator_${config.instanceName}.CNNCreator_${config.instanceName}()
     dis_creator = CNNCreator_${discriminatorInstanceName}()
     <#if (qNetworkInstanceName)??>
@@ -44,10 +54,29 @@ if __name__ == "__main__":
         qnet_creator
         </#if>
     )
+    <#elseif learningMethod == "vae">
+    encoder_creator = CNNCreator_${encoderInstanceName}()
+    decoder_creator = CNNCreator_${config.instanceName}.CNNCreator_${config.instanceName}()
+    ${config.instanceName}_trainer = CNNAutoencoderTrainer_${encoderInstanceName}.CNNAutoencoderTrainer(
+    data_loader,
+    encoder_creator,
+    decoder_creator,
+    )
+    </#if>
 
     ${config.instanceName}_trainer.train(
 <#if (config.batchSize)??>
         batch_size=${config.batchSize},
+</#if>
+<#if (config.configuration.loss)??>
+        loss='${config.lossName}',
+    <#if (config.lossParams)??>
+        loss_params={
+        <#list config.lossParams?keys as param>
+            '${param}': ${config.lossParams[param]}<#sep>,
+        </#list>
+        },
+    </#if>
 </#if>
 <#if (config.numEpoch)??>
         num_epoch=${config.numEpoch},
@@ -146,6 +175,12 @@ if __name__ == "__main__":
 </#if>
 <#if (config.logPeriod)??>
         log_period=${config.logPeriod},
+</#if>
+<#if (config.reconLossName)??>
+        reconstruction_loss='${config.reconLossName}',
+</#if>
+<#if (config.klLossWeight)??>
+        kl_loss_weight=${config.klLossWeight},
 </#if>
 <#if (config.printImages)??>
         print_images=${config.printImages?string("True","False")},
