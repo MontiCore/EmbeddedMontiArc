@@ -30,10 +30,10 @@ if __name__ == "__main__":
         eval_metric_params={
         },
         loss='softmax_cross_entropy',
-        loss_params={
-            'sparse_label': True,
-            'loss_axis': -1,
-            'from_logits': False},
+            loss_params={
+                'sparse_label': True,
+                'loss_axis': -1,
+                'from_logits': False},
         optimizer='rmsprop',
         optimizer_params={
             'weight_decay': 0.01,
