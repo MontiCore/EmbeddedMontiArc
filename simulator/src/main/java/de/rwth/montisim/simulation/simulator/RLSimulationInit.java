@@ -22,11 +22,9 @@ public class RLSimulationInit {
     boolean randomize = false;
     boolean play = false;
 
-    public RLSimulationInit(SimulationConfig config, World world, Pathfinding pathfinding, OsmMap map){
+    public RLSimulationInit(SimulationConfig config, OsmMap map){
         this.config = config;
         this.simulationTime = config.start_time;
-        this.world = world;
-        this.pathfinding = pathfinding;
         this.map = map;
     }
 
@@ -34,7 +32,7 @@ public class RLSimulationInit {
     public void init() {
         NodeConfiguration rosNodeConfiguration = NodeConfiguration.newPrivate();
         NodeMainExecutor nodeMainExecutor = DefaultNodeMainExecutor.newDefault();
-        NodeMain rlSimulationHandler = new RLSimulationHandler(config, simulationTime, world, pathfinding, map, null, nodeMainExecutor);
+        NodeMain rlSimulationHandler = new RLSimulationHandler(config, simulationTime, map, null, nodeMainExecutor);
         ((RLSimulationHandler) rlSimulationHandler).setSettings(distributed, randomize, play);
         nodeMainExecutor.execute(rlSimulationHandler, rosNodeConfiguration);
     }

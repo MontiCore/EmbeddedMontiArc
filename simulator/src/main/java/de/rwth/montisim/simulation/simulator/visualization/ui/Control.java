@@ -201,6 +201,12 @@ public class Control extends JPanel implements ActionListener, ChangeListener {
         } else if (status == TaskStatus.FAILED) {
             statusLabel.setText("FAILED");
             statusLabel.setForeground(FAILED_COLOR);
+        } else if (status == TaskStatus.FAILED_COLLISION) {
+            statusLabel.setText("FAILED: COLLISION");
+            statusLabel.setForeground(FAILED_COLOR);
+        } else if (status == TaskStatus.FAILED_TIMEOUT) {
+            statusLabel.setText("FAILED: TIMEOUT");
+            statusLabel.setForeground(FAILED_COLOR);
         }
 
         return true;

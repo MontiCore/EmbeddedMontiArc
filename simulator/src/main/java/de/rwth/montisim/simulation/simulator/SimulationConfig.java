@@ -29,6 +29,7 @@ public class SimulationConfig {
 
     public Vector<VehicleProperties> cars = new Vector<>();
     public Vector<ModuleProperties> modules = new Vector<>();
+    public String collision_mode = "IGNORE_COLLISIONS";
 
     public static SimulationConfig fromFile(File file) throws SerializationException {
         return Json.instantiateFromJson(file, SimulationConfig.class);

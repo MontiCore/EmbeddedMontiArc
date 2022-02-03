@@ -4,6 +4,7 @@ package de.rwth.montisim.simulation.simulator;
 import java.time.Duration;
 import java.util.ArrayList;
 import java.util.HashMap;
+import java.util.LinkedHashMap;
 import java.util.List;
 import java.util.stream.Stream;
 
@@ -11,6 +12,7 @@ import de.rwth.montisim.commons.eventsimulation.DiscreteEventSimulator;
 import de.rwth.montisim.commons.map.Pathfinding;
 import de.rwth.montisim.commons.simulation.*;
 import de.rwth.montisim.simulation.commons.*;
+import de.rwth.montisim.commons.utils.*;
 import de.rwth.montisim.commons.utils.BuildContext;
 import de.rwth.montisim.commons.utils.json.SerializationException;
 import de.rwth.montisim.simulation.eecomponents.simple_network.SimulatorModule;
@@ -49,6 +51,10 @@ public class Simulator implements ISimulator, Updatable {
     private HashMap<String, Vehicle> vehiclesByName = new HashMap<>();
     private List<Vehicle> vehicles = new ArrayList<>();
     private int vehiclesCount = 0;
+
+    public HashMap<Triplet<String,String,Duration>,Duration> currentCollisions = new HashMap<>();
+
+    public LinkedHashMap<Triplet<String,String,Duration>,Duration> collisionHistory = new LinkedHashMap<>();
 
     final CollisionDetection collisionDetection;
 
@@ -181,9 +187,34 @@ public class Simulator implements ISimulator, Updatable {
         // TODO handle failures in tasks (early stop parameter?)
         // -> use 'any running ?' logic
         if (timeout) {
-            return TaskStatus.FAILED;
+            return TaskStatus.FAILED_TIMEOUT;
+        }
+        ArrayList<Triplet<String,String,Duration>> col = getCollisions();
+        if(config.collision_mode.equals("LOG_COLLISIONS")){
+            logNewCollisions(col);
+        }
+        if(!col.isEmpty()){
+            if(config.collision_mode.equals("FAIL_ON_COLLISIONS")){
+                return TaskStatus.FAILED_COLLISION;
+            }
+            
         }
         return allTasksSucceeded() ? TaskStatus.SUCCEEDED : TaskStatus.RUNNING;
+    }
+
+    private ArrayList<Triplet<String,String,Duration>> getCollisions(){
+        ArrayList<Triplet<String,String,Duration>> res = new ArrayList<Triplet<String,String,Duration>>();
+        for (Vehicle v : vehicles) {
+            for(StaticObject o : v.staticCollisions){
+                res.add(new Triplet(v.properties.vehicleName,o.name,simulatedTime));
+            }
+
+            for(Vehicle v1 : v.vehicleCollisions){
+                res.add(new Triplet(v.properties.vehicleName,v1.properties.vehicleName,simulatedTime));
+            }
+        }
+        
+        return res;
     }
 
     public boolean allTasksSucceeded() {
@@ -281,6 +312,34 @@ public class Simulator implements ISimulator, Updatable {
             l.add(object);
         }
         return slot;
+    }
+
+    //log finished collision and calculate new collisions
+    private void logNewCollisions(ArrayList<Triplet<String,String,Duration>> col){
+        List<Triplet<String,String,Duration>> newCollisions = new ArrayList(col);
+        List<Triplet<String,String,Duration>> toRemove = new ArrayList();
+        for(Triplet<String,String,Duration> active : currentCollisions.keySet()){
+            boolean found = false;
+            for(Triplet<String,String,Duration> cur : col){
+                if(cur.getAt(0).equals(active.getAt(0)) && cur.getAt(1).equals(active.getAt(1))){
+                    currentCollisions.replace(active,currentCollisions.get(active).plus(config.tick_duration));
+                    newCollisions.remove(cur);
+                    found = true;
+                    break;
+                }
+            }
+            if(!found){
+                collisionHistory.put(active,currentCollisions.get(active));
+                toRemove.add(active);
+            }
+        }
+        for(Triplet<String,String,Duration> newCol : newCollisions){
+            currentCollisions.put(newCol,Duration.ZERO);
+        }
+        for(Triplet<String,String,Duration> item : toRemove){
+            currentCollisions.remove(item);
+        }
+        
     }
 
 }

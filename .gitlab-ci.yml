@@ -10,7 +10,7 @@ MasterJobLinux:
  stage: linux
  image: maven:3-jdk-8
  script: 
- - mvn -B clean deploy -s settings.xml
+ - mvn -B -U clean deploy -s settings.xml
  #- cat report/target/coverage-report/html/index.html
  only:
  - master
@@ -19,7 +19,7 @@ BranchJobLinux:
   stage: linux
   image: maven:3-jdk-8
   script:
-  - mvn -B clean install -s settings.xml
+  - mvn -B -U clean install -s settings.xml
   #- cat report/target/coverage-report/html/index.html
   except:
   - master

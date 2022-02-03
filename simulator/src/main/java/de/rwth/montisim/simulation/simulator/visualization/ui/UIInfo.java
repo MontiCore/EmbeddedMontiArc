@@ -24,4 +24,5 @@ public class UIInfo {
     public static boolean showSegments = false;
     public static boolean showAABBs = false;
     public static boolean showBuildingDebug = false;
+    public static boolean drawDrivenTrajectory = false;
 }
