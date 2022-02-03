@@ -8,11 +8,11 @@ component Network<Z(2:oo) classes = 10>{
     implementation CNN {
         data ->
         LoadNetwork(
-            networkDir="../", 
+            networkDir="tag:mnistcalc", 
             networkPrefix="model_0-", 
             numInputs=1, 
             outputShape=10,
-            trainable=true
+            trainable=false
         ) -> 
         softmax ->
 		softmax;
