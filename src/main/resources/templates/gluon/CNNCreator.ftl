@@ -189,7 +189,9 @@ class ${tc.fileNameWithoutEnding}:
             warnings.simplefilter("ignore")
             self.networks[${networkInstruction?index}].collect_params().initialize(self.weight_initializer, force_reinit=False, ctx=context)
         self.networks[${networkInstruction?index}].hybridize()
+<#if !(tc.architecture.useDgl)>
         self.networks[${networkInstruction?index}](<#list tc.getStreamInputDimensions(networkInstruction.body) as dimensions><#if tc.cutDimensions(dimensions)[tc.cutDimensions(dimensions)?size-1] == "1" && tc.cutDimensions(dimensions)?size != 1>mx.nd.zeros((${tc.join(tc.cutDimensions(dimensions), ",")},), ctx=context[0])<#else>mx.nd.zeros((batch_size, ${tc.join(tc.cutDimensions(dimensions), ",")},), ctx=context[0])</#if><#sep>, </#list>)
+</#if>
 <#if networkInstruction.body.episodicSubNetworks?has_content>
         self.networks[0].episodicsubnet0_(<#list tc.getStreamInputDimensions(networkInstruction.body) as dimensions><#if tc.cutDimensions(dimensions)[tc.cutDimensions(dimensions)?size-1] == "1" && tc.cutDimensions(dimensions)?size != 1>mx.nd.zeros((${tc.join(tc.cutDimensions(dimensions), ",")},), ctx=context[0])<#else>mx.nd.zeros((batch_size, ${tc.join(tc.cutDimensions(dimensions), ",")},), ctx=context[0])</#if><#sep>, </#list>)
 </#if>
@@ -197,10 +199,10 @@ class ${tc.fileNameWithoutEnding}:
 
         if not os.path.exists(self._model_dir_):
             os.makedirs(self._model_dir_)
-
+<#if !(tc.architecture.useDgl)>
         for i, network in self.networks.items():
             network.export(self._model_dir_ + self._model_prefix_ + "_" + str(i), epoch=0)
-
+</#if>
     def setWeightInitializer(self, initializer):
         self.weight_initializer = initializer
 

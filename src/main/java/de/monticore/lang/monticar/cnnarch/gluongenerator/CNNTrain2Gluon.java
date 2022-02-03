@@ -14,6 +14,7 @@ import de.monticore.lang.monticar.cnnarch.generator.reinforcement.FunctionParame
 import de.monticore.lang.monticar.cnnarch.generator.reinforcement.RewardFunctionParameterAdapter;
 import de.monticore.lang.monticar.cnnarch.generator.reinforcement.RewardFunctionSourceGenerator;
 import de.monticore.lang.monticar.cnnarch.generator.training.RlAlgorithm;
+import de.monticore.lang.monticar.cnnarch.generator.training.NetworkType;
 import de.monticore.lang.monticar.cnnarch.generator.training.TrainingComponentsContainer;
 import de.monticore.lang.monticar.cnnarch.generator.training.TrainingConfiguration;
 import de.monticore.lang.monticar.generator.FileContent;
@@ -138,6 +139,8 @@ public class CNNTrain2Gluon extends CNNTrainGenerator {
         }
 
         if (trainingConfiguration.isSupervisedLearning()) {
+            final Optional<NetworkType> networkTypeOpt = trainingConfiguration.getNetworkType();
+
             String cnnTrainTrainerTemplateContent = templateConfiguration.processTemplate(ftlContext, "CNNTrainer.ftl");
             fileContents.add(new FileContent(cnnTrainTrainerTemplateContent, "CNNTrainer_" + getInstanceName() + ".py"));
 
