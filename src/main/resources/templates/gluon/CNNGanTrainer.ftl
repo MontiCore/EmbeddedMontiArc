@@ -187,9 +187,9 @@ class ${tc.fileNameWithoutEnding}:
             del discriminator_optimizer_params['learning_rate_decay']
 
         if normalize:
-            self._net_creator_dis.construct([mx_context], data_mean=data_mean, data_std=data_std)
+            self._net_creator_dis.construct([mx_context], batch_size=batch_size, data_mean=data_mean, data_std=data_std)
         else:
-            self._net_creator_dis.construct([mx_context])
+            self._net_creator_dis.construct([mx_context], batch_size=batch_size)
 
         self._net_creator_gen.construct([mx_context])
 
@@ -248,7 +248,7 @@ class ${tc.fileNameWithoutEnding}:
 
         metric_dis = mx.metric.create(eval_metric)
         metric_gen = mx.metric.create(eval_metric)
-        <#include "gan/InputGenerator.ftl">
+        <#include "generative_model/gan/InputGenerator.ftl">
 
         tic = None
 
