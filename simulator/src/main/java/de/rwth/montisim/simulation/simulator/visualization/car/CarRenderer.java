@@ -9,6 +9,7 @@ import javax.swing.JMenuItem;
 
 import de.rwth.montisim.simulation.commons.boundingbox.AABB;
 import de.rwth.montisim.simulation.commons.boundingbox.OBB;
+import de.rwth.montisim.simulation.commons.physicalvalue.*;
 import de.rwth.montisim.commons.map.Path;
 import de.rwth.montisim.simulation.commons.DynamicObject;
 import de.rwth.montisim.simulation.commons.Inspectable;
@@ -37,6 +38,7 @@ public class CarRenderer extends Renderer {
     public static final Color TRAJECTORY_COLOR = new Color(50, 255, 50, 255);
     public static final BasicStroke PATH_STROKE = new BasicStroke(3);
     public static final BasicStroke TRAJECTORY_STROKE = new BasicStroke(1);
+    public static final Color PAST_TRAJECTORY_COLOR = new Color(51, 153, 255);
 
     private static final int[] faceIndices = new int[] {
         0,1,3,2, // -X face
@@ -47,6 +49,7 @@ public class CarRenderer extends Renderer {
         1,3,7,5, // +Z face
     };
     Optional<Vehicle> car = Optional.empty();
+    Optional<PhysicalValue> truePosition = Optional.empty();
     final Vec3 half_size = new Vec3();
     final Vec3 points[] = new Vec3[8];
     final boolean visible[] = new boolean[6];
@@ -68,6 +71,7 @@ public class CarRenderer extends Renderer {
     
     final List<Polyline> pathLines = new ArrayList<>();
     final List<Polyline> trajectoryLines = new ArrayList<>();
+    final List<Polyline> pastTrajectoryLines = new ArrayList<>();
     private final List<Polyline> aabbLines = new ArrayList<>();
     private final Polyline aabbContour = new Polyline(5, UIInfo.AABB_COLOR);
     private final Polyline obbLines[] = new Polyline[] {new Polyline(2, UIInfo.OOB_X_COLOR), new Polyline(2, UIInfo.OOB_Y_COLOR), new Polyline(2, UIInfo.OOB_Z_COLOR)};
@@ -82,6 +86,8 @@ public class CarRenderer extends Renderer {
     Vec3 v3 = new Vec3();
     Mat3 m1 = new Mat3();
     Vec3 color = new Vec3(CAR_COLOR.getRed()/255d,CAR_COLOR.getGreen()/255d,CAR_COLOR.getBlue()/255d);
+
+    private Vec3 lastPosition = null;
 
     public CarRenderer() {
         initGeom();
@@ -106,6 +112,7 @@ public class CarRenderer extends Renderer {
     public void setCar(Vehicle vehicle){
         VehicleProperties p = vehicle.properties;
         this.car = Optional.of(vehicle);
+        this.truePosition = Optional.of(vehicle.physicalValues.getPhysicalValue("true_position"));
         IPM.multiplyTo(half_size, new Vec3(p.body.length, p.body.width, p.body.height), 0.5);
         for (int i = 0; i < points.length; ++i){
             points[i] = new Vec3();
@@ -121,6 +128,7 @@ public class CarRenderer extends Renderer {
 
     public void setCar(Vehicle car, Vec3 size){
         this.car = Optional.of(car);
+        this.truePosition = Optional.of(car.physicalValues.getPhysicalValue("true_position"));
         IPM.multiplyTo(half_size, size, 0.5);
         for (int i = 0; i < points.length; ++i){
             points[i] = new Vec3();
@@ -161,6 +169,10 @@ public class CarRenderer extends Renderer {
         }
         if (UIInfo.showAABBs) {
             drawLines(g, aabbLines);
+        }
+
+        if (UIInfo.drawDrivenTrajectory) {
+            drawLines(g, pastTrajectoryLines);
         }
     }
 
@@ -217,6 +229,12 @@ public class CarRenderer extends Renderer {
             computeGasCircle(viewMatrix);
             computeBrakeCircle(viewMatrix);
         }
+
+        if (true) {
+            computeTrajectoryHistory(viewMatrix);
+        } //else {
+        //    lastPosition = null;
+        //}
 
         if (UIInfo.showAABBs) {
             AABB b = vehicle.physicalObject.worldSpaceAABB.get();
@@ -374,6 +392,20 @@ public class CarRenderer extends Renderer {
         visible[i] =  neg ? -vec.z > 0 : vec.z > 0;
         if (!visible[i]) return;
         // Perform crude illumination (diffuse from 2 lights)
+    }
+
+    void computeTrajectoryHistory(Mat3 viewMatrix) {
+        PhysicalValue position1 = truePosition.get();
+        Vec2 currentPosition = (Vec2) position1.get();
+        Vec3 position3D = new Vec3(currentPosition, 1d);
+        if(lastPosition != null) {
+            Polyline path = new Polyline(2, PAST_TRAJECTORY_COLOR);
+            path.points[0] = lastPosition;
+            path.points[1] = position3D;
+            pastTrajectoryLines.add(path);
+        }
+        lastPosition = position3D;
+        computeLineGeometry(viewMatrix, pastTrajectoryLines);
     }
 
     @Override

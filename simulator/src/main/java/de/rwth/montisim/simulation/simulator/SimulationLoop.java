@@ -9,6 +9,7 @@ import de.rwth.montisim.commons.simulation.TimeUpdate;
 public class SimulationLoop {
     final Simulator simulator;
     final SimulationConfig config;
+    
     Instant simulationTime;
     public SimulationLoop(Simulator simulator, SimulationConfig config){
         this.simulator = simulator;
@@ -20,8 +21,10 @@ public class SimulationLoop {
         try {
             do {
                 TaskStatus res = simulator.status();
-                if (res != TaskStatus.RUNNING) return res;
-                
+                if (res != TaskStatus.RUNNING){
+
+                    return res;
+                }
                 TimeUpdate tu = new TimeUpdate(simulationTime, config.tick_duration);
                 simulator.update(tu);
                 simulationTime = tu.newTime;

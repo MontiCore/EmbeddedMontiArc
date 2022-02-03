@@ -4,5 +4,7 @@ package de.rwth.montisim.simulation.commons;
 public enum TaskStatus {
     RUNNING,
     SUCCEEDED,
-    FAILED
+    FAILED,
+    FAILED_TIMEOUT,
+    FAILED_COLLISION
 }

@@ -6,10 +6,12 @@ import de.rwth.montisim.commons.simulation.TimeUpdate;
 import de.rwth.montisim.commons.utils.IPM;
 import de.rwth.montisim.commons.utils.Vec2;
 import de.rwth.montisim.simulation.commons.TaskStatus;
+import de.rwth.montisim.simulation.commons.util.CollisionLogWriter;
 import de.rwth.montisim.simulation.eecomponents.autopilots.*;
 import de.rwth.montisim.simulation.eecomponents.lidar.Lidar;
 import de.rwth.montisim.simulation.eecomponents.speed_limit.SpeedLimitService;
 import de.rwth.montisim.simulation.environment.osmmap.*;
+import de.rwth.montisim.simulation.environment.pathfinding.PathfindingImpl;
 import de.rwth.montisim.simulation.environment.world.World;
 import de.rwth.montisim.simulation.simulator.visualization.rl.RLVisualizer;
 import de.rwth.montisim.simulation.vehicle.navigation.*;
@@ -95,12 +97,10 @@ public class RLSimulationHandler extends AbstractNodeMain{
         public Result(){}
     }
 
-    public RLSimulationHandler (SimulationConfig config, Instant simulationTime, World world, Pathfinding pathfinding, OsmMap map, RLVisualizer viz, NodeMainExecutor nodeExecutor){
+    public RLSimulationHandler (SimulationConfig config, Instant simulationTime, OsmMap map, RLVisualizer viz, NodeMainExecutor nodeExecutor){
         this.nodeExecutor = nodeExecutor;
         this.config = config;
         this.simulationTime = simulationTime;
-        this.world = world;
-        this.pathfinding = pathfinding;
         this.map = map;
         this.viz = viz;
         rndGen.setSeed(seed);
@@ -227,11 +227,13 @@ public class RLSimulationHandler extends AbstractNodeMain{
         if(viz!= null){ 
             viz.clearRenderer();
         }
+        world = new OsmToWorldLoader(map).getWorld();
+        pathfinding = new PathfindingImpl(world);
         simulator = config.build(world, pathfinding, map);
-        vehiclesArray = (Vehicle[]) simulator.getVehicles().toArray();
+        vehiclesArray = simulator.getVehicles().toArray(Vehicle[]::new);
         if(viz != null){
             viz.simTime = simulationTime;
-            viz.setup();
+            viz.setup(world, pathfinding);
         }
 
         if(config.tick_duration.toMillis() <= 100l){
@@ -252,6 +254,8 @@ public class RLSimulationHandler extends AbstractNodeMain{
         truePositions = new TruePosition[autopilots.length];
         trueVelocity = new TrueVelocity[autopilots.length];
         trueCompass = new TrueCompass[autopilots.length];
+        lidars = new Lidar[autopilots.length];
+        speedLimitServices = new SpeedLimitService[autopilots.length];
         for(int i = 0; i<truePositions.length;i++){
             truePositions[i] = (TruePosition) vehiclesArray[i].physicalValues.getPhysicalValue("true_position");
             trueVelocity[i] = (TrueVelocity) vehiclesArray[i].physicalValues.getPhysicalValue("true_velocity");
@@ -333,6 +337,9 @@ public class RLSimulationHandler extends AbstractNodeMain{
             }
             catch(ConcurrentModificationException ignore) {}
         }
+        if(simTermination && config.collision_mode.equals("LOG_COLLISIONS")){
+            CollisionLogWriter.addCollisions(simulator.collisionHistory, config.start_time, true, !PLAYMODE, episodeCounter);
+        }
         done = true;
 
         return new Result(step_reward, simState, simTermination);
@@ -358,7 +365,6 @@ public class RLSimulationHandler extends AbstractNodeMain{
     //return the state array that is published on the state topic
     private float[] getState(){
         int vehicleCount = autopilots.length;
-        int stateLength = autopilots[0].state.length;
         int statePacketLength = autopilots[0].getStatePacket().length;
         updateVehicleStates();
 

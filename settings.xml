@@ -43,11 +43,6 @@
             <mirrorOf>rosjava_mvn</mirrorOf>
             <url>https://github.com/rosjava/rosjava_mvn_repo/raw/master/</url>
         </mirror>
-        <mirror>
-            <id>central</id>
-            <mirrorOf>central</mirrorOf>
-            <url>http://maven.icm.edu.pl/artifactory/repo/</url>
-        </mirror>
     </mirrors>
 
     <profiles>
@@ -117,17 +112,6 @@
                 <repository>
                     <id>topobyte</id>
                     <url>http://mvn.topobyte.de/</url>
-                    <releases>
-                        <enabled>true</enabled>
-                    </releases>
-                    <snapshots>
-                        <enabled>true</enabled>
-                    </snapshots>
-                </repository>
-
-                <repository>
-                    <id>spring</id>
-                    <url>https://repo.spring.io/libs-release/</url>
                     <releases>
                         <enabled>true</enabled>
                     </releases>

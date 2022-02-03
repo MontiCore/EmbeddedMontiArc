@@ -40,18 +40,14 @@ public class RLVisualizer{
 
     Simulator simulator;
     SimulationConfig simConfig;
-    World world;
     OsmMap map;
-    Pathfinding pathfinding;
     public Instant simTime;
     RLSimulationHandler rlSimulationHandler;
     private boolean done_clearing = true;
 
 
-    public RLVisualizer(World world, OsmMap map, Pathfinding pathfinding, SimulationConfig simConfig, Viewer2D viewer, Instant simTime){
-	    this.world = world;
+    public RLVisualizer(OsmMap map, SimulationConfig simConfig, Viewer2D viewer, Instant simTime){
     	this.map = map;
-    	this.pathfinding = pathfinding;
     	this.simConfig = simConfig;
         this.viewer = viewer;
         this.simTime = simTime;
@@ -61,7 +57,7 @@ public class RLVisualizer{
     public void init(Boolean distributed, Boolean randomize, Boolean play){
         NodeConfiguration rosNodeConfiguration = NodeConfiguration.newPrivate();
         NodeMainExecutor nodeMainExecutor = DefaultNodeMainExecutor.newDefault();
-        rlSimulationHandler = new RLSimulationHandler(simConfig, simTime, world, pathfinding, map, this, nodeMainExecutor);
+        rlSimulationHandler = new RLSimulationHandler(simConfig, simTime, map, this, nodeMainExecutor);
         rlSimulationHandler.setSettings(distributed, randomize, play);
         nodeMainExecutor.execute(rlSimulationHandler, rosNodeConfiguration);
 
@@ -76,9 +72,8 @@ public class RLVisualizer{
         done_clearing = true;
         
     }
-    public void setup(){
+    public void setup(World world, Pathfinding pathfinding){
         // Setup visualizer
-
         viewer.addRenderer(new WorldRenderer(world));
         viewer.addRenderer(new PathfinderRenderer(pathfinding));
 
