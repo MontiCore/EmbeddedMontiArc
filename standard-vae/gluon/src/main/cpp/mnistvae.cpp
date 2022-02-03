@@ -23,13 +23,15 @@ int main(int argc, char* argv[]) {
 	generator.seed(genSeed);
 	std::normal_distribution<double> distribution(0.0,1.0);
 
-    colvec<float> data(2);
+    vector<float> data(2);
 
 	for(size_t i=0; i < 2; i++){
 		data[i] = distribution(generator);
 	}
 
-	connector.data = data;
+	connector.data = conv_to< arma::Col<double> >::from( CNNTranslator::translateToCol(data,
+				vector<size_t> {2}) );
+;
 
     connector.execute();
 
