@@ -9,18 +9,12 @@ import abc
 import warnings
 import sys
 from mxnet import gluon, nd
-<#if tc.containsAdaNet()>
-from mxnet.gluon import nn, HybridBlock
-from numpy import log, product,prod,sqrt
-from mxnet.ndarray import zeros,zeros_like
-sys.path.insert(1, '${tc.architecture.getAdaNetUtils()}')
-from AdaNetConfig import AdaNetConfig
-import CoreAdaNet
-</#if>
+
 <#if tc.architecture.customPyFilesPath??>
 sys.path.insert(1, '${tc.architecture.customPyFilesPath}')
 from custom_layers import *
 </#if>
+
 
 class ZScoreNormalization(gluon.HybridBlock):
     def __init__(self, data_mean, data_std, **kwargs):
@@ -531,46 +525,52 @@ class EpisodicMemory(EpisodicReplayMemoryInterface):
                 self.value_memory.append(mem_dict[key])
             elif key.startswith("labels_"):
                 self.label_memory.append(mem_dict[key])
-<#if tc.containsAdaNet()>
-# Blocks needed for AdaNet are generated below
-<#list tc.architecture.networkInstructions as networkInstruction>
-<#if networkInstruction.body.containsAdaNet()>
-${tc.include(networkInstruction.body, "ADANET_CONSTRUCTION")}
-<#assign outblock = networkInstruction.body.getElements()[1].getDeclaration().getBlock("outBlock")>
-<#assign block = networkInstruction.body.getElements()[1].getDeclaration().getBlock("block")>
-<#assign inblock = networkInstruction.body.getElements()[1].getDeclaration().getBlock("inBlock")>
-class Net_${networkInstruction?index}(gluon.HybridBlock):
-    # this is a dummy network during the AdaNet generation it gets overridden
-    # it is only here so many if tags in the .ftl files can be avoided
-    def __init__(self,**kwargs):
-        super(Net_${networkInstruction?index},self).__init__(**kwargs)
-        with self.name_scope():
-            self.AdaNet = True
-            self.dummy = nn.Dense(units=1)
 
-    def hybrid_forward(self,F,x):
-        return self.dummy(x)
-FullyConnected = AdaNetConfig.DEFAULT_BLOCK.value
-DataClass_${networkInstruction?index} = CoreAdaNet.DataClass(
-    <#if outblock.isPresent()>
-        outBlock = ${outblock.get().name},
-    <#else>
-        outBlock = None,
-    </#if>
-    <#if inblock.isPresent()>
-        inBlock = ${inblock.get().name},
-    <#else>
-        inBlock = None,
-    </#if>
-    <#if block.isPresent()>
-        block = ${block.get().name},
-    <#else>
-        block = None,
-    </#if>
-        model_shape = ${tc.getDefinedOutputDimension()})
-</#if>
-</#list>
-<#else>
+class Reparameterize(gluon.HybridBlock):
+    def __init__(self, shape, pdf="normal", **kwargs):
+        super(Reparameterize, self).__init__(**kwargs)
+        self.sample_shape = shape
+        self.latent_dim = shape[0]
+        self.pdf = pdf
+
+    def hybrid_forward(self, F, x):
+        sample = None
+
+        if self.pdf == "normal":
+            eps = F.random_normal(shape=(-1,self.latent_dim))
+            sample = x[0] + x[1] * eps
+
+        return sample
+
+class VectorQuantize(gluon.HybridBlock):
+    def __init__(self,batch_size, num_embeddings, embedding_dim, input_shape, total_feature_maps_size, **kwargs):
+        super(VectorQuantize,self).__init__(**kwargs)
+        self.embedding_dim = embedding_dim
+        self.num_embeddings = num_embeddings
+        self.input_shape = input_shape
+        self.size = int(total_feature_maps_size / embedding_dim)
+
+        # Codebook
+        self.embeddings = self.params.get('embeddings', shape=(num_embeddings,embedding_dim), init=mx.init.Uniform())
+
+    def hybrid_forward(self, F, x, *args, **params):
+        # Flatten the inputs keeping and `embedding_dim` intact.
+        flattened = F.reshape(x, shape=(-1, self.embedding_dim))
+
+        # Get best representation
+        a = F.broadcast_axis(F.sum(flattened ** 2, axis=1, keepdims=True), axis=1, size=self.num_embeddings)
+        b = F.sum(F.broadcast_axis(F.expand_dims(self.embeddings.var() ** 2,axis=0),axis=0,size=self.size), axis=2)
+
+        distances = a + b - 2 * F.dot(flattened, F.transpose(self.embeddings.var()))
+
+        encoding_indices = F.argmin(distances, axis=1)
+        encodings = F.one_hot(encoding_indices, self.num_embeddings)
+
+        # Quantize and unflatten
+        quantized = F.dot(encodings, self.embeddings.var()).reshape(self.input_shape)
+
+        return quantized
+
 <#list tc.architecture.networkInstructions as networkInstruction>
 #Stream ${networkInstruction?index}
 <#list networkInstruction.body.episodicSubNetworks as elements>
@@ -609,10 +609,13 @@ ${tc.include(networkInstruction.body, elements?index, "FORWARD_FUNCTION")}
 
 </#list>
 
+
+
 class Net_${networkInstruction?index}(gluon.HybridBlock):
-    def __init__(self, data_mean=None, data_std=None, mx_context=None, **kwargs):
+    def __init__(self, data_mean=None, data_std=None, mx_context=None, batch_size=None, **kwargs):
         super(Net_${networkInstruction?index}, self).__init__(**kwargs)
         with self.name_scope():
+            self.save_specific_params_list = []
 <#if networkInstruction.body.episodicSubNetworks?has_content>
 <#list networkInstruction.body.episodicSubNetworks as elements>
 <#if elements?index == 0>
@@ -633,6 +636,9 @@ ${tc.include(networkInstruction.body, "ARCHITECTURE_DEFINITION")}
 
 
     def hybrid_forward(self, F, ${tc.join(tc.getStreamInputNames(networkInstruction.body, false), ", ")}):
+<#if networkInstruction.body.hasLossParameterizingElements()>
+        loss_params = []
+</#if>
 <#if networkInstruction.body.episodicSubNetworks?has_content>
 <#list networkInstruction.body.episodicSubNetworks as elements>
 <#if elements?index == 0>
@@ -646,9 +652,11 @@ ${tc.include(networkInstruction.body, "ARCHITECTURE_DEFINITION")}
 ${tc.include(networkInstruction.body, "FORWARD_FUNCTION")}
 <#if tc.isAttentionNetwork() && networkInstruction.isUnroll() >
         return [[${tc.join(tc.getStreamOutputNames(networkInstruction.body, false), ", ")}], [attention_output_]]
+<#elseif networkInstruction.body.hasLossParameterizingElements()>
+        return [[${tc.join(tc.getStreamOutputNames(networkInstruction.body, false), ", ")}], loss_params]
 <#else>
         return [[${tc.join(tc.getStreamOutputNames(networkInstruction.body, false), ", ")}]]
 </#if>
 </#if>
 </#list>
-</#if>
+

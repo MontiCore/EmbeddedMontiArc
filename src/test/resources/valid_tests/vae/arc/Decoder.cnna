@@ -1,0 +1,11 @@
+architecture Decoder{
+    def input Q(-oo:oo)^{2} encoding
+    def output Q(0:1)^{1,28,28} data
+
+    encoding ->
+    FullyConnected(units=400) ->
+    FullyConnected(units=784) ->
+    Reshape(shape=(1,28,28)) ->
+    Sigmoid() ->
+    data;
+}
