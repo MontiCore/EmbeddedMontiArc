@@ -30,12 +30,20 @@ import org.ros.node.NodeMainExecutor;
 import org.ros.node.topic.Subscriber;
 import org.ros.node.topic.Publisher;
 
+
+import java.awt.event.*;
+import java.io.File;
 import java.lang.Double;
 import java.lang.Thread;
+import java.time.Duration;
 import java.time.Instant;
+import java.util.ArrayList;
+import java.util.Collection;
 import java.util.ConcurrentModificationException;
+import java.util.List;
 import java.util.Optional;
 import java.util.Random;
+import java.util.Arrays;
 
 // This class is responsible for the training and playing with 
 // reinforcement learning agents
@@ -46,6 +54,8 @@ public class RLSimulationHandler extends AbstractNodeMain{
     private boolean distributed = false;
     private boolean randomize = false;
     private boolean PLAYMODE = false;
+    private boolean miniStep = false;
+    private String selfPlay_mode = ".";
 
     private final long ACCESS_TIME = 100; //simulated time between 2 control signals in ms
     private int update_iterations = 1; //number of update calls required for one step
@@ -68,7 +78,16 @@ public class RLSimulationHandler extends AbstractNodeMain{
     private TrueCompass[] trueCompass; 
     private RLRewardCalculator rewardCalc;
     private Random rndGen = new Random();
+
     private int activeVehicle = 0; //Round Robin variable
+    private int trainedVehicle = 0; //denotes which vehicle is currently trained, all other vehicles are simulated by the self-play agent
+    
+    private List<float[]> decentralizedActionsList = new ArrayList<float[]>(); //list to save actions send by the self-play agent
+    private boolean receiveActions = true; 
+    private boolean setupComplete = false; //simulation setup
+    private boolean finished = true; //prevent race condition
+    private int currentVehicle = 0;
+
     private RLVisualizer viz;
 
     private Lidar[] lidars = null;
@@ -120,41 +139,189 @@ public class RLSimulationHandler extends AbstractNodeMain{
     final String step_topic = "/sim/step";
     final String reset_topic = "/sim/reset";
     final String reward_topic = "/sim/reward";
-
-	//initialize subscribers and publsihers
+    
+	//initialize subscribers and publishers
 	Subscriber<std_msgs.Float32MultiArray> action_subscriber = connectedNode.newSubscriber(step_topic, std_msgs.Float32MultiArray._TYPE);
     Subscriber<std_msgs.Bool> reset_subscriber = connectedNode.newSubscriber(reset_topic, std_msgs.Bool._TYPE);
 
     final Publisher<std_msgs.Float32MultiArray> state_publisher = connectedNode.newPublisher(state_topic, std_msgs.Float32MultiArray._TYPE);
     final Publisher<std_msgs.Bool> terminate_publisher = connectedNode.newPublisher(terminate_topic, std_msgs.Bool._TYPE);
     final Publisher<std_msgs.Float32> reward_publisher = connectedNode.newPublisher(reward_topic, std_msgs.Float32._TYPE);
+
+    //initialize publishers and subscribers for the self-play agent
+    //reward topic not required since the self-play agent does not process it
+    final String state2_topic = "sim/state2";
+    final String step2_topic = "/sim/step2";
+    final String reset2_topic = "/sim/reset2";
+    final String terminate2_topic = "/sim/terminal2";
+
+    Subscriber<std_msgs.Float32MultiArray> action2_subscriber = connectedNode.newSubscriber(step2_topic, std_msgs.Float32MultiArray._TYPE);
+    Subscriber<std_msgs.Bool> reset2_subscriber = connectedNode.newSubscriber(reset2_topic, std_msgs.Bool._TYPE);
+
+    final Publisher<std_msgs.Float32MultiArray> state2_publisher = connectedNode.newPublisher(state2_topic, std_msgs.Float32MultiArray._TYPE); //braucht man den wirklich oder ist der nicht überflüssig?
+    final Publisher<std_msgs.Bool> terminate2_publisher = connectedNode.newPublisher(terminate2_topic, std_msgs.Bool._TYPE);
+
+
+    //called when self-play agent sends an action
+    action2_subscriber.addMessageListener(new MessageListener<std_msgs.Float32MultiArray>() {
+      @Override
+      public void onNewMessage(std_msgs.Float32MultiArray action) {
+            if(in_termination || in_reset) return;
+
+            if(setupComplete) {
+                if(PLAYMODE == false) { //training mode activated
+                    if(finished) {
+                        finished = false;
+                        if(currentVehicle < vehiclesArray.length-1){
+                            currentVehicle += 1;
+                        }
+                        if(currentVehicle == trainedVehicle && currentVehicle < vehiclesArray.length-1) { //make sure trained and current vehicle do not overlap
+                            currentVehicle += 1;
+                        }
+
+                        if(receiveActions) { 
+                            decentralizedActionsList.add(action.getData()); //save received actions
+                        }
+                        if(decentralizedActionsList.size() >= vehiclesArray.length-1) { //only n-1 actions required by the self-play agent for n vehicles
+                            receiveActions = false;
+                        }
+
+                        //publish next state to the self-play agent 
+                        //make sure currentVehicle is not the trainedVehicle and the the number of vehicles is over 2, otherwise dont publish again
+                        if(currentVehicle <= vehiclesArray.length-1 && currentVehicle != trainedVehicle && !(vehiclesArray.length-1 == 1)){
+                            std_msgs.Float32MultiArray state2 = state2_publisher.newMessage();
+                            state2.setData(getDistributedState(currentVehicle));
+                            std_msgs.Bool terminated2 = terminate2_publisher.newMessage();
+
+                            terminated2.setData(false);
+                            finished = true;
+
+                            state2_publisher.publish(state2);
+                            terminate2_publisher.publish(terminated2);
+                        }
+                        else{
+                            finished = true;
+                        }
+                    }
+
+                }
+                else{ //execution mode activated
+                    //publish state for every vehicle to the self-play agent
+                    for(int i = currentVehicle; i <= vehiclesArray.length-1; i++) {
+                        std_msgs.Float32MultiArray state2 = state2_publisher.newMessage();
+                        state2.setData(getDistributedState(i));
+                        std_msgs.Bool terminated2 = terminate2_publisher.newMessage();
+                        //boolean term = getSimTermination();
+                        terminated2.setData(false);
+                        state2_publisher.publish(state2);
+                        terminate2_publisher.publish(terminated2);
+                    }
+
+                    if(receiveActions) { 
+                        decentralizedActionsList.add(action.getData());
+                    }
+                    
+                    if(decentralizedActionsList.size() >= vehiclesArray.length) {
+                        receiveActions= false;
+                    }
+
+                    //if action for every vehicle received simulate next step
+                    if(decentralizedActionsList.size() == vehiclesArray.length) { 
+
+                        Result result = step(action.getData()); 
+                    
+                        std_msgs.Float32MultiArray state = state2_publisher.newMessage();
+                        state.setData(result.state);
+                        std_msgs.Bool terminated = terminate2_publisher.newMessage();
+                        terminated.setData(result.terminated);
+
+                        if(result.terminated) in_termination = true;
+                        
+                        state2_publisher.publish(state);
+                        terminate2_publisher.publish(terminated);
+                    }
+            
+                }
+
+
+            }
+            else{
+                //System.out.println("Waiting");
+            }
+          
+        }
+    });
     
 	//called when agent gives action for next step
     action_subscriber.addMessageListener(new MessageListener<std_msgs.Float32MultiArray>() {
       @Override
       public void onNewMessage(std_msgs.Float32MultiArray action) {
 		if(in_termination || in_reset) return;
-        Result result = step(action.getData());
+        if(distributed && PLAYMODE == false && !miniStep) {
+            if(trainedVehicle == currentVehicle) { //make sure to dont mix up trained and current vehicle
+                if(currentVehicle < vehiclesArray.length-1) {
+                    currentVehicle += 1;
+                    std_msgs.Float32MultiArray state2 = state2_publisher.newMessage();
+                    state2.setData(getDistributedState(currentVehicle));
+                    std_msgs.Bool terminated2 = terminate2_publisher.newMessage();
+                    terminated2.setData(false);
+                    /*while(decentralizedActionsList.size() > 0) { //extra verfication that list is empty for new actions
+                        decentralizedActionsList.remove(0);
+                    }*/
+                    finished = true;
+                    receiveActions = true;
+                    state2_publisher.publish(state2);
+                    terminate2_publisher.publish(terminated2);
+                }
 
-	    std_msgs.Float32MultiArray state = state_publisher.newMessage();
-	    state.setData(result.state);
-	    std_msgs.Bool terminated = terminate_publisher.newMessage();
-	    terminated.setData(result.terminated);
-	    std_msgs.Float32 reward = reward_publisher.newMessage();
-	    reward.setData(result.reward);
+            }
+            else {
+                if(currentVehicle <= vehiclesArray.length-1) { 
+                    std_msgs.Float32MultiArray state2 = state2_publisher.newMessage();
+                    state2.setData(getDistributedState(currentVehicle));
+                    std_msgs.Bool terminated2 = terminate2_publisher.newMessage();
+                    terminated2.setData(false);
+                    /*while(decentralizedActionsList.size() > 0) { //extra verfication that list is empty for new actions
+                        decentralizedActionsList.remove(0);
+                    }*/
+                    finished = true;
+                    receiveActions = true;
+                    state2_publisher.publish(state2);
+                    terminate2_publisher.publish(terminated2);
+                }
+            }
 
-		if(result.terminated) in_termination = true;
-        
-	    state_publisher.publish(state);
-	    terminate_publisher.publish(terminated);
-	    reward_publisher.publish(reward);
+            while(true) { //wait until all actions of self-play agent are send
+                try{
+                    Thread.sleep(0);
+                } catch (InterruptedException ex) {}
 
-      }
+                if(decentralizedActionsList.size() >= vehiclesArray.length-1) break;              
+            }
+
+        }
+
+        Result result = step(action.getData()); //simulate next step
+            
+        std_msgs.Float32MultiArray state = state_publisher.newMessage(); //return reward, state and etc.
+        state.setData(result.state);
+        std_msgs.Bool terminated = terminate_publisher.newMessage();
+        terminated.setData(result.terminated);
+        std_msgs.Float32 reward = reward_publisher.newMessage();
+        reward.setData(result.reward);
+    
+        if(result.terminated) in_termination = true;
+                    
+        state_publisher.publish(state);
+        terminate_publisher.publish(terminated);
+        reward_publisher.publish(reward);
+
+    } 
 
     });
 
 	//called when agent calls for a reset
-    reset_subscriber.addMessageListener(new MessageListener<std_msgs.Bool>() {
+    reset_subscriber.addMessageListener(new MessageListener<std_msgs.Bool>() { //TODO: hier auch noch anderes Vorgehen für decentralized approach hinzufügen
       @Override
       public void onNewMessage(std_msgs.Bool reset) {
 		if(reset.getData() && in_termination){
@@ -174,9 +341,36 @@ public class RLSimulationHandler extends AbstractNodeMain{
 		  in_termination = false;
 		  in_reset = false;
 		}
+        
       }
 
     });
+
+    //called when self-play agent calls for a reset
+    reset2_subscriber.addMessageListener(new MessageListener<std_msgs.Bool>() { //TODO: hier auch noch anderes Vorgehen für decentralized approach hinzufügen
+        @Override
+        public void onNewMessage(std_msgs.Bool reset) {
+          if(reset.getData() && in_termination){
+            in_reset = true;
+            Result result = reset();
+  
+            std_msgs.Float32MultiArray state = state2_publisher.newMessage();
+            state.setData(result.state);
+            std_msgs.Bool terminated = terminate2_publisher.newMessage();
+            terminated.setData(result.terminated);
+            std_msgs.Float32 reward = reward_publisher.newMessage();
+            reward.setData(result.reward);
+  
+            state2_publisher.publish(state);
+            terminate2_publisher.publish(terminated);
+            reward_publisher.publish(reward);
+            in_termination = false;
+            in_reset = false;
+          }
+          
+        }
+  
+      });
 
         //if the agent is not trained the environment has to provide the
         //initial messages
@@ -185,6 +379,7 @@ public class RLSimulationHandler extends AbstractNodeMain{
               Thread.sleep(5000);
           } catch (InterruptedException ex) {}
 		  in_reset = true;
+          currentVehicle = 0;
 		  Result result = reset();
 
 		  std_msgs.Float32MultiArray state = state_publisher.newMessage();
@@ -199,6 +394,9 @@ public class RLSimulationHandler extends AbstractNodeMain{
 		  reward_publisher.publish(reward);
 		  in_termination = false;
 		  in_reset = false;
+        }
+        else {
+            currentVehicle = 0;
         }
     }
 
@@ -280,6 +478,11 @@ public class RLSimulationHandler extends AbstractNodeMain{
             simulationTime = tu.newTime;
         }
         activeVehicle = 0;
+        receiveActions = true;
+
+        if(selfPlay_mode == "afterEpisode") { // afterEpisode option can be selected via CLI
+            trainedVehicle = (trainedVehicle +1)%vehiclesArray.length; //pick the next vehicle as the trained vehicle
+        } 
         updateStatePackets();
         float[] simState = getState();
         rewardCalc = new RLRewardCalculator(navigations, vehiclesArray);
@@ -291,15 +494,52 @@ public class RLSimulationHandler extends AbstractNodeMain{
             if(navigations[i].getCurrentPath().get().getLength() == 0)
                 return setup();
         }
+        setupComplete = true;
 
         return new Result(init_reward, simState, simTermination);
     }
 
-    //perform next simulation step
+
     private Result step(float[] action){
-        setAction(action);
+
+        //self-play and training mode
+        if(distributed && PLAYMODE == false && !miniStep) { 
+            int listCounter = 0; //makes sure that right action out of the decentralizedActionsList is selected
+            for(int i = 0; i<=autopilots.length-1; i++) {
+
+                if(i == trainedVehicle) {
+                    setAction(action); //set action for the trained vehicle
+                } else if( i != trainedVehicle && decentralizedActionsList!=null && decentralizedActionsList.size()!=0) {
+                    if(decentralizedActionsList.size() >= i) { //set self-play actions
+                        setDistributedAction(decentralizedActionsList.get(listCounter), i);
+                        listCounter +=1;
+                    }
+                    else if(decentralizedActionsList.size() < i && decentralizedActionsList.size() >= 1){
+                        setDistributedAction(decentralizedActionsList.get(0), i);
+                    }    
+                }
+            }
+            listCounter = 0;
+
+        }
+        //set action for all vehicles in self-play execution mode
+        else if(distributed && PLAYMODE == true && !miniStep) {
+            if(decentralizedActionsList!=null && decentralizedActionsList.size()!=0) {
+                for(int i=0; i<= decentralizedActionsList.size()-1; i++) {
+                    setDistributedAction(decentralizedActionsList.get(i),i);
+                
+                }
+            }
+        }
+        //set action for single-vehicle and centralized case
+        else{
+            setAction(action);
+        }
+        
+
         if(simulator == null) return new Result();
-        if(!distributed){
+        
+        if(!miniStep) {
             for(int i = 0; i<update_iterations; i++){
                 if(simulator != null){
                     TimeUpdate tu = new TimeUpdate(simulationTime, config.tick_duration);
@@ -317,6 +557,8 @@ public class RLSimulationHandler extends AbstractNodeMain{
                 }
             }
         }
+        
+
         updateStatePackets();
         float[] simState = getState();
         float step_reward;
@@ -324,12 +566,31 @@ public class RLSimulationHandler extends AbstractNodeMain{
         if(!distributed){
             step_reward = rewardCalc.getReward();
         }
-        else{
+        else if(miniStep) {
             step_reward = rewardCalc.getRewardForVehicle(activeVehicle);
+        }
+        else{
+            step_reward = rewardCalc.getRewardForVehicle(trainedVehicle); //calculate reward only for trained vehicle in self-play mode
         }
 
         boolean simTermination = this.getSimTermination();
         activeVehicle = (activeVehicle + 1)%vehiclesArray.length;
+
+        if(distributed & !miniStep) {
+   
+            while(decentralizedActionsList.size() > 0) { //clear self-play action list for next step
+                decentralizedActionsList.remove(0);
+            }
+        }
+
+        currentVehicle=0;
+
+        //afterStep option is selected in CLI
+        if(selfPlay_mode == "afterStep") {
+             trainedVehicle = (trainedVehicle +1)%vehiclesArray.length; //pick next vehicle as the trainedVehicle
+        }
+
+        receiveActions = true;
 
         if(viz != null){
             try{viz.simTime = simulationTime;
@@ -378,7 +639,7 @@ public class RLSimulationHandler extends AbstractNodeMain{
                 }
             }
         }
-        else{
+        else if(miniStep){
             result = new float[stateLength + (vehicleCount-1) * statePacketLength];
             for(int i = 0; i<stateLength; i++){
                 result[i] = vehicleStates[activeVehicle][i];
@@ -389,8 +650,39 @@ public class RLSimulationHandler extends AbstractNodeMain{
                 }
             }
         }
+        else{
+            result = new float[stateLength + (vehicleCount-1) * statePacketLength];
+            for(int i = 0; i<stateLength; i++){
+                result[i] = vehicleStates[trainedVehicle][i]; //return state to EMADL agent
+            }
+            for(int i = 1; i< vehicleCount; i++){
+                for(int j = 0; j < statePacketLength; j++){
+                    result[stateLength + (i-1)*statePacketLength + j] = autopilots[(trainedVehicle + i) % vehicleCount].getStatePacket()[j];
+                }
+            }
+        }
 
         return result;
+    }
+
+    //method to return the state to the self-play vehicle
+    private float[] getDistributedState(int index) {
+        int vehicleCount = autopilots.length;
+        int stateLength = autopilots[0].state.length;
+        int statePacketLength = autopilots[0].getStatePacket().length;
+        updateVehicleStates();
+        float[] result;
+        result = new float[stateLength + (vehicleCount-1) * statePacketLength];
+        for(int i = 0; i<stateLength; i++){
+            result[i] = vehicleStates[index][i];
+        }
+        for(int i = 1; i< vehicleCount; i++){
+            for(int j = 0; j < statePacketLength; j++){
+                result[stateLength + (i-1)*statePacketLength + j] = autopilots[(index + i) % vehicleCount].getStatePacket()[j];
+            }
+        }
+        return result;
+
     }
 
     //set the combined action from all vehicles
@@ -399,7 +691,7 @@ public class RLSimulationHandler extends AbstractNodeMain{
         int vehicleCount = autopilots.length;
         int actionLength =  action.length / vehicleCount; //assume that every vehicle has same action space
 
-        if(!distributed){
+        if(!distributed){ //single vehicle or centralized
             for(int i = 0; i<vehicleCount; i++){
                 float[] result = new float[actionLength];
                 for(int j = 0; j<actionLength; j++){
@@ -408,11 +700,21 @@ public class RLSimulationHandler extends AbstractNodeMain{
                 autopilots[i].action = result;
             } 
         }
+        else if(miniStep){
+            
+            autopilots[activeVehicle].action = action; //mini-step approach
+        }
         else{
-            autopilots[activeVehicle].action = action;
+            
+            autopilots[trainedVehicle].action = action; //self-play approach
         }
 
         return;
+    }
+
+    //set action of the self play agent
+    private void setDistributedAction(float[] action, int index) {
+        autopilots[index].action = action;
     }
 
     private boolean anyStateNull(){
@@ -424,6 +726,7 @@ public class RLSimulationHandler extends AbstractNodeMain{
 
     //assign random start and target coordinates for all vehicles
     //addtional orientation allignment with first segment
+
     private void randomizeScenario(){
         if(pathfinding == null) return;
         VehicleProperties[] properties;
@@ -505,10 +808,12 @@ public class RLSimulationHandler extends AbstractNodeMain{
     }
 
     // set reinforcement learning settings
-    public void setSettings(boolean distributed, boolean randomize, boolean play){
+    public void setSettings(boolean distributed, boolean randomize, boolean play, boolean miniStep, String selfPlay_mode){
         this.distributed = distributed;
         this.randomize = randomize;
         this.PLAYMODE = play;
+        this.miniStep = miniStep;
+        this.selfPlay_mode = selfPlay_mode;
     }
 
 }
