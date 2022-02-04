@@ -19,8 +19,8 @@ import de.rwth.montisim.simulation.eesimulator.EESystem;
 import de.rwth.montisim.simulation.eesimulator.events.MessageReceiveEvent;
 import de.rwth.montisim.simulation.eesimulator.message.Message;
 import de.rwth.montisim.simulation.eecomponents.lidar.Lidar;
-import de.rwth.montisim.simulation.eecomponents.speed_limit.SpeedLimitService;
 import de.rwth.montisim.simulation.vehicle.navigation.Navigation;
+import de.rwth.montisim.simulation.eecomponents.speed_limit.SpeedLimitService;
 import de.rwth.montisim.simulation.vehicle.physicalvalues.BatteryLevel;
 import de.rwth.montisim.simulation.vehicle.physicalvalues.TrueCompass;
 import de.rwth.montisim.simulation.vehicle.physicalvalues.TruePosition;
@@ -119,6 +119,18 @@ public class RLAutopilot extends EEComponent implements Inspectable {
 
     public float[] getStatePacket(){
         return this.statePacket;
+    }
+    
+    public double getCurrentSteering(){
+        return this.currentSteering;
+    }
+
+    public double getCurrentGas() {
+        return this.currentGas;
+    }
+
+    public double getCurrentBrakes() {
+        return this.currentBrakes;
     }
 
     void setGas(Instant sendTime, double val) {

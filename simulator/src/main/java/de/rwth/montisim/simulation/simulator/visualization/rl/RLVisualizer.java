@@ -54,11 +54,11 @@ public class RLVisualizer{
     }
 
     // initialize simulation handler
-    public void init(Boolean distributed, Boolean randomize, Boolean play){
+    public void init(Boolean distributed, Boolean randomize, Boolean play, Boolean miniStep, String selfPlay_mode){
         NodeConfiguration rosNodeConfiguration = NodeConfiguration.newPrivate();
         NodeMainExecutor nodeMainExecutor = DefaultNodeMainExecutor.newDefault();
         rlSimulationHandler = new RLSimulationHandler(simConfig, simTime, map, this, nodeMainExecutor);
-        rlSimulationHandler.setSettings(distributed, randomize, play);
+        rlSimulationHandler.setSettings(distributed, randomize, play, miniStep, selfPlay_mode);
         nodeMainExecutor.execute(rlSimulationHandler, rosNodeConfiguration);
 
     }

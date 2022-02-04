@@ -100,6 +100,13 @@ public class Vehicle extends SimulationObject implements Updatable, Destroyable,
         staticCollisions.add(o);
     }
 
+    public List<StaticObject> getStaticCollisions() {
+        return this.staticCollisions;
+    }
+
+    public List<Vehicle> getVehicleCollisions() {
+        return this.vehicleCollisions;
+    }
     /**
      * For tests
      *
