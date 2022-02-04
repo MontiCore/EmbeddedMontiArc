@@ -47,6 +47,10 @@ public class TrainingConfiguration {
         return getParameterValue(CONTEXT);
     }
 
+    public Optional<String> getSelfPlay() {
+        return getParameterValue(SELF_PLAY);
+    }
+
     public Optional<LearningMethod> getLearningMethod() {
         Optional<ConfigurationEntry> learningMethodOpt =
                 configurationSymbol.getConfigurationEntry(LEARNING_METHOD);

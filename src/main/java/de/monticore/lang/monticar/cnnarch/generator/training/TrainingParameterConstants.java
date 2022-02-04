@@ -57,6 +57,7 @@ public class TrainingParameterConstants {
     public static final String DQN = "dqn";
     public static final String DDPG = "ddpg";
     public static final String TD3 = "td3";
+    public static final String SELF_PLAY = "self_play";
 
     public static final String MULTI_GRAPH = "multi_graph";
     public static final String TRAIN_MASK = "train_mask";
