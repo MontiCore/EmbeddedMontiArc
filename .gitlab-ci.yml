@@ -46,7 +46,7 @@ TestPretrainedVAE:
   script:
     - mv /mxnet/build/libmxnet.so /mxnet/build/libmxnet.a /usr/lib/
     - cd standard-vae/pre-trained
-    - python3 mnistVAE.py
+    - python3 mnistvaeGrid.py
 
 TestPretrainedBetaVAE:
   stage: test
@@ -55,7 +55,7 @@ TestPretrainedBetaVAE:
   script:
     - mv /mxnet/build/libmxnet.so /mxnet/build/libmxnet.a /usr/lib/
     - cd beta-vae/pre-trained
-    - python3 mnistVAE.py
+    - python3 mnistvaeGrid.py
 
 TestPretrainedCVAE:
   stage: test
@@ -64,7 +64,7 @@ TestPretrainedCVAE:
   script:
     - mv /mxnet/build/libmxnet.so /mxnet/build/libmxnet.a /usr/lib/
     - cd conditional-vae/pre-trained
-    - python3 mnistVAE.py
+    - python3 mnistvaeGrid.py
 
 TestPretrainedVQVAE:
   stage: test
@@ -73,4 +73,4 @@ TestPretrainedVQVAE:
   script:
     - mv /mxnet/build/libmxnet.so /mxnet/build/libmxnet.a /usr/lib/
     - cd vq-vae/pre-trained
-    - python3 mnistVAE.py
+    - python3 mnistvaeGrid.py
