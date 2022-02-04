@@ -13,9 +13,6 @@ if __name__ == "__main__":
         warnings.simplefilter("ignore")
         decoder = gluon.nn.SymbolBlock.imports("model/vae.Decoder/model_0_newest-symbol.json", ['data'],
                                                         "model/vae.Decoder/model_0_newest-0015.params", ctx=mx.cpu())
-        #sample = mx.ndarray.random_normal(0,1,(1,8))
-        #res = mx.ndarray.transpose(net(sample).squeeze(0)).asnumpy()
-        #print(sample.asnumpy())
         x = np.linspace(-1, 1, n_samples)
         y = np.linspace(-1, 1, n_samples)
         X,Y = np.meshgrid(x,y)
