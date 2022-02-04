@@ -156,12 +156,9 @@ public class App
             SimulationConfig config = SimulationConfig.fromFile(scenarioFile);
             File mapPath = new File(config.map_name + ".osm");
             OsmMap map = new OsmMap(config.map_name, mapPath);
-            World world = new OsmToWorldLoader(map).getWorld();
-            Pathfinding pathfinding = new PathfindingImpl(world);
-            Simulator simulator = config.build(world, pathfinding, map);
 
             //Run Simulation
-            RLSimulationInit simInit = new RLSimulationInit(config, world, pathfinding, map);
+            RLSimulationInit simInit = new RLSimulationInit(config, map);
             simInit.setRLSettings(distributed, randomize, play);
             simInit.init();
         } catch (Exception e1) {
