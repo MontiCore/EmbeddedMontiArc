@@ -377,7 +377,11 @@ public abstract class ConfigurationData {
 //    public Map<String, Map<String, Object>> getConstraintLosses() { // TODO
 //        return getMultiParamMapEntry(CONSTRAINT_LOSS, "name");
 //    }
-
+    public String getSelfPlay() { // added Parameter self_play for cooperative driving
+        Optional<String> selfPlay = trainingConfiguration.getSelfPlay();
+        return selfPlay.orElse(null);
+    }
+    
     public String getRlAlgorithm() {
         Optional<RlAlgorithm> rlAlgorithmOpt = trainingConfiguration.getRlAlgorithm();
         if (!rlAlgorithmOpt.isPresent()) {
