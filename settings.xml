@@ -37,11 +37,6 @@
       <mirrorOf>rosjava_mvn</mirrorOf>
       <url>https://github.com/rosjava/rosjava_mvn_repo/raw/master/</url>
     </mirror>
-    <mirror> 
-      <id>jfrog_repo</id>
-      <mirrorOf>jfrog</mirrorOf>
-      <url>https://repo.jfrog.org/artifactory/libs-releases</url>
-    </mirror>
   </mirrors>
   
   <profiles>
@@ -50,19 +45,24 @@
       <repositories>
         <repository>
           <id>central</id>
-          <url>http://central</url>
+          <url>https://repo1.maven.org/maven2/</url>
           <releases><enabled /></releases>
           <snapshots><enabled /></snapshots>
         </repository>
+<!--        <repository>
+            <id>spring</id>
+            <url>https://repo.spring.io/libs-release/</url>
+            <releases>
+                <enabled>true</enabled>
+            </releases>
+            <snapshots>
+                <enabled>true</enabled>
+            </snapshots>
+        </repository>-->
         <repository>
           <id>rosjava_mvn</id>
           <name>Public Rosjava repository</name>
           <url>https://github.com/rosjava/rosjava_mvn_repo/raw/master</url>
-        </repository>
-        <repository>
-          <id>jfrog</id>
-          <name>JFrog repository</name>
-          <url>https://repo.jfrog.org/artifactory/libs-releases</url>
         </repository>
       </repositories>
       <pluginRepositories>

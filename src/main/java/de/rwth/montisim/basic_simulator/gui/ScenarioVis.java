@@ -104,7 +104,7 @@ public class ScenarioVis extends SimVis implements SimulationRunner {
         }
         if(current_scenario.charAt(0) == 'r' && current_scenario.charAt(1) == 'l'){
             topPanel.remove(control);
-            RLVisualizer viz = new RLVisualizer(world, map, pathfinding, simConfig, viewer, simConfig.start_time);
+            RLVisualizer viz = new RLVisualizer(map, simConfig, viewer, simConfig.start_time);
             viz.init(distributed, randomize, play);
             return;
         }
@@ -263,6 +263,16 @@ public class ScenarioVis extends SimVis implements SimulationRunner {
         });
         interm.add(checkBox4);
 
+        JCheckBox checkBox5 = new JCheckBox("Show driven Trajectory", UIInfo.drawDrivenTrajectory);
+        checkBox5.addItemListener(new ItemListener() {
+            public void itemStateChanged(ItemEvent e) {
+                UIInfo.drawDrivenTrajectory = e.getStateChange() == 1;
+                viewer.setDirty();
+                viewer.repaint();
+            }
+        });
+        interm.add(checkBox5);
+        
         JPanel bottomPanel = new JPanel();
         bottomPanel.setLayout(new BoxLayout(bottomPanel, BoxLayout.Y_AXIS));
         bottomPanel.setBorder(Browser.paneBorder);

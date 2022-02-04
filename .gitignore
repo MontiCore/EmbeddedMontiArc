@@ -12,6 +12,8 @@
 install/hardware_emulator_lib.dll
 install/hardware_emulator_lib.so
 install/basic-simulator.jar
+install/results/*
 dependency-reduced-pom.xml
 .vscode/
 .factorypath
+*.log
