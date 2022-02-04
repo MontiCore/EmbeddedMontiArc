@@ -58,6 +58,8 @@ public class ScenarioVis extends SimVis implements SimulationRunner {
     boolean distributed = false;
     boolean randomize = false;
     boolean play = false;
+    boolean miniStep = false;
+    String selfPlay_mode = ".";
 
     final long PHYSICS_TICK_DURATION_MS = 10;
     final long TICK_NANO = PHYSICS_TICK_DURATION_MS * 1000000;
@@ -105,7 +107,7 @@ public class ScenarioVis extends SimVis implements SimulationRunner {
         if(current_scenario.charAt(0) == 'r' && current_scenario.charAt(1) == 'l'){
             topPanel.remove(control);
             RLVisualizer viz = new RLVisualizer(map, simConfig, viewer, simConfig.start_time);
-            viz.init(distributed, randomize, play);
+            viz.init(distributed, randomize, play, miniStep, selfPlay_mode);
             return;
         }
         else{
@@ -262,7 +264,7 @@ public class ScenarioVis extends SimVis implements SimulationRunner {
             }
         });
         interm.add(checkBox4);
-
+        
         JCheckBox checkBox5 = new JCheckBox("Show driven Trajectory", UIInfo.drawDrivenTrajectory);
         checkBox5.addItemListener(new ItemListener() {
             public void itemStateChanged(ItemEvent e) {
@@ -272,7 +274,7 @@ public class ScenarioVis extends SimVis implements SimulationRunner {
             }
         });
         interm.add(checkBox5);
-        
+
         JPanel bottomPanel = new JPanel();
         bottomPanel.setLayout(new BoxLayout(bottomPanel, BoxLayout.Y_AXIS));
         bottomPanel.setBorder(Browser.paneBorder);

@@ -41,6 +41,8 @@ public class Browser extends JFrame implements TreeSelectionListener {
     boolean distributed = false;
     boolean randomize = false;
     boolean play = true;
+    boolean miniStep = false;
+    String selfPlay_mode = ".";
 
     HashMap<TreeNode, Category> node_category = new HashMap<>();
     HashMap<String, DefaultMutableTreeNode> categories = new HashMap<>();
@@ -127,12 +129,26 @@ public class Browser extends JFrame implements TreeSelectionListener {
         addOption(box, "Use decentralized reinforcement learning", false, e -> {
             distributed = e.getStateChange() == 1;
         });
+        addOption(box, "Self play update after every STEP", false, e -> {
+            if(e.getStateChange() == 1) {
+                selfPlay_mode = "afterStep";
+            }
+        });
+        addOption(box, "Self play update after every EPISODE", false, e -> {
+            if(e.getStateChange() == 1) {
+                selfPlay_mode = "afterEpisode";
+            }
+        });
+        addOption(box, "Use mini-step reinforcement learning", false, e -> {
+            miniStep = e.getStateChange() == 1;
+        });
         addOption(box, "Use randomization for reinforcement learning", false, e -> {
             randomize = e.getStateChange() == 1;
         });
         addOption(box, "Start RL-simulator in training mode", false, e -> {
             play = e.getStateChange() == 0;
         });
+        
 
 
         interm.setBackground(Color.WHITE);
@@ -254,6 +270,8 @@ public class Browser extends JFrame implements TreeSelectionListener {
                         ((ScenarioVis) new_vis).distributed = distributed;
                         ((ScenarioVis) new_vis).randomize = randomize;
                         ((ScenarioVis) new_vis).play = play;
+                        ((ScenarioVis) new_vis).miniStep = miniStep;
+                        ((ScenarioVis) new_vis).selfPlay_mode = selfPlay_mode;
                     }
                 }
             }

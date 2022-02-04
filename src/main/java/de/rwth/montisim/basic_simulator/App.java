@@ -40,6 +40,8 @@ public class App
             boolean decentralized = false;
             boolean randomize = false;
             boolean play = false;
+            boolean miniStep = false;
+            String selfPlay_mode = ".";
             String maps_folder = ".";
 
             if(args.length > 0){
@@ -50,6 +52,10 @@ public class App
                     System.out.printf(" %-30s %-20s\n", "-h,--help" ,"Display help information");
                     System.out.printf(" %-30s %-20s\n", "-m,--maps <folder>" ,"Specify the maps folder");
                     System.out.printf(" %-30s %-20s\n", "-d,--decentralized" ,"Use decentralized mode. Only relevant for Reinforcement Learning");
+                    System.out.printf(" %-30s %-20s\n", "-mS,--mini_step" ,"Use Mini-Step mode. Only relevant for Reinforcement Learning");
+                    System.out.printf(" %-30s %-20s\n", "-nU,--no_update" ,"Do not update the trained vehicle. Only available for decentralized mode in Reinforcement Learning");
+                    System.out.printf(" %-30s %-20s\n", "-aS,--after_step" ,"Update the trained vehicle after every trainings step. Only relevant for Reinforcement Learning");
+                    System.out.printf(" %-30s %-20s\n", "-aE,--after_episode" ,"Update the trained vehicle after every episode. Only available for decentralized mode in Reinforcement Learning");
                     System.out.printf(" %-30s %-20s\n", "-rl,--reinforcement_learning" ,"Use simulator for Reinforcement Learning");
                     System.out.printf(" %-30s %-20s\n", "-s,--scenario <arg>" ,"Relative path to executed scenario");
                     System.out.printf(" %-30s %-20s\n", "-r,--randomize" ,"Randomize the scenarios. Only relevant for Reinforcement Learning");
@@ -91,6 +97,42 @@ public class App
                         decentralized = true;
                     }
 
+                    if(args[i].equals("-mS") || args[i].equals("--mini_step")){
+                        miniStep = true;
+                    }
+
+                    if(args[i].equals("-nU") || args[i].equals("--no_update")){
+                        selfPlay_mode = "noUpdate";
+                        if(!decentralized) {
+                            System.out.println("Please use the decentralized mode for the option no_update. Use '--help' for more information.");
+                        }
+                        if(selfPlay_mode == "afterStep" || selfPlay_mode == "afterEpisode") {
+                            System.out.println("Please only use one self play option. Use '--help' for more information.");
+                        }
+                    }
+
+                    if(args[i].equals("-aS") || args[i].equals("--after_step")){
+                        selfPlay_mode = "afterStep";
+                        if(!decentralized) {
+                            System.out.println("Please use the decentralized mode for the option after_step. Use '--help' for more information.");
+                        }
+
+                        if(selfPlay_mode == "noUpdate" || selfPlay_mode == "afterEpisode") {
+                            System.out.println("Please only use one self play option. Use '--help' for more information.");
+                        }
+                    }
+
+                    if(args[i].equals("-aE") || args[i].equals("--after_episode")){
+                        selfPlay_mode = "afterEpisode";
+                        if(!decentralized) {
+                            System.out.println("Please use the decentralized mode for the option after_episode. Use '--help' for more information.");
+                        }
+                        
+                        if(selfPlay_mode == "noUpdate" || selfPlay_mode == "afterStep") {
+                            System.out.println("Please only use one self play option. Use '--help' for more information.");
+                        }
+                    }
+
                     if(args[i].equals("-r") || args[i].equals("--randomize")){
                         randomize = true;
                     }
@@ -110,6 +152,16 @@ public class App
                     System.out.println(" Currently used settings:");
                     if(decentralized){
                         System.out.print("Decentralized mode.\n");
+                        if(selfPlay_mode == "noUpdate") {
+                            System.out.print("Self play mode: No update.\n");
+                        } else if(selfPlay_mode == "afterStep") {
+                            System.out.print("Self play mode: Update after step.\n");
+                        } else if(selfPlay_mode == "afterEpisode") {
+                            System.out.print("Self play mode: Update after episode.\n");
+                        }
+                    }
+                    else if(miniStep) {
+                        System.out.print("Mini-Step mode.\n");
                     }
                     else{
                         System.out.print("Centralized mode. \n");
@@ -126,7 +178,7 @@ public class App
                     else{
                         System.out.println("Using training mode");
                     }
-                    runRLSimulation(scenario_name, decentralized, randomize, play);
+                    runRLSimulation(scenario_name, decentralized, randomize, play, miniStep, selfPlay_mode);
                 }
                 else{
                     System.out.println("Starting simulation with scenario: " + scenario_name);
@@ -150,7 +202,7 @@ public class App
 
 
 
-    protected static void runRLSimulation(String path, boolean distributed, boolean randomize, boolean play){
+    protected static void runRLSimulation(String path, boolean distributed, boolean randomize, boolean play, boolean miniStep, String selfPlay_mode){
         try {
             File scenarioFile = new File(path);
             SimulationConfig config = SimulationConfig.fromFile(scenarioFile);
@@ -159,7 +211,7 @@ public class App
 
             //Run Simulation
             RLSimulationInit simInit = new RLSimulationInit(config, map);
-            simInit.setRLSettings(distributed, randomize, play);
+            simInit.setRLSettings(distributed, randomize, play, miniStep, selfPlay_mode);
             simInit.init();
         } catch (Exception e1) {
             e1.printStackTrace();
