@@ -321,7 +321,7 @@ public class RLSimulationHandler extends AbstractNodeMain{
     });
 
 	//called when agent calls for a reset
-    reset_subscriber.addMessageListener(new MessageListener<std_msgs.Bool>() { //TODO: hier auch noch anderes Vorgehen für decentralized approach hinzufügen
+    reset_subscriber.addMessageListener(new MessageListener<std_msgs.Bool>() { 
       @Override
       public void onNewMessage(std_msgs.Bool reset) {
 		if(reset.getData() && in_termination){
@@ -347,7 +347,7 @@ public class RLSimulationHandler extends AbstractNodeMain{
     });
 
     //called when self-play agent calls for a reset
-    reset2_subscriber.addMessageListener(new MessageListener<std_msgs.Bool>() { //TODO: hier auch noch anderes Vorgehen für decentralized approach hinzufügen
+    reset2_subscriber.addMessageListener(new MessageListener<std_msgs.Bool>() { 
         @Override
         public void onNewMessage(std_msgs.Bool reset) {
           if(reset.getData() && in_termination){
