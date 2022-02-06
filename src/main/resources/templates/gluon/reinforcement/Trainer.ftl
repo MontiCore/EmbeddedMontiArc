@@ -110,14 +110,14 @@ if __name__ == "__main__":
 <#if config.rlAlgorithm == "dqn">
     qnet_creator = CNNCreator_${config.instanceName}.CNNCreator_${config.instanceName}()
     qnet_creator.setWeightInitializer(initializer)
-    qnet_creator.construct(context)
+    qnet_creator.construct([context])
 <#elseif config.rlAlgorithm=="ddpg" || config.rlAlgorithm=="td3">
     actor_creator = CNNCreator_${config.instanceName}.CNNCreator_${config.instanceName}()
     actor_creator.setWeightInitializer(initializer)
-    actor_creator.construct(context)
+    actor_creator.construct([context])
     critic_creator = CNNCreator_${criticInstanceName}()
     critic_creator.setWeightInitializer(critic_initializer)
-    critic_creator.construct(context)
+    critic_creator.construct([context])
 </#if>
 
     agent_params = {
@@ -156,6 +156,9 @@ if __name__ == "__main__":
 </#if>
 <#if (config.evaluationSamples)??>
         'evaluation_samples': ${config.evaluationSamples},
+</#if>
+<#if (config.selfPlay)??>
+        'self_play': '${config.selfPlay}',
 </#if>
 <#if (config.outputDirectory)??>
         'output_directory': ${config.outputDirectory},

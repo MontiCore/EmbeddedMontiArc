@@ -12,6 +12,9 @@ import math
 import sys
 import inspect
 from mxnet import gluon, autograd, nd
+<#if tc.architecture.useDgl>
+import dgl
+</#if>
 <#if tc.containsAdaNet()>
 from typing import List
 from mxnet.gluon.loss import Loss, SigmoidBCELoss
@@ -181,6 +184,28 @@ class ACCURACY_IGNORE_LABEL(mx.metric.EvalMetric):
             self.sum_metric += correct
             self.num_inst += total
 
+
+@mx.metric.register
+class ACCURACY_MASKED(mx.metric.EvalMetric):
+    def __init__(self, axis=1, name='accuracy_masked', output_names=None, label_names=None):
+        super(ACCURACY_MASKED, self).__init__(name, axis=axis, output_names=output_names, label_names=label_names)
+        self.axis = axis
+
+    def update(self, labels, preds, mask):
+        mx.metric.check_label_shapes(labels, preds)
+        if preds.shape != labels.shape:
+            preds = mx.nd.argmax(preds, axis=self.axis, keepdims=True)
+        labels = labels.astype('int32')
+        preds = preds.astype('int32').as_in_context(labels.context)
+        mask = mask.astype('int32').as_in_context(labels.context)
+        mx.metric.check_label_shapes(labels, preds)
+
+        correct = ((preds == labels)*mask).sum().asscalar()
+        total = mask.sum().asscalar()
+        self.sum_metric += correct
+        self.num_inst += total
+
+
 @mx.metric.register
 class BLEU(mx.metric.EvalMetric):
     N = 4
@@ -329,6 +354,9 @@ class ${tc.fileNameWithoutEnding}:
               shuffle_data=False,
               clip_global_grad_norm=None,
               preprocessing=False,
+              train_mask=None,
+              test_mask=None,
+              multi_graph=False,
               onnx_export=False):
         num_pus = 1
         if context == 'gpu':
@@ -350,7 +378,7 @@ class ${tc.fileNameWithoutEnding}:
             preproc_lib = "CNNPreprocessor_${tc.fileNameWithoutEnding?keep_after("CNNSupervisedTrainer_")}_executor"
             train_iter, test_iter, data_mean, data_std, train_images, test_images = self._data_loader.load_preprocessed_data(batch_size, preproc_lib, shuffle_data)
         else:
-            train_iter, test_iter, data_mean, data_std, train_images, test_images = self._data_loader.load_data(batch_size, shuffle_data)
+            train_iter, test_iter, data_mean, data_std, train_images, test_images, train_graph, test_graph = self._data_loader.load_data(batch_size, shuffle_data, multi_graph)
 
         if 'weight_decay' in optimizer_params:
             optimizer_params['wd'] = optimizer_params['weight_decay']
@@ -464,7 +492,7 @@ class ${tc.fileNameWithoutEnding}:
             trainers = [mx.gluon.Trainer(network.collect_params(), optimizer, optimizer_params) for network in self._networks.values() if len(network.collect_params().values()) != 0]
 </#list>
 </#if>
-<#list tc.architecture.networkInstructions as networkInstruction>    
+<#list tc.architecture.networkInstructions as networkInstruction>
 <#if networkInstruction.body.episodicSubNetworks?has_content>
 <#assign episodicReplayVisited = true>
 </#if>
@@ -507,7 +535,7 @@ class ${tc.fileNameWithoutEnding}:
                     preproc_lib = "CNNPreprocessor_${tc.fileNameWithoutEnding?keep_after("CNNSupervisedTrainer_")}_executor"
                     train_iter, test_iter, data_mean, data_std, train_images, test_images = self._data_loader.load_preprocessed_data(batch_size, preproc_lib, shuffle_data)
                 else:
-                    train_iter, test_iter, data_mean, data_std, train_images, test_images = self._data_loader.load_data(batch_size, shuffle_data)
+                    train_iter, test_iter, data_mean, data_std, train_images, test_images, train_graph, test_graph = self._data_loader.load_data(batch_size, shuffle_data, multi_graph)
 
             global_loss_train = 0.0
             train_batches = 0
@@ -562,7 +590,9 @@ class ${tc.fileNameWithoutEnding}:
 
                         loss_avg = loss_total / (batch_size * log_period)
                         loss_total = 0
-
+<#if tc.architecture.useDgl>
+                        print("Epoch[%d] Batch[%d] Speed: %.2f samples/sec Loss: %.5f" % (epoch, batch_i, speed, loss_avg))
+</#if>
                         logging.info("Epoch[%d] Batch[%d] Speed: %.2f samples/sec Loss: %.5f" % (epoch, batch_i, speed, loss_avg))
                         
                         avg_speed += speed
@@ -639,8 +669,12 @@ class ${tc.fileNameWithoutEnding}:
             test_iter.reset()
             metric = mx.metric.create(eval_metric, **eval_metric_params)
             for batch_i, batch in enumerate(test_iter):
-                if True: <#-- Fix indentation -->
-                                                   
+<#if tc.architecture.useDgl>
+                if multi_graph:
+<#else>
+                if test_mask == None: <#-- Fix indentation -->
+</#if>
+
 <#if episodicReplayVisited?? && anyEpisodicLocalAdaptation && !containsUnrollNetwork>
 <#include "pythonExecuteTest.ftl">
     
@@ -669,10 +703,10 @@ class ${tc.fileNameWithoutEnding}:
 <#include "saveAttentionImageTest.ftl">
 
                 loss = 0
-                for element in lossList:
-                    loss = loss + element
-
-                global_loss_test += loss.sum().asscalar()
+                if test_mask == None or multi_graph:
+                    for element in lossList:
+                        loss = loss + element
+                    global_loss_test += loss.sum().asscalar()
 
                 test_batches += 1
 
@@ -682,9 +716,17 @@ class ${tc.fileNameWithoutEnding}:
                         predictions.append(mx.nd.argmax(output_name, axis=1))
                     else:
                         predictions.append(output_name)
-
-                metric.update(preds=predictions, labels=[labels[j] for j in range(len(labels))])
-
+<#if tc.architecture.useDgl>
+                if not multi_graph:
+                    metric.update(preds=predictions[0], labels=mx.nd.squeeze(labels[0][0]), mask=graph_[0].ndata['test_mask'])
+                else:
+                    metric.update(preds=predictions, labels=[labels[j] for j in range(len(labels))])
+<#else>
+                if train_mask != None:
+                    metric.update(preds=predictions[0], labels=mx.nd.squeeze(labels[0][0]), mask=self.get_mask_array(predictions[0].shape[0], test_mask))
+                else:
+                    metric.update(preds=predictions, labels=[labels[j] for j in range(len(labels))])
+</#if>
             global_loss_test /= (test_batches * single_pu_batch_size)
 </#if>
             test_metric_name = metric.get()[0]
@@ -693,7 +735,9 @@ class ${tc.fileNameWithoutEnding}:
             metric_file = open(self._net_creator._model_dir_ + 'metric.txt', 'w')
             metric_file.write(test_metric_name + " " + str(test_metric_score))
             metric_file.close()
-
+<#if tc.architecture.useDgl>
+            print("Epoch[%d] Train metric: %f, Test metric: %f, Train loss: %f, Test loss: %f" % (epoch, train_metric_score, test_metric_score, global_loss_train, global_loss_test))
+</#if>
             logging.info("Epoch[%d] Train metric: %f, Test metric: %f, Train loss: %f, Test loss: %f" % (epoch, train_metric_score, test_metric_score, global_loss_train, global_loss_test))
 
             if (epoch+1) % checkpoint_period == 0:
@@ -707,15 +751,16 @@ class ${tc.fileNameWithoutEnding}:
 
         for i, network in self._networks.items():
             network.save_parameters(self.parameter_path(i) + '-' + str((num_epoch-1) + begin_epoch).zfill(4) + '.params')
+<#if !(tc.architecture.useDgl)>
             network.export(self.parameter_path(i) + '_newest', epoch=0)
-
+</#if>
             if onnx_export:
                 from mxnet.contrib import onnx as onnx_mxnet
                 input_shapes = [(1,) + d.shape[1:] for _, d in test_iter.data]
                 model_path = self.parameter_path(i) + '_newest'
                 onnx_mxnet.export_model(model_path+'-symbol.json', model_path+'-0000.params', input_shapes, np.float32, model_path+'.onnx')
 
-<#if episodicReplayVisited??>  
+<#if episodicReplayVisited??>
             if hasattr(network, 'episodic_sub_nets'):
                 network.episodicsubnet0_.export(self.parameter_path(i) + '_newest_episodic_sub_net_' + str(0), epoch=0)
                 for j, net in enumerate(network.episodic_sub_nets):
@@ -725,6 +770,15 @@ class ${tc.fileNameWithoutEnding}:
                     episodic_layers[i][j].save_memory(self.parameter_path(i) + "_newest_episodic_memory_sub_net_" + str(j + 1) + "-0000")
 </#if>
             loss_function.export(self.parameter_path(i) + '_newest_loss', epoch=0)
+
+
+    def get_mask_array(self, shape, mask):
+        idx = range(mask[0], mask[1])
+        mask_array = np.zeros(shape)
+        mask_array[idx] = 1
+        mask_array = mx.nd.array(mask_array)
+        return mask_array
+
 
     def parameter_path(self, index):
         return self._net_creator._model_dir_ + self._net_creator._model_prefix_ + '_' + str(index)
