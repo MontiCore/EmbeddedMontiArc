@@ -1,7 +1,6 @@
 # (c) https://github.com/MontiCore/monticore
 MXNET_PATH=$(python3 -c "import mxnet; print(mxnet.__file__)")
 python3 -c "import mxnet; print(mxnet.__version__)"
-# (c) https://github.com/MontiCore/monticore
 MXNET_FOLDER=$(dirname $MXNET_PATH)
 
 if [ ! -f $MXNET_FOLDER/libmxnet.so ]; then
@@ -19,6 +18,6 @@ java -jar embedded-montiarc-emadl-generator-0.5.4-SNAPSHOT-jar-with-dependencies
 rm -rf build
 mkdir build && cd build
 
-echo "Building MNISTVAE.."
+echo "Building mnistvae.."
 cmake -D MXNET_PATH=$MXNET_FOLDER/libmxnet.so ..
 make
