@@ -22,9 +22,11 @@ int main(int argc, char* argv[]) {
 
     vector<float> data(2);
 
-	for(size_t i=0; i < 2; i++){
-		data[i] = distribution(generator);
-	}
+	//for(size_t i=0; i < 2; i++){
+	//	data[i] = distribution(generator);
+	//}
+	data[0] = std::stoi(argv[1]);
+	data[1] = std::stoi(argv[2]);
 
     // EMADL generated VAE model -------------------------------------------------
     vae_connector connector;

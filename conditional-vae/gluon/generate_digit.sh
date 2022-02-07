@@ -2,4 +2,5 @@
 
 # $1 : generator seed
 # $2 : label
-./build/src/main/cpp/mnistvae $1 $2 $3
+# example seeds 67, 486
+./build/src/main/cpp/mnistvae $1 $2
