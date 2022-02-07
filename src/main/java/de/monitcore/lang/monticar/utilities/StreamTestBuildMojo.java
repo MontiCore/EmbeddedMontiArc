@@ -314,7 +314,7 @@ public class StreamTestBuildMojo extends StreamTestMojoBase {
         backend = Backend.getBackendFromString("Gluon");
         EMADLGenerator emadlGenerator = new EMADLGenerator(backend.get());
         try{
-            emadlGenerator.generate(getPathMain(), "VGG16", "pythonPath", "y", true);
+            emadlGenerator.generate(getPathMain(), "VGG16", "pythonPath", "y", true, "n");
         }
         catch (IOException | TemplateException e){
             Log.error("io error during generation", e);

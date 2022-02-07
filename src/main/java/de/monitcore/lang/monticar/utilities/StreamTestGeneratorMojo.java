@@ -242,6 +242,10 @@ public class StreamTestGeneratorMojo extends StreamTestMojoBase {
                 emadlGenerator.setCustomFilesPath(this.getCustomFilesPath());
             }
 
+            if(this.getUseDgl() != null) {
+                emadlGenerator.setUseDgl(this.getUseDgl().equals("y"));
+            }
+
             if(this.getPathToPython() != null) {
                 emadlGenerator.setPythonPath(this.getPathToPython());
             }
@@ -287,7 +291,7 @@ public class StreamTestGeneratorMojo extends StreamTestMojoBase {
                     emadlGenerator.setGenerationTargetPath(outputPath);
                 }
                 try{
-                    emadlGenerator.generate(this.getPathMain(), this.getRootModel(), this.getPathToPython(), "x", true);
+                    emadlGenerator.generate(this.getPathMain(), this.getRootModel(), this.getPathToPython(), "x", true, this.getUseDgl());
                 }
                 catch (IOException e){
                     Log.error("io error during generation", e);

@@ -121,6 +121,11 @@ public class StreamTestMojoBase extends AbstractMojo {
     public String getCustomFilesPath() {return customFilesPath;}
     public void setCustomFilesPath(String customFilesPath){this.customFilesPath = customFilesPath;}
 
+    @Parameter(defaultValue = "n")
+    protected String useDgl;
+    public String getUseDgl() {return useDgl;}
+    public void setUseDgl(String useDgl){this.useDgl = useDgl;}
+
     @Parameter(defaultValue = "VGG16")
     protected String rootModel;
     public String getRootModel() { return rootModel;}
