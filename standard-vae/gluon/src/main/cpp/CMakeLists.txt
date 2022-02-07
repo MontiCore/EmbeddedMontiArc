@@ -1,5 +1,5 @@
 cmake_minimum_required(VERSION 3.5)
-project(MNISTGenerator CXX)
+project(mnistvae CXX)
 set(CMAKE_CXX_STANDARD 11)
 
 option(MXNET_PATH "Path to libmxnet.so")

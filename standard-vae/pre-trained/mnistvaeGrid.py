@@ -12,7 +12,7 @@ if __name__ == "__main__":
     with warnings.catch_warnings():
         warnings.simplefilter("ignore")
         decoder = gluon.nn.SymbolBlock.imports("model/vae.Decoder/model_0_newest-symbol.json", ['data'],
-                                                        "model/vae.Decoder/model_0_newest-0015.params", ctx=mx.cpu())
+                                               "model/vae.Decoder/model_0_newest-0015.params", ctx=mx.cpu())
         x = np.linspace(-1, 1, n_samples)
         y = np.linspace(-1, 1, n_samples)
         X,Y = np.meshgrid(x,y)

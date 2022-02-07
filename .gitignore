@@ -1,3 +1,6 @@
 **/target
 **/train.log
+**/build
+**/images
 .idea
+*.png

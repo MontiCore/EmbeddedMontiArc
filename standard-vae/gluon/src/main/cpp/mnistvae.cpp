@@ -11,12 +11,9 @@
 #include <map>
 
 int main(int argc, char* argv[]) {
-
 	std::cout << argc << std::endl;
 
-    vae_connector connector;
-    connector.init();
-
+	// Code Sampling from normal distribution
 	int genSeed = std::stoi(argv[1]);
 	srand(genSeed);
 	std::default_random_engine generator;
@@ -29,21 +26,25 @@ int main(int argc, char* argv[]) {
 		data[i] = distribution(generator);
 	}
 
+    // EMADL generated VAE model -------------------------------------------------
+    vae_connector connector;
+    connector.init();
+
 	connector.data = conv_to< arma::Col<double> >::from( CNNTranslator::translateToCol(data,
 				vector<size_t> {2}) );
-;
 
     connector.execute();
 
-	arma::cube img_result_cube = (connector.res + 1) * 127.5;
+	arma::cube img_result_cube = ((1-connector.res) + 1) * 127.5;
+	// ----------------------------------------------------------------------------
 
+    // Save image
 	vector<float> img_vec = CNNTranslator::translate(img_result_cube);
-
 	cv::Mat result_img_cv = cv::Mat(img_vec, false);
 	result_img_cv = result_img_cv.reshape(1, 28);
 	cv::resize(result_img_cv, result_img_cv, cv::Size(), 16, 16, cv::INTER_LINEAR);
-	result_img_cv.convertTo(result_img_cv, CV_8UC3);
-
+	result_img_cv.convertTo(result_img_cv, CV_8UC1);
+	cv::imwrite("generated_digit.png", result_img_cv);
 	cv::namedWindow("MNIST");
 	cv::imshow("MNIST", result_img_cv);
 	cv::waitKey(0);
