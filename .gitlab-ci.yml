@@ -20,11 +20,6 @@ MasterDeployJobLinux:
     - mvn -s settings.xml -Dorg.slf4j.simpleLogger.log.org.apache.maven.cli.transfer.Slf4jMavenTransferListener=warn -B clean deploy 
   only:
     - master
-  except:
-    changes:
-      - .gitlab-ci.yml
-      - .gitignore
-      - README.md
 
 trigger-mnistcalc:
   stage: trigger_apps
