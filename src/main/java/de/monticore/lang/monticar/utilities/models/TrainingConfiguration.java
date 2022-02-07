@@ -17,6 +17,8 @@ public class TrainingConfiguration {
 
   private String modelToTrain;
 
+  private String useDgl;
+
   private Backend backend;
 
   private GeneratorEnum generator;
@@ -39,6 +41,10 @@ public class TrainingConfiguration {
 
   public String getModelToTrain() {
     return modelToTrain;
+  }
+
+  public String getUseDgl(){
+    return useDgl;
   }
 
   public Backend getBackend() {

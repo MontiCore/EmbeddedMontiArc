@@ -54,6 +54,8 @@ public class TrainingMojo extends TrainingConfigMojo {
       elements.add(element(name("generator"), trainingConfig.getGenerator().name()));
     if (trainingConfig.getCustomFilesPath() != null)
       elements.add(element(name("customFilesPath"), trainingConfig.getCustomFilesPath().getAbsolutePath()));
+    if (trainingConfig.getUseDgl() != null)
+      elements.add(element(name("useDgl"), trainingConfig.getUseDgl()));
     return elements;
   }
 
