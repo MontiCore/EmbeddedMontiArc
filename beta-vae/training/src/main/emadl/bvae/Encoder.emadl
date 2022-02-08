@@ -6,15 +6,7 @@ component Encoder{
 
     implementation CNN {
         data ->
-        Convolution(channels=64,kernel=(4,4),stride=(2,2),padding="same") ->
-        Relu() ->
-        Dropout() ->
-        Convolution(channels=64,kernel=(4,4),stride=(2,2),padding="same") ->
-        Relu() ->
-        Dropout() ->
-        Convolution(channels=64,kernel=(4,4),stride=(2,2),padding="same") ->
-        Relu() ->
-        Dropout() ->
+        FullyConnected(units=400) ->
         FullyConnected(units=16) ->
         Split(n=2) ->
         (
