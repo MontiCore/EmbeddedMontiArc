@@ -74,17 +74,26 @@ The training is done within a single script. It starts the ROS master node as we
    ./run_training.sh
    ```
 
+For the decentralized self-play approach there exists an additional script called **initial_run_training.sh**. This is executed for the first training run after installation when using the self-play approach. The reason for that is, that the initial policy needs to be created to be used by the self-play agent in the beginning of the training.
+
 ### Execution
 With the execution script, a trained agent is executed. For this, the `target/agent/src/de_rwth_montisim_agent_master/cpp/model` folder has to be copied to `target/bin`. Within the model folder, the used parameter file in `model/de.rwth.montisim.agent.network.AutopilotQNet` has to be named `model_0_newest-0000.params` and the json file has to be named `model_0_newest-symbol.json`.
 The script starts the GUI of the simulation. By clicking on the checkboxes at the bottom left, the settings can be chosen before simulation. Then, choose a reinforcement learning scenario. The script executes `./agent -t 100` and therefore executes the agent every 100ms, since one step of the simulator simulates 100ms.
 
     ./execute.sh
 
+### Save configurations
+To easily save previous Autopilot trainings when making changes in the training configuration the save_autopilot.sh script can be used.
+
+    ./save_autopilot.sh
+
 ## EMADL Models
-There are 3 different Autopilot models that can be used.
-1. Only a single vehcile is controlled by the agent
-2. 2 vehicles are controlled by the agent, but the agent only calculates the action for one vehicle at the time (Decentralized approach)
-3. 2 vehicles are controlled, but the agent receives the combined state of all individual vehicles and outputs all actions at the same time (Centralized approach)
+There are 5 different Autopilot models that can be used.
+1. A single vehicle is trained on a long and complicated route
+2. A single vehicle is trained on random scenarios
+3. Two vehicles are trained on an intersection with the self-play approach where one vehilce is simulated by the self-play agent (Decentralized Self-Play approach)
+4. Two vehicles are trained on random scenarios with thee self-play approach where one vehilce is simulated by the self-play agent (Decentraized Self-Play approach)
+5. Two vehicles are trained on an intersection, but the agent receives the combined state of all individual vehicles and outputs all actions at the same time (Centralized approach)
 
 ### State and Action Array
 Every individual vehicle has a 25-34 dimensional state array, and a 3 dimensinal action array: 
@@ -115,6 +124,16 @@ When using the **decentralized** approach, addtional states are appended to the 
 
 When using the **centralized** approach, the states of all vehicles are appended to each other, resulting in one large state. The same is done for the actions. Since the minimal state is chosen in Autopilot3, the state has dimension stateLength(vehicle 1) + stateLength(vehicle 2) = 25 + 25 = 50. The action array has dimension action(vehicle 1) + action(vehicle 2) = 3 + 3 = 6.
 
+## Self-play approach
+A new self-play option was added to MontiSim for the training with multiple vehicles. Thereby one vehicle is trained via EMADL, while all other vehicles are simulated by a self-play agent which is executed simultaneously. Therefore the agent binary generated in the beginning of the training is executed with the latest version of the EMADL agents policy. To allow updating of the agent over the course of the training the network weights of the self-play agent are updated after every snapshot. Thus the **update_agent.sh** gets executed which handles the process and restarts the self-play agent with the updated network weights. This script is executed by the toolchain automatically. 
+Depending on the trained number of vehicles the execution interval of the self-play agent in the **run_training.sh** and **update_agent.sh** script can be adapted. It makes sense to increase the execution interval for an increasing number of vehicles since the self-play agent then sends its actions to MontiSim faster.
+There exist three different ways the EMADL trained vehicle switches during the training: 
+1. No Update at all (nU). 
+2. Update after every simulation step (aS). 
+3. Update after every episode (aE). 
+
+These options can be selected in the GUI and CLI (nU, aS, aE) of the Simulator where an switch after every episode provided the best results. 
+
 ## Singularity Container
 A Singularity Container can be used for generating, training and executing of MontiSim and its agents. The definition file of that container can be found [here](https://git.rwth-aachen.de/monticore/EmbeddedMontiArc/applications/reinforcement_learning/coopmontisimautopilot/-/blob/main/additional_files/RLContainerNew.def). To use this Container locally, first install singularity ([installation guide](https://sylabs.io/guides/3.7/user-guide/quick_start.html#quick-installation-steps)). Then install the container with the following command (this might take a while): 
 
@@ -131,4 +150,6 @@ With this Container, a batch job can be submitted, that executes a script in the
 ```bash
 . /opt/ros/kinetic/setup.sh
 ```
+
+Sample templates for training on the RWTH HPC Cluster can be found under `/additional_files/Cluster_Scripts`.
 
