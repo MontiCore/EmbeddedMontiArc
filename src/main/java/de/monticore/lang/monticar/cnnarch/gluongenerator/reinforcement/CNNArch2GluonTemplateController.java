@@ -89,7 +89,7 @@ public class CNNArch2GluonTemplateController extends CNNArchTemplateController {
         }else if(layer.isAtomic()){
             String templateName = layer.getDeclaration().getName();
             include(TEMPLATE_ELEMENTS_DIR_PATH, templateName, writer, netDefinitionMode);
-        }else if(layer.isArtificial()){
+        }else if(layer.isArtificial() && this.containsAdaNet()){
             if(netDefinitionMode.equals(NetDefinitionMode.ARTIFICIAL_ARCH_CLASS)){
                 boolean originalArtificialState = layer.isArtificial();
                 layer.setArtificial(false);
