@@ -70,7 +70,7 @@ trigger-coopautopilot:
   stage: trigger_apps
   allow_failure: true
   trigger:
-    project: monticore/EmbeddedMontiArc/applications/reinforcement_learning/coopmontisimautopilot
+    project: monticore/EmbeddedMontiArc/applications/reinforcement_learning/CoopMontiSimAutopilot
     branch: master
   only:
     - master    
