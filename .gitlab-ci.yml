@@ -3,12 +3,18 @@ stages:
 
 TestBuild:
   stage: linux
-  image: registry.git.rwth-aachen.de/monticore/embeddedmontiarc/applications/reinforcement_learning/cartpole/emadl-rl-mxnet:latest
+  image: registry.git.rwth-aachen.de/monticore/embeddedmontiarc/applications/reinforcement_learning/cartpole/rl-fix-new2:latest
   script:
     - cd Autopilot1
     - ./install.sh
     - cd ..
+    - cd Autopilot1_random
+    - ./install.sh
+    - cd ..
     - cd Autopilot2
+    - ./install.sh
+    - cd ..
+    - cd Autopilot2_random
     - ./install.sh
     - cd ..
     - cd Autopilot3
