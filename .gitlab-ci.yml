@@ -53,7 +53,7 @@ trigger-cvae:
   allow_failure: true
   trigger:
     project: monticore/EmbeddedMontiArc/applications/vaes/cvae
-    branch: master
+    branch: main
   only:
     - master
 
@@ -71,7 +71,7 @@ trigger-coopautopilot:
   allow_failure: true
   trigger:
     project: monticore/EmbeddedMontiArc/applications/reinforcement_learning/CoopMontiSimAutopilot
-    branch: master
+    branch: main
   only:
     - master    
 
