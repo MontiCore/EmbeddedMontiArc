@@ -558,8 +558,8 @@ class Net_${networkInstruction?index}(gluon.HybridBlock):
     def __init__(self,**kwargs):
         super(Net_${networkInstruction?index},self).__init__(**kwargs)
         with self.name_scope():
-        self.AdaNet = True
-        self.dummy = nn.Dense(units=1)
+            self.AdaNet = True
+            self.dummy = nn.Dense(units=1)
 
     def hybrid_forward(self,F,x):
         return self.dummy(x)
