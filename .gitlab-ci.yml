@@ -10,5 +10,5 @@ TestFordNetwork:
   image: registry.git.rwth-aachen.de/monticore/embeddedmontiarc/generators/emadl2cpp/dockerimages/mxnet170-dgl:v0.0.1
   script:
   - mv /mxnet/build/libmxnet.so /mxnet/build/libmxnet.a /usr/lib/
-  - python3 -m dgl.backend.set_default_backend mxnet
+  - python -m dgl.backend.set_default_backend mxnet
   - mvn dependency:resolve emadl:train -s settings.xml -U
