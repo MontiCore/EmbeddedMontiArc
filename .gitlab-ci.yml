@@ -7,7 +7,7 @@ stages:
 
 TestFordNetwork:
   stage: linux
-  image: registry.git.rwth-aachen.de/monticore/embeddedmontiarc/generators/emadl2cpp/dockerimages/mxnet170:v0.0.1
+  image: registry.git.rwth-aachen.de/monticore/embeddedmontiarc/generators/emadl2cpp/dockerimages/mxnet170-dgl:v0.0.1
   script:
   - mv /mxnet/build/libmxnet.so /mxnet/build/libmxnet.a /usr/lib/
   - mvn dependency:resolve emadl:train -s settings.xml -U
