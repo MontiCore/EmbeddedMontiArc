@@ -128,6 +128,7 @@ public class AllPredefinedLayers {
     public static final String NETWORK_PREFIX_NAME = "networkPrefix";
     public static final String NUM_INPUTS_NAME = "numInputs";
     public static final String OUTPUT_SHAPE_NAME = "outputShape";
+    public static final String TRAINABLE = "trainable";
 
     //parameters DotProductSelfAttention
     public static final String SCALE_FACTOR_NAME="scaleFactor";
