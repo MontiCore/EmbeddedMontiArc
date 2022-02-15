@@ -1,0 +1,20 @@
+architecture VAELayers{
+    def input Q(-oo:oo)^{1,28,28} data
+    def output Q(-oo:oo)^{1,28,28} res
+
+    data ->
+    VectorQuantize(num_embeddings=64,beta=0.25) ->
+    FullyConnected(units=400) ->
+    FullyConnected(units=4) ->
+    Split(n=2) ->
+    (
+        [0]
+        |
+        [1]
+    ) ->
+    Reparameterize(pdf="normal") ->
+    FullyConnected(units=400) ->
+    FullyConnected(units=784) ->
+    Reshape(shape=(1,28,28)) ->
+    res;
+}
