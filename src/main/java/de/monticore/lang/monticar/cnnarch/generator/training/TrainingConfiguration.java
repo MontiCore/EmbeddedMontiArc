@@ -7,10 +7,7 @@ import conflang._symboltable.ConfigurationEntrySymbol;
 import conflang._symboltable.NestedConfigurationEntrySymbol;
 import schemalang._symboltable.SchemaDefinitionSymbol;
 
-import java.util.Collection;
-import java.util.List;
-import java.util.Map;
-import java.util.Optional;
+import java.util.*;
 
 import static de.monticore.lang.monticar.cnnarch.generator.training.TrainingParameterConstants.*;
 
@@ -50,6 +47,10 @@ public class TrainingConfiguration {
         return getParameterValue(CONTEXT);
     }
 
+    public Optional<String> getSelfPlay() {
+        return getParameterValue(SELF_PLAY);
+    }
+
     public Optional<LearningMethod> getLearningMethod() {
         Optional<ConfigurationEntry> learningMethodOpt =
                 configurationSymbol.getConfigurationEntry(LEARNING_METHOD);
@@ -83,6 +84,15 @@ public class TrainingConfiguration {
         return LearningMethod.GAN.equals(learningMethod);
     }
 
+    public boolean isVaeLearning() {
+        Optional<LearningMethod> learningMethodOpt = getLearningMethod();
+        if (!learningMethodOpt.isPresent()) {
+            return false; // Not correct here to return false..
+        }
+        LearningMethod learningMethod = learningMethodOpt.get();
+        return LearningMethod.VAE.equals(learningMethod);
+    }
+
     public boolean isReinforcementLearning() {
         Optional<LearningMethod> learningMethodOpt = getLearningMethod();
         if (!learningMethodOpt.isPresent()) {
@@ -99,6 +109,15 @@ public class TrainingConfiguration {
         }
         String rlAlgorithm = (String) rlAlgorithmOpt.get().getValue();
         return Optional.of(RlAlgorithm.rlAlgorithm(rlAlgorithm));
+    }
+
+    public Optional<NetworkType> getNetworkType() {
+        Optional<ConfigurationEntry> networkTypeOpt = configurationSymbol.getConfigurationEntry(NETWORK_TYPE);
+        if (!networkTypeOpt.isPresent()) {
+            return Optional.empty();
+        }
+        String networkType = (String) networkTypeOpt.get().getValue();
+        return Optional.of(NetworkType.networkType(networkType));
     }
 
     public Optional<Integer> getBatchSize() {
@@ -139,6 +158,18 @@ public class TrainingConfiguration {
 
     public Optional<Boolean> getShuffleData() {
         return getParameterValue(SHUFFLE_DATA);
+    }
+
+    public Optional<Boolean> getMultiGraph() {
+        return getParameterValue(MULTI_GRAPH);
+    }
+
+    public Optional<List<Integer>> getTrainMask() {
+        return getParameterValue(TRAIN_MASK);
+    }
+
+    public Optional<List<Integer>> getTestMask() {
+        return getParameterValue(TEST_MASK);
     }
 
     public Optional<Double> getClipGlobalGradNorm() {
@@ -353,6 +384,20 @@ public class TrainingConfiguration {
         return getObjectParameterParameters(DISCRIMINATOR_OPTIMIZER);
     }
 
+    public Boolean hasEncoderName() {
+        return hasParameter(ENCODER);
+    }
+
+    public Optional<String> getEncoderName() {
+        return getObjectParameterValue(ENCODER);
+    }
+
+    public Optional<String> getReconLossName() {
+        return getObjectParameterValue(RECON_LOSS);
+    }
+
+    public Optional<Double> getKlLossWeight() { return getParameterValue(KL_LOSS_WEIGHT); }
+
     public boolean hasStrategy() {
         return hasParameter(STRATEGY);
     }
@@ -513,4 +558,5 @@ public class TrainingConfiguration {
         }
         return keyValues;
     }
+
 }

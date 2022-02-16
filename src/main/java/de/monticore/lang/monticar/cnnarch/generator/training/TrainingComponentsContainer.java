@@ -20,6 +20,8 @@ public class TrainingComponentsContainer {
     private ArchitectureAdapter actorNetwork;
     private ArchitectureAdapter criticNetwork;
     private ArchitectureAdapter generatorNetwork;
+    private ArchitectureAdapter encoderNetwork;
+    private ArchitectureAdapter decoderNetwork;
     private ArchitectureAdapter discriminatorNetwork;
     private ArchitectureAdapter qNetwork;
     private EMAComponentInstanceSymbol rewardFunction;
@@ -43,9 +45,16 @@ public class TrainingComponentsContainer {
         return Optional.ofNullable(generatorNetwork);
     }
 
-
     public Optional<ArchitectureAdapter> getDiscriminatorNetwork() {
         return Optional.ofNullable(discriminatorNetwork);
+    }
+
+    public Optional<ArchitectureAdapter> getDecoderNetwork() {
+        return Optional.ofNullable(decoderNetwork);
+    }
+
+    public Optional<ArchitectureAdapter> getEncoderNetwork() {
+        return Optional.ofNullable(encoderNetwork);
     }
 
     public Optional<ArchitectureAdapter> getQNetwork() {
@@ -80,6 +89,8 @@ public class TrainingComponentsContainer {
             }
         } else if (trainingConfiguration.isGanLearning()) {
             setGeneratorNetwork(trainedArchitecture);
+        } else if (trainingConfiguration.isVaeLearning()) {
+            setDecoderNetwork(trainedArchitecture);
         }
     }
 
@@ -106,6 +117,16 @@ public class TrainingComponentsContainer {
     public void setQNetwork(ArchitectureAdapter qNetwork) {
         this.qNetwork = qNetwork;
         addTrainingComponent(QNETWORK, qNetwork);
+    }
+
+    public void setDecoderNetwork(ArchitectureAdapter decoderNetwork) {
+        this.decoderNetwork = decoderNetwork;
+        addTrainingComponent(DECODER, decoderNetwork);
+    }
+
+    public void setEncoderNetwork(ArchitectureAdapter encoderNetwork) {
+        this.encoderNetwork = encoderNetwork;
+        addTrainingComponent(ENCODER, encoderNetwork);
     }
 
     public void setRewardFunction(EMAComponentInstanceSymbol rewardFunction) {

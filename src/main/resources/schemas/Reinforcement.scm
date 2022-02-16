@@ -8,6 +8,10 @@ schema Reinforcement extends General {
         dqn, ddpg, td3;
     }
 
+    self_play: enum {
+	no, yes;
+    }
+
     agent_name: string
     num_episodes = 50: N1
     num_max_steps = 99999: N

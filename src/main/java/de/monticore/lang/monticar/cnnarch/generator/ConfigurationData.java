@@ -6,6 +6,7 @@ import com.google.common.collect.Maps;
 import de.monticore.lang.monticar.cnnarch.generator.annotations.ArchitectureAdapter;
 import de.monticore.lang.monticar.cnnarch.generator.annotations.Range;
 import de.monticore.lang.monticar.cnnarch.generator.training.RlAlgorithm;
+import de.monticore.lang.monticar.cnnarch.generator.training.NetworkType;
 import de.monticore.lang.monticar.cnnarch.generator.training.TrainingComponentsContainer;
 import de.monticore.lang.monticar.cnnarch.generator.training.TrainingConfiguration;
 
@@ -37,6 +38,10 @@ public abstract class ConfigurationData {
 
     public boolean isGanLearning() {
         return trainingConfiguration.isGanLearning();
+    }
+
+    public Boolean isVaeLearning() {
+        return trainingConfiguration.isVaeLearning();
     }
 
     public Boolean isReinforcementLearning() {
@@ -73,6 +78,16 @@ public abstract class ConfigurationData {
         return loadPretrainedOpt.orElse(null);
     }
 
+    public Double getKlLossWeight() {
+        Optional<Double> klLossWeightOpt = trainingConfiguration.getKlLossWeight();
+        return klLossWeightOpt.orElse(null);
+    }
+
+    public String getReconLossName() {
+        Optional<String> reconLossNameOpt = trainingConfiguration.getReconLossName();
+        return reconLossNameOpt.orElse(null);
+    }
+
     // COMPARE WITH CNNTRAIN IMPLEMENTATION IN GluonConfigurationData
     public Boolean getPreprocessor() {
         Optional<String> preprocessorOpt = trainingConfiguration.getPreprocessor();
@@ -87,6 +102,21 @@ public abstract class ConfigurationData {
     public Boolean getOnnxExport() {
         Optional<Boolean> onnxExport = trainingConfiguration.getOnnxExport();
         return onnxExport.orElse(null);
+    }
+
+    public Boolean getMultiGraph() {
+        Optional<Boolean> multiGraphOpt = trainingConfiguration.getMultiGraph();
+        return multiGraphOpt.orElse(null);
+    }
+
+    public List<Integer> getTrainMask() {
+        Optional<List<Integer>> trainMaskOpt = trainingConfiguration.getTrainMask();
+        return trainMaskOpt.orElse(null);
+    }
+
+    public List<Integer> getTestMask() {
+        Optional<List<Integer>> testMaskOpt = trainingConfiguration.getTestMask();
+        return testMaskOpt.orElse(null);
     }
 
     public Boolean getShuffleData() {
@@ -352,7 +382,11 @@ public abstract class ConfigurationData {
 //    public Map<String, Map<String, Object>> getConstraintLosses() { // TODO
 //        return getMultiParamMapEntry(CONSTRAINT_LOSS, "name");
 //    }
-
+    public String getSelfPlay() { // added Parameter self_play for cooperative driving
+        Optional<String> selfPlay = trainingConfiguration.getSelfPlay();
+        return selfPlay.orElse(null);
+    }
+    
     public String getRlAlgorithm() {
         Optional<RlAlgorithm> rlAlgorithmOpt = trainingConfiguration.getRlAlgorithm();
         if (!rlAlgorithmOpt.isPresent()) {
@@ -368,6 +402,16 @@ public abstract class ConfigurationData {
             return TD3;
         }
         return DQN;
+    }
+
+    public String getNetworkType() {
+        Optional<NetworkType> networkTypeOpt = trainingConfiguration.getNetworkType();
+
+        NetworkType networkType = networkTypeOpt.get();
+        if (networkType.equals(NetworkType.GNN)) {
+            return GNN;
+        }
+        return null;
     }
 
 //    protected Object getDefaultValueOrElse(String parameterKey, Object elseValue) {
