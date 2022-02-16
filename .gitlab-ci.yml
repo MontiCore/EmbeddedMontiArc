@@ -17,18 +17,18 @@ install-mnist-dataset:
 
 # VAE
 deploy-vae-mnist-dataset:
-image: maven:3.6-jdk-8
-script:
-  - cd datasets/vae/vae-mnist
-  - mvn emadl:deploy-dataset -s ci_settings.xml
-only:
-  - master
+  image: maven:3.6-jdk-8
+  script:
+    - cd datasets/vae/vae-mnist
+    - mvn emadl:deploy-dataset -s ci_settings.xml
+  only:
+    - master
 
 
 install-vae-mnist-dataset:
-image: maven:3.6-jdk-8
-script:
-  - cd datasets/vae/vae-mnist
-  - mvn emadl:install-dataset -s ci_settings.xml
-except:
-  - master
+  image: maven:3.6-jdk-8
+  script:
+    - cd datasets/vae/vae-mnist
+    - mvn emadl:install-dataset -s ci_settings.xml
+  except:
+    - master
