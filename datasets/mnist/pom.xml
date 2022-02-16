@@ -22,14 +22,8 @@
                 <version>0.0.5-SNAPSHOT</version>
                 <configuration>
                     <datasetToStore>
-                        <path>datasets/mnist/</path>
+                        <path>./</path>
                         <artifactId>mnist</artifactId>
-                        <groupId>de.monticore.lang.monticar.datasets</groupId>
-                        <version>1</version>
-                    </datasetToStore>
-                    <datasetToStore>
-                        <path>datasets/vae/vae-mnist</path>
-                        <artifactId>vae-mnist</artifactId>
                         <groupId>de.monticore.lang.monticar.datasets</groupId>
                         <version>1</version>
                     </datasetToStore>
