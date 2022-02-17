@@ -769,7 +769,10 @@ class ${tc.fileNameWithoutEnding}:
                     episodic_layers[i][j].save_memory(self.parameter_path(i) + "_episodic_memory_sub_net_" + str(j + 1) + "-" + str((num_epoch - 1) + begin_epoch).zfill(4))
                     episodic_layers[i][j].save_memory(self.parameter_path(i) + "_newest_episodic_memory_sub_net_" + str(j + 1) + "-0000")
 </#if>
-            loss_function.export(self.parameter_path(i) + '_newest_loss', epoch=0)
+            try:
+                loss_function.export(self.parameter_path(i) + '_newest_loss', epoch=0)
+            except RuntimeError:
+                logging.info("Forward for loss functions was not run, export is not possible.")
 
 
     def get_mask_array(self, shape, mask):
