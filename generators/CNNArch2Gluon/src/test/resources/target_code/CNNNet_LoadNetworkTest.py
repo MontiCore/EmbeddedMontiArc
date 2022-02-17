@@ -607,16 +607,7 @@ class Net_0(gluon.HybridBlock):
                     self.loadnetwork1_ = gluon.nn.SymbolBlock.imports("pretrained/" + symbolFile, inputNames, "pretrained/" + weightFile, ctx=mx_context)
                 elif onnxFile:
                     from mxnet.contrib import onnx as onnx_mxnet
-                    sym, arg_params, aux_params = onnx_mxnet.import_model("pretrained/" + onnxFile)
-                    inputSymVars = [mx.sym.var(inputName) for inputName in inputNames]
-                    self.loadnetwork1_ = gluon.nn.SymbolBlock(outputs=sym, inputs=inputSymVars)
-                    net_params = self.loadnetwork1_.collect_params()
-                    for param in arg_params:
-                        if param in net_params:
-                            net_params[param]._load_init(arg_params[param], ctx=mx_context)
-                    for param in aux_params:
-                        if param in net_params:
-                            net_params[param]._load_init(aux_params[param], ctx=mx_context)
+                    self.loadnetwork1_ = onnx_mxnet.import_to_gluon("pretrained/" + onnxFile, ctx=mx_context)
                 else:
                     raise FileNotFoundError("Model files were not found in 'pretrained'.")
 
