@@ -199,6 +199,10 @@ public class ArchitectureElementData {
         return getLayerSymbol().getIntValue(AllPredefinedLayers.NUM_INPUTS_NAME).get();
     }
 
+    public boolean getTrainable(){
+        return getLayerSymbol().getBooleanValue(AllPredefinedLayers.TRAINABLE).get();
+    }
+
     public List<Integer> getOutputShape(){
         if (getLayerSymbol().getIntValue(AllPredefinedLayers.OUTPUT_SHAPE_NAME).isPresent()){
             List<Integer> list = new ArrayList<>();
