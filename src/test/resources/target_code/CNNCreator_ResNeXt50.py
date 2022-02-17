@@ -260,7 +260,8 @@ class CNNCreator_ResNeXt50:
               load_checkpoint=True,
               context='gpu',
               checkpoint_period=5,
-              normalize=True):
+              normalize=True,
+              onnx_export=False):
                                 
         if context=="cpu":
             os.environ["CUDA_VISIBLE_DEVICES2"] = '-1'
@@ -337,6 +338,11 @@ class CNNCreator_ResNeXt50:
         sess = tf.keras.backend.get_session()
         save_path = saver.save(sess, self._model_dir_ + self._model_prefix_ + "_cpp_pred")
 
+        if onnx_export:
+            import onnx
+            import onnxmltools
+            onnx_model = onnxmltools.convert_keras(self.model)
+            onnx.save(onnx_model, self._model_dir_ + self._model_prefix_ + ".onnx")
 
     def construct(self, data_mean=None, data_std=None):
 	
@@ -350,8 +356,9 @@ class CNNCreator_ResNeXt50:
         data_ = tf.keras.layers.Input(shape=(3,224,224), name="data_")
         input_tensors.append(data_)      
         
-        #We Want channels last for tensorflow
-        data_ = tf.keras.layers.Permute((2,3,1))(data_)
+        # We Want channels last for tensorflow
+        # "tf_hwc_permute" name is used to check loaded networks for already existed permutation level, see LoadNetwork.ftl
+        data_ = tf.keras.layers.Permute((2,3,1), name="tf_hwc_permute")(data_)
 
         # data_, output shape: {[224,224,3]}
 

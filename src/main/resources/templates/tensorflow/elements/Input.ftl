@@ -18,8 +18,9 @@
         input_tensors.append(${element.name})      
         
 <#if widthIndex != heightIndex + 1 || channelIndex != widthIndex + 1>
-        #We Want channels last for tensorflow
-        ${element.name} = tf.keras.layers.Permute((2,3,1))(${element.name})
+        # We Want channels last for tensorflow
+        # "tf_hwc_permute" name is used to check loaded networks for already existed permutation level, see LoadNetwork.ftl
+        ${element.name} = tf.keras.layers.Permute((2,3,1), name="tf_hwc_permute")(${element.name})
         <#assign dimensions = element.element.outputTypes[0].dimensions[1..] + [element.element.outputTypes[0].dimensions[0]]>
 </#if>        
 

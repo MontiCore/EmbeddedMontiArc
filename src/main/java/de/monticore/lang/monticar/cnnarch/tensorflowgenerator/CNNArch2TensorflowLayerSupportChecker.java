@@ -24,6 +24,7 @@ public class CNNArch2TensorflowLayerSupportChecker extends LayerSupportChecker {
         supportedLayerList.add(AllPredefinedLayers.ADD_NAME);
         supportedLayerList.add(AllPredefinedLayers.CONCATENATE_NAME);
         supportedLayerList.add(AllPredefinedLayers.FLATTEN_NAME);
+        supportedLayerList.add(AllPredefinedLayers.LOAD_NETWORK_NAME);
     }
 
 }

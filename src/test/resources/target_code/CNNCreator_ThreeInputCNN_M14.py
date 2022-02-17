@@ -260,7 +260,8 @@ class CNNCreator_ThreeInputCNN_M14:
               load_checkpoint=True,
               context='gpu',
               checkpoint_period=5,
-              normalize=True):
+              normalize=True,
+              onnx_export=False):
                                 
         if context=="cpu":
             os.environ["CUDA_VISIBLE_DEVICES2"] = '-1'
@@ -337,6 +338,11 @@ class CNNCreator_ThreeInputCNN_M14:
         sess = tf.keras.backend.get_session()
         save_path = saver.save(sess, self._model_dir_ + self._model_prefix_ + "_cpp_pred")
 
+        if onnx_export:
+            import onnx
+            import onnxmltools
+            onnx_model = onnxmltools.convert_keras(self.model)
+            onnx.save(onnx_model, self._model_dir_ + self._model_prefix_ + ".onnx")
 
     def construct(self, data_mean=None, data_std=None):
 	
@@ -350,8 +356,9 @@ class CNNCreator_ThreeInputCNN_M14:
         data_0_ = tf.keras.layers.Input(shape=(3,200,300), name="data_0_")
         input_tensors.append(data_0_)      
         
-        #We Want channels last for tensorflow
-        data_0_ = tf.keras.layers.Permute((2,3,1))(data_0_)
+        # We Want channels last for tensorflow
+        # "tf_hwc_permute" name is used to check loaded networks for already existed permutation level, see LoadNetwork.ftl
+        data_0_ = tf.keras.layers.Permute((2,3,1), name="tf_hwc_permute")(data_0_)
 
         # data_0_, output shape: {[200,300,3]}
 
@@ -368,8 +375,9 @@ class CNNCreator_ThreeInputCNN_M14:
         data_1_ = tf.keras.layers.Input(shape=(3,200,300), name="data_1_")
         input_tensors.append(data_1_)      
         
-        #We Want channels last for tensorflow
-        data_1_ = tf.keras.layers.Permute((2,3,1))(data_1_)
+        # We Want channels last for tensorflow
+        # "tf_hwc_permute" name is used to check loaded networks for already existed permutation level, see LoadNetwork.ftl
+        data_1_ = tf.keras.layers.Permute((2,3,1), name="tf_hwc_permute")(data_1_)
 
         # data_1_, output shape: {[200,300,3]}
 
@@ -386,8 +394,9 @@ class CNNCreator_ThreeInputCNN_M14:
         data_2_ = tf.keras.layers.Input(shape=(3,200,300), name="data_2_")
         input_tensors.append(data_2_)      
         
-        #We Want channels last for tensorflow
-        data_2_ = tf.keras.layers.Permute((2,3,1))(data_2_)
+        # We Want channels last for tensorflow
+        # "tf_hwc_permute" name is used to check loaded networks for already existed permutation level, see LoadNetwork.ftl
+        data_2_ = tf.keras.layers.Permute((2,3,1), name="tf_hwc_permute")(data_2_)
 
         # data_2_, output shape: {[200,300,3]}
 
