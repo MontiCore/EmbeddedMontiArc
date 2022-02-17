@@ -727,7 +727,10 @@ class CNNSupervisedTrainer_Alexnet:
                 model_path = self.parameter_path(i) + '_newest'
                 onnx_mxnet.export_model(model_path+'-symbol.json', model_path+'-0000.params', input_shapes, np.float32, model_path+'.onnx')
 
-            loss_function.export(self.parameter_path(i) + '_newest_loss', epoch=0)
+            try:
+                loss_function.export(self.parameter_path(i) + '_newest_loss', epoch=0)
+            except RuntimeError:
+                logging.info("Forward for loss functions was not run, export is not possible.")
 
 
     def get_mask_array(self, shape, mask):
