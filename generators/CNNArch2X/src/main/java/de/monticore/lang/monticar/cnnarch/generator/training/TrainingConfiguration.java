@@ -152,6 +152,10 @@ public class TrainingConfiguration {
         return getParameterValue(NORMALIZE);
     }
 
+    public Optional<Boolean> getOnnxExport() {
+        return getParameterValue(ONNX_EXPORT);
+    }
+
     public Optional<Boolean> getShuffleData() {
         return getParameterValue(SHUFFLE_DATA);
     }

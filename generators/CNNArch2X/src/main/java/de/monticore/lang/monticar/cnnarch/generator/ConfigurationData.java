@@ -99,6 +99,11 @@ public abstract class ConfigurationData {
         return normalizeOpt.orElse(null);
     }
 
+    public Boolean getOnnxExport() {
+        Optional<Boolean> onnxExport = trainingConfiguration.getOnnxExport();
+        return onnxExport.orElse(null);
+    }
+
     public Boolean getMultiGraph() {
         Optional<Boolean> multiGraphOpt = trainingConfiguration.getMultiGraph();
         return multiGraphOpt.orElse(null);
