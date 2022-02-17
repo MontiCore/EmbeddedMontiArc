@@ -16,5 +16,5 @@ if __name__ == "__main__":
         loss='cross_entropy',
         optimizer='adam',
         optimizer_params={
-            'learning_rate': 0.001}
+            'learning_rate': 0.001},
     )

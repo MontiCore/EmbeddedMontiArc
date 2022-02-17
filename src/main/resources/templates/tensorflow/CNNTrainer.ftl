@@ -32,7 +32,7 @@ if __name__ == "__main__":
         normalize=${config.normalize?string("True","False")},
 </#if>
 <#if (config.evalMetric)??>
-        eval_metric='${config.evalMetric}',
+        eval_metric='${config.evalMetricName}',
 </#if>
 <#if (config.loss)??>
         loss='${config.lossName}',
@@ -58,7 +58,10 @@ if __name__ == "__main__":
         </#if>
         '${paramName}': ${paramValue}<#sep>,
     </#list>
-}
+},
+</#if>
+<#if (config.onnxExport)??>
+        onnx_export=${config.onnxExport?string("True","False")},
 </#if>
     )
 </#list>
