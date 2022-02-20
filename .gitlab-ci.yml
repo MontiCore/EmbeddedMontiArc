@@ -18,7 +18,7 @@ TestBuildBetaVAE:
   allow_failure: true
   script:
   - mv /mxnet/build/libmxnet.so /mxnet/build/libmxnet.a /usr/lib/
-  - cd beta-vae
+  - cd beta-vae/src/test/test_training
   - bash build.sh
 
 TestBuildCVAE:
@@ -27,7 +27,7 @@ TestBuildCVAE:
   allow_failure: true
   script:
   - mv /mxnet/build/libmxnet.so /mxnet/build/libmxnet.a /usr/lib/
-  - cd conditional-vae
+  - cd conditional-vae/src/test/test_training
   - bash build.sh
 
 TestBuildVQVAE:
@@ -36,7 +36,7 @@ TestBuildVQVAE:
   allow_failure: true
   script:
   - mv /mxnet/build/libmxnet.so /mxnet/build/libmxnet.a /usr/lib/
-  - cd vq-vae
+  - cd vq-vae/src/test/test_training
   - bash build.sh
 
 TestPretrainedVAE:
