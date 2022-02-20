@@ -4,3 +4,7 @@
 **/images
 .idea
 *.png
+beta-vae/model
+standard-vae/model
+conditional-vae/model
+vq-vae/model

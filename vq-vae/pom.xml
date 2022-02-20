@@ -35,8 +35,8 @@
                         <backend>GLUON</backend>
                         <pathToPython>/usr/bin/python3</pathToPython>
                         <modelToTrain>vqvae.Connector</modelToTrain>
-                        <pathToProject>training/src/main/emadl</pathToProject>
-                        <pathToTest>training/src/main/emadl</pathToTest>
+                        <pathToProject>src/main/emadl</pathToProject>
+                        <pathToTest>src/main/emadl</pathToTest>
                     </training>
                     <pretrainedModelToStore>
                         <path>pre-trained</path>

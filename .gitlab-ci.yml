@@ -9,8 +9,8 @@ TestBuildVAE:
   allow_failure: true
   script:
   - mv /mxnet/build/libmxnet.so /mxnet/build/libmxnet.a /usr/lib/
-  - cd standard-vae
-  - mvn dependency:resolve emadl:train -s settings.xml
+  - cd standard-vae/src/test/test_training
+  - bash build.sh
 
 TestBuildBetaVAE:
   stage: build
@@ -19,7 +19,7 @@ TestBuildBetaVAE:
   script:
   - mv /mxnet/build/libmxnet.so /mxnet/build/libmxnet.a /usr/lib/
   - cd beta-vae
-  - mvn dependency:resolve emadl:train -s settings.xml
+  - bash build.sh
 
 TestBuildCVAE:
   stage: build
@@ -28,7 +28,7 @@ TestBuildCVAE:
   script:
   - mv /mxnet/build/libmxnet.so /mxnet/build/libmxnet.a /usr/lib/
   - cd conditional-vae
-  - mvn dependency:resolve emadl:train -s settings.xml
+  - bash build.sh
 
 TestBuildVQVAE:
   stage: build
@@ -37,7 +37,7 @@ TestBuildVQVAE:
   script:
   - mv /mxnet/build/libmxnet.so /mxnet/build/libmxnet.a /usr/lib/
   - cd vq-vae
-  - mvn dependency:resolve emadl:train -s settings.xml
+  - bash build.sh
 
 TestPretrainedVAE:
   stage: test
@@ -45,8 +45,12 @@ TestPretrainedVAE:
   allow_failure: true
   script:
     - mv /mxnet/build/libmxnet.so /mxnet/build/libmxnet.a /usr/lib/
-    - cd standard-vae/pre-trained
-    - python3 mnistvaeGrid.py
+    - cd standard-vae
+    - cp -a pre-trained/vae.Encoder/. src/test/test_pre-trained/model/mnist.Encoder/
+    - cp -a pre-trained/vae.Deocder/. src/test/test_pre-trained/model/mnist.Decoder/
+    - cd src/test/test_pre-trained
+    - bash cpp_compile.sh
+    - bash test_digit_generation.sh
 
 TestPretrainedBetaVAE:
   stage: test
@@ -54,8 +58,12 @@ TestPretrainedBetaVAE:
   allow_failure: true
   script:
     - mv /mxnet/build/libmxnet.so /mxnet/build/libmxnet.a /usr/lib/
-    - cd beta-vae/pre-trained
-    - python3 mnistvaeGrid.py
+    - cd beta-vae
+    - cp -a pre-trained/bvae.Encoder/. src/test/test_pre-trained/model/mnist.Encoder/
+    - cp -a pre-trained/bvae.Deocder/. src/test/test_pre-trained/model/mnist.Decoder/
+    - cd src/test/test_pre-trained
+    - bash cpp_compile.sh
+    - bash test_digit_generation.sh
 
 TestPretrainedCVAE:
   stage: test
@@ -63,8 +71,12 @@ TestPretrainedCVAE:
   allow_failure: true
   script:
     - mv /mxnet/build/libmxnet.so /mxnet/build/libmxnet.a /usr/lib/
-    - cd conditional-vae/pre-trained
-    - python3 mnistvaeGrid.py
+    - cd conditional-vae
+    - cp -a pre-trained/cvae.Encoder/. src/test/test_pre-trained/model/mnist.Encoder/
+    - cp -a pre-trained/cvae.Deocder/. src/test/test_pre-trained/model/mnist.Decoder/
+    - cd src/test/test_pre-trained
+    - bash cpp_compile.sh
+    - bash test_digit_generation.sh
 
 TestPretrainedVQVAE:
   stage: test
@@ -72,5 +84,9 @@ TestPretrainedVQVAE:
   allow_failure: true
   script:
     - mv /mxnet/build/libmxnet.so /mxnet/build/libmxnet.a /usr/lib/
-    - cd vq-vae/pre-trained
-    - python3 mnistvaeGrid.py
+    - cd vq-vae
+    - cp -a pre-trained/vqvae.Encoder/. src/test/test_pre-trained/model/mnist.Encoder/
+    - cp -a pre-trained/vqvae.Deocder/. src/test/test_pre-trained/model/mnist.Decoder/
+    - cd src/test/test_pre-trained
+    - bash cpp_compile.sh
+    - bash test_digit_generation.sh
