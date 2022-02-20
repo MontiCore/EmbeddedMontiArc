@@ -47,7 +47,7 @@ TestPretrainedVAE:
     - mv /mxnet/build/libmxnet.so /mxnet/build/libmxnet.a /usr/lib/
     - cd standard-vae
     - cp -a pre-trained/model/vae.Encoder/. src/test/test_pre-trained/model/mnist.Encoder/
-    - cp -a pre-trained/model/vae.Deocder/. src/test/test_pre-trained/model/mnist.Decoder/
+    - cp -a pre-trained/model/vae.Decoder/. src/test/test_pre-trained/model/mnist.Decoder/
     - cd src/test/test_pre-trained
     - bash cpp_compile.sh
     - bash test_digit_generation.sh
@@ -60,7 +60,7 @@ TestPretrainedBetaVAE:
     - mv /mxnet/build/libmxnet.so /mxnet/build/libmxnet.a /usr/lib/
     - cd beta-vae
     - cp -a pre-trained/model/bvae.Encoder/. src/test/test_pre-trained/model/mnist.Encoder/
-    - cp -a pre-trained/model/bvae.Deocder/. src/test/test_pre-trained/model/mnist.Decoder/
+    - cp -a pre-trained/model/bvae.Decoder/. src/test/test_pre-trained/model/mnist.Decoder/
     - cd src/test/test_pre-trained
     - bash cpp_compile.sh
     - bash test_digit_generation.sh
@@ -73,7 +73,7 @@ TestPretrainedCVAE:
     - mv /mxnet/build/libmxnet.so /mxnet/build/libmxnet.a /usr/lib/
     - cd conditional-vae
     - cp -a pre-trained/model/cvae.Encoder/. src/test/test_pre-trained/model/mnist.Encoder/
-    - cp -a pre-trained/model/cvae.Deocder/. src/test/test_pre-trained/model/mnist.Decoder/
+    - cp -a pre-trained/model/cvae.Decoder/. src/test/test_pre-trained/model/mnist.Decoder/
     - cd src/test/test_pre-trained
     - bash cpp_compile.sh
     - bash test_digit_generation.sh
@@ -86,7 +86,7 @@ TestPretrainedVQVAE:
     - mv /mxnet/build/libmxnet.so /mxnet/build/libmxnet.a /usr/lib/
     - cd vq-vae
     - cp -a pre-trained/model/vqvae.Encoder/. src/test/test_pre-trained/model/mnist.Encoder/
-    - cp -a pre-trained/model/vqvae.Deocder/. src/test/test_pre-trained/model/mnist.Decoder/
+    - cp -a pre-trained/model/vqvae.Decoder/. src/test/test_pre-trained/model/mnist.Decoder/
     - cd src/test/test_pre-trained
     - bash cpp_compile.sh
     - bash test_digit_generation.sh
