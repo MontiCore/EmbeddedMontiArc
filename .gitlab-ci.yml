@@ -46,8 +46,8 @@ TestPretrainedVAE:
   script:
     - mv /mxnet/build/libmxnet.so /mxnet/build/libmxnet.a /usr/lib/
     - cd standard-vae
-    - cp -a pre-trained/vae.Encoder/. src/test/test_pre-trained/model/mnist.Encoder/
-    - cp -a pre-trained/vae.Deocder/. src/test/test_pre-trained/model/mnist.Decoder/
+    - cp -a pre-trained/model/vae.Encoder/. src/test/test_pre-trained/model/mnist.Encoder/
+    - cp -a pre-trained/model/vae.Deocder/. src/test/test_pre-trained/model/mnist.Decoder/
     - cd src/test/test_pre-trained
     - bash cpp_compile.sh
     - bash test_digit_generation.sh
@@ -59,8 +59,8 @@ TestPretrainedBetaVAE:
   script:
     - mv /mxnet/build/libmxnet.so /mxnet/build/libmxnet.a /usr/lib/
     - cd beta-vae
-    - cp -a pre-trained/bvae.Encoder/. src/test/test_pre-trained/model/mnist.Encoder/
-    - cp -a pre-trained/bvae.Deocder/. src/test/test_pre-trained/model/mnist.Decoder/
+    - cp -a pre-trained/model/bvae.Encoder/. src/test/test_pre-trained/model/mnist.Encoder/
+    - cp -a pre-trained/model/bvae.Deocder/. src/test/test_pre-trained/model/mnist.Decoder/
     - cd src/test/test_pre-trained
     - bash cpp_compile.sh
     - bash test_digit_generation.sh
@@ -72,8 +72,8 @@ TestPretrainedCVAE:
   script:
     - mv /mxnet/build/libmxnet.so /mxnet/build/libmxnet.a /usr/lib/
     - cd conditional-vae
-    - cp -a pre-trained/cvae.Encoder/. src/test/test_pre-trained/model/mnist.Encoder/
-    - cp -a pre-trained/cvae.Deocder/. src/test/test_pre-trained/model/mnist.Decoder/
+    - cp -a pre-trained/model/cvae.Encoder/. src/test/test_pre-trained/model/mnist.Encoder/
+    - cp -a pre-trained/model/cvae.Deocder/. src/test/test_pre-trained/model/mnist.Decoder/
     - cd src/test/test_pre-trained
     - bash cpp_compile.sh
     - bash test_digit_generation.sh
@@ -85,8 +85,8 @@ TestPretrainedVQVAE:
   script:
     - mv /mxnet/build/libmxnet.so /mxnet/build/libmxnet.a /usr/lib/
     - cd vq-vae
-    - cp -a pre-trained/vqvae.Encoder/. src/test/test_pre-trained/model/mnist.Encoder/
-    - cp -a pre-trained/vqvae.Deocder/. src/test/test_pre-trained/model/mnist.Decoder/
+    - cp -a pre-trained/model/vqvae.Encoder/. src/test/test_pre-trained/model/mnist.Encoder/
+    - cp -a pre-trained/model/vqvae.Deocder/. src/test/test_pre-trained/model/mnist.Decoder/
     - cd src/test/test_pre-trained
     - bash cpp_compile.sh
     - bash test_digit_generation.sh
