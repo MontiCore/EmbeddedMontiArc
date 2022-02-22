@@ -32,6 +32,7 @@ public class PretrainedArtifactCreator extends ArtifactCreator {
 
     boolean paramFileFound = false;
     boolean jsonFileFound = false;
+    boolean onnxFileFound = false;
     for (File file : Objects.requireNonNull(pretrainedPath.listFiles())) {
       if (file.isDirectory()) {
         continue;
@@ -53,10 +54,18 @@ public class PretrainedArtifactCreator extends ArtifactCreator {
         pretrainedLocations.add(fileLocation);
         jsonFileFound = true;
       }
+      else if (file.getName().endsWith(".onnx")) {
+        FileLocation fileLocation = new FileLocation();
+        fileLocation.setSourceLocation(file.getAbsolutePath());
+        fileLocation.setJarLocation(file.getName());
+
+        pretrainedLocations.add(fileLocation);
+        onnxFileFound = true;
+      }
     }
 
-    if (!paramFileFound || !jsonFileFound) {
-      throw new MojoExecutionException("Directory must contain {...}.param and {...}.json file.");
+    if ((!paramFileFound || !jsonFileFound) & !onnxFileFound) {
+      throw new MojoExecutionException("Directory must contain {...}.param and {...}.json files, or {...}.onnx file.");
     }
 
     return pretrainedLocations;

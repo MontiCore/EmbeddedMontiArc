@@ -131,7 +131,7 @@ public class PretrainedArtifactCreatorTest {
     );
 
     assertEquals(
-        "Directory must contain {...}.param and {...}.json file.",
+        "Directory must contain {...}.param and {...}.json files, or {...}.onnx file.",
         exception.getMessage()
     );
   }
