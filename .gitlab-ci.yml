@@ -108,6 +108,7 @@ TestGluonONNX:
   needs:
     - TrainTensorflowONNX
   script:
+    - mv /mxnet/build/libmxnet.so /mxnet/build/libmxnet.a /usr/lib/
     - cd onnx/tensorflow-pretrained
     - ls model/cNNCalculator.Network/
     - mvn emadl:install-pretrained -e -s ./settings.xml
