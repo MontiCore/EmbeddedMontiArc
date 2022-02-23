@@ -5,5 +5,5 @@ conforms to dltag.DataPathTagSchema, artifacttag.LayerArtifactParameterTagSchema
 
 tags mnistcalculator {
 tag Network with DataPath = {path = resources/training_data, type = HDF5};
-tag Network with LayerArtifactParameter = {artifact = de.monticore.lang.monticar.pretrained:mnistcalc-gluon:1, id = mnistcalc};
+tag Network with LayerArtifactParameter = {artifact = de.monticore.lang.monticar.pretrained:mnistcalc-tensorflow:1, id = mnistcalc};
 }

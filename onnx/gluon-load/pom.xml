@@ -21,7 +21,7 @@
     <dependencies>
         <dependency>
             <groupId>de.monticore.lang.monticar.pretrained</groupId>
-            <artifactId>mnistcalc-gluon</artifactId>
+            <artifactId>mnistcalc-tensorflow</artifactId>
             <version>1</version>
             <classifier>pretrained</classifier>
         </dependency>

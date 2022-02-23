@@ -9,7 +9,7 @@ component Network<Z(2:oo) classes = 10>{
         data ->
         LoadNetwork(
             networkDir="tag:mnistcalc", 
-            networkPrefix="model_0-", 
+            networkPrefix="model", 
             numInputs=1, 
             outputShape=10,
             trainable=false
