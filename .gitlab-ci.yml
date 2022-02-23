@@ -90,7 +90,7 @@ TestMNISTwithCustomLayer:
   - cd mnist-custom-layer
   - mvn dependency:resolve emadl:train -s settings.xml
 
-InstallONNXTensorflow:
+TrainTensorflowONNX:
   stage: linux
   image: registry.git.rwth-aachen.de/monticore/embeddedmontiarc/generators/emadl2cpp/dockerimages/tensorflow-onnx:latest
   artifacts:
@@ -102,3 +102,13 @@ InstallONNXTensorflow:
     - mvn -v
     - mvn dependency:resolve emadl:train -s settings.xml
 
+TestGluonONNX:
+  stage: linux
+  image: registry.git.rwth-aachen.de/monticore/embeddedmontiarc/generators/emadl2cpp/dockerimages/mxnet170-onnx:v0.0.1
+  dependencies:
+    - TrainTensorflowONNX
+  script:
+    - cd onnx/tensorflow-pretrained
+    - mvn emadl:install-pretrained -s ./settings.xml
+    - cd ../gluon-load
+    - mvn emadl:train -s settings.xml
