@@ -92,14 +92,13 @@ TestMNISTwithCustomLayer:
 
 InstallONNXTensorflow:
   stage: linux
-  image: registry.git.rwth-aachen.de/monticore/embeddedmontiarc/generators/emadl2cpp/dockerimages/tensorflow-onnx
+  image: registry.git.rwth-aachen.de/monticore/embeddedmontiarc/generators/emadl2cpp/dockerimages/tensorflow-onnx:latest
   artifacts:
     paths:
     - onnx/tensorflow-pretrained/model/
     expire_in: 1 day
   script:
     - cd onnx/tensorflow-pretrained
-    - maven -v
     - mvn -v
     - mvn dependency:resolve emadl:train -s settings.xml
 
