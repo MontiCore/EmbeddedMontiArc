@@ -109,6 +109,7 @@ TestGluonONNX:
     - TrainTensorflowONNX
   script:
     - cd onnx/tensorflow-pretrained
-    - mvn emadl:install-pretrained -s ./settings.xml
+    - ls model/cNNCalculator.Network/
+    - mvn emadl:install-pretrained -e -s ./settings.xml
     - cd ../gluon-load
     - mvn emadl:train -s settings.xml
