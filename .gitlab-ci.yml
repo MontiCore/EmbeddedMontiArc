@@ -105,7 +105,7 @@ TrainTensorflowONNX:
 TestGluonONNX:
   stage: linux
   image: registry.git.rwth-aachen.de/monticore/embeddedmontiarc/generators/emadl2cpp/dockerimages/mxnet170-onnx:v0.0.1
-  dependencies:
+  needs:
     - TrainTensorflowONNX
   script:
     - cd onnx/tensorflow-pretrained
