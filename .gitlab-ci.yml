@@ -99,5 +99,7 @@ InstallONNXTensorflow:
     expire_in: 1 day
   script:
     - cd onnx/tensorflow-pretrained
+    - maven -v
+    - mvn -v
     - mvn dependency:resolve emadl:train -s settings.xml
 
