@@ -228,6 +228,9 @@ public class CNNTrain2Gluon extends CNNTrainGenerator {
                     .map(k -> new FileContent(k.getFileContent(), k.getFileName()))
                     .collect(Collectors.toList()));
 
+            String encoderLAOptimizerTemplateContent = templateConfiguration.processTemplate(ftlContext, "CNNLAOptimizer.ftl");
+            fileContents.add(new FileContent(encoderLAOptimizerTemplateContent, "CNNLAOptimizer_" + encoderInstanceName + ".h"));
+
             ftlContext.put("encoderInstanceName", encoderInstanceName);
             ftlContext.put("trainerName", trainerName);
             ftlContext.put("learningMethod", "vae"); //GANs and VAEs share the same Trainer.ftl
