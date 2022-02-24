@@ -228,7 +228,7 @@ public class CNNTrain2Gluon extends CNNTrainGenerator {
                     .map(k -> new FileContent(k.getFileContent(), k.getFileName()))
                     .collect(Collectors.toList()));
 
-            String encoderLAOptimizerTemplateContent = templateConfiguration.processTemplate(ftlContext, "CNNLAOptimizer.ftl");
+            String encoderLAOptimizerTemplateContent = templateConfiguration.processTemplate(ftlContext, "generative_model/vae/CNNLAOptimizer.ftl");
             fileContents.add(new FileContent(encoderLAOptimizerTemplateContent, "CNNLAOptimizer_" + encoderInstanceName + ".h"));
 
             ftlContext.put("encoderInstanceName", encoderInstanceName);
