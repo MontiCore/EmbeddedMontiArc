@@ -12,7 +12,7 @@ fi
 
 mvn dependency:resolve emadl:train -s settings.xml
 
-#java -jar ../embedded-montiarc-emadl-generator-0.5.4-SNAPSHOT-jar-with-dependencies.jar -m src/main/emadl -r bvae.Connector -o target -b GLUON -p /usr/bin/python3
+#java -jar ../embedded-montiarc-emadl-generator-0.5.5-SNAPSHOT-jar-with-dependencies.jar -m src/main/emadl -r bvae.Connector -o target -b GLUON -p /usr/bin/python3
 
 rm -rf build
 mkdir build && cd build
