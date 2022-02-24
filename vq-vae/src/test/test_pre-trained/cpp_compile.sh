@@ -10,6 +10,9 @@ if [ ! -f $MXNET_FOLDER/libmxnet.so ]; then
     echo "Either fix the installation, or adapt the ./build.sh script to locate libmxnet.so correctly"
 fi
 
-mvn dependency:resolve emadl:train -s settings.xml -U
-
-#java -jar ../embedded-montiarc-emadl-generator-0.5.4-SNAPSHOT-jar-with-dependencies.jar -m src/main/emadl -r cvae.Connector -o target -b GLUON -p /usr/bin/python3
+rm -rf build
+mkdir build && cd build
+echo "MXNET_PATH: ${MXNET_PATH}"
+echo "Building mnistvae.."
+cmake -D MXNET_PATH=$MXNET_FOLDER/libmxnet.so ..
+make
