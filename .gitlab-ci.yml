@@ -2,47 +2,44 @@
 stages:
   - build
   - test
+  - deploy
 
-TestBuildVAE:
+
+BuildVAE:
   stage: build
   image: registry.git.rwth-aachen.de/monticore/embeddedmontiarc/generators/emadl2cpp/dockerimages/mxnet170:v0.0.1
-  allow_failure: true
   script:
   - mv /mxnet/build/libmxnet.so /mxnet/build/libmxnet.a /usr/lib/
   - cd standard-vae/src/test/test_training
-  - bash build.sh
+  - mvn dependency:resolve emadl:train -s settings.xml -U
 
-TestBuildBetaVAE:
+BuildBetaVAE:
   stage: build
   image: registry.git.rwth-aachen.de/monticore/embeddedmontiarc/generators/emadl2cpp/dockerimages/mxnet170:v0.0.1
-  allow_failure: true
   script:
   - mv /mxnet/build/libmxnet.so /mxnet/build/libmxnet.a /usr/lib/
   - cd beta-vae/src/test/test_training
-  - bash build.sh
+  - mvn dependency:resolve emadl:train -s settings.xml -U
 
-TestBuildCVAE:
+BuildCVAE:
   stage: build
   image: registry.git.rwth-aachen.de/monticore/embeddedmontiarc/generators/emadl2cpp/dockerimages/mxnet170:v0.0.1
-  allow_failure: true
   script:
   - mv /mxnet/build/libmxnet.so /mxnet/build/libmxnet.a /usr/lib/
   - cd conditional-vae/src/test/test_training
-  - bash build.sh
+  - mvn dependency:resolve emadl:train -s settings.xml -U
 
-TestBuildVQVAE:
+BuildVQVAE:
   stage: build
   image: registry.git.rwth-aachen.de/monticore/embeddedmontiarc/generators/emadl2cpp/dockerimages/mxnet170:v0.0.1
-  allow_failure: true
   script:
   - mv /mxnet/build/libmxnet.so /mxnet/build/libmxnet.a /usr/lib/
   - cd vq-vae/src/test/test_training
-  - bash build.sh
+  - mvn dependency:resolve emadl:train -s settings.xml -U
 
-TestPretrainedVAE:
+TestPretrainedVAE: #Not testing digits 5 and 9
   stage: test
   image: registry.git.rwth-aachen.de/monticore/embeddedmontiarc/generators/emadl2cpp/dockerimages/mxnet170:v0.0.1
-  allow_failure: true
   script:
     - mv /mxnet/build/libmxnet.so /mxnet/build/libmxnet.a /usr/lib/
     - cd standard-vae
@@ -52,10 +49,9 @@ TestPretrainedVAE:
     - bash cpp_compile.sh
     - bash test_digit_generation.sh
 
-TestPretrainedBetaVAE:
+TestPretrainedBetaVAE: #Not testing digits 4 and 5
   stage: test
   image: registry.git.rwth-aachen.de/monticore/embeddedmontiarc/generators/emadl2cpp/dockerimages/mxnet170:v0.0.1
-  allow_failure: true
   script:
     - mv /mxnet/build/libmxnet.so /mxnet/build/libmxnet.a /usr/lib/
     - cd beta-vae
@@ -68,7 +64,6 @@ TestPretrainedBetaVAE:
 TestPretrainedCVAE:
   stage: test
   image: registry.git.rwth-aachen.de/monticore/embeddedmontiarc/generators/emadl2cpp/dockerimages/mxnet170:v0.0.1
-  allow_failure: true
   script:
     - mv /mxnet/build/libmxnet.so /mxnet/build/libmxnet.a /usr/lib/
     - cd conditional-vae
@@ -81,7 +76,7 @@ TestPretrainedCVAE:
 TestPretrainedVQVAE:
   stage: test
   image: registry.git.rwth-aachen.de/monticore/embeddedmontiarc/generators/emadl2cpp/dockerimages/mxnet170:v0.0.1
-  allow_failure: true
+  allow_failure: true #Works only with GPU
   script:
     - mv /mxnet/build/libmxnet.so /mxnet/build/libmxnet.a /usr/lib/
     - cd vq-vae
@@ -89,4 +84,45 @@ TestPretrainedVQVAE:
     - cp -a pre-trained/model/vqvae.Decoder/. src/test/test_pre-trained/model/mnist.Decoder/
     - cd src/test/test_pre-trained
     - bash cpp_compile.sh
-    - bash test_digit_generation.sh
+    - bash test_reconstruction.sh
+
+DeployPretrainedVAE:
+  stage: deploy
+  image: maven:3.6-jdk-8
+  needs: ["TestPretrainedVAE"]
+  script:
+    - cd standard-vae/pre-trained/model/vae.Encoder
+    - mvn dependency:resolve emadl:install-pretrained emadl:deploy-pretrained -s settings.xml -U
+    - cd ../vae.Decoder
+    - mvn dependency:resolve emadl:install-pretrained emadl:deploy-pretrained -s settings.xml -U
+
+DeployPretrainedBetaVAE:
+  stage: deploy
+  image: maven:3.6-jdk-8
+  needs: ["TestPretrainedBetaVAE"]
+  script:
+    - cd beta-vae/pre-trained/model/bvae.Encoder
+    - mvn dependency:resolve emadl:install-pretrained emadl:deploy-pretrained -s settings.xml -U
+    - cd ../bvae.Decoder
+    - mvn dependency:resolve emadl:install-pretrained emadl:deploy-pretrained -s settings.xml -U
+
+
+DeployPretrainedCVAE:
+  stage: deploy
+  image: maven:3.6-jdk-8
+  needs: ["TestPretrainedCVAE"]
+  script:
+    - cd conditional-vae/pre-trained/model/cvae.Encoder
+    - mvn dependency:resolve emadl:install-pretrained emadl:deploy-pretrained -s settings.xml -U
+    - cd ../cvae.Decoder
+    - mvn dependency:resolve emadl:install-pretrained emadl:deploy-pretrained -s settings.xml -U
+
+DeployPretrainedVQVAE:
+  stage: deploy
+  image: maven:3.6-jdk-8
+  needs: ["TestPretrainedVQVAE"]
+  script:
+    - cd vq-vae/pre-trained/model/vqvae.Encoder
+    - mvn dependency:resolve emadl:install-pretrained emadl:deploy-pretrained -s settings.xml -U
+    - cd ../vqvae.Decoder
+    - mvn dependency:resolve emadl:install-pretrained emadl:deploy-pretrained -s settings.xml -U
