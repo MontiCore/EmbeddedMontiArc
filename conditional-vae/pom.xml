@@ -38,12 +38,6 @@
                         <pathToProject>src/main/emadl</pathToProject>
                         <pathToTest>src/main/emadl</pathToTest>
                     </training>
-                    <pretrainedModelToStore>
-                        <path>pre-trained</path>
-                        <artifactId>conditional-vae</artifactId>
-                        <groupId>de.monticore.lang.monticar.pretrained</groupId>
-                        <version>1</version>
-                    </pretrainedModelToStore>
                 </configuration>
            </plugin>
         </plugins>

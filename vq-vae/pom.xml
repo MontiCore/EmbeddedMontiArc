@@ -29,7 +29,7 @@
             <plugin>
                 <groupId>de.monticore.lang.monticar.utilities</groupId>
                 <artifactId>emadl-maven-plugin</artifactId>
-                <version>0.0.5-SNAPSHOT</version>
+                <version>0.0.6-SNAPSHOT</version>
                 <configuration>
                     <training>
                         <backend>GLUON</backend>
@@ -38,12 +38,6 @@
                         <pathToProject>src/main/emadl</pathToProject>
                         <pathToTest>src/main/emadl</pathToTest>
                     </training>
-                    <pretrainedModelToStore>
-                        <path>pre-trained</path>
-                        <artifactId>vq-vae</artifactId>
-                        <groupId>de.monticore.lang.monticar.pretrained</groupId>
-                        <version>1</version>
-                    </pretrainedModelToStore>
                 </configuration>
            </plugin>
         </plugins>
