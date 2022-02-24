@@ -21,7 +21,7 @@ public:
     const std::vector<std::string> network_input_keys = {
         "data"
     };
-    const std::vector<std::vector<mx_uint>> network_input_shapes = {{1, 1, 28, 28}};
+    const std::vector<std::vector<mx_uint>> network_input_shapes = {{200, 1, 28, 28}};
     std::vector<mx_uint> network_input_sizes;
     std::vector<std::vector<std::string>> network_arg_names;
     std::vector<Executor *> network_handles;
@@ -138,18 +138,11 @@ public:
         std::map<std::string, std::vector<mx_uint>> in_shape_map;
         for(mx_uint i=0; i < network_input_keys.size(); i++){
             in_shape_map[network_input_keys[i]] = network_input_shapes[i];
-            std::cout << std::to_string(network_input_shapes[i][0]) << std::endl;
-            std::cout << std::to_string(network_input_shapes[i][1]) << std::endl;
-            std::cout << std::to_string(network_input_shapes[i][2]) << std::endl;
-            std::cout << std::to_string(network_input_shapes[i][3]) << std::endl;
         }
         std::vector<std::vector<mx_uint>> in_shapes;
         std::vector<std::vector<mx_uint>> aux_shapes;
         std::vector<std::vector<mx_uint>> out_shapes;
         network_symbols[0].InferShape(in_shape_map, &in_shapes, &aux_shapes, &out_shapes);
-        std::cout << std::to_string(in_shapes.size()) << std::endl;
-        std::cout << std::to_string(aux_shapes.size()) << std::endl;
-        std::cout << std::to_string(out_shapes.size()) << std::endl;
         network_handles.push_back(initExecutor(network_symbols[0], network_param_maps[0], network_input_keys, network_input_shapes));
     
     }

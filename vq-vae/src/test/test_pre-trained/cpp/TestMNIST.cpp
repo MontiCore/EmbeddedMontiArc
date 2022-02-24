@@ -36,15 +36,17 @@ int main(int argc, char* argv[]) {
     cv::resize(img, img, scale);
     std::cout << "== simply resize: " << img.size() << " ==" << std::endl;
 
+
+    size_t batch_size = 200;
     size_t channels = 1;
     size_t height = img.rows;
     size_t width = img.cols;
-    vector<float> data(channels*height*width);
+    vector<float> data(batch_size*channels*height*width);
 
     for(size_t j=0; j<height; j++){
         for(size_t k=0; k<width; k++){
             cv::Vec3b intensity = img.at<cv::Vec3b>(j, k);
-            for(size_t i=0; i<channels; i++){
+            for(size_t i=0; i<batch_size; i++){
                 data[i*height*width + j*height + k] = (float) intensity[i];
             }
         }
@@ -54,9 +56,7 @@ int main(int argc, char* argv[]) {
     mnist_encoder encoder;
     encoder.init();
 
-    std::cout << " Test " << std::endl;
-
-    encoder.data = CNNTranslator::translateToCube(data, vector<size_t> {channels,height,width} );
+    encoder.data = CNNTranslator::translateToCube(data, vector<size_t> {batch_size,channels,height,width} );
 
     encoder.execute();
 
@@ -64,7 +64,7 @@ int main(int argc, char* argv[]) {
     mnist_mnistClassifier classifier;
     classifier.init();
 
-	classifier.data = encoder.encoding;
+	classifier.data = encoder.encoding[0];
 
     classifier.execute();
 

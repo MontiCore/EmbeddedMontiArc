@@ -23,12 +23,10 @@ if __name__ == "__main__":
         except:
             logging.error(" Failed while trying to load the decoder model")
 
-    #TODO: Model and train a PixelCNN with the encoder outputs and quantize the outputs of the PixelCNN using the codebook
-
     # Get trained codebook
     codebook = gluon.ParameterDict()
     codebook.get("vectorquantize0_embeddings")
-    codebook.load(filename="model/vqvae.Encoder/model_0-vectorquantize0-0014.params", ctx=mx.cpu())
+    codebook.load(filename="model/vqvae.Encoder/model_0-vectorquantize0-0000.params", ctx=mx.cpu())
     try:
         codebook.get("vectorquantize0_embeddings").data()
     except:
