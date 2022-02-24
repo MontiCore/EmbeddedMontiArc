@@ -3,6 +3,8 @@ Vector-Quantized Variational Autoencoders are discrete variants of the VAEs. Ins
 
 PixelCNNs belong to the autoregressive generative models that are not yet modelable in EMADL as it is the case with GANs and VAEs. Therefore, the user needs to implement and train them themselves.
 
+
+**This Model works only with (one) GPU.**
 ## How to Run
 Generate code, train and build the EMADL model by executing:
 

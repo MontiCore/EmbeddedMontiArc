@@ -12,8 +12,8 @@ This repository includes variants of VAEs to generate new handwritten digits usi
 
 Parameter | Type                             | Default Value | Description       
 ---|----------------------------------|---------------|--------------------
-`learning_method` | {`supervised`,`reinforcement`,`gan`,`vae`} | `supervised`  | ! Must be set to `vae`. !                        
-`encoder` | Component Path                   | -             | ! Must set a reference to the encoder component. !
+`learning_method` | {`supervised`,`reinforcement`,`gan`,`vae`} | `supervised`  | !!! Must be set to `vae`. !!!                        
+`encoder` | Component Path                   | -             | !!! Must set a reference to the encoder component. !!!
 `batch_size` | N1 | `64`            | Size of mini batch.
 `num_epoch` | N1 | `10` | Number of training iterations.
 `normalize` | B | `false` | Normalization of the dataset.
@@ -24,8 +24,4 @@ Parameter | Type                             | Default Value | Description
 `reconstruction_loss` | {`mse`,`bce`} | `mse` | The reconstruction loss is either mean squarred error (mse) or in the case of binary data binary cross entropy (bce).
 `print_images` | B | `false` | Saves images between a input image and reconstructed image that can be used to visually evaluate the training process.
 `kl_loss_weight` | Q | `1.0` | Weight of the Kullbach-Leibler loss. Needed for beta-VAEs.
-
-## Note regarding CI-Pipeline
-
-The generated images of the VAEs using pre-trained parameters are validated using a pre-trained LeNet classifier. However the classifier seems to have problems regarding the classification of some digits e.g. 5 or 9 in standard-vae.
 
