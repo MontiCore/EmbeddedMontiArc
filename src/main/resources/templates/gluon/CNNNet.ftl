@@ -602,6 +602,10 @@ class Reparameterize(gluon.HybridBlock):
 
         return sample
 
+#TODO: Find a method to infer the batch size.
+# implementation is dependent on batch_size variable as we need a single codebook of size (num of embedding vectors,latent channels)
+# for each pixel in the batch. This provides problems during inference in runtime and
+# it is also the reason why Multi-GPU training is not possible for VQ-VAEs.
 class VectorQuantize(gluon.HybridBlock):
     def __init__(self,batch_size, num_embeddings, embedding_dim, input_shape, total_feature_maps_size, **kwargs):
         super(VectorQuantize,self).__init__(**kwargs)
