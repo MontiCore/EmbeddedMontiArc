@@ -1,8 +1,8 @@
 /* (c) https://github.com/MontiCore/monticore */
-package bvae;
+package mnist;
 
 component Connector{
-    ports in Q(-oo:oo)^{8} data,
+    ports in Q(-oo:oo)^{16,7,7} data,
           out Q(-oo:oo)^{1,28,28} res;
 
     instance Decoder decoder;
