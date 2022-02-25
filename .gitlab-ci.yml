@@ -106,7 +106,7 @@ TestGluonONNX:
     - TrainAndDeployTensorflowONNX
   script:
     - mv /mxnet/build/libmxnet.so /mxnet/build/libmxnet.a /usr/lib/
-    - cd ../gluon-load
+    - cd onnx/gluon-load
     - mvn dependency:resolve emadl:train -s settings.xml
     - chmod +x build.sh
     - ./build.sh
