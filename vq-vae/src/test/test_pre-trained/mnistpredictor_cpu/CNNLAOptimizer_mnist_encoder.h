@@ -1,6 +1,6 @@
 /* (c) https://github.com/MontiCore/monticore */
-#ifndef CNNLAOPTIMIZER_MNIST_ENCODER
-#define CNNLAOPTIMIZER_MNIST_ENCODER
+#ifndef CNNLAOPTIMIZER_MNIST_MNISTCLASSIFIER_DECODER
+#define CNNLAOPTIMIZER_MNIST_MNISTCLASSIFIER_DECODER
 
 #include <mxnet-cpp/MxNetCpp.h>
 
@@ -10,13 +10,13 @@
 
 using namespace mxnet::cpp;    
 
-class CNNLAOptimizer_mnist_encoder{
+class CNNLAOptimizer_mnist_mnistClassifier_decoder{
 private:
     Optimizer *optimizerHandle;
     std::string context_name = "cpu";
             
 public:
-    explicit CNNLAOptimizer_mnist_encoder(){
+    explicit CNNLAOptimizer_mnist_mnistClassifier_decoder(){
     
         optimizerHandle = OptimizerRegistry::Find("adam");
         optimizerHandle->SetParam("lr", 1.0E-4);
@@ -35,5 +35,5 @@ public:
         return context_name;
    }
 };
-#endif // CNNLAOPTIMIZER_MNIST_ENCODER
+#endif // CNNLAOPTIMIZER_MNIST_MNISTCLASSIFIER_DECODER
     

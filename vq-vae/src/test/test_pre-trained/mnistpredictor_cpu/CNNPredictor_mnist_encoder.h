@@ -21,7 +21,7 @@ public:
     const std::vector<std::string> network_input_keys = {
         "data"
     };
-    const std::vector<std::vector<mx_uint>> network_input_shapes = {{200, 1, 28, 28}};
+    const std::vector<std::vector<mx_uint>> network_input_shapes = {{1, 1, 28, 28}};
     std::vector<mx_uint> network_input_sizes;
     std::vector<std::vector<std::string>> network_arg_names;
     std::vector<Executor *> network_handles;

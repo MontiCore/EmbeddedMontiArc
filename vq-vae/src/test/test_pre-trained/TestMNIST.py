@@ -34,9 +34,6 @@ if __name__ == "__main__":
 
     input = mx.nd.array(np.reshape(cv2.resize(img, dsize=(28, 28), interpolation=cv2.INTER_CUBIC), (1, 1, 28, 28)),ctx=mx_ctx) / 255
 
-    #VQ-Layer is dependent on batch_size.
-    input = mx.nd.array(np.broadcast_to(input.asnumpy(), shape=(200,1,28,28)),ctx=mx_ctx)
-
     with warnings.catch_warnings():
         warnings.simplefilter("ignore")
 
@@ -54,7 +51,7 @@ if __name__ == "__main__":
             decoder = gluon.nn.SymbolBlock.imports("model/mnist.Decoder/model_0_newest-symbol.json", ['data'],
                                                         "model/mnist.Decoder/model_0_newest-0000.params", ctx=mx_ctx)
         except:
-            logging.error(" Failed while trying to load the decoder model")
+            print(" Failed while trying to load the decoder model")
             sys.exit(1)
 
         # Get LeNet
@@ -62,18 +59,21 @@ if __name__ == "__main__":
             leNet = gluon.nn.SymbolBlock.imports("model/mnist.LeNetNetwork/model_0_newest-symbol.json", ['data'],
                                                         "model/mnist.LeNetNetwork/model_0_newest-0000.params", ctx=mx_ctx)
         except:
-            logging.error(" Failed while trying to load the decoder model")
+            print(" Failed while trying to load the decoder model")
             sys.exit(1)
 
+        with warnings.catch_warnings():
+            warnings.simplefilter("ignore")
+            encoded, _, _ = encoder(input.as_in_context(mx_ctx))
+            decoded = decoder(encoded.as_in_context(mx_ctx))
+            probs = leNet(decoded.as_in_context(mx_ctx))[0]
 
-        encoded = encoder(input.as_in_context(mx_ctx))
-        decoded = decoder(encoded[0][:1].as_in_context(mx_ctx))
-        probs = leNet(decoded.as_in_context(mx_ctx))
+        plt.imsave(f"reconstructed_{int(args.digit)}.png",decoded[0][0].asnumpy())
 
         predicited_class = np.argmax(probs.asnumpy())
 
         if predicited_class == int(args.digit):
-            logging.info("Successfully predicted reconstruction of digit" + str(predicited_class))
+            print("Successfully predicted reconstruction of digit: " + str(predicited_class))
         else:
             logging.error(f"Test failed \n Predicited digit: {predicited_class} \n Expected digit: {args.digit}")
             sys.exit(1)

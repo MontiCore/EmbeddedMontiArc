@@ -28,7 +28,7 @@ int main(int argc, char* argv[]) {
         exit(1);
     }
 
-    cv::Mat img = cv::imread(filePath);
+    cv::Mat img = cv::imread(filePath, cv::IMREAD_GRAYSCALE);
     std::cout << "== original image size: " << img.size() << " ==" << std::endl;
 
     // scale image to fit
@@ -37,17 +37,16 @@ int main(int argc, char* argv[]) {
     std::cout << "== simply resize: " << img.size() << " ==" << std::endl;
 
 
-    size_t batch_size = 200;
     size_t channels = 1;
     size_t height = img.rows;
     size_t width = img.cols;
-    vector<float> data(batch_size*channels*height*width);
+    vector<float> data(channels*height*width);
 
-    for(size_t j=0; j<height; j++){
-        for(size_t k=0; k<width; k++){
+    for(size_t j=0; j<width; j++){
+        for(size_t k=0; k<height; k++){
             cv::Vec3b intensity = img.at<cv::Vec3b>(j, k);
-            for(size_t i=0; i<batch_size; i++){
-                data[i*height*width + j*height + k] = (float) intensity[i];
+            for(size_t i=0; i<channels; i++){
+                data[i*height*width + j*height + k] = ((float)intensity[i])/255.0;
             }
         }
     }
@@ -56,7 +55,7 @@ int main(int argc, char* argv[]) {
     mnist_encoder encoder;
     encoder.init();
 
-    encoder.data = CNNTranslator::translateToCube(data, vector<size_t> {batch_size,channels,height,width} );
+    encoder.data = CNNTranslator::translateToCube(data, vector<size_t> {channels,height,width} );
 
     encoder.execute();
 
@@ -64,7 +63,7 @@ int main(int argc, char* argv[]) {
     mnist_mnistClassifier classifier;
     classifier.init();
 
-	classifier.data = encoder.encoding[0];
+	classifier.data = encoder.encoding;
 
     classifier.execute();
 
