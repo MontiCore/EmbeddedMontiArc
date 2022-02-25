@@ -90,24 +90,29 @@ TestMNISTwithCustomLayer:
   - cd mnist-custom-layer
   - mvn dependency:resolve emadl:train -s settings.xml
 
-TrainAndDeployTensorflowONNX:
+TrainTensorflowONNX:
   stage: linux
   image: registry.git.rwth-aachen.de/monticore/embeddedmontiarc/generators/emadl2cpp/dockerimages/tensorflow-onnx:latest
+  artifacts:
+    paths:
+    - onnx/tensorflow-pretrained/model/
+    expire_in: 1 day
   script:
     - cd onnx/tensorflow-pretrained
-    - mvn -v
     - mvn dependency:resolve emadl:train -s settings.xml
-    - mvn emadl:deploy-pretrained -s settings.xml
 
 TestGluonONNX:
   stage: linux
   image: registry.git.rwth-aachen.de/monticore/embeddedmontiarc/generators/emadl2cpp/dockerimages/mxnet170-onnx:v0.0.1
   needs:
-    - TrainAndDeployTensorflowONNX
+    - TrainTensorflowONNX
   script:
     - mv /mxnet/build/libmxnet.so /mxnet/build/libmxnet.a /usr/lib/
-    - cd onnx/gluon-load
-    - mvn dependency:resolve emadl:train -s settings.xml
+    - cd onnx/tensorflow-pretrained
+    - ls model/cNNCalculator.Network/
+    - mvn emadl:install-pretrained -e -s ./settings.xml
+    - cd ../gluon-load
+    - mvn emadl:train -s settings.xml
     - chmod +x build.sh
     - ./build.sh
     - RES=$(./build/src/cpp/DigitCalculator resources/images/1.png resources/images/2.png resources/images/3.png resources/images/4.png resources/images/5.png resources/images/6.png)
