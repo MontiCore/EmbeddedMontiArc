@@ -45,15 +45,22 @@
         </plugins>
     </build>
 
+    <repositories>
+        <repository>
+            <id>gitlab-maven</id>
+            <url>https://git.rwth-aachen.de/api/v4/projects/55417/packages/maven</url>
+        </repository>
+    </repositories>
     <distributionManagement>
         <repository>
-            <id>se-nexus</id>
-            <url>https://nexus.se.rwth-aachen.de/content/repositories/embeddedmontiarc-releases/</url>
+            <id>gitlab-maven</id>
+            <url>https://git.rwth-aachen.de/api/v4/projects/55417/packages/maven</url>
         </repository>
         <snapshotRepository>
-            <id>se-nexus</id>
-            <url>https://nexus.se.rwth-aachen.de/content/repositories/embeddedmontiarc-snapshots/</url>
+            <id>gitlab-maven</id>
+            <url>https://git.rwth-aachen.de/api/v4/projects/55417/packages/maven</url>
         </snapshotRepository>
     </distributionManagement>
+
 
 </project>

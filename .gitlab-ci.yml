@@ -101,6 +101,7 @@ TrainTensorflowONNX:
     - cd onnx/tensorflow-pretrained
     - mvn -v
     - mvn dependency:resolve emadl:train -s settings.xml
+    - mvn emadl:deploy-pretrained -s settings.xml
 
 TestGluonONNX:
   stage: linux
