@@ -59,7 +59,7 @@ int main(int argc, char* argv[]) {
 
     encoder.execute();
 
-    #latent code maps
+    //latent code maps
     arma::cube img_latent_cube = ((1-encoder.encoding)+1)*125.5;
 	vector<float> t_img_vec = CNNTranslator::translate(img_latent_cube);
 	cv::Mat l_img_cv = cv::Mat(t_img_vec, false);
