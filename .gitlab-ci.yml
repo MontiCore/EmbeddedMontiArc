@@ -97,83 +97,105 @@ TestCPPPretrainedVQVAE:
     - bash cpp_compile.sh
     - bash cpp_test_reconstruction.sh
 
-TestInstallVAE:
-  stage: test
+InstallVAE:
+  stage: deploy
   image: maven:3.6-jdk-8
   needs: ["TestPretrainedVAE"]
   script:
     - cd standard-vae/pre-trained/model/vae.Encoder
-    - mvn dependency:resolve emadl:install-pretrained -s settings.xml -U
+    - mvn emadl:install-pretrained -s ../settings.xml
     - cd ../vae.Decoder
-    - mvn emadl:install-pretrained -s settings.xml -U
+    - mvn emadl:install-pretrained -s ../settings.xml
+  except:
+    - master
 
-TestInstallBetaVAE:
-  stage: test
+
+InstallBetaVAE:
+  stage: deploy
   image: maven:3.6-jdk-8
   needs: ["TestPretrainedBetaVAE"]
   script:
     - cd beta-vae/pre-trained/model/bvae.Encoder
-    - mvn dependency:resolve emadl:install-pretrained -s settings.xml -U
+    - mvn emadl:install-pretrained -s ../settings.xml
     - cd ../bvae.Decoder
-    - mvn emadl:install-pretrained -s settings.xml -U
+    - mvn emadl:install-pretrained -s ../settings.xml
+  except:
+    - master
 
-TestInstallCVAE:
-  stage: test
+
+InstallCVAE:
+  stage: deploy
   image: maven:3.6-jdk-8
   needs: ["TestPretrainedCVAE"]
   script:
     - cd conditional-vae/pre-trained/model/cvae.Encoder
-    - mvn dependency:resolve emadl:install-pretrained -s settings.xml -U
+    - mvn emadl:install-pretrained -s ../settings.xml
     - cd ../cvae.Decoder
-    - mvn emadl:install-pretrained -s settings.xml -U
+    - mvn emadl:install-pretrained -s ../settings.xml
+  except:
+    - master
 
-TestInstallVQVAE:
-  stage: test
+
+InstallVQVAE:
+  stage: deploy
   image: maven:3.6-jdk-8
   needs: ["TestPythonPretrainedVQVAE","TestCPPPretrainedVQVAE"]
   script:
     - cd vq-vae/pre-trained/model/vqvae.Encoder
-    - mvn dependency:resolve emadl:install-pretrained -s settings.xml -U
+    - mvn emadl:install-pretrained -s ../settings.xml
     - cd ../vqvae.Decoder
-    - mvn emadl:install-pretrained -s settings.xml -U
+    - mvn emadl:install-pretrained -s ../settings.xml
+  except:
+    - master
+
 
 DeployPretrainedVAE:
   stage: deploy
   image: maven:3.6-jdk-8
-  needs: ["TestInstallVAE"]
+  needs: ["TestPretrainedVAE"]
   script:
     - cd standard-vae/pre-trained/model/vae.Encoder
-    - mvn dependency:resolve emadl:deploy-pretrained -s settings.xml -U
+    - mvn emadl:deploy-pretrained -s ../settings.xml
     - cd ../vae.Decoder
-    - mvn emadl:deploy-pretrained -s settings.xml -U
+    - mvn emadl:deploy-pretrained -s ../settings.xml
+  only:
+    - master
+
 
 DeployPretrainedBetaVAE:
   stage: deploy
   image: maven:3.6-jdk-8
-  needs: ["TestInstallBetaVAE"]
+  needs: ["TestPretrainedBetaVAE"]
   script:
     - cd beta-vae/pre-trained/model/bvae.Encoder
-    - mvn dependency:resolve emadl:deploy-pretrained -s settings.xml -U
+    - mvn emadl:deploy-pretrained -s ../settings.xml
     - cd ../bvae.Decoder
-    - mvn emadl:deploy-pretrained -s settings.xml -U
+    - mvn emadl:deploy-pretrained -s ../settings.xml
+  only:
+    - master
 
 
 DeployPretrainedCVAE:
   stage: deploy
   image: maven:3.6-jdk-8
-  needs: ["TestInstallCVAE"]
+  needs: ["TestPretrainedCVAE"]
   script:
     - cd conditional-vae/pre-trained/model/cvae.Encoder
-    - mvn dependency:resolve emadl:deploy-pretrained -s settings.xml -U
+    - mvn emadl:deploy-pretrained -s ../settings.xml
     - cd ../cvae.Decoder
-    - mvn emadl:deploy-pretrained -s settings.xml -U
+    - mvn emadl:deploy-pretrained -s ../settings.xml
+  only:
+    - master
+
 
 DeployPretrainedVQVAE:
   stage: deploy
   image: maven:3.6-jdk-8
-  needs: ["TestInstallVQVAE"]
+  needs: ["TestPythonPretrainedVQVAE","TestCPPPretrainedVQVAE"]
   script:
     - cd vq-vae/pre-trained/model/vqvae.Encoder
-    - mvn dependency:resolve emadl:deploy-pretrained -s settings.xml -U
+    - mvn emadl:deploy-pretrained -s ../settings.xml
     - cd ../vqvae.Decoder
-    - mvn emadl:deploy-pretrained -s settings.xml -U
+    - mvn emadl:deploy-pretrained -s ../settings.xml
+  only:
+    - master
