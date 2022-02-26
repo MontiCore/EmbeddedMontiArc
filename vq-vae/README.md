@@ -29,4 +29,8 @@ Left image: Epoch 78; Right image: Epoch 99.
 
 
 ## Issues
-The trained model does not work in C++, but the parameters can be loaded and used in Python. The reason why it does not work will require further investigations. You can use the reconstruction tests in `src/test/test_pre-trained` as a reference point regarding this issue.
+The trained model does not work in C++, but the parameters can be loaded and used in Python. We can use the reconstruction tests in `src/test/test_pre-trained` as a reference point regarding this issue.
+The Python test successfully reconstructs the input images. The C++ application doesn't produce any reconstructions.
+The latent codes were also compared to each other. While the latent code in the python clearly shows the computed features, the encodings in the CPP application seem rather meaningless.
+It seems like the functionality of the encoder is different in the C++ language bindings than in the MXNet Python bindings.
+The root of this problem was not found yet and will require further investigations. 
