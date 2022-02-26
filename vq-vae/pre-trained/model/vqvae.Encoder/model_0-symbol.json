@@ -178,16 +178,40 @@
       "inputs": [[12, 0, 0], [13, 0, 0], [14, 0, 0]]
     }, 
     {
+      "op": "Activation", 
+      "name": "tanh0_fwd", 
+      "attrs": {"act_type": "tanh"}, 
+      "inputs": [[15, 0, 0]]
+    }, 
+    {
+      "op": "SwapAxis", 
+      "name": "vectorquantize0_swapaxes0", 
+      "attrs": {
+        "dim1": "1", 
+        "dim2": "2"
+      }, 
+      "inputs": [[16, 0, 0]]
+    }, 
+    {
+      "op": "SwapAxis", 
+      "name": "vectorquantize0_swapaxes1", 
+      "attrs": {
+        "dim1": "2", 
+        "dim2": "3"
+      }, 
+      "inputs": [[17, 0, 0]]
+    }, 
+    {
       "op": "Reshape", 
       "name": "vectorquantize0_reshape0", 
       "attrs": {"shape": "(-1, 16)"}, 
-      "inputs": [[15, 0, 0]]
+      "inputs": [[18, 0, 0]]
     }, 
     {
       "op": "_power_scalar", 
       "name": "vectorquantize0__powerscalar0", 
       "attrs": {"scalar": "2"}, 
-      "inputs": [[16, 0, 0]]
+      "inputs": [[19, 0, 0]]
     }, 
     {
       "op": "sum", 
@@ -196,16 +220,7 @@
         "axis": "1", 
         "keepdims": "True"
       }, 
-      "inputs": [[17, 0, 0]]
-    }, 
-    {
-      "op": "broadcast_axis", 
-      "name": "vectorquantize0_broadcast_axis0", 
-      "attrs": {
-        "axis": "1", 
-        "size": "64"
-      }, 
-      "inputs": [[18, 0, 0]]
+      "inputs": [[20, 0, 0]]
     }, 
     {
       "op": "null", 
@@ -221,88 +236,171 @@
       "inputs": []
     }, 
     {
-      "op": "_power_scalar", 
-      "name": "vectorquantize0__powerscalar1", 
-      "attrs": {"scalar": "2"}, 
-      "inputs": [[20, 0, 0]]
-    }, 
-    {
-      "op": "expand_dims", 
-      "name": "vectorquantize0_expand_dims0", 
-      "attrs": {"axis": "0"}, 
-      "inputs": [[21, 0, 0]]
-    }, 
-    {
-      "op": "broadcast_axis", 
-      "name": "vectorquantize0_broadcast_axis1", 
-      "attrs": {
-        "axis": "0", 
-        "size": "9800"
-      }, 
-      "inputs": [[22, 0, 0]]
-    }, 
-    {
-      "op": "sum", 
-      "name": "vectorquantize0_sum1", 
-      "attrs": {"axis": "2"}, 
-      "inputs": [[23, 0, 0]]
-    }, 
-    {
-      "op": "elemwise_add", 
-      "name": "vectorquantize0__plus0", 
-      "inputs": [[19, 0, 0], [24, 0, 0]]
-    }, 
-    {
       "op": "transpose", 
       "name": "vectorquantize0_transpose0", 
-      "inputs": [[20, 0, 0]]
+      "inputs": [[22, 0, 0]]
     }, 
     {
       "op": "dot", 
       "name": "vectorquantize0_dot0", 
-      "inputs": [[16, 0, 0], [26, 0, 0]]
+      "inputs": [[19, 0, 0], [23, 0, 0]]
+    }, 
+    {
+      "op": "broadcast_like", 
+      "name": "vectorquantize0_broadcast_like0", 
+      "inputs": [[21, 0, 0], [24, 0, 0]]
     }, 
     {
       "op": "_mul_scalar", 
       "name": "vectorquantize0__mulscalar0", 
       "attrs": {"scalar": "2"}, 
-      "inputs": [[27, 0, 0]]
+      "inputs": [[24, 0, 0]]
     }, 
     {
       "op": "elemwise_sub", 
       "name": "vectorquantize0__minus0", 
-      "inputs": [[25, 0, 0], [28, 0, 0]]
+      "inputs": [[25, 0, 0], [26, 0, 0]]
+    }, 
+    {
+      "op": "_power_scalar", 
+      "name": "vectorquantize0__powerscalar1", 
+      "attrs": {"scalar": "2"}, 
+      "inputs": [[22, 0, 0]]
+    }, 
+    {
+      "op": "sum", 
+      "name": "vectorquantize0_sum1", 
+      "attrs": {"axis": "1"}, 
+      "inputs": [[28, 0, 0]]
+    }, 
+    {
+      "op": "expand_dims", 
+      "name": "vectorquantize0_expand_dims0", 
+      "attrs": {"axis": "0"}, 
+      "inputs": [[29, 0, 0]]
+    }, 
+    {
+      "op": "broadcast_like", 
+      "name": "vectorquantize0_broadcast_like1", 
+      "inputs": [[30, 0, 0], [24, 0, 0]]
+    }, 
+    {
+      "op": "elemwise_add", 
+      "name": "vectorquantize0__plus0", 
+      "inputs": [[27, 0, 0], [31, 0, 0]]
     }, 
     {
       "op": "argmin", 
       "name": "vectorquantize0_argmin0", 
       "attrs": {"axis": "1"}, 
-      "inputs": [[29, 0, 0]]
+      "inputs": [[32, 0, 0]]
     }, 
     {
       "op": "one_hot", 
       "name": "vectorquantize0_one_hot0", 
       "attrs": {"depth": "64"}, 
-      "inputs": [[30, 0, 0]]
+      "inputs": [[33, 0, 0]]
     }, 
     {
       "op": "dot", 
       "name": "vectorquantize0_dot1", 
-      "inputs": [[31, 0, 0], [20, 0, 0]]
+      "inputs": [[34, 0, 0], [22, 0, 0]]
     }, 
     {
-      "op": "Reshape", 
-      "name": "vectorquantize0_reshape1", 
-      "attrs": {"shape": "(200, 16, 7, 7)"}, 
-      "inputs": [[32, 0, 0]]
+      "op": "reshape_like", 
+      "name": "vectorquantize0_reshape_like0", 
+      "inputs": [[35, 0, 0], [18, 0, 0]]
+    }, 
+    {
+      "op": "elemwise_add", 
+      "name": "vectorquantize0__plus1", 
+      "inputs": [[18, 0, 0], [36, 0, 0]]
+    }, 
+    {
+      "op": "BlockGrad", 
+      "name": "vectorquantize0_stop_gradient2", 
+      "inputs": [[37, 0, 0]]
+    }, 
+    {
+      "op": "elemwise_sub", 
+      "name": "vectorquantize0__minus3", 
+      "inputs": [[18, 0, 0], [38, 0, 0]]
+    }, 
+    {
+      "op": "SwapAxis", 
+      "name": "vectorquantize0_swapaxes2", 
+      "attrs": {
+        "dim1": "3", 
+        "dim2": "2"
+      }, 
+      "inputs": [[39, 0, 0]]
+    }, 
+    {
+      "op": "SwapAxis", 
+      "name": "vectorquantize0_swapaxes3", 
+      "attrs": {
+        "dim1": "2", 
+        "dim2": "1"
+      }, 
+      "inputs": [[40, 0, 0]]
     }, 
     {
       "op": "_copy", 
       "name": "identity0", 
-      "inputs": [[33, 0, 0]]
+      "inputs": [[41, 0, 0]]
+    }, 
+    {
+      "op": "BlockGrad", 
+      "name": "vectorquantize0_stop_gradient0", 
+      "inputs": [[36, 0, 0]]
+    }, 
+    {
+      "op": "elemwise_sub", 
+      "name": "vectorquantize0__minus1", 
+      "inputs": [[43, 0, 0], [18, 0, 0]]
+    }, 
+    {
+      "op": "_power_scalar", 
+      "name": "vectorquantize0__powerscalar2", 
+      "attrs": {"scalar": "2"}, 
+      "inputs": [[44, 0, 0]]
+    }, 
+    {
+      "op": "mean", 
+      "name": "vectorquantize0_mean0", 
+      "attrs": {
+        "axis": "0", 
+        "exclude": "True"
+      }, 
+      "inputs": [[45, 0, 0]]
+    }, 
+    {
+      "op": "BlockGrad", 
+      "name": "vectorquantize0_stop_gradient1", 
+      "inputs": [[18, 0, 0]]
+    }, 
+    {
+      "op": "elemwise_sub", 
+      "name": "vectorquantize0__minus2", 
+      "inputs": [[36, 0, 0], [47, 0, 0]]
+    }, 
+    {
+      "op": "_power_scalar", 
+      "name": "vectorquantize0__powerscalar3", 
+      "attrs": {"scalar": "2"}, 
+      "inputs": [[48, 0, 0]]
+    }, 
+    {
+      "op": "mean", 
+      "name": "vectorquantize0_mean1", 
+      "attrs": {
+        "axis": "0", 
+        "exclude": "True"
+      }, 
+      "inputs": [[49, 0, 0]]
     }
   ], 
-  "arg_nodes": [0, 2, 3, 8, 9, 13, 14, 20], 
+  "arg_nodes": [0, 2, 3, 8, 9, 13, 14, 22], 
   "node_row_ptr": [
     0, 
     1, 
@@ -339,8 +437,24 @@
     34, 
     35, 
     36, 
-    37
+    37, 
+    38, 
+    39, 
+    40, 
+    41, 
+    42, 
+    43, 
+    44, 
+    45, 
+    46, 
+    47, 
+    48, 
+    49, 
+    50, 
+    51, 
+    52, 
+    53
   ], 
-  "heads": [[34, 0, 0], [15, 0, 0], [33, 0, 0]], 
+  "heads": [[42, 0, 0], [46, 0, 0], [50, 0, 0]], 
   "attrs": {"mxnet_version": ["int", 10800]}
 }
