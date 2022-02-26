@@ -1,6 +1,8 @@
 # Conditional VAE
 Conditional VAEs can be used to control the content to be generated. In this case, the model can be used to create a specific digit, without figuring out which values you need to put into the code in order to generate them.
 
+<img src="pre-trained/generated_digits.png" alt="Epoch 78" width="400">
+
 ## How to Run
 Generate code, train and build the EMADL model by executing:
 

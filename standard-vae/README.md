@@ -1,6 +1,8 @@
 # Variational Autoencoder
 VAEs are generative models that are used to generate new data and in this case we generate new handwritten digits. This folder shows an example of the basic VAE architecture framework using a CNN that learns a 2D-latent code.
 
+<img src="pre-trained/generated_digits.png" alt="Epoch 78" width="400">
+
 ## How to Run
 Generate code, train and build the EMADL model by executing:
 
