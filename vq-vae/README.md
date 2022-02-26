@@ -5,13 +5,11 @@ the `VectorQuantized`-Layer.
 
 However, VQ-VAEs can not simply sample the codes from this codebook to generate new images.
 They need to be appropriately composed. For that reason,
-the VQ-VAEs need additionally a model that learns probability distributions of
+the generation of new images using VQ-VAEs are dependent on an additional model that learns probability distributions of
 feature map pixels from which we can take a sample and quantize them using the learned codebook.
-We can use a autoregressive generative model like PixelCNNs.
+The probability model can be an autoregressive generative model such as PixelCNNs, which is not utilized in this project.
 
-These generative models are not yet modelable in EMADL.
-Therefore, the user needs to implement and train them themselves.
-
+This EMADL project contains the trainable neural network model of a VQ-VAE.
 
 ## How to Run
 Generate code, train and build the EMADL model by executing:
