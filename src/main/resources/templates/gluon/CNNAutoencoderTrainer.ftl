@@ -349,7 +349,7 @@ class CNNAutoencoderTrainer:
                 <#if tc.architecture.getAuxiliaryArchitecture()??>
                 nd.waitall()
                 for i in range(num_pus):
-                    res_<#if auxNetworkInstruction.body.hasLossParameterizingElements() >, loss_params_dec</#if> = decoder_nets[0](<#list tc.architecture.getAuxiliaryArchitecture().getInputs() as inputName> ${inputName}_[i]<#sep>, </#list>)
+                    res_<#if auxNetworkInstruction.body.hasLossParameterizingElements() >, loss_params_dec</#if> = decoder_nets[0](<#list tc.architecture.getAuxiliaryArchitecture().getInputs() as inputName> ${inputName}_[i][:num_test_images]<#sep>, </#list>)
                     <#if auxNetworkInstruction.body.hasLossParameterizingElements() >loss_param_list[i].append(loss_params_dec)</#if>
                     pred_[i] = res_[0]<#if auxNetworkInstruction.body.hasLossParameterizingElements()><#else>[0]</#if>
                     </#if>
