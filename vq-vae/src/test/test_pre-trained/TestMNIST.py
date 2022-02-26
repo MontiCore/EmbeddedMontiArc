@@ -3,10 +3,12 @@ import logging
 import sys
 import warnings
 
-import cv2
+#import cv2
 import mxnet as mx
 import numpy as np
 import matplotlib.pyplot as plt
+import matplotlib.image as mpimg
+from PIL import Image, ImageOps
 from mxnet import nd, gluon
 
 if __name__ == "__main__":
@@ -28,11 +30,13 @@ if __name__ == "__main__":
         logging.error("Argument Error: Argument digit was not provided with a digit.")
 
     try:
-        img = cv2.cvtColor(cv2.imread(args.image), cv2.COLOR_BGR2GRAY)
+        #img = cv2.cvtColor(cv2.imread(args.image), cv2.COLOR_BGR2GRAY)
+        img = np.asarray(ImageOps.grayscale(Image.open((args.image))).resize((28,28))).reshape((1,1,28,28))
     except:
         logging.error("Argument Error: No image found in given path")
 
-    input = mx.nd.array(np.reshape(cv2.resize(img, dsize=(28, 28), interpolation=cv2.INTER_CUBIC), (1, 1, 28, 28)),ctx=mx_ctx) / 255
+    #input = mx.nd.array(np.reshape(cv2.resize(img, dsize=(28, 28), interpolation=cv2.INTER_CUBIC), (1, 1, 28, 28)),ctx=mx_ctx) / 255
+    input = mx.nd.array(img,ctx=mx_ctx) / 255
 
     with warnings.catch_warnings():
         warnings.simplefilter("ignore")

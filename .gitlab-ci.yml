@@ -105,7 +105,7 @@ TestInstallVAE:
     - cd standard-vae/pre-trained/model/vae.Encoder
     - mvn dependency:resolve emadl:install-pretrained -s settings.xml -U
     - cd ../vae.Decoder
-    - mvn dependency:resolve emadl:install-pretrained -s settings.xml -U
+    - mvn emadl:install-pretrained -s settings.xml -U
 
 TestInstallBetaVAE:
   stage: test
@@ -115,7 +115,7 @@ TestInstallBetaVAE:
     - cd beta-vae/pre-trained/model/bvae.Encoder
     - mvn dependency:resolve emadl:install-pretrained -s settings.xml -U
     - cd ../bvae.Decoder
-    - mvn dependency:resolve emadl:install-pretrained -s settings.xml -U
+    - mvn emadl:install-pretrained -s settings.xml -U
 
 TestInstallCVAE:
   stage: test
@@ -125,7 +125,7 @@ TestInstallCVAE:
     - cd conditional-vae/pre-trained/model/cvae.Encoder
     - mvn dependency:resolve emadl:install-pretrained -s settings.xml -U
     - cd ../cvae.Decoder
-    - mvn dependency:resolve emadl:install-pretrained -s settings.xml -U
+    - mvn emadl:install-pretrained -s settings.xml -U
 
 TestInstallVQVAE:
   stage: test
@@ -135,7 +135,7 @@ TestInstallVQVAE:
     - cd vq-vae/pre-trained/model/vqvae.Encoder
     - mvn dependency:resolve emadl:install-pretrained -s settings.xml -U
     - cd ../vqvae.Decoder
-    - mvn dependency:resolve emadl:install-pretrained -s settings.xml -U
+    - mvn emadl:install-pretrained -s settings.xml -U
 
 DeployPretrainedVAE:
   stage: deploy
@@ -145,7 +145,7 @@ DeployPretrainedVAE:
     - cd standard-vae/pre-trained/model/vae.Encoder
     - mvn dependency:resolve emadl:deploy-pretrained -s settings.xml -U
     - cd ../vae.Decoder
-    - mvn dependency:resolve emadl:deploy-pretrained -s settings.xml -U
+    - mvn emadl:deploy-pretrained -s settings.xml -U
 
 DeployPretrainedBetaVAE:
   stage: deploy
@@ -155,7 +155,7 @@ DeployPretrainedBetaVAE:
     - cd beta-vae/pre-trained/model/bvae.Encoder
     - mvn dependency:resolve emadl:deploy-pretrained -s settings.xml -U
     - cd ../bvae.Decoder
-    - mvn dependency:resolve emadl:deploy-pretrained -s settings.xml -U
+    - mvn emadl:deploy-pretrained -s settings.xml -U
 
 
 DeployPretrainedCVAE:
@@ -166,7 +166,7 @@ DeployPretrainedCVAE:
     - cd conditional-vae/pre-trained/model/cvae.Encoder
     - mvn dependency:resolve emadl:deploy-pretrained -s settings.xml -U
     - cd ../cvae.Decoder
-    - mvn dependency:resolve emadl:deploy-pretrained -s settings.xml -U
+    - mvn emadl:deploy-pretrained -s settings.xml -U
 
 DeployPretrainedVQVAE:
   stage: deploy
@@ -176,4 +176,4 @@ DeployPretrainedVQVAE:
     - cd vq-vae/pre-trained/model/vqvae.Encoder
     - mvn dependency:resolve emadl:deploy-pretrained -s settings.xml -U
     - cd ../vqvae.Decoder
-    - mvn dependency:resolve emadl:deploy-pretrained -s settings.xml -U
+    - mvn emadl:deploy-pretrained -s settings.xml -U
