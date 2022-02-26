@@ -4,19 +4,17 @@
 <#assign beta = element.beta?c>
 <#if mode == "ARCHITECTURE_DEFINITION">
 
-            self.${element.name} = VectorQuantize(batch_size=batch_size,
-                                                  num_embeddings=${num_embeddings},
+            self.${element.name} = VectorQuantize(num_embeddings=${num_embeddings},
                                                   embedding_dim=<#list element.element.outputTypes as type>${type.dimensions[0]}</#list>,
-                                                  input_shape=(batch_size,<#list element.element.outputTypes as type>${tc.join(type.dimensions, ",")}</#list>),
-                                                  total_feature_maps_size=int(batch_size*<#list element.element.outputTypes as type>${tc.join(type.dimensions, "*")}</#list>))
+                                                  input_shape=(<#list element.element.outputTypes as type>${tc.join(type.dimensions, ",")}</#list>),
+                                                  total_feature_maps_size=int(<#list element.element.outputTypes as type>${tc.join(type.dimensions, "*")}</#list>))
             self.loss_ctx_dict = {"loss": "quantization_loss",
                                   "values": { "beta":${beta},}}
-            self.vq_type = type(self.${element.name})
 
 
 <#elseif mode == "FORWARD_FUNCTION">
-        ${element.name} = self.${element.name}(${input})
-        loss_params.append(${input})
-        loss_params.append(${element.name})
+        ${element.name}, ${element.name}_commit_loss, ${element.name}_codebook_loss = self.${element.name}(${input})
+        loss_params.append(${element.name}_commit_loss)
+        loss_params.append(${element.name}_codebook_loss)
         self.save_specific_params_list.append((self.${element.name}.name,self.${element.name}.collect_params()))
 </#if>
