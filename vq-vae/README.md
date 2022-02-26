@@ -29,4 +29,4 @@ Left image: Epoch 78; Right image: Epoch 99.
 
 
 ## Issues
-The trained model does not work in C++, but the parameters can be loaded and used in Python. The reason why it doens not work will require further investigations. You can use the reconstruction tests in `src/test/test_pre-trained` as a reference point regarding this issue.
+The trained model does not work in C++, but the parameters can be loaded and used in Python. The reason why it does not work will require further investigations. You can use the reconstruction tests in `src/test/test_pre-trained` as a reference point regarding this issue.
