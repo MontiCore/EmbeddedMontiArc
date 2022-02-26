@@ -8,11 +8,10 @@ component Encoder{
         data ->
         Convolution(channels=32,kernel=(3,3),stride=(2,2)) ->
         Relu() ->
-        Dropout() ->
         Convolution(channels=64,kernel=(3,3),stride=(2,2)) ->
         Relu() ->
-        Dropout() ->
         Convolution(channels=16,kernel=(1,1),stride=(1,1)) ->
+        Tanh() ->
         VectorQuantize(num_embeddings=64) ->
         encoding;
     }

@@ -59,6 +59,15 @@ int main(int argc, char* argv[]) {
 
     encoder.execute();
 
+    #latent code maps
+    arma::cube img_latent_cube = ((1-encoder.encoding)+1)*125.5;
+	vector<float> t_img_vec = CNNTranslator::translate(img_latent_cube);
+	cv::Mat l_img_cv = cv::Mat(t_img_vec, false);
+	l_img_cv = l_img_cv.reshape(1, 7);
+	cv::resize(l_img_cv, l_img_cv, cv::Size(), 16, 16, cv::INTER_LINEAR);
+	l_img_cv.convertTo(l_img_cv, CV_8UC1);
+	cv::imwrite("code_" + std::to_string(std::stoi(argv[2])) + ".png", l_img_cv);
+
     // Reconstruct and Classify
     mnist_mnistClassifier classifier;
     classifier.init();

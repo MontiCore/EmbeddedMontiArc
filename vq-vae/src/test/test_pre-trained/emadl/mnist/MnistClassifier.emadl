@@ -2,7 +2,7 @@
 package mnist;
 
 component MnistClassifier{
-    ports in Q(-oo:oo)^{2} data,
+    ports in Q(-oo:oo)^{16,7,7} data,
           in Z(0:9)^{1} label,
          out Z(0:9) classIndex,
          out Q probability;
