@@ -82,7 +82,6 @@ TestPythonPretrainedVQVAE:
     - cp -a pre-trained/model/vqvae.Encoder/. src/test/test_pre-trained/model/mnist.Encoder/
     - cp -a pre-trained/model/vqvae.Decoder/. src/test/test_pre-trained/model/mnist.Decoder/
     - cd src/test/test_pre-trained
-    - bash cpp_compile.sh
     - bash py_test_reconstruction.sh
 
 TestCPPPretrainedVQVAE:
