@@ -8,3 +8,7 @@ beta-vae/model
 standard-vae/model
 conditional-vae/model
 vq-vae/model
+vq-vae/src/test/test_training/model/
+standard-vae/src/test/test_training/model/
+beta-vae/src/test/test_training/model/
+conditional-vae/src/test/test_training/model/
