@@ -113,7 +113,7 @@ class CNNAutoencoderTrainer:
                 logging.error("Creation of the 'images' directory failed.")
 
         input_names = [ "data"]
-        train_iter, test_iter, data_mean, data_std, _, _ = self._data_loader.load_vae_data(batch_size=batch_size, input_names=input_names)
+        train_iter, test_iter, data_mean, data_std, _, _ = self._data_loader.load_vae_data(batch_size=batch_size, input_names=input_names, shuffle=True)
 
         if 'weight_decay' in optimizer_params:
             optimizer_params['wd'] = optimizer_params['weight_decay']
