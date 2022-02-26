@@ -9,7 +9,7 @@
         <groupId>de.monticore.lang.monticar.application</groupId>
         <artifactId>mnist-vaes</artifactId>
         <version>0.0.1</version>
-        <relativePath>../pom.xml</relativePath>
+        <relativePath>../../../../pom.xml</relativePath>
     </parent>
 
     <groupId>de.monticore.lang.monticar.application</groupId>
@@ -22,15 +22,6 @@
         <project.reporting.outputEncoding>UTF-8</project.reporting.outputEncoding>
     </properties>
 
-    <dependencies>
-        <dependency>
-            <groupId>de.monticore.lang.monticar.datasets</groupId>
-            <artifactId>vae-mnist</artifactId>
-            <version>${vae-mnist-dataset-version}</version>
-            <classifier>dataset</classifier>
-        </dependency>
-    </dependencies>
-
     <build>
         <plugins>
             <plugin>
@@ -38,13 +29,12 @@
                 <artifactId>emadl-maven-plugin</artifactId>
                 <version>${emadl-maven-plugin-version}</version>
                 <configuration>
-                    <training>
-                        <backend>GLUON</backend>
-                        <pathToPython>/usr/bin/python3</pathToPython>
-                        <modelToTrain>vae.Connector</modelToTrain>
-                        <pathToProject>src/main/emadl</pathToProject>
-                        <pathToTest>src/main/emadl</pathToTest>
-                    </training>
+                    <pretrainedModelToStore>
+                        <path>./</path>
+                        <artifactId>Encoder</artifactId>
+                        <groupId>de.monticore.lang.monticar.pretrained.vq-vae</groupId>
+                        <version>1</version>
+                    </pretrainedModelToStore>
                 </configuration>
            </plugin>
         </plugins>

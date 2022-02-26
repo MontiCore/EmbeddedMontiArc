@@ -5,6 +5,13 @@
          xsi:schemaLocation="http://maven.apache.org/POM/4.0.0 http://maven.apache.org/xsd/maven-4.0.0.xsd">
     <modelVersion>4.0.0</modelVersion>
 
+    <parent>
+        <groupId>de.monticore.lang.monticar.application</groupId>
+        <artifactId>mnist-vaes</artifactId>
+        <version>0.0.1</version>
+        <relativePath>../../../../pom.xml</relativePath>
+    </parent>
+
     <groupId>de.monticore.lang.monticar.application</groupId>
     <artifactId>standard-vae</artifactId>
     <version>0.0.1</version>
@@ -20,7 +27,7 @@
             <plugin>
                 <groupId>de.monticore.lang.monticar.utilities</groupId>
                 <artifactId>emadl-maven-plugin</artifactId>
-                <version>0.0.6-SNAPSHOT</version>
+                <version>${emadl-maven-plugin-version}</version>
                 <configuration>
                     <pretrainedModelToStore>
                         <path>./</path>
