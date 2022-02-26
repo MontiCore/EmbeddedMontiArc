@@ -1,4 +1,4 @@
-architecture Encoder{
+architecture VQEncoder{
     def input Q(0:1)^{1,28,28} data
     def output Q(-oo:oo)^{1,28,28} encoding
 

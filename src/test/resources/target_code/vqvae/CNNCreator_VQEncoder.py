@@ -8,10 +8,10 @@ import inspect
 import sys
 
 
-from CNNNet_Encoder import Net_0
+from CNNNet_VQEncoder import Net_0
 
-class CNNCreator_Encoder:
-    _model_dir_ = "model/Encoder/"
+class CNNCreator_VQEncoder:
+    _model_dir_ = "model/VQEncoder/"
     _model_prefix_ = "model"
 
     def __init__(self):
@@ -169,10 +169,8 @@ class CNNCreator_Encoder:
 
         if not os.path.exists(self._model_dir_):
             os.makedirs(self._model_dir_)
-
         for i, network in self.networks.items():
             network.export(self._model_dir_ + self._model_prefix_ + "_" + str(i), epoch=0)
-
     def setWeightInitializer(self, initializer):
         self.weight_initializer = initializer
 

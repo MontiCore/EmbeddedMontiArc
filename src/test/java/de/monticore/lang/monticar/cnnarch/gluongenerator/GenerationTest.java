@@ -490,21 +490,21 @@ public class GenerationTest extends AbstractSymtabTest {
         Path modelPath = Paths.get("src/test/resources/valid_tests/vqvae");
         CNNTrain2Gluon trainGenerator = new CNNTrain2Gluon(rewardFunctionSourceGenerator);
         ArchitectureAdapter encoderArchitecture = NNArchitectureMockFactory.createArchitectureSymbolByCNNArchModel(
-                Paths.get("./src/test/resources/valid_tests/vqvae/arc"), "Encoder");
+                Paths.get("./src/test/resources/valid_tests/vqvae/arc"), "VQEncoder");
         ArchitectureAdapter decoderArchitecture = NNArchitectureMockFactory.createArchitectureSymbolByCNNArchModel(
-                Paths.get("./src/test/resources/valid_tests/vqvae/arc"), "Decoder");
+                Paths.get("./src/test/resources/valid_tests/vqvae/arc"), "VQDecoder");
 
-        trainGenerator.generate(modelPath, "Decoder", decoderArchitecture, encoderArchitecture);
+        trainGenerator.generate(modelPath, "VQDecoder", decoderArchitecture, encoderArchitecture);
 
         assertTrue(Log.getFindings().stream().noneMatch(Finding::isError));
         checkFilesAreEqual(
                 Paths.get("target/generated-sources-cnnarch"),
                 Paths.get("src/test/resources/target_code/vqvae"),
                 Arrays.asList(
-                        "CNNAutoencoderTrainer_Encoder.py",
-                        "CNNCreator_Encoder.py",
-                        "CNNNet_Encoder.py",
-                        "CNNTrainer_decoder.py"));
+                        "CNNAutoencoderTrainer_VQEncoder.py",
+                        "CNNCreator_VQEncoder.py",
+                        "CNNNet_VQEncoder.py",
+                        "CNNTrainer_vQDecoder.py"));
 
 
     }
