@@ -1,4 +1,4 @@
-# MNIST-VAE
+# MNIST-VAEs
 This repository includes variants of VAEs to generate new handwritten digits using EMADL.
 
 ## Prerequisites
@@ -24,4 +24,11 @@ Parameter | Type                             | Default Value | Description
 `reconstruction_loss` | {`mse`,`bce`} | `mse` | The reconstruction loss is either mean squarred error (mse) or in the case of binary data binary cross entropy (bce).
 `print_images` | B | `false` | Saves images between a input image and reconstructed image that can be used to visually evaluate the training process.
 `kl_loss_weight` | Q | `1.0` | Weight of the Kullbach-Leibler loss. Needed for beta-VAEs.
+`optimizer` | {`sgd`,`adam`,`rmsprop`,`adagrad`,`nag`,`adadelta`} | `adam` | Optimization algorithm that will update the weights during training
+
+Learning rate scheduling is also possible: Simply set the optimizer parameters `learning_rate_decay` and `step_size`. You can also set the `learning_rate` that will be used as initial value (default is 0.01).
+The learning rate scheduler will return the next learning rate based on: 
+```
+learning_rate * pow(learning_rate_decay, floor(num_update/step_size))
+```
 
