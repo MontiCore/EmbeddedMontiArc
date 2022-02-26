@@ -13,7 +13,7 @@
     </parent>
 
     <groupId>de.monticore.lang.monticar.application</groupId>
-    <artifactId>standard-vae</artifactId>
+    <artifactId>vq-vae</artifactId>
     <version>0.0.1</version>
 
     <properties>
