@@ -703,7 +703,11 @@ class ${tc.fileNameWithoutEnding}:
 <#include "saveAttentionImageTest.ftl">
 
                 loss = 0
-                if test_mask == None or multi_graph:
+<#if tc.architecture.useDgl>
+                if multi_graph:
+<#else>
+                if test_mask == None:
+</#if>
                     for element in lossList:
                         loss = loss + element
                     global_loss_test += loss.sum().asscalar()
@@ -722,7 +726,7 @@ class ${tc.fileNameWithoutEnding}:
                 else:
                     metric.update(preds=predictions, labels=[labels[j] for j in range(len(labels))])
 <#else>
-                if train_mask != None:
+                if test_mask != None:
                     metric.update(preds=predictions[0], labels=mx.nd.squeeze(labels[0][0]), mask=self.get_mask_array(predictions[0].shape[0], test_mask))
                 else:
                     metric.update(preds=predictions, labels=[labels[j] for j in range(len(labels))])
