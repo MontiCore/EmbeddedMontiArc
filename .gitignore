@@ -10,3 +10,4 @@ target/
 /bin/
 .vsls.json
 output.txt
+.DS_Store

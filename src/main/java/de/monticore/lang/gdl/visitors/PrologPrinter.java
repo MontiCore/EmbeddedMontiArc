@@ -35,6 +35,8 @@ import de.monticore.prettyprint.IndentPrinter;
 public class PrologPrinter extends IndentPrinter implements GDLVisitor2, MCCommonLiteralsVisitor2, GDLHandler {
     private GDLTraverser traverser;
     private Set<FunctionSignature> functionSignatures = new HashSet<>();
+    private Set<FunctionSignature> legalSignatures = new HashSet<>();
+
     private Set<FunctionSignature> statesSignatures = new HashSet<>();
     private Set<FunctionSignature> nextSignatures = new HashSet<>();
     private boolean hasTerminal = false;
@@ -52,6 +54,10 @@ public class PrologPrinter extends IndentPrinter implements GDLVisitor2, MCCommo
 
     public Set<FunctionSignature> getFunctionSignatures() {
         return functionSignatures;
+    }
+
+    public Set<FunctionSignature> getLegalSignatures() {
+        return legalSignatures;
     }
 
     public Set<FunctionSignature> getStatesSignatures() {
@@ -259,6 +265,10 @@ public class PrologPrinter extends IndentPrinter implements GDLVisitor2, MCCommo
                     ASTGameExpression parameters = (ASTGameExpression) head.getArguments(1);
                     String pseudoValue = "value_" + ((ASTGameFunction) parameters.getType()).getFunction();
                     print(pseudoValue);
+
+                    int arity = parameters.getArgumentsList().size() + 1;
+                    FunctionSignature s = new FunctionSignature("legal", arity + 1);
+                    legalSignatures.add(s);
 
                     for (int i = 0; i < parameters.getArgumentsList().size(); i++) {
                         if (i == 0) {

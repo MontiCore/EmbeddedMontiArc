@@ -5,6 +5,8 @@ import java.io.BufferedOutputStream;
 import java.io.OutputStreamWriter;
 import java.util.ArrayList;
 import java.util.HashSet;
+import java.util.HashMap;
+import java.util.Map;
 import java.util.LinkedList;
 import java.util.List;
 import java.util.Scanner;
@@ -14,6 +16,9 @@ import java.util.stream.Collectors;
 
 import de.monticore.lang.gdl._ast.ASTGame;
 import de.monticore.lang.gdl.visitors.PrologPrinter;
+
+import sun.misc.Signal;
+import sun.misc.SignalHandler;
 
 public class Interpreter {
 
@@ -32,11 +37,16 @@ public class Interpreter {
     private Set<FunctionSignature> functionSignatures;
     private Set<FunctionSignature> statesSignatures;
     private Set<FunctionSignature> nextSignatures;
+    private Set<FunctionSignature> legalSignatures;
 
     private boolean hasTerminal;
 
     private List<String> currentEvaluation = null;
     private Semaphore evalSemaphore;
+
+    List<List<String>> initialStateList = null; 
+
+    private Map<String, List<List<String>>> savedStates = new HashMap<String, List<List<String>>>();
 
     public Interpreter(ASTGame game) {
         this.game = game;
@@ -52,18 +62,34 @@ public class Interpreter {
         in = new BufferedInputStream(prologProcess.getInputStream());
         err = new BufferedInputStream(prologProcess.getErrorStream());
 
+        Signal.handle(new Signal("INT"),  // SIGINT
+            signal -> {
+                prologProcess.destroy();
+                printIn.interrupt();
+                printErr.interrupt();
+                System.exit(0);
+            });
+
         printIn = new Thread(new Runnable() {
             @Override
             public void run() {
-                Scanner s = new Scanner(in);
-                while(s.hasNextLine()) {
-                    String line = s.nextLine();
-                    if (line.length() == 0) {
-                        continue;
+                
+                try {
+                    Scanner s = new Scanner(in);
+                    while(s.hasNextLine()) {
+                        String line = s.nextLine();
+                        if (line.length() == 0) {
+                            continue;
+                        }
+                    
+                        readIn(line);
                     }
-                    readIn(line);
+                    s.close();
+                } catch (Exception e) {
+                    System.out.println("LOOOOL");
                 }
-                s.close();
+
+                
             }
         });
 
@@ -91,6 +117,7 @@ public class Interpreter {
         String stateDynamics = printer.getStateDynamics();
         statesSignatures = printer.getStatesSignatures();
         functionSignatures = printer.getFunctionSignatures();
+        legalSignatures = printer.getLegalSignatures();
         nextSignatures = printer.getNextSignatures();
         hasTerminal = printer.hasTerminal();
 
@@ -106,14 +133,22 @@ public class Interpreter {
 
         initSemaphore.acquire();
 
+        this.saveState("initialState");
+
         return this;
     }
 
     public List<List<String>> getAllModels(String function) {
-        Set<FunctionSignature> signatures = functionSignatures
+        Set<FunctionSignature> signatures;
+
+        if (function.equals("legal")) {
+            signatures = legalSignatures;
+        } else {
+            signatures = functionSignatures
             .stream()
             .filter(signature -> signature.functionName.equals(function))
             .collect(Collectors.toSet());
+        }
 
         if (signatures.isEmpty()) {
             return null;
@@ -239,6 +274,27 @@ public class Interpreter {
         // System.out.println("! " + line);
     }
 
+    public List<List<String>> getAllLegalMoves() {
+        return this.getAllModels("legal");
+    }
+
+    public List<List<String>> getAllLegalMovesForPlayer(String player) {
+   
+        List<List<String>> allLegalMoves = this.getAllLegalMoves();
+        if (allLegalMoves != null) {
+            allLegalMoves = allLegalMoves
+            .stream()
+            .filter(
+                l -> l != null && l.size() > 0 && l.get(0).equals(player)
+            )
+            .collect(Collectors.toList());
+            return allLegalMoves;
+        } else {
+            return new ArrayList<List<String>>();
+        }
+        
+    }
+
     private boolean isLegal(Command command) {
         StringBuilder legalBuilder = new StringBuilder();
 
@@ -299,6 +355,25 @@ public class Interpreter {
         execute(commandBuilder.toString());
     }
 
+    public void saveState(String name) {
+        List<List<String>> stateToSave = this.getGameState().stream().map(l -> l.stream().map(s -> "value_" + s).collect(Collectors.toList())
+        ).collect(Collectors.toList());
+        this.savedStates.put(name, stateToSave);
+    }
+
+    public boolean restoreState(String name) {
+        List<List<String>> stateToRestore = this.savedStates.get(name);
+        if (stateToRestore != null) {
+            this.buildNextStates(stateToRestore);
+            return true;
+        }
+        return false;
+    }
+
+    public void reset() {
+        this.restoreState("initialState");
+    }
+
     public List<List<String>> interpret(String line) {
         return interpret(Command.createMoveFromLine(line));
     }
@@ -341,7 +416,7 @@ public class Interpreter {
 
         if (allResults != null) {
             buildNextStates(allResults);
-            
+        
             allResults = allResults
                 .stream().map(
                     l -> l.stream().map(s -> s.substring(6)).collect(Collectors.toList())

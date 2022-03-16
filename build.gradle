@@ -53,6 +53,7 @@ buildDir = file("$projectDir/target")
 configurations {grammar}
 
 test {
+    exclude 'de/monticore/lang/gdl/*'
     useJUnit()
 }
 
@@ -86,6 +87,7 @@ dependencies {
     implementation 'org.apache.commons:commons-lang3:3.12.0'
     implementation 'org.apache.commons:commons-collections4:4.1'
     testImplementation "junit:junit:$junit_version"
+    
 }
 
 /* ============================================================ */
@@ -170,9 +172,20 @@ jar.dependsOn shadowJar
 //     }
 // }
 
+
+task copyGDLJarToBin(type: Copy) {
+    from 'target/libs/GDL-7.1.0-SNAPSHOT.jar'
+    into "bin/GDL-cli.jar"
+}   
+
+task copyGDLCliJarToBin(type: Copy) {
+    from 'target/libs/GDL-cli.jar'
+    into "bin/GDL-cli.jar"
+}   
+
 task buildAll(type: GradleBuild) {
   tasks = [ 'build' ]
 }
 
-defaultTasks 'build'
+defaultTasks 'build', 'copyGDLJarToBin', 'copyGDLCliJarToBin'
 

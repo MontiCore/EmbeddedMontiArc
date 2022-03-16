@@ -19,6 +19,37 @@ public class Command {
         return arguments;
     }
 
+    public String toString() {
+        StringBuilder sb = new StringBuilder();
+        sb.append(this.getPlayer() + " ");
+        sb.append("(");
+        for (int i = 0; i < this.getArguments().size(); i++) {
+
+            if (i < (this.getArguments().size() - 1)) {
+                sb.append(this.getArguments().get(i) + " ");
+            } else {
+                sb.append(this.getArguments().get(i));
+            }
+        }
+        sb.append(")");
+
+        return sb.toString();
+    }
+
+    public static Command createMoveFromList(List<String> list) {
+
+
+        if (list.size() < 2) {
+            return null;
+        }
+        
+        Command move = new Command();
+        move.player = list.get(0);
+        move.arguments = UnmodifiableList.unmodifiableList(list.subList(1, list.size()));
+
+        return move;
+    }
+
     public static Command createMoveFromLine(String line) {
         if (!line.matches("[a-zA-z0-9]+ \\(([a-zA-z0-9])+( [a-zA-z0-9]+)*\\)")) {
             System.out.println("Move format wrong");
