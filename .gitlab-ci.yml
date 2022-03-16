@@ -30,14 +30,8 @@ build:
 
 deploy:
   stage: deploy
-  dependencies:
-    - build
   script:
-    - "gradle publish $GRADLE_OPT $ARGS1 --info"
-  artifacts:
-    paths:
-      - "target/"
-      - ".gradle/"
+    - echo "${env.cibuild}"
 
 
 # deploy:
