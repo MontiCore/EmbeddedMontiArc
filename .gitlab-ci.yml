@@ -30,7 +30,7 @@ stages:
 deploy:
   stage: deploy
   script:
-    - echo "$env.cibuild"
+    - echo "$cibuild"
 
 
 # deploy:
