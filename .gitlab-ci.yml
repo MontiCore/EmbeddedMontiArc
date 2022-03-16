@@ -4,7 +4,7 @@ image: gradle:6.9.0-jdk11
 
 stages:
   - build
-  # - deploy
+  - deploy
   # - check
 
 before_script:
@@ -27,6 +27,17 @@ build:
       - "target/"
       - ".gradle/"
     expire_in: 1 week
+
+deploy:
+  stage: deploy
+  dependencies:
+    - build
+  script:
+    - "gradle publish $GRADLE_OPT $ARGS1 --info"
+  artifacts:
+    paths:
+      - "target/"
+      - ".gradle/"
 
 
 # deploy:
