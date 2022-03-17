@@ -51,6 +51,7 @@ void ${sub.getMethodName()}(const ${sub.getTypeNameInTargetLanguage()}::ConstPtr
         </#if>
 
     </#if>
+    ${sub.getMethodName()}_wasCalled = true;
 }
 </#macro>
 
