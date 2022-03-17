@@ -8,6 +8,11 @@ TestBuild:
   before_script:
     - apt-get update
     - apt-get install -y maven 
+  artifacts:
+    paths:
+      - "tictactoe-environment/target/"
+      - "tictactoe-agent/generator-target/"
+    expire_in: 1 week
   script:
     - cd tictactoe-environment
     - mvn clean package -s settings.xml
@@ -33,6 +38,7 @@ TestTrain:
 
   script:
       - cd tictactoe-environment
+      - ls -la
       - roscore &
       - sleep 2
       - java -cp "target/tictactoe-environment-1.0-SNAPSHOT.jar" de.gdl.rl.environment.games.tictactoe.TicTacToeEnv --training &
