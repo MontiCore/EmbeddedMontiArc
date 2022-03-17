@@ -10,3 +10,5 @@ TestBuild:
   script:
     - cd tictactoe-environment
     - mvn clean package -s settings.xml
+    - cd ../tictactoe-agent
+    - ./install.sh
