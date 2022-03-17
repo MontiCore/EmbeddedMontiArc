@@ -9,4 +9,4 @@ TestBuild:
     - apt-get install -y maven 
   script:
     - cd tictactoe-environment
-    - mvn clean build -s settings.xml
+    - mvn clean package -s settings.xml
