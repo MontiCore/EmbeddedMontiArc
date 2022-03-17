@@ -47,12 +47,14 @@ TestTrain:
       - apt-key adv --keyserver keyserver.ubuntu.com --recv-keys EF8406856DBFCA18
       - apt-get update
       - apt-get install -y swi-prolog
+      - apt install openjdk-11-jdk -y
 
   script:
       - cd tictactoe-environment
       - ls -la
       - roscore &
       - sleep 2
+      - java --version
       - java -cp "target/tictactoe-environment-1.0-SNAPSHOT.jar" de.gdl.rl.environment.games.tictactoe.TicTacToeEnv --training &
       - echo "waiting 15 ..."
       - sleep 15
