@@ -158,7 +158,7 @@ publishing {
             groupId = 'de.monticore.lang'
             artifactId = 'gdl'
             version = '7.1.0-SNAPSHOT'
-            from components.java
+            from components.shadow
         }
     }
     repositories.maven {
