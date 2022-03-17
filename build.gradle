@@ -159,7 +159,6 @@ publishing {
             artifactId = 'gdl'
             version = '7.1.0-SNAPSHOT'
             from components.java
-            artifact sourcesJar
             artifact shadowJar
         }
     }
