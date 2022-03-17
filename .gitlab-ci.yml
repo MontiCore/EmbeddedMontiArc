@@ -1,8 +1,9 @@
 stages:
-- linux
+- linuxBuild
+- linuxTrain
 
 TestBuild:
-  stage: linux
+  stage: linuxBuild
   image: registry.git.rwth-aachen.de/monticore/embeddedmontiarc/applications/reinforcement_learning/cartpole/rl-fix-new2:latest
   before_script:
     - apt-get update
@@ -13,3 +14,27 @@ TestBuild:
     - cd ../tictactoe-agent
     - chmod 777 *.sh
     - ./install.sh
+  
+TestTrain:
+  stage: linuxTrain
+  image: registry.git.rwth-aachen.de/monticore/embeddedmontiarc/applications/reinforcement_learning/cartpole/rl-fix-new2:latest
+  dependencies:
+    - TestBuild
+
+  before_script:
+      - apt-get update
+      - apt-get install -y maven
+      - apt-get install -y gnupg2
+      - echo "deb http://ppa.launchpad.net/swi-prolog/stable/ubuntu $(cat /etc/os-release | grep -oP -m 1 "VERSION_CODENAME=\K\w+") main" | tee -a /etc/apt/sources.list
+      - echo "deb-src http://ppa.launchpad.net/swi-prolog/stable/ubuntu $(cat /etc/os-release | grep -oP -m 1 "VERSION_CODENAME=\K\w+") main" | tee -a /etc/apt/sources.list
+      - apt-key adv --keyserver keyserver.ubuntu.com --recv-keys EF8406856DBFCA18
+      - apt-get update
+      - apt-get install -y swi-prolog
+
+  script:
+      - cd tictactoe-environment
+      - roscore &
+      - sleep 2
+      - java -cp "target/tictactoe-environment-1.0-SNAPSHOT.jar" de.gdl.rl.environment.games.tictactoe.TicTacToeEnv --training &
+      - echo "waiting 15 ..."
+      - sleep 15
