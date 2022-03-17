@@ -1,21 +1,32 @@
 stages:
-- linuxBuild
+- linuxBuildJava17
+- linuxBuildJava1_8
 - linuxTrain
 
-TestBuild:
-  stage: linuxBuild
+TestBuildJava17:
+  stage: linuxBuildJava17
+  image: maven:3.8.3-openjdk-17
+  artifacts:
+    paths:
+      - "tictactoe-environment/target/"
+    expireIn: 1 week
+  script:
+    - cd tictactoe-environment
+    - mvn clean package -s settings.xml
+
+TestBuildJava1_8:
+  stage: linuxBuildJava1_8
   image: registry.git.rwth-aachen.de/monticore/embeddedmontiarc/applications/reinforcement_learning/cartpole/rl-fix-new2:latest
+  dependencies:
+    - TestBuildJava17
   before_script:
     - apt-get update
     - apt-get install -y maven 
   artifacts:
     paths:
-      - "tictactoe-environment/target/"
       - "tictactoe-agent/generator-target/"
     expire_in: 1 week
   script:
-    - cd tictactoe-environment
-    - mvn clean package -s settings.xml
     - cd ../tictactoe-agent
     - chmod 777 *.sh
     - ./install.sh
@@ -24,7 +35,8 @@ TestTrain:
   stage: linuxTrain
   image: registry.git.rwth-aachen.de/monticore/embeddedmontiarc/applications/reinforcement_learning/cartpole/rl-fix-new2:latest
   dependencies:
-    - TestBuild
+    - TestBuildJava17
+    - TestBuildJava1_8
 
   before_script:
       - apt-get update
