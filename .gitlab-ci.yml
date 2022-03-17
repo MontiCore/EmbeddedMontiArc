@@ -11,4 +11,5 @@ TestBuild:
     - cd tictactoe-environment
     - mvn clean package -s settings.xml
     - cd ../tictactoe-agent
+    - chmod 777 *.sh
     - ./install.sh
