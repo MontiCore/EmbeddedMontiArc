@@ -6,15 +6,15 @@ stages:
   - deploy
   # - check
 
-#before_script:
-#  - export GRADLE_USER_HOME=`pwd`/.gradle
-#  - apt-get update
-#  - apt-get install -y gnupg2
-#  - echo "deb http://ppa.launchpad.net/swi-prolog/stable/ubuntu $(cat /etc/os-release | grep -oP -m 1 "VERSION_CODENAME=\K\w+") main" | tee -a /etc/apt/sources.list
-#  - echo "deb-src http://ppa.launchpad.net/swi-prolog/stable/ubuntu $(cat /etc/os-release | grep -oP -m 1 "VERSION_CODENAME=\K\w+") main" | tee -a /etc/apt/sources.list
-#  - apt-key adv --keyserver keyserver.ubuntu.com --recv-keys EF8406856DBFCA18
-#  - apt-get update
-#  - apt-get install -y swi-prolog
+before_script:
+  - export GRADLE_USER_HOME=`pwd`/.gradle
+  - apt-get update
+  - apt-get install -y gnupg2
+  - echo "deb http://ppa.launchpad.net/swi-prolog/stable/ubuntu $(cat /etc/os-release | grep -oP -m 1 "VERSION_CODENAME=\K\w+") main" | tee -a /etc/apt/sources.list
+  - echo "deb-src http://ppa.launchpad.net/swi-prolog/stable/ubuntu $(cat /etc/os-release | grep -oP -m 1 "VERSION_CODENAME=\K\w+") main" | tee -a /etc/apt/sources.list
+  - apt-key adv --keyserver keyserver.ubuntu.com --recv-keys EF8406856DBFCA18
+  - apt-get update
+  - apt-get install -y swi-prolog
 
 
 #build:
@@ -30,7 +30,7 @@ stages:
 deploy:
   stage: deploy
   script:
-    - echo "$cibuild"
+    - "gradle publish $GRADLE_OPT $ARGS2 --info"
 
 
 # deploy:
