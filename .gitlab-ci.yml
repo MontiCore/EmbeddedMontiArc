@@ -14,3 +14,4 @@ TestTrain:
 
   script:
       - cd tictactoe-environment
+      - java --version
