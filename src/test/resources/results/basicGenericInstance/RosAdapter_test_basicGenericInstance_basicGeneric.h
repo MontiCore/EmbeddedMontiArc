@@ -9,6 +9,9 @@ class RosAdapter_test_basicGenericInstance_basicGeneric: public IAdapter_test_ba
 	const int n = 3;
 	
 	test_basicGenericInstance_basicGeneric* component;
+	
+	bool _name1Callback_wasCalled;
+	
 	ros::Subscriber _name1Subscriber;
 	ros::Publisher _name1Publisher;
 	
@@ -19,6 +22,7 @@ class RosAdapter_test_basicGenericInstance_basicGeneric: public IAdapter_test_ba
 	
 	void init(test_basicGenericInstance_basicGeneric* comp){
 		this->component = comp;
+		_name1Callback_wasCalled = false;
 		char* tmp = strdup("");
 		int i = 0;
 		ros::init(i, &tmp, "RosAdapter_test_basicGenericInstance_basicGeneric_node");
@@ -29,6 +33,10 @@ class RosAdapter_test_basicGenericInstance_basicGeneric: public IAdapter_test_ba
 		_name1Publisher = node_handle.advertise<std_msgs::Float64MultiArray>("/name1",5);
 		
 		ros::spin();
+	}
+	
+	bool hasReceivedNewData() {
+		return true && _name1Callback_wasCalled;
 	}
 	
 	void _name1Callback(const std_msgs::Float64MultiArray::ConstPtr& msg){
@@ -50,6 +58,7 @@ class RosAdapter_test_basicGenericInstance_basicGeneric: public IAdapter_test_ba
 		}
 		
 		
+		_name1Callback_wasCalled = true;
 	}
 	
 	void publish_name1Publisher(){
@@ -67,6 +76,8 @@ class RosAdapter_test_basicGenericInstance_basicGeneric: public IAdapter_test_ba
 	}
 	
 	void tick(){
+		_name1Callback_wasCalled = false;
+		
 		publish_name1Publisher();
 	}
 	

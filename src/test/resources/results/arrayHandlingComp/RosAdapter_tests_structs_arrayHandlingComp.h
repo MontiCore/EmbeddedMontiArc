@@ -11,6 +11,12 @@
 class RosAdapter_tests_structs_arrayHandlingComp: public IAdapter_tests_structs_arrayHandlingComp{
 	
 	tests_structs_arrayHandlingComp* component;
+	
+	bool _name1Callback_wasCalled;
+	bool _name2Callback_wasCalled;
+	bool _name3Callback_wasCalled;
+	bool _name4Callback_wasCalled;
+	
 	ros::Subscriber _name1Subscriber;
 	ros::Subscriber _name2Subscriber;
 	ros::Subscriber _name3Subscriber;
@@ -25,6 +31,10 @@ class RosAdapter_tests_structs_arrayHandlingComp: public IAdapter_tests_structs_
 	
 	void init(tests_structs_arrayHandlingComp* comp){
 		this->component = comp;
+		_name1Callback_wasCalled = false;
+		_name2Callback_wasCalled = false;
+		_name3Callback_wasCalled = false;
+		_name4Callback_wasCalled = false;
 		char* tmp = strdup("");
 		int i = 0;
 		ros::init(i, &tmp, "RosAdapter_tests_structs_arrayHandlingComp_node");
@@ -39,6 +49,10 @@ class RosAdapter_tests_structs_arrayHandlingComp: public IAdapter_tests_structs_
 		_name6Publisher = node_handle.advertise<std_msgs::Int32MultiArray>("/name6",5);
 		
 		ros::spin();
+	}
+	
+	bool hasReceivedNewData() {
+		return true && _name1Callback_wasCalled && _name2Callback_wasCalled && _name3Callback_wasCalled && _name4Callback_wasCalled;
 	}
 	
 	void _name1Callback(const std_msgs::Float64MultiArray::ConstPtr& msg){
@@ -60,6 +74,7 @@ class RosAdapter_tests_structs_arrayHandlingComp: public IAdapter_tests_structs_
 		}
 		
 		
+		_name1Callback_wasCalled = true;
 	}
 	void _name2Callback(const std_msgs::ByteMultiArray::ConstPtr& msg){
 		
@@ -80,6 +95,7 @@ class RosAdapter_tests_structs_arrayHandlingComp: public IAdapter_tests_structs_
 		}
 		
 		
+		_name2Callback_wasCalled = true;
 	}
 	void _name3Callback(const nav_msgs::Path::ConstPtr& msg){
 		
@@ -100,6 +116,7 @@ class RosAdapter_tests_structs_arrayHandlingComp: public IAdapter_tests_structs_
 		}
 		
 		
+		_name3Callback_wasCalled = true;
 	}
 	void _name4Callback(const nav_msgs::Path::ConstPtr& msg){
 		
@@ -120,6 +137,7 @@ class RosAdapter_tests_structs_arrayHandlingComp: public IAdapter_tests_structs_
 		}
 		
 		
+		_name4Callback_wasCalled = true;
 	}
 	
 	void publish_name5Publisher(){
@@ -150,6 +168,11 @@ class RosAdapter_tests_structs_arrayHandlingComp: public IAdapter_tests_structs_
 	}
 	
 	void tick(){
+		_name1Callback_wasCalled = false;
+		_name2Callback_wasCalled = false;
+		_name3Callback_wasCalled = false;
+		_name4Callback_wasCalled = false;
+		
 		publish_name5Publisher();
 		publish_name6Publisher();
 	}
