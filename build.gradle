@@ -154,11 +154,13 @@ jar.dependsOn shadowJar
 publishing {
     // configure what artifacts to publish
     publications {
-        shadow(MavenPublication) {
+        mavenJava(MavenPublication) {
             groupId = 'de.monticore.lang'
             artifactId = 'gdl'
             version = '7.1.0-SNAPSHOT'
-            from components.shadow
+            from components.java
+            artifact sourcesJar
+            artifact shadowJar
         }
     }
     repositories.maven {
