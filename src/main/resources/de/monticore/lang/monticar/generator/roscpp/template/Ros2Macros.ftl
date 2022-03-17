@@ -52,7 +52,6 @@ void ${sub.getMethodName()}(const ${sub.getTypeNameInTargetLanguage()}::SharedPt
         </#if>
 
     </#if>
-    ${sub.getMethodName()}_wasCalled = true;
 }
 </#macro>
 
