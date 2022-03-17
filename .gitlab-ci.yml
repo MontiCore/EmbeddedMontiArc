@@ -3,6 +3,7 @@
 image: gradle:6.9.0-jdk11
 
 stages:
+  - build
   - deploy
   # - check
 
@@ -17,15 +18,15 @@ before_script:
   - apt-get install -y swi-prolog
 
 
-#build:
-#  stage: build
-#  script:
-#    - "gradle build $GRADLE_OPT $ARGS1 --info"
-#  artifacts:
-#    paths:
-#      - "target/"
-#      - ".gradle/"
-#    expire_in: 1 week
+build:
+ stage: build
+ script:
+   - "gradle build $GRADLE_OPT $ARGS1 --info"
+ artifacts:
+   paths:
+     - "target/"
+     - ".gradle/"
+   expire_in: 1 week
 
 deploy:
   stage: deploy
