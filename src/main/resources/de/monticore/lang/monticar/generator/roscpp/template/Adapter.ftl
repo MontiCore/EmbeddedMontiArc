@@ -53,10 +53,6 @@ void init(${model.getCompName()}* comp){
     <@m.mwstart/>
 }
 
-bool hasReceivedNewData() {
-    return true<#list model.getSubscribers() as sub> && ${sub.getMethodName()}_wasCalled</#list>;
-}
-
 <#list model.getSubscribers() as sub>
     <@m.callback sub=sub/>
 </#list>
