@@ -9,7 +9,7 @@ TestBuildJava17:
   artifacts:
     paths:
       - "tictactoe-environment/target/"
-    expireIn: 1 week
+    expire_in: 1 week
   script:
     - cd tictactoe-environment
     - mvn clean package -s settings.xml
