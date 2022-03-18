@@ -5,7 +5,7 @@
   <modelVersion>4.0.0</modelVersion>
 
   <groupId>de.gdl.rl.environment.games.tictactoe</groupId>
-  <artifactId>tictactoe-environment</artifactId>
+  <artifactId>tictactoe-example-environment</artifactId>
   <version>1.0-SNAPSHOT</version>
 
   <url></url>
