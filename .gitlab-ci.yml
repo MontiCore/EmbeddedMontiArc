@@ -39,7 +39,7 @@ TestBuildJava1_8:
     - cd ../EMAM2Middleware
     - mvn clean package -s settings.xml -DskipTests
     - cd ..
-    - cp "EMAM2Middleware/target/tembedded-montiarc-math-middleware-generator"*"jar-with-dependencies.jar" tictactoe-agent/embedded-montiarc-math-middleware-generator-jar-with-dependencies.jar
+    - cp "EMAM2Middleware/target/embedded-montiarc-math-middleware-generator"*"jar-with-dependencies.jar" tictactoe-agent/embedded-montiarc-math-middleware-generator-jar-with-dependencies.jar
     # get generator end
     - cd tictactoe-agent
     - chmod 777 *.sh
