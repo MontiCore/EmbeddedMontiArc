@@ -16,11 +16,11 @@ TestTrainC:
     - git clone --branch ba-muenker --single-branch https://gitlab-ci-token:${CI_JOB_TOKEN}@git.rwth-aachen.de/monticore/EmbeddedMontiArc/generators/EMAM2Middleware.git
 
     - cd EMAM2RosCpp
-    - mvn clean install -s settings.xml -DskipTests
+    - mvn clean install -s settings.xml
     - cd ../CNNArch2Gluon
-    - mvn clean install -s settings.xml -DskipTests
+    - mvn clean install -s settings.xml
     - cd ../EMAM2Middleware
-    - mvn clean package -s settings.xml -DskipTests
+    - mvn clean package -s settings.xml
 
 .TestBuildJava17:
   stage: linuxBuildJava17
