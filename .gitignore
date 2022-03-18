@@ -12,3 +12,19 @@ target/
 output.txt
 .DS_Store
 
+examples/tictactoe-example-environment/target/
+examples/tictactoe-example-environment/target/
+examples/tictactoe-example-environment/.project
+examples/tictactoe-example-environment/.settings/
+examples/tictactoe-example-environment/.classpath
+examples/tictactoe-example-environment/*.log
+examples/tictactoe-example-environment/*.iml
+examples/tictactoe-example-environment/.idea/
+examples/tictactoe-example-environment/.gradle/
+examples/tictactoe-example-environment/bin/
+examples/tictactoe-example-environment/.vsls.json
+examples/tictactoe-example-environment/output.txt
+examples/tictactoe-example-environment/.DS_Store
+examples/tictactoe-example-environment/.vscode/
+examples/.DS_Store
+doc/.DS_Store
