@@ -70,12 +70,15 @@ ConcreteLocalAgent agent = new ConcreteLocalAgent()
 ```java
 this.addToTrainingConfiguration(exampleTrainingAgent);
 ```
-- Agents can be added to the training configuration in the constructor as follows:
+- Agents can be added to the gaming configuration in the constructor as follows:
 ```java
 this.addToGamingConfiguration(exampleAgent);
 ```
 ## 4. Compiling environment
-- Prerequisites for compiling: Java 17 and Maven 3.8.3
+### Prerequisites
+- Java 17 or newer
+- Maven 3.8.3 or newer
+### Compilation
 ```bash
 mvn package -s settings.xml
 ```
