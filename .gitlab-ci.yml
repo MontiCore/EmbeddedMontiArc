@@ -1,9 +1,25 @@
 stages:
-- linuxBuildJava17
-- linuxBuildJava1_8
-- linuxTrain
+ - linuxTrain2
+#- linuxBuildJava17
+#- linuxBuildJava1_8
+#- linuxTrain
 
-TestBuildJava17:
+TestTrainC:
+  stage: linuxTrain2
+  image: registry.git.rwth-aachen.de/monticore/embeddedmontiarc/applications/reinforcement_learning/cartpole/rl-fix-new2:latest
+  script:
+    - git clone --branch ba-muenker --single-branch https://gitlab-ci-token:${CI_JOB_TOKEN}@git.rwth-aachen.de/monticore/EmbeddedMontiArc/generators/CNNArch2Gluon.git
+    - git clone --branch ba-muenker --single-branch https://gitlab-ci-token:${CI_JOB_TOKEN}@git.rwth-aachen.de/monticore/EmbeddedMontiArc/generators/EMAM2RosCpp.git
+    - git clone --branch ba-muenker --single-branch https://gitlab-ci-token:${CI_JOB_TOKEN}@git.rwth-aachen.de/monticore/EmbeddedMontiArc/generators/EMAM2Middleware.git
+
+    - cd EMAM2RosCpp
+    - mvn clean install -s settings.xml -DskipTests
+    - cd ../CNNArch2Gluon
+    - mvn clean install -s settings.xml -DskipTests
+    - cd ../EMAM2Middleware
+    - mvn clean package -s settings.xml -DskipTests
+
+.TestBuildJava17:
   stage: linuxBuildJava17
   image: maven:3.8.3-openjdk-17
   artifacts:
@@ -14,7 +30,7 @@ TestBuildJava17:
     - cd tictactoe-environment
     - mvn clean package -s settings.xml
 
-TestBuildJava1_8:
+.TestBuildJava1_8:
   stage: linuxBuildJava1_8
   image: registry.git.rwth-aachen.de/monticore/embeddedmontiarc/applications/reinforcement_learning/cartpole/rl-fix-new2:latest
   dependencies:
@@ -31,7 +47,7 @@ TestBuildJava1_8:
     - chmod 777 *.sh
     - ./install.sh
   
-TestTrain:
+.TestTrain:
   stage: linuxTrain
   image: registry.git.rwth-aachen.de/monticore/embeddedmontiarc/applications/reinforcement_learning/cartpole/rl-fix-new2:latest
   dependencies:
