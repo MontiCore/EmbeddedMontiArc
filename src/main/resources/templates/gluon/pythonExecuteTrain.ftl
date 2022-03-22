@@ -88,20 +88,20 @@
 </#list>
 <#list tc.getStreamOutputNames(networkInstruction.body, true) as outputName>
 <#if tc.getNameWithoutIndex(outputName) == tc.outputName>
+                    if (train_mask is not None or test_mask is not None) and epoch == 0:
+                        train_mask = self.get_mask_array(${outputName}[0].shape[0], train_mask)
+                        test_mask = self.get_mask_array(${outputName}[0].shape[0], test_mask)
 <#if tc.architecture.useDgl>
-                    if multi_graph:
-                        [lossList[i].append(loss_function(${outputName}[i], labels[${tc.getIndex(outputName, true)}][i])) for i in range(num_pus)]
-                    else:
-                        outputs = [${outputName}[0]]
-                        train_samples = graph_[0].ndata['train_mask'].sum().asscalar()
-                        [lossList[i].append(loss_function(mx.nd.squeeze(${outputName}[i]), mx.nd.squeeze(labels[${tc.getIndex(outputName, true)}][i]), mx.nd.expand_dims(graph_[0].ndata['train_mask'], 1)).sum() / train_samples) for i in range(num_pus)]
-<#else>
-                    if train_mask != None:
-                        outputs = [${outputName}[0]]
-                        [lossList[i].append(loss_function(mx.nd.squeeze(${outputName}[i]), mx.nd.squeeze(labels[${tc.getIndex(outputName, true)}][i]), mx.nd.expand_dims(self.get_mask_array(${outputName}[0].shape[0], train_mask), 1)).sum() / (train_mask[1] - train_mask[0])) for i in range(num_pus)]
-                    else:
-                        [lossList[i].append(loss_function(${outputName}[i], labels[${tc.getIndex(outputName, true)}][i])) for i in range(num_pus)]
+                    elif not multi_graph and epoch == 0:
+                        train_mask = graph_[0].ndata['train_mask']
+                        test_mask = graph_[0].ndata['test_mask']
 </#if>
+                    if train_mask is not None:
+                        outputs = [${outputName}[0]]
+                        [lossList[i].append(loss_function(mx.nd.squeeze(${outputName}[i]), mx.nd.squeeze(labels[${tc.getIndex(outputName, true)}][i]), mx.nd.expand_dims(train_mask, 1)).sum() / train_mask.sum().asscalar()) for i in range(num_pus)]
+                    else:
+                        [lossList[i].append(loss_function(${outputName}[i], labels[${tc.getIndex(outputName, true)}][i])) for i in range(num_pus)]
+
 </#if>
 </#list>
 

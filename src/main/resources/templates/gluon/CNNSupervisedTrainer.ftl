@@ -669,11 +669,7 @@ class ${tc.fileNameWithoutEnding}:
             test_iter.reset()
             metric = mx.metric.create(eval_metric, **eval_metric_params)
             for batch_i, batch in enumerate(test_iter):
-<#if tc.architecture.useDgl>
-                if multi_graph:
-<#else>
-                if test_mask == None: <#-- Fix indentation -->
-</#if>
+                if test_mask is None:
 
 <#if episodicReplayVisited?? && anyEpisodicLocalAdaptation && !containsUnrollNetwork>
 <#include "pythonExecuteTest.ftl">
@@ -703,11 +699,7 @@ class ${tc.fileNameWithoutEnding}:
 <#include "saveAttentionImageTest.ftl">
 
                 loss = 0
-<#if tc.architecture.useDgl>
-                if multi_graph:
-<#else>
-                if test_mask == None:
-</#if>
+                if test_mask is None:
                     for element in lossList:
                         loss = loss + element
                     global_loss_test += loss.sum().asscalar()
@@ -720,17 +712,10 @@ class ${tc.fileNameWithoutEnding}:
                         predictions.append(mx.nd.argmax(output_name, axis=1))
                     else:
                         predictions.append(output_name)
-<#if tc.architecture.useDgl>
-                if not multi_graph:
-                    metric.update(preds=predictions[0], labels=mx.nd.squeeze(labels[0][0]), mask=graph_[0].ndata['test_mask'])
+                if test_mask is not None:
+                    metric.update(preds=predictions[0], labels=mx.nd.squeeze(labels[0][0]), mask=test_mask)
                 else:
                     metric.update(preds=predictions, labels=[labels[j] for j in range(len(labels))])
-<#else>
-                if test_mask != None:
-                    metric.update(preds=predictions[0], labels=mx.nd.squeeze(labels[0][0]), mask=self.get_mask_array(predictions[0].shape[0], test_mask))
-                else:
-                    metric.update(preds=predictions, labels=[labels[j] for j in range(len(labels))])
-</#if>
             global_loss_test /= (test_batches * single_pu_batch_size)
 </#if>
             test_metric_name = metric.get()[0]
@@ -780,6 +765,8 @@ class ${tc.fileNameWithoutEnding}:
 
 
     def get_mask_array(self, shape, mask):
+        if mask is None:
+            return None
         idx = range(mask[0], mask[1])
         mask_array = np.zeros(shape)
         mask_array[idx] = 1
