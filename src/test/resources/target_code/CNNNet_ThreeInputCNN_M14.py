@@ -38,14 +38,12 @@ class Padding(gluon.HybridBlock):
             constant_value=0)
         return x
 
-
 class NoNormalization(gluon.HybridBlock):
     def __init__(self, **kwargs):
         super(NoNormalization, self).__init__(**kwargs)
 
     def hybrid_forward(self, F, x):
         return x
-
 
 class Reshape(gluon.HybridBlock):
     def __init__(self, shape, **kwargs):
@@ -520,6 +518,7 @@ class EpisodicMemory(EpisodicReplayMemoryInterface):
             elif key.startswith("labels_"):
                 self.label_memory.append(mem_dict[key])
 
+
 class Reparameterize(gluon.HybridBlock):
     def __init__(self, shape, pdf="normal", **kwargs):
         super(Reparameterize, self).__init__(**kwargs)
@@ -566,9 +565,6 @@ class VectorQuantize(gluon.HybridBlock):
         return quantized
 
 #Stream 0
-
-
-
 class Net_0(gluon.HybridBlock):
     def __init__(self, data_mean=None, data_std=None, mx_context=None, batch_size=None, **kwargs):
         super(Net_0, self).__init__(**kwargs)
@@ -705,7 +701,6 @@ class Net_0(gluon.HybridBlock):
 
             pass
 
-
     def hybrid_forward(self, F, data_0_, data_1_, data_2_):
         data_0_ = self.input_normalization_data_0_(data_0_)
         data_1_ = self.input_normalization_data_1_(data_1_)
@@ -755,4 +750,3 @@ class Net_0(gluon.HybridBlock):
         predictions_ = F.identity(softmax8_)
 
         return [[predictions_]]
-

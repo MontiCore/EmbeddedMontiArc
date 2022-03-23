@@ -38,14 +38,12 @@ class Padding(gluon.HybridBlock):
             constant_value=0)
         return x
 
-
 class NoNormalization(gluon.HybridBlock):
     def __init__(self, **kwargs):
         super(NoNormalization, self).__init__(**kwargs)
 
     def hybrid_forward(self, F, x):
         return x
-
 
 class Reshape(gluon.HybridBlock):
     def __init__(self, shape, **kwargs):
@@ -520,6 +518,7 @@ class EpisodicMemory(EpisodicReplayMemoryInterface):
             elif key.startswith("labels_"):
                 self.label_memory.append(mem_dict[key])
 
+
 class Reparameterize(gluon.HybridBlock):
     def __init__(self, shape, pdf="normal", **kwargs):
         super(Reparameterize, self).__init__(**kwargs)
@@ -566,9 +565,6 @@ class VectorQuantize(gluon.HybridBlock):
         return quantized
 
 #Stream 0
-
-
-
 class Net_0(gluon.HybridBlock):
     def __init__(self, data_mean=None, data_std=None, mx_context=None, batch_size=None, **kwargs):
         super(Net_0, self).__init__(**kwargs)
@@ -596,7 +592,6 @@ class Net_0(gluon.HybridBlock):
 
             pass
 
-
     def hybrid_forward(self, F, source_, encoder_state_):
         source_ = self.input_normalization_source_(source_)
         embedding1_ = self.embedding1_(source_)
@@ -605,9 +600,6 @@ class Net_0(gluon.HybridBlock):
 
         return [[fc_output_, encoder_state_, encoder_output_]]
 #Stream 1
-
-
-
 class Net_1(gluon.HybridBlock):
     def __init__(self, data_mean=None, data_std=None, mx_context=None, batch_size=None, **kwargs):
         super(Net_1, self).__init__(**kwargs)
@@ -616,15 +608,11 @@ class Net_1(gluon.HybridBlock):
 
             pass
 
-
     def hybrid_forward(self, F, const1_):
         target_0_ = F.identity(const1_)
 
         return [[target_0_]]
 #Stream 2
-
-
-
 class Net_2(gluon.HybridBlock):
     def __init__(self, data_mean=None, data_std=None, mx_context=None, batch_size=None, **kwargs):
         super(Net_2, self).__init__(**kwargs)
@@ -634,7 +622,6 @@ class Net_2(gluon.HybridBlock):
 
             pass
 
-
     def hybrid_forward(self, F, encoder_state_):
 
         split1_ = F.split(encoder_state_, axis=1, num_outputs=2)
@@ -643,9 +630,6 @@ class Net_2(gluon.HybridBlock):
 
         return [[decoder_state_]]
 #Stream 3
-
-
-
 class Net_3(gluon.HybridBlock):
     def __init__(self, data_mean=None, data_std=None, mx_context=None, batch_size=None, **kwargs):
         super(Net_3, self).__init__(**kwargs)
@@ -673,7 +657,6 @@ class Net_3(gluon.HybridBlock):
 
             pass
 
-
     def hybrid_forward(self, F, decoder_state_, fc_output_, target_999999_):
         repeat4_1_1_1_ = F.repeat(decoder_state_, repeats=30, axis=1)
         concatenate5_1_1_ = F.concat(repeat4_1_1_1_, fc_output_, dim=2)
@@ -692,4 +675,3 @@ class Net_3(gluon.HybridBlock):
         target_1000000_ = F.identity(argmax8_)
 
         return [[target_1000000_, decoder_state_, decoder_output_]]
-

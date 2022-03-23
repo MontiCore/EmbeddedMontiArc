@@ -171,6 +171,28 @@ class ACCURACY_IGNORE_LABEL(mx.metric.EvalMetric):
             self.sum_metric += correct
             self.num_inst += total
 
+
+@mx.metric.register
+class ACCURACY_MASKED(mx.metric.EvalMetric):
+    def __init__(self, axis=1, name='accuracy_masked', output_names=None, label_names=None):
+        super(ACCURACY_MASKED, self).__init__(name, axis=axis, output_names=output_names, label_names=label_names)
+        self.axis = axis
+
+    def update(self, labels, preds, mask):
+        mx.metric.check_label_shapes(labels, preds)
+        if preds.shape != labels.shape:
+            preds = mx.nd.argmax(preds, axis=self.axis, keepdims=True)
+        labels = labels.astype('int32')
+        preds = preds.astype('int32').as_in_context(labels.context)
+        mask = mask.astype('int32').as_in_context(labels.context)
+        mx.metric.check_label_shapes(labels, preds)
+
+        correct = ((preds == labels)*mask).sum().asscalar()
+        total = mask.sum().asscalar()
+        self.sum_metric += correct
+        self.num_inst += total
+
+
 @mx.metric.register
 class BLEU(mx.metric.EvalMetric):
     N = 4
@@ -315,6 +337,9 @@ class CNNSupervisedTrainer_ThreeInputCNN_M14:
               shuffle_data=False,
               clip_global_grad_norm=None,
               preprocessing=False,
+              train_mask=None,
+              test_mask=None,
+              multi_graph=False,
               onnx_export=False):
         num_pus = 1
         if context == 'gpu':
@@ -336,7 +361,7 @@ class CNNSupervisedTrainer_ThreeInputCNN_M14:
             preproc_lib = "CNNPreprocessor_ThreeInputCNN_M14_executor"
             train_iter, test_iter, data_mean, data_std, train_images, test_images = self._data_loader.load_preprocessed_data(batch_size, preproc_lib, shuffle_data)
         else:
-            train_iter, test_iter, data_mean, data_std, train_images, test_images = self._data_loader.load_data(batch_size, shuffle_data)
+            train_iter, test_iter, data_mean, data_std, train_images, test_images, train_graph, test_graph = self._data_loader.load_data(batch_size, shuffle_data, multi_graph)
 
         if 'weight_decay' in optimizer_params:
             optimizer_params['wd'] = optimizer_params['weight_decay']
@@ -438,7 +463,7 @@ class CNNSupervisedTrainer_ThreeInputCNN_M14:
                     preproc_lib = "CNNPreprocessor_ThreeInputCNN_M14_executor"
                     train_iter, test_iter, data_mean, data_std, train_images, test_images = self._data_loader.load_preprocessed_data(batch_size, preproc_lib, shuffle_data)
                 else:
-                    train_iter, test_iter, data_mean, data_std, train_images, test_images = self._data_loader.load_data(batch_size, shuffle_data)
+                    train_iter, test_iter, data_mean, data_std, train_images, test_images, train_graph, test_graph = self._data_loader.load_data(batch_size, shuffle_data, multi_graph)
 
             global_loss_train = 0.0
             train_batches = 0
@@ -464,7 +489,15 @@ class CNNSupervisedTrainer_ThreeInputCNN_M14:
 
                     net_ret = [self._networks[0](data_0_[i], data_1_[i], data_2_[i]) for i in range(num_pus)]
                     predictions_ = [net_ret[i][0][0] for i in range(num_pus)]
-                    [lossList[i].append(loss_function(predictions_[i], labels[0][i])) for i in range(num_pus)]
+                    if (train_mask is not None or test_mask is not None) and epoch == 0:
+                        train_mask = self.get_mask_array(predictions_[0].shape[0], train_mask)
+                        test_mask = self.get_mask_array(predictions_[0].shape[0], test_mask)
+                    if train_mask is not None:
+                        outputs = [predictions_[0]]
+                        [lossList[i].append(loss_function(mx.nd.squeeze(predictions_[i]), mx.nd.squeeze(labels[0][i]), mx.nd.expand_dims(train_mask, 1)).sum() / train_mask.sum().asscalar()) for i in range(num_pus)]
+                    else:
+                        [lossList[i].append(loss_function(predictions_[i], labels[0][i])) for i in range(num_pus)]
+
 
 
                     losses = [0]*num_pus
@@ -600,8 +633,8 @@ class CNNSupervisedTrainer_ThreeInputCNN_M14:
             test_iter.reset()
             metric = mx.metric.create(eval_metric, **eval_metric_params)
             for batch_i, batch in enumerate(test_iter):
-                if True: 
-                                                   
+                if test_mask is None:
+
                     labels = [batch.label[i].as_in_context(mx_context[0]) for i in range(1)]
                     data_0_ = batch.data[0].as_in_context(mx_context[0])
                     data_1_ = batch.data[1].as_in_context(mx_context[0])
@@ -664,10 +697,10 @@ class CNNSupervisedTrainer_ThreeInputCNN_M14:
                         plt.close()
 
                 loss = 0
-                for element in lossList:
-                    loss = loss + element
-
-                global_loss_test += loss.sum().asscalar()
+                if test_mask is None:
+                    for element in lossList:
+                        loss = loss + element
+                    global_loss_test += loss.sum().asscalar()
 
                 test_batches += 1
 
@@ -677,9 +710,10 @@ class CNNSupervisedTrainer_ThreeInputCNN_M14:
                         predictions.append(mx.nd.argmax(output_name, axis=1))
                     else:
                         predictions.append(output_name)
-
-                metric.update(preds=predictions, labels=[labels[j] for j in range(len(labels))])
-
+                if test_mask is not None:
+                    metric.update(preds=predictions[0], labels=mx.nd.squeeze(labels[0][0]), mask=test_mask)
+                else:
+                    metric.update(preds=predictions, labels=[labels[j] for j in range(len(labels))])
             global_loss_test /= (test_batches * single_pu_batch_size)
             test_metric_name = metric.get()[0]
             test_metric_score = metric.get()[1]
@@ -697,14 +731,27 @@ class CNNSupervisedTrainer_ThreeInputCNN_M14:
         for i, network in self._networks.items():
             network.save_parameters(self.parameter_path(i) + '-' + str((num_epoch-1) + begin_epoch).zfill(4) + '.params')
             network.export(self.parameter_path(i) + '_newest', epoch=0)
-
             if onnx_export:
                 from mxnet.contrib import onnx as onnx_mxnet
                 input_shapes = [(1,) + d.shape[1:] for _, d in test_iter.data]
                 model_path = self.parameter_path(i) + '_newest'
                 onnx_mxnet.export_model(model_path+'-symbol.json', model_path+'-0000.params', input_shapes, np.float32, model_path+'.onnx')
 
-            loss_function.export(self.parameter_path(i) + '_newest_loss', epoch=0)
+            try:
+                loss_function.export(self.parameter_path(i) + '_newest_loss', epoch=0)
+            except RuntimeError:
+                logging.info("Forward for loss functions was not run, export is not possible.")
+
+
+    def get_mask_array(self, shape, mask):
+        if mask is None:
+            return None
+        idx = range(mask[0], mask[1])
+        mask_array = np.zeros(shape)
+        mask_array[idx] = 1
+        mask_array = mx.nd.array(mask_array)
+        return mask_array
+
 
     def parameter_path(self, index):
         return self._net_creator._model_dir_ + self._net_creator._model_prefix_ + '_' + str(index)

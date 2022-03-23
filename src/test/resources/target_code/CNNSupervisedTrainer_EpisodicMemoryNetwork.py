@@ -568,13 +568,15 @@ class CNNSupervisedTrainer_EpisodicMemoryNetwork:
                         episodic_store_buffer[0][i] = temp_buffer_data
 
                     softmax_ = [net_ret[i][0][0] for i in range(num_pus)]
-                    if train_mask != None:
-                        outputs = []
-                        outputs.append(softmax_[0])
-                        train_samples = train_mask[1] - train_mask[0]
-                        [lossList[i].append(loss_function(mx.nd.squeeze(softmax_[i]), mx.nd.squeeze(labels[0][i]), self.get_mask_array(softmax_[0].shape[0], train_mask)).sum() / train_samples) for i in range(num_pus)]
+                    if (train_mask is not None or test_mask is not None) and epoch == 0:
+                        train_mask = self.get_mask_array(softmax_[0].shape[0], train_mask)
+                        test_mask = self.get_mask_array(softmax_[0].shape[0], test_mask)
+                    if train_mask is not None:
+                        outputs = [softmax_[0]]
+                        [lossList[i].append(loss_function(mx.nd.squeeze(softmax_[i]), mx.nd.squeeze(labels[0][i]), mx.nd.expand_dims(train_mask, 1)).sum() / train_mask.sum().asscalar()) for i in range(num_pus)]
                     else:
                         [lossList[i].append(loss_function(softmax_[i], labels[0][i])) for i in range(num_pus)]
+
 
 
                     losses = [0]*num_pus
@@ -616,6 +618,7 @@ class CNNSupervisedTrainer_EpisodicMemoryNetwork:
 
                         loss_avg = loss_total / (batch_size * log_period)
                         loss_total = 0
+
                         logging.info("Epoch[%d] Batch[%d] Speed: %.2f samples/sec Loss: %.5f" % (epoch, batch_i, speed, loss_avg))
                         
                         avg_speed += speed
@@ -734,7 +737,7 @@ class CNNSupervisedTrainer_EpisodicMemoryNetwork:
             test_iter.reset()
             metric = mx.metric.create(eval_metric, **eval_metric_params)
             for batch_i, batch in enumerate(test_iter):
-                if test_mask == None: 
+                if test_mask is None:
 
                     labels = [batch.label[i].as_in_context(mx_context[0]) for i in range(1)]
                     data_ = batch.data[0].as_in_context(mx_context[0])
@@ -832,6 +835,7 @@ class CNNSupervisedTrainer_EpisodicMemoryNetwork:
             metric_file = open(self._net_creator._model_dir_ + 'metric.txt', 'w')
             metric_file.write(test_metric_name + " " + str(test_metric_score))
             metric_file.close()
+
             logging.info("Epoch[%d] Train metric: %f, Test metric: %f, Train loss: %f, Test loss: %f" % (epoch, train_metric_score, test_metric_score, global_loss_train, global_loss_test))
 
             if (epoch+1) % checkpoint_period == 0:
@@ -864,6 +868,8 @@ class CNNSupervisedTrainer_EpisodicMemoryNetwork:
 
 
     def get_mask_array(self, shape, mask):
+        if mask is None:
+            return None
         idx = range(mask[0], mask[1])
         mask_array = np.zeros(shape)
         mask_array[idx] = 1

@@ -38,14 +38,12 @@ class Padding(gluon.HybridBlock):
             constant_value=0)
         return x
 
-
 class NoNormalization(gluon.HybridBlock):
     def __init__(self, **kwargs):
         super(NoNormalization, self).__init__(**kwargs)
 
     def hybrid_forward(self, F, x):
         return x
-
 
 class Reshape(gluon.HybridBlock):
     def __init__(self, shape, **kwargs):
@@ -520,6 +518,7 @@ class EpisodicMemory(EpisodicReplayMemoryInterface):
             elif key.startswith("labels_"):
                 self.label_memory.append(mem_dict[key])
 
+
 class Reparameterize(gluon.HybridBlock):
     def __init__(self, shape, pdf="normal", **kwargs):
         super(Reparameterize, self).__init__(**kwargs)
@@ -687,9 +686,6 @@ class EpisodicSubNet_3(gluon.HybridBlock):
                 ret.append(elem)
         return [ret, [memory3_full_, ind_memory3_]]
 
-
-
-
 class Net_0(gluon.HybridBlock):
     def __init__(self, data_mean=None, data_std=None, mx_context=None, batch_size=None, **kwargs):
         super(Net_0, self).__init__(**kwargs)
@@ -710,11 +706,9 @@ class Net_0(gluon.HybridBlock):
 
             pass
 
-
     def hybrid_forward(self, F, data_):
         episodicsubnet0_ = self.episodicsubnet0_(data_)  
         episodicsubnet1_ = self.episodic_sub_nets[0](*episodicsubnet0_[0])
         episodicsubnet2_ = self.episodic_sub_nets[1](*episodicsubnet1_[0])
         episodicsubnet3_ = self.episodic_sub_nets[2](*episodicsubnet2_[0])
         return [episodicsubnet3_[0], [episodicsubnet1_[1], episodicsubnet2_[1], episodicsubnet3_[1], ]]
-
