@@ -590,9 +590,7 @@ class ${tc.fileNameWithoutEnding}:
 
                         loss_avg = loss_total / (batch_size * log_period)
                         loss_total = 0
-<#if tc.architecture.useDgl>
-                        print("Epoch[%d] Batch[%d] Speed: %.2f samples/sec Loss: %.5f" % (epoch, batch_i, speed, loss_avg))
-</#if>
+
                         logging.info("Epoch[%d] Batch[%d] Speed: %.2f samples/sec Loss: %.5f" % (epoch, batch_i, speed, loss_avg))
                         
                         avg_speed += speed
@@ -724,9 +722,7 @@ class ${tc.fileNameWithoutEnding}:
             metric_file = open(self._net_creator._model_dir_ + 'metric.txt', 'w')
             metric_file.write(test_metric_name + " " + str(test_metric_score))
             metric_file.close()
-<#if tc.architecture.useDgl>
-            print("Epoch[%d] Train metric: %f, Test metric: %f, Train loss: %f, Test loss: %f" % (epoch, train_metric_score, test_metric_score, global_loss_train, global_loss_test))
-</#if>
+
             logging.info("Epoch[%d] Train metric: %f, Test metric: %f, Train loss: %f, Test loss: %f" % (epoch, train_metric_score, test_metric_score, global_loss_train, global_loss_test))
 
             if (epoch+1) % checkpoint_period == 0:
