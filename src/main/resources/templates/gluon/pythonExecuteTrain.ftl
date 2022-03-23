@@ -3,26 +3,21 @@
 <#assign input_index = 0>
 <#if tc.architecture.useDgl>
                     train_data_index = 0
-                    if multi_graph:
-                        graph_ = [dgl.batch(train_graph[batch_size*train_batches:min(len(train_graph), batch_size*(train_batches+1))])]
-                    else:
-                        graph_ = train_graph
+                    graph_ = [dgl.batch(train_graph[batch_size*train_batches:min(len(train_graph), batch_size*(train_batches+1))])]
 </#if>
 <#list tc.architectureInputs as input_name>
 <#if input_name?index == tc.architectureInputs?seq_index_of(input_name)>
 <#if tc.architecture.useDgl>
 <#if input_name != 'graph_'>
-                    if multi_graph:
-                        if '${input_name}' in graph_[0].ndata:
-                            ${input_name} = [graph_[0].ndata['${input_name}']]
-                        elif '${input_name}' in graph_[0].edata:
-                            ${input_name} = [graph_[0].edata['${input_name}']]
-                        else:
-                            ${input_name} = gluon.utils.split_and_load(batch.data[train_data_index], ctx_list=mx_context, even_split=False)
-                            train_data_index += 1
+                    if '${input_name}' in graph_[0].ndata:
+                        ${input_name} = [graph_[0].ndata['${input_name}']]
+                    elif '${input_name}' in graph_[0].edata:
+                        ${input_name} = [graph_[0].edata['${input_name}']]
                     else:
-                        ${input_name} = gluon.utils.split_and_load(batch.data[${input_index}], ctx_list=mx_context, even_split=False)[0]
-<#assign input_index++>
+                        ${input_name} = gluon.utils.split_and_load(batch.data[train_data_index], ctx_list=mx_context, even_split=False)
+                        train_data_index += 1
+                    if not multi_graph:
+                        ${input_name} = ${input_name}[0]
 </#if>
 <#else>
                     ${input_name} = gluon.utils.split_and_load(batch.data[${input_index}], ctx_list=mx_context, even_split=False)
