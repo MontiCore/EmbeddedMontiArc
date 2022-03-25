@@ -1,12 +1,13 @@
 package de.gdl.rl.environment.games.tictactoe;
 
+import de.gdl.rl.agents.Agent;
 import de.gdl.rl.agents.RosAgent;
 import de.gdl.rl.agents.RosTrainingAgent;
 
 import de.gdl.rl.environment.GDLGameEnvironment;
 
-import de.monticore.lang.gdl.Command;
-
+import java.util.Arrays;
+import java.util.HashMap;
 import java.util.List;
 import org.apache.commons.collections4.BidiMap;
 import org.apache.commons.collections4.bidimap.DualHashBidiMap;
@@ -16,6 +17,7 @@ import java.util.stream.Collectors;
 public class TicTacToeEnv extends GDLGameEnvironment {
     
     private BidiMap<Integer, String> actionMoveMap = new DualHashBidiMap<Integer, String>();
+    private HashMap<String, Integer> numberOfPossibleActionsForRole = new HashMap<String, Integer>();
 
     private RosTrainingAgent trainingAgent;
     
@@ -46,26 +48,29 @@ public class TicTacToeEnv extends GDLGameEnvironment {
                                 .withNumberOfRandomEpisodes(50)
                                 .withEpsilon(0.9f)
                                 .withEpsilonDecay(0.9f);
+
+        TicTacToeMiniMaxAgent miniMaxAgent = new TicTacToeMiniMaxAgent();
         
         this.addToTrainingConfiguration(this.trainingAgent);
         this.addToTrainingConfiguration(selfPlayAgent);
 
         this.addToGamingConfiguration(agent);
+        this.addToGamingConfiguration(miniMaxAgent);
 
         this.numberOfPossibleActionsForRole.put("x", 9);
         this.numberOfPossibleActionsForRole.put("o", 9);
 
-        actionMoveMap.put(new Integer(0), "(mark 1 1)");
-        actionMoveMap.put(new Integer(1), "(mark 1 2)");
-        actionMoveMap.put(new Integer(2), "(mark 1 3)");
+        actionMoveMap.put(0, "(mark 1 1)");
+        actionMoveMap.put(1, "(mark 1 2)");
+        actionMoveMap.put(2, "(mark 1 3)");
 
-        actionMoveMap.put(new Integer(3), "(mark 2 1)");
-        actionMoveMap.put(new Integer(4), "(mark 2 2)");
-        actionMoveMap.put(new Integer(5), "(mark 2 3)");
+        actionMoveMap.put(3, "(mark 2 1)");
+        actionMoveMap.put(4, "(mark 2 2)");
+        actionMoveMap.put(5, "(mark 2 3)");
 
-        actionMoveMap.put(new Integer(6), "(mark 3 1)");
-        actionMoveMap.put(new Integer(7), "(mark 3 2)");
-        actionMoveMap.put(new Integer(8), "(mark 3 3)");
+        actionMoveMap.put(6, "(mark 3 1)");
+        actionMoveMap.put(7, "(mark 3 2)");
+        actionMoveMap.put(8, "(mark 3 3)");
 
     }
 
@@ -73,8 +78,11 @@ public class TicTacToeEnv extends GDLGameEnvironment {
         return "src/main/resources/gdl/games/TicTacToe.gdl";
     }
 
+    public int getNumberOfActionsForRole(String roleName)  {
+        return this.numberOfPossibleActionsForRole.get(roleName);
+    }
+
     public void onNextEpisode() {
-        // can be used to change things before the next episode starts
 
         if (this.trainingAgent.currentGdlRoleName == "x") {
             this.trainingAgent.currentGdlRoleName = "o";
@@ -85,14 +93,14 @@ public class TicTacToeEnv extends GDLGameEnvironment {
     }
 
     // get state as float representation
-    public float[] getStateAsFloatRepresentation(String gdlRoleName) {
+    public float[] getStateAsFloatRepresentation(String gdlRoleName, Agent agent) {
         
         boolean inverted = gdlRoleName.equals("o");
 
         float[] output = new float[27];
 
         for (int i = 0; i < 9; i++) {
-            String fieldStatus = this.currentState.get(i).get(3);
+            String fieldStatus = this.getCurrentState().get(i).get(3);
             
             switch (fieldStatus) {
                 case "x":
@@ -116,27 +124,29 @@ public class TicTacToeEnv extends GDLGameEnvironment {
     }
 
     // convert action from agent to mapped move
-    public String getMoveStringFromAction(int action, String gdlRoleName) {
+    public String getMoveStringFromAction(int action, String gdlRoleName, Agent agent) {
         
-        return gdlRoleName + " " + actionMoveMap.inverseBidiMap().getKey(new Integer(action));
+        return gdlRoleName + " " + actionMoveMap.inverseBidiMap().getKey(action);
     }
 
     // ... and the direction back!
     // used for calculating legal-move-matrix
-    public int getActionFromMoveString(Command move) {
-        return actionMoveMap.getKey("(" + move.getArguments().stream().collect(Collectors.joining(" ")) + ")");
+    public int getActionFromMoveString(List<String> moveStringSplitted, String gdlRoleName, Agent agent) {
+        return actionMoveMap.getKey("(" + moveStringSplitted.stream().collect(Collectors.joining(" ")) + ")");
     }
 
     // calculate the reward for specific role
-    public float calculateRewardFromGoals(List<List<String>> goals, String gdlRoleName) {
-        
-        if ((!this.wasLastStepIllegal() || !this.whichRoleHasControl().equals(gdlRoleName)) && this.isTerminal() && goals.size() == 2) {
+    public float calculateRewardFromGoals(List<List<String>> goals, String gdlRoleName, Agent agent) {
+
+        List<String> rolesInControl = this.whichRolesHaveControl();
+
+        if ((!this.wasLastMoveIllegal() || !rolesInControl.contains(gdlRoleName)) && this.isTerminal() && goals.size() == 2) {
             if (goals.get(0).get(0) == gdlRoleName) {
                 return Integer.parseInt(goals.get(0).get(1)) > 0 ? 1.0f : -1.0f;
             } else {
                 return Integer.parseInt(goals.get(1).get(1)) > 0 ? 1.0f : -1.0f;
             }
-        }  else if(this.wasLastStepIllegal() && this.whichRoleHasControl().equals(gdlRoleName)) { 
+        }  else if(this.wasLastMoveIllegal() && rolesInControl.contains(gdlRoleName)) { 
             return -10.0f;
         }
 
@@ -159,7 +169,7 @@ public class TicTacToeEnv extends GDLGameEnvironment {
         readableStringBuilder.append("    1     2     3 \n");
 
         for (int i = 0; i < 9; i++) {
-            String fieldStatus = this.currentState.get(i).get(3);
+            String fieldStatus = this.getCurrentState().get(i).get(3);
             
             String infix = (i % 3 == 0) ? (((int) i / 3) + 1) + " " : "";
 

@@ -24,6 +24,7 @@ tictactoe-agent/bin/
 tictactoe-agent/.vsls.json
 tictactoe-agent/output.txt
 tictactoe-agent/.DS_Store
+tictactoe-environment/test/.DS_Store
 tictactoe-environment/target/
 tictactoe-environment/target/
 tictactoe-environment/.project
