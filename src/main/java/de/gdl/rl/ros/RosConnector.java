@@ -5,22 +5,19 @@ import de.isse.jros.RosNode.Publishing;
 
 import de.isse.jros.fields.RBoolean;
 import de.isse.jros.fields.RInteger;
-import de.isse.jros.fields.RArray;
+//import de.isse.jros.fields.RArray;
 
 import de.isse.jros.messages.StdMsgs;
 
 import java.net.*;
 import de.isse.jros.types.*;
 
-import java.lang.Thread;
 import java.util.HashMap;
 
 public class RosConnector 
 {
 
     private boolean WITH_DEBUG_OUTPUT = false;
-    private boolean WITH_STATE_OUTPUT = false;
-    private boolean WITH_GAME_RESULT_OUTPUT = true;
 
     private RosNode node;
 
@@ -45,14 +42,18 @@ public class RosConnector
     }
 
     public boolean gotPublisherForTopic(String topic) {
-        for (String t : this.node.getConnectionTopics()) {
-            String[] splitted = t.split(" ");
-            if (splitted.length > 2) {
-                if (splitted[2].equals(topic)) {
-                    return true;
+   
+        if (this.node != null && this.node.getConnectionTopics() != null) {
+            for (String t : this.node.getConnectionTopics()) {
+                String[] splitted = t.split(" ");
+                if (splitted.length > 2) {
+                    if (splitted[2].equals(topic)) {
+                        return true;
+                    }
                 }
             }
         }
+        
         return false;
     }
 

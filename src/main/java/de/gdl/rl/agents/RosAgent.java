@@ -1,26 +1,15 @@
 package de.gdl.rl.agents;
-import java.util.HashSet;
 import java.util.ArrayList;
 import java.util.List;
 
-public class RosAgent {
+public class RosAgent extends Agent {
 
-    public String name = "";
-    public String type = ""; // not yet relevant (all are DQN atm)
-
-    public HashSet<String> gdlRoleNames = new HashSet<String>();
-
-    public boolean gameOverForIllegalActions = false;
 
     // ros - topics
     public String stateTopic = "";
     public String legalActionsTopic = "";
     public String actionTopic = "";
 
-    // for training
-    public int numberOfRandomEpisodes = 0; // determines how many initial episodes should be played completely randomly
-    public float epsilon = 0.0f; // percentage of steps taken completely at random
-    public float epsilonDecay = 0.0f; // determines how much epsilon decreases over time
 
 
     

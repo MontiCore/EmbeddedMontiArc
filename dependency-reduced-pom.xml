@@ -3,7 +3,7 @@
   <modelVersion>4.0.0</modelVersion>
   <groupId>de.monticore.lang.monticar.utilities</groupId>
   <artifactId>gdl-tools</artifactId>
-  <version>1.0</version>
+  <version>1.0.1</version>
   <build>
     <pluginManagement>
       <plugins>
@@ -61,20 +61,6 @@
       </plugin>
     </plugins>
   </build>
-  <dependencies>
-    <dependency>
-      <groupId>junit</groupId>
-      <artifactId>junit</artifactId>
-      <version>4.11</version>
-      <scope>test</scope>
-      <exclusions>
-        <exclusion>
-          <artifactId>hamcrest-core</artifactId>
-          <groupId>org.hamcrest</groupId>
-        </exclusion>
-      </exclusions>
-    </dependency>
-  </dependencies>
   <distributionManagement>
     <repository>
       <id>se-nexus</id>

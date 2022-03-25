@@ -2,7 +2,6 @@ package de.gdl.rl.cli;
 import de.gdl.rl.Coordinator;
 
 import java.util.HashMap;
-import java.util.HashSet;
 import java.util.Scanner;
 import java.util.List;
 import java.util.regex.Pattern;
@@ -33,7 +32,6 @@ public class GamingCLI<ConcreteEnvironment extends GDLGameEnvironment> extends C
         System.out.println("");
         System.out.println("Welcome to the GDL-Gaming-CLI");
         System.out.println("    Game: " + this.env.getNameOfGame());
-        System.out.println("    Roles: " +  String.join(", ", this.env.getAvailableRoles()));
         System.out.println("");
         
         if (this.evaluation) {
@@ -75,8 +73,13 @@ public class GamingCLI<ConcreteEnvironment extends GDLGameEnvironment> extends C
         return move; 
     }
 
-    protected void onMoveWasIllegal(String move) {
+    protected void onMoveWasIllegal(String move, List<String> legalMoves) {
         System.out.println("Move was not legal");
+        if (legalMoves != null) {
+            for(String legalMove : legalMoves) {
+                System.out.println(legalMove);
+            }
+        }
     }
     
     protected void onPreDoMove(String move, String playerDescription) {
@@ -91,7 +94,7 @@ public class GamingCLI<ConcreteEnvironment extends GDLGameEnvironment> extends C
         System.out.println(this.env.getStateAsReadableString());
     }
     
-    protected void onGameIsOver() {
+    protected void onGameIsOver(int numberOfEpisodesPlayed) {
         System.out.println("Game is over");
         System.out.println("Goals: ");
         this.numberOfEpisodes++;

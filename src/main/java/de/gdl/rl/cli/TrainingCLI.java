@@ -1,5 +1,6 @@
 package de.gdl.rl.cli;
 import de.gdl.rl.Coordinator;
+import de.gdl.rl.agents.RosTrainingAgent;
 
 import java.util.List;
 import de.gdl.rl.environment.GDLGameEnvironment;
@@ -14,7 +15,6 @@ public class TrainingCLI<ConcreteEnvironment extends GDLGameEnvironment> extends
         System.out.println("");
         System.out.println("Welcome to the GDL-RL-Training-CLI");
         System.out.println("    Game: " + this.env.getNameOfGame());
-        System.out.println("    Roles: " +  String.join(", ", this.env.getAvailableRoles()));
         System.out.println("");
     }
 
@@ -24,7 +24,7 @@ public class TrainingCLI<ConcreteEnvironment extends GDLGameEnvironment> extends
         System.out.println(this.env.getStateAsReadableString());
     }
 
-    protected void onMoveWasIllegal(String move) {
+    protected void onMoveWasIllegal(String move, List<String> legalMoves) {
         System.out.println("Move was not legal");
     }
     
@@ -36,18 +36,21 @@ public class TrainingCLI<ConcreteEnvironment extends GDLGameEnvironment> extends
         System.out.println(this.env.getStateAsReadableString());
     }
     
-    protected void onGameIsOver() {
-        System.out.println("Game is over");
+    protected void onGameIsOver(int numberOfEpisodesPlayed) {
+        System.out.println(this.env.getStateAsReadableString());
+        System.out.println("Game is over, Episode: "+ (numberOfEpisodesPlayed - 1));
+        
+        for (RosTrainingAgent agent : this.getTrainingAgents() ) {
+
+            // print the calculated reward
+            float reward = (float) this.env.getReward(agent.currentGdlRoleName, agent);
+            System.out.println("Reward for "+ agent.name +": " + reward);
+            
+        }
+        
         System.out.println("Goals: ");
         for (List<String> goal : this.env.getReachedGoals()) {
             System.out.println("(" + String.join(", ", goal) + ")");
-            // print the goal:
-            if (this.doesTrainingAgentControlRole(goal.get(0))) {
-                // print the calculated reward
-                float reward = (float) this.env.getReward(goal.get(0));
-                System.out.println("Reward: " + reward);
-            } 
-
         }
         System.out.println("");
     }

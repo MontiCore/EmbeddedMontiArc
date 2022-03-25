@@ -1,12 +1,13 @@
 package de.gdl.rl.environment.games.tictactoe;
 
+import de.gdl.rl.agents.Agent;
 import de.gdl.rl.agents.RosAgent;
 import de.gdl.rl.agents.RosTrainingAgent;
 
 import de.gdl.rl.environment.GDLGameEnvironment;
 
-import de.monticore.lang.gdl.Command;
-
+import java.util.Arrays;
+import java.util.HashMap;
 import java.util.List;
 import org.apache.commons.collections4.BidiMap;
 import org.apache.commons.collections4.bidimap.DualHashBidiMap;
@@ -16,6 +17,7 @@ import java.util.stream.Collectors;
 public class TicTacToeEnvironmentExample extends GDLGameEnvironment {
     
     private BidiMap<Integer, String> actionMoveMap = new DualHashBidiMap<Integer, String>();
+    private HashMap<String, Integer> numberOfPossibleActionsForRole = new HashMap<String, Integer>();
 
     private RosTrainingAgent trainingAgent;
     
@@ -46,10 +48,14 @@ public class TicTacToeEnvironmentExample extends GDLGameEnvironment {
                                 .withNumberOfRandomEpisodes(50)
                                 .withEpsilon(0.9f)
                                 .withEpsilonDecay(0.9f);
+
+        TicTacToeMiniMaxAgent miniMaxAgent = new TicTacToeMiniMaxAgent();
         
         this.addToTrainingConfiguration(this.trainingAgent);
         this.addToTrainingConfiguration(selfPlayAgent);
+
         this.addToGamingConfiguration(agent);
+        this.addToGamingConfiguration(miniMaxAgent);
 
         this.numberOfPossibleActionsForRole.put("x", 9);
         this.numberOfPossibleActionsForRole.put("o", 9);
@@ -69,17 +75,31 @@ public class TicTacToeEnvironmentExample extends GDLGameEnvironment {
     }
 
     protected String getPathToGdlModel() {
-        return "src/main/resources/gdl/games/TicTacToeExample.gdl";
+        return "src/main/resources/gdl/games/TicTacToe.gdl";
     }
 
-    public float[] getStateAsFloatRepresentation(String gdlRoleName) {
+    public int getNumberOfActionsForRole(String roleName)  {
+        return this.numberOfPossibleActionsForRole.get(roleName);
+    }
+
+    public void onNextEpisode() {
+
+        if (this.trainingAgent.currentGdlRoleName == "x") {
+            this.trainingAgent.currentGdlRoleName = "o";
+        } else {
+            this.trainingAgent.currentGdlRoleName = "x";
+        }
+
+    }
+
+    public float[] getStateAsFloatRepresentation(String gdlRoleName, Agent agent) {
         
         boolean inverted = gdlRoleName.equals("o");
 
         float[] output = new float[27];
 
         for (int i = 0; i < 9; i++) {
-            String fieldStatus = this.currentState.get(i).get(3);
+            String fieldStatus = this.getCurrentState().get(i).get(3);
             
             switch (fieldStatus) {
                 case "x":
@@ -102,25 +122,26 @@ public class TicTacToeEnvironmentExample extends GDLGameEnvironment {
         return output; 
     }
 
-    public String getMoveStringFromAction(int action, String gdlRoleName) {
+    public String getMoveStringFromAction(int action, String gdlRoleName, Agent agent) {
         
         return gdlRoleName + " " + actionMoveMap.inverseBidiMap().getKey(action);
     }
 
-
-    public int getActionFromMoveString(Command move) {
-        return actionMoveMap.getKey("(" + move.getArguments().stream().collect(Collectors.joining(" ")) + ")");
+    public int getActionFromMoveString(List<String> moveStringSplitted, String gdlRoleName, Agent agent) {
+        return actionMoveMap.getKey("(" + moveStringSplitted.stream().collect(Collectors.joining(" ")) + ")");
     }
 
-    public float calculateRewardFromGoals(List<List<String>> goals, String gdlRoleName) {
-        
-        if ((!this.wasLastStepIllegal() || !this.whichRoleHasControl().equals(gdlRoleName)) && this.isTerminal() && goals.size() == 2) {
+    public float calculateRewardFromGoals(List<List<String>> goals, String gdlRoleName, Agent agent) {
+
+        List<String> rolesInControl = this.whichRolesHaveControl();
+
+        if ((!this.wasLastMoveIllegal() || !rolesInControl.contains(gdlRoleName)) && this.isTerminal() && goals.size() == 2) {
             if (goals.get(0).get(0) == gdlRoleName) {
                 return Integer.parseInt(goals.get(0).get(1)) > 0 ? 1.0f : -1.0f;
             } else {
                 return Integer.parseInt(goals.get(1).get(1)) > 0 ? 1.0f : -1.0f;
             }
-        }  else if(this.wasLastStepIllegal() && this.whichRoleHasControl().equals(gdlRoleName)) { 
+        }  else if(this.wasLastMoveIllegal() && rolesInControl.contains(gdlRoleName)) { 
             return -10.0f;
         }
 
@@ -128,13 +149,6 @@ public class TicTacToeEnvironmentExample extends GDLGameEnvironment {
 
     }
 
-    public void onNextEpisode() {
-        if (this.trainingAgent.currentGdlRoleName == "x") {
-            this.trainingAgent.currentGdlRoleName = "o";
-        } else {
-            this.trainingAgent.currentGdlRoleName = "x";
-        }
-    }
 
     public static void main(String[] args) throws Exception {
         GDLGameEnvironment.initEnvironment(new TicTacToeEnvironmentExample(), args);

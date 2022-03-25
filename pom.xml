@@ -6,7 +6,7 @@
 
   <groupId>de.monticore.lang.monticar.utilities</groupId>
   <artifactId>gdl-tools</artifactId>
-  <version>1.0</version>
+  <version>1.0.1</version>
 
   <url></url>
 
@@ -20,8 +20,7 @@
     <dependency>
       <groupId>junit</groupId>
       <artifactId>junit</artifactId>
-      <version>4.11</version>
-      <scope>test</scope>
+      <version>4.13.1</version>
     </dependency>
 
     <dependency>

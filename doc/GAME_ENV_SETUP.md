@@ -39,7 +39,7 @@ public float calculateRewardFromGoals(List<List<String>> goals, String gdlRoleNa
 ```
 
 
-### Defining agents
+### Assignment of roles to agents
 There are three different types of agents that can be added to the environment: RosTrainingAgent, RosAgent and LocalAgent. 
 - RosTrainingAgents are agents that are in training and should be connected via ROS-interface. They have ROS topics for transferring state, actions, end of game / episode, reward and for resetting. In the constructor of ```YourGameEnvironment.java``` they are defined as shown below:
 ```java
