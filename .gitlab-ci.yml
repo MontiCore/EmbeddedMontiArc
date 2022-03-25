@@ -11,6 +11,9 @@ TestBuildJava17:
       - "tictactoe-environment/target/"
     expire_in: 1 week
   before_script:
+    - lsb_release -sirc
+    - cat /etc/os-release
+    - cat /etc/issue
     - apt-get update
     - apt-get install -y gnupg2
     - echo "deb http://ppa.launchpad.net/swi-prolog/stable/ubuntu $(cat /etc/os-release | grep -oP -m 1 "VERSION_CODENAME=\K\w+") main" | tee -a /etc/apt/sources.list
