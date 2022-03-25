@@ -40,7 +40,7 @@
     <dependency>
       <groupId>de.monticore.lang.monticar.utilities</groupId>
       <artifactId>gdl-tools</artifactId>
-      <version>1.0.1</version>
+      <version>1.1</version>
     </dependency>
 
     <!-- https://mvnrepository.com/artifact/org.apache.commons/commons-collections4 -->
