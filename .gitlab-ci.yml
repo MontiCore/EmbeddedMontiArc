@@ -18,7 +18,6 @@ TestBuildJava17:
     - echo "deb-src http://ppa.launchpad.net/swi-prolog/stable/ubuntu $(cat /etc/os-release | grep -oP -m 1 "VERSION_CODENAME=\K\w+") main" | tee -a /etc/apt/sources.list
     - apt-key adv --keyserver keyserver.ubuntu.com --recv-keys EF8406856DBFCA18
     - apt-add-repository ppa:swi-prolog/stable -y 2>/dev/null
-    - apt-get update 2>/dev/null
     - apt-get install -y swi-prolog
 
 
