@@ -49,13 +49,11 @@ public class TicTacToeEnvironmentExample extends GDLGameEnvironment {
                                 .withEpsilon(0.9f)
                                 .withEpsilonDecay(0.9f);
 
-        TicTacToeMiniMaxAgent miniMaxAgent = new TicTacToeMiniMaxAgent();
         
         this.addToTrainingConfiguration(this.trainingAgent);
         this.addToTrainingConfiguration(selfPlayAgent);
 
         this.addToGamingConfiguration(agent);
-        this.addToGamingConfiguration(miniMaxAgent);
 
         this.numberOfPossibleActionsForRole.put("x", 9);
         this.numberOfPossibleActionsForRole.put("o", 9);
