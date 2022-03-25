@@ -5,7 +5,7 @@ stages:
 
 TestBuildJava17:
   stage: linuxBuildJava17
-  image: maven:3.8.3-openjdk-17-slim
+  image: maven:3.8.4-openjdk-17-slim
   artifacts:
     paths:
       - "tictactoe-environment/target/"
@@ -17,7 +17,7 @@ TestBuildJava17:
     - echo "deb http://ppa.launchpad.net/swi-prolog/stable/ubuntu $(cat /etc/os-release | grep -oP -m 1 "VERSION_CODENAME=\K\w+") main" | tee -a /etc/apt/sources.list
     - echo "deb-src http://ppa.launchpad.net/swi-prolog/stable/ubuntu $(cat /etc/os-release | grep -oP -m 1 "VERSION_CODENAME=\K\w+") main" | tee -a /etc/apt/sources.list
     - apt-key adv --keyserver keyserver.ubuntu.com --recv-keys EF8406856DBFCA18
-    - apt-add-repository ppa:swi-prolog/stable 2>/dev/null
+    - apt-add-repository ppa:swi-prolog/stable -y 2>/dev/null
     - apt-get update
     - apt-get install -y swi-prolog
 
