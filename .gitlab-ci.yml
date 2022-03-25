@@ -12,12 +12,15 @@ TestBuildJava17:
     expire_in: 1 week
   before_script:
     - apt-get update
+    - apt-get install software-properties-common -y
     - apt-get install -y gnupg2
     - echo "deb http://ppa.launchpad.net/swi-prolog/stable/ubuntu $(cat /etc/os-release | grep -oP -m 1 "VERSION_CODENAME=\K\w+") main" | tee -a /etc/apt/sources.list
     - echo "deb-src http://ppa.launchpad.net/swi-prolog/stable/ubuntu $(cat /etc/os-release | grep -oP -m 1 "VERSION_CODENAME=\K\w+") main" | tee -a /etc/apt/sources.list
     - apt-key adv --keyserver keyserver.ubuntu.com --recv-keys EF8406856DBFCA18
     - apt-get update
     - apt-get install -y swi-prolog
+
+
   script:
     - cd tictactoe-environment
     - mvn clean package -s settings.xml
