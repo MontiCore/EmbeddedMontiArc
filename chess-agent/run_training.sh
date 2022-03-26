@@ -28,7 +28,11 @@ cd "generator-target/agent/src/${NAME_OF_AGENT}_agent_master/cpp"
 python2.7 CNNTrainer_${NAME_OF_AGENT}_agent_master_dqn.py
 cp -r ./model ${PROJECT_ROOT}/${BINARY}
 
-echo "kill running agent ...."
-
 RUNNING_AGENT=$(pgrep -f ./agent) #abort currently running agent binary
-kill $RUNNING_AGENT
+
+if [ -z "$RUNNING_AGENT" ]
+then
+      :
+else
+      kill $RUNNING_AGENT
+fi
