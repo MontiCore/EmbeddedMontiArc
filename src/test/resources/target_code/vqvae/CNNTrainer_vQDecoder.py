@@ -8,10 +8,10 @@ import time
 import shutil
 from mxnet import gluon, autograd, nd
 
-import CNNCreator_decoder
-import CNNDataLoader_decoder
-import CNNAutoencoderTrainer_Encoder
-from CNNCreator_Encoder import CNNCreator_Encoder
+import CNNCreator_vQDecoder
+import CNNDataLoader_vQDecoder
+import CNNAutoencoderTrainer_VQEncoder
+from CNNCreator_VQEncoder import CNNCreator_VQEncoder
 
 
 
@@ -25,16 +25,16 @@ if __name__ == "__main__":
     logging.getLogger('matplotlib.colorbar').disabled = True
     logger.addHandler(handler)
 
-    data_loader = CNNDataLoader_decoder.CNNDataLoader_decoder()
-    encoder_creator = CNNCreator_Encoder()
-    decoder_creator = CNNCreator_decoder.CNNCreator_decoder()
-    decoder_trainer = CNNAutoencoderTrainer_Encoder.CNNAutoencoderTrainer(
+    data_loader = CNNDataLoader_vQDecoder.CNNDataLoader_vQDecoder()
+    encoder_creator = CNNCreator_VQEncoder()
+    decoder_creator = CNNCreator_vQDecoder.CNNCreator_vQDecoder()
+    vQDecoder_trainer = CNNAutoencoderTrainer_VQEncoder.CNNAutoencoderTrainer(
     data_loader,
     encoder_creator,
     decoder_creator,
     )
 
-    decoder_trainer.train(
+    vQDecoder_trainer.train(
         batch_size=200,
         num_epoch=15,
         checkpoint_period=5,
