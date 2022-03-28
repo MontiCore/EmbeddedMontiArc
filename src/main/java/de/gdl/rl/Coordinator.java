@@ -33,6 +33,11 @@ public class Coordinator<ConcreteEnvironment extends GDLGameEnvironment> impleme
     private boolean isInTraining = false;
     private int numberOfEpisodesPlayed = 0;
 
+    /**
+     * Can be used by a subclass in onInit()
+     * to define roles to be controlled manually. 
+     * Then, moves for these roles are resolved via onEnterMove().
+     */
     protected HashSet<String> manualRoles = new HashSet<String>();
 
     private final Semaphore resetSemaphore = new Semaphore(1, true);
