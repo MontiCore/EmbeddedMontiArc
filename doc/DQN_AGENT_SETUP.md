@@ -1,4 +1,4 @@
-# Modeling and creating DQN agents
+# Setting up a DQN-Agent for a GDL game
 
 ## 1. Copy an example agent
 - Locate the TicTacToe-Example-Agent at [examples/tictactoe-example-agent](examples/tictactoe-example-agent) and and make a copy of it
