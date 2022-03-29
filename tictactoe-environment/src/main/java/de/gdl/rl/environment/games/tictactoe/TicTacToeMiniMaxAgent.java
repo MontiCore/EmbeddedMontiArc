@@ -41,7 +41,7 @@ public class TicTacToeMiniMaxAgent extends LocalAgent {
     }
     
 }
-
+// code taken from here: https://de.acervolima.com/minimax-algorithmus-in-der-spieltheorie-set-3-(tic-tac-toe-ai-den-optimalen-zug-finden)/
 class TicTacToeAI
 {
     public static class Move
