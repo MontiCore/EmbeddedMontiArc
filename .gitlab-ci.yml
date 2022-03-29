@@ -158,6 +158,8 @@ DeployPretrainedVAE:
     - mvn emadl:deploy-pretrained -s ../settings.xml
     - cd ../vae.Decoder
     - mvn emadl:deploy-pretrained -s ../settings.xml
+  only:
+    - master
 
 
 DeployPretrainedBetaVAE:
@@ -169,6 +171,8 @@ DeployPretrainedBetaVAE:
     - mvn emadl:deploy-pretrained -s ../settings.xml
     - cd ../bvae.Decoder
     - mvn emadl:deploy-pretrained -s ../settings.xml
+  only:
+    - master
 
 
 DeployPretrainedCVAE:
@@ -180,6 +184,8 @@ DeployPretrainedCVAE:
     - mvn emadl:deploy-pretrained -s ../settings.xml
     - cd ../cvae.Decoder
     - mvn emadl:deploy-pretrained -s ../settings.xml
+  only:
+    - master
 
 
 DeployPretrainedVQVAE:
@@ -191,3 +197,5 @@ DeployPretrainedVQVAE:
     - mvn emadl:deploy-pretrained -s ../settings.xml
     - cd ../vqvae.Decoder
     - mvn emadl:deploy-pretrained -s ../settings.xml
+  only:
+    - master
