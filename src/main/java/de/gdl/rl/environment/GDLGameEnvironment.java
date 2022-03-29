@@ -480,6 +480,7 @@ public abstract class GDLGameEnvironment implements RlGdlGameEnvironment {
             if (command.equals("--evaluation") || command.equals("-eval")) {
                 evaluation = true;
                 evaluationNext = true;
+                System.out.println("Hit enter twice to start the evaluation without controlling roles manually.");
             } else if(evaluationNext) {
                 evaluationNext = false;
                 try {

@@ -383,10 +383,6 @@ public class RosNode {
 		}
 	}
 
-	public void test() {
-		System.out.println("testblaa");	
-	}
-
 	/**
 	 * Handles the removal of a publisher for a topic this node is subscribed to
 	 */

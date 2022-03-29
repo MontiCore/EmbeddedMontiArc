@@ -32,7 +32,6 @@ public class RosConnector
         try {
             
             this.node = new RosNode("gdlEnv", "http://" + InetAddress.getLocalHost().getHostAddress() + ":11311", InetAddress.getLocalHost().getHostAddress());
-            this.node.test();
             System.out.println("ROSGDLConnector inited.");
 
         } catch (Exception e) {
