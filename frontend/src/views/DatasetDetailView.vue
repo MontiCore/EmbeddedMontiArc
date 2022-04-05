@@ -128,7 +128,7 @@ export default {
       zoomOffset: -1,
       accessToken: 'pk.eyJ1IjoianVibGExMDIiLCJhIjoiY2wxZXMzZ3Z6MGx6YzNjbG45bGd1ZjV3ciJ9.QDU9GpeOQSK-zSCTb-lLTg'
     }).addTo(map)
-    leaflet.marker(CENTER_COORDINATES_GERMANY).addTo(map)
+    // leaflet.marker(CENTER_COORDINATES_GERMANY).addTo(map)
 
     const cfg = {
       // radius should be small ONLY if scaleRadius is true (or small radius is intended)

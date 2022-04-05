@@ -13,7 +13,7 @@ const routes = [
     component: DatasetsView
   },
   {
-    path: '/',
+    path: '/datasets/:datasetId',
     name: 'datasetDetail',
     component: DatasetDetailView
   },
