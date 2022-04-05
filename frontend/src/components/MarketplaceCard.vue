@@ -9,7 +9,7 @@
           aria-expanded="false"
           @click="collapsed = !collapsed"
           >
-          <div class="d-flex align-items-center">
+          <div class="d-flex align-items-center" style="color: #036eb8">
             <p class="m-0" style="font-size: 0.8rem">Policies</p>
             <Icon :icon="icon" style="font-size: 1rem" />
           </div>

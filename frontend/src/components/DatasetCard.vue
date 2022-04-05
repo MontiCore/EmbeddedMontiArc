@@ -9,7 +9,7 @@
           aria-expanded="false"
           @click="collapsed = !collapsed"
           >
-          <div class="d-flex align-items-center">
+          <div class="d-flex align-items-center" style="color: #036eb8">
             <p class="m-0" style="font-size: 0.8rem">Policies</p>
             <Icon :icon="icon" style="font-size: 1rem" />
           </div>
@@ -40,7 +40,10 @@
       </div>
     </div>
     <p class="description m-0 flex-grow-1">{{ description }}</p>
-    <p class="fw-bold m-0 fs-5">{{ price }} €</p>
+    <div class="d-flex justify-content-between align-items-center">
+      <router-link class="btn buy-btn" style="font-weight: bold" :to="`/datasets/1ac6d07f-1756-47a1-b430-0097758ba9a1`">View data</router-link>
+      <p class="fw-bold m-0 fs-5">{{ price }} €</p>
+    </div>
   </div>
 </template>
 
