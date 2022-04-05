@@ -20,6 +20,11 @@ ${gen}
 </#list>
 
 ${model.getCompName()}* component;
+
+<#list model.getSubscribers() as sub>
+bool ${sub.getMethodName()}_wasCalled;
+</#list>
+
 <#list model.getSubscribers() as sub>
 <@m.fieldSubscriber type="${sub.getTypeNameInTargetLanguage()}" name="${sub.getNameInTargetLanguage()}"/>
 </#list>
@@ -34,6 +39,9 @@ public:
 
 void init(${model.getCompName()}* comp){
     this->component = comp;
+    <#list model.getSubscribers() as sub>
+    ${sub.getMethodName()}_wasCalled = false;
+    </#list>
      <@m.mwinit compname="${model.getCompName()}"/>
 
     <#list model.getSubscribers() as sub>
@@ -47,6 +55,10 @@ void init(${model.getCompName()}* comp){
     <@m.mwstart/>
 }
 
+bool hasReceivedNewData() {
+    return true<#list model.getSubscribers() as sub> && ${sub.getMethodName()}_wasCalled</#list>;
+}
+
 <#list model.getSubscribers() as sub>
     <@m.callback sub=sub/>
 </#list>
@@ -56,6 +68,10 @@ void init(${model.getCompName()}* comp){
 </#list>
 
 void tick(){
+<#list model.getSubscribers() as sub>
+${sub.getMethodName()}_wasCalled = false;
+</#list>
+
 <#list model.getPublishers() as pub>
     ${pub.getMethodName()}();
 </#list>

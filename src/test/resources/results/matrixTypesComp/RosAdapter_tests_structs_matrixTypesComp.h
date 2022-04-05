@@ -10,6 +10,10 @@
 class RosAdapter_tests_structs_matrixTypesComp: public IAdapter_tests_structs_matrixTypesComp{
 	
 	tests_structs_matrixTypesComp* component;
+	
+	bool _name1Callback_wasCalled;
+	bool _name2Callback_wasCalled;
+	
 	ros::Subscriber _name1Subscriber;
 	ros::Subscriber _name2Subscriber;
 	ros::Publisher _name3Publisher;
@@ -22,6 +26,8 @@ class RosAdapter_tests_structs_matrixTypesComp: public IAdapter_tests_structs_ma
 	
 	void init(tests_structs_matrixTypesComp* comp){
 		this->component = comp;
+		_name1Callback_wasCalled = false;
+		_name2Callback_wasCalled = false;
 		char* tmp = strdup("");
 		int i = 0;
 		ros::init(i, &tmp, "RosAdapter_tests_structs_matrixTypesComp_node");
@@ -34,6 +40,10 @@ class RosAdapter_tests_structs_matrixTypesComp: public IAdapter_tests_structs_ma
 		_name4Publisher = node_handle.advertise<std_msgs::Int32MultiArray>("/name4",5);
 		
 		ros::spin();
+	}
+	
+	bool hasReceivedNewData() {
+		return true && _name1Callback_wasCalled && _name2Callback_wasCalled;
 	}
 	
 	void _name1Callback(const std_msgs::Float64MultiArray::ConstPtr& msg){
@@ -55,6 +65,7 @@ class RosAdapter_tests_structs_matrixTypesComp: public IAdapter_tests_structs_ma
 		}
 		
 		
+		_name1Callback_wasCalled = true;
 	}
 	void _name2Callback(const std_msgs::ByteMultiArray::ConstPtr& msg){
 		
@@ -75,6 +86,7 @@ class RosAdapter_tests_structs_matrixTypesComp: public IAdapter_tests_structs_ma
 		}
 		
 		
+		_name2Callback_wasCalled = true;
 	}
 	
 	void publish_name3Publisher(){
@@ -105,6 +117,9 @@ class RosAdapter_tests_structs_matrixTypesComp: public IAdapter_tests_structs_ma
 	}
 	
 	void tick(){
+		_name1Callback_wasCalled = false;
+		_name2Callback_wasCalled = false;
+		
 		publish_name3Publisher();
 		publish_name4Publisher();
 	}

@@ -10,6 +10,11 @@
 class RosAdapter_tests_msg_basicTypesComp: public IAdapter_tests_msg_basicTypesComp{
 	
 	tests_msg_basicTypesComp* component;
+	
+	bool topic7Callback_wasCalled;
+	bool topic8Callback_wasCalled;
+	bool topic9Callback_wasCalled;
+	
 	ros::Subscriber topic7Subscriber;
 	ros::Subscriber topic8Subscriber;
 	ros::Subscriber topic9Subscriber;
@@ -24,6 +29,9 @@ class RosAdapter_tests_msg_basicTypesComp: public IAdapter_tests_msg_basicTypesC
 	
 	void init(tests_msg_basicTypesComp* comp){
 		this->component = comp;
+		topic7Callback_wasCalled = false;
+		topic8Callback_wasCalled = false;
+		topic9Callback_wasCalled = false;
 		char* tmp = strdup("");
 		int i = 0;
 		ros::init(i, &tmp, "RosAdapter_tests_msg_basicTypesComp_node");
@@ -40,20 +48,27 @@ class RosAdapter_tests_msg_basicTypesComp: public IAdapter_tests_msg_basicTypesC
 		ros::spin();
 	}
 	
+	bool hasReceivedNewData() {
+		return true && topic7Callback_wasCalled && topic8Callback_wasCalled && topic9Callback_wasCalled;
+	}
+	
 	void topic7Callback(const std_msgs::Float64::ConstPtr& msg){
 		
 		component->inQ = msg->data;
 		
+		topic7Callback_wasCalled = true;
 	}
 	void topic8Callback(const std_msgs::Int32::ConstPtr& msg){
 		
 		component->inZ = msg->data;
 		
+		topic8Callback_wasCalled = true;
 	}
 	void topic9Callback(const std_msgs::Bool::ConstPtr& msg){
 		
 		component->inB = msg->data;
 		
+		topic9Callback_wasCalled = true;
 	}
 	
 	void publishtopic7Publisher(){
@@ -73,6 +88,10 @@ class RosAdapter_tests_msg_basicTypesComp: public IAdapter_tests_msg_basicTypesC
 	}
 	
 	void tick(){
+		topic7Callback_wasCalled = false;
+		topic8Callback_wasCalled = false;
+		topic9Callback_wasCalled = false;
+		
 		publishtopic7Publisher();
 		publishtopic8Publisher();
 		publishtopic9Publisher();
