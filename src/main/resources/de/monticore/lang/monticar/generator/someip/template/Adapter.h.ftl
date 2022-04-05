@@ -24,6 +24,7 @@ public:
     void init(${model.getEscapedCompName()} *comp);
 
     void tick();
+	bool hasReceivedNewData();  
 
 
 private:

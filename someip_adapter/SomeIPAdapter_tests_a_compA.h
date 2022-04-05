@@ -29,6 +29,8 @@ public:
 	void publishout2_Publisher();
 
     void tick();
+	
+	bool hasReceivedNewData(); 
 
 
 private:

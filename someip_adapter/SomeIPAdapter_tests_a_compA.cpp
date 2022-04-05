@@ -141,3 +141,9 @@ void SomeIPAdapter_tests_a_compA::tick()
     publishout2_Publisher();
 }
 
+bool SomeIPAdapter_tests_a_compA::hasReceivedNewData()
+{
+  return true;
+}
+
+

@@ -1,4 +1,3 @@
-/* (c) https://github.com/MontiCore/monticore */
 #pragma once
 #include "tests_a_compA.h"
 #include "IAdapter_tests_a_compA.h"
@@ -23,6 +22,7 @@ public:
     void init(tests_a_compA *comp);
 
     void tick();
+	bool hasReceivedNewData();  
 
 
 private:
