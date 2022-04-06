@@ -28,6 +28,7 @@ public:
     void publish_echo_portJ();
 
     void tick();
+    bool hasReceivedNewData();  
 
 private:
     const string SERVER_ADDRESS = "tcp://localhost:1883";

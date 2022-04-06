@@ -119,3 +119,8 @@ void MqttAdapter_tests_a_compA::tick()
     publish_echoPublisherZ();
     publish_echoPublisherB();
 }
+
+bool MqttAdapter_tests_a_compA::hasReceivedNewData() {
+    return true;
+}
+

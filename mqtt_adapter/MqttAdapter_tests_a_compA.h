@@ -24,6 +24,7 @@ public:
     void publish_echoPublisherB();
 
     void tick();
+    bool hasReceivedNewData();
 
 private:
     const string SERVER_ADDRESS = "tcp://localhost:1883";
