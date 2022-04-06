@@ -139,3 +139,8 @@ void MqttAdapter_tests_a_compA::tick()
     publish_echo_portH();
     publish_echo_portJ();
 }
+
+bool MqttAdapter_tests_a_compA::hasReceivedNewData()
+{
+  return true;
+}

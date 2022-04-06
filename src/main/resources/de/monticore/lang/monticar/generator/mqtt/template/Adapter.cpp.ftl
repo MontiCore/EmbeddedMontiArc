@@ -102,3 +102,8 @@ void <@m.mwIdent/>Adapter_${model.getEscapedCompName()}::tick()
     publish_echo_${pub.getName()}();
     </#list>
 }
+
+bool <@m.mwIdent/>Adapter_${model.getEscapedCompName()}::hasReceivedNewData()
+{
+  return true;
+}
