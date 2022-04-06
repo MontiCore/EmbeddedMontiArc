@@ -120,7 +120,7 @@ void MqttAdapter_tests_a_compA::tick()
     publish_echoPublisherB();
 }
 
-void MqttAdapter_tests_a_compA::hasReceivedNewData() {
+bool MqttAdapter_tests_a_compA::hasReceivedNewData() {
     return true;
 }
 
