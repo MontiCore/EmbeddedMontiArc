@@ -20,6 +20,20 @@ CompileJobLinux:
     paths:
     - target/
     expire_in: 1 day
+  
+  before_script:
+    - git clone --branch ba-muenker --single-branch https://gitlab-ci-token:${CI_JOB_TOKEN}@git.rwth-aachen.de/monticore/EmbeddedMontiArc/generators/EMAM2RosCpp.git
+    - git clone --branch ba-muenker --single-branch https://gitlab-ci-token:${CI_JOB_TOKEN}@git.rwth-aachen.de/monticore/EmbeddedMontiArc/generators/emam2mqtt.git
+    - git clone --branch ba-muenker --single-branch https://gitlab-ci-token:${CI_JOB_TOKEN}@git.rwth-aachen.de/monticore/EmbeddedMontiArc/generators/emam2someip.git
+
+    - cd EMAM2RosCpp
+    - mvn clean install -s settings.xml -DskipTests
+    - cd ../emam2mqtt
+    - mvn clean install -s settings.xml -DskipTests
+    - cd ../emam2someip
+    - mvn clean install -s settings.xml -DskipTests
+    - cd ..
+
   script:
   - mvn -Dorg.slf4j.simpleLogger.log.org.apache.maven.cli.transfer.Slf4jMavenTransferListener=warn -B  clean install --settings settings.xml -U
 #  - cat target/site/jacoco/index.html

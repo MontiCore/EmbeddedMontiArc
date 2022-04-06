@@ -16,6 +16,10 @@ public:
 	void tick(){
 		cout << "Dummy publish data: component.out1 = "<< component->out1 << endl;
 	}
+
+	bool hasReceivedNewData() {
+    	return true;
+	}
 	
 	void init(${compName}* comp){
 		this->component = comp;
