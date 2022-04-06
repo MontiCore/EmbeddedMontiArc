@@ -138,3 +138,8 @@ void <@m.mwIdent/>Adapter_${model.getEscapedCompName()}::tick()
     	publish${pub.getName()}_Publisher();
     </#list>
 }
+
+bool <@m.mwIdent/>Adapter_${model.getEscapedCompName()}::hasReceivedNewData()
+{
+  return true;
+}

@@ -1,4 +1,3 @@
-/* (c) https://github.com/MontiCore/monticore */
 #include "SomeIPAdapter_tests_a_compA.h"
 
 SomeIPAdapter_tests_a_compA::SomeIPAdapter_tests_a_compA() {
@@ -37,7 +36,7 @@ void SomeIPAdapter_tests_a_compA::init(tests_a_compA *comp) {
 		if (!in3_Subscriber->init()) {
             std::cerr << "Couldn't initialize Subscriber in3" << std::endl;
         }
-
+		
 		in3_Subscriber->register_availability_handler(31, 32, std::bind(&SomeIPAdapter_tests_a_compA::on_availability_in3, this, std::placeholders::_1, std::placeholders::_2, std::placeholders::_3));
 		in3_Subscriber->request_service(31, 32);
 		in3_Subscriber->register_message_handler(31, 32, 0, std::bind(&SomeIPAdapter_tests_a_compA::on_message_in3, this, std::placeholders::_1));
@@ -84,7 +83,7 @@ void SomeIPAdapter_tests_a_compA::init(tests_a_compA *comp) {
     	out3_Publisher = vsomeip::runtime::get()->create_application("Publisher out3");
 		if (!out3_Publisher->init()) {
             std::cerr << "Couldn't initialize Publisher out3" << std::endl;
-}
+        }
     	out3_Publisher->offer_service(131, 132);
 		out3_Publisher->start();
     	out4_Publisher = vsomeip::runtime::get()->create_application("Publisher out4");
@@ -118,7 +117,7 @@ void SomeIPAdapter_tests_a_compA::on_message_in1(const std::shared_ptr<vsomeip::
     double dataFromMessage = *((double*)its_payload->get_data());
 	
         // double
-    component->in1 = dataFromMessage;
+		component->in1 = dataFromMessage;
 
 	//print data to std out
     std::cout << "SERVICE in1: Received message from ["
@@ -152,7 +151,7 @@ void SomeIPAdapter_tests_a_compA::on_message_in2(const std::shared_ptr<vsomeip::
     double dataFromMessage = *((double*)its_payload->get_data());
 	
         // double
-    component->in2 = dataFromMessage;
+		component->in2 = dataFromMessage;
 
 	//print data to std out
     std::cout << "SERVICE in2: Received message from ["
@@ -218,7 +217,7 @@ void SomeIPAdapter_tests_a_compA::on_message_in4(const std::shared_ptr<vsomeip::
     std::shared_ptr<vsomeip::payload> its_payload = _message->get_payload();
     vsomeip::length_t l = its_payload->get_length();
     double dataFromMessage = *((double*)its_payload->get_data());
-
+	
         //int
 		component->in4 = (int) round(dataFromMessage);
 
@@ -277,7 +276,7 @@ void SomeIPAdapter_tests_a_compA::publishout1_Publisher()
 {
     //Read data from component
         // double
-    double d = component->out1;
+    	double d = component->out1;
 
 	const vsomeip::byte_t its_data[] = { (uint8_t) d };
 	std::shared_ptr<vsomeip::payload> payload = vsomeip::runtime::get()->create_payload();
@@ -293,7 +292,7 @@ void SomeIPAdapter_tests_a_compA::publishout2_Publisher()
 {
     //Read data from component
         // double
-    double d = component->out2;
+    	double d = component->out2;
 
 	const vsomeip::byte_t its_data[] = { (uint8_t) d };
 	std::shared_ptr<vsomeip::payload> payload = vsomeip::runtime::get()->create_payload();
@@ -362,4 +361,9 @@ void SomeIPAdapter_tests_a_compA::tick()
     	publishout3_Publisher();
     	publishout4_Publisher();
     	publishout5_Publisher();
+}
+
+bool SomeIPAdapter_tests_a_compA::hasReceivedNewData()
+{
+  return true;
 }
