@@ -41,7 +41,7 @@ TestBuildJava1_8:
     # get generator start
     - git clone --branch ba-muenker --single-branch https://gitlab-ci-token:${CI_JOB_TOKEN}@git.rwth-aachen.de/monticore/EmbeddedMontiArc/generators/EMAM2Middleware.git
 
-    - cd ../EMAM2Middleware
+    - cd EMAM2Middleware
     - mvn clean package -s settings.xml -DskipTests
     - cd ..
     - cp "EMAM2Middleware/target/embedded-montiarc-math-middleware-generator"*"jar-with-dependencies.jar" tictactoe-agent/embedded-montiarc-math-middleware-generator-jar-with-dependencies.jar
