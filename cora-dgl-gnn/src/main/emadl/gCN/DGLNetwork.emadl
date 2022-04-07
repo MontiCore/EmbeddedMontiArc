@@ -12,8 +12,6 @@ component DGLNetwork{
 
         (graph | features) ->
         GraphConv(input_dim=1433, output_dim=16, nodes=2708) ->
-        /* GraphConv(input_dim=1433, output_dim=16, nodes=2708) -> */
-        /* Reshape(shape=(2708, 16)) -> */
         layerOne;
 
         (graph | layerOne.output) ->
