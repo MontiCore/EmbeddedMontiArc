@@ -57,6 +57,15 @@ trigger-cvae:
   only:
     - master
 
+trigger-kipf-gnn:
+  stage: trigger_apps
+  allow_failure: true
+  trigger:
+    project: monticore/EmbeddedMontiArc/applications/kipf-gnn
+    branch: master
+  only:
+    - master
+
 trigger-sentiment:
   stage: trigger_apps
   allow_failure: true
