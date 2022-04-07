@@ -3,28 +3,21 @@
 <#assign input_index = 0>
 <#if tc.architecture.useDgl>
                     train_data_index = 0
+                    graph_ = [dgl.batch(train_graph[batch_size*train_batches:min(len(train_graph), batch_size*(train_batches+1))])]
 </#if>
 <#list tc.architectureInputs as input_name>
 <#if input_name?index == tc.architectureInputs?seq_index_of(input_name)>
 <#if tc.architecture.useDgl>
-<#if input_name == 'graph_'>
-                    if multi_graph:
-                        if (batch_size*(train_batches+1)) > len(train_graph):
-                            ${input_name} = [dgl.batch(train_graph[batch_size*train_batches:len(train_graph)])]
-                        else:
-                            ${input_name} = [dgl.batch(train_graph[batch_size*train_batches:batch_size*(train_batches+1)])]
+<#if input_name != 'graph_'>
+                    if '${input_name}' in graph_[0].ndata:
+                        ${input_name} = [graph_[0].ndata['${input_name}']]
+                    elif '${input_name}' in graph_[0].edata:
+                        ${input_name} = [graph_[0].edata['${input_name}']]
                     else:
-                        ${input_name} = train_graph
-<#else>
-                    if multi_graph:
-                        if '${input_name}' in graph_[0].ndata:
-                            ${input_name} = [graph_[0].ndata['${input_name}']]
-                        else:
-                            ${input_name} = gluon.utils.split_and_load(batch.data[train_data_index], ctx_list=mx_context, even_split=False)
-                            train_data_index += 1
-                    else:
-                        ${input_name} = gluon.utils.split_and_load(batch.data[${input_index}], ctx_list=mx_context, even_split=False)[0]
-<#assign input_index++>
+                        ${input_name} = gluon.utils.split_and_load(batch.data[train_data_index], ctx_list=mx_context, even_split=False)
+                        train_data_index += 1
+                    if not multi_graph:
+                        ${input_name} = ${input_name}[0]
 </#if>
 <#else>
                     ${input_name} = gluon.utils.split_and_load(batch.data[${input_index}], ctx_list=mx_context, even_split=False)
@@ -90,23 +83,20 @@
 </#list>
 <#list tc.getStreamOutputNames(networkInstruction.body, true) as outputName>
 <#if tc.getNameWithoutIndex(outputName) == tc.outputName>
+                    if (train_mask is not None or test_mask is not None) and epoch == 0:
+                        train_mask = self.get_mask_array(${outputName}[0].shape[0], train_mask)
+                        test_mask = self.get_mask_array(${outputName}[0].shape[0], test_mask)
 <#if tc.architecture.useDgl>
-                    if multi_graph:
-                        [lossList[i].append(loss_function(${outputName}[i], labels[${tc.getIndex(outputName, true)}][i])) for i in range(num_pus)]
-                    else:
-                        outputs = []
-                        outputs.append(${outputName}[0])
-                        train_samples = graph_[0].ndata['train_mask'].sum().asscalar()
-                        [lossList[i].append(loss_function(mx.nd.squeeze(${outputName}[i]), mx.nd.squeeze(labels[${tc.getIndex(outputName, true)}][i]), mx.nd.expand_dims(graph_[0].ndata['train_mask'], 1)).sum() / train_samples) for i in range(num_pus)]
-<#else>
-                    if train_mask != None:
-                        outputs = []
-                        outputs.append(${outputName}[0])
-                        train_samples = train_mask[1] - train_mask[0]
-                        [lossList[i].append(loss_function(mx.nd.squeeze(${outputName}[i]), mx.nd.squeeze(labels[${tc.getIndex(outputName, true)}][i]), self.get_mask_array(${outputName}[0].shape[0], train_mask)).sum() / train_samples) for i in range(num_pus)]
-                    else:
-                        [lossList[i].append(loss_function(${outputName}[i], labels[${tc.getIndex(outputName, true)}][i])) for i in range(num_pus)]
+                    elif not multi_graph and epoch == 0:
+                        train_mask = graph_[0].ndata['train_mask']
+                        test_mask = graph_[0].ndata['test_mask']
 </#if>
+                    if train_mask is not None:
+                        outputs = [${outputName}[0]]
+                        [lossList[i].append(loss_function(mx.nd.squeeze(${outputName}[i]), mx.nd.squeeze(labels[${tc.getIndex(outputName, true)}][i]), mx.nd.expand_dims(train_mask, 1)).sum() / train_mask.sum().asscalar()) for i in range(num_pus)]
+                    else:
+                        [lossList[i].append(loss_function(${outputName}[i], labels[${tc.getIndex(outputName, true)}][i])) for i in range(num_pus)]
+
 </#if>
 </#list>
 
