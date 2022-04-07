@@ -681,6 +681,9 @@ ${tc.include(networkInstruction.body, elements?index, "FORWARD_FUNCTION")}
 </#list>
 <#if !(tc.architecture.useDgl)>
 class Net_${networkInstruction?index}(gluon.HybridBlock):
+<#else>
+class Net_${networkInstruction?index}(gluon.Block):
+</#if>
     def __init__(self, data_mean=None, data_std=None, mx_context=None, batch_size=None, **kwargs):
         super(Net_${networkInstruction?index}, self).__init__(**kwargs)
         with self.name_scope():
@@ -703,9 +706,12 @@ ${tc.include(networkInstruction.body, "ARCHITECTURE_DEFINITION")}
 </#if>    
             pass
 
-
+<#if !(tc.architecture.useDgl)>
     def hybrid_forward(self, F, ${tc.join(tc.getStreamInputNames(networkInstruction.body, false), ", ")}):
-<#if networkInstruction.body.hasLossParameterizingElements()>
+<#else>
+    def forward(self, ${tc.join(tc.getStreamInputNames(networkInstruction.body, false), ", ")}):
+</#if>
+    <#if networkInstruction.body.hasLossParameterizingElements()>
         loss_params = []
 </#if>
 <#if networkInstruction.body.episodicSubNetworks?has_content>
@@ -726,18 +732,6 @@ ${tc.include(networkInstruction.body, "FORWARD_FUNCTION")}
 <#else>
         return [[${tc.join(tc.getStreamOutputNames(networkInstruction.body, false), ", ")}]]
 </#if>
-</#if>
-<#else>
-class Net_${networkInstruction?index}(gluon.Block):
-    def __init__(self, data_mean=None, data_std=None, mx_context=None, batch_size=None, **kwargs):
-        super(Net_${networkInstruction?index}, self).__init__(**kwargs)
-        with self.name_scope():
-${tc.include(networkInstruction.body, "ARCHITECTURE_DEFINITION")}
-            pass
-
-    def forward(self, ${tc.join(tc.getStreamInputNames(networkInstruction.body, false), ", ")}):
-${tc.include(networkInstruction.body, "FORWARD_FUNCTION")}
-        return [[${tc.join(tc.getStreamOutputNames(networkInstruction.body, false), ", ")}]]
 </#if>
 </#list>
 </#if>

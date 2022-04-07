@@ -590,9 +590,7 @@ class ${tc.fileNameWithoutEnding}:
 
                         loss_avg = loss_total / (batch_size * log_period)
                         loss_total = 0
-<#if tc.architecture.useDgl>
-                        print("Epoch[%d] Batch[%d] Speed: %.2f samples/sec Loss: %.5f" % (epoch, batch_i, speed, loss_avg))
-</#if>
+
                         logging.info("Epoch[%d] Batch[%d] Speed: %.2f samples/sec Loss: %.5f" % (epoch, batch_i, speed, loss_avg))
                         
                         avg_speed += speed
@@ -669,11 +667,7 @@ class ${tc.fileNameWithoutEnding}:
             test_iter.reset()
             metric = mx.metric.create(eval_metric, **eval_metric_params)
             for batch_i, batch in enumerate(test_iter):
-<#if tc.architecture.useDgl>
-                if multi_graph:
-<#else>
-                if test_mask == None: <#-- Fix indentation -->
-</#if>
+                if test_mask is None:
 
 <#if episodicReplayVisited?? && anyEpisodicLocalAdaptation && !containsUnrollNetwork>
 <#include "pythonExecuteTest.ftl">
@@ -703,7 +697,7 @@ class ${tc.fileNameWithoutEnding}:
 <#include "saveAttentionImageTest.ftl">
 
                 loss = 0
-                if test_mask == None or multi_graph:
+                if test_mask is None:
                     for element in lossList:
                         loss = loss + element
                     global_loss_test += loss.sum().asscalar()
@@ -716,17 +710,10 @@ class ${tc.fileNameWithoutEnding}:
                         predictions.append(mx.nd.argmax(output_name, axis=1))
                     else:
                         predictions.append(output_name)
-<#if tc.architecture.useDgl>
-                if not multi_graph:
-                    metric.update(preds=predictions[0], labels=mx.nd.squeeze(labels[0][0]), mask=graph_[0].ndata['test_mask'])
+                if test_mask is not None:
+                    metric.update(preds=predictions[0], labels=mx.nd.squeeze(labels[0][0]), mask=test_mask)
                 else:
                     metric.update(preds=predictions, labels=[labels[j] for j in range(len(labels))])
-<#else>
-                if train_mask != None:
-                    metric.update(preds=predictions[0], labels=mx.nd.squeeze(labels[0][0]), mask=self.get_mask_array(predictions[0].shape[0], test_mask))
-                else:
-                    metric.update(preds=predictions, labels=[labels[j] for j in range(len(labels))])
-</#if>
             global_loss_test /= (test_batches * single_pu_batch_size)
 </#if>
             test_metric_name = metric.get()[0]
@@ -735,9 +722,7 @@ class ${tc.fileNameWithoutEnding}:
             metric_file = open(self._net_creator._model_dir_ + 'metric.txt', 'w')
             metric_file.write(test_metric_name + " " + str(test_metric_score))
             metric_file.close()
-<#if tc.architecture.useDgl>
-            print("Epoch[%d] Train metric: %f, Test metric: %f, Train loss: %f, Test loss: %f" % (epoch, train_metric_score, test_metric_score, global_loss_train, global_loss_test))
-</#if>
+
             logging.info("Epoch[%d] Train metric: %f, Test metric: %f, Train loss: %f, Test loss: %f" % (epoch, train_metric_score, test_metric_score, global_loss_train, global_loss_test))
 
             if (epoch+1) % checkpoint_period == 0:
@@ -776,6 +761,8 @@ class ${tc.fileNameWithoutEnding}:
 
 
     def get_mask_array(self, shape, mask):
+        if mask is None:
+            return None
         idx = range(mask[0], mask[1])
         mask_array = np.zeros(shape)
         mask_array[idx] = 1

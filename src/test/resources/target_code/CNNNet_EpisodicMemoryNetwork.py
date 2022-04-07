@@ -717,7 +717,6 @@ class Net_0(gluon.HybridBlock):
 
             pass
 
-
     def hybrid_forward(self, F, data_):
         episodicsubnet0_ = self.episodicsubnet0_(data_)  
         episodicsubnet1_ = self.episodic_sub_nets[0](*episodicsubnet0_[0])
