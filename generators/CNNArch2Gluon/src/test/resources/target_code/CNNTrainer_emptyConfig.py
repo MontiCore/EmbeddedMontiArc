@@ -1,13 +1,14 @@
 # (c) https://github.com/MontiCore/monticore
 import logging
 import mxnet as mx
+
 import CNNCreator_emptyConfig
 import CNNDataLoader_emptyConfig
 import CNNSupervisedTrainer_emptyConfig
 
 if __name__ == "__main__":
-    logging.basicConfig(level=logging.DEBUG)
     logger = logging.getLogger()
+    logger.setLevel(logging.DEBUG)
     handler = logging.FileHandler("train.log", "w", encoding=None, delay="true")
     logger.addHandler(handler)
 

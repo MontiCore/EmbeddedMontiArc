@@ -10,7 +10,6 @@ import numpy as np
 import importlib
 from mxnet import nd
 <#if tc.architecture.useDgl>
-import dgl
 from dgl.data.utils import load_graphs
 </#if>
 
