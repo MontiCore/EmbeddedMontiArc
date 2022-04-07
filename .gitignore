@@ -6,3 +6,4 @@ target
 .git
 
 *.iml
+.DS_Store
