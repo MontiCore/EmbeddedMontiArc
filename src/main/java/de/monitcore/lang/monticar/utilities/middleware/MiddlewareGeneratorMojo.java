@@ -163,29 +163,6 @@ public class MiddlewareGeneratorMojo extends MiddlewareMojoBase {
         if(modelsInError.size() > 0){
             throw new MojoExecutionException("Models "+String.join(", ", modelsInError)+" could not resolved to ExpandedComponentInstanceSymbol!");
         }
-
-//        if (trainingNeeded){
-//            if (this.middlewareGenerator.contains(MiddlewareGenerator.emadlcpp)){
-//                EMADLGenerator emadlGenerator = new EMADLGenerator(Backend.valueOf(this.emadlBackend));
-//                String outputPath = getPathMiddlewareOut();
-//                if (outputPath != null){
-//                    emadlGenerator.setGenerationTargetPath(getPathMiddlewareOut());
-//                }
-//                try{
-//                    emadlGenerator.generate(this.getPathMain(), this.getRootModel(), this.getPathToPython(), "x", true);
-//                }
-//                catch (IOException e){
-//                    Log.error("io error during generation", e);
-//                    System.exit(1);
-//                }
-//                catch (TemplateException e){
-//                    Log.error("template error during generation", e);
-//                    System.exit(1);
-//                }
-//            }
-//        }
-
-
     }
 
     @Override
