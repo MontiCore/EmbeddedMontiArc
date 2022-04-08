@@ -358,6 +358,9 @@ class ${tc.fileNameWithoutEnding}:
               test_mask=None,
               multi_graph=False,
               onnx_export=False):
+<#if tc.architecture.useDgl>
+        logging.getLogger().setLevel(logging.DEBUG)
+</#if>
         num_pus = 1
         if context == 'gpu':
             num_pus = mx.context.num_gpus()
