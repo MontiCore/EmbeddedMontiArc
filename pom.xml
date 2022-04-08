@@ -13,7 +13,7 @@
 
     <properties>
         <EMAM2Middleware.version>0.1.3-SNAPSHOT</EMAM2Middleware.version>
-        <EMADLGenerator.version>0.5.5-SNAPSHOT</EMADLGenerator.version>
+        <EMADLGenerator.version>0.5.6-SNAPSHOT</EMADLGenerator.version>
         <cnnarch-generator.version>0.4.11-SNAPSHOT</cnnarch-generator.version>
         <source.plugin>2.4</source.plugin>
         <!--misc-->
