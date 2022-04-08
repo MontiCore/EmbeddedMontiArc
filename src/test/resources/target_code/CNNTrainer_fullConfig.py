@@ -8,7 +8,7 @@ import CNNSupervisedTrainer_fullConfig
 
 if __name__ == "__main__":
     logger = logging.getLogger()
-    logger.setLevel(logging.DEBUG)
+    logging.basicConfig(level=logging.DEBUG)
     handler = logging.FileHandler("train.log", "w", encoding=None, delay="true")
     logger.addHandler(handler)
 
