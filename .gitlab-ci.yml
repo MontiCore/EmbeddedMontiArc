@@ -39,8 +39,7 @@ TestBuildJava1_8:
     expire_in: 1 week
   script:
     # get generator start
-    - git clone --branch ba-muenker --single-branch https://gitlab-ci-token:${CI_JOB_TOKEN}@git.rwth-aachen.de/monticore/EmbeddedMontiArc/generators/EMAM2Middleware.git
-
+    - git clone https://gitlab-ci-token:${CI_JOB_TOKEN}@git.rwth-aachen.de/monticore/EmbeddedMontiArc/generators/EMAM2Middleware.git
     - cd EMAM2Middleware
     - mvn clean package -s settings.xml -DskipTests
     - cd ..
