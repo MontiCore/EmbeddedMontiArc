@@ -1,19 +1,25 @@
 package de.thesis.consumer.backend.domain;
 
-import de.thesis.consumer.backend.entities.Dataset;
+import de.thesis.consumer.backend.entities.Offer;
 import lombok.AllArgsConstructor;
 
-@AllArgsConstructor
-public class DatasetService {
+import java.util.List;
 
-	private DatasetRepository datasetRepository;
+@AllArgsConstructor
+public class OfferService {
+
+	private OfferRepository offerRepository;
 	private PolicyService policyService;
 
-	public void offerDataset(Dataset dataset) throws InvalidPolicyException {
-		if (!policyService.isValid(dataset.getPolicy())) {
+	public void offerDataset(Offer offer) throws InvalidPolicyException {
+		if (!policyService.isValid(offer.getPolicy())) {
 			throw new InvalidPolicyException("Policy invalid");
 		}
 
-		datasetRepository.save(dataset);
+		offerRepository.save(offer);
+	}
+
+	public List<Offer> getAllOffers() {
+		return offerRepository.findAll();
 	}
 }

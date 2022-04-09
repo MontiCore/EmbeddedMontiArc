@@ -1,18 +1,25 @@
 package de.thesis.consumer.backend.persistence;
 
-import de.thesis.consumer.backend.domain.DatasetRepository;
-import de.thesis.consumer.backend.entities.Dataset;
+import de.thesis.consumer.backend.domain.OfferRepository;
+import de.thesis.consumer.backend.entities.Offer;
 import lombok.AllArgsConstructor;
 import org.springframework.stereotype.Repository;
 
+import java.util.List;
+
 @Repository
 @AllArgsConstructor
-public class DatasetRepositoryImpl implements DatasetRepository {
+public class OfferRepositoryImpl implements OfferRepository {
 
-	private SpringDataDatasetCrudRepository repository;
+	private SpringDataOfferCrudRepository repository;
 
 	@Override
-	public void save(Dataset dataset) {
-		this.repository.save(dataset);
+	public void save(Offer offer) {
+		repository.save(offer);
+	}
+
+	@Override
+	public List<Offer> findAll() {
+		return repository.findAll();
 	}
 }

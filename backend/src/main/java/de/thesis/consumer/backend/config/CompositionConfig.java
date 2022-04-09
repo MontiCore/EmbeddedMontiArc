@@ -1,7 +1,7 @@
 package de.thesis.consumer.backend.config;
 
-import de.thesis.consumer.backend.domain.DatasetRepository;
-import de.thesis.consumer.backend.domain.DatasetService;
+import de.thesis.consumer.backend.domain.OfferRepository;
+import de.thesis.consumer.backend.domain.OfferService;
 import de.thesis.consumer.backend.domain.PolicyServiceMock;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
@@ -10,7 +10,7 @@ import org.springframework.context.annotation.Configuration;
 public class CompositionConfig {
 
 	@Bean
-	public DatasetService getDatasetService(DatasetRepository repository) {
-		return new DatasetService(repository, new PolicyServiceMock());
+	public OfferService getDatasetService(OfferRepository repository) {
+		return new OfferService(repository, new PolicyServiceMock());
 	}
 }

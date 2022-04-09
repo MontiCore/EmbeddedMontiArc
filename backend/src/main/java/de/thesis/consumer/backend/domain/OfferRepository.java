@@ -1,8 +1,12 @@
 package de.thesis.consumer.backend.domain;
 
-import de.thesis.consumer.backend.entities.Dataset;
+import de.thesis.consumer.backend.entities.Offer;
 
-public interface DatasetRepository {
+import java.util.List;
 
-	void save(Dataset dataset);
+public interface OfferRepository {
+
+	void save(Offer offer);
+
+	List<Offer> findAll();
 }
