@@ -11,7 +11,7 @@
 </template>
 
 <script>
-import Card from '@/components/MarketplaceCard.vue'
+import Card from '@/components/OfferCard.vue'
 import 'bootstrap/js/dist/collapse'
 
 export default {
