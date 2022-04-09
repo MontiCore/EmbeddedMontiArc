@@ -1,6 +1,12 @@
 <template>
   <div class="d-flex flex-wrap justify-content-center gap-4 mt-4">
-    <Card v-for="n in 10" :key="n" :id="n" description='Lorem ipsum dolor sit amet, consetetur sadipscing elitr, sed diam nonumy eirmod tempor invidunt ut labore et dolore magna aliquyam erat, sed diam voluptua. At vero eos et accusam et justo duo dolores et ea rebum. Stet clita kasd gubergren, no sea takimata sanctus est Lorem ipsum dolor sit amet. Lorem ipsum dolor sit amet'/>
+    <Card v-for="offer in offers" :key="offer.id"
+      :id="offer.id"
+      :provider="offer.provider"
+      :title="offer.title"
+      :description="offer.description"
+      :price="offer.price"
+    />
   </div>
 </template>
 
@@ -11,6 +17,14 @@ import 'bootstrap/js/dist/collapse'
 export default {
   components: {
     Card
+  },
+  computed: {
+    offers () {
+      return this.$store.getters.getOffers
+    }
+  },
+  mounted () {
+    this.$store.dispatch('fetchOffers')
   }
 }
 </script>

@@ -2,7 +2,7 @@
   <div ref="card" class="d-flex flex-column shadow text-start gap-2 p-3" style="width: 18rem; border-radius: 0.5rem" :style="collapsedStyle">
     <h5 class="m-0">{{ title }}</h5>
     <div class="d-flex justify-content-between align-items-center">
-      <h6 class="card-subtitle text-muted">{{ company }}</h6>
+      <h6 class="card-subtitle text-muted">{{ provider }}</h6>
         <button class="btn p-0"
           type="button" data-bs-toggle="collapse"
           :data-bs-target="'#policies-' + id"
@@ -59,17 +59,26 @@ export default {
       type: Number,
       required: true
     },
+    provider: {
+      type: String,
+      required: true
+    },
+    title: {
+      type: String,
+      required: true
+    },
     description: {
       type: String,
+      required: true
+    },
+    price: {
+      type: Number,
       required: true
     }
   },
   data () {
     return {
       collapsed: true,
-      title: 'Dachser Western Germany',
-      company: 'Dachser Gmbh',
-      price: 15.45,
       policies: {
         usages: 5,
         time: '06:00 - 20:00',
