@@ -17,6 +17,8 @@ public class Offer {
 	@GeneratedValue
 	private Long id;
 
+	private String title;
+
 	private String provider;
 
 	@Column(columnDefinition = "TEXT")

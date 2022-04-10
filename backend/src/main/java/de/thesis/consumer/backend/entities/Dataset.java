@@ -16,6 +16,8 @@ public class Dataset {
 	@GeneratedValue
 	private Long id;
 
+	private String title;
+
 	private String provider;
 
 	@Column(columnDefinition = "TEXT")
