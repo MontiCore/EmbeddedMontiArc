@@ -22,4 +22,9 @@ public class OfferRepositoryImpl implements OfferRepository {
 	public List<Offer> findAll() {
 		return repository.findAll();
 	}
+
+	@Override
+	public Offer findBy(Long offerId) {
+		return repository.findById(offerId).orElse(null);
+	}
 }

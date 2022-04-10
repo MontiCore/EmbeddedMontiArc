@@ -15,7 +15,7 @@ import java.util.List;
 @RequestMapping("/datasets")
 @AllArgsConstructor
 @CrossOrigin(origins = "*")
-public class DatasetController {
+public class OfferController {
 
 	private OfferService service;
 
@@ -32,5 +32,11 @@ public class DatasetController {
 	@GetMapping
 	public List<Offer> getAllOffers() {
 		return service.getAllOffers();
+	}
+
+	@PostMapping("/{offerId}")
+	@ResponseStatus(HttpStatus.OK)
+	public void buyOffer(@PathVariable Long offerId) {
+		service.buyOffer(offerId);
 	}
 }

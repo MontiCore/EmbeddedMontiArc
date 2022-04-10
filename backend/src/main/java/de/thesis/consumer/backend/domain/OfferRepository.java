@@ -9,4 +9,6 @@ public interface OfferRepository {
 	void save(Offer offer);
 
 	List<Offer> findAll();
+
+	Offer findBy(Long offerId);
 }

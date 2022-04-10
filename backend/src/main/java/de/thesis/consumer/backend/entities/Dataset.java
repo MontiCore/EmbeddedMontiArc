@@ -11,8 +11,7 @@ import javax.persistence.Id;
 @Entity
 @Getter
 @Setter
-public class Offer {
-
+public class Dataset {
 	@Id
 	@GeneratedValue
 	private Long id;
