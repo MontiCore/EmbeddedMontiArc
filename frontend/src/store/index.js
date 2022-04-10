@@ -32,6 +32,9 @@ export default createStore({
       axios.get('/datasets').then(response => {
         context.commit('setDatasets', response.data)
       })
+    },
+    buyOffer (context, offerId) {
+      axios.post('offers/' + offerId)
     }
   },
   modules: {
