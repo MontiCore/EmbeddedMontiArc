@@ -10,6 +10,7 @@ import org.springframework.web.bind.annotation.*;
 import org.springframework.web.server.ResponseStatusException;
 
 import java.util.List;
+import java.util.UUID;
 
 @RestController
 @RequestMapping("/offers")
@@ -36,7 +37,7 @@ public class OfferController {
 
 	@PostMapping("/{offerId}")
 	@ResponseStatus(HttpStatus.OK)
-	public void buyOffer(@PathVariable Long offerId) {
+	public void buyOffer(@PathVariable UUID offerId) {
 		service.buyOffer(offerId);
 	}
 }

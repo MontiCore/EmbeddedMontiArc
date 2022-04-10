@@ -6,6 +6,7 @@ import de.thesis.consumer.backend.entities.Offer;
 import lombok.AllArgsConstructor;
 
 import java.util.List;
+import java.util.UUID;
 
 @AllArgsConstructor
 public class OfferService {
@@ -27,7 +28,7 @@ public class OfferService {
 		return offerRepository.findAll();
 	}
 
-	public void buyOffer(Long offerId) {
+	public void buyOffer(UUID offerId) {
 		Offer offer = offerRepository.findBy(offerId);
 		Dataset dataset = mapper.convertValue(offer, Dataset.class);
 		datasetRepository.save(dataset);

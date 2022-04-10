@@ -3,6 +3,7 @@ package de.thesis.consumer.backend.domain;
 import de.thesis.consumer.backend.entities.Offer;
 
 import java.util.List;
+import java.util.UUID;
 
 public interface OfferRepository {
 
@@ -10,5 +11,5 @@ public interface OfferRepository {
 
 	List<Offer> findAll();
 
-	Offer findBy(Long offerId);
+	Offer findBy(UUID offerId);
 }

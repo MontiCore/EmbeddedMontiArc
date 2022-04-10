@@ -41,7 +41,7 @@
     </div>
     <p class="description m-0 flex-grow-1">{{ description }}</p>
     <div class="d-flex justify-content-between align-items-center">
-      <button type="button" class="btn buy-btn" @click="buy()" style="font-weight: bold">Buy now</button>
+      <button type="button" class="btn buy-btn" @click="buy()" style="font-weight: bold" :disabled="bought">Buy now</button>
       <p class="fw-bold m-0 fs-5">{{ price }} €</p>
     </div>
   </div>
@@ -56,7 +56,7 @@ export default {
   },
   props: {
     id: {
-      type: Number,
+      type: String,
       required: true
     },
     provider: {
@@ -107,11 +107,21 @@ export default {
       } else {
         return {}
       }
+    },
+    bought () {
+      this.$store.getters.getDatasets.forEach(dataset => {
+        if (dataset.id === this.id) {
+          return true
+        }
+      })
+
+      return false
     }
   },
   methods: {
     buy () {
       this.$store.dispatch('buyOffer', this.id)
+      this.$store.dispatch('fetchDatasets')
     }
   }
 }

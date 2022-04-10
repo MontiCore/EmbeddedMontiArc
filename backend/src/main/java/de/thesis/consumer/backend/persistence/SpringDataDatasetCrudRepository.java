@@ -5,8 +5,9 @@ import org.springframework.data.repository.CrudRepository;
 import org.springframework.stereotype.Repository;
 
 import java.util.List;
+import java.util.UUID;
 
 @Repository
-public interface SpringDataDatasetCrudRepository extends CrudRepository<Dataset, Long> {
+public interface SpringDataDatasetCrudRepository extends CrudRepository<Dataset, UUID> {
 	List<Dataset> findAll();
 }
