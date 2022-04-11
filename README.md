@@ -7,7 +7,7 @@ Different EMADL models for Deep Reinforcement Learning with MontiSim.
 
 Following tools are needed for this application:
 
-### EMADL
+### EMADL (When using Python 2)
 Generation, training and execution were done on Ubuntu 16.04 LTS. Follwoing software is needed (Taken from similar reinforcement learning applications e.g. [TORCS_RF](https://git.rwth-aachen.de/monticore/EmbeddedMontiArc/applications/reinforcement_learning/torcs_rf/-/tree/master)):
   
 - Java 8, Build Tools (make, cmake, gcc), Git, Python 2.7, pip, numpy, SWIG:
@@ -42,6 +42,11 @@ Generation, training and execution were done on Ubuntu 16.04 LTS. Follwoing soft
     ```
 - Armadillo >= 9.400.3 (Follow official [installation guide](http://arma.sourceforge.net/download.html))
 - ROS Kinetic (Follow official [installation guide](http://wiki.ros.org/kinetic/Installation/Ubuntu))
+
+###EMADL (When using Python 3)
+All installations and trainings were tested on a fresh Ubuntu 20.04 LTS.
+
+For installation of all necessary dependencies: Copy the [Installation script](https://git.rwth-aachen.de/monticore/EmbeddedMontiArc/applications/reinforcement_learning/coopmontisimautopilot/-/blob/main/additional_files/installation_script.sh) to your preferred installation location and execute it (The installation takes a while and you will need to grant sudo permission on multiple occasions). 
 
 ### MontiSim
 
