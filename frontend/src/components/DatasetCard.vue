@@ -41,7 +41,7 @@
     </div>
     <p class="description m-0 flex-grow-1">{{ description }}</p>
     <div class="d-flex justify-content-between align-items-center">
-      <router-link class="btn buy-btn" style="font-weight: bold" :to="`/datasets/1ac6d07f-1756-47a1-b430-0097758ba9a1`">View data</router-link>
+      <router-link class="btn buy-btn" style="font-weight: bold" :to="`/datasets/${id}`">View data</router-link>
       <p class="fw-bold m-0 fs-5">{{ price }} €</p>
     </div>
   </div>
