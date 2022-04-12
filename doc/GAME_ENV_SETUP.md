@@ -125,7 +125,7 @@ YourGameEnvironment.stateMappingTest(new YourGameEnvironment(), <<numberOfRandon
 ### Prerequisites
 - Java 17 or newer
 - Maven 3.8.3 or newer
-- *Prolog is needed for the execution of the tests (see 5. for installation instructions)* 
+- *Prolog is needed for the execution of the tests (see 6. for installation instructions)* 
 ### Compilation
 ```bash
 mvn package -s settings.xml
