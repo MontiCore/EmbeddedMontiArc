@@ -28,14 +28,13 @@ export default createStore({
         context.commit('setOffers', response.data)
       })
     },
-    async fetchDatasets (context) {
-      return axios.get('/datasets').then(response => {
+    fetchDatasets (context) {
+      axios.get('/datasets').then(response => {
         context.commit('setDatasets', response.data)
-        console.log('im store fertig mit fetchen')
       })
     },
-    buyOffer (context, offerId) {
-      axios.post('offers/' + offerId)
+    async buyOffer (context, offerId) {
+      return axios.post('offers/' + offerId)
     }
   },
   modules: {
