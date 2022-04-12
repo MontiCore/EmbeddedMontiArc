@@ -85,7 +85,8 @@ export default {
         date: '05.04.2022',
         logging: ['local', 'remote'],
         delete: 'delete after'
-      }
+      },
+      bought: false
     }
   },
   computed: {
@@ -107,22 +108,22 @@ export default {
       } else {
         return {}
       }
-    },
-    bought () {
-      this.$store.getters.getDatasets.forEach(dataset => {
-        if (dataset.id === this.id) {
-          return true
-        }
-      })
-
-      return false
     }
   },
   methods: {
     buy () {
       this.$store.dispatch('buyOffer', this.id)
-      this.$store.dispatch('fetchDatasets')
+      this.bought = true
     }
+  },
+  mounted () {
+    this.$store.dispatch('fetchDatasets').then(() => {
+      this.$store.getters.getDatasets.forEach(dataset => {
+        if (dataset.id === this.id) {
+          this.bought = true
+        }
+      })
+    })
   }
 }
 </script>
