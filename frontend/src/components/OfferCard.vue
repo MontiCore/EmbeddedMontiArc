@@ -42,7 +42,7 @@
     <p class="description m-0 flex-grow-1">{{ description }}</p>
     <div class="d-flex justify-content-between align-items-center">
       <button type="button" class="btn buy-btn" @click="buy()" style="font-weight: bold" :disabled="bought">Buy now</button>
-      <p class="fw-bold m-0 fs-5">{{ price }} €</p>
+      <p class="fw-bold m-0 fs-5">{{ price.toLocaleString("en-US", { maximumFractionDigits: 2, minimumFractionDigits: 2 }) }} €</p>
     </div>
   </div>
 </template>

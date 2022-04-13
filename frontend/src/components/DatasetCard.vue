@@ -42,7 +42,7 @@
     <p class="description m-0 flex-grow-1">{{ description }}</p>
     <div class="d-flex justify-content-between align-items-center">
       <router-link class="btn buy-btn" style="font-weight: bold" :to="`/datasets/${id}`">View data</router-link>
-      <p class="fw-bold m-0 fs-5">{{ price }} €</p>
+      <p class="fw-bold m-0 fs-5">{{ price.toLocaleString("en-US", { maximumFractionDigits: 2, minimumFractionDigits: 2 }) }} €</p>
     </div>
   </div>
 </template>
