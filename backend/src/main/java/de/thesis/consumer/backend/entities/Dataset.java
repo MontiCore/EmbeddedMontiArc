@@ -3,9 +3,9 @@ package de.thesis.consumer.backend.entities;
 import lombok.Getter;
 import lombok.Setter;
 
-import javax.persistence.Column;
-import javax.persistence.Entity;
-import javax.persistence.Id;
+import javax.persistence.*;
+import java.util.ArrayList;
+import java.util.List;
 import java.util.UUID;
 
 @Entity
@@ -26,4 +26,7 @@ public class Dataset {
 	private double price;
 
 	private String policy;
+
+	@OneToMany(mappedBy = "dataset", cascade = CascadeType.ALL)
+	private List<TruckData> truckData = new ArrayList<>();
 }

@@ -9,8 +9,8 @@ import org.springframework.context.annotation.Configuration;
 public class CompositionConfig {
 
 	@Bean
-	public OfferService getOfferService(OfferRepository offerRepository, DatasetRepository datasetRepository, ObjectMapper mapper) {
-		return new OfferService(offerRepository, datasetRepository, new PolicyServiceMock(), mapper);
+	public OfferService getOfferService(OfferRepository offerRepository, DatasetRepository datasetRepository, TruckDataRepository truckDataRepository, ObjectMapper mapper) {
+		return new OfferService(offerRepository, datasetRepository, truckDataRepository, new PolicyServiceMock(), mapper);
 	}
 
 	@Bean

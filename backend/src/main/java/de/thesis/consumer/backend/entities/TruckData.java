@@ -1,10 +1,9 @@
 package de.thesis.consumer.backend.entities;
 
+import com.fasterxml.jackson.annotation.JsonIgnore;
 import lombok.Data;
 
-import javax.persistence.Entity;
-import javax.persistence.GeneratedValue;
-import javax.persistence.Id;
+import javax.persistence.*;
 import java.time.LocalDateTime;
 
 @Entity
@@ -23,4 +22,8 @@ public class TruckData {
 	private int totalFuelUsed;
 	private boolean validPosition;
 	private LocalDateTime timestamp;
+	@ManyToOne
+	@JoinColumn(name = "dataset")
+	@JsonIgnore
+	private Dataset dataset;
 }
