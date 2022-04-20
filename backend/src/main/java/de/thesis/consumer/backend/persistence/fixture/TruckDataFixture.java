@@ -1,14 +1,13 @@
-package de.thesis.consumer.backend.fixtures;
+package de.thesis.consumer.backend.persistence.fixture;
 
-import de.thesis.consumer.backend.domain.TruckDataRepository;
-import de.thesis.consumer.backend.entities.TruckData;
+import de.thesis.consumer.backend.domain.repository.TruckDataRepository;
+import de.thesis.consumer.backend.persistence.entity.TruckData;
 import lombok.AllArgsConstructor;
 import org.springframework.boot.ApplicationArguments;
 import org.springframework.boot.ApplicationRunner;
 import org.springframework.stereotype.Component;
 
 import java.time.LocalDateTime;
-import java.util.UUID;
 
 @Component
 @AllArgsConstructor

@@ -1,7 +1,7 @@
-package de.thesis.consumer.backend.fixtures;
+package de.thesis.consumer.backend.persistence.fixture;
 
-import de.thesis.consumer.backend.domain.OfferRepository;
-import de.thesis.consumer.backend.entities.Offer;
+import de.thesis.consumer.backend.domain.repository.OfferRepository;
+import de.thesis.consumer.backend.persistence.entity.Offer;
 import lombok.AllArgsConstructor;
 import org.springframework.boot.ApplicationArguments;
 import org.springframework.boot.ApplicationRunner;

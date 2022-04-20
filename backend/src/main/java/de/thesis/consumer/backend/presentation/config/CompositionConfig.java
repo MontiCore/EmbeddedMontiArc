@@ -1,7 +1,12 @@
-package de.thesis.consumer.backend.config;
+package de.thesis.consumer.backend.presentation.config;
 
 import com.fasterxml.jackson.databind.ObjectMapper;
-import de.thesis.consumer.backend.domain.*;
+import de.thesis.consumer.backend.domain.repository.DatasetRepository;
+import de.thesis.consumer.backend.domain.repository.OfferRepository;
+import de.thesis.consumer.backend.domain.repository.TruckDataRepository;
+import de.thesis.consumer.backend.domain.service.DatasetService;
+import de.thesis.consumer.backend.domain.service.OfferService;
+import de.thesis.consumer.backend.domain.service.PolicyServiceMock;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
 

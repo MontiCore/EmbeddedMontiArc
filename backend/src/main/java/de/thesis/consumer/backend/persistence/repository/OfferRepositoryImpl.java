@@ -1,7 +1,7 @@
-package de.thesis.consumer.backend.persistence;
+package de.thesis.consumer.backend.persistence.repository;
 
-import de.thesis.consumer.backend.domain.OfferRepository;
-import de.thesis.consumer.backend.entities.Offer;
+import de.thesis.consumer.backend.domain.repository.OfferRepository;
+import de.thesis.consumer.backend.persistence.entity.Offer;
 import lombok.AllArgsConstructor;
 import org.springframework.stereotype.Repository;
 

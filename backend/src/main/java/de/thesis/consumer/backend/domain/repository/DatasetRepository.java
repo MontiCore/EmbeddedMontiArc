@@ -1,7 +1,7 @@
-package de.thesis.consumer.backend.domain;
+package de.thesis.consumer.backend.domain.repository;
 
-import de.thesis.consumer.backend.entities.Dataset;
-import de.thesis.consumer.backend.exceptions.DatasetNotFoundException;
+import de.thesis.consumer.backend.persistence.entity.Dataset;
+import de.thesis.consumer.backend.domain.exception.DatasetNotFoundException;
 
 import java.util.List;
 import java.util.UUID;

@@ -1,7 +1,8 @@
-package de.thesis.consumer.backend.domain;
+package de.thesis.consumer.backend.domain.service;
 
-import de.thesis.consumer.backend.entities.Dataset;
-import de.thesis.consumer.backend.exceptions.DatasetNotFoundException;
+import de.thesis.consumer.backend.domain.repository.DatasetRepository;
+import de.thesis.consumer.backend.persistence.entity.Dataset;
+import de.thesis.consumer.backend.domain.exception.DatasetNotFoundException;
 import lombok.AllArgsConstructor;
 
 import java.util.List;

@@ -1,7 +1,7 @@
-package de.thesis.consumer.backend.persistence;
+package de.thesis.consumer.backend.persistence.repository;
 
-import de.thesis.consumer.backend.domain.TruckDataRepository;
-import de.thesis.consumer.backend.entities.TruckData;
+import de.thesis.consumer.backend.domain.repository.TruckDataRepository;
+import de.thesis.consumer.backend.persistence.entity.TruckData;
 import lombok.AllArgsConstructor;
 import org.springframework.stereotype.Repository;
 

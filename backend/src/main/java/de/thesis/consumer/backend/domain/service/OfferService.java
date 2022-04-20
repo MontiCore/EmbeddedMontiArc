@@ -1,9 +1,13 @@
-package de.thesis.consumer.backend.domain;
+package de.thesis.consumer.backend.domain.service;
 
 import com.fasterxml.jackson.databind.ObjectMapper;
-import de.thesis.consumer.backend.entities.Dataset;
-import de.thesis.consumer.backend.entities.Offer;
-import de.thesis.consumer.backend.entities.TruckData;
+import de.thesis.consumer.backend.domain.repository.DatasetRepository;
+import de.thesis.consumer.backend.domain.repository.OfferRepository;
+import de.thesis.consumer.backend.domain.repository.TruckDataRepository;
+import de.thesis.consumer.backend.domain.exception.InvalidPolicyException;
+import de.thesis.consumer.backend.persistence.entity.Dataset;
+import de.thesis.consumer.backend.persistence.entity.Offer;
+import de.thesis.consumer.backend.persistence.entity.TruckData;
 import lombok.AllArgsConstructor;
 
 import java.util.List;

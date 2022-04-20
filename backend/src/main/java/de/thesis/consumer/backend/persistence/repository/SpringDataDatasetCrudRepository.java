@@ -1,6 +1,6 @@
-package de.thesis.consumer.backend.persistence;
+package de.thesis.consumer.backend.persistence.repository;
 
-import de.thesis.consumer.backend.entities.Dataset;
+import de.thesis.consumer.backend.persistence.entity.Dataset;
 import org.springframework.data.repository.CrudRepository;
 import org.springframework.stereotype.Repository;
 

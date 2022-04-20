@@ -1,6 +1,6 @@
-package de.thesis.consumer.backend.domain;
+package de.thesis.consumer.backend.domain.repository;
 
-import de.thesis.consumer.backend.entities.Offer;
+import de.thesis.consumer.backend.persistence.entity.Offer;
 
 import java.util.List;
 import java.util.UUID;

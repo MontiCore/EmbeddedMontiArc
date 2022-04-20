@@ -1,4 +1,4 @@
-package de.thesis.consumer.backend.entities;
+package de.thesis.consumer.backend.persistence.entity;
 
 import com.fasterxml.jackson.annotation.JsonIgnore;
 import lombok.Data;

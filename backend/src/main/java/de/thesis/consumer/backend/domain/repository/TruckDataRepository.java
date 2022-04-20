@@ -1,6 +1,6 @@
-package de.thesis.consumer.backend.domain;
+package de.thesis.consumer.backend.domain.repository;
 
-import de.thesis.consumer.backend.entities.TruckData;
+import de.thesis.consumer.backend.persistence.entity.TruckData;
 
 import java.util.List;
 

@@ -1,4 +1,4 @@
-package de.thesis.consumer.backend.config;
+package de.thesis.consumer.backend.presentation.config;
 
 
 import org.springframework.context.annotation.Configuration;

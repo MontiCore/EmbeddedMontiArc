@@ -1,4 +1,4 @@
-package de.thesis.consumer.backend.domain;
+package de.thesis.consumer.backend.domain.service;
 
 public class PolicyServiceMock implements PolicyService{
 	@Override

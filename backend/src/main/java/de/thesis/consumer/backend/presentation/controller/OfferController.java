@@ -1,8 +1,8 @@
-package de.thesis.consumer.backend.controllers;
+package de.thesis.consumer.backend.presentation.controller;
 
-import de.thesis.consumer.backend.domain.OfferService;
-import de.thesis.consumer.backend.domain.InvalidPolicyException;
-import de.thesis.consumer.backend.entities.Offer;
+import de.thesis.consumer.backend.domain.service.OfferService;
+import de.thesis.consumer.backend.domain.exception.InvalidPolicyException;
+import de.thesis.consumer.backend.persistence.entity.Offer;
 import lombok.AllArgsConstructor;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.MediaType;
