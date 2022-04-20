@@ -1,7 +1,8 @@
 package de.thesis.consumer.backend.presentation.controller;
 
+import de.thesis.consumer.backend.domain.model.Dataset;
 import de.thesis.consumer.backend.domain.service.DatasetService;
-import de.thesis.consumer.backend.persistence.entity.Dataset;
+import de.thesis.consumer.backend.persistence.entity.DatasetEntity;
 import de.thesis.consumer.backend.domain.exception.DatasetNotFoundException;
 import lombok.AllArgsConstructor;
 import org.springframework.http.HttpStatus;

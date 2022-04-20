@@ -3,19 +3,17 @@ package de.thesis.consumer.backend.persistence.entity;
 import lombok.Getter;
 import lombok.Setter;
 
-import javax.persistence.Column;
-import javax.persistence.Entity;
-import javax.persistence.GeneratedValue;
-import javax.persistence.Id;
+import javax.persistence.*;
+import java.util.ArrayList;
+import java.util.List;
 import java.util.UUID;
 
 @Entity
 @Getter
 @Setter
-public class Offer {
+public class DatasetEntity {
 
 	@Id
-	@GeneratedValue
 	private UUID id;
 
 	private String title;
@@ -28,4 +26,7 @@ public class Offer {
 	private double price;
 
 	private String policy;
+
+	@OneToMany(mappedBy = "dataset", cascade = CascadeType.ALL)
+	private List<DataRowEntity> truckData = new ArrayList<>();
 }

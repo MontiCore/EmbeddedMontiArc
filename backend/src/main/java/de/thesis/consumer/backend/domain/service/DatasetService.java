@@ -1,7 +1,7 @@
 package de.thesis.consumer.backend.domain.service;
 
 import de.thesis.consumer.backend.domain.repository.DatasetRepository;
-import de.thesis.consumer.backend.persistence.entity.Dataset;
+import de.thesis.consumer.backend.domain.model.Dataset;
 import de.thesis.consumer.backend.domain.exception.DatasetNotFoundException;
 import lombok.AllArgsConstructor;
 
