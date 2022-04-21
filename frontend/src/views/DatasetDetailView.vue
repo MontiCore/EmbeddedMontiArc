@@ -50,13 +50,13 @@
       <table class="table table-hover">
         <thead>
           <tr>
-            <th class="text-nowrap" v-for="(_, key) in dataset.truckData[0]" :key="key">
+            <th class="text-nowrap" v-for="(_, key) in dataset.data[0]" :key="key">
               {{ key }}
             </th>
           </tr>
         </thead>
         <tbody>
-          <tr v-for="row in dataset.truckData" :key="row">
+          <tr v-for="row in dataset.data" :key="row">
             <td
               class="text-nowrap"
               v-for="(value, key) in row"
@@ -86,7 +86,7 @@ export default {
   data () {
     return {
       dataset: {
-        truckData: []
+        data: []
       }
     }
   },
@@ -124,13 +124,15 @@ export default {
     axios.get(`/datasets/${this.$route.params.datasetId}`).then(response => {
       this.dataset = response.data
       const coordinates = {
-        data: response.data.truckData
+        data: response.data.data
       }
 
       const heatmapLayer = new HeatmapOverlay(cfg)
       heatmapLayer.setData(coordinates)
       heatmapLayer.addTo(map)
     })
+
+    console.log(this.dataset)
   }
 }
 </script>

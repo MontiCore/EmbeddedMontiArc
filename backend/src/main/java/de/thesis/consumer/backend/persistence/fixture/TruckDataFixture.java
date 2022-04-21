@@ -16,8 +16,8 @@ public class TruckDataFixture implements ApplicationRunner {
 	private final DataRowRepository repository;
 
 	@Override
-	public void run(ApplicationArguments args) throws Exception {
-		for (int i = 0; i < 100; i++) {
+	public void run(ApplicationArguments args) {
+		for (int i = 0; i < 2; i++) {
 			LocalDateTime time = LocalDateTime.now();
 			DataRow row = new DataRow();
 			row.setDIdCIdDay("2");

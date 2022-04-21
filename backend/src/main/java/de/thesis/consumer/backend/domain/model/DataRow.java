@@ -8,6 +8,7 @@ import java.time.LocalDateTime;
 @Getter
 @Setter
 public class DataRow {
+	private Long id;
 	private String dIdCIdDay;
 	private double longitude;
 	private double latitude;

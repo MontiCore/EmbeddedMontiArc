@@ -17,7 +17,7 @@ public class OfferFixture implements ApplicationRunner {
 	private final OfferRepository repo;
 
 	@Override
-	public void run(ApplicationArguments args) throws Exception {
+	public void run(ApplicationArguments args) {
 		String[] provider = {"Dachser", "FedEx", "DBCargo", "UPS", "DHL", "DPD"};
 		String[] cities = {"Berlin", "Hamburg", "Hannover", "Wolfsburg", "Düsseldorf", "Köln", "Mannheim", "Aachen",
 				"Friedrichshafen", "Dortmund", "München", "Augsburg", "Stuttgart", "Leipzig"};

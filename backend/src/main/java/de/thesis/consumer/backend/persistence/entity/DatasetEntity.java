@@ -8,9 +8,10 @@ import java.util.ArrayList;
 import java.util.List;
 import java.util.UUID;
 
-@Entity
 @Getter
 @Setter
+@Entity
+@Table(name = "dataset")
 public class DatasetEntity {
 
 	@Id
@@ -28,5 +29,5 @@ public class DatasetEntity {
 	private String policy;
 
 	@OneToMany(mappedBy = "dataset", cascade = CascadeType.ALL)
-	private List<DataRowEntity> truckData = new ArrayList<>();
+	private List<DataRowEntity> data = new ArrayList<>();
 }

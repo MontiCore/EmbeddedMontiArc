@@ -4,6 +4,7 @@ import lombok.Getter;
 import lombok.Setter;
 
 import java.time.LocalDateTime;
+import java.util.List;
 import java.util.UUID;
 
 @Getter
@@ -16,4 +17,5 @@ public class Dataset {
 	private double price;
 	private String policy;
 	private LocalDateTime boughtAt;
+	private List<DataRow> data;
 }

@@ -6,8 +6,9 @@ import lombok.Data;
 import javax.persistence.*;
 import java.time.LocalDateTime;
 
-@Entity
 @Data
+@Entity
+@Table(name = "data_row")
 public class DataRowEntity {
 	@Id
 	@GeneratedValue

@@ -10,6 +10,7 @@ import de.thesis.consumer.backend.domain.model.Dataset;
 import de.thesis.consumer.backend.domain.model.Offer;
 import lombok.AllArgsConstructor;
 
+import java.time.LocalDateTime;
 import java.util.List;
 import java.util.UUID;
 
@@ -37,6 +38,7 @@ public class OfferService {
 	public void buyOffer(UUID offerId) {
 		Offer offer = offerRepository.findBy(offerId);
 		Dataset dataset = mapper.convertValue(offer, Dataset.class);
+		dataset.setBoughtAt(LocalDateTime.now());
 		List<DataRow> rows = dataRowRepository.findAll();
 		datasetRepository.save(dataset);
 		for(DataRow row : rows) {
