@@ -15,6 +15,7 @@
     <description>backend</description>
     <properties>
         <java.version>11</java.version>
+        <mydata.version>4.0.0</mydata.version>
     </properties>
     <dependencies>
         <dependency>
@@ -50,8 +51,18 @@
             <artifactId>spring-security-test</artifactId>
             <scope>test</scope>
         </dependency>
+        <dependency>
+            <groupId>de.fraunhofer.iese.mydata</groupId>
+            <artifactId>sdk.spring</artifactId>
+            <version>${mydata.version}</version>
+        </dependency>
     </dependencies>
-
+    <repositories>
+        <repository>
+            <id>fraunhofer-mydata-control</id>
+            <url>https://repo.mydata-control.de/repository/maven-releases-customer/</url>
+        </repository>
+    </repositories>
     <build>
         <plugins>
             <plugin>
