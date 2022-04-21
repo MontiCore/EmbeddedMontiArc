@@ -1,5 +1,6 @@
 package de.thesis.consumer.backend.presentation.controller;
 
+import de.thesis.consumer.backend.domain.InhibitionException;
 import de.thesis.consumer.backend.domain.model.Dataset;
 import de.thesis.consumer.backend.domain.service.DatasetService;
 import de.thesis.consumer.backend.persistence.entity.DatasetEntity;
@@ -31,6 +32,8 @@ public class DatasetController {
 			return service.getDataset(id);
 		} catch (DatasetNotFoundException e) {
 			throw new ResponseStatusException(HttpStatus.NOT_FOUND, String.format("Dataset with ID %s not found", id.toString()));
+		} catch (InhibitionException e) {
+			throw new ResponseStatusException(HttpStatus.BAD_REQUEST, String.format("Acces to dataset with ID %s was denied", id.toString()));
 		}
 	}
 }

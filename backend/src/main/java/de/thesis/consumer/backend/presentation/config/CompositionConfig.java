@@ -1,6 +1,7 @@
 package de.thesis.consumer.backend.presentation.config;
 
 import com.fasterxml.jackson.databind.ObjectMapper;
+import de.thesis.consumer.backend.datasovereignty.DatasetPolicyEnforcementPoint;
 import de.thesis.consumer.backend.domain.repository.DatasetRepository;
 import de.thesis.consumer.backend.domain.repository.OfferRepository;
 import de.thesis.consumer.backend.domain.repository.DataRowRepository;
@@ -19,7 +20,7 @@ public class CompositionConfig {
 	}
 
 	@Bean
-	public DatasetService getDatasetService(DatasetRepository datasetRepository) {
-		return new DatasetService(datasetRepository);
+	public DatasetService getDatasetService(DatasetRepository datasetRepository, DatasetPolicyEnforcementPoint pep) {
+		return new DatasetService(datasetRepository, pep);
 	}
 }
