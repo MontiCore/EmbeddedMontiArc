@@ -15,7 +15,7 @@ public class Dataset {
 	private String provider;
 	private String description;
 	private double price;
-	private String policy;
+	private Policy policy;
 	private LocalDateTime boughtAt;
 	private List<DataRow> data;
 }

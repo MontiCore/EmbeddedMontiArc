@@ -13,5 +13,5 @@ public class Offer {
 	private String provider;
 	private String description;
 	private double price;
-	private String policy;
+	private Policy policy;
 }
