@@ -13,7 +13,6 @@ import java.util.UUID;
 public class OfferEntity {
 
 	@Id
-	@GeneratedValue
 	private UUID id;
 
 	private String title;
