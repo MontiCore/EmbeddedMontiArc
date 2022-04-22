@@ -1,6 +1,8 @@
 package de.thesis.consumer.backend.domain.service;
 
 import com.fasterxml.jackson.databind.ObjectMapper;
+import de.thesis.consumer.backend.domain.IPolicyManagementPoint;
+import de.thesis.consumer.backend.domain.PolicyInstantiationException;
 import de.thesis.consumer.backend.domain.exception.InvalidPolicyException;
 import de.thesis.consumer.backend.domain.model.DataRow;
 import de.thesis.consumer.backend.domain.model.Dataset;
@@ -20,11 +22,12 @@ public class OfferService {
 	private OfferRepository offerRepository;
 	private DatasetRepository datasetRepository;
 	private DataRowRepository dataRowRepository;
-	private IPolicyService policyService;
+	private IPolicyService IPolicyService;
+	private IPolicyManagementPoint pmp;
 	private ObjectMapper mapper;
 
 	public void offerDataset(Offer offer) throws InvalidPolicyException {
-		if (!policyService.isValid(offer.getPolicy())) {
+		if (!IPolicyService.isValid(offer.getPolicy())) {
 			throw new InvalidPolicyException("Policy invalid");
 		}
 
@@ -35,8 +38,9 @@ public class OfferService {
 		return offerRepository.findAll();
 	}
 
-	public void buyOffer(UUID offerId) {
+	public void buyOffer(UUID offerId) throws PolicyInstantiationException {
 		Offer offer = offerRepository.findBy(offerId);
+		pmp.instantiatePolicy(offer.getPolicy());
 		Dataset dataset = mapper.convertValue(offer, Dataset.class);
 		dataset.setBoughtAt(LocalDateTime.now());
 		List<DataRow> rows = dataRowRepository.findAll();

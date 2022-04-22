@@ -1,5 +1,6 @@
 package de.thesis.consumer.backend.presentation.controller;
 
+import de.thesis.consumer.backend.domain.PolicyInstantiationException;
 import de.thesis.consumer.backend.domain.exception.InvalidPolicyException;
 import de.thesis.consumer.backend.domain.model.Offer;
 import de.thesis.consumer.backend.domain.service.OfferService;
@@ -39,6 +40,10 @@ public class OfferController {
 	@PostMapping("/{offerId}")
 	@ResponseStatus(HttpStatus.OK)
 	public void buyOffer(@PathVariable UUID offerId) {
+		try {
 		service.buyOffer(offerId);
+		} catch (PolicyInstantiationException e) {
+			throw new ResponseStatusException(HttpStatus.INTERNAL_SERVER_ERROR, "Error instantiating associated usage policies");
+		}
 	}
 }
