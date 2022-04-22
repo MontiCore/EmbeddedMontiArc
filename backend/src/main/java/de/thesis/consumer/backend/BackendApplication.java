@@ -51,9 +51,6 @@ public class BackendApplication {
 							"        </if>\n" +
 							"    </mechanism>\n" +
 							"</policy>")));
-
-			Set<Policy> deployedPolicies = myDataEnvironment.getPmp().getDeployedPolicies();
-			System.err.println(deployedPolicies);
 		} catch (IOException | ResourceUpdateException | InvalidEntityException | ConflictingResourceException | NoSuchEntityException e) {
 			LOG.error(e.getMessage(), e);
 		}
