@@ -2,14 +2,14 @@ package de.thesis.consumer.backend.persistence.repository;
 
 import com.fasterxml.jackson.databind.ObjectMapper;
 import de.thesis.consumer.backend.domain.model.Policy;
-import de.thesis.consumer.backend.domain.repository.IPolicyRepository;
+import de.thesis.consumer.backend.domain.repository.PolicyRepository;
 import de.thesis.consumer.backend.persistence.entity.PolicyEntity;
 import lombok.AllArgsConstructor;
 import org.springframework.stereotype.Repository;
 
 @Repository
 @AllArgsConstructor
-public class PolicyRepositoryImpl implements IPolicyRepository {
+public class PolicyRepositoryImpl implements PolicyRepository {
 
 	// TODO kann man das ganze mapping mit einer Generics-Klasse machen?
 	// TODO Optionalhandling fixen
@@ -18,7 +18,8 @@ public class PolicyRepositoryImpl implements IPolicyRepository {
 
 	@Override
 	public void save(Policy policy) {
-		repository.save(mapper.convertValue(policy, PolicyEntity.class));
+		PolicyEntity entity = mapper.convertValue(policy, PolicyEntity.class);
+		repository.save(entity);
 	}
 
 	@Override

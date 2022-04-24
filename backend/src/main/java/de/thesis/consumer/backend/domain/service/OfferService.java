@@ -4,6 +4,7 @@ import com.fasterxml.jackson.databind.ObjectMapper;
 import de.thesis.consumer.backend.domain.IPolicyManagementPoint;
 import de.thesis.consumer.backend.domain.PolicyInstantiationException;
 import de.thesis.consumer.backend.domain.exception.InvalidPolicyException;
+import de.thesis.consumer.backend.domain.exception.PolicyNotFoundException;
 import de.thesis.consumer.backend.domain.model.DataRow;
 import de.thesis.consumer.backend.domain.model.Dataset;
 import de.thesis.consumer.backend.domain.model.Offer;
@@ -26,7 +27,7 @@ public class OfferService {
 	private IPolicyManagementPoint pmp;
 	private ObjectMapper mapper;
 
-	public void offerDataset(Offer offer) throws InvalidPolicyException {
+	public void offerDataset(Offer offer) throws InvalidPolicyException, PolicyNotFoundException {
 		if (!IPolicyService.isValid(offer.getPolicy())) {
 			throw new InvalidPolicyException("Policy invalid");
 		}
