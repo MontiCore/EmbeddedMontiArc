@@ -1,3 +1,6 @@
+default:
+  image: registry.git.rwth-aachen.de/monticore/embeddedmontiarc/generators/emadl2cpp/dockerimages/mxnet170:v0.0.1
+
 stages:
   - build
   - test
@@ -5,11 +8,9 @@ stages:
 build-job:
   stage: build
   script:
-    - echo "Compiling the code..."
-    - echo "Compile complete."
+    - echo "This is a placeholder for "
 
 test-job:
   stage: test
   script:
-    - echo "Running unit tests... This will take about 10 seconds."
-    - sleep 10
+    - echo "This is a placeholder for future tests"
