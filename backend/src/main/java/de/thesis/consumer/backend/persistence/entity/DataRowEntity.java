@@ -16,7 +16,7 @@ public class DataRowEntity {
 	@Id
 	@GeneratedValue
 	private Long id;
-	private String dIdCIdDay;
+	private String dayID;
 	private double longitude;
 	private double latitude;
 	private LocalDateTime gpsTime;

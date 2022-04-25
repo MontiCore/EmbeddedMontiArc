@@ -9,7 +9,7 @@ import java.time.LocalDateTime;
 @Setter
 public class DataRow {
 	private Long id;
-	private String dIdCIdDay;
+	private String dayID;
 	private double longitude;
 	private double latitude;
 	private LocalDateTime gpsTime;

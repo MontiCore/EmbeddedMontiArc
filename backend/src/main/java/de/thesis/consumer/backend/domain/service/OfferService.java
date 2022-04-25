@@ -29,7 +29,6 @@ public class OfferService {
 	private OfferRepository offerRepository;
 	private PolicyRepository policyRepository;
 	private DatasetRepository datasetRepository;
-	private DataRowRepository dataRowRepository;
 	private IPolicyService IPolicyService;
 	private IPolicyManagementPoint pmp;
 	private ObjectMapper mapper;
@@ -40,8 +39,6 @@ public class OfferService {
 		}
 
 		policyRepository.save(offer.getPolicy());
-		dataRowRepository.saveAll(offer.getData());
-
 		offerRepository.save(offer);
 	}
 

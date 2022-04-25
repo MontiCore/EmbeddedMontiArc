@@ -27,20 +27,17 @@ public class OfferRepositoryImpl implements OfferRepository {
 	@Override
 	public void save(Offer offer) throws PolicyNotFoundException {
 		PolicyEntity policyEntity =  policyRepository.findById(offer.getPolicy().getId()).orElseThrow(PolicyNotFoundException::new);
-//		List<DataRowEntity> data = dataRowRepository.findAllByOfferId(offer.getId());
-//		List<DataRowEntity> dataRowEntities = data.stream()
-//				.map(row -> mapper.convertValue(row, DataRowEntity.class))
-//				.collect(Collectors.toList());
+
+		List<DataRowEntity> rows = offer.getData().stream().map(row -> mapper.convertValue(row, DataRowEntity.class)).collect(Collectors.toList());
 		OfferEntity entity = mapper.convertValue(offer, OfferEntity.class);
-		// entity.setData(dataRowEntities);
+		entity.setData(null);
+		for(DataRowEntity dataRow : rows) {
+			dataRow.setOffer(entity);
+		}
 		entity.setPolicy(policyEntity);
 
-//		for(DataRowEntity dataRow : dataRowEntities) {
-//			dataRow.setOffer(entity);
-//		}
-
 		offerRepository.save(entity);
-		// dataRowRepository.saveAll(dataRowEntities);
+		dataRowRepository.saveAll(rows);
 	}
 
 	@Override

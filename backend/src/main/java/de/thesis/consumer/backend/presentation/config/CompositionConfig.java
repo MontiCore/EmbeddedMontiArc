@@ -21,11 +21,10 @@ public class CompositionConfig {
 			OfferRepository offerRepository,
 			PolicyRepository policyRepository,
 			DatasetRepository datasetRepository,
-			DataRowRepository truckDataRepository,
 			IPolicyService policyService,
 			IPolicyManagementPoint pmp,
 			ObjectMapper mapper) {
-		return new OfferService(offerRepository, policyRepository, datasetRepository, truckDataRepository, policyService, pmp, mapper);
+		return new OfferService(offerRepository, policyRepository, datasetRepository, policyService, pmp, mapper);
 	}
 
 	@Bean
