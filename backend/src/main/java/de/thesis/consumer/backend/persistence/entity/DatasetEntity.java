@@ -26,7 +26,9 @@ public class DatasetEntity {
 
 	private double price;
 
-	private String policy;
+	@OneToOne(cascade = CascadeType.ALL)
+	@JoinColumn(name = "policy_id", referencedColumnName = "id")
+	private PolicyEntity policy;
 
 	@OneToMany(mappedBy = "dataset", cascade = CascadeType.ALL)
 	private List<DataRowEntity> data = new ArrayList<>();

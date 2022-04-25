@@ -1,5 +1,6 @@
 package de.thesis.consumer.backend.domain.repository;
 
+import de.thesis.consumer.backend.domain.exception.PolicyNotFoundException;
 import de.thesis.consumer.backend.domain.model.Dataset;
 import de.thesis.consumer.backend.domain.exception.DatasetNotFoundException;
 
@@ -8,7 +9,7 @@ import java.util.UUID;
 
 public interface DatasetRepository {
 
-	void save(Dataset dataset);
+	void save(Dataset dataset) throws PolicyNotFoundException;
 
 	List<Dataset> findAll();
 

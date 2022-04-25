@@ -7,12 +7,10 @@ import de.thesis.consumer.backend.domain.model.Policy;
 import de.thesis.consumer.backend.domain.repository.OfferRepository;
 import de.thesis.consumer.backend.persistence.entity.OfferEntity;
 import de.thesis.consumer.backend.persistence.entity.PolicyEntity;
-import de.thesis.consumer.backend.persistence.mapper.OfferMapper;
 import lombok.AllArgsConstructor;
 import org.springframework.stereotype.Repository;
 
 import java.util.List;
-import java.util.Optional;
 import java.util.UUID;
 import java.util.stream.Collectors;
 
@@ -22,15 +20,12 @@ public class OfferRepositoryImpl implements OfferRepository {
 
 	private SpringDataOfferCrudRepository offerRepository;
 	private SpringDataPolicyCrudRepository policyRepository;
-	private final OfferMapper mapper;
-	private final ObjectMapper objectMapper;
+	private final ObjectMapper mapper;
 
 	@Override
 	public void save(Offer offer) throws PolicyNotFoundException {
-		PolicyEntity policyEntity = policyRepository.findById(offer.getPolicy().getId())
-				.orElse(new PolicyEntity(offer.getPolicy().getId(), offer.getPolicy().getRawValue()));
-		policyRepository.save(policyEntity);
-		OfferEntity entity = mapper.mapTo(offer);
+		PolicyEntity policyEntity =  policyRepository.findById(offer.getPolicy().getId()).orElseThrow(PolicyNotFoundException::new);
+		OfferEntity entity = mapper.convertValue(offer, OfferEntity.class);
 		entity.setPolicy(policyEntity);
 
 		offerRepository.save(entity);
@@ -41,8 +36,8 @@ public class OfferRepositoryImpl implements OfferRepository {
 		List<OfferEntity> entities = offerRepository.findAll();
 		return entities.stream()
 				.map(entity -> {
-					Offer offer = mapper.mapFrom(entity);
-					offer.setPolicy(objectMapper.convertValue(offer.getPolicy(), Policy.class));
+					Offer offer = mapper.convertValue(entity, Offer.class);
+					offer.setPolicy(mapper.convertValue(entity.getPolicy(), Policy.class));
 					return offer;
 				})
 				.collect(Collectors.toList());
@@ -51,9 +46,6 @@ public class OfferRepositoryImpl implements OfferRepository {
 	@Override
 	public Offer findBy(UUID offerId) {
 		OfferEntity entity = offerRepository.findById(offerId).orElse(null);
-		Offer offer = mapper.mapFrom(entity);
-		offer.setPolicy(objectMapper.convertValue(entity.getPolicy(), Policy.class));
-
-		return offer;
+		return mapper.convertValue(entity, Offer.class);
 	}
 }

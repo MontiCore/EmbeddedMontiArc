@@ -25,6 +25,6 @@ public class OfferEntity {
 	private double price;
 
 	@OneToOne(cascade = CascadeType.ALL)
-	@JoinColumn(name = "policy_id", referencedColumnName = "id")
+	@JoinColumn(referencedColumnName = "id")
 	private PolicyEntity policy;
 }

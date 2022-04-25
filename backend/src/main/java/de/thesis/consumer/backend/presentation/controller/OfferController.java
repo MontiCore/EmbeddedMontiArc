@@ -1,17 +1,21 @@
 package de.thesis.consumer.backend.presentation.controller;
 
+import de.fraunhofer.iese.mydata.exception.ConflictingResourceException;
+import de.fraunhofer.iese.mydata.exception.InvalidEntityException;
+import de.fraunhofer.iese.mydata.exception.NoSuchEntityException;
+import de.fraunhofer.iese.mydata.exception.ResourceUpdateException;
 import de.thesis.consumer.backend.domain.PolicyInstantiationException;
 import de.thesis.consumer.backend.domain.exception.InvalidPolicyException;
 import de.thesis.consumer.backend.domain.exception.PolicyNotFoundException;
 import de.thesis.consumer.backend.domain.model.Offer;
 import de.thesis.consumer.backend.domain.service.OfferService;
-import de.thesis.consumer.backend.persistence.entity.OfferEntity;
 import lombok.AllArgsConstructor;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.MediaType;
 import org.springframework.web.bind.annotation.*;
 import org.springframework.web.server.ResponseStatusException;
 
+import java.io.IOException;
 import java.util.List;
 import java.util.UUID;
 
@@ -27,7 +31,7 @@ public class OfferController {
 	@ResponseStatus(HttpStatus.OK)
 	public void offer(@RequestBody Offer offer) {
 		try {
-			service.offerDataset(offer);
+			service.offer(offer);
 		} catch (InvalidPolicyException e) {
 			throw new ResponseStatusException(HttpStatus.BAD_REQUEST, "Dataset policy is invalid");
 		} catch (PolicyNotFoundException e) {
@@ -42,11 +46,7 @@ public class OfferController {
 
 	@PostMapping("/{offerId}")
 	@ResponseStatus(HttpStatus.OK)
-	public void buyOffer(@PathVariable UUID offerId) {
-		try {
-			service.buyOffer(offerId);
-		} catch (PolicyInstantiationException e) {
-			throw new ResponseStatusException(HttpStatus.INTERNAL_SERVER_ERROR, "Error instantiating associated usage policies");
-		}
+	public void buyOffer(@PathVariable UUID offerId) throws PolicyInstantiationException, ConflictingResourceException, IOException, NoSuchEntityException, InvalidEntityException, ResourceUpdateException, PolicyNotFoundException {
+		service.buyOffer(offerId);
 	}
 }

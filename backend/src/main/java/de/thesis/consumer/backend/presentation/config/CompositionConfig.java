@@ -6,6 +6,7 @@ import de.thesis.consumer.backend.domain.IPolicyManagementPoint;
 import de.thesis.consumer.backend.domain.repository.DataRowRepository;
 import de.thesis.consumer.backend.domain.repository.DatasetRepository;
 import de.thesis.consumer.backend.domain.repository.OfferRepository;
+import de.thesis.consumer.backend.domain.repository.PolicyRepository;
 import de.thesis.consumer.backend.domain.service.DatasetService;
 import de.thesis.consumer.backend.domain.service.IPolicyService;
 import de.thesis.consumer.backend.domain.service.OfferService;
@@ -18,12 +19,13 @@ public class CompositionConfig {
 	@Bean
 	public OfferService getOfferService(
 			OfferRepository offerRepository,
+			PolicyRepository policyRepository,
 			DatasetRepository datasetRepository,
 			DataRowRepository truckDataRepository,
 			IPolicyService policyService,
 			IPolicyManagementPoint pmp,
 			ObjectMapper mapper) {
-		return new OfferService(offerRepository, datasetRepository, truckDataRepository, policyService, pmp, mapper);
+		return new OfferService(offerRepository, policyRepository, datasetRepository, truckDataRepository, policyService, pmp, mapper);
 	}
 
 	@Bean

@@ -2,9 +2,12 @@ package de.thesis.consumer.backend.persistence.repository;
 
 import com.fasterxml.jackson.databind.ObjectMapper;
 import de.thesis.consumer.backend.domain.exception.DatasetNotFoundException;
+import de.thesis.consumer.backend.domain.exception.PolicyNotFoundException;
 import de.thesis.consumer.backend.domain.model.Dataset;
+import de.thesis.consumer.backend.domain.model.Policy;
 import de.thesis.consumer.backend.domain.repository.DatasetRepository;
 import de.thesis.consumer.backend.persistence.entity.DatasetEntity;
+import de.thesis.consumer.backend.persistence.entity.PolicyEntity;
 import lombok.AllArgsConstructor;
 import org.springframework.stereotype.Service;
 
@@ -16,26 +19,34 @@ import java.util.stream.Collectors;
 @AllArgsConstructor
 public class DatasetRepositoryImpl implements DatasetRepository {
 
-	private final SpringDataDatasetCrudRepository repository;
+	private final SpringDataDatasetCrudRepository datasetRepository;
+	private final SpringDataPolicyCrudRepository policyRepository;
 	private final ObjectMapper mapper;
 
 	@Override
-	public void save(Dataset dataset) {
+	public void save(Dataset dataset) throws PolicyNotFoundException {
+		PolicyEntity policyEntity = policyRepository.findById(dataset.getPolicy().getId()).orElseThrow(PolicyNotFoundException::new);
 		DatasetEntity entity = mapper.convertValue(dataset, DatasetEntity.class);
-		repository.save(entity);
+		entity.setPolicy(policyEntity);
+
+		datasetRepository.save(entity);
 	}
 
 	@Override
 	public List<Dataset> findAll() {
-		List<DatasetEntity> entities = repository.findAll();
+		List<DatasetEntity> entities = datasetRepository.findAll();
 		return entities.stream()
-				.map(entity -> mapper.convertValue(entity, Dataset.class))
+				.map(entity -> {
+					Dataset dataset = mapper.convertValue(entity, Dataset.class);
+					dataset.setPolicy(mapper.convertValue(entity.getPolicy(), Policy.class));
+					return dataset;
+				})
 				.collect(Collectors.toList());
 	}
 
 	@Override
 	public Dataset findById(UUID id) throws DatasetNotFoundException {
-		DatasetEntity entity = repository.findById(id).orElseThrow(() -> new DatasetNotFoundException("Dataset not found"));
+		DatasetEntity entity = datasetRepository.findById(id).orElseThrow(() -> new DatasetNotFoundException("Dataset not found"));
 		return mapper.convertValue(entity, Dataset.class);
 	}
 }
