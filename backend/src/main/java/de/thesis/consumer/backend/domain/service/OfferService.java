@@ -40,6 +40,8 @@ public class OfferService {
 		}
 
 		policyRepository.save(offer.getPolicy());
+		dataRowRepository.saveAll(offer.getData());
+
 		offerRepository.save(offer);
 	}
 
@@ -52,11 +54,6 @@ public class OfferService {
 		pmp.instantiatePolicy(offer.getPolicy());
 		Dataset dataset = mapper.convertValue(offer, Dataset.class);
 		dataset.setBoughtAt(LocalDateTime.now());
-		List<DataRow> rows = dataRowRepository.findAll();
 		datasetRepository.save(dataset);
-		for (DataRow row : rows) {
-			row.setDataset(dataset);
-			dataRowRepository.save(row);
-		}
 	}
 }

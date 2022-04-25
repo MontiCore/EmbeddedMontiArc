@@ -2,14 +2,15 @@ package de.thesis.consumer.backend.persistence.repository;
 
 import com.fasterxml.jackson.databind.ObjectMapper;
 import de.thesis.consumer.backend.domain.model.DataRow;
+import de.thesis.consumer.backend.domain.model.Offer;
 import de.thesis.consumer.backend.domain.repository.DataRowRepository;
 import de.thesis.consumer.backend.persistence.entity.DataRowEntity;
-import de.thesis.consumer.backend.persistence.entity.DatasetEntity;
+import de.thesis.consumer.backend.persistence.entity.OfferEntity;
 import lombok.AllArgsConstructor;
 import org.springframework.stereotype.Repository;
 
 import java.util.List;
-import java.util.Optional;
+import java.util.UUID;
 import java.util.stream.Collectors;
 
 @Repository
@@ -17,32 +18,24 @@ import java.util.stream.Collectors;
 public class DataRowRepositoryImpl implements DataRowRepository {
 
 	private final SpringDataDataRowCrudRepository dataRowRepo;
-	private final SpringDataDatasetCrudRepository datasetRepo;
+	private final SpringDataOfferCrudRepository offerRepo;
 	private final ObjectMapper mapper;
 
 	@Override
-	public void save(DataRow row) {
-		DataRowEntity entity = mapToEntity(row);
-		dataRowRepo.save(entity);
+	public void saveAll(List<DataRow> data) {
+		// OfferEntity offer = offerRepo.findById(data.get(0).getOffer().getId()).orElse(null);
+		List<DataRowEntity> entities = data.stream().map(row -> {
+			DataRowEntity entity = mapper.convertValue(row, DataRowEntity.class);
+			return entity;
+		}).collect(Collectors.toList());
+		dataRowRepo.saveAll(entities);
 	}
 
 	@Override
-	public List<DataRow> findAll() {
-		List<DataRowEntity> entities = dataRowRepo.findAll();
+	public List<DataRow> findAllByOfferId(UUID offerId) {
+		List<DataRowEntity> entities = dataRowRepo.findAllByOfferId(offerId);
 		return entities.stream()
 				.map(entity -> mapper.convertValue(entity, DataRow.class))
 				.collect(Collectors.toList());
-	}
-
-	private DataRowEntity mapToEntity(DataRow row) {
-		DataRowEntity entity = mapper.convertValue(row, DataRowEntity.class);
-
-		if (row.getDataset() != null) {
-			Optional<DatasetEntity> dataset = datasetRepo.findById(row.getDataset().getId());
-			dataset.ifPresent(entity::setDataset);
-		}
-
-
-		return entity;
 	}
 }

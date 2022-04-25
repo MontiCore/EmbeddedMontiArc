@@ -1,12 +1,15 @@
 package de.thesis.consumer.backend.persistence.entity;
 
+import com.fasterxml.jackson.annotation.JsonBackReference;
 import com.fasterxml.jackson.annotation.JsonIgnore;
-import lombok.Data;
+import lombok.Getter;
+import lombok.Setter;
 
 import javax.persistence.*;
 import java.time.LocalDateTime;
 
-@Data
+@Getter
+@Setter
 @Entity
 @Table(name = "data_row")
 public class DataRowEntity {
@@ -27,4 +30,9 @@ public class DataRowEntity {
 	@JoinColumn(name = "dataset")
 	@JsonIgnore
 	private DatasetEntity dataset;
+
+	@ManyToOne
+	@JoinColumn(name = "offer")
+	@JsonIgnore
+	private OfferEntity offer;
 }

@@ -31,5 +31,5 @@ public class DatasetEntity {
 	private PolicyEntity policy;
 
 	@OneToMany(mappedBy = "dataset", cascade = CascadeType.ALL)
-	private List<DataRowEntity> data = new ArrayList<>();
+	private List<DataRowEntity> data;
 }

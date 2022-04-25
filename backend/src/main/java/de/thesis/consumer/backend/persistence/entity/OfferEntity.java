@@ -1,9 +1,11 @@
 package de.thesis.consumer.backend.persistence.entity;
 
+import com.fasterxml.jackson.annotation.JsonManagedReference;
 import lombok.Getter;
 import lombok.Setter;
 
 import javax.persistence.*;
+import java.util.List;
 import java.util.UUID;
 
 @Getter
@@ -27,4 +29,7 @@ public class OfferEntity {
 	@OneToOne(cascade = CascadeType.ALL)
 	@JoinColumn(referencedColumnName = "id")
 	private PolicyEntity policy;
+
+	@OneToMany(mappedBy = "offer")
+	private List<DataRowEntity> data;
 }

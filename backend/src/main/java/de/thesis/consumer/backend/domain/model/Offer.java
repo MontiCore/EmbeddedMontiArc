@@ -3,6 +3,7 @@ package de.thesis.consumer.backend.domain.model;
 import lombok.Getter;
 import lombok.Setter;
 
+import java.util.List;
 import java.util.UUID;
 
 @Getter
@@ -14,4 +15,5 @@ public class Offer {
 	private String description;
 	private double price;
 	private Policy policy;
+	private List<DataRow> data;
 }

@@ -3,6 +3,7 @@ package de.thesis.consumer.backend.persistence.repository;
 import com.fasterxml.jackson.databind.ObjectMapper;
 import de.thesis.consumer.backend.domain.exception.DatasetNotFoundException;
 import de.thesis.consumer.backend.domain.exception.PolicyNotFoundException;
+import de.thesis.consumer.backend.domain.model.DataRow;
 import de.thesis.consumer.backend.domain.model.Dataset;
 import de.thesis.consumer.backend.domain.model.Policy;
 import de.thesis.consumer.backend.domain.repository.DatasetRepository;
@@ -47,6 +48,9 @@ public class DatasetRepositoryImpl implements DatasetRepository {
 	@Override
 	public Dataset findById(UUID id) throws DatasetNotFoundException {
 		DatasetEntity entity = datasetRepository.findById(id).orElseThrow(() -> new DatasetNotFoundException("Dataset not found"));
-		return mapper.convertValue(entity, Dataset.class);
+		Dataset dataset = mapper.convertValue(entity, Dataset.class);
+		dataset.setData(entity.getData().stream().map(dataRowEntity -> mapper.convertValue(dataRowEntity, DataRow.class)).collect(Collectors.toList()));
+
+		return dataset;
 	}
 }

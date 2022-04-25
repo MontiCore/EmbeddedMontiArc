@@ -20,4 +20,5 @@ public class DataRow {
 	private boolean validPosition;
 	private LocalDateTime timestamp;
 	private Dataset dataset;
+	private Offer offer;
 }
