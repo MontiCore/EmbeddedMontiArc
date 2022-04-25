@@ -50,6 +50,7 @@ public class OfferService {
 		Offer offer = offerRepository.findBy(offerId);
 		pmp.instantiatePolicy(offer.getPolicy());
 		Dataset dataset = mapper.convertValue(offer, Dataset.class);
+		dataset.setData(offer.getData());
 		dataset.setBoughtAt(LocalDateTime.now());
 		datasetRepository.save(dataset);
 	}

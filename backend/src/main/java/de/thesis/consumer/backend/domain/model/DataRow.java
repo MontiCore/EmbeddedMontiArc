@@ -19,6 +19,4 @@ public class DataRow {
 	private int totalFuelUsed;
 	private boolean validPosition;
 	private LocalDateTime timestamp;
-	private Dataset dataset;
-	private Offer offer;
 }
