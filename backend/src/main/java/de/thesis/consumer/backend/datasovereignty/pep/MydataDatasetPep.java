@@ -10,7 +10,7 @@ import rx.Observable;
 
 @PepServiceDescription(componentName = "dataset-pep")
 @Modifiers
-public interface MYDATADatasetPEP {
+public interface MydataDatasetPep {
 	@EventSpecification(action = "dataset-access")
 	Observable<Event> enforceDataset(@EventParameter(name = "dataset") Dataset dataset);
 }

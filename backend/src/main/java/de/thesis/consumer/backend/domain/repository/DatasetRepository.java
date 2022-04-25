@@ -14,4 +14,6 @@ public interface DatasetRepository {
 	List<Dataset> findAll();
 
 	Dataset findById(UUID id) throws DatasetNotFoundException;
+
+	void deleteById(UUID id);
 }

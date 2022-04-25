@@ -59,4 +59,9 @@ public class DatasetRepositoryImpl implements DatasetRepository {
 
 		return dataset;
 	}
+
+	@Override
+	public void deleteById(UUID id) {
+		datasetRepository.deleteById(id);
+	}
 }

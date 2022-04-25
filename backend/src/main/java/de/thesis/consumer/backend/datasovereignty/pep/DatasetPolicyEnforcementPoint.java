@@ -11,7 +11,7 @@ import org.springframework.stereotype.Component;
 @AllArgsConstructor
 public class DatasetPolicyEnforcementPoint implements IPolicyEnforcementPoint<Dataset> {
 
-	private final MYDATADatasetPEP pep;
+	private final MydataDatasetPep pep;
 
 	@Override
 	public Dataset enforce(Dataset dataset) throws InhibitionException {
