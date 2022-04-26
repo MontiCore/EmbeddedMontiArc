@@ -8,12 +8,11 @@ import lombok.extern.slf4j.Slf4j;
 
 import java.time.LocalDateTime;
 
-@PxpService(componentName = "dataset-pxp")
-@AllArgsConstructor
+@PxpService(componentName = "logging-local-pxp")
 @Slf4j
-public class MydataDatasetPxp {
+public class LocalLoggingPxp {
 
-	@ActionDescription(methodName = "delete-dataset")
+	@ActionDescription(methodName = "log-local")
 	public boolean deleteDataset(@ActionParameterDescription(name = "datasetId", mandatory = true) final String datasetId) {
 		log.info("Dataset {} accessed at {}", datasetId, LocalDateTime.now());
 
