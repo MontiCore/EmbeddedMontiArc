@@ -20,9 +20,6 @@ public class PolicyManagementPoint implements IPolicyManagementPoint {
 
 	@Override
 	public void instantiatePolicy(Policy policy) throws ConflictingResourceException, IOException, NoSuchEntityException, InvalidEntityException, ResourceUpdateException {
-		for(de.fraunhofer.iese.mydata.policy.Policy p: myDataEnv.getPmp().getDeployedPolicies()){
-			System.err.println(p.getPolicyId());
-		}
 		myDataEnv.getPmp().deployPolicy(
 				myDataEnv.getPmp().addPolicy(
 						new de.fraunhofer.iese.mydata.policy.Policy(policy.getRawValue())

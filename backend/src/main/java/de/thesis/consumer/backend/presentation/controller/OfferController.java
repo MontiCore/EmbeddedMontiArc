@@ -32,10 +32,10 @@ public class OfferController {
 	public void offer(@RequestBody Offer offer) {
 		try {
 			service.offer(offer);
-		} catch (InvalidPolicyException e) {
-			throw new ResponseStatusException(HttpStatus.BAD_REQUEST, "Dataset policy is invalid");
 		} catch (PolicyNotFoundException e) {
 			throw new ResponseStatusException(HttpStatus.BAD_REQUEST, "Policy not found");
+		} catch (Exception e) {
+			throw new ResponseStatusException(HttpStatus.BAD_REQUEST, "Dataset policy is invalid");
 		}
 	}
 

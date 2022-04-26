@@ -8,6 +8,8 @@ import org.springframework.stereotype.Component;
 public class PolicyServiceImpl implements IPolicyService {
 	@Override
 	public boolean isValid(Policy policy) {
+		new de.fraunhofer.iese.mydata.policy.Policy(policy.getRawValue());
+
 		return true;
 	}
 }
