@@ -13,9 +13,10 @@ public class MydataDatasetPxp {
 
 	// private final DatasetRepository repository;
 
-	@ActionDescription(methodName = "delete-dataset")
+	@ActionDescription
 	public void deleteDataset(@ActionParameterDescription(name = "datasetId", mandatory = true) final String id) {
-		log.error("executing Policy execution point");
+		log.error("executing Policy execution point: " + id);
+		System.err.println("hier bin ich");
 		// repository.deleteById(UUID.fromString(id));
 	}
 }
