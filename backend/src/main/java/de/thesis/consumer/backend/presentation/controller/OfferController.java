@@ -10,6 +10,7 @@ import de.thesis.consumer.backend.domain.exception.PolicyNotFoundException;
 import de.thesis.consumer.backend.domain.model.Offer;
 import de.thesis.consumer.backend.domain.service.OfferService;
 import lombok.AllArgsConstructor;
+import lombok.extern.slf4j.Slf4j;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.MediaType;
 import org.springframework.web.bind.annotation.*;
@@ -23,6 +24,7 @@ import java.util.UUID;
 @RequestMapping("/offers")
 @AllArgsConstructor
 @CrossOrigin(origins = "*")
+@Slf4j
 public class OfferController {
 
 	private OfferService service;
@@ -47,6 +49,7 @@ public class OfferController {
 	@PostMapping("/{offerId}")
 	@ResponseStatus(HttpStatus.OK)
 	public void buyOffer(@PathVariable UUID offerId) throws PolicyInstantiationException, ConflictingResourceException, IOException, NoSuchEntityException, InvalidEntityException, ResourceUpdateException, PolicyNotFoundException {
+		log.error("offer bought");
 		service.buyOffer(offerId);
 	}
 }

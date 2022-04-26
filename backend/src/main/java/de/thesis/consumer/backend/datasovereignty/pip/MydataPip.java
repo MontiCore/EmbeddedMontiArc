@@ -5,7 +5,7 @@ import de.fraunhofer.iese.mydata.registry.ActionDescription;
 import de.fraunhofer.iese.mydata.registry.ActionParameterDescription;
 
 @PipService(componentName = "authoritypip")
-public class MydataTestPip {
+public class MydataPip {
 	@ActionDescription
 	public String getAuthority(
 			@ActionParameterDescription(name = "username", mandatory = true) String username
