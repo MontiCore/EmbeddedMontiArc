@@ -2,6 +2,7 @@ package de.thesis.consumer.backend.presentation.config;
 
 import com.fasterxml.jackson.databind.ObjectMapper;
 import de.thesis.consumer.backend.datasovereignty.pep.DatasetPolicyEnforcementPoint;
+import de.thesis.consumer.backend.domain.IPolicyExecutionPoint;
 import de.thesis.consumer.backend.domain.IPolicyManagementPoint;
 import de.thesis.consumer.backend.domain.repository.DataRowRepository;
 import de.thesis.consumer.backend.domain.repository.DatasetRepository;
