@@ -15,7 +15,7 @@ public class DatasetPolicyEnforcementPoint implements IPolicyEnforcementPoint<Da
 
 	@Override
 	public Dataset enforce(Dataset dataset) throws InhibitionException {
-		Event event = pep.enforceDataset(dataset).toBlocking().first();
+		Event event = pep.enforceDataset(dataset, dataset.getId().toString()).toBlocking().first();
 		return event.getParameterValue("dataset", Dataset.class);
 	}
 }
