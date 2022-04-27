@@ -18,4 +18,5 @@ public class Dataset {
 	private Policy policy;
 	private LocalDateTime boughtAt;
 	private List<DataRow> data;
+	private String loggingUrl = "/logging";
 }

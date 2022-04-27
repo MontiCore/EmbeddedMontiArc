@@ -7,6 +7,8 @@ import de.thesis.consumer.backend.domain.model.Dataset;
 import de.thesis.consumer.backend.domain.service.ProviderClient;
 import lombok.AllArgsConstructor;
 
+import java.util.UUID;
+
 @PxpService(componentName = "logging-remote-pxp")
 @AllArgsConstructor
 public class RemoteLoggingPxp {
@@ -14,9 +16,10 @@ public class RemoteLoggingPxp {
 	private final ProviderClient client;
 
 	@ActionDescription(methodName = "log-remote")
-	public boolean logDataUsage(@ActionParameterDescription(name = "dataset", mandatory = true) final Dataset dataset) {
+	public boolean logDataUsage(@ActionParameterDescription(name = "url", mandatory = true) final String url,
+								@ActionParameterDescription(name = "id", mandatory = true) final String datasetId) {
 		try {
-			client.notifyDataOwner(dataset);
+			client.notifyDataOwner(url, UUID.fromString(datasetId));
 		} catch(Exception e){
 			return false;
 		}

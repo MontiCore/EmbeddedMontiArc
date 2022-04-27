@@ -49,7 +49,6 @@ public class OfferController {
 	@PostMapping("/{offerId}")
 	@ResponseStatus(HttpStatus.OK)
 	public void buyOffer(@PathVariable UUID offerId) throws PolicyInstantiationException, ConflictingResourceException, IOException, NoSuchEntityException, InvalidEntityException, ResourceUpdateException, PolicyNotFoundException {
-		log.error("offer bought");
 		service.buyOffer(offerId);
 	}
 }
