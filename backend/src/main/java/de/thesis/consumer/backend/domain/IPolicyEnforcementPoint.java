@@ -1,5 +1,5 @@
 package de.thesis.consumer.backend.domain;
 
 public interface IPolicyEnforcementPoint<T> {
-	T enforce(T object) throws InhibitionException;
+	T enforce(T object);
 }

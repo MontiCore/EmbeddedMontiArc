@@ -1,7 +1,6 @@
 package de.thesis.consumer.backend.domain.service;
 
 import de.thesis.consumer.backend.domain.IPolicyEnforcementPoint;
-import de.thesis.consumer.backend.domain.InhibitionException;
 import de.thesis.consumer.backend.domain.exception.DatasetNotFoundException;
 import de.thesis.consumer.backend.domain.model.Dataset;
 import de.thesis.consumer.backend.domain.repository.DatasetRepository;
@@ -20,7 +19,7 @@ public class DatasetService {
 		return repository.findAll();
 	}
 
-	public Dataset getDataset(UUID id) throws DatasetNotFoundException, InhibitionException {
+	public Dataset getDataset(UUID id) throws DatasetNotFoundException {
 		Dataset dataset = repository.findById(id);
 
 		return pep.enforce(dataset);

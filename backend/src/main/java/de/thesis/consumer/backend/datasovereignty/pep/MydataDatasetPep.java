@@ -12,5 +12,5 @@ import rx.Observable;
 @Modifiers
 public interface MydataDatasetPep {
 	@EventSpecification(action = "dataset-access")
-	Observable<Event> enforceDataset(@EventParameter(name = "dataset") Dataset dataset, @EventParameter(name = "dataset-id") String datasetId);
+	Observable<Event> enforce(@EventParameter(name = "dataset") Dataset dataset, @EventParameter(name = "dataset-id") String datasetId);
 }
