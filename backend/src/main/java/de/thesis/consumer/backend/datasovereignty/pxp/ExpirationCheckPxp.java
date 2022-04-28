@@ -2,20 +2,26 @@ package de.thesis.consumer.backend.datasovereignty.pxp;
 
 import de.fraunhofer.iese.mydata.pxp.PxpService;
 import de.fraunhofer.iese.mydata.registry.ActionDescription;
-import de.fraunhofer.iese.mydata.registry.ActionParameterDescription;
+import de.thesis.consumer.backend.domain.model.Dataset;
 import de.thesis.consumer.backend.domain.repository.DatasetRepository;
 import lombok.AllArgsConstructor;
 
-import java.time.LocalDateTime;
-import java.util.UUID;
+import java.time.LocalDate;
 
 @PxpService(componentName = "expiration-check-pxp")
 @AllArgsConstructor
 public class ExpirationCheckPxp {
 
+	private final DatasetRepository repository;
+
 	@ActionDescription(methodName = "check-expiration")
 	public boolean deleteDataset() {
-		System.err.println("I was executed at " + LocalDateTime.now());
+		for (Dataset dataset : repository.findAll()) {
+			if (dataset.getExpiresOn().isBefore(LocalDate.now())) {
+				repository.deleteById(dataset.getId());
+			}
+		}
+
 		return true;
 	}
 }

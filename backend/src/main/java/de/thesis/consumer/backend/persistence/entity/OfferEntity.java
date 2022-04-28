@@ -5,6 +5,7 @@ import lombok.Getter;
 import lombok.Setter;
 
 import javax.persistence.*;
+import java.time.LocalDate;
 import java.util.List;
 import java.util.UUID;
 
@@ -29,6 +30,8 @@ public class OfferEntity {
 	@OneToOne(cascade = CascadeType.ALL)
 	@JoinColumn(referencedColumnName = "id")
 	private PolicyEntity policy;
+
+	private LocalDate expiresOn;
 
 	@OneToMany(mappedBy = "offer")
 	private List<DataRowEntity> data;

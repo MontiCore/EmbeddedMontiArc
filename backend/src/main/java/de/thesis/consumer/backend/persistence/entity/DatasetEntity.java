@@ -4,6 +4,7 @@ import lombok.Getter;
 import lombok.Setter;
 
 import javax.persistence.*;
+import java.time.LocalDate;
 import java.time.LocalDateTime;
 import java.util.List;
 import java.util.UUID;
@@ -28,10 +29,12 @@ public class DatasetEntity {
 
 	private LocalDateTime boughtAt;
 
+	private LocalDate expiresOn;
+
 	@OneToOne(cascade = CascadeType.ALL)
 	@JoinColumn(name = "policy_id", referencedColumnName = "id")
 	private PolicyEntity policy;
 
-	@OneToMany(mappedBy = "dataset", cascade = CascadeType.ALL)
+	@OneToMany(mappedBy = "dataset", cascade = CascadeType.ALL, fetch = FetchType.EAGER)
 	private List<DataRowEntity> data;
 }

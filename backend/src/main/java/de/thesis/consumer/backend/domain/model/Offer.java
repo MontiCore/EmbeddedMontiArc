@@ -3,6 +3,7 @@ package de.thesis.consumer.backend.domain.model;
 import lombok.Getter;
 import lombok.Setter;
 
+import java.time.LocalDate;
 import java.util.List;
 import java.util.UUID;
 
@@ -15,5 +16,6 @@ public class Offer {
 	private String description;
 	private double price;
 	private Policy policy;
+	private LocalDate expiresOn;
 	private List<DataRow> data;
 }
