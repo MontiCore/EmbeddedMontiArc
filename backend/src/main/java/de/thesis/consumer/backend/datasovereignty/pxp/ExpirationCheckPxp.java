@@ -17,7 +17,7 @@ public class ExpirationCheckPxp {
 	@ActionDescription(methodName = "check-expiration")
 	public boolean deleteDataset() {
 		for (Dataset dataset : repository.findAll()) {
-			if (dataset.getExpiresOn().isBefore(LocalDate.now())) {
+			if (dataset.getExpiresOn() != null && dataset.getExpiresOn().isBefore(LocalDate.now())) {
 				repository.deleteById(dataset.getId());
 			}
 		}
