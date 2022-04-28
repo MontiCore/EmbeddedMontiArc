@@ -24,7 +24,7 @@ mydata:
   solution: urn:solution:rwth-student-solution
   jpa:
     database-platform: org.hibernate.dialect.H2Dialect
-    show-sql: true
+    show-sql: false
     properties:
       hibernate:
         ddl-auto: create

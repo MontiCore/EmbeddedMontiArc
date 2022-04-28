@@ -21,7 +21,6 @@ public class DatasetService {
 
 	public Dataset getDataset(UUID id) throws DatasetNotFoundException {
 		Dataset dataset = repository.findById(id);
-
 		return pep.enforce(dataset);
 	}
 }

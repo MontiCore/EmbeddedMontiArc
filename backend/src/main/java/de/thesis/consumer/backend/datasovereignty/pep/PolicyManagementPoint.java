@@ -1,16 +1,11 @@
 package de.thesis.consumer.backend.datasovereignty.pep;
 
 import de.fraunhofer.iese.mydata.IMyDataEnvironment;
-import de.fraunhofer.iese.mydata.exception.ConflictingResourceException;
-import de.fraunhofer.iese.mydata.exception.InvalidEntityException;
-import de.fraunhofer.iese.mydata.exception.NoSuchEntityException;
-import de.fraunhofer.iese.mydata.exception.ResourceUpdateException;
 import de.thesis.consumer.backend.domain.IPolicyManagementPoint;
 import de.thesis.consumer.backend.domain.model.Policy;
+import de.thesis.consumer.backend.domain.model.Timer;
 import lombok.AllArgsConstructor;
 import org.springframework.stereotype.Component;
-
-import java.io.IOException;
 
 @Component
 @AllArgsConstructor
@@ -19,12 +14,24 @@ public class PolicyManagementPoint implements IPolicyManagementPoint {
 	private final IMyDataEnvironment myDataEnv;
 
 	@Override
-	public void instantiatePolicy(Policy policy) throws ConflictingResourceException, IOException, NoSuchEntityException, InvalidEntityException, ResourceUpdateException {
-		myDataEnv.getPmp().deployPolicy(
-				myDataEnv.getPmp().addPolicy(
-						new de.fraunhofer.iese.mydata.policy.Policy(policy.getRawValue())
-				)
-		);
+	public void deployPolicy(Policy policy) {
+		try {
+			myDataEnv.getPmp().deployPolicy(
+					myDataEnv.getPmp().addPolicy(
+							new de.fraunhofer.iese.mydata.policy.Policy(policy.getRawValue())
+					)
+			);
+		} catch (Exception e) {
+			e.printStackTrace();
+		}
+	}
 
+	@Override
+	public void deployTimer(Timer timer) {
+		try {
+			myDataEnv.getPmp().deployTimer(myDataEnv.getPmp().addTimer(new de.fraunhofer.iese.mydata.timer.Timer(timer.getRawValue())));
+		} catch (Exception e) {
+			e.printStackTrace();
+		}
 	}
 }

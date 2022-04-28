@@ -46,7 +46,7 @@ public class OfferService {
 
 	public void buyOffer(UUID offerId) throws PolicyInstantiationException, ConflictingResourceException, IOException, NoSuchEntityException, InvalidEntityException, ResourceUpdateException, PolicyNotFoundException {
 		Offer offer = offerRepository.findBy(offerId);
-		pmp.instantiatePolicy(offer.getPolicy());
+		pmp.deployPolicy(offer.getPolicy());
 		Dataset dataset = mapper.convertValue(offer, Dataset.class);
 		dataset.setData(offer.getData());
 		dataset.setBoughtAt(LocalDateTime.now());
