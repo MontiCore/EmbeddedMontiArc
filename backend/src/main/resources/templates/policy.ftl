@@ -8,16 +8,16 @@
         xmlns:parameter='http://www.mydata-control.de/4.0/parameter'
         xmlns:constant='http://www.mydata-control.de/4.0/constant'
 >
-    <#if startTime?? || endTime()??>
-    <@t_macro.time_mechanism event=event id=id startTime=startTime endTime=endTime/>
+    <#if businessHours??>
+    <@t_macro.time_mechanism event=event id=id businessHours=businessHours/>
     </#if>
     <#if maxUsages??>
     <@u_macro.usage_number_mechanism event=event id=id maxUsages=maxUsages/>
     </#if>
     <#if localLogging>
-    <@rl_macro.remote_logging_mechanism event=event id=id/>
+    <@ll_macro.local_logging_mechanism event=event id=id/>
     </#if>
     <#if remoteLogging>
-    <@ll_macro.local_logging_mechanism event=event id=id/>
+    <@rl_macro.remote_logging_mechanism event=event id=id/>
     </#if>
 </policy>

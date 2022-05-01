@@ -12,8 +12,7 @@ import java.util.UUID;
 public class PolicyRequest {
 	private UUID id;
 	private String event;
-	private LocalTime startTime;
-	private LocalTime endTime;
+	private TimeRule businessHours;
 	private Integer maxUsages;
 	private LocalDate expiresOn;
 	private boolean localLogging;

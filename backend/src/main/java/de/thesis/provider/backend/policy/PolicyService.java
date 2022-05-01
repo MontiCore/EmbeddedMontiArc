@@ -25,8 +25,7 @@ public class PolicyService {
 		templateData.put("id", policyRequest.getId());
 		templateData.put("event", policyRequest.getEvent());
 		templateData.put("maxUsages", policyRequest.getMaxUsages());
-		templateData.put("startTime", policyRequest.getStartTime());
-		templateData.put("endTime", policyRequest.getEndTime());
+		templateData.put("businessHours", policyRequest.getBusinessHours());
 		templateData.put("localLogging", policyRequest.isLocalLogging());
 		templateData.put("remoteLogging", policyRequest.isRemoteLogging());
 

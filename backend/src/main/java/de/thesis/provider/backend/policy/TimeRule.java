@@ -6,6 +6,6 @@ import java.time.LocalTime;
 
 @Value
 public class TimeRule {
-	LocalTime before;
-	LocalTime after;
+	LocalTime start;
+	LocalTime end;
 }

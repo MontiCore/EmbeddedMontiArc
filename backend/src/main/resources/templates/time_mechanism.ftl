@@ -1,4 +1,4 @@
-<#macro time_mechanism event id startTime endTime>
+<#macro time_mechanism event id businessHours>
     <mechanism event='urn:action:rwth-student-solution:${event}'>
         <if>
             <and>
@@ -7,11 +7,11 @@
                     <constant:string value='${id}'/>
                 </equals>
                 <or>
-                    <#if startTime??>
-                    <time is='before' value='${startTime.toString()}'/>
+                    <#if businessHours.getStart()??>
+                    <time is='before' value='${businessHours.getStart().toString()}'/>
                     </#if>
-                    <#if endTime??>
-                    <time is='after' value='${endTime.toString()}'/>
+                    <#if businessHours.getEnd()??>
+                    <time is='after' value='${businessHours.getEnd().toString()}'/>
                     </#if>
                 </or>
             </and>
