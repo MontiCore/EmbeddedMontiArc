@@ -1,0 +1,3 @@
+id;dayID;longitude;latitude;gpsTime;heading;speed;odometer;totalFuelUsed;validPosition;timestamp
+1;95e1053d34c316cbde6c153ac750a6f5;9.4835;49.6559;2011-12-03T10:15:30Z;2;0;5447;1;true;2011-12-03T10:15:30Z
+2;95e1053d34c316cbde6c153ac750a6f5;9;50;2011-12-03T10:15:30Z;2;12;5447;1;true;2011-12-03T10:15:30Z

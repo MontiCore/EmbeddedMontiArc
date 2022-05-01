@@ -1,5 +1,6 @@
 package de.thesis.provider.backend;
 
+import de.thesis.provider.backend.csv.CsvReader;
 import de.thesis.provider.backend.policy.PolicyRequest;
 import de.thesis.provider.backend.policy.PolicyService;
 import freemarker.template.TemplateException;
@@ -21,5 +22,12 @@ public class PolicyController {
 	@ResponseStatus(HttpStatus.OK)
 	public void getPolicy(@RequestBody PolicyRequest policyRequest) throws TemplateException, IOException {
 		System.err.println(policyService.getPolicy(policyRequest));
+	}
+
+	@GetMapping
+	@ResponseStatus(HttpStatus.OK)
+	public void readCSV() throws Exception {
+		CsvReader reader = new CsvReader();
+		reader.beanBuilderExample();
 	}
 }
