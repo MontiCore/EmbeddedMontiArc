@@ -5,7 +5,7 @@ import lombok.Value;
 import java.time.LocalTime;
 
 @Value
-public class TimeRule {
+public class BusinessHours {
 	LocalTime start;
 	LocalTime end;
 }

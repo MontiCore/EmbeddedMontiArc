@@ -12,6 +12,7 @@ import java.io.IOException;
 @RestController
 @RequestMapping("/policy")
 @AllArgsConstructor
+@CrossOrigin(origins = "*")
 public class PolicyController {
 
 	private final PolicyService policyService;
