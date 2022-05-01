@@ -1,4 +1,4 @@
-package de.thesis.provider.backend;
+package de.thesis.provider.backend.controller;
 
 import de.thesis.provider.backend.policy.PolicyService;
 import lombok.AllArgsConstructor;

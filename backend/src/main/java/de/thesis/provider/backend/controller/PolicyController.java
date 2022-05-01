@@ -1,4 +1,4 @@
-package de.thesis.provider.backend;
+package de.thesis.provider.backend.controller;
 
 import de.thesis.provider.backend.csv.CsvReader;
 import de.thesis.provider.backend.policy.PolicyRequest;

@@ -1,5 +1,6 @@
 <template>
   <form class="d-flex flex-column border rounded p-3 align-items-start gap-3" style="width: 22rem">
+    <h3>Policy</h3>
     <div class="w-100">
       <div class="d-flex justify-content-between gap-3">
         <div class="text-start flex-grow-1">
@@ -35,7 +36,7 @@
             Remote logging
           </label>
       </div>
-    <button type="submit" class="btn btn-primary fw-bold" @click="submit" style="width: 8rem">Create policy</button>
+      <div class="form-text text-start">If a value is not set, the corresponding field wont be regarded in the policy</div>
   </form>
 </template>
 

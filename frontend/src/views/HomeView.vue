@@ -1,21 +1,32 @@
 <template>
-  <div class="d-flex flex-column justify-content-center align-items-center">
-    <img alt="Vue logo" src="../assets/logo.png">
+  <div class="d-flex justify-content-center p-3">
+    <DatasetForm />
     <PolicyForm />
-    <HelloWorld msg="Welcome to Your Vue.js App"/>
   </div>
 </template>
 
 <script>
 // @ is an alias to /src
-import HelloWorld from '@/components/HelloWorld.vue'
 import PolicyForm from '@/components/PolicyForm.vue'
+import DatasetForm from '@/components/DatasetForm.vue'
+import axios from 'axios'
 
 export default {
   name: 'HomeView',
   components: {
-    HelloWorld,
+    DatasetForm,
     PolicyForm
+  },
+  data () {
+    return {
+      truckData: []
+    }
+  },
+  async mounted () {
+    console.log('hier bin ich')
+    await axios.get('/truckdata').then(response => {
+      this.truckData = response.data
+    })
   }
 }
 </script>

@@ -6,11 +6,12 @@ import org.springframework.core.io.ClassPathResource;
 
 import java.io.BufferedReader;
 import java.io.FileReader;
+import java.io.IOException;
 import java.io.Reader;
 import java.util.List;
 
 public class CsvReader {
-	public void beanBuilderExample() throws Exception {
+	public List<TruckData> beanBuilderExample() throws IOException {
 		Reader reader = new BufferedReader(new FileReader(new ClassPathResource(
 				"csv/test.csv").getFile()));
 		CsvToBean<TruckData> csvReader = new CsvToBeanBuilder<TruckData>(reader)
@@ -20,7 +21,6 @@ public class CsvReader {
 				.withIgnoreEmptyLine(true)
 				.build();
 
-		List<TruckData> results = csvReader.parse();
-		System.err.println("done");
+		return csvReader.parse();
 	}
 }
