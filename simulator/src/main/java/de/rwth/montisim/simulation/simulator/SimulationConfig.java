@@ -4,6 +4,7 @@ package de.rwth.montisim.simulation.simulator;
 import java.io.File;
 import java.time.*;
 import java.util.Objects;
+import java.util.Optional;
 import java.util.Vector;
 
 import de.rwth.montisim.commons.map.Pathfinding;
@@ -17,6 +18,7 @@ import de.rwth.montisim.simulation.eesimulator.exceptions.EEMissingComponentExce
 import de.rwth.montisim.simulation.eesimulator.exceptions.EESetupException;
 import de.rwth.montisim.simulation.environment.osmmap.OsmMap;
 import de.rwth.montisim.simulation.environment.world.World;
+import de.rwth.montisim.simulation.simulator.randomization.RandomizationProperties;
 import de.rwth.montisim.simulation.vehicle.Vehicle;
 import de.rwth.montisim.simulation.vehicle.VehicleProperties;
 
@@ -26,6 +28,7 @@ public class SimulationConfig {
     public Duration max_duration = Duration.ofSeconds(60);
     public Duration tick_duration = Duration.ofNanos(Time.SECOND_TO_NANOSEC / 100);
     public Instant start_time = Instant.now();
+    public Optional<RandomizationProperties> randomization = Optional.empty();
 
     public Vector<VehicleProperties> cars = new Vector<>();
     public Vector<ModuleProperties> modules = new Vector<>();
