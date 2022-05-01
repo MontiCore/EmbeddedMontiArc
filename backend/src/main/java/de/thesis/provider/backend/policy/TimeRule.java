@@ -1,4 +1,4 @@
-package de.thesis.provider.backend.policycreator;
+package de.thesis.provider.backend.policy;
 
 import lombok.Value;
 

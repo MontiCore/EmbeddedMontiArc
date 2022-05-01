@@ -1,14 +1,20 @@
-<#macro time_mechanism event timeRule>
+<#macro time_mechanism event id startTime endTime>
     <mechanism event='urn:action:rwth-student-solution:${event}'>
         <if>
-            <or>
-                <#if timeRule.before??>
-                <time is='before' value='${timeRule.getBefore().toString()}'/>
-                </#if>
-                <#if timeRule.after??>
-                <time is='after' value='${timeRule.getAfter().toString()}'/>
-                </#if>
-            </or>
+            <and>
+                <equals>
+                    <event:string eventParameter='datasetId' default='' jsonPathQuery='$.id'/>
+                    <constant:string value='${id}'/>
+                </equals>
+                <or>
+                    <#if startTime??>
+                    <time is='before' value='${startTime.toString()}'/>
+                    </#if>
+                    <#if endTime??>
+                    <time is='after' value='${endTime.toString()}'/>
+                    </#if>
+                </or>
+            </and>
             <then>
                 <inhibit/>
             </then>
