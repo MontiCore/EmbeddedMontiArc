@@ -1,11 +1,12 @@
 <template>
-  <div style="overflow-x: scroll">
-      <table class="table table-hover">
-        <thead>
+<div class="d-flex flex-column align-items-center">
+  <div class="card" style="overflow-x: scroll; border-color: transparent; border-radius: 0.5rem">
+      <table class="table table-striped table-hover rounded">
+        <thead class="colored-thead">
           <tr>
-            <th class="text-nowrap" v-for="(_, key) in truckData[0]" :key="key">
-              {{ key }}
-            </th>
+              <th class="text-nowrap text-light" v-for="(_, key) in truckData[0]" :key="key">
+                {{ key }}
+              </th>
           </tr>
         </thead>
         <tbody>
@@ -21,17 +22,46 @@
           </tr>
         </tbody>
       </table>
-
     </div>
+    <TablePagination :elements="elements" @pageChange="pageChanged"/>
+</div>
 </template>
 
 <script>
+import TablePagination from '@/components/TablePagination.vue'
 export default {
-  props: {
-    truckData: {
-      type: Array,
-      required: true
+  components: {
+    TablePagination
+  },
+  data () {
+    return {
+      currentPage: 1
     }
+  },
+  computed: {
+    truckData () {
+      return this.$store.getters.getTruckData.slice((this.currentPage - 1) * 15, (this.currentPage - 1) * 15 + 15)
+    },
+    elements () {
+      return this.$store.getters.getTruckData.length
+    }
+  },
+  methods: {
+    pageChanged (newPage) {
+      this.currentPage = newPage
+    }
+  },
+  mounted () {
+    this.$store.dispatch('fetchTruckData')
   }
 }
 </script>
+
+<style scoped>
+.colored-thead {
+  background-color: #212529;
+}
+.table-hover tbody tr:hover td, .table-hover tbody tr:hover th {
+  background-color: rgb(221, 221, 221);
+}
+</style>

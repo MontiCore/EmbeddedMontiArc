@@ -11,9 +11,9 @@ import java.io.Reader;
 import java.util.List;
 
 public class CsvReader {
-	public List<TruckData> beanBuilderExample() throws IOException {
+	public List<TruckData> getCsvData() throws IOException {
 		Reader reader = new BufferedReader(new FileReader(new ClassPathResource(
-				"csv/test.csv").getFile()));
+				"csv/bigtest.csv").getFile()));
 		CsvToBean<TruckData> csvReader = new CsvToBeanBuilder<TruckData>(reader)
 				.withType(TruckData.class)
 				.withSeparator(';')

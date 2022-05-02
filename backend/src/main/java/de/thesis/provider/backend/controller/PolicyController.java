@@ -28,6 +28,6 @@ public class PolicyController {
 	@ResponseStatus(HttpStatus.OK)
 	public void readCSV() throws Exception {
 		CsvReader reader = new CsvReader();
-		reader.beanBuilderExample();
+		reader.getCsvData();
 	}
 }
