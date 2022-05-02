@@ -1,7 +1,7 @@
 package de.thesis.provider.backend.controller;
 
 import de.thesis.provider.backend.csv.CsvReader;
-import de.thesis.provider.backend.policy.PolicyRequest;
+import de.thesis.provider.backend.policy.Policy;
 import de.thesis.provider.backend.policy.PolicyService;
 import freemarker.template.TemplateException;
 import lombok.AllArgsConstructor;
@@ -20,7 +20,7 @@ public class PolicyController {
 
 	@PostMapping
 	@ResponseStatus(HttpStatus.OK)
-	public void getPolicy(@RequestBody PolicyRequest policyRequest) throws TemplateException, IOException {
+	public void getPolicy(@RequestBody Policy policyRequest) throws TemplateException, IOException {
 		System.err.println(policyService.getPolicy(policyRequest));
 	}
 

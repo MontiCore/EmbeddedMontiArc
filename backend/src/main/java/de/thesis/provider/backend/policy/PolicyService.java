@@ -20,7 +20,7 @@ public class PolicyService {
 		config.setDefaultEncoding("UTF-8");
 	}
 
-	public String getPolicy(PolicyRequest policyRequest) throws IOException, TemplateException {
+	public String getPolicy(Policy policyRequest) throws IOException, TemplateException {
 		Map<String, Object> templateData = new HashMap<>();
 		templateData.put("id", policyRequest.getId());
 		templateData.put("event", policyRequest.getEvent());

@@ -1,11 +1,13 @@
 package de.thesis.provider.backend.policy;
 
-import lombok.Value;
+import lombok.Getter;
+import lombok.Setter;
 
 import java.time.LocalTime;
 
-@Value
+@Getter
+@Setter
 public class BusinessHours {
-	LocalTime start;
-	LocalTime end;
+	private LocalTime start;
+	private LocalTime end;
 }

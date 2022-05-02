@@ -1,7 +1,7 @@
 <template>
   <div>
     <div class="d-flex justify-content-center">
-      <TruckDataTable :value="rows" @input="rows = $event.target.value"/>
+      <TruckDataTable :value="rows" @input="rows = $event.target.value.replace(/\s/g, '')"/>
     </div>
     <button class="btn btn-primary" @click="navigateToMetadata">Next</button>
   </div>

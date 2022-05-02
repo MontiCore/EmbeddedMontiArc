@@ -21,7 +21,7 @@
     </div>
     <div class="text-start w-100">
       <label class="form-label" for="max-usages">Number of usages</label>
-      <input class="form-control" type="number" id="max-usages" @input="this.$emit('number-of-usages-changed', $event.target.value)"/>
+      <input class="form-control" type="number" id="max-usages" @input="this.$emit('max-usages-changed', $event.target.value)"/>
       <div class="form-text text-start">Number of times the dataset may be used</div>
     </div>
       <div class="form-check">
@@ -41,27 +41,7 @@
 </template>
 
 <script>
-import axios from 'axios'
-
 export default {
-  props: ['startTime', 'endTime', 'expiresOn', 'numberOfUsages', 'localLogging', 'remoteLogging'],
-  methods: {
-    submit () {
-      axios.post('policy', {
-        id: '1ead349e-36ec-4d44-abd3-d94c576a74ca',
-        event: 'data-access',
-        businessHours: {
-          start: this.startTime,
-          end: this.endTime
-        },
-        maxUsages: this.numberOfUsages,
-        expiresOn: this.expiresOn,
-        localLogging: this.localLogging,
-        remoteLogging: this.remoteLogging
-      }).then(response => {
-        console.log('success')
-      })
-    }
-  }
+  props: ['startTime', 'endTime', 'expiresOn', 'maxUsages', 'localLogging', 'remoteLogging']
 }
 </script>

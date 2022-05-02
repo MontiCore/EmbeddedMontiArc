@@ -8,7 +8,7 @@ import java.util.UUID;
 
 @Getter
 @Setter
-public class PolicyRequest {
+public class Policy {
 	private UUID id;
 	private String event;
 	private BusinessHours businessHours;
