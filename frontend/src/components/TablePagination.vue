@@ -1,16 +1,16 @@
 <template>
   <nav class="p-0">
       <ul class="pagination">
-        <li class="page-item">
-          <a class="page-link" href="#" aria-label="Previous" @click="leftArrowClicked">
+        <li class="page-item hover-cursor" :class="{ disabled: currentPage ===  1 }">
+          <a class="page-link" aria-label="Previous" @click="leftArrowClicked">
             <span aria-hidden="true">&laquo;</span>
           </a>
         </li>
-        <li class="page-item" :class="{ active: currentPage === visiblePages[0], disabled: visiblePages[0] > Math.ceil(elements / 15) }"><a class="page-link" href="#" @click="pageLinkClicked(visiblePages[0])">{{ visiblePages[0] }}</a></li>
-        <li class="page-item" :class="{ active: currentPage === visiblePages[1], disabled: visiblePages[1] > Math.ceil(elements / 15)}"><a class="page-link" href="#" @click="pageLinkClicked(visiblePages[1])">{{ visiblePages[1] }}</a></li>
-        <li class="page-item" :class="{ active: currentPage === visiblePages[2], disabled: visiblePages[2] > Math.ceil(elements / 15)}"><a class="page-link" href="#" @click="pageLinkClicked(visiblePages[2])">{{ visiblePages[2] }}</a></li>
-        <li class="page-item">
-          <a class="page-link" href="#" aria-label="Next" @click="rightArrowClicked">
+        <li class="page-item hover-cursor" :class="{ active: currentPage === visiblePages[0], disabled: visiblePages[0] > Math.ceil(elements / 15) }"><a class="page-link" @click="pageLinkClicked(visiblePages[0])">{{ visiblePages[0] }}</a></li>
+        <li class="page-item hover-cursor" :class="{ active: currentPage === visiblePages[1], disabled: visiblePages[1] > Math.ceil(elements / 15) }"><a class="page-link" @click="pageLinkClicked(visiblePages[1])">{{ visiblePages[1] }}</a></li>
+        <li class="page-item hover-cursor" :class="{ active: currentPage === visiblePages[2], disabled: visiblePages[2] > Math.ceil(elements / 15) }"><a class="page-link" @click="pageLinkClicked(visiblePages[2])">{{ visiblePages[2] }}</a></li>
+        <li class="page-item hover-cursor" :class="{ disabled: currentPage ===  Math.ceil(elements / 15) }">
+          <a class="page-link" aria-label="Next" @click="rightArrowClicked">
             <span aria-hidden="true">&raquo;</span>
           </a>
         </li>
@@ -54,3 +54,9 @@ export default {
   }
 }
 </script>
+
+<style scoped>
+  .hover-cursor {
+    cursor: pointer;
+  }
+</style>

@@ -1,29 +1,38 @@
 <template>
-<div class="d-flex flex-column align-items-center">
-  <div class="card" style="overflow-x: scroll; border-color: transparent; border-radius: 0.5rem">
-      <table class="table table-striped table-hover rounded">
-        <thead class="colored-thead">
-          <tr>
-              <th class="text-nowrap text-light" v-for="(_, key) in truckData[0]" :key="key">
-                {{ key }}
-              </th>
-          </tr>
-        </thead>
-        <tbody>
-          <tr v-for="row in truckData" :key="row">
-            <td
-              class="text-nowrap"
-              v-for="(value, key) in row"
-              :key="key"
-              style="border-width: 0"
-            >
-              {{ value }}
-            </td>
-          </tr>
-        </tbody>
-      </table>
+<div class="d-flex flex-column gap-3">
+  <div>
+    <div class="text-start">
+      <label class="form-label" for="rows">Select rows</label>
+      <input class="form-control" type="text" id="rows" @input="handleRowSelection"/>
+      <div class="form-text text-start">Select rows from 1 - {{ elements }} in the following format: 1-20;31;35-99</div>
     </div>
-    <TablePagination :elements="elements" @pageChange="pageChanged"/>
+  </div>
+  <div class="d-flex flex-column align-items-center gap-3">
+    <div class="card" style="overflow-x: scroll; border-color: transparent; border-radius: 0.5rem">
+        <table class="table table-striped table-hover rounded">
+          <thead class="colored-thead">
+            <tr>
+                <th class="text-nowrap text-light" v-for="(_, key) in truckData[0]" :key="key">
+                  {{ key }}
+                </th>
+            </tr>
+          </thead>
+          <tbody>
+            <tr v-for="row in truckData" :key="row">
+              <td
+                class="text-nowrap"
+                v-for="(value, key) in row"
+                :key="key"
+                style="border-width: 0"
+              >
+                {{ value }}
+              </td>
+            </tr>
+          </tbody>
+        </table>
+      </div>
+      <TablePagination :elements="elements" @pageChange="pageChanged"/>
+  </div>
 </div>
 </template>
 
@@ -32,6 +41,12 @@ import TablePagination from '@/components/TablePagination.vue'
 export default {
   components: {
     TablePagination
+  },
+  pros: {
+    value: {
+      type: String,
+      required: true
+    }
   },
   data () {
     return {
@@ -49,6 +64,9 @@ export default {
   methods: {
     pageChanged (newPage) {
       this.currentPage = newPage
+    },
+    handleRowSelection (currentValue) {
+      this.$emit('input', currentValue)
     }
   },
   mounted () {
