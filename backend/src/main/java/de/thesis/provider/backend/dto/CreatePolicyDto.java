@@ -1,4 +1,4 @@
-package de.thesis.provider.backend.policy;
+package de.thesis.provider.backend.dto;
 
 import lombok.Getter;
 import lombok.Setter;
@@ -8,7 +8,7 @@ import java.util.UUID;
 
 @Getter
 @Setter
-public class Policy {
+public class CreatePolicyDto {
 	private UUID id;
 	private String event;
 	private BusinessHours businessHours;

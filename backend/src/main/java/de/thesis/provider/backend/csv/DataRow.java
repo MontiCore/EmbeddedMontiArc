@@ -9,9 +9,9 @@ import java.time.LocalDateTime;
 
 @Getter
 @Setter
-public class TruckData {
+public class DataRow {
 	@CsvBindByName(column = "id")
-	private Long id;
+	private int id;
 	@CsvBindByName(column = "dayID")
 	private String dayID;
 	@CsvBindByName(column = "longitude")

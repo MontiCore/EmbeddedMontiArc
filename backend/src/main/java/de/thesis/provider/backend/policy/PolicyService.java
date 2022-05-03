@@ -1,5 +1,6 @@
 package de.thesis.provider.backend.policy;
 
+import de.thesis.provider.backend.dto.CreatePolicyDto;
 import freemarker.template.Configuration;
 import freemarker.template.Template;
 import freemarker.template.TemplateException;
@@ -20,7 +21,7 @@ public class PolicyService {
 		config.setDefaultEncoding("UTF-8");
 	}
 
-	public String getPolicy(Policy policyRequest) throws IOException, TemplateException {
+	public String getPolicy(CreatePolicyDto policyRequest) throws IOException, TemplateException {
 		Map<String, Object> templateData = new HashMap<>();
 		templateData.put("id", policyRequest.getId());
 		templateData.put("event", policyRequest.getEvent());

@@ -11,11 +11,11 @@ import java.io.Reader;
 import java.util.List;
 
 public class CsvReader {
-	public List<TruckData> getCsvData() throws IOException {
+	public List<DataRow> getCsvData() throws IOException {
 		Reader reader = new BufferedReader(new FileReader(new ClassPathResource(
 				"csv/bigtest.csv").getFile()));
-		CsvToBean<TruckData> csvReader = new CsvToBeanBuilder<TruckData>(reader)
-				.withType(TruckData.class)
+		CsvToBean<DataRow> csvReader = new CsvToBeanBuilder<DataRow>(reader)
+				.withType(DataRow.class)
 				.withSeparator(';')
 				.withIgnoreLeadingWhiteSpace(true)
 				.withIgnoreEmptyLine(true)

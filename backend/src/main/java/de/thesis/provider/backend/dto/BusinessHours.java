@@ -1,4 +1,4 @@
-package de.thesis.provider.backend.policy;
+package de.thesis.provider.backend.dto;
 
 import lombok.Getter;
 import lombok.Setter;

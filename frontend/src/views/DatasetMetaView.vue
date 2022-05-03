@@ -14,7 +14,6 @@
 import PolicyForm from '@/components/PolicyForm.vue'
 import DatasetForm from '@/components/DatasetForm.vue'
 import axios from 'axios'
-import { v4 as uuidv4 } from 'uuid'
 
 export default {
   components: {
@@ -42,12 +41,8 @@ export default {
   },
   methods: {
     createDataset () {
-      const datasetPolicy = this.policy
-      datasetPolicy.id = uuidv4()
-      datasetPolicy.event = 'data-access'
       axios.post('/dataset', {
-        id: datasetPolicy.id,
-        policy: datasetPolicy,
+        policy: this.policy,
         metaData: this.metaData,
         file: this.$route.query.file,
         rows: this.$route.query.rows
