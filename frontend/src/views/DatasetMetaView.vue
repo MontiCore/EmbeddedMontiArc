@@ -1,6 +1,6 @@
 <template>
   <div class="d-flex justify-content-center gap-3">
-    <div class="d-flex flex-column gap-3">
+    <div class="d-flex flex-column p-3 gap-3">
       <DatasetForm :title="metaData.title" :description="metaData.description" :price="metaData.price" @titleChanged="titleChanged" @priceChanged="priceChanged" @descriptionChanged="descriptionChanged"/>
       <button type="submit" class="btn btn-primary fw-bold" style="width: 10rem" @click="createDataset()">Create dataset</button>
     </div>

@@ -1,5 +1,5 @@
 <template>
-  <form class="d-flex flex-column border align-items-start p-3 gap-3" style="width: 30rem; border-color: white!important">
+  <form class="d-flex flex-column border align-items-start gap-3" style="width: 30rem; border-color: white!important">
     <h3>Metadata</h3>
     <div class="text-start w-100">
       <label class="form-label" for="title">Title</label>

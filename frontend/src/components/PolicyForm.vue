@@ -21,8 +21,9 @@
     </div>
     <div class="text-start w-100">
       <label class="form-label" for="max-usages">Number of usages</label>
-      <input class="form-control" type="number" id="max-usages" @input="this.$emit('max-usages-changed', $event.target.value)"/>
-      <div class="form-text text-start">Number of times the dataset may be used</div>
+      <input class="form-control" type="number" id="max-usages" v-model="usages" @input="this.$emit('max-usages-changed', $event.target.value)"/>
+      <div v-if="invalidMaxUsages" class="form-text text-start text-danger">The number of usages must be greater than 0</div>
+      <div v-else class="form-text text-start">Number of times the dataset may be used</div>
     </div>
       <div class="form-check">
           <input class="form-check-input" type="checkbox" id="local-logging" @input="this.$emit('local-logging-changed', $event.target.checked)">
@@ -42,6 +43,23 @@
 
 <script>
 export default {
-  props: ['startTime', 'endTime', 'expiresOn', 'maxUsages', 'localLogging', 'remoteLogging']
+  props: ['startTime', 'endTime', 'expiresOn', 'maxUsages', 'localLogging', 'remoteLogging'],
+  data () {
+    return {
+      usages: this.maxUsages,
+      invalidMaxUsages: false
+    }
+  },
+  watch: {
+    usages (value) {
+      if (value === '') {
+        this.invalidMaxUsages = false
+      } else if (value <= 0) {
+        this.invalidMaxUsages = true
+      } else {
+        this.invalidMaxUsages = false
+      }
+    }
+  }
 }
 </script>

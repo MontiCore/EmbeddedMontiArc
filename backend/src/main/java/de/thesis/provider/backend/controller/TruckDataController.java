@@ -15,8 +15,6 @@ public class TruckDataController {
 	@GetMapping
 	public List<DataRow> getTruckData() throws IOException {
 		CsvReader reader = new CsvReader();
-		List<DataRow> csvData = reader.getCsvData();
-		System.err.println("test");
-		return csvData;
+		return reader.getCsvData();
 	}
 }

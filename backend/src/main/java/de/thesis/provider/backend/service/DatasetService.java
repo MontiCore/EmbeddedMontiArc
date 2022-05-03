@@ -34,10 +34,11 @@ public class DatasetService {
 		offer.setExpiresOn(command.getPolicy().getExpiresOn());
 		CreatePolicyDto policy = command.getPolicy();
 		policy.setId(id);
-		policy.setEvent("data-access");
+		policy.setEvent("dataset-access");
 		offer.setPolicy(new Policy("urn:policy:rwth-student-solution:" + id, policyService.getPolicy(policy)));
 		offer.setData(getDataRows(command));
 
+		System.err.println(offer.getPolicy().getRawValue());
 		client.offerDataset(offer);
 	}
 

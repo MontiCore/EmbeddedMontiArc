@@ -12,7 +12,7 @@ public class CreatePolicyDto {
 	private UUID id;
 	private String event;
 	private BusinessHours businessHours;
-	private Integer maxUsages;
+	private int maxUsages;
 	private LocalDate expiresOn;
 	private boolean localLogging;
 	private boolean remoteLogging;

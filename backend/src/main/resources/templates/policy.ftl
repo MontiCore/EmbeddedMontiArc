@@ -7,11 +7,12 @@
         xmlns='http://www.mydata-control.de/4.0/mydataLanguage'
         xmlns:parameter='http://www.mydata-control.de/4.0/parameter'
         xmlns:constant='http://www.mydata-control.de/4.0/constant'
+        xmlns:event='http://www.mydata-control.de/4.0/event'
 >
-    <#if businessHours??>
+    <#if businessHours.getStart()?? || businessHours.getEnd()??>
     <@t_macro.time_mechanism event=event id=id businessHours=businessHours/>
     </#if>
-    <#if maxUsages??>
+    <#if maxUsages != 0>
     <@u_macro.usage_number_mechanism event=event id=id maxUsages=maxUsages/>
     </#if>
     <#if localLogging>
