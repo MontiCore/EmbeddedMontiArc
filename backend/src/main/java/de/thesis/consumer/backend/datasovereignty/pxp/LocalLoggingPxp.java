@@ -12,7 +12,7 @@ import java.time.LocalDateTime;
 public class LocalLoggingPxp {
 
 	@ActionDescription(methodName = "log-local")
-	public boolean logDataUsage(@ActionParameterDescription(name = "datasetId", mandatory = true) final String datasetId) {
+	public boolean logDataUsage(@ActionParameterDescription(name = "id", mandatory = true) final String datasetId) {
 		log.info("Dataset {} accessed at {}", datasetId, LocalDateTime.now());
 
 		return true;

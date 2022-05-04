@@ -31,6 +31,7 @@ public class DatasetController {
 		} catch (DatasetNotFoundException e) {
 			throw new ResponseStatusException(HttpStatus.NOT_FOUND, String.format("Dataset with ID %s not found", id.toString()));
 		} catch (RuntimeException e) {
+			e.printStackTrace();
 			throw new ResponseStatusException(HttpStatus.BAD_REQUEST, "Policy violation");
 		}
 	}
