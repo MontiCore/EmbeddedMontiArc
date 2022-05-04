@@ -13,10 +13,9 @@ import javax.persistence.*;
 @Getter
 @Setter
 public class PolicyEntity {
-	// TODO die brauche ich nicht
 	@Id
 	private String id;
-	@Column(length = 2048)
+	@Column(length = 8192)
 	private String rawValue;
 
 	@OneToOne(mappedBy = "policy")
