@@ -3,18 +3,18 @@
         <if>
             <and>
                 <equals>
-                    <event:string eventParameter='datasetId' default='' jsonPathQuery='$.id'/>
+                    <event:string eventParameter='dataset' default='' jsonPathQuery='$.id'/>
                     <constant:string value='${id}'/>
                 </equals>
-                <greaterEqual>
+                <greater>
                     <count>
                         <eventOccurrence event='urn:action:rwth-student-solution:dataset-access'>
-                            <parameter:string name='dataset-id' value='${id}'/>
+                            <parameter:string name='id' value='${id}'/>
                         </eventOccurrence>
                         <when fixedTime='always'/>
                     </count>
                     <constant:number value='${maxUsages}'/>
-                </greaterEqual>
+                </greater>
             </and>
             <then>
                 <inhibit/>

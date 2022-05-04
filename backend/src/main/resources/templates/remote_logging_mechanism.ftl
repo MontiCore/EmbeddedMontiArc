@@ -2,7 +2,7 @@
     <mechanism event='urn:action:rwth-student-solution:${event}'>
         <if>
             <equals>
-                <event:string eventParameter='datasetId' default='' jsonPathQuery='$.id'/>
+                <event:string eventParameter='dataset' default='' jsonPathQuery='$.id'/>
                 <constant:string value='${id}'/>
             </equals>
             <then>

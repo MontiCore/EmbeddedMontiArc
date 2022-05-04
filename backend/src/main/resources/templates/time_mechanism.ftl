@@ -3,7 +3,7 @@
         <if>
             <and>
                 <equals>
-                    <event:string eventParameter='datasetId' default='' jsonPathQuery='$.id'/>
+                    <event:string eventParameter='dataset' default='' jsonPathQuery='$.id'/>
                     <constant:string value='${id}'/>
                 </equals>
                 <or>
