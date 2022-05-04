@@ -123,6 +123,7 @@ export default {
     buy () {
       this.$store.dispatch('buyOffer', this.id).then(() => {
         this.$store.dispatch('fetchDatasets')
+        this.$emit('buy', this.title)
       })
     }
   },
