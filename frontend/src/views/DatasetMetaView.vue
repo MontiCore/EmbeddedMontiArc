@@ -41,7 +41,7 @@ export default {
   },
   methods: {
     createDataset () {
-      axios.post('/dataset', {
+      axios.post('/datasets', {
         policy: this.policy,
         metaData: this.metaData,
         file: this.$route.query.file,

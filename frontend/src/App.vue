@@ -1,6 +1,18 @@
 <template>
+  <Header/>
   <router-view class="p-3"/>
 </template>
+
+<script>
+import Header from '@/components/BrandHeader.vue'
+
+export default {
+  name: 'HomeView',
+  components: {
+    Header
+  }
+}
+</script>
 
 <style>
 #app {
