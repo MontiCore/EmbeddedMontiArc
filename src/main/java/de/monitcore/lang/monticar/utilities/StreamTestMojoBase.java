@@ -284,6 +284,7 @@ public class StreamTestMojoBase extends AbstractMojo {
         stmb.importArmadillo = importArmadillo;
         stmb.generateLibraryInterface = generateLibraryInterface;
         stmb.generateServerAdapter = generateServerAdapter;
+        stmb.useDgl = useDgl;
 
         stmb.setLog(getLog());
 
