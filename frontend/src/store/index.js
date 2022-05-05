@@ -4,7 +4,8 @@ import axios from 'axios'
 export default createStore({
   state: {
     offers: [],
-    datasets: []
+    datasets: [],
+    currentDataset: null
   },
   getters: {
     getOffers (state) {
@@ -12,6 +13,9 @@ export default createStore({
     },
     getDatasets (state) {
       return state.datasets
+    },
+    getCurrentDataset (state) {
+      return state.currentDataset
     }
   },
   mutations: {
@@ -20,6 +24,10 @@ export default createStore({
     },
     setDatasets (state, datasets) {
       state.datasets = datasets
+    },
+    setCurrentDataset (state, dataset) {
+      state.currentDataset = dataset
+      console.log('fertig mit setzen')
     }
   },
   actions: {
@@ -35,6 +43,12 @@ export default createStore({
     },
     async buyOffer (context, offerId) {
       return axios.post('offers/' + offerId)
+    },
+    async fetchDataset (context, id) {
+      return axios.get(`datasets/${id}`)
+    },
+    setCurrentDataset (context, dataset) {
+      context.commit('setCurrentDataset', dataset)
     }
   },
   modules: {

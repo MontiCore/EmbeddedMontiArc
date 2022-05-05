@@ -77,7 +77,7 @@
 import { Icon } from '@iconify/vue'
 import leaflet from 'leaflet'
 import HeatmapOverlay from 'leaflet-heatmap'
-import axios from 'axios'
+// import axios from 'axios'
 
 export default {
   components: {
@@ -90,7 +90,20 @@ export default {
       }
     }
   },
-  mounted () {
+  async mounted () {
+    if (this.$store.getters.getCurrentDataset === null) {
+      await this.$store.dispatch('fetchDataset', this.$route.params.datasetId).then(response => {
+        this.dataset = response.data
+        console.log('details: ich hab den datensatz neu gesetzt')
+        console.log(this.dataset)
+      })
+    } else {
+      this.dataset = this.$store.getters.getCurrentDataset
+      this.$store.dispatch('setCurrentDataset', null)
+      console.log('details: ich hab den ausm store genommen')
+      console.log(this.dataset)
+    }
+
     const CENTER_COORDINATES_GERMANY = [51.1657, 10.4515]
     const map = leaflet.map('map').setView(CENTER_COORDINATES_GERMANY, 6)
     leaflet.tileLayer('https://api.mapbox.com/styles/v1/{id}/tiles/{z}/{x}/{y}?access_token=pk.eyJ1IjoianVibGExMDIiLCJhIjoiY2wxZXMzZ3Z6MGx6YzNjbG45bGd1ZjV3ciJ9.QDU9GpeOQSK-zSCTb-lLTg', {
@@ -121,18 +134,14 @@ export default {
       // which field name in your data represents the data value - default "value"
       valueField: 'count'
     }
-    axios.get(`/datasets/${this.$route.params.datasetId}`).then(response => {
-      this.dataset = response.data
-      const coordinates = {
-        data: response.data.data
-      }
 
-      const heatmapLayer = new HeatmapOverlay(cfg)
-      heatmapLayer.setData(coordinates)
-      heatmapLayer.addTo(map)
-    })
+    const coordinates = {
+      data: this.dataset.data
+    }
 
-    console.log(this.dataset)
+    const heatmapLayer = new HeatmapOverlay(cfg)
+    heatmapLayer.setData(coordinates)
+    heatmapLayer.addTo(map)
   }
 }
 </script>

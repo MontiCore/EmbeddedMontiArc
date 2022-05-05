@@ -41,7 +41,7 @@
     </div>
     <p class="description m-0 flex-grow-1">{{ description }}</p>
     <div class="d-flex justify-content-between align-items-center">
-      <router-link class="btn buy-btn" style="font-weight: bold" :to="`/datasets/${id}`">View data</router-link>
+      <button class="btn buy-btn fw-bold" @click="viewData">View data</button>
       <p class="fw-bold m-0 fs-5">{{ price.toLocaleString("en-US", { maximumFractionDigits: 2, minimumFractionDigits: 2 }) }} €</p>
     </div>
   </div>
@@ -107,6 +107,16 @@ export default {
       } else {
         return {}
       }
+    }
+  },
+  methods: {
+    viewData () {
+      this.$store.dispatch('fetchDataset', this.id).then(response => {
+        this.$store.dispatch('setCurrentDataset', response.data)
+        console.log('card: ich hab den ds neu gesetzt')
+        console.log(this.$store.getters.getCurrentDataset)
+        this.$router.push(`/datasets/${this.id}`)
+      })
     }
   }
 }
