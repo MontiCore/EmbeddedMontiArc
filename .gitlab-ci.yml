@@ -62,7 +62,7 @@ trigger-kipf-gnn:
   allow_failure: true
   trigger:
     project: monticore/EmbeddedMontiArc/applications/kipf-gnn
-    branch: master
+    branch: main
   only:
     - master
 
