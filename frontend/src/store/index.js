@@ -27,7 +27,6 @@ export default createStore({
     },
     setCurrentDataset (state, dataset) {
       state.currentDataset = dataset
-      console.log('fertig mit setzen')
     }
   },
   actions: {

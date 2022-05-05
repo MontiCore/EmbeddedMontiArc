@@ -1,74 +1,83 @@
 <template>
-  <div class="d-flex flex-column w-75 m-auto gap-3 mt-4">
-    <div>
-    <h2 class="text-start m-0">{{ dataset.title }}</h2>
-    <h6 class="text-start m-0 text-muted">{{ dataset.provider }}</h6>
-    <p class="text-start m-0">{{ dataset.description }}</p>
+  <div class="d-flex flex-column align-items-center gap-3 mt-4">
+    <div v-if="alert" class="alert alert-danger mt-4" role="alert">
+      <strong>Policy violation!</strong> Data access not possible!<br>
+      <a href="/datasets" class="alert-link">Return to datasets overview</a>
     </div>
-    <div id="map" style="height: 600px"></div>
-
-    <div class="container">
-      <div class="row">
-        <div class="col-5 d-flex align-items-center ps-0">
-          <Icon icon="bxs:truck" style="font-size: 1.5rem" />
-          <p class="m-0 text-nowrap">Trucks</p>
-        </div>
-        <div class="col-1 text-end">123</div>
-        <div class="col-5 d-flex align-items-center">
-          <Icon icon="jam:triangle-danger" style="font-size: 1.25rem" />
-          <p class="m-0 text-nowrap">Bad driver score</p>
-        </div>
-        <div class="col-1 text-end pe-0">17</div>
+    <div v-else class="d-flex flex-column w-75 m-auto gap-3 mt-4">
+      <div>
+        <h2 class="text-start m-0">{{ dataset.title }}</h2>
+        <h6 class="text-start m-0 text-muted">{{ dataset.provider }}</h6>
+        <p class="text-start m-0">{{ dataset.description }}</p>
       </div>
-      <div class="row">
-        <div class="col-5 d-flex align-items-center ps-0">
-          <Icon icon="bxs:gas-pump" style="font-size: 1.25rem" />
-          <p class="m-0 text-nowrap">Avg. fuel consumption</p>
-        </div>
-        <div class="col-1 text-end">35</div>
-        <div class="col-5 d-flex align-items-center">
-          <Icon icon="mdi:tools" style="font-size: 1.25rem" />
-          <p class="m-0 text-nowrap">Repair needed</p>
-        </div>
-        <div class="col-1 text-end pe-0">4</div>
-      </div>
-      <div class="row">
-        <div class="col-5 d-flex align-items-center ps-0">
-          <Icon icon="mdi:highway" style="font-size: 1.25rem" />
-          <p class="m-0 text-nowrap">Active</p>
-        </div>
-        <div class="col-1 text-end">100</div>
-        <div class="col-5 d-flex align-items-center">
-          <Icon icon="mdi-light:sleep" style="font-size: 1.25rem" />
-          <p class="m-0 text-nowrap">Resting</p>
-        </div>
-        <div class="col-1 text-end pe-0">117</div>
-      </div>
-    </div>
+      <div id="map" style="height: 600px"></div>
 
-    <div style="overflow-x: scroll">
-      <table class="table table-hover">
-        <thead>
-          <tr>
-            <th class="text-nowrap" v-for="(_, key) in dataset.data[0]" :key="key">
-              {{ key }}
-            </th>
-          </tr>
-        </thead>
-        <tbody>
-          <tr v-for="row in dataset.data" :key="row">
-            <td
-              class="text-nowrap"
-              v-for="(value, key) in row"
-              :key="key"
-              style="border-width: 0"
-            >
-              {{ value }}
-            </td>
-          </tr>
-        </tbody>
-      </table>
+      <div class="container">
+        <div class="row">
+          <div class="col-5 d-flex align-items-center ps-0">
+            <Icon icon="bxs:truck" style="font-size: 1.5rem" />
+            <p class="m-0 text-nowrap">Trucks</p>
+          </div>
+          <div class="col-1 text-end">123</div>
+          <div class="col-5 d-flex align-items-center">
+            <Icon icon="jam:triangle-danger" style="font-size: 1.25rem" />
+            <p class="m-0 text-nowrap">Bad driver score</p>
+          </div>
+          <div class="col-1 text-end pe-0">17</div>
+        </div>
+        <div class="row">
+          <div class="col-5 d-flex align-items-center ps-0">
+            <Icon icon="bxs:gas-pump" style="font-size: 1.25rem" />
+            <p class="m-0 text-nowrap">Avg. fuel consumption</p>
+          </div>
+          <div class="col-1 text-end">35</div>
+          <div class="col-5 d-flex align-items-center">
+            <Icon icon="mdi:tools" style="font-size: 1.25rem" />
+            <p class="m-0 text-nowrap">Repair needed</p>
+          </div>
+          <div class="col-1 text-end pe-0">4</div>
+        </div>
+        <div class="row">
+          <div class="col-5 d-flex align-items-center ps-0">
+            <Icon icon="mdi:highway" style="font-size: 1.25rem" />
+            <p class="m-0 text-nowrap">Active</p>
+          </div>
+          <div class="col-1 text-end">100</div>
+          <div class="col-5 d-flex align-items-center">
+            <Icon icon="mdi-light:sleep" style="font-size: 1.25rem" />
+            <p class="m-0 text-nowrap">Resting</p>
+          </div>
+          <div class="col-1 text-end pe-0">117</div>
+        </div>
+      </div>
 
+      <div style="overflow-x: scroll">
+        <table class="table table-hover">
+          <thead>
+            <tr>
+              <th
+                class="text-nowrap"
+                v-for="(_, key) in dataset.data[0]"
+                :key="key"
+              >
+                {{ key }}
+              </th>
+            </tr>
+          </thead>
+          <tbody>
+            <tr v-for="row in dataset.data" :key="row">
+              <td
+                class="text-nowrap"
+                v-for="(value, key) in row"
+                :key="key"
+                style="border-width: 0"
+              >
+                {{ value }}
+              </td>
+            </tr>
+          </tbody>
+        </table>
+      </div>
     </div>
   </div>
 </template>
@@ -87,34 +96,42 @@ export default {
     return {
       dataset: {
         data: []
-      }
+      },
+      alert: false
     }
   },
   async mounted () {
     if (this.$store.getters.getCurrentDataset === null) {
-      await this.$store.dispatch('fetchDataset', this.$route.params.datasetId).then(response => {
-        this.dataset = response.data
-        console.log('details: ich hab den datensatz neu gesetzt')
-        console.log(this.dataset)
-      })
+      await this.$store
+        .dispatch('fetchDataset', this.$route.params.datasetId)
+        .then((response) => {
+          this.dataset = response.data
+        })
+        .catch(() => {
+          this.alert = true
+        })
     } else {
       this.dataset = this.$store.getters.getCurrentDataset
       this.$store.dispatch('setCurrentDataset', null)
-      console.log('details: ich hab den ausm store genommen')
-      console.log(this.dataset)
     }
-
     const CENTER_COORDINATES_GERMANY = [51.1657, 10.4515]
     const map = leaflet.map('map').setView(CENTER_COORDINATES_GERMANY, 6)
-    leaflet.tileLayer('https://api.mapbox.com/styles/v1/{id}/tiles/{z}/{x}/{y}?access_token=pk.eyJ1IjoianVibGExMDIiLCJhIjoiY2wxZXMzZ3Z6MGx6YzNjbG45bGd1ZjV3ciJ9.QDU9GpeOQSK-zSCTb-lLTg', {
-      attribution: 'Map data &copy; <a href="https://www.openstreetmap.org/copyright">OpenStreetMap</a> contributors, Imagery © <a href="https://www.mapbox.com/">Mapbox</a>',
-      minZoom: 2,
-      maxZoom: 18,
-      id: 'mapbox/streets-v11',
-      tileSize: 512,
-      zoomOffset: -1,
-      accessToken: 'pk.eyJ1IjoianVibGExMDIiLCJhIjoiY2wxZXMzZ3Z6MGx6YzNjbG45bGd1ZjV3ciJ9.QDU9GpeOQSK-zSCTb-lLTg'
-    }).addTo(map)
+    leaflet
+      .tileLayer(
+        'https://api.mapbox.com/styles/v1/{id}/tiles/{z}/{x}/{y}?access_token=pk.eyJ1IjoianVibGExMDIiLCJhIjoiY2wxZXMzZ3Z6MGx6YzNjbG45bGd1ZjV3ciJ9.QDU9GpeOQSK-zSCTb-lLTg',
+        {
+          attribution:
+            'Map data &copy; <a href="https://www.openstreetmap.org/copyright">OpenStreetMap</a> contributors, Imagery © <a href="https://www.mapbox.com/">Mapbox</a>',
+          minZoom: 2,
+          maxZoom: 18,
+          id: 'mapbox/streets-v11',
+          tileSize: 512,
+          zoomOffset: -1,
+          accessToken:
+            'pk.eyJ1IjoianVibGExMDIiLCJhIjoiY2wxZXMzZ3Z6MGx6YzNjbG45bGd1ZjV3ciJ9.QDU9GpeOQSK-zSCTb-lLTg'
+        }
+      )
+      .addTo(map)
     // leaflet.marker(CENTER_COORDINATES_GERMANY).addTo(map)
     const cfg = {
       // radius should be small ONLY if scaleRadius is true (or small radius is intended)

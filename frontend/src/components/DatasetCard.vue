@@ -113,10 +113,8 @@ export default {
     viewData () {
       this.$store.dispatch('fetchDataset', this.id).then(response => {
         this.$store.dispatch('setCurrentDataset', response.data)
-        console.log('card: ich hab den ds neu gesetzt')
-        console.log(this.$store.getters.getCurrentDataset)
-        this.$router.push(`/datasets/${this.id}`)
-      })
+        this.$emit('view')
+      }).catch(() => this.$emit('policy-violation'))
     }
   }
 }
