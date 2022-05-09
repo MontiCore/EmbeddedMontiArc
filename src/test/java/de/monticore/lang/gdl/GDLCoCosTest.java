@@ -97,7 +97,8 @@ public class GDLCoCosTest {
         "FailLegalWithTooFewArguments",
         "FailLegalWithTooManyArguments",
         "FailLegalWithWrongArgumentTypeOfSecondArgument",
-        "FailLegalWithWrongFirstArgumentType",
+        // Wird unterstützt:
+        // "FailLegalWithWrongFirstArgumentType",
         "FailLegalWithWrongSecondArgumentType",
         "FailNextWithTooFewArguments",
         "FailNextWithTooManyArguments",
