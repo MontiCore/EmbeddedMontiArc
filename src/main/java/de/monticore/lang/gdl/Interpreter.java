@@ -2,6 +2,7 @@ package de.monticore.lang.gdl;
 
 import java.io.BufferedInputStream;
 import java.io.BufferedOutputStream;
+import java.io.IOException;
 import java.io.OutputStreamWriter;
 import java.util.ArrayList;
 import java.util.HashSet;
@@ -18,7 +19,6 @@ import de.monticore.lang.gdl._ast.ASTGame;
 import de.monticore.lang.gdl.visitors.PrologPrinter;
 
 import sun.misc.Signal;
-import sun.misc.SignalHandler;
 
 public class Interpreter {
 
@@ -58,7 +58,13 @@ public class Interpreter {
 
         prologProcess = Runtime.getRuntime().exec("swipl");
         out = new BufferedOutputStream(prologProcess.getOutputStream());
-        writer = new OutputStreamWriter(out);
+        writer = new OutputStreamWriter(out) {
+            @Override
+            public void write(String str) throws IOException {
+                System.out.println(str);
+                super.write(str);
+            }
+        };
         in = new BufferedInputStream(prologProcess.getInputStream());
         err = new BufferedInputStream(prologProcess.getErrorStream());
 
@@ -73,23 +79,16 @@ public class Interpreter {
         printIn = new Thread(new Runnable() {
             @Override
             public void run() {
-                
-                try {
-                    Scanner s = new Scanner(in);
-                    while(s.hasNextLine()) {
-                        String line = s.nextLine();
-                        if (line.length() == 0) {
-                            continue;
-                        }
-                    
-                        readIn(line);
+                Scanner s = new Scanner(in);
+                while(s.hasNextLine()) {
+                    String line = s.nextLine();
+                    if (line.length() == 0) {
+                        continue;
                     }
-                    s.close();
-                } catch (Exception e) {
-                    System.out.println("LOOOOL");
-                }
-
                 
+                    readIn(line);
+                }
+                s.close();
             }
         });
 
