@@ -1,0 +1,529 @@
+// -----------------------
+// -------- ROLES --------
+// -----------------------
+
+(role player1)
+(role player2)
+(role player3)
+(role player4)
+
+// -----------------------
+// -------- INIT ---------
+// -----------------------
+
+
+// TODO: random initialize
+// Erste Idee: (falsch, weil nicht max karten pro spieler definiert)
+// (<= (init (hand ?player ?karte))
+//     (role ?player)
+//     (karte ?short ?karte)
+//     (random ?player)
+//     (random ?karte)
+// )
+
+// Zweite Idee:
+// (<= (init (hand player1 ?karte))
+//     (leq (true (hand player1 ?any_karte)) 12)
+//     (random ?karte
+//         (karte ?short ?karte)
+//     )
+// )
+// (<= (init (hand player2 ?karte))
+//     (random ?karte
+//         (karte ?short ?karte)
+//         (leq (true (hand player2 ?any_karte)) 12)
+//     )
+// )
+// (<= (init (hand player3 ?karte))
+//     (random ?karte
+//         (karte ?short ?karte)
+//         (leq (true (hand player3 ?any_karte)) 12)
+//     )
+// )
+// (<= (init (hand player4 ?karte))
+//     (random ?karte
+//         (karte ?short ?karte)
+//         (leq (true (hand player4 ?any_karte)) 12)
+//     )
+// )
+
+// ansage = keine 120, 90, 60, 30, 0
+(init (ansage none))
+
+// historie der stiche (sieht nur der gewinner des stiches)
+(init (sees (none) (stich 1 none none none none)))
+(init (sees (none) (stich 2 none none none none)))
+(init (sees (none) (stich 3 none none none none)))
+(init (sees (none) (stich 4 none none none none)))
+(init (sees (none) (stich 5 none none none none)))
+(init (sees (none) (stich 6 none none none none)))
+(init (sees (none) (stich 7 none none none none)))
+(init (sees (none) (stich 8 none none none none)))
+(init (sees (none) (stich 9 none none none none)))
+(init (sees (none) (stich 10 none none none none)))
+(init (sees (none) (stich 11 none none none none))) // mit (2*4) neunen = 12 stiche
+(init (sees (none) (stich 12 none none none none)))
+
+// punktetabelle
+(init (punkte player1 0))
+(init (punkte player2 0))
+(init (punkte player3 0))
+(init (punkte player4 0))
+
+// vorbehalte
+(init (vorbehalt player1 none))
+(init (vorbehalt player2 none))
+(init (vorbehalt player3 none))
+(init (vorbehalt player4 none))
+
+// teams
+(init (team player1 none))
+(init (team player2 none))
+(init (team player3 none))
+(init (team player4 none))
+
+// ansagen
+(init (ansage re none))
+(init (ansage kontra none))
+
+// offene spielart
+(init (spielart normal none))
+
+// geschlossene spielart (stille hochzeit)
+(init (sees (none) (hidden_spielart normal none)))
+
+// spielablauf
+(init (ablauf geben))
+(init (zug player1))
+
+
+// -----------------------
+// -------- NEXT ---------
+// -----------------------
+
+// -- Vorbehalte --
+// ----------------
+
+// immer Zug weitergeben
+(<= (next (zug ?next_player))
+    (does ?current_player (vorbehalt ?vorbehalt))
+    (next_player ?current_player ?next_player)
+)
+
+// Vorbehalt nicht letzter Spieler
+// speichern
+(<= (next (vorbehalt ?player ?vorbehalt))
+    (does ?player (vorbehalt ?vorbehalt))
+    (distinct ?player player4)
+)
+// Ablauf bleibt
+(<= (next (ablauf vorbehalt))
+    (does ?player (vorbehalt ?vorbehalt))
+    (distinct ?player player4)
+)
+
+// Vorbehalt letzter Spieler
+// speichern (?unnötig?)
+(<= (next (vorbehalt player4 ?vorbehalt))
+    (does player4 (vorbehalt ?vorbehalt))
+)
+
+// Spielart festlegen
+
+// alle gesund = Normal (öffentlich)
+(<= (next (spielart normal none))
+    (true (vorbehalt player1 gesund))
+    (true (vorbehalt player2 gesund))
+    (true (vorbehalt player3 gesund))
+    (does player4 (vorbehalt gesund))
+)
+// alle gesund, aber Hochzeit = Stille Hochzeit
+(<= (next (sees (?player_hochzeit) (hidden_spielart stille_hochzeit ?player_hochzeit)))
+    (true (vorbehalt player1 gesund))
+    (true (vorbehalt player2 gesund))
+    (true (vorbehalt player3 gesund))
+    (does player4 (vorbehalt gesund))
+
+    (has_hochzeit_hand ?player_hochzeit)
+)
+// sonst Normal
+(<= (next (sees (none) (hidden_spielart normal none)))
+    (true (vorbehalt player1 gesund))
+    (true (vorbehalt player2 gesund))
+    (true (vorbehalt player3 gesund))
+    (does player4 (vorbehalt gesund))
+
+    (not (has_hochzeit_hand player1))
+    (not (has_hochzeit_hand player2))
+    (not (has_hochzeit_hand player3))
+    (not (has_hochzeit_hand player4))
+)
+
+// Vorbehalte vorhanden = Solo vor Hochzeit
+(<= (next (spielart ?art ?player))
+    (true (vorbehalt player1 ?vorbehalt_1))
+    (true (vorbehalt player2 ?vorbehalt_2))
+    (true (vorbehalt player3 ?vorbehalt_3))
+    (does player4 (vorbehalt ?vorbehalt_4))
+
+    (solo_vor_hochzeit ?vorbehalt_1 ?vorbehalt_2 ?vorbehalt_3 ?vorbehalt_4 ?art ?player)
+)
+(<= (next (sees (none) (hidden_spielart ?art ?player)))
+    (true (vorbehalt player1 ?vorbehalt_1))
+    (true (vorbehalt player2 ?vorbehalt_2))
+    (true (vorbehalt player3 ?vorbehalt_3))
+    (does player4 (vorbehalt ?vorbehalt_4))
+
+    (solo_vor_hochzeit ?vorbehalt_1 ?vorbehalt_2 ?vorbehalt_3 ?vorbehalt_4 ?art ?player)
+)
+
+// nächster ablauf
+(<= (next (ablauf stich_1))
+    (does player4 (vorbehalt ?vorbehalt))
+)
+
+// -----------------------
+// -------- LEGAL --------
+// -----------------------
+
+// Dritte Idee: GDL-II Diskussion (Standart, Favorit)
+(role random)
+(<= (legal random (deal ?player ?card))
+    (true (ablauf geben))
+    (true (deck ?card))
+    // Idee: Model counts hinzufügen
+    (leq (true (hand ?player ?x_card)) 12)
+    // Sonst:
+    (nicht_12_karten ?player)
+)
+
+// Idee: distinct mehr als 2 (distinct ?karte1 ?karte2 ?karte3 ?karte4 ...)
+// Sonst:
+(<= (nicht_12_karten ?player)
+    (true (hand ?player ?karte1))
+    (true (hand ?player ?karte2))
+    (true (hand ?player ?karte3))
+    (true (hand ?player ?karte4))
+    (true (hand ?player ?karte5))
+    (true (hand ?player ?karte6))
+    (true (hand ?player ?karte7))
+    (true (hand ?player ?karte8))
+    (true (hand ?player ?karte9))
+    (true (hand ?player ?karte10))
+    (true (hand ?player ?karte11))
+    (true (hand ?player ?karte12))
+    
+    (distinct ?karte1 ?karte2)
+    (distinct ?karte1 ?karte3)
+    (distinct ?karte1 ?karte4)
+    (distinct ?karte1 ?karte5)
+    (distinct ?karte1 ?karte6)
+    (distinct ?karte1 ?karte7)
+    (distinct ?karte1 ?karte8)
+    (distinct ?karte1 ?karte9)
+    (distinct ?karte1 ?karte10)
+    (distinct ?karte1 ?karte11)
+    (distinct ?karte1 ?karte12)
+    
+    (distinct ?karte2 ?karte3)
+    (distinct ?karte2 ?karte4)
+    (distinct ?karte2 ?karte5)
+    (distinct ?karte2 ?karte6)
+    (distinct ?karte2 ?karte7)
+    (distinct ?karte2 ?karte8)
+    (distinct ?karte2 ?karte9)
+    (distinct ?karte2 ?karte10)
+    (distinct ?karte2 ?karte11)
+    (distinct ?karte2 ?karte12)
+
+    (distinct ?karte3 ?karte4)
+    (distinct ?karte3 ?karte5)
+    (distinct ?karte3 ?karte6)
+    (distinct ?karte3 ?karte7)
+    (distinct ?karte3 ?karte8)
+    (distinct ?karte3 ?karte9)
+    (distinct ?karte3 ?karte10)
+    (distinct ?karte3 ?karte11)
+    (distinct ?karte3 ?karte12)
+
+    (distinct ?karte4 ?karte5)
+    (distinct ?karte4 ?karte6)
+    (distinct ?karte4 ?karte7)
+    (distinct ?karte4 ?karte8)
+    (distinct ?karte4 ?karte9)
+    (distinct ?karte4 ?karte10)
+    (distinct ?karte4 ?karte11)
+    (distinct ?karte4 ?karte12)
+    
+    (distinct ?karte5 ?karte6)
+    (distinct ?karte5 ?karte7)
+    (distinct ?karte5 ?karte8)
+    (distinct ?karte5 ?karte9)
+    (distinct ?karte5 ?karte10)
+    (distinct ?karte5 ?karte11)
+    (distinct ?karte5 ?karte12)
+    
+    (distinct ?karte6 ?karte7)
+    (distinct ?karte6 ?karte8)
+    (distinct ?karte6 ?karte9)
+    (distinct ?karte6 ?karte10)
+    (distinct ?karte6 ?karte11)
+    (distinct ?karte6 ?karte12)
+    
+    (distinct ?karte7 ?karte8)
+    (distinct ?karte7 ?karte9)
+    (distinct ?karte7 ?karte10)
+    (distinct ?karte7 ?karte11)
+    (distinct ?karte7 ?karte12)
+    
+    (distinct ?karte8 ?karte9)
+    (distinct ?karte8 ?karte10)
+    (distinct ?karte8 ?karte11)
+    (distinct ?karte8 ?karte12)
+    
+    (distinct ?karte9 ?karte10)
+    (distinct ?karte9 ?karte11)
+    (distinct ?karte9 ?karte12)
+    
+    (distinct ?karte10 ?karte11)
+    (distinct ?karte10 ?karte12)
+
+    (distinct ?karte11 ?karte12)
+)
+(<= (next (ablauf vorbehalt))
+    (does random (deal ?player4 ?card))
+    (eq (true (sees ?player1 (hand ?player1 ?x0_card))) 12)
+    (eq (true (hand ?player2 ?x1_card)) 12)
+    (eq (true (hand ?player3 ?x2_card)) 12)
+    (eq (true (hand ?player4 ?x3_card)) 11)
+    (distinct ?player1 ?player2 ?player3 ?player4)
+
+)
+
+
+// vorbehalt
+(<= (legal ?player (vorbehalt gesund))
+    (true (zug ?player))
+    (true (ablauf vorbehalt))
+)
+
+(<= (legal ?player (vorbehalt solo_damen))
+    (true (zug ?player))
+    (true (ablauf vorbehalt))
+)
+(<= (legal ?player (vorbehalt solo_buben))
+    (true (zug ?player))
+    (true (ablauf vorbehalt))
+)
+
+(<= (legal ?player (vorbehalt solo_trumpf_kreuz))
+    (true (zug ?player))
+    (true (ablauf vorbehalt))
+)
+(<= (legal ?player (vorbehalt solo_trumpf_pik))
+    (true (zug ?player))
+    (true (ablauf vorbehalt))
+)
+(<= (legal ?player (vorbehalt solo_trumpf_herz))
+    (true (zug ?player))
+    (true (ablauf vorbehalt))
+)
+(<= (legal ?player (vorbehalt solo_trumpf_karo))
+    (true (zug ?player))
+    (true (ablauf vorbehalt))
+)
+
+(<= (legal ?player (vorbehalt hochzeit))
+    (true (zug ?player))
+    (true (ablauf vorbehalt))
+
+    (has_hochzeit_hand ?player)
+)
+
+// ansagen (/ absagen)
+(<= (legal ?player (ansagen re))
+    // wenn spieler re und vor der 6. Karte (stich 2 karte 2)
+    (true (ablauf ansagen_partie))
+)
+(<= (legal ?player (ansagen kontra))
+    // wenn spieler kontra und vor der 6. Karte (stich 2 karte 2)
+    (true (ablauf ansagen_partie))
+)
+
+// absagen
+(<= (legal ?player (ansagen 90))
+    // wenn spieler re gesagt (kontra gesagt) und vor der 10. Karte (stich 3 karte 2)
+    (true (ablauf ansagen_90))
+)
+(<= (legal ?player (ansagen 60))
+    // wenn spieler re gesagt (kontra gesagt) und vor der 14. Karte (stich 4 karte 2)
+    (true (ablauf ansagen_60))
+)
+(<= (legal ?player (ansagen 30))
+    // wenn spieler re gesagt (kontra gesagt) und vor der 18. Karte (stich 5 karte 2)
+    (true (ablauf ansagen_30))
+)
+(<= (legal ?player (ansagen schwarz))
+    // wenn spieler re gesagt (kontra gesagt) und vor der 22. Karte (stich 6 karte 2)
+    (true (ablauf ansagen_schwarz))
+)
+
+// karte spielen
+(<= (legal ?player (spielen ?karte))
+    (true (zug ?player))
+    (true (ablauf stich ?x))
+    (true (hand ?player ?karte))
+)
+
+// -----------------------
+// ------ FUNCTIONS ------
+// -----------------------
+
+// Bestimmt vor dem ersten Stich, ob jemand eine Hochzeit auf der Hand hat
+(<= (has_hochzeit_hand ?player)
+    (true (hand ?player kreuz_dame_1))
+    (true (hand ?player kreuz_dame_2))
+)
+
+// Bestimmt den höchstwertigsten Vorbehalt ausgehend von Spieler ?player
+(<= (solo_vor_hochzeit ?vorbehalt_1 ?vorbehalt_2 ?vorbehalt_3 ?vorbehalt_4 ?vorbehalt_1 player1)
+    (vorbehalt_typ solo ?vorbehalt_1)
+)
+(<= (solo_vor_hochzeit ?vorbehalt_1 ?vorbehalt_2 ?vorbehalt_3 ?vorbehalt_4 ?vorbehalt_2 player2)
+    (vorbehalt_typ solo ?vorbehalt_2)
+)
+(<= (solo_vor_hochzeit ?vorbehalt_1 ?vorbehalt_2 ?vorbehalt_3 ?vorbehalt_4 ?vorbehalt_3 player3)
+    (vorbehalt_typ solo ?vorbehalt_3)
+)
+(<= (solo_vor_hochzeit ?vorbehalt_1 ?vorbehalt_2 ?vorbehalt_3 ?vorbehalt_4 ?vorbehalt_4 player4)
+    (vorbehalt_typ solo ?vorbehalt_4)
+)
+
+(<= (solo_vor_hochzeit hochzeit ?vorbehalt_2 ?vorbehalt_3 ?vorbehalt_4 hochzeit player1)
+)
+(<= (solo_vor_hochzeit ?vorbehalt_1 hochzeit ?vorbehalt_3 ?vorbehalt_4 hochzeit player2)
+)
+(<= (solo_vor_hochzeit ?vorbehalt_1 ?vorbehalt_2 hochzeit ?vorbehalt_4 hochzeit player3)
+)
+(<= (solo_vor_hochzeit ?vorbehalt_1 ?vorbehalt_2 ?vorbehalt_3 hochzeit hochzeit player4)
+)
+
+
+
+// -----------------------
+// ------ CONSTANTS ------
+// -----------------------
+
+// trumpf regeln
+(trumpf herz_zehn kreuz_dame)
+
+(trumpf kreuz_dame pik_dame)
+(trumpf pik_dame herz_dame)
+(trumpf herz_dame karo_dame)
+
+(trumpf karo_dame kreuz_bube)
+(trumpf kreuz_bube pik_bube)
+(trumpf pik_bube herz_bube)
+(trumpf herz_bube karo_bube)
+
+(trumpf herz_bube karo_ass)
+(trumpf karo_ass karo_zehn)
+(trumpf karo_zehn karo_koenig)
+(trumpf karo_koenig karo_neun)
+
+// fehl farben
+(fehl kreuz_ass)
+(fehl kreuz_zehn)
+(fehl kreuz_koenig)
+(fehl kreuz_neun)
+
+(fehl pik_ass)
+(fehl pik_zehn)
+(fehl pik_koenig)
+(fehl pik_neun)
+
+(fehl herz_ass)
+(fehl herz_zehn)
+(fehl herz_koenig)
+(fehl herz_neun)
+
+// alle karten (kommen doppelt vor)
+(karte kreuz_dame kreuz_dame_1)
+(karte kreuz_dame kreuz_dame_2)
+(karte kreuz_bube kreuz_bube_1)
+(karte kreuz_bube kreuz_bube_2)
+(karte kreuz_ass kreuz_ass_1)
+(karte kreuz_ass kreuz_ass_2)
+(karte kreuz_zehn kreuz_zehn_1)
+(karte kreuz_zehn kreuz_zehn_2)
+(karte kreuz_koenig kreuz_koenig_1)
+(karte kreuz_koenig kreuz_koenig_2)
+(karte kreuz_neun kreuz_neun_1)
+(karte kreuz_neun kreuz_neun_2)
+
+(karte pik_dame pik_dame_1)
+(karte pik_dame pik_dame_2)
+(karte pik_bube pik_bube_1)
+(karte pik_bube pik_bube_2)
+(karte pik_ass pik_ass_1)
+(karte pik_ass pik_ass_2)
+(karte pik_zehn pik_zehn_1)
+(karte pik_zehn pik_zehn_2)
+(karte pik_koenig pik_koenig_1)
+(karte pik_koenig pik_koenig_2)
+(karte pik_neun pik_neun_1)
+(karte pik_neun pik_neun_2)
+
+(karte herz_dame herz_dame_1)
+(karte herz_dame herz_dame_2)
+(karte herz_bube herz_bube_1)
+(karte herz_bube herz_bube_2)
+(karte herz_ass herz_ass_1)
+(karte herz_ass herz_ass_2)
+(karte herz_zehn herz_zehn_1)
+(karte herz_zehn herz_zehn_2)
+(karte herz_koenig herz_koenig_1)
+(karte herz_koenig herz_koenig_2)
+(karte herz_neun herz_neun_1)
+(karte herz_neun herz_neun_2)
+
+(karte karo_dame karo_dame_1)
+(karte karo_dame karo_dame_2)
+(karte karo_bube karo_bube_1)
+(karte karo_bube karo_bube_2)
+(karte karo_ass karo_ass_1)
+(karte karo_ass karo_ass_2)
+(karte karo_zehn karo_zehn_1)
+(karte karo_zehn karo_zehn_2)
+(karte karo_koenig karo_koenig_1)
+(karte karo_koenig karo_koenig_2)
+(karte karo_neun karo_neun_1)
+(karte karo_neun karo_neun_2)
+
+// Sitzreihenfolge
+(next_player player1 player2)
+(next_player player2 player3)
+(next_player player3 player4)
+(next_player player4 player1)
+
+// Reihenfolge Stiche
+(next_stich stich_1 stich_2)
+(next_stich stich_2 stich_3)
+(next_stich stich_3 stich_4)
+(next_stich stich_4 stich_5)
+(next_stich stich_5 stich_6)
+(next_stich stich_6 stich_7)
+(next_stich stich_7 stich_8)
+(next_stich stich_8 stich_9)
+(next_stich stich_9 stich_10)
+(next_stich stich_10 stich_11)
+(next_stich stich_11 stich_12)
+
+// vorbehalt typ
+(vorbehalt_typ solo solo_damen)
+(vorbehalt_typ solo solo_buben)
+(vorbehalt_typ solo solo_trumpf_kreuz)
+(vorbehalt_typ solo solo_trumpf_pik)
+(vorbehalt_typ solo solo_trumpf_herz)
+(vorbehalt_typ solo solo_trumpf_karo)
+(vorbehalt_typ hochzeit hochzeit)
