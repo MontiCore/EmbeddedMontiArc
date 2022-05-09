@@ -187,3 +187,6 @@ task buildAll(type: GradleBuild) {
 
 defaultTasks 'build', 'copyGDLJarToBin', 'copyGDLCliJarToBin'
 
+tasks.withType(Copy) {
+    duplicatesStrategy = DuplicatesStrategy.EXCLUDE
+}
