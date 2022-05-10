@@ -9,14 +9,20 @@ import de.monticore.lang.gdl.FunctionSignature;
 import de.monticore.lang.gdl.GDLMill;
 import de.monticore.lang.gdl._ast.ASTGameDistinct;
 import de.monticore.lang.gdl._ast.ASTGameDoes;
+import de.monticore.lang.gdl._ast.ASTGameEquals;
 import de.monticore.lang.gdl._ast.ASTGameExpression;
 import de.monticore.lang.gdl._ast.ASTGameFunction;
 import de.monticore.lang.gdl._ast.ASTGameFunctionDefinition;
 import de.monticore.lang.gdl._ast.ASTGameFunctionHead;
 import de.monticore.lang.gdl._ast.ASTGameGoal;
+import de.monticore.lang.gdl._ast.ASTGameGreaterEqual;
+import de.monticore.lang.gdl._ast.ASTGameGreaterThan;
 import de.monticore.lang.gdl._ast.ASTGameInference;
 import de.monticore.lang.gdl._ast.ASTGameInit;
 import de.monticore.lang.gdl._ast.ASTGameLegal;
+import de.monticore.lang.gdl._ast.ASTGameLessEqual;
+import de.monticore.lang.gdl._ast.ASTGameLessThan;
+import de.monticore.lang.gdl._ast.ASTGameModelCompare;
 import de.monticore.lang.gdl._ast.ASTGameNext;
 import de.monticore.lang.gdl._ast.ASTGameNot;
 import de.monticore.lang.gdl._ast.ASTGameRelation;
@@ -47,6 +53,17 @@ public class PrologPrinter extends IndentPrinter implements GDLVisitor2, MCCommo
         this.traverser.add4GDL(this);
         this.traverser.add4MCCommonLiterals(this);
         this.traverser.setGDLHandler(this);
+    }
+
+    private boolean saveVars = false;
+    private List<String> vars;
+    private String uniqueID = "";
+
+    private void saveVars(boolean save) {
+        this.saveVars = save;
+        if (save) {
+            vars = new LinkedList<>();
+        }
     }
 
     public GDLTraverser getTraverser() {
@@ -98,12 +115,14 @@ public class PrologPrinter extends IndentPrinter implements GDLVisitor2, MCCommo
     public void visit(ASTGameToken node) {
         String token = node.getToken();
         print("Token_" + token);
+        if (saveVars) vars.add("Token_" + token);
     }
 
     @Override
     public void visit(ASTGameValue node) {
         String value = node.getValue();
         print("value_" + value);
+        if (saveVars) vars.add("value_" + value);
     }
 
     public void visit(ASTGameFunction node) {
@@ -142,6 +161,27 @@ public class PrologPrinter extends IndentPrinter implements GDLVisitor2, MCCommo
         print("function_goal");
     }
 
+    public void visit(ASTGameEquals node) {
+        print("==");
+    }
+
+    public void visit(ASTGameLessEqual node) {
+        print("<=");
+    }
+
+    public void visit(ASTGameGreaterEqual node) {
+        print(">=");
+    }
+
+    public void visit(ASTGameLessThan node) {
+        print("<");
+    }
+
+    public void visit(ASTGameGreaterThan node) {
+        print(">");
+    }
+
+
     private boolean isInFunctionDefinition = false;
     @Override
     public void handle(ASTGameExpression node) {
@@ -179,6 +219,53 @@ public class PrologPrinter extends IndentPrinter implements GDLVisitor2, MCCommo
                     }
                 }
                 print("))");
+            } else if(type instanceof ASTGameModelCompare) {
+                StringBuilder buffer = new StringBuilder();
+                Set<String> varSet = new HashSet<>();
+                for (int i = 1; i < node.getArgumentsList().size(); i++) {
+                    PrologPrinter temp = new PrologPrinter();
+                    temp.saveVars(true);
+                    temp.isInFunctionDefinition = true;
+                    temp.uniqueID = uniqueID + "_" + i;
+
+                    node.getArguments(i).accept(temp.getTraverser());
+
+                    buffer.append(temp.getContent());
+                    if (i < node.getArgumentsList().size() - 1) {
+                        buffer.append(", ");
+                    }
+                    varSet.addAll(temp.vars);
+                }
+
+                println("setof(");
+                indent();
+                // model tuple:
+                print("(");
+                List<String> varList = new LinkedList<>(varSet);
+                for (int i = 0; i < varList.size(); i++) {
+                    print(varList.get(i));
+                    if (i < varList.size() - 1) {
+                        print(", ");
+                    }
+                }
+                println("),");
+
+                // inner expression
+                println("(" + buffer.toString() + "),");
+
+                println("Models" + uniqueID);
+                unindent();
+                println("),");
+
+                println("length(Models" + uniqueID + ", Length" + uniqueID + "),");
+
+                print("atom_to_number(");
+                node.getArguments(0).accept(getTraverser());
+                println(", Number" + uniqueID + "),");
+
+                print("Length" + uniqueID);
+                type.accept(getTraverser());
+                print("Number" + uniqueID);
             } else {
                 type.accept(getTraverser());
                 print("(");

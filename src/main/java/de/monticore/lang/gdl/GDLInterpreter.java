@@ -22,7 +22,7 @@ public class GDLInterpreter {
 
     public static void main(String[] args) throws Exception {
         if (args.length < 1) {
-            Log.error("Specify exactly one model file.");
+            System.out.println("Specify exactly one model file.");
             return;
         }
 
@@ -30,6 +30,7 @@ public class GDLInterpreter {
 
         boolean chessGui = false;
         boolean cli = true;
+        boolean debugMode = false;
         int windowSize = 950;
 
         boolean error = false;
@@ -43,8 +44,10 @@ public class GDLInterpreter {
                 }
             } else if (command.equals("--no-cli") || command.equals("-nc")) {
                 cli = false;
+            } else if (command.equals("--debug-mode") || command.equals("-dm")) {
+                debugMode = true;
             } else {
-                Log.error("Unknown command: " + command);
+                System.out.println("Unknown command: " + command);
                 error = true;
             }
         }
@@ -61,7 +64,9 @@ public class GDLInterpreter {
         checker.checkAll(ast);
         // final IGDLArtifactScope scope = GDLInterpreter.createSymbolTable(ast);
 
-        final Interpreter interpreter = new Interpreter(ast).init();
+        final Interpreter interpreter = new Interpreter(ast);
+        interpreter.setDebugMode(debugMode);
+        interpreter.init();
 
         if (cli) {
             new Thread(new GDLCLI(interpreter)).start();
@@ -75,9 +80,10 @@ public class GDLInterpreter {
         String help = 
             "Usage:\n" +
             "  -cg, --chess-gui" + "\t" + "Start with a Chess GUI\n" +
-            "  -nc, --no-cli" + "\t" + "Disable the CLI\n" +
+            "  -nc, --no-cli" + "\t\t" + "Disable the CLI\n" +
+            "  -dm, --debug-mode" + "\t" + "Enable the debug mode\n" +
             "";
-        System.out.print(help);
+        System.out.println(help);
     }
 
     /**

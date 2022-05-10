@@ -2,7 +2,10 @@ package de.monticore.lang.gdl;
 
 import java.io.BufferedInputStream;
 import java.io.BufferedOutputStream;
+import java.io.BufferedReader;
 import java.io.IOException;
+import java.io.InputStream;
+import java.io.InputStreamReader;
 import java.io.OutputStreamWriter;
 import java.util.ArrayList;
 import java.util.Arrays;
@@ -23,7 +26,7 @@ import sun.misc.Signal;
 
 public class Interpreter {
 
-    private boolean debugMode = true;
+    private boolean debugMode = false;
 
     private Semaphore initSemaphore;
     private int initTrueCounter;
@@ -122,21 +125,15 @@ public class Interpreter {
         functionSignatures = printer.getFunctionSignatures();
         legalSignatures = printer.getLegalSignatures();
         nextSignatures = printer.getNextSignatures();
+        String util = loadUtil();
+
         hasTerminal = printer.hasTerminal();
         hasRandom = printer.hasRandom();
 
         writer.write("[user].\n");
         writer.write(stateDynamics);
         writer.write(prologProgram);
-
-        if (hasRandom) {
-            StringBuilder sb = new StringBuilder();
-            sb.append(":- use_module(library(random)).\n");
-            sb.append("get_random_legal(A) :-\n");
-            sb.append("  setof((X), function_legal(value_random, X), Models),\n");
-            sb.append("  random_member(A, Models).\n");
-            writer.write(sb.toString());
-        }
+        writer.write(util);
 
         writer.write("end_of_file.\n");
         writer.flush();
@@ -155,11 +152,23 @@ public class Interpreter {
         return this;
     }
 
+    private String loadUtil() {
+        InputStream stream = Interpreter.class.getResourceAsStream("util.pl");
+        try {
+            BufferedReader reader = new BufferedReader(new InputStreamReader(stream, "UTF-8"));
+            return reader.lines().reduce("", (s1, s2) -> s1 + "\n" + s2) + "\n";
+        } catch (Exception e) {
+            System.err.println("Unable to load util.pl.");
+            return "";
+        }
+        
+    }
+
     public List<List<String>> getAllModels(String function) {
         Set<FunctionSignature> signatures;
 
         if (function.equals("legal")) {
-            signatures = legalSignatures;
+            return getAllLegalMoves();
         } else {
             signatures = functionSignatures
             .stream()
@@ -296,11 +305,17 @@ public class Interpreter {
     }
 
     public List<List<String>> getAllLegalMoves() {
-        return this.getAllModels("legal");
+        List<List<String>> result = getAllModels("function_legal", 2);
+        result = result
+            .stream().map(
+                l -> l.stream().map(s -> s.substring(6)).collect(Collectors.toList())
+            ).filter(
+                l -> l.stream().filter(s -> s.length() == 0).count() == 0
+            ).collect(Collectors.toList());
+        return result;
     }
 
     public List<List<String>> getAllLegalMovesForPlayer(String player) {
-   
         List<List<String>> allLegalMoves = this.getAllLegalMoves();
         if (allLegalMoves != null) {
             allLegalMoves = allLegalMoves
@@ -487,6 +502,7 @@ public class Interpreter {
             // random command
             // randomMove = randomMove.stream().map(s -> "value_" + s).collect(Collectors.toList());
             Command command = Command.createMoveFromList(randomMove);
+            System.out.println(command);
 
             StringBuilder inputBuilder = new StringBuilder();
     
