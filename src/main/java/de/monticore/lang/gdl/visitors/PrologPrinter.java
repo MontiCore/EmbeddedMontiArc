@@ -265,7 +265,7 @@ public class PrologPrinter extends IndentPrinter implements GDLVisitor2, MCCommo
                     print("(");
                     ASTGameRelation astPlayer = head.getArguments(0);
                     astPlayer.accept(getTraverser());
-                    print(", ");
+                    print(", (");
 
                     ASTGameExpression parameters = (ASTGameExpression) head.getArguments(1);
                     String pseudoValue = "value_" + ((ASTGameFunction) parameters.getType()).getFunction();
@@ -287,7 +287,7 @@ public class PrologPrinter extends IndentPrinter implements GDLVisitor2, MCCommo
                         }
                     }
 
-                    println(") :-");
+                    println(")) :-");
                     indent();
 
                     List<ASTGameExpression> distinctExpressions = new LinkedList<>();
@@ -313,9 +313,32 @@ public class PrologPrinter extends IndentPrinter implements GDLVisitor2, MCCommo
                         }
                     }
 
-                    isInFunctionDefinition = false;
                     println(".");
                     unindent();
+
+                    // map arity function to tuple function
+                    // headType.accept(getTraverser());
+                    // print("(Player, ");
+                    // for (int i = 0; i < arity; i++) {
+                    //     print("X" + i);
+                    //     if (i < arity - 1) {
+                    //         print(", ");
+                    //     }
+                    // }
+                    // println(") :-");
+                    // indent();
+                    // headType.accept(getTraverser());
+                    // print("(Player, (");
+                    // for (int i = 0; i < arity; i++) {
+                    //     print("X" + i);
+                    //     if (i < arity - 1) {
+                    //         print(", ");
+                    //     }
+                    // }
+                    // println(")).");
+                    // unindent();
+
+                    isInFunctionDefinition = false;
                 } else if (headType instanceof ASTGameGoal) {
                     // add functionSignature
                     String functionName = "goal";

@@ -5,6 +5,7 @@ import java.io.BufferedOutputStream;
 import java.io.IOException;
 import java.io.OutputStreamWriter;
 import java.util.ArrayList;
+import java.util.Arrays;
 import java.util.HashSet;
 import java.util.HashMap;
 import java.util.Map;
@@ -127,9 +128,20 @@ public class Interpreter {
         writer.write("[user].\n");
         writer.write(stateDynamics);
         writer.write(prologProgram);
-        writer.write("end_of_file.\n");
-        writer.write("set_prolog_flag(answer_write_options,[max_depth(0)]).\n");
 
+        if (hasRandom) {
+            StringBuilder sb = new StringBuilder();
+            sb.append(":- use_module(library(random)).\n");
+            sb.append("get_random_legal(A) :-\n");
+            sb.append("  setof((X), function_legal(value_random, X), Models),\n");
+            sb.append("  random_member(A, Models).\n");
+            writer.write(sb.toString());
+        }
+
+        writer.write("end_of_file.\n");
+        writer.flush();
+
+        writer.write("set_prolog_flag(answer_write_options,[max_depth(0)]).\n");
         writer.flush();
 
         initSemaphore.acquire();
@@ -309,14 +321,14 @@ public class Interpreter {
 
         legalBuilder.append("setof(_,");
         legalBuilder.append("function_legal(");
-        legalBuilder.append(command.getPlayer()).append(", ");
+        legalBuilder.append(command.getPlayer()).append(", (");
         for (int i = 0; i < command.getArguments().size(); i++) {
             legalBuilder.append(command.getArguments().get(i));
             if (i + 1 < command.getArguments().size()) {
                 legalBuilder.append(", ");
             }
         }
-        legalBuilder.append(")");
+        legalBuilder.append("))");
         legalBuilder.append(",_).\n");
 
         String result = execute(legalBuilder.toString());
@@ -440,15 +452,40 @@ public class Interpreter {
         return allResults;
     }
 
+    private List<String> getRandomMove() {
+        if (legalSignatures.isEmpty()) {
+            return null;
+        }
+
+        String command = "get_random_legal(A).\n";
+        String result = execute(command);
+
+        if (result.equals("false.")) {
+            return null;
+        }
+
+        if (result.endsWith(").")) {
+            // A =  (3, 3).
+            result = result.substring(6, result.length() - 2);
+
+            List<String> moveResult = new ArrayList<String>(Arrays.asList(result.split(", ")));
+            moveResult.add(0, "value_random");
+            return moveResult;
+        }
+
+        // A = 2.
+        result = result.substring(4, result.length() - 1);
+        
+        return List.of("value_random", result);
+    }
+
     private List<List<String>> doRandom() {
         List<List<String>> finalResults = null;
-        List<List<String>> allRandomMoves = getAllLegalMovesForPlayer("random");
+        List<String> randomMove = getRandomMove();
 
-        while (allRandomMoves.size() > 0) {
+        while (randomMove != null) {
             // random command
-            int random = (int) (Math.random() * allRandomMoves.size());
-            List<String> randomMove = allRandomMoves.get(random);
-            randomMove = randomMove.stream().map(s -> "value_" + s).collect(Collectors.toList());
+            // randomMove = randomMove.stream().map(s -> "value_" + s).collect(Collectors.toList());
             Command command = Command.createMoveFromList(randomMove);
 
             StringBuilder inputBuilder = new StringBuilder();
@@ -494,7 +531,7 @@ public class Interpreter {
     
             finalResults = allResults;
 
-            allRandomMoves = getAllLegalMovesForPlayer("random");
+            randomMove = getRandomMove();
         }
 
         return finalResults;
