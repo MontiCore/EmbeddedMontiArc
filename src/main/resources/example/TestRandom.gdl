@@ -3,7 +3,7 @@
 
 (init (control random))
 
-(<= (legal player (roll_dice 1 1))
+(<= (legal player (roll_dice))
     (true (control player))
 )
 
@@ -21,7 +21,7 @@
     (does random (roll_dice ?value ?value2))
 )
 (<= (next (control random))
-    (does player (roll_dice 1 1))
+    (does player (roll_dice))
 )
 
 

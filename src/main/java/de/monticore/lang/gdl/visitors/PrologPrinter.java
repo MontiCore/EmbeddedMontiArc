@@ -157,7 +157,7 @@ public class PrologPrinter extends IndentPrinter implements GDLVisitor2, MCCommo
                 node.getArguments(0).accept(getTraverser());
             } else if (type instanceof ASTGameDoes) {
                 type.accept(getTraverser());
-                print("(");
+                print("((");
                 
                 ASTGameRelation astPlayer = node.getArguments(0);
                 astPlayer.accept(getTraverser());
@@ -178,7 +178,7 @@ public class PrologPrinter extends IndentPrinter implements GDLVisitor2, MCCommo
                         print(", ");
                     }
                 }
-                print(")");
+                print("))");
             } else {
                 type.accept(getTraverser());
                 print("(");

@@ -22,7 +22,7 @@ import sun.misc.Signal;
 
 public class Interpreter {
 
-    private boolean debugMode = false;
+    private boolean debugMode = true;
 
     private Semaphore initSemaphore;
     private int initTrueCounter;
@@ -393,7 +393,7 @@ public class Interpreter {
         }
         StringBuilder inputBuilder = new StringBuilder();
 
-        inputBuilder.append("input(");
+        inputBuilder.append("input((");
         inputBuilder.append(command.getPlayer()).append(", ");
         for (int i = 0; i < command.getArguments().size(); i++) {
             inputBuilder.append(command.getArguments().get(i));
@@ -401,7 +401,7 @@ public class Interpreter {
                 inputBuilder.append(", ");
             }
         }
-        inputBuilder.append(")");
+        inputBuilder.append("))");
 
         StringBuilder assertBuilder = new StringBuilder();
         assertBuilder.append("assert(").append(inputBuilder.toString()).append(").\n");
@@ -453,7 +453,7 @@ public class Interpreter {
 
             StringBuilder inputBuilder = new StringBuilder();
     
-            inputBuilder.append("input(");
+            inputBuilder.append("input((");
             inputBuilder.append(command.getPlayer()).append(", ");
             for (int i = 0; i < command.getArguments().size(); i++) {
                 inputBuilder.append(command.getArguments().get(i));
@@ -461,7 +461,7 @@ public class Interpreter {
                     inputBuilder.append(", ");
                 }
             }
-            inputBuilder.append(")");
+            inputBuilder.append("))");
     
             StringBuilder assertBuilder = new StringBuilder();
             assertBuilder.append("assert(").append(inputBuilder.toString()).append(").\n");
