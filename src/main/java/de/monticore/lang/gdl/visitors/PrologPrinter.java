@@ -40,6 +40,7 @@ public class PrologPrinter extends IndentPrinter implements GDLVisitor2, MCCommo
     private Set<FunctionSignature> statesSignatures = new HashSet<>();
     private Set<FunctionSignature> nextSignatures = new HashSet<>();
     private boolean hasTerminal = false;
+    private boolean hasRandom = false;
 
     public PrologPrinter() {
         this.traverser = GDLMill.traverser();
@@ -70,6 +71,10 @@ public class PrologPrinter extends IndentPrinter implements GDLVisitor2, MCCommo
 
     public boolean hasTerminal() {
         return hasTerminal;
+    }
+
+    public boolean hasRandom() {
+        return hasRandom;
     }
 
     public String getStateDynamics() {
@@ -399,6 +404,23 @@ public class PrologPrinter extends IndentPrinter implements GDLVisitor2, MCCommo
                 println(".");
                 unindent();
 
+            } else if(type instanceof ASTGameRole) {
+                // type game role
+                type.accept(getTraverser());
+                print("(");
+                for (int i = 0; i < node.getArgumentsList().size(); i++) {
+                    node.getArguments(i).accept(getTraverser());
+
+                    // check if "random" is defined
+                    if (i == 0 && ((ASTGameValue) node.getArguments(i)).getValue().equals("random")) {
+                        hasRandom = true;
+                    }
+    
+                    if (i + 1 < node.getArgumentsList().size()) {
+                        print(", ");
+                    }
+                }
+                println(").");
             } else {
                 // constant
                 type.accept(getTraverser());

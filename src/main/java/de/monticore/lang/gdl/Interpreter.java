@@ -22,6 +22,8 @@ import sun.misc.Signal;
 
 public class Interpreter {
 
+    private boolean debugMode = false;
+
     private Semaphore initSemaphore;
     private int initTrueCounter;
 
@@ -40,6 +42,7 @@ public class Interpreter {
     private Set<FunctionSignature> legalSignatures;
 
     private boolean hasTerminal;
+    private boolean hasRandom;
 
     private List<String> currentEvaluation = null;
     private Semaphore evalSemaphore;
@@ -61,7 +64,7 @@ public class Interpreter {
         writer = new OutputStreamWriter(out) {
             @Override
             public void write(String str) throws IOException {
-                System.out.println(str);
+                if (debugMode) System.out.println("? " + str);
                 super.write(str);
             }
         };
@@ -119,8 +122,7 @@ public class Interpreter {
         legalSignatures = printer.getLegalSignatures();
         nextSignatures = printer.getNextSignatures();
         hasTerminal = printer.hasTerminal();
-
-        // System.out.println(prologProgram);
+        hasRandom = printer.hasRandom();
 
         writer.write("[user].\n");
         writer.write(stateDynamics);
@@ -133,6 +135,10 @@ public class Interpreter {
         initSemaphore.acquire();
 
         this.saveState("initialState");
+
+        if (hasRandom) {
+            doRandom();
+        }
 
         return this;
     }
@@ -190,11 +196,14 @@ public class Interpreter {
         sb.append("Models).\n");
 
         String command = sb.toString();
-
         String result = execute(command);
-        result = result.substring(10, result.length() - 2);
 
         List<List<String>> results = new LinkedList<>();
+
+        if (result.equals("false.")) {
+            return results;
+        }
+        result = result.substring(10, result.length() - 2);
 
         if (arity > 1) {
             String[] tuples = result.split("\\(");
@@ -255,7 +264,8 @@ public class Interpreter {
     }
 
     private void readIn(String line) {
-        // System.out.println("| " + line);
+        if (debugMode) System.out.println("| " + line);
+
         if (line.equals("true.")) {
             initTrueCounter++;
             if (initTrueCounter == 2) {
@@ -270,7 +280,7 @@ public class Interpreter {
     }
 
     private void readErr(String line) {
-        // System.out.println("! " + line);
+        if (debugMode) System.out.println("! " + line);
     }
 
     public List<List<String>> getAllLegalMoves() {
@@ -422,9 +432,75 @@ public class Interpreter {
                 ).collect(Collectors.toList());
         }
 
+        if (hasRandom) {
+            List<List<String>> randomResults = doRandom();
+            if (randomResults != null) return randomResults;
+        }
 
         return allResults;
     }
+
+    private List<List<String>> doRandom() {
+        List<List<String>> finalResults = null;
+        List<List<String>> allRandomMoves = getAllLegalMovesForPlayer("random");
+
+        while (allRandomMoves.size() > 0) {
+            // random command
+            int random = (int) (Math.random() * allRandomMoves.size());
+            List<String> randomMove = allRandomMoves.get(random);
+            randomMove = randomMove.stream().map(s -> "value_" + s).collect(Collectors.toList());
+            Command command = Command.createMoveFromList(randomMove);
+
+            StringBuilder inputBuilder = new StringBuilder();
+    
+            inputBuilder.append("input(");
+            inputBuilder.append(command.getPlayer()).append(", ");
+            for (int i = 0; i < command.getArguments().size(); i++) {
+                inputBuilder.append(command.getArguments().get(i));
+                if (i + 1 < command.getArguments().size()) {
+                    inputBuilder.append(", ");
+                }
+            }
+            inputBuilder.append(")");
+    
+            StringBuilder assertBuilder = new StringBuilder();
+            assertBuilder.append("assert(").append(inputBuilder.toString()).append(").\n");
+    
+            StringBuilder retractBuilder = new StringBuilder();
+            retractBuilder.append("retract(").append(inputBuilder.toString()).append(").\n");
+    
+            execute(assertBuilder.toString());
+    
+            List<List<String>> allResults = null;
+    
+            if (isLegal(command)) {
+                allResults = new LinkedList<>();
+                for (FunctionSignature next : nextSignatures) {
+                    List<List<String>> models = getAllModels(next.functionName, next.arity);
+                    allResults.addAll(models);
+                }
+            }
+    
+            execute(retractBuilder.toString());
+    
+            if (allResults != null) {
+                buildNextStates(allResults);
+            
+                allResults = allResults
+                    .stream().map(
+                        l -> l.stream().map(s -> s.substring(6)).collect(Collectors.toList())
+                    ).collect(Collectors.toList());
+            }
+    
+            finalResults = allResults;
+
+            allRandomMoves = getAllLegalMovesForPlayer("random");
+        }
+
+        return finalResults;
+    }
+
+    
 
     public List<List<String>> getGameState() {
         List<List<String>> allResults = new LinkedList<>();
@@ -458,6 +534,10 @@ public class Interpreter {
         boolean legal = result.trim().equals("true.");
 
         return legal;
+    }
+
+    public void setDebugMode(boolean debugMode) {
+        this.debugMode = debugMode;
     }
 
 }
