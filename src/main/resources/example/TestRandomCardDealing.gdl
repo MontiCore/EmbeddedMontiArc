@@ -57,18 +57,28 @@
 (role player3)
 (role player4)
 
+(player player1)
+(player player2)
+(player player3)
+(player player4)
+
 (init (state geben))
 (init (hand none none))
 
 (<= (legal random (karte_geben ?player ?karte))
     (true (state geben))
-    (role ?player)
+    (player ?player)
     (karte ?any ?karte)
-    (not (player_has_12_cards ?player))
+    (not (player_has_n_cards 12 ?player))
     (not (any_player_has_card ?karte))
 )
+(<= (legal random (finish))
+    (true (state geben))
+    (all_players_12_cards)
+)
+
 (<= (legal ?player (neu_geben))
-    (player ?payer)
+    (player ?player)
     (true (state neu))
 )
 
@@ -77,7 +87,7 @@
 )
 
 (<= (next (hand ?player ?card))
-    (true (state geben))
+    (not (true (state neu)))
     (true (hand ?player ?card))
 )
 (<= (next (hand ?player ?card))
@@ -91,15 +101,21 @@
     (not (all_players_12_cards))
 )
 (<= (next (state neu))
-    (not (does ?player (neu_geben)))
-    (all_players_12_cards)
+    (does random (finish))
 )
 
 (<= (any_player_has_card ?karte)
     (true (hand ?any_player ?karte))
 )
 
-(<= (player_has_12_cards ?player)
+(<= (all_players_12_cards)
+    (player_has_n_cards 12 player1)
+    (player_has_n_cards 12 player2)
+    (player_has_n_cards 12 player3)
+    (player_has_n_cards 12 player4)
+)
+
+(<= (player_has_n_cards 12 ?player)
     (true (hand ?player ?karte1))
     (true (hand ?player ?karte2))
     (true (hand ?player ?karte3))
@@ -189,11 +205,4 @@
     (distinct ?karte10 ?karte12)
 
     (distinct ?karte11 ?karte12)
-)
-
-(<= (all_players_12_cards)
-    (player_has_12_cards player1)
-    (player_has_12_cards player2)
-    (player_has_12_cards player3)
-    (player_has_12_cards player4)
 )

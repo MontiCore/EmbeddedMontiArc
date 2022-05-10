@@ -69,7 +69,7 @@
     (true (state geben))
     (player ?player)
     (karte ?any ?karte)
-    (not (player_has_12_cards ?player))
+    (not (player_has_n_cards 12 ?player))
     (not (any_player_has_card ?karte))
 )
 (<= (legal random (finish))
