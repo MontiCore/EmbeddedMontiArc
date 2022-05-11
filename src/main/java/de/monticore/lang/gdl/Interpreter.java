@@ -234,8 +234,10 @@ public class Interpreter {
                 results.add(List.of(elements));
             }
         } else {
-            String[] tuples = result.split(", ");
-            results.add(List.of(tuples));
+            String[] tuples = result.split(",");
+            for (String s: tuples) {
+                results.add(List.of(s));
+            }
         }
 
         return results;
@@ -559,6 +561,11 @@ public class Interpreter {
         List<List<String>> allResults = new LinkedList<>();
         for (FunctionSignature state : statesSignatures) {
             List<List<String>> models = getAllModels("state_function_" + state.functionName, state.arity);
+
+            if (models == null) {
+                allResults.add(List.of("123456" + state.functionName));
+                continue;
+            }
 
             models = models.stream().map(list -> {
                 List<String> l = new ArrayList<>();
