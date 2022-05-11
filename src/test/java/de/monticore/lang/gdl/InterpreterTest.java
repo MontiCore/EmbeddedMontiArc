@@ -56,6 +56,113 @@ public class InterpreterTest {
         testCase.doTestCase();
     }
 
+    @Test
+    public void testTrue() {
+        InterpreterTestCase testCase = new InterpreterTestCase("True");
+        testCase.moves.addAll(List.of(
+            Command.createMoveFromLine("test (do)")
+        ));
+        testCase.expectedState.addAll(List.of(
+            List.of("success")
+        ));
+        testCase.doTestCase();
+    }
+
+    @Test
+    public void testRandom() {
+        InterpreterTestCase testCase = new InterpreterTestCase("Random");
+        testCase.expectedState.addAll(List.of(
+            List.of("dice", "1")
+        ));
+        testCase.doTestCase();
+    }
+
+    @Test
+    public void testTerminal() {
+        InterpreterTestCase testCase = new InterpreterTestCase("Terminal");
+        testCase.expectedState.addAll(List.of(
+            List.of("test")
+        ));
+        assertTrue("Expected test to be terminal, but test is not terminal.", testCase.doTestCase().isTerminal());
+    }
+
+    @Test
+    public void testCount() {
+        InterpreterTestCase testCase = new InterpreterTestCase("Count");
+        testCase.moves.addAll(List.of(
+            Command.createMoveFromLine("test (do1)"),
+            Command.createMoveFromLine("test (do2)")
+        ));
+        testCase.expectedState.addAll(List.of(
+            List.of("success", "0"),
+            List.of("success", "1"),
+            List.of("success", "2")
+        ));
+        testCase.doTestCase();
+    }
+
+    @Test
+    public void testDistinct() {
+        InterpreterTestCase testCase = new InterpreterTestCase("Distinct");
+        testCase.moves.addAll(List.of(
+            Command.createMoveFromLine("test (do)")
+        ));
+        testCase.expectedState.addAll(List.of(
+            List.of("success")
+        ));
+        testCase.doTestCase();
+    }
+
+    @Test
+    public void testDoes() {
+        InterpreterTestCase testCase = new InterpreterTestCase("Does");
+        testCase.moves.addAll(List.of(
+            Command.createMoveFromLine("test (do)")
+        ));
+        testCase.expectedState.addAll(List.of(
+            List.of("success")
+        ));
+        testCase.doTestCase();
+    }
+
+    @Test
+    public void testInference() {
+        InterpreterTestCase testCase = new InterpreterTestCase("Inference");
+        testCase.moves.addAll(List.of(
+            Command.createMoveFromLine("test (do)")
+        ));
+        testCase.expectedState.addAll(List.of(
+            List.of("success")
+        ));
+        testCase.doTestCase();
+    }
+
+    @Test
+    public void testLegal() {
+        InterpreterTestCase testCase = new InterpreterTestCase("Legal");
+        testCase.moves.addAll(List.of(
+            Command.createMoveFromLine("test (do)"),
+            Command.createMoveFromLine("test (do_not)")
+        ));
+        testCase.expectedState.addAll(List.of(
+            List.of("success")
+        ));
+        testCase.doTestCase();
+    }
+
+    @Test
+    public void testNot() {
+        InterpreterTestCase testCase = new InterpreterTestCase("Not");
+        testCase.moves.addAll(List.of(
+            Command.createMoveFromLine("test (do)")
+        ));
+        testCase.expectedState.addAll(List.of(
+            List.of("success")
+        ));
+        testCase.doTestCase();
+    }
+
+
     private final class InterpreterTestCase {
         final String modelPath;
         final List<Command> moves;
