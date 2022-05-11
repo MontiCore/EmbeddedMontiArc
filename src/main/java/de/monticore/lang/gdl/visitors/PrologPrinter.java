@@ -7,6 +7,7 @@ import java.util.Set;
 
 import de.monticore.lang.gdl.FunctionSignature;
 import de.monticore.lang.gdl.GDLMill;
+import de.monticore.lang.gdl._ast.ASTGameCount;
 import de.monticore.lang.gdl._ast.ASTGameDistinct;
 import de.monticore.lang.gdl._ast.ASTGameDoes;
 import de.monticore.lang.gdl._ast.ASTGameExpression;
@@ -40,12 +41,24 @@ public class PrologPrinter extends IndentPrinter implements GDLVisitor2, MCCommo
     private Set<FunctionSignature> statesSignatures = new HashSet<>();
     private Set<FunctionSignature> nextSignatures = new HashSet<>();
     private boolean hasTerminal = false;
+    private boolean hasRandom = false;
 
     public PrologPrinter() {
         this.traverser = GDLMill.traverser();
         this.traverser.add4GDL(this);
         this.traverser.add4MCCommonLiterals(this);
         this.traverser.setGDLHandler(this);
+    }
+
+    private boolean saveVars = false;
+    private List<String> vars;
+    private String uniqueID = "";
+
+    private void saveVars(boolean save) {
+        this.saveVars = save;
+        if (save) {
+            vars = new LinkedList<>();
+        }
     }
 
     public GDLTraverser getTraverser() {
@@ -72,6 +85,10 @@ public class PrologPrinter extends IndentPrinter implements GDLVisitor2, MCCommo
         return hasTerminal;
     }
 
+    public boolean hasRandom() {
+        return hasRandom;
+    }
+
     public String getStateDynamics() {
         StringBuilder sb = new StringBuilder();
         for (FunctionSignature s : statesSignatures) {
@@ -93,12 +110,14 @@ public class PrologPrinter extends IndentPrinter implements GDLVisitor2, MCCommo
     public void visit(ASTGameToken node) {
         String token = node.getToken();
         print("Token_" + token);
+        if (saveVars) vars.add("Token_" + token);
     }
 
     @Override
     public void visit(ASTGameValue node) {
         String value = node.getValue();
         print("value_" + value);
+        if (saveVars) vars.add("value_" + value);
     }
 
     public void visit(ASTGameFunction node) {
@@ -152,7 +171,7 @@ public class PrologPrinter extends IndentPrinter implements GDLVisitor2, MCCommo
                 node.getArguments(0).accept(getTraverser());
             } else if (type instanceof ASTGameDoes) {
                 type.accept(getTraverser());
-                print("(");
+                print("((");
                 
                 ASTGameRelation astPlayer = node.getArguments(0);
                 astPlayer.accept(getTraverser());
@@ -173,6 +192,49 @@ public class PrologPrinter extends IndentPrinter implements GDLVisitor2, MCCommo
                         print(", ");
                     }
                 }
+                print("))");
+            } else if(type instanceof ASTGameCount) {
+                StringBuilder buffer = new StringBuilder();
+                Set<String> varSet = new HashSet<>();
+                for (int i = 1; i < node.getArgumentsList().size(); i++) {
+                    PrologPrinter temp = new PrologPrinter();
+                    temp.saveVars(true);
+                    temp.isInFunctionDefinition = true;
+                    temp.uniqueID = uniqueID + "_" + i;
+
+                    node.getArguments(i).accept(temp.getTraverser());
+
+                    buffer.append(temp.getContent());
+                    if (i < node.getArgumentsList().size() - 1) {
+                        buffer.append(", ");
+                    }
+                    varSet.addAll(temp.vars);
+                }
+
+                println("setof(");
+                indent();
+                // model tuple:
+                print("(");
+                List<String> varList = new LinkedList<>(varSet);
+                for (int i = 0; i < varList.size(); i++) {
+                    print(varList.get(i));
+                    if (i < varList.size() - 1) {
+                        print(", ");
+                    }
+                }
+                println("),");
+
+                // inner expression
+                println("(" + buffer.toString() + "),");
+
+                println("Models" + uniqueID);
+                unindent();
+                println("),");
+
+                println("length(Models" + uniqueID + ", Length" + uniqueID + "),");
+
+                print("number_to_atom(Length" + uniqueID + ", ");
+                node.getArguments(0).accept(getTraverser());
                 print(")");
             } else {
                 type.accept(getTraverser());
@@ -260,7 +322,7 @@ public class PrologPrinter extends IndentPrinter implements GDLVisitor2, MCCommo
                     print("(");
                     ASTGameRelation astPlayer = head.getArguments(0);
                     astPlayer.accept(getTraverser());
-                    print(", ");
+                    print(", (");
 
                     ASTGameExpression parameters = (ASTGameExpression) head.getArguments(1);
                     String pseudoValue = "value_" + ((ASTGameFunction) parameters.getType()).getFunction();
@@ -282,7 +344,7 @@ public class PrologPrinter extends IndentPrinter implements GDLVisitor2, MCCommo
                         }
                     }
 
-                    println(") :-");
+                    println(")) :-");
                     indent();
 
                     List<ASTGameExpression> distinctExpressions = new LinkedList<>();
@@ -308,9 +370,32 @@ public class PrologPrinter extends IndentPrinter implements GDLVisitor2, MCCommo
                         }
                     }
 
-                    isInFunctionDefinition = false;
                     println(".");
                     unindent();
+
+                    // map arity function to tuple function
+                    // headType.accept(getTraverser());
+                    // print("(Player, ");
+                    // for (int i = 0; i < arity; i++) {
+                    //     print("X" + i);
+                    //     if (i < arity - 1) {
+                    //         print(", ");
+                    //     }
+                    // }
+                    // println(") :-");
+                    // indent();
+                    // headType.accept(getTraverser());
+                    // print("(Player, (");
+                    // for (int i = 0; i < arity; i++) {
+                    //     print("X" + i);
+                    //     if (i < arity - 1) {
+                    //         print(", ");
+                    //     }
+                    // }
+                    // println(")).");
+                    // unindent();
+
+                    isInFunctionDefinition = false;
                 } else if (headType instanceof ASTGameGoal) {
                     // add functionSignature
                     String functionName = "goal";
@@ -399,6 +484,23 @@ public class PrologPrinter extends IndentPrinter implements GDLVisitor2, MCCommo
                 println(".");
                 unindent();
 
+            } else if(type instanceof ASTGameRole) {
+                // type game role
+                type.accept(getTraverser());
+                print("(");
+                for (int i = 0; i < node.getArgumentsList().size(); i++) {
+                    node.getArguments(i).accept(getTraverser());
+
+                    // check if "random" is defined
+                    if (i == 0 && ((ASTGameValue) node.getArguments(i)).getValue().equals("random")) {
+                        hasRandom = true;
+                    }
+    
+                    if (i + 1 < node.getArgumentsList().size()) {
+                        print(", ");
+                    }
+                }
+                println(").");
             } else {
                 // constant
                 type.accept(getTraverser());

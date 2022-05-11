@@ -26,8 +26,9 @@ public class GDLCLI implements Runnable {
             "Additional functions:\n" +
             "  /help" + "\t\t\t\t" + "Show the CLI usage\n" +
             "  /exit" + "\t\t\t\t" + "Exit the CLI\n" +
+            "  /eval {func}" + "\t\t" + "Calculate all models for a function {func}\n" +
             "  /state" + "\t\t\t" + "Print the current game state\n" +
-            "  /eval {func}" + "\t" + "Calculate all models for a function {func}\n" +
+            "  /legal {role}" + "\t\t" + "Print all currently legal moves (for a role {role})\n" +
             "";
         System.out.print(help);
     }
@@ -59,6 +60,37 @@ public class GDLCLI implements Runnable {
                 } else {
                     System.out.println("\t" + goal);
                 }
+            }
+        }
+    }
+
+    private void printLegal(String role) {
+        List<List<String>> legal;
+        if (role == null) legal = interpreter.getAllLegalMoves();
+        else legal = interpreter.getAllLegalMovesForPlayer(role);
+
+        if (legal.isEmpty()) {
+            if (role == null) System.out.println("There are no legal moves.");
+            else System.out.printf("There are no legal moves for role '%s'.\n", role);
+        } else {
+            System.out.printf("Legal moves (%d):\n", legal.size());
+            
+            for (List<String> move: legal) {
+                if (move.size() <= 1) {
+                    System.out.println("\t[!err]");
+                    continue;
+                }
+
+                System.out.print("\t");
+                System.out.print(move.get(0));
+                System.out.print(" (");
+                for (int i = 1; i < move.size(); i++) {
+                    System.out.print(move.get(i));
+                    if (i < move.size() - 1) {
+                        System.out.print(" ");
+                    }
+                }
+                System.out.println(")");
             }
         }
     }
@@ -96,6 +128,12 @@ public class GDLCLI implements Runnable {
                     printGameState();
                 } else if (line.startsWith("/help")) {
                     printHelp();
+                } else if (line.startsWith("/legal")) {
+                    if (line.length() > 7) {
+                        printLegal(line.substring(7));
+                    } else {
+                        printLegal(null);
+                    }
                 } else {
                     System.out.println("Unknown command: " + line);
                     printHelp();

@@ -30,5 +30,6 @@ grammar GDL extends de.monticore.literals.MCCommonLiterals {
     GameDistinct implements GameType = "distinct";
     GameGoal implements GameType = "goal";
     GameFunction implements GameType = function:Name@GameFunctionDefinition;
-  
+    GameCount implements GameType = "count";
+    
 }
