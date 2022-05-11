@@ -31,12 +31,6 @@ grammar GDL extends de.monticore.literals.MCCommonLiterals {
     GameGoal implements GameType = "goal";
     GameFunction implements GameType = function:Name@GameFunctionDefinition;
 
-    interface GameModelCompare extends GameType;
-
-    GameEquals implements GameModelCompare = "eq";
-    GameLessEqual implements GameModelCompare = "leq";
-    GameGreaterEqual implements GameModelCompare = "geq";
-    GameLessThan implements GameModelCompare = "lt";
-    GameGreaterThan implements GameModelCompare = "gt";
-  
+    GameCount implements GameType = "count";
+    
 }

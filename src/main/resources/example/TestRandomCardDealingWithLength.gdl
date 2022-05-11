@@ -117,5 +117,5 @@
 
 (<= (player_has_n_cards ?n ?player)
     (player ?player)
-    (eq ?n (true (hand ?player ?karte)))
+    (count ?n (true (hand ?player ?karte)))
 )

@@ -1,5 +1,5 @@
 (<= (player_has_12_cards ?player)
-    (eq 12
+    (count 12
         (karte ?player ?karte)
         (distinct ?player ?karte)
     )

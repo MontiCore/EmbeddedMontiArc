@@ -2,50 +2,20 @@
 // -------- ROLES --------
 // -----------------------
 
+(role random)
 (role player1)
 (role player2)
 (role player3)
 (role player4)
 
+(player player1)
+(player player2)
+(player player3)
+(player player4)
+
 // -----------------------
 // -------- INIT ---------
 // -----------------------
-
-
-// TODO: random initialize
-// Erste Idee: (falsch, weil nicht max karten pro spieler definiert)
-// (<= (init (hand ?player ?karte))
-//     (role ?player)
-//     (karte ?short ?karte)
-//     (random ?player)
-//     (random ?karte)
-// )
-
-// Zweite Idee:
-// (<= (init (hand player1 ?karte))
-//     (leq (true (hand player1 ?any_karte)) 12)
-//     (random ?karte
-//         (karte ?short ?karte)
-//     )
-// )
-// (<= (init (hand player2 ?karte))
-//     (random ?karte
-//         (karte ?short ?karte)
-//         (leq (true (hand player2 ?any_karte)) 12)
-//     )
-// )
-// (<= (init (hand player3 ?karte))
-//     (random ?karte
-//         (karte ?short ?karte)
-//         (leq (true (hand player3 ?any_karte)) 12)
-//     )
-// )
-// (<= (init (hand player4 ?karte))
-//     (random ?karte
-//         (karte ?short ?karte)
-//         (leq (true (hand player4 ?any_karte)) 12)
-//     )
-// )
 
 // ansage = keine 120, 90, 60, 30, 0
 (init (ansage none))
@@ -100,6 +70,19 @@
 // -----------------------
 // -------- NEXT ---------
 // -----------------------
+
+// -- Geben --
+// -----------
+
+(<= (next (ablauf geben))
+    (true (ablauf geben))
+    (not (all_players_12_cards))
+)
+
+
+(<= (next (ablauf vorbehalt))
+    (does random (deal_finish))
+)
 
 // -- Vorbehalte --
 // ----------------
@@ -186,120 +169,17 @@
 // -------- LEGAL --------
 // -----------------------
 
-// Dritte Idee: GDL-II Diskussion (Standart, Favorit)
-(role random)
 (<= (legal random (deal ?player ?card))
     (true (ablauf geben))
-    (true (deck ?card))
-    // Idee: Model counts hinzufügen
-    (leq (true (hand ?player ?x_card)) 12)
-    // Sonst:
-    (nicht_12_karten ?player)
+    (player ?player)
+    (karte ?any ?karte)
+    (not (any_player_has_card ?karte))
+    (not (player_card_count 12 ?player))
 )
-
-// Idee: distinct mehr als 2 (distinct ?karte1 ?karte2 ?karte3 ?karte4 ...)
-// Sonst:
-(<= (nicht_12_karten ?player)
-    (true (hand ?player ?karte1))
-    (true (hand ?player ?karte2))
-    (true (hand ?player ?karte3))
-    (true (hand ?player ?karte4))
-    (true (hand ?player ?karte5))
-    (true (hand ?player ?karte6))
-    (true (hand ?player ?karte7))
-    (true (hand ?player ?karte8))
-    (true (hand ?player ?karte9))
-    (true (hand ?player ?karte10))
-    (true (hand ?player ?karte11))
-    (true (hand ?player ?karte12))
-    
-    (distinct ?karte1 ?karte2)
-    (distinct ?karte1 ?karte3)
-    (distinct ?karte1 ?karte4)
-    (distinct ?karte1 ?karte5)
-    (distinct ?karte1 ?karte6)
-    (distinct ?karte1 ?karte7)
-    (distinct ?karte1 ?karte8)
-    (distinct ?karte1 ?karte9)
-    (distinct ?karte1 ?karte10)
-    (distinct ?karte1 ?karte11)
-    (distinct ?karte1 ?karte12)
-    
-    (distinct ?karte2 ?karte3)
-    (distinct ?karte2 ?karte4)
-    (distinct ?karte2 ?karte5)
-    (distinct ?karte2 ?karte6)
-    (distinct ?karte2 ?karte7)
-    (distinct ?karte2 ?karte8)
-    (distinct ?karte2 ?karte9)
-    (distinct ?karte2 ?karte10)
-    (distinct ?karte2 ?karte11)
-    (distinct ?karte2 ?karte12)
-
-    (distinct ?karte3 ?karte4)
-    (distinct ?karte3 ?karte5)
-    (distinct ?karte3 ?karte6)
-    (distinct ?karte3 ?karte7)
-    (distinct ?karte3 ?karte8)
-    (distinct ?karte3 ?karte9)
-    (distinct ?karte3 ?karte10)
-    (distinct ?karte3 ?karte11)
-    (distinct ?karte3 ?karte12)
-
-    (distinct ?karte4 ?karte5)
-    (distinct ?karte4 ?karte6)
-    (distinct ?karte4 ?karte7)
-    (distinct ?karte4 ?karte8)
-    (distinct ?karte4 ?karte9)
-    (distinct ?karte4 ?karte10)
-    (distinct ?karte4 ?karte11)
-    (distinct ?karte4 ?karte12)
-    
-    (distinct ?karte5 ?karte6)
-    (distinct ?karte5 ?karte7)
-    (distinct ?karte5 ?karte8)
-    (distinct ?karte5 ?karte9)
-    (distinct ?karte5 ?karte10)
-    (distinct ?karte5 ?karte11)
-    (distinct ?karte5 ?karte12)
-    
-    (distinct ?karte6 ?karte7)
-    (distinct ?karte6 ?karte8)
-    (distinct ?karte6 ?karte9)
-    (distinct ?karte6 ?karte10)
-    (distinct ?karte6 ?karte11)
-    (distinct ?karte6 ?karte12)
-    
-    (distinct ?karte7 ?karte8)
-    (distinct ?karte7 ?karte9)
-    (distinct ?karte7 ?karte10)
-    (distinct ?karte7 ?karte11)
-    (distinct ?karte7 ?karte12)
-    
-    (distinct ?karte8 ?karte9)
-    (distinct ?karte8 ?karte10)
-    (distinct ?karte8 ?karte11)
-    (distinct ?karte8 ?karte12)
-    
-    (distinct ?karte9 ?karte10)
-    (distinct ?karte9 ?karte11)
-    (distinct ?karte9 ?karte12)
-    
-    (distinct ?karte10 ?karte11)
-    (distinct ?karte10 ?karte12)
-
-    (distinct ?karte11 ?karte12)
+(<= (legal random (deal_finish))
+    (true (state geben))
+    (all_players_12_cards)
 )
-(<= (next (ablauf vorbehalt))
-    (does random (deal ?player4 ?card))
-    (eq (true (sees ?player1 (hand ?player1 ?x0_card))) 12)
-    (eq (true (hand ?player2 ?x1_card)) 12)
-    (eq (true (hand ?player3 ?x2_card)) 12)
-    (eq (true (hand ?player4 ?x3_card)) 11)
-    (distinct ?player1 ?player2 ?player3 ?player4)
-
-)
-
 
 // vorbehalt
 (<= (legal ?player (vorbehalt gesund))
@@ -378,6 +258,17 @@
 // -----------------------
 // ------ FUNCTIONS ------
 // -----------------------
+
+(<= (all_players_12_cards)
+    (player_card_count 12 player1)
+    (player_card_count 12 player2)
+    (player_card_count 12 player3)
+    (player_card_count 12 player4)
+)
+
+(<= (player_card_count ?n ?player)
+    (count ?n (true (hand ?player ?karte)))
+)
 
 // Bestimmt vor dem ersten Stich, ob jemand eine Hochzeit auf der Hand hat
 (<= (has_hochzeit_hand ?player)
