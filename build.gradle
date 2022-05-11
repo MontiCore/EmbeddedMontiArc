@@ -53,7 +53,7 @@ buildDir = file("$projectDir/target")
 configurations {grammar}
 
 test {
-    // exclude 'de/monticore/lang/gdl/*'
+    exclude 'de/monticore/lang/gdl/*'
     useJUnit()
 }
 

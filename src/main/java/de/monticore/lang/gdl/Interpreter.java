@@ -9,6 +9,7 @@ import java.io.InputStreamReader;
 import java.io.OutputStreamWriter;
 import java.util.ArrayList;
 import java.util.Arrays;
+import java.util.Collections;
 import java.util.HashSet;
 import java.util.HashMap;
 import java.util.Map;
@@ -42,7 +43,9 @@ public class Interpreter {
 
     private Set<FunctionSignature> functionSignatures;
     private Set<FunctionSignature> statesSignatures;
+    private Set<FunctionSignature> hiddenStatesSignatures;
     private Set<FunctionSignature> nextSignatures;
+    private Set<FunctionSignature> hiddenNextSignatures;
     private Set<FunctionSignature> legalSignatures;
 
     private boolean hasTerminal;
@@ -53,7 +56,7 @@ public class Interpreter {
 
     List<List<String>> initialStateList = null; 
 
-    private Map<String, List<List<String>>> savedStates = new HashMap<String, List<List<String>>>();
+    private Map<String, List<List<String>>[]> savedStates = new HashMap<String, List<List<String>>[]>();
 
     public Interpreter(ASTGame game) {
         this.game = game;
@@ -122,9 +125,11 @@ public class Interpreter {
         String prologProgram = printer.getContent();
         String stateDynamics = printer.getStateDynamics();
         statesSignatures = printer.getStatesSignatures();
+        hiddenStatesSignatures = printer.getHiddenStatesSignatures();
         functionSignatures = printer.getFunctionSignatures();
         legalSignatures = printer.getLegalSignatures();
         nextSignatures = printer.getNextSignatures();
+        hiddenNextSignatures = printer.getHiddenNextSignatures();
         String util = loadUtil();
 
         hasTerminal = printer.hasTerminal();
@@ -258,9 +263,22 @@ public class Interpreter {
 
             sb.append(")).\n");
         }
+        for (FunctionSignature state : hiddenStatesSignatures) {
+            sb.append("retractall(");
+
+            sb.append("state_hidden_function_").append(state.functionName).append("(");
+            for (int i = 0; i < state.arity; i++) {
+                sb.append("X").append(i);
+                if (i + 1 < state.arity) {
+                    sb.append(", ");
+                }
+            }
+
+            sb.append(")).\n");
+        }
         String command = sb.toString();
 
-        execute(command, statesSignatures.size());
+        execute(command, statesSignatures.size() + hiddenStatesSignatures.size());
     }
 
     private synchronized String execute(String command) {
@@ -354,9 +372,10 @@ public class Interpreter {
         return legal;
     }
 
-    private void buildNextStates(List<List<String>> statesList) {
+    private void buildNextStates(List<List<String>> statesList, List<List<String>> hiddenStatesList) {
         retractAllStates();
         statesSignatures = new HashSet<>();
+        hiddenStatesSignatures = new HashSet<>();
 
         StringBuilder statesBuilder = new StringBuilder();
 
@@ -378,10 +397,32 @@ public class Interpreter {
             FunctionSignature signature = new FunctionSignature(stateName, state.size() - 1);
             statesSignatures.add(signature);
         }
+
+        for (List<String> state : hiddenStatesList) {
+            String stateName = state.get(0).substring(6);
+            statesBuilder.append("state_hidden_function_").append(stateName);
+
+            statesBuilder.append("(");
+
+            for (int i = 1; i < state.size(); i++) {
+                statesBuilder.append(state.get(i));
+                if (i + 1 < state.size()) {
+                    statesBuilder.append(", ");
+                }
+            }
+
+            statesBuilder.append(").\n");
+
+            FunctionSignature signature = new FunctionSignature(stateName, state.size() - 1);
+            hiddenStatesSignatures.add(signature);
+        }
         
         StringBuilder dynamicsBuilder = new StringBuilder();
         for (FunctionSignature s : statesSignatures) {
             dynamicsBuilder.append(":- dynamic state_function_" + s.functionName + "/" + s.arity + ".\n");
+        }
+        for (FunctionSignature s : hiddenStatesSignatures) {
+            dynamicsBuilder.append(":- dynamic state_hidden_function_" + s.functionName + "/" + s.arity + ".\n");
         }
 
         StringBuilder commandBuilder = new StringBuilder();
@@ -394,15 +435,18 @@ public class Interpreter {
     }
 
     public void saveState(String name) {
-        List<List<String>> stateToSave = this.getGameState().stream().map(l -> l.stream().map(s -> "value_" + s).collect(Collectors.toList())
-        ).collect(Collectors.toList());
+        List<List<String>>[] stateToSave = this.getGameState();
+        List<List<String>> state = stateToSave[0].stream().map(l -> l.stream().map(s -> "value_" + s).collect(Collectors.toList())).collect(Collectors.toList());
+        List<List<String>> hiddenState = stateToSave[1].stream().map(l -> l.stream().map(s -> "value_" + s).collect(Collectors.toList())).collect(Collectors.toList());
+        stateToSave[0] = state;
+        stateToSave[1] = hiddenState;
         this.savedStates.put(name, stateToSave);
     }
 
     public boolean restoreState(String name) {
-        List<List<String>> stateToRestore = this.savedStates.get(name);
+        List<List<String>>[] stateToRestore = this.savedStates.get(name);
         if (stateToRestore != null) {
-            this.buildNextStates(stateToRestore);
+            this.buildNextStates(stateToRestore[0], stateToRestore[1]);
             return true;
         }
         return false;
@@ -441,6 +485,7 @@ public class Interpreter {
         execute(assertBuilder.toString());
 
         List<List<String>> allResults = null;
+        List<List<String>> allHiddenResults = null;
 
         if (isLegal(command)) {
             allResults = new LinkedList<>();
@@ -448,13 +493,27 @@ public class Interpreter {
                 List<List<String>> models = getAllModels(next.functionName, next.arity);
                 allResults.addAll(models);
             }
+
+            allHiddenResults = new LinkedList<>();
+            for (FunctionSignature next : hiddenNextSignatures) {
+                List<List<String>> models = getAllModels(next.functionName, next.arity);
+                allHiddenResults.addAll(models);
+            }
+
+            allHiddenResults = allHiddenResults.stream().map(
+                list -> {
+                    ArrayList<String> l = new ArrayList<>(list);
+                    Collections.swap(l, 0, 1);
+                    return l;
+                }
+            ).collect(Collectors.toList());
         }
 
         execute(retractBuilder.toString());
 
         if (allResults != null) {
-            buildNextStates(allResults);
-        
+            buildNextStates(allResults, allHiddenResults);
+            System.out.println(allResults);
             allResults = allResults
                 .stream().map(
                     l -> l.stream().map(s -> s.substring(6)).collect(Collectors.toList())
@@ -527,6 +586,7 @@ public class Interpreter {
             execute(assertBuilder.toString());
     
             List<List<String>> allResults = null;
+            List<List<String>> allHiddenResults = null;
     
             if (isLegal(command)) {
                 allResults = new LinkedList<>();
@@ -534,12 +594,26 @@ public class Interpreter {
                     List<List<String>> models = getAllModels(next.functionName, next.arity);
                     allResults.addAll(models);
                 }
+            
+                allHiddenResults = new LinkedList<>();
+                for (FunctionSignature next : hiddenNextSignatures) {
+                    List<List<String>> models = getAllModels(next.functionName, next.arity);
+                    allHiddenResults.addAll(models);
+                }
+
+                allHiddenResults = allHiddenResults.stream().map(
+                    list -> {
+                        ArrayList<String> l = new ArrayList<>(list);
+                        Collections.swap(l, 0, 1);
+                        return l;
+                    }
+                ).collect(Collectors.toList());
             }
     
             execute(retractBuilder.toString());
     
             if (allResults != null) {
-                buildNextStates(allResults);
+                buildNextStates(allResults, allHiddenResults);
             
                 allResults = allResults
                     .stream().map(
@@ -555,9 +629,24 @@ public class Interpreter {
         return finalResults;
     }
 
-    
+    public List<List<String>> getGameStateForRole(String role) {
+        List<List<String>>[] gameState = getGameState();
+        List<List<String>> hiddenGameState = gameState[1];
 
-    public List<List<String>> getGameState() {
+        hiddenGameState = hiddenGameState.stream().filter(list -> list.get(1).equals(role)).map(
+            list -> {
+                ArrayList<String> l = new ArrayList<>(list);
+                l.remove(1);
+                return l;
+            }
+        ).collect(Collectors.toList());
+
+        hiddenGameState = new ArrayList<>(hiddenGameState);
+        hiddenGameState.addAll(gameState[0]);
+        return hiddenGameState;
+    }
+
+    public List<List<String>>[] getGameState() {
         List<List<String>> allResults = new LinkedList<>();
         for (FunctionSignature state : statesSignatures) {
             List<List<String>> models = getAllModels("state_function_" + state.functionName, state.arity);
@@ -581,8 +670,35 @@ public class Interpreter {
             .stream().map(
                 l -> l.stream().map(s -> s.substring(6)).collect(Collectors.toList())
             ).collect(Collectors.toList());
+            
+        List<List<String>> allHiddenResults = new LinkedList<>();
+        for (FunctionSignature state : hiddenStatesSignatures) {
+            List<List<String>> models = getAllModels("state_hidden_function_" + state.functionName, state.arity);
+
+            if (models == null) {
+                allHiddenResults.add(List.of("123456" + state.functionName));
+                continue;
+            }
+
+            models = models.stream().map(list -> {
+                List<String> l = new ArrayList<>();
+                l.add("123456" + state.functionName);
+                l.addAll(list);
+                return l;
+            }).collect(Collectors.toList());
+
+            allHiddenResults.addAll(models);
+        }
+
+        allHiddenResults = allHiddenResults
+            .stream().map(
+                l -> l.stream().map(s -> s.substring(6)).collect(Collectors.toList())
+            ).collect(Collectors.toList());
         
-        return allResults;
+        List<List<String>>[] both = new List[2];
+        both[0] = allResults;
+        both[1] = allHiddenResults;
+        return both;
     }
 
     public boolean isTerminal() {

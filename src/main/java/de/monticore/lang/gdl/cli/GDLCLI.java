@@ -13,9 +13,19 @@ public class GDLCLI implements Runnable {
         this.interpreter = interpreter;
     }
 
-    private void printGameState() {
-        System.out.println("Current Game State (" + interpreter.getGameState().size() +  "): ");
-        interpreter.getGameState().forEach(s -> System.out.println("\t" + s));
+    private void printGameState(String role) {
+        if (role == null) {
+            List<List<String>>[] gameState = interpreter.getGameState();
+            System.out.println("Current Game State (" + gameState[0].size() +  "):");
+            gameState[0].forEach(s -> System.out.println("\t" + s));
+    
+            System.out.println("Current Hidden Game State (" + gameState[1].size() +  "):");
+            gameState[1].forEach(s -> System.out.println("\t" + s));
+        } else {
+            List<List<String>> gameState = interpreter.getGameStateForRole(role);
+            System.out.printf("Current Game State for role '%s' (%d):\n", role, gameState.size());
+            gameState.forEach(s -> System.out.println("\t" + s));
+        }
     }
 
     private void printHelp() {
@@ -24,10 +34,10 @@ public class GDLCLI implements Runnable {
             "  {player} ([args])" + "\t" + "Do a game move\n" + 
             "\n" +
             "Additional functions:\n" +
-            "  /help" + "\t\t\t\t" + "Show the CLI usage\n" +
-            "  /exit" + "\t\t\t\t" + "Exit the CLI\n" +
+            "  /help" + "\t\t\t" + "Show the CLI usage\n" +
+            "  /exit" + "\t\t\t" + "Exit the CLI\n" +
             "  /eval {func}" + "\t\t" + "Calculate all models for a function {func}\n" +
-            "  /state" + "\t\t\t" + "Print the current game state\n" +
+            "  /state {role}" + "\t\t" + "Print the current game state (for a role {role})\n" +
             "  /legal {role}" + "\t\t" + "Print all currently legal moves (for a role {role})\n" +
             "";
         System.out.print(help);
@@ -125,7 +135,11 @@ public class GDLCLI implements Runnable {
                 if (line.startsWith("/eval ") || line.startsWith("/evaluate ")) {
                     evaluate(line);
                 } else if (line.startsWith("/state")) {
-                    printGameState();
+                    if (line.length() > 7) {
+                        printGameState(line.substring(7));
+                    } else {
+                        printGameState(null);
+                    }
                 } else if (line.startsWith("/help")) {
                     printHelp();
                 } else if (line.startsWith("/legal")) {

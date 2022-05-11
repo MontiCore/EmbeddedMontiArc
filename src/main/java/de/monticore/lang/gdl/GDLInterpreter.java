@@ -15,6 +15,7 @@ import de.monticore.lang.gdl._symboltable.IGDLGlobalScope;
 import de.monticore.lang.gdl._visitor.GDLTraverser;
 import de.monticore.lang.gdl.chess.ChessGUI;
 import de.monticore.lang.gdl.cli.GDLCLI;
+import de.monticore.lang.gdl.visitors.PrologPrinter;
 import de.se_rwth.commons.logging.Log;
 import de.monticore.lang.gdl._cocos.*;
 
@@ -63,6 +64,11 @@ public class GDLInterpreter {
         checker.addCoCo(new ASTGameExpressionCoCo());
         checker.checkAll(ast);
         // final IGDLArtifactScope scope = GDLInterpreter.createSymbolTable(ast);
+
+        // PrologPrinter p = new PrologPrinter();
+        // ast.accept(p.getTraverser());
+        // System.out.println(p.getContent());
+        // System.exit(0);
 
         final Interpreter interpreter = new Interpreter(ast);
         interpreter.setDebugMode(debugMode);

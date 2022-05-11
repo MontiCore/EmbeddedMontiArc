@@ -188,7 +188,7 @@ public class InterpreterTest {
                 interpreter.interpret(c);
             }
     
-            List<List<String>> state = interpreter.getGameState();
+            List<List<String>> state = interpreter.getGameState()[0];
     
             assertEquals(String.format("State sizes do not match: %s %s", state.toString(), this.expectedState.toString()), state.size(), this.expectedState.size());
     

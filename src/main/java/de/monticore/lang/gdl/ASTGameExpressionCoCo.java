@@ -21,8 +21,11 @@ public class ASTGameExpressionCoCo implements GDLASTGameExpressionCoCo {
 				Log.error("GameInit definition argument must be of type GameExpression");
 			}
 			if (node.getArgumentsList().size() >= 1
-					&& !(((ASTGameExpression) node.getArguments(0)).getType() instanceof ASTGameFunction)) {
-				Log.error("First argument of the GameInit argument tuple must be of type GameFunction");
+					&& !(
+						((ASTGameExpression) node.getArguments(0)).getType() instanceof ASTGameFunction
+						|| ((ASTGameExpression) node.getArguments(0)).getType() instanceof ASTGameSees
+					)) {
+				Log.error("First argument of the GameInit argument tuple must be either of type GameFunction or of type GameSees");
 			}
 		}
 
@@ -53,8 +56,11 @@ public class ASTGameExpressionCoCo implements GDLASTGameExpressionCoCo {
 				Log.error("GameNext definition argument must be of type GameExpression");
 			}
 			if (node.getArgumentsList().size() >= 1 && (node.getArguments(0) instanceof ASTGameExpression)
-					&& !(((ASTGameExpression) node.getArguments(0)).getType() instanceof ASTGameFunction)) {
-				Log.error("First argument of the GameNext argument tuple must be of type GameFunction");
+					&& !(
+						((ASTGameExpression) node.getArguments(0)).getType() instanceof ASTGameFunction
+						|| ((ASTGameExpression) node.getArguments(0)).getType() instanceof ASTGameSees
+					)) {
+				Log.error("First argument of the GameNext argument tuple must be either of type GameFunction or of type GameSees");
 			}
 		}
 
@@ -66,8 +72,11 @@ public class ASTGameExpressionCoCo implements GDLASTGameExpressionCoCo {
 				Log.error("GameTrue definition argument must be of type GameExpression");
 			}
 			if (node.getArgumentsList().size() >= 1 && (node.getArguments(0) instanceof ASTGameExpression)
-					&& !(((ASTGameExpression) node.getArguments(0)).getType() instanceof ASTGameFunction)) {
-				Log.error("First argument of the GameTrue argument tuple must be of type GameFunction");
+					&& !(
+						((ASTGameExpression) node.getArguments(0)).getType() instanceof ASTGameFunction
+						|| ((ASTGameExpression) node.getArguments(0)).getType() instanceof ASTGameSees
+					)) {
+				Log.error("First argument of the GameTrue argument tuple must be either of type GameFunction or of type GameSees");
 			}
 		}
 

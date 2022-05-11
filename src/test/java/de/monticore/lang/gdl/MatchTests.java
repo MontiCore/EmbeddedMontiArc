@@ -72,7 +72,7 @@ public class MatchTests {
                     if (object instanceof List) {
                         List<String> state = (List<String>) object;
 
-                        List<String> interpreterState = interpreter.getGameState().stream().map(list -> {
+                        List<String> interpreterState = interpreter.getGameState()[0].stream().map(list -> {
                             StringBuilder sb = new StringBuilder();
                             sb.append("(");
                             for (int i = 0; i < list.size(); i++) {
