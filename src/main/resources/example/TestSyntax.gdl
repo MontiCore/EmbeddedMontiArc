@@ -1,6 +1,0 @@
-(<= (player_has_12_cards ?player)
-    (count 12
-        (karte ?player ?karte)
-        (distinct ?player ?karte)
-    )
-)
