@@ -2,6 +2,7 @@ package de.monticore.lang.gdl.cli;
 
 import java.util.List;
 import java.util.Scanner;
+import java.util.Set;
 
 import de.monticore.lang.gdl.Interpreter;
 
@@ -13,9 +14,22 @@ public class GDLCLI implements Runnable {
         this.interpreter = interpreter;
     }
 
-    private void printGameState() {
-        System.out.println("Current Game State (" + interpreter.getGameState().size() +  "): ");
-        interpreter.getGameState().forEach(s -> System.out.println("\t" + s));
+    private void printGameState(String role) {
+        if (role == null) {
+            List<List<String>> gameState = interpreter.getGameState();
+            List<List<String>> hiddenGameState = interpreter.getHiddenGameState();
+            System.out.println("Current Game State (" + gameState.size() +  "):");
+            gameState.forEach(s -> System.out.println("  " + s));
+    
+            System.out.println();
+
+            System.out.println("Current Hidden Game State (" + hiddenGameState.size() +  "):");
+            hiddenGameState.forEach(s -> System.out.println("  " + s));
+        } else {
+            List<List<String>> gameState = interpreter.getGameStateForRole(role);
+            System.out.printf("Current Game State for role '%s' (%d):\n", role, gameState.size());
+            gameState.forEach(s -> System.out.println("  " + s));
+        }
     }
 
     private void printHelp() {
@@ -24,10 +38,11 @@ public class GDLCLI implements Runnable {
             "  {player} ([args])" + "\t" + "Do a game move\n" + 
             "\n" +
             "Additional functions:\n" +
-            "  /help" + "\t\t\t\t" + "Show the CLI usage\n" +
-            "  /exit" + "\t\t\t\t" + "Exit the CLI\n" +
+            "  /help" + "\t\t\t" + "Show the CLI usage\n" +
+            "  /exit" + "\t\t\t" + "Exit the CLI\n" +
             "  /eval {func}" + "\t\t" + "Calculate all models for a function {func}\n" +
-            "  /state" + "\t\t\t" + "Print the current game state\n" +
+            "  /roles" + "\t\t\t" + "Print all playable roles.\n" +
+            "  /state {role}" + "\t\t" + "Print the current game state (for a role {role})\n" +
             "  /legal {role}" + "\t\t" + "Print all currently legal moves (for a role {role})\n" +
             "";
         System.out.print(help);
@@ -45,6 +60,15 @@ public class GDLCLI implements Runnable {
             System.out.println(allModels);
         } else {
             System.out.println("Function '" + function + "' does not exist.");
+        }
+    }
+
+    private void printRoles() {
+        Set<String> roles = interpreter.getRoles();
+        
+        System.out.printf("All Roles (%d):\n", roles.size());
+        for (String role : roles) {
+            System.out.println("  " + role);
         }
     }
 
@@ -77,11 +101,11 @@ public class GDLCLI implements Runnable {
             
             for (List<String> move: legal) {
                 if (move.size() <= 1) {
-                    System.out.println("\t[!err]");
+                    System.out.println("  [!err]");
                     continue;
                 }
 
-                System.out.print("\t");
+                System.out.print("  ");
                 System.out.print(move.get(0));
                 System.out.print(" (");
                 for (int i = 1; i < move.size(); i++) {
@@ -124,8 +148,14 @@ public class GDLCLI implements Runnable {
             } else if (line.startsWith("/")) {
                 if (line.startsWith("/eval ") || line.startsWith("/evaluate ")) {
                     evaluate(line);
+                } else if(line.startsWith("/roles")) {
+                    printRoles();
                 } else if (line.startsWith("/state")) {
-                    printGameState();
+                    if (line.length() > 7) {
+                        printGameState(line.substring(7));
+                    } else {
+                        printGameState(null);
+                    }
                 } else if (line.startsWith("/help")) {
                     printHelp();
                 } else if (line.startsWith("/legal")) {
@@ -144,7 +174,8 @@ public class GDLCLI implements Runnable {
                 if (nextState == null) {
                     System.out.println("Move was illegal! Type /help for usage");
                 } else {
-                    System.out.println(nextState);
+                    System.out.println("Next Game State (" + nextState.size() +  "):");
+                    nextState.forEach(state -> System.out.println("  " + state));
 
                     if (interpreter.isTerminal()) {
                         printGameOver();

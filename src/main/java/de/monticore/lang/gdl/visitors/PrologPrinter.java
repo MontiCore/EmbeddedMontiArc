@@ -22,6 +22,7 @@ import de.monticore.lang.gdl._ast.ASTGameNext;
 import de.monticore.lang.gdl._ast.ASTGameNot;
 import de.monticore.lang.gdl._ast.ASTGameRelation;
 import de.monticore.lang.gdl._ast.ASTGameRole;
+import de.monticore.lang.gdl._ast.ASTGameSees;
 import de.monticore.lang.gdl._ast.ASTGameTerminal;
 import de.monticore.lang.gdl._ast.ASTGameToken;
 import de.monticore.lang.gdl._ast.ASTGameTrue;
@@ -39,9 +40,12 @@ public class PrologPrinter extends IndentPrinter implements GDLVisitor2, MCCommo
     private Set<FunctionSignature> legalSignatures = new HashSet<>();
 
     private Set<FunctionSignature> statesSignatures = new HashSet<>();
+    private Set<FunctionSignature> hiddenStatesSignatures = new HashSet<>();
     private Set<FunctionSignature> nextSignatures = new HashSet<>();
+    private Set<FunctionSignature> hiddenNextSignatures = new HashSet<>();
     private boolean hasTerminal = false;
-    private boolean hasRandom = false;
+
+    private Set<String> roles = new HashSet<>();
 
     public PrologPrinter() {
         this.traverser = GDLMill.traverser();
@@ -77,8 +81,16 @@ public class PrologPrinter extends IndentPrinter implements GDLVisitor2, MCCommo
         return statesSignatures;
     }
 
+    public Set<FunctionSignature> getHiddenStatesSignatures() {
+        return hiddenStatesSignatures;
+    }
+
     public Set<FunctionSignature> getNextSignatures() {
         return nextSignatures;
+    }
+
+    public Set<FunctionSignature> getHiddenNextSignatures() {
+        return hiddenNextSignatures;
     }
 
     public boolean hasTerminal() {
@@ -86,13 +98,20 @@ public class PrologPrinter extends IndentPrinter implements GDLVisitor2, MCCommo
     }
 
     public boolean hasRandom() {
-        return hasRandom;
+        return roles.contains("random");
+    }
+
+    public Set<String> getRoles() {
+        return roles;
     }
 
     public String getStateDynamics() {
         StringBuilder sb = new StringBuilder();
         for (FunctionSignature s : statesSignatures) {
             sb.append(":- dynamic state_function_" + s.functionName + "/" + s.arity + ".\n");
+        }
+        for (FunctionSignature s : hiddenStatesSignatures) {
+            sb.append(":- dynamic state_hidden_function_" + s.functionName + "/" + s.arity + ".\n");
         }
         return sb.toString();
     }
@@ -136,6 +155,10 @@ public class PrologPrinter extends IndentPrinter implements GDLVisitor2, MCCommo
         print("state_");
     }
     
+    public void visit(ASTGameSees node) {
+        print("hidden_");
+    }
+
     public void visit(ASTGameNext node) {
         print("function_next");
     }
@@ -168,7 +191,30 @@ public class PrologPrinter extends IndentPrinter implements GDLVisitor2, MCCommo
                 node.getArguments(1).accept(getTraverser());
             } else if (type instanceof ASTGameTrue) {
                 type.accept(getTraverser());
-                node.getArguments(0).accept(getTraverser());
+
+                ASTGameExpression innerExpression = (ASTGameExpression) node.getArguments(0);
+                if (innerExpression.getType() instanceof ASTGameSees) {
+                    // handle hidden states
+                    ASTGameExpression seesExpression = innerExpression;
+                    innerExpression = (ASTGameExpression) seesExpression.getArguments(1);
+
+                    seesExpression.getType().accept(getTraverser());
+                    innerExpression.getType().accept(getTraverser());
+                    
+                    print("(");
+                    seesExpression.getArguments(0).accept(getTraverser());
+                    print(", ");
+                    for (int i = 0; i < innerExpression.getArgumentsList().size(); i++) {
+                        innerExpression.getArguments(i).accept(getTraverser());
+
+                        if (i < innerExpression.getArgumentsList().size() - 1) {
+                            print(", ");
+                        }
+                    }
+                    print(")");
+                } else {
+                    node.getArguments(0).accept(getTraverser());
+                }
             } else if (type instanceof ASTGameDoes) {
                 type.accept(getTraverser());
                 print("((");
@@ -251,28 +297,73 @@ public class PrologPrinter extends IndentPrinter implements GDLVisitor2, MCCommo
         } else {
             if (type instanceof ASTGameInit) {
                 type.accept(getTraverser());
-                node.getArguments(0).accept(getTraverser());
 
-                // add to state signatures
                 ASTGameExpression innerExpression = (ASTGameExpression) node.getArguments(0);
-                String state = ((ASTGameFunction) innerExpression.getType()).getFunction();
-                int arity = innerExpression.getArgumentsList().size();
-                FunctionSignature s = new FunctionSignature(state, arity);
-                statesSignatures.add(s);
+                if (innerExpression.getType() instanceof ASTGameSees) {
+                    // handle hidden states
+                    ASTGameExpression seesExpression = innerExpression;
+                    innerExpression = (ASTGameExpression) seesExpression.getArguments(1);
+
+                    seesExpression.getType().accept(getTraverser());
+                    innerExpression.getType().accept(getTraverser());
+                    
+                    print("(");
+                    seesExpression.getArguments(0).accept(getTraverser());
+                    print(", ");
+                    for (int i = 0; i < innerExpression.getArgumentsList().size(); i++) {
+                        innerExpression.getArguments(i).accept(getTraverser());
+
+                        if (i < innerExpression.getArgumentsList().size() - 1) {
+                            print(", ");
+                        }
+                    }
+                    println(").");
+                    
+
+                    String state = ((ASTGameFunction) innerExpression.getType()).getFunction();
+                    int arity = innerExpression.getArgumentsList().size();
+                    FunctionSignature s = new FunctionSignature(state, arity + 1);
+                    hiddenStatesSignatures.add(s);
+                } else {
+                    node.getArguments(0).accept(getTraverser());
+                    // add to state signatures
+                    String state = ((ASTGameFunction) innerExpression.getType()).getFunction();
+                    int arity = innerExpression.getArgumentsList().size();
+                    FunctionSignature s = new FunctionSignature(state, arity);
+                    statesSignatures.add(s);
+                }
             } else if (type instanceof ASTGameInference) {
                 ASTGameExpression head = (ASTGameExpression) node.getArguments(0);
                 ASTGameType headType = head.getType();
 
                 if (headType instanceof ASTGameNext) {
-                    // add nextSignature
-                    ASTGameExpression parameters = (ASTGameExpression) head.getArguments(0);
-                    String functionName = "function_next";
-                    int arity = parameters.getArgumentsList().size() + 1;
-                    FunctionSignature s = new FunctionSignature(functionName, arity);
-                    nextSignatures.add(s);
-
                     headType.accept(getTraverser());
-                    print("(");
+                    ASTGameExpression parameters = (ASTGameExpression) head.getArguments(0);
+
+                    if (parameters.getType() instanceof ASTGameSees) {
+                        print("_hidden(");
+
+                        ASTGameExpression seesExpression = parameters;
+                        parameters = (ASTGameExpression) seesExpression.getArguments(1);
+
+                        seesExpression.getArguments(0).accept(getTraverser());
+                        print(", ");
+
+                        // add hiddenNextSignature
+                        String functionName = "function_next_hidden";
+                        int arity = parameters.getArgumentsList().size() + 2;
+                        FunctionSignature s = new FunctionSignature(functionName, arity);
+                        hiddenNextSignatures.add(s);
+                    } else {
+                        // add nextSignature
+                        String functionName = "function_next";
+                        int arity = parameters.getArgumentsList().size() + 1;
+                        FunctionSignature s = new FunctionSignature(functionName, arity);
+                        nextSignatures.add(s);
+
+                        print("(");
+                    }
+
                     String pseudoValue = "value_" + ((ASTGameFunction) parameters.getType()).getFunction();
                     print(pseudoValue);
 
@@ -373,28 +464,6 @@ public class PrologPrinter extends IndentPrinter implements GDLVisitor2, MCCommo
                     println(".");
                     unindent();
 
-                    // map arity function to tuple function
-                    // headType.accept(getTraverser());
-                    // print("(Player, ");
-                    // for (int i = 0; i < arity; i++) {
-                    //     print("X" + i);
-                    //     if (i < arity - 1) {
-                    //         print(", ");
-                    //     }
-                    // }
-                    // println(") :-");
-                    // indent();
-                    // headType.accept(getTraverser());
-                    // print("(Player, (");
-                    // for (int i = 0; i < arity; i++) {
-                    //     print("X" + i);
-                    //     if (i < arity - 1) {
-                    //         print(", ");
-                    //     }
-                    // }
-                    // println(")).");
-                    // unindent();
-
                     isInFunctionDefinition = false;
                 } else if (headType instanceof ASTGameGoal) {
                     // add functionSignature
@@ -491,10 +560,8 @@ public class PrologPrinter extends IndentPrinter implements GDLVisitor2, MCCommo
                 for (int i = 0; i < node.getArgumentsList().size(); i++) {
                     node.getArguments(i).accept(getTraverser());
 
-                    // check if "random" is defined
-                    if (i == 0 && ((ASTGameValue) node.getArguments(i)).getValue().equals("random")) {
-                        hasRandom = true;
-                    }
+                    // add role to role set
+                    this.roles.add(((ASTGameValue) node.getArguments(i)).getValue());
     
                     if (i + 1 < node.getArgumentsList().size()) {
                         print(", ");

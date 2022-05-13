@@ -162,16 +162,30 @@ public class InterpreterTest {
         testCase.doTestCase();
     }
 
+    @Test
+    public void testSees() {
+        InterpreterTestCase testCase = new InterpreterTestCase("Sees");
+        testCase.moves.addAll(List.of(
+            Command.createMoveFromLine("player0 (see player1 hidden)")
+        ));
+        testCase.expectedHiddenState.addAll(List.of(
+            List.of("hidden", "player1", "1")
+        ));
+        testCase.doTestCase();
+    }
+
 
     private final class InterpreterTestCase {
         final String modelPath;
         final List<Command> moves;
         final List<List<String>> expectedState;
+        final List<List<String>> expectedHiddenState;
 
         public InterpreterTestCase(String modelName) {
             this.modelPath = "src/test/resources/gdl/interpreter/" + modelName + ".gdl";
             this.moves = new ArrayList<>();
             this.expectedState = new ArrayList<>();
+            this.expectedHiddenState = new ArrayList<>();
         }
 
         public Interpreter doTestCase() {
@@ -189,14 +203,23 @@ public class InterpreterTest {
             }
     
             List<List<String>> state = interpreter.getGameState();
+            List<List<String>> hiddenState = interpreter.getHiddenGameState();
     
             assertEquals(String.format("State sizes do not match: %s %s", state.toString(), this.expectedState.toString()), state.size(), this.expectedState.size());
     
             Set<String> setExpected = this.expectedState
                 .stream().map(list -> list.stream().reduce("", (s1, s2) -> s1 + "," + s2))
                 .collect(Collectors.toSet());
+
+            Set<String> setHiddenExpected = this.expectedHiddenState
+                .stream().map(list -> list.stream().reduce("", (s1, s2) -> s1 + "," + s2))
+                .collect(Collectors.toSet());
     
             Set<String> set = state
+                .stream().map(list -> list.stream().reduce("", (s1, s2) -> s1 + "," + s2))
+                .collect(Collectors.toSet());
+                
+            Set<String> hiddenSet = hiddenState
                 .stream().map(list -> list.stream().reduce("", (s1, s2) -> s1 + "," + s2))
                 .collect(Collectors.toSet());
     
@@ -206,6 +229,14 @@ public class InterpreterTest {
             
             for (String s : setExpected) {
                 assertTrue(String.format("State %s was expected, but not found", s), set.contains(s));
+            }
+
+            for (String s : hiddenSet) {
+                assertTrue(String.format("Hidden state %s was found, but not expected", s), setHiddenExpected.contains(s));
+            }
+            
+            for (String s : setHiddenExpected) {
+                assertTrue(String.format("Hidden state %s was expected, but not found", s), hiddenSet.contains(s));
             }
     
             return interpreter;
