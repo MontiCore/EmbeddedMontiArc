@@ -21,18 +21,22 @@
 (init (ansage none))
 
 // historie der stiche (sieht nur der gewinner des stiches)
-(init (sees (none) (stich 1 none none none none)))
-(init (sees (none) (stich 2 none none none none)))
-(init (sees (none) (stich 3 none none none none)))
-(init (sees (none) (stich 4 none none none none)))
-(init (sees (none) (stich 5 none none none none)))
-(init (sees (none) (stich 6 none none none none)))
-(init (sees (none) (stich 7 none none none none)))
-(init (sees (none) (stich 8 none none none none)))
-(init (sees (none) (stich 9 none none none none)))
-(init (sees (none) (stich 10 none none none none)))
-(init (sees (none) (stich 11 none none none none))) // mit (2*4) neunen = 12 stiche
-(init (sees (none) (stich 12 none none none none)))
+(init (sees none (stich 1 none none none none)))
+(init (sees none (stich 2 none none none none)))
+(init (sees none (stich 3 none none none none)))
+(init (sees none (stich 4 none none none none)))
+(init (sees none (stich 5 none none none none)))
+(init (sees none (stich 6 none none none none)))
+(init (sees none (stich 7 none none none none)))
+(init (sees none (stich 8 none none none none)))
+(init (sees none (stich 9 none none none none)))
+(init (sees none (stich 10 none none none none)))
+(init (sees none (stich 11 none none none none))) // mit (2*4) neunen = 12 stiche
+(init (sees none (stich 12 none none none none)))
+
+// hand
+(init (sees none (hand none none)))
+
 
 // punktetabelle
 (init (punkte player1 0))
@@ -60,7 +64,7 @@
 (init (spielart normal none))
 
 // geschlossene spielart (stille hochzeit)
-(init (sees (none) (hidden_spielart normal none)))
+(init (sees none (hidden_spielart normal none)))
 
 // spielablauf
 (init (ablauf geben))
@@ -78,10 +82,18 @@
     (true (ablauf geben))
     (not (all_players_12_cards))
 )
-
-
 (<= (next (ablauf vorbehalt))
     (does random (deal_finish))
+)
+// Karte auf Hand behalten
+(<= (next (sees ?player (hand ?player ?karte)))
+    (true (ablauf geben))
+    (true (sees ?player (hand ?player ?karte)))
+)
+// Neue Karte auf Hand nehmen
+(<= (next (sees ?player (hand ?player ?karte)))
+    (true (ablauf geben))
+    (does random (deal ?player ?karte))
 )
 
 // -- Vorbehalte --
@@ -121,7 +133,7 @@
     (does player4 (vorbehalt gesund))
 )
 // alle gesund, aber Hochzeit = Stille Hochzeit
-(<= (next (sees (?player_hochzeit) (hidden_spielart stille_hochzeit ?player_hochzeit)))
+(<= (next (sees ?player_hochzeit (hidden_spielart stille_hochzeit ?player_hochzeit)))
     (true (vorbehalt player1 gesund))
     (true (vorbehalt player2 gesund))
     (true (vorbehalt player3 gesund))
@@ -130,7 +142,7 @@
     (has_hochzeit_hand ?player_hochzeit)
 )
 // sonst Normal
-(<= (next (sees (none) (hidden_spielart normal none)))
+(<= (next (sees none (hidden_spielart normal none)))
     (true (vorbehalt player1 gesund))
     (true (vorbehalt player2 gesund))
     (true (vorbehalt player3 gesund))
@@ -151,7 +163,7 @@
 
     (solo_vor_hochzeit ?vorbehalt_1 ?vorbehalt_2 ?vorbehalt_3 ?vorbehalt_4 ?art ?player)
 )
-(<= (next (sees (none) (hidden_spielart ?art ?player)))
+(<= (next (sees none (hidden_spielart ?art ?player)))
     (true (vorbehalt player1 ?vorbehalt_1))
     (true (vorbehalt player2 ?vorbehalt_2))
     (true (vorbehalt player3 ?vorbehalt_3))
@@ -169,7 +181,7 @@
 // -------- LEGAL --------
 // -----------------------
 
-(<= (legal random (deal ?player ?card))
+(<= (legal random (deal ?player ?karte))
     (true (ablauf geben))
     (player ?player)
     (karte ?any ?karte)
@@ -177,7 +189,7 @@
     (not (player_card_count 12 ?player))
 )
 (<= (legal random (deal_finish))
-    (true (state geben))
+    (true (ablauf geben))
     (all_players_12_cards)
 )
 
@@ -252,12 +264,25 @@
 (<= (legal ?player (spielen ?karte))
     (true (zug ?player))
     (true (ablauf stich ?x))
-    (true (hand ?player ?karte))
+    (true (sees ?player (hand ?player ?karte)))
 )
 
 // -----------------------
 // ------ FUNCTIONS ------
 // -----------------------
+
+(<= (any_player_has_card ?card)
+    (true (sees player1 (hand player1 ?card)))
+)
+(<= (any_player_has_card ?card)
+    (true (sees player2 (hand player2 ?card)))
+)
+(<= (any_player_has_card ?card)
+    (true (sees player3 (hand player3 ?card)))
+)
+(<= (any_player_has_card ?card)
+    (true (sees player4 (hand player4 ?card)))
+)
 
 (<= (all_players_12_cards)
     (player_card_count 12 player1)
@@ -267,13 +292,13 @@
 )
 
 (<= (player_card_count ?n ?player)
-    (count ?n (true (hand ?player ?karte)))
+    (count ?n (true (sees ?player (hand ?player ?karte))))
 )
 
 // Bestimmt vor dem ersten Stich, ob jemand eine Hochzeit auf der Hand hat
 (<= (has_hochzeit_hand ?player)
-    (true (hand ?player kreuz_dame_1))
-    (true (hand ?player kreuz_dame_2))
+    (true (sees ?player (hand ?player kreuz_dame_1)))
+    (true (sees ?player (hand ?player kreuz_dame_2)))
 )
 
 // Bestimmt den höchstwertigsten Vorbehalt ausgehend von Spieler ?player
