@@ -30,6 +30,9 @@ build:
 
 deploy:
   stage: deploy
+  only:
+    - develop
+    - master
   script:
     - "gradle publish $GRADLE_OPT $ARGS2 --info"
 
