@@ -589,7 +589,7 @@ public class Interpreter {
             // random command
             // randomMove = randomMove.stream().map(s -> "value_" + s).collect(Collectors.toList());
             Command command = Command.createMoveFromList(randomMove);
-            System.out.println(command);
+            if (debugMode) System.out.println("R " + command);
 
             StringBuilder inputBuilder = new StringBuilder();
     
