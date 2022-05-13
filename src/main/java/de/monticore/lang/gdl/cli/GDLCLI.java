@@ -16,10 +16,12 @@ public class GDLCLI implements Runnable {
     private void printGameState(String role) {
         if (role == null) {
             List<List<String>> gameState = interpreter.getGameState();
-            List<List<String>> hiddenGameState = interpreter.getGameState();
+            List<List<String>> hiddenGameState = interpreter.getHiddenGameState();
             System.out.println("Current Game State (" + gameState.size() +  "):");
             gameState.forEach(s -> System.out.println("\t" + s));
     
+            System.out.println();
+            
             System.out.println("Current Hidden Game State (" + hiddenGameState.size() +  "):");
             hiddenGameState.forEach(s -> System.out.println("\t" + s));
         } else {
