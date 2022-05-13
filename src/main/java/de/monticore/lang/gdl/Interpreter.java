@@ -695,6 +695,7 @@ public class Interpreter {
                 l -> l.stream().map(s -> s.substring(6)).collect(Collectors.toList())
             ).collect(Collectors.toList());
         
+        @SuppressWarnings("unchecked")
         List<List<String>>[] both = new List[2];
         both[0] = allResults;
         both[1] = allHiddenResults;
