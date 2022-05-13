@@ -282,7 +282,8 @@ public class Interpreter {
     }
 
     private synchronized String execute(String command) {
-        return execute(command, 1).get(0);
+        List<String> result = execute(command, 1);
+        return result == null ? null : result.get(0);
     }
 
     private synchronized List<String> execute(String command, int waitEvalLines) {
@@ -292,8 +293,18 @@ public class Interpreter {
         try {
             writer.write(command);
             writer.flush();
-            evalSemaphore.acquire(waitEvalLines);
-        } catch (Exception e) {
+
+            for (int i = 0; i < waitEvalLines; i++) {
+                evalSemaphore.acquire(1);
+
+                if (evalError) {
+                    currentEvaluation = null;
+                    
+                    if (!debugMode) throw new RuntimeException("The current evaluation faced an unexpected Error. Re-run your program in debug mode to get more detail.");
+                    throw new RuntimeException("The current evaluation faced an unexpected Error.");
+                }
+            }
+        } catch (IOException | InterruptedException e) {
             e.printStackTrace();
             return null;
         }
@@ -320,8 +331,16 @@ public class Interpreter {
         }
     }
 
+    private boolean evalError;
     private void readErr(String line) {
         if (debugMode) System.out.println("! " + line);
+
+        if (currentEvaluation != null) {
+            if (line.startsWith("ERROR")) {
+                evalError = true;
+                evalSemaphore.release(1);
+            }
+        }
     }
 
     public List<List<String>> getAllLegalMoves() {
