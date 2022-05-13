@@ -44,7 +44,8 @@ public class PrologPrinter extends IndentPrinter implements GDLVisitor2, MCCommo
     private Set<FunctionSignature> nextSignatures = new HashSet<>();
     private Set<FunctionSignature> hiddenNextSignatures = new HashSet<>();
     private boolean hasTerminal = false;
-    private boolean hasRandom = false;
+
+    private Set<String> roles = new HashSet<>();
 
     public PrologPrinter() {
         this.traverser = GDLMill.traverser();
@@ -97,7 +98,11 @@ public class PrologPrinter extends IndentPrinter implements GDLVisitor2, MCCommo
     }
 
     public boolean hasRandom() {
-        return hasRandom;
+        return roles.contains("random");
+    }
+
+    public Set<String> getRoles() {
+        return roles;
     }
 
     public String getStateDynamics() {
@@ -555,10 +560,8 @@ public class PrologPrinter extends IndentPrinter implements GDLVisitor2, MCCommo
                 for (int i = 0; i < node.getArgumentsList().size(); i++) {
                     node.getArguments(i).accept(getTraverser());
 
-                    // check if "random" is defined
-                    if (i == 0 && ((ASTGameValue) node.getArguments(i)).getValue().equals("random")) {
-                        hasRandom = true;
-                    }
+                    // add role to role set
+                    this.roles.add(((ASTGameValue) node.getArguments(i)).getValue());
     
                     if (i + 1 < node.getArgumentsList().size()) {
                         print(", ");

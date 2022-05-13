@@ -50,6 +50,7 @@ public class Interpreter {
 
     private boolean hasTerminal;
     private boolean hasRandom;
+    private Set<String> roles;
 
     private List<String> currentEvaluation = null;
     private Semaphore evalSemaphore;
@@ -134,6 +135,7 @@ public class Interpreter {
 
         hasTerminal = printer.hasTerminal();
         hasRandom = printer.hasRandom();
+        roles = printer.getRoles();
 
         writer.write("[user].\n");
         writer.write(stateDynamics);
@@ -734,6 +736,10 @@ public class Interpreter {
         boolean legal = result.trim().equals("true.");
 
         return legal;
+    }
+
+    public Set<String> getRoles() {
+        return roles;
     }
 
     public void setDebugMode(boolean debugMode) {
