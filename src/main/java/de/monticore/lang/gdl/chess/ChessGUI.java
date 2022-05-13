@@ -119,7 +119,7 @@ public class ChessGUI {
 
         frame.add(southPanel, BorderLayout.SOUTH);
 
-        updateGameState(interpreter.getGameState()[0]);
+        updateGameState(interpreter.getGameState());
         frame.setResizable(false);
         frame.pack();
         frame.setVisible(true);
@@ -354,7 +354,7 @@ public class ChessGUI {
     }
 
     private void refresh() {
-        updateGameState(interpreter.getGameState()[0]);
+        updateGameState(interpreter.getGameState());
     }
 
 }

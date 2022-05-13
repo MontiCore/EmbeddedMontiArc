@@ -435,12 +435,17 @@ public class Interpreter {
     }
 
     public void saveState(String name) {
-        List<List<String>>[] stateToSave = this.getGameState();
-        List<List<String>> state = stateToSave[0].stream().map(l -> l.stream().map(s -> "value_" + s).collect(Collectors.toList())).collect(Collectors.toList());
-        List<List<String>> hiddenState = stateToSave[1].stream().map(l -> l.stream().map(s -> "value_" + s).collect(Collectors.toList())).collect(Collectors.toList());
-        stateToSave[0] = state;
-        stateToSave[1] = hiddenState;
-        this.savedStates.put(name, stateToSave);
+        List<List<String>> stateToSave = this.getGameState();
+        List<List<String>> hiddenStateToSave = this.getGameState();
+        List<List<String>> state = stateToSave.stream().map(l -> l.stream().map(s -> "value_" + s).collect(Collectors.toList())).collect(Collectors.toList());
+        List<List<String>> hiddenState = hiddenStateToSave.stream().map(l -> l.stream().map(s -> "value_" + s).collect(Collectors.toList())).collect(Collectors.toList());
+        
+        @SuppressWarnings("unchecked")
+        List<List<String>>[] save = new List[2];
+        save[0] = state;
+        save[1] = hiddenState;
+
+        this.savedStates.put(name, save);
     }
 
     public boolean restoreState(String name) {
@@ -630,8 +635,7 @@ public class Interpreter {
     }
 
     public List<List<String>> getGameStateForRole(String role) {
-        List<List<String>>[] gameState = getGameState();
-        List<List<String>> hiddenGameState = gameState[1];
+        List<List<String>> hiddenGameState = getHiddenGameState();
 
         hiddenGameState = hiddenGameState.stream().filter(list -> list.get(1).equals(role)).map(
             list -> {
@@ -642,35 +646,11 @@ public class Interpreter {
         ).collect(Collectors.toList());
 
         hiddenGameState = new ArrayList<>(hiddenGameState);
-        hiddenGameState.addAll(gameState[0]);
+        hiddenGameState.addAll(getGameState());
         return hiddenGameState;
     }
 
-    public List<List<String>>[] getGameState() {
-        List<List<String>> allResults = new LinkedList<>();
-        for (FunctionSignature state : statesSignatures) {
-            List<List<String>> models = getAllModels("state_function_" + state.functionName, state.arity);
-
-            if (models == null) {
-                allResults.add(List.of("123456" + state.functionName));
-                continue;
-            }
-
-            models = models.stream().map(list -> {
-                List<String> l = new ArrayList<>();
-                l.add("123456" + state.functionName);
-                l.addAll(list);
-                return l;
-            }).collect(Collectors.toList());
-
-            allResults.addAll(models);
-        }
-
-        allResults = allResults
-            .stream().map(
-                l -> l.stream().map(s -> s.substring(6)).collect(Collectors.toList())
-            ).collect(Collectors.toList());
-            
+    public List<List<String>> getHiddenGameState() {
         List<List<String>> allHiddenResults = new LinkedList<>();
         for (FunctionSignature state : hiddenStatesSignatures) {
             List<List<String>> models = getAllModels("state_hidden_function_" + state.functionName, state.arity);
@@ -695,11 +675,35 @@ public class Interpreter {
                 l -> l.stream().map(s -> s.substring(6)).collect(Collectors.toList())
             ).collect(Collectors.toList());
         
-        @SuppressWarnings("unchecked")
-        List<List<String>>[] both = new List[2];
-        both[0] = allResults;
-        both[1] = allHiddenResults;
-        return both;
+        return allHiddenResults;
+    }
+
+    public List<List<String>> getGameState() {
+        List<List<String>> allResults = new LinkedList<>();
+        for (FunctionSignature state : statesSignatures) {
+            List<List<String>> models = getAllModels("state_function_" + state.functionName, state.arity);
+
+            if (models == null) {
+                allResults.add(List.of("123456" + state.functionName));
+                continue;
+            }
+
+            models = models.stream().map(list -> {
+                List<String> l = new ArrayList<>();
+                l.add("123456" + state.functionName);
+                l.addAll(list);
+                return l;
+            }).collect(Collectors.toList());
+
+            allResults.addAll(models);
+        }
+
+        allResults = allResults
+            .stream().map(
+                l -> l.stream().map(s -> s.substring(6)).collect(Collectors.toList())
+            ).collect(Collectors.toList());
+
+        return allResults;
     }
 
     public boolean isTerminal() {
