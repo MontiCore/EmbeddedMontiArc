@@ -539,7 +539,7 @@ public class Interpreter {
 
         if (allResults != null) {
             buildNextStates(allResults, allHiddenResults);
-            System.out.println(allResults);
+            allResults.addAll(allHiddenResults);
             allResults = allResults
                 .stream().map(
                     l -> l.stream().map(s -> s.substring(6)).collect(Collectors.toList())
@@ -641,6 +641,7 @@ public class Interpreter {
             if (allResults != null) {
                 buildNextStates(allResults, allHiddenResults);
             
+                allResults.addAll(allHiddenResults);
                 allResults = allResults
                     .stream().map(
                         l -> l.stream().map(s -> s.substring(6)).collect(Collectors.toList())

@@ -174,7 +174,8 @@ public class GDLCLI implements Runnable {
                 if (nextState == null) {
                     System.out.println("Move was illegal! Type /help for usage");
                 } else {
-                    System.out.println(nextState);
+                    System.out.println("Next Game State (" + nextState.size() +  "):");
+                    nextState.forEach(state -> System.out.println("  " + state));
 
                     if (interpreter.isTerminal()) {
                         printGameOver();
