@@ -738,8 +738,12 @@ public class Interpreter {
         return legal;
     }
 
+    /**
+     * Retrieve all roles playable in the current gdl model.
+     * @return Set of all playable roles.
+     */
     public Set<String> getRoles() {
-        return roles;
+        return roles.stream().filter(r -> !r.equals("random")).collect(Collectors.toSet());
     }
 
     public void setDebugMode(boolean debugMode) {

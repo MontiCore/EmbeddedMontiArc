@@ -41,7 +41,7 @@ public class GDLCLI implements Runnable {
             "  /help" + "\t\t\t" + "Show the CLI usage\n" +
             "  /exit" + "\t\t\t" + "Exit the CLI\n" +
             "  /eval {func}" + "\t\t" + "Calculate all models for a function {func}\n" +
-            "  /roles" + "\t\t\t" + "Print all defined roles.\n" +
+            "  /roles" + "\t\t\t" + "Print all playable roles.\n" +
             "  /state {role}" + "\t\t" + "Print the current game state (for a role {role})\n" +
             "  /legal {role}" + "\t\t" + "Print all currently legal moves (for a role {role})\n" +
             "";
