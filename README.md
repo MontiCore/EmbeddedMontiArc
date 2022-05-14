@@ -64,6 +64,10 @@ MontiSim:
     cd basic-simulator
     mvn clean install -s settings.xml
     ```
+3. Clone [simulation repository](https://git.rwth-aachen.de/monticore/EmbeddedMontiArc/simulators/simulation)
+4. Install ROSInterface (Found in the simulation project)
+5. Copy libROSInterface.so into install directory of basic-simulator project
+
 **FOR DEVELOPERS:** When using the standard maven version for Ubuntu 16.04: When installing the simulation project manually, the revision variable which takes care of assigning the correct version number does not work properly. So that the correct versions are used, use the [mavenFix.py](https://git.rwth-aachen.de/monticore/EmbeddedMontiArc/applications/reinforcement_learning/coopmontisimautopilot/-/blob/main/additional_files/mavenFix.py) file. Replace the version variable with the correct version. The version is then updated to the standard path to the montisim project ($HOME/.m2/repository/montisim)
     
 ## Generate,Train and Execute
