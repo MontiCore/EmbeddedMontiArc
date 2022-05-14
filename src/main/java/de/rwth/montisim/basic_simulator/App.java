@@ -203,6 +203,8 @@ public class App
 
 
     protected static void runRLSimulation(String path, boolean distributed, boolean randomize, boolean play, boolean miniStep, String selfPlay_mode){
+        String lib_path = System.getProperty("user.dir") + "/";
+        System.load(lib_path + "libROSInterface.so");
         try {
             File scenarioFile = new File(path);
             SimulationConfig config = SimulationConfig.fromFile(scenarioFile);
