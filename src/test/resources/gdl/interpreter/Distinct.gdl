@@ -1,0 +1,7 @@
+(<= (legal test (do))
+    (distinct 1 2)
+)
+
+(<= (next (success))
+    (does test (do))
+)

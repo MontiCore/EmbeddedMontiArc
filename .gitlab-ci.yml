@@ -1,0 +1,66 @@
+# (c) https://github.com/MontiCore/monticore
+
+image: gradle:6.9.0-jdk11
+
+stages:
+  - build
+  - deploy
+  # - check
+
+before_script:
+  - export GRADLE_USER_HOME=`pwd`/.gradle
+  - apt-get update
+  - apt-get install -y gnupg2
+  - echo "deb http://ppa.launchpad.net/swi-prolog/stable/ubuntu $(cat /etc/os-release | grep -oP -m 1 "VERSION_CODENAME=\K\w+") main" | tee -a /etc/apt/sources.list
+  - echo "deb-src http://ppa.launchpad.net/swi-prolog/stable/ubuntu $(cat /etc/os-release | grep -oP -m 1 "VERSION_CODENAME=\K\w+") main" | tee -a /etc/apt/sources.list
+  - apt-key adv --keyserver keyserver.ubuntu.com --recv-keys EF8406856DBFCA18
+  - apt-get update
+  - apt-get install -y swi-prolog
+
+
+build:
+ stage: build
+ script:
+   - "gradle build $GRADLE_OPT $ARGS1 --info"
+ artifacts:
+   paths:
+     - "target/"
+     - ".gradle/"
+   expire_in: 1 week
+
+deploy:
+  stage: deploy
+  only:
+    - develop
+    - master
+  script:
+    - "gradle publish $GRADLE_OPT $ARGS2 --info"
+
+
+# deploy:
+#   stage: deploy
+#   dependencies:
+#     - build
+#   script:
+#     - "gradle publish -PmavenPassword=$pass -PmavenUser=$user $GRADLE_OPT $ARGS2"
+#   artifacts:
+#     paths:
+#       - target/libs/JSON-cli.jar
+#     expire_in: 1 week
+#   only:
+#     refs:
+#       - develop
+
+
+# checkMDLinks:
+#   stage: check
+#   dependencies:
+#     - build
+#   script:
+#     - "curl --location --header \"PRIVATE-TOKEN: $secibuildtoken\" \"https://git.rwth-aachen.de/api/v4/projects/monticore%2Fmdlinkchecker/jobs/artifacts/master/raw/target/libs/MDLinkCheckerCLI.jar?job=build\" --output MDLinkCheckerCLI.jar"
+#     - "url=https://git.rwth-aachen.de/se-student/ss21/labs/GDL/-/tree/develop"
+#     - "linkCheckRes=$(java -jar MDLinkCheckerCLI.jar -url $url -t $secibuildtoken -p)"
+#     - "echo \"$linkCheckRes\""
+#     - "if [[ $linkCheckRes == *\"ERROR\"* ]]; then exit 1; fi"
+#   only:
+#     - develop

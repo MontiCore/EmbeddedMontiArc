@@ -1,0 +1,33 @@
+(role random)
+(role player)
+
+(init (control random))
+
+(<= (legal player (roll_dice))
+    (true (control player))
+)
+
+(<= (legal random (roll_dice ?value ?value2))
+    (dice ?value)
+    (dice ?value2)
+    (true (control random))
+)
+
+(<= (next (dice ?value ?value2))
+    (does random (roll_dice ?value ?value2))
+)
+
+(<= (next (control player))
+    (does random (roll_dice ?value ?value2))
+)
+(<= (next (control random))
+    (does player (roll_dice))
+)
+
+
+(dice 1)
+(dice 2)
+(dice 3)
+(dice 4)
+(dice 5)
+(dice 6)

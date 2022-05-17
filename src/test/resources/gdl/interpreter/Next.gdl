@@ -1,0 +1,19 @@
+(role test)
+
+(<= (legal test (do))
+    (role test)
+)
+
+(init (state 0))
+
+(<= (next (state ?x))
+    (true (state ?x))
+)
+(<= (next (state ?y))
+    (true (state ?x))
+    (succ ?x ?y)
+)
+
+(succ 0 1)
+(succ 1 2)
+(succ 2 3)

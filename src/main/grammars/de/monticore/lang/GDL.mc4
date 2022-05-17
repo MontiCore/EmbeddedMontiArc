@@ -1,0 +1,36 @@
+package de.monticore.lang;
+
+grammar GDL extends de.monticore.literals.MCCommonLiterals {
+
+    Game = GameExpression*;
+
+    GameExpression implements GameRelation = "(" type:GameType arguments:GameRelation* ")";
+
+    symbol GameFunctionDefinition extends GameExpression = "(" GameInference head:GameFunctionHead body:GameExpression* ")";
+
+    GameFunctionHead = "(" name:Name parameters:GameRelation* ")";
+
+    Comment extends GameExpression implements GameType = SL_COMMENT;
+
+    interface GameRelation;
+    interface GameType;
+
+    GameToken implements GameRelation = "?"token:Name;
+    GameValue implements GameRelation = value:Name | value:Digits;
+
+    GameRole implements GameType = "role";
+    GameInit implements GameType = "init";
+    GameTerminal implements GameType = "<= terminal";
+    GameInference implements GameType = "<=";
+    GameNext implements GameType = "next";
+    GameTrue implements GameType = "true";
+    GameLegal implements GameType = "legal";
+    GameDoes implements GameType = "does";
+    GameNot implements GameType = "not";
+    GameDistinct implements GameType = "distinct";
+    GameGoal implements GameType = "goal";
+    GameFunction implements GameType = function:Name@GameFunctionDefinition;
+    GameCount implements GameType = "count";
+    GameSees implements GameType = "sees";
+    
+}

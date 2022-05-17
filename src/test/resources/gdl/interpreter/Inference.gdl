@@ -1,0 +1,22 @@
+(<= (legal test (do))
+    (a 1 2)
+)
+
+(<= (next (success))
+    (does test (do))
+)
+
+(<= (a ?x ?y)
+    (b ?x ?y)
+)
+
+(<= (b ?x ?y)
+    (a ?x)
+    (a ?y)
+)
+
+(<= (a 1)
+    (a 2)
+)
+
+(a 2)
