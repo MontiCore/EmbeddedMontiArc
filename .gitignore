@@ -13,3 +13,4 @@
 .vscode/
 ./lib/
 **/vis
+ROSInterface/build

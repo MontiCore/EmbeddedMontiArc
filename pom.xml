@@ -62,24 +62,6 @@
             <version>${commons.version}</version>
         </dependency>
 
-         <dependency>
-            <groupId>org.ros.rosjava_core</groupId>
-            <artifactId>rosjava</artifactId>
-            <version>0.3.6</version>
-        </dependency>
-        
-        <dependency>
-            <groupId>org.ros.rosjava_bootstrap</groupId>
-            <artifactId>message_generation</artifactId>
-            <version>0.3.3</version>
-        </dependency>
-
-        <dependency>
-            <groupId>org.ros.rosjava_messages</groupId>
-            <artifactId>std_msgs</artifactId>
-            <version>0.5.11</version>
-        </dependency> 
-
     </dependencies>
 
     <!-- == PROJECT BUILD SETTINGS =========================================== -->
@@ -251,12 +233,6 @@
             <id>se-nexus</id>
             <name>SE-Nexus repository</name>
             <url>https://nexus.se.rwth-aachen.de/content/groups/public</url>
-        </repository>
-
-        <repository>
-            <id>rosjava_mvn_repo</id>
-            <name>ROSJava repo</name>
-            <url>https://github.com/rosjava/rosjava_mvn_repo/raw/master/</url>
         </repository>
 
         <repository>

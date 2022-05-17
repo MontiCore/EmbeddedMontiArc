@@ -6,11 +6,7 @@ import java.time.Instant;
 import de.rwth.montisim.commons.map.Pathfinding;
 import de.rwth.montisim.simulation.environment.osmmap.*;
 import de.rwth.montisim.simulation.environment.world.World;
-
-import org.ros.node.DefaultNodeMainExecutor;
-import org.ros.node.NodeConfiguration;
-import org.ros.node.NodeMain;
-import org.ros.node.NodeMainExecutor;
+import java.lang.Thread;
 
 public class RLSimulationInit {
     final SimulationConfig config;
@@ -32,11 +28,9 @@ public class RLSimulationInit {
 
     //initialize simulation handler
     public void init() {
-        NodeConfiguration rosNodeConfiguration = NodeConfiguration.newPrivate();
-        NodeMainExecutor nodeMainExecutor = DefaultNodeMainExecutor.newDefault();
-        NodeMain rlSimulationHandler = new RLSimulationHandler(config, simulationTime, map, null, nodeMainExecutor);
-        ((RLSimulationHandler) rlSimulationHandler).setSettings(distributed, randomize, play, miniStep, selfPlay_mode);
-        nodeMainExecutor.execute(rlSimulationHandler, rosNodeConfiguration);
+        RLSimulationHandler rlSimulationHandler = new RLSimulationHandler(config, simulationTime, map, null);
+        rlSimulationHandler.setSettings(distributed, randomize, play, miniStep, selfPlay_mode);
+        rlSimulationHandler.start(); 
     }
 
     //set RL specific settings
