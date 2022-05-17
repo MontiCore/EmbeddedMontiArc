@@ -23,10 +23,6 @@ import java.util.Collection;
 import java.util.List;
 import java.util.stream.Collectors;
 
-import org.ros.node.DefaultNodeMainExecutor;
-import org.ros.node.NodeConfiguration;
-import org.ros.node.NodeMainExecutor;
-
 // Reinforcement learning version of ScenarioVis
 
 public class RLVisualizer{
@@ -55,12 +51,11 @@ public class RLVisualizer{
 
     // initialize simulation handler
     public void init(Boolean distributed, Boolean randomize, Boolean play, Boolean miniStep, String selfPlay_mode){
-        NodeConfiguration rosNodeConfiguration = NodeConfiguration.newPrivate();
-        NodeMainExecutor nodeMainExecutor = DefaultNodeMainExecutor.newDefault();
-        rlSimulationHandler = new RLSimulationHandler(simConfig, simTime, map, this, nodeMainExecutor);
+        String lib_path = System.getProperty("user.dir") + "/";
+        System.load(lib_path + "libROSInterface.so");
+        rlSimulationHandler = new RLSimulationHandler(simConfig, simTime, map, this);
         rlSimulationHandler.setSettings(distributed, randomize, play, miniStep, selfPlay_mode);
-        nodeMainExecutor.execute(rlSimulationHandler, rosNodeConfiguration);
-
+        new Thread(() -> rlSimulationHandler.start()).start();        
     }
 
     public void clearRenderer(){
