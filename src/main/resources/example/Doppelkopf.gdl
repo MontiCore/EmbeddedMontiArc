@@ -17,9 +17,6 @@
 // -------- INIT ---------
 // -----------------------
 
-// ansage = keine 120, 90, 60, 30, 0
-(init (ansage none))
-
 // historie der stiche (sieht nur der gewinner des stiches)
 (init (sees none (stich 1 none none none none)))
 (init (sees none (stich 2 none none none none)))
@@ -56,7 +53,7 @@
 (init (team player3 none))
 (init (team player4 none))
 
-// ansagen
+// ansage = keine 120, 90, 60, 30, 0
 (init (ansage re none))
 (init (ansage kontra none))
 
@@ -78,13 +75,17 @@
 // -- Geben --
 // -----------
 
+// geben, solange nicht 12 Karten pro Spieler
 (<= (next (ablauf geben))
     (true (ablauf geben))
     (not (all_players_12_cards))
 )
+
+// sonst in vorbehalt wechseln
 (<= (next (ablauf vorbehalt))
     (does random (deal_finish))
 )
+
 // Karte auf Hand behalten
 (<= (next (sees ?player (hand ?player ?karte)))
     (true (ablauf geben))
@@ -96,11 +97,24 @@
     (does random (deal ?player ?karte))
 )
 
+// Zug bleibt erhalten
+(<= (next (zug ?player))
+    (true (ablauf geben))
+    (true (zug ?player))
+)
+
 // -- Vorbehalte --
 // ----------------
 
+// Karten behalten
+(<= (next (sees ?player (hand ?player ?karte)))
+    (true (ablauf vorbehalt))
+    (true (sees ?player (hand ?player ?karte)))
+)
+
 // immer Zug weitergeben
 (<= (next (zug ?next_player))
+    (true (ablauf vorbehalt))
     (does ?current_player (vorbehalt ?vorbehalt))
     (next_player ?current_player ?next_player)
 )
