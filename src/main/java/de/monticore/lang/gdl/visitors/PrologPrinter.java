@@ -105,17 +105,6 @@ public class PrologPrinter extends IndentPrinter implements GDLVisitor2, MCCommo
         return roles;
     }
 
-    public String getStateDynamics() {
-        StringBuilder sb = new StringBuilder();
-        for (FunctionSignature s : statesSignatures) {
-            sb.append(":- dynamic state_function_" + s.functionName + "/" + s.arity + ".\n");
-        }
-        for (FunctionSignature s : hiddenStatesSignatures) {
-            sb.append(":- dynamic state_hidden_function_" + s.functionName + "/" + s.arity + ".\n");
-        }
-        return sb.toString();
-    }
-
     public void setTraverser(GDLTraverser traverser) {
         this.traverser = traverser;
     }
@@ -148,15 +137,15 @@ public class PrologPrinter extends IndentPrinter implements GDLVisitor2, MCCommo
     }
 
     public void visit(ASTGameTrue node) {
-        print("state_");
+        print("state");
     }
     
     public void visit(ASTGameInit node) {
-        print("state_");
+        print("state");
     }
     
     public void visit(ASTGameSees node) {
-        print("hidden_");
+        print("_hidden");
     }
 
     public void visit(ASTGameNext node) {
@@ -179,6 +168,15 @@ public class PrologPrinter extends IndentPrinter implements GDLVisitor2, MCCommo
         print("function_goal");
     }
 
+    public String getPlaceholderStates() {
+        StringBuilder sb = new StringBuilder();
+        sb.append("state(placeholder).\n");
+        sb.append("state(placeholder, placeholder).\n");
+        sb.append("state_hidden(placeholder, placeholder).\n");
+        sb.append("state_hidden(placeholder, placeholder, placeholder).\n");
+        return sb.toString();
+    }
+
     private boolean isInFunctionDefinition = false;
     @Override
     public void handle(ASTGameExpression node) {
@@ -199,21 +197,42 @@ public class PrologPrinter extends IndentPrinter implements GDLVisitor2, MCCommo
                     innerExpression = (ASTGameExpression) seesExpression.getArguments(1);
 
                     seesExpression.getType().accept(getTraverser());
-                    innerExpression.getType().accept(getTraverser());
                     
                     print("(");
-                    seesExpression.getArguments(0).accept(getTraverser());
+                    innerExpression.getType().accept(getTraverser());
                     print(", ");
-                    for (int i = 0; i < innerExpression.getArgumentsList().size(); i++) {
-                        innerExpression.getArguments(i).accept(getTraverser());
+                    seesExpression.getArguments(0).accept(getTraverser());
 
-                        if (i < innerExpression.getArgumentsList().size() - 1) {
-                            print(", ");
+                    if (innerExpression.getArgumentsList().size() > 0) {
+                        print(", (");
+                        for (int i = 0; i < innerExpression.getArgumentsList().size(); i++) {
+                            innerExpression.getArguments(i).accept(getTraverser());
+
+                            if (i < innerExpression.getArgumentsList().size() - 1) {
+                                print(", ");
+                            }
                         }
+                        print(")");
                     }
+                    
                     print(")");
                 } else {
-                    node.getArguments(0).accept(getTraverser());
+                    print("(");
+                    innerExpression.getType().accept(getTraverser());
+                    
+                    if (innerExpression.getArgumentsList().size() > 0) {
+                        print(", (");
+                        for (int i = 0; i < innerExpression.getArgumentsList().size(); i++) {
+                            innerExpression.getArguments(i).accept(getTraverser());
+
+                            if (i < innerExpression.getArgumentsList().size() - 1) {
+                                print(", ");
+                            }
+                        }
+                        print(")");
+                    }
+                    
+                    print(")");
                 }
             } else if (type instanceof ASTGameDoes) {
                 type.accept(getTraverser());
@@ -305,18 +324,24 @@ public class PrologPrinter extends IndentPrinter implements GDLVisitor2, MCCommo
                     innerExpression = (ASTGameExpression) seesExpression.getArguments(1);
 
                     seesExpression.getType().accept(getTraverser());
-                    innerExpression.getType().accept(getTraverser());
                     
                     print("(");
-                    seesExpression.getArguments(0).accept(getTraverser());
+                    innerExpression.getType().accept(getTraverser());
                     print(", ");
-                    for (int i = 0; i < innerExpression.getArgumentsList().size(); i++) {
-                        innerExpression.getArguments(i).accept(getTraverser());
+                    seesExpression.getArguments(0).accept(getTraverser());
 
-                        if (i < innerExpression.getArgumentsList().size() - 1) {
-                            print(", ");
+                    if (innerExpression.getArgumentsList().size() > 0) {
+                        print(", (");
+                        for (int i = 0; i < innerExpression.getArgumentsList().size(); i++) {
+                            innerExpression.getArguments(i).accept(getTraverser());
+
+                            if (i < innerExpression.getArgumentsList().size() - 1) {
+                                print(", ");
+                            }
                         }
+                        print(")");
                     }
+                    
                     println(").");
                     
 
@@ -325,7 +350,23 @@ public class PrologPrinter extends IndentPrinter implements GDLVisitor2, MCCommo
                     FunctionSignature s = new FunctionSignature(state, arity + 1);
                     hiddenStatesSignatures.add(s);
                 } else {
-                    node.getArguments(0).accept(getTraverser());
+                    print("(");
+                    innerExpression.getType().accept(getTraverser());
+
+                    if (innerExpression.getArgumentsList().size() > 0) {
+                        print(", (");
+                        for (int i = 0; i < innerExpression.getArgumentsList().size(); i++) {
+                            innerExpression.getArguments(i).accept(getTraverser());
+
+                            if (i < innerExpression.getArgumentsList().size() - 1) {
+                                print(", ");
+                            }
+                        }
+                        print(")");
+                    }
+                    
+                    println(").");
+
                     // add to state signatures
                     String state = ((ASTGameFunction) innerExpression.getType()).getFunction();
                     int arity = innerExpression.getArgumentsList().size();

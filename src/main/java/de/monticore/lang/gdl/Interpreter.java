@@ -55,7 +55,7 @@ public class Interpreter {
     private List<String> currentEvaluation = null;
     private Semaphore evalSemaphore;
 
-    List<List<String>> initialStateList = null; 
+    private String placeholderStates;
 
     private Map<String, List<List<String>>[]> savedStates = new HashMap<String, List<List<String>>[]>();
 
@@ -124,7 +124,6 @@ public class Interpreter {
         PrologPrinter printer = new PrologPrinter();
         game.accept(printer.getTraverser());
         String prologProgram = printer.getContent();
-        String stateDynamics = printer.getStateDynamics();
         statesSignatures = printer.getStatesSignatures();
         hiddenStatesSignatures = printer.getHiddenStatesSignatures();
         functionSignatures = printer.getFunctionSignatures();
@@ -132,15 +131,16 @@ public class Interpreter {
         nextSignatures = printer.getNextSignatures();
         hiddenNextSignatures = printer.getHiddenNextSignatures();
         String util = loadUtil();
+        placeholderStates = printer.getPlaceholderStates();
 
         hasTerminal = printer.hasTerminal();
         hasRandom = printer.hasRandom();
         roles = printer.getRoles();
 
         writer.write("[user].\n");
-        writer.write(stateDynamics);
-        writer.write(prologProgram);
         writer.write(util);
+        writer.write(placeholderStates);
+        writer.write(prologProgram);
 
         writer.write("end_of_file.\n");
         writer.flush();
@@ -251,36 +251,8 @@ public class Interpreter {
     }
 
     private void retractAllStates() {
-        StringBuilder sb = new StringBuilder();
-        for (FunctionSignature state : statesSignatures) {
-            sb.append("retractall(");
-
-            sb.append("state_function_").append(state.functionName).append("(");
-            for (int i = 0; i < state.arity; i++) {
-                sb.append("X").append(i);
-                if (i + 1 < state.arity) {
-                    sb.append(", ");
-                }
-            }
-
-            sb.append(")).\n");
-        }
-        for (FunctionSignature state : hiddenStatesSignatures) {
-            sb.append("retractall(");
-
-            sb.append("state_hidden_function_").append(state.functionName).append("(");
-            for (int i = 0; i < state.arity; i++) {
-                sb.append("X").append(i);
-                if (i + 1 < state.arity) {
-                    sb.append(", ");
-                }
-            }
-
-            sb.append(")).\n");
-        }
-        String command = sb.toString();
-
-        execute(command, statesSignatures.size() + hiddenStatesSignatures.size());
+        String command = "retractAllStates().\n";
+        execute(command);
     }
 
     private synchronized String execute(String command) {
@@ -399,18 +371,23 @@ public class Interpreter {
         hiddenStatesSignatures = new HashSet<>();
 
         StringBuilder statesBuilder = new StringBuilder();
+        statesBuilder.append(placeholderStates);
 
         for (List<String> state : statesList) {
             String stateName = state.get(0).substring(6);
-            statesBuilder.append("state_function_").append(stateName);
+            statesBuilder.append("state(function_").append(stateName);
 
-            statesBuilder.append("(");
+            if (state.size() > 1) {
+                statesBuilder.append(", (");
 
-            for (int i = 1; i < state.size(); i++) {
-                statesBuilder.append(state.get(i));
-                if (i + 1 < state.size()) {
-                    statesBuilder.append(", ");
+                for (int i = 1; i < state.size(); i++) {
+                    statesBuilder.append(state.get(i));
+                    if (i + 1 < state.size()) {
+                        statesBuilder.append(", ");
+                    }
                 }
+    
+                statesBuilder.append(")");
             }
 
             statesBuilder.append(").\n");
@@ -421,15 +398,21 @@ public class Interpreter {
 
         for (List<String> state : hiddenStatesList) {
             String stateName = state.get(0).substring(6);
-            statesBuilder.append("state_hidden_function_").append(stateName);
+            statesBuilder.append("state_hidden(function_").append(stateName);
 
-            statesBuilder.append("(");
+            statesBuilder.append(", ").append(state.get(1));
 
-            for (int i = 1; i < state.size(); i++) {
-                statesBuilder.append(state.get(i));
-                if (i + 1 < state.size()) {
-                    statesBuilder.append(", ");
+            if (state.size() > 2) {
+                statesBuilder.append(", (");
+
+                for (int i = 2; i < state.size(); i++) {
+                    statesBuilder.append(state.get(i));
+                    if (i + 1 < state.size()) {
+                        statesBuilder.append(", ");
+                    }
                 }
+
+                statesBuilder.append(")");
             }
 
             statesBuilder.append(").\n");
@@ -437,18 +420,9 @@ public class Interpreter {
             FunctionSignature signature = new FunctionSignature(stateName, state.size() - 1);
             hiddenStatesSignatures.add(signature);
         }
-        
-        StringBuilder dynamicsBuilder = new StringBuilder();
-        for (FunctionSignature s : statesSignatures) {
-            dynamicsBuilder.append(":- dynamic state_function_" + s.functionName + "/" + s.arity + ".\n");
-        }
-        for (FunctionSignature s : hiddenStatesSignatures) {
-            dynamicsBuilder.append(":- dynamic state_hidden_function_" + s.functionName + "/" + s.arity + ".\n");
-        }
 
         StringBuilder commandBuilder = new StringBuilder();
         commandBuilder.append("[user].\n");
-        commandBuilder.append(dynamicsBuilder.toString());
         commandBuilder.append(statesBuilder.toString());
         commandBuilder.append("end_of_file.\n");
 
@@ -675,50 +649,145 @@ public class Interpreter {
     public List<List<String>> getHiddenGameState() {
         List<List<String>> allHiddenResults = new LinkedList<>();
         for (FunctionSignature state : hiddenStatesSignatures) {
-            List<List<String>> models = getAllModels("state_hidden_function_" + state.functionName, state.arity);
+            int arity = state.arity;
+            String functionName = state.functionName;
 
-            if (models == null) {
-                allHiddenResults.add(List.of("123456" + state.functionName));
-                continue;
+            StringBuilder sb = new StringBuilder();
+
+            StringBuilder tupleBuilder = new StringBuilder();
+            tupleBuilder.append("(");
+            for (int i = 0; i < arity; i++) {
+                tupleBuilder.append("X").append(i);
+                if (i + 1 < arity) {
+                    tupleBuilder.append(", ");
+                }
+            }
+            tupleBuilder.append(")");
+
+            StringBuilder tupleBuilderMinus1 = new StringBuilder();
+            tupleBuilderMinus1.append("(");
+            for (int i = 1; i < arity; i++) {
+                tupleBuilderMinus1.append("X").append(i);
+                if (i + 1 < arity) {
+                    tupleBuilderMinus1.append(", ");
+                }
+            }
+            tupleBuilderMinus1.append(")");
+
+            sb.append("setof(").append(tupleBuilder.toString()).append(", ");
+            sb.append("state_hidden(").append("function_" + functionName).append(", ");
+            sb.append("X0");
+
+            if (arity > 1) sb.append(", ").append(tupleBuilderMinus1.toString());
+
+            sb.append("), ");
+            sb.append("Models).\n");
+
+            String command = sb.toString();
+            String result = execute(command);
+
+            List<List<String>> results = new LinkedList<>();
+
+            if (result.equals("false.")) {
+                return results;
+            }
+            result = result.substring(10, result.length() - 2);
+
+            if (arity > 1) {
+                String[] tuples = result.split("\\(");
+                for (int i = 1; i < tuples.length; i++) {
+                    String current = tuples[i].split("\\)")[0];
+                    String[] elements = current.split(",");
+                    results.add(List.of(elements));
+                }
+            } else {
+                String[] tuples = result.split(",");
+                for (String s: tuples) {
+                    results.add(List.of(s));
+                }
             }
 
-            models = models.stream().map(list -> {
+            results = results.stream().map(list -> {
                 List<String> l = new ArrayList<>();
                 l.add("123456" + state.functionName);
                 l.addAll(list);
                 return l;
             }).collect(Collectors.toList());
 
-            allHiddenResults.addAll(models);
+            allHiddenResults.addAll(results);
         }
 
         allHiddenResults = allHiddenResults
             .stream().map(
                 l -> l.stream().map(s -> s.substring(6)).collect(Collectors.toList())
             ).collect(Collectors.toList());
-        
+
         return allHiddenResults;
     }
 
     public List<List<String>> getGameState() {
         List<List<String>> allResults = new LinkedList<>();
         for (FunctionSignature state : statesSignatures) {
-            List<List<String>> models = getAllModels("state_function_" + state.functionName, state.arity);
+            int arity = state.arity;
+            String functionName = state.functionName;
 
-            if (models == null) {
-                allResults.add(List.of("123456" + state.functionName));
+            if (arity == 0) {
+                allResults.add(List.of("123456" + functionName));
                 continue;
             }
 
-            models = models.stream().map(list -> {
+            StringBuilder sb = new StringBuilder();
+
+            StringBuilder tupleBuilder = new StringBuilder();
+            tupleBuilder.append("(");
+            for (int i = 0; i < arity; i++) {
+                tupleBuilder.append("X").append(i);
+                if (i + 1 < arity) {
+                    tupleBuilder.append(", ");
+                }
+            }
+            tupleBuilder.append(")");
+
+            sb.append("setof(").append(tupleBuilder.toString()).append(", ");
+            sb.append("state(").append("function_" + functionName).append(", ");
+            sb.append(tupleBuilder.toString()).append("), ");
+            sb.append("Models).\n");
+
+            String command = sb.toString();
+            String result = execute(command);
+
+            List<List<String>> results = new LinkedList<>();
+
+            if (result.equals("false.")) {
+                return results;
+            }
+            result = result.substring(10, result.length() - 2);
+
+            if (arity > 1) {
+                String[] tuples = result.split("\\(");
+                for (int i = 1; i < tuples.length; i++) {
+                    String current = tuples[i].split("\\)")[0];
+                    String[] elements = current.split(",");
+                    results.add(List.of(elements));
+                }
+            } else {
+                String[] tuples = result.split(",");
+                for (String s: tuples) {
+                    results.add(List.of(s));
+                }
+            }
+
+            results = results.stream().map(list -> {
                 List<String> l = new ArrayList<>();
                 l.add("123456" + state.functionName);
                 l.addAll(list);
                 return l;
             }).collect(Collectors.toList());
 
-            allResults.addAll(models);
+            allResults.addAll(results);
         }
+
+
 
         allResults = allResults
             .stream().map(
