@@ -62,6 +62,7 @@ public class AllPredefinedLayers {
     public static final String CONVOLUTION3D_NAME = "Convolution3D";
     public static final String UP_CONVOLUTION3D_NAME = "UpConvolution3D";
     public static final String VECTOR_QUANTIZE_NAME = "VectorQuantize";
+    public static final String POSITION_ENCODING_NAME = "PositionEncoding";
 
     public static final String AdaNet_Name = "AdaNet"; //AdaNet layer
 
@@ -248,7 +249,8 @@ public class AllPredefinedLayers {
                 GraphSumPool.create(),
                 AdaNet.create(),
                 Reparameterize.create(),
-                VectorQuantize.create());
+                VectorQuantize.create(),
+                PositionEncoding.create());
 
     }
 
