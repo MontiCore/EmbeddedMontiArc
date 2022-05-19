@@ -40,8 +40,7 @@ public class WorldRenderer extends Renderer {
     public static final float SEGMENT_OFFSET = -0.2f; // Positive is to the left in segment direction
     public static final Color SEPARATING_LINE_COLOR = new Color(99, 150, 226);
     public static final Color BUILDING_OUTLINE_COLOR = new Color(94, 106, 124);
-    
-    
+
 
     public World world;
     private final List<Polyline> roads = new ArrayList<>();
@@ -62,7 +61,7 @@ public class WorldRenderer extends Renderer {
         load(world);
     }
 
-    public void load(World world){
+    public void load(World world) {
         this.world = world;
         constructRoads();
         constructBuildings();
@@ -99,26 +98,26 @@ public class WorldRenderer extends Renderer {
         ThreadLocalRandom r = ThreadLocalRandom.current();
         Vector<Vec2> normals = new Vector<>(); // Working array
         Vec2 displacement = new Vec2();
-        for (WaySegment s : world.waySegments){
-            int size = Math.abs(s.pointsEnd-s.pointsStart)+1;
-            if (size > 1){
+        for (WaySegment s : world.waySegments) {
+            int size = Math.abs(s.pointsEnd - s.pointsStart) + 1;
+            if (size > 1) {
                 int inc = s.pointsEnd > s.pointsStart ? 1 : -1;
-                Polyline p = new Polyline(size, new Color(r.nextInt(50, 230),r.nextInt(50, 230),r.nextInt(50, 230)));
+                Polyline p = new Polyline(size, new Color(r.nextInt(50, 230), r.nextInt(50, 230), r.nextInt(50, 230)));
                 roadSegments.add(p);
 
-                if (normals.size() < size-1) { // Resize working array
-                    normals.setSize(size-1);
-                    for (int i = 0; i < size-1; ++i) if (normals.elementAt(i) == null) normals.set(i, new Vec2());
+                if (normals.size() < size - 1) { // Resize working array
+                    normals.setSize(size - 1);
+                    for (int i = 0; i < size - 1; ++i) if (normals.elementAt(i) == null) normals.set(i, new Vec2());
                 }
-                
+
                 Vec3 lastPoint = null;
                 Vec3 currentPoint;
 
                 // Get segment vectors -> normalize -> rotate +90 deg -> save in 'normals'
                 int j = 0;
-                for (int i = s.pointsStart; i != s.pointsEnd+inc; i+=inc){
+                for (int i = s.pointsStart; i != s.pointsEnd + inc; i += inc) {
                     currentPoint = s.way.points.elementAt(i);
-                    if (lastPoint != null){
+                    if (lastPoint != null) {
                         Vec2 n = normals.elementAt(j);
                         // In place subtraction & conversion
                         n.x = currentPoint.x - lastPoint.x;
@@ -132,14 +131,14 @@ public class WorldRenderer extends Renderer {
                     }
                     lastPoint = currentPoint;
                 }
-                
+
                 j = 0;
-                for (int i = s.pointsStart; i != s.pointsEnd+inc; i+=inc){
+                for (int i = s.pointsStart; i != s.pointsEnd + inc; i += inc) {
                     Vec3 pi = s.way.points.elementAt(i);
                     //Get displacement
                     if (i == s.pointsStart) displacement.set(normals.elementAt(j));
-                    else if (i == s.pointsEnd) displacement.set(normals.elementAt(j-1));
-                    else IPM.midpointTo(displacement, normals.elementAt(j), normals.elementAt(j-1));
+                    else if (i == s.pointsEnd) displacement.set(normals.elementAt(j - 1));
+                    else IPM.midpointTo(displacement, normals.elementAt(j), normals.elementAt(j - 1));
                     p.points[j] = new Vec3(pi.x + displacement.x, pi.y + displacement.y, 1); // Transform to extended 2D coordinates
                     j++;
                 }
@@ -176,7 +175,7 @@ public class WorldRenderer extends Renderer {
             int size = b.boundary.size();
             if (size >= 3) {
                 double h = Math.max(b.height, b.levels * 3);
-                Polyline p = new Polyline(size+1, lerp(BUILDING_OUTLINE_COLOR, BUILDING_COLOR_MAX_HEIGHT, h / MAX_HEIGHT));
+                Polyline p = new Polyline(size + 1, lerp(BUILDING_OUTLINE_COLOR, BUILDING_COLOR_MAX_HEIGHT, h / MAX_HEIGHT));
                 int i = 0;
                 for (Vec3 ip : b.boundary) {
                     p.points[i] = new Vec3(ip.x, ip.y, 1); // Transform to extended 2D coordinates

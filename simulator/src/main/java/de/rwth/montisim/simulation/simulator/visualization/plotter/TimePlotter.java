@@ -19,15 +19,15 @@ public class TimePlotter extends JPanel {
 
     public static final int LEGEND_LINE_WIDTH = 12;
     public static final int LEGEND_LINE_HEIGHT = 3;
-    
+
     public boolean dirty = true;
-    
+
     public Vec2 screen_size = new Vec2();
 
     List<DataPoints> graphs = new ArrayList<>();
 
-    public TimePlotter(){
-        setPreferredSize(new Dimension(100,300));
+    public TimePlotter() {
+        setPreferredSize(new Dimension(100, 300));
     }
 
     @Override
@@ -45,10 +45,10 @@ public class TimePlotter extends JPanel {
         screen_size.x = d.getWidth();
         screen_size.y = d.getHeight();
 
-        g2.setColor(new Color(255,180,180));
-        g2.fillRect(0, 0, (int)d.getWidth(), (int)d.getHeight());
+        g2.setColor(new Color(255, 180, 180));
+        g2.fillRect(0, 0, (int) d.getWidth(), (int) d.getHeight());
 
-        if (dirty){
+        if (dirty) {
             refresh();
         }
 
@@ -60,9 +60,9 @@ public class TimePlotter extends JPanel {
     }
 
 
-    public void update(){
+    public void update() {
         // Update time for graphs
-        for (DataPoints dp : graphs){
+        for (DataPoints dp : graphs) {
             dp.nextTimeStep();
         }
         dirty = true;
@@ -88,7 +88,7 @@ public class TimePlotter extends JPanel {
         return size;
     }
 
-    
+
     private void drawAxesAndGrid() {
         // Use precomputed labels sizes to draw axes lines
         // Use precomputed info to draw label ticks and labels
@@ -108,5 +108,5 @@ public class TimePlotter extends JPanel {
         graphs.add(dp);
         dirty = true;
     }
-    
+
 }

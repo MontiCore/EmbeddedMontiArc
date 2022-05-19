@@ -1,6 +1,6 @@
 /**
  * (c) https://github.com/MontiCore/monticore
- *
+ * <p>
  * The license generally applicable for this project
  * can be found under https://github.com/MontiCore/monticore.
  */
@@ -35,42 +35,42 @@ public class MassPointPhysicalVehicleBuilder extends PhysicalVehicleBuilder {
     /**
      * Constructor
      */
-    public MassPointPhysicalVehicleBuilder(){
+    public MassPointPhysicalVehicleBuilder() {
         // Class has no uninitialized fields
     }
-    
-	@Override
-	PhysicalVehicle createPhysicalVehicle() {
-		return new MassPointPhysicalVehicle();
-	}
 
-	@Override
-	Vec3 calculateAngularVelocity(Vec3 angularVelocity) {
-		// Get rotation
+    @Override
+    PhysicalVehicle createPhysicalVehicle() {
+        return new MassPointPhysicalVehicle();
+    }
+
+    @Override
+    Vec3 calculateAngularVelocity(Vec3 angularVelocity) {
+        // Get rotation
         RealMatrix rotation;
-        if(this.rotation.isPresent()){
+        if (this.rotation.isPresent()) {
             rotation = new BlockRealMatrix(this.rotation.get().getMatrix());
-        }else{
+        } else {
             rotation = new BlockRealMatrix(new Rotation(RotationOrder.XYZ, RotationConvention.VECTOR_OPERATOR, 0.0, 0.0, 0.0).getMatrix());
         }
         // Compute angular velocity in local coordinates
         return rotation.transpose().operate(this.angularVelocity.get());
-	}
+    }
 
-	@Override
-	void setVelocity(PhysicalVehicle physicalVehicle, Vec3 velocity) {
-		// Get rotation
+    @Override
+    void setVelocity(PhysicalVehicle physicalVehicle, Vec3 velocity) {
+        // Get rotation
         RealMatrix rotation;
-        if(this.rotation.isPresent()){
+        if (this.rotation.isPresent()) {
             rotation = new BlockRealMatrix(this.rotation.get().getMatrix());
-        }else{
+        } else {
             rotation = new BlockRealMatrix(new Rotation(RotationOrder.XYZ, RotationConvention.VECTOR_OPERATOR, 0.0, 0.0, 0.0).getMatrix());
         }
         // Compute velocity in local coordinates
         Vec3 localVelocity = rotation.transpose().operate(this.velocity.get());
         // Set velocity
         physicalVehicle.setVelocity(localVelocity);
-	}
+    }
 
     /**
      * Method takes a file that has to contain a valid JSON representation of a car.
@@ -80,7 +80,7 @@ public class MassPointPhysicalVehicleBuilder extends PhysicalVehicleBuilder {
      * @return MassPointPhysicalVehicle according to the JSON contents
      * @throws IOException thrown if the given file could either not be found or accessed/read.
      */
-    public MassPointPhysicalVehicle loadFromFile(Vehicle vehicle,File file) throws IOException {
+    public MassPointPhysicalVehicle loadFromFile(Vehicle vehicle, File file) throws IOException {
         String jsonContents = new String(Files.readAllBytes(file.toPath()));
         Gson g = new Gson();
         ParsableVehicleProperties data = g.fromJson(jsonContents, ParsableVehicleProperties.class);
@@ -103,7 +103,7 @@ public class MassPointPhysicalVehicleBuilder extends PhysicalVehicleBuilder {
         builder.setWheelDistLeftRightBackSide(data.getWheelDistLeftRightBackSide());
         builder.setWheelDistToFront(data.getWheelDistToFront());
         builder.setWheelDistToBack(data.getWheelDistToBack());
-        
+
         return (MassPointPhysicalVehicle) builder.buildPhysicalVehicle(vehicle);
     }
 
@@ -116,13 +116,13 @@ public class MassPointPhysicalVehicleBuilder extends PhysicalVehicleBuilder {
      * @throws IOException thrown if the given path cannot be accessed.
      */
     public void storeInFile(File whereToStore) throws IOException {
-		EESimulator eeSimulator = new EESimulator(Instant.EPOCH);
-		EEVehicleBuilder eeVehicleBuilder = new EEVehicleBuilder(eeSimulator);
-		InstantBus bus = new InstantBus(eeSimulator);
-		eeVehicleBuilder.createAllSensorsNActuators(bus);
-		Vehicle vehicle = new Vehicle(this, eeVehicleBuilder);
+        EESimulator eeSimulator = new EESimulator(Instant.EPOCH);
+        EEVehicleBuilder eeVehicleBuilder = new EEVehicleBuilder(eeSimulator);
+        InstantBus bus = new InstantBus(eeSimulator);
+        eeVehicleBuilder.createAllSensorsNActuators(bus);
+        Vehicle vehicle = new Vehicle(this, eeVehicleBuilder);
         PhysicalVehicle physicalVehicle = vehicle.getPhysicalVehicle();
-        ParsableVehicleProperties properties = new MassPointPhysicalVehicleBuilder.ParsableVehicleProperties((MassPointPhysicalVehicle) physicalVehicle) ;
+        ParsableVehicleProperties properties = new MassPointPhysicalVehicleBuilder.ParsableVehicleProperties((MassPointPhysicalVehicle) physicalVehicle);
 
         Gson g = new Gson();
         String json = g.toJson(properties, MassPointPhysicalVehicleBuilder.ParsableVehicleProperties.class);
@@ -205,7 +205,7 @@ public class MassPointPhysicalVehicleBuilder extends PhysicalVehicleBuilder {
             wheelDistToBack = v.getWheelDistToBack();
         }
 
-        public Vec3 getPosition(){
+        public Vec3 getPosition() {
             return new Vec3(new double[]{positionX, positionY, positionZ});
         }
 
@@ -213,11 +213,11 @@ public class MassPointPhysicalVehicleBuilder extends PhysicalVehicleBuilder {
             return new Rotation(RotationOrder.XYZ, RotationConvention.VECTOR_OPERATOR, rotationX, rotationY, rotationZ);
         }
 
-        public Vec3 getVelocity(){
+        public Vec3 getVelocity() {
             return new Vec3(new double[]{velocityX, velocityY, velocityZ});
         }
 
-        public Vec3 getAngularVelocity(){
+        public Vec3 getAngularVelocity() {
             return new Vec3(new double[]{angularVelocityX, angularVelocityY, angularVelocityZ});
         }
 

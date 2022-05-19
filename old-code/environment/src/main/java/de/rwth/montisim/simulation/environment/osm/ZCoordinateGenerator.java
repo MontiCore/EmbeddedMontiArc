@@ -1,6 +1,6 @@
 /**
  * (c) https://github.com/MontiCore/monticore
- *
+ * <p>
  * The license generally applicable for this project
  * can be found under https://github.com/MontiCore/monticore.
  */
@@ -32,9 +32,9 @@ public class ZCoordinateGenerator {
     private static HeightGenerator heightGenerator;
 
     public static void generateZCoordinates(EnvironmentContainer2D container, ParserSettings.ZCoordinates strategy) {
-        if(strategy == ParserSettings.ZCoordinates.ALLZERO) {
+        if (strategy == ParserSettings.ZCoordinates.ALLZERO) {
             heightGenerator = new AllZeroGenerator(container.getBounds());
-        } else if(strategy == ParserSettings.ZCoordinates.STATIC) {
+        } else if (strategy == ParserSettings.ZCoordinates.STATIC) {
             heightGenerator = new StaticHeightGenerator(container.getBounds());
         } else if (strategy == ParserSettings.ZCoordinates.FROM_FILE) {
             heightGenerator = new SRTMHeightGenerator();
@@ -46,48 +46,48 @@ public class ZCoordinateGenerator {
         double maxZ = Double.MIN_VALUE;
         double minZ = Double.MAX_VALUE;
 
-        for(EnvStreet s : container.getStreets()) {
-            for(EnvNode n : s.getNodes()) {
+        for (EnvStreet s : container.getStreets()) {
+            for (EnvNode n : s.getNodes()) {
                 Node2D n1 = (Node2D) n;
                 n1.setZ(heightGenerator.getGround(n1.getX().doubleValue(), n1.getY().doubleValue()));
 
-                if(n1.getZ().doubleValue() < 0) {
+                if (n1.getZ().doubleValue() < 0) {
                     System.out.println(n1);
                 }
 
-                if(n1.getZ().doubleValue() > maxZ) {
+                if (n1.getZ().doubleValue() > maxZ) {
                     maxZ = n1.getZ().doubleValue();
                 }
 
-                if(n1.getZ().doubleValue() < minZ) {
+                if (n1.getZ().doubleValue() < minZ) {
                     minZ = n1.getZ().doubleValue();
                 }
 
             }
 
-            for(EnvNode n : s.getIntersections()) {
+            for (EnvNode n : s.getIntersections()) {
                 Node2D n1 = (Node2D) n;
                 n1.setZ(heightGenerator.getGround(n1.getX().doubleValue(), n1.getY().doubleValue()));
-                if(n1.getZ().doubleValue() > maxZ) {
+                if (n1.getZ().doubleValue() > maxZ) {
                     maxZ = n1.getZ().doubleValue();
                 }
 
-                if(n1.getZ().doubleValue() < minZ) {
+                if (n1.getZ().doubleValue() < minZ) {
                     minZ = n1.getZ().doubleValue();
                 }
             }
         }
 
-        for(Building b : container.getBuildings()) {
-            for(EnvNode n : b.getNodes()) {
+        for (Building b : container.getBuildings()) {
+            for (EnvNode n : b.getNodes()) {
                 Node2D n1 = (Node2D) n;
                 n1.setZ(heightGenerator.getGround(n1.getX().doubleValue(), n1.getY().doubleValue()));
 
-                if(n1.getZ().doubleValue() > maxZ) {
+                if (n1.getZ().doubleValue() > maxZ) {
                     maxZ = n1.getZ().doubleValue();
                 }
 
-                if(n1.getZ().doubleValue() < minZ) {
+                if (n1.getZ().doubleValue() < minZ) {
                     minZ = n1.getZ().doubleValue();
                 }
             }
@@ -111,19 +111,18 @@ public class ZCoordinateGenerator {
             Log.info("Created new height generator as no reference existed!");
         }
 
-        double minLat=50.7767081,minLong=6.052651;
+        double minLat = 50.7767081, minLong = 6.052651;
         double LAT_CONSTANT = 110.574;
         double LONG_CONSTANT = 111.320;
-        double lat = y/(1000*LAT_CONSTANT) + minLat;
-        double longi = x/(1000*LONG_CONSTANT*Math.cos(Math.toRadians(lat))) + minLong;
+        double lat = y / (1000 * LAT_CONSTANT) + minLat;
+        double longi = x / (1000 * LONG_CONSTANT * Math.cos(Math.toRadians(lat))) + minLong;
 
-        if(heightGenerator != null) {
+        if (heightGenerator != null) {
             //Log.info("Height at " + heightGenerator.getGround(x, y));
             double z = 0;
             try {
                 z = heightGenerator.getGround(longi, lat);
-            }
-            catch (ArrayIndexOutOfBoundsException ex) {
+            } catch (ArrayIndexOutOfBoundsException ex) {
                 Log.info("IndexOutOfBounds: x=" + x + "->long=" + longi + ",y=" + y + "->lat=" + lat);
             }
             return z;
@@ -166,7 +165,7 @@ public class ZCoordinateGenerator {
             return heightGenerator.getHeightMapMinPoint();
         }
 
-        return new Vec2(0,0);
+        return new Vec2(0, 0);
     }
 
     public static Vec2 getHeightMapMaxPoint() {
@@ -174,6 +173,6 @@ public class ZCoordinateGenerator {
             return heightGenerator.getHeightMapMaxPoint();
         }
 
-        return new Vec2(0,0);
+        return new Vec2(0, 0);
     }
 }

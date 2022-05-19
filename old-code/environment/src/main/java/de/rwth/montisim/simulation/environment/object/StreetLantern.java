@@ -1,6 +1,6 @@
 /**
  * (c) https://github.com/MontiCore/monticore
- *
+ * <p>
  * The license generally applicable for this project
  * can be found under https://github.com/MontiCore/monticore.
  */
@@ -33,7 +33,7 @@ public class StreetLantern implements SimulationObject {
     public void registerComponents(ISimulator simulator) {
         simulator.registerStaticObject(objectData);
     }
-    
+
     // TODO
     // /**
     //  * Function that returns a list of pairs of 3D coordinates, indicating a vector on the edges of the physical object

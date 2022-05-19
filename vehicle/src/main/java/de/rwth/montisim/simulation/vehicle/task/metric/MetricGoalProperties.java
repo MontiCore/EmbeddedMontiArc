@@ -18,7 +18,6 @@ public class MetricGoalProperties extends GoalProperties {
     public Comparator operator = Comparator.EQUAL;
 
 
-    
     // public MetricGoal(LTLOperator ltlOperator, String property, Comparator comparator, double value, String unit) {
     //     this.ltlOperator = ltlOperator;
     //     this.property = property;
@@ -56,9 +55,9 @@ public class MetricGoalProperties extends GoalProperties {
             return false;
         MetricGoalProperties op = (MetricGoalProperties) o;
         return compare.equals(op.compare) &&
-            with == op.with && 
-            unit.equals(op.unit) &&
-            operator == op.operator &&
-            ltl_operator == op.ltl_operator;
+                with == op.with &&
+                unit.equals(op.unit) &&
+                operator == op.operator &&
+                ltl_operator == op.ltl_operator;
     }
 }

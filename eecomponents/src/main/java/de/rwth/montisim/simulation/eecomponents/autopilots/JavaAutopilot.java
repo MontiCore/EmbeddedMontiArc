@@ -32,7 +32,7 @@ public class JavaAutopilot extends EEComponent implements Inspectable {
 
     public static final double MAX_DEVIATION = 3; // max allowed deviation from the trajectory "corners" (in meters)
     public static final double ORTHO_DIST = MAX_DEVIATION / (Math.sqrt(2) - 1); // max allowed deviation from the
-                                                                                // trajectory "corners" (in meters)
+    // trajectory "corners" (in meters)
 
     transient int velocityMsg;
     transient int positionMsg;
@@ -48,7 +48,7 @@ public class JavaAutopilot extends EEComponent implements Inspectable {
 
     transient int batteryMsg;
 
-    transient List<Integer> sensorMsg = Arrays.asList(0,0,0,0,0,0,0,0);
+    transient List<Integer> sensorMsg = Arrays.asList(0, 0, 0, 0, 0, 0, 0, 0);
 
     transient int upperSpeedLimitMsg;
 
@@ -56,7 +56,7 @@ public class JavaAutopilot extends EEComponent implements Inspectable {
     public Vec2 currentPosition = null;
     public double currentCompass = Double.NaN;
     public double batteryLevel = 0; // Unused
-    public List<Double> lidarSensors = Arrays.asList(0.0,0.0,0.0,0.0,0.0,0.0,0.0,0.0); // Unused
+    public List<Double> lidarSensors = Arrays.asList(0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0); // Unused
 
     double newTrajX[] = null;
     public int newTrajLength = 0;
@@ -89,13 +89,13 @@ public class JavaAutopilot extends EEComponent implements Inspectable {
         this.trajYMsg = addPort(PortInformation.newRequiredInputDataPort(Navigation.TRAJECTORY_Y_MSG, Navigation.TRAJECTORY_Y_TYPE, false));
 
         this.steeringMsg = addPort(PortInformation.newRequiredOutputDataPort(Actuator.SETTER_PREFIX + PowerTrainProperties.STEERING_VALUE_NAME,
-        BasicType.DOUBLE));
+                BasicType.DOUBLE));
         this.accelMsg = addPort(PortInformation.newRequiredOutputDataPort(Actuator.SETTER_PREFIX + PowerTrainProperties.GAS_VALUE_NAME, BasicType.DOUBLE));
         this.brakeMsg = addPort(PortInformation.newRequiredOutputDataPort(Actuator.SETTER_PREFIX + PowerTrainProperties.BRAKING_VALUE_NAME, BasicType.DOUBLE));
 
         this.batteryMsg = addPort(PortInformation.newOptionalInputDataPort(BatteryLevel.VALUE_NAME, BatteryLevel.TYPE, false));
 
-        for (int i=0; i<sensorMsg.size(); i++){
+        for (int i = 0; i < sensorMsg.size(); i++) {
             this.sensorMsg.set(i, addPort(PortInformation.newOptionalInputDataPort(Lidar.LIDAR_MSG.get(i), PhysicalValueDouble.TYPE, false)));
         }
 
@@ -114,8 +114,8 @@ public class JavaAutopilot extends EEComponent implements Inspectable {
             compute(msgRecvEvent.getEventTime());
         } else if (msg.isMsg(compassMsg)) {
             currentCompass = (Double) msg.message;
-        } else if (msg.isMsg(trajLengthMsg)){
-            newTrajLength = (int)msg.message;
+        } else if (msg.isMsg(trajLengthMsg)) {
+            newTrajLength = (int) msg.message;
         } else if (msg.isMsg(trajXMsg)) {
             newTrajX = (double[]) msg.message;
         } else if (msg.isMsg(trajYMsg)) {
@@ -127,10 +127,9 @@ public class JavaAutopilot extends EEComponent implements Inspectable {
             batteryLevel = (double) msg.message;
         } else if (msg.isMsg(upperSpeedLimitMsg)) {
             upperSpeedLimitArr = (double[]) msg.message;
-        }
-        else {
-            for (int i=0; i<sensorMsg.size(); i++){
-                if(msg.isMsg(sensorMsg.get(i))){
+        } else {
+            for (int i = 0; i < sensorMsg.size(); i++) {
+                if (msg.isMsg(sensorMsg.get(i))) {
                     this.lidarSensors.set(i, (double) msg.message);
                 }
             }
@@ -157,7 +156,9 @@ public class JavaAutopilot extends EEComponent implements Inspectable {
             init();
         }
 
-        /** Assumes posStart & posEnd are set */
+        /**
+         * Assumes posStart & posEnd are set
+         */
         void init() {
             IPM.subtractTo(dir, posEnd, posStart);
             length = dir.magnitude();
@@ -192,10 +193,12 @@ public class JavaAutopilot extends EEComponent implements Inspectable {
         this.currentGas = val;
         sendMessage(sendTime, accelMsg, val);
     }
+
     void setBrakes(Instant sendTime, double val) {
         this.currentBrakes = val;
         sendMessage(sendTime, brakeMsg, val);
     }
+
     void setSteering(Instant sendTime, double val) {
         this.currentSteering = val;
         sendMessage(sendTime, steeringMsg, val);
@@ -412,7 +415,7 @@ public class JavaAutopilot extends EEComponent implements Inspectable {
             else {
                 entries.add(res);
                 for (String s : toStr) {
-                    entries.add("  "+s);
+                    entries.add("  " + s);
                 }
             }
         }

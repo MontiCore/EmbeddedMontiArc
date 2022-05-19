@@ -1,6 +1,6 @@
 /**
  * (c) https://github.com/MontiCore/monticore
- *
+ * <p>
  * The license generally applicable for this project
  * can be found under https://github.com/MontiCore/monticore.
  */
@@ -43,7 +43,7 @@ public class EnvNode {
 
 
     public StreetSign getStreetSign() {
-        if(this.sign == null) {
+        if (this.sign == null) {
             this.sign = new StreetSign(SignTypeAndState.EMPTY_SIGN);
         }
         return this.sign;
@@ -70,7 +70,7 @@ public class EnvNode {
     }
 
     public String toString() {
-        return "{osmid: " + this.osmId + ", pos:" + this.point.toString()+"}";
+        return "{osmid: " + this.osmId + ", pos:" + this.point.toString() + "}";
     }
 
 }

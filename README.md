@@ -1,9 +1,11 @@
 <!-- (c) https://github.com/MontiCore/monticore -->
+
 # Simulation
 
-## >> [Link to the MontiSim Documentation (Wiki)](https://git.rwth-aachen.de/monticore/EmbeddedMontiArc/simulators/simulation/-/wikis/home)  <<
+## > > [Link to the MontiSim Documentation (Wiki)](https://git.rwth-aachen.de/monticore/EmbeddedMontiArc/simulators/simulation/-/wikis/home)  <<
 
-The Issues for MontiSim are tracked in the [simulation project](https://git.rwth-aachen.de/monticore/EmbeddedMontiArc/simulators/simulation/-/boards/8343).
+The Issues for MontiSim are tracked in
+the [simulation project](https://git.rwth-aachen.de/monticore/EmbeddedMontiArc/simulators/simulation/-/boards/8343).
 
 ## Usage
 

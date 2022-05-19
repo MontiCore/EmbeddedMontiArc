@@ -1,6 +1,6 @@
 /**
  * (c) https://github.com/MontiCore/monticore
- *
+ * <p>
  * The license generally applicable for this project
  * can be found under https://github.com/MontiCore/monticore.
  */
@@ -23,11 +23,13 @@ import simulation.EESimulator.EESimulator;
 import simulation.bus.InstantBus;
 import de.rwth.montisim.simulation.util.Log;
 import de.rwth.montisim.simulation.util.MathHelper;
+
 import java.io.File;
 import java.io.IOException;
 import java.nio.file.Files;
 import java.time.Instant;
 import java.util.Optional;
+
 import static org.junit.Assert.*;
 
 /**
@@ -45,10 +47,10 @@ public class MassPointBuilderTest {
     }
 
     @Test
-    public void buildDefaultVehicle(){
+    public void buildDefaultVehicle() {
         // Calculate expected values
         double height = PhysicalVehicle.VEHICLE_DEFAULT_HEIGHT;
-        Vec3 expectedPosition = new Vec3(new double[]{0.0, 0.0, - height/2});
+        Vec3 expectedPosition = new Vec3(new double[]{0.0, 0.0, -height / 2});
         Rotation expectedRot = new Rotation(RotationOrder.XYZ, RotationConvention.VECTOR_OPERATOR, 0.0, 0.0, 0.0);
         RealMatrix expectedRotation = new BlockRealMatrix(expectedRot.getMatrix());
         Vec3 expectedVelocity = new Vec3(new double[]{0.0, 0.0, 0.0});
@@ -69,13 +71,13 @@ public class MassPointBuilderTest {
         Vec3 expectedGeometryPosition = new Vec3(new double[]{0.0, 0.0, 0.0});
 
         // Build default car
-    	PhysicalVehicleBuilder physicalVehicleBuilder = new MassPointPhysicalVehicleBuilder();
-		EESimulator eeSimulator = new EESimulator(Instant.EPOCH);
-		EEVehicleBuilder eeVehicleBuilder = new EEVehicleBuilder(eeSimulator);
-		InstantBus bus = new InstantBus(eeSimulator);
-		eeVehicleBuilder.createAllSensorsNActuators(bus);
-		Vehicle vehicle = new Vehicle(physicalVehicleBuilder, eeVehicleBuilder);
-		MassPointPhysicalVehicle physicalVehicle = (MassPointPhysicalVehicle) vehicle.getPhysicalVehicle();
+        PhysicalVehicleBuilder physicalVehicleBuilder = new MassPointPhysicalVehicleBuilder();
+        EESimulator eeSimulator = new EESimulator(Instant.EPOCH);
+        EEVehicleBuilder eeVehicleBuilder = new EEVehicleBuilder(eeSimulator);
+        InstantBus bus = new InstantBus(eeSimulator);
+        eeVehicleBuilder.createAllSensorsNActuators(bus);
+        Vehicle vehicle = new Vehicle(physicalVehicleBuilder, eeVehicleBuilder);
+        MassPointPhysicalVehicle physicalVehicle = (MassPointPhysicalVehicle) vehicle.getPhysicalVehicle();
 
         // Test not set/default parameters
         assertTrue(MathHelper.vectorEquals(expectedPosition, physicalVehicle.getPosition(), 0.00000001));
@@ -106,7 +108,7 @@ public class MassPointBuilderTest {
     }
 
     @Test
-    public void buildCustomVehicle(){
+    public void buildCustomVehicle() {
         // Calculate expected values
         Vec3 expectedPosition = new Vec3(new double[]{12.0, -3.0, 3.5});
         Rotation expectedRot = new Rotation(RotationOrder.XYZ, RotationConvention.VECTOR_OPERATOR, 7.0, -1.5, Math.PI / 2);
@@ -127,7 +129,7 @@ public class MassPointBuilderTest {
         // Calculate remaining expected values
         Vec3 expectedForce = new Vec3(new double[]{0.0, 0.0, 0.0});
         Vec3 expectedTorque = new Vec3(3);
-        Vec3 expectedGeometryPositionOffset = expectedRotation.operate(new Vec3(new double[]{0.0, 0.0, expectedHeight/2}));
+        Vec3 expectedGeometryPositionOffset = expectedRotation.operate(new Vec3(new double[]{0.0, 0.0, expectedHeight / 2}));
         Vec3 expectedGeometryPosition = expectedPosition.add(expectedGeometryPositionOffset);
 
         // Build custom car
@@ -146,14 +148,14 @@ public class MassPointBuilderTest {
         builder.setWheelDistToFront(expectedWheelDistToFront);
         builder.setWheelDistToBack(expectedWheelDistToBack);
         builder.setGlobalId(expectedGlobalId);
-        
 
-		EESimulator eeSimulator = new EESimulator(Instant.EPOCH);
-		EEVehicleBuilder eeVehicleBuilder = new EEVehicleBuilder(eeSimulator);
-		InstantBus bus = new InstantBus(eeSimulator);
-		eeVehicleBuilder.createAllSensorsNActuators(bus);
-		Vehicle vehicle = new Vehicle(builder, eeVehicleBuilder);
-		MassPointPhysicalVehicle physicalVehicle = (MassPointPhysicalVehicle) vehicle.getPhysicalVehicle();
+
+        EESimulator eeSimulator = new EESimulator(Instant.EPOCH);
+        EEVehicleBuilder eeVehicleBuilder = new EEVehicleBuilder(eeSimulator);
+        InstantBus bus = new InstantBus(eeSimulator);
+        eeVehicleBuilder.createAllSensorsNActuators(bus);
+        Vehicle vehicle = new Vehicle(builder, eeVehicleBuilder);
+        MassPointPhysicalVehicle physicalVehicle = (MassPointPhysicalVehicle) vehicle.getPhysicalVehicle();
 
         // Test custom set parameters
         assertTrue(MathHelper.vectorEquals(expectedPosition, physicalVehicle.getPosition(), 0.00000001));
@@ -203,10 +205,10 @@ public class MassPointBuilderTest {
 
         // Load car from file
         EESimulator eeSimulator = new EESimulator(Instant.EPOCH);
-		EEVehicleBuilder eeVehicleBuilder = new EEVehicleBuilder(eeSimulator);
-		InstantBus bus = new InstantBus(eeSimulator);
-		eeVehicleBuilder.createAllSensorsNActuators(bus);
-		Vehicle vehicle = new Vehicle(testFile, eeVehicleBuilder);
+        EEVehicleBuilder eeVehicleBuilder = new EEVehicleBuilder(eeSimulator);
+        InstantBus bus = new InstantBus(eeSimulator);
+        eeVehicleBuilder.createAllSensorsNActuators(bus);
+        Vehicle vehicle = new Vehicle(testFile, eeVehicleBuilder);
         PhysicalVehicle physicalVehicle = vehicle.getPhysicalVehicle();
 
         // Check if both are equal
@@ -234,11 +236,11 @@ public class MassPointBuilderTest {
 
         // Create default reference car
         EESimulator eeSimulator = new EESimulator(Instant.EPOCH);
-		EEVehicleBuilder eeVehicleBuilder = new EEVehicleBuilder(eeSimulator);
-		InstantBus bus = new InstantBus(eeSimulator);
-		eeVehicleBuilder.createAllSensorsNActuators(bus);
-		MassPointPhysicalVehicleBuilder massPointBuilder = new MassPointPhysicalVehicleBuilder();
-		Vehicle vehicle = new Vehicle(massPointBuilder, eeVehicleBuilder);
+        EEVehicleBuilder eeVehicleBuilder = new EEVehicleBuilder(eeSimulator);
+        InstantBus bus = new InstantBus(eeSimulator);
+        eeVehicleBuilder.createAllSensorsNActuators(bus);
+        MassPointPhysicalVehicleBuilder massPointBuilder = new MassPointPhysicalVehicleBuilder();
+        Vehicle vehicle = new Vehicle(massPointBuilder, eeVehicleBuilder);
         PhysicalVehicle physicalVehicle = vehicle.getPhysicalVehicle();
 
         checkTheCar(properties, physicalVehicle);

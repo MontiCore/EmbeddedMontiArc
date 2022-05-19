@@ -1,6 +1,6 @@
 /**
  * (c) https://github.com/MontiCore/monticore
- *
+ * <p>
  * The license generally applicable for this project
  * can be found under https://github.com/MontiCore/monticore.
  */
@@ -9,6 +9,7 @@ package de.rwth.montisim.simulation.environment.osm;
 import de.rwth.montisim.simulation.environment.visualisationadapter.interfaces.EnvNode;
 import de.rwth.montisim.simulation.environment.visualisationadapter.interfaces.EnvStreet;
 import de.rwth.montisim.simulation.environment.visualisationadapter.interfaces.VisualisationEnvironmentContainer;
+
 import java.util.ArrayList;
 import java.util.Collection;
 import java.util.HashMap;
@@ -33,13 +34,13 @@ public class IntersectionToStreetMapper {
         Collection<EnvStreet> streets = container.getStreets();
         this.intersectionToStreet = new HashMap<>();
 
-        for(EnvStreet street : streets) {
-            for(EnvNode intersection : street.getIntersections()) {
-                if(!intersectionToStreet.containsKey(intersection)) {
+        for (EnvStreet street : streets) {
+            for (EnvNode intersection : street.getIntersections()) {
+                if (!intersectionToStreet.containsKey(intersection)) {
                     intersectionToStreet.put(intersection, new ArrayList<>());
                 }
 
-                if(!intersectionToStreet.get(intersection).contains(street)) {
+                if (!intersectionToStreet.get(intersection).contains(street)) {
                     intersectionToStreet.get(intersection).add(street);
                 }
             }
@@ -47,7 +48,7 @@ public class IntersectionToStreetMapper {
     }
 
     public List<EnvStreet> getStreetsForIntersection(EnvNode intersection) {
-        if(!intersectionToStreet.containsKey(intersection)) {
+        if (!intersectionToStreet.containsKey(intersection)) {
             return new ArrayList<>();
         }
 

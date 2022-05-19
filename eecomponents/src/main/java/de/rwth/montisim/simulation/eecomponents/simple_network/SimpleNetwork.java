@@ -41,7 +41,7 @@ public class SimpleNetwork implements EventTarget, SimulatorModule {
     }
 
     public IPV6Address registerNode(String nodeName, StaticObject physicalObject, SimpleCommunicationGateway component) {
-        String addrStr = "1::"+Integer.toHexString(addrCounter);
+        String addrStr = "1::" + Integer.toHexString(addrCounter);
         IPV6Address addr = new IPV6Address(addrStr);
         SimpleNetworkNodeInfo nodeInfo = new SimpleNetworkNodeInfo(nodeName, addr, physicalObject, component);
         int id = nodes.size();
@@ -61,8 +61,8 @@ public class SimpleNetwork implements EventTarget, SimulatorModule {
                 SimpleNetworkNodeInfo prevNode = ipToNode.get(prev.getValue().getString());
                 SimpleNetworkNodeInfo newNode = ipToNode.get(addr.getString());
                 throw new IllegalArgumentException(
-                    "Network Msg type error: Node "+newNode.nodeName + " registered msg '"+msgName+"' with type '"+msgType
-                    +" which was already registered with type '"+prev.getKey()+"' by node "+prevNode.nodeName);
+                        "Network Msg type error: Node " + newNode.nodeName + " registered msg '" + msgName + "' with type '" + msgType
+                                + " which was already registered with type '" + prev.getKey() + "' by node " + prevNode.nodeName);
             }
         }
     }
@@ -70,9 +70,9 @@ public class SimpleNetwork implements EventTarget, SimulatorModule {
     @Override
     public void process(DiscreteEvent event) {
         int type = event.getType();
-        if (type == SimpleNetworkRecvEvent.type){
-            simulator.addEvent(new SimpleNetworkSendEvent(this, event.getEventTime().plus(properties.transmission_time), ((SimpleNetworkRecvEvent)event).msg));
-        } else if (type == SimpleNetworkSendEvent.type){
+        if (type == SimpleNetworkRecvEvent.type) {
+            simulator.addEvent(new SimpleNetworkSendEvent(this, event.getEventTime().plus(properties.transmission_time), ((SimpleNetworkRecvEvent) event).msg));
+        } else if (type == SimpleNetworkSendEvent.type) {
             dispatch((SimpleNetworkSendEvent) event);
         } else throw new UnexpectedEventException(this.toString(), event);
     }
@@ -93,26 +93,27 @@ public class SimpleNetwork implements EventTarget, SimulatorModule {
                     ++senderId; // Now target is after sender: id of sender is position in 'nodes' table.
                     continue;
                 }
-                recvEvent.msg.sender = new IPV6Address(N_TO_N_PREFIX + Integer.toString(senderId+1)); // Convert sender ip to relative n-to-n address
+                recvEvent.msg.sender = new IPV6Address(N_TO_N_PREFIX + Integer.toString(senderId + 1)); // Convert sender ip to relative n-to-n address
                 node.component.process(recvEvent);
             }
         } else if (event.msg.target.getString().startsWith(N_TO_N_PREFIX)) { // TODO this is hacky
             // N-to-N message
             int senderIndex = ipToId.get(event.msg.sender.getString());
             int targetId = Integer.parseInt(event.msg.target.getString().substring(N_TO_N_PREFIX.length())) - 1;
-            if (targetId+1 >= nodes.size()) {
-                throw new IllegalArgumentException("Trying to send N-to-N message to invalid IP: "+event.msg.target.getString());
+            if (targetId + 1 >= nodes.size()) {
+                throw new IllegalArgumentException("Trying to send N-to-N message to invalid IP: " + event.msg.target.getString());
             }
             // Get 'other' target
-            int targetIndex = targetId >= senderIndex ? targetId+1 : targetId;
+            int targetIndex = targetId >= senderIndex ? targetId + 1 : targetId;
             SimpleNetworkNodeInfo target = nodes.elementAt(targetIndex);
             int senderId = senderIndex < targetId ? senderIndex : senderIndex - 1;
-            recvEvent.msg.sender = new IPV6Address(N_TO_N_PREFIX + Integer.toString(senderId+1)); // Convert sender ip to relative n-to-n address
+            recvEvent.msg.sender = new IPV6Address(N_TO_N_PREFIX + Integer.toString(senderId + 1)); // Convert sender ip to relative n-to-n address
             target.component.process(recvEvent);
             return;
         } else {
             SimpleNetworkNodeInfo target = ipToNode.get(event.msg.target.getString());
-            if (target == null) throw new IllegalArgumentException("Sending to Unknown IP: "+event.msg.target.getString());
+            if (target == null)
+                throw new IllegalArgumentException("Sending to Unknown IP: " + event.msg.target.getString());
             if (inRange(target, sender)) {
                 target.component.process(recvEvent);
             }
@@ -131,5 +132,5 @@ public class SimpleNetwork implements EventTarget, SimulatorModule {
     public String getKey() {
         return CONTEXT_KEY;
     }
-    
+
 }

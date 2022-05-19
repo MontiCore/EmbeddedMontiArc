@@ -1,6 +1,6 @@
 /**
  * (c) https://github.com/MontiCore/monticore
- *
+ * <p>
  * The license generally applicable for this project
  * can be found under https://github.com/MontiCore/monticore.
  */
@@ -14,6 +14,7 @@ import java.time.Duration;
 import java.time.Instant;
 import java.time.temporal.ChronoUnit;
 import java.util.*;
+
 import static simulation.network.NetworkDiscreteEventId.*;
 
 /**
@@ -159,7 +160,7 @@ public class TaskLinkCSMA extends NetworkTask {
                 // Choose backoff timer when sending channel is busy by other node and message queue is not empty and timer is zero
                 if (sendingChannelsBusy && !messageQueue.isEmpty() && waitingBackoffRemainingTimeNs == 0L) {
                     int randomWindowSize = MathHelper.randomInt(TASK_LINK_CSMA_CONTENTION_WINDOW_MIN_SLOT, (int) (TASK_LINK_CSMA_CONTENTION_WINDOW_MAX_BROADCAST_FRACTION * TASK_LINK_CSMA_CONTENTION_WINDOW_MAX_SLOT));
-                    waitingBackoffRemainingTimeNs = (long)(randomWindowSize) * TASK_LINK_CSMA_SLOT_TIME_NS;
+                    waitingBackoffRemainingTimeNs = (long) (randomWindowSize) * TASK_LINK_CSMA_SLOT_TIME_NS;
                 }
 
                 // When waiting for DIFS and channel is busy, then DIFS was interrupted

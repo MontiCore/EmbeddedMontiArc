@@ -59,8 +59,8 @@ public class IntegrationTest {
 
     @Test
     public void driveToTargetGlobalCoordinate() throws Exception {
-        Coordinates startCoord = new Coordinates(6.0721450,50.7738916);
-        Coordinates targetCoord = new Coordinates(6.0690220,50.773491);
+        Coordinates startCoord = new Coordinates(6.0721450, 50.7738916);
+        Coordinates targetCoord = new Coordinates(6.0690220, 50.773491);
 
         TaskProperties task = new TaskProperties();
         task.addGoal(new PathGoalProperties()
@@ -118,7 +118,7 @@ public class IntegrationTest {
             TimeUpdate tu = new TimeUpdate(simulationTime, config.tick_duration);
             simulator.update(tu);
             simulationTime = tu.newTime;
-            
+
             //++cnt;
             if (cnt % 1000 != 0) {
                 continue;

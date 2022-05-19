@@ -26,12 +26,12 @@ public class MessagePriorityComparatorTest {
         TestEEComponent c2 = new TestEEComponent("comp2", eesystem);
 
         eesystem.addComponentPriorities(Arrays.asList(
-            new Pair<String, Integer>("comp1", 1),
-            new Pair<String, Integer>("comp2", 2)
+                new Pair<String, Integer>("comp1", 1),
+                new Pair<String, Integer>("comp2", 2)
         ));
 
         PriorityQueue<CANMessageTransmission> messages = new PriorityQueue<CANMessageTransmission>(
-            new MessageTransmission.MsgTransPriorityComp(eesystem.getMsgPrioComp())
+                new MessageTransmission.MsgTransPriorityComp(eesystem.getMsgPrioComp())
         );
 
         c1.addPort(PortInformation.newOptionalOutputDataPort("msg1", BasicType.DOUBLE));
@@ -45,10 +45,10 @@ public class MessagePriorityComparatorTest {
         Message msg4 = new Message(c2.getMsgInfo("msg4"), null, 1);
 
         eesystem.addMessagePriorities(Arrays.asList(
-            new Pair<String, Integer>("msg1", 1),
-            new Pair<String, Integer>("msg2", 2),
-            new Pair<String, Integer>("msg3", 3),
-            new Pair<String, Integer>("msg4", 1)
+                new Pair<String, Integer>("msg1", 1),
+                new Pair<String, Integer>("msg2", 2),
+                new Pair<String, Integer>("msg3", 3),
+                new Pair<String, Integer>("msg4", 1)
         ));
 
 

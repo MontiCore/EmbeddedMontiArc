@@ -1,6 +1,6 @@
 /**
  * (c) https://github.com/MontiCore/monticore
- *
+ * <p>
  * The license generally applicable for this project
  * can be found under https://github.com/MontiCore/monticore.
  */
@@ -8,17 +8,18 @@ package de.rwth.montisim.simulation.environment.osm;
 
 import de.topobyte.osm4j.core.dataset.InMemoryMapDataSet;
 import org.junit.*;
+
 import java.io.InputStream;
-import static  org.junit.Assert.*;
+
+import static org.junit.Assert.*;
 
 /**
  * Created by lukas on 15.12.16.
  */
-public class IntersectionFinderTest  {
+public class IntersectionFinderTest {
 
 
-
-	 @Test
+    @Test
     public void testApp() {
         // maven test will fail for this file path
 //        String filePath = "src/test/data/min_intersection_test.osm";

@@ -1,6 +1,6 @@
 /**
  * (c) https://github.com/MontiCore/monticore
- *
+ * <p>
  * The license generally applicable for this project
  * can be found under https://github.com/MontiCore/monticore.
  */
@@ -9,7 +9,7 @@ package simulation.vehicle;
 /**
  * Physics calculations for simulation
  */
-public class PhysicsEngine{
+public class PhysicsEngine {
 
     public static double calcFrictionCoefficient(StreetPavements streetPavement, boolean isItRaining) {
         try {
@@ -17,7 +17,7 @@ public class PhysicsEngine{
             Reader in = new InputStreamReader(input);
             CSVParser csvParser = new CSVParser(in, CSVFormat.DEFAULT);
 
-            switch(streetPavement) {
+            switch (streetPavement) {
                 case QUALITY: // Asphalt
                     if (isItRaining) {
                         return Double.parseDouble(csvParser.getRecords().get(1).get(1));
@@ -72,12 +72,12 @@ public class PhysicsEngine{
 
     public static double calcRollingResistance(Vec3 v, double pressure, double forceRoadFrictionBackFrontNorm) {
         double defaultValue = 0.005 + (1 / pressure) * (0.01 + 0.0095 * (forceRoadFrictionBackFrontNorm * 3.6 / 100) * (forceRoadFrictionBackFrontNorm * 3.6 / 100));
-        try{
-        StreetPavements streetPavement = World.getInstance().getSurfaceType(v);
-        boolean isItRaining = World.getInstance().isItRaining();
-        InputStream input = PhysicsEngine.class.getResourceAsStream("/FrictionCoefficient.csv");
-        Reader in = new InputStreamReader(input);
-        CSVParser csvParser = new CSVParser(in, CSVFormat.DEFAULT);
+        try {
+            StreetPavements streetPavement = World.getInstance().getSurfaceType(v);
+            boolean isItRaining = World.getInstance().isItRaining();
+            InputStream input = PhysicsEngine.class.getResourceAsStream("/FrictionCoefficient.csv");
+            Reader in = new InputStreamReader(input);
+            CSVParser csvParser = new CSVParser(in, CSVFormat.DEFAULT);
 
 
             switch (streetPavement) {
@@ -121,7 +121,7 @@ public class PhysicsEngine{
                 default:
                     return defaultValue;
             }
-        }catch (IOException e) {
+        } catch (IOException e) {
             e.printStackTrace();
         }
 

@@ -1,6 +1,6 @@
 /**
  * (c) https://github.com/MontiCore/monticore
- *
+ * <p>
  * The license generally applicable for this project
  * can be found under https://github.com/MontiCore/monticore.
  */
@@ -9,6 +9,7 @@ package simulation.network;
 import java.util.Collections;
 import java.util.LinkedList;
 import java.util.List;
+
 import static simulation.network.NetworkTaskId.NETWORK_TASK_ID_NONE;
 
 /**
@@ -54,7 +55,9 @@ public abstract class NetworkTask implements NetworkEventHandler {
      */
     public NetworkNode getNetworkNode() {
         return networkNode;
-    };
+    }
+
+    ;
 
     /**
      * Function that sets the network node
@@ -63,7 +66,9 @@ public abstract class NetworkTask implements NetworkEventHandler {
      */
     protected void setNetworkNode(NetworkNode networkNode) {
         this.networkNode = networkNode;
-    };
+    }
+
+    ;
 
     /**
      * Function that returns the list of all network event ids that are processed by this task
@@ -72,7 +77,9 @@ public abstract class NetworkTask implements NetworkEventHandler {
      */
     public List<NetworkDiscreteEventId> getTaskEventIdList() {
         return Collections.synchronizedList(new LinkedList<>(taskEventIdList));
-    };
+    }
+
+    ;
 
     /**
      * Set list of task event ids

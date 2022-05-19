@@ -68,7 +68,8 @@ public class ActuatorProperties extends EEComponentProperties {
         // TODO physical value name resolve as "config error"
         PhysicalValueRegistry values = context.getObject(PhysicalValueRegistry.CONTEXT_KEY);
         PhysicalValue val = values.getPhysicalValue(physical_value_name);
-        if (!(val instanceof PhysicalValueDouble)) throw new IllegalArgumentException("Actuators can only work on Double type Physical values");
+        if (!(val instanceof PhysicalValueDouble))
+            throw new IllegalArgumentException("Actuators can only work on Double type Physical values");
         Updater updater = context.getObject(EESystem.COMPONENT_UPDATER_CONTEXT_KEY);
         return new Actuator(this, eesystem, (PhysicalValueDouble) val, updater);
     }

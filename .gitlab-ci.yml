@@ -2,38 +2,38 @@
 
 
 stages:
-- windows
-- linux
-- integration-test
+  - windows
+  - linux
+  - integration-test
 
 MasterJobLinux:
- stage: linux
- image: maven:3-jdk-8
- script: 
- - mvn -B -U clean deploy -s settings.xml
- #- cat report/target/coverage-report/html/index.html
- only:
- - master
+  stage: linux
+  image: maven:3-jdk-8
+  script:
+    - mvn -B -U clean deploy -s settings.xml
+  #- cat report/target/coverage-report/html/index.html
+  only:
+    - master
 
 BranchJobLinux:
   stage: linux
   image: maven:3-jdk-8
   script:
-  - mvn -B -U clean install -s settings.xml
+    - mvn -B -U clean install -s settings.xml
   #- cat report/target/coverage-report/html/index.html
   except:
-  - master
- 
-# masterJobWindows:
-#   stage: windows
-#   script:
-#   - mvn clean deploy -s settings.xml
-#   - mvn package sonar:sonar -s settings.xml
-#   tags:
-#   - Windows10_OS
-#   only:
-#   - master
-  
+    - master
+
+  # masterJobWindows:
+  #   stage: windows
+  #   script:
+  #   - mvn clean deploy -s settings.xml
+  #   - mvn package sonar:sonar -s settings.xml
+  #   tags:
+  #   - Windows10_OS
+  #   only:
+  #   - master
+
 # branchJobWindows:
 #  stage: windows
 #  script:

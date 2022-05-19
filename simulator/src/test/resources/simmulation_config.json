@@ -1,1 +1,15 @@
-{"max_duration":[60,0],"tick_duration":[0,10000000],"start_time":[1603901018,875625900],"cars":[]}
+{
+  "max_duration": [
+    60,
+    0
+  ],
+  "tick_duration": [
+    0,
+    10000000
+  ],
+  "start_time": [
+    1603901018,
+    875625900
+  ],
+  "cars": []
+}

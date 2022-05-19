@@ -46,17 +46,19 @@ public abstract class EEComponent implements EventTarget {
         connectToComponent(this.eesystem.getComponent(name).orElseThrow(() -> new EEMissingComponentException(name)));
     }
 
-    /** Connects two components together for messaging. */
+    /**
+     * Connects two components together for messaging.
+     */
     public void connectToComponent(EEComponent component) {
         if (component == null)
-            throw new IllegalArgumentException("Trying to connect '"+this+"' to missing component.");
+            throw new IllegalArgumentException("Trying to connect '" + this + "' to missing component.");
         this.connectOneWay(component);
         component.connectOneWay(this);
     }
 
     private void connectOneWay(EEComponent component) {
         if (!connectedComponents.contains(component))
-        connectedComponents.add(component);
+            connectedComponents.add(component);
     }
 
 
@@ -71,8 +73,10 @@ public abstract class EEComponent implements EventTarget {
         } else
             throw new UnexpectedEventException(this.toString(), event);
     }
-    
-    /** Dispatches the given Message to all its targets. */
+
+    /**
+     * Dispatches the given Message to all its targets.
+     */
     protected void dispatchMessage(MessageSendEvent msgSendEvent) {
         // NOTE: targets must exist but can be an empty list. (=> The Routing has to
         // have been computed for the EE system.)
@@ -83,7 +87,7 @@ public abstract class EEComponent implements EventTarget {
             e.process(recvEvent);
         }
     }
-    
+
     protected abstract void receive(MessageReceiveEvent msgRecvEvent);
 
 
@@ -103,7 +107,6 @@ public abstract class EEComponent implements EventTarget {
     }
 
 
-
     public void sendMessage(Instant time, int msgId, Object message, int msgLen) {
         this.eesystem.simulator.addEvent(new MessageSendEvent(this, time, new Message(msgInfoById.get(msgId), message, msgLen)));
     }
@@ -119,6 +122,7 @@ public abstract class EEComponent implements EventTarget {
     public Stream<PortInformation> streamInputPorts() {
         return ports.stream().filter(x -> x.isInput());
     }
+
     public Stream<PortInformation> streamOutputPorts() {
         return ports.stream().filter(x -> x.isOutput());
     }

@@ -2,8 +2,9 @@
 <!--
     (c) https://github.com/MontiCore/monticore
 -->
-<settings xmlns="http://maven.apache.org/SETTINGS/1.0.0" 
-    xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:schemaLocation="http://maven.apache.org/SETTINGS/1.0.0 http://maven.apache.org/xsd/settings-1.0.0.xsd">
+<settings xmlns="http://maven.apache.org/SETTINGS/1.0.0"
+          xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+          xsi:schemaLocation="http://maven.apache.org/SETTINGS/1.0.0 http://maven.apache.org/xsd/settings-1.0.0.xsd">
 
     <pluginGroups>
         <pluginGroup>org.mortbay.jetty</pluginGroup>
@@ -49,13 +50,13 @@
             <properties>
                 <!-- Optional URL to server. Default value is http://localhost:9000 -->
                 <sonar.host.url>
-                https://metric.se.rwth-aachen.de
+                    https://metric.se.rwth-aachen.de
                 </sonar.host.url>
                 <sonar.login>
-                jenkins
+                    jenkins
                 </sonar.login>
                 <sonar.password>
-                ${env.sonar}
+                    ${env.sonar}
                 </sonar.password>
             </properties>
         </profile>
@@ -67,10 +68,10 @@
                     <id>central</id>
                     <url>https://repo1.maven.org/maven2/</url>
                     <releases>
-                        <enabled />
+                        <enabled/>
                     </releases>
                     <snapshots>
-                        <enabled />
+                        <enabled/>
                     </snapshots>
                 </repository>
                 <!--<repository>
@@ -116,16 +117,16 @@
                 </repository>
 
             </repositories>
-            
+
             <pluginRepositories>
                 <pluginRepository>
                     <id>central</id>
                     <url>http://central</url>
                     <releases>
-                        <enabled />
+                        <enabled/>
                     </releases>
                     <snapshots>
-                        <enabled />
+                        <enabled/>
                     </snapshots>
                 </pluginRepository>
                 <pluginRepository>

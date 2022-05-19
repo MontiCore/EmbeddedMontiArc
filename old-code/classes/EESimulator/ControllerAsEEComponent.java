@@ -1,6 +1,6 @@
 /**
  * (c) https://github.com/MontiCore/monticore
- *
+ * <p>
  * The license generally applicable for this project
  * can be found under https://github.com/MontiCore/monticore.
  */
@@ -79,7 +79,7 @@ public class ControllerAsEEComponent extends ImmutableEEComponent {
     int modelId;
 
     HashMap<String, Serializable> inputs = new HashMap<String, Serializable>();
-    HashMap<String, Serializable>  outputs = new HashMap<String, Serializable>();
+    HashMap<String, Serializable> outputs = new HashMap<String, Serializable>();
 
     Optional<Object> trajectoryX = Optional.empty();
     Optional<Object> trajectoryY = Optional.empty();
@@ -104,7 +104,7 @@ public class ControllerAsEEComponent extends ImmutableEEComponent {
      * @param buses Buses that the ControllerAsEEComponent is connected to
      * @return ControllerAsEEComponent with default configuration
      */
-    public static ControllerAsEEComponent createControllerAsEEComponent(List<Bus> buses){
+    public static ControllerAsEEComponent createControllerAsEEComponent(List<Bus> buses) {
         HashMap<BusEntry, List<EEComponent>> targetsByMessageId = new HashMap<>();
         targetsByMessageId.put(BusEntry.ACTUATOR_BRAKE, new LinkedList<>());
         targetsByMessageId.put(BusEntry.ACTUATOR_STEERING, new LinkedList<>());
@@ -130,18 +130,18 @@ public class ControllerAsEEComponent extends ImmutableEEComponent {
 
 
     public void setCycleTime(Duration cycleTime) {
-    	this.cycleTime = cycleTime;
+        this.cycleTime = cycleTime;
     }
-    
+
     public Duration getCycleTime() {
-    	return cycleTime;
+        return cycleTime;
     }
-    
-    
-    public void free(){
+
+
+    public void free() {
         try {
             softwareSimulator.free();
-        } catch(Exception e){
+        } catch (Exception e) {
             e.printStackTrace();
         }
     }
@@ -161,7 +161,7 @@ public class ControllerAsEEComponent extends ImmutableEEComponent {
     }
 
     @Override
-    protected void finalize(){
+    protected void finalize() {
         free();
     }
 
@@ -214,23 +214,22 @@ public class ControllerAsEEComponent extends ImmutableEEComponent {
                 }
             }
 
-            if(wakeUpNeeded) {
+            if (wakeUpNeeded) {
                 try {
                     executeController(event);
-                } catch (Exception e){
+                } catch (Exception e) {
                     e.printStackTrace();
                 }
             }
         } else if (event.getEventType() == EEDiscreteEventTypeEnum.CONTROLLER_EXECUTE_EVENT) {
-            if(newInputs) {
-            	try {
+            if (newInputs) {
+                try {
                     executeController(event);
-                } catch (Exception e){
+                } catch (Exception e) {
                     e.printStackTrace();
                 }
-            } 
-            else {
-            	wakeUpNeeded = true;
+            } else {
+                wakeUpNeeded = true;
             }
         } else {
             throw new IllegalArgumentException("ControllerAsEEComponent expect BusMessageEvent or ControllerExecuteEvent as event. Event was: " + event.getEventType());
@@ -241,47 +240,46 @@ public class ControllerAsEEComponent extends ImmutableEEComponent {
      * Execute the controller once. Add a ControllerExecuteEvent for the next cycle.
      * @param event
      */
-	private void executeController(EEDiscreteEvent event) throws Exception {
-		double timeIncrement = Duration.between(event.getEventTime(), lastFinishTime).toMillis();
+    private void executeController(EEDiscreteEvent event) throws Exception {
+        double timeIncrement = Duration.between(event.getEventTime(), lastFinishTime).toMillis();
         this.inputs.put("timeIncrement", timeIncrement);
         this.softwareSimulator.setInputs(inputs);
-		Duration delay = this.softwareSimulator.runCycle();
-		this.outputs = this.softwareSimulator.getOutputs();
+        Duration delay = this.softwareSimulator.runCycle();
+        this.outputs = this.softwareSimulator.getOutputs();
         lastFinishTime = event.getEventTime().plus(delay);
-		
-		Object engine = outputs.get("engine");
-		if (engine != null) {
-            if(!lastValueByMessageId.containsKey(BusEntry.ACTUATOR_ENGINE) || !lastValueByMessageId.get(BusEntry.ACTUATOR_ENGINE).equals(engine)) {
+
+        Object engine = outputs.get("engine");
+        if (engine != null) {
+            if (!lastValueByMessageId.containsKey(BusEntry.ACTUATOR_ENGINE) || !lastValueByMessageId.get(BusEntry.ACTUATOR_ENGINE).equals(engine)) {
                 this.sendMessage(engine, 8, BusEntry.ACTUATOR_ENGINE, lastFinishTime);
             }
-		}
+        }
 
-		Object brakes = outputs.get("brakes");
-		if (brakes != null) {
-		    if(!lastValueByMessageId.containsKey(BusEntry.ACTUATOR_BRAKE) || !lastValueByMessageId.get(BusEntry.ACTUATOR_BRAKE).equals(brakes)){
+        Object brakes = outputs.get("brakes");
+        if (brakes != null) {
+            if (!lastValueByMessageId.containsKey(BusEntry.ACTUATOR_BRAKE) || !lastValueByMessageId.get(BusEntry.ACTUATOR_BRAKE).equals(brakes)) {
                 this.sendMessage(brakes, 8, BusEntry.ACTUATOR_BRAKE, lastFinishTime);
             }
 
-		}
+        }
 
-		Object steering = outputs.get("steering");
-		if (steering != null) {
-            if(!lastValueByMessageId.containsKey(BusEntry.ACTUATOR_STEERING) || !lastValueByMessageId.get(BusEntry.ACTUATOR_STEERING).equals(steering)) {
+        Object steering = outputs.get("steering");
+        if (steering != null) {
+            if (!lastValueByMessageId.containsKey(BusEntry.ACTUATOR_STEERING) || !lastValueByMessageId.get(BusEntry.ACTUATOR_STEERING).equals(steering)) {
                 this.sendMessage(steering, 8, BusEntry.ACTUATOR_STEERING, lastFinishTime);
             }
-		}
-		
-		//set next execute event
-		Instant nextExecuteTime = event.getEventTime().plus(cycleTime);
-		if(lastFinishTime.isBefore(nextExecuteTime)) {
-			this.getSimulator().addEvent(new ControllerExecuteEvent(nextExecuteTime, this));
-		}
-		else {
-			this.getSimulator().addEvent(new ControllerExecuteEvent(lastFinishTime, this));
-		}
-		wakeUpNeeded = false;
-		newInputs = false;
-	}
+        }
+
+        //set next execute event
+        Instant nextExecuteTime = event.getEventTime().plus(cycleTime);
+        if (lastFinishTime.isBefore(nextExecuteTime)) {
+            this.getSimulator().addEvent(new ControllerExecuteEvent(nextExecuteTime, this));
+        } else {
+            this.getSimulator().addEvent(new ControllerExecuteEvent(lastFinishTime, this));
+        }
+        wakeUpNeeded = false;
+        newInputs = false;
+    }
 
 
     private int processTrajectory(List<Double> xCoords, List<Double> yCoords) {

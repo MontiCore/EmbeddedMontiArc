@@ -37,15 +37,21 @@ public class CAN extends Bus {
      */
     public static final int TRAILER_SIZE_BITS = 15 + 1 + 1 + 1 + 7;
 
-    /** Maximum payload size in bytes */
+    /**
+     * Maximum payload size in bytes
+     */
     public static final int MAX_PAYLOAD_SIZE_BYTES = 8;
 
     public static final int INTERFRAME_SPACE_BITS = 3;
 
-    /** Frame size with no payload and no inter-frame space. */
+    /**
+     * Frame size with no payload and no inter-frame space.
+     */
     public static final int PARTIAL_FRAME = CAN.HEADER_SIZE_BITS + CAN.TRAILER_SIZE_BITS;
 
-    /** Frame size with full payload and inter-frame bits */
+    /**
+     * Frame size with full payload and inter-frame bits
+     */
     public static final int FULL_FRAME = CAN.INTERFRAME_SPACE_BITS + CAN.HEADER_SIZE_BITS
             + CAN.MAX_PAYLOAD_SIZE_BYTES * 8 + CAN.TRAILER_SIZE_BITS;
 
@@ -62,7 +68,9 @@ public class CAN extends Bus {
     // inter-frame space). (Since frames are an "atom" in CAN transmission.)
     private long bitTime = 0;
 
-    /** Currently registered messages at this bus. */
+    /**
+     * Currently registered messages at this bus.
+     */
     private PriorityQueue<CANMessageTransmission> messages; // TODO serialize
 
     private Optional<CANMessageTransmission> currentTransmission = Optional.empty(); // TODO serialize
@@ -81,12 +89,12 @@ public class CAN extends Bus {
         return BusType.CAN;
     }
 
-    
-	/**
-	 * Process a MessageReceiveEvent: register the message for transmission and handle current transmissions up to the event time.
-	 * If the new message changes the current next MessageReceiveEvent, it has to be invalidated.
-	 * Responsible of registering the next MessageReceiveEvent for the next message transmission completion.
-	 */
+
+    /**
+     * Process a MessageReceiveEvent: register the message for transmission and handle current transmissions up to the event time.
+     * If the new message changes the current next MessageReceiveEvent, it has to be invalidated.
+     * Responsible of registering the next MessageReceiveEvent for the next message transmission completion.
+     */
     @Override
     protected void receive(MessageReceiveEvent event) {
         MessageTransmission current = nextTransmission();
@@ -131,12 +139,12 @@ public class CAN extends Bus {
         createNextSendEvent();
     }
 
-    
-	/**
-	 * Update the bus simulation to when the event's message is transmitted.
-	 * The message itself is already checked for validity and dispatched to its targets.
-	 * Responsible of registering the next MessageSendEvent if there are still messages to be transmitted.
-	 */
+
+    /**
+     * Update the bus simulation to when the event's message is transmitted.
+     * The message itself is already checked for validity and dispatched to its targets.
+     * Responsible of registering the next MessageSendEvent if there are still messages to be transmitted.
+     */
     @Override
     protected void messageSent(MessageSendEvent event) {
         if (!currentTransmission.isPresent() || currentTransmission.get().event.get() != event)
@@ -146,7 +154,7 @@ public class CAN extends Bus {
         CANMessageTransmission msg = currentTransmission.get();
         bitTime += msg.getRemainingBits() + INTERFRAME_SPACE_BITS;
         msg.finished = true; // Tag the transmissions to remove them from the 'messages' (there is no
-                             // guarantee that they are at the front of the queue)
+        // guarantee that they are at the front of the queue)
         currentTransmission = Optional.empty();
 
         createNextSendEvent();
@@ -168,7 +176,9 @@ public class CAN extends Bus {
         }
     }
 
-    /** Returns the next unfinished message transmission. */
+    /**
+     * Returns the next unfinished message transmission.
+     */
     private CANMessageTransmission nextTransmission() {
         CANMessageTransmission c = messages.peek();
         while (c != null && c.finished) {

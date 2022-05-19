@@ -1,6 +1,6 @@
 /**
  * (c) https://github.com/MontiCore/monticore
- *
+ * <p>
  * The license generally applicable for this project
  * can be found under https://github.com/MontiCore/monticore.
  */
@@ -36,7 +36,7 @@ public class Weather implements Updatable {
 
 
     private final double FIXED_WEATHER_CHANGE = 0.5;
-    private final double MEAN_OF_EXPONENTIAL  = 1/300000d; //corresponds to 5 minutes
+    private final double MEAN_OF_EXPONENTIAL = 1 / 300000d; //corresponds to 5 minutes
 
     private Random weatherRandom;
     private Random timeRandom;
@@ -44,9 +44,9 @@ public class Weather implements Updatable {
     private double fixedWeatherChange;
 
     public Weather(WeatherSettings settings) {
-        if(settings.fixedWeatherChanges != -1) {
+        if (settings.fixedWeatherChanges != -1) {
             init(settings.fixedWeatherChanges);
-        } else if(settings.fixedWeather != -1) {
+        } else if (settings.fixedWeather != -1) {
             init(settings.fixedWeather);
         } else {
             init();
@@ -85,11 +85,11 @@ public class Weather implements Updatable {
      * compute the next weather and time to the next weather change
      */
     private void initWeather() {
-        if(this.weatherRandom != null) {
+        if (this.weatherRandom != null) {
             this.weather = weatherRandom.nextDouble();
         }
 
-        if(this.timeRandom != null) {
+        if (this.timeRandom != null) {
             this.nextWeatherChange = getNextExpDouble();
         } else {
             this.nextWeatherChange = fixedWeatherChange;
@@ -100,13 +100,13 @@ public class Weather implements Updatable {
      * @return the next exponentially distributed random number
      */
     private double getNextExpDouble() {
-        return  Math.log(1-timeRandom.nextDouble())/(-MEAN_OF_EXPONENTIAL);
+        return Math.log(1 - timeRandom.nextDouble()) / (-MEAN_OF_EXPONENTIAL);
     }
 
     /**
      * @return true iff it is raining
      */
-    public boolean isRain(){
+    public boolean isRain() {
         return this.weather > 0.5;
     }
 
@@ -128,7 +128,7 @@ public class Weather implements Updatable {
     public void update(Duration deltaT) {
         this.nextWeatherChange -= deltaT.toMillis();
 
-        if(this.nextWeatherChange <= 0) {
+        if (this.nextWeatherChange <= 0) {
 
             initWeather();
         }

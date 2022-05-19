@@ -147,18 +147,18 @@ public class RigidbodyPhysics implements PhysicsModel {
         IPM.multiply(bbox.world_space_half_axes.col3, bbox.half_extent.z);
 
         // Update AABB
-        halfAxesAbs.x = 
-            Math.abs(bbox.world_space_half_axes.col1.x)
-            + Math.abs(bbox.world_space_half_axes.col2.x)
-            + Math.abs(bbox.world_space_half_axes.col3.x);
-        halfAxesAbs.y = 
-            Math.abs(bbox.world_space_half_axes.col1.y)
-            + Math.abs(bbox.world_space_half_axes.col2.y)
-            + Math.abs(bbox.world_space_half_axes.col3.y);
-        halfAxesAbs.z = 
-            Math.abs(bbox.world_space_half_axes.col1.z)
-            + Math.abs(bbox.world_space_half_axes.col2.z)
-            + Math.abs(bbox.world_space_half_axes.col3.z);
+        halfAxesAbs.x =
+                Math.abs(bbox.world_space_half_axes.col1.x)
+                        + Math.abs(bbox.world_space_half_axes.col2.x)
+                        + Math.abs(bbox.world_space_half_axes.col3.x);
+        halfAxesAbs.y =
+                Math.abs(bbox.world_space_half_axes.col1.y)
+                        + Math.abs(bbox.world_space_half_axes.col2.y)
+                        + Math.abs(bbox.world_space_half_axes.col3.y);
+        halfAxesAbs.z =
+                Math.abs(bbox.world_space_half_axes.col1.z)
+                        + Math.abs(bbox.world_space_half_axes.col2.z)
+                        + Math.abs(bbox.world_space_half_axes.col3.z);
 
         IPM.addTo(worldAABB.max, rb.pos, halfAxesAbs);
         IPM.subtractTo(worldAABB.min, rb.pos, halfAxesAbs);

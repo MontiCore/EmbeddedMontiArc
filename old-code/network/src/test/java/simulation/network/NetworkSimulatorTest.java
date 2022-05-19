@@ -1,6 +1,6 @@
 /**
  * (c) https://github.com/MontiCore/monticore
- *
+ * <p>
  * The license generally applicable for this project
  * can be found under https://github.com/MontiCore/monticore.
  */
@@ -43,13 +43,13 @@ public class NetworkSimulatorTest {
         NetworkStatistics statistics = NetworkStatistics.getInstance();
 
         PhysicalVehicleBuilder physicalVehicleBuilder = new MassPointPhysicalVehicleBuilder();
-		EESimulator eeSimulator = new EESimulator(Instant.EPOCH);
-		EEVehicleBuilder eeVehicleBuilder = new EEVehicleBuilder(eeSimulator);
-		InstantBus bus = new InstantBus(eeSimulator);
-		eeVehicleBuilder.createAllSensorsNActuators(bus);
-		Vehicle vehicle = new Vehicle(physicalVehicleBuilder, eeVehicleBuilder);
-		PhysicalVehicle physicalVehicle = vehicle.getPhysicalVehicle();
-		physicalVehicle.setPosition(new Vec3(new double[]{1000.0, 1000.0, 0.50}));
+        EESimulator eeSimulator = new EESimulator(Instant.EPOCH);
+        EEVehicleBuilder eeVehicleBuilder = new EEVehicleBuilder(eeSimulator);
+        InstantBus bus = new InstantBus(eeSimulator);
+        eeVehicleBuilder.createAllSensorsNActuators(bus);
+        Vehicle vehicle = new Vehicle(physicalVehicleBuilder, eeVehicleBuilder);
+        PhysicalVehicle physicalVehicle = vehicle.getPhysicalVehicle();
+        physicalVehicle.setPosition(new Vec3(new double[]{1000.0, 1000.0, 0.50}));
         NetworkNode networkNode = new NetworkNode(physicalVehicle);
 
         List<NetworkNode> nodeList = new LinkedList<>();
@@ -81,13 +81,13 @@ public class NetworkSimulatorTest {
         NetworkStatistics statistics = NetworkStatistics.getInstance();
 
         PhysicalVehicleBuilder physicalVehicleBuilder = new MassPointPhysicalVehicleBuilder();
-		EESimulator eeSimulator = new EESimulator(Instant.EPOCH);
-		EEVehicleBuilder eeVehicleBuilder = new EEVehicleBuilder(eeSimulator);
-		InstantBus bus = new InstantBus(eeSimulator);
-		eeVehicleBuilder.createAllSensorsNActuators(bus);
-		Vehicle vehicle = new Vehicle(physicalVehicleBuilder, eeVehicleBuilder);
-		PhysicalVehicle physicalVehicle = vehicle.getPhysicalVehicle();
-		physicalVehicle.setPosition(new Vec3(new double[]{1000.0, 1000.0, 0.50}));
+        EESimulator eeSimulator = new EESimulator(Instant.EPOCH);
+        EEVehicleBuilder eeVehicleBuilder = new EEVehicleBuilder(eeSimulator);
+        InstantBus bus = new InstantBus(eeSimulator);
+        eeVehicleBuilder.createAllSensorsNActuators(bus);
+        Vehicle vehicle = new Vehicle(physicalVehicleBuilder, eeVehicleBuilder);
+        PhysicalVehicle physicalVehicle = vehicle.getPhysicalVehicle();
+        physicalVehicle.setPosition(new Vec3(new double[]{1000.0, 1000.0, 0.50}));
         NetworkNode networkNode = new NetworkNode(physicalVehicle);
 
         List<NetworkNode> nodeList = new LinkedList<>();
@@ -120,14 +120,14 @@ public class NetworkSimulatorTest {
         NetworkStatistics statistics = NetworkStatistics.getInstance();
 
         PhysicalVehicleBuilder physicalVehicleBuilder = new MassPointPhysicalVehicleBuilder();
-		EESimulator eeSimulator = new EESimulator(Instant.EPOCH);
-		EEVehicleBuilder eeVehicleBuilder = new EEVehicleBuilder(eeSimulator);
-		InstantBus bus = new InstantBus(eeSimulator);
-		eeVehicleBuilder.createAllSensorsNActuators(bus);
-		eeVehicleBuilder.createNavigation(bus);
-		Vehicle vehicle = new Vehicle(physicalVehicleBuilder, eeVehicleBuilder);
-		PhysicalVehicle physicalVehicle = vehicle.getPhysicalVehicle();
-		physicalVehicle.setPosition(new Vec3(new double[]{1000.0, 1000.0, 0.50}));
+        EESimulator eeSimulator = new EESimulator(Instant.EPOCH);
+        EEVehicleBuilder eeVehicleBuilder = new EEVehicleBuilder(eeSimulator);
+        InstantBus bus = new InstantBus(eeSimulator);
+        eeVehicleBuilder.createAllSensorsNActuators(bus);
+        eeVehicleBuilder.createNavigation(bus);
+        Vehicle vehicle = new Vehicle(physicalVehicleBuilder, eeVehicleBuilder);
+        PhysicalVehicle physicalVehicle = vehicle.getPhysicalVehicle();
+        physicalVehicle.setPosition(new Vec3(new double[]{1000.0, 1000.0, 0.50}));
         NetworkNode networkNode = new NetworkNode(physicalVehicle);
 
         List<NetworkNode> nodeList = new LinkedList<>();
@@ -152,7 +152,7 @@ public class NetworkSimulatorTest {
         networkSimulator.didExecuteLoop(new LinkedList<SimulationLoopExecutable>(), Instant.EPOCH, Duration.between(Instant.EPOCH, settings.getMaxTaskStartTime()));
         assertTrue(!networkSimulator.getEventList().isEmpty());
         firstEvent = NetworkSimulator.getInstance().getEventList().get(0);
-        assertNotEquals(NETWORK_EVENT_ID_RANDOM_START_INITIALIZE.ordinal(),firstEvent.getEventId());
+        assertNotEquals(NETWORK_EVENT_ID_RANDOM_START_INITIALIZE.ordinal(), firstEvent.getEventId());
 
         // Enable log
         Log.setLogEnabled(true);
@@ -172,13 +172,13 @@ public class NetworkSimulatorTest {
         NetworkStatistics statistics = NetworkStatistics.getInstance();
 
         PhysicalVehicleBuilder physicalVehicleBuilder = new MassPointPhysicalVehicleBuilder();
-		EESimulator eeSimulator = new EESimulator(Instant.EPOCH);
-		EEVehicleBuilder eeVehicleBuilder = new EEVehicleBuilder(eeSimulator);
-		InstantBus bus = new InstantBus(eeSimulator);
-		eeVehicleBuilder.createAllSensorsNActuators(bus);
-		Vehicle vehicle = new Vehicle(physicalVehicleBuilder, eeVehicleBuilder);
-		PhysicalVehicle physicalVehicle = vehicle.getPhysicalVehicle();        
-		physicalVehicle.setPosition(new Vec3(new double[]{1000.0, 1000.0, 0.50}));
+        EESimulator eeSimulator = new EESimulator(Instant.EPOCH);
+        EEVehicleBuilder eeVehicleBuilder = new EEVehicleBuilder(eeSimulator);
+        InstantBus bus = new InstantBus(eeSimulator);
+        eeVehicleBuilder.createAllSensorsNActuators(bus);
+        Vehicle vehicle = new Vehicle(physicalVehicleBuilder, eeVehicleBuilder);
+        PhysicalVehicle physicalVehicle = vehicle.getPhysicalVehicle();
+        physicalVehicle.setPosition(new Vec3(new double[]{1000.0, 1000.0, 0.50}));
         NetworkNode networkNode = new NetworkNode(physicalVehicle);
 
         List<NetworkNode> nodeList = new LinkedList<>();

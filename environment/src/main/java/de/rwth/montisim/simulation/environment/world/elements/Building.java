@@ -27,8 +27,8 @@ public class Building extends SimulationObject {
     public StaticObject staticObject;
     public final List<Edge> separatingEdges = new ArrayList<>();
 
-    public Building(String name, long osmId, String type, double height, int levels){
-        this.name = name + "(OSM id: "+Long.toString(osmId)+")";
+    public Building(String name, long osmId, String type, double height, int levels) {
+        this.name = name + "(OSM id: " + Long.toString(osmId) + ")";
         this.osmId = osmId;
         this.type = type;
         this.height = Math.abs(height) < 0.001 ? (levels > 0 ? DEFAULT_LEVEL_HEIGHT * levels : DEFAULT_BUILDING_HEIGHT) : height;
@@ -54,9 +54,9 @@ public class Building extends SimulationObject {
             convexParts = conv.getParts();
             separatingEdges.addAll(conv.separatingEdges);
         } catch (ConversionError e) {
-            throw new IllegalArgumentException("Polygon conversion error on building '"+name+"'");
+            throw new IllegalArgumentException("Polygon conversion error on building '" + name + "'");
         }
-        
+
         buildingAABB.min.z = 0.0;
         buildingAABB.max.z = height;
 
@@ -69,32 +69,32 @@ public class Building extends SimulationObject {
             int vertexCount = part.points.size();
             hull.halfSpaceNormals = new Vec3[vertexCount + 2]; // One half-space per edge + top & bottom
             hull.halfSpacePos = new double[vertexCount + 2];
-            hull.corners = new Vec3[vertexCount*2]; // "Extrude" 2D shape of the building to 'height'
+            hull.corners = new Vec3[vertexCount * 2]; // "Extrude" 2D shape of the building to 'height'
 
             // Add a half-space per edge of the boundary part
-            Vec2 lastPoint = part.points.get(vertexCount-1);
+            Vec2 lastPoint = part.points.get(vertexCount - 1);
             for (int i = 0; i < vertexCount; ++i) {
                 Vec2 point = part.points.get(i);
                 Vec3 point3D = new Vec3(point.x, point.y, 0);
 
                 hull.halfSpaceNormals[i] = new Vec3(point.y - lastPoint.y, -(point.x - lastPoint.x), 0.0);
                 hull.halfSpacePos[i] = IPM.dot(point3D, hull.halfSpaceNormals[i]);
-                hull.corners[i*2] = point3D;
-                hull.corners[i*2+1] = new Vec3(point.x, point.y, height);
+                hull.corners[i * 2] = point3D;
+                hull.corners[i * 2 + 1] = new Vec3(point.x, point.y, height);
 
                 lastPoint = point;
             }
 
             // Add top & bottom half-spaces
-            hull.halfSpaceNormals[vertexCount] = new Vec3(0,0,1); // Top: up normal
+            hull.halfSpaceNormals[vertexCount] = new Vec3(0, 0, 1); // Top: up normal
             hull.halfSpacePos[vertexCount] = height;
-            hull.halfSpaceNormals[vertexCount+1] = new Vec3(0,0,-1); // Bottom: down normal
-            hull.halfSpacePos[vertexCount+1] = 0;
+            hull.halfSpaceNormals[vertexCount + 1] = new Vec3(0, 0, -1); // Bottom: down normal
+            hull.halfSpacePos[vertexCount + 1] = 0;
 
 
             union.boundingBoxes.add(hull);
         }
-        
+
         staticObject.bbox = Optional.of(union);
     }
 

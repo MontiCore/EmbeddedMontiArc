@@ -22,6 +22,7 @@ import de.rwth.montisim.simulation.vehicle.Vehicle;
 public class SimpleCommunicationGateway extends EEComponent implements PortTagUser {
     public static final String NETWORK_TAG = "network";
     public static final Set<String> tagSet = new HashSet<>();
+
     static {
         tagSet.add(NETWORK_TAG);
     }
@@ -41,20 +42,19 @@ public class SimpleCommunicationGateway extends EEComponent implements PortTagUs
     }
 
 
-    
     @Override
     public void process(DiscreteEvent event) {
         int type = event.getType();
-        if (type == MessageSendEvent.type){
+        if (type == MessageSendEvent.type) {
             dispatchMessage((MessageSendEvent) event);
-        } else if (type == MessageReceiveEvent.type){
+        } else if (type == MessageReceiveEvent.type) {
             receive((MessageReceiveEvent) event);
-        } else if (type == SimpleNetworkRecvEvent.type){
+        } else if (type == SimpleNetworkRecvEvent.type) {
             receive((SimpleNetworkRecvEvent) event);
         } else throw new UnexpectedEventException(this.toString(), event);
     }
 
-    
+
     // Receiving a message from a vehicle component -> Send to the Network
     @Override
     protected void receive(MessageReceiveEvent msgRecvEvent) {
@@ -86,11 +86,13 @@ public class SimpleCommunicationGateway extends EEComponent implements PortTagUs
     public void processTag(String tag, PortInformation portInfo) {
         // TODO handle multiple components with same port
         // Add the found ports as own ports
-        if (portInfo.port_type != PortType.SOCKET) throw new IllegalArgumentException("Port " + portInfo.name + " has 'network' tag but is not of type 'SOCKET'.");
-        if (!(portInfo.data_type instanceof SimplePacketType)) throw new IllegalArgumentException("Port "+portInfo.name + " has 'network' tag but its DataType is not 'SimplePacketType'.");
+        if (portInfo.port_type != PortType.SOCKET)
+            throw new IllegalArgumentException("Port " + portInfo.name + " has 'network' tag but is not of type 'SOCKET'.");
+        if (!(portInfo.data_type instanceof SimplePacketType))
+            throw new IllegalArgumentException("Port " + portInfo.name + " has 'network' tag but its DataType is not 'SimplePacketType'.");
         addPort(PortInformation.newSocketPort(portInfo.name, portInfo.data_type, portInfo.isOutput(), portInfo.isInput()));
         // Register msg types at the Network for type checking
         network.registerMessage(address, portInfo.name, portInfo.data_type);
     }
-    
+
 }

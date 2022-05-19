@@ -8,6 +8,8 @@ import de.rwth.montisim.commons.utils.Vec3;
 
 public interface PhysicsModel extends Updatable {
     PhysicsProperties getProperties();
-	DynamicObject getPhysicalObject();
+
+    DynamicObject getPhysicalObject();
+
     void setGroundPosition(Vec3 pos, Vec2 front);
 }

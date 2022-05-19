@@ -32,17 +32,20 @@ public abstract class EEEvent extends DiscreteEvent {
 
         EventData(EEEvent event) {
             this.time = event.time;
-            this.target = ((EEComponent)event.target).properties.name;
+            this.target = ((EEComponent) event.target).properties.name;
         }
 
-        protected EventData() {}
+        protected EventData() {
+        }
 
         public abstract EEEvent getEvent(EESystem eesystem);
     }
+
     public abstract EventData getEventData();
-    protected static EEComponent getTarget(String name, EESystem eesystem){
+
+    protected static EEComponent getTarget(String name, EESystem eesystem) {
         Optional<EEComponent> r = eesystem.getComponent(name);
-        if (!r.isPresent()) throw new ParsingException("Unknown target component: "+name);
+        if (!r.isPresent()) throw new ParsingException("Unknown target component: " + name);
         return r.get();
     }
 }

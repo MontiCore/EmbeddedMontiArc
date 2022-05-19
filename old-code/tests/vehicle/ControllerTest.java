@@ -1,6 +1,6 @@
 /**
  * (c) https://github.com/MontiCore/monticore
- *
+ * <p>
  * The license generally applicable for this project
  * can be found under https://github.com/MontiCore/monticore.
  */
@@ -34,22 +34,22 @@ import simulation.bus.InstantBus;
 
 public class ControllerTest {
 
-	//hardcoded config
-	private final ControllerConfig AUTOPILOT_CONFIG = new ControllerConfig(ControllerConfig.EmulatorType.HARDWARE_EMULATOR, "AutopilotAdapter")
-		.set_os(ControllerConfig.OS.WINDOWS).set_timemodel_constant(Duration.ofMillis(60));
-	
-	@Test
-	public void testController() throws Exception {
-		SoftwareSimulatorManager softwareSimulatorManager = new DirectSoftwareSimulatorManager(new SoftwareSimulatorConfig().set_softwares_folder("autopilots"));
-		PhysicalVehicleBuilder physicalVehicleBuilder = new MassPointPhysicalVehicleBuilder();
-		EESimulator eeSimulator = new EESimulator(Instant.EPOCH);
-		EEVehicleBuilder eeVehicleBuilder = new EEVehicleBuilder(eeSimulator);
-		InstantBus bus = new InstantBus(eeSimulator);
-		eeVehicleBuilder.createControllerSensors(bus);
-		eeVehicleBuilder.createMassPointActuators(bus);
-		ControllerAsEEComponent ecu = eeVehicleBuilder.createController(softwareSimulatorManager, AUTOPILOT_CONFIG, bus);
-		Vehicle vehicle = new Vehicle(physicalVehicleBuilder, eeVehicleBuilder);
-		EEVehicle eeVehicle = vehicle.getEEVehicle();
+    //hardcoded config
+    private final ControllerConfig AUTOPILOT_CONFIG = new ControllerConfig(ControllerConfig.EmulatorType.HARDWARE_EMULATOR, "AutopilotAdapter")
+            .set_os(ControllerConfig.OS.WINDOWS).set_timemodel_constant(Duration.ofMillis(60));
+
+    @Test
+    public void testController() throws Exception {
+        SoftwareSimulatorManager softwareSimulatorManager = new DirectSoftwareSimulatorManager(new SoftwareSimulatorConfig().set_softwares_folder("autopilots"));
+        PhysicalVehicleBuilder physicalVehicleBuilder = new MassPointPhysicalVehicleBuilder();
+        EESimulator eeSimulator = new EESimulator(Instant.EPOCH);
+        EEVehicleBuilder eeVehicleBuilder = new EEVehicleBuilder(eeSimulator);
+        InstantBus bus = new InstantBus(eeSimulator);
+        eeVehicleBuilder.createControllerSensors(bus);
+        eeVehicleBuilder.createMassPointActuators(bus);
+        ControllerAsEEComponent ecu = eeVehicleBuilder.createController(softwareSimulatorManager, AUTOPILOT_CONFIG, bus);
+        Vehicle vehicle = new Vehicle(physicalVehicleBuilder, eeVehicleBuilder);
+        EEVehicle eeVehicle = vehicle.getEEVehicle();
 
         //get actuators
         VehicleActuator steering = vehicle.getEEVehicle().getActuator(VehicleActuatorType.VEHICLE_ACTUATOR_TYPE_STEERING).get();
@@ -67,31 +67,31 @@ public class ControllerTest {
         initialValuesByActuator.put(brakeFR, brakeFR.getActuatorValueTarget());
         initialValuesByActuator.put(motor, motor.getActuatorValueTarget());
 
-		vehicle.executeLoopIteration(Duration.ofMillis(30));
+        vehicle.executeLoopIteration(Duration.ofMillis(30));
 
-		//ecu emits 3 messages
-		int controllerMessagesCount = 0;
-		for(EEDiscreteEvent event : eeVehicle.getEESimulator().getEventList()) {
-			if(event.getEventType() == EEDiscreteEventTypeEnum.BUSMESSAGE) {
-				BusMessageEvent msg = (BusMessageEvent) event;
-				if(msg.getControllerID() == ecu.getId()) {
-					controllerMessagesCount++;
-				}
-			}
-		}
+        //ecu emits 3 messages
+        int controllerMessagesCount = 0;
+        for (EEDiscreteEvent event : eeVehicle.getEESimulator().getEventList()) {
+            if (event.getEventType() == EEDiscreteEventTypeEnum.BUSMESSAGE) {
+                BusMessageEvent msg = (BusMessageEvent) event;
+                if (msg.getControllerID() == ecu.getId()) {
+                    controllerMessagesCount++;
+                }
+            }
+        }
 
-		assertEquals(3, controllerMessagesCount);
+        assertEquals(3, controllerMessagesCount);
 
-		vehicle.executeLoopIteration(Duration.ofMillis(30));
+        vehicle.executeLoopIteration(Duration.ofMillis(30));
 
-		boolean initialValuesChanged = false;
-		for(Map.Entry<VehicleActuator, Double> initialValueByActuator : initialValuesByActuator.entrySet()) {
-			if(Math.abs(initialValueByActuator.getKey().getActuatorValueTarget()-initialValueByActuator.getValue()) > 0.001) {
-				initialValuesChanged = true;
-			}
-		}
+        boolean initialValuesChanged = false;
+        for (Map.Entry<VehicleActuator, Double> initialValueByActuator : initialValuesByActuator.entrySet()) {
+            if (Math.abs(initialValueByActuator.getKey().getActuatorValueTarget() - initialValueByActuator.getValue()) > 0.001) {
+                initialValuesChanged = true;
+            }
+        }
 
-		Assert.isTrue(initialValuesChanged);
-	}
+        Assert.isTrue(initialValuesChanged);
+    }
 
 }

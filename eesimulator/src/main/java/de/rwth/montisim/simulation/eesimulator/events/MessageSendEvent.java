@@ -13,45 +13,49 @@ import de.rwth.montisim.simulation.eesimulator.message.Message;
  * value and starts to (attempt to) send a message )
  */
 public class MessageSendEvent extends EEEvent {
-	public static final int type = registerType(MessageSendEvent.class);
-	public final static String TYPE_NAME = "send";
+    public static final int type = registerType(MessageSendEvent.class);
+    public final static String TYPE_NAME = "send";
 
-	private Message msg;
+    private Message msg;
 
-	public MessageSendEvent(EEComponent target, Instant eventTime, Message msg) {
-		super(target, eventTime);
-		this.msg = msg;
-	}
+    public MessageSendEvent(EEComponent target, Instant eventTime, Message msg) {
+        super(target, eventTime);
+        this.msg = msg;
+    }
 
-	protected MessageSendEvent() {
-	}
+    protected MessageSendEvent() {
+    }
 
-	public Message getMessage() {
-		return msg;
-	}
+    public Message getMessage() {
+        return msg;
+    }
 
-	@Typed(MessageSendEvent.TYPE_NAME)
-	public static class MessageSendEventData extends EventData {
-		Message msg;
-		MessageSendEventData(MessageSendEvent event) {
-			super(event);
-			msg = event.msg;
-		}
-        protected MessageSendEventData() {}
-		@Override
-		public EEEvent getEvent(EESystem eesystem) {
-			return new MessageReceiveEvent(EEEvent.getTarget(target, eesystem), time, msg);
-		}
-	}
-	
-	@Override
-	public EventData getEventData() {
-		return new MessageSendEventData(this);
-	}
+    @Typed(MessageSendEvent.TYPE_NAME)
+    public static class MessageSendEventData extends EventData {
+        Message msg;
 
-	@Override
-	public int getType() {
-		return type;
-	}
+        MessageSendEventData(MessageSendEvent event) {
+            super(event);
+            msg = event.msg;
+        }
+
+        protected MessageSendEventData() {
+        }
+
+        @Override
+        public EEEvent getEvent(EESystem eesystem) {
+            return new MessageReceiveEvent(EEEvent.getTarget(target, eesystem), time, msg);
+        }
+    }
+
+    @Override
+    public EventData getEventData() {
+        return new MessageSendEventData(this);
+    }
+
+    @Override
+    public int getType() {
+        return type;
+    }
 
 }

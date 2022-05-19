@@ -1,6 +1,6 @@
 /**
  * (c) https://github.com/MontiCore/monticore
- *
+ * <p>
  * The license generally applicable for this project
  * can be found under https://github.com/MontiCore/monticore.
  */
@@ -16,6 +16,7 @@ import de.rwth.montisim.simulation.util.Log;
 import java.time.Duration;
 import java.time.Instant;
 import java.util.*;
+
 import static org.junit.Assert.assertTrue;
 import static simulation.network.tasks.TaskAppTrafficOptimization.TRAFFIC_OPTIMIZATION_MIN_COUNT;
 import static simulation.network.tasks.TaskAppTrafficOptimization.TRAFFIC_OPTIMIZATION_MIN_TIME;

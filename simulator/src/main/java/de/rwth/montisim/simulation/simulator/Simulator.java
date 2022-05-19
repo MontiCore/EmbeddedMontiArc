@@ -52,9 +52,9 @@ public class Simulator implements ISimulator, Updatable {
     private List<Vehicle> vehicles = new ArrayList<>();
     private int vehiclesCount = 0;
 
-    public HashMap<Triplet<String,String,Duration>,Duration> currentCollisions = new HashMap<>();
+    public HashMap<Triplet<String, String, Duration>, Duration> currentCollisions = new HashMap<>();
 
-    public LinkedHashMap<Triplet<String,String,Duration>,Duration> collisionHistory = new LinkedHashMap<>();
+    public LinkedHashMap<Triplet<String, String, Duration>, Duration> collisionHistory = new LinkedHashMap<>();
 
     final CollisionDetection collisionDetection;
 
@@ -86,7 +86,8 @@ public class Simulator implements ISimulator, Updatable {
         obj.registerComponents(this);
         if (obj instanceof Vehicle) {
             Vehicle v = (Vehicle) obj;
-            if (vehiclesByName.containsKey(v.properties.vehicleName)) throw new IllegalArgumentException("Error on adding Vehicle '"+v.properties.vehicleName+"' to the simulation: a vehicle with this name is already registered.");
+            if (vehiclesByName.containsKey(v.properties.vehicleName))
+                throw new IllegalArgumentException("Error on adding Vehicle '" + v.properties.vehicleName + "' to the simulation: a vehicle with this name is already registered.");
             vehiclesByName.put(v.properties.vehicleName, v);
             SimulatorState state = (SimulatorState) obj.state;
             state.staticId = addObject(vehicles, vehiclesCount, v);
@@ -189,31 +190,31 @@ public class Simulator implements ISimulator, Updatable {
         if (timeout) {
             return TaskStatus.FAILED_TIMEOUT;
         }
-        ArrayList<Triplet<String,String,Duration>> col = getCollisions();
-        if(config.collision_mode.equals("LOG_COLLISIONS")){
+        ArrayList<Triplet<String, String, Duration>> col = getCollisions();
+        if (config.collision_mode.equals("LOG_COLLISIONS")) {
             logNewCollisions(col);
         }
-        if(!col.isEmpty()){
-            if(config.collision_mode.equals("FAIL_ON_COLLISIONS")){
+        if (!col.isEmpty()) {
+            if (config.collision_mode.equals("FAIL_ON_COLLISIONS")) {
                 return TaskStatus.FAILED_COLLISION;
             }
-            
+
         }
         return allTasksSucceeded() ? TaskStatus.SUCCEEDED : TaskStatus.RUNNING;
     }
 
-    private ArrayList<Triplet<String,String,Duration>> getCollisions(){
-        ArrayList<Triplet<String,String,Duration>> res = new ArrayList<Triplet<String,String,Duration>>();
+    private ArrayList<Triplet<String, String, Duration>> getCollisions() {
+        ArrayList<Triplet<String, String, Duration>> res = new ArrayList<Triplet<String, String, Duration>>();
         for (Vehicle v : vehicles) {
-            for(StaticObject o : v.staticCollisions){
-                res.add(new Triplet(v.properties.vehicleName,o.name,simulatedTime));
+            for (StaticObject o : v.staticCollisions) {
+                res.add(new Triplet(v.properties.vehicleName, o.name, simulatedTime));
             }
 
-            for(Vehicle v1 : v.vehicleCollisions){
-                res.add(new Triplet(v.properties.vehicleName,v1.properties.vehicleName,simulatedTime));
+            for (Vehicle v1 : v.vehicleCollisions) {
+                res.add(new Triplet(v.properties.vehicleName, v1.properties.vehicleName, simulatedTime));
             }
         }
-        
+
         return res;
     }
 
@@ -315,31 +316,31 @@ public class Simulator implements ISimulator, Updatable {
     }
 
     //log finished collision and calculate new collisions
-    private void logNewCollisions(ArrayList<Triplet<String,String,Duration>> col){
-        List<Triplet<String,String,Duration>> newCollisions = new ArrayList(col);
-        List<Triplet<String,String,Duration>> toRemove = new ArrayList();
-        for(Triplet<String,String,Duration> active : currentCollisions.keySet()){
+    private void logNewCollisions(ArrayList<Triplet<String, String, Duration>> col) {
+        List<Triplet<String, String, Duration>> newCollisions = new ArrayList(col);
+        List<Triplet<String, String, Duration>> toRemove = new ArrayList();
+        for (Triplet<String, String, Duration> active : currentCollisions.keySet()) {
             boolean found = false;
-            for(Triplet<String,String,Duration> cur : col){
-                if(cur.getAt(0).equals(active.getAt(0)) && cur.getAt(1).equals(active.getAt(1))){
-                    currentCollisions.replace(active,currentCollisions.get(active).plus(config.tick_duration));
+            for (Triplet<String, String, Duration> cur : col) {
+                if (cur.getAt(0).equals(active.getAt(0)) && cur.getAt(1).equals(active.getAt(1))) {
+                    currentCollisions.replace(active, currentCollisions.get(active).plus(config.tick_duration));
                     newCollisions.remove(cur);
                     found = true;
                     break;
                 }
             }
-            if(!found){
-                collisionHistory.put(active,currentCollisions.get(active));
+            if (!found) {
+                collisionHistory.put(active, currentCollisions.get(active));
                 toRemove.add(active);
             }
         }
-        for(Triplet<String,String,Duration> newCol : newCollisions){
-            currentCollisions.put(newCol,Duration.ZERO);
+        for (Triplet<String, String, Duration> newCol : newCollisions) {
+            currentCollisions.put(newCol, Duration.ZERO);
         }
-        for(Triplet<String,String,Duration> item : toRemove){
+        for (Triplet<String, String, Duration> item : toRemove) {
             currentCollisions.remove(item);
         }
-        
+
     }
 
 }

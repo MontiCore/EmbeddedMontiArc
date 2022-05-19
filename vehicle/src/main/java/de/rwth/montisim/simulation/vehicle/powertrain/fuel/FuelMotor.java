@@ -7,8 +7,8 @@ public class FuelMotor implements Motor {
     transient FuelTank tank = null;
     transient double litersPerJoule;
 
-    public FuelMotor(FuelPTProperties properties){
-        this.litersPerJoule = 1.0/properties.joules_per_liter;
+    public FuelMotor(FuelPTProperties properties) {
+        this.litersPerJoule = 1.0 / properties.joules_per_liter;
     }
 
     @Override
@@ -21,7 +21,7 @@ public class FuelMotor implements Motor {
     @Override
     public void consume(double energy, double delta_t) {
         // TODO Auto-generated method stub
-        tank.consume(energy*litersPerJoule);
+        tank.consume(energy * litersPerJoule);
     }
 
     @Override
@@ -29,7 +29,7 @@ public class FuelMotor implements Motor {
         // Fuel based cars can't regenerate their energy.
     }
 
-    public void setTank(FuelTank tank){
+    public void setTank(FuelTank tank) {
         this.tank = tank;
     }
 

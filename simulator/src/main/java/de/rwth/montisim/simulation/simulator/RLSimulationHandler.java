@@ -38,7 +38,7 @@ import java.util.Arrays;
 // This class is responsible for the training and playing with 
 // reinforcement learning agents
 
-public class RLSimulationHandler{
+public class RLSimulationHandler {
 
     //RL settings
     private boolean distributed = false;
@@ -65,15 +65,15 @@ public class RLSimulationHandler{
     private Navigation[] navigations;
     private TruePosition[] truePositions;
     private TrueVelocity[] trueVelocity;
-    private TrueCompass[] trueCompass; 
+    private TrueCompass[] trueCompass;
     private RLRewardCalculator rewardCalc;
     private Random rndGen = new Random();
 
     private int activeVehicle = 0; //Round Robin variable
     private int trainedVehicle = 0; //denotes which vehicle is currently trained, all other vehicles are simulated by the self-play agent
-    
+
     private List<float[]> decentralizedActionsList = new ArrayList<float[]>(); //list to save actions send by the self-play agent
-    private boolean receiveActions = false; 
+    private boolean receiveActions = false;
     private boolean setupComplete = false; //simulation setup
     private boolean finished = true; //prevent race condition
     private int currentVehicle = 0;
@@ -95,21 +95,22 @@ public class RLSimulationHandler{
     private float[] train_action;
     private boolean in_action = false;
 
-    private class Result{
+    private class Result {
         float reward = 0f;
         float[] state = null;
         boolean terminated = true;
 
-        public Result (float reward, float[] state, boolean terminated){
+        public Result(float reward, float[] state, boolean terminated) {
             this.reward = reward;
             this.state = state;
             this.terminated = terminated;
         }
 
-        public Result(){}
+        public Result() {
+        }
     }
 
-    public RLSimulationHandler (SimulationConfig config, Instant simulationTime, OsmMap map, RLVisualizer viz){
+    public RLSimulationHandler(SimulationConfig config, Instant simulationTime, OsmMap map, RLVisualizer viz) {
         this.config = config;
         this.simulationTime = simulationTime;
         this.map = map;
@@ -118,165 +119,163 @@ public class RLSimulationHandler{
     }
 
     //called when self-play agent sends an action
-    public void action2(float[] action){
-        if(in_termination || in_reset){
+    public void action2(float[] action) {
+        if (in_termination || in_reset) {
             return;
         }
-        if(setupComplete) {
-            if(PLAYMODE == false) { //training mode activated
-                if(finished && !receiveActions && in_action){
+        if (setupComplete) {
+            if (PLAYMODE == false) { //training mode activated
+                if (finished && !receiveActions && in_action) {
                     do_step();
                     return;
                 }
-                if(finished) {
+                if (finished) {
                     finished = false;
-                    if(currentVehicle < vehiclesArray.length-1){
+                    if (currentVehicle < vehiclesArray.length - 1) {
                         currentVehicle += 1;
                     }
-                    if(currentVehicle == trainedVehicle && currentVehicle < vehiclesArray.length-1) { //make sure trained and current vehicle do not overlap
+                    if (currentVehicle == trainedVehicle && currentVehicle < vehiclesArray.length - 1) { //make sure trained and current vehicle do not overlap
                         currentVehicle += 1;
                     }
-                    if(receiveActions) { 
+                    if (receiveActions) {
                         decentralizedActionsList.add(action); //save received actions
                     }
-                    if(decentralizedActionsList.size() >= vehiclesArray.length-1) { //only n-1 actions required by the self-play agent for n vehicles
+                    if (decentralizedActionsList.size() >= vehiclesArray.length - 1) { //only n-1 actions required by the self-play agent for n vehicles
                         receiveActions = false;
                     }
 
                     //publish next state to the self-play agent 
                     //make sure currentVehicle is not the trainedVehicle and the the number of vehicles is over 2, otherwise dont publish again
-                    if(currentVehicle <= vehiclesArray.length-1 && currentVehicle != trainedVehicle && !(vehiclesArray.length-1 == 1)){
+                    if (currentVehicle <= vehiclesArray.length - 1 && currentVehicle != trainedVehicle && !(vehiclesArray.length - 1 == 1)) {
                         finished = true;
                         publishNonTrainMessage(cppInterface, getDistributedState(currentVehicle), false);
-                    }
-                    else{
+                    } else {
                         finished = true;
                     }
                     finished = true;
                 }
-            }
-            else{ //execution mode activated
-                if(receiveActions) { 
+            } else { //execution mode activated
+                if (receiveActions) {
                     decentralizedActionsList.add(action);
                 }
-                
-                if(decentralizedActionsList.size() >= vehiclesArray.length) {
-                    receiveActions= false;
+
+                if (decentralizedActionsList.size() >= vehiclesArray.length) {
+                    receiveActions = false;
                 } else {
                     currentVehicle++;
                     publishNonTrainMessage(cppInterface, getDistributedState(currentVehicle), false);
                 }
 
                 //if action for every vehicle received simulate next step
-                if(decentralizedActionsList.size() == vehiclesArray.length) { 
-                    Result result = step(action); 
-                    if(result.terminated) in_termination = true;
+                if (decentralizedActionsList.size() == vehiclesArray.length) {
+                    Result result = step(action);
+                    if (result.terminated) in_termination = true;
                     publishNonTrainMessage(cppInterface, result.state, result.terminated);
                 }
             }
         }
     }
-    
-	//called when agent gives action for next step
-    public void action(float[] action){
-		if(in_termination || in_reset || in_action){
+
+    //called when agent gives action for next step
+    public void action(float[] action) {
+        if (in_termination || in_reset || in_action) {
             return;
         }
         in_action = true;
-        if(distributed && PLAYMODE == false && !miniStep) {
-            if(currentVehicle < vehiclesArray.length-1 || (trainedVehicle!=currentVehicle
-            && currentVehicle <=vehiclesArray.length-1)){
-                if(trainedVehicle == currentVehicle) currentVehicle++;
+        if (distributed && PLAYMODE == false && !miniStep) {
+            if (currentVehicle < vehiclesArray.length - 1 || (trainedVehicle != currentVehicle
+                    && currentVehicle <= vehiclesArray.length - 1)) {
+                if (trainedVehicle == currentVehicle) currentVehicle++;
                 finished = true;
                 receiveActions = true;
 
                 publishNonTrainMessage(cppInterface, getDistributedState(currentVehicle), false);
             }
             train_action = action;
-            if(decentralizedActionsList.size() >= vehiclesArray.length-1) do_step();
+            if (decentralizedActionsList.size() >= vehiclesArray.length - 1) do_step();
 
-        } else{
+        } else {
             train_action = action;
             do_step();
         }
     }
 
-    private void do_step(){
+    private void do_step() {
         Result result = step(train_action);
-            
-        if(result.terminated) in_termination = true;
+
+        if (result.terminated) in_termination = true;
         in_action = false;
         publishTrainMessage(cppInterface, result.state, result.terminated, result.reward);
-    } 
+    }
 
-	//called when agent calls for a reset
-    public void reset1(boolean reset){
-        if(reset && in_termination){
+    //called when agent calls for a reset
+    public void reset1(boolean reset) {
+        if (reset && in_termination) {
             in_reset = true;
             Result result = reset();
 
             in_termination = false;
             in_reset = false;
-            if(!PLAYMODE) publishTrainMessage(cppInterface, result.state, result.terminated, result.reward);
+            if (!PLAYMODE) publishTrainMessage(cppInterface, result.state, result.terminated, result.reward);
             else publishNonTrainMessage(cppInterface, result.state, result.terminated);
         }
     }
 
     //called when self-play agent calls for a reset
-    public void reset2(boolean reset){
-        if(reset && in_termination && PLAYMODE){
-            reset1(reset);           
+    public void reset2(boolean reset) {
+        if (reset && in_termination && PLAYMODE) {
+            reset1(reset);
         }
     }
 
     //if the agent is not trained the environment has to provide the
     //initial messages (NOT NEEDED)
     //public void sendFirst(){
-        ////try{
-            ////Thread.sleep(3000);
-        ////} catch (InterruptedException ex) {}
-        //currentVehicle = 0;
-        //reset1(true);
+    ////try{
+    ////Thread.sleep(3000);
+    ////} catch (InterruptedException ex) {}
+    //currentVehicle = 0;
+    //reset1(true);
     //}
 
-    public Result reset(){
+    public Result reset() {
         ++this.episodeCounter;
         return this.setup();
     }
 
     //starts a new simulation and initializes all variables
-    private Result setup(){
-        if(simulator != null){
+    private Result setup() {
+        if (simulator != null) {
             simulator.destroy();
             simulator = null;
         }
-        if(randomize){
+        if (randomize) {
             randomizeScenario();
         }
-        if(viz!= null){ 
+        if (viz != null) {
             viz.clearRenderer();
         }
         world = new OsmToWorldLoader(map).getWorld();
         pathfinding = new PathfindingImpl(world);
         simulator = config.build(world, pathfinding, map);
         vehiclesArray = simulator.getVehicles().toArray(Vehicle[]::new);
-        if(viz != null){
+        if (viz != null) {
             viz.simTime = simulationTime;
             viz.setup(world, pathfinding);
         }
 
-        if(config.tick_duration.toMillis() <= 100l){
-            update_iterations = (int) (100l/config.tick_duration.toMillis());
+        if (config.tick_duration.toMillis() <= 100l) {
+            update_iterations = (int) (100l / config.tick_duration.toMillis());
         }
 
         //parse all required components
         autopilots = new RLAutopilot[vehiclesArray.length];
-        for(int i = 0; i<autopilots.length; i++){
+        for (int i = 0; i < autopilots.length; i++) {
             autopilots[i] = (RLAutopilot) vehiclesArray[i].eesystem.getComponent("RLAutopilot").get();
         }
 
         navigations = new Navigation[autopilots.length];
-        for(int i = 0;i<navigations.length;i++){
+        for (int i = 0; i < navigations.length; i++) {
             navigations[i] = (Navigation) vehiclesArray[i].eesystem.getComponent("Navigation").get();
         }
 
@@ -285,15 +284,15 @@ public class RLSimulationHandler{
         trueCompass = new TrueCompass[autopilots.length];
         lidars = new Lidar[autopilots.length];
         speedLimitServices = new SpeedLimitService[autopilots.length];
-        for(int i = 0; i<truePositions.length;i++){
+        for (int i = 0; i < truePositions.length; i++) {
             truePositions[i] = (TruePosition) vehiclesArray[i].physicalValues.getPhysicalValue("true_position");
             trueVelocity[i] = (TrueVelocity) vehiclesArray[i].physicalValues.getPhysicalValue("true_velocity");
             trueCompass[i] = (TrueCompass) vehiclesArray[i].physicalValues.getPhysicalValue("true_compass");
-            if(vehiclesArray[i].eesystem.getComponent("Lidar").isPresent()){
+            if (vehiclesArray[i].eesystem.getComponent("Lidar").isPresent()) {
                 lidars[i] = (Lidar) vehiclesArray[i].eesystem.getComponent("Lidar").get();
                 lidar_offset = lidars[i].getMessageLength();
             }
-            if(vehiclesArray[i].eesystem.getComponent("SpeedLimit").isPresent()){
+            if (vehiclesArray[i].eesystem.getComponent("SpeedLimit").isPresent()) {
                 speedLimitServices[i] = (SpeedLimitService) vehiclesArray[i].eesystem.getComponent("SpeedLimit").get();
                 speed_limit_offset = 1;
             }
@@ -303,7 +302,7 @@ public class RLSimulationHandler{
         vehicleStates = new float[autopilots.length][stateLength];
 
         //update simulation until all values are assigned
-        while(anyStateNull()){
+        while (anyStateNull()) {
             TimeUpdate tu = new TimeUpdate(simulationTime, config.tick_duration);
             simulator.update(tu);
             simulationTime = tu.newTime;
@@ -311,9 +310,9 @@ public class RLSimulationHandler{
         activeVehicle = 0;
         receiveActions = true;
 
-        if(selfPlay_mode == "afterEpisode") { // afterEpisode option can be selected via CLI
-            trainedVehicle = (trainedVehicle +1)%vehiclesArray.length; //pick the next vehicle as the trained vehicle
-        } 
+        if (selfPlay_mode == "afterEpisode") { // afterEpisode option can be selected via CLI
+            trainedVehicle = (trainedVehicle + 1) % vehiclesArray.length; //pick the next vehicle as the trained vehicle
+        }
         updateStatePackets();
         float[] simState = getState();
         rewardCalc = new RLRewardCalculator(navigations, vehiclesArray);
@@ -321,8 +320,8 @@ public class RLSimulationHandler{
         boolean simTermination = this.getSimTermination();
 
         //check if all vehicles found a path, if not, restart simulation
-        for(int i = 0; i<navigations.length; i++){
-            if(navigations[i].getCurrentPath().get().getLength() == 0)
+        for (int i = 0; i < navigations.length; i++) {
+            if (navigations[i].getCurrentPath().get().getLength() == 0)
                 return setup();
         }
         setupComplete = true;
@@ -330,159 +329,154 @@ public class RLSimulationHandler{
         return new Result(init_reward, simState, simTermination);
     }
 
-    private Result step(float[] action){
+    private Result step(float[] action) {
         //self-play and training mode
-        if(distributed && PLAYMODE == false && !miniStep) { 
+        if (distributed && PLAYMODE == false && !miniStep) {
             int listCounter = 0; //makes sure that right action out of the decentralizedActionsList is selected
-            for(int i = 0; i<=autopilots.length-1; i++) {
+            for (int i = 0; i <= autopilots.length - 1; i++) {
 
-                if(i == trainedVehicle) {
+                if (i == trainedVehicle) {
                     setAction(action); //set action for the trained vehicle
-                } else if( i != trainedVehicle && decentralizedActionsList!=null && decentralizedActionsList.size()!=0) {
-                    if(decentralizedActionsList.size() >= i) { //set self-play actions
+                } else if (i != trainedVehicle && decentralizedActionsList != null && decentralizedActionsList.size() != 0) {
+                    if (decentralizedActionsList.size() >= i) { //set self-play actions
                         setDistributedAction(decentralizedActionsList.get(listCounter), i);
-                        listCounter +=1;
-                    }
-                    else if(decentralizedActionsList.size() < i && decentralizedActionsList.size() >= 1){
+                        listCounter += 1;
+                    } else if (decentralizedActionsList.size() < i && decentralizedActionsList.size() >= 1) {
                         setDistributedAction(decentralizedActionsList.get(0), i);
-                    }    
+                    }
                 }
             }
             listCounter = 0;
 
         }
         //set action for all vehicles in self-play execution mode
-        else if(distributed && PLAYMODE == true && !miniStep) {
-            if(decentralizedActionsList!=null && decentralizedActionsList.size()!=0) {
-                for(int i=0; i<= decentralizedActionsList.size()-1; i++) {
-                    setDistributedAction(decentralizedActionsList.get(i),i);
-                
+        else if (distributed && PLAYMODE == true && !miniStep) {
+            if (decentralizedActionsList != null && decentralizedActionsList.size() != 0) {
+                for (int i = 0; i <= decentralizedActionsList.size() - 1; i++) {
+                    setDistributedAction(decentralizedActionsList.get(i), i);
+
                 }
             }
         }
         //set action for single-vehicle and centralized case
-        else{
+        else {
             setAction(action);
         }
 
-        if(simulator == null) return new Result();
-        
-        if(!miniStep) {
-            for(int i = 0; i<update_iterations; i++){
-                if(simulator != null){
+        if (simulator == null) return new Result();
+
+        if (!miniStep) {
+            for (int i = 0; i < update_iterations; i++) {
+                if (simulator != null) {
                     TimeUpdate tu = new TimeUpdate(simulationTime, config.tick_duration);
                     simulator.update(tu);
                     simulationTime = tu.newTime;
                 }
             }
-        }
-        else{
-            for(int i = 0; i<update_iterations; i++){
-                if(simulator != null){
+        } else {
+            for (int i = 0; i < update_iterations; i++) {
+                if (simulator != null) {
                     TimeUpdate tu = new TimeUpdate(simulationTime, config.tick_duration.dividedBy((long) vehiclesArray.length));
                     simulator.update(tu);
                     simulationTime = tu.newTime;
                 }
             }
         }
-        
+
         updateStatePackets();
         float[] simState = getState();
         float step_reward;
 
-        if(!distributed){
+        if (!distributed) {
             step_reward = rewardCalc.getReward();
-        }
-        else if(miniStep) {
+        } else if (miniStep) {
             step_reward = rewardCalc.getRewardForVehicle(activeVehicle);
-        }
-        else{
+        } else {
             step_reward = rewardCalc.getRewardForVehicle(trainedVehicle); //calculate reward only for trained vehicle in self-play mode
         }
 
         boolean simTermination = this.getSimTermination();
-        activeVehicle = (activeVehicle + 1)%vehiclesArray.length;
+        activeVehicle = (activeVehicle + 1) % vehiclesArray.length;
 
-        if(distributed & !miniStep) {
-   
-            while(decentralizedActionsList.size() > 0) { //clear self-play action list for next step
+        if (distributed & !miniStep) {
+
+            while (decentralizedActionsList.size() > 0) { //clear self-play action list for next step
                 decentralizedActionsList.remove(0);
             }
         }
-        currentVehicle=0;
+        currentVehicle = 0;
 
         //afterStep option is selected in CLI
-        if(selfPlay_mode.equals("afterStep")) {
-             trainedVehicle = (trainedVehicle +1)%vehiclesArray.length; //pick next vehicle as the trainedVehicle
+        if (selfPlay_mode.equals("afterStep")) {
+            trainedVehicle = (trainedVehicle + 1) % vehiclesArray.length; //pick next vehicle as the trainedVehicle
         }
 
 
-        if(viz != null){
-            try{viz.simTime = simulationTime;
-            viz.redraw();
+        if (viz != null) {
+            try {
+                viz.simTime = simulationTime;
+                viz.redraw();
+            } catch (ConcurrentModificationException ignore) {
             }
-            catch(ConcurrentModificationException ignore) {}
         }
-        if(simTermination && config.collision_mode.equals("LOG_COLLISIONS")){
+        if (simTermination && config.collision_mode.equals("LOG_COLLISIONS")) {
             CollisionLogWriter.addCollisions(simulator.collisionHistory, config.start_time, true, !PLAYMODE, episodeCounter);
         }
         done = true;
         receiveActions = true;
         return new Result(step_reward, simState, simTermination);
-    } 
+    }
 
-    private void updateStatePackets(){
-        for(int i = 0; i<autopilots.length; i++){
+    private void updateStatePackets() {
+        for (int i = 0; i < autopilots.length; i++) {
             autopilots[i].updateStatePacket();
         }
     }
 
-    private void wait_done(){
-        while(!done);
+    private void wait_done() {
+        while (!done) ;
         done = false;
         return;
     }
 
-    private boolean getSimTermination(){
-        if(simulator.status() == TaskStatus.RUNNING) return false;
+    private boolean getSimTermination() {
+        if (simulator.status() == TaskStatus.RUNNING) return false;
         else return true;
     }
 
     //return the state array that is published on the state topic
-    private float[] getState(){
+    private float[] getState() {
         int vehicleCount = autopilots.length;
         int statePacketLength = autopilots[0].getStatePacket().length;
         updateVehicleStates();
 
         float[] result;
-        if(!distributed){
+        if (!distributed) {
             result = new float[vehicleCount * stateLength];
 
-            for(int i = 0; i<vehicleCount; i++){
-                for(int j = 0; j<stateLength; j++){
-                    result[i*stateLength + j] = vehicleStates[i][j];
+            for (int i = 0; i < vehicleCount; i++) {
+                for (int j = 0; j < stateLength; j++) {
+                    result[i * stateLength + j] = vehicleStates[i][j];
                 }
             }
-        }
-        else if(miniStep){
-            result = new float[stateLength + (vehicleCount-1) * statePacketLength];
-            for(int i = 0; i<stateLength; i++){
+        } else if (miniStep) {
+            result = new float[stateLength + (vehicleCount - 1) * statePacketLength];
+            for (int i = 0; i < stateLength; i++) {
                 result[i] = vehicleStates[activeVehicle][i];
             }
-            for(int i = 1; i< vehicleCount; i++){
-                for(int j = 0; j < statePacketLength; j++){
-                    result[stateLength + (i-1)*statePacketLength + j] = autopilots[(activeVehicle + i) % vehicleCount].getStatePacket()[j];
+            for (int i = 1; i < vehicleCount; i++) {
+                for (int j = 0; j < statePacketLength; j++) {
+                    result[stateLength + (i - 1) * statePacketLength + j] = autopilots[(activeVehicle + i) % vehicleCount].getStatePacket()[j];
                 }
             }
-        }
-        else{
-            result = new float[stateLength + (vehicleCount-1) * statePacketLength];
-            for(int i = 0; i<stateLength; i++){
+        } else {
+            result = new float[stateLength + (vehicleCount - 1) * statePacketLength];
+            for (int i = 0; i < stateLength; i++) {
                 result[i] = vehicleStates[trainedVehicle][i]; //return state to EMADL agent
             }
-            for(int i = 1; i< vehicleCount; i++){
-                for(int j = 0; j < statePacketLength; j++){
-                    result[stateLength + (i-1)*statePacketLength + j] = autopilots[(trainedVehicle + i) % vehicleCount].getStatePacket()[j];
+            for (int i = 1; i < vehicleCount; i++) {
+                for (int j = 0; j < statePacketLength; j++) {
+                    result[stateLength + (i - 1) * statePacketLength + j] = autopilots[(trainedVehicle + i) % vehicleCount].getStatePacket()[j];
                 }
             }
         }
@@ -496,39 +490,37 @@ public class RLSimulationHandler{
         int statePacketLength = autopilots[0].getStatePacket().length;
         updateVehicleStates();
         float[] result;
-        result = new float[stateLength + (vehicleCount-1) * statePacketLength];
-        for(int i = 0; i<stateLength; i++){
+        result = new float[stateLength + (vehicleCount - 1) * statePacketLength];
+        for (int i = 0; i < stateLength; i++) {
             result[i] = vehicleStates[index][i];
         }
-        for(int i = 1; i< vehicleCount; i++){
-            for(int j = 0; j < statePacketLength; j++){
-                result[stateLength + (i-1)*statePacketLength + j] = autopilots[(index + i) % vehicleCount].getStatePacket()[j];
+        for (int i = 1; i < vehicleCount; i++) {
+            for (int j = 0; j < statePacketLength; j++) {
+                result[stateLength + (i - 1) * statePacketLength + j] = autopilots[(index + i) % vehicleCount].getStatePacket()[j];
             }
         }
         return result;
     }
 
     //set the combined action from all vehicles
-    private void setAction(float[] action){
+    private void setAction(float[] action) {
 
         int vehicleCount = autopilots.length;
-        int actionLength =  action.length / vehicleCount; //assume that every vehicle has same action space
+        int actionLength = action.length / vehicleCount; //assume that every vehicle has same action space
 
-        if(!distributed){ //single vehicle or centralized
-            for(int i = 0; i<vehicleCount; i++){
+        if (!distributed) { //single vehicle or centralized
+            for (int i = 0; i < vehicleCount; i++) {
                 float[] result = new float[actionLength];
-                for(int j = 0; j<actionLength; j++){
+                for (int j = 0; j < actionLength; j++) {
                     result[j] = action[i * actionLength + j];
                 }
                 autopilots[i].action = result;
-            } 
-        }
-        else if(miniStep){
-            
+            }
+        } else if (miniStep) {
+
             autopilots[activeVehicle].action = action; //mini-step approach
-        }
-        else{
-            
+        } else {
+
             autopilots[trainedVehicle].action = action; //self-play approach
         }
         return;
@@ -539,9 +531,9 @@ public class RLSimulationHandler{
         autopilots[index].action = action;
     }
 
-    private boolean anyStateNull(){
-        for(int i = 0; i<autopilots.length; i++){
-            if(autopilots[i].state == null) return true;
+    private boolean anyStateNull() {
+        for (int i = 0; i < autopilots.length; i++) {
+            if (autopilots[i].state == null) return true;
         }
         return false;
     }
@@ -549,8 +541,8 @@ public class RLSimulationHandler{
     //assign random start and target coordinates for all vehicles
     //addtional orientation allignment with first segment
 
-    private void randomizeScenario(){
-        if(pathfinding == null) return;
+    private void randomizeScenario() {
+        if (pathfinding == null) return;
         VehicleProperties[] properties;
         properties = config.cars.toArray(new VehicleProperties[0]);
         Vec2[] startCoords = new Vec2[properties.length];
@@ -559,69 +551,70 @@ public class RLSimulationHandler{
         int x_boundary = (int) world.maxCorner.at(0);
         int y_boundary = (int) world.maxCorner.at(1);
 
-        for(int i = 0; i < properties.length; i++){
+        for (int i = 0; i < properties.length; i++) {
             Path path = new Path(0);
-            do{
-            startCoords[i] = new Vec2(rndGen.nextInt()%x_boundary,rndGen.nextInt()%y_boundary);
-            targetCoords[i] = new Vec2(rndGen.nextInt()%x_boundary,rndGen.nextInt()%y_boundary);
-            try{
-                path = pathfinding.findShortestPath(startCoords[i],targetCoords[i]);
-            } catch (Exception e) {}
-            } while(path.getLength()<=0);
+            do {
+                startCoords[i] = new Vec2(rndGen.nextInt() % x_boundary, rndGen.nextInt() % y_boundary);
+                targetCoords[i] = new Vec2(rndGen.nextInt() % x_boundary, rndGen.nextInt() % y_boundary);
+                try {
+                    path = pathfinding.findShortestPath(startCoords[i], targetCoords[i]);
+                } catch (Exception e) {
+                }
+            } while (path.getLength() <= 0);
 
-            path.get(1,startCoords[i]);
-            path.get(path.getLength()-2,targetCoords[i]);
+            path.get(1, startCoords[i]);
+            path.get(path.getLength() - 2, targetCoords[i]);
 
             Vec2 dir = new Vec2();
             Vec2 secondPoint = new Vec2();
-            path.get(2,secondPoint);
-            IPM.subtractTo(dir,secondPoint , startCoords[i]);
+            path.get(2, secondPoint);
+            IPM.subtractTo(dir, secondPoint, startCoords[i]);
             double length = dir.magnitude();
             if (length > 0.001) {
                 IPM.multiply(dir, 1 / length);
             } else {
                 dir.set(Double.NaN, Double.NaN);
             }
-            startOrientations[i] = (180* Math.acos(dir.x) * Math.signum(dir.y))/Math.PI;
+            startOrientations[i] = (180 * Math.acos(dir.x) * Math.signum(dir.y)) / Math.PI;
         }
 
-        for(int i = 0; i<properties.length;i++){
+        for (int i = 0; i < properties.length; i++) {
             TaskProperties task = new TaskProperties();
             task.addGoal(new PathGoalProperties()
-                .reach(targetCoords[i])
-                .withinRange(10)
-                .eventually());
+                    .reach(targetCoords[i])
+                    .withinRange(10)
+                    .eventually());
             properties[i].task = task;
             properties[i].start_pos = Optional.of(startCoords[i]);
             properties[i].start_orientation = startOrientations[i];
         }
     }
 
-    public Simulator getSim(){
+    public Simulator getSim() {
         return simulator;
     }
 
     //update the array containing the states of all vehicles
-    public void updateVehicleStates(){
-        for(int i = 0; i<autopilots.length;i++){
-            for(int j = 0; j<stateLength;j++){
+    public void updateVehicleStates() {
+        for (int i = 0; i < autopilots.length; i++) {
+            for (int j = 0; j < stateLength; j++) {
                 vehicleStates[i][j] = 0.f;
             }
             int trajectoryLength = navigations[i].getCurrentTrajSize();
-            for(int j = 0; j<trajectoryLength; j++){
+            for (int j = 0; j < trajectoryLength; j++) {
                 vehicleStates[i][j] = (float) navigations[i].getCurrentTraj()[j].at(0);
-                vehicleStates[i][10+j] = (float) navigations[i].getCurrentTraj()[j].at(1);
+                vehicleStates[i][10 + j] = (float) navigations[i].getCurrentTraj()[j].at(1);
             }
             vehicleStates[i][20] = (float) trajectoryLength;
             vehicleStates[i][21] = (float) ((Vec2) truePositions[i].get()).at(0);
             vehicleStates[i][22] = (float) ((Vec2) truePositions[i].get()).at(1);
             vehicleStates[i][23] = (float) ((Double) trueCompass[i].get()).doubleValue();
             vehicleStates[i][24] = (float) ((Double) trueVelocity[i].get()).doubleValue();
-            if(speed_limit_offset >0){
+            if (speed_limit_offset > 0) {
                 vehicleStates[i][25] = (float) speedLimitServices[i].getSpeedLimit(0);
             }
-            if(lidar_offset >0){
-                for(int j = 0; j<lidar_offset; j++){
+            if (lidar_offset > 0) {
+                for (int j = 0; j < lidar_offset; j++) {
                     vehicleStates[i][DEFAULT_STATE_LENGTH + speed_limit_offset + j] = (float) lidars[i].getLidarValue(j);
                 }
             }
@@ -629,7 +622,7 @@ public class RLSimulationHandler{
     }
 
     // set reinforcement learning settings
-    public void setSettings(boolean distributed, boolean randomize, boolean play, boolean miniStep, String selfPlay_mode){
+    public void setSettings(boolean distributed, boolean randomize, boolean play, boolean miniStep, String selfPlay_mode) {
         this.distributed = distributed;
         this.randomize = randomize;
         this.PLAYMODE = play;
@@ -643,16 +636,16 @@ public class RLSimulationHandler{
 
     public native void publishTrainMessage(long interf, float[] state, boolean terminal, float reward);
 
-    public void start(){
+    public void start() {
         startros();
     }
 
     //store cpp ROSInterface object
-    public void setCppInterface(long cppInterface){
+    public void setCppInterface(long cppInterface) {
         this.cppInterface = cppInterface;
     }
 
     //public void checkPlay(){
-        //if(PLAYMODE) sendFirst();
+    //if(PLAYMODE) sendFirst();
     //}
 }

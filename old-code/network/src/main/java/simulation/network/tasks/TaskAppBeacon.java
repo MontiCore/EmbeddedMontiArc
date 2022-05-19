@@ -1,6 +1,6 @@
 /**
  * (c) https://github.com/MontiCore/monticore
- *
+ * <p>
  * The license generally applicable for this project
  * can be found under https://github.com/MontiCore/monticore.
  */
@@ -18,6 +18,7 @@ import simulation.vehicle.Vehicle;
 
 import java.time.Duration;
 import java.util.*;
+
 import static de.rwth.montisim.commons.controller.commons.BusEntry.SENSOR_COMPASS;
 import static de.rwth.montisim.commons.controller.commons.BusEntry.SENSOR_GPS_COORDINATES;
 import static de.rwth.montisim.commons.controller.commons.BusEntry.SENSOR_VELOCITY;
@@ -47,8 +48,8 @@ public class TaskAppBeacon extends NetworkTask {
         setTaskId(NetworkTaskId.NETWORK_TASK_ID_APP_BEACON);
         setNetworkNode(node);
         setTaskEventIdList(Arrays.asList(
-            NETWORK_EVENT_ID_RANDOM_START_INITIALIZE, NETWORK_EVENT_ID_APP_RECEIVE,
-            NETWORK_EVENT_ID_APP_SEND, NETWORK_EVENT_ID_SELF_PERIODIC));
+                NETWORK_EVENT_ID_RANDOM_START_INITIALIZE, NETWORK_EVENT_ID_APP_RECEIVE,
+                NETWORK_EVENT_ID_APP_SEND, NETWORK_EVENT_ID_SELF_PERIODIC));
 
         beaconCounter = 0;
     }
@@ -116,7 +117,7 @@ public class TaskAppBeacon extends NetworkTask {
 
         // Convert to vehicle
         if (networkNode.getPhysicalObject() instanceof PhysicalVehicle) {
-            PhysicalVehicle physicalVehicle = (PhysicalVehicle)(networkNode.getPhysicalObject());
+            PhysicalVehicle physicalVehicle = (PhysicalVehicle) (networkNode.getPhysicalObject());
             Vehicle vehicle = physicalVehicle.getVehicle();
             List<Float> messageFloats = Collections.synchronizedList(new LinkedList<>());
             NetworkMessage message = new NetworkMessage();
@@ -129,7 +130,7 @@ public class TaskAppBeacon extends NetworkTask {
 
                 if (gpsSensor.isPresent()) {
                     Object gpsSensorValue = gpsSensor.get().getValue();
-                    gpsPosition = (Vec3)(gpsSensorValue);
+                    gpsPosition = (Vec3) (gpsSensorValue);
                 } else {
                     Log.warning("TaskAppBeacon - sendBroadcastBeaconMessage: Missing GPS sensor in trajectory extraction, vehicle: " + vehicle);
                     return;
@@ -152,18 +153,18 @@ public class TaskAppBeacon extends NetworkTask {
 
                 // Add intermediate point if too far away from next regular node
                 if (nearestPosOnTrajectory.getDistance(nextVertexPos) > 0.2) {
-                    messageFloats.add((float)(nearestPosOnTrajectory.getEntry(0)));
-                    messageFloats.add((float)(nearestPosOnTrajectory.getEntry(1)));
-                    messageFloats.add((float)(nearestPosOnTrajectory.getEntry(2)));
+                    messageFloats.add((float) (nearestPosOnTrajectory.getEntry(0)));
+                    messageFloats.add((float) (nearestPosOnTrajectory.getEntry(1)));
+                    messageFloats.add((float) (nearestPosOnTrajectory.getEntry(2)));
                     maxSentLength--;
                 }
 
                 // Add trajectory values to message
                 for (Vertex v : trajectoryList.subList(nextVertex, Math.min(trajectoryList.size(), nextVertex + maxSentLength))) {
                     Vec3 vectorData = v.getPosition();
-                    messageFloats.add((float)(vectorData.getEntry(0)));
-                    messageFloats.add((float)(vectorData.getEntry(1)));
-                    messageFloats.add((float)(vectorData.getEntry(2)));
+                    messageFloats.add((float) (vectorData.getEntry(0)));
+                    messageFloats.add((float) (vectorData.getEntry(1)));
+                    messageFloats.add((float) (vectorData.getEntry(2)));
                 }
 
                 // Set message ports
@@ -180,15 +181,15 @@ public class TaskAppBeacon extends NetworkTask {
 
                         switch (sensorEntry) {
                             case SENSOR_GPS_COORDINATES:
-                                Vec3 vectorData = (Vec3)(sensorValue);
-                                messageFloats.add((float)(vectorData.getEntry(0)));
-                                messageFloats.add((float)(vectorData.getEntry(1)));
-                                messageFloats.add((float)(vectorData.getEntry(2)));
+                                Vec3 vectorData = (Vec3) (sensorValue);
+                                messageFloats.add((float) (vectorData.getEntry(0)));
+                                messageFloats.add((float) (vectorData.getEntry(1)));
+                                messageFloats.add((float) (vectorData.getEntry(2)));
                                 break;
                             case SENSOR_VELOCITY:
                             case SENSOR_COMPASS:
-                                double doubleData = (Double)(sensorValue);
-                                messageFloats.add((float)(doubleData));
+                                double doubleData = (Double) (sensorValue);
+                                messageFloats.add((float) (doubleData));
                                 break;
                             default:
                                 Log.warning("TaskAppBeacon - sendBroadcastBeaconMessage: Missing switch case for sensor entry: " + sensorEntry.name() + ", vehicle: " + vehicle);
@@ -201,9 +202,9 @@ public class TaskAppBeacon extends NetworkTask {
                 }
 
                 // Add vehicle values to message
-                messageFloats.add((float)(physicalVehicle.getLength()));
-                messageFloats.add((float)(physicalVehicle.getWidth()));
-                messageFloats.add((float)(physicalVehicle.getHeight()));
+                messageFloats.add((float) (physicalVehicle.getLength()));
+                messageFloats.add((float) (physicalVehicle.getWidth()));
+                messageFloats.add((float) (physicalVehicle.getHeight()));
 
                 // Set message ports
                 message.setTransportPortSourceNumber(APP_BEACON_PORT_NUMBER_STATUS_MSG);

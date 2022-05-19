@@ -7,5 +7,5 @@ public class EEComponentNameException extends Exception {
     public EEComponentNameException(String name) {
         super("Multiple components with name: " + name);
     }
- 
+
 }

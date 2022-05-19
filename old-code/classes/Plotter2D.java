@@ -1,6 +1,6 @@
 /**
  * (c) https://github.com/MontiCore/monticore
- *
+ * <p>
  * The license generally applicable for this project
  * can be found under https://github.com/MontiCore/monticore.
  */
@@ -16,12 +16,14 @@ import org.apache.commons.math3.linear.BlockRealMatrix;
 import org.apache.commons.math3.linear.RealMatrix;
 import org.jfree.chart.ChartUtilities;
 import org.jfree.chart.axis.NumberAxis;
+
 import java.awt.*;
 import java.io.File;
 import java.time.Duration;
 import java.time.Instant;
 import java.util.LinkedList;
 import java.util.List;
+
 import de.rwth.montisim.commons.utils.Vec3;
 import org.jfree.chart.JFreeChart;
 import org.jfree.chart.axis.NumberTickUnit;
@@ -35,7 +37,7 @@ import org.jfree.chart.renderer.xy.XYLineAndShapeRenderer;
 /**
  * Class that Plots a 2D Graph for data sets
  */
-public final class Plotter2D{
+public final class Plotter2D {
 
     /* A circle shape to be used by the plotting renderer */
     private static java.awt.geom.Ellipse2D.Double shape = new java.awt.geom.Ellipse2D.Double(-2.0, -2.0, 4.0, 4.0);
@@ -44,7 +46,7 @@ public final class Plotter2D{
     /**
      * Function that is used in the Simulation Debug Plotter
      */
-    public static void plotOne(Vehicle physicalVehicle, long counter, Duration timeDiffms, String name){
+    public static void plotOne(Vehicle physicalVehicle, long counter, Duration timeDiffms, String name) {
         //TODO ADAPT
         // if(counter != 0){
         //     //return;
@@ -199,7 +201,7 @@ public final class Plotter2D{
             ChartUtilities.saveChartAsPNG(new File("Position.png"), positionChart, 750, 450);
             ChartUtilities.saveChartAsPNG(new File("Velocity.png"), velocityChart, 750, 450);
             ChartUtilities.saveChartAsPNG(new File("Rotation.png"), rotationRatesChart, 750, 450);
-        }catch (Exception e){
+        } catch (Exception e) {
             //Log.severe("Could not save charts as PNGs." + e);
         }
     }
@@ -249,7 +251,7 @@ public final class Plotter2D{
      * @param  simulationTimePoints Discrete time points during the simulation
      * @return Returns a chart of the velocity of the center of mass of the vehicle
      */
-    private static JFreeChart vehicleVelocityChart(List<Vec3> vehicleVelocity, List<Instant> simulationTimePoints ) {
+    private static JFreeChart vehicleVelocityChart(List<Vec3> vehicleVelocity, List<Instant> simulationTimePoints) {
         // Create axis
         NumberAxis xAxis = new NumberAxis("Simulation Time (ms)");
         xAxis.setLabelFont(new Font("Dialog", Font.BOLD, 30));
@@ -307,7 +309,7 @@ public final class Plotter2D{
         rotationRatesPlotRenderer.setBaseShapesFilled(true);
 
         rotationRatesPlotRenderer.setSeriesPaint(0, Color.BLUE);
-        rotationRatesPlotRenderer.setSeriesPaint(1, Color. RED);
+        rotationRatesPlotRenderer.setSeriesPaint(1, Color.RED);
         rotationRatesPlotRenderer.setSeriesPaint(2, Color.GREEN);
         rotationRatesPlotRenderer.setSeriesPaint(3, Color.YELLOW);
 
@@ -322,7 +324,7 @@ public final class Plotter2D{
         rotationRatesPlotRenderer.setSeriesLinesVisible(3, false);
 
         // Create rotation rates plot
-        XYPlot rotationRatePlot  = new XYPlot(rotationRates, xAxis, yAxis, rotationRatesPlotRenderer);
+        XYPlot rotationRatePlot = new XYPlot(rotationRates, xAxis, yAxis, rotationRatesPlotRenderer);
 
         // Create rotation rates chart
         JFreeChart rotationRateChart = new JFreeChart(" ", JFreeChart.DEFAULT_TITLE_FONT, rotationRatePlot, true);
@@ -345,7 +347,7 @@ public final class Plotter2D{
         List<Double> tempPosition = new LinkedList<Double>();
 
         // Fill series with data
-        for(int i=0; i<vehiclePosition.size(); i++){
+        for (int i = 0; i < vehiclePosition.size(); i++) {
 
             tempPosition.add(vehiclePosition.get(i).y);
             //position.add(simTime.get(i), tempPosition.get(i));
@@ -372,10 +374,10 @@ public final class Plotter2D{
 
         // Create XY series for storing the velocity
         XYSeries velocity = new XYSeries("v_y", false, true);
-        List<Double>  tempVelocity = new LinkedList<Double>();
+        List<Double> tempVelocity = new LinkedList<Double>();
 
         // Fill series with data
-        for(int i=0; i<vehicleVelocity.size(); i++){
+        for (int i = 0; i < vehicleVelocity.size(); i++) {
 
             tempVelocity.add(vehicleVelocity.get(i).y);
             velocity.add(simTime.get(i).toEpochMilli(), tempVelocity.get(i));
@@ -410,7 +412,7 @@ public final class Plotter2D{
         List<Double> tempFour = new LinkedList<Double>();
 
         // Fill series with data
-        for(int i=0; i<wheelRotationRates.size(); i++){
+        for (int i = 0; i < wheelRotationRates.size(); i++) {
 
             tempOne.add(wheelRotationRates.get(i).get(0));
             tempTwo.add(wheelRotationRates.get(i).get(1));

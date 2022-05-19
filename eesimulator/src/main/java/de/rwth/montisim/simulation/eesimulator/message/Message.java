@@ -20,13 +20,19 @@ import de.rwth.montisim.simulation.eesimulator.EESystem;
  */
 public class Message implements CustomJson {
 
-    /** Static information associated to this message. */
+    /**
+     * Static information associated to this message.
+     */
     public MessageInformation msgInfo;
 
-    /** Message to be transmitted. */
+    /**
+     * Message to be transmitted.
+     */
     public Object message;
 
-    /** Message length in bytes. */
+    /**
+     * Message length in bytes.
+     */
     public int msgLen = -1;
 
     public Message(MessageInformation info, Object message, int msgLen) {
@@ -74,9 +80,10 @@ public class Message implements CustomJson {
                 Optional<EEComponent> r = eesystem.getComponent(name);
                 if (!r.isPresent())
                     throw new ParsingException("Unknown component: " + name);
-                sender = (EEComponent)r.get();
+                sender = (EEComponent) r.get();
             } else if (e.key.equals(K_NAME)) {
-                if (sender == null) throw new ParsingException("Sender must be known before parsing the MessageInformation");
+                if (sender == null)
+                    throw new ParsingException("Sender must be known before parsing the MessageInformation");
                 String name = t.getString().getJsonString();
                 this.msgInfo = sender.getMsgInfo(name);
                 if (this.msgInfo == null)
@@ -91,6 +98,6 @@ public class Message implements CustomJson {
                 t.unexpected(e);
         }
     }
-    
+
 }
 

@@ -17,11 +17,11 @@ public class EESetupErrors {
 
     public void throwExceptions() throws EESetupException {
         if (
-            !msgTypeExceptions.isEmpty() || 
-            !namesErrors.isEmpty() || 
-            !missingComponentExceptions.isEmpty() ||
-            !multipleInputsExceptions.isEmpty() ||
-            !missingOutputExceptions.isEmpty()
+                !msgTypeExceptions.isEmpty() ||
+                        !namesErrors.isEmpty() ||
+                        !missingComponentExceptions.isEmpty() ||
+                        !multipleInputsExceptions.isEmpty() ||
+                        !missingOutputExceptions.isEmpty()
         )
             throw new EESetupException(this);
     }
@@ -40,8 +40,8 @@ public class EESetupErrors {
 
     private static String printExceptions(String name, List<? extends Exception> exceptions) {
         String res = "";
-        if (!exceptions.isEmpty()){
-            res += "## "+name+ "s:\n";
+        if (!exceptions.isEmpty()) {
+            res += "## " + name + "s:\n";
             for (Exception e : exceptions) {
                 res += "- " + e.getMessage() + '\n';
             }
@@ -49,5 +49,5 @@ public class EESetupErrors {
         return res;
     }
 
-    
+
 }

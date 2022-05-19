@@ -1,6 +1,6 @@
 /**
  * (c) https://github.com/MontiCore/monticore
- *
+ * <p>
  * The license generally applicable for this project
  * can be found under https://github.com/MontiCore/monticore.
  */
@@ -9,6 +9,7 @@ package de.rwth.montisim.simulation.environment.object;
 import de.rwth.montisim.commons.simulation.ISimulator;
 import de.rwth.montisim.commons.simulation.SimulationObject;
 import de.rwth.montisim.commons.simulation.StaticObject;
+
 /**
  * Class that represents a Tree in the simulation
  */
@@ -27,7 +28,7 @@ public class Tree implements SimulationObject {
         // length = 1.0;
         // height = 0.5;
     }
-    
+
     @Override
     public void registerComponents(ISimulator simulator) {
         simulator.registerStaticObject(objectData);

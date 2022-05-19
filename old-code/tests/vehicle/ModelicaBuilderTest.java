@@ -1,6 +1,6 @@
 /**
  * (c) https://github.com/MontiCore/monticore
- *
+ * <p>
  * The license generally applicable for this project
  * can be found under https://github.com/MontiCore/monticore.
  */
@@ -43,16 +43,16 @@ public class ModelicaBuilderTest {
     }
 
     @Test
-    public void buildDefaultVehicle(){
+    public void buildDefaultVehicle() {
         // Get default VDM values
-    	Vehicle referenceVehicle = createStandardVehicle(new ModelicaPhysicalVehicleBuilder());
+        Vehicle referenceVehicle = createStandardVehicle(new ModelicaPhysicalVehicleBuilder());
         ModelicaPhysicalVehicle referencePhysicalVehicle = (ModelicaPhysicalVehicle) referenceVehicle.getPhysicalVehicle();
         VehicleDynamicsModel referenceVDM = referencePhysicalVehicle.getVDM();
 
         // Calculate expected values
         double z = referenceVDM.getValue("z");
         double height = PhysicalVehicle.VEHICLE_DEFAULT_HEIGHT;
-        Vec3 expectedPosition = new Vec3(new Double[]{0.0, 0.0, - height/2 + z});
+        Vec3 expectedPosition = new Vec3(new Double[]{0.0, 0.0, -height / 2 + z});
         Rotation expectedRot = new Rotation(RotationOrder.XYZ, RotationConvention.VECTOR_OPERATOR, 0.0, 0.0, 0.0);
         RealMatrix expectedRotation = new BlockRealMatrix(expectedRot.getMatrix());
         Vec3 expectedVelocity = new Vec3(new double[]{0.0, 0.0, 0.0});
@@ -108,7 +108,7 @@ public class ModelicaBuilderTest {
     }
 
     @Test
-    public void buildCustomVehicle(){
+    public void buildCustomVehicle() {
         // Get default VDM values
         ModelicaPhysicalVehicleBuilder modelicaBuilder = new ModelicaPhysicalVehicleBuilder();
         Vehicle referenceVehicle = createStandardVehicle(modelicaBuilder);
@@ -142,7 +142,7 @@ public class ModelicaBuilderTest {
 
         // Calculate remaining expected values
         Vec3 expectedForce = new Vec3(new double[]{0.0, 0.0, 0.0});
-        Vec3 expectedGeometryPositionOffset = internalRotation.operate(new Vec3(new double[]{0.0, 0.0, expectedHeight/2 - z}));
+        Vec3 expectedGeometryPositionOffset = internalRotation.operate(new Vec3(new double[]{0.0, 0.0, expectedHeight / 2 - z}));
         Vec3 expectedGeometryPosition = expectedPosition.add(expectedGeometryPositionOffset);
         double expectedWheelRotationRate = expectedVelocityLocal.getEntry(0) / expectedWheelRadius;
 
@@ -197,10 +197,10 @@ public class ModelicaBuilderTest {
     }
 
     private Vehicle createStandardVehicle(PhysicalVehicleBuilder physicalVehicleBuilder) {
-    	EESimulator eeSimulator = new EESimulator(Instant.EPOCH);
-		EEVehicleBuilder eeVehicleBuilder = new EEVehicleBuilder(eeSimulator);
-		InstantBus bus = new InstantBus(eeSimulator);
-		eeVehicleBuilder.createAllSensorsNActuators(bus);
-		return new Vehicle(physicalVehicleBuilder, eeVehicleBuilder);
+        EESimulator eeSimulator = new EESimulator(Instant.EPOCH);
+        EEVehicleBuilder eeVehicleBuilder = new EEVehicleBuilder(eeSimulator);
+        InstantBus bus = new InstantBus(eeSimulator);
+        eeVehicleBuilder.createAllSensorsNActuators(bus);
+        return new Vehicle(physicalVehicleBuilder, eeVehicleBuilder);
     }
 }

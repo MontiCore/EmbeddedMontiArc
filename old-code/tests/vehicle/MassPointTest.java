@@ -1,6 +1,6 @@
 /**
  * (c) https://github.com/MontiCore/monticore
- *
+ * <p>
  * The license generally applicable for this project
  * can be found under https://github.com/MontiCore/monticore.
  */
@@ -10,6 +10,7 @@ import de.rwth.montisim.commons.utils.Vec3;
 import org.junit.*;
 import de.rwth.montisim.simulation.util.Log;
 import de.rwth.montisim.simulation.util.MathHelper;
+
 import static org.junit.Assert.*;
 
 /**
@@ -28,10 +29,10 @@ public class MassPointTest {
     }
 
     @Test
-    public void constructorTest(){
+    public void constructorTest() {
         // Create test values
         Vec3 zeroVector = new Vec3(3);
-        Vec3 localPos = new Vec3(new double[] {0.2346, 0.3678, 0.2486});
+        Vec3 localPos = new Vec3(new double[]{0.2346, 0.3678, 0.2486});
         double mass = 500.0;
 
         // Construct mass point
@@ -39,11 +40,11 @@ public class MassPointTest {
 
         // Ensure that constructor works
         assertTrue(MathHelper.vectorEquals(localPos, mp.getLocalPosition(), 0.00000001));
-        assertTrue(MathHelper.vectorEquals(zeroVector,mp.getLocalCenterDiff(), 0.00000001));
-        assertTrue(MathHelper.vectorEquals(zeroVector,mp.getPosition(), 0.00000001));
-        assertTrue(MathHelper.vectorEquals(zeroVector,mp.getCenterDiff(), 0.00000001));
-        assertTrue(MathHelper.vectorEquals(zeroVector,mp.getVelocity(), 0.00000001));
-        assertTrue(MathHelper.vectorEquals(zeroVector,mp.getForce(), 0.00000001));
+        assertTrue(MathHelper.vectorEquals(zeroVector, mp.getLocalCenterDiff(), 0.00000001));
+        assertTrue(MathHelper.vectorEquals(zeroVector, mp.getPosition(), 0.00000001));
+        assertTrue(MathHelper.vectorEquals(zeroVector, mp.getCenterDiff(), 0.00000001));
+        assertTrue(MathHelper.vectorEquals(zeroVector, mp.getVelocity(), 0.00000001));
+        assertTrue(MathHelper.vectorEquals(zeroVector, mp.getForce(), 0.00000001));
         assertEquals(mass, mp.getMass(), 0);
         assertEquals(0.0, mp.getGroundZ(), 0);
         assertEquals(0.0, mp.getPressure(), 0);
@@ -53,11 +54,11 @@ public class MassPointTest {
     public void getterAndSetterTest() {
         // Create test values
         Vec3 zeroVector = new Vec3(3);
-        Vec3 localPosition = new Vec3(new double[] {0.2346, 0.3678, 0.2486});
-        Vec3 localCenterDiff = new Vec3(new double[] {5.2346, 0.678, 1.2486});
-        Vec3 position = new Vec3(new double[] {249.2346, 10.3678, 3.2486});
-        Vec3 centerDiff = new Vec3(new double[] {240.2346, 11.3678, 2.2486});
-        Vec3 velocity = new Vec3(new double[] {0.0, 50.3, -0.25});
+        Vec3 localPosition = new Vec3(new double[]{0.2346, 0.3678, 0.2486});
+        Vec3 localCenterDiff = new Vec3(new double[]{5.2346, 0.678, 1.2486});
+        Vec3 position = new Vec3(new double[]{249.2346, 10.3678, 3.2486});
+        Vec3 centerDiff = new Vec3(new double[]{240.2346, 11.3678, 2.2486});
+        Vec3 velocity = new Vec3(new double[]{0.0, 50.3, -0.25});
         double mass = 500.0;
         double groundZ = 2.1;
         double pressure = 1.9;
@@ -101,10 +102,10 @@ public class MassPointTest {
     }
 
     @Test
-    public void forceAdderAndResetterTest(){
+    public void forceAdderAndResetterTest() {
         // Create test values
         Vec3 zeroVector = new Vec3(3);
-        Vec3 force = new Vec3(new double[] {5.02, 0.1, -39.4});
+        Vec3 force = new Vec3(new double[]{5.02, 0.1, -39.4});
 
         // Construct mass point
         MassPoint mp = new MassPoint(MassPointType.MASS_POINT_TYPE_WHEEL_BACK_LEFT, zeroVector, 0.0);

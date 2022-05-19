@@ -1,13 +1,15 @@
 /**
  * (c) https://github.com/MontiCore/monticore
- *
+ * <p>
  * The license generally applicable for this project
  * can be found under https://github.com/MontiCore/monticore.
  */
 package simulation.network.tasks;
 
 import simulation.network.*;
+
 import java.util.Arrays;
+
 import static simulation.network.NetworkDiscreteEventId.*;
 
 /**

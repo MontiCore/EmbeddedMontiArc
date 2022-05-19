@@ -1,6 +1,6 @@
 /**
  * (c) https://github.com/MontiCore/monticore
- *
+ * <p>
  * The license generally applicable for this project
  * can be found under https://github.com/MontiCore/monticore.
  */
@@ -85,56 +85,56 @@ public class ChannelModelCellular extends NetworkChannelModel {
     public final static double HANDOVER_DISTANCE_OFFSET = 30.0;
 
     /** Channel information: Channel id, center carrier frequency in kHz, channel bandwidth in kHz */
-    private static int[][] channelInfo = new int[][] {
-        // Uplink channels: Band 3
-        {1715000, 10000},
-        {1725000, 10000},
-        {1735000, 10000},
-        {1745000, 10000},
-        {1755000, 10000},
-        {1765000, 10000},
-        {1775000, 10000},
-        // Uplink channels: Band 7
-        {2505000, 10000},
-        {2515000, 10000},
-        {2525000, 10000},
-        {2535000, 10000},
-        {2545000, 10000},
-        {2555000, 10000},
-        {2565000, 10000},
-        // Uplink channels: Band 65
-        {1925000, 10000},
-        {1935000, 10000},
-        {1945000, 10000},
-        {1955000, 10000},
-        {1965000, 10000},
-        {1975000, 10000},
-        {1985000, 10000},
+    private static int[][] channelInfo = new int[][]{
+            // Uplink channels: Band 3
+            {1715000, 10000},
+            {1725000, 10000},
+            {1735000, 10000},
+            {1745000, 10000},
+            {1755000, 10000},
+            {1765000, 10000},
+            {1775000, 10000},
+            // Uplink channels: Band 7
+            {2505000, 10000},
+            {2515000, 10000},
+            {2525000, 10000},
+            {2535000, 10000},
+            {2545000, 10000},
+            {2555000, 10000},
+            {2565000, 10000},
+            // Uplink channels: Band 65
+            {1925000, 10000},
+            {1935000, 10000},
+            {1945000, 10000},
+            {1955000, 10000},
+            {1965000, 10000},
+            {1975000, 10000},
+            {1985000, 10000},
 
-        // Downlink channels: Band 3
-        {1810000, 10000},
-        {1820000, 10000},
-        {1830000, 10000},
-        {1840000, 10000},
-        {1850000, 10000},
-        {1860000, 10000},
-        {1870000, 10000},
-        // Downlink channels: Band 7
-        {2625000, 10000},
-        {2635000, 10000},
-        {2645000, 10000},
-        {2655000, 10000},
-        {2665000, 10000},
-        {2675000, 10000},
-        {2685000, 10000},
-        // Downlink channels: Band 65
-        {2115000, 10000},
-        {2125000, 10000},
-        {2135000, 10000},
-        {2145000, 10000},
-        {2155000, 10000},
-        {2165000, 10000},
-        {2175000, 10000},
+            // Downlink channels: Band 3
+            {1810000, 10000},
+            {1820000, 10000},
+            {1830000, 10000},
+            {1840000, 10000},
+            {1850000, 10000},
+            {1860000, 10000},
+            {1870000, 10000},
+            // Downlink channels: Band 7
+            {2625000, 10000},
+            {2635000, 10000},
+            {2645000, 10000},
+            {2655000, 10000},
+            {2665000, 10000},
+            {2675000, 10000},
+            {2685000, 10000},
+            // Downlink channels: Band 65
+            {2115000, 10000},
+            {2125000, 10000},
+            {2135000, 10000},
+            {2145000, 10000},
+            {2155000, 10000},
+            {2165000, 10000},
+            {2175000, 10000},
     };
 
     /** Last maximum computed HARQ delay */
@@ -187,7 +187,7 @@ public class ChannelModelCellular extends NetworkChannelModel {
         // Special handling of wired messages between base stations
         if (message.isWiredMessage()) {
             if (sender.getPhysicalObject().getPhysicalObjectType() == PhysicalObjectType.PHYSICAL_OBJECT_TYPE_NETWORK_CELL_BASE_STATION && otherNode.getPhysicalObject().getPhysicalObjectType() == PhysicalObjectType.PHYSICAL_OBJECT_TYPE_NETWORK_CELL_BASE_STATION) {
-                NetworkCellBaseStation senderStation = (NetworkCellBaseStation)(sender.getPhysicalObject());
+                NetworkCellBaseStation senderStation = (NetworkCellBaseStation) (sender.getPhysicalObject());
 
                 if (senderStation.getConnectedBaseStationIDs().contains(otherNode.getPhysicalObject().getId())) {
                     NetworkDiscreteEvent wiredEvent = new NetworkDiscreteEvent(NetworkUtils.simTimeWithDelay(Duration.ofNanos(1500000L)), NetworkDiscreteEventId.NETWORK_EVENT_ID_PHY_RECEIVE_MESSAGE_END, otherNode, message);
@@ -217,10 +217,17 @@ public class ChannelModelCellular extends NetworkChannelModel {
         double maxClearTransmissionRange = RANGE_MAXIMUM_RECEIVE_QPSK;
 
         switch (message.getPhyBitsPerSignal()) {
-            case 2: maxClearTransmissionRange = RANGE_MAXIMUM_RECEIVE_QPSK; break;
-            case 4: maxClearTransmissionRange = RANGE_MAXIMUM_RECEIVE_16QAM; break;
-            case 6: maxClearTransmissionRange = RANGE_MAXIMUM_RECEIVE_64QAM; break;
-            default: break;
+            case 2:
+                maxClearTransmissionRange = RANGE_MAXIMUM_RECEIVE_QPSK;
+                break;
+            case 4:
+                maxClearTransmissionRange = RANGE_MAXIMUM_RECEIVE_16QAM;
+                break;
+            case 6:
+                maxClearTransmissionRange = RANGE_MAXIMUM_RECEIVE_64QAM;
+                break;
+            default:
+                break;
         }
 
         double maxInterferenceRange = maxClearTransmissionRange * RANGE_INTERFERENCE_FACTOR;
@@ -249,7 +256,7 @@ public class ChannelModelCellular extends NetworkChannelModel {
                 List<Vec3> positionList = Collections.synchronizedList(new LinkedList<>());
 
                 for (int i = 0; i <= MULTI_PATH_ACCURACY; ++i) {
-                    double factor = (double)(i) / (double)(MULTI_PATH_ACCURACY);
+                    double factor = (double) (i) / (double) (MULTI_PATH_ACCURACY);
                     positionList.add(senderPos.add(diffVector.mapMultiply(factor)));
                 }
 
@@ -300,7 +307,7 @@ public class ChannelModelCellular extends NetworkChannelModel {
 
             // Relative velocity needs to be negative if nodes move towards each other
             // It is positive when they move away from each other, put these values in formula
-            double dopplerShiftAbsolute = 1000.0 * channelCarrierKHz * Math.sqrt((1.0 - (relativeVelocity / (double)(NetworkSettings.SPEED_OF_LIGHT))) / (1.0 + (relativeVelocity / (double)(NetworkSettings.SPEED_OF_LIGHT))));
+            double dopplerShiftAbsolute = 1000.0 * channelCarrierKHz * Math.sqrt((1.0 - (relativeVelocity / (double) (NetworkSettings.SPEED_OF_LIGHT))) / (1.0 + (relativeVelocity / (double) (NetworkSettings.SPEED_OF_LIGHT))));
             dopplerShiftAmount = Math.abs(dopplerShiftAbsolute - 1000.0 * channelCarrierKHz);
         }
 
@@ -346,7 +353,7 @@ public class ChannelModelCellular extends NetworkChannelModel {
             if (packetSuccessProbability >= HARQ_LIMIT_ERROR_PROBABILITY) {
                 long baseTime = 2 * (2 * NetworkUtils.randomNextLayerSimulationTime().toNanos() + NetworkUtils.calcPropagationTime(sender, otherNode).toNanos() + NetworkUtils.calcTransmissionTime(message).toNanos());
                 double factor = (1.0 / packetSuccessProbability) - 1.0;
-                harqDelay = (long)(factor * baseTime);
+                harqDelay = (long) (factor * baseTime);
                 packetSuccessProbability = 1.0;
 
                 // Update last max harq delay value
@@ -365,7 +372,7 @@ public class ChannelModelCellular extends NetworkChannelModel {
             NetworkSimulator.getInstance().scheduleEvent(eventReceiveStart);
             NetworkSimulator.getInstance().scheduleEvent(eventReceiveEnd);
 
-        // Otherwise if within interference range, create an interference receive at receiver
+            // Otherwise if within interference range, create an interference receive at receiver
         } else if (distance <= maxInterferenceRange) {
             Instant transmissionReceiveStart = NetworkUtils.simTimeWithDelay(NetworkUtils.calcPropagationTime(sender, otherNode));
             Instant transmissionReceiveEnd = NetworkUtils.simTimeWithDelay(NetworkUtils.calcPropagationTime(sender, otherNode).plus(NetworkUtils.calcTransmissionTime(message)));
@@ -395,15 +402,15 @@ public class ChannelModelCellular extends NetworkChannelModel {
 
         // Base station communicates on all defined channels of its frequency band
         if (node.getPhysicalObject().getPhysicalObjectType() == PhysicalObjectType.PHYSICAL_OBJECT_TYPE_NETWORK_CELL_BASE_STATION) {
-            int startIndex = (int)(node.getPhysicalObject().getId() % (long)(frequencyBandCount)) * channelCountPerBand;
+            int startIndex = (int) (node.getPhysicalObject().getId() % (long) (frequencyBandCount)) * channelCountPerBand;
             for (int i = startIndex; i < startIndex + channelCountPerBand; ++i) {
                 resultList.add(i + (sending ? sendOffset : 0));
             }
 
-        // Otherwise assign one uplink or downlink channel
+            // Otherwise assign one uplink or downlink channel
         } else {
             long nodeID = node.getPhysicalObject().getId();
-            int channelIndexForBand = (int)(nodeID % (long)(channelCountPerBand));
+            int channelIndexForBand = (int) (nodeID % (long) (channelCountPerBand));
 
             // Handover algorithm
             long preferredStationID = -1L;
@@ -442,7 +449,7 @@ public class ChannelModelCellular extends NetworkChannelModel {
             }
 
             // From preferredStationID compute final channel index
-            int bandStartIndex = (int)(preferredStationID % (long)(frequencyBandCount)) * channelCountPerBand;
+            int bandStartIndex = (int) (preferredStationID % (long) (frequencyBandCount)) * channelCountPerBand;
             int channelIndex = bandStartIndex + channelIndexForBand;
             resultList.add(channelIndex + (sending ? 0 : sendOffset));
         }

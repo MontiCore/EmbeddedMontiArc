@@ -1,7 +1,7 @@
 /* (c) https://github.com/MontiCore/monticore */
 package de.rwth.montisim.simulation.eesimulator;
 
-public enum EEComponentType{
+public enum EEComponentType {
 
     BUS("Bus"),
     SENSOR("Sensor"),
@@ -10,16 +10,16 @@ public enum EEComponentType{
     COMPUTER("Computer"),
     SERVICE("Service"),
     FUNCTION_BLOCK("FunctionBlock"),
-	TEST_COMPONENT("TestComponent");
+    TEST_COMPONENT("TestComponent");
 
     private final String name;
 
-    private EEComponentType(String name){
+    private EEComponentType(String name) {
         this.name = name;
     }
 
 
-    public String toString(){
+    public String toString() {
         return this.name;
     }
 

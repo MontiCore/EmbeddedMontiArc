@@ -37,7 +37,7 @@ public class TestAutopilotProperties extends EEComponentProperties {
     }
 
     public TestAutopilotProperties(Mode mode, Duration computeTime, double maxVehicleAccel, double targetVelocity,
-            double turnAngle) {
+                                   double turnAngle) {
         this.mode = mode;
         this.compute_time = computeTime;
         this.maxVehicleAccel = maxVehicleAccel;
@@ -46,12 +46,12 @@ public class TestAutopilotProperties extends EEComponentProperties {
     }
 
     public static TestAutopilotProperties circleAutopilot(Duration computeTime, double maxVehicleAccel,
-            double targetVelocity, double turnAngle) {
+                                                          double targetVelocity, double turnAngle) {
         return new TestAutopilotProperties(Mode.CIRCLE, computeTime, maxVehicleAccel, targetVelocity, turnAngle);
     }
 
     public static TestAutopilotProperties startStopAutopilot(Duration computeTime, double maxVehicleAccel,
-            double targetVelocity) {
+                                                             double targetVelocity) {
         return new TestAutopilotProperties(Mode.START_STOP, computeTime, maxVehicleAccel, targetVelocity, 0);
     }
 

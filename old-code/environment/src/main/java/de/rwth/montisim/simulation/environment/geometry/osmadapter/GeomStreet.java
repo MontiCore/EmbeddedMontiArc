@@ -1,6 +1,6 @@
 /**
  * (c) https://github.com/MontiCore/monticore
- *
+ * <p>
  * The license generally applicable for this project
  * can be found under https://github.com/MontiCore/monticore.
  */
@@ -30,7 +30,6 @@ public class GeomStreet {
     }
 
 
-
     /**
      * @return the distance from node to the middle of the street
      */
@@ -38,7 +37,7 @@ public class GeomStreet {
         //ensure EnvNode-Implementation implements equals() and hashCode()!!!!!
         EnvNode node = new EnvNode(o.pos.clone());
 
-        if(street.getNodes().contains(node)) {
+        if (street.getNodes().contains(node)) {
             return 0;
         } else {
             return deter.determineSplineDistance(o);
@@ -50,7 +49,7 @@ public class GeomStreet {
      */
     public double getDistanceToMiddle(EnvNode node) {
         //ensure EnvNode-Implementation implements equals() and hashCode()!!!!!
-        if(street.getNodes().contains(node)) {
+        if (street.getNodes().contains(node)) {
             return 0;
         } else {
             return deter.determineSplineDistance(node);
@@ -75,11 +74,11 @@ public class GeomStreet {
         return this.deter.determineDistanceToLeft(o);
     }
 
-    public double getDistancetoFrontLeft(PhysicalObject o){
+    public double getDistancetoFrontLeft(PhysicalObject o) {
         return this.deter.determineDistanceFrontLeft(o);
     }
-    
-    public double getDistancetoFrontRight(PhysicalObject o){
+
+    public double getDistancetoFrontRight(PhysicalObject o) {
         return this.deter.determineDistanceFrontRight(o);
     }
 

@@ -70,13 +70,13 @@ public class SetupErrorsTest {
         boolean foundError = false;
         try {
             eesystem.finalizeSetup();
-        } catch (EESetupException e){
+        } catch (EESetupException e) {
             foundError = e.errors.missingOutputExceptions.size() == 3;
             //e.printStackTrace();
         }
         Assert.assertTrue("Expected an EEMissingOutputException to be thrown.", foundError);
     }
-    
+
     // Two components register the same message with different types (output-input, input-input)
     @Test
     public void messageType() throws EEMessageTypeException {
@@ -95,7 +95,7 @@ public class SetupErrorsTest {
         boolean foundError = false;
         try {
             eesystem.finalizeSetup();
-        } catch (EESetupException e){
+        } catch (EESetupException e) {
             foundError = e.errors.msgTypeExceptions.size() == 1;
             //e.printStackTrace();
         }

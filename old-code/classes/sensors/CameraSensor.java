@@ -1,6 +1,6 @@
 /**
  * (c) https://github.com/MontiCore/monticore
- *
+ * <p>
  * The license generally applicable for this project
  * can be found under https://github.com/MontiCore/monticore.
  */
@@ -64,14 +64,14 @@ public class CameraSensor extends AbstractSensor {
      */
     public CameraSensor(IPhysicalVehicle phyiscalVehicle, EESimulator simulator, List<BusEntry> subscribedMessages,
                         HashMap<BusEntry, List<EEComponent>> targetsByMessageId, List<PhysicalObject> simulationObjects) {
-        super(phyiscalVehicle,simulator, subscribedMessages, targetsByMessageId);
+        super(phyiscalVehicle, simulator, subscribedMessages, targetsByMessageId);
         otherVehicles = new ArrayList<IPhysicalVehicle>();
         for (PhysicalObject object : simulationObjects) {
-            if(object.getPhysicalObjectType()== PhysicalObjectType.PHYSICAL_OBJECT_TYPE_CAR){
-            	IPhysicalVehicle otherVehicle = (IPhysicalVehicle)object;
-            	if(otherVehicle.getId() != this.getPhysicalVehicle().getId()) {
-            		otherVehicles.add(otherVehicle);
-            	}
+            if (object.getPhysicalObjectType() == PhysicalObjectType.PHYSICAL_OBJECT_TYPE_CAR) {
+                IPhysicalVehicle otherVehicle = (IPhysicalVehicle) object;
+                if (otherVehicle.getId() != this.getPhysicalVehicle().getId()) {
+                    otherVehicles.add(otherVehicle);
+                }
             }
         }
     }
@@ -81,9 +81,9 @@ public class CameraSensor extends AbstractSensor {
         return BusEntry.SENSOR_CAMERA;
     }
 
-	public static BusEntry getSensorType() {
-		return BusEntry.SENSOR_CAMERA;
-	}
+    public static BusEntry getSensorType() {
+        return BusEntry.SENSOR_CAMERA;
+    }
 
 
     @Override
@@ -137,14 +137,14 @@ public class CameraSensor extends AbstractSensor {
         try {
             // get objects in the environment
             World world = WorldModel.getInstance();
-            Collection<House> houses = ((EnvironmentContainer2D)world.getContainer()).getHouses();
+            Collection<House> houses = ((EnvironmentContainer2D) world.getContainer()).getHouses();
             Collection<EnvNode> trees = world.getContainer().getTrees();
             Collection<EnvStreet> nodes = world.getContainer().getStreets();
             Collection<EnvNode> intersection = new ArrayList<EnvNode>();
-            for(EnvStreet street: nodes){
+            for (EnvStreet street : nodes) {
                 Collection<EnvNode> intersectionode = street.getIntersections();
-                for(EnvNode inter : intersectionode){
-                    if(!intersection.contains(inter)){
+                for (EnvNode inter : intersectionode) {
+                    if (!intersection.contains(inter)) {
                         intersection.add(inter);
                     }
                 }
@@ -164,35 +164,35 @@ public class CameraSensor extends AbstractSensor {
 
             // detect all buildings in the detecting range of the camera sensor
             IPhysicalVehicle vehicle = this.getPhysicalVehicle();
-            for (House house : houses){
+            for (House house : houses) {
                 double distance = vehicle.getGeometryPosition().getDistance(house.getGeometryPosition());
-                if (distance < range){
+                if (distance < range) {
                     detected_buildings.add(house);
                 }
             }
 
             // detect all trees in the detecting range of the camera sensor
-            for (EnvNode tree : trees){
+            for (EnvNode tree : trees) {
                 double distance = vehicle.getGeometryPosition().getDistance(new Vec3(new double[]{
                         tree.getX().doubleValue(),
                         tree.getY().doubleValue(),
                         tree.getZ().doubleValue()
                 }));
-                if (distance < range){
+                if (distance < range) {
                     detected_trees.add(tree);
                 }
             }
             // detect all vehicles in the detecting range of the camera sensor
             double distance_init = 200.0;
             EnvNode nearest_intersection = null;
-            for (EnvNode inter : intersection){
+            for (EnvNode inter : intersection) {
                 double distance = vehicle.getGeometryPosition().getDistance(new Vec3(new double[]{
                         inter.getX().doubleValue(),
                         inter.getY().doubleValue(),
                         inter.getZ().doubleValue()
                 }));
 
-                if(distance <= distance_init) {
+                if (distance <= distance_init) {
                     nearest_intersection = inter;
                     distance_init = distance;
                 }
@@ -205,20 +205,20 @@ public class CameraSensor extends AbstractSensor {
             drawer.drawBackground();
 
             // draw street
-            if (nearest_intersection != null){
+            if (nearest_intersection != null) {
                 double distFrontLeftToInter = vehicle.getFrontLeftWheelGeometryPosition().getDistance(getGeometryPosition(nearest_intersection));
                 double distFrontRightToInter = vehicle.getFrontRightWheelGeometryPosition().getDistance(getGeometryPosition(nearest_intersection));
 
                 double distBackLeftToInter = vehicle.getBackLeftWheelGeometryPosition().getDistance(getGeometryPosition(nearest_intersection));
                 double distBackRightToInter = vehicle.getBackRightWheelGeometryPosition().getDistance(getGeometryPosition(nearest_intersection));
                 double distToInter = vehicle.getGeometryPosition().getDistance(getGeometryPosition(nearest_intersection));
-                drawer.drawIntersection(distFrontLeftToInter,distFrontRightToInter,distBackLeftToInter,distBackRightToInter,distToInter);
+                drawer.drawIntersection(distFrontLeftToInter, distFrontRightToInter, distBackLeftToInter, distBackRightToInter, distToInter);
 
 
             }
 
             // draw buildings
-            for (House detected_building : detected_buildings){
+            for (House detected_building : detected_buildings) {
                 double distFrontLeftToBuilding = vehicle.getFrontLeftWheelGeometryPosition().getDistance(detected_building.getGeometryPosition());
                 double distFrontRightToBuilding = vehicle.getFrontRightWheelGeometryPosition().getDistance(detected_building.getGeometryPosition());
                 double distBackLeftToBuilding = vehicle.getBackLeftWheelGeometryPosition().getDistance(detected_building.getGeometryPosition());
@@ -229,7 +229,7 @@ public class CameraSensor extends AbstractSensor {
             }
 
             // draw trees
-            for (EnvNode detected_tree : detected_trees){
+            for (EnvNode detected_tree : detected_trees) {
                 double distFrontLeftToTree = vehicle.getFrontLeftWheelGeometryPosition().getDistance(getGeometryPosition(detected_tree));
                 double distFrontRightToTree = vehicle.getFrontRightWheelGeometryPosition().getDistance(getGeometryPosition(detected_tree));
 
@@ -242,15 +242,14 @@ public class CameraSensor extends AbstractSensor {
 
             // TODO: draw vehicles
             for (IPhysicalVehicle otherVehicle : otherVehicles) {
-                    double distFrontLeftToCar = vehicle.getFrontLeftWheelGeometryPosition().getDistance(otherVehicle.getGeometryPosition());
-                    //double distFrontRightToCar = vehicle.getFrontRightWheelGeometryPosition().getDistance(otherVehicle.getGeometryPosition());
+                double distFrontLeftToCar = vehicle.getFrontLeftWheelGeometryPosition().getDistance(otherVehicle.getGeometryPosition());
+                //double distFrontRightToCar = vehicle.getFrontRightWheelGeometryPosition().getDistance(otherVehicle.getGeometryPosition());
 
-                    double distBackLeftToCar = vehicle.getBackLeftWheelGeometryPosition().getDistance(otherVehicle.getGeometryPosition());
-                    //double distBackRightToCar = vehicle.getBackRightWheelGeometryPosition().getDistance(otherVehicle.getGeometryPosition());
-                    double distToCar = vehicle.getGeometryPosition().getDistance(otherVehicle.getGeometryPosition());
-                    drawer.drawVehicle( distToCar,  distFrontLeftToCar, distBackLeftToCar);
+                double distBackLeftToCar = vehicle.getBackLeftWheelGeometryPosition().getDistance(otherVehicle.getGeometryPosition());
+                //double distBackRightToCar = vehicle.getBackRightWheelGeometryPosition().getDistance(otherVehicle.getGeometryPosition());
+                double distToCar = vehicle.getGeometryPosition().getDistance(otherVehicle.getGeometryPosition());
+                drawer.drawVehicle(distToCar, distFrontLeftToCar, distBackLeftToCar);
             }
-
 
 
             this.value = drawer.getImage();
@@ -275,8 +274,7 @@ public class CameraSensor extends AbstractSensor {
     }
 
 
-
-    private BufferedImage cropImage(ImagePlus imp, int x, int y, int width, int height){
+    private BufferedImage cropImage(ImagePlus imp, int x, int y, int width, int height) {
 
         ImageProcessor ip = imp.getProcessor();
         ip.setInterpolationMethod(ImageProcessor.BILINEAR);
@@ -341,23 +339,22 @@ public class CameraSensor extends AbstractSensor {
     public static BufferedImage gaussianBlurFilter(BufferedImage bi) {
 
         BufferedImage bi_blur = null;
-        try{
-            bi_blur= bi;
-        }
-        catch( Exception e ){
-            System.out.print( e.toString() );
+        try {
+            bi_blur = bi;
+        } catch (Exception e) {
+            System.out.print(e.toString());
             return bi;
         }
-        BufferedImage bi_blurred = new BufferedImage( bi_blur.getWidth() , bi_blur.getHeight() , bi_blur.getType() );
+        BufferedImage bi_blurred = new BufferedImage(bi_blur.getWidth(), bi_blur.getHeight(), bi_blur.getType());
         float[] matrix = {
-                1f/273,4f/273,7f/273,4f/273,1f/273,
-                4f/273,16f/273,26f/273,16f/273,4f/273,
-                7f/273,26f/273,41f/273,26f/273,7f/273,
-                4f/273,16f/273,26f/273,16f/273,4f/273,
-                1f/273,4f/273,7f/273,4f/273,1f/273
+                1f / 273, 4f / 273, 7f / 273, 4f / 273, 1f / 273,
+                4f / 273, 16f / 273, 26f / 273, 16f / 273, 4f / 273,
+                7f / 273, 26f / 273, 41f / 273, 26f / 273, 7f / 273,
+                4f / 273, 16f / 273, 26f / 273, 16f / 273, 4f / 273,
+                1f / 273, 4f / 273, 7f / 273, 4f / 273, 1f / 273
         };
-        BufferedImageOp op = new ConvolveOp( new Kernel( 5, 5, matrix ) );
-        bi_blurred = op.filter( bi_blur, bi_blurred );
+        BufferedImageOp op = new ConvolveOp(new Kernel(5, 5, matrix));
+        bi_blurred = op.filter(bi_blur, bi_blurred);
 
         return bi_blurred;
     }
@@ -369,7 +366,7 @@ public class CameraSensor extends AbstractSensor {
         double sigma = 30;
         BufferedImage originalImage = bi;
 
-        double variance = sigma*sigma;
+        double variance = sigma * sigma;
 
         int width = originalImage.getWidth();
         int height = originalImage.getHeight();
@@ -386,7 +383,7 @@ public class CameraSensor extends AbstractSensor {
                     a = Math.random();
                 b = Math.random();
 
-                double variable_x = Math.sqrt(-2*Math.log(a)) * Math.cos(2*Math.PI*b);
+                double variable_x = Math.sqrt(-2 * Math.log(a)) * Math.cos(2 * Math.PI * b);
                 double noise = mean + Math.sqrt(variance) * variable_x;
 
                 int gray = new Color(originalImage.getRGB(i, j)).getRed();

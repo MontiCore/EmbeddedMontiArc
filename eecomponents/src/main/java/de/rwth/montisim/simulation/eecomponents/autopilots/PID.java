@@ -2,19 +2,20 @@
 package de.rwth.montisim.simulation.eecomponents.autopilots;
 
 public class PID {
-    final double P; 
-    final double I; 
+    final double P;
+    final double I;
     final double D;
     double previous_error;
     double integral;
-    public PID(double P, double I, double D){
+
+    public PID(double P, double I, double D) {
         this.P = P;
         this.I = I;
         this.D = D;
         reset();
     }
 
-    public void reset(){
+    public void reset() {
         previous_error = 0;
         integral = 0;
     }

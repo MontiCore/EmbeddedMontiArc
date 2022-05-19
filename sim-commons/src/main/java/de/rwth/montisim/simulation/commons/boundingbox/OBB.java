@@ -20,18 +20,22 @@ public class OBB implements BoundingBox {
     public boolean collidesWith(BoundingBox other) {
         return other.collidesWith(this);
     }
+
     @Override
     public boolean collidesWith(AABB other) {
         throw new UnimplementedCollisionException("OBB-AABB");
     }
+
     @Override
     public boolean collidesWith(OBB other) {
         return CollisionTests.collides(this, other, new Vec3(), new Vec3());
     }
+
     @Override
     public boolean collidesWith(ConvexHull other) {
         return CollisionTests.collides(this, other);
     }
+
     @Override
     public boolean collidesWith(Union other) {
         for (BoundingBox bb : other.boundingBoxes) {

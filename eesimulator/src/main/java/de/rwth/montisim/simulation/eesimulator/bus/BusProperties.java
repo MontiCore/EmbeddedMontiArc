@@ -9,24 +9,24 @@ public abstract class BusProperties extends EEComponentProperties {
         CONSTANT_BUS("ConstantBus"),
         FLEXRAY("FlexRay"),
         CAN("CAN");
-    
+
         private String name;
-    
-        private BusType(String name){
+
+        private BusType(String name) {
             this.name = name;
         }
-    
+
         @Override
-        public String toString(){
+        public String toString() {
             return this.name;
         }
     }
-    
+
     @Override
     public boolean canTransferMessages() {
         return true;
     }
-    
+
     public abstract BusType getBusType();
-    
+
 }

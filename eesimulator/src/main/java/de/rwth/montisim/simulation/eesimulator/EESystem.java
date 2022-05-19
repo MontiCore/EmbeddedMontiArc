@@ -28,7 +28,7 @@ import de.rwth.montisim.simulation.eesimulator.sensor.Sensor;
 
 /**
  * Handles the EEComponents of the vehicle and their setup.
- * 
+ * <p>
  * For more information on the EE-system, see [docs/eesimulator.md]
  */
 public class EESystem implements CustomJson, BuildObject {
@@ -38,14 +38,15 @@ public class EESystem implements CustomJson, BuildObject {
     public static final String COMPONENT_DESTROYER_CONTEXT_KEY = "component_destroyer";
     //public static final String START_TIME_CONTEXT_KEY = "start_time";
 
-	// Vector<DataType> types = new Vector<>();
-	// HashMap<DataType, Integer> typeIds = new HashMap<>();
-	public final DiscreteEventSimulator simulator;
-	protected final MessagePriorityComparator msgPrioComp;
+    // Vector<DataType> types = new Vector<>();
+    // HashMap<DataType, Integer> typeIds = new HashMap<>();
+    public final DiscreteEventSimulator simulator;
+    protected final MessagePriorityComparator msgPrioComp;
 
-	
 
-	/** All registered Components (Buses, Bridges & EEComponents) */
+    /**
+     * All registered Components (Buses, Bridges & EEComponents)
+     */
     public final Vector<EEComponent> componentTable = new Vector<>();
     private final Vector<Integer> componentPriority = new Vector<>();
     private final HashMap<String, EEComponent> componentsByName = new HashMap<>();
@@ -53,31 +54,34 @@ public class EESystem implements CustomJson, BuildObject {
     //public final List<EEComponent> components = new Vector<>();
     /** All registered Bridges */
     //public final List<Bridge> bridges = new Vector<>();
-    /** All registered Buses */
+    /**
+     * All registered Buses
+     */
     //public final List<Bus> buses = new Vector<>();
     private final List<PortTagUser> tagUsers = new Vector<>();
 
     private final HashMap<String, Integer> msgIdMap = new HashMap<>();
     private final Vector<DataType> msgTypes = new Vector<>();
     private int msgIdCounter = 0;
-	
-	protected final EESetupErrors errors;
 
-	private boolean finalized = false;
-	public boolean isFinalized() {
-		return finalized;
-	}
+    protected final EESetupErrors errors;
+
+    private boolean finalized = false;
+
+    public boolean isFinalized() {
+        return finalized;
+    }
 
 
-	public EESystem(DiscreteEventSimulator simulator) {
-		this.simulator = simulator;
-		this.errors = new EESetupErrors();
-		this.msgPrioComp = new MessagePriorityComparator(this);
-	}
-	
-	public MessagePriorityComparator getMsgPrioComp() {
-		return msgPrioComp;
-	}
+    public EESystem(DiscreteEventSimulator simulator) {
+        this.simulator = simulator;
+        this.errors = new EESetupErrors();
+        this.msgPrioComp = new MessagePriorityComparator(this);
+    }
+
+    public MessagePriorityComparator getMsgPrioComp() {
+        return msgPrioComp;
+    }
 
     public int getMessageId(String name, DataType msgType) {
         Integer i = msgIdMap.get(name);
@@ -92,26 +96,28 @@ public class EESystem implements CustomJson, BuildObject {
     public DataType getMsgType(int msgId) {
         return msgTypes.elementAt(msgId);
     }
+
     public DataType getMsgType(String name) {
         return msgTypes.elementAt(msgIdMap.get(name));
     }
 
-	
 
     public Optional<Actuator> getActuator(String name) {
         EEComponent e = componentsByName.get(name);
         if (e == null || e.properties.getGeneralType() != EEComponentType.ACTUATOR) return Optional.empty();
-        return Optional.of((Actuator)e);
+        return Optional.of((Actuator) e);
     }
+
     public Optional<Sensor> getSensor(String name) {
         EEComponent e = componentsByName.get(name);
         if (e == null || e.properties.getGeneralType() != EEComponentType.SENSOR) return Optional.empty();
-        return Optional.of((Sensor)e);
+        return Optional.of((Sensor) e);
     }
+
     public Optional<Bridge> getBridge(String name) {
         EEComponent e = componentsByName.get(name);
         if (e == null || e.properties.getGeneralType() != EEComponentType.BRIDGE) return Optional.empty();
-        return Optional.of((Bridge)e);
+        return Optional.of((Bridge) e);
     }
 
     public Optional<EEComponent> getComponent(String name) {
@@ -124,7 +130,7 @@ public class EESystem implements CustomJson, BuildObject {
      * NOTE: the component's name must be set before registering it.
      */
     public int registerComponent(EEComponent comp, Optional<Integer> priority) {
-        if (componentsByName.containsKey(comp.properties.name)){
+        if (componentsByName.containsKey(comp.properties.name)) {
             errors.namesErrors.add(new EEComponentNameException(comp.properties.name));
         }
         int id = componentTable.size();
@@ -139,7 +145,7 @@ public class EESystem implements CustomJson, BuildObject {
         //     components.add(comp);
         // }
         if (comp instanceof PortTagUser) {
-            tagUsers.add((PortTagUser)comp);
+            tagUsers.add((PortTagUser) comp);
         }
         return id;
     }
@@ -159,15 +165,15 @@ public class EESystem implements CustomJson, BuildObject {
                 componentPriority.set(componentsByName.get(p.getKey()).id, p.getValue());
             }
         }
-	}
-	
-    /** 
+    }
+
+    /**
      * Sets the priority of all <b>registered</b> messages contained in the priorities list.
      * The lower the number, the higher the priority.
-    */
-    public void addMessagePriorities(List<Pair<String,Integer>> priorities) {
+     */
+    public void addMessagePriorities(List<Pair<String, Integer>> priorities) {
         for (EEComponent comp : componentTable) {
-            for (Pair<String, Integer> p : priorities){
+            for (Pair<String, Integer> p : priorities) {
                 MessageInformation info = comp.getMsgInfo(p.getKey());
                 if (info != null) info.priority = p.getValue();
             }
@@ -175,76 +181,64 @@ public class EESystem implements CustomJson, BuildObject {
     }
 
 
-
-
-
-
-
-
-
-
-
-
-	
-	public void finalizeSetup() throws EESetupException {
-		resolveTags();
-		checkMessageTypes();
-		computeMessageRouting();
-		errors.throwExceptions();
-		this.finalized = true;
+    public void finalizeSetup() throws EESetupException {
+        resolveTags();
+        checkMessageTypes();
+        computeMessageRouting();
+        errors.throwExceptions();
+        this.finalized = true;
     }
-    
+
     private void resolveTags() {
         if (tagUsers.size() == 0) return;
         for (EEComponent c : componentTable) {
             for (PortInformation pi : c.ports) {
                 for (String tag : pi.tags) {
                     for (PortTagUser tu : tagUsers) {
-                        if (tu.getUsedTags().contains(tag)){
+                        if (tu.getUsedTags().contains(tag)) {
                             tu.processTag(tag, pi);
                         }
                     }
                 }
-			}
+            }
         }
     }
 
-	private void checkMessageTypes() {
-		HashMap<String, List<Pair<EEComponent, DataType>>> typeMap = new HashMap<>();
-		for (EEComponent c : componentTable) {
-			for (PortInformation pi : c.ports) {
-				List<Pair<EEComponent, DataType>> compList = typeMap.get(pi.name);
-				if (compList == null) {
-					compList = new Vector<>();
-					typeMap.put(pi.name, compList);
-				}
-				compList.add(new Pair<>(c, pi.data_type));
-			}
-		}
-		
-		for (java.util.Map.Entry<String, List<Pair<EEComponent, DataType>>> e : typeMap.entrySet()) {
-			String msgName = e.getKey();
-			List<Pair<EEComponent, DataType>> compList = e.getValue();
-			DataType firstType = compList.get(0).getValue();
-			for (int i = 1; i < compList.size(); ++i) {
-				if (!compList.get(i).getValue().equals(firstType)) {
+    private void checkMessageTypes() {
+        HashMap<String, List<Pair<EEComponent, DataType>>> typeMap = new HashMap<>();
+        for (EEComponent c : componentTable) {
+            for (PortInformation pi : c.ports) {
+                List<Pair<EEComponent, DataType>> compList = typeMap.get(pi.name);
+                if (compList == null) {
+                    compList = new Vector<>();
+                    typeMap.put(pi.name, compList);
+                }
+                compList.add(new Pair<>(c, pi.data_type));
+            }
+        }
+
+        for (java.util.Map.Entry<String, List<Pair<EEComponent, DataType>>> e : typeMap.entrySet()) {
+            String msgName = e.getKey();
+            List<Pair<EEComponent, DataType>> compList = e.getValue();
+            DataType firstType = compList.get(0).getValue();
+            for (int i = 1; i < compList.size(); ++i) {
+                if (!compList.get(i).getValue().equals(firstType)) {
                     errors.msgTypeExceptions.add(new EEMessageTypeException(msgName, compList));
                     break;
-				}
-			}
-		}
-	}
+                }
+            }
+        }
+    }
 
-	
 
-    static class CostComparator implements Comparator<Pair<Integer, Integer>>
-    {
+    static class CostComparator implements Comparator<Pair<Integer, Integer>> {
         final float costs[];
+
         public CostComparator(float costs[]) {
             this.costs = costs;
         }
-        public int compare(Pair<Integer, Integer> a, Pair<Integer, Integer> b)
-        {
+
+        public int compare(Pair<Integer, Integer> a, Pair<Integer, Integer> b) {
             return costs[a.getKey()] < costs[b.getKey()] ? -1 : 1;
         }
     }
@@ -276,8 +270,8 @@ public class EESystem implements CustomJson, BuildObject {
 
             // Breadth first traversal starting from the component
             nodeCosts[component.id] = 0;
-			nextNodes.add(new Pair<>(component.id, -1));
-			
+            nextNodes.add(new Pair<>(component.id, -1));
+
             while (!nextNodes.isEmpty()) {
                 Pair<Integer, Integer> next = nextNodes.poll();
                 int next_id = next.getKey();
@@ -285,14 +279,14 @@ public class EESystem implements CustomJson, BuildObject {
                 visited[next_id] = true;
                 predecessor[next_id] = next.getValue();
                 EEComponent nextComponent = componentTable.elementAt(next_id);
-                
+
                 // Check inputs
                 if (next_id != component.id) {
-					HashMap<String, PortInformation> portMap = ports[next_id];
-					component.streamOutputPorts().forEach(p -> {
+                    HashMap<String, PortInformation> portMap = ports[next_id];
+                    component.streamOutputPorts().forEach(p -> {
                         PortInformation otherPort = portMap.get(p.name);
                         if (otherPort != null && otherPort.isInput()) {
-							// Found
+                            // Found
                             backtrack(component.msgInfos.get(p.name), next_id, predecessor, routings);
                             // Add to inputs
                             Set<EEComponent> senders = inputMap[next_id].get(p.name);
@@ -302,7 +296,7 @@ public class EESystem implements CustomJson, BuildObject {
                             }
                             senders.add(component);
                         }
-					});
+                    });
                 }
 
                 // Check neighbors if start component or 'canTransfer' component
@@ -331,8 +325,10 @@ public class EESystem implements CustomJson, BuildObject {
                 int count = 0;
                 Set<EEComponent> senders = inputMap[component.id].get(p.name);
                 if (senders != null) count = senders.size();
-                if (!p.optional && count < 1) errors.missingOutputExceptions.add(new EEMissingOutputException(p.name, component.properties.name));
-                if (!p.allows_multiple_inputs && count > 1) errors.multipleInputsExceptions.add(new EEMultipleInputsException(component, p.name, senders));
+                if (!p.optional && count < 1)
+                    errors.missingOutputExceptions.add(new EEMissingOutputException(p.name, component.properties.name));
+                if (!p.allows_multiple_inputs && count > 1)
+                    errors.multipleInputsExceptions.add(new EEMultipleInputsException(component, p.name, senders));
             });
         }
     }
@@ -357,61 +353,61 @@ public class EESystem implements CustomJson, BuildObject {
     }
 
 
-	public static final String K_COMPONENTS = "components";
-	public static final String K_EVENTS = "events";
+    public static final String K_COMPONENTS = "components";
+    public static final String K_EVENTS = "events";
 
 
-	@Override
-	public void write(JsonWriter w, BuildContext context) throws SerializationException {
-		BuildContext subcontext = new BuildContext(context);
-		subcontext.addObject(this);
-		w.startObject();
-		w.writeKey(K_COMPONENTS);
-		w.startObject();
-		// Save all component states (name: {component state})
-		for (EEComponent e : componentTable) {
-			w.writeKey(e.properties.name);
-			Json.toJson(w, e, subcontext);
-		}
-		w.endObject();
-		w.writeKey(K_EVENTS);
-		w.startArray();
-		// Save all events -> resolve ids
-		for (DiscreteEvent e : simulator.getEventList()) {
+    @Override
+    public void write(JsonWriter w, BuildContext context) throws SerializationException {
+        BuildContext subcontext = new BuildContext(context);
+        subcontext.addObject(this);
+        w.startObject();
+        w.writeKey(K_COMPONENTS);
+        w.startObject();
+        // Save all component states (name: {component state})
+        for (EEComponent e : componentTable) {
+            w.writeKey(e.properties.name);
+            Json.toJson(w, e, subcontext);
+        }
+        w.endObject();
+        w.writeKey(K_EVENTS);
+        w.startArray();
+        // Save all events -> resolve ids
+        for (DiscreteEvent e : simulator.getEventList()) {
             if (e.invalid || !(e instanceof EEEvent)) continue;
             if (!(e.getTarget() instanceof EEComponent)) continue;
             if (((EEComponent) e.getTarget()).eesystem != this) continue; // Event for another vehicle
-            Json.toJson(w, ((EEEvent)e).getEventData(), subcontext);
+            Json.toJson(w, ((EEEvent) e).getEventData(), subcontext);
             e.invalid = true; // Remove from the event simulator
-		}
-		w.endArray();
-		w.endObject();
-	}
+        }
+        w.endArray();
+        w.endObject();
+    }
 
-	@Override
-	public void read(JsonTraverser t, ObjectIterable it, BuildContext context) throws SerializationException {
-		BuildContext subcontext = new BuildContext(context);
-		subcontext.addObject(this);
-		for (Entry e : t.streamObject()) {
-			if (e.key.equals(K_COMPONENTS)) {
-				for (Entry e2 : t.streamObject()) {
-					String name = e2.key.getJsonString();
-					Optional<EEComponent> o = getComponent(name);
-					if (!o.isPresent())
-						throw new ParsingException("Unknown component: " + name);
-					Json.fromJson(t, o.get(), subcontext);
-				}
-			} else if (e.key.equals(K_EVENTS)) {
-				for (ValueType vt : t.streamArray()) {
-					simulator.getEventList().offer(Json.instantiateFromJson(t, EventData.class, subcontext).getEvent(this));
-				}
-			} else
-				t.unexpected(e);
-		}
-	}
+    @Override
+    public void read(JsonTraverser t, ObjectIterable it, BuildContext context) throws SerializationException {
+        BuildContext subcontext = new BuildContext(context);
+        subcontext.addObject(this);
+        for (Entry e : t.streamObject()) {
+            if (e.key.equals(K_COMPONENTS)) {
+                for (Entry e2 : t.streamObject()) {
+                    String name = e2.key.getJsonString();
+                    Optional<EEComponent> o = getComponent(name);
+                    if (!o.isPresent())
+                        throw new ParsingException("Unknown component: " + name);
+                    Json.fromJson(t, o.get(), subcontext);
+                }
+            } else if (e.key.equals(K_EVENTS)) {
+                for (ValueType vt : t.streamArray()) {
+                    simulator.getEventList().offer(Json.instantiateFromJson(t, EventData.class, subcontext).getEvent(this));
+                }
+            } else
+                t.unexpected(e);
+        }
+    }
 
-	@Override
-	public String getKey() {
-		return CONTEXT_KEY;
-	}
+    @Override
+    public String getKey() {
+        return CONTEXT_KEY;
+    }
 }

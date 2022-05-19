@@ -25,28 +25,28 @@ import de.rwth.montisim.simulation.vehicle.navigation.NavigationProperties;
 public class CarRenderer extends Renderer {
     private static final DecimalFormat posFormat = new DecimalFormat("##0.00",
             DecimalFormatSymbols.getInstance(Locale.ENGLISH));
-    public static final Color CAR_COLOR = new Color(47,141,235);//= new Color(204,163,122); // new Color(239, 81, 38);
-    public static final Color CAR_COLLISION_COLOR = new Color(237,126,42);//= new Color(204,163,122); // new Color(239, 81, 38);
+    public static final Color CAR_COLOR = new Color(47, 141, 235);//= new Color(204,163,122); // new Color(239, 81, 38);
+    public static final Color CAR_COLLISION_COLOR = new Color(237, 126, 42);//= new Color(204,163,122); // new Color(239, 81, 38);
     public static final Color LINE_COLOR = Color.BLACK; // new Color(122,130,129); // new Color(50, 50, 255);
     public static final Color FULL_GAS_COLOR = new Color(25, 255, 0);
     public static final Color FULL_REVERSE_COLOR = new Color(180, 200, 255);
     public static final Color FULL_BRAKE_COLOR = Color.RED;
     public static final BasicStroke LINE_STROKE = new BasicStroke(2);
     public static final Color BOTTOM_COLOR = new Color(147, 47, 19);
-    
+
     public static final Color PATH_COLOR = new Color(255, 100, 100, 100);
     public static final Color TRAJECTORY_COLOR = new Color(50, 255, 50, 255);
     public static final BasicStroke PATH_STROKE = new BasicStroke(3);
     public static final BasicStroke TRAJECTORY_STROKE = new BasicStroke(1);
     public static final Color PAST_TRAJECTORY_COLOR = new Color(51, 153, 255);
 
-    private static final int[] faceIndices = new int[] {
-        0,1,3,2, // -X face
-        4,5,7,6, // +X face
-        0,1,5,4, // -Y face
-        2,3,7,6, // +Y face
-        0,2,6,4, // -Z face
-        1,3,7,5, // +Z face
+    private static final int[] faceIndices = new int[]{
+            0, 1, 3, 2, // -X face
+            4, 5, 7, 6, // +X face
+            0, 1, 5, 4, // -Y face
+            2, 3, 7, 6, // +Y face
+            0, 2, 6, 4, // -Z face
+            1, 3, 7, 5, // +Z face
     };
     Optional<Vehicle> car = Optional.empty();
     Optional<PhysicalValue> truePosition = Optional.empty();
@@ -54,13 +54,13 @@ public class CarRenderer extends Renderer {
     final Vec3 points[] = new Vec3[8];
     final boolean visible[] = new boolean[6];
 
-    final Polygonn[] faces = new Polygonn[] {
-        new Polygonn(4, CAR_COLOR),
-        new Polygonn(4, CAR_COLOR),
-        new Polygonn(4, CAR_COLOR),
-        new Polygonn(4, CAR_COLOR),
-        new Polygonn(4, BOTTOM_COLOR),
-        new Polygonn(4, CAR_COLOR)
+    final Polygonn[] faces = new Polygonn[]{
+            new Polygonn(4, CAR_COLOR),
+            new Polygonn(4, CAR_COLOR),
+            new Polygonn(4, CAR_COLOR),
+            new Polygonn(4, CAR_COLOR),
+            new Polygonn(4, BOTTOM_COLOR),
+            new Polygonn(4, CAR_COLOR)
     };
     final Polyline steeringLine = new Polyline(2, LINE_COLOR, LINE_STROKE);
     final Vec2[] gasCircle = new Vec2[2];
@@ -68,31 +68,32 @@ public class CarRenderer extends Renderer {
     final Vec2[] brakeCircle = new Vec2[2];
     Color brakeColor = Color.BLACK;
 
-    
+
     final List<Polyline> pathLines = new ArrayList<>();
     final List<Polyline> trajectoryLines = new ArrayList<>();
     final List<Polyline> pastTrajectoryLines = new ArrayList<>();
     private final List<Polyline> aabbLines = new ArrayList<>();
     private final Polyline aabbContour = new Polyline(5, UIInfo.AABB_COLOR);
-    private final Polyline obbLines[] = new Polyline[] {new Polyline(2, UIInfo.OOB_X_COLOR), new Polyline(2, UIInfo.OOB_Y_COLOR), new Polyline(2, UIInfo.OOB_Z_COLOR)};
+    private final Polyline obbLines[] = new Polyline[]{new Polyline(2, UIInfo.OOB_X_COLOR), new Polyline(2, UIInfo.OOB_Y_COLOR), new Polyline(2, UIInfo.OOB_Z_COLOR)};
 
 
-    Vec3 light1 = new Vec3(10,5,10);
-    Vec3 light2 = new Vec3(-10,-5,5);
+    Vec3 light1 = new Vec3(10, 5, 10);
+    Vec3 light2 = new Vec3(-10, -5, 5);
 
     // Vec for in-place computations
     Vec3 v1 = new Vec3();
     Vec3 v2 = new Vec3();
     Vec3 v3 = new Vec3();
     Mat3 m1 = new Mat3();
-    Vec3 color = new Vec3(CAR_COLOR.getRed()/255d,CAR_COLOR.getGreen()/255d,CAR_COLOR.getBlue()/255d);
+    Vec3 color = new Vec3(CAR_COLOR.getRed() / 255d, CAR_COLOR.getGreen() / 255d, CAR_COLOR.getBlue() / 255d);
 
     private Vec3 lastPosition = null;
 
     public CarRenderer() {
         initGeom();
     }
-    public CarRenderer(Vehicle car, Vec3 size){
+
+    public CarRenderer(Vehicle car, Vec3 size) {
         setCar(car, size);
         initGeom();
     }
@@ -109,12 +110,12 @@ public class CarRenderer extends Renderer {
         }
     }
 
-    public void setCar(Vehicle vehicle){
+    public void setCar(Vehicle vehicle) {
         VehicleProperties p = vehicle.properties;
         this.car = Optional.of(vehicle);
         this.truePosition = Optional.of(vehicle.physicalValues.getPhysicalValue("true_position"));
         IPM.multiplyTo(half_size, new Vec3(p.body.length, p.body.width, p.body.height), 0.5);
-        for (int i = 0; i < points.length; ++i){
+        for (int i = 0; i < points.length; ++i) {
             points[i] = new Vec3();
         }
         IPM.normalize(light1);
@@ -126,11 +127,11 @@ public class CarRenderer extends Renderer {
         brakeCircle[1] = new Vec2();
     }
 
-    public void setCar(Vehicle car, Vec3 size){
+    public void setCar(Vehicle car, Vec3 size) {
         this.car = Optional.of(car);
         this.truePosition = Optional.of(car.physicalValues.getPhysicalValue("true_position"));
         IPM.multiplyTo(half_size, size, 0.5);
-        for (int i = 0; i < points.length; ++i){
+        for (int i = 0; i < points.length; ++i) {
             points[i] = new Vec3();
         }
         IPM.normalize(light1);
@@ -147,9 +148,9 @@ public class CarRenderer extends Renderer {
         if (UIInfo.drawPlannedTrajectory) {
             drawLines(g, trajectoryLines);
         }
-        faces[5].color = car.get().staticCollisions.size() > 0 ? CAR_COLLISION_COLOR: CAR_COLOR;
-        for (int i = 0; i < 6; ++i){
-            if (visible[i]){
+        faces[5].color = car.get().staticCollisions.size() > 0 ? CAR_COLLISION_COLOR : CAR_COLOR;
+        for (int i = 0; i < 6; ++i) {
+            if (visible[i]) {
                 Polygonn p = faces[i];
                 g.setColor(p.color);
                 g.fill(p.p);
@@ -158,7 +159,7 @@ public class CarRenderer extends Renderer {
         if (UIInfo.drawActuators) {
             g.setColor(steeringLine.color);
             g.setStroke(steeringLine.stroke);
-            g.drawPolyline(steeringLine.x,steeringLine.y,steeringLine.x.length);
+            g.drawPolyline(steeringLine.x, steeringLine.y, steeringLine.x.length);
 
             int width = (int) Math.round(gasCircle[1].x - gasCircle[0].x);
             g.setColor(gasColor);
@@ -183,14 +184,14 @@ public class CarRenderer extends Renderer {
         DynamicObject c = vehicle.physicalObject;
         int i = 0;
         // Generate and project Box geometry in one go
-        for (int dx = -1; dx <= 1; dx +=2){
-            for (int dy = -1; dy <= 1; dy +=2){
-                for (int dz = -1; dz <= 1; dz +=2){
+        for (int dx = -1; dx <= 1; dx += 2) {
+            for (int dy = -1; dy <= 1; dy += 2) {
+                for (int dz = -1; dz <= 1; dz += 2) {
                     // Local pos
                     Vec3 p = points[i];
-                    p.x = half_size.x *dx;
-                    p.y = half_size.y *dy;
-                    p.z = half_size.z *dz;
+                    p.x = half_size.x * dx;
+                    p.y = half_size.y * dy;
+                    p.z = half_size.z * dz;
                     // To world pos
                     IPM.multiply(c.rotation, p);
                     IPM.add(p, c.pos);
@@ -213,12 +214,12 @@ public class CarRenderer extends Renderer {
         checkFace(5, c.rotation.col3, false);
 
         // Fill faces
-        for (i = 0; i < 6; i++){
+        for (i = 0; i < 6; i++) {
             if (!visible[i]) continue;
-            int offset = i*4;
+            int offset = i * 4;
             Polygonn p = faces[i];
-            for (int j = 0; j <4; ++j){
-                Vec3 res = points[faceIndices[offset+j]];
+            for (int j = 0; j < 4; ++j) {
+                Vec3 res = points[faceIndices[offset + j]];
                 p.p.xpoints[j] = (int) Math.round(res.x);
                 p.p.ypoints[j] = (int) Math.round(res.y);
             }
@@ -244,17 +245,17 @@ public class CarRenderer extends Renderer {
             aabbContour.points[3].set(b.min.x, b.max.y, 1.0);
             aabbContour.points[4].set(b.min.x, b.min.y, 1.0);
 
-            OBB b2 = (OBB)vehicle.physicalObject.bbox.get();
+            OBB b2 = (OBB) vehicle.physicalObject.bbox.get();
             double x = b2.pos.x;
             double y = b2.pos.y;
             for (i = 0; i < 3; ++i) {
-                obbLines[i].points[0].set(x,y,1.0);
+                obbLines[i].points[0].set(x, y, 1.0);
                 obbLines[i].points[1].set(
-                    x+b2.world_space_half_axes.at(0, i),
-                    y+b2.world_space_half_axes.at(1, i),
-                    1.0
+                        x + b2.world_space_half_axes.at(0, i),
+                        y + b2.world_space_half_axes.at(1, i),
+                        1.0
                 );
-                
+
             }
             computeLineGeometry(viewMatrix, aabbLines);
         }
@@ -262,7 +263,7 @@ public class CarRenderer extends Renderer {
         if (UIInfo.drawPlannedPath || UIInfo.drawPlannedTrajectory) {
             Optional<EEComponent> res = vehicle.eesystem.getComponent(NavigationProperties.NAME);
             if (res.isPresent()) {
-                Navigation nav = (Navigation)res.get();
+                Navigation nav = (Navigation) res.get();
 
                 if (UIInfo.drawPlannedPath) {
                     pathLines.clear();
@@ -300,25 +301,25 @@ public class CarRenderer extends Renderer {
             }
         }
 
-        
+
     }
 
     void computeSteeringLine(Mat3 viewMatrix) {
         Vehicle vehicle = car.get();
         DynamicObject c = vehicle.physicalObject;
         // Center of steering line = (Car pos + (local pos (front axle) -> rotated local pos))
-        v1.set(half_size.x*0.6, 0,0); // Local pos in car
+        v1.set(half_size.x * 0.6, 0, 0); // Local pos in car
         IPM.multiply(c.rotation, v1); // Relative global pos
         IPM.add(v1, c.pos); // Global front axle pos
 
         // Steering direction = (Car Z rot) * steering angle
-        v2.set(1,0,0);
+        v2.set(1, 0, 0);
         IPM.multiply(c.rotation, v2); // Get vehicle front vector => to 2D homogeneous coordinates
         v2.z = 0;
         IPM.normalize(v2);
-        IPM.rotationMatrix(m1, (Double)vehicle.powerTrain.steeringValue.get() * Geometry.DEG_TO_RAD);
+        IPM.rotationMatrix(m1, (Double) vehicle.powerTrain.steeringValue.get() * Geometry.DEG_TO_RAD);
         IPM.multiply(m1, v2); // Rotate "Vehicle Front vector" to Steering direction
-        IPM.multiply(v2, half_size.x*0.3);
+        IPM.multiply(v2, half_size.x * 0.3);
 
         // Point 1
         IPM.addTo(v3, v1, v2);
@@ -337,10 +338,10 @@ public class CarRenderer extends Renderer {
     void computeGasCircle(Mat3 viewMatrix) {
         Vehicle vehicle = car.get();
         DynamicObject c = vehicle.physicalObject;
-        v1.set(half_size.x*-0.5, half_size.y*-0.5,0); // Local pos in car
+        v1.set(half_size.x * -0.5, half_size.y * -0.5, 0); // Local pos in car
         IPM.multiply(c.rotation, v1); // Relative global pos
         IPM.add(v1, c.pos); // Global pos
-        v2.set(half_size.y*-0.3, half_size.y*0.3,0);
+        v2.set(half_size.y * -0.3, half_size.y * 0.3, 0);
         // Upper left corner
         IPM.addTo(v3, v1, v2);
         v3.z = 1; // homogenous coordinates
@@ -354,23 +355,23 @@ public class CarRenderer extends Renderer {
         gasCircle[1].x = (int) Math.round(v3.x);
         gasCircle[1].y = (int) Math.round(v3.y);
 
-        double gas = (Double)vehicle.powerTrain.gasValue.get();
-        if (gas < 0){
+        double gas = (Double) vehicle.powerTrain.gasValue.get();
+        if (gas < 0) {
             gas *= -2;
             if (gas > 1) gas = 1;
-            gasColor = new Color((int)(FULL_REVERSE_COLOR.getRed()*gas), (int)(FULL_REVERSE_COLOR.getGreen()*gas), (int)(FULL_REVERSE_COLOR.getBlue()*gas));
+            gasColor = new Color((int) (FULL_REVERSE_COLOR.getRed() * gas), (int) (FULL_REVERSE_COLOR.getGreen() * gas), (int) (FULL_REVERSE_COLOR.getBlue() * gas));
         } else {
-            gasColor = new Color((int)(FULL_GAS_COLOR.getRed()*gas), (int)(FULL_GAS_COLOR.getGreen()*gas), (int)(FULL_GAS_COLOR.getBlue()*gas));
+            gasColor = new Color((int) (FULL_GAS_COLOR.getRed() * gas), (int) (FULL_GAS_COLOR.getGreen() * gas), (int) (FULL_GAS_COLOR.getBlue() * gas));
         }
     }
 
     void computeBrakeCircle(Mat3 viewMatrix) {
         Vehicle vehicle = car.get();
         DynamicObject c = vehicle.physicalObject;
-        v1.set(half_size.x*-0.5, half_size.y*0.5,0); // Local pos in car
+        v1.set(half_size.x * -0.5, half_size.y * 0.5, 0); // Local pos in car
         IPM.multiply(c.rotation, v1); // Relative global pos
         IPM.add(v1, c.pos); // Global pos
-        v2.set(half_size.y*-0.3, half_size.y*0.3,0);
+        v2.set(half_size.y * -0.3, half_size.y * 0.3, 0);
         // Upper left corner
         IPM.addTo(v3, v1, v2);
         v3.z = 1; // homogenous coordinates
@@ -384,12 +385,12 @@ public class CarRenderer extends Renderer {
         brakeCircle[1].x = (int) Math.round(v3.x);
         brakeCircle[1].y = (int) Math.round(v3.y);
 
-        double brakes = (Double)vehicle.powerTrain.brakingValue.get();
-        brakeColor = new Color((int)(FULL_BRAKE_COLOR.getRed()*brakes), (int)(FULL_BRAKE_COLOR.getGreen()*brakes), (int)(FULL_BRAKE_COLOR.getBlue()*brakes));
+        double brakes = (Double) vehicle.powerTrain.brakingValue.get();
+        brakeColor = new Color((int) (FULL_BRAKE_COLOR.getRed() * brakes), (int) (FULL_BRAKE_COLOR.getGreen() * brakes), (int) (FULL_BRAKE_COLOR.getBlue() * brakes));
     }
 
-    void checkFace(int i, Vec3 vec, boolean neg){
-        visible[i] =  neg ? -vec.z > 0 : vec.z > 0;
+    void checkFace(int i, Vec3 vec, boolean neg) {
+        visible[i] = neg ? -vec.z > 0 : vec.z > 0;
         if (!visible[i]) return;
         // Perform crude illumination (diffuse from 2 lights)
     }
@@ -398,7 +399,7 @@ public class CarRenderer extends Renderer {
         PhysicalValue position1 = truePosition.get();
         Vec2 currentPosition = (Vec2) position1.get();
         Vec3 position3D = new Vec3(currentPosition, 1d);
-        if(lastPosition != null) {
+        if (lastPosition != null) {
             Polyline path = new Polyline(2, PAST_TRAJECTORY_COLOR);
             path.points[0] = lastPosition;
             path.points[1] = position3D;
@@ -413,28 +414,28 @@ public class CarRenderer extends Renderer {
         if (!car.isPresent()) return null;
         DynamicObject rb = car.get().physicalObject;
         List<String> baseInfo = new ArrayList<>();
-        baseInfo.add("Car '"+rb.name+"' velocity: " + posFormat.format(rb.velocity.magnitude()*3.6));
-        baseInfo.add("  pos: "+posFormat.format(rb.pos.x) + " : "+posFormat.format(rb.pos.y));
-        
+        baseInfo.add("Car '" + rb.name + "' velocity: " + posFormat.format(rb.velocity.magnitude() * 3.6));
+        baseInfo.add("  pos: " + posFormat.format(rb.pos.x) + " : " + posFormat.format(rb.pos.y));
+
         for (Vehicle col : car.get().vehicleCollisions) {
-            baseInfo.add("Vehicle Collision: "+col.properties.vehicleName);
+            baseInfo.add("Vehicle Collision: " + col.properties.vehicleName);
         }
         for (StaticObject col : car.get().staticCollisions) {
-            baseInfo.add("Static Collision: "+col.name);
+            baseInfo.add("Static Collision: " + col.name);
         }
 
         if (UIInfo.inspectAutopilots) {
             car.get().eesystem.componentTable.stream()
-                .filter(c -> (c instanceof Inspectable))
-                .map(c -> ((Inspectable) c))
-                .filter(c -> c.getType().equals("autopilot"))
-                .forEach(i -> {
-                    baseInfo.add("  Autopilot: "+i.getName());
-                    List<String> entries = i.getEntries();
-                    for (String e : entries){
-                        baseInfo.add("    "+e);
-                    }
-                });
+                    .filter(c -> (c instanceof Inspectable))
+                    .map(c -> ((Inspectable) c))
+                    .filter(c -> c.getType().equals("autopilot"))
+                    .forEach(i -> {
+                        baseInfo.add("  Autopilot: " + i.getName());
+                        List<String> entries = i.getEntries();
+                        for (String e : entries) {
+                            baseInfo.add("    " + e);
+                        }
+                    });
         }
         return baseInfo;
     }

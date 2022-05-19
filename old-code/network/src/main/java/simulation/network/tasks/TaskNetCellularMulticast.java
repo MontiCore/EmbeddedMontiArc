@@ -1,6 +1,6 @@
 /**
  * (c) https://github.com/MontiCore/monticore
- *
+ * <p>
  * The license generally applicable for this project
  * can be found under https://github.com/MontiCore/monticore.
  */
@@ -10,6 +10,7 @@ import simulation.network.*;
 
 import java.time.Duration;
 import java.util.Arrays;
+
 import static simulation.network.NetworkDiscreteEventId.*;
 
 /**

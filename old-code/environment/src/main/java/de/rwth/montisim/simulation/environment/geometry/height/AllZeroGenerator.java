@@ -1,6 +1,6 @@
 /**
  * (c) https://github.com/MontiCore/monticore
- *
+ * <p>
  * The license generally applicable for this project
  * can be found under https://github.com/MontiCore/monticore.
  */
@@ -15,7 +15,7 @@ import de.rwth.montisim.simulation.environment.visualisationadapter.EnvBounds;
  *
  * A height Generator that returns always zero
  */
-public class AllZeroGenerator implements HeightGenerator{
+public class AllZeroGenerator implements HeightGenerator {
     private EnvBounds envBounds;
 
     public AllZeroGenerator(EnvBounds envBounds) {

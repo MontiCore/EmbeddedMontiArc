@@ -65,7 +65,7 @@ public class RLAutopilot extends EEComponent implements Inspectable {
     //action and state as arrays for more flexibility
     public float[] state = null;
     public float[] action = null;
-    
+
     //array with all state values that get sent
     public float[] statePacket = new float[4];
 
@@ -82,7 +82,7 @@ public class RLAutopilot extends EEComponent implements Inspectable {
         this.trajYMsg = addPort(PortInformation.newRequiredInputDataPort(Navigation.TRAJECTORY_Y_MSG, Navigation.TRAJECTORY_Y_TYPE, false));
 
         this.steeringMsg = addPort(PortInformation.newRequiredOutputDataPort(Actuator.SETTER_PREFIX + PowerTrainProperties.STEERING_VALUE_NAME,
-        BasicType.DOUBLE));
+                BasicType.DOUBLE));
         this.accelMsg = addPort(PortInformation.newRequiredOutputDataPort(Actuator.SETTER_PREFIX + PowerTrainProperties.GAS_VALUE_NAME, BasicType.DOUBLE));
         this.brakeMsg = addPort(PortInformation.newRequiredOutputDataPort(Actuator.SETTER_PREFIX + PowerTrainProperties.BRAKING_VALUE_NAME, BasicType.DOUBLE));
 
@@ -99,8 +99,8 @@ public class RLAutopilot extends EEComponent implements Inspectable {
             compute(msgRecvEvent.getEventTime());
         } else if (msg.isMsg(compassMsg)) {
             currentCompass = (Double) msg.message;
-        } else if (msg.isMsg(trajLengthMsg)){
-            newTrajLength = (int)msg.message;
+        } else if (msg.isMsg(trajLengthMsg)) {
+            newTrajLength = (int) msg.message;
         } else if (msg.isMsg(trajXMsg)) {
             newTrajX = (double[]) msg.message;
         } else if (msg.isMsg(trajYMsg)) {
@@ -108,20 +108,21 @@ public class RLAutopilot extends EEComponent implements Inspectable {
             trajY = (double[]) msg.message;
             trajLength = newTrajLength;
             trajX = newTrajX;
-        }     }
+        }
+    }
 
-    public void updateStatePacket(){
+    public void updateStatePacket() {
         this.statePacket[0] = (float) currentPosition.at(0);
         this.statePacket[1] = (float) currentPosition.at(1);
         this.statePacket[2] = (float) currentCompass;
         this.statePacket[3] = (float) currentVelocity;
     }
 
-    public float[] getStatePacket(){
+    public float[] getStatePacket() {
         return this.statePacket;
     }
-    
-    public double getCurrentSteering(){
+
+    public double getCurrentSteering() {
         return this.currentSteering;
     }
 
@@ -137,10 +138,12 @@ public class RLAutopilot extends EEComponent implements Inspectable {
         this.currentGas = val;
         sendMessage(sendTime, accelMsg, val);
     }
+
     void setBrakes(Instant sendTime, double val) {
         this.currentBrakes = val;
         sendMessage(sendTime, brakeMsg, val);
     }
+
     void setSteering(Instant sendTime, double val) {
         this.currentSteering = val;
         sendMessage(sendTime, steeringMsg, val);
@@ -149,9 +152,9 @@ public class RLAutopilot extends EEComponent implements Inspectable {
     void compute(Instant startTime) {
         //get action values from action array
         Instant sendTime = startTime.plus(properties.compute_time);
-        if(action != null){
-            speedOutput = (double) (action[0]+1)/2; 
-            brakeOutput = (double) (action[1] + 1)/2;
+        if (action != null) {
+            speedOutput = (double) (action[0] + 1) / 2;
+            brakeOutput = (double) (action[1] + 1) / 2;
 
             turnOutput = (double) action[2] * 30;
         }
@@ -162,23 +165,22 @@ public class RLAutopilot extends EEComponent implements Inspectable {
         setBrakes(sendTime, brakeOutput);
     }
 
-    private void setState(){
-        state = new float[25]; 
-        if(trajX != null){
-            for(int i = 0; i<trajLength; i++){                
+    private void setState() {
+        state = new float[25];
+        if (trajX != null) {
+            for (int i = 0; i < trajLength; i++) {
                 state[i] = (float) trajX[i];
             }
-        }
-        else return;
-        for(int i = 0; i<10-trajLength; i++){
+        } else return;
+        for (int i = 0; i < 10 - trajLength; i++) {
             state[trajLength + i] = 0f;
         }
-        if(trajY != null){
-            for(int i = 10; i<10 + trajLength; i++){
-                state[i] = (float) trajY[i-10];
+        if (trajY != null) {
+            for (int i = 10; i < 10 + trajLength; i++) {
+                state[i] = (float) trajY[i - 10];
             }
         }
-        for(int i = 10+trajLength; i<20; i++){
+        for (int i = 10 + trajLength; i < 20; i++) {
             state[i] = 0f;
         }
 
@@ -207,7 +209,7 @@ public class RLAutopilot extends EEComponent implements Inspectable {
             else {
                 entries.add(res);
                 for (String s : toStr) {
-                    entries.add("  "+s);
+                    entries.add("  " + s);
                 }
             }
         }

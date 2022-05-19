@@ -1,6 +1,6 @@
 /**
  * (c) https://github.com/MontiCore/monticore
- *
+ * <p>
  * The license generally applicable for this project
  * can be found under https://github.com/MontiCore/monticore.
  */
@@ -11,6 +11,7 @@ import de.topobyte.osm4j.core.model.iface.OsmNode;
 import de.topobyte.osm4j.core.model.iface.OsmWay;
 import de.topobyte.osm4j.core.model.util.OsmModelUtil;
 import de.topobyte.osm4j.core.resolve.EntityNotFoundException;
+
 import java.util.*;
 
 /**
@@ -23,7 +24,8 @@ public class IntersectionFinder {
 
     private static IntersectionFinder instance = null;
 
-    private IntersectionFinder() {}
+    private IntersectionFinder() {
+    }
 
     public static IntersectionFinder getInstance() {
         if (instance == null) {
@@ -40,17 +42,17 @@ public class IntersectionFinder {
      * @param dataSet
      */
     public void findIntersections(InMemoryMapDataSet dataSet) {
-        if(dataSet == null) {
+        if (dataSet == null) {
             return;
         }
 
         HashMap<OsmNode, Integer> nodes = new HashMap<OsmNode, Integer>();
-        for(OsmWay way : dataSet.getWays().valueCollection()) {
+        for (OsmWay way : dataSet.getWays().valueCollection()) {
             Map<String, String> tags = OsmModelUtil.getTagsAsMap(way);
             String highway = tags.get("highway");
             //filter buildings
-            if(highway != null) {
-                try{
+            if (highway != null) {
+                try {
                     countNodes(dataSet, way, nodes);
                     filterNonIntersections(nodes);
                 } catch (EntityNotFoundException e) {
@@ -59,7 +61,6 @@ public class IntersectionFinder {
                 }
             }
         }
-
 
 
     }
@@ -72,10 +73,10 @@ public class IntersectionFinder {
      * simply increments the counter in the nodes map for all nodes specified by way
      */
     private void countNodes(InMemoryMapDataSet dataSet, OsmWay way, HashMap<OsmNode, Integer> nodes) throws EntityNotFoundException {
-        for(int i = 0; i < way.getNumberOfNodes(); i++) {
+        for (int i = 0; i < way.getNumberOfNodes(); i++) {
             OsmNode node = dataSet.getNode(way.getNodeId(i));
 
-            if(nodes.containsKey(node)) {
+            if (nodes.containsKey(node)) {
                 nodes.put(node, nodes.get(dataSet.getNode(way.getNodeId(i))) + 1);
             } else {
                 nodes.put(node, 1);
@@ -90,8 +91,8 @@ public class IntersectionFinder {
      */
     private void filterNonIntersections(HashMap<OsmNode, Integer> nodes) {
         this.intersections = new HashSet<OsmNode>();
-        for(OsmNode node : nodes.keySet()) {
-            if(nodes.get(node) > 1) {
+        for (OsmNode node : nodes.keySet()) {
+            if (nodes.get(node) > 1) {
                 intersections.add(node);
             }
         }
@@ -101,7 +102,7 @@ public class IntersectionFinder {
         return this.intersections.size();
     }
 
-    public Set<OsmNode> getIntersections(){
+    public Set<OsmNode> getIntersections() {
         return Collections.synchronizedSet(new HashSet<OsmNode>(this.intersections));
     }
 

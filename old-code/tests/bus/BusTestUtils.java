@@ -1,6 +1,6 @@
 /**
  * (c) https://github.com/MontiCore/monticore
- *
+ * <p>
  * The license generally applicable for this project
  * can be found under https://github.com/MontiCore/monticore.
  */
@@ -22,14 +22,13 @@ import java.util.*;
 import static org.junit.Assert.assertTrue;
 
 
-
 public class BusTestUtils {
 
     private static Map<Integer, BusEntry> busEntryByOrdinal = new HashMap<Integer, BusEntry>();
 
     public static void init() {
-        if(busEntryByOrdinal.size() == 0) {
-        	for (BusEntry entry : BusEntry.values()) {
+        if (busEntryByOrdinal.size() == 0) {
+            for (BusEntry entry : BusEntry.values()) {
                 busEntryByOrdinal.put(entry.ordinal(), entry);
             }
         }
@@ -82,7 +81,7 @@ public class BusTestUtils {
     }
 
     public static BusMessageEvent createNregisterMessage(Bus bus, Object message, int senderPos, int messageLength,
-                                              int priority) {
+                                                         int priority) {
         assertTrue(busEntryByOrdinal.size() > priority);
 
         List<EEComponent> connectedComponents = bus.getConnectedComponents();
@@ -113,5 +112,5 @@ public class BusTestUtils {
             msgs.add(createNregisterMessage(bus, j, senderPos, messageLength, priority));
         }
         return msgs;
-    } 
+    }
 }

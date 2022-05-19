@@ -36,6 +36,6 @@ public class LidarProperties extends EEComponentProperties {
 
     @Override
     public EEComponent build(EESystem eesystem, BuildContext context) throws EEMessageTypeException {
-        return new Lidar(this, eesystem, context.getObject(World.CONTEXT_KEY), context.getObject( Vehicle.CONTEXT_KEY ));
+        return new Lidar(this, eesystem, context.getObject(World.CONTEXT_KEY), context.getObject(Vehicle.CONTEXT_KEY));
     }
 }

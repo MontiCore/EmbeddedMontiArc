@@ -27,7 +27,7 @@ public abstract class PhysicalValue {
      * overwritten.
      */
     // public abstract Object value();
-
     public abstract boolean hasChanged();
+
     public abstract DataType getType();
 }

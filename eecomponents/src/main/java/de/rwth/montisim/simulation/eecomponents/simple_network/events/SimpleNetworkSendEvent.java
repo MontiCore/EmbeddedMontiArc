@@ -9,9 +9,9 @@ import de.rwth.montisim.simulation.eecomponents.simple_network.SimpleNetworkMess
 
 public class SimpleNetworkSendEvent extends DiscreteEvent {
     public static final int type = registerType(SimpleNetworkSendEvent.class);
-    
+
     public SimpleNetworkMessage msg;
-    
+
     public SimpleNetworkSendEvent(EventTarget target, Instant time, SimpleNetworkMessage msg) {
         super(target, time);
         this.msg = msg;
@@ -21,5 +21,5 @@ public class SimpleNetworkSendEvent extends DiscreteEvent {
     public int getType() {
         return type;
     }
-    
+
 }

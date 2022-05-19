@@ -1,6 +1,6 @@
 /**
  * (c) https://github.com/MontiCore/monticore
- *
+ * <p>
  * The license generally applicable for this project
  * can be found under https://github.com/MontiCore/monticore.
  */
@@ -13,6 +13,7 @@ import de.topobyte.osm4j.core.model.util.OsmModelUtil;
 import gnu.trove.map.TLongObjectMap;
 import de.rwth.montisim.simulation.environment.visualisationadapter.implementation.Intersection2D;
 import de.rwth.montisim.simulation.environment.visualisationadapter.interfaces.EnvIntersection;
+
 import java.util.HashMap;
 import java.util.HashSet;
 import java.util.Map;
@@ -32,31 +33,31 @@ public class IntersectionMapper {
 
 
     public IntersectionMapper(InMemoryMapDataSet data, Set<OsmNode> intersections) {
-            this.wayToIntersection = new HashMap<>();
-            this.wayToIntersectionOsm = new HashMap<>();
-            this.dataSet = data;
-            this.intersections = intersections;
-            map();
+        this.wayToIntersection = new HashMap<>();
+        this.wayToIntersectionOsm = new HashMap<>();
+        this.dataSet = data;
+        this.intersections = intersections;
+        map();
     }
 
     /**
      * check for each node in all ways if it is an intersection and put it in the set of intersections
      */
     private void map() {
-        if(dataSet == null || intersections == null) {
+        if (dataSet == null || intersections == null) {
             return;
         }
 
         TLongObjectMap<OsmNode> nodes = dataSet.getNodes();
-        for(OsmWay way : dataSet.getWays().valueCollection()) {
+        for (OsmWay way : dataSet.getWays().valueCollection()) {
             Map<String, String> tags = OsmModelUtil.getTagsAsMap(way);
             String highway = tags.get("highway");
             //filter buildings
-            if(highway != null) {
-                for(int i = 0; i < way.getNumberOfNodes(); i++) {
+            if (highway != null) {
+                for (int i = 0; i < way.getNumberOfNodes(); i++) {
                     OsmNode n = nodes.get(way.getNodeId(i));
-                    if(intersections.contains(n)) {
-                        if(!wayToIntersection.containsKey(way)) {
+                    if (intersections.contains(n)) {
+                        if (!wayToIntersection.containsKey(way)) {
                             wayToIntersection.put(way, new HashSet<EnvIntersection>());
                         }
 
@@ -64,8 +65,8 @@ public class IntersectionMapper {
                     }
 
 
-                    if(intersections.contains(n)) {
-                        if(!wayToIntersectionOsm.containsKey(way)) {
+                    if (intersections.contains(n)) {
+                        if (!wayToIntersectionOsm.containsKey(way)) {
                             wayToIntersectionOsm.put(way, new HashSet<OsmNode>());
                         }
 
@@ -82,6 +83,8 @@ public class IntersectionMapper {
         return wayToIntersection.get(w);
     }
 
-    public Set<OsmNode> getOsmIntersectionsForWay(OsmWay w) { return wayToIntersectionOsm.get(w);}
+    public Set<OsmNode> getOsmIntersectionsForWay(OsmWay w) {
+        return wayToIntersectionOsm.get(w);
+    }
 
 }

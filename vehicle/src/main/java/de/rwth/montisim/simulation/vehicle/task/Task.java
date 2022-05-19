@@ -44,7 +44,7 @@ public class Task {
     protected void addGoal(Goal g) {
         goals.add(g);
         if (g instanceof PathGoal && g.properties.ltl_operator == LTLOperator.EVENTUALLY) {
-            driveGoals.add((PathGoal)g);
+            driveGoals.add((PathGoal) g);
         }
     }
 

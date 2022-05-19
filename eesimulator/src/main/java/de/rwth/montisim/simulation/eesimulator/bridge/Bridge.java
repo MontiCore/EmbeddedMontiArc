@@ -18,11 +18,11 @@ public class Bridge extends EEComponent {
     @Override
     protected void receive(MessageReceiveEvent msgRecvEvent) {
         this.eesystem.simulator.addEvent(
-            new MessageSendEvent(
-                this, 
-                msgRecvEvent.getEventTime().plus(properties.delay),
-                msgRecvEvent.getMessage()
-            )
+                new MessageSendEvent(
+                        this,
+                        msgRecvEvent.getEventTime().plus(properties.delay),
+                        msgRecvEvent.getMessage()
+                )
         );
     }
 

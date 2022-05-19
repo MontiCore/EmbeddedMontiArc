@@ -1,6 +1,6 @@
 /**
  * (c) https://github.com/MontiCore/monticore
- *
+ * <p>
  * The license generally applicable for this project
  * can be found under https://github.com/MontiCore/monticore.
  */
@@ -13,6 +13,7 @@ import de.rwth.montisim.simulation.environment.object.ChargingStation;
 import de.rwth.montisim.simulation.environment.visualisationadapter.implementation.*;
 import de.rwth.montisim.simulation.environment.visualisationadapter.interfaces.*;
 import de.rwth.montisim.simulation.environment.visualisationadapter.implementation.EnvironmentContainer2D;
+
 import java.util.ArrayList;
 import java.util.List;
 
@@ -28,7 +29,6 @@ public class EnvironmentContainerConverter {
     private ApproximateConverter converter;
 
     private Bounds2D bounds;
-
 
 
     public EnvironmentContainerConverter(VisualisationEnvironmentContainer containerLongLat) {
@@ -47,13 +47,13 @@ public class EnvironmentContainerConverter {
         return converter;
     }
 
-    List<EnvNode> convertNodes(List<EnvNode> geoCoordNodes){
+    List<EnvNode> convertNodes(List<EnvNode> geoCoordNodes) {
         ArrayList<EnvNode> nodes = new ArrayList<>();
-        for(EnvNode node : geoCoordNodes) {
+        for (EnvNode node : geoCoordNodes) {
             nodes.add(new Node2D(
-                new Vec3(converter.coordinatesToMeters(new Coordinates(node.point.x, node.point.y)), node.point.z), 
-                node.osmId)
-                );
+                    new Vec3(converter.coordinatesToMeters(new Coordinates(node.point.x, node.point.y)), node.point.z),
+                    node.osmId)
+            );
         }
         return nodes;
     }
@@ -67,31 +67,31 @@ public class EnvironmentContainerConverter {
         ArrayList<Waterway> meterWaterway = new ArrayList<>();
         ArrayList<ChargingStation> meterChargingStations = new ArrayList<>();
 
-        for(EnvStreet longLatStreet : containerLongLat.getStreets()) {
+        for (EnvStreet longLatStreet : containerLongLat.getStreets()) {
             List<EnvNode> nodes = convertNodes(longLatStreet.getNodes());
             List<EnvNode> intersections = convertNodes(longLatStreet.getIntersections());
             meterStreets.add(new Street2D(nodes, longLatStreet.getSpeedLimit(), intersections, longLatStreet.getOsmId(), longLatStreet.isOneWay(), longLatStreet.getStreetType(), longLatStreet.getStreetPavement()));
         }
 
-        for(Building longLatBuilding : containerLongLat.getBuildings()) {
+        for (Building longLatBuilding : containerLongLat.getBuildings()) {
             List<EnvNode> nodes = convertNodes(longLatBuilding.getNodes());
             meterBuildings.add(new BuildingImpl(nodes, longLatBuilding.getOsmId()));
         }
 
-        for(Waterway longLatWaterway : containerLongLat.getWaterway()) {
+        for (Waterway longLatWaterway : containerLongLat.getWaterway()) {
             List<EnvNode> nodes = convertNodes(longLatWaterway.getNodes());
             meterWaterway.add(new Waterway2D(nodes, longLatWaterway.getOsmId()));
         }
 
-        for(ChargingStation chargingStation: containerLongLat.getChargingStations()) {
+        for (ChargingStation chargingStation : containerLongLat.getChargingStations()) {
             List<EnvNode> nodes = convertNodes(chargingStation.getNodes());
             EnvNode csNode = nodes.get(0);
             meterChargingStations.add(new ChargingStation(
-                csNode.osmId, csNode, chargingStation.getCapacity(), chargingStation.getName()));
+                    csNode.osmId, csNode, chargingStation.getCapacity(), chargingStation.getName()));
         }
         computeMinMax(meterStreets, meterBuildings, meterWaterway, meterChargingStations);
         containerMeters = new EnvironmentContainer2D(
-                bounds,meterStreets, meterBuildings, meterWaterway, meterChargingStations);
+                bounds, meterStreets, meterBuildings, meterWaterway, meterChargingStations);
     }
 
     /**
@@ -107,30 +107,30 @@ public class EnvironmentContainerConverter {
         // double minX = 0 - Waterway.RIVER_WIDTH;
         // double minY = 0 - Waterway.RIVER_WIDTH;
         // double minZ = 0;
-        
+
         Vec3 min = new Vec3(Double.MAX_VALUE);
         Vec3 max = new Vec3(Double.MIN_VALUE);
 
-        for(EnvStreet street: streets) {
-            for(EnvNode nodes: street.getNodes()) {
+        for (EnvStreet street : streets) {
+            for (EnvNode nodes : street.getNodes()) {
                 Geometry.minimize(min, nodes.point);
                 Geometry.maximize(max, nodes.point);
             }
         }
-        for(Building building: buildings) {
-            for(EnvNode nodes: building.getNodes()) {
+        for (Building building : buildings) {
+            for (EnvNode nodes : building.getNodes()) {
                 Geometry.minimize(min, nodes.point);
                 Geometry.maximize(max, nodes.point);
             }
         }
-        for(Waterway waterway: waterways) {
-            for(EnvNode nodes: waterway.getNodes()) {
+        for (Waterway waterway : waterways) {
+            for (EnvNode nodes : waterway.getNodes()) {
                 Geometry.minimize(min, nodes.point);
                 Geometry.maximize(max, nodes.point);
             }
         }
-        for(ChargingStation chargingStation: chargingStations) {
-            for(EnvNode nodes: chargingStation.getNodes()) {
+        for (ChargingStation chargingStation : chargingStations) {
+            for (EnvNode nodes : chargingStation.getNodes()) {
                 Geometry.minimize(min, nodes.point);
                 Geometry.maximize(max, nodes.point);
             }
@@ -146,8 +146,8 @@ public class EnvironmentContainerConverter {
     private void computeMinLongMinLat() {
         Vec3 min = new Vec2(Double.MAX_VALUE);
 
-        for(EnvObject object : containerLongLat.getStreets()) {
-            for(EnvNode node : object.getNodes()) {
+        for (EnvObject object : containerLongLat.getStreets()) {
+            for (EnvNode node : object.getNodes()) {
                 Geometry.minimize(min, node.point);
             }
         }

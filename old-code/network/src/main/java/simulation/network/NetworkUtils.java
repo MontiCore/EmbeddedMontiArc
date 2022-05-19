@@ -1,6 +1,6 @@
 /**
  * (c) https://github.com/MontiCore/monticore
- *
+ * <p>
  * The license generally applicable for this project
  * can be found under https://github.com/MontiCore/monticore.
  */
@@ -21,7 +21,8 @@ import java.util.Random;
 public final class NetworkUtils {
 
     /** Empty constructor, this class has no instances, only static functions */
-    private NetworkUtils() {}
+    private NetworkUtils() {
+    }
 
     /**
      * Function that returns the current simulation time with additional delay
@@ -42,7 +43,7 @@ public final class NetworkUtils {
         int slowDataLength = message.getPhySlowTransmissionBits();
         int dataRate = message.getPhyDataRateKBits() * 1000;
         int dataLength = message.getMessageLengthBits() - slowDataLength;
-        long result = (long)(1000000000.0 * (((double)(slowDataLength) / (double)(slowDataRate)) + ((double)(dataLength) / (double)(dataRate))));
+        long result = (long) (1000000000.0 * (((double) (slowDataLength) / (double) (slowDataRate)) + ((double) (dataLength) / (double) (dataRate))));
         return Duration.ofNanos(result);
     }
 
@@ -54,7 +55,7 @@ public final class NetworkUtils {
      */
     public static Duration calcPropagationTime(NetworkNode node1, NetworkNode node2) {
         double distance = node1.getPhysicalObject().getGeometryPosition().getDistance(node2.getPhysicalObject().getGeometryPosition());
-        long result = (long)(1000000000.0 * (distance / (double)(NetworkSettings.SPEED_OF_LIGHT)));
+        long result = (long) (1000000000.0 * (distance / (double) (NetworkSettings.SPEED_OF_LIGHT)));
         return Duration.ofNanos(result);
     }
 
@@ -163,7 +164,7 @@ public final class NetworkUtils {
         List<Float> resultList = Collections.synchronizedList(new LinkedList<>());
 
         for (int i = 0; i < chunkCount; ++i) {
-            String floatStr = bitString.substring(i * 32, (i+1) * 32);
+            String floatStr = bitString.substring(i * 32, (i + 1) * 32);
 
             // Remove leading zeros, considering special case that original string might have been just a single "0"
             while (floatStr.length() > 1 && floatStr.charAt(0) == '0') {

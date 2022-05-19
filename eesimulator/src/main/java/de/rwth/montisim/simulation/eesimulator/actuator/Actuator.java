@@ -24,7 +24,7 @@ public class Actuator extends EEComponent implements Updatable {
     SensorLogic sensor;
     public double targetValue;
     final transient boolean sendFeedback; // Whether the actuator senses itself and sends its current value on the bus. ~>
-                                // "Sensor enabled"
+    // "Sensor enabled"
     //transient boolean isDouble;
     transient int msgId;
 

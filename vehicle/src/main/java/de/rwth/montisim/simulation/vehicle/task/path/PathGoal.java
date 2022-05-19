@@ -17,15 +17,14 @@ import java.util.Vector;
  * PathGoal is used for setting up a set of locations, which a vehicle must or must
  * not reach. The order in the path matters, they will be considered in the exact
  * order as they are given.
- *
+ * <p>
  * For example, path = [node1, node2, ...] means node2
  * can only be considered, after node1 has been reached by the vehicle.
- *
  */
 public class PathGoal extends Goal {
     public transient final PathGoalProperties properties;
     public transient Vector<Vec2> path; // In local coordinates (meters)
-    
+
     private int currDestIdx = -1; // the index of current destination (next location the vehicle should reach)
 
     public PathGoal(PathGoalProperties properties, Vector<Vec2> path) {
@@ -34,7 +33,6 @@ public class PathGoal extends Goal {
         this.path = path;
     }
 
-    
 
     public void update(Vehicle v) {
         switch (properties.ltl_operator) {
@@ -44,14 +42,16 @@ public class PathGoal extends Goal {
             case NEVER:
                 handleNever(v);
                 break;
-            default: throw new IllegalArgumentException("Specified LTL operator not supported for the PathGoal.");
+            default:
+                throw new IllegalArgumentException("Specified LTL operator not supported for the PathGoal.");
         }
     }
 
     // Only gets called when this PathGoal is active
     // Returns true if all completed
     public boolean updateDriveTarget(Vehicle v, Optional<Navigation> nav) {
-        if (!nav.isPresent()) throw new IllegalArgumentException("PathGoal requires a Navigation component in the Vehicle.");
+        if (!nav.isPresent())
+            throw new IllegalArgumentException("PathGoal requires a Navigation component in the Vehicle.");
         Navigation navv = nav.get();
         boolean newTarget = false;
         if (currDestIdx < 0) {

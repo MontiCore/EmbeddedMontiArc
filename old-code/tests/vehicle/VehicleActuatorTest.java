@@ -1,6 +1,6 @@
 /**
  * (c) https://github.com/MontiCore/monticore
- *
+ * <p>
  * The license generally applicable for this project
  * can be found under https://github.com/MontiCore/monticore.
  */
@@ -99,14 +99,14 @@ public class VehicleActuatorTest {
     }
 
     @Test(expected = IllegalArgumentException.class)
-    public void vehicleActuatorFailRate(){
+    public void vehicleActuatorFailRate() {
         EESimulator simulator = new EESimulator(Instant.EPOCH);
         HashMap<BusEntry, List<EEComponent>> targetsByMessageId = new HashMap<>();
         VehicleActuator actuator = new VehicleActuator(VehicleActuatorType.VEHICLE_ACTUATOR_TYPE_BRAKES_BACK_LEFT, 0, 10, -1, simulator, Collections.emptyList(), targetsByMessageId);
     }
 
     @Test
-    public void updateTest(){
+    public void updateTest() {
         // Test approach target
         EESimulator simulator = new EESimulator(Instant.EPOCH);
         HashMap<BusEntry, List<EEComponent>> targetsByMessageId = new HashMap<>();
@@ -143,7 +143,7 @@ public class VehicleActuatorTest {
     }
 
     @Test
-    public void setActuatorValueTargetNormal(){
+    public void setActuatorValueTargetNormal() {
         // Test normal case
         EESimulator simulator = new EESimulator(Instant.EPOCH);
         HashMap<BusEntry, List<EEComponent>> targetsByMessageId = new HashMap<>();
@@ -171,7 +171,7 @@ public class VehicleActuatorTest {
     }
 
     @Test(expected = IllegalArgumentException.class)
-    public void setActuatorValueTargetUnderMin(){
+    public void setActuatorValueTargetUnderMin() {
         EESimulator simulator = new EESimulator(Instant.EPOCH);
         HashMap<BusEntry, List<EEComponent>> targetsByMessageId = new HashMap<>();
         VehicleActuator actuator = new VehicleActuator(VehicleActuatorType.VEHICLE_ACTUATOR_TYPE_BRAKES_BACK_LEFT, 0, 10, 1, simulator, Collections.emptyList(), targetsByMessageId);
@@ -179,7 +179,7 @@ public class VehicleActuatorTest {
     }
 
     @Test
-    public void setActuatorValueCurrentNormal(){
+    public void setActuatorValueCurrentNormal() {
         // Test normal case
         EESimulator simulator = new EESimulator(Instant.EPOCH);
         HashMap<BusEntry, List<EEComponent>> targetsByMessageId = new HashMap<>();
@@ -207,7 +207,7 @@ public class VehicleActuatorTest {
     }
 
     @Test(expected = IllegalArgumentException.class)
-    public void setActuatorValueCurrentUnderMin(){
+    public void setActuatorValueCurrentUnderMin() {
         EESimulator simulator = new EESimulator(Instant.EPOCH);
         HashMap<BusEntry, List<EEComponent>> targetsByMessageId = new HashMap<>();
         VehicleActuator actuator = new VehicleActuator(VehicleActuatorType.VEHICLE_ACTUATOR_TYPE_BRAKES_BACK_LEFT, 0, 10, 1, simulator, Collections.emptyList(), targetsByMessageId);

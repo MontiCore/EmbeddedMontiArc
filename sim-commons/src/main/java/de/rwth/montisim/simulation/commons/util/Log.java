@@ -3,6 +3,7 @@ package de.rwth.montisim.simulation.commons.util;
 
 import java.util.Locale;
 import java.util.logging.*;
+
 import static java.util.logging.Level.*;
 
 /**
@@ -10,8 +11,11 @@ import static java.util.logging.Level.*;
  */
 public final class Log {
 
-    /** Don't let anyone instantiate this class */
-    private Log() {}
+    /**
+     * Don't let anyone instantiate this class
+     */
+    private Log() {
+    }
 
     // Make sure LoggingModule constructor is called exists
     static {
@@ -20,8 +24,9 @@ public final class Log {
 
     /**
      * Log a message
+     *
      * @param logLevel Level, i.e., severeness, of the message
-     * @param msg Content of the message
+     * @param msg      Content of the message
      */
     public static void log(Level logLevel, String msg) {
         if (isLogEnabled())
@@ -33,16 +38,24 @@ public final class Log {
      */
     private static class LoggingModule {
 
-        /** Instance of used logger */
+        /**
+         * Instance of used logger
+         */
         private static Logger logger = null;
 
-        /** True iff logging is enabled by user */
+        /**
+         * True iff logging is enabled by user
+         */
         private static boolean logEnabled = true;
 
-        /** True iff the log messages should be written to a file */
+        /**
+         * True iff the log messages should be written to a file
+         */
         private static boolean writeToDiskEnabled = false;
 
-        /** File handler for storing the log messages to disk */
+        /**
+         * File handler for storing the log messages to disk
+         */
         private static FileHandler fileHandler;
 
 
@@ -88,6 +101,7 @@ public final class Log {
 
     /**
      * Log a message of level "severe"
+     *
      * @param msg Content of the message
      */
     public static void severe(String msg) {
@@ -96,24 +110,34 @@ public final class Log {
 
     /**
      * Log a message of level "warning"
+     *
      * @param msg Content of the message
      */
-    public static void warning(String msg) { log(WARNING, msg); }
+    public static void warning(String msg) {
+        log(WARNING, msg);
+    }
 
     /**
      * Log a message of level "info"
+     *
      * @param msg Content of the message
      */
-    public static void info(String msg) { log(INFO, msg); }
+    public static void info(String msg) {
+        log(INFO, msg);
+    }
 
     /**
      * Log a message of level "finest"
+     *
      * @param msg Content of the message
      */
-    public static void finest(String msg) { log(FINEST, msg); }
+    public static void finest(String msg) {
+        log(FINEST, msg);
+    }
 
     /**
      * Returns whether or not the logging is enabled
+     *
      * @return True iff logging is enabled
      */
     public static boolean isLogEnabled() {
@@ -122,6 +146,7 @@ public final class Log {
 
     /**
      * Enable or disable logging
+     *
      * @param enabled True iff logging should enabled
      */
     public static void setLogEnabled(boolean enabled) {
@@ -130,6 +155,7 @@ public final class Log {
 
     /**
      * Returns whether or not writing logs to disk is enabled
+     *
      * @return True iff logging to disk is enabled
      */
     public static boolean isWriteToDiskEnabled() {
@@ -138,6 +164,7 @@ public final class Log {
 
     /**
      * Enable or disable logging to disk
+     *
      * @param enabled True iff logging to disk should enabled
      */
     public static void setWriteToDiskEnabled(boolean enabled) {

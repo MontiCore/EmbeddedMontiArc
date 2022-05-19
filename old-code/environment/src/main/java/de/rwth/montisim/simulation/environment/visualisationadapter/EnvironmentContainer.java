@@ -1,6 +1,6 @@
 /**
  * (c) https://github.com/MontiCore/monticore
- *
+ * <p>
  * The license generally applicable for this project
  * can be found under https://github.com/MontiCore/monticore.
  */
@@ -48,7 +48,7 @@ public class EnvironmentContainer {
         this.buildings = buildings;
         this.waterway = waterway;
         this.chargingStations = chargingStations;
-    }    
+    }
 
     // public Collection<IPhysicalVehicle> getVehicles(){
     //     return this.vehicles;
@@ -71,17 +71,25 @@ public class EnvironmentContainer {
         return this.streets;
     }
 
-    public Collection<Building> getBuildings() { return this.buildings; }
+    public Collection<Building> getBuildings() {
+        return this.buildings;
+    }
 
-    public Collection<House> getHouses() { return this.houses; }
+    public Collection<House> getHouses() {
+        return this.houses;
+    }
 
-    public Collection<EnvNode> getTrees() { return this.trees; }
+    public Collection<EnvNode> getTrees() {
+        return this.trees;
+    }
 
     public void setTrees(Collection<EnvNode> trees) {
         this.trees = trees;
     }
 
-    public EnvBounds getBounds() { return this.bounds; }
+    public EnvBounds getBounds() {
+        return this.bounds;
+    }
 
     public Vec3 getMidpoint() {
         return this.midPoint;

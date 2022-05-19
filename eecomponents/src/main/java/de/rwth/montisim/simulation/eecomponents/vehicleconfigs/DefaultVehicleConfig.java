@@ -35,63 +35,63 @@ public class DefaultVehicleConfig {
         this.properties.physics = rbPhysicsProperties;
 
         properties.addComponent(
-            new SensorProperties()
-            .setPhysicalValueName(TrueVelocity.VALUE_NAME)
-            .setName("TrueVelocitySensor")
-            .connectTo("DefaultBus")
+                new SensorProperties()
+                        .setPhysicalValueName(TrueVelocity.VALUE_NAME)
+                        .setName("TrueVelocitySensor")
+                        .connectTo("DefaultBus")
         );
 
         properties.addComponent(
-            new SensorProperties()
-            .setPhysicalValueName(TruePosition.VALUE_NAME)
-            .setName("TruePositionSensor")
-            .connectTo("DefaultBus")
+                new SensorProperties()
+                        .setPhysicalValueName(TruePosition.VALUE_NAME)
+                        .setName("TruePositionSensor")
+                        .connectTo("DefaultBus")
         );
 
         properties.addComponent(
-            new SensorProperties()
-            .setPhysicalValueName(TrueCompass.VALUE_NAME)
-            .setName("TrueCompassSensor")
-            .connectTo("DefaultBus")
+                new SensorProperties()
+                        .setPhysicalValueName(TrueCompass.VALUE_NAME)
+                        .setName("TrueCompassSensor")
+                        .connectTo("DefaultBus")
         );
 
         properties.addComponent(
-            new SensorProperties()
-            .setPhysicalValueName(BatteryLevel.VALUE_NAME)
-            .setName("BatterySensor")
-            .connectTo("DefaultBus")
+                new SensorProperties()
+                        .setPhysicalValueName(BatteryLevel.VALUE_NAME)
+                        .setName("BatterySensor")
+                        .connectTo("DefaultBus")
         );
 
         properties.addComponent(
-            new NavigationProperties()
-            .connectTo("DefaultBus")
+                new NavigationProperties()
+                        .connectTo("DefaultBus")
         );
 
         properties.addComponent(
-            new LidarProperties()
-            .connectTo("DefaultBus")
+                new LidarProperties()
+                        .connectTo("DefaultBus")
         );
 
         properties.addComponent(
-            new SpeedLimitServiceProperties()
-                .connectTo("DefaultBus")
+                new SpeedLimitServiceProperties()
+                        .connectTo("DefaultBus")
         );
 
         properties.addComponent(
-            ConstantBusProperties.instantBus().setName("DefaultBus")
+                ConstantBusProperties.instantBus().setName("DefaultBus")
         );
     }
 
     public static DefaultVehicleConfig withJavaAutopilot() {
         DefaultVehicleConfig config = new DefaultVehicleConfig();
         double maxForce = config.electricalPTProperties.motorProperties.motor_peek_torque *
-            config.electricalPTProperties.transmission_ratio * 2 /
-            config.properties.wheels.diameter;
-            config.properties.addComponent(
-                new JavaAutopilotProperties(maxForce/config.properties.body.mass)
-                .setName("TestAutopilot")
-                .connectTo("DefaultBus")
-            );
+                config.electricalPTProperties.transmission_ratio * 2 /
+                config.properties.wheels.diameter;
+        config.properties.addComponent(
+                new JavaAutopilotProperties(maxForce / config.properties.body.mass)
+                        .setName("TestAutopilot")
+                        .connectTo("DefaultBus")
+        );
         return config;
     }
 
@@ -100,7 +100,7 @@ public class DefaultVehicleConfig {
         return this;
     }
 
-    public DefaultVehicleConfig setName(String vehicleName){
+    public DefaultVehicleConfig setName(String vehicleName) {
         this.properties.vehicleName = vehicleName;
         return this;
     }

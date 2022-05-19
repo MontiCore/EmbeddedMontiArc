@@ -1,6 +1,6 @@
 /**
  * (c) https://github.com/MontiCore/monticore
- *
+ * <p>
  * The license generally applicable for this project
  * can be found under https://github.com/MontiCore/monticore.
  */
@@ -32,6 +32,7 @@ import java.time.Instant;
 import java.time.temporal.ChronoUnit;
 import java.util.*;
 import java.util.concurrent.atomic.AtomicLong;
+
 import static simulation.network.NetworkDiscreteEventId.NETWORK_EVENT_ID_APP_UPDATE;
 import static simulation.network.NetworkDiscreteEventId.NETWORK_EVENT_ID_SELF_PERIODIC;
 
@@ -79,7 +80,6 @@ public class TaskAppVelocityControl extends NetworkTask {
     public final static int VELOCITY_CONTROL_PRIORITY_COMMON_MAX_TRAJECTORY_SIZE = 25;
 
 
-
     /** Value that determines how large the distance is in which other vehicles should be checked */
     public final static double VELOCITY_CONTROL_AVOIDANCE_MAX_VEHICLE_DISTANCE = 100.0;
 
@@ -121,7 +121,6 @@ public class TaskAppVelocityControl extends NetworkTask {
 
     /** Value that determines how many trajectory nodes are at most processed */
     public final static int VELOCITY_CONTROL_AVOIDANCE_COMMON_MAX_TRAJECTORY_SIZE = 25;
-
 
 
     /** Map that stores received information. Key is IPv6 address, value is pair of last receive time and list of status floats */
@@ -183,7 +182,7 @@ public class TaskAppVelocityControl extends NetworkTask {
             case NETWORK_EVENT_ID_APP_UPDATE: {
                 // Skip if message is not status or trajectory message
                 if (event.getEventMessage().getTransportPortDestNumber() != TaskAppBeacon.APP_BEACON_PORT_NUMBER_STATUS_MSG &&
-                    event.getEventMessage().getTransportPortDestNumber() != TaskAppBeacon.APP_BEACON_PORT_NUMBER_TRAJECTORY_MSG) {
+                        event.getEventMessage().getTransportPortDestNumber() != TaskAppBeacon.APP_BEACON_PORT_NUMBER_TRAJECTORY_MSG) {
                     return;
                 }
 
@@ -213,7 +212,7 @@ public class TaskAppVelocityControl extends NetworkTask {
                         Map.Entry<Long, List<Float>> mapEntry = new AbstractMap.SimpleEntry<>(Instant.EPOCH.until(event.getEventMessage().getSimReceiveTime(), ChronoUnit.NANOS), floatValues);
                         statusInfoMap.put(event.getEventMessage().getNetworkIpv6Sender(), mapEntry);
 
-                    // Put trajectory message in map
+                        // Put trajectory message in map
                     } else if (event.getEventMessage().getTransportPortDestNumber() == TaskAppBeacon.APP_BEACON_PORT_NUMBER_TRAJECTORY_MSG) {
                         // Insert or update map entry
                         Map.Entry<Long, List<Float>> mapEntry = new AbstractMap.SimpleEntry<>(Instant.EPOCH.until(event.getEventMessage().getSimReceiveTime(), ChronoUnit.NANOS), floatValues);
@@ -225,7 +224,8 @@ public class TaskAppVelocityControl extends NetworkTask {
                         periodicUpdateScheduled = true;
                         NetworkMessage messageTaskName = new NetworkMessage();
                         messageTaskName.setMessageContent(getTaskId().name());
-                        NetworkDiscreteEvent newEvent = new NetworkDiscreteEvent(NetworkUtils.simTimeWithDelay(Duration.ofMillis(500L)), NETWORK_EVENT_ID_SELF_PERIODIC, networkNode, messageTaskName);                       NetworkSimulator.getInstance().scheduleEvent(newEvent);
+                        NetworkDiscreteEvent newEvent = new NetworkDiscreteEvent(NetworkUtils.simTimeWithDelay(Duration.ofMillis(500L)), NETWORK_EVENT_ID_SELF_PERIODIC, networkNode, messageTaskName);
+                        NetworkSimulator.getInstance().scheduleEvent(newEvent);
                     }
 
                     // Perform computation for velocity control
@@ -253,7 +253,7 @@ public class TaskAppVelocityControl extends NetworkTask {
             Optional<AbstractSensor> velocitySensor = vehicle.getSensorByType(BusEntry.SENSOR_VELOCITY);
 
             if (velocitySensor.isPresent()) {
-                currentVelocity = (Double)(velocitySensor.get().getValue());
+                currentVelocity = (Double) (velocitySensor.get().getValue());
             } else {
                 Log.warning("TaskAppVelocityControl - performVelocityControl: Vehicle has missing velocity sensor, skipped! Vehicle: " + vehicle);
                 return;
@@ -367,7 +367,7 @@ public class TaskAppVelocityControl extends NetworkTask {
             if (i == nextIndex) {
                 travelDistance += trajectory.get(nextIndex).getPosition().getDistance(frontGps);
             } else {
-                travelDistance += trajectory.get(i).getPosition().getDistance(trajectory.get(i-1).getPosition());
+                travelDistance += trajectory.get(i).getPosition().getDistance(trajectory.get(i - 1).getPosition());
             }
 
             // Skip non intersection nodes
@@ -378,7 +378,7 @@ public class TaskAppVelocityControl extends NetworkTask {
             long intersectionNodeOsmId = trajectory.get(i).getOsmId();
 
             // If travel distance to next intersection node is still too big, this can be skipped
-            int currentSector = (int)(travelDistance / VELOCITY_CONTROL_PRIORITY_SECTOR_DISTANCE);
+            int currentSector = (int) (travelDistance / VELOCITY_CONTROL_PRIORITY_SECTOR_DISTANCE);
             if (currentSector > VELOCITY_CONTROL_PRIORITY_MAX_SECTOR_AMOUNT) {
                 priorityMap.clear();
                 return Double.MAX_VALUE;
@@ -431,9 +431,9 @@ public class TaskAppVelocityControl extends NetworkTask {
             // Determine the neighbor node list for vehicle
             List<Float> trajectoryPositions = Collections.synchronizedList(new LinkedList<>());
             for (int j = nextIndex; j < Math.min(j + VELOCITY_CONTROL_PRIORITY_COMMON_MAX_TRAJECTORY_SIZE, trajectory.size()); ++j) {
-                trajectoryPositions.add((float)(trajectory.get(j).getPosition().getEntry(0)));
-                trajectoryPositions.add((float)(trajectory.get(j).getPosition().getEntry(1)));
-                trajectoryPositions.add((float)(trajectory.get(j).getPosition().getEntry(2)));
+                trajectoryPositions.add((float) (trajectory.get(j).getPosition().getEntry(0)));
+                trajectoryPositions.add((float) (trajectory.get(j).getPosition().getEntry(1)));
+                trajectoryPositions.add((float) (trajectory.get(j).getPosition().getEntry(2)));
             }
 
             int neighborPositionListIndex = findNeighborNodeListForVehicle(neighborPositionLists, trajectoryPositions, originalIntersectionPos, frontGps, compass);
@@ -534,12 +534,12 @@ public class TaskAppVelocityControl extends NetworkTask {
                                 double otherTravelDistance = 0.0;
 
                                 for (int j = 1; j < otherTravelPositions.size(); ++j) {
-                                    otherTravelDistance += otherTravelPositions.get(j).getDistance(otherTravelPositions.get(j-1));
+                                    otherTravelDistance += otherTravelPositions.get(j).getDistance(otherTravelPositions.get(j - 1));
                                 }
 
                                 // From travel distance compute sector counts and compare them with each other
                                 // If vehicle on the right is too far away, it does not get priority
-                                int otherSector = (int)(otherTravelDistance / VELOCITY_CONTROL_PRIORITY_SECTOR_DISTANCE);
+                                int otherSector = (int) (otherTravelDistance / VELOCITY_CONTROL_PRIORITY_SECTOR_DISTANCE);
 
                                 if (otherSector - currentSector <= VELOCITY_CONTROL_PRIORITY_MAX_SECTOR_DIFFERENCE) {
                                     newPriorityEntries.add(statusMapEntry.getKey());
@@ -880,7 +880,7 @@ public class TaskAppVelocityControl extends NetworkTask {
 
         // If collision distance is found, compute velocity value
         if (minCollisionDistance <= maxCheckDistance) {
-            int sectorNumber = Math.max(1, (int)(minCollisionDistance / VELOCITY_CONTROL_AVOIDANCE_SECTOR_DISTANCE));
+            int sectorNumber = Math.max(1, (int) (minCollisionDistance / VELOCITY_CONTROL_AVOIDANCE_SECTOR_DISTANCE));
 
             // Compute sector zero with shorter distance
             if (minCollisionDistance <= VELOCITY_CONTROL_AVOIDANCE_ZERO_SECTOR_DISTANCE) {
@@ -913,9 +913,9 @@ public class TaskAppVelocityControl extends NetworkTask {
         Vec3 compassVectorOrthogonal = rotationMatrixOrthogonal.operate(compassVector);
 
         // Change vectors to 2D vectors, in error case return empty list and log warning
-        Vec3 compassVector2D = compassVector.getSubVector(0,2);
-        Vec3 compassVectorOrthogonal2D = compassVectorOrthogonal.getSubVector(0,2);
-        Vec3 gps2D = gps.getSubVector(0,2);
+        Vec3 compassVector2D = compassVector.getSubVector(0, 2);
+        Vec3 compassVectorOrthogonal2D = compassVectorOrthogonal.getSubVector(0, 2);
+        Vec3 gps2D = gps.getSubVector(0, 2);
 
         if (compassVector2D.getNorm() <= 0.0 || compassVectorOrthogonal2D.getNorm() <= 0.0) {
             Log.warning("TaskAppVelocityControl - compute2DBoundaryVectors: Compass vector has zero norm, no boundary was computed!");
@@ -977,7 +977,7 @@ public class TaskAppVelocityControl extends NetworkTask {
             if (distanceOnTrajectory + currentToNextLength < travelDistance) {
                 distanceOnTrajectory += currentToNextLength;
 
-            // When norm is not zero, then compute correct partial values between positions
+                // When norm is not zero, then compute correct partial values between positions
             } else if (currentToNextLength > 0.0 && travelDistance > distanceOnTrajectory) {
                 double distanceFactor = (travelDistance - distanceOnTrajectory) / currentToNextLength;
                 Vec3 gpsResult = positionList.get(i).add(currentToNext.mapMultiply(distanceFactor));

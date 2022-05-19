@@ -18,7 +18,7 @@ public class ElectricalPowerTrain extends PowerTrain {
 
         battery = properties.batteryProperties.build();
         e_motor = properties.motorProperties.build();
-        
+
         this.e_motor.setBattery(this.battery);
         this.motor = this.e_motor;
     }
@@ -34,9 +34,9 @@ public class ElectricalPowerTrain extends PowerTrain {
     }
 
     @Override
-    public void registerPhysicalValues(PhysicalValueRegistry physicalValues){
+    public void registerPhysicalValues(PhysicalValueRegistry physicalValues) {
         super.registerPhysicalValues(physicalValues);
         physicalValues.addPhysicalValue(new BatteryLevel(battery));
     }
-    
+
 }

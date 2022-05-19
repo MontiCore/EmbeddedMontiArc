@@ -24,7 +24,7 @@ public class TestCompProperties extends EEComponentProperties {
         this.name = name;
     }
 
-    public TestCompProperties addPort(PortInformation inf){
+    public TestCompProperties addPort(PortInformation inf) {
         ports.add(inf);
         return this;
     }

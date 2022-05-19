@@ -1,6 +1,6 @@
 /**
  * (c) https://github.com/MontiCore/monticore
- *
+ * <p>
  * The license generally applicable for this project
  * can be found under https://github.com/MontiCore/monticore.
  */
@@ -23,6 +23,7 @@ import de.rwth.montisim.simulation.environment.util.Chargeable;
 import de.rwth.montisim.simulation.environment.util.ChargingStationNavigator;
 import de.rwth.montisim.simulation.environment.util.IBattery;
 import de.rwth.montisim.simulation.environment.util.VehicleType;
+
 import static de.rwth.montisim.commons.controller.commons.BusEntry.*;
 
 import java.awt.*;
@@ -88,21 +89,21 @@ public class Vehicle implements SimulationLoopExecutable, Chargeable {
     public static final double VEHICLE_DEFAULT_GEAR_RATE = 1;
 
 
-    public void updateBattery(){
+    public void updateBattery() {
         batteryProblem = false;
 
         if (!battery.isPresent()) return;
-        
+
         IBattery bat = battery.get();
 
-        
+
         // check if connection to ChargingStation is established
-        if (bat.getChargingStationConnectionStatus() == true ) {
-            
+        if (bat.getChargingStationConnectionStatus() == true) {
+
             // dummy placeholders for ChargingStation specifications
             double ChargingStationVoltage = 100;
             double ChargingStationAmpere = 1;
-            
+
             // depending on the ChargingStation implementation, 
             // they also can invoke this function themselves
             //      here, for demonstration purposes, we set them to some dummy values
@@ -111,22 +112,21 @@ public class Vehicle implements SimulationLoopExecutable, Chargeable {
             // leave charging initiation to ChargingStation, not to the Vehicle
             //bat.charge();
         }
-        
+
         // check vehicle type,
         //      set consumption calculation based on the vehicle type
         if (physicalVehicle instanceof MassPointPhysicalVehicle)
             bat.setConsumptionMethod(IBattery.ConsumptionMethod.CONSUMPTION_MASS_VELOCITY);
         else
             bat.setConsumptionMethod(IBattery.ConsumptionMethod.CONSUMPTION_THROTTLE_GEAR);
-        
+
         try {
             bat.discharge();
-        }
-        catch (IllegalArgumentException e) {
+        } catch (IllegalArgumentException e) {
             // this flag would cause motor/throttle to be updated to zero,
             //      exactly at the end of this function
             batteryProblem = true;
-        } 
+        }
 
         /**
          * Check Battery state and move to the next Chargingstation if needed
@@ -136,11 +136,11 @@ public class Vehicle implements SimulationLoopExecutable, Chargeable {
             try {
                 List<Double> x1;
                 List<Double> y1;
-                x1 = ((List<Double>)getSensorByType(PLANNED_TRAJECTORY_X).get().getValue());
-                y1 = ((List<Double>)getSensorByType(PLANNED_TRAJECTORY_Y).get().getValue());
-                lastdestination = new ControllerNodeImpl(new Vec3( x1.get(x1.size()-1), y1.get(y1.size()-1), 0), ChargingStationNavigator.getNearestOsmNodeFrom(
-                        new Vec3(new double[]{x1.get(x1.size()-1), y1.get(y1.size()-1),0})));
-                lastdestinationrealvector = new Vec3(new double[]{x1.get(x1.size()-1), y1.get(y1.size()-1)});
+                x1 = ((List<Double>) getSensorByType(PLANNED_TRAJECTORY_X).get().getValue());
+                y1 = ((List<Double>) getSensorByType(PLANNED_TRAJECTORY_Y).get().getValue());
+                lastdestination = new ControllerNodeImpl(new Vec3(x1.get(x1.size() - 1), y1.get(y1.size() - 1), 0), ChargingStationNavigator.getNearestOsmNodeFrom(
+                        new Vec3(new double[]{x1.get(x1.size() - 1), y1.get(y1.size() - 1), 0})));
+                lastdestinationrealvector = new Vec3(new double[]{x1.get(x1.size() - 1), y1.get(y1.size() - 1)});
                 long nearestcharg = ChargingStationNavigator.getNearestChargingStation(
                         getGlobalId(),
                         ChargingStationNavigator.getNearestOsmNodeFrom(this.physicalVehicle.getPosition())

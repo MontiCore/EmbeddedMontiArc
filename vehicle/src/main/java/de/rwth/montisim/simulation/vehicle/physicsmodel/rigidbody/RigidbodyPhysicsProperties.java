@@ -9,7 +9,7 @@ import de.rwth.montisim.simulation.vehicle.powertrain.PowerTrain;
 
 @Typed(RigidbodyPhysicsProperties.TYPE)
 public class RigidbodyPhysicsProperties extends PhysicsProperties {
-	public final static String TYPE = "rigidbody";
+    public final static String TYPE = "rigidbody";
 
     @Override
     public PhysicsType getPhysicsType() {

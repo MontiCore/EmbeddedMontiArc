@@ -1,6 +1,6 @@
 /**
  * (c) https://github.com/MontiCore/monticore
- *
+ * <p>
  * The license generally applicable for this project
  * can be found under https://github.com/MontiCore/monticore.
  */
@@ -54,7 +54,7 @@ public class ChargingStationNavigator {
 
         String serverHost = System.getenv("SIM_SERVER");
         String serverPort = System.getenv("SIM_PORT");
-        if (serverHost== null || serverPort == null || serverHost.equals("") || serverPort.equals("")) {
+        if (serverHost == null || serverPort == null || serverHost.equals("") || serverPort.equals("")) {
             return result;
         }
 
@@ -71,7 +71,7 @@ public class ChargingStationNavigator {
 
         try {
             result = Long.valueOf(resp);
-        } catch (NumberFormatException ignore){
+        } catch (NumberFormatException ignore) {
             Log.info("Unexpected server response: " + resp + ". Expect a number.");
         }
         return result;
@@ -117,26 +117,27 @@ public class ChargingStationNavigator {
 
         throw new Exception("OsmNode " + osmID + " not found in current map");
     }
+
     public static long getNearestOsmNodeFrom(Vec3 realVector) throws Exception {
         long nearest = 0;
         double bestDist = Double.MAX_VALUE;
         Graph g = new Graph(
                 World.getInstance().getControllerMap().getAdjacencies(), true);
         for (Vertex v : g.getVertices()) {
-            double dist =  v.getPosition().getDistance(realVector);
-            if (dist < bestDist){
+            double dist = v.getPosition().getDistance(realVector);
+            if (dist < bestDist) {
                 bestDist = dist;
                 nearest = v.getOsmId();
             }
         }
 
-        if (nearest != 0){
+        if (nearest != 0) {
             return nearest;
         }
         throw new Exception("Realvector " + realVector.toString() + " not found in current map");
     }
 
-    public static ChargingStation getNearestCS(){
+    public static ChargingStation getNearestCS() {
         return nearestCS;
     }
 }

@@ -1,6 +1,6 @@
 /**
  * (c) https://github.com/MontiCore/monticore
- *
+ * <p>
  * The license generally applicable for this project
  * can be found under https://github.com/MontiCore/monticore.
  */
@@ -11,14 +11,14 @@ public enum TrafficSignalStatus {
     GREEN("GREEN"),
     YELLOW("YELLOW");
 
-	private String name;
+    private String name;
 
-	private TrafficSignalStatus(String name) {
-		this.name = name;
-	}
+    private TrafficSignalStatus(String name) {
+        this.name = name;
+    }
 
-	@Override
-	public String toString() {
-		return this.name;
-	}
+    @Override
+    public String toString() {
+        return this.name;
+    }
 }

@@ -1,6 +1,6 @@
 /**
  * (c) https://github.com/MontiCore/monticore
- *
+ * <p>
  * The license generally applicable for this project
  * can be found under https://github.com/MontiCore/monticore.
  */
@@ -10,6 +10,7 @@ import de.rwth.montisim.commons.simulation.PhysicalObject;
 import de.rwth.montisim.commons.simulation.PhysicalObjectType;
 import de.rwth.montisim.simulation.util.Log;
 import de.rwth.montisim.simulation.util.MathHelper;
+
 import java.math.BigInteger;
 import java.security.MessageDigest;
 import java.time.Duration;
@@ -231,9 +232,9 @@ public class NetworkNode implements NetworkEventHandler {
 
         // Compute random start time for tasks with network settings
         Duration diffTime = Duration.between(NetworkSimulator.getInstance().getNetworkSettings().getMinTaskStartTime(), NetworkSimulator.getInstance().getNetworkSettings().getMaxTaskStartTime());
-        long randomOffset = MathHelper.randomLong(0 , diffTime.toNanos());
+        long randomOffset = MathHelper.randomLong(0, diffTime.toNanos());
         Instant startTime = NetworkSimulator.getInstance().getNetworkSettings().getMinTaskStartTime().plusNanos(randomOffset);
-         	
+
         // Create event for initial tasks with random start time and empty message
         NetworkMessage message = new NetworkMessage();
         NetworkDiscreteEvent event = new NetworkDiscreteEvent(startTime, NetworkDiscreteEventId.NETWORK_EVENT_ID_RANDOM_START_INITIALIZE, this, message);

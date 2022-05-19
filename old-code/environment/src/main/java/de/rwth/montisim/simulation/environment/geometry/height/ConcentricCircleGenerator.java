@@ -1,6 +1,6 @@
 /**
  * (c) https://github.com/MontiCore/monticore
- *
+ * <p>
  * The license generally applicable for this project
  * can be found under https://github.com/MontiCore/monticore.
  */
@@ -11,6 +11,7 @@ import de.rwth.montisim.commons.utils.Vec3;
 import org.apache.commons.math3.distribution.NormalDistribution;
 import de.rwth.montisim.simulation.environment.osm.ApproximateConverter;
 import de.rwth.montisim.simulation.environment.visualisationadapter.EnvBounds;
+
 import java.util.ArrayList;
 
 /**
@@ -25,7 +26,7 @@ import java.util.ArrayList;
  * form all points within the first circle share the same height. Thus no interpolation is computed
  * in the first circle
  */
-public class ConcentricCircleGenerator implements HeightGenerator{
+public class ConcentricCircleGenerator implements HeightGenerator {
     private static ConcentricCircleGenerator instance;
 
     //for testing purposes
@@ -87,7 +88,6 @@ public class ConcentricCircleGenerator implements HeightGenerator{
     }
 
 
-
     private ConcentricCircleGenerator(EnvBounds bounds, double intervalLength, boolean fixedSlopes) {
         this.bounds = bounds;
         this.length = intervalLength;
@@ -106,28 +106,28 @@ public class ConcentricCircleGenerator implements HeightGenerator{
         //add 1 to ensure last interval is constructed
         numberOfIntervals = (int) (Math.ceil(midVec2.distance(minPoint) / intervalLength)) + 1;
 
-        this.midVec3 = new Vec3(midVec2,fixedSlopes ? fixedStartGround : Math.random());
+        this.midVec3 = new Vec3(midVec2, fixedSlopes ? fixedStartGround : Math.random());
     }
 
     private void initIntervals() {
         this.circles = new ArrayList<>();
 
         //ensure there is no height difference between midpoint and first circle
-        this.circles.add(0,new ConcentricCircle(0.d, this.midVec3.z));
+        this.circles.add(0, new ConcentricCircle(0.d, this.midVec3.z));
 
         //ensure first circle has height of midpoint
-        this.circles.add(1,new ConcentricCircle(fixedSlopes ? fixedSlope : normalDist.sample(), this.midVec3.z));
+        this.circles.add(1, new ConcentricCircle(fixedSlopes ? fixedSlope : normalDist.sample(), this.midVec3.z));
 
-        for(int i = 2; i < numberOfIntervals; i++) {
-            double slope = circles.get(i-1).slope;
-            double lastHeight = circles.get(i-1).height;
+        for (int i = 2; i < numberOfIntervals; i++) {
+            double slope = circles.get(i - 1).slope;
+            double lastHeight = circles.get(i - 1).height;
 
             double difference = slope * this.length;
 
             double newHeight = lastHeight + difference;
 
             //check for negative heights
-            if(newHeight < 0) {
+            if (newHeight < 0) {
                 difference *= -1;
                 circles.get(i - 1).slope *= -1;
                 newHeight = lastHeight + difference;
@@ -137,19 +137,19 @@ public class ConcentricCircleGenerator implements HeightGenerator{
 
 
             //if height is 0 set slope to a positive value
-            if(circles.get(i -1).height != 0 && !fixedSlopes) {
+            if (circles.get(i - 1).height != 0 && !fixedSlopes) {
                 //change sign of slope with a probability of ~0.25
                 boolean slopeSwitch = Math.random() > 0.75;
 
                 //get sign of last slope (set to 1 if last slope is 0
-                double signOfLastSlope =  Math.signum(circles.get(i -1).slope) != 0 ? Math.signum(circles.get(i -1).slope) : 1;
+                double signOfLastSlope = Math.signum(circles.get(i - 1).slope) != 0 ? Math.signum(circles.get(i - 1).slope) : 1;
 
                 //switch sign if slopeSwitch is true
                 double newSign = slopeSwitch ? signOfLastSlope * -1 : signOfLastSlope;
                 newSlope *= newSign;
             }
 
-            this.circles.add(i,new ConcentricCircle(newSlope, newHeight));
+            this.circles.add(i, new ConcentricCircle(newSlope, newHeight));
 
         }
     }
@@ -157,8 +157,8 @@ public class ConcentricCircleGenerator implements HeightGenerator{
     @Override
     public double getGround(double x, double y) {
         int index = getCircleIndex(x, y);
-        if(index >= this.circles.size()) {
-            if(index - this.circles.size() - 1 > 10) {
+        if (index >= this.circles.size()) {
+            if (index - this.circles.size() - 1 > 10) {
                 throw new IllegalArgumentException("The coordinates aren't part of the environment");
             } else {
                 index = this.circles.size() - 1;
@@ -175,8 +175,8 @@ public class ConcentricCircleGenerator implements HeightGenerator{
     @Override
     public double[][] toHeightMap() {
         double[][] result = new double[3][this.circles.size()];
-        for(int i = 0; i < this.circles.size(); i++) {
-         ConcentricCircle circle = circles.get(i);
+        for (int i = 0; i < this.circles.size(); i++) {
+            ConcentricCircle circle = circles.get(i);
             result[0][i] = circle.height;
             result[1][i] = circle.slope;
             result[2][i] = this.length;
@@ -186,12 +186,12 @@ public class ConcentricCircleGenerator implements HeightGenerator{
 
     @Override
     public Vec2 getHeightMapMinPoint() {
-        return new Vec2(0,0);
+        return new Vec2(0, 0);
     }
 
     @Override
     public Vec2 getHeightMapMaxPoint() {
-        return new Vec2(2,circles.size());
+        return new Vec2(2, circles.size());
     }
 
     @Override

@@ -1,26 +1,26 @@
 /**
  * (c) https://github.com/MontiCore/monticore
- *
+ * <p>
  * The license generally applicable for this project
  * can be found under https://github.com/MontiCore/monticore.
  */
 package de.rwth.montisim.simulation.environment.weather;
 
 
-import static  org.junit.Assert.*;
+import static org.junit.Assert.*;
+
 import org.junit.*;
 
 import java.time.Duration;
 
 
-
 /**
  * Created by lukas on 02.02.17.
  */
-public class WeatherTest  {
+public class WeatherTest {
 
 
-	@Test
+    @Test
     public void testApp() throws Exception {
         Weather w = new Weather(new WeatherSettings(10l));
 

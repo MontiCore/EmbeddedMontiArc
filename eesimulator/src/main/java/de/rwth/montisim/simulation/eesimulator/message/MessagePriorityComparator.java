@@ -12,19 +12,20 @@ import de.rwth.montisim.simulation.eesimulator.EESystem;
 public class MessagePriorityComparator implements Comparator<Message>, BuildObject {
     public static final String CONTEXT_KEY = "msg_prio_comparator";
     final EESystem eesystem;
-    public MessagePriorityComparator(EESystem eesystem){
+
+    public MessagePriorityComparator(EESystem eesystem) {
         this.eesystem = eesystem;
     }
 
     public int compare(Message a, Message b) {
         int r = Integer.compare(
-            a.msgInfo.priority,
-            b.msgInfo.priority
+                a.msgInfo.priority,
+                b.msgInfo.priority
         );
         if (r != 0) return r;
         return Integer.compare(
-            eesystem.getComponentPriority(b.msgInfo.sender.id),
-            eesystem.getComponentPriority(a.msgInfo.sender.id)
+                eesystem.getComponentPriority(b.msgInfo.sender.id),
+                eesystem.getComponentPriority(a.msgInfo.sender.id)
         );
     }
 

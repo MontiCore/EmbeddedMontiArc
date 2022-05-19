@@ -16,7 +16,7 @@ import java.util.List;
 
 public class ServerRequest {
 
-    public static String sendChargingStationRequest(String host, String port, String vehicleGlobalId, long osmID){
+    public static String sendChargingStationRequest(String host, String port, String vehicleGlobalId, long osmID) {
         CloseableHttpClient client = HttpClients.createDefault();
         String uri = String.format(
                 "http://%s:%s/vehicle/%s/navigate-to-charging-station", host, port, vehicleGlobalId);

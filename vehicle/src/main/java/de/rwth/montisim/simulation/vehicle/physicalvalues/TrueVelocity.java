@@ -12,21 +12,23 @@ import de.rwth.montisim.commons.utils.IPM;
 public class TrueVelocity extends PhysicalValueDouble {
     public static final String VALUE_NAME = "true_velocity";
     transient final DynamicObject object;
+
     public TrueVelocity(DynamicObject object) {
         super(VALUE_NAME);
         this.object = object;
     }
-    
+
     @Override
-    public Object get(){
+    public Object get() {
         // Project the vehicle velocity on its front axis (+X)
         // the +X axis is incidentally the first column of the rotation matrix
         this.lastValue = this.value;
         this.value = IPM.dot(object.velocity, object.rotation.col1) * 3.6;
         return Double.valueOf(this.value);
     }
+
     @Override
-    public void set(Object value){
+    public void set(Object value) {
         // Cannot change the velocity this way
     }
 }

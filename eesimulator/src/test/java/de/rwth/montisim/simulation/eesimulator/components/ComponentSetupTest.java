@@ -39,7 +39,7 @@ public class ComponentSetupTest {
 
         c1.addPort(PortInformation.newOptionalInputDataPort("m1", BasicType.INT, true));
         c1.addPort(PortInformation.newOptionalInputDataPort("m2", BasicType.DOUBLE, true));
-        
+
         c2.addPort(PortInformation.newOptionalInputDataPort("m1", BasicType.INT, true));
         c2.addPort(PortInformation.newOptionalInputDataPort("m3", BasicType.INT, true));
         c2.addPort(PortInformation.newOptionalOutputDataPort("m4", BasicType.DOUBLE));
@@ -60,7 +60,7 @@ public class ComponentSetupTest {
         // Validate Routing
         HashMap<MessageInformation, HashSet<EEComponent>> c1MsgTargets = new HashMap<>();
         assertContent(c1.msgRoutingTable, c1MsgTargets);
-        
+
         HashSet<EEComponent> busTarget = new HashSet<>();
         busTarget.add(bus);
 
@@ -80,7 +80,7 @@ public class ComponentSetupTest {
         m1Targets.add(c1);
         m1Targets.add(c2);
         busTargets.put(c3.getMsgInfo("m1"), m1Targets);
-        
+
         HashSet<EEComponent> m2Targets = new HashSet<>();
         m2Targets.add(c1);
         busTargets.put(c3.getMsgInfo("m2"), m2Targets);
@@ -155,7 +155,7 @@ public class ComponentSetupTest {
         c3.addPort(PortInformation.newOptionalInputDataPort("m7", BasicType.INT, true));
         c6.addPort(PortInformation.newOptionalInputDataPort("m7", BasicType.INT, true));
         MessageInformation m7 = c1.getMsgInfo("m7");
-        
+
         // Connect components and bridges
         c1.connectToComponent(b1);
         c1.connectToComponent(b5);
@@ -218,7 +218,7 @@ public class ComponentSetupTest {
         c1MsgTargets.put(m5, targetB1);
         c1MsgTargets.put(m7, targetB1B5);
         assertContent(c1.msgRoutingTable, c1MsgTargets);
-        
+
         // C2, C3, C4, C5, C6
         assertContent(c2.msgRoutingTable, new HashMap<>());
         assertContent(c3.msgRoutingTable, new HashMap<>());
@@ -298,7 +298,7 @@ public class ComponentSetupTest {
         assertContent(b5.msgRoutingTable, b5Targets);
 
         // Validate Routing of Parallel Setup
-        
+
         // Components
         HashSet<EEComponent> targetBA = new HashSet<>();
         targetBA.add(bA);
@@ -310,7 +310,7 @@ public class ComponentSetupTest {
         HashMap<MessageInformation, HashSet<EEComponent>> cBMsgTargets = new HashMap<>();
         cBMsgTargets.put(mB, targetBA);
         assertContent(cB.msgRoutingTable, cBMsgTargets);
-        
+
         // Bus
 
         HashSet<EEComponent> targetCA = new HashSet<>();
@@ -327,16 +327,16 @@ public class ComponentSetupTest {
         //TODO Test message transmission?
     }
 
-    private void assertContent(HashMap<MessageInformation, List<EEComponent>> map, HashMap<MessageInformation, HashSet<EEComponent>> reference){
+    private void assertContent(HashMap<MessageInformation, List<EEComponent>> map, HashMap<MessageInformation, HashSet<EEComponent>> reference) {
         Assert.assertEquals(reference.size(), map.size());
-        for (HashMap.Entry<MessageInformation, List<EEComponent>> e : map.entrySet()){
+        for (HashMap.Entry<MessageInformation, List<EEComponent>> e : map.entrySet()) {
             HashSet<EEComponent> s = reference.get(e.getKey());
             List<EEComponent> l = e.getValue();
             if (s == null && l == null) continue;
             Assert.assertNotNull(s);
             Assert.assertNotNull(l);
             Assert.assertEquals(s.size(), l.size());
-            for (EEComponent t : l){
+            for (EEComponent t : l) {
                 Assert.assertTrue("Object of list not in reference.", s.contains(t));
             }
         }

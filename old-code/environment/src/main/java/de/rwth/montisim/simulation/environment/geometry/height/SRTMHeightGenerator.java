@@ -1,6 +1,6 @@
 /**
  * (c) https://github.com/MontiCore/monticore
- *
+ * <p>
  * The license generally applicable for this project
  * can be found under https://github.com/MontiCore/monticore.
  */
@@ -43,8 +43,8 @@ public class SRTMHeightGenerator implements HeightGenerator {
         heightMap = getHeightMapFromFile(heightDataStream);
         try {
             heightDataStream.close();
+        } catch (IOException ex) {
         }
-        catch (IOException ex) { }
 
         // Read min lat/long from file name
         // This is done by pattern, so it can be dynamically done when using different file names
@@ -82,11 +82,11 @@ public class SRTMHeightGenerator implements HeightGenerator {
         double ceiledLat = getLatitudeFromRow(ceiledRow);
 
         // Bilinear interpolation (for more information see https://en.wikipedia.org/wiki/Bilinear_interpolation )
-        double denominator = (ceiledLong - flooredLong)*(ceiledLat - flooredLat);
-        double flooredFlooredFactor = ((ceiledLong - longitude)*(ceiledLat - latitude)) / denominator;
-        double ceiledFlooredFactor = ((longitude - flooredLong)*(ceiledLat - latitude)) / denominator;
-        double flooredCeiledFactor = ((ceiledLong - longitude)*(latitude - flooredLat)) / denominator;
-        double ceiledCeiledFactor = ((longitude - flooredLong)*(latitude - flooredLat)) / denominator;
+        double denominator = (ceiledLong - flooredLong) * (ceiledLat - flooredLat);
+        double flooredFlooredFactor = ((ceiledLong - longitude) * (ceiledLat - latitude)) / denominator;
+        double ceiledFlooredFactor = ((longitude - flooredLong) * (ceiledLat - latitude)) / denominator;
+        double flooredCeiledFactor = ((ceiledLong - longitude) * (latitude - flooredLat)) / denominator;
+        double ceiledCeiledFactor = ((longitude - flooredLong) * (latitude - flooredLat)) / denominator;
         return flooredFlooredFactor * heightMap[flooredRow][flooredColumn]
                 + ceiledFlooredFactor * heightMap[ceiledRow][flooredColumn]
                 + flooredCeiledFactor * heightMap[flooredRow][ceiledColumn]
@@ -143,8 +143,7 @@ public class SRTMHeightGenerator implements HeightGenerator {
 
                     // Construct height value
                     heightValue = (msb << Byte.SIZE) | lsb;
-                }
-                catch (IOException ex) {
+                } catch (IOException ex) {
                     Log.warning("Exception occurred while parsing height data file at row=" + row + ",column=" + column);
                     heightValue = 0.0;
                 }
@@ -162,7 +161,7 @@ public class SRTMHeightGenerator implements HeightGenerator {
     }
 
     private static int getColumnInHeightMap(double longitude, boolean useFloor) {
-        long longDeg = (long)longitude;
+        long longDeg = (long) longitude;
         if (longDeg != 6) { // For now only allow longitude degree of 6, because only one file is deployed
             // TODO: Remove this and adapt to multiple height files
             return -1;
@@ -170,18 +169,18 @@ public class SRTMHeightGenerator implements HeightGenerator {
 
         double unroundedColumn = (longitude - longDeg) / SRTM_RESOLUTION;
 
-        return (int)(useFloor ? Math.floor(unroundedColumn) : Math.ceil(unroundedColumn));
+        return (int) (useFloor ? Math.floor(unroundedColumn) : Math.ceil(unroundedColumn));
     }
 
     private static int getRowInHeightMap(double latitude, boolean useFloor) {
-        long latDeg = (long)latitude;
+        long latDeg = (long) latitude;
         if (latDeg != 50) { // For now only allow latitude degree of 50, because only one file is deployed
             // TODO: Remove this and adapt to multiple height files
             return -1;
         }
         double unroundedRow = (latitude - latDeg) / SRTM_RESOLUTION;
 
-        return (int)(useFloor ? Math.floor(unroundedRow) : Math.ceil(unroundedRow));
+        return (int) (useFloor ? Math.floor(unroundedRow) : Math.ceil(unroundedRow));
     }
 
     private double getLongitudeFromColumn(long column) {

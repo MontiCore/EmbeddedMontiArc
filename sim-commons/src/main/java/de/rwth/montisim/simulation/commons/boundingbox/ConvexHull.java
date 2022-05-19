@@ -18,22 +18,27 @@ public class ConvexHull implements BoundingBox {
      * The list of corner points of the hull. Used when testing a Separating Axis from an external axis.
      */
     public Vec3 corners[];
+
     @Override
     public boolean collidesWith(BoundingBox other) {
         return other.collidesWith(this);
     }
+
     @Override
     public boolean collidesWith(AABB other) {
         throw new UnimplementedCollisionException("ConvexHull-AABB");
     }
+
     @Override
     public boolean collidesWith(OBB other) {
         return CollisionTests.collides(other, this);
     }
+
     @Override
     public boolean collidesWith(ConvexHull other) {
         throw new IllegalStateException("Unimplemented ConvexHull-ConvexHull collision detection");
     }
+
     @Override
     public boolean collidesWith(Union other) {
         for (BoundingBox bb : other.boundingBoxes) {

@@ -17,12 +17,12 @@ public class ElectricMotorProperties {
     // TODO is the torque specified in the wiki page (450 N) the torque @ the motor
     // or @ the wheels? (guess: motor)
 
-    public ElectricMotor build(){
+    public ElectricMotor build() {
         switch (type) {
             case DEFAULT:
-            return new ElectricMotor(this);
+                return new ElectricMotor(this);
             default:
-            throw new IllegalArgumentException("Missing ElectricMotor Type: "+type);
+                throw new IllegalArgumentException("Missing ElectricMotor Type: " + type);
         }
     }
 }

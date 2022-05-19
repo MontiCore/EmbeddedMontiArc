@@ -34,7 +34,7 @@ public abstract class Goal {
      * @param status new status
      */
     protected void updateStatus(TaskStatus status) {
-        switch(properties.ltl_operator) {
+        switch (properties.ltl_operator) {
             case ALWAYS:
                 handleAlways(status);
                 break;
@@ -44,7 +44,8 @@ public abstract class Goal {
             case NEVER:
                 handleNever(status);
                 break;
-            default: throw new IllegalArgumentException("Specified LTL operator not supported.");
+            default:
+                throw new IllegalArgumentException("Specified LTL operator not supported.");
         }
     }
 

@@ -5,7 +5,7 @@ import java.util.List;
 
 public class Popper {
     protected transient List<Poppable> poppables = new ArrayList<>();
-    
+
     public void addPoppable(Poppable p) {
         poppables.add(p);
     }

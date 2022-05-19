@@ -2,5 +2,5 @@
 package de.rwth.montisim.simulation.environment.world;
 
 public class WorldSerialization {
-    
+
 }

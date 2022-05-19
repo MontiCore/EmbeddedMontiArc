@@ -32,45 +32,45 @@ public class TestVehicleConfig {
         this.properties.physics = rbPhysicsProperties;
 
         properties.addComponent(
-            new SensorProperties(
-                Duration.ofMillis(100), // Update rate
-                Duration.ofMillis(10), // Read time
-                false
-            )
-            .setPhysicalValueName(TrueVelocity.VALUE_NAME)
-            .setName("TrueVelocitySensor")
-            .connectTo("DefaultBus")
-        );
-        
-        properties.addComponent(
-            ConstantBusProperties.instantBus().setName("DefaultBus")
+                new SensorProperties(
+                        Duration.ofMillis(100), // Update rate
+                        Duration.ofMillis(10), // Read time
+                        false
+                )
+                        .setPhysicalValueName(TrueVelocity.VALUE_NAME)
+                        .setName("TrueVelocitySensor")
+                        .connectTo("DefaultBus")
         );
 
-        
+        properties.addComponent(
+                ConstantBusProperties.instantBus().setName("DefaultBus")
+        );
+
+
     }
 
-    static public TestVehicleConfig newCircleAutopilotConfig(double maxSpeed, double turnRadius){
+    static public TestVehicleConfig newCircleAutopilotConfig(double maxSpeed, double turnRadius) {
         TestVehicleConfig config = new TestVehicleConfig();
         double maxForce = config.electricalPTProperties.motorProperties.motor_peek_torque *
-            config.electricalPTProperties.transmission_ratio * 2 /
-            config.properties.wheels.diameter;
+                config.electricalPTProperties.transmission_ratio * 2 /
+                config.properties.wheels.diameter;
         config.properties.addComponent(
-            TestAutopilotProperties.circleAutopilot(Duration.ofMillis(1), maxForce/config.properties.body.mass, maxSpeed, turnRadius)
-            .setName("TestAutopilot")
-            .connectTo("DefaultBus")
+                TestAutopilotProperties.circleAutopilot(Duration.ofMillis(1), maxForce / config.properties.body.mass, maxSpeed, turnRadius)
+                        .setName("TestAutopilot")
+                        .connectTo("DefaultBus")
         );
         return config;
     }
 
-    static public TestVehicleConfig newStartStopAutopilotConfig(double targetSpeed){
+    static public TestVehicleConfig newStartStopAutopilotConfig(double targetSpeed) {
         TestVehicleConfig config = new TestVehicleConfig();
         double maxForce = config.electricalPTProperties.motorProperties.motor_peek_torque *
-            config.electricalPTProperties.transmission_ratio * 2 /
-            config.properties.wheels.diameter;
+                config.electricalPTProperties.transmission_ratio * 2 /
+                config.properties.wheels.diameter;
         config.properties.addComponent(
-            TestAutopilotProperties.startStopAutopilot(Duration.ofMillis(1), maxForce/config.properties.body.mass, targetSpeed)
-            .setName("TestAutopilot")
-            .connectTo("DefaultBus")
+                TestAutopilotProperties.startStopAutopilot(Duration.ofMillis(1), maxForce / config.properties.body.mass, targetSpeed)
+                        .setName("TestAutopilot")
+                        .connectTo("DefaultBus")
         );
         return config;
     }

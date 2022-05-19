@@ -18,25 +18,29 @@ public abstract class EEComponentProperties {
         this.priority = Optional.empty();
     }
 
-    public EEComponentProperties setPriority(int priority){
+    public EEComponentProperties setPriority(int priority) {
         this.priority = Optional.of(priority);
         return this;
     }
 
-    public EEComponentProperties setName(String name){
+    public EEComponentProperties setName(String name) {
         this.name = name;
         return this;
     }
-    public EEComponentProperties connectTo(String componentName){
+
+    public EEComponentProperties connectTo(String componentName) {
         this.connected_to.add(componentName);
         return this;
     }
 
     public abstract EEComponentType getGeneralType();
+
     public abstract String getType();
+
     public boolean canTransferMessages() {
         return false;
     }
+
     // For components that can transfer messages: a search cost that represents the priority this component has to be used for routing
     public float routingCost() {
         return 0.0f;
