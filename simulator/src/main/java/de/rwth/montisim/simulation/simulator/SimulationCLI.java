@@ -34,18 +34,16 @@ public class SimulationCLI {
         File scenarioFile = new File(path);
         SimulationConfig config = SimulationConfig.fromFile(scenarioFile);
         // Randomize Scenario
-        if (true) { // config.randomization.isPresent()
-            Vector<RandomizationProperties> randomizationPropertiesVector = config.randomization;
-            Optional<RandomizationProperties> randomizationPropertiesOptional = RandomRandomizationPropertiesPicker.pickRandomizationProperties(randomizationPropertiesVector);
-            if (randomizationPropertiesOptional.isPresent()) {
-                RandomizationProperties randomizationProperties = randomizationPropertiesOptional.get();
-                RandomizationStrategy strategy = randomizationProperties.build(config, mapsFolder);
-                config.cars = strategy.randomizeCars(config.cars);
-                config.map_name = strategy.randomizeMapName(config.map_name);
-                config.max_duration = strategy.randomizeMaxDuration(config.max_duration);
-                config.tick_duration = strategy.randomizeTickDuration(config.tick_duration);
-                config.modules = strategy.randomizeModules(config.modules);
-            }
+        Vector<RandomizationProperties> randomizationPropertiesVector = config.randomization;
+        Optional<RandomizationProperties> randomizationPropertiesOptional = RandomRandomizationPropertiesPicker.pickRandomizationProperties(randomizationPropertiesVector);
+        if (randomizationPropertiesOptional.isPresent()) {
+            RandomizationProperties randomizationProperties = randomizationPropertiesOptional.get();
+            RandomizationStrategy strategy = randomizationProperties.build(config, mapsFolder);
+            config.cars = strategy.randomizeCars(config.cars);
+            config.map_name = strategy.randomizeMapName(config.map_name);
+            config.max_duration = strategy.randomizeMaxDuration(config.max_duration);
+            config.tick_duration = strategy.randomizeTickDuration(config.tick_duration);
+            config.modules = strategy.randomizeModules(config.modules);
         }
         File mapPath = Paths.get(mapsFolder, config.map_name + ".osm").toFile();
         OsmMap map = new OsmMap(config.map_name, mapPath);
