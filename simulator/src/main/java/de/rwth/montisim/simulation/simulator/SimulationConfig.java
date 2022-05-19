@@ -28,7 +28,7 @@ public class SimulationConfig {
     public Duration max_duration = Duration.ofSeconds(60);
     public Duration tick_duration = Duration.ofNanos(Time.SECOND_TO_NANOSEC / 100);
     public Instant start_time = Instant.now();
-    public Optional<RandomizationProperties> randomization = Optional.empty();
+    public Vector<RandomizationProperties> randomization = new Vector<>();
 
     public Vector<VehicleProperties> cars = new Vector<>();
     public Vector<ModuleProperties> modules = new Vector<>();
@@ -55,7 +55,7 @@ public class SimulationConfig {
             try {
                 vehicle = sim.getVehicleBuilder(v).build();
             } catch (SerializationException | EEMessageTypeException | EESetupException
-                    | EEMissingComponentException e) {
+                     | EEMissingComponentException e) {
                 throw new IllegalStateException(e);
             }
             sim.addSimulationObject(vehicle);

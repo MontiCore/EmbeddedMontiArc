@@ -15,9 +15,9 @@ import de.rwth.montisim.simulation.environment.world.elements.*;
 
 /**
  * An intermediary representation of the contents of the map.
- * Does not contain precise geometry, only deterministic information 
+ * Does not contain precise geometry, only deterministic information
  * to build it.
- * 
+ * <p>
  * This representation is serializable into json and can be created
  * from an [OsmMap].
  */
@@ -44,24 +44,37 @@ public class World implements BuildObject {
     public final Vector<WaySegment> waySegments = new Vector<>();
 
 
-    public void addWay(Way way){
+    public int addWay(Way way) {
+        int id = ways.size();
+        if (way.localID < 0) { // local ID not set yet
+            way.setLocalID(id);
+        }
         ways.add(way);
+        return id;
     }
+
     /**
      * @param s New Road Segment to add to the world.
      * @return Its local ID.
      */
-    public int addWaySegment(WaySegment s){
+    public int addWaySegment(WaySegment s) {
         int id = waySegments.size();
+        if (s.localID < 0) { // local ID not set yet
+            s.setLocalID(id);
+        }
         waySegments.add(s);
         return id;
     }
+
     /**
      * @param is New Intersection to add to the world.
      * @return Its local ID.
      */
-    public int addNode(Node is){
+    public int addNode(Node is) {
         int id = nodes.size();
+        if (is.localID < 0) { // local ID not set yet
+            is.setLocalID(id);
+        }
         nodes.add(is);
         return id;
     }
@@ -74,24 +87,24 @@ public class World implements BuildObject {
         return nodes.elementAt(localID);
     }
 
-    public World(String name){
+    public World(String name) {
         this.name = name;
     }
-    
+
     /**
      * Takes the current Way & Node information and computes the WaySegments.
      */
-    public void finalizeGraph(){
+    public void finalizeGraph() {
         // Get AREA center points
         for (Way way : ways) {
             if (!way.isArea) continue;
             if (way.points.size() == 0) continue;
-            way.centerPoint = new Vec3(0,0,0);
+            way.centerPoint = new Vec3(0, 0, 0);
             for (Vec3 p : way.points) IPM.add(way.centerPoint, p);
-            IPM.multiply(way.centerPoint, 1.0/way.points.size());
+            IPM.multiply(way.centerPoint, 1.0 / way.points.size());
         }
 
-        for (Way way : ways){
+        for (Way way : ways) {
             double time_factor = 3.6 / way.maxSpeed;
 
             boolean hasCurrentSegment = false;
@@ -104,7 +117,7 @@ public class World implements BuildObject {
             int count = way.points.size();
             for (int i = 0; i < count; ++i) {
                 // Track length
-                if (lastPos == null){
+                if (lastPos == null) {
                     lastPos = way.points.elementAt(i);
                 } else {
                     Vec3 p = way.points.elementAt(i);
@@ -113,18 +126,19 @@ public class World implements BuildObject {
                 }
                 // Check if intersection
                 int nid = way.nodeID.elementAt(i);
-                if (nid >= 0){
+                if (nid >= 0) {
                     Node node = getNode(nid);
                     node.ways.add(way);
-                    if (hasCurrentSegment){
+                    if (hasCurrentSegment) {
                         WaySegment segment = new WaySegment(way, length, time_factor, lastPointIndex, i, lastNodeID, nid);
                         int segmentID = addWaySegment(segment);
                         if (lastNode != null) lastNode.outRoadSegmentIDs.add(segmentID);
-
+                        node.inRoadSegmentIDs.add(segmentID);
                         if (!way.oneWay) {
                             WaySegment reverseSegment = new WaySegment(way, length, time_factor, i, lastPointIndex, nid, lastNodeID);
                             int reverseSegmentID = addWaySegment(reverseSegment);
                             node.outRoadSegmentIDs.add(reverseSegmentID);
+                            if (lastNode != null) lastNode.inRoadSegmentIDs.add(reverseSegmentID);
                             reverseSegment.reverseId = segmentID;
                             segment.reverseId = reverseSegmentID;
                         }
@@ -138,20 +152,21 @@ public class World implements BuildObject {
             }
 
             // If the last piece of road doesn't arrive at an intersection
-            if (lastNodeID != way.nodeID.elementAt(count-1)){
-                WaySegment segment = new WaySegment(way, length, time_factor, lastPointIndex, count-1, lastNodeID, -1);
+            if (lastNodeID != way.nodeID.elementAt(count - 1)) {
+                WaySegment segment = new WaySegment(way, length, time_factor, lastPointIndex, count - 1, lastNodeID, -1);
                 int segmentID = addWaySegment(segment);
                 if (lastNode != null) lastNode.outRoadSegmentIDs.add(segmentID);
 
                 if (!way.oneWay) {
-                    WaySegment reverseSegment = new WaySegment(way, length, time_factor, count-1, lastPointIndex, -1, lastNodeID);
+                    WaySegment reverseSegment = new WaySegment(way, length, time_factor, count - 1, lastPointIndex, -1, lastNodeID);
                     int reverseSegmentID = addWaySegment(reverseSegment);
+                    if (lastNode != null) lastNode.inRoadSegmentIDs.add(reverseSegmentID);
                     reverseSegment.reverseId = segmentID;
                     segment.reverseId = reverseSegmentID;
                 }
             }
         }
-        
+
     }
 
     @Override
