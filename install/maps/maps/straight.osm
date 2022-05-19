@@ -1,0 +1,111 @@
+<osm version="0.6" generator="Overpass API 0.7.55.4 3079d8ea">
+<note>The data included in this document is from www.openstreetmap.org. The data is made available under ODbL.</note>
+<meta osm_base="2018-10-13T11:17:03Z"/>
+
+  <bounds minlat="50.8355300" minlon="5.8772300" maxlat="50.8380500" maxlon="5.8828800"/>
+
+  <node id="41955998" lat="50.8358227" lon="5.8812630" version="4" timestamp="2017-10-15T23:07:14Z" changeset="52968702" uid="388804" user="Allroads"/>
+  <node id="41956861" lat="50.8363407" lon="5.8809847" version="4" timestamp="2017-10-15T23:07:14Z" changeset="52968702" uid="388804" user="Allroads"/>
+  <node id="41957031" lat="50.8367570" lon="5.8805782" version="5" timestamp="2017-10-15T23:07:14Z" changeset="52968702" uid="388804" user="Allroads"/>
+  <node id="41957426" lat="50.8370597" lon="5.8803462" version="4" timestamp="2017-10-15T23:07:15Z" changeset="52968702" uid="388804" user="Allroads"/>
+  <node id="41958190" lat="50.8375791" lon="5.8801674" version="5" timestamp="2017-10-15T23:07:15Z" changeset="52968702" uid="388804" user="Allroads"/>
+  <node id="41958919" lat="50.8382483" lon="5.8801075" version="4" timestamp="2017-10-15T23:07:15Z" changeset="52968702" uid="388804" user="Allroads"/>
+  <node id="656503713" lat="50.8386647" lon="5.8801307" version="4" timestamp="2017-10-15T23:07:15Z" changeset="52968702" uid="388804" user="Allroads"/>
+  <node id="897050130" lat="50.8396308" lon="5.8800090" version="4" timestamp="2017-10-15T23:07:16Z" changeset="52968702" uid="388804" user="Allroads"/>
+  <node id="3763089970" lat="50.8360967" lon="5.8811536" version="2" timestamp="2017-10-15T23:07:19Z" changeset="52968702" uid="388804" user="Allroads"/>
+  <node id="3763089974" lat="50.8365828" lon="5.8807777" version="3" timestamp="2017-10-15T23:07:19Z" changeset="52968702" uid="388804" user="Allroads"/>
+  <node id="3763089977" lat="50.8369256" lon="5.8804405" version="2" timestamp="2017-10-15T23:07:19Z" changeset="52968702" uid="388804" user="Allroads"/>
+  <node id="3763089980" lat="50.8380199" lon="5.8801217" version="2" timestamp="2017-10-15T23:07:19Z" changeset="52968702" uid="388804" user="Allroads"/>
+  <node id="3763089984" lat="50.8390248" lon="5.8801401" version="2" timestamp="2017-10-15T23:07:19Z" changeset="52968702" uid="388804" user="Allroads"/>
+  <node id="3763089985" lat="50.8394048" lon="5.8801075" version="3" timestamp="2017-10-15T23:07:19Z" changeset="52968702" uid="388804" user="Allroads"/>
+  <node id="4188028027" lat="50.8355156" lon="5.8813333" version="2" timestamp="2017-10-15T23:07:19Z" changeset="52968702" uid="388804" user="Allroads"/>
+  <node id="5170132156" lat="50.8372631" lon="5.8802547" version="1" timestamp="2017-10-15T23:07:04Z" changeset="52968702" uid="388804" user="Allroads"/>
+  <node id="5170132157" lat="50.8374588" lon="5.8801943" version="1" timestamp="2017-10-15T23:07:04Z" changeset="52968702" uid="388804" user="Allroads"/>
+  <node id="5170132158" lat="50.8376488" lon="5.8801556" version="1" timestamp="2017-10-15T23:07:04Z" changeset="52968702" uid="388804" user="Allroads"/>
+  <node id="5170132159" lat="50.8377634" lon="5.8801401" version="1" timestamp="2017-10-15T23:07:04Z" changeset="52968702" uid="388804" user="Allroads"/>
+  <node id="5170132160" lat="50.8379192" lon="5.8801283" version="1" timestamp="2017-10-15T23:07:04Z" changeset="52968702" uid="388804" user="Allroads"/>
+  <node id="5170132209" lat="50.8385208" lon="5.8801156" version="1" timestamp="2017-10-15T23:07:04Z" changeset="52968702" uid="388804" user="Allroads"/>
+  <node id="5170132210" lat="50.8384178" lon="5.8801090" version="1" timestamp="2017-10-15T23:07:04Z" changeset="52968702" uid="388804" user="Allroads"/>
+  <node id="5170132211" lat="50.8383359" lon="5.8801052" version="1" timestamp="2017-10-15T23:07:04Z" changeset="52968702" uid="388804" user="Allroads"/>
+  <node id="5170132212" lat="50.8387192" lon="5.8801382" version="1" timestamp="2017-10-15T23:07:04Z" changeset="52968702" uid="388804" user="Allroads"/>
+  <node id="5170132213" lat="50.8387783" lon="5.8801422" version="1" timestamp="2017-10-15T23:07:04Z" changeset="52968702" uid="388804" user="Allroads"/>
+  <node id="5170132214" lat="50.8388592" lon="5.8801410" version="1" timestamp="2017-10-15T23:07:04Z" changeset="52968702" uid="388804" user="Allroads"/>
+  <node id="5170132215" lat="50.8389175" lon="5.8801387" version="1" timestamp="2017-10-15T23:07:04Z" changeset="52968702" uid="388804" user="Allroads"/>
+  <node id="5170132216" lat="50.8391948" lon="5.8801462" version="1" timestamp="2017-10-15T23:07:05Z" changeset="52968702" uid="388804" user="Allroads"/>
+  <node id="5170132217" lat="50.8393002" lon="5.8801377" version="1" timestamp="2017-10-15T23:07:05Z" changeset="52968702" uid="388804" user="Allroads"/>
+  <node id="5170132218" lat="50.8393550" lon="5.8801236" version="1" timestamp="2017-10-15T23:07:05Z" changeset="52968702" uid="388804" user="Allroads"/>
+  <node id="5170132219" lat="50.8394620" lon="5.8800854" version="1" timestamp="2017-10-15T23:07:05Z" changeset="52968702" uid="388804" user="Allroads"/>
+  <node id="5170132220" lat="50.8395248" lon="5.8800599" version="1" timestamp="2017-10-15T23:07:05Z" changeset="52968702" uid="388804" user="Allroads"/>
+  <node id="5170132468" lat="50.8354394" lon="5.8813385" version="1" timestamp="2017-10-15T23:07:02Z" changeset="52968702" uid="388804" user="Allroads"/>
+  <node id="5170132487" lat="50.8356771" lon="5.8813069" version="1" timestamp="2017-10-15T23:07:03Z" changeset="52968702" uid="388804" user="Allroads"/>
+  <node id="5170132488" lat="50.8358745" lon="5.8812507" version="1" timestamp="2017-10-15T23:07:03Z" changeset="52968702" uid="388804" user="Allroads"/>
+  <node id="5170132489" lat="50.8359356" lon="5.8812319" version="1" timestamp="2017-10-15T23:07:03Z" changeset="52968702" uid="388804" user="Allroads"/>
+  <node id="5170132490" lat="50.8359949" lon="5.8812078" version="1" timestamp="2017-10-15T23:07:03Z" changeset="52968702" uid="388804" user="Allroads"/>
+  <node id="5170132491" lat="50.8360500" lon="5.8811809" version="1" timestamp="2017-10-15T23:07:03Z" changeset="52968702" uid="388804" user="Allroads"/>
+  <node id="5170132492" lat="50.8361739" lon="5.8811017" version="1" timestamp="2017-10-15T23:07:03Z" changeset="52968702" uid="388804" user="Allroads"/>
+  <node id="5170132493" lat="50.8363758" lon="5.8809612" version="1" timestamp="2017-10-15T23:07:03Z" changeset="52968702" uid="388804" user="Allroads"/>
+  <node id="5170132494" lat="50.8364116" lon="5.8809352" version="1" timestamp="2017-10-15T23:07:03Z" changeset="52968702" uid="388804" user="Allroads"/>
+  <node id="5170132495" lat="50.8364944" lon="5.8808645" version="1" timestamp="2017-10-15T23:07:03Z" changeset="52968702" uid="388804" user="Allroads"/>
+  <node id="5170132496" lat="50.8365366" lon="5.8808253" version="1" timestamp="2017-10-15T23:07:03Z" changeset="52968702" uid="388804" user="Allroads"/>
+  <node id="5170132497" lat="50.8366882" lon="5.8806556" version="1" timestamp="2017-10-15T23:07:03Z" changeset="52968702" uid="388804" user="Allroads"/>
+  <node id="5170132498" lat="50.8368020" lon="5.8805358" version="1" timestamp="2017-10-15T23:07:03Z" changeset="52968702" uid="388804" user="Allroads"/>
+  <node id="5170132499" lat="50.8368530" lon="5.8804947" version="1" timestamp="2017-10-15T23:07:03Z" changeset="52968702" uid="388804" user="Allroads"/>
+  <node id="5170132500" lat="50.8370051" lon="5.8803797" version="1" timestamp="2017-10-15T23:07:03Z" changeset="52968702" uid="388804" user="Allroads"/>
+  <node id="5170132501" lat="50.8371040" lon="5.8803179" version="1" timestamp="2017-10-15T23:07:03Z" changeset="52968702" uid="388804" user="Allroads"/>
+  <node id="5170132502" lat="50.8371463" lon="5.8802976" version="1" timestamp="2017-10-15T23:07:03Z" changeset="52968702" uid="388804" user="Allroads"/>
+  <way id="6767361" version="9" timestamp="2017-10-15T23:07:20Z" changeset="52968702" uid="388804" user="Allroads">
+    <nd ref="5170132468"/>
+    <nd ref="4188028027"/>
+    <nd ref="5170132487"/>
+    <nd ref="41955998"/>
+    <nd ref="5170132488"/>
+    <nd ref="5170132489"/>
+    <nd ref="5170132490"/>
+    <nd ref="5170132491"/>
+    <nd ref="3763089970"/>
+    <nd ref="5170132492"/>
+    <nd ref="41956861"/>
+    <nd ref="5170132493"/>
+    <nd ref="5170132494"/>
+    <nd ref="5170132495"/>
+    <nd ref="5170132496"/>
+    <nd ref="3763089974"/>
+    <nd ref="5170132497"/>
+    <nd ref="41957031"/>
+    <nd ref="5170132498"/>
+    <nd ref="5170132499"/>
+    <nd ref="3763089977"/>
+    <nd ref="5170132500"/>
+    <nd ref="41957426"/>
+    <nd ref="5170132501"/>
+    <nd ref="5170132502"/>
+    <nd ref="5170132156"/>
+    <nd ref="5170132157"/>
+    <nd ref="41958190"/>
+    <nd ref="5170132158"/>
+    <nd ref="5170132159"/>
+    <nd ref="5170132160"/>
+    <nd ref="3763089980"/>
+    <nd ref="41958919"/>
+    <nd ref="5170132211"/>
+    <nd ref="5170132210"/>
+    <nd ref="5170132209"/>
+    <nd ref="656503713"/>
+    <nd ref="5170132212"/>
+    <nd ref="5170132213"/>
+    <nd ref="5170132214"/>
+    <nd ref="5170132215"/>
+    <nd ref="3763089984"/>
+    <nd ref="5170132216"/>
+    <nd ref="5170132217"/>
+    <nd ref="5170132218"/>
+    <nd ref="3763089985"/>
+    <nd ref="5170132219"/>
+    <nd ref="5170132220"/>
+    <nd ref="897050130"/>
+    <tag k="highway" v="unclassified"/>
+    <tag k="maxspeed" v="80"/>
+    <tag k="name" v="Haasstad"/>
+    <tag k="surface" v="asphalt"/>
+  </way>
+  </osm>
