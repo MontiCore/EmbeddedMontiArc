@@ -18,21 +18,23 @@
 // -----------------------
 
 // historie der stiche (sieht nur der gewinner des stiches)
-(init (sees none (stich 1 none none none none)))
-(init (sees none (stich 2 none none none none)))
-(init (sees none (stich 3 none none none none)))
-(init (sees none (stich 4 none none none none)))
-(init (sees none (stich 5 none none none none)))
-(init (sees none (stich 6 none none none none)))
-(init (sees none (stich 7 none none none none)))
-(init (sees none (stich 8 none none none none)))
-(init (sees none (stich 9 none none none none)))
-(init (sees none (stich 10 none none none none)))
-(init (sees none (stich 11 none none none none))) // mit (2*4) neunen = 12 stiche
-(init (sees none (stich 12 none none none none)))
+// (init (sees none (stich 1 none none none none)))
+// (init (sees none (stich 2 none none none none)))
+// (init (sees none (stich 3 none none none none)))
+// (init (sees none (stich 4 none none none none)))
+// (init (sees none (stich 5 none none none none)))
+// (init (sees none (stich 6 none none none none)))
+// (init (sees none (stich 7 none none none none)))
+// (init (sees none (stich 8 none none none none)))
+// (init (sees none (stich 9 none none none none)))
+// (init (sees none (stich 10 none none none none)))
+// (init (sees none (stich 11 none none none none))) // mit (2*4) neunen = 12 stiche
+// (init (sees none (stich 12 none none none none)))
 
 // hand
-(init (sees none (hand none none)))
+// force hochzeit
+// (init (sees player1 (hand player1 kreuz_dame_1)))
+// (init (sees player1 (hand player1 kreuz_dame_2)))
 
 
 // punktetabelle
@@ -41,19 +43,13 @@
 (init (punkte player3 0))
 (init (punkte player4 0))
 
-// vorbehalte
-(init (vorbehalt player1 none))
-(init (vorbehalt player2 none))
-(init (vorbehalt player3 none))
-(init (vorbehalt player4 none))
-
 // teams
 (init (team player1 none))
 (init (team player2 none))
 (init (team player3 none))
 (init (team player4 none))
 
-// ansage = keine 120, 90, 60, 30, 0
+// ansage = keine 120 90 60 30 0
 (init (ansage re none))
 (init (ansage kontra none))
 
@@ -66,16 +62,24 @@
 // spielablauf
 (init (ablauf geben))
 (init (zug player1))
+(init (start_player player1))
 
 
 // -----------------------
 // -------- NEXT ---------
 // -----------------------
 
+// -- Punkte --
+// ------------
+
+(<= (next (punkte ?player ?p))
+    (true (punkte ?player ?p))
+)
+
 // -- Geben --
 // -----------
 
-// geben, solange nicht 12 Karten pro Spieler
+// geben solange nicht 12 Karten pro Spieler
 (<= (next (ablauf geben))
     (true (ablauf geben))
     (not (all_players_12_cards))
@@ -119,21 +123,25 @@
     (next_player ?current_player ?next_player)
 )
 
-// Vorbehalt nicht letzter Spieler
-// speichern
+// Vorbehalt nicht letzter Spieler speichern
 (<= (next (vorbehalt ?player ?vorbehalt))
+    (true (ablauf vorbehalt))
     (does ?player (vorbehalt ?vorbehalt))
     (distinct ?player player4)
 )
+(<= (next (vorbehalt ?player ?vorbehalt))
+    (true (ablauf vorbehalt))
+    (true (vorbehalt ?player ?vorbehalt))
+    (distinct ?player player4)
+)
+
 // Ablauf bleibt
 (<= (next (ablauf vorbehalt))
     (does ?player (vorbehalt ?vorbehalt))
     (distinct ?player player4)
 )
-
-// Vorbehalt letzter Spieler
-// speichern (?unnötig?)
-(<= (next (vorbehalt player4 ?vorbehalt))
+// ... außer Vorbehalt letzter Spieler
+(<= (next (ablauf stich 1 1))
     (does player4 (vorbehalt ?vorbehalt))
 )
 
@@ -141,35 +149,26 @@
 
 // alle gesund = Normal (öffentlich)
 (<= (next (spielart normal none))
-    (true (vorbehalt player1 gesund))
-    (true (vorbehalt player2 gesund))
-    (true (vorbehalt player3 gesund))
-    (does player4 (vorbehalt gesund))
+    (alle_gesund)
 )
-// alle gesund, aber Hochzeit = Stille Hochzeit
-(<= (next (sees ?player_hochzeit (hidden_spielart stille_hochzeit ?player_hochzeit)))
-    (true (vorbehalt player1 gesund))
-    (true (vorbehalt player2 gesund))
-    (true (vorbehalt player3 gesund))
-    (does player4 (vorbehalt gesund))
+// alle gesund aber Hochzeit = Stille Hochzeit
+(<= (next (sees ?player_hochzeit (hidden_spielart hochzeit ?player_hochzeit)))
+    (alle_gesund)
 
     (has_hochzeit_hand ?player_hochzeit)
 )
 // sonst Normal
 (<= (next (sees none (hidden_spielart normal none)))
-    (true (vorbehalt player1 gesund))
-    (true (vorbehalt player2 gesund))
-    (true (vorbehalt player3 gesund))
-    (does player4 (vorbehalt gesund))
+    (alle_gesund)
 
-    (not (has_hochzeit_hand player1))
-    (not (has_hochzeit_hand player2))
-    (not (has_hochzeit_hand player3))
-    (not (has_hochzeit_hand player4))
+    (player ?player)
+    (not (has_hochzeit_hand ?player))
 )
 
 // Vorbehalte vorhanden = Solo vor Hochzeit
 (<= (next (spielart ?art ?player))
+    (not (alle_gesund))
+
     (true (vorbehalt player1 ?vorbehalt_1))
     (true (vorbehalt player2 ?vorbehalt_2))
     (true (vorbehalt player3 ?vorbehalt_3))
@@ -178,6 +177,8 @@
     (solo_vor_hochzeit ?vorbehalt_1 ?vorbehalt_2 ?vorbehalt_3 ?vorbehalt_4 ?art ?player)
 )
 (<= (next (sees none (hidden_spielart ?art ?player)))
+    (not (alle_gesund))
+
     (true (vorbehalt player1 ?vorbehalt_1))
     (true (vorbehalt player2 ?vorbehalt_2))
     (true (vorbehalt player3 ?vorbehalt_3))
@@ -186,10 +187,95 @@
     (solo_vor_hochzeit ?vorbehalt_1 ?vorbehalt_2 ?vorbehalt_3 ?vorbehalt_4 ?art ?player)
 )
 
-// nächster ablauf
-(<= (next (ablauf stich_1))
-    (does player4 (vorbehalt ?vorbehalt))
+// -- Spielen --
+// -------------
+// immer spielart weitergeben
+(<= (next (spielart ?spielart ?player))
+    (true (ablauf stich ?x ?y))
+    (true (spielart ?spielart ?player))
 )
+(<= (next (sees ?vis (hidden_spielart ?spielart ?player)))
+    (true (ablauf stich ?x ?y))
+    (true (sees ?vis (hidden_spielart ?spielart ?player)))
+)
+
+// immer Zug weitergeben
+(<= (next (zug ?next_player))
+    (true (ablauf stich ?x ?y))
+    (true (zug ?current_player))
+    (next_player ?current_player ?next_player)
+)
+
+// ablauf stich erhöhen wenn letzte karte des stichs
+(<= (next (ablauf stich ?xx 1))
+    (true (ablauf stich ?x 4))
+    (distinct ?x 12)
+    (succ ?x ?xx)
+)
+// sonst ablauf behalten
+(<= (next (ablauf stich ?x ?yy))
+    (true (ablauf stich ?x ?y))
+    (distinct ?y 4)
+    (succ ?y ?yy)
+)
+
+// nicht gespielte Karten behalten
+(<= (next (sees ?player (hand ?player ?karte)))
+    (true (ablauf stich ?x ?y))
+    (true (sees ?player (hand ?player ?karte)))
+    (not (does ?player (spielen ?karte)))
+)
+
+// gespielte karte auf den stich
+(<= (next (stich ?x ?y ?karte))
+    (true (ablauf stich ?x ?y))
+    (does ?player (spielen ?karte))
+    (distinct ?y 4)
+)
+// rest stich mitnehmen
+(<= (next (stich ?x ?y ?karte))
+    (true (stich ?x ?y ?karte))
+    (true (ablauf stich ?x ?ab_y))
+    (distinct ?ab_y 4)
+)
+// letzte karte stich
+// stich nehmen
+(<= (next (sees ?winner (stich ?x ?y ?fkarte)))
+    (true (ablauf stich ?x 4))
+    (does ?player (spielen ?any_karte))
+    (true (stich ?x ?y ?fkarte))
+
+    (true (spielart ?spieltyp ?any))
+    (stich_karten ?fkarte1 ?fkarte2 ?fkarte3 ?fkarte4)
+    (stich_winner ?spieltyp ?fkarte1 ?fkarte2 ?fkarte3 ?fkarte4 ?winner)
+)
+(<= (next (sees ?winner (stich ?x 4 ?fkarte)))
+    (true (ablauf stich ?x 4))
+    (does ?player (spielen ?fkarte))
+
+    (true (spielart ?spieltyp ?any))
+    (stich_karten ?fkarte1 ?fkarte2 ?fkarte3 ?fkarte4)
+    (stich_winner ?spieltyp ?fkarte1 ?fkarte2 ?fkarte3 ?fkarte4 ?winner)
+)
+
+// andere spieler sehen nur, dass stich gewonnen wurde
+(<= (next (sees ?not_winner (stich ?x ?winner)))
+    (true (ablauf stich ?x 4))
+    (player ?not_winner)
+    (stich_winner ?spieltyp ?fkarte1 ?fkarte2 ?fkarte3 ?fkarte4 ?winner)
+    (distinct ?not_winner ?winner)
+)
+
+// stiche behalten
+(<= (next (sees ?player (stich ?x ?y ?fkarte)))
+    (true (sees ?player (stich ?x ?y ?fkarte)))
+    (not (true (ablauf stich 12 4)))
+)
+(<= (next (sees ?player (stich ?x ?winner)))
+    (true (sees ?player (stich ?x ?winner)))
+    (not (true (ablauf stich 12 4)))
+)
+
 
 // -----------------------
 // -------- LEGAL --------
@@ -274,12 +360,46 @@
     (true (ablauf ansagen_schwarz))
 )
 
-// karte spielen
+// karte spielen (erste karte stich muss nicht bedienen)
 (<= (legal ?player (spielen ?karte))
     (true (zug ?player))
-    (true (ablauf stich ?x))
+    (true (ablauf stich ?x 1))
     (true (sees ?player (hand ?player ?karte)))
 )
+// karte spielen (bedienpflicht)
+// jede karte wenn nicht bedienen muss
+(<= (legal ?player (spielen ?fkarte))
+    (true (zug ?player))
+    (true (ablauf stich ?x ?y))
+    (true (sees ?player (hand ?player ?fkarte)))
+    // Stichfarbe bestimmen
+    (true (stich ?x 1 ?fkarte1))
+    (karte ?karte1 ?fkarte1)
+    (true (spielart ?spieltyp ?any))
+    (farbe ?spieltyp ?stichfarbe ?karte1)
+    // farben unterscheiden sich
+    (karte ?karte ?fkarte)
+    (farbe ?spieltyp ?farbe ?karte)
+    (distinct ?stichfarbe ?farbe)
+    // Spieler hat die Farbe nicht
+    (not (player_has_farbe ?player ?stichfarbe))
+)
+
+// nur stichfarbe wenn bedienen muss
+(<= (legal ?player (spielen ?fkarte))
+    (true (zug ?player))
+    (true (ablauf stich ?x ?y))
+    (true (sees ?player (hand ?player ?fkarte)))
+    // Stichfarbe bestimmen
+    (true (stich ?x 1 ?fkarte1))
+    (karte ?karte1 ?fkarte1)
+    (true (spielart ?spieltyp ?any))
+    (farbe ?spieltyp ?stichfarbe ?karte1)
+    // Farbe muss Stichfarbe sein
+    (karte ?karte ?fkarte)
+    (farbe ?spieltyp ?stichfarbe ?karte)
+)
+
 
 // -----------------------
 // ------ FUNCTIONS ------
@@ -309,13 +429,15 @@
     (count ?n (true (sees ?player (hand ?player ?karte))))
 )
 
-// Bestimmt vor dem ersten Stich, ob jemand eine Hochzeit auf der Hand hat
+// Bestimmt vor dem ersten Stich ob jemand eine Hochzeit auf der Hand hat
 (<= (has_hochzeit_hand ?player)
     (true (sees ?player (hand ?player kreuz_dame_1)))
     (true (sees ?player (hand ?player kreuz_dame_2)))
 )
 
 // Bestimmt den höchstwertigsten Vorbehalt ausgehend von Spieler ?player
+(<= (solo_vor_hochzeit gesund gesund gesund gesund normal player1))
+
 (<= (solo_vor_hochzeit ?vorbehalt_1 ?vorbehalt_2 ?vorbehalt_3 ?vorbehalt_4 ?vorbehalt_1 player1)
     (vorbehalt_typ solo ?vorbehalt_1)
 )
@@ -338,44 +460,179 @@
 (<= (solo_vor_hochzeit ?vorbehalt_1 ?vorbehalt_2 ?vorbehalt_3 hochzeit hochzeit player4)
 )
 
+// Höchste Karte im Stich über Trumpfregeln bestimmen
+// Karte 1 gewinnt:
+(<= (stich_winner
+        ?spieltyp
+            ?fkarte1
+            ?fkarte2
+            ?fkarte3
+            ?fkarte4
+        player1
+    )
+    (map_all_cards
+        ?karte1 ?fkarte1
+        ?karte2 ?fkarte2
+        ?karte3 ?fkarte3
+        ?karte4 ?fkarte4
+    )
+    (farbe ?spieltyp ?farbe ?karte1)
 
+    (all_trumpf ?spieltyp ?farbe ?karte1 ?karte2)
+    (all_trumpf ?spieltyp ?farbe ?karte1 ?karte3)
+    (all_trumpf ?spieltyp ?farbe ?karte1 ?karte4)
+)
+// Karte 2 gewinnt:
+(<= (stich_winner
+        ?spieltyp
+            ?fkarte1
+            ?fkarte2
+            ?fkarte3
+            ?fkarte4
+        player2
+    )
+    (map_all_cards
+        ?karte1 ?fkarte1
+        ?karte2 ?fkarte2
+        ?karte3 ?fkarte3
+        ?karte4 ?fkarte4
+    )
+    (farbe ?spieltyp ?farbe ?karte1)
+
+    (all_trumpf ?spieltyp ?farbe ?karte2 ?karte3)
+    (all_trumpf ?spieltyp ?farbe ?karte2 ?karte4)
+    (not (stich_winner ?spieltyp ?fkarte1 ?fkarte2 ?fkarte3 ?fkarte4 player1))
+)
+// Karte 3 gewinnt:
+(<= (stich_winner
+        ?spieltyp
+            ?fkarte1
+            ?fkarte2
+            ?fkarte3
+            ?fkarte4
+        player3
+    )
+    (map_all_cards
+        ?karte1 ?fkarte1
+        ?karte2 ?fkarte2
+        ?karte3 ?fkarte3
+        ?karte4 ?fkarte4
+    )
+    (farbe ?spieltyp ?farbe ?karte1)
+
+    (all_trumpf ?spieltyp ?farbe ?karte1 ?karte4)
+    (not (stich_winner ?spieltyp ?fkarte1 ?fkarte2 ?fkarte3 ?fkarte4 player1))
+    (not (stich_winner ?spieltyp ?fkarte1 ?fkarte2 ?fkarte3 ?fkarte4 player2))
+)
+// Karte 4 gewinnt:
+(<= (stich_winner
+        ?spieltyp
+            ?fkarte1
+            ?fkarte2
+            ?fkarte3
+            ?fkarte4
+        player4
+    )
+    (not (stich_winner ?spieltyp ?fkarte1 ?fkarte2 ?fkarte3 ?fkarte4 player1))
+    (not (stich_winner ?spieltyp ?fkarte1 ?fkarte2 ?fkarte3 ?fkarte4 player2))
+    (not (stich_winner ?spieltyp ?fkarte1 ?fkarte2 ?fkarte3 ?fkarte4 player3))
+)
+
+// Trumpf
+// ------
+
+// Trumpf bestimmen
+// karten gleich => gewinnt
+(<= (all_trumpf ?spieltyp ?farbe ?karte1 ?karte1)
+    (karte_trumpf ?spieltyp ?karte1 ?any)
+)
+(<= (all_trumpf ?spieltyp ?farbe ?karte1 ?karte1)
+    (karte_trumpf ?spieltyp ?any ?karte1)
+)
+
+// bessere farbe gewinnt
+(<= (all_trumpf ?spieltyp ?farbe ?karte1 ?karte2)
+    (farbe ?spieltyp ?farbe1 ?karte1)
+    (farbe ?spieltyp ?farbe2 ?karte2)
+    (farb_trumpf ?spieltyp ?farbe ?farbe1 ?farbe2)
+)
+
+// sonst: bessere karte gewinnt
+(<= (all_trumpf ?spieltyp ?farbe ?karte1 ?karte2)
+    (rekur_karte_trumpf ?spieltyp ?karte1 ?karte2)
+)
+
+// Trumpf über Farbe
+(<= (farb_trumpf normal ?any trumpf kreuz))
+(<= (farb_trumpf normal ?any trumpf pik))
+(<= (farb_trumpf normal ?any trumpf herz))
+
+
+(<= (farb_trumpf normal ?x ?x ?y)
+    (distinct ?x trumpf)
+    (distinct ?y trumpf)
+)
+
+// Trumpf über Karte (rekursiv weil transitiv)
+(<= (rekur_karte_trumpf ?spieltyp ?karte1 ?karte2)
+    (karte_trumpf ?spieltyp ?karte1 ?karte2)
+)
+(<= (rekur_karte_trumpf ?spieltyp ?karte1 ?karte2)
+    (karte_trumpf ?spieltyp ?karte1 ?karteX)
+    (rekur_karte_trumpf ?spieltyp ?karteX ?karte2)
+)
+
+
+// Hilfsfunktionen
+// ---------------
+
+(<= (alle_gesund)
+    (true (vorbehalt player1 gesund))
+    (true (vorbehalt player2 gesund))
+    (true (vorbehalt player3 gesund))
+    (does player4 (vorbehalt gesund))
+)
+
+// Abkürzung stich_winner
+(<= (stich_winner_short ?winner)
+    (stich_karten ?fkarte1 ?fkarte2 ?fkarte3 ?fkarte4)
+    (true (spielart ?spieltyp ?any))
+    (stich_winner ?spieltyp ?fkarte1 ?fkarte2 ?fkarte3 ?fkarte4 ?winner)
+)
+
+// Karten des aktuellen Stiches
+(<= (stich_karten ?fkarte1 ?fkarte2 ?fkarte3 ?fkarte4)
+    (true (ablauf stich ?x ?y))
+
+    (true (stich ?x 1 ?fkarte1))
+    (true (stich ?x 2 ?fkarte2))
+    (true (stich ?x 3 ?fkarte3))
+    (does ?any (spielen ?fkarte4))
+)
+
+// Karten mappen
+(<= (map_all_cards
+        ?karte1 ?fkarte1
+        ?karte2 ?fkarte2
+        ?karte3 ?fkarte3
+        ?karte4 ?fkarte4
+    )
+    (karte ?karte1 ?fkarte1)
+    (karte ?karte2 ?fkarte2)
+    (karte ?karte3 ?fkarte3)
+    (karte ?karte4 ?fkarte4)
+)
+
+(<= (player_has_farbe ?player ?farbe)
+    (true (sees ?player (hand ?player ?fkarte)))
+    (true (spielart ?spieltyp ?any))
+    (karte ?karte ?fkarte)
+    (farbe ?spieltyp ?farbe ?karte)
+)
 
 // -----------------------
 // ------ CONSTANTS ------
 // -----------------------
-
-// trumpf regeln
-(trumpf herz_zehn kreuz_dame)
-
-(trumpf kreuz_dame pik_dame)
-(trumpf pik_dame herz_dame)
-(trumpf herz_dame karo_dame)
-
-(trumpf karo_dame kreuz_bube)
-(trumpf kreuz_bube pik_bube)
-(trumpf pik_bube herz_bube)
-(trumpf herz_bube karo_bube)
-
-(trumpf herz_bube karo_ass)
-(trumpf karo_ass karo_zehn)
-(trumpf karo_zehn karo_koenig)
-(trumpf karo_koenig karo_neun)
-
-// fehl farben
-(fehl kreuz_ass)
-(fehl kreuz_zehn)
-(fehl kreuz_koenig)
-(fehl kreuz_neun)
-
-(fehl pik_ass)
-(fehl pik_zehn)
-(fehl pik_koenig)
-(fehl pik_neun)
-
-(fehl herz_ass)
-(fehl herz_zehn)
-(fehl herz_koenig)
-(fehl herz_neun)
 
 // alle karten (kommen doppelt vor)
 (karte kreuz_dame kreuz_dame_1)
@@ -437,17 +694,18 @@
 (next_player player4 player1)
 
 // Reihenfolge Stiche
-(next_stich stich_1 stich_2)
-(next_stich stich_2 stich_3)
-(next_stich stich_3 stich_4)
-(next_stich stich_4 stich_5)
-(next_stich stich_5 stich_6)
-(next_stich stich_6 stich_7)
-(next_stich stich_7 stich_8)
-(next_stich stich_8 stich_9)
-(next_stich stich_9 stich_10)
-(next_stich stich_10 stich_11)
-(next_stich stich_11 stich_12)
+(succ 0 1)
+(succ 1 2)
+(succ 2 3)
+(succ 3 4)
+(succ 4 5)
+(succ 5 6)
+(succ 6 7)
+(succ 7 8)
+(succ 8 9)
+(succ 9 10)
+(succ 10 11)
+(succ 11 12)
 
 // vorbehalt typ
 (vorbehalt_typ solo solo_damen)
@@ -456,4 +714,412 @@
 (vorbehalt_typ solo solo_trumpf_pik)
 (vorbehalt_typ solo solo_trumpf_herz)
 (vorbehalt_typ solo solo_trumpf_karo)
+(vorbehalt_typ solo solo_trumpf_ass)
 (vorbehalt_typ hochzeit hochzeit)
+
+
+
+
+// ---------------------
+// --- Trumpf Regeln ---
+// ---------------------
+
+// Normal
+(farbe normal trumpf herz_zehn)
+(farbe normal trumpf kreuz_dame)
+(farbe normal trumpf pik_dame)
+(farbe normal trumpf herz_dame)
+(farbe normal trumpf karo_dame)
+(farbe normal trumpf kreuz_bube)
+(farbe normal trumpf pik_bube)
+(farbe normal trumpf herz_bube)
+(farbe normal trumpf karo_bube)
+(farbe normal trumpf karo_ass)
+(farbe normal trumpf karo_zehn)
+(farbe normal trumpf karo_koenig)
+(farbe normal trumpf karo_neun)
+
+(farbe normal kreuz kreuz_ass)
+(farbe normal kreuz kreuz_zehn)
+(farbe normal kreuz kreuz_koenig)
+(farbe normal kreuz kreuz_neun)
+
+(farbe normal pik pik_ass)
+(farbe normal pik pik_zehn)
+(farbe normal pik pik_koenig)
+(farbe normal pik pik_neun)
+
+(farbe normal herz herz_ass)
+(farbe normal herz herz_koenig)
+(farbe normal herz herz_neun)
+
+
+(karte_trumpf normal herz_zehn kreuz_dame)
+(karte_trumpf normal kreuz_dame pik_dame)
+(karte_trumpf normal pik_dame herz_dame)
+(karte_trumpf normal herz_dame karo_dame)
+(karte_trumpf normal karo_dame kreuz_bube)
+(karte_trumpf normal kreuz_bube pik_bube)
+(karte_trumpf normal pik_bube herz_bube)
+(karte_trumpf normal herz_bube karo_bube)
+(karte_trumpf normal karo_bube karo_ass)
+(karte_trumpf normal karo_ass karo_zehn)
+(karte_trumpf normal karo_zehn karo_koenig)
+(karte_trumpf normal karo_koenig karo_neun)
+
+(karte_trumpf normal kreuz_ass kreuz_zehn)
+(karte_trumpf normal kreuz_zehn kreuz_koenig)
+(karte_trumpf normal kreuz_koenig kreuz_neun)
+
+(karte_trumpf normal pik_ass pik_zehn)
+(karte_trumpf normal pik_zehn pik_koenig)
+(karte_trumpf normal pik_koenig pik_neun)
+
+(karte_trumpf normal herz_ass herz_koenig)
+(karte_trumpf normal herz_koenig herz_neun)
+
+// Hochzeit (= normal)
+(<= (farbe hochzeit ?x ?y)
+    (farbe normal ?x ?y)
+)
+(<= (karte_trumpf hochzeit ?x ?y)
+    (karte_trumpf normal ?x ?y)
+)
+
+
+// solo damen = nur damen trumpf
+(farbe solo_damen trumpf kreuz_dame)
+(farbe solo_damen trumpf pik_dame)
+(farbe solo_damen trumpf herz_dame)
+(farbe solo_damen trumpf karo_dame)
+
+(farbe solo_damen kreuz kreuz_ass)
+(farbe solo_damen kreuz kreuz_zehn)
+(farbe solo_damen kreuz kreuz_koenig)
+(farbe solo_damen kreuz kreuz_bube)
+(farbe solo_damen kreuz kreuz_neun)
+
+(farbe solo_damen pik pik_ass)
+(farbe solo_damen pik pik_zehn)
+(farbe solo_damen pik pik_koenig)
+(farbe solo_damen pik pik_bube)
+(farbe solo_damen pik pik_neun)
+
+(farbe solo_damen herz herz_ass)
+(farbe solo_damen herz herz_zehn)
+(farbe solo_damen herz herz_koenig)
+(farbe solo_damen herz herz_bube)
+(farbe solo_damen herz herz_neun)
+
+(farbe solo_damen karo karo_ass)
+(farbe solo_damen karo karo_zehn)
+(farbe solo_damen karo karo_koenig)
+(farbe solo_damen karo karo_bube)
+(farbe solo_damen karo karo_neun)
+
+
+(karte_trumpf solo_damen kreuz_dame pik_dame)
+(karte_trumpf solo_damen pik_dame herz_dame)
+(karte_trumpf solo_damen herz_dame karo_dame)
+
+(karte_trumpf solo_damen kreuz_ass kreuz_zehn)
+(karte_trumpf solo_damen kreuz_zehn kreuz_koenig)
+(karte_trumpf solo_damen kreuz_koenig kreuz_bube)
+(karte_trumpf solo_damen kreuz_bube kreuz_neun)
+
+(karte_trumpf solo_damen pik_ass pik_zehn)
+(karte_trumpf solo_damen pik_zehn pik_koenig)
+(karte_trumpf solo_damen pik_koenig pik_bube)
+(karte_trumpf solo_damen pik_bube pik_neun)
+
+(karte_trumpf solo_damen herz_ass herz_zehn)
+(karte_trumpf solo_damen herz_zehn herz_koenig)
+(karte_trumpf solo_damen herz_koenig herz_bube)
+(karte_trumpf solo_damen herz_bube herz_neun)
+
+(karte_trumpf solo_damen karo_ass karo_zehn)
+(karte_trumpf solo_damen karo_zehn karo_koenig)
+(karte_trumpf solo_damen karo_koenig karo_bube)
+(karte_trumpf solo_damen karo_bube karo_neun)
+
+
+// solo buben = nur buben trumpf
+(farbe solo_buben trumpf kreuz_bube)
+(farbe solo_buben trumpf pik_bube)
+(farbe solo_buben trumpf herz_bube)
+(farbe solo_buben trumpf karo_bube)
+
+(farbe solo_buben kreuz kreuz_ass)
+(farbe solo_buben kreuz kreuz_zehn)
+(farbe solo_buben kreuz kreuz_koenig)
+(farbe solo_buben kreuz kreuz_dame)
+(farbe solo_buben kreuz kreuz_neun)
+
+(farbe solo_buben pik pik_ass)
+(farbe solo_buben pik pik_zehn)
+(farbe solo_buben pik pik_koenig)
+(farbe solo_buben pik pik_dame)
+(farbe solo_buben pik pik_neun)
+
+(farbe solo_buben herz herz_ass)
+(farbe solo_buben herz herz_zehn)
+(farbe solo_buben herz herz_koenig)
+(farbe solo_buben herz herz_dame)
+(farbe solo_buben herz herz_neun)
+
+(farbe solo_buben karo karo_ass)
+(farbe solo_buben karo karo_zehn)
+(farbe solo_buben karo karo_koenig)
+(farbe solo_buben karo karo_dame)
+(farbe solo_buben karo karo_neun)
+
+
+(karte_trumpf solo_buben kreuz_bube pik_bube)
+(karte_trumpf solo_buben pik_bube herz_bube)
+(karte_trumpf solo_buben herz_bube karo_bube)
+
+(karte_trumpf solo_buben kreuz_ass kreuz_zehn)
+(karte_trumpf solo_buben kreuz_zehn kreuz_koenig)
+(karte_trumpf solo_buben kreuz_koenig kreuz_dame)
+(karte_trumpf solo_buben kreuz_dame kreuz_neun)
+
+(karte_trumpf solo_buben pik_ass pik_zehn)
+(karte_trumpf solo_buben pik_zehn pik_koenig)
+(karte_trumpf solo_buben pik_koenig pik_dame)
+(karte_trumpf solo_buben pik_dame pik_neun)
+
+(karte_trumpf solo_buben herz_ass herz_zehn)
+(karte_trumpf solo_buben herz_zehn herz_koenig)
+(karte_trumpf solo_buben herz_koenig herz_dame)
+(karte_trumpf solo_buben herz_dame herz_neun)
+
+(karte_trumpf solo_buben karo_ass karo_zehn)
+(karte_trumpf solo_buben karo_zehn karo_koenig)
+(karte_trumpf solo_buben karo_koenig karo_dame)
+(karte_trumpf solo_buben karo_dame karo_neun)
+
+// solo trumpf kreuz = karo durch kreuz austauschen
+(farbe solo_trumpf_kreuz trumpf herz_zehn)
+(farbe solo_trumpf_kreuz trumpf kreuz_dame)
+(farbe solo_trumpf_kreuz trumpf pik_dame)
+(farbe solo_trumpf_kreuz trumpf herz_dame)
+(farbe solo_trumpf_kreuz trumpf karo_dame)
+(farbe solo_trumpf_kreuz trumpf kreuz_bube)
+(farbe solo_trumpf_kreuz trumpf pik_bube)
+(farbe solo_trumpf_kreuz trumpf herz_bube)
+(farbe solo_trumpf_kreuz trumpf karo_bube)
+(farbe solo_trumpf_kreuz trumpf kreuz_ass)
+(farbe solo_trumpf_kreuz trumpf kreuz_zehn)
+(farbe solo_trumpf_kreuz trumpf kreuz_koenig)
+(farbe solo_trumpf_kreuz trumpf kreuz_neun)
+
+(farbe solo_trumpf_kreuz pik pik_ass)
+(farbe solo_trumpf_kreuz pik pik_zehn)
+(farbe solo_trumpf_kreuz pik pik_koenig)
+(farbe solo_trumpf_kreuz pik pik_neun)
+
+(farbe solo_trumpf_kreuz herz herz_ass)
+(farbe solo_trumpf_kreuz herz herz_koenig)
+(farbe solo_trumpf_kreuz herz herz_neun)
+
+(farbe solo_trumpf_kreuz karo karo_ass)
+(farbe solo_trumpf_kreuz karo karo_zehn)
+(farbe solo_trumpf_kreuz karo karo_koenig)
+(farbe solo_trumpf_kreuz karo karo_neun)
+
+
+(karte_trumpf solo_trumpf_kreuz herz_zehn kreuz_dame)
+(karte_trumpf solo_trumpf_kreuz kreuz_dame pik_dame)
+(karte_trumpf solo_trumpf_kreuz pik_dame herz_dame)
+(karte_trumpf solo_trumpf_kreuz herz_dame karo_dame)
+(karte_trumpf solo_trumpf_kreuz karo_dame kreuz_bube)
+(karte_trumpf solo_trumpf_kreuz kreuz_bube pik_bube)
+(karte_trumpf solo_trumpf_kreuz pik_bube herz_bube)
+(karte_trumpf solo_trumpf_kreuz herz_bube karo_bube)
+(karte_trumpf solo_trumpf_kreuz karo_bube kreuz_ass)
+(karte_trumpf solo_trumpf_kreuz kreuz_ass kreuz_zehn)
+(karte_trumpf solo_trumpf_kreuz kreuz_zehn kreuz_koenig)
+(karte_trumpf solo_trumpf_kreuz kreuz_koenig kreuz_neun)
+
+(karte_trumpf solo_trumpf_kreuz pik_ass pik_zehn)
+(karte_trumpf solo_trumpf_kreuz pik_zehn pik_koenig)
+(karte_trumpf solo_trumpf_kreuz pik_koenig pik_neun)
+
+(karte_trumpf solo_trumpf_kreuz herz_ass herz_koenig)
+(karte_trumpf solo_trumpf_kreuz herz_koenig herz_neun)
+
+(karte_trumpf solo_trumpf_kreuz karo_ass karo_zehn)
+(karte_trumpf solo_trumpf_kreuz karo_zehn karo_koenig)
+(karte_trumpf solo_trumpf_kreuz karo_koenig karo_neun)
+
+
+// solo trumpf pik = karo durch pik austauschen
+(farbe solo_trumpf_pik trumpf herz_zehn)
+(farbe solo_trumpf_pik trumpf kreuz_dame)
+(farbe solo_trumpf_pik trumpf pik_dame)
+(farbe solo_trumpf_pik trumpf herz_dame)
+(farbe solo_trumpf_pik trumpf karo_dame)
+(farbe solo_trumpf_pik trumpf kreuz_bube)
+(farbe solo_trumpf_pik trumpf pik_bube)
+(farbe solo_trumpf_pik trumpf herz_bube)
+(farbe solo_trumpf_pik trumpf karo_bube)
+(farbe solo_trumpf_pik trumpf pik_ass)
+(farbe solo_trumpf_pik trumpf pik_zehn)
+(farbe solo_trumpf_pik trumpf pik_koenig)
+(farbe solo_trumpf_pik trumpf pik_neun)
+
+(farbe solo_trumpf_pik kreuz kreuz_ass)
+(farbe solo_trumpf_pik kreuz kreuz_zehn)
+(farbe solo_trumpf_pik kreuz kreuz_koenig)
+(farbe solo_trumpf_pik kreuz kreuz_neun)
+
+(farbe solo_trumpf_pik herz herz_ass)
+(farbe solo_trumpf_pik herz herz_koenig)
+(farbe solo_trumpf_pik herz herz_neun)
+
+(farbe solo_trumpf_pik karo karo_ass)
+(farbe solo_trumpf_pik karo karo_zehn)
+(farbe solo_trumpf_pik karo karo_koenig)
+(farbe solo_trumpf_pik karo karo_neun)
+
+
+(karte_trumpf solo_trumpf_pik herz_zehn kreuz_dame)
+(karte_trumpf solo_trumpf_pik kreuz_dame pik_dame)
+(karte_trumpf solo_trumpf_pik pik_dame herz_dame)
+(karte_trumpf solo_trumpf_pik herz_dame karo_dame)
+(karte_trumpf solo_trumpf_pik karo_dame kreuz_bube)
+(karte_trumpf solo_trumpf_pik kreuz_bube pik_bube)
+(karte_trumpf solo_trumpf_pik pik_bube herz_bube)
+(karte_trumpf solo_trumpf_pik herz_bube karo_bube)
+(karte_trumpf solo_trumpf_pik karo_bube pik_ass)
+(karte_trumpf solo_trumpf_pik pik_ass pik_zehn)
+(karte_trumpf solo_trumpf_pik pik_zehn pik_koenig)
+(karte_trumpf solo_trumpf_pik pik_koenig pik_neun)
+
+(karte_trumpf solo_trumpf_pik kreuz_ass kreuz_zehn)
+(karte_trumpf solo_trumpf_pik kreuz_zehn kreuz_koenig)
+(karte_trumpf solo_trumpf_pik kreuz_koenig kreuz_neun)
+
+(karte_trumpf solo_trumpf_pik herz_ass herz_koenig)
+(karte_trumpf solo_trumpf_pik herz_koenig herz_neun)
+
+(karte_trumpf solo_trumpf_pik karo_ass karo_zehn)
+(karte_trumpf solo_trumpf_pik karo_zehn karo_koenig)
+(karte_trumpf solo_trumpf_pik karo_koenig karo_neun)
+
+// solo trumpf herz = karo durch herz austauschen (achtung mit herz_zehn)
+(farbe solo_trumpf_herz trumpf herz_zehn)
+(farbe solo_trumpf_herz trumpf kreuz_dame)
+(farbe solo_trumpf_herz trumpf pik_dame)
+(farbe solo_trumpf_herz trumpf herz_dame)
+(farbe solo_trumpf_herz trumpf karo_dame)
+(farbe solo_trumpf_herz trumpf kreuz_bube)
+(farbe solo_trumpf_herz trumpf pik_bube)
+(farbe solo_trumpf_herz trumpf herz_bube)
+(farbe solo_trumpf_herz trumpf karo_bube)
+(farbe solo_trumpf_herz trumpf herz_ass)
+(farbe solo_trumpf_herz trumpf herz_koenig)
+(farbe solo_trumpf_herz trumpf herz_neun)
+
+(farbe solo_trumpf_herz kreuz kreuz_ass)
+(farbe solo_trumpf_herz kreuz kreuz_zehn)
+(farbe solo_trumpf_herz kreuz kreuz_koenig)
+(farbe solo_trumpf_herz kreuz kreuz_neun)
+
+(farbe solo_trumpf_herz pik pik_ass)
+(farbe solo_trumpf_herz pik pik_zehn)
+(farbe solo_trumpf_herz pik pik_koenig)
+(farbe solo_trumpf_herz pik pik_neun)
+
+(farbe solo_trumpf_herz karo karo_ass)
+(farbe solo_trumpf_herz karo karo_zehn)
+(farbe solo_trumpf_herz karo karo_koenig)
+(farbe solo_trumpf_herz karo karo_neun)
+
+
+(karte_trumpf solo_trumpf_herz herz_zehn kreuz_dame)
+(karte_trumpf solo_trumpf_herz kreuz_dame pik_dame)
+(karte_trumpf solo_trumpf_herz pik_dame herz_dame)
+(karte_trumpf solo_trumpf_herz herz_dame karo_dame)
+(karte_trumpf solo_trumpf_herz karo_dame kreuz_bube)
+(karte_trumpf solo_trumpf_herz kreuz_bube pik_bube)
+(karte_trumpf solo_trumpf_herz pik_bube herz_bube)
+(karte_trumpf solo_trumpf_herz herz_bube karo_bube)
+(karte_trumpf solo_trumpf_herz karo_bube herz_ass)
+(karte_trumpf solo_trumpf_herz herz_ass herz_koenig)
+(karte_trumpf solo_trumpf_herz herz_koenig herz_neun)
+
+(karte_trumpf solo_trumpf_herz kreuz_ass kreuz_zehn)
+(karte_trumpf solo_trumpf_herz kreuz_zehn kreuz_koenig)
+(karte_trumpf solo_trumpf_herz kreuz_koenig kreuz_neun)
+
+(karte_trumpf solo_trumpf_herz pik_ass pik_zehn)
+(karte_trumpf solo_trumpf_herz pik_zehn pik_koenig)
+(karte_trumpf solo_trumpf_herz pik_koenig pik_neun)
+
+(karte_trumpf solo_trumpf_herz karo_ass karo_zehn)
+(karte_trumpf solo_trumpf_herz karo_zehn karo_koenig)
+(karte_trumpf solo_trumpf_herz karo_koenig karo_neun)
+
+// solo trumpf karo (= normal)
+(<= (farbe solo_trumpf_karo ?x ?y)
+    (farbe normal ?x ?y)
+)
+(<= (karte_trumpf solo_trumpf_karo ?x ?y)
+    (karte_trumpf normal ?x ?y)
+)
+
+
+// solo trumpf ass (fleischlos) = kein trumpf
+(farbe solo_trumpf_ass kreuz kreuz_ass)
+(farbe solo_trumpf_ass kreuz kreuz_zehn)
+(farbe solo_trumpf_ass kreuz kreuz_koenig)
+(farbe solo_trumpf_ass kreuz kreuz_dame)
+(farbe solo_trumpf_ass kreuz kreuz_bube)
+(farbe solo_trumpf_ass kreuz kreuz_neun)
+
+(farbe solo_trumpf_ass pik pik_ass)
+(farbe solo_trumpf_ass pik pik_zehn)
+(farbe solo_trumpf_ass pik pik_koenig)
+(farbe solo_trumpf_ass pik pik_dame)
+(farbe solo_trumpf_ass pik pik_bube)
+(farbe solo_trumpf_ass pik pik_neun)
+
+(farbe solo_trumpf_ass herz herz_ass)
+(farbe solo_trumpf_ass herz herz_zehn)
+(farbe solo_trumpf_ass herz herz_koenig)
+(farbe solo_trumpf_ass herz herz_dame)
+(farbe solo_trumpf_ass herz herz_bube)
+(farbe solo_trumpf_ass herz herz_neun)
+
+(farbe solo_trumpf_ass karo karo_ass)
+(farbe solo_trumpf_ass karo karo_zehn)
+(farbe solo_trumpf_ass karo karo_koenig)
+(farbe solo_trumpf_ass karo karo_dame)
+(farbe solo_trumpf_ass karo karo_bube)
+(farbe solo_trumpf_ass karo karo_neun)
+
+
+(karte_trumpf solo_trumpf_ass kreuz_ass kreuz_zehn)
+(karte_trumpf solo_trumpf_ass kreuz_zehn kreuz_koenig)
+(karte_trumpf solo_trumpf_ass kreuz_koenig kreuz_dame)
+(karte_trumpf solo_trumpf_ass kreuz_dame kreuz_bube)
+(karte_trumpf solo_trumpf_ass kreuz_bube kreuz_neun)
+
+(karte_trumpf solo_trumpf_ass pik_ass pik_zehn)
+(karte_trumpf solo_trumpf_ass pik_zehn pik_koenig)
+(karte_trumpf solo_trumpf_ass pik_koenig pik_dame)
+(karte_trumpf solo_trumpf_ass pik_dame pik_bube)
+(karte_trumpf solo_trumpf_ass pik_bube pik_neun)
+
+(karte_trumpf solo_trumpf_ass herz_ass herz_zehn)
+(karte_trumpf solo_trumpf_ass herz_zehn herz_koenig)
+(karte_trumpf solo_trumpf_ass herz_koenig herz_dame)
+(karte_trumpf solo_trumpf_ass herz_dame herz_bube)
+(karte_trumpf solo_trumpf_ass herz_bube herz_neun)
+
+(karte_trumpf solo_trumpf_ass karo_ass karo_zehn)
+(karte_trumpf solo_trumpf_ass karo_zehn karo_koenig)
+(karte_trumpf solo_trumpf_ass karo_koenig karo_dame)
+(karte_trumpf solo_trumpf_ass karo_dame karo_bube)
+(karte_trumpf solo_trumpf_ass karo_bube karo_neun)
