@@ -1,6 +1,6 @@
 package usecase;
 
-import entity.Dataset;
+import dto.NotifyProviderCommand;
 import lombok.AllArgsConstructor;
 import port.ProviderCommunicationPort;
 
@@ -9,7 +9,7 @@ public class NotifyProviderUseCase {
 
 	private final ProviderCommunicationPort providerCommunicationPort;
 
-	public void notifyDataOwner(Dataset dataset) {
-		providerCommunicationPort.notifyProvider(dataset);
+	public void notifyProvider(NotifyProviderCommand command) {
+		providerCommunicationPort.notifyProvider(command.getUrl(), command.getDatasetId());
 	}
 }
