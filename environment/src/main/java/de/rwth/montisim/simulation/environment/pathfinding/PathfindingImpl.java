@@ -309,14 +309,6 @@ public class PathfindingImpl implements Pathfinding {
             }
         }
 
-        // get firstEdgeID
-        int firstEdgeID = lastEdgeID;
-        while (true) {
-            firstEdgeID = vertexPredecessorEdge[s.startNodeID];
-            if (firstEdgeID == startRef.roadSegmentID || firstEdgeID == startRef.reverseId)
-                break; // Reached start segment
-        }
-
         Path path = new Path(pointCount);
         int pos = path.getLength();
 
@@ -357,12 +349,10 @@ public class PathfindingImpl implements Pathfinding {
         while (true) {
             int tmp = lastEdgeID;
             lastEdgeID = vertexPredecessorEdge[s.startNodeID];
-            System.out.println("IN LOOP " + tmp + " " + lastEdgeID);
-            if (lastEdgeID == firstEdgeID)
-                break; // Reached start segment
-
             if (lastEdgeID == -1) return new Path(0);
             s = world.getWaySegment(lastEdgeID);
+            if (lastEdgeID == startRef.roadSegmentID || lastEdgeID == startRef.reverseId)
+                break; // Reached start segment
 
             inc = s.pointsStart < s.pointsEnd ? -1 : 1;
 
