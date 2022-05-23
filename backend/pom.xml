@@ -6,6 +6,7 @@
     <modules>
         <module>domain</module>
         <module>application</module>
+        <module>adapters</module>
     </modules>
     <groupId>de.thesis.consumer</groupId>
     <artifactId>backend</artifactId>
