@@ -18,7 +18,7 @@ public class DataRow {
 	private double longitude;
 	@CsvBindByName(column = "latitude")
 	private double latitude;
-	@CsvCustomBindByName(column = "gpsTime", converter = LocalDateConverter.class)
+	@CsvCustomBindByName(column = "gpsTime", converter = LocalDateTimeConverter.class)
 	private LocalDateTime gpsTime;
 	@CsvBindByName(column = "heading")
 	private double heading;
@@ -28,8 +28,6 @@ public class DataRow {
 	private int odometer;
 	@CsvBindByName(column = "totalFuelUsed")
 	private int totalFuelUsed;
-	@CsvBindByName(column = "validPosition")
-	private boolean validPosition;
-	@CsvCustomBindByName(column = "timestamp", converter = LocalDateConverter.class)
+	@CsvCustomBindByName(column = "timestamp", converter = LocalDateTimeConverter.class)
 	private LocalDateTime timestamp;
 }
