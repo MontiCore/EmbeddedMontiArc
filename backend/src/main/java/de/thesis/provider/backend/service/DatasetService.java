@@ -1,9 +1,6 @@
 package de.thesis.provider.backend.service;
 
-import de.thesis.provider.backend.DatasetCreateCommand;
-import de.thesis.provider.backend.InsuranceClient;
-import de.thesis.provider.backend.Offer;
-import de.thesis.provider.backend.Policy;
+import de.thesis.provider.backend.*;
 import de.thesis.provider.backend.csv.CsvReader;
 import de.thesis.provider.backend.csv.DataRow;
 import de.thesis.provider.backend.dto.CreatePolicyDto;
@@ -40,6 +37,10 @@ public class DatasetService {
 
 		System.err.println(offer.getPolicy().getRawValue());
 		client.offerDataset(offer);
+	}
+
+	public List<Dataset> getDatasets() {
+		return client.getOffers();
 	}
 
 	private List<DataRow> getDataRows(DatasetCreateCommand command) throws IOException {

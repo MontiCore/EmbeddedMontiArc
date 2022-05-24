@@ -5,7 +5,6 @@
     </div>
     <div class="d-flex justify-content-center flex-grow-1 gap-3">
         <router-link class="nav-item nav-link" to="/datasets"><div :class="{ 'active-route': isCurrentView('datasets')}"><Icon class="pe-1" icon="bx:data" style="font-size: 1.75rem" />Datasets</div></router-link>
-        <router-link class="nav-item nav-link" to="/marketplace"><div :class="{ 'active-route': isCurrentView('marketplace')}"><Icon class="pe-1" icon="eva:shopping-cart-outline" style="font-size: 1.75rem" />Marketplace</div></router-link>
     </div>
     <button class="btn p-0 text-end" style="min-width: 20rem" type="button">
       <div style="color: #ffa630">

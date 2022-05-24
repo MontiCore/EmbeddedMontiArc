@@ -7,7 +7,7 @@ import java.util.Map;
 
 public interface HttpClient {
 
-	<T> T get(String path,
+	<T> List<T> get(String path,
 			  MultiValueMap<String, String> queryParams,
 			  Class<T> responseType,
 			  MultiValueMap<String, String> headers);

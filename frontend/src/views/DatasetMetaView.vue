@@ -47,7 +47,7 @@ export default {
         file: this.$route.query.file,
         rows: this.$route.query.rows
       }).then(response => {
-        console.log('success')
+        this.$router.push('/datasets')
       })
     },
     titleChanged (title) {

@@ -1,19 +1,6 @@
 server:
   port: 8081
 
-spring:
-  datasource:
-    url: ${DATABASE_URL}
-    username: ${DATABASE_USER}
-    password: ${DATABASE_PASSWORD}
-
-  jpa:
-    show-sql:
-      true
-    hibernate:
-      ddl-auto: create
-      format_sql: true
-
 logging:
   level:
     org:
