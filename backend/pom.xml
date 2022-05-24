@@ -12,7 +12,7 @@
     <modules>
         <module>domain</module>
         <module>application</module>
-        <module>adapters</module>
+        <module>adapter</module>
         <module>infrastructure</module>
     </modules>
     <groupId>de.thesis.consumer</groupId>

@@ -15,7 +15,7 @@ public class AddOfferUseCase {
 	private final OfferPersistencePort offerPersistencePort;
 	private final PolicyManagementPort policyValidationPort;
 
-	public void offer(AddOfferCommand command) throws PolicyInvalidException {
+	public void addOffer(AddOfferCommand command) throws PolicyInvalidException {
 		if (!policyValidationPort.isValid(command.getPolicy())) {
 			throw new PolicyInvalidException("Policy invalid");
 		}
