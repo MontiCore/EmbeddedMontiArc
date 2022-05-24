@@ -1,0 +1,384 @@
+// 6 nimm!
+
+// Roles
+//----
+(role red)
+(role blue)
+(role green)
+(role yellow)
+//TODO Nötig?------------------------------------------------------------------------------------------------
+(role random)
+
+//Initial State
+//----
+//Before dealing cards
+
+//all, red, blue, green, yellow, random
+(init (control all))
+
+// 4 Stacks
+//(stack <stack#> <stack pos>)
+(init (stack a 1 0))
+(init (stack a 2 0))
+(init (stack a 3 0))
+(init (stack a 4 0))
+(init (stack a 5 0))
+(init (stack a 6 0))
+
+(init (stack b 1 0))
+(init (stack b 2 0))
+(init (stack b 3 0))
+(init (stack b 4 0))
+(init (stack b 5 0))
+(init (stack b 6 0))
+
+(init (stack c 1 0))
+(init (stack c 2 0))
+(init (stack c 3 0))
+(init (stack c 4 0))
+(init (stack c 5 0))
+(init (stack c 6 0))
+
+(init (stack d 1 0))
+(init (stack d 2 0))
+(init (stack d 3 0))
+(init (stack d 4 0))
+(init (stack d 5 0))
+(init (stack d 6 0))
+
+//4 Hands, 10 cards each
+// (hand <role> <pos> <card>)
+(init (hand red 1 0))
+(init (hand red 2 0))
+(init (hand red 3 0))
+(init (hand red 4 0))
+(init (hand red 5 0))
+(init (hand red 6 0))
+(init (hand red 7 0))
+(init (hand red 8 0))
+(init (hand red 9 0))
+(init (hand red 10 0))
+
+(init (hand blue 1 0))
+(init (hand blue 2 0))
+(init (hand blue 3 0))
+(init (hand blue 4 0))
+(init (hand blue 5 0))
+(init (hand blue 6 0))
+(init (hand blue 7 0))
+(init (hand blue 8 0))
+(init (hand blue 9 0))
+(init (hand blue 10 0))
+
+(init (hand green 1 0))
+(init (hand green 2 0))
+(init (hand green 3 0))
+(init (hand green 4 0))
+(init (hand green 5 0))
+(init (hand green 6 0))
+(init (hand green 7 0))
+(init (hand green 8 0))
+(init (hand green 9 0))
+(init (hand green 10 0))
+
+(init (hand yellow 1 0))
+(init (hand yellow 2 0))
+(init (hand yellow 3 0))
+(init (hand yellow 4 0))
+(init (hand yellow 5 0))
+(init (hand yellow 6 0))
+(init (hand yellow 7 0))
+(init (hand yellow 8 0))
+(init (hand yellow 9 0))
+(init (hand yellow 10 0))
+//TODO Hände random verteilen, Stapel auflegen-----------------------------------------------------------------------------------
+
+//------------
+//Stack Functions
+//------------
+(<= (isFull ?Stack)
+    (not (true(stack ?stack 6 0)))
+)
+//TODO: isMatchingStack soll bestimmen, ob die Karte korrekt angelegt wurde, wenn es einen kleineren Stack gibt, muss es der größte davon sein, ansonsten true für beliebigen Stack
+
+//Util Functions
+(<= (smallest ?card)
+    (true (inPlay ?player1 ?card1))
+    (true (inPlay ?player2 ?card2))
+    (true (inPlay ?player3 ?card3))
+    (true (inPlay ?player4 ?card4))
+    (distinct (?player1, ?player2, ?player3, ?player4))
+)
+
+//TODO anlegen der Karten-------------------------------------------------------------------------------------------------------------------------
+//ggf anlegzüge nachschieben (aka Control an niedrigsten Spieler geben, dann aufwärts)
+//(<= (cards_placed)
+//    (does red (play ?card1))
+//    (does blue (play ?card2))
+//    (does green (play ?card3))
+//    (does yellow (play ?card4))
+//    (placedFirst ?card1 ?card2 ?card3 ?card4 ?placed1)
+//    (placedSecond ?card1 ?card2 ?card3 ?card4 ?placed1 ?placed2)
+//    (placedThird ?card1 ?card2 ?card3 ?card4 ?placed1 ?placed2 ?placed3)
+//    (placedFourth ?card1 ?card2 ?card3 ?card4 ?placed1 ?placed2 ?placed3 ?placed4)
+//)*/
+
+//-------------
+//Legal
+//-------------
+
+//define legal moves
+//Karten dürfen nur gespielt werden, wenn alle spielen
+(<= (legal ?player (play ?card))
+    (true (control all))
+    (true(hand ?player ?pos ?card))
+)
+
+(<= (legal ?player (put ?card ?stack))
+    (true (control ?player))
+    (true (inPlay ?player ?card))
+    (isMatchingStack ?card ?stack)
+)
+//TODO-----------------------------------------------------------------------------------------------------------------------
+
+//-------------
+//Build next state
+//-------------
+
+//TODO Gespielte Karten als inPlay codieren
+//TODO inPlay kopieren bis angelegt
+//TODO niedrigste Karte in play finden, control an den Spieler
+//TODO wenn keine Karte in Play, control => all
+
+//TODO: put Function
+
+//handle inPlay flags
+(<= (next (inPlay ?player ?card))
+    (inPlay ?player ?card)
+    (not (does ?player (put ?card ?stack)))
+)
+
+(<= (next (inPlay ?player 1000))
+    (does ?player (put ?card ?stack))
+)
+
+(<= (next (inPlay ?player 1000))
+    (not (does ?player (play ?card)))
+    (distinct ?card1 1000)
+    (not (inPlay ?player ?card1))
+)
+
+(<= (next (control ?player))
+    (inPlay ?player ?card)
+    (not (does ?player (put ?card ?stack)))
+    (smallest ?card)
+)
+
+//Hands
+//Copy all non played cards
+(<= (next (hand ?player ?pos ?card))
+    (true (hand ?player ?pos ?card))
+    (not (does ?player (play ?card)))
+)
+//Set all played cards in hand to zero
+(<= (next (hand ?player ?pos 0))
+    (true (hand ?player ?pos ?card))
+    (does ?player (play ?card))
+)
+
+//points
+(<= (next (points ?player ?card))
+    (true (points ?player ?card))
+)
+
+//Copy Stacks and remove overflow
+//Copy non full stacks 1 to 1
+(<= (next (stack ?Stack ?pos ?card))
+    (true (stack ?Stack ?pos ?card))
+    (not (isFull ?Stack))
+)
+
+//Copy slots 6-9 into 1-4 if stack is full if they exist, If not write 0
+(<= (next (stack ?Stack 1 ?card))
+    (true (stack ?Stack 6 ?card))
+    (isFull (?Stack))
+)
+
+(<= (next (stack ?Stack 2 ?card))
+    (true (stack ?Stack 7 ?card))
+    (isFull (?Stack))
+)
+
+(<= (next (stack ?Stack 2 0))
+    (not(true (stack ?Stack 7 ?card)))
+    (isFull (?Stack))
+)
+
+(<= (next (stack ?Stack 3 ?card))
+    (true (stack ?Stack 8 ?card))
+    (isFull (?Stack))
+)
+
+(<= (next (stack ?Stack 3 0))
+    (not(true (stack ?Stack 8 ?card)))
+    (isFull (?Stack))
+)
+
+(<= (next (stack ?Stack 4 ?card))
+    (true (stack ?Stack 9 ?card))
+    (isFull (?Stack))
+)
+
+(<= (next (stack ?Stack 4 0))
+    (not(true (stack ?Stack 9 ?card)))
+    (isFull (?Stack))
+)
+
+//Empty slots 5 and 6 if stack was full
+(<= (next (stack ?Stack 5 0))
+    (isFull (?Stack))
+)
+
+(<= (next (stack ?Stack 6 0))
+    (isFull (?Stack))
+)
+
+//apply Points gained by moving pos 1-5 to points
+(<= (next (points ?player ?card1))
+    (true (stack ?Stack 6 ?card))
+    (does ?player (play ?card))
+    (true (stack ?Stack 1 ?card1))
+)
+
+(<= (next (points ?player ?card2))
+    (true (stack ?Stack 6 ?card))
+    (does ?player (play ?card))
+    (true (stack ?Stack 2 ?card2))
+)
+
+(<= (next (points ?player ?card3))
+    (true (stack ?Stack 6 ?card))
+    (does ?player (play ?card))
+    (true (stack ?Stack 3 ?card3))
+)
+
+(<= (next (points ?player ?card4))
+    (true (stack ?Stack 6 ?card))
+    (does ?player (play ?card))
+    (true (stack ?Stack 4 ?card4))
+)
+
+(<= (next (points ?player ?card5))
+    (true (stack ?Stack 6 ?card))
+    (does ?player (play ?card))
+    (true (stack ?Stack 5 ?card5))
+)
+
+//------------
+//Constants
+//------------
+//(isCard <number> <points>)
+(isCard 1 1)
+(isCard 2 1)
+(isCard 3 1)
+(isCard 4 1)
+(isCard 5 2)
+(isCard 6 1)
+(isCard 7 1)
+(isCard 8 1)
+(isCard 9 1)
+(isCard 10 3)
+(isCard 11 5)
+(isCard 12 1)
+(isCard 13 1)
+(isCard 14 1)
+(isCard 15 2)
+(isCard 16 1)
+(isCard 17 1)
+(isCard 18 1)
+(isCard 19 1)
+(isCard 20 3)
+(isCard 21 1)
+(isCard 22 5)
+(isCard 23 1)
+(isCard 24 1)
+(isCard 25 2)
+(isCard 26 1)
+(isCard 27 1)
+(isCard 28 1)
+(isCard 29 1)
+(isCard 30 3)
+(isCard 31 1)
+(isCard 32 1)
+(isCard 33 5)
+(isCard 34 1)
+(isCard 35 2)
+(isCard 36 1)
+(isCard 37 1)
+(isCard 38 1)
+(isCard 39 1)
+(isCard 40 3)
+(isCard 41 1)
+(isCard 42 1)
+(isCard 43 1)
+(isCard 44 5)
+(isCard 45 2)
+(isCard 46 1)
+(isCard 47 1)
+(isCard 48 1)
+(isCard 49 1)
+(isCard 50 3)
+(isCard 51 1)
+(isCard 52 1)
+(isCard 53 1)
+(isCard 54 1)
+(isCard 55 7)
+(isCard 56 1)
+(isCard 57 1)
+(isCard 58 1)
+(isCard 59 1)
+(isCard 60 3)
+(isCard 61 1)
+(isCard 62 1)
+(isCard 63 1)
+(isCard 64 1)
+(isCard 65 2)
+(isCard 66 5)
+(isCard 67 1)
+(isCard 68 1)
+(isCard 69 1)
+(isCard 70 3)
+(isCard 71 1)
+(isCard 72 1)
+(isCard 73 1)
+(isCard 74 1)
+(isCard 75 2)
+(isCard 76 1)
+(isCard 77 5)
+(isCard 78 1)
+(isCard 79 1)
+(isCard 80 3)
+(isCard 81 1)
+(isCard 82 1)
+(isCard 83 1)
+(isCard 84 1)
+(isCard 85 2)
+(isCard 86 1)
+(isCard 87 1)
+(isCard 88 5)
+(isCard 89 1)
+(isCard 90 3)
+(isCard 91 1)
+(isCard 92 1)
+(isCard 93 1)
+(isCard 94 1)
+(isCard 95 2)
+(isCard 96 1)
+(isCard 97 1)
+(isCard 98 1)
+(isCard 99 5)
+(isCard 100 3)
+(isCard 101 1)
+(isCard 102 1)
+(isCard 103 1)
+(isCard 104 1)
