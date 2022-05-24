@@ -1,6 +1,5 @@
 package de.thesis.consumer.backend.persistence.entity;
 
-import com.fasterxml.jackson.annotation.JsonBackReference;
 import com.fasterxml.jackson.annotation.JsonIgnore;
 import lombok.Getter;
 import lombok.Setter;
@@ -24,7 +23,6 @@ public class DataRowEntity {
 	private int speed;
 	private int odometer;
 	private int totalFuelUsed;
-	private boolean validPosition;
 	private LocalDateTime timestamp;
 	@ManyToOne
 	@JoinColumn(name = "dataset")

@@ -17,6 +17,5 @@ public class DataRow {
 	private int speed;
 	private int odometer;
 	private int totalFuelUsed;
-	private boolean validPosition;
 	private LocalDateTime timestamp;
 }
