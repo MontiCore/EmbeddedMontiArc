@@ -1,24 +1,26 @@
-package usecase;
+package usecases;
 
+import commands.BuyOfferCommand;
 import entity.Dataset;
 import entity.Offer;
 import lombok.AllArgsConstructor;
-import port.DatasetPersistencePort;
-import port.OfferPersistencePort;
-import port.PolicyManagementPort;
+import ports.DatasetPersistencePort;
+import ports.OfferPersistencePort;
+import ports.PolicyManagementPort;
 
 import java.time.LocalDateTime;
 import java.util.UUID;
 
 @AllArgsConstructor
-public class BuyOfferUseCase {
+public class BuyOfferUseCase implements CommandHandler<BuyOfferCommand> {
 
 	private OfferPersistencePort offerPersistencePort;
 	private DatasetPersistencePort datasetPersistencePort;
 	private PolicyManagementPort policyManagementPort;
 
-	public void buyOffer(UUID offerId) {
-		Offer offer = offerPersistencePort.findBy(offerId);
+	@Override
+	public void handle(BuyOfferCommand command) {
+		Offer offer = offerPersistencePort.findBy(command.getOfferId());
 		policyManagementPort.deployPolicy(offer.getPolicy());
 		Dataset dataset = mapOfferToDataset(offer);
 		datasetPersistencePort.save(dataset);

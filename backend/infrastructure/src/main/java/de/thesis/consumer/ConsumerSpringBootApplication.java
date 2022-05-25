@@ -7,13 +7,13 @@ import org.springframework.context.annotation.ComponentScan;
 import org.springframework.data.jpa.repository.config.EnableJpaRepositories;
 
 @SpringBootApplication
-@ComponentScan(basePackages = {"presentation.controller", "de.thesis.consumer.config"})
+@ComponentScan(basePackages = {"presentation.controllers", "persistence", "de.thesis.consumer.config"})
 @EnableJpaRepositories(basePackages = {"persistence.repository"})
 @EntityScan(basePackages = "persistence.entity")
-public class Main {
+public class ConsumerSpringBootApplication {
 
 	public static void main(String[] args) {
-		SpringApplication.run(Main.class, args);
+		SpringApplication.run(ConsumerSpringBootApplication.class, args);
 	}
 
 }

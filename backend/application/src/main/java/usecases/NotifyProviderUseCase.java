@@ -1,8 +1,8 @@
-package usecase;
+package usecases;
 
-import dto.NotifyProviderCommand;
+import commands.NotifyProviderCommand;
 import lombok.AllArgsConstructor;
-import port.ProviderCommunicationPort;
+import ports.ProviderCommunicationPort;
 
 @AllArgsConstructor
 public class NotifyProviderUseCase {

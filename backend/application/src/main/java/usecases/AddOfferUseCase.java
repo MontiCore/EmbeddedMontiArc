@@ -1,25 +1,20 @@
-package usecase;
+package usecases;
 
-import dto.AddOfferCommand;
+import commands.AddOfferCommand;
 import entity.Offer;
-import exception.PolicyInvalidException;
 import lombok.AllArgsConstructor;
-import port.OfferPersistencePort;
-import port.PolicyManagementPort;
+import ports.OfferPersistencePort;
 
 import java.util.UUID;
 
+
 @AllArgsConstructor
-public class AddOfferUseCase {
+public class AddOfferUseCase implements CommandHandler<AddOfferCommand> {
 
+	// private final DataRowPersistencePort dataRowPersistencePort;
 	private final OfferPersistencePort offerPersistencePort;
-	private final PolicyManagementPort policyValidationPort;
 
-	public void addOffer(AddOfferCommand command) throws PolicyInvalidException {
-		if (!policyValidationPort.isValid(command.getPolicy())) {
-			throw new PolicyInvalidException("Policy invalid");
-		}
-
+	public void handle(AddOfferCommand command) {
 		Offer offer = new Offer(
 				UUID.randomUUID(),
 				command.getTitle(),
@@ -32,6 +27,7 @@ public class AddOfferUseCase {
 				command.getLoggingUrl()
 		);
 
+		// dataRowPersistencePort.saveAll(offer.getData());
 		offerPersistencePort.save(offer);
 	}
 }

@@ -1,4 +1,4 @@
-package exception;
+package exceptions;
 
 public class PolicyInvalidException extends Exception {
 	public PolicyInvalidException(String errorMessage) {

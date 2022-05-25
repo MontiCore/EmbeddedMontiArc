@@ -1,4 +1,4 @@
-package dto;
+package commands;
 
 import entity.DataRow;
 import entity.Policy;
@@ -8,7 +8,7 @@ import java.time.LocalDate;
 import java.util.List;
 
 @Value
-public class AddOfferCommand {
+public class AddOfferCommand implements Command {
 	String title;
 	String provider;
 	String description;

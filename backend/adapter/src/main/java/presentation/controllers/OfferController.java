@@ -1,13 +1,14 @@
-package presentation.controller;
+package presentation.controllers;
 
-import dto.AddOfferCommand;
-import exception.PolicyInvalidException;
+import commands.AddOfferCommand;
+import exceptions.UseCaseException;
 import lombok.AllArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.MediaType;
 import org.springframework.web.bind.annotation.*;
-import usecase.AddOfferUseCase;
+import org.springframework.web.server.ResponseStatusException;
+import usecases.AddOfferUseCase;
 
 @RestController
 @RequestMapping("/offers")
@@ -22,9 +23,9 @@ public class OfferController {
 	@ResponseStatus(HttpStatus.OK)
 	public void offer(@RequestBody AddOfferCommand offer) {
 		try {
-			addOfferUseCase.addOffer(offer);
-		} catch (PolicyInvalidException e) {
-			System.err.println("Policy not valid");
+			addOfferUseCase.handle(offer);
+		} catch (UseCaseException exception) {
+			throw new ResponseStatusException(HttpStatus.BAD_REQUEST, "Dataset could not be offered", exception);
 		}
 	}
 }

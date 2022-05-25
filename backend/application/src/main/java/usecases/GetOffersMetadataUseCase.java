@@ -1,8 +1,8 @@
-package usecase;
+package usecases;
 
 import entity.Offer;
 import lombok.AllArgsConstructor;
-import port.OfferPersistencePort;
+import ports.OfferPersistencePort;
 
 @AllArgsConstructor
 public class GetOffersMetadataUseCase {

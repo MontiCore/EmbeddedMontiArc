@@ -1,4 +1,4 @@
-package dto;
+package commands;
 
 import lombok.Value;
 
