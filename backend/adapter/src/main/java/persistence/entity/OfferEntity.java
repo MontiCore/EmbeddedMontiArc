@@ -26,7 +26,6 @@ public class OfferEntity {
 	private double price;
 
 	@OneToOne(cascade = CascadeType.ALL)
-	@JoinColumn(referencedColumnName = "id")
 	private PolicyEntity policy;
 
 	private LocalDate expiresOn;

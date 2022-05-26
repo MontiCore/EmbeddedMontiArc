@@ -1,7 +1,6 @@
 package persistence.entity;
 
 
-import com.fasterxml.jackson.annotation.JsonIgnore;
 import lombok.Getter;
 import lombok.Setter;
 
@@ -17,13 +16,5 @@ public class PolicyEntity {
 
 	@Column(columnDefinition = "TEXT")
 	private String rawValue;
-
-	@OneToOne(mappedBy = "policy")
-	@JsonIgnore
-	private OfferEntity offer;
-
-	@OneToOne(mappedBy = "policy")
-	@JsonIgnore
-	private DatasetEntity dataset;
 }
 

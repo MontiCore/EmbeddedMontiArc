@@ -11,7 +11,7 @@ import java.util.List;
 import java.util.UUID;
 
 @Entity
-@Table(name = "policy")
+@Table(name = "dataset")
 @Getter
 @Setter
 public class DatasetEntity {
@@ -32,10 +32,8 @@ public class DatasetEntity {
 	private LocalDate expiresOn;
 
 	@OneToOne(cascade = CascadeType.ALL)
-	@JoinColumn(referencedColumnName = "id")
 	private PolicyEntity policy;
 
 	@OneToMany(mappedBy = "dataset", cascade = CascadeType.ALL)
 	private List<DataRowEntity> data;
 }
-
