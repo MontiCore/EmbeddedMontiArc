@@ -9,14 +9,8 @@ import java.util.UUID;
 
 @Data
 public class Dataset {
-	UUID id;
-	String title;
-	String provider;
-	String description;
-	double price;
-	Policy policy;
-	LocalDateTime boughtAt;
-	LocalDate expiresOn;
-	List<DataRow> data;
-	String loggingUrl;
+	private UUID id;
+	private Metadata metadata;
+	private List<DataRow> data;
+	private LocalDateTime boughtAt;
 }

@@ -18,22 +18,11 @@ public class DatasetEntity {
 	@Id
 	private UUID id;
 
-	private String title;
-
-	private String provider;
-
-	@Column(columnDefinition = "TEXT")
-	private String description;
-
-	private double price;
-
-	private LocalDateTime boughtAt;
-
-	private LocalDate expiresOn;
-
 	@OneToOne(cascade = CascadeType.ALL)
-	private PolicyEntity policy;
+	private MetadataEntity metadata;
 
 	@OneToMany(mappedBy = "dataset", cascade = CascadeType.ALL)
 	private List<DataRowEntity> data;
+
+	private LocalDateTime boughtAt;
 }

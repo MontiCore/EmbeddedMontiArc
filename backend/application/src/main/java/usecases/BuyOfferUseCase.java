@@ -21,7 +21,7 @@ public class BuyOfferUseCase implements CommandHandler<BuyOfferCommand, Dataset>
 	@Override
 	public Dataset handle(BuyOfferCommand command) {
 		Offer offer = offerPersistencePort.findBy(command.getOfferId());
-		// policyManagementPort.deployPolicy(offer.getPolicy());
+		policyManagementPort.deployPolicy(offer.getMetadata().getPolicy());
 		Dataset dataset = createDatasetFromOffer(offer);
 		dataset.setBoughtAt(LocalDateTime.now());
 		datasetPersistencePort.save(dataset);
@@ -32,6 +32,8 @@ public class BuyOfferUseCase implements CommandHandler<BuyOfferCommand, Dataset>
 	private Dataset createDatasetFromOffer(Offer offer) {
 		Dataset dataset = new Dataset();
 		dataset.setId(UUID.randomUUID());
+		dataset.setMetadata(offer.getMetadata());
+		dataset.setData(offer.getData());
 
 		return dataset;
 	}

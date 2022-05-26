@@ -11,7 +11,7 @@ import java.util.UUID;
 @Data
 @AllArgsConstructor
 public class Offer {
-	UUID id;
-	Metadata metadata;
-	List<DataRow> data;
+	private UUID id;
+	private Metadata metadata;
+	private List<DataRow> data;
 }
