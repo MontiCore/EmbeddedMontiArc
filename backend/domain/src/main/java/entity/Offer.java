@@ -12,12 +12,6 @@ import java.util.UUID;
 @AllArgsConstructor
 public class Offer {
 	UUID id;
-	String title;
-	String provider;
-	String description;
-	double price;
-	Policy policy;
-	LocalDate expiresOn;
+	Metadata metadata;
 	List<DataRow> data;
-	String loggingUrl;
 }
