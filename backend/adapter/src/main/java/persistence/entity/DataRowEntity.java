@@ -32,5 +32,5 @@ public class DataRowEntity {
 	@ManyToOne
 	@JoinColumn(name = "dataset")
 	@JsonIgnore
-	private OfferEntity dataset;
+	private DatasetEntity dataset;
 }
