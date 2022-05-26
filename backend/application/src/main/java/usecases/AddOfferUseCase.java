@@ -9,12 +9,12 @@ import java.util.UUID;
 
 
 @AllArgsConstructor
-public class AddOfferUseCase implements CommandHandler<AddOfferCommand> {
+public class AddOfferUseCase implements CommandHandler<AddOfferCommand, Offer> {
 
 	// private final DataRowPersistencePort dataRowPersistencePort;
 	private final OfferPersistencePort offerPersistencePort;
 
-	public void handle(AddOfferCommand command) {
+	public Offer handle(AddOfferCommand command) {
 		Offer offer = new Offer(
 				UUID.randomUUID(),
 				command.getTitle(),
@@ -28,5 +28,7 @@ public class AddOfferUseCase implements CommandHandler<AddOfferCommand> {
 		);
 
 		offerPersistencePort.save(offer);
+
+		return offer;
 	}
 }

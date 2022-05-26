@@ -12,19 +12,21 @@ import java.time.LocalDateTime;
 import java.util.UUID;
 
 @AllArgsConstructor
-public class BuyOfferUseCase implements CommandHandler<BuyOfferCommand> {
+public class BuyOfferUseCase implements CommandHandler<BuyOfferCommand, Dataset> {
 
-	private OfferPersistencePort offerPersistencePort;
 	private DatasetPersistencePort datasetPersistencePort;
+	private OfferPersistencePort offerPersistencePort;
 	private PolicyManagementPort policyManagementPort;
 
 	@Override
-	public void handle(BuyOfferCommand command) {
+	public Dataset handle(BuyOfferCommand command) {
 		Offer offer = offerPersistencePort.findBy(command.getOfferId());
 		policyManagementPort.deployPolicy(offer.getPolicy());
 		Dataset dataset = createDatasetFromOffer(offer);
 		dataset.setBoughtAt(LocalDateTime.now());
 		datasetPersistencePort.save(dataset);
+
+		return dataset;
 	}
 
 	private Dataset createDatasetFromOffer(Offer offer) {

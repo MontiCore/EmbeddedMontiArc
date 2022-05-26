@@ -1,10 +1,11 @@
 package entity;
 
+import lombok.Data;
 import lombok.Value;
 
 import java.time.LocalDateTime;
 
-@Value
+@Data
 public class DataRow {
 	Long id;
 	String dayID;

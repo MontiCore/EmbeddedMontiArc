@@ -29,6 +29,5 @@ public class PolicyManagementPointAdapter implements PolicyManagementPort {
 		} catch (Exception e) {
 			e.printStackTrace();
 		}
-
 	}
 }

@@ -19,7 +19,10 @@ public class SpringDatasetRepositoryAdapter implements DatasetPersistencePort {
 
 	@Override
 	public void save(Dataset dataset) {
-		repository.save(mapper.mapToPersistenceEntity(dataset));
+		DatasetEntity datasetEntity = mapper.mapToPersistenceEntity(dataset);
+		datasetEntity.getData().forEach(dataRowEntity -> dataRowEntity.setDataset(datasetEntity));
+
+		repository.save(datasetEntity);
 	}
 
 	@Override
