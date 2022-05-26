@@ -27,7 +27,6 @@ public class AddOfferUseCase implements CommandHandler<AddOfferCommand> {
 				command.getLoggingUrl()
 		);
 
-		// dataRowPersistencePort.saveAll(offer.getData());
 		offerPersistencePort.save(offer);
 	}
 }

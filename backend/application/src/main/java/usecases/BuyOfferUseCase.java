@@ -22,22 +22,23 @@ public class BuyOfferUseCase implements CommandHandler<BuyOfferCommand> {
 	public void handle(BuyOfferCommand command) {
 		Offer offer = offerPersistencePort.findBy(command.getOfferId());
 		policyManagementPort.deployPolicy(offer.getPolicy());
-		Dataset dataset = mapOfferToDataset(offer);
+		Dataset dataset = createDatasetFromOffer(offer);
+		dataset.setBoughtAt(LocalDateTime.now());
 		datasetPersistencePort.save(dataset);
 	}
 
-	private Dataset mapOfferToDataset(Offer offer) {
-		return new Dataset(
-				UUID.randomUUID(),
-				offer.getTitle(),
-				offer.getProvider(),
-				offer.getDescription(),
-				offer.getPrice(),
-				offer.getPolicy(),
-				LocalDateTime.now(),
-				offer.getExpiresOn(),
-				offer.getData(),
-				offer.getLoggingUrl()
-		);
+	private Dataset createDatasetFromOffer(Offer offer) {
+		Dataset dataset = new Dataset();
+		dataset.setId(UUID.randomUUID());
+		dataset.setTitle(offer.getTitle());
+		dataset.setProvider(offer.getProvider());
+		dataset.setDescription(offer.getDescription());
+		dataset.setPrice(offer.getPrice());
+		dataset.setPolicy(offer.getPolicy());
+		dataset.setExpiresOn(offer.getExpiresOn());
+		dataset.setData(offer.getData());
+		dataset.setLoggingUrl(offer.getLoggingUrl());
+
+		return dataset;
 	}
 }

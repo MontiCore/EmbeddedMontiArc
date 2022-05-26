@@ -1,18 +1,20 @@
 package persistence.entity;
 
+
 import lombok.Getter;
 import lombok.Setter;
 
 import javax.persistence.*;
 import java.time.LocalDate;
+import java.time.LocalDateTime;
 import java.util.List;
 import java.util.UUID;
 
 @Entity
-@Table(name = "offer")
+@Table(name = "policy")
 @Getter
 @Setter
-public class OfferEntity {
+public class DatasetEntity {
 	@Id
 	private UUID id;
 
@@ -25,12 +27,15 @@ public class OfferEntity {
 
 	private double price;
 
+	private LocalDateTime boughtAt;
+
+	private LocalDate expiresOn;
+
 	@OneToOne(cascade = CascadeType.ALL)
 	@JoinColumn(referencedColumnName = "id")
 	private PolicyEntity policy;
 
-	private LocalDate expiresOn;
-
-	@OneToMany(mappedBy = "offer", cascade = CascadeType.ALL)
+	@OneToMany(mappedBy = "dataset", cascade = CascadeType.ALL)
 	private List<DataRowEntity> data;
 }
+

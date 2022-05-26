@@ -20,11 +20,6 @@ public class CompositionConfig {
 		return new AddOfferUseCase(offerPersistencePort);
 	}
 
-//	@Bean
-//	public DataRowPersistencePort dataRowPersistencePort(JacksonDataRowMapper mapper, SpringDataRowRepository repository) {
-//		return new SpringDataRowRepositoryAdapter(mapper, repository);
-//	}
-
 	@Bean
 	public OfferPersistencePort offerPersistencePort(JacksonOfferMapper mapper, SpringOfferRepository repository) {
 		return new SpringOfferRepositoryAdapter(mapper, repository);
@@ -38,11 +33,6 @@ public class CompositionConfig {
 	@Bean
 	PolicyManagementPort policyManagementPort() {
 		return new PolicyManagementPort() {
-			@Override
-			public boolean isValid(Policy policy) {
-				return true;
-			}
-
 			@Override
 			public void deployPolicy(Policy policy) {
 

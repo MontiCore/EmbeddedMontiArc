@@ -21,5 +21,9 @@ public class PolicyEntity {
 	@OneToOne(mappedBy = "policy")
 	@JsonIgnore
 	private OfferEntity offer;
+
+	@OneToOne(mappedBy = "policy")
+	@JsonIgnore
+	private OfferEntity dataset;
 }
 

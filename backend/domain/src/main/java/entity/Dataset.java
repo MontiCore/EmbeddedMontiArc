@@ -1,13 +1,13 @@
 package entity;
 
-import lombok.Value;
+import lombok.Data;
 
 import java.time.LocalDate;
 import java.time.LocalDateTime;
 import java.util.List;
 import java.util.UUID;
 
-@Value
+@Data
 public class Dataset {
 	UUID id;
 	String title;

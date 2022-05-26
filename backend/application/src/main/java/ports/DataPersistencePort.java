@@ -1,12 +1,18 @@
 package ports;
 
 import entity.DataRow;
+import entity.Dataset;
 
+import javax.xml.crypto.Data;
 import java.util.UUID;
 
 public interface DataPersistencePort {
 
-	Iterable<DataRow> findAllByOfferId(UUID offerId);
+	Iterable<Dataset> findById(UUID id);
 
-	void saveAll(Iterable<DataRow> data);
+	Iterable<Dataset> findAll();
+
+	void save(Dataset dataset);
+
+
 }

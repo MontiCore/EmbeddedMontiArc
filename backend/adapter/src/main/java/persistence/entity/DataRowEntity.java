@@ -23,9 +23,14 @@ public class DataRowEntity {
 	private int odometer;
 	private int totalFuelUsed;
 	private LocalDateTime timestamp;
+
 	@ManyToOne
 	@JoinColumn(name = "offer")
 	@JsonIgnore
 	private OfferEntity offer;
 
+	@ManyToOne
+	@JoinColumn(name = "dataset")
+	@JsonIgnore
+	private OfferEntity dataset;
 }

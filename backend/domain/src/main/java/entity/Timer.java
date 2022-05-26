@@ -1,8 +1,8 @@
 package entity;
 
-import lombok.Value;
+import lombok.Data;
 
-@Value
+@Data
 public class Timer {
 	String id;
 	String rawValue;
