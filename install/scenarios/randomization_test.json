@@ -1,6 +1,6 @@
 {
     "name": "java_autopilot",
-    "map_name": "aachen",
+    "map_name": "Aachen2",
     "max_duration": [60,0],
     "tick_duration": [0,10000000],
     "randomization": [
@@ -23,7 +23,7 @@
                 ]
             },
             "components": [
-                { 
+                {
                     "type": "constant_bus",
                     "connected_to": [
                         "SteeringActuator",
