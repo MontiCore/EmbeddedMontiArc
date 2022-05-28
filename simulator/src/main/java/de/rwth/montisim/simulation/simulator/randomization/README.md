@@ -54,8 +54,8 @@ This is done to encourage the vehicles forming their own platoons and in the end
 |------------------------|----------|---------------|----------------------------------------------------------|--------------------------------|
 | minNumberOfVehicles    | `int`    | 2             | Minimum number of vehicles                               | `"minNumberOfVehicles": 2`     | 
 | maxNumberOfVehicles    | `int`    | 20            | Maximum number of vehicles                               | `"maxNumberOfVehicles": 20`    | 
-| minDistanceBtwVehicles | `double` | 5             | Minimum distance between the spawn positions of vehicles | `"minDistanceBtwVehicles": 5`  | 
-| maxDistanceBtwVehicles | `double` | 15            | Maximum distance between the spawn positions of vehicles | `"maxDistanceBtwVehicles": 15` | 
+| minDistanceBtwVehicles | `double` | 10            | Minimum distance between the spawn positions of vehicles | `"minDistanceBtwVehicles": 10` | 
+| maxDistanceBtwVehicles | `double` | 20            | Maximum distance between the spawn positions of vehicles | `"maxDistanceBtwVehicles": 20` | 
 | minGoalDistance        | `double` | 500           | Minimum length of the path                               | `"minGoalDistance": 500`       | 
 | maxGoalDistance        | `double` | 1000          | Maximum length of the path                               | `"maxGoalDistance": 20`        | 
 

@@ -285,24 +285,22 @@ public class PlatooningStrategy extends RandomizationStrategy {
             newVehicle.start_coords = Optional.of(generatedStartPoses.get(i).getKey());
             System.out.println(generatedStartPoses.get(i).getValue());
             newVehicle.start_orientation = generatedStartPoses.get(i).getValue();
+
             TaskProperties task = new TaskProperties();
+            PathGoalProperties goal = new PathGoalProperties();
+            goal.ltl_operator = LTLOperator.EVENTUALLY;
 
             // add path points
             for (Node node : generatedPath) {
-                PathGoalProperties goal = new PathGoalProperties();
-                goal.ltl_operator = LTLOperator.EVENTUALLY;
                 goal.reach(node.point.asVec2());
-                task.addGoal(goal);
             }
 
             // add end point
-            PathGoalProperties goal = new PathGoalProperties();
-            goal.ltl_operator = LTLOperator.EVENTUALLY;
             Vec2 endPoint = new Vec2();
             this.converter.coordsToMeters(generatedEndPoses.get(i).getKey(), endPoint);
             goal.reach(endPoint);
-            task.addGoal(goal);
 
+            task.addGoal(goal);
             newVehicle.task = task;
 
             // Add the vehicle to the list

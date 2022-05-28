@@ -16,8 +16,8 @@ public class PlatooningStrategyProperties extends RandomizationProperties {
 
     public int minNumberOfVehicles = 2;
     public int maxNumberOfVehicles = 20;
-    public double minDistanceBtwVehicles = 5;
-    public double maxDistanceBtwVehicles = 15;
+    public double minDistanceBtwVehicles = 10;
+    public double maxDistanceBtwVehicles = 20;
     public double minGoalDistance = 500;
     public double maxGoalDistance = 1000;
 

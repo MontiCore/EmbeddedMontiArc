@@ -3,6 +3,7 @@ package de.rwth.montisim.simulation.vehicle.navigation;
 
 import java.time.*;
 import java.util.*;
+import java.util.stream.Collectors;
 
 import de.rwth.montisim.commons.dynamicinterface.*;
 import de.rwth.montisim.commons.map.Path;
@@ -117,6 +118,25 @@ public class Navigation extends EEComponent {
         }
     }
 
+    /**
+     * Set the whole path as targets. Will later calculate a trajectory through this given path.
+     * @param targets the order of points to generate the trajectory through
+     */
+    public void setTargetsPos(Vector<Vec2> targets) { setTargetsPos(targets, eesystem.simulator.getSimulationTime()); }
+
+    /**
+     * Set the whole path as targets. Will later calculate a trajectory through this given path.
+     * @param targets the order of points to generate the trajectory through
+     * @param time
+     */
+    public void setTargetsPos(Vector<Vec2> targets, Instant time) {
+        this.targets.clear();
+        this.targets.addAll(targets);
+        currentPath = Optional.empty();
+        currentTrajSize = 0;
+        sendMessage(time, currentTargetPosMsg, targets.firstElement());
+    }
+
     public void pushTargetPos(Vec2 target) {
         pushTargetPos(target, eesystem.simulator.getSimulationTime());
     }
@@ -142,7 +162,38 @@ public class Navigation extends EEComponent {
             return;
         }
         try {
-            currentPath = Optional.of(pathfinding.findShortestPath(currentPos.get(), targets.peek()));
+            // currentPath = Optional.of(pathfinding.findShortestPath(currentPos.get(), targets.peek()));
+
+            Path path = new Path(0);
+
+            // create whole path by combining all sub paths between the adjacent targets
+            Vec2 lastPos = currentPos.get();
+            for(Vec2 target : targets) {
+                Path subPath = pathfinding.findShortestPath(lastPos, target);
+
+                Path newPath = new Path(path.getLength() + subPath.getLength());
+
+                // copy existing path
+                for (int index = 0; index < path.getLength(); index++) {
+                    Vec2 tmp = new Vec2();
+                    path.get(index, tmp);
+                    newPath.set(index, tmp.x, tmp.y);
+                }
+
+                // append the sub path
+                for (int index = 0; index < subPath.getLength(); index++) {
+                    Vec2 tmp = new Vec2();
+                    subPath.get(index, tmp);
+                    newPath.set(index + path.getLength(), tmp.x, tmp.y);
+                }
+
+                path = newPath;
+
+                lastPos = target;
+            }
+
+            currentPath = Optional.of(path);
+
             updateTrajectory(time);
         } catch (Exception e) {
             e.printStackTrace();

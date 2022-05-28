@@ -9,6 +9,7 @@ import de.rwth.montisim.simulation.vehicle.navigation.Navigation;
 import de.rwth.montisim.simulation.vehicle.task.Goal;
 
 import java.util.List;
+import java.util.ListIterator;
 import java.util.Optional;
 import java.util.Vector;
 
@@ -62,7 +63,7 @@ public class PathGoal extends Goal {
             double dist = v.physicalObject.pos.asVec2().distance(dest);
 
             if (dist <= properties.range) {
-                navv.popTargetPos();
+                navv.popTargetPos(); // I think this is unnecessary now (since we set the whole path in the navigation), but doesn't hurt
                 newTarget = true;
             }
         } else return true;
@@ -70,7 +71,12 @@ public class PathGoal extends Goal {
             currDestIdx += 1;
             if (currDestIdx < path.size()) {
                 updateStatus(TaskStatus.RUNNING);
-                navv.pushTargetPos(path.get(currDestIdx));
+                Vector<Vec2> tmp = new Vector<>();
+                // only get the points on the path, which we haven't visited yet
+                for(int index = currDestIdx; index < path.size(); index++) {
+                    tmp.add(path.get(index));
+                }
+                navv.setTargetsPos(tmp);
             } else {
                 // goal is successful if all destinations have been reached
                 updateStatus(TaskStatus.SUCCEEDED);

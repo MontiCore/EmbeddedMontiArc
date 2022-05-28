@@ -52,9 +52,6 @@ public class BasicDrivingStrategy extends RandomizationStrategy {
         Vec3 nextPoint = firstSegment.way.points.get(nextPointIndex);
         double orientation = Math.toDegrees(Math.atan2(nextPoint.y - firstPoint.y, nextPoint.x - firstPoint.x));
 
-        System.out.println("FIRST SEGMENT ID: " + firstSegmentID);
-        System.out.println("FIRST SEGMENT ID REVERSE: " + firstSegment.reverseId);
-
         // convert meeters to coordinates
         Coordinates startCoordinates = new Coordinates();
         converter.metersToCoords(firstPoint, startCoordinates);
@@ -142,15 +139,16 @@ public class BasicDrivingStrategy extends RandomizationStrategy {
         // Add randomized properties
         newVehicle.start_coords = Optional.of(startPose.getKey());
         newVehicle.start_orientation = startPose.getValue();
+
         TaskProperties task = new TaskProperties();
+        PathGoalProperties goal = new PathGoalProperties();
+        goal.ltl_operator = LTLOperator.EVENTUALLY;
 
         // add path points
         for (Node node : this.path) {
-            PathGoalProperties goal = new PathGoalProperties();
-            goal.ltl_operator = LTLOperator.EVENTUALLY;
             goal.reach(node.point.asVec2());
-            task.addGoal(goal);
         }
+        task.addGoal(goal);
         newVehicle.task = task;
 
         // Add the vehicle to the list
