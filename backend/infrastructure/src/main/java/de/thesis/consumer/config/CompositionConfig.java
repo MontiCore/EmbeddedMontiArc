@@ -1,9 +1,12 @@
 package de.thesis.consumer.config;
 
+import de.fraunhofer.iese.mydata.IMyDataEnvironment;
 import entity.Dataset;
 import lombok.AllArgsConstructor;
+import org.springframework.beans.factory.annotation.Value;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
+import org.springframework.web.reactive.function.client.WebClient;
 import persistence.mappers.JacksonDatasetMapper;
 import persistence.mappers.JacksonOfferMapper;
 import persistence.repository.SpringDatasetRepository;
@@ -56,4 +59,10 @@ public class CompositionConfig {
 	public DatasetPersistencePort datasetPersistencePort(JacksonDatasetMapper mapper, SpringDatasetRepository repository) {
 		return new SpringDatasetRepositoryAdapter(mapper, repository);
 	}
+
+	@Bean
+	public WebClient getWebClient(@Value("${DATA_PROVIDER_URL}") String url) {
+		return WebClient.create(url);
+	}
+
 }

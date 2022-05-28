@@ -8,4 +8,6 @@ public interface PolicyManagementPort {
 	void deployPolicy(Policy policy);
 
 	void deployTimer(Timer timer);
+
+	void addPxp(PolicyExecutionPoint policyExecutionPoint);
 }

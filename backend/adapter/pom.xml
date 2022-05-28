@@ -44,6 +44,10 @@
             <artifactId>sdk.spring</artifactId>
             <version>${mydata.version}</version>
         </dependency>
+        <dependency>
+            <groupId>org.springframework.boot</groupId>
+            <artifactId>spring-boot-starter-webflux</artifactId>
+        </dependency>
     </dependencies>
     <repositories>
         <repository>
