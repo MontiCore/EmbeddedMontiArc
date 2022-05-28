@@ -1,6 +1,7 @@
 package commands;
 
 import entity.DataRow;
+import entity.Metadata;
 import entity.Policy;
 import lombok.Value;
 
@@ -9,12 +10,6 @@ import java.util.List;
 
 @Value
 public class AddOfferCommand implements Command {
-	String title;
-	String provider;
-	String description;
-	double price;
-	Policy policy;
-	LocalDate expiresOn;
+	Metadata metadata;
 	List<DataRow> data;
-	String loggingUrl;
 }

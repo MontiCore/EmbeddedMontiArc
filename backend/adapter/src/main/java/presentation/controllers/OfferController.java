@@ -3,6 +3,7 @@ package presentation.controllers;
 import commands.AddOfferCommand;
 import commands.BuyOfferCommand;
 import entity.Dataset;
+import entity.Metadata;
 import entity.Offer;
 import exceptions.UseCaseException;
 import lombok.AllArgsConstructor;
@@ -11,9 +12,12 @@ import org.springframework.http.HttpStatus;
 import org.springframework.http.MediaType;
 import org.springframework.web.bind.annotation.*;
 import org.springframework.web.server.ResponseStatusException;
+import queries.GetAllOffersMetadataQuery;
 import usecases.AddOfferUseCase;
 import usecases.BuyOfferUseCase;
+import usecases.GetAllOffersMetadataUseCase;
 
+import java.util.Map;
 import java.util.UUID;
 
 @RestController
@@ -26,9 +30,11 @@ public class OfferController {
 	private AddOfferUseCase addOfferUseCase;
 	private BuyOfferUseCase buyOfferUseCase;
 
+	private GetAllOffersMetadataUseCase getAllOffersUseCase;
+
 	@PostMapping(consumes = MediaType.APPLICATION_JSON_VALUE)
 	@ResponseStatus(HttpStatus.OK)
-	public void offer(@RequestBody AddOfferCommand addOfferCommand) {
+	public void addOffer(@RequestBody AddOfferCommand addOfferCommand) {
 		try {
 			Offer offer = addOfferUseCase.handle(addOfferCommand);
 
@@ -45,5 +51,10 @@ public class OfferController {
 		Dataset dataset = buyOfferUseCase.handle(new BuyOfferCommand(offerId));
 
 		log.info("Bought offer {}, created dataset {}", offerId, dataset.getId());
+	}
+
+	@GetMapping
+	public Map<UUID, Metadata> getAllOffers() {
+		return getAllOffersUseCase.handle(new GetAllOffersMetadataQuery());
 	}
 }

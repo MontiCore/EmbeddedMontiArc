@@ -1,11 +1,13 @@
-package datasovereingty;
+package datasovereignty;
 
 import de.fraunhofer.iese.mydata.IMyDataEnvironment;
 import entity.Policy;
 import entity.Timer;
 import lombok.AllArgsConstructor;
+import org.springframework.stereotype.Component;
 import ports.PolicyManagementPort;
 
+@Component
 @AllArgsConstructor
 public class PolicyManagementPointAdapter implements PolicyManagementPort {
 

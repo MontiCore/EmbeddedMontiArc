@@ -1,17 +1,24 @@
 package usecases;
 
 import entity.Dataset;
+import entity.Metadata;
 import lombok.AllArgsConstructor;
 import ports.DatasetPersistencePort;
 import queries.GetAllDatasetMedataQuery;
 
+import java.util.*;
+
 @AllArgsConstructor
-public class GetAllDatasetMetadataUseCase implements QueryHandler<GetAllDatasetMedataQuery, Iterable<Dataset>> {
+public class GetAllDatasetMetadataUseCase implements QueryHandler<GetAllDatasetMedataQuery, Map<UUID, Metadata>> {
 
 	private final DatasetPersistencePort datasetPersistencePort;
 
 	@Override
-	public Iterable<Dataset> handle(GetAllDatasetMedataQuery query) {
-		return datasetPersistencePort.findAll();
+	public Map<UUID, Metadata> handle(GetAllDatasetMedataQuery query) {
+		Map<UUID, Metadata> map = new HashMap<>();
+		Iterable<Dataset> datasets = datasetPersistencePort.findAll();
+		datasets.forEach(dataset -> map.put(dataset.getId(), dataset.getMetadata()));
+
+		return map;
 	}
 }

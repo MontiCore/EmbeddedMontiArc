@@ -3,8 +3,10 @@ package persistence.mappers;
 import com.fasterxml.jackson.databind.ObjectMapper;
 import entity.Dataset;
 import lombok.AllArgsConstructor;
+import org.springframework.stereotype.Component;
 import persistence.entity.DatasetEntity;
 
+@Component
 @AllArgsConstructor
 public class JacksonDatasetMapper implements DatasetMapper<DatasetEntity> {
 

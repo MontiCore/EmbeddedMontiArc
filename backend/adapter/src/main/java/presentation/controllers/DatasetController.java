@@ -1,0 +1,35 @@
+package presentation.controllers;
+
+import entity.Dataset;
+import entity.Metadata;
+import lombok.AllArgsConstructor;
+import lombok.extern.slf4j.Slf4j;
+import org.springframework.web.bind.annotation.*;
+import queries.GetAllDatasetMedataQuery;
+import queries.GetDatasetQuery;
+import usecases.GetAllDatasetMetadataUseCase;
+import usecases.GetDatasetUseCase;
+
+import java.util.Map;
+import java.util.UUID;
+
+@RestController
+@RequestMapping("/datasets")
+@AllArgsConstructor
+@CrossOrigin(origins = "*")
+@Slf4j
+public class DatasetController {
+
+	private GetDatasetUseCase getDatasetUseCase;
+	private GetAllDatasetMetadataUseCase getAllDatasetMetadataUseCase;
+
+	@GetMapping
+	public Map<UUID, Metadata> getAllOffers() {
+		return getAllDatasetMetadataUseCase.handle(new GetAllDatasetMedataQuery());
+	}
+
+	@GetMapping("/{datasetId}")
+	public Dataset getDataset(@PathVariable UUID datasetId) {
+		return getDatasetUseCase.handle(new GetDatasetQuery(datasetId));
+	}
+}
