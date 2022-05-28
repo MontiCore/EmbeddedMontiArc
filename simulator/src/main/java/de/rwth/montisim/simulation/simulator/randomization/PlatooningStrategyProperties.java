@@ -15,7 +15,7 @@ public class PlatooningStrategyProperties extends RandomizationProperties {
     public static final String TYPE_LABEL = "platooning";
 
     public int minNumberOfVehicles = 2;
-    public int maxNumberOfVehicles = 5;
+    public int maxNumberOfVehicles = 20;
     public double minDistanceBtwVehicles = 5;
     public double maxDistanceBtwVehicles = 15;
     public double minGoalDistance = 500;

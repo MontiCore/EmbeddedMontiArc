@@ -199,11 +199,14 @@ public class PlatooningStrategy extends RandomizationStrategy {
                 boolean reversed = (segment.pointsStart > segment.pointsEnd);
                 // travel traverse_length from pointsStart to pointsEnd
                 double currDistance = 0;
-                int currPointID = segment.pointsEnd;
+
+                int currPointID = inward ? segment.pointsEnd : segment.pointsStart;
+                int inc = reversed ^ !inward ? 1 : -1;
+
                 Vec3 currPoint = way.points.get(currPointID);
                 int nextPointID;
                 do {
-                    nextPointID = reversed ? currPointID + 1 : currPointID - 1; // step forward
+                    nextPointID = currPointID + inc; // step forward
 
                     Vec3 nextPoint = way.points.get(nextPointID);
                     double distance = currPoint.distance(nextPoint);
@@ -217,7 +220,7 @@ public class PlatooningStrategy extends RandomizationStrategy {
                     }
                 } while (!((segment.pointsStart <= nextPointID || nextPointID <= segment.pointsEnd) && (segment.pointsEnd <= nextPointID || nextPointID <= segment.pointsStart)));
 
-                int prevPointID = reversed ? currPointID - 1 : currPointID + 1; // step backward
+                int prevPointID = currPointID - inc; // step backward
                 Vec3 prevPoint = way.points.get(prevPointID);
 
                 // interpolate point
