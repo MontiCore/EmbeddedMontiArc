@@ -31,7 +31,7 @@ public class BuyOfferUseCase implements CommandHandler<BuyOfferCommand, Dataset>
 
 	private Dataset createDatasetFromOffer(Offer offer) {
 		Dataset dataset = new Dataset();
-		dataset.setId(UUID.randomUUID());
+		dataset.setId(offer.getId());
 		dataset.setMetadata(offer.getMetadata());
 		dataset.setData(offer.getData());
 

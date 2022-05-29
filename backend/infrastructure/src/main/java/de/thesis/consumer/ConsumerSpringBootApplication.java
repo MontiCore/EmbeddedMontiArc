@@ -1,6 +1,7 @@
 package de.thesis.consumer;
 
 import de.fraunhofer.iese.mydata.pep.EnablePolicyEnforcementPoint;
+import de.fraunhofer.iese.mydata.pxp.EnablePolicyExecutionPoint;
 import lombok.AllArgsConstructor;
 import org.springframework.boot.SpringApplication;
 import org.springframework.boot.autoconfigure.SpringBootApplication;
@@ -8,6 +9,7 @@ import org.springframework.boot.autoconfigure.domain.EntityScan;
 import org.springframework.context.annotation.ComponentScan;
 import org.springframework.data.jpa.repository.config.EnableJpaRepositories;
 import ports.DatasetDeletionExecutionPoint;
+import ports.LocalLoggingExecutionPoint;
 import ports.PolicyManagementPort;
 
 import javax.annotation.PostConstruct;
@@ -17,11 +19,13 @@ import javax.annotation.PostConstruct;
 @EnableJpaRepositories(basePackages = {"persistence.repository"})
 @EntityScan(basePackages = "persistence.entity")
 @EnablePolicyEnforcementPoint(basePackages = "datasovereignty")
+@EnablePolicyExecutionPoint
 @AllArgsConstructor
 public class ConsumerSpringBootApplication {
 
 	private PolicyManagementPort policyManagementPort;
 	private DatasetDeletionExecutionPoint datasetDeletionExecutionPoint;
+	private LocalLoggingExecutionPoint localLoggingExecutionPoint;
 
 	public static void main(String[] args) {
 		SpringApplication.run(ConsumerSpringBootApplication.class, args);
@@ -30,5 +34,6 @@ public class ConsumerSpringBootApplication {
 	@PostConstruct
 	public void init() {
 		policyManagementPort.addPxp(datasetDeletionExecutionPoint);
+		policyManagementPort.addPxp(localLoggingExecutionPoint);
 	}
 }
