@@ -16,7 +16,6 @@ public class LocalLoggingExecutionPointAdapter implements LocalLoggingExecutionP
 	@Override
 	@ActionDescription(methodName = "log-local")
 	public boolean log(@ActionParameterDescription(name = "id", mandatory = true) final String datasetId) {
-		System.err.println("camillo meine perle");
 		log.info("Dataset {} accessed at {}", datasetId, LocalDateTime.now());
 
 		return true;
