@@ -124,3 +124,21 @@ succ(X,Y) :-
   atom_to_number(Y, NY),
   NX is NY - 1,
   number_to_atom(NX, X).
+
+
+less(X,Y) :-
+  nonvar(X),
+  nonvar(Y),
+  atom_to_number(X, NX),
+  atom_to_number(Y, NY),
+  NX < NY.
+
+greater(X,Y) :-
+  less(Y,X).
+
+equals(X,Y) :-
+  nonvar(X),
+  nonvar(Y),
+  atom_to_number(X, NX),
+  atom_to_number(Y, NY),
+  NX = NY.
