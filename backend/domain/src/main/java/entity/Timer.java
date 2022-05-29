@@ -4,6 +4,6 @@ import lombok.Data;
 
 @Data
 public class Timer {
-	String id;
-	String rawValue;
+	private String id;
+	private String rawValue;
 }

@@ -24,13 +24,13 @@ public class PolicyManagementPointAdapter implements PolicyManagementPort {
 	// TODO die Policies und Timer richtig ins Domain model aufnehmen
 	@Override
 	public void deployPolicy(Policy policy) {
-		try {
-			myDataEnvironment.getPmp().deployPolicy(
-					myDataEnvironment.getPmp().addPolicy(
-							new de.fraunhofer.iese.mydata.policy.Policy(policy.getRawValue())));
-		} catch (Exception e) {
-			throw new RuntimeException(String.format("Policy %s could not be deployed", policy.getId()));
-		}
+//		try {
+//			myDataEnvironment.getPmp().deployPolicy(
+//					myDataEnvironment.getPmp().addPolicy(
+//							new de.fraunhofer.iese.mydata.policy.Policy(policy.getRawValue())));
+//		} catch (Exception e) {
+//			throw new RuntimeException(String.format("Policy %s could not be deployed", policy.getId()));
+//		}
 	}
 
 	@Override

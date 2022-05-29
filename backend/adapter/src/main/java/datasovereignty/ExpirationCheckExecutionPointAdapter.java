@@ -19,10 +19,11 @@ public class ExpirationCheckExecutionPointAdapter implements ExpirationCheckExec
 	@Override
 	public boolean removeExpiredDatasets() {
 		for (Dataset dataset : persistencePort.findAll()) {
-			if (dataset.getMetadata().getExpiresOn() != null &&
-					dataset.getMetadata().getExpiresOn().isBefore(LocalDate.now())) {
-				log.info("Dataset {} was removed because it was expired", dataset.getId());
+			LocalDate expiresOn = dataset.getMetadata().getPolicy().getExpiresOn();
+			if (expiresOn != null && expiresOn.isBefore(LocalDate.now())) {
 				persistencePort.deleteById(dataset.getId());
+
+				log.info("Dataset {} was deleted because it was expired", dataset.getId());
 			}
 		}
 

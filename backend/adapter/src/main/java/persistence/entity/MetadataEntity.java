@@ -25,8 +25,6 @@ public class MetadataEntity {
 
 	private double price;
 
-	private LocalDate expiresOn;
-
 	@OneToOne(cascade = CascadeType.ALL)
 	private PolicyEntity policy;
 }

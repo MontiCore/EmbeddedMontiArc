@@ -11,7 +11,6 @@ public class Metadata {
 	private String provider;
 	private String description;
 	private double price;
-	private LocalDate expiresOn;
 	private String loggingUrl;
 	private Policy policy;
 }

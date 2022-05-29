@@ -7,14 +7,14 @@ import java.time.LocalDateTime;
 
 @Data
 public class DataRow {
-	Long id;
-	String dayID;
-	double longitude;
-	double latitude;
-	LocalDateTime gpsTime;
-	double heading;
-	int speed;
-	int odometer;
-	int totalFuelUsed;
-	LocalDateTime timestamp;
+	private Long id;
+	private String dayID;
+	private double longitude;
+	private double latitude;
+	private LocalDateTime gpsTime;
+	private double heading;
+	private int speed;
+	private int odometer;
+	private int totalFuelUsed;
+	private LocalDateTime timestamp;
 }
