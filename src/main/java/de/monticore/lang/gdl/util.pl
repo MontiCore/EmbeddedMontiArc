@@ -107,6 +107,7 @@ div(X, Y, Z) :-
   nonvar(Y),
   atom_to_number(X, NX),
   atom_to_number(Y, NY),
+  NY \== 0,
   NZ is NX / NY,
   number_to_atom(NZ, Z).
 
@@ -116,6 +117,7 @@ div(X, Y, Z) :-
   nonvar(Z),
   atom_to_number(X, NX),
   atom_to_number(Z, NZ),
+  NZ \== 0,
   NY is NX / NZ,
   number_to_atom(NY, Y).
 
@@ -130,14 +132,14 @@ div(X, Y, Z) :-
 
 % -----Successor Relation-----
 % Y is Variable
-succ(X,Y) :-
+successor(X,Y) :-
   nonvar(X),
   atom_to_number(X, NX),
   NY is NX + 1,
   number_to_atom(NY, Y).
 
 % X is Variable
-succ(X,Y) :-
+successor(X,Y) :-
   nonvar(Y),
   atom_to_number(Y, NY),
   NX is NY - 1,

@@ -7,22 +7,30 @@ import java.util.Set;
 
 import de.monticore.lang.gdl.FunctionSignature;
 import de.monticore.lang.gdl.GDLMill;
+import de.monticore.lang.gdl._ast.ASTGameAdd;
 import de.monticore.lang.gdl._ast.ASTGameCount;
 import de.monticore.lang.gdl._ast.ASTGameDistinct;
+import de.monticore.lang.gdl._ast.ASTGameDiv;
 import de.monticore.lang.gdl._ast.ASTGameDoes;
+import de.monticore.lang.gdl._ast.ASTGameEqual;
 import de.monticore.lang.gdl._ast.ASTGameExpression;
 import de.monticore.lang.gdl._ast.ASTGameFunction;
 import de.monticore.lang.gdl._ast.ASTGameFunctionDefinition;
 import de.monticore.lang.gdl._ast.ASTGameFunctionHead;
 import de.monticore.lang.gdl._ast.ASTGameGoal;
+import de.monticore.lang.gdl._ast.ASTGameGreater;
 import de.monticore.lang.gdl._ast.ASTGameInference;
 import de.monticore.lang.gdl._ast.ASTGameInit;
 import de.monticore.lang.gdl._ast.ASTGameLegal;
+import de.monticore.lang.gdl._ast.ASTGameLess;
+import de.monticore.lang.gdl._ast.ASTGameMult;
 import de.monticore.lang.gdl._ast.ASTGameNext;
 import de.monticore.lang.gdl._ast.ASTGameNot;
 import de.monticore.lang.gdl._ast.ASTGameRelation;
 import de.monticore.lang.gdl._ast.ASTGameRole;
 import de.monticore.lang.gdl._ast.ASTGameSees;
+import de.monticore.lang.gdl._ast.ASTGameSubstract;
+import de.monticore.lang.gdl._ast.ASTGameSuccessor;
 import de.monticore.lang.gdl._ast.ASTGameTerminal;
 import de.monticore.lang.gdl._ast.ASTGameToken;
 import de.monticore.lang.gdl._ast.ASTGameTrue;
@@ -168,6 +176,10 @@ public class PrologPrinter extends IndentPrinter implements GDLVisitor2, MCCommo
         print("function_goal");
     }
 
+    public void visit(ASTGameAdd node) {
+        print("function_add");
+    }
+
     public String getPlaceholderStates() {
         StringBuilder sb = new StringBuilder();
         sb.append("state(placeholder).\n");
@@ -185,6 +197,7 @@ public class PrologPrinter extends IndentPrinter implements GDLVisitor2, MCCommo
         if (isInFunctionDefinition) {
             if (type instanceof ASTGameDistinct) {
                 int numArguments = node.getArgumentsList().size();
+                //Itterate over all Arguments
                 for (int i = 0; i < numArguments-1; i++)
                 {
                     for (int j = i+1; j<numArguments; j++)
@@ -192,11 +205,13 @@ public class PrologPrinter extends IndentPrinter implements GDLVisitor2, MCCommo
                         node.getArguments(i).accept(getTraverser());
                         print(" \\== ");
                         node.getArguments(j).accept(getTraverser());
+                        // More Inequalities following
                         if(j != numArguments - 1)
                         {
                             print(", ");
                         }
                     }
+                    // More Inequalities following
                     if(i != numArguments - 2)
                     {
                         print(", ");
@@ -206,6 +221,70 @@ public class PrologPrinter extends IndentPrinter implements GDLVisitor2, MCCommo
                 /* node.getArguments(0).accept(getTraverser());
                 print(" \\== ");
                 node.getArguments(1).accept(getTraverser());*/ 
+            } else if (type instanceof ASTGameAdd) {
+                print("add(");
+                node.getArguments(0).accept(getTraverser());
+                print(", ");
+                node.getArguments(1).accept(getTraverser());
+                print(", ");
+                node.getArguments(2).accept(getTraverser());
+                print(")");
+            } else if (type instanceof ASTGameSubstract) {
+                print("substract(");
+                node.getArguments(0).accept(getTraverser());
+                print(", ");
+                node.getArguments(1).accept(getTraverser());
+                print(", ");
+                node.getArguments(2).accept(getTraverser());
+                print(")");
+            } else if (type instanceof ASTGameMult) {
+                print("mult(");
+                node.getArguments(0).accept(getTraverser());
+                print(", ");
+                node.getArguments(1).accept(getTraverser());
+                print(", ");
+                node.getArguments(2).accept(getTraverser());
+                print(")");
+            } else if (type instanceof ASTGameDiv) {
+                print("div(");
+                node.getArguments(0).accept(getTraverser());
+                print(", ");
+                node.getArguments(1).accept(getTraverser());
+                print(", ");
+                node.getArguments(2).accept(getTraverser());
+                print(")");
+            } else if (type instanceof ASTGameSuccessor) {
+                print("successor(");
+                node.getArguments(0).accept(getTraverser());
+                print(", ");
+                node.getArguments(1).accept(getTraverser());
+                print(", ");
+                node.getArguments(2).accept(getTraverser());
+                print(")");
+            } else if (type instanceof ASTGameLess) {
+                print("less(");
+                node.getArguments(0).accept(getTraverser());
+                print(", ");
+                node.getArguments(1).accept(getTraverser());
+                print(", ");
+                node.getArguments(2).accept(getTraverser());
+                print(")");
+            } else if (type instanceof ASTGameGreater) {
+                print("greater(");
+                node.getArguments(0).accept(getTraverser());
+                print(", ");
+                node.getArguments(1).accept(getTraverser());
+                print(", ");
+                node.getArguments(2).accept(getTraverser());
+                print(")");
+            } else if (type instanceof ASTGameEqual) {
+                print("eq(");
+                node.getArguments(0).accept(getTraverser());
+                print(", ");
+                node.getArguments(1).accept(getTraverser());
+                print(", ");
+                node.getArguments(2).accept(getTraverser());
+                print(")");
             } else if (type instanceof ASTGameTrue) {
                 type.accept(getTraverser());
 
@@ -450,6 +529,30 @@ public class PrologPrinter extends IndentPrinter implements GDLVisitor2, MCCommo
                         if (bodyExpression.getType() instanceof ASTGameDistinct) {
                             distinctExpressions.add(bodyExpression);
                             continue;
+                        } else if (bodyExpression.getType() instanceof ASTGameAdd) {
+                            distinctExpressions.add(bodyExpression);
+                            continue;
+                        } else if (bodyExpression.getType() instanceof ASTGameSubstract) {
+                            distinctExpressions.add(bodyExpression);
+                            continue;
+                        } else if (bodyExpression.getType() instanceof ASTGameMult) {
+                            distinctExpressions.add(bodyExpression);
+                            continue;
+                        } else if (bodyExpression.getType() instanceof ASTGameDiv) {
+                            distinctExpressions.add(bodyExpression);
+                            continue;
+                        } else if (bodyExpression.getType() instanceof ASTGameSuccessor) {
+                            distinctExpressions.add(bodyExpression);
+                            continue;
+                        } else if (bodyExpression.getType() instanceof ASTGameLess) {
+                            distinctExpressions.add(bodyExpression);
+                            continue;
+                        } else if (bodyExpression.getType() instanceof ASTGameGreater) {
+                            distinctExpressions.add(bodyExpression);
+                            continue;
+                        } else if (bodyExpression.getType() instanceof ASTGameEqual) {
+                            distinctExpressions.add(bodyExpression);
+                            continue;
                         }
                         bodyExpression.accept(getTraverser());
 
@@ -506,6 +609,30 @@ public class PrologPrinter extends IndentPrinter implements GDLVisitor2, MCCommo
                         if (bodyExpression.getType() instanceof ASTGameDistinct) {
                             distinctExpressions.add(bodyExpression);
                             continue;
+                        } else if (bodyExpression.getType() instanceof ASTGameAdd) {
+                            distinctExpressions.add(bodyExpression);
+                            continue;
+                        } else if (bodyExpression.getType() instanceof ASTGameSubstract) {
+                            distinctExpressions.add(bodyExpression);
+                            continue;
+                        } else if (bodyExpression.getType() instanceof ASTGameMult) {
+                            distinctExpressions.add(bodyExpression);
+                            continue;
+                        } else if (bodyExpression.getType() instanceof ASTGameDiv) {
+                            distinctExpressions.add(bodyExpression);
+                            continue;
+                        } else if (bodyExpression.getType() instanceof ASTGameSuccessor) {
+                            distinctExpressions.add(bodyExpression);
+                            continue;
+                        } else if (bodyExpression.getType() instanceof ASTGameLess) {
+                            distinctExpressions.add(bodyExpression);
+                            continue;
+                        } else if (bodyExpression.getType() instanceof ASTGameGreater) {
+                            distinctExpressions.add(bodyExpression);
+                            continue;
+                        } else if (bodyExpression.getType() instanceof ASTGameEqual) {
+                            distinctExpressions.add(bodyExpression);
+                            continue;
                         }
                         bodyExpression.accept(getTraverser());
 
@@ -557,6 +684,30 @@ public class PrologPrinter extends IndentPrinter implements GDLVisitor2, MCCommo
                         if (bodyExpression.getType() instanceof ASTGameDistinct) {
                             distinctExpressions.add(bodyExpression);
                             continue;
+                        } else if (bodyExpression.getType() instanceof ASTGameAdd) {
+                            distinctExpressions.add(bodyExpression);
+                            continue;
+                        } else if (bodyExpression.getType() instanceof ASTGameSubstract) {
+                            distinctExpressions.add(bodyExpression);
+                            continue;
+                        } else if (bodyExpression.getType() instanceof ASTGameMult) {
+                            distinctExpressions.add(bodyExpression);
+                            continue;
+                        } else if (bodyExpression.getType() instanceof ASTGameDiv) {
+                            distinctExpressions.add(bodyExpression);
+                            continue;
+                        } else if (bodyExpression.getType() instanceof ASTGameSuccessor) {
+                            distinctExpressions.add(bodyExpression);
+                            continue;
+                        } else if (bodyExpression.getType() instanceof ASTGameLess) {
+                            distinctExpressions.add(bodyExpression);
+                            continue;
+                        } else if (bodyExpression.getType() instanceof ASTGameGreater) {
+                            distinctExpressions.add(bodyExpression);
+                            continue;
+                        } else if (bodyExpression.getType() instanceof ASTGameEqual) {
+                            distinctExpressions.add(bodyExpression);
+                            continue;
                         }
                         bodyExpression.accept(getTraverser());
 
@@ -592,6 +743,30 @@ public class PrologPrinter extends IndentPrinter implements GDLVisitor2, MCCommo
                 for (int i = 0; i < node.getArgumentsList().size(); i++) {
                     ASTGameExpression bodyExpression = (ASTGameExpression) node.getArguments(i);
                     if (bodyExpression.getType() instanceof ASTGameDistinct) {
+                        distinctExpressions.add(bodyExpression);
+                        continue;
+                    } else if (bodyExpression.getType() instanceof ASTGameAdd) {
+                        distinctExpressions.add(bodyExpression);
+                        continue;
+                    } else if (bodyExpression.getType() instanceof ASTGameSubstract) {
+                        distinctExpressions.add(bodyExpression);
+                        continue;
+                    } else if (bodyExpression.getType() instanceof ASTGameMult) {
+                        distinctExpressions.add(bodyExpression);
+                        continue;
+                    } else if (bodyExpression.getType() instanceof ASTGameDiv) {
+                        distinctExpressions.add(bodyExpression);
+                        continue;
+                    } else if (bodyExpression.getType() instanceof ASTGameSuccessor) {
+                        distinctExpressions.add(bodyExpression);
+                        continue;
+                    } else if (bodyExpression.getType() instanceof ASTGameLess) {
+                        distinctExpressions.add(bodyExpression);
+                        continue;
+                    } else if (bodyExpression.getType() instanceof ASTGameGreater) {
+                        distinctExpressions.add(bodyExpression);
+                        continue;
+                    } else if (bodyExpression.getType() instanceof ASTGameEqual) {
                         distinctExpressions.add(bodyExpression);
                         continue;
                     }
@@ -689,6 +864,30 @@ public class PrologPrinter extends IndentPrinter implements GDLVisitor2, MCCommo
         isInFunctionDefinition = true;
         for (int i = 0; i < node.getBodyList().size(); i++) {
             if (node.getBody(i).getType() instanceof ASTGameDistinct) {
+                distinctExpressions.add(node.getBody(i));
+                continue;
+            } else if (node.getBody(i).getType() instanceof ASTGameAdd) {
+                distinctExpressions.add(node.getBody(i));
+                continue;
+            } else if (node.getBody(i).getType() instanceof ASTGameSubstract) {
+                distinctExpressions.add(node.getBody(i));
+                continue;
+            } else if (node.getBody(i).getType() instanceof ASTGameMult) {
+                distinctExpressions.add(node.getBody(i));
+                continue;
+            } else if (node.getBody(i).getType() instanceof ASTGameDiv) {
+                distinctExpressions.add(node.getBody(i));
+                continue;
+            } else if (node.getBody(i).getType() instanceof ASTGameSuccessor) {
+                distinctExpressions.add(node.getBody(i));
+                continue;
+            } else if (node.getBody(i).getType() instanceof ASTGameLess) {
+                distinctExpressions.add(node.getBody(i));
+                continue;
+            } else if (node.getBody(i).getType() instanceof ASTGameGreater) {
+                distinctExpressions.add(node.getBody(i));
+                continue;
+            } else if (node.getBody(i).getType() instanceof ASTGameEqual) {
                 distinctExpressions.add(node.getBody(i));
                 continue;
             }

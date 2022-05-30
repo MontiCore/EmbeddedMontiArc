@@ -101,6 +101,102 @@ public class InterpreterTest {
         testCase.doTestCase();
     }
 
+    /*@Test
+    public void testAdd() {
+        InterpreterTestCase testCase = new InterpreterTestCase("Add");
+        testCase.moves.addAll(List.of(
+            Command.createMoveFromLine("test (do)")
+        ));
+        testCase.expectedState.addAll(List.of(
+            List.of("success")
+        ));
+        testCase.doTestCase();
+    }
+
+    @Test
+    public void testSubtract() {
+        InterpreterTestCase testCase = new InterpreterTestCase("Subtract");
+        testCase.moves.addAll(List.of(
+            Command.createMoveFromLine("test (do)")
+        ));
+        testCase.expectedState.addAll(List.of(
+            List.of("success")
+        ));
+        testCase.doTestCase();
+    }
+
+    @Test
+    public void testMult() {
+        InterpreterTestCase testCase = new InterpreterTestCase("Mult");
+        testCase.moves.addAll(List.of(
+            Command.createMoveFromLine("test (do)")
+        ));
+        testCase.expectedState.addAll(List.of(
+            List.of("success")
+        ));
+        testCase.doTestCase();
+    }
+
+    @Test
+    public void testDiv() {
+        InterpreterTestCase testCase = new InterpreterTestCase("Div");
+        testCase.moves.addAll(List.of(
+            Command.createMoveFromLine("test (do)")
+        ));
+        testCase.expectedState.addAll(List.of(
+            List.of("success")
+        ));
+        testCase.doTestCase();
+    }
+
+    @Test
+    public void testSuccessor() {
+        InterpreterTestCase testCase = new InterpreterTestCase("Successor");
+        testCase.moves.addAll(List.of(
+            Command.createMoveFromLine("test (do)")
+        ));
+        testCase.expectedState.addAll(List.of(
+            List.of("success")
+        ));
+        testCase.doTestCase();
+    }
+
+    @Test
+    public void testLess() {
+        InterpreterTestCase testCase = new InterpreterTestCase("Less");
+        testCase.moves.addAll(List.of(
+            Command.createMoveFromLine("test (do)")
+        ));
+        testCase.expectedState.addAll(List.of(
+            List.of("success")
+        ));
+        testCase.doTestCase();
+    }
+
+    @Test
+    public void testGreater() {
+        InterpreterTestCase testCase = new InterpreterTestCase("Greater");
+        testCase.moves.addAll(List.of(
+            Command.createMoveFromLine("test (do)")
+        ));
+        testCase.expectedState.addAll(List.of(
+            List.of("success")
+        ));
+        testCase.doTestCase();
+    }
+
+    @Test
+    public void testEqual() {
+        InterpreterTestCase testCase = new InterpreterTestCase("Equal");
+        testCase.moves.addAll(List.of(
+            Command.createMoveFromLine("test (do)")
+        ));
+        testCase.expectedState.addAll(List.of(
+            List.of("success")
+        ));
+        testCase.doTestCase();
+    }*/
+
     @Test
     public void testDistinct() {
         InterpreterTestCase testCase = new InterpreterTestCase("Distinct");
