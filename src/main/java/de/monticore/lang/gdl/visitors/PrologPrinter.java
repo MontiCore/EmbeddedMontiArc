@@ -184,9 +184,28 @@ public class PrologPrinter extends IndentPrinter implements GDLVisitor2, MCCommo
 
         if (isInFunctionDefinition) {
             if (type instanceof ASTGameDistinct) {
-                node.getArguments(0).accept(getTraverser());
+                int numArguments = node.getArgumentsList().size();
+                for (int i = 0; i < numArguments-1; i++)
+                {
+                    for (int j = i+1; j<numArguments; j++)
+                    {
+                        node.getArguments(i).accept(getTraverser());
+                        print(" \\== ");
+                        node.getArguments(j).accept(getTraverser());
+                        if(j != numArguments - 1)
+                        {
+                            print(", ");
+                        }
+                    }
+                    if(i != numArguments - 2)
+                    {
+                        print(", ");
+                    }
+                }
+                //Code for 2 Arguments only
+                /* node.getArguments(0).accept(getTraverser());
                 print(" \\== ");
-                node.getArguments(1).accept(getTraverser());
+                node.getArguments(1).accept(getTraverser());*/ 
             } else if (type instanceof ASTGameTrue) {
                 type.accept(getTraverser());
 
