@@ -121,14 +121,19 @@ public class ASTGameExpressionCoCo implements GDLASTGameExpressionCoCo {
 		}
 
 		if (node.getType() instanceof ASTGameDistinct) {
-			if (node.getArgumentsList().size() != 2) {
-				Log.error("GameDistinct definition must have exactly two arguments");
+			if (node.getArgumentsList().size() < 2) {
+				Log.error("GameDistinct definition must have at least two arguments");
 			}
-			if (node.getArgumentsList().size() >= 2 && !(node.getArguments(0) instanceof ASTGameToken
+			for(int i = 0; i < node.getArgumentsList().size(); i++){
+				if(!(node.getArguments(i) instanceof ASTGameToken || node.getArguments(i) instanceof ASTGameValue)){
+					Log.error("GameDistinct arguments must be of type GameToken or GameValue");
+				}
+			}
+			/*if (node.getArgumentsList().size() >= 2 && !(node.getArguments(0) instanceof ASTGameToken
 					|| node.getArguments(0) instanceof ASTGameValue && node.getArguments(1) instanceof ASTGameToken
 					|| node.getArguments(1) instanceof ASTGameValue)) {
 				Log.error("GameDistinct arguments must be of type GameToken or GameValue");
-			}
+			}*/
 		}
 
 		if (node.getType() instanceof ASTGameGoal) {
