@@ -36,13 +36,19 @@ add(X, Y, Z) :-
 add(X, Y, Z) :-
   nonvar(X),
   nonvar(Z),
-  substract(Z, X, Y).
+  atom_to_number(X, NX),
+  atom_to_number(Z, NZ),
+  NY is NZ - NX,
+  number_to_atom(NY, Y).
 
 % X is variable
 add(X,Y,Z) :-
   nonvar(Y),
   nonvar(Z),
-  substract(Z, Y, X).
+  atom_to_number(Y, NY),
+  atom_to_number(Z, NZ),
+  NX is NZ - NY,
+  number_to_atom(NX, X).
 
 % -----Subtraction-----
 % Z is variable or no Variables
@@ -80,19 +86,25 @@ mult(X, Y, Z) :-
 mult(X, Y, Z) :-
   nonvar(X),
   nonvar(Z),
-  div(Z,X,Y).
+  atom_to_number(X, NX),
+  atom_to_number(Z, NZ),
+  NY is NZ / NX,
+  number_to_atom(NY, Y).
 
 % X is variable
 mult(X, Y, Z) :-
   nonvar(Y),
   nonvar(Z),
-  div(Z,Y,X).
+  atom_to_number(Z, NZ),
+  atom_to_number(Y, NY),
+  NX is NZ / NY,
+  number_to_atom(NX, X).
 
 % -----Division-----
 % Z is variable or no Variables
 div(X, Y, Z) :-
+  nonvar(X),
   nonvar(Y),
-  nonvar(Z),
   atom_to_number(X, NX),
   atom_to_number(Y, NY),
   NZ is NX / NY,
@@ -102,13 +114,19 @@ div(X, Y, Z) :-
 div(X, Y, Z) :-
   nonvar(X),
   nonvar(Z),
-  div(X,Z,Y).
+  atom_to_number(X, NX),
+  atom_to_number(Z, NZ),
+  NY is NX / NZ,
+  number_to_atom(NY, Y).
 
 % X is variable
 div(X, Y, Z) :-
   nonvar(Y),
   nonvar(Z),
-  mult(Y,Z,X).
+  atom_to_number(Z, NZ),
+  atom_to_number(Y, NY),
+  NX is NY * NZ,
+  number_to_atom(NX, X).
 
 % -----Successor Relation-----
 % Y is Variable
@@ -125,7 +143,7 @@ succ(X,Y) :-
   NX is NY - 1,
   number_to_atom(NX, X).
 
-
+% -----Value Comparision-----
 less(X,Y) :-
   nonvar(X),
   nonvar(Y),
