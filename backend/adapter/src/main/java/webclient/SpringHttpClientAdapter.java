@@ -3,11 +3,8 @@ package webclient;
 import lombok.AllArgsConstructor;
 import org.springframework.http.MediaType;
 import org.springframework.stereotype.Component;
-import org.springframework.util.MultiValueMap;
 import org.springframework.web.reactive.function.client.WebClient;
 import ports.HttpClientPort;
-
-import java.util.Map;
 
 
 @Component

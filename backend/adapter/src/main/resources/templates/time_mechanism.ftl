@@ -8,10 +8,10 @@
                 </equals>
                 <or>
                     <#if businessHours.getStart()??>
-                    <time is='before' value='${businessHours.getStart().toString()}'/>
+                        <time is='before' value='${businessHours.getStart().toString()}'/>
                     </#if>
                     <#if businessHours.getEnd()??>
-                    <time is='after' value='${businessHours.getEnd().toString()}'/>
+                        <time is='after' value='${businessHours.getEnd().toString()}'/>
                     </#if>
                 </or>
             </and>

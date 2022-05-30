@@ -1,6 +1,5 @@
 package datasovereignty;
 
-import de.fraunhofer.iese.mydata.pxp.PxpService;
 import de.fraunhofer.iese.mydata.registry.ActionDescription;
 import de.fraunhofer.iese.mydata.registry.ActionParameterDescription;
 import lombok.extern.slf4j.Slf4j;

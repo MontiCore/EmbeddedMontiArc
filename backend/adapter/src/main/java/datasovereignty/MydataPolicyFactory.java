@@ -1,7 +1,6 @@
 package datasovereignty;
 
 import entity.Offer;
-import entity.Policy;
 import freemarker.template.Configuration;
 import freemarker.template.Template;
 import freemarker.template.TemplateException;
@@ -20,13 +19,6 @@ public class MydataPolicyFactory {
 
 	private final String EVENT_NAME = "dataset-access";
 	private final Configuration config = new Configuration(Configuration.VERSION_2_3_23);
-
-	@Getter
-	@AllArgsConstructor
-	public static class BusinessHours {
-		private LocalTime start;
-		private LocalTime end;
-	}
 
 	public MydataPolicyFactory() {
 		config.setClassForTemplateLoading(MydataPolicyFactory.class, "/templates");
@@ -47,5 +39,12 @@ public class MydataPolicyFactory {
 		template.process(templateData, stringWriter);
 
 		return stringWriter.toString();
+	}
+
+	@Getter
+	@AllArgsConstructor
+	public static class BusinessHours {
+		private LocalTime start;
+		private LocalTime end;
 	}
 }

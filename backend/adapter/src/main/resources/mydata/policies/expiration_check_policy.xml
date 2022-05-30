@@ -1,6 +1,6 @@
-<policy id='urn:policy:rwth-student-solution:expiration-check'
-        xmlns='http://www.mydata-control.de/4.0/mydataLanguage'
-        xmlns:constant='http://www.mydata-control.de/4.0/constant'>
+<policy xmlns:constant='http://www.mydata-control.de/4.0/constant'
+        id='urn:policy:rwth-student-solution:expiration-check'
+        xmlns='http://www.mydata-control.de/4.0/mydataLanguage'>
     <mechanism event='urn:action:rwth-student-solution:expiration-check'>
         <if>
             <constant:true/>

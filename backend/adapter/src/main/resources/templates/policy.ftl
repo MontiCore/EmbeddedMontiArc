@@ -5,20 +5,17 @@
 
 <policy id='urn:policy:rwth-student-solution:${id}'
         xmlns='http://www.mydata-control.de/4.0/mydataLanguage'
-        xmlns:parameter='http://www.mydata-control.de/4.0/parameter'
-        xmlns:constant='http://www.mydata-control.de/4.0/constant'
-        xmlns:event='http://www.mydata-control.de/4.0/event'
 >
     <#if businessHours.getStart()?? || businessHours.getEnd()??>
-    <@t_macro.time_mechanism event=event id=id businessHours=businessHours/>
+        <@t_macro.time_mechanism event=event id=id businessHours=businessHours/>
     </#if>
     <#if maxUsages??>
-    <@u_macro.usage_number_mechanism event=event id=id maxUsages=maxUsages/>
+        <@u_macro.usage_number_mechanism event=event id=id maxUsages=maxUsages/>
     </#if>
     <#if localLogging>
-    <@ll_macro.local_logging_mechanism event=event id=id/>
+        <@ll_macro.local_logging_mechanism event=event id=id/>
     </#if>
     <#if remoteLogging>
-    <@rl_macro.remote_logging_mechanism event=event id=id/>
+        <@rl_macro.remote_logging_mechanism event=event id=id/>
     </#if>
 </policy>

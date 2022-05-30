@@ -7,9 +7,6 @@ spring:
     hibernate:
       ddl-auto: create
 
-provider:
-  url: ${DATA_PROVIDER_URL}
-
 mydata:
   solution: urn:solution:rwth-student-solution
   jpa:

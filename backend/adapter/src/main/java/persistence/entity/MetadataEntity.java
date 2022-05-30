@@ -5,21 +5,17 @@ import lombok.Getter;
 import lombok.Setter;
 
 import javax.persistence.*;
-import java.time.LocalDate;
 
 @Entity
 @Table(name = "metadata")
 @Getter
 @Setter
 public class MetadataEntity {
+	String title;
+	String provider;
 	@Id
 	@GeneratedValue
 	private Long id;
-
-	String title;
-
-	String provider;
-
 	@Column(columnDefinition = "TEXT")
 	private String description;
 

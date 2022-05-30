@@ -1,5 +1,6 @@
 package datasovereignty;
 
+import de.fraunhofer.iese.mydata.registry.ActionDescription;
 import entity.Dataset;
 import lombok.AllArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
@@ -17,6 +18,7 @@ public class ExpirationCheckExecutionPointAdapter implements ExpirationCheckExec
 	private DatasetPersistencePort persistencePort;
 
 	@Override
+	@ActionDescription(methodName = "check-expiration")
 	public boolean removeExpiredDatasets() {
 		for (Dataset dataset : persistencePort.findAll()) {
 			LocalDate expiresOn = dataset.getMetadata().getPolicy().getExpiresOn();
