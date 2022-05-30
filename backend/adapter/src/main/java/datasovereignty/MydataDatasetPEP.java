@@ -8,7 +8,7 @@ import entity.Dataset;
 import rx.Observable;
 
 @PepServiceDescription(componentName = "dataset-pep")
-public interface MYDATADatasetPEP {
+public interface MydataDatasetPEP {
 	@EventSpecification(action = "dataset-access")
 	Observable<Event> enforce(@EventParameter(name = "dataset") Dataset dataset, @EventParameter(name = "id") String id);
 }

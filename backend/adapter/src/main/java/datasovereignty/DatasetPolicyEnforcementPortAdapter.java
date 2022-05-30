@@ -11,7 +11,7 @@ import ports.PolicyEnforcementPort;
 @AllArgsConstructor
 public class DatasetPolicyEnforcementPortAdapter implements PolicyEnforcementPort<Dataset> {
 
-	private final MYDATADatasetPEP pep;
+	private final MydataDatasetPEP pep;
 
 	@Override
 	public Dataset enforce(Dataset dataset) {

@@ -1,10 +1,8 @@
 package datasovereignty;
 
 import de.fraunhofer.iese.mydata.IMyDataEnvironment;
-import de.fraunhofer.iese.mydata.exception.ConflictingResourceException;
-import de.fraunhofer.iese.mydata.exception.InvalidEntityException;
-import de.fraunhofer.iese.mydata.exception.NoSuchEntityException;
-import de.fraunhofer.iese.mydata.exception.ResourceUpdateException;
+import entity.Dataset;
+import entity.Offer;
 import entity.Policy;
 import entity.Timer;
 import lombok.AllArgsConstructor;
@@ -13,24 +11,27 @@ import org.springframework.stereotype.Component;
 import ports.PolicyExecutionPoint;
 import ports.PolicyManagementPort;
 
-import java.io.IOException;
-
 @Component
 @AllArgsConstructor
 @Slf4j
 public class PolicyManagementPointAdapter implements PolicyManagementPort {
 
+	private final MydataPolicyFactory policyFactory;
 	private final IMyDataEnvironment myDataEnvironment;
-	// TODO die Policies und Timer richtig ins Domain model aufnehmen
+
 	@Override
-	public void deployPolicy(Policy policy) {
-//		try {
-//			myDataEnvironment.getPmp().deployPolicy(
-//					myDataEnvironment.getPmp().addPolicy(
-//							new de.fraunhofer.iese.mydata.policy.Policy(policy.getRawValue())));
-//		} catch (Exception e) {
-//			throw new RuntimeException(String.format("Policy %s could not be deployed", policy.getId()));
-//		}
+	public void deployPolicy(Offer offer) {
+		try {
+			System.err.println(policyFactory.getMydataPolicy(offer));
+			myDataEnvironment.getPmp().deployPolicy(
+					myDataEnvironment.getPmp().addPolicy(
+							new de.fraunhofer.iese.mydata.policy.Policy(
+									policyFactory.getMydataPolicy(offer)
+							)
+					));
+		} catch (Exception e) {
+			throw new RuntimeException(String.format("Policy for offer %s could not be deployed", offer.getId()));
+		}
 	}
 
 	@Override

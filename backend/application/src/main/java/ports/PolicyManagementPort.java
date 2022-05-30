@@ -1,11 +1,11 @@
 package ports;
 
-import entity.Policy;
+import entity.Offer;
 import entity.Timer;
 
 public interface PolicyManagementPort {
 
-	void deployPolicy(Policy policy);
+	void deployPolicy(Offer offer);
 
 	void deployTimer(Timer timer);
 
