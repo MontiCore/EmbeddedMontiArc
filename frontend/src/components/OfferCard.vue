@@ -110,11 +110,11 @@ export default {
     },
     bought () {
       let result = false
-      this.$store.getters.getDatasets.forEach(dataset => {
-        if (dataset.id === this.id) {
+      for (const [id] of Object.entries(this.$store.getters.getDatasets)) {
+        if (id === this.id) {
           result = true
         }
-      })
+      }
 
       return result
     }

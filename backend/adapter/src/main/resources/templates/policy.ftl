@@ -5,6 +5,10 @@
 
 <policy id='urn:policy:rwth-student-solution:${id}'
         xmlns='http://www.mydata-control.de/4.0/mydataLanguage'
+        xmlns:parameter='http://www.mydata-control.de/4.0/parameter'
+        xmlns:constant='http://www.mydata-control.de/4.0/constant'
+        xmlns:event='http://www.mydata-control.de/4.0/event'
+
 >
     <#if businessHours.getStart()?? || businessHours.getEnd()??>
         <@t_macro.time_mechanism event=event id=id businessHours=businessHours/>

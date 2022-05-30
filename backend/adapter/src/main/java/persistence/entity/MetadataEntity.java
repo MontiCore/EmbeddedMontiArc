@@ -21,6 +21,8 @@ public class MetadataEntity {
 
 	private double price;
 
+	private String loggingUrl;
+
 	@OneToOne(cascade = CascadeType.ALL)
 	private PolicyEntity policy;
 }

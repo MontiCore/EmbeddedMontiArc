@@ -19,6 +19,7 @@ public class PolicyManagementPointAdapter implements PolicyManagementPort {
 	@Override
 	public void deployPolicy(Offer offer) {
 		try {
+			System.err.println(policyFactory.getMydataPolicy(offer));
 			myDataEnvironment.getPmp().deployPolicy(
 					myDataEnvironment.getPmp().addPolicy(
 							new de.fraunhofer.iese.mydata.policy.Policy(

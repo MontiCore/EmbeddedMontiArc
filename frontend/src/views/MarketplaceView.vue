@@ -5,12 +5,12 @@
       <button type="button" class="btn-close" data-bs-dismiss="alert" aria-label="Close"></button>
     </div>
     <div class="d-flex flex-wrap justify-content-center gap-4">
-      <Card v-for="offer in offers" :key="offer.id"
-        :id="offer.id"
-        :provider="offer.provider"
-        :title="offer.title"
-        :description="offer.description"
-        :price="offer.price"
+      <Card v-for="(metadata, id) in offers" :key="id"
+        :id="id"
+        :provider="metadata.provider"
+        :title="metadata.title"
+        :description="metadata.description"
+        :price="metadata.price"
         @buy="showAlert"
       />
     </div>
@@ -27,6 +27,7 @@ export default {
   },
   computed: {
     offers () {
+      console.log(this.$store.getters.getOffers)
       return this.$store.getters.getOffers
     }
   },
