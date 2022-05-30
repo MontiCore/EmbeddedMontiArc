@@ -6,3 +6,10 @@ logging:
     org:
       springframework:
         web: DEBUG
+
+provider:
+  name: ${PROVIDER_NAME}
+  url: ${PROVIDER_URL}
+
+consumer:
+  url: ${CONSUMER_URL}

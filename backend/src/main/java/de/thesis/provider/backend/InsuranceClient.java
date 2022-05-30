@@ -11,11 +11,11 @@ public class InsuranceClient {
 
 	private final HttpClient client;
 
-	public void offerDataset(Offer offer) {
-		client.post("/offers", offer, Object.class, null);
+	public void offerDataset(Dataset dataset) {
+		client.post("/offers", dataset, Object.class, null);
 	}
 
-	public List<Dataset> getOffers() {
-		return client.get("/offers", null, Dataset.class, null);
+	public List<Metadata> getOffers() {
+		return client.get("/offers", null, Metadata.class, null);
 	}
 }

@@ -1,6 +1,5 @@
 package de.thesis.provider.backend.controller;
 
-import de.thesis.provider.backend.policy.PolicyService;
 import lombok.AllArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.http.HttpStatus;
@@ -14,8 +13,6 @@ import java.util.UUID;
 @AllArgsConstructor
 @Slf4j
 public class LoggingController {
-
-	private final PolicyService policyService;
 
 	@PostMapping("/{datasetId}")
 	@ResponseStatus(HttpStatus.OK)

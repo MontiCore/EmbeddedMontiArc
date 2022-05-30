@@ -1,15 +1,18 @@
 package de.thesis.provider.backend;
 
-import lombok.AllArgsConstructor;
 import lombok.Getter;
-import lombok.NoArgsConstructor;
 import lombok.Setter;
+
+import java.time.LocalDate;
+import java.time.LocalTime;
 
 @Getter
 @Setter
-@AllArgsConstructor
-@NoArgsConstructor
 public class Policy {
-	private String id;
-	private String rawValue;
+	private LocalTime startTime;
+	private LocalTime endTime;
+	private LocalDate expiresOn;
+	private Integer maxUsages;
+	private boolean localLogging;
+	private boolean remoteLogging;
 }
