@@ -3,7 +3,8 @@ import axios from 'axios'
 
 export default createStore({
   state: {
-    truckData: []
+    truckData: [],
+    datasets: {}
   },
   getters: {
     getTruckData (state) {
@@ -29,6 +30,7 @@ export default createStore({
     },
     fetchDatasets (context) {
       axios.get('/datasets').then(response => {
+        console.log(response.data)
         context.commit('setDatasets', response.data)
       })
     }

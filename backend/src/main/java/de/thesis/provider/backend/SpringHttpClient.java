@@ -7,6 +7,7 @@ import org.springframework.util.MultiValueMap;
 import org.springframework.web.reactive.function.client.WebClient;
 
 import java.util.List;
+import java.util.Map;
 
 @Component
 @AllArgsConstructor
@@ -15,7 +16,7 @@ public class SpringHttpClient implements HttpClient {
 	private final WebClient webClient;
 
 	@Override
-	public <T> List<T> get(String path, MultiValueMap<String, String> queryParams, Class<T> responseType, MultiValueMap<String, String> headers) {
+	public <S, T> Map<S, T> get(String path, MultiValueMap<String, String> queryParams, MultiValueMap<String, String> headers) {
 
 		return webClient.get()
 				.uri(builder -> builder.path(path).queryParams(queryParams).build())
@@ -25,8 +26,8 @@ public class SpringHttpClient implements HttpClient {
 					}
 				})
 				.retrieve()
-				.bodyToFlux(responseType)
-				.collectList().block();
+				.bodyToMono(Map.class)
+				.block();
 	}
 
 	@Override

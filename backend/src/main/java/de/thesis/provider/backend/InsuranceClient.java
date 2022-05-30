@@ -4,6 +4,8 @@ import lombok.AllArgsConstructor;
 import org.springframework.stereotype.Component;
 
 import java.util.List;
+import java.util.Map;
+import java.util.UUID;
 
 @Component
 @AllArgsConstructor
@@ -15,7 +17,7 @@ public class InsuranceClient {
 		client.post("/offers", dataset, Object.class, null);
 	}
 
-	public List<Metadata> getOffers() {
-		return client.get("/offers", null, Metadata.class, null);
+	public Map<UUID, Metadata> getAllOffersMetadata() {
+		return client.get("/offers", null, null);
 	}
 }

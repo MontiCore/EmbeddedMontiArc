@@ -12,6 +12,7 @@ import org.springframework.stereotype.Component;
 import java.io.IOException;
 import java.util.ArrayList;
 import java.util.List;
+import java.util.Map;
 import java.util.UUID;
 
 @Component
@@ -29,8 +30,8 @@ public class DatasetService {
 		client.offerDataset(dataset);
 	}
 
-	public List<Metadata> getDatasets() {
-		return client.getOffers();
+	public Map<UUID, Metadata> getDatasets() {
+		return client.getAllOffersMetadata();
 	}
 
 	private List<DataRow> getDataRows(CreateDatasetCommand command) throws IOException {

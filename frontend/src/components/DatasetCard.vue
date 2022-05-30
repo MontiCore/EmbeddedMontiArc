@@ -15,30 +15,7 @@
           </div>
         </button>
     </div>
-    <div :id="'policies-' + id" class="collapse">
-      <div class="d-flex flex-column gap-2">
-        <div v-if="'usages' in policies" class="d-flex justify-content-between">
-          <Icon icon="ic:baseline-replay" style="font-size: 1.25rem" />
-          <p class="m-0 text-nowrap">{{ policies.usages }} {{ usages }}</p>
-        </div>
-        <div v-if="'time' in policies" class="d-flex justify-content-between">
-          <Icon icon="akar-icons:clock" style="font-size: 1.25rem" />
-          <p class="m-0 text-nowrap">{{ policies.time }}</p>
-        </div>
-        <div v-if="'date' in policies" class="d-flex justify-content-between">
-          <Icon icon="akar-icons:calendar" style="font-size: 1.25rem" />
-          <p class="m-0 text-nowrap">{{ policies.date }}</p>
-        </div>
-        <div v-if="'logging' in policies" class="d-flex justify-content-between">
-          <Icon icon="fe:document" style="font-size: 1.25rem" />
-          <p class="m-0 text-nowrap">{{ logging }}</p>
-        </div>
-        <div v-if="'delete' in policies" class="d-flex justify-content-between">
-          <Icon icon="bx:trash" style="font-size: 1.25rem" />
-          <p class="m-0 text-nowrap">{{ policies.delete }}</p>
-        </div>
-      </div>
-    </div>
+    <PolicyCollapsable :id="id" :policy="policy" />
     <p class="description m-0 flex-grow-1">{{ description }}</p>
     <div class="d-flex justify-content-between align-items-center">
       <button class="btn buy-btn fw-bold" @click="viewData">View data</button>
@@ -49,10 +26,12 @@
 
 <script>
 import { Icon } from '@iconify/vue'
+import PolicyCollapsable from '@/components/PolicyCollapsable'
 
 export default {
   components: {
-    Icon
+    Icon,
+    PolicyCollapsable
   },
   props: {
     id: {
@@ -74,18 +53,15 @@ export default {
     price: {
       type: Number,
       required: true
+    },
+    policy: {
+      type: Object,
+      require: true
     }
   },
   data () {
     return {
-      collapsed: true,
-      policies: {
-        usages: 5,
-        time: '06:00 - 20:00',
-        date: '05.04.2022',
-        logging: ['local', 'remote'],
-        delete: 'delete after'
-      }
+      collapsed: true
     }
   },
   computed: {
