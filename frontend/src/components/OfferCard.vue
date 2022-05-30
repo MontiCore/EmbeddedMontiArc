@@ -17,25 +17,21 @@
     </div>
     <div :id="'policies-' + id" class="collapse">
       <div class="d-flex flex-column gap-2">
-        <div v-if="'usages' in policies" class="d-flex justify-content-between">
+        <div v-if="policy.maxUsages !== 0" class="d-flex justify-content-between">
           <Icon icon="ic:baseline-replay" style="font-size: 1.25rem" />
-          <p class="m-0 text-nowrap">{{ policies.usages }} {{ usages }}</p>
+          <p class="m-0 text-nowrap">{{ policy.maxUsages }} {{ usages }}</p>
         </div>
-        <div v-if="'time' in policies" class="d-flex justify-content-between">
+        <div v-if="policy.startTime !== null || policy.endTime !== null" class="d-flex justify-content-between">
           <Icon icon="akar-icons:clock" style="font-size: 1.25rem" />
-          <p class="m-0 text-nowrap">{{ policies.time }}</p>
+          <p class="m-0 text-nowrap">{{ times }}</p>
         </div>
-        <div v-if="'date' in policies" class="d-flex justify-content-between">
+        <div v-if="policy.expiresOn !== null" class="d-flex justify-content-between">
           <Icon icon="akar-icons:calendar" style="font-size: 1.25rem" />
-          <p class="m-0 text-nowrap">{{ policies.date }}</p>
+          <p class="m-0 text-nowrap">{{ policy.expiresOn }}</p>
         </div>
-        <div v-if="'logging' in policies" class="d-flex justify-content-between">
+        <div v-if="policy.localLogging || policy.remoteLogging" class="d-flex justify-content-between">
           <Icon icon="fe:document" style="font-size: 1.25rem" />
           <p class="m-0 text-nowrap">{{ logging }}</p>
-        </div>
-        <div v-if="'delete' in policies" class="d-flex justify-content-between">
-          <Icon icon="bx:trash" style="font-size: 1.25rem" />
-          <p class="m-0 text-nowrap">{{ policies.delete }}</p>
         </div>
       </div>
     </div>
@@ -74,26 +70,42 @@ export default {
     price: {
       type: Number,
       required: true
+    },
+    policy: {
+      type: Object,
+      required: true
     }
   },
   data () {
     return {
-      collapsed: true,
-      policies: {
-        usages: 5,
-        time: '06:00 - 20:00',
-        date: '05.04.2022',
-        logging: ['local', 'remote'],
-        delete: 'delete after'
-      }
+      collapsed: true
     }
   },
   computed: {
     usages () {
-      return this.policies.usages === 1 ? 'usage' : 'usages'
+      return this.policy.maxUsages === 1 ? 'usage' : 'usages'
+    },
+    times () {
+      if (this.policy.startTime !== null && this.policy.endTime !== null) {
+        return this.policy.startTime.slice(0, -3) + ' - ' + this.policy.endTime.slice(0, -3)
+      }
+
+      if (this.policy.startTime !== null) {
+        return 'from ' + this.policy.startTime.slice(0, -3)
+      }
+
+      return 'until ' + this.policy.endTime.slice(0, -3)
     },
     logging () {
-      return this.policies.logging.join(', ')
+      if (this.policy.localLogging && this.policy.remoteLogging) {
+        return 'local, remote'
+      }
+
+      if (this.policy.localLogging) {
+        return 'local'
+      }
+
+      return 'remote'
     },
     icon () {
       return this.collapsed ? 'ant-design:down-outlined' : 'ant-design:up-outlined'

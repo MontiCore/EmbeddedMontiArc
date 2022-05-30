@@ -11,6 +11,7 @@
         :title="metadata.title"
         :description="metadata.description"
         :price="metadata.price"
+        :policy="metadata.policy"
         @buy="showAlert"
       />
     </div>
