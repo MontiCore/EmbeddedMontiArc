@@ -74,9 +74,11 @@ public class GDLCoCosTest {
     String[] models = {
         "FailDistinctWithNoArguments",
         "FailDistinctWithTooFewArguments",
-        "FailDistinctWithTooManyArguments",
+        //Wird unterstützt
+        //"FailDistinctWithTooManyArguments",
         "FailDistinctWithWrongFirstArgumentType",
         "FailDistinctWithWrongSecondArgumentType",
+        "FailDistinctWithMultipleWrongArgumentTypes",
         "FailDoesWithTooFewArguments",
         "FailDoesWithTooManyArguments",
         "FailDoesWithWrongArgumentTypeOfSecondArgument",
