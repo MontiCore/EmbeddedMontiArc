@@ -5,14 +5,15 @@
       <button type="button" class="btn-close" data-bs-dismiss="alert" aria-label="Close"></button>
     </div>
     <div class="d-flex flex-wrap justify-content-center gap-4">
-      <Card v-for="dataset in datasets" :key="dataset.id"
-        :id="dataset.id"
-        :provider="dataset.provider"
-        :title="dataset.title"
-        :description="dataset.description"
-        :price="dataset.price"
-        @view="viewDataset(dataset.id)"
-        @policy-violation="alert"
+      <Card v-for="(metadata, id) in datasets" :key="id"
+            :id="id"
+            :provider="metadata.provider"
+            :title="metadata.title"
+            :description="metadata.description"
+            :price="metadata.price"
+            :policy="metadata.policy"
+            @view="viewDataset(dataset.id)"
+            @policy-violation="alert"
       />
     </div>
   </div>

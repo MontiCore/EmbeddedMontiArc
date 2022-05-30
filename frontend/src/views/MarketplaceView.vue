@@ -28,7 +28,6 @@ export default {
   },
   computed: {
     offers () {
-      console.log(this.$store.getters.getOffers)
       return this.$store.getters.getOffers
     }
   },
