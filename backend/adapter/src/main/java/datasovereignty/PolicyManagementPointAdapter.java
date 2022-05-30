@@ -1,10 +1,7 @@
 package datasovereignty;
 
 import de.fraunhofer.iese.mydata.IMyDataEnvironment;
-import entity.Dataset;
 import entity.Offer;
-import entity.Policy;
-import entity.Timer;
 import lombok.AllArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.stereotype.Component;
@@ -22,7 +19,6 @@ public class PolicyManagementPointAdapter implements PolicyManagementPort {
 	@Override
 	public void deployPolicy(Offer offer) {
 		try {
-			System.err.println(policyFactory.getMydataPolicy(offer));
 			myDataEnvironment.getPmp().deployPolicy(
 					myDataEnvironment.getPmp().addPolicy(
 							new de.fraunhofer.iese.mydata.policy.Policy(
@@ -31,15 +27,6 @@ public class PolicyManagementPointAdapter implements PolicyManagementPort {
 					));
 		} catch (Exception e) {
 			throw new RuntimeException(String.format("Policy for offer %s could not be deployed", offer.getId()));
-		}
-	}
-
-	@Override
-	public void deployTimer(Timer timer) {
-		try {
-			myDataEnvironment.getPmp().deployTimer(myDataEnvironment.getPmp().addTimer(new de.fraunhofer.iese.mydata.timer.Timer(timer.getRawValue())));
-		} catch (Exception e) {
-			e.printStackTrace();
 		}
 	}
 

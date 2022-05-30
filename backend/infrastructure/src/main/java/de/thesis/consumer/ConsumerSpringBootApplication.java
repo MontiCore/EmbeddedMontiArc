@@ -1,7 +1,10 @@
 package de.thesis.consumer;
 
+import de.fraunhofer.iese.mydata.IMyDataEnvironment;
 import de.fraunhofer.iese.mydata.pep.EnablePolicyEnforcementPoint;
+import de.fraunhofer.iese.mydata.policy.Policy;
 import de.fraunhofer.iese.mydata.pxp.EnablePolicyExecutionPoint;
+import de.fraunhofer.iese.mydata.timer.Timer;
 import lombok.AllArgsConstructor;
 import org.springframework.boot.SpringApplication;
 import org.springframework.boot.autoconfigure.SpringBootApplication;
@@ -11,6 +14,7 @@ import org.springframework.data.jpa.repository.config.EnableJpaRepositories;
 import ports.DatasetDeletionExecutionPoint;
 import ports.LocalLoggingExecutionPoint;
 import ports.PolicyManagementPort;
+import utilities.MydataResourceReader;
 
 import javax.annotation.PostConstruct;
 
@@ -23,6 +27,7 @@ import javax.annotation.PostConstruct;
 @AllArgsConstructor
 public class ConsumerSpringBootApplication {
 
+	private IMyDataEnvironment myDataEnvironment;
 	private PolicyManagementPort policyManagementPort;
 	private DatasetDeletionExecutionPoint datasetDeletionExecutionPoint;
 	private LocalLoggingExecutionPoint localLoggingExecutionPoint;
@@ -32,8 +37,18 @@ public class ConsumerSpringBootApplication {
 	}
 
 	@PostConstruct
-	public void init() {
+	public void setUp() {
 		policyManagementPort.addPxp(datasetDeletionExecutionPoint);
 		policyManagementPort.addPxp(localLoggingExecutionPoint);
+
+		Policy policy = MydataResourceReader.readPolicyFromFile("expiration_check_policy.xml");
+		Timer timer = MydataResourceReader.readTimerFromFile("expiration_check_timer.xml");
+
+		try {
+			myDataEnvironment.getPmp().deployPolicy(myDataEnvironment.getPmp().addPolicy(policy));
+			myDataEnvironment.getPmp().deployTimer(myDataEnvironment.getPmp().addTimer(timer));
+		} catch (Exception e) {
+			e.printStackTrace();
+		}
 	}
 }
