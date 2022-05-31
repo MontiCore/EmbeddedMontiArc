@@ -40,4 +40,5 @@ grammar GDL extends de.monticore.literals.MCCommonLiterals {
     GameLess implements GameType = "less";
     GameGreater implements GameType = "greater";
     GameEqual implements GameType = "equal";
+    GameNumber implements GameType = "number";
 }

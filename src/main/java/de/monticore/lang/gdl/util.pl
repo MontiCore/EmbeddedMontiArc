@@ -164,9 +164,15 @@ less(X,Y) :-
 greater(X,Y) :-
   less(Y,X).
 
-equals(X,Y) :-
+equal(X,Y) :-
   nonvar(X),
   nonvar(Y),
   atom_to_number(X, NX),
   atom_to_number(Y, NY),
   NX = NY.
+
+% ----- is a number? -----
+num(X) :-
+  nonvar(X),
+  atom_to_number(X, NX),
+  integer(NX).
