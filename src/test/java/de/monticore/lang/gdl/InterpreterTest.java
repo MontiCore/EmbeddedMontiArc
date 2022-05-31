@@ -114,8 +114,8 @@ public class InterpreterTest {
     }
 
     @Test
-    public void testSubtract() {
-        InterpreterTestCase testCase = new InterpreterTestCase("Subtract");
+    public void testSub() {
+        InterpreterTestCase testCase = new InterpreterTestCase("Sub");
         testCase.moves.addAll(List.of(
             Command.createMoveFromLine("test (do)")
         ));

@@ -52,7 +52,7 @@ add(X,Y,Z) :-
 
 % -----Subtraction-----
 % Z is variable or no Variables
-subtract(X, Y, Z) :-
+sub(X, Y, Z) :-
   nonvar(X),
   nonvar(Y),
   atom_to_number(X, NX),
@@ -61,7 +61,7 @@ subtract(X, Y, Z) :-
   number_to_atom(NZ, Z).
 
 % Y is variable
-subtract(X, Y, Z) :-
+sub(X, Y, Z) :-
   nonvar(X),
   nonvar(Z),
   atom_to_number(X, NX),
@@ -70,7 +70,7 @@ subtract(X, Y, Z) :-
   number_to_atom(NY, Y).
 
 % X is variable
-subtract(X, Y, Z) :-
+sub(X, Y, Z) :-
   nonvar(Y),
   nonvar(Z),
   atom_to_number(Y, NY),
