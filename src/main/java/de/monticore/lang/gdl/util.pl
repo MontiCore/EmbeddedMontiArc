@@ -96,7 +96,8 @@ mult(X, Y, Z) :-
   atom_to_number(Z, NZ),
   NX \== 0,
   NY is NZ / NX,
-  number_to_atom(NY, Y).
+  NYF is floor(NY),
+  number_to_atom(NYF, Y).
 
 % X is variable
 mult(X, Y, Z) :-
@@ -106,7 +107,8 @@ mult(X, Y, Z) :-
   atom_to_number(Y, NY),
   NY \== 0,
   NX is NZ / NY,
-  number_to_atom(NX, X).
+  NXF is floor(NX),
+  number_to_atom(NXF, X).
 
 % -----Division-----
 % Z is variable or no Variables
@@ -117,7 +119,8 @@ div(X, Y, Z) :-
   atom_to_number(Y, NY),
   NY \== 0,
   NZ is NX / NY,
-  number_to_atom(NZ, Z).
+  NZF is floor(NZ),
+  number_to_atom(NZF, Z).
 
 % Y is variable
 div(X, Y, Z) :-
@@ -127,7 +130,8 @@ div(X, Y, Z) :-
   atom_to_number(Z, NZ),
   NZ \== 0,
   NY is NX / NZ,
-  number_to_atom(NY, Y).
+  NYF is floor(NY),
+  number_to_atom(NYF, Y).
 
 % X is variable
 div(X, Y, Z) :-

@@ -129,11 +129,132 @@ public class ASTGameExpressionCoCo implements GDLASTGameExpressionCoCo {
 					Log.error("GameDistinct arguments must be of type GameToken or GameValue");
 				}
 			}
-			/*if (node.getArgumentsList().size() >= 2 && !(node.getArguments(0) instanceof ASTGameToken
-					|| node.getArguments(0) instanceof ASTGameValue && node.getArguments(1) instanceof ASTGameToken
-					|| node.getArguments(1) instanceof ASTGameValue)) {
-				Log.error("GameDistinct arguments must be of type GameToken or GameValue");
-			}*/
+		}
+
+		if (node.getType() instanceof ASTGameAdd) {
+			if (node.getArgumentsList().size() != 3) {
+				Log.error("GameAdd definition must have exactly three arguments");
+			}
+			int numToken = 0;
+			for(int i = 0; i < 3; i++){
+				if(!(node.getArguments(i) instanceof ASTGameToken || node.getArguments(i) instanceof ASTGameValue)){
+					Log.error("GameAdd arguments must be of type GameToken or GameValue");
+				}
+				if(node.getArguments(i) instanceof ASTGameToken){
+					numToken++;
+				}
+			}
+			if(numToken > 1){
+				Log.error("GameAdd arguments must include at most one GameToken");
+			}
+		}
+
+		if (node.getType() instanceof ASTGameSub) {
+			if (node.getArgumentsList().size() != 3) {
+				Log.error("GameSub definition must have exactly three arguments");
+			}
+			int numToken = 0;
+			for(int i = 0; i < 3; i++){
+				if(!(node.getArguments(i) instanceof ASTGameToken || node.getArguments(i) instanceof ASTGameValue)){
+					Log.error("GameSub arguments must be of type GameToken or GameValue");
+				}
+				if(node.getArguments(i) instanceof ASTGameToken){
+					numToken++;
+				}
+			}
+			if(numToken > 1){
+				Log.error("GameSub arguments must include at most one GameToken");
+			}
+		}
+
+		if (node.getType() instanceof ASTGameMult) {
+			if (node.getArgumentsList().size() != 3) {
+				Log.error("GameMult definition must have exactly three arguments");
+			}
+			int numToken = 0;
+			for(int i = 0; i < 3; i++){
+				if(!(node.getArguments(i) instanceof ASTGameToken || node.getArguments(i) instanceof ASTGameValue)){
+					Log.error("GameMult arguments must be of type GameToken or GameValue");
+				}
+				if(node.getArguments(i) instanceof ASTGameToken){
+					numToken++;
+				}
+			}
+			if(numToken > 1){
+				Log.error("GameMult arguments must include at most one GameToken");
+			}
+		}
+
+		if (node.getType() instanceof ASTGameDiv) {
+			if (node.getArgumentsList().size() != 3) {
+				Log.error("GameDiv definition must have exactly three arguments");
+			}
+			int numToken = 0;
+			for(int i = 0; i < 3; i++){
+				if(!(node.getArguments(i) instanceof ASTGameToken || node.getArguments(i) instanceof ASTGameValue)){
+					Log.error("GameDiv arguments must be of type GameToken or GameValue");
+				}
+				if(node.getArguments(i) instanceof ASTGameToken){
+					numToken++;
+				}
+			}
+			if(numToken > 1){
+				Log.error("GameDiv arguments must include at most one GameToken");
+			}
+		}
+
+		if (node.getType() instanceof ASTGameLess) {
+			if (node.getArgumentsList().size() != 2) {
+				Log.error("GameLess definition must have exactly two arguments");
+			}
+			if(!(node.getArguments(0) instanceof ASTGameValue) || !(node.getArguments(1) instanceof ASTGameValue)){
+				Log.error("GameLess arguments must be of type GameValue");
+			}
+		}
+
+		if (node.getType() instanceof ASTGameGreater) {
+			if (node.getArgumentsList().size() != 2) {
+				Log.error("GameGreater definition must have exactly two arguments");
+			}
+			if(!(node.getArguments(0) instanceof ASTGameValue) || !(node.getArguments(1) instanceof ASTGameValue)){
+				Log.error("GameGreater arguments must be of type GameValue");
+			}
+		}
+
+		if (node.getType() instanceof ASTGameEqual) {
+			if (node.getArgumentsList().size() != 2) {
+				Log.error("GameEqual definition must have exactly two arguments");
+			}
+			if(!(node.getArguments(0) instanceof ASTGameValue) || !(node.getArguments(1) instanceof ASTGameValue)){
+				Log.error("GameEqual arguments must be of type GameValue");
+			}
+		}
+
+		if (node.getType() instanceof ASTGameSucc) {
+			if (node.getArgumentsList().size() != 2) {
+				Log.error("GameSucc definition must have exactly two arguments");
+			}
+			int numToken = 0;
+			for(int i = 0; i < 2; i++){
+				if(!(node.getArguments(i) instanceof ASTGameToken || node.getArguments(i) instanceof ASTGameValue)){
+					Log.error("GameSucc arguments must be of type GameToken or GameValue");
+				}
+				if(node.getArguments(i) instanceof ASTGameToken){
+					numToken++;
+				}
+			}
+			if(numToken > 1){
+				Log.error("GameSucc arguments must include at most one GameToken");
+			}
+		}
+
+		if (node.getType() instanceof ASTGameNumber) {
+			if (node.getArgumentsList().size() != 1) {
+				Log.error("GameNumber definition must have exactly one argument");
+			}
+			if(!(node.getArguments(0) instanceof ASTGameValue)){
+				Log.error("GameSucc arguments must be of type GameValue");
+			}
 		}
 
 		if (node.getType() instanceof ASTGameGoal) {
