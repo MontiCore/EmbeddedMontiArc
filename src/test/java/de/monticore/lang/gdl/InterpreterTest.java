@@ -210,6 +210,18 @@ public class InterpreterTest {
     }
 
     @Test
+    public void testMod() {
+        InterpreterTestCase testCase = new InterpreterTestCase("Mod");
+        testCase.moves.addAll(List.of(
+            Command.createMoveFromLine("test (do)")
+        ));
+        testCase.expectedState.addAll(List.of(
+            List.of("success")
+        ));
+        testCase.doTestCase();
+    }
+
+    @Test
     public void testDistinct() {
         InterpreterTestCase testCase = new InterpreterTestCase("Distinct");
         testCase.moves.addAll(List.of(

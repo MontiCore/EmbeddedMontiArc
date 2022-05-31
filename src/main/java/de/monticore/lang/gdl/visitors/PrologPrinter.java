@@ -23,6 +23,7 @@ import de.monticore.lang.gdl._ast.ASTGameInference;
 import de.monticore.lang.gdl._ast.ASTGameInit;
 import de.monticore.lang.gdl._ast.ASTGameLegal;
 import de.monticore.lang.gdl._ast.ASTGameLess;
+import de.monticore.lang.gdl._ast.ASTGameMod;
 import de.monticore.lang.gdl._ast.ASTGameMult;
 import de.monticore.lang.gdl._ast.ASTGameNext;
 import de.monticore.lang.gdl._ast.ASTGameNot;
@@ -210,7 +211,11 @@ public class PrologPrinter extends IndentPrinter implements GDLVisitor2, MCCommo
     }
 
     public void visit(ASTGameNumber node) {
-        print("function_number");
+        print("function_num");
+    }
+
+    public void visit(ASTGameMod node) {
+        print("function_modulo");
     }
 
     public String getPlaceholderStates() {
@@ -313,6 +318,14 @@ public class PrologPrinter extends IndentPrinter implements GDLVisitor2, MCCommo
             } else if (type instanceof ASTGameNumber) {
                 print("num(");
                 node.getArguments(0).accept(getTraverser());
+                print(")");
+            } else if (type instanceof ASTGameMod) {
+                print("modulo(");
+                node.getArguments(0).accept(getTraverser());
+                print(", ");
+                node.getArguments(1).accept(getTraverser());
+                print(", ");
+                node.getArguments(2).accept(getTraverser());
                 print(")");
             } else if (type instanceof ASTGameTrue) {
                 type.accept(getTraverser());
@@ -585,6 +598,9 @@ public class PrologPrinter extends IndentPrinter implements GDLVisitor2, MCCommo
                         } else if (bodyExpression.getType() instanceof ASTGameNumber) {
                             distinctExpressions.add(bodyExpression);
                             continue;
+                        } else if (bodyExpression.getType() instanceof ASTGameMod) {
+                            distinctExpressions.add(bodyExpression);
+                            continue;
                         }
                         bodyExpression.accept(getTraverser());
 
@@ -668,6 +684,9 @@ public class PrologPrinter extends IndentPrinter implements GDLVisitor2, MCCommo
                         } else if (bodyExpression.getType() instanceof ASTGameNumber) {
                             distinctExpressions.add(bodyExpression);
                             continue;
+                        } else if (bodyExpression.getType() instanceof ASTGameMod) {
+                            distinctExpressions.add(bodyExpression);
+                            continue;
                         }
                         bodyExpression.accept(getTraverser());
 
@@ -746,6 +765,9 @@ public class PrologPrinter extends IndentPrinter implements GDLVisitor2, MCCommo
                         } else if (bodyExpression.getType() instanceof ASTGameNumber) {
                             distinctExpressions.add(bodyExpression);
                             continue;
+                        } else if (bodyExpression.getType() instanceof ASTGameMod) {
+                            distinctExpressions.add(bodyExpression);
+                            continue;
                         }
                         bodyExpression.accept(getTraverser());
 
@@ -808,6 +830,9 @@ public class PrologPrinter extends IndentPrinter implements GDLVisitor2, MCCommo
                         distinctExpressions.add(bodyExpression);
                         continue;
                     } else if (bodyExpression.getType() instanceof ASTGameNumber) {
+                        distinctExpressions.add(bodyExpression);
+                        continue;
+                    } else if (bodyExpression.getType() instanceof ASTGameMod) {
                         distinctExpressions.add(bodyExpression);
                         continue;
                     }
@@ -932,6 +957,9 @@ public class PrologPrinter extends IndentPrinter implements GDLVisitor2, MCCommo
                 distinctExpressions.add(node.getBody(i));
                 continue;
             } else if (node.getBody(i).getType() instanceof ASTGameNumber) {
+                distinctExpressions.add(node.getBody(i));
+                continue;
+            } else if (node.getBody(i).getType() instanceof ASTGameMod) {
                 distinctExpressions.add(node.getBody(i));
                 continue;
             }

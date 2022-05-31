@@ -176,3 +176,13 @@ num(X) :-
   nonvar(X),
   atom_to_number(X, NX),
   integer(NX).
+
+% ----- Modulo -----
+modulo(X, Y, Z) :-
+  nonvar(X),
+  nonvar(Y),
+  atom_to_number(X, NX),
+  atom_to_number(Y, NY),
+  NY \== 0,
+  NZ is NX mod NY,
+  number_to_atom(NZ, Z).
