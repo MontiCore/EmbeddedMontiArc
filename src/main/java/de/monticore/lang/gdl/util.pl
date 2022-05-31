@@ -52,7 +52,7 @@ add(X,Y,Z) :-
 
 % -----Subtraction-----
 % Z is variable or no Variables
-substract(X, Y, Z) :-
+subtract(X, Y, Z) :-
   nonvar(X),
   nonvar(Y),
   atom_to_number(X, NX),
@@ -61,16 +61,22 @@ substract(X, Y, Z) :-
   number_to_atom(NZ, Z).
 
 % Y is variable
-substract(X, Y, Z) :-
+subtract(X, Y, Z) :-
   nonvar(X),
   nonvar(Z),
-  substract(X, Z, Y).
+  atom_to_number(X, NX),
+  atom_to_number(Z, NZ),
+  NY is NX - NZ,
+  number_to_atom(NY, Y).
 
 % X is variable
-substract(X, Y, Z) :-
+subtract(X, Y, Z) :-
   nonvar(Y),
   nonvar(Z),
-  add(Y, Z, X).
+  atom_to_number(Y, NY),
+  atom_to_number(Z, NZ),
+  NX is NY + NZ,
+  number_to_atom(NX, X).
 
 % -----Multiplication-----
 % Z is variable or no Variables
@@ -88,6 +94,7 @@ mult(X, Y, Z) :-
   nonvar(Z),
   atom_to_number(X, NX),
   atom_to_number(Z, NZ),
+  NX \== 0,
   NY is NZ / NX,
   number_to_atom(NY, Y).
 
@@ -97,6 +104,7 @@ mult(X, Y, Z) :-
   nonvar(Z),
   atom_to_number(Z, NZ),
   atom_to_number(Y, NY),
+  NY \== 0,
   NX is NZ / NY,
   number_to_atom(NX, X).
 

@@ -2,7 +2,6 @@
     (greater 7 6)
     (not (greater 6 7))
     (not (greater 7 7))
-    (greater 0 -1)
 )
 
 (<= (next (success))

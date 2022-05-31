@@ -29,7 +29,7 @@ import de.monticore.lang.gdl._ast.ASTGameNot;
 import de.monticore.lang.gdl._ast.ASTGameRelation;
 import de.monticore.lang.gdl._ast.ASTGameRole;
 import de.monticore.lang.gdl._ast.ASTGameSees;
-import de.monticore.lang.gdl._ast.ASTGameSubstract;
+import de.monticore.lang.gdl._ast.ASTGameSubtract;
 import de.monticore.lang.gdl._ast.ASTGameSuccessor;
 import de.monticore.lang.gdl._ast.ASTGameTerminal;
 import de.monticore.lang.gdl._ast.ASTGameToken;
@@ -229,8 +229,8 @@ public class PrologPrinter extends IndentPrinter implements GDLVisitor2, MCCommo
                 print(", ");
                 node.getArguments(2).accept(getTraverser());
                 print(")");
-            } else if (type instanceof ASTGameSubstract) {
-                print("substract(");
+            } else if (type instanceof ASTGameSubtract) {
+                print("subtract(");
                 node.getArguments(0).accept(getTraverser());
                 print(", ");
                 node.getArguments(1).accept(getTraverser());
@@ -258,32 +258,24 @@ public class PrologPrinter extends IndentPrinter implements GDLVisitor2, MCCommo
                 node.getArguments(0).accept(getTraverser());
                 print(", ");
                 node.getArguments(1).accept(getTraverser());
-                print(", ");
-                node.getArguments(2).accept(getTraverser());
                 print(")");
             } else if (type instanceof ASTGameLess) {
                 print("less(");
                 node.getArguments(0).accept(getTraverser());
                 print(", ");
                 node.getArguments(1).accept(getTraverser());
-                print(", ");
-                node.getArguments(2).accept(getTraverser());
                 print(")");
             } else if (type instanceof ASTGameGreater) {
                 print("greater(");
                 node.getArguments(0).accept(getTraverser());
                 print(", ");
                 node.getArguments(1).accept(getTraverser());
-                print(", ");
-                node.getArguments(2).accept(getTraverser());
                 print(")");
             } else if (type instanceof ASTGameEqual) {
-                print("eq(");
+                print("equals(");
                 node.getArguments(0).accept(getTraverser());
                 print(", ");
                 node.getArguments(1).accept(getTraverser());
-                print(", ");
-                node.getArguments(2).accept(getTraverser());
                 print(")");
             } else if (type instanceof ASTGameTrue) {
                 type.accept(getTraverser());
@@ -532,7 +524,7 @@ public class PrologPrinter extends IndentPrinter implements GDLVisitor2, MCCommo
                         } else if (bodyExpression.getType() instanceof ASTGameAdd) {
                             distinctExpressions.add(bodyExpression);
                             continue;
-                        } else if (bodyExpression.getType() instanceof ASTGameSubstract) {
+                        } else if (bodyExpression.getType() instanceof ASTGameSubtract) {
                             distinctExpressions.add(bodyExpression);
                             continue;
                         } else if (bodyExpression.getType() instanceof ASTGameMult) {
@@ -612,7 +604,7 @@ public class PrologPrinter extends IndentPrinter implements GDLVisitor2, MCCommo
                         } else if (bodyExpression.getType() instanceof ASTGameAdd) {
                             distinctExpressions.add(bodyExpression);
                             continue;
-                        } else if (bodyExpression.getType() instanceof ASTGameSubstract) {
+                        } else if (bodyExpression.getType() instanceof ASTGameSubtract) {
                             distinctExpressions.add(bodyExpression);
                             continue;
                         } else if (bodyExpression.getType() instanceof ASTGameMult) {
@@ -687,7 +679,7 @@ public class PrologPrinter extends IndentPrinter implements GDLVisitor2, MCCommo
                         } else if (bodyExpression.getType() instanceof ASTGameAdd) {
                             distinctExpressions.add(bodyExpression);
                             continue;
-                        } else if (bodyExpression.getType() instanceof ASTGameSubstract) {
+                        } else if (bodyExpression.getType() instanceof ASTGameSubtract) {
                             distinctExpressions.add(bodyExpression);
                             continue;
                         } else if (bodyExpression.getType() instanceof ASTGameMult) {
@@ -748,7 +740,7 @@ public class PrologPrinter extends IndentPrinter implements GDLVisitor2, MCCommo
                     } else if (bodyExpression.getType() instanceof ASTGameAdd) {
                         distinctExpressions.add(bodyExpression);
                         continue;
-                    } else if (bodyExpression.getType() instanceof ASTGameSubstract) {
+                    } else if (bodyExpression.getType() instanceof ASTGameSubtract) {
                         distinctExpressions.add(bodyExpression);
                         continue;
                     } else if (bodyExpression.getType() instanceof ASTGameMult) {
@@ -869,7 +861,7 @@ public class PrologPrinter extends IndentPrinter implements GDLVisitor2, MCCommo
             } else if (node.getBody(i).getType() instanceof ASTGameAdd) {
                 distinctExpressions.add(node.getBody(i));
                 continue;
-            } else if (node.getBody(i).getType() instanceof ASTGameSubstract) {
+            } else if (node.getBody(i).getType() instanceof ASTGameSubtract) {
                 distinctExpressions.add(node.getBody(i));
                 continue;
             } else if (node.getBody(i).getType() instanceof ASTGameMult) {

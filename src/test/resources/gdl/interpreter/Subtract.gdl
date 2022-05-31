@@ -1,0 +1,17 @@
+(<= (legal test (do))
+    (subtract 3 2 1)
+    (subtract 3 2 ?Z)
+    (is1 ?Z)
+    (subtract 3 ?Y 1)
+    (is2 ?Y)
+    (subtract ?X 2 1)
+    (is3 ?X)
+)
+
+(<= (next (success))
+    (does test (do))
+)
+
+(is1 1)
+(is2 2)
+(is3 3)

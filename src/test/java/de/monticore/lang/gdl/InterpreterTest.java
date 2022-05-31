@@ -101,7 +101,7 @@ public class InterpreterTest {
         testCase.doTestCase();
     }
 
-    /*@Test
+    @Test
     public void testAdd() {
         InterpreterTestCase testCase = new InterpreterTestCase("Add");
         testCase.moves.addAll(List.of(
@@ -195,7 +195,7 @@ public class InterpreterTest {
             List.of("success")
         ));
         testCase.doTestCase();
-    }*/
+    }
 
     @Test
     public void testDistinct() {

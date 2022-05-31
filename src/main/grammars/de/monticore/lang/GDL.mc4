@@ -33,7 +33,7 @@ grammar GDL extends de.monticore.literals.MCCommonLiterals {
     GameCount implements GameType = "count";
     GameSees implements GameType = "sees";
     GameAdd implements GameType = "add";
-    GameSubstract implements GameType = "substract";
+    GameSubtract implements GameType = "subtract";
     GameMult implements GameType = "mult";
     GameDiv implements GameType = "div";
     GameSuccessor implements GameType = "successor";
