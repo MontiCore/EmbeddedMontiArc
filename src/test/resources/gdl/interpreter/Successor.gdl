@@ -2,6 +2,8 @@
     (successor 1 2)
     (successor 1 ?X)
     (is2 ?X)
+    (successor ?Y 7)
+    (is6 ?Y)
 )
 
 (<= (next (success))
