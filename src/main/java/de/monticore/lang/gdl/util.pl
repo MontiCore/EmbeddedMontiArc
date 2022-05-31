@@ -140,14 +140,14 @@ div(X, Y, Z) :-
 
 % -----Successor Relation-----
 % Y is Variable
-successor(X,Y) :-
+succ(X,Y) :-
   nonvar(X),
   atom_to_number(X, NX),
   NY is NX + 1,
   number_to_atom(NY, Y).
 
 % X is Variable
-successor(X,Y) :-
+succ(X,Y) :-
   nonvar(Y),
   atom_to_number(Y, NY),
   NX is NY - 1,

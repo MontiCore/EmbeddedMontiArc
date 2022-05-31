@@ -150,8 +150,8 @@ public class InterpreterTest {
     }
 
     @Test
-    public void testSuccessor() {
-        InterpreterTestCase testCase = new InterpreterTestCase("Successor");
+    public void testSucc() {
+        InterpreterTestCase testCase = new InterpreterTestCase("Succ");
         testCase.moves.addAll(List.of(
             Command.createMoveFromLine("test (do)")
         ));
