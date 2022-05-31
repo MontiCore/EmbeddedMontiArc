@@ -12,7 +12,7 @@ import java.util.Optional;
 import java.util.UUID;
 
 @AllArgsConstructor
-public class SpringOfferRepositoryAdapter implements OfferPersistencePort {
+public class SpringOfferPersistencePortAdapter implements OfferPersistencePort {
 
 	private final JacksonOfferMapper mapper;
 	private final SpringOfferRepository repository;
@@ -20,7 +20,9 @@ public class SpringOfferRepositoryAdapter implements OfferPersistencePort {
 	@Override
 	public void save(Offer offer) {
 		OfferEntity offerEntity = mapper.mapToPersistenceEntity(offer);
-		offerEntity.getData().forEach(dataRowEntity -> dataRowEntity.setOffer(offerEntity));
+		offerEntity.getData().forEach(dataRowEntity ->
+				dataRowEntity.setOffer(offerEntity)
+		);
 
 		repository.save(offerEntity);
 	}

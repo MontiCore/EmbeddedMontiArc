@@ -7,7 +7,7 @@ import java.time.LocalTime;
 
 @Data
 public class Policy {
-	private Long id;
+	private int id;
 	private LocalTime startTime;
 	private LocalTime endTime;
 	private LocalDate expiresOn;

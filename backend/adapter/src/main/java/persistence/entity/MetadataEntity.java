@@ -11,12 +11,15 @@ import javax.persistence.*;
 @Getter
 @Setter
 public class MetadataEntity {
-	String title;
-	String provider;
 	@Id
 	@GeneratedValue
-	private Long id;
+	private int id;
 	@Column(columnDefinition = "TEXT")
+
+	private String title;
+
+	private String provider;
+
 	private String description;
 
 	private double price;

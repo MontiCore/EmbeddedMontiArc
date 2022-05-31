@@ -18,7 +18,7 @@ import java.time.LocalTime;
 public class PolicyEntity {
 	@Id
 	@GeneratedValue
-	private Long id;
+	private int id;
 	private LocalTime startTime;
 	private LocalTime endTime;
 	private LocalDate expiresOn;

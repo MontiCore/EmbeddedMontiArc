@@ -13,7 +13,7 @@ import java.time.LocalDateTime;
 @Table(name = "data_row")
 public class DataRowEntity {
 	@Id
-	private Long id;
+	private int id;
 	private String dayID;
 	private double longitude;
 	private double latitude;

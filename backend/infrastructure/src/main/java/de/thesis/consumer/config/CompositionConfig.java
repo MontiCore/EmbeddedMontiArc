@@ -1,6 +1,5 @@
 package de.thesis.consumer.config;
 
-import de.fraunhofer.iese.mydata.IMyDataEnvironment;
 import entity.Dataset;
 import lombok.AllArgsConstructor;
 import org.springframework.beans.factory.annotation.Value;
@@ -12,7 +11,7 @@ import persistence.mappers.JacksonOfferMapper;
 import persistence.repository.SpringDatasetRepository;
 import persistence.repository.SpringDatasetRepositoryAdapter;
 import persistence.repository.SpringOfferRepository;
-import persistence.repository.SpringOfferRepositoryAdapter;
+import persistence.repository.SpringOfferPersistencePortAdapter;
 import ports.DatasetPersistencePort;
 import ports.OfferPersistencePort;
 import ports.PolicyEnforcementPort;
@@ -52,7 +51,7 @@ public class CompositionConfig {
 
 	@Bean
 	public OfferPersistencePort offerPersistencePort(JacksonOfferMapper mapper, SpringOfferRepository repository) {
-		return new SpringOfferRepositoryAdapter(mapper, repository);
+		return new SpringOfferPersistencePortAdapter(mapper, repository);
 	}
 
 	@Bean

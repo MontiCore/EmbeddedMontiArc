@@ -6,7 +6,7 @@ import java.time.LocalDate;
 
 @Data
 public class Metadata {
-	private Long id;
+	private int id;
 	private String title;
 	private String provider;
 	private String description;
