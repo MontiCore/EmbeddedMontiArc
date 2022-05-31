@@ -1,7 +1,8 @@
 /* (c) https://github.com/MontiCore/monticore */
 package calculator;
 
-component Network{
+
+component /*AnyType*/ Network{
     ports in Z(0:255)^{1, 28, 28} data,
          out Q(0:1)^{10} softmax;
 
@@ -14,7 +15,7 @@ component Network{
     connect net2.softmaxOutput -> softmax
     */
 
-    implementation CNN {
+    implementation /*AnyType*/ CNN {
         data ->
         net1 ->
         net2 ->
