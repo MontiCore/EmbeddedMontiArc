@@ -5,7 +5,7 @@ import de.fraunhofer.iese.mydata.registry.ActionParameterDescription;
 import lombok.AllArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.stereotype.Component;
-import ports.DatasetDeletionExecutionPoint;
+import ports.DatasetDeletionExecutionPort;
 import ports.DatasetPersistencePort;
 
 import java.util.UUID;
@@ -13,7 +13,7 @@ import java.util.UUID;
 @Component
 @AllArgsConstructor
 @Slf4j
-public class DatasetDeletionExecutionPointAdapter implements DatasetDeletionExecutionPoint {
+public class DatasetDeletionExecutionPortAdapter implements DatasetDeletionExecutionPort {
 
 	private final DatasetPersistencePort datasetPersistencePort;
 

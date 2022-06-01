@@ -4,13 +4,13 @@ import de.fraunhofer.iese.mydata.registry.ActionDescription;
 import de.fraunhofer.iese.mydata.registry.ActionParameterDescription;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.stereotype.Component;
-import ports.LocalLoggingExecutionPoint;
+import ports.LocalLoggingExecutionPort;
 
 import java.time.LocalDateTime;
 
 @Component
 @Slf4j
-public class LocalLoggingExecutionPointAdapter implements LocalLoggingExecutionPoint {
+public class LocalLoggingExecutionPortAdapter implements LocalLoggingExecutionPort {
 
 	@Override
 	@ActionDescription(methodName = "log-local")

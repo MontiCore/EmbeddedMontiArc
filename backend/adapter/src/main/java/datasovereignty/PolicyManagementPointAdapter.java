@@ -5,7 +5,7 @@ import entity.Offer;
 import lombok.AllArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.stereotype.Component;
-import ports.PolicyExecutionPoint;
+import ports.DsExecutionPort;
 import ports.PolicyManagementPort;
 
 @Component
@@ -32,11 +32,11 @@ public class PolicyManagementPointAdapter implements PolicyManagementPort {
 	}
 
 	@Override
-	public void addPxp(PolicyExecutionPoint policyExecutionPoint) {
+	public void addPxp(DsExecutionPort dsExecutionPort) {
 		try {
-			myDataEnvironment.registerLocalPxp(policyExecutionPoint.getName(), policyExecutionPoint);
+			myDataEnvironment.registerLocalPxp(dsExecutionPort.getName(), dsExecutionPort);
 		} catch (Exception e) {
-			log.info("Policy execution point {} could not be deployed", policyExecutionPoint.getName());
+			log.info("Policy execution point {} could not be deployed", dsExecutionPort.getName());
 			throw new RuntimeException(e);
 		}
 	}

@@ -4,11 +4,11 @@ import de.fraunhofer.iese.mydata.registry.ActionDescription;
 import de.fraunhofer.iese.mydata.registry.ActionParameterDescription;
 import lombok.AllArgsConstructor;
 import org.springframework.stereotype.Component;
-import ports.RemoteLoggingExecutionPoint;
+import ports.RemoteLoggingExecutionPort;
 
 @Component
 @AllArgsConstructor
-public class RemoteLoggingExecutionPointAdapter implements RemoteLoggingExecutionPoint {
+public class RemoteLoggingExecutionPortAdapter implements RemoteLoggingExecutionPort {
 
 	private final ProviderCommunicationPortAdapter providerCommunicationPortAdapter;
 

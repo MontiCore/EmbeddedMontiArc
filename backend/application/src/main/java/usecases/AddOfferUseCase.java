@@ -17,7 +17,6 @@ public class AddOfferUseCase implements CommandHandler<AddOfferCommand, Offer> {
 				command.getMetadata(),
 				command.getData()
 		);
-
 		offerPersistencePort.save(offer);
 
 		return offer;

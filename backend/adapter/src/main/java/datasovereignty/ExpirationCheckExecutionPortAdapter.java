@@ -6,14 +6,14 @@ import lombok.AllArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.stereotype.Component;
 import ports.DatasetPersistencePort;
-import ports.ExpirationCheckExecutionPoint;
+import ports.ExpirationCheckExecutionPort;
 
 import java.time.LocalDate;
 
 @Component
 @AllArgsConstructor
 @Slf4j
-public class ExpirationCheckExecutionPointAdapter implements ExpirationCheckExecutionPoint {
+public class ExpirationCheckExecutionPortAdapter implements ExpirationCheckExecutionPort {
 
 	private DatasetPersistencePort persistencePort;
 

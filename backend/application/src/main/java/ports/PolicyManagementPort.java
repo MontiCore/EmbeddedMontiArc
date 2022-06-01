@@ -6,5 +6,5 @@ public interface PolicyManagementPort {
 
 	void deployPolicy(Offer offer);
 
-	void addPxp(PolicyExecutionPoint policyExecutionPoint);
+	void addPxp(DsExecutionPort dsExecutionPort);
 }

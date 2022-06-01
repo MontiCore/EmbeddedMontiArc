@@ -27,10 +27,10 @@ public class ConsumerSpringBootApplication {
 
 	private IMyDataEnvironment myDataEnvironment;
 	private PolicyManagementPort policyManagementPort;
-	private DatasetDeletionExecutionPoint datasetDeletionExecutionPoint;
-	private LocalLoggingExecutionPoint localLoggingExecutionPoint;
-	private RemoteLoggingExecutionPoint remoteLoggingExecutionPoint;
-	private ExpirationCheckExecutionPoint expirationCheckExecutionPoint;
+	private DatasetDeletionExecutionPort datasetDeletionExecutionPoint;
+	private LocalLoggingExecutionPort localLoggingExecutionPoint;
+	private RemoteLoggingExecutionPort remoteLoggingExecutionPoint;
+	private ExpirationCheckExecutionPort expirationCheckExecutionPoint;
 
 	public static void main(String[] args) {
 		SpringApplication.run(ConsumerSpringBootApplication.class, args);
