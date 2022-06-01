@@ -1,6 +1,7 @@
 package de.thesis.consumer;
 
 import de.fraunhofer.iese.mydata.IMyDataEnvironment;
+import de.fraunhofer.iese.mydata.eventhistory.EnableEventHistory;
 import de.fraunhofer.iese.mydata.pep.EnablePolicyEnforcementPoint;
 import de.fraunhofer.iese.mydata.policy.Policy;
 import de.fraunhofer.iese.mydata.pxp.EnablePolicyExecutionPoint;
@@ -22,6 +23,7 @@ import javax.annotation.PostConstruct;
 @EntityScan(basePackages = "persistence.entity")
 @EnablePolicyEnforcementPoint(basePackages = "datasovereignty")
 @EnablePolicyExecutionPoint
+@EnableEventHistory
 @AllArgsConstructor
 public class ConsumerSpringBootApplication {
 

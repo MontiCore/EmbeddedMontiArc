@@ -12,7 +12,7 @@
             :description="metadata.description"
             :price="metadata.price"
             :policy="metadata.policy"
-            @view="viewDataset(dataset.id)"
+            @view="viewDataset(id)"
             @policy-violation="alert"
       />
     </div>
