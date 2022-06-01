@@ -20,7 +20,7 @@ public class DatasetEntity {
 	@OneToOne(cascade = CascadeType.ALL)
 	private MetadataEntity metadata;
 
-	@OneToMany(mappedBy = "dataset", cascade = CascadeType.ALL)
+	@OneToMany(mappedBy = "dataset", cascade = CascadeType.ALL, fetch = FetchType.EAGER)
 	private List<DataRowEntity> data;
 
 	private LocalDateTime boughtAt;

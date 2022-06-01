@@ -18,6 +18,6 @@ public class OfferEntity {
 	@OneToOne(cascade = CascadeType.ALL)
 	private MetadataEntity metadata;
 
-	@OneToMany(mappedBy = "offer", cascade = CascadeType.ALL)
+	@OneToMany(mappedBy = "offer", cascade = CascadeType.ALL, fetch = FetchType.EAGER)
 	private List<DataRowEntity> data;
 }
