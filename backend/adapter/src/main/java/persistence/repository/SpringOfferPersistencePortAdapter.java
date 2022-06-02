@@ -3,7 +3,7 @@ package persistence.repository;
 import entity.Offer;
 import lombok.AllArgsConstructor;
 import persistence.entity.OfferEntity;
-import persistence.mappers.JacksonOfferMapper;
+import persistence.mappers.Mapper;
 import ports.OfferPersistencePort;
 
 import java.util.ArrayList;
@@ -14,12 +14,12 @@ import java.util.UUID;
 @AllArgsConstructor
 public class SpringOfferPersistencePortAdapter implements OfferPersistencePort {
 
-	private final JacksonOfferMapper mapper;
+	private final Mapper<Offer, OfferEntity> mapper;
 	private final SpringOfferRepository repository;
 
 	@Override
 	public void save(Offer offer) {
-		OfferEntity offerEntity = mapper.mapToPersistenceEntity(offer);
+		OfferEntity offerEntity = mapper.mapTo(offer);
 		offerEntity.getData().forEach(dataRowEntity ->
 				dataRowEntity.setOffer(offerEntity)
 		);
@@ -35,14 +35,14 @@ public class SpringOfferPersistencePortAdapter implements OfferPersistencePort {
 			return null;
 		}
 
-		return mapper.mapToDomainEntity(optional.get());
+		return mapper.mapFrom(optional.get());
 	}
 
 	@Override
 	public Iterable<Offer> findAll() {
 		List<Offer> offers = new ArrayList<>();
 		repository.findAll().forEach(offerEntity ->
-				offers.add(mapper.mapToDomainEntity(offerEntity))
+				offers.add(mapper.mapFrom(offerEntity))
 		);
 
 		return offers;

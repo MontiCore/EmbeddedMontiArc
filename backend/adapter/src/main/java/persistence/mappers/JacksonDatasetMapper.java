@@ -8,17 +8,17 @@ import persistence.entity.DatasetEntity;
 
 @Component
 @AllArgsConstructor
-public class JacksonDatasetMapper implements DatasetMapper<DatasetEntity> {
+public class JacksonDatasetMapper implements Mapper<Dataset, DatasetEntity> {
 
 	private final ObjectMapper mapper;
 
 	@Override
-	public DatasetEntity mapToPersistenceEntity(Dataset dataset) {
+	public DatasetEntity mapTo(Dataset dataset) {
 		return mapper.convertValue(dataset, DatasetEntity.class);
 	}
 
 	@Override
-	public Dataset mapToDomainEntity(DatasetEntity datasetEntity) {
+	public Dataset mapFrom(DatasetEntity datasetEntity) {
 		return mapper.convertValue(datasetEntity, Dataset.class);
 	}
 }

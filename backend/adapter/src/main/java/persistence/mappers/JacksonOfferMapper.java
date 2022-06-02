@@ -8,17 +8,17 @@ import persistence.entity.OfferEntity;
 
 @Component
 @AllArgsConstructor
-public class JacksonOfferMapper implements OfferMapper<OfferEntity> {
+public class JacksonOfferMapper implements Mapper<Offer, OfferEntity> {
 
 	private final ObjectMapper mapper;
 
 	@Override
-	public OfferEntity mapToPersistenceEntity(Offer offer) {
+	public OfferEntity mapTo(Offer offer) {
 		return mapper.convertValue(offer, OfferEntity.class);
 	}
 
 	@Override
-	public Offer mapToDomainEntity(OfferEntity offerEntity) {
+	public Offer mapFrom(OfferEntity offerEntity) {
 		return mapper.convertValue(offerEntity, Offer.class);
 	}
 }

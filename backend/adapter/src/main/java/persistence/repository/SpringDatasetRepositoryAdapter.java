@@ -3,7 +3,7 @@ package persistence.repository;
 import entity.Dataset;
 import lombok.AllArgsConstructor;
 import persistence.entity.DatasetEntity;
-import persistence.mappers.JacksonDatasetMapper;
+import persistence.mappers.Mapper;
 import ports.DatasetPersistencePort;
 
 import java.util.ArrayList;
@@ -14,12 +14,12 @@ import java.util.UUID;
 @AllArgsConstructor
 public class SpringDatasetRepositoryAdapter implements DatasetPersistencePort {
 
-	private final JacksonDatasetMapper mapper;
+	private final Mapper<Dataset, DatasetEntity> mapper;
 	private final SpringDatasetRepository repository;
 
 	@Override
 	public void save(Dataset dataset) {
-		DatasetEntity datasetEntity = mapper.mapToPersistenceEntity(dataset);
+		DatasetEntity datasetEntity = mapper.mapTo(dataset);
 		datasetEntity.getData().forEach(dataRowEntity -> dataRowEntity.setDataset(datasetEntity));
 
 		repository.save(datasetEntity);
@@ -33,14 +33,14 @@ public class SpringDatasetRepositoryAdapter implements DatasetPersistencePort {
 			return null;
 		}
 
-		return mapper.mapToDomainEntity(optional.get());
+		return mapper.mapFrom(optional.get());
 	}
 
 	@Override
 	public Iterable<Dataset> findAll() {
 		List<Dataset> datasets = new ArrayList<>();
 		repository.findAll().forEach(datasetEntity ->
-				datasets.add(mapper.mapToDomainEntity(datasetEntity))
+				datasets.add(mapper.mapFrom(datasetEntity))
 		);
 
 		return datasets;

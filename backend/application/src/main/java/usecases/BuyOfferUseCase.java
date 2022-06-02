@@ -20,6 +20,7 @@ public class BuyOfferUseCase implements CommandHandler<BuyOfferCommand, Dataset>
 	@Override
 	public Dataset handle(BuyOfferCommand command) {
 		Offer offer = offerPersistencePort.findBy(command.getOfferId());
+		// Policy policy = offer.getMetadata().getPolicy();
 		dsManagementPort.deployPolicy(offer);
 		Dataset dataset = createDatasetFromOffer(offer);
 		dataset.setBoughtAt(LocalDateTime.now());

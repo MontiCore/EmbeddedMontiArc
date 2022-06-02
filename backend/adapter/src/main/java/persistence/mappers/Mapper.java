@@ -1,7 +1,7 @@
 package persistence.mappers;
 
 public interface Mapper<S, T> {
-	T mapToPersistenceEntity(S s);
+	T mapTo(S s);
 
-	S mapToDomainEntity(T t);
+	S mapFrom(T t);
 }
