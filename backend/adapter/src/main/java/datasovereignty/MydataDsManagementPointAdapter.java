@@ -5,7 +5,6 @@ import entity.Offer;
 import lombok.AllArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.stereotype.Component;
-import ports.DsExecutionPort;
 import ports.DsManagementPort;
 
 @Component
@@ -28,16 +27,6 @@ public class MydataDsManagementPointAdapter implements DsManagementPort {
 					));
 		} catch (Exception e) {
 			throw new RuntimeException(String.format("Policy for offer %s could not be deployed", offer.getId()));
-		}
-	}
-
-	@Override
-	public void addExecutionPort(DsExecutionPort dsExecutionPort) {
-		try {
-			myDataEnvironment.registerLocalPxp(dsExecutionPort.getName(), dsExecutionPort);
-		} catch (Exception e) {
-			log.info("Policy execution point {} could not be deployed", dsExecutionPort.getName());
-			throw new RuntimeException(e);
 		}
 	}
 }

@@ -12,7 +12,7 @@ import org.springframework.boot.autoconfigure.SpringBootApplication;
 import org.springframework.boot.autoconfigure.domain.EntityScan;
 import org.springframework.context.annotation.ComponentScan;
 import org.springframework.data.jpa.repository.config.EnableJpaRepositories;
-import ports.*;
+import ports.DsManagementPort;
 import utilities.MydataResourceReader;
 
 import javax.annotation.PostConstruct;
@@ -29,10 +29,6 @@ public class ConsumerSpringBootApplication {
 
 	private IMyDataEnvironment myDataEnvironment;
 	private DsManagementPort dsManagementPort;
-	private DatasetDeletionExecutionPort datasetDeletionExecutionPoint;
-	private LocalLoggingExecutionPort localLoggingExecutionPoint;
-	private RemoteLoggingExecutionPort remoteLoggingExecutionPoint;
-	private ExpirationCheckExecutionPort expirationCheckExecutionPoint;
 
 	public static void main(String[] args) {
 		SpringApplication.run(ConsumerSpringBootApplication.class, args);
@@ -40,11 +36,6 @@ public class ConsumerSpringBootApplication {
 
 	@PostConstruct
 	public void setUp() {
-		dsManagementPort.addExecutionPort(expirationCheckExecutionPoint);
-		dsManagementPort.addExecutionPort(datasetDeletionExecutionPoint);
-		dsManagementPort.addExecutionPort(localLoggingExecutionPoint);
-		dsManagementPort.addExecutionPort(remoteLoggingExecutionPoint);
-
 		Policy policy = MydataResourceReader.readPolicyFromFile("expiration_check_policy.xml");
 		Timer timer = MydataResourceReader.readTimerFromFile("expiration_check_timer.xml");
 

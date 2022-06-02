@@ -1,23 +1,21 @@
 package datasovereignty;
 
+import de.fraunhofer.iese.mydata.pxp.PxpService;
 import de.fraunhofer.iese.mydata.registry.ActionDescription;
 import entity.Dataset;
 import lombok.AllArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
-import org.springframework.stereotype.Component;
 import ports.DatasetPersistencePort;
-import ports.ExpirationCheckExecutionPort;
 
 import java.time.LocalDate;
 
-@Component
+@PxpService(componentName = "expiration-check-pxp")
 @AllArgsConstructor
 @Slf4j
-public class MydataExpirationCheckExecutionPortAdapter implements ExpirationCheckExecutionPort {
+public class MydataExpirationCheckExecutionPortAdapter {
 
 	private DatasetPersistencePort persistencePort;
 
-	@Override
 	@ActionDescription(methodName = "check-expiration")
 	public boolean removeExpiredDatasets() {
 		for (Dataset dataset : persistencePort.findAll()) {
@@ -30,10 +28,5 @@ public class MydataExpirationCheckExecutionPortAdapter implements ExpirationChec
 		}
 
 		return true;
-	}
-
-	@Override
-	public String getName() {
-		return "expiration-check-pxp";
 	}
 }
