@@ -15,7 +15,7 @@ import persistence.repository.SpringOfferPersistencePortAdapter;
 import ports.DatasetPersistencePort;
 import ports.OfferPersistencePort;
 import ports.DsEnforcementPort;
-import ports.PolicyManagementPort;
+import ports.DsManagementPort;
 import usecases.*;
 
 @Configuration
@@ -30,8 +30,8 @@ public class CompositionConfig {
 	@Bean
 	public BuyOfferUseCase buyOfferUseCase(DatasetPersistencePort datasetPersistencePort,
 										   OfferPersistencePort offerPersistencePort,
-										   PolicyManagementPort policyManagementPort) {
-		return new BuyOfferUseCase(datasetPersistencePort, offerPersistencePort, policyManagementPort);
+										   DsManagementPort dsManagementPort) {
+		return new BuyOfferUseCase(datasetPersistencePort, offerPersistencePort, dsManagementPort);
 	}
 
 	@Bean

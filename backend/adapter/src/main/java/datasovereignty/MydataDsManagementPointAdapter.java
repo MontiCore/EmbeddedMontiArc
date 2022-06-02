@@ -6,12 +6,12 @@ import lombok.AllArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.stereotype.Component;
 import ports.DsExecutionPort;
-import ports.PolicyManagementPort;
+import ports.DsManagementPort;
 
 @Component
 @AllArgsConstructor
 @Slf4j
-public class PolicyManagementPointAdapter implements PolicyManagementPort {
+public class MydataDsManagementPointAdapter implements DsManagementPort {
 
 	private final MydataPolicyFactory policyFactory;
 	private final IMyDataEnvironment myDataEnvironment;
@@ -32,7 +32,7 @@ public class PolicyManagementPointAdapter implements PolicyManagementPort {
 	}
 
 	@Override
-	public void addPxp(DsExecutionPort dsExecutionPort) {
+	public void addExecutionPort(DsExecutionPort dsExecutionPort) {
 		try {
 			myDataEnvironment.registerLocalPxp(dsExecutionPort.getName(), dsExecutionPort);
 		} catch (Exception e) {

@@ -13,7 +13,7 @@ import java.util.UUID;
 @Component
 @AllArgsConstructor
 @Slf4j
-public class DatasetDeletionExecutionPortAdapter implements DatasetDeletionExecutionPort {
+public class MydataDatasetDeletionExecutionPortAdapter implements DatasetDeletionExecutionPort {
 
 	private final DatasetPersistencePort datasetPersistencePort;
 

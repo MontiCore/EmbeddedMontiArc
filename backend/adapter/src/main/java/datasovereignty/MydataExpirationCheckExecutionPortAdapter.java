@@ -13,7 +13,7 @@ import java.time.LocalDate;
 @Component
 @AllArgsConstructor
 @Slf4j
-public class ExpirationCheckExecutionPortAdapter implements ExpirationCheckExecutionPort {
+public class MydataExpirationCheckExecutionPortAdapter implements ExpirationCheckExecutionPort {
 
 	private DatasetPersistencePort persistencePort;
 

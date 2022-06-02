@@ -6,22 +6,21 @@ import entity.Offer;
 import lombok.AllArgsConstructor;
 import ports.DatasetPersistencePort;
 import ports.OfferPersistencePort;
-import ports.PolicyManagementPort;
+import ports.DsManagementPort;
 
 import java.time.LocalDateTime;
-import java.util.UUID;
 
 @AllArgsConstructor
 public class BuyOfferUseCase implements CommandHandler<BuyOfferCommand, Dataset> {
 
 	private DatasetPersistencePort datasetPersistencePort;
 	private OfferPersistencePort offerPersistencePort;
-	private PolicyManagementPort policyManagementPort;
+	private DsManagementPort dsManagementPort;
 
 	@Override
 	public Dataset handle(BuyOfferCommand command) {
 		Offer offer = offerPersistencePort.findBy(command.getOfferId());
-		policyManagementPort.deployPolicy(offer);
+		dsManagementPort.deployPolicy(offer);
 		Dataset dataset = createDatasetFromOffer(offer);
 		dataset.setBoughtAt(LocalDateTime.now());
 		datasetPersistencePort.save(dataset);

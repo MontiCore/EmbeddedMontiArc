@@ -9,7 +9,7 @@ import ports.DsEnforcementPort;
 
 @Component
 @AllArgsConstructor
-public class DatasetDsEnforcementPortAdapter implements DsEnforcementPort<Dataset> {
+public class MydataDatasetDsEnforcementPortAdapter implements DsEnforcementPort<Dataset> {
 
 	private final MydataDatasetPEP pep;
 

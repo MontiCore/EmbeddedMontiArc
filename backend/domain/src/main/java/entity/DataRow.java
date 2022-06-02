@@ -1,11 +1,13 @@
 package entity;
 
+import lombok.AllArgsConstructor;
 import lombok.Data;
 import lombok.Value;
 
 import java.time.LocalDateTime;
 
 @Data
+@AllArgsConstructor
 public class DataRow {
 	private int id;
 	private String dayID;

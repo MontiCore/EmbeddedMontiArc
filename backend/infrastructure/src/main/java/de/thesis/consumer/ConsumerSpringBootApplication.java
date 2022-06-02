@@ -28,7 +28,7 @@ import javax.annotation.PostConstruct;
 public class ConsumerSpringBootApplication {
 
 	private IMyDataEnvironment myDataEnvironment;
-	private PolicyManagementPort policyManagementPort;
+	private DsManagementPort dsManagementPort;
 	private DatasetDeletionExecutionPort datasetDeletionExecutionPoint;
 	private LocalLoggingExecutionPort localLoggingExecutionPoint;
 	private RemoteLoggingExecutionPort remoteLoggingExecutionPoint;
@@ -40,10 +40,10 @@ public class ConsumerSpringBootApplication {
 
 	@PostConstruct
 	public void setUp() {
-		policyManagementPort.addPxp(expirationCheckExecutionPoint);
-		policyManagementPort.addPxp(datasetDeletionExecutionPoint);
-		policyManagementPort.addPxp(localLoggingExecutionPoint);
-		policyManagementPort.addPxp(remoteLoggingExecutionPoint);
+		dsManagementPort.addExecutionPort(expirationCheckExecutionPoint);
+		dsManagementPort.addExecutionPort(datasetDeletionExecutionPoint);
+		dsManagementPort.addExecutionPort(localLoggingExecutionPoint);
+		dsManagementPort.addExecutionPort(remoteLoggingExecutionPoint);
 
 		Policy policy = MydataResourceReader.readPolicyFromFile("expiration_check_policy.xml");
 		Timer timer = MydataResourceReader.readTimerFromFile("expiration_check_timer.xml");

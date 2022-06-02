@@ -1,10 +1,12 @@
 package entity;
 
+import lombok.AllArgsConstructor;
 import lombok.Data;
 
 import java.time.LocalDate;
 
 @Data
+@AllArgsConstructor
 public class Metadata {
 	private int id;
 	private String title;

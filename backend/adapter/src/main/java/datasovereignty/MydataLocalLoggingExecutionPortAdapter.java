@@ -10,7 +10,7 @@ import java.time.LocalDateTime;
 
 @Component
 @Slf4j
-public class LocalLoggingExecutionPortAdapter implements LocalLoggingExecutionPort {
+public class MydataLocalLoggingExecutionPortAdapter implements LocalLoggingExecutionPort {
 
 	@Override
 	@ActionDescription(methodName = "log-local")
