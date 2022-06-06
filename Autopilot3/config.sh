@@ -1,8 +1,0 @@
-PROJECT_ROOT="$(pwd)"
-BINARY="target/bin"
-GENERATOR_PATH="bin/embedded-montiarc-math-middleware-generator-0.1.2-SNAPSHOT-jar-with-dependencies.jar"
-AGENT_BUILD="target/agent/build"
-SIMULATOR_PATH="$HOME/basic-simulator/install"
-SCENARIO_PATH="scenarios/rl_autopilot2cars_intersection.json"
-DIR_NAME="Autopilot3"
-SAVE_FOLDER="$HOME/coopmontisimautopilot/saved_autopilots"
