@@ -5,6 +5,7 @@ import lombok.AllArgsConstructor;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
+import org.springframework.jdbc.core.JdbcTemplate;
 import org.springframework.web.reactive.function.client.WebClient;
 import persistence.mappers.JacksonDatasetMapper;
 import persistence.mappers.JacksonOfferMapper;
@@ -17,6 +18,8 @@ import ports.OfferPersistencePort;
 import ports.DsEnforcementPort;
 import ports.DsManagementPort;
 import usecases.*;
+
+import javax.sql.DataSource;
 
 @Configuration
 @AllArgsConstructor
@@ -35,8 +38,8 @@ public class CompositionConfig {
 	}
 
 	@Bean
-	public GetAllOffersMetadataUseCase getAllOffersMetadataUseCase(OfferPersistencePort offerPersistencePort) {
-		return new GetAllOffersMetadataUseCase(offerPersistencePort);
+	public GetOffersMetadataUseCase getAllOffersMetadataUseCase(OfferPersistencePort offerPersistencePort) {
+		return new GetOffersMetadataUseCase(offerPersistencePort);
 	}
 
 	@Bean
@@ -55,13 +58,17 @@ public class CompositionConfig {
 	}
 
 	@Bean
-	public DatasetPersistencePort datasetPersistencePort(JacksonDatasetMapper mapper, SpringDatasetRepository repository) {
-		return new SpringDatasetRepositoryAdapter(mapper, repository);
+	public DatasetPersistencePort datasetPersistencePort(JacksonDatasetMapper mapper, SpringDatasetRepository repository, JdbcTemplate jdbcTemplate) {
+		return new SpringDatasetRepositoryAdapter(mapper, repository, jdbcTemplate);
 	}
 
 	@Bean
 	public WebClient getWebClient(@Value("${DATA_PROVIDER_URL}") String url) {
 		return WebClient.create(url);
+	}
+	@Bean
+	public JdbcTemplate jdbcTemplate(DataSource dataSource) {
+		return new JdbcTemplate(dataSource);
 	}
 
 }

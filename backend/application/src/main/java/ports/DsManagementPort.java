@@ -1,7 +1,7 @@
 package ports;
 
-import entity.Offer;
+import entity.Policy;
 
 public interface DsManagementPort {
-	void deployPolicy(Offer offer);
+	void deployPolicy(Policy policy);
 }

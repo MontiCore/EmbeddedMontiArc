@@ -1,11 +1,16 @@
 package persistence.repository;
 
+import entity.DataRow;
 import entity.Dataset;
+import entity.Metadata;
+import entity.Offer;
 import lombok.AllArgsConstructor;
+import org.springframework.jdbc.core.JdbcTemplate;
 import persistence.entity.DatasetEntity;
 import persistence.mappers.Mapper;
 import ports.DatasetPersistencePort;
 
+import java.time.LocalDateTime;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.Optional;
@@ -16,13 +21,23 @@ public class SpringDatasetRepositoryAdapter implements DatasetPersistencePort {
 
 	private final Mapper<Dataset, DatasetEntity> mapper;
 	private final SpringDatasetRepository repository;
+	private final JdbcTemplate jdbcTemplate ;
 
 	@Override
 	public void save(Dataset dataset) {
-		DatasetEntity datasetEntity = mapper.mapTo(dataset);
-		datasetEntity.getData().forEach(dataRowEntity -> dataRowEntity.setDataset(datasetEntity));
+		jdbcTemplate.update(
+				"INSERT INTO dataset (id, offer_id, metadata_id, bought_at) VALUES (?, ?, ?, ?)",
+				dataset.getId(),
+				dataset.getOffer().getId(),
+				dataset.getMetadata().getId(),
+				dataset.getBoughtAt()
+		);
 
-		repository.save(datasetEntity);
+		jdbcTemplate.update(
+				"UPDATE data_row SET dataset = ? WHERE offer = ?",
+				dataset.getId(),
+				dataset.getOffer().getId()
+		);
 	}
 
 	@Override

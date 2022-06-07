@@ -105,7 +105,8 @@ export default {
     },
     bought () {
       let result = false
-      for (const [id] of Object.entries(this.$store.getters.getDatasets)) {
+      console.log(this.$store.getters.getBoughtOffers)
+      for (const [id] of Object.entries(this.$store.getters.getBoughtOffers)) {
         if (id === this.id) {
           result = true
         }
@@ -117,13 +118,13 @@ export default {
   methods: {
     buy () {
       this.$store.dispatch('buyOffer', this.id).then(() => {
-        this.$store.dispatch('fetchDatasets')
+        this.$store.dispatch('fetchBoughtOffers')
         this.$emit('buy', this.title)
       })
     }
   },
   mounted () {
-    this.$store.dispatch('fetchDatasets')
+    this.$store.dispatch('fetchBoughtOffers')
   }
 }
 </script>

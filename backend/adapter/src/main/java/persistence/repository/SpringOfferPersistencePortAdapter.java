@@ -47,4 +47,14 @@ public class SpringOfferPersistencePortAdapter implements OfferPersistencePort {
 
 		return offers;
 	}
+
+	@Override
+	public Iterable<Offer> findAllBought() {
+		List<Offer> offers = new ArrayList<>();
+		repository.findAllBoughtOffers().forEach(offerEntity ->
+				offers.add(mapper.mapFrom(offerEntity))
+		);
+
+		return offers;
+	}
 }

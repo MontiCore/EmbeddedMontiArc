@@ -12,10 +12,10 @@ import org.springframework.http.HttpStatus;
 import org.springframework.http.MediaType;
 import org.springframework.web.bind.annotation.*;
 import org.springframework.web.server.ResponseStatusException;
-import queries.GetAllOffersMetadataQuery;
+import queries.GetOffersMetadataQuery;
 import usecases.AddOfferUseCase;
 import usecases.BuyOfferUseCase;
-import usecases.GetAllOffersMetadataUseCase;
+import usecases.GetOffersMetadataUseCase;
 
 import java.util.Map;
 import java.util.UUID;
@@ -29,7 +29,7 @@ public class OfferController {
 
 	private AddOfferUseCase addOfferUseCase;
 	private BuyOfferUseCase buyOfferUseCase;
-	private GetAllOffersMetadataUseCase getAllOffersUseCase;
+	private GetOffersMetadataUseCase getAllOffersUseCase;
 
 	@PostMapping(consumes = MediaType.APPLICATION_JSON_VALUE)
 	@ResponseStatus(HttpStatus.OK)
@@ -53,7 +53,7 @@ public class OfferController {
 	}
 
 	@GetMapping
-	public Map<UUID, Metadata> getAllOffers() {
-		return getAllOffersUseCase.handle(new GetAllOffersMetadataQuery());
+	public Map<UUID, Metadata> getAllOffers(@RequestParam(required = false) boolean bought) {
+		return getAllOffersUseCase.handle(new GetOffersMetadataQuery(bought));
 	}
 }

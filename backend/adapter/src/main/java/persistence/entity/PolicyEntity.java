@@ -10,6 +10,7 @@ import javax.persistence.Id;
 import javax.persistence.Table;
 import java.time.LocalDate;
 import java.time.LocalTime;
+import java.util.UUID;
 
 @Entity
 @Table(name = "policy")
@@ -19,6 +20,7 @@ public class PolicyEntity {
 	@Id
 	@GeneratedValue
 	private int id;
+	private UUID targetId;
 	private LocalTime startTime;
 	private LocalTime endTime;
 	private LocalDate expiresOn;

@@ -1,6 +1,7 @@
 package datasovereignty;
 
 import entity.Offer;
+import entity.Policy;
 import freemarker.template.Configuration;
 import freemarker.template.Template;
 import freemarker.template.TemplateException;
@@ -25,14 +26,14 @@ public class MydataPolicyFactory {
 		config.setDefaultEncoding("UTF-8");
 	}
 
-	public String getMydataPolicy(Offer offer) throws IOException, TemplateException {
+	public String getMydataPolicy(Policy policy) throws IOException, TemplateException {
 		Map<String, Object> templateData = new HashMap<>();
-		templateData.put("id", offer.getId());
+		templateData.put("id", policy.getTargetId());
 		templateData.put("event", EVENT_NAME);
-		templateData.put("maxUsages", offer.getMetadata().getPolicy().getMaxUsages());
-		templateData.put("businessHours", new BusinessHours(offer.getMetadata().getPolicy().getStartTime(), offer.getMetadata().getPolicy().getEndTime()));
-		templateData.put("localLogging", offer.getMetadata().getPolicy().isLocalLogging());
-		templateData.put("remoteLogging", offer.getMetadata().getPolicy().isRemoteLogging());
+		templateData.put("maxUsages", policy.getMaxUsages());
+		templateData.put("businessHours", new BusinessHours(policy.getStartTime(), policy.getEndTime()));
+		templateData.put("localLogging", policy.isLocalLogging());
+		templateData.put("remoteLogging", policy.isRemoteLogging());
 
 		Template template = config.getTemplate("policy.ftl");
 		StringWriter stringWriter = new StringWriter();

@@ -2,6 +2,7 @@ package datasovereignty;
 
 import de.fraunhofer.iese.mydata.IMyDataEnvironment;
 import entity.Offer;
+import entity.Policy;
 import lombok.AllArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.stereotype.Component;
@@ -16,17 +17,17 @@ public class MydataDsManagementPointAdapter implements DsManagementPort {
 	private final IMyDataEnvironment myDataEnvironment;
 
 	@Override
-	public void deployPolicy(Offer offer) {
+	public void deployPolicy(Policy policy) {
 		try {
-			System.err.println(policyFactory.getMydataPolicy(offer));
+			System.err.println(policyFactory.getMydataPolicy(policy));
 			myDataEnvironment.getPmp().deployPolicy(
 					myDataEnvironment.getPmp().addPolicy(
 							new de.fraunhofer.iese.mydata.policy.Policy(
-									policyFactory.getMydataPolicy(offer)
+									policyFactory.getMydataPolicy(policy)
 							)
 					));
 		} catch (Exception e) {
-			throw new RuntimeException(String.format("Policy for offer %s could not be deployed", offer.getId()));
+			throw new RuntimeException(String.format("Policy with target %s could not be deployed", policy.getTargetId()));
 		}
 	}
 }

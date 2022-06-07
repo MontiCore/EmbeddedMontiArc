@@ -10,6 +10,7 @@ import java.util.UUID;
 @Data
 public class Dataset {
 	private UUID id;
+	private Offer offer;
 	private Metadata metadata;
 	private List<DataRow> data;
 	private LocalDateTime boughtAt;

@@ -4,21 +4,28 @@ import entity.Metadata;
 import entity.Offer;
 import lombok.AllArgsConstructor;
 import ports.OfferPersistencePort;
-import queries.GetAllOffersMetadataQuery;
+import queries.GetOffersMetadataQuery;
 
 import java.util.HashMap;
 import java.util.Map;
 import java.util.UUID;
 
 @AllArgsConstructor
-public class GetAllOffersMetadataUseCase implements QueryHandler<GetAllOffersMetadataQuery, Map<UUID, Metadata>> {
+public class GetOffersMetadataUseCase implements QueryHandler<GetOffersMetadataQuery, Map<UUID, Metadata>> {
 
 	private final OfferPersistencePort offerPersistencePort;
 
 	@Override
-	public Map<UUID, Metadata> handle(GetAllOffersMetadataQuery query) {
+	public Map<UUID, Metadata> handle(GetOffersMetadataQuery query) {
 		Map<UUID, Metadata> map = new HashMap<>();
-		Iterable<Offer> offers = offerPersistencePort.findAll();
+		Iterable<Offer> offers;
+
+		if (query.isOnlyBought()) {
+			offers = offerPersistencePort.findAllBought();
+		} else {
+			offers = offerPersistencePort.findAll();
+		}
+
 		offers.forEach(offer -> map.put(offer.getId(), offer.getMetadata()));
 
 		return map;

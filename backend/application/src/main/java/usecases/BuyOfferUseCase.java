@@ -9,6 +9,7 @@ import ports.OfferPersistencePort;
 import ports.DsManagementPort;
 
 import java.time.LocalDateTime;
+import java.util.UUID;
 
 @AllArgsConstructor
 public class BuyOfferUseCase implements CommandHandler<BuyOfferCommand, Dataset> {
@@ -20,10 +21,10 @@ public class BuyOfferUseCase implements CommandHandler<BuyOfferCommand, Dataset>
 	@Override
 	public Dataset handle(BuyOfferCommand command) {
 		Offer offer = offerPersistencePort.findBy(command.getOfferId());
-		// Policy policy = offer.getMetadata().getPolicy();
-		dsManagementPort.deployPolicy(offer);
 		Dataset dataset = createDatasetFromOffer(offer);
 		dataset.setBoughtAt(LocalDateTime.now());
+		dataset.getMetadata().getPolicy().setTargetId(dataset.getId());
+		dsManagementPort.deployPolicy(dataset.getMetadata().getPolicy());
 		datasetPersistencePort.save(dataset);
 
 		return dataset;
@@ -31,7 +32,8 @@ public class BuyOfferUseCase implements CommandHandler<BuyOfferCommand, Dataset>
 
 	private Dataset createDatasetFromOffer(Offer offer) {
 		Dataset dataset = new Dataset();
-		dataset.setId(offer.getId());
+		dataset.setId(UUID.randomUUID());
+		dataset.setOffer(offer);
 		dataset.setMetadata(offer.getMetadata());
 		dataset.setData(offer.getData());
 

@@ -24,7 +24,7 @@ public class DatasetController {
 	private GetAllDatasetMetadataUseCase getAllDatasetMetadataUseCase;
 
 	@GetMapping
-	public Map<UUID, Metadata> getAllOffers() {
+	public Map<UUID, Metadata> getAllDatasets() {
 		return getAllDatasetMetadataUseCase.handle(new GetAllDatasetMedataQuery());
 	}
 

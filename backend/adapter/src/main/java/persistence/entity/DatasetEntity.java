@@ -1,6 +1,7 @@
 package persistence.entity;
 
 
+import entity.Offer;
 import lombok.Getter;
 import lombok.Setter;
 
@@ -16,6 +17,9 @@ import java.util.UUID;
 public class DatasetEntity {
 	@Id
 	private UUID id;
+
+	@OneToOne
+	private OfferEntity offer;
 
 	@OneToOne(cascade = CascadeType.ALL)
 	private MetadataEntity metadata;

@@ -10,4 +10,6 @@ public interface OfferPersistencePort {
 	Offer findBy(UUID id);
 
 	Iterable<Offer> findAll();
+
+	Iterable<Offer> findAllBought();
 }
