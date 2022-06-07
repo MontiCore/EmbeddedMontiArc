@@ -6,7 +6,7 @@
 (role blue)
 (role green)
 (role yellow)
-//TODO Nötig?------------------------------------------------------------------------------------------------
+
 (role random)
 
 //Initial State
@@ -101,13 +101,70 @@
 )
 //TODO: isMatchingStack soll bestimmen, ob die Karte korrekt angelegt wurde, wenn es einen kleineren Stack gibt, muss es der größte davon sein, ansonsten true für beliebigen Stack
 
+//Atleast one smaller stack
+(<= (isMatchingStack ?stack ?card)
+    (lastCard ?stack ?pos1 ?card1)
+    (lastCard ?stack2 ?pos2 ?card2)
+    (lastCard ?stack3 ?pos3 ?card3)
+    (lastCard ?stack4 ?pos4 ?card4)
+    (distinct ?stack ?stack2 ?stack3 ?stack4)
+    //is ?card closest to ?stack ?
+    (less ?card1 ?card)
+    (not (between ?card2 ?card1 ?card))
+    (not (between ?card3 ?card1 ?card))
+    (not (between ?card4 ?card1 ?card))
+)
+
+//No smaller stack => any stack returns true
+(<= (isMatchingStack ?stack ?card)
+    (lastCard ?stack ?pos1 ?card1)
+    (lastCard ?stack2 ?pos2 ?card2)
+    (lastCard ?stack3 ?pos3 ?card3)
+    (lastCard ?stack4 ?pos4 ?card4)
+    (distinct ?stack ?stack2 ?stack3 ?stack4)
+    (not (less ?card1 ?card))
+    (not (less ?card2 ?card))
+    (not (less ?card3 ?card))
+    (not (less ?card4 ?card))
+)
+
+//Determine the last card in a stack
+(<= (lastCard ?stack ?pos ?card)
+    //following slot empty
+    (succ ?pos ?posP)
+    (stack ?stack ?posP 0)
+    //?pos has a card
+    (not (stack ?stack ?pos 0))
+    //previous slot filled
+    (succ ?posM ?pos)
+    (not (stack ?stack ?posM 0))
+)
+
+//special case slot 1
+(<= (lastCard ?stack ?pos ?card)
+    (equal ?pos 1)
+    (stack ?stack 1 ?card)
+    (stack ?stack 2 0)
+)
+
 //Util Functions
-(<= (smallest ?card)
+
+//Determine if ?cardMiddle is greater than ?cardLeft and smaller than ?cardRight
+(<= (between ?cardMiddle ?cardLeft ?cardRight)
+    (less ?cardLeft ?cardMiddle)
+    (less ?cardMiddle ?cardRight)
+)
+
+//determine the smallest card in Play
+(<= (smallest ?card1)
     (true (inPlay ?player1 ?card1))
     (true (inPlay ?player2 ?card2))
     (true (inPlay ?player3 ?card3))
     (true (inPlay ?player4 ?card4))
     (distinct (?player1, ?player2, ?player3, ?player4))
+    (less ?card1 ?card2)
+    (less ?card1 ?card3)
+    (less ?card1 ?card4)
 )
 
 //TODO anlegen der Karten-------------------------------------------------------------------------------------------------------------------------
@@ -131,13 +188,44 @@
 //Karten dürfen nur gespielt werden, wenn alle spielen
 (<= (legal ?player (play ?card))
     (true (control all))
-    (true(hand ?player ?pos ?card))
+    (true (hand ?player ?pos ?card))
 )
 
-(<= (legal ?player (put ?card ?stack))
+//Anlegen
+(<= (legal ?player (put ?card ?stack ?pos))
     (true (control ?player))
     (true (inPlay ?player ?card))
-    (isMatchingStack ?card ?stack)
+    (isMatchingStack ?stack ?card)
+    (succ ?posP ?pos)
+    (lastCard ?stack ?posP ?cardP)
+    (less ?cardP ?card)
+)
+
+//Anlegen in slot 6 falls kein passender Stapel vorhanden war
+(<= (legal ?player (put ?card ?stack 6))
+    (true (control ?player))
+    (true (inPlay ?player ?card))
+    (isMatchingStack ?stack ?card)
+    (lastCard ?stack ?posLast ?cardLast)
+    (greater ?cardLast ?card)
+)
+
+//Kein Spieler hat einen freien Platz auf der Hand, Poisition 1 jedes Stapels ist belegt
+(<= (legal random (gameReady))
+    (not (true (stack ?num 1 0)))
+    (not (true (hand ?player ?pos 0)))
+)
+
+(<= (legal random (deal stack ?num ?card))
+    (true (stack ?num 1 0))
+    (true (control random))
+    (not (true (dealt ?card)))
+)
+
+(<= (legal random (deal hand ?player ?pos ?card))
+    (true (hand ?player ?pos 0))
+    (true (control random))
+    (not (true (dealt ?card)))
 )
 //TODO-----------------------------------------------------------------------------------------------------------------------
 
@@ -145,6 +233,36 @@
 //Build next state
 //-------------
 
+//handle dealt cards
+(<= (next (dealt ?card))
+    (dealt (?card))
+    //discard flags to save space after random is done
+    (control random)
+)
+
+(<= (next (dealt ?card))
+    (does random (deal hand ?player ?pos ?card))
+)
+
+(<= (next (dealt ?card))
+    (does random (deal stack ?num ?card))
+)
+
+(<= (next (sees ?player (hand ?player ?pos ?card)))
+    (does random (deal hand ?player ?pos ?card))
+)
+
+(<= (next (stack ?num 1 ?card))
+    (does random (deal stack ?num ?card))
+)
+
+(<= (next (control random))
+    (not (does random (gameReady)))
+)
+
+(<= (next (control all))
+    (does random (gameReady))
+)
 //TODO Gespielte Karten als inPlay codieren
 //TODO inPlay kopieren bis angelegt
 //TODO niedrigste Karte in play finden, control an den Spieler
@@ -152,26 +270,48 @@
 
 //TODO: put Function
 
+//place card
+(<= (next (stack ?stack ?pos ?card))
+    (does ?player (put ?card ?stack ?pos))
+)
+
 //handle inPlay flags
+//copy inPlay card while it's not beeing put
 (<= (next (inPlay ?player ?card))
     (inPlay ?player ?card)
     (not (does ?player (put ?card ?stack)))
 )
 
+//remove card from inPlay when it's put
 (<= (next (inPlay ?player 1000))
     (does ?player (put ?card ?stack))
 )
 
+//mark player as having no card in play
 (<= (next (inPlay ?player 1000))
     (not (does ?player (play ?card)))
-    (distinct ?card1 1000)
     (not (inPlay ?player ?card1))
+    (distinct ?card1 1000)
 )
 
+//hand control to the player with the smallest card in play which isn't already placed (1000 = card was placed in a prior turn)
 (<= (next (control ?player))
     (inPlay ?player ?card)
     (not (does ?player (put ?card ?stack)))
     (smallest ?card)
+    (distinct ?card 1000)
+)
+
+//Letzter Spieler legt an
+(<= (next (control all))
+    (true (does ?player1 (put ?card1 ?stack)))
+    (true (inPlay ?player2 ?card2))
+    (true (inPlay ?player3 ?card3))
+    (true (inPlay ?player4 ?card4))
+    (distinct ?player1 ?player2 ?player3 ?player4)
+    (equal ?card2 1000)
+    (equal ?card3 1000)
+    (equal ?card4 1000)
 )
 
 //Hands
