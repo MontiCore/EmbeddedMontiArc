@@ -3,15 +3,18 @@ package usecases;
 import commands.AddOfferCommand;
 import entity.Offer;
 import lombok.AllArgsConstructor;
+import lombok.extern.slf4j.Slf4j;
 import ports.OfferPersistencePort;
 
 import java.util.UUID;
 
 
 @AllArgsConstructor
-public class AddOfferUseCase implements CommandHandler<AddOfferCommand, Offer> {
+@Slf4j
+public class AddOfferUseCase implements CommandHandler<AddOfferCommand> {
 	private final OfferPersistencePort offerPersistencePort;
-	public Offer handle(AddOfferCommand command) {
+
+	public void handle(AddOfferCommand command) {
 		Offer offer = new Offer(
 				UUID.randomUUID(),
 				command.getMetadata(),
@@ -19,6 +22,6 @@ public class AddOfferUseCase implements CommandHandler<AddOfferCommand, Offer> {
 		);
 		offerPersistencePort.save(offer);
 
-		return offer;
+		log.info("Created offer {}", offer.getId().toString());
 	}
 }

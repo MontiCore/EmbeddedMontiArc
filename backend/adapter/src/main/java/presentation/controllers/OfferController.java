@@ -35,9 +35,7 @@ public class OfferController {
 	@ResponseStatus(HttpStatus.OK)
 	public void addOffer(@RequestBody AddOfferCommand addOfferCommand) {
 		try {
-			Offer offer = addOfferUseCase.handle(addOfferCommand);
-
-			log.info("Created offer {}", offer.getId());
+			addOfferUseCase.handle(addOfferCommand);
 		} catch (UseCaseException exception) {
 			log.error("Error while creating offer");
 			throw new ResponseStatusException(HttpStatus.BAD_REQUEST, "Dataset could not be offered", exception);
@@ -47,9 +45,7 @@ public class OfferController {
 	@PostMapping("/{offerId}")
 	@ResponseStatus(HttpStatus.OK)
 	public void buyOffer(@PathVariable UUID offerId) {
-		Dataset dataset = buyOfferUseCase.handle(new BuyOfferCommand(offerId));
-
-		log.info("Bought offer {}, created dataset {}", offerId, dataset.getId());
+		buyOfferUseCase.handle(new BuyOfferCommand(offerId));
 	}
 
 	@GetMapping

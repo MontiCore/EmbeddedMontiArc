@@ -5,36 +5,32 @@ import entity.DataRow;
 import entity.Metadata;
 import entity.Offer;
 import entity.Policy;
-import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
+import org.junit.jupiter.api.extension.ExtendWith;
+import org.mockito.ArgumentCaptor;
 import org.mockito.InjectMocks;
-import org.mockito.MockitoAnnotations;
-import org.springframework.boot.test.mock.mockito.MockBean;
+import org.mockito.Mock;
+import org.mockito.junit.jupiter.MockitoExtension;
 import ports.OfferPersistencePort;
 
 import java.time.LocalDateTime;
 import java.time.LocalTime;
 import java.util.List;
 
-import static org.junit.jupiter.api.Assertions.assertAll;
-import static org.junit.jupiter.api.Assertions.assertEquals;
+import static org.assertj.core.api.AssertionsForClassTypes.assertThat;
+import static org.mockito.Mockito.verify;
 
-
-class AddOfferUseCaseTest {
+@ExtendWith(MockitoExtension.class)
+public class AddOfferUseCaseTest {
 
 	@InjectMocks
-	private AddOfferUseCase addOfferUseCase;
+	private AddOfferUseCase underTest;
 
-	@MockBean
+	@Mock
 	private OfferPersistencePort persistencePort;
 
-	@BeforeEach
-	public void init() {
-		MockitoAnnotations.initMocks(this);
-	}
-
 	@Test
-	void handle() {
+	public void shouldSaveOffer() {
 		Policy policy = new Policy();
 		policy.setId(1);
 		policy.setStartTime(LocalTime.of(8, 0));
@@ -63,12 +59,15 @@ class AddOfferUseCaseTest {
 		);
 
 		AddOfferCommand command = new AddOfferCommand(metadata, List.of(dataRow));
+		ArgumentCaptor<Offer> offerArgumentCaptor =
+				ArgumentCaptor.forClass(Offer.class);
 
-		Offer offer = addOfferUseCase.handle(command);
+		// when
+		underTest.handle(command);
 
-		assertAll(
-				() -> assertEquals(metadata, offer.getMetadata()),
-				() -> assertEquals(List.of(dataRow), offer.getData())
-		);
+		// then
+		verify(persistencePort).save(offerArgumentCaptor.capture());
+		Offer capturedOffer = offerArgumentCaptor.getValue();
+		assertThat(capturedOffer.getMetadata().getId()).isEqualTo(1);
 	}
 }
