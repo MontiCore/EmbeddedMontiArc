@@ -2,8 +2,10 @@ package commands;
 
 import lombok.Value;
 
+import java.util.UUID;
+
 @Value
 public class NotifyProviderCommand implements Command {
 	String url;
-	String datasetId;
+	UUID datasetId;
 }
