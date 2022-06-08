@@ -157,14 +157,31 @@
 
 //determine the smallest card in Play
 (<= (smallest ?card1)
-    (true (inPlay ?player1 ?card1))
-    (true (inPlay ?player2 ?card2))
-    (true (inPlay ?player3 ?card3))
-    (true (inPlay ?player4 ?card4))
+    (true (sees ?player1 (inPlay ?player1 ?card1)))
+    (true (sees ?player2 (inPlay ?player2 ?card2)))
+    (true (sees ?player3 (inPlay ?player3 ?card3)))
+    (true (sees ?player4 (inPlay ?player4 ?card4)))
     (distinct ?player1 ?player2 ?player3 ?player4)
     (less ?card1 ?card2)
     (less ?card1 ?card3)
     (less ?card1 ?card4)
+)
+
+(<= (hasCardInPlay ?player)
+    (true (sees ?player (inPlay ?card)))
+    (distinct 1000 ?card)
+)
+
+(<= (allPlayed)
+    (true (control all))
+    (true (sees ?player1 (inPlay ?card1)))
+    (true (sees ?player2 (inPlay ?card2)))
+    (true (sees ?player3 (inPlay ?card3)))
+    (distinct ?card1 1000)
+    (distinct ?card2 1000)
+    (distinct ?card3 1000)
+    (does ?player4 (play ?card4))
+    (distinct ?player1 ?player2 ?player3 ?player4)
 )
 
 //TODO anlegen der Karten-------------------------------------------------------------------------------------------------------------------------
@@ -191,13 +208,14 @@
     (isCard ?card ?val)
     (true (control all))
     (true (sees ?player (hand ?player ?pos ?card)))
+    (not (hasCardInPlay ?player))
 )
 
 //Anlegen
 (<= (legal ?player (put ?card ?stack ?pos))
     (isPlayer ?player)
     (true (control ?player))
-    (true (inPlay ?player ?card))
+    (true (sees ?player (inPlay ?player ?card)))
     (isMatchingStack ?stack ?card)
     (succ ?posP ?pos)
     (lastCard ?stack ?posP ?cardP)
@@ -208,7 +226,7 @@
 (<= (legal ?player (put ?card ?stack 6))
     (isPlayer ?player)
     (true (control ?player))
-    (true (inPlay ?player ?card))
+    (true (sees ?player (inPlay ?player ?card)))
     (isMatchingStack ?stack ?card)
     (lastCard ?stack ?posLast ?cardLast)
     (greater ?cardLast ?card)
@@ -287,45 +305,56 @@
 )
 
 //handle inPlay flags
-(<= (next (inPlay ?player ?card))
+(<= (next (sees ?player (inPlay ?player ?card)))
     (does ?player (play ?card))
 )
 
 //copy inPlay card while it's not beeing put
-(<= (next (inPlay ?player ?card))
-    (true (inPlay ?player ?card))
+(<= (next (sees ?player (inPlay ?player ?card)))
+    (true (sees ?player (inPlay ?player ?card)))
     (not (does ?player (put ?card ?stack)))
 )
 
 //remove card from inPlay when it's put
-(<= (next (inPlay ?player 1000))
+(<= (next (sees ?player (inPlay ?player 1000)))
     (does ?player (put ?card ?stack))
 )
 
 //mark player as having no card in play
-(<= (next (inPlay ?player 1000))
+(<= (next (sees ?player (inPlay ?player 1000)))
     (not (true (control all)))
-    (isPlayer ?player)
-    (not (does ?player (play ?card)))
-    (not (true (inPlay ?player ?card1)))
-    (distinct ?card1 1000)
+    (true (sees ?player (inPlay ?player 1000)))
 )
 
 //hand control to the player with the smallest card in play which isn't already placed (1000 = card was placed in a prior turn)
 (<= (next (control ?player))
-    (true (inPlay ?player ?card))
+    (not (true (control all)))
+    (true (sees ?player (inPlay ?player ?card)))
     (not (does ?player (put ?card ?stack)))
     (smallest ?card)
     (distinct ?card 1000)
+)
+
+//transition to put phase
+(<= (next (control ?player))
+    (allPlayed)
+    (true (sees ?player (inPlay ?player ?card)))
+    (smallest ?card)
+)
+
+//Warten bis alle gespielt haben
+(<= (next (control all))
+    (true (control all))
+    (not (allPlayed))
 )
 
 //Letzter Spieler legt an
 (<= (next (control all))
     (not (true (control all)))
     (does ?player1 (put ?card1 ?stack))
-    (true (inPlay ?player2 ?card2))
-    (true (inPlay ?player3 ?card3))
-    (true (inPlay ?player4 ?card4))
+    (true (sees ?player2 (inPlay ?player2 ?card2)))
+    (true (sees ?player3 (inPlay ?player3 ?card3)))
+    (true (sees ?player4 (inPlay ?player4 ?card4)))
     (distinct ?player1 ?player2 ?player3 ?player4)
     (equal ?card2 1000)
     (equal ?card3 1000)
