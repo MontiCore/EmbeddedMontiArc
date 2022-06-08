@@ -58,12 +58,11 @@ public class AddOfferUseCaseTest {
 				LocalDateTime.now()
 		);
 
-		AddOfferCommand command = new AddOfferCommand(metadata, List.of(dataRow));
+		// when
 		ArgumentCaptor<Offer> offerArgumentCaptor =
 				ArgumentCaptor.forClass(Offer.class);
 
-		// when
-		underTest.handle(command);
+		underTest.handle(new AddOfferCommand(metadata, List.of(dataRow)));
 
 		// then
 		verify(persistencePort).save(offerArgumentCaptor.capture());
