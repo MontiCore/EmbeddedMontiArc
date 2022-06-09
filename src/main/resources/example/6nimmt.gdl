@@ -158,6 +158,17 @@
 //determine the smallest card in Play
 (<= (smallest ?card1)
     (true (sees ?player1 (inPlay ?player1 ?card1)))
+    (does ?player2 (play ?card2))
+    (true (sees ?player3 (inPlay ?player3 ?card3)))
+    (true (sees ?player4 (inPlay ?player4 ?card4)))
+    (distinct ?player1 ?player2 ?player3 ?player4)
+    (less ?card1 ?card2)
+    (less ?card1 ?card3)
+    (less ?card1 ?card4)
+)
+
+(<= (smallest ?card1)
+    (does ?player1 (play ?card1))
     (true (sees ?player2 (inPlay ?player2 ?card2)))
     (true (sees ?player3 (inPlay ?player3 ?card3)))
     (true (sees ?player4 (inPlay ?player4 ?card4)))
@@ -339,6 +350,12 @@
 (<= (next (control ?player))
     (allPlayed)
     (true (sees ?player (inPlay ?player ?card)))
+    (smallest ?card)
+)
+
+(<= (next (control ?player))
+    (allPlayed)
+    (does ?player (play ?card))
     (smallest ?card)
 )
 
