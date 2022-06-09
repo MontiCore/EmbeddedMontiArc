@@ -99,10 +99,15 @@
 (<= (isFull ?Stack)
     (not (true (stack ?stack 6 0)))
 )
+
+//(<= (cardPut ?stack ?pos)
+//    (does ?player (put ?card ?stack ?pos))
+//)
 //TODO: isMatchingStack soll bestimmen, ob die Karte korrekt angelegt wurde, wenn es einen kleineren Stack gibt, muss es der größte davon sein, ansonsten true für beliebigen Stack
 
 //Atleast one smaller stack
 (<= (isMatchingStack ?stack ?card)
+    (isCard ?card ?val)
     (lastCard ?stack ?pos1 ?card1)
     (lastCard ?stack2 ?pos2 ?card2)
     (lastCard ?stack3 ?pos3 ?card3)
@@ -117,6 +122,7 @@
 
 //No smaller stack => any stack returns true
 (<= (isMatchingStack ?stack ?card)
+    (isCard ?card ?val)
     (lastCard ?stack ?pos1 ?card1)
     (lastCard ?stack2 ?pos2 ?card2)
     (lastCard ?stack3 ?pos3 ?card3)
@@ -129,7 +135,13 @@
 )
 
 //Determine the last card in a stack
+//TODO Function inoperable FIX!
 (<= (lastCard ?stack ?pos ?card)
+    (isPos ?pos)
+    (isPos ?posP)
+    (isPos ?posM)
+    (isStack ?stack)
+    (true (stack ?stack ?pos ?card))
     //following slot empty
     (succ ?pos ?posP)
     (true (stack ?stack ?posP 0))
@@ -140,9 +152,17 @@
     (not (true (stack ?stack ?posM 0)))
 )
 
+(<= (testSucc ?pos)
+    (isPos ?pos)
+    (isPos ?pos1)
+    (isPos ?pos2)
+    (succ ?pos ?pos1)
+    (succ ?pos2 ?pos)
+)
+
 //special case slot 1
-(<= (lastCard ?stack ?pos ?card)
-    (equal ?pos 1)
+(<= (lastCard ?stack 1 ?card)
+    (isCard ?card ?val)
     (true (stack ?stack 1 ?card))
     (true (stack ?stack 2 0))
 )
@@ -174,6 +194,27 @@
     (true (sees ?player4 (inPlay ?player4 ?card4)))
     (distinct ?player1 ?player2 ?player3 ?player4)
     (less ?card1 ?card2)
+    (less ?card1 ?card3)
+    (less ?card1 ?card4)
+)
+
+(<= (smallest ?card1)
+    (true (sees ?player1 (inPlay ?player1 ?card1)))
+    (true (sees ?player2 (inPlay ?player2 ?card2)))
+    (true (sees ?player3 (inPlay ?player3 ?card3)))
+    (true (sees ?player4 (inPlay ?player4 ?card4)))
+    (distinct ?player1 ?player2 ?player3 ?player4)
+    (less ?card1 ?card2)
+    (less ?card1 ?card3)
+    (less ?card1 ?card4)
+)
+
+(<= (smallest ?card1)
+    (true (sees ?player1 (inPlay ?player1 ?card1)))
+    (does ?player2 (put ?card2 ?stack2 ?pos2))
+    (true (sees ?player3 (inPlay ?player3 ?card3)))
+    (true (sees ?player4 (inPlay ?player4 ?card4)))
+    (distinct ?player1 ?player2 ?player3 ?player4)
     (less ?card1 ?card3)
     (less ?card1 ?card4)
 )
@@ -402,12 +443,14 @@
     (true (stack ?stack ?pos ?card))
     (not (isFull ?stack))
     (not (does random (deal stack ?stack ?card1)))
+    (not (does ?player (put ?card2 ?stack ?pos)))
 )
 
 (<= (next (stack ?stack ?pos ?card))
     (true (stack ?stack ?pos ?card))
     (not (isFull ?stack))
     (not (equal ?pos 1))
+    (not (does ?player (put ?card2 ?stack ?pos)))
 )
 
 //Copy slots 6-9 into 1-4 if stack is full if they exist, If not write 0
@@ -494,6 +537,20 @@
 (isPlayer blue)
 (isPlayer green)
 (isPlayer yellow)
+
+//(isPos <position>)
+(isPos 1)
+(isPos 2)
+(isPos 3)
+(isPos 4)
+(isPos 5)
+(isPos 6)
+
+//(isStack <stack>)
+(isStack a)
+(isStack b)
+(isStack c)
+(isStack d)
 
 //(isCard <number> <points>)
 (isCard 1 1)
