@@ -251,6 +251,7 @@
     (succ ?posP ?pos)
     (lastCard ?stack ?posP ?cardP)
     (less ?cardP ?card)
+    (smallest ?card)
 )
 
 //Anlegen in slot 6 falls kein passender Stapel vorhanden war
@@ -261,6 +262,7 @@
     (isMatchingStack ?stack ?card)
     (lastCard ?stack ?posLast ?cardLast)
     (greater ?cardLast ?card)
+    (smallest ?card)
 )
 
 //---random---
@@ -333,6 +335,7 @@
 (<= (next (sees ?player (inPlay ?player ?card)))
     (true (sees ?player (inPlay ?player ?card)))
     (not (does ?player (put ?card ?stack)))
+    (not (does ?player (play ?card2)))
 )
 
 //remove card from inPlay when it's put
@@ -413,12 +416,6 @@
     (does ?player (play ?card))
 )
 
-//---Point handling---
-//points
-(<= (next (points ?player ?card))
-    (true (points ?player ?card))
-)
-
 //Copy Stacks and remove overflow
 //Copy non full stacks 1 to 1 except positions where a card was put
 (<= (next (stack ?stack ?pos ?card))
@@ -460,6 +457,12 @@
     (isFull ?stack)
 )
 
+//---Point handling---
+//copy existing points
+(<= (next (points ?player ?card))
+    (true (points ?player ?card))
+)
+
 //apply Points gained by moving pos 1-5 to points
 (<= (next (points ?player ?card1))
     (does ?player (put ?card ?stack 6))
@@ -469,22 +472,34 @@
 (<= (next (points ?player ?card2))
     (does ?player (put ?card ?stack 6))
     (true (stack ?stack 2 ?card2))
+    (not (equal ?card2 0))
 )
 
 (<= (next (points ?player ?card3))
     (does ?player (put ?card ?stack 6))
     (true (stack ?stack 3 ?card3))
+    (not (equal ?card3 0))
 )
 
 (<= (next (points ?player ?card4))
     (does ?player (put ?card ?stack 6))
     (true (stack ?stack 4 ?card4))
+    (not (equal ?card4 0))
 )
 
 (<= (next (points ?player ?card5))
     (does ?player (put ?card ?stack 6))
     (true (stack ?stack 5 ?card5))
+    (not (equal ?card5 0))
 )
+
+//------------
+//Goals
+//------------
+
+//TODO
+
+
 
 //------------
 //Constants
@@ -614,3 +629,14 @@
 (isCard 102 1)
 (isCard 103 1)
 (isCard 104 1)
+
+//------------
+//Terminal
+//------------
+//Noone has cards in hand or in Play
+//(<= terminal
+//    (not (sees ?player (hand ?player ?pos ?card)))
+//    (distinct ?card 0)
+//    (not (sees ?player1 (inPlay ?player1 ?card1)))
+//    (distinct ?card1 1000)
+//)
