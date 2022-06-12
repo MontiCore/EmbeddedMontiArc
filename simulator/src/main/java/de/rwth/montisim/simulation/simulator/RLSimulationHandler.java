@@ -13,6 +13,9 @@ import de.rwth.montisim.simulation.eecomponents.speed_limit.SpeedLimitService;
 import de.rwth.montisim.simulation.environment.osmmap.*;
 import de.rwth.montisim.simulation.environment.pathfinding.PathfindingImpl;
 import de.rwth.montisim.simulation.environment.world.World;
+import de.rwth.montisim.simulation.simulator.randomization.RandomRandomizationPropertiesPicker;
+import de.rwth.montisim.simulation.simulator.randomization.RandomizationProperties;
+import de.rwth.montisim.simulation.simulator.randomization.RandomizationStrategy;
 import de.rwth.montisim.simulation.simulator.visualization.rl.RLVisualizer;
 import de.rwth.montisim.simulation.vehicle.navigation.*;
 import de.rwth.montisim.simulation.vehicle.physicalvalues.*;
@@ -202,7 +205,6 @@ public class RLSimulationHandler {
 
     private void do_step() {
         Result result = step(train_action);
-
         if (result.terminated) in_termination = true;
         in_action = false;
         publishTrainMessage(cppInterface, result.state, result.terminated, result.reward);
@@ -239,6 +241,7 @@ public class RLSimulationHandler {
     //}
 
     public Result reset() {
+        System.out.println("RESETTING");
         ++this.episodeCounter;
         return this.setup();
     }
@@ -255,6 +258,26 @@ public class RLSimulationHandler {
         if (viz != null) {
             viz.clearRenderer();
         }
+        
+        // Randomize Scenario
+        try {
+          Optional<RandomizationProperties> randomizationPropertiesOptional;
+          randomizationPropertiesOptional = RandomRandomizationPropertiesPicker.pickRandomizationProperties(config.randomization);
+          if (randomizationPropertiesOptional.isPresent()) {
+            RandomizationProperties randomizationProperties = randomizationPropertiesOptional.get();
+            // TODO: Do we need the mapfolder?
+            RandomizationStrategy strategy = randomizationProperties.build(config, "");
+            config.cars = strategy.randomizeCars(config.cars);
+            config.map_name = strategy.randomizeMapName(config.map_name);
+            config.max_duration = strategy.randomizeMaxDuration(config.max_duration);
+            config.tick_duration = strategy.randomizeTickDuration(config.tick_duration);
+            config.modules = strategy.randomizeModules(config.modules);
+          }
+        }
+        catch (Exception e) {
+          e.printStackTrace();
+        }
+        
         world = new OsmToWorldLoader(map).getWorld();
         pathfinding = new PathfindingImpl(world);
         simulator = config.build(world, pathfinding, map);
