@@ -1,20 +1,18 @@
 package de.rwth.montisim.agent.network;
 
-component AutopilotQNet<N1 training_vehicles=5> {
-    ports
-        in Q^{training_vehicles, 26} state,
-        in Q^{25} self_state,
-        out Q(-1:1)^{3} action;
+component AutopilotQNet {
+	ports
+		in Q^{25} state,
+		out Q(-1:1)^{3} action;
 
-    implementation CNN {
-
-        state ->
-        FullyConnected(units=500) ->
-        Relu() ->
-        FullyConnected(units=800) ->
-        Relu() ->
-        FullyConnected(units=3) ->
-        Tanh() ->
-        action;
-    }
+	implementation CNN {
+		state ->
+		FullyConnected(units=128) ->
+		Relu() ->
+		FullyConnected(units=256) ->
+		Relu() ->
+		FullyConnected(units=3) ->
+		Tanh() ->
+		action;
+	}
 }
