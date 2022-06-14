@@ -28,11 +28,6 @@ class SpringOfferRepositoryTest {
 	@Autowired
 	private SpringDatasetRepository datasetRepository;
 
-	@AfterEach
-	private void cleanUpEach() {
-		underTest.deleteAll();
-	}
-
 	@Test
 	void shouldFindOneBoughtOfferOutOfTwo() {
 		// given

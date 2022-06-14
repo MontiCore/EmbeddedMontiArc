@@ -1,23 +1,19 @@
 package persistence.repository;
 
-import entity.DataRow;
 import entity.Dataset;
-import entity.Metadata;
-import entity.Offer;
 import lombok.AllArgsConstructor;
 import org.springframework.jdbc.core.JdbcTemplate;
 import persistence.entity.DatasetEntity;
 import persistence.mappers.Mapper;
 import ports.DatasetPersistencePort;
 
-import java.time.LocalDateTime;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.Optional;
 import java.util.UUID;
 
 @AllArgsConstructor
-public class SpringDatasetRepositoryAdapter implements DatasetPersistencePort {
+public class SpringDatasetRepositoryPortAdapter implements DatasetPersistencePort {
 
 	private final Mapper<Dataset, DatasetEntity> mapper;
 	private final SpringDatasetRepository repository;

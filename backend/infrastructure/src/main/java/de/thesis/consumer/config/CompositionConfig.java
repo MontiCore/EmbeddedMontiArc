@@ -10,7 +10,7 @@ import org.springframework.web.reactive.function.client.WebClient;
 import persistence.mappers.JacksonDatasetMapper;
 import persistence.mappers.JacksonOfferMapper;
 import persistence.repository.SpringDatasetRepository;
-import persistence.repository.SpringDatasetRepositoryAdapter;
+import persistence.repository.SpringDatasetRepositoryPortAdapter;
 import persistence.repository.SpringOfferRepository;
 import persistence.repository.SpringOfferPersistencePortAdapter;
 import ports.DatasetPersistencePort;
@@ -59,7 +59,7 @@ public class CompositionConfig {
 
 	@Bean
 	public DatasetPersistencePort datasetPersistencePort(JacksonDatasetMapper mapper, SpringDatasetRepository repository, JdbcTemplate jdbcTemplate) {
-		return new SpringDatasetRepositoryAdapter(mapper, repository, jdbcTemplate);
+		return new SpringDatasetRepositoryPortAdapter(mapper, repository, jdbcTemplate);
 	}
 
 	@Bean
