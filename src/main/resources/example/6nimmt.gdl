@@ -16,6 +16,12 @@
 //all, red, blue, green, yellow, random
 (init (control random))
 
+//init points
+(init (currPoints red 0))
+(init (currPoints blue 0))
+(init (currPoints green 0))
+(init (currPoints yellow 0))
+
 // 4 Stacks
 //(stack <stack#> <stack pos>)
 (init (stack a 1 0))
@@ -104,14 +110,22 @@
     (does ?player (put ?card ?stack 6))
 )
 
-//Atleast one smaller stack
+//Is ?stack1 equal ?stack2
+(<= (equalStack ?stack1 ?stack2)
+    (isStack ?stack1 ?num1)
+    (isStack ?stack2 ?num2)
+    (equal ?num1 ?num2)
+)
+
+//Atleast one smaller stack; One function for each possible stack to optimize runtime
 (<= (isMatchingStack ?stack ?card)
     (isCard ?card ?val)
-    (lastCard ?stack ?pos1 ?card1)
-    (lastCard ?stack2 ?pos2 ?card2)
-    (lastCard ?stack3 ?pos3 ?card3)
-    (lastCard ?stack4 ?pos4 ?card4)
-    (distinct ?stack ?stack2 ?stack3 ?stack4)
+    (lastCard a ?pos1 ?card1)
+    (lastCard b ?pos2 ?card2)
+    (lastCard c ?pos3 ?card3)
+    (lastCard d ?pos4 ?card4)
+    (equalStack ?stack a)
+    //(distinct ?stack ?stack2 ?stack3 ?stack4)
     //is ?card closest to ?stack ?
     (less ?card1 ?card)
     (not (between ?card2 ?card1 ?card))
@@ -119,14 +133,60 @@
     (not (between ?card4 ?card1 ?card))
 )
 
+(<= (isMatchingStack ?stack ?card)
+    (isCard ?card ?val)
+    (lastCard a ?pos1 ?card1)
+    (lastCard b ?pos2 ?card2)
+    (lastCard c ?pos3 ?card3)
+    (lastCard d ?pos4 ?card4)
+    (equalStack ?stack b)
+    //(distinct ?stack ?stack2 ?stack3 ?stack4)
+    //is ?card closest to ?stack ?
+    (less ?card2 ?card)
+    (not (between ?card1 ?card2 ?card))
+    (not (between ?card3 ?card2 ?card))
+    (not (between ?card4 ?card2 ?card))
+)
+
+(<= (isMatchingStack ?stack ?card)
+    (isCard ?card ?val)
+    (lastCard a ?pos1 ?card1)
+    (lastCard b ?pos2 ?card2)
+    (lastCard c ?pos3 ?card3)
+    (lastCard d ?pos4 ?card4)
+    (equalStack ?stack c)
+    //(distinct ?stack ?stack2 ?stack3 ?stack4)
+    //is ?card closest to ?stack ?
+    (less ?card3 ?card)
+    (not (between ?card2 ?card3 ?card))
+    (not (between ?card1 ?card3 ?card))
+    (not (between ?card4 ?card3 ?card))
+)
+
+(<= (isMatchingStack ?stack ?card)
+    (isCard ?card ?val)
+    (lastCard a ?pos1 ?card1)
+    (lastCard b ?pos2 ?card2)
+    (lastCard c ?pos3 ?card3)
+    (lastCard d ?pos4 ?card4)
+    (equalStack ?stack d)
+    //(distinct ?stack ?stack2 ?stack3 ?stack4)
+    //is ?card closest to ?stack ?
+    (less ?card4 ?card)
+    (not (between ?card2 ?card4 ?card))
+    (not (between ?card3 ?card4 ?card))
+    (not (between ?card1 ?card4 ?card))
+)
+
 //No smaller stack => any stack returns true
 (<= (isMatchingStack ?stack ?card)
     (isCard ?card ?val)
-    (lastCard ?stack ?pos1 ?card1)
-    (lastCard ?stack2 ?pos2 ?card2)
-    (lastCard ?stack3 ?pos3 ?card3)
-    (lastCard ?stack4 ?pos4 ?card4)
-    (distinct ?stack ?stack2 ?stack3 ?stack4)
+    (lastCard a ?pos1 ?card1)
+    (lastCard b ?pos2 ?card2)
+    (lastCard c ?pos3 ?card3)
+    (lastCard d ?pos4 ?card4)
+    (isStack ?stack ?num)
+    //(distinct ?stack ?stack2 ?stack3 ?stack4)
     (not (less ?card1 ?card))
     (not (less ?card2 ?card))
     (not (less ?card3 ?card))
@@ -138,7 +198,7 @@
     (isPos ?pos)
     (isPos ?posP)
     (isPos ?posM)
-    (isStack ?stack)
+    (isStack ?stack ?num)
     (true (stack ?stack ?pos ?card))
     //following slot empty
     (succ ?pos ?posP)
@@ -158,6 +218,15 @@
 )
 
 //Util Functions
+
+//Return points of the given card, return 0 if not a card
+(<= (hasPoints ?card ?points)
+    (isCard ?card ?points)
+)
+
+(<= (hasPoints ?card 0)
+    (not (isCard ?card ?points))
+)
 
 //Determine if ?cardMiddle is greater than ?cardLeft and smaller than ?cardRight
 (<= (between ?cardMiddle ?cardLeft ?cardRight)
@@ -207,6 +276,14 @@
     (distinct ?player1 ?player2 ?player3 ?player4)
     (less ?card1 ?card3)
     (less ?card1 ?card4)
+)
+
+(<= (lessEqual ?num1 ?num2)
+    (less ?num1 ?num2)
+)
+
+(<= (lessEqual ?num1 ?num2)
+    (equal ?num1 ?num2)
 )
 
 (<= (hasCardInPlay ?player)
@@ -458,6 +535,35 @@
 )
 
 //---Point handling---
+//Arith Points 
+//add all points in pos 1-5 if player puts card at 6
+(<= (next (currPoints ?player ?num))
+    (does ?player (put ?card ?stack 6))
+    (true (currPoints ?player ?p))
+    (true (stack ?stack 1 ?card1))
+    (hasPoints ?card1 ?points1)
+    (add ?p ?points1 ?temp1) 
+    (true (stack ?stack 2 ?card2))
+    (hasPoints ?card2 ?points2)
+    (add ?temp1 ?points2 ?temp2)
+    (true (stack ?stack 3 ?card3))
+    (hasPoints ?card3 ?points3)
+    (add ?temp2 ?points3 ?temp3)
+    (true (stack ?stack 4 ?card4))
+    (hasPoints ?card4 ?points4)
+    (add ?temp3 ?points4 ?temp4)
+    (true (stack ?stack 5 ?card5))
+    (hasPoints ?card5 ?points5)
+    (add ?temp4 ?points5 ?num)
+)
+
+//If player is not gaining points, copy old score
+(<= (next (currPoints ?player ?num))
+    (isPlayer ?player)
+    (not (does ?player (put ?card ?stack 6)))
+    (true (currPoints ?player ?num))
+)
+
 //copy existing points
 (<= (next (points ?player ?card))
     (true (points ?player ?card))
@@ -497,8 +603,37 @@
 //Goals
 //------------
 
-//TODO
+//First Place
+(<= (goal ?player 100)
+    (isPlayer ?player)
+    (isPlayer ?player2)
+    (isPlayer ?player3)
+    (isPlayer ?player4)
+    (distinct ?player ?player2 ?player3 ?player4)
+    (currPoints ?player ?points)
+    (currPoints ?player2 ?points2)
+    (currPoints ?player3 ?points3)
+    (currPoints ?player4 ?points4)
+    (lessEqual ?points ?points2)
+    (lessEqual ?points ?points3)
+    (lessEqual ?points ?points4)
+)
 
+//Second Place
+(<= (goal ?player 50)
+    (isPlayer ?player)
+    (isPlayer ?player2)
+    (isPlayer ?player3)
+    (isPlayer ?player4)
+    (distinct ?player ?player2 ?player3 ?player4)
+    (currPoints ?player ?points)
+    (currPoints ?player2 ?points2)
+    (currPoints ?player3 ?points3)
+    (currPoints ?player4 ?points4)
+    (greater ?points ?points2)
+    (lessEqual ?points ?points3)
+    (lessEqual ?points ?points4)
+)
 
 
 //------------
@@ -518,11 +653,11 @@
 (isPos 5)
 (isPos 6)
 
-//(isStack <stack>)
-(isStack a)
-(isStack b)
-(isStack c)
-(isStack d)
+//(isStack <stack> <identNum>)
+(isStack a 1)
+(isStack b 2)
+(isStack c 3)
+(isStack d 4)
 
 //(isCard <number> <points>)
 (isCard 1 1)
