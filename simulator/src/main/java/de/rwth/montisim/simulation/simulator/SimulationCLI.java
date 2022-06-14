@@ -44,13 +44,14 @@ public class SimulationCLI {
             config.max_duration = strategy.randomizeMaxDuration(config.max_duration);
             config.tick_duration = strategy.randomizeTickDuration(config.tick_duration);
             config.modules = strategy.randomizeModules(config.modules);
+            config.preprocessor = strategy.randomizePreprocessor(config.preprocessor);
         }
         File mapPath = Paths.get(mapsFolder, config.map_name + ".osm").toFile();
         OsmMap map = new OsmMap(config.map_name, mapPath);
         World world = new OsmToWorldLoader(map).getWorld();
         Pathfinding pathfinding = new PathfindingImpl(world);
         Simulator simulator = config.build(world, pathfinding, map);
-
+        
         // Run simulation
         SimulationLoop simLoop = new SimulationLoop(simulator, config);
         TaskStatus res = simLoop.run();

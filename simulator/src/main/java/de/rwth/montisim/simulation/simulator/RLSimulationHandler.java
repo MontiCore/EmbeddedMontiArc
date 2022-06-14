@@ -13,6 +13,7 @@ import de.rwth.montisim.simulation.eecomponents.speed_limit.SpeedLimitService;
 import de.rwth.montisim.simulation.environment.osmmap.*;
 import de.rwth.montisim.simulation.environment.pathfinding.PathfindingImpl;
 import de.rwth.montisim.simulation.environment.world.World;
+import de.rwth.montisim.simulation.simulator.communication.DefaultPreprocessorProperties;
 import de.rwth.montisim.simulation.simulator.communication.Preprocessor;
 import de.rwth.montisim.simulation.simulator.randomization.RandomRandomizationPropertiesPicker;
 import de.rwth.montisim.simulation.simulator.randomization.RandomizationProperties;
@@ -266,13 +267,14 @@ public class RLSimulationHandler {
           randomizationPropertiesOptional = RandomRandomizationPropertiesPicker.pickRandomizationProperties(config.randomization);
           if (randomizationPropertiesOptional.isPresent()) {
             RandomizationProperties randomizationProperties = randomizationPropertiesOptional.get();
-            // TODO: Do we need the mapfolder?
+            // TODO: Do we need the map-folder?
             RandomizationStrategy strategy = randomizationProperties.build(config, "");
             config.cars = strategy.randomizeCars(config.cars);
             config.map_name = strategy.randomizeMapName(config.map_name);
             config.max_duration = strategy.randomizeMaxDuration(config.max_duration);
             config.tick_duration = strategy.randomizeTickDuration(config.tick_duration);
             config.modules = strategy.randomizeModules(config.modules);
+            config.preprocessor = strategy.randomizePreprocessor(config.preprocessor);
           }
         }
         catch (Exception e) {
