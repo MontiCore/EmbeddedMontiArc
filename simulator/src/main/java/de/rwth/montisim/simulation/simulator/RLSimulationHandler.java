@@ -510,10 +510,16 @@ public class RLSimulationHandler {
         int vehicleCount = autopilots.length;
         int statePacketLength = autopilots[0].getStatePacket().length;
         // Reshape the vehicle states
-        float [] activeVehicleState = vehicleStates[currentVehicleIndex];
+        float [] activeVehicleState = new float[vehicleStates[currentVehicleIndex].length];
+        for (int i = 0; i < activeVehicleState.length; i++) {
+            activeVehicleState[i] = vehicleStates[currentVehicleIndex][i];
+        }
         float[][] otherVehicleStates = new float[vehicleCount - 1][statePacketLength];
         for (int i = 0; i < vehicleCount - 1; i++) {
-            otherVehicleStates[i] = autopilots[(currentVehicleIndex + i + 1) % vehicleCount].getStatePacket();
+            float[] statePacket = autopilots[(currentVehicleIndex + i + 1) % vehicleCount].getStatePacket();
+            for (int j = 0; j < statePacket.length; i++) {
+                otherVehicleStates[i][j] = statePacket[j];
+            }
         }
         // Preprocess the states and return the result
         float[] result = simulator.preprocessor.preprocessState(activeVehicleState, otherVehicleStates, statePacketLength);
