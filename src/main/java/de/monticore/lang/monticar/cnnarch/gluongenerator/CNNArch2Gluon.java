@@ -80,6 +80,9 @@ public class CNNArch2Gluon extends CNNArchGenerator {
         temp = controller.process("CNNPredictor", Target.CPP);
         fileContents.add(temp);
 
+        temp = controller.process("CNNPythonExecuteNetwork", Target.PYTHON);
+        fileContents.add(temp);
+
         temp = controller.process("execute", Target.CPP);
         temp = new FileContent(temp.getFileContent(), temp.getFileName().replace(".h",""));
         fileContents.add(temp);
