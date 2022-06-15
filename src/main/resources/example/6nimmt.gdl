@@ -1,4 +1,4 @@
-// 6 nimm!
+// 6 nimmt!
 
 // Roles
 //----
@@ -633,6 +633,16 @@
     (greater ?points ?points2)
     (lessEqual ?points ?points3)
     (lessEqual ?points ?points4)
+)
+
+//------------
+//Terminal
+//------------
+(<= terminal
+    (not (true (sees ?player (hand ?player ?pos ?card))))
+    (distinct ?card 0)
+    (not (true (sees ?player1 (inPlay ?player ?card1))))
+    (distinct ?card1 1000)
 )
 
 

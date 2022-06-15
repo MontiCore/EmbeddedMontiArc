@@ -171,8 +171,8 @@ greater(X,Y) :-
 equal(X,Y) :-
   nonvar(X),
   nonvar(Y),
-  atom_to_number(X, NX),
-  atom_to_number(Y, NY),
+  atom_concat(value_, NX, X),
+  atom_concat(value_, NY, Y),
   NX = NY.
 
 % ----- is a number? -----
