@@ -2,10 +2,7 @@
 package de.rwth.montisim.simulation.simulator;
 
 import java.time.Duration;
-import java.util.ArrayList;
-import java.util.HashMap;
-import java.util.LinkedHashMap;
-import java.util.List;
+import java.util.*;
 import java.util.stream.Stream;
 
 import de.rwth.montisim.commons.eventsimulation.DiscreteEventSimulator;
@@ -20,6 +17,9 @@ import de.rwth.montisim.simulation.eecomponents.vehicleconfigs.DefaultVehicleCon
 import de.rwth.montisim.simulation.environment.osmmap.OsmMap;
 import de.rwth.montisim.simulation.environment.world.World;
 import de.rwth.montisim.simulation.environment.world.elements.Building;
+import de.rwth.montisim.simulation.simulator.communication.DefaultPreprocessor;
+import de.rwth.montisim.simulation.simulator.communication.DefaultPreprocessorProperties;
+import de.rwth.montisim.simulation.simulator.communication.Preprocessor;
 import de.rwth.montisim.simulation.vehicle.Vehicle;
 import de.rwth.montisim.simulation.vehicle.VehicleBuilder;
 import de.rwth.montisim.simulation.vehicle.VehicleProperties;
@@ -30,6 +30,7 @@ public class Simulator implements ISimulator, Updatable {
     final Pathfinding pathfinding;
     final public BuildContext buildContext;
     public final DiscreteEventSimulator eventSimulator;
+    public final Preprocessor preprocessor;
     final List<SimulatorModule> modules = new ArrayList<>();
     final HashMap<String, SimulatorModule> moduleByName = new HashMap<>();
 
@@ -72,6 +73,12 @@ public class Simulator implements ISimulator, Updatable {
         buildContext.addObject(world);
         buildContext.addObject(map);
         buildContext.addObject(eventSimulator);
+
+        // Build preprocessor
+        if (!config.preprocessor.isPresent()) {
+            config.preprocessor = Optional.of(new DefaultPreprocessorProperties());
+        }
+        preprocessor = config.preprocessor.get().build();
 
         for (Building b : world.buildings) {
             addSimulationObject(b);

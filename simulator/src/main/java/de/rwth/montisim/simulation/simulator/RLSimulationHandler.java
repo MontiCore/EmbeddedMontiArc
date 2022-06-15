@@ -13,6 +13,8 @@ import de.rwth.montisim.simulation.eecomponents.speed_limit.SpeedLimitService;
 import de.rwth.montisim.simulation.environment.osmmap.*;
 import de.rwth.montisim.simulation.environment.pathfinding.PathfindingImpl;
 import de.rwth.montisim.simulation.environment.world.World;
+import de.rwth.montisim.simulation.simulator.communication.DefaultPreprocessorProperties;
+import de.rwth.montisim.simulation.simulator.communication.Preprocessor;
 import de.rwth.montisim.simulation.simulator.randomization.RandomRandomizationPropertiesPicker;
 import de.rwth.montisim.simulation.simulator.randomization.RandomizationProperties;
 import de.rwth.montisim.simulation.simulator.randomization.RandomizationStrategy;
@@ -265,13 +267,14 @@ public class RLSimulationHandler {
           randomizationPropertiesOptional = RandomRandomizationPropertiesPicker.pickRandomizationProperties(config.randomization);
           if (randomizationPropertiesOptional.isPresent()) {
             RandomizationProperties randomizationProperties = randomizationPropertiesOptional.get();
-            // TODO: Do we need the mapfolder?
+            // TODO: Do we need the map-folder?
             RandomizationStrategy strategy = randomizationProperties.build(config, "");
             config.cars = strategy.randomizeCars(config.cars);
             config.map_name = strategy.randomizeMapName(config.map_name);
             config.max_duration = strategy.randomizeMaxDuration(config.max_duration);
             config.tick_duration = strategy.randomizeTickDuration(config.tick_duration);
             config.modules = strategy.randomizeModules(config.modules);
+            config.preprocessor = strategy.randomizePreprocessor(config.preprocessor);
           }
         }
         catch (Exception e) {
@@ -482,46 +485,44 @@ public class RLSimulationHandler {
                     result[i * stateLength + j] = vehicleStates[i][j];
                 }
             }
-        } else if (miniStep) {
-            result = new float[stateLength + (vehicleCount - 1) * statePacketLength];
-            for (int i = 0; i < stateLength; i++) {
-                result[i] = vehicleStates[activeVehicle][i];
-            }
-            for (int i = 1; i < vehicleCount; i++) {
-                for (int j = 0; j < statePacketLength; j++) {
-                    result[stateLength + (i - 1) * statePacketLength + j] = autopilots[(activeVehicle + i) % vehicleCount].getStatePacket()[j];
-                }
-            }
         } else {
-            result = new float[stateLength + (vehicleCount - 1) * statePacketLength];
-            for (int i = 0; i < stateLength; i++) {
-                result[i] = vehicleStates[trainedVehicle][i]; //return state to EMADL agent
-            }
-            for (int i = 1; i < vehicleCount; i++) {
-                for (int j = 0; j < statePacketLength; j++) {
-                    result[stateLength + (i - 1) * statePacketLength + j] = autopilots[(trainedVehicle + i) % vehicleCount].getStatePacket()[j];
-                }
-            }
+            int currentVehicle = (miniStep)? activeVehicle : trainedVehicle;
+            result = getPreprocessedStates(currentVehicle);
         }
         return result;
     }
 
     //method to return the state to the self-play vehicle
     private float[] getDistributedState(int index) {
-        int vehicleCount = autopilots.length;
         int stateLength = autopilots[0].state.length;
-        int statePacketLength = autopilots[0].getStatePacket().length;
         updateVehicleStates();
         float[] result;
-        result = new float[stateLength + (vehicleCount - 1) * statePacketLength];
-        for (int i = 0; i < stateLength; i++) {
-            result[i] = vehicleStates[index][i];
+        result = getPreprocessedStates(index);
+        return result;
+    }
+
+    /**
+     * Returns the current preprocessed state
+     * @param currentVehicleIndex The index of the current vehicle
+     * @return A float[] containing the preprocessed state
+     */
+    private float[] getPreprocessedStates(int currentVehicleIndex) {
+        int vehicleCount = autopilots.length;
+        int statePacketLength = autopilots[0].getStatePacket().length;
+        // Reshape the vehicle states
+        float [] activeVehicleState = new float[vehicleStates[currentVehicleIndex].length];
+        for (int i = 0; i < activeVehicleState.length; i++) {
+            activeVehicleState[i] = vehicleStates[currentVehicleIndex][i];
         }
-        for (int i = 1; i < vehicleCount; i++) {
-            for (int j = 0; j < statePacketLength; j++) {
-                result[stateLength + (i - 1) * statePacketLength + j] = autopilots[(index + i) % vehicleCount].getStatePacket()[j];
+        float[][] otherVehicleStates = new float[vehicleCount - 1][statePacketLength];
+        for (int i = 0; i < vehicleCount - 1; i++) {
+            float[] statePacket = autopilots[(currentVehicleIndex + i + 1) % vehicleCount].getStatePacket();
+            for (int j = 0; j < statePacket.length; i++) {
+                otherVehicleStates[i][j] = statePacket[j];
             }
         }
+        // Preprocess the states and return the result
+        float[] result = simulator.preprocessor.preprocessState(activeVehicleState, otherVehicleStates, statePacketLength);
         return result;
     }
 
