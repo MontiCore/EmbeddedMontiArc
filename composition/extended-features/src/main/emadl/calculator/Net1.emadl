@@ -1,10 +1,10 @@
 package calculator
 
-component AnyType Net1 {
+component Net1 {
     ports in Z(0:255)^{1, 28, 28} input,
          out Z(0:255)^{1, 28, 28} output;
 
-    implementation AnyType CNN {
+    implementation CNN {
         def conv(channels, kernel=1, stride=1){
             Convolution(kernel=(kernel,kernel),channels=channels) ->
             Relu() ->
