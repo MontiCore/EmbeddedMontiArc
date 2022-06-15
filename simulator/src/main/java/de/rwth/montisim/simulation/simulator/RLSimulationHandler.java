@@ -516,7 +516,7 @@ public class RLSimulationHandler {
             otherVehicleStates[i] = autopilots[(currentVehicleIndex + i + 1) % vehicleCount].getStatePacket();
         }
         // Preprocess the states and return the result
-        float[] result = simulator.preprocessor.preprocessState(activeVehicleState, otherVehicleStates);
+        float[] result = simulator.preprocessor.preprocessState(activeVehicleState, otherVehicleStates, statePacketLength);
         return result;
     }
 

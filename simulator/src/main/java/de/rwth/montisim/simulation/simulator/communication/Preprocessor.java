@@ -11,6 +11,6 @@ public interface Preprocessor {
      * @return A float[] containing the preprocessed combined state of the vehicles.
      * @throws Exception When the states could not be preprocessed.
      */
-    float[] preprocessState(float[] vehicleState, float[][] otherStates);
+    float[] preprocessState(float[] vehicleState, float[][] otherStates, int statePacketLength);
 
 }

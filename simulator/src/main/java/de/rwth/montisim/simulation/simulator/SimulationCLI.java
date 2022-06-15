@@ -51,7 +51,7 @@ public class SimulationCLI {
         World world = new OsmToWorldLoader(map).getWorld();
         Pathfinding pathfinding = new PathfindingImpl(world);
         Simulator simulator = config.build(world, pathfinding, map);
-        
+
         // Run simulation
         SimulationLoop simLoop = new SimulationLoop(simulator, config);
         TaskStatus res = simLoop.run();

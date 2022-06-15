@@ -10,23 +10,23 @@ public class DefaultPreprocessor implements Preprocessor {
 
     final static String STATE_PACKET_LENGTH_ERROR = "Preprocessor received different state packet lengths from different vehicles.";
 
-    public float[] preprocessState(float[] vehicleState, float[][] otherStates) {
+    public float[] preprocessState(float[] vehicleState, float[][] otherStates, int statePacketLength) {
         // If there are no other vehicle states, return just the current vehicle state
-        if (otherStates.length == 0) return vehicleState;
+        if (statePacketLength == 0) return vehicleState;
         // Check whether the state packets are malformed
         for (int i = 1; i < otherStates.length; i++) {
-            if (otherStates[i].length != otherStates[0].length) {
+            if (otherStates[i].length != statePacketLength) {
                 Log.error(STATE_PACKET_LENGTH_ERROR);
             }
         }
         // Combine the states
-        float[] result = new float[vehicleState.length + otherStates.length * otherStates[0].length];
+        float[] result = new float[vehicleState.length + otherStates.length * statePacketLength];
         for (int i = 0; i < vehicleState.length; i++) {
             result[i] = vehicleState[i];
         }
         for (int i = 0; i < otherStates.length; i++) {
-            for (int j = 0; j < otherStates[0].length; j++) {
-                result[vehicleState.length + i * otherStates[0].length + j] = otherStates[i][j];
+            for (int j = 0; j < statePacketLength; j++) {
+                result[vehicleState.length + i * statePacketLength + j] = otherStates[i][j];
             }
         }
 
