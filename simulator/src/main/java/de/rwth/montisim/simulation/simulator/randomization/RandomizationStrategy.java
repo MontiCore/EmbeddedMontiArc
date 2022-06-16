@@ -6,6 +6,8 @@ import java.util.Random;
 import java.util.Vector;
 
 import de.rwth.montisim.simulation.eecomponents.simple_network.ModuleProperties;
+import de.rwth.montisim.simulation.simulator.communication.Preprocessor;
+import de.rwth.montisim.simulation.simulator.communication.PreprocessorProperties;
 import de.rwth.montisim.simulation.vehicle.VehicleProperties;
 
 /**
@@ -88,6 +90,19 @@ public abstract class RandomizationStrategy {
      */
     public Vector<ModuleProperties> randomizeModules(Vector<ModuleProperties> modules) {
         return modules;
+    }
+
+    /**
+     * Randomizes the preprocessor of a simulation.
+     *
+     * @param preprocessor The preprocessor of the simulation that was specified
+     *                     in the configuration.
+     * @return A preprocessor that preprocesses the states of the vehicles in
+     * the simulation.
+     * @see de.rwth.montisim.simulation.simulator.communication.PreprocessorProperties;
+     */
+    public Optional<PreprocessorProperties> randomizePreprocessor(Optional<PreprocessorProperties> preprocessor) {
+        return preprocessor;
     }
 
 }

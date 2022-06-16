@@ -16,6 +16,7 @@ import de.rwth.montisim.simulation.eesimulator.events.MessageReceiveEvent.Messag
 import de.rwth.montisim.simulation.eesimulator.events.MessageSendEvent.MessageSendEventData;
 import de.rwth.montisim.simulation.eesimulator.sensor.SensorProperties;
 import de.rwth.montisim.simulation.eesimulator.testcomponents.TestCompProperties;
+import de.rwth.montisim.simulation.simulator.communication.*;
 import de.rwth.montisim.simulation.simulator.randomization.BasicDrivingStrategyProperties;
 import de.rwth.montisim.simulation.simulator.randomization.EmptyStrategyProperties;
 import de.rwth.montisim.simulation.simulator.randomization.IntersectionStrategyProperties;
@@ -60,5 +61,7 @@ public class TypedSimulation {
         Json.registerType(IntersectionStrategyProperties.class);
         Json.registerType(PlatooningStrategyProperties.class);
         Json.registerType(BasicDrivingStrategyProperties.class);
+        Json.registerType(DefaultPreprocessorProperties.class);
+        Json.registerType(ProximityFilterProperties.class);
     }
 }

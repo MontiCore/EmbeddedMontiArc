@@ -18,6 +18,9 @@ import de.rwth.montisim.simulation.eesimulator.exceptions.EEMissingComponentExce
 import de.rwth.montisim.simulation.eesimulator.exceptions.EESetupException;
 import de.rwth.montisim.simulation.environment.osmmap.OsmMap;
 import de.rwth.montisim.simulation.environment.world.World;
+import de.rwth.montisim.simulation.simulator.communication.DefaultPreprocessorProperties;
+import de.rwth.montisim.simulation.simulator.communication.Preprocessor;
+import de.rwth.montisim.simulation.simulator.communication.PreprocessorProperties;
 import de.rwth.montisim.simulation.simulator.randomization.RandomizationProperties;
 import de.rwth.montisim.simulation.vehicle.Vehicle;
 import de.rwth.montisim.simulation.vehicle.VehicleProperties;
@@ -29,6 +32,7 @@ public class SimulationConfig {
     public Duration tick_duration = Duration.ofNanos(Time.SECOND_TO_NANOSEC / 100);
     public Instant start_time = Instant.now();
     public Vector<RandomizationProperties> randomization = new Vector<>();
+    public Optional<PreprocessorProperties> preprocessor = Optional.empty();
 
     public Vector<VehicleProperties> cars = new Vector<>();
     public Vector<ModuleProperties> modules = new Vector<>();
