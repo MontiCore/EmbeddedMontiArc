@@ -1,10 +1,10 @@
 package calculator
 
-component DefinedType Net2 {
+component Net2 {
     ports in Z(0:255)^{1, 28, 28} input,
          out Q(0:1)^{10} softmaxOutput;
 
-    implementation DefinedType CNN {
+    implementation CNN {
         input ->
         FullyConnected(units=10) ->
         Softmax() ->

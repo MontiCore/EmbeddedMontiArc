@@ -2,7 +2,7 @@
 package calculator;
 
 
-component /*AnyType*/ Network{
+component Network{
     ports in Z(0:255)^{1, 28, 28} data,
          out Q(0:1)^{10} softmax;
 
