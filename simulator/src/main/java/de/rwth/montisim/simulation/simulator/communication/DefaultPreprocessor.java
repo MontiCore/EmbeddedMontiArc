@@ -33,4 +33,14 @@ public class DefaultPreprocessor implements Preprocessor {
         return result;
     }
 
+    @Override
+    public int getStateLength(int inputStateLength, int inputStatePacketLength) {
+        return inputStateLength;
+    }
+
+    @Override
+    public int getStatePacketLength(int inputStateLength, int inputStatePacketLength) {
+        return inputStatePacketLength;
+    }
+
 }

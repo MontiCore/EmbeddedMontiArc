@@ -62,6 +62,6 @@ public class TypedSimulation {
         Json.registerType(PlatooningStrategyProperties.class);
         Json.registerType(BasicDrivingStrategyProperties.class);
         Json.registerType(DefaultPreprocessorProperties.class);
-        Json.registerType(ProximityFilterProperties.class);
+        Json.registerType(SequencePreprocessorProperties.class);
     }
 }

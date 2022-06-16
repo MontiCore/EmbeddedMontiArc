@@ -10,6 +10,7 @@ import org.junit.Assert;
 public class ProximityFilterTest extends TestCase {
 
     public void testPreprocessState() {
+        ProximityFilter filter = new ProximityFilter(0, false);
         // Create state
         float[] state = new float[25];
         for (int i = 0; i < 21; i++) state[i] = 0;
@@ -32,7 +33,6 @@ public class ProximityFilterTest extends TestCase {
         otherStates[2][1] = 2;
 
         // Test filtering out all other vehicles:
-        ProximityFilter filter = new ProximityFilter(0, false);
         float[] result = filter.preprocessState(state, otherStates, 4);
         Assert.assertArrayEquals(state, result, 0.001f);
         result = filter.preprocessState(state, new float[0][], 4);
