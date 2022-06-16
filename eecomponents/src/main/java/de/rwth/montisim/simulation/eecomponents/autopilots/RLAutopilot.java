@@ -7,21 +7,14 @@ import java.util.*;
 
 import de.rwth.montisim.commons.dynamicinterface.BasicType;
 import de.rwth.montisim.commons.dynamicinterface.PortInformation;
-import de.rwth.montisim.simulation.commons.physicalvalue.PhysicalValueDouble;
 import de.rwth.montisim.simulation.commons.Inspectable;
-import de.rwth.montisim.commons.utils.Geometry;
-import de.rwth.montisim.commons.utils.IPM;
-import de.rwth.montisim.commons.utils.Time;
 import de.rwth.montisim.commons.utils.Vec2;
 import de.rwth.montisim.simulation.eesimulator.actuator.Actuator;
 import de.rwth.montisim.simulation.eesimulator.EEComponent;
 import de.rwth.montisim.simulation.eesimulator.EESystem;
 import de.rwth.montisim.simulation.eesimulator.events.MessageReceiveEvent;
 import de.rwth.montisim.simulation.eesimulator.message.Message;
-import de.rwth.montisim.simulation.eecomponents.lidar.Lidar;
 import de.rwth.montisim.simulation.vehicle.navigation.Navigation;
-import de.rwth.montisim.simulation.eecomponents.speed_limit.SpeedLimitService;
-import de.rwth.montisim.simulation.vehicle.physicalvalues.BatteryLevel;
 import de.rwth.montisim.simulation.vehicle.physicalvalues.TrueCompass;
 import de.rwth.montisim.simulation.vehicle.physicalvalues.TruePosition;
 import de.rwth.montisim.simulation.vehicle.physicalvalues.TrueVelocity;
@@ -67,7 +60,7 @@ public class RLAutopilot extends EEComponent implements Inspectable {
     public float[] action = null;
 
     //array with all state values that get sent
-    public float[] statePacket = new float[4];
+    public float[] statePacket = new float[25];
 
     public RLAutopilot(RLAutopilotProperties properties, EESystem eeSystem) {
         super(properties, eeSystem);
@@ -112,10 +105,18 @@ public class RLAutopilot extends EEComponent implements Inspectable {
     }
 
     public void updateStatePacket() {
-        this.statePacket[0] = (float) currentPosition.at(0);
-        this.statePacket[1] = (float) currentPosition.at(1);
-        this.statePacket[2] = (float) currentCompass;
-        this.statePacket[3] = (float) currentVelocity;
+		for (int i = 0; i < this.statePacket.length; i++) {
+			this.statePacket[i] = 0.f;
+		}
+		for (int i = 0; i < this.trajLength; i++) {
+			this.statePacket[i] = (float) this.trajX[i];
+			this.statePacket[10 + i] = (float) this.trajY[i];
+		}
+		this.statePacket[20] = (float) this.trajLength;
+        this.statePacket[21] = (float) currentPosition.at(0);
+        this.statePacket[22] = (float) currentPosition.at(1);
+        this.statePacket[23] = (float) currentCompass;
+        this.statePacket[24] = (float) currentVelocity;
     }
 
     public float[] getStatePacket() {
