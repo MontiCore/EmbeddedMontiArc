@@ -9,7 +9,7 @@ import org.springframework.boot.autoconfigure.domain.EntityScan;
 import org.springframework.boot.test.autoconfigure.orm.jpa.DataJpaTest;
 import org.springframework.data.jpa.repository.config.EnableJpaRepositories;
 import org.springframework.test.context.ContextConfiguration;
-import persistence.entity.DatasetEntity;
+import persistence.entity.*;
 import persistence.mappers.JacksonDatasetMapper;
 import persistence.mappers.JacksonOfferMapper;
 
@@ -21,7 +21,7 @@ import java.util.UUID;
 import static org.assertj.core.api.Assertions.assertThat;
 
 @DataJpaTest
-@ContextConfiguration(classes = {SpringDatasetRepositoryPortAdapter.class, SpringOfferPersistencePortAdapter.class, JacksonDatasetMapper.class, JacksonOfferMapper.class, SpringDatasetRepository.class, SpringOfferRepository.class, SpringOfferRepository.class, ObjectMapper.class})
+@ContextConfiguration(classes = {SpringDatasetRepositoryPortAdapter.class, SpringOfferPersistencePortAdapter.class, JacksonDatasetMapper.class, JacksonOfferMapper.class, SpringDatasetRepository.class, SpringOfferRepository.class, ObjectMapper.class})
 @EnableJpaRepositories(basePackages = {"persistence.repository"})
 @EntityScan("persistence.entity")
 class SpringDatasetRepositoryPortAdapterTest {
@@ -30,14 +30,17 @@ class SpringDatasetRepositoryPortAdapterTest {
 	private SpringDatasetRepositoryPortAdapter underTest;
 
 	@Autowired
-	private SpringOfferPersistencePortAdapter offerRepository;
+	private SpringOfferPersistencePortAdapter springOfferPersistencePortAdapter;
+
+	@Autowired
+	private SpringOfferRepository springOfferRepository;
 
 	@Autowired
 	private SpringDatasetRepository springDatasetRepository;
 
 	@AfterEach
 	private void cleanUpEach() {
-		springDatasetRepository.deleteAll();
+		springOfferRepository.deleteAll();
 	}
 
 	@Test
@@ -46,43 +49,45 @@ class SpringDatasetRepositoryPortAdapterTest {
 		Policy policy = new Policy();
 		policy.setMaxUsages(3);
 
-		Metadata metadata = new Metadata();
-		metadata.setTitle("Aachen Dataset");
-		metadata.setProvider("Carrier GmbH");
-		metadata.setDescription("A simple test data set...");
-		metadata.setPrice(10);
-		metadata.setLoggingUrl("/logging");
-		metadata.setPolicy(policy);
+		Metadata metadata = new Metadata(
+				1,
+				"Aachen Dataset",
+				"Carrier GmbH",
+				"A simple test data set...",
+				10,
+				"/logging",
+				policy);
 
-		DataRow datarow = new DataRow();
-		datarow.setDayID("1234");
-		datarow.setLongitude(51);
-		datarow.setLatitude(10);
-		datarow.setGpsTime(null);
-		datarow.setHeading(42);
-		datarow.setSpeed(50);
-		datarow.setOdometer(22000);
-		datarow.setTotalFuelUsed(50);
-		datarow.setTimestamp(null);
+		DataRow datarow = new DataRow(
+				1,
+				"213421",
+				51,
+				10,
+				null,
+				42,
+				50,
+				20000,
+				50,
+				null
+		);
 
 		UUID offerId = UUID.randomUUID();
 		Offer offer = new Offer(offerId, metadata, List.of(datarow));
-		offerRepository.save(offer);
-		Offer savedOffer = offerRepository.findBy(offerId);
+		springOfferPersistencePortAdapter.save(offer);
+		Offer savedOffer = springOfferPersistencePortAdapter.findBy(offerId);
 
 		// when
 		UUID datasetId = UUID.randomUUID();
 		Dataset dataset = new Dataset();
 		dataset.setId(datasetId);
-		dataset.setOffer(savedOffer);
 		dataset.setMetadata(savedOffer.getMetadata());
+		dataset.setOffer(savedOffer);
 		dataset.setData(savedOffer.getData());
-		dataset.setBoughtAt(LocalDateTime.now());
 
 		underTest.save(dataset);
 
-		// then
 		Optional<DatasetEntity> datasetEntity = springDatasetRepository.findById(datasetId);
 		assertThat(datasetEntity.isPresent()).isTrue();
+		assertThat(datasetEntity.get().getData().size()).isEqualTo(1);
 	}
 }

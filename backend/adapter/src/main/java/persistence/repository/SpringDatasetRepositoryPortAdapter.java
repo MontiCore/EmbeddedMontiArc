@@ -2,7 +2,6 @@ package persistence.repository;
 
 import entity.Dataset;
 import lombok.AllArgsConstructor;
-import org.springframework.jdbc.core.JdbcTemplate;
 import persistence.entity.DatasetEntity;
 import persistence.mappers.Mapper;
 import ports.DatasetPersistencePort;
@@ -17,23 +16,10 @@ public class SpringDatasetRepositoryPortAdapter implements DatasetPersistencePor
 
 	private final Mapper<Dataset, DatasetEntity> mapper;
 	private final SpringDatasetRepository repository;
-	private final JdbcTemplate jdbcTemplate ;
 
 	@Override
 	public void save(Dataset dataset) {
-		jdbcTemplate.update(
-				"INSERT INTO dataset (id, offer_id, metadata_id, bought_at) VALUES (?, ?, ?, ?)",
-				dataset.getId(),
-				dataset.getOffer().getId(),
-				dataset.getMetadata().getId(),
-				dataset.getBoughtAt()
-		);
-
-		jdbcTemplate.update(
-				"UPDATE data_row SET dataset = ? WHERE offer = ?",
-				dataset.getId(),
-				dataset.getOffer().getId()
-		);
+		repository.saveCorrect(dataset.getId(), dataset.getBoughtAt(), dataset.getMetadata().getId(), dataset.getOffer().getId());
 	}
 
 	@Override
