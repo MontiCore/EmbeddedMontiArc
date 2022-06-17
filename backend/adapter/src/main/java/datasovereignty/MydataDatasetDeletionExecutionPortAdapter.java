@@ -1,11 +1,12 @@
 package datasovereignty;
 
+import commands.DeleteDatasetCommand;
 import de.fraunhofer.iese.mydata.pxp.PxpService;
 import de.fraunhofer.iese.mydata.registry.ActionDescription;
 import de.fraunhofer.iese.mydata.registry.ActionParameterDescription;
 import lombok.AllArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
-import ports.DatasetPersistencePort;
+import usecases.DeleteDatasetUseCase;
 
 import java.util.UUID;
 
@@ -14,12 +15,11 @@ import java.util.UUID;
 @Slf4j
 public class MydataDatasetDeletionExecutionPortAdapter {
 
-	private final DatasetPersistencePort datasetPersistencePort;
+	private final DeleteDatasetUseCase deleteDatasetUseCase;
 
 	@ActionDescription(methodName = "delete-dataset")
 	public boolean deleteDataset(@ActionParameterDescription(name = "id", mandatory = true) final String datasetId) {
-		datasetPersistencePort.deleteById(UUID.fromString(datasetId));
-		log.info("Successfully deleted dataset {}", datasetId);
+		deleteDatasetUseCase.handle(new DeleteDatasetCommand(UUID.fromString(datasetId)));
 
 		return true;
 	}
