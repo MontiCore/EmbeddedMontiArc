@@ -515,10 +515,10 @@ public class RLSimulationHandler {
             activeVehicleState[i] = vehicleStates[currentVehicleIndex][i];
         }
         float[][] otherVehicleStates = new float[vehicleCount - 1][statePacketLength];
-        for (int i = 0; i < vehicleCount - 1; i++) {
-            float[] statePacket = autopilots[(currentVehicleIndex + i + 1) % vehicleCount].getStatePacket();
-            for (int j = 0; j < statePacket.length; i++) {
-                otherVehicleStates[i][j] = statePacket[j];
+        for (int i = 1; i < vehicleCount; i++) {
+            float[] statePacket = autopilots[(currentVehicleIndex + i) % vehicleCount].getStatePacket();
+            for (int j = 0; j < statePacketLength; j++) {
+                otherVehicleStates[i - 1][j] = statePacket[j];
             }
         }
         // Preprocess the states and return the result
