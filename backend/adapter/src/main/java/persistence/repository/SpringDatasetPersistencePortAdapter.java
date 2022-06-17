@@ -12,14 +12,14 @@ import java.util.Optional;
 import java.util.UUID;
 
 @AllArgsConstructor
-public class SpringDatasetRepositoryPortAdapter implements DatasetPersistencePort {
+public class SpringDatasetPersistencePortAdapter implements DatasetPersistencePort {
 
 	private final Mapper<Dataset, DatasetEntity> mapper;
 	private final SpringDatasetRepository repository;
 
 	@Override
 	public void save(Dataset dataset) {
-		repository.saveCorrect(dataset.getId(), dataset.getBoughtAt(), dataset.getMetadata().getId(), dataset.getOffer().getId());
+		repository.save(dataset.getId(), dataset.getBoughtAt(), dataset.getMetadata().getId(), dataset.getOffer().getId());
 	}
 
 	@Override

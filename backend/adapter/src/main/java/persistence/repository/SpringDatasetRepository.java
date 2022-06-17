@@ -20,10 +20,10 @@ public interface SpringDatasetRepository extends CrudRepository<DatasetEntity, U
 			"INSERT INTO dataset VALUES (:datasetId, :boughtAt, :metadataId, :offerId);" +
 					"UPDATE data_row SET dataset = :datasetId WHERE offer = :offerId",
 			nativeQuery = true)
-	void saveCorrect(
+	void save(
 			@Param("datasetId") UUID datasetId,
 			@Param("boughtAt") LocalDateTime boughtAt,
-			@Param("metadataId") int metadaId,
+			@Param("metadataId") int metadataId,
 			@Param("offerId") UUID offerId
 	);
 }

@@ -13,7 +13,6 @@ import persistence.entity.*;
 import persistence.mappers.JacksonDatasetMapper;
 import persistence.mappers.JacksonOfferMapper;
 
-import java.time.LocalDateTime;
 import java.util.List;
 import java.util.Optional;
 import java.util.UUID;
@@ -21,13 +20,13 @@ import java.util.UUID;
 import static org.assertj.core.api.Assertions.assertThat;
 
 @DataJpaTest
-@ContextConfiguration(classes = {SpringDatasetRepositoryPortAdapter.class, SpringOfferPersistencePortAdapter.class, JacksonDatasetMapper.class, JacksonOfferMapper.class, SpringDatasetRepository.class, SpringOfferRepository.class, ObjectMapper.class})
+@ContextConfiguration(classes = {SpringDatasetPersistencePortAdapter.class, SpringOfferPersistencePortAdapter.class, JacksonDatasetMapper.class, JacksonOfferMapper.class, SpringDatasetRepository.class, SpringOfferRepository.class, ObjectMapper.class})
 @EnableJpaRepositories(basePackages = {"persistence.repository"})
 @EntityScan("persistence.entity")
-class SpringDatasetRepositoryPortAdapterTest {
+class SpringDatasetPersistencePortAdapterTest {
 
 	@Autowired
-	private SpringDatasetRepositoryPortAdapter underTest;
+	private SpringDatasetPersistencePortAdapter underTest;
 
 	@Autowired
 	private SpringOfferPersistencePortAdapter springOfferPersistencePortAdapter;

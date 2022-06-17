@@ -9,14 +9,14 @@ import org.springframework.jdbc.core.JdbcTemplate;
 import org.springframework.web.reactive.function.client.WebClient;
 import persistence.mappers.JacksonDatasetMapper;
 import persistence.mappers.JacksonOfferMapper;
+import persistence.repository.SpringDatasetPersistencePortAdapter;
 import persistence.repository.SpringDatasetRepository;
-import persistence.repository.SpringDatasetRepositoryPortAdapter;
-import persistence.repository.SpringOfferRepository;
 import persistence.repository.SpringOfferPersistencePortAdapter;
+import persistence.repository.SpringOfferRepository;
 import ports.DatasetPersistencePort;
-import ports.OfferPersistencePort;
 import ports.DsEnforcementPort;
 import ports.DsManagementPort;
+import ports.OfferPersistencePort;
 import usecases.*;
 
 import javax.sql.DataSource;
@@ -58,14 +58,15 @@ public class CompositionConfig {
 	}
 
 	@Bean
-	public DatasetPersistencePort datasetPersistencePort(JacksonDatasetMapper mapper, SpringDatasetRepository repository, JdbcTemplate jdbcTemplate) {
-		return new SpringDatasetRepositoryPortAdapter(mapper, repository, jdbcTemplate);
+	public DatasetPersistencePort datasetPersistencePort(JacksonDatasetMapper mapper, SpringDatasetRepository repository) {
+		return new SpringDatasetPersistencePortAdapter(mapper, repository);
 	}
 
 	@Bean
 	public WebClient getWebClient(@Value("${DATA_PROVIDER_URL}") String url) {
 		return WebClient.create(url);
 	}
+
 	@Bean
 	public JdbcTemplate jdbcTemplate(DataSource dataSource) {
 		return new JdbcTemplate(dataSource);
