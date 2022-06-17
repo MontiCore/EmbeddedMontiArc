@@ -28,7 +28,7 @@ public class SpringOfferPersistencePortAdapter implements OfferPersistencePort {
 	}
 
 	@Override
-	public Offer findBy(UUID id) {
+	public Offer findById(UUID id) {
 		Optional<OfferEntity> optional = repository.findById(id);
 
 		if (optional.isEmpty()) {

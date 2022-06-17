@@ -112,7 +112,7 @@ class SpringOfferRepositoryPortAdapterTest {
 		springOfferRepository.save(offerEntity);
 
 		// when
-		Offer offer = underTest.findBy(uuid);
+		Offer offer = underTest.findById(uuid);
 
 		// then
 		assertThat(offer.getData().get(0).getDayID()).isEqualTo("1234");

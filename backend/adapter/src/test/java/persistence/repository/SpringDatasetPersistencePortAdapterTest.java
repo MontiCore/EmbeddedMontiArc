@@ -73,7 +73,7 @@ class SpringDatasetPersistencePortAdapterTest {
 		UUID offerId = UUID.randomUUID();
 		Offer offer = new Offer(offerId, metadata, List.of(datarow));
 		springOfferPersistencePortAdapter.save(offer);
-		Offer savedOffer = springOfferPersistencePortAdapter.findBy(offerId);
+		Offer savedOffer = springOfferPersistencePortAdapter.findById(offerId);
 
 		// when
 		UUID datasetId = UUID.randomUUID();

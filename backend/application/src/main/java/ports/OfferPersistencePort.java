@@ -7,7 +7,7 @@ import java.util.UUID;
 public interface OfferPersistencePort {
 	void save(Offer offer);
 
-	Offer findBy(UUID id);
+	Offer findById(UUID id);
 
 	Iterable<Offer> findAll();
 

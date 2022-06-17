@@ -22,7 +22,7 @@ public class BuyOfferUseCase implements CommandHandler<BuyOfferCommand> {
 
 	@Override
 	public void handle(BuyOfferCommand command) {
-		Offer offer = offerPersistencePort.findBy(command.getOfferId());
+		Offer offer = offerPersistencePort.findById(command.getOfferId());
 		Dataset dataset = createDatasetFromOffer(offer);
 		dataset.setBoughtAt(LocalDateTime.now());
 		dataset.getMetadata().getPolicy().setTargetId(dataset.getId());
