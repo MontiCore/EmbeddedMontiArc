@@ -1,0 +1,3 @@
+(succ 1 2)
+(succ 1 ?x)
+(succ ?y 2)

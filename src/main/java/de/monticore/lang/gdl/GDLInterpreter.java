@@ -15,6 +15,7 @@ import de.monticore.lang.gdl._symboltable.IGDLGlobalScope;
 import de.monticore.lang.gdl._visitor.GDLTraverser;
 import de.monticore.lang.gdl.chess.ChessGUI;
 import de.monticore.lang.gdl.cli.GDLCLI;
+import de.monticore.lang.gdl.doppelkopf.DoppelkopfGUI;
 import de.se_rwth.commons.logging.Log;
 import de.monticore.lang.gdl._cocos.*;
 
@@ -23,14 +24,17 @@ public class GDLInterpreter {
     public static void main(String[] args) throws Exception {
         if (args.length < 1) {
             System.out.println("Specify exactly one model file.");
+            printHelp();
             return;
         }
 
         List<String> commands = List.of(args).stream().filter(arg -> !arg.equals(args[0])).collect(Collectors.toList());
 
         boolean chessGui = false;
+        boolean doppelkopfGui = false;
         boolean cli = true;
         boolean debugMode = false;
+        boolean manualRandom = false;
         int windowSize = 950;
 
         boolean error = false;
@@ -42,10 +46,14 @@ public class GDLInterpreter {
                     windowSize = Integer.parseInt(commands.get(i + 1));
                     i++;
                 }
+            } else if(command.equals("--doppelkopf-gui") || command.equals("-dg")) {
+                doppelkopfGui = true;
             } else if (command.equals("--no-cli") || command.equals("-nc")) {
                 cli = false;
             } else if (command.equals("--debug-mode") || command.equals("-dm")) {
                 debugMode = true;
+            } else if (command.equals("--manual-random") || command.equals("-mr")) {
+                manualRandom = true;
             } else {
                 System.out.println("Unknown command: " + command);
                 error = true;
@@ -65,8 +73,7 @@ public class GDLInterpreter {
         // final IGDLArtifactScope scope = GDLInterpreter.createSymbolTable(ast);
 
         final Interpreter interpreter = new Interpreter(ast);
-        interpreter.setDebugMode(debugMode);
-        interpreter.init();
+        interpreter.init(new InterpreterOptions().debugMode(debugMode).manualRandom(manualRandom));
 
         if (cli) {
             new Thread(new GDLCLI(interpreter)).start();
@@ -74,14 +81,21 @@ public class GDLInterpreter {
         if (chessGui) {
             new ChessGUI(interpreter, windowSize);
         }
+        if (doppelkopfGui) {
+            new DoppelkopfGUI(interpreter);
+        }
     }
 
     private static void printHelp() {
         String help = 
-            "Usage:\n" +
+            "Usage:  gdl-cli [path-to-gdl-model] {options}\n" +
+            "\n" +
+            "Options:\n"+
             "  -cg, --chess-gui" + "\t" + "Start with a Chess GUI\n" +
+            "  -dg, --doppelkopf-gui" + "\t" + "Start with a Doppelkopf GUI\n" +
             "  -nc, --no-cli" + "\t\t" + "Disable the CLI\n" +
             "  -dm, --debug-mode" + "\t" + "Enable the debug mode\n" +
+            "  -mr, --manual-random" + "\t" + "Enable manual control over the random role\n" +
             "";
         System.out.println(help);
     }

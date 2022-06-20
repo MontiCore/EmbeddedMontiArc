@@ -32,22 +32,32 @@ public class GDLCoCosTest {
   public void testAccept() throws RecognitionException, IOException {
 
     String[] models = {
+        "AcceptAdd",
         "AcceptDistinct",
         "AcceptDistinctWithToken",
         "AcceptDistinctWithValueAndToken",
         "AcceptDistinctWithValue",
+        "AcceptDiv",
         "AcceptDoesWithToken",
         "AcceptDoesWithValue",
+        "AcceptEqual",
         "AcceptFunction",
         "AcceptGoal",
+        "AcceptGreater",
         "AcceptInference",
         "AcceptInit",
         "AcceptLegal",
+        "AcceptLess",
+        "AcceptMod",
+        "AcceptMult",
         "AcceptNext",
         "AcceptNot",
         "AcceptNotWithExpression",
         "AcceptNotWithFunction",
+        "AcceptNumber",
         "AcceptRole",
+        "AcceptSub",
+        "AcceptSucc",
         "AcceptTerminal",
         "AcceptTrue"
     };
@@ -74,9 +84,11 @@ public class GDLCoCosTest {
     String[] models = {
         "FailDistinctWithNoArguments",
         "FailDistinctWithTooFewArguments",
-        "FailDistinctWithTooManyArguments",
+        //Wird unterstützt
+        //"FailDistinctWithTooManyArguments",
         "FailDistinctWithWrongFirstArgumentType",
         "FailDistinctWithWrongSecondArgumentType",
+        "FailDistinctWithMultipleWrongArgumentTypes",
         "FailDoesWithTooFewArguments",
         "FailDoesWithTooManyArguments",
         "FailDoesWithWrongArgumentTypeOfSecondArgument",
