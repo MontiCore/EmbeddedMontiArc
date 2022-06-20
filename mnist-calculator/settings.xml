@@ -31,8 +31,8 @@
             <configuration>
                 <httpHeaders>
                     <property>
-                        <name>Deploy-Token</name>
-                        <value>${env.MA_TOKEN}</value>
+                        <name>Job-Token</name>
+                        <value>${env.CI_JOB_TOKEN}</value>
                     </property>
                 </httpHeaders>
             </configuration>
