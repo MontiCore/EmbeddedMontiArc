@@ -32,7 +32,7 @@
                 <httpHeaders>
                     <property>
                         <name>Deploy-Token</name>
-                        <value>KJkmCZosey-A8XBES2Fy</value>
+                        <value>${env.MA_TOKEN}</value>
                     </property>
                 </httpHeaders>
             </configuration>
