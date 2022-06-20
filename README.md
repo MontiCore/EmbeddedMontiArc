@@ -2,36 +2,35 @@
 
 SLE project Game Description Language
 
-Execute Interpreter with CLI:
+## GDL Models
+
+- [TicTacToe](src/main/resources/example/TicTacToe.gdl)
+- [Chess](src/main/resources/example/Chess.gdl)
+- [Doppelkopf](src/main/resources/example/Doppelkopf.gdl)
+
+## Usage
+
+Launch GDL Interpreter with CLI (Windows PowerShell / Bash):
 ```bash
-java --class-path "target/libs/GDL-7.1.0-SNAPSHOT.jar;target/libs/GDL-cli.jar" de.monticore.lang.gdl.GDLInterpreter "src/main/resources/example/Chess.gdl"
+./gdl-cli "src/main/resources/example/Chess.gdl"
 ```
 
-Execute Interpreter with Chess-GUI and CLI:
-```bash
-java --class-path "target/libs/GDL-7.1.0-SNAPSHOT.jar;target/libs/GDL-cli.jar" de.monticore.lang.gdl.GDLInterpreter "src/main/resources/example/Chess.gdl" -cg
+Command line Options:
+
+```
+-cg, --chess-gui      Start with a Chess GUI
+-dg, --doppelkopf-gui Start with a Doppelkopf GUI
+-nc, --no-cli         Disable the CLI
+-dm, --debug-mode     Enable the debug mode
+-mr, --manual-random  Enable manual control over the random role
 ```
 
-Execute Interpreter with Chess-GUI and without CLI:
-```bash
-java --class-path "target/libs/GDL-7.1.0-SNAPSHOT.jar;target/libs/GDL-cli.jar" de.monticore.lang.gdl.GDLInterpreter "src/main/resources/example/Chess.gdl" -cg -nc
-```
-
-Load in jshell:
-```bash
-jshell --class-path "target/libs/GDL-7.1.0-SNAPSHOT.jar;target/libs/GDL-cli.jar"
-```
-
-Execute Interpreter on Ubuntu:
-```bash
-java -classpath "target/libs/GDL-7.1.0-SNAPSHOT.jar:target/libs/GDL-cli.jar" de.monticore.lang.gdl.GDLInterpreter "src/main/resources/example/TicTacToe.gdl"
-```
+---
 
 Install .jar in local maven repository:
-
 ```bash
 mvn install:install-file \
-   -Dfile=target/libs/GDL-7.1.0-SNAPSHOT.jar \
+   -Dfile=target/libs/GDL-7.2.0-SNAPSHOT.jar \
    -DgroupId=de.monticore.lang.gdl \
    -DartifactId=lang.gdl \
    -Dversion=1.0 \

@@ -1,1 +1,3 @@
 (distinct ?player1 ?player2)
+(distinct ?player1 ?player2 ?player3)
+(distinct ?player1 ?player2 ?player3 ?player4 ?player5 ?player6 ?player7)

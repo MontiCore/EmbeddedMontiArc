@@ -1,0 +1,2 @@
+@echo off
+java --class-path "target/libs/GDL-7.1.0-SNAPSHOT.jar;target/libs/GDL-cli.jar" de.monticore.lang.gdl.GDLInterpreter %*

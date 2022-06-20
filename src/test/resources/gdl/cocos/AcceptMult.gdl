@@ -1,0 +1,4 @@
+(mult 1 2 3)
+(mult 1 2 ?x)
+(mult 1 ?y 3)
+(mult ?z 2 3)
