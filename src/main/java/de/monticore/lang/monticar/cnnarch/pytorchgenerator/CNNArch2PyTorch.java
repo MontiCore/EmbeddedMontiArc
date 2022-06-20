@@ -33,13 +33,16 @@ public class CNNArch2PyTorch extends CNNArchGenerator {
         List<FileContent> fileContents = new ArrayList<>();
         FileContent temp;
 
-        temp = controller.process("CNNCreator", Target.PYTHON);
+        //temp = controller.process("CNNCreator", Target.PYTHON);
+        //fileContents.add(temp);
+
+        temp = controller.process("CNNNet", Target.PYTHON);
         fileContents.add(temp);
 
-       /* if (architecture.getDataPath() != null) {
-            temp = controller.process("CNNDataLoader", Target.PYTHON);
-            fileContents.add(temp);
-        }*/
+        //if (architecture.getDataPath() != null) {
+        //  temp = controller.process("CNNDataLoader", Target.PYTHON);
+        //fileContents.add(temp);
+        //}
 
         return fileContents;
     }

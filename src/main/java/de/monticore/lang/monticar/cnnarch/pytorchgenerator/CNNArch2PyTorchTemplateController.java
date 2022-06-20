@@ -7,17 +7,14 @@ import de.monticore.lang.monticar.cnnarch.generator.TemplateConfiguration;
 import de.monticore.lang.monticar.cnnarch.predefined.AllPredefinedLayers;
 
 import java.io.Writer;
-import java.util.ArrayList;
-import java.util.HashMap;
-import java.util.List;
-import java.util.Map;
+import java.util.*;
 
 public class CNNArch2PyTorchTemplateController extends CNNArchTemplateController {
     public static final String NET_DEFINITION_MODE_KEY = "mode";
     public List<String> worked_list = new ArrayList<String>();
 
     public CNNArch2PyTorchTemplateController(ArchitectureSymbol architecture,
-                                                TemplateConfiguration templateConfiguration) {
+                                             TemplateConfiguration templateConfiguration) {
         super(architecture, templateConfiguration);
     }
 
@@ -115,5 +112,141 @@ public class CNNArch2PyTorchTemplateController extends CNNArchTemplateController
         include(architectureElement, getWriter(), netDefinitionMode);
     }
 
-}
+    public Set<String> getStreamInputNames(SerialCompositeElementSymbol stream, boolean outputAsArray) {
+        return getStreamInputs(stream, outputAsArray).keySet();
+    }
 
+    public Map<String, List<String>> getStreamInputs(SerialCompositeElementSymbol stream, boolean outputAsArray) {
+        Map<String, List<String>> inputs = new LinkedHashMap<>();
+
+        for (ArchitectureElementSymbol element : stream.getFirstAtomicElements()) {
+            if (element.isInput() || element.isOutput()) {
+                List<Integer> intDimensions = element.getOutputTypes().get(0).getDimensions();
+
+                List<String> dimensions = new ArrayList<>();
+                for (Integer intDimension : intDimensions) {
+                    dimensions.add(intDimension.toString());
+                }
+
+                String name = getName(element);
+
+                if (outputAsArray && element.isOutput() && element instanceof VariableSymbol) {
+                    VariableSymbol variable = (VariableSymbol) element;
+
+                    if (variable.getType() == VariableSymbol.Type.IO) {
+                        name = getNameAsArray(name);
+                    }
+                }
+
+                inputs.put(name, dimensions);
+            }
+            else if (element instanceof ConstantSymbol) {
+                inputs.put(getName(element), Arrays.asList("1"));
+            }
+        }
+
+        inputs.putAll(getStreamLayerVariableMembers(stream, false));
+        return inputs;
+    }
+
+    public String getNameAsArray(String name) {
+        return name.replaceAll("([0-9]+)_$", "[$1]");
+    }
+
+    private Map<String, List<String>> getStreamLayerVariableMembers(SerialCompositeElementSymbol stream, boolean includeOutput) {
+        Map<String, List<String>> members = new LinkedHashMap<>();
+
+        List<ArchitectureElementSymbol> elements = stream.getSpannedScope().resolveLocally(ArchitectureElementSymbol.KIND);
+        for (ArchitectureElementSymbol element : elements) {
+            if (element instanceof VariableSymbol) {
+                VariableSymbol variable = (VariableSymbol) element;
+
+                if (variable.getType() == VariableSymbol.Type.LAYER && (variable.getMember() == VariableSymbol.Member.NONE)) {
+                    LayerVariableDeclarationSymbol layerVariableDeclaration = variable.getLayerVariableDeclaration();
+
+                    if (layerVariableDeclaration.getLayer().getDeclaration().isPredefined()) {
+                        PredefinedLayerDeclaration predefinedLayerDeclaration =
+                                (PredefinedLayerDeclaration) layerVariableDeclaration.getLayer().getDeclaration();
+
+                        int arrayLength = predefinedLayerDeclaration.getArrayLength(VariableSymbol.Member.STATE);
+
+                        for (int i = 0; i < arrayLength; ++i) {
+                            String name = variable.getName() + "_state_";
+
+                            if (arrayLength > 1) {
+                                name += i + "_";
+                            }
+
+                            List<Integer> intDimensions = predefinedLayerDeclaration.computeOutputTypes(
+                                    layerVariableDeclaration.getLayer().getInputTypes(),
+                                    layerVariableDeclaration.getLayer(),
+                                    VariableSymbol.Member.STATE
+                            ).get(0).getDimensions();
+
+                            List<String> dimensions = new ArrayList<>();
+
+                            for (Integer intDimension : intDimensions) {
+                                dimensions.add(intDimension.toString());
+                            }
+
+                            members.put(name, dimensions);
+                        }
+
+                        if (includeOutput) {
+                            arrayLength = predefinedLayerDeclaration.getArrayLength(VariableSymbol.Member.OUTPUT);
+
+                            for (int i = 0; i < arrayLength; ++i) {
+                                String name = variable.getName() + "_output_";
+
+                                if (arrayLength > 1) {
+                                    name += i + "_";
+                                }
+
+                                List<Integer> intDimensions = predefinedLayerDeclaration.computeOutputTypes(
+                                        layerVariableDeclaration.getLayer().getInputTypes(),
+                                        layerVariableDeclaration.getLayer(),
+                                        VariableSymbol.Member.OUTPUT
+                                ).get(0).getDimensions();
+
+                                List<String> dimensions = new ArrayList<>();
+
+                                for (Integer intDimension : intDimensions) {
+                                    dimensions.add(intDimension.toString());
+                                }
+
+                                members.put(name, dimensions);
+                            }
+                        }
+                    }
+                }
+            }
+        }
+        return members;
+    }
+
+    public Set<String> getStreamOutputNames(SerialCompositeElementSymbol stream, boolean asArray) {
+        Set<String> outputNames = new LinkedHashSet<>();
+
+        for (ArchitectureElementSymbol element : stream.getLastAtomicElements()) {
+            if (element.isOutput()) {
+                String name = getName(element);
+
+                if (asArray && element instanceof VariableSymbol) {
+                    VariableSymbol variable = (VariableSymbol) element;
+
+                    if (variable.getType() == VariableSymbol.Type.IO) {
+                        name = getNameAsArray(name);
+                    }
+                }
+
+                outputNames.add(name);
+            }
+        }
+
+        outputNames.addAll(getStreamLayerVariableMembers(stream, true).keySet());
+
+
+        return outputNames;
+    }
+
+}
