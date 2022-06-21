@@ -1,14 +1,16 @@
 package de.thesis.consumer.config;
 
 import entity.Dataset;
+import entity.Offer;
 import lombok.AllArgsConstructor;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
 import org.springframework.jdbc.core.JdbcTemplate;
 import org.springframework.web.reactive.function.client.WebClient;
-import persistence.mappers.JacksonDatasetMapper;
-import persistence.mappers.JacksonOfferMapper;
+import persistence.entity.DatasetEntity;
+import persistence.entity.OfferEntity;
+import persistence.mappers.Mapper;
 import persistence.repository.SpringDatasetPersistencePortAdapter;
 import persistence.repository.SpringDatasetRepository;
 import persistence.repository.SpringOfferPersistencePortAdapter;
@@ -65,12 +67,12 @@ public class CompositionConfig {
 	}
 
 	@Bean
-	public OfferPersistencePort offerPersistencePort(JacksonOfferMapper mapper, SpringOfferRepository repository) {
+	public OfferPersistencePort offerPersistencePort(Mapper<Offer, OfferEntity> mapper, SpringOfferRepository repository) {
 		return new SpringOfferPersistencePortAdapter(mapper, repository);
 	}
 
 	@Bean
-	public DatasetPersistencePort datasetPersistencePort(JacksonDatasetMapper mapper, SpringDatasetRepository repository) {
+	public DatasetPersistencePort datasetPersistencePort(Mapper<Dataset, DatasetEntity> mapper, SpringDatasetRepository repository) {
 		return new SpringDatasetPersistencePortAdapter(mapper, repository);
 	}
 
