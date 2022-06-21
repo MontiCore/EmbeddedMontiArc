@@ -13,10 +13,7 @@ import persistence.repository.SpringDatasetPersistencePortAdapter;
 import persistence.repository.SpringDatasetRepository;
 import persistence.repository.SpringOfferPersistencePortAdapter;
 import persistence.repository.SpringOfferRepository;
-import ports.DatasetPersistencePort;
-import ports.DsEnforcementPort;
-import ports.DsManagementPort;
-import ports.OfferPersistencePort;
+import ports.*;
 import usecases.*;
 
 import javax.sql.DataSource;
@@ -38,8 +35,8 @@ public class CompositionConfig {
 	}
 
 	@Bean
-	public GetOffersMetadataUseCase getAllOffersMetadataUseCase(OfferPersistencePort offerPersistencePort) {
-		return new GetOffersMetadataUseCase(offerPersistencePort);
+	public DeleteDatasetUseCase getDeleteDatasetUseCase(DatasetPersistencePort datasetPersistencePort) {
+		return new DeleteDatasetUseCase(datasetPersistencePort);
 	}
 
 	@Bean
@@ -50,6 +47,21 @@ public class CompositionConfig {
 	@Bean
 	public GetDatasetUseCase getDatasetUseCase(DatasetPersistencePort datasetPersistencePort, DsEnforcementPort<Dataset> dsEnforcementPort) {
 		return new GetDatasetUseCase(datasetPersistencePort, dsEnforcementPort);
+	}
+
+	@Bean
+	public GetOffersMetadataUseCase getAllOffersMetadataUseCase(OfferPersistencePort offerPersistencePort) {
+		return new GetOffersMetadataUseCase(offerPersistencePort);
+	}
+
+	@Bean
+	public RemoteLoggingUseCase getRemoteLoggingUseCase(ProviderCommunicationPort communicationPort) {
+		return new RemoteLoggingUseCase(communicationPort);
+	}
+
+	@Bean
+	public RemoveExpiredDatasetsUseCase getRemoveExpiredDatasetsUseCase(DatasetPersistencePort datasetPersistencePort) {
+		return new RemoveExpiredDatasetsUseCase(datasetPersistencePort);
 	}
 
 	@Bean

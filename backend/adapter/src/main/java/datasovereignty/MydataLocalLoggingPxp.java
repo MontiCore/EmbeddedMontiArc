@@ -9,7 +9,7 @@ import java.time.LocalDateTime;
 
 @PxpService(componentName = "logging-local-pxp")
 @Slf4j
-public class MydataLocalLoggingExecutionPortAdapter {
+public class MydataLocalLoggingPxp {
 
 	@ActionDescription(methodName = "log-local")
 	public boolean log(@ActionParameterDescription(name = "id", mandatory = true) final String datasetId) {

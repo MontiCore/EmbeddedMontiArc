@@ -9,7 +9,7 @@ import org.springframework.boot.autoconfigure.domain.EntityScan;
 import org.springframework.boot.test.autoconfigure.orm.jpa.DataJpaTest;
 import org.springframework.data.jpa.repository.config.EnableJpaRepositories;
 import org.springframework.test.context.ContextConfiguration;
-import persistence.entity.*;
+import persistence.entity.DatasetEntity;
 import persistence.mappers.JacksonDatasetMapper;
 import persistence.mappers.JacksonOfferMapper;
 

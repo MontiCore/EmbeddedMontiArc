@@ -13,7 +13,7 @@ import java.util.UUID;
 @PxpService(componentName = "dataset-deletion-pxp")
 @AllArgsConstructor
 @Slf4j
-public class MydataDatasetDeletionExecutionPortAdapter {
+public class MydataDatasetDeletionPxp {
 
 	private final DeleteDatasetUseCase deleteDatasetUseCase;
 

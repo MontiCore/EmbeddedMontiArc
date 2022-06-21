@@ -4,8 +4,6 @@ import commands.RemoteLoggingCommand;
 import lombok.AllArgsConstructor;
 import ports.ProviderCommunicationPort;
 
-import java.util.UUID;
-
 @AllArgsConstructor
 public class RemoteLoggingUseCase implements CommandHandler<RemoteLoggingCommand> {
 

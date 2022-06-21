@@ -1,6 +1,5 @@
 package datasovereignty;
 
-import entity.Offer;
 import entity.Policy;
 import freemarker.template.Configuration;
 import freemarker.template.Template;

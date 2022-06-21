@@ -11,7 +11,7 @@ import java.util.UUID;
 
 @PxpService(componentName = "remote-local-pxp")
 @AllArgsConstructor
-public class RemoteLoggingExecutionPortAdapter {
+public class MydataRemoteLoggingPxp {
 
 	private final ProviderCommunicationPortAdapter providerCommunicationPortAdapter;
 	private final RemoteLoggingUseCase remoteLoggingUseCase;

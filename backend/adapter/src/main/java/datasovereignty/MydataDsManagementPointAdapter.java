@@ -1,7 +1,6 @@
 package datasovereignty;
 
 import de.fraunhofer.iese.mydata.IMyDataEnvironment;
-import entity.Offer;
 import entity.Policy;
 import lombok.AllArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
@@ -19,13 +18,16 @@ public class MydataDsManagementPointAdapter implements DsManagementPort {
 	@Override
 	public void deployPolicy(Policy policy) {
 		try {
-			System.err.println(policyFactory.getMydataPolicy(policy));
+			String rawMyDataPolicy = policyFactory.getMydataPolicy(policy);
 			myDataEnvironment.getPmp().deployPolicy(
 					myDataEnvironment.getPmp().addPolicy(
 							new de.fraunhofer.iese.mydata.policy.Policy(
-									policyFactory.getMydataPolicy(policy)
+									rawMyDataPolicy
 							)
 					));
+
+			log.info("Policy deployed successfully:");
+			log.info(rawMyDataPolicy);
 		} catch (Exception e) {
 			throw new RuntimeException(String.format("Policy with target %s could not be deployed", policy.getTargetId()));
 		}

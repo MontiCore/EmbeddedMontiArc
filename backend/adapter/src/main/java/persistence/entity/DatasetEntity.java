@@ -1,7 +1,6 @@
 package persistence.entity;
 
 
-import entity.Offer;
 import lombok.Getter;
 import lombok.Setter;
 
