@@ -7,5 +7,5 @@ import 'bootstrap/dist/css/bootstrap.min.css'
 
 const app = createApp(App).use(store).use(router)
 app.config.globalProperties.axios = axios
-axios.defaults.baseURL = 'http://localhost:8080'
+axios.defaults.baseURL = process.env.VUE_APP_BACKEND_URL
 app.mount('#app')
