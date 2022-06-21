@@ -1,7 +1,9 @@
 package presentation.controllers;
 
+import commands.DeleteDatasetCommand;
 import entity.*;
 import org.junit.jupiter.api.Test;
+import org.mockito.ArgumentCaptor;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.test.autoconfigure.web.servlet.WebMvcTest;
 import org.springframework.boot.test.mock.mockito.MockBean;
@@ -9,6 +11,7 @@ import org.springframework.http.MediaType;
 import org.springframework.test.context.ContextConfiguration;
 import org.springframework.test.web.servlet.MockMvc;
 import queries.GetDatasetQuery;
+import usecases.DeleteDatasetUseCase;
 import usecases.GetAllDatasetMetadataUseCase;
 import usecases.GetDatasetUseCase;
 
@@ -17,9 +20,12 @@ import java.util.List;
 import java.util.Map;
 import java.util.UUID;
 
+import static org.assertj.core.api.Assertions.assertThat;
 import static org.hamcrest.collection.IsMapContaining.hasKey;
 import static org.mockito.ArgumentMatchers.any;
 import static org.mockito.BDDMockito.given;
+import static org.mockito.Mockito.verify;
+import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.delete;
 import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.get;
 import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.jsonPath;
 import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.status;
@@ -30,6 +36,9 @@ class DatasetControllerTest {
 
 	@Autowired
 	private MockMvc mvc;
+
+	@MockBean
+	private DeleteDatasetUseCase deleteDatasetUseCase;
 
 	@MockBean
 	private GetDatasetUseCase getDatasetUseCase;
@@ -126,5 +135,17 @@ class DatasetControllerTest {
 				.andExpect(status().isOk())
 				.andExpect(jsonPath("$.id").value("d8e71f74-1c7e-4f69-a9db-786d65f7e17a"))
 				.andExpect(jsonPath("$.metadata.title").value("Aachen Dataset"));
+	}
+
+	@Test
+	void shouldDeleteCorrectDataset() throws Exception {
+		ArgumentCaptor<DeleteDatasetCommand> commandArgumentCaptor = ArgumentCaptor.forClass(DeleteDatasetCommand.class);
+
+		mvc.perform(delete("/datasets/73816ebc-bcf5-41dd-a070-d69e12729e5f")
+						.contentType(MediaType.APPLICATION_JSON))
+				.andExpect(status().isOk());
+
+		verify(deleteDatasetUseCase).handle(commandArgumentCaptor.capture());
+		assertThat(commandArgumentCaptor.getValue().getDatasetId()).isEqualTo(UUID.fromString("73816ebc-bcf5-41dd-a070-d69e12729e5f"));
 	}
 }
