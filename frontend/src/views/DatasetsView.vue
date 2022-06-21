@@ -32,14 +32,6 @@ export default {
       return this.$store.getters.getDatasets
     }
   },
-  methods: {
-    viewDataset (id) {
-      this.$router.push(`/datasets/${id}`)
-    },
-    alert () {
-      this.showAlert = true
-    }
-  },
   mounted () {
     this.$store.dispatch('fetchDatasets')
   }

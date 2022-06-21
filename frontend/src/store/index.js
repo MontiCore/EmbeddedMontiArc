@@ -30,9 +30,11 @@ export default createStore({
     },
     fetchDatasets (context) {
       axios.get('/datasets').then(response => {
-        console.log(response.data)
         context.commit('setDatasets', response.data)
       })
+    },
+    async deleteDataset (context, datasetId) {
+      return axios.delete(`/datasets/${datasetId}`)
     }
   },
   modules: {
