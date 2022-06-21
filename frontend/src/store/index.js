@@ -4,12 +4,16 @@ import axios from 'axios'
 export default createStore({
   state: {
     offers: [],
+    boughtOffers: [],
     datasets: [],
     currentDataset: null
   },
   getters: {
     getOffers (state) {
       return state.offers
+    },
+    getBoughtOffers (state) {
+      return state.boughtOffers
     },
     getDatasets (state) {
       return state.datasets
@@ -22,6 +26,9 @@ export default createStore({
     setOffers (state, offers) {
       state.offers = offers
     },
+    setBoughtOffers (state, offers) {
+      state.boughtOffers = offers
+    },
     setDatasets (state, datasets) {
       state.datasets = datasets
     },
@@ -33,6 +40,11 @@ export default createStore({
     fetchOffers (context) {
       axios.get('/offers').then(response => {
         context.commit('setOffers', response.data)
+      })
+    },
+    fetchBoughtOffers (context) {
+      axios.get('/offers', { params: { bought: true } }).then(response => {
+        context.commit('setBoughtOffers', response.data)
       })
     },
     fetchDatasets (context) {

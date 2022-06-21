@@ -1,5 +1,0 @@
-<timer cron='0/15 * * * * ?' id='urn:timer:rwth-student-solution:expiration-check'
-       xmlns='http://www.mydata-control.de/4.0/mydataLanguageTimer'
->
-    <event action='urn:action:rwth-student-solution:expiration-check'/>
-</timer>
