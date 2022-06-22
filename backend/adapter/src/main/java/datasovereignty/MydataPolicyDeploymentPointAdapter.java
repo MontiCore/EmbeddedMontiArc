@@ -5,12 +5,12 @@ import entity.Policy;
 import lombok.AllArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.stereotype.Component;
-import ports.DsManagementPort;
+import ports.PolicyDeploymentPort;
 
 @Component
 @AllArgsConstructor
 @Slf4j
-public class MydataDsManagementPointAdapter implements DsManagementPort {
+public class MydataPolicyDeploymentPointAdapter implements PolicyDeploymentPort {
 
 	private final MydataPolicyFactory policyFactory;
 	private final IMyDataEnvironment myDataEnvironment;

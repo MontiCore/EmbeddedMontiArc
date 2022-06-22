@@ -2,6 +2,6 @@ package ports;
 
 import entity.Policy;
 
-public interface DsManagementPort {
+public interface PolicyDeploymentPort {
 	void deployPolicy(Policy policy);
 }

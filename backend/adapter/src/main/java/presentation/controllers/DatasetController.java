@@ -1,6 +1,7 @@
 package presentation.controllers;
 
 import commands.DeleteDatasetCommand;
+import dto.DatasetView;
 import entity.Dataset;
 import entity.Metadata;
 import lombok.AllArgsConstructor;
@@ -10,7 +11,7 @@ import queries.GetAllDatasetMedataQuery;
 import queries.GetDatasetQuery;
 import usecases.DeleteDatasetUseCase;
 import usecases.GetAllDatasetMetadataUseCase;
-import usecases.GetDatasetUseCase;
+import usecases.GetDatasetViewUseCase;
 
 import java.util.Map;
 import java.util.UUID;
@@ -23,7 +24,7 @@ import java.util.UUID;
 public class DatasetController {
 
 	private DeleteDatasetUseCase deleteDatasetUseCase;
-	private GetDatasetUseCase getDatasetUseCase;
+	private GetDatasetViewUseCase getDatasetViewUseCase;
 	private GetAllDatasetMetadataUseCase getAllDatasetMetadataUseCase;
 
 	@GetMapping
@@ -32,8 +33,8 @@ public class DatasetController {
 	}
 
 	@GetMapping("/{datasetId}")
-	public Dataset getDataset(@PathVariable UUID datasetId) {
-		return getDatasetUseCase.handle(new GetDatasetQuery(datasetId));
+	public DatasetView getDataset(@PathVariable UUID datasetId) {
+		return getDatasetViewUseCase.handle(new GetDatasetQuery(datasetId));
 	}
 
 	@DeleteMapping("/{datasetId}")

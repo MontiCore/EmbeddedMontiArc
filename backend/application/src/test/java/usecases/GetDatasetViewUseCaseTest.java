@@ -1,5 +1,6 @@
 package usecases;
 
+import dto.DatasetView;
 import entity.*;
 import org.junit.jupiter.api.Test;
 import org.junit.jupiter.api.extension.ExtendWith;
@@ -8,7 +9,7 @@ import org.mockito.InjectMocks;
 import org.mockito.Mock;
 import org.mockito.junit.jupiter.MockitoExtension;
 import ports.DatasetPersistencePort;
-import ports.DsEnforcementPort;
+import ports.PolicyEnforcementPort;
 import queries.GetDatasetQuery;
 
 import java.time.LocalDateTime;
@@ -22,20 +23,19 @@ import static org.mockito.BDDMockito.given;
 import static org.mockito.Mockito.verify;
 
 @ExtendWith(MockitoExtension.class)
-class GetDatasetUseCaseTest {
+class GetDatasetViewUseCaseTest {
 
 	@InjectMocks
-	private GetDatasetUseCase underTest;
+	private GetDatasetViewUseCase underTest;
 
 	@Mock
 	private DatasetPersistencePort datasetPersistencePort;
 
 	@Mock
-	private DsEnforcementPort<Dataset> enforcementPort;
+	private PolicyEnforcementPort<Dataset> enforcementPort;
 
 	@Test
 	void shouldReturnDataset() {
-		// given
 		UUID uuid = UUID.fromString("84c7f4ef-17d3-49de-b757-93b9db2ea9e8");
 
 		Policy policy = new Policy();
@@ -77,18 +77,22 @@ class GetDatasetUseCaseTest {
 		);
 
 		given(datasetPersistencePort.findById(any())).willReturn(dataset);
-		given(enforcementPort.enforce(any())).willReturn(dataset);
+		given(enforcementPort.enforcePolicy(any())).willReturn(dataset);
 
 		// when
 		ArgumentCaptor<Dataset> datasetArgumentCaptor =
 				ArgumentCaptor.forClass(Dataset.class);
 
-		Dataset actualDataset = underTest.handle(new GetDatasetQuery(uuid));
+		DatasetView datasetView = underTest.handle(new GetDatasetQuery(uuid));
 
 		// then
-		verify(enforcementPort).enforce(datasetArgumentCaptor.capture());
+		verify(enforcementPort).enforcePolicy(datasetArgumentCaptor.capture());
 		Dataset capturedDataset = datasetArgumentCaptor.getValue();
-		assertThat(actualDataset.getId()).isEqualTo(uuid);
-		assertThat(actualDataset).isEqualTo(capturedDataset);
+		assertThat(datasetView.getId()).isEqualTo(uuid);
+		assertThat(datasetView.getId()).isEqualTo(capturedDataset.getId());
+		assertThat(datasetView.getNumberOfTrucks()).isEqualTo(1);
+		assertThat(datasetView.getDrivingTrucks()).isEqualTo(1);
+		assertThat(datasetView.getRestingTrucks()).isEqualTo(0);
+		assertThat(datasetView.getAvgFuelConsumption()).isEqualTo(50);
 	}
 }

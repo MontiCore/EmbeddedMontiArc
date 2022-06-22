@@ -9,7 +9,7 @@ import org.mockito.InjectMocks;
 import org.mockito.Mock;
 import org.mockito.junit.jupiter.MockitoExtension;
 import ports.DatasetPersistencePort;
-import ports.DsManagementPort;
+import ports.PolicyDeploymentPort;
 import ports.OfferPersistencePort;
 
 import java.time.LocalDateTime;
@@ -35,7 +35,7 @@ class BuyOfferUseCaseTest {
 	private OfferPersistencePort offerPersistencePort;
 
 	@Mock
-	private DsManagementPort dsManagementPort;
+	private PolicyDeploymentPort policyDeploymentPort;
 
 	@Test
 	void shouldDeployPolicyAndCreateNewDataset() {
@@ -87,7 +87,7 @@ class BuyOfferUseCaseTest {
 		underTest.handle(new BuyOfferCommand(uuid));
 
 		// then
-		verify(dsManagementPort).deployPolicy(policyArgumentCaptor.capture());
+		verify(policyDeploymentPort).deployPolicy(policyArgumentCaptor.capture());
 		Policy capturedPolicy = policyArgumentCaptor.getValue();
 
 		verify(datasetPersistencePort).save(datasetArgumentCaptor.capture());

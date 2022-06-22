@@ -6,7 +6,7 @@ import entity.Offer;
 import lombok.AllArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import ports.DatasetPersistencePort;
-import ports.DsManagementPort;
+import ports.PolicyDeploymentPort;
 import ports.OfferPersistencePort;
 
 import java.time.LocalDateTime;
@@ -18,7 +18,7 @@ public class BuyOfferUseCase implements CommandHandler<BuyOfferCommand> {
 
 	private DatasetPersistencePort datasetPersistencePort;
 	private OfferPersistencePort offerPersistencePort;
-	private DsManagementPort dsManagementPort;
+	private PolicyDeploymentPort policyDeploymentPort;
 
 	@Override
 	public void handle(BuyOfferCommand command) {
@@ -26,7 +26,7 @@ public class BuyOfferUseCase implements CommandHandler<BuyOfferCommand> {
 		Dataset dataset = createDatasetFromOffer(offer);
 		dataset.setBoughtAt(LocalDateTime.now());
 		dataset.getMetadata().getPolicy().setTargetId(dataset.getId());
-		dsManagementPort.deployPolicy(dataset.getMetadata().getPolicy());
+		policyDeploymentPort.deployPolicy(dataset.getMetadata().getPolicy());
 		datasetPersistencePort.save(dataset);
 
 		log.info("Bought offer {}, created dataset {}", command.getOfferId().toString(), dataset.getId().toString());

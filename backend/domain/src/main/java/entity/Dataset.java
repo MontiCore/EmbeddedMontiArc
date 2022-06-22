@@ -17,4 +17,41 @@ public class Dataset {
 	private Metadata metadata;
 	private List<DataRow> data;
 	private LocalDateTime boughtAt;
+
+	public int getNumberOfTrucks() {
+		return data.size();
+	}
+
+	public int getRestingTrucks() {
+		int count = 0;
+
+		for (DataRow datarow : data) {
+			if (datarow.getSpeed() == 0) {
+				count++;
+			}
+		}
+
+		return count;
+	}
+
+	public int getDrivingTrucks() {
+		int count = 0;
+
+		for (DataRow datarow : data) {
+			if (datarow.getSpeed() > 0) {
+				count++;
+			}
+		}
+
+		return count;
+	}
+
+	public long getFuelConsumption() {
+		long totalFuel = 0;
+		for (DataRow datarow : data) {
+			totalFuel += datarow.getTotalFuelUsed();
+		}
+
+		return totalFuel / data.size();
+	}
 }

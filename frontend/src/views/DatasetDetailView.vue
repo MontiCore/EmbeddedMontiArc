@@ -17,36 +17,24 @@
           <Icon icon="bxs:truck" style="font-size: 1.5rem" />
           <p class="m-0 text-nowrap">Trucks</p>
         </div>
-        <div class="col-1 text-end">123</div>
-        <div class="col-5 d-flex align-items-center">
-          <Icon icon="jam:triangle-danger" style="font-size: 1.25rem" />
-          <p class="m-0 text-nowrap">Bad driver score</p>
-        </div>
-        <div class="col-1 text-end">17</div>
-      </div>
-      <div class="row">
+        <div class="col-1 text-end">{{ dataset.numberOfTrucks }}</div>
         <div class="col-5 d-flex align-items-center">
           <Icon icon="bxs:gas-pump" style="font-size: 1.25rem" />
           <p class="m-0 text-nowrap">Avg. fuel consumption</p>
         </div>
-        <div class="col-1 text-end">35</div>
-        <div class="col-5 d-flex align-items-center">
-          <Icon icon="mdi:tools" style="font-size: 1.25rem" />
-          <p class="m-0 text-nowrap">Repair needed</p>
-        </div>
-        <div class="col-1 text-end">4</div>
+        <div class="col-1 text-end">{{ dataset.avgFuelConsumption }}</div>
       </div>
       <div class="row">
         <div class="col-5 d-flex align-items-center">
           <Icon icon="mdi:highway" style="font-size: 1.25rem" />
           <p class="m-0 text-nowrap">Active</p>
         </div>
-        <div class="col-1 text-end">100</div>
+        <div class="col-1 text-end">{{ dataset.drivingTrucks }}</div>
         <div class="col-5 d-flex align-items-center">
           <Icon icon="mdi-light:sleep" style="font-size: 1.25rem" />
           <p class="m-0 text-nowrap">Resting</p>
         </div>
-        <div class="col-1 text-end">117</div>
+        <div class="col-1 text-end">{{ dataset.restingTrucks }}</div>
       </div>
         </div>
         <div class="d-flex flex-column justify-content-center align-items-end">
@@ -107,7 +95,11 @@ export default {
           title: '',
           description: '',
           provider: ''
-        }
+        },
+        numberOfTrucks: 0,
+        restingTrucks: 0,
+        drivingTrucks: 0,
+        avgFuelConsumption: 0
       },
       currentPage: 1,
       alert: false

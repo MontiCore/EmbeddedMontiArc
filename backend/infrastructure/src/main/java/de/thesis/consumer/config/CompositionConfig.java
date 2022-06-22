@@ -16,6 +16,7 @@ import persistence.repository.SpringDatasetRepository;
 import persistence.repository.SpringOfferPersistencePortAdapter;
 import persistence.repository.SpringOfferRepository;
 import ports.*;
+import ports.PolicyEnforcementPort;
 import usecases.*;
 
 import javax.sql.DataSource;
@@ -32,8 +33,8 @@ public class CompositionConfig {
 	@Bean
 	public BuyOfferUseCase buyOfferUseCase(DatasetPersistencePort datasetPersistencePort,
 										   OfferPersistencePort offerPersistencePort,
-										   DsManagementPort dsManagementPort) {
-		return new BuyOfferUseCase(datasetPersistencePort, offerPersistencePort, dsManagementPort);
+										   PolicyDeploymentPort policyDeploymentPort) {
+		return new BuyOfferUseCase(datasetPersistencePort, offerPersistencePort, policyDeploymentPort);
 	}
 
 	@Bean
@@ -47,8 +48,8 @@ public class CompositionConfig {
 	}
 
 	@Bean
-	public GetDatasetUseCase getDatasetUseCase(DatasetPersistencePort datasetPersistencePort, DsEnforcementPort<Dataset> dsEnforcementPort) {
-		return new GetDatasetUseCase(datasetPersistencePort, dsEnforcementPort);
+	public GetDatasetViewUseCase getDatasetUseCase(DatasetPersistencePort datasetPersistencePort, PolicyEnforcementPort<Dataset> policyEnforcementPort) {
+		return new GetDatasetViewUseCase(datasetPersistencePort, policyEnforcementPort);
 	}
 
 	@Bean

@@ -1,6 +1,7 @@
 package presentation.controllers;
 
 import commands.DeleteDatasetCommand;
+import dto.DatasetView;
 import entity.*;
 import org.junit.jupiter.api.Test;
 import org.mockito.ArgumentCaptor;
@@ -13,8 +14,9 @@ import org.springframework.test.web.servlet.MockMvc;
 import queries.GetDatasetQuery;
 import usecases.DeleteDatasetUseCase;
 import usecases.GetAllDatasetMetadataUseCase;
-import usecases.GetDatasetUseCase;
+import usecases.GetDatasetViewUseCase;
 
+import java.time.LocalDateTime;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
@@ -41,7 +43,7 @@ class DatasetControllerTest {
 	private DeleteDatasetUseCase deleteDatasetUseCase;
 
 	@MockBean
-	private GetDatasetUseCase getDatasetUseCase;
+	private GetDatasetViewUseCase getDatasetViewUseCase;
 
 	@MockBean
 	private GetAllDatasetMetadataUseCase getAllDatasetMetadataUseCase;
@@ -117,18 +119,18 @@ class DatasetControllerTest {
 				null
 		);
 
-		Dataset dataset = new Dataset(
+		DatasetView datasetView = new DatasetView(
 				uuid,
-				new Offer(UUID.randomUUID(),
-						metadata,
-						List.of(dataRow)
-				),
 				metadata,
 				List.of(dataRow),
-				null
+				null,
+				1,
+				0,
+				1,
+				50
 		);
 
-		given(getDatasetUseCase.handle(new GetDatasetQuery(uuid))).willReturn(dataset);
+		given(getDatasetViewUseCase.handle(new GetDatasetQuery(uuid))).willReturn(datasetView);
 
 		mvc.perform(get("/datasets/" + uuid)
 						.contentType(MediaType.APPLICATION_JSON))
