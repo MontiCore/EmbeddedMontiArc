@@ -9,14 +9,14 @@ VALUES (5, null, '2023-06-26', false, 10000, false, null, null);
 INSERT INTO public.metadata (id, description, logging_url, price, provider, title, policy_id)
 VALUES (2,
         'This dataset contains 1000 data points from trucks driving through Europe. It can be used to train machine learning models',
-        'logging', 19.99, 'Carrier GmbH', 'DHL European Truckdata', 1);
+        'logging', 19.99, 'Carrier GmbH', 'Benelux Truckdata', 1);
 INSERT INTO public.metadata (id, description, logging_url, price, provider, title, policy_id)
 VALUES (4, 'This dataset contains 500 entries. It can be used for damage forecasting. ', 'logging', 5.5, 'Carrier GmbH',
         'Western Europe Truck Data', 3);
 INSERT INTO public.metadata (id, description, logging_url, price, provider, title, policy_id)
 VALUES (6,
         'This small dataset can be used for testing your machine learning models. It contains a small sample of 100 entries. It is not recommended to use it for training your models.',
-        'logging', 2.99, 'Carrier GmbH', 'Machine Learning Test Data Set', 5);
+        'logging', 2.99, 'Carrier GmbH', 'ML Test Data Set', 5);
 
 
 INSERT INTO public.offer (id, metadata_id)

@@ -1,14 +1,14 @@
 <template>
-  <div class="d-flex flex-column align-items-center gap-3 mt-4">
+  <div class="d-flex flex-column align-items-center gap-3 m-4">
     <div v-if="alert" class="alert alert-danger mt-4" role="alert">
       <strong>Policy violation!</strong> Data access not possible!<br>
       <a href="/datasets" class="alert-link">Return to datasets overview</a>
     </div>
-    <div v-else class="d-flex flex-column m-auto gap-3 mt-4">
+    <div v-else class="d-flex flex-column m-auto gap-3 w-100">
       <div>
-        <h2 class="text-start m-0">{{ dataset.title }}</h2>
-        <h6 class="text-start m-0 text-muted">{{ dataset.provider }}</h6>
-        <p class="text-start m-0">{{ dataset.description }}</p>
+        <h2 class="text-start m-0">{{ dataset.metadata.title }}</h2>
+        <h6 class="text-start m-0 text-muted">{{ dataset.metadata.provider }}</h6>
+        <p class="text-start m-0">{{ dataset.metadata.description }}</p>
       </div>
       <div id="map" style="height: 600px"></div>
 
@@ -97,7 +97,12 @@ export default {
   data () {
     return {
       dataset: {
-        data: []
+        data: [],
+        metadata: {
+          title: '',
+          description: '',
+          provider: ''
+        }
       },
       currentPage: 1,
       alert: false
@@ -130,6 +135,7 @@ export default {
       this.dataset = this.$store.getters.getCurrentDataset
       this.$store.dispatch('setCurrentDataset', null)
     }
+    console.log(this.dataset.metadata.title)
     const CENTER_COORDINATES_GERMANY = [51.1657, 10.4515]
     const map = leaflet.map('map').setView(CENTER_COORDINATES_GERMANY, 6)
     leaflet
