@@ -127,7 +127,7 @@ class DatasetControllerTest {
 				1,
 				0,
 				1,
-				50
+				50,3550.99
 		);
 
 		given(getDatasetViewUseCase.handle(new GetDatasetQuery(uuid))).willReturn(datasetView);

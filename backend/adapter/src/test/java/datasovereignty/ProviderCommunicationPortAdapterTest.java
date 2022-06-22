@@ -25,13 +25,10 @@ class ProviderCommunicationPortAdapterTest {
 
 	@Test
 	void shouldUseCorrectLoggingUrl() {
-
-		// when
 		ArgumentCaptor<String> stringArgumentCaptor =
 				ArgumentCaptor.forClass(String.class);
 		underTest.notifyProvider("/logging", UUID.fromString("d2f22172-60e8-4bdc-84f2-0f00521d625d"));
 
-		// then
 		verify(clientPort).post(stringArgumentCaptor.capture(), any(), any());
 
 		assertThat(stringArgumentCaptor.getValue()).isEqualTo("/logging/d2f22172-60e8-4bdc-84f2-0f00521d625d");

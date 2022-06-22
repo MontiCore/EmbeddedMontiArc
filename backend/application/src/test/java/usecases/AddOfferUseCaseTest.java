@@ -58,13 +58,11 @@ public class AddOfferUseCaseTest {
 				LocalDateTime.now()
 		);
 
-		// when
 		ArgumentCaptor<Offer> offerArgumentCaptor =
 				ArgumentCaptor.forClass(Offer.class);
 
 		underTest.handle(new AddOfferCommand(metadata, List.of(dataRow)));
 
-		// then
 		verify(persistencePort).save(offerArgumentCaptor.capture());
 		Offer capturedOffer = offerArgumentCaptor.getValue();
 		assertThat(capturedOffer.getMetadata().getId()).isEqualTo(1);

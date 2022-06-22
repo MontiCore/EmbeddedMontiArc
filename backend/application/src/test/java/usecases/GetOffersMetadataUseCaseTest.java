@@ -34,7 +34,6 @@ class GetOffersMetadataUseCaseTest {
 
 	@Test
 	void shouldReturnTwoOffersMetadata() {
-		// given
 		UUID firstUUID = UUID.fromString("298384ab-ee2e-48d3-9e26-8895643316cb");
 		UUID secondUUID = UUID.fromString("95d0ee07-e868-48ec-8322-3d7c2cad4c70");
 
@@ -93,10 +92,9 @@ class GetOffersMetadataUseCaseTest {
 								List.of(dataRow)
 						)));
 
-		// when
+
 		Map<UUID, Metadata> actualMetadataMap = underTest.handle(new GetOffersMetadataQuery(false));
 
-		// then
 		verify(offerPersistencePort).findAll();
 		assertThat(actualMetadataMap.containsKey(firstUUID)).isTrue();
 		assertThat(actualMetadataMap.containsKey(secondUUID)).isTrue();
@@ -106,20 +104,16 @@ class GetOffersMetadataUseCaseTest {
 
 	@Test
 	void shouldBeEmptyIfNoOffersAtAll() {
-		// given
 		given(offerPersistencePort.findAll()).willReturn(Collections.emptyList());
 
-		// when
 		Map<UUID, Metadata> actualMetadataMap = underTest.handle(new GetOffersMetadataQuery(false));
 
-		// then
 		verify(offerPersistencePort).findAll();
 		assertThat(actualMetadataMap.size()).isEqualTo(0);
 	}
 
 	@Test
 	void shouldReturnOneBoughtOffersMetadata() {
-		// given
 		UUID uuid = UUID.fromString("298384ab-ee2e-48d3-9e26-8895643316cb");
 
 		Policy policy = new Policy();
@@ -158,10 +152,9 @@ class GetOffersMetadataUseCaseTest {
 						)
 				));
 
-		// when
+
 		Map<UUID, Metadata> actualMetadataMap = underTest.handle(new GetOffersMetadataQuery(true));
 
-		// then
 		verify(offerPersistencePort).findAllBought();
 		assertThat(actualMetadataMap.containsKey(uuid)).isTrue();
 		assertThat(actualMetadataMap.get(uuid).getPolicy().getId()).isEqualTo(1);
@@ -169,13 +162,10 @@ class GetOffersMetadataUseCaseTest {
 
 	@Test
 	void shouldBeEmptyIfNoOffersBought() {
-		// given
 		given(offerPersistencePort.findAllBought()).willReturn(Collections.emptyList());
 
-		// when
 		Map<UUID, Metadata> actualMetadataMap = underTest.handle(new GetOffersMetadataQuery(true));
 
-		// then
 		verify(offerPersistencePort).findAllBought();
 		assertThat(actualMetadataMap.size()).isEqualTo(0);
 	}

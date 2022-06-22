@@ -17,7 +17,7 @@ import utilities.MydataResourceReader;
 import javax.annotation.PostConstruct;
 
 @SpringBootApplication
-@ComponentScan(basePackages = {"presentation", "persistence", "datasovereignty", "webclient", "de.thesis.consumer.config"})
+@ComponentScan(basePackages = {"presentation", "persistence", "datasovereignty", "insurance", "webclient", "de.thesis.consumer.config"})
 @EnableJpaRepositories(basePackages = {"persistence.repository"})
 @EntityScan(basePackages = "persistence.entity")
 @EnablePolicyEnforcementPoint(basePackages = "datasovereignty")

@@ -18,4 +18,5 @@ public class DatasetView {
 	int restingTrucks;
 	int drivingTrucks;
 	long avgFuelConsumption;
+	double insuranceFee;
 }

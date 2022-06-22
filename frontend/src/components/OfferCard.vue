@@ -105,7 +105,6 @@ export default {
     },
     bought () {
       let result = false
-      console.log(this.$store.getters.getBoughtOffers)
       for (const [id] of Object.entries(this.$store.getters.getBoughtOffers)) {
         if (id === this.id) {
           result = true

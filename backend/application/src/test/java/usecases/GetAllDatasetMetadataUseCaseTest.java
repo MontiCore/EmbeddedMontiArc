@@ -30,7 +30,6 @@ class GetAllDatasetMetadataUseCaseTest {
 
 	@Test
 	void shouldReturnTwoDatasetMetadata() {
-		// given
 		UUID firstUUID = UUID.fromString("298384ab-ee2e-48d3-9e26-8895643316cb");
 		UUID secondUUID = UUID.fromString("95d0ee07-e868-48ec-8322-3d7c2cad4c70");
 
@@ -99,10 +98,9 @@ class GetAllDatasetMetadataUseCaseTest {
 								LocalDateTime.now()
 						)));
 
-		// when
+
 		Map<UUID, Metadata> actualMetadataMap = underTest.handle(new GetAllDatasetMedataQuery());
 
-		// then
 		assertThat(actualMetadataMap.containsKey(firstUUID)).isTrue();
 		assertThat(actualMetadataMap.containsKey(secondUUID)).isTrue();
 		assertThat(actualMetadataMap.get(firstUUID).getPolicy().getId()).isEqualTo(1);
@@ -111,13 +109,10 @@ class GetAllDatasetMetadataUseCaseTest {
 
 	@Test
 	void shouldBeEmptyIfNoDatasetBought() {
-		// given
 		given(datasetPersistencePort.findAll()).willReturn(Collections.emptyList());
 
-		// when
 		Map<UUID, Metadata> actualMetadataMap = underTest.handle(new GetAllDatasetMedataQuery());
 
-		// then
 		assertThat(actualMetadataMap.size()).isEqualTo(0);
 	}
  }

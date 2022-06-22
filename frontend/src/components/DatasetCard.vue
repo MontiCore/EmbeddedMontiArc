@@ -104,10 +104,6 @@ export default {
 </script>
 
 <style scoped>
-.card {
-  border-radius: 0.5rem;
-}
-
 /* https://stackoverflow.com/questions/3922739/limit-text-length-to-n-lines-using-css */
 .description {
    overflow: hidden;

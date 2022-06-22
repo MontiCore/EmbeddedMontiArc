@@ -29,7 +29,6 @@ class SpringOfferRepositoryTest {
 
 	@Test
 	void shouldFindOneBoughtOfferOutOfTwo() {
-		// given
 		PolicyEntity policy = new PolicyEntity();
 		policy.setStartTime(LocalTime.of(8, 0));
 
@@ -65,13 +64,11 @@ class SpringOfferRepositoryTest {
 		dataset.setData(List.of(datarow));
 		datasetRepository.save(dataset);
 
-		// when
 		int count = 0;
 		for (OfferEntity ignored : underTest.findAllBoughtOffers()) {
 			count++;
 		}
 
-		// then
 		assertThat(count).isEqualTo(1);
 	}
 }

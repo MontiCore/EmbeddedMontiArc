@@ -2,11 +2,12 @@ package de.thesis.consumer.config;
 
 import entity.Dataset;
 import entity.Offer;
+import insurance.InsuranceFeeCalculatorPortAdapter;
+import insurance.RandomFeeCalculator;
 import lombok.AllArgsConstructor;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
-import org.springframework.jdbc.core.JdbcTemplate;
 import org.springframework.web.reactive.function.client.WebClient;
 import persistence.entity.DatasetEntity;
 import persistence.entity.OfferEntity;
@@ -16,10 +17,7 @@ import persistence.repository.SpringDatasetRepository;
 import persistence.repository.SpringOfferPersistencePortAdapter;
 import persistence.repository.SpringOfferRepository;
 import ports.*;
-import ports.PolicyEnforcementPort;
 import usecases.*;
-
-import javax.sql.DataSource;
 
 @Configuration
 @AllArgsConstructor
@@ -48,8 +46,10 @@ public class CompositionConfig {
 	}
 
 	@Bean
-	public GetDatasetViewUseCase getDatasetUseCase(DatasetPersistencePort datasetPersistencePort, PolicyEnforcementPort<Dataset> policyEnforcementPort) {
-		return new GetDatasetViewUseCase(datasetPersistencePort, policyEnforcementPort);
+	public GetDatasetViewUseCase getDatasetViewUseCase(DatasetPersistencePort datasetPersistencePort,
+													   InsuranceFeeCalculatorPort insuranceFeeCalculatorPort,
+													   PolicyEnforcementPort<Dataset> policyEnforcementPort) {
+		return new GetDatasetViewUseCase(datasetPersistencePort, insuranceFeeCalculatorPort, policyEnforcementPort);
 	}
 
 	@Bean
@@ -78,13 +78,14 @@ public class CompositionConfig {
 	}
 
 	@Bean
+	public InsuranceFeeCalculatorPort getInsuranceFeeCalculatorPort(RandomFeeCalculator calculator) {
+		return new InsuranceFeeCalculatorPortAdapter(calculator);
+	}
+
+	@Bean
 	public WebClient getWebClient(@Value("${DATA_PROVIDER_URL}") String url) {
 		return WebClient.create(url);
 	}
 
-	@Bean
-	public JdbcTemplate jdbcTemplate(DataSource dataSource) {
-		return new JdbcTemplate(dataSource);
-	}
 
 }

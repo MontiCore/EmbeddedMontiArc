@@ -39,7 +39,6 @@ class BuyOfferUseCaseTest {
 
 	@Test
 	void shouldDeployPolicyAndCreateNewDataset() {
-		// given
 		UUID uuid = UUID.fromString("84c7f4ef-17d3-49de-b757-93b9db2ea9e8");
 
 		Policy policy = new Policy();
@@ -77,7 +76,7 @@ class BuyOfferUseCaseTest {
 				)
 		);
 
-		// when
+
 		ArgumentCaptor<Policy> policyArgumentCaptor =
 				ArgumentCaptor.forClass(Policy.class);
 
@@ -86,7 +85,6 @@ class BuyOfferUseCaseTest {
 
 		underTest.handle(new BuyOfferCommand(uuid));
 
-		// then
 		verify(policyDeploymentPort).deployPolicy(policyArgumentCaptor.capture());
 		Policy capturedPolicy = policyArgumentCaptor.getValue();
 

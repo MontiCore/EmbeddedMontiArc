@@ -117,7 +117,6 @@ class OfferControllerTest {
 
 	@Test
 	void shouldReturnMapWithTwoOffers() throws Exception {
-		// given
 		Map<UUID, Metadata> map = new HashMap<>();
 		Policy firstPolicy = new Policy();
 		firstPolicy.setMaxUsages(2);

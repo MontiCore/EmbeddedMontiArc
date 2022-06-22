@@ -9,6 +9,7 @@ import org.mockito.InjectMocks;
 import org.mockito.Mock;
 import org.mockito.junit.jupiter.MockitoExtension;
 import ports.DatasetPersistencePort;
+import ports.InsuranceFeeCalculatorPort;
 import ports.PolicyEnforcementPort;
 import queries.GetDatasetQuery;
 
@@ -32,10 +33,13 @@ class GetDatasetViewUseCaseTest {
 	private DatasetPersistencePort datasetPersistencePort;
 
 	@Mock
+	private InsuranceFeeCalculatorPort feeCalculatorPort;
+
+	@Mock
 	private PolicyEnforcementPort<Dataset> enforcementPort;
 
 	@Test
-	void shouldReturnDataset() {
+	void shouldReturnCorrectDatasetView() {
 		UUID uuid = UUID.fromString("84c7f4ef-17d3-49de-b757-93b9db2ea9e8");
 
 		Policy policy = new Policy();
@@ -78,14 +82,13 @@ class GetDatasetViewUseCaseTest {
 
 		given(datasetPersistencePort.findById(any())).willReturn(dataset);
 		given(enforcementPort.enforcePolicy(any())).willReturn(dataset);
+		given(feeCalculatorPort.calculateFee(any())).willReturn(2000.0);
 
-		// when
 		ArgumentCaptor<Dataset> datasetArgumentCaptor =
 				ArgumentCaptor.forClass(Dataset.class);
 
 		DatasetView datasetView = underTest.handle(new GetDatasetQuery(uuid));
 
-		// then
 		verify(enforcementPort).enforcePolicy(datasetArgumentCaptor.capture());
 		Dataset capturedDataset = datasetArgumentCaptor.getValue();
 		assertThat(datasetView.getId()).isEqualTo(uuid);
@@ -94,5 +97,6 @@ class GetDatasetViewUseCaseTest {
 		assertThat(datasetView.getDrivingTrucks()).isEqualTo(1);
 		assertThat(datasetView.getRestingTrucks()).isEqualTo(0);
 		assertThat(datasetView.getAvgFuelConsumption()).isEqualTo(50);
+		assertThat(datasetView.getInsuranceFee()).isEqualTo(2000.0);
 	}
 }

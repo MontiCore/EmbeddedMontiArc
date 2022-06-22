@@ -38,7 +38,7 @@
       </div>
         </div>
         <div class="d-flex flex-column justify-content-center align-items-end">
-          <p class="m-0" style="font-size: 4rem">1539 € p.a.</p>
+          <p class="m-0" style="font-size: 4rem">{{ roundedFee }} € p.a.</p>
           <p class="m-0">Suggested insurance fee per truck</p>
         </div>
       </div>
@@ -99,7 +99,8 @@ export default {
         numberOfTrucks: 0,
         restingTrucks: 0,
         drivingTrucks: 0,
-        avgFuelConsumption: 0
+        avgFuelConsumption: 0,
+        insuranceFee: 0
       },
       currentPage: 1,
       alert: false
@@ -111,6 +112,9 @@ export default {
     },
     truckData () {
       return this.dataset.data.slice((this.currentPage - 1) * 15, (this.currentPage - 1) * 15 + 15)
+    },
+    roundedFee () {
+      return this.dataset.insuranceFee.toLocaleString('en-US', { maximumFractionDigits: 2, minimumFractionDigits: 2 })
     }
   },
   methods: {
@@ -132,7 +136,6 @@ export default {
       this.dataset = this.$store.getters.getCurrentDataset
       this.$store.dispatch('setCurrentDataset', null)
     }
-    console.log(this.dataset.metadata.title)
     const CENTER_COORDINATES_GERMANY = [51.1657, 10.4515]
     const map = leaflet.map('map').setView(CENTER_COORDINATES_GERMANY, 6)
     leaflet

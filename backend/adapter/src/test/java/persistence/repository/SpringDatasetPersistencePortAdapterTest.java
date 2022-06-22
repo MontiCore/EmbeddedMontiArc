@@ -44,7 +44,6 @@ class SpringDatasetPersistencePortAdapterTest {
 
 	@Test
 	void shouldSaveDataset() {
-		// given
 		Policy policy = new Policy();
 		policy.setMaxUsages(3);
 
@@ -75,7 +74,6 @@ class SpringDatasetPersistencePortAdapterTest {
 		springOfferPersistencePortAdapter.save(offer);
 		Offer savedOffer = springOfferPersistencePortAdapter.findById(offerId);
 
-		// when
 		UUID datasetId = UUID.randomUUID();
 		Dataset dataset = new Dataset();
 		dataset.setId(datasetId);

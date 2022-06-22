@@ -43,7 +43,6 @@ class SpringOfferRepositoryPortAdapterTest {
 
 	@Test
 	void shouldSaveOffer() {
-		// given
 		Policy policy = new Policy();
 		policy.setMaxUsages(3);
 
@@ -72,10 +71,8 @@ class SpringOfferRepositoryPortAdapterTest {
 		UUID uuid = UUID.randomUUID();
 		Offer offer = new Offer(uuid, metadata, List.of(datarow));
 
-		// when
 		underTest.save(offer);
 
-		// then
 		Optional<OfferEntity> offerEntity = springOfferRepository.findById(uuid);
 		assertThat(offerEntity.isPresent()).isTrue();
 		assertThat(offerEntity.get().getData().size()).isEqualTo(1);
@@ -83,7 +80,6 @@ class SpringOfferRepositoryPortAdapterTest {
 
 	@Test
 	void shouldFindCorrectOfferById() {
-		// given
 		PolicyEntity policy = new PolicyEntity();
 		policy.setMaxUsages(1);
 
@@ -111,16 +107,13 @@ class SpringOfferRepositoryPortAdapterTest {
 
 		springOfferRepository.save(offerEntity);
 
-		// when
 		Offer offer = underTest.findById(uuid);
 
-		// then
 		assertThat(offer.getData().get(0).getDayID()).isEqualTo("1234");
 	}
 
 	@Test
 	void shouldFindTwoOffers() {
-		// given
 		PolicyEntity firstPolicy = new PolicyEntity();
 		firstPolicy.setMaxUsages(1);
 
@@ -160,7 +153,6 @@ class SpringOfferRepositoryPortAdapterTest {
 		springOfferRepository.save(firstOfferEntity);
 		springOfferRepository.save(secondOfferEntity);
 
-		// when
 		Iterable<Offer> offers = underTest.findAll();
 
 		//then
@@ -174,7 +166,6 @@ class SpringOfferRepositoryPortAdapterTest {
 
 	@Test
 	void shouldFindOneBoughtOffers() {
-		// given
 		PolicyEntity firstPolicy = new PolicyEntity();
 		firstPolicy.setMaxUsages(1);
 
@@ -219,10 +210,8 @@ class SpringOfferRepositoryPortAdapterTest {
 		springOfferRepository.save(secondOfferEntity);
 		springDatasetRepository.save(dataset);
 
-		// when
 		Iterable<Offer> offers = underTest.findAllBought();
 
-		//then
 		int count = 0;
 		for (Offer ignored : offers) {
 			count++;
