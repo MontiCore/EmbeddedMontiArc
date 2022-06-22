@@ -5,6 +5,7 @@ import dto.DatasetView;
 import entity.*;
 import org.junit.jupiter.api.Test;
 import org.mockito.ArgumentCaptor;
+import org.mockito.Captor;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.test.autoconfigure.web.servlet.WebMvcTest;
 import org.springframework.boot.test.mock.mockito.MockBean;
@@ -48,6 +49,8 @@ class DatasetControllerTest {
 	@MockBean
 	private GetAllDatasetMetadataUseCase getAllDatasetMetadataUseCase;
 
+	@Captor
+	private ArgumentCaptor<DeleteDatasetCommand> commandArgumentCaptor;
 	@Test
 	void shouldReturnTwoDatasetMetadata() throws Exception {
 		Map<UUID, Metadata> map = new HashMap<>();
@@ -141,8 +144,6 @@ class DatasetControllerTest {
 
 	@Test
 	void shouldDeleteCorrectDataset() throws Exception {
-		ArgumentCaptor<DeleteDatasetCommand> commandArgumentCaptor = ArgumentCaptor.forClass(DeleteDatasetCommand.class);
-
 		mvc.perform(delete("/datasets/73816ebc-bcf5-41dd-a070-d69e12729e5f")
 						.contentType(MediaType.APPLICATION_JSON))
 				.andExpect(status().isOk());

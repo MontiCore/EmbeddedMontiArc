@@ -5,9 +5,11 @@ import commands.AddOfferCommand;
 import commands.BuyOfferCommand;
 import entity.DataRow;
 import entity.Metadata;
+import entity.Offer;
 import entity.Policy;
 import org.junit.jupiter.api.Test;
 import org.mockito.ArgumentCaptor;
+import org.mockito.Captor;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.test.autoconfigure.web.servlet.WebMvcTest;
 import org.springframework.boot.test.mock.mockito.MockBean;
@@ -52,6 +54,12 @@ class OfferControllerTest {
 	@MockBean
 	private GetOffersMetadataUseCase getAllOffersUseCase;
 
+	@Captor
+	private ArgumentCaptor<AddOfferCommand> addOfferCommandArgumentCaptor;
+
+	@Captor
+	private ArgumentCaptor<BuyOfferCommand> commandArgumentCaptor;
+
 	@Test
 	void shouldAddOffer() throws Exception {
 		Policy policy = new Policy();
@@ -80,32 +88,21 @@ class OfferControllerTest {
 				null
 		);
 
-		AddOfferCommand command = new AddOfferCommand(
-				metadata,
-				List.of(dataRow)
-		);
-
-		ArgumentCaptor<AddOfferCommand> commandArgumentCaptor =
-				ArgumentCaptor.forClass(AddOfferCommand.class);
-
 		mvc.perform(post("/offers")
 						.contentType(MediaType.APPLICATION_JSON)
-						.content(mapper.writeValueAsString(command))
+						.content(mapper.writeValueAsString(new AddOfferCommand(metadata, List.of(dataRow))))
 				)
 				.andExpect(status().isOk());
 
-		verify(addOfferUseCase).handle(commandArgumentCaptor.capture());
+		verify(addOfferUseCase).handle(addOfferCommandArgumentCaptor.capture());
 
-		assertThat(commandArgumentCaptor.getValue().getMetadata().getTitle()).isEqualTo("Aachen Dataset");
-		assertThat(commandArgumentCaptor.getValue().getMetadata().getPolicy().getMaxUsages()).isEqualTo(5);
+		assertThat(addOfferCommandArgumentCaptor.getValue().getMetadata().getTitle()).isEqualTo("Aachen Dataset");
+		assertThat(addOfferCommandArgumentCaptor.getValue().getMetadata().getPolicy().getMaxUsages()).isEqualTo(5);
 	}
 
 	@Test
 	void shouldCallUseCaseWithCorrectId() throws Exception {
 		UUID uuid = UUID.randomUUID();
-
-		ArgumentCaptor<BuyOfferCommand> commandArgumentCaptor =
-				ArgumentCaptor.forClass(BuyOfferCommand.class);
 
 		mvc.perform(post("/offers/" + uuid)
 						.contentType(MediaType.APPLICATION_JSON))

@@ -3,6 +3,7 @@ package datasovereignty;
 import org.junit.jupiter.api.Test;
 import org.junit.jupiter.api.extension.ExtendWith;
 import org.mockito.ArgumentCaptor;
+import org.mockito.Captor;
 import org.mockito.InjectMocks;
 import org.mockito.Mock;
 import org.mockito.junit.jupiter.MockitoExtension;
@@ -23,10 +24,11 @@ class ProviderCommunicationPortAdapterTest {
 	@Mock
 	private HttpClientPort clientPort;
 
+	@Captor
+	private ArgumentCaptor<String> stringArgumentCaptor;
+
 	@Test
 	void shouldUseCorrectLoggingUrl() {
-		ArgumentCaptor<String> stringArgumentCaptor =
-				ArgumentCaptor.forClass(String.class);
 		underTest.notifyProvider("/logging", UUID.fromString("d2f22172-60e8-4bdc-84f2-0f00521d625d"));
 
 		verify(clientPort).post(stringArgumentCaptor.capture(), any(), any());

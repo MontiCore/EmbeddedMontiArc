@@ -5,6 +5,7 @@ import entity.*;
 import org.junit.jupiter.api.Test;
 import org.junit.jupiter.api.extension.ExtendWith;
 import org.mockito.ArgumentCaptor;
+import org.mockito.Captor;
 import org.mockito.InjectMocks;
 import org.mockito.Mock;
 import org.mockito.junit.jupiter.MockitoExtension;
@@ -36,6 +37,15 @@ class BuyOfferUseCaseTest {
 
 	@Mock
 	private PolicyDeploymentPort policyDeploymentPort;
+
+	@Captor
+	private ArgumentCaptor<Offer> offerArgumentCaptor;
+
+	@Captor
+	private ArgumentCaptor<Policy> policyArgumentCaptor;
+
+	@Captor
+	private ArgumentCaptor<Dataset> datasetArgumentCaptor;
 
 	@Test
 	void shouldDeployPolicyAndCreateNewDataset() {
@@ -76,23 +86,15 @@ class BuyOfferUseCaseTest {
 				)
 		);
 
-
-		ArgumentCaptor<Policy> policyArgumentCaptor =
-				ArgumentCaptor.forClass(Policy.class);
-
-		ArgumentCaptor<Dataset> datasetArgumentCaptor =
-				ArgumentCaptor.forClass(Dataset.class);
-
 		underTest.handle(new BuyOfferCommand(uuid));
 
-		verify(policyDeploymentPort).deployPolicy(policyArgumentCaptor.capture());
-		Policy capturedPolicy = policyArgumentCaptor.getValue();
-
 		verify(datasetPersistencePort).save(datasetArgumentCaptor.capture());
-		Dataset capturedDataset = datasetArgumentCaptor.getValue();
+		verify(policyDeploymentPort).deployPolicy(policyArgumentCaptor.capture());
+		verify(offerPersistencePort).delete(offerArgumentCaptor.capture());
 
-		assertThat(capturedPolicy.getId()).isEqualTo(9);
-		assertThat(capturedDataset.getMetadata().getId()).isEqualTo(42);
-		assertThat(capturedDataset.getOffer().getId()).isEqualTo(uuid);
+		assertThat(policyArgumentCaptor.getValue().getId()).isEqualTo(9);
+		assertThat(datasetArgumentCaptor.getValue().getMetadata().getId()).isEqualTo(42);
+		assertThat(datasetArgumentCaptor.getValue().getOffer().getId()).isEqualTo(uuid);
+		assertThat(offerArgumentCaptor.getValue().getId()).isEqualTo(uuid);
 	}
 }

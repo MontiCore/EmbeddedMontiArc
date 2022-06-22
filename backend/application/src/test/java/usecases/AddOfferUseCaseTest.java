@@ -8,6 +8,7 @@ import entity.Policy;
 import org.junit.jupiter.api.Test;
 import org.junit.jupiter.api.extension.ExtendWith;
 import org.mockito.ArgumentCaptor;
+import org.mockito.Captor;
 import org.mockito.InjectMocks;
 import org.mockito.Mock;
 import org.mockito.junit.jupiter.MockitoExtension;
@@ -28,6 +29,9 @@ public class AddOfferUseCaseTest {
 
 	@Mock
 	private OfferPersistencePort persistencePort;
+
+	@Captor
+	private ArgumentCaptor<Offer> offerArgumentCaptor;
 
 	@Test
 	public void shouldSaveOffer() {
@@ -57,9 +61,6 @@ public class AddOfferUseCaseTest {
 				50,
 				LocalDateTime.now()
 		);
-
-		ArgumentCaptor<Offer> offerArgumentCaptor =
-				ArgumentCaptor.forClass(Offer.class);
 
 		underTest.handle(new AddOfferCommand(metadata, List.of(dataRow)));
 

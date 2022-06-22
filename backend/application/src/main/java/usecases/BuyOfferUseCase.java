@@ -28,6 +28,7 @@ public class BuyOfferUseCase implements CommandHandler<BuyOfferCommand> {
 		dataset.getMetadata().getPolicy().setTargetId(dataset.getId());
 		policyDeploymentPort.deployPolicy(dataset.getMetadata().getPolicy());
 		datasetPersistencePort.save(dataset);
+		offerPersistencePort.delete(offer);
 
 		log.info("Bought offer {}, created dataset {}", command.getOfferId().toString(), dataset.getId().toString());
 	}

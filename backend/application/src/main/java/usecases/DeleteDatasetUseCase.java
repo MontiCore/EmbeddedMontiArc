@@ -13,7 +13,6 @@ public class DeleteDatasetUseCase implements CommandHandler<DeleteDatasetCommand
 
 	@Override
 	public void handle(DeleteDatasetCommand command) {
-		System.err.println("ich versuche den datensatz zu löschen");
 		datasetPersistencePort.deleteById(command.getDatasetId());
 
 		log.info("Successfully deleted dataset {}", command.getDatasetId().toString());

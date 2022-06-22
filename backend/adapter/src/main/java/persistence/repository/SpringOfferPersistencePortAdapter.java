@@ -57,4 +57,9 @@ public class SpringOfferPersistencePortAdapter implements OfferPersistencePort {
 
 		return offers;
 	}
+
+	@Override
+	public void delete(Offer offer) {
+		repository.delete(mapper.mapTo(offer));
+	}
 }

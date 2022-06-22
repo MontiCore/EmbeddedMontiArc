@@ -4,6 +4,7 @@ import commands.RemoteLoggingCommand;
 import org.junit.jupiter.api.Test;
 import org.junit.jupiter.api.extension.ExtendWith;
 import org.mockito.ArgumentCaptor;
+import org.mockito.Captor;
 import org.mockito.InjectMocks;
 import org.mockito.Mock;
 import org.mockito.junit.jupiter.MockitoExtension;
@@ -23,13 +24,14 @@ class RemoteLoggingUseCaseTest {
 	@Mock
 	private ProviderCommunicationPort communicationPort;
 
+	@Captor
+	private ArgumentCaptor<String> stringArgumentCaptor;
+
+	@Captor
+	private ArgumentCaptor<UUID> uuidArgumentCaptor;
+
 	@Test
 	void shouldCallCommunicationPortWithCorrectParams() {
-
-		ArgumentCaptor<String> stringArgumentCaptor =
-				ArgumentCaptor.forClass(String.class);
-		ArgumentCaptor<UUID> uuidArgumentCaptor =
-				ArgumentCaptor.forClass(UUID.class);
 		underTest.handle(new RemoteLoggingCommand("/log", UUID.fromString("8a484636-e817-4fa9-9e7e-7300c799547b")));
 
 		verify(communicationPort).notifyProvider(stringArgumentCaptor.capture(), uuidArgumentCaptor.capture());

@@ -12,4 +12,6 @@ public interface OfferPersistencePort {
 	Iterable<Offer> findAll();
 
 	Iterable<Offer> findAllBought();
+
+	void delete(Offer offer);
 }

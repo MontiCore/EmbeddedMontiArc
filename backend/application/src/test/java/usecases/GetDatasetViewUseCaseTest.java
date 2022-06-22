@@ -5,6 +5,7 @@ import entity.*;
 import org.junit.jupiter.api.Test;
 import org.junit.jupiter.api.extension.ExtendWith;
 import org.mockito.ArgumentCaptor;
+import org.mockito.Captor;
 import org.mockito.InjectMocks;
 import org.mockito.Mock;
 import org.mockito.junit.jupiter.MockitoExtension;
@@ -37,6 +38,9 @@ class GetDatasetViewUseCaseTest {
 
 	@Mock
 	private PolicyEnforcementPort<Dataset> enforcementPort;
+
+	@Captor
+	private ArgumentCaptor<Dataset> datasetArgumentCaptor;
 
 	@Test
 	void shouldReturnCorrectDatasetView() {
@@ -83,9 +87,6 @@ class GetDatasetViewUseCaseTest {
 		given(datasetPersistencePort.findById(any())).willReturn(dataset);
 		given(enforcementPort.enforcePolicy(any())).willReturn(dataset);
 		given(feeCalculatorPort.calculateFee(any())).willReturn(2000.0);
-
-		ArgumentCaptor<Dataset> datasetArgumentCaptor =
-				ArgumentCaptor.forClass(Dataset.class);
 
 		DatasetView datasetView = underTest.handle(new GetDatasetQuery(uuid));
 
