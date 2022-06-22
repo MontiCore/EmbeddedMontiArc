@@ -5,51 +5,56 @@
       <a href="/datasets" class="alert-link">Return to datasets overview</a>
     </div>
     <div v-else class="d-flex flex-column m-auto gap-3 w-100">
+      <div class="d-flex justify-content-between">
+      <div class="d-flex flex-column gap-3 w-75">
       <div>
-        <h2 class="text-start m-0">{{ dataset.metadata.title }}</h2>
-        <h6 class="text-start m-0 text-muted">{{ dataset.metadata.provider }}</h6>
+        <h1 class="text-start m-0">{{ dataset.metadata.title }}</h1>
+        <h3 class="text-start m-0 text-muted">{{ dataset.metadata.provider }}</h3>
         <p class="text-start m-0">{{ dataset.metadata.description }}</p>
       </div>
-      <div id="map" style="height: 600px"></div>
-
-      <div class="container">
-        <div class="row">
-          <div class="col-5 d-flex align-items-center ps-0">
-            <Icon icon="bxs:truck" style="font-size: 1.5rem" />
-            <p class="m-0 text-nowrap">Trucks</p>
-          </div>
-          <div class="col-1 text-end">123</div>
-          <div class="col-5 d-flex align-items-center">
-            <Icon icon="jam:triangle-danger" style="font-size: 1.25rem" />
-            <p class="m-0 text-nowrap">Bad driver score</p>
-          </div>
-          <div class="col-1 text-end pe-0">17</div>
+      <div class="row">
+        <div class="col-5 d-flex align-items-center">
+          <Icon icon="bxs:truck" style="font-size: 1.5rem" />
+          <p class="m-0 text-nowrap">Trucks</p>
         </div>
-        <div class="row">
-          <div class="col-5 d-flex align-items-center ps-0">
-            <Icon icon="bxs:gas-pump" style="font-size: 1.25rem" />
-            <p class="m-0 text-nowrap">Avg. fuel consumption</p>
-          </div>
-          <div class="col-1 text-end">35</div>
-          <div class="col-5 d-flex align-items-center">
-            <Icon icon="mdi:tools" style="font-size: 1.25rem" />
-            <p class="m-0 text-nowrap">Repair needed</p>
-          </div>
-          <div class="col-1 text-end pe-0">4</div>
+        <div class="col-1 text-end">123</div>
+        <div class="col-5 d-flex align-items-center">
+          <Icon icon="jam:triangle-danger" style="font-size: 1.25rem" />
+          <p class="m-0 text-nowrap">Bad driver score</p>
         </div>
-        <div class="row">
-          <div class="col-5 d-flex align-items-center ps-0">
-            <Icon icon="mdi:highway" style="font-size: 1.25rem" />
-            <p class="m-0 text-nowrap">Active</p>
-          </div>
-          <div class="col-1 text-end">100</div>
-          <div class="col-5 d-flex align-items-center">
-            <Icon icon="mdi-light:sleep" style="font-size: 1.25rem" />
-            <p class="m-0 text-nowrap">Resting</p>
-          </div>
-          <div class="col-1 text-end pe-0">117</div>
+        <div class="col-1 text-end">17</div>
+      </div>
+      <div class="row">
+        <div class="col-5 d-flex align-items-center">
+          <Icon icon="bxs:gas-pump" style="font-size: 1.25rem" />
+          <p class="m-0 text-nowrap">Avg. fuel consumption</p>
+        </div>
+        <div class="col-1 text-end">35</div>
+        <div class="col-5 d-flex align-items-center">
+          <Icon icon="mdi:tools" style="font-size: 1.25rem" />
+          <p class="m-0 text-nowrap">Repair needed</p>
+        </div>
+        <div class="col-1 text-end">4</div>
+      </div>
+      <div class="row">
+        <div class="col-5 d-flex align-items-center">
+          <Icon icon="mdi:highway" style="font-size: 1.25rem" />
+          <p class="m-0 text-nowrap">Active</p>
+        </div>
+        <div class="col-1 text-end">100</div>
+        <div class="col-5 d-flex align-items-center">
+          <Icon icon="mdi-light:sleep" style="font-size: 1.25rem" />
+          <p class="m-0 text-nowrap">Resting</p>
+        </div>
+        <div class="col-1 text-end">117</div>
+      </div>
+        </div>
+        <div class="d-flex flex-column justify-content-center align-items-end">
+          <p class="m-0" style="font-size: 4rem">1539 € p.a.</p>
+          <p class="m-0">Suggested insurance fee per truck</p>
         </div>
       </div>
+      <div id="map" style="height: 600px"/>
 
       <div class="d-flex flex-column align-items-center justify-content-center">
         <table class="table table-hover">
