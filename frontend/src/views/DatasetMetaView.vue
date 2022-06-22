@@ -39,10 +39,20 @@ export default {
   },
   methods: {
     createDataset () {
+      let datarows = []
+      const parts = this.$route.query.rows.split(';')
+      parts.forEach(part => {
+        if (part.includes('-')) {
+          const start = parseInt(part.split('-')[0])
+          const end = parseInt(part.split('-')[1])
+          datarows = datarows.concat(this.$store.getters.getDatarows.slice(start - 1, end))
+        } else {
+          datarows.push(this.$store.getters.getDatarows[parseInt(part) - 1])
+        }
+      })
       axios.post('/datasets', {
         metadata: this.metadata,
-        file: this.$route.query.file,
-        rows: this.$route.query.rows
+        data: datarows
       }).then(() => {
         this.$router.push('/datasets')
       })

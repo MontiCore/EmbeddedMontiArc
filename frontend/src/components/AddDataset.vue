@@ -1,7 +1,10 @@
 <template>
-  <div @click="add()" class="d-flex flex-column justify-content-center align-items-center shadow text-start gap-2 p-3 add-card">
-    <h1 class="m-0">Add Dataset</h1>
-    <Icon icon="akar-icons:plus" style="font-size: 3rem" />
+  <div>
+    <label for="file-upload"  class="d-flex flex-column justify-content-center align-items-center shadow text-start gap-2 p-3 add-card">
+        <h1 class="m-0">Add Dataset</h1>
+        <Icon icon="akar-icons:plus" style="font-size: 3rem" />
+    </label>
+    <input id="file-upload" ref="fileUpload" type="file" @change="uploadImage()"/>
   </div>
 </template>
 
@@ -13,7 +16,10 @@ export default {
     Icon
   },
   methods: {
-    add () {
+    uploadImage () {
+      console.log('i was changed')
+      const file = this.$refs.fileUpload.files[0]
+      this.$store.dispatch('uploadCsv', file)
       this.$router.push('/createdataset/rows')
     }
   }
@@ -32,5 +38,9 @@ export default {
 
 .add-card:hover {
   color: rgb(140, 140, 140);
+}
+
+input[type="file"] {
+  display: none;
 }
 </style>

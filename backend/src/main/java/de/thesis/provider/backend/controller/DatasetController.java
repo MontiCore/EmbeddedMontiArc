@@ -15,7 +15,7 @@ import java.util.UUID;
 @RestController
 @RequestMapping("/datasets")
 @AllArgsConstructor
-@CrossOrigin(origins = "*")
+@CrossOrigin("*")
 public class DatasetController {
 
 	private final DatasetService service;

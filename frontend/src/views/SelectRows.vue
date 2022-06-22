@@ -1,7 +1,14 @@
 <template>
-  <div>
+  <div class="d-flex flex-column align-items-center gap-3">
+    <div>
+      <div class="text-start">
+        <label class="form-label" for="rows">Select rows</label>
+        <input class="form-control" type="text" id="rows" v-model="rows"/>
+        <div class="form-text text-start">Select rows in the following format: 1-20;31;35-99</div>
+      </div>
+    </div>
     <div class="d-flex justify-content-center">
-      <TruckDataTable :value="rows" @input="rows = $event.target.value.replace(/\s/g, '')"/>
+      <TruckDataTable />
     </div>
     <button class="btn btn-primary" @click="navigateToMetadata">Next</button>
   </div>
@@ -18,13 +25,13 @@ export default {
   },
   data () {
     return {
-      rows: '',
-      step: 1
+      rows: ''
     }
   },
   methods: {
     navigateToMetadata () {
-      this.$router.push(`/createdataset/meta?file=${this.$route.query.file}&rows=${this.rows}`)
+      console.log(this.rows)
+      this.$router.push(`/createdataset/meta?rows=${this.rows}`)
     }
   }
 }

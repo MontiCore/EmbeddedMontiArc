@@ -4,7 +4,8 @@ import axios from 'axios'
 export default createStore({
   state: {
     truckData: [],
-    datasets: {}
+    datasets: {},
+    datarows: []
   },
   getters: {
     getTruckData (state) {
@@ -12,6 +13,9 @@ export default createStore({
     },
     getDatasets (state) {
       return state.datasets
+    },
+    getDatarows (state) {
+      return state.datarows
     }
   },
   mutations: {
@@ -20,6 +24,9 @@ export default createStore({
     },
     setDatasets (state, datasets) {
       state.datasets = datasets
+    },
+    setDatarows (state, datarows) {
+      state.datarows = datarows
     }
   },
   actions: {
@@ -35,6 +42,13 @@ export default createStore({
     },
     async deleteDataset (context, datasetId) {
       return axios.delete(`/datasets/${datasetId}`)
+    },
+    async uploadCsv (context, file) {
+      const formData = new FormData()
+      formData.append('file', file)
+      return axios.post('/fileupload', formData).then((response) => {
+        context.commit('setDatarows', response.data)
+      })
     }
   },
   modules: {
