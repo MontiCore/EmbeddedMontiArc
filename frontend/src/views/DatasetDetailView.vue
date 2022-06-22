@@ -4,7 +4,7 @@
       <strong>Policy violation!</strong> Data access not possible!<br>
       <a href="/datasets" class="alert-link">Return to datasets overview</a>
     </div>
-    <div v-else class="d-flex flex-column w-75 m-auto gap-3 mt-4">
+    <div v-else class="d-flex flex-column m-auto gap-3 mt-4">
       <div>
         <h2 class="text-start m-0">{{ dataset.title }}</h2>
         <h6 class="text-start m-0 text-muted">{{ dataset.provider }}</h6>
@@ -51,7 +51,7 @@
         </div>
       </div>
 
-      <div style="overflow-x: scroll">
+      <div class="d-flex flex-column align-items-center justify-content-center">
         <table class="table table-hover">
           <thead>
             <tr>
@@ -65,7 +65,7 @@
             </tr>
           </thead>
           <tbody>
-            <tr v-for="row in dataset.data" :key="row">
+            <tr v-for="row in truckData" :key="row">
               <td
                 class="text-nowrap"
                 v-for="(value, key) in row"
@@ -77,6 +77,7 @@
             </tr>
           </tbody>
         </table>
+        <TablePagination :elements="elements" @pageChange="pageChanged"/>
       </div>
     </div>
   </div>
@@ -86,18 +87,33 @@
 import { Icon } from '@iconify/vue'
 import leaflet from 'leaflet'
 import HeatmapOverlay from 'leaflet-heatmap'
-// import axios from 'axios'
+import TablePagination from '@/components/TablePagination.vue'
 
 export default {
   components: {
-    Icon
+    Icon,
+    TablePagination
   },
   data () {
     return {
       dataset: {
         data: []
       },
+      currentPage: 1,
       alert: false
+    }
+  },
+  computed: {
+    elements () {
+      return this.dataset.data.length
+    },
+    truckData () {
+      return this.dataset.data.slice((this.currentPage - 1) * 15, (this.currentPage - 1) * 15 + 15)
+    }
+  },
+  methods: {
+    pageChanged (newPage) {
+      this.currentPage = newPage
     }
   },
   async mounted () {
