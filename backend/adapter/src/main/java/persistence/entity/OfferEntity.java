@@ -22,6 +22,6 @@ public class OfferEntity {
 	@OneToOne(cascade = CascadeType.ALL)
 	private MetadataEntity metadata;
 
-	@OneToMany(mappedBy = "offer", cascade = CascadeType.ALL, fetch = FetchType.EAGER)
+	@OneToMany(mappedBy = "offer", cascade = CascadeType.ALL, orphanRemoval = true)
 	private List<DataRowEntity> data;
 }
