@@ -967,8 +967,6 @@ VALUES (1611489700, '3a14403175269eb7e05ffbef10cd4027d252676a9528023554d68961f08
         'd9c48beb-24a6-4663-8e6e-a361ca74a114');
 INSERT INTO public.data_row (id, dayid, gps_time, heading, latitude, longitude, odometer, speed, timestamp,
                              total_fuel_used, dataset, offer)
-INSERT INTO public.data_row (id, dayid, gps_time, heading, latitude, longitude, odometer, speed, timestamp,
-                             total_fuel_used, dataset, offer)
 VALUES (1611539184, '221dbc0ba9190ad573ba968a54858ac5c7ebc3a310ccf2cb114c7b6dd9655a64', '2021-08-18 11:37:02.000000', 6,
         51.085152, 3.667262, 40780, 90, '2021-08-18 11:37:07.887000', 0, null, '6355f4d9-6361-4a55-89d8-57bcd5666532');
 INSERT INTO public.data_row (id, dayid, gps_time, heading, latitude, longitude, odometer, speed, timestamp,
