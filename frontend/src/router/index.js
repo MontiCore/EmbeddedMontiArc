@@ -1,23 +1,23 @@
 import { createRouter, createWebHashHistory } from 'vue-router'
 import SelectRowsView from '../views/SelectRows.vue'
-import DatasetsView from '../views/DatasetsView.vue'
-import DatasetMetaView from '../views/DatasetMetaView.vue'
+import OffersView from '../views/OffersView.vue'
+import OfferMetaView from '../views/OfferMetaView.vue'
 
 const routes = [
   {
-    path: '/datasets',
-    name: 'datasets',
-    component: DatasetsView
+    path: '/offers',
+    name: 'offers',
+    component: OffersView
   },
   {
-    path: '/createdataset/rows',
+    path: '/create-offer/rows',
     name: 'selectRowsView',
     component: SelectRowsView
   },
   {
-    path: '/createdataset/meta',
-    name: 'datasetMetaView',
-    component: DatasetMetaView
+    path: '/create-offer/meta',
+    name: 'offerMetaView',
+    component: OfferMetaView
   }
 ]
 

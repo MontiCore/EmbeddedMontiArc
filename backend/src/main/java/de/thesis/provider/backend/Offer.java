@@ -9,7 +9,7 @@ import java.util.UUID;
 
 @Getter
 @Setter
-public class Dataset {
+public class Offer {
 	private UUID id;
 	private Metadata metadata;
 	private List<DataRow> data;

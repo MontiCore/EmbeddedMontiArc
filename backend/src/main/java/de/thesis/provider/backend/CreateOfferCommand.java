@@ -7,7 +7,7 @@ import lombok.Value;
 import java.util.List;
 
 @Value
-public class CreateDatasetCommand {
+public class CreateOfferCommand {
 	Metadata metadata;
 	List<DataRow> data;
 }

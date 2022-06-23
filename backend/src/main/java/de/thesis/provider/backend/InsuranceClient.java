@@ -12,8 +12,8 @@ public class InsuranceClient {
 
 	private final HttpClient client;
 
-	public void offerDataset(Dataset dataset) {
-		client.post("/offers", dataset, Object.class, null);
+	public void addOffer(Offer offer) {
+		client.post("/offers", offer, Object.class, null);
 	}
 
 	public Map<UUID, Metadata> getAllOffersMetadata() {

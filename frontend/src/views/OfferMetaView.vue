@@ -1,8 +1,8 @@
 <template>
   <div class="d-flex justify-content-center gap-3">
     <div class="d-flex flex-column p-3 gap-3">
-      <DatasetForm :title="metadata.title" :description="metadata.description" :price="metadata.price" @titleChanged="titleChanged" @priceChanged="priceChanged" @descriptionChanged="descriptionChanged"/>
-      <button type="submit" class="btn btn-primary fw-bold" style="width: 10rem" @click="createDataset()">Create dataset</button>
+      <OfferForm :title="metadata.title" :description="metadata.description" :price="metadata.price" @titleChanged="titleChanged" @priceChanged="priceChanged" @descriptionChanged="descriptionChanged"/>
+      <button type="submit" class="btn btn-primary fw-bold" style="width: 10rem" @click="createOffer()">Create offer</button>
     </div>
     <PolicyForm :startTime="metadata.policy.startTime" :endTime="metadata.policy.endTime" :expiresOn="metadata.policy.expiresOn" :maxUsages="metadata.policy.maxUsages" :localLogging="metadata.policy.localLogging" :remoteLogging="metadata.policy.remoteLogging"
       @start-time-changed="startTimeChanged" @end-time-changed="endTimeChanged" @expires-on-changed="expiresOnChanged" @max-usages-changed="maxUsagesChanged" @local-logging-changed="localLoggingChanged" @remote-logging-changed="remoteLoggingChanged"
@@ -12,13 +12,13 @@
 
 <script>
 import PolicyForm from '@/components/PolicyForm.vue'
-import DatasetForm from '@/components/DatasetForm.vue'
+import OfferForm from '@/components/OfferForm.vue'
 import axios from 'axios'
 
 export default {
   components: {
     PolicyForm,
-    DatasetForm
+    OfferForm
   },
   data () {
     return {
@@ -38,7 +38,7 @@ export default {
     }
   },
   methods: {
-    createDataset () {
+    createOffer () {
       let datarows = []
       const parts = this.$route.query.rows.split(';')
       parts.forEach(part => {
@@ -50,11 +50,11 @@ export default {
           datarows.push(this.$store.getters.getDatarows[parseInt(part) - 1])
         }
       })
-      axios.post('/datasets', {
+      axios.post('/offers', {
         metadata: this.metadata,
         data: datarows
       }).then(() => {
-        this.$router.push('/datasets')
+        this.$router.push('/offers')
       })
     },
     titleChanged (title) {

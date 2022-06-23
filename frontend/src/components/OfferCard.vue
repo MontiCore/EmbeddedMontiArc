@@ -18,7 +18,7 @@
     <PolicyCollapsable :id="id" :policy="policy" />
     <p class="description m-0 flex-grow-1">{{ description }}</p>
     <div class="d-flex justify-content-between align-items-center">
-      <button class="btn buy-btn fw-bold" @click="deleteDataset">Delete</button>
+      <button class="btn buy-btn fw-bold" @click="deleteOffer">Delete</button>
       <p class="fw-bold m-0 fs-5">{{ price.toLocaleString("en-US", { maximumFractionDigits: 2, minimumFractionDigits: 2 }) }} €</p>
     </div>
   </div>
@@ -86,9 +86,9 @@ export default {
     }
   },
   methods: {
-    deleteDataset () {
-      this.$store.dispatch('deleteDataset', this.id).then(() => {
-        this.$store.dispatch('fetchDatasets')
+    deleteOffer () {
+      this.$store.dispatch('deleteOffer', this.id).then(() => {
+        this.$store.dispatch('fetchOffers')
       })
     }
   }

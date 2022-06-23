@@ -31,7 +31,7 @@ export default {
   methods: {
     navigateToMetadata () {
       console.log(this.rows)
-      this.$router.push(`/createdataset/meta?rows=${this.rows}`)
+      this.$router.push(`/create-offer/meta?rows=${this.rows}`)
     }
   }
 }

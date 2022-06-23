@@ -4,7 +4,7 @@
         <h1 class="m-0 fw-bold fst-italic" style="color: #ffa630">Carrier</h1>
     </div>
     <div class="d-flex justify-content-center flex-grow-1 gap-3">
-        <router-link class="nav-item nav-link" to="/datasets"><div :class="{ 'active-route': isCurrentView('datasets')}"><Icon class="pe-1" icon="bx:data" style="font-size: 1.75rem" />Datasets</div></router-link>
+        <router-link class="nav-item nav-link" to="/offers"><div :class="{ 'active-route': isCurrentView('datasets')}"><Icon class="pe-1" icon="bx:data" style="font-size: 1.75rem" />Datasets</div></router-link>
     </div>
     <button class="btn p-0 text-end" style="min-width: 20rem" type="button">
       <div style="color: #ffa630">

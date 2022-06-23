@@ -4,15 +4,15 @@ import axios from 'axios'
 export default createStore({
   state: {
     truckData: [],
-    datasets: {},
+    offers: {},
     datarows: []
   },
   getters: {
     getTruckData (state) {
       return state.truckData
     },
-    getDatasets (state) {
-      return state.datasets
+    getOffers (state) {
+      return state.offers
     },
     getDatarows (state) {
       return state.datarows
@@ -22,8 +22,8 @@ export default createStore({
     setTruckData (state, truckData) {
       state.truckData = truckData
     },
-    setDatasets (state, datasets) {
-      state.datasets = datasets
+    setOffers (state, offers) {
+      state.offers = offers
     },
     setDatarows (state, datarows) {
       state.datarows = datarows
@@ -35,13 +35,13 @@ export default createStore({
         context.commit('setTruckData', response.data)
       })
     },
-    fetchDatasets (context) {
-      axios.get('/datasets').then(response => {
-        context.commit('setDatasets', response.data)
+    fetchOffers (context) {
+      axios.get('/offers').then(response => {
+        context.commit('setOffers', response.data)
       })
     },
-    async deleteDataset (context, datasetId) {
-      return axios.delete(`/datasets/${datasetId}`)
+    async deleteOffer (context, offerId) {
+      return axios.delete(`/offers/${offerId}`)
     },
     async uploadCsv (context, file) {
       const formData = new FormData()

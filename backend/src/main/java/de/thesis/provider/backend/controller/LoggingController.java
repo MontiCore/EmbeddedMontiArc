@@ -14,9 +14,9 @@ import java.util.UUID;
 @Slf4j
 public class LoggingController {
 
-	@PostMapping("/{datasetId}")
+	@PostMapping("/{offerId}")
 	@ResponseStatus(HttpStatus.OK)
-	public void testPost(@PathVariable UUID datasetId) {
-		log.info("Dataset {} accessed at {}", datasetId, LocalDateTime.now());
+	public void testPost(@PathVariable UUID offerId) {
+		log.info("Dataset {} accessed at {}", offerId, LocalDateTime.now());
 	}
 }

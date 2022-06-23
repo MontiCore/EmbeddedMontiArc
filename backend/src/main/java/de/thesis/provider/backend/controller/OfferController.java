@@ -1,39 +1,38 @@
 package de.thesis.provider.backend.controller;
 
-import de.thesis.provider.backend.CreateDatasetCommand;
+import de.thesis.provider.backend.CreateOfferCommand;
 import de.thesis.provider.backend.Metadata;
-import de.thesis.provider.backend.service.DatasetService;
+import de.thesis.provider.backend.service.OfferService;
 import lombok.AllArgsConstructor;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.http.HttpStatus;
 import org.springframework.web.bind.annotation.*;
 
-import java.io.IOException;
 import java.util.Map;
 import java.util.UUID;
 
 @RestController
-@RequestMapping("/datasets")
+@RequestMapping("/offers")
 @AllArgsConstructor
 @CrossOrigin("*")
-public class DatasetController {
+public class OfferController {
 
-	private final DatasetService service;
+	private final OfferService service;
 
 	@PostMapping
 	@ResponseStatus(HttpStatus.OK)
-	public void createDataset(@RequestBody CreateDatasetCommand command,
-							  @Value("${provider.name}") String providerName,
-							  @Value("${provider.url}") String providerUrl) throws IOException {
+	public void createOffer(@RequestBody CreateOfferCommand command,
+							@Value("${provider.name}") String providerName,
+							@Value("${provider.url}") String providerUrl) {
 		command.getMetadata().setProvider(providerName);
 		command.getMetadata().setLoggingUrl(providerUrl);
-		service.offerDataset(command);
+		service.addOffer(command);
 	}
 
 	@GetMapping
 	@ResponseStatus(HttpStatus.OK)
-	public Map<UUID, Metadata> getDatasets() {
-		return service.getDatasets();
+	public Map<UUID, Metadata> getOffers() {
+		return service.getOffers();
 	}
 
 	@DeleteMapping("/{offerId}")
