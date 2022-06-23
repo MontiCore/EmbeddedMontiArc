@@ -35,4 +35,10 @@ public class DatasetController {
 	public Map<UUID, Metadata> getDatasets() {
 		return service.getDatasets();
 	}
+
+	@DeleteMapping("/{offerId}")
+	@ResponseStatus(HttpStatus.OK)
+	public void deleteOffer(@PathVariable UUID offerId) {
+		service.deleteOffer(offerId);
+	}
 }

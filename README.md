@@ -3,7 +3,7 @@ The following guide explains how run a dockerized version of this application fo
 how to run a local version with Intellij for development purposes. To use all functions, the data-consumer application must run in the same mode. You can find a guide
 how to start it [here](https://git.rwth-aachen.de/monticore/EmbeddedMontiArc/applications/catena-x/data-consumer).
 
-In both cases, the application will be reachable at [http://localhost:8083/datasets](http://localhost:8083/datasets).
+In both cases, the application will be reachable at [http://localhost:8083/#/datasets](http://localhost:8083/#/datasets).
 
 For both approaches, the following two steps have to be executed first.
 

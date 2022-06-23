@@ -7,7 +7,6 @@ import de.thesis.provider.backend.Metadata;
 import lombok.AllArgsConstructor;
 import org.springframework.stereotype.Component;
 
-import java.io.IOException;
 import java.util.Map;
 import java.util.UUID;
 
@@ -28,5 +27,9 @@ public class DatasetService {
 
 	public Map<UUID, Metadata> getDatasets() {
 		return client.getAllOffersMetadata();
+	}
+
+	public void deleteOffer(UUID datasetId) {
+		client.deleteOffer(datasetId);
 	}
 }

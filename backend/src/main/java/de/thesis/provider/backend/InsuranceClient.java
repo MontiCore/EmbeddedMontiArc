@@ -3,7 +3,6 @@ package de.thesis.provider.backend;
 import lombok.AllArgsConstructor;
 import org.springframework.stereotype.Component;
 
-import java.util.List;
 import java.util.Map;
 import java.util.UUID;
 
@@ -19,5 +18,9 @@ public class InsuranceClient {
 
 	public Map<UUID, Metadata> getAllOffersMetadata() {
 		return client.get("/offers", null, null);
+	}
+
+	public void deleteOffer(UUID offerId) {
+		client.delete("/offers/" + offerId, Object.class, null);
 	}
 }
