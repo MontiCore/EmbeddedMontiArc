@@ -4,10 +4,7 @@ package persistence.entity;
 import lombok.Getter;
 import lombok.Setter;
 
-import javax.persistence.Entity;
-import javax.persistence.GeneratedValue;
-import javax.persistence.Id;
-import javax.persistence.Table;
+import javax.persistence.*;
 import java.time.LocalDate;
 import java.time.LocalTime;
 import java.util.UUID;
@@ -18,7 +15,7 @@ import java.util.UUID;
 @Setter
 public class PolicyEntity {
 	@Id
-	@GeneratedValue
+	@GeneratedValue(strategy = GenerationType.SEQUENCE)
 	private int id;
 	private UUID targetId;
 	private LocalTime startTime;

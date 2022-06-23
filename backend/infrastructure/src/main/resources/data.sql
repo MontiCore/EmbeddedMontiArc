@@ -1,30 +1,30 @@
 INSERT INTO public.policy (id, end_time, expires_on, local_logging, max_usages, remote_logging, start_time, target_id)
 VALUES (1, '16:00:00', '2023-06-24', true, 100, false, '08:00:00', null);
 INSERT INTO public.policy (id, end_time, expires_on, local_logging, max_usages, remote_logging, start_time, target_id)
-VALUES (3, null, '2023-07-05', true, 1000, true, null, null);
+VALUES (2, null, '2023-07-05', true, 1000, true, null, null);
 INSERT INTO public.policy (id, end_time, expires_on, local_logging, max_usages, remote_logging, start_time, target_id)
-VALUES (5, null, '2023-06-26', true, 2, false, null, null);
+VALUES (3, null, '2023-06-26', true, 2, false, null, null);
 
 
 INSERT INTO public.metadata (id, description, logging_url, price, provider, title, policy_id)
-VALUES (2,
+VALUES (1,
         'This dataset contains 1000 data points from trucks driving through Europe. It can be used to train machine learning models',
         'logging', 19.99, 'Carrier GmbH', 'Benelux Truckdata', 1);
 INSERT INTO public.metadata (id, description, logging_url, price, provider, title, policy_id)
-VALUES (4, 'This dataset contains 500 entries. It can be used for damage forecasting. ', 'logging', 5.5, 'Carrier GmbH',
-        'Western Europe Truck Data', 3);
+VALUES (2, 'This dataset contains 500 entries. It can be used for damage forecasting. ', 'logging', 5.5, 'Carrier GmbH',
+        'Western Europe Truck Data', 2);
 INSERT INTO public.metadata (id, description, logging_url, price, provider, title, policy_id)
-VALUES (6,
+VALUES (3,
         'This small dataset can be used for testing your machine learning models. It contains a small sample of 100 entries. It is not recommended to use it for training your models.',
-        'logging', 2.99, 'Carrier GmbH', 'ML Test Data Set', 5);
+        'logging', 2.99, 'Carrier GmbH', 'ML Test Data Set', 3);
 
 
 INSERT INTO public.offer (id, metadata_id)
-VALUES ('f10d7f03-ae67-4c51-ba92-ab62f7962973', 2);
+VALUES ('f10d7f03-ae67-4c51-ba92-ab62f7962973', 1);
 INSERT INTO public.offer (id, metadata_id)
-VALUES ('6355f4d9-6361-4a55-89d8-57bcd5666532', 4);
+VALUES ('6355f4d9-6361-4a55-89d8-57bcd5666532', 2);
 INSERT INTO public.offer (id, metadata_id)
-VALUES ('d9c48beb-24a6-4663-8e6e-a361ca74a114', 6);
+VALUES ('d9c48beb-24a6-4663-8e6e-a361ca74a114', 3);
 
 
 INSERT INTO public.data_row (id, dayid, gps_time, heading, latitude, longitude, odometer, speed, timestamp,
@@ -3314,3 +3314,5 @@ INSERT INTO public.data_row (id, dayid, gps_time, heading, latitude, longitude, 
 VALUES (1611634882, 'f6a276da9f90bdeb881796f939022bda10be6b1aac347c74003f5b91f0583db9', '2021-08-18 21:25:28.000000',
         28, 51.4965, 7.3966, 549440, 84, '2021-08-18 21:32:15.441000', 349289, null,
         '6355f4d9-6361-4a55-89d8-57bcd5666532');
+
+SELECT setval('hibernate_sequence', 4);

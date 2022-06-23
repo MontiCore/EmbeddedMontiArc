@@ -12,7 +12,7 @@ import javax.persistence.*;
 @Setter
 public class MetadataEntity {
 	@Id
-	@GeneratedValue
+	@GeneratedValue(strategy = GenerationType.SEQUENCE)
 	private int id;
 	@Column(columnDefinition = "TEXT")
 

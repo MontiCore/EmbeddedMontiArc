@@ -8,7 +8,7 @@
             <then>
                 <execute action='urn:action:rwth-student-solution:log-remote'>
                     <parameter:string name='url'>
-                        <event:string eventParameter='dataset' default='' jsonPathQuery='$.loggingUrl'/>
+                        <event:string eventParameter='dataset' default='' jsonPathQuery='$.metadata.loggingUrl'/>
                     </parameter:string>
                     <parameter:string name='id'>
                         <event:string eventParameter='dataset' default='' jsonPathQuery='$.id'/>
