@@ -3,6 +3,7 @@ import de.gdl.rl.Coordinator;
 
 import java.util.HashMap;
 import java.util.Scanner;
+import java.util.Set;
 import java.util.List;
 import java.util.regex.Pattern;
 import de.gdl.rl.environment.GDLGameEnvironment;
@@ -108,7 +109,7 @@ public class GamingCLI<ConcreteEnvironment extends GDLGameEnvironment> extends C
                 evaluationTable = new HashMap<String, HashMap<String, Integer>>();
             }
 
-            List<List<String>> goals = this.env.getReachedGoals();
+            Set<List<String>> goals = this.env.getReachedGoals();
             for (List<String> goal : goals) {
                 if (goal.size() == 2) {
                     HashMap<String, Integer> currentMap = null;

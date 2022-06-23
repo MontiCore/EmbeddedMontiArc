@@ -1,5 +1,6 @@
 package de.gdl.rl.agents;
 import java.util.List;
+import java.util.Set;
 
 public abstract class LocalAgent extends Agent {
     /** 
@@ -11,5 +12,5 @@ public abstract class LocalAgent extends Agent {
      * @param numberOfEpisodesPlayed the number of all episodes played since the launch of the environment
      * @return a move to be performed for the specified role
      */
-    public abstract String getMove(List<List<String>> state, List<String> legalMoves, String role, int numberOfEpisodesPlayed);
+    public abstract String getMove(Set<List<String>> state, List<String> legalMoves, String role, int numberOfEpisodesPlayed);
 }

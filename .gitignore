@@ -11,6 +11,7 @@ target/
 .vsls.json
 output.txt
 .DS_Store
+.vscode/
 
 examples/tictactoe-example-environment/target/
 examples/tictactoe-example-environment/.project

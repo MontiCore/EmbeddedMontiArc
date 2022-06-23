@@ -10,6 +10,7 @@ import de.monticore.lang.gdl.GDLInterpreter;
 import de.monticore.lang.gdl._ast.ASTGame;
 import de.monticore.lang.gdl._cocos.*;
 import java.util.List;
+import java.util.Set;
 import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.HashSet;
@@ -37,19 +38,21 @@ public abstract class GDLGameEnvironment implements RlGdlGameEnvironment {
 
     private Interpreter interpreter;
     
-    private List<List<String>> currentState;
+    private Set<List<String>> currentState;
+    private Set<List<String>> currentHiddenState;
     private boolean terminal = false;
 
     private boolean lastStepWasIllegal = false;
     private String lastExecutedMove = "";
 
-    private List<List<String>> legalMovesCached;
+    private Set<List<String>> legalMovesCached;
     private boolean legalMovesCouldHaveChanged = true;
 
+    private final ASTGame ast;
 
     public GDLGameEnvironment() {
 
-        final ASTGame ast = GDLInterpreter.parse(this.getPathToGdlModel());
+        ast = GDLInterpreter.parse(this.getPathToGdlModel());
         GDLCoCoChecker checker = new GDLCoCoChecker();
         
         checker.addCoCo(new ASTGameExpressionCoCo());
@@ -59,6 +62,7 @@ public abstract class GDLGameEnvironment implements RlGdlGameEnvironment {
             this.interpreter = new Interpreter(ast).init();
 
             this.currentState = this.interpreter.getGameState();
+            this.currentHiddenState = this.interpreter.getHiddenGameState();
             this.terminal = this.interpreter.isTerminal();
         } catch (Exception e) {
             this.interpreter = null;
@@ -133,7 +137,7 @@ public abstract class GDLGameEnvironment implements RlGdlGameEnvironment {
 
         HashSet<String> rolesInConrol = new HashSet<String>();
         if (!this.interpreter.isTerminal()) {
-            List<List<String>> allLegalMoves = _getAllLegalMoves();
+            Set<List<String>> allLegalMoves = _getAllLegalMoves();
             for(List<String> move : allLegalMoves) {
                 rolesInConrol.add(move.get(0));
             }
@@ -150,7 +154,7 @@ public abstract class GDLGameEnvironment implements RlGdlGameEnvironment {
     * @return List of of legal moves 
     */
     public List<String> getLegalMovesForRole(String gdlRoleName) {
-        List<List<String>> legalMovesForPlayer = this._getAllLegalMovesForRole(gdlRoleName);
+        Set<List<String>> legalMovesForPlayer = this._getAllLegalMovesForRole(gdlRoleName);
         List<String> legalActions = new ArrayList<String>();
 
         for (List<String> move : legalMovesForPlayer) {
@@ -159,7 +163,7 @@ public abstract class GDLGameEnvironment implements RlGdlGameEnvironment {
         return legalActions;
     }
 
-    private List<List<String>> _getAllLegalMoves() {
+    private Set<List<String>> _getAllLegalMoves() {
         if (!legalMovesCouldHaveChanged) {
             return this.legalMovesCached;
         }
@@ -168,18 +172,18 @@ public abstract class GDLGameEnvironment implements RlGdlGameEnvironment {
         return legalMovesCached;
     }
 
-    private  List<List<String>> _getAllLegalMovesForRole(String gdlRoleName) {
-        List<List<String>> allLegalMoves = this._getAllLegalMoves();
+    private  Set<List<String>> _getAllLegalMovesForRole(String gdlRoleName) {
+        Set<List<String>> allLegalMoves = this._getAllLegalMoves();
         if (allLegalMoves != null) {
             allLegalMoves = allLegalMoves
             .stream()
             .filter(
                 l -> l != null && l.size() > 0 && l.get(0).equals(gdlRoleName)
             )
-            .collect(Collectors.toList());
+            .collect(Collectors.toSet());
             return allLegalMoves;
         } else {
-            return new ArrayList<List<String>>();
+            return Set.of();
         }  
     }
 
@@ -228,7 +232,7 @@ public abstract class GDLGameEnvironment implements RlGdlGameEnvironment {
     * @return list of all numbers of legal actions
     */
     public int[] getLegalActionsForPlayer(String gdlRoleName, Agent agent) {
-        List<List<String>> legalMovesForPlayer = this._getAllLegalMovesForRole(gdlRoleName);
+        Set<List<String>> legalMovesForPlayer = this._getAllLegalMovesForRole(gdlRoleName);
 
         List<Integer> legalActions = new ArrayList<Integer>();
 
@@ -283,7 +287,7 @@ public abstract class GDLGameEnvironment implements RlGdlGameEnvironment {
     * @return true if the move was legal and executed; otherwise false
     */
     public boolean step(String moveString, Agent agent) {
-        List<List<String>> nextState = interpreter.interpret(moveString);
+        Set<List<String>> nextState = interpreter.interpret(moveString);
 
         if (nextState != null) { 
             this.legalMovesCouldHaveChanged = true;
@@ -308,7 +312,7 @@ public abstract class GDLGameEnvironment implements RlGdlGameEnvironment {
      * Returns a list of all currently achieved goals
      * @return a list of tuple describing all the goals achieved
      */
-    public List<List<String>> getReachedGoals() {
+    public Set<List<String>> getReachedGoals() {
         return interpreter.getAllModels("goal");
     }
 
@@ -317,7 +321,7 @@ public abstract class GDLGameEnvironment implements RlGdlGameEnvironment {
      * @return a list of strings describing tuple of all the goals achieved
      */
     public List<String> getReachedGoalsAsStrings() {
-        List<List<String>> goals = interpreter.getAllModels("goal");
+        Set<List<String>> goals = interpreter.getAllModels("goal");
         List<String> stringGoals = new ArrayList<String>();
 
         for (List<String> goal : goals) {
@@ -335,7 +339,7 @@ public abstract class GDLGameEnvironment implements RlGdlGameEnvironment {
      * @return a decimal number indicating the reward
      */
     public float getReward(String gdlRoleName, Agent agent) {
-        List<List<String>> goals = interpreter.getAllModels("goal");
+        Set<List<String>> goals = interpreter.getAllModels("goal");
         if (goals != null) {
             return this.calculateRewardFromGoals(goals, gdlRoleName, agent);
         }
@@ -353,7 +357,11 @@ public abstract class GDLGameEnvironment implements RlGdlGameEnvironment {
      * Can be used to start a new episode.
      */
     public void reset() {
-        this.interpreter.reset();
+        try {
+            this.interpreter = new Interpreter(ast).init();
+        } catch (Exception e) {
+            e.printStackTrace();
+        }
         this.lastStepWasIllegal = false;
         this.legalMovesCouldHaveChanged = true;
         this.currentState = this.interpreter.getGameState();
@@ -365,8 +373,24 @@ public abstract class GDLGameEnvironment implements RlGdlGameEnvironment {
      * Returns a list of all tuple of the current state.
      * @return a list of all tuple (encoded as list of strings) of the current state
      */
-    public List<List<String>> getCurrentState() {
+    public Set<List<String>> getCurrentState() {
         return this.currentState;
+    }
+
+    /**
+     * Returns a list of all tuple of the current hidden state.
+     * @return a list of all tuple (encoded as list of strings) of the current hidden state
+     */
+    public Set<List<String>> getCurrentHiddenState() {
+        return this.currentHiddenState;
+    }
+
+    /**
+     * Returns a list of all tuple of the current visible state by role.
+     * @return a list of all tuple (encoded as list of strings) of the current visible state by role
+     */
+    public Set<List<String>> getCurrentStateByRole(String role) {
+        return this.interpreter.getGameStateForRole(role);
     }
 
     /**
@@ -410,6 +434,7 @@ public abstract class GDLGameEnvironment implements RlGdlGameEnvironment {
     public String getStateAsString() {
         StringBuilder readableStringBuilder = new StringBuilder();
         interpreter.getGameState().forEach(s -> readableStringBuilder.append("\t" + s + "\n"));
+        interpreter.getHiddenGameState().forEach(s -> readableStringBuilder.append("\t" + s + "\n"));
         return readableStringBuilder.toString();
     }
 
@@ -442,7 +467,7 @@ public abstract class GDLGameEnvironment implements RlGdlGameEnvironment {
      * @param agent the agent for which the reward is
      * @return a number that gives the reward for an agent for a role
      */
-    public float calculateRewardFromGoals(List<List<String>> goals, String gdlRoleName, Agent agent) {
+    public float calculateRewardFromGoals(Set<List<String>> goals, String gdlRoleName, Agent agent) {
         
         for (List<String> goal : goals) {
             if (goal.get(0) == gdlRoleName) {
