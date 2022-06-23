@@ -1,8 +1,7 @@
 # data-consumer
 
-The following guide explains how run a dockerized version of this application for demo purposes and
-how to run it locally on your machine with Intellij for development purposes. To use all functions including 
-remote logging, the data-provider application must run in the same mode. You can find a guide
+The following guide explains how run a dockerized version of this application for demo purposes and also
+how to run a local version with Intellij for development purposes. To use all functions, the data-consumer application must run in the same mode. You can find a guide
 how to start it [here](https://git.rwth-aachen.de/monticore/EmbeddedMontiArc/applications/catena-x/data-provider).
 
 In both cases, the application will be reachable at [http://localhost:8081/marketplace](http://localhost:8081/marketplace).
@@ -50,7 +49,7 @@ docker-compose up database
 ```
 After this, you can start the backend with the **`ConsumerSpringBootApplication.run.xml`** run configuration that is contained 
 in this repository. Intellij will automatically import it as run configuration. Therefore, you just have to click
-the green RUN button on the top.
+the green RUN button at the top.
 
 Now, when the backend is running, you can start the frontend. Move into the frontend directory:
 ```
