@@ -359,7 +359,7 @@ public class RLSimulationHandler {
         //self-play and training mode
         if (distributed && PLAYMODE == false && !miniStep) {
             int listCounter = 0; //makes sure that right action out of the decentralizedActionsList is selected
-            for (int i = 0; i <= autopilots.length - 1; i++) {
+            for (int i = 0; i < autopilots.length; i++) {
 
                 if (i == trainedVehicle) {
                     setAction(action); //set action for the trained vehicle
@@ -517,7 +517,7 @@ public class RLSimulationHandler {
         float[][] otherVehicleStates = new float[vehicleCount - 1][statePacketLength];
         for (int i = 0; i < vehicleCount - 1; i++) {
             float[] statePacket = autopilots[(currentVehicleIndex + i + 1) % vehicleCount].getStatePacket();
-            for (int j = 0; j < statePacket.length; i++) {
+            for (int j = 0; j < statePacket.length; j++) {
                 otherVehicleStates[i][j] = statePacket[j];
             }
         }
