@@ -219,4 +219,43 @@ class SpringOfferRepositoryPortAdapterTest {
 
 		assertThat(count).isEqualTo(1);
 	}
+
+	@Test
+	void shouldDeleteCorrectOffer() {
+		PolicyEntity policy = new PolicyEntity();
+		policy.setMaxUsages(1);
+
+		MetadataEntity metadata = new MetadataEntity();
+		metadata.setTitle("Aachen Dataset");
+		metadata.setProvider("Carrier GmbH");
+		metadata.setDescription("A simple test data set...");
+		metadata.setPrice(10);
+		metadata.setLoggingUrl("/logging");
+		metadata.setPolicy(policy);
+
+		DataRowEntity datarow = new DataRowEntity();
+		datarow.setDayID("1234");
+		datarow.setLongitude(51);
+		datarow.setLatitude(10);
+		datarow.setGpsTime(null);
+		datarow.setHeading(42);
+		datarow.setSpeed(50);
+		datarow.setOdometer(22000);
+		datarow.setTotalFuelUsed(50);
+		datarow.setTimestamp(null);
+
+		UUID uuid = UUID.fromString("75d5288c-fff5-45db-be0e-b3d8bedf985d");
+		OfferEntity offer = new OfferEntity(uuid, metadata, List.of(datarow));
+
+		springOfferRepository.save(offer);
+
+		underTest.deleteById(uuid);
+
+		int count = 0;
+		for (Offer ignored : underTest.findAll()) {
+			count++;
+		}
+
+		assertThat(count).isEqualTo(0);
+	}
 }

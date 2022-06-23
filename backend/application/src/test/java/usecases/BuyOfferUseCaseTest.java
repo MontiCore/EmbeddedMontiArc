@@ -90,7 +90,6 @@ class BuyOfferUseCaseTest {
 
 		verify(datasetPersistencePort).save(datasetArgumentCaptor.capture());
 		verify(policyDeploymentPort).deployPolicy(policyArgumentCaptor.capture());
-		verify(offerPersistencePort).delete(offerArgumentCaptor.capture());
 
 		assertThat(policyArgumentCaptor.getValue().getId()).isEqualTo(9);
 		assertThat(datasetArgumentCaptor.getValue().getMetadata().getId()).isEqualTo(42);

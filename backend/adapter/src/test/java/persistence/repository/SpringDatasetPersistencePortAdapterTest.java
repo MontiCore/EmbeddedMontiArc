@@ -9,10 +9,11 @@ import org.springframework.boot.autoconfigure.domain.EntityScan;
 import org.springframework.boot.test.autoconfigure.orm.jpa.DataJpaTest;
 import org.springframework.data.jpa.repository.config.EnableJpaRepositories;
 import org.springframework.test.context.ContextConfiguration;
-import persistence.entity.DatasetEntity;
+import persistence.entity.*;
 import persistence.mappers.JacksonDatasetMapper;
 import persistence.mappers.JacksonOfferMapper;
 
+import java.time.LocalDateTime;
 import java.util.List;
 import java.util.Optional;
 import java.util.UUID;
@@ -87,4 +88,49 @@ class SpringDatasetPersistencePortAdapterTest {
 		assertThat(datasetEntity.isPresent()).isTrue();
 		assertThat(datasetEntity.get().getData().size()).isEqualTo(1);
 	}
+
+/*	@Test
+	void shouldDeleteCorrectDataset() {
+		Policy policy = new Policy();
+		policy.setMaxUsages(3);
+
+		Metadata metadata = new Metadata(
+				1,
+				"Aachen Dataset",
+				"Carrier GmbH",
+				"A simple test data set...",
+				10,
+				"/logging",
+				policy);
+
+		DataRow datarow = new DataRow(
+				1,
+				"213421",
+				51,
+				10,
+				null,
+				42,
+				50,
+				20000,
+				50,
+				null
+		);
+
+		UUID offerId = UUID.randomUUID();
+		Offer offer = new Offer(offerId, metadata, List.of(datarow));
+		springOfferPersistencePortAdapter.save(offer);
+		Offer savedOffer = springOfferPersistencePortAdapter.findById(offerId);
+
+		UUID datasetId = UUID.randomUUID();
+		Dataset dataset = new Dataset();
+		dataset.setId(datasetId);
+		dataset.setMetadata(savedOffer.getMetadata());
+		dataset.setOffer(savedOffer);
+		dataset.setData(savedOffer.getData());
+
+		underTest.save(dataset);
+		underTest.deleteById(datasetId);
+
+		assertThat(underTest.findAll().iterator().hasNext()).isFalse();
+	}*/
 }
