@@ -7,38 +7,30 @@ import de.rwth.montisim.commons.utils.IPM;
 import de.rwth.montisim.commons.utils.Vec2;
 import de.rwth.montisim.simulation.commons.TaskStatus;
 import de.rwth.montisim.simulation.commons.util.CollisionLogWriter;
-import de.rwth.montisim.simulation.eecomponents.autopilots.*;
+import de.rwth.montisim.simulation.eecomponents.autopilots.RLAutopilot;
 import de.rwth.montisim.simulation.eecomponents.lidar.Lidar;
 import de.rwth.montisim.simulation.eecomponents.speed_limit.SpeedLimitService;
-import de.rwth.montisim.simulation.environment.osmmap.*;
+import de.rwth.montisim.simulation.environment.osmmap.OsmMap;
+import de.rwth.montisim.simulation.environment.osmmap.OsmToWorldLoader;
 import de.rwth.montisim.simulation.environment.pathfinding.PathfindingImpl;
 import de.rwth.montisim.simulation.environment.world.World;
-import de.rwth.montisim.simulation.simulator.communication.DefaultPreprocessorProperties;
-import de.rwth.montisim.simulation.simulator.communication.Preprocessor;
 import de.rwth.montisim.simulation.simulator.randomization.RandomRandomizationPropertiesPicker;
 import de.rwth.montisim.simulation.simulator.randomization.RandomizationProperties;
 import de.rwth.montisim.simulation.simulator.randomization.RandomizationStrategy;
+import de.rwth.montisim.simulation.simulator.rewards.DefaultRewardFunctionProperties;
+import de.rwth.montisim.simulation.simulator.rewards.RewardFunction;
 import de.rwth.montisim.simulation.simulator.visualization.rl.RLVisualizer;
-import de.rwth.montisim.simulation.vehicle.navigation.*;
-import de.rwth.montisim.simulation.vehicle.physicalvalues.*;
-import de.rwth.montisim.simulation.vehicle.task.path.PathGoalProperties;
-import de.rwth.montisim.simulation.vehicle.task.TaskProperties;
 import de.rwth.montisim.simulation.vehicle.Vehicle;
 import de.rwth.montisim.simulation.vehicle.VehicleProperties;
+import de.rwth.montisim.simulation.vehicle.navigation.Navigation;
+import de.rwth.montisim.simulation.vehicle.physicalvalues.TrueCompass;
+import de.rwth.montisim.simulation.vehicle.physicalvalues.TruePosition;
+import de.rwth.montisim.simulation.vehicle.physicalvalues.TrueVelocity;
+import de.rwth.montisim.simulation.vehicle.task.TaskProperties;
+import de.rwth.montisim.simulation.vehicle.task.path.PathGoalProperties;
 
-import java.awt.event.*;
-import java.io.File;
-import java.lang.Double;
-import java.lang.Thread;
-import java.time.Duration;
 import java.time.Instant;
-import java.util.ArrayList;
-import java.util.Collection;
-import java.util.ConcurrentModificationException;
-import java.util.List;
-import java.util.Optional;
-import java.util.Random;
-import java.util.Arrays;
+import java.util.*;
 
 // This class is responsible for the training and playing with 
 // reinforcement learning agents
@@ -55,7 +47,6 @@ public class RLSimulationHandler {
     private final long ACCESS_TIME = 100; //simulated time between 2 control signals in ms
     private int update_iterations = 1; //number of update calls required for one step
     private final int DEFAULT_STATE_LENGTH = 25;
-    private final long seed = 48965l;
     private int lidar_offset = 0;
     private int speed_limit_offset = 0;
 
@@ -71,7 +62,7 @@ public class RLSimulationHandler {
     private TruePosition[] truePositions;
     private TrueVelocity[] trueVelocity;
     private TrueCompass[] trueCompass;
-    private RLRewardCalculator rewardCalc;
+    private RewardFunction rewardFunction;
     private Random rndGen = new Random();
 
     private int activeVehicle = 0; //Round Robin variable
@@ -120,7 +111,6 @@ public class RLSimulationHandler {
         this.simulationTime = simulationTime;
         this.map = map;
         this.viz = viz;
-        rndGen.setSeed(seed);
     }
 
     //called when self-play agent sends an action
@@ -341,8 +331,9 @@ public class RLSimulationHandler {
         }
         updateStatePackets();
         float[] simState = getState();
-        rewardCalc = new RLRewardCalculator(navigations, vehiclesArray);
-        float init_reward = rewardCalc.getReward();
+
+        rewardFunction = config.rewardFunction.map(props -> props.build(navigations, vehiclesArray)).orElse(new DefaultRewardFunctionProperties().build(navigations, vehiclesArray));
+        float init_reward = rewardFunction.getReward();
         boolean simTermination = this.getSimTermination();
 
         //check if all vehicles found a path, if not, restart simulation
@@ -414,11 +405,11 @@ public class RLSimulationHandler {
         float step_reward;
 
         if (!distributed) {
-            step_reward = rewardCalc.getReward();
+            step_reward = rewardFunction.getReward();
         } else if (miniStep) {
-            step_reward = rewardCalc.getRewardForVehicle(activeVehicle);
+            step_reward = rewardFunction.getRewardForVehicle(activeVehicle);
         } else {
-            step_reward = rewardCalc.getRewardForVehicle(trainedVehicle); //calculate reward only for trained vehicle in self-play mode
+            step_reward = rewardFunction.getRewardForVehicle(trainedVehicle); //calculate reward only for trained vehicle in self-play mode
         }
 
         boolean simTermination = this.getSimTermination();

@@ -21,6 +21,7 @@ import de.rwth.montisim.simulation.simulator.randomization.BasicDrivingStrategyP
 import de.rwth.montisim.simulation.simulator.randomization.EmptyStrategyProperties;
 import de.rwth.montisim.simulation.simulator.randomization.IntersectionStrategyProperties;
 import de.rwth.montisim.simulation.simulator.randomization.PlatooningStrategyProperties;
+import de.rwth.montisim.simulation.simulator.rewards.*;
 import de.rwth.montisim.simulation.vehicle.navigation.NavigationProperties;
 import de.rwth.montisim.simulation.vehicle.physicsmodel.rigidbody.RigidbodyPhysicsProperties;
 import de.rwth.montisim.simulation.vehicle.powertrain.electrical.ElectricalPTProperties;
@@ -57,12 +58,19 @@ public class TypedSimulation {
         Json.registerType(OBB.class);
         Json.registerType(DynamicObject.class);
         Json.registerType(StaticObject.class);
+        /* Randomization Strategies */
         Json.registerType(EmptyStrategyProperties.class);
         Json.registerType(IntersectionStrategyProperties.class);
         Json.registerType(PlatooningStrategyProperties.class);
         Json.registerType(BasicDrivingStrategyProperties.class);
+        /* Preprocessors */
         Json.registerType(DefaultPreprocessorProperties.class);
         Json.registerType(ProximityFilterProperties.class);
         Json.registerType(SequencePreprocessorProperties.class);
+        /* Reward Functions */
+        Json.registerType(DefaultRewardFunctionProperties.class);
+        Json.registerType(SequenceRewardFunctionProperties.class);
+        Json.registerType(StaticCollisionsRewardFunctionProperties.class);
+        Json.registerType(VehicleCollisionsRewardFunctionProperties.class);
     }
 }
