@@ -62,4 +62,9 @@ public class SpringOfferPersistencePortAdapter implements OfferPersistencePort {
 	public void deleteById(UUID offerId) {
 		repository.deleteById(offerId);
 	}
+
+	@Override
+	public void deleteDatasetDataRowOfferById(UUID offerId) {
+		repository.deleteDatasetDataRowOfferById(offerId);
+	}
 }

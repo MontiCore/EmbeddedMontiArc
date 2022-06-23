@@ -26,7 +26,7 @@ public class DatasetSerializer extends StdSerializer<Dataset> {
 
 		jgen.writeStartObject();
 		jgen.writeStringField("id", dataset.getId().toString());
-		jgen.writeStringField("offer", dataset.getOffer().getId().toString());
+		jgen.writeStringField("offer", dataset.getOfferId().toString());
 		jgen.writeObjectField("metadata", dataset.getMetadata());
 		jgen.writeObjectField("data", dataset.getData());
 		jgen.writeStringField("boughtAt", dataset.getBoughtAt().toString());

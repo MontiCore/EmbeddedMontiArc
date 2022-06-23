@@ -14,4 +14,6 @@ public interface OfferPersistencePort {
 	Iterable<Offer> findAllBought();
 
 	void deleteById(UUID offerId);
+
+	void deleteDatasetDataRowOfferById(UUID offerId);
 }

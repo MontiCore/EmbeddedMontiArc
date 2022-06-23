@@ -17,8 +17,7 @@ public class DatasetEntity {
 	@Id
 	private UUID id;
 
-	@OneToOne
-	private OfferEntity offer;
+	private UUID offerId;
 
 	@OneToOne(cascade = CascadeType.ALL)
 	private MetadataEntity metadata;

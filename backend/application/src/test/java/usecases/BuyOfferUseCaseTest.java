@@ -93,7 +93,7 @@ class BuyOfferUseCaseTest {
 
 		assertThat(policyArgumentCaptor.getValue().getId()).isEqualTo(9);
 		assertThat(datasetArgumentCaptor.getValue().getMetadata().getId()).isEqualTo(42);
-		assertThat(datasetArgumentCaptor.getValue().getOffer().getId()).isEqualTo(uuid);
+		assertThat(datasetArgumentCaptor.getValue().getOfferId().getId()).isEqualTo(uuid);
 		assertThat(offerArgumentCaptor.getValue().getId()).isEqualTo(uuid);
 	}
 }

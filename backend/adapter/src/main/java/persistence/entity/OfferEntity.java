@@ -19,9 +19,9 @@ public class OfferEntity {
 	@Id
 	private UUID id;
 
-	@OneToOne(cascade = CascadeType.ALL)
+	@OneToOne
 	private MetadataEntity metadata;
 
-	@OneToMany(mappedBy = "offer", cascade = CascadeType.ALL, orphanRemoval = true)
+	@OneToMany(mappedBy = "offer")
 	private List<DataRowEntity> data;
 }

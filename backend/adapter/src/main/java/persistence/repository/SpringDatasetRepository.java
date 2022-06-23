@@ -17,7 +17,7 @@ public interface SpringDatasetRepository extends CrudRepository<DatasetEntity, U
 	@Transactional
 	@Modifying
 	@Query(value =
-			"INSERT INTO dataset VALUES (:datasetId, :boughtAt, :metadataId, :offerId);" +
+			"INSERT INTO dataset (id, bought_at, metadata_id, offer_id) VALUES (:datasetId, :boughtAt, :metadataId, :offerId);" +
 					"UPDATE data_row SET dataset = :datasetId WHERE offer = :offerId",
 			nativeQuery = true)
 	void save(

@@ -19,7 +19,7 @@ public class SpringDatasetPersistencePortAdapter implements DatasetPersistencePo
 
 	@Override
 	public void save(Dataset dataset) {
-		repository.save(dataset.getId(), dataset.getBoughtAt(), dataset.getMetadata().getId(), dataset.getOffer().getId());
+		repository.save(dataset.getId(), dataset.getBoughtAt(), dataset.getMetadata().getId(), dataset.getOfferId());
 	}
 
 	@Override

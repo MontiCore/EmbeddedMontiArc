@@ -13,7 +13,6 @@ import persistence.entity.*;
 import persistence.mappers.JacksonDatasetMapper;
 import persistence.mappers.JacksonOfferMapper;
 
-import java.time.LocalDateTime;
 import java.util.List;
 import java.util.Optional;
 import java.util.UUID;
@@ -79,7 +78,7 @@ class SpringDatasetPersistencePortAdapterTest {
 		Dataset dataset = new Dataset();
 		dataset.setId(datasetId);
 		dataset.setMetadata(savedOffer.getMetadata());
-		dataset.setOffer(savedOffer);
+		dataset.setOfferId(savedOffer);
 		dataset.setData(savedOffer.getData());
 
 		underTest.save(dataset);

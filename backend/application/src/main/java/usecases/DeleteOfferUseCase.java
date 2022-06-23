@@ -16,7 +16,7 @@ public class DeleteOfferUseCase implements CommandHandler<DeleteOfferCommand> {
 
 	@Override
 	public void handle(DeleteOfferCommand command) {
-		offerPersistencePort.deleteById(command.getOfferId());
+		offerPersistencePort.deleteDatasetDataRowOfferById(command.getOfferId());
 
 		log.info("Successfully deleted dataset {}", command.getOfferId().toString());
 	}

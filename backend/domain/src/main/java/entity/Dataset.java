@@ -13,7 +13,7 @@ import java.util.UUID;
 @NoArgsConstructor
 public class Dataset {
 	private UUID id;
-	private Offer offer;
+	private UUID offerId;
 	private Metadata metadata;
 	private List<DataRow> data;
 	private LocalDateTime boughtAt;
