@@ -48,8 +48,8 @@ public class ProximityFilter implements Preprocessor {
         // Sort the indices by their distance to the vehicle
         Vec2 pos1 = new Vec2(vehicleState[21], vehicleState[22]);
         Arrays.sort(index, (a, b) -> {
-            double distA = pos1.distance(new Vec2(otherStates[a][0], otherStates[a][1]));
-            double distB = pos1.distance(new Vec2(otherStates[b][0], otherStates[b][1]));
+            double distA = pos1.distance(new Vec2(otherStates[a][21], otherStates[a][22]));
+            double distB = pos1.distance(new Vec2(otherStates[b][21], otherStates[b][22]));
             if (distA < distB) return -1;
             else if (distA > distB) return 1;
             else return 0;
