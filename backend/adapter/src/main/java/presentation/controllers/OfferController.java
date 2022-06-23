@@ -26,7 +26,6 @@ public class OfferController {
 	private AddOfferUseCase addOfferUseCase;
 	private BuyOfferUseCase buyOfferUseCase;
 	private GetOffersMetadataUseCase getAllOffersUseCase;
-
 	private DeleteOfferUseCase deleteOfferUseCase;
 
 	@PostMapping(consumes = MediaType.APPLICATION_JSON_VALUE)

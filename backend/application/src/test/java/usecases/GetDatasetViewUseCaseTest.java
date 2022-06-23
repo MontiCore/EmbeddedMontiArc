@@ -75,10 +75,7 @@ class GetDatasetViewUseCaseTest {
 
 		Dataset dataset = new Dataset(
 				uuid,
-				new Offer(UUID.randomUUID(),
-						metadata,
-						List.of(dataRow)
-				),
+				UUID.randomUUID(),
 				metadata,
 				List.of(dataRow),
 				LocalDateTime.now()

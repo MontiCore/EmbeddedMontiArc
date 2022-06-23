@@ -21,14 +21,8 @@ public interface SpringOfferRepository extends CrudRepository<OfferEntity, UUID>
 			"UPDATE data_row SET offer = null WHERE offer = :offerId ; " +
 					"DELETE FROM offer WHERE id = :offerId",
 			nativeQuery = true)
-	void deleteById(@Param("offerId") UUID offerId);
+	void deleteByIdWithoutCascading(@Param("offerId") UUID offerId);
 
 	@Transactional
-	@Modifying
-	@Query(value =
-			"DELETE FROM data_row WHERE dataset = (SELECT id FROM dataset WHERE offer_id = :offerId );" +
-					"DELETE FROM dataset WHERE offer_id = :offerId ; " +
-					"DELETE FROM offer WHERE id = :offerId",
-			nativeQuery = true)
-	void deleteDatasetDataRowOfferById(@Param("offerId") UUID offerId);
+	void deleteById(UUID offerId);
 }

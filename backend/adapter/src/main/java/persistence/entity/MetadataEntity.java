@@ -14,8 +14,8 @@ public class MetadataEntity {
 	@Id
 	@GeneratedValue(strategy = GenerationType.SEQUENCE)
 	private int id;
-	@Column(columnDefinition = "TEXT")
 
+	@Column(columnDefinition = "TEXT")
 	private String title;
 
 	private String provider;
@@ -26,7 +26,7 @@ public class MetadataEntity {
 
 	private String loggingUrl;
 
-	@OneToOne(cascade = CascadeType.ALL)
+	@OneToOne(cascade = CascadeType.ALL, orphanRemoval = true)
 	private PolicyEntity policy;
 }
 

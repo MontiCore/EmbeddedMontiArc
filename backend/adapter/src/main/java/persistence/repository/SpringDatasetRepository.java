@@ -26,15 +26,8 @@ public interface SpringDatasetRepository extends CrudRepository<DatasetEntity, U
 			@Param("metadataId") int metadataId,
 			@Param("offerId") UUID offerId
 	);
-//
-//	@Transactional
-//	@Modifying
-//	@Query(value =
-//			"DELETE FROM data_row WHERE dataset = :datasetId;" +
-//					"DELETE FROM dataset WHERE id = :datasetId;",
-//			nativeQuery = true)
-//	void delete(
-//			@Param("datasetId") UUID datasetId
-//	);
+
+	@Transactional
+	void deleteByOfferId(UUID offerId);
 }
 

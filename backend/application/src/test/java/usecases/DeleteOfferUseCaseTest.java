@@ -1,17 +1,21 @@
 package usecases;
 
-import commands.DeleteDatasetCommand;
 import commands.DeleteOfferCommand;
+import entity.Offer;
 import org.junit.jupiter.api.Test;
 import org.junit.jupiter.api.extension.ExtendWith;
+import org.mockito.BDDMockito;
 import org.mockito.InjectMocks;
 import org.mockito.Mock;
 import org.mockito.junit.jupiter.MockitoExtension;
 import ports.DatasetPersistencePort;
 import ports.OfferPersistencePort;
 
+import java.util.List;
 import java.util.UUID;
 
+import static org.mockito.ArgumentMatchers.any;
+import static org.mockito.BDDMockito.*;
 import static org.mockito.Mockito.verify;
 
 @ExtendWith(MockitoExtension.class)
@@ -21,12 +25,23 @@ class DeleteOfferUseCaseTest {
 	private DeleteOfferUseCase underTest;
 
 	@Mock
-	private OfferPersistencePort persistencePort;
+	private DatasetPersistencePort datasetPersistencePort;
+
+	@Mock
+	private OfferPersistencePort offerPersistencePort;
 
 	@Test
-	void shouldDeleteCorrectDataset() {
-		underTest.handle(new DeleteOfferCommand(UUID.fromString("f3875794-e220-44c5-bde1-e328505387e6")));
+	void shouldOnlyDeleteOffer() {
+		UUID uuid = UUID.fromString("f3875794-e220-44c5-bde1-e328505387e6");
+		given(offerPersistencePort.findById(uuid)).willReturn(
+				new Offer(
+						uuid,
+						null,
+						null
+				)
+		);
+		underTest.handle(new DeleteOfferCommand(uuid));
 
-		verify(persistencePort).deleteById(UUID.fromString("f3875794-e220-44c5-bde1-e328505387e6"));
+		verify(offerPersistencePort).deleteDatasetDataRowOfferById(uuid);
 	}
 }

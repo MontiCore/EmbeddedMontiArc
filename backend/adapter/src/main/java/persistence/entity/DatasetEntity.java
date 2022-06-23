@@ -19,10 +19,10 @@ public class DatasetEntity {
 
 	private UUID offerId;
 
-	@OneToOne(cascade = CascadeType.ALL)
+	@OneToOne(cascade = CascadeType.ALL, orphanRemoval = true)
 	private MetadataEntity metadata;
 
-	@OneToMany(mappedBy = "dataset", cascade = CascadeType.ALL, orphanRemoval = true)
+	@OneToMany(mappedBy = "dataset", fetch = FetchType.EAGER, cascade = CascadeType.ALL, orphanRemoval = true)
 	private List<DataRowEntity> data;
 
 	private LocalDateTime boughtAt;

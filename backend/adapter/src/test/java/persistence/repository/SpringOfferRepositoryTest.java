@@ -58,7 +58,7 @@ class SpringOfferRepositoryTest {
 		underTest.save(boughOffer);
 		DatasetEntity dataset = new DatasetEntity();
 		dataset.setId(UUID.randomUUID());
-		dataset.setOfferId(boughOffer);
+		dataset.setOfferId(boughOffer.getId());
 		dataset.setBoughtAt(LocalDateTime.now());
 		dataset.setMetadata(metadata);
 		dataset.setData(List.of(datarow));

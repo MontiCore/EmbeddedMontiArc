@@ -18,6 +18,7 @@ import org.springframework.test.context.ContextConfiguration;
 import org.springframework.test.web.servlet.MockMvc;
 import usecases.AddOfferUseCase;
 import usecases.BuyOfferUseCase;
+import usecases.DeleteOfferUseCase;
 import usecases.GetOffersMetadataUseCase;
 
 import java.util.HashMap;
@@ -53,6 +54,9 @@ class OfferControllerTest {
 
 	@MockBean
 	private GetOffersMetadataUseCase getAllOffersUseCase;
+
+	@MockBean
+	private DeleteOfferUseCase deleteOfferUseCase;
 
 	@Captor
 	private ArgumentCaptor<AddOfferCommand> addOfferCommandArgumentCaptor;

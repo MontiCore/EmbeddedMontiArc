@@ -47,4 +47,9 @@ public class SpringDatasetPersistencePortAdapter implements DatasetPersistencePo
 	public void deleteById(UUID id) {
 		repository.deleteById(id);
 	}
+
+	@Override
+	public void deleteByOfferId(UUID offerId) {
+		repository.deleteByOfferId(offerId);
+	}
 }

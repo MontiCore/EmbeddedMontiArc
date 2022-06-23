@@ -14,4 +14,6 @@ public interface DatasetPersistencePort {
 	Dataset findById(UUID id);
 
 	void deleteById(UUID id);
+
+	void deleteByOfferId(UUID offerId);
 }

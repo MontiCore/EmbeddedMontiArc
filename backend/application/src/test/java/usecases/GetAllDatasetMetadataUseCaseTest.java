@@ -78,21 +78,13 @@ class GetAllDatasetMetadataUseCaseTest {
 				List.of(
 						new Dataset(
 								firstUUID,
-								new Offer(
-										UUID.randomUUID(),
-										firstMetadata,
-										List.of(dataRow)
-								),
+								UUID.randomUUID(),
 								firstMetadata,
 								List.of(dataRow),
 								LocalDateTime.now()
 						), new Dataset(
 								secondUUID,
-								new Offer(
-										UUID.randomUUID(),
-										secondMetadata,
-										List.of(dataRow)
-								),
+								UUID.randomUUID(),
 								secondMetadata,
 								List.of(dataRow),
 								LocalDateTime.now()

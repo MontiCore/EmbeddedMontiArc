@@ -1,7 +1,10 @@
 package usecases;
 
 import commands.RemoveExpiredDatasetsCommand;
-import entity.*;
+import entity.DataRow;
+import entity.Dataset;
+import entity.Metadata;
+import entity.Policy;
 import org.junit.jupiter.api.Test;
 import org.junit.jupiter.api.extension.ExtendWith;
 import org.mockito.InjectMocks;
@@ -79,21 +82,13 @@ class RemoveExpiredDatasetsUseCaseTest {
 				List.of(
 						new Dataset(
 								firstUUID,
-								new Offer(
-										UUID.randomUUID(),
-										firstMetadata,
-										List.of(dataRow)
-								),
+								UUID.randomUUID(),
 								firstMetadata,
 								List.of(dataRow),
 								LocalDateTime.now()
 						), new Dataset(
 								secondUUID,
-								new Offer(
-										UUID.randomUUID(),
-										secondMetadata,
-										List.of(dataRow)
-								),
+								UUID.randomUUID(),
 								secondMetadata,
 								List.of(dataRow),
 								LocalDateTime.now()

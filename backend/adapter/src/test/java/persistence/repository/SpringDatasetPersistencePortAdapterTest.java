@@ -78,7 +78,7 @@ class SpringDatasetPersistencePortAdapterTest {
 		Dataset dataset = new Dataset();
 		dataset.setId(datasetId);
 		dataset.setMetadata(savedOffer.getMetadata());
-		dataset.setOfferId(savedOffer);
+		dataset.setOfferId(savedOffer.getId());
 		dataset.setData(savedOffer.getData());
 
 		underTest.save(dataset);

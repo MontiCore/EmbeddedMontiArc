@@ -52,7 +52,7 @@ class InsuranceFeeCalculatorPortAdapterTest {
 				null
 		);
 		Offer offer = new Offer(UUID.randomUUID(), metadata, List.of(dataRow));
-		Dataset dataset = new Dataset(UUID.randomUUID(), offer, metadata, List.of(dataRow), null);
+		Dataset dataset = new Dataset(UUID.randomUUID(), offer.getId(), metadata, List.of(dataRow), null);
 		given(calculator.calculate(any())).willReturn(2500.0);
 
 		assertThat(underTest.calculateFee(dataset)).isEqualTo(2500);

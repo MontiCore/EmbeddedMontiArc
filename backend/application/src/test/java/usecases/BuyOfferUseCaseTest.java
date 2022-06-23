@@ -39,7 +39,7 @@ class BuyOfferUseCaseTest {
 	private PolicyDeploymentPort policyDeploymentPort;
 
 	@Captor
-	private ArgumentCaptor<Offer> offerArgumentCaptor;
+	private ArgumentCaptor<UUID> uuidArgumentCaptor;
 
 	@Captor
 	private ArgumentCaptor<Policy> policyArgumentCaptor;
@@ -90,10 +90,12 @@ class BuyOfferUseCaseTest {
 
 		verify(datasetPersistencePort).save(datasetArgumentCaptor.capture());
 		verify(policyDeploymentPort).deployPolicy(policyArgumentCaptor.capture());
+		verify(offerPersistencePort).deleteById(uuidArgumentCaptor.capture());
+
 
 		assertThat(policyArgumentCaptor.getValue().getId()).isEqualTo(9);
 		assertThat(datasetArgumentCaptor.getValue().getMetadata().getId()).isEqualTo(42);
-		assertThat(datasetArgumentCaptor.getValue().getOfferId().getId()).isEqualTo(uuid);
-		assertThat(offerArgumentCaptor.getValue().getId()).isEqualTo(uuid);
+		assertThat(datasetArgumentCaptor.getValue().getOfferId()).isEqualTo(uuid);
+		assertThat(uuidArgumentCaptor.getValue()).isEqualTo(uuid);
 	}
 }

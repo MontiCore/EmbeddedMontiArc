@@ -42,8 +42,8 @@ public class CompositionConfig {
 	}
 
 	@Bean
-	public DeleteOfferUseCase getDeleteOfferUseCase(OfferPersistencePort offerPersistencePort) {
-		return new DeleteOfferUseCase(offerPersistencePort);
+	public DeleteOfferUseCase getDeleteOfferUseCase(DatasetPersistencePort datasetPersistencePort, OfferPersistencePort offerPersistencePort) {
+		return new DeleteOfferUseCase(datasetPersistencePort, offerPersistencePort);
 	}
 
 	@Bean
