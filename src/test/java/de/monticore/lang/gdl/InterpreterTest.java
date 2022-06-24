@@ -5,6 +5,7 @@ import static org.junit.Assert.assertNotNull;
 import static org.junit.Assert.assertTrue;
 
 import java.util.ArrayList;
+import java.util.HashSet;
 import java.util.List;
 import java.util.Set;
 import java.util.stream.Collectors;
@@ -294,18 +295,48 @@ public class InterpreterTest {
         testCase.doTestCase();
     }
 
+    @Test
+    public void testNegative() {
+        InterpreterTestCase testCase = new InterpreterTestCase("Negative");
+        testCase.moves.addAll(List.of(
+            Command.createMoveFromLine("test (do tmult)"),
+            Command.createMoveFromLine("test (do tadd)"),
+            Command.createMoveFromLine("test (do tsub)"),
+            Command.createMoveFromLine("test (do tdiv)"),
+            Command.createMoveFromLine("test (do tmod)"),
+            Command.createMoveFromLine("test (do tless)"),
+            Command.createMoveFromLine("test (do tgreater)"),
+            Command.createMoveFromLine("test (do tequal)"),
+            Command.createMoveFromLine("test (do tnumber)"),
+            Command.createMoveFromLine("test (do tsucc)")
+        ));
+        testCase.expectedState.addAll(List.of(
+            List.of("success", "tmult"),
+            List.of("success", "tadd"),
+            List.of("success", "tsub"),
+            List.of("success", "tdiv"),
+            List.of("success", "tmod"),
+            List.of("success", "tless"),
+            List.of("success", "tgreater"),
+            List.of("success", "tequal"),
+            List.of("success", "tnumber"),
+            List.of("success", "tsucc")
+        ));
+        testCase.doTestCase();
+    }
+
 
     private final class InterpreterTestCase {
         final String modelPath;
         final List<Command> moves;
-        final List<List<String>> expectedState;
-        final List<List<String>> expectedHiddenState;
+        final Set<List<String>> expectedState;
+        final Set<List<String>> expectedHiddenState;
 
         public InterpreterTestCase(String modelName) {
             this.modelPath = "src/test/resources/gdl/interpreter/" + modelName + ".gdl";
             this.moves = new ArrayList<>();
-            this.expectedState = new ArrayList<>();
-            this.expectedHiddenState = new ArrayList<>();
+            this.expectedState = new HashSet<>();
+            this.expectedHiddenState = new HashSet<>();
         }
 
         public Interpreter doTestCase() {
@@ -322,8 +353,8 @@ public class InterpreterTest {
                 interpreter.interpret(c);
             }
     
-            List<List<String>> state = interpreter.getGameState();
-            List<List<String>> hiddenState = interpreter.getHiddenGameState();
+            Set<List<String>> state = interpreter.getGameState();
+            Set<List<String>> hiddenState = interpreter.getHiddenGameState();
     
             assertEquals(String.format("State sizes do not match: %s %s", state.toString(), this.expectedState.toString()), state.size(), this.expectedState.size());
     

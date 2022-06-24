@@ -9,6 +9,7 @@ import de.monticore.lang.gdl.FunctionSignature;
 import de.monticore.lang.gdl.GDLMill;
 import de.monticore.lang.gdl._ast.ASTGameAdd;
 import de.monticore.lang.gdl._ast.ASTGameCount;
+import de.monticore.lang.gdl._ast.ASTGameDigits;
 import de.monticore.lang.gdl._ast.ASTGameDistinct;
 import de.monticore.lang.gdl._ast.ASTGameDiv;
 import de.monticore.lang.gdl._ast.ASTGameDoes;
@@ -133,9 +134,18 @@ public class PrologPrinter extends IndentPrinter implements GDLVisitor2, MCCommo
 
     @Override
     public void visit(ASTGameValue node) {
-        String value = node.getValue();
+        String value = node.toString();
         print("value_" + value);
         if (saveVars) vars.add("value_" + value);
+    }
+
+    @Override
+    public void visit(ASTGameDigits node) {
+        String prefix = node.getVal().isNegative() ? "valnn_" : "value_";
+        String value = node.toString();
+        if (node.getVal().isNegative()) value = value.substring(1);
+        print(prefix + value);
+        if (saveVars) vars.add(prefix + value);
     }
 
     public void visit(ASTGameFunction node) {
@@ -176,46 +186,6 @@ public class PrologPrinter extends IndentPrinter implements GDLVisitor2, MCCommo
 
     public void visit(ASTGameGoal node) {
         print("function_goal");
-    }
-
-    public void visit(ASTGameAdd node) {
-        print("function_add");
-    }
-
-    public void visit(ASTGameSub node) {
-        print("function_sub");
-    }
-
-    public void visit(ASTGameMult node) {
-        print("function_mult");
-    }
-
-    public void visit(ASTGameDiv node) {
-        print("function_div");
-    }
-
-    public void visit(ASTGameSucc node) {
-        print("function_succ");
-    }
-
-    public void visit(ASTGameLess node) {
-        print("function_less");
-    }
-
-    public void visit(ASTGameGreater node) {
-        print("function_greater");
-    }
-
-    public void visit(ASTGameEqual node) {
-        print("function_equal");
-    }
-
-    public void visit(ASTGameNumber node) {
-        print("function_num");
-    }
-
-    public void visit(ASTGameMod node) {
-        print("function_modulo");
     }
 
     public String getPlaceholderStates() {
@@ -441,6 +411,30 @@ public class PrologPrinter extends IndentPrinter implements GDLVisitor2, MCCommo
                 print("number_to_atom(Length" + uniqueID + ", ");
                 node.getArguments(0).accept(getTraverser());
                 print(")");
+            } else if (type instanceof ASTGameLegal) {
+                type.accept(getTraverser());
+                print("(");
+                ASTGameRelation astPlayer = node.getArguments(0);
+                astPlayer.accept(getTraverser());
+                print(", (");
+
+                ASTGameExpression parameters = (ASTGameExpression) node.getArguments(1);
+                String pseudoValue = "value_" + ((ASTGameFunction) parameters.getType()).getFunction();
+                print(pseudoValue);
+
+                for (int i = 0; i < parameters.getArgumentsList().size(); i++) {
+                    if (i == 0) {
+                        print(", ");
+                    }
+
+                    parameters.getArguments(i).accept(getTraverser());
+
+                    if (i + 1 < parameters.getArgumentsList().size()) {
+                        print(", ");
+                    }
+                }
+
+                print("))");
             } else {
                 type.accept(getTraverser());
                 print("(");

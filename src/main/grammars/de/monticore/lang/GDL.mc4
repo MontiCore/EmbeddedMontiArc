@@ -16,7 +16,8 @@ grammar GDL extends de.monticore.literals.MCCommonLiterals {
     interface GameType;
 
     GameToken implements GameRelation = "?"token:Name;
-    GameValue implements GameRelation = value:Name | value:Digits;
+    GameValue implements GameRelation = value:Name;
+    GameDigits extends GameValue = val:SignedNatLiteral;
 
     GameRole implements GameType = "role";
     GameInit implements GameType = "init";

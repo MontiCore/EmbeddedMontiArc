@@ -3,18 +3,37 @@ get_random_legal(A) :-
   setof((X), function_legal(value_random, X), Models),
   random_member(A, Models).
 
+% positive
 atom_to_number(Atom, Number) :-
   atom_concat(value_, OnlyNumber, Atom),
   atom_number(OnlyNumber, Number).
 
+% negative
+atom_to_number(Atom, Number) :-
+  atom_concat(valnn_, OnlyNumber, Atom),
+  atom_concat('-', OnlyNumber, SignedNumberAtom),
+  atom_number(SignedNumberAtom, Number).
+
+
+% positive
 number_to_atom(Number, Atom) :-
+  (1 is sign(Number); 0 is sign(Number)),
   atom_number(OnlyNumber, Number),
   atom_concat(value_, OnlyNumber, Atom).
+
+% negative
+number_to_atom(Number, Atom) :-
+  -1 is sign(Number),
+  PNumber is -1 * Number,
+  atom_number(OnlyNumber, PNumber),
+  atom_concat(valnn_, OnlyNumber, Atom).
 
 :- dynamic(state/1).
 :- dynamic(state/2).
 :- dynamic(state_hidden/2).
 :- dynamic(state_hidden/3).
+
+:- dynamic(input/1).
 
 retractAllStates() :-
   retractall(state(X0)),
