@@ -17,6 +17,8 @@ import java.util.List;
 import java.util.Scanner;
 import java.util.Set;
 import java.util.concurrent.Semaphore;
+import java.util.regex.Matcher;
+import java.util.regex.Pattern;
 import java.util.stream.Collectors;
 
 import de.monticore.lang.gdl._ast.ASTGame;
@@ -512,6 +514,7 @@ public class Interpreter {
         return allResults;
     }
 
+    private final Pattern randomMoveResultPattern = Pattern.compile("(\\(.*\\))", Pattern.MULTILINE);
     private List<String> getRandomMove() {
         if (legalSignatures.isEmpty()) {
             return null;
@@ -526,10 +529,16 @@ public class Interpreter {
 
         if (result.endsWith(").")) {
             // A =  (3, 3).
-            result = result.substring(6, result.length() - 2);
+            // result = result.substring(6, result.length() - 2);
+            final Matcher m = randomMoveResultPattern.matcher(result);
+            m.find();
+            result = m.group();
+            result = result.substring(1, result.length()-1);
 
-            List<String> moveResult = new ArrayList<String>(Arrays.asList(result.split(", ")));
+            List<String> moveResult = new ArrayList<String>(Arrays.asList(result.split(",")));
             moveResult.add(0, "value_random");
+            moveResult = moveResult.stream().map(s -> s.strip()).collect(Collectors.toList());
+
             return moveResult;
         }
 

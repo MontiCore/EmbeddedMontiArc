@@ -157,7 +157,7 @@ publishing {
         mavenJava(MavenPublication) {
             groupId = 'de.monticore.lang'
             artifactId = 'gdl'
-            version = '7.1.0-SNAPSHOT'
+            version = '7.2.0-SNAPSHOT'
             from components.java
         }
     }
@@ -172,7 +172,7 @@ publishing {
 
 
 task copyGDLJarToBin(type: Copy) {
-    from 'target/libs/GDL-7.1.0-SNAPSHOT.jar'
+    from 'target/libs/GDL-7.2.0-SNAPSHOT.jar'
     into "bin/GDL-cli.jar"
 }   
 
