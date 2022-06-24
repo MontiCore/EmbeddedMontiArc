@@ -190,9 +190,7 @@ greater(X,Y) :-
 equal(X,Y) :-
   nonvar(X),
   nonvar(Y),
-  atom_concat(value_, NX, X),
-  atom_concat(value_, NY, Y),
-  NX = NY.
+  X = Y.
 
 % ----- is a number? -----
 num(X) :-
