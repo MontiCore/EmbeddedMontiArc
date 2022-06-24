@@ -9,7 +9,7 @@ import ports.PolicyEnforcementPort;
 
 @Component
 @AllArgsConstructor
-public class MydataDatasetPolicyEnforcementPortAdapter implements PolicyEnforcementPort<Dataset> {
+public class MydataPolicyEnforcementPortAdapter implements PolicyEnforcementPort<Dataset> {
 
 	private final MydataDatasetPEP pep;
 
