@@ -2,7 +2,7 @@
   <div class="header d-flex align-items-center">
     <div class="d-flex align-items-center" style="min-width: 20rem">
         <Logo/>
-        <h1 class="m-0 fw-bold fst-italic" style="color: #036eb8">TruckSurance</h1>
+        <h1 class="m-0 fw-bold fst-italic" style="color: #036eb8">TruckInsurance</h1>
     </div>
     <div class="d-flex justify-content-center flex-grow-1 gap-3">
         <router-link class="nav-item nav-link" to="/datasets"><div :class="{ 'active-route': isCurrentView('datasets')}"><Icon class="pe-1" icon="bx:data" style="font-size: 1.75rem" />Datasets</div></router-link>

@@ -1,6 +1,6 @@
 package usecases;
 
-import dto.DatasetView;
+import dto.DatasetViewDto;
 import entity.Dataset;
 import lombok.AllArgsConstructor;
 import ports.DatasetPersistencePort;
@@ -9,16 +9,16 @@ import ports.PolicyEnforcementPort;
 import queries.GetDatasetQuery;
 
 @AllArgsConstructor
-public class GetDatasetViewUseCase implements QueryHandler<GetDatasetQuery, DatasetView> {
+public class GetDatasetViewUseCase implements QueryHandler<GetDatasetQuery, DatasetViewDto> {
 
 	private final DatasetPersistencePort datasetPersistencePort;
 	private final InsuranceFeeCalculatorPort feeCalculatorPort;
 	private final PolicyEnforcementPort<Dataset> enforcementPort;
 
-	public DatasetView handle(GetDatasetQuery query) {
+	public DatasetViewDto handle(GetDatasetQuery query) {
 		Dataset dataset = enforcementPort.enforcePolicy(datasetPersistencePort.findById(query.getDatasetId()));
 
-		return new DatasetView(
+		return new DatasetViewDto(
 				dataset.getId(),
 				dataset.getMetadata(),
 				dataset.getData(),

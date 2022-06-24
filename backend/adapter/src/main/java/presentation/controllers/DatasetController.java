@@ -1,8 +1,7 @@
 package presentation.controllers;
 
 import commands.DeleteDatasetCommand;
-import dto.DatasetView;
-import entity.Dataset;
+import dto.DatasetViewDto;
 import entity.Metadata;
 import lombok.AllArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
@@ -33,7 +32,7 @@ public class DatasetController {
 	}
 
 	@GetMapping("/{datasetId}")
-	public DatasetView getDataset(@PathVariable UUID datasetId) {
+	public DatasetViewDto getDataset(@PathVariable UUID datasetId) {
 		return getDatasetViewUseCase.handle(new GetDatasetQuery(datasetId));
 	}
 

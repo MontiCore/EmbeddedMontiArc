@@ -1,6 +1,6 @@
 package usecases;
 
-import dto.DatasetView;
+import dto.DatasetViewDto;
 import entity.*;
 import org.junit.jupiter.api.Test;
 import org.junit.jupiter.api.extension.ExtendWith;
@@ -25,7 +25,7 @@ import static org.mockito.BDDMockito.given;
 import static org.mockito.Mockito.verify;
 
 @ExtendWith(MockitoExtension.class)
-class GetDatasetViewUseCaseTest {
+class GetDatasetViewDtoUseCaseTest {
 
 	@InjectMocks
 	private GetDatasetViewUseCase underTest;
@@ -85,16 +85,16 @@ class GetDatasetViewUseCaseTest {
 		given(enforcementPort.enforcePolicy(any())).willReturn(dataset);
 		given(feeCalculatorPort.calculateFee(any())).willReturn(2000.0);
 
-		DatasetView datasetView = underTest.handle(new GetDatasetQuery(uuid));
+		DatasetViewDto datasetViewDto = underTest.handle(new GetDatasetQuery(uuid));
 
 		verify(enforcementPort).enforcePolicy(datasetArgumentCaptor.capture());
 		Dataset capturedDataset = datasetArgumentCaptor.getValue();
-		assertThat(datasetView.getId()).isEqualTo(uuid);
-		assertThat(datasetView.getId()).isEqualTo(capturedDataset.getId());
-		assertThat(datasetView.getNumberOfTrucks()).isEqualTo(1);
-		assertThat(datasetView.getDrivingTrucks()).isEqualTo(1);
-		assertThat(datasetView.getRestingTrucks()).isEqualTo(0);
-		assertThat(datasetView.getAvgFuelConsumption()).isEqualTo(50);
-		assertThat(datasetView.getInsuranceFee()).isEqualTo(2000.0);
+		assertThat(datasetViewDto.getId()).isEqualTo(uuid);
+		assertThat(datasetViewDto.getId()).isEqualTo(capturedDataset.getId());
+		assertThat(datasetViewDto.getNumberOfTrucks()).isEqualTo(1);
+		assertThat(datasetViewDto.getDrivingTrucks()).isEqualTo(1);
+		assertThat(datasetViewDto.getRestingTrucks()).isEqualTo(0);
+		assertThat(datasetViewDto.getAvgFuelConsumption()).isEqualTo(50);
+		assertThat(datasetViewDto.getInsuranceFee()).isEqualTo(2000.0);
 	}
 }

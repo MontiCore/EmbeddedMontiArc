@@ -20,6 +20,7 @@ public class MetadataEntity {
 
 	private String provider;
 
+	@Column(columnDefinition = "TEXT")
 	private String description;
 
 	private double price;

@@ -1,7 +1,7 @@
 package presentation.controllers;
 
 import commands.DeleteDatasetCommand;
-import dto.DatasetView;
+import dto.DatasetViewDto;
 import entity.*;
 import org.junit.jupiter.api.Test;
 import org.mockito.ArgumentCaptor;
@@ -17,7 +17,6 @@ import usecases.DeleteDatasetUseCase;
 import usecases.GetAllDatasetMetadataUseCase;
 import usecases.GetDatasetViewUseCase;
 
-import java.time.LocalDateTime;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
@@ -122,7 +121,7 @@ class DatasetControllerTest {
 				null
 		);
 
-		DatasetView datasetView = new DatasetView(
+		DatasetViewDto datasetViewDto = new DatasetViewDto(
 				uuid,
 				metadata,
 				List.of(dataRow),
@@ -133,7 +132,7 @@ class DatasetControllerTest {
 				50,3550.99
 		);
 
-		given(getDatasetViewUseCase.handle(new GetDatasetQuery(uuid))).willReturn(datasetView);
+		given(getDatasetViewUseCase.handle(new GetDatasetQuery(uuid))).willReturn(datasetViewDto);
 
 		mvc.perform(get("/datasets/" + uuid)
 						.contentType(MediaType.APPLICATION_JSON))

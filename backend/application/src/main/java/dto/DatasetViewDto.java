@@ -9,7 +9,7 @@ import java.util.List;
 import java.util.UUID;
 
 @Value
-public class DatasetView {
+public class DatasetViewDto {
 	UUID id;
 	Metadata metadata;
 	List<DataRow> data;
