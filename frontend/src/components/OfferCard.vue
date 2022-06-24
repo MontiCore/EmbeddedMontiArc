@@ -18,7 +18,7 @@
     <PolicyCollapsable :id="id" :policy="policy" />
     <p class="description m-0 flex-grow-1">{{ description }}</p>
     <div class="d-flex justify-content-between align-items-center">
-      <button type="button" class="btn buy-btn" @click="buy()" style="font-weight: bold" :disabled="bought">Buy now</button>
+      <button type="button" class="btn buy-btn" @click="buy()" style="font-weight: bold">Buy now</button>
       <p class="fw-bold m-0 fs-5">{{ price.toLocaleString("en-US", { maximumFractionDigits: 2, minimumFractionDigits: 2 }) }} €</p>
     </div>
   </div>
@@ -102,28 +102,15 @@ export default {
       } else {
         return {}
       }
-    },
-    bought () {
-      let result = false
-      for (const [id] of Object.entries(this.$store.getters.getBoughtOffers)) {
-        if (id === this.id) {
-          result = true
-        }
-      }
-
-      return result
     }
   },
   methods: {
     buy () {
       this.$store.dispatch('buyOffer', this.id).then(() => {
-        this.$store.dispatch('fetchBoughtOffers')
         this.$emit('buy', this.title)
+        this.$store.dispatch('fetchOffers')
       })
     }
-  },
-  mounted () {
-    this.$store.dispatch('fetchBoughtOffers')
   }
 }
 </script>

@@ -5,7 +5,6 @@ import commands.AddOfferCommand;
 import commands.BuyOfferCommand;
 import entity.DataRow;
 import entity.Metadata;
-import entity.Offer;
 import entity.Policy;
 import org.junit.jupiter.api.Test;
 import org.mockito.ArgumentCaptor;
@@ -19,7 +18,7 @@ import org.springframework.test.web.servlet.MockMvc;
 import usecases.AddOfferUseCase;
 import usecases.BuyOfferUseCase;
 import usecases.DeleteOfferUseCase;
-import usecases.GetOffersMetadataUseCase;
+import usecases.GetAllOffersMetadataUseCase;
 
 import java.util.HashMap;
 import java.util.List;
@@ -53,7 +52,7 @@ class OfferControllerTest {
 	private BuyOfferUseCase buyOfferUseCase;
 
 	@MockBean
-	private GetOffersMetadataUseCase getAllOffersUseCase;
+	private GetAllOffersMetadataUseCase getAllOffersUseCase;
 
 	@MockBean
 	private DeleteOfferUseCase deleteOfferUseCase;

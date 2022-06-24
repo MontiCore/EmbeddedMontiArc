@@ -12,9 +12,6 @@ import java.util.UUID;
 
 @Repository
 public interface SpringOfferRepository extends CrudRepository<OfferEntity, UUID> {
-	@Query(value = "SELECT o.* FROM offer o WHERE o.id IN (SELECT DISTINCT d.offer_id FROM dataset d)", nativeQuery = true)
-	Iterable<OfferEntity> findAllBoughtOffers();
-
 	@Transactional
 	@Modifying
 	@Query(value =

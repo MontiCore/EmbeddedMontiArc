@@ -10,7 +10,7 @@ import org.mockito.InjectMocks;
 import org.mockito.Mock;
 import org.mockito.junit.jupiter.MockitoExtension;
 import ports.OfferPersistencePort;
-import queries.GetOffersMetadataQuery;
+import queries.GetAllOffersMetadataQuery;
 
 import java.time.LocalDateTime;
 import java.time.LocalTime;
@@ -24,10 +24,10 @@ import static org.mockito.BDDMockito.given;
 import static org.mockito.Mockito.verify;
 
 @ExtendWith(MockitoExtension.class)
-class GetOffersMetadataUseCaseTest {
+class GetAllOffersMetadataUseCaseTest {
 
 	@InjectMocks
-	private GetOffersMetadataUseCase underTest;
+	private GetAllOffersMetadataUseCase underTest;
 
 	@Mock
 	private OfferPersistencePort offerPersistencePort;
@@ -93,7 +93,7 @@ class GetOffersMetadataUseCaseTest {
 						)));
 
 
-		Map<UUID, Metadata> actualMetadataMap = underTest.handle(new GetOffersMetadataQuery(false));
+		Map<UUID, Metadata> actualMetadataMap = underTest.handle(new GetAllOffersMetadataQuery());
 
 		verify(offerPersistencePort).findAll();
 		assertThat(actualMetadataMap.containsKey(firstUUID)).isTrue();
@@ -106,68 +106,9 @@ class GetOffersMetadataUseCaseTest {
 	void shouldBeEmptyIfNoOffersAtAll() {
 		given(offerPersistencePort.findAll()).willReturn(Collections.emptyList());
 
-		Map<UUID, Metadata> actualMetadataMap = underTest.handle(new GetOffersMetadataQuery(false));
+		Map<UUID, Metadata> actualMetadataMap = underTest.handle(new GetAllOffersMetadataQuery());
 
 		verify(offerPersistencePort).findAll();
 		assertThat(actualMetadataMap.size()).isEqualTo(0);
 	}
-
-	@Test
-	void shouldReturnOneBoughtOffersMetadata() {
-		UUID uuid = UUID.fromString("298384ab-ee2e-48d3-9e26-8895643316cb");
-
-		Policy policy = new Policy();
-		policy.setId(1);
-		policy.setStartTime(LocalTime.of(8, 0));
-
-		Metadata metadata = new Metadata(
-				42,
-				"Aachen Dataset",
-				"Carrier GmbH",
-				"A simple test data set...",
-				10,
-				"/logging",
-				policy
-		);
-
-		DataRow dataRow = new DataRow(
-				1,
-				"1234",
-				51,
-				10,
-				LocalDateTime.now(),
-				42,
-				50,
-				22000,
-				50,
-				LocalDateTime.now()
-		);
-
-		given(offerPersistencePort.findAllBought()).willReturn(
-				List.of(
-						new Offer(
-								uuid,
-								metadata,
-								List.of(dataRow)
-						)
-				));
-
-
-		Map<UUID, Metadata> actualMetadataMap = underTest.handle(new GetOffersMetadataQuery(true));
-
-		verify(offerPersistencePort).findAllBought();
-		assertThat(actualMetadataMap.containsKey(uuid)).isTrue();
-		assertThat(actualMetadataMap.get(uuid).getPolicy().getId()).isEqualTo(1);
-	}
-
-	@Test
-	void shouldBeEmptyIfNoOffersBought() {
-		given(offerPersistencePort.findAllBought()).willReturn(Collections.emptyList());
-
-		Map<UUID, Metadata> actualMetadataMap = underTest.handle(new GetOffersMetadataQuery(true));
-
-		verify(offerPersistencePort).findAllBought();
-		assertThat(actualMetadataMap.size()).isEqualTo(0);
-	}
-
 }

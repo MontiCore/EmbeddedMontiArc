@@ -3,7 +3,7 @@ VALUES (1, '16:00:00', '2023-06-24', true, 100, false, '08:00:00', null);
 INSERT INTO public.policy (id, end_time, expires_on, local_logging, max_usages, remote_logging, start_time, target_id)
 VALUES (2, null, '2023-07-05', true, 1000, true, null, null);
 INSERT INTO public.policy (id, end_time, expires_on, local_logging, max_usages, remote_logging, start_time, target_id)
-VALUES (3, null, '2022-06-20', true, 2, false, null, null);
+VALUES (3, null, '2023-06-20', true, 2, false, null, null);
 
 
 INSERT INTO public.metadata (id, description, logging_url, price, provider, title, policy_id)

@@ -5,7 +5,6 @@ import entity.Offer;
 import insurance.InsuranceFeeCalculatorPortAdapter;
 import insurance.RandomFeeCalculator;
 import lombok.AllArgsConstructor;
-import org.hibernate.sql.Delete;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
@@ -59,8 +58,8 @@ public class CompositionConfig {
 	}
 
 	@Bean
-	public GetOffersMetadataUseCase getAllOffersMetadataUseCase(OfferPersistencePort offerPersistencePort) {
-		return new GetOffersMetadataUseCase(offerPersistencePort);
+	public GetAllOffersMetadataUseCase getAllOffersMetadataUseCase(OfferPersistencePort offerPersistencePort) {
+		return new GetAllOffersMetadataUseCase(offerPersistencePort);
 	}
 
 	@Bean

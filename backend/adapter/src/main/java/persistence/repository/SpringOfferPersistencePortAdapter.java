@@ -49,16 +49,6 @@ public class SpringOfferPersistencePortAdapter implements OfferPersistencePort {
 	}
 
 	@Override
-	public Iterable<Offer> findAllBought() {
-		List<Offer> offers = new ArrayList<>();
-		repository.findAllBoughtOffers().forEach(offerEntity ->
-				offers.add(mapper.mapFrom(offerEntity))
-		);
-
-		return offers;
-	}
-
-	@Override
 	public void deleteById(UUID offerId) {
 		repository.deleteByIdWithoutCascading(offerId);
 	}

@@ -8,11 +8,11 @@ import lombok.AllArgsConstructor;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.MediaType;
 import org.springframework.web.bind.annotation.*;
-import queries.GetOffersMetadataQuery;
+import queries.GetAllOffersMetadataQuery;
 import usecases.AddOfferUseCase;
 import usecases.BuyOfferUseCase;
 import usecases.DeleteOfferUseCase;
-import usecases.GetOffersMetadataUseCase;
+import usecases.GetAllOffersMetadataUseCase;
 
 import java.util.Map;
 import java.util.UUID;
@@ -25,7 +25,7 @@ public class OfferController {
 
 	private AddOfferUseCase addOfferUseCase;
 	private BuyOfferUseCase buyOfferUseCase;
-	private GetOffersMetadataUseCase getAllOffersUseCase;
+	private GetAllOffersMetadataUseCase getAllOffersUseCase;
 	private DeleteOfferUseCase deleteOfferUseCase;
 
 	@PostMapping(consumes = MediaType.APPLICATION_JSON_VALUE)
@@ -41,8 +41,8 @@ public class OfferController {
 	}
 
 	@GetMapping
-	public Map<UUID, Metadata> getAllOffers(@RequestParam(required = false) boolean bought) {
-		return getAllOffersUseCase.handle(new GetOffersMetadataQuery(bought));
+	public Map<UUID, Metadata> getAllOffers() {
+		return getAllOffersUseCase.handle(new GetAllOffersMetadataQuery());
 	}
 
 	@DeleteMapping("/{offerId}")
