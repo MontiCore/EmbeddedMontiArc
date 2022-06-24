@@ -390,7 +390,7 @@
 //place card
 (<= (next (stack ?stack ?pos ?card))
     (does ?player (put ?card ?stack ?pos))
-    (not (equal ?pos 6))
+    (distinct ?pos 6)
 )
 
 //handle inPlay flags
@@ -450,13 +450,10 @@
 (<= (next (control all))
     (not (true (control all)))
     (does ?player1 (put ?card1 ?stack))
-    (true (sees ?player2 (inPlay ?player2 ?card2)))
-    (true (sees ?player3 (inPlay ?player3 ?card3)))
-    (true (sees ?player4 (inPlay ?player4 ?card4)))
+    (true (sees ?player2 (inPlay ?player2 1000)))
+    (true (sees ?player3 (inPlay ?player3 1000)))
+    (true (sees ?player4 (inPlay ?player4 1000)))
     (distinct ?player1 ?player2 ?player3 ?player4)
-    (equal ?card2 1000)
-    (equal ?card3 1000)
-    (equal ?card4 1000)
 )
 
 //Random control handling
@@ -495,7 +492,7 @@
 (<= (next (stack ?stack ?pos ?card))
     (true (stack ?stack ?pos ?card))
     (not (isFull ?stack))
-    (not (equal ?pos 1))
+    (distinct ?pos 1)
     (not (does ?player (put ?card2 ?stack ?pos)))
 )
 
@@ -568,25 +565,25 @@
 (<= (next (points ?player ?card2))
     (does ?player (put ?card ?stack 6))
     (true (stack ?stack 2 ?card2))
-    (not (equal ?card2 0))
+    (distinct ?card2 0)
 )
 
 (<= (next (points ?player ?card3))
     (does ?player (put ?card ?stack 6))
     (true (stack ?stack 3 ?card3))
-    (not (equal ?card3 0))
+    (distinct ?card3 0)
 )
 
 (<= (next (points ?player ?card4))
     (does ?player (put ?card ?stack 6))
     (true (stack ?stack 4 ?card4))
-    (not (equal ?card4 0))
+    (distinct ?card4 0)
 )
 
 (<= (next (points ?player ?card5))
     (does ?player (put ?card ?stack 6))
     (true (stack ?stack 5 ?card5))
-    (not (equal ?card5 0))
+    (distinct ?card5 0)
 )
 
 //------------
