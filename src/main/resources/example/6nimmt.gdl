@@ -110,21 +110,13 @@
     (does ?player (put ?card ?stack 6))
 )
 
-//Is ?stack1 equal ?stack2
-(<= (equalStack ?stack1 ?stack2)
-    (isStack ?stack1 ?num1)
-    (isStack ?stack2 ?num2)
-    (equal ?num1 ?num2)
-)
-
 //Atleast one smaller stack; One function for each possible stack to optimize runtime
-(<= (isMatchingStack ?stack ?card)
+(<= (isMatchingStack a ?card)
     (isCard ?card ?val)
     (lastCard a ?pos1 ?card1)
     (lastCard b ?pos2 ?card2)
     (lastCard c ?pos3 ?card3)
     (lastCard d ?pos4 ?card4)
-    (equalStack ?stack a)
     //(distinct ?stack ?stack2 ?stack3 ?stack4)
     //is ?card closest to ?stack ?
     (less ?card1 ?card)
@@ -133,13 +125,12 @@
     (not (between ?card4 ?card1 ?card))
 )
 
-(<= (isMatchingStack ?stack ?card)
+(<= (isMatchingStack b ?card)
     (isCard ?card ?val)
     (lastCard a ?pos1 ?card1)
     (lastCard b ?pos2 ?card2)
     (lastCard c ?pos3 ?card3)
     (lastCard d ?pos4 ?card4)
-    (equalStack ?stack b)
     //(distinct ?stack ?stack2 ?stack3 ?stack4)
     //is ?card closest to ?stack ?
     (less ?card2 ?card)
@@ -148,13 +139,12 @@
     (not (between ?card4 ?card2 ?card))
 )
 
-(<= (isMatchingStack ?stack ?card)
+(<= (isMatchingStack c ?card)
     (isCard ?card ?val)
     (lastCard a ?pos1 ?card1)
     (lastCard b ?pos2 ?card2)
     (lastCard c ?pos3 ?card3)
     (lastCard d ?pos4 ?card4)
-    (equalStack ?stack c)
     //(distinct ?stack ?stack2 ?stack3 ?stack4)
     //is ?card closest to ?stack ?
     (less ?card3 ?card)
@@ -163,13 +153,12 @@
     (not (between ?card4 ?card3 ?card))
 )
 
-(<= (isMatchingStack ?stack ?card)
+(<= (isMatchingStack d ?card)
     (isCard ?card ?val)
     (lastCard a ?pos1 ?card1)
     (lastCard b ?pos2 ?card2)
     (lastCard c ?pos3 ?card3)
     (lastCard d ?pos4 ?card4)
-    (equalStack ?stack d)
     //(distinct ?stack ?stack2 ?stack3 ?stack4)
     //is ?card closest to ?stack ?
     (less ?card4 ?card)
@@ -185,7 +174,7 @@
     (lastCard b ?pos2 ?card2)
     (lastCard c ?pos3 ?card3)
     (lastCard d ?pos4 ?card4)
-    (isStack ?stack ?num)
+    (isStack ?stack)
     //(distinct ?stack ?stack2 ?stack3 ?stack4)
     (not (less ?card1 ?card))
     (not (less ?card2 ?card))
@@ -198,7 +187,7 @@
     (isPos ?pos)
     (isPos ?posP)
     (isPos ?posM)
-    (isStack ?stack ?num)
+    (isStack ?stack)
     (true (stack ?stack ?pos ?card))
     //following slot empty
     (succ ?pos ?posP)
@@ -282,8 +271,9 @@
     (less ?num1 ?num2)
 )
 
-(<= (lessEqual ?num1 ?num2)
-    (equal ?num1 ?num2)
+//Both parameters equal
+(<= (lessEqual ?num1 ?num1)
+    (number ?num1) //one operation to avoid prolog error, make sure numbers are being compared
 )
 
 (<= (hasCardInPlay ?player)
@@ -610,10 +600,10 @@
     (isPlayer ?player3)
     (isPlayer ?player4)
     (distinct ?player ?player2 ?player3 ?player4)
-    (currPoints ?player ?points)
-    (currPoints ?player2 ?points2)
-    (currPoints ?player3 ?points3)
-    (currPoints ?player4 ?points4)
+    (true (currPoints ?player ?points))
+    (true (currPoints ?player2 ?points2))
+    (true (currPoints ?player3 ?points3))
+    (true (currPoints ?player4 ?points4))
     (lessEqual ?points ?points2)
     (lessEqual ?points ?points3)
     (lessEqual ?points ?points4)
@@ -626,10 +616,10 @@
     (isPlayer ?player3)
     (isPlayer ?player4)
     (distinct ?player ?player2 ?player3 ?player4)
-    (currPoints ?player ?points)
-    (currPoints ?player2 ?points2)
-    (currPoints ?player3 ?points3)
-    (currPoints ?player4 ?points4)
+    (true (currPoints ?player ?points))
+    (true (currPoints ?player2 ?points2))
+    (true (currPoints ?player3 ?points3))
+    (true (currPoints ?player4 ?points4))
     (greater ?points ?points2)
     (lessEqual ?points ?points3)
     (lessEqual ?points ?points4)
@@ -663,11 +653,11 @@
 (isPos 5)
 (isPos 6)
 
-//(isStack <stack> <identNum>)
-(isStack a 1)
-(isStack b 2)
-(isStack c 3)
-(isStack d 4)
+//(isStack <stack>)
+(isStack a)
+(isStack b)
+(isStack c)
+(isStack d)
 
 //(isCard <number> <points>)
 (isCard 1 1)
@@ -774,14 +764,3 @@
 (isCard 102 1)
 (isCard 103 1)
 (isCard 104 1)
-
-//------------
-//Terminal
-//------------
-//Noone has cards in hand or in Play
-//(<= terminal
-//    (not (sees ?player (hand ?player ?pos ?card)))
-//    (distinct ?card 0)
-//    (not (sees ?player1 (inPlay ?player1 ?card1)))
-//    (distinct ?card1 1000)
-//)
