@@ -13,7 +13,6 @@ import java.util.Collections;
 import java.util.HashSet;
 import java.util.HashMap;
 import java.util.Map;
-import java.util.LinkedList;
 import java.util.List;
 import java.util.Scanner;
 import java.util.Set;
@@ -26,8 +25,6 @@ import de.monticore.lang.gdl.visitors.PrologPrinter;
 import sun.misc.Signal;
 
 public class Interpreter {
-
-    private boolean debugMode = false;
 
     private Semaphore initSemaphore;
     private int initTrueCounter;
@@ -57,10 +54,17 @@ public class Interpreter {
 
     private String placeholderStates;
 
-    private Map<String, List<List<String>>[]> savedStates = new HashMap<String, List<List<String>>[]>();
+    private Map<String, List<Runnable>> onStateHasChangedMap = new HashMap<>();
+
+    private InterpreterOptions options = new InterpreterOptions();
 
     public Interpreter(ASTGame game) {
         this.game = game;
+    }
+
+    public Interpreter init(final InterpreterOptions options) throws Exception {
+        this.options = options;
+        return init();
     }
 
     public Interpreter init() throws Exception {
@@ -72,7 +76,7 @@ public class Interpreter {
         writer = new OutputStreamWriter(out) {
             @Override
             public void write(String str) throws IOException {
-                if (debugMode) System.out.println("? " + str);
+                if (options.isDebugMode()) System.out.println("? " + str);
                 super.write(str);
             }
         };
@@ -150,9 +154,7 @@ public class Interpreter {
 
         initSemaphore.acquire();
 
-        this.saveState("initialState");
-
-        if (hasRandom) {
+        if (hasRandom && !options.isManualRandom()) {
             doRandom();
         }
 
@@ -171,7 +173,7 @@ public class Interpreter {
         
     }
 
-    public List<List<String>> getAllModels(String function) {
+    public Set<List<String>> getAllModels(String function) {
         Set<FunctionSignature> signatures;
 
         if (function.equals("legal")) {
@@ -187,23 +189,23 @@ public class Interpreter {
             return null;
         }
 
-        List<List<String>> allResults = new ArrayList<>();
+        Set<List<String>> allResults = new HashSet<>();
         for (FunctionSignature signature : signatures) {
-            List<List<String>> result = getAllModels("function_" + signature.functionName, signature.arity);
+            Set<List<String>> result = getAllModels("function_" + signature.functionName, signature.arity);
             if (result != null) {
                 allResults.addAll(result);
             }
         }
         allResults = allResults
             .stream().map(
-                l -> l.stream().map(s -> s.substring(6)).collect(Collectors.toList())
+                l -> l.stream().map(Interpreter::convertPLValue2Interpreter).collect(Collectors.toList())
             ).filter(
                 l -> l.stream().filter(s -> s.length() == 0).count() == 0
-            ).collect(Collectors.toList());
+            ).collect(Collectors.toSet());
         return allResults;
     }
 
-    private List<List<String>> getAllModels(String functionName, int arity) {
+    private Set<List<String>> getAllModels(String functionName, int arity) {
         if (arity < 1) {
             return null;
         }
@@ -226,7 +228,7 @@ public class Interpreter {
         String command = sb.toString();
         String result = execute(command);
 
-        List<List<String>> results = new LinkedList<>();
+        Set<List<String>> results = new HashSet<>();
 
         if (result.equals("false.")) {
             return results;
@@ -274,7 +276,7 @@ public class Interpreter {
                 if (evalError) {
                     currentEvaluation = null;
                     
-                    if (!debugMode) throw new RuntimeException("The current evaluation faced an unexpected Error. Re-run your program in debug mode to get more detail.");
+                    if (!options.isDebugMode()) throw new RuntimeException("The current evaluation faced an unexpected Error. Re-run your program in debug mode to get more detail.");
                     throw new RuntimeException("The current evaluation faced an unexpected Error.");
                 }
             }
@@ -290,7 +292,7 @@ public class Interpreter {
     }
 
     private void readIn(String line) {
-        if (debugMode) System.out.println("| " + line);
+        if (options.isDebugMode()) System.out.println("| " + line);
 
         if (line.equals("true.")) {
             initTrueCounter++;
@@ -307,7 +309,7 @@ public class Interpreter {
 
     private boolean evalError;
     private void readErr(String line) {
-        if (debugMode) System.out.println("! " + line);
+        if (options.isDebugMode()) System.out.println("! " + line);
 
         if (currentEvaluation != null) {
             if (line.startsWith("ERROR")) {
@@ -317,29 +319,29 @@ public class Interpreter {
         }
     }
 
-    public List<List<String>> getAllLegalMoves() {
-        List<List<String>> result = getAllModels("function_legal", 2);
+    public Set<List<String>> getAllLegalMoves() {
+        Set<List<String>> result = getAllModels("function_legal", 2);
         result = result
             .stream().map(
-                l -> l.stream().map(s -> s.substring(6)).collect(Collectors.toList())
+                l -> l.stream().map(Interpreter::convertPLValue2Interpreter).collect(Collectors.toList())
             ).filter(
                 l -> l.stream().filter(s -> s.length() == 0).count() == 0
-            ).collect(Collectors.toList());
+            ).collect(Collectors.toSet());
         return result;
     }
 
-    public List<List<String>> getAllLegalMovesForPlayer(String player) {
-        List<List<String>> allLegalMoves = this.getAllLegalMoves();
+    public Set<List<String>> getAllLegalMovesForPlayer(String player) {
+        Set<List<String>> allLegalMoves = this.getAllLegalMoves();
         if (allLegalMoves != null) {
             allLegalMoves = allLegalMoves
             .stream()
             .filter(
                 l -> l != null && l.size() > 0 && l.get(0).equals(player)
             )
-            .collect(Collectors.toList());
+            .collect(Collectors.toSet());
             return allLegalMoves;
         } else {
-            return new ArrayList<List<String>>();
+            return new HashSet<List<String>>();
         }
         
     }
@@ -365,7 +367,7 @@ public class Interpreter {
         return legal;
     }
 
-    private void buildNextStates(List<List<String>> statesList, List<List<String>> hiddenStatesList) {
+    private void buildNextStates(Set<List<String>> statesList, Set<List<String>> hiddenStatesList) {
         retractAllStates();
         statesSignatures = new HashSet<>();
         hiddenStatesSignatures = new HashSet<>();
@@ -429,38 +431,11 @@ public class Interpreter {
         execute(commandBuilder.toString());
     }
 
-    public void saveState(String name) {
-        List<List<String>> stateToSave = this.getGameState();
-        List<List<String>> hiddenStateToSave = this.getGameState();
-        List<List<String>> state = stateToSave.stream().map(l -> l.stream().map(s -> "value_" + s).collect(Collectors.toList())).collect(Collectors.toList());
-        List<List<String>> hiddenState = hiddenStateToSave.stream().map(l -> l.stream().map(s -> "value_" + s).collect(Collectors.toList())).collect(Collectors.toList());
-        
-        @SuppressWarnings("unchecked")
-        List<List<String>>[] save = new List[2];
-        save[0] = state;
-        save[1] = hiddenState;
-
-        this.savedStates.put(name, save);
-    }
-
-    public boolean restoreState(String name) {
-        List<List<String>>[] stateToRestore = this.savedStates.get(name);
-        if (stateToRestore != null) {
-            this.buildNextStates(stateToRestore[0], stateToRestore[1]);
-            return true;
-        }
-        return false;
-    }
-
-    public void reset() {
-        this.restoreState("initialState");
-    }
-
-    public List<List<String>> interpret(String line) {
+    public Set<List<String>> interpret(String line) {
         return interpret(Command.createMoveFromLine(line));
     }
 
-    public List<List<String>> interpret(Command command) {
+    public synchronized Set<List<String>> interpret(Command command) {
         if (command == null) {
             return null;
         }
@@ -484,19 +459,26 @@ public class Interpreter {
 
         execute(assertBuilder.toString());
 
-        List<List<String>> allResults = null;
-        List<List<String>> allHiddenResults = null;
+        if (command.getArguments().get(0).equals("value_noop") && isLegal(command)) {
+            execute(retractBuilder.toString());
+
+            return getGameState();
+        }
+
+        Set<List<String>> allResults = null;
+        Set<List<String>> allHiddenResults = null;
+
 
         if (isLegal(command)) {
-            allResults = new LinkedList<>();
+            allResults = new HashSet<>();
             for (FunctionSignature next : nextSignatures) {
-                List<List<String>> models = getAllModels(next.functionName, next.arity);
+                Set<List<String>> models = getAllModels(next.functionName, next.arity);
                 allResults.addAll(models);
             }
 
-            allHiddenResults = new LinkedList<>();
+            allHiddenResults = new HashSet<>();
             for (FunctionSignature next : hiddenNextSignatures) {
-                List<List<String>> models = getAllModels(next.functionName, next.arity);
+                Set<List<String>> models = getAllModels(next.functionName, next.arity);
                 allHiddenResults.addAll(models);
             }
 
@@ -506,7 +488,7 @@ public class Interpreter {
                     Collections.swap(l, 0, 1);
                     return l;
                 }
-            ).collect(Collectors.toList());
+            ).collect(Collectors.toSet());
         }
 
         execute(retractBuilder.toString());
@@ -516,14 +498,16 @@ public class Interpreter {
             allResults.addAll(allHiddenResults);
             allResults = allResults
                 .stream().map(
-                    l -> l.stream().map(s -> s.substring(6)).collect(Collectors.toList())
-                ).collect(Collectors.toList());
+                    l -> l.stream().map(Interpreter::convertPLValue2Interpreter).collect(Collectors.toList())
+                ).collect(Collectors.toSet());
         }
 
-        if (hasRandom) {
-            List<List<String>> randomResults = doRandom();
-            if (randomResults != null) return randomResults;
+        if (hasRandom && !options.isManualRandom()) {
+            Set<List<String>> randomResults = doRandom();
+            if (randomResults != null) allResults = randomResults;
         }
+        
+        notifyAllObservers();
 
         return allResults;
     }
@@ -555,15 +539,15 @@ public class Interpreter {
         return List.of("value_random", result);
     }
 
-    private List<List<String>> doRandom() {
-        List<List<String>> finalResults = null;
+    private Set<List<String>> doRandom() {
+        Set<List<String>> finalResults = null;
         List<String> randomMove = getRandomMove();
 
         while (randomMove != null) {
             // random command
             // randomMove = randomMove.stream().map(s -> "value_" + s).collect(Collectors.toList());
             Command command = Command.createMoveFromList(randomMove);
-            if (debugMode) System.out.println("R " + command);
+            if (options.isDebugMode()) System.out.println("R " + command);
 
             StringBuilder inputBuilder = new StringBuilder();
     
@@ -585,19 +569,19 @@ public class Interpreter {
     
             execute(assertBuilder.toString());
     
-            List<List<String>> allResults = null;
-            List<List<String>> allHiddenResults = null;
+            Set<List<String>> allResults = null;
+            Set<List<String>> allHiddenResults = null;
     
             if (isLegal(command)) {
-                allResults = new LinkedList<>();
+                allResults = new HashSet<>();
                 for (FunctionSignature next : nextSignatures) {
-                    List<List<String>> models = getAllModels(next.functionName, next.arity);
+                    Set<List<String>> models = getAllModels(next.functionName, next.arity);
                     allResults.addAll(models);
                 }
             
-                allHiddenResults = new LinkedList<>();
+                allHiddenResults = new HashSet<>();
                 for (FunctionSignature next : hiddenNextSignatures) {
-                    List<List<String>> models = getAllModels(next.functionName, next.arity);
+                    Set<List<String>> models = getAllModels(next.functionName, next.arity);
                     allHiddenResults.addAll(models);
                 }
 
@@ -607,7 +591,7 @@ public class Interpreter {
                         Collections.swap(l, 0, 1);
                         return l;
                     }
-                ).collect(Collectors.toList());
+                ).collect(Collectors.toSet());
             }
     
             execute(retractBuilder.toString());
@@ -618,8 +602,8 @@ public class Interpreter {
                 allResults.addAll(allHiddenResults);
                 allResults = allResults
                     .stream().map(
-                        l -> l.stream().map(s -> s.substring(6)).collect(Collectors.toList())
-                    ).collect(Collectors.toList());
+                        l -> l.stream().map(Interpreter::convertPLValue2Interpreter).collect(Collectors.toList())
+                    ).collect(Collectors.toSet());
             }
     
             finalResults = allResults;
@@ -630,8 +614,8 @@ public class Interpreter {
         return finalResults;
     }
 
-    public List<List<String>> getGameStateForRole(String role) {
-        List<List<String>> hiddenGameState = getHiddenGameState();
+    public Set<List<String>> getGameStateForRole(String role) {
+        Set<List<String>> hiddenGameState = getHiddenGameState();
 
         hiddenGameState = hiddenGameState.stream().filter(list -> list.get(1).equals(role)).map(
             list -> {
@@ -639,15 +623,15 @@ public class Interpreter {
                 l.remove(1);
                 return l;
             }
-        ).collect(Collectors.toList());
+        ).collect(Collectors.toSet());
 
-        hiddenGameState = new ArrayList<>(hiddenGameState);
+        hiddenGameState = new HashSet<>(hiddenGameState);
         hiddenGameState.addAll(getGameState());
         return hiddenGameState;
     }
 
-    public List<List<String>> getHiddenGameState() {
-        List<List<String>> allHiddenResults = new LinkedList<>();
+    public Set<List<String>> getHiddenGameState() {
+        Set<List<String>> allHiddenResults = new HashSet<>();
         for (FunctionSignature state : hiddenStatesSignatures) {
             int arity = state.arity;
             String functionName = state.functionName;
@@ -686,7 +670,7 @@ public class Interpreter {
             String command = sb.toString();
             String result = execute(command);
 
-            List<List<String>> results = new LinkedList<>();
+            Set<List<String>> results = new HashSet<>();
 
             if (result.equals("false.")) {
                 return results;
@@ -709,30 +693,30 @@ public class Interpreter {
 
             results = results.stream().map(list -> {
                 List<String> l = new ArrayList<>();
-                l.add("123456" + state.functionName);
+                l.add("value_" + state.functionName);
                 l.addAll(list);
                 return l;
-            }).collect(Collectors.toList());
+            }).collect(Collectors.toSet());
 
             allHiddenResults.addAll(results);
         }
 
         allHiddenResults = allHiddenResults
             .stream().map(
-                l -> l.stream().map(s -> s.substring(6)).collect(Collectors.toList())
-            ).collect(Collectors.toList());
+                l -> l.stream().map(Interpreter::convertPLValue2Interpreter).collect(Collectors.toList())
+            ).collect(Collectors.toSet());
 
         return allHiddenResults;
     }
 
-    public List<List<String>> getGameState() {
-        List<List<String>> allResults = new LinkedList<>();
+    public Set<List<String>> getGameState() {
+        Set<List<String>> allResults = new HashSet<>();
         for (FunctionSignature state : statesSignatures) {
             int arity = state.arity;
             String functionName = state.functionName;
 
             if (arity == 0) {
-                allResults.add(List.of("123456" + functionName));
+                allResults.add(List.of("value_" + functionName));
                 continue;
             }
 
@@ -756,7 +740,7 @@ public class Interpreter {
             String command = sb.toString();
             String result = execute(command);
 
-            List<List<String>> results = new LinkedList<>();
+            Set<List<String>> results = new HashSet<>();
 
             if (result.equals("false.")) {
                 return results;
@@ -779,10 +763,10 @@ public class Interpreter {
 
             results = results.stream().map(list -> {
                 List<String> l = new ArrayList<>();
-                l.add("123456" + state.functionName);
+                l.add("value_" + state.functionName);
                 l.addAll(list);
                 return l;
-            }).collect(Collectors.toList());
+            }).collect(Collectors.toSet());
 
             allResults.addAll(results);
         }
@@ -791,8 +775,8 @@ public class Interpreter {
 
         allResults = allResults
             .stream().map(
-                l -> l.stream().map(s -> s.substring(6)).collect(Collectors.toList())
-            ).collect(Collectors.toList());
+                l -> l.stream().map(Interpreter::convertPLValue2Interpreter).collect(Collectors.toList())
+            ).collect(Collectors.toSet());
 
         return allResults;
     }
@@ -816,8 +800,49 @@ public class Interpreter {
         return roles.stream().filter(r -> !r.equals("random")).collect(Collectors.toSet());
     }
 
-    public void setDebugMode(boolean debugMode) {
-        this.debugMode = debugMode;
+    public void addStateObserver(String player, Runnable observer) {
+        if (!roles.contains(player)) return;
+
+        if (onStateHasChangedMap.get(player) == null) {
+            onStateHasChangedMap.put(player, new ArrayList<>());
+        }
+
+        onStateHasChangedMap.get(player).add(observer);
+    }
+
+    private void notifyStateObservers(String player) {
+        List<Runnable> observers = onStateHasChangedMap.get(player);
+        if (observers == null) return;
+
+        for (Runnable r : observers) {
+            r.run();
+        }
+    }
+
+    private void notifyAllObservers() {
+        for (String role : roles) {
+            notifyStateObservers(role);
+        }
+    }
+
+    public static String convertPLValue2Interpreter(String plValue) {
+        if (!plValue.startsWith("value_") && !plValue.startsWith("valnn_")) {
+            throw new IllegalArgumentException("Cannot convert '" + plValue + "' into Interpreter value");
+        }
+
+        String vPart = plValue.substring(6);
+        if (plValue.startsWith("valnn_")) {
+            vPart = "-" + vPart;
+        }
+
+        return vPart;
+    }
+
+    public static String convertInterpreterValue2PL(String inValue) {
+        if (inValue.startsWith("-")) {
+            return "valnn_" + inValue.substring(1);
+        }
+        return "value_" + inValue;
     }
 
 }

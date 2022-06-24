@@ -10,6 +10,7 @@ import java.awt.GridLayout;
 import java.awt.Image;
 import java.io.IOException;
 import java.util.List;
+import java.util.Set;
 
 import javax.imageio.ImageIO;
 import javax.swing.ImageIcon;
@@ -146,7 +147,7 @@ public class ChessGUI {
         }
     }
 
-    private void updateGameState(List<List<String>> gameState) {
+    private void updateGameState(Set<List<String>> gameState) {
         clearAll();
 
         gameState.forEach(exp -> {
@@ -328,12 +329,12 @@ public class ChessGUI {
         
         String move = String.format("%s (move %s %s %s %s %s)", player, figure, sX, sY, sTX, sTY);
 
-        List<List<String>> nextState = interpreter.interpret(Command.createMoveFromLine(move));
+        Set<List<String>> nextState = interpreter.interpret(Command.createMoveFromLine(move));
         if (nextState != null) {
             updateGameState(nextState);
 
             if (interpreter.isTerminal()) {
-                List<List<String>> goals = interpreter.getAllModels("goal");
+                Set<List<String>> goals = interpreter.getAllModels("goal");
                 if (goals != null) {
                     StringBuilder sb = new StringBuilder();
                     for (List<String> goal : goals) {

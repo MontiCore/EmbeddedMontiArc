@@ -16,8 +16,8 @@ public class GDLCLI implements Runnable {
 
     private void printGameState(String role) {
         if (role == null) {
-            List<List<String>> gameState = interpreter.getGameState();
-            List<List<String>> hiddenGameState = interpreter.getHiddenGameState();
+            Set<List<String>> gameState = interpreter.getGameState();
+            Set<List<String>> hiddenGameState = interpreter.getHiddenGameState();
             System.out.println("Current Game State (" + gameState.size() +  "):");
             gameState.forEach(s -> System.out.println("  " + s));
     
@@ -26,7 +26,7 @@ public class GDLCLI implements Runnable {
             System.out.println("Current Hidden Game State (" + hiddenGameState.size() +  "):");
             hiddenGameState.forEach(s -> System.out.println("  " + s));
         } else {
-            List<List<String>> gameState = interpreter.getGameStateForRole(role);
+            Set<List<String>> gameState = interpreter.getGameStateForRole(role);
             System.out.printf("Current Game State for role '%s' (%d):\n", role, gameState.size());
             gameState.forEach(s -> System.out.println("  " + s));
         }
@@ -55,7 +55,7 @@ public class GDLCLI implements Runnable {
             return;
         }
         String function = args[1];
-        List<List<String>> allModels = interpreter.getAllModels(function);
+        Set<List<String>> allModels = interpreter.getAllModels(function);
         if (allModels != null) {
             System.out.println(allModels);
         } else {
@@ -76,7 +76,7 @@ public class GDLCLI implements Runnable {
         System.out.println("---- -----");
         System.out.println("Game over.");
         System.out.println("---- -----");
-        List<List<String>> goals = interpreter.getAllModels("goal");
+        Set<List<String>> goals = interpreter.getAllModels("goal");
         if (goals != null) {
             for (List<String> goal : goals) {
                 if (goal.size() == 2) {
@@ -89,7 +89,7 @@ public class GDLCLI implements Runnable {
     }
 
     private void printLegal(String role) {
-        List<List<String>> legal;
+        Set<List<String>> legal;
         if (role == null) legal = interpreter.getAllLegalMoves();
         else legal = interpreter.getAllLegalMovesForPlayer(role);
 
@@ -169,7 +169,7 @@ public class GDLCLI implements Runnable {
                     printHelp();
                 }
             } else {
-                List<List<String>> nextState = interpreter.interpret(line);
+                Set<List<String>> nextState = interpreter.interpret(line);
 
                 if (nextState == null) {
                     System.out.println("Move was illegal! Type /help for usage");
