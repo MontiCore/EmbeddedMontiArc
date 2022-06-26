@@ -6,6 +6,7 @@ import de.gdl.rl.agents.RosAgent;
 import de.gdl.rl.agents.RosTrainingAgent;
 
 import de.monticore.lang.gdl.Interpreter;
+import de.monticore.lang.gdl.InterpreterOptions;
 import de.monticore.lang.gdl.GDLInterpreter;
 import de.monticore.lang.gdl._ast.ASTGame;
 import de.monticore.lang.gdl._cocos.*;
@@ -51,7 +52,10 @@ public abstract class GDLGameEnvironment implements RlGdlGameEnvironment {
     private final ASTGame ast;
 
     public GDLGameEnvironment() {
+        this(null);
+    }
 
+    public GDLGameEnvironment(InterpreterOptions options) {
         ast = GDLInterpreter.parse(this.getPathToGdlModel());
         GDLCoCoChecker checker = new GDLCoCoChecker();
         
@@ -59,13 +63,19 @@ public abstract class GDLGameEnvironment implements RlGdlGameEnvironment {
         checker.checkAll(ast);
         
         try {
-            this.interpreter = new Interpreter(ast).init();
+            this.interpreter = new Interpreter(ast);
+            if (options != null) {
+                interpreter.init(options);
+            } else {
+                interpreter.init();
+            }
 
             this.currentState = this.interpreter.getGameState();
             this.currentHiddenState = this.interpreter.getHiddenGameState();
             this.terminal = this.interpreter.isTerminal();
         } catch (Exception e) {
             this.interpreter = null;
+            e.printStackTrace();
         }
     }
 
