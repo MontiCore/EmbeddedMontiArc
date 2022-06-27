@@ -50,6 +50,7 @@ public abstract class GDLGameEnvironment implements RlGdlGameEnvironment {
     private boolean legalMovesCouldHaveChanged = true;
 
     private final ASTGame ast;
+    private final InterpreterOptions options;
 
     public GDLGameEnvironment() {
         this(null);
@@ -57,6 +58,7 @@ public abstract class GDLGameEnvironment implements RlGdlGameEnvironment {
 
     public GDLGameEnvironment(InterpreterOptions options) {
         ast = GDLInterpreter.parse(this.getPathToGdlModel());
+        this.options = options;
         GDLCoCoChecker checker = new GDLCoCoChecker();
         
         checker.addCoCo(new ASTGameExpressionCoCo());
@@ -368,7 +370,10 @@ public abstract class GDLGameEnvironment implements RlGdlGameEnvironment {
      */
     public void reset() {
         try {
-            this.interpreter = new Interpreter(ast).init();
+            if (options != null)
+                this.interpreter = new Interpreter(ast).init(options);
+            else
+                this.interpreter = new Interpreter(ast).init();
         } catch (Exception e) {
             e.printStackTrace();
         }
