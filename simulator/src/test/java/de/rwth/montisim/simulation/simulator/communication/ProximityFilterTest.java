@@ -30,7 +30,7 @@ public class ProximityFilterTest extends TestCase {
         otherStates[2][22] = 2;
 
         // Test filtering out all other vehicles:
-        ProximityFilter filter = new ProximityFilter(0, false);
+        filter = new ProximityFilter(0, false);
         float[] result = filter.preprocessState(state, otherStates, 25);
         Assert.assertArrayEquals(state, result, 0.001f);
         result = filter.preprocessState(state, new float[0][], 25);
