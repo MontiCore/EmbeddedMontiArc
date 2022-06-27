@@ -75,6 +75,14 @@ public class GDLInterpreter {
         final Interpreter interpreter = new Interpreter(ast);
         interpreter.init(new InterpreterOptions().debugMode(debugMode).manualRandom(manualRandom));
 
+        Runtime.getRuntime().addShutdownHook(new Thread(() -> {
+            try {
+                interpreter.close();
+            } catch (Exception e) {
+                e.printStackTrace();
+            }
+        }));
+
         if (cli) {
             new Thread(new GDLCLI(interpreter)).start();
         }
