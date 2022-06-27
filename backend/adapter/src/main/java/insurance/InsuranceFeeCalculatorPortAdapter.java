@@ -2,7 +2,6 @@ package insurance;
 
 import entity.Dataset;
 import lombok.AllArgsConstructor;
-import org.springframework.stereotype.Component;
 import ports.InsuranceFeeCalculatorPort;
 
 @AllArgsConstructor

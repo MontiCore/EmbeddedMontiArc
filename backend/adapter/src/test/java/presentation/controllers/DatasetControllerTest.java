@@ -2,7 +2,9 @@ package presentation.controllers;
 
 import commands.DeleteDatasetCommand;
 import dto.DatasetViewDto;
-import entity.*;
+import entity.DataRow;
+import entity.Metadata;
+import entity.Policy;
 import org.junit.jupiter.api.Test;
 import org.mockito.ArgumentCaptor;
 import org.mockito.Captor;
@@ -50,6 +52,7 @@ class DatasetControllerTest {
 
 	@Captor
 	private ArgumentCaptor<DeleteDatasetCommand> commandArgumentCaptor;
+
 	@Test
 	void shouldReturnTwoDatasetMetadata() throws Exception {
 		Map<UUID, Metadata> map = new HashMap<>();
@@ -129,7 +132,7 @@ class DatasetControllerTest {
 				1,
 				0,
 				1,
-				50,3550.99
+				50, 3550.99
 		);
 
 		given(getDatasetViewUseCase.handle(new GetDatasetQuery(uuid))).willReturn(datasetViewDto);

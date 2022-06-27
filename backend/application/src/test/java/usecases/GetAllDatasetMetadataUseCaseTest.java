@@ -1,6 +1,9 @@
 package usecases;
 
-import entity.*;
+import entity.DataRow;
+import entity.Dataset;
+import entity.Metadata;
+import entity.Policy;
 import org.junit.jupiter.api.Test;
 import org.junit.jupiter.api.extension.ExtendWith;
 import org.mockito.InjectMocks;
@@ -107,4 +110,4 @@ class GetAllDatasetMetadataUseCaseTest {
 
 		assertThat(actualMetadataMap.size()).isEqualTo(0);
 	}
- }
+}

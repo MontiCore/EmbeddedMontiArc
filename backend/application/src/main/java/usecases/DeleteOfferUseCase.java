@@ -1,6 +1,5 @@
 package usecases;
 
-import commands.DeleteDatasetCommand;
 import commands.DeleteOfferCommand;
 import entity.Offer;
 import lombok.AllArgsConstructor;

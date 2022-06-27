@@ -1,7 +1,10 @@
 package usecases;
 
 import dto.DatasetViewDto;
-import entity.*;
+import entity.DataRow;
+import entity.Dataset;
+import entity.Metadata;
+import entity.Policy;
 import org.junit.jupiter.api.Test;
 import org.junit.jupiter.api.extension.ExtendWith;
 import org.mockito.ArgumentCaptor;

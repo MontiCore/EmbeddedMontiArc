@@ -18,7 +18,7 @@ public class GetAllOffersMetadataUseCase implements QueryHandler<GetAllOffersMet
 	@Override
 	public Map<UUID, Metadata> handle(GetAllOffersMetadataQuery query) {
 		Map<UUID, Metadata> map = new HashMap<>();
-		Iterable<Offer> offers = offerPersistencePort.findAll();;
+		Iterable<Offer> offers = offerPersistencePort.findAll();
 		offers.forEach(offer -> map.put(offer.getId(), offer.getMetadata()));
 
 		return map;
