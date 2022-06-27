@@ -7,8 +7,8 @@
         <div class="form-text text-start">Select rows in the following format: 1-20;31;35-99</div>
       </div>
     </div>
-    <div class="d-flex justify-content-center">
-      <TruckDataTable />
+    <div class="d-flex justify-content-center w-100">
+      <TruckDataTable style="overflow-x: scroll"/>
     </div>
     <button class="btn btn-primary" @click="navigateToMetadata">Next</button>
   </div>
