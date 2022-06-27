@@ -20,8 +20,8 @@ public class ProximityFilter implements Preprocessor {
     // constants
     private final int X_POS_STATE_INDEX = 21;
     private final int Y_POS_STATE_INDEX = 22;
-    private final int X_POS_PACKET_INDEX = 0;
-    private final int Y_POS_PACKET_INDEX = 1;
+    private final int X_POS_PACKET_INDEX = 21;
+    private final int Y_POS_PACKET_INDEX = 22;
 
     /**
      * Initializes the ProximityFilter.
