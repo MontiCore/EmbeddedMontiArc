@@ -24,4 +24,7 @@ cd "${PROJECT_ROOT}/${BINARY}"
 ./agent -t 50 &
 sleep 2
 cd $oldpath
-yes | ./run_agent_training_script.sh
+
+mkdir -p logs
+mkdir -p logs/figures
+yes | ./run_agent_training_script.sh | tee logs/logfile
