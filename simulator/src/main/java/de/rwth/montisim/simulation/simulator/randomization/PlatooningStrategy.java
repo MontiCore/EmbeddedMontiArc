@@ -297,7 +297,7 @@ public class PlatooningStrategy extends RandomizationStrategy {
 
             // add end point
             Vec2 endPoint = new Vec2();
-            this.converter.coordsToMeters(generatedEndPoses.get(i).getKey(), endPoint);
+            this.converter.coordsToMeters(generatedEndPoses.get(generatedEndPoses.size() - i).getKey(), endPoint); // assign vehicles end poses in reverse order (first vehicle in platoon should have a further distant parking pose)
             goal.reach(endPoint);
 
             task.addGoal(goal);

@@ -8,6 +8,6 @@ import de.rwth.montisim.simulation.vehicle.navigation.Navigation;
  */
 public abstract class RewardFunctionProperties {
 
-    public abstract RewardFunction build(Navigation[] navigations, Vehicle[] vehicles);
+  public abstract RewardFunction build(Navigation[] navigations, Vehicle[] vehicles);
 
 }

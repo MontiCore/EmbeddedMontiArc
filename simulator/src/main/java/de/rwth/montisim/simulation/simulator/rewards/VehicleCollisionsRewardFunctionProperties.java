@@ -7,10 +7,10 @@ import de.rwth.montisim.simulation.vehicle.navigation.Navigation;
 @Typed("vehicle_collision_reward")
 public class VehicleCollisionsRewardFunctionProperties extends RewardFunctionProperties {
 
-    public float reward = -800;
+  public float reward = -800;
 
-    @Override
-    public RewardFunction build(Navigation[] navigations, Vehicle[] vehicles) {
-        return new VehicleCollisionsRewardFunction(navigations, vehicles, reward);
-    }
+  @Override
+  public RewardFunction build(Navigation[] navigations, Vehicle[] vehicles) {
+    return new VehicleCollisionsRewardFunction(navigations, vehicles, reward);
+  }
 }
