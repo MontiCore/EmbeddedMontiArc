@@ -10,7 +10,7 @@ import ports.PolicyDeploymentPort;
 @Component
 @AllArgsConstructor
 @Slf4j
-public class MydataPolicyDeploymentPointAdapter implements PolicyDeploymentPort {
+public class MydataPolicyDeploymentPortAdapter implements PolicyDeploymentPort {
 
 	private final MydataPolicyFactory policyFactory;
 	private final IMyDataEnvironment myDataEnvironment;
