@@ -1,7 +1,6 @@
 package de.rwth.montisim.simulation.simulator.communication;
 
 import de.rwth.montisim.commons.utils.Vec2;
-import de.rwth.montisim.commons.utils.json.Typed;
 
 import java.util.Arrays;
 
@@ -17,6 +16,12 @@ public class ProximityFilter implements Preprocessor {
 
     private final int maxNumberOfVehicles;
     private final boolean addIndicator;
+
+    // constants
+    private final int X_POS_STATE_INDEX = 21;
+    private final int Y_POS_STATE_INDEX = 22;
+    private final int X_POS_PACKET_INDEX = 0;
+    private final int Y_POS_PACKET_INDEX = 1;
 
     /**
      * Initializes the ProximityFilter.
@@ -46,10 +51,10 @@ public class ProximityFilter implements Preprocessor {
         for (int i = 0; i < index.length; i++) index[i] = i;
 
         // Sort the indices by their distance to the vehicle
-        Vec2 pos1 = new Vec2(vehicleState[21], vehicleState[22]);
+        Vec2 pos1 = new Vec2(vehicleState[X_POS_STATE_INDEX], vehicleState[Y_POS_STATE_INDEX]);
         Arrays.sort(index, (a, b) -> {
-            double distA = pos1.distance(new Vec2(otherStates[a][21], otherStates[a][22]));
-            double distB = pos1.distance(new Vec2(otherStates[b][21], otherStates[b][22]));
+            double distA = pos1.distance(new Vec2(otherStates[a][X_POS_PACKET_INDEX], otherStates[a][Y_POS_PACKET_INDEX]));
+            double distB = pos1.distance(new Vec2(otherStates[b][X_POS_PACKET_INDEX], otherStates[b][Y_POS_PACKET_INDEX]));
             if (distA < distB) return -1;
             else if (distA > distB) return 1;
             else return 0;
@@ -74,5 +79,19 @@ public class ProximityFilter implements Preprocessor {
         }
 
         return result;
+    }
+
+    @Override
+    public int getStateLength(int inputStateLength, int inputStatePacketLength) {
+        return inputStateLength;
+    }
+
+    @Override
+    public int getStatePacketLength(int inputStateLength, int inputStatePacketLength) {
+        if (addIndicator) {
+            return inputStatePacketLength + 1;
+        } else {
+            return inputStatePacketLength;
+        }
     }
 }

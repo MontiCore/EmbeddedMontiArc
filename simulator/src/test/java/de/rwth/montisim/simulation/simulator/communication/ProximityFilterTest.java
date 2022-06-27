@@ -10,6 +10,7 @@ import org.junit.Assert;
 public class ProximityFilterTest extends TestCase {
 
     public void testPreprocessState() {
+        ProximityFilter filter = new ProximityFilter(0, false);
         // Create state
         float[] state = new float[25];
         for (int i = 0; i < 21; i++) state[i] = 0;

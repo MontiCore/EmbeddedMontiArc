@@ -52,4 +52,13 @@ The size of the state with the indicator is: vehicleState + (statePacketLength +
 | maxNumberOfVehicles | `int`     | 5             | Number of State Packets          | `"maxNumberOfVehicles": 3` | 
 | addIndicator        | `boolean` | true          | Add flag for empty state packets | `"addIndicator": false`    | 
 
+### Sequence Preprocessor
+```json
+"type": "sequence"
+```
+The Sequence Preprocessor allows using multiple preprocessor in a sequence.
+#### Properties
+| Property      | Type             | Default Value | Short Description                | Usage                                     |
+|---------------|------------------|---------------|----------------------------------|-------------------------------------------|
+| preprocessors | `Preprocessor[]` | empty         | List of Preprocessors            | `"preprocessors": [{ "type": "default"}]` | 
 
