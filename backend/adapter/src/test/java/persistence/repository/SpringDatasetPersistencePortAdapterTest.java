@@ -9,7 +9,7 @@ import org.springframework.boot.autoconfigure.domain.EntityScan;
 import org.springframework.boot.test.autoconfigure.orm.jpa.DataJpaTest;
 import org.springframework.data.jpa.repository.config.EnableJpaRepositories;
 import org.springframework.test.context.ContextConfiguration;
-import persistence.entity.*;
+import persistence.entity.DatasetEntity;
 import persistence.mappers.JacksonDatasetMapper;
 import persistence.mappers.JacksonOfferMapper;
 
@@ -88,8 +88,8 @@ class SpringDatasetPersistencePortAdapterTest {
 		assertThat(datasetEntity.get().getData().size()).isEqualTo(1);
 	}
 
-/*	@Test
-	void shouldDeleteCorrectDataset() {
+	@Test
+	void shouldFindCorrectDataset() {
 		Policy policy = new Policy();
 		policy.setMaxUsages(3);
 
@@ -124,12 +124,81 @@ class SpringDatasetPersistencePortAdapterTest {
 		Dataset dataset = new Dataset();
 		dataset.setId(datasetId);
 		dataset.setMetadata(savedOffer.getMetadata());
-		dataset.setOffer(savedOffer);
+		dataset.setOfferId(savedOffer.getId());
 		dataset.setData(savedOffer.getData());
-
 		underTest.save(dataset);
-		underTest.deleteById(datasetId);
 
-		assertThat(underTest.findAll().iterator().hasNext()).isFalse();
-	}*/
+		Dataset foundDataset = underTest.findById(datasetId);
+		assertThat(foundDataset.getMetadata().getTitle()).isEqualTo("Aachen Dataset");
+		assertThat(foundDataset.getData().size()).isEqualTo(1);
+	}
+
+	@Test
+	void shouldFindTwoDatasets() {
+		Policy firstPolicy = new Policy();
+		firstPolicy.setMaxUsages(3);
+		Policy secondPolicy = new Policy();
+		secondPolicy.setLocalLogging(true);
+
+		Metadata firstMetadata = new Metadata(
+				1,
+				"Aachen Dataset",
+				"Carrier GmbH",
+				"A simple test data set...",
+				10,
+				"/logging",
+				firstPolicy);
+
+		Metadata secondMetadata = new Metadata(
+				2,
+				"Friedrichshafen Dataset",
+				"Carrier GmbH",
+				"Another simple test data set...",
+				20,
+				"/logging",
+				secondPolicy);
+
+		DataRow datarow = new DataRow(
+				1,
+				"213421",
+				51,
+				10,
+				null,
+				42,
+				50,
+				20000,
+				50,
+				null
+		);
+
+		UUID firstOfferId = UUID.randomUUID();
+		Offer firstOffer = new Offer(firstOfferId, firstMetadata, List.of(datarow));
+		springOfferPersistencePortAdapter.save(firstOffer);
+		Offer firstSavedOffer = springOfferPersistencePortAdapter.findById(firstOfferId);
+
+		UUID secondOfferId = UUID.randomUUID();
+		Offer secondOffer = new Offer(secondOfferId, secondMetadata, List.of(datarow));
+		springOfferPersistencePortAdapter.save(secondOffer);
+		Offer secondSavedOffer = springOfferPersistencePortAdapter.findById(secondOfferId);
+
+		Dataset firstDataset = new Dataset();
+		firstDataset.setId(UUID.randomUUID());
+		firstDataset.setMetadata(firstSavedOffer.getMetadata());
+		firstDataset.setOfferId(firstSavedOffer.getId());
+		firstDataset.setData(firstSavedOffer.getData());
+		Dataset secondDataset = new Dataset();
+		secondDataset.setId(UUID.randomUUID());
+		secondDataset.setMetadata(firstSavedOffer.getMetadata());
+		secondDataset.setOfferId(firstSavedOffer.getId());
+		secondDataset.setData(firstSavedOffer.getData());
+		underTest.save(firstDataset);
+		underTest.save(secondDataset);
+
+		int count = 0;
+		for (Dataset ignored : underTest.findAll()) {
+			count++;
+		}
+
+		assertThat(count).isEqualTo(2);
+	}
 }
