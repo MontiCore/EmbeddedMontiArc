@@ -2,7 +2,6 @@ package de.thesis.provider.backend;
 
 import org.springframework.util.MultiValueMap;
 
-import java.util.List;
 import java.util.Map;
 
 public interface HttpClient {

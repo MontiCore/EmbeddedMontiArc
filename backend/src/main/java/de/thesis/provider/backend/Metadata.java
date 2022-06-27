@@ -1,7 +1,6 @@
 package de.thesis.provider.backend;
 
 import lombok.Data;
-import org.springframework.beans.factory.annotation.Value;
 
 @Data
 public class Metadata {
