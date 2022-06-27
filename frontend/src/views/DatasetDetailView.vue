@@ -38,7 +38,7 @@
       </div>
         </div>
         <div class="d-flex flex-column justify-content-center align-items-end">
-          <p class="m-0" style="font-size: 4rem">{{ roundedFee }} € p.a.</p>
+          <p class="m-0" style="font-size: 3rem">{{ roundedFee }} € p.a.</p>
           <p class="m-0">Suggested insurance fee per truck</p>
         </div>
       </div>
