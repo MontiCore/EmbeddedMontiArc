@@ -1,5 +1,6 @@
-package de.thesis.provider.backend;
+package de.thesis.provider.backend.httpclient;
 
+import de.thesis.provider.backend.httpclient.HttpClient;
 import lombok.AllArgsConstructor;
 import org.springframework.http.MediaType;
 import org.springframework.stereotype.Component;

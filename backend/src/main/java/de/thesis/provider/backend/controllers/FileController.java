@@ -1,4 +1,4 @@
-package de.thesis.provider.backend.controller;
+package de.thesis.provider.backend.controllers;
 
 import com.opencsv.bean.CsvToBean;
 import com.opencsv.bean.CsvToBeanBuilder;

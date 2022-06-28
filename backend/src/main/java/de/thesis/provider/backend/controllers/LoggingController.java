@@ -1,4 +1,4 @@
-package de.thesis.provider.backend.controller;
+package de.thesis.provider.backend.controllers;
 
 import lombok.AllArgsConstructor;
 import lombok.extern.slf4j.Slf4j;

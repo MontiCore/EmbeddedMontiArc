@@ -1,4 +1,4 @@
-package de.thesis.provider.backend;
+package de.thesis.provider.backend.httpclient;
 
 import org.springframework.util.MultiValueMap;
 

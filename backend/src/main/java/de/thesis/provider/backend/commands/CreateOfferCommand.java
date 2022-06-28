@@ -1,6 +1,7 @@
-package de.thesis.provider.backend;
+package de.thesis.provider.backend.commands;
 
 
+import de.thesis.provider.backend.entities.Metadata;
 import de.thesis.provider.backend.csv.DataRow;
 import lombok.Value;
 

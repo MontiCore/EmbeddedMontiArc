@@ -1,4 +1,4 @@
-package de.thesis.provider.backend;
+package de.thesis.provider.backend.entities;
 
 import de.thesis.provider.backend.csv.DataRow;
 import lombok.Getter;
