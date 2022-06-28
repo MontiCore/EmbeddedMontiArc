@@ -1,21 +1,10 @@
-# (c) https://github.com/MontiCore/monticore
 import logging
 import os
 import h5py
 import sys
 import numpy as np
-from abc import ABCMeta, abstractmethod
 
-class AbstractDataset(metaclass=ABCMeta):
-    @abstractmethod
-    def __getitem__(self, index):
-        pass
-
-    @abstractmethod
-    def __len__(self):
-        pass
-
-class HDF5Dataset(AbstractDataset,metaclass=ABCMeta):
+class Data_Access_Executor_Impl():
 
     def __init__(self, data_path, input_names, output_names, output_shapes, transform=None):
         super().__init__()
@@ -56,3 +45,8 @@ class HDF5Dataset(AbstractDataset,metaclass=ABCMeta):
         else:
             logging.error("Data loading failure. File '" + os.path.abspath(self._data_path_) + "' does not exist.")
             sys.exit(1)
+
+    def execute(self):
+        trainData = None
+        testData = None
+        return trainData, testData

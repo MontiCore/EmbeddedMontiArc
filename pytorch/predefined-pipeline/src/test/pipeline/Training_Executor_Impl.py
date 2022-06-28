@@ -1,12 +1,4 @@
-# (c) https://github.com/MontiCore/monticore
-from abc import ABCMeta, abstractmethod
-
-class AbstractTrainer(metaclass=ABCMeta):
-    @abstractmethod
-    def train(self):
-        pass
-
-class SupervisedTrainer(AbstractTrainer, metaclass=ABCMeta):
+class Training_Executor_Impl():
 
     def __init__(self, model, train_config, train_loader, test_loader, model_dir, model_prefix):
         super().__init__()
@@ -17,7 +9,7 @@ class SupervisedTrainer(AbstractTrainer, metaclass=ABCMeta):
         self._model_dir_ = model_dir
         self._model_prefix_ = model_prefix
 
-    def train(self):
+    def execute(self):
         #later we will take this from train_config.loss()
         criterion = nn.CrossEntropyLoss()
         #later we will take this from train_config.optimizer()
