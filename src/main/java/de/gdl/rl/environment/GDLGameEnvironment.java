@@ -50,7 +50,6 @@ public abstract class GDLGameEnvironment implements RlGdlGameEnvironment {
     private boolean legalMovesCouldHaveChanged = true;
 
     private final ASTGame ast;
-    private final InterpreterOptions options;
 
     public GDLGameEnvironment() {
         this(null);
@@ -58,7 +57,6 @@ public abstract class GDLGameEnvironment implements RlGdlGameEnvironment {
 
     public GDLGameEnvironment(InterpreterOptions options) {
         ast = GDLInterpreter.parse(this.getPathToGdlModel());
-        this.options = options;
         GDLCoCoChecker checker = new GDLCoCoChecker();
         
         checker.addCoCo(new ASTGameExpressionCoCo());
@@ -369,24 +367,7 @@ public abstract class GDLGameEnvironment implements RlGdlGameEnvironment {
      * Can be used to start a new episode.
      */
     public void reset() {
-        try {
-            final Interpreter tInterpreter = this.interpreter;
-            new Thread(() -> {
-                try {
-                    Thread.sleep(5000);
-                    tInterpreter.close();
-                } catch (Exception e) {
-                    e.printStackTrace();
-                }
-            }).start();
-            this.interpreter = new Interpreter(ast);
-            if (options != null)
-                this.interpreter = this.interpreter.init(options);
-            else
-                this.interpreter = this.interpreter.init();
-        } catch (Exception e) {
-            e.printStackTrace();
-        }
+        this.interpreter.reset();
         this.lastStepWasIllegal = false;
         this.legalMovesCouldHaveChanged = true;
         this.currentState = this.interpreter.getGameState();
