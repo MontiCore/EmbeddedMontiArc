@@ -370,12 +370,20 @@ public abstract class GDLGameEnvironment implements RlGdlGameEnvironment {
      */
     public void reset() {
         try {
-            this.interpreter.close();
+            final Interpreter tInterpreter = this.interpreter;
+            new Thread(() -> {
+                try {
+                    Thread.sleep(5000);
+                    tInterpreter.close();
+                } catch (Exception e) {
+                    e.printStackTrace();
+                }
+            }).start();
             this.interpreter = new Interpreter(ast);
             if (options != null)
-                this.interpreter.init(options);
+                this.interpreter = this.interpreter.init(options);
             else
-                this.interpreter.init();
+                this.interpreter = this.interpreter.init();
         } catch (Exception e) {
             e.printStackTrace();
         }
