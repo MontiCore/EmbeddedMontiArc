@@ -57,6 +57,8 @@ public class Interpreter implements AutoCloseable {
     private String placeholderStates;
 
     private Map<String, List<Runnable>> onStateHasChangedMap = new HashMap<>();
+    private Set<List<String>> initialState = null;
+    private Set<List<String>> initialHiddenState = null;
 
     private InterpreterOptions options = new InterpreterOptions();
 
@@ -153,11 +155,32 @@ public class Interpreter implements AutoCloseable {
 
         initSemaphore.acquire();
 
+        this.initialState = getGameState().stream()
+                .map(l ->
+                    l.stream()
+                    .map(Interpreter::convertInterpreterValue2PL)
+                    .collect(Collectors.toList()))
+                .collect(Collectors.toSet());
+        this.initialHiddenState = getHiddenGameState().stream()
+                .map(l ->
+                    l.stream()
+                    .map(Interpreter::convertInterpreterValue2PL)
+                    .collect(Collectors.toList()))
+                .collect(Collectors.toSet());
+
         if (hasRandom && !options.isManualRandom()) {
             doRandom();
         }
 
         return this;
+    }
+
+    public void reset() {
+        buildNextStates(initialState, initialHiddenState);
+
+        if (hasRandom && !options.isManualRandom()) {
+            doRandom();
+        }
     }
 
     private String loadUtil() {

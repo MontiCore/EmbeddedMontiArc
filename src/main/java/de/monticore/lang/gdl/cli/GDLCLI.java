@@ -40,12 +40,19 @@ public class GDLCLI implements Runnable {
             "Additional functions:\n" +
             "  /help" + "\t\t\t" + "Show the CLI usage\n" +
             "  /exit" + "\t\t\t" + "Exit the CLI\n" +
+            "  /reset" + "\t\t\t" + "Reset the interpreter\n" +
             "  /eval {func}" + "\t\t" + "Calculate all models for a function {func}\n" +
             "  /roles" + "\t\t\t" + "Print all playable roles.\n" +
             "  /state {role}" + "\t\t" + "Print the current game state (for a role {role})\n" +
             "  /legal {role}" + "\t\t" + "Print all currently legal moves (for a role {role})\n" +
             "";
         System.out.print(help);
+    }
+
+    private void reset() {
+        interpreter.reset();
+        System.out.println("Interpreter was reset.");
+        printGameState(null);
     }
 
     private void evaluate(String expression) {
@@ -158,6 +165,8 @@ public class GDLCLI implements Runnable {
                     }
                 } else if (line.startsWith("/help")) {
                     printHelp();
+                } else if (line.startsWith("/reset")) {
+                    reset();
                 } else if (line.startsWith("/legal")) {
                     if (line.length() > 7) {
                         printLegal(line.substring(7));
