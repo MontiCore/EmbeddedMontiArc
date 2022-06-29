@@ -4,5 +4,5 @@ GENERATOR_PATH="bin/embedded-montiarc-math-middleware-generator-0.1.4-SNAPSHOT-j
 AGENT_BUILD="target/agent/build"
 SIMULATOR_PATH="$HOME/dev/basic-simulator/install"
 SCENARIO_PATH="scenarios/rl_autopilot_160.json"
-DIR_NAME="Autopilot1"
+DIR_NAME="Autopilot"
 SAVE_FOLDER="$HOME/dev/coopmontisimautopilot/saved_autopilots"

@@ -9,12 +9,11 @@ component AutopilotCritic {
     implementation CNN {
         ( state | action )->
         Concatenate() ->
-        FullyConnected(units=384) ->
+        FullyConnected(units=512) ->
         Relu() ->
         FullyConnected(units=768) ->
         Relu() ->
         FullyConnected(units=1) ->
         qvalues;
     }
-
 }
