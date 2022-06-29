@@ -8,7 +8,7 @@ import de.rwth.montisim.simulation.vehicle.navigation.Navigation;
 public class DefaultRewardFunctionProperties extends RewardFunctionProperties {
 
   @Override
-  public RewardFunction build(Navigation[] navigations, Vehicle[] vehicles) {
-    return new DefaultRewardFunction(navigations, vehicles);
+  public RewardFunction build(Vehicle[] vehicles) {
+    return new DefaultRewardFunction(vehicles);
   }
 }

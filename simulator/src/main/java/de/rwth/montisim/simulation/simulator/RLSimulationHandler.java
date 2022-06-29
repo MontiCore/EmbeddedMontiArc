@@ -332,7 +332,7 @@ public class RLSimulationHandler {
         updateStatePackets();
         float[] simState = getState();
 
-        rewardFunction = config.rewardFunction.map(props -> props.build(navigations, vehiclesArray)).orElse(new DefaultRewardFunctionProperties().build(navigations, vehiclesArray));
+        rewardFunction = config.rewardFunction.map(props -> props.build(vehiclesArray)).orElse(new DefaultRewardFunctionProperties().build(vehiclesArray));
         float init_reward = rewardFunction.getReward();
         boolean simTermination = this.getSimTermination();
 
@@ -403,6 +403,8 @@ public class RLSimulationHandler {
         updateStatePackets();
         float[] simState = getState();
         float step_reward;
+
+        rewardFunction = config.rewardFunction.map(props -> props.build(vehiclesArray)).orElse(new DefaultRewardFunctionProperties().build(vehiclesArray));
 
         if (!distributed) {
             step_reward = rewardFunction.getReward();

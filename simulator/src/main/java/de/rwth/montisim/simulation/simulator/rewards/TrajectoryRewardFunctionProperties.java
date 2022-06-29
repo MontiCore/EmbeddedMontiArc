@@ -11,7 +11,7 @@ public class TrajectoryRewardFunctionProperties extends RewardFunctionProperties
   float distance_max = 5;
 
   @Override
-  public RewardFunction build(Navigation[] navigations, Vehicle[] vehicles) {
-    return new TrajectoryRewardFunction(navigations, vehicles, reward, distance_max);
+  public RewardFunction build(Vehicle[] vehicles) {
+    return new TrajectoryRewardFunction(vehicles, reward, distance_max);
   }
 }

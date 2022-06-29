@@ -1,7 +1,10 @@
 package de.rwth.montisim.simulation.simulator.rewards;
 
+import de.rwth.montisim.commons.utils.Vec2;
 import de.rwth.montisim.simulation.vehicle.Vehicle;
 import de.rwth.montisim.simulation.vehicle.navigation.Navigation;
+
+import java.util.Arrays;
 
 /**
  * Abstract class that specifies a reward function, evaluating an action taken by an agent in the environment.
@@ -9,21 +12,22 @@ import de.rwth.montisim.simulation.vehicle.navigation.Navigation;
 public abstract class RewardFunction {
 
   final int NUMBER_OF_VEHICLES;
-  final Navigation[] navigations;
   final Vehicle[] vehicles;
+  final Navigation[] navigations;
+  final Vec2[] positions;
+  final Double[] velocities;
 
   /**
    * Default constructor that initializes the parameters required for any given reward function: Navigation and Data of each Vehicle.
    *
-   * @param navigations Navigation[] containing the currently active vehicle's navigation.
    * @param vehicles    Vehicle[] containing additional data about each active vehicle.
    */
-  public RewardFunction(Navigation[] navigations, Vehicle[] vehicles) {
-    assert navigations.length == vehicles.length;
-
-    this.NUMBER_OF_VEHICLES = navigations.length;
-    this.navigations = navigations;
+  public RewardFunction(Vehicle[] vehicles) {
+    this.NUMBER_OF_VEHICLES = vehicles.length;
     this.vehicles = vehicles;
+    this.navigations = Arrays.stream(vehicles).map(vehicle -> (Navigation) vehicle.eesystem.getComponent("Navigation").get()).toArray(Navigation[]::new);
+    this.positions = Arrays.stream(vehicles).map(vehicle -> (Vec2) vehicle.physicalValues.getPhysicalValue("true_position").get()).toArray(Vec2[]::new);
+    this.velocities = Arrays.stream(vehicles).map(vehicle -> (Double) vehicle.physicalValues.getPhysicalValue("true_velocity").get()).toArray(Double[]::new);
   }
 
   /**

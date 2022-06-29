@@ -5,8 +5,8 @@ import de.rwth.montisim.simulation.vehicle.navigation.Navigation;
 
 public class DefaultRewardFunction extends RewardFunction {
 
-  public DefaultRewardFunction(Navigation[] navigations, Vehicle[] vehicles) {
-    super(navigations, vehicles);
+  public DefaultRewardFunction(Vehicle[] vehicles) {
+    super(vehicles);
   }
 
   @Override

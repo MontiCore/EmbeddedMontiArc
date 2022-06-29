@@ -19,11 +19,11 @@ public class SequenceRewardFunctionProperties extends RewardFunctionProperties {
   public Vector<RewardFunctionProperties> rewardFunctions = new Vector<>();
 
   @Override
-  public RewardFunction build(Navigation[] navigations, Vehicle[] vehicles) {
+  public RewardFunction build(Vehicle[] vehicles) {
     RewardFunction[] rewardFunctionsArray = new RewardFunction[rewardFunctions.size()];
     for (int i = 0; i < rewardFunctions.size(); i++) {
-      rewardFunctionsArray[i] = rewardFunctions.get(i).build(navigations, vehicles);
+      rewardFunctionsArray[i] = rewardFunctions.get(i).build(vehicles);
     }
-    return new SequenceRewardFunction(navigations, vehicles, rewardFunctionsArray);
+    return new SequenceRewardFunction(vehicles, rewardFunctionsArray);
   }
 }

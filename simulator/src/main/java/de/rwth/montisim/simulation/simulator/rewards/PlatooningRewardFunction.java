@@ -29,7 +29,6 @@ public class PlatooningRewardFunction extends RewardFunction {
   /**
    * Initializes a new Platoon Reward Function
    *
-   * @param navigations       Navigation[] containing the currently active vehicle's navigation.
    * @param vehicles          Vehicle[] containing additional data about each active vehicle.
    * @param platooning_reward The scaled reward.
    * @param gap_max           Maximum allowed gap between vehicles.
@@ -37,8 +36,8 @@ public class PlatooningRewardFunction extends RewardFunction {
    * @param velocity_max      Maximum allowed velocity.
    * @param velocity_desired  Desired velocity.
    */
-  public PlatooningRewardFunction(Navigation[] navigations, Vehicle[] vehicles, float platooning_reward, float gap_max, float gap_desired, float velocity_max, float velocity_desired) {
-    super(navigations, vehicles);
+  public PlatooningRewardFunction(Vehicle[] vehicles, float platooning_reward, float gap_max, float gap_desired, float velocity_max, float velocity_desired) {
+    super(vehicles);
     this.PLATOONING_REWARD = platooning_reward;
     this.gap_max = gap_max;
     this.gap_desired = gap_desired;
@@ -55,14 +54,14 @@ public class PlatooningRewardFunction extends RewardFunction {
       int preceding_index = preceding_index_optional.get();
 
       // punish distance
-      Vec2 vehicle_position = (Vec2) this.vehicles[vehicle_index].physicalValues.getPhysicalValue("true_position").get();
-      Vec2 preceding_position = (Vec2) this.vehicles[preceding_index].physicalValues.getPhysicalValue("true_position").get();
+      Vec2 vehicle_position = this.positions[vehicle_index];
+      Vec2 preceding_position = this.positions[preceding_index];
       double gap = vehicle_position.distance(preceding_position);
       reward -= PLATOONING_REWARD * Math.pow((1 / this.gap_max) * (this.gap_desired - gap), 2);
 
       // punish velocity difference
-      double vehicle_velocity = (Double) this.vehicles[vehicle_index].physicalValues.getPhysicalValue("true_velocity").get();
-      double preceding_velocity = (Double) this.vehicles[preceding_index].physicalValues.getPhysicalValue("true_velocity").get();
+      double vehicle_velocity = this.velocities[vehicle_index];
+      double preceding_velocity = this.velocities[preceding_index];
       reward -= PLATOONING_REWARD * Math.pow((1 / this.velocity_max) * (vehicle_velocity - preceding_velocity), 2);
 
       // reward below max gap
@@ -75,7 +74,7 @@ public class PlatooningRewardFunction extends RewardFunction {
     }
     else {
       // punish velocity difference
-      double vehicle_velocity = (Double) this.vehicles[vehicle_index].physicalValues.getPhysicalValue("true_velocity").get();
+      double vehicle_velocity = this.velocities[vehicle_index];
       reward -= PLATOONING_REWARD * Math.pow((1 / this.velocity_max) * (this.velocity_desired - vehicle_velocity), 2);
 
       // reward below max velocity
@@ -113,7 +112,7 @@ public class PlatooningRewardFunction extends RewardFunction {
         Vec2 vehicle_target = vehicle_targets.get(vehicle_target_index);
 
         if (vehicle_target_index == 0) {
-          vehicle_distance = ((Vec2) this.vehicles[vehicle_index].physicalValues.getPhysicalValue("true_position").get()).distance(i_targets.get(0));
+          vehicle_distance = (this.positions[vehicle_index]).distance(i_targets.get(0));
         }
         else {
           vehicle_distance = vehicle_target.distance(vehicle_targets.get(vehicle_target_index - 1));
@@ -125,7 +124,7 @@ public class PlatooningRewardFunction extends RewardFunction {
           Vec2 i_target = i_targets.get(i_target_index);
 
           if (i_target_index == 0) {
-            i_distance = ((Vec2) this.vehicles[i].physicalValues.getPhysicalValue("true_position").get()).distance(i_targets.get(0));
+            i_distance = (this.positions[i]).distance(i_targets.get(0));
           }
           else {
             i_distance = i_target.distance(i_targets.get(i_target_index - 1));

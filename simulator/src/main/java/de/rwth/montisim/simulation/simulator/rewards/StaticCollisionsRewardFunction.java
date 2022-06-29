@@ -13,12 +13,11 @@ public class StaticCollisionsRewardFunction extends RewardFunction {
   /**
    * Reward function that punishes static collisions.
    *
-   * @param navigations             Navigation[] containing the currently active vehicle's navigation.
    * @param vehicles                Vehicle[] containing additional data about each active vehicle.
    * @param static_collision_reward The reward given for each static collision.
    */
-  public StaticCollisionsRewardFunction(Navigation[] navigations, Vehicle[] vehicles, float static_collision_reward) {
-    super(navigations, vehicles);
+  public StaticCollisionsRewardFunction(Vehicle[] vehicles, float static_collision_reward) {
+    super( vehicles);
     STATIC_COLLISION_REWARD = static_collision_reward;
   }
 

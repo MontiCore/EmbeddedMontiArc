@@ -10,7 +10,7 @@ public class StaticCollisionsRewardFunctionProperties extends RewardFunctionProp
   public float reward = -600;
 
   @Override
-  public RewardFunction build(Navigation[] navigations, Vehicle[] vehicles) {
-    return new StaticCollisionsRewardFunction(navigations, vehicles, reward);
+  public RewardFunction build(Vehicle[] vehicles) {
+    return new StaticCollisionsRewardFunction(vehicles, reward);
   }
 }

@@ -17,25 +17,24 @@ public class TrajectoryRewardFunction extends RewardFunction {
   /**
    * Initializes the Trajectory Reward Function.
    *
-   * @param navigations       Navigation[] containing the currently active vehicle's navigation.
    * @param vehicles          Vehicle[] containing additional data about each active vehicle.
    * @param trajectory_reward Scaled reward.
    * @param distance_max      Maximum allowed distance to the next trajectory point.
    */
-  public TrajectoryRewardFunction(Navigation[] navigations, Vehicle[] vehicles, float trajectory_reward, float distance_max) {
-    super(navigations, vehicles);
+  public TrajectoryRewardFunction(Vehicle[] vehicles, float trajectory_reward, float distance_max) {
+    super(vehicles);
     this.TRAJECTORY_REWARD = trajectory_reward;
     this.distance_max = distance_max;
   }
 
   @Override
   public float getRewardForVehicle(int vehicle_index) {
-    Vec2 vehicle_position = (Vec2) this.vehicles[vehicle_index].physicalValues.getPhysicalValue("true_position").get();
+    Vec2 vehicle_position = this.positions[vehicle_index];
     Vec2[] vehicle_trajectory = this.navigations[vehicle_index].getCurrentTraj();
 
     double distanceToSeg;
     double distance = Double.MAX_VALUE;
-    for (int i = 0; i < vehicle_trajectory.length; i++) {
+    for (int i = 0; i < vehicle_trajectory.length - 1; i++) {
       SegmentPos currentSegment = new SegmentPos();
       currentSegment.initFromTrajectory(vehicle_position, vehicle_trajectory[i], vehicle_trajectory[i + 1]);
       if (currentSegment.projPos < 0) { //vehicle is in front of segment

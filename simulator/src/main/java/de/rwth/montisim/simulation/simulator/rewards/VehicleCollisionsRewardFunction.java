@@ -13,12 +13,11 @@ public class VehicleCollisionsRewardFunction extends RewardFunction {
   /**
    * Reward function that punishes vehicle collisions.
    *
-   * @param navigations              Navigation[] containing the currently active vehicle's navigation.
    * @param vehicles                 Vehicle[] containing additional data about each active vehicle.
    * @param vehicle_collision_reward The reward given for each vehicle collision.
    */
-  public VehicleCollisionsRewardFunction(Navigation[] navigations, Vehicle[] vehicles, float vehicle_collision_reward) {
-    super(navigations, vehicles);
+  public VehicleCollisionsRewardFunction(Vehicle[] vehicles, float vehicle_collision_reward) {
+    super(vehicles);
     VEHICLE_COLLISION_REWARD = vehicle_collision_reward;
   }
 
