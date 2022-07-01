@@ -1,2 +1,0 @@
-(init (<= (next (control x))
-  (true (control o))))

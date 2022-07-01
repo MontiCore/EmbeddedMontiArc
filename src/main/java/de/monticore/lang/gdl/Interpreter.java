@@ -3,314 +3,151 @@ package de.monticore.lang.gdl;
 import java.io.BufferedInputStream;
 import java.io.BufferedOutputStream;
 import java.io.BufferedReader;
+import java.io.BufferedWriter;
+import java.io.File;
+import java.io.FileInputStream;
 import java.io.IOException;
 import java.io.InputStream;
 import java.io.InputStreamReader;
+import java.io.OutputStream;
 import java.io.OutputStreamWriter;
+import java.io.Reader;
+import java.io.StringReader;
+import java.io.Writer;
 import java.util.ArrayList;
-import java.util.Arrays;
-import java.util.Collections;
-import java.util.HashSet;
 import java.util.HashMap;
-import java.util.Map;
+import java.util.HashSet;
 import java.util.List;
+import java.util.Map;
+import java.util.Optional;
 import java.util.Scanner;
 import java.util.Set;
 import java.util.concurrent.Semaphore;
+import java.util.function.Consumer;
+import java.util.function.Function;
 import java.util.regex.Matcher;
 import java.util.regex.Pattern;
 import java.util.stream.Collectors;
 
 import de.monticore.lang.gdl._ast.ASTGame;
+import de.monticore.lang.gdl._parser.GDLParser;
+import de.monticore.lang.gdl._symboltable.GDLScopesGenitor;
+import de.monticore.lang.gdl._symboltable.IGDLGlobalScope;
+import de.monticore.lang.gdl._visitor.GDLTraverser;
+import de.monticore.lang.gdl.cocos.AllCoCosChecker;
+import de.monticore.lang.gdl.types.GDLTuple;
+import de.monticore.lang.gdl.types.GDLType;
 import de.monticore.lang.gdl.visitors.PrologPrinter;
+import de.se_rwth.commons.logging.Log;
 
-import sun.misc.Signal;
+public class Interpreter extends EventSource<GDLType, Set<GDLType>> implements AutoCloseable {
 
-public class Interpreter implements AutoCloseable {
+    private static final Pattern RESULT_ARRAY_PATTERN = Pattern.compile("\\[(.*)\\]");
 
-    private Semaphore initSemaphore;
-    private int initTrueCounter;
+    private final String prologProgram;
+    private final InterpreterOptions options;
 
-    private BufferedOutputStream out;
-    private OutputStreamWriter writer;
-    private BufferedInputStream in, err;
     private Process prologProcess;
+    private Writer prologWriter;
+    private Thread printInThread, printErrThread;
 
-    private Thread printIn, printErr;
-
-    private final ASTGame game;
-
-    private Set<FunctionSignature> functionSignatures;
-    private Set<FunctionSignature> statesSignatures;
-    private Set<FunctionSignature> hiddenStatesSignatures;
-    private Set<FunctionSignature> nextSignatures;
-    private Set<FunctionSignature> hiddenNextSignatures;
-    private Set<FunctionSignature> legalSignatures;
-
-    private boolean hasTerminal;
-    private boolean hasRandom;
-    private Set<String> roles;
+    private int initTrueCounter;
+    private Semaphore initSemaphore;
 
     private List<String> currentEvaluation = null;
     private Semaphore evalSemaphore;
+    private boolean evalError;
 
-    private String placeholderStates;
+    private Semaphore executeSemaphore = new Semaphore(1);
 
-    private Map<String, List<Runnable>> onStateHasChangedMap = new HashMap<>();
-    private Set<List<String>> initialState = null;
-    private Set<List<String>> initialHiddenState = null;
-
-    private InterpreterOptions options = new InterpreterOptions();
-
-    public Interpreter(ASTGame game) {
-        this.game = game;
+    private Interpreter(String prolog, InterpreterOptions options) {
+        this.prologProgram = prolog;
+        this.options = options == null ? new InterpreterOptions() : options;
     }
 
-    public Interpreter init(final InterpreterOptions options) throws Exception {
-        this.options = options;
-        return init();
+    public String getPrologProgram() {
+        return this.prologProgram;
     }
 
-    public Interpreter init() throws Exception {
-        initSemaphore = new Semaphore(0);
-        initTrueCounter = 0;
-
-        prologProcess = Runtime.getRuntime().exec("swipl");
-        out = new BufferedOutputStream(prologProcess.getOutputStream());
-        writer = new OutputStreamWriter(out) {
-            @Override
-            public void write(String str) throws IOException {
-                if (options.isDebugMode()) System.out.println("? " + str);
-                super.write(str);
-            }
-        };
-        in = new BufferedInputStream(prologProcess.getInputStream());
-        err = new BufferedInputStream(prologProcess.getErrorStream());
-
-        Signal.handle(new Signal("INT"),  // SIGINT
-            signal -> {
-                prologProcess.destroy();
-                printIn.interrupt();
-                printErr.interrupt();
-                System.exit(0);
-            });
-
-        printIn = new Thread(new Runnable() {
-            @Override
-            public void run() {
-                Scanner s = new Scanner(in);
-                while(s.hasNextLine()) {
-                    String line = s.nextLine();
-                    if (line.length() == 0) {
-                        continue;
-                    }
-                
-                    readIn(line);
-                }
-                s.close();
-            }
-        });
-
-        printErr = new Thread(new Runnable() {
-            @Override
-            public void run() {
-                Scanner s = new Scanner(err);
-                while(s.hasNextLine()) {
-                    String line = s.nextLine();
-                    if (line.length() == 0) {
-                        continue;
-                    }
-                    readErr(line);
-                }
-                s.close();
-            }
-        });
-
-        printIn.start();
-        printErr.start();
-
-        PrologPrinter printer = new PrologPrinter();
-        game.accept(printer.getTraverser());
-        String prologProgram = printer.getContent();
-        statesSignatures = printer.getStatesSignatures();
-        hiddenStatesSignatures = printer.getHiddenStatesSignatures();
-        functionSignatures = printer.getFunctionSignatures();
-        legalSignatures = printer.getLegalSignatures();
-        nextSignatures = printer.getNextSignatures();
-        hiddenNextSignatures = printer.getHiddenNextSignatures();
-        String util = loadUtil();
-        placeholderStates = printer.getPlaceholderStates();
-
-        hasTerminal = printer.hasTerminal();
-        hasRandom = printer.hasRandom();
-        roles = printer.getRoles();
-
-        writer.write("[user].\n");
-        writer.write(util);
-        writer.write(placeholderStates);
-        writer.write(prologProgram);
-
-        writer.write("end_of_file.\n");
-        writer.flush();
-
-        initSemaphore.acquire();
-
-        this.initialState = getGameState().stream()
-                .map(l ->
-                    l.stream()
-                    .map(Interpreter::convertInterpreterValue2PL)
-                    .collect(Collectors.toList()))
-                .collect(Collectors.toSet());
-        this.initialHiddenState = getHiddenGameState().stream()
-                .map(l ->
-                    l.stream()
-                    .map(Interpreter::convertInterpreterValue2PL)
-                    .collect(Collectors.toList()))
-                .collect(Collectors.toSet());
-
-        if (hasRandom && !options.isManualRandom()) {
-            doRandom();
-        }
-
-        return this;
-    }
-
-    public void reset() {
-        buildNextStates(initialState, initialHiddenState);
-
-        if (hasRandom && !options.isManualRandom()) {
-            doRandom();
-        }
-    }
-
-    private String loadUtil() {
-        InputStream stream = Interpreter.class.getResourceAsStream("util.pl");
+    private synchronized void init() {
         try {
-            BufferedReader reader = new BufferedReader(new InputStreamReader(stream, "UTF-8"));
-            return reader.lines().reduce("", (s1, s2) -> s1 + "\n" + s2) + "\n";
-        } catch (Exception e) {
-            System.err.println("Unable to load util.pl.");
-            return "";
-        }
-        
-    }
+            prologProcess = Runtime.getRuntime().exec("swipl");
 
-    public Set<List<String>> getAllModels(String function) {
-        Set<FunctionSignature> signatures;
+            // setup pipes
+            OutputStream out = new BufferedOutputStream(prologProcess.getOutputStream());
+            prologWriter = new BufferedWriter(new OutputStreamWriter(out)) {
+                @Override
+                public void write(String str) throws IOException {
+                    if (options.isDebugMode()) System.out.println("? " + str);
+                    super.write(str);
+                }
+            };
 
-        if (function.equals("legal")) {
-            return getAllLegalMoves();
-        } else {
-            signatures = functionSignatures
-            .stream()
-            .filter(signature -> signature.functionName.equals(function))
-            .collect(Collectors.toSet());
-        }
-
-        if (signatures.isEmpty()) {
-            return null;
-        }
-
-        Set<List<String>> allResults = new HashSet<>();
-        for (FunctionSignature signature : signatures) {
-            Set<List<String>> result = getAllModels("function_" + signature.functionName, signature.arity);
-            if (result != null) {
-                allResults.addAll(result);
-            }
-        }
-        allResults = allResults
-            .stream().map(
-                l -> l.stream().map(Interpreter::convertPLValue2Interpreter).collect(Collectors.toList())
-            ).filter(
-                l -> l.stream().filter(s -> s.length() == 0).count() == 0
-            ).collect(Collectors.toSet());
-        return allResults;
-    }
-
-    private Set<List<String>> getAllModels(String functionName, int arity) {
-        if (arity < 1) {
-            return null;
-        }
-        StringBuilder sb = new StringBuilder();
-
-        StringBuilder tupleBuilder = new StringBuilder();
-        tupleBuilder.append("(");
-        for (int i = 0; i < arity; i++) {
-            tupleBuilder.append("X").append(i);
-            if (i + 1 < arity) {
-                tupleBuilder.append(", ");
-            }
-        }
-        tupleBuilder.append(")");
-
-        sb.append("setof(").append(tupleBuilder.toString()).append(", ");
-        sb.append(functionName).append(tupleBuilder.toString()).append(", ");
-        sb.append("Models).\n");
-
-        String command = sb.toString();
-        String result = execute(command);
-
-        Set<List<String>> results = new HashSet<>();
-
-        if (result.equals("false.")) {
-            return results;
-        }
-        result = result.substring(10, result.length() - 2);
-
-        if (arity > 1) {
-            String[] tuples = result.split("\\(");
-            for (int i = 1; i < tuples.length; i++) {
-                String current = tuples[i].split("\\)")[0];
-                String[] elements = current.split(",");
-                results.add(List.of(elements));
-            }
-        } else {
-            String[] tuples = result.split(",");
-            for (String s: tuples) {
-                results.add(List.of(s));
-            }
-        }
-
-        return results;
-    }
-
-    private void retractAllStates() {
-        String command = "retractAllStates().\n";
-        execute(command);
-    }
-
-    private synchronized String execute(String command) {
-        List<String> result = execute(command, 1);
-        return result == null ? null : result.get(0);
-    }
-
-    private synchronized List<String> execute(String command, int waitEvalLines) {
-        currentEvaluation = new ArrayList<>(waitEvalLines);
-        this.evalSemaphore = new Semaphore(0);
-
-        try {
-            writer.write(command);
-            writer.flush();
-
-            for (int i = 0; i < waitEvalLines; i++) {
-                evalSemaphore.acquire(1);
-
-                if (evalError) {
-                    currentEvaluation = null;
+            final InputStream in = new BufferedInputStream(prologProcess.getInputStream());
+            printInThread = new Thread(new Runnable() {
+                @Override
+                public void run() {
+                    Scanner s = new Scanner(in);
+                    while(s.hasNextLine()) {
+                        String line = s.nextLine();
+                        if (line.strip().length() == 0) {
+                            continue;
+                        }
                     
-                    if (!options.isDebugMode()) throw new RuntimeException("The current evaluation faced an unexpected Error. Re-run your program in debug mode to get more detail.");
-                    throw new RuntimeException("The current evaluation faced an unexpected Error.");
+                        readIn(line.strip());
+                    }
+                    s.close();
                 }
-            }
+            });
+    
+            final InputStream err = new BufferedInputStream(prologProcess.getErrorStream());
+            printErrThread = new Thread(new Runnable() {
+                @Override
+                public void run() {
+                    Scanner s = new Scanner(err);
+                    while(s.hasNextLine()) {
+                        String line = s.nextLine();
+                        if (line.strip().length() == 0) {
+                            continue;
+                        }
+                        readErr(line.strip());
+                    }
+                    s.close();
+                }
+            });
+    
+            printInThread.start();
+            printErrThread.start();
+
+
+            // load program into Prolog
+            initSemaphore = new Semaphore(0);
+            initTrueCounter = 0;
+
+            prologWriter.write("[user].\n");
+            prologWriter.write(prologProgram);
+            prologWriter.write("end_of_file.\n");
+            prologWriter.flush();
+
+            initSemaphore.acquire();
+
+            // load options
+            loadOptions();
+
+            // init state
+            execute("gdli_init().");
         } catch (IOException | InterruptedException e) {
-            e.printStackTrace();
-            return null;
+            Log.error("Failed to initialize interpreter.", e);
         }
+    }
 
-        List<String> result = currentEvaluation;
-        currentEvaluation = null;
-
-        return result;
+    @Override
+    public void close() throws Exception {
+        printInThread.interrupt();
+        printErrThread.interrupt();
+        prologWriter.flush();
+        prologWriter.close();
+        prologProcess.destroy();
     }
 
     private void readIn(String line) {
@@ -329,7 +166,6 @@ public class Interpreter implements AutoCloseable {
         }
     }
 
-    private boolean evalError;
     private void readErr(String line) {
         if (options.isDebugMode()) System.out.println("! " + line);
 
@@ -341,556 +177,386 @@ public class Interpreter implements AutoCloseable {
         }
     }
 
-    public Set<List<String>> getAllLegalMoves() {
-        Set<List<String>> result = getAllModels("function_legal", 2);
-        result = result
-            .stream().map(
-                l -> l.stream().map(Interpreter::convertPLValue2Interpreter).collect(Collectors.toList())
-            ).filter(
-                l -> l.stream().filter(s -> s.length() == 0).count() == 0
-            ).collect(Collectors.toSet());
+    private void loadOptions() {
+        if (options.isManualRandom()) {
+            execute("assertz(gdli_options(manual_random)).");
+        }
+    }
+
+    private synchronized String execute(String command) {
+        List<String> result = execute(command, 1);
+        return result == null ? null : result.get(0);
+    }
+
+    private synchronized List<String> execute(String command, int waitEvalLines) {
+        try {
+            executeSemaphore.acquire();
+        } catch (InterruptedException e) {
+            e.printStackTrace();
+            return null;
+        }
+
+        if (!command.endsWith("\n")) command = command + "\n";
+        currentEvaluation = new ArrayList<>(waitEvalLines);
+        this.evalSemaphore = new Semaphore(0);
+
+        try {
+            prologWriter.write(command);
+            prologWriter.flush();
+
+            for (int i = 0; i < waitEvalLines; i++) {
+                evalSemaphore.acquire(1);
+
+                if (evalError) {
+                    currentEvaluation = null;
+                    
+                    if (!options.isDebugMode()) throw new RuntimeException("The current evaluation faced an unexpected Error. Re-run your program in debug mode to get more detail.");
+                    throw new RuntimeException("The current evaluation faced an unexpected Error.");
+                }
+            }
+        } catch (IOException | InterruptedException e) {
+            e.printStackTrace();
+            executeSemaphore.release();
+            return null;
+        }
+
+        List<String> result = currentEvaluation;
+        currentEvaluation = null;
+
+        executeSemaphore.release();
         return result;
     }
 
-    public Set<List<String>> getAllLegalMovesForPlayer(String player) {
-        Set<List<String>> allLegalMoves = this.getAllLegalMoves();
-        if (allLegalMoves != null) {
-            allLegalMoves = allLegalMoves
-            .stream()
-            .filter(
-                l -> l != null && l.size() > 0 && l.get(0).equals(player)
-            )
-            .collect(Collectors.toSet());
-            return allLegalMoves;
-        } else {
-            return new HashSet<List<String>>();
-        }
-        
+    public boolean interpret(String line) {
+        return interpret(Command.createFromLine(line));
     }
 
-    private boolean isLegal(Command command) {
-        StringBuilder legalBuilder = new StringBuilder();
-
-        legalBuilder.append("setof(_,");
-        legalBuilder.append("function_legal(");
-        legalBuilder.append(command.getPlayer()).append(", (");
-        for (int i = 0; i < command.getArguments().size(); i++) {
-            legalBuilder.append(command.getArguments().get(i));
-            if (i + 1 < command.getArguments().size()) {
-                legalBuilder.append(", ");
-            }
+    public boolean interpret(Command command) {
+        String move = command.toPlString();
+        String queryResult = execute("gdli_do_move(" + move + ").");
+        boolean success = toBooleanValue(queryResult);
+        if (success && !command.isNoop()) {
+            stateHasChanged();
         }
-        legalBuilder.append("))");
-        legalBuilder.append(",_).\n");
-
-        String result = execute(legalBuilder.toString());
-        boolean legal = result.trim().equals("true.");
-
-        return legal;
+        return success;
     }
 
-    private void buildNextStates(Set<List<String>> statesList, Set<List<String>> hiddenStatesList) {
-        retractAllStates();
-        statesSignatures = new HashSet<>();
-        hiddenStatesSignatures = new HashSet<>();
-
-        StringBuilder statesBuilder = new StringBuilder();
-        statesBuilder.append(placeholderStates);
-
-        for (List<String> state : statesList) {
-            String stateName = state.get(0).substring(6);
-            statesBuilder.append("state(function_").append(stateName);
-
-            if (state.size() > 1) {
-                statesBuilder.append(", (");
-
-                for (int i = 1; i < state.size(); i++) {
-                    statesBuilder.append(state.get(i));
-                    if (i + 1 < state.size()) {
-                        statesBuilder.append(", ");
-                    }
-                }
-    
-                statesBuilder.append(")");
-            }
-
-            statesBuilder.append(").\n");
-
-            FunctionSignature signature = new FunctionSignature(stateName, state.size() - 1);
-            statesSignatures.add(signature);
-        }
-
-        for (List<String> state : hiddenStatesList) {
-            String stateName = state.get(0).substring(6);
-            statesBuilder.append("state_hidden(function_").append(stateName);
-
-            statesBuilder.append(", ").append(state.get(1));
-
-            if (state.size() > 2) {
-                statesBuilder.append(", (");
-
-                for (int i = 2; i < state.size(); i++) {
-                    statesBuilder.append(state.get(i));
-                    if (i + 1 < state.size()) {
-                        statesBuilder.append(", ");
-                    }
-                }
-
-                statesBuilder.append(")");
-            }
-
-            statesBuilder.append(").\n");
-
-            FunctionSignature signature = new FunctionSignature(stateName, state.size() - 1);
-            hiddenStatesSignatures.add(signature);
-        }
-
-        StringBuilder commandBuilder = new StringBuilder();
-        commandBuilder.append("[user].\n");
-        commandBuilder.append(statesBuilder.toString());
-        commandBuilder.append("end_of_file.\n");
-
-        execute(commandBuilder.toString());
-    }
-
-    public Set<List<String>> interpret(String line) {
-        return interpret(Command.createMoveFromLine(line));
-    }
-
-    public synchronized Set<List<String>> interpret(Command command) {
-        if (command == null) {
-            return null;
-        }
-        StringBuilder inputBuilder = new StringBuilder();
-
-        inputBuilder.append("input((");
-        inputBuilder.append(command.getPlayer()).append(", ");
-        for (int i = 0; i < command.getArguments().size(); i++) {
-            inputBuilder.append(command.getArguments().get(i));
-            if (i + 1 < command.getArguments().size()) {
-                inputBuilder.append(", ");
-            }
-        }
-        inputBuilder.append("))");
-
-        StringBuilder assertBuilder = new StringBuilder();
-        assertBuilder.append("assert(").append(inputBuilder.toString()).append(").\n");
-
-        StringBuilder retractBuilder = new StringBuilder();
-        retractBuilder.append("retract(").append(inputBuilder.toString()).append(").\n");
-
-        execute(assertBuilder.toString());
-
-        if (command.getArguments().get(0).equals("value_noop") && isLegal(command)) {
-            execute(retractBuilder.toString());
-
-            return getGameState();
-        }
-
-        Set<List<String>> allResults = null;
-        Set<List<String>> allHiddenResults = null;
-
-
-        if (isLegal(command)) {
-            allResults = new HashSet<>();
-            for (FunctionSignature next : nextSignatures) {
-                Set<List<String>> models = getAllModels(next.functionName, next.arity);
-                allResults.addAll(models);
-            }
-
-            allHiddenResults = new HashSet<>();
-            for (FunctionSignature next : hiddenNextSignatures) {
-                Set<List<String>> models = getAllModels(next.functionName, next.arity);
-                allHiddenResults.addAll(models);
-            }
-
-            allHiddenResults = allHiddenResults.stream().map(
-                list -> {
-                    ArrayList<String> l = new ArrayList<>(list);
-                    Collections.swap(l, 0, 1);
-                    return l;
-                }
-            ).collect(Collectors.toSet());
-        }
-
-        execute(retractBuilder.toString());
-
-        if (allResults != null) {
-            buildNextStates(allResults, allHiddenResults);
-            allResults.addAll(allHiddenResults);
-            allResults = allResults
-                .stream().map(
-                    l -> l.stream().map(Interpreter::convertPLValue2Interpreter).collect(Collectors.toList())
-                ).collect(Collectors.toSet());
-        }
-
-        if (hasRandom && !options.isManualRandom()) {
-            Set<List<String>> randomResults = doRandom();
-            if (randomResults != null) allResults = randomResults;
-        }
-        
-        notifyAllObservers();
-
-        return allResults;
-    }
-
-    private final Pattern randomMoveResultPattern = Pattern.compile("(\\(.*\\))", Pattern.MULTILINE);
-    private List<String> getRandomMove() {
-        if (legalSignatures.isEmpty()) {
-            return null;
-        }
-
-        String result = "";
-
-        while (result.length() < 6) {
-            String command = "get_random_legal(A).\n";
-            result = execute(command);
-
-            if (result.equals("false.")) {
-                return null;
-            }
-
-            if (result.endsWith(").")) {
-                // A =  (3, 3).
-                // result = result.substring(6, result.length() - 2);
-                final Matcher m = randomMoveResultPattern.matcher(result);
-                m.find();
-                result = m.group();
-                result = result.substring(1, result.length()-1);
-
-                List<String> moveResult = new ArrayList<String>(Arrays.asList(result.split(",")));
-                moveResult.add(0, "value_random");
-                moveResult = moveResult.stream().map(s -> s.strip()).collect(Collectors.toList());
-
-                return moveResult;
-            }
-
-            // A = 2.
-            result = result.substring(3, result.length() - 1).strip();
-
-            if (result.length() < 6 && options.isDebugMode()) {
-                System.out.println("R WARNING: Forbidden random move detected. Finding new random move...");
-            }
-        }
-        
-        return List.of("value_random", result);
-    }
-
-    private Set<List<String>> doRandom() {
-        Set<List<String>> finalResults = null;
-        List<String> randomMove = getRandomMove();
-
-        while (randomMove != null) {
-            // random command
-            // randomMove = randomMove.stream().map(s -> "value_" + s).collect(Collectors.toList());
-            Command command = Command.createMoveFromList(randomMove);
-            if (options.isDebugMode()) System.out.println("R " + command);
-
-            StringBuilder inputBuilder = new StringBuilder();
-    
-            inputBuilder.append("input((");
-            inputBuilder.append(command.getPlayer()).append(", ");
-            for (int i = 0; i < command.getArguments().size(); i++) {
-                inputBuilder.append(command.getArguments().get(i));
-                if (i + 1 < command.getArguments().size()) {
-                    inputBuilder.append(", ");
-                }
-            }
-            inputBuilder.append("))");
-    
-            StringBuilder assertBuilder = new StringBuilder();
-            assertBuilder.append("assert(").append(inputBuilder.toString()).append(").\n");
-    
-            StringBuilder retractBuilder = new StringBuilder();
-            retractBuilder.append("retract(").append(inputBuilder.toString()).append(").\n");
-    
-            execute(assertBuilder.toString());
-    
-            Set<List<String>> allResults = null;
-            Set<List<String>> allHiddenResults = null;
-    
-            if (isLegal(command)) {
-                allResults = new HashSet<>();
-                for (FunctionSignature next : nextSignatures) {
-                    Set<List<String>> models = getAllModels(next.functionName, next.arity);
-                    allResults.addAll(models);
-                }
-            
-                allHiddenResults = new HashSet<>();
-                for (FunctionSignature next : hiddenNextSignatures) {
-                    Set<List<String>> models = getAllModels(next.functionName, next.arity);
-                    allHiddenResults.addAll(models);
-                }
-
-                allHiddenResults = allHiddenResults.stream().map(
-                    list -> {
-                        ArrayList<String> l = new ArrayList<>(list);
-                        Collections.swap(l, 0, 1);
-                        return l;
-                    }
-                ).collect(Collectors.toSet());
-            }
-    
-            execute(retractBuilder.toString());
-    
-            if (allResults != null) {
-                buildNextStates(allResults, allHiddenResults);
-            
-                allResults.addAll(allHiddenResults);
-                allResults = allResults
-                    .stream().map(
-                        l -> l.stream().map(Interpreter::convertPLValue2Interpreter).collect(Collectors.toList())
-                    ).collect(Collectors.toSet());
-            }
-    
-            finalResults = allResults;
-
-            randomMove = getRandomMove();
-        }
-
-        return finalResults;
-    }
-
-    public Set<List<String>> getGameStateForRole(String role) {
-        Set<List<String>> hiddenGameState = getHiddenGameState();
-
-        hiddenGameState = hiddenGameState.stream().filter(list -> list.get(1).equals(role)).map(
-            list -> {
-                ArrayList<String> l = new ArrayList<>(list);
-                l.remove(1);
-                return l;
-            }
-        ).collect(Collectors.toSet());
-
-        hiddenGameState = new HashSet<>(hiddenGameState);
-        hiddenGameState.addAll(getGameState());
-        return hiddenGameState;
-    }
-
-    public Set<List<String>> getHiddenGameState() {
-        Set<List<String>> allHiddenResults = new HashSet<>();
-        for (FunctionSignature state : hiddenStatesSignatures) {
-            int arity = state.arity;
-            String functionName = state.functionName;
-
-            StringBuilder sb = new StringBuilder();
-
-            StringBuilder tupleBuilder = new StringBuilder();
-            tupleBuilder.append("(");
-            for (int i = 0; i < arity; i++) {
-                tupleBuilder.append("X").append(i);
-                if (i + 1 < arity) {
-                    tupleBuilder.append(", ");
-                }
-            }
-            tupleBuilder.append(")");
-
-            StringBuilder tupleBuilderMinus1 = new StringBuilder();
-            tupleBuilderMinus1.append("(");
-            for (int i = 1; i < arity; i++) {
-                tupleBuilderMinus1.append("X").append(i);
-                if (i + 1 < arity) {
-                    tupleBuilderMinus1.append(", ");
-                }
-            }
-            tupleBuilderMinus1.append(")");
-
-            sb.append("setof(").append(tupleBuilder.toString()).append(", ");
-            sb.append("state_hidden(").append("function_" + functionName).append(", ");
-            sb.append("X0");
-
-            if (arity > 1) sb.append(", ").append(tupleBuilderMinus1.toString());
-
-            sb.append("), ");
-            sb.append("Models).\n");
-
-            String command = sb.toString();
-            String result = execute(command);
-
-            Set<List<String>> results = new HashSet<>();
-
-            if (result.equals("false.")) {
-                return results;
-            }
-            result = result.substring(10, result.length() - 2);
-
-            if (arity > 1) {
-                String[] tuples = result.split("\\(");
-                for (int i = 1; i < tuples.length; i++) {
-                    String current = tuples[i].split("\\)")[0];
-                    String[] elements = current.split(",");
-                    results.add(List.of(elements));
-                }
-            } else {
-                String[] tuples = result.split(",");
-                for (String s: tuples) {
-                    results.add(List.of(s));
-                }
-            }
-
-            results = results.stream().map(list -> {
-                List<String> l = new ArrayList<>();
-                l.add("value_" + state.functionName);
-                l.addAll(list);
-                return l;
-            }).collect(Collectors.toSet());
-
-            allHiddenResults.addAll(results);
-        }
-
-        allHiddenResults = allHiddenResults
-            .stream().map(
-                l -> l.stream().map(Interpreter::convertPLValue2Interpreter).collect(Collectors.toList())
-            ).collect(Collectors.toSet());
-
-        return allHiddenResults;
-    }
-
-    public Set<List<String>> getGameState() {
-        Set<List<String>> allResults = new HashSet<>();
-        for (FunctionSignature state : statesSignatures) {
-            int arity = state.arity;
-            String functionName = state.functionName;
-
-            if (arity == 0) {
-                allResults.add(List.of("value_" + functionName));
-                continue;
-            }
-
-            StringBuilder sb = new StringBuilder();
-
-            StringBuilder tupleBuilder = new StringBuilder();
-            tupleBuilder.append("(");
-            for (int i = 0; i < arity; i++) {
-                tupleBuilder.append("X").append(i);
-                if (i + 1 < arity) {
-                    tupleBuilder.append(", ");
-                }
-            }
-            tupleBuilder.append(")");
-
-            sb.append("setof(").append(tupleBuilder.toString()).append(", ");
-            sb.append("state(").append("function_" + functionName).append(", ");
-            sb.append(tupleBuilder.toString()).append("), ");
-            sb.append("Models).\n");
-
-            String command = sb.toString();
-            String result = execute(command);
-
-            Set<List<String>> results = new HashSet<>();
-
-            if (result.equals("false.")) {
-                return results;
-            }
-            result = result.substring(10, result.length() - 2);
-
-            if (arity > 1) {
-                String[] tuples = result.split("\\(");
-                for (int i = 1; i < tuples.length; i++) {
-                    String current = tuples[i].split("\\)")[0];
-                    String[] elements = current.split(",");
-                    results.add(List.of(elements));
-                }
-            } else {
-                String[] tuples = result.split(",");
-                for (String s: tuples) {
-                    results.add(List.of(s));
-                }
-            }
-
-            results = results.stream().map(list -> {
-                List<String> l = new ArrayList<>();
-                l.add("value_" + state.functionName);
-                l.addAll(list);
-                return l;
-            }).collect(Collectors.toSet());
-
-            allResults.addAll(results);
-        }
-
-
-
-        allResults = allResults
-            .stream().map(
-                l -> l.stream().map(Interpreter::convertPLValue2Interpreter).collect(Collectors.toList())
-            ).collect(Collectors.toSet());
-
-        return allResults;
-    }
-
-    public boolean isTerminal() {
-        if (!hasTerminal) {
-            return false;
-        }
-        String command = "setof(_,function_terminal(),_).\n";
-        String result = execute(command);
-        boolean legal = result.trim().equals("true.");
-
-        return legal;
+    public boolean isLegal(Command command) {
+        String move = command.toPlString();
+        String queryResult = execute("gdli_legal(" + move + ").");
+        return toBooleanValue(queryResult);
     }
 
     /**
-     * Retrieve all roles playable in the current gdl model.
-     * @return Set of all playable roles.
+     * Reset the game state to the initial state.
+     * @return true, if the reset was successfull, false otherwise
      */
-    public Set<String> getRoles() {
-        return roles.stream().filter(r -> !r.equals("random")).collect(Collectors.toSet());
+    public boolean reset() {
+        String queryResult = execute("gdli_reset().");
+        boolean success = toBooleanValue(queryResult);
+        if (success) {
+            stateHasChanged();
+        }
+        return success;
     }
 
-    public void addStateObserver(String player, Runnable observer) {
-        if (!roles.contains(player)) return;
+    /**
+     * Get all moves that are legal in the current state.
+     * @return Set of all legal moves
+     */
+    public Set<Command> getAllLegalMoves() {
+        return getAllLegalMovesForRole(null);
+    }
 
-        if (onStateHasChangedMap.get(player) == null) {
-            onStateHasChangedMap.put(player, new ArrayList<>());
+    /**
+     * Get all moves that are legal for a role in the current state.
+     * @param role Role that the legal moves are filtered by.
+     * @return Set of all legal moves for role
+     */
+    public Set<Command> getAllLegalMovesForRole(GDLType role) {
+        Set<Command> resultSet = new HashSet<>();
+
+        String queryResult;
+
+        if (role != null) {
+            String plRole = role.toPlString();
+            queryResult = execute("gdli_all_legal_moves(" + plRole + ", Models).");
+        } else {
+            queryResult = execute("gdli_all_legal_moves(Models).");
         }
 
-        onStateHasChangedMap.get(player).add(observer);
+        final Consumer<GDLTuple> addToResultSet = t -> resultSet.add(Command.createFromGDLTuple(t));
+        matchAllGDLTypes(queryResult, addToResultSet);
+
+        return resultSet;
     }
 
-    private void notifyStateObservers(String player) {
-        List<Runnable> observers = onStateHasChangedMap.get(player);
-        if (observers == null) return;
+    /**
+     * Get the openly visible part of the current game state.
+     * @return Full visible game state
+     */
+    public Set<GDLType> getVisibleGameState() {
+        String queryResult = execute("gdli_all_state(Models).");
 
-        for (Runnable r : observers) {
-            r.run();
+        Set<GDLType> resultSet = new HashSet<>();
+        matchAllGDLTypes(queryResult, resultSet::add);
+
+        return resultSet;
+    }
+
+    /**
+     * Get the hidden part of the current game state, where the first index
+     * of each tuple indicates the visibility of the state.
+     * @return Full hidden game state
+     */
+    public Set<GDLType> getHiddenGameState() {
+        String queryResult = execute("gdli_all_state_hidden(Models).");
+
+        Set<GDLType> resultSet = new HashSet<>();
+        matchAllGDLTypes(queryResult, resultSet::add);
+
+        return resultSet;
+    }
+
+    /**
+     * Get the combined game state for a role, which consists of the visible state and
+     * the part of the hidden state only visible to role.
+     * @param role
+     * @return Game state visible to role
+     */
+    public Set<GDLType> getGameStateForRole(GDLType role) {
+        String plRole = role.toPlString();
+        String queryResult = execute("gdli_full_state_role(" + plRole + ", Models).");
+
+        Set<GDLType> resultSet = new HashSet<>();
+        matchAllGDLTypes(queryResult, resultSet::add);
+
+        return resultSet;
+    }
+
+    /**
+     * Evaluates the terminal condition.
+     * @return true, if the program is in terminal state, false otherwise
+     */
+    public boolean isTerminal() {
+        String queryResult = execute("gdli_terminal().");
+        return toBooleanValue(queryResult);
+    }
+
+    /**
+     * Evaluates the goal condition.
+     * @return Roles mapped to their respective goals.
+     */
+    public Map<GDLType, GDLType> getGoals() {
+        String queryResult = execute("gdli_all_goal(Models).");
+
+        Map<GDLType, GDLType> resultMap = new HashMap<>();
+        
+        final Consumer<GDLTuple> addToResultMap = t ->
+                resultMap.put(t.getElements().get(0), t.getElements().get(1));
+        matchAllGDLTypes(queryResult, addToResultMap);
+
+        return resultMap;
+    }
+
+
+    /**
+     * Get all roles defined in the program
+     * @return Set of all roles
+     */
+    public Set<GDLType> getRoles() {
+        String queryResult = execute("gdli_all_role(Models).");
+
+        Set<GDLType> resultSet = new HashSet<>();
+        matchAllGDLTypes(queryResult, resultSet::add);
+
+        return resultSet;
+    }
+
+    private <E extends GDLType> void matchAllGDLTypes(String queryResult, Consumer<E> tupleConsumer) {
+        Matcher matcher = RESULT_ARRAY_PATTERN.matcher(queryResult);
+        
+        if (matcher.find()) {
+            String tupleString = matcher.group();
+
+            GDLTuple tuple = GDLTuple.createFromPl(tupleString);
+
+            @SuppressWarnings("unchecked")
+            final Function<GDLType, E> cast = t -> (E) t;
+            
+            List<E> castList = tuple.getElements().stream().map(cast).collect(Collectors.toList());
+            for (E e: castList) {
+                tupleConsumer.accept(e);
+            }
         }
     }
 
-    private void notifyAllObservers() {
-        for (String role : roles) {
-            notifyStateObservers(role);
+    private void stateHasChanged() {
+        Set<GDLType> roles = getRoles();
+        for (GDLType role: roles) {
+            notifyAll(role, getGameStateForRole(role));
         }
     }
 
-    public static String convertPLValue2Interpreter(String plValue) {
-        if (!plValue.startsWith("value_") && !plValue.startsWith("valnn_")) {
+    /**
+     * Converts a value in Prolog representation to a value in GDL representation.
+     * @param plValue A value in Prolog representation
+     * @return The value in GDL representation
+     */
+    public static String convertPLValue2GDL(String plValue) {
+        int prefixSize;
+        if (plValue.startsWith("value_")) {
+            prefixSize = "value_".length();
+        } else if (plValue.startsWith("numpos_")) {
+            prefixSize = "numpos_".length();
+        } else if (plValue.startsWith("numneg_")) {
+            prefixSize = "numneg_".length();
+        } else {
             throw new IllegalArgumentException("Cannot convert '" + plValue + "' into Interpreter value");
         }
 
-        String vPart = plValue.substring(6);
-        if (plValue.startsWith("valnn_")) {
+        String vPart = plValue.substring(prefixSize);
+        if (plValue.startsWith("numneg_")) {
             vPart = "-" + vPart;
         }
 
         return vPart;
     }
 
-    public static String convertInterpreterValue2PL(String inValue) {
-        if (inValue.startsWith("-")) {
-            return "valnn_" + inValue.substring(1);
+    /**
+     * Converts a value in GDL representation to a value in Prolog representation.
+     * @param gdlValue A value in GDL representation
+     * @return The value in Prolog representation
+     */
+    public static String convertGDLValue2PL(String gdlValue) {
+        Optional<Integer> maybeNumber = toNumber(gdlValue);
+        if (maybeNumber.isPresent()) {
+            int num = maybeNumber.get();
+
+            if (num < 0) {
+                return "numneg_" + (num * -1);
+            } else {
+                return "numpos_" + num;
+            }
+        } else {
+            return "value_" + gdlValue;
         }
-        return "value_" + inValue;
     }
 
-    @Override
-    public void close() throws Exception {
-        out.close();
-        writer.close();
-        in.close();
-        err.close();
-        printIn.interrupt();
-        printErr.interrupt();
-        prologProcess.destroy();
+    private static Optional<Integer> toNumber(String inValue) {
+        try {
+            int i = Integer.parseInt(inValue);
+            return Optional.of(i);
+        } catch (NumberFormatException e) {
+            return Optional.empty();
+        }
+    }
+
+    private static boolean toBooleanValue(String plResult) {
+        return plResult.strip().contains("true");
+    }
+
+    /**
+     * Generate an Interpreter with a GDL program.
+     * @param gdl GDL program
+     * @param options Interpreter options for debugging
+     * @return An Interpreter instance for the GDL program
+     */
+    public static Interpreter fromGDL(String gdl, InterpreterOptions options) {
+        try (Reader reader = new StringReader(gdl)) {
+            GDLParser parser = GDLMill.parser();
+            Optional<ASTGame> optGame = parser.parse(reader);
+
+            if (!parser.hasErrors() && optGame.isPresent()) {
+                ASTGame ast = optGame.get();
+                return fromAST(ast, options);
+            }
+            Log.error("Model could not be parsed.");
+        } catch (IOException e) {
+            Log.error("Failed to parse gdl model.", e);
+        }
+        return null;
+    }
+
+    /**
+     * Generate an Interpreter with a GDL program file.
+     * @param gdlFilePath File path of the GDL program
+     * @param options Interpreter options for debugging
+     * @return An Interpreter instance for the GDL program
+     */
+    public static Interpreter fromGDLFile(String gdlFilePath, InterpreterOptions options) {
+        try {
+            GDLParser parser = GDLMill.parser();
+            Optional<ASTGame> optGame = parser.parse(gdlFilePath);
+
+            if (!parser.hasErrors() && optGame.isPresent()) {
+                ASTGame ast = optGame.get();
+                return fromAST(ast, options);
+            }
+            Log.error("Model could not be parsed.");
+        } catch (IOException e) {
+            Log.error("Failed to parse " + gdlFilePath, e);
+        }
+        return null;
+    }
+
+    /**
+     * Generate an Interpreter with a compatible Prolog program.
+     * @param prolog Prolog program
+     * @param options Interpreter options for debugging
+     * @return An Interpreter instance for the Prolog program
+     */
+    public static Interpreter fromProlog(String prolog, InterpreterOptions options) {
+        final Interpreter interpreter = new Interpreter(prolog, options);
+        interpreter.init();
+        return interpreter;
+    }
+
+    /**
+     * Generate an Interpreter with a compatible Prolog program file.
+     * @param prologFilePath File path of the Prolog program
+     * @param options Interpreter options for debugging
+     * @return An Interpreter instance for the Prolog program
+     */
+    public static Interpreter fromPrologPath(String prologFilePath, InterpreterOptions options) {
+        try (
+            InputStream stream = new FileInputStream(new File(prologFilePath));
+            BufferedReader reader = new BufferedReader(new InputStreamReader(stream, "UTF-8"))
+        ) {
+            String prolog = reader.lines().reduce("", (s1, s2) -> s1 + "\n" + s2) + "\n";
+            return fromProlog(prolog, options);
+        } catch (Exception e) {
+            e.printStackTrace();
+            System.err.println("Unable to load util.pl.");
+            return null;
+        }
+    }
+
+    /**
+     * Generate an Interpreter with a GDL program in AST representation.
+     * @param ast AST of the GDL Program
+     * @param options Interpreter options for debugging
+     * @return An Interpreter instance for the GDL program
+     */
+    public static Interpreter fromAST(ASTGame ast, InterpreterOptions options) {
+        final IGDLGlobalScope gs = GDLMill.globalScope();
+        gs.clear();
+
+        final GDLScopesGenitor genitor = GDLMill.scopesGenitor();
+        final GDLTraverser traverser = GDLMill.traverser();
+        traverser.setGDLHandler(genitor);
+        traverser.add4GDL(genitor);
+        genitor.putOnStack(gs);
+
+        gs.addSubScope(genitor.createFromAST(ast));
+
+        final AllCoCosChecker checker = new AllCoCosChecker();
+        checker.checkAll(ast);
+
+        final PrologPrinter printer = new PrologPrinter();
+        ast.accept(printer.getTraverser());
+        final String prolog = printer.getContent();
+        return fromProlog(prolog, options);
     }
 
 }
