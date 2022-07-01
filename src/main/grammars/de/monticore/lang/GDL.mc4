@@ -2,17 +2,15 @@ package de.monticore.lang;
 
 grammar GDL extends de.monticore.literals.MCCommonLiterals {
 
-    Game = tuples:GameTuple*;
-
+    scope Game = tuples:GameTuple*;
 
     interface GameConstruct;
 
-    GameTuple implements GameConstruct = "(" element:GameConstruct+ ")";
+    scope GameTuple implements GameConstruct = "(" element:GameConstruct+ ")";
     GameToken implements GameConstruct = "?"(type:Name":")?token:Name;
     
     GameValue implements GameConstruct = (type:Name":")?value:Name;
     GameDigits implements GameConstruct = number:SignedNatLiteral;
-
 
     interface GameKeyword extends GameConstruct;
 
