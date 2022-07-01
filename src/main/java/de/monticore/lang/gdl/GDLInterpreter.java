@@ -19,8 +19,6 @@ import de.monticore.lang.gdl._visitor.GDLTraverser;
 import de.monticore.lang.gdl.chess.ChessGUI;
 import de.monticore.lang.gdl.cli.GDLCLI;
 import de.monticore.lang.gdl.doppelkopf.DoppelkopfGUI;
-import de.monticore.lang.gdl.types.GDLTuple;
-import de.monticore.lang.gdl.types.GDLType;
 import de.se_rwth.commons.logging.Log;
 
 public class GDLInterpreter {

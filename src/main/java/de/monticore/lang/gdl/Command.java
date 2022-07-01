@@ -1,14 +1,7 @@
 package de.monticore.lang.gdl;
 
-import java.util.LinkedList;
-import java.util.List;
-import java.util.regex.Matcher;
-import java.util.regex.Pattern;
-import java.util.stream.Collectors;
-
 import de.monticore.lang.gdl.types.GDLTuple;
 import de.monticore.lang.gdl.types.GDLType;
-import de.monticore.lang.gdl.types.GDLValue;
 
 public class Command {
     

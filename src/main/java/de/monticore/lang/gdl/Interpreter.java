@@ -33,13 +33,11 @@ import de.monticore.lang.gdl._ast.ASTGame;
 import de.monticore.lang.gdl._parser.GDLParser;
 import de.monticore.lang.gdl.types.GDLTuple;
 import de.monticore.lang.gdl.types.GDLType;
-import de.monticore.lang.gdl.types.GDLValue;
 import de.monticore.lang.gdl.visitors.PrologPrinter;
 import de.se_rwth.commons.logging.Log;
 
 public class Interpreter extends EventSource<GDLType, Set<GDLType>> implements AutoCloseable {
 
-    private static final Pattern RESULT_ARRAY_TUPLE_PATTERN = Pattern.compile("\\((.*?,.*?)\\)");
     private static final Pattern RESULT_ARRAY_PATTERN = Pattern.compile("\\[(.*)\\]");
 
     private final String prologProgram;
@@ -381,7 +379,10 @@ public class Interpreter extends EventSource<GDLType, Set<GDLType>> implements A
             tupleString = tupleString.endsWith("]") ? tupleString.substring(0, tupleString.length() - 1) : tupleString;
 
             GDLTuple tuple = GDLTuple.createFromPl("(" + tupleString + ")");
+
+            @SuppressWarnings("unchecked")
             final Function<GDLType, E> cast = t -> (E) t;
+            
             List<E> castList = tuple.getElements().stream().map(cast).collect(Collectors.toList());
             for (E e: castList) {
                 tupleConsumer.accept(e);
