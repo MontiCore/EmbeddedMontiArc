@@ -325,6 +325,21 @@ public class InterpreterTest {
         testCase.doTestCase();
     }
 
+    @Test
+    public void testReset() {
+        InterpreterTestCase testCase = new InterpreterTestCase("Reset");
+        testCase.moves.addAll(List.of(
+            Command.createMoveFromLine("test (do)")
+        ));
+        testCase.expectedState.addAll(Set.of(
+            List.of("state", "a")
+        ));
+        Interpreter interpreter = testCase.doTestCase();
+        interpreter.reset();
+
+        assertTrue("Expected 1 legal move after reset.", interpreter.getAllLegalMoves().size() == 1);
+    }
+
 
     private final class InterpreterTestCase {
         final String modelPath;

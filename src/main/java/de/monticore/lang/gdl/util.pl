@@ -1,4 +1,8 @@
 :- use_module(library(random)).
+:- style_check(-singleton).
+:- style_check(-discontiguous).
+:- set_prolog_flag(answer_write_options,[max_depth(0)]).
+
 get_random_legal(A) :-
   setof((X), function_legal(value_random, X), Models),
   random_member(A, Models).

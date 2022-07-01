@@ -17,6 +17,8 @@ import java.util.List;
 import java.util.Scanner;
 import java.util.Set;
 import java.util.concurrent.Semaphore;
+import java.util.regex.Matcher;
+import java.util.regex.Pattern;
 import java.util.stream.Collectors;
 
 import de.monticore.lang.gdl._ast.ASTGame;
@@ -24,7 +26,7 @@ import de.monticore.lang.gdl.visitors.PrologPrinter;
 
 import sun.misc.Signal;
 
-public class Interpreter {
+public class Interpreter implements AutoCloseable {
 
     private Semaphore initSemaphore;
     private int initTrueCounter;
@@ -55,6 +57,8 @@ public class Interpreter {
     private String placeholderStates;
 
     private Map<String, List<Runnable>> onStateHasChangedMap = new HashMap<>();
+    private Set<List<String>> initialState = null;
+    private Set<List<String>> initialHiddenState = null;
 
     private InterpreterOptions options = new InterpreterOptions();
 
@@ -149,16 +153,34 @@ public class Interpreter {
         writer.write("end_of_file.\n");
         writer.flush();
 
-        writer.write("set_prolog_flag(answer_write_options,[max_depth(0)]).\n");
-        writer.flush();
-
         initSemaphore.acquire();
+
+        this.initialState = getGameState().stream()
+                .map(l ->
+                    l.stream()
+                    .map(Interpreter::convertInterpreterValue2PL)
+                    .collect(Collectors.toList()))
+                .collect(Collectors.toSet());
+        this.initialHiddenState = getHiddenGameState().stream()
+                .map(l ->
+                    l.stream()
+                    .map(Interpreter::convertInterpreterValue2PL)
+                    .collect(Collectors.toList()))
+                .collect(Collectors.toSet());
 
         if (hasRandom && !options.isManualRandom()) {
             doRandom();
         }
 
         return this;
+    }
+
+    public void reset() {
+        buildNextStates(initialState, initialHiddenState);
+
+        if (hasRandom && !options.isManualRandom()) {
+            doRandom();
+        }
     }
 
     private String loadUtil() {
@@ -296,7 +318,7 @@ public class Interpreter {
 
         if (line.equals("true.")) {
             initTrueCounter++;
-            if (initTrueCounter == 2) {
+            if (initTrueCounter == 1) {
                 initSemaphore.release();
             }
         }
@@ -512,29 +534,44 @@ public class Interpreter {
         return allResults;
     }
 
+    private final Pattern randomMoveResultPattern = Pattern.compile("(\\(.*\\))", Pattern.MULTILINE);
     private List<String> getRandomMove() {
         if (legalSignatures.isEmpty()) {
             return null;
         }
 
-        String command = "get_random_legal(A).\n";
-        String result = execute(command);
+        String result = "";
 
-        if (result.equals("false.")) {
-            return null;
+        while (result.length() < 6) {
+            String command = "get_random_legal(A).\n";
+            result = execute(command);
+
+            if (result.equals("false.")) {
+                return null;
+            }
+
+            if (result.endsWith(").")) {
+                // A =  (3, 3).
+                // result = result.substring(6, result.length() - 2);
+                final Matcher m = randomMoveResultPattern.matcher(result);
+                m.find();
+                result = m.group();
+                result = result.substring(1, result.length()-1);
+
+                List<String> moveResult = new ArrayList<String>(Arrays.asList(result.split(",")));
+                moveResult.add(0, "value_random");
+                moveResult = moveResult.stream().map(s -> s.strip()).collect(Collectors.toList());
+
+                return moveResult;
+            }
+
+            // A = 2.
+            result = result.substring(3, result.length() - 1).strip();
+
+            if (result.length() < 6 && options.isDebugMode()) {
+                System.out.println("R WARNING: Forbidden random move detected. Finding new random move...");
+            }
         }
-
-        if (result.endsWith(").")) {
-            // A =  (3, 3).
-            result = result.substring(6, result.length() - 2);
-
-            List<String> moveResult = new ArrayList<String>(Arrays.asList(result.split(", ")));
-            moveResult.add(0, "value_random");
-            return moveResult;
-        }
-
-        // A = 2.
-        result = result.substring(4, result.length() - 1);
         
         return List.of("value_random", result);
     }
@@ -843,6 +880,17 @@ public class Interpreter {
             return "valnn_" + inValue.substring(1);
         }
         return "value_" + inValue;
+    }
+
+    @Override
+    public void close() throws Exception {
+        out.close();
+        writer.close();
+        in.close();
+        err.close();
+        printIn.interrupt();
+        printErr.interrupt();
+        prologProcess.destroy();
     }
 
 }
