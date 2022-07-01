@@ -23,7 +23,7 @@ public class InterpreterTest {
     public void testInit() {
         InterpreterTestCase testCase = new InterpreterTestCase("Init");
         testCase.expectedState.addAll(List.of(
-            new GDLValue("test"),
+            new GDLTuple("test"),
             new GDLTuple("test", "1")
         ));
         testCase.doTestCase();
@@ -69,7 +69,7 @@ public class InterpreterTest {
             Command.createFromLine("test (do)")
         ));
         testCase.expectedState.addAll(List.of(
-            new GDLValue("success")
+            new GDLTuple("success")
         ));
         testCase.doTestCase();
     }
@@ -87,7 +87,7 @@ public class InterpreterTest {
     public void testTerminal() {
         InterpreterTestCase testCase = new InterpreterTestCase("Terminal");
         testCase.expectedState.addAll(List.of(
-            new GDLValue("test")
+            new GDLTuple("test")
         ));
         assertTrue("Expected test to be terminal, but test is not terminal.", testCase.doTestCase().isTerminal());
     }
@@ -114,7 +114,7 @@ public class InterpreterTest {
             Command.createFromLine("test (do)")
         ));
         testCase.expectedState.addAll(List.of(
-            new GDLValue("success")
+            new GDLTuple("success")
         ));
         testCase.doTestCase();
     }
@@ -126,7 +126,7 @@ public class InterpreterTest {
             Command.createFromLine("test (do)")
         ));
         testCase.expectedState.addAll(List.of(
-            new GDLValue("success")
+            new GDLTuple("success")
         ));
         testCase.doTestCase();
     }
@@ -138,7 +138,7 @@ public class InterpreterTest {
             Command.createFromLine("test (do)")
         ));
         testCase.expectedState.addAll(List.of(
-            new GDLValue("success")
+            new GDLTuple("success")
         ));
         testCase.doTestCase();
     }
@@ -150,7 +150,7 @@ public class InterpreterTest {
             Command.createFromLine("test (do)")
         ));
         testCase.expectedState.addAll(List.of(
-            new GDLValue("success")
+            new GDLTuple("success")
         ));
         testCase.doTestCase();
     }
@@ -162,7 +162,7 @@ public class InterpreterTest {
             Command.createFromLine("test (do)")
         ));
         testCase.expectedState.addAll(List.of(
-            new GDLValue("success")
+            new GDLTuple("success")
         ));
         testCase.doTestCase();
     }
@@ -174,7 +174,7 @@ public class InterpreterTest {
             Command.createFromLine("test (do)")
         ));
         testCase.expectedState.addAll(List.of(
-            new GDLValue("success")
+            new GDLTuple("success")
         ));
         testCase.doTestCase();
     }
@@ -186,7 +186,7 @@ public class InterpreterTest {
             Command.createFromLine("test (do)")
         ));
         testCase.expectedState.addAll(List.of(
-            new GDLValue("success")
+            new GDLTuple("success")
         ));
         testCase.doTestCase();
     }
@@ -198,7 +198,7 @@ public class InterpreterTest {
             Command.createFromLine("test (do)")
         ));
         testCase.expectedState.addAll(List.of(
-            new GDLValue("success")
+            new GDLTuple("success")
         ));
         testCase.doTestCase();
     }
@@ -210,7 +210,7 @@ public class InterpreterTest {
             Command.createFromLine("test (do)")
         ));
         testCase.expectedState.addAll(List.of(
-            new GDLValue("success")
+            new GDLTuple("success")
         ));
         testCase.doTestCase();
     }
@@ -222,7 +222,7 @@ public class InterpreterTest {
             Command.createFromLine("test (do)")
         ));
         testCase.expectedState.addAll(List.of(
-            new GDLValue("success")
+            new GDLTuple("success")
         ));
         testCase.doTestCase();
     }
@@ -234,7 +234,7 @@ public class InterpreterTest {
             Command.createFromLine("test (do)")
         ));
         testCase.expectedState.addAll(List.of(
-            new GDLValue("success")
+            new GDLTuple("success")
         ));
         testCase.doTestCase();
     }
@@ -246,7 +246,7 @@ public class InterpreterTest {
             Command.createFromLine("test (do)")
         ));
         testCase.expectedState.addAll(List.of(
-            new GDLValue("success")
+            new GDLTuple("success")
         ));
         testCase.doTestCase();
     }
@@ -258,7 +258,7 @@ public class InterpreterTest {
             Command.createFromLine("test (do)")
         ));
         testCase.expectedState.addAll(List.of(
-            new GDLValue("success")
+            new GDLTuple("success")
         ));
         testCase.doTestCase();
     }
@@ -271,7 +271,7 @@ public class InterpreterTest {
             Command.createFromLine("test (do_not)")
         ));
         testCase.expectedState.addAll(List.of(
-            new GDLValue("success")
+            new GDLTuple("success")
         ));
         testCase.doTestCase();
     }
@@ -283,7 +283,7 @@ public class InterpreterTest {
             Command.createFromLine("test (do)")
         ));
         testCase.expectedState.addAll(List.of(
-            new GDLValue("success")
+            new GDLTuple("success")
         ));
         testCase.doTestCase();
     }
@@ -295,7 +295,7 @@ public class InterpreterTest {
             Command.createFromLine("player0 (see player1 hidden)")
         ));
         testCase.expectedHiddenState.addAll(List.of(
-            new GDLTuple("player1", "hidden", "1")
+            new GDLTuple(new GDLValue("player"), new GDLTuple("hidden", "1"))
         ));
         testCase.doTestCase();
     }
@@ -349,7 +349,7 @@ public class InterpreterTest {
     public void testGoal() {
         InterpreterTestCase testCase = new InterpreterTestCase("Goal");
         testCase.expectedState.addAll(List.of(
-            new GDLValue("test")
+            new GDLTuple("test")
         ));
         Interpreter interpreter = testCase.doTestCase();
 
