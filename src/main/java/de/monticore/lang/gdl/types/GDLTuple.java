@@ -142,7 +142,7 @@ public class GDLTuple implements GDLType {
     @Override
     public boolean equals(Object obj) {
         if (elements.size() == 1) {
-            return elements.equals(obj);
+            return elements.get(0).equals(obj);
         }
         if (obj instanceof GDLTuple) {
             GDLTuple tuple = (GDLTuple) obj;
@@ -150,5 +150,5 @@ public class GDLTuple implements GDLType {
         }
         return super.equals(obj);
     }
-
+    
 }
