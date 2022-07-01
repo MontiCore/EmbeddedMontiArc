@@ -2,45 +2,50 @@ package de.monticore.lang;
 
 grammar GDL extends de.monticore.literals.MCCommonLiterals {
 
-    Game = GameExpression*;
+    Game = tuples:GameTuple*;
 
-    GameExpression implements GameRelation = "(" type:GameType arguments:GameRelation* ")";
 
-    symbol GameFunctionDefinition extends GameExpression = "(" GameInference head:GameFunctionHead body:GameExpression* ")";
+    interface GameConstruct;
 
-    GameFunctionHead = "(" name:Name parameters:GameRelation* ")";
+    GameTuple implements GameConstruct = "(" element:GameConstruct+ ")";
+    GameToken implements GameConstruct = "?"(type:Name":")?token:Name;
+    
+    GameValue implements GameConstruct = (type:Name":")?value:Name;
+    GameDigits implements GameConstruct = number:SignedNatLiteral;
 
-    Comment extends GameExpression implements GameType = SL_COMMENT;
 
-    interface GameRelation;
-    interface GameType;
+    interface GameKeyword extends GameConstruct;
 
-    GameToken implements GameRelation = "?"token:Name;
-    GameValue implements GameRelation = value:Name;
-    GameDigits extends GameValue = val:SignedNatLiteral;
+    GameInference implements GameKeyword = "<=";
 
-    GameRole implements GameType = "role";
-    GameInit implements GameType = "init";
-    GameTerminal implements GameType = "<= terminal";
-    GameInference implements GameType = "<=";
-    GameNext implements GameType = "next";
-    GameTrue implements GameType = "true";
-    GameLegal implements GameType = "legal";
-    GameDoes implements GameType = "does";
-    GameNot implements GameType = "not";
-    GameDistinct implements GameType = "distinct";
-    GameGoal implements GameType = "goal";
-    GameFunction implements GameType = function:Name@GameFunctionDefinition;
-    GameCount implements GameType = "count";
-    GameSees implements GameType = "sees";
-    GameAdd implements GameType = "add";
-    GameSub implements GameType = "sub";
-    GameMult implements GameType = "mult";
-    GameDiv implements GameType = "div";
-    GameSucc implements GameType = "succ";
-    GameLess implements GameType = "less";
-    GameGreater implements GameType = "greater";
-    GameEqual implements GameType = "equal";
-    GameNumber implements GameType = "number";
-    GameMod implements GameType = "mod";
+    GameRole implements GameKeyword = "role";
+    GameInit implements GameKeyword = "init";
+    GameNext implements GameKeyword = "next";
+    GameTrue implements GameKeyword = "true";
+    GameSees implements GameKeyword = "sees";
+
+    GameLegal implements GameKeyword = "legal";
+    GameDoes implements GameKeyword = "does";
+
+    GameNot implements GameKeyword = "not";
+    GameDistinct implements GameKeyword = "distinct";
+
+    GameGoal implements GameKeyword = "goal";
+    GameTerminal implements GameKeyword = "terminal";
+
+    GameCount implements GameKeyword = "count";
+    GameAdd implements GameKeyword = "add";
+    GameSub implements GameKeyword = "sub";
+    GameMult implements GameKeyword = "mult";
+    GameDiv implements GameKeyword = "div";
+    GameMod implements GameKeyword = "mod";
+    GameSucc implements GameKeyword = "succ";
+    GameLess implements GameKeyword = "less";
+    GameGreater implements GameKeyword = "greater";
+    GameEqual implements GameKeyword = "equal";
+    GameNumber implements GameKeyword = "number";
+
+    GameType implements GameKeyword = "type";
+    GameCast implements GameKeyword = "cast";
+
 }
