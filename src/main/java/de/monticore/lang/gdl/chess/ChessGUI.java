@@ -9,8 +9,9 @@ import java.awt.Graphics;
 import java.awt.GridLayout;
 import java.awt.Image;
 import java.io.IOException;
-import java.util.List;
+import java.util.Map;
 import java.util.Set;
+import java.util.Map.Entry;
 
 import javax.imageio.ImageIO;
 import javax.swing.ImageIcon;
@@ -22,6 +23,8 @@ import javax.swing.JPanel;
 
 import de.monticore.lang.gdl.Command;
 import de.monticore.lang.gdl.Interpreter;
+import de.monticore.lang.gdl.types.GDLTuple;
+import de.monticore.lang.gdl.types.GDLType;
 
 public class ChessGUI {
 
@@ -120,7 +123,7 @@ public class ChessGUI {
 
         frame.add(southPanel, BorderLayout.SOUTH);
 
-        updateGameState(interpreter.getGameState());
+        updateGameState(interpreter.getVisibleGameState());
         frame.setResizable(false);
         frame.pack();
         frame.setVisible(true);
@@ -147,28 +150,32 @@ public class ChessGUI {
         }
     }
 
-    private void updateGameState(Set<List<String>> gameState) {
+    private void updateGameState(Set<GDLType> gameState) {
         clearAll();
 
-        gameState.forEach(exp -> {
-            String identifier = exp.get(0);
+        gameState.stream()
+                .filter(gdlType -> (gdlType instanceof GDLTuple))
+                .map(gdlType -> (GDLTuple) gdlType)
+                .map(gdlType -> gdlType.getElements())
+                .forEach(exp -> {
+                    String identifier = exp.get(0).toString();
 
-            switch (identifier) {
-                case "field":
-                    String sX = exp.get(1);
-                    String sY = exp.get(2);
-                    String figure = exp.get(3);
-                    int x = sX.charAt(0) - 97;
-                    int y = Integer.valueOf(sY) - 1;
-                    setFigureOnField(x, y, figure);
-                    break;
+                    switch (identifier) {
+                        case "field":
+                            String sX = exp.get(1).toString();
+                            String sY = exp.get(2).toString();
+                            String figure = exp.get(3).toString();
+                            int x = sX.charAt(0) - 97;
+                            int y = Integer.valueOf(sY) - 1;
+                            setFigureOnField(x, y, figure);
+                            break;
 
-                case "control":
-                    control = exp.get(1);
-                    setControlLabel(control);
-                    break;
-            }
-        });
+                        case "control":
+                            control = exp.get(1).toString();
+                            setControlLabel(control);
+                            break;
+                    }
+                });
     }
 
     private void clearAll() {
@@ -329,24 +336,19 @@ public class ChessGUI {
         
         String move = String.format("%s (move %s %s %s %s %s)", player, figure, sX, sY, sTX, sTY);
 
-        Set<List<String>> nextState = interpreter.interpret(Command.createMoveFromLine(move));
-        if (nextState != null) {
+        boolean legal = interpreter.interpret(Command.createFromLine(move));
+        if (legal) {
+            Set<GDLType> nextState = interpreter.getVisibleGameState();
             updateGameState(nextState);
 
             if (interpreter.isTerminal()) {
-                Set<List<String>> goals = interpreter.getAllModels("goal");
-                if (goals != null) {
-                    StringBuilder sb = new StringBuilder();
-                    for (List<String> goal : goals) {
-                        if (goal.size() == 2) {
-                            sb.append(String.format("\tPlayer %s achieved %s points.\n", goal.get(0), goal.get(1)));
-                        } else {
-                            sb.append("\t" + goal);
-                        }
-                    }
-                    JOptionPane.showMessageDialog(frame, sb.toString(), "Game Over!", JOptionPane.INFORMATION_MESSAGE);
-                    System.exit(0);
+                Map<GDLType, GDLType> goals = interpreter.getGoals();
+                StringBuilder sb = new StringBuilder();
+                for (Entry<GDLType, GDLType> goal : goals.entrySet()) {
+                    sb.append(String.format("\tPlayer %s achieved %s points.\n", goal.getKey(), goal.getValue()));
                 }
+                JOptionPane.showMessageDialog(frame, sb.toString(), "Game Over!", JOptionPane.INFORMATION_MESSAGE);
+                System.exit(0);
             }
         } else {
             String message = "Move was not legal! Move:\n\t" + move;
@@ -355,7 +357,7 @@ public class ChessGUI {
     }
 
     private void refresh() {
-        updateGameState(interpreter.getGameState());
+        updateGameState(interpreter.getVisibleGameState());
     }
 
 }

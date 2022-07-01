@@ -1,10 +1,13 @@
 package de.monticore.lang.gdl.cli;
 
-import java.util.List;
+import java.util.Map;
 import java.util.Scanner;
 import java.util.Set;
+import java.util.Map.Entry;
 
+import de.monticore.lang.gdl.Command;
 import de.monticore.lang.gdl.Interpreter;
+import de.monticore.lang.gdl.types.GDLType;
 
 public class GDLCLI implements Runnable {
     
@@ -16,8 +19,8 @@ public class GDLCLI implements Runnable {
 
     private void printGameState(String role) {
         if (role == null) {
-            Set<List<String>> gameState = interpreter.getGameState();
-            Set<List<String>> hiddenGameState = interpreter.getHiddenGameState();
+            Set<GDLType> gameState = interpreter.getVisibleGameState();
+            Set<GDLType> hiddenGameState = interpreter.getHiddenGameState();
             System.out.println("Current Game State (" + gameState.size() +  "):");
             gameState.forEach(s -> System.out.println("  " + s));
     
@@ -26,8 +29,9 @@ public class GDLCLI implements Runnable {
             System.out.println("Current Hidden Game State (" + hiddenGameState.size() +  "):");
             hiddenGameState.forEach(s -> System.out.println("  " + s));
         } else {
-            Set<List<String>> gameState = interpreter.getGameStateForRole(role);
-            System.out.printf("Current Game State for role '%s' (%d):\n", role, gameState.size());
+            GDLType gdlRole = GDLType.createFromLine(role);
+            Set<GDLType> gameState = interpreter.getGameStateForRole(gdlRole);
+            System.out.printf("Current Game State for role '%s' (%d):\n", gdlRole.toString(), gameState.size());
             gameState.forEach(s -> System.out.println("  " + s));
         }
     }
@@ -41,7 +45,7 @@ public class GDLCLI implements Runnable {
             "  /help" + "\t\t\t" + "Show the CLI usage\n" +
             "  /exit" + "\t\t\t" + "Exit the CLI\n" +
             "  /reset" + "\t\t\t" + "Reset the interpreter\n" +
-            "  /eval {func}" + "\t\t" + "Calculate all models for a function {func}\n" +
+            // "  /eval {func}" + "\t\t" + "Calculate all models for a function {func}\n" +
             "  /roles" + "\t\t\t" + "Print all playable roles.\n" +
             "  /state {role}" + "\t\t" + "Print the current game state (for a role {role})\n" +
             "  /legal {role}" + "\t\t" + "Print all currently legal moves (for a role {role})\n" +
@@ -55,26 +59,26 @@ public class GDLCLI implements Runnable {
         printGameState(null);
     }
 
-    private void evaluate(String expression) {
-        String[] args = expression.split(" ");
-        if (args.length > 2) {
-            printHelp();
-            return;
-        }
-        String function = args[1];
-        Set<List<String>> allModels = interpreter.getAllModels(function);
-        if (allModels != null) {
-            System.out.println(allModels);
-        } else {
-            System.out.println("Function '" + function + "' does not exist.");
-        }
-    }
+    // private void evaluate(String expression) {
+    //     String[] args = expression.split(" ");
+    //     if (args.length > 2) {
+    //         printHelp();
+    //         return;
+    //     }
+    //     String function = args[1];
+    //     Set<List<String>> allModels = interpreter.getAllModels(function);
+    //     if (allModels != null) {
+    //         System.out.println(allModels);
+    //     } else {
+    //         System.out.println("Function '" + function + "' does not exist.");
+    //     }
+    // }
 
     private void printRoles() {
-        Set<String> roles = interpreter.getRoles();
+        Set<GDLType> roles = interpreter.getRoles();
         
         System.out.printf("All Roles (%d):\n", roles.size());
-        for (String role : roles) {
+        for (GDLType role : roles) {
             System.out.println("  " + role);
         }
     }
@@ -83,45 +87,30 @@ public class GDLCLI implements Runnable {
         System.out.println("---- -----");
         System.out.println("Game over.");
         System.out.println("---- -----");
-        Set<List<String>> goals = interpreter.getAllModels("goal");
-        if (goals != null) {
-            for (List<String> goal : goals) {
-                if (goal.size() == 2) {
-                    System.out.printf("\tPlayer %s achieved %s points.\n", goal.get(0), goal.get(1));
-                } else {
-                    System.out.println("\t" + goal);
-                }
-            }
+        Map<GDLType, GDLType> goals = interpreter.getGoals();
+        for (Entry<GDLType, GDLType> goal : goals.entrySet()) {
+            System.out.printf("\tPlayer %s achieved goal %s.\n", goal.getKey(), goal.getValue());
         }
     }
 
     private void printLegal(String role) {
-        Set<List<String>> legal;
+        Set<Command> legal;
+        GDLType gdlRole = null;
         if (role == null) legal = interpreter.getAllLegalMoves();
-        else legal = interpreter.getAllLegalMovesForPlayer(role);
+        else {
+            gdlRole = GDLType.createFromLine(role);
+            legal = interpreter.getAllLegalMovesForRole(gdlRole);
+        }
 
         if (legal.isEmpty()) {
             if (role == null) System.out.println("There are no legal moves.");
-            else System.out.printf("There are no legal moves for role '%s'.\n", role);
+            else System.out.printf("There are no legal moves for role '%s'.\n", gdlRole);
         } else {
             System.out.printf("Legal moves (%d):\n", legal.size());
             
-            for (List<String> move: legal) {
-                if (move.size() <= 1) {
-                    System.out.println("  [!err]");
-                    continue;
-                }
-
+            for (Command command: legal) {
                 System.out.print("  ");
-                System.out.print(move.get(0));
-                System.out.print(" (");
-                for (int i = 1; i < move.size(); i++) {
-                    System.out.print(move.get(i));
-                    if (i < move.size() - 1) {
-                        System.out.print(" ");
-                    }
-                }
-                System.out.println(")");
+                System.out.println(command.toString());
             }
         }
     }
@@ -153,9 +142,10 @@ public class GDLCLI implements Runnable {
                 System.out.print("> ");
                 continue;
             } else if (line.startsWith("/")) {
-                if (line.startsWith("/eval ") || line.startsWith("/evaluate ")) {
-                    evaluate(line);
-                } else if(line.startsWith("/roles")) {
+                // if (line.startsWith("/eval ") || line.startsWith("/evaluate ")) {
+                //     evaluate(line);
+                // } else
+                if(line.startsWith("/roles")) {
                     printRoles();
                 } else if (line.startsWith("/state")) {
                     if (line.length() > 7) {
@@ -178,11 +168,14 @@ public class GDLCLI implements Runnable {
                     printHelp();
                 }
             } else {
-                Set<List<String>> nextState = interpreter.interpret(line);
+                boolean legal = interpreter.interpret(line);
 
-                if (nextState == null) {
+                if (!legal) {
                     System.out.println("Move was illegal! Type /help for usage");
                 } else {
+                    Set<GDLType> nextState = interpreter.getVisibleGameState();
+                    nextState.addAll(interpreter.getHiddenGameState());
+
                     System.out.println("Next Game State (" + nextState.size() +  "):");
                     nextState.forEach(state -> System.out.println("  " + state));
 
