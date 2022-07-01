@@ -1,6 +1,7 @@
 package de.monticore.lang.gdl;
 
 import static org.junit.Assert.assertEquals;
+import static org.junit.Assert.assertFalse;
 import static org.junit.Assert.assertNotNull;
 import static org.junit.Assert.assertTrue;
 
@@ -361,6 +362,23 @@ public class InterpreterTest {
         );
 
         assertEquals(String.format("Expected goals %s do not match actual goals %s", expected, goals), expected, goals);
+    }
+
+    @Test
+    public void testNoop() {
+        InterpreterTestCase testCase = new InterpreterTestCase("Noop");
+        testCase.moves.addAll(List.of(
+            Command.createFromLine("test (noop)"),
+            Command.createFromLine("test (do)")
+        ));
+        testCase.expectedState.addAll(List.of(
+            new GDLTuple("success")
+        ));
+        Interpreter interpreter = testCase.doTestCase();
+
+        boolean moveLegal = interpreter.interpret(Command.createFromLine("test (noop)"));
+
+        assertFalse("Noop move was legal when it should not have been", moveLegal);
     }
 
 
