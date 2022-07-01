@@ -34,7 +34,7 @@ public class SimultaneousTest {
 
         final Command serialCommand = Command.createFromLine("serial (serial)");
         final Set<GDLType> expectedState = Set.of(
-            GDLType.createFromLine("serial")
+            GDLType.createFromLine("(serial)")
         );
 
         for (int i = 0; i < TEST_LENGTH; i++) {

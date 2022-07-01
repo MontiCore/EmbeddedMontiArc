@@ -295,7 +295,7 @@ public class InterpreterTest {
             Command.createFromLine("player0 (see player1 hidden)")
         ));
         testCase.expectedHiddenState.addAll(List.of(
-            new GDLTuple(new GDLValue("player"), new GDLTuple("hidden", "1"))
+            new GDLTuple(new GDLValue("player1"), new GDLTuple("hidden", "1"))
         ));
         testCase.doTestCase();
     }
