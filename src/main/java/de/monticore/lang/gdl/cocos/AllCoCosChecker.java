@@ -6,7 +6,11 @@ public class AllCoCosChecker extends GDLCoCoChecker {
     
     public AllCoCosChecker() {
         super();
-        addCoCo(new InitOnlyOnRoot());
+        addCoCo(new SeesOnlyInStateQuery());
+        addCoCo(new KeywordsOnFirstPositionOnly());
+        addCoCo(new MatchTupleArityMin());
+        addCoCo(new MatchTupleArityExact());
+        addCoCo(new KeywordOnlyInContext());
     }
 
 }
