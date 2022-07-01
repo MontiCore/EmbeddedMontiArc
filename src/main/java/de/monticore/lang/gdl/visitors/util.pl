@@ -101,7 +101,7 @@ gdli_reset() :-
 
 
 gdli_is_legal([Role, Move]) :-
-    gdl_legal(Role, Action),
+    gdl_legal(Role, Move),
     !.
 
 gdli_do_move(Move) :-
@@ -458,4 +458,4 @@ gdli_terminal() :-
     gdl_rule(terminal).
 
 gdli_goal(X, Y) :-
-    gdl_rule((goal, X, Y)).
+    gdl_rule([goal, X, Y]).
