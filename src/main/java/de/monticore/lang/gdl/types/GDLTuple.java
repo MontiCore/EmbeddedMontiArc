@@ -48,7 +48,7 @@ public class GDLTuple implements GDLType {
                     tuple.elements.add(GDLType.createFromLine(paraSegment.toString()));
                     paraSegment = new StringBuilder();
                 }
-            } else if (character == ' ' && para == 0 && !wordSegment.isEmpty()) {
+            } else if (character == ' ' && para == 0 && wordSegment.length() != 0) {
                 tuple.elements.add(GDLType.createFromLine(wordSegment.toString()));
                 wordSegment = new StringBuilder();
             } else if (para > 0) {
@@ -57,7 +57,7 @@ public class GDLTuple implements GDLType {
                 wordSegment.append(character);
             }
         }
-        if (!wordSegment.isEmpty()) tuple.elements.add(GDLType.createFromLine(wordSegment.toString()));
+        if (wordSegment.length() != 0) tuple.elements.add(GDLType.createFromLine(wordSegment.toString()));
         
         return tuple;
     }
@@ -90,7 +90,7 @@ public class GDLTuple implements GDLType {
                     tuple.elements.add(GDLType.createFromPl(paraSegment.toString()));
                     paraSegment = new StringBuilder();
                 }
-            } else if (character == ',' && para == 0 && !wordSegment.isEmpty()) {
+            } else if (character == ',' && para == 0 && wordSegment.length() != 0) {
                 tuple.elements.add(GDLType.createFromPl(wordSegment.toString()));
                 wordSegment = new StringBuilder();
             } else if (para > 0) {
@@ -99,7 +99,7 @@ public class GDLTuple implements GDLType {
                 wordSegment.append(character);
             }
         }
-        if (!wordSegment.isEmpty()) tuple.elements.add(GDLType.createFromPl(wordSegment.toString()));
+        if (wordSegment.length() != 0) tuple.elements.add(GDLType.createFromPl(wordSegment.toString()));
         
         return tuple;
     }
@@ -150,5 +150,5 @@ public class GDLTuple implements GDLType {
         }
         return super.equals(obj);
     }
-    
+
 }
