@@ -64,10 +64,6 @@ public class GDLNumber implements GDLType {
 
     @Override
     public boolean equals(Object obj) {
-        if (obj instanceof GDLTuple) {
-            GDLTuple tuple = (GDLTuple) obj;
-            return tuple.equals(this);
-        }
         if (obj instanceof GDLNumber) {
             return gdlValue == ((GDLNumber) obj).gdlValue;
         }

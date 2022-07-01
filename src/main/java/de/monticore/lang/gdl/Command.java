@@ -1,7 +1,6 @@
 package de.monticore.lang.gdl;
 
 import de.monticore.lang.gdl.types.GDLTuple;
-import de.monticore.lang.gdl.types.GDLType;
 
 public class Command {
     
@@ -30,22 +29,13 @@ public class Command {
 
     public static Command createFromPl(String plLine) {
         Command command = new Command();
-        command.tuple = GDLTuple.createFromPl("(" + plLine + ")");
+        command.tuple = GDLTuple.createFromPl("[" + plLine + "]");
         return command;
     }
 
     public static Command createFromGDLTuple(GDLTuple tuple) {
         Command command = new Command();
         command.tuple = tuple;
-        return command;
-    }
-
-    public static Command createFromGDLPlTuple(GDLTuple tuple) {
-        Command command = new Command();
-
-        GDLType[] args = tuple.getElements().stream().skip(1).toArray(i -> new GDLType[i]);
-
-        command.tuple = new GDLTuple(tuple.getElements().get(0), new GDLTuple(args));
         return command;
     }
 

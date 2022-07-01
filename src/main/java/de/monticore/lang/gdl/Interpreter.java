@@ -281,7 +281,7 @@ public class Interpreter extends EventSource<GDLType, Set<GDLType>> implements A
             queryResult = execute("gdli_all_legal_moves(Models).");
         }
 
-        final Consumer<GDLTuple> addToResultSet = t -> resultSet.add(Command.createFromGDLPlTuple(t));
+        final Consumer<GDLTuple> addToResultSet = t -> resultSet.add(Command.createFromGDLTuple(t));
         matchAllGDLTypes(queryResult, addToResultSet);
 
         return resultSet;
@@ -374,11 +374,8 @@ public class Interpreter extends EventSource<GDLType, Set<GDLType>> implements A
         
         if (matcher.find()) {
             String tupleString = matcher.group();
-            
-            tupleString = tupleString.startsWith("[") ? tupleString.substring(1) : tupleString;
-            tupleString = tupleString.endsWith("]") ? tupleString.substring(0, tupleString.length() - 1) : tupleString;
 
-            GDLTuple tuple = GDLTuple.createFromPl("(" + tupleString + ")");
+            GDLTuple tuple = GDLTuple.createFromPl(tupleString);
 
             @SuppressWarnings("unchecked")
             final Function<GDLType, E> cast = t -> (E) t;

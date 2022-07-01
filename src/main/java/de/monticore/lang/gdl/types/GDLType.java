@@ -15,7 +15,7 @@ public interface GDLType {
 
     public static GDLType createFromPl(String plLine) {
         plLine = plLine.strip();
-        if (plLine.startsWith("(") && plLine.endsWith(")")) {
+        if (plLine.startsWith("[") && plLine.endsWith("]")) {
             return GDLTuple.createFromPl(plLine);
         } else if (plLine.startsWith("num")) {
             return GDLNumber.createFromPl(plLine);

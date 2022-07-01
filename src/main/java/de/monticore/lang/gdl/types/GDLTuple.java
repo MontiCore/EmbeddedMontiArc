@@ -80,10 +80,10 @@ public class GDLTuple implements GDLType {
             }
 
 
-            if (character == '(') {
+            if (character == '[') {
                 para++;
                 paraSegment.append(character);
-            } else if (character == ')') {
+            } else if (character == ']') {
                 para--;
                 paraSegment.append(character);
                 if (para == 0) {
@@ -121,29 +121,24 @@ public class GDLTuple implements GDLType {
     @Override
     public String toPlString() {
         StringBuilder sb = new StringBuilder();
-        sb.append("(");
+        sb.append("[");
         for (int i = 0; i < elements.size(); i++) {
             GDLType element = elements.get(i);
             sb.append(element.toPlString());
 
             if (i + 1 < elements.size()) sb.append(", ");
         }
-        sb.append(")");
+        sb.append("]");
         return sb.toString();
     }
 
     @Override
     public int hashCode() {
-        if (elements.size() == 1)
-            return elements.get(0).hashCode();
         return elements.hashCode();
     }
 
     @Override
     public boolean equals(Object obj) {
-        if (elements.size() == 1) {
-            return elements.get(0).equals(obj);
-        }
         if (obj instanceof GDLTuple) {
             GDLTuple tuple = (GDLTuple) obj;
             return elements.equals(tuple.elements);
