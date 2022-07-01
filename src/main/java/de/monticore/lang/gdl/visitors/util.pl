@@ -24,9 +24,9 @@ gdli_options(X) :- false.
 % ----------------------------
 
 gdli_random_legal(Move) :-
-    setof((X), gdl_rule((legal, value_random, X)), Models),
+    setof(X, gdl_legal(value_random, X), Models),
     random_member(B, Models),
-    Move = (value_random, B).
+    Move = [value_random, B].
 
 gdli_do_random() :-
     \+ gdli_options(manual_random),
@@ -40,20 +40,24 @@ gdli_retract_state() :-
 
 
 gdli_init_state(State) :-
-    setof((X), gdl_init(X), State).
+    setof(X, gdl_init(X), State),
+    !.
 gdli_init_state([]).
 
 gdli_init_hidden_state(HiddenState) :-
-    setof((X, Y), gdl_init_hidden(X, Y), HiddenState).
+    setof([X, Y], gdl_init_hidden(X, Y), HiddenState),
+    !.
 gdli_init_hidden_state([]).
 
 
 gdli_next_state(State) :-
-    setof((X), gdl_next(X), State).
+    setof(X, gdl_next(X), State),
+    !.
 gdli_next_state([]).
 
 gdli_next_hidden_state(HiddenState) :-
-    setof((X, Y), gdl_next_hidden(X, Y), HiddenState).
+    setof([X, Y], gdl_next_hidden(X, Y), HiddenState),
+    !.
 gdli_next_hidden_state([]).
 
 
@@ -83,7 +87,7 @@ gdli_load_state([X|Xs]) :-
     gdli_load_state(Xs).
 
 gdli_load_hidden_state([]).
-gdli_load_hidden_state([(X, Y)]) :- 
+gdli_load_hidden_state([[X, Y]]) :- 
     assertz(gdl_state_hidden(X, Y)).
 gdli_load_hidden_state([X|Xs]) :-
     gdli_load_hidden_state([X]),
@@ -96,7 +100,7 @@ gdli_reset() :-
     !.
 
 
-gdli_is_legal((Role, Action)) :-
+gdli_is_legal([Role, Move]) :-
     gdl_legal(Role, Action),
     !.
 
@@ -116,12 +120,12 @@ gdli_retract_move() :-
 
 
 gdli_all_legal_moves(Models) :-
-    setof((Role, Move), gdl_legal(Role, Move), Models),
+    setof([Role, Move], gdl_legal(Role, Move), Models),
     !.
 gdli_all_legal_moves([]).
 
 gdli_all_legal_moves(Role, Models) :-
-    setof((Role, Move), gdl_legal(Role, Move), Models),
+    setof([Role, Move], gdl_legal(Role, Move), Models),
     !.
 gdli_all_legal_moves(_, []).
 
@@ -132,7 +136,7 @@ gdli_all_state(Models) :-
 gdli_all_state([]).
 
 gdli_all_state_hidden(Models) :-
-    setof((X, Y), gdl_state_hidden(X, Y), Models),
+    setof([X, Y], gdl_state_hidden(X, Y), Models),
     !.
 gdli_all_state_hidden([]).
 
@@ -148,12 +152,12 @@ gdli_full_state_role(Role, Models) :-
     !.
 
 gdli_all_goal(Models) :-
-    setof((X, Y), gdli_goal(X, Y), Models),
+    setof([X, Y], gdli_goal(X, Y), Models),
     !.
 gdli_all_goal([]).
 
 gdli_all_role(Models) :-
-    setof(X, gdl_rule((role, X)), Models),
+    setof(X, gdl_role(X), Models),
     !.
 gdli_all_role([]).
 
@@ -172,11 +176,11 @@ gdl_count(N, Goal) :-
     Count > 0,
     gdli_number_to_atom(Count, N).
 
-% gdl_legal(Move) :-
-%     gdl_rule((legal, Move)).
-
 gdl_legal(Role, Move) :-
-    gdl_rule((legal, Role, Move)).
+    gdl_rule([legal, Role, Move]).
+
+gdl_role(X) :-
+    gdl_rule([role, X]).
 
 % ----------------------------
 % -------- Arithmetic --------
@@ -401,40 +405,40 @@ gdli_number(X) :-
 % -- Does --
 % ----------
 
-gdl_rule((does, X, Y)) :-
-    gdli_input((X, Y)).
+gdl_rule([does, X, Y]) :-
+    gdli_input([X, Y]).
 
 % -- Arithmetic --
 % ----------------
 
-gdl_rule((add, Token_X, Token_Y, Token_Z)) :-
+gdl_rule([add, Token_X, Token_Y, Token_Z]) :-
     gdli_add(Token_X, Token_Y, Token_Z).
 
-gdl_rule((sub, Token_X, Token_Y, Token_Z)) :-
+gdl_rule([sub, Token_X, Token_Y, Token_Z]) :-
     gdli_sub(Token_X, Token_Y, Token_Z).
 
-gdl_rule((mult, Token_X, Token_Y, Token_Z)) :-
+gdl_rule([mult, Token_X, Token_Y, Token_Z]) :-
     gdli_mult(Token_X, Token_Y, Token_Z).
 
-gdl_rule((div, Token_X, Token_Y, Token_Z)) :-
+gdl_rule([div, Token_X, Token_Y, Token_Z]) :-
     gdli_div(Token_X, Token_Y, Token_Z).
 
-gdl_rule((mod, Token_X, Token_Y, Token_Z)) :-
+gdl_rule([mod, Token_X, Token_Y, Token_Z]) :-
     gdli_mod(Token_X, Token_Y, Token_Z).
 
-gdl_rule((succ, Token_X, Token_Y)) :-
+gdl_rule([succ, Token_X, Token_Y]) :-
     gdli_succ(Token_X, Token_Y).
 
-gdl_rule((less, Token_X, Token_Y)) :-
+gdl_rule([less, Token_X, Token_Y]) :-
     gdli_less(Token_X, Token_Y).
 
-gdl_rule((greater, Token_X, Token_Y)) :-
+gdl_rule([greater, Token_X, Token_Y]) :-
     gdli_greater(Token_X, Token_Y).
 
-gdl_rule((equal, Token_X, Token_Y)) :-
+gdl_rule([equal, Token_X, Token_Y]) :-
     gdli_equal(Token_X, Token_Y).
 
-gdl_rule((number, Token_X)) :-
+gdl_rule([number, Token_X]) :-
     gdli_number(Token_X).
 
 % -- Not / Distinct --
@@ -443,7 +447,7 @@ gdl_rule((number, Token_X)) :-
 gdl_not(X) :-
     \+ X.
 
-gdl_rule((distinct, Token_X, Token_Y)) :-
+gdl_rule([distinct, Token_X, Token_Y]) :-
     gdli_distinct(Token_X, Token_Y).
 
 

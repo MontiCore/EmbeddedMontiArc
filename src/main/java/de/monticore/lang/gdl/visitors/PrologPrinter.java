@@ -320,9 +320,9 @@ public class PrologPrinter extends IndentPrinter implements GDLVisitor2, MCCommo
 
     @Override
     public void handle(ASTGameTuple tuple) {
-        print("(");
+        print("[");
         printElementsSeparated(tuple.getElementList(), 0, ELEMENT_SEPARATOR, false, c -> c.accept(getTraverser()));
-        print(")");
+        print("]");
     }
 
     // VISIT
