@@ -168,8 +168,16 @@ gdli_all_role([]).
 gdli_not(X) :-
     \+ gdl_rule(X).
 
-gdli_distinct(X, Y) :-
-    X \== Y.
+gdli_distinct([]).
+gdli_distinct(X) :-
+    msort(X, Sorted),
+    gdli_sorted_distinct(Sorted).
+
+gdli_sorted_distinct([]).
+gdli_sorted_distinct([_]).
+gdli_sorted_distinct([X,Y|Xs]) :-
+    X \== Y,
+    gdli_sorted_distinct([Y|Xs]).
 
 gdl_count(N, Goal) :-
     aggregate_all(count, Goal, Count),
@@ -447,8 +455,8 @@ gdl_rule([number, Token_X]) :-
 gdl_not(X) :-
     \+ X.
 
-gdl_rule([distinct, Token_X, Token_Y]) :-
-    gdli_distinct(Token_X, Token_Y).
+gdl_rule([distinct | Xs]) :-
+    gdli_distinct(Xs).
 
 
 % -- Goal / Terminal --
