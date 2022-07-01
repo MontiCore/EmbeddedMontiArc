@@ -9,6 +9,7 @@ target/
 /.gradle/
 /bin/
 .vsls.json
-output.txt
+/output.txt
+/out.pl
 .DS_Store
 Todo
