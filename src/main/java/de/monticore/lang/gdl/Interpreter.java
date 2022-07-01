@@ -31,6 +31,10 @@ import java.util.stream.Collectors;
 
 import de.monticore.lang.gdl._ast.ASTGame;
 import de.monticore.lang.gdl._parser.GDLParser;
+import de.monticore.lang.gdl._symboltable.GDLScopesGenitor;
+import de.monticore.lang.gdl._symboltable.IGDLGlobalScope;
+import de.monticore.lang.gdl._visitor.GDLTraverser;
+import de.monticore.lang.gdl.cocos.AllCoCosChecker;
 import de.monticore.lang.gdl.types.GDLTuple;
 import de.monticore.lang.gdl.types.GDLType;
 import de.monticore.lang.gdl.visitors.PrologPrinter;
@@ -535,6 +539,20 @@ public class Interpreter extends EventSource<GDLType, Set<GDLType>> implements A
      * @return An Interpreter instance for the GDL program
      */
     public static Interpreter fromAST(ASTGame ast, InterpreterOptions options) {
+        final IGDLGlobalScope gs = GDLMill.globalScope();
+        gs.clear();
+
+        final GDLScopesGenitor genitor = GDLMill.scopesGenitor();
+        final GDLTraverser traverser = GDLMill.traverser();
+        traverser.setGDLHandler(genitor);
+        traverser.add4GDL(genitor);
+        genitor.putOnStack(gs);
+
+        gs.addSubScope(genitor.createFromAST(ast));
+
+        final AllCoCosChecker checker = new AllCoCosChecker();
+        checker.checkAll(ast);
+
         final PrologPrinter printer = new PrologPrinter();
         ast.accept(printer.getTraverser());
         final String prolog = printer.getContent();
