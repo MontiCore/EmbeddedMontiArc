@@ -104,6 +104,9 @@ gdli_is_legal([Role, Move]) :-
     gdl_legal(Role, Move),
     !.
 
+gdli_do_move([Player, [value_noop]]) :-
+    gdli_is_legal([Player, [value_noop]]),
+    !.
 gdli_do_move(Move) :-
     gdli_is_legal(Move),
     gdli_assert_move(Move),

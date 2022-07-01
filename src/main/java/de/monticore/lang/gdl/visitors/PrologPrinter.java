@@ -27,6 +27,7 @@ import de.monticore.lang.gdl._ast.ASTGameLess;
 import de.monticore.lang.gdl._ast.ASTGameMod;
 import de.monticore.lang.gdl._ast.ASTGameMult;
 import de.monticore.lang.gdl._ast.ASTGameNext;
+import de.monticore.lang.gdl._ast.ASTGameNoop;
 import de.monticore.lang.gdl._ast.ASTGameNot;
 import de.monticore.lang.gdl._ast.ASTGameNumber;
 import de.monticore.lang.gdl._ast.ASTGameRole;
@@ -459,6 +460,11 @@ public class PrologPrinter extends IndentPrinter implements GDLVisitor2, MCCommo
     @Override
     public void visit(ASTGameMod node) {
         print("mod");
+    }
+    
+    @Override
+    public void visit(ASTGameNoop node) {
+        print(VALUE_PREFIX + PREFIX_SEPARATOR + "noop");
     }
     
 }

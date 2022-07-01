@@ -232,6 +232,8 @@ public class Interpreter extends EventSource<GDLType, Set<GDLType>> implements A
     }
 
     public boolean interpret(Command command) {
+        if (command.isNoop()) return true;
+        
         String move = command.toPlString();
         String queryResult = execute("gdli_do_move(" + move + ").");
         boolean success = toBooleanValue(queryResult);

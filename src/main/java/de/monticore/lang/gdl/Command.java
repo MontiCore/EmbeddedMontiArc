@@ -10,6 +10,10 @@ public class Command {
         tuple = null;
     }
 
+    public boolean isNoop() {
+        return tuple.getElements().size() > 1 && tuple.getElements().get(1).equals(new GDLTuple("noop"));
+    }
+
     @Override
     public String toString() {
         String tupleString = tuple.toString();
