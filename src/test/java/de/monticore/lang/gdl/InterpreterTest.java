@@ -315,7 +315,8 @@ public class InterpreterTest {
             Command.createFromLine("test (do tgreater)"),
             Command.createFromLine("test (do tequal)"),
             Command.createFromLine("test (do tnumber)"),
-            Command.createFromLine("test (do tsucc)")
+            Command.createFromLine("test (do tsucc)"),
+            Command.createFromLine("test (do (-1 -1 -2))")
         ));
         testCase.expectedState.addAll(List.of(
             new GDLTuple("success", "tmult"),
@@ -327,7 +328,8 @@ public class InterpreterTest {
             new GDLTuple("success", "tgreater"),
             new GDLTuple("success", "tequal"),
             new GDLTuple("success", "tnumber"),
-            new GDLTuple("success", "tsucc")
+            new GDLTuple("success", "tsucc"),
+            GDLType.createFromLine("(success (-1 -1 -2))")
         ));
         testCase.doTestCase();
     }
