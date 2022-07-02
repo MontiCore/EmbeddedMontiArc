@@ -11,7 +11,7 @@ public class Command {
     }
 
     public boolean isNoop() {
-        return tuple.getElements().size() > 1 && tuple.getElements().get(1).equals(new GDLTuple("noop"));
+        return tuple.size() > 1 && tuple.get(1).equals(new GDLTuple("noop"));
     }
 
     @Override

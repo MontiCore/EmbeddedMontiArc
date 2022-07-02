@@ -156,7 +156,6 @@ public class ChessGUI {
         gameState.stream()
                 .filter(gdlType -> (gdlType instanceof GDLTuple))
                 .map(gdlType -> (GDLTuple) gdlType)
-                .map(gdlType -> gdlType.getElements())
                 .forEach(exp -> {
                     String identifier = exp.get(0).toString();
 

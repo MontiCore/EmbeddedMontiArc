@@ -6,6 +6,7 @@ import static org.junit.Assert.assertNotNull;
 import static org.junit.Assert.assertTrue;
 
 import java.util.ArrayList;
+import java.util.HashMap;
 import java.util.HashSet;
 import java.util.List;
 import java.util.Map;
@@ -295,9 +296,9 @@ public class InterpreterTest {
         testCase.moves.addAll(List.of(
             Command.createFromLine("player0 (see player1 hidden)")
         ));
-        testCase.expectedHiddenState.addAll(List.of(
-            new GDLTuple(new GDLValue("player1"), new GDLTuple("hidden", "1"))
-        ));
+        testCase.expectedHiddenState.putAll(Map.of(
+            new GDLValue("player1"), Set.of(new GDLTuple("hidden", "1")))
+        );
         testCase.doTestCase();
     }
 
@@ -386,13 +387,13 @@ public class InterpreterTest {
         final String modelPath;
         final List<Command> moves;
         final Set<GDLType> expectedState;
-        final Set<GDLType> expectedHiddenState;
+        final Map<GDLType, Set<GDLType>> expectedHiddenState;
 
         public InterpreterTestCase(String modelName) {
             this.modelPath = "src/test/resources/gdl/interpreter/" + modelName + ".gdl";
             this.moves = new ArrayList<>();
             this.expectedState = new HashSet<>();
-            this.expectedHiddenState = new HashSet<>();
+            this.expectedHiddenState = new HashMap<>();
         }
 
         public Interpreter doTestCase() {
@@ -404,7 +405,7 @@ public class InterpreterTest {
             }
     
             Set<GDLType> state = interpreter.getVisibleGameState();
-            Set<GDLType> hiddenState = interpreter.getHiddenGameState();
+            Map<GDLType, Set<GDLType>> hiddenState = interpreter.getHiddenGameState();
     
             assertEquals(String.format("State sizes do not match: %s %s", state.toString(), this.expectedState.toString()), state.size(), this.expectedState.size());
     
@@ -416,12 +417,26 @@ public class InterpreterTest {
                 assertTrue(String.format("State %s was expected, but not found", s), state.contains(s));
             }
 
-            for (GDLType s : hiddenState) {
-                assertTrue(String.format("Hidden state %s was found, but not expected", s), expectedHiddenState.contains(s));
+            for (GDLType role : hiddenState.keySet()) {
+                Set<GDLType> hiddenStateValues = hiddenState.get(role);
+                Set<GDLType> expectedHiddenStateValues = expectedHiddenState.get(role);
+                assertNotNull(String.format("Role %s has hidden state, but not expected", role), expectedHiddenStateValues);
+                if (expectedHiddenStateValues != null) {
+                    for (GDLType s : hiddenStateValues) {
+                        assertTrue(String.format("Hidden state %s was found for role %s, but not expected", s, role), expectedHiddenStateValues.contains(s));
+                    }
+                }
             }
-            
-            for (GDLType s : expectedHiddenState) {
-                assertTrue(String.format("Hidden state %s was expected, but not found", s), hiddenState.contains(s));
+
+            for (GDLType role : expectedHiddenState.keySet()) {
+                Set<GDLType> expectedHiddenStateValues = expectedHiddenState.get(role);
+                Set<GDLType> hiddenStateValues = hiddenState.get(role);
+                assertNotNull(String.format("Role %s has expected hidden state, but not found", role), hiddenStateValues);
+                if (hiddenStateValues != null) {
+                    for (GDLType s : expectedHiddenStateValues) {
+                        assertTrue(String.format("Hidden state %s was expected for role %s, but not found", s, role), hiddenStateValues.contains(s));
+                    }
+                }
             }
     
             return interpreter;
