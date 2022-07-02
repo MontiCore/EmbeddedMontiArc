@@ -114,7 +114,7 @@ public class GDLInterpreter {
             "Usage:  gdl-cli [path-to-gdl-model] {options}\n" +
             "\n" +
             "Options:\n"+
-            "  -o,  --out" + "\t\t\t" + "Write Prolog output file\n" +
+            "  -o,  --out" + "\t\t" + "Write Prolog output file\n" +
             "  -cg, --chess-gui" + "\t" + "Start with a Chess GUI\n" +
             "  -dg, --doppelkopf-gui" + "\t" + "Start with a Doppelkopf GUI\n" +
             "  -nc, --no-cli" + "\t\t" + "Disable the CLI\n" +

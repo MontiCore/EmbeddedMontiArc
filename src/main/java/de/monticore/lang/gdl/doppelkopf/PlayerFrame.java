@@ -155,8 +155,7 @@ public class PlayerFrame extends JFrame {
                 continue;
             }
             GDLTuple stateTuple = (GDLTuple) stateGDL;
-            List<String> state = stateTuple.getElements()
-                    .stream()
+            List<String> state = stateTuple.stream()
                     .map(e -> e.toString())
                     .collect(Collectors.toList()) ;
 
@@ -251,9 +250,9 @@ public class PlayerFrame extends JFrame {
         Optional<GDLType> maybeMajor = gameState.stream()
                 .filter(t -> (t instanceof GDLTuple))
                 .map(t -> (GDLTuple) t)
-                .filter(t -> t.getElements().get(0).equals(new GDLValue("ablauf")))
-                .filter(t -> t.getElements().get(1).equals(new GDLValue("stich")))
-                .map(t -> t.getElements().get(2))
+                .filter(t -> t.get(0).equals(new GDLValue("ablauf")))
+                .filter(t -> t.get(1).equals(new GDLValue("stich")))
+                .map(t -> t.get(2))
                 .findFirst();
 
         if (maybeMajor.isPresent()) {

@@ -82,7 +82,7 @@ public class MatchTests {
                     input.add(new CommandInput().set(Command.createFromLine(line)));
                 } else if (mode == Mode.GOAL) {
                     GDLTuple tuple = GDLTuple.createFromLine(line);
-                    goals.get().put(tuple.getElements().get(1), tuple.getElements().get(2));
+                    goals.get().put(tuple.get(1), tuple.get(2));
                 }
             }
 

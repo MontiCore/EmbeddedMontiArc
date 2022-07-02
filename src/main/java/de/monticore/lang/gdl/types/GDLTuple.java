@@ -4,6 +4,7 @@ import java.util.Arrays;
 import java.util.LinkedList;
 import java.util.List;
 import java.util.stream.Collectors;
+import java.util.stream.Stream;
 
 public class GDLTuple implements GDLType {
     
@@ -21,8 +22,16 @@ public class GDLTuple implements GDLType {
                 .collect(Collectors.toList());
     }
 
-    public List<GDLType> getElements() {
-        return elements;
+    public GDLType get(int i) {
+        return elements.get(i);
+    }
+
+    public int size() {
+        return elements.size();
+    }
+
+    public Stream<GDLType> stream() {
+        return elements.stream();
     }
 
     public static GDLTuple createFromLine(String line) {

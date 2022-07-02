@@ -20,14 +20,17 @@ public class GDLCLI implements Runnable {
     private void printGameState(String role) {
         if (role == null) {
             Set<GDLType> gameState = interpreter.getVisibleGameState();
-            Set<GDLType> hiddenGameState = interpreter.getHiddenGameState();
+            Map<GDLType, Set<GDLType>> hiddenGameState = interpreter.getHiddenGameState();
             System.out.println("Current Game State (" + gameState.size() +  "):");
             gameState.forEach(s -> System.out.println("  " + s));
     
             System.out.println();
 
             System.out.println("Current Hidden Game State (" + hiddenGameState.size() +  "):");
-            hiddenGameState.forEach(s -> System.out.println("  " + s));
+            for (GDLType roleKey : hiddenGameState.keySet()) {
+                System.out.println("  " + roleKey + ":");
+                hiddenGameState.get(roleKey).forEach(s -> System.out.println("    " + s));
+            }
         } else {
             GDLType gdlRole = GDLType.createFromLine(role);
             Set<GDLType> gameState = interpreter.getGameStateForRole(gdlRole);
@@ -44,9 +47,9 @@ public class GDLCLI implements Runnable {
             "Additional functions:\n" +
             "  /help" + "\t\t\t" + "Show the CLI usage\n" +
             "  /exit" + "\t\t\t" + "Exit the CLI\n" +
-            "  /reset" + "\t\t\t" + "Reset the interpreter\n" +
+            "  /reset" + "\t\t" + "Reset the interpreter\n" +
             // "  /eval {func}" + "\t\t" + "Calculate all models for a function {func}\n" +
-            "  /roles" + "\t\t\t" + "Print all playable roles.\n" +
+            "  /roles" + "\t\t" + "Print all playable roles.\n" +
             "  /state {role}" + "\t\t" + "Print the current game state (for a role {role})\n" +
             "  /legal {role}" + "\t\t" + "Print all currently legal moves (for a role {role})\n" +
             "";
@@ -173,11 +176,7 @@ public class GDLCLI implements Runnable {
                 if (!legal) {
                     System.out.println("Move was illegal! Type /help for usage");
                 } else {
-                    Set<GDLType> nextState = interpreter.getVisibleGameState();
-                    nextState.addAll(interpreter.getHiddenGameState());
-
-                    System.out.println("Next Game State (" + nextState.size() +  "):");
-                    nextState.forEach(state -> System.out.println("  " + state));
+                    printGameState(null);
 
                     if (interpreter.isTerminal()) {
                         printGameOver();

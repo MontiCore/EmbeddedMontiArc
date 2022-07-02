@@ -307,15 +307,23 @@ public class Interpreter extends EventSource<GDLType, Set<GDLType>> implements A
     /**
      * Get the hidden part of the current game state, where the first index
      * of each tuple indicates the visibility of the state.
-     * @return Full hidden game state
+     * @return Hidden game states mapped to their respective roles
      */
-    public Set<GDLType> getHiddenGameState() {
+    public Map<GDLType, Set<GDLType>> getHiddenGameState() {
         String queryResult = execute("gdli_all_state_hidden(Models).");
 
-        Set<GDLType> resultSet = new HashSet<>();
-        matchAllGDLTypes(queryResult, resultSet::add);
+        Map<GDLType, Set<GDLType>> resultMap = new HashMap<>();
+        matchAllGDLTypes(queryResult, t -> {
+            GDLTuple tuple = ((GDLTuple) t);
+            Set<GDLType> roleState = resultMap.get(tuple.get(0));
+            if (roleState == null) {
+                roleState = new HashSet<>();
+                resultMap.put(tuple.get(0), roleState);
+            }
+            roleState.add(tuple.get(1));
+        });
 
-        return resultSet;
+        return resultMap;
     }
 
     /**
@@ -353,7 +361,7 @@ public class Interpreter extends EventSource<GDLType, Set<GDLType>> implements A
         Map<GDLType, GDLType> resultMap = new HashMap<>();
         
         final Consumer<GDLTuple> addToResultMap = t ->
-                resultMap.put(t.getElements().get(0), t.getElements().get(1));
+                resultMap.put(t.get(0), t.get(1));
         matchAllGDLTypes(queryResult, addToResultMap);
 
         return resultMap;
@@ -384,7 +392,7 @@ public class Interpreter extends EventSource<GDLType, Set<GDLType>> implements A
             @SuppressWarnings("unchecked")
             final Function<GDLType, E> cast = t -> (E) t;
             
-            List<E> castList = tuple.getElements().stream().map(cast).collect(Collectors.toList());
+            List<E> castList = tuple.stream().map(cast).collect(Collectors.toList());
             for (E e: castList) {
                 tupleConsumer.accept(e);
             }
