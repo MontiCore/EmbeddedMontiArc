@@ -1,5 +1,6 @@
 package de.monticore.lang.monticar.cnnarch.generator.util;
 
+import schemalang.SchemaMemberType;
 import schemalang._ast.ASTSchemaMember;
 import schemalang._ast.ASTTypedDeclaration;
 import schematypes.TypeIdentifier;
@@ -39,8 +40,24 @@ public class SchemaTypeUtil {
         }
     }
 
+    public boolean isComplexPropertyDefinition(ASTSchemaMember astSchemaMember) {
+        return astSchemaMember.getSchemaMemberType().equals(SchemaMemberType.COMPLEX);
+    }
+
     @SuppressWarnings("unused")
     public boolean isPrimitiveSchemaMember(ASTSchemaMember astSchemaMember) {
-        return astSchemaMember instanceof ASTTypedDeclaration && !(((ASTTypedDeclaration) astSchemaMember).getType() instanceof ASTObjectType);
+        return isTypedDeclaration(astSchemaMember) && !isObjectType((ASTTypedDeclaration) astSchemaMember);
+    }
+
+    public boolean isObjectSchemaMember(ASTSchemaMember astSchemaMember) {
+        return isTypedDeclaration(astSchemaMember) && isObjectType((ASTTypedDeclaration) astSchemaMember);
+    }
+
+    private boolean isTypedDeclaration(ASTSchemaMember astSchemaMember) {
+        return astSchemaMember instanceof ASTTypedDeclaration;
+    }
+
+    private boolean isObjectType(ASTTypedDeclaration astTypedDeclaration) {
+        return (astTypedDeclaration.getType() instanceof ASTObjectType);
     }
 }
