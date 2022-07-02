@@ -57,7 +57,7 @@ public class GDLNumber implements GDLType {
     @Override
     public String toPlString() {
         if (gdlValue.signum() < 0) {
-            return "numneg_" + gdlValue;
+            return "numneg_" + gdlValue.negate();
         } else {
             return "numpos_" + gdlValue;
         }

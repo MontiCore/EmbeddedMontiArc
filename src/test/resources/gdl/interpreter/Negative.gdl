@@ -59,6 +59,10 @@
     (succ -100 -99)
 )
 
+(<= (legal test (do (?x ?y ?z)))
+    (add ?x ?y ?z)
+)
+
 
 (<= (next (success ?x))
     (true (success ?x))
