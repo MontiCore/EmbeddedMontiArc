@@ -1,16 +1,22 @@
 package de.monticore.lang.gdl.types;
 
+import java.math.BigInteger;
+
 public class GDLNumber implements GDLType {
 
-    private int gdlValue;
+    private BigInteger gdlValue;
 
     private GDLNumber() { }
 
     public GDLNumber(int number) {
+        this.gdlValue = BigInteger.valueOf(number);
+    }
+
+    public GDLNumber(BigInteger number) {
         this.gdlValue = number;
     }
 
-    public int getValue() {
+    public BigInteger getValue() {
         return gdlValue;
     }
 
@@ -18,7 +24,7 @@ public class GDLNumber implements GDLType {
         if (!isNumber(line)) return null;
 
         GDLNumber value = new GDLNumber();
-        value.gdlValue = Integer.parseInt(line);
+        value.gdlValue = new BigInteger(line);
         return value;
     }
 
@@ -26,17 +32,17 @@ public class GDLNumber implements GDLType {
         GDLNumber value = null;
         if (plLine.startsWith("numpos_")) {
             value = new GDLNumber();
-            value.gdlValue = Integer.parseInt(plLine.substring("numpos_".length()));
+            value.gdlValue = new BigInteger(plLine.substring("numpos_".length()));
         } else if (plLine.startsWith("numneg_")) {
             value = new GDLNumber();
-            value.gdlValue = - Integer.parseInt(plLine.substring("numneg_".length()));
+            value.gdlValue = new BigInteger("-" + plLine.substring("numneg_".length()));
         }
         return value;
     }
 
     public static boolean isNumber(String line) {
         try {
-            Integer.parseInt(line);
+            new BigInteger(line);
             return true;
         } catch (NumberFormatException e) {
             return false;
@@ -50,7 +56,7 @@ public class GDLNumber implements GDLType {
 
     @Override
     public String toPlString() {
-        if (gdlValue < 0) {
+        if (gdlValue.signum() < 0) {
             return "numneg_" + gdlValue;
         } else {
             return "numpos_" + gdlValue;
@@ -59,13 +65,13 @@ public class GDLNumber implements GDLType {
 
     @Override
     public int hashCode() {
-        return Integer.hashCode(gdlValue);
+        return gdlValue.hashCode();
     }
 
     @Override
     public boolean equals(Object obj) {
         if (obj instanceof GDLNumber) {
-            return gdlValue == ((GDLNumber) obj).gdlValue;
+            return gdlValue.equals(((GDLNumber) obj).gdlValue);
         }
         return super.equals(obj);
     }
