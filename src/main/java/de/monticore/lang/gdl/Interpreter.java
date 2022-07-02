@@ -56,7 +56,8 @@ public class Interpreter extends EventSource<GDLType, Set<GDLType>> implements A
 
     private List<String> currentEvaluation = null;
     private Semaphore evalSemaphore;
-    private boolean evalError;
+    private int evalToRelease = 0;
+    private Throwable evalError;
 
     private Semaphore executeSemaphore = new Semaphore(1);
 
@@ -72,6 +73,14 @@ public class Interpreter extends EventSource<GDLType, Set<GDLType>> implements A
     private synchronized void init() {
         try {
             prologProcess = Runtime.getRuntime().exec("swipl");
+
+            prologProcess.onExit().thenAcceptAsync(p -> {
+                int exitValue = p.exitValue();
+                if (currentEvaluation != null) {
+                    evalError = new IllegalStateException("The prolog Process exited unexpectedly with exit code " + exitValue);
+                    evalSemaphore.release(evalToRelease);
+                }
+            });
 
             // setup pipes
             OutputStream out = new BufferedOutputStream(prologProcess.getOutputStream());
@@ -171,8 +180,8 @@ public class Interpreter extends EventSource<GDLType, Set<GDLType>> implements A
 
         if (currentEvaluation != null) {
             if (line.startsWith("ERROR")) {
-                evalError = true;
-                evalSemaphore.release(1);
+                evalError = new IllegalStateException("The current evaluation faced an unexpected error in the prolog process.");
+                evalSemaphore.release(evalToRelease);
             }
         }
     }
@@ -204,15 +213,17 @@ public class Interpreter extends EventSource<GDLType, Set<GDLType>> implements A
             prologWriter.write(command);
             prologWriter.flush();
 
+            this.evalToRelease = waitEvalLines;
             for (int i = 0; i < waitEvalLines; i++) {
                 evalSemaphore.acquire(1);
+                this.evalToRelease--;
+            }
 
-                if (evalError) {
-                    currentEvaluation = null;
-                    
-                    if (!options.isDebugMode()) throw new RuntimeException("The current evaluation faced an unexpected Error. Re-run your program in debug mode to get more detail.");
-                    throw new RuntimeException("The current evaluation faced an unexpected Error.");
-                }
+            if (evalError != null) {
+                currentEvaluation = null;
+                
+                if (!options.isDebugMode()) throw new RuntimeException("The current evaluation faced an unexpected Error. Re-run your program in debug mode to get more detail.", evalError);
+                throw new RuntimeException("The current evaluation faced an unexpected Error.", evalError);
             }
         } catch (IOException | InterruptedException e) {
             e.printStackTrace();
