@@ -5,12 +5,16 @@ grammar GDL extends de.monticore.literals.MCCommonLiterals {
     scope Game = tuples:GameTuple*;
 
     interface GameConstruct;
+    interface GameType;
 
-    scope GameTuple implements GameConstruct = "(" element:GameConstruct+ ")";
-    GameToken implements GameConstruct = "?"(type:Name":")?token:Name;
+    GameRangeType implements GameType = "[" start:SignedNatLiteral "," end:SignedNatLiteral "]:";
+    GameValueType implements GameType = type:Name":";
+
+    scope GameTuple implements GameConstruct = type:GameValueType?"(" element:GameConstruct+ ")";
+    GameToken implements GameConstruct = "?"type:GameType?token:Name;
     
-    GameValue implements GameConstruct = (type:Name":")?value:Name;
-    GameDigits implements GameConstruct = number:SignedNatLiteral;
+    GameValue implements GameConstruct = type:GameValueType?value:Name;
+    GameDigits implements GameConstruct = type:GameRangeType?number:SignedNatLiteral;
 
     interface GameKeyword extends GameConstruct;
 
@@ -43,8 +47,7 @@ grammar GDL extends de.monticore.literals.MCCommonLiterals {
     GameEqual implements GameKeyword = "equal";
     GameNumber implements GameKeyword = "number";
 
-    GameType implements GameKeyword = "type";
-    GameCast implements GameKeyword = "cast";
+    GameTypeDef implements GameKeyword = "type";
 
     GameNoop implements GameKeyword = "noop";
 
