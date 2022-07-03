@@ -72,6 +72,7 @@ public class Interpreter extends EventSource<GDLType, Set<GDLType>> implements A
 
     private synchronized void init() {
         try {
+            long time = System.currentTimeMillis();
             prologProcess = Runtime.getRuntime().exec("swipl");
 
             prologProcess.onExit().thenAcceptAsync(p -> {
@@ -87,7 +88,7 @@ public class Interpreter extends EventSource<GDLType, Set<GDLType>> implements A
             prologWriter = new BufferedWriter(new OutputStreamWriter(out)) {
                 @Override
                 public void write(String str) throws IOException {
-                    if (options.isDebugMode()) System.out.println("? " + str);
+                    if (options.isDebugMode()) System.out.print("? " + str);
                     super.write(str);
                 }
             };
@@ -145,6 +146,11 @@ public class Interpreter extends EventSource<GDLType, Set<GDLType>> implements A
 
             // init state
             execute("gdli_init().");
+
+            if (options.isShowTimes()) {
+                long ellapsed = System.currentTimeMillis() - time;
+                System.out.printf("X Initialization took %.4f seconds.\n", ellapsed/1000f);
+            }
         } catch (IOException | InterruptedException e) {
             Log.error("Failed to initialize interpreter.", e);
         }
@@ -243,11 +249,18 @@ public class Interpreter extends EventSource<GDLType, Set<GDLType>> implements A
     }
 
     public boolean interpret(Command command) {
+        long time = System.currentTimeMillis();
+
         String move = command.toPlString();
         String queryResult = execute("gdli_do_move(" + move + ").");
         boolean success = toBooleanValue(queryResult);
         if (success && !command.isNoop()) {
             stateHasChanged();
+        }
+
+        if (options.isShowTimes()) {
+            long ellapsed = System.currentTimeMillis() - time;
+            System.out.printf("X Move took %.4f seconds.\n", ellapsed/1000f);
         }
         return success;
     }
@@ -397,8 +410,14 @@ public class Interpreter extends EventSource<GDLType, Set<GDLType>> implements A
         
         if (matcher.find()) {
             String tupleString = matcher.group();
+            long time = System.currentTimeMillis();
 
             GDLTuple tuple = GDLTuple.createFromPl(tupleString);
+            
+            if (options.isShowTimes()) {
+                long ellapsed = System.currentTimeMillis() - time;
+                System.out.printf("X Parsing took %.4f seconds.\n", ellapsed/1000f);
+            }
 
             @SuppressWarnings("unchecked")
             final Function<GDLType, E> cast = t -> (E) t;
