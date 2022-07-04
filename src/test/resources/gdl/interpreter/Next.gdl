@@ -13,7 +13,3 @@
     (true (state ?x))
     (succ ?x ?y)
 )
-
-(succ 0 1)
-(succ 1 2)
-(succ 2 3)

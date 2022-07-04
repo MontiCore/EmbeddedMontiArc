@@ -1,4 +1,0 @@
-(<= (row ?x ?player)
-  (true (cell ?x 1 ?player))
-  (true (cell ?x 2 ?player))
-  (true (cell ?x 3 ?player)))

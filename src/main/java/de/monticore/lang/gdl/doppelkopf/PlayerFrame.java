@@ -2,8 +2,10 @@ package de.monticore.lang.gdl.doppelkopf;
 
 import java.awt.Color;
 import java.awt.Component;
+import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.List;
+import java.util.Optional;
 import java.util.Set;
 import java.util.stream.Collectors;
 
@@ -18,15 +20,18 @@ import javax.swing.border.EmptyBorder;
 
 import de.monticore.lang.gdl.Command;
 import de.monticore.lang.gdl.Interpreter;
+import de.monticore.lang.gdl.types.GDLTuple;
+import de.monticore.lang.gdl.types.GDLType;
+import de.monticore.lang.gdl.types.GDLValue;
 
 public class PlayerFrame extends JFrame {
 
-    private final String player;
+    private final GDLValue player;
     private final Interpreter interpreter;
     private final JCheckBox checkboxRandom;
 
     public PlayerFrame(String player, Interpreter interpreter) {
-        this.player = player;
+        this.player = new GDLValue(player);
         this.interpreter = interpreter;
         setTitle(player);
 
@@ -49,15 +54,15 @@ public class PlayerFrame extends JFrame {
 
         this.setContentPane(content);
 
-        updateGUI();
+        updateGUI(interpreter.getGameStateForRole(this.player));
 
-        interpreter.addStateObserver(player, this::updateGUI);
+        interpreter.addObserver(this.player, this::updateGUI);
 
         setVisible(true);
         setDefaultCloseOperation(EXIT_ON_CLOSE);
     }
 
-    private void updateGUI() {
+    private void updateGUI(Set<GDLType> gameState) {
         this.getContentPane().removeAll();
 
         if (interpreter.isTerminal()) {
@@ -71,15 +76,13 @@ public class PlayerFrame extends JFrame {
             panelResult.add(gameOverLabel);
 
             JLabel resultLabel = new JLabel();
-            resultLabel.setText(interpreter.getAllModels("goal").toString());
+            resultLabel.setText(interpreter.getGoals().toString());
             panelResult.add(resultLabel);
 
             this.getContentPane().add(panelResult);
             pack();
             return;
         }
-
-        Set<List<String>> gameState = interpreter.getGameStateForRole(player);
 
         // Spielerhand
         JPanel panelHand = new JPanel();
@@ -147,7 +150,15 @@ public class PlayerFrame extends JFrame {
 
         this.getContentPane().add(panelSonstige);
 
-        for (List<String> state : gameState) {
+        for (GDLType stateGDL : gameState) {
+            if (!(stateGDL instanceof GDLTuple)) {
+                continue;
+            }
+            GDLTuple stateTuple = (GDLTuple) stateGDL;
+            List<String> state = stateTuple.stream()
+                    .map(e -> e.toString())
+                    .collect(Collectors.toList()) ;
+
             switch (state.get(0)) {
                 case "hand":
                     panelHand.add(new JLabel(state.get(2)));
@@ -167,7 +178,7 @@ public class PlayerFrame extends JFrame {
                     break;
 
                 case "stich":
-                    if (state.get(1).equals(gameState.stream().filter(s -> s.get(0).equals("ablauf") && s.get(1).equals("stich")).map(s -> s.get(2)).findFirst().orElse(null))) {
+                    if (state.get(1).equals(getAblaufStichMajor(gameState))) {
                         panelAktStich.add(new JLabel(state.stream().skip(1).reduce("", (x, y) -> x + ", " + y).substring(2)));
                     } else {
                         panelStiche.add(new JLabel(state.stream().skip(1).reduce("", (x, y) -> x + ", " + y).substring(2)));
@@ -195,7 +206,7 @@ public class PlayerFrame extends JFrame {
 
         this.getContentPane().add(panelLegal);
 
-        List<Command> commands = interpreter.getAllLegalMovesForPlayer(player).stream().map(Command::createMoveFromList).collect(Collectors.toList());
+        List<Command> commands = new ArrayList<>(interpreter.getAllLegalMovesForRole(player));
 
         for (final Command c : commands) {
             JButton commandButton = new JButton(c.toString());
@@ -232,6 +243,22 @@ public class PlayerFrame extends JFrame {
             Arrays.stream(panelLegal.getComponents()).skip(2).forEach(bt -> ((JButton) bt).setEnabled(false));
             Command c = commands.get((int) (Math.random() * commands.size()));
             interpreter.interpret(c);
+        }
+    }
+
+    private String getAblaufStichMajor(Set<GDLType> gameState) {
+        Optional<GDLType> maybeMajor = gameState.stream()
+                .filter(t -> (t instanceof GDLTuple))
+                .map(t -> (GDLTuple) t)
+                .filter(t -> t.get(0).equals(new GDLValue("ablauf")))
+                .filter(t -> t.get(1).equals(new GDLValue("stich")))
+                .map(t -> t.get(2))
+                .findFirst();
+
+        if (maybeMajor.isPresent()) {
+            return maybeMajor.get().toString();
+        } else {
+            return null;
         }
     }
     
