@@ -6,7 +6,7 @@ ${tc.signature ("astComplexPropertyDefinition")}
         def __init__(self,outer):
          self.outer = outer
         def get${className}Value(self):
-            return self.outer.training_configuration.getValue()
+            return self.outer.training_configuration.get${className}Value()
 <#list astComplexPropertyDefinition.getComplexPropertyValueDefinitionList()  as astComplexPropertyValueDefinition>
     <#list astComplexPropertyValueDefinition.getSchemaMemberList() as astSchemaMember>
         <#assign methodName = astComplexPropertyValueDefinition.getName()+astSchemaMember.getName()>
