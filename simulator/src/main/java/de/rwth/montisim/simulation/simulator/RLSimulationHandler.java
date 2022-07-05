@@ -359,7 +359,7 @@ public class RLSimulationHandler {
         //self-play and training mode
         if (distributed && PLAYMODE == false && !miniStep) {
             int listCounter = 0; //makes sure that right action out of the decentralizedActionsList is selected
-            for (int i = 0; i <= autopilots.length - 1; i++) {
+            for (int i = 0; i < autopilots.length; i++) {
 
                 if (i == trainedVehicle) {
                     setAction(action); //set action for the trained vehicle

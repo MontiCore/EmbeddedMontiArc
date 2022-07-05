@@ -174,7 +174,7 @@ public class PlatooningStrategy extends RandomizationStrategy {
 
             // traverse segment to find a spawn point
             double traverse_length = spawnLength + this.random.nextDouble() * (this.maxDistanceBtwVehicles - this.minDistanceBtwVehicles) + this.minDistanceBtwVehicles;
-            //System.out.println(traverse_length);
+
             if (traverse_length >= segment.length) { // cannot place pose here, but at child // >= not > makes it easier later (no checking if last element)
                 // remove segment
                 segments.remove(0);
@@ -227,7 +227,6 @@ public class PlatooningStrategy extends RandomizationStrategy {
                 double total_distance = prevPoint.distance(currPoint);
                 double distance = currDistance - (traverse_length);
                 double fraction = distance / total_distance;
-                System.out.println(total_distance + " " + distance + " " + fraction);
 
                 Vec2 spawnPoint = new Vec2(prevPoint.x + fraction * (currPoint.x - prevPoint.x), prevPoint.y + fraction * (currPoint.y - prevPoint.y));
 
@@ -283,7 +282,6 @@ public class PlatooningStrategy extends RandomizationStrategy {
 
             // Add randomized properties
             newVehicle.start_coords = Optional.of(generatedStartPoses.get(i).getKey());
-            System.out.println(generatedStartPoses.get(i).getValue());
             newVehicle.start_orientation = generatedStartPoses.get(i).getValue();
 
             TaskProperties task = new TaskProperties();
