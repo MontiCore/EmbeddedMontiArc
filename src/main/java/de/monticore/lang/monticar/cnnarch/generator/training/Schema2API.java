@@ -20,14 +20,26 @@ import java.util.Optional;
 
 public class Schema2API {
 
+    private File outputDirectory = new File("target/schemaAPI");
+    private ModelPath schemasModelPath = new ModelPath(Paths.get("src/main/resources/schemas"));
+
+    public void setOutputDirectory(File outputDirectory) {
+        this.outputDirectory = outputDirectory;
+    }
+
+    public void setSchemasModelPath(ModelPath schemasModelPath) {
+        this.schemasModelPath = schemasModelPath;
+    }
+
     public void generatePythonAPI() {
-        //parse schema
+
+        //resolve schema
         List<SchemaDefinitionSymbol> schemaDefinitionSymbols = resolveSchemas();
         //check cocos
         //for each schema generate class
         GeneratorSetup generatorSetup = new GeneratorSetup();
         generatorSetup.setTracing(false);
-        generatorSetup.setOutputDirectory(new File("target/schema"));
+        generatorSetup.setOutputDirectory(outputDirectory);
         generatorSetup.setGlex(new GlobalExtensionManagement());
         GeneratorEngine generatorEngine = new GeneratorEngine(generatorSetup);
         StringBuilder result = new StringBuilder();
@@ -52,7 +64,7 @@ public class Schema2API {
     }
 
     protected SchemaDefinitionSymbol resolveSchema(final String schemaName) {
-        return SchemaUtil.resolveSchemaDefinition(schemaName, new ModelPath(Paths.get("src/main/resources/schemas")));
+        return SchemaUtil.resolveSchemaDefinition(schemaName, schemasModelPath);
 
     }
 
