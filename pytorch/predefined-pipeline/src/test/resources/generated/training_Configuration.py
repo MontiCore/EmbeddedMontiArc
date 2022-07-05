@@ -7,3 +7,5 @@ class TrainingConfiguration:
         return 33
     def getEval_metric_typeValue(self):
         return "adam"
+    def getNum_epoch(self):
+        return 4

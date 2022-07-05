@@ -1,7 +1,6 @@
-class Training_Executor_Impl():
+class SupervisedTrainer():
 
     def __init__(self, model, train_config, train_loader, test_loader, model_dir, model_prefix):
-        super().__init__()
         self._model_ = model
         self._train_config_ = train_config
         self._train_loader_ = train_loader
@@ -16,7 +15,7 @@ class Training_Executor_Impl():
         optimizer = torch.optim.SGD(self._model_.parameters(), lr=0.001, momentum=0.9)
         begin_epoch= 0
         self._model_.train()
-        num_epoch = 2
+        num_epoch = self._train_config_.getNum_epoch()
         train_losses_total = []
         train_accuracy_total = []
         #later we will take this from train_config.num_epoch()
@@ -48,13 +47,11 @@ class Training_Executor_Impl():
             if not os.path.isdir(self._model_dir_):
                 raise
         torch.save({
-                    'epoch': str(num_epoch + begin_epoch),
-                    'model_state_dict': self._model_.state_dict(),
-                    'optimizer_state_dict': optimizer.state_dict(),
-                    'loss': loss}, self._model_dir_ + self._model_prefix_ + "_" + str(num_epoch + begin_epoch))
+            'epoch': str(num_epoch + begin_epoch),
+            'model_state_dict': self._model_.state_dict(),
+            'optimizer_state_dict': optimizer.state_dict(),
+            'loss': loss}, self._model_dir_ + self._model_prefix_ + "_" + str(num_epoch + begin_epoch))
         #Saving model in .pt format for prediction in c++
         model_scripted = torch.jit.script(self._model_) # Export to TorchScript
         model_scripted.save('model_scripted.pt')
-        torch.save(model, PATH)
-        return {'trained_model': self._model_ , 'accuracy':accurracy_overall,'loss':loss_overall }
-        #print(torch.tensor(train_accuracy_total))
+        return self._model_ , accurracy_overall, loss_overall

@@ -1,14 +1,13 @@
-class Evaluation_Executor_Impl():
+class SupervisedEvaluation():
 
     def __init__(self, trained_model, train_config, test_loader):
-        super().__init__()
         self._trained_model_ = trained_model
         self._test_loader_ = test_loader
         self._train_config_ = train_config
 
     def execute(self):
-        self._trained_model_.eval()
         test_accuracy = []
+        self._trained_model_.eval()
         # since we're not training, we don't need to calculate the gradients for our outputs
         with torch.no_grad():
             for data in self._test_loader_:
