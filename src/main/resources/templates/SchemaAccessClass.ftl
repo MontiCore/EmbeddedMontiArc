@@ -4,4 +4,6 @@ class ${schemaDefinition.getName()}<#if superSchema??>(${superSchema.getName()})
 
     def __init__(self):
         self.training_configuration = None
-    ${tc.includeArgs("templates.SchemaAPIMethod",[schemaMembers])}
+    def set_training_configuration(self,training_configuration):
+        self.training_configuration =  training_configuration
+    ${tc.includeArgs("templates.SchemaAPIMethod",[schemaMembers, schemaDefinition.getEnumPropertyDefinitions()])}
