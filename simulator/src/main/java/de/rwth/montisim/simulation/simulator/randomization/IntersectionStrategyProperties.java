@@ -27,9 +27,9 @@ public class IntersectionStrategyProperties extends RandomizationProperties {
     File mapPath = Paths.get(mapsFolder, config.map_name + ".osm").toFile();
     OsmMap map = new OsmMap(config.map_name, mapPath);
     World world = new OsmToWorldLoader(map).getWorld();
-    if (!seed.isPresent()) seed = Optional.of(System.nanoTime());
-    System.out.println("Seed: " + seed.get());
-    return new IntersectionStrategy(seed, world, max_number_of_vehicles, min_number_of_vehicles, min_distance_btw_vehicles, max_distance_btw_vehicles, min_distance_from_intersection, max_distance_from_intersection, min_goal_distance, max_goal_distance);
+    Optional<Long> usedSeed = (seed.isPresent())? seed : Optional.of(System.nanoTime());
+    System.out.println("Seed: " + usedSeed.get());
+    return new IntersectionStrategy(usedSeed, world, max_number_of_vehicles, min_number_of_vehicles, min_distance_btw_vehicles, max_distance_btw_vehicles, min_distance_from_intersection, max_distance_from_intersection, min_goal_distance, max_goal_distance);
   }
   
 }

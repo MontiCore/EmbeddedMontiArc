@@ -26,6 +26,7 @@ import de.rwth.montisim.simulation.eesimulator.testcomponents.TestCompProperties
 import de.rwth.montisim.simulation.simulator.communication.DefaultPreprocessorProperties;
 import de.rwth.montisim.simulation.simulator.communication.ProximityFilterProperties;
 import de.rwth.montisim.simulation.simulator.communication.SequencePreprocessorProperties;
+import de.rwth.montisim.simulation.simulator.communication.AnglePreprocessorProperties;
 import de.rwth.montisim.simulation.simulator.randomization.BasicDrivingStrategyProperties;
 import de.rwth.montisim.simulation.simulator.randomization.EmptyStrategyProperties;
 import de.rwth.montisim.simulation.simulator.randomization.IntersectionStrategyProperties;
@@ -74,6 +75,7 @@ public class TypedSimulation {
     Json.registerType(DefaultPreprocessorProperties.class);
     Json.registerType(ProximityFilterProperties.class);
     Json.registerType(SequencePreprocessorProperties.class);
+    Json.registerType(AnglePreprocessorProperties.class);
     /* Reward Functions */
     Json.registerType(DefaultRewardFunctionProperties.class);
     Json.registerType(SequenceRewardFunctionProperties.class);
