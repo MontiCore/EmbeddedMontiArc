@@ -4,6 +4,7 @@ import de.rwth.montisim.commons.utils.Vec2;
 import de.rwth.montisim.simulation.vehicle.Vehicle;
 import de.rwth.montisim.simulation.vehicle.navigation.Navigation;
 
+import java.time.Duration;
 import java.util.Arrays;
 
 /**
@@ -16,18 +17,21 @@ public abstract class RewardFunction {
   final Navigation[] navigations;
   final Vec2[] positions;
   final Double[] velocities;
+  final Duration tickDuration;
 
   /**
    * Default constructor that initializes the parameters required for any given reward function: Navigation and Data of each Vehicle.
    *
-   * @param vehicles    Vehicle[] containing additional data about each active vehicle.
+   * @param vehicles     Vehicle[] containing additional data about each active vehicle.
+   * @param tickDuration Duration between two Updates of the Simulator.
    */
-  public RewardFunction(Vehicle[] vehicles) {
+  public RewardFunction(Vehicle[] vehicles, Duration tickDuration) {
     this.NUMBER_OF_VEHICLES = vehicles.length;
     this.vehicles = vehicles;
     this.navigations = Arrays.stream(vehicles).map(vehicle -> (Navigation) vehicle.eesystem.getComponent("Navigation").get()).toArray(Navigation[]::new);
     this.positions = Arrays.stream(vehicles).map(vehicle -> (Vec2) vehicle.physicalValues.getPhysicalValue("true_position").get()).toArray(Vec2[]::new);
     this.velocities = Arrays.stream(vehicles).map(vehicle -> (Double) vehicle.physicalValues.getPhysicalValue("true_velocity").get()).toArray(Double[]::new);
+    this.tickDuration = tickDuration;
   }
 
   /**

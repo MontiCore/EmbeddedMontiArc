@@ -3,8 +3,8 @@ package de.rwth.montisim.simulation.simulator.rewards;
 import de.rwth.montisim.commons.utils.Pair;
 import de.rwth.montisim.commons.utils.Vec2;
 import de.rwth.montisim.simulation.vehicle.Vehicle;
-import de.rwth.montisim.simulation.vehicle.navigation.Navigation;
 
+import java.time.Duration;
 import java.util.Optional;
 import java.util.Stack;
 
@@ -30,14 +30,15 @@ public class PlatooningRewardFunction extends RewardFunction {
    * Initializes a new Platoon Reward Function
    *
    * @param vehicles          Vehicle[] containing additional data about each active vehicle.
+   * @param tickDuration      Duration between two Updates of the Simulator.
    * @param platooning_reward The scaled reward.
    * @param gap_max           Maximum allowed gap between vehicles.
    * @param gap_desired       Desired gap between vehicles.
    * @param velocity_max      Maximum allowed velocity.
    * @param velocity_desired  Desired velocity.
    */
-  public PlatooningRewardFunction(Vehicle[] vehicles, float platooning_reward, float gap_max, float gap_desired, float velocity_max, float velocity_desired) {
-    super(vehicles);
+  public PlatooningRewardFunction(Vehicle[] vehicles, Duration tickDuration, float platooning_reward, float gap_max, float gap_desired, float velocity_max, float velocity_desired) {
+    super(vehicles, tickDuration);
     this.PLATOONING_REWARD = platooning_reward;
     this.gap_max = gap_max;
     this.gap_desired = gap_desired;

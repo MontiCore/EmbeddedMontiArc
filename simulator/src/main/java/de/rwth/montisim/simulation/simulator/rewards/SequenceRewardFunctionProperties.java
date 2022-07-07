@@ -2,8 +2,8 @@ package de.rwth.montisim.simulation.simulator.rewards;
 
 import de.rwth.montisim.commons.utils.json.Typed;
 import de.rwth.montisim.simulation.vehicle.Vehicle;
-import de.rwth.montisim.simulation.vehicle.navigation.Navigation;
 
+import java.time.Duration;
 import java.util.Vector;
 
 /**
@@ -19,11 +19,11 @@ public class SequenceRewardFunctionProperties extends RewardFunctionProperties {
   public Vector<RewardFunctionProperties> rewardFunctions = new Vector<>();
 
   @Override
-  public RewardFunction build(Vehicle[] vehicles) {
+  public RewardFunction build(Vehicle[] vehicles, Duration tickDuration) {
     RewardFunction[] rewardFunctionsArray = new RewardFunction[rewardFunctions.size()];
     for (int i = 0; i < rewardFunctions.size(); i++) {
-      rewardFunctionsArray[i] = rewardFunctions.get(i).build(vehicles);
+      rewardFunctionsArray[i] = rewardFunctions.get(i).build(vehicles, tickDuration);
     }
-    return new SequenceRewardFunction(vehicles, rewardFunctionsArray);
+    return new SequenceRewardFunction(vehicles, tickDuration, rewardFunctionsArray);
   }
 }

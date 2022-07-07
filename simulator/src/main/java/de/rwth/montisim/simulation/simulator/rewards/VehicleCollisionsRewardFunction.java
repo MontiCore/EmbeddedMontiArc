@@ -1,7 +1,8 @@
 package de.rwth.montisim.simulation.simulator.rewards;
 
 import de.rwth.montisim.simulation.vehicle.Vehicle;
-import de.rwth.montisim.simulation.vehicle.navigation.Navigation;
+
+import java.time.Duration;
 
 /**
  * Reward function that punishes vehicle collisions.
@@ -14,10 +15,11 @@ public class VehicleCollisionsRewardFunction extends RewardFunction {
    * Reward function that punishes vehicle collisions.
    *
    * @param vehicles                 Vehicle[] containing additional data about each active vehicle.
+   * @param tickDuration             Duration between two Updates of the Simulator.
    * @param vehicle_collision_reward The reward given for each vehicle collision.
    */
-  public VehicleCollisionsRewardFunction(Vehicle[] vehicles, float vehicle_collision_reward) {
-    super(vehicles);
+  public VehicleCollisionsRewardFunction(Vehicle[] vehicles, Duration tickDuration, float vehicle_collision_reward) {
+    super(vehicles, tickDuration);
     VEHICLE_COLLISION_REWARD = vehicle_collision_reward;
   }
 

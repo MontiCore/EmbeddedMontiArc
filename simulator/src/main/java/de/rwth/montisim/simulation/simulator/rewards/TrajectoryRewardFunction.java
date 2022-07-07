@@ -3,7 +3,8 @@ package de.rwth.montisim.simulation.simulator.rewards;
 import de.rwth.montisim.commons.utils.IPM;
 import de.rwth.montisim.commons.utils.Vec2;
 import de.rwth.montisim.simulation.vehicle.Vehicle;
-import de.rwth.montisim.simulation.vehicle.navigation.Navigation;
+
+import java.time.Duration;
 
 /**
  * Reward Function that evaluates how well a vehicle follows its trajectory.
@@ -18,11 +19,12 @@ public class TrajectoryRewardFunction extends RewardFunction {
    * Initializes the Trajectory Reward Function.
    *
    * @param vehicles          Vehicle[] containing additional data about each active vehicle.
+   * @param tickDuration      Duration between two Updates of the Simulator.
    * @param trajectory_reward Scaled reward.
    * @param distance_max      Maximum allowed distance to the next trajectory point.
    */
-  public TrajectoryRewardFunction(Vehicle[] vehicles, float trajectory_reward, float distance_max) {
-    super(vehicles);
+  public TrajectoryRewardFunction(Vehicle[] vehicles, Duration tickDuration, float trajectory_reward, float distance_max) {
+    super(vehicles, tickDuration);
     this.TRAJECTORY_REWARD = trajectory_reward;
     this.distance_max = distance_max;
   }

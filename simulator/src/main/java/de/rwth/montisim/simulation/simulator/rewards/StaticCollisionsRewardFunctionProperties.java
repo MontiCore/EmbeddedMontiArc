@@ -2,7 +2,8 @@ package de.rwth.montisim.simulation.simulator.rewards;
 
 import de.rwth.montisim.commons.utils.json.Typed;
 import de.rwth.montisim.simulation.vehicle.Vehicle;
-import de.rwth.montisim.simulation.vehicle.navigation.Navigation;
+
+import java.time.Duration;
 
 @Typed("static_collision_reward")
 public class StaticCollisionsRewardFunctionProperties extends RewardFunctionProperties {
@@ -10,7 +11,7 @@ public class StaticCollisionsRewardFunctionProperties extends RewardFunctionProp
   public float reward = -600;
 
   @Override
-  public RewardFunction build(Vehicle[] vehicles) {
-    return new StaticCollisionsRewardFunction(vehicles, reward);
+  public RewardFunction build(Vehicle[] vehicles, Duration tickDuration) {
+    return new StaticCollisionsRewardFunction(vehicles, tickDuration, reward);
   }
 }
