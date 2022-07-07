@@ -15,6 +15,8 @@ public class TrajectoryRewardFunction extends RewardFunction {
 
   private final float distance_max;
 
+  private double[] total_path_distance;
+
   /**
    * Initializes the Trajectory Reward Function.
    *
@@ -27,6 +29,10 @@ public class TrajectoryRewardFunction extends RewardFunction {
     super(vehicles, tickDuration);
     this.TRAJECTORY_REWARD = trajectory_reward;
     this.distance_max = distance_max;
+    this.total_path_distance = new double[this.NUMBER_OF_VEHICLES];
+    for(int i = 0; i < this.NUMBER_OF_VEHICLES; i++) {
+      this.total_path_distance[i] = this.navigations[i].getRemainingPathLength().get(); // if not present something went horribly wrong
+    }
   }
 
   @Override
@@ -34,6 +40,9 @@ public class TrajectoryRewardFunction extends RewardFunction {
     Vec2 vehicle_position = this.positions[vehicle_index];
     Vec2[] vehicle_trajectory = this.navigations[vehicle_index].getCurrentTraj();
 
+    float reward = 0;
+
+    // Stay on the Path
     double distanceToSeg;
     double distance = Double.MAX_VALUE;
     for (int i = 0; i < vehicle_trajectory.length - 1; i++) {
@@ -52,9 +61,12 @@ public class TrajectoryRewardFunction extends RewardFunction {
         distance = distanceToSeg;
       }
     }
+    reward += -(this.TRAJECTORY_REWARD / this.distance_max) * (float) distance + this.TRAJECTORY_REWARD;
 
-    return -(this.TRAJECTORY_REWARD / this.distance_max) * (float) distance + this.TRAJECTORY_REWARD;
+    // Progress on the Path
+    reward += this.TRAJECTORY_REWARD * (1 - (this.navigations[vehicle_index].getRemainingPathLength().get() / total_path_distance[vehicle_index]));
 
+    return reward;
   }
 
   // SegmentPos taken from JavaAutopilot class for distance calculation
