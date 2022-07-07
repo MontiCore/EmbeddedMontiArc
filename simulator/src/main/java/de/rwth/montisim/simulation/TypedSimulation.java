@@ -64,5 +64,6 @@ public class TypedSimulation {
         Json.registerType(DefaultPreprocessorProperties.class);
         Json.registerType(ProximityFilterProperties.class);
         Json.registerType(SequencePreprocessorProperties.class);
+        Json.registerType(AnglePreprocessorProperties.class);
     }
 }

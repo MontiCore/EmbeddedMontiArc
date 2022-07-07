@@ -62,3 +62,15 @@ The Sequence Preprocessor allows using multiple preprocessor in a sequence.
 |---------------|------------------|---------------|----------------------------------|-------------------------------------------|
 | preprocessors | `Preprocessor[]` | empty         | List of Preprocessors            | `"preprocessors": [{ "type": "default"}]` | 
 
+### Angle Preprocessor
+```json
+"type": "angle"
+```
+The Angle Preprocessor replaces angles in the state with their sin-cos values.
+Thus we replace each angle with two values from -1 to 1.
+#### Properties
+| Property              | Type  | Default Value | Short Description                           | Usage                         |
+|-----------------------|-------|---------------|---------------------------------------------|-------------------------------|
+| angleStateIndex       | `int` | 23            | Index of the angle in the vehicle state     | `"angleStateIndex": 7`        | 
+ | angleStatePacketIndex | `int` | 2             | Index of the angle in the statepacket state | `"angleStatePacketIndex": 13` |
+
