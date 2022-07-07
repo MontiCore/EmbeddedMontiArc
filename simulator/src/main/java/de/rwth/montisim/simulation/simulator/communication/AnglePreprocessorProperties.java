@@ -16,7 +16,7 @@ public class AnglePreprocessorProperties extends PreprocessorProperties {
     /**
      * Index of the angle state packet index
      */
-    public int angleStatePacketIndex = 2;
+    public int angleStatePacketIndex = 23;
 
     @Override
     public Preprocessor build() {

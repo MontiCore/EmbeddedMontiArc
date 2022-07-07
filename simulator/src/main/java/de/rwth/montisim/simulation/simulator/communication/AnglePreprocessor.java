@@ -7,7 +7,6 @@ import de.rwth.montisim.commons.utils.json.Typed;
  */
 public class AnglePreprocessor implements Preprocessor {
     private final int angleStateIndex;
-    //TODO: Change into Til's index
     private final int angleStatePacketIndex;
 
     public AnglePreprocessor(int angleStateIndex, int angleStatePacketIndex) {
