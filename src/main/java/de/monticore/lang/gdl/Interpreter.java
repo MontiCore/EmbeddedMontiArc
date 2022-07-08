@@ -38,6 +38,7 @@ import de.monticore.lang.gdl.cocos.AllCoCosChecker;
 import de.monticore.lang.gdl.types.GDLTuple;
 import de.monticore.lang.gdl.types.GDLType;
 import de.monticore.lang.gdl.visitors.PrologPrinter;
+import de.monticore.lang.gdl.visitors.TypeTemplatePrinter;
 import de.se_rwth.commons.logging.Log;
 
 public class Interpreter extends EventSource<GDLType, Set<GDLType>> implements AutoCloseable {
@@ -591,9 +592,17 @@ public class Interpreter extends EventSource<GDLType, Set<GDLType>> implements A
         final AllCoCosChecker checker = new AllCoCosChecker();
         checker.checkAll(ast);
 
+
         final PrologPrinter printer = new PrologPrinter();
         ast.accept(printer.getTraverser());
-        final String prolog = printer.getContent();
+        String prolog = printer.getContent();
+
+        if (options != null && options.isWithTypes()) {
+            final TypeTemplatePrinter typePrinter = new TypeTemplatePrinter();
+            ast.accept(typePrinter.getTraverser());
+            prolog += "\n" + typePrinter.getContent();
+        }
+
         return fromProlog(prolog, options);
     }
 

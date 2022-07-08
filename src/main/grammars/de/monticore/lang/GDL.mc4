@@ -11,7 +11,7 @@ grammar GDL extends de.monticore.literals.MCCommonLiterals {
     GameValueType implements GameType = type:Name":";
 
     scope GameTuple implements GameConstruct = type:GameValueType?"(" element:GameConstruct+ ")";
-    GameToken implements GameConstruct = "?"type:GameType?token:Name;
+    GameToken implements GameConstruct = type:GameType?"?"token:Name;
     
     GameValue implements GameConstruct = type:GameValueType?value:Name;
     GameDigits implements GameConstruct = type:GameRangeType?number:SignedNatLiteral;

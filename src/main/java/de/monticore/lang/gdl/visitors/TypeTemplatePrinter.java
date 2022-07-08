@@ -1,5 +1,8 @@
 package de.monticore.lang.gdl.visitors;
 
+import java.io.BufferedReader;
+import java.io.InputStream;
+import java.io.InputStreamReader;
 import java.util.List;
 import java.util.function.Consumer;
 
@@ -23,6 +26,7 @@ import de.monticore.lang.gdl._ast.ASTGameValueType;
 import de.monticore.lang.gdl._visitor.GDLHandler;
 import de.monticore.lang.gdl._visitor.GDLTraverser;
 import de.monticore.lang.gdl._visitor.GDLVisitor2;
+import de.monticore.literals.mccommonliterals._ast.ASTSignedNatLiteral;
 import de.monticore.literals.mccommonliterals._visitor.MCCommonLiteralsVisitor2;
 import de.monticore.prettyprint.IndentPrinter;
 
@@ -31,18 +35,38 @@ public class TypeTemplatePrinter extends IndentPrinter implements GDLVisitor2, M
     private static final String TEMPLATE_PREFIX_STATE = "gdl_template_state";
     private static final String TEMPLATE_PREFIX_ACTION = "gdl_template_action";
 
-    private static final String VALUE_TYPE_PREFIX = "type";
+
+    private static final String VALUE_PREFIX = "value";
+    private static final String DIGITS_POSITIVE_PREFIX = "numpos";
+    private static final String DIGITS_NEGATIVE_PREFIX = "numneg";
+    private static final String VALUE_TYPE_PREFIX = "value";
 
     private static final String PREFIX_SEPARATOR = "_";
     private static final String ELEMENT_SEPARATOR = ", ";
 
     private GDLTraverser traverser;
 
+    private final String util;
+
     public TypeTemplatePrinter() {
+        this.util = loadUtil();
+
         this.traverser = GDLMill.traverser();
         this.traverser.add4GDL(this);
         this.traverser.add4MCCommonLiterals(this);
         this.traverser.setGDLHandler(this);
+    }
+
+    private String loadUtil() {
+        InputStream stream = PrologPrinter.class.getResourceAsStream("type_util.pl");
+        try {
+            BufferedReader reader = new BufferedReader(new InputStreamReader(stream, "UTF-8"));
+            return reader.lines().reduce("", (s1, s2) -> s1 + "\n" + s2) + "\n";
+        } catch (Exception e) {
+            e.printStackTrace();
+            System.err.println("Unable to load util.pl.");
+            return null;
+        }
     }
 
     @Override
@@ -61,8 +85,16 @@ public class TypeTemplatePrinter extends IndentPrinter implements GDLVisitor2, M
 
         StringBuilder contentBuilder = new StringBuilder();
 
+        if (this.util != null) {
+            contentBuilder.append("% ================================ \n");
+            contentBuilder.append("% =========== TYPE UTIL ========== \n");
+            contentBuilder.append("% ================================ \n");
+            contentBuilder.append(this.util);
+            contentBuilder.append("\n");
+        }
+
         contentBuilder.append("% ================================ \n");
-        contentBuilder.append("% =========== GENERATED ========== \n");
+        contentBuilder.append("% ======== TYPE GENERATED ======== \n");
         contentBuilder.append("% ================================ \n");
         contentBuilder.append("\n");
         contentBuilder.append(content);
@@ -85,7 +117,7 @@ public class TypeTemplatePrinter extends IndentPrinter implements GDLVisitor2, M
 
     @Override
     public void handle(ASTGame game) {
-        printElementsSeparated(game.getTuplesList(), 0, "", true, this::handleRoot);
+        printElementsSeparated(game.getTuplesList(), 0, "", false, this::handleRoot);
     }
 
     private void handleRoot(ASTGameTuple tuple) {
@@ -135,7 +167,7 @@ public class TypeTemplatePrinter extends IndentPrinter implements GDLVisitor2, M
     public void handleTemplateKeyword(ASTGameTuple tuple, ASTGameLegal keyword) {
         print(TEMPLATE_PREFIX_ACTION);
         print("(");
-        printElementsSeparated(tuple.getElementList(), 1, ELEMENT_SEPARATOR, false, this::handle);
+        tuple.getElement(2).accept(getTraverser());
         println(").");
     }
 
@@ -146,10 +178,12 @@ public class TypeTemplatePrinter extends IndentPrinter implements GDLVisitor2, M
             ASTGameTuple tuple = (ASTGameTuple) construct;
 
             if (tuple.getElement(0) instanceof ASTGameSees) {
-                printElementsSeparated(tuple.getElementList(), 1, ELEMENT_SEPARATOR, false, this::handle);
+                printElementsSeparated(tuple.getElementList(), 1, ELEMENT_SEPARATOR, false,  n -> n.accept(getTraverser()));
+            } else {
+                construct.accept(getTraverser());
             }
         } else {
-            handle(construct);
+            construct.accept(getTraverser());
         }
         println(").");
     }
@@ -157,22 +191,30 @@ public class TypeTemplatePrinter extends IndentPrinter implements GDLVisitor2, M
     @Override
     public void handle(ASTGameTuple tuple) {
         if (tuple.isPresentType()) {
-            handleConstantType(tuple.getType());
+            handleConstantType(tuple, tuple.getType());
         } else {
             print("[");
-            printElementsSeparated(tuple.getElementList(), 0, ELEMENT_SEPARATOR, false, this::handle);
+            printElementsSeparated(tuple.getElementList(), 0, ELEMENT_SEPARATOR, false, n -> n.accept(getTraverser()));
             print("]");
         }
     }
 
     @Override
     public void handle(ASTGameValue node) {
-        handleConstantType(node.getType());
+        if (!node.isPresentType()) {
+            handleConstantType(node, null);
+        } else {
+            handleConstantType(node, node.getType());
+        }
     }
 
     @Override
     public void handle(ASTGameDigits node) {
-        handleConstantType(node.getType());
+        if (!node.isPresentType()) {
+            handleConstantType(node, null);
+        } else {
+            handleConstantType(node, node.getType());
+        }
     }
 
     @Override
@@ -180,22 +222,65 @@ public class TypeTemplatePrinter extends IndentPrinter implements GDLVisitor2, M
         node.getType().accept(getTraverser());
     }
 
-    public void handleConstantType(ASTGameType type) {
-        print("[constant");
-        print(ELEMENT_SEPARATOR);
-        type.accept(getTraverser());
+    private void handleConstantConstruct(ASTGameConstruct value) {
+        if (value instanceof ASTGameTuple) {
+            handleConstantConstruct((ASTGameTuple) value);
+        } else if (value instanceof ASTGameValue) {
+            handleConstantConstruct((ASTGameValue) value);
+        } else if (value instanceof ASTGameDigits) {
+            handleConstantConstruct((ASTGameDigits) value);
+        }
+    }
+
+    private void handleConstantConstruct(ASTGameTuple value) {
+        print("[");
+        printElementsSeparated(value.getElementList(), 0, ELEMENT_SEPARATOR, false, this::handleConstantConstruct);
         print("]");
+    }
+
+    private void handleConstantConstruct(ASTGameValue value) {
+        final String v = VALUE_PREFIX + PREFIX_SEPARATOR + value.getValue();
+        print(v);
+    }
+
+    private void handleConstantConstruct(ASTGameDigits value) {
+        final ASTSignedNatLiteral literal = value.getNumber();
+        final int number = literal.getValue();
+        printNumber(number);
+    }
+
+    private void printNumber(int number) {
+        final String numberString;
+        if (number < 0) {
+            numberString = DIGITS_NEGATIVE_PREFIX + PREFIX_SEPARATOR + (number*-1);
+        } else {
+            numberString = DIGITS_POSITIVE_PREFIX + PREFIX_SEPARATOR + number;
+        }
+        print(numberString);
     }
 
     // TYPES
 
+    private void handleConstantType(ASTGameConstruct value, ASTGameType type) {
+        print("(constant");
+        print(ELEMENT_SEPARATOR);
+        if (type == null) {
+            print("undefined");
+        } else {
+            type.accept(getTraverser());
+        }
+        print(ELEMENT_SEPARATOR);
+        handleConstantConstruct(value);
+        print(")");
+    }
+
     public void visit(ASTGameRangeType node) {
-        print("[range");
+        print("(range");
         print(ELEMENT_SEPARATOR);
-        print(node.getStart().getValue());
+        printNumber(node.getStart().getValue());
         print(ELEMENT_SEPARATOR);
-        print(node.getEnd().getValue());
-        print("]");
+        printNumber(node.getEnd().getValue());
+        print(")");
     }
 
     public void visit(ASTGameValueType node) {

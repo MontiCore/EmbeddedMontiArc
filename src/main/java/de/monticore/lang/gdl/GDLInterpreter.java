@@ -38,6 +38,7 @@ public class GDLInterpreter {
         boolean debugMode = false;
         boolean manualRandom = false;
         boolean showTimes = false;
+        boolean withTypes = false;
         boolean output = false;
         String outputPath = "out.pl";
         int windowSize = 950;
@@ -61,6 +62,8 @@ public class GDLInterpreter {
                 manualRandom = true;
             } else if (command.equals("--show-times") || command.equals("-st")) {
                 showTimes = true;
+            }  else if (command.equals("--with-types") || command.equals("-wt")) {
+                withTypes = true;
             } else if (command.equals("--out") || command.equals("-o")) {
                 output = true;
                 if (i + 1 < commands.size()) {
@@ -81,7 +84,8 @@ public class GDLInterpreter {
         InterpreterOptions options = new InterpreterOptions()
                 .debugMode(debugMode)
                 .manualRandom(manualRandom)
-                .showTimes(showTimes);
+                .showTimes(showTimes)
+                .withTypes(withTypes);
         
         final Interpreter interpreter = Interpreter.fromGDLFile(gdlFilePath, options);
 

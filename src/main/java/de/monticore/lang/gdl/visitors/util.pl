@@ -19,6 +19,8 @@ gdli_input(X) :- false.
 
 gdli_options(X) :- false.
 
+gdli_with_types() :- false.
+
 % ----------------------------
 % ------- Interpreter --------
 % ----------------------------
@@ -30,6 +32,7 @@ gdli_random_legal(Move) :-
 
 gdli_do_random() :-
     \+ gdli_options(manual_random),
+    gdl_role(value_random),
     gdli_random_legal(Move),
     gdli_do_move(Move).
 gdli_do_random().
