@@ -3,6 +3,7 @@ package presentation.controllers;
 import com.fasterxml.jackson.databind.ObjectMapper;
 import commands.AddOfferCommand;
 import commands.BuyOfferCommand;
+import commands.DeleteOfferCommand;
 import entity.DataRow;
 import entity.Metadata;
 import entity.Policy;
@@ -30,8 +31,7 @@ import static org.hamcrest.collection.IsMapContaining.hasKey;
 import static org.mockito.ArgumentMatchers.any;
 import static org.mockito.BDDMockito.given;
 import static org.mockito.Mockito.verify;
-import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.get;
-import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.post;
+import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.*;
 import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.jsonPath;
 import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.status;
 
@@ -61,7 +61,10 @@ class OfferControllerTest {
 	private ArgumentCaptor<AddOfferCommand> addOfferCommandArgumentCaptor;
 
 	@Captor
-	private ArgumentCaptor<BuyOfferCommand> commandArgumentCaptor;
+	private ArgumentCaptor<BuyOfferCommand> buyOfferCommandArgumentCaptor;
+
+	@Captor
+	private ArgumentCaptor<DeleteOfferCommand> deleteOfferCommandArgumentCaptor;
 
 	@Test
 	void shouldAddOffer() throws Exception {
@@ -111,8 +114,8 @@ class OfferControllerTest {
 						.contentType(MediaType.APPLICATION_JSON))
 				.andExpect(status().isOk());
 
-		verify(buyOfferUseCase).handle(commandArgumentCaptor.capture());
-		assertThat(commandArgumentCaptor.getValue().getOfferId()).isEqualTo(uuid);
+		verify(buyOfferUseCase).handle(buyOfferCommandArgumentCaptor.capture());
+		assertThat(buyOfferCommandArgumentCaptor.getValue().getOfferId()).isEqualTo(uuid);
 	}
 
 	@Test
@@ -155,5 +158,19 @@ class OfferControllerTest {
 				.andExpect(status().isOk())
 				.andExpect(jsonPath("$", hasKey(firstId.toString())))
 				.andExpect(jsonPath("$", hasKey(secondId.toString())));
+	}
+
+	@Test
+	void shouldDeleteOffer() throws Exception {
+		UUID uuid = UUID.randomUUID();
+
+		mvc.perform(delete("/offers/4875c6f3-60be-4fbc-ba8e-4b4e2637846a")
+						.contentType(MediaType.APPLICATION_JSON))
+				.andExpect(status().isOk());
+
+		verify(deleteOfferUseCase).handle(deleteOfferCommandArgumentCaptor.capture());
+
+		assertThat(deleteOfferCommandArgumentCaptor.getValue().getOfferId())
+				.isEqualTo(UUID.fromString("4875c6f3-60be-4fbc-ba8e-4b4e2637846a"));
 	}
 }

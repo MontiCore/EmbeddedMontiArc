@@ -36,9 +36,6 @@ class SpringOfferRepositoryPortAdapterTest {
 	@Autowired
 	private SpringOfferRepository springOfferRepository;
 
-	@Autowired
-	private SpringDatasetRepository springDatasetRepository;
-
 	@AfterEach
 	private void cleanUpEach() {
 		springOfferRepository.deleteAll();
