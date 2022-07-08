@@ -1,9 +1,9 @@
 package de.thesis.provider.backend.services;
 
-import de.thesis.provider.backend.commands.CreateOfferCommand;
+import de.thesis.provider.backend.dto.CreateOfferCommand;
 import de.thesis.provider.backend.httpclient.InsuranceClient;
-import de.thesis.provider.backend.entities.Metadata;
-import de.thesis.provider.backend.entities.Offer;
+import de.thesis.provider.backend.dto.Metadata;
+import de.thesis.provider.backend.dto.Offer;
 import lombok.AllArgsConstructor;
 import org.springframework.stereotype.Component;
 
