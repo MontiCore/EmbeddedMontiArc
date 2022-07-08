@@ -2,8 +2,8 @@
     <servers>
         <server>
             <id>fraunhofer-mydata-control</id>
-            <username>customer.rwth-blanquez</username>
-            <password>SjFNw-wN2V3Z6QFSP</password>
+            <username>${fraunhofer-mydata-control.username}</username>
+            <password>${fraunhofer-mydata-control.password}</password>
         </server>
     </servers>
 </settings>
