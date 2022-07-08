@@ -1,0 +1,23 @@
+(<= (next (field column:?x [1,4]:?y (color:?color figure:?figure))))
+(<= (next (field column:?x [4,8]:?y (color:?color figure:?figure))))
+
+(type figure king)
+(type figure queen)
+(type figure rook)
+(type figure knight)
+(type figure bishop)
+(type figure pawn)
+
+(type color white)
+(type color black)
+
+(type column a)
+(type column b)
+(type column c)
+(type column d)
+(type column e)
+(type column f)
+(type column g)
+(type column h)
+
+(<= (legal ?player (move column:?x [1,8]:?y column:?tx [1,8]:?ty)))
