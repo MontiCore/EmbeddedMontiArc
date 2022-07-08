@@ -1,7 +1,7 @@
 package de.thesis.provider.backend.controllers;
 
-import de.thesis.provider.backend.commands.CreateOfferCommand;
-import de.thesis.provider.backend.entities.Metadata;
+import de.thesis.provider.backend.dto.CreateOfferCommand;
+import de.thesis.provider.backend.dto.Metadata;
 import de.thesis.provider.backend.services.OfferService;
 import lombok.AllArgsConstructor;
 import org.springframework.beans.factory.annotation.Value;

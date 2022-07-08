@@ -1,8 +1,7 @@
 package de.thesis.provider.backend.httpclient;
 
-import de.thesis.provider.backend.entities.Metadata;
-import de.thesis.provider.backend.entities.Offer;
-import de.thesis.provider.backend.httpclient.HttpClient;
+import de.thesis.provider.backend.dto.Metadata;
+import de.thesis.provider.backend.dto.Offer;
 import lombok.AllArgsConstructor;
 import org.springframework.stereotype.Component;
 
