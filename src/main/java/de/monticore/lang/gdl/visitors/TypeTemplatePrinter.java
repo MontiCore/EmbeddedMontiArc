@@ -20,7 +20,6 @@ import de.monticore.lang.gdl._ast.ASTGameRangeType;
 import de.monticore.lang.gdl._ast.ASTGameSees;
 import de.monticore.lang.gdl._ast.ASTGameToken;
 import de.monticore.lang.gdl._ast.ASTGameTuple;
-import de.monticore.lang.gdl._ast.ASTGameType;
 import de.monticore.lang.gdl._ast.ASTGameValue;
 import de.monticore.lang.gdl._ast.ASTGameValueType;
 import de.monticore.lang.gdl._visitor.GDLHandler;
@@ -190,31 +189,19 @@ public class TypeTemplatePrinter extends IndentPrinter implements GDLVisitor2, M
     
     @Override
     public void handle(ASTGameTuple tuple) {
-        if (tuple.isPresentType()) {
-            handleConstantType(tuple, tuple.getType());
-        } else {
-            print("[");
-            printElementsSeparated(tuple.getElementList(), 0, ELEMENT_SEPARATOR, false, n -> n.accept(getTraverser()));
-            print("]");
-        }
+        print("[");
+        printElementsSeparated(tuple.getElementList(), 0, ELEMENT_SEPARATOR, false, n -> n.accept(getTraverser()));
+        print("]");
     }
 
     @Override
     public void handle(ASTGameValue node) {
-        if (!node.isPresentType()) {
-            handleConstantType(node, null);
-        } else {
-            handleConstantType(node, node.getType());
-        }
+        handleConstantType(node);
     }
 
     @Override
     public void handle(ASTGameDigits node) {
-        if (!node.isPresentType()) {
-            handleConstantType(node, null);
-        } else {
-            handleConstantType(node, node.getType());
-        }
+        handleConstantType(node);
     }
 
     @Override
@@ -261,14 +248,8 @@ public class TypeTemplatePrinter extends IndentPrinter implements GDLVisitor2, M
 
     // TYPES
 
-    private void handleConstantType(ASTGameConstruct value, ASTGameType type) {
+    private void handleConstantType(ASTGameConstruct value) {
         print("(constant");
-        print(ELEMENT_SEPARATOR);
-        if (type == null) {
-            print("undefined");
-        } else {
-            type.accept(getTraverser());
-        }
         print(ELEMENT_SEPARATOR);
         handleConstantConstruct(value);
         print(")");

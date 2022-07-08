@@ -3,7 +3,15 @@
 :- style_check(-singleton).
 :- style_check(-discontiguous).
 
-gdl_with_types().
+% ----------------------------
+% -------- Interpreter -------
+% ----------------------------
+
+gdli_with_types().
+
+% ----------------------------
+% ---------- Mapping ---------
+% ----------------------------
 
 gdlt_type(X, Y) :-
     gdl_rule([type, X, Y]).
@@ -12,59 +20,15 @@ gdlt_type(X, Y) :-
 % ------- Template Gen -------
 % ----------------------------
 
-% INIT ONCE
-gdlt_make_templates() :-
-    gdlt_merge_all_templates(state, StateMerged),
-    gdlt_assert_all_templates(state, StateMerged),
-    gdlt_merge_all_templates(action, ActionMerged),
-    gdlt_assert_all_templates(action, ActionMerged).
-
-
-% "PUBLIC"
-gdlt_get_state_index(Value, Index) :-
-    gdlt_template_state_start_index(Template, TIndex),
-    gdlt_value_template_index(Value, Template, VIndex),
-    gdli_add(TIndex, VIndex, Index),
-    !.
-gdlt_get_action_index(Value, Index) :-
-    gdlt_template_action_start_index(Template, TIndex),
-    gdlt_value_template_index(Value, Template, VIndex),
-    gdli_add(TIndex, VIndex, Index),
+gdlt_make_all_templates() :-
+    gdlt_merge_all_templates(state, SMerged),
+    gdlt_merge_all_templates(action, AMerged),
+    gdlt_assert_all_templates(state, SMerged),
+    gdlt_assert_all_templates(action, AMerged),
     !.
 
 
-gdlt_get_state_dimension(Dimension) :-
-    gdlt_all_templates_merged(state, [T | _]),
-    gdlt_template_state_start_index(T, I),
-    gdlt_template_size(T, S),
-    gdli_add(I, S, Dimension),
-    !.
-gdlt_get_state_dimension(Dimension) :-
-    gdlt_all_templates_merged(state, [T]),
-    gdlt_template_size(T, Dimension),
-    !.
-gdlt_get_state_dimension(numpos_0).
-
-
-gdlt_get_action_dimension(Dimension) :-
-    gdlt_all_templates_merged(action, [T | _]),
-    gdlt_template_action_start_index(T, I),
-    gdlt_template_size(T, S),
-    gdli_add(I, S, Dimension),
-    !.
-gdlt_get_action_dimension(Dimension) :-
-    gdlt_all_templates_merged(action, [T]),
-    gdlt_template_size(T, Dimension),
-    !.
-gdlt_get_action_dimension(numpos_0).
-
-
-% "PRIVATE"
-gdlt_all_state_templates(Templates) :-
-    setof(X, gdl_template_state(X), Templates).
-gdlt_all_action_templates(Templates) :-
-    setof(X, gdl_template_action(X), Templates).
-
+% -- Merge all templates
 
 :- dynamic(gdlt_all_templates_merged/2).
 gdlt_all_templates_merged(state, []) :- false.
@@ -73,12 +37,16 @@ gdlt_all_templates_merged(action, []) :- false.
 gdlt_assert_all_templates(X, Y) :- 
     assertz(gdlt_all_templates_merged(X, Y)).
 
-gdlt_merge_all_templates(state, Result) :-
-    gdlt_all_state_templates([T | Qs]),
-    gdlt_merge(T, Qs, Result).
-gdlt_merge_all_templates(action, Result) :-
-    gdlt_all_action_templates([T | Qs]),
-    gdlt_merge(T, Qs, Result).
+gdlt_merge_all_templates(Scope, Result) :-
+    gdlt_all_templates(Scope, [T | Qs]),
+    gdlt_merge(T, Qs, Result),
+    !.
+gdlt_merge_all_templates(_, []).
+
+gdlt_all_templates(state, Templates) :-
+    setof(X, gdl_template_state(X), Templates).
+gdlt_all_templates(action, Templates) :-
+    setof(X, gdl_template_action(X), Templates).
 
 gdlt_merge(T, [], [T]) :- !.
 gdlt_merge(T, [Q], [M]) :-
@@ -106,75 +74,148 @@ gdlt_merge_templates([X | Xs], [Y | Ys], [Merged1 | Merged2]) :-
     gdlt_merge_templates(Xs, Ys, Merged2),
     !.
 
-gdlt_template_state_start_index(Template, TIndex) :-
-    gdlt_all_templates_merged(state, TList),
-    nth0(_, TList, Template),
-    gdlt_template_start_index(Template, TList, TIndex).
+% -- Dimensions
+gdlt_get_dimension(X, Dimension) :-
+    gdlt_all_templates_merged(X, Templates),
+    gdlt_get_templates_dimension(Templates, Dimension).
 
-gdlt_template_action_start_index(Template, TIndex) :-
-    gdlt_all_templates_merged(action, TList),
-    nth0(_, TList, Template),
-    gdlt_template_start_index(Template, TList, TIndex).
+% For templates
+gdlt_get_templates_dimension([Type | Types], Dimension) :- 
+    gdlt_get_type_dimension(Type, TDim),
+    gdlt_get_type_dimension(Types, TDims),
+    gdli_add(TDim, TDims, Dimension),
+    !.
+gdlt_get_templates_dimension([Type], Dimension) :- 
+    gdlt_get_type_dimension(Type, Dimension).
 
-gdlt_template_start_index(T, [T], numpos_0) :- !.
-gdlt_template_start_index(T, [T | _], numpos_0) :- !.
-gdlt_template_start_index(T, [Tx | Ts], Size) :-
-    gdlt_template_size(Tx, XSize),
-    gdlt_template_start_index(T, Ts, SSize),
-    gdli_add(XSize, SSize, Size).
+% For type
+gdlt_get_type_dimension([Type | Types], Dimension) :-
+    gdlt_get_type_dimension(Type, D),
+    gdlt_get_type_dimension(Types, Ds),
+    gdli_mult(D, Ds, Dimension),
+    !.
+gdlt_get_type_dimension([Type], Dimension) :-
+    gdlt_get_type_dimension(Type, Dimension),
+    !.
+gdlt_get_type_dimension(Type, Dimension) :-
+    setof(X, gdlt_type(Type, X), All),
+    length(All, NDimension),
+    gdli_number_to_atom(NDimension, Dimension),
+    !.
+gdlt_get_type_dimension((constant, _), numpos_1) :- !.
+gdlt_get_type_dimension((range, Start, End), Dimension) :-
+    gdli_sub(End, Start, Sub),
+    gdli_add(Sub, numpos_1, Dimension).
 
+% -- Index mapping
+gdlt_all_index_value_pairs(Scope, AllMaps) :-
+    setof([Index, Value], gdlt_index_map(Scope, Value, Index), AllMaps).
 
-gdlt_value_template_index(Value, Template, VIndex) :-
-    gdlt_type_index(Template, Value, VIndex),
+gdlt_index_map(Scope, Value, Index) :-
+    nonvar(Value),
+    gdlt_value_index(Scope, Value, Index),
+    !.
+gdlt_index_map(Scope, Value, Index) :-
+    nonvar(Index),
+    gdlt_index_value(Scope, Index, Value),
+    !.
+gdlt_index_map(Scope, Value, Index) :-
+    var(Value),
+    var(Index),
+    gdlt_all_templates_merged(Scope, Templates),
+    gdlt_get_templates_dimension(Templates, Dimension),
+    gdli_sub(Dimension, numpos_1, DSub),
+    gdli_between(numpos_0, DSub, Index),
+    gdlt_index_value(Scope, Index, Value).
+
+% Index is variable
+% Map Value to Index
+gdlt_value_index(Scope, Value, Index) :-
+    gdlt_all_templates_merged(Scope, Templates),
+    nth0(_, Templates, Template),
+    gdlt_value_template_index(Value, Template, ValueIndex),
+    gdlt_template_start_index(Scope, Template, TypeIndex),
+    gdli_add(TypeIndex, ValueIndex, Index).
+
+gdlt_template_start_index(Scope, Template, numpos_0) :-
+    gdlt_all_templates_merged(Scope, Templates),
+    append([Template], _, Templates),
+    !.
+gdlt_template_start_index(Scope, Template, TIndex) :-
+    gdlt_all_templates_merged(Scope, Templates),
+    append([Template | Ts], _, Templates),
+    gdlt_get_templates_dimension(Ts, TIndex),
     !.
 
+gdlt_value_template_index(Value, Type, Index) :-
+    var(Index),
+    setof(X, gdlt_type(Type, X), Values),
+    nth0(NIndex, Values, Value),
+    gdli_number_to_atom(NIndex, Index),
+    !.
+gdlt_value_template_index(Value, Type, Index) :-
+    nonvar(Index),
+    gdli_atom_to_number(Index, NIndex),
+    setof(X, gdlt_type(Type, X), Values),
+    nth0(NIndex, Values, Value),
+    !.
+gdlt_value_template_index(Value, (constant, Value), numpos_0) :- !.
+gdlt_value_template_index(Value, (range, Start, End), Index) :-
+    (gdli_greater(Value, Start); Value = Start),
+    (gdli_less(Value, End); Value = End),
+    gdli_sub(Value, Start, Index),
+    !.
 gdlt_value_template_index([Value], [Template], VIndex) :-
     gdlt_value_template_index(Value, Template, VIndex),
     !.
 gdlt_value_template_index([V | Vs], [T | Ts], VIndex) :-
     gdlt_value_template_index(V, T, SelfIndex),
     gdlt_value_template_index(Vs, Ts, RightIndex),
-    gdlt_template_size(Ts, RightSize),
-    gdli_mult(SelfIndex, RightSize, X1),
-    gdli_add(X1, RightIndex, VIndex),
+    gdlt_get_type_dimension(Ts, RightSize),
+    gdli_mult(SelfIndex, RightSize, Prod),
+    gdli_add(Prod, RightIndex, VIndex),
     !.
 
 
-gdlt_type_index((range, Start, End), Value, Index) :-
-    gdli_number(Value),
+% Value is variable
+% Map value to Index
+gdlt_index_value(Scope, Index, Value) :-
+    gdlt_all_templates_merged(Scope, Templates),
+    nth0(_, Templates, Template),
+    gdlt_template_start_index(Scope, Template, TypeIndex),
+    gdli_sub(Index, TypeIndex, ValueIndex),
+    gdlt_template_index_value(Template, ValueIndex, Value).
+
+
+gdlt_template_index_value(Type, Index, Value) :-
+    var(Index),
+    setof(X, gdlt_type(Type, X), Values),
+    nth0(NIndex, Values, Value),
+    gdli_number_to_atom(NIndex, Index),
+    !.
+gdlt_template_index_value(Type, Index, Value) :-
+    nonvar(Index),
+    gdli_atom_to_number(Index, NIndex),
+    setof(X, gdlt_type(Type, X), Values),
+    nth0(NIndex, Values, Value),
+    !.
+gdlt_template_index_value((constant, Value), numpos_0, Value) :- !.
+gdlt_template_index_value((range, Start, End), Index, Value) :-
+    gdli_add(Start, Index, Value),
     (gdli_greater(Value, Start); Value = Start),
     (gdli_less(Value, End); Value = End),
-    gdli_sub(Value, Start, Index),
     !.
-gdlt_type_index((constant, undefined, Value), Value, numpos_0) :- !.
-gdlt_type_index((constant, Type, Value), Value, numpos_0) :- 
-    gdlt_type(Type, Value),
+gdlt_template_index_value([Template], Index, [Value]) :-
+    gdlt_template_index_value(Template, Index, Value),
     !.
-
-gdlt_type_index(Type, Value, Index) :-
-    setof(X, gdlt_type(Type, X), All),
-    nth0(IndexA, All, Value),
-    gdli_number_to_atom(IndexA, Index),
-    !.
-
-gdlt_template_size((range, Start, End), Size) :-
-    gdli_sub(End, Start, X1),
-    gdli_add(X1, numpos_1, Size),
-    !.
-gdlt_template_size((constant, _, _), numpos_1) :-
-    !.
-gdlt_template_size(Template, Size) :-
-    setof(X, gdlt_type(Template, X), All),
-    length(All, SizeA),
-    gdli_number_to_atom(SizeA, Size),
-    !.
-
-gdlt_template_size([Template], Size) :-
-    gdlt_template_size(Template, Size),
-    !.
-
-gdlt_template_size([T | Ts], Size) :-
-    gdlt_template_size(T, S1),
-    gdlt_template_size(Ts, S2),
-    gdli_mult(S1, S2, Size),
+gdlt_template_index_value([T | Ts], Index, [V | Vs]) :-
+    gdlt_get_type_dimension(Ts, RightSize),
+    gdli_atom_to_number(Index, NIndex),
+    gdli_atom_to_number(RightSize, NRightSize),
+    NSelfIndex is floor(NIndex/NRightSize),
+    gdli_number_to_atom(NSelfIndex, SelfIndex),
+    gdlt_template_index_value(T, SelfIndex, V),
+    gdli_mult(SelfIndex, RightSize, Prod),
+    gdli_sub(Index, Prod, RightIndex),
+    gdlt_template_index_value(Ts, RightIndex, Vs),
     !.
