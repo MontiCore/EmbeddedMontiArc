@@ -15,9 +15,9 @@ public class PlatooningRewardFunctionProperties extends RewardFunctionProperties
   public float velocity_max = 40;
   public float velocity_desired = 20;
 
-  public Optional<StaticCollisionsRewardFunctionProperties> static_collision_reward_properties;
-  public Optional<VehicleCollisionsRewardFunctionProperties> vehicle_collision_reward_properties;
-  public Optional<TrajectoryRewardFunctionProperties> trajectory_reward_properties;
+  public Optional<StaticCollisionsRewardFunctionProperties> static_collision_reward_properties = Optional.empty();
+  public Optional<VehicleCollisionsRewardFunctionProperties> vehicle_collision_reward_properties = Optional.empty();
+  public Optional<TrajectoryRewardFunctionProperties> trajectory_reward_properties = Optional.empty();
 
   @Override
   public RewardFunction build(Vehicle[] vehicles, Duration tickDuration) {
@@ -25,7 +25,7 @@ public class PlatooningRewardFunctionProperties extends RewardFunctionProperties
     rewardFunctionsArray[0] = new PlatooningRewardFunction(vehicles, tickDuration, reward, gap_max, gap_desired, velocity_max, velocity_desired);
 
     if (static_collision_reward_properties.isPresent()) {
-      rewardFunctionsArray[0] = static_collision_reward_properties.get().build(vehicles, tickDuration);
+      rewardFunctionsArray[1] = static_collision_reward_properties.get().build(vehicles, tickDuration);
     }
     else {
       // default scrp
@@ -35,7 +35,7 @@ public class PlatooningRewardFunctionProperties extends RewardFunctionProperties
     }
 
     if (vehicle_collision_reward_properties.isPresent()) {
-      rewardFunctionsArray[0] = vehicle_collision_reward_properties.get().build(vehicles, tickDuration);
+      rewardFunctionsArray[2] = vehicle_collision_reward_properties.get().build(vehicles, tickDuration);
     }
     else {
       // default scrp
@@ -45,7 +45,7 @@ public class PlatooningRewardFunctionProperties extends RewardFunctionProperties
     }
 
     if (trajectory_reward_properties.isPresent()) {
-      rewardFunctionsArray[0] = trajectory_reward_properties.get().build(vehicles, tickDuration);
+      rewardFunctionsArray[3] = trajectory_reward_properties.get().build(vehicles, tickDuration);
     }
     else {
       // default scrp

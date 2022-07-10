@@ -44,12 +44,12 @@ public class SpeedControlRewardFunction extends RewardFunction {
       reward += 1;
 
     // control effort (acceleration)
-    double current_acceleration = (velocity - past_velocities[vehicle_index][0]) / tickDuration.getSeconds();
+    double current_acceleration = (velocity - past_velocities[vehicle_index][0]) / (tickDuration.getNano() / (double) (10^9));
     reward -= Math.pow(current_acceleration, 2);
 
     // derivative of control effort
-    double previous_acceleration = (past_velocities[vehicle_index][0] - past_velocities[vehicle_index][1]) / tickDuration.getSeconds();
-    double derivative = (current_acceleration - previous_acceleration) / tickDuration.getSeconds();
+    double previous_acceleration = (past_velocities[vehicle_index][1] - past_velocities[vehicle_index][0]) / (tickDuration.getNano() / (double) (10^9));
+    double derivative = (current_acceleration - previous_acceleration) / (tickDuration.getNano() / (double) (10^9));
     reward -= 0.05 * Math.pow(derivative, 2);
 
     // update past velocities

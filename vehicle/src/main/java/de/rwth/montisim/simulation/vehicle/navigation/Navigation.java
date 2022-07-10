@@ -312,7 +312,9 @@ public class Navigation extends EEComponent {
 
     public Optional<Double> getRemainingPathLength() {
       Optional<Integer> index_optional = getCurrentPathIndex();
-      if(!index_optional.isPresent()) return Optional.empty();
+      if(!index_optional.isPresent()) {
+        return Optional.empty();
+      }
       double distance = 0;
       Path p = currentPath.get();
       for(int i = index_optional.get(); i < p.getLength() - 1; i++) {

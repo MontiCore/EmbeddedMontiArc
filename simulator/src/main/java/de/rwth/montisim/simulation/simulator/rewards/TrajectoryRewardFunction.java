@@ -5,6 +5,7 @@ import de.rwth.montisim.commons.utils.Vec2;
 import de.rwth.montisim.simulation.vehicle.Vehicle;
 
 import java.time.Duration;
+import java.util.Optional;
 
 /**
  * Reward Function that evaluates how well a vehicle follows its trajectory.
@@ -15,7 +16,9 @@ public class TrajectoryRewardFunction extends RewardFunction {
 
   private final float distance_max;
 
-  private double[] total_path_distance;
+  private final double[] total_path_distance;
+
+  private final double[] old_remaining_path_distance_score;
 
   /**
    * Initializes the Trajectory Reward Function.
@@ -30,8 +33,16 @@ public class TrajectoryRewardFunction extends RewardFunction {
     this.TRAJECTORY_REWARD = trajectory_reward;
     this.distance_max = distance_max;
     this.total_path_distance = new double[this.NUMBER_OF_VEHICLES];
-    for(int i = 0; i < this.NUMBER_OF_VEHICLES; i++) {
-      this.total_path_distance[i] = this.navigations[i].getRemainingPathLength().get(); // if not present something went horribly wrong
+    for (int i = 0; i < this.NUMBER_OF_VEHICLES; i++) {
+      Optional<Double> total_dist = this.navigations[i].getRemainingPathLength();
+      if (!total_dist.isPresent()) {
+        new Exception("Something went horribly wrong!").printStackTrace();
+      }
+      this.total_path_distance[i] = total_dist.get(); // if not present something went horribly wrong
+    }
+    this.old_remaining_path_distance_score = new double[this.NUMBER_OF_VEHICLES];
+    for (int i = 0; i < this.NUMBER_OF_VEHICLES; i++) {
+      this.old_remaining_path_distance_score[i] = 0;
     }
   }
 
@@ -64,7 +75,11 @@ public class TrajectoryRewardFunction extends RewardFunction {
     reward += -(this.TRAJECTORY_REWARD / this.distance_max) * (float) distance + this.TRAJECTORY_REWARD;
 
     // Progress on the Path
-    reward += this.TRAJECTORY_REWARD * (1 - (this.navigations[vehicle_index].getRemainingPathLength().get() / total_path_distance[vehicle_index]));
+    Optional<Double> remaining_length = this.navigations[vehicle_index].getRemainingPathLength();
+    if (remaining_length.isPresent()) { // So, apparently, sometimes, some data in Navigation just isn't there. Just reward the old score...
+      old_remaining_path_distance_score[vehicle_index] = (1 - (remaining_length.get() / total_path_distance[vehicle_index]));
+    }
+    reward += this.TRAJECTORY_REWARD * old_remaining_path_distance_score[vehicle_index];
 
     return reward;
   }

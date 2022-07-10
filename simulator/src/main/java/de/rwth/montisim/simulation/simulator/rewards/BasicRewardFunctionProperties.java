@@ -9,10 +9,10 @@ import java.util.Optional;
 @Typed("basic_reward")
 public class BasicRewardFunctionProperties extends RewardFunctionProperties{
 
-  public Optional<StaticCollisionsRewardFunctionProperties> static_collision_reward_properties;
-  public Optional<VehicleCollisionsRewardFunctionProperties> vehicle_collision_reward_properties;
-  public Optional<TrajectoryRewardFunctionProperties> trajectory_reward_properties;
-  public Optional<SpeedControlRewardFunctionProperties> speed_control_reward_properties;
+  public Optional<StaticCollisionsRewardFunctionProperties> static_collision_reward_properties = Optional.empty();
+  public Optional<VehicleCollisionsRewardFunctionProperties> vehicle_collision_reward_properties = Optional.empty();
+  public Optional<TrajectoryRewardFunctionProperties> trajectory_reward_properties = Optional.empty();
+  public Optional<SpeedControlRewardFunctionProperties> speed_control_reward_properties = Optional.empty();
 
   @Override
   public RewardFunction build(Vehicle[] vehicles, Duration tickDuration) {
@@ -25,32 +25,32 @@ public class BasicRewardFunctionProperties extends RewardFunctionProperties{
       // default scrp
       StaticCollisionsRewardFunctionProperties scrp = new StaticCollisionsRewardFunctionProperties();
       scrp.reward = -500;
-      rewardFunctionsArray[1] = scrp.build(vehicles, tickDuration);
+      rewardFunctionsArray[0] = scrp.build(vehicles, tickDuration);
     }
 
     if (vehicle_collision_reward_properties.isPresent()) {
-      rewardFunctionsArray[0] = vehicle_collision_reward_properties.get().build(vehicles, tickDuration);
+      rewardFunctionsArray[1] = vehicle_collision_reward_properties.get().build(vehicles, tickDuration);
     }
     else {
       // default scrp
       VehicleCollisionsRewardFunctionProperties vcrp = new VehicleCollisionsRewardFunctionProperties();
       vcrp.reward = -500;
-      rewardFunctionsArray[2] = vcrp.build(vehicles, tickDuration);
+      rewardFunctionsArray[1] = vcrp.build(vehicles, tickDuration);
     }
 
     if (trajectory_reward_properties.isPresent()) {
-      rewardFunctionsArray[0] = trajectory_reward_properties.get().build(vehicles, tickDuration);
+      rewardFunctionsArray[2] = trajectory_reward_properties.get().build(vehicles, tickDuration);
     }
     else {
       // default scrp
       TrajectoryRewardFunctionProperties trp = new TrajectoryRewardFunctionProperties();
       trp.reward = 1;
       trp.distance_max = 5;
-      rewardFunctionsArray[3] = trp.build(vehicles, tickDuration);
+      rewardFunctionsArray[2] = trp.build(vehicles, tickDuration);
     }
 
     if (speed_control_reward_properties.isPresent()) {
-      rewardFunctionsArray[0] = speed_control_reward_properties.get().build(vehicles, tickDuration);
+      rewardFunctionsArray[3] = speed_control_reward_properties.get().build(vehicles, tickDuration);
     }
     else {
       // default scrp
