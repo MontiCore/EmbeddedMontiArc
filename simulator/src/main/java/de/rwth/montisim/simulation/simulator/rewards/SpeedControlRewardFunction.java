@@ -37,11 +37,15 @@ public class SpeedControlRewardFunction extends RewardFunction {
     float reward = 0;
     // punish velocity difference
     double velocity = this.velocities[vehicle_index];
-    reward -= 0.1 * Math.pow((1 / this.velocity_max) * (this.velocity_desired - velocity), 2);
+    reward -= Math.pow((1 / this.velocity_max) * (this.velocity_desired - velocity), 2);
 
     // reward below max velocity
     if (this.velocity_max >= velocity)
-      reward += 1;
+      reward += 0.1;
+
+    // don't let the vehicle stant still
+    if (velocity <= 0.001)
+      reward -= 10;
 
     // control effort (acceleration)
     double current_acceleration = (velocity - past_velocities[vehicle_index][0]) / (tickDuration.getNano() / (double) (10^9));

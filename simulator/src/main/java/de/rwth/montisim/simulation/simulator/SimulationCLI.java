@@ -45,6 +45,7 @@ public class SimulationCLI {
             config.tick_duration = strategy.randomizeTickDuration(config.tick_duration);
             config.modules = strategy.randomizeModules(config.modules);
             config.preprocessor = strategy.randomizePreprocessor(config.preprocessor);
+            config.rewardFunction = strategy.randomizeRewardFunction(config.rewardFunction);
         }
         File mapPath = Paths.get(mapsFolder, config.map_name + ".osm").toFile();
         OsmMap map = new OsmMap(config.map_name, mapPath);

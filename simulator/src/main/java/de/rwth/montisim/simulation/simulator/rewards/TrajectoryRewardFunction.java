@@ -76,10 +76,16 @@ public class TrajectoryRewardFunction extends RewardFunction {
 
     // Progress on the Path
     Optional<Double> remaining_length = this.navigations[vehicle_index].getRemainingPathLength();
+    double old_score = old_remaining_path_distance_score[vehicle_index];
+    double new_score = old_score;
     if (remaining_length.isPresent()) { // So, apparently, sometimes, some data in Navigation just isn't there. Just reward the old score...
-      old_remaining_path_distance_score[vehicle_index] = (1 - (remaining_length.get() / total_path_distance[vehicle_index]));
+      new_score = (1 - (remaining_length.get() / total_path_distance[vehicle_index]));
+      old_remaining_path_distance_score[vehicle_index] = new_score;
     }
+    // reward the total progress
     reward += this.TRAJECTORY_REWARD * old_remaining_path_distance_score[vehicle_index];
+    // reward the change in progress
+    reward += 10 * this.TRAJECTORY_REWARD * (new_score - old_score);
 
     return reward;
   }

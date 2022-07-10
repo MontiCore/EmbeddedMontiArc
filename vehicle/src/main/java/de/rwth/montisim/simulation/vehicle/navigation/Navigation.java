@@ -312,13 +312,13 @@ public class Navigation extends EEComponent {
 
     public Optional<Double> getRemainingPathLength() {
       Optional<Integer> index_optional = getCurrentPathIndex();
-      if(!index_optional.isPresent()) {
+      if (!index_optional.isPresent()) {
         return Optional.empty();
       }
-      double distance = 0;
       Path p = currentPath.get();
-      for(int i = index_optional.get(); i < p.getLength() - 1; i++) {
-        distance += (new Vec2(p.trajectoryX[i], p.trajectoryY[i])).distance(p.trajectoryX[i+1], p.trajectoryY[i+1]);
+      double distance = currentPos.get().distance(p.trajectoryX[index_optional.get()], p.trajectoryY[index_optional.get()]);
+      for (int i = index_optional.get(); i < p.getLength() - 1; i++) {
+        distance += (new Vec2(p.trajectoryX[i], p.trajectoryY[i])).distance(p.trajectoryX[i + 1], p.trajectoryY[i + 1]);
       }
       return Optional.of(distance);
     }
