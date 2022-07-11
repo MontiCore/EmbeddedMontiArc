@@ -1,9 +1,7 @@
 package de.rwth.montisim.simulation.simulator;
 
-import de.rwth.montisim.commons.map.Path;
 import de.rwth.montisim.commons.map.Pathfinding;
 import de.rwth.montisim.commons.simulation.TimeUpdate;
-import de.rwth.montisim.commons.utils.IPM;
 import de.rwth.montisim.commons.utils.Vec2;
 import de.rwth.montisim.simulation.commons.TaskStatus;
 import de.rwth.montisim.simulation.commons.util.CollisionLogWriter;
@@ -21,13 +19,10 @@ import de.rwth.montisim.simulation.simulator.rewards.DefaultRewardFunctionProper
 import de.rwth.montisim.simulation.simulator.rewards.RewardFunction;
 import de.rwth.montisim.simulation.simulator.visualization.rl.RLVisualizer;
 import de.rwth.montisim.simulation.vehicle.Vehicle;
-import de.rwth.montisim.simulation.vehicle.VehicleProperties;
 import de.rwth.montisim.simulation.vehicle.navigation.Navigation;
 import de.rwth.montisim.simulation.vehicle.physicalvalues.TrueCompass;
 import de.rwth.montisim.simulation.vehicle.physicalvalues.TruePosition;
 import de.rwth.montisim.simulation.vehicle.physicalvalues.TrueVelocity;
-import de.rwth.montisim.simulation.vehicle.task.TaskProperties;
-import de.rwth.montisim.simulation.vehicle.task.path.PathGoalProperties;
 
 import java.time.Instant;
 import java.util.*;
@@ -80,6 +75,7 @@ public class RLSimulationHandler {
   private boolean in_reset = false;
   private boolean done = true;
   private int episodeCounter = 0;
+  private int stepCounter = 0;
 
   private float[][] vehicleStates;
   private int stateLength;
@@ -216,6 +212,7 @@ public class RLSimulationHandler {
   public Result reset() {
     System.out.println("RESETTING");
     ++this.episodeCounter;
+    this.stepCounter = 0;
     return this.setup();
   }
 
@@ -336,9 +333,8 @@ public class RLSimulationHandler {
     return new Result(init_reward, simState, simTermination);
   }
 
-  int step = 0;
   private Result step(float[] action) {
-    step++;
+    stepCounter++;
     //self-play and training mode
     if (distributed && PLAYMODE == false && !miniStep) {
       int listCounter = 0; //makes sure that right action out of the decentralizedActionsList is selected
@@ -401,13 +397,13 @@ public class RLSimulationHandler {
     float step_reward;
 
     if (!distributed) {
-      step_reward = rewardFunction.getReward(step);
+      step_reward = rewardFunction.getReward(stepCounter);
     }
     else if (miniStep) {
-      step_reward = rewardFunction.getRewardForVehicle(activeVehicle, step);
+      step_reward = rewardFunction.getRewardForVehicle(activeVehicle, stepCounter);
     }
     else {
-      step_reward = rewardFunction.getRewardForVehicle(trainedVehicle, step); //calculate reward only for trained vehicle in self-play mode
+      step_reward = rewardFunction.getRewardForVehicle(trainedVehicle, stepCounter); //calculate reward only for trained vehicle in self-play mode
     }
 
     boolean simTermination = this.getSimTermination();
