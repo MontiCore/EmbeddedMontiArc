@@ -141,9 +141,12 @@ In addition, it also rewards the distance of a vehicle to its preceding vehicle 
 ```json
 "type": "sum_reward"
 ```
-
-> TODO
+This reward functions returns a weighted sum of other reward functions.
 
 #### Properties
-> TODO
+
+| Property        | Type       | Default Value           | Short Description                    | Usage                                       |
+|-----------------|------------|-------------------------|--------------------------------------|---------------------------------------------|
+| rewardFunctions | `object[]` | `{}`                    | The reward functions                 | `"rewardFunctions": [/*reward functions*/]` | 
+| rewardWeights   | `float[]`  | `1.0` for each function | The weights for each reward function | `"rewardWeights": [/*floats*/]`             | 
 

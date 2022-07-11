@@ -18,6 +18,8 @@ public class SumRewardFunctionProperties extends RewardFunctionProperties {
    */
   public Vector<RewardFunctionProperties> rewardFunctions = new Vector<>();
 
+  public Vector<Float> rewardWeights = new Vector<>();
+
   @Override
   public RewardFunction build(Vehicle[] vehicles, Duration tickDuration) {
     RewardFunction[] rewardFunctionsArray = new RewardFunction[rewardFunctions.size()];
