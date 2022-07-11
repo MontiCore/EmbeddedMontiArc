@@ -35,10 +35,10 @@ public class SequenceRewardFunction extends RewardFunction {
   }
 
   @Override
-  public float getRewardForVehicle(int vehicle_index) {
+  public float getRewardForVehicle(int vehicle_index, int step) {
     float reward = 0;
     for (int i = 0; i < components.length; i++) {
-      reward += components[i].getRewardForVehicle(vehicle_index);
+      reward += components[i].getRewardForVehicle(vehicle_index, step);
     }
     return reward;
   }

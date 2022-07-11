@@ -323,7 +323,7 @@ public class RLSimulationHandler {
 
     rewardFunction = config.rewardFunction.map(props -> props.build(vehiclesArray, config.tick_duration)).orElse(new DefaultRewardFunctionProperties().build(vehiclesArray, config.tick_duration));
 
-    float init_reward = rewardFunction.getReward();
+    float init_reward = rewardFunction.getReward(0);
     boolean simTermination = this.getSimTermination();
 
     //check if all vehicles found a path, if not, restart simulation
@@ -336,7 +336,9 @@ public class RLSimulationHandler {
     return new Result(init_reward, simState, simTermination);
   }
 
+  int step = 0;
   private Result step(float[] action) {
+    step++;
     //self-play and training mode
     if (distributed && PLAYMODE == false && !miniStep) {
       int listCounter = 0; //makes sure that right action out of the decentralizedActionsList is selected
@@ -399,13 +401,13 @@ public class RLSimulationHandler {
     float step_reward;
 
     if (!distributed) {
-      step_reward = rewardFunction.getReward();
+      step_reward = rewardFunction.getReward(step);
     }
     else if (miniStep) {
-      step_reward = rewardFunction.getRewardForVehicle(activeVehicle);
+      step_reward = rewardFunction.getRewardForVehicle(activeVehicle, step);
     }
     else {
-      step_reward = rewardFunction.getRewardForVehicle(trainedVehicle); //calculate reward only for trained vehicle in self-play mode
+      step_reward = rewardFunction.getRewardForVehicle(trainedVehicle, step); //calculate reward only for trained vehicle in self-play mode
     }
 
     boolean simTermination = this.getSimTermination();

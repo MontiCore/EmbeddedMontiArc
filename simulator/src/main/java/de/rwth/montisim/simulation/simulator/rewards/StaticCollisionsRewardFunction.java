@@ -24,7 +24,7 @@ public class StaticCollisionsRewardFunction extends RewardFunction {
   }
 
   @Override
-  public float getRewardForVehicle(int vehicle_index) {
+  public float getRewardForVehicle(int vehicle_index, int step) {
     int numberOfCollisions = this.vehicles[vehicle_index].getStaticCollisions().size();
     return numberOfCollisions * STATIC_COLLISION_REWARD;
   }

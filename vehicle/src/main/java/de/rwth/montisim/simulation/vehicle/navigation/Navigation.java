@@ -316,8 +316,9 @@ public class Navigation extends EEComponent {
         return Optional.empty();
       }
       Path p = currentPath.get();
-      double distance = currentPos.get().distance(p.trajectoryX[index_optional.get()], p.trajectoryY[index_optional.get()]);
-      for (int i = index_optional.get(); i < p.getLength() - 1; i++) {
+      int index = index_optional.get();
+      double distance = currentPos.get().distance(p.trajectoryX[index], p.trajectoryY[index]);
+      for (int i = index; i < p.getLength() - 1; i++) {
         distance += (new Vec2(p.trajectoryX[i], p.trajectoryY[i])).distance(p.trajectoryX[i + 1], p.trajectoryY[i + 1]);
       }
       return Optional.of(distance);

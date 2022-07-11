@@ -12,7 +12,9 @@ import java.util.Optional;
  */
 public class TrajectoryRewardFunction extends RewardFunction {
 
-  private final float TRAJECTORY_REWARD;
+  private final float TRAJECTORY_FOLLOWING_REWARD;
+  private final float TOTAL_PATH_PROGRESS_SCALING;
+  private final float PATH_PROGRESS_DERIVATIVE_SCALING;
 
   private final float distance_max;
 
@@ -25,12 +27,16 @@ public class TrajectoryRewardFunction extends RewardFunction {
    *
    * @param vehicles          Vehicle[] containing additional data about each active vehicle.
    * @param tickDuration      Duration between two Updates of the Simulator.
-   * @param trajectory_reward Scaled reward.
+   * @param TRAJECTORY_FOLLOWING_REWARD Total reward given to a vehicle exactly following the trajectory.
+   * @param TOTAL_PATH_PROGRESS_SCALING Scaled reward given to the total progress on the path.
+   * @param PATH_PROGRESS_DERIVATIVE_SCALING Scaled reward given to the change in progress on the path.
    * @param distance_max      Maximum allowed distance to the next trajectory point.
    */
-  public TrajectoryRewardFunction(Vehicle[] vehicles, Duration tickDuration, float trajectory_reward, float distance_max) {
+  public TrajectoryRewardFunction(Vehicle[] vehicles, Duration tickDuration, float TRAJECTORY_FOLLOWING_REWARD, float TOTAL_PATH_PROGRESS_SCALING, float PATH_PROGRESS_DERIVATIVE_SCALING, float distance_max) {
     super(vehicles, tickDuration);
-    this.TRAJECTORY_REWARD = trajectory_reward;
+    this.TRAJECTORY_FOLLOWING_REWARD = TRAJECTORY_FOLLOWING_REWARD;
+    this.TOTAL_PATH_PROGRESS_SCALING = TOTAL_PATH_PROGRESS_SCALING;
+    this.PATH_PROGRESS_DERIVATIVE_SCALING = PATH_PROGRESS_DERIVATIVE_SCALING;
     this.distance_max = distance_max;
     this.total_path_distance = new double[this.NUMBER_OF_VEHICLES];
     for (int i = 0; i < this.NUMBER_OF_VEHICLES; i++) {
@@ -47,7 +53,7 @@ public class TrajectoryRewardFunction extends RewardFunction {
   }
 
   @Override
-  public float getRewardForVehicle(int vehicle_index) {
+  public float getRewardForVehicle(int vehicle_index, int step) {
     Vec2 vehicle_position = this.positions[vehicle_index];
     Vec2[] vehicle_trajectory = this.navigations[vehicle_index].getCurrentTraj();
 
@@ -72,7 +78,7 @@ public class TrajectoryRewardFunction extends RewardFunction {
         distance = distanceToSeg;
       }
     }
-    reward += -(this.TRAJECTORY_REWARD / this.distance_max) * (float) distance + this.TRAJECTORY_REWARD;
+    reward += -(this.TRAJECTORY_FOLLOWING_REWARD / this.distance_max) * (float) distance + this.TRAJECTORY_FOLLOWING_REWARD;
 
     // Progress on the Path
     Optional<Double> remaining_length = this.navigations[vehicle_index].getRemainingPathLength();
@@ -83,9 +89,9 @@ public class TrajectoryRewardFunction extends RewardFunction {
       old_remaining_path_distance_score[vehicle_index] = new_score;
     }
     // reward the total progress
-    reward += this.TRAJECTORY_REWARD * old_remaining_path_distance_score[vehicle_index];
+    reward += this.TOTAL_PATH_PROGRESS_SCALING * old_remaining_path_distance_score[vehicle_index];
     // reward the change in progress
-    reward += 10 * this.TRAJECTORY_REWARD * (new_score - old_score);
+    reward += this.PATH_PROGRESS_DERIVATIVE_SCALING * (new_score - old_score);
 
     return reward;
   }

@@ -47,7 +47,7 @@ public class PlatooningRewardFunction extends RewardFunction {
   }
 
   @Override
-  public float getRewardForVehicle(int vehicle_index) {
+  public float getRewardForVehicle(int vehicle_index, int step) {
     float reward = 0;
 
     Optional<Integer> preceding_index_optional = getPrecedingVehicleIndex(vehicle_index);

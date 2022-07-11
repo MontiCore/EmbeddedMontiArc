@@ -8,11 +8,13 @@ import java.time.Duration;
 @Typed("trajectory_reward")
 public class TrajectoryRewardFunctionProperties extends RewardFunctionProperties {
 
-  float reward = 100;
+  public float TRAJECTORY_FOLLOWING_REWARD = 1;
+  public float TOTAL_PATH_PROGRESS_SCALING = 10;
+  public float PATH_PROGRESS_DERIVATIVE_SCALING = 100;
   float distance_max = 5;
 
   @Override
   public RewardFunction build(Vehicle[] vehicles, Duration tickDuration) {
-    return new TrajectoryRewardFunction(vehicles, tickDuration, reward, distance_max);
+    return new TrajectoryRewardFunction(vehicles, tickDuration, TRAJECTORY_FOLLOWING_REWARD, TOTAL_PATH_PROGRESS_SCALING, PATH_PROGRESS_DERIVATIVE_SCALING, distance_max);
   }
 }

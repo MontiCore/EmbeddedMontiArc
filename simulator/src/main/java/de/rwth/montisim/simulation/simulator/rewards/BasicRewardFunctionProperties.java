@@ -44,7 +44,6 @@ public class BasicRewardFunctionProperties extends RewardFunctionProperties{
     else {
       // default scrp
       TrajectoryRewardFunctionProperties trp = new TrajectoryRewardFunctionProperties();
-      trp.reward = 1;
       trp.distance_max = 5;
       rewardFunctionsArray[2] = trp.build(vehicles, tickDuration);
     }
@@ -55,7 +54,6 @@ public class BasicRewardFunctionProperties extends RewardFunctionProperties{
     else {
       // default scrp
       SpeedControlRewardFunctionProperties scrp = new SpeedControlRewardFunctionProperties();
-      scrp.speed_control_reward = 1;
       rewardFunctionsArray[3] = scrp.build(vehicles, tickDuration);
     }
 

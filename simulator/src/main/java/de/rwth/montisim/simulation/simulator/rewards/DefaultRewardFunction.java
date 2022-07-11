@@ -11,7 +11,7 @@ public class DefaultRewardFunction extends RewardFunction {
   }
 
   @Override
-  public float getRewardForVehicle(int vehicle_index) {
+  public float getRewardForVehicle(int vehicle_index, int step) {
     return 0;
   }
 }

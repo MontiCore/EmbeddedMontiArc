@@ -50,7 +50,6 @@ public class PlatooningRewardFunctionProperties extends RewardFunctionProperties
     else {
       // default scrp
       TrajectoryRewardFunctionProperties trp = new TrajectoryRewardFunctionProperties();
-      trp.reward = 1;
       trp.distance_max = 5;
       rewardFunctionsArray[3] = trp.build(vehicles, tickDuration);
     }

@@ -24,15 +24,15 @@ public class VehicleCollisionsRewardFunction extends RewardFunction {
   }
 
   @Override
-  public float getReward() {
+  public float getReward(int step) {
         /*
          If a vehicle collides with another, the reward would be given twice. Thus, we need to halve this reward.
          */
-    return super.getReward() / 2;
+    return super.getReward(step) / 2;
   }
 
   @Override
-  public float getRewardForVehicle(int vehicle_index) {
+  public float getRewardForVehicle(int vehicle_index, int step) {
     int numberOfCollisions = this.vehicles[vehicle_index].getVehicleCollisions().size();
     return numberOfCollisions * VEHICLE_COLLISION_REWARD;
   }
