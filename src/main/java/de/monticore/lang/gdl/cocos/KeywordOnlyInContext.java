@@ -32,6 +32,7 @@ import de.monticore.lang.gdl._ast.ASTGameTerminal;
 import de.monticore.lang.gdl._ast.ASTGameTrue;
 import de.monticore.lang.gdl._ast.ASTGameTuple;
 import de.monticore.lang.gdl._ast.ASTGameTypeDef;
+import de.monticore.lang.gdl._ast.ASTGameTypeMapDef;
 import de.monticore.lang.gdl._cocos.GDLASTGameKeywordCoCo;
 import de.se_rwth.commons.logging.Log;
 
@@ -46,6 +47,7 @@ public class KeywordOnlyInContext implements GDLASTGameKeywordCoCo {
                 ASTGameInference.class,
                 ASTGameInit.class,
                 ASTGameRole.class,
+                
                 ASTGameTypeDef.class
             )
         ),
@@ -105,7 +107,10 @@ public class KeywordOnlyInContext implements GDLASTGameKeywordCoCo {
                 ASTGameRole.class,
                 ASTGameLegal.class,
                 ASTGameDoes.class,
-                ASTGameGoal.class
+                ASTGameGoal.class,
+
+                ASTGameTypeDef.class,
+                ASTGameTypeMapDef.class
             )
         ),
         new Context(
@@ -136,7 +141,8 @@ public class KeywordOnlyInContext implements GDLASTGameKeywordCoCo {
                 ASTGameTerminal.class,
                 ASTGameNext.class,
                 ASTGameLegal.class,
-                ASTGameGoal.class
+                ASTGameGoal.class,
+                ASTGameTypeMapDef.class
             )
         )
     );

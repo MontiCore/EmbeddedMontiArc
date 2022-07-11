@@ -16,6 +16,10 @@ gdli_with_types().
 gdlt_type(X, Y) :-
     gdl_rule([type, X, Y]).
 
+gdlt_type_map(X, Y, Z) :-
+    gdl_rule([typemap, X, Y, Z]),
+    !.
+
 % ----------------------------
 % ------- Template Gen -------
 % ----------------------------
@@ -137,16 +141,25 @@ gdlt_value_index(Scope, Value, Index) :-
     gdlt_template_start_index(Scope, Template, TypeIndex),
     gdli_add(TypeIndex, ValueIndex, Index).
 
-gdlt_template_start_index(Scope, Template, numpos_0) :-
-    gdlt_all_templates_merged(Scope, Templates),
-    append([Template], _, Templates),
-    !.
-gdlt_template_start_index(Scope, Template, TIndex) :-
-    gdlt_all_templates_merged(Scope, Templates),
-    append([Template | Ts], _, Templates),
-    gdlt_get_templates_dimension(Ts, TIndex),
-    !.
 
+gdlt_template_start_index(Scope, Template, Index) :-
+    gdlt_all_templates_merged(Scope, Templates),
+    gdlt_template_start_index_r(Template, Templates, Index).
+
+gdlt_template_start_index_r(T, [T], numpos_0).
+gdlt_template_start_index_r(T, [T | Ts], Index) :-
+    gdlt_get_templates_dimension(Ts, Index).
+gdlt_template_start_index_r(T, [Tx | Ts], Index) :-
+    gdlt_template_start_index_r(T, Ts, Index).
+
+
+gdlt_value_template_index(Value, Type, Index) :-
+    var(Index),
+    gdlt_type_map(Type, TypeInstance, Value),
+    setof(X, gdlt_type(Type, X), InstanceValues),
+    nth0(NIndex, InstanceValues, TypeInstance),
+    gdli_number_to_atom(NIndex, Index),
+    !.
 gdlt_value_template_index(Value, Type, Index) :-
     var(Index),
     setof(X, gdlt_type(Type, X), Values),

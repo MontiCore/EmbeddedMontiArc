@@ -48,6 +48,7 @@ grammar GDL extends de.monticore.literals.MCCommonLiterals {
     GameNumber implements GameKeyword = "number";
 
     GameTypeDef implements GameKeyword = "type";
+    GameTypeMapDef implements GameKeyword = "typemap";
 
     GameNoop implements GameKeyword = "noop";
 
