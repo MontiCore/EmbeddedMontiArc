@@ -305,9 +305,22 @@ public class Navigation extends EEComponent {
         return targets;
     }
 
-    public int getCurrentPathIndex(Vec2 currentPosition) {
-        if (!currentPos.isPresent()) return -1;
-        if (!currentPath.isPresent()) return -1;
-        return getNearestSegment(currentPosition);
+    public Optional<Integer> getCurrentPathIndex() {
+        if (!currentPos.isPresent() || !currentPath.isPresent()) return Optional.empty();
+        return Optional.of(getNearestSegment(currentPos.get()));
+    }
+
+    public Optional<Double> getRemainingPathLength() {
+      Optional<Integer> index_optional = getCurrentPathIndex();
+      if (!index_optional.isPresent()) {
+        return Optional.empty();
+      }
+      Path p = currentPath.get();
+      int index = index_optional.get();
+      double distance = currentPos.get().distance(p.trajectoryX[index], p.trajectoryY[index]);
+      for (int i = index; i < p.getLength() - 1; i++) {
+        distance += (new Vec2(p.trajectoryX[i], p.trajectoryY[i])).distance(p.trajectoryX[i + 1], p.trajectoryY[i + 1]);
+      }
+      return Optional.of(distance);
     }
 }

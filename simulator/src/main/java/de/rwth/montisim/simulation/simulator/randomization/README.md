@@ -15,7 +15,7 @@ In the [basic simulator](https://git.rwth-aachen.de/monticore/EmbeddedMontiArc/s
     {
       "type": "platooning",
       "minNumberOfVehicles": 5,
-      "maxNumberOfVehicles": 10 // <- Stragegy porperties are optional. If not present, default will be used
+      "maxNumberOfVehicles": 10 // <- Stragegy properties are optional. If not present, default will be used
     },
     ...
   ],

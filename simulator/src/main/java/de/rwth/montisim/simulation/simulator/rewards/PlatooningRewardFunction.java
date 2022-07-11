@@ -3,8 +3,8 @@ package de.rwth.montisim.simulation.simulator.rewards;
 import de.rwth.montisim.commons.utils.Pair;
 import de.rwth.montisim.commons.utils.Vec2;
 import de.rwth.montisim.simulation.vehicle.Vehicle;
-import de.rwth.montisim.simulation.vehicle.navigation.Navigation;
 
+import java.time.Duration;
 import java.util.Optional;
 import java.util.Stack;
 
@@ -20,67 +20,62 @@ import java.util.Stack;
  */
 public class PlatooningRewardFunction extends RewardFunction {
 
-  private final float PLATOONING_REWARD;
+  private final float GAP_DISTANCE_REWARD_SCALING;
+  private final float GAP_SUB_MAXIMUM_REWARD;
+  private final VariableSpeedControlRewardFunction speed_control_reward_function;
   private final float gap_max;
   private final float gap_desired;
-  private final float velocity_max;
+
   private final float velocity_desired;
 
   /**
    * Initializes a new Platoon Reward Function
    *
-   * @param vehicles          Vehicle[] containing additional data about each active vehicle.
-   * @param platooning_reward The scaled reward.
-   * @param gap_max           Maximum allowed gap between vehicles.
-   * @param gap_desired       Desired gap between vehicles.
-   * @param velocity_max      Maximum allowed velocity.
-   * @param velocity_desired  Desired velocity.
+   * @param vehicles                      Vehicle[] containing additional data about each active vehicle.
+   * @param tickDuration                  Duration between two Updates of the Simulator.
+   * @param speed_control_reward_function The Speed Control Component variable depending on if a vehicle is a leader of a follower in the platoon.
+   * @param GAP_DISTANCE_REWARD_SCALING   Scaling of the reward given to the distance to the next vehicle.
+   * @param GAP_SUB_MAXIMUM_REWARD        Reward given, if the vehicle is less than the maximum distance behind the preceding vehicle.
+   * @param gap_max                       Maximum allowed gap between vehicles.
+   * @param gap_desired                   Desired gap between vehicles.
    */
-  public PlatooningRewardFunction(Vehicle[] vehicles, float platooning_reward, float gap_max, float gap_desired, float velocity_max, float velocity_desired) {
-    super(vehicles);
-    this.PLATOONING_REWARD = platooning_reward;
+  public PlatooningRewardFunction(Vehicle[] vehicles, Duration tickDuration, VariableSpeedControlRewardFunction speed_control_reward_function, float GAP_DISTANCE_REWARD_SCALING, float GAP_SUB_MAXIMUM_REWARD, float gap_max, float gap_desired) {
+    super(vehicles, tickDuration);
+    this.GAP_DISTANCE_REWARD_SCALING = GAP_DISTANCE_REWARD_SCALING;
+    this.GAP_SUB_MAXIMUM_REWARD = GAP_SUB_MAXIMUM_REWARD;
+    this.speed_control_reward_function = speed_control_reward_function;
+    this.velocity_desired = speed_control_reward_function.velocity_desired;
     this.gap_max = gap_max;
     this.gap_desired = gap_desired;
-    this.velocity_max = velocity_max;
-    this.velocity_desired = velocity_desired;
   }
 
   @Override
-  public float getRewardForVehicle(int vehicle_index) {
+  public float getRewardForVehicle(int vehicle_index, int step) {
     float reward = 0;
 
     Optional<Integer> preceding_index_optional = getPrecedingVehicleIndex(vehicle_index);
-    if (preceding_index_optional.isPresent()) {
+    if (preceding_index_optional.isPresent()) { // current vehicle is following another vehicle
       int preceding_index = preceding_index_optional.get();
 
       // punish distance
       Vec2 vehicle_position = this.positions[vehicle_index];
       Vec2 preceding_position = this.positions[preceding_index];
       double gap = vehicle_position.distance(preceding_position);
-      reward -= PLATOONING_REWARD * Math.pow((1 / this.gap_max) * (this.gap_desired - gap), 2);
-
-      // punish velocity difference
-      double vehicle_velocity = this.velocities[vehicle_index];
-      double preceding_velocity = this.velocities[preceding_index];
-      reward -= PLATOONING_REWARD * Math.pow((1 / this.velocity_max) * (vehicle_velocity - preceding_velocity), 2);
+      reward -= GAP_DISTANCE_REWARD_SCALING * Math.pow((1 / this.gap_max) * (this.gap_desired - gap), 2);
 
       // reward below max gap
       if (this.gap_max >= gap)
-        reward += PLATOONING_REWARD / 2;
+        reward += GAP_SUB_MAXIMUM_REWARD;
 
-      // reward below max velocity
-      if (this.velocity_max >= vehicle_velocity)
-        reward += PLATOONING_REWARD / 2;
+      // set desired velocity to preceding vehicles speed
+      speed_control_reward_function.velocity_desired = this.velocities[preceding_index].floatValue();
     }
-    else {
-      // punish velocity difference
-      double vehicle_velocity = this.velocities[vehicle_index];
-      reward -= PLATOONING_REWARD * Math.pow((1 / this.velocity_max) * (this.velocity_desired - vehicle_velocity), 2);
-
-      // reward below max velocity
-      if (this.velocity_max >= vehicle_velocity)
-        reward += PLATOONING_REWARD;
+    else { // current vehicle is not following another vehicle, thus is a leader
+      // reset desired velocity
+      speed_control_reward_function.velocity_desired = this.velocity_desired;
     }
+    // reward speed control
+    reward += speed_control_reward_function.getRewardForVehicle(vehicle_index, step);
 
     return reward;
   }
