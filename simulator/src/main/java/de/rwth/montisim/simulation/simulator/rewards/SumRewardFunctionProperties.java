@@ -9,10 +9,10 @@ import java.util.Vector;
 /**
  * The properties for the sequence reward function.
  *
- * @see de.rwth.montisim.simulation.simulator.rewards.SequenceRewardFunction
+ * @see SumRewardFunction
  */
-@Typed("sequence_reward")
-public class SequenceRewardFunctionProperties extends RewardFunctionProperties {
+@Typed("sum_reward")
+public class SumRewardFunctionProperties extends RewardFunctionProperties {
   /**
    * The properties of the preprocessors that should be applied.
    */
@@ -24,6 +24,6 @@ public class SequenceRewardFunctionProperties extends RewardFunctionProperties {
     for (int i = 0; i < rewardFunctions.size(); i++) {
       rewardFunctionsArray[i] = rewardFunctions.get(i).build(vehicles, tickDuration);
     }
-    return new SequenceRewardFunction(vehicles, tickDuration, rewardFunctionsArray);
+    return new SumRewardFunction(vehicles, tickDuration, rewardFunctionsArray);
   }
 }

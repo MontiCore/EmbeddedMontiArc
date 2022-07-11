@@ -9,12 +9,12 @@ import java.util.Optional;
 @Typed("platooning_reward")
 public class PlatooningRewardFunctionProperties extends RewardFunctionProperties {
 
-  public float reward = 1;
+  public float GAP_DISTANCE_REWARD_SCALING = 20;
+  public float GAP_SUB_MAXIMUM_REWARD = 1;
   public float gap_max = 20;
   public float gap_desired = 10;
-  public float velocity_max = 40;
-  public float velocity_desired = 20;
 
+  public Optional<SpeedControlRewardFunctionProperties> speed_control_reward_properties = Optional.empty();
   public Optional<StaticCollisionsRewardFunctionProperties> static_collision_reward_properties = Optional.empty();
   public Optional<VehicleCollisionsRewardFunctionProperties> vehicle_collision_reward_properties = Optional.empty();
   public Optional<TrajectoryRewardFunctionProperties> trajectory_reward_properties = Optional.empty();
@@ -22,7 +22,17 @@ public class PlatooningRewardFunctionProperties extends RewardFunctionProperties
   @Override
   public RewardFunction build(Vehicle[] vehicles, Duration tickDuration) {
     RewardFunction[] rewardFunctionsArray = new RewardFunction[4];
-    rewardFunctionsArray[0] = new PlatooningRewardFunction(vehicles, tickDuration, reward, gap_max, gap_desired, velocity_max, velocity_desired);
+
+    VariableSpeedControlRewardFunction vscrf;
+    if (speed_control_reward_properties.isPresent()) {
+      vscrf = (VariableSpeedControlRewardFunction) ((VariableSpeedControlRewardFunctionProperties) speed_control_reward_properties.get()).build(vehicles, tickDuration);
+    }
+    else {
+      // default vscrf
+      vscrf = (VariableSpeedControlRewardFunction) (new VariableSpeedControlRewardFunctionProperties()).build(vehicles, tickDuration);
+    }
+
+    rewardFunctionsArray[0] = new PlatooningRewardFunction(vehicles, tickDuration, vscrf, GAP_DISTANCE_REWARD_SCALING, GAP_SUB_MAXIMUM_REWARD, gap_max, gap_desired);
 
     if (static_collision_reward_properties.isPresent()) {
       rewardFunctionsArray[1] = static_collision_reward_properties.get().build(vehicles, tickDuration);
@@ -30,7 +40,7 @@ public class PlatooningRewardFunctionProperties extends RewardFunctionProperties
     else {
       // default scrp
       StaticCollisionsRewardFunctionProperties scrp = new StaticCollisionsRewardFunctionProperties();
-      scrp.reward = -500;
+      scrp.STATIC_COLLISION_REWARD = -500;
       rewardFunctionsArray[1] = scrp.build(vehicles, tickDuration);
     }
 
@@ -40,7 +50,7 @@ public class PlatooningRewardFunctionProperties extends RewardFunctionProperties
     else {
       // default scrp
       VehicleCollisionsRewardFunctionProperties vcrp = new VehicleCollisionsRewardFunctionProperties();
-      vcrp.reward = -500;
+      vcrp.VEHICLE_COLLISIONS_REWARD = -500;
       rewardFunctionsArray[2] = vcrp.build(vehicles, tickDuration);
     }
 
@@ -54,6 +64,6 @@ public class PlatooningRewardFunctionProperties extends RewardFunctionProperties
       rewardFunctionsArray[3] = trp.build(vehicles, tickDuration);
     }
 
-    return new SequenceRewardFunction(vehicles, tickDuration, rewardFunctionsArray);
+    return new SumRewardFunction(vehicles, tickDuration, rewardFunctionsArray);
   }
 }

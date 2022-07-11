@@ -7,7 +7,7 @@ import java.time.Duration;
 /**
  * Reward function that calculates the reward by applying a sequence of other reward functions.
  */
-public class SequenceRewardFunction extends RewardFunction {
+public class SumRewardFunction extends RewardFunction {
 
   private final RewardFunction[] components;
 
@@ -18,7 +18,7 @@ public class SequenceRewardFunction extends RewardFunction {
    * @param tickDuration Duration between two Updates of the Simulator.
    * @param components   The sequence of reward functions that should be applied.
    */
-  public SequenceRewardFunction(Vehicle[] vehicles, Duration tickDuration, RewardFunction[] components) {
+  public SumRewardFunction(Vehicle[] vehicles, Duration tickDuration, RewardFunction[] components) {
     super(vehicles, tickDuration);
     this.components = components;
   }
@@ -29,7 +29,7 @@ public class SequenceRewardFunction extends RewardFunction {
    * @param vehicles     Vehicle[] containing additional data about each active vehicle.
    * @param tickDuration Duration between two Updates of the Simulator.
    */
-  public SequenceRewardFunction(Vehicle[] vehicles, Duration tickDuration) {
+  public SumRewardFunction(Vehicle[] vehicles, Duration tickDuration) {
     super(vehicles, tickDuration);
     this.components = new RewardFunction[0];
   }

@@ -8,10 +8,10 @@ import java.time.Duration;
 @Typed("vehicle_collision_reward")
 public class VehicleCollisionsRewardFunctionProperties extends RewardFunctionProperties {
 
-  public float reward = -800;
+  public float VEHICLE_COLLISIONS_REWARD = -800;
 
   @Override
   public RewardFunction build(Vehicle[] vehicles, Duration tickDuration) {
-    return new VehicleCollisionsRewardFunction(vehicles, tickDuration, reward);
+    return new VehicleCollisionsRewardFunction(vehicles, tickDuration, VEHICLE_COLLISIONS_REWARD);
   }
 }

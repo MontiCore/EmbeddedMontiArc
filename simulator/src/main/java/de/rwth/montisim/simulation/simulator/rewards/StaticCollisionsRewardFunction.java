@@ -16,16 +16,16 @@ public class StaticCollisionsRewardFunction extends RewardFunction {
    *
    * @param vehicles                Vehicle[] containing additional data about each active vehicle.
    * @param tickDuration            Duration between two Updates of the Simulator.
-   * @param static_collision_reward The reward given for each static collision.
+   * @param STATIC_COLLISION_REWARD The reward given for each static collision.
    */
-  public StaticCollisionsRewardFunction(Vehicle[] vehicles, Duration tickDuration, float static_collision_reward) {
+  public StaticCollisionsRewardFunction(Vehicle[] vehicles, Duration tickDuration, float STATIC_COLLISION_REWARD) {
     super(vehicles, tickDuration);
-    STATIC_COLLISION_REWARD = static_collision_reward;
+    this.STATIC_COLLISION_REWARD = STATIC_COLLISION_REWARD;
   }
 
   @Override
   public float getRewardForVehicle(int vehicle_index, int step) {
     int numberOfCollisions = this.vehicles[vehicle_index].getStaticCollisions().size();
-    return numberOfCollisions * STATIC_COLLISION_REWARD;
+    return numberOfCollisions * this.STATIC_COLLISION_REWARD;
   }
 }

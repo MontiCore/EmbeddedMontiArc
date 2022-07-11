@@ -24,7 +24,7 @@ public class BasicRewardFunctionProperties extends RewardFunctionProperties{
     else {
       // default scrp
       StaticCollisionsRewardFunctionProperties scrp = new StaticCollisionsRewardFunctionProperties();
-      scrp.reward = -500;
+      scrp.STATIC_COLLISION_REWARD = -500;
       rewardFunctionsArray[0] = scrp.build(vehicles, tickDuration);
     }
 
@@ -34,7 +34,7 @@ public class BasicRewardFunctionProperties extends RewardFunctionProperties{
     else {
       // default scrp
       VehicleCollisionsRewardFunctionProperties vcrp = new VehicleCollisionsRewardFunctionProperties();
-      vcrp.reward = -500;
+      vcrp.VEHICLE_COLLISIONS_REWARD = -500;
       rewardFunctionsArray[1] = vcrp.build(vehicles, tickDuration);
     }
 
@@ -57,6 +57,6 @@ public class BasicRewardFunctionProperties extends RewardFunctionProperties{
       rewardFunctionsArray[3] = scrp.build(vehicles, tickDuration);
     }
 
-    return new SequenceRewardFunction(vehicles, tickDuration, rewardFunctionsArray);
+    return new SumRewardFunction(vehicles, tickDuration, rewardFunctionsArray);
   }
 }

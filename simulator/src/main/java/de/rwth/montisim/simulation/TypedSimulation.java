@@ -78,7 +78,7 @@ public class TypedSimulation {
     Json.registerType(AnglePreprocessorProperties.class);
     /* Reward Functions */
     Json.registerType(DefaultRewardFunctionProperties.class);
-    Json.registerType(SequenceRewardFunctionProperties.class);
+    Json.registerType(SumRewardFunctionProperties.class);
     Json.registerType(StaticCollisionsRewardFunctionProperties.class);
     Json.registerType(VehicleCollisionsRewardFunctionProperties.class);
     Json.registerType(TrajectoryRewardFunctionProperties.class);
