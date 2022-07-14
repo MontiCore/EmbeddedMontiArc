@@ -1,10 +1,12 @@
 package de.rwth.montisim.simulation.simulator.rewards;
 
+import de.rwth.montisim.commons.utils.json.Typed;
 import de.rwth.montisim.simulation.vehicle.Vehicle;
 
 import java.time.Duration;
 
-class VariableSpeedControlRewardFunctionProperties extends RewardFunctionProperties {
+@Typed("variable_speed_control_reward")
+public class VariableSpeedControlRewardFunctionProperties extends RewardFunctionProperties {
 
   public float VELOCITY_DIFFERENCE_REWARD_SCALING = 1;
   public float VELOCITY_SUB_MAXIMUM_REWARD = 0.5f;
