@@ -24,10 +24,10 @@ def predict(path_to_h5, start=None, end=None, batch_size=1, model_path="../../..
     logger.setLevel(logging.DEBUG)
 </#if>
     data, graph = load_data(path_to_h5)
-    if context is "gpu":
+    if context == "gpu":
         mx_context = [mx.gpu()]
     else:
-        if context is not "cpu":
+        if context != "cpu":
             logging.warning("%s is not a valid context argument. Switching to cpu..." % (context))
         mx_context = [mx.cpu()]
 
