@@ -100,7 +100,11 @@ class GymEnvironment(Environment):
 <#else>
 <#assign action_ros_datatype=config.discreteRlAlgorithm?string("Int32", "Float32MultiArray")>
 import rospy
-import thread
+import sys
+if sys.version.strip().split(".")[0] > '2':
+    import _thread as thread
+else:
+    import thread
 import numpy as np
 import time
 from std_msgs.msg import Float32MultiArray, Bool, Int32, MultiArrayDimension, Float32
