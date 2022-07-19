@@ -385,7 +385,7 @@ public class CNNTrain2Gluon extends CNNTrainGenerator {
                 ftlContext, "reinforcement/util/Util.ftl");
         fileContents.add(new FileContent(utilContent, REINFORCEMENT_LEARNING_FRAMEWORK_MODULE + "/util.py"));
 
-        final String initContent = "";
+        final String initContent = "import os, sys; sys.path.append(os.path.dirname(os.path.abspath(__file__)))";
         fileContents.add(new FileContent(initContent, REINFORCEMENT_LEARNING_FRAMEWORK_MODULE + "/__init__.py"));
 
         return fileContents;

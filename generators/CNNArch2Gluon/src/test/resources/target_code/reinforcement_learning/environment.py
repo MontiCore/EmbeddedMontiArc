@@ -18,6 +18,10 @@ class Environment:
     def step(self, action):
         pass
 
+    @abc.abstractmethod
+    def close(self):
+        pass
+
 import gym
 class GymEnvironment(Environment):
     def __init__(self, env_name, **kwargs):
@@ -30,13 +34,6 @@ class GymEnvironment(Environment):
     def state_dim(self):
         return self.__env.observation_space.shape
 
-    @property
-    def state_dtype(self):
-        return 'float32'
-
-    @property
-    def action_dtype(self):
-        return 'uint8'
 
     @property
     def number_of_actions(self):
