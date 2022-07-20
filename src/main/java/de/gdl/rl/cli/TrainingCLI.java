@@ -3,7 +3,10 @@ import de.gdl.rl.Coordinator;
 import de.gdl.rl.agents.RosTrainingAgent;
 
 import java.util.List;
+import java.util.Map.Entry;
+
 import de.gdl.rl.environment.GDLGameEnvironment;
+import de.monticore.lang.gdl.types.GDLType;
 
 public class TrainingCLI<ConcreteEnvironment extends GDLGameEnvironment> extends Coordinator<ConcreteEnvironment> {
     
@@ -43,14 +46,14 @@ public class TrainingCLI<ConcreteEnvironment extends GDLGameEnvironment> extends
         for (RosTrainingAgent agent : this.getTrainingAgents() ) {
 
             // print the calculated reward
-            float reward = (float) this.env.getReward(agent.currentGdlRoleName, agent);
+            float reward = (float) this.env.getReward(agent.currentGdlRole, agent);
             System.out.println("Reward for "+ agent.name +": " + reward);
             
         }
         
         System.out.println("Goals: ");
-        for (List<String> goal : this.env.getReachedGoals()) {
-            System.out.println("(" + String.join(", ", goal) + ")");
+        for (Entry<GDLType, GDLType> goal : this.env.getReachedGoals().entrySet()) {
+            System.out.println("(" + goal.getKey() + " " + goal.getValue() + ")");
         }
         System.out.println("");
     }

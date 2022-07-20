@@ -2,7 +2,8 @@ package de.gdl.rl;
 
 import de.gdl.rl.ros.RosConnector;
 import de.gdl.rl.ros.RosConnectorSubscriber;
-
+import de.monticore.lang.gdl.Command;
+import de.monticore.lang.gdl.types.GDLType;
 import de.gdl.rl.environment.GDLGameEnvironment;
 
 import de.gdl.rl.agents.LocalAgent;
@@ -12,6 +13,8 @@ import de.gdl.rl.agents.RosTrainingAgent;
 import java.util.HashMap;
 import java.util.HashSet;
 import java.util.List;
+import java.util.Map;
+import java.util.Set;
 import java.util.concurrent.Semaphore;
 import java.util.logging.Logger;
 import java.util.logging.LogManager;
@@ -20,15 +23,14 @@ import java.util.logging.Handler;
 
 import java.util.concurrent.ThreadLocalRandom;
 
-public class Coordinator<ConcreteEnvironment extends GDLGameEnvironment> implements RosConnectorSubscriber
-{
+public class Coordinator<ConcreteEnvironment extends GDLGameEnvironment> implements RosConnectorSubscriber {
 
     private boolean WITH_DEBUG_OUTPUT = false;
 
     public ConcreteEnvironment env;
     private RosConnector connector;
 
-    private HashMap<String, Boolean> receivedResetFrom = new HashMap<String, Boolean>();
+    private Map<String, Boolean> receivedResetFrom = new HashMap<>();
     
     private boolean isInTraining = false;
     private int numberOfEpisodesPlayed = 0;
@@ -38,13 +40,13 @@ public class Coordinator<ConcreteEnvironment extends GDLGameEnvironment> impleme
      * to define roles to be controlled manually. 
      * Then, moves for these roles are resolved via onEnterMove().
      */
-    protected HashSet<String> manualRoles = new HashSet<String>();
+    protected Set<GDLType> manualRoles = new HashSet<>();
 
     private final Semaphore resetSemaphore = new Semaphore(1, true);
     
     private RosAgent waitForActionFromAgent = null;
-    private String waitForActionForRole = "";
-    private String waitForActionFromTopic = "";
+    private GDLType waitForActionForRole = null;
+    private String waitForActionFromTopic = null;
 
     protected boolean evaluation = false;
     protected int evaluationSamples = 0;
@@ -107,10 +109,8 @@ public class Coordinator<ConcreteEnvironment extends GDLGameEnvironment> impleme
     }
 
     // RosConnectorSubscriber interface
-
     @Override
     public void receivedData(String topic, boolean value) {
-
         try {
             if (this.receivedResetFrom.containsKey(topic)) {
                 resetSemaphore.acquire();
@@ -118,22 +118,19 @@ public class Coordinator<ConcreteEnvironment extends GDLGameEnvironment> impleme
                 this.receivedReset();
             } 
         } catch (Exception e) {
-
+            e.printStackTrace();
         }
-
     }
+
     @Override
     public void receivedData(String topic, int value) {
-
         if (this.waitForActionFromTopic.equals(topic)) {
             this.performAction(value, this.waitForActionForRole, this.waitForActionFromAgent);
         }
-
     }
 
     private void receivedReset() {
         // check if we received all resets so that we can restart / initate a game
-
         for (String from : this.receivedResetFrom.keySet()) {
             if (!this.receivedResetFrom.get(from)) {
                 resetSemaphore.release();
@@ -142,7 +139,6 @@ public class Coordinator<ConcreteEnvironment extends GDLGameEnvironment> impleme
         }
 
         // we received all: we can reset the list
-
         for (String from : this.receivedResetFrom.keySet()) {
             this.receivedResetFrom.put(from ,false);
         }
@@ -157,43 +153,39 @@ public class Coordinator<ConcreteEnvironment extends GDLGameEnvironment> impleme
 
         // we can go on playing
         this.next();
-
     }
 
-
     private void next() {
-        
-
-        List<String> rolesInControl = this.env.whichRolesHaveControl(); 
-        String currentGdlRoleName = null;
+        List<GDLType> rolesInControl = this.env.whichRolesHaveControl(); 
+        GDLType currentGdlRole = null;
         if (rolesInControl.size() > 1) {
-            currentGdlRoleName = this.env.whichRoleShouldBeNext(rolesInControl);     
+            currentGdlRole = this.env.whichRoleShouldBeNext(rolesInControl);     
         } else {
-            currentGdlRoleName = rolesInControl.get(0);
+            currentGdlRole = rolesInControl.get(0);
         }
         
         
-        System.out.println(currentGdlRoleName + "'s turn");
-        if (this.manualRoles.contains(currentGdlRoleName)) {
+        System.out.println(currentGdlRole + "'s turn");
+        if (this.manualRoles.contains(currentGdlRole)) {
 
             this.waitForActionFromTopic = "-------NULL------";
 
             // get manually the move by CLI or GUI
-            String moveString = this.onEnterMove(currentGdlRoleName);
-            this.performAction(moveString, currentGdlRoleName, "CLI/GUI");
+            Command move = this.onEnterMove(currentGdlRole);
+            this.performAction(move, currentGdlRole, "CLI/GUI");
             return;
         } 
             
         // check if there is a training agent who can perform the action
         if (this.isInTraining) {
             for (RosTrainingAgent trainingAgent : this.env.train_config_trainingAgents) {
-                if (trainingAgent.currentGdlRoleName.equals(currentGdlRoleName)) {
+                if (trainingAgent.currentGdlRole.equals(currentGdlRole)) {
                     
-                    float[] state = this.env.getStateAsFloatRepresentation(currentGdlRoleName, trainingAgent);
+                    float[] state = this.env.getStateAsFloatRepresentation(currentGdlRole, trainingAgent);
                     boolean isTerminal = this.env.isTerminal();
-                    float reward = (float) this.env.getReward(currentGdlRoleName, trainingAgent);
+                    float reward = (float) this.env.getReward(currentGdlRole, trainingAgent);
                     
-                    this.waitForActionForRole = currentGdlRoleName;
+                    this.waitForActionForRole = currentGdlRole;
                     this.waitForActionFromTopic = trainingAgent.actionTopic;
                     this.waitForActionFromAgent = trainingAgent;
     
@@ -202,7 +194,7 @@ public class Coordinator<ConcreteEnvironment extends GDLGameEnvironment> impleme
                     this.connector.publish(trainingAgent.rewardTopic, reward);
     
                     if (trainingAgent.legalActionsTopic != "") {
-                        float[] legalActions = this.env.getLegalActionsForRoleAsIndicatorArray(currentGdlRoleName, trainingAgent);
+                        float[] legalActions = this.env.getLegalActionsForRoleAsIndicatorArray(currentGdlRole, trainingAgent);
                         this.connector.publish(trainingAgent.legalActionsTopic, legalActions);
                     }
     
@@ -213,21 +205,21 @@ public class Coordinator<ConcreteEnvironment extends GDLGameEnvironment> impleme
 
         // check if there is an agent who can perform the action
         for (RosAgent agent : this.isInTraining ? this.env.train_config_agents : this.env.game_config_agents) {
-            if (agent.gdlRoleNames.contains(currentGdlRoleName)) {
+            if (agent.gdlRoles.contains(currentGdlRole)) {
                 if (this.numberOfEpisodesPlayed < agent.numberOfRandomEpisodes) {
                     // play randomly
-                    this.performAction(this.env.getRandomLegalMove(), currentGdlRoleName, agent.name + " (initial random)");
+                    this.performAction(this.env.getRandomLegalMove(), currentGdlRole, agent.name + " (initial random)");
                     return;
                 } else if(ThreadLocalRandom.current().nextDouble() > (1.0f - agent.epsilon)) {
                     // play randomly & decrease epsilon
                     agent.epsilon = agent.epsilon * agent.epsilonDecay;
-                    this.performAction(this.env.getRandomLegalMove(), currentGdlRoleName, agent.name + " (epsiolon random)");
+                    this.performAction(this.env.getRandomLegalMove(), currentGdlRole, agent.name + " (epsilon random)");
                     return;
                 } else if(this.connector.gotPublisherForTopic(agent.actionTopic)) {
-                    float[] state = this.env.getStateAsFloatRepresentation(currentGdlRoleName, agent);
-                    float[] legalActions = this.env.getLegalActionsForRoleAsIndicatorArray(currentGdlRoleName, agent);
+                    float[] state = this.env.getStateAsFloatRepresentation(currentGdlRole, agent);
+                    float[] legalActions = this.env.getLegalActionsForRoleAsIndicatorArray(currentGdlRole, agent);
 
-                    this.waitForActionForRole = currentGdlRoleName;
+                    this.waitForActionForRole = currentGdlRole;
                     this.waitForActionFromTopic = agent.actionTopic;
                     this.waitForActionFromAgent = agent;
 
@@ -241,41 +233,40 @@ public class Coordinator<ConcreteEnvironment extends GDLGameEnvironment> impleme
 
          // check if there is a local agent who can perform the action
         for (LocalAgent agent : this.isInTraining ? this.env.train_config_localAgents : this.env.game_config_localAgents) {
-            if (agent.gdlRoleNames.contains(currentGdlRoleName)) {
-                this.performAction(agent.getMove(this.env.getCurrentState(), this.env.getLegalMovesForRole(currentGdlRoleName), currentGdlRoleName, this.numberOfEpisodesPlayed), currentGdlRoleName, agent.name);
+            if (agent.gdlRoles.contains(currentGdlRole)) {
+                this.performAction(agent.getMove(this.env.getCurrentState(), this.env.getLegalMovesForRole(currentGdlRole), currentGdlRole, this.numberOfEpisodesPlayed), currentGdlRole, agent.name);
                 return;
             }
         }
 
         // play a random move if neither an agent nor an user takes action
-        this.performAction(this.env.getRandomLegalMove(), currentGdlRoleName,"Random");
-        
+        this.performAction(this.env.getRandomLegalMove(), currentGdlRole, "Random");
     }
 
-    private void performAction(String move, String gdlRoleName, String playerDescription) {
+    private void performAction(Command move, GDLType gdlRole, String playerDescription) {
         this.onPreDoMove(move, playerDescription);
         if(this.env.step(move, null)) {
             this.onPostDoMove();
             this.postPerformAction();
         } else {
             this.onPostDoMove();
-            this.onMoveWasIllegal(move, this.env.getLegalMovesForRole(gdlRoleName));
+            this.onMoveWasIllegal(move, this.env.getLegalMovesForRole(gdlRole));
             this.postPerformAction();
         }   
     }
 
-    private void performAction(int action, String gdlRoleName, RosAgent agent) {
+    private void performAction(int action, GDLType gdlRole, RosAgent agent) {
         
-        this.onPreDoMove(this.env.getMoveStringFromAction(action, gdlRoleName, agent), agent.name);
+        this.onPreDoMove(this.env.getMoveFromAction(action, gdlRole, agent), agent.name);
 
-        if(this.env.step(action, gdlRoleName, agent)) {
+        if(this.env.step(action, gdlRole, agent)) {
             this.onPostDoMove();
             this.postPerformAction();
         } else {
             this.onPostDoMove();
-            this.onMoveWasIllegal(this.env.getMoveStringFromAction(action, gdlRoleName, agent), null);
+            this.onMoveWasIllegal(this.env.getMoveFromAction(action, gdlRole, agent), null);
             if (!agent.gameOverForIllegalActions) {
-                this.performAction(this.env.getRandomLegalMove(), gdlRoleName, "Random");
+                this.performAction(this.env.getRandomLegalMove(), gdlRole, "Random");
             } else {
                 this.postPerformAction();
             }
@@ -294,9 +285,9 @@ public class Coordinator<ConcreteEnvironment extends GDLGameEnvironment> impleme
             // tell all the training agents that it is over
             if (this.isInTraining) {
                 for (RosTrainingAgent trainingAgent : this.env.train_config_trainingAgents) {
-                    float[] state = this.env.getStateAsFloatRepresentation(trainingAgent.currentGdlRoleName, trainingAgent);
+                    float[] state = this.env.getStateAsFloatRepresentation(trainingAgent.currentGdlRole, trainingAgent);
                     boolean isTerminal = true;
-                    float reward = (float) this.env.getReward(trainingAgent.currentGdlRoleName, trainingAgent);
+                    float reward = (float) this.env.getReward(trainingAgent.currentGdlRole, trainingAgent);
                         
                     this.connector.publish(trainingAgent.stateTopic, state);
                     this.connector.publish(trainingAgent.terminalTopic, isTerminal);
@@ -320,23 +311,23 @@ public class Coordinator<ConcreteEnvironment extends GDLGameEnvironment> impleme
      * @param role a role
      * @return a description of the agent/player in control of the role
      */
-    protected String getCurrentPlayerOfRole(String role) {
+    protected String getCurrentPlayerOfRole(GDLType role) {
         if (this.manualRoles.contains(role)) return "manual";
         if (this.isInTraining) {
             for (RosTrainingAgent trainingAgent : this.env.train_config_trainingAgents) {
-                if (trainingAgent.currentGdlRoleName.equals(role)) {
+                if (trainingAgent.currentGdlRole.equals(role)) {
                     return trainingAgent.name;
                 }
             }
         }
         for (RosAgent agent : this.isInTraining ? this.env.train_config_agents : this.env.game_config_agents) {
-            if (agent.gdlRoleNames.contains(role)) {
+            if (agent.gdlRoles.contains(role)) {
                 return agent.name;
             }
         }
 
         for (LocalAgent agent : this.isInTraining ? this.env.train_config_localAgents : this.env.game_config_localAgents) {
-            if (agent.gdlRoleNames.contains(role)) {
+            if (agent.gdlRoles.contains(role)) {
                 return agent.name;
             }
         }
@@ -357,13 +348,13 @@ public class Coordinator<ConcreteEnvironment extends GDLGameEnvironment> impleme
      * @param roleName a role
      * @return the training agent which controls the role or otherwise null
      */
-    protected RosTrainingAgent doesTrainingAgentControlRole(String roleName) {
-        if (this.manualRoles.contains(roleName)) {
+    protected RosTrainingAgent doesTrainingAgentControlRole(GDLType role) {
+        if (this.manualRoles.contains(role)) {
             return null;
         }
 
         for (RosTrainingAgent trainingAgent : this.env.train_config_trainingAgents) {
-            if (trainingAgent.currentGdlRoleName.equals(roleName)) {
+            if (trainingAgent.currentGdlRole.equals(role)) {
                 return trainingAgent;
             }
         }
@@ -391,14 +382,14 @@ public class Coordinator<ConcreteEnvironment extends GDLGameEnvironment> impleme
      * @param role the role for which the move is
      * @return a move for the role as a string
      */
-    protected String onEnterMove(String role) { return ""; }
+    protected Command onEnterMove(GDLType role) { return null; }
     
     /**
      * Event: Called before a move is executed
      * @param move the move that is executed
      * @param playerDescription a description of the player/agent making the move
      */
-    protected void onPreDoMove(String move, String playerDescription) {}
+    protected void onPreDoMove(Command move, String playerDescription) {}
     
     /**
      * Event: Called after a move was executed
@@ -410,7 +401,7 @@ public class Coordinator<ConcreteEnvironment extends GDLGameEnvironment> impleme
      * @param move the illegal move
      * @param legalMoves a list of all legal moves or null if an agent executed the illegal move
      */
-    protected void onMoveWasIllegal(String move, List<String> legalMoves) {}
+    protected void onMoveWasIllegal(Command move, List<Command> legalMoves) {}
 
     private void freeze() throws InterruptedException {
         Object obj = new Object();
