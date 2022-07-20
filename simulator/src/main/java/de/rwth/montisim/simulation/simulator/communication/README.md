@@ -67,10 +67,26 @@ The Sequence Preprocessor allows using multiple preprocessor in a sequence.
 "type": "angle"
 ```
 The Angle Preprocessor replaces angles in the state with their sin-cos values.
-Thus we replace each angle with two values from -1 to 1.
+Thus, we replace each angle with two values from -1 to 1.
 #### Properties
 | Property              | Type  | Default Value | Short Description                           | Usage                         |
 |-----------------------|-------|---------------|---------------------------------------------|-------------------------------|
 | angleStateIndex       | `int` | 23            | Index of the angle in the vehicle state     | `"angleStateIndex": 7`        | 
  | angleStatePacketIndex | `int` | 2             | Index of the angle in the statepacket state | `"angleStatePacketIndex": 13` |
+
+### Trajectory Filter
+```json
+"type": "trajectory"
+```
+The Trajectory Filter reorders all other vehicles' states depending on, if they are likely to collide with the current vehicle in the near future.
+
+For this, Kalman Filtering is used to approximate the future locations of vehicles, depending on their trajectory, if they would drive with the current velocity constantly.
+Vehicles, that are likely to collide soon with the current vehicle, have a high priority.
+
+#### Properties
+| Property               | Type    | Default Value | Short Description                                             | Usage                          |
+|------------------------|---------|---------------|---------------------------------------------------------------|--------------------------------|
+| VEHICLE_WIDTH          | `float` | 1.87          | Width of a vehicle                                            | `"VEHICLE_WIDTH": 2`           | 
+| VEHICLE_LENGTH         | `float` | 4.871         | Height of a vehicle                                           | `"VEHICLE_LENGTH": 5`          |
+| MAX_STATES_PER_VEHICLE | `int`   | 25            | Maximum amount of future states to be generated for a vehicle | `"MAX_STATES_PER_VEHICLE": 10` |
 

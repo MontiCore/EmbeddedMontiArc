@@ -5,9 +5,9 @@ import de.rwth.montisim.commons.utils.json.Typed;
 @Typed("trajectory")
 public class TrajectoryFilterProperties extends PreprocessorProperties{
 
-
-  public float VEHICLE_WIDTH;
-  public float VEHICLE_LENGTH;
+  // from https://git.rwth-aachen.de/monticore/EmbeddedMontiArc/simulators/simulation/-/wikis/user-docs/json-scenario-reference/Body-and-Wheel-Properties
+  public float VEHICLE_WIDTH = 1.87f;
+  public float VEHICLE_LENGTH = 4.871f;
   public int MAX_STATES_PER_VEHICLE = 25;
 
   @Override
