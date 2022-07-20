@@ -95,9 +95,9 @@ random (deal hand yellow 9 42)
 COMMAND
 random (deal hand yellow 10 14)
 PARTIAL_STATE
-(currPoints red 0)
-(currPoints green 0)
 (currPoints blue 0)
+(currPoints green 0)
+(currPoints red 0)
 (currPoints yellow 0)
 COMMAND
 random (gameReady)
@@ -119,9 +119,9 @@ green (put 29 c 2)
 COMMAND
 blue (put 66 b 2)
 PARTIAL_STATE
-(currPoints red 0)
-(currPoints green 0)
 (currPoints blue 0)
+(currPoints green 0)
+(currPoints red 0)
 (currPoints yellow 1)
 # Round 2
 COMMAND
@@ -141,9 +141,9 @@ blue (put 45 c 4)
 COMMAND
 yellow (put 100 b 3)
 PARTIAL_STATE
-(currPoints red 0)
-(currPoints green 1)
 (currPoints blue 0)
+(currPoints green 1)
+(currPoints red 0)
 (currPoints yellow 1)
 # Round 3
 COMMAND
@@ -163,9 +163,9 @@ red (put 4 d 4)
 COMMAND
 yellow (put 14 d 5)
 PARTIAL_STATE
-(currPoints red 0)
-(currPoints green 1)
 (currPoints blue 0)
+(currPoints green 1)
+(currPoints red 0)
 (currPoints yellow 1)
 # Round 4
 COMMAND
@@ -185,9 +185,9 @@ red (put 102 b 4)
 COMMAND
 blue (put 103 b 5)
 PARTIAL_STATE
-(currPoints red 0)
-(currPoints green 6)
 (currPoints blue 0)
+(currPoints green 6)
+(currPoints red 0)
 (currPoints yellow 1)
 # Round 5
 COMMAND
@@ -207,9 +207,9 @@ yellow (put 48 c 5)
 COMMAND
 red (put 51 c 6)
 PARTIAL_STATE
-(currPoints red 0)
-(currPoints green 6)
-(currPoints blue 6)
+(currPoints blue 0)
+(currPoints green 13)
+(currPoints red 6)
 (currPoints yellow 1)
 # Round 6
 COMMAND
@@ -229,9 +229,9 @@ green (put 46 a 5)
 COMMAND
 yellow (put 91 a 6)
 PARTIAL_STATE
-(currPoints red 1)
+(currPoints blue 1)
 (currPoints green 6)
-(currPoints blue 6)
+(currPoints red 6)
 (currPoints yellow 11)
 # Round 7
 COMMAND
@@ -251,9 +251,9 @@ yellow (put 67 d 5)
 COMMAND
 green (put 80 d 6)
 PARTIAL_STATE
-(currPoints red 1)
+(currPoints blue 1)
 (currPoints green 13)
-(currPoints blue 6)
+(currPoints red 6)
 (currPoints yellow 11)
 # Round 8
 COMMAND
@@ -273,9 +273,9 @@ green (put 76 c 5)
 COMMAND
 yellow (put 88 d 2)
 PARTIAL_STATE
-(currPoints red 1)
+(currPoints blue 1)
 (currPoints green 13)
-(currPoints blue 6)
+(currPoints red 6)
 (currPoints yellow 11)
 # Round 9
 COMMAND
@@ -295,9 +295,9 @@ green (put 78 c 3)
 COMMAND
 yellow (put 94 a 2)
 PARTIAL_STATE
-(currPoints red 10)
+(currPoints blue 10)
 (currPoints green 13)
-(currPoints blue 6)
+(currPoints red 6)
 (currPoints yellow 11)
 # Round 10
 COMMAND
@@ -317,7 +317,7 @@ yellow (put 95 a 3)
 COMMAND
 green (put 96 a 4)
 PARTIAL_STATE
-(currPoints red 21)
+(currPoints blue 21)
 (currPoints green 13)
-(currPoints blue 6)
+(currPoints red 6)
 (currPoints yellow 11)
