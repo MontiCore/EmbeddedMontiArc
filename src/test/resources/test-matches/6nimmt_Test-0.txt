@@ -101,8 +101,8 @@ PARTIAL_STATE
 (currPoints yellow 0)
 COMMAND
 random (gameReady)
-COMMAND
 # Round 1
+COMMAND
 red (play 63)
 COMMAND
 blue (play 61)
@@ -119,6 +119,7 @@ red (put 63 b 2)
 COMMAND
 yellow (put 72 d 2)
 # Round 2
+COMMAND
 red (play 74)
 COMMAND
 blue (play 69)
@@ -139,6 +140,7 @@ red (put 74 d 3)
 COMMAND
 yellow (put 93 d 4)
 # Round 3
+COMMAND
 red (play 68)
 COMMAND
 blue (play 9)
@@ -155,6 +157,7 @@ green (put 20 c 4)
 COMMAND
 red (put 68 a 4)
 # Round 4
+COMMAND
 red (play 21)
 COMMAND
 blue (play 23)
@@ -179,6 +182,7 @@ blue (put 23 c 2)
 COMMAND
 yellow (put 28 c 3)
 # Round 5
+COMMAND
 red (play 95)
 COMMAND
 blue (play 104)
@@ -199,6 +203,7 @@ PARTIAL_STATE
 COMMAND
 blue (put 104 d 2)
 # Round 6
+COMMAND
 red (play 36)
 COMMAND
 blue (play 10)
@@ -225,6 +230,7 @@ PARTIAL_STATE
 COMMAND
 red (put 36 c 2)
 # Round 7
+COMMAND
 red (play 43)
 COMMAND
 blue (play 41)
@@ -241,6 +247,7 @@ blue (put 41 c 4)
 COMMAND
 red (put 43 c 5)
 # Round 8
+COMMAND
 red (play 26)
 COMMAND
 blue (play 81)
@@ -257,6 +264,7 @@ blue (put 81 b 4)
 COMMAND
 yellow (put 86 b 5)
 # Round 9
+COMMAND
 red (play 58)
 COMMAND
 blue (play 85)
@@ -283,6 +291,7 @@ red (put 58 c 2)
 COMMAND
 blue (put 85 a 5)
 # Round 10
+COMMAND
 red (play 59)
 COMMAND
 blue (play 88)
