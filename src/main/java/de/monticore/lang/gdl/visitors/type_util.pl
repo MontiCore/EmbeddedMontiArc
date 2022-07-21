@@ -65,10 +65,8 @@ gdlt_merge(T, [Q | Qs], [T | Ms]) :-
     gdlt_merge(Q, Qs, Ms), !.
 
 gdlt_merge_templates(Temp, Temp, Temp) :- !.
-gdlt_merge_templates((range, StartX, EndX), (range, StartY, EndY), (range, StartX, EndY)) :-
-    (gdli_greater(EndX, StartY); EndX = StartY),
-    (gdli_less(StartX, StartY); StartX = StartY),
-    !.
+gdlt_merge_templates((constant_type, Type, Value), Type, Type) :- !.
+gdlt_merge_templates(Type, (constant_type, Type, Value), Type) :- !.
 gdlt_merge_templates((range, StartY, EndY), (range, StartX, EndX), (range, StartX, EndY)) :-
     (gdli_greater(EndX, StartY); EndX = StartY),
     (gdli_less(StartX, StartY); StartX = StartY),
