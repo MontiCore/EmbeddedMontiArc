@@ -18,11 +18,12 @@ Launch GDL Interpreter with CLI (Windows PowerShell / Bash):
 Command line Options:
 
 ```
--cg, --chess-gui      Start with a Chess GUI
--dg, --doppelkopf-gui Start with a Doppelkopf GUI
--nc, --no-cli         Disable the CLI
--dm, --debug-mode     Enable the debug mode
--mr, --manual-random  Enable manual control over the random role
+-cg, --chess-gui        Start with a Chess GUI
+-dg, --doppelkopf-gui   Start with a Doppelkopf GUI
+-nc, --no-cli           Disable the CLI
+-dm, --debug-mode       Enable the debug mode
+-mr, --manual-random    Enable manual control over the random role
+-wt, --with-types       Use features for strongly typed models
 ```
 
 ---
