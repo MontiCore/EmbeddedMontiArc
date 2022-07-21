@@ -321,7 +321,7 @@
 )
 
 
-(<= (isLegal ?player move col:?start_col [1,8]:?start_row col:?dest_col [1,8]:?dest_row)
+(<= (isLegal ?player move ?start_col ?start_row ?dest_col ?dest_row)
     (true (control ?player))
     (isFigureOnField ?player ?figure ?color_fig ?start_col ?start_row)
     (isLegalMove ?figure ?player ?start_col ?start_row ?dest_col ?dest_row)

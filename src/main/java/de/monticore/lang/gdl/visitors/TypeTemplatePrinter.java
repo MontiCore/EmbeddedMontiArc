@@ -16,6 +16,7 @@ import de.monticore.lang.gdl._ast.ASTGameInit;
 import de.monticore.lang.gdl._ast.ASTGameKeyword;
 import de.monticore.lang.gdl._ast.ASTGameLegal;
 import de.monticore.lang.gdl._ast.ASTGameNext;
+import de.monticore.lang.gdl._ast.ASTGameNoop;
 import de.monticore.lang.gdl._ast.ASTGameRangeType;
 import de.monticore.lang.gdl._ast.ASTGameSees;
 import de.monticore.lang.gdl._ast.ASTGameToken;
@@ -26,7 +27,6 @@ import de.monticore.lang.gdl._ast.ASTGameValueType;
 import de.monticore.lang.gdl._visitor.GDLHandler;
 import de.monticore.lang.gdl._visitor.GDLTraverser;
 import de.monticore.lang.gdl._visitor.GDLVisitor2;
-import de.monticore.literals.mccommonliterals._ast.ASTSignedNatLiteral;
 import de.monticore.literals.mccommonliterals._visitor.MCCommonLiteralsVisitor2;
 import de.monticore.prettyprint.IndentPrinter;
 
@@ -167,6 +167,10 @@ public class TypeTemplatePrinter extends IndentPrinter implements GDLVisitor2, M
     }
 
     public void handleTemplateKeyword(ASTGameTuple tuple, ASTGameLegal keyword) {
+        if (tuple.getElement(1) instanceof ASTGameValue && ((ASTGameValue) tuple.getElement(1)).getValue().equals("random")) {
+            // skip random
+            return;
+        }
         print(TEMPLATE_PREFIX_ACTION);
         print("(");
         tuple.getElement(2).accept(getTraverser());
@@ -174,20 +178,30 @@ public class TypeTemplatePrinter extends IndentPrinter implements GDLVisitor2, M
     }
 
     public void handleDecideHidden(ASTGameConstruct construct) {
-        print(TEMPLATE_PREFIX_STATE);
-        print("(");
         if (construct instanceof ASTGameTuple) {
             ASTGameTuple tuple = (ASTGameTuple) construct;
 
             if (tuple.getElement(0) instanceof ASTGameSees) {
+                if (tuple.getElement(1) instanceof ASTGameValue && ((ASTGameValue) tuple.getElement(1)).getValue().equals("none")) {
+                    // skip none
+                    return;
+                }
+                print(TEMPLATE_PREFIX_STATE);
+                print("(");
                 printElementsSeparated(tuple.getElementList(), 2, ELEMENT_SEPARATOR, false,  n -> n.accept(getTraverser()));
+                println(").");
             } else {
+                print(TEMPLATE_PREFIX_STATE);
+                print("(");
                 construct.accept(getTraverser());
+                println(").");
             }
         } else {
+            print(TEMPLATE_PREFIX_STATE);
+            print("(");
             construct.accept(getTraverser());
+            println(").");
         }
-        println(").");
     }
     
     @Override
@@ -221,6 +235,9 @@ public class TypeTemplatePrinter extends IndentPrinter implements GDLVisitor2, M
 
     @Override
     public void handle(ASTGameToken node) {
+        if (!node.isPresentType()) {
+            System.out.println("Type expected but not found: " + node.get_SourcePositionStart());
+        }
         node.getType().accept(getTraverser());
     }
 
@@ -235,6 +252,8 @@ public class TypeTemplatePrinter extends IndentPrinter implements GDLVisitor2, M
             handleConstant((ASTGameValue) constant);
         } else if (constant instanceof ASTGameDigits) {
             handleConstant((ASTGameDigits) constant);
+        } else if (constant instanceof ASTGameNoop) {
+            handleConstant((ASTGameNoop) constant);
         }
     }
 
@@ -254,31 +273,8 @@ public class TypeTemplatePrinter extends IndentPrinter implements GDLVisitor2, M
         printNumber(constant.getNumber().getValue());
     }
 
-    private void handleConstantConstruct(ASTGameConstruct value) {
-        if (value instanceof ASTGameTuple) {
-            handleConstantConstruct((ASTGameTuple) value);
-        } else if (value instanceof ASTGameValue) {
-            handleConstantConstruct((ASTGameValue) value);
-        } else if (value instanceof ASTGameDigits) {
-            handleConstantConstruct((ASTGameDigits) value);
-        }
-    }
-
-    private void handleConstantConstruct(ASTGameTuple value) {
-        print("[");
-        printElementsSeparated(value.getElementList(), 0, ELEMENT_SEPARATOR, false, this::handleConstantConstruct);
-        print("]");
-    }
-
-    private void handleConstantConstruct(ASTGameValue value) {
-        final String v = VALUE_PREFIX + PREFIX_SEPARATOR + value.getValue();
-        print(v);
-    }
-
-    private void handleConstantConstruct(ASTGameDigits value) {
-        final ASTSignedNatLiteral literal = value.getNumber();
-        final int number = literal.getValue();
-        printNumber(number);
+    private void handleConstant(ASTGameNoop constant) {
+        print("noop");
     }
 
     private void printNumber(int number) {
@@ -296,7 +292,7 @@ public class TypeTemplatePrinter extends IndentPrinter implements GDLVisitor2, M
     private void handleConstantType(ASTGameConstruct value) {
         print("(constant");
         print(ELEMENT_SEPARATOR);
-        handleConstantConstruct(value);
+        handleConstant(value);
         print(")");
     }
 
@@ -313,6 +309,10 @@ public class TypeTemplatePrinter extends IndentPrinter implements GDLVisitor2, M
         print(VALUE_TYPE_PREFIX);
         print(PREFIX_SEPARATOR);
         print(node.getType());
+    }
+
+    public void visit(ASTGameNoop node) {
+        print("(constant, noop)");
     }
     
 }
