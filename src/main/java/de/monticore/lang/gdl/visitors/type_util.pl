@@ -78,34 +78,42 @@ gdlt_merge_templates((constant, Value), Type, Type) :-
 gdlt_merge_templates((constant, Value1), (constant, Value2), (range, Value1, Value2)) :-
     gdli_number(Value1),
     gdli_number(Value2),
+    \+ gdlt_type(_, Value1),
+    \+ gdlt_type(_, Value2),
     gdli_succ(Value1, Value2),
     !.
 gdlt_merge_templates((range, Start, End), (constant, Value), (range, Start, End)) :-
     gdli_number(Value),
+    \+ gdlt_type(_, Value),
     (gdli_greater(Value, Start); Value = Start),
     (gdli_less(Value, End); Value = End),
     !.
 gdlt_merge_templates((constant, Value), (range, Start, End), (range, Start, End)) :-
     gdli_number(Value),
+    \+ gdlt_type(_, Value),
     (gdli_greater(Value, Start); Value = Start),
     (gdli_less(Value, End); Value = End),
     !.
 
 gdlt_merge_templates((range, Start, End), (constant, Value), (range, Value, End)) :-
     gdli_number(Value),
+    \+ gdlt_type(_, Value),
     gdli_succ(Value, Start),
     !.
 gdlt_merge_templates((constant, Value), (range, Start, End), (range, Value, End)) :-
     gdli_number(Value),
+    \+ gdlt_type(_, Value),
     gdli_succ(Value, Start),
     !.
 
 gdlt_merge_templates((range, Start, End), (constant, Value), (range, Start, Value)) :-
     gdli_number(Value),
+    \+ gdlt_type(_, Value),
     gdli_succ(End, Value),
     !.
 gdlt_merge_templates((constant, Value), (range, Start, End), (range, Start, Value)) :-
     gdli_number(Value),
+    \+ gdlt_type(_, Value),
     gdli_succ(End, Value),
     !.
 
