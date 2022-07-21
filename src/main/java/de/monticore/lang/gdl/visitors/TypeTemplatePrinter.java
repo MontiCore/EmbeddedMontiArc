@@ -125,6 +125,8 @@ public class TypeTemplatePrinter extends IndentPrinter implements GDLVisitor2, M
 
         if (first instanceof ASTGameInference) {
             handleRootKeyword(tuple, (ASTGameInference) first);
+        } else if (first instanceof ASTGameInit) {
+            handleTemplate(tuple);
         }
     }
 
@@ -178,7 +180,7 @@ public class TypeTemplatePrinter extends IndentPrinter implements GDLVisitor2, M
             ASTGameTuple tuple = (ASTGameTuple) construct;
 
             if (tuple.getElement(0) instanceof ASTGameSees) {
-                printElementsSeparated(tuple.getElementList(), 1, ELEMENT_SEPARATOR, false,  n -> n.accept(getTraverser()));
+                printElementsSeparated(tuple.getElementList(), 2, ELEMENT_SEPARATOR, false,  n -> n.accept(getTraverser()));
             } else {
                 construct.accept(getTraverser());
             }
@@ -223,13 +225,7 @@ public class TypeTemplatePrinter extends IndentPrinter implements GDLVisitor2, M
     }
 
     private void handleTypedConstant(ASTGameType type, ASTGameConstruct construct) {
-        print("(");
-        print("constant_type");
-        print(", ");
         type.accept(getTraverser());
-        print(", ");
-        handleConstant(construct);
-        print(")");
     }
 
     private void handleConstant(ASTGameConstruct constant) {
@@ -282,12 +278,7 @@ public class TypeTemplatePrinter extends IndentPrinter implements GDLVisitor2, M
     private void handleConstantConstruct(ASTGameDigits value) {
         final ASTSignedNatLiteral literal = value.getNumber();
         final int number = literal.getValue();
-        print("(range");
-        print(ELEMENT_SEPARATOR);
         printNumber(number);
-        print(ELEMENT_SEPARATOR);
-        printNumber(number);
-        print(")");
     }
 
     private void printNumber(int number) {

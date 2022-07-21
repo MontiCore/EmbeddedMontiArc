@@ -65,12 +65,50 @@ gdlt_merge(T, [Q | Qs], [T | Ms]) :-
     gdlt_merge(Q, Qs, Ms), !.
 
 gdlt_merge_templates(Temp, Temp, Temp) :- !.
-gdlt_merge_templates((constant_type, Type, Value), Type, Type) :- !.
-gdlt_merge_templates(Type, (constant_type, Type, Value), Type) :- !.
 gdlt_merge_templates((range, StartY, EndY), (range, StartX, EndX), (range, StartX, EndY)) :-
-    (gdli_greater(EndX, StartY); EndX = StartY),
+    (gdli_greater(EndX, StartY); EndX = StartY; gdli_succ(EndX, StartY)),
     (gdli_less(StartX, StartY); StartX = StartY),
     !.
+gdlt_merge_templates(Type, (constant, Value), Type) :-
+    gdlt_type(Type, Value),
+    !.
+gdlt_merge_templates((constant, Value), Type, Type) :-
+    gdlt_type(Type, Value),
+    !.
+gdlt_merge_templates((constant, Value1), (constant, Value2), (range, Value1, Value2)) :-
+    gdli_number(Value1),
+    gdli_number(Value2),
+    gdli_succ(Value1, Value2),
+    !.
+gdlt_merge_templates((range, Start, End), (constant, Value), (range, Start, End)) :-
+    gdli_number(Value),
+    (gdli_greater(Value, Start); Value = Start),
+    (gdli_less(Value, End); Value = End),
+    !.
+gdlt_merge_templates((constant, Value), (range, Start, End), (range, Start, End)) :-
+    gdli_number(Value),
+    (gdli_greater(Value, Start); Value = Start),
+    (gdli_less(Value, End); Value = End),
+    !.
+
+gdlt_merge_templates((range, Start, End), (constant, Value), (range, Value, End)) :-
+    gdli_number(Value),
+    gdli_succ(Value, Start),
+    !.
+gdlt_merge_templates((constant, Value), (range, Start, End), (range, Value, End)) :-
+    gdli_number(Value),
+    gdli_succ(Value, Start),
+    !.
+
+gdlt_merge_templates((range, Start, End), (constant, Value), (range, Start, Value)) :-
+    gdli_number(Value),
+    gdli_succ(End, Value),
+    !.
+gdlt_merge_templates((constant, Value), (range, Start, End), (range, Start, Value)) :-
+    gdli_number(Value),
+    gdli_succ(End, Value),
+    !.
+
 gdlt_merge_templates([X | Xs], [Y | Ys], [Merged1 | Merged2]) :-
     gdlt_merge_templates(X, Y, Merged1),
     gdlt_merge_templates(Xs, Ys, Merged2),
@@ -84,7 +122,7 @@ gdlt_get_dimension(X, Dimension) :-
 % For templates
 gdlt_get_templates_dimension([Type | Types], Dimension) :- 
     gdlt_get_type_dimension(Type, TDim),
-    gdlt_get_type_dimension(Types, TDims),
+    gdlt_get_templates_dimension(Types, TDims),
     gdli_add(TDim, TDims, Dimension),
     !.
 gdlt_get_templates_dimension([Type], Dimension) :- 
@@ -108,6 +146,17 @@ gdlt_get_type_dimension((constant, _), numpos_1) :- !.
 gdlt_get_type_dimension((range, Start, End), Dimension) :-
     gdli_sub(End, Start, Sub),
     gdli_add(Sub, numpos_1, Dimension).
+
+
+% -- Create Indicator matrix
+gdlt_role_indicator_matrix(Role, Matrix) :-
+    gdli_full_state_role(Role, Models),
+    maplist(gdlt_indicator_map, Models, Matrix),
+    !.
+
+gdlt_indicator_map(State, Index) :-
+    gdlt_index_map(state, State, Index).
+
 
 % -- Index mapping
 gdlt_all_index_value_pairs(Scope, AllMaps) :-
@@ -158,6 +207,7 @@ gdlt_value_template_index(Value, Type, Index) :-
     nth0(NIndex, InstanceValues, TypeInstance),
     gdli_number_to_atom(NIndex, Index),
     !.
+
 gdlt_value_template_index(Value, Type, Index) :-
     var(Index),
     setof(X, gdlt_type(Type, X), Values),

@@ -35,6 +35,7 @@ import de.monticore.lang.gdl._symboltable.GDLScopesGenitor;
 import de.monticore.lang.gdl._symboltable.IGDLGlobalScope;
 import de.monticore.lang.gdl._visitor.GDLTraverser;
 import de.monticore.lang.gdl.cocos.AllCoCosChecker;
+import de.monticore.lang.gdl.types.GDLNumber;
 import de.monticore.lang.gdl.types.GDLTuple;
 import de.monticore.lang.gdl.types.GDLType;
 import de.monticore.lang.gdl.visitors.ASTTypeInflator;
@@ -45,6 +46,7 @@ import de.se_rwth.commons.logging.Log;
 public class Interpreter extends EventSource<GDLType, Set<GDLType>> implements AutoCloseable {
 
     private static final Pattern RESULT_ARRAY_PATTERN = Pattern.compile("\\[(.*)\\]");
+    private static final Pattern SINGLE_RESULT_PATTERN = Pattern.compile("=\\s*(.*?)\\.");
 
     private final String prologProgram;
     private final InterpreterOptions options;
@@ -62,6 +64,10 @@ public class Interpreter extends EventSource<GDLType, Set<GDLType>> implements A
     private Throwable evalError;
 
     private Semaphore executeSemaphore = new Semaphore(1);
+
+    private boolean withTypes = false;
+    private int stateSpaceDimension = 0;
+    private int actionSpaceDimension = 0;
 
     private Interpreter(String prolog, InterpreterOptions options) {
         this.prologProgram = prolog;
@@ -147,7 +153,9 @@ public class Interpreter extends EventSource<GDLType, Set<GDLType>> implements A
             loadOptions();
 
             // init state
-            execute("gdli_init().");
+            execute("gdli_init.");
+
+            if (options.isWithTypes()) loadTypes();
 
             if (options.isShowTimes()) {
                 long ellapsed = System.currentTimeMillis() - time;
@@ -197,6 +205,24 @@ public class Interpreter extends EventSource<GDLType, Set<GDLType>> implements A
     private void loadOptions() {
         if (options.isManualRandom()) {
             execute("assertz(gdli_options(manual_random)).");
+        }
+    }
+
+    private void loadTypes() {
+        String withTypesResult = execute("gdli_with_types.");
+        if (withTypesResult.startsWith("true")) {
+            this.withTypes = true;
+
+            String stateDimensionResult = execute("gdlt_get_dimension(state, X).");
+            String actionDimensionResult = execute("gdlt_get_dimension(action, X).");
+
+            System.out.println(stateDimensionResult);
+
+            GDLNumber stateDimension = getSingleGDLType(stateDimensionResult, GDLNumber.class);
+            GDLNumber actionDimension = getSingleGDLType(actionDimensionResult, GDLNumber.class);
+
+            this.stateSpaceDimension = stateDimension.getValue().intValue();
+            this.actionSpaceDimension = actionDimension.getValue().intValue();
         }
     }
 
@@ -393,7 +419,6 @@ public class Interpreter extends EventSource<GDLType, Set<GDLType>> implements A
         return resultMap;
     }
 
-
     /**
      * Get all roles defined in the program
      * @return Set of all roles
@@ -405,6 +430,65 @@ public class Interpreter extends EventSource<GDLType, Set<GDLType>> implements A
         matchAllGDLTypes(queryResult, resultSet::add);
 
         return resultSet;
+    }
+
+    public boolean isWithTypes() {
+        return this.withTypes;
+    }
+
+    public int getStateSpaceDimension() {
+        return this.stateSpaceDimension;
+    }
+
+    public int getActionSpaceDimension() {
+        return this.actionSpaceDimension;
+    }
+
+    public int getIndexForAction(GDLType action) {
+        String result = execute("gdlt_index_map(action, " + action.toPlString() + ", X).");
+        GDLNumber index = getSingleGDLType(result, GDLNumber.class);
+
+        return index.getValue().intValue();
+    }
+
+    public GDLType getActionForIndex(int index) {
+        GDLNumber gdlIndex = GDLNumber.createFromLine(index + "");
+        String result = execute("gdlt_index_map(action, X, " + gdlIndex.toPlString() + ").");
+        GDLType action = getSingleGDLType(result, GDLType.class);
+        return action;
+    }
+
+    public int getIndexForState(GDLType state) {
+        String result = execute("gdlt_index_map(state, " + state.toPlString() + ", X).");
+        GDLNumber index = getSingleGDLType(result, GDLNumber.class);
+
+        return index.getValue().intValue();
+    }
+
+    public float[] getStateIndicatorMatrixForRole(GDLType role) {
+        String queryResult = execute("gdlt_role_indicator_matrix(" + role.toPlString() + ", Matrix).");
+
+        float[] result = new float[stateSpaceDimension];
+
+        final Consumer<GDLNumber> numberConsumer = n -> result[n.getValue().intValue()] = 1;
+        matchAllGDLTypes(queryResult, numberConsumer);
+
+        return result;
+    }
+
+    private <E extends GDLType> E getSingleGDLType(String queryResult, Class<E> typeClass) {
+        Matcher matcher = SINGLE_RESULT_PATTERN.matcher(queryResult);
+
+        if (matcher.find()) {
+            String valueString = matcher.group(1);
+
+            @SuppressWarnings("unchecked")
+            E result = (E) GDLType.createFromPl(valueString);
+
+            return result;
+        }
+
+        throw new IllegalArgumentException("Cannot convert '" + queryResult + "' into Interpreter value");
     }
 
     private <E extends GDLType> void matchAllGDLTypes(String queryResult, Consumer<E> tupleConsumer) {
@@ -603,7 +687,12 @@ public class Interpreter extends EventSource<GDLType, Set<GDLType>> implements A
         if (options != null && options.isWithTypes()) {
             final TypeTemplatePrinter typePrinter = new TypeTemplatePrinter();
             ast.accept(typePrinter.getTraverser());
+            // TODO: Check if types are valid (cocos)
+
             prolog += "\n" + typePrinter.getContent();
+
+
+
         }
 
         return fromProlog(prolog, options);
