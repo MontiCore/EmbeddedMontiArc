@@ -216,8 +216,6 @@ public class Interpreter extends EventSource<GDLType, Set<GDLType>> implements A
             String stateDimensionResult = execute("gdlt_get_dimension(state, X).");
             String actionDimensionResult = execute("gdlt_get_dimension(action, X).");
 
-            System.out.println(stateDimensionResult);
-
             GDLNumber stateDimension = getSingleGDLType(stateDimensionResult, GDLNumber.class);
             GDLNumber actionDimension = getSingleGDLType(actionDimensionResult, GDLNumber.class);
 
