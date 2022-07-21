@@ -101,7 +101,7 @@ PARTIAL_STATE
 (currPoints yellow 0)
 COMMAND
 random (gameReady)
-# Round 1
+# Round 1 | verified
 COMMAND
 red (play 25)
 COMMAND
@@ -123,7 +123,7 @@ PARTIAL_STATE
 (currPoints green 0)
 (currPoints red 0)
 (currPoints yellow 1)
-# Round 2
+# Round 2 | verified
 COMMAND
 red (play 32)
 COMMAND
@@ -167,7 +167,7 @@ PARTIAL_STATE
 (currPoints green 1)
 (currPoints red 0)
 (currPoints yellow 1)
-# Round 4
+# Round 4 | verified
 COMMAND
 red (play 102)
 COMMAND
@@ -189,7 +189,7 @@ PARTIAL_STATE
 (currPoints green 6)
 (currPoints red 0)
 (currPoints yellow 1)
-# Round 5
+# Round 5 | verified
 COMMAND
 red (play 51)
 COMMAND
@@ -208,10 +208,10 @@ COMMAND
 red (put 51 c 6)
 PARTIAL_STATE
 (currPoints blue 0)
-(currPoints green 13)
+(currPoints green 6)
 (currPoints red 6)
 (currPoints yellow 1)
-# Round 6
+# Round 6 | verified
 COMMAND
 red (play 44)
 COMMAND
@@ -233,13 +233,13 @@ PARTIAL_STATE
 (currPoints green 6)
 (currPoints red 6)
 (currPoints yellow 11)
-# Round 7
+# Round 7 | verified
 COMMAND
 red (play 62)
 COMMAND
 blue (play 27)
 COMMAND
-green (play 80)
+green (play 90)
 COMMAND
 yellow (play 67)
 COMMAND
@@ -249,7 +249,7 @@ red (put 62 d 4)
 COMMAND
 yellow (put 67 d 5)
 COMMAND
-green (put 80 d 6)
+green (put 90 d 6)
 PARTIAL_STATE
 (currPoints blue 1)
 (currPoints green 13)
@@ -271,13 +271,13 @@ red (put 52 c 4)
 COMMAND
 green (put 76 c 5)
 COMMAND
-yellow (put 88 d 2)
+yellow (put 88 c 6)
 PARTIAL_STATE
 (currPoints blue 1)
 (currPoints green 13)
 (currPoints red 6)
-(currPoints yellow 11)
-# Round 9
+(currPoints yellow 20)
+# Round 9 | verified
 COMMAND
 red (play 57)
 COMMAND
@@ -295,10 +295,10 @@ green (put 78 c 3)
 COMMAND
 yellow (put 94 a 2)
 PARTIAL_STATE
-(currPoints blue 10)
+(currPoints blue 6)
 (currPoints green 13)
 (currPoints red 6)
-(currPoints yellow 11)
+(currPoints yellow 20)
 # Round 10
 COMMAND
 red (play 81)
@@ -317,7 +317,7 @@ yellow (put 95 a 3)
 COMMAND
 green (put 96 a 4)
 PARTIAL_STATE
-(currPoints blue 21)
+(currPoints blue 17)
 (currPoints green 13)
 (currPoints red 6)
-(currPoints yellow 11)
+(currPoints yellow 20)

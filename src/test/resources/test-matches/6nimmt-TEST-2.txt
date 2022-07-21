@@ -99,6 +99,8 @@ PARTIAL_STATE
 (currPoints green 0)
 (currPoints red 0)
 (currPoints yellow 0)
+COMMAND
+random (gameReady)
 # Round 1
 COMMAND
 red (play 49)
