@@ -76,13 +76,14 @@ gdli_init() :-
 
 
 gdli_init_templates() :-
-    \+ gdli_with_types().
+    \+ gdli_with_types(),
+    !.
 gdli_init_templates() :-
     gdli_with_types(),
     \+ gdlt_all_templates_merged(_, _),
     gdlt_make_all_templates(),
     !.
-
+gdli_init_templates().
 
 gdli_build_next() :-
     gdli_next_state(State),
