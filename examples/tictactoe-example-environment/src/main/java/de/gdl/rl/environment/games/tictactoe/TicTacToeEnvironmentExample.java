@@ -5,7 +5,6 @@ import de.gdl.rl.agents.RosAgent;
 import de.gdl.rl.agents.RosTrainingAgent;
 
 import de.gdl.rl.environment.GDLGameEnvironment;
-import de.monticore.lang.gdl.Command;
 import de.monticore.lang.gdl.InterpreterOptions;
 import de.monticore.lang.gdl.types.GDLNumber;
 import de.monticore.lang.gdl.types.GDLType;
