@@ -18,7 +18,7 @@ public class TicTacToeEnvironmentExample extends GDLGameEnvironment {
     private RosTrainingAgent trainingAgent;
     
     public TicTacToeEnvironmentExample() {
-        super(new InterpreterOptions().withTypes(true).debugMode(true));
+        super(new InterpreterOptions().withTypes(true));
 
         final GDLType roleX = GDLType.createFromLine("x");
         final GDLType roleO = GDLType.createFromLine("o");
