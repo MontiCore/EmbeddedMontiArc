@@ -38,6 +38,7 @@ import de.monticore.lang.gdl._ast.ASTGameTerminal;
 import de.monticore.lang.gdl._ast.ASTGameToken;
 import de.monticore.lang.gdl._ast.ASTGameTrue;
 import de.monticore.lang.gdl._ast.ASTGameTuple;
+import de.monticore.lang.gdl._ast.ASTGameTypeCombineDef;
 import de.monticore.lang.gdl._ast.ASTGameTypeDef;
 import de.monticore.lang.gdl._ast.ASTGameTypeMapDef;
 import de.monticore.lang.gdl._ast.ASTGameValue;
@@ -469,6 +470,11 @@ public class PrologPrinter extends IndentPrinter implements GDLVisitor2, MCCommo
     @Override
     public void visit(ASTGameTypeMapDef node) {
         print("typemap");
+    }
+    
+    @Override
+    public void visit(ASTGameTypeCombineDef node) {
+        print("typecombine");
     }
     
     @Override

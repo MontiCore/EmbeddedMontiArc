@@ -1,0 +1,7 @@
+(<= (next combined:?x))
+
+(<= (next one:?x))
+
+(typecombine combined one two)
+(type one 1)
+(type two 2)

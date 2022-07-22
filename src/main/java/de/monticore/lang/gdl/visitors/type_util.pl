@@ -16,6 +16,13 @@ gdli_with_types().
 gdlt_type(X, Y) :-
     gdl_rule([type, X, Y]).
 
+gdlt_type(X, V) :-
+    gdlt_type_combine(X, Y, Z),
+    (gdlt_type(Y, V); gdlt_type(Z, V)).
+
+gdlt_type_combine(X, Y, Z) :-
+    gdl_rule([typecombine, X, Y, Z]).
+
 gdlt_type_map(X, Y, Z) :-
     gdl_rule([typemap, X, Y, Z]),
     !.
@@ -78,6 +85,17 @@ gdlt_merge_templates(Type, (constant, Value), Type) :-
 gdlt_merge_templates((constant, Value), Type, Type) :-
     gdlt_type(Type, Value),
     !.
+
+gdlt_merge_templates(Type1, Type2, Type3) :-
+    (gdlt_type_combine(Type3, Type1, Type2); gdlt_type_combine(Type3, Type2, Type1)),
+    !.
+gdlt_merge_templates(Type, CombineType, CombineType) :-
+    (gdlt_type_combine(CombineType, Type, _); gdlt_type_combine(CombineType, _, Type)),
+    !.
+gdlt_merge_templates(CombineType, Type, CombineType) :-
+    (gdlt_type_combine(CombineType, Type, _); gdlt_type_combine(CombineType, _, Type)),
+    !.
+
 gdlt_merge_templates((constant, Value1), (constant, Value2), (range, Value1, Value2)) :-
     gdli_number(Value1),
     gdli_number(Value2),
