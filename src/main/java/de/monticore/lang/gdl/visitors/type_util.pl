@@ -87,8 +87,16 @@ gdlt_merge_templates((constant, Value), Type, Type) :-
     !.
 
 gdlt_merge_templates(Type1, Type2, Type3) :-
-    (gdlt_type_combine(Type3, Type1, Type2); gdlt_type_combine(Type3, Type2, Type1)),
-    !.
+    (gdlt_type_combine(Type3, Type1, Type2); gdlt_type_combine(Type3, Type2, Type1)).
+
+gdlt_merge_templates(Type1, Type2, CombineType) :-
+    (gdlt_type_combine(Temp, Type1, _); gdlt_type_combine(Temp, _, Type1)),
+    gdlt_merge_templates(Temp, Type2, CombineType).
+
+gdlt_merge_templates(Type1, Type2, CombineType) :-
+    (gdlt_type_combine(Temp, Type2, _); gdlt_type_combine(Temp, _, Type2)),
+    gdlt_merge_templates(Type1, Temp, CombineType).
+
 gdlt_merge_templates(Type, CombineType, CombineType) :-
     (gdlt_type_combine(CombineType, Type, _); gdlt_type_combine(CombineType, _, Type)),
     !.

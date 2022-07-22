@@ -24,6 +24,7 @@ import de.monticore.lang.gdl._ast.ASTGameSub;
 import de.monticore.lang.gdl._ast.ASTGameSucc;
 import de.monticore.lang.gdl._ast.ASTGameTrue;
 import de.monticore.lang.gdl._ast.ASTGameTuple;
+import de.monticore.lang.gdl._ast.ASTGameTypeCombineDef;
 import de.monticore.lang.gdl._ast.ASTGameTypeDef;
 import de.monticore.lang.gdl._ast.ASTGameTypeMapDef;
 import de.monticore.lang.gdl._cocos.GDLASTGameTupleCoCo;
@@ -55,7 +56,8 @@ public class MatchTupleArityExact implements GDLASTGameTupleCoCo {
         Map.entry(ASTGameMult.class, 3),
         Map.entry(ASTGameDiv.class, 3),
         Map.entry(ASTGameMod.class, 3),
-        Map.entry(ASTGameTypeMapDef.class, 3)
+        Map.entry(ASTGameTypeMapDef.class, 3),
+        Map.entry(ASTGameTypeCombineDef.class, 3)
     );
 
     @Override
