@@ -2,7 +2,7 @@
 # (c) https://github.com/MontiCore/monticore  
 . config.sh
 
-GENERATOR_PATH={$EMAM_GENERATOR}
+GENERATOR_PATH="embedded-montiarc-math-middleware-generator-0.1.2-SNAPSHOT-jar-with-dependencies.jar"
 AGENT_BUILD="generator-target/agent/build"
 
 rm -rf generator-target
@@ -20,7 +20,7 @@ echo "Build agent..."
 cmake -B${AGENT_BUILD} -Hgenerator-target/agent/src
 make -C${AGENT_BUILD}
 
-cp "${AGENT_BUILD}/${PACKAGE_NAME}_agent_master/coordinator/Coordinator_${PACKAGE_NAME}_agent_master" "${BINARY}/agent"
+cp "${AGENT_BUILD}/${NAME_OF_AGENT}_agent_master/coordinator/Coordinator_${NAME_OF_AGENT}_agent_master" "${BINARY}/agent"
 
-sed -i "4i matplotlib.use('Agg')" generator-target/agent/src/${PACKAGE_NAME}_agent_master/cpp/reinforcement_learning/util.py
-sed -i "4i import matplotlib" generator-target/agent/src/${PACKAGE_NAME}_agent_master/cpp/reinforcement_learning/util.py
+sed -i "4i matplotlib.use('Agg')" generator-target/agent/src/${NAME_OF_AGENT}_agent_master/cpp/reinforcement_learning/util.py
+sed -i "4i import matplotlib" generator-target/agent/src/${NAME_OF_AGENT}_agent_master/cpp/reinforcement_learning/util.py
