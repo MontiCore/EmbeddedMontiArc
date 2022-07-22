@@ -17,9 +17,6 @@
 (type player player3)
 (type player player4)
 
-(type team re)
-(type team kontra)
-
 (type fkarte kreuz_ass_1)
 (type fkarte kreuz_zehn_1)
 (type fkarte kreuz_koenig_1)
@@ -79,20 +76,15 @@
 (type vorbehalt solo_trumpf_ass)
 (type vorbehalt hochzeit)
 
-(type ansage re)
-(type ansage kontra)
-(type ansage 90)
-(type ansage 60)
-(type ansage 30)
-(type ansage schwarz)
+(typecombine anabsage team absage)
 
-(type l_ansage re)
-(type l_ansage kontra)
+(type team re)
+(type team kontra)
 
-(type l_absage 90)
-(type l_absage 60)
-(type l_absage 30)
-(type l_absage schwarz)
+(type absage 90)
+(type absage 60)
+(type absage 30)
+(type absage schwarz)
 
 
 (<= (typemap punkte far_behind ?x)
@@ -883,13 +875,13 @@
 // -------
 
 // Ansagen mitführen
-(<= (next (ansage team:?x ansage:?y [1,12]:?stich))
+(<= (next (ansage team:?x anabsage:?y [1,12]:?stich))
     (not (true (ablauf auswertung)))
 
     (true (ansage ?x ?y ?stich))
     (not (does ?any_player (absagen ?any)))
 )
-(<= (next (ansage team:?x ansage:?y [1,12]:?stich))
+(<= (next (ansage team:?x anabsage:?y [1,12]:?stich))
     (not (true (ablauf auswertung)))
 
     (true (ansage ?x ?y ?stich))
@@ -898,11 +890,11 @@
 )
 
 // Ansagen aktualisieren
-(<= (next (ansage team:?y ansage:?y [1,12]:?stich))
+(<= (next (ansage team:?y anabsage:?y [1,12]:?stich))
     (does ?player (ansagen ?y))
     (true (ablauf stich ?stich ?any))
 )
-(<= (next (ansage team:?x ansage:?y [1,12]:?stich))
+(<= (next (ansage team:?x anabsage:?y [1,12]:?stich))
     (does ?player (absagen ?y))
     (true (sees ?player (team ?player ?x)))
     (true (ablauf stich ?stich ?any))
@@ -1122,7 +1114,7 @@
 )
 
 // Kontra/Re
-(<= (legal ?player (ansagen l_ansage:?ansage))
+(<= (legal ?player (ansagen team:?ansage))
     (true (ablauf stich ?x ?y))
 
     (true (sees ?player (team ?player ?ansage)))
@@ -1140,7 +1132,7 @@
 // Absagen
 // -------
 
-(<= (legal ?player (absagen l_absage:?absage))
+(<= (legal ?player (absagen absage:?absage))
     (true (ablauf stich ?x ?y))
     // Erst, nachdem bereits eine Ansage des Teams getätigt wurde
     (true (sees ?player (team ?player ?team)))
