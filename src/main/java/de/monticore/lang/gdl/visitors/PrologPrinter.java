@@ -38,6 +38,9 @@ import de.monticore.lang.gdl._ast.ASTGameTerminal;
 import de.monticore.lang.gdl._ast.ASTGameToken;
 import de.monticore.lang.gdl._ast.ASTGameTrue;
 import de.monticore.lang.gdl._ast.ASTGameTuple;
+import de.monticore.lang.gdl._ast.ASTGameTypeCombineDef;
+import de.monticore.lang.gdl._ast.ASTGameTypeDef;
+import de.monticore.lang.gdl._ast.ASTGameTypeMapDef;
 import de.monticore.lang.gdl._ast.ASTGameValue;
 import de.monticore.lang.gdl._visitor.GDLHandler;
 import de.monticore.lang.gdl._visitor.GDLTraverser;
@@ -54,10 +57,7 @@ public class PrologPrinter extends IndentPrinter implements GDLVisitor2, MCCommo
     private static final String TOKEN_PREFIX = "Token";
     private static final String DIGITS_POSITIVE_PREFIX = "numpos";
     private static final String DIGITS_NEGATIVE_PREFIX = "numneg";
-
-    // private static final String TYPE_START = "T_";
-    // private static final String TYPE_END = "_T";
-
+    
     private static final String PREFIX_SEPARATOR = "_";
     private static final String ELEMENT_SEPARATOR = ", ";
 
@@ -460,6 +460,21 @@ public class PrologPrinter extends IndentPrinter implements GDLVisitor2, MCCommo
     @Override
     public void visit(ASTGameMod node) {
         print("mod");
+    }
+    
+    @Override
+    public void visit(ASTGameTypeDef node) {
+        print("type");
+    }
+    
+    @Override
+    public void visit(ASTGameTypeMapDef node) {
+        print("typemap");
+    }
+    
+    @Override
+    public void visit(ASTGameTypeCombineDef node) {
+        print("typecombine");
     }
     
     @Override
