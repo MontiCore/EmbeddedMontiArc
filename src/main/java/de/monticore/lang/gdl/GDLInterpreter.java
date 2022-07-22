@@ -132,6 +132,7 @@ public class GDLInterpreter {
             "  -dm, --debug-mode" + "\t" + "Enable the debug mode\n" +
             "  -mr, --manual-random" + "\t" + "Enable manual control over the random role\n" +
             "  -st, --show-times" + "\t" + "Profile the runtime of some functions\n" +
+            "  -wt, --with-types" + "\t" + "Create features for strongly typed models\n" +
             "";
         System.out.println(help);
     }

@@ -53,8 +53,10 @@ public class GDLCLI implements Runnable {
             "  /roles" + "\t\t" + "Print all playable roles.\n" +
             "  /state {role}" + "\t\t" + "Print the current game state (for a role {role})\n" +
             "  /legal {role}" + "\t\t" + "Print all currently legal moves (for a role {role})\n" +
+            (interpreter.isWithTypes() ?
             "  /dimensions" + "\t\t" + "Print all known space dimensions\n" +
-            "  /indicator {role}" + "\t" + "Print the indicator matrix for a role {role}\n" +
+            "  /indicator {role}" + "\t" + "Print the indicator matrix for a role {role}\n"
+            : "") +
             "";
         System.out.print(help);
     }

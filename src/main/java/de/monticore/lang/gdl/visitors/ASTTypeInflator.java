@@ -13,7 +13,6 @@ import de.monticore.lang.gdl._ast.ASTGameTuple;
 import de.monticore.lang.gdl._ast.ASTGameTupleBuilder;
 import de.monticore.lang.gdl._ast.ASTGameTypeDefBuilder;
 import de.monticore.lang.gdl._ast.ASTGameTypeMapDef;
-import de.monticore.lang.gdl._ast.ASTGameValue;
 import de.monticore.lang.gdl._visitor.GDLTraverser;
 import de.monticore.lang.gdl._visitor.GDLVisitor2;
 
@@ -26,7 +25,7 @@ public class ASTTypeInflator implements GDLVisitor2 {
     
     private static final Function<ASTGameTuple, ASTGameTuple> TYPEDEF_TO_TYPE = tuple -> {
         final ASTGameTypeMapDef typeMapDef = (ASTGameTypeMapDef) ((ASTGameTuple) tuple.getElement(1)).getElement(0);
-        final ASTGameValue type = (ASTGameValue) ((ASTGameTuple) tuple.getElement(1)).getElement(1);
+        final ASTGameConstruct type = (ASTGameConstruct) ((ASTGameTuple) tuple.getElement(1)).getElement(1);
         final ASTGameConstruct typeMap = (ASTGameConstruct) ((ASTGameTuple) tuple.getElement(1)).getElement(2);
 
         return new ASTGameTupleBuilder()

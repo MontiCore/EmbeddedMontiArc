@@ -35,6 +35,7 @@ import de.monticore.lang.gdl._symboltable.GDLScopesGenitor;
 import de.monticore.lang.gdl._symboltable.IGDLGlobalScope;
 import de.monticore.lang.gdl._visitor.GDLTraverser;
 import de.monticore.lang.gdl.cocos.AllCoCosChecker;
+import de.monticore.lang.gdl.cocos.types.TypesCoCosChecker;
 import de.monticore.lang.gdl.types.GDLNumber;
 import de.monticore.lang.gdl.types.GDLTuple;
 import de.monticore.lang.gdl.types.GDLType;
@@ -675,22 +676,33 @@ public class Interpreter extends EventSource<GDLType, Set<GDLType>> implements A
         final AllCoCosChecker checker = new AllCoCosChecker();
         checker.checkAll(ast);
 
-        final ASTTypeInflator inflator = new ASTTypeInflator();
-        ast.accept(inflator.getTraverser());
+        boolean typesFail = false;
+        if (options != null && options.isWithTypes()) {
+            Log.enableFailQuick(false);
+            final TypesCoCosChecker tChecker = new TypesCoCosChecker();
+            tChecker.checkAll(ast);
+            if (Log.getErrorCount() > 0) {
+                typesFail = true;
+                Log.warn("Types can not be created.");
+                Log.clearFindings();
+            }
+            Log.enableFailQuick(true);
+        }
+
+        if (!typesFail) {
+            final ASTTypeInflator inflator = new ASTTypeInflator();
+            ast.accept(inflator.getTraverser());
+        }
 
         final PrologPrinter printer = new PrologPrinter();
         ast.accept(printer.getTraverser());
         String prolog = printer.getContent();
 
-        if (options != null && options.isWithTypes()) {
+        if (options != null && options.isWithTypes() && !typesFail) {
             final TypeTemplatePrinter typePrinter = new TypeTemplatePrinter();
             ast.accept(typePrinter.getTraverser());
-            // TODO: Check if types are valid (cocos)
 
             prolog += "\n" + typePrinter.getContent();
-
-
-
         }
 
         return fromProlog(prolog, options);

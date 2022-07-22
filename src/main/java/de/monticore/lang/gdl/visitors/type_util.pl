@@ -24,6 +24,9 @@ gdlt_type_map(X, Y, Z) :-
 % ------- Template Gen -------
 % ----------------------------
 
+gdl_template_state(_) :- false.
+gdl_template_action(_) :- false.
+
 gdlt_make_all_templates() :-
     gdlt_merge_all_templates(state, SMerged),
     gdlt_merge_all_templates(action, AMerged),
@@ -125,7 +128,9 @@ gdlt_merge_templates([X | Xs], [Y | Ys], [Merged1 | Merged2]) :-
 % -- Dimensions
 gdlt_get_dimension(X, Dimension) :-
     gdlt_all_templates_merged(X, Templates),
-    gdlt_get_templates_dimension(Templates, Dimension).
+    gdlt_get_templates_dimension(Templates, Dimension),
+    !.
+gdlt_get_dimension(_, numpos_0).
 
 % For templates
 gdlt_get_templates_dimension([Type | Types], Dimension) :- 

@@ -11,7 +11,6 @@ public class AllCoCosChecker extends GDLCoCoChecker {
         addCoCo(new MatchTupleArityMin());
         addCoCo(new MatchTupleArityExact());
         addCoCo(new KeywordOnlyInContext());
-        addCoCo(new TypeDefNoTokens());
     }
 
 }
