@@ -201,7 +201,7 @@ public abstract class GDLGameEnvironment implements RlGdlGameEnvironment {
 
         for (Command move : legalMovesForPlayer) {
 
-            legalActions.add(this.getActionFromMoveString(move, agent));
+            legalActions.add(this.getActionFromMove(move, agent));
         }
 
         return legalActions.stream().mapToInt(i -> i).toArray();
@@ -542,7 +542,7 @@ public abstract class GDLGameEnvironment implements RlGdlGameEnvironment {
                     
                     Command move = env.getMoveFromAction(j, role, agent);
                     
-                    int actionNumber = env.getActionFromMoveString(move, agent);
+                    int actionNumber = env.getActionFromMove(move, agent);
                     
                     Assert.assertEquals(j, actionNumber);
 
@@ -554,6 +554,41 @@ public abstract class GDLGameEnvironment implements RlGdlGameEnvironment {
         }
     }
 
+    // From RlGdlGameEnvironment
+
+    public float[] getStateAsFloatRepresentation(GDLType gdlRole, Agent agent) {
+        if (interpreter.isWithTypes()) {
+            return interpreter.getStateIndicatorMatrixForRole(gdlRole);
+        }
+        throw new UnsupportedOperationException("Interpreter does not support types. The method must be implemented by hand.");
+    }
+    
+    public Command getMoveFromAction(int actionIndex, GDLType gdlRole, Agent agent) {
+        if (interpreter.isWithTypes()) {
+            GDLType action = interpreter.getActionForIndex(actionIndex);
+            Command move = Command.createFromLine(gdlRole.toString() + " " + action.toString());
+            return move;
+        }
+        throw new UnsupportedOperationException("Interpreter does not support types. The method must be implemented by hand.");
+    }
+    
+    public int getActionFromMove(Command move, Agent agent) {
+        if (interpreter.isWithTypes()) {
+            GDLType action = move.getAction();
+            int actionIndex = interpreter.getIndexForAction(action);
+            return actionIndex;
+        }
+        throw new UnsupportedOperationException("Interpreter does not support types. The method must be implemented by hand.");
+    }
+    
+    public int getNumberOfActionsForRole(GDLType gdlRole) {
+        if (interpreter.isWithTypes()) {
+            return interpreter.getActionSpaceDimension();
+        }
+        throw new UnsupportedOperationException("Interpreter does not support types. The method must be implemented by hand.");
+    }
+
+    
     public static void main(String[] args) throws Exception {
         
         System.out.println("Please implement main method");

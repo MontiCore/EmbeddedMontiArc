@@ -28,7 +28,7 @@ public interface RlGdlGameEnvironment {
     * @param agent the corresponding agent for which the numbering is
     * @return the number of the agent's action for the given role
     */
-    public int getActionFromMoveString(Command move, Agent agent);
+    public int getActionFromMove(Command move, Agent agent);
     
     /**
      * States how many different actions a role has in total
