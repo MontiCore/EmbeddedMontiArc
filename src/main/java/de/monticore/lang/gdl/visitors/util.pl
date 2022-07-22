@@ -492,7 +492,8 @@ gdl_rule([distinct | Xs]) :-
 % ---------------------
 
 gdli_terminal() :-
-    gdl_rule(terminal).
+    gdl_rule(terminal),
+    !.
 
 gdli_goal(X, Y) :-
     gdl_rule([goal, X, Y]).
