@@ -401,13 +401,13 @@
 //copy inPlay card while it's not beeing put
 (<= (next (sees ?player (inPlay ?player ?card)))
     (true (sees ?player (inPlay ?player ?card)))
-    (not (does ?player (put ?card ?stack)))
+    (not (does ?player (put ?card ?stack ?pos)))
     (not (does ?player (play ?card2)))
 )
 
 //remove card from inPlay when it's put
 (<= (next (sees ?player (inPlay ?player 1000)))
-    (does ?player (put ?card ?stack))
+    (does ?player (put ?card ?stack ?pos))
 )
 
 //mark player as having no card in play
@@ -422,7 +422,7 @@
 (<= (next (control ?player))
     (not (true (control all)))
     (true (sees ?player (inPlay ?player ?card)))
-    (not (does ?player (put ?card ?stack)))
+    (not (does ?player (put ?card ?stack ?pos)))
     (smallest ?card)
     (distinct ?card 1000)
 )
