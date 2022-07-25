@@ -65,7 +65,7 @@
 (init (sees red (hand red 5 102)))
 (init (sees red (hand red 6 52)))
 (init (sees red (hand red 7 57)))
-(init (sees red (hand red 8 72)))
+(init (sees red (hand red 8 71)))
 (init (sees red (hand red 9 30)))
 (init (sees red (hand red 10 19)))
 
