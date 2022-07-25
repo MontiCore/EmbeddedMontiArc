@@ -312,6 +312,7 @@
 //Anlegen
 (<= (legal ?player (put ?card ?stack ?pos))
     (isPlayer ?player)
+    (isPos ?pos)
     (true (control ?player))
     (true (sees ?player (inPlay ?player ?card)))
     (isMatchingStack ?stack ?card)

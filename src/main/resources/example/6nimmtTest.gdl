@@ -322,6 +322,7 @@
 //Anlegen
 (<= (legal ?player (put ?card ?stack ?pos))
     (isPlayer ?player)
+    (isPos ?pos)
     (true (control ?player))
     (true (sees ?player (inPlay ?player ?card)))
     (isMatchingStack ?stack ?card)
@@ -828,20 +829,20 @@
     (true (sees green (inPlay green 17)))
 )
 
-(<= (next (debug player isMatchingStack D))
-    (isMatchingStack d 17)
+(<= (next (debug player isMatchingStack ?stack))
+    (isMatchingStack ?stack 51)
 )
 
-(<= (next (debug player succ))
+(<= (next (debug player succT))
     (succ ?posP 2)
 )
 
 (<= (next (debug player lastCard ?cardP))
-    (lastCard D 1 ?cardP)
+    (lastCard d 1 ?cardP)
     
 )
 
-(<= (next (debug player less))
+(<= (next (debug player lessT))
     (less 1 17)
 )
 
