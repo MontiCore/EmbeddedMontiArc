@@ -460,7 +460,7 @@
 //Letzter Spieler legt an
 (<= (next (control all))
     (not (true (control all)))
-    (does ?player1 (put ?card1 ?stack))
+    (does ?player1 (put ?card1 ?stack ?pos))
     (true (sees ?player2 (inPlay ?player2 1000)))
     (true (sees ?player3 (inPlay ?player3 1000)))
     (true (sees ?player4 (inPlay ?player4 1000)))
