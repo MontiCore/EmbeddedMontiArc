@@ -19,6 +19,8 @@ gdli_input(X) :- false.
 
 gdli_options(X) :- false.
 
+gdli_with_types() :- false.
+
 % ----------------------------
 % ------- Interpreter --------
 % ----------------------------
@@ -30,6 +32,7 @@ gdli_random_legal(Move) :-
 
 gdli_do_random() :-
     \+ gdli_options(manual_random),
+    gdl_role(value_random),
     gdli_random_legal(Move),
     gdli_do_move(Move).
 gdli_do_random().
@@ -63,12 +66,24 @@ gdli_next_hidden_state([]).
 
 
 gdli_init() :-
+    gdli_init_templates(),
     gdli_init_state(State),
     gdli_init_hidden_state(HiddenState),
     gdli_load_state(State),
     gdli_load_hidden_state(HiddenState),
     gdli_do_random(),
     !.
+
+
+gdli_init_templates() :-
+    \+ gdli_with_types(),
+    !.
+gdli_init_templates() :-
+    gdli_with_types(),
+    \+ gdlt_all_templates_merged(_, _),
+    gdlt_make_all_templates(),
+    !.
+gdli_init_templates().
 
 gdli_build_next() :-
     gdli_next_state(State),
@@ -389,6 +404,17 @@ gdli_greater(X, Y) :-
     gdli_less(Y, X).
 
 
+% -- Between --
+% -------------
+
+gdli_between(X, Y, Z) :-
+    nonvar(X),
+    nonvar(Y),
+    gdli_atom_to_number(X, NX),
+    gdli_atom_to_number(Y, NY),
+    between(NX, NY, NZ),
+    gdli_number_to_atom(NZ, Z).
+
 % -- Equal --
 % ------------
 
@@ -466,7 +492,8 @@ gdl_rule([distinct | Xs]) :-
 % ---------------------
 
 gdli_terminal() :-
-    gdl_rule(terminal).
+    gdl_rule(terminal),
+    !.
 
 gdli_goal(X, Y) :-
     gdl_rule([goal, X, Y]).

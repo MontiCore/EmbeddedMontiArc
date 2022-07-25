@@ -19,7 +19,7 @@ plugins {
 
 group = 'de.monticore.lang'
 description = 'gdl'
-sourceCompatibility = '1.8'
+sourceCompatibility = '11'
 
 /* ============================================================ */
 /* ========================= Versions ========================= */
@@ -30,7 +30,7 @@ def commons_cli_version = "1.4"
 def grammar_classifier = "grammars"
 def grammarDir = "src/main/grammars"
 // def mc_version = "4.5.3"
-def se_commons_version = "7.1.0-SNAPSHOT"
+def se_commons_version = "7.4.0-SNAPSHOT"
 
 
 /* ============================================================ */

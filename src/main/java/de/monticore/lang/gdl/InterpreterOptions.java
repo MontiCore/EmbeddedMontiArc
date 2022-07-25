@@ -5,7 +5,8 @@ public class InterpreterOptions {
     private boolean
         manualRandom = false,
         debugMode = false,
-        showTimes = false;
+        showTimes = false,
+        withTypes = false;
 
     public InterpreterOptions manualRandom(boolean manualRandom) {
         this.manualRandom = manualRandom;
@@ -22,6 +23,11 @@ public class InterpreterOptions {
         return this;
     }
 
+    public InterpreterOptions withTypes(boolean withTypes) {
+        this.withTypes = withTypes;
+        return this;
+    }
+
     public boolean isManualRandom() {
         return manualRandom;
     }
@@ -32,6 +38,10 @@ public class InterpreterOptions {
 
     public boolean isShowTimes() {
         return showTimes;
+    }
+
+    public boolean isWithTypes() {
+        return withTypes;
     }
 
 }

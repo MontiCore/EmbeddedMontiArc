@@ -1,6 +1,7 @@
 package de.monticore.lang.gdl;
 
 import de.monticore.lang.gdl.types.GDLTuple;
+import de.monticore.lang.gdl.types.GDLType;
 
 public class Command {
     
@@ -8,6 +9,14 @@ public class Command {
 
     private Command() {
         tuple = null;
+    }
+
+    public GDLType getRole() {
+        return tuple.get(0);
+    }
+
+    public GDLType getAction() {
+        return tuple.get(1);
     }
 
     public boolean isNoop() {

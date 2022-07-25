@@ -1,5 +1,6 @@
 package de.monticore.lang.gdl.cli;
 
+import java.util.Arrays;
 import java.util.Map;
 import java.util.Scanner;
 import java.util.Set;
@@ -52,6 +53,10 @@ public class GDLCLI implements Runnable {
             "  /roles" + "\t\t" + "Print all playable roles.\n" +
             "  /state {role}" + "\t\t" + "Print the current game state (for a role {role})\n" +
             "  /legal {role}" + "\t\t" + "Print all currently legal moves (for a role {role})\n" +
+            (interpreter.isWithTypes() ?
+            "  /dimensions" + "\t\t" + "Print all known space dimensions\n" +
+            "  /indicator {role}" + "\t" + "Print the indicator matrix for a role {role}\n"
+            : "") +
             "";
         System.out.print(help);
     }
@@ -118,6 +123,28 @@ public class GDLCLI implements Runnable {
         }
     }
 
+    private void printDimensions() {
+        if (!interpreter.isWithTypes()) {
+            System.out.println("The Model does not support types!");
+        } else {
+            System.out.printf("State Space Dimension:\t%d\n", interpreter.getStateSpaceDimension());
+            System.out.printf("Action Space Dimension:\t%d\n", interpreter.getActionSpaceDimension());
+        }
+    }
+
+    private void printIndicator(String role) {
+        if (!interpreter.isWithTypes()) {
+            System.out.println("The Model does not support types!");
+            return;
+        }
+
+        GDLType gdlRole = GDLType.createFromLine(role);
+        float[] matrix = interpreter.getStateIndicatorMatrixForRole(gdlRole);
+
+        System.out.println("Indicator matrix:");
+        System.out.println("  " + Arrays.toString(matrix));
+    }
+
     private void printWelcome() {
         String welcome = "Welcome to the GDL Interpreter!";
         System.out.println(welcome);
@@ -165,6 +192,14 @@ public class GDLCLI implements Runnable {
                         printLegal(line.substring(7));
                     } else {
                         printLegal(null);
+                    }
+                } else if (line.startsWith("/dimensions")) {
+                    printDimensions();
+                } else if (line.startsWith("/indicator")) {
+                    if (line.length() > "/indicator ".length()) {
+                        printIndicator(line.substring("/indicator ".length()));
+                    } else {
+                        printHelp();
                     }
                 } else {
                     System.out.println("Unknown command: " + line);
