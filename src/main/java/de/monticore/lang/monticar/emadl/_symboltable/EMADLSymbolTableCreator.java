@@ -7,37 +7,43 @@
 /* (c) https://github.com/MontiCore/monticore */
 package de.monticore.lang.monticar.emadl._symboltable;
 
+import de.monticore.ast.ASTNode;
+import de.monticore.lang.embeddedmontiarc.embeddedmontiarc._ast.ASTComponent;
 import de.monticore.lang.embeddedmontiarc.embeddedmontiarc._ast.ASTEMACompilationUnit;
+import de.monticore.lang.embeddedmontiarc.embeddedmontiarc._ast.ASTSubComponent;
 import de.monticore.lang.embeddedmontiarc.embeddedmontiarcbehavior._symboltable.EmbeddedMontiArcBehaviorSymbolTableCreator;
 import de.monticore.lang.embeddedmontiarc.embeddedmontiarcbehavior._visitor.EmbeddedMontiArcBehaviorVisitor;
 import de.monticore.lang.embeddedmontiarc.embeddedmontiarcmath._symboltable.EmbeddedMontiArcMathSymbolTableCreatorTOP;
 import de.monticore.lang.embeddedmontiarc.embeddedmontiarcmath._symboltable.instanceStructure.ModifiedEMAComponentInstanceSymbolCreator;
 import de.monticore.lang.embeddedmontiarcdynamic.embeddedmontiarcdynamic._symboltable.EmbeddedMontiArcDynamicSymbolTableCreator;
-import de.monticore.lang.math._ast.ASTStatement;
 import de.monticore.lang.mathopt._symboltable.MathOptSymbolTableCreator;
+import de.monticore.lang.monticar.cnnarch._ast.ASTArchitecture;
 import de.monticore.lang.monticar.cnnarch._symboltable.CNNArchSymbolTableCreator;
 import de.monticore.lang.monticar.emadl._ast.ASTBehaviorEmbedding;
 import de.monticore.lang.monticar.emadl._visitor.EMADLDelegatorVisitor;
 import de.monticore.lang.monticar.emadl._visitor.EMADLVisitor;
+import de.monticore.lang.monticar.emadl._visitor.ModularEMADLDelegatorVisitor;
+import de.monticore.lang.monticar.emadl._visitor.ModularNetworkVisitor;
 import de.monticore.symboltable.MutableScope;
 import de.monticore.symboltable.ResolvingConfiguration;
 import de.monticore.symboltable.Scope;
+import de.monticore.symboltable.Symbol;
 import de.se_rwth.commons.logging.Log;
 
-import java.util.ArrayList;
-import java.util.Deque;
-import java.util.HashMap;
+import java.util.*;
 
 public class EMADLSymbolTableCreator extends de.monticore.symboltable.CommonSymbolTableCreator
         implements EMADLVisitor {
     
-    private final EMADLDelegatorVisitor visitor = new EMADLDelegatorVisitor();
+    private final ModularEMADLDelegatorVisitor visitor = new ModularEMADLDelegatorVisitor();
 
     private EmbeddedMontiArcMathSymbolTableCreatorTOP emamSTC;
     private CNNArchSymbolTableCreator cnnArchSTC;
     private MathOptSymbolTableCreator mathOptSTC;
     private EmbeddedMontiArcDynamicSymbolTableCreator emadSTC;
     private EmbeddedMontiArcBehaviorVisitor emaBehaviorSTC;
+    private ModularNetworkVisitor mnv;
+
 
     public EMADLSymbolTableCreator(
             final ResolvingConfiguration resolvingConfig, final MutableScope enclosingScope) {
@@ -70,6 +76,7 @@ public class EMADLSymbolTableCreator extends de.monticore.symboltable.CommonSymb
         this.emadSTC = new ModifiedEMADynamicSymbolTableCreator(resolvingConfig, scopeStack);
         this.emadSTC.setInstanceSymbolCreator(new ModifiedEMAComponentInstanceSymbolCreator()); //Use an instance symbo, creator that adds math statement to instances
         this.emaBehaviorSTC = new EmbeddedMontiArcBehaviorSymbolTableCreator(resolvingConfig, scopeStack);
+        this.mnv = new ModularNetworkVisitor();
 
         visitor.setEMADLVisitor(this);
         visitor.setCNNArchVisitor(cnnArchSTC);
@@ -88,6 +95,8 @@ public class EMADLSymbolTableCreator extends de.monticore.symboltable.CommonSymb
         visitor.setMathOptVisitor(mathOptSTC);
 
         visitor.setCommon2Visitor(emamSTC);
+
+        visitor.setModularNetworkVisitor(mnv);
     }
 
     private void initSuperSTC(final ResolvingConfiguration resolvingConfig, String customFilesPath, String pythonPath, String backend) {
@@ -97,6 +106,7 @@ public class EMADLSymbolTableCreator extends de.monticore.symboltable.CommonSymb
         this.emadSTC = new ModifiedEMADynamicSymbolTableCreator(resolvingConfig, scopeStack);
         this.emadSTC.setInstanceSymbolCreator(new ModifiedEMAComponentInstanceSymbolCreator()); //Use an instance symbo, creator that adds math statement to instances
         this.emaBehaviorSTC = new EmbeddedMontiArcBehaviorSymbolTableCreator(resolvingConfig, scopeStack);
+        this.mnv = new ModularNetworkVisitor();
 
         visitor.setEMADLVisitor(this);
         visitor.setCNNArchVisitor(cnnArchSTC);
@@ -115,6 +125,9 @@ public class EMADLSymbolTableCreator extends de.monticore.symboltable.CommonSymb
         visitor.setMathOptVisitor(mathOptSTC);
 
         visitor.setCommon2Visitor(emamSTC);
+
+        visitor.setModularNetworkVisitor(mnv);
+
     }
 
 /**
@@ -128,7 +141,16 @@ public class EMADLSymbolTableCreator extends de.monticore.symboltable.CommonSymb
 
     public Scope createFromAST(ASTEMACompilationUnit rootNode) {
         Log.errorIfNull(rootNode, "0xA7004_184 Error by creating of the EMADLSymbolTableCreator symbol table: top ast node is null");
+
+        ASTComponent comp =  rootNode.getComponent();
+        Log.info(comp.toString(),"COMP_AST");
+        List<ASTSubComponent> subcomps = comp.getSubComponents();
+        for (ASTSubComponent c : subcomps){
+
+        }
+
         rootNode.accept(visitor);
+        Log.info(rootNode.toString(),"ROOT_NODE");
         return getFirstCreatedScope();
     }
 
@@ -151,9 +173,81 @@ public class EMADLSymbolTableCreator extends de.monticore.symboltable.CommonSymb
         }
     }
 
+
+    public void visit(ASTBehaviorEmbedding ast){
+        Log.info("TEST BE","TEST_VISITOR");
+        if (ast.isPresentArchitecture()){
+           ASTArchitecture arch =  ast.getArchitecture();
+           Collection<de.monticore.ast.ASTNode> children = arch.get_Children();
+           for (de.monticore.ast.ASTNode n: children){
+               Optional<? extends Symbol> symbolOpt =  n.getSymbolOpt();
+               if (!symbolOpt.isPresent()) {
+                   Log.info("NO SYMBOL PRESENT","SYMBOL_CHECK");
+                   continue;
+               }
+
+               Symbol symbol = symbolOpt.get();
+
+               symbol.getName();
+               Log.info(symbol.getName(),"SYMBOL_CHECK");
+               Log.info(symbol.getFullName(),"SYMBOL_CHECK");
+               Log.info(symbol.getPackageName(),"SYMBOL_CHECK");
+               Log.info(symbol.getKind().toString(),"SYMBOL_CHECK");
+
+               if (symbol.getAstNode().isPresent()){
+                   ASTNode astNode = symbol.getAstNode().get();
+                   //astNode.get
+               }
+
+           }
+        }
+
+    }
+
+    public void visit(ASTNode node) {
+
+        Log.info("TEST N","TEST_VISITOR_ASTNode");
+        Log.info(node.toString(),"TEST_VISITOR_ASTNode");
+        //node.
+        if (node.isPresentSpannedScope()) Log.info(node.getSpannedScope().toString(),"TEST_VISITOR_ASTNode");
+        if (node.isPresentEnclosingScope()) Log.info(node.getEnclosingScope().toString(),"TEST_VISITOR_ASTNode");
+
+        /*Optional<? extends Symbol> symbolOpt = node.getSymbolOpt();
+
+
+
+        if (!symbolOpt.isPresent()) {
+            Log.info("NO SYMBOL PRESENT","SYMBOL_CHECK_ASTNode");
+            return;
+        }
+
+
+        Symbol symbol = symbolOpt.get();
+
+        Log.info(symbol.getName(),"SYMBOL_CHECK_ASTNode");
+        Log.info(symbol.getFullName(),"SYMBOL_CHECK_ASTNode");
+        Log.info(symbol.getPackageName(),"SYMBOL_CHECK_ASTNode");
+        Log.info(symbol.getKind().toString(),"SYMBOL_CHECK_ASTNode");
+        */
+
+
+
+    }
+
+    public void handle(ASTNode node){
+        Log.info("TEST N","TEST_HANDLER_ASTNode");
+        Log.info(node.toString(),"TEST_HANDLER_ASTNode");
+    }
+
+    public void visit(ASTArchitecture node){
+        Log.info("TEST N","VISITOR_Rand");
+    }
+
     public void endVisit(ASTBehaviorEmbedding ast) {
         if(ast.isPresentArchitecture()){
             //processed in handle/visit/endVisit of ASTArchitecture and ASTArchBody
+            Log.info("TEST N","VISITOR_Rand");
+            Log.info(ast.toString(),"VISITOR_Rand");
         }else if(ast.getStatementList().size() > 0) {
             addToScopeAndLinkWithNode(new EMADLMathStatementsSymbol("MathStatements", ast.getStatementList()), ast);
         }

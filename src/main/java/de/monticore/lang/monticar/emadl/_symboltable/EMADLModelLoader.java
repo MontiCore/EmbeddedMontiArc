@@ -8,6 +8,7 @@
 package de.monticore.lang.monticar.emadl._symboltable;
 
 import de.monticore.lang.embeddedmontiarc.embeddedmontiarc._ast.ASTEMACompilationUnit;
+import de.monticore.lang.monticar.emadl._ast.EMADLMill;
 import de.monticore.symboltable.ArtifactScope;
 import de.monticore.symboltable.MutableScope;
 import de.monticore.symboltable.ResolvingConfiguration;

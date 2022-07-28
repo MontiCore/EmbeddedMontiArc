@@ -4,28 +4,23 @@
  * The license generally applicable for this project
  * can be found under https://github.com/MontiCore/monticore.
  */
-/* (c) https://github.com/MontiCore/monticore */
 package de.monticore.lang.monticar.emadl;
 
 import de.monticore.lang.embeddedmontiarc.embeddedmontiarc._symboltable.instanceStructure.EMAComponentInstanceSymbol;
 import de.monticore.lang.monticar.cnnarch._symboltable.ArchitectureSymbol;
-import de.monticore.lang.monticar.cnnarch._symboltable.CompositeElementSymbol;
 import de.monticore.lang.monticar.cnnarch._symboltable.LayerSymbol;
 import de.monticore.symboltable.Scope;
 import de.se_rwth.commons.logging.Log;
 import org.junit.Before;
 import org.junit.Test;
 
-import static de.monticore.lang.monticar.emadl.ParserTest.ENABLE_FAIL_QUICK;
 import static junit.framework.TestCase.assertEquals;
 
-public class InstanceTest extends AbstractSymtabTest {
+public class ModularTest extends AbstractSymtabTest{
 
     @Before
     public void setUp() {
-        // ensure an empty log
         Log.getFindings().clear();
-        //Log.enableFailQuick(ENABLE_FAIL_QUICK);
         Log.enableFailQuick(false);
     }
 
@@ -58,3 +53,4 @@ public class InstanceTest extends AbstractSymtabTest {
         assertEquals(40, convChannels2);
     }
 }
+
