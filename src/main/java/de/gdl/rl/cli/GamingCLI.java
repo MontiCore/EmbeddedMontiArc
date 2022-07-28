@@ -8,6 +8,7 @@ import java.util.List;
 import java.util.Map;
 import java.util.regex.Pattern;
 import de.gdl.rl.environment.GDLGameEnvironment;
+import de.monticore.lang.gdl.Command;
 import de.monticore.lang.gdl.types.GDLNumber;
 import de.monticore.lang.gdl.types.GDLType;
 
@@ -63,7 +64,7 @@ public class GamingCLI<ConcreteEnvironment extends GDLGameEnvironment> extends C
         System.out.println(this.env.getStateAsReadableString());
     }
 
-    protected String onEnterMove(String role) {
+    protected Command onEnterMove(GDLType role) {
         System.out.println("Enter a move for '" + role + "':");
         this.scanner = new Scanner(System.in).useDelimiter(Pattern.compile("(\\n)|;"));
         String move = this.scanner.next();
@@ -71,7 +72,7 @@ public class GamingCLI<ConcreteEnvironment extends GDLGameEnvironment> extends C
         this.moveWasEnteredByUser = true;
         // TBD: check if move has special format: /legalMoves -> shows all legal moves for the role
 
-        return move; 
+        return Command.createFromLine(move); 
     }
 
     protected void onMoveWasIllegal(String move, List<String> legalMoves) {

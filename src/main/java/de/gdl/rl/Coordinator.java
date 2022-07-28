@@ -124,7 +124,7 @@ public class Coordinator<ConcreteEnvironment extends GDLGameEnvironment> impleme
 
     @Override
     public void receivedData(String topic, int value) {
-        if (this.waitForActionFromTopic.equals(topic)) {
+        if (topic.equals(this.waitForActionFromTopic)) {
             this.performAction(value, this.waitForActionForRole, this.waitForActionFromAgent);
         }
     }
