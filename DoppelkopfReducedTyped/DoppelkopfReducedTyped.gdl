@@ -2280,61 +2280,15 @@
 // ------ Goal & Terminal ------
 // -----------------------------
 
-(<= (goal ?player 100)
-    (type player ?player)
-    (meiste_punkte ?player)
-)
-
-(<= (goal ?player 0)
-    (type player ?player)
-    (not (meiste_punkte ?player))
-)
-
-(<= (meiste_punkte player1)
-    (true (punkte player1 ?p1))
-    (true (punkte player2 ?p2))
-    (true (punkte player3 ?p3))
-    (true (punkte player4 ?p4))
-    (greater ?p1 ?p2)
-    (greater ?p1 ?p3)
-    (greater ?p1 ?p4)
-)
-
-(<= (meiste_punkte player2)
-    (true (punkte player1 ?p1))
-    (true (punkte player2 ?p2))
-    (true (punkte player3 ?p3))
-    (true (punkte player4 ?p4))
-    (greater ?p2 ?p1)
-    (greater ?p2 ?p3)
-    (greater ?p2 ?p4)
-)
-
-(<= (meiste_punkte player3)
-    (true (punkte player1 ?p1))
-    (true (punkte player2 ?p2))
-    (true (punkte player3 ?p3))
-    (true (punkte player4 ?p4))
-    (greater ?p3 ?p2)
-    (greater ?p3 ?p1)
-    (greater ?p3 ?p4)
-)
-
-(<= (meiste_punkte player4)
-    (true (punkte player1 ?p1))
-    (true (punkte player2 ?p2))
-    (true (punkte player3 ?p3))
-    (true (punkte player4 ?p4))
-    (greater ?p4 ?p2)
-    (greater ?p4 ?p3)
-    (greater ?p4 ?p1)
+(<= (goal ?player ?punkte)
+    (true (punkte ?player ?punkte))
 )
 
 
-// Ende nach 24 Spielen
+// Ende nach 1 Spiel
 (<= terminal
     (true (spiel ?x))
-    (greater ?x 24)
+    (greater ?x 1)
 )
 
 
