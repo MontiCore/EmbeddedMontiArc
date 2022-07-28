@@ -1,4 +1,4 @@
-package calculator
+package cNNCalculator
 
 component Net1 {
     ports in Z(0:255)^{1, 28, 28} input,
