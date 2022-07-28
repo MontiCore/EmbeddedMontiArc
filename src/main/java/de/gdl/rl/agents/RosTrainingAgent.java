@@ -3,10 +3,12 @@ package de.gdl.rl.agents;
 import java.util.ArrayList;
 import java.util.List;
 
+import de.monticore.lang.gdl.types.GDLType;
+
 
 public class RosTrainingAgent extends RosAgent {
 
-    public String currentGdlRoleName = "";
+    public GDLType currentGdlRole = null;
 
     // ros topics
     public String terminalTopic = "";
@@ -27,10 +29,9 @@ public class RosTrainingAgent extends RosAgent {
         return this;
     }
 
-    public RosTrainingAgent withGdlRoleNames(String[] gdlRoleNames) {
-        
-        for (String roleName : gdlRoleNames) {
-            this.gdlRoleNames.add(roleName);
+    public RosTrainingAgent withGdlRoles(GDLType[] gdlRoles) {
+        for (GDLType role : gdlRoles) {
+            this.gdlRoles.add(role);
         }
         return this;
     }
@@ -40,8 +41,8 @@ public class RosTrainingAgent extends RosAgent {
         return this;
     }
 
-    public RosTrainingAgent withCurrentGdlRoleName(String currentGdlRoleName) {
-        this.currentGdlRoleName = currentGdlRoleName;
+    public RosTrainingAgent withCurrentGdlRole(GDLType currentGdlRole) {
+        this.currentGdlRole = currentGdlRole;
         return this;
     }
 
@@ -91,14 +92,13 @@ public class RosTrainingAgent extends RosAgent {
     }
 
     public RosTrainingAgent copy() {
-
-        List<String> gdlRoleNamesList = new ArrayList<String>(this.gdlRoleNames);
-        String[] gdlRoleNameArr = gdlRoleNamesList.toArray(new String[gdlRoleNamesList.size()]);
+        List<GDLType> gdlRolesList = new ArrayList<>(this.gdlRoles);
+        GDLType[] gdlRoleArr = gdlRolesList.toArray(new GDLType[gdlRolesList.size()]);
 
        return new RosTrainingAgent()
         .withName(this.name)
         .withType(this.type)
-        .withGdlRoleNames(gdlRoleNameArr)
+        .withGdlRoles(gdlRoleArr)
         .withGameOverForIllegalActions(this.gameOverForIllegalActions)
         .withStateTopic(this.stateTopic)
         .withLegalActionsTopic(this.legalActionsTopic)
@@ -106,7 +106,7 @@ public class RosTrainingAgent extends RosAgent {
         .withNumberOfRandomEpisodes(this.numberOfRandomEpisodes)
         .withEpsilon(this.epsilon)
         .withEpsilonDecay(this.epsilonDecay)
-        .withCurrentGdlRoleName(this.currentGdlRoleName)
+        .withCurrentGdlRole(this.currentGdlRole)
         .withTerminalTopic(this.terminalTopic)
         .withRewardTopic(this.rewardTopic)
         .withResetTopic(this.resetTopic);

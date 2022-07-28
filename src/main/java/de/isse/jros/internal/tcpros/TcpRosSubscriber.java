@@ -7,6 +7,7 @@
 
 package de.isse.jros.internal.tcpros;
 
+import java.io.BufferedInputStream;
 import java.io.DataInputStream;
 import java.io.IOException;
 import java.io.InputStream;
@@ -65,7 +66,7 @@ public class TcpRosSubscriber {
 					+ "], but our version has [" + message.getName() + "/" + md5 + "]. Dropping connection.");
 		}
 
-		dis = new DataInputStream(is);
+		dis = new DataInputStream(new BufferedInputStream(is));
 
 		Thread thread = new Thread(new Runnable() {
 			@Override
@@ -73,8 +74,7 @@ public class TcpRosSubscriber {
 				while (true) {
 					byte[] msg = null, lmsg = new byte[4];
 					try {
-						for (int pos = 0; pos < 4; pos += dis.read(lmsg, pos, 4 - pos))
-							;
+						dis.readFully(lmsg);
 						int len = ROSint32.TYPE.read(lmsg, 0).intValue();
 						if (len > 0) {
 							msg = new byte[len];

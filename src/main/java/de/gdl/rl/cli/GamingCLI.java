@@ -3,9 +3,14 @@ import de.gdl.rl.Coordinator;
 
 import java.util.HashMap;
 import java.util.Scanner;
+import java.util.Map.Entry;
 import java.util.List;
+import java.util.Map;
 import java.util.regex.Pattern;
 import de.gdl.rl.environment.GDLGameEnvironment;
+import de.monticore.lang.gdl.Command;
+import de.monticore.lang.gdl.types.GDLNumber;
+import de.monticore.lang.gdl.types.GDLType;
 
 
 
@@ -16,7 +21,7 @@ public class GamingCLI<ConcreteEnvironment extends GDLGameEnvironment> extends C
 
     private int numberOfEpisodes = 0;
 
-    protected HashMap<String, HashMap<String, Integer>> evaluationTable;
+    protected Map<String, Map<String, Integer>> evaluationTable;
 
 
     public GamingCLI(ConcreteEnvironment env, boolean evaluation, int evaluationSamples) {
@@ -42,11 +47,8 @@ public class GamingCLI<ConcreteEnvironment extends GDLGameEnvironment> extends C
         System.out.println("    (e.g. role1, role2, role3, ...)");
         String[] manualRolesRaw = this.scanner.next().split(",");
         for (String pseudo_role : manualRolesRaw) {
-            String[] ws_splitted_role = pseudo_role.split(" ");      
-            for (String role : ws_splitted_role) {
-                if (!role.equals("")) {
-                    this.manualRoles.add(role);
-                }
+            if (!pseudo_role.isBlank()) {
+                this.manualRoles.add(GDLType.createFromLine(pseudo_role.strip()));
             }
         }
         this.scanner.nextLine();
@@ -62,7 +64,7 @@ public class GamingCLI<ConcreteEnvironment extends GDLGameEnvironment> extends C
         System.out.println(this.env.getStateAsReadableString());
     }
 
-    protected String onEnterMove(String role) {
+    protected Command onEnterMove(GDLType role) {
         System.out.println("Enter a move for '" + role + "':");
         this.scanner = new Scanner(System.in).useDelimiter(Pattern.compile("(\\n)|;"));
         String move = this.scanner.next();
@@ -70,7 +72,7 @@ public class GamingCLI<ConcreteEnvironment extends GDLGameEnvironment> extends C
         this.moveWasEnteredByUser = true;
         // TBD: check if move has special format: /legalMoves -> shows all legal moves for the role
 
-        return move; 
+        return Command.createFromLine(move); 
     }
 
     protected void onMoveWasIllegal(String move, List<String> legalMoves) {
@@ -98,35 +100,33 @@ public class GamingCLI<ConcreteEnvironment extends GDLGameEnvironment> extends C
         System.out.println("Game is over");
         System.out.println("Goals: ");
         this.numberOfEpisodes++;
-        for (String goal : this.env.getReachedGoalsAsStrings()) {
+        for (Entry<GDLType, GDLType> goal : this.env.getReachedGoals().entrySet()) {
             System.out.println(goal);
         }
 
         if (this.evaluation) {
 
             if (evaluationTable == null) {
-                evaluationTable = new HashMap<String, HashMap<String, Integer>>();
+                evaluationTable = new HashMap<String, Map<String, Integer>>();
             }
 
-            List<List<String>> goals = this.env.getReachedGoals();
-            for (List<String> goal : goals) {
-                if (goal.size() == 2) {
-                    HashMap<String, Integer> currentMap = null;
-                    String playerName = this.getCurrentPlayerOfRole(goal.get(0));
+            for (Entry<GDLType, GDLType> goal : this.env.getReachedGoals().entrySet()) {
+                if (goal.getValue() instanceof GDLNumber) {
+                    Map<String, Integer> currentMap = null;
+                    String playerName = this.getCurrentPlayerOfRole(goal.getKey());
                     if (evaluationTable.containsKey(playerName)) {
                         currentMap = evaluationTable.get(playerName);
                     } else {
-                        currentMap = new HashMap<String, Integer>();
+                        currentMap = new HashMap<>();
                     }
 
-                    if (currentMap.containsKey("" + goal.get(1))) {
-                        currentMap.put("" + goal.get(1), currentMap.get("" + goal.get(1)) + 1);
+                    if (currentMap.containsKey(goal.getValue().toString())) {
+                        currentMap.put(goal.getValue().toString(), currentMap.get(goal.getValue().toString()) + 1);
                     } else {
-                        currentMap.put("" + goal.get(1), 1);
+                        currentMap.put(goal.getValue().toString(), 1);
                     }
 
                     evaluationTable.put(playerName, currentMap);
-
                 }
             }
         }
@@ -142,7 +142,7 @@ public class GamingCLI<ConcreteEnvironment extends GDLGameEnvironment> extends C
     private void evaluate() {
         for (String role : evaluationTable.keySet()) {
             System.out.print(role + ": ");
-            HashMap<String, Integer> results = evaluationTable.get(role);
+            Map<String, Integer> results = evaluationTable.get(role);
             float total = 0.0f;
             float count = 0.0f;
             for (String res : results.keySet()) {

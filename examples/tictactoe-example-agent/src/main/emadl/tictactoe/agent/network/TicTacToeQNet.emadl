@@ -3,17 +3,20 @@ package tictactoe.agent.network;
 
 component TicTacToeQNet {
     ports
-        in Q(0:1)^{3,3,3} state,
+        in Q(0:1)^{29} state,
         out Q(-oo:oo)^{9} qvalues; 
 
     implementation CNN {
         state ->
+        FullyConnected(units=29) ->
         Relu() ->
-        FullyConnected(units=27) ->
+        FullyConnected(units=128) ->
         Relu() ->
-        FullyConnected(units=27) ->
+        FullyConnected(units=256) ->
         Relu() ->
-        FullyConnected(units=27) ->
+        FullyConnected(units=256) ->
+        Relu() ->
+        FullyConnected(units=128) ->
         Relu() ->
         FullyConnected(units=9) ->
         qvalues;

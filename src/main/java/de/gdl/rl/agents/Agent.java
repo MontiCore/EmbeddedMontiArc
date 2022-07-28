@@ -1,12 +1,15 @@
 package de.gdl.rl.agents;
 
 import java.util.HashSet;
+import java.util.Set;
+
+import de.monticore.lang.gdl.types.GDLType;
 
 public class Agent {
     
     public String name = "";
     public String type = "";
-    public HashSet<String> gdlRoleNames = new HashSet<String>();
+    public Set<GDLType> gdlRoles = new HashSet<>();
     
     public boolean gameOverForIllegalActions = false;
     public int numberOfRandomEpisodes = 0; // determines how many initial episodes should be played completely randomly

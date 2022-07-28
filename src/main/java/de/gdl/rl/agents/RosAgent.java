@@ -2,6 +2,8 @@ package de.gdl.rl.agents;
 import java.util.ArrayList;
 import java.util.List;
 
+import de.monticore.lang.gdl.types.GDLType;
+
 public class RosAgent extends Agent {
 
 
@@ -26,10 +28,9 @@ public class RosAgent extends Agent {
         return this;
     }
 
-    public RosAgent withGdlRoleNames(String[] gdlRoleNames) {
-        
-        for (String roleName : gdlRoleNames) {
-            this.gdlRoleNames.add(roleName);
+    public RosAgent withGdlRoles(GDLType[] gdlRoles) {
+        for (GDLType role : gdlRoles) {
+            this.gdlRoles.add(role);
         }
         return this;
     }
@@ -70,14 +71,13 @@ public class RosAgent extends Agent {
     }
 
     public RosAgent copy() {
-
-        List<String> gdlRoleNamesList = new ArrayList<String>(this.gdlRoleNames);
-        String[] gdlRoleNameArr = gdlRoleNamesList.toArray(new String[gdlRoleNamesList.size()]);
+        List<GDLType> gdlRolesList = new ArrayList<>(this.gdlRoles);
+        GDLType[] gdlRoleArr = gdlRolesList.toArray(new GDLType[gdlRolesList.size()]);
 
        return new RosAgent()
         .withName(this.name)
         .withType(this.type)
-        .withGdlRoleNames(gdlRoleNameArr)
+        .withGdlRoles(gdlRoleArr)
         .withGameOverForIllegalActions(this.gameOverForIllegalActions)
         .withStateTopic(this.stateTopic)
         .withLegalActionsTopic(this.legalActionsTopic)
