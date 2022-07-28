@@ -9,7 +9,6 @@ import de.monticore.lang.gdl.InterpreterOptions;
 import de.monticore.lang.gdl.types.GDLNumber;
 import de.monticore.lang.gdl.types.GDLType;
 
-import java.util.List;
 import java.util.Map;
 
 
@@ -51,9 +50,13 @@ public class TicTacToeEnvironmentExample extends GDLGameEnvironment {
                                 .withEpsilon(0.9f)
                                 .withEpsilonDecay(0.9f);
 
+        TicTacToeMiniMaxAgent minimax = new TicTacToeMiniMaxAgent();
+        minimax.gdlRoles.add(roleX);
+        minimax.gdlRoles.add(roleO);
+
         
         this.addToTrainingConfiguration(this.trainingAgent);
-        this.addToTrainingConfiguration(selfPlayAgent);
+        this.addToTrainingConfiguration(selfPlayAgent); // alternatively: use provided minimax
 
         this.addToGamingConfiguration(agent);
     }
@@ -62,23 +65,60 @@ public class TicTacToeEnvironmentExample extends GDLGameEnvironment {
         return "src/main/resources/gdl/games/TicTacToeTyped.gdl";
     }
 
+    private int episode;
+    private int won, lost, tie, illegal, other;
+
     @Override
     public void onNextEpisode() {
+        episode++;
+        System.out.printf("Episode: %d. Last 1000: (Won: %d    Lost: %d    Tie: %d    Illegal: %d    Other: %d)\n", episode, won, lost, tie, illegal, other);
+        if (episode % 1000 == 0) {
+            won = lost = tie = illegal = other = 0;
+        }
+
         this.trainingAgent.currentGdlRole
             = this.trainingAgent.currentGdlRole.equals(GDLType.createFromLine("x")) ?
                 GDLType.createFromLine("o") : GDLType.createFromLine("x");
     }
 
+
     public float calculateRewardFromGoals(Map<GDLType, GDLType> goals, GDLType gdlRole, Agent agent) {
-        List<GDLType> rolesInControl = this.whichRolesHaveControl();
+        // first 5k: legal only
+        if (episode < 1050*5) {
+            if (this.wasLastMoveIllegal()) {
+                illegal++;
+                return -10f;
+            }
+    
+            other++;
+            return 1f;
+        } else {
 
-        if ((!this.wasLastMoveIllegal() || !rolesInControl.contains(gdlRole)) && this.isTerminal() && goals.size() == 2) {
-            return ((GDLNumber) goals.get(gdlRole)).getValue().intValue() > 0 ? 1.0f : -1.0f;
-        } else if(this.wasLastMoveIllegal() && rolesInControl.contains(gdlRole)) { 
-            return -10.0f;
+            if (!this.wasLastMoveIllegal() && this.isTerminal()) {
+                int value = ((GDLNumber) goals.get(gdlRole)).getValue().intValue();
+
+                if (value == 0) {
+                    lost++;
+                    return -5;
+                }
+                if (value == 50) {
+                    tie++;
+                    return 0;
+                }
+                if (value == 100)  {
+                    won++;
+                    return 1;
+                }
+
+                return (value/50) - 1;
+            } else if (this.wasLastMoveIllegal() && this.whichRolesHaveControl().contains(gdlRole)) {
+                illegal++;
+                return -5;
+            } else {
+                other++;
+                return 0;
+            }
         }
-
-        return 0.0f;
     }
 
     public static void main(String[] args) throws Exception {

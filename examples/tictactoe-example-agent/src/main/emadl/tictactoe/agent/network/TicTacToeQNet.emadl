@@ -8,12 +8,15 @@ component TicTacToeQNet {
 
     implementation CNN {
         state ->
-        Relu() ->
         FullyConnected(units=29) ->
         Relu() ->
-        FullyConnected(units=27) ->
+        FullyConnected(units=128) ->
         Relu() ->
-        FullyConnected(units=27) ->
+        FullyConnected(units=256) ->
+        Relu() ->
+        FullyConnected(units=256) ->
+        Relu() ->
+        FullyConnected(units=128) ->
         Relu() ->
         FullyConnected(units=9) ->
         qvalues;
