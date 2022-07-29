@@ -1,4 +1,4 @@
-image: gradle:6.9.0-jdk11
+image: gradle:7.1.0-jdk11
 
 stages:
   - test
@@ -6,4 +6,4 @@ stages:
 test:
   stage: test
   script:
-    - gradle test
+    - gradle test --info
