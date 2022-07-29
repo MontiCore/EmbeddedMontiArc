@@ -1,4 +1,4 @@
-src/main/resources/example/Doppelkopf.gdl
+DoppelkopfTyped/DoppelkopfTyped.gdl
 
 # https://www.online-doppelkopf.com/spiele/82.403.604
 

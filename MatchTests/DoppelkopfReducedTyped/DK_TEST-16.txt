@@ -1,4 +1,4 @@
-src/main/resources/example/Doppelkopf.gdl
+DoppelkopfReducedTyped/DoppelkopfReducedTyped.gdl
 
 # https://www.online-doppelkopf.com/spiele/82.403.618
 
@@ -208,10 +208,8 @@ COMMAND
 player2 (spielen kreuz_koenig_2)
 COMMAND
 random (auswerten)
-PARTIAL_STATE
-(ablauf geben)
-(spiel 2)
-(punkte player1 -4)
-(punkte player2 4)
-(punkte player3 4)
-(punkte player4 -4)
+GOAL
+(goal player1 -4)
+(goal player2 4)
+(goal player3 4)
+(goal player4 -4)
