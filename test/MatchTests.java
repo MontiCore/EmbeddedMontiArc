@@ -5,7 +5,7 @@ import org.junit.Test;
 
 import de.monticore.lang.gdl.GDLTest;
 
-public class AllTests implements GDLTest.TestImpl {
+public class MatchTests implements GDLTest.TestImpl {
 
     private final GDLTest TESTER = new GDLTest(this);
 
