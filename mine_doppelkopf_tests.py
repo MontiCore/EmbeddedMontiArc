@@ -158,7 +158,7 @@ def make_test_code(game):
 
     cards, points, ansagen, aufspiel, player_teams, vorbehalt, source = game
 
-    code = "src/main/resources/example/Doppelkopf.gdl\n\n"
+    code = "Doppelkopf/Doppelkopf.gdl\n\n"
     code += "# " + source + "\n\n"
 
     # karten geben
@@ -216,7 +216,7 @@ def make_test_code(game):
 
 
 def write_test_file(i, test_code):
-    f = open("src/test/resources/test-matches/DK_TEST-" + str(i) + ".txt", "w")
+    f = open("MatchTests/DK_TEST-" + str(i) + ".txt", "w")
     f.write(test_code)
     f.close()
 

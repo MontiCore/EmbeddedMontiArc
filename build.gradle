@@ -1,0 +1,60 @@
+// (c) https://github.com/MontiCore/monticore
+
+/* ============================================================ */
+/* ========================= Plugins ========================== */
+/* ============================================================ */
+
+plugins {
+    id 'java'
+    id 'org.unbroken-dome.test-sets' version '3.0.1'
+}
+
+/* ============================================================ */
+/* ========================= Project ========================== */
+/* ============================================================ */
+
+sourceCompatibility = '11'
+
+/* ============================================================ */
+/* ========================= Versions ========================= */
+/* ============================================================ */
+
+def gdl_version = "7.4.3-SNAPSHOT"
+def junit_version = "4.13.1"
+
+/* ============================================================ */
+/* ======================= Configuration ====================== */
+/* ============================================================ */
+
+// configure non-standard source sets
+sourceSets {
+
+    test {
+        java.srcDir "$projectDir"
+    }
+
+    sourceSets.main.resources { srcDirs = ["$projectDir/src/main/java"]; exclude "**/*.java" }
+}
+buildDir = file("$projectDir/target")
+
+configurations {grammar}
+
+test {
+    useJUnit()
+}
+
+/* ============================================================ */
+/* ======================= Dependencies ======================= */
+/* ============================================================ */
+
+repositories {
+    mavenCentral()
+    maven {
+        url "https://nexus.se.rwth-aachen.de/content/groups/public"
+    }
+}
+
+dependencies {
+    testImplementation "de.monticore.lang:gdl:$gdl_version"
+    testImplementation "junit:junit:$junit_version"
+}
