@@ -31,4 +31,4 @@ Um die GDL-Pipeline zu integrieren, wurde ein minimales Java-Projekt mit Unit-Te
 Die Modelle wurden von den [offiziellen Turnierregeln](/Turnier-Spielregeln%20Stand%2001.04.2019.pdf) des [DDV](https://www.doko-verband.de/) abgeleitet. Es sind folgende Abweichungen bekannt:
 
 - Das Prinzip "Plichtsolo" ist nicht implementiert
-- Die Abfrage des Vorbehaltes dauert immer nur eine einzige Runde
+- Bei der Abfrage des Vorbehaltes muss direkt die gewünschte Spielart genannt werden
