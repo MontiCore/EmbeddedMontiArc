@@ -1,0 +1,9 @@
+image: gradle:6.9.0-jdk11
+
+stages:
+  - test
+
+test:
+  stage: test
+  script:
+    - gradle test
