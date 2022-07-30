@@ -24,6 +24,7 @@ import de.monticore.lang.monticar.emadl._visitor.EMADLDelegatorVisitor;
 import de.monticore.lang.monticar.emadl._visitor.EMADLVisitor;
 import de.monticore.lang.monticar.emadl._visitor.ModularEMADLDelegatorVisitor;
 import de.monticore.lang.monticar.emadl._visitor.ModularNetworkVisitor;
+import de.monticore.lang.monticar.emadl.modularcnn.ModularCNNSymbolTableCreator;
 import de.monticore.symboltable.MutableScope;
 import de.monticore.symboltable.ResolvingConfiguration;
 import de.monticore.symboltable.Scope;
@@ -42,7 +43,7 @@ public class EMADLSymbolTableCreator extends de.monticore.symboltable.CommonSymb
     private MathOptSymbolTableCreator mathOptSTC;
     private EmbeddedMontiArcDynamicSymbolTableCreator emadSTC;
     private EmbeddedMontiArcBehaviorVisitor emaBehaviorSTC;
-    private ModularNetworkVisitor mnv;
+    private ModularNetworkVisitor mcnnSTC;
 
 
     public EMADLSymbolTableCreator(
@@ -76,7 +77,8 @@ public class EMADLSymbolTableCreator extends de.monticore.symboltable.CommonSymb
         this.emadSTC = new ModifiedEMADynamicSymbolTableCreator(resolvingConfig, scopeStack);
         this.emadSTC.setInstanceSymbolCreator(new ModifiedEMAComponentInstanceSymbolCreator()); //Use an instance symbo, creator that adds math statement to instances
         this.emaBehaviorSTC = new EmbeddedMontiArcBehaviorSymbolTableCreator(resolvingConfig, scopeStack);
-        this.mnv = new ModularNetworkVisitor();
+
+        this.mcnnSTC = new ModularCNNSymbolTableCreator(resolvingConfig, scopeStack);
 
         visitor.setEMADLVisitor(this);
         visitor.setCNNArchVisitor(cnnArchSTC);
@@ -96,7 +98,7 @@ public class EMADLSymbolTableCreator extends de.monticore.symboltable.CommonSymb
 
         visitor.setCommon2Visitor(emamSTC);
 
-        visitor.setModularNetworkVisitor(mnv);
+        visitor.setModularNetworkVisitor(mcnnSTC);
     }
 
     private void initSuperSTC(final ResolvingConfiguration resolvingConfig, String customFilesPath, String pythonPath, String backend) {
@@ -106,7 +108,7 @@ public class EMADLSymbolTableCreator extends de.monticore.symboltable.CommonSymb
         this.emadSTC = new ModifiedEMADynamicSymbolTableCreator(resolvingConfig, scopeStack);
         this.emadSTC.setInstanceSymbolCreator(new ModifiedEMAComponentInstanceSymbolCreator()); //Use an instance symbo, creator that adds math statement to instances
         this.emaBehaviorSTC = new EmbeddedMontiArcBehaviorSymbolTableCreator(resolvingConfig, scopeStack);
-        this.mnv = new ModularNetworkVisitor();
+        this.mcnnSTC = new ModularCNNSymbolTableCreator(resolvingConfig, scopeStack);
 
         visitor.setEMADLVisitor(this);
         visitor.setCNNArchVisitor(cnnArchSTC);
@@ -126,7 +128,7 @@ public class EMADLSymbolTableCreator extends de.monticore.symboltable.CommonSymb
 
         visitor.setCommon2Visitor(emamSTC);
 
-        visitor.setModularNetworkVisitor(mnv);
+        visitor.setModularNetworkVisitor(mcnnSTC);
 
     }
 

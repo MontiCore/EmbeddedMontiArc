@@ -10,10 +10,11 @@ package de.monticore.lang.monticar.emadl.modularcnn;
 import de.monticore.ast.ASTNode;
 import de.monticore.lang.embeddedmontiarc.embeddedmontiarc._visitor.EmbeddedMontiArcVisitor;
 import de.monticore.lang.embeddedmontiarcdynamic.embeddedmontiarcdynamic._visitor.EmbeddedMontiArcDynamicVisitor;
+import de.monticore.lang.monticar.emadl._visitor.EMADLVisitor;
 import de.se_rwth.commons.logging.Log;
 
 
-public class NetworkStructureScanner implements EmbeddedMontiArcVisitor {
+public class NetworkStructureScanner implements EMADLVisitor {
 
     public NetworkStructureScanner() {
 
@@ -21,7 +22,7 @@ public class NetworkStructureScanner implements EmbeddedMontiArcVisitor {
 
     @Override
     public void visit(ASTNode node) {
-        EmbeddedMontiArcVisitor.super.visit(node);
+        EMADLVisitor.super.visit(node);
         Log.info("Hello","NSSV");
     }
 }
