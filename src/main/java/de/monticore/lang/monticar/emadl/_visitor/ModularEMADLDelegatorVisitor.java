@@ -28,7 +28,7 @@ public class ModularEMADLDelegatorVisitor extends EMADLDelegatorVisitor implemen
             super.setRealThis(realThis);
             this.realThis = (ModularEMADLDelegatorVisitor) realThis;
             if (this.modularNetworkVisitor.isPresent()){
-                Log.info("Trying to set MVN","MEDV_SetRealThis");
+                //Log.info("Trying to set MVN","MEDV_SetRealThis");
                 this.setModularNetworkVisitor(modularNetworkVisitor.get());
             }
         }
@@ -43,10 +43,10 @@ public class ModularEMADLDelegatorVisitor extends EMADLDelegatorVisitor implemen
     public void setModularNetworkVisitor(ModularNetworkVisitor mvn) {
         this.modularNetworkVisitor = Optional.ofNullable(mvn);
         if (this.modularNetworkVisitor.isPresent()) {
-            Log.info("Trying to set MVN","MEDV_setModularNetworkVisitor_1");
+            //Log.info("Trying to set MVN","MEDV_setModularNetworkVisitor_1");
             this.modularNetworkVisitor.get().setRealThis(getRealThis());
         }
-        Log.info("Trying to set MVN","MEDV_setModularNetworkVisitor_2");
+        //Log.info("Trying to set MVN","MEDV_setModularNetworkVisitor_2");
         if (getRealThis() != this) {
             getRealThis().setModularNetworkVisitor(mvn);
         }
