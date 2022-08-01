@@ -7,9 +7,11 @@
 package de.monticore.lang.monticar.emadl._visitor;
 
 import de.monticore.ast.ASTNode;
+import de.monticore.lang.embeddedmontiarc.embeddedmontiarc._ast.ASTEMACompilationUnit;
 import de.monticore.lang.embeddedmontiarc.embeddedmontiarc._visitor.EmbeddedMontiArcVisitor;
 import de.monticore.lang.embeddedmontiarcdynamic.embeddedmontiarcdynamic._visitor.EmbeddedMontiArcDynamicVisitor;
 import de.monticore.lang.mathopt._visitor.MathOptVisitor;
+import de.monticore.lang.monticar.emadl._ast.ASTEMADLNode;
 import de.se_rwth.commons.logging.Log;
 
 public interface ModularNetworkVisitor extends EMADLVisitor {
@@ -32,16 +34,16 @@ public interface ModularNetworkVisitor extends EMADLVisitor {
         Log.info("MVN","TRAVERSE_MVN");
     }
 
+    //@Override
+    default void handle(ASTNode node) {
+        Log.info("MVN","HANDLE_MVN");
+    }
+
     @Override
     default void visit(ASTNode node) {
         Log.info("MVN","VISIT_MVN");
     }
 
-    //@Override
-    default void handle(ASTNode node) {
-        Log.info("MVN","HANDLE_MVN");
-
-    }
 
     @Override
     default void endVisit(ASTNode node) {
@@ -49,45 +51,25 @@ public interface ModularNetworkVisitor extends EMADLVisitor {
 
     }
 
-    //public ModularNetworkVisitor realThis = this;
+    @Override
+    default void visit(ASTEMACompilationUnit node){
+        Log.info("MVN","VISIT_MVN_COMP");
 
-
-    /*public default void setRealThis(EMADLVisitor rt) {
-       this.realThis = (ModularNetworkVisitor) rt;
-    }*/
-
-    /*public void setRealThis(EmbeddedMontiArcVisitor rt){
-        //this.realThis = (ModularNetworkVisitor) rt;
-    }
-
-    public ModularNetworkVisitor getRealThis() {
-        return this.realThis;
-    }*/
-
-    /*
-    public EMADLVisitor getRealThis(){
-        return this.realThis;
-    }
-
-    public ModularNetworkVisitor(){
-        Log.info("MNV IN DA HOUSE","INIT_MNV");
     }
 
     @Override
-    public void visit(ASTNode node) {
-        Log.info("MNV","VISIT_MNV");
+    default void endVisit(ASTEMACompilationUnit node){
+        Log.info("MVN","END_VISIT_MVN_COMP");
     }
 
-
-    public void handle(ASTNode node) {
-        Log.info("MNV","HANDLE_MNV");
+    //@Override
+    default void visit(ASTEMADLNode node) {
+        Log.info("MVN","VISIT_MVN");
     }
 
+    //@Override
+    default void endVisit(ASTEMADLNode node) {
+        Log.info("MVN","END_VISIT_MVN");
 
-    @Override
-    public void endVisit(ASTNode node){
-        Log.info("MNV","END_MNV");
     }
-    */
-
 }

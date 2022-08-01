@@ -17,9 +17,11 @@ import de.monticore.lang.monticar.cnnarch._ast.ASTCNNArchCompilationUnit;
 import de.monticore.lang.monticar.cnnarch._ast.ASTCNNArchNode;
 import de.monticore.symboltable.MutableScope;
 import de.monticore.symboltable.ResolvingConfiguration;
+import de.monticore.symboltable.Symbol;
 import de.se_rwth.commons.logging.Log;
 
 import java.util.Deque;
+import java.util.Optional;
 
 public class ModifiedEMADynamicSymbolTableCreator extends EmbeddedMontiArcDynamicSymbolTableCreator {
 
@@ -37,19 +39,11 @@ public class ModifiedEMADynamicSymbolTableCreator extends EmbeddedMontiArcDynami
         return instanceSymbolCreator;
     }
 
-    public void visit(ASTNode node){
-        Log.info("TEST","TEST_MOD");
-        Log.info(node.toString(),"TEST_MOD");
-    }
-
-    public void visit(ASTCNNArchNode node){
-        Log.info("TEST","TEST_UNIT");
-        Log.info(node.toString(),"TEST_UNIT");
-    }
     @Override
     public void endVisit(ASTEMACompilationUnit node) {
         this.removeCurrentScope();
         if (!this.aboartVisitComponent) {
+            Optional<? extends Symbol> sym = node.getComponent().getSymbolOpt();
             Log.debug("endVisit of " + node.getComponent().getSymbolOpt().get().getFullName(), "SymbolTableCreator:");
             getInstanceSymbolCreator().createInstances((EMAComponentSymbol)(Log.errorIfNull(node.getComponent().getSymbolOpt().orElse(null))),node.getComponent().getSymbolOpt().get().getName());
         }

@@ -143,14 +143,6 @@ public class EMADLSymbolTableCreator extends de.monticore.symboltable.CommonSymb
 
     public Scope createFromAST(ASTEMACompilationUnit rootNode) {
         Log.errorIfNull(rootNode, "0xA7004_184 Error by creating of the EMADLSymbolTableCreator symbol table: top ast node is null");
-
-        ASTComponent comp =  rootNode.getComponent();
-        Log.info(comp.toString(),"COMP_AST");
-        List<ASTSubComponent> subcomps = comp.getSubComponents();
-        for (ASTSubComponent c : subcomps){
-
-        }
-
         rootNode.accept(visitor);
         Log.info(rootNode.toString(),"ROOT_NODE");
         return getFirstCreatedScope();
@@ -176,7 +168,7 @@ public class EMADLSymbolTableCreator extends de.monticore.symboltable.CommonSymb
     }
 
 
-    public void visit(ASTBehaviorEmbedding ast){
+    /*public void visit(ASTBehaviorEmbedding ast){
         Log.info("TEST BE","TEST_VISITOR");
         if (ast.isPresentArchitecture()){
            ASTArchitecture arch =  ast.getArchitecture();
@@ -205,8 +197,9 @@ public class EMADLSymbolTableCreator extends de.monticore.symboltable.CommonSymb
         }
 
     }
+*/
 
-    public void visit(ASTNode node) {
+   /* public void visit(ASTNode node) {
 
         Log.info("TEST N","TEST_VISITOR_ASTNode");
         Log.info(node.toString(),"TEST_VISITOR_ASTNode");
@@ -214,7 +207,7 @@ public class EMADLSymbolTableCreator extends de.monticore.symboltable.CommonSymb
         if (node.isPresentSpannedScope()) Log.info(node.getSpannedScope().toString(),"TEST_VISITOR_ASTNode");
         if (node.isPresentEnclosingScope()) Log.info(node.getEnclosingScope().toString(),"TEST_VISITOR_ASTNode");
 
-        /*Optional<? extends Symbol> symbolOpt = node.getSymbolOpt();
+        *//*Optional<? extends Symbol> symbolOpt = node.getSymbolOpt();
 
 
 
@@ -230,26 +223,24 @@ public class EMADLSymbolTableCreator extends de.monticore.symboltable.CommonSymb
         Log.info(symbol.getFullName(),"SYMBOL_CHECK_ASTNode");
         Log.info(symbol.getPackageName(),"SYMBOL_CHECK_ASTNode");
         Log.info(symbol.getKind().toString(),"SYMBOL_CHECK_ASTNode");
-        */
+        *//*
 
 
 
-    }
+    }*/
 
-    public void handle(ASTNode node){
+/*    public void handle(ASTNode node){
         Log.info("TEST N","TEST_HANDLER_ASTNode");
         Log.info(node.toString(),"TEST_HANDLER_ASTNode");
     }
 
     public void visit(ASTArchitecture node){
         Log.info("TEST N","VISITOR_Rand");
-    }
+    }*/
 
     public void endVisit(ASTBehaviorEmbedding ast) {
         if(ast.isPresentArchitecture()){
             //processed in handle/visit/endVisit of ASTArchitecture and ASTArchBody
-            Log.info("TEST N","VISITOR_Rand");
-            Log.info(ast.toString(),"VISITOR_Rand");
         }else if(ast.getStatementList().size() > 0) {
             addToScopeAndLinkWithNode(new EMADLMathStatementsSymbol("MathStatements", ast.getStatementList()), ast);
         }

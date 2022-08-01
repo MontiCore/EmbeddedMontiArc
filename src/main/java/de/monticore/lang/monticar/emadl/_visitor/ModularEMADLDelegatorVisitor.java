@@ -7,6 +7,8 @@
 package de.monticore.lang.monticar.emadl._visitor;
 
 import de.monticore.ast.ASTNode;
+import de.monticore.lang.embeddedmontiarc.embeddedmontiarc._ast.ASTEMACompilationUnit;
+import de.monticore.lang.embeddedmontiarc.embeddedmontiarc._symboltable.instanceStructure.EMAComponentInstanceSymbol;
 import de.monticore.lang.monticar.emadl.modularcnn.ModularCNNSymbolTableCreator;
 import de.se_rwth.commons.logging.Log;
 
@@ -30,9 +32,6 @@ public class ModularEMADLDelegatorVisitor extends EMADLDelegatorVisitor implemen
                 this.setModularNetworkVisitor(modularNetworkVisitor.get());
             }
         }
-
-
-
     }
 
     private Optional<ModularNetworkVisitor> modularNetworkVisitor = Optional.empty();
@@ -66,6 +65,8 @@ public class ModularEMADLDelegatorVisitor extends EMADLDelegatorVisitor implemen
         if (getRealThis().getModularNetworkVisitor().isPresent()) {
             getRealThis().getModularNetworkVisitor().get().traverse(node);
         }
+
+
     }
 
     @Override
@@ -74,6 +75,8 @@ public class ModularEMADLDelegatorVisitor extends EMADLDelegatorVisitor implemen
         if (getRealThis().getModularNetworkVisitor().isPresent()) {
             getRealThis().getModularNetworkVisitor().get().visit(node);
         }
+
+
     }
 
     @Override
@@ -82,8 +85,50 @@ public class ModularEMADLDelegatorVisitor extends EMADLDelegatorVisitor implemen
         if (getRealThis().getModularNetworkVisitor().isPresent()) {
             getRealThis().getModularNetworkVisitor().get().endVisit(node);
         }
+
+
     }
 
+    @Override
+    public void visit(ASTEMACompilationUnit node) {
+        super.visit(node);
+        if (getRealThis().getModularNetworkVisitor().isPresent()) {
+            getRealThis().getModularNetworkVisitor().get().visit(node);
+        }
+    }
+
+    /*
+    @Override
+    public void endVisit(ASTEMACompilationUnit node) {
+        super.visit(node);
+        if (getRealThis().getModularNetworkVisitor().isPresent()) {
+            getRealThis().getModularNetworkVisitor().get().endVisit(node);
+        }
+    }*/
+
+
+
+    /*
+    //@Override
+    public void visit(EMAComponentInstanceSymbol node) {
+
+        if (getRealThis().getModularNetworkVisitor().isPresent()) {
+            //getRealThis().getModularNetworkVisitor().get().visit(node);
+        }
+
+        //super.visit(node);
+    }
+
+    //@Override
+    public void endVisit(EMAComponentInstanceSymbol node) {
+
+        if (getRealThis().getModularNetworkVisitor().isPresent()) {
+            //getRealThis().getModularNetworkVisitor().get().endVisit(node);
+        }
+
+        //super.visit(node);
+    }
+    */
 
 
 }

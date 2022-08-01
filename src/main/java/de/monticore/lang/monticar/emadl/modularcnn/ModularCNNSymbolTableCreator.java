@@ -8,13 +8,11 @@ package de.monticore.lang.monticar.emadl.modularcnn;
 
 import de.monticore.ast.ASTNode;
 import de.monticore.lang.embeddedmontiarc.embeddedmontiarc._ast.ASTEMACompilationUnit;
+import de.monticore.lang.embeddedmontiarc.embeddedmontiarc._symboltable.instanceStructure.EMAComponentInstanceSymbol;
 import de.monticore.lang.monticar.emadl._ast.ASTEMADLNode;
 import de.monticore.lang.monticar.emadl._visitor.EMADLVisitor;
 import de.monticore.lang.monticar.emadl._visitor.ModularNetworkVisitor;
-import de.monticore.symboltable.CommonSymbolTableCreator;
-import de.monticore.symboltable.MutableScope;
-import de.monticore.symboltable.ResolvingConfiguration;
-import de.monticore.symboltable.Scope;
+import de.monticore.symboltable.*;
 import de.se_rwth.commons.logging.Log;
 
 import java.util.Deque;
@@ -46,6 +44,8 @@ public class ModularCNNSymbolTableCreator extends CommonSymbolTableCreator imple
         return this.getFirstCreatedScope();
     }
 
+
+
     public Scope createFromAST(ASTEMACompilationUnit rootNode) {
         Log.errorIfNull(rootNode, "ModularCNNSymbolTableCreator symbol table: top ast node is null");
         rootNode.accept(this.realThis);
@@ -76,12 +76,7 @@ public class ModularCNNSymbolTableCreator extends CommonSymbolTableCreator imple
 
     @Override
     public void traverse(ASTNode node){
-        Log.info("MVN","TRAVERSE_MVN");
-    }
-
-    @Override
-    public void visit(ASTNode node) {
-        Log.info("MCNNSTC","VISIT_MCNNSTC");
+        Log.info("MCNNSTC","TRAVERSE_MCNNSTC");
     }
 
     @Override
@@ -89,9 +84,34 @@ public class ModularCNNSymbolTableCreator extends CommonSymbolTableCreator imple
         Log.info("MCNNSTC","HANDLE_MCNNSTC");
     }
 
+    @Override
+    public void visit(ASTNode node) {
+        Log.info("MCNNSTC","VISIT_MCNNSTC");
+        Log.info(node.toString(),"VISIT_MCNNSTC");
+
+        NetworkStructureScanner nss = new NetworkStructureScanner();
+        nss.scanStructure(node);
+    }
 
     @Override
     public void endVisit(ASTNode node){
         Log.info("MCNNSTC","END_MCNNSTC");
+    }
+
+
+    @Override
+    public void visit(ASTEMACompilationUnit node){
+        Log.info("MCNNSTC","VISIT_MCNNSTC_COMP");
+
+
+
+        NetworkStructureScanner nss = new NetworkStructureScanner();
+        nss.scanStructure(node);
+
+    }
+
+    @Override
+    public void endVisit(ASTEMACompilationUnit node){
+        Log.info("MCNNSTC","END_MCNNSTC_COMP");
     }
 }
