@@ -1,0 +1,22 @@
+// Debug
+
+(role red)
+(init (sees red (hand red 1 1)))
+(init (stack a 1 0))
+
+(<= (legal ?player (put ?card ?stack ?pos))
+    (isStack ?stack)
+    (isPos ?pos)
+    (true (sees ?player (hand ?player ?posH ?card)))
+)
+
+(<= (next (stack a 1 ?card))
+    (does ?player (put ?card a 1))
+)
+
+(<= (next (stack a 1 0))
+    (not (does ?player (put ?card a 1)))
+)
+
+(isStack a)
+(isPos 1)
