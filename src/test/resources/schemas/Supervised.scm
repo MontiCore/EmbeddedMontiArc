@@ -3,6 +3,7 @@
 
 schema Supervised {
 
+    reference-model: referencemodels.ddpg.DDPG2
     network_type: schema {
         gnn;
     }

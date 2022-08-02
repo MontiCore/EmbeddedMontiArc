@@ -11,6 +11,7 @@ import schemalang._ast.ASTSchemaDefinition;
 import schemalang._ast.ASTSchemaLangCompilationUnit;
 import schemalang._symboltable.SchemaDefinitionSymbol;
 
+import java.nio.file.Path;
 import java.nio.file.Paths;
 import java.util.List;
 
@@ -61,5 +62,17 @@ class Schema2APITest {
         final ASTSchemaDefinition schemaDefinition = (ASTSchemaDefinition) supervised.getAstNode().get();
         final StringBuilder generationResult = generatorEngine.generate(FreeMarkerTemplate.SCHEMA_API_OBJECT_TYPE.getTemplateName(), schemaDefinition, schemaDefinition.getSchemaMemberList().get(0));
         System.out.print(generationResult);
+    }
+    @Test
+    void inheritanceOnRefModels() {
+        final Schema2API schema2API = new Schema2API();
+        schema2API.setSchemasModelPath(new ModelPath(Paths.get("src/test/resources/schemas")));
+        SchemaDefinitionSymbol schema = schema2API.resolveSchema("SchemaWithReferenceModel");
+        assertNotNull(schema.getAstNode().get());
+        final ASTSchemaDefinition schemaDefinition = (ASTSchemaDefinition) schema.getAstNode().get();
+    }
+    @Test
+    void referencemodelValidation() {
+        Path src = Paths.get("src/test/resources/architectures");
     }
 }
