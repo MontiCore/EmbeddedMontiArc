@@ -14,3 +14,32 @@ The current version for gluon is located in gluon-cpp wich uses the newest EMADL
 
 ## MXNet/Gluon, Tensorflow and Caffe2
 For detailed instructions on how to run the MXNet/Gluon, Tensorflow and Caffe2 examples, see the README in the corresponding folders.
+
+
+## Build on Windows
+1. Download and build this docker container: https://git.rwth-aachen.de/monticore/EmbeddedMontiArc/applications/mnistcalculator/-/tree/ba_weber/docker/base
+2. In mnistcalculator/emadl-maven-plugin/settings.xml:
+   3. In the gitlab-maven part, replace the value with your private access key:
+   ```
+      <server>
+            <id>gitlab-maven</id>
+            <configuration>
+                <httpHeaders>
+                    <property>
+                        <name>Deploy-Token</name>
+                        <value>Your private access key</value>
+                    </property>
+                </httpHeaders>
+            </configuration>
+        </server>
+      ```
+   You can find a private access key in the first commit of the file history.
+3. In <i>mnistcalculator/emadl-maven-plugin</i>, run the following commands:
+   ```
+   docker run -d -it -p 80:3000 --name mxnetcalculator base/mxnet bash
+   docker cp ..\..\mnistcalculator\ mxnetcalculator:/opt/mnistcalculator
+   docker container exec -it mxnetcalculator bash -c "cd ./mnistcalculator/emadl-maven-plugin/ && mvn dependency:resolve emadl:train -s settings.xml"
+   docker cp mxnetcalculator:/opt/mnistcalculator/emadl-maven-plugin/model ./model
+   docker stop mxnetcalculator
+   docker rm mxnetcalculator
+   ```
