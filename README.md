@@ -18,7 +18,8 @@ For detailed instructions on how to run the MXNet/Gluon, Tensorflow and Caffe2 e
 
 ## Build on Windows
 1. Download and build this docker container: https://git.rwth-aachen.de/monticore/EmbeddedMontiArc/applications/mnistcalculator/-/tree/ba_weber/docker/base
-2. In mnistcalculator/emadl-maven-plugin/settings.xml:
+   2. This can take more than one hour
+3. In mnistcalculator/\<your project\>/settings.xml:
    3. In the gitlab-maven part, replace the value with your private access key:
    ```
       <server>
@@ -34,7 +35,7 @@ For detailed instructions on how to run the MXNet/Gluon, Tensorflow and Caffe2 e
         </server>
       ```
    You can find a private access key in the first commit of the file history.
-3. In <i>mnistcalculator/emadl-maven-plugin</i>, run the following commands:
+3. In <i>mnistcalculator/\<your project\></i>, run the following commands:
    ```
    docker run -d -it -p 80:3000 --name mxnetcalculator base/mxnet bash
    docker cp ..\..\mnistcalculator\ mxnetcalculator:/opt/mnistcalculator
