@@ -30,7 +30,7 @@
 (type pos 5)
 (type pos 6)
 
-(type card 0)
+//(type card 0)
 (type card 1)
 (type card 2)
 (type card 3)
@@ -135,7 +135,7 @@
 (type card 102)
 (type card 103)
 (type card 104)
-(type card 1000)
+//(type card 1000)
 
 (type points 0)
 (type points 1)
@@ -457,13 +457,15 @@
     (not (true (sees player:?player (hand ?player ?pos 0))))
 )
 
-(<= (legal random (deal stack stack:?stack card:?card))
+(<= (legal random (deal stack ?stack [1,104]:?card))
+    (isCard ?card ?val)
     (true (control random))
     (true (stack ?stack 1 0))
     (not (true (dealt ?card)))
 )
 
-(<= (legal random (deal hand player:?player ?pos card:?card))
+(<= (legal random (deal hand ?player ?pos [1,104]:?card))
+    (isCard ?card ?val)
     (true (control random))
     (true (sees ?player (hand ?player ?pos 0)))
     (not (true (dealt ?card)))
