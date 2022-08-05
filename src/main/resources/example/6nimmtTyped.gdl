@@ -310,11 +310,11 @@
 //Determine the last card in a stack
 (<= (lastCard stack:?stack pos:?pos card:?card)
     (true (stack ?stack ?pos ?card))
+    //?pos has a card
+    (distinct ?card 0)
     //following slot empty
     (succ ?pos pos:?posP)
     (true (stack ?stack ?posP 0))
-    //?pos has a card
-    (not (true (stack ?stack ?pos 0)))
     //previous slot filled
     (succ pos:?posM ?pos)
     (not (true (stack ?stack ?posM 0)))
@@ -406,11 +406,11 @@
     (true (sees ?player1 (inPlay ?player1 card:?card1)))
     (true (sees ?player2 (inPlay ?player2 card:?card2)))
     (true (sees ?player3 (inPlay ?player3 card:?card3)))
+    (does ?player4 (play ?card4))
     (distinct player:?player1 player:?player2 player:?player3 player:?player4)
     (distinct ?card1 1000)
     (distinct ?card2 1000)
     (distinct ?card3 1000)
-    (does ?player4 (play ?card4))
 )
 
 //-------------
@@ -432,8 +432,8 @@
     (true (control ?player))
     (true (sees ?player (inPlay ?player ?card)))
     (isMatchingStack ?stack ?card)
-    (succ ?posP ?pos)
     (lastCard ?stack ?posP ?cardP)
+    (succ ?posP ?pos)
     (less ?cardP ?card)
     (smallest ?card)
 )
@@ -458,16 +458,16 @@
 )
 
 (<= (legal random (deal stack ?stack [1,104]:?card))
-    (isCard ?card ?val)
     (true (control random))
     (true (stack ?stack 1 0))
+    (isCard ?card ?val)
     (not (true (dealt ?card)))
 )
 
 (<= (legal random (deal hand ?player ?pos [1,104]:?card))
-    (isCard ?card ?val)
     (true (control random))
     (true (sees ?player (hand ?player ?pos 0)))
+    (isCard ?card ?val)
     (not (true (dealt ?card)))
 )
 
@@ -478,9 +478,9 @@
 //---deal cards---
 //handle dealt cards
 (<= (next (dealt card:?card))
+    (true (control random))
     (true (dealt ?card))
     //discard flags to save space after random is done
-    (true (control random))
 )
 
 (<= (next (dealt card:?card))
@@ -543,14 +543,14 @@
 
 //transition to put phase
 (<= (next (control player:?player))
-    (allPlayed)
     (true (sees ?player (inPlay ?player card:?card)))
+    (allPlayed)
     (smallest ?card)
 )
 
 (<= (next (control player:?player))
-    (allPlayed)
     (does ?player (play ?card))
+    (allPlayed)
     (smallest ?card)
 )
 
@@ -736,6 +736,13 @@
     (not (true (sees player:?player1 (inPlay ?player card:?card1))))
     (distinct ?card1 1000)
 )
+
+(isPos 1)
+(isPos 2)
+(isPos 3)
+(isPos 4)
+(isPos 5)
+(isPos 6)
 
 //Points per card
 //(isCard <number> <points>)
