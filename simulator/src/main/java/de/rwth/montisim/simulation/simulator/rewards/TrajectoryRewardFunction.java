@@ -28,8 +28,8 @@ public class TrajectoryRewardFunction extends RewardFunction {
    * @param vehicles          Vehicle[] containing additional data about each active vehicle.
    * @param tickDuration      Duration between two Updates of the Simulator.
    * @param TRAJECTORY_FOLLOWING_REWARD Total reward given to a vehicle exactly following the trajectory.
-   * @param TOTAL_PATH_PROGRESS_SCALING Scaled reward given to the total progress on the path.
-   * @param PATH_PROGRESS_DERIVATIVE_SCALING Scaled reward given to the change in progress on the path.
+   * @param TOTAL_PATH_PROGRESS_REWARD_SCALING Scaled reward given to the total progress on the path.
+   * @param PATH_PROGRESS_DERIVATIVE_REWARD_SCALING Scaled reward given to the change in progress on the path.
    * @param distance_max      Maximum allowed distance to the next trajectory point.
    */
   public TrajectoryRewardFunction(Vehicle[] vehicles, Duration tickDuration, float TRAJECTORY_FOLLOWING_REWARD, float TOTAL_PATH_PROGRESS_REWARD_SCALING, float PATH_PROGRESS_DERIVATIVE_REWARD_SCALING, float distance_max) {

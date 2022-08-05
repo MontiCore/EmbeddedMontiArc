@@ -17,6 +17,7 @@ public abstract class RewardFunction {
   final Navigation[] navigations;
   final Vec2[] positions;
   final Double[] velocities;
+  final Double[] angles;
   final Duration tickDuration;
 
   /**
@@ -31,6 +32,7 @@ public abstract class RewardFunction {
     this.navigations = Arrays.stream(vehicles).map(vehicle -> (Navigation) vehicle.eesystem.getComponent("Navigation").get()).toArray(Navigation[]::new);
     this.positions = Arrays.stream(vehicles).map(vehicle -> (Vec2) vehicle.physicalValues.getPhysicalValue("true_position").get()).toArray(Vec2[]::new);
     this.velocities = Arrays.stream(vehicles).map(vehicle -> (Double) vehicle.physicalValues.getPhysicalValue("true_velocity").get()).toArray(Double[]::new);
+    this.angles = Arrays.stream(vehicles).map(vehicle -> (Double) vehicle.physicalValues.getPhysicalValue("true_compass").get()).toArray(Double[]::new);
     this.tickDuration = tickDuration;
   }
 

@@ -8,7 +8,7 @@ In the [basic simulator](https://git.rwth-aachen.de/monticore/EmbeddedMontiArc/s
 ```json
 {
   ...,
-  "randomization" : {
+  "rewardFunction" : {
     "type": "vehicle_collision_reward",
     "VEHICLE_COLLISIONS_REWARD": -800 // <-- Properties are optional
   },
@@ -57,18 +57,20 @@ This reward function rewards speed control. That includes the following:
 - Reward depending on the derivative of the control effort
 
 #### Properties
-| Property                                 | Type    | Default Value | Short Description                                                                     | Usage                                             |
-|------------------------------------------|---------|---------------|---------------------------------------------------------------------------------------|---------------------------------------------------|
-| VELOCITY_DIFFERENCE_REWARD_SCALING       | `float` | 1             | Scaling of the reward given to the difference in vehicle velocity to desired velocity | `"VELOCITY_DIFFERENCE_REWARD_SCALING": 2`         | 
-| VELOCITY_SUB_MAXIMUM_REWARD              | `float` | 0.5           | Reward given to a vehicle driving slower than the maximum speed                       | `"VELOCITY_SUB_MAXIMUM_REWARD": 20`               | 
-| STANDING_REWARD                          | `float` | -10           | Punishment given to a vehicle standing still                                          | `"STANDING_REWARD": -80`                          | 
-| CONTROL_EFFORT_REWARD_SCALING            | `float` | 1             | Scaling of the reward given to the smoothness of the acceleration                     | `"CONTROL_EFFORT_REWARD_SCALING": 20`             | 
-| CONTROL_EFFORT_DERIVATIVE_REWARD_SCALING | `float` | 0.05          | Scaling of the reward given to the smoothness of the change in acceleration           | `"CONTROL_EFFORT_DERIVATIVE_REWARD_SCALING": 500` | 
-| velocity_max                             | `float` | 40            | Maximum allowed velocity                                                              | `"velocity_max": 20`                              | 
-| velocity_desired                         | `float` | 20            | Desired velocity                                                                      | `"velocity_desired": 10`                          | 
-| standing_threshold                       | `float` | 0.5           | Maximum velocity of a vehicle considered to be standing still                         | `"standing_threshold": 1`                         | 
-| standing_punishment_from_step            | `int`   | 5             | Allows punishment of standing still only after some simulation steps                  | `"standing_punishment_from_step": 10`             | 
-| standing_punishment_to_min_path_distance | `float` | 2.5           | Disallows punishment of standing still when close to the vehicle's goal               | `"standing_punishment_to_min_path_distance": 8`   | 
+| Property                                 | Type    | Default Value | Short Description                                                                     | Usage                                           |
+|------------------------------------------|---------|---------------|---------------------------------------------------------------------------------------|-------------------------------------------------|
+| VELOCITY_DIFFERENCE_REWARD_SCALING       | `float` | 1             | Scaling of the reward given to the difference in vehicle velocity to desired velocity | `"VELOCITY_DIFFERENCE_REWARD_SCALING": 2`       | 
+| VELOCITY_SUB_MAXIMUM_REWARD              | `float` | 0.5           | Reward given to a vehicle driving slower than the maximum speed                       | `"VELOCITY_SUB_MAXIMUM_REWARD": 20`             | 
+| STANDING_REWARD                          | `float` | -10           | Punishment given to a vehicle standing still                                          | `"STANDING_REWARD": -80`                        | 
+| LINEAR_ACCELERATION_REWARD_SCALING       | `float` | 1             | Scaling of the reward given to the smoothness of the acceleration                     | `"LINEAR_ACCELERATION_REWARD_SCALING": 1`       | 
+| LINEAR_JERK_REWARD_SCALING               | `float` | 0.05          | Scaling of the reward given to the smoothness of the change in acceleration           | `"LINEAR_JERK_REWARD_SCALING": 0.05`            | 
+| ANGULAR_ACCELERATION_REWARD_SCALING      | `float` | 0             | How much angular acceleration should be punished                                      | `"ANGULAR_ACCELERATION_REWARD_SCALING": 0`      | 
+| ANGULAR_JERK_REWARD_SCALING              | `float` | 0             | How much angular jerk should be punished                                              | `"ANGULAR_JERK_REWARD_SCALING": 0`              | 
+| velocity_max                             | `float` | 40            | Maximum allowed velocity                                                              | `"velocity_max": 20`                            | 
+| velocity_desired                         | `float` | 20            | Desired velocity                                                                      | `"velocity_desired": 10`                        | 
+| standing_threshold                       | `float` | 0.5           | Maximum velocity of a vehicle considered to be standing still                         | `"standing_threshold": 1`                       | 
+| standing_punishment_from_step            | `int`   | 5             | Allows punishment of standing still only after some simulation steps                  | `"standing_punishment_from_step": 10`           | 
+| standing_punishment_to_min_path_distance | `float` | 2.5           | Disallows punishment of standing still when close to the vehicle's goal               | `"standing_punishment_to_min_path_distance": 8` | 
 
 
 ### Trajectory
@@ -87,6 +89,19 @@ This reward function rewards a vehicle following its path. That includes the fol
 | TOTAL_PATH_PROGRESS_REWARD_SCALING      | `float` | 10            | Scaling of the reward given to the total progress the vehicle has made on the path | `"TOTAL_PATH_PROGRESS_REWARD_SCALING": 20`      | 
 | PATH_PROGRESS_DERIVATIVE_REWARD_SCALING | `float` | 100           | Scaling of the reward given to the change in progress on the path                  | `"PATH_PROGRESS_DERIVATIVE_REWARD_SCALING": 10` | 
 | distance_max                            | `float` | 5             | Maximum allowed distance from the vehicle to its trajectory                        | `"distance_max": 10`                            |
+
+### Derivative
+
+This reward function punishes high linear and angular derivatives and jerks.
+
+#### Properties
+| Property                         | Type    | Default Value | Short Description                                  | Usage                              |
+|----------------------------------|---------|---------------|----------------------------------------------------|------------------------------------|
+| angular_jerk_reward_factor       | `float` | 10            | How much angular jerk should be punished           | `"angular_jerk_reward_factor": 10` | 
+| angular_acc_reward_factor        | `float` | 10            | How much angular acceleration should be punished   | `"angular_acc_reward_factor": 10`  | 
+| linear_jerk_reward_factor        | `float` | 10            | How much linear jerk should be punished            | `"linear_jerk_reward_factor": 10`  | 
+| linear_acc_reward_factor         | `float` | 10            | How much linear acceleration should be punished    | `"linear_acc_reward_factor": 10`   |
+| quadratic                        | `bool`  | `false`       | Whether the different components should be squared | `"quadratic": false`               |
 
 
 ### Basic Driving
@@ -136,6 +151,40 @@ In addition, it also rewards the distance of a vehicle to its preceding vehicle 
 | gap_max                             | `float`  | 20                                    | Maximum distance to the preceding vehicle                                    | `"gap_max": 10`                                           |
 | gap_desired                         | `float`  | 10                                    | Desired distance to the preceding vehicle                                    | `"gap_desired": 5`                                        |
 
+### Intersection
+```json
+"type": "intersection_reward"
+```
+This reward function was made to be used in unsignalized intersection scenarios. It is composed of the following reward functions:
+- Static Collisions
+- Vehicle Collisions
+- Speed Control
+- Trajectory
+
+Here, you can **overwrite** the default properties of these reward functions.
+
+#### Properties
+| Property                                 | Type     | Default Value | Short Description                                                                     | Usage                                             |
+|------------------------------------------|----------|---------------|---------------------------------------------------------------------------------------|---------------------------------------------------|
+| static_collision_factor                  | `float`  | -800          | How much vehicle collisions should be punished                                        | `"static_collision_factor": -800`                 | 
+| vehicle_collision_factor                 | `float`  | -600          | How much static collisions should be punished                                         | `"vehicle_collision_factor": -600`                | 
+| trajectory_reward_factor                 | `float`  | 1             | How much the trajectory reward should be weighted                                     | `"trajectory_reward_factor": 1`                   | 
+| angular_jerk_reward_factor               | `object` | 0.5           | How much angular jerk should be punishe                                               | `"angular_jerk_reward_factor": 0.5`               |
+| angular_acc_reward_factor                | `float`  | 10            | How much angular acceleration should be punished                                      | `"angular_acc_reward_factor": 10`                 |
+| linear_jerk_reward_factor                | `float`  | 0.05          | How much linear jerk should be punished                                               | `"linear_jerk_reward_factor": 0.05`               |
+| linear_acc_reward_factor                 | `float`  | 1             | How much linear acceleration should be punished                                       | `"linear_acc_reward_factor": 1`                   |
+| trajectory_following_reward              | `float`  | 1             | How much trajectory following should be rewarded                                      | `"trajectory_following_reward": 1`                |
+| total_path_progress_reward_scaling       | `float`  | 10            | How much path progression should be rewarded                                          | `"total_path_progress_reward_scaling": 10`        |
+| path_progress_derivative_reward_scaling  | `float`  | 100           | How much path progress derivative should be rewarded                                  | `"path_progress_derivative_reward_scaling": 100`  |
+| distance_max                             | `float`  | 5             | Maximum allowed distance from the vehicle to its trajectory                           | `"distance_max": 5`                               |
+| velocity_difference_scaling              | `float`  | 1             | Scaling of the reward given to the difference in vehicle velocity to desired velocity | `"velocity_difference_scaling": 1`                |
+| velocity_sub_maximum_reward              | `float`  | 0.05          | Reward given to a vehicle driving slower than the maximum speed                       | `"velocity_sub_maximum_reward": 0.05`             |
+| standing_punishment                      | `float`  | -10           | Punishment given to a vehicle standing still                                          | `"standing_punishment": -10`                      |
+| velocity_max                             | `float`  | 40            | Maximum allowed velocity                                                              | `"velocity_max": 40`                              |
+| velocity_desired                         | `float`  | 20            | Desired velocity                                                                      | `"velocity_desired": 20`                          |
+| standing_threshold                       | `float`  | 0.5           | Maximum velocity of a vehicle considered to be standing still                         | `"standing_threshold": 0.5`                       |
+| standing_punishment_from_step            | `int`    | 5             | Allows punishment of standing still only after some simulation steps                  | `"standing_punishment_from_step": 5`              |
+| standing_punishment_to_min_path_distance | `float`  | 2.5           | Disallows punishment of standing still when close to the vehicle's goal               | `"standing_punishment_to_min_path_distance": 2.5` |
 
 # Sum
 ```json
