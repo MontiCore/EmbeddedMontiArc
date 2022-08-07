@@ -11,7 +11,7 @@ component SupervisedPipeline<D>{
 
     component Training {
         ports in D trainData,
-              in String Network,
+              in String network,
               out String trainedModel,
               out Z accuracy,
               out Z Loss;
@@ -27,7 +27,7 @@ component SupervisedPipeline<D>{
     instance Training training_executor;
     instance Evaluation evaluation_executor;
 
-    connect data_access_executor.trainData -> training_executor.trainData;
+    connect data_access_executor.trainData -> Training.trainData;
     connect data_access_executor.testData -> evaluation_executor.testData;
     connect training_executor.trainedModel -> evaluation_executor.trainedModel;
 }
