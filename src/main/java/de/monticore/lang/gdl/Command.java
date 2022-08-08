@@ -52,4 +52,21 @@ public class Command {
         return command;
     }
 
+    @Override
+    public boolean equals(Object obj){
+        if(obj instanceof Command){
+            if(this.getRole().equals(((Command)obj).getRole()) && this.getAction().equals(((Command)obj).getAction())){
+                return true;
+            } else {
+                return false;
+            }
+        }
+
+        return super.equals(obj);
+    }
+
+    @Override
+    public int hashCode(){
+        return this.getRole().hashCode() + this.getAction().hashCode();
+    }
 }

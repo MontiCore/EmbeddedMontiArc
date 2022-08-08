@@ -1,4 +1,4 @@
-src/main/resources/example/6nimmt.gdl
+src/main/resources/example/6nimmtTyped.gdl
 
 # random (deal stack ?stack ?card)
 # random (deal hand ?player ?pos ?card)
