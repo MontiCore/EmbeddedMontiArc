@@ -424,6 +424,7 @@
 (<= (legal player:?player (play card:?card))
     (true (control all))
     (true (sees ?player (hand ?player ?pos ?card)))
+    (isCard ?card ?val)
     (not (hasCardInPlay ?player))
 )
 
