@@ -35,7 +35,7 @@ public class SumRewardFunction extends RewardFunction {
    * @param tickDuration Duration between two Updates of the Simulator.
    * @param components   The sum of reward functions that should be applied.
    */
-  public SumRewardFunction(Vehicle[] vehicles, Float[] weights, Duration tickDuration, RewardFunction[] components) {
+  public SumRewardFunction(Vehicle[] vehicles, Duration tickDuration, RewardFunction[] components, Float[] weights) {
     super(vehicles, tickDuration);
     this.components = components;
     this.weights = weights;

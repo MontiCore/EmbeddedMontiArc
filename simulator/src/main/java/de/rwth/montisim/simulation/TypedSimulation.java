@@ -84,5 +84,7 @@ public class TypedSimulation {
     Json.registerType(VariableSpeedControlRewardFunctionProperties.class);
     Json.registerType(SpeedControlRewardFunctionProperties.class);
     Json.registerType(BasicRewardFunctionProperties.class);
+    Json.registerType(DerivativeRewardFunctionProperties.class);
+    Json.registerType(IntersectionRewardFunctionProperties.class);
   }
 }
