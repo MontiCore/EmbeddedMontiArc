@@ -16,7 +16,6 @@ import java.util.Vector;
 public class BasicDrivingStrategy extends RandomizationStrategy {
 
   private final World world;
-  private final SimpleCoordinateConverter converter;
 
   private final double minGoalDistance;
   private final double maxGoalDistance;
@@ -28,7 +27,7 @@ public class BasicDrivingStrategy extends RandomizationStrategy {
   public BasicDrivingStrategy(Optional<Long> seed, World world, double minGoalDistance, double maxGoalDistance) {
     super(seed);
     this.world = world;
-    this.converter = world.converter.get();
+    SimpleCoordinateConverter converter = world.converter.get();
     this.minGoalDistance = minGoalDistance;
     this.maxGoalDistance = maxGoalDistance;
 
@@ -50,25 +49,22 @@ public class BasicDrivingStrategy extends RandomizationStrategy {
     Vec3 nextPoint = firstSegment.way.points.get(nextPointIndex);
     double orientation = Math.toDegrees(Math.atan2(nextPoint.y - firstPoint.y, nextPoint.x - firstPoint.x));
 
-    // convert meeters to coordinates
+    // convert meters to coordinates
     Coordinates startCoordinates = new Coordinates();
     converter.metersToCoords(firstPoint, startCoordinates);
 
     // set start and end
-    this.startPose = new Pair<Coordinates, Double>(startCoordinates, orientation);
+    this.startPose = new Pair<>(startCoordinates, orientation);
   }
 
   /**
    * Traverse the map randomly from the start node to find a route
    *
-   * @param start
-   * @param minGoalDistance
-   * @param maxGoalDistance
-   * @param random
-   * @return
+   * @param start The node from which to start traversing the world from.
+   * @return A vector of nodes which form a valid path.
    */
   private Vector<Node> traverse(Node start) {
-    return traverse(start, new Vector<Node>(), 0);
+    return traverse(start, new Vector<>(), 0);
   }
 
   private Vector<Node> traverse(Node start, Vector<Node> currPath, double currDistance) {
@@ -88,7 +84,7 @@ public class BasicDrivingStrategy extends RandomizationStrategy {
       return null; // backtrack
     }
 
-    // check if any adjecent Nodes are sufficient for min length
+    // check if any adjacent Nodes are sufficient for min length
     for (Node outNode : adjeNodes) {
       double distance = start.point.distance(outNode.point);
       distance += currDistance;
@@ -104,7 +100,7 @@ public class BasicDrivingStrategy extends RandomizationStrategy {
       return null; // backtrack
     }
 
-    // recursivly find a path if possible
+    // recursively find a path if possible
     for (Node outNode : adjeNodes) {
       double distance = start.point.distance(outNode.point);
       Vector<Node> path = new Vector<>(currPath);
@@ -121,7 +117,7 @@ public class BasicDrivingStrategy extends RandomizationStrategy {
   @Override
   public Vector<VehicleProperties> randomizeCars(Vector<VehicleProperties> vehicles) {
     VehicleProperties template = vehicles.firstElement();
-    Vector<VehicleProperties> generatedVehicles = new Vector<VehicleProperties>(1);
+    Vector<VehicleProperties> generatedVehicles = new Vector<>(1);
     // Assemble the randomized vehicle
     VehicleProperties newVehicle = new VehicleProperties();
     newVehicle.setName("Car_" + 1);

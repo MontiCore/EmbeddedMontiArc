@@ -18,8 +18,6 @@ public class PlatooningStrategy extends RandomizationStrategy {
 
   private final World world;
 
-  private final int maxNumberOfVehicles;
-  private final int minNumberOfVehicles;
   private final double minDistanceBtwVehicles;
   private final double maxDistanceBtwVehicles;
   private final double minGoalDistance;
@@ -37,8 +35,6 @@ public class PlatooningStrategy extends RandomizationStrategy {
   public PlatooningStrategy(Optional<Long> seed, World world, int minNumberOfVehicles, int maxNumberOfVehicles, double minDistanceBtwVehicles, double maxDistanceBtwVehicles, double minGoalDistance, double maxGoalDistance) {
     super(seed);
     this.world = world;
-    this.minNumberOfVehicles = minNumberOfVehicles;
-    this.maxNumberOfVehicles = maxNumberOfVehicles;
     this.minDistanceBtwVehicles = minDistanceBtwVehicles;
     this.maxDistanceBtwVehicles = maxDistanceBtwVehicles;
     this.minGoalDistance = minGoalDistance;
@@ -47,7 +43,7 @@ public class PlatooningStrategy extends RandomizationStrategy {
     this.converter = this.world.converter.get();
 
     // Select random number of vehicles
-    int numbOfVehicles = this.random.nextInt(this.maxNumberOfVehicles - this.minNumberOfVehicles + 1) + this.minNumberOfVehicles;
+    int numbOfVehicles = this.random.nextInt(maxNumberOfVehicles - minNumberOfVehicles + 1) + minNumberOfVehicles;
 
     generatedStartPoses = null;
     generatedEndPoses = null;
@@ -67,13 +63,12 @@ public class PlatooningStrategy extends RandomizationStrategy {
       avoidSegmentIDs = new Vector<>();
       Node lastNode = start;
       for (Node nextNode : generatedPath) {
-        WaySegment outSegment = lastNode.outRoadSegmentIDs.stream().map(id -> this.world.getWaySegment(id)).filter(segment -> segment.endNodeID == nextNode.localID).findFirst().get();
+        WaySegment outSegment = lastNode.outRoadSegmentIDs.stream().map(this.world::getWaySegment).filter(segment -> segment.endNodeID == nextNode.localID).findFirst().get();
         avoidSegmentIDs.add(outSegment.localID);
         avoidSegmentIDs.add(outSegment.reverseId);
         lastNode = nextNode;
       }
 
-      //TODO: Generate End Poses in a similar fashion
       // Generate Start and End Poses randomly
       generatedStartPoses = randomizedPoses(start, true, numbOfVehicles);
       generatedEndPoses = randomizedPoses(generatedPath.lastElement(), false, numbOfVehicles);
@@ -83,14 +78,11 @@ public class PlatooningStrategy extends RandomizationStrategy {
   /**
    * Traverse the map randomly from the start node to find a route
    *
-   * @param start
-   * @param minGoalDistance
-   * @param maxGoalDistance
-   * @param random
-   * @return
+   * @param start The node from which to start traversing the world from.
+   * @return A vector of nodes which form a valid path.
    */
   private Vector<Node> traverse(Node start) {
-    return traverse(start, new Vector<Node>(), 0);
+    return traverse(start, new Vector<>(), 0);
   }
 
   private Vector<Node> traverse(Node start, Vector<Node> currPath, double currDistance) {
@@ -110,8 +102,8 @@ public class PlatooningStrategy extends RandomizationStrategy {
       return null; // backtrack
     }
 
-    // check if any adjecent Nodes are sufficient for min length
-    for (Node outNode : adjeNodes) {
+    // check if any adjacent Nodes are sufficient for min length
+    for (Node outNode : new Vector<>(adjeNodes)) { // can modify adjeNodes, so copy it for iteration
       double distance = start.point.distance(outNode.point);
       distance += currDistance;
       if (minGoalDistance <= distance && distance <= maxGoalDistance) {
@@ -126,7 +118,7 @@ public class PlatooningStrategy extends RandomizationStrategy {
       return null; // backtrack
     }
 
-    // recursivly find a path if possible
+    // recursively find a path if possible
     for (Node outNode : adjeNodes) {
       double distance = start.point.distance(outNode.point);
       Vector<Node> path = new Vector<>(currPath);
@@ -141,7 +133,8 @@ public class PlatooningStrategy extends RandomizationStrategy {
   }
 
   private Vector<Pair<Coordinates, Double>> randomizedPoses(Node node, boolean inward, int poses_to_generate) {
-    Vector<Pair<Integer, Double>> segments = randomizedSegments(node, new Vector<Pair<Integer, Double>>(), this.avoidSegmentIDs, inward, 0);
+    // get segments adjacent to node, that which not on the path
+    Vector<Pair<Integer, Double>> segments = randomizedSegments(node, new Vector<>(), this.avoidSegmentIDs, inward, this.minDistanceBtwVehicles);
     if (segments.isEmpty()) {
       return null;
     }
@@ -151,29 +144,31 @@ public class PlatooningStrategy extends RandomizationStrategy {
     // spawn vehicles randomly
     for (int i = 0; i < poses_to_generate; i++) {
       if (segments.isEmpty()) { // because we remove segments
+        // did not determine all poses yet, but also no more segments to choose from
+        // try the whole randomization again
         return null;
       }
+
       // get random WaySegment to generate pose on
-      Pair<Integer, Double> pair = segments.get(0);
+      Pair<Integer, Double> pair = segments.get(this.random.nextInt(segments.size()));
       Integer segmentID = pair.getKey();
       WaySegment segment = world.getWaySegment(segmentID);
       Double spawnLength = pair.getValue();
 
       // traverse segment to find a spawn point
-      double traverse_length = spawnLength + this.random.nextDouble() * (this.maxDistanceBtwVehicles - this.minDistanceBtwVehicles) + this.minDistanceBtwVehicles;
+      double traverse_length = spawnLength + this.random.nextDouble() * (this.maxDistanceBtwVehicles - this.minDistanceBtwVehicles);
 
       if (traverse_length >= segment.length) { // cannot place pose here, but at child // >= not > makes it easier later (no checking if last element)
         // remove segment
-        segments.remove(0);
+        segments.remove(pair);
 
-        // recursivly add childs
+        // recursively add children
         int childNodeID = inward ? segment.startNodeID : segment.endNodeID;
         if (childNodeID >= 0) { // child is a node
           Node childNode = world.getNode(childNodeID);
-          Vector<Integer> newAvoidSegmentIDs = new Vector<>(this.avoidSegmentIDs);
-          newAvoidSegmentIDs.add(segment.localID);
-          newAvoidSegmentIDs.add(segment.reverseId);
-          segments = randomizedSegments(childNode, segments, newAvoidSegmentIDs, inward, 0);
+          // get new segments
+          // spawnOffset depending on the traverse_length
+          segments = randomizedSegments(childNode, segments, avoidSegmentIDs, inward, traverse_length - segment.length);
         }
 
         // try again for vehicle i
@@ -183,14 +178,17 @@ public class PlatooningStrategy extends RandomizationStrategy {
       else { // place pose here: traverse the way to find the nearest point
         // get way
         Way way = segment.way;
-        // determine if waysegment is reversed
+        // determine if way-segment is reversed
         boolean reversed = (segment.pointsStart > segment.pointsEnd);
         // travel traverse_length from pointsStart to pointsEnd
         double currDistance = 0;
 
+        // get start point of the segment (if reversed, end point)
         int currPointID = inward ? segment.pointsEnd : segment.pointsStart;
-        int inc = reversed ^ !inward ? 1 : -1;
+        int inc = reversed ^ inward ? -1 : 1;
 
+        // determine the way-point at which the vehicle will spawn
+        // is the way-point at which the vehicle will have traveled traverse_length from the start point of the segment
         Vec3 currPoint = way.points.get(currPointID);
         int nextPointID;
         do {
@@ -213,38 +211,52 @@ public class PlatooningStrategy extends RandomizationStrategy {
 
         // interpolate point
         double total_distance = prevPoint.distance(currPoint);
-        double distance = currDistance - (traverse_length);
-        double fraction = distance / total_distance;
+        double distance = currDistance - traverse_length;
+        assert(distance >= 0);
+        double fraction = 1 - (distance / total_distance);
 
+        // determine accurate point based on linear interpolation
         Vec2 spawnPoint = new Vec2(prevPoint.x + fraction * (currPoint.x - prevPoint.x), prevPoint.y + fraction * (currPoint.y - prevPoint.y));
-
-        double orientation = Math.toDegrees(Math.atan2(spawnPoint.y - prevPoint.y, spawnPoint.x - prevPoint.x)) - 180;
         Coordinates spawnCoordinates = new Coordinates();
         this.converter.metersToCoords(spawnPoint, spawnCoordinates);
-        poses.add(new Pair<Coordinates, Double>(spawnCoordinates, orientation));
+
+        // determine the orientation of the vehicle at spawnPoint
+        double orientation = Math.toDegrees(Math.atan2(spawnPoint.y - prevPoint.y, spawnPoint.x - prevPoint.x)) - 180;
+
+        // add the final pose to the list of poses
+        poses.add(new Pair<>(spawnCoordinates, orientation));
 
         // update segments
-        segments.remove(0);
-        segments.add(new Pair<Integer, Double>(segmentID, traverse_length));
-
-        // add segment to avoidSegmentIDs
-        this.avoidSegmentIDs.add(segment.localID);
-        this.avoidSegmentIDs.add(segment.reverseId);
+        segments.remove(pair);
+        segments.add(new Pair<>(segmentID, traverse_length + this.minDistanceBtwVehicles));
       }
     }
     assert (poses.size() == poses_to_generate);
     return poses;
   }
 
+  /*
+    Add all adjacent segments from the startNode, excluding the avoidSegments and excludeSegments.
+   */
   private Vector<Pair<Integer, Double>> randomizedSegments(Node startNode, Vector<Pair<Integer, Double>> existingSegments, Vector<Integer> avoidSegmentIDs, boolean inward, double spawnOffset) {
+    // Additional Safety Precaution: If Node is a junction with very sharp corners. Doesn't guarantee collision-free spawning, but helps a lot.
+    spawnOffset = Math.max(spawnOffset, this.minDistanceBtwVehicles * 3 / 4);
+
+    // get all adjacent segments
     Vector<Integer> newSegmentsIDs = inward ? startNode.inRoadSegmentIDs : startNode.outRoadSegmentIDs;
-    Vector<Pair<Integer, Double>> segments = new Vector<Pair<Integer, Double>>(existingSegments);
+
+    Vector<Pair<Integer, Double>> segments = new Vector<>(existingSegments);
     for (Integer newSegmentID : newSegmentsIDs) {
       WaySegment segment = this.world.getWaySegment(newSegmentID);
-      boolean skipSegment = avoidSegmentIDs.contains(segment.localID);
-      skipSegment = skipSegment || (segments.parallelStream().anyMatch(pair -> pair.getKey() == segment.localID || pair.getKey() == segment.reverseId));
-      if (!skipSegment) {
-        segments.add(new Pair<Integer, Double>(segment.localID, spawnOffset));
+      assert(newSegmentID == segment.localID);
+
+      // do not add segment if it should be excluded
+      if (!avoidSegmentIDs.contains(newSegmentID)) {
+        segments.add(new Pair<>(newSegmentID, spawnOffset));
+
+        // avoid this segment in the future
+        avoidSegmentIDs.add(segment.localID);
+        avoidSegmentIDs.add(segment.reverseId);
       }
     }
     return segments;
@@ -253,7 +265,7 @@ public class PlatooningStrategy extends RandomizationStrategy {
   @Override
   public Vector<VehicleProperties> randomizeCars(Vector<VehicleProperties> vehicles) {
     VehicleProperties template = vehicles.firstElement();
-    Vector<VehicleProperties> generatedVehicles = new Vector<VehicleProperties>(generatedStartPoses.size());
+    Vector<VehicleProperties> generatedVehicles = new Vector<>(generatedStartPoses.size());
     for (int i = 0; i < generatedStartPoses.size(); i++) {
 
       // Assemble the randomized vehicle
@@ -268,20 +280,21 @@ public class PlatooningStrategy extends RandomizationStrategy {
       newVehicle.physics = template.physics;
       newVehicle.powertrain = template.powertrain;
 
-      // Add randomized properties
+      // Add the start pose
       newVehicle.start_coords = Optional.of(generatedStartPoses.get(i).getKey());
       newVehicle.start_orientation = generatedStartPoses.get(i).getValue();
 
+      // Create a task to follow the path
       TaskProperties task = new TaskProperties();
       PathGoalProperties goal = new PathGoalProperties();
       goal.ltl_operator = LTLOperator.EVENTUALLY;
 
-      // add path points
+      // Add the path points
       for (Node node : generatedPath) {
         goal.reach(node.point.asVec2());
       }
 
-      // add end point
+      // Add the end point
       Vec2 endPoint = new Vec2();
       this.converter.coordsToMeters(generatedEndPoses.get(generatedEndPoses.size() - i - 1).getKey(), endPoint); // assign vehicles end poses in reverse order (first vehicle in platoon should have a further distant parking pose)
       goal.reach(endPoint);
