@@ -18,18 +18,20 @@ Step {
 	Data_Access,
 	Training;
 
-//determines tep order
+//determines step order
  id:N!
 
  define Training{
     implementation = SupervisedTrainer: component!
     // should correpsond to those of components in the corresponding reference model(s)
     network: component!
+    schemaApi = path.to.schemaapi: component
+
  }
 
  define Data_Access{
     implementation = HDF5DataAccess:component!
-    datasource: component!
+    datasource: String!
  }
 
 }
