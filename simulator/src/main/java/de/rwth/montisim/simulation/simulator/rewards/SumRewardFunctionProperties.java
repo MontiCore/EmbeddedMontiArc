@@ -22,10 +22,21 @@ public class SumRewardFunctionProperties extends RewardFunctionProperties {
 
   @Override
   public RewardFunction build(Vehicle[] vehicles, Duration tickDuration) {
+    assert (rewardWeights.size() == rewardFunctions.size() || rewardWeights.size() == 0);
     RewardFunction[] rewardFunctionsArray = new RewardFunction[rewardFunctions.size()];
     for (int i = 0; i < rewardFunctions.size(); i++) {
       rewardFunctionsArray[i] = rewardFunctions.get(i).build(vehicles, tickDuration);
     }
-    return new SumRewardFunction(vehicles, tickDuration, rewardFunctionsArray);
+    if (rewardWeights.size() == 0) {
+      return new SumRewardFunction(vehicles, tickDuration, rewardFunctionsArray);
+    }
+    else {
+      float[] rewardWeightsArray = new float[rewardWeights.size()];
+      for (int i = 0; i < rewardWeights.size(); i++) {
+        rewardWeightsArray[i] = rewardWeights.get(i);
+      }
+      return new SumRewardFunction(vehicles, tickDuration, rewardFunctionsArray, rewardWeightsArray);
+    }
+
   }
 }

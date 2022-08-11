@@ -11,7 +11,7 @@ import java.util.Arrays;
 public class SumRewardFunction extends RewardFunction {
 
   private final RewardFunction[] components;
-  private final Float[] weights;
+  private final float[] weights;
 
 
   /**
@@ -24,7 +24,7 @@ public class SumRewardFunction extends RewardFunction {
   public SumRewardFunction(Vehicle[] vehicles, Duration tickDuration, RewardFunction[] components) {
     super(vehicles, tickDuration);
     this.components = components;
-    weights = new Float[components.length];
+    weights = new float[components.length];
     Arrays.fill(weights, 1f);
   }
 
@@ -35,7 +35,7 @@ public class SumRewardFunction extends RewardFunction {
    * @param tickDuration Duration between two Updates of the Simulator.
    * @param components   The sum of reward functions that should be applied.
    */
-  public SumRewardFunction(Vehicle[] vehicles, Duration tickDuration, RewardFunction[] components, Float[] weights) {
+  public SumRewardFunction(Vehicle[] vehicles, Duration tickDuration, RewardFunction[] components, float[] weights) {
     super(vehicles, tickDuration);
     this.components = components;
     this.weights = weights;
@@ -50,7 +50,7 @@ public class SumRewardFunction extends RewardFunction {
   public SumRewardFunction(Vehicle[] vehicles, Duration tickDuration) {
     super(vehicles, tickDuration);
     this.components = new RewardFunction[0];
-    weights = new Float[0];
+    weights = new float[0];
   }
 
   @Override
