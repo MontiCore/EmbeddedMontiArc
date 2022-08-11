@@ -1,11 +1,11 @@
-cd /home/clusterID/path/to/autopilot
-directory=/home/clusterID/path/to/autopilot
-. $directory/config.sh
+#!/bin/bash
+
+. ./config.sh
 
 rm -rf target
 
 echo "Generate agent..."
-java -jar ${GENERATOR_PATH} config/agent.json
+java -jar bin/*-jar-with-dependencies.jar config/agent.json
 
 echo "Building..."
 rm -rf ${BINARY}

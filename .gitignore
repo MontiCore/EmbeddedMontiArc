@@ -4,3 +4,4 @@ logs
 **/target
 cmake-build-debug
 *.jar
+cudnn*

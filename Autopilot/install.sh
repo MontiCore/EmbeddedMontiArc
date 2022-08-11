@@ -1,5 +1,6 @@
-directory=$(pwd)
-. $directory/config.sh
+#!/bin/bash
+
+. ./config.sh
 
 rm -rf target
 
