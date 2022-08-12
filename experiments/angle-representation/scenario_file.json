@@ -1,15 +1,6 @@
 {
 	"name": "rlMinimalExperiment",
 	"map_name": "maps/dallas",
-	"modules": [
-		{
-			"type": "simple_network",
-			"transmission_time": [
-				0,
-				100000000
-			]
-		}
-	],
 	"max_duration": [
 		60,
 		0
