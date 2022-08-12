@@ -1,0 +1,137 @@
+{
+	"name": "rlMinimalExperiment",
+	"map_name": "maps/dallas",
+	"modules": [
+		{
+			"type": "simple_network",
+			"transmission_time": [
+				0,
+				100000000
+			]
+		}
+	],
+	"max_duration": [
+		60,
+		0
+	],
+	"tick_duration": [
+		0,
+		10000000
+	],
+	"collision_mode": "LOG_COLLISIONS",
+	"randomization": [
+		{
+			"type": "basic",
+			"minGoalDistance": 500,
+			"maxGoalDistance": 1000
+		}
+	],
+	"rewardFunction": {
+		"type": "basic_reward",
+		"trajectory_reward_properties": {
+			"type": "trajectory_reward",
+			"TRAJECTORY_FOLLOWING_REWARD": 1,
+			"TOTAL_PATH_PROGRESS_REWARD_SCALING": 10,
+			"PATH_PROGRESS_DERIVATIVE_REWARD_SCALING": 100,
+			"distance_max": 5
+		},
+		"speed_control_reward_properties": {
+			"type": "speed_control_reward",
+			"VELOCITY_DIFFERENCE_REWARD_SCALING": 1,
+			"VELOCITY_SUB_MAXIMUM_REWARD": 0.5,
+			"STANDING_REWARD": -10,
+			"LINEAR_ACCELERATION_REWARD_SCALING": 1,
+			"LINEAR_JERK_REWARD_SCALING": 0.05,
+			"ANGULAR_ACCELERATION_REWARD_SCALING": 0.1,
+			"ANGULAR_JERK_REWARD_SCALING": 0.005,
+			"velocity_max": 40,
+			"velocity_desired": 20,
+			"standing_threshold": 0.5,
+			"standing_punishment_from_step": 5,
+			"standing_punishment_to_min_path_distance": 2.5
+		},
+		"static_collision_reward_properties": {
+			"type": "static_collision_reward",
+			"STATIC_COLLISION_REWARD": -500
+		}
+	},
+	"preprocessor": {
+		"type": "centering"
+	},
+	"cars": [
+		{
+			"start_pos": [
+				0,
+				0
+			],
+			"start_orientation": 0.0,
+			"task": {
+				"goals": []
+			},
+			"components": [
+				{
+					"type": "constant_bus",
+					"connected_to": [
+						"SteeringActuator",
+						"BrakingActuator",
+						"GasActuator",
+						"TrueVelocitySensor",
+						"TruePositionSensor",
+						"TrueCompassSensor",
+						"Navigation",
+						"RLAutopilot"
+					]
+				},
+				{
+					"type": "actuator",
+					"name": "SteeringActuator",
+					"physical_value_name": "steering",
+					"change_rate": 60.0,
+					"sensor": {
+						"type": "sensor"
+					}
+				},
+				{
+					"type": "actuator",
+					"name": "BrakingActuator",
+					"physical_value_name": "braking",
+					"change_rate": 10.0,
+					"sensor": {
+						"type": "sensor"
+					}
+				},
+				{
+					"type": "actuator",
+					"name": "GasActuator",
+					"physical_value_name": "gas",
+					"sensor": {
+						"type": "sensor"
+					}
+				},
+				{
+					"type": "sensor",
+					"name": "TrueVelocitySensor",
+					"physical_value_name": "true_velocity"
+				},
+				{
+					"type": "sensor",
+					"name": "TruePositionSensor",
+					"physical_value_name": "true_position"
+				},
+				{
+					"type": "sensor",
+					"name": "TrueCompassSensor",
+					"physical_value_name": "true_compass"
+				},
+				{
+					"type": "navigation"
+				},
+				{
+					"type": "rl_autopilot",
+					"name": "RLAutopilot",
+					"maxVehicleAccel": 7.460690450979396
+				}
+			]
+		}
+	]
+}

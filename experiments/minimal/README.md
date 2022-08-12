@@ -1,15 +1,18 @@
 # Minimal Driving Experiment
 
 ## Description
-This Experiment will be used as a point of reference to compare the value of different preprocessors in a basic driving scenario.
+This experiment will be used as a point of reference to compare the value of different preprocessors in a basic driving scenario.
 
 In this experiment, a single vehicle will learn to follow a path, without the use of any preprocessor.
 
-## Goal
+# Goal
+The training goal of the autopilot is to follow a given path as closely and as fast as possible, without causing any collisions.
+
+## Research Goal
 This experiment is expected to perform worse than the comparative experiments using preprocessors. So the goal of this experiment is to get some result after training until the loss-functions stabilize.
 
 ## Pass Criteria
-This experiment is considered passed, if the vehicle will drive in some fashion after the loss-function stabilizes.
+Given the research goal, this experiment is considered passed, if the vehicle will drive in some fashion after the loss-function stabilizes.
 
 ## Parameters
 ### Map
@@ -18,41 +21,43 @@ This experiment is considered passed, if the vehicle will drive in some fashion 
 ```
 
 ### Randomization
+
+### Randomization
 ```json
 {
-  "type": "basic",
-  "minGoalDistance": 500,
-  "maxGoalDistance": 1000
+	"type": "basic",
+	"minGoalDistance": 500,
+	"maxGoalDistance": 1000
 }
 ```
 
 ### Reward
 ```json
 {
-  "type": "basic_reward",
-  "static_collision_reward_properties": {
-	"STATIC_COLLISION_REWARD": -500
-  },
-  "trajectory_reward_properties": {
-	"TRAJECTORY_FOLLOWING_REWARD": 1,
-	"TOTAL_PATH_PROGRESS_REWARD_SCALING": 10,
-	"PATH_PROGRESS_DERIVATIVE_REWARD_SCALING": 100,
-	"distance_max": 5
-  },
-  "speed_control_reward_properties": {
-	"VELOCITY_DIFFERENCE_REWARD_SCALING": 1,
-	"VELOCITY_SUB_MAXIMUM_REWARD": 0.5,
-	"STANDING_REWARD": -10,
-	"LINEAR_ACCELERATION_REWARD_SCALING": 1,
-	"LINEAR_JERK_REWARD_SCALING": 0.05,
-	"ANGULAR_ACCELERATION_REWARD_SCALING": 0.1,
-	"ANGULAR_JERK_REWARD_SCALING": 0.005,
-	"velocity_max": 40,
-	"velocity_desired": 20,
-	"standing_threshold": 0.5,
-	"standing_punishment_from_step": 5,
-	"standing_punishment_to_min_path_distance": 2.5
-  }
+	"type": "basic_reward",
+	"static_collision_reward_properties": {
+		"STATIC_COLLISION_REWARD": -500
+	},
+	"trajectory_reward_properties": {
+		"TRAJECTORY_FOLLOWING_REWARD": 1,
+		"TOTAL_PATH_PROGRESS_REWARD_SCALING": 10,
+		"PATH_PROGRESS_DERIVATIVE_REWARD_SCALING": 100,
+		"distance_max": 5
+	},
+	"speed_control_reward_properties": {
+		"VELOCITY_DIFFERENCE_REWARD_SCALING": 1,
+		"VELOCITY_SUB_MAXIMUM_REWARD": 0.5,
+		"STANDING_REWARD": -10,
+		"LINEAR_ACCELERATION_REWARD_SCALING": 1,
+		"LINEAR_JERK_REWARD_SCALING": 0.05,
+		"ANGULAR_ACCELERATION_REWARD_SCALING": 0.1,
+		"ANGULAR_JERK_REWARD_SCALING": 0.005,
+		"velocity_max": 40,
+		"velocity_desired": 20,
+		"standing_threshold": 0.5,
+		"standing_punishment_from_step": 5,
+		"standing_punishment_to_min_path_distance": 2.5
+	}
 }
 ```
 
