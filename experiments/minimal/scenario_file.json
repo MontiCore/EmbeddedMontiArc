@@ -1,6 +1,15 @@
 {
 	"name": "rlMinimalExperiment",
 	"map_name": "maps/dallas",
+	"modules": [
+		{
+			"type": "simple_network",
+			"transmission_time": [
+				0,
+				100000000
+			]
+		}
+	],
 	"max_duration": [
 		60,
 		0
@@ -20,12 +29,14 @@
 	"rewardFunction": {
 		"type": "basic_reward",
 		"trajectory_reward_properties": {
+			"type": "trajectory_reward",
 			"TRAJECTORY_FOLLOWING_REWARD": 1,
 			"TOTAL_PATH_PROGRESS_REWARD_SCALING": 10,
 			"PATH_PROGRESS_DERIVATIVE_REWARD_SCALING": 100,
 			"distance_max": 5
 		},
 		"speed_control_reward_properties": {
+			"type": "speed_control_reward",
 			"VELOCITY_DIFFERENCE_REWARD_SCALING": 1,
 			"VELOCITY_SUB_MAXIMUM_REWARD": 0.5,
 			"STANDING_REWARD": -10,
@@ -40,6 +51,7 @@
 			"standing_punishment_to_min_path_distance": 2.5
 		},
 		"static_collision_reward_properties": {
+			"type": "static_collision_reward",
 			"STATIC_COLLISION_REWARD": -500
 		}
 	},
@@ -71,7 +83,7 @@
 					"type": "actuator",
 					"name": "SteeringActuator",
 					"physical_value_name": "steering",
-					"change_rate": 100.0,
+					"change_rate": 60.0,
 					"sensor": {
 						"type": "sensor"
 					}
@@ -109,22 +121,11 @@
 					"physical_value_name": "true_compass"
 				},
 				{
-					"type": "sensor",
-					"name": "BatterySensor",
-					"physical_value_name": "battery_level"
-				},
-				{
 					"type": "navigation"
 				},
 				{
-					"type": "lidar"
-				},
-				{
-					"type": "speed_limit"
-				},
-				{
-					"type": "java_autopilot",
-					"name": "JavaAutopilot",
+					"type": "rl_autopilot",
+					"name": "RLAutopilot",
 					"maxVehicleAccel": 7.460690450979396
 				}
 			]

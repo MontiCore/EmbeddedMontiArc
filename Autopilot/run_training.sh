@@ -29,11 +29,10 @@ then
 	./agent -t 50
 	sleep 2
 else
-	java -jar basic-simulator.jar -rl -s "${SCENARIO_PATH}" &
+	/usr/lib/jvm/java-8-openjdk-amd64/jre/bin/java -jar basic-simulator.jar -rl -s "${SCENARIO_PATH}" &
 fi
-cd $PROJECT_ROOT
 
+cd $PROJECT_ROOT
 mkdir -p logs
 mkdir -p logs/figures
 yes | ./run_agent_training_script.sh | tee logs/logfile
-sleep 1

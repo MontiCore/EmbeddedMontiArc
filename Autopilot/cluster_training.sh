@@ -18,4 +18,4 @@ module load cuda
 module load cudnn
 module load nccl
 
-singularity exec --nv /rwthfs/rz/SW/UTIL.common/singularity/in296142 $HOME/dev/coopmontisimautopilot/Autopilot/install_and_run_training.sh
+singularity exec --nv /rwthfs/rz/SW/UTIL.common/singularity/in296142 $(pwd)/install_and_run_training.sh
