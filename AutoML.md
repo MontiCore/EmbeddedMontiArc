@@ -3,6 +3,8 @@
 ## Input requirements
 - Train config (as configuration symbol )
 - Network architecture (as java object)
+- termination criterion (some metric and some value)
+  - i.e. 80% accuracy or 100% precision
 
 ## Steps:
 1. The AutoML-pipeline gets a start architecture and a start train config as input
