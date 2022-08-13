@@ -3,7 +3,7 @@
 ## Input requirements
 - Train config (as configuration symbol )
 - Network architecture (as java object)
-- termination criterion (some metric and some value)
+- Termination criterion (some metric (enum) and some numeric value )
   - i.e. 80% accuracy or 100% precision
 
 ## Steps:
