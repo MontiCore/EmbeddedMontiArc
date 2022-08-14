@@ -1,7 +1,5 @@
 #!/bin/bash
 
-. ./config.sh
-
 trap 'kill $(jobs -pr)' SIGINT SIGTERM EXIT
 roscore &
 sleep 2
