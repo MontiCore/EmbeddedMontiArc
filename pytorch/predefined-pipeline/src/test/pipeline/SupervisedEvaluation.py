@@ -1,9 +1,9 @@
 class SupervisedEvaluation():
 
-    def __init__(self, trained_model, train_config, test_loader):
-        self._trained_model_ = trained_model
-        self._test_loader_ = test_loader
-        self._train_config_ = train_config
+    def __init__(self, trainedModel, schemaApi, testData):
+        self._trained_model_ = trainedModel
+        self._test_loader_ = testData
+        self._train_config_ = schemaApi
 
     def execute(self):
         test_accuracy = []
