@@ -9,38 +9,4 @@ schema Pipeline {
 
 reference-model = referencemodels.Training_Pipeline
 
-/*  possible pipeline steps
-    step names should correpsond to those of components in the corresponding reference model(s) to make symbol linking easier
-*/
-
-Step {
-  values:
-	Data_Access,
-	Training;
-
-//determines step order
- id:N!
-
- define Training{
-    implementation = SupervisedTrainer: component!
-    // should correpsond to those of components in the corresponding reference model(s)
-    network: component!
-    schemaApi = path.to.schemaapi: component
-
- }
-
- define Data_Access{
-    implementation = HDF5DataAccess:component!
-    datasource: String!
- }
-
-}
-
-// Pipeline steps
-   steps {
-    values: useless_keyword;
-
-    train_step: Step!
-    data_access_step: Step!
-   }
 }
