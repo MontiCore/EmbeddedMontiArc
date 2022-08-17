@@ -9,14 +9,14 @@ component SupervisedPipeline{
     }
 
     component Training(String network){
-        ports in D trainData,
+        ports in String trainData,
               out String trainedModel,
               out Z accuracy,
               out Z Loss;
     }
 
     component Evaluation {
-        ports in D testData,
+        ports in String testData,
               in String trainedModel,
               out Z accuracy;
     }
