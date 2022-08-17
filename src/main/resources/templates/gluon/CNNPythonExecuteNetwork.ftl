@@ -41,6 +41,7 @@ def predict(path_to_h5, start=None, end=None, batch_size=1, model_path="../../..
 <#if tc.architecture.useDgl>
     net_creator.load_pretrained_weights(context=mx_context)
 <#else>
+    net_creator._model_dir_ = net_creator._weights_dir_
     _ = net_creator.load(context=mx_context)
 </#if>
 
