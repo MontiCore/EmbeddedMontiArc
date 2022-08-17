@@ -1,6 +1,6 @@
 # Generated from a Supervised-learning schema
 
-class Supervised:
+class Supervised_Schema_API:
 
     def __init__(self):
         self.training_configuration = None
