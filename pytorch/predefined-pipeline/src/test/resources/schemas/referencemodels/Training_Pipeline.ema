@@ -1,17 +1,15 @@
 /* (c) https://github.com/MontiCore/monticore */
 package pipeline;
 
-component SupervisedPipeline<D>{
+component SupervisedPipeline{
 
-    component Data_Access {
-        ports in String dataSource,
-              out D trainData,
-              out D testData;
+    component Data_Access(String datasource){
+        ports out String trainData,
+              out String testData;
     }
 
-    component Training {
+    component Training(String network){
         ports in D trainData,
-              in String network,
               out String trainedModel,
               out Z accuracy,
               out Z Loss;
