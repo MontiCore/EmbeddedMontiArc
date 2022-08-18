@@ -1,0 +1,13 @@
+Bootstrap: library
+From: ubuntu:20.04
+
+%environment
+    export DGLBACKEND=mxnet
+
+%post
+    apt-get update -y
+    apt-get -y install python3 git curl python3-pip nano
+
+    pip3 install setuptools numpy pybind11
+    pip3 install qd zipfile38 matplotlib pandas h5py xlrd mxnet plotly
+    pip3 install dgl dglgo -f https://data.dgl.ai/wheels/repo.html
