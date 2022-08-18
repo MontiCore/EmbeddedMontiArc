@@ -100,16 +100,13 @@ public class ScenarioVis extends SimVis implements SimulationRunner {
         // Randomize Scenario
 		try {
 			Vector<RandomizationProperties> randomizationPropertiesVector = simConfig.randomization;
-			Optional<RandomizationProperties> randomizationPropertiesOptional = RandomRandomizationPropertiesPicker.pickRandomizationProperties(randomizationPropertiesVector);
-			if(randomizationPropertiesOptional.isPresent()) {
-				RandomizationProperties randomizationProperties = randomizationPropertiesOptional.get();
-				RandomizationStrategy strategy = randomizationProperties.build(simConfig, fileSystem.getPath("maps",  "").getAbsolutePath());
-				simConfig.cars = strategy.randomizeCars(simConfig.cars);
-				simConfig.map_name = strategy.randomizeMapName(simConfig.map_name);
-				simConfig.max_duration = strategy.randomizeMaxDuration(simConfig.max_duration);
-				simConfig.tick_duration = strategy.randomizeTickDuration(simConfig.tick_duration);
-				simConfig.modules = strategy.randomizeModules(simConfig.modules);
-			}
+			RandomizationProperties randomizationProperties = RandomRandomizationPropertiesPicker.pickRandomizationProperties(randomizationPropertiesVector);
+			RandomizationStrategy strategy = randomizationProperties.build(simConfig, fileSystem.getPath("maps",  "").getAbsolutePath());
+			simConfig.cars = strategy.randomizeCars(simConfig.cars);
+			simConfig.map_name = strategy.randomizeMapName(simConfig.map_name);
+			simConfig.max_duration = strategy.randomizeMaxDuration(simConfig.max_duration);
+			simConfig.tick_duration = strategy.randomizeTickDuration(simConfig.tick_duration);
+			simConfig.modules = strategy.randomizeModules(simConfig.modules);
 		}catch (Exception e) {
 			e.printStackTrace();
 		}
