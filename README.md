@@ -8,10 +8,15 @@ RL model using EMADL that can optimize lattice structures. Structures are genera
 
 - A PC with Windows 10, capable of running nTopology ([System Requirements](https://support.ntopology.com/hc/en-us/articles/360061698333-System-Requirements-Guide))
 - nTopology (on local PC)
-- Python 3.9.x installed on local PC (does not work with 3.10+!) as well as the following dependencies:
+- Python 3.9.x installed on local PC (does not work with 3.10+!) as well as the following dependencies: `certifi`, `charset-normalizer`, `idna`, `pip`, `pywin32`, `requests`, `setuptools`, `urllib3`, `websocket-client`
 - (ideally) Access to a linux instance on the RWTH HPC Cluster
-- If running everything locally: Docker for Windows installed (Requires WSL2 to be enabled!)
-- If using the cluster: WinSCP (installed on the local PC)
+- If running everything locally:
+    - Docker for Windows installed (Requires WSL2 to be enabled!)
+    - ANSYS LS-DYNA
+    - Additional python dependencies: `docker`
+- If using the cluster:
+    - WinSCP (installed on the local PC)
+    - Additional python dependencies: `bcrypt`, `cffi`, `cryptography`, `paramiko`, `PyNaCl`, `six`, `pycparser`
 
 ## Installation
 
@@ -21,7 +26,7 @@ To install, please clone this repository, then copy the content of `/src/main/lo
 
 If you plan to use the cluster, you need to generate an ssh key for authentication (Ed25519). Place the key in the tools/Keys folder on your local PC and make sure to secure your key with a password. The key is needed in both `.ppk` and split `.priv` and `.pub` format. Guides on how to generate these files can be found [here](https://www.simplified.guide/putty/puttygen-generate-ssh-key-pair) and [here](https://www.simplified.guide/putty/convert-ppk-to-ssh-key). Please name your files `key.ppk` (PuTTY format), `key.priv` (Private OpenSSH Key) and `key.pub` (Public OpenSSH Key). You will also need to add the public key to the authorized keys on the cluster.
 
-Furthermore, if you are running everything locally, you need to build the docker container for the preprocessing. You can use the Dockerfile and requirements file in the `additional_files/Docker` folder in the root of this repository. Please name the container "preprocessing".
+Furthermore, if you are running everything locally, you need to build the docker container for the preprocessing. You can use the Dockerfile and requirements file in the `/additional_files/Docker` folder in the root of this repository. Please name the container "preprocessing".
 
 Depending on whether the FEM simulation and preprocessing should run on the cluster or locally, you need to change the following parameters:
 
@@ -35,7 +40,7 @@ All these files are in the `tools` folder:
 ### Local execution
 
 - In the `container.py` file in the `tools` folder, you need to adjust the path at line 14 to match your path to the `preprocessing` folder.
-- In the `runncommand.bat` file at `files/Lattice_Structures`, please adjust the path to the `main.key` file in that same folder.
+- In the `runncommand.bat` file at `files/Lattice_Structures`, please adjust the paths to LS-DYNA and the `main.key` file in that same folder. Also adjust the cpu and memory limits if needed, depending on the capabilities of your PC and your LS-DYNA license.
 
 ### Cluster execution
 
