@@ -19,14 +19,13 @@ then
 	fi
 	cd ${PROJECT_ROOT}/"target/agent/src/de_rwth_montisim_agent_master/cpp" #directory of the new model folder
 	cp -r ./model ${PROJECT_ROOT}/${BINARY}
-	#cd ${PROJECT_ROOT}/${BINARY}/"model/AutopilotAgent"
 
 	cd "${PROJECT_ROOT}/${BINARY}"
 	cd model/de.rwth.montisim.agent.network.AutopilotQNet
 	mv model_0-0000.params model_0_newest-0000.params
 	mv model_0-symbol.json model_0_newest-symbol.json
 	cd "${PROJECT_ROOT}/${BINARY}"
-	./agent -t 50
+	./agent -t 50 &
 	sleep 2
 else
 	/usr/lib/jvm/java-8-openjdk-amd64/jre/bin/java -jar basic-simulator.jar -rl -s "${SCENARIO_PATH}" &

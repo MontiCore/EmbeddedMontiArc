@@ -1,5 +1,5 @@
 {
-	"name": "rlCenteringExperiment",
+	"name": "rlAngleExperiment",
 	"map_name": "maps/dallas",
 	"max_duration": [
 		100,
@@ -10,10 +10,19 @@
 		10000000
 	],
 	"collision_mode": "LOG_COLLISIONS",
-	"preprocessor":
-	{
-		"type": "centering"
-	},
+	"preprocessor": {
+		"type": "sequence",
+		"preprocessors": [
+			{
+				"type": "angle",
+				"angleStateIndex": 23,
+				"angleStatePacketIndex": 23
+			},
+			{
+				"type": "centering"
+			}
+		]
+	}
 	"rewardFunction": {
 		"type": "basic_reward",
 		"trajectory_reward_properties": {
