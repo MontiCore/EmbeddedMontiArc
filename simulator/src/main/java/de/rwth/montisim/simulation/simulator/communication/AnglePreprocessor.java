@@ -17,7 +17,7 @@ public class AnglePreprocessor implements Preprocessor {
     @Override
     public float[] preprocessState(float[] vehicleState, float[][] otherStates, int statePacketLength) {
         // Init array
-        float[] result = new float[vehicleState.length + 1 + (otherStates.length + 1) * statePacketLength];
+        float[] result = new float[vehicleState.length + 1 + otherStates.length * (statePacketLength + 1)];
         int stateLength = vehicleState.length;
         // Append vehicle state
         boolean addOne = false;

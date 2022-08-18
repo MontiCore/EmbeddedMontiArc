@@ -238,20 +238,16 @@ public class RLSimulationHandler {
 
     // Randomize Scenario
     try {
-      Optional<RandomizationProperties> randomizationPropertiesOptional;
-      randomizationPropertiesOptional = RandomRandomizationPropertiesPicker.pickRandomizationProperties(config.randomization);
-      if (randomizationPropertiesOptional.isPresent()) {
-        RandomizationProperties randomizationProperties = randomizationPropertiesOptional.get();
-        // TODO: Do we need the map-folder?
-        RandomizationStrategy strategy = randomizationProperties.build(config, "");
-        config.cars = strategy.randomizeCars(config.cars);
-        config.map_name = strategy.randomizeMapName(config.map_name);
-        config.max_duration = strategy.randomizeMaxDuration(config.max_duration);
-        config.tick_duration = strategy.randomizeTickDuration(config.tick_duration);
-        config.modules = strategy.randomizeModules(config.modules);
-        config.preprocessor = strategy.randomizePreprocessor(config.preprocessor);
-        config.rewardFunction = strategy.randomizeRewardFunction(config.rewardFunction);
-      }
+      RandomizationProperties randomizationProperties  = RandomRandomizationPropertiesPicker.pickRandomizationProperties(config.randomization);
+      // TODO: Do we need the map-folder?
+      RandomizationStrategy strategy = randomizationProperties.build(config, "");
+      config.cars = strategy.randomizeCars(config.cars);
+      config.map_name = strategy.randomizeMapName(config.map_name);
+      config.max_duration = strategy.randomizeMaxDuration(config.max_duration);
+      config.tick_duration = strategy.randomizeTickDuration(config.tick_duration);
+      config.modules = strategy.randomizeModules(config.modules);
+      config.preprocessor = strategy.randomizePreprocessor(config.preprocessor);
+      config.rewardFunction = strategy.randomizeRewardFunction(config.rewardFunction);
     }
     catch (Exception e) {
       e.printStackTrace();

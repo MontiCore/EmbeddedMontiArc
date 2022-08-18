@@ -10,11 +10,11 @@ public class RandomRandomizationPropertiesPicker {
 
     /**
      * @param availableRandomizationProperties
-     * @return Returns a randomly picked RandomisationProperties from a Vector, if the Vector is not empty, otherwise Optional.empty()
+     * @return Returns a randomly picked RandomisationProperties from a Vector, if the Vector is not empty, otherwise Empty Strategy Properties
      */
-    public static Optional<RandomizationProperties> pickRandomizationProperties(Vector<RandomizationProperties> availableRandomizationProperties) throws Exception {
+    public static RandomizationProperties pickRandomizationProperties(Vector<RandomizationProperties> availableRandomizationProperties) throws Exception {
         if (availableRandomizationProperties.size() == 0)
-            return Optional.empty();
+            return new EmptyStrategyProperties();
 
         Random random = ThreadLocalRandom.current();
 
@@ -36,7 +36,7 @@ public class RandomRandomizationPropertiesPicker {
         }
 
         // Select random RandomizationProperties
-        return Optional.of(availableRandomizationProperties.get(random.nextInt(availableRandomizationProperties.size())));
+        return availableRandomizationProperties.get(random.nextInt(availableRandomizationProperties.size()));
     }
 
 }
