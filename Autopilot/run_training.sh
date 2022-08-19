@@ -2,7 +2,7 @@
 
 . ./config.sh
 
-trap 'kill $(ps -o pid= --ppid $$)' INT TERM EXIT
+trap 'kill $(jobs -pr)' SIGINT SIGTERM EXIT
 roscore &
 sleep 5
 

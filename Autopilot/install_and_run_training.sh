@@ -1,6 +1,5 @@
 #!/bin/bash
 
-rosdep update
 . /opt/ros/noetic/setup.sh
 
 . ./config.sh
@@ -8,9 +7,10 @@ rosdep update
 
 if [[ "$*" == *"-sp"* ]]
 then
-	./initial_run_training.sh > ./output.txt
+	/bin/echo "STARTING INITIAL RUN"
+	./initial_run_training.sh
 else
-	./run_training.sh > ./output.txt
+	./run_training.sh
 fi
 
 sleep 1
