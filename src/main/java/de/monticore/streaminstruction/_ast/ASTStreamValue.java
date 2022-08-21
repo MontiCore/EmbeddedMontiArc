@@ -1,9 +1,8 @@
 /* (c) https://github.com/MontiCore/monticore */
-package de.monticore.lang.monticar.streamunits._ast;
+package de.monticore.streaminstruction._ast;
 
 import de.monticore.literals.literals._ast.ASTSignedLiteral;
 
-import javax.swing.text.html.Option;
 import java.util.Optional;
 
 /**

@@ -7,8 +7,9 @@ package de.monticore.lang.monticar.streamunits._symboltable;
 
 import de.monticore.lang.monticar.streamunits._ast.*;
 import de.monticore.literals.literals._ast.ASTSignedLiteral;
-import de.monticore.numberunit._ast.ASTNumberWithUnit;
-import de.monticore.numberunit._parser.NumberUnitParser;
+import de.monticore.streaminstruction._ast.*;
+import de.monticore.streaminstruction._parser.StreamInstructionParser;
+import de.monticore.streaminstruction._symboltable.*;
 import de.monticore.symboltable.ArtifactScope;
 import de.monticore.symboltable.MutableScope;
 import de.monticore.symboltable.ResolvingConfiguration;
@@ -105,18 +106,19 @@ public class StreamUnitsSymbolTableCreator extends StreamUnitsSymbolTableCreator
             ASTValueAtTick valueAtTick = streamValue.getValueAtTickOpt().get();
             result = (new StreamValueAtTick(valueAtTick));
         } else if (streamValue.getFilePathOpt().isPresent()) {
-            final String dir = System.getProperty("user.dir");
             ASTFilePath astFilePath = streamValue.getFilePathOpt().get();
-            String filePath = dir + astFilePath.getStringLiteral().getSource();
+
+            final String dir = System.getProperty("user.dir");
+            final String filePath = dir + astFilePath.getStringLiteral().getSource();
             File file = new File(filePath);
             if (file.exists()) {
                 Path path = file.toPath();
                 try {
                     List<String> content = Files.readAllLines(path, Charset.defaultCharset());
-                    Optional<ASTNumberWithUnit> test = new NumberUnitParser().parse_String(content.get(0));
-                    if (test.isPresent()) {
-                        Optional<Double> val = test.get().getNumber();
-                        result = new StreamValuePrecision(Integer.parseInt(content.get(0)));
+                    Optional<ASTStreamInstruction> astStreamInstruction =
+                            new StreamInstructionParser().parse_StringStreamInstruction(content.get(0));
+                    if (astStreamInstruction.isPresent()) {
+                        result = this.handleStreamValue(astStreamInstruction.get().getStreamValue());
                     }
                 } catch (IOException | NumberFormatException e) {
                     if (e instanceof  IOException) {

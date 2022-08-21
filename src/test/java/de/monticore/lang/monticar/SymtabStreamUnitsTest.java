@@ -5,6 +5,8 @@ import de.monticore.ModelingLanguageFamily;
 import de.monticore.io.paths.ModelPath;
 import de.monticore.lang.monticar.streamunits._symboltable.*;
 import de.monticore.numberunit._ast.ASTNumberWithUnit;
+import de.monticore.streaminstruction._symboltable.StreamInstruction;
+import de.monticore.streaminstruction._symboltable.StreamValues;
 import de.monticore.symboltable.GlobalScope;
 import de.monticore.symboltable.Scope;
 import de.se_rwth.commons.logging.Log;
@@ -83,9 +85,11 @@ public class SymtabStreamUnitsTest {
                 "basicLibrary.AddTest.in1", NamedStreamUnitsSymbol.KIND).orElse(null);
 
         StreamInstruction instruction = (StreamInstruction) namedStreamSymbol.getValue(2);
-        StreamValuePrecision val = instruction.getStreamValue().get();
 
-        assertEquals(3, val.getValue());
+        ASTNumberWithUnit percision = (ASTNumberWithUnit) instruction.getStreamValue().get().getValue();
+
+
+        assertEquals(3, percision.getNumber().get(), 0);
 
     }
 
