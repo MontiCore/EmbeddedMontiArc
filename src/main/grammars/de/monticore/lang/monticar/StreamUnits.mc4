@@ -18,9 +18,11 @@ grammar StreamUnits extends de.monticore.NumberUnit, de.monticore.literals.Liter
   symbol scope NamedStreamUnits = Name ("." fieldQualifier:Name)* ":" Stream ";" ;
 
   Stream = (StreamInstruction | "tick" )+;
+
   StreamInstruction = StreamValue | StreamCompare | StreamArrayValues;
-  StreamValue = Name | PrecisionNumber | SignedLiteral | DontCare | ValueAtTick ;
+  StreamValue = Name | PrecisionNumber | SignedLiteral | DontCare | ValueAtTick | FilePath;
   ValueAtTick = Name "(" (value:NumberWithUnit|lowerBound:NumberWithUnit ":" upperBound:NumberWithUnit ) ")";
+  FilePath = "file::" StringLiteral;
   DontCare = "-";
   StreamArrayValues = "[" (ValuePair | MatrixPair)"]" ;
   ValuePair = (StreamValue | ",")+;

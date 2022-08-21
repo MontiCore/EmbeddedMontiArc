@@ -8,12 +8,14 @@ import de.monticore.numberunit._ast.ASTNumberWithUnit;
 import de.monticore.symboltable.GlobalScope;
 import de.monticore.symboltable.Scope;
 import de.se_rwth.commons.logging.Log;
+import org.junit.BeforeClass;
 import org.junit.Ignore;
 import org.junit.Test;
 
 import java.nio.file.Paths;
 import java.util.Collection;
 
+import static de.monticore.lang.monticar.ParserStreamUnitsTest.ENABLE_FAIL_QUICK;
 import static org.junit.Assert.*;
 
 /**
@@ -31,12 +33,21 @@ public class SymtabStreamUnitsTest {
         return scope;
     }
 
+    @BeforeClass
+    public static void setUp() {
+        // ensure an empty log
+        Log.init();
+        Log.getFindings().clear();
+        Log.enableFailQuick(ENABLE_FAIL_QUICK);
+    }
+
     @Test
     public void testResolveComponentStreamUnitsSymbol() {
         Scope symTab = createSymTab("src/test/resources/unitstreams/streams");
         Log.debug(symTab.toString(), "SymTab:");
         ComponentStreamUnitsSymbol comp = symTab.<ComponentStreamUnitsSymbol>resolve(
-                "basicLibrary.AndTest", ComponentStreamUnitsSymbol.KIND).orElse(null);
+                "basicLibrary.AddTest", ComponentStreamUnitsSymbol.KIND).orElse(null);
+        comp.getNamedStream("in1");
         assertNotNull(comp);
     }
 
@@ -62,6 +73,20 @@ public class SymtabStreamUnitsTest {
         ASTNumberWithUnit percision = (ASTNumberWithUnit) instruction.getStreamValue().get().getPrecision();
         assertEquals(0.5, percision.getNumber().get(), 0);
         assertFalse(instruction.getStreamCompare().isPresent());
+    }
+
+    @Test
+    public void testResolveFilePathStreamUnit() {
+        Scope symTab = createSymTab("src/test/resources/unitstreams/streams");
+
+        NamedStreamUnitsSymbol namedStreamSymbol = symTab.<NamedStreamUnitsSymbol>resolve(
+                "basicLibrary.AddTest.in1", NamedStreamUnitsSymbol.KIND).orElse(null);
+
+        StreamInstruction instruction = (StreamInstruction) namedStreamSymbol.getValue(2);
+        StreamValuePrecision val = instruction.getStreamValue().get();
+
+        assertEquals(3, val.getValue());
+
     }
 
     @Test

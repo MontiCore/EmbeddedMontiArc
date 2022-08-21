@@ -17,6 +17,11 @@ grammar Stream extends de.monticore.common.Common {
   
   symbol scope NamedStream = Name ("." fieldQualifier:Name)* ":" Stream ";" ;
   
-  Stream = (SignedLiteral || "tick")+;
+  Stream = (AllowedType || "tick")+;
+
+  AllowedType = SignedLiteral | FilePath;
+
+  FilePath = "file::" StringLiteral;
+
 
 }
