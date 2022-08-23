@@ -187,6 +187,23 @@ public class SymtabStreamUnitsTest {
 
     }
 
+    @Test
+    public void testResolveMatrixStreamWithFile() {
+        Scope symTab = createSymTab("src/test/resources/unitstreams/streams");
+
+        NamedStreamUnitsSymbol namedStreamSymbol = symTab.<NamedStreamUnitsSymbol>resolve(
+                "emamtest.TestMatrixStreamWithFile.direction", NamedStreamUnitsSymbol.KIND).orElse(null);
+        assertNotNull(namedStreamSymbol);
+        StreamInstruction streamInstruction = (StreamInstruction) namedStreamSymbol.getValue(2);
+        assertTrue(streamInstruction.getStreamValues().isPresent());
+        StreamValues streamValues = streamInstruction.getStreamValues().get();
+        assertEquals(1, streamValues.getRowDimension());
+        assertEquals(3, streamValues.getColumnDimension());
+        assertEquals("1.0", streamValues.getStreamValue(0, 0).toString());
+        assertEquals("0.0", streamValues.getStreamValue(0, 1).toString());
+        assertEquals("1.0", streamValues.getStreamValue(0, 2).toString());
+    }
+
 
     @Ignore("ModelPath#resolveModel does not support loading a collection, which should be done when resolving many")
     @Test

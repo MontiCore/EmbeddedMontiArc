@@ -73,17 +73,44 @@ public class StreamUnitsSymbolTableCreator extends StreamUnitsSymbolTableCreator
         }
         NamedStreamUnitsSymbol streamSymbol = new NamedStreamUnitsSymbol(qualifiedName, id);
         for (ASTStreamInstruction streamInstruction : node.getStream().getStreamInstructionList()) {
-            if (streamInstruction.getStreamValueOpt().isPresent()) {
-                streamSymbol.add(handleStreamValue(streamInstruction.getStreamValueOpt().get()));
-            } else if (streamInstruction.getStreamCompareOpt().isPresent()) {
-                ASTStreamCompare astStreamCompare = streamInstruction.getStreamCompareOpt().get();
-                streamSymbol.add(new StreamCompare(new StreamValuePrecision(astStreamCompare.getLeft()),
-                        astStreamCompare.getOperator(), new StreamValuePrecision(astStreamCompare.getRight())));
-            } else if (streamInstruction.getStreamArrayValuesOpt().isPresent()) {
-                streamSymbol.add(handleStreamArrayValues(streamInstruction));
-            }
+            handleStreamInstruction(streamSymbol, streamInstruction);
         }
         addToScopeAndLinkWithNode(streamSymbol, node);
+    }
+
+    private void handleStreamInstruction(NamedStreamUnitsSymbol streamSymbol,
+                                                           ASTStreamInstruction streamInstruction) {
+        if (streamInstruction.getStreamValueOpt().isPresent()) {
+            streamSymbol.add(handleStreamValue(streamInstruction.getStreamValueOpt().get()));
+        } else if (streamInstruction.getStreamCompareOpt().isPresent()) {
+            ASTStreamCompare astStreamCompare = streamInstruction.getStreamCompareOpt().get();
+            streamSymbol.add(new StreamCompare(new StreamValuePrecision(astStreamCompare.getLeft()),
+                    astStreamCompare.getOperator(), new StreamValuePrecision(astStreamCompare.getRight())));
+        } else if (streamInstruction.getStreamArrayValuesOpt().isPresent()) {
+            streamSymbol.add(handleStreamArrayValues(streamInstruction));
+        } else if (streamInstruction.getFilePathOpt().isPresent()) {
+            ASTFilePath astFilePath = streamInstruction.getFilePathOpt().get();
+            final String dir = System.getProperty("user.dir");
+            final String filePath = dir + astFilePath.getStringLiteral().getSource();
+            File file = new File(filePath);
+
+            if (file.exists()) {
+                Path path = file.toPath();
+                try {
+                    List<String> content = Files.readAllLines(path, Charset.defaultCharset());
+                    Optional<ASTStreamInstruction> astStreamInstruction =
+                            new StreamInstructionParser().parse_StringStreamInstruction(content.get(0));
+                    astStreamInstruction.ifPresent(instruction -> handleStreamInstruction(streamSymbol, instruction));
+                } catch (IOException | NumberFormatException e) {
+                    if (e instanceof  IOException) {
+                        Log.error("Error on reading file:" + path);
+                    } else {
+                        e.printStackTrace();
+                    }
+                }
+            }
+
+        }
     }
 
     private IStreamValue handleStreamValue(ASTStreamValue streamValue) {
@@ -105,29 +132,6 @@ public class StreamUnitsSymbolTableCreator extends StreamUnitsSymbolTableCreator
         } else if (streamValue.getValueAtTickOpt().isPresent()) {
             ASTValueAtTick valueAtTick = streamValue.getValueAtTickOpt().get();
             result = (new StreamValueAtTick(valueAtTick));
-        } else if (streamValue.getFilePathOpt().isPresent()) {
-            ASTFilePath astFilePath = streamValue.getFilePathOpt().get();
-
-            final String dir = System.getProperty("user.dir");
-            final String filePath = dir + astFilePath.getStringLiteral().getSource();
-            File file = new File(filePath);
-            if (file.exists()) {
-                Path path = file.toPath();
-                try {
-                    List<String> content = Files.readAllLines(path, Charset.defaultCharset());
-                    Optional<ASTStreamInstruction> astStreamInstruction =
-                            new StreamInstructionParser().parse_StringStreamInstruction(content.get(0));
-                    if (astStreamInstruction.isPresent()) {
-                        result = this.handleStreamValue(astStreamInstruction.get().getStreamValue());
-                    }
-                } catch (IOException | NumberFormatException e) {
-                    if (e instanceof  IOException) {
-                        Log.error("Error on reading file:" + path);
-                    } else {
-                        e.printStackTrace();
-                    }
-                }
-            }
         }
         return result;
     }

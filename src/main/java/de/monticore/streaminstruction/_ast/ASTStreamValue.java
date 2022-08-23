@@ -18,9 +18,8 @@ public class ASTStreamValue extends ASTStreamValueTOP {
             , Optional<ASTPrecisionNumber> precisionNumber
             , Optional<ASTSignedLiteral> signedLiteral
             , Optional<ASTDontCare> dontCare
-            , Optional<ASTValueAtTick> valueAtTick
-            , Optional<ASTFilePath> filePath) {
-        super(name, precisionNumber, signedLiteral, dontCare, valueAtTick, filePath);
+            , Optional<ASTValueAtTick> valueAtTick) {
+        super(name, precisionNumber, signedLiteral, dontCare, valueAtTick);
     }
 
     @Override
@@ -36,8 +35,6 @@ public class ASTStreamValue extends ASTStreamValueTOP {
             result += "-";
         } else if (getSignedLiteralOpt().isPresent()) {
             result += signedLiteral.get().toString();
-        } else if (getFilePathOpt().isPresent()) {
-            result += filePath.get().getStringLiteral().toString();
         }
         return result;
     }
