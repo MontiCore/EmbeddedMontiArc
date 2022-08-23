@@ -1,5 +1,5 @@
 {
-	"name": "rlCenteringExperiment",
+	"name": "rlMinimalExperiment",
 	"map_name": "maps/dallas",
 	"max_duration": [
 		100,
@@ -10,10 +10,6 @@
 		10000000
 	],
 	"collision_mode": "LOG_COLLISIONS",
-	"preprocessor":
-	{
-		"type": "centering"
-	},
 	"rewardFunction": {
 		"type": "intersection_reward",
 		"static_collision_factor": -800,

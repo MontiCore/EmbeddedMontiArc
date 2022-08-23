@@ -22,35 +22,28 @@
 				"type": "centering"
 			}
 		]
-	}
+	},
 	"rewardFunction": {
-		"type": "basic_reward",
-		"trajectory_reward_properties": {
-			"type": "trajectory_reward",
-			"TRAJECTORY_FOLLOWING_REWARD": 1,
-			"TOTAL_PATH_PROGRESS_REWARD_SCALING": 10,
-			"PATH_PROGRESS_DERIVATIVE_REWARD_SCALING": 100,
-			"distance_max": 5
-		},
-		"speed_control_reward_properties": {
-			"type": "speed_control_reward",
-			"VELOCITY_DIFFERENCE_REWARD_SCALING": 1,
-			"VELOCITY_SUB_MAXIMUM_REWARD": 0.5,
-			"STANDING_REWARD": -10,
-			"LINEAR_ACCELERATION_REWARD_SCALING": 1,
-			"LINEAR_JERK_REWARD_SCALING": 0.05,
-			"ANGULAR_ACCELERATION_REWARD_SCALING": 0.1,
-			"ANGULAR_JERK_REWARD_SCALING": 0.005,
-			"velocity_max": 40,
-			"velocity_desired": 20,
-			"standing_threshold": 0.5,
-			"standing_punishment_from_step": 5,
-			"standing_punishment_to_min_path_distance": 2.5
-		},
-		"static_collision_reward_properties": {
-			"type": "static_collision_reward",
-			"STATIC_COLLISION_REWARD": -500
-		}
+		"type": "intersection_reward",
+		"static_collision_factor": -800,
+		"vehicle_collision_factor": -600,
+		"trajectory_reward_factor": 1,
+		"angular_jerk_reward_factor": 0.005,
+		"angular_acc_reward_factor": 0.1,
+		"linear_jerk_reward_factor": 0.05,
+		"linear_acc_reward_factor": 1,
+		"trajectory_following_reward": 5,
+		"total_path_progress_reward_scaling": 10,
+		"path_progress_derivative_reward_scaling": 100,
+		"distance_max": 5,
+		"velocity_difference_scaling": 1,
+		"velocity_sub_maximum_reward": 0.5,
+		"standing_punishment": -250,
+		"velocity_max": 40,
+		"velocity_desired": 20,
+		"standing_threshold": 5,
+		"standing_punishment_from_step": 15,
+		"standing_punishment_to_min_path_distance": 5
 	},
 	"cars": [
 		{
