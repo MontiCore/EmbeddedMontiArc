@@ -21,21 +21,29 @@ public class ModularCNNSymbolTableCreator extends CommonSymbolTableCreator imple
 
 
     private ModularNetworkVisitor realThis = this;
+    private NetworkStructureScanner nss = null;
 
     public ModularCNNSymbolTableCreator(ResolvingConfiguration resolvingConfig, MutableScope enclosingScope) {
         super(resolvingConfig, enclosingScope);
         this.initSuperSTC();
+        this.initNetworkStructureScanner();
         Log.info("INIT","MCNNSTC_INIT_ENCLOSING-SCOPE");
+
     }
 
     public ModularCNNSymbolTableCreator(ResolvingConfiguration resolvingConfig, Deque<MutableScope> scopeStack) {
         super(resolvingConfig, scopeStack);
         this.initSuperSTC();
+        this.initNetworkStructureScanner();
         Log.info("INIT","MCNNSTC_INIT_SCOPE-STACK");
     }
 
     public void initSuperSTC(){
 
+    }
+
+    public void initNetworkStructureScanner(){
+        nss = new NetworkStructureScanner();
     }
 
     public Scope createFromAST(ASTEMADLNode rootNode) {
@@ -89,12 +97,14 @@ public class ModularCNNSymbolTableCreator extends CommonSymbolTableCreator imple
         Log.info("MCNNSTC","VISIT_MCNNSTC");
         Log.info(node.toString(),"VISIT_MCNNSTC");
 
-        NetworkStructureScanner nss = new NetworkStructureScanner();
-        nss.scanStructure(node);
+
+        nss.scanForArchitectureNodes(node);
     }
 
     @Override
     public void endVisit(ASTNode node){
+        Log.info("Size of ArchNode: " + nss.getArchitecturesNodes().size(),"END_MCNNSTC_ASTNode");
+        //nss.getArchitecturesNodes().size();
         Log.info("MCNNSTC","END_MCNNSTC");
     }
 
@@ -113,5 +123,19 @@ public class ModularCNNSymbolTableCreator extends CommonSymbolTableCreator imple
     @Override
     public void endVisit(ASTEMACompilationUnit node){
         Log.info("MCNNSTC","END_MCNNSTC_COMP");
+    }
+
+    @Override
+    public void visit(ASTEMADLNode node) {
+        Log.info("MCNNSTC","VISIT_MCNNSTC");
+        Log.info(node.toString(),"VISIT_MCNNSTC");
+
+        NetworkStructureScanner nss = new NetworkStructureScanner();
+        nss.scanStructure(node);
+    }
+
+    @Override
+    public void endVisit(ASTEMADLNode node){
+        Log.info("MCNNSTC","END_MCNNSTC");
     }
 }
