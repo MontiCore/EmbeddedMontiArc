@@ -591,7 +591,6 @@ class Net_0(gluon.HybridBlock):
 
             pass
 
-
     def hybrid_forward(self, F, source_):
         source_ = self.input_normalization_source_(source_)
         softmax1_ = F.softmax(source_, axis=-1)
@@ -609,7 +608,6 @@ class Net_1(gluon.HybridBlock):
 
 
             pass
-
 
     def hybrid_forward(self, F, target_999999_):
         fc1_ = self.fc1_(target_999999_)
