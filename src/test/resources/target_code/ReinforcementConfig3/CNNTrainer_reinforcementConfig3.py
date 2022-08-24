@@ -71,6 +71,7 @@ if __name__ == "__main__":
             'state_dtype': 'float32',
             'action_dtype': 'uint8',
             'rewards_dtype': 'float32'
+
         },
         'strategy_params': {
             'method':'epsgreedy',
@@ -96,7 +97,7 @@ if __name__ == "__main__":
         'loss_function': 'huber',
         'optimizer': 'adam',
         'optimizer_params': {
-            'learning_rate': 0.001        },
+                'learning_rate': 0.001        },
         'double_dqn': True,
     }
 

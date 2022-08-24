@@ -631,7 +631,6 @@ class Net_0(gluon.HybridBlock):
 
             pass
 
-
     def hybrid_forward(self, F, data_):
         data_ = self.input_normalization_data_(data_)
         loadnetwork1_ = self.loadnetwork1_(data_)

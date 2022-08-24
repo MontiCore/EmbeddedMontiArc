@@ -584,7 +584,6 @@ class Net_0(gluon.HybridBlock):
 
             pass
 
-
     def hybrid_forward(self, F, const1_):
         target_0_ = F.identity(const1_)
 
@@ -624,7 +623,6 @@ class Net_1(gluon.HybridBlock):
 
 
             pass
-
 
     def hybrid_forward(self, F, images_):
         images_ = self.input_normalization_images_(images_)
@@ -673,7 +671,6 @@ class Net_2(gluon.HybridBlock):
             self.dropout8_ = gluon.nn.Dropout(rate=0.25)
 
             pass
-
 
     def hybrid_forward(self, F, features_output_, decoder_state_0_, target_999999_, decoder_state_1_):
         fc5_1_1_1_ = self.fc5_1_1_1_(features_output_)
