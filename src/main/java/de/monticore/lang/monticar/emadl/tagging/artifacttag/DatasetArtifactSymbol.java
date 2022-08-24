@@ -21,6 +21,10 @@ public class DatasetArtifactSymbol extends TagSymbol {
     this(KIND, artifact, jar, type);
   }
 
+  public DatasetArtifactSymbol(String artifact, String jar, String type, String artifactId, String groupId, String version) {
+    super(KIND, artifact, jar, type, artifactId, groupId, version);
+  }
+
   public DatasetArtifactSymbol(DatasetArtifactKind kind, String artifact, String jar, String type) {
     super(kind, artifact, jar, type);
   }
@@ -35,6 +39,18 @@ public class DatasetArtifactSymbol extends TagSymbol {
 
   public String getType() {
     return getValue(2);
+  }
+
+  public String getArtifactId() {
+    return getValue(3);
+  }
+
+  public String getGroupId() {
+    return getValue(4);
+  }
+
+  public String getVersion() {
+    return getValue(5);
   }
 
   @Override
