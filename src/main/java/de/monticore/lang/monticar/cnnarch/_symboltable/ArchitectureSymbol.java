@@ -33,7 +33,14 @@ public class ArchitectureSymbol extends CommonScopeSpanningSymbol {
     private List<VariableSymbol> inputs = new ArrayList<>();
     private List<VariableSymbol> outputs = new ArrayList<>();
     private List<ConstantSymbol> constants = new ArrayList<>();
+
+    /**
+     * @deprecated use {@link #dataPaths} instead.
+     */
+    @Deprecated
     private String dataPath;
+
+    private List<String> dataPaths;
     private String weightsPath;
     private String componentName;
     private ArchitectureSymbol auxiliaryArchitecture;
@@ -126,6 +133,14 @@ public class ArchitectureSymbol extends CommonScopeSpanningSymbol {
 
     public List<VariableSymbol> getOutputs() {
         return outputs;
+    }
+
+    public List<String> getDataPaths() {
+        return dataPaths;
+    }
+
+    public void setDataPaths(List<String> dataPaths) {
+        this.dataPaths = dataPaths;
     }
 
     public void setOutputs(List<VariableSymbol> outputs) {
