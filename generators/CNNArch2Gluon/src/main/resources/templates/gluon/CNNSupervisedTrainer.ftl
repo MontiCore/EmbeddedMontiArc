@@ -1,17 +1,21 @@
 <#-- (c) https://github.com/MontiCore/monticore -->
 <#-- So that the license is in the generated file: -->
 # (c) https://github.com/MontiCore/monticore
-import mxnet as mx
-import logging
-import numpy as np
-import time
-import os
-import shutil
-import pickle
-import math
-import sys
 import inspect
-from mxnet import gluon, autograd, nd
+import json
+import logging
+import math
+import os
+import pathlib
+import pickle
+import shutil
+import sys
+import time
+import typing as t
+
+import mxnet as mx
+import numpy as np
+from mxnet import autograd, gluon, nd
 <#if tc.architecture.useDgl>
 import dgl
 </#if>
@@ -27,7 +31,9 @@ try:
     import AdamW
 except:
     pass
+from CNNDataLoader_${tc.fullArchitectureName} import TrainingDataset
 
+logger = logging.getLogger(__name__)
 
 class CrossEntropyLoss(gluon.loss.Loss):
     def __init__(self, axis=-1, sparse_label=True, weight=None, batch_axis=0, **kwargs):
@@ -345,7 +351,10 @@ class ${tc.fileNameWithoutEnding}:
               optimizer_params=(('learning_rate', 0.001),),
               load_checkpoint=True,
               checkpoint_period=5,
+              dataset=None,
+              test_dataset=None,
               load_pretrained=False,
+              load_pretrained_dataset=None,
               log_period=50,
               context='gpu',
               save_attention_image=False,
@@ -357,7 +366,9 @@ class ${tc.fileNameWithoutEnding}:
               train_mask=None,
               test_mask=None,
               multi_graph=False,
-              onnx_export=False):
+              onnx_export=False,
+              retraining_type: str = "automatically"
+    ):
 <#if tc.architecture.useDgl>
         logging.getLogger().setLevel(logging.DEBUG)
 </#if>
@@ -381,7 +392,7 @@ class ${tc.fileNameWithoutEnding}:
             preproc_lib = "CNNPreprocessor_${tc.fileNameWithoutEnding?keep_after("CNNSupervisedTrainer_")}_executor"
             train_iter, test_iter, data_mean, data_std, train_images, test_images = self._data_loader.load_preprocessed_data(batch_size, preproc_lib, shuffle_data)
         else:
-            train_iter, test_iter, data_mean, data_std, train_images, test_images, train_graph, test_graph = self._data_loader.load_data(batch_size, shuffle_data, multi_graph)
+            train_iter, test_iter, data_mean, data_std, train_images, test_images, train_graph, test_graph = self._data_loader.load_data(batch_size, shuffle_data, multi_graph, dataset, test_dataset)
 
         if 'weight_decay' in optimizer_params:
             optimizer_params['wd'] = optimizer_params['weight_decay']
@@ -398,6 +409,8 @@ class ${tc.fileNameWithoutEnding}:
             del optimizer_params['step_size']
             del optimizer_params['learning_rate_decay']
 
+
+
         if normalize:
             self._net_creator.construct(context=mx_context, batch_size=batch_size, data_mean=data_mean, data_std=data_std)
         else:
@@ -407,23 +420,30 @@ class ${tc.fileNameWithoutEnding}:
         if load_checkpoint:
             begin_epoch = self._net_creator.load(mx_context)
         elif load_pretrained:
-            self._net_creator.load_pretrained_weights(mx_context)
+            self._net_creator.load_pretrained_weights(mx_context, load_pretrained_dataset)
         else:
-            if os.path.isdir(self._net_creator._model_dir_):
-                shutil.rmtree(self._net_creator._model_dir_)
+            model_dir = self.parameter_path(0, dataset).parent
+            if model_dir.exists():
+                shutil.rmtree(model_dir)
 
         self._networks = self._net_creator.networks
 
+        network_optimizer_params = {i: optimizer_params for i, _ in self._networks.items()}
+
+        if load_pretrained and retraining_type == "automatically":
+            for i, _ in self._networks.items():
+                network_optimizer_params[i]["learning_rate"] = self.load_learning_rate(load_pretrained_dataset, network_optimizer_params[i], i)
+
         try:
-            os.makedirs(self._net_creator._model_dir_)
+            os.makedirs(self._net_creator._model_basedir_)
         except OSError:
-            if not os.path.isdir(self._net_creator._model_dir_):
+            if not os.path.isdir(self._net_creator._model_basedir_):
                 raise
 
         if optimizer == "adamw":
-            trainers = [mx.gluon.Trainer(network.collect_params(), AdamW.AdamW(**optimizer_params)) for network in self._networks.values() if len(network.collect_params().values()) != 0]
+            trainers = [mx.gluon.Trainer(network.collect_params(), AdamW.AdamW(**network_optimizer_params[i])) for i, network in self._networks.items() if len(network.collect_params().values()) != 0]
         else:
-            trainers = [mx.gluon.Trainer(network.collect_params(), optimizer, optimizer_params) for network in self._networks.values() if len(network.collect_params().values()) != 0]
+            trainers = [mx.gluon.Trainer(network.collect_params(), optimizer, network_optimizer_params[i]) for i, network in self._networks.items() if len(network.collect_params().values()) != 0]
 
         margin = loss_params['margin'] if 'margin' in loss_params else 1.0
         sparseLabel = loss_params['sparse_label'] if 'sparse_label' in loss_params else True
@@ -538,7 +558,7 @@ class ${tc.fileNameWithoutEnding}:
                     preproc_lib = "CNNPreprocessor_${tc.fileNameWithoutEnding?keep_after("CNNSupervisedTrainer_")}_executor"
                     train_iter, test_iter, data_mean, data_std, train_images, test_images = self._data_loader.load_preprocessed_data(batch_size, preproc_lib, shuffle_data)
                 else:
-                    train_iter, test_iter, data_mean, data_std, train_images, test_images, train_graph, test_graph = self._data_loader.load_data(batch_size, shuffle_data, multi_graph)
+                    train_iter, test_iter, data_mean, data_std, train_images, test_images, train_graph, test_graph = self._data_loader.load_data(batch_size, shuffle_data, multi_graph, dataset, test_dataset)
 
             global_loss_train = 0.0
             train_batches = 0
@@ -629,6 +649,7 @@ class ${tc.fileNameWithoutEnding}:
                 train_iter.reset()
                 metric = mx.metric.create(eval_metric, **eval_metric_params)
                 for batch_i, batch in enumerate(train_iter):
+                    if True: # This statement is needed because of different indentations in FreeMarker
 
 <#if episodicReplayVisited?? && anyEpisodicLocalAdaptation && !containsUnrollNetwork>
 <#include "pythonExecuteTest.ftl">
@@ -665,72 +686,88 @@ class ${tc.fileNameWithoutEnding}:
 
             global_loss_test = 0.0
             test_batches = 0
-    
-            test_iter.batch_size = single_pu_batch_size
-            test_iter.reset()
-            metric = mx.metric.create(eval_metric, **eval_metric_params)
-            for batch_i, batch in enumerate(test_iter):
-                if test_mask is None:
+            test_metric_score = 0.0
+
+            if test_iter: 
+                test_iter.batch_size = single_pu_batch_size
+                test_iter.reset()
+                metric = mx.metric.create(eval_metric, **eval_metric_params)
+                for batch_i, batch in enumerate(test_iter):
+                    if test_mask is None:
 
 <#if episodicReplayVisited?? && anyEpisodicLocalAdaptation && !containsUnrollNetwork>
 <#include "pythonExecuteTest.ftl">
     
-                        loss = 0
-                        for element in lossList:
-                            loss = loss + element
-                        global_loss_test += loss.sum().asscalar()
+                            loss = 0
+                            for element in lossList:
+                                loss = loss + element
+                            global_loss_test += loss.sum().asscalar()
 
-                        test_batches += 1
-                
-                        predictions = []
-                        for output_name in outputs:
-                            if mx.nd.shape_array(mx.nd.squeeze(output_name)).size > 1:
-                                predictions.append(mx.nd.argmax(output_name, axis=1))
-                            else:
-                                predictions.append(output_name)
+                            test_batches += 1
+                    
+                            predictions = []
+                            for output_name in outputs:
+                                if mx.nd.shape_array(mx.nd.squeeze(output_name)).size > 1:
+                                    predictions.append(mx.nd.argmax(output_name, axis=1))
+                                else:
+                                    predictions.append(output_name)
 
-                        metric.update(preds=predictions, labels=[labels[j][local_adaptation_batch_i] for j in range(len(labels))])
+                            metric.update(preds=predictions, labels=[labels[j][local_adaptation_batch_i] for j in range(len(labels))])
 <#list tc.architecture.networkInstructions as networkInstruction>    
-                self._networks[${networkInstruction?index}].collect_params().load_dict(params[${networkInstruction?index}], ctx=mx_context[0])
+                    self._networks[${networkInstruction?index}].collect_params().load_dict(params[${networkInstruction?index}], ctx=mx_context[0])
 </#list>
-            global_loss_test /= (test_batches)    
+                global_loss_test /= (test_batches)    
 <#else>
 <#include "pythonExecuteTest.ftl">
 
 <#include "saveAttentionImageTest.ftl">
 
-                loss = 0
-                if test_mask is None:
-                    for element in lossList:
-                        loss = loss + element
-                    global_loss_test += loss.sum().asscalar()
+                    loss = 0
+                    if test_mask is None:
+                        for element in lossList:
+                            loss = loss + element
+                        global_loss_test += loss.sum().asscalar()
 
-                test_batches += 1
+                    test_batches += 1
 
-                predictions = []
-                for output_name in outputs:
-                    if mx.nd.shape_array(mx.nd.squeeze(output_name)).size > 1:
-                        predictions.append(mx.nd.argmax(output_name, axis=1))
+                    predictions = []
+                    for output_name in outputs:
+                        if mx.nd.shape_array(mx.nd.squeeze(output_name)).size > 1:
+                            predictions.append(mx.nd.argmax(output_name, axis=1))
+                        else:
+                            predictions.append(output_name)
+                    if test_mask is not None:
+                        metric.update(preds=predictions[0], labels=mx.nd.squeeze(labels[0][0]), mask=test_mask)
                     else:
-                        predictions.append(output_name)
-                if test_mask is not None:
-                    metric.update(preds=predictions[0], labels=mx.nd.squeeze(labels[0][0]), mask=test_mask)
-                else:
-                    metric.update(preds=predictions, labels=[labels[j] for j in range(len(labels))])
-            global_loss_test /= (test_batches * single_pu_batch_size)
+                        metric.update(preds=predictions, labels=[labels[j] for j in range(len(labels))])
+                global_loss_test /= (test_batches * single_pu_batch_size)
 </#if>
-            test_metric_name = metric.get()[0]
-            test_metric_score = metric.get()[1]
+                test_metric_name = metric.get()[0]
+                test_metric_score = metric.get()[1]
 
-            metric_file = open(self._net_creator._model_dir_ + 'metric.txt', 'w')
-            metric_file.write(test_metric_name + " " + str(test_metric_score))
-            metric_file.close()
+                metric_file = open(self.parameter_path(i, dataset) / 'metric.txt', 'w')
+                metric_file.write(test_metric_name + " " + str(test_metric_score))
+                metric_file.close()
+
+                metric_json_file = self.parameter_path(i, dataset) / 'metric.json'
+                if not metric_json_file.exists():
+                    metric_json_file.touch()
+                try:
+                    data = json.loads(metric_json_file.read_text())
+                except json.decoder.JSONDecodeError:
+                    data = []
+
+                data.append(test_metric_score)
+                metric_json_file.write_text(json.dumps(data))
 
             logging.info("Epoch[%d] Train metric: %f, Test metric: %f, Train loss: %f, Test loss: %f" % (epoch, train_metric_score, test_metric_score, global_loss_train, global_loss_test))
 
             if (epoch+1) % checkpoint_period == 0:
                 for i, network in self._networks.items():
-                    network.save_parameters(self.parameter_path(i) + '-' + str(epoch).zfill(4) + '.params')
+                    param_path = str(self.parameter_path(i, dataset) / (str(epoch).zfill(4) + '.params'))
+                    network.save_parameters(param_path)
+                    logger.info("Saved parameters to %s", param_path)
+
 <#if episodicReplayVisited??>
                     if hasattr(network, 'episodic_sub_nets'):
                         for j, net in enumerate(network.episodic_sub_nets):
@@ -738,15 +775,17 @@ class ${tc.fileNameWithoutEnding}:
 </#if>
 
         for i, network in self._networks.items():
-            network.save_parameters(self.parameter_path(i) + '-' + str((num_epoch-1) + begin_epoch).zfill(4) + '.params')
+            param_path = str(self.parameter_path(i, dataset) / (str((num_epoch-1) + begin_epoch).zfill(4) + '.params'))
+            network.save_parameters(param_path)
+            logger.info("Saved parameters to %s", param_path)
 <#if !(tc.architecture.useDgl)>
-            network.export(self.parameter_path(i) + '_newest', epoch=0)
+            network.export(str(self.parameter_path(i, dataset) / 'newest'), epoch=0)
 </#if>
             if onnx_export:
                 from mxnet.contrib import onnx as onnx_mxnet
                 input_shapes = [(1,) + d.shape[1:] for _, d in test_iter.data]
-                model_path = self.parameter_path(i) + '_newest'
-                onnx_mxnet.export_model(model_path+'-symbol.json', model_path+'-0000.params', input_shapes, np.float32, model_path+'.onnx')
+                model_path = self.parameter_path(i, dataset) / 'newest'
+                onnx_mxnet.export_model(str(model_path) + '-symbol.json'), str(model_path) + '-0000.params', input_shapes, np.float32, str(model_path) + '.onnx'
 
 <#if episodicReplayVisited??>
             if hasattr(network, 'episodic_sub_nets'):
@@ -758,9 +797,14 @@ class ${tc.fileNameWithoutEnding}:
                     episodic_layers[i][j].save_memory(self.parameter_path(i) + "_newest_episodic_memory_sub_net_" + str(j + 1) + "-0000")
 </#if>
             try:
-                loss_function.export(self.parameter_path(i) + '_newest_loss', epoch=0)
+                loss_function.export(str(self.parameter_path(i, dataset) / 'newest_loss'), epoch=0)
             except RuntimeError:
                 logging.info("Forward for loss functions was not run, export is not possible.")
+
+            # Save learning rate
+            learning_rate_path = self.parameter_path(i, dataset) / 'learning_rate.txt'
+            learning_rate_path.write_text(str(trainers[i].learning_rate))
+            logger.info("Saved learning rate to %s", str(learning_rate_path))
 
 
     def get_mask_array(self, shape, mask):
@@ -773,5 +817,20 @@ class ${tc.fileNameWithoutEnding}:
         return mask_array
 
 
-    def parameter_path(self, index):
-        return self._net_creator._model_dir_ + self._net_creator._model_prefix_ + '_' + str(index)
+    def parameter_path(self, index, dataset) -> pathlib.Path:
+        path: pathlib.Path = self._net_creator.get_model_dir(index, dataset)
+        path.mkdir(parents=True, exist_ok=True)
+        return path
+
+    def load_learning_rate(self, dataset: TrainingDataset, optimizer_params, index: int) -> t.Optional[float]:
+        """Load learning rate from file"""
+
+        try:
+            learning_rate = float(pathlib.Path(self.parameter_path(index, dataset) / "learning_rate.txt").read_text())
+            logging.info("Loaded learning rate %.4f for dataset %s and network %s", learning_rate, dataset.id, index)
+            return learning_rate
+        except FileNotFoundError:
+            logging.warning("No learning rate found for dataset %s. Fallback to optimizer learning rate.", dataset.id)
+            return optimizer_params.get("learning_rate", None)
+
+        return None
