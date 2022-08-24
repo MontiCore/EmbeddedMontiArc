@@ -1,6 +1,7 @@
 /* (c) https://github.com/MontiCore/monticore */
 import EvalMetric;
 import Loss;
+import Optimizer;
 
 schema Supervised extends General {
 
@@ -23,4 +24,8 @@ schema Supervised extends General {
     loss: loss_type
     shuffle_data: B
     onnx_export: B
+    retraining_type: enum {
+        ignore, automatically, manually;
+    }
+    retraining_optimizer: optimizer_type
 }

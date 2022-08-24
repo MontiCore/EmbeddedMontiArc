@@ -48,6 +48,9 @@ public class TrainingParameterConstants {
     public static final String SAVE_ATTENTION_IMAGE = "save_attention_image";
     public static final String EVAL_TRAIN = "eval_train";
     public static final String OPTIMIZER = "optimizer";
+    public static final String RETRAINING_TYPE = "retraining_type";
+
+    public static final String RETRAINING_OPTIMIZER = "retraining_optimizer";
     public static final String ACTOR_OPTIMIZER = "actor_optimizer";
     public static final String CRITIC_OPTIMIZER = "critic_optimizer";
     public static final String ONNX_EXPORT = "onnx_export";
