@@ -236,6 +236,29 @@ public abstract class ConfigurationData {
         return formatParameters(discriminatorOptimizerParameters);
     }
 
+    public String getRetrainingType() { // TODO enum?
+        Optional<String> context = trainingConfiguration.getRetrainingType();
+        return context.orElse(null);
+    }
+
+    public Boolean getRetrainingOptimizer() {
+        if (!trainingConfiguration.hasRetrainingOptimizer()) return null;
+        return true;
+    }
+
+    public String getRetrainingOptimizerName() {
+        Optional<String> getRetrainingOptimizerNameOpt = trainingConfiguration.getRetrainingOptimizerName();
+        return getRetrainingOptimizerNameOpt.orElse(null);
+    }
+
+    public Map<String, Object> getRetrainingOptimizerParameters() {
+        if (!getRetrainingOptimizer()) {
+            return null;
+        }
+
+        return trainingConfiguration.getRetrainingOptimizerParameters();
+    }
+
     public Boolean getNoiseDistribution() {
         return trainingConfiguration.hasNoiseDistribution() ? true : null;
     }

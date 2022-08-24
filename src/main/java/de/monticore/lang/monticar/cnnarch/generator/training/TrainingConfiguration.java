@@ -364,6 +364,22 @@ public class TrainingConfiguration {
         return getObjectParameterParameters(CRITIC_OPTIMIZER);
     }
 
+    public Optional<String> getRetrainingType() {
+        return getParameterValue(RETRAINING_TYPE);
+    }
+
+    public Optional<String> getRetrainingOptimizerName() {
+        return getObjectParameterValue(RETRAINING_OPTIMIZER);
+    }
+
+    public boolean hasRetrainingOptimizer() {
+        return hasParameter(RETRAINING_OPTIMIZER);
+    }
+
+    public Map<String, Object> getRetrainingOptimizerParameters() {
+        return getObjectParameterParameters(RETRAINING_OPTIMIZER);
+    }
+
     public Boolean hasDiscriminatorName() {
         return hasParameter(DISCRIMINATOR);
     }
