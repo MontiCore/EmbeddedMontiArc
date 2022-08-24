@@ -1,10 +1,13 @@
 # (c) https://github.com/MontiCore/monticore
 import logging
+import pathlib
+
 import mxnet as mx
 
 import CNNCreator_simpleConfig
 import CNNDataLoader_simpleConfig
 import CNNSupervisedTrainer_simpleConfig
+from CNNDataLoader_simpleConfig import RetrainingConf
 
 if __name__ == "__main__":
     logger = logging.getLogger()
@@ -20,12 +23,36 @@ if __name__ == "__main__":
         simpleConfig_creator
     )
 
-    simpleConfig_trainer.train(
-        batch_size=100,
-        num_epoch=50,
-        preprocessing=False,
-        loss='cross_entropy',
-        optimizer='adam',
-        optimizer_params={
-            'learning_rate': 0.001},
-    )
+    prev_dataset = None
+    retraining_conf = simpleConfig_loader.load_retraining_conf()
+    for dataset in retraining_conf.changes:
+        simpleConfig_creator.dataset = dataset
+        if(dataset.retraining):
+            if prev_dataset: 
+                logger.info("Retrain dataset %s on top of dataset %s.", dataset.id, prev_dataset.id)
+            else: 
+                logger.info("Dataset %s needs to be trained. Hash was different during the last EMADL2CPP run.", dataset.id)
+
+            optimizer = 'adam'
+            optimizer_params = {
+                'learning_rate': 0.001}
+
+
+
+            simpleConfig_trainer.train(
+                dataset=dataset,
+                test_dataset=retraining_conf.testing,
+                batch_size=100,
+                num_epoch=50,
+                load_pretrained=bool(prev_dataset),
+                load_pretrained_dataset=prev_dataset,
+                preprocessing=False,
+                loss='cross_entropy',
+            optimizer=optimizer,
+            optimizer_params=optimizer_params,
+            )
+        else: 
+            logger.info("Skipped training of dataset %s. Training is not necessary", dataset.id)
+        
+        prev_dataset = dataset
+

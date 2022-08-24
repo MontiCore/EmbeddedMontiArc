@@ -603,7 +603,6 @@ class Net_0(gluon.HybridBlock):
 
             pass
 
-
     def hybrid_forward(self, F, data_):
         loss_params = []
         data_ = self.input_normalization_data_(data_)

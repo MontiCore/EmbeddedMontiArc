@@ -601,7 +601,6 @@ class Net_0(gluon.HybridBlock):
 
             pass
 
-
     def hybrid_forward(self, F, features_):
         features_ = self.input_normalization_features_(features_)
         fc1_ = self.fc1_(features_)

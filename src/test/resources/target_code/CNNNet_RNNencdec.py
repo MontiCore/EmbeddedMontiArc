@@ -601,7 +601,6 @@ class Net_0(gluon.HybridBlock):
 
             pass
 
-
     def hybrid_forward(self, F, source_, encoder_state_0_, encoder_state_1_):
         source_ = self.input_normalization_source_(source_)
         embedding1_ = self.embedding1_(source_)
@@ -618,7 +617,6 @@ class Net_1(gluon.HybridBlock):
 
             pass
 
-
     def hybrid_forward(self, F, const1_):
         target_0_ = F.identity(const1_)
 
@@ -631,7 +629,6 @@ class Net_2(gluon.HybridBlock):
             self.save_specific_params_list = []
 
             pass
-
 
     def hybrid_forward(self, F, encoder_state_0_, encoder_state_1_):
         get4_1_ = encoder_state_0_
@@ -661,7 +658,6 @@ class Net_3(gluon.HybridBlock):
 
 
             pass
-
 
     def hybrid_forward(self, F, target_999999_, decoder_state_0_, decoder_state_1_):
         embedding5_ = self.embedding5_(target_999999_)

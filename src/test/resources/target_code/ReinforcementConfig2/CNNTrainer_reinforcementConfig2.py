@@ -64,6 +64,7 @@ if __name__ == "__main__":
             'state_dtype': 'float32',
             'action_dtype': 'uint8',
             'rewards_dtype': 'float32'
+
         },
         'strategy_params': {
             'method':'epsgreedy',
@@ -90,19 +91,19 @@ if __name__ == "__main__":
         'loss_function': 'l2',
         'optimizer': 'rmsprop',
         'optimizer_params': {
-            'weight_decay': 0.01,
-            'centered': True,
-            'gamma2': 0.9,
-            'gamma1': 0.9,
-            'clip_weights': 10.0,
-            'learning_rate_decay': 0.9,
-            'epsilon': 1.0E-6,
-            'rescale_grad': 1.1,
-            'clip_gradient': 10.0,
-            'learning_rate_minimum': 1.0E-5,
-            'learning_rate_policy': 'step',
-            'learning_rate': 0.001,
-            'step_size': 1000        },
+                'weight_decay': 0.01,
+                'centered': True,
+                'gamma2': 0.9,
+                'gamma1': 0.9,
+                'clip_weights': 10.0,
+                'learning_rate_decay': 0.9,
+                'epsilon': 1.0E-6,
+                'rescale_grad': 1.1,
+                'clip_gradient': 10.0,
+                'learning_rate_minimum': 1.0E-5,
+                'learning_rate_policy': 'step',
+                'learning_rate': 0.001,
+                'step_size': 1000        },
         'double_dqn': False,
     }
 
