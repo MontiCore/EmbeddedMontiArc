@@ -17,6 +17,6 @@ ${tc.signature ("schemaMembers","astEnumeratedDeclarationList")}
 
 <#list enumeratedDeclarations as enumeratedDeclaration>
 <#assign methodName = "get"+enumeratedDeclaration.getName()>
-    def get${methodName}(self):
+    def ${methodName}(self):
         return self.training_configuration.${methodName}()
 </#list>

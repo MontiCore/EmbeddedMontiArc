@@ -52,6 +52,9 @@ public class SchemaTypeUtil {
     public boolean isObjectSchemaMember(ASTSchemaMember astSchemaMember) {
         return isTypedDeclaration(astSchemaMember) && isObjectType((ASTTypedDeclaration) astSchemaMember);
     }
+    public boolean isEnumSchemaMember(ASTSchemaMember astSchemaMember) {
+        return astSchemaMember.getSchemaMemberType().equals(SchemaMemberType.ENUM);
+    }
 
     private boolean isTypedDeclaration(ASTSchemaMember astSchemaMember) {
         return astSchemaMember instanceof ASTTypedDeclaration;
