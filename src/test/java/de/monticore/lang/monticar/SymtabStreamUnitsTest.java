@@ -5,8 +5,8 @@ import de.monticore.ModelingLanguageFamily;
 import de.monticore.io.paths.ModelPath;
 import de.monticore.lang.monticar.streamunits._symboltable.*;
 import de.monticore.numberunit._ast.ASTNumberWithUnit;
-import de.monticore.streaminstruction._symboltable.StreamInstruction;
-import de.monticore.streaminstruction._symboltable.StreamValues;
+import de.monticore.lang.monticar.streamunits._symboltable.StreamInstruction;
+import de.monticore.lang.monticar.streamunits._symboltable.StreamValues;
 import de.monticore.symboltable.GlobalScope;
 import de.monticore.symboltable.Scope;
 import de.se_rwth.commons.logging.Log;
@@ -197,11 +197,11 @@ public class SymtabStreamUnitsTest {
         StreamInstruction streamInstruction = (StreamInstruction) namedStreamSymbol.getValue(2);
         assertTrue(streamInstruction.getStreamValues().isPresent());
         StreamValues streamValues = streamInstruction.getStreamValues().get();
-        assertEquals(1, streamValues.getRowDimension());
+        assertEquals(2, streamValues.getRowDimension());
         assertEquals(3, streamValues.getColumnDimension());
         assertEquals("1.0", streamValues.getStreamValue(0, 0).toString());
         assertEquals("0.0", streamValues.getStreamValue(0, 1).toString());
-        assertEquals("1.0", streamValues.getStreamValue(0, 2).toString());
+        assertEquals("2.0", streamValues.getStreamValue(1, 2).toString());
     }
 
 

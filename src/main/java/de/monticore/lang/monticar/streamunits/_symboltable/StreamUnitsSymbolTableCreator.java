@@ -6,10 +6,8 @@
 package de.monticore.lang.monticar.streamunits._symboltable;
 
 import de.monticore.lang.monticar.streamunits._ast.*;
+import de.monticore.lang.monticar.streamunits._parser.StreamUnitsParser;
 import de.monticore.literals.literals._ast.ASTSignedLiteral;
-import de.monticore.streaminstruction._ast.*;
-import de.monticore.streaminstruction._parser.StreamInstructionParser;
-import de.monticore.streaminstruction._symboltable.*;
 import de.monticore.symboltable.ArtifactScope;
 import de.monticore.symboltable.MutableScope;
 import de.monticore.symboltable.ResolvingConfiguration;
@@ -89,27 +87,30 @@ public class StreamUnitsSymbolTableCreator extends StreamUnitsSymbolTableCreator
         } else if (streamInstruction.getStreamArrayValuesOpt().isPresent()) {
             streamSymbol.add(handleStreamArrayValues(streamInstruction));
         } else if (streamInstruction.getFilePathOpt().isPresent()) {
-            ASTFilePath astFilePath = streamInstruction.getFilePathOpt().get();
-            final String dir = System.getProperty("user.dir");
-            final String filePath = dir + astFilePath.getStringLiteral().getSource();
-            File file = new File(filePath);
+            handleFilePath(streamSymbol, streamInstruction);
+        }
+    }
 
-            if (file.exists()) {
-                Path path = file.toPath();
-                try {
-                    List<String> content = Files.readAllLines(path, Charset.defaultCharset());
-                    Optional<ASTStreamInstruction> astStreamInstruction =
-                            new StreamInstructionParser().parse_StringStreamInstruction(content.get(0));
-                    astStreamInstruction.ifPresent(instruction -> handleStreamInstruction(streamSymbol, instruction));
-                } catch (IOException | NumberFormatException e) {
-                    if (e instanceof  IOException) {
-                        Log.error("Error on reading file:" + path);
-                    } else {
-                        e.printStackTrace();
-                    }
+    private void handleFilePath(NamedStreamUnitsSymbol streamSymbol, ASTStreamInstruction streamInstruction) {
+        ASTFilePath astFilePath = streamInstruction.getFilePathOpt().get();
+        final String dir = System.getProperty("user.dir");
+        final String filePath = dir + astFilePath.getStringLiteral().getSource();
+        File file = new File(filePath);
+
+        if (file.exists()) {
+            Path path = file.toPath();
+            try {
+                List<String> content = Files.readAllLines(path, Charset.defaultCharset());
+                Optional<ASTStreamInstruction> astStreamInstruction =
+                        new StreamUnitsParser().parse_StringStreamInstruction((content.get(0)));
+                astStreamInstruction.ifPresent(instruction -> handleStreamInstruction(streamSymbol, instruction));
+            } catch (IOException | NumberFormatException e) {
+                if (e instanceof  IOException) {
+                    Log.error("Error on reading file:" + path);
+                } else {
+                    e.printStackTrace();
                 }
             }
-
         }
     }
 

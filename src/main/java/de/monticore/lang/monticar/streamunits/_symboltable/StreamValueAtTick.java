@@ -1,9 +1,7 @@
 /* (c) https://github.com/MontiCore/monticore */
-package de.monticore.streaminstruction._symboltable;
+package de.monticore.lang.monticar.streamunits._symboltable;
 
-import de.monticore.lang.monticar.streamunits._symboltable.NamedStreamUnitsSymbol;
-import de.monticore.streaminstruction._ast.ASTValueAtTick;
-import de.monticore.streaminstruction._symboltable.IStreamValue;
+import de.monticore.lang.monticar.streamunits._ast.ASTValueAtTick;
 import org.jscience.mathematics.number.Rational;
 
 import java.util.Optional;

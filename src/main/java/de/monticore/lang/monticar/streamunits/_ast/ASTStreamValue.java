@@ -1,5 +1,5 @@
 /* (c) https://github.com/MontiCore/monticore */
-package de.monticore.streaminstruction._ast;
+package de.monticore.lang.monticar.streamunits._ast;
 
 import de.monticore.literals.literals._ast.ASTSignedLiteral;
 

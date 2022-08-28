@@ -6,8 +6,6 @@
 package de.monticore.lang.monticar.streamunits._symboltable;
 
 
-import de.monticore.streaminstruction._symboltable.*;
-
 import java.util.ArrayList;
 import java.util.Collection;
 import java.util.List;

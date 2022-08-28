@@ -1,7 +1,6 @@
 /* (c) https://github.com/MontiCore/monticore */
-package de.monticore.streaminstruction._ast;
+package de.monticore.lang.monticar.streamunits._ast;
 
-import de.monticore.streaminstruction._ast.ASTValueAtTickTOP;
 import de.monticore.numberunit._ast.ASTNumberWithUnit;
 
 import java.util.Optional;

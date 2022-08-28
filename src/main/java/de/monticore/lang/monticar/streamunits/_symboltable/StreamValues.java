@@ -1,7 +1,5 @@
 /* (c) https://github.com/MontiCore/monticore */
-package de.monticore.streaminstruction._symboltable;
-
-import de.monticore.streaminstruction._symboltable.IStreamValue;
+package de.monticore.lang.monticar.streamunits._symboltable;
 
 import java.util.ArrayList;
 import java.util.List;
