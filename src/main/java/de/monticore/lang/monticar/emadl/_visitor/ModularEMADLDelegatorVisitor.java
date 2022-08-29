@@ -1,6 +1,6 @@
 /**
  * (c) https://github.com/MontiCore/monticore
- *
+ * <p>
  * The license generally applicable for this project
  * can be found under https://github.com/MontiCore/monticore.
  */
@@ -24,10 +24,10 @@ public class ModularEMADLDelegatorVisitor extends EMADLDelegatorVisitor implemen
 
     @Override
     public void setRealThis(EMADLVisitor realThis) {
-        if (this.realThis != realThis){
-            super.setRealThis(realThis);
+        super.setRealThis(realThis);
+        if (this.realThis != realThis) {
             this.realThis = (ModularEMADLDelegatorVisitor) realThis;
-            if (this.modularNetworkVisitor.isPresent()){
+            if (this.modularNetworkVisitor.isPresent()) {
                 //Log.info("Trying to set MVN","MEDV_SetRealThis");
                 this.setModularNetworkVisitor(modularNetworkVisitor.get());
             }
@@ -36,7 +36,7 @@ public class ModularEMADLDelegatorVisitor extends EMADLDelegatorVisitor implemen
 
     private Optional<ModularNetworkVisitor> modularNetworkVisitor = Optional.empty();
 
-    public Optional<ModularNetworkVisitor> getModularNetworkVisitor(){
+    public Optional<ModularNetworkVisitor> getModularNetworkVisitor() {
         return modularNetworkVisitor;
     }
 
@@ -52,22 +52,7 @@ public class ModularEMADLDelegatorVisitor extends EMADLDelegatorVisitor implemen
         }
     }
 
-    //@Override
-    public void handle(ASTNode node) {
-        if (getRealThis().getModularNetworkVisitor().isPresent()) {
-            getRealThis().getModularNetworkVisitor().get().handle(node);
-        }
-    }
 
-    //@Override
-    public void traverse(ASTNode node) {
-        //super.traverse(node)
-        if (getRealThis().getModularNetworkVisitor().isPresent()) {
-            getRealThis().getModularNetworkVisitor().get().traverse(node);
-        }
-
-
-    }
 
     @Override
     public void visit(ASTNode node) {
@@ -81,7 +66,7 @@ public class ModularEMADLDelegatorVisitor extends EMADLDelegatorVisitor implemen
 
     @Override
     public void endVisit(ASTNode node) {
-        super.visit(node);
+        super.endVisit(node);
         if (getRealThis().getModularNetworkVisitor().isPresent()) {
             getRealThis().getModularNetworkVisitor().get().endVisit(node);
         }
@@ -97,14 +82,14 @@ public class ModularEMADLDelegatorVisitor extends EMADLDelegatorVisitor implemen
         }
     }
 
-    /*
+
     @Override
     public void endVisit(ASTEMACompilationUnit node) {
-        super.visit(node);
+        super.endVisit(node);
         if (getRealThis().getModularNetworkVisitor().isPresent()) {
             getRealThis().getModularNetworkVisitor().get().endVisit(node);
         }
-    }*/
+    }
 
 
 
@@ -130,5 +115,26 @@ public class ModularEMADLDelegatorVisitor extends EMADLDelegatorVisitor implemen
     }
     */
 
+        /*
+    @Override
+
+    public void handle(ASTNode node) {
+        //super.handle(node);
+        if (getRealThis().getModularNetworkVisitor().isPresent()) {
+            getRealThis().getModularNetworkVisitor().get().handle(node);
+        }
+    }
+
+
+    //@Override
+    public void traverse(ASTNode node) {
+        //super.traverse(node)
+        if (getRealThis().getModularNetworkVisitor().isPresent()) {
+            getRealThis().getModularNetworkVisitor().get().traverse(node);
+        }
+
+
+    }
+    */
 
 }

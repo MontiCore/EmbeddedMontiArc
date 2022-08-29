@@ -14,6 +14,8 @@ import de.se_rwth.commons.logging.Log;
 import org.junit.Before;
 import org.junit.Test;
 
+import java.util.Optional;
+
 import static junit.framework.TestCase.assertEquals;
 
 public class ModularTest extends AbstractSymtabTest{
@@ -27,8 +29,11 @@ public class ModularTest extends AbstractSymtabTest{
     @Test
     public void testInstances(){
         Scope symtab = createSymTab("src/test/resources/models/");
-        EMAComponentInstanceSymbol mainInstance = symtab.<EMAComponentInstanceSymbol>
-                resolve("InstanceTest.mainB", EMAComponentInstanceSymbol.KIND).get();
+        Optional<EMAComponentInstanceSymbol> compInstanceSymbol = symtab.<EMAComponentInstanceSymbol>resolve("InstanceTest.mainB", EMAComponentInstanceSymbol.KIND);
+        if(compInstanceSymbol.isPresent()){
+            EMAComponentInstanceSymbol mainInstance = compInstanceSymbol.get();
+        }
+
 
         /*
         EMAComponentInstanceSymbol net1 = mainInstance.getSpannedScope().<EMAComponentInstanceSymbol>

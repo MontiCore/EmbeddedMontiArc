@@ -9,13 +9,16 @@ package de.monticore.lang.monticar.emadl.modularcnn;
 import de.monticore.ast.ASTNode;
 import de.monticore.lang.embeddedmontiarc.embeddedmontiarc._ast.ASTEMACompilationUnit;
 import de.monticore.lang.embeddedmontiarc.embeddedmontiarc._symboltable.instanceStructure.EMAComponentInstanceSymbol;
+import de.monticore.lang.monticar.cnnarch._ast.ASTArchitecture;
 import de.monticore.lang.monticar.emadl._ast.ASTEMADLNode;
 import de.monticore.lang.monticar.emadl._visitor.EMADLVisitor;
 import de.monticore.lang.monticar.emadl._visitor.ModularNetworkVisitor;
 import de.monticore.symboltable.*;
 import de.se_rwth.commons.logging.Log;
 
+import java.util.ArrayList;
 import java.util.Deque;
+import java.util.Optional;
 
 public class ModularCNNSymbolTableCreator extends CommonSymbolTableCreator implements ModularNetworkVisitor {
 
@@ -94,7 +97,7 @@ public class ModularCNNSymbolTableCreator extends CommonSymbolTableCreator imple
 
     @Override
     public void visit(ASTNode node) {
-        Log.info("MCNNSTC","VISIT_MCNNSTC");
+        Log.info("MCNNSTC","VISIT_MCNNSTC_ASTNODE");
         Log.info(node.toString(),"VISIT_MCNNSTC");
 
 
@@ -103,16 +106,18 @@ public class ModularCNNSymbolTableCreator extends CommonSymbolTableCreator imple
 
     @Override
     public void endVisit(ASTNode node){
-        Log.info("Size of ArchNode: " + nss.getArchitecturesNodes().size(),"END_MCNNSTC_ASTNode");
-        //nss.getArchitecturesNodes().size();
-        Log.info("MCNNSTC","END_MCNNSTC");
+        ArrayList<ASTArchitecture> archNodes = nss.getArchitecturesNodes();
+        Log.info("Size of ArchNode: " + archNodes.size(),"END_MCNNSTC_ASTNODE");
+
+
+        Log.info("MCNNSTC","END_MCNNSTC_ASTNODE");
     }
 
 
     @Override
     public void visit(ASTEMACompilationUnit node){
         Log.info("MCNNSTC","VISIT_MCNNSTC_COMP");
-
+        Log.info("Node to String: " + node.toString(),"VISIT_MCNNSTC_COMP");
 
 
         NetworkStructureScanner nss = new NetworkStructureScanner();
@@ -123,11 +128,22 @@ public class ModularCNNSymbolTableCreator extends CommonSymbolTableCreator imple
     @Override
     public void endVisit(ASTEMACompilationUnit node){
         Log.info("MCNNSTC","END_MCNNSTC_COMP");
+
+        //Log.info("","END_MCNNSTC_COMP");
+
+        //this.removeCurrentScope();
+        //MutableScope scope = this.getFirstCreatedScope();
+        //Deque<MutableScope> scope = this.scopeStack;
+        //Optional<? extends Symbol> sym = node.getComponent().getSymbolOpt();
+        //Log.info("endVisit of " + node.getComponent().getSymbolOpt().get().getFullName(), "END_MCNNSTC_COMP");
+
+        //Log.info("ScopeStack","END_MCNNSTC_COMP");
+        
     }
 
     @Override
     public void visit(ASTEMADLNode node) {
-        Log.info("MCNNSTC","VISIT_MCNNSTC");
+        Log.info("MCNNSTC","VISIT_MCNNSTC_EMADL");
         Log.info(node.toString(),"VISIT_MCNNSTC");
 
         NetworkStructureScanner nss = new NetworkStructureScanner();
@@ -136,6 +152,6 @@ public class ModularCNNSymbolTableCreator extends CommonSymbolTableCreator imple
 
     @Override
     public void endVisit(ASTEMADLNode node){
-        Log.info("MCNNSTC","END_MCNNSTC");
+        Log.info("MCNNSTC","END_MCNNSTC_EMADL");
     }
 }
