@@ -71,7 +71,7 @@ class VariableSpeedControlRewardFunction extends RewardFunction {
     reward -= VELOCITY_DIFFERENCE_REWARD_SCALING * Math.pow((1 / this.velocity_max) * (this.velocity_desired - velocity), 2);
 
     // reward below max velocity
-    if (this.velocity_max >= velocity)
+    if (this.velocity_max >= velocity && velocity > standing_threshold)
       reward += VELOCITY_SUB_MAXIMUM_REWARD;
 
     // don't let the vehicle stand still
