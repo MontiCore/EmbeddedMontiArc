@@ -25,7 +25,7 @@ then
 	mv model_0-0000.params model_0_newest-0000.params
 	mv model_0-symbol.json model_0_newest-symbol.json
 	cd "${PROJECT_ROOT}/${BINARY}"
-	./agent -t 50 &
+	./agent -t 5 &
 	sleep 2
 else
 	/usr/lib/jvm/java-8-openjdk-amd64/jre/bin/java -jar basic-simulator.jar -rl -s "${SCENARIO_PATH}" &

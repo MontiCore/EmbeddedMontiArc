@@ -31,7 +31,9 @@ def plot_total_reward_avg_last_100_reward(con):
 
 def plot_last_x_episodes_total_reward_avg_last_100_reward(con, x=100):
     cur = con.cursor()
-    cur.execute(f"SELECT episode, total_reward, avg_last_100_reward FROM episodes WHERE episode in (SELECT episode FROM episodes ORDER BY episode DESC LIMIT {x}) ORDER BY episode ASC")
+    cur.execute(
+        f"SELECT episode, total_reward, avg_last_100_reward FROM episodes WHERE episode in (SELECT episode FROM episodes ORDER BY episode DESC LIMIT {x}) ORDER BY episode ASC"
+    )
     tuples = cur.fetchall()
     tuples = sorted(tuples, key=lambda tup: tup[0])
     episodes = [tup[0] for tup in tuples]
@@ -84,6 +86,42 @@ def plot_avg_actor_critic_loss(con):
 
     plt.legend()
     plt.savefig(PATH_FIGURES / "loss.png")
+    plt.close()
+
+
+def plot_avg_actor_loss(con):
+    cur = con.cursor()
+    cur.execute("SELECT episode, avg_actor_loss FROM episodes")
+    tuples = cur.fetchall()
+    tuples = sorted(tuples, key=lambda tup: tup[0])
+    episodes = [tup[0] for tup in tuples]
+    avg_actor_losses = [tup[1] for tup in tuples]
+
+    plt.plot(episodes, avg_actor_losses, label="Avg. Actor Loss per Episode")
+
+    plt.xlabel("Episode")
+    plt.ylabel("Loss")
+
+    plt.legend()
+    plt.savefig(PATH_FIGURES / "actor_loss.png")
+    plt.close()
+
+
+def plot_avg_critic_loss(con):
+    cur = con.cursor()
+    cur.execute("SELECT episode, avg_critic_loss FROM episodes")
+    tuples = cur.fetchall()
+    tuples = sorted(tuples, key=lambda tup: tup[0])
+    episodes = [tup[0] for tup in tuples]
+    avg_critic_losses = [tup[1] for tup in tuples]
+
+    plt.plot(episodes, avg_critic_losses, label="Avg. Critic Loss per Episode")
+
+    plt.xlabel("Episode")
+    plt.ylabel("Loss")
+
+    plt.legend()
+    plt.savefig(PATH_FIGURES / "critic_loss.png")
     plt.close()
 
 
@@ -186,13 +224,33 @@ def plot_collisions_times(con):
     total_time_static_collisions = [tup[2] for tup in tuples]
     number_vehicle_collisions = [tup[3] for tup in tuples]
     total_time_vehicle_collisions = [tup[4] for tup in tuples]
-    avg_time_static_collisions = [total_time_static_collisions[episode] / number_static_collisions[episode] if number_static_collisions[episode] > 0 else 0 for episode in episodes]
-    avg_time_vehicle_collisions = [total_time_vehicle_collisions[episode] / number_vehicle_collisions[episode] if number_vehicle_collisions[episode] > 0 else 0 for episode in episodes]
+    avg_time_static_collisions = [
+        total_time_static_collisions[episode] / number_static_collisions[episode]
+        if number_static_collisions[episode] > 0
+        else 0
+        for episode in episodes
+    ]
+    avg_time_vehicle_collisions = [
+        total_time_vehicle_collisions[episode] / number_vehicle_collisions[episode]
+        if number_vehicle_collisions[episode] > 0
+        else 0
+        for episode in episodes
+    ]
 
-    plt.plot(episodes, total_time_static_collisions, label="Total Time of Static Collisions")
-    plt.plot(episodes, total_time_vehicle_collisions, label="Total Time of Vehicle Collisions")
-    plt.plot(episodes, avg_time_static_collisions, label="Avg. Time of Static Collisions")
-    plt.plot(episodes, avg_time_vehicle_collisions, label="Avg. Time of Vehicle Collisions")
+    plt.plot(
+        episodes, total_time_static_collisions, label="Total Time of Static Collisions"
+    )
+    plt.plot(
+        episodes,
+        total_time_vehicle_collisions,
+        label="Total Time of Vehicle Collisions",
+    )
+    plt.plot(
+        episodes, avg_time_static_collisions, label="Avg. Time of Static Collisions"
+    )
+    plt.plot(
+        episodes, avg_time_vehicle_collisions, label="Avg. Time of Vehicle Collisions"
+    )
 
     plt.xlabel("Episode")
     plt.ylabel("Seconds")
@@ -201,6 +259,87 @@ def plot_collisions_times(con):
     plt.savefig(PATH_FIGURES / "collision_times.png")
     plt.close()
 
+
+def plot_avg_collisions_times(con):
+    cur = con.cursor()
+    cur.execute(
+        "SELECT episode, number_static_collisions, total_time_static_collisions, number_vehicle_collisions, total_time_vehicle_collisions FROM episodes"
+    )
+    tuples = cur.fetchall()
+    tuples = sorted(tuples, key=lambda tup: tup[0])
+    episodes = [tup[0] for tup in tuples]
+    number_static_collisions = [tup[1] for tup in tuples]
+    total_time_static_collisions = [tup[2] for tup in tuples]
+    number_vehicle_collisions = [tup[3] for tup in tuples]
+    total_time_vehicle_collisions = [tup[4] for tup in tuples]
+    avg_time_static_collisions = [
+        total_time_static_collisions[episode] / number_static_collisions[episode]
+        if number_static_collisions[episode] > 0
+        else 0
+        for episode in episodes
+    ]
+    avg_time_vehicle_collisions = [
+        total_time_vehicle_collisions[episode] / number_vehicle_collisions[episode]
+        if number_vehicle_collisions[episode] > 0
+        else 0
+        for episode in episodes
+    ]
+
+    plt.plot(
+        episodes, avg_time_static_collisions, label="Avg. Time of Static Collisions"
+    )
+    plt.plot(
+        episodes, avg_time_vehicle_collisions, label="Avg. Time of Vehicle Collisions"
+    )
+
+    plt.xlabel("Episode")
+    plt.ylabel("Seconds")
+
+    plt.legend()
+    plt.savefig(PATH_FIGURES / "avg_collision_times.png")
+    plt.close()
+
+
+def plot_total_collisions_times(con):
+    cur = con.cursor()
+    cur.execute(
+        "SELECT episode, number_static_collisions, total_time_static_collisions, number_vehicle_collisions, total_time_vehicle_collisions FROM episodes"
+    )
+    tuples = cur.fetchall()
+    tuples = sorted(tuples, key=lambda tup: tup[0])
+    episodes = [tup[0] for tup in tuples]
+    number_static_collisions = [tup[1] for tup in tuples]
+    total_time_static_collisions = [tup[2] for tup in tuples]
+    number_vehicle_collisions = [tup[3] for tup in tuples]
+    total_time_vehicle_collisions = [tup[4] for tup in tuples]
+    avg_time_static_collisions = [
+        total_time_static_collisions[episode] / number_static_collisions[episode]
+        if number_static_collisions[episode] > 0
+        else 0
+        for episode in episodes
+    ]
+    avg_time_vehicle_collisions = [
+        total_time_vehicle_collisions[episode] / number_vehicle_collisions[episode]
+        if number_vehicle_collisions[episode] > 0
+        else 0
+        for episode in episodes
+    ]
+
+    plt.plot(
+        episodes, total_time_static_collisions, label="Total Time of Static Collisions"
+    )
+    plt.plot(
+        episodes,
+        total_time_vehicle_collisions,
+        label="Total Time of Vehicle Collisions",
+    )
+
+    plt.xlabel("Episode")
+    plt.ylabel("Seconds")
+
+    plt.legend()
+    plt.savefig(PATH_FIGURES / "total_collision_times.png")
+    plt.close()
 
 
 con = sqlite3.connect(DATABASE_FILE)
@@ -213,10 +352,14 @@ plot_last_x_episodes_total_reward_avg_last_100_reward(con, 200)
 plot_last_x_episodes_total_reward_avg_last_100_reward(con, 500)
 plot_last_x_episodes_total_reward_avg_last_100_reward(con, 1000)
 plot_avg_actor_critic_loss(con)
+plot_avg_actor_loss(con)
+plot_avg_critic_loss(con)
 plot_avg_q_values(con)
 plot_durations_training_steps(con)
 plot_epsilon(con)
 plot_collisions_numbers(con)
 plot_collisions_times(con)
+plot_avg_collisions_times(con)
+plot_total_collisions_times(con)
 
 con.close()
