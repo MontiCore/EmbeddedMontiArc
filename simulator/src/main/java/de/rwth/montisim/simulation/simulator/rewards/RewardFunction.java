@@ -1,6 +1,7 @@
 package de.rwth.montisim.simulation.simulator.rewards;
 
 import de.rwth.montisim.commons.utils.Vec2;
+import de.rwth.montisim.simulation.commons.physicalvalue.PhysicalValue;
 import de.rwth.montisim.simulation.vehicle.Vehicle;
 import de.rwth.montisim.simulation.vehicle.navigation.Navigation;
 
@@ -15,9 +16,9 @@ public abstract class RewardFunction {
   final int NUMBER_OF_VEHICLES;
   final Vehicle[] vehicles;
   final Navigation[] navigations;
-  final Vec2[] positions;
-  final Double[] velocities;
-  final Double[] angles;
+  final PhysicalValue[] positions;
+  final PhysicalValue[] velocities;
+  final PhysicalValue[] angles;
   final Duration tickDuration;
 
   /**
@@ -30,9 +31,9 @@ public abstract class RewardFunction {
     this.NUMBER_OF_VEHICLES = vehicles.length;
     this.vehicles = vehicles;
     this.navigations = Arrays.stream(vehicles).map(vehicle -> (Navigation) vehicle.eesystem.getComponent("Navigation").get()).toArray(Navigation[]::new);
-    this.positions = Arrays.stream(vehicles).map(vehicle -> (Vec2) vehicle.physicalValues.getPhysicalValue("true_position").get()).toArray(Vec2[]::new);
-    this.velocities = Arrays.stream(vehicles).map(vehicle -> (Double) vehicle.physicalValues.getPhysicalValue("true_velocity").get()).toArray(Double[]::new);
-    this.angles = Arrays.stream(vehicles).map(vehicle -> (Double) vehicle.physicalValues.getPhysicalValue("true_compass").get()).toArray(Double[]::new);
+    this.positions = Arrays.stream(vehicles).map(vehicle -> vehicle.physicalValues.getPhysicalValue("true_position")).toArray(PhysicalValue[]::new);
+    this.velocities = Arrays.stream(vehicles).map(vehicle -> vehicle.physicalValues.getPhysicalValue("true_velocity")).toArray(PhysicalValue[]::new);
+    this.angles = Arrays.stream(vehicles).map(vehicle -> vehicle.physicalValues.getPhysicalValue("true_compass")).toArray(PhysicalValue[]::new);
     this.tickDuration = tickDuration;
   }
 

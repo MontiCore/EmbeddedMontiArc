@@ -45,12 +45,12 @@ public class DerivativeRewardFunction extends RewardFunction {
     @Override
     public float getRewardForVehicle(int vehicle_index, int step) {
         // Compute Linear Derivatives
-        double linearVelocity = velocities[vehicle_index];
+        double linearVelocity = (Double) velocities[vehicle_index].get();
         double linearAcceleration = (linearVelocity - pastLinearVelocity) / (tickDuration.getNano() / (double) (10 ^ 9));
         double linearJerk = (linearAcceleration - pastLinearAcceleration) / (tickDuration.getNano() / (double) (10 ^ 9));
 
         // Compute Angular Derivatives in rad per second
-        double angle = angles[vehicle_index] / 180 * Math.PI;
+        double angle = ((Double) angles[vehicle_index].get()) / 180 * Math.PI;
         double angularVelocity = (angle - pastAngle) / (tickDuration.getNano() / (double) (10 ^ 9));
         double angularAcceleration = (angularVelocity - pastAngularVelocity) / (tickDuration.getNano() / (double) (10 ^ 9));
         double angularJerk = (angularAcceleration - pastAngularAcceleration) / (tickDuration.getNano() / (double) (10 ^ 9));

@@ -58,8 +58,8 @@ public class PlatooningRewardFunction extends RewardFunction {
       int preceding_index = preceding_index_optional.get();
 
       // punish distance
-      Vec2 vehicle_position = this.positions[vehicle_index];
-      Vec2 preceding_position = this.positions[preceding_index];
+      Vec2 vehicle_position = (Vec2) this.positions[vehicle_index].get();
+      Vec2 preceding_position = (Vec2) this.positions[preceding_index].get();
       double gap = vehicle_position.distance(preceding_position);
       reward -= GAP_DISTANCE_REWARD_SCALING * Math.pow((1 / this.gap_max) * (this.gap_desired - gap), 2);
 
@@ -68,7 +68,7 @@ public class PlatooningRewardFunction extends RewardFunction {
         reward += GAP_SUB_MAXIMUM_REWARD;
 
       // set desired velocity to preceding vehicles speed
-      speed_control_reward_function.velocity_desired = this.velocities[preceding_index].floatValue();
+      speed_control_reward_function.velocity_desired = ((Double) this.velocities[preceding_index].get()).floatValue();
     }
     else { // current vehicle is not following another vehicle, thus is a leader
       // reset desired velocity
@@ -107,7 +107,7 @@ public class PlatooningRewardFunction extends RewardFunction {
         Vec2 vehicle_target = vehicle_targets.get(vehicle_target_index);
 
         if (vehicle_target_index == 0) {
-          vehicle_distance = (this.positions[vehicle_index]).distance(i_targets.get(0));
+          vehicle_distance = ((Vec2) this.positions[vehicle_index].get()).distance(i_targets.get(0));
         }
         else {
           vehicle_distance = vehicle_target.distance(vehicle_targets.get(vehicle_target_index - 1));
@@ -119,7 +119,7 @@ public class PlatooningRewardFunction extends RewardFunction {
           Vec2 i_target = i_targets.get(i_target_index);
 
           if (i_target_index == 0) {
-            i_distance = (this.positions[i]).distance(i_targets.get(0));
+            i_distance = ((Vec2) this.positions[i].get()).distance(i_targets.get(0));
           }
           else {
             i_distance = i_target.distance(i_targets.get(i_target_index - 1));

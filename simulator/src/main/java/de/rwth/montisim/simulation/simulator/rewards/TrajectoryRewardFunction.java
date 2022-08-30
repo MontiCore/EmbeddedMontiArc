@@ -54,7 +54,7 @@ public class TrajectoryRewardFunction extends RewardFunction {
 
   @Override
   public float getRewardForVehicle(int vehicle_index, int step) {
-    Vec2 vehicle_position = this.positions[vehicle_index];
+    Vec2 vehicle_position = (Vec2) this.positions[vehicle_index].get();
     Vec2[] vehicle_trajectory = this.navigations[vehicle_index].getCurrentTraj();
 
     float reward = 0;

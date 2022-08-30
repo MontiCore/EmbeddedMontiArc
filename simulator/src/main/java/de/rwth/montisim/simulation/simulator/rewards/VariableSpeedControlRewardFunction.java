@@ -67,7 +67,7 @@ class VariableSpeedControlRewardFunction extends RewardFunction {
   public float getRewardForVehicle(int vehicle_index, int step) {
     float reward = 0;
     // punish velocity difference
-    double velocity = this.velocities[vehicle_index];
+    double velocity = (Double) this.velocities[vehicle_index].get();
     reward -= VELOCITY_DIFFERENCE_REWARD_SCALING * Math.pow((1 / this.velocity_max) * (this.velocity_desired - velocity), 2);
 
     // reward below max velocity
