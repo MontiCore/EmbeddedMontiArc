@@ -1,0 +1,10 @@
+ {
+    "modelsDir": "model",
+    "outputDir": "target/agent",
+    "rootModel": "topology.agent.master",
+    "generators": [
+        "emadlcpp",
+        "roscpp"
+    ],
+    "emadlBackend": "GLUON"
+}
