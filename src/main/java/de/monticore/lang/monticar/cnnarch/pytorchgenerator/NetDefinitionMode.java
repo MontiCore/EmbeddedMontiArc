@@ -4,7 +4,6 @@ public enum NetDefinitionMode {
     ARCHITECTURE_DEFINITION,
     FORWARD_FUNCTION;
 
-
     public static NetDefinitionMode fromString(final String netDefinitionMode) {
         switch(netDefinitionMode) {
             case "ARCHITECTURE_DEFINITION":

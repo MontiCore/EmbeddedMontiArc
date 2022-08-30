@@ -249,4 +249,20 @@ public class CNNArch2PyTorchTemplateController extends CNNArchTemplateController
         return outputNames;
     }
 
+    public List<String> cutDimensions(List<String> dimensions) {
+        while (dimensions.size() > 1 && dimensions.get(dimensions.size() - 1).equals("1")) {
+            dimensions.remove(dimensions.size() - 1);
+        }
+
+        return dimensions;
+    }
+
+    public List<Integer> cutDimensionsInteger(List<Integer> dimensions) {
+        while (dimensions.size() > 1 && dimensions.get(dimensions.size() - 1).equals(1)) {
+            dimensions.remove(dimensions.size() - 1);
+        }
+
+        return dimensions;
+    }
+
 }

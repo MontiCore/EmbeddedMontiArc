@@ -70,7 +70,7 @@ public class CNNArch2PyTorch extends CNNArchGenerator {
                 architecture, templateConfiguration);
 
         fileContents.addAll(compilePythonFiles(archTc, architecture));
-        //fileContents.addAll(compileCppFiles(archTc));
+        fileContents.addAll(compileCppFiles(archTc));
 
         return fileContents;
     }
@@ -93,6 +93,7 @@ public class CNNArch2PyTorch extends CNNArchGenerator {
 
     private void addCMakeDependencies() {
         cMakeConfig.addModuleDependency(new CMakeFindModule("Armadillo", true));
+        cMakeConfig.addCMakeCommand("find_package(Torch REQUIRED)");
     }
 
     @Override

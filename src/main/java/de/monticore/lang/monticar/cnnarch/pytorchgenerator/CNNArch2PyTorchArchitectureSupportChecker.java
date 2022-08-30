@@ -7,11 +7,6 @@ public class CNNArch2PyTorchArchitectureSupportChecker extends ArchitectureSuppo
     public CNNArch2PyTorchArchitectureSupportChecker() {}
 
     @Override
-    protected boolean checkLayerVariables(ArchitectureSymbol architecture) {
-        return true;
-    }
-
-    @Override
     protected boolean checkMultipleStreams(ArchitectureSymbol architecture) {
         return true;
     }
@@ -37,12 +32,8 @@ public class CNNArch2PyTorchArchitectureSupportChecker extends ArchitectureSuppo
     }
 
     @Override
-    protected boolean checkOutputAsInput(ArchitectureSymbol architecture) {
+    protected boolean checkLayerVariables(ArchitectureSymbol architecture) {
         return true;
     }
 
-    @Override
-    protected boolean checkUnroll(ArchitectureSymbol architecture) {
-        return true;
-    }
 }
