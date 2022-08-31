@@ -15,6 +15,7 @@ import de.rwth.montisim.commons.utils.Triplet;
 import de.rwth.montisim.simulation.commons.TaskStatus;
 import de.rwth.montisim.simulation.commons.util.CollisionLogEntry;
 import de.rwth.montisim.simulation.commons.util.CollisionLogWriter;
+import de.rwth.montisim.simulation.commons.util.VelocityLogWriter;
 import de.rwth.montisim.simulation.environment.osmmap.OsmMap;
 import de.rwth.montisim.simulation.environment.osmmap.OsmToWorldLoader;
 import de.rwth.montisim.simulation.environment.pathfinding.PathfindingImpl;
@@ -73,6 +74,7 @@ public class SimulationCLI {
         //write collision history to file
         if (simulator.config.collision_mode.equals("LOG_COLLISIONS")) {
             CollisionLogWriter.addCollisions(simulator.collisionHistory, simulator.config.start_time);
+            VelocityLogWriter.addVelocities(simulator.velocityHistory, simulator.config.start_time);
         }
         return res;
     }

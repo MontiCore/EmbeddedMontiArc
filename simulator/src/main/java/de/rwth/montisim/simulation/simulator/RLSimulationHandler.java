@@ -5,6 +5,7 @@ import de.rwth.montisim.commons.simulation.TimeUpdate;
 import de.rwth.montisim.commons.utils.Vec2;
 import de.rwth.montisim.simulation.commons.TaskStatus;
 import de.rwth.montisim.simulation.commons.util.CollisionLogWriter;
+import de.rwth.montisim.simulation.commons.util.VelocityLogWriter;
 import de.rwth.montisim.simulation.eecomponents.autopilots.RLAutopilot;
 import de.rwth.montisim.simulation.eecomponents.lidar.Lidar;
 import de.rwth.montisim.simulation.eecomponents.speed_limit.SpeedLimitService;
@@ -428,6 +429,7 @@ public class RLSimulationHandler {
     }
     if (simTermination && config.collision_mode.equals("LOG_COLLISIONS")) {
       CollisionLogWriter.addCollisions(simulator.collisionHistory, config.start_time, true, !PLAYMODE, episodeCounter);
+      VelocityLogWriter.addVelocities(simulator.velocityHistory, config.start_time, true, !PLAYMODE, episodeCounter);
     }
     done = true;
     receiveActions = true;

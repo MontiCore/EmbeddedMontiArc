@@ -11,6 +11,7 @@ import de.rwth.montisim.commons.utils.Triplet;
 import de.rwth.montisim.commons.utils.json.SerializationException;
 import de.rwth.montisim.simulation.commons.*;
 import de.rwth.montisim.simulation.commons.util.CollisionLogEntry;
+import de.rwth.montisim.simulation.commons.util.VelocityLogEntry;
 import de.rwth.montisim.simulation.eecomponents.simple_network.SimulatorModule;
 import de.rwth.montisim.simulation.eecomponents.vehicleconfigs.DefaultVehicleConfig;
 import de.rwth.montisim.simulation.environment.osmmap.OsmMap;
@@ -38,6 +39,7 @@ public class Simulator implements ISimulator, Updatable {
   final CollisionDetection collisionDetection;
   public Vector<CollisionLogEntry> currentCollisions = new Vector<>();
   public Vector<CollisionLogEntry> collisionHistory = new Vector<>();
+  public Vector<VelocityLogEntry> velocityHistory = new Vector<>();
   Duration simulatedTime = Duration.ZERO;
   boolean timeout = false;
   private final List<StaticObject> staticObjects = new ArrayList<>();
@@ -207,8 +209,10 @@ public class Simulator implements ISimulator, Updatable {
       return TaskStatus.FAILED_TIMEOUT;
     }
     Vector<CollisionLogEntry> col = getCollisions();
+    Vector<VelocityLogEntry> vel = getVelocities();
     if (config.collision_mode.equals("LOG_COLLISIONS")) {
       logNewCollisions(col);
+      logNewVelocities(vel);
     }
     if (!col.isEmpty()) {
       if (config.collision_mode.equals("FAIL_ON_COLLISIONS")) {
@@ -217,6 +221,14 @@ public class Simulator implements ISimulator, Updatable {
 
     }
     return allTasksSucceeded() ? TaskStatus.SUCCEEDED : TaskStatus.RUNNING;
+  }
+
+  private Vector<VelocityLogEntry> getVelocities() {
+    Vector<VelocityLogEntry> res = new Vector();
+    for (Vehicle v : vehicles) {
+      res.add(new VelocityLogEntry(v.properties.vehicleName, (Double) v.physicalValues.getPhysicalValue("true_velocity").get(), simulatedTime));
+    }
+    return res;
   }
 
   private Vector<CollisionLogEntry> getCollisions() {
@@ -321,6 +333,13 @@ public class Simulator implements ISimulator, Updatable {
       currentCollisions.remove(item);
     }
 
+  }
+
+  //log velocities
+  private void logNewVelocities(Vector<VelocityLogEntry> vel) {
+    for (VelocityLogEntry newVel : vel) {
+      velocityHistory.add(newVel);
+    }
   }
 
   private static class SimulatorState implements ISimulatorState {
