@@ -197,11 +197,11 @@ public class SymtabStreamUnitsTest {
         StreamInstruction streamInstruction = (StreamInstruction) namedStreamSymbol.getValue(2);
         assertTrue(streamInstruction.getStreamValues().isPresent());
         StreamValues streamValues = streamInstruction.getStreamValues().get();
-        assertEquals(2, streamValues.getRowDimension());
+        assertEquals(1, streamValues.getRowDimension());
         assertEquals(3, streamValues.getColumnDimension());
         assertEquals("1.0", streamValues.getStreamValue(0, 0).toString());
         assertEquals("0.0", streamValues.getStreamValue(0, 1).toString());
-        assertEquals("2.0", streamValues.getStreamValue(1, 2).toString());
+        assertEquals("1.0", streamValues.getStreamValue(0, 2).toString());
     }
 
 
