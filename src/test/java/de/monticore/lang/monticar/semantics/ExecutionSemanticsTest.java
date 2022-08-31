@@ -3,12 +3,18 @@ package de.monticore.lang.monticar.semantics;
 
 import de.monticore.lang.embeddedmontiarc.embeddedmontiarc._symboltable.instanceStructure.EMAComponentInstanceSymbol;
 import de.monticore.lang.monticar.semantics.construct.SymtabCreator;
+import de.monticore.lang.monticar.semantics.helper.Find;
 import de.monticore.lang.monticar.semantics.util.PrintExecutionOrder;
 import de.monticore.lang.tagging._symboltable.TaggingResolver;
+import de.monticore.symboltable.CommonSymbol;
 import de.se_rwth.commons.logging.Log;
 import org.junit.Before;
 import org.junit.Test;
 
+import java.util.Comparator;
+import java.util.List;
+
+import static org.junit.jupiter.api.Assertions.*;
 public class ExecutionSemanticsTest {
 
     @Before
@@ -106,5 +112,19 @@ public class ExecutionSemanticsTest {
         System.out.println("\nSList of model \"" + model + "\": \n" + PrintExecutionOrder.printSListSerial(component));
 
         return symTab.<EMAComponentInstanceSymbol>resolve(model, EMAComponentInstanceSymbol.KIND).orElse(null);
+    }
+
+    @Test
+    public void correctOrderForMachineLearningPipeline() {
+        EMAComponentInstanceSymbol component = testComponent("de.monticore.lang.ema.pipeline");
+        List<EMAComponentInstanceSymbol> emaComponents = Find.allAtomicOrNVComponents(component);
+        sortcomponentsByExecutionOrder(emaComponents);
+        String[] expectedOrder = new String[]{"data_access_step","training_step","evaluation_step"};
+        String[] actualOrder = emaComponents.stream().map(CommonSymbol::getName).toArray(String[]::new);
+        assertArrayEquals(expectedOrder, actualOrder, "Pipeline execution order is not as expected");
+    }
+    private void sortcomponentsByExecutionOrder(List<EMAComponentInstanceSymbol> emaComponents) {
+        Comparator<EMAComponentInstanceSymbol> comparator = (EMAComponentInstanceSymbol comp1, EMAComponentInstanceSymbol comp2) -> Integer.compareUnsigned(comp1.getOrderOutput().get(0), comp2.getOrderOutput().get(0));
+        emaComponents.sort(comparator);
     }
 }
