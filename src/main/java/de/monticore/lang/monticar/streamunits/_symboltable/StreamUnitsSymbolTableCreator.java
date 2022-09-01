@@ -136,9 +136,9 @@ public class StreamUnitsSymbolTableCreator extends StreamUnitsSymbolTableCreator
     private double[][][] handleFilePNG(File file) {
         OpenCV.loadShared();
         Mat img = Imgcodecs.imread(file.getAbsolutePath());
-        Log.info("Original image size:", img.size().toString());
+        Log.debug("Original image size:", img.size().toString());
 
-        Log.info("Start resizing for ", file.getName());
+        Log.debug("Start resizing for ", file.getName());
         Size scale = new Size(28, 28);
         Imgproc.resize(img, img, scale);
 
@@ -196,7 +196,7 @@ public class StreamUnitsSymbolTableCreator extends StreamUnitsSymbolTableCreator
         assert shape.length == 1;
         double[] column = new double[shape[0]];
         for (int i = 0; i < source.length; i++) {
-            column[i] = (double) source[i];
+            column[i] = source[i];
         }
         return column;
     }
