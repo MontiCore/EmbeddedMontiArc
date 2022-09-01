@@ -5,9 +5,7 @@
 
 package de.monticore.lang.monticar.stream._symboltable;
 
-import de.monticore.lang.monticar.stream._ast.ASTComponentStream;
-import de.monticore.lang.monticar.stream._ast.ASTNamedStream;
-import de.monticore.lang.monticar.stream._ast.ASTStreamCompilationUnit;
+import de.monticore.lang.monticar.stream._ast.*;
 import de.monticore.literals.literals._ast.*;
 import de.monticore.symboltable.ArtifactScope;
 import de.monticore.symboltable.MutableScope;
@@ -59,24 +57,38 @@ public class StreamSymbolTableCreator extends StreamSymbolTableCreatorTOP {
     @Override
     public void visit(ASTNamedStream node) {
         NamedStreamSymbol streamSymbol = new NamedStreamSymbol(node.getName(), id);
-        for (ASTSignedLiteral num : node.getStream().getSignedLiteralList()) {
-            if (num instanceof ASTSignedDoubleLiteral) {
-                if (((ASTSignedDoubleLiteral) num).isNegative()) {
-                    streamSymbol.add(Double.parseDouble("-" + ((ASTSignedDoubleLiteral) num).getSource()));
-                } else {
-                    streamSymbol.add(Double.parseDouble(((ASTSignedDoubleLiteral) num).getSource()));
-                }
-            } else if (num instanceof ASTDoubleLiteral)
-                streamSymbol.add(Double.parseDouble(((ASTDoubleLiteral) num).getSource()));
-            else if (num instanceof ASTSignedIntLiteral) {
-                if (((ASTSignedIntLiteral) num).isNegative()) {
-                    streamSymbol.add(Integer.parseInt("-" + ((ASTSignedIntLiteral) num).getSource()));
-                } else {
-                    streamSymbol.add(Integer.parseInt(((ASTSignedIntLiteral) num).getSource()));
-                }
-            } else if (num instanceof ASTIntLiteral)
-                streamSymbol.add(Integer.parseInt(((ASTIntLiteral) num).getSource()));
+        for (ASTAllowedType value : node.getStream().getAllowedTypeList()) {
+            if (value.getSignedLiteral() != null) {
+                ASTSignedLiteral num = value.getSignedLiteral();
+                if (num instanceof ASTSignedDoubleLiteral) {
+                    if (((ASTSignedDoubleLiteral) num).isNegative()) {
+                        streamSymbol.add(Double.parseDouble("-" + ((ASTSignedDoubleLiteral) num).getSource()));
+                    } else {
+                        streamSymbol.add(Double.parseDouble(((ASTSignedDoubleLiteral) num).getSource()));
+                    }
+                } else if (num instanceof ASTDoubleLiteral)
+                    streamSymbol.add(Double.parseDouble(((ASTDoubleLiteral) num).getSource()));
+                else if (num instanceof ASTSignedIntLiteral) {
+                    if (((ASTSignedIntLiteral) num).isNegative()) {
+                        streamSymbol.add(Integer.parseInt("-" + ((ASTSignedIntLiteral) num).getSource()));
+                    } else {
+                        streamSymbol.add(Integer.parseInt(((ASTSignedIntLiteral) num).getSource()));
+                    }
+                } else if (num instanceof ASTIntLiteral)
+                    streamSymbol.add(Integer.parseInt(((ASTIntLiteral) num).getSource()));
+            } else if (value.getFilePath() != null) {
+                ASTFilePath filePath = value.getFilePath();
+                streamSymbol.add(filePath.getStringLiteral());
+            }
+
         }
         addToScopeAndLinkWithNode(streamSymbol, node);
+    }
+
+
+
+    @Override
+    public void visit(ASTAllowedType node) {
+
     }
 }
