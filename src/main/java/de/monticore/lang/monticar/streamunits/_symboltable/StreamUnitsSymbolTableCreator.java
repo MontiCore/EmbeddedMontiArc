@@ -6,14 +6,27 @@
 package de.monticore.lang.monticar.streamunits._symboltable;
 
 import de.monticore.lang.monticar.streamunits._ast.*;
+import de.monticore.lang.monticar.streamunits._parser.StreamUnitsParser;
 import de.monticore.literals.literals._ast.ASTSignedLiteral;
 import de.monticore.symboltable.ArtifactScope;
 import de.monticore.symboltable.MutableScope;
 import de.monticore.symboltable.ResolvingConfiguration;
 import de.se_rwth.commons.Names;
 import de.se_rwth.commons.logging.Log;
+import nu.pattern.OpenCV;
+import org.apache.commons.io.FilenameUtils;
+import org.opencv.core.Mat;
+import org.opencv.core.Size;
+import org.opencv.imgcodecs.Imgcodecs;
+import org.opencv.imgproc.Imgproc;
 
+import java.io.File;
+import java.io.IOException;
+import java.nio.charset.Charset;
+import java.nio.file.Files;
+import java.nio.file.Path;
 import java.util.ArrayList;
+import java.util.Arrays;
 import java.util.List;
 import java.util.Optional;
 
@@ -65,17 +78,127 @@ public class StreamUnitsSymbolTableCreator extends StreamUnitsSymbolTableCreator
         }
         NamedStreamUnitsSymbol streamSymbol = new NamedStreamUnitsSymbol(qualifiedName, id);
         for (ASTStreamInstruction streamInstruction : node.getStream().getStreamInstructionList()) {
-            if (streamInstruction.getStreamValueOpt().isPresent()) {
-                streamSymbol.add(handleStreamValue(streamInstruction.getStreamValueOpt().get()));
-            } else if (streamInstruction.getStreamCompareOpt().isPresent()) {
-                ASTStreamCompare astStreamCompare = streamInstruction.getStreamCompareOpt().get();
-                streamSymbol.add(new StreamCompare(new StreamValuePrecision(astStreamCompare.getLeft()),
-                        astStreamCompare.getOperator(), new StreamValuePrecision(astStreamCompare.getRight())));
-            } else if (streamInstruction.getStreamArrayValuesOpt().isPresent()) {
-                streamSymbol.add(handleStreamArrayValues(streamInstruction));
-            }
+            handleStreamInstruction(streamSymbol, streamInstruction);
         }
         addToScopeAndLinkWithNode(streamSymbol, node);
+    }
+
+    private void handleStreamInstruction(NamedStreamUnitsSymbol streamSymbol,
+                                                           ASTStreamInstruction streamInstruction) {
+        if (streamInstruction.getStreamValueOpt().isPresent()) {
+            streamSymbol.add(handleStreamValue(streamInstruction.getStreamValueOpt().get()));
+        } else if (streamInstruction.getStreamCompareOpt().isPresent()) {
+            ASTStreamCompare astStreamCompare = streamInstruction.getStreamCompareOpt().get();
+            streamSymbol.add(new StreamCompare(new StreamValuePrecision(astStreamCompare.getLeft()),
+                    astStreamCompare.getOperator(), new StreamValuePrecision(astStreamCompare.getRight())));
+        } else if (streamInstruction.getStreamArrayValuesOpt().isPresent()) {
+            streamSymbol.add(handleStreamArrayValues(streamInstruction));
+        } else if (streamInstruction.getFilePathOpt().isPresent()) {
+            handleFilePath(streamSymbol, streamInstruction);
+        }
+    }
+
+    private void handleFilePath(NamedStreamUnitsSymbol streamSymbol, ASTStreamInstruction streamInstruction) {
+        ASTFilePath astFilePath = streamInstruction.getFilePathOpt().get();
+        final String dir = System.getProperty("user.dir");
+        final String filePath = dir + astFilePath.getStringLiteral().getSource();
+        File file = new File(filePath);
+
+        if (file.exists()) {
+            try {
+                Optional<ASTStreamInstruction> astStreamInstruction =
+                        handleFileByExtension(file);
+                astStreamInstruction.ifPresent(instruction -> handleStreamInstruction(streamSymbol, instruction));
+            } catch (IOException | NumberFormatException e) {
+                if (e instanceof  IOException) {
+                    Log.error("Error on reading file:" + filePath);
+                } else {
+                    e.printStackTrace();
+                }
+            }
+        }
+    }
+
+    private Optional<ASTStreamInstruction> handleFileByExtension(File file) throws IOException {
+        String extension = FilenameUtils.getExtension(file.getPath());
+        if (extension.equals("txt")) {
+            Path path = file.toPath();
+            List<String> content = Files.readAllLines(path, Charset.defaultCharset());
+            return new StreamUnitsParser().parse_StringStreamInstruction((content.get(0)));
+        } else if (extension.equals("png")) {
+            double[][][] cube = handleFilePNG(file);
+            assert cube.length == 1;
+        }
+        Log.error("File Extension not supported");
+        return Optional.empty();
+    }
+
+    private double[][][] handleFilePNG(File file) {
+        OpenCV.loadShared();
+        Mat img = Imgcodecs.imread(file.getAbsolutePath());
+        Log.debug("Original image size:", img.size().toString());
+
+        Log.debug("Start resizing for ", file.getName());
+        Size scale = new Size(28, 28);
+        Imgproc.resize(img, img, scale);
+
+        int channels = 1;
+        int height = img.rows();
+        int width = img.width();
+
+        double[] data = new double[channels * height * width];
+
+        for (int j = 0; j < height; j++) {
+            for (int k = 0; k < width; k++) {
+                double[] intensity = img.get(j, k);
+                for (int i = 0; i < channels; i++) {
+                    data[i * height * width + j * height + k] = intensity[i];
+                }
+            }
+        }
+
+        return translateToCube(data, new int[]{channels, height, width});
+    }
+
+    private double[][][] translateToCube(double[] source, int[] shape) {
+        assert(shape.length == 3);
+        double[][][] cubeMatrix = new double[shape[0]][shape[2]][shape[1]]; // slices(channels), columns(weight), rows(height)
+        final int matrixSize = shape[1] * shape[2];
+        long[] matrixShape = new long[]{shape[2], shape[1]};
+        int startPos = 0;
+        int endPos = matrixSize;
+
+        for (int i = 0; i < shape[0]; i++) {
+            double[] matrixSource = Arrays.copyOfRange(source, startPos, endPos);
+            cubeMatrix[i] = translateToMat(matrixSource, matrixShape);
+            startPos = endPos;
+            endPos += matrixSize;
+        }
+        return cubeMatrix;
+    }
+
+    private double[][] translateToMat(double[] source, long[] shape) { // shape {col, row}
+        assert(shape.length == 2);
+        double[][] matrix = new double[(int) shape[1]][(int) shape[0]];
+        int startPos = 0;
+        int endPos = (int) shape[1];
+        final int[] columnShape = new int[]{(int) shape[1]};
+        for (int i = 0; i < shape[0]; i++) {  // for each column
+            double[] colSource = Arrays.copyOfRange(source, startPos, endPos);
+            matrix[i] = translateToCol(colSource, columnShape);
+            startPos = endPos;
+            endPos += shape[1];
+        }
+        return matrix;
+    }
+
+    private double[] translateToCol(double[] source, int[] shape) {
+        assert shape.length == 1;
+        double[] column = new double[shape[0]];
+        for (int i = 0; i < source.length; i++) {
+            column[i] = source[i];
+        }
+        return column;
     }
 
     private IStreamValue handleStreamValue(ASTStreamValue streamValue) {

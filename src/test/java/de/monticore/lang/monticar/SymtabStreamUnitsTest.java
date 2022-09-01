@@ -5,15 +5,19 @@ import de.monticore.ModelingLanguageFamily;
 import de.monticore.io.paths.ModelPath;
 import de.monticore.lang.monticar.streamunits._symboltable.*;
 import de.monticore.numberunit._ast.ASTNumberWithUnit;
+import de.monticore.lang.monticar.streamunits._symboltable.StreamInstruction;
+import de.monticore.lang.monticar.streamunits._symboltable.StreamValues;
 import de.monticore.symboltable.GlobalScope;
 import de.monticore.symboltable.Scope;
 import de.se_rwth.commons.logging.Log;
+import org.junit.BeforeClass;
 import org.junit.Ignore;
 import org.junit.Test;
 
 import java.nio.file.Paths;
 import java.util.Collection;
 
+import static de.monticore.lang.monticar.ParserStreamUnitsTest.ENABLE_FAIL_QUICK;
 import static org.junit.Assert.*;
 
 /**
@@ -31,12 +35,21 @@ public class SymtabStreamUnitsTest {
         return scope;
     }
 
+    @BeforeClass
+    public static void setUp() {
+        // ensure an empty log
+        Log.init();
+        Log.getFindings().clear();
+        Log.enableFailQuick(ENABLE_FAIL_QUICK);
+    }
+
     @Test
     public void testResolveComponentStreamUnitsSymbol() {
         Scope symTab = createSymTab("src/test/resources/unitstreams/streams");
         Log.debug(symTab.toString(), "SymTab:");
         ComponentStreamUnitsSymbol comp = symTab.<ComponentStreamUnitsSymbol>resolve(
-                "basicLibrary.AndTest", ComponentStreamUnitsSymbol.KIND).orElse(null);
+                "basicLibrary.AddTest", ComponentStreamUnitsSymbol.KIND).orElse(null);
+        comp.getNamedStream("in1");
         assertNotNull(comp);
     }
 
@@ -62,6 +75,22 @@ public class SymtabStreamUnitsTest {
         ASTNumberWithUnit percision = (ASTNumberWithUnit) instruction.getStreamValue().get().getPrecision();
         assertEquals(0.5, percision.getNumber().get(), 0);
         assertFalse(instruction.getStreamCompare().isPresent());
+    }
+
+    @Test
+    public void testResolveFilePathStreamUnit() {
+        Scope symTab = createSymTab("src/test/resources/unitstreams/streams");
+
+        NamedStreamUnitsSymbol namedStreamSymbol = symTab.<NamedStreamUnitsSymbol>resolve(
+                "basicLibrary.AddTest.in1", NamedStreamUnitsSymbol.KIND).orElse(null);
+
+        StreamInstruction instruction = (StreamInstruction) namedStreamSymbol.getValue(2);
+
+        ASTNumberWithUnit percision = (ASTNumberWithUnit) instruction.getStreamValue().get().getValue();
+
+
+        assertEquals(3, percision.getNumber().get(), 0);
+
     }
 
     @Test
@@ -156,6 +185,23 @@ public class SymtabStreamUnitsTest {
         assertEquals("0.0", streamValues.getStreamValue(0, 1).toString());
         assertEquals("1.0", streamValues.getStreamValue(0, 2).toString());
 
+    }
+
+    @Test
+    public void testResolveMatrixStreamWithFile() {
+        Scope symTab = createSymTab("src/test/resources/unitstreams/streams");
+
+        NamedStreamUnitsSymbol namedStreamSymbol = symTab.<NamedStreamUnitsSymbol>resolve(
+                "emamtest.TestMatrixStreamWithFile.direction", NamedStreamUnitsSymbol.KIND).orElse(null);
+        assertNotNull(namedStreamSymbol);
+        StreamInstruction streamInstruction = (StreamInstruction) namedStreamSymbol.getValue(2);
+        assertTrue(streamInstruction.getStreamValues().isPresent());
+        StreamValues streamValues = streamInstruction.getStreamValues().get();
+        assertEquals(1, streamValues.getRowDimension());
+        assertEquals(3, streamValues.getColumnDimension());
+        assertEquals("1.0", streamValues.getStreamValue(0, 0).toString());
+        assertEquals("0.0", streamValues.getStreamValue(0, 1).toString());
+        assertEquals("1.0", streamValues.getStreamValue(0, 2).toString());
     }
 
 
