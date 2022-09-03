@@ -7,6 +7,7 @@ from std_msgs.msg import Float32MultiArray, Bool, Int32, Float32
 from gym import wrappers
 from gymenv import TopoEnv
 
+CONSTR = 10 # default value
 
 class BaseEnvironment(object):
     def __init__(self):
@@ -27,7 +28,7 @@ class RosGymConnector(object):
         self.__env_str = env_str
         self.__verbose = verbose
         self.__render_per_step = render_per_step
-        self.__env = TopoEnv()
+        self.__env = TopoEnv(constraint=CONSTR)
         self.__last_game_score = 0
 
         self.__terminated = True

@@ -28,7 +28,7 @@ If you plan to use the cluster, you need to generate an ssh key for authenticati
 
 If you are running everything locally, you need to build the docker container for the preprocessing. You can use the Dockerfile and requirements file in the `/additional_files/Docker` folder in the root of this repository. Please name the container "preprocessing".
 
-**Note that the Machine Learning component has not been adapted for local execution and will not be executed!**
+**Note that the Machine Learning component has not been adapted for local execution and will not be executed locally!**
 
 Depending on whether the FEM simulation and preprocessing should run on the cluster or locally, you need to change the following parameters:
 
@@ -47,6 +47,9 @@ The following files are in the local `tools` folder:
 
 - In the `main-cluster.py` file at the root of the local folder, you need to adjust line 12 to your cluster username, line 13 to your private ssh key's password, as well as lines 51 and 76 to the respective paths on the cluster
 - In the `cluster.py` file in the local `tools` folder, you need to adjust your key password in line 10, and the path to the root folder of the project on your cluster account in line 14.
+- In the `run.job` file at the root of the cluster folder, you need to adjust your account and log-path.
+- In the `cleanup_preprocessing.py` file in the `toolchain/preprocessing` folder on the cluster, you need to adjust the cluster project root path in line 6.
+- In the `copy_preprocessing.py` file in the `toolchain/preprocessing` folder on the cluster, line 6 needs to be adjusted to reflect the project root path.
 
 ## Usage
 

@@ -3,6 +3,8 @@ from gym import spaces
 import numpy as np
 import random
 
+from dynawrapper import DynaWrapper
+
 #MAX_REWARD = 1 # Maximum reward
 cube_size = 10 # used to define boundaries for scale values
 steps = 100000
@@ -10,16 +12,16 @@ steps = 100000
 class TopoEnv(gym.Env):
     metadata = {'render.modes': ['human']}
     
-    def __init__(self, constraint=1):
+    def __init__(self, constraint):
         super(TopoEnv, self).__init__()
         
         #self.reward_range = (0, MAX_REWARD)
         
         self.current_step = 0
 
-        self.constraint = constraint # constraint is the minimum integral that should be achieved in the load-displacement curve
+        self.constraint = constraint # constraint is the minimum integral that should be achieved in the load-displacement curve, interval: [0.1,100]
 
-        self.last_performance = 0
+        self.last_penalty = 0
 
         self.last_reward = 0
         
@@ -29,8 +31,8 @@ class TopoEnv(gym.Env):
         # Multiple adjustments possible at the same time
         # self.action_space = spaces.MultiDiscrete([2,2,2,2,2,2])
         
-        # Define observation space: [a,a,a,b,b,b] with a in [0.1,cube_size/5] and b in [0.0,359.9]
-        self.observation_space = spaces.Box(low=np.array([0.1,0.1,0.1,0.0,0.0,0.0]), high=np.array([cube_size/2, cube_size/2, cube_size/2, 359.9, 359.9, 359.9]), dtype=np.float32)
+        # Define observation space: [c,a,a,a,b,b,b] with c in [0.1,100], a in [0.1,cube_size/5] and b in [0.0,359.9] reprepresenting constraint, scale and rotation respectively
+        self.observation_space = spaces.Box(low=np.array([0.1,0.1,0.1,0.1,0.0,0.0,0.0]), high=np.array([100, cube_size/2, cube_size/2, cube_size/2, 359.9, 359.9, 359.9]), dtype=np.float32)
         
         
 
@@ -65,71 +67,78 @@ class TopoEnv(gym.Env):
         elif action == 11:
             self.material.change(5,1)
 
-        new_value = max(self.material.get_material()) # placeholder calculation
+        new_penalty = self.materialPenalty(self.material)
 
-        # TODO: reward calculation
-        # evaluate material performance
-        new_performance = self.performance(constraint=self.constraint, value=new_value)
+        old_penalty = self.last_penalty
 
-        old_performance = self.last_performance
-
-        if new_performance > old_performance:
-            reward = 10*((new_performance/old_performance)-1) # alternative: 1.0
+        if new_penalty < old_penalty:
+            reward = 10*((old_penalty/new_penalty)-1) # alternative: 1.0
         else:
             reward = -1.0
         
         self.last_reward = reward
-        self.last_performance = new_performance
+        self.last_penalty = new_penalty
         
         self.current_step += 1
         
         done = self.current_step >= steps
         
-        observation = np.array(self.material.get_material(), dtype=np.float32) # get new material
+        observation = np.concatenate((np.array(self.constraint), np.array(self.material.get_material(), dtype=np.float32)), axis=None) # get new material and current constraint
         
         return observation, reward, done, {}
     
 
     def reset(self):
         # Reset the state of the environment to an initial state
+        constraint = round(random.uniform(0.1, 100), 1)
         x = round(random.uniform(0.1, cube_size/2), 1)
         y = round(random.uniform(0.1,cube_size/2), 1)
         z = round(random.uniform(0.1,cube_size/2), 1)
         rot_x = round(random.uniform(0.0,359.9), 1)
         rot_y = round(random.uniform(0.0,359.9), 1)
         rot_z = round(random.uniform(0.0,359.9), 1)
-        
+
+        self.constraint = constraint
         self.material = Material(x, y, z, rot_x, rot_y, rot_z)
         self.current_step = 0
         self.last_reward = 0
 
-        current_value = 0.1 # dummy value
-        performance = self.performance(constraint=self.constraint, value=current_value)
-        self.last_performance = performance
+        self.dyna = DynaWrapper(self.material)
 
-        observation = np.array(self.material.get_material(), dtype=np.float32) # get new material
+        penalty = self.materialPenalty(self.material)
+        self.last_penalty = penalty
+
+        observation = np.concatenate((np.array(self.constraint), np.array(self.material.get_material(), dtype=np.float32)), axis=None) # get new material and constraint
         
         return observation
 
     def render(self, mode='human', close=False):
         # Render the environment to the screen
 
-        last_material = self.material.get_material()
+        last_material = self.material.get_material()[1:]
+        last_constraint = self.constraint
 
         print(f'Step: {self.current_step}')
         print(f'Last material: {last_material}')
+        print(f'Last constraint: {last_constraint}')
         print(f'Last reward: {self.last_reward}')
 
-    def performance(self, constraint, value):
-        # Calculate how "good" the material is compared proportionally to the constraint
-        if value >= constraint:
-            performance = value
-        else:
-            proportion = constraint / value
-            factor = 1/(1+proportion)
-            performance = value * factor
+    def materialPenalty(self, material):
+        self.dyna.simulate()
+        energy_absorption = self.dyna.integrate()
+        peak = self.dyna.getPeak()
+        final_level = self.dyna.getFinalLevel()
+        scale = self.material.get_material()[:3]
+        avg_scale = sum(scale) / 3
 
-        return performance
+        if energy_absorption >= self.constraint:
+            energy_absorption_penalty = 0
+        else:
+            energy_absorption_penalty = self.constraint - energy_absorption
+
+        peak_penalty = peak - final_level
+
+        return avg_scale * (1 + energy_absorption_penalty + peak_penalty)
 
     
 
