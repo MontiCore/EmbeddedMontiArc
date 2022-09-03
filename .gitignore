@@ -1,5 +1,4 @@
 *.pyc
-logs
 .vscode
 **/target
 cmake-build-debug

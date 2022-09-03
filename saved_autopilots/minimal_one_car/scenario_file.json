@@ -2,7 +2,7 @@
 	"name": "rlMinimalExperiment",
 	"map_name": "maps/dallas",
 	"max_duration": [
-		60,
+		100,
 		0
 	],
 	"tick_duration": [
@@ -19,13 +19,13 @@
 		"angular_acc_reward_factor": 0.0,
 		"linear_jerk_reward_factor": 0.0,
 		"linear_acc_reward_factor": 0.0,
-		"trajectory_following_reward": 20,
+		"trajectory_following_reward": 1,
 		"total_path_progress_reward_scaling": 100,
-		"path_progress_derivative_reward_scaling": 1000,
+		"path_progress_derivative_reward_scaling": 100,
 		"distance_max": 3,
-		"velocity_difference_scaling": 100,
+		"velocity_difference_scaling": 1,
 		"velocity_sub_maximum_reward": 100,
-		"standing_punishment": -250,
+		"standing_punishment": -1000,
 		"velocity_max": 20,
 		"velocity_desired": 15,
 		"standing_threshold": 1,

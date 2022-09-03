@@ -1,5 +1,7 @@
 #!/bin/bash
 
+/bin/echo "Updating agent..."
+
 directory=$(pwd)
 . $directory/config.sh
 cd $directory
@@ -49,6 +51,8 @@ kill $RUNNING_AGENT
 
 #restart agent with updated network weights
 cd ${PROJECT_ROOT}/${BINARY}
-./agent -t 100 &
+./agent -t ${SELF_PLAY_AGENT_EXECUTION_INTERVAL_TRAINING} &
 sleep 2
 cd ${PROJECT_ROOT}
+
+/bin/echo "Agent updated"

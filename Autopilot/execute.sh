@@ -11,6 +11,7 @@ cd "${BINARY}"
 if [ -d "model_old" ]; then
 	/bin/echo "model_old exists"
 	if [ -d "model" ]; then
+		/bin/echo "removing model"
 		rm -r model
 	fi
 else
@@ -25,7 +26,7 @@ mv model_0-symbol.json model_0_newest-symbol.json
 
 cd "${oldpath}"
 cd "${BINARY}"
-./agent -t 100 &
+./agent -t ${SELF_PLAY_AGENT_EXECUTION_INTERVAL_RUNNING} &
 sleep 2
 cd "${SIMULATOR_PATH}"
 java -jar basic-simulator.jar
