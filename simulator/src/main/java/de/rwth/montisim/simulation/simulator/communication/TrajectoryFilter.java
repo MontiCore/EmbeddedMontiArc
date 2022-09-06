@@ -14,6 +14,9 @@ import java.util.stream.IntStream;
  */
 public class TrajectoryFilter implements Preprocessor {
 
+  private final int maxNumberOfVehicles;
+  private final boolean addIndicator;
+
   private final float VEHICLE_WIDTH;
   private final float VEHICLE_LENGTH;
   private final float VEHICLE_RADIUS;
@@ -28,7 +31,9 @@ public class TrajectoryFilter implements Preprocessor {
    * @param VEHICLE_LENGTH         Height of a vehicle
    * @param MAX_STATES_PER_VEHICLE specifies how many future states should be calculated for a vehicle
    */
-  public TrajectoryFilter(float VEHICLE_WIDTH, float VEHICLE_LENGTH, int MAX_STATES_PER_VEHICLE) {
+  public TrajectoryFilter(float VEHICLE_WIDTH, float VEHICLE_LENGTH, int MAX_STATES_PER_VEHICLE, int maxNumberOfVehicles, boolean addIndicator) {
+    this.maxNumberOfVehicles = maxNumberOfVehicles;
+    this.addIndicator = addIndicator;
     this.VEHICLE_WIDTH = VEHICLE_WIDTH;
     this.VEHICLE_LENGTH = VEHICLE_LENGTH;
     this.MAX_STATES_PER_VEHICLE = MAX_STATES_PER_VEHICLE;
@@ -132,7 +137,6 @@ public class TrajectoryFilter implements Preprocessor {
 
   @Override
   public float[] preprocessState(float[] vehicleState, float[][] otherStates, int statePacketLength) {
-    // TODO: Test if parallel stream here improves performance
     /*
       For each other vehicle, do the following:
        - Calculate the future states
@@ -142,11 +146,14 @@ public class TrajectoryFilter implements Preprocessor {
     Comparator<Pair<Integer, Float>> c = Comparator.comparing(Pair::getValue);
     Vector<Pair<Integer, Float>> scores = IntStream.range(0, otherStates.length).mapToObj(index -> new Pair<>(index, scoreFutureStates(getFutureStates(vehicleState, otherStates[index])))).sorted(c.reversed()).collect(Collectors.toCollection(Vector::new));
 
-    float[] preprocessedState = new float[vehicleState.length + otherStates.length * statePacketLength];
+    float[] preprocessedState = new float[vehicleState.length + this.maxNumberOfVehicles * (statePacketLength + (this.addIndicator ? 1 : 0))];
 
     System.arraycopy(vehicleState, 0, preprocessedState, 0, vehicleState.length);
-    for (int index = 0; index < scores.size(); index++) {
-      System.arraycopy(otherStates[scores.get(index).getKey()], 0, preprocessedState, vehicleState.length + index * statePacketLength, statePacketLength);
+    for (int index = 0; index < Math.min(scores.size(), maxNumberOfVehicles); index++) {
+      System.arraycopy(otherStates[scores.get(index).getKey()], 0, preprocessedState, vehicleState.length + index * (statePacketLength + (this.addIndicator ? 1 : 0)), statePacketLength);
+      if(this.addIndicator) {
+        preprocessedState[vehicleState.length + index * (statePacketLength + 1) + statePacketLength] = 1;
+      }
     }
 
     return preprocessedState;
@@ -159,7 +166,11 @@ public class TrajectoryFilter implements Preprocessor {
 
   @Override
   public int getStatePacketLength(int inputStateLength, int inputStatePacketLength) {
-    return inputStatePacketLength;
+    if (addIndicator) {
+      return inputStatePacketLength + 1;
+    } else {
+      return inputStatePacketLength;
+    }
   }
 
   /**

@@ -21,7 +21,7 @@ the preprocessor with the preprocessor property in our scenario file:
 ```
 
 ## Preprocessing Strategies:
-### Basic Strategy
+### Default Preprocessor
 ```json
 "type": "default"
 ```
@@ -83,10 +83,14 @@ The Trajectory Filter reorders all other vehicles' states depending on, if they 
 For this, Kalman Filtering is used to approximate the future locations of vehicles, depending on their trajectory, if they would drive with the current velocity constantly.
 Vehicles, that are likely to collide soon with the current vehicle, have a high priority.
 
+Similarly to the Proximity Filter, the Trajectory Filter also returns a state array of constant size and can add an indicator flag.
+
 #### Properties
-| Property               | Type    | Default Value | Short Description                                             | Usage                          |
-|------------------------|---------|---------------|---------------------------------------------------------------|--------------------------------|
-| VEHICLE_WIDTH          | `float` | 1.87          | Width of a vehicle                                            | `"VEHICLE_WIDTH": 2`           | 
-| VEHICLE_LENGTH         | `float` | 4.871         | Height of a vehicle                                           | `"VEHICLE_LENGTH": 5`          |
-| MAX_STATES_PER_VEHICLE | `int`   | 25            | Maximum amount of future states to be generated for a vehicle | `"MAX_STATES_PER_VEHICLE": 10` |
+| Property               | Type      | Default Value | Short Description                                             | Usage                          |
+|------------------------|-----------|---------------|---------------------------------------------------------------|--------------------------------|
+| VEHICLE_WIDTH          | `float`   | 1.87          | Width of a vehicle                                            | `"VEHICLE_WIDTH": 2`           | 
+| VEHICLE_LENGTH         | `float`   | 4.871         | Height of a vehicle                                           | `"VEHICLE_LENGTH": 5`          |
+| MAX_STATES_PER_VEHICLE | `int`     | 25            | Maximum amount of future states to be generated for a vehicle | `"MAX_STATES_PER_VEHICLE": 10` |
+| maxNumberOfVehicles    | `int`     | 5             | Number of State Packets                                       | `"maxNumberOfVehicles": 3`     | 
+| addIndicator           | `boolean` | true          | Add flag for empty state packets                              | `"addIndicator": false`        | 
 
