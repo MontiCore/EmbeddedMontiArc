@@ -10,4 +10,4 @@ clean:
 preprocessing:
 	python toolchain/preprocessing/copy_preprocessing.py
 	@echo "Preprocessing..."
-	singularity exec /rwthfs/rz/SW/UTIL.common/singularity/DGLQD toolchain/preprocessing/preprocessing.sh
+	./toolchain/preprocessing/preprocessing.sh
