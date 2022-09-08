@@ -103,9 +103,9 @@ class TopoEnv(gym.Env):
         self.current_step = 0
         self.last_reward = 0
 
-        self.dyna = DynaWrapper(self.material)
+        self.dyna = DynaWrapper(self.material.get_material())
 
-        penalty = self.materialPenalty(self.material)
+        penalty = self.materialPenalty()
         self.last_penalty = penalty
 
         observation = np.concatenate((np.array(self.constraint), np.array(self.material.get_material(), dtype=np.float32)), axis=None) # get new material and constraint
@@ -123,7 +123,7 @@ class TopoEnv(gym.Env):
         print(f'Last constraint: {last_constraint}')
         print(f'Last reward: {self.last_reward}')
 
-    def materialPenalty(self, material):
+    def materialPenalty(self):
         self.dyna.simulate()
         energy_absorption = self.dyna.integrate()
         peak = self.dyna.getPeak()
