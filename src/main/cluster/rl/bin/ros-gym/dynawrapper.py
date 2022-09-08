@@ -1,13 +1,18 @@
 import h5py
 import numpy as np
 import os
+import time
+import sys
 import pathlib
 import subprocess
 
 this_directory = pathlib.Path(__file__).parent.resolve()
 project_root = os.path.join(this_directory, '..', '..', '..')
 input_file = os.path.join(this_directory, '..', '..', '..', 'toolchain', 'files', 'Input.csv')
+dyna_file = os.path.join(this_directory, '..', '..', '..', 'toolchain', 'files', 'Lattice_Structures', '1.k')
 processed_file = os.path.join(this_directory, '..', '..', '..', 'toolchain', 'preprocessing', 'h5', 'raw', 'train.h5')
+
+time_to_wait = 120 # Wait up to 2 minutes
 
 class DynaWrapper(object):
     def __init__(self, material):
@@ -17,9 +22,18 @@ class DynaWrapper(object):
         self.distance = np.zeros(self.limit)
 
     def simulate(self):
-        materialString = " ".join(self.material)
+        materialString = ",".join(self.material)
         with open(input_file, 'w') as csvFile:
-            csvFile.write(materialString + r'\r\n\ '[:-1])
+            csvFile.write(r'1,100,0,' + materialString + r'\r\n\ '[:-1])
+
+        # Wait for 1.k file
+        time_counter = 0
+        while not os.path.exists(dyna_file):
+            time.sleep(1)
+            time_counter += 1
+            if time_counter > time_to_wait:
+                sys.exit("Local computer timed out!")
+
         subprocess.run(['make', 'dyna'], cwd=project_root)
         subprocess.run(['make', 'preprocessing'], cwd=project_root)
         file = h5py.File(processed_file, 'r')

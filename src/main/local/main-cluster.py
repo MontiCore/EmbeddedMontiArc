@@ -12,21 +12,15 @@ current_path = pathlib.Path().resolve()  # Project path
 cluster_user = "wj777230"  # Cluster username for cluster computation
 cluster_key_password = 'Pax40nO9b' # Password for ssh key for cluster authentication
 
+print("Preparing...")
 
 # Catch Ctrl-c
 def signal_handler(signal, frame):
+    print("Received stop signal, finishing last loop iteration...")
     global interrupted
     interrupted = True
 
 signal.signal(signal.SIGINT, signal_handler)
-
-print("Preparing...")
-
-# Read number of iterations
-iterations = int(input("Please input number of iterations (-1 for infinity):"))
-if iterations == 0:
-    print("0 is not a valid number of iterations")
-    sys.exit()
 
 ## Start Cluster
 print("Starting RL-component...")
@@ -36,9 +30,9 @@ subprocess.run(['python', os.path.join(current_path, "tools", "cluster.py"), cur
 time.sleep(10)
 
 ## Iteration loop
-while i < iterations:
+while True:
     if interrupted:
-        print("Completed ", i, " iterations")
+        print("Interrupted, completed ", i, " iterations")
         print("exiting now...")
         break
 
@@ -53,7 +47,7 @@ while i < iterations:
 
     # Check for input files
     if not os.path.isfile(os.path.join(current_path, "files", "Input.csv")):
-        sys.exit("You have not provided a Input.csv file for nTop!")
+        sys.exit("Cluster timeout. Exiting...")
 
     print("Received Input file for nTop!")
 
@@ -71,7 +65,7 @@ while i < iterations:
         ['winscp.com', '/ini=nul', '/log=transferP2C.log', '/script=tools/PC_to_Cluster.txt', '/parameter',
          cluster_user,                                                      # Cluster username
          os.path.join(current_path, "tools", "Keys", "key.ppk"),            # Path to ssh key
-         cluster_key_password,                                                       # Password for ssh key
+         cluster_key_password,                                              # Password for ssh key
          os.path.join(current_path, "files", "Lattice_Structures"),         # Local path (origin)
          '/home/wj777230/Dokumente/topologyoptimizer/toolchain/files/Lattice_Structures'])     # Path on the cluster
 

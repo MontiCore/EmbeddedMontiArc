@@ -21,6 +21,3 @@ for file in filtered_lsdyna:
 for file in filtered_lsdyna:
     path_to_file = os.path.join(cluster_path, "toolchain", "files", "Lattice_Structures", file)
     os.remove(path_to_file)
-
-path_to_inputcsv = os.path.join(cluster_path, "toolchain", "files", "Input.csv")
-shutil.move(path_to_inputcsv, os.path.join(cluster_path, "toolchain", "preprocessing", "raw"))
