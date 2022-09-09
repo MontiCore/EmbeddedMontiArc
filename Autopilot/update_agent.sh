@@ -6,7 +6,6 @@ directory=$(pwd)
 . $directory/config.sh
 cd $directory
 
-
 cd ${PROJECT_ROOT}/${BINARY}
 rm -rf model #remove current model folder
 

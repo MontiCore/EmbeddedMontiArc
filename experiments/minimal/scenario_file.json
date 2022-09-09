@@ -19,7 +19,7 @@
 		"angular_acc_reward_factor": 0.0,
 		"linear_jerk_reward_factor": 0.0,
 		"linear_acc_reward_factor": 0.0,
-		"trajectory_following_reward": 20,
+		"trajectory_following_reward": 100,
 		"total_path_progress_reward_scaling": 100,
 		"path_progress_derivative_reward_scaling": 1000,
 		"distance_max": 3,

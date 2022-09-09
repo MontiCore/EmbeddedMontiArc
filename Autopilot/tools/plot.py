@@ -25,7 +25,7 @@ def plot_total_reward_avg_last_100_reward(con):
     plt.ylabel("Reward")
 
     plt.legend()
-    plt.savefig(PATH_FIGURES / "reward.png")
+    plt.savefig(PATH_FIGURES / "reward.png", dpi=300)
     plt.close()
 
 
@@ -47,7 +47,7 @@ def plot_last_x_episodes_total_reward_avg_last_100_reward(con, x=100):
     plt.ylabel("Reward")
 
     plt.legend()
-    plt.savefig(PATH_FIGURES / f"reward_last_{x}.png")
+    plt.savefig(PATH_FIGURES / f"reward_last_{x}.png", dpi=300)
     plt.close()
 
 
@@ -65,7 +65,7 @@ def plot_avg_last_100_reward(con):
     plt.ylabel("Reward")
 
     plt.legend()
-    plt.savefig(PATH_FIGURES / "avg_100_reward.png")
+    plt.savefig(PATH_FIGURES / "avg_100_reward.png", dpi=300)
     plt.close()
 
 
@@ -85,7 +85,7 @@ def plot_avg_actor_critic_loss(con):
     plt.ylabel("Loss")
 
     plt.legend()
-    plt.savefig(PATH_FIGURES / "loss.png")
+    plt.savefig(PATH_FIGURES / "loss.png", dpi=300)
     plt.close()
 
 
@@ -103,7 +103,7 @@ def plot_avg_actor_loss(con):
     plt.ylabel("Loss")
 
     plt.legend()
-    plt.savefig(PATH_FIGURES / "actor_loss.png")
+    plt.savefig(PATH_FIGURES / "actor_loss.png", dpi=300)
     plt.close()
 
 
@@ -121,7 +121,7 @@ def plot_avg_critic_loss(con):
     plt.ylabel("Loss")
 
     plt.legend()
-    plt.savefig(PATH_FIGURES / "critic_loss.png")
+    plt.savefig(PATH_FIGURES / "critic_loss.png", dpi=300)
     plt.close()
 
 
@@ -139,7 +139,7 @@ def plot_avg_q_values(con):
     plt.ylabel("Q-Value")
 
     plt.legend()
-    plt.savefig(PATH_FIGURES / "q_value.png")
+    plt.savefig(PATH_FIGURES / "q_value.png", dpi=300)
     plt.close()
 
 
@@ -168,7 +168,7 @@ def plot_durations_training_steps(con):
     ax1.set_ylabel("Duration (s)")
     ax2.set_ylabel("Time Steps")
 
-    plt.savefig(PATH_FIGURES / "duration.png")
+    plt.savefig(PATH_FIGURES / "duration.png", dpi=300)
     plt.close()
 
 
@@ -186,7 +186,7 @@ def plot_epsilon(con):
     plt.ylabel("Epsilon")
 
     plt.legend()
-    plt.savefig(PATH_FIGURES / "epsilon.png")
+    plt.savefig(PATH_FIGURES / "epsilon.png", dpi=300)
     plt.close()
 
 
@@ -208,7 +208,7 @@ def plot_collisions_numbers(con):
     plt.ylabel("Number of Collisions")
 
     plt.legend()
-    plt.savefig(PATH_FIGURES / "collision_numbers.png")
+    plt.savefig(PATH_FIGURES / "collision_numbers.png", dpi=300)
     plt.close()
 
 
@@ -256,7 +256,7 @@ def plot_collisions_times(con):
     plt.ylabel("Seconds")
 
     plt.legend()
-    plt.savefig(PATH_FIGURES / "collision_times.png")
+    plt.savefig(PATH_FIGURES / "collision_times.png", dpi=300)
     plt.close()
 
 
@@ -296,7 +296,7 @@ def plot_avg_collisions_times(con):
     plt.ylabel("Seconds")
 
     plt.legend()
-    plt.savefig(PATH_FIGURES / "avg_collision_times.png")
+    plt.savefig(PATH_FIGURES / "avg_collision_times.png", dpi=300)
     plt.close()
 
 
@@ -338,11 +338,13 @@ def plot_total_collisions_times(con):
     plt.ylabel("Seconds")
 
     plt.legend()
-    plt.savefig(PATH_FIGURES / "total_collision_times.png")
+    plt.savefig(PATH_FIGURES / "total_collision_times.png", dpi=300)
     plt.close()
 
 
 con = sqlite3.connect(DATABASE_FILE)
+
+plt.rcParams['lines.linewidth'] = 1
 
 plot_total_reward_avg_last_100_reward(con)
 plot_avg_last_100_reward(con)
