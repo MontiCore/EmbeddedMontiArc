@@ -1,1 +1,1 @@
-EMADL agent for 2 vehicles, using the decentralized self-play approach on an intersection
+Structure of the Autopilot. This directory also contains scripts necessary for installation, training, and execution of agents, that the experiments are linked to.
