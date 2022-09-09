@@ -19,4 +19,4 @@
 ### module load cudnn
 ### module load nccl
 
-singularity exec --nv /rwthfs/rz/SW/UTIL.common/singularity/RLContainerCPU $(pwd)/install_and_run_training.sh -sp
+singularity exec /rwthfs/rz/SW/UTIL.common/singularity/RLContainerCPU $(pwd)/install_and_run_training.sh -sp
