@@ -67,7 +67,7 @@ class TopoEnv(gym.Env):
         elif action == 11:
             self.material.change(5,1)
 
-        new_penalty = self.materialPenalty(self.material)
+        new_penalty = self.materialPenalty()
 
         old_penalty = self.last_penalty
 
