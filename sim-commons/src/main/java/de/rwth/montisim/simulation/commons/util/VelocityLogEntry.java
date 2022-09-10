@@ -34,7 +34,7 @@ public class VelocityLogEntry {
 
     @Override
     public String toString() {
-      return "\"" + vehicleName + "\","+ stepCounter + ",\"" + velocity + "\"," + (timeStamp.toMillis() / 1000.0);
+      return stepCounter + ",\"" + vehicleName + "\",\"" + velocity + "\"," + (timeStamp.toMillis() / 1000.0);
     }
 
     public String toCSV(int episodeCounter) {
