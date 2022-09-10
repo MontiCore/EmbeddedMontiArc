@@ -1,3 +1,4 @@
+from re import S
 import sqlite3
 import os
 import matplotlib
@@ -6,11 +7,12 @@ from pathlib import Path
 
 AP_TRAINING_AP = Path(os.path.dirname(os.path.abspath(__file__))).parent
 PATH_FIGURES = AP_TRAINING_AP / "logs" / "figures"
-DATABASE_FILE = AP_TRAINING_AP / "logs" / "log.db"
+EPISODES_DATABASE_FILE = AP_TRAINING_AP / "logs" / "episodes.db"
+VELOCITIES_DATABASE_FILE = AP_TRAINING_AP / "logs" / "velocities.db"
 
 
-def plot_total_reward_avg_last_100_reward(con):
-    cur = con.cursor()
+def plot_total_reward_avg_last_100_reward(con_episodes):
+    cur = con_episodes.cursor()
     cur.execute("SELECT episode, total_reward, avg_last_100_reward FROM episodes")
     tuples = cur.fetchall()
     tuples = sorted(tuples, key=lambda tup: tup[0])
@@ -29,8 +31,8 @@ def plot_total_reward_avg_last_100_reward(con):
     plt.close()
 
 
-def plot_last_x_episodes_total_reward_avg_last_100_reward(con, x=100):
-    cur = con.cursor()
+def plot_last_x_episodes_total_reward_avg_last_100_reward(con_episodes, x=100):
+    cur = con_episodes.cursor()
     cur.execute(
         f"SELECT episode, total_reward, avg_last_100_reward FROM episodes WHERE episode in (SELECT episode FROM episodes ORDER BY episode DESC LIMIT {x}) ORDER BY episode ASC"
     )
@@ -51,8 +53,8 @@ def plot_last_x_episodes_total_reward_avg_last_100_reward(con, x=100):
     plt.close()
 
 
-def plot_avg_last_100_reward(con):
-    cur = con.cursor()
+def plot_avg_last_100_reward(con_episodes):
+    cur = con_episodes.cursor()
     cur.execute("SELECT episode, avg_last_100_reward FROM episodes")
     tuples = cur.fetchall()
     tuples = sorted(tuples, key=lambda tup: tup[0])
@@ -69,8 +71,8 @@ def plot_avg_last_100_reward(con):
     plt.close()
 
 
-def plot_avg_actor_critic_loss(con):
-    cur = con.cursor()
+def plot_avg_actor_critic_loss(con_episodes):
+    cur = con_episodes.cursor()
     cur.execute("SELECT episode, avg_actor_loss, avg_critic_loss FROM episodes")
     tuples = cur.fetchall()
     tuples = sorted(tuples, key=lambda tup: tup[0])
@@ -89,8 +91,8 @@ def plot_avg_actor_critic_loss(con):
     plt.close()
 
 
-def plot_avg_actor_loss(con):
-    cur = con.cursor()
+def plot_avg_actor_loss(con_episodes):
+    cur = con_episodes.cursor()
     cur.execute("SELECT episode, avg_actor_loss FROM episodes")
     tuples = cur.fetchall()
     tuples = sorted(tuples, key=lambda tup: tup[0])
@@ -107,8 +109,8 @@ def plot_avg_actor_loss(con):
     plt.close()
 
 
-def plot_avg_critic_loss(con):
-    cur = con.cursor()
+def plot_avg_critic_loss(con_episodes):
+    cur = con_episodes.cursor()
     cur.execute("SELECT episode, avg_critic_loss FROM episodes")
     tuples = cur.fetchall()
     tuples = sorted(tuples, key=lambda tup: tup[0])
@@ -125,8 +127,8 @@ def plot_avg_critic_loss(con):
     plt.close()
 
 
-def plot_avg_q_values(con):
-    cur = con.cursor()
+def plot_avg_q_values(con_episodes):
+    cur = con_episodes.cursor()
     cur.execute("SELECT episode, avg_q_values FROM episodes")
     tuples = cur.fetchall()
     tuples = sorted(tuples, key=lambda tup: tup[0])
@@ -143,8 +145,8 @@ def plot_avg_q_values(con):
     plt.close()
 
 
-def plot_durations_training_steps(con):
-    cur = con.cursor()
+def plot_durations_training_steps(con_episodes):
+    cur = con_episodes.cursor()
     cur.execute("SELECT episode, duration, training_steps FROM episodes")
     tuples = cur.fetchall()
     tuples = sorted(tuples, key=lambda tup: tup[0])
@@ -172,8 +174,8 @@ def plot_durations_training_steps(con):
     plt.close()
 
 
-def plot_epsilon(con):
-    cur = con.cursor()
+def plot_epsilon(con_episodes):
+    cur = con_episodes.cursor()
     cur.execute("SELECT episode, epsilon FROM episodes")
     tuples = cur.fetchall()
     tuples = sorted(tuples, key=lambda tup: tup[0])
@@ -190,8 +192,8 @@ def plot_epsilon(con):
     plt.close()
 
 
-def plot_collisions_numbers(con):
-    cur = con.cursor()
+def plot_collisions_numbers(con_episodes):
+    cur = con_episodes.cursor()
     cur.execute(
         "SELECT episode, number_static_collisions, number_vehicle_collisions FROM episodes"
     )
@@ -212,8 +214,8 @@ def plot_collisions_numbers(con):
     plt.close()
 
 
-def plot_collisions_times(con):
-    cur = con.cursor()
+def plot_collisions_times(con_episodes):
+    cur = con_episodes.cursor()
     cur.execute(
         "SELECT episode, number_static_collisions, total_time_static_collisions, number_vehicle_collisions, total_time_vehicle_collisions FROM episodes"
     )
@@ -253,15 +255,15 @@ def plot_collisions_times(con):
     )
 
     plt.xlabel("Episode")
-    plt.ylabel("Seconds")
+    plt.ylabel("Secon_episodesds")
 
     plt.legend()
     plt.savefig(PATH_FIGURES / "collision_times.png", dpi=300)
     plt.close()
 
 
-def plot_avg_collisions_times(con):
-    cur = con.cursor()
+def plot_avg_collisions_times(con_episodes):
+    cur = con_episodes.cursor()
     cur.execute(
         "SELECT episode, number_static_collisions, total_time_static_collisions, number_vehicle_collisions, total_time_vehicle_collisions FROM episodes"
     )
@@ -293,15 +295,15 @@ def plot_avg_collisions_times(con):
     )
 
     plt.xlabel("Episode")
-    plt.ylabel("Seconds")
+    plt.ylabel("Secon_episodesds")
 
     plt.legend()
     plt.savefig(PATH_FIGURES / "avg_collision_times.png", dpi=300)
     plt.close()
 
 
-def plot_total_collisions_times(con):
-    cur = con.cursor()
+def plot_total_collisions_times(con_episodes):
+    cur = con_episodes.cursor()
     cur.execute(
         "SELECT episode, number_static_collisions, total_time_static_collisions, number_vehicle_collisions, total_time_vehicle_collisions FROM episodes"
     )
@@ -335,33 +337,148 @@ def plot_total_collisions_times(con):
     )
 
     plt.xlabel("Episode")
-    plt.ylabel("Seconds")
+    plt.ylabel("Secon_episodesds")
 
     plt.legend()
     plt.savefig(PATH_FIGURES / "total_collision_times.png", dpi=300)
     plt.close()
 
 
-con = sqlite3.connect(DATABASE_FILE)
+def plot_velocities_interval(con_velocities, interval=50, starting_at=0, reverse=False):
+    if starting_at < 1 and not reverse:
+        starting_at = 1
 
-plt.rcParams['lines.linewidth'] = 1
+    cur = con_velocities.cursor()
+    cur.execute(f"SELECT episode, step, car_name, velocity FROM velocities")
+    tuples = cur.fetchall()
+    max_episode = max([tup[0] for tup in tuples])
+    if reverse:
+        tuples = [
+            tup
+            for tup in tuples
+            if tup[0] <= max_episode - starting_at
+            and tup[0] > max_episode - starting_at - interval
+        ]
+    else:
+        tuples = [
+            tup
+            for tup in tuples
+            if tup[0] >= starting_at and tup[0] < starting_at + interval
+        ]
 
-plot_total_reward_avg_last_100_reward(con)
-plot_avg_last_100_reward(con)
-plot_last_x_episodes_total_reward_avg_last_100_reward(con, 50)
-plot_last_x_episodes_total_reward_avg_last_100_reward(con, 100)
-plot_last_x_episodes_total_reward_avg_last_100_reward(con, 200)
-plot_last_x_episodes_total_reward_avg_last_100_reward(con, 500)
-plot_last_x_episodes_total_reward_avg_last_100_reward(con, 1000)
-plot_avg_actor_critic_loss(con)
-plot_avg_actor_loss(con)
-plot_avg_critic_loss(con)
-plot_avg_q_values(con)
-plot_durations_training_steps(con)
-plot_epsilon(con)
-plot_collisions_numbers(con)
-plot_collisions_times(con)
-plot_avg_collisions_times(con)
-plot_total_collisions_times(con)
+    tuples = sorted(tuples, key=lambda tup: tup[1])
 
-con.close()
+    steps = [tup[1] for tup in tuples]
+    steps = sorted(steps)
+
+    # get min velocity for every step
+    min_velocities = []
+    for step in steps:
+        min_velocities.append(min([tup[3] for tup in tuples if tup[1] == step]))
+
+    # get max velocity for every step
+    max_velocities = []
+    for step in steps:
+        max_velocities.append(max([tup[3] for tup in tuples if tup[1] == step]))
+
+    # get avg velocity for every step
+    avg_velocities = []
+    for step in steps:
+        avg_velocities.append(
+            sum([tup[3] for tup in tuples if tup[1] == step])
+            / len([tup[3] for tup in tuples if tup[1] == step])
+        )
+
+    fig, ax = plt.subplots(1)
+    ax.plot(
+        steps, avg_velocities, label="Average Velocity of all Vehicles", color="blue"
+    )
+    ax.fill_between(steps, min_velocities, max_velocities, alpha=0.4, color="blue")
+
+    ax.set_xlabel("Step")
+    ax.set_ylabel("Velocity")
+
+    plt.legend()
+    plt.savefig(
+        PATH_FIGURES
+        / f"velocities_interval_eps-{starting_at}-{starting_at+interval}_reverse-{reverse}.png",
+        dpi=300,
+    )
+    plt.close()
+
+
+def plot_velocities_single_episode(con_velocities, episode_at=0, reverse=False):
+    if episode_at < 1 and not reverse:
+        episode_at = 1
+
+    cur = con_velocities.cursor()
+    cur.execute(f"SELECT episode, step, car_name, velocity FROM velocities")
+    tuples = cur.fetchall()
+    max_episode = max([tup[0] for tup in tuples])
+    if reverse:
+        tuples = [tup for tup in tuples if tup[0] == max_episode - episode_at]
+    else:
+        tuples = [tup for tup in tuples if tup[0] == episode_at]
+
+    tuples = sorted(tuples, key=lambda tup: tup[1])
+
+    steps = [tup[1] for tup in tuples]
+    steps = sorted(steps)
+    step_count = max(steps)
+
+    vehicle_velocities = dict()
+    for tup in tuples:
+        if tup[2] not in vehicle_velocities:
+            vehicle_velocities[tup[2]] = [None] * (step_count + 1)
+        vehicle_velocities[tup[2]][tup[1]] = tup[3]
+
+    for vehicle in vehicle_velocities:
+        plt.plot(steps, vehicle_velocities[vehicle], label=vehicle)
+
+    plt.xlabel("Step")
+    plt.ylabel("Velocity")
+
+    plt.legend()
+    plt.savefig(
+        PATH_FIGURES / f"velocities_episode-{episode_at}reverse-{reverse}.png", dpi=300
+    )
+    plt.close()
+
+
+con_episodes = sqlite3.connect(EPISODES_DATABASE_FILE)
+con_velocities = sqlite3.connect(VELOCITIES_DATABASE_FILE)
+
+plt.rcParams["lines.linewidth"] = 1
+
+plot_total_reward_avg_last_100_reward(con_episodes)
+plot_avg_last_100_reward(con_episodes)
+plot_last_x_episodes_total_reward_avg_last_100_reward(con_episodes, 50)
+plot_last_x_episodes_total_reward_avg_last_100_reward(con_episodes, 100)
+plot_last_x_episodes_total_reward_avg_last_100_reward(con_episodes, 200)
+plot_last_x_episodes_total_reward_avg_last_100_reward(con_episodes, 500)
+plot_last_x_episodes_total_reward_avg_last_100_reward(con_episodes, 1000)
+plot_avg_actor_critic_loss(con_episodes)
+plot_avg_actor_loss(con_episodes)
+plot_avg_critic_loss(con_episodes)
+plot_avg_q_values(con_episodes)
+plot_durations_training_steps(con_episodes)
+plot_epsilon(con_episodes)
+plot_collisions_numbers(con_episodes)
+plot_collisions_times(con_episodes)
+plot_avg_collisions_times(con_episodes)
+plot_total_collisions_times(con_episodes)
+plot_velocities_interval(con_velocities, interval=10, starting_at=0, reverse=False)
+plot_velocities_interval(con_velocities, interval=10, starting_at=100, reverse=False)
+plot_velocities_interval(con_velocities, interval=10, starting_at=500, reverse=False)
+plot_velocities_interval(con_velocities, interval=10, starting_at=0, reverse=True)
+plot_velocities_interval(con_velocities, interval=10, starting_at=100, reverse=True)
+plot_velocities_interval(con_velocities, interval=10, starting_at=500, reverse=True)
+plot_velocities_single_episode(con_velocities, episode_at=0, reverse=False)
+plot_velocities_single_episode(con_velocities, episode_at=100, reverse=False)
+plot_velocities_single_episode(con_velocities, episode_at=500, reverse=False)
+plot_velocities_single_episode(con_velocities, episode_at=0, reverse=True)
+plot_velocities_single_episode(con_velocities, episode_at=100, reverse=True)
+plot_velocities_single_episode(con_velocities, episode_at=500, reverse=True)
+
+con_episodes.close()
+con_velocities.close()
