@@ -69,10 +69,10 @@ public class DerivativeRewardFunction extends RewardFunction {
                     - ANGULAR_ACC_REWARD_FACTOR * Math.pow(angularAcceleration, 2)
                     - ANGULAR_JERK_REWARD_FACTOR * Math.pow(angularJerk, 2))
                 : (float) (
-                    - LINEAR_ACC_REWARD_FACTOR * linearAcceleration
-                    - LINEAR_JERK_REWARD_FACTOR * linearJerk
-                    - ANGULAR_ACC_REWARD_FACTOR * angularAcceleration
-                    - ANGULAR_JERK_REWARD_FACTOR * angularJerk);
+                    - LINEAR_ACC_REWARD_FACTOR * Math.abs(linearAcceleration)
+                    - LINEAR_JERK_REWARD_FACTOR * Math.abs(linearJerk)
+                    - ANGULAR_ACC_REWARD_FACTOR * Math.abs(angularAcceleration)
+                    - ANGULAR_JERK_REWARD_FACTOR * Math.abs(angularJerk));
 
         return reward;
     }

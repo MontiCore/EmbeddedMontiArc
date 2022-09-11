@@ -240,7 +240,6 @@ public class RLSimulationHandler {
     // Randomize Scenario
     try {
       RandomizationProperties randomizationProperties  = RandomRandomizationPropertiesPicker.pickRandomizationProperties(config.randomization);
-      // TODO: Do we need the map-folder?
       RandomizationStrategy strategy = randomizationProperties.build(config, "");
       config.cars = strategy.randomizeCars(config.cars);
       config.map_name = strategy.randomizeMapName(config.map_name);
