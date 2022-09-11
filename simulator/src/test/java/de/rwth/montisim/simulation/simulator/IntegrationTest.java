@@ -110,8 +110,9 @@ public class IntegrationTest {
         // dump and reload vehicle every 1000 steps. test if it is able to reach the destination.
         Instant simulationTime = config.start_time;
         int cnt = 1;
+        int stepCounter = 0;
         while (true) {
-            TaskStatus status = simulator.status();
+            TaskStatus status = simulator.status(stepCounter);
             if (status == TaskStatus.SUCCEEDED) break;
             if (status == TaskStatus.FAILED) throw new IllegalStateException("Vehicle did not reach target");
 
@@ -133,6 +134,8 @@ public class IntegrationTest {
 
             vehicle = VehicleBuilder.fromJsonState(simulator.buildContext, state).build();
             simulator.addSimulationObject(vehicle);
+
+            stepCounter++;
         }
 
         double dist = vehicle.physicalObject.pos.distance(new Vec3(targetPos.x, targetPos.y, 0));

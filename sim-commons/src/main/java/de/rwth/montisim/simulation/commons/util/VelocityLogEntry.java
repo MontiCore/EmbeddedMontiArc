@@ -7,15 +7,17 @@ public class VelocityLogEntry {
     private final String vehicleName;
     private final double velocity;
     private final Duration timeStamp;
+    private final int stepCounter;
 
-    public VelocityLogEntry(String vehicleName, Double velocity, Duration timeStamp) {
+    public VelocityLogEntry(String vehicleName, int stepCounter, Double velocity, Duration timeStamp) {
         this.vehicleName = vehicleName;
+        this.stepCounter = stepCounter;
         this.velocity = velocity;
         this.timeStamp = timeStamp;
     }
 
     public static String getCSVHeader() {
-        return "Episode,VehicleName,Velocity,TimeStamp";
+        return "Episode,Step,VehicleName,Velocity,TimeStamp";
     }
 
     public String getVehicleName() {
@@ -32,7 +34,7 @@ public class VelocityLogEntry {
 
     @Override
     public String toString() {
-        return vehicleName + "\",\"" + velocity + "\"," + (timeStamp.toMillis() / 1000.0);
+      return stepCounter + ",\"" + vehicleName + "\",\"" + velocity + "\"," + (timeStamp.toMillis() / 1000.0);
     }
 
     public String toCSV(int episodeCounter) {

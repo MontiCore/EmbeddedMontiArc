@@ -202,14 +202,14 @@ public class Simulator implements ISimulator, Updatable {
   /**
    * @return SUCCEEDED if all tasks succeeded, FAILED if timeout and RUNNING else.
    */
-  public TaskStatus status() {
+  public TaskStatus status(int stepCounter) {
     // TODO handle failures in tasks (early stop parameter?)
     // -> use 'any running ?' logic
     if (timeout) {
       return TaskStatus.FAILED_TIMEOUT;
     }
     Vector<CollisionLogEntry> col = getCollisions();
-    Vector<VelocityLogEntry> vel = getVelocities();
+    Vector<VelocityLogEntry> vel = getVelocities(stepCounter);
     if (config.collision_mode.equals("LOG_COLLISIONS")) {
       logNewCollisions(col);
       logNewVelocities(vel);
@@ -223,10 +223,15 @@ public class Simulator implements ISimulator, Updatable {
     return allTasksSucceeded() ? TaskStatus.SUCCEEDED : TaskStatus.RUNNING;
   }
 
-  private Vector<VelocityLogEntry> getVelocities() {
+
+  public TaskStatus status() {
+    return status(0);
+  }
+
+  private Vector<VelocityLogEntry> getVelocities(int stepCounter) {
     Vector<VelocityLogEntry> res = new Vector();
     for (Vehicle v : vehicles) {
-      res.add(new VelocityLogEntry(v.properties.vehicleName, (Double) v.physicalValues.getPhysicalValue("true_velocity").get(), simulatedTime));
+      res.add(new VelocityLogEntry(v.properties.vehicleName, stepCounter, (Double) v.physicalValues.getPhysicalValue("true_velocity").get(), simulatedTime));
     }
     return res;
   }

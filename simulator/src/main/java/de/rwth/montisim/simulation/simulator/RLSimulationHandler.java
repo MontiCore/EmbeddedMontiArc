@@ -449,7 +449,7 @@ public class RLSimulationHandler {
   }
 
   private boolean getSimTermination() {
-    return simulator.status() != TaskStatus.RUNNING;
+    return simulator.status(stepCounter) != TaskStatus.RUNNING;
   }
 
   //return the state array that is published on the state topic

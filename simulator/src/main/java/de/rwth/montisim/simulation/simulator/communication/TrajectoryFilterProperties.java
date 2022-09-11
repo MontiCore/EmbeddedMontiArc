@@ -9,9 +9,11 @@ public class TrajectoryFilterProperties extends PreprocessorProperties{
   public float VEHICLE_WIDTH = 1.87f;
   public float VEHICLE_LENGTH = 4.871f;
   public int MAX_STATES_PER_VEHICLE = 25;
+  public int maxNumberOfVehicles = 5;
+  public boolean addIndicator = true;
 
   @Override
   public Preprocessor build() {
-    return new TrajectoryFilter(VEHICLE_WIDTH, VEHICLE_LENGTH, MAX_STATES_PER_VEHICLE);
+    return new TrajectoryFilter(VEHICLE_WIDTH, VEHICLE_LENGTH, MAX_STATES_PER_VEHICLE, maxNumberOfVehicles, addIndicator);
   }
 }

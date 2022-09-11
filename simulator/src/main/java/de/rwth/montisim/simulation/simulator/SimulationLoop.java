@@ -11,17 +11,19 @@ public class SimulationLoop {
     final SimulationConfig config;
 
     Instant simulationTime;
+    int stepCounter;
 
     public SimulationLoop(Simulator simulator, SimulationConfig config) {
         this.simulator = simulator;
         this.config = config;
         this.simulationTime = config.start_time;
+        stepCounter = 0;
     }
 
     public TaskStatus run() {
         try {
             do {
-                TaskStatus res = simulator.status();
+                TaskStatus res = simulator.status(stepCounter);
                 if (res != TaskStatus.RUNNING) {
 
                     return res;
@@ -29,7 +31,7 @@ public class SimulationLoop {
                 TimeUpdate tu = new TimeUpdate(simulationTime, config.tick_duration);
                 simulator.update(tu);
                 simulationTime = tu.newTime;
-
+                stepCounter++;
             } while (true);
         } catch (Exception e) {
             e.printStackTrace();
