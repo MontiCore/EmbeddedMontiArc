@@ -33,8 +33,6 @@ public class IntersectionStrategy extends RandomizationStrategy {
   public double maxDistanceBtwVehicles;
   public double minDistanceFromIntersection;
   public double maxDistanceFromIntersection;
-  public double minGoalDistance;
-  public double maxGoalDistance;
   
   private Vector<VehicleBlueprint> vehicleBlueprints;
   
@@ -54,7 +52,7 @@ public class IntersectionStrategy extends RandomizationStrategy {
   
   public IntersectionStrategy(Optional<Long> seed, World world, int maxNumberOfVehicles, int minNumberOfVehicles, 
       double minDistanceBtwVehicles, double maxDistanceBtwVehicles, double minDistanceFromIntersection,
-      double maxDistanceFromIntersection, double minGoalDistance, double maxGoalDistance) {
+      double maxDistanceFromIntersection) {
     
     super(seed);
     
@@ -64,8 +62,6 @@ public class IntersectionStrategy extends RandomizationStrategy {
     this.maxDistanceBtwVehicles = maxDistanceBtwVehicles;
     this.minDistanceFromIntersection = minDistanceFromIntersection;
     this.maxDistanceFromIntersection = maxDistanceFromIntersection;
-    this.minGoalDistance = minGoalDistance;
-    this.maxGoalDistance = maxGoalDistance;
     this.world = world;
     
     if (world.converter.isPresent()) {
