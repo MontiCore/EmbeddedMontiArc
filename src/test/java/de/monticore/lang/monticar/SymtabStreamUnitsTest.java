@@ -204,6 +204,24 @@ public class SymtabStreamUnitsTest {
         assertEquals("1.0", streamValues.getStreamValue(0, 2).toString());
     }
 
+    @Test
+    public void testResolveCubeStream() {
+        Scope symTab = createSymTab("src/test/resources/unitstreams/streams");
+
+        NamedStreamUnitsSymbol namedStreamSymbol = symTab.<NamedStreamUnitsSymbol>resolve(
+                "advancedLibrary.ImageTest.in1", NamedStreamUnitsSymbol.KIND).orElse(null);
+        assertNotNull(namedStreamSymbol);
+        StreamInstruction streamInstruction = (StreamInstruction) namedStreamSymbol.getValue(0);
+        assertTrue(streamInstruction.getStreamValues().isPresent());
+        StreamValues streamValues = streamInstruction.getStreamValues().get();
+        assertEquals(3, streamValues.getDepthDimension());
+        assertEquals(3, streamValues.getRowDimension());
+        assertEquals(3, streamValues.getColumnDimension());
+        assertEquals("1.0", streamValues.getStreamValue(0, 0,0).toString());
+        assertEquals("3.0", streamValues.getStreamValue(0, 1,1).toString());
+        assertEquals("4.0", streamValues.getStreamValue(0, 2,1).toString());
+    }
+
 
     @Ignore("ModelPath#resolveModel does not support loading a collection, which should be done when resolving many")
     @Test

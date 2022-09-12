@@ -127,10 +127,33 @@ public class StreamUnitsSymbolTableCreator extends StreamUnitsSymbolTableCreator
             return new StreamUnitsParser().parse_StringStreamInstruction((content.get(0)));
         } else if (extension.equals("png")) {
             double[][][] cube = handleFilePNG(file);
-            assert cube.length == 1;
+            return new StreamUnitsParser().parse_StringStreamInstruction(convertCubeToString(cube));
         }
         Log.error("File Extension not supported");
         return Optional.empty();
+    }
+
+    private String convertCubeToString(double[][][] cube) {
+        double[][] matrix = cube[0];
+        String str = "[";
+        for (int k = 0; k < cube.length; k++) {
+            str += "[";
+            for (int i = 0; i < matrix.length; i++) {
+                for (int j = 0; j < matrix[i].length; j++) {
+                    str += " " + matrix[i][j];
+                    if (j < matrix[i].length - 1) {
+                        str += ",";
+                    }
+                }
+                if (i < matrix.length - 1) {
+                    str += ";";
+                }
+            }
+            str += "]";
+        }
+
+        str += "]";
+        return str;
     }
 
     private double[][][] handleFilePNG(File file) {
@@ -162,7 +185,7 @@ public class StreamUnitsSymbolTableCreator extends StreamUnitsSymbolTableCreator
 
     private double[][][] translateToCube(double[] source, int[] shape) {
         assert(shape.length == 3);
-        double[][][] cubeMatrix = new double[shape[0]][shape[2]][shape[1]]; // slices(channels), columns(weight), rows(height)
+        double[][][] cubeMatrix = new double[shape[0]][shape[2]][shape[1]]; // slices(channels), columns(width), rows(height)
         final int matrixSize = shape[1] * shape[2];
         long[] matrixShape = new long[]{shape[2], shape[1]};
         int startPos = 0;
@@ -231,8 +254,19 @@ public class StreamUnitsSymbolTableCreator extends StreamUnitsSymbolTableCreator
             result = handleMatrixPair(streamArrayValues.getMatrixPairOpt().get());
         } else if (streamArrayValues.getValuePairOpt().isPresent()) {
             result = new StreamValues(handleValuePair(streamArrayValues.getValuePairOpt().get()));
+        } else if (streamArrayValues.getCubePairOpt().isPresent()) {
+            result = handleCubePair(streamArrayValues.getCubePairOpt().get());
         }
         return result;
+    }
+
+    private StreamValues handleCubePair(ASTCubePair astCubePair) {
+        StreamValues streamValues = new StreamValues();
+        for (int slice = 0; slice < astCubePair.getMatrixPairList().size(); slice++) {
+            //TODO: StreamValuesValues???
+            streamValues.setStreamValues(handleMatrixPair(astCubePair.getMatrixPairList().get(slice)).streamValues.get(0));
+        }
+        return streamValues;
     }
 
     private StreamValues handleMatrixPair(ASTMatrixPair matrixPair) {

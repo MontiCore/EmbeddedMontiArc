@@ -25,9 +25,10 @@ grammar StreamUnits extends de.monticore.NumberUnit, de.monticore.literals.Liter
     ValueAtTick = Name "(" (value:NumberWithUnit|lowerBound:NumberWithUnit ":" upperBound:NumberWithUnit ) ")";
     FilePath = "file::" StringLiteral;
     DontCare = "-";
-    StreamArrayValues = "[" (ValuePair | MatrixPair)"]" ;
+    StreamArrayValues = "[" (ValuePair | MatrixPair | CubePair)"]" ;
     ValuePair = (StreamValue | ",")+;
     MatrixPair = ValuePair (";" ValuePair)+ ;
+    CubePair = ("[" MatrixPair "]")+;
     ast StreamCompare = method public ASTStreamValue getLeft(){}
                         method public ASTStreamValue getRight(){}
                         method public String getOperator(){};
