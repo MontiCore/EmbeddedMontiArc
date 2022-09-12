@@ -8,12 +8,12 @@
 #SBATCH --output=output_%J.txt
 
 ### Job Specification
-#SBATCH --cpus-per-task=6
-#SBATCH --mem-per-cpu=4096m
+#SBATCH --cpus-per-task=12
+#SBATCH --mem-per-cpu=2048m
 
 ### #SBATCH --gres=gpu:volta:2
 
-#SBATCH --time=100:00:00
+#SBATCH --time=12:00:00
 
 ### module load cuda
 ### module load cudnn
