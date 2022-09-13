@@ -4,7 +4,6 @@ import time
 import _thread
 
 from std_msgs.msg import Float32MultiArray, Bool, Int32, Float32
-from gym import wrappers
 from gymenv import TopoEnv
 
 CONSTR = 10 # default value
