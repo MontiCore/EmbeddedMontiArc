@@ -151,12 +151,12 @@ class Material(object):
         if action == 0:
             selected = self.state[selection]
             if selection < 3: # first three elements
-                if selected == 0.1: # already at minimum
+                if selected <= 0.1: # already at minimum
                     self.state[selection] = 0.1 #clamp
                 else:
                     self.state[selection] -= 0.1
             else: # rotation selected
-                if selected == 0.0: # already at minimum
+                if selected <= 0.0: # already at minimum
                     self.state[selection] = 359.9 # rolling over
                 else:
                     self.state[selection] -= 0.1
@@ -164,12 +164,12 @@ class Material(object):
         if action == 1:
             selected = self.state[selection]
             if selection < 3: # first three elements
-                if selected == cube_size/2: # already at maximum
+                if selected >= cube_size/2: # already at maximum
                     self.state[selection] = cube_size/2 #clamp
                 else:
                     self.state[selection] += 0.1
             else: # rotation selected
-                if selected == 359.9: # already at maximum
+                if selected >= 359.9: # already at maximum
                     self.state[selection] = 0.0 # rolling over
                 else:
                     self.state[selection] += 0.1

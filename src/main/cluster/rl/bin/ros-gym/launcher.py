@@ -43,7 +43,7 @@ if __name__ == "__main__":
         parser.error('Environment string not given')
 
     mode_options = 0
-    mode = TRAINING_MODE
+    #mode = TRAINING_MODE
     if options.training:
         mode = TRAINING_MODE
         mode_options += 1
@@ -67,7 +67,8 @@ if __name__ == "__main__":
     if mode == PLAY_MODE:
         time.sleep(8)
         connector.reset()
-        while not connector.is_terminated or connector.in_reset:
+        #while not connector.is_terminated or connector.in_reset:
+        while True:
             time.sleep(1)
     elif mode == EVAL_MODE:
         print('Start Evaluation Mode')
