@@ -13,6 +13,7 @@ public class PlatooningRewardFunctionProperties extends RewardFunctionProperties
   public float GAP_SUB_MAXIMUM_REWARD = 1;
   public float gap_max = 20;
   public float gap_desired = 10;
+  public int look_ahead = 2;
 
   public Optional<SpeedControlRewardFunctionProperties> speed_control_reward_properties = Optional.empty();
   public Optional<StaticCollisionsRewardFunctionProperties> static_collision_reward_properties = Optional.empty();
@@ -32,7 +33,7 @@ public class PlatooningRewardFunctionProperties extends RewardFunctionProperties
       vscrf = (VariableSpeedControlRewardFunction) (new VariableSpeedControlRewardFunctionProperties()).build(vehicles, tickDuration);
     }
 
-    rewardFunctionsArray[0] = new PlatooningRewardFunction(vehicles, tickDuration, vscrf, GAP_DISTANCE_REWARD_SCALING, GAP_SUB_MAXIMUM_REWARD, gap_max, gap_desired);
+    rewardFunctionsArray[0] = new PlatooningRewardFunction(vehicles, tickDuration, vscrf, GAP_DISTANCE_REWARD_SCALING, GAP_SUB_MAXIMUM_REWARD, gap_max, gap_desired, look_ahead);
 
     if (static_collision_reward_properties.isPresent()) {
       rewardFunctionsArray[1] = static_collision_reward_properties.get().build(vehicles, tickDuration);
