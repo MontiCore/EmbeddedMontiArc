@@ -10,6 +10,7 @@ import de.monticore.ast.ASTNode;
 import de.monticore.lang.embeddedmontiarc.embeddedmontiarc._ast.ASTEMACompilationUnit;
 import de.monticore.lang.embeddedmontiarc.embeddedmontiarc._symboltable.instanceStructure.EMAComponentInstanceSymbol;
 import de.monticore.lang.monticar.cnnarch._ast.ASTArchitecture;
+import de.monticore.lang.monticar.cnnarch._symboltable.ArchitectureKind;
 import de.monticore.lang.monticar.emadl._ast.ASTEMADLNode;
 import de.monticore.lang.monticar.emadl._visitor.EMADLVisitor;
 import de.monticore.lang.monticar.emadl._visitor.ModularNetworkVisitor;
@@ -128,16 +129,25 @@ public class ModularCNNSymbolTableCreator extends CommonSymbolTableCreator imple
     @Override
     public void endVisit(ASTEMACompilationUnit node){
         Log.info("MCNNSTC","END_MCNNSTC_COMP");
+        this.removeCurrentScope();
 
-        //Log.info("","END_MCNNSTC_COMP");
+        Deque<MutableScope> scopeStackRef = this.scopeStack;
+        while (scopeStackRef.size() > 0 && scopeStackRef.iterator().hasNext() ){
+            MutableScope currentScope = scopeStackRef.iterator().next();
+            Optional<Symbol> sym = currentScope.resolve("InstanceTest.mainB", EMAComponentInstanceSymbol.KIND);
+            // Optional<Symbol> sym = currentScope.resolve("", EMAComponentInstanceSymbol.KIND);
+            if (sym.isPresent()){
+                Log.info("Symbol found:" + sym.toString(),"END_MCNNSTC_COMP_SCOPE");
+            }
 
-        //this.removeCurrentScope();
-        //MutableScope scope = this.getFirstCreatedScope();
-        //Deque<MutableScope> scope = this.scopeStack;
+
+            Log.info("Current Scope: "+ currentScope.toString(),"END_MCNNSTC_COMP_SCOPE");
+        }
+        Log.info("DONE","END_MCNNSTC_COMP_DONE");
         //Optional<? extends Symbol> sym = node.getComponent().getSymbolOpt();
         //Log.info("endVisit of " + node.getComponent().getSymbolOpt().get().getFullName(), "END_MCNNSTC_COMP");
 
-        //Log.info("ScopeStack","END_MCNNSTC_COMP");
+
         
     }
 
