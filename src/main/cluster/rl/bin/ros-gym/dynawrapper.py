@@ -22,9 +22,11 @@ class DynaWrapper(object):
         self.distance = np.zeros(self.limit)
 
     def simulate(self):
-        materialString = ",".join(self.material)
+        x,y,z,rx,ry,rz = self.material
+        stringlist = [str(x),str(y),str(z),str(rx),str(ry),str(rz)]
+        materialString = ",".join(stringlist)
         with open(input_file, 'w') as csvFile:
-            csvFile.write(r'1,100,0,' + materialString + r'\r\n\ '[:-1])
+            csvFile.write(r'1,100,0,' + materialString)
 
         # Wait for 1.k file
         time_counter = 0
