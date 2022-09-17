@@ -89,6 +89,6 @@ while i < iterations:
     shutil.rmtree(temp_path)
 
     i += 1
-    print("Iteration " + str(i) + "finished!")
+    print("Iteration " + str(i) + " finished!")
     print("Starting next iteration in " + str(delay) + " seconds...")
     time.sleep(delay)

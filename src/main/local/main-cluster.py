@@ -75,6 +75,6 @@ while True:
     os.remove(os.path.join(current_path, "files", "Lattice_Structures", "1.k"))
 
     i += 1
-    print("Iteration " + str(i) + "finished!")
+    print("Iteration " + str(i) + " finished!")
     print("Starting next iteration in " + str(delay) + " seconds...")
     time.sleep(delay)
