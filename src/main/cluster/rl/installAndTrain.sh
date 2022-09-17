@@ -1,8 +1,7 @@
 #!/bin/bash
 
-. /opt/ros/kinetic/setup.sh
+. /opt/ros/noetic/setup.sh
 
-cd $HOME/Dokumente/toolchain/rl/
+cd $HOME/Dokumente/topologyoptimizer/rl
 ./install.sh
-./run_all.sh > ../logs/training_log.txt
-sleep 1
+./run_all.sh

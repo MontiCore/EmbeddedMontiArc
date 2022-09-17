@@ -3,9 +3,9 @@
 . config.sh
 
 echo "Start ROSCORE..."
-xterm -title "ROSCORE" -e "roscore; bash" &
+roscore &
 sleep 4
 
 echo "Start up environment..."
-xterm -title "Gym-Environment" -e "python bin/ros-gym/launcher.py --environment \"TopoEnv\"; bash" &
+python bin/ros-gym/launcher.py --environment \"TopoEnv\" &
 sleep 2

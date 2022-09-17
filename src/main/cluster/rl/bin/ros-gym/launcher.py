@@ -43,7 +43,7 @@ if __name__ == "__main__":
         parser.error('Environment string not given')
 
     mode_options = 0
-    #mode = TRAINING_MODE
+    mode = TRAINING_MODE
     if options.training:
         mode = TRAINING_MODE
         mode_options += 1

@@ -1,7 +1,11 @@
 #!/bin/bash
 
-xterm -title "Rosgym" -e "./run_environment.sh; bash" &
+echo "Run environment..."
+nohup ./run_environment.sh &
+sleep 4
+
+echo "Run training..."
+nohup ./run_training.sh &
 sleep 2
 
-xterm -title "Training" -e "./run_training.sh; bash" &
-sleep 2
+wait
