@@ -9,7 +9,7 @@ import subprocess
 this_directory = pathlib.Path(__file__).parent.resolve()
 project_root = os.path.join(this_directory, '..', '..', '..')
 input_file = os.path.join(this_directory, '..', '..', '..', 'toolchain', 'files', 'Input.csv')
-dyna_file = os.path.join(this_directory, '..', '..', '..', 'toolchain', 'files', 'Lattice_Structures', '1.k')
+final_file = os.path.join(this_directory, '..', '..', '..', 'toolchain', 'files', 'Lattice_Structures', 'endfile')
 processed_file = os.path.join(this_directory, '..', '..', '..', 'toolchain', 'preprocessing', 'h5', 'raw', 'train.h5')
 
 time_to_wait = 120 # Wait up to 2 minutes
@@ -28,15 +28,18 @@ class DynaWrapper(object):
         with open(input_file, 'w') as csvFile:
             csvFile.write(r'1,100,0,' + materialString)
 
-        # Wait for 1.k file
+        # The csv file will be automatically copied to the local PC, processed by nTopology, and copied to the cluster
+
+        # LSDyna will automatically process the file created by nTopology
+
+        # Wait for dyna to finish file
         time_counter = 0
-        while not os.path.exists(dyna_file):
+        while not os.path.exists(final_file):
             time.sleep(1)
             time_counter += 1
             if time_counter > time_to_wait:
-                sys.exit("Local computer timed out!")
+                sys.exit("LSDyna timed out!")
 
-        subprocess.run(['make', 'dyna'], cwd=project_root)
         subprocess.run(['make', 'preprocessing'], cwd=project_root)
         file = h5py.File(processed_file, 'r')
         force_all = file["fd_label"][0][1] # force

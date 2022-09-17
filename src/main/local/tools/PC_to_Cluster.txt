@@ -10,5 +10,6 @@ cd %5%
 
 # Upload file
 put 1.k
+put signalfile
 
 exit

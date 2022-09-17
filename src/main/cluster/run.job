@@ -30,4 +30,4 @@ module load lsdyna
 
 cd $HOME/Dokumente/topologyoptimizer
 
-singularity exec /rwthfs/rz/SW/UTIL.common/singularity/dglqd_rlcontainercpu rl/installAndTrain.sh
+./run.sh
