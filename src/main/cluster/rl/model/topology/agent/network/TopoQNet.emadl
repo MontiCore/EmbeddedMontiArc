@@ -2,7 +2,7 @@ package topology.agent.network;
 
 component TopoQNet {
     ports
-        in Q(0:oo)^{6} state,
+        in Z(0:oo)^{7} state,
         out Q(-oo:oo)^{12} qvalues;
 
     implementation CNN {

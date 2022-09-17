@@ -1,12 +1,14 @@
 #!/bin/bash
 
+cd $HOME/Dokumente/topologyoptimizer/rl
+
 directory=$(pwd)
 . $directory/config.sh
 
 rm -rf target
 
 echo "Generate agent..."
-java -jar bin/*-jar-with-dependencies.jar config/agent.json
+java -jar bin/*-jar-with-dependencies-int.jar config/agent.json
 
 echo "Building..."
 rm -rf ${BINARY}

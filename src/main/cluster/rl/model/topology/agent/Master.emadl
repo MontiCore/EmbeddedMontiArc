@@ -5,7 +5,7 @@ import topology.agent.strategy.GreedyDiscreteStrategy;
 
 component Master {
     ports
-        in Q(0:oo)^{6} state,
+        in Z(0:oo)^{7} state,
         in B terminated,
         out Z(0:11) action,
         out B terminate;

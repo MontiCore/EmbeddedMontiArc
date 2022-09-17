@@ -6,8 +6,8 @@ import random
 from dynawrapper import DynaWrapper
 
 #MAX_REWARD = 1 # Maximum reward
-cube_size = 10 # used to define boundaries for scale values
-steps = 100000
+cube_size = 100 # used to define boundaries for scale values (in mm)
+steps = 687 # this is the maximum number of steps, to reach any material
 
 class TopoEnv(gym.Env):
     metadata = {'render.modes': ['human']}
@@ -31,8 +31,11 @@ class TopoEnv(gym.Env):
         # Multiple adjustments possible at the same time
         # self.action_space = spaces.MultiDiscrete([2,2,2,2,2,2])
         
+        max_scale = int(cube_size / 2)
         # Define observation space: [c,a,a,a,b,b,b] with c in [0.1,100], a in [0.1,cube_size/5] and b in [0.0,359.9] reprepresenting constraint, scale and rotation respectively
-        self.observation_space = spaces.Box(low=np.array([0.1,0.1,0.1,0.1,0.0,0.0,0.0]), high=np.array([100, cube_size/2, cube_size/2, cube_size/2, 359.9, 359.9, 359.9]), dtype=np.float32)
+        # self.observation_space = spaces.Box(low=np.array([0.1,0.1,0.1,0.1,0.0,0.0,0.0]), high=np.array([100, cube_size/2, cube_size/2, cube_size/2, 359.9, 359.9, 359.9]), dtype=np.float32)
+        self.observation_space = spaces.Box(low=np.array([1, 1, 1, 1, 0, 0, 0]), high=np.array(
+            [1000, max_scale, max_scale, max_scale, 359, 359, 359]), dtype=np.int32)
         
         
 
@@ -83,7 +86,7 @@ class TopoEnv(gym.Env):
         
         done = self.current_step >= steps
         
-        observation = np.concatenate((np.array(self.constraint), np.array(self.material.get_material(), dtype=np.float32)), axis=None) # get new material and current constraint
+        observation = np.concatenate((np.array(int(self.constraint*10)), np.array(self.material.get_material(), dtype=np.int32)), axis=None) # get new material and current constraint
         
         return observation, reward, done, {}
     
@@ -91,12 +94,12 @@ class TopoEnv(gym.Env):
     def reset(self):
         # Reset the state of the environment to an initial state
         constraint = round(random.uniform(0.1, 100), 1)
-        x = round(random.uniform(0.1, cube_size/2), 1)
-        y = round(random.uniform(0.1,cube_size/2), 1)
-        z = round(random.uniform(0.1,cube_size/2), 1)
-        rot_x = round(random.uniform(0.0,359.9), 1)
-        rot_y = round(random.uniform(0.0,359.9), 1)
-        rot_z = round(random.uniform(0.0,359.9), 1)
+        x = round(random.uniform(0.1, cube_size/20), 1)
+        y = round(random.uniform(0.1, cube_size/20), 1)
+        z = round(random.uniform(0.1, cube_size/20), 1)
+        rot_x = random.randint(0, 359)
+        rot_y = random.randint(0, 359)
+        rot_z = random.randint(0, 359)
 
         self.constraint = constraint
         self.material = Material(x, y, z, rot_x, rot_y, rot_z)
@@ -108,14 +111,14 @@ class TopoEnv(gym.Env):
         penalty = self.materialPenalty()
         self.last_penalty = penalty
 
-        observation = np.concatenate((np.array(self.constraint), np.array(self.material.get_material(), dtype=np.float32)), axis=None) # get new material and constraint
+        observation = np.concatenate((np.array(int(self.constraint*10)), np.array(self.material.get_material(), dtype=np.int32)), axis=None) # get new material and constraint
         
         return observation
 
     def render(self, mode='human', close=False):
         # Render the environment to the screen
 
-        last_material = self.material.get_material()[1:]
+        last_material = self.material.get_material()
         last_constraint = self.constraint
 
         print(f'Step: {self.current_step}')
@@ -137,6 +140,8 @@ class TopoEnv(gym.Env):
             energy_absorption_penalty = self.constraint - energy_absorption
 
         peak_penalty = peak - final_level
+        if peak_penalty < 0:
+            peak_penalty = 0
 
         return avg_scale * (1 + energy_absorption_penalty + peak_penalty)
 
@@ -156,23 +161,25 @@ class Material(object):
                 else:
                     self.state[selection] -= 0.1
             else: # rotation selected
-                if selected <= 0.0: # already at minimum
-                    self.state[selection] = 359.9 # rolling over
+                if selected <= 0: # already at minimum
+                    self.state[selection] = 359 # rolling over
                 else:
-                    self.state[selection] -= 0.1
+                    self.state[selection] -= 1
         
         if action == 1:
             selected = self.state[selection]
             if selection < 3: # first three elements
-                if selected >= cube_size/2: # already at maximum
-                    self.state[selection] = cube_size/2 #clamp
+                if selected >= cube_size/20: # already at maximum
+                    self.state[selection] = cube_size/20 #clamp
                 else:
                     self.state[selection] += 0.1
             else: # rotation selected
-                if selected >= 359.9: # already at maximum
-                    self.state[selection] = 0.0 # rolling over
+                if selected >= 359: # already at maximum
+                    self.state[selection] = 0 # rolling over
                 else:
-                    self.state[selection] += 0.1
+                    self.state[selection] += 1
     
     def get_material(self):
-        return self.state
+        x,y,z,rx,ry,rz = self.state
+        obs = [int(x*10),int(y*10),int(z*10),rx,ry,rz]
+        return obs

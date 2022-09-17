@@ -3,7 +3,7 @@ import rospy
 import time
 import _thread
 
-from std_msgs.msg import Float32MultiArray, Bool, Int32, Float32
+from std_msgs.msg import Int32MultiArray, Bool, Int32, Float32
 from gymenv import TopoEnv
 
 CONSTR = 10 # default value
@@ -43,7 +43,7 @@ class RosGymConnector(object):
         self.print_if_verbose('Initialize node')
 
         self.__state_publisher = rospy.Publisher(
-            RosGymConnector.state_topic, Float32MultiArray, queue_size=1)
+            RosGymConnector.state_topic, Int32MultiArray, queue_size=1)
         self.__terminate_publisher = rospy.Publisher(
             RosGymConnector.terminate_topic, Bool, queue_size=1)
         self.__reward_publisher = rospy.Publisher(
@@ -59,7 +59,7 @@ class RosGymConnector(object):
         self.__score = 0
 
         rospy.init_node(
-            'gymEnv{}'.format(env_str.replace('-', '_')), anonymous=True)
+            'gymEnv{}'.format(env_str.replace('-', '_').replace('"','')), anonymous=True)
         rate = rospy.Rate(RosGymConnector.ros_update_rate)
         self.__listener = _thread.start_new_thread(rospy.spin, ())
         time.sleep(2)
@@ -91,7 +91,7 @@ class RosGymConnector(object):
             self.render()
             time.sleep(1)
             self.__terminate_publisher.publish(Bool(False))
-            self.__state_publisher.publish(Float32MultiArray(
+            self.__state_publisher.publish(Int32MultiArray(
                 data=self.flatten(state)))
             self.__reward_publisher.publish(Float32(0.0))
             self.__terminated = False
@@ -121,7 +121,7 @@ class RosGymConnector(object):
             self.__terminated = True
             self.__last_game_score = self.__score
 
-        state_msg = Float32MultiArray(data=self.flatten(s))
+        state_msg = Int32MultiArray(data=self.flatten(s))
         self.__state_publisher.publish(state_msg)
         self.__terminate_publisher.publish(Bool(t))
         self.__reward_publisher.publish(Float32(r))
