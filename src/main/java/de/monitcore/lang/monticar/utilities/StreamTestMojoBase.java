@@ -482,10 +482,7 @@ public class StreamTestMojoBase extends AbstractMojo {
                     streamTests.get(cs.get()).forEach( (ComponentStreamUnitsSymbol csus) -> logInfo("      # Streamtest: "+csus.getFullName()));
                 }
             }
-            if (StringUtils.equals(componentName, getRootModel())) {
-                cs = getScope().resolve(componentName, EMAComponentSymbol.KIND);
-                toTestComponents.add(cs.get());
-            }
+            toTestComponents.add(cs.get());
         }
 
         return toTestComponents;
