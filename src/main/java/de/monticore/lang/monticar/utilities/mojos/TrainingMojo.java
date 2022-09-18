@@ -23,7 +23,7 @@ public class TrainingMojo extends TrainingConfigMojo {
         plugin(
             groupId("de.monticore.lang.monticar.utilities"),
             artifactId("maven-streamtest"),
-            version("0.0.27-SNAPSHOT")
+            version("0.0.28-SNAPSHOT")
         ),
         goal("streamtest-generator"),
         configuration(getConfigElements().toArray(new Element[0])),
