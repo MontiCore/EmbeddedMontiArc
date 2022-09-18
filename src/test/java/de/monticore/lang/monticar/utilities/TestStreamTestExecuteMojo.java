@@ -22,7 +22,7 @@ public class TestStreamTestExecuteMojo  {
     @Test
     public void Test_02_execution_invalid() {
         int r = BaseTest.validExecution("./src/test/resources/emam/execution/invalid", "./target/tmp/exec/02");
-        assertTrue("Exec-02: Execution is invalid.[r="+r+" | != 0]", r==0);
+        assertTrue("Exec-02: Execution is invalid.[r="+r+" | != 0]", r==1);
     }
 
     @Test
