@@ -14,7 +14,7 @@
 		{
 			"type": "platooning",
 			"minNumberOfVehicles": 2,
-			"maxNumberOfVehicles": 7,
+			"maxNumberOfVehicles": 5,
 			"minDistanceBtwVehicles": 10,
 			"maxDistanceBtwVehicles": 20,
 			"minGoalDistance": 20,
