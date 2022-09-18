@@ -22,7 +22,7 @@
                 <version>0.0.1-SNAPSHOT</version>
                 <configuration>
                     <pretrainedModelToStore>
-                        <path>resources/model/pretrained/res_32/sofa</path>
+                        <path>Pre-Trained/resources/model/res_32/sofa</path>
                         <artifactId>threeD_GAN</artifactId>
                         <groupId>de.monticore.lang.monticar.pretrained</groupId>
                         <version>1</version>
