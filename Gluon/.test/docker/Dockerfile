@@ -4,7 +4,7 @@ RUN apt-get update --allow-releaseinfo-change
 RUN apt-get install -y unzip g++
 RUN apt-get install -y libopenblas-dev libhdf5-serial-dev
 
-# Essential
+# Essential 
 RUN apt-get install -y gcc make cmake git python3.7 python3.7-dev python3.7-numpy swig libboost-all-dev curl wget python3.7-tk python3-pip
 RUN pip3 install h5py numpy pyprind matplotlib
 RUN pip3 install matplotlib
