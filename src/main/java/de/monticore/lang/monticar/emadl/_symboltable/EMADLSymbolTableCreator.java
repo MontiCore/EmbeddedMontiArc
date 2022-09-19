@@ -45,6 +45,8 @@ public class EMADLSymbolTableCreator extends de.monticore.symboltable.CommonSymb
     private EmbeddedMontiArcBehaviorVisitor emaBehaviorSTC;
     private ModularNetworkVisitor mcnnSTC;
 
+    private ArrayList<ASTArchitecture> archNodes = new ArrayList<ASTArchitecture>();
+
 
     public EMADLSymbolTableCreator(
             final ResolvingConfiguration resolvingConfig, final MutableScope enclosingScope) {
@@ -78,7 +80,7 @@ public class EMADLSymbolTableCreator extends de.monticore.symboltable.CommonSymb
         this.emadSTC.setInstanceSymbolCreator(new ModifiedEMAComponentInstanceSymbolCreator()); //Use an instance symbo, creator that adds math statement to instances
         this.emaBehaviorSTC = new EmbeddedMontiArcBehaviorSymbolTableCreator(resolvingConfig, scopeStack);
 
-        this.mcnnSTC = new ModularCNNSymbolTableCreator(resolvingConfig, scopeStack);
+        this.mcnnSTC = new ModularCNNSymbolTableCreator(resolvingConfig, scopeStack, archNodes);
 
         visitor.setEMADLVisitor(this);
         visitor.setCNNArchVisitor(cnnArchSTC);
@@ -99,6 +101,8 @@ public class EMADLSymbolTableCreator extends de.monticore.symboltable.CommonSymb
         visitor.setCommon2Visitor(emamSTC);
 
         visitor.setModularNetworkVisitor(mcnnSTC);
+
+        Log.info("Created Symbol Table","ESTC_INIT");
     }
 
     private void initSuperSTC(final ResolvingConfiguration resolvingConfig, String customFilesPath, String pythonPath, String backend) {
@@ -108,7 +112,7 @@ public class EMADLSymbolTableCreator extends de.monticore.symboltable.CommonSymb
         this.emadSTC = new ModifiedEMADynamicSymbolTableCreator(resolvingConfig, scopeStack);
         this.emadSTC.setInstanceSymbolCreator(new ModifiedEMAComponentInstanceSymbolCreator()); //Use an instance symbo, creator that adds math statement to instances
         this.emaBehaviorSTC = new EmbeddedMontiArcBehaviorSymbolTableCreator(resolvingConfig, scopeStack);
-        this.mcnnSTC = new ModularCNNSymbolTableCreator(resolvingConfig, scopeStack);
+        this.mcnnSTC = new ModularCNNSymbolTableCreator(resolvingConfig, scopeStack, archNodes);
 
         visitor.setEMADLVisitor(this);
         visitor.setCNNArchVisitor(cnnArchSTC);
@@ -129,6 +133,8 @@ public class EMADLSymbolTableCreator extends de.monticore.symboltable.CommonSymb
         visitor.setCommon2Visitor(emamSTC);
 
         visitor.setModularNetworkVisitor(mcnnSTC);
+
+        Log.info("Created Symbol Table","ESTC_INIT");
 
     }
 
@@ -144,6 +150,9 @@ public class EMADLSymbolTableCreator extends de.monticore.symboltable.CommonSymb
     public Scope createFromAST(ASTEMACompilationUnit rootNode) {
         Log.errorIfNull(rootNode, "0xA7004_184 Error by creating of the EMADLSymbolTableCreator symbol table: top ast node is null");
         rootNode.accept(visitor);
+
+        Log.info("Size of ArchNodes:" + this.archNodes.size(),"ROOT_NODE_ARCH_NODE");
+
         Log.info(rootNode.toString(),"ROOT_NODE");
         return getFirstCreatedScope();
     }
@@ -167,6 +176,13 @@ public class EMADLSymbolTableCreator extends de.monticore.symboltable.CommonSymb
         }
     }
 
+    public void endVisit(ASTBehaviorEmbedding ast) {
+        if(ast.isPresentArchitecture()){
+            //processed in handle/visit/endVisit of ASTArchitecture and ASTArchBody
+        }else if(ast.getStatementList().size() > 0) {
+            addToScopeAndLinkWithNode(new EMADLMathStatementsSymbol("MathStatements", ast.getStatementList()), ast);
+        }
+    }
 
     /*public void visit(ASTBehaviorEmbedding ast){
         Log.info("TEST BE","TEST_VISITOR");
@@ -237,14 +253,5 @@ public class EMADLSymbolTableCreator extends de.monticore.symboltable.CommonSymb
     public void visit(ASTArchitecture node){
         Log.info("TEST N","VISITOR_Rand");
     }*/
-
-    public void endVisit(ASTBehaviorEmbedding ast) {
-        if(ast.isPresentArchitecture()){
-            //processed in handle/visit/endVisit of ASTArchitecture and ASTArchBody
-        }else if(ast.getStatementList().size() > 0) {
-            addToScopeAndLinkWithNode(new EMADLMathStatementsSymbol("MathStatements", ast.getStatementList()), ast);
-        }
-    }
-
 
 }

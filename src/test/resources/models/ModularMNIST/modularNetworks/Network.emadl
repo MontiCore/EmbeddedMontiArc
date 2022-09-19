@@ -7,12 +7,22 @@ component Network {
          out Q(0:1)^{10} softmax;
 
     instance Net1 net1;
-    instance Net2 net2;
+    instance Net1 net3;
 
-    
+    instance Net2 net2;
+    instance Net2 net4;
+
+    /*
     connect data -> net1.dataInput;
     connect net1.dataOutput -> net2.dataInput;
     connect net2.dataOutput -> softmax;
+    */
+
+    connect data -> net1.dataInput;
+    connect net1.dataOutput -> net2.dataInput;
+    connect net2.dataOutput -> net4.dataInput;
+    connect net4.dataOutput -> softmax;
+
 
     
 }

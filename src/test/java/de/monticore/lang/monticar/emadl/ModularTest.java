@@ -60,5 +60,14 @@ public class ModularTest extends AbstractSymtabTest{
         assertEquals(40, convChannels2);
         */
     }
+
+    @Test
+    public void testModular(){
+        Scope symtab = createSymTab("src/test/resources/models/ModularMNIST/");
+        Optional<EMAComponentInstanceSymbol> compInstanceSymbol = symtab.<EMAComponentInstanceSymbol>resolve("modularNetworks.Connector", EMAComponentInstanceSymbol.KIND);
+        if(compInstanceSymbol.isPresent()){
+            EMAComponentInstanceSymbol mainInstance = compInstanceSymbol.get();
+        }
+    }
 }
 
