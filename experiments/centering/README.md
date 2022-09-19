@@ -1,16 +1,16 @@
-# Drive Forward Experiment
+# Centering Experiment
 
 ## Description
-In this experiment, a single vehicle will be trained to follow a straight line.
+In this experiment two agents will be trained on identical scenarios. One agent will use the CenteringPreprocessor to recenter the environment around a vehicle, while the other agent doesn't.
 
 ## Goal
-In this experiment, a single vehicle will be trained to follow a straight line.
+Two vehicles will be trained to drive northwards on similar and straight roads on different sides of the map.
 
 ## Research Goal
-The purpose of this experiment is to verify, that our contributions in the simulator - specifically the reward functions - are working correctly.
+The goal is to see if the CenteringPreprocessor improves the performance of the agent.
 
 ## Pass Criteria
-If the vehicle tries to follow the path, the experiment is considered a success.
+If the rewards stabilize and are converging to some value, the experiment can be terminated.
 
 ## Parameters
 ### Map
@@ -30,14 +30,14 @@ View the `scenario_file.json` for more details.
 	"static_collision_factor": -400,
 	"vehicle_collision_factor": -300,
 	"trajectory_reward_factor": 1,
-	"angular_jerk_reward_factor": 0.015,
-	"angular_acc_reward_factor": 0.015,
-	"linear_jerk_reward_factor": 0.0,
-	"linear_acc_reward_factor": 0.0,
-	"trajectory_following_reward": 30,
+	"angular_jerk_reward_factor": 0.005,
+	"angular_acc_reward_factor": 0.1,
+	"linear_jerk_reward_factor": 0.05,
+	"linear_acc_reward_factor": 1,
+	"trajectory_following_reward": 50,
 	"total_path_progress_reward_scaling": 2000,
 	"path_progress_derivative_reward_scaling": 1000,
-	"distance_max": 5,
+	"distance_max": 3,
 	"velocity_difference_scaling": 100,
 	"velocity_sub_maximum_reward": 100,
 	"standing_punishment": -300,
@@ -45,13 +45,15 @@ View the `scenario_file.json` for more details.
 	"velocity_desired": 15,
 	"standing_threshold": 1,
 	"standing_punishment_from_step": 5,
-	"standing_punishment_to_min_path_distance": 2
 }
 ```
 
 ### Preprocessor
+None for the first agent. CenteringPreprocessor for the second agent.
 ```json
-{}
+{
+	"type": "centering"
+}
 ```
 
 ### Training
@@ -60,10 +62,10 @@ See the src/ folder for more details.
 #### Overview
 ##### State
 Size of state for own vehicle: 25
-Number of other vehicles: 0
-Size of state for each other vehicle: NA
+Number of other vehicles: 2
+Size of state for each other vehicle: 25
 
 ##### Training
-Self-Play: No
-Number of Episodes: 2000
+Self-Play: Yes
+Number of Episodes: 3000
 Start training after Episode: 500 (fill replay buffer)
