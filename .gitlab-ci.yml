@@ -27,7 +27,7 @@ TestBuild:
     - cd centering/baseline-centering
     - ./install.sh
     - cd ../../
-    - cd centering/-centering
+    - cd centering/centering
     - ./install.sh
     - cd ../../
     - cd intersection
