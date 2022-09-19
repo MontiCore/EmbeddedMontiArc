@@ -1,7 +1,5 @@
-from re import S
 import sqlite3
 import os
-import matplotlib
 import matplotlib.pyplot as plt
 from pathlib import Path
 
