@@ -170,7 +170,13 @@ public class ModularCNNSymbolTableCreator extends CommonSymbolTableCreator imple
         Log.info("MCNNSTC","END_MCNNSTC_COMP");
         Log.info("Node: " + node.toString(),"END_MCNNSTC_COMP");
         CNNComposer cnnComposer = new CNNComposer(archNodes);
-        cnnComposer.checkAndTransformComponentOnMatch(node);
+
+        if (cnnComposer.nodeIsComposedCNN(node)){
+            this.removeCurrentScope();
+            cnnComposer.checkAndTransformComponentOnMatch(node);
+        }
+
+
 
         Log.info("DONE","END_MCNNSTC_COMP_DONE");
 

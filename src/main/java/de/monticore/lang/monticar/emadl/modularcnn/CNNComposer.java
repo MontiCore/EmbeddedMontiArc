@@ -7,6 +7,9 @@
 package de.monticore.lang.monticar.emadl.modularcnn;
 
 import de.monticore.lang.embeddedmontiarc.embeddedmontiarc._ast.*;
+import de.monticore.lang.embeddedmontiarc.embeddedmontiarc._symboltable.cncModel.EMAComponentSymbol;
+import de.monticore.lang.monticar.cnnarch._symboltable.ArchitectureSymbol;
+import de.monticore.lang.monticar.emadl._symboltable.ModifiedExpandedInstanceSymbolCreator;
 import de.se_rwth.commons.logging.Log;
 
 import java.util.ArrayList;
@@ -26,6 +29,11 @@ public class CNNComposer {
         return componentInformation.isComposedCNN();
     }
 
+    public boolean nodeIsComposedCNN(ASTEMACompilationUnit node){
+        if (node == null) return false;
+        return isValidCNNCanditate(node.getComponent());
+    }
+
     public void checkAndTransformComponentOnMatch(ASTEMACompilationUnit node) {
         ASTComponent component = node.getComponent();
         if (component == null || !isValidCNNCanditate(component)) return;
@@ -39,7 +47,8 @@ public class CNNComposer {
 
     //TODO: Transform Node to architecture Node
     private void transformComponentToCNN(ASTEMACompilationUnit node){
-
+        ModifiedExpandedInstanceSymbolCreator instanceSymbolCreator = new ModifiedExpandedInstanceSymbolCreator();
+        instanceSymbolCreator.createInstances((EMAComponentSymbol)(Log.errorIfNull(node.getComponent().getSymbolOpt().orElse(null))),node.getComponent().getSymbolOpt().get().getName());
 
 
 
