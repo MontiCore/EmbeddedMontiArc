@@ -8,11 +8,6 @@ package de.monticore.lang.monticar.emadl.modularcnn;
 
 import de.monticore.ast.ASTNode;
 import de.monticore.lang.embeddedmontiarc.embeddedmontiarc._ast.ASTEMACompilationUnit;
-import de.monticore.lang.embeddedmontiarc.embeddedmontiarc._symboltable.instanceStructure.EMAComponentInstanceSymbol;
-import de.monticore.lang.monticar.cnnarch._ast.ASTArchitecture;
-import de.monticore.lang.monticar.cnnarch._symboltable.ArchitectureKind;
-import de.monticore.lang.monticar.cnnarch._symboltable.ArchitectureSymbol;
-import de.monticore.lang.monticar.cnnarch._symboltable.CNNArchLanguage;
 import de.monticore.lang.monticar.emadl._ast.ASTEMADLNode;
 import de.monticore.lang.monticar.emadl._visitor.EMADLVisitor;
 import de.monticore.lang.monticar.emadl._visitor.ModularNetworkVisitor;
@@ -21,8 +16,6 @@ import de.se_rwth.commons.logging.Log;
 
 import java.util.ArrayList;
 import java.util.Deque;
-import java.util.List;
-import java.util.Optional;
 
 public class ModularCNNSymbolTableCreator extends CommonSymbolTableCreator implements ModularNetworkVisitor {
 
@@ -176,12 +169,12 @@ public class ModularCNNSymbolTableCreator extends CommonSymbolTableCreator imple
     public void endVisit(ASTEMACompilationUnit node){
         Log.info("MCNNSTC","END_MCNNSTC_COMP");
         Log.info("Node: " + node.toString(),"END_MCNNSTC_COMP");
-        //nss.scanForArchitectureNodes(node);
-        CNNChecker cnnChecker = new CNNChecker(archNodes);
-        cnnChecker.check(node.getComponent());
+        CNNComposer cnnComposer = new CNNComposer(archNodes);
+        cnnComposer.checkAndTransformComponentOnMatch(node);
 
+        Log.info("DONE","END_MCNNSTC_COMP_DONE");
 
-
+        /*
         if (node.getComponent().getName().equals("Net1")) {
             //cnnChecker.check(node.getComponent());
             Log.info("Check out node: " + node.toString(),"END_MCNNSTC_COMP_MATCH");
@@ -237,7 +230,7 @@ public class ModularCNNSymbolTableCreator extends CommonSymbolTableCreator imple
         //Optional<? extends Symbol> sym = node.getComponent().getSymbolOpt();
         //Log.info("endVisit of " + node.getComponent().getSymbolOpt().get().getFullName(), "END_MCNNSTC_COMP");
 
-        Log.info("DONE","END_MCNNSTC_COMP_DONE");
+
         
     }
 
