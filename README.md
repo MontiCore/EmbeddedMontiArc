@@ -63,7 +63,7 @@ Hyperparameters that we experimented with were:
 - Time gap between images (30FPS, 10FPS)
 - Model architecture (modifications to the original architecture from the [paper](https://images.nvidia.com/content/tegra/automotive/images/2016/solutions/pdf/end-to-end-dl-using-px.pdf))
     - Different Activations (ReLU, Sigmoid)
-    - Different usage of Dropout to learn curves
+    - Different usage of Dropout to learn learn curves
     - With(out) Batch-normalization
     - With(out) large fully connected layer after convolutional layers
     - Different number of layers with different kernel sizes 
