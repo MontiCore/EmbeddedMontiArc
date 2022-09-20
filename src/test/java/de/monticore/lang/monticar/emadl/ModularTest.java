@@ -28,38 +28,37 @@ public class ModularTest extends AbstractSymtabTest{
     }
 
     @Test
-    public void testInstances(){
+    public void testModularInstances(){
         Scope symtab = createSymTab("src/test/resources/models/");
-        Optional<EMAComponentInstanceSymbol> compInstanceSymbol = symtab.<EMAComponentInstanceSymbol>resolve("InstanceTest.mainB", EMAComponentInstanceSymbol.KIND);
+        Optional<EMAComponentInstanceSymbol> compInstanceSymbol = symtab.<EMAComponentInstanceSymbol>resolve("ModularInstanceTest.mainB", EMAComponentInstanceSymbol.KIND);
+
+        assertTrue(compInstanceSymbol.isPresent());
+
         if(compInstanceSymbol.isPresent()){
             EMAComponentInstanceSymbol mainInstance = compInstanceSymbol.get();
+            EMAComponentInstanceSymbol net1 = mainInstance.getSpannedScope().<EMAComponentInstanceSymbol>
+                    resolve("net1", EMAComponentInstanceSymbol.KIND).get();
+            EMAComponentInstanceSymbol net2 = mainInstance.getSpannedScope().<EMAComponentInstanceSymbol>
+                    resolve("net2", EMAComponentInstanceSymbol.KIND).get();
+
+            assertEquals("ModularInstanceTest.mainB.net1",net1.getFullName());
+            assertEquals("ModularInstanceTest.mainB.net2",net2.getFullName());
+
+            ArchitectureSymbol arch1 = net1.getSpannedScope().<ArchitectureSymbol>
+                    resolve("", ArchitectureSymbol.KIND).get();
+
+            ArchitectureSymbol arch2 = net2.getSpannedScope().<ArchitectureSymbol>
+                    resolve("", ArchitectureSymbol.KIND).get();
+
+            arch1.resolve();
+            arch2.resolve();
+
+            int convChannels1 = ((LayerSymbol)arch1.getStreams().get(0).getElements().get(1)).getArgument("channels").get().getRhs().getIntValue().get();
+            int convChannels2 = ((LayerSymbol)arch2.getStreams().get(0).getElements().get(1)).getArgument("channels").get().getRhs().getIntValue().get();
+
+            assertEquals(20, convChannels1);
+            assertEquals(40, convChannels2);
         }
-
-
-        /*
-        EMAComponentInstanceSymbol net1 = mainInstance.getSpannedScope().<EMAComponentInstanceSymbol>
-                resolve("net1", EMAComponentInstanceSymbol.KIND).get();
-        EMAComponentInstanceSymbol net2 = mainInstance.getSpannedScope().<EMAComponentInstanceSymbol>
-                resolve("net2", EMAComponentInstanceSymbol.KIND).get();
-
-        assertEquals("InstanceTest.mainB.net1",net1.getFullName());
-        assertEquals("InstanceTest.mainB.net2",net2.getFullName());
-
-        ArchitectureSymbol arch1 = net1.getSpannedScope().<ArchitectureSymbol>
-                resolve("", ArchitectureSymbol.KIND).get();
-
-        ArchitectureSymbol arch2 = net2.getSpannedScope().<ArchitectureSymbol>
-                resolve("", ArchitectureSymbol.KIND).get();
-
-        arch1.resolve();
-        arch2.resolve();
-
-        int convChannels1 = ((LayerSymbol)arch1.getStreams().get(0).getElements().get(1)).getArgument("channels").get().getRhs().getIntValue().get();
-        int convChannels2 = ((LayerSymbol)arch2.getStreams().get(0).getElements().get(1)).getArgument("channels").get().getRhs().getIntValue().get();
-
-        assertEquals(20, convChannels1);
-        assertEquals(40, convChannels2);
-        */
     }
 
     @Test

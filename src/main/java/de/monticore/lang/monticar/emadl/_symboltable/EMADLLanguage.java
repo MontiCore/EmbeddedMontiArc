@@ -75,6 +75,10 @@ public class EMADLLanguage extends EmbeddingModelingLanguage {
 
     public String getPythonPath (){ return this.pythonPath; }
 
+    public ArrayList<ArchitectureNode> getArchitectureNodes() {
+        return architectureNodes;
+    }
+
 
     @Override
     public Collection<ResolvingFilter<? extends Symbol>> getResolvingFilters() {
@@ -99,10 +103,12 @@ public class EMADLLanguage extends EmbeddingModelingLanguage {
         return new EMADLParser();
     }
 
+
+
     @Override
     public Optional<EMADLSymbolTableCreator> getSymbolTableCreator(ResolvingConfiguration resolvingConfiguration, MutableScope enclosingScope) {
         return Optional.of(new EMADLSymbolTableCreator(
-                resolvingConfiguration, enclosingScope,getCustomFilesPath(), getPythonPath(), getBackend(),this.architectureNodes));
+                resolvingConfiguration, enclosingScope,getCustomFilesPath(), getPythonPath(), getBackend(), getArchitectureNodes()));
     }
 
 }

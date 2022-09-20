@@ -1,5 +1,7 @@
 /* (c) https://github.com/MontiCore/monticore */
 package modularNetworks;
+import Net1;
+import Net2;
 
 
 component Network {

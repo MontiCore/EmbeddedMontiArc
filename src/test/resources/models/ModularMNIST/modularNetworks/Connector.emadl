@@ -1,5 +1,6 @@
  /* (c) https://github.com/MontiCore/monticore */
 package modularNetworks;
+import Network;
 
 component Connector {
     ports in Z(0:255)^{1, 28, 28} image1,

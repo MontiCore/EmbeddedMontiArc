@@ -157,10 +157,6 @@ public class EMADLSymbolTableCreator extends de.monticore.symboltable.CommonSymb
     public Scope createFromAST(ASTEMACompilationUnit rootNode) {
         Log.errorIfNull(rootNode, "0xA7004_184 Error by creating of the EMADLSymbolTableCreator symbol table: top ast node is null");
         rootNode.accept(visitor);
-
-        Log.info("Size of ArchNodes:" + this.archNodes.size(),"ROOT_NODE_ARCH_NODE");
-
-        Log.info(rootNode.toString(),"ROOT_NODE");
         return getFirstCreatedScope();
     }
 
