@@ -1,3 +1,4 @@
+# (c) https://github.com/MontiCore/monticore  
 import numpy as np
 from time import sleep
 import matplotlib.pyplot as plt

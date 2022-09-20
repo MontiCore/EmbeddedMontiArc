@@ -1,3 +1,4 @@
+# (c) https://github.com/MontiCore/monticore  
 import argparse
 import h5py
 from functools import reduce

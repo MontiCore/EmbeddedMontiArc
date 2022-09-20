@@ -1,3 +1,4 @@
+# (c) https://github.com/MontiCore/monticore  
 from matplotlib.animation import FuncAnimation
 import mpl_toolkits.axes_grid1
 import matplotlib.widgets as widgets

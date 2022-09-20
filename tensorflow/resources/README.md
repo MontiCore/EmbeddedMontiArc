@@ -1,8 +1,14 @@
+<!-- (c) https://github.com/MontiCore/monticore -->
 # Udacity Data generation
 
-This readme describes the geration of the test and train sets we used. 
-Predefined datasets can be downloaded [here](https://rwth-aachen.sciebo.de/apps/files/?dir=/LabSS19/end2end_training_testing_data&fileid=1993075326) (contact felix.hermsen@rwth-aachen.de or kusmenko@se-rwth.de to get access to training and testing files) .
-Otherwise use the jpg2hdf5.py script to generate train.h5 and test.h5 and place them into the training_data folder. After that proceed as described in the root Readme.
+- This readme describes the geration of the test and train sets we used. 
+- Predefined datasets can be downloaded [here](https://rwth-aachen.sciebo.de/apps/files/?dir=/LabSS19/end2end_training_testing_data&fileid=1993075326) 
+    - among them are hdf5 files which can be used directly for training and testing. 
+        - lables describe the resolution of images the saved in them. (Adjust neuronal network acordingly) 
+    - there are also files which contain the extracted data from udacity. On it the jpg2hdf5 script can be exectuted (see section usage on how to do that).
+    - contact kusmenko@se-rwth.de to get access to it.
+- Otherwise download the udacity data yourself and extract it (see section udacity data download).
+- The result should be two files named train.h5 and test.h5. Place them into the training_data folder. After that proceed as described in the root Readme.
 
 ## Udacity data download 
 
@@ -30,13 +36,16 @@ To achive these steps a number of csv files are generated and can be reviewed.
 | 5 | -l | Set this flag in order to generate hdf5 file containing only images represeting straight driving | 
 | 6 | -s float | Set this flag in order to generate hdf5 file containing  in which the specified float specifies the percentage of how much the straigth driving the data contains. The rest of the data is curve driving. Make sure that the percentage does not exceed 0.5. | 
 | 7 | -n int | specifies number of training images used (default all images in center)| 
+| 8 | -t | use this flag to generate testing data scince it has different format than the training data | 
 
 
-The -i flag is mandatory scince it specifies the path to the folder containg the images (needs to be named center) and the steering csv (needs to be named steering.csv).
-In addition exactly one of the following flags has to be set (-a,-c,-l,-s)
-Optional: set the -n flag to specify how many images should be taken.  
-Note: Image resolution is hard coded to 120/180.
-Change:  PIXEL_WIDTH  = int(640/4) and PIXEL_HEIGHT = int(480/4) in the script to change that. 
+- The -i flag is mandatory scince it specifies the path to the folder containg the images (needs to be named center) and the steering csv (needs to be named steering.csv).
+    - In addition exactly one of the following flags has to be set (-a,-c,-l,-s)
+- Optional: set the -n flag to specify how many images should be taken. 
+- Use the -i and -t flag for generating testing data from images based on the udacity_ch02 challange dataset. 
+    - The reason is that they changed the structure of this specific dataset. 
+- Note: Image resolution is hard coded to 120/180.
+    - Change:  PIXEL_WIDTH  = int(640/4) and PIXEL_HEIGHT = int(480/4) in the script to change that. 
 
 ## Examples 
 - python jpg2hdf5.py -i ../test_set/ -n 100 -a
