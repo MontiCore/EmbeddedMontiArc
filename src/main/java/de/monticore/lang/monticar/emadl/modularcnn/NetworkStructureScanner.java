@@ -29,101 +29,32 @@ import java.util.stream.Collectors;
 
 
 public class NetworkStructureScanner /*implements EMADLVisitor*/ {
-    ArrayList<ASTArchitecture> architecturesNodes = new ArrayList<>();
+    ArrayList<ArchitectureNode> architecturesNodes = null;
 
-    public NetworkStructureScanner() {
+    public NetworkStructureScanner(ArrayList<ArchitectureNode> currentNodes) {
+        this.architecturesNodes = currentNodes;
 
     }
 
+    /*
     public ArrayList<ASTArchitecture> getArchitecturesNodes() {
         return architecturesNodes;
     }
+    */
 
-    public ArtifactScope getNextArtifactScopeUp(Scope scope){
-        if (scope == null) return null;
-        else if (scope instanceof ArtifactScope) return (ArtifactScope) scope;
-        else if (scope.getEnclosingScope().isPresent()) return getNextArtifactScopeUp(scope.getEnclosingScope().get());
-        return null;
-    }
 
-    public GlobalScope getNextGlobalScopeUp(Scope scope){
-        if (scope == null) return null;
-        else if (scope instanceof GlobalScope) return (GlobalScope) scope;
-        else if (scope.getEnclosingScope().isPresent()) return getNextGlobalScopeUp(scope.getEnclosingScope().get());
-        return null;
-    }
-
-    public CommonScope getNextCommonScopeUp(Scope scope){
-        if (scope == null) return null;
-        else if (scope instanceof CommonScope) return (CommonScope) scope;
-        else if (scope.getEnclosingScope().isPresent()) return getNextCommonScopeUp(scope.getEnclosingScope().get());
-        return null;
-    }
 
     public void scanForArchitectureNodes(ASTNode node){
-            Log.info("NSS","NSS_ASTNODE");
-            Log.info(node.toString(),"NSS_ASTNODE");
-
-
-             node.getSymbolOpt().ifPresent(symbol -> {
-                 if (symbol.getName().equals("Network")){
-                     Log.info("ARCH_FOUND","NSS_ASTNODE");
-                 }
-             });
-       // EMAComponentInstanceSymbolCreator instanceSymbolCreator = new EMAComponentInstanceSymbolCreator();
         if (node instanceof ASTArchitecture){
-            Log.info("ARCH_FOUND","NSS_ASTNODE");
-            if (!node.getEnclosingScopeOpt().isPresent() || !node.getSymbolOpt().isPresent()) return;
-            ArtifactScope artifactScope = getNextArtifactScopeUp(node.getEnclosingScope());
-            GlobalScope globalScope = getNextGlobalScopeUp(node.getEnclosingScope());
-            Symbol symbol = node.getSymbolOpt().get();
 
+           if ((architecturesNodes.size() == 0)) architecturesNodes.add(new ArchitectureNode((ASTArchitecture) node));
 
-            //Symbol symbol =
+           for (ArchitectureNode architectureNode: architecturesNodes){
+               if (architectureNode.getOriginalNode().equals((ASTArchitecture) node)) return;
+           }
 
-
-            if (artifactScope == null || globalScope == null || symbol == null || !artifactScope.getName().isPresent() || symbol.getKind() == null ) return;
-
-            Log.info("Symbol:"+ symbol.toString(),"NSS_ASTNODE_NEW_SYMBOl");
-            //artifactScope.getName().get();
-            String name = artifactScope.getName().get();
-            ArrayList<Collection<Symbol>> symbolCollectionArrayList = artifactScope.getLocalSymbols().values().stream().collect(Collectors.toCollection(ArrayList::new));
-            if (symbolCollectionArrayList.size() == 0) {
-                Log.info("Empty","NSS_ASTNODE_NEW_SYMBOl");
-            }
-            SymbolKind k = null;
-            for (Collection<Symbol> c: symbolCollectionArrayList   ) {
-                ArrayList<Symbol> symbolArrayList = c.stream().collect(Collectors.toCollection(ArrayList::new));
-                Log.info("Empty","NSS_ASTNODE_NEW_SYMBOl");
-                for (Symbol s: symbolArrayList){
-
-                    k = s.getKind();
-                    break;
-                }
-            }
-
-
-
-
-            //Optional<Symbol> optArtitfactSymbol =
-            SymbolKind kind = symbol.getKind();
-            Optional<Symbol> optNewSym = globalScope.resolve(name, kind);
-            Log.info(name + " " + kind.getName(),"NSS_ASTNODE_NEW_SYMBOl");
-            if (!optNewSym.isPresent()){
-                Log.info("New Symbol not present!" ,"NSS_ASTNODE_NEW_SYMBOl");
-                return;
-            }
-
-            Symbol newSym = optNewSym.get();
-
-            Log.info("New Symbol:" + newSym.toString(),"NSS_ASTNODE_NEW_SYMBOl");
-
-            architecturesNodes.add((ASTArchitecture) node);
+            architecturesNodes.add(new ArchitectureNode((ASTArchitecture) node));
         }
-
-
-
-        //instanceSymbolCreator.createInstances();
     }
 
     /*public void scanForArchitectureNodes(ASTEMACompilationUnit node){

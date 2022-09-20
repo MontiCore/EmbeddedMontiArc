@@ -5,6 +5,7 @@ import de.monticore.lang.embeddedmontiarc.embeddedmontiarc._symboltable.Componen
 import de.monticore.lang.embeddedmontiarcdynamic.embeddedmontiarcdynamic._symboltable.cncModel.EMADynamicComponentSymbol;
 import de.monticore.lang.embeddedmontiarcdynamic.embeddedmontiarcdynamic._symboltable.cncModel.EMADynamicConnectorSymbol;
 import de.monticore.lang.embeddedmontiarcdynamic.embeddedmontiarcdynamic._symboltable.instanceStructure.EMADynamicComponentInstantiationSymbol;
+import de.monticore.lang.monticar.cnnarch._ast.ASTArchitecture;
 import de.se_rwth.commons.logging.Log;
 
 import java.util.ArrayList;
@@ -24,6 +25,7 @@ public class ComponentInformation {
     private ComponentKind componentKind;
     private String inputPort;
     private String outputPort;
+    private ArrayList<ArchitectureNode> archNodes = null;
 
     private ASTComponent originalComponentReference = null;
 
@@ -86,12 +88,13 @@ public class ComponentInformation {
 
 
 
-    public ComponentInformation(ASTComponent component){
+    public ComponentInformation(ASTComponent component, ArrayList<ArchitectureNode> currentNodes){
 
 
         this.originalComponentReference = component;
         this.componentName = component.getName();
         this.componentInstanceName = "";
+        this.archNodes = currentNodes;
 
         //TODO: add these
         //this.componentKind = component.
@@ -101,8 +104,8 @@ public class ComponentInformation {
         printConnectiorRelations();
     }
 
-    public ComponentInformation(ASTComponent component, String instanceName){
-        this(component);
+    public ComponentInformation(ASTComponent component, ArrayList<ArchitectureNode> currentNodes, String instanceName){
+        this(component, currentNodes);
         this.componentInstanceName = instanceName;
     }
 
@@ -110,8 +113,13 @@ public class ComponentInformation {
 
     //TODO: find actual solution to determine this -> Maybe textfile
     public boolean isASTArchitectureNode(){
+        Log.info("ASTArchitecture Check for " + this.getComponentName(),"COMPONENT_INFORMATION");
+        for (ArchitectureNode node: archNodes){
+            Log.info("Checking if: " + this.componentName + " == " + node.getComponentName(),"COMPONENT_INFORMATION" );
+            if (this.componentName.equals(node.getComponentName())) return true;
+        }
 
-        if (this.componentName.equals("Net1") || this.componentName.equals("Net2")) return true;
+
         return false;
     }
 
@@ -201,7 +209,7 @@ public class ComponentInformation {
             EMADynamicComponentSymbol refSymbol = (EMADynamicComponentSymbol) symbol.getComponentType().getReferencedSymbol();
             if (refSymbol.getAstNode().isPresent()) {
                 this.includedComponents.add((ASTComponent) refSymbol.getAstNode().get());
-                this.includedComponentsInformation.add(new ComponentInformation((ASTComponent) refSymbol.getAstNode().get(), symbol.getName() ));
+                this.includedComponentsInformation.add(new ComponentInformation((ASTComponent) refSymbol.getAstNode().get(), this.archNodes, symbol.getName() ));
             }
         }
 

@@ -13,9 +13,11 @@ import de.monticore.lang.embeddedmontiarc.embeddedmontiarcmath.adapter.PortArray
 import de.monticore.lang.embeddedmontiarc.embeddedmontiarcmath.adapter.ResolutionDeclarationSymbol2MathVariableDeclarationTypeFilter;
 import de.monticore.lang.embeddedmontiarcdynamic.embeddedmontiarcdynamic._symboltable.EmbeddedMontiArcDynamicLanguage;
 import de.monticore.lang.mathopt._symboltable.MathOptLanguage;
+import de.monticore.lang.monticar.cnnarch._ast.ASTArchitecture;
 import de.monticore.lang.monticar.cnnarch._symboltable.CNNArchLanguage;
 import de.monticore.lang.monticar.emadl._parser.EMADLParser;
 import de.monticore.lang.monticar.emadl.adapter.PortArraySymbol2IODeclarationSymbolTypeFilter;
+import de.monticore.lang.monticar.emadl.modularcnn.ArchitectureNode;
 import de.monticore.symboltable.MutableScope;
 import de.monticore.symboltable.ResolvingConfiguration;
 import de.monticore.symboltable.Symbol;
@@ -33,6 +35,8 @@ public class EMADLLanguage extends EmbeddingModelingLanguage {
     public static final EmbeddedMontiArcDynamicLanguage HOST_LANGUAGE = new EmbeddedMontiArcDynamicLanguage();
     public static final CNNArchLanguage CNNARCH_LANGUAGE = new CNNArchLanguage();
     public static final MathOptLanguage MATH_LANGUAGE = new MathOptLanguage();
+
+    private ArrayList<ArchitectureNode> architectureNodes = new ArrayList<>();
 
     public EMADLLanguage() {
         super("Embedded MontiArc Deep Learning Language",
@@ -98,7 +102,7 @@ public class EMADLLanguage extends EmbeddingModelingLanguage {
     @Override
     public Optional<EMADLSymbolTableCreator> getSymbolTableCreator(ResolvingConfiguration resolvingConfiguration, MutableScope enclosingScope) {
         return Optional.of(new EMADLSymbolTableCreator(
-                resolvingConfiguration, enclosingScope,getCustomFilesPath(), getPythonPath(), getBackend()));
+                resolvingConfiguration, enclosingScope,getCustomFilesPath(), getPythonPath(), getBackend(),this.architectureNodes));
     }
 
 }

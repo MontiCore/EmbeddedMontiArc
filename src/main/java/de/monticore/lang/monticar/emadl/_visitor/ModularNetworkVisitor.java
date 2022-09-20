@@ -31,45 +31,45 @@ public interface ModularNetworkVisitor extends EMADLVisitor {
 
     //@Override
     default void traverse(ASTNode node){
-        Log.info("MVN","TRAVERSE_MVN");
+        //Log.info("MVN","TRAVERSE_MVN");
     }
 
     //@Override
     default void handle(ASTNode node) {
-        Log.info("MVN","HANDLE_MVN");
+        //Log.info("MVN","HANDLE_MVN");
     }
 
     @Override
     default void visit(ASTNode node) {
-        Log.info("MVN","VISIT_MVN");
+        //Log.info("MVN","VISIT_MVN");
     }
 
 
     @Override
     default void endVisit(ASTNode node) {
-        Log.info("MVN","END_VISIT_MVN");
+        //Log.info("MVN","END_VISIT_MVN");
 
     }
 
     @Override
     default void visit(ASTEMACompilationUnit node){
-        Log.info("MVN","VISIT_MVN_COMP");
+        //Log.info("MVN","VISIT_MVN_COMP");
 
     }
 
     @Override
     default void endVisit(ASTEMACompilationUnit node){
-        Log.info("MVN","END_VISIT_MVN_COMP");
+        //Log.info("MVN","END_VISIT_MVN_COMP");
     }
 
     @Override
     default void visit(ASTEMADLNode node) {
-        Log.info("MVN","VISIT_MVN");
+        //Log.info("MVN","VISIT_MVN");
     }
 
     @Override
     default void endVisit(ASTEMADLNode node) {
-        Log.info("MVN","END_VISIT_MVN");
+        //Log.info("MVN","END_VISIT_MVN");
 
     }
 }

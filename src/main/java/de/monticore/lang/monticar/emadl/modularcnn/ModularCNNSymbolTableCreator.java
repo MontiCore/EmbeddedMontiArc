@@ -29,34 +29,39 @@ public class ModularCNNSymbolTableCreator extends CommonSymbolTableCreator imple
 
     private ModularNetworkVisitor realThis = this;
     private NetworkStructureScanner nss = null;
-    private ArrayList<ASTArchitecture> archNodes = null;
+    private ArrayList<ArchitectureNode> archNodes = null;
 
-    public ModularCNNSymbolTableCreator(ResolvingConfiguration resolvingConfig, MutableScope enclosingScope, ArrayList<ASTArchitecture> nodes) {
+
+    public ModularCNNSymbolTableCreator(ResolvingConfiguration resolvingConfig, MutableScope enclosingScope, ArrayList<ArchitectureNode> archNodes) {
         super(resolvingConfig, enclosingScope);
         this.initSuperSTC();
-        this.initNetworkStructureScanner();
+        this.initNetworkStructureScanner(archNodes);
 
-        this.archNodes = nodes;
-        Log.info("INIT","MCNNSTC_INIT_ENCLOSING-SCOPE");
+
+        //Log.info("INIT","MCNNSTC_INIT_ENCLOSING-SCOPE");
 
     }
 
-    public ModularCNNSymbolTableCreator(ResolvingConfiguration resolvingConfig, Deque<MutableScope> scopeStack, ArrayList<ASTArchitecture> nodes) {
+    public ModularCNNSymbolTableCreator(ResolvingConfiguration resolvingConfig, Deque<MutableScope> scopeStack, ArrayList<ArchitectureNode> archNodes) {
         super(resolvingConfig, scopeStack);
         this.initSuperSTC();
-        this.initNetworkStructureScanner();
 
-        this.archNodes = nodes;
-        Log.info("INIT","MCNNSTC_INIT_SCOPE-STACK");
+
+        this.initNetworkStructureScanner(archNodes);
+
+
+
+        //Log.info("INIT","MCNNSTC_INIT_SCOPE-STACK");
     }
 
     public void initSuperSTC(){
 
     }
 
-    public void initNetworkStructureScanner(){
-        nss = new NetworkStructureScanner();
-        Log.info("Initialized Network Structure Scanner","NSS_INIT");
+    public void initNetworkStructureScanner(ArrayList<ArchitectureNode> archNodes){
+        nss = new NetworkStructureScanner(archNodes);
+        this.archNodes = archNodes;
+        //Log.info("Initialized Network Structure Scanner","NSS_INIT");
     }
 
     public Scope createFromAST(ASTEMADLNode rootNode) {
@@ -85,43 +90,42 @@ public class ModularCNNSymbolTableCreator extends CommonSymbolTableCreator imple
 
     public void setRealThis (EMADLVisitor v) {
         if (v instanceof ModularNetworkVisitor){
-            Log.info("MCNNSTC Set Real this EMADLVisitor pass","MCNNSTC_SET_REAL_THIS_INSTANCE");
+            //Log.info("MCNNSTC Set Real this EMADLVisitor pass","MCNNSTC_SET_REAL_THIS_INSTANCE");
             this.setRealThis((ModularNetworkVisitor) v);
         } else{
-            Log.info("MCNNSTC Set Real this EMADLVisitor fail","MCNNSTC_SET_REAL_THIS_INSTANCE");
+            //Log.info("MCNNSTC Set Real this EMADLVisitor fail","MCNNSTC_SET_REAL_THIS_INSTANCE");
         }
 
     }
 
-    public ArrayList<ASTArchitecture> getArchNodes(){
-        return this.archNodes;
-    }
+
 
 
 
     @Override
     public void traverse(ASTNode node){
-        Log.info("MCNNSTC","TRAVERSE_MCNNSTC");
+        //Log.info("MCNNSTC","TRAVERSE_MCNNSTC");
     }
 
     @Override
     public void handle(ASTNode node) {
-        Log.info("MCNNSTC","HANDLE_MCNNSTC");
+        //Log.info("MCNNSTC","HANDLE_MCNNSTC");
     }
 
     @Override
     public void visit(ASTNode node) {
-        Log.info("MCNNSTC","VISIT_MCNNSTC_ASTNODE");
-        Log.info(node.toString(),"VISIT_MCNNSTC");
+        //Log.info("MCNNSTC","VISIT_MCNNSTC_ASTNODE");
+        //Log.info(node.toString(),"VISIT_MCNNSTC");
 
 
-       // nss.scanForArchitectureNodes(node);
+       //nss.scanForArchitectureNodes(node);
     }
 
     @Override
     public void endVisit(ASTNode node){
 
         nss.scanForArchitectureNodes(node);
+        /*
         if (node instanceof  ASTEMADLNode){
             Log.info("HIT:" + node.toString(),"END_MCNNSTC_ASTNODE");
         }
@@ -145,11 +149,14 @@ public class ModularCNNSymbolTableCreator extends CommonSymbolTableCreator imple
 
 
         Log.info("MCNNSTC","END_MCNNSTC_ASTNODE");
+
+         */
     }
 
 
     @Override
     public void visit(ASTEMACompilationUnit node){
+        /*
         Log.info("MCNNSTC","VISIT_MCNNSTC_COMP");
         Log.info("Node to String: " + node.toString(),"VISIT_MCNNSTC_COMP");
 
@@ -157,7 +164,7 @@ public class ModularCNNSymbolTableCreator extends CommonSymbolTableCreator imple
 
             Log.info("Check out this node: " + node.toString(),"VISIT_MCNNSTC_COMP_MATCH");
         }
-
+        */
 
         //NetworkStructureScanner nss = new NetworkStructureScanner();
         //nss.scanStructure(node);
@@ -170,17 +177,17 @@ public class ModularCNNSymbolTableCreator extends CommonSymbolTableCreator imple
         Log.info("MCNNSTC","END_MCNNSTC_COMP");
         Log.info("Node: " + node.toString(),"END_MCNNSTC_COMP");
         //nss.scanForArchitectureNodes(node);
-        CNNChecker cnnChecker = new CNNChecker();
+        CNNChecker cnnChecker = new CNNChecker(archNodes);
         cnnChecker.check(node.getComponent());
 
 
 
         if (node.getComponent().getName().equals("Net1")) {
             //cnnChecker.check(node.getComponent());
-            Log.info("Check out this node: " + node.toString(),"END_MCNNSTC_COMP_MATCH");
+            Log.info("Check out node: " + node.toString(),"END_MCNNSTC_COMP_MATCH");
         } else if (node.getComponent().getName().equals("Net2")) {
             //cnnChecker.check(node.getComponent());
-            Log.info("Check out this node: " + node.toString(),"END_MCNNSTC_COMP_MATCH");
+            Log.info("Check out node: " + node.toString(),"END_MCNNSTC_COMP_MATCH");
 
         } else if (node.getComponent().getName().equals("Network")) {
             //cnnChecker.check(node.getComponent());
@@ -204,10 +211,12 @@ public class ModularCNNSymbolTableCreator extends CommonSymbolTableCreator imple
         }
 
 
+        /*
         if (node.getComponent().getName().equals("Network")) {
             this.removeCurrentScope();
             Log.info("Check out this node: " + node.toString(),"END_MCNNSTC_COMP_MATCH");
         }
+         */
 
 
        /* Deque<MutableScope> scopeStackRef = this.scopeStack;
@@ -224,14 +233,15 @@ public class ModularCNNSymbolTableCreator extends CommonSymbolTableCreator imple
         }*/
 
 
-        Log.info("DONE","END_MCNNSTC_COMP_DONE");
+
         //Optional<? extends Symbol> sym = node.getComponent().getSymbolOpt();
         //Log.info("endVisit of " + node.getComponent().getSymbolOpt().get().getFullName(), "END_MCNNSTC_COMP");
 
-
+        Log.info("DONE","END_MCNNSTC_COMP_DONE");
         
     }
 
+    /*
     @Override
     public void visit(ASTEMADLNode node) {
         Log.info("MCNNSTC","VISIT_MCNNSTC_EMADL");
@@ -246,4 +256,6 @@ public class ModularCNNSymbolTableCreator extends CommonSymbolTableCreator imple
         Log.info("MCNNSTC","END_MCNNSTC_EMADL");
         Log.info(node.toString(),"END_MCNNSTC_EMADL");
     }
+    */
+
 }
