@@ -9,6 +9,7 @@ package de.monticore.lang.monticar.emadl._visitor;
 import de.monticore.ast.ASTNode;
 import de.monticore.lang.embeddedmontiarc.embeddedmontiarc._ast.ASTEMACompilationUnit;
 import de.monticore.lang.embeddedmontiarc.embeddedmontiarc._symboltable.instanceStructure.EMAComponentInstanceSymbol;
+import de.monticore.lang.monticar.emadl._ast.ASTEMADLNode;
 import de.monticore.lang.monticar.emadl.modularcnn.ModularCNNSymbolTableCreator;
 import de.se_rwth.commons.logging.Log;
 
@@ -85,6 +86,22 @@ public class ModularEMADLDelegatorVisitor extends EMADLDelegatorVisitor implemen
 
     @Override
     public void endVisit(ASTEMACompilationUnit node) {
+        super.endVisit(node);
+        if (getRealThis().getModularNetworkVisitor().isPresent()) {
+            getRealThis().getModularNetworkVisitor().get().endVisit(node);
+        }
+    }
+
+    @Override
+    public void visit(ASTEMADLNode node){
+        super.visit(node);
+        if (getRealThis().getModularNetworkVisitor().isPresent()) {
+            getRealThis().getModularNetworkVisitor().get().visit(node);
+        }
+    }
+
+    @Override
+    public void endVisit(ASTEMADLNode node){
         super.endVisit(node);
         if (getRealThis().getModularNetworkVisitor().isPresent()) {
             getRealThis().getModularNetworkVisitor().get().endVisit(node);

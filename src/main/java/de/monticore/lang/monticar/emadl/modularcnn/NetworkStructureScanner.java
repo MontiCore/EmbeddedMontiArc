@@ -63,6 +63,13 @@ public class NetworkStructureScanner /*implements EMADLVisitor*/ {
     public void scanForArchitectureNodes(ASTNode node){
             Log.info("NSS","NSS_ASTNODE");
             Log.info(node.toString(),"NSS_ASTNODE");
+
+
+             node.getSymbolOpt().ifPresent(symbol -> {
+                 if (symbol.getName().equals("Network")){
+                     Log.info("ARCH_FOUND","NSS_ASTNODE");
+                 }
+             });
        // EMAComponentInstanceSymbolCreator instanceSymbolCreator = new EMAComponentInstanceSymbolCreator();
         if (node instanceof ASTArchitecture){
             Log.info("ARCH_FOUND","NSS_ASTNODE");
@@ -118,6 +125,12 @@ public class NetworkStructureScanner /*implements EMADLVisitor*/ {
 
         //instanceSymbolCreator.createInstances();
     }
+
+    /*public void scanForArchitectureNodes(ASTEMACompilationUnit node){
+        Log.info("NSS","NSS_CU");
+        Log.info(node.toString(),"NSS_CU");
+
+    }*/
 
     public void scanStructure(ASTEMADLNode node){
         Log.info("NSS","NSS_ASTEMADLNODE");
