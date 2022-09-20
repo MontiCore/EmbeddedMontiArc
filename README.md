@@ -2,6 +2,8 @@
 ![pipeline](https://git.rwth-aachen.de/monticore/EmbeddedMontiArc/languages/CNNTrainLang/badges/master/build.svg)
 ![coverage](https://git.rwth-aachen.de/monticore/EmbeddedMontiArc/languages/CNNTrainLang/badges/master/coverage.svg)
 
+# !!This project is obsolete !! Use ConfLang instead !!
+
 # CNNTrain
 
 CNNTrain is a domain specific language for describing training parameters of a feedforward neural network. CNNTrain files must have .cnnt extension. Training configuration starts with a `configuration` word, followed by the configuration name and a list of parameters.  The available parameters are batch size, number of epochs, loading previous checkpoint as well as an optimizer with its parameters. All these parameters are optional.
