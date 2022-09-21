@@ -30,7 +30,7 @@
             <plugin>
                 <groupId>de.monticore.lang.monticar.utilities</groupId>
                 <artifactId>emadl-maven-plugin</artifactId>
-                <version>0.0.5-SNAPSHOT</version>
+                <version>LATEST</version>
                 <configuration>
                     <training>
                         <backend>GLUON</backend>
