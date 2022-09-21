@@ -19,7 +19,7 @@
     <url>https://git.rwth-aachen.de/monticore/EmbeddedMontiArc/utilities/emadl-maven-plugin</url>
 
     <properties>
-        <MavenStreamTest.version>0.0.28-SNAPSHOT</MavenStreamTest.version>
+        <MavenStreamTest.version>0.0.29-SNAPSHOT</MavenStreamTest.version>
         
         <montisim.hardware_emulator.version>2.1.0-SNAPSHOT</montisim.hardware_emulator.version>
 
