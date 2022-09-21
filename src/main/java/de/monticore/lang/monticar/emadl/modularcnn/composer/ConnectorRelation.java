@@ -4,9 +4,7 @@
  * The license generally applicable for this project
  * can be found under https://github.com/MontiCore/monticore.
  */
-package de.monticore.lang.monticar.emadl.modularcnn;
-
-import de.monticore.lang.embeddedmontiarc.embeddedmontiarc._ast.ASTComponent;
+package de.monticore.lang.monticar.emadl.modularcnn.composer;
 
 public class ConnectorRelation {
 

@@ -4,12 +4,12 @@
  * The license generally applicable for this project
  * can be found under https://github.com/MontiCore/monticore.
  */
-package de.monticore.lang.monticar.emadl.modularcnn;
+package de.monticore.lang.monticar.emadl.modularcnn.composer;
 
 import de.monticore.lang.embeddedmontiarc.embeddedmontiarc._ast.*;
 import de.monticore.lang.embeddedmontiarc.embeddedmontiarc._symboltable.cncModel.EMAComponentSymbol;
-import de.monticore.lang.monticar.cnnarch._symboltable.ArchitectureSymbol;
-import de.monticore.lang.monticar.emadl._symboltable.ModifiedExpandedInstanceSymbolCreator;
+import de.monticore.lang.monticar.emadl.modularcnn.builder.InstanceBuilder;
+import de.monticore.lang.monticar.emadl.modularcnn.builder.SymbolCreator;
 import de.se_rwth.commons.logging.Log;
 
 import java.util.ArrayList;
@@ -34,10 +34,14 @@ public class CNNComposer {
         return isValidCNNCanditate(node.getComponent());
     }
 
-    public void checkAndTransformComponentOnMatch(ASTEMACompilationUnit node) {
+    public boolean checkNotNullAndValid(ASTEMACompilationUnit node){
         ASTComponent component = node.getComponent();
-        if (component == null || !isValidCNNCanditate(component)) return;
+        return component != null && isValidCNNCanditate(component);
+    }
 
+
+    public void checkAndTransformComponentOnMatch(ASTEMACompilationUnit node) {
+        if (!checkNotNullAndValid(node)) return;
         transformComponentToCNN(node);
 
         //TODO: Add to archNodes for completeness/updates
@@ -47,9 +51,20 @@ public class CNNComposer {
 
     //TODO: Transform Node to architecture Node
     private void transformComponentToCNN(ASTEMACompilationUnit node){
-        ModifiedExpandedInstanceSymbolCreator instanceSymbolCreator = new ModifiedExpandedInstanceSymbolCreator();
-        instanceSymbolCreator.createInstances((EMAComponentSymbol)(Log.errorIfNull(node.getComponent().getSymbolOpt().orElse(null))),node.getComponent().getSymbolOpt().get().getName());
+        if (node.getComponent().getSymbolOpt().isPresent()) {
+            EMAComponentSymbol symbol = (EMAComponentSymbol) node.getComponent().getSymbolOpt().get();
 
+            SymbolCreator symbolCreator = new SymbolCreator();
+            symbolCreator.createInstances(symbol, symbol.getName());
+
+            //InstanceBuilder instanceBuilder = new InstanceBuilder(node);
+            /*
+            ModifiedExpandedInstanceSymbolCreator instanceSymbolCreator = new ModifiedExpandedInstanceSymbolCreator();
+            String instanceName = symbol.getName();
+            instanceSymbolCreator.createInstances(symbol,instanceName);
+            instanceSymbolCreator.createInstances((EMAComponentSymbol)(Log.errorIfNull(node.getComponent().getSymbolOpt().orElse(null))),node.getComponent().getSymbolOpt().get().getName());
+            */
+        }
 
 
     }

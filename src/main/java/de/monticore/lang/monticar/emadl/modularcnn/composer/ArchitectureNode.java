@@ -4,9 +4,10 @@
  * The license generally applicable for this project
  * can be found under https://github.com/MontiCore/monticore.
  */
-package de.monticore.lang.monticar.emadl.modularcnn;
+package de.monticore.lang.monticar.emadl.modularcnn.composer;
 
 import de.monticore.lang.monticar.cnnarch._ast.ASTArchitecture;
+import de.monticore.lang.monticar.emadl.modularcnn.ScopeFinder;
 import de.monticore.symboltable.ArtifactScope;
 import de.monticore.symboltable.Scope;
 

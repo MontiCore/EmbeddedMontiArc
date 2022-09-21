@@ -7,29 +7,23 @@
 /* (c) https://github.com/MontiCore/monticore */
 package de.monticore.lang.monticar.emadl._symboltable;
 
-import de.monticore.ast.ASTNode;
-import de.monticore.lang.embeddedmontiarc.embeddedmontiarc._ast.ASTComponent;
 import de.monticore.lang.embeddedmontiarc.embeddedmontiarc._ast.ASTEMACompilationUnit;
-import de.monticore.lang.embeddedmontiarc.embeddedmontiarc._ast.ASTSubComponent;
 import de.monticore.lang.embeddedmontiarc.embeddedmontiarcbehavior._symboltable.EmbeddedMontiArcBehaviorSymbolTableCreator;
 import de.monticore.lang.embeddedmontiarc.embeddedmontiarcbehavior._visitor.EmbeddedMontiArcBehaviorVisitor;
 import de.monticore.lang.embeddedmontiarc.embeddedmontiarcmath._symboltable.EmbeddedMontiArcMathSymbolTableCreatorTOP;
 import de.monticore.lang.embeddedmontiarc.embeddedmontiarcmath._symboltable.instanceStructure.ModifiedEMAComponentInstanceSymbolCreator;
 import de.monticore.lang.embeddedmontiarcdynamic.embeddedmontiarcdynamic._symboltable.EmbeddedMontiArcDynamicSymbolTableCreator;
 import de.monticore.lang.mathopt._symboltable.MathOptSymbolTableCreator;
-import de.monticore.lang.monticar.cnnarch._ast.ASTArchitecture;
 import de.monticore.lang.monticar.cnnarch._symboltable.CNNArchSymbolTableCreator;
 import de.monticore.lang.monticar.emadl._ast.ASTBehaviorEmbedding;
-import de.monticore.lang.monticar.emadl._visitor.EMADLDelegatorVisitor;
 import de.monticore.lang.monticar.emadl._visitor.EMADLVisitor;
 import de.monticore.lang.monticar.emadl._visitor.ModularEMADLDelegatorVisitor;
 import de.monticore.lang.monticar.emadl._visitor.ModularNetworkVisitor;
-import de.monticore.lang.monticar.emadl.modularcnn.ArchitectureNode;
+import de.monticore.lang.monticar.emadl.modularcnn.composer.ArchitectureNode;
 import de.monticore.lang.monticar.emadl.modularcnn.ModularCNNSymbolTableCreator;
 import de.monticore.symboltable.MutableScope;
 import de.monticore.symboltable.ResolvingConfiguration;
 import de.monticore.symboltable.Scope;
-import de.monticore.symboltable.Symbol;
 import de.se_rwth.commons.logging.Log;
 
 import java.util.*;

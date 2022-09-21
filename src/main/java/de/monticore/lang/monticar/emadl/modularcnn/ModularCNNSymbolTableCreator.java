@@ -11,6 +11,9 @@ import de.monticore.lang.embeddedmontiarc.embeddedmontiarc._ast.ASTEMACompilatio
 import de.monticore.lang.monticar.emadl._ast.ASTEMADLNode;
 import de.monticore.lang.monticar.emadl._visitor.EMADLVisitor;
 import de.monticore.lang.monticar.emadl._visitor.ModularNetworkVisitor;
+import de.monticore.lang.monticar.emadl.modularcnn.composer.ArchitectureNode;
+import de.monticore.lang.monticar.emadl.modularcnn.composer.CNNComposer;
+import de.monticore.lang.monticar.emadl.modularcnn.composer.NetworkStructureScanner;
 import de.monticore.symboltable.*;
 import de.se_rwth.commons.logging.Log;
 
@@ -171,9 +174,11 @@ public class ModularCNNSymbolTableCreator extends CommonSymbolTableCreator imple
         Log.info("Node: " + node.toString(),"END_MCNNSTC_COMP");
         CNNComposer cnnComposer = new CNNComposer(archNodes);
 
-        if (cnnComposer.nodeIsComposedCNN(node)){
-            //this.removeCurrentScope();
+        if (cnnComposer.nodeIsComposedCNN(node) && cnnComposer.checkNotNullAndValid(node)){
+            this.removeCurrentScope();
             cnnComposer.checkAndTransformComponentOnMatch(node);
+            MutableScope newScope = getFirstCreatedScope();
+            Log.info("NewScope: " + newScope.toString(),"END_MCNNSTC_COMP_DONE");
         }
 
 

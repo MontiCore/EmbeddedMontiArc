@@ -4,7 +4,7 @@
  * The license generally applicable for this project
  * can be found under https://github.com/MontiCore/monticore.
  */
-package de.monticore.lang.monticar.emadl.modularcnn;
+package de.monticore.lang.monticar.emadl.modularcnn.composer;
 
 
 import de.monticore.ast.ASTNode;
@@ -12,20 +12,14 @@ import de.monticore.lang.embeddedmontiarc.embeddedmontiarc._ast.ASTComponent;
 import de.monticore.lang.embeddedmontiarc.embeddedmontiarc._ast.ASTEMACompilationUnit;
 import de.monticore.lang.embeddedmontiarc.embeddedmontiarc._ast.ASTSubComponent;
 import de.monticore.lang.embeddedmontiarc.embeddedmontiarc._ast.ASTSubComponentInstance;
-import de.monticore.lang.embeddedmontiarc.embeddedmontiarc._symboltable.cncModel.EMAComponentSymbol;
-import de.monticore.lang.embeddedmontiarc.embeddedmontiarc._symboltable.instanceStructure.EMAComponentInstanceSymbolCreator;
 import de.monticore.lang.monticar.cnnarch._ast.ASTArchitecture;
-import de.monticore.lang.monticar.cnnarch._symboltable.ArchitectureSymbol;
 import de.monticore.lang.monticar.emadl._ast.ASTEMADLNode;
-import de.monticore.lang.monticar.emadl._ast.EMADLMill;
 import de.monticore.symboltable.*;
 import de.se_rwth.commons.logging.Log;
 
 import java.util.ArrayList;
-import java.util.Collection;
 import java.util.List;
 import java.util.Optional;
-import java.util.stream.Collectors;
 
 
 public class NetworkStructureScanner /*implements EMADLVisitor*/ {

@@ -4,14 +4,13 @@
  * The license generally applicable for this project
  * can be found under https://github.com/MontiCore/monticore.
  */
-package de.monticore.lang.monticar.emadl.modularcnn;
+package de.monticore.lang.monticar.emadl.modularcnn.composer;
 
 import de.monticore.lang.embeddedmontiarc.embeddedmontiarc._ast.*;
 import de.monticore.lang.embeddedmontiarc.embeddedmontiarc._symboltable.ComponentKind;
 import de.monticore.lang.embeddedmontiarcdynamic.embeddedmontiarcdynamic._symboltable.cncModel.EMADynamicComponentSymbol;
 import de.monticore.lang.embeddedmontiarcdynamic.embeddedmontiarcdynamic._symboltable.cncModel.EMADynamicConnectorSymbol;
 import de.monticore.lang.embeddedmontiarcdynamic.embeddedmontiarcdynamic._symboltable.instanceStructure.EMADynamicComponentInstantiationSymbol;
-import de.monticore.lang.monticar.cnnarch._ast.ASTArchitecture;
 import de.se_rwth.commons.logging.Log;
 
 import java.util.ArrayList;
