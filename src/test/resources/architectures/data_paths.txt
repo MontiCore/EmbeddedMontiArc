@@ -1,1 +1,4 @@
 LeNet data/LeNet
+DGLNetwork data/DGLNetwork
+LayerInvalid data/LayerInvalid
+ArchitectureInvalid data/ArchitectureInvalid
