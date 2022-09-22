@@ -1,22 +1,16 @@
-# (c) https://github.com/MontiCore/monticore
-from abc import ABCMeta, abstractmethod
+import torch
+import torch.nn as nn
+import torch.nn.functional as F
 
-class AbstractEvaluation(metaclass=ABCMeta):
-    @abstractmethod
-    def evaluate(self):
-        pass
+class SupervisedEvaluation():
 
-class SupervisedEvaluation(AbstractEvaluation, metaclass=ABCMeta):
-
-    def __init__(self, trained_model, train_config, test_loader):
-        super().__init__()
+    def __init__(self, trained_model, test_loader):
         self._trained_model_ = trained_model
         self._test_loader_ = test_loader
-        self._train_config_ = train_config
 
-    def evaluate(self):
-        self._trained_model_.eval()
+    def execute(self):
         test_accuracy = []
+        self._trained_model_.eval()
         # since we're not training, we don't need to calculate the gradients for our outputs
         with torch.no_grad():
             for data in self._test_loader_:
