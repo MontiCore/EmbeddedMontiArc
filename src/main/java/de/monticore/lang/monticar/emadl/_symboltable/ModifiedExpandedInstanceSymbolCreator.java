@@ -86,7 +86,6 @@ public class ModifiedExpandedInstanceSymbolCreator extends EMAComponentInstanceS
 
     @Override
     public void createInstances(EMAComponentSymbol topComponent, String instanceName) {
-        Log.info(instanceName + " | " + instanceName.substring(0,1).toLowerCase() + instanceName.substring(1),"FUCK_THIS");
         super.createInstances(topComponent,instanceName.substring(0,1).toLowerCase() + instanceName.substring(1));
     }
 }

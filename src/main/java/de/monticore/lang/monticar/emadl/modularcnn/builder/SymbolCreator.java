@@ -1,19 +1,22 @@
 package de.monticore.lang.monticar.emadl.modularcnn.builder;
 
+import de.monticore.lang.embeddedmontiarc.embeddedmontiarc._ast.ASTComponent;
+import de.monticore.lang.embeddedmontiarc.embeddedmontiarc._ast.ASTEMACompilationUnit;
 import de.monticore.lang.embeddedmontiarc.embeddedmontiarc._symboltable.cncModel.EMAComponentSymbol;
 import de.monticore.lang.embeddedmontiarc.embeddedmontiarc._symboltable.cncModel.EMAComponentSymbolReference;
 import de.monticore.lang.embeddedmontiarc.embeddedmontiarc._symboltable.cncModel.EMAConnectorSymbol;
 import de.monticore.lang.embeddedmontiarc.embeddedmontiarc._symboltable.instanceStructure.EMAComponentInstanceBuilder;
+import de.monticore.lang.embeddedmontiarc.embeddedmontiarc._symboltable.instanceStructure.EMAComponentInstanceSymbol;
 import de.monticore.lang.embeddedmontiarc.embeddedmontiarc._symboltable.instanceStructure.EMAComponentInstanceSymbolCreator;
 import de.monticore.lang.embeddedmontiarc.embeddedmontiarc._symboltable.instanceStructure.EMAComponentInstantiationSymbol;
-import de.monticore.lang.embeddedmontiarcdynamic.embeddedmontiarcdynamic._symboltable.cncModel.EMADynamicComponentSymbol;
+import de.monticore.lang.monticar.cnnarch._symboltable.ArchitectureSymbol;
 import de.monticore.lang.monticar.si._symboltable.ResolutionDeclarationSymbol;
 import de.monticore.symboltable.Symbol;
 import de.monticore.symboltable.resolving.ResolvingFilter;
 import de.se_rwth.commons.logging.Log;
 
-import java.util.ArrayList;
 import java.util.List;
+import java.util.Optional;
 import java.util.Set;
 
 public class SymbolCreator extends EMAComponentInstanceSymbolCreator {
@@ -26,6 +29,21 @@ public class SymbolCreator extends EMAComponentInstanceSymbolCreator {
 
 
         super.createInstances(topComponent,realInstanceName);
+    }
+
+    public void createAndLinkNewSymbol(ASTComponent component, EMAComponentSymbol componentSymbol){
+        String realInstanceName = "Bitch"; //componentSymbol.getEnclosingScope().getLocalSymbols().keySet().stream().skip(componentSymbol.getEnclosingScope().getSymbolsSize()-1).findFirst().get();
+        List<ResolutionDeclarationSymbol> resolutionDeclarationSymbols = componentSymbol.getResolutionDeclarationSymbols();
+        Set<ResolvingFilter<? extends Symbol>> resolvingFilters = componentSymbol.getSpannedScope().getResolvingFilters();
+
+        EMAComponentInstanceBuilder builder = createInstance(componentSymbol, resolvingFilters, resolutionDeclarationSymbols, realInstanceName);
+        EMAComponentInstanceSymbol newSymbol = builder.build();
+        component.setSymbolOpt(Optional.of(newSymbol));
+    }
+
+    public void createNewArchitectureSymbol(){
+        ArchitectureSymbol architectureSymbol = new ArchitectureSymbol();
+        //architectureSymbol.set
     }
 
     @Override

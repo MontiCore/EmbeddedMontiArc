@@ -11,6 +11,7 @@ import de.monticore.lang.embeddedmontiarc.embeddedmontiarc._symboltable.Componen
 import de.monticore.lang.embeddedmontiarcdynamic.embeddedmontiarcdynamic._symboltable.cncModel.EMADynamicComponentSymbol;
 import de.monticore.lang.embeddedmontiarcdynamic.embeddedmontiarcdynamic._symboltable.cncModel.EMADynamicConnectorSymbol;
 import de.monticore.lang.embeddedmontiarcdynamic.embeddedmontiarcdynamic._symboltable.instanceStructure.EMADynamicComponentInstantiationSymbol;
+import de.monticore.lang.monticar.cnnarch._ast.ASTArchitecture;
 import de.se_rwth.commons.logging.Log;
 
 import java.util.ArrayList;
@@ -35,6 +36,7 @@ public class ComponentInformation {
     private ASTComponent originalComponentReference = null;
 
     private boolean violatesNetworkForm = false;
+    private boolean isCNNNode = false;
 
     public ArrayList<ASTInterface> getInterfaces() {
         return interfaces;
@@ -93,7 +95,7 @@ public class ComponentInformation {
 
 
 
-    public ComponentInformation(ASTComponent component, ArrayList<ArchitectureNode> currentNodes){
+    public ComponentInformation(ASTComponent component, ArrayList<ArchitectureNode> currentNodes) {
 
 
         this.originalComponentReference = component;
@@ -107,6 +109,27 @@ public class ComponentInformation {
         initLists(component);
 
         printConnectiorRelations();
+
+
+        if (this.isComposedCNN()){
+            ArrayList<ASTArchitecture> subNodes = new ArrayList<>();
+            for (ComponentInformation componentInformation: this.includedComponentsInformation){
+                for (ArchitectureNode architectureNode: this.archNodes){
+                    if (componentInformation.getComponentName().equals(architectureNode.getComponentName()) && !subNodes.contains(architectureNode.getOriginalNode())){
+                        subNodes.add(architectureNode.getOriginalNode());
+                    }
+
+                }
+            }
+            ArchitectureNode architectureNode = new ArchitectureNode(subNodes,true,this.componentName);
+            this.archNodes.add(architectureNode);
+        }
+
+        if (this.isASTArchitectureNode() || this.isComposedCNN()) {
+            this.isCNNNode = true;
+        } else {
+            this.isCNNNode = false;
+        }
     }
 
     public ComponentInformation(ASTComponent component, ArrayList<ArchitectureNode> currentNodes, String instanceName){
@@ -117,7 +140,7 @@ public class ComponentInformation {
 
 
     //TODO: find actual solution to determine this -> Maybe textfile
-    public boolean isASTArchitectureNode(){
+    private boolean isASTArchitectureNode(){
         Log.info("ASTArchitecture Check for " + this.getComponentName(),"COMPONENT_INFORMATION");
         for (ArchitectureNode node: archNodes){
             Log.info("Checking if: " + this.componentName + " == " + node.getComponentName(),"COMPONENT_INFORMATION" );
@@ -128,6 +151,10 @@ public class ComponentInformation {
         return false;
     }
 
+    public boolean isCNN(){
+        return this.isCNNNode;
+    }
+
     public boolean isComposedCNN(){
         if (violatesNetworkForm) return false;
 
@@ -136,7 +163,7 @@ public class ComponentInformation {
         Log.info("Checking included components of " + this.getComponentName(),"COMPONENT_INFORMATION");
         for (ComponentInformation componentInformation: this.includedComponentsInformation){
             Log.info("Checking: " + componentInformation.getComponentName() + " " +componentInformation.getComponentInstanceName(),"COMPONENT_INFORMATION");
-            if (!componentInformation.isASTArchitectureNode()) {
+            if (!componentInformation.isCNN()) {
                 Log.info("failed","COMPONENT_INFORMATION");
                 return false;
             }
@@ -144,6 +171,8 @@ public class ComponentInformation {
         Log.info("passed","COMPONENT_INFORMATION");
         return true;
     }
+
+
 
     private void printConnectiorRelations(){
         Log.info("Connector relations of: " + this.componentName + " " + this.componentInstanceName,"COMPONENT_INFORMATION");

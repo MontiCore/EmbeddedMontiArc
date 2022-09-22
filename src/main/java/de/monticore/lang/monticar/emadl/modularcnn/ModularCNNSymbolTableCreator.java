@@ -8,6 +8,9 @@ package de.monticore.lang.monticar.emadl.modularcnn;
 
 import de.monticore.ast.ASTNode;
 import de.monticore.lang.embeddedmontiarc.embeddedmontiarc._ast.ASTEMACompilationUnit;
+import de.monticore.lang.monticar.cnnarch._ast.ASTArchitecture;
+import de.monticore.lang.monticar.cnnarch._symboltable.ArchitectureKind;
+import de.monticore.lang.monticar.cnnarch._symboltable.ArchitectureSymbol;
 import de.monticore.lang.monticar.emadl._ast.ASTEMADLNode;
 import de.monticore.lang.monticar.emadl._visitor.EMADLVisitor;
 import de.monticore.lang.monticar.emadl._visitor.ModularNetworkVisitor;
@@ -106,34 +109,46 @@ public class ModularCNNSymbolTableCreator extends CommonSymbolTableCreator imple
 
     @Override
     public void endVisit(ASTNode node){
+        if (node instanceof ASTEMADLNode) Log.info("EMADLNODE","END_MCNNSTC_AST_EMADLNODE");
 
         nss.scanForArchitectureNodes(node);
 
-        /*
-        Log.info("MCNNSTC","END_MCNNSTC_ASTNODE");
-         */
+        if (node.get_SourcePositionStartOpt().isPresent() && node.get_SourcePositionStartOpt().get().getFileName().get().contains("MainB.emadl")){
+            Log.info("Check node:" + node.toString(),"END_MCNNSTC_ASTNODE");
+        }
+       Log.info("MCNNSTC","END_MCNNSTC_ASTNODE");
+
     }
 
 
     @Override
     public void visit(ASTEMACompilationUnit node){
-        /*
-        Log.info("MCNNSTC","VISIT_MCNNSTC_COMP");
-        Log.info("Node to String: " + node.toString(),"VISIT_MCNNSTC_COMP");
-        */
+
+        //Log.info("MCNNSTC","VISIT_MCNNSTC_COMP");
+        //Log.info("Node to String: " + node.toString(),"VISIT_MCNNSTC_COMP");
+
     }
 
     @Override
     public void endVisit(ASTEMACompilationUnit node){
+        if (node instanceof ASTEMADLNode) Log.info("EMADLNODE","END_MCNNSTC_COMP_EMADLNODE");
+
+        if (node.get_SourcePositionStartOpt().isPresent() && node.get_SourcePositionStartOpt().get().getFileName().get().contains("NetworkC.emadl")){
+            Log.info("Check node:" + node.toString(),"END_MCNNSTC_ASTNODE");
+            if (ArchitectureKind.KIND.isKindOf(node.getComponent().getSymbolOpt().get().getKind())){
+                Log.info("ARCH_SYMBOL","END_MCNNSTC_ASTNODE");
+            }
+        }
+
         Log.info("MCNNSTC","END_MCNNSTC_COMP");
-        Log.info("Node: " + node.toString(),"END_MCNNSTC_COMP");
+        //Log.info("Node: " + node.toString(),"END_MCNNSTC_COMP");
         CNNComposer cnnComposer = new CNNComposer(archNodes);
 
         if (cnnComposer.nodeIsComposedCNN(node) && cnnComposer.checkNotNullAndValid(node)){
             this.removeCurrentScope();
             cnnComposer.checkAndTransformComponentOnMatch(node);
-            MutableScope newScope = getFirstCreatedScope();
-            Log.info("NewScope: " + newScope.toString(),"END_MCNNSTC_COMP_DONE");
+            //MutableScope newScope = getFirstCreatedScope();
+            //Log.info("NewScope: " + newScope.toString(),"END_MCNNSTC_COMP_DONE");
         }
 
         Log.info("DONE","END_MCNNSTC_COMP_DONE");

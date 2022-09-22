@@ -11,19 +11,39 @@ import de.monticore.lang.monticar.emadl.modularcnn.ScopeFinder;
 import de.monticore.symboltable.ArtifactScope;
 import de.monticore.symboltable.Scope;
 
+import java.util.ArrayList;
+
 public class ArchitectureNode{
 
-    private ASTArchitecture originalNode = null;
-    private String componentName = null;
+    private ArrayList<ASTArchitecture> originalNodes = null;
+
+    private boolean composedNode = false;
+    private String componentName;
     public ScopeFinder scopeFinder = new ScopeFinder();
 
+    public ArchitectureNode(ArrayList<ASTArchitecture> nodes, boolean isComposed, String composedComponentName){
+        this.originalNodes = nodes;
+        this.composedNode = isComposed;
+        this.componentName = composedComponentName;
+    }
+
     public ArchitectureNode(ASTArchitecture node){
-        this.originalNode = node;
+        this.originalNodes = new ArrayList<>();
+        this.originalNodes.add(node);
+        this.composedNode = false;
         this.componentName = findComponentName(node);
     }
 
+
+
     public ASTArchitecture getOriginalNode() {
-        return originalNode;
+        if (!composedNode && originalNodes.size() == 1) return this.originalNodes.get(0);
+        return null;
+    }
+
+    public ArrayList<ASTArchitecture> getOriginalNodes(){
+        if (composedNode) return this.originalNodes;
+        return null;
     }
 
     public String getComponentName() {
