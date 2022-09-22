@@ -483,6 +483,10 @@ public class StreamTestMojoBase extends AbstractMojo {
                 }
                 toTestComponents.add(cs.get());
             }
+            if (StringUtils.equals(componentName, getRootModel())) {
+                cs = getScope().resolve(componentName, EMAComponentSymbol.KIND);
+                toTestComponents.add(cs.get());
+            }
         }
 
         return toTestComponents;
