@@ -285,7 +285,7 @@ public class StreamTestGeneratorMojo extends StreamTestMojoBase {
             // Needed, as the C++ generator modifies the Symbol Table in destructive ways
 
 
-            if (this.trainingNeeded){
+            if (this.trainingNeeded) {
                 String outputPath = Paths.get(this.getPathTmpOutCPP(),cs.getFullName()).toString();
                 if (outputPath != null){
                     emadlGenerator.setGenerationTargetPath(outputPath);

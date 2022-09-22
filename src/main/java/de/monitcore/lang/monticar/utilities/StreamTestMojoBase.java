@@ -413,7 +413,7 @@ public class StreamTestMojoBase extends AbstractMojo {
             GlobalScope gs = new GlobalScope(mp_main, fam);
             de.monticore.lang.monticar.Utils.addBuiltInTypes(gs);
 
-            ArrayList<String> col = new ArrayList<String>();
+            ArrayList<String> col = new ArrayList<>();
 
             col.add(this.pathMain);
             if (!this.pathMain.equals(this.pathTest)) {
@@ -472,17 +472,25 @@ public class StreamTestMojoBase extends AbstractMojo {
                 logInfo(" - "+componentName);
             }
             Optional<EMAComponentSymbol> cs = getTestComponentSymbol(componentName, streamTests.keySet());
-            if(!cs.isPresent()){
-                if(output) {
-                    logWarn("   -> No streamtest found for " + componentName);
+            if (this.trainingNeeded) {
+                if (StringUtils.equals(componentName, getRootModel())) {
+                    cs = getScope().resolve(componentName, EMAComponentSymbol.KIND);
+                    toTestComponents.add(cs.get());
                 }
-            }else{
-                if(output){
-                    logInfo("   -> Test with component: "+cs.get().getFullName()+" :");
-                    streamTests.get(cs.get()).forEach( (ComponentStreamUnitsSymbol csus) -> logInfo("      # Streamtest: "+csus.getFullName()));
+            } else {
+                if(cs.isPresent()) {
+                    if(output){
+                        logInfo("   -> Test with component: "+cs.get().getFullName()+" :");
+                        streamTests.get(cs.get()).forEach( (ComponentStreamUnitsSymbol csus) -> logInfo("      # Streamtest: "+csus.getFullName()));
+                    }
+                    toTestComponents.add(cs.get());
+                } else {
+                    if(output) {
+                        logWarn("   -> No streamtest found for " + componentName);
+                    }
                 }
-                toTestComponents.add(cs.get());
             }
+
         }
 
         return toTestComponents;
