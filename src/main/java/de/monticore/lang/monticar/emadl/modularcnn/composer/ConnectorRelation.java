@@ -13,15 +13,6 @@ public class ConnectorRelation {
     private String sourceValue;
     private String targetValue;
 
-    public ConnectorRelation(ComponentInformation source, String sourceValue, ComponentInformation target, String targetValue){
-        this.source = source;
-        this.sourceValue = sourceValue;
-
-        this.target = target;
-        this.targetValue = targetValue;
-
-    }
-
     public ComponentInformation getSource() {
         return source;
     }
@@ -36,5 +27,14 @@ public class ConnectorRelation {
 
     public String getTargetValue() {
         return targetValue;
+    }
+
+    public ConnectorRelation(ComponentInformation source, String sourceValue, ComponentInformation target, String targetValue){
+        this.source = source;
+        this.sourceValue = sourceValue;
+
+        this.target = target;
+        this.targetValue = targetValue;
+
     }
 }

@@ -7,7 +7,7 @@
 package de.monticore.lang.monticar.emadl.modularcnn.composer;
 
 import de.monticore.lang.monticar.cnnarch._ast.ASTArchitecture;
-import de.monticore.lang.monticar.emadl.modularcnn.ScopeFinder;
+import de.monticore.lang.monticar.emadl.modularcnn.tools.ScopeFinder;
 import de.monticore.symboltable.ArtifactScope;
 import de.monticore.symboltable.Scope;
 
@@ -15,15 +15,15 @@ import java.util.ArrayList;
 
 public class ArchitectureNode{
 
-    private ArrayList<ASTArchitecture> originalNodes = null;
+    final private ArrayList<ASTArchitecture> originalNodes;
+    final private ScopeFinder scopeFinder = new ScopeFinder();
 
     private boolean composedNode = false;
     private String componentName;
-    public ScopeFinder scopeFinder = new ScopeFinder();
 
-    public ArchitectureNode(ArrayList<ASTArchitecture> nodes, boolean isComposed, String composedComponentName){
+    public ArchitectureNode(ArrayList<ASTArchitecture> nodes, String composedComponentName){
         this.originalNodes = nodes;
-        this.composedNode = isComposed;
+        this.composedNode = true;
         this.componentName = composedComponentName;
     }
 
@@ -34,7 +34,9 @@ public class ArchitectureNode{
         this.componentName = findComponentName(node);
     }
 
-
+    public boolean isComposedNode(){
+        return composedNode;
+    }
 
     public ASTArchitecture getOriginalNode() {
         if (!composedNode && originalNodes.size() == 1) return this.originalNodes.get(0);
@@ -42,7 +44,7 @@ public class ArchitectureNode{
     }
 
     public ArrayList<ASTArchitecture> getOriginalNodes(){
-        if (composedNode) return this.originalNodes;
+        if (this.originalNodes.size() > 0) return this.originalNodes;
         return null;
     }
 
@@ -50,12 +52,8 @@ public class ArchitectureNode{
         return componentName;
     }
 
-    private String findComponentName(ASTArchitecture node) /*throws Exception*/ {
-        if (!node.getEnclosingScopeOpt().isPresent()) {
-            //System.exit(0);
-            //throw new Exception("Enclosing Scope is null");
-            return null;
-        }
+    private String findComponentName(ASTArchitecture node) {
+        if (!node.getEnclosingScopeOpt().isPresent()) return null;
 
         Scope nodeScope = node.getEnclosingScopeOpt().get();
         ArtifactScope artifactScope = scopeFinder.getNextArtifactScopeUp(nodeScope);

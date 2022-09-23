@@ -10,6 +10,7 @@ import de.monticore.lang.embeddedmontiarc.embeddedmontiarc._ast.*;
 import de.monticore.lang.embeddedmontiarc.embeddedmontiarc._symboltable.cncModel.EMAComponentSymbol;
 import de.monticore.lang.monticar.cnnarch._symboltable.ArchitectureSymbol;
 import de.monticore.lang.monticar.emadl.modularcnn.builder.SymbolCreator;
+import de.monticore.lang.monticar.emadl.modularcnn.tools.FileHandler;
 import de.se_rwth.commons.logging.Log;
 
 import java.io.BufferedWriter;
@@ -20,72 +21,40 @@ import java.util.ArrayList;
 import java.util.Optional;
 
 public class CNNComposer {
-
     private ArrayList<ArchitectureNode> archNodes = null;
+    private String composedNetworksFilePath = "target/ComposedNetworks";
     public CNNComposer(ArrayList<ArchitectureNode> currentNodes) {
         this.archNodes = currentNodes;
     }
-    
+
     private boolean isValidCNNCanditate(ASTComponent component){
         if (component == null) return false;
 
         ComponentInformation componentInformation = new ComponentInformation(component, archNodes);
-        Log.info(component.getName() + " is composed CNN: " + componentInformation.isComposedCNN(),"COMPOSED_CNN");
+        Log.info(component.getName() + " is composed CNN: " + componentInformation.isComposedCNN(),"IS_COMPOSED_CNN");
         return componentInformation.isComposedCNN();
-    }
-
-    private void writeNetworkFile(ASTComponent component){
-        if (component == null) return;
-        ComponentInformation componentInformation = new ComponentInformation(component, archNodes);
-        try {
-            writeToFile(componentInformation.getComponentName());
-        } catch (Exception e) {
-            e.printStackTrace();
-        }
-
-
-    }
-
-    public boolean nodeIsComposedCNN(ASTEMACompilationUnit node){
-        if (node == null) return false;
-        return isValidCNNCanditate(node.getComponent());
     }
 
     public boolean checkNotNullAndValid(ASTEMACompilationUnit node){
         ASTComponent component = node.getComponent();
-        return component != null && isValidCNNCanditate(component);
+        return isValidCNNCanditate(component);
     }
 
-
-    public void checkAndTransformComponentOnMatch(ASTEMACompilationUnit node) {
+    public void checkAndProcessComponentOnMatch(ASTEMACompilationUnit node) {
         if (!checkNotNullAndValid(node)) return;
+        ComponentInformation componentInformation = new ComponentInformation(node.getComponent(), archNodes);
 
-        writeNetworkFile(node.getComponent());
+        FileHandler fileHandler = new FileHandler();
+        fileHandler.writeNetworkFile(componentInformation, composedNetworksFilePath,true);
 
         //transformComponentToCNN(node);
 
-
-
         //TODO: Add to archNodes for completeness/updates
         //this.archNodes.add(new ArchitectureNode())
-
-    }
-
-    private void writeToFile(String content) throws IOException {
-        String fileName = "ComposedNetworks.txt";
-        File f = new File(fileName);
-
-        if (!f.exists()){
-            f.createNewFile();
-        }
-
-        BufferedWriter writer = new BufferedWriter(new FileWriter(fileName,true));
-        writer.append(content + "\n");
-        writer.close();
-
     }
 
     //TODO: Transform Node to architecture Node
+    /*
     private void transformComponentToCNN(ASTEMACompilationUnit node){
         Log.info("" + node.toString(),"COMPOSED_CNN_TRANSFORM_START");
         ASTComponent component = node.getComponent();
@@ -113,11 +82,7 @@ public class CNNComposer {
             instanceSymbolCreator.createInstances(symbol,instanceName);
             instanceSymbolCreator.createInstances((EMAComponentSymbol)(Log.errorIfNull(node.getComponent().getSymbolOpt().orElse(null))),node.getComponent().getSymbolOpt().get().getName());
             */
-        }
-        Log.info("" + node.toString(),"COMPOSED_CNN_TRANSFORM_END");
-
-    }
-    
-    
-    
+    /*  }
+        //Log.info("" + node.toString(),"COMPOSED_CNN_TRANSFORM_END");
+    }*/
 }

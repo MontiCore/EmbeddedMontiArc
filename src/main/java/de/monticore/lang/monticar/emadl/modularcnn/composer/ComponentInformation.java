@@ -1,6 +1,6 @@
 /**
  * (c) https://github.com/MontiCore/monticore
- *
+ * <p>
  * The license generally applicable for this project
  * can be found under https://github.com/MontiCore/monticore.
  */
@@ -17,24 +17,20 @@ import de.se_rwth.commons.logging.Log;
 import java.util.ArrayList;
 
 public class ComponentInformation {
-    private ArrayList<ASTInterface> interfaces = new ArrayList<>();
-    private ArrayList<ASTConnector> connectors = new ArrayList<>();
-    private ArrayList<ASTSubComponent> subComponents = new ArrayList<>();
-
+    final private ArrayList<ASTInterface> interfaces = new ArrayList<>();
+    final private ArrayList<ASTConnector> connectors = new ArrayList<>();
+    final private ArrayList<ASTSubComponent> astSubComponents = new ArrayList<>();
+    final private ArrayList<ASTComponent> includedComponents = new ArrayList<>();
+    final private ArrayList<ComponentInformation> subComponentsInformation = new ArrayList<>();
+    final private ArrayList<ConnectorRelation> connectorRelations = new ArrayList<>();
+    final private ASTComponent originalComponentReference;
+    final private String componentName;
+    final private ArrayList<ArchitectureNode> archNodes;
     private ArrayList<ASTPort> ports = new ArrayList<>();
-    private ArrayList<ASTComponent> includedComponents = new ArrayList<>();
-    private ArrayList<ComponentInformation> includedComponentsInformation = new ArrayList<>();
-    private ArrayList<ConnectorRelation> connectorRelations = new ArrayList<>();
-
-    private String componentName;
     private String componentInstanceName;
     private ComponentKind componentKind;
     private String inputPort;
     private String outputPort;
-    private ArrayList<ArchitectureNode> archNodes = null;
-
-    private ASTComponent originalComponentReference = null;
-
     private boolean violatesNetworkForm = false;
     private boolean isCNNNode = false;
 
@@ -46,8 +42,8 @@ public class ComponentInformation {
         return connectors;
     }
 
-    public ArrayList<ASTSubComponent> getSubComponents() {
-        return subComponents;
+    public ArrayList<ASTSubComponent> getAstSubComponents() {
+        return astSubComponents;
     }
 
     public ArrayList<ASTPort> getPorts() {
@@ -58,8 +54,8 @@ public class ComponentInformation {
         return includedComponents;
     }
 
-    public ArrayList<ComponentInformation> getIncludedComponentsInformation() {
-        return includedComponentsInformation;
+    public ArrayList<ComponentInformation> getSubComponentsInformation() {
+        return subComponentsInformation;
     }
 
     public ArrayList<ConnectorRelation> getConnectorRelations() {
@@ -90,121 +86,113 @@ public class ComponentInformation {
         return originalComponentReference;
     }
 
-
-
-
-
-
+    //TODO: CHECK
     public ComponentInformation(ASTComponent component, ArrayList<ArchitectureNode> currentNodes) {
-
-
         this.originalComponentReference = component;
         this.componentName = component.getName();
         this.componentInstanceName = "";
         this.archNodes = currentNodes;
 
-        //TODO: add these
-        //this.componentKind = component.
-
         initLists(component);
 
-        printConnectiorRelations();
-
-
-        if (this.isComposedCNN()){
+        if (this.isComposedCNN()) {
             ArrayList<ASTArchitecture> subNodes = new ArrayList<>();
-            for (ComponentInformation componentInformation: this.includedComponentsInformation){
-                for (ArchitectureNode architectureNode: this.archNodes){
-                    if (componentInformation.getComponentName().equals(architectureNode.getComponentName()) && !subNodes.contains(architectureNode.getOriginalNode())){
-                        subNodes.add(architectureNode.getOriginalNode());
+            for (ComponentInformation componentInformation : this.subComponentsInformation) {
+                for (ArchitectureNode architectureNode : this.archNodes) {
+                    if (componentInformation.getComponentName().equals(architectureNode.getComponentName()) && !subNodes.contains(architectureNode.getOriginalNode()) && architectureNode.getOriginalNodes() != null) {
+                        subNodes.addAll(architectureNode.getOriginalNodes());
                     }
-
                 }
             }
-            ArchitectureNode architectureNode = new ArchitectureNode(subNodes,true,this.componentName);
+            ArchitectureNode architectureNode = new ArchitectureNode(subNodes, this.componentName);
             this.archNodes.add(architectureNode);
         }
 
-        if (this.isASTArchitectureNode() || this.isComposedCNN()) {
-            this.isCNNNode = true;
-        } else {
-            this.isCNNNode = false;
-        }
+        this.isCNNNode = this.isASTArchitectureNode() || this.isComposedCNN();
     }
 
-    public ComponentInformation(ASTComponent component, ArrayList<ArchitectureNode> currentNodes, String instanceName){
+    public ComponentInformation(ASTComponent component, ArrayList<ArchitectureNode> currentNodes, String instanceName) {
         this(component, currentNodes);
         this.componentInstanceName = instanceName;
     }
 
 
-
-    //TODO: find actual solution to determine this -> Maybe textfile
-    private boolean isASTArchitectureNode(){
-        Log.info("ASTArchitecture Check for " + this.getComponentName(),"COMPONENT_INFORMATION");
-        for (ArchitectureNode node: archNodes){
-            Log.info("Checking if: " + this.componentName + " == " + node.getComponentName(),"COMPONENT_INFORMATION" );
-            if (this.componentName.equals(node.getComponentName())) return true;
+    private boolean isASTArchitectureNode() {
+        for (ArchitectureNode node : archNodes) {
+            if (this.componentName.equals(node.getComponentName()) && !node.isComposedNode()) return true;
         }
-
-
         return false;
     }
 
-    public boolean isCNN(){
+    public boolean isCNN() {
         return this.isCNNNode;
     }
 
-    public boolean isComposedCNN(){
-        if (violatesNetworkForm) return false;
+    //TODO: CHECK
+    public boolean isComposedCNN() {
+        Log.info("Checking included components of " + this.getComponentName(), "COMPONENT_INFORMATION_CCNN_CHECK");
+        if (violatesNetworkForm) {
+            Log.info("FORM_VIOLATION_BY: " + this.getComponentName(), "COMPONENT_INFORMATION_CCNN_CHECK");
+            return false;
+        }
 
-
-
-        Log.info("Checking included components of " + this.getComponentName(),"COMPONENT_INFORMATION");
-        for (ComponentInformation componentInformation: this.includedComponentsInformation){
-            Log.info("Checking: " + componentInformation.getComponentName() + " " +componentInformation.getComponentInstanceName(),"COMPONENT_INFORMATION");
+        for (ComponentInformation componentInformation : this.subComponentsInformation) {
+            Log.info("Checking: " + componentInformation.getComponentName() + " " + componentInformation.getComponentInstanceName(), "COMPONENT_INFORMATION_CCNN_CHECK");
             if (!componentInformation.isCNN()) {
-                Log.info("failed","COMPONENT_INFORMATION");
+                Log.info("IS_COMPOSED_CHECK_FAIL", "COMPONENT_INFORMATION_CCNN_CHECK");
                 return false;
             }
         }
-        Log.info("passed","COMPONENT_INFORMATION");
+
+        Log.info("IS_COMPOSED_CHECK_PASS", "COMPONENT_INFORMATION_CCNN_CHECK");
         return true;
     }
 
-
-
-    private void printConnectiorRelations(){
-        Log.info("Connector relations of: " + this.componentName + " " + this.componentInstanceName,"COMPONENT_INFORMATION");
-        for (ConnectorRelation c : connectorRelations){
-            Log.info(c.getSourceValue() + " -> " + c.getTargetValue(),"COMPONENT_INFORMATION");
-        }
+    public NetworkStructureInformation analyzeNetworkStructure(){
+        return new NetworkStructureInformation(this);
     }
 
-    private void initLists(ASTComponent component){
+    public String printNetworkStructure(){
+        NetworkStructureInformation networkStructureInformation = analyzeNetworkStructure();
+        return networkStructureInformation.printStructure();
+    }
+
+    public String printNetworkStructureJSON(){
+        return analyzeNetworkStructure().printStructureJSON();
+    }
+
+    private void initLists(ASTComponent component) {
         ArrayList<ASTElement> elementList = (ArrayList<ASTElement>) component.getBody().getElementList();
-        for (ASTElement e : elementList){
-            if (e instanceof ASTInterface){
-               this.interfaces.add((ASTInterface) e);
+        for (ASTElement e : elementList) {
+            if (e instanceof ASTInterface) {
+                this.interfaces.add((ASTInterface) e);
             } else if (e instanceof ASTConnector) {
                 this.connectors.add((ASTConnector) e);
             } else if (e instanceof ASTSubComponent) {
-                this.subComponents.add((ASTSubComponent) e);
+                this.astSubComponents.add((ASTSubComponent) e);
             }
         }
 
         findPorts(this.interfaces);
-        findComponents(this.subComponents);
+        findComponents(this.astSubComponents);
         findConnectorRelations(this.connectors);
     }
 
+    private void printConnectiorRelations() {
+        Log.info("Connector relations of: " + this.componentName + " " + this.componentInstanceName, "COMPONENT_INFORMATION");
+        for (ConnectorRelation c : connectorRelations) {
+            Log.info(c.getSourceValue() + " -> " + c.getTargetValue(), "COMPONENT_INFORMATION");
+        }
+    }
+
     private void findPorts(ArrayList<ASTInterface> interfaces){
-        if (!(interfaces.size() > 0) || interfaces.size() > 1) {
+        if (interfaces.size() != 1) {
+            Log.info("FORM_VIOLATION: " + this.getComponentName(),"COMPONENT_INFORMATION_FIND_PORTS_1");
             this.violatesNetworkForm = true;
             return;
         }
 
-        for (ASTInterface i: interfaces){
+        for (ASTInterface i : interfaces) {
             ArrayList<ASTPort> interfacePorts = (ArrayList<ASTPort>) i.getPortsList();
             if (interfacePorts.size() > 0) {
                 this.ports = interfacePorts;
@@ -212,30 +200,32 @@ public class ComponentInformation {
         }
 
         if (this.ports.size() != 2) {
+            Log.info("FORM_VIOLATION: " + this.getComponentName(),"COMPONENT_INFORMATION_FIND_PORTS_2");
             this.violatesNetworkForm = true;
             return;
         }
 
-        for (ASTPort p : this.ports){
+        for (ASTPort p : this.ports) {
             if (p.getNameOpt().isPresent()) {
                 if (p.isIncoming() && !p.isOutgoing()) {
                     this.inputPort = p.getNameOpt().get();
-                } else if (!p.isIncoming() && p.isOutgoing()){
+                } else if (!p.isIncoming() && p.isOutgoing()) {
                     this.outputPort = p.getNameOpt().get();
                 }
             }
-
         }
     }
 
+    //TODO: CHECK
     private void findComponents(ArrayList<ASTSubComponent> components) {
-        if (!(components.size() > 0) ) {
+        if (!(components.size() > 0)) {
+            Log.info("FORM_VIOLATION: " + this.getComponentName(),"COMPONENT_INFORMATION_FIND_COMPONENTS");
             this.violatesNetworkForm = true;
             return;
         }
 
-        for (ASTSubComponent subComponent: components){
-            if (!subComponent.getSymbolOpt().isPresent() || !(subComponent.getSymbolOpt().get() instanceof EMADynamicComponentInstantiationSymbol)){
+        for (ASTSubComponent subComponent : components) {
+            if (!subComponent.getSymbolOpt().isPresent() || !(subComponent.getSymbolOpt().get() instanceof EMADynamicComponentInstantiationSymbol)) {
                 continue;
             }
 
@@ -243,16 +233,14 @@ public class ComponentInformation {
             EMADynamicComponentSymbol refSymbol = (EMADynamicComponentSymbol) symbol.getComponentType().getReferencedSymbol();
             if (refSymbol.getAstNode().isPresent()) {
                 this.includedComponents.add((ASTComponent) refSymbol.getAstNode().get());
-                this.includedComponentsInformation.add(new ComponentInformation((ASTComponent) refSymbol.getAstNode().get(), this.archNodes, symbol.getName() ));
+                this.subComponentsInformation.add(new ComponentInformation((ASTComponent) refSymbol.getAstNode().get(), this.archNodes, symbol.getName()));
             }
         }
-
-
     }
 
-    private void findConnectorRelations(ArrayList<ASTConnector> connectors){
-        for (ASTConnector connector: connectors){
-            if (!connector.getSymbolOpt().isPresent()){
+    private void findConnectorRelations(ArrayList<ASTConnector> connectors) {
+        for (ASTConnector connector : connectors) {
+            if (!connector.getSymbolOpt().isPresent()) {
                 continue;
             }
 
@@ -261,55 +249,39 @@ public class ComponentInformation {
             ComponentInformation sourceComponent = matchComponentToPort(sourceValue);
             ComponentInformation targetComponent = matchComponentToPort(targetValue);
 
-            this.connectorRelations.add(new ConnectorRelation(sourceComponent,sourceValue,targetComponent,targetValue));
+            this.connectorRelations.add(new ConnectorRelation(sourceComponent, sourceValue, targetComponent, targetValue));
         }
     }
 
-    //TODO: find correct kind for comparison -> ArchitectureKind or similar to identify CNN declaration
-    private void findKind(ASTComponent component){
-        if (!component.getSymbolOpt().isPresent()){
-            this.violatesNetworkForm = true;
-            return;
-        }
-
-        EMADynamicComponentSymbol symbol = (EMADynamicComponentSymbol) component.getSymbolOpt().get();
-        this.componentKind = (ComponentKind) symbol.getKind();
-    }
-
-
-    private ComponentInformation matchComponentToPort(String portValue){
+    private ComponentInformation matchComponentToPort(String portValue) {
         if (portValue.equals(this.inputPort) || portValue.equals(this.outputPort)) return this;
 
         String[] qualifiedNameDecons = portValue.split("\\.");
         String instanceRef = qualifiedNameDecons[0];
 
-        for (ComponentInformation info : this.includedComponentsInformation){
-            if (!instanceRef.equals("") && !info.componentInstanceName.equals("") && instanceRef.equals(info.componentInstanceName)){
+        for (ComponentInformation info : this.subComponentsInformation) {
+            if (!instanceRef.equals("") && !info.componentInstanceName.equals("") && instanceRef.equals(info.componentInstanceName)) {
                 return info;
             }
         }
-
         return null;
     }
 
-
-    private String getConnectorSource(ASTConnector connector){
+    private String getConnectorSource(ASTConnector connector) {
         if (!connector.getSymbolOpt().isPresent()) {
-            return "Symbol missing for source connector";
+            return "Symbol missing for source connector: " + connector.toString();
         }
 
         EMADynamicConnectorSymbol symbol = (EMADynamicConnectorSymbol) connector.getSymbolOpt().get();
         return symbol.getSource();
     }
 
-    private String getConnectorTarget(ASTConnector connector){
+    private String getConnectorTarget(ASTConnector connector) {
         if (!connector.getSymbolOpt().isPresent()) {
-            return "Symbol missing for target connector";
+            return "Symbol missing for target connector: " + connector.toString();
         }
 
         EMADynamicConnectorSymbol symbol = (EMADynamicConnectorSymbol) connector.getSymbolOpt().get();
         return symbol.getTarget();
     }
-
-
 }

@@ -15,7 +15,7 @@ import java.util.ArrayList;
 
 
 
-public class NetworkStructureScanner /*implements EMADLVisitor*/ {
+public class NetworkStructureScanner{
     ArrayList<ArchitectureNode> architecturesNodes = null;
 
     public NetworkStructureScanner(ArrayList<ArchitectureNode> currentNodes) {
@@ -26,14 +26,17 @@ public class NetworkStructureScanner /*implements EMADLVisitor*/ {
 
     public void scanForArchitectureNodes(ASTNode node){
         if (node instanceof ASTArchitecture){
-
-           if ((architecturesNodes.size() == 0)) architecturesNodes.add(new ArchitectureNode((ASTArchitecture) node));
-
            for (ArchitectureNode architectureNode: architecturesNodes){
-               if (architectureNode.getOriginalNode().equals((ASTArchitecture) node)) return;
+               if (!architectureNode.isComposedNode() && architectureNode.getOriginalNode().equals((ASTArchitecture) node)) return;
            }
 
-            architecturesNodes.add(new ArchitectureNode((ASTArchitecture) node));
+           ArchitectureNode newArchNode = new ArchitectureNode((ASTArchitecture) node);
+
+           for (ArchitectureNode architectureNode: architecturesNodes) {
+                if (architectureNode.getComponentName() == newArchNode.getComponentName()) return;
+           }
+
+           architecturesNodes.add(newArchNode);
         }
     }
 }
