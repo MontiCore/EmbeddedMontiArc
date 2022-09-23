@@ -19,7 +19,6 @@
             <plugin>
                 <groupId>de.monticore.lang.monticar.utilities</groupId>
                 <artifactId>emadl-maven-plugin</artifactId>
-                <version>0.0.1-SNAPSHOT</version>
                 <configuration>
                     <pretrainedModelToStore>
                         <path>resources/pretrained_bert/small</path>
