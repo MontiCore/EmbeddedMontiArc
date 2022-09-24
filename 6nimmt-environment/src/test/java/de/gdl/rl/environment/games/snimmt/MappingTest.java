@@ -1,0 +1,203 @@
+package de.gdl.rl.environment.games.snimmt;
+
+import static org.junit.Assert.assertEquals;
+import de.gdl.rl.agents.Agent;
+import de.monticore.lang.gdl.Command;
+import de.monticore.lang.gdl.types.GDLType;
+
+import org.junit.Test;
+
+public class MappingTest {
+    
+    /*
+    @Test
+    public void bidirectionalActionMappingTest() {
+        ChessEnv.bidirectionalActionMappingTest(new ChessEnv());
+    }
+
+    @Test
+    public void stateMappingTest() {
+        ChessEnv.stateMappingTest(new ChessEnv(), 2);
+        
+        //assertEquals(true, false);
+    }*/
+
+    @Test
+    public void bidirectionalActionMapping() {
+        Command playCommand = Command.createFromLine("red (play 4)");
+        Command putCommand = Command.createFromLine("red (put a 5)");
+        Agent tAgent = new Agent();
+        SnimmtEnv Env = new SnimmtEnv();
+        int testIPlay = Env.getActionFromMove(playCommand, tAgent);
+        Command testSPlay = Env.getMoveFromAction(24, GDLType.createFromLine("red"), tAgent);
+        int testIPut = Env.getActionFromMove(putCommand, tAgent);
+        Command testSPut = Env.getMoveFromAction(4, GDLType.createFromLine("red"), tAgent);
+        assertEquals(testIPlay, 24);
+        assertEquals(playCommand.toString(), testSPlay.toString());
+        assertEquals(testIPut, 4);
+        assertEquals(putCommand.toString(), testSPut.toString());
+    }
+
+    @Test
+    public void bidirectionalActionMappingAll() {
+        Command commandNoop = Command.createFromLine("red (noop)");
+        Command commandPlayOne = Command.createFromLine("red (play 1)");
+        Command commandPlayTwo = Command.createFromLine("red (play 2)");
+        Command commandPlayThree = Command.createFromLine("red (play 3)");
+        Command commandPlayFour = Command.createFromLine("red (play 4)");
+        Command commandPlayFive = Command.createFromLine("red (play 5)");
+        Command commandPlaySix = Command.createFromLine("red (play 6)");
+        Command commandPlaySeven = Command.createFromLine("red (play 7)");
+        Command commandPlayEight = Command.createFromLine("red (play 8)");
+        Command commandPlayNine = Command.createFromLine("red (play 9)");
+        Command commandPlayTen = Command.createFromLine("red (play 10)");
+        Command commandPutATwo = Command.createFromLine("red (put a 2)");
+        Command commandPutAThree = Command.createFromLine("red (put a 3)");
+        Command commandPutAFour = Command.createFromLine("red (put a 4)");
+        Command commandPutAFive = Command.createFromLine("red (put a 5)");
+        Command commandPutASix = Command.createFromLine("red (put a 6)");
+        Command commandPutBTwo = Command.createFromLine("red (put b 2)");
+        Command commandPutBThree = Command.createFromLine("red (put b 3)");
+        Command commandPutBFour = Command.createFromLine("red (put b 4)");
+        Command commandPutBFive = Command.createFromLine("red (put b 5)");
+        Command commandPutBSix = Command.createFromLine("red (put b 6)");
+        Command commandPutCTwo = Command.createFromLine("red (put c 2)");
+        Command commandPutCThree = Command.createFromLine("red (put c 3)");
+        Command commandPutCFour = Command.createFromLine("red (put c 4)");
+        Command commandPutCFive = Command.createFromLine("red (put c 5)");
+        Command commandPutCSix = Command.createFromLine("red (put c 6)");
+        Command commandPutDTwo = Command.createFromLine("red (put d 2)");
+        Command commandPutDThree = Command.createFromLine("red (put d 3)");
+        Command commandPutDFour = Command.createFromLine("red (put d 4)");
+        Command commandPutDFive = Command.createFromLine("red (put d 5)");
+        Command commandPutDSix = Command.createFromLine("red (put d 6)");
+        Agent tAgent = new Agent();
+        SnimmtEnv Env = new SnimmtEnv();
+        int testINoop = Env.getActionFromMove(commandNoop, tAgent);
+        Command testSNoop = Env.getMoveFromAction(0, GDLType.createFromLine("red"), tAgent);
+        int testIPlayOne = Env.getActionFromMove(commandPlayOne, tAgent);
+        int testIPlayTwo = Env.getActionFromMove(commandPlayTwo, tAgent);
+        int testIPlayThree = Env.getActionFromMove(commandPlayThree, tAgent);
+        int testIPlayFour = Env.getActionFromMove(commandPlayFour, tAgent);
+        int testIPlayFive = Env.getActionFromMove(commandPlayFive, tAgent);
+        int testIPlaySix = Env.getActionFromMove(commandPlaySix, tAgent);
+        int testIPlaySeven = Env.getActionFromMove(commandPlaySeven, tAgent);
+        int testIPlayEight = Env.getActionFromMove(commandPlayEight, tAgent);
+        int testIPlayNine = Env.getActionFromMove(commandPlayNine, tAgent);
+        int testIPlayTen = Env.getActionFromMove(commandPlayTen, tAgent);
+        Command testSPlayOne = Env.getMoveFromAction(21, GDLType.createFromLine("red"), tAgent);
+        Command testSPlayTwo = Env.getMoveFromAction(22, GDLType.createFromLine("red"), tAgent);
+        Command testSPlayThree = Env.getMoveFromAction(23, GDLType.createFromLine("red"), tAgent);
+        Command testSPlayFour = Env.getMoveFromAction(24, GDLType.createFromLine("red"), tAgent);
+        Command testSPlayFive = Env.getMoveFromAction(25, GDLType.createFromLine("red"), tAgent);
+        Command testSPlaySix = Env.getMoveFromAction(26, GDLType.createFromLine("red"), tAgent);
+        Command testSPlaySeven = Env.getMoveFromAction(27, GDLType.createFromLine("red"), tAgent);
+        Command testSPlayEight = Env.getMoveFromAction(28, GDLType.createFromLine("red"), tAgent);
+        Command testSPlayNine = Env.getMoveFromAction(29, GDLType.createFromLine("red"), tAgent);
+        Command testSPlayTen = Env.getMoveFromAction(30, GDLType.createFromLine("red"), tAgent);
+        int testIPutATwo = Env.getActionFromMove(commandPutATwo, tAgent);
+        int testIPutAThree = Env.getActionFromMove(commandPutAThree, tAgent);
+        int testIPutAFour = Env.getActionFromMove(commandPutAFour, tAgent);
+        int testIPutAFive = Env.getActionFromMove(commandPutAFive, tAgent);
+        int testIPutASix = Env.getActionFromMove(commandPutASix, tAgent);
+        int testIPutBTwo = Env.getActionFromMove(commandPutBTwo, tAgent);
+        int testIPutBThree = Env.getActionFromMove(commandPutBThree, tAgent);
+        int testIPutBFour = Env.getActionFromMove(commandPutBFour, tAgent);
+        int testIPutBFive = Env.getActionFromMove(commandPutBFive, tAgent);
+        int testIPutBSix = Env.getActionFromMove(commandPutBSix, tAgent);
+        int testIPutCTwo = Env.getActionFromMove(commandPutCTwo, tAgent);
+        int testIPutCThree = Env.getActionFromMove(commandPutCThree, tAgent);
+        int testIPutCFour = Env.getActionFromMove(commandPutCFour, tAgent);
+        int testIPutCFive = Env.getActionFromMove(commandPutCFive, tAgent);
+        int testIPutCSix = Env.getActionFromMove(commandPutCSix, tAgent);
+        int testIPutDTwo = Env.getActionFromMove(commandPutDTwo, tAgent);
+        int testIPutDThree = Env.getActionFromMove(commandPutDThree, tAgent);
+        int testIPutDFour = Env.getActionFromMove(commandPutDFour, tAgent);
+        int testIPutDFive = Env.getActionFromMove(commandPutDFive, tAgent);
+        int testIPutDSix = Env.getActionFromMove(commandPutDSix, tAgent);
+        Command testSPutATwo = Env.getMoveFromAction(1, GDLType.createFromLine("red"), tAgent);
+        Command testSPutAThree = Env.getMoveFromAction(2, GDLType.createFromLine("red"), tAgent);
+        Command testSPutAFour = Env.getMoveFromAction(3, GDLType.createFromLine("red"), tAgent);
+        Command testSPutAFive = Env.getMoveFromAction(4, GDLType.createFromLine("red"), tAgent);
+        Command testSPutASix = Env.getMoveFromAction(5, GDLType.createFromLine("red"), tAgent);
+        Command testSPutBTwo = Env.getMoveFromAction(6, GDLType.createFromLine("red"), tAgent);
+        Command testSPutBThree = Env.getMoveFromAction(7, GDLType.createFromLine("red"), tAgent);
+        Command testSPutBFour = Env.getMoveFromAction(8, GDLType.createFromLine("red"), tAgent);
+        Command testSPutBFive = Env.getMoveFromAction(9, GDLType.createFromLine("red"), tAgent);
+        Command testSPutBSix = Env.getMoveFromAction(10, GDLType.createFromLine("red"), tAgent);
+        Command testSPutCTwo = Env.getMoveFromAction(11, GDLType.createFromLine("red"), tAgent);
+        Command testSPutCThree = Env.getMoveFromAction(12, GDLType.createFromLine("red"), tAgent);
+        Command testSPutCFour = Env.getMoveFromAction(13, GDLType.createFromLine("red"), tAgent);
+        Command testSPutCFive = Env.getMoveFromAction(14, GDLType.createFromLine("red"), tAgent);
+        Command testSPutCSix = Env.getMoveFromAction(15, GDLType.createFromLine("red"), tAgent);
+        Command testSPutDTwo = Env.getMoveFromAction(16, GDLType.createFromLine("red"), tAgent);
+        Command testSPutDThree = Env.getMoveFromAction(17, GDLType.createFromLine("red"), tAgent);
+        Command testSPutDFour = Env.getMoveFromAction(18, GDLType.createFromLine("red"), tAgent);
+        Command testSPutDFive = Env.getMoveFromAction(19, GDLType.createFromLine("red"), tAgent);
+        Command testSPutDSix = Env.getMoveFromAction(20, GDLType.createFromLine("red"), tAgent);
+        assertEquals(testINoop, 0);
+        assertEquals(testIPutATwo, 1);
+        assertEquals(testIPutAThree, 2);
+        assertEquals(testIPutAFour, 3);
+        assertEquals(testIPutAFive, 4);
+        assertEquals(testIPutASix, 5);
+        assertEquals(testIPutBTwo, 6);
+        assertEquals(testIPutBThree, 7);
+        assertEquals(testIPutBFour, 8);
+        assertEquals(testIPutBFive, 9);
+        assertEquals(testIPutBSix, 10);
+        assertEquals(testIPutCTwo, 11);
+        assertEquals(testIPutCThree, 12);
+        assertEquals(testIPutCFour, 13);
+        assertEquals(testIPutCFive, 14);
+        assertEquals(testIPutCSix, 15);
+        assertEquals(testIPutDTwo, 16);
+        assertEquals(testIPutDThree, 17);
+        assertEquals(testIPutDFour, 18);
+        assertEquals(testIPutDFive, 19);
+        assertEquals(testIPutDSix, 20);
+        assertEquals(testIPlayOne, 21);
+        assertEquals(testIPlayTwo, 22);
+        assertEquals(testIPlayThree, 23);
+        assertEquals(testIPlayFour, 24);
+        assertEquals(testIPlayFive, 25);
+        assertEquals(testIPlaySix, 26);
+        assertEquals(testIPlaySeven, 27);
+        assertEquals(testIPlayEight, 28);
+        assertEquals(testIPlayNine, 29);
+        assertEquals(testIPlayTen, 30);
+        assertEquals(commandNoop.toString(), testSNoop.toString());
+
+        assertEquals(commandPutATwo.toString(), testSPutATwo.toString());
+        assertEquals(commandPutAThree.toString(), testSPutAThree.toString());
+        assertEquals(commandPutAFour.toString(), testSPutAFour.toString());
+        assertEquals(commandPutAFive.toString(), testSPutAFive.toString());
+        assertEquals(commandPutASix.toString(), testSPutASix.toString());
+        assertEquals(commandPutBTwo.toString(), testSPutBTwo.toString());
+        assertEquals(commandPutBThree.toString(), testSPutBThree.toString());
+        assertEquals(commandPutBFour.toString(), testSPutBFour.toString());
+        assertEquals(commandPutBFive.toString(), testSPutBFive.toString());
+        assertEquals(commandPutBSix.toString(), testSPutBSix.toString());
+        assertEquals(commandPutCTwo.toString(), testSPutCTwo.toString());
+        assertEquals(commandPutCThree.toString(), testSPutCThree.toString());
+        assertEquals(commandPutCFour.toString(), testSPutCFour.toString());
+        assertEquals(commandPutCFive.toString(), testSPutCFive.toString());
+        assertEquals(commandPutCSix.toString(), testSPutCSix.toString());
+        assertEquals(commandPutDTwo.toString(), testSPutDTwo.toString());
+        assertEquals(commandPutDThree.toString(), testSPutDThree.toString());
+        assertEquals(commandPutDFour.toString(), testSPutDFour.toString());
+        assertEquals(commandPutDFive.toString(), testSPutDFive.toString());
+        assertEquals(commandPutDSix.toString(), testSPutDSix.toString());
+
+        assertEquals(commandPlayOne.toString(), testSPlayOne.toString());
+        assertEquals(commandPlayTwo.toString(), testSPlayTwo.toString());
+        assertEquals(commandPlayThree.toString(), testSPlayThree.toString());
+        assertEquals(commandPlayFour.toString(), testSPlayFour.toString());
+        assertEquals(commandPlayFive.toString(), testSPlayFive.toString());
+        assertEquals(commandPlaySix.toString(), testSPlaySix.toString());
+        assertEquals(commandPlaySeven.toString(), testSPlaySeven.toString());
+        assertEquals(commandPlayEight.toString(), testSPlayEight.toString());
+        assertEquals(commandPlayNine.toString(), testSPlayNine.toString());
+        assertEquals(commandPlayTen.toString(), testSPlayTen.toString());
+    }
+}
