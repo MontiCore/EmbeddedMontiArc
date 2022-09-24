@@ -16,7 +16,10 @@ public class FileHandler {
             ArrayList<String> knownNetworks = readNetworkFile(composedNetworksFilePath);
             if (knownNetworks == null || !knownNetworks.contains(componentInformation.printNetworkStructure())){
                 String content;
-                if (json) content = componentInformation.printNetworkStructureJSON();
+                if (json) {
+
+                    content = componentInformation.printNetworkStructureJSON();
+                }
                 else content =  componentInformation.printNetworkStructure();
 
                 writeToFile(composedNetworksFilePath,content);

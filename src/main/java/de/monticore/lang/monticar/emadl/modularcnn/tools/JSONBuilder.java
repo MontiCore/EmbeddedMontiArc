@@ -1,43 +1,78 @@
 package de.monticore.lang.monticar.emadl.modularcnn.tools;
 
+import de.se_rwth.commons.logging.Log;
+
 import java.util.ArrayList;
 
 public class JSONBuilder {
+
+    private String content = "";
 
     public JSONBuilder(){
 
     }
 
-    public static String JSONObject(String content, boolean trailing){
-        return "{" + content + "}" + (trailing ? "" : ",");
+    private String JSONObject(boolean trailing){
+        return "{" + this.content + "}" + (trailing ? "" : ",");
     }
 
-    public static String JSONBoolean(String key, boolean value){
+    private String JSONBoolean(String key, boolean value){
        return "\"" + key + "\"" + ":" + value;
     }
 
-    public static String JSONString(String key, String value){
+    private String JSONString(String key, String value){
         return "\"" + key + "\"" + ":" + "\"" + value + "\"";
     }
 
-    public static String JSONEntry(String key, String value, boolean trailing){
+    private String JSONEntry(String key, String value, boolean trailing){
         return JSONString(key,value) + (trailing ? "" : ",");
     }
 
-    public static String JSONEntry(String key, boolean value, boolean trailing){
+    private String JSONEntry(String key, boolean value, boolean trailing){
         return JSONBoolean(key,value) + (trailing ? "" : ",");
     }
 
-    public static String JSONArray(String key, ArrayList<String> content, boolean trailing) {
+    private String JSONArray(String key, ArrayList<String> values, boolean trailing) {
         String array = "\"" + key + "\"" + ":" + "[";
 
-        for (String element : content)
-            array += content + (element.equals(content.get(content.size()-1)) ? "" : ",");
+        for (String element : values)
+            array += element + (element.equals(values.get(values.size()-1)) ? "" : ",");
 
         array += "]" + (trailing ? "" : ",");
 
         return array;
     }
+
+    private void reset(){
+        this.content = "";
+    }
+
+    public void addContent(String key, String value, boolean trailing){
+        this.content += JSONEntry(key,value,trailing);
+    }
+
+    public void addContent(String key, boolean value, boolean trailing){
+        this.content += JSONEntry(key,value,trailing);
+    }
+
+    public void addContent(String key, ArrayList<String> values, boolean trailing){
+        this.content += JSONArray(key,values,trailing);
+    }
+
+    public String getJSONObject(boolean trailing){
+        return JSONObject(trailing);
+    }
+
+    public String getJSONObjectAndReset(boolean trailing){
+        String json = getJSONObject(trailing);
+        reset();
+        return json;
+    }
+
+
+
+
+
 
 
 }

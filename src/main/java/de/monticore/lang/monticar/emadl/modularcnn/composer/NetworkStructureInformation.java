@@ -1,6 +1,7 @@
 package de.monticore.lang.monticar.emadl.modularcnn.composer;
 
 import de.monticore.lang.monticar.emadl.modularcnn.tools.JSONBuilder;
+import de.se_rwth.commons.logging.Log;
 
 import java.util.ArrayList;
 
@@ -62,28 +63,45 @@ public class NetworkStructureInformation {
             return  "";
         }
 
-        String jsonContent = "";
-        jsonContent += JSONBuilder.JSONEntry("name",this.networkName,false);
-        jsonContent += JSONBuilder.JSONEntry("atomic",this.atomic,false);
+        JSONBuilder jsonObject = new JSONBuilder();
+
+        jsonObject.addContent("name",this.networkName,false);
+        jsonObject.addContent("atomic",this.atomic,false);
 
         ArrayList<String> arrayContents = new ArrayList<>();
-        for (NetworkStructureInformation networkStructureInformation : this.getSubNetworks()){
-            // TODO: Fix JSON printing -> Dual array brackets ( [[]] ) and whitespace in recursive printed arrays
-            String subNetContent = networkStructureInformation.printStructureJSON();
-            arrayContents.add(subNetContent);
+        if (this.getSubNetworks().size() > 0){
+            for (NetworkStructureInformation networkStructureInformation : this.getSubNetworks()){
+                String subNetContent = networkStructureInformation.printStructureJSON();
+                arrayContents.add(subNetContent);
+            }
+
         }
 
-        jsonContent += JSONBuilder.JSONArray("subNetworks", arrayContents,true);
-        String json = JSONBuilder.JSONObject(jsonContent,true);
-
-        return json;
+        jsonObject.addContent("subNetworks", arrayContents,true);
+        return jsonObject.getJSONObjectAndReset(true);
     }
 
     public boolean isSubNet(ComponentInformation componentInformation){
-        return true;
+        String net = this.printStructureJSON();
+        String possibleSubnet = componentInformation.printNetworkStructureJSON();
+        return net.contains(possibleSubnet);
     }
 
     public boolean isSubNet(NetworkStructureInformation networkStructureInformation){
-        return true;
+        String net = this.printStructureJSON();
+        String possibleSubnet = networkStructureInformation.printStructureJSON();
+        return net.contains(possibleSubnet);
+    }
+
+    public boolean isSuperNet(ComponentInformation componentInformation){
+        String net = this.printStructureJSON();
+        String possibleSupernet = componentInformation.printNetworkStructureJSON();
+        return possibleSupernet.contains(net);
+    }
+
+    public boolean isSuperNet(NetworkStructureInformation networkStructureInformation){
+        String net = this.printStructureJSON();
+        String possibleSupernet = networkStructureInformation.printStructureJSON();
+        return possibleSupernet.contains(net);
     }
 }
