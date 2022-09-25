@@ -14,7 +14,9 @@ import org.junit.Test;
 import schemalang.AbstractTest;
 import schemalang._ast.ASTSchemaDefinition;
 import schemalang._ast.ASTSchemaLangCompilationUnit;
+import schemalang._symboltable.SchemaDefinitionSymbol;
 import schemalang.exception.SchemaLangTechnicalException;
+import schemalang.validation.exception.SchemaLangException;
 import schemalang.validation.model.ArchitectureComponent;
 import schemalang.validation.model.MappingUtils;
 
@@ -139,7 +141,7 @@ public class ReferenceModelValidatorTest extends AbstractTest {
         Collection<Violation> expectedErrors = Lists.newArrayList(
                 Violation.create(ERROR_CODE_TA_09C, String.format(ERROR_MSG_TA_09C,
                         "actor.output_actor -> critic.input_critic")),
-                Violation.create(ERROR_CODE_TA_07C, String.format(ERROR_MSG_TA_07C,"Critic", "Actor",
+                Violation.create(ERROR_CODE_TA_07C, String.format(ERROR_MSG_TA_07C, "Critic", "Actor",
                         "critic.output_critic -> actor.input_actor")),
                 Violation.create(ERROR_CODE_TA_09C, String.format(ERROR_MSG_TA_09C,
                         "critic.output_critic -> actor.input_actor"))
@@ -354,7 +356,7 @@ public class ReferenceModelValidatorTest extends AbstractTest {
         } catch (SchemaLangTechnicalException e) {
             // ignore
             assertEquals("Reference model 'referencemodel.NotExists' in schema definition " +
-                            "'ReferenceModelDoesNotExist' could not be resolved.", e.getMessage());
+                    "'ReferenceModelDoesNotExist' could not be resolved.", e.getMessage());
             assertNull(violations);
         }
     }
@@ -638,5 +640,20 @@ public class ReferenceModelValidatorTest extends AbstractTest {
         ReferenceModelViolation violation = new ReferenceModelViolation("ddpg16.DDPG");
         violation.setViolations(expectedErrors);
         assertThat(violations.get(0), equalTo(violation));
+    }
+
+    @Test
+    public void nestedConfigurationEntryInReferenceModel() {
+        ASTConfiguration configuration = parseConfiguration("src/test/resources/conflang/DefinedNestedEntriesInReferenceModel.conf");
+        createEMASymbolTable(configuration);
+        ASTSchemaLangCompilationUnit parsedModel =
+                parse("src/test/resources/schemalang/validation/referencemodels/DefinedNestedEntriesInReferenceModel.scm");
+        createSymbolTable2(parsedModel, modelPath);
+        /* Act */
+        SchemaDefinitionSymbol schemaDefinitionSymbol = parsedModel.getSchemaDefinition().getSchemaDefinitionSymbol();
+        List<SchemaViolation> schemaViolations = SchemaDefinitionValidator.validateConfiguration(Lists.newArrayList(schemaDefinitionSymbol), configuration.getConfigurationSymbol());
+        /* Assert */
+        assertNotNull(configuration);
+        assertTrue(schemaViolations.isEmpty());
     }
 }
