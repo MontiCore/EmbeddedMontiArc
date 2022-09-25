@@ -1,5 +1,5 @@
 rm -rf build
-# (c) https://github.com/MontiCore/monticore  
+# (c) https://github.com/MontiCore/monticore
 mkdir build && cd build
 
 echo "Building DigitClassifier.."
