@@ -10,6 +10,7 @@ gen:
     paths:
     - target/
   script:
+  - chmod 700 generate.sh
   - ./generate.sh
 
 comp:
@@ -18,4 +19,5 @@ comp:
   dependencies:
     - gen
   script:
+    - chmod 700 compile.sh
     - ./compile.sh
