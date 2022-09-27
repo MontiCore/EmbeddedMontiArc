@@ -20,8 +20,8 @@ gl=gitlab.Gitlab('https://git.rwth-aachen.de/', private_token=str(sys.argv[1]))
 
 gl.auth()
 
-#ema group id
-ema = gl.groups.get(437)
+#mc group id
+mc = gl.groups.get(437)
 
-print_FailedPipelineProjects(ema, "https://git.rwth-aachen.de/monticore/")
+print_FailedPipelineProjects(mc, "https://git.rwth-aachen.de/monticore/")
 
