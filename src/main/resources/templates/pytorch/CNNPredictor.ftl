@@ -7,12 +7,12 @@
 #include <torch/script.h>
 #include <torch/torch.h>
 
-class ${tc.fileNameWithoutEnding}{
+class ${tc.fileNameWithoutEnding}_0{
     public:
-    const std::string pt_file = "model/${tc.componentName}/model_cpp.pt";
+    const std::string pt_file = "./model/${tc.componentName}/model_cpp.pt";
     torch::jit::script::Module module;
 
-    explicit ${tc.fileNameWithoutEnding}(){
+    explicit ${tc.fileNameWithoutEnding}_0(){
         init(pt_file);
     }
 

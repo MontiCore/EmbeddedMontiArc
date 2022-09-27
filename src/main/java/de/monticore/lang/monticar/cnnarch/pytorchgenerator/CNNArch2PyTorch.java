@@ -93,7 +93,11 @@ public class CNNArch2PyTorch extends CNNArchGenerator {
 
     private void addCMakeDependencies() {
         cMakeConfig.addModuleDependency(new CMakeFindModule("Armadillo", true));
+        cMakeConfig.addCMakeCommand("find_package (OpenCV 4.0.0 REQUIRED)");
+        cMakeConfig.addCMakeCommand("include_directories (${OpenCV_INCLUDE_DIRS})");
         cMakeConfig.addCMakeCommand("find_package(Torch REQUIRED)");
+        cMakeConfig.addCMakeCommand("set(CMAKE_CXX_FLAGS \"${CMAKE_CXX_FLAGS} ${TORCH_CXX_FLAGS}\")");
+        cMakeConfig.addCMakeCommand("set(TORCH_INCLUDE_DIRS ${TORCH_INSTALL_PREFIX}/include ${TORCH_INSTALL_PREFIX}/include/torch/csrc/api/include)");
     }
 
     @Override

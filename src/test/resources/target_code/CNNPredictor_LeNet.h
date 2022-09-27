@@ -7,12 +7,12 @@
 #include <torch/script.h>
 #include <torch/torch.h>
 
-class CNNPredictor_LeNet{
+class CNNPredictor_LeNet_0{
     public:
-    const std::string pt_file = "model/LeNet/model_cpp.pt";
+    const std::string pt_file = "./model/LeNet/model_cpp.pt";
     torch::jit::script::Module module;
 
-    explicit CNNPredictor_LeNet(){
+    explicit CNNPredictor_LeNet_0(){
         init(pt_file);
     }
 

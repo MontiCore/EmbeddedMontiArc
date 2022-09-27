@@ -3,6 +3,7 @@ import os
 import h5py
 import sys
 import numpy as np
+import torch
 
 class HDF5DataAccess():
 
