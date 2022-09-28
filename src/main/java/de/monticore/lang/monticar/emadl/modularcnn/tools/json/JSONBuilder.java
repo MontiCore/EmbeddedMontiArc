@@ -1,4 +1,4 @@
-package de.monticore.lang.monticar.emadl.modularcnn.tools;
+package de.monticore.lang.monticar.emadl.modularcnn.tools.json;
 
 import de.se_rwth.commons.logging.Log;
 
