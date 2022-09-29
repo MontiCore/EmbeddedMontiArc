@@ -1,6 +1,6 @@
 /* (c) https://github.com/MontiCore/monticore */
-#ifndef ${tc.fileNameWithoutEnding?upper_case}
-#define ${tc.fileNameWithoutEnding?upper_case}
+#ifndef ${tc.fileNameWithoutEnding?upper_case}_0
+#define ${tc.fileNameWithoutEnding?upper_case}_0
 #include <cassert>
 #include <string>
 #include <vector>
@@ -24,7 +24,6 @@ class ${tc.fileNameWithoutEnding}_0{
         }
         catch (const c10::Error& e) {
             throw std::runtime_error("Error loading the model\n");
-            return -1;
         }
         std::cout << "Model loaded\n";
     }

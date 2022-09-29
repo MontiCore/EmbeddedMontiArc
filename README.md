@@ -4,9 +4,9 @@ The PyTorch backend
 # Installation
 Install the Stable PyTorch version using official instructions on [website](https://pytorch.org/get-started/locally/)
 
-
 For installing the LibTorch for C++ predictions follow instructions on [URL](https://pytorch.org/cppdocs/installing.html)
 
+For installing the DGL Library  [Follow the instructions from this link](https://www.dgl.ai/pages/start.html)
 
 ## Using Custom Layers
 
