@@ -30,4 +30,5 @@ grammar Types2 extends de.monticore.types.Types, de.monticore.NumberUnit, de.mon
 
   // added missing expressions
   BooleanExpression implements Expression<50> = BooleanLiteral;
+  StringExpression implements Expression<200> = StringLiteral;
 }
