@@ -26,6 +26,7 @@ public class NetworkStructureInformation {
         if (subComponentsInformation == null || subComponentsInformation.size() == 0) {
             this.atomic = true;
         } else {
+            this.atomic = false;
             for (ComponentInformation comp : subComponentsInformation) {
                 subNetworks.add(comp.analyzeNetworkStructure());
             }
@@ -43,9 +44,9 @@ public class NetworkStructureInformation {
         JSONReader jsonReader = new JSONReader();
         NetworkStructureInformation networkStructureInformation = jsonReader.getNetworkStructureInstance(json);
         this.networkName = networkStructureInformation.getNetworkName();
+        this.instanceName = networkStructureInformation.getInstanceName();
         this.atomic = networkStructureInformation.isAtomic();
         this.subNetworks = networkStructureInformation.getSubNetworks();
-        this.instanceName = networkStructureInformation.getInstanceName();
     }
 
 
@@ -88,26 +89,8 @@ public class NetworkStructureInformation {
         return "composed";
     }
 
-    public String printStructure() {
-        String structure = this.getNetworkName() + " | " + this.atomicInfo();
-
-        if (this.getSubNetworks().size() > 0) {
-            structure += " : ( ";
-
-            for (NetworkStructureInformation subNetworkStructureInformation : this.getSubNetworks()) {
-                structure += subNetworkStructureInformation.printStructure();
-                if (!(this.getSubNetworks().get(this.getSubNetworks().size() - 1).equals(subNetworkStructureInformation))) {
-                    structure += " , ";
-                }
-            }
-            structure += " )";
-        }
-        return structure;
-
-    }
-
     public String printStructureJSON() {
-        if (this.networkName.equals("") || this.networkName == null) {
+        if (this.networkName == null || this.networkName.equals("")) {
             return "";
         }
 
@@ -130,27 +113,29 @@ public class NetworkStructureInformation {
         return jsonObject.getJSONObjectAndReset(true);
     }
 
-    public boolean isSubNet(ComponentInformation componentInformation) {
-        String net = this.printStructureJSON();
-        String possibleSubnet = componentInformation.printNetworkStructureJSON();
-        return net.contains(possibleSubnet);
-    }
-
-    public boolean isSubNet(NetworkStructureInformation networkStructureInformation) {
-        String net = this.printStructureJSON();
-        String possibleSubnet = networkStructureInformation.printStructureJSON();
-        return net.contains(possibleSubnet);
-    }
-
-    public boolean isSuperNet(ComponentInformation componentInformation) {
+    public boolean isSubNetOf(ComponentInformation componentInformation) {
         String net = this.printStructureJSON();
         String possibleSupernet = componentInformation.printNetworkStructureJSON();
         return possibleSupernet.contains(net);
     }
 
-    public boolean isSuperNet(NetworkStructureInformation networkStructureInformation) {
+    public boolean isSubNetOf(NetworkStructureInformation networkStructureInformation) {
         String net = this.printStructureJSON();
         String possibleSupernet = networkStructureInformation.printStructureJSON();
         return possibleSupernet.contains(net);
+
+    }
+
+    public boolean isSuperNetOf(ComponentInformation componentInformation) {
+        String net = this.printStructureJSON();
+        String possibleSubnet = componentInformation.printNetworkStructureJSON();
+        return net.contains(possibleSubnet);
+
+    }
+
+    public boolean isSuperNetOf(NetworkStructureInformation networkStructureInformation) {
+        String net = this.printStructureJSON();
+        String possibleSubnet = networkStructureInformation.printStructureJSON();
+        return net.contains(possibleSubnet);
     }
 }

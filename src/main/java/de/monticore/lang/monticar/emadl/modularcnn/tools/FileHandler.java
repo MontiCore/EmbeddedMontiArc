@@ -8,8 +8,6 @@ package de.monticore.lang.monticar.emadl.modularcnn.tools;
 
 import de.monticore.lang.monticar.emadl.modularcnn.composer.ComponentInformation;
 import de.monticore.lang.monticar.emadl.modularcnn.composer.NetworkStructureInformation;
-import de.monticore.lang.monticar.emadl.modularcnn.tools.json.JSONReader;
-import de.se_rwth.commons.logging.Log;
 
 import java.io.*;
 import java.util.ArrayList;
@@ -17,11 +15,11 @@ import java.util.ArrayList;
 public class FileHandler {
     public FileHandler(){}
 
-    public void documentNetwork(ComponentInformation componentInformation, String composedNetworksFilePath, boolean json){
-        writeNetworkFile(componentInformation, composedNetworksFilePath, json);
+    public void documentNetwork(ComponentInformation componentInformation, String composedNetworksFilePath){
+        writeNetworkFile(componentInformation, composedNetworksFilePath);
     }
 
-    private void writeNetworkFile(ComponentInformation componentInformation, String composedNetworksFilePath, boolean json){
+    private void writeNetworkFile(ComponentInformation componentInformation, String composedNetworksFilePath){
         if (componentInformation == null) return;
 
         try {
@@ -32,19 +30,29 @@ public class FileHandler {
                 knownNetworks.add(new NetworkStructureInformation(jsonString));
             }
 
-            //for ()
-
-            if (knownNetworks == null || !knownNetworks.contains(componentInformation.printNetworkStructure())){
-                String content;
-                if (json) {
-
-                    content = componentInformation.printNetworkStructureJSON();
+            boolean hit = false;
+            for (int i = 0; i<knownNetworks.size();i++){
+                NetworkStructureInformation network = knownNetworks.get(i);
+                if (network.isSubNetOf(componentInformation)){
+                    hit = true;
+                    knownNetworks.set(i, new NetworkStructureInformation(componentInformation));
+                } else if( network.isSuperNetOf(componentInformation)){
+                    hit = true;
                 }
-                else content =  componentInformation.printNetworkStructure();
-
-                writeToFile(composedNetworksFilePath,content);
             }
-        } catch (Exception e) {
+
+            if (!hit){
+                NetworkStructureInformation newNet = new NetworkStructureInformation(componentInformation);
+                knownNetworks.add(newNet);
+            }
+
+            if (knownNetworks == null){
+                removeFiles(composedNetworksFilePath);
+                for (NetworkStructureInformation network: knownNetworks){
+                    writeToFile(composedNetworksFilePath,network.printStructureJSON());
+                }
+            }
+        } catch (IOException e) {
             e.printStackTrace();
         }
     }
@@ -80,16 +88,21 @@ public class FileHandler {
     }
 
     private void writeToFile(String path,String content) throws IOException {
-        File f = new File(path);
-
-        if (!f.exists()){
-            boolean success = f.createNewFile();
-            if (!success) throw new IOException("Could not create file: " + path);
-        }
-
+        createFileIfNotExists(path);
         BufferedWriter writer = new BufferedWriter(new FileWriter(path,true));
         writer.append(content + "\n");
         writer.close();
+    }
+
+    public void createFileIfNotExists(String path) throws IOException{
+        File f = new File(path);
+
+        if (f.exists()){
+            return;
+        } else {
+            boolean success = f.createNewFile();
+            if (!success) throw new IOException("Could not create file: " + path);
+        }
     }
 
     public void removeFiles(String path) throws IOException{

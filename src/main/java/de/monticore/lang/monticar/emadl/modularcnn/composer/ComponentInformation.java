@@ -158,11 +158,6 @@ public class ComponentInformation {
         return new NetworkStructureInformation(this);
     }
 
-    public String printNetworkStructure(){
-        NetworkStructureInformation networkStructureInformation = analyzeNetworkStructure();
-        return networkStructureInformation.printStructure();
-    }
-
     public String printNetworkStructureJSON(){
         return analyzeNetworkStructure().printStructureJSON();
     }
