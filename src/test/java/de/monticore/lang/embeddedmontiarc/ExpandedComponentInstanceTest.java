@@ -11,6 +11,7 @@ import de.monticore.lang.embeddedmontiarc.embeddedmontiarc._symboltable.instance
 import de.monticore.lang.embeddedmontiarc.helper.ConstantPortHelper;
 import de.monticore.lang.monticar.resolution._ast.ASTUnitNumberExpression;
 import de.monticore.lang.monticar.si._symboltable.ResolutionDeclarationSymbol;
+import de.monticore.lang.monticar.types2._ast.ASTStringExpression;
 import de.monticore.symboltable.Scope;
 import de.se_rwth.commons.logging.Log;
 import org.junit.BeforeClass;
@@ -18,8 +19,10 @@ import org.junit.Ignore;
 import org.junit.Test;
 
 import java.util.Iterator;
+import java.util.List;
 
 import static org.junit.Assert.*;
+import static org.junit.Assert.assertNotNull;
 
 /**
  * Tests for toString methods of EmbeddedMontiArc symbols.
@@ -613,5 +616,28 @@ public class ExpandedComponentInstanceTest extends AbstractSymtabTest {
         assertFalse(nonVirtNonDF.isVirtual());
         assertTrue(nonVirtNonDF.isNonDirectFeedThrough());
         assertFalse(nonVirtNonDF.isDirectFeedThrough());
+    }
+
+    @Test
+    public void testStringTypeInstance() {
+       Scope symTab = createSymTab("src/test/resources");
+       EMAComponentInstanceSymbol cs = symTab.<EMAComponentInstanceSymbol>resolve(
+               "testing.stringTypeInstance", EMAComponentInstanceSymbol.KIND).orElse(null);
+       assertNotNull(cs);
+       Iterator<EMAComponentInstanceSymbol> iterator = cs.getSubComponents().iterator();
+       EMAComponentInstanceSymbol sub1 = iterator.next();
+       assertNotNull(sub1);
+       EMAComponentInstanceSymbol sub2 = iterator.next();
+       assertNotNull(sub2);
+
+       ASTStringExpression arg1 = (ASTStringExpression) sub1.getArguments().get(0);
+       assertEquals("de.monticore.lang.monticar.types2._ast.ASTStringExpression",arg1.getClass().getName());
+       assertEquals("path/home/datasource/",arg1.getStringLiteral().getSource());
+
+
+       ASTStringExpression arg2 = (ASTStringExpression) sub2.getArguments().get(0);
+       assertEquals("de.monticore.lang.monticar.types2._ast.ASTStringExpression",arg2.getClass().getName());
+       assertEquals("path/home/network/",arg2.getStringLiteral().getSource());
+
     }
 }
