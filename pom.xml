@@ -13,7 +13,7 @@
     <!-- == PROJECT DEPENDENCIES ============================================= -->
     <properties>
         <!-- .. EMA-Libraries ............................................. -->
-        <Common-MontiCar.version>0.4.4-SNAPSHOT</Common-MontiCar.version>
+        <Common-MontiCar.version>0.4.6-SNAPSHOT</Common-MontiCar.version>
         <enumlang.version>0.4.4-SNAPSHOT</enumlang.version>
 
         <!-- .. SE-Libraries .............................................. -->
