@@ -16,8 +16,11 @@ public class NetworkStructureInformation {
     private boolean atomic;
     private String networkName;
 
+    private String instanceName;
+
     public NetworkStructureInformation(ComponentInformation componentInformation) {
         this.networkName = componentInformation.getComponentName();
+        this.instanceName = componentInformation.getComponentInstanceName();
         ArrayList<ComponentInformation> subComponentsInformation = componentInformation.getSubComponentsInformation();
 
         if (subComponentsInformation == null || subComponentsInformation.size() == 0) {
@@ -29,8 +32,9 @@ public class NetworkStructureInformation {
         }
     }
 
-    public NetworkStructureInformation(String name, boolean atomic, ArrayList<NetworkStructureInformation> subNets) {
+    public NetworkStructureInformation(String name, String instanceName, boolean atomic, ArrayList<NetworkStructureInformation> subNets) {
         this.networkName = name;
+        this.instanceName = instanceName;
         this.atomic = atomic;
         this.subNetworks = subNets;
     }
@@ -41,6 +45,7 @@ public class NetworkStructureInformation {
         this.networkName = networkStructureInformation.getNetworkName();
         this.atomic = networkStructureInformation.isAtomic();
         this.subNetworks = networkStructureInformation.getSubNetworks();
+        this.instanceName = networkStructureInformation.getInstanceName();
     }
 
 
@@ -59,7 +64,7 @@ public class NetworkStructureInformation {
                 }
             }
         }
-        return this.networkName.equals(net.networkName) && this.atomic == net.atomic && subnetEquality;
+        return this.networkName.equals(net.networkName) && this.atomic == net.atomic && this.instanceName.equals(net.getInstanceName()) && subnetEquality;
     }
 
     public ArrayList<NetworkStructureInformation> getSubNetworks() {
@@ -72,6 +77,10 @@ public class NetworkStructureInformation {
 
     public String getNetworkName() {
         return networkName;
+    }
+
+    public String getInstanceName() {
+        return this.instanceName;
     }
 
     public String atomicInfo() {
@@ -105,6 +114,7 @@ public class NetworkStructureInformation {
         JSONBuilder jsonObject = new JSONBuilder();
 
         jsonObject.addContent("name", this.networkName, false);
+        jsonObject.addContent("instanceName",this.instanceName,false);
         jsonObject.addContent("atomic", this.atomic, false);
 
         ArrayList<String> arrayContents = new ArrayList<>();

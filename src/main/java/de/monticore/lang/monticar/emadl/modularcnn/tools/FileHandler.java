@@ -7,6 +7,8 @@
 package de.monticore.lang.monticar.emadl.modularcnn.tools;
 
 import de.monticore.lang.monticar.emadl.modularcnn.composer.ComponentInformation;
+import de.monticore.lang.monticar.emadl.modularcnn.composer.NetworkStructureInformation;
+import de.monticore.lang.monticar.emadl.modularcnn.tools.json.JSONReader;
 import de.se_rwth.commons.logging.Log;
 
 import java.io.*;
@@ -15,11 +17,23 @@ import java.util.ArrayList;
 public class FileHandler {
     public FileHandler(){}
 
-    public void writeNetworkFile(ComponentInformation componentInformation, String composedNetworksFilePath, boolean json){
+    public void documentNetwork(ComponentInformation componentInformation, String composedNetworksFilePath, boolean json){
+        writeNetworkFile(componentInformation, composedNetworksFilePath, json);
+    }
+
+    private void writeNetworkFile(ComponentInformation componentInformation, String composedNetworksFilePath, boolean json){
         if (componentInformation == null) return;
 
         try {
-            ArrayList<String> knownNetworks = readNetworkFile(composedNetworksFilePath);
+            ArrayList<String> knownNetworksJSONs = readNetworkFile(composedNetworksFilePath);
+            ArrayList<NetworkStructureInformation> knownNetworks = new ArrayList<>();
+
+            for (String jsonString : knownNetworksJSONs){
+                knownNetworks.add(new NetworkStructureInformation(jsonString));
+            }
+
+            //for ()
+
             if (knownNetworks == null || !knownNetworks.contains(componentInformation.printNetworkStructure())){
                 String content;
                 if (json) {
@@ -38,6 +52,8 @@ public class FileHandler {
     public ArrayList<String> readNetworkFile(String composedNetworksFilePath){
         return readFromFile(composedNetworksFilePath);
     }
+
+
 
     private ArrayList<String> readFromFile(String path){
         ArrayList<String> lines = new ArrayList<>();

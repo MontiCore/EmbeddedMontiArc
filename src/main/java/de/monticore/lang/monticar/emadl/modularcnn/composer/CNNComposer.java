@@ -45,7 +45,7 @@ public class CNNComposer {
         ComponentInformation componentInformation = new ComponentInformation(node.getComponent(), archNodes);
 
         FileHandler fileHandler = new FileHandler();
-        fileHandler.writeNetworkFile(componentInformation, composedNetworksFilePath,true);
+        fileHandler.documentNetwork(componentInformation, composedNetworksFilePath,true);
 
         //transformComponentToCNN(node);
 

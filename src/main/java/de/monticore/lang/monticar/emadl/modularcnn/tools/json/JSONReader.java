@@ -32,6 +32,7 @@ public class JSONReader {
         ArrayList<KeyValuePair> levelKvPairs = splitLevelContent(separatedEntries);
 
         String name = null;
+        String instanceName = null;
         boolean atomic = false;
         ArrayList<NetworkStructureInformation> subnets = null;
 
@@ -39,6 +40,9 @@ public class JSONReader {
             switch (levelKvPairs.get(i).key) {
                 case "name":
                     name = levelKvPairs.get(i).value;
+                    break;
+                case "instanceName":
+                    instanceName = levelKvPairs.get(i).value;
                     break;
                 case "atomic":
                     atomic = Boolean.parseBoolean(levelKvPairs.get(i).value);
@@ -53,7 +57,7 @@ public class JSONReader {
             }
         }
 
-        NetworkStructureInformation networkStructureInformation = new NetworkStructureInformation(name, atomic, subnets);
+        NetworkStructureInformation networkStructureInformation = new NetworkStructureInformation(name, instanceName, atomic, subnets);
         return networkStructureInformation;
     }
 

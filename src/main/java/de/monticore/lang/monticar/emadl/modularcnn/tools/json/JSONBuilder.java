@@ -66,7 +66,7 @@ public class JSONBuilder {
     }
 
     public String getJSONObject(boolean trailing){
-        return JSONObject(trailing);
+        return JSONObject(trailing).replaceAll(" ", "").replaceAll("\n","");
     }
 
     public String getJSONObjectAndReset(boolean trailing){
