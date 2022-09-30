@@ -38,7 +38,7 @@ public class SymbolCreator extends EMAComponentInstanceSymbolCreator {
     }
 
     public void createAndLinkNewSymbol(ASTComponent component, EMAComponentSymbol componentSymbol){
-        String realInstanceName = "Bitch"; //componentSymbol.getEnclosingScope().getLocalSymbols().keySet().stream().skip(componentSymbol.getEnclosingScope().getSymbolsSize()-1).findFirst().get();
+        String realInstanceName = componentSymbol.getEnclosingScope().getLocalSymbols().keySet().stream().skip(componentSymbol.getEnclosingScope().getSymbolsSize()-1).findFirst().get();
         List<ResolutionDeclarationSymbol> resolutionDeclarationSymbols = componentSymbol.getResolutionDeclarationSymbols();
         Set<ResolvingFilter<? extends Symbol>> resolvingFilters = componentSymbol.getSpannedScope().getResolvingFilters();
 
