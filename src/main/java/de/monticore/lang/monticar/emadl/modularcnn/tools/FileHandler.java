@@ -26,6 +26,10 @@ public class FileHandler {
             ArrayList<String> knownNetworksJSONs = readNetworkFile(composedNetworksFilePath);
             ArrayList<NetworkStructureInformation> knownNetworks = new ArrayList<>();
 
+            if (knownNetworksJSONs == null) {
+                knownNetworksJSONs = new ArrayList<>();
+            }
+
             for (String jsonString : knownNetworksJSONs){
                 knownNetworks.add(new NetworkStructureInformation(jsonString));
             }
@@ -46,8 +50,8 @@ public class FileHandler {
                 knownNetworks.add(newNet);
             }
 
-            if (knownNetworks == null){
-                removeFiles(composedNetworksFilePath);
+            if (knownNetworks.size() > 0){
+                removeFile(composedNetworksFilePath);
                 for (NetworkStructureInformation network: knownNetworks){
                     writeToFile(composedNetworksFilePath,network.printStructureJSON());
                 }
@@ -105,15 +109,21 @@ public class FileHandler {
         }
     }
 
-    public void removeFiles(String path) throws IOException{
+    public void removeFile(String path) throws IOException{
         if (path.equals("")) {
             return;
         }
 
-        File files = new File(path);
-        if (!files.exists()) {
+        File file = new File(path);
+        if (!file.exists()) {
             return;
         }
+
+        boolean success = file.delete();
+        if (!success) throw new IOException("File could not be deleted:" + file.toString());
+
+        /*
+        File[] filesList = files.listFiles();
 
         for (File file: files.listFiles()){
             if (file.isDirectory())removeFiles(file.getPath());
@@ -121,5 +131,7 @@ public class FileHandler {
             boolean success = file.delete();
             if (!success) throw new IOException("File could not be deleted:" + file.toString());
         }
+        */
+
     }
 }

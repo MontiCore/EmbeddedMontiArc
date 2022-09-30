@@ -18,9 +18,12 @@ import de.monticore.lang.embeddedmontiarcdynamic.embeddedmontiarcdynamic._symbol
 import de.monticore.lang.embeddedmontiarcdynamic.embeddedmontiarcdynamic._symboltable.cncModel.EMADynamicConnectorSymbol;
 import de.monticore.lang.embeddedmontiarcdynamic.embeddedmontiarcdynamic._symboltable.instanceStructure.EMADynamicComponentInstantiationSymbol;
 import de.monticore.lang.monticar.cnnarch._ast.ASTArchitecture;
+import de.monticore.lang.monticar.emadl.modularcnn.tools.ScopeFinder;
 import de.se_rwth.commons.logging.Log;
 
 import java.util.ArrayList;
+import java.util.Iterator;
+import java.util.Set;
 
 public class ComponentInformation {
     final private ArrayList<ASTInterface> interfaces = new ArrayList<>();
@@ -115,11 +118,13 @@ public class ComponentInformation {
         }
 
         this.isCNNNode = this.isASTArchitectureNode() || this.isComposedCNN();
+        findInstanceNameIfEmpty();
     }
 
     public ComponentInformation(ASTComponent component, ArrayList<ArchitectureNode> currentNodes, String instanceName) {
         this(component, currentNodes);
         this.componentInstanceName = instanceName;
+        findInstanceNameIfEmpty();
     }
 
 
@@ -177,6 +182,19 @@ public class ComponentInformation {
         findPorts(this.interfaces);
         findComponents(this.astSubComponents);
         findConnectorRelations(this.connectors);
+    }
+
+    private void findInstanceNameIfEmpty(){
+        if (!this.componentInstanceName.equals("")) return;
+
+        ScopeFinder scopeFinder = new ScopeFinder();
+        Set<String> keySet = scopeFinder.getNextArtifactScopeUp(this.getOriginalComponentReference().getEnclosingScope()).getLocalSymbols().keySet();
+        String instanceName = null;
+        for (Iterator<String> keyIterator = keySet.iterator(); keyIterator.hasNext();){
+            instanceName = keyIterator.next();
+        }
+
+        if (instanceName != null && !instanceName.equals("")) this.componentInstanceName = instanceName;
     }
 
     private void printConnectiorRelations() {
