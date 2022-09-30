@@ -7,18 +7,10 @@
 package de.monticore.lang.monticar.emadl.modularcnn.composer;
 
 import de.monticore.lang.embeddedmontiarc.embeddedmontiarc._ast.*;
-import de.monticore.lang.embeddedmontiarc.embeddedmontiarc._symboltable.cncModel.EMAComponentSymbol;
-import de.monticore.lang.monticar.cnnarch._symboltable.ArchitectureSymbol;
-import de.monticore.lang.monticar.emadl.modularcnn.builder.SymbolCreator;
 import de.monticore.lang.monticar.emadl.modularcnn.tools.FileHandler;
 import de.se_rwth.commons.logging.Log;
 
-import java.io.BufferedWriter;
-import java.io.File;
-import java.io.FileWriter;
-import java.io.IOException;
 import java.util.ArrayList;
-import java.util.Optional;
 
 public class CNNComposer {
     private ArrayList<ArchitectureNode> archNodes = null;
@@ -45,7 +37,7 @@ public class CNNComposer {
         ComponentInformation componentInformation = new ComponentInformation(node.getComponent(), archNodes);
 
         FileHandler fileHandler = new FileHandler();
-        fileHandler.documentNetwork(componentInformation, composedNetworksFilePath);
+        fileHandler.documentNetworkInFile(componentInformation, composedNetworksFilePath);
 
         //transformComponentToCNN(node);
 

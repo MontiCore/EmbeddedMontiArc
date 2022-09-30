@@ -15,24 +15,30 @@ import java.util.ArrayList;
 public class FileHandler {
     public FileHandler(){}
 
-    public void documentNetwork(ComponentInformation componentInformation, String composedNetworksFilePath){
+    public void documentNetworkInFile(ComponentInformation componentInformation, String composedNetworksFilePath){
         writeNetworkFile(componentInformation, composedNetworksFilePath);
+    }
+
+    public ArrayList<NetworkStructureInformation> fetchKnownNetworksFromFile(String composedNetworksFilePath){
+        ArrayList<NetworkStructureInformation> knownNetworks = new ArrayList<>();
+        ArrayList<String> knownNetworksJSONs = readNetworkFile(composedNetworksFilePath);
+
+        if (knownNetworksJSONs == null) {
+            knownNetworksJSONs = new ArrayList<>();
+        }
+
+        for (String jsonString : knownNetworksJSONs){
+            knownNetworks.add(new NetworkStructureInformation(jsonString));
+        }
+
+        return knownNetworks;
     }
 
     private void writeNetworkFile(ComponentInformation componentInformation, String composedNetworksFilePath){
         if (componentInformation == null) return;
 
         try {
-            ArrayList<String> knownNetworksJSONs = readNetworkFile(composedNetworksFilePath);
-            ArrayList<NetworkStructureInformation> knownNetworks = new ArrayList<>();
-
-            if (knownNetworksJSONs == null) {
-                knownNetworksJSONs = new ArrayList<>();
-            }
-
-            for (String jsonString : knownNetworksJSONs){
-                knownNetworks.add(new NetworkStructureInformation(jsonString));
-            }
+            ArrayList<NetworkStructureInformation> knownNetworks = fetchKnownNetworksFromFile(composedNetworksFilePath);
 
             boolean hit = false;
             for (int i = 0; i<knownNetworks.size();i++){
@@ -61,11 +67,9 @@ public class FileHandler {
         }
     }
 
-    public ArrayList<String> readNetworkFile(String composedNetworksFilePath){
+    private ArrayList<String> readNetworkFile(String composedNetworksFilePath){
         return readFromFile(composedNetworksFilePath);
     }
-
-
 
     private ArrayList<String> readFromFile(String path){
         ArrayList<String> lines = new ArrayList<>();
@@ -98,7 +102,7 @@ public class FileHandler {
         writer.close();
     }
 
-    public void createFileIfNotExists(String path) throws IOException{
+    private void createFileIfNotExists(String path) throws IOException{
         File f = new File(path);
 
         if (f.exists()){
@@ -109,7 +113,7 @@ public class FileHandler {
         }
     }
 
-    public void removeFile(String path) throws IOException{
+    private void removeFile(String path) throws IOException{
         if (path.equals("")) {
             return;
         }
@@ -121,17 +125,5 @@ public class FileHandler {
 
         boolean success = file.delete();
         if (!success) throw new IOException("File could not be deleted:" + file.toString());
-
-        /*
-        File[] filesList = files.listFiles();
-
-        for (File file: files.listFiles()){
-            if (file.isDirectory())removeFiles(file.getPath());
-
-            boolean success = file.delete();
-            if (!success) throw new IOException("File could not be deleted:" + file.toString());
-        }
-        */
-
     }
 }
