@@ -12,14 +12,21 @@ import de.monticore.lang.monticar.emadl.modularcnn.composer.NetworkStructureInfo
 import java.io.*;
 import java.util.ArrayList;
 
-public class FileHandler {
-    public FileHandler(){}
+public class ComposedNetworkFileHandler {
+    private String composedNetworksFilePath;
+    public ComposedNetworkFileHandler(String composedNetworksFilePath){
+        if (composedNetworksFilePath == null || composedNetworksFilePath.equals("")){
+            this.composedNetworksFilePath = "ComposedNetworks";
+        } else {
+            this.composedNetworksFilePath = composedNetworksFilePath;
+        }
+    }
 
-    public void documentNetworkInFile(ComponentInformation componentInformation, String composedNetworksFilePath){
+    public void documentNetworkInFile(ComponentInformation componentInformation){
         writeNetworkFile(componentInformation, composedNetworksFilePath);
     }
 
-    public ArrayList<NetworkStructureInformation> fetchKnownNetworksFromFile(String composedNetworksFilePath){
+    public ArrayList<NetworkStructureInformation> fetchKnownNetworksFromFile(){
         ArrayList<NetworkStructureInformation> knownNetworks = new ArrayList<>();
         ArrayList<String> knownNetworksJSONs = readNetworkFile(composedNetworksFilePath);
 
@@ -38,7 +45,7 @@ public class FileHandler {
         if (componentInformation == null) return;
 
         try {
-            ArrayList<NetworkStructureInformation> knownNetworks = fetchKnownNetworksFromFile(composedNetworksFilePath);
+            ArrayList<NetworkStructureInformation> knownNetworks = fetchKnownNetworksFromFile();
 
             boolean hit = false;
             for (int i = 0; i<knownNetworks.size();i++){
@@ -98,7 +105,7 @@ public class FileHandler {
     private void writeToFile(String path,String content) throws IOException {
         createFileIfNotExists(path);
         BufferedWriter writer = new BufferedWriter(new FileWriter(path,true));
-        writer.append(content + "\n");
+        writer.append(content).append("\n");
         writer.close();
     }
 

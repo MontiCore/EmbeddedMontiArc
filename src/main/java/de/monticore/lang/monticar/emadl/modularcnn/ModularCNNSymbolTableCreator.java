@@ -27,26 +27,29 @@ public class ModularCNNSymbolTableCreator extends CommonSymbolTableCreator imple
     private NetworkStructureScanner nss = null;
     private ArrayList<ArchitectureNode> archNodes = null;
 
+    private String composedNetworksFilePath = "";
 
-    public ModularCNNSymbolTableCreator(ResolvingConfiguration resolvingConfig, MutableScope enclosingScope, ArrayList<ArchitectureNode> archNodes) {
+
+    public ModularCNNSymbolTableCreator(ResolvingConfiguration resolvingConfig, MutableScope enclosingScope, ArrayList<ArchitectureNode> archNodes, String composedNetworksFilePath) {
         super(resolvingConfig, enclosingScope);
         this.initSuperSTC();
-        this.initNetworkStructureScanner(archNodes);
+        this.initNetworkStructureScanner(archNodes, composedNetworksFilePath);
     }
 
-    public ModularCNNSymbolTableCreator(ResolvingConfiguration resolvingConfig, Deque<MutableScope> scopeStack, ArrayList<ArchitectureNode> archNodes) {
+    public ModularCNNSymbolTableCreator(ResolvingConfiguration resolvingConfig, Deque<MutableScope> scopeStack, ArrayList<ArchitectureNode> archNodes, String composedNetworksFilePath) {
         super(resolvingConfig, scopeStack);
         this.initSuperSTC();
-        this.initNetworkStructureScanner(archNodes);
+        this.initNetworkStructureScanner(archNodes, composedNetworksFilePath);
     }
 
     public void initSuperSTC(){
 
     }
 
-    public void initNetworkStructureScanner(ArrayList<ArchitectureNode> archNodes){
+    public void initNetworkStructureScanner(ArrayList<ArchitectureNode> archNodes, String composedNetworksFilePath){
         nss = new NetworkStructureScanner(archNodes);
         this.archNodes = archNodes;
+        this.composedNetworksFilePath = composedNetworksFilePath;
         //Log.info("Initialized Network Structure Scanner","NSS_INIT");
     }
 
@@ -95,7 +98,7 @@ public class ModularCNNSymbolTableCreator extends CommonSymbolTableCreator imple
 
     @Override
     public void endVisit(ASTEMACompilationUnit node){
-        CNNComposer cnnComposer = new CNNComposer(archNodes);
+        CNNComposer cnnComposer = new CNNComposer(archNodes, this.composedNetworksFilePath);
         if (cnnComposer.checkNotNullAndValid(node)){
             cnnComposer.checkAndProcessComponentOnMatch(node);
         }

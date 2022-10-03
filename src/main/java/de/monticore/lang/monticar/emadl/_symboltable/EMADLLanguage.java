@@ -31,11 +31,13 @@ public class EMADLLanguage extends EmbeddingModelingLanguage {
     private String backend = "";
     private String pythonPath = "";
 
+
     public static final EmbeddedMontiArcDynamicLanguage HOST_LANGUAGE = new EmbeddedMontiArcDynamicLanguage();
     public static final CNNArchLanguage CNNARCH_LANGUAGE = new CNNArchLanguage();
     public static final MathOptLanguage MATH_LANGUAGE = new MathOptLanguage();
 
     private ArrayList<ArchitectureNode> architectureNodes = new ArrayList<>();
+    private String composedNetworkFilePath = "";
 
     public EMADLLanguage() {
         super("Embedded MontiArc Deep Learning Language",
@@ -44,7 +46,7 @@ public class EMADLLanguage extends EmbeddingModelingLanguage {
                 Arrays.asList(CNNARCH_LANGUAGE, MATH_LANGUAGE));
     }
 
-    public EMADLLanguage(String customFilesPath, String pythonPath, String backend) {
+    public EMADLLanguage(String customFilesPath, String pythonPath, String backend, String composedNetworkFilePath) {
         super("Embedded MontiArc Deep Learning Language",
                 FILE_ENDING,
                 HOST_LANGUAGE,
@@ -52,6 +54,7 @@ public class EMADLLanguage extends EmbeddingModelingLanguage {
         setBackend(backend);
         setCustomFilesPath(customFilesPath);
         setPythonPath(pythonPath);
+        setComposedNetworkFilePath(composedNetworkFilePath);
     }
 
     private void setBackend(String backend){
@@ -73,6 +76,14 @@ public class EMADLLanguage extends EmbeddingModelingLanguage {
     private void setPythonPath (String pythonPath){ this.pythonPath = pythonPath; }
 
     public String getPythonPath (){ return this.pythonPath; }
+
+    public void setComposedNetworkFilePath(String composedNetworkFilePath){
+        this.composedNetworkFilePath = composedNetworkFilePath;
+    }
+
+    public String getComposedNetworkFilePath(){
+        return this.composedNetworkFilePath;
+    }
 
     public ArrayList<ArchitectureNode> getArchitectureNodes() {
         return architectureNodes;
@@ -107,7 +118,7 @@ public class EMADLLanguage extends EmbeddingModelingLanguage {
     @Override
     public Optional<EMADLSymbolTableCreator> getSymbolTableCreator(ResolvingConfiguration resolvingConfiguration, MutableScope enclosingScope) {
         return Optional.of(new EMADLSymbolTableCreator(
-                resolvingConfiguration, enclosingScope,getCustomFilesPath(), getPythonPath(), getBackend(), getArchitectureNodes()));
+                resolvingConfiguration, enclosingScope,getCustomFilesPath(), getPythonPath(), getBackend(), getArchitectureNodes(), getComposedNetworkFilePath()));
     }
 
 }

@@ -7,16 +7,17 @@
 package de.monticore.lang.monticar.emadl.modularcnn.composer;
 
 import de.monticore.lang.embeddedmontiarc.embeddedmontiarc._ast.*;
-import de.monticore.lang.monticar.emadl.modularcnn.tools.FileHandler;
+import de.monticore.lang.monticar.emadl.modularcnn.tools.ComposedNetworkFileHandler;
 import de.se_rwth.commons.logging.Log;
 
 import java.util.ArrayList;
 
 public class CNNComposer {
     private ArrayList<ArchitectureNode> archNodes = null;
-    private String composedNetworksFilePath = "target/ComposedNetworks";
-    public CNNComposer(ArrayList<ArchitectureNode> currentNodes) {
+    private String composedNetworksFilePath = "";
+    public CNNComposer(ArrayList<ArchitectureNode> currentNodes, String composedNetworksFilePath) {
         this.archNodes = currentNodes;
+        this.composedNetworksFilePath = composedNetworksFilePath;
     }
 
     private boolean isValidCNNCanditate(ASTComponent component){
@@ -36,8 +37,8 @@ public class CNNComposer {
         if (!checkNotNullAndValid(node)) return;
         ComponentInformation componentInformation = new ComponentInformation(node.getComponent(), archNodes);
 
-        FileHandler fileHandler = new FileHandler();
-        fileHandler.documentNetworkInFile(componentInformation, composedNetworksFilePath);
+        ComposedNetworkFileHandler composedNetworkFileHandler = new ComposedNetworkFileHandler(this.composedNetworksFilePath);
+        composedNetworkFileHandler.documentNetworkInFile(componentInformation);
 
         //transformComponentToCNN(node);
 

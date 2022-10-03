@@ -138,4 +138,35 @@ public class NetworkStructureInformation {
         String possibleSubnet = networkStructureInformation.printStructureJSON();
         return net.contains(possibleSubnet);
     }
+
+    public boolean isComposedNet(String networkName, String instanceName){
+        if (this.networkName.equals(networkName) && this.instanceName.equals(instanceName) && !isAtomic()) return true;
+        if (this.isSubnet(networkName,instanceName)){
+            NetworkStructureInformation subNet = this.getSubnet(networkName,instanceName);
+            return !subNet.isAtomic();
+        }
+        return false;
+    }
+
+    public boolean isSubnet(String networkName, String instanceName){
+        if (this.getSubNetworks() == null || this.getSubNetworks().size() == 0) return false;
+
+        for (NetworkStructureInformation subNet: this.getSubNetworks()){
+            if (subNet.getNetworkName().equals(networkName) && subNet.getInstanceName().equals(instanceName)) return true;
+            boolean isSub = subNet.isSubnet(networkName,instanceName);
+            if (isSub) return true;
+        }
+        return false;
+    }
+    public NetworkStructureInformation getSubnet(String networkName, String instanceName){
+        if (this.getSubNetworks() == null || this.getSubNetworks().size() == 0) return null;
+
+        for (NetworkStructureInformation subNet: this.getSubNetworks()){
+            if (subNet.getNetworkName().equals(networkName) && subNet.getInstanceName().equals(instanceName)) return subNet;
+            NetworkStructureInformation net = subNet.getSubnet(networkName,instanceName);
+            if (net != null) return net;
+        }
+
+        return null;
+    }
 }
