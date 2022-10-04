@@ -156,6 +156,42 @@ public class TrainingConfiguration {
         return getParameterValue(ONNX_EXPORT);
     }
 
+    public boolean hasCleaning() {
+        return hasParameter(CLEANING);
+    }
+
+    public Optional<String> getCleaningName() {
+        return getObjectParameterValue(CLEANING);
+    }
+
+    public Map<String, Object> getCleaningParameters() {
+        return getObjectParameterParameters(CLEANING);
+    }
+
+    public boolean hasDataImbalance() {
+        return hasParameter(DATA_IMBALANCE);
+    }
+
+    public Optional<String> getDataImbalanceName() {
+        return getObjectParameterValue(DATA_IMBALANCE);
+    }
+
+    public Map<String, Object> getDataImbalanceParameters() {
+        return getObjectParameterParameters(DATA_IMBALANCE);
+    }
+
+    public boolean hasDataSplitting() {
+        return hasParameter(DATA_SPLITTING);
+    }
+
+    public Optional<String> getDataSplittingName() {
+        return getObjectParameterValue(DATA_SPLITTING);
+    }
+
+    public Map<String, Object> getDataSplittingParameters() {
+        return getObjectParameterParameters(DATA_SPLITTING);
+    }
+    
     public Optional<Boolean> getShuffleData() {
         return getParameterValue(SHUFFLE_DATA);
     }
@@ -362,6 +398,22 @@ public class TrainingConfiguration {
 
     public Map<String, Object> getCriticOptimizerParameters() {
         return getObjectParameterParameters(CRITIC_OPTIMIZER);
+    }
+
+    public Optional<String> getRetrainingType() {
+        return getParameterValue(RETRAINING_TYPE);
+    }
+
+    public Optional<String> getRetrainingOptimizerName() {
+        return getObjectParameterValue(RETRAINING_OPTIMIZER);
+    }
+
+    public boolean hasRetrainingOptimizer() {
+        return hasParameter(RETRAINING_OPTIMIZER);
+    }
+
+    public Map<String, Object> getRetrainingOptimizerParameters() {
+        return getObjectParameterParameters(RETRAINING_OPTIMIZER);
     }
 
     public Boolean hasDiscriminatorName() {
