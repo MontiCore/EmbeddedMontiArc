@@ -99,6 +99,57 @@ public abstract class ConfigurationData {
         return normalizeOpt.orElse(null);
     }
 
+    public Boolean getCleaning() {
+        return trainingConfiguration.hasCleaning() ? true : null;
+    }
+
+    public String getCleaningName() {
+        Optional<String> cleaningNameOpt = trainingConfiguration.getCleaningName();
+        return cleaningNameOpt.orElse(null);
+    }
+
+    public Map<String, Object> getCleaningParameters() {
+        if (!getCleaning()) {
+            return null;
+        }
+        Map<String, Object> cleaningParameters = trainingConfiguration.getCleaningParameters();
+        return formatParameters(cleaningParameters);
+    }
+
+    public Boolean getDataImbalance() {
+        return trainingConfiguration.hasDataImbalance() ? true : null;
+    }
+
+    public String getDataImbalanceName() {
+        Optional<String> dataImbalanceNameOpt = trainingConfiguration.getDataImbalanceName();
+        return dataImbalanceNameOpt.orElse(null);
+    }
+
+    public Map<String, Object> getDataImbalanceParameters() {
+        if (!getDataImbalance()) {
+            return null;
+        }
+        Map<String, Object> dataImbalanceParameters = trainingConfiguration.getDataImbalanceParameters();
+        return formatParameters(dataImbalanceParameters);
+    }
+
+    public Boolean getDataSplitting() {
+        return trainingConfiguration.hasDataSplitting() ? true : null;
+    }
+
+    public String getDataSplittingName() {
+        Optional<String> dataSplittingNameOpt = trainingConfiguration.getDataSplittingName();
+        return dataSplittingNameOpt.orElse(null);
+    }
+
+    public Map<String, Object> getDataSplittingParameters() {
+        if (!getDataSplitting()) {
+            return null;
+        }
+        Map<String, Object> dataSplittingParameters = trainingConfiguration.getDataSplittingParameters();
+        return formatParameters(dataSplittingParameters);
+    }
+
     public Boolean getOnnxExport() {
         Optional<Boolean> onnxExport = trainingConfiguration.getOnnxExport();
         return onnxExport.orElse(null);

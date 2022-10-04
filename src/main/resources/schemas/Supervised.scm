@@ -1,6 +1,9 @@
 /* (c) https://github.com/MontiCore/monticore */
 import EvalMetric;
 import Loss;
+import Cleaning;
+import DataImbalance;
+import DataSplitting;
 import Optimizer;
 
 schema Supervised extends General {
@@ -12,6 +15,9 @@ schema Supervised extends General {
     batch_size: N1
     num_epoch: N
     normalize: B
+    cleaning: cleaning_type
+    data_imbalance: imbalance_type
+    data_splitting: splitting_type
     checkpoint_period = 5: N
     preprocessing_name: component
     load_checkpoint: B
