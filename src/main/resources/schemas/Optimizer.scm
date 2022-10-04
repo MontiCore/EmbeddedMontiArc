@@ -10,7 +10,8 @@ schema Optimizer {
             rmsprop,
             adagrad,
             nag,
-            adadelta;
+            adadelta,
+            hpo;
 
         /*
         * Parameters common to all optimizer algorithms.
@@ -62,6 +63,18 @@ schema Optimizer {
         define adadelta {
             epsilon: Q
             rho: Q
+        }
+
+        /*
+        * Hyperparameter ranges for HPO and with cleaning parameter option
+        */
+        define hpo {
+            learning_rate_range: Q*
+            weight_decay_range: Q*
+            momentum_range: Q*
+            optimizer_options: string*
+            with_cleaning: B
+            ntrials: N1
         }
     }
 }
