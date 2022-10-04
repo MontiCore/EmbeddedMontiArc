@@ -8,12 +8,16 @@ import conflang._symboltable.ConfigurationEntrySymbol;
 import conflang._symboltable.NestedConfigurationEntrySymbol;
 import conflangliterals._ast.ASTTypelessLiteral;
 import de.monticore.ast.ASTNode;
+import de.monticore.lang.embeddedmontiarc.embeddedmontiarc._ast.ASTComponent;
 import de.monticore.lang.embeddedmontiarc.embeddedmontiarc._symboltable.cncModel.EMAComponentSymbol;
 import de.monticore.mcliterals._ast.ASTSignedLiteral;
 import de.monticore.symboltable.Scope;
 import de.monticore.symboltable.ScopeSpanningSymbol;
 import de.se_rwth.commons.logging.Log;
-import schemalang._ast.*;
+import schemalang._ast.ASTRequiresRule;
+import schemalang._ast.ASTSchemaDefinition;
+import schemalang._ast.ASTSchemaMember;
+import schemalang._ast.ASTTypedDeclaration;
 import schemalang._symboltable.*;
 import schemalang.validation.SchemaViolation;
 import schematypes._ast.*;
@@ -29,7 +33,7 @@ import static schemalang.validation.ValidationHelpers.*;
 public abstract class AbstractSchemaValidator {
 
     protected List<SchemaDefinitionSymbol> schemaDefinitionSymbols;
-    private List<SchemaViolation> schemaViolations;
+    private final List<SchemaViolation> schemaViolations;
     private boolean logError = false;
 
     public AbstractSchemaValidator(List<SchemaDefinitionSymbol> schemaDefinitionSymbols,
@@ -301,9 +305,24 @@ public abstract class AbstractSchemaValidator {
     }
 
     protected boolean isDefinedInReferenceModel(String componentName) {
+
         Collection<EMAComponentSymbol> referenceModels = getReferenceModels(schemaDefinitionSymbols);
         for (EMAComponentSymbol referenceModel : referenceModels) {
             if (referenceModel.getSubComponent(componentName).isPresent()) {
+                return true;
+            }
+            if (isDefinedAsParameterInReferenceModel(componentName, referenceModel)) return true;
+        }
+        return false;
+    }
+
+    private static boolean isDefinedAsParameterInReferenceModel(final String entryName, final EMAComponentSymbol referenceModel) {
+        final ASTComponent astReferenceModel = (ASTComponent) referenceModel.getAstNode().orElseThrow(IllegalStateException::new);
+        final List<ASTComponent> innerComponents = astReferenceModel.getInnerComponents();
+        for (ASTComponent astComponent : innerComponents
+        ) {
+            long numOfMatchedParameters = astComponent.getParameterList().stream().filter(astParameter -> astParameter.getNameWithArray().getName().equals(entryName)).count();
+            if (numOfMatchedParameters == 1) {
                 return true;
             }
         }
