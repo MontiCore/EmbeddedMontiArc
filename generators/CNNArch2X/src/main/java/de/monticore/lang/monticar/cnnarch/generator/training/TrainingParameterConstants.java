@@ -41,13 +41,18 @@ public class TrainingParameterConstants {
     public static final String LOAD_PRETRAINED = "load_pretrained";
     public static final String NORMALIZE = "normalize";
     public static final String CONTEXT = "context";
+    public static final String CLEANING = "cleaning";
+    public static final String DATA_IMBALANCE = "data_imbalance";
+    public static final String DATA_SPLITTING = "data_splitting";
     public static final String SHUFFLE_DATA = "shuffle_data";
-
     public static final String CLIP_GLOBAL_GRAD_NORM = "clip_global_grad_norm";
     public static final String USE_TEACHER_FORCING = "use_teacher_forcing";
     public static final String SAVE_ATTENTION_IMAGE = "save_attention_image";
     public static final String EVAL_TRAIN = "eval_train";
     public static final String OPTIMIZER = "optimizer";
+    public static final String RETRAINING_TYPE = "retraining_type";
+
+    public static final String RETRAINING_OPTIMIZER = "retraining_optimizer";
     public static final String ACTOR_OPTIMIZER = "actor_optimizer";
     public static final String CRITIC_OPTIMIZER = "critic_optimizer";
     public static final String ONNX_EXPORT = "onnx_export";
