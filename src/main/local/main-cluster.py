@@ -1,3 +1,4 @@
+import csv
 import os
 import pathlib
 import signal
@@ -6,11 +7,11 @@ import sys
 import time
 
 i = 0  # Iteration counter
-delay = 10 # Delay (in seconds) between each iteration
+delay = 20 # Delay (in seconds) between each iteration
 interrupted  = False # Flag to exit safely after Ctrl-c
 current_path = pathlib.Path().resolve()  # Project path
 cluster_user = "wj777230"  # Cluster username for cluster computation
-cluster_key_password = 'Pax40nO9b' # Password for ssh key for cluster authentication
+cluster_key_password = "Pax40nO9b" # Password for ssh key for cluster authentication
 
 print("Preparing...")
 
@@ -24,7 +25,7 @@ signal.signal(signal.SIGINT, signal_handler)
 
 ## Start Cluster
 print("Starting RL-component...")
-subprocess.run(['python', os.path.join(current_path, "tools", "cluster.py"), current_path, cluster_user])
+subprocess.run(['python', os.path.join(current_path, "tools", "cluster.py"), current_path, cluster_user, cluster_key_password])
 
 # Initial delay
 time.sleep(10)
@@ -50,6 +51,11 @@ while True:
         sys.exit("Cluster timeout. Exiting...")
 
     print("Received Input file for nTop!")
+
+    with open(os.path.join(current_path, "files", "Input.csv"), 'r') as inputcsv:
+        reader = csv.reader(inputcsv)
+        for row in reader:
+            print(row)
 
     # Python script for nTop
     print("Generating structure with nTop...")
