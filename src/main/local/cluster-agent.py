@@ -7,7 +7,7 @@ import sys
 interrupted  = False # Flag to exit safely after Ctrl-c
 current_path = pathlib.Path().resolve()  # Project path
 cluster_user = "wj777230"  # Cluster username for cluster computation
-cluster_key_password = 'Pax40nO9b' # Password for ssh key for cluster authentication
+cluster_key_password = "Pax40nO9b" # Password for ssh key for cluster authentication
 constraint_file = os.path.join(current_path, "tools", "constraint.txt")
 
 print("Preparing...")
@@ -32,7 +32,7 @@ subprocess.run(
 
 ## Start Cluster
 print("Starting RL-component...")
-subprocess.run(['python', os.path.join(current_path, "tools", "agent.py"), current_path, cluster_user])
+subprocess.run(['python', os.path.join(current_path, "tools", "agent.py"), current_path, cluster_user, cluster_key_password])
 
 ## Wait for output file (Input.csv) from the cluster and copy it to the local folder
 subprocess.run([os.path.join(current_path, "tools", "Cluster_to_PC.bat"),
