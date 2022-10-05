@@ -1,6 +1,6 @@
 @echo off
-set TRIES=25
-set INTERVAL=5
+set TRIES=300
+set INTERVAL=10
 
 :retry
 

@@ -9,6 +9,6 @@ lcd %4%
 cd %5%
 
 # Download file
-get Input.csv
+get -delete Input.csv
 
 exit
