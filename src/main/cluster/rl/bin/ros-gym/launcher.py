@@ -36,6 +36,8 @@ if __name__ == "__main__":
                       help='evaluation mode')
     parser.add_option('-c', '--continuous', action='store_true',
                       dest='continuous', help='continuous environment')
+    parser.add_option('--constraint', action='store_true', dest='constraint',
+                      help='constraint input for reset')
 
     options, args = parser.parse_args()
 
@@ -59,16 +61,16 @@ if __name__ == "__main__":
     verbose = options.verbose
     render = 0 if not options.render else options.render
     continuous = True if options.continuous else False
+    constraint = True if options.constraint else False
     sample_games = 10
 
     connector = RosGymConnector(options.environment, verbose, render,
-                                continuous)
+                                continuous, constraint)
 
     if mode == PLAY_MODE:
         time.sleep(8)
         connector.reset()
-        #while not connector.is_terminated or connector.in_reset:
-        while True:
+        while not connector.is_terminated or connector.in_reset:
             time.sleep(1)
     elif mode == EVAL_MODE:
         print('Start Evaluation Mode')

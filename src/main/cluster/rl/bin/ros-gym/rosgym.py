@@ -6,8 +6,6 @@ import _thread
 from std_msgs.msg import Int32MultiArray, Bool, Int32, Float32
 from gymenv import TopoEnv
 
-CONSTR = 10 # default value
-
 class BaseEnvironment(object):
     def __init__(self):
         pass
@@ -22,12 +20,12 @@ class RosGymConnector(object):
     ros_update_rate = 10
 
     def __init__(self, env_str="TopoEnv", verbose=True, render_per_step=1,
-                 continuous=False):
+                 continuous=False, constraint=False):
         assert render_per_step >= 0, 'Render per steps needs to be positive'
         self.__env_str = env_str
         self.__verbose = verbose
         self.__render_per_step = render_per_step
-        self.__env = TopoEnv(constraint=CONSTR)
+        self.__env = TopoEnv(constraint=constraint)
         self.__last_game_score = 0
 
         self.__terminated = True
