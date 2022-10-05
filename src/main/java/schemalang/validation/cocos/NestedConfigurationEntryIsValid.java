@@ -3,23 +3,15 @@ package schemalang.validation.cocos;
 import com.google.common.base.Joiner;
 import conflang._ast.ASTNestedConfigurationEntry;
 import conflang._cocos.ConfLangASTNestedConfigurationEntryCoCo;
-import conflang._symboltable.ConfigurationEntry;
 import conflang._symboltable.NestedConfigurationEntrySymbol;
-import de.monticore.lang.embeddedmontiarc.embeddedmontiarc._ast.ASTComponent;
-import de.monticore.lang.embeddedmontiarc.embeddedmontiarc._symboltable.cncModel.EMAComponentSymbol;
-import de.monticore.lang.embeddedmontiarc.embeddedmontiarc._symboltable.instanceStructure.EMAComponentInstantiationSymbol;
-import de.monticore.lang.monticar.common2._ast.ASTParameter;
 import schemalang._symboltable.ComplexPropertyDefinitionSymbol;
 import schemalang._symboltable.SchemaDefinitionSymbol;
 import schemalang._symboltable.TypedDeclarationSymbol;
 import schemalang.validation.SchemaViolation;
-import schemalang.validation.ValidationHelpers;
 import schematypes._ast.ASTObjectType;
 
-import java.util.Collection;
 import java.util.List;
 import java.util.Optional;
-import java.util.stream.Stream;
 
 import static schemalang.ErrorCodes.*;
 
@@ -81,38 +73,5 @@ public class NestedConfigurationEntryIsValid extends AbstractSchemaValidator imp
         }
     }
 
-    private boolean isNestedEntryDefinedInReferenceModels(NestedConfigurationEntrySymbol symbol) {
-        Collection<EMAComponentSymbol> linkedReferenceModels = ValidationHelpers.getReferenceModels(schemaDefinitionSymbols);
-        List<ConfigurationEntry> allConfigurationEntries = symbol.getAllConfigurationEntries();
-        String entryName = symbol.getName();
-        for (EMAComponentSymbol referenceModel :
-                linkedReferenceModels) {
-            //is nested entry defined in reference model
-            if (isConformNestedEntryToInstance(allConfigurationEntries, entryName, referenceModel)) {
-                return true;
-            }
-        }
-        return false;
-    }
 
-    private static boolean isConformNestedEntryToInstance(List<ConfigurationEntry> allConfigurationEntries, String entryName, EMAComponentSymbol referenceModel) {
-        EMAComponentInstantiationSymbol instance = referenceModel.getSubComponent(entryName).orElse(null);
-        ASTComponent astNode = (ASTComponent) referenceModel.getAstNode().orElseThrow(IllegalStateException::new);
-        if (instance == null)
-            return false;
-        //now check if parameters are conform
-        ASTComponent instanceType = astNode.getInnerComponents().stream().filter(astComponent -> astComponent.getName().equals(instance.getComponentType().getReferencedSymbol().getName())).findFirst().orElseThrow(IllegalStateException::new);
-        List<ASTParameter> parameters = instanceType.getParameterList();
-        final Stream<ASTParameter> emaVariableStream = parameters.stream().filter(parameter -> hasArgumentsParameter(allConfigurationEntries, parameter));
-        return emaVariableStream.count() == allConfigurationEntries.size();
-    }
-
-    private static boolean hasArgumentsParameter(List<ConfigurationEntry> allConfigurationEntries, ASTParameter parameter) {
-        for (ConfigurationEntry configurationEntry :
-                allConfigurationEntries) {
-            if (configurationEntry.getName().equals(parameter.getNameWithArray().getName()))
-                return true;
-        }
-        return false;
-    }
 }

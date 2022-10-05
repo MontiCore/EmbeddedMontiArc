@@ -4,12 +4,15 @@ import com.google.common.base.Joiner;
 import com.google.common.collect.Lists;
 import conflang._ast.ASTConfigurationEntry;
 import conflang._ast.ASTNestedConfigurationEntry;
+import conflang._symboltable.ConfigurationEntry;
 import conflang._symboltable.ConfigurationEntrySymbol;
 import conflang._symboltable.NestedConfigurationEntrySymbol;
 import conflangliterals._ast.ASTTypelessLiteral;
 import de.monticore.ast.ASTNode;
 import de.monticore.lang.embeddedmontiarc.embeddedmontiarc._ast.ASTComponent;
 import de.monticore.lang.embeddedmontiarc.embeddedmontiarc._symboltable.cncModel.EMAComponentSymbol;
+import de.monticore.lang.embeddedmontiarc.embeddedmontiarc._symboltable.instanceStructure.EMAComponentInstantiationSymbol;
+import de.monticore.lang.monticar.common2._ast.ASTParameter;
 import de.monticore.mcliterals._ast.ASTSignedLiteral;
 import de.monticore.symboltable.Scope;
 import de.monticore.symboltable.ScopeSpanningSymbol;
@@ -20,11 +23,14 @@ import schemalang._ast.ASTSchemaMember;
 import schemalang._ast.ASTTypedDeclaration;
 import schemalang._symboltable.*;
 import schemalang.validation.SchemaViolation;
+import schemalang.validation.ValidationHelpers;
 import schematypes._ast.*;
 
 import java.util.Collection;
 import java.util.List;
 import java.util.Optional;
+import java.util.function.Predicate;
+import java.util.stream.Stream;
 
 import static schemalang.ErrorCodes.*;
 import static schemalang.validation.TypeCompatibility.isValueCompatibleWithType;
@@ -312,6 +318,42 @@ public abstract class AbstractSchemaValidator {
                 return true;
             }
             if (isDefinedAsParameterInReferenceModel(componentName, referenceModel)) return true;
+        }
+        return false;
+    }
+    protected boolean isNestedEntryDefinedInReferenceModels(NestedConfigurationEntrySymbol symbol) {
+        Collection<EMAComponentSymbol> linkedReferenceModels = ValidationHelpers.getReferenceModels(schemaDefinitionSymbols);
+        List<ConfigurationEntry> allConfigurationEntries = symbol.getAllConfigurationEntries();
+        String entryName = symbol.getName();
+        for (EMAComponentSymbol referenceModel :
+                linkedReferenceModels) {
+            //is nested entry defined in reference model
+            if (isConformNestedEntryToInstance(allConfigurationEntries, entryName, referenceModel)) {
+                return true;
+            }
+        }
+        return false;
+    }
+
+    private static boolean isConformNestedEntryToInstance(List<ConfigurationEntry> allConfigurationEntries, String entryName, EMAComponentSymbol referenceModel) {
+        final EMAComponentInstantiationSymbol instance = referenceModel.getSubComponent(entryName).orElse(null);
+        final ASTComponent astNode = (ASTComponent) referenceModel.getAstNode().orElseThrow(IllegalStateException::new);
+        if (instance == null)
+            return false;
+        //now check if parameters are conform
+        final Predicate<ASTComponent> filterPredicateToFindNestedEntryName = astComponent -> astComponent.getName().equals(instance.getComponentType().getReferencedSymbol().getName());
+        final Stream<ASTComponent> filteredSubComponents = astNode.getInnerComponents().stream().filter(filterPredicateToFindNestedEntryName);
+        final ASTComponent componentForInstance = filteredSubComponents.findFirst().orElseThrow(IllegalStateException::new);
+        final List<ASTParameter> componentParameters = componentForInstance.getParameterList();
+        final Stream<ASTParameter> emaVariableStream = componentParameters.stream().filter(componentParameter-> hasConfigurationEntriesParameter(allConfigurationEntries, componentParameter));
+        return emaVariableStream.count() == allConfigurationEntries.size();
+    }
+
+    private static boolean hasConfigurationEntriesParameter(List<ConfigurationEntry> allConfigurationEntries, ASTParameter parameter) {
+        for (ConfigurationEntry configurationEntry :
+                allConfigurationEntries) {
+            if (configurationEntry.getName().equals(parameter.getNameWithArray().getName()))
+                return true;
         }
         return false;
     }

@@ -644,15 +644,15 @@ public class ReferenceModelValidatorTest extends AbstractTest {
     @Test
     public void nestedConfigurationEntryInReferenceModel() {
         /* Arrange */
-        ASTConfiguration configuration = parseConfiguration("src/test/resources/conflang/DefinedNestedEntriesInReferenceModel.conf");
+        final ASTConfiguration configuration = parseConfiguration("src/test/resources/conflang/DefinedNestedEntriesInReferenceModel.conf");
         createEMASymbolTable(configuration);
-        ASTSchemaLangCompilationUnit parsedModel =
+        final ASTSchemaLangCompilationUnit parsedModel =
                 parse("src/test/resources/schemalang/validation/referencemodels/SchemaWithReferenceModel.scm");
         createSymbolTable2(parsedModel, modelPath);
         assertNotNull(configuration);
         /* Act */
-        SchemaDefinitionSymbol schemaDefinitionSymbol = parsedModel.getSchemaDefinition().getSchemaDefinitionSymbol();
-        List<SchemaViolation> schemaViolations = SchemaDefinitionValidator.validateConfiguration(Lists.newArrayList(schemaDefinitionSymbol), configuration.getConfigurationSymbol());
+        final SchemaDefinitionSymbol schemaDefinitionSymbol = parsedModel.getSchemaDefinition().getSchemaDefinitionSymbol();
+        final List<SchemaViolation> schemaViolations = SchemaDefinitionValidator.validateConfiguration(Lists.newArrayList(schemaDefinitionSymbol), configuration.getConfigurationSymbol());
         /* Assert */
         assertTrue(schemaViolations.isEmpty());
     }
@@ -666,14 +666,14 @@ public class ReferenceModelValidatorTest extends AbstractTest {
     @Test
     public void nestedConfigurationEntryNotInReferenceModel() {
         /* Arrange */
-        ASTConfiguration configuration = parseConfiguration("src/test/resources/conflang/UndefinedNestedEntriesInReferenceModel.conf");
+        final ASTConfiguration configuration = parseConfiguration("src/test/resources/conflang/UndefinedNestedEntriesInReferenceModel.conf");
         createEMASymbolTable(configuration);
-        ASTSchemaLangCompilationUnit parsedModel = parse("src/test/resources/schemalang/validation/referencemodels/SchemaWithReferenceModel.scm");
+        final ASTSchemaLangCompilationUnit parsedModel = parse("src/test/resources/schemalang/validation/referencemodels/SchemaWithReferenceModel.scm");
         createSymbolTable2(parsedModel, modelPath);
         assertNotNull(configuration);
         /* Act */
-        SchemaDefinitionSymbol schemaDefinitionSymbol = parsedModel.getSchemaDefinition().getSchemaDefinitionSymbol();
-        List<SchemaViolation> schemaViolations = SchemaDefinitionValidator.validateConfiguration(Lists.newArrayList(schemaDefinitionSymbol), configuration.getConfigurationSymbol());
+        final SchemaDefinitionSymbol schemaDefinitionSymbol = parsedModel.getSchemaDefinition().getSchemaDefinitionSymbol();
+        final List<SchemaViolation> schemaViolations = SchemaDefinitionValidator.validateConfiguration(Lists.newArrayList(schemaDefinitionSymbol), configuration.getConfigurationSymbol());
         /* Assert */
         assertEquals(3, schemaViolations.size());
     }
