@@ -17,6 +17,7 @@ public class NetworkStructureInformation {
     private String networkName;
 
     private String instanceName;
+    private NetworkStructureInformation parentNetwork = null;
 
     public NetworkStructureInformation(ComponentInformation componentInformation) {
         this.networkName = componentInformation.getComponentName();
@@ -30,14 +31,17 @@ public class NetworkStructureInformation {
             for (ComponentInformation comp : subComponentsInformation) {
                 subNetworks.add(comp.analyzeNetworkStructure());
             }
+            rebuildParentRelation();
         }
     }
 
-    public NetworkStructureInformation(String name, String instanceName, boolean atomic, ArrayList<NetworkStructureInformation> subNets) {
+    public NetworkStructureInformation(String name, String instanceName, boolean atomic, ArrayList<NetworkStructureInformation> subNets, NetworkStructureInformation parent) {
         this.networkName = name;
         this.instanceName = instanceName;
         this.atomic = atomic;
         this.subNetworks = subNets;
+        this.parentNetwork = parent;
+        rebuildParentRelation();
     }
 
     public NetworkStructureInformation(String json){
@@ -47,10 +51,34 @@ public class NetworkStructureInformation {
         this.instanceName = networkStructureInformation.getInstanceName();
         this.atomic = networkStructureInformation.isAtomic();
         this.subNetworks = networkStructureInformation.getSubNetworks();
+        rebuildParentRelation();
+    }
+
+    public void rebuildParentRelation(){
+        if (this.subNetworks != null){
+            setThisAsParentNetworkInSubnetworks();
+            for (NetworkStructureInformation subNet :this.subNetworks){
+                subNet.rebuildParentRelation();
+            }
+        }
+
+
+
+    }
+
+    private void setThisAsParentNetworkInSubnetworks(){
+        if (this.subNetworks == null) return;
+        for (NetworkStructureInformation subnet : this.subNetworks){
+            subnet.setParentNetwork(this);
+        }
     }
 
 
     public boolean equals(NetworkStructureInformation net) {
+       return equals(net,false);
+    }
+
+    public boolean equals(NetworkStructureInformation net, boolean ignoreParent){
         boolean subnetEquality = true;
 
         if (this.subNetworks == null && net.getSubNetworks() == null) subnetEquality = true;
@@ -58,14 +86,26 @@ public class NetworkStructureInformation {
             subnetEquality = false;
         else {
             for (int i = 0; i < subNetworks.size(); i++) {
-                boolean eq = this.subNetworks.get(i).equals(net.getSubNetworks().get(i));
+                boolean eq = this.subNetworks.get(i).equals(net.getSubNetworks().get(i),true);
                 if (!eq) {
                     subnetEquality = false;
                     break;
                 }
             }
         }
-        return this.networkName.equals(net.networkName) && this.atomic == net.atomic && this.instanceName.equals(net.getInstanceName()) && subnetEquality;
+
+        boolean parentCheck = true;
+        if (!ignoreParent){
+            parentCheck = (this.parentNetwork == null && net.getParentNetwork() == null) || (this.parentNetwork != null && net.getParentNetwork() != null && this.parentNetwork.equals(net.getParentNetwork())) ;
+
+        }
+
+
+
+        return this.networkName.equals(net.networkName) && this.atomic == net.atomic &&
+                this.instanceName.equals(net.getInstanceName()) &&
+                 parentCheck && subnetEquality;
+
     }
 
     public ArrayList<NetworkStructureInformation> getSubNetworks() {
@@ -74,6 +114,24 @@ public class NetworkStructureInformation {
 
     public boolean isAtomic() {
         return atomic;
+    }
+
+    public boolean isRoot(){
+        return this.parentNetwork == null;
+    }
+
+
+    public void setParentNetwork(NetworkStructureInformation parentNetwork){
+        this.parentNetwork = parentNetwork;
+    }
+
+    public NetworkStructureInformation getParentNetwork(){
+        return this.parentNetwork;
+    }
+
+    public NetworkStructureInformation getRootNetwork(){
+        if (this.isRoot()) return this;
+        else return this.parentNetwork.getRootNetwork();
     }
 
     public String getNetworkName() {

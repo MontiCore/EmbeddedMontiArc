@@ -27,12 +27,12 @@ public class JsonTest {
 
     @Test
     public void TestJsonHandlingSimple(){
-        NetworkStructureInformation net3 = new NetworkStructureInformation("Net3", "net3",true,null);
-        NetworkStructureInformation net2 = new NetworkStructureInformation("Net2", "net2",true,null);
+        NetworkStructureInformation net3 = new NetworkStructureInformation("Net3", "net3",true,null,null);
+        NetworkStructureInformation net2 = new NetworkStructureInformation("Net2", "net2",true,null,null);
         ArrayList<NetworkStructureInformation> net1Subnets = new ArrayList<>();
         net1Subnets.add(net2);
         net1Subnets.add(net3);
-        NetworkStructureInformation net1 = new NetworkStructureInformation("Net1", "net1",false, net1Subnets);
+        NetworkStructureInformation net1 = new NetworkStructureInformation("Net1", "net1",false, net1Subnets,null);
 
 
         String json = net3.printStructureJSON();
@@ -53,63 +53,64 @@ public class JsonTest {
     @Test
     public void TestJsonHandlingComplex(){
 
-        NetworkStructureInformation net5 = new NetworkStructureInformation("Net5", "net5",true,null);
-        NetworkStructureInformation net4 = new NetworkStructureInformation("Net4", "net4",true,null);
+        NetworkStructureInformation net5 = new NetworkStructureInformation("Net5", "net5",true,null,null);
+        NetworkStructureInformation net4 = new NetworkStructureInformation("Net4", "net4",true,null,null);
         ArrayList<NetworkStructureInformation> net3Subnets = new ArrayList<>();
         net3Subnets.add(net4);
         net3Subnets.add(net5);
-        NetworkStructureInformation net3 = new NetworkStructureInformation("Net3", "net3",false,net3Subnets);
+        NetworkStructureInformation net3 = new NetworkStructureInformation("Net3", "net3",false,net3Subnets,null);
 
 
-        NetworkStructureInformation net2 = new NetworkStructureInformation("Net2", "net2",true,null);
+        NetworkStructureInformation net2 = new NetworkStructureInformation("Net2", "net2",true,null,null);
 
 
         ArrayList<NetworkStructureInformation> net1Subnets = new ArrayList<>();
         net1Subnets.add(net2);
         net1Subnets.add(net3);
-        NetworkStructureInformation net1 = new NetworkStructureInformation("Net1", "net1",false,net1Subnets);
+        NetworkStructureInformation net1 = new NetworkStructureInformation("Net1", "net1",false, net1Subnets,null);
 
         String json = net5.printStructureJSON();
         NetworkStructureInformation net5Read = new NetworkStructureInformation(json);
-        assertTrue(net5.equals(net5Read));
+        assertTrue(net5.equals(net5Read,true));
 
         json = net4.printStructureJSON();
         NetworkStructureInformation net4Read = new NetworkStructureInformation(json);
-        assertTrue(net4.equals(net4Read));
+        assertTrue(net4.equals(net4Read,true));
 
         json = net3.printStructureJSON();
         NetworkStructureInformation net3Read = new NetworkStructureInformation(json);
-        assertTrue(net3.equals(net3Read));
+        assertTrue(net3.equals(net3Read,true));
 
         json = net2.printStructureJSON();
         NetworkStructureInformation net2Read = new NetworkStructureInformation(json);
-        assertTrue(net2.equals(net2Read));
+        assertTrue(net2.equals(net2Read,true));
 
         json = net1.printStructureJSON();
         NetworkStructureInformation net1Read = new NetworkStructureInformation(json);
 
         Log.info("JSON","JSON");
         assertTrue(net1.equals(net1Read));
+        assertTrue(net1.isRoot());
     }
 
     @Test
     public void TestJsonSubnetSearch(){
 
-        NetworkStructureInformation net5 = new NetworkStructureInformation("Net5", "net5",true,null);
-        NetworkStructureInformation net4 = new NetworkStructureInformation("Net4", "net4",true,null);
+        NetworkStructureInformation net5 = new NetworkStructureInformation("Net5", "net5",true,null,null);
+        NetworkStructureInformation net4 = new NetworkStructureInformation("Net4", "net4",true,null,null);
         ArrayList<NetworkStructureInformation> net3Subnets = new ArrayList<>();
         net3Subnets.add(net4);
         net3Subnets.add(net5);
-        NetworkStructureInformation net3 = new NetworkStructureInformation("Net3", "net3",false, net3Subnets);
+        NetworkStructureInformation net3 = new NetworkStructureInformation("Net3", "net3",false, net3Subnets,null);
 
 
-        NetworkStructureInformation net2 = new NetworkStructureInformation("Net2", "net2",true,null);
+        NetworkStructureInformation net2 = new NetworkStructureInformation("Net2", "net2",true,null,null);
 
 
         ArrayList<NetworkStructureInformation> net1Subnets = new ArrayList<>();
         net1Subnets.add(net2);
         net1Subnets.add(net3);
-        NetworkStructureInformation net1 = new NetworkStructureInformation("Net1", "net1",false, net1Subnets);
+        NetworkStructureInformation net1 = new NetworkStructureInformation("Net1", "net1",false, net1Subnets,null);
 
         assertTrue(net1.isSubnet("Net5","net5"));
         assertTrue(!net1.isComposedNet("Net5","net5"));

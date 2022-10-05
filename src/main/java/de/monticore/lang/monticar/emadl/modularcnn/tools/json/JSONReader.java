@@ -57,7 +57,7 @@ public class JSONReader {
             }
         }
 
-        NetworkStructureInformation networkStructureInformation = new NetworkStructureInformation(name, instanceName, atomic, subnets);
+        NetworkStructureInformation networkStructureInformation = new NetworkStructureInformation(name, instanceName, atomic, subnets,null);
         return networkStructureInformation;
     }
 
