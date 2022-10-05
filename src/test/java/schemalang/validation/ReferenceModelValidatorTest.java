@@ -16,7 +16,6 @@ import schemalang._ast.ASTSchemaDefinition;
 import schemalang._ast.ASTSchemaLangCompilationUnit;
 import schemalang._symboltable.SchemaDefinitionSymbol;
 import schemalang.exception.SchemaLangTechnicalException;
-import schemalang.validation.exception.SchemaLangException;
 import schemalang.validation.model.ArchitectureComponent;
 import schemalang.validation.model.MappingUtils;
 
@@ -644,16 +643,38 @@ public class ReferenceModelValidatorTest extends AbstractTest {
 
     @Test
     public void nestedConfigurationEntryInReferenceModel() {
+        /* Arrange */
         ASTConfiguration configuration = parseConfiguration("src/test/resources/conflang/DefinedNestedEntriesInReferenceModel.conf");
         createEMASymbolTable(configuration);
         ASTSchemaLangCompilationUnit parsedModel =
-                parse("src/test/resources/schemalang/validation/referencemodels/DefinedNestedEntriesInReferenceModel.scm");
+                parse("src/test/resources/schemalang/validation/referencemodels/SchemaWithReferenceModel.scm");
         createSymbolTable2(parsedModel, modelPath);
+        assertNotNull(configuration);
         /* Act */
         SchemaDefinitionSymbol schemaDefinitionSymbol = parsedModel.getSchemaDefinition().getSchemaDefinitionSymbol();
         List<SchemaViolation> schemaViolations = SchemaDefinitionValidator.validateConfiguration(Lists.newArrayList(schemaDefinitionSymbol), configuration.getConfigurationSymbol());
         /* Assert */
-        assertNotNull(configuration);
         assertTrue(schemaViolations.isEmpty());
+    }
+
+    /***
+     * three violations are expected
+     * one for the undefined nested entry in the reference model
+     * one for the undefined simple entry  in the reference model
+     * one for the defined nested entry which has an undefined nested entry
+     */
+    @Test
+    public void nestedConfigurationEntryNotInReferenceModel() {
+        /* Arrange */
+        ASTConfiguration configuration = parseConfiguration("src/test/resources/conflang/UndefinedNestedEntriesInReferenceModel.conf");
+        createEMASymbolTable(configuration);
+        ASTSchemaLangCompilationUnit parsedModel = parse("src/test/resources/schemalang/validation/referencemodels/SchemaWithReferenceModel.scm");
+        createSymbolTable2(parsedModel, modelPath);
+        assertNotNull(configuration);
+        /* Act */
+        SchemaDefinitionSymbol schemaDefinitionSymbol = parsedModel.getSchemaDefinition().getSchemaDefinitionSymbol();
+        List<SchemaViolation> schemaViolations = SchemaDefinitionValidator.validateConfiguration(Lists.newArrayList(schemaDefinitionSymbol), configuration.getConfigurationSymbol());
+        /* Assert */
+        assertEquals(3, schemaViolations.size());
     }
 }
