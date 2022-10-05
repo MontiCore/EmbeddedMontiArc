@@ -7,7 +7,6 @@ import de.rwth.montisim.simulation.commons.physicalvalue.PhysicalValue;
 import de.rwth.montisim.simulation.eecomponents.autopilots.RLAutopilot;
 import de.rwth.montisim.simulation.eecomponents.speed_limit.SpeedLimitService;
 import de.rwth.montisim.simulation.vehicle.Vehicle;
-import de.rwth.montisim.simulation.vehicle.navigation.Navigation;
 import de.rwth.montisim.simulation.vehicle.physicalvalues.TruePosition;
 import de.rwth.montisim.simulation.vehicle.physicalvalues.TrueVelocity;
 
@@ -21,21 +20,20 @@ import java.util.List;
  * @author Tristan Höfer
  * See commit BA Hoefer (https://git.rwth-aachen.de/monticore/EmbeddedMontiArc/simulators/simulation/-/commit/933d9a561e6c73d44c412407be0fd81e1772863f)
  */
-public class OldRewardFunction extends RewardFunction{
+public class OldRewardFunction extends RewardFunction {
 
   private final double DEFAULT_SPEED_LIMIT = 50.0; //in km/h
-  private PhysicalValue[] truePositions;
-  private PhysicalValue[] trueVelocity;
-  private Navigation[] navigations;
-  private SpeedLimitService[] speedLimitServices;
-  private double[] vehicleLengths;
-  private int[] maxPathIndex;
-  private double[] currentSpeedLimits; //in km/h
+  private final PhysicalValue[] truePositions;
+  private final PhysicalValue[] trueVelocity;
+  private final SpeedLimitService[] speedLimitServices;
+  private final double[] vehicleLengths;
+  private final int[] maxPathIndex;
+  private final double[] currentSpeedLimits; //in km/h
 
-  private RLAutopilot[] steering;
-  private RLAutopilot[] gas;
-  private RLAutopilot[] brakes;
-  private Vehicle[] vehicle;
+  private final RLAutopilot[] steering;
+  private final RLAutopilot[] gas;
+  private final RLAutopilot[] brakes;
+  private final Vehicle[] vehicle;
 
   /**
    * Default constructor that initializes the parameters required for any given reward function: Navigation and Data of each Vehicle.
@@ -53,48 +51,45 @@ public class OldRewardFunction extends RewardFunction{
     speedLimitServices = new SpeedLimitService[vehicles.length];
     vehicle = vehicles;
 
-    for(int i = 0; i<truePositions.length; i++){
+    for (int i = 0; i < truePositions.length; i++) {
       truePositions[i] = vehicles[i].physicalValues.getPhysicalValue("true_position");
       trueVelocity[i] = vehicles[i].physicalValues.getPhysicalValue("true_velocity");
-      if(!vehicles[i].eesystem.getComponent("SpeedLimit").isPresent()){
+      if (!vehicles[i].eesystem.getComponent("SpeedLimit").isPresent()) {
         speedLimitServices[i] = null;
       }
-      else{
+      else {
         speedLimitServices[i] = (SpeedLimitService) vehicles[i].eesystem.getComponent("SpeedLimit").get();
       }
-      if(!vehicles[i].eesystem.getComponent("RLAutopilot").isPresent()){
+      if (!vehicles[i].eesystem.getComponent("RLAutopilot").isPresent()) {
         steering[i] = null;
         gas[i] = null;
         brakes[i] = null;
       }
-      else{
+      else {
         steering[i] = (RLAutopilot) vehicles[i].eesystem.getComponent("RLAutopilot").get();
         gas[i] = (RLAutopilot) vehicles[i].eesystem.getComponent("RLAutopilot").get();
         brakes[i] = (RLAutopilot) vehicles[i].eesystem.getComponent("RLAutopilot").get();
       }
     }
-    this.navigations = navigations;
     vehicleLengths = new double[vehicles.length];
     maxPathIndex = new int[vehicles.length];
-    for(int i = 0; i<vehicles.length; i++){
+    for (int i = 0; i < vehicles.length; i++) {
       vehicleLengths[i] = vehicles[i].properties.body.length;
       maxPathIndex[i] = -1;
     }
     currentSpeedLimits = new double[vehicles.length];
 
-
   }
 
   @Override
-  public float getReward(int step){
-    float reward  = 0;
-    for(int i = 0; i<truePositions.length; i++){
+  public float getReward(int step) {
+    float reward = 0;
+    for (int i = 0; i < truePositions.length; i++) {
       reward += getRewardForVehicle(i, step);
     }
 
     return reward;
   }
-
 
   @Override
   public float getRewardForVehicle(int vehicle_index, int step) {
@@ -103,67 +98,79 @@ public class OldRewardFunction extends RewardFunction{
     float reward = 0;
     List<StaticObject> objectCollision = vehicle[carNumber].getStaticCollisions();
     List<Vehicle> vehicleCollision = vehicle[carNumber].getVehicleCollisions();
+
     double curVelocity = ((Double) trueVelocity[carNumber].get()).doubleValue();
     double curSteering = steering[carNumber].getCurrentSteering();
     double deltaVelocity = Math.abs(15 - ((Double) trueVelocity[carNumber].get()).doubleValue()); //speed limit of 15 to prevent the agent of crashing
 
-    if(deltaVelocity >= 300) deltaVelocity = 15; //if bug occurs that agent moves unrealistic fast
-    if(curVelocity >= 40) { //if agent exceeds speed limit
+    if (deltaVelocity >= 300)
+      deltaVelocity = 15; //if bug occurs that agent moves unrealistic fast
+    if (curVelocity >= 40) { //if agent exceeds speed limit
       reward += -400;
-    }else if(curVelocity < 1){
+    }
+    else if (curVelocity < 1) {
       reward += -400;
-    }else if(curVelocity < 10 && curVelocity > 5) {
+    }
+    else if (curVelocity < 10 && curVelocity > 5) {
       reward += 350;
-    }else if(deltaVelocity <= 5 && deltaVelocity > 2) {
+    }
+    else if (deltaVelocity <= 5 && deltaVelocity > 2) {
       reward += 250;
-    }else {
+    }
+    else {
       reward += 100;
     }
 
-    if(curSteering <= -21.0 || curSteering >= 21.0) reward += -300; //steering of 21 is 0.7 * 30
+    if (curSteering <= -21.0 || curSteering >= 21.0)
+      reward += -300; //steering of 21 is 0.7 * 30
 
-    if(curVelocity >= 35.0 && (curSteering <= -21 || curSteering >= 21)) reward += -800; //punishment: if too fast and too much steering
+    if (curVelocity >= 35.0 && (curSteering <= -21 || curSteering >= 21))
+      reward += -800; //punishment: if too fast and too much steering
 
     Vec2[] traj = navigations[carNumber].getCurrentTraj();
-
     //calculate distance to nearest trajectory point
     Vec2 pos = (Vec2) truePositions[carNumber].get();
 
     double temp = 0;
     double distanceToSeg = 0;
-    if(pos == null) return 0.f;
+    if (pos == null)
+      return 0.f;
     double distance = Double.MAX_VALUE;
-    for(int i = 0; i<traj.length-1; i++){
+    for (int i = 0; i < traj.length - 1; i++) {
       SegmentPos currentSegment = new SegmentPos();
-      currentSegment.initFromTraj(pos, traj[i],traj[i+1]);
-      if(currentSegment.projPos < 0) { //vehicle is in front on segment
+      currentSegment.initFromTraj(pos, traj[i], traj[i + 1]);
+      if (currentSegment.projPos < 0) { //vehicle is in front on segment
         distanceToSeg = currentSegment.relPos.magnitude();
       }
-      else if(currentSegment.projDistToEnd < 0) { //vehicle is behind segment
+      else if (currentSegment.projDistToEnd < 0) { //vehicle is behind segment
         distanceToSeg = currentSegment.endDis.magnitude();
       }
-      else{
+      else {
         distanceToSeg = currentSegment.dist;
       }
-      if(distanceToSeg < distance) {
+      if (distanceToSeg < distance) {
         temp = currentSegment.projPos;
         distance = distanceToSeg;
       }
 
     }
     //Punish if the distance to the trajectory is too great, otherwise reward
-    if(distance > 5.0) {
+    if (distance > 5.0) {
       reward += -500;
-    } else if(distance <= 1.5) {
+    }
+    else if (distance <= 1.5) {
       reward += 400;
-    } else {reward += 100;}
+    }
+    else {
+      reward += 100;
+    }
 
     //punish collisions
-    for(int i = 0; i< vehicleCollision.size()-1; i++) { //punish collision with other vehicle
+    for (int i = 0; i < vehicleCollision.size() - 1; i++) { //punish collision with other vehicle
       reward += -600;
     }
 
-    for(int i = 0; i < objectCollision.size()-1; i++) { //punish collision with objects
+    for (int i = 0; i < objectCollision.size() - 1; i++) { //punish collision with objects
       reward += -400;
     }
 
@@ -183,6 +190,18 @@ public class OldRewardFunction extends RewardFunction{
 
   }
 
+  //get new speed limits
+  private void updateCurrentSpeedLimit(int index) {
+    if (speedLimitServices[index] == null) {
+      currentSpeedLimits[index] = DEFAULT_SPEED_LIMIT;
+    }
+    else {
+      currentSpeedLimits[index] = speedLimitServices[index].getSpeedLimit(0);
+      if (currentSpeedLimits[index] <= 0) {
+        currentSpeedLimits[index] = DEFAULT_SPEED_LIMIT;
+      }
+    }
+  }
 
   // SegmentPos taken from JavaAutopilot class for distance calculation
   private class SegmentPos {
@@ -212,7 +231,8 @@ public class OldRewardFunction extends RewardFunction{
       length = dir.magnitude();
       if (length > 0.001) {
         IPM.multiply(dir, 1 / length);
-      } else {
+      }
+      else {
         dir.set(Double.NaN, Double.NaN);
       }
       normal.set(-dir.y, dir.x);
@@ -223,19 +243,6 @@ public class OldRewardFunction extends RewardFunction{
       orthoPos = IPM.dot(normal, relPos);
       dist = Math.abs(orthoPos);
       projDistToEnd = length - projPos;
-    }
-  }
-
-  //get new speed limits
-  private void updateCurrentSpeedLimit(int index){
-    if(speedLimitServices[index] == null){
-      currentSpeedLimits[index] = DEFAULT_SPEED_LIMIT;
-    }
-    else{
-      currentSpeedLimits[index] = speedLimitServices[index].getSpeedLimit(0);
-      if(currentSpeedLimits[index] <= 0){
-        currentSpeedLimits[index] = DEFAULT_SPEED_LIMIT;
-      }
     }
   }
 
