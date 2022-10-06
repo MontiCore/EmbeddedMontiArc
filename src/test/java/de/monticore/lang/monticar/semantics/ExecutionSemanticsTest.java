@@ -12,9 +12,13 @@ import de.monticore.symboltable.CommonSymbol;
 import de.se_rwth.commons.logging.Log;
 import org.junit.Before;
 import org.junit.Test;
+import org.junit.jupiter.params.ParameterizedTest;
+import org.junit.jupiter.params.provider.Arguments;
+import org.junit.jupiter.params.provider.MethodSource;
 
 import java.util.Comparator;
 import java.util.List;
+import java.util.stream.Stream;
 
 import static org.junit.jupiter.api.Assertions.assertArrayEquals;
 
@@ -118,14 +122,25 @@ public class ExecutionSemanticsTest {
         return symTab.<EMAComponentInstanceSymbol>resolve(model, EMAComponentInstanceSymbol.KIND).orElse(null);
     }
 
-    @Test
-    public void correctOrderForMachineLearningPipeline() {
-        final EMAComponentInstanceSymbol component = testComponent("de.monticore.lang.ema.pipeline", new EmbeddedMontiArcLanguage());
+    /***
+     * @implNote Only if it is run as a single test, it throws an exception that can be ignored as it is thrown after execution is finished
+     */
+    @ParameterizedTest
+    @MethodSource("createTestCasesForPipelines")
+    public void correctOrderForMachineLearningPipeline(final String componentName, final String[] expectedOrder) {
+        final EMAComponentInstanceSymbol component = testComponent(componentName, new EmbeddedMontiArcLanguage());
         final List<EMAComponentInstanceSymbol> emaComponents = Find.allAtomicOrNVComponents(component);
         sortcomponentsByExecutionOrder(emaComponents);
-        final String[] expectedOrder = new String[]{"data_access_step", "training_step", "evaluation_step"};
         final String[] actualOrder = emaComponents.stream().map(CommonSymbol::getName).toArray(String[]::new);
         assertArrayEquals(expectedOrder, actualOrder, "Pipeline execution order is not as expected");
+    }
+
+    private static Stream<Arguments> createTestCasesForPipelines() {
+        final String[] typicalPipeline = {"data_access_step", "training_step", "evaluation_step"};
+        final String[] reversePipeline = {"evaluation_step", "training_step", "data_access_step"};
+        return Stream.of(
+                Arguments.of("de.monticore.lang.ema.pipeline", typicalPipeline),
+                Arguments.of("de.monticore.lang.ema.reverseOrderPipeline", reversePipeline));
     }
 
     private void sortcomponentsByExecutionOrder(List<EMAComponentInstanceSymbol> emaComponents) {
