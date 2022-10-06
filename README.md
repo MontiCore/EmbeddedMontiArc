@@ -115,6 +115,8 @@ When using self-play, the **initial_run_training.sh** script is called (in the b
 
 After training, the best networks parameters along with every snapshot are saved under `target/agent/src/de_rwth_montisim_agent_master/cpp/model/AutopilotAgent/*/`.
 
+Training Data can be visualized using the tools in the `tools` directory. View its README for more information.
+
 ### Execution
 In order to execute the trained network, the parameter files have to be moved to `target/bin/model/de.rwth.montisim.agent.network.AutopilotQNet/` and the files have to be renamed to `model_0_newest-0000.params` and `model_0_newest-symbol.json`.
 Alternatively, the process of copying and renaming the best network can be automated by using the `-auto` flag:
@@ -155,3 +157,5 @@ For training on the Cluster, [SLURM Jobs](https://help.itc.rwth-aachen.de/servic
  - Resource Specification
  - Thesis Project ID
  - Self-Play (`-sp`) or Single Vehicle?
+
+> :warning: **BUG:** GPU training on the cluster is currently only working for training **without** self-play. When training on the cluster a self-play agent using GPU, MXNET doesn't detect the GPU.

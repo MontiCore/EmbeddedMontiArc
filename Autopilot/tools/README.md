@@ -15,6 +15,7 @@ Using this file, the training log, velocity log, and collision log will be read 
  - total_time_static_collisions
  - number_vehicle_collisions
  - total_time_vehicle_collisions
+
 **velocities.db**:
  - episode
  - step
