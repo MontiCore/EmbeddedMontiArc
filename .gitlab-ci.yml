@@ -5,4 +5,5 @@ TestPYTORCH:
   stage: linux
   script: 
   - cd pytorch
+  - chmod +x generate.sh
   - ./generate.sh
