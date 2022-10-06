@@ -1,0 +1,19 @@
+stages:
+- linux
+
+TestBuild:
+  stage: linux
+  image: registry.git.rwth-aachen.de/monticore/embeddedmontiarc/applications/reinforcement_learning/cartpole/rl-fix-new2:latest
+  before_script:
+    - apt-get update
+    - apt-get install -y maven
+  script:
+    - git clone https://gitlab-ci-token:${CI_JOB_TOKEN}@git.rwth-aachen.de/monticore/EmbeddedMontiArc/generators/EMAM2Middleware.git
+    - cd EMAM2Middleware
+    - mvn clean install -s settings.xml
+    - cd target
+    - xargs -n 1 cp -v *-jar-with-dependencies.jar<<<"../../src/main/cluster/rl/bin/"
+    - cd ../../
+    - cd src/main/cluster/rl/
+    - chmod +x install.sh
+    - ./install.sh
