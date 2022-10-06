@@ -3,6 +3,7 @@ stages:
 
 TestPYTORCH:
   stage: linux
+  image: registry.git.rwth-aachen.de/monticore/embeddedmontiarc/generators/emadl2cpp/mxnet/190
   script: 
   - cd pytorch
   - chmod +x generate.sh
