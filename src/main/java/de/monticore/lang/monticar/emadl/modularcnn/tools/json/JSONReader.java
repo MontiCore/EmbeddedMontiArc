@@ -41,7 +41,7 @@ public class JSONReader {
                 case "name":
                     name = levelKvPairs.get(i).value;
                     break;
-                case "instanceName":
+                case "instanceSymbolName":
                     instanceName = levelKvPairs.get(i).value;
                     break;
                 case "atomic":

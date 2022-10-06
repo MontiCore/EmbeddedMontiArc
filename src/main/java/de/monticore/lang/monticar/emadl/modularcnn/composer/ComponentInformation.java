@@ -36,7 +36,7 @@ public class ComponentInformation {
     final private String componentName;
     final private ArrayList<ArchitectureNode> archNodes;
     private ArrayList<ASTPort> ports = new ArrayList<>();
-    private String componentInstanceName;
+    private String componentInstanceSymbolName;
     private ComponentKind componentKind;
     private String inputPort;
     private String outputPort;
@@ -75,8 +75,8 @@ public class ComponentInformation {
         return componentName;
     }
 
-    public String getComponentInstanceName() {
-        return componentInstanceName;
+    public String getComponentInstanceSymbolName() {
+        return componentInstanceSymbolName;
     }
 
     public ComponentKind getComponentKind() {
@@ -99,7 +99,7 @@ public class ComponentInformation {
     public ComponentInformation(ASTComponent component, ArrayList<ArchitectureNode> currentNodes) {
         this.originalComponentReference = component;
         this.componentName = component.getName();
-        this.componentInstanceName = "";
+        this.componentInstanceSymbolName = "";
         this.archNodes = currentNodes;
 
         initLists(component);
@@ -118,14 +118,17 @@ public class ComponentInformation {
         }
 
         this.isCNNNode = this.isASTArchitectureNode() || this.isComposedCNN();
-        findInstanceNameIfEmpty();
+        findInstanceSymbolNameIfEmpty();
     }
 
+    /*
     public ComponentInformation(ASTComponent component, ArrayList<ArchitectureNode> currentNodes, String instanceName) {
         this(component, currentNodes);
-        this.componentInstanceName = instanceName;
+        //this.componentInstanceName = instanceName;
         findInstanceNameIfEmpty();
     }
+    */
+
 
 
     private boolean isASTArchitectureNode() {
@@ -148,7 +151,7 @@ public class ComponentInformation {
         }
 
         for (ComponentInformation componentInformation : this.subComponentsInformation) {
-            Log.info("Checking: " + componentInformation.getComponentName() + " " + componentInformation.getComponentInstanceName(), "COMPONENT_INFORMATION_CCNN_CHECK");
+            Log.info("Checking: " + componentInformation.getComponentName() + " " + componentInformation.getComponentInstanceSymbolName(), "COMPONENT_INFORMATION_CCNN_CHECK");
             if (!componentInformation.isCNN()) {
                 Log.info("IS_COMPOSED_CHECK_FAIL", "COMPONENT_INFORMATION_CCNN_CHECK");
                 return false;
@@ -184,8 +187,8 @@ public class ComponentInformation {
         findConnectorRelations(this.connectors);
     }
 
-    private void findInstanceNameIfEmpty(){
-        if (!this.componentInstanceName.equals("")) return;
+    private void findInstanceSymbolNameIfEmpty(){
+        if (!this.componentInstanceSymbolName.equals("")) return;
 
         ScopeFinder scopeFinder = new ScopeFinder();
         Set<String> keySet = scopeFinder.getNextArtifactScopeUp(this.getOriginalComponentReference().getEnclosingScope()).getLocalSymbols().keySet();
@@ -194,11 +197,11 @@ public class ComponentInformation {
             instanceName = keyIterator.next();
         }
 
-        if (instanceName != null && !instanceName.equals("")) this.componentInstanceName = instanceName;
+        if (instanceName != null && !instanceName.equals("")) this.componentInstanceSymbolName = instanceName;
     }
 
     private void printConnectiorRelations() {
-        Log.info("Connector relations of: " + this.componentName + " " + this.componentInstanceName, "COMPONENT_INFORMATION");
+        Log.info("Connector relations of: " + this.componentName + " " + this.componentInstanceSymbolName, "COMPONENT_INFORMATION");
         for (ConnectorRelation c : connectorRelations) {
             Log.info(c.getSourceValue() + " -> " + c.getTargetValue(), "COMPONENT_INFORMATION");
         }
@@ -252,7 +255,7 @@ public class ComponentInformation {
             EMADynamicComponentSymbol refSymbol = (EMADynamicComponentSymbol) symbol.getComponentType().getReferencedSymbol();
             if (refSymbol.getAstNode().isPresent()) {
                 this.includedComponents.add((ASTComponent) refSymbol.getAstNode().get());
-                this.subComponentsInformation.add(new ComponentInformation((ASTComponent) refSymbol.getAstNode().get(), this.archNodes, symbol.getName()));
+                this.subComponentsInformation.add(new ComponentInformation((ASTComponent) refSymbol.getAstNode().get(), this.archNodes));
             }
         }
     }
@@ -279,7 +282,7 @@ public class ComponentInformation {
         String instanceRef = qualifiedNameDecons[0];
 
         for (ComponentInformation info : this.subComponentsInformation) {
-            if (!instanceRef.equals("") && !info.componentInstanceName.equals("") && instanceRef.equals(info.componentInstanceName)) {
+            if (!instanceRef.equals("") && !info.componentInstanceSymbolName.equals("") && instanceRef.equals(info.componentInstanceSymbolName)) {
                 return info;
             }
         }
