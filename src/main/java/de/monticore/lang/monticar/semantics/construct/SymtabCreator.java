@@ -1,9 +1,9 @@
 /* (c) https://github.com/MontiCore/monticore */
 package de.monticore.lang.monticar.semantics.construct;
 
+import de.monticore.ModelingLanguage;
 import de.monticore.ModelingLanguageFamily;
 import de.monticore.io.paths.ModelPath;
-import de.monticore.lang.embeddedmontiarc.LogConfig;
 import de.monticore.lang.embeddedmontiarc.embeddedmontiarcmath._symboltable.EmbeddedMontiArcMathLanguage;
 import de.monticore.lang.embeddedmontiarcdynamic.event._symboltable.EventLanguage;
 import de.monticore.lang.monticar.stream._symboltable.StreamLanguage;
@@ -19,6 +19,13 @@ public class SymtabCreator {
     public static TaggingResolver createSymTab(String... modelPath) {
         ModelingLanguageFamily fam = getStandardModelingLanguageFamily();
         fam.addModelingLanguage(new EmbeddedMontiArcMathLanguage());
+
+        return create(fam, modelPath);
+    }
+
+    public static TaggingResolver createSymTabForLanguage(final ModelingLanguage modelingLanguage, final String... modelPath) {
+        ModelingLanguageFamily fam = getStandardModelingLanguageFamily();
+        fam.addModelingLanguage(modelingLanguage);
 
         return create(fam, modelPath);
     }
