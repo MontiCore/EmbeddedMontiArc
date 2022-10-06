@@ -8,6 +8,15 @@ TestBuild:
     - apt-get update
     - apt-get install -y maven
   script:
+    - mkdir dev
+    - cd dev
+    - git clone https://gitlab-ci-token:${CI_JOB_TOKEN}@git.rwth-aachen.de:monticore/EmbeddedMontiArc/simulators/basic-simulator.git
+    - git clone https://gitlab-ci-token:${CI_JOB_TOKEN}@git.rwth-aachen.de:monticore/EmbeddedMontiArc/simulators/simulation.git
+    - cd simulation
+    - mvn clean install -s settings.xml
+    - cp ROSInterface/target/libROSInterface.so ../basic-simulator/install/
+    - cd ../basic-simulator
+    - mvn clean install -s settings.xml
     - git clone https://gitlab-ci-token:${CI_JOB_TOKEN}@git.rwth-aachen.de/monticore/EmbeddedMontiArc/generators/EMAM2Middleware.git
     - cd EMAM2Middleware
     - mvn clean install -s settings.xml
