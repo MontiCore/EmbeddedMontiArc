@@ -1,0 +1,8 @@
+stages:
+- linux
+
+TestPYTORCH:
+  stage: linux
+  script: 
+  - cd pytorch
+  - ./generate.sh
