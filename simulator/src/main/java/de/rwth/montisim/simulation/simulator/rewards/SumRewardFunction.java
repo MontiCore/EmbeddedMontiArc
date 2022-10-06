@@ -13,6 +13,12 @@ public class SumRewardFunction extends RewardFunction {
   private final RewardFunction[] components;
   private final float[] weights;
 
+  /**
+   * Filters out exploding rewards
+   */
+  private final boolean rewardFailSave = true;
+  private final int rewardFailSaveThreshold = 10000;
+
 
   /**
    * Initializes the sum reward function.
@@ -57,7 +63,13 @@ public class SumRewardFunction extends RewardFunction {
   public float getRewardForVehicle(int vehicle_index, int step) {
     float reward = 0;
     for (int i = 0; i < components.length; i++) {
-      reward += components[i].getRewardForVehicle(vehicle_index, step) * weights[i];
+      float componentReward = components[i].getRewardForVehicle(vehicle_index, step) * weights[i];
+      if (rewardFailSave && (Math.abs(componentReward) > 10000 || Float.isInfinite(componentReward) || Float.isNaN(componentReward))) {
+        System.out.println("REWARD_ERROR: " + components.getClass().getName() + " returned reward " + componentReward);
+        reward += Math.signum(componentReward) * rewardFailSaveThreshold;
+      } else {
+        reward += componentReward;
+      }
     }
     return reward;
   }
