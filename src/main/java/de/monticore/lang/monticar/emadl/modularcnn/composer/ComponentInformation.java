@@ -121,16 +121,6 @@ public class ComponentInformation {
         findInstanceSymbolNameIfEmpty();
     }
 
-    /*
-    public ComponentInformation(ASTComponent component, ArrayList<ArchitectureNode> currentNodes, String instanceName) {
-        this(component, currentNodes);
-        //this.componentInstanceName = instanceName;
-        findInstanceNameIfEmpty();
-    }
-    */
-
-
-
     private boolean isASTArchitectureNode() {
         for (ArchitectureNode node : archNodes) {
             if (this.componentName.equals(node.getComponentName()) && !node.isComposedNode()) return true;
@@ -144,21 +134,16 @@ public class ComponentInformation {
 
     //TODO: CHECK
     public boolean isComposedCNN() {
-        Log.info("Checking included components of " + this.getComponentName(), "COMPONENT_INFORMATION_CCNN_CHECK");
         if (violatesNetworkForm) {
-            Log.info("FORM_VIOLATION_BY: " + this.getComponentName(), "COMPONENT_INFORMATION_CCNN_CHECK");
             return false;
         }
 
         for (ComponentInformation componentInformation : this.subComponentsInformation) {
-            Log.info("Checking: " + componentInformation.getComponentName() + " " + componentInformation.getComponentInstanceSymbolName(), "COMPONENT_INFORMATION_CCNN_CHECK");
             if (!componentInformation.isCNN()) {
-                Log.info("IS_COMPOSED_CHECK_FAIL", "COMPONENT_INFORMATION_CCNN_CHECK");
                 return false;
             }
         }
 
-        Log.info("IS_COMPOSED_CHECK_PASS", "COMPONENT_INFORMATION_CCNN_CHECK");
         return true;
     }
 
@@ -209,7 +194,6 @@ public class ComponentInformation {
 
     private void findPorts(ArrayList<ASTInterface> interfaces){
         if (interfaces.size() != 1) {
-            Log.info("FORM_VIOLATION: " + this.getComponentName(),"COMPONENT_INFORMATION_FIND_PORTS_1");
             this.violatesNetworkForm = true;
             return;
         }
@@ -222,7 +206,6 @@ public class ComponentInformation {
         }
 
         if (this.ports.size() != 2) {
-            Log.info("FORM_VIOLATION: " + this.getComponentName(),"COMPONENT_INFORMATION_FIND_PORTS_2");
             this.violatesNetworkForm = true;
             return;
         }
@@ -241,7 +224,6 @@ public class ComponentInformation {
     //TODO: CHECK
     private void findComponents(ArrayList<ASTSubComponent> components) {
         if (!(components.size() > 0)) {
-            Log.info("FORM_VIOLATION: " + this.getComponentName(),"COMPONENT_INFORMATION_FIND_COMPONENTS");
             this.violatesNetworkForm = true;
             return;
         }

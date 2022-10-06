@@ -10,18 +10,28 @@ import de.monticore.lang.monticar.emadl.modularcnn.composer.ComponentInformation
 import de.monticore.lang.monticar.emadl.modularcnn.composer.NetworkStructureInformation;
 
 import java.io.*;
+import java.text.SimpleDateFormat;
+import java.time.LocalDate;
 import java.util.ArrayList;
+import java.util.Calendar;
+import java.util.Date;
 
 public class ComposedNetworkFileHandler {
     private String composedNetworksFilePath;
     public ComposedNetworkFileHandler(String composedNetworksFilePath){
         if (composedNetworksFilePath == null || composedNetworksFilePath.equals("")){
-            this.composedNetworksFilePath = "ComposedNetworks";
+            this.composedNetworksFilePath = "ComposedNetworks" + timeStamp();
         } else {
-            this.composedNetworksFilePath = composedNetworksFilePath;
+            this.composedNetworksFilePath = composedNetworksFilePath + timeStamp();
         }
     }
 
+    private String timeStamp(){
+        String dateFormat = "yyyy-MM-dd_HH:mm:ss";
+        Calendar calendar = Calendar.getInstance();
+        SimpleDateFormat simpleDateFormat = new SimpleDateFormat(dateFormat);
+        return "_" + simpleDateFormat.format(calendar.getTime());
+    }
     public void documentNetworkInFile(ComponentInformation componentInformation){
         writeNetworkFile(componentInformation, composedNetworksFilePath);
     }
@@ -48,12 +58,17 @@ public class ComposedNetworkFileHandler {
             ArrayList<NetworkStructureInformation> knownNetworks = fetchKnownNetworksFromFile();
 
             boolean hit = false;
-            for (int i = 0; i<knownNetworks.size();i++){
+            for (int i = 0; i<knownNetworks.size(); i++){
                 NetworkStructureInformation network = knownNetworks.get(i);
+                /*
                 if (network.isSubNetOf(componentInformation)){
                     hit = true;
                     knownNetworks.set(i, new NetworkStructureInformation(componentInformation));
                 } else if( network.isSuperNetOf(componentInformation)){
+                    hit = true;
+                }
+                */
+                if (network.printStructureJSON().equals(componentInformation.printNetworkStructureJSON())){
                     hit = true;
                 }
             }
