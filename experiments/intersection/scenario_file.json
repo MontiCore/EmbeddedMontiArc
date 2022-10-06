@@ -14,11 +14,11 @@
         "type": "sequence",
         "preprocessors": [
             {
-                "type": "proximity",
-                "maxNumberOfVehicles": 4
+                "type": "angle"
             },
             {
-                "type": "angle"
+                "type": "proximity",
+                "maxNumberOfVehicles": 4
             }
         ]
     },
