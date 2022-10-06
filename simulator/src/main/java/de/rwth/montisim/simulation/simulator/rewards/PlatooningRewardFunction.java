@@ -5,6 +5,7 @@ import de.rwth.montisim.commons.utils.Vec2;
 import de.rwth.montisim.simulation.vehicle.Vehicle;
 
 import java.time.Duration;
+import java.util.List;
 import java.util.Optional;
 import java.util.Stack;
 
@@ -27,6 +28,7 @@ public class PlatooningRewardFunction extends RewardFunction {
   private final float gap_desired;
 
   private final float velocity_desired;
+  private final int look_ahead;
 
   /**
    * Initializes a new Platoon Reward Function
@@ -39,7 +41,7 @@ public class PlatooningRewardFunction extends RewardFunction {
    * @param gap_max                       Maximum allowed gap between vehicles.
    * @param gap_desired                   Desired gap between vehicles.
    */
-  public PlatooningRewardFunction(Vehicle[] vehicles, Duration tickDuration, VariableSpeedControlRewardFunction speed_control_reward_function, float GAP_DISTANCE_REWARD_SCALING, float GAP_SUB_MAXIMUM_REWARD, float gap_max, float gap_desired) {
+  public PlatooningRewardFunction(Vehicle[] vehicles, Duration tickDuration, VariableSpeedControlRewardFunction speed_control_reward_function, float GAP_DISTANCE_REWARD_SCALING, float GAP_SUB_MAXIMUM_REWARD, float gap_max, float gap_desired, int look_ahead) {
     super(vehicles, tickDuration);
     this.GAP_DISTANCE_REWARD_SCALING = GAP_DISTANCE_REWARD_SCALING;
     this.GAP_SUB_MAXIMUM_REWARD = GAP_SUB_MAXIMUM_REWARD;
@@ -47,6 +49,7 @@ public class PlatooningRewardFunction extends RewardFunction {
     this.velocity_desired = speed_control_reward_function.velocity_desired;
     this.gap_max = gap_max;
     this.gap_desired = gap_desired;
+    this.look_ahead = look_ahead;
   }
 
   @Override
@@ -88,67 +91,51 @@ public class PlatooningRewardFunction extends RewardFunction {
    */
   private Optional<Integer> getPrecedingVehicleIndex(int vehicle_index) {
     // Intersections which the vehicle drives through
-    Stack<Vec2> vehicle_targets = this.navigations[vehicle_index].getTargets();
+    Stack<Vec2> vehicle_targets_stack = this.navigations[vehicle_index].getTargets();
+    List<Vec2> vehicle_targets = vehicle_targets_stack.subList(0, Math.min(vehicle_targets_stack.size(), look_ahead));
 
-    int current_best_target_index = Integer.MAX_VALUE;
-    Pair<Integer, Double> current_best = new Pair<>(-1, 0d);
+    float[] distances = new float[vehicles.length];
+    boolean[] passes_through_node = new boolean[vehicles.length];
+    boolean found_a_node = false;
+    for (int vehicle_target_index = 0; vehicle_target_index < vehicle_targets.size() && !found_a_node; vehicle_target_index++) {
+      Vec2 vehicle_target = vehicle_targets.get(vehicle_target_index);
+      distances[vehicle_index] += vehicle_target.distance((Vec2) this.positions[vehicle_index].get());
 
-    // Search all other vehicles for the preceding vehicle
-    for (int i = 0; i < this.NUMBER_OF_VEHICLES; i++) {
-      if (i == vehicle_index)
-        continue;
+      passes_through_node = new boolean[vehicles.length];
 
-      // keep track of the current vehicles distance to the next target
-      double vehicle_distance;
+      for (int other_vehicle_index = 0; other_vehicle_index < vehicles.length; other_vehicle_index++) {
+        if (other_vehicle_index == vehicle_index)
+          continue;
 
-      // search for matching targets between the two vehicles
-      Stack<Vec2> i_targets = this.navigations[i].getTargets();
-      for (int vehicle_target_index = 0; vehicle_target_index <= Math.min(vehicle_targets.size() - 1, current_best_target_index); vehicle_target_index++) {
-        Vec2 vehicle_target = vehicle_targets.get(vehicle_target_index);
+        // Intersections which the other vehicle drives through
+        Stack<Vec2> other_vehicle_targets_stack = this.navigations[other_vehicle_index].getTargets();
+        List<Vec2> other_vehicle_targets = other_vehicle_targets_stack.subList(0, Math.min(other_vehicle_targets_stack.size(), look_ahead));
 
-        if (vehicle_target_index == 0) {
-          vehicle_distance = ((Vec2) this.positions[vehicle_index].get()).distance(i_targets.get(0));
-        }
-        else {
-          vehicle_distance = vehicle_target.distance(vehicle_targets.get(vehicle_target_index - 1));
-        }
+        for (int other_vehicle_target_index = 0; other_vehicle_target_index < other_vehicle_targets.size(); other_vehicle_target_index++) {
+          Vec2 other_vehicle_target = other_vehicle_targets.get(other_vehicle_target_index);
+          distances[other_vehicle_index] += other_vehicle_target.distance((Vec2) this.positions[other_vehicle_index].get());
 
-        // keep track of the other vehicles distance to the next target
-        double i_distance;
-        for (int i_target_index = 0; i_target_index < vehicle_targets.size(); i_target_index++) {
-          Vec2 i_target = i_targets.get(i_target_index);
-
-          if (i_target_index == 0) {
-            i_distance = ((Vec2) this.positions[i].get()).distance(i_targets.get(0));
-          }
-          else {
-            i_distance = i_target.distance(i_targets.get(i_target_index - 1));
-          }
-
-          // check if the target points are equal (i.e. share the same trajectory from here on)
-          if (vehicle_target.equals(i_target)) {
-
-            double distance = vehicle_distance - i_distance;
-
-            // the other vehicle will only precede the current vehicle if it will arrive at that point first
-            if (distance > 0) {
-              boolean replace = vehicle_target_index < current_best_target_index || current_best.getValue() > distance;
-              // do not replace
-              if (replace) {
-                current_best_target_index = vehicle_target_index;
-                current_best = new Pair<>(i, distance);
-              }
-            }
+          if (vehicle_target.equals(other_vehicle_target) && distances[vehicle_index] > distances[other_vehicle_index]) {
+            found_a_node = true;
+            passes_through_node[other_vehicle_index] = true;
           }
         }
       }
     }
 
-    // if we haven't found a preceding vehicle, the current vehicle is a leader
-    if (current_best_target_index == Integer.MAX_VALUE) {
+    if(!found_a_node)
       return Optional.empty();
-    }
 
-    return Optional.of(current_best.getKey());
+    int best_index = -1;
+    for (int other_vehicle_index = 0; other_vehicle_index < vehicles.length; other_vehicle_index++) {
+      if (other_vehicle_index == vehicle_index)
+        continue;
+
+      if (passes_through_node[other_vehicle_index]) {
+        if (best_index == -1 || distances[other_vehicle_index] > distances[best_index])
+          best_index = other_vehicle_index;
+      }
+    }
+    return Optional.of(best_index);
   }
 }
