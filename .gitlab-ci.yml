@@ -36,3 +36,7 @@ TestBuild:
     - cd platooning
     - ./install.sh
     - cd ..
+    - cd basic
+    - ./install.sh
+    - ./run_training.sh
+    - cd ..
