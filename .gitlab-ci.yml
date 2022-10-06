@@ -6,26 +6,33 @@ TestBuild:
   image: registry.git.rwth-aachen.de/monticore/embeddedmontiarc/applications/reinforcement_learning/cartpole/rl-fix-new2:latest
   before_script:
     - apt-get update
-    - apt-get install -y maven 
+    - apt-get install -y maven
   script:
     - git clone https://gitlab-ci-token:${CI_JOB_TOKEN}@git.rwth-aachen.de/monticore/EmbeddedMontiArc/generators/EMAM2Middleware.git
     - cd EMAM2Middleware
     - mvn clean install -s settings.xml
     - cd target
-    - xargs -n 1 cp -v *-jar-with-dependencies.jar<<<"../../Autopilot1/bin/ ../../Autopilot1_random/bin/ ../../Autopilot2/bin/ ../../Autopilot2_random/bin/ ../../Autopilot3/bin/" 
+    - cp -v *-jar-with-dependencies.jar ../../Autopilot/bin/
     - cd ../../
-    - cd Autopilot1
+    - cd experiments
+    - cd drive_forward
     - ./install.sh
     - cd ..
-    - cd Autopilot1_random
+    - cd angle/baseline-angle-representation
+    - ./install.sh
+    - cd ../../
+    - cd angle/angle-representation
+    - ./install.sh
+    - cd ../../
+    - cd centering/baseline-centering
+    - ./install.sh
+    - cd ../../
+    - cd centering/centering
+    - ./install.sh
+    - cd ../../
+    - cd intersection
     - ./install.sh
     - cd ..
-    - cd Autopilot2
-    - ./install.sh
-    - cd ..
-    - cd Autopilot2_random
-    - ./install.sh
-    - cd ..
-    - cd Autopilot3
+    - cd platooning
     - ./install.sh
     - cd ..

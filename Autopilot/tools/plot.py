@@ -1,7 +1,5 @@
-from re import S
 import sqlite3
 import os
-import matplotlib
 import matplotlib.pyplot as plt
 from pathlib import Path
 
@@ -170,6 +168,24 @@ def plot_durations_training_steps(con_episodes):
     ax1.set_ylabel("Duration (s)")
     ax2.set_ylabel("Time Steps")
 
+    plt.savefig(PATH_FIGURES / "duration_time_steps.png", dpi=300)
+    plt.close()
+
+def plot_duration(con_episodes):
+    cur = con_episodes.cursor()
+    cur.execute("SELECT episode, duration FROM episodes")
+    tuples = cur.fetchall()
+    tuples = sorted(tuples, key=lambda tup: tup[0])
+    episodes = [tup[0] for tup in tuples]
+    durations = [tup[1] for tup in tuples]
+
+    plt.plot(episodes, durations, label="Duration per Epsiode")
+
+    plt.xlabel("Episode")
+    plt.ylabel("Duration (s)")
+
+    plt.legend()
+
     plt.savefig(PATH_FIGURES / "duration.png", dpi=300)
     plt.close()
 
@@ -255,7 +271,7 @@ def plot_collisions_times(con_episodes):
     )
 
     plt.xlabel("Episode")
-    plt.ylabel("Secon_episodesds")
+    plt.ylabel("Seconds")
 
     plt.legend()
     plt.savefig(PATH_FIGURES / "collision_times.png", dpi=300)
@@ -295,7 +311,7 @@ def plot_avg_collisions_times(con_episodes):
     )
 
     plt.xlabel("Episode")
-    plt.ylabel("Secon_episodesds")
+    plt.ylabel("Seconds")
 
     plt.legend()
     plt.savefig(PATH_FIGURES / "avg_collision_times.png", dpi=300)
@@ -337,7 +353,7 @@ def plot_total_collisions_times(con_episodes):
     )
 
     plt.xlabel("Episode")
-    plt.ylabel("Secon_episodesds")
+    plt.ylabel("Seconds")
 
     plt.legend()
     plt.savefig(PATH_FIGURES / "total_collision_times.png", dpi=300)
@@ -424,6 +440,7 @@ def plot_velocities_single_episode(con_velocities, episode_at=0, reverse=False):
 
     steps = [tup[1] for tup in tuples]
     steps = sorted(steps)
+    steps = list(dict.fromkeys(steps))
     step_count = max(steps)
 
     vehicle_velocities = dict()
@@ -457,28 +474,26 @@ plot_last_x_episodes_total_reward_avg_last_100_reward(con_episodes, 100)
 plot_last_x_episodes_total_reward_avg_last_100_reward(con_episodes, 200)
 plot_last_x_episodes_total_reward_avg_last_100_reward(con_episodes, 500)
 plot_last_x_episodes_total_reward_avg_last_100_reward(con_episodes, 1000)
+plot_last_x_episodes_total_reward_avg_last_100_reward(con_episodes, 10000)
 plot_avg_actor_critic_loss(con_episodes)
 plot_avg_actor_loss(con_episodes)
 plot_avg_critic_loss(con_episodes)
 plot_avg_q_values(con_episodes)
 plot_durations_training_steps(con_episodes)
+plot_duration(con_episodes)
 plot_epsilon(con_episodes)
 plot_collisions_numbers(con_episodes)
 plot_collisions_times(con_episodes)
 plot_avg_collisions_times(con_episodes)
 plot_total_collisions_times(con_episodes)
-plot_velocities_interval(con_velocities, interval=10, starting_at=0, reverse=False)
-plot_velocities_interval(con_velocities, interval=10, starting_at=100, reverse=False)
-plot_velocities_interval(con_velocities, interval=10, starting_at=500, reverse=False)
-plot_velocities_interval(con_velocities, interval=10, starting_at=0, reverse=True)
-plot_velocities_interval(con_velocities, interval=10, starting_at=100, reverse=True)
-plot_velocities_interval(con_velocities, interval=10, starting_at=500, reverse=True)
-plot_velocities_single_episode(con_velocities, episode_at=0, reverse=False)
-plot_velocities_single_episode(con_velocities, episode_at=100, reverse=False)
-plot_velocities_single_episode(con_velocities, episode_at=500, reverse=False)
+
+for episode in range(1000, 11000, 250):
+    plot_velocities_single_episode(con_velocities, episode_at=episode, reverse=False)
+    plot_velocities_interval(con_velocities, interval=10, starting_at=episode, reverse=False)
+
+
 plot_velocities_single_episode(con_velocities, episode_at=0, reverse=True)
-plot_velocities_single_episode(con_velocities, episode_at=100, reverse=True)
-plot_velocities_single_episode(con_velocities, episode_at=500, reverse=True)
+plot_velocities_interval(con_velocities, interval=10, starting_at=0, reverse=True)
 
 con_episodes.close()
 con_velocities.close()

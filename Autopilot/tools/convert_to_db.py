@@ -1,4 +1,3 @@
-import csv
 import sqlite3
 import re
 import os
@@ -18,11 +17,11 @@ try:
         argv, "has:e:", ["automatic", "snapshot_interval=", "evaluation_samples="]
     )
 except getopt.GetoptError:
-    print("convert_to_db.py -s <snapshot_interval> -e <evaluation_samples> [-a]")
+    print("python convert_to_db.py -s <snapshot_interval> -e <evaluation_samples> [-a]")
     sys.exit(2)
 for opt, arg in opts:
     if opt == "-h":
-        print("convert_to_db.py -s <snapshot_interval> -e <evaluation_samples> [-a]")
+        print("python convert_to_db.py -s <snapshot_interval> -e <evaluation_samples> [-a]")
         sys.exit()
     if opt == "-a":
         OTHER_LOG_DIRECTORY = Path(BASIC_SIMULATOR_FOLDER / "install" / "results")

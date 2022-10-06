@@ -1,18 +1,16 @@
-# Centering Preprocessor Experiment
+# Centering Experiment
 
 ## Description
-This experiment will be used to determine, if centering the environment around the current (trained) vehicle helps the overall learning process.
-
-In this experiment, a single vehicle will learn to follow a path, without the use of any preprocessor.
+In this experiment two agents will be trained on identical scenarios. One agent will use the CenteringPreprocessor to recenter the environment around a vehicle, while the other agent doesn't.
 
 ## Goal
-The training goal of the autopilot is to follow a given path as closely and as fast as possible, without causing any collisions.
+Two vehicles will be trained to drive northwards on similar and straight roads on different sides of the map.
 
 ## Research Goal
-This experiment is expected to perform better than the minimal driving experiment, does not center the environment around the autopilot. We theorize, that always positioning the vehicle at (0,0) with a forward orientation and recentering the environment around the vehicle will remove some complexity from the learning process. So the goal of this experiment is to get some result after training until the loss-functions stabilize. After getting such constant results, we can compare the results of this experiment with the minimal driving experiment.
+The goal is to see if the CenteringPreprocessor improves the performance of the agent.
 
 ## Pass Criteria
-Given the research goal, this experiment is considered passed, if the vehicle will drive in some fashion after the loss-function stabilizes.
+If the rewards stabilize and are converging to some value, the experiment can be terminated.
 
 ## Parameters
 ### Map
@@ -21,45 +19,37 @@ Given the research goal, this experiment is considered passed, if the vehicle wi
 ```
 
 ### Randomization
-```json
-{
-	"type": "basic",
-	"minGoalDistance": 500,
-	"maxGoalDistance": 1000
-}
-```
+**None**
+Instead, we use a fixed scenario to ensure a comparable result.
+View the `scenario_file.json` for more details.
 
 ### Reward
 ```json
 {
-	"type": "basic_reward",
-	"static_collision_reward_properties": {
-		"STATIC_COLLISION_REWARD": -500
-	},
-	"trajectory_reward_properties": {
-		"TRAJECTORY_FOLLOWING_REWARD": 1,
-		"TOTAL_PATH_PROGRESS_REWARD_SCALING": 10,
-		"PATH_PROGRESS_DERIVATIVE_REWARD_SCALING": 100,
-		"distance_max": 5
-	},
-	"speed_control_reward_properties": {
-		"VELOCITY_DIFFERENCE_REWARD_SCALING": 1,
-		"VELOCITY_SUB_MAXIMUM_REWARD": 0.5,
-		"STANDING_REWARD": -10,
-		"LINEAR_ACCELERATION_REWARD_SCALING": 1,
-		"LINEAR_JERK_REWARD_SCALING": 0.05,
-		"ANGULAR_ACCELERATION_REWARD_SCALING": 0.1,
-		"ANGULAR_JERK_REWARD_SCALING": 0.005,
-		"velocity_max": 40,
-		"velocity_desired": 20,
-		"standing_threshold": 0.5,
-		"standing_punishment_from_step": 5,
-		"standing_punishment_to_min_path_distance": 2.5
-	}
+	"type": "intersection_reward",
+	"static_collision_factor": -400,
+	"vehicle_collision_factor": -300,
+	"trajectory_reward_factor": 1,
+	"angular_jerk_reward_factor": 0.005,
+	"angular_acc_reward_factor": 0.1,
+	"linear_jerk_reward_factor": 0.05,
+	"linear_acc_reward_factor": 1,
+	"trajectory_following_reward": 50,
+	"total_path_progress_reward_scaling": 2000,
+	"path_progress_derivative_reward_scaling": 1000,
+	"distance_max": 3,
+	"velocity_difference_scaling": 100,
+	"velocity_sub_maximum_reward": 100,
+	"standing_punishment": -300,
+	"velocity_max": 20,
+	"velocity_desired": 15,
+	"standing_threshold": 1,
+	"standing_punishment_from_step": 5,
 }
 ```
 
 ### Preprocessor
+None for the first agent. CenteringPreprocessor for the second agent.
 ```json
 {
 	"type": "centering"
@@ -72,9 +62,10 @@ See the src/ folder for more details.
 #### Overview
 ##### State
 Size of state for own vehicle: 25
-Number of other vehicles: 0
-Size of state for each other vehicle: NA
+Number of other vehicles: 2
+Size of state for each other vehicle: 25
 
 ##### Training
-Self-Play: No
-Number of Episodes: 500
+Self-Play: Yes
+Number of Episodes: 3000
+Start training after Episode: 500 (fill replay buffer)
