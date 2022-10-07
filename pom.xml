@@ -14,7 +14,7 @@
 
 
     <properties>
-        <simulation.version>3.3.5</simulation.version>
+        <simulation.version>3.3.6</simulation.version>
 
 
         <wagon.provider.version>2.6</wagon.provider.version>
