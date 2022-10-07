@@ -23,6 +23,13 @@
 (type stack c)
 (type stack d)
 
+(type pos pos_1)
+(type pos pos_2)
+(type pos pos_3)
+(type pos pos_4)
+(type pos pos_5)
+(type pos pos_6)
+
 //(type card 0)
 (type card 1)
 (type card 2)
@@ -299,15 +306,16 @@
 )
 
 //Determine the last card in a stack
-(<= (lastCard stack:?stack ?pos card:?card)
-    (true (stack ?stack ?pos ?card))
+(<= (lastCard stack:?stack pos:?pos card:?card)
+    (isPos ?pos ?posi)
+    (true (stack ?stack ?posi ?card))
     //?pos has a card
     (distinct ?card 0)
     //following slot empty
-    (succ ?pos ?posP)
+    (succ ?posi ?posP)
     (true (stack ?stack ?posP 0))
     //previous slot filled
-    (succ ?posM ?pos)
+    (succ ?posM ?posi)
     (not (true (stack ?stack ?posM 0)))
 )
 
@@ -325,7 +333,7 @@
 )
 
 (<= (hasPoints card:?card 0)
-    (not (isCard ?card points:?points))
+    (not (isCard ?card ?points))
 )
 
 //Determine if ?cardMiddle is greater than ?cardLeft and smaller than ?cardRight
@@ -423,21 +431,23 @@
     (isPlayer ?player)
 )
 //Karten dürfen nur gespielt werden, wenn alle spielen
-(<= (legal player:?player (play ?pos))
+(<= (legal player:?player (play pos:?pos))
     (true (control all))
-    (true (sees ?player (hand ?player ?pos ?card)))
+    (isPos ?pos ?posi)
+    (true (sees ?player (hand ?player ?posi ?card)))
     (isCard ?card ?val)
     (distinct ?card 0)
     (not (hasCardInPlay ?player))
 )
 
 //Anlegen
-(<= (legal player:?player (put stack:?stack ?pos))
+(<= (legal player:?player (put stack:?stack pos:?pos))
     (true (control ?player))
     (true (sees ?player (inPlay ?player ?card)))
     (isMatchingStack ?stack ?card)
     (lastCard ?stack ?posP ?cardP)
-    (succ ?posP ?pos)
+    (isPos ?pos ?posi)
+    (succ ?posP ?posi)
     (less ?cardP ?card)
     (smallest ?card)
 )
@@ -650,19 +660,19 @@
     (does ?player (put ?stack 6))
     (true (currPoints ?player ?p))
     (true (stack ?stack 1 card:?card1))
-    (hasPoints ?card1 points:?points1)
+    (hasPoints ?card1 ?points1)
     (add ?p ?points1 ?temp1) 
     (true (stack ?stack 2 card:?card2))
-    (hasPoints ?card2 points:?points2)
+    (hasPoints ?card2 ?points2)
     (add ?temp1 ?points2 ?temp2)
     (true (stack ?stack 3 card:?card3))
-    (hasPoints ?card3 points:?points3)
+    (hasPoints ?card3 ?points3)
     (add ?temp2 ?points3 ?temp3)
     (true (stack ?stack 4 card:?card4))
-    (hasPoints ?card4 points:?points4)
+    (hasPoints ?card4 ?points4)
     (add ?temp3 ?points4 ?temp4)
     (true (stack ?stack 5 card:?card5))
-    (hasPoints ?card5 points:?points5)
+    (hasPoints ?card5 ?points5)
     (add ?temp4 ?points5 ?num)
 )
 
@@ -802,12 +812,12 @@
 (isPlayer green)
 (isPlayer yellow)
 
-(isPos 1)
-(isPos 2)
-(isPos 3)
-(isPos 4)
-(isPos 5)
-(isPos 6)
+(isPos pos_1 1)
+(isPos pos_2 2)
+(isPos pos_3 3)
+(isPos pos_4 4)
+(isPos pos_5 5)
+(isPos pos_6 6)
 
 //Points per card
 //(isCard <number> <points>)
