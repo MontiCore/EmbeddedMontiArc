@@ -1,4 +1,4 @@
-# NAME Experiment
+# Intersection Experiment
 
 ## Description
 This experiment teaches a small number of vehicles to drive safely across an intersection. For this the intersection randomization is used.
