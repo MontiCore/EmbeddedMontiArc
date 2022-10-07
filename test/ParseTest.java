@@ -8,13 +8,13 @@ import de.monticore.lang.gdl.InterpreterOptions;
 public class ParseTest {
     
     @Test
-    public void testDoppelkopf() throws Exception {
+    public void testTicTacToe() throws Exception {
         Interpreter interpreter = Interpreter.fromGDLFile("TicTacToe/TicTacToe.gdl", new InterpreterOptions());
         interpreter.close();
     }
     
     @Test
-    public void testDoppelkopfTyped() throws Exception {
+    public void testTicTacToeTyped() throws Exception {
         Interpreter interpreter = Interpreter.fromGDLFile("TicTacToeTyped/TicTacToeTyped.gdl", new InterpreterOptions().withTypes(true));
         assertTrue(interpreter.isWithTypes());
         assertTrue(interpreter.getStateSpaceDimension() > 0);
