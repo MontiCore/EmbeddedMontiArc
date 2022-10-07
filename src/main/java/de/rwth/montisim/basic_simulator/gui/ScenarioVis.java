@@ -15,6 +15,9 @@ import de.rwth.montisim.simulation.environment.osmmap.*;
 import de.rwth.montisim.simulation.environment.world.World;
 import de.rwth.montisim.simulation.simulator.SimulationConfig;
 import de.rwth.montisim.simulation.simulator.Simulator;
+import de.rwth.montisim.simulation.simulator.randomization.RandomRandomizationPropertiesPicker;
+import de.rwth.montisim.simulation.simulator.randomization.RandomizationProperties;
+import de.rwth.montisim.simulation.simulator.randomization.RandomizationStrategy;
 import de.rwth.montisim.simulation.simulator.visualization.car.CarRenderer;
 import de.rwth.montisim.simulation.simulator.visualization.map.PathfinderRenderer;
 import de.rwth.montisim.simulation.simulator.visualization.map.WorldRenderer;
@@ -26,6 +29,7 @@ import de.rwth.montisim.simulation.vehicle.Vehicle;
 import de.rwth.montisim.simulation.simulator.visualization.rl.RLVisualizer;
 
 import javax.swing.*;
+
 import java.awt.Color;
 import java.awt.Dimension;
 import java.awt.FlowLayout;
@@ -36,8 +40,10 @@ import java.time.*;
 import java.util.ArrayList;
 import java.util.Collection;
 import java.util.List;
+import java.util.Optional;
+import java.util.Vector;
 import java.util.stream.Collectors;
- 
+
 public class ScenarioVis extends SimVis implements SimulationRunner {
     private static final  long serialVersionUID = 7903217594061845406L;
 
@@ -90,6 +96,21 @@ public class ScenarioVis extends SimVis implements SimulationRunner {
             e1.printStackTrace();
             return;
         }
+
+        // Randomize Scenario
+		try {
+			Vector<RandomizationProperties> randomizationPropertiesVector = simConfig.randomization;
+			RandomizationProperties randomizationProperties = RandomRandomizationPropertiesPicker.pickRandomizationProperties(randomizationPropertiesVector);
+			RandomizationStrategy strategy = randomizationProperties.build(simConfig, fileSystem.getPath("maps",  "").getAbsolutePath());
+			simConfig.cars = strategy.randomizeCars(simConfig.cars);
+			simConfig.map_name = strategy.randomizeMapName(simConfig.map_name);
+			simConfig.max_duration = strategy.randomizeMaxDuration(simConfig.max_duration);
+			simConfig.tick_duration = strategy.randomizeTickDuration(simConfig.tick_duration);
+			simConfig.modules = strategy.randomizeModules(simConfig.modules);
+		}catch (Exception e) {
+			e.printStackTrace();
+		}
+
         control.init(simConfig.tick_duration, simConfig.start_time);
 
         // Create simulator from scenario file
@@ -124,6 +145,7 @@ public class ScenarioVis extends SimVis implements SimulationRunner {
         setView(vehicles);
 
         for (Vehicle v : vehicles) {
+            System.out.println(v.properties.vehicleName + " has a carrenderer");
             CarRenderer cr = new CarRenderer();
             cr.setCar(v);
             viewer.addRenderer(cr);
@@ -264,7 +286,7 @@ public class ScenarioVis extends SimVis implements SimulationRunner {
             }
         });
         interm.add(checkBox4);
-        
+
         JCheckBox checkBox5 = new JCheckBox("Show driven Trajectory", UIInfo.drawDrivenTrajectory);
         checkBox5.addItemListener(new ItemListener() {
             public void itemStateChanged(ItemEvent e) {

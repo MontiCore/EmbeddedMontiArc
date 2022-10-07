@@ -18,3 +18,5 @@ dependency-reduced-pom.xml
 .vscode/
 .factorypath
 *.log
+
+bin
