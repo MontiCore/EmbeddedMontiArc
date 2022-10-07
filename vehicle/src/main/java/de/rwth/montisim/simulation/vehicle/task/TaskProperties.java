@@ -23,10 +23,11 @@ public class TaskProperties {
         Optional<Navigation> nav = Optional.empty();
         if (res.isPresent()) {
             EEComponent r2 = res.get();
-            if (!(r2 instanceof Navigation)) throw new IllegalArgumentException("Expected EEComponent with name 'Navigation' to be of type Navigation.");
+            if (!(r2 instanceof Navigation))
+                throw new IllegalArgumentException("Expected EEComponent with name 'Navigation' to be of type Navigation.");
             nav = Optional.of((Navigation) r2);
         }
-        
+
         Task t = new Task(this, nav);
         for (GoalProperties goal : goals) {
             t.addGoal(goal.build(vehicle, map, world));

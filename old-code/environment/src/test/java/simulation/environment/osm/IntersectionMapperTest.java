@@ -1,6 +1,6 @@
 /**
  * (c) https://github.com/MontiCore/monticore
- *
+ * <p>
  * The license generally applicable for this project
  * can be found under https://github.com/MontiCore/monticore.
  */
@@ -9,17 +9,18 @@ package de.rwth.montisim.simulation.environment.osm;
 import org.junit.*;
 import de.topobyte.osm4j.core.dataset.InMemoryMapDataSet;
 import de.topobyte.osm4j.core.resolve.EntityNotFoundException;
+
 import java.io.InputStream;
-import static  org.junit.Assert.*;
+
+import static org.junit.Assert.*;
 
 /**
  * Created by lukas on 15.12.16.
  */
-public class IntersectionMapperTest  {
+public class IntersectionMapperTest {
 
 
-
-	 @Test
+    @Test
     public void testApp() throws EntityNotFoundException {
         // maven test will fail for this file path
 

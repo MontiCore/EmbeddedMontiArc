@@ -10,6 +10,7 @@ import de.rwth.montisim.commons.dynamicinterface.PortInformation;
 public interface PortTagUser {
     // Return the tags the component is looking for
     Set<String> getUsedTags();
+
     // Gets called for every component port that contains a tag returned by getUsedTags().
     void processTag(String tag, PortInformation portInfo);
 }

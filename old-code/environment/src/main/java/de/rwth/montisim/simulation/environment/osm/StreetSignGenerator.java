@@ -1,6 +1,6 @@
 /**
  * (c) https://github.com/MontiCore/monticore
- *
+ * <p>
  * The license generally applicable for this project
  * can be found under https://github.com/MontiCore/monticore.
  */
@@ -14,6 +14,7 @@ import de.rwth.montisim.simulation.environment.visualisationadapter.implementati
 import de.rwth.montisim.simulation.environment.visualisationadapter.interfaces.EnvNode;
 import de.rwth.montisim.simulation.environment.visualisationadapter.interfaces.EnvStreet;
 import de.rwth.montisim.simulation.environment.visualisationadapter.interfaces.SignTypeAndState;
+
 import java.util.*;
 
 /**
@@ -33,34 +34,34 @@ public class StreetSignGenerator {
         HashMap<EnvNode, List<TrafficLight>> trafficSignalMapper = new HashMap<>();
 
         Collection<EnvStreet> streets = container.getStreets();
-        for(EnvStreet street : streets) {
+        for (EnvStreet street : streets) {
             List<EnvNode> nodes = street.getNodes();
             Collection<EnvNode> intersections = street.getIntersections();
-            for(int i = 0; i < nodes.size(); i++) {
+            for (int i = 0; i < nodes.size(); i++) {
                 Node2D node = (Node2D) nodes.get(i);
 
-                if(intersections.contains(node)) {
-                    if(!intersectionTypeMapper.containsKey(node)) {
+                if (intersections.contains(node)) {
+                    if (!intersectionTypeMapper.containsKey(node)) {
                         intersectionTypeMapper.put(node, generateType());
                     }
 
                     IntersectionType type = intersectionTypeMapper.get(node);
-                    if(type == IntersectionType.EGG_INTERSECTION) {
-                        List<EnvStreet> intersectionStreets =  mapper.getStreetsForIntersection(node);
-                        if(canBeEgg(intersectionStreets, node)) {
+                    if (type == IntersectionType.EGG_INTERSECTION) {
+                        List<EnvStreet> intersectionStreets = mapper.getStreetsForIntersection(node);
+                        if (canBeEgg(intersectionStreets, node)) {
                             node.setStreetSign(new StreetSignImpl(SignTypeAndState.EGG_SIGN));
                         } else {
                             boolean stop = r.nextBoolean();
-                            if(stop) {
+                            if (stop) {
                                 node.setStreetSign(new StreetSignImpl(SignTypeAndState.STOP_SIGN));
                             } else {
                                 node.setStreetSign(new StreetSignImpl(SignTypeAndState.PRIORITY_SIGN));
                             }
                         }
-                    } else if(type == IntersectionType.NORMAL_INTERSECTION) {
+                    } else if (type == IntersectionType.NORMAL_INTERSECTION) {
                         node.setStreetSign(new StreetSignImpl(SignTypeAndState.INTERSECTION_SIGN));
                     } else {
-                        if(!trafficSignalMapper.containsKey(node)) {
+                        if (!trafficSignalMapper.containsKey(node)) {
                             trafficSignalMapper.put(node, new ArrayList<>());
                         }
                         TrafficLight signal = new TrafficLight();
@@ -71,7 +72,7 @@ public class StreetSignGenerator {
             }
         }
 
-        for(EnvNode n : trafficSignalMapper.keySet()) {
+        for (EnvNode n : trafficSignalMapper.keySet()) {
             TrafficLightSwitcher.addSwitcher(new TrafficLightSwitcher(trafficSignalMapper.get(n)));
         }
     }
@@ -79,9 +80,9 @@ public class StreetSignGenerator {
     private static IntersectionType generateType() {
         int val = r.nextInt(3);
 
-        if(val == 0) {
+        if (val == 0) {
             return IntersectionType.EGG_INTERSECTION;
-        } else if(val == 1) {
+        } else if (val == 1) {
             return IntersectionType.NORMAL_INTERSECTION;
         } else {
             return IntersectionType.TRAFFIC_LIGHT_INTERSECTION;
@@ -90,13 +91,13 @@ public class StreetSignGenerator {
 
     private static boolean canBeEgg(List<EnvStreet> streets, EnvNode intersection) {
         boolean result = true;
-        for(EnvStreet street : streets) {
-            for(EnvNode n : street.getNodes()) {
-                if(n.equals(intersection)) {
+        for (EnvStreet street : streets) {
+            for (EnvNode n : street.getNodes()) {
+                if (n.equals(intersection)) {
                     result &= n.getStreetSign().getType() != SignTypeAndState.EGG_SIGN;
                 }
 
-                if(!result) {
+                if (!result) {
                     return result;
                 }
             }

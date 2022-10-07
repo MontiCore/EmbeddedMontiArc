@@ -37,6 +37,7 @@ public class BridgeProperties extends EEComponentProperties {
     public boolean canTransferMessages() {
         return true;
     }
+
     @Override
     public float routingCost() {
         return 1.5f;

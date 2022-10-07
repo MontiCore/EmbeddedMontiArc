@@ -55,7 +55,7 @@ public class SimpleBattery extends Battery {
     @Override
     public boolean isCritical() {
         // TODO Auto-generated method stub
-        return charge < properties.critical_charge * 0.01 *properties.capacity;
+        return charge < properties.critical_charge * 0.01 * properties.capacity;
     }
 
 }

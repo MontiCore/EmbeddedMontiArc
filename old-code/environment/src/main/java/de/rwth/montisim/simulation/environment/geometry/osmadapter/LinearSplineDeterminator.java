@@ -1,6 +1,6 @@
 /**
  * (c) https://github.com/MontiCore/monticore
- *
+ * <p>
  * The license generally applicable for this project
  * can be found under https://github.com/MontiCore/monticore.
  */
@@ -13,6 +13,7 @@ import de.rwth.montisim.simulation.environment.geometry.splines.Spline;
 import de.rwth.montisim.simulation.environment.visualisationadapter.EnvBounds;
 import de.rwth.montisim.simulation.environment.visualisationadapter.EnvNode;
 import de.rwth.montisim.simulation.environment.visualisationadapter.Street;
+
 import java.util.ArrayList;
 
 /**
@@ -20,7 +21,7 @@ import java.util.ArrayList;
  *
  * A SplineDeterminator for the usage of Linear interpolation
  */
-public class LinearSplineDeterminator extends SplineDeterminator{
+public class LinearSplineDeterminator extends SplineDeterminator {
 
     public LinearSplineDeterminator(Street street) {
         super(street);
@@ -32,14 +33,14 @@ public class LinearSplineDeterminator extends SplineDeterminator{
         Vec3 min = new Vec3(Double.MAX_VALUE);
         Vec3 max = new Vec3(Double.MIN_VALUE);
 
-        for(Spline s : splines.values()) {
+        for (Spline s : splines.values()) {
             ArrayList<Vec3> borderPoints = new ArrayList<>();
             LinearInterpolator leftPavement = s.getPavement(true);
             borderPoints.addAll(leftPavement.getAllBorders());
             LinearInterpolator rightPavement = s.getPavement(false);
             borderPoints.addAll(rightPavement.getAllBorders());
 
-            for(Vec3 p : borderPoints) {
+            for (Vec3 p : borderPoints) {
                 Geometry.minimize(min, p);
                 Geometry.maximize(max, p);
             }
@@ -56,9 +57,9 @@ public class LinearSplineDeterminator extends SplineDeterminator{
 
         ArrayList<EnvNode> nodes = (ArrayList<EnvNode>) street.getNodes();
 
-        for(int i = 0; i < nodes.size() - 1; i++) {
+        for (int i = 0; i < nodes.size() - 1; i++) {
             EnvNode n1 = nodes.get(i);
-            EnvNode n2 = nodes.get(i+1);
+            EnvNode n2 = nodes.get(i + 1);
 
             Vec3 p1 = n1.point.clone();
             Vec3 p2 = n2.point.clone();

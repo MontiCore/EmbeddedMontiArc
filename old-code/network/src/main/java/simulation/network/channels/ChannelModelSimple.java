@@ -1,6 +1,6 @@
 /**
  * (c) https://github.com/MontiCore/monticore
- *
+ * <p>
  * The license generally applicable for this project
  * can be found under https://github.com/MontiCore/monticore.
  */
@@ -18,8 +18,8 @@ import java.util.List;
 public class ChannelModelSimple extends NetworkChannelModel {
 
     /** Channel information: Channel id, center carrier frequency in kHz, channel bandwidth in kHz */
-    private static int[][] channelInfo = new int[][] {
-        {5890000, 10000},
+    private static int[][] channelInfo = new int[][]{
+            {5890000, 10000},
     };
 
     /**
@@ -32,7 +32,7 @@ public class ChannelModelSimple extends NetworkChannelModel {
     @Override
     public void computeTransmission(NetworkNode sender, NetworkNode otherNode, NetworkMessage message) {
         // Get channel information for sender node
-        int channelId = (int)(sender.getPhysicalObject().getId() % 1L);
+        int channelId = (int) (sender.getPhysicalObject().getId() % 1L);
         int channelCarrierKHz = channelInfo[channelId][0];
         int channelBandwidthKHz = channelInfo[channelId][1];
 
@@ -74,5 +74,6 @@ public class ChannelModelSimple extends NetworkChannelModel {
      * Function that is called when the network simulation starts, useful for channel objects initialization
      */
     @Override
-    public void networkSimulationStart() {}
+    public void networkSimulationStart() {
+    }
 }

@@ -1,6 +1,6 @@
 /**
  * (c) https://github.com/MontiCore/monticore
- *
+ * <p>
  * The license generally applicable for this project
  * can be found under https://github.com/MontiCore/monticore.
  */
@@ -8,7 +8,9 @@ package simulation.network.tasks;
 
 import simulation.network.*;
 import de.rwth.montisim.simulation.util.Log;
+
 import java.util.Arrays;
+
 import static simulation.network.NetworkDiscreteEventId.*;
 
 /**
@@ -48,7 +50,7 @@ public class TaskPhySimple extends NetworkTask {
 
                 int dataRate = modulationAndRateInfo[defaultModulationAndRateInfoIndex][0];
                 int bitsPerSignal = modulationAndRateInfo[defaultModulationAndRateInfoIndex][1];
-                double codeRate = (double)(modulationAndRateInfo[defaultModulationAndRateInfoIndex][2]) / (double)(modulationAndRateInfo[defaultModulationAndRateInfoIndex][3]);
+                double codeRate = (double) (modulationAndRateInfo[defaultModulationAndRateInfoIndex][2]) / (double) (modulationAndRateInfo[defaultModulationAndRateInfoIndex][3]);
                 event.getEventMessage().setPhyDataRateKBits(dataRate);
                 event.getEventMessage().setPhyBitsPerSignal(bitsPerSignal);
                 event.getEventMessage().setPhyCodeRate(codeRate);

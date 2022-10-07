@@ -1,6 +1,6 @@
 /**
  * (c) https://github.com/MontiCore/monticore
- *
+ * <p>
  * The license generally applicable for this project
  * can be found under https://github.com/MontiCore/monticore.
  */
@@ -10,6 +10,7 @@ import simulation.network.*;
 
 import java.time.Duration;
 import java.util.*;
+
 import static simulation.network.NetworkDiscreteEventId.*;
 
 /**
@@ -82,7 +83,7 @@ public class TaskAppMessagesSoftState extends NetworkTask {
 
             synchronized (messageList) {
                 for (NetworkMessage message : messageList) {
-                	Duration diff = Duration.between(message.getSimReceiveTime(), NetworkSimulator.getInstance().getSimulationTime());
+                    Duration diff = Duration.between(message.getSimReceiveTime(), NetworkSimulator.getInstance().getSimulationTime());
                     if (diff.toNanos() >= NetworkSimulator.getInstance().getNetworkSettings().getMessageBufferMaxTime().toNanos()) {
                         removeList.add(message);
                     }

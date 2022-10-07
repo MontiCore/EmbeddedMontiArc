@@ -1,4 +1,3 @@
-
 public class WeatherSensor extends AbstractSensor {
     private Double value;
 

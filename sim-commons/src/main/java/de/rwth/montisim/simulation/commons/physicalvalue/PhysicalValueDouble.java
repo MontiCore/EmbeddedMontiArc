@@ -19,7 +19,7 @@ public class PhysicalValueDouble extends PhysicalValue {
         this.min = min;
         this.max = max;
     }
-    
+
     public PhysicalValueDouble(String name) {
         super(name);
         this.value = 0;
@@ -28,10 +28,18 @@ public class PhysicalValueDouble extends PhysicalValue {
         this.max = Double.POSITIVE_INFINITY;
     }
 
-    public double getMin() { return min; }
-    public double getMax() { return max; }
-    public double getValue() { return value; }
-    
+    public double getMin() {
+        return min;
+    }
+
+    public double getMax() {
+        return max;
+    }
+
+    public double getValue() {
+        return value;
+    }
+
 
     @Override
     public Object get() {
@@ -41,7 +49,7 @@ public class PhysicalValueDouble extends PhysicalValue {
     @Override
     public void set(Object v) {
         lastValue = value;
-        value = ((Double)v);
+        value = ((Double) v);
     }
 
     @Override

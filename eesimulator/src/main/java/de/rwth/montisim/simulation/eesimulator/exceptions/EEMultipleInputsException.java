@@ -16,11 +16,11 @@ public class EEMultipleInputsException extends Exception {
         this.messageName = messageName;
         this.sendingComponents = sendingComponents;
     }
-    
+
     @Override
-    public String getMessage(){
+    public String getMessage() {
         String res = "Component \"" + componentName + "\" expects the input \"" + messageName + "\" from only one sender but receives it from:";
-        for (EEComponent e : sendingComponents){
+        for (EEComponent e : sendingComponents) {
             res += "\n  - " + e.properties.name;
         }
         return res;

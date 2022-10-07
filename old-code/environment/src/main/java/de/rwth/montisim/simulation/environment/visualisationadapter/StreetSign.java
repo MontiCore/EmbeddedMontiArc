@@ -1,6 +1,6 @@
 /**
  * (c) https://github.com/MontiCore/monticore
- *
+ * <p>
  * The license generally applicable for this project
  * can be found under https://github.com/MontiCore/monticore.
  */
@@ -26,7 +26,7 @@ public class StreetSign {
     public StreetSign(SignTypeAndState type) {
         this.type = type;
         this.isOne = this.isTwo = false;
-        if(type != SignTypeAndState.TRAFFIC_LIGHT) {
+        if (type != SignTypeAndState.TRAFFIC_LIGHT) {
             state = type;
         }
     }

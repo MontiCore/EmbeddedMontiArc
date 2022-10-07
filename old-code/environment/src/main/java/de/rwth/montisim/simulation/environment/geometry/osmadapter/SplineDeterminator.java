@@ -1,6 +1,6 @@
 /**
  * (c) https://github.com/MontiCore/monticore
- *
+ * <p>
  * The license generally applicable for this project
  * can be found under https://github.com/MontiCore/monticore.
  */
@@ -14,6 +14,7 @@ import de.rwth.montisim.simulation.environment.pedestrians.PedestrianStreetParam
 import de.rwth.montisim.simulation.environment.visualisationadapter.EnvBounds;
 import de.rwth.montisim.simulation.environment.visualisationadapter.EnvNode;
 import de.rwth.montisim.simulation.environment.visualisationadapter.Street;
+
 import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.Random;
@@ -95,19 +96,19 @@ public abstract class SplineDeterminator {
      * @return the distance to the left spline
      */
     public double determineDistanceToLeft(StaticObject o) {
-        Vec3 p = new Vec3(o.getGeometryPosition().getEntry(0),o.getGeometryPosition().getEntry(1),o.getGeometryPosition().getEntry(2));
+        Vec3 p = new Vec3(o.getGeometryPosition().getEntry(0), o.getGeometryPosition().getEntry(1), o.getGeometryPosition().getEntry(2));
         Spline s = getMinimumSplineForSetAndPoints(this.splines.keySet(), p);
         return s.computeDistanceToLeft(o);
     }
 
     public double determineDistanceFrontLeft(StaticObject o) {
-        Vec3 p = new Vec3(o.getGeometryPosition().getEntry(0),o.getGeometryPosition().getEntry(1),o.getGeometryPosition().getEntry(2));
+        Vec3 p = new Vec3(o.getGeometryPosition().getEntry(0), o.getGeometryPosition().getEntry(1), o.getGeometryPosition().getEntry(2));
         Spline s = getMinimumSplineForSetAndPoints(this.splines.keySet(), p);
         return s.computeDistanceToFrontLeft(o);
     }
 
     public double determineDistanceFrontRight(StaticObject o) {
-        Vec3 p = new Vec3(o.getGeometryPosition().getEntry(0),o.getGeometryPosition().getEntry(1),o.getGeometryPosition().getEntry(2));
+        Vec3 p = new Vec3(o.getGeometryPosition().getEntry(0), o.getGeometryPosition().getEntry(1), o.getGeometryPosition().getEntry(2));
         Spline s = getMinimumSplineForSetAndPoints(this.splines.keySet(), p);
         return s.computeDistanceToFrontRight(o);
     }
@@ -117,7 +118,7 @@ public abstract class SplineDeterminator {
      * @return the distance to the right spline
      */
     public double determineDistanceToRight(StaticObject o) {
-        Vec3 p = new Vec3(o.getGeometryPosition().getEntry(0),o.getGeometryPosition().getEntry(1),o.getGeometryPosition().getEntry(2));
+        Vec3 p = new Vec3(o.getGeometryPosition().getEntry(0), o.getGeometryPosition().getEntry(1), o.getGeometryPosition().getEntry(2));
         Spline s = getMinimumSplineForSetAndPoints(this.splines.keySet(), p);
         return s.computeDistanceToRight(o);
     }
@@ -164,9 +165,9 @@ public abstract class SplineDeterminator {
             result = this.splines.get(keys.toArray()[0]);
         }
 
-        for(Key k : keys) {
+        for (Key k : keys) {
             double dist = this.splines.get(k).computeDistanceToMiddle(p);
-            if(dist < minDist) {
+            if (dist < minDist) {
                 minDist = dist;
                 result = this.splines.get(k);
             }

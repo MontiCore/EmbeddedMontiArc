@@ -1,6 +1,6 @@
 /**
  * (c) https://github.com/MontiCore/monticore
- *
+ * <p>
  * The license generally applicable for this project
  * can be found under https://github.com/MontiCore/monticore.
  */
@@ -86,7 +86,7 @@ public class Parser2D implements IParser {
      * @throws Exception
      */
     public void parse() throws Exception {
-        if(this.in == null) {
+        if (this.in == null) {
             if (!StringUtils.isBlank(this.filePath)) {
                 this.in = new FileInputStream(filePath);
             } else {
@@ -118,24 +118,24 @@ public class Parser2D implements IParser {
     }
 
     public void parseCertainArea(double lon, double lat, double vicinityRange) throws Exception {
-            //Automatic call of OSM-Data. Currently not used cause of manually changes in Map-Data.
-            OSMConnector connector = new OSMConnector();
-            //Call Area you want to load. Further instructions in class doc.
+        //Automatic call of OSM-Data. Currently not used cause of manually changes in Map-Data.
+        OSMConnector connector = new OSMConnector();
+        //Call Area you want to load. Further instructions in class doc.
 
-            //TODO: For now only RWTH-AAchen coordinates. Can be extended with all possible coordinates.
-            Document mapData = connector.getXML(lon, lat, vicinityRange);
-            //Create temp file for loaded data.
-            DOMSource source = new DOMSource(mapData);
-            FileWriter writer = new FileWriter(new File("/tmp/output.xml"));
-            StreamResult result = new StreamResult(writer);
+        //TODO: For now only RWTH-AAchen coordinates. Can be extended with all possible coordinates.
+        Document mapData = connector.getXML(lon, lat, vicinityRange);
+        //Create temp file for loaded data.
+        DOMSource source = new DOMSource(mapData);
+        FileWriter writer = new FileWriter(new File("/tmp/output.xml"));
+        StreamResult result = new StreamResult(writer);
 
-            TransformerFactory transformerFactory = TransformerFactory.newInstance();
-            Transformer transformer = transformerFactory.newTransformer();
-            transformer.transform(source, result);
+        TransformerFactory transformerFactory = TransformerFactory.newInstance();
+        Transformer transformer = transformerFactory.newTransformer();
+        transformer.transform(source, result);
 
-            this.in = new FileInputStream("/tmp/output.xml");
+        this.in = new FileInputStream("/tmp/output.xml");
 
-            executeParsing();
+        executeParsing();
     }
 
     private void executeParsing() throws Exception {
@@ -153,9 +153,9 @@ public class Parser2D implements IParser {
                 String building = tags.get("building");
                 String waterway = tags.get("waterway");
                 String surface = tags.get("surface");
-                
+
                 if (highway == null && building == null && waterway == null) {
-                   continue;
+                    continue;
                 }
 
                 for (int i = 0; i < way.getNumberOfNodes(); i++) {
@@ -235,11 +235,11 @@ public class Parser2D implements IParser {
     private void parseChargingStations() {
         // Each charging station in OSM are represented by a node with tag amenity=charging_station
         // We iterate over all nodes in the map to find charging stations
-        for (OsmNode node: dataSet.getNodes().valueCollection()){
+        for (OsmNode node : dataSet.getNodes().valueCollection()) {
             Map<String, String> tags = OsmModelUtil.getTagsAsMap(node);
             String amenity = tags.get("amenity");
 
-            if (amenity != null && amenity.equals("charging_station")){
+            if (amenity != null && amenity.equals("charging_station")) {
                 String capacity = tags.get("capacity");
                 if (capacity == null) {
                     capacity = "1";
@@ -307,8 +307,8 @@ public class Parser2D implements IParser {
             String surface = tags.get("surface");
 
 
-        //  System.out.println("PARSE OBJECTS FUNCTION  "+highway);
-          //  System.out.println(waterway);
+            //  System.out.println("PARSE OBJECTS FUNCTION  "+highway);
+            //  System.out.println(waterway);
 
             if (highway != null) {
                 // Check if way is marked as oneWayRoad
@@ -321,11 +321,11 @@ public class Parser2D implements IParser {
                 constructStreet(way, isOneWay, highway, surface);
             }
             if (building != null) {
-                constructBuilding( way , building );
+                constructBuilding(way, building);
             }
 
             if (waterway != null) {
-                constructWaterway( way, waterway);
+                constructWaterway(way, waterway);
             }
         }
     }
@@ -340,22 +340,22 @@ public class Parser2D implements IParser {
 
             nodes.add(new Node2D(node.getLongitude(), node.getLatitude(), 0, way.getNodeId(i)));
         }
-        this.waterway.add(new Waterway2D(nodes,way.getId()));
+        this.waterway.add(new Waterway2D(nodes, way.getId()));
     }
 
 
     private void constructBuilding(OsmWay way, String building) throws EntityNotFoundException {
 
-            List<EnvNode> nodes = new ArrayList<>();
-            for (int i = 0; i < way.getNumberOfNodes(); i++) {
-                OsmNode node = dataSet.getNode(way.getNodeId(i));
-                nodes.add(new Node2D(node.getLongitude(), node.getLatitude(), 0, way.getNodeId(i)));
-            }
-
-            this.buildings.add(new BuildingImpl(nodes,way.getId()));
-
-
+        List<EnvNode> nodes = new ArrayList<>();
+        for (int i = 0; i < way.getNumberOfNodes(); i++) {
+            OsmNode node = dataSet.getNode(way.getNodeId(i));
+            nodes.add(new Node2D(node.getLongitude(), node.getLatitude(), 0, way.getNodeId(i)));
         }
+
+        this.buildings.add(new BuildingImpl(nodes, way.getId()));
+
+
+    }
 
     /**
      * construct a Street2D from a given OsmWay object
@@ -437,7 +437,6 @@ public class Parser2D implements IParser {
     }
 
 
-
     /**
      * converts String streetpavement in enum
      * @param s as streetpavement
@@ -462,7 +461,7 @@ public class Parser2D implements IParser {
         }
     }
 
-    public String getMapName(){
+    public String getMapName() {
         return this.mapName;
     }
 }

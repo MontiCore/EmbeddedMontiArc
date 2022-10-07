@@ -9,28 +9,31 @@ import de.rwth.montisim.commons.simulation.TimeUpdate;
 public class SimulationLoop {
     final Simulator simulator;
     final SimulationConfig config;
-    
+
     Instant simulationTime;
-    public SimulationLoop(Simulator simulator, SimulationConfig config){
+    int stepCounter;
+
+    public SimulationLoop(Simulator simulator, SimulationConfig config) {
         this.simulator = simulator;
         this.config = config;
         this.simulationTime = config.start_time;
+        stepCounter = 0;
     }
 
     public TaskStatus run() {
         try {
             do {
-                TaskStatus res = simulator.status();
-                if (res != TaskStatus.RUNNING){
+                TaskStatus res = simulator.status(stepCounter);
+                if (res != TaskStatus.RUNNING) {
 
                     return res;
                 }
                 TimeUpdate tu = new TimeUpdate(simulationTime, config.tick_duration);
                 simulator.update(tu);
                 simulationTime = tu.newTime;
-
-            } while(true);
-        } catch(Exception e){
+                stepCounter++;
+            } while (true);
+        } catch (Exception e) {
             e.printStackTrace();
             return TaskStatus.FAILED;
         }

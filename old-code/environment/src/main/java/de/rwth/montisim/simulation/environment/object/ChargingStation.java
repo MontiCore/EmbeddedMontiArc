@@ -1,6 +1,6 @@
 /**
  * (c) https://github.com/MontiCore/monticore
- *
+ * <p>
  * The license generally applicable for this project
  * can be found under https://github.com/MontiCore/monticore.
  */
@@ -89,7 +89,7 @@ public class ChargingStation extends EnvObject implements SimulationObject, Upda
             }
         };
         this.location = new Vec3(
-                new double[] { node.getX().doubleValue(), node.getY().doubleValue(), node.getZ().doubleValue() });
+                new double[]{node.getX().doubleValue(), node.getY().doubleValue(), node.getZ().doubleValue()});
         this.capacity = capacity;
         this.name = name;
     }
@@ -144,9 +144,9 @@ public class ChargingStation extends EnvObject implements SimulationObject, Upda
 
     public boolean carStandingAtTheCS(DynamicObject vehicle) {
         // Is the Car near the CS (consider only x,y coordinates)
-        Vec3 location2D = new Vec3(new double[] { location.getEntry(0), location.getEntry(1) });
+        Vec3 location2D = new Vec3(new double[]{location.getEntry(0), location.getEntry(1)});
         Vec3 vehiclePos2D = new Vec3(
-                new double[] { vehicle.position.x, vehicle.position.y });
+                new double[]{vehicle.position.x, vehicle.position.y});
         return location2D.getDistance(vehiclePos2D) < stationRadius;
     }
 

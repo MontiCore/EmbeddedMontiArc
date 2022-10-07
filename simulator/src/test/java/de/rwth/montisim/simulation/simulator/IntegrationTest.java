@@ -59,8 +59,8 @@ public class IntegrationTest {
 
     @Test
     public void driveToTargetGlobalCoordinate() throws Exception {
-        Coordinates startCoord = new Coordinates(6.0721450,50.7738916);
-        Coordinates targetCoord = new Coordinates(6.0690220,50.773491);
+        Coordinates startCoord = new Coordinates(6.0721450, 50.7738916);
+        Coordinates targetCoord = new Coordinates(6.0690220, 50.773491);
 
         TaskProperties task = new TaskProperties();
         task.addGoal(new PathGoalProperties()
@@ -110,15 +110,16 @@ public class IntegrationTest {
         // dump and reload vehicle every 1000 steps. test if it is able to reach the destination.
         Instant simulationTime = config.start_time;
         int cnt = 1;
+        int stepCounter = 0;
         while (true) {
-            TaskStatus status = simulator.status();
+            TaskStatus status = simulator.status(stepCounter);
             if (status == TaskStatus.SUCCEEDED) break;
             if (status == TaskStatus.FAILED) throw new IllegalStateException("Vehicle did not reach target");
 
             TimeUpdate tu = new TimeUpdate(simulationTime, config.tick_duration);
             simulator.update(tu);
             simulationTime = tu.newTime;
-            
+
             //++cnt;
             if (cnt % 1000 != 0) {
                 continue;
@@ -133,6 +134,8 @@ public class IntegrationTest {
 
             vehicle = VehicleBuilder.fromJsonState(simulator.buildContext, state).build();
             simulator.addSimulationObject(vehicle);
+
+            stepCounter++;
         }
 
         double dist = vehicle.physicalObject.pos.distance(new Vec3(targetPos.x, targetPos.y, 0));

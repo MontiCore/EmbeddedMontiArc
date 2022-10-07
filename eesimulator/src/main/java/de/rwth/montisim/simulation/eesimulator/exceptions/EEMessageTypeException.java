@@ -16,13 +16,13 @@ public class EEMessageTypeException extends Exception {
         this.msgName = msgName;
         this.compList = compList;
     }
-    
+
     @Override
     public String getMessage() {
         StringBuilder str = new StringBuilder();
         str.append("Message " + msgName + " registered with different types:");
         for (Pair<EEComponent, DataType> p : compList) {
-            str.append("\n    - Component '"+p.getKey().properties.name+ "' with type "+p.getValue());
+            str.append("\n    - Component '" + p.getKey().properties.name + "' with type " + p.getValue());
         }
         return str.toString();
     }

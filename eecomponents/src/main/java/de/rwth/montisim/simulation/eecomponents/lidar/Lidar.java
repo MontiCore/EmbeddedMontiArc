@@ -31,7 +31,7 @@ public class Lidar extends EEComponent {
     private transient int truePositionMsg;
     private transient int trueCompassMsg;
 
-    private transient List<Integer> lidarMsg = Arrays.asList(0,0,0,0,0,0,0,0);
+    private transient List<Integer> lidarMsg = Arrays.asList(0, 0, 0, 0, 0, 0, 0, 0);
     private double[] lidarInfo;
 
     private double angleDeg;
@@ -39,41 +39,42 @@ public class Lidar extends EEComponent {
             "right_front_lidar", "right_back_lidar", "left_front_lidar", "left_back_lidar",
             "back_right_lidar", "back_left_lidar");
 
-    private Vec2 truePosition = new Vec2(0,0);
-    private Vec2 orientation = new Vec2(0,0);
+    private Vec2 truePosition = new Vec2(0, 0);
+    private Vec2 orientation = new Vec2(0, 0);
     public static final double DOUBLE_TOLERANCE = 0.000001d;
 
     private final Vehicle vehicle;
 
-    public Lidar(LidarProperties properties, EESystem eeSystem, World world, Vehicle vehicle){
-        super(properties,eeSystem);
+    public Lidar(LidarProperties properties, EESystem eeSystem, World world, Vehicle vehicle) {
+        super(properties, eeSystem);
 
         this.vehicle = vehicle;
 
         for (Building building : world.buildings) {
             int corners = building.boundary.size();
-            for (int i=0; i < corners; i++) {
+            for (int i = 0; i < corners; i++) {
                 //Line line = getLineBetweenPoints(building.boundary.elementAt(i), building.boundary.elementAt(i%corners));
-                edges.add(new Edge(building.boundary.get(i), building.boundary.get((i+1)%corners)));
+                edges.add(new Edge(building.boundary.get(i), building.boundary.get((i + 1) % corners)));
             }
         }
 
         this.truePositionMsg = addPort(PortInformation.newOptionalInputDataPort(TruePosition.VALUE_NAME, TruePosition.TYPE, false));
         this.trueCompassMsg = addPort(PortInformation.newOptionalInputDataPort(TrueCompass.VALUE_NAME, TrueCompass.TYPE, false));
 
-        for (int i=0; i<lidarMsg.size(); i++ ){
+        for (int i = 0; i < lidarMsg.size(); i++) {
             this.lidarMsg.set(i, addPort(PortInformation.newOptionalOutputDataPort(LIDAR_MSG.get(i), PhysicalValueDouble.TYPE)));
         }
         lidarInfo = new double[lidarMsg.size()];
     }
+
     @Override
     protected void receive(MessageReceiveEvent msgRecvEvent) {
         Message msg = msgRecvEvent.getMessage();
-        if (msg.isMsg(truePositionMsg)){
+        if (msg.isMsg(truePositionMsg)) {
             Instant time = msgRecvEvent.getEventTime();
             truePosition = (Vec2) msg.message;
             compute(time);
-        } else if (msg.isMsg(trueCompassMsg)){
+        } else if (msg.isMsg(trueCompassMsg)) {
             this.angleDeg = (double) msg.message;
             double angleRad = angleDeg * Geometry.DEG_TO_RAD;
             orientation = new Vec2(Math.cos(angleRad), Math.sin(angleRad));
@@ -83,6 +84,7 @@ public class Lidar extends EEComponent {
     /**
      * The main computing part of the component.
      * Here the distances are computed and sent to other components
+     *
      * @param time the time of the last received truePosition message
      */
     private void compute(Instant time) {
@@ -100,28 +102,29 @@ public class Lidar extends EEComponent {
 
         // The lidars in the lists always follow the following order: front right, front left,
         // right front, right back, left front, left back, back right, back left
-        List<Vec2> positionOffset = Arrays.asList(new Vec2(length/2,width/4), new Vec2(length/2,width/-4),
-                new Vec2(length/4,width/2), new Vec2(length/-4,width/2),
-                new Vec2(length/4,width/-2), new Vec2(length/-4,width/-2),
-                new Vec2(length/-2,width/4), new Vec2(length/-2,width/-4));
+        List<Vec2> positionOffset = Arrays.asList(new Vec2(length / 2, width / 4), new Vec2(length / 2, width / -4),
+                new Vec2(length / 4, width / 2), new Vec2(length / -4, width / 2),
+                new Vec2(length / 4, width / -2), new Vec2(length / -4, width / -2),
+                new Vec2(length / -2, width / 4), new Vec2(length / -2, width / -4));
 
         List<Vec2> orientationOffset = Arrays.asList(orientation, orientation,
                 rightOrientation, rightOrientation,
                 leftOrientation, leftOrientation,
                 backOrientation, backOrientation);
 
-        for (int i=0; i<lidarMsg.size(); i++){
+        for (int i = 0; i < lidarMsg.size(); i++) {
             double distance = computeShortestDistance(truePosition.add(positionOffset.get(i)), orientationOffset.get(i));
             lidarInfo[i] = distance;
             sendMessage(time, lidarMsg.get(i), distance);
         }
-        
+
     }
 
     /**
      * Sends out a ray from a given point (rayStart) in a given direction (rayDirection)
      * and returns the distance traveled until it hits the first building in the world.
-     * @param rayStart the starting point from where to shoot the ray
+     *
+     * @param rayStart     the starting point from where to shoot the ray
      * @param rayDirection the direction of the ray
      * @return the closest distance to a building
      */
@@ -154,34 +157,36 @@ public class Lidar extends EEComponent {
 
     /**
      * Calculates the determinant for a 2x2 matrix
+     *
      * @param a the first column of the matrix
      * @param b the second column of the matrix
      * @return the determinant of the matrix
      */
-    private double determinant2x2(Vec2 a, Vec2 b){
-        return a.x*b.y - a.y*b.x;
+    private double determinant2x2(Vec2 a, Vec2 b) {
+        return a.x * b.y - a.y * b.x;
     }
 
     /**
      * @return lidar values sent in last message
      */
-    public double[] getLidarValues(){
+    public double[] getLidarValues() {
         return lidarInfo;
     }
 
     /**
      * Getter method for specific lidar value
+     *
      * @param index index of desired value
      * @return lidar value at index
      */
-    public double getLidarValue(int index){
+    public double getLidarValue(int index) {
         return lidarInfo[index];
     }
 
     /**
      * @return length of lidar messages
      */
-    public int getMessageLength(){
+    public int getMessageLength() {
         return lidarMsg.size();
     }
 

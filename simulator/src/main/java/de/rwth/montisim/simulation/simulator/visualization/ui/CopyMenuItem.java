@@ -14,7 +14,7 @@ public class CopyMenuItem extends JMenuItem implements ActionListener {
 
     // Preview: wether the text to be copied is shown in parenthesis after the button message
     public CopyMenuItem(String msg, String textToCopy, boolean preview) {
-        super(preview ? msg + " ("+textToCopy+")" : msg);
+        super(preview ? msg + " (" + textToCopy + ")" : msg);
         this.textToCopy = textToCopy;
         addActionListener(this);
     }

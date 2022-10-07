@@ -1,6 +1,6 @@
 /**
  * (c) https://github.com/MontiCore/monticore
- *
+ * <p>
  * The license generally applicable for this project
  * can be found under https://github.com/MontiCore/monticore.
  */
@@ -14,6 +14,7 @@ import org.junit.AfterClass;
 
 import static junit.framework.TestCase.assertEquals;
 import static org.junit.Assert.*;
+
 import org.junit.BeforeClass;
 import org.junit.Test;
 
@@ -40,7 +41,7 @@ public class VehicleTest {
 
         // 2 colliding vehicles
         PhysicalObject vehicle1 = createStandardVehicle(new MassPointPhysicalVehicleBuilder()).getPhysicalVehicle();
-        PhysicalObject vehicle2 = createStandardVehicle(new MassPointPhysicalVehicleBuilder().setPosition(new Vec3(new double[] {1, 0, 0}))).getPhysicalVehicle();
+        PhysicalObject vehicle2 = createStandardVehicle(new MassPointPhysicalVehicleBuilder().setPosition(new Vec3(new double[]{1, 0, 0}))).getPhysicalVehicle();
         List<PhysicalObject> physicalObjects = new ArrayList<>();
         physicalObjects.add(vehicle2);
         PhysicsEngine.computePhysics(vehicle1, physicalObjects, timeDiff);
@@ -49,7 +50,7 @@ public class VehicleTest {
         // 2 non colliding vehicles
         physicalObjects.clear();
         vehicle1 = createStandardVehicle(new MassPointPhysicalVehicleBuilder()).getPhysicalVehicle();
-        vehicle2 = createStandardVehicle(new MassPointPhysicalVehicleBuilder().setPosition(new Vec3(new double[] {10, 0, 0}))).getPhysicalVehicle();
+        vehicle2 = createStandardVehicle(new MassPointPhysicalVehicleBuilder().setPosition(new Vec3(new double[]{10, 0, 0}))).getPhysicalVehicle();
         physicalObjects.add(vehicle2);
         PhysicsEngine.computePhysics(vehicle1, physicalObjects, timeDiff);
         assertTrue(!vehicle1.getCollision() && !vehicle2.getCollision());
@@ -57,9 +58,9 @@ public class VehicleTest {
         // Vehicle colliding with non vehicle
         physicalObjects.clear();
         vehicle1 = createStandardVehicle(new MassPointPhysicalVehicleBuilder()).getPhysicalVehicle();
-        vehicle2 = createStandardVehicle(new MassPointPhysicalVehicleBuilder().setPosition(new Vec3(new double[] {30, 0, 0}))).getPhysicalVehicle();
+        vehicle2 = createStandardVehicle(new MassPointPhysicalVehicleBuilder().setPosition(new Vec3(new double[]{30, 0, 0}))).getPhysicalVehicle();
         House house = new House();
-        house.setPosition(new Vec3(new double[] {1, 0, 0}));
+        house.setPosition(new Vec3(new double[]{1, 0, 0}));
         house.setWidth(10.0);
         house.setLength(10.0);
         house.setHeight(10.0);
@@ -70,23 +71,23 @@ public class VehicleTest {
     }
 
     private Vehicle createStandardVehicle(PhysicalVehicleBuilder physicalVehicleBuilder) {
-    	EESimulator eeSimulator = new EESimulator(Instant.EPOCH);
-		EEVehicleBuilder eeVehicleBuilder = new EEVehicleBuilder(eeSimulator);
-		InstantBus bus = new InstantBus(eeSimulator);
-		eeVehicleBuilder.createAllSensorsNActuators(bus);
-		return new Vehicle(physicalVehicleBuilder, eeVehicleBuilder);
+        EESimulator eeSimulator = new EESimulator(Instant.EPOCH);
+        EEVehicleBuilder eeVehicleBuilder = new EEVehicleBuilder(eeSimulator);
+        InstantBus bus = new InstantBus(eeSimulator);
+        eeVehicleBuilder.createAllSensorsNActuators(bus);
+        return new Vehicle(physicalVehicleBuilder, eeVehicleBuilder);
     }
 
     @Test
-    public void AutopilotBehaviorTest() throws Exception{
+    public void AutopilotBehaviorTest() throws Exception {
         /*       Masspoint       */
 
         Vehicle vehicle = createStandardVehicle(new MassPointPhysicalVehicleBuilder());
-        vehicle.setVehicleType(VehicleType.ELECTRIC,0);
+        vehicle.setVehicleType(VehicleType.ELECTRIC, 0);
         Vehicle vehicle2 = createStandardVehicle(new MassPointPhysicalVehicleBuilder());
-        vehicle2.setVehicleType(VehicleType.ELECTRIC,0.1);
+        vehicle2.setVehicleType(VehicleType.ELECTRIC, 0.1);
         Vehicle vehicle3 = createStandardVehicle(new MassPointPhysicalVehicleBuilder());
-        vehicle3.setVehicleType(VehicleType.ELECTRIC,30);
+        vehicle3.setVehicleType(VehicleType.ELECTRIC, 30);
 
         vehicle.getPhysicalVehicle().executeLoopIteration(Duration.ofMillis(10));
         vehicle2.getPhysicalVehicle().executeLoopIteration(Duration.ofMillis(10));
@@ -103,13 +104,13 @@ public class VehicleTest {
         /*       Modelica       */
 
         Vehicle vehicle4 = createStandardVehicle(new ModelicaPhysicalVehicleBuilder());
-        vehicle4.setVehicleType(VehicleType.ELECTRIC,0);
+        vehicle4.setVehicleType(VehicleType.ELECTRIC, 0);
         Vehicle vehicle5 = createStandardVehicle(new ModelicaPhysicalVehicleBuilder());
-        vehicle5.setVehicleType(VehicleType.ELECTRIC,0.1);
+        vehicle5.setVehicleType(VehicleType.ELECTRIC, 0.1);
         Vehicle vehicle6 = createStandardVehicle(new ModelicaPhysicalVehicleBuilder());
-        vehicle6.setVehicleType(VehicleType.ELECTRIC,30);
+        vehicle6.setVehicleType(VehicleType.ELECTRIC, 30);
 
-        
+
         vehicle4.getPhysicalVehicle().executeLoopIteration(Duration.ofMillis(10));
         vehicle5.getPhysicalVehicle().executeLoopIteration(Duration.ofMillis(10));
         vehicle6.getPhysicalVehicle().executeLoopIteration(Duration.ofMillis(10));

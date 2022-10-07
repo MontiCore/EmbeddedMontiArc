@@ -1,6 +1,6 @@
 /**
  * (c) https://github.com/MontiCore/monticore
- *
+ * <p>
  * The license generally applicable for this project
  * can be found under https://github.com/MontiCore/monticore.
  */
@@ -8,6 +8,7 @@ package de.rwth.montisim.simulation.environment.pedestrians;
 
 import de.rwth.montisim.simulation.environment.geometry.osmadapter.GeomStreet;
 import de.rwth.montisim.simulation.environment.visualisationadapter.EnvNode;
+
 import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.List;
@@ -20,7 +21,7 @@ import java.util.Random;
  */
 public class PedestrianContainer {
 
-    private static final long[] STREET_WHITELIST_OSMID = new long[] {
+    private static final long[] STREET_WHITELIST_OSMID = new long[]{
             // Halifax
             35855882,
             352800013,
@@ -70,6 +71,7 @@ public class PedestrianContainer {
     public static final double THRESHOLD_METER_PER_PEDESTRIAN = 120;
 
     private List<Pedestrian> pedestrians;
+
     public List<Pedestrian> getPedestrians() {
         return pedestrians;
     }
@@ -107,12 +109,12 @@ public class PedestrianContainer {
      * @param streets the streets on which to spawn pedestrians
      */
     private void spawnPedestrians(ArrayList<GeomStreet> streets) {
-        for(GeomStreet s : streets) {
+        for (GeomStreet s : streets) {
             List<EnvNode> listOfNodes = s.getDeterminator().getStreet().getNodes();
 
             // Only one id must match and the whole street is added
             boolean isOnWhiteList = false;
-            for (int i = 0; !isOnWhiteList &&  i < listOfNodes.size(); i++) {
+            for (int i = 0; !isOnWhiteList && i < listOfNodes.size(); i++) {
                 long osmId = listOfNodes.get(i).osmId;
 
                 isOnWhiteList = Arrays.binarySearch(STREET_WHITELIST_OSMID, osmId) >= 0;

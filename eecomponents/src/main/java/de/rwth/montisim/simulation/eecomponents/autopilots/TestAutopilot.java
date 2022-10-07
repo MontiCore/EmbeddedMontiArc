@@ -39,7 +39,7 @@ public class TestAutopilot extends EEComponent {
 
         this.velocityMsg = addPort(PortInformation.newRequiredInputDataPort(TrueVelocity.VALUE_NAME, TrueVelocity.TYPE, false));
         this.steeringMsg = addPort(PortInformation.newRequiredOutputDataPort(Actuator.SETTER_PREFIX + PowerTrainProperties.STEERING_VALUE_NAME,
-        BasicType.DOUBLE));
+                BasicType.DOUBLE));
         this.accelMsg = addPort(PortInformation.newRequiredOutputDataPort(Actuator.SETTER_PREFIX + PowerTrainProperties.GAS_VALUE_NAME, BasicType.DOUBLE));
         this.brakeMsg = addPort(PortInformation.newRequiredOutputDataPort(Actuator.SETTER_PREFIX + PowerTrainProperties.BRAKING_VALUE_NAME, BasicType.DOUBLE));
     }
@@ -81,5 +81,5 @@ public class TestAutopilot extends EEComponent {
         sendMessage(sendTime, steeringMsg, properties.turn_angle);
         sendMessage(sendTime, accelMsg, accel);
     }
-    
+
 }

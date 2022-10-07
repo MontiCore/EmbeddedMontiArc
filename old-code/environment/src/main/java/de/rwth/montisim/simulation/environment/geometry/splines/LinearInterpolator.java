@@ -1,6 +1,6 @@
 /**
  * (c) https://github.com/MontiCore/monticore
- *
+ * <p>
  * The license generally applicable for this project
  * can be found under https://github.com/MontiCore/monticore.
  */
@@ -9,6 +9,7 @@ package de.rwth.montisim.simulation.environment.geometry.splines;
 import de.rwth.montisim.commons.map.ControllerNode;
 import de.rwth.montisim.commons.utils.Vec3;
 import de.rwth.montisim.simulation.environment.pedestrians.PedestrianStreetParameters;
+
 import java.util.ArrayList;
 import java.util.Random;
 
@@ -28,7 +29,7 @@ public class LinearInterpolator implements Spline {
     public static final double precision = Math.pow(10, -9);
 
     //an enum for directions
-    protected enum Direction{
+    protected enum Direction {
         LEFT, MIDDLE, RIGHT
     }
 
@@ -59,13 +60,13 @@ public class LinearInterpolator implements Spline {
             this.normalVec = new Vec3(-difference.y, difference.x, 0);
             this.normalVec = this.normalVec.normalize();
             //construct other points by parallel movement
-            Vec3 n1 = this.p.add(normalVec.multiply(0.5*streetWidth));
-            Vec3 pavement1 = this.p.add(normalVec.multiply(0.5*streetWidth + 0.5*pavementWidth));
-            Vec3 n2 = this.p.add(normalVec.multiply(-0.5*streetWidth));
+            Vec3 n1 = this.p.add(normalVec.multiply(0.5 * streetWidth));
+            Vec3 pavement1 = this.p.add(normalVec.multiply(0.5 * streetWidth + 0.5 * pavementWidth));
+            Vec3 n2 = this.p.add(normalVec.multiply(-0.5 * streetWidth));
 
-            Vec3 pavement2 = this.p.add(normalVec.multiply(-0.5*streetWidth - 0.5*pavementWidth));
+            Vec3 pavement2 = this.p.add(normalVec.multiply(-0.5 * streetWidth - 0.5 * pavementWidth));
             //ensure that n1 is always the left lane and n2 the right lane (pavements accordingly
-            if(n1.x < p.x || (n1.x == p.x && n1.y > p.y)) {
+            if (n1.x < p.x || (n1.x == p.x && n1.y > p.y)) {
                 this.n1 = n1;
                 this.pavement1 = pavement1;
                 this.n2 = n2;
@@ -111,7 +112,7 @@ public class LinearInterpolator implements Spline {
      */
     public LinearInterpolator(Vec3 p1, Vec3 p2, double streetWidth, long osmId1, long osmId2, boolean withPavements) {
         init(p1, p2, streetWidth, osmId1, osmId2, withPavements, PAVEMENT_WIDTH);
-        if(withPavements) {
+        if (withPavements) {
             this.leftPavement = new LinearInterpolator(this.p1In3d.pavement1, this.p2In3d.pavement1, PAVEMENT_WIDTH, PAVEMENT_ID, PAVEMENT_ID, false);
             this.rightPavement = new LinearInterpolator(this.p1In3d.pavement2, this.p2In3d.pavement2, PAVEMENT_WIDTH, PAVEMENT_ID, PAVEMENT_ID, false);
         }
@@ -119,7 +120,7 @@ public class LinearInterpolator implements Spline {
 
     public LinearInterpolator(Vec3 p1, Vec3 p2, double streetWidth, long osmId1, long osmId2, boolean withPavements, double pavementWidth) {
         init(p1, p2, streetWidth, osmId1, osmId2, withPavements, pavementWidth);
-        if(withPavements) {
+        if (withPavements) {
             this.leftPavement = new LinearInterpolator(this.p1In3d.pavement1, this.p2In3d.pavement1, pavementWidth, PAVEMENT_ID, PAVEMENT_ID, false);
             this.rightPavement = new LinearInterpolator(this.p1In3d.pavement2, this.p2In3d.pavement2, pavementWidth, PAVEMENT_ID, PAVEMENT_ID, false);
         }
@@ -248,17 +249,17 @@ public class LinearInterpolator implements Spline {
     private double computeDistance(Vec3 p, Direction d, Direction lane, boolean in3D) {
         Vec3 s;
 
-        if(d == Direction.LEFT) {
-            if(lane == Direction.RIGHT) {
+        if (d == Direction.LEFT) {
+            if (lane == Direction.RIGHT) {
                 s = in3D ? p1In3d.n1 : p1In2d.n1;
             } else {
                 s = in3D ? p1In3d.n2 : p1In2d.n2;
             }
 
-        } else if(d == Direction.MIDDLE) {
+        } else if (d == Direction.MIDDLE) {
             s = in3D ? p1In3d.p : p1In2d.p;
         } else {
-            if(lane == Direction.RIGHT) {
+            if (lane == Direction.RIGHT) {
                 s = in3D ? p1In3d.n2 : p1In2d.n2;
             } else {
                 s = in3D ? p1In3d.n1 : p1In2d.n1;
@@ -308,7 +309,7 @@ public class LinearInterpolator implements Spline {
         Vec3 tmpDifference;
         Vec3 tmpPC;
 
-        if(in3D) {
+        if (in3D) {
             tmpP = p;
             tmpDifference = difference;
             tmpPC = p1In3d.p;
@@ -318,7 +319,7 @@ public class LinearInterpolator implements Spline {
             tmpPC = p1In2d.p;
         }
         Vec3 differenceOfp1AndP = computeDifference(tmpPC, tmpP);
-        return -1*(differenceOfp1AndP.dotProduct(tmpDifference) / getSquaredNorm(tmpDifference));
+        return -1 * (differenceOfp1AndP.dotProduct(tmpDifference) / getSquaredNorm(tmpDifference));
     }
 
     @Override
@@ -355,21 +356,25 @@ public class LinearInterpolator implements Spline {
     }
 
     @Override
-    public Vec3 getP1() { return this.p1In3d.p;}
+    public Vec3 getP1() {
+        return this.p1In3d.p;
+    }
 
     @Override
-    public Vec3 getP2() { return this.p2In3d.p;}
+    public Vec3 getP2() {
+        return this.p2In3d.p;
+    }
 
     @Override
     public Vec3 getBorder(boolean left, boolean isP1) {
         PointContainer tmp;
-        if(isP1) {
+        if (isP1) {
             tmp = p1In3d;
         } else {
             tmp = p2In3d;
         }
 
-        if(left) {
+        if (left) {
             return tmp.n1;
         } else {
             return tmp.n2;
@@ -383,11 +388,11 @@ public class LinearInterpolator implements Spline {
         result.add(getBorder(true, false));
         result.add(getBorder(true, true));
 
-        if(this.leftPavement != null) {
+        if (this.leftPavement != null) {
             result.addAll(leftPavement.getAllBorders());
         }
 
-        if(this.rightPavement != null) {
+        if (this.rightPavement != null) {
             result.addAll(rightPavement.getAllBorders());
         }
 
@@ -402,13 +407,13 @@ public class LinearInterpolator implements Spline {
     //TODO: check back with other groups
     private Direction determineLaneOfPoint(Vec3 p) {
         Vec3 p0 = computePoint(computeT(p));
-        if(p0.x == p.x && p0.y == p.y) {
+        if (p0.x == p.x && p0.y == p.y) {
             return Direction.MIDDLE;
         }
 
-        if(p.x < p0.x) {
+        if (p.x < p0.x) {
             return Direction.LEFT;
-        } else if(p.x == p0.x && p.y > p0.y) {
+        } else if (p.x == p0.x && p.y > p0.y) {
             return Direction.LEFT;
         } else {
             return Direction.RIGHT;
@@ -428,7 +433,7 @@ public class LinearInterpolator implements Spline {
         boolean isDirection = lastResult.isDirection();
         boolean leftPavement = lastResult.isLeftPavement();
 
-        if(isCrossing) {
+        if (isCrossing) {
             return crossStreet(lastResult, distance);
         } else {
             return walkNormal(position, distance, isDirection, leftPavement);
@@ -447,12 +452,12 @@ public class LinearInterpolator implements Spline {
         boolean isOnLeftPavement = lastResult.isLeftPavement();
 
         // Resulting position
-        Vec3 result ;// = position.add(p1In3d.normalVec.normalize().multiply(distance));
+        Vec3 result;// = position.add(p1In3d.normalVec.normalize().multiply(distance));
 
         LinearInterpolator targetPavement;
         Vec3 direction;
 
-        if(isOnLeftPavement) {
+        if (isOnLeftPavement) {
             targetPavement = rightPavement;
             direction = computeDifference(rightPavement.p1In3d.p, p1In3d.p);
         } else {
@@ -468,10 +473,10 @@ public class LinearInterpolator implements Spline {
         double resultingDistance = targetPavement.computeDistanceToMiddle(result);
         double previousDistance = targetPavement.computeDistanceToMiddle(position);
 
-        if(resultingDistance > previousDistance) {
+        if (resultingDistance > previousDistance) {
             // So the distance has increased
 
-            if(!targetPavement.isOnStreet(result)) {
+            if (!targetPavement.isOnStreet(result)) {
                 // He were going beyond the pavement; we should go a little bit back
                 result = result.subtract(p1In3d.normalVec.normalize().multiply(distance * 0.49));
             }
@@ -506,7 +511,7 @@ public class LinearInterpolator implements Spline {
     private PedestrianStreetParameters walkNormal(Vec3 position, double distance, boolean isDirection, boolean onLeftPavement) {
         LinearInterpolator pavement;
 
-        if(onLeftPavement) {
+        if (onLeftPavement) {
             pavement = leftPavement;
         } else {
             pavement = rightPavement;
@@ -518,7 +523,7 @@ public class LinearInterpolator implements Spline {
         double lengthOfPavement = Math.sqrt(getSquaredNorm(pavement.getDifference()));
 
         // Test if we have gone too far ahead
-        if(getDistanceFromInterpolationPoint(isDirection, result) >= lengthOfPavement) {
+        if (getDistanceFromInterpolationPoint(isDirection, result) >= lengthOfPavement) {
             // Too far ahead so turn around
             resultDir = !isDirection;
 
@@ -526,7 +531,7 @@ public class LinearInterpolator implements Spline {
             result = pavement.getPointWithDistance(position, distance, resultDir);
 
             // Test if even this is too far ahead
-            if(getDistanceFromInterpolationPoint(resultDir, result) >= lengthOfPavement) {
+            if (getDistanceFromInterpolationPoint(resultDir, result) >= lengthOfPavement) {
                 // We are even now too far ahead, so go ahead and stay where we are
                 return new PedestrianStreetParameters(false, position, isDirection, onLeftPavement);
             }
@@ -543,7 +548,7 @@ public class LinearInterpolator implements Spline {
      */
     public Vec3 getPointWithDistance(Vec3 p1, double distance, boolean isDirection) {
         Vec3 movement = this.difference.normalize().multiply(distance);
-        if(isDirection) {
+        if (isDirection) {
             return p1.add(movement);
         } else {
             return p1.subtract(movement);
@@ -556,7 +561,7 @@ public class LinearInterpolator implements Spline {
      * @return the distance of p to p1In3d (or p2In3d)
      */
     public double getDistanceFromInterpolationPoint(boolean isP1, Vec3 p) {
-        if(isP1) {
+        if (isP1) {
             return this.p1In3d.p.distance(p);
         } else {
             return this.p2In3d.p.distance(p);
@@ -564,7 +569,7 @@ public class LinearInterpolator implements Spline {
     }
 
     public LinearInterpolator getPavement(boolean isLeft) {
-        if(isLeft) {
+        if (isLeft) {
             return this.leftPavement;
         } else {
             return this.rightPavement;
@@ -575,7 +580,7 @@ public class LinearInterpolator implements Spline {
     public Vec3 spawnCar(boolean rightLane, Vec3 p) {
         Vec3 endPoint;
 
-        if(rightLane) {
+        if (rightLane) {
             endPoint = this.p1In3d.n2;
         } else {
             endPoint = this.p1In3d.n1;

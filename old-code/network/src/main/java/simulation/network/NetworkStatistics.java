@@ -1,6 +1,6 @@
 /**
  * (c) https://github.com/MontiCore/monticore
- *
+ * <p>
  * The license generally applicable for this project
  * can be found under https://github.com/MontiCore/monticore.
  */
@@ -85,8 +85,8 @@ public class NetworkStatistics {
             return;
         }
 
-        double latency = (double)(Duration.between(message.getSimReceiveTime(), message.getSimCreateTime()).toNanos());
-        averageLatencyNsApp = (((double)(receivedMessagesAmountApp) * averageLatencyNsApp + latency) / (double)(receivedMessagesAmountApp + 1L));
+        double latency = (double) (Duration.between(message.getSimReceiveTime(), message.getSimCreateTime()).toNanos());
+        averageLatencyNsApp = (((double) (receivedMessagesAmountApp) * averageLatencyNsApp + latency) / (double) (receivedMessagesAmountApp + 1L));
         receivedMessagesAmountApp++;
     }
 
@@ -123,12 +123,12 @@ public class NetworkStatistics {
             return;
         }
 
-        double dataRateKBits = (double)(message.getPhyDataRateKBits());
-        double applicationMessageSizeBits = (double)(message.getApplicationLengthBits());
-        double messageSize = (double)(message.getMessageLengthBits());
-        averageSizeBitsPhy = (((double)(sentMessagesAmountPhy) * averageSizeBitsPhy + messageSize) / (double)(sentMessagesAmountPhy + 1L));
-        averageSentDataRateKBitsPhy = (((double)(sentMessagesAmountPhy) * averageSentDataRateKBitsPhy + dataRateKBits) / (double)(sentMessagesAmountPhy + 1L));
-        averageSizeBitsApp = (((double)(sentMessagesAmountPhy) * averageSizeBitsApp + applicationMessageSizeBits) / (double)(sentMessagesAmountPhy + 1L));
+        double dataRateKBits = (double) (message.getPhyDataRateKBits());
+        double applicationMessageSizeBits = (double) (message.getApplicationLengthBits());
+        double messageSize = (double) (message.getMessageLengthBits());
+        averageSizeBitsPhy = (((double) (sentMessagesAmountPhy) * averageSizeBitsPhy + messageSize) / (double) (sentMessagesAmountPhy + 1L));
+        averageSentDataRateKBitsPhy = (((double) (sentMessagesAmountPhy) * averageSentDataRateKBitsPhy + dataRateKBits) / (double) (sentMessagesAmountPhy + 1L));
+        averageSizeBitsApp = (((double) (sentMessagesAmountPhy) * averageSizeBitsApp + applicationMessageSizeBits) / (double) (sentMessagesAmountPhy + 1L));
         sentMessagesAmountPhy++;
     }
 

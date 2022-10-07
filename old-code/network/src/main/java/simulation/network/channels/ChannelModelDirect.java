@@ -1,6 +1,6 @@
 /**
  * (c) https://github.com/MontiCore/monticore
- *
+ * <p>
  * The license generally applicable for this project
  * can be found under https://github.com/MontiCore/monticore.
  */
@@ -76,8 +76,8 @@ public class ChannelModelDirect extends NetworkChannelModel {
     public final static double RANGE_INTERFERENCE_FACTOR = 1.3;
 
     /** Channel information: Channel id, center carrier frequency in kHz, channel bandwidth in kHz */
-    private static int[][] channelInfo = new int[][] {
-        {5890000, 10000},
+    private static int[][] channelInfo = new int[][]{
+            {5890000, 10000},
     };
 
     /**
@@ -137,7 +137,7 @@ public class ChannelModelDirect extends NetworkChannelModel {
                 List<Vec3> positionList = Collections.synchronizedList(new LinkedList<>());
 
                 for (int i = 0; i <= MULTI_PATH_ACCURACY; ++i) {
-                    double factor = (double)(i) / (double)(MULTI_PATH_ACCURACY);
+                    double factor = (double) (i) / (double) (MULTI_PATH_ACCURACY);
                     positionList.add(senderPos.add(diffVector.mapMultiply(factor)));
                 }
 
@@ -188,7 +188,7 @@ public class ChannelModelDirect extends NetworkChannelModel {
 
             // Relative velocity needs to be negative if nodes move towards each other
             // It is positive when they move away from each other, put these values in formula
-            double dopplerShiftAbsolute = 1000.0 * channelCarrierKHz * Math.sqrt((1.0 - (relativeVelocity / (double)(NetworkSettings.SPEED_OF_LIGHT))) / (1.0 + (relativeVelocity / (double)(NetworkSettings.SPEED_OF_LIGHT))));
+            double dopplerShiftAbsolute = 1000.0 * channelCarrierKHz * Math.sqrt((1.0 - (relativeVelocity / (double) (NetworkSettings.SPEED_OF_LIGHT))) / (1.0 + (relativeVelocity / (double) (NetworkSettings.SPEED_OF_LIGHT))));
             dopplerShiftAmount = Math.abs(dopplerShiftAbsolute - 1000.0 * channelCarrierKHz);
         }
 
@@ -237,7 +237,7 @@ public class ChannelModelDirect extends NetworkChannelModel {
             NetworkSimulator.getInstance().scheduleEvent(eventReceiveStart);
             NetworkSimulator.getInstance().scheduleEvent(eventReceiveEnd);
 
-        // Otherwise if within interference range, create an interference receive at receiver
+            // Otherwise if within interference range, create an interference receive at receiver
         } else if (distance <= maxInterferenceRange) {
             Instant transmissionReceiveStart = NetworkUtils.simTimeWithDelay(NetworkUtils.calcPropagationTime(sender, otherNode));
             Instant transmissionReceiveEnd = NetworkUtils.simTimeWithDelay(NetworkUtils.calcPropagationTime(sender, otherNode).plus(NetworkUtils.calcTransmissionTime(message)));
@@ -279,5 +279,6 @@ public class ChannelModelDirect extends NetworkChannelModel {
      * Function that is called when the network simulation starts, useful for channel objects initialization
      */
     @Override
-    public void networkSimulationStart() {}
+    public void networkSimulationStart() {
+    }
 }

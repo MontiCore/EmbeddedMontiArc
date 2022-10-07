@@ -1,6 +1,4 @@
-
-
-public class RightBackWheelDistanceToStreetSensor extends AbstractDistanceSensor{
+public class RightBackWheelDistanceToStreetSensor extends AbstractDistanceSensor {
 
     @Override
     protected Double calculateDistance(IPhysicalVehicle physicalVehicle) {

@@ -1,6 +1,6 @@
 /**
  * (c) https://github.com/MontiCore/monticore
- *
+ * <p>
  * The license generally applicable for this project
  * can be found under https://github.com/MontiCore/monticore.
  */
@@ -45,28 +45,28 @@ public class MassPointPhysicalVehicleTest {
     }
 
     @Test
-    public void setHeightNormal(){
+    public void setHeightNormal() {
         MassPointPhysicalVehicle physicalVehicle = new MassPointPhysicalVehicle();
         physicalVehicle.setHeight(1.0);
         Assert.assertEquals(1.0, physicalVehicle.getHeight(), 0);
     }
 
     @Test(expected = IllegalStateException.class)
-    public void setHeightFail(){
-    	MassPointPhysicalVehicleBuilder massPointBuilder = new MassPointPhysicalVehicleBuilder();
-		Vehicle vehicle = createStandardVehicle(massPointBuilder);
+    public void setHeightFail() {
+        MassPointPhysicalVehicleBuilder massPointBuilder = new MassPointPhysicalVehicleBuilder();
+        Vehicle vehicle = createStandardVehicle(massPointBuilder);
         PhysicalVehicle physicalVehicle = vehicle.getPhysicalVehicle();
         physicalVehicle.setHeight(1.0);
     }
 
     @Test
-    public void executeLoopIterationNoFlags(){
+    public void executeLoopIterationNoFlags() {
         EESimulator simulator = new EESimulator(Instant.EPOCH);
         HashMap<BusEntry, List<EEComponent>> targetsByMessageId = new HashMap<>();
 
         // Set up normal vehicle
-    	MassPointPhysicalVehicleBuilder massPointBuilder = new MassPointPhysicalVehicleBuilder();
-		Vehicle vehicle = createStandardVehicle(massPointBuilder);
+        MassPointPhysicalVehicleBuilder massPointBuilder = new MassPointPhysicalVehicleBuilder();
+        Vehicle vehicle = createStandardVehicle(massPointBuilder);
         PhysicalVehicle physicalVehicle = vehicle.getPhysicalVehicle();
 
         // Set values for vehicle actuators
@@ -147,13 +147,13 @@ public class MassPointPhysicalVehicleTest {
     }
 
     @Test
-    public void executeLoopIterationCollisionFlag(){
+    public void executeLoopIterationCollisionFlag() {
         EESimulator simulator = new EESimulator(Instant.EPOCH);
         HashMap<BusEntry, List<EEComponent>> targetsByMessageId = new HashMap<>();
 
         // Set up vehicle with collision
-    	MassPointPhysicalVehicleBuilder massPointBuilder = new MassPointPhysicalVehicleBuilder();
-		Vehicle vehicle = createStandardVehicle(massPointBuilder);
+        MassPointPhysicalVehicleBuilder massPointBuilder = new MassPointPhysicalVehicleBuilder();
+        Vehicle vehicle = createStandardVehicle(massPointBuilder);
         PhysicalVehicle physicalVehicle = vehicle.getPhysicalVehicle();
         physicalVehicle.setCollision(true);
 
@@ -208,10 +208,10 @@ public class MassPointPhysicalVehicleTest {
     }
 
     @Test
-    public void executeLoopIterationErrorFlag(){
+    public void executeLoopIterationErrorFlag() {
         // Set up vehicle with an error
-    	MassPointPhysicalVehicleBuilder massPointBuilder = new MassPointPhysicalVehicleBuilder();
-		Vehicle vehicle = createStandardVehicle(massPointBuilder);
+        MassPointPhysicalVehicleBuilder massPointBuilder = new MassPointPhysicalVehicleBuilder();
+        Vehicle vehicle = createStandardVehicle(massPointBuilder);
         PhysicalVehicle physicalVehicle = vehicle.getPhysicalVehicle();
         physicalVehicle.setError(true);
 
@@ -258,9 +258,9 @@ public class MassPointPhysicalVehicleTest {
     }
 
     @Test
-    public void setPositionNormal(){
-    	MassPointPhysicalVehicleBuilder massPointBuilder = new MassPointPhysicalVehicleBuilder();
-		Vehicle vehicle = createStandardVehicle(massPointBuilder);
+    public void setPositionNormal() {
+        MassPointPhysicalVehicleBuilder massPointBuilder = new MassPointPhysicalVehicleBuilder();
+        Vehicle vehicle = createStandardVehicle(massPointBuilder);
         PhysicalVehicle physicalVehicle = vehicle.getPhysicalVehicle();
 
         Vec3 position = new Vec3(new double[]{1.0, 2.0, 3.0});
@@ -270,15 +270,15 @@ public class MassPointPhysicalVehicleTest {
     }
 
     @Test(expected = IllegalStateException.class)
-    public void setPositionFail(){
+    public void setPositionFail() {
         MassPointPhysicalVehicle physicalVehicle = new MassPointPhysicalVehicle();
         physicalVehicle.setPosition(new Vec3(new double[]{1.0, 2.0, 3.0}));
     }
 
     @Test
-    public void setRotationNormal(){
-    	MassPointPhysicalVehicleBuilder massPointBuilder = new MassPointPhysicalVehicleBuilder();
-		Vehicle vehicle = createStandardVehicle(massPointBuilder);
+    public void setRotationNormal() {
+        MassPointPhysicalVehicleBuilder massPointBuilder = new MassPointPhysicalVehicleBuilder();
+        Vehicle vehicle = createStandardVehicle(massPointBuilder);
         PhysicalVehicle physicalVehicle = vehicle.getPhysicalVehicle();
 
         Rotation rot = new Rotation(RotationOrder.XYZ, RotationConvention.VECTOR_OPERATOR, 1.0, 2.0, 3.0);
@@ -289,7 +289,7 @@ public class MassPointPhysicalVehicleTest {
     }
 
     @Test(expected = IllegalStateException.class)
-    public void setRotationFail(){
+    public void setRotationFail() {
         MassPointPhysicalVehicle physicalVehicle = new MassPointPhysicalVehicle();
         Rotation rot = new Rotation(RotationOrder.XYZ, RotationConvention.VECTOR_OPERATOR, 1.0, 2.0, 3.0);
         RealMatrix rotation = new BlockRealMatrix(rot.getMatrix());
@@ -297,7 +297,7 @@ public class MassPointPhysicalVehicleTest {
     }
 
     @Test
-    public void setVelocityUninitialised(){
+    public void setVelocityUninitialised() {
         MassPointPhysicalVehicle physicalVehicle = new MassPointPhysicalVehicle();
         Vec3 velocity = new Vec3(new double[]{1.0, 2.0, 3.0});
         physicalVehicle.setVelocity(velocity);
@@ -306,15 +306,15 @@ public class MassPointPhysicalVehicleTest {
     }
 
     @Test(expected = IllegalStateException.class)
-    public void setVelocityInitialised(){
-    	MassPointPhysicalVehicleBuilder massPointBuilder = new MassPointPhysicalVehicleBuilder();
-		Vehicle vehicle = createStandardVehicle(massPointBuilder);
+    public void setVelocityInitialised() {
+        MassPointPhysicalVehicleBuilder massPointBuilder = new MassPointPhysicalVehicleBuilder();
+        Vehicle vehicle = createStandardVehicle(massPointBuilder);
         PhysicalVehicle physicalVehicle = vehicle.getPhysicalVehicle();
         physicalVehicle.setVelocity(new Vec3(new double[]{1.0, 2.0, 3.0}));
     }
 
     @Test
-    public void setAngularVelocityUninitialized(){
+    public void setAngularVelocityUninitialized() {
         MassPointPhysicalVehicle physicalVehicle = new MassPointPhysicalVehicle();
         Vec3 angularVelocity = new Vec3(new double[]{1.0, 2.0, 3.0});
         physicalVehicle.setAngularVelocity(angularVelocity);
@@ -323,15 +323,15 @@ public class MassPointPhysicalVehicleTest {
     }
 
     @Test(expected = IllegalStateException.class)
-    public void setAngularVelocityInitialized(){
-		MassPointPhysicalVehicleBuilder massPointBuilder = new MassPointPhysicalVehicleBuilder();
-		Vehicle vehicle = createStandardVehicle(massPointBuilder);
+    public void setAngularVelocityInitialized() {
+        MassPointPhysicalVehicleBuilder massPointBuilder = new MassPointPhysicalVehicleBuilder();
+        Vehicle vehicle = createStandardVehicle(massPointBuilder);
         PhysicalVehicle physicalVehicle = vehicle.getPhysicalVehicle();
         physicalVehicle.setAngularVelocity(new Vec3(new double[]{1.0, 2.0, 3.0}));
     }
 
     @Test
-    public void setMassNormal(){
+    public void setMassNormal() {
         MassPointPhysicalVehicle physicalVehicle = new MassPointPhysicalVehicle();
         physicalVehicle.setMass(1000.0);
         Assert.assertEquals(1000.0, physicalVehicle.getMass(), 0);
@@ -339,16 +339,16 @@ public class MassPointPhysicalVehicleTest {
 
     @Test(expected = IllegalStateException.class)
     public void setMassFail() {
-		MassPointPhysicalVehicleBuilder massPointBuilder = new MassPointPhysicalVehicleBuilder();
-		Vehicle vehicle = createStandardVehicle(massPointBuilder);
+        MassPointPhysicalVehicleBuilder massPointBuilder = new MassPointPhysicalVehicleBuilder();
+        Vehicle vehicle = createStandardVehicle(massPointBuilder);
         PhysicalVehicle physicalVehicle = vehicle.getPhysicalVehicle();
         physicalVehicle.setMass(1000.0);
     }
 
     @Test
-    public void setGeometryPositionNormal(){
-		MassPointPhysicalVehicleBuilder massPointBuilder = new MassPointPhysicalVehicleBuilder();
-		Vehicle vehicle = createStandardVehicle(massPointBuilder);
+    public void setGeometryPositionNormal() {
+        MassPointPhysicalVehicleBuilder massPointBuilder = new MassPointPhysicalVehicleBuilder();
+        Vehicle vehicle = createStandardVehicle(massPointBuilder);
         PhysicalVehicle physicalVehicle = vehicle.getPhysicalVehicle();
         Vec3 geometryPosition = new Vec3(new double[]{1.0, 2.0, 3.0});
         physicalVehicle.setGeometryPosition(geometryPosition);
@@ -357,29 +357,29 @@ public class MassPointPhysicalVehicleTest {
     }
 
     @Test(expected = IllegalStateException.class)
-    public void setPositionGeometryFail(){
+    public void setPositionGeometryFail() {
         MassPointPhysicalVehicle physicalVehicle = new MassPointPhysicalVehicle();
         physicalVehicle.setGeometryPosition(new Vec3(new double[]{1.0, 2.0, 3.0}));
     }
 
     @Test(expected = UnsupportedOperationException.class)
-    public void setGeometryPositionOffsetFail(){
-		MassPointPhysicalVehicleBuilder massPointBuilder = new MassPointPhysicalVehicleBuilder();
-		Vehicle vehicle = createStandardVehicle(massPointBuilder);
+    public void setGeometryPositionOffsetFail() {
+        MassPointPhysicalVehicleBuilder massPointBuilder = new MassPointPhysicalVehicleBuilder();
+        Vehicle vehicle = createStandardVehicle(massPointBuilder);
         PhysicalVehicle physicalVehicle = vehicle.getPhysicalVehicle();
         physicalVehicle.setGeometryPositionOffset(new Vec3(3));
     }
 
     @Test(expected = IllegalStateException.class)
-    public void computePhysicsFail(){
+    public void computePhysicsFail() {
         MassPointPhysicalVehicle physicalVehicle = new MassPointPhysicalVehicle();
         physicalVehicle.computePhysics(Duration.ofMillis(33));
     }
 
     @Test(expected = IllegalStateException.class)
-    public void initPhysicsFail(){
-		MassPointPhysicalVehicleBuilder massPointBuilder = new MassPointPhysicalVehicleBuilder();
-		Vehicle vehicle = createStandardVehicle(massPointBuilder);
+    public void initPhysicsFail() {
+        MassPointPhysicalVehicleBuilder massPointBuilder = new MassPointPhysicalVehicleBuilder();
+        Vehicle vehicle = createStandardVehicle(massPointBuilder);
         PhysicalVehicle physicalVehicle = vehicle.getPhysicalVehicle();
         physicalVehicle.initPhysics();
     }
@@ -392,7 +392,7 @@ public class MassPointPhysicalVehicleTest {
         // Create a new vehicle with a velocity
         MassPointPhysicalVehicleBuilder physicalVehicleBuilder = new MassPointPhysicalVehicleBuilder();
         physicalVehicleBuilder.setVelocity(new Vec3(new double[]{0.0, 14.0, 0.0}));
-		Vehicle vehicle = createStandardVehicle(physicalVehicleBuilder);
+        Vehicle vehicle = createStandardVehicle(physicalVehicleBuilder);
         PhysicalVehicle physicalVehicle = vehicle.getPhysicalVehicle();
 
         // Put physical vehicle on the surface
@@ -421,9 +421,9 @@ public class MassPointPhysicalVehicleTest {
      */
     @Test
     public void testNoDriveIfNoAcceleration() {
-    	// Create a new vehicle
-		MassPointPhysicalVehicleBuilder massPointBuilder = new MassPointPhysicalVehicleBuilder();
-		Vehicle vehicle = createStandardVehicle(massPointBuilder);
+        // Create a new vehicle
+        MassPointPhysicalVehicleBuilder massPointBuilder = new MassPointPhysicalVehicleBuilder();
+        Vehicle vehicle = createStandardVehicle(massPointBuilder);
         PhysicalVehicle physicalVehicle = vehicle.getPhysicalVehicle();
 
         // Add physicalVehicle to simulation
@@ -450,7 +450,7 @@ public class MassPointPhysicalVehicleTest {
         // Create a new vehicle with a velocity
         MassPointPhysicalVehicleBuilder physicalVehicleBuilder = new MassPointPhysicalVehicleBuilder();
         physicalVehicleBuilder.setVelocity(new Vec3(new double[]{0.0, 0.01, 0.0}));
-		Vehicle vehicle = createStandardVehicle(physicalVehicleBuilder);
+        Vehicle vehicle = createStandardVehicle(physicalVehicleBuilder);
         PhysicalVehicle physicalVehicle = vehicle.getPhysicalVehicle();
 
         // Add physicalVehicle to simulation
@@ -465,16 +465,16 @@ public class MassPointPhysicalVehicleTest {
 
     //TODO: Test if the rotation matrix stays orthogonal
 
-    private void mockSimulation(PhysicalVehicle physicalVehicle, long simulationLength, long stepSize){
+    private void mockSimulation(PhysicalVehicle physicalVehicle, long simulationLength, long stepSize) {
         long currentTime = 0;
-        while(currentTime < simulationLength) {
+        while (currentTime < simulationLength) {
             physicalVehicle.computePhysics(Duration.ofMillis(stepSize));
             updateActuators(physicalVehicle, stepSize);
             currentTime = currentTime + stepSize;
         }
     }
 
-    private void updateActuators(PhysicalVehicle physicalVehicle, long timeDiffMs){
+    private void updateActuators(PhysicalVehicle physicalVehicle, long timeDiffMs) {
         physicalVehicle.getVehicleActuator(VehicleActuatorType.VEHICLE_ACTUATOR_TYPE_STEERING).update(Instant.EPOCH.plusMillis(timeDiffMs));
         physicalVehicle.getVehicleActuator(VehicleActuatorType.VEHICLE_ACTUATOR_TYPE_BRAKES_FRONT_LEFT).update(Instant.EPOCH.plusMillis(timeDiffMs));
         physicalVehicle.getVehicleActuator(VehicleActuatorType.VEHICLE_ACTUATOR_TYPE_BRAKES_FRONT_RIGHT).update(Instant.EPOCH.plusMillis(timeDiffMs));
@@ -484,10 +484,10 @@ public class MassPointPhysicalVehicleTest {
     }
 
     private Vehicle createStandardVehicle(PhysicalVehicleBuilder physicalVehicleBuilder) {
-    	EESimulator eeSimulator = new EESimulator(Instant.EPOCH);
-		EEVehicleBuilder eeVehicleBuilder = new EEVehicleBuilder(eeSimulator);
-		InstantBus bus = new InstantBus(eeSimulator);
-		eeVehicleBuilder.createAllSensorsNActuators(bus);
-		return new Vehicle(physicalVehicleBuilder, eeVehicleBuilder);
+        EESimulator eeSimulator = new EESimulator(Instant.EPOCH);
+        EEVehicleBuilder eeVehicleBuilder = new EEVehicleBuilder(eeSimulator);
+        InstantBus bus = new InstantBus(eeSimulator);
+        eeVehicleBuilder.createAllSensorsNActuators(bus);
+        return new Vehicle(physicalVehicleBuilder, eeVehicleBuilder);
     }
 }

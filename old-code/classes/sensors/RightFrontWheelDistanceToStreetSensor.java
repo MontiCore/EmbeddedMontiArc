@@ -1,6 +1,4 @@
-
-
-public class RightFrontWheelDistanceToStreetSensor extends AbstractDistanceSensor{
+public class RightFrontWheelDistanceToStreetSensor extends AbstractDistanceSensor {
     @Override
     protected Double calculateDistance(IPhysicalVehicle physicalVehicle) {
         World world = WorldModel.getInstance();

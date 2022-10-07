@@ -15,9 +15,9 @@ import de.rwth.montisim.commons.utils.*;
 /**
  * This class is a JPanel that allows navigating a 2D view.
  * Multiple 2D views can be overlaid. They share a common coordinate system.
- * Use the scroll wheel to zoom in and out. 
+ * Use the scroll wheel to zoom in and out.
  * Hold the middle mouse button to move the map around.
- * 
+ * <p>
  * Possible 2D views:
  * - Map
  * - CarVis
@@ -83,28 +83,29 @@ public class Viewer2D extends JPanel implements MouseInputListener, MouseWheelLi
             screenCenter = zoneCenter;
         }
 
-        if (dirty){
+        if (dirty) {
             viewMatrix = computeViewMatrix();
             invViewMatrix = computeInvViewMatrix();
         }
         //Iterator<Renderer> iter = renderers.iterator();
         List<Renderer> copy = new ArrayList<>(renderers);
-        for (Renderer r : copy){
-        //while(iter.hasNext()){
-            if(renderers.contains(r)){
-            if (dirty || r.dirty){
-                r.computeGeometry(viewMatrix);
-                r.dirty = false;
+        for (Renderer r : copy) {
+            //while(iter.hasNext()){
+            if (renderers.contains(r)) {
+                if (dirty || r.dirty) {
+                    r.computeGeometry(viewMatrix);
+                    r.dirty = false;
+                }
+                r.draw(g2);
+            } else {
+                return;
             }
-            r.draw(g2);
-            }
-            else{return;}
         }
 
         if (dirty) dirty = false;
 
         renderInfoText(g);
-        
+
         // if (a != null){
         //     a.paintIcon(this, g, 100, 100);
         // }
@@ -129,11 +130,11 @@ public class Viewer2D extends JPanel implements MouseInputListener, MouseWheelLi
             lines.add(" ");
         }
 
-        for (Renderer r : renderers){
+        for (Renderer r : renderers) {
             List<String> l = r.getInfo();
             if (l != null) {
                 lines.add(" ");
-                for(String s : l) lines.add(s);
+                for (String s : l) lines.add(s);
             }
         }
 
@@ -141,9 +142,9 @@ public class Viewer2D extends JPanel implements MouseInputListener, MouseWheelLi
         if (hover) {
             Vec2 wp = getWorldPos(mousePos);
             lines.add("x: " + format.format(wp.x) + " y: " + format.format(wp.y));
-            for (Renderer r : renderers){
+            for (Renderer r : renderers) {
                 String[] l = r.getHoverInfo(wp);
-                if (l != null) for(String s : l) lines.add(s);
+                if (l != null) for (String s : l) lines.add(s);
             }
         }
 
@@ -152,8 +153,8 @@ public class Viewer2D extends JPanel implements MouseInputListener, MouseWheelLi
         FontMetrics metrics = g.getFontMetrics(g.getFont());
         int lineCount = 0;
         int maxWidth = 0;
-        for (String s : lines){
-            if (s.length() > 0){
+        for (String s : lines) {
+            if (s.length() > 0) {
                 lineCount++;
                 int width = metrics.stringWidth(s);
                 if (width > maxWidth) maxWidth = width;
@@ -163,22 +164,23 @@ public class Viewer2D extends JPanel implements MouseInputListener, MouseWheelLi
         // Render
         final int offset = g.getFont().getSize() + UIInfo.LINE_SPACE;
         g.setColor(UIInfo.PANEL_COLOR);
-        g.fillRect(0, 0, maxWidth+(2*UIInfo.MARGIN), lineCount*offset+UIInfo.MARGIN);
+        g.fillRect(0, 0, maxWidth + (2 * UIInfo.MARGIN), lineCount * offset + UIInfo.MARGIN);
         g.setColor(UIInfo.TEXT_COLOR);
 
         int index = 1;
-        for (String s : lines){
+        for (String s : lines) {
             if (s.length() == 0) continue;
-            g.drawString(s, UIInfo.MARGIN, offset*index);
+            g.drawString(s, UIInfo.MARGIN, offset * index);
             index++;
         }
     }
 
 
-    public void addRenderer(Renderer r){
+    public void addRenderer(Renderer r) {
         this.renderers.add(r);
         r.dirty = true;
     }
+
     public void clearRenderers() {
         Renderer grid = renderers.get(0);
         renderers.clear();
@@ -212,15 +214,19 @@ public class Viewer2D extends JPanel implements MouseInputListener, MouseWheelLi
         dirty = true;
     }
 
-    /** Sets the number of pixels per meter. */
+    /**
+     * Sets the number of pixels per meter.
+     */
     public void setZoom(double newScale) {
         // Get nearest scroll count
-        scrollCount = (int) Math.round(Math.log(newScale)/Math.log(UIInfo.SCROLL_FACTOR));
+        scrollCount = (int) Math.round(Math.log(newScale) / Math.log(UIInfo.SCROLL_FACTOR));
         scale = Math.pow(UIInfo.SCROLL_FACTOR, scrollCount);
         dirty = true;
     }
 
-    /** Sets the World coordinates that should be at the center of the screen. */
+    /**
+     * Sets the World coordinates that should be at the center of the screen.
+     */
     public void setCenter(Vec2 center) {
         this.center.set(center);
         dirty = true;
@@ -267,19 +273,19 @@ public class Viewer2D extends JPanel implements MouseInputListener, MouseWheelLi
         if (e.isPopupTrigger()) {
             Vec2 wp = getWorldPos(new Vec2(e.getX(), e.getY()));
             List<JMenuItem> items = new ArrayList<>();
-            
-            if (copyPos){
+
+            if (copyPos) {
                 String pos = format.format(wp.x) + ", " + format.format(wp.y);
                 items.add(new CopyMenuItem("Copy position ", pos, true));
             }
-            for (Renderer r : renderers){
+            for (Renderer r : renderers) {
                 JMenuItem[] l = r.getClicMenuItem(wp);
-                if (l != null) for(JMenuItem s : l) items.add(s);
+                if (l != null) for (JMenuItem s : l) items.add(s);
             }
-            
-            if (items.size() > 0){
+
+            if (items.size() > 0) {
                 JPopupMenu menu = new JPopupMenu();
-                for (JMenuItem i : items){
+                for (JMenuItem i : items) {
                     menu.add(i);
                 }
                 menu.show(e.getComponent(), e.getX(), e.getY());
@@ -290,7 +296,7 @@ public class Viewer2D extends JPanel implements MouseInputListener, MouseWheelLi
         }
     }
 
-    public void update(){
+    public void update() {
         repaint();
         revalidate();
     }
@@ -331,7 +337,7 @@ public class Viewer2D extends JPanel implements MouseInputListener, MouseWheelLi
     }
 
 
-    public void setDirty(){
+    public void setDirty() {
         this.dirty = true;
     }
 

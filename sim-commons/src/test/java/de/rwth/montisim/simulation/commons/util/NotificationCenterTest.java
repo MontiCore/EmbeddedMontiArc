@@ -2,6 +2,7 @@
 package de.rwth.montisim.simulation.commons.util;
 
 import org.junit.*;
+
 import static org.junit.Assert.assertTrue;
 
 /**
@@ -21,7 +22,7 @@ public class NotificationCenterTest {
 
     @Ignore
     @Test
-    public void postNotificationWithContext () {
+    public void postNotificationWithContext() {
         TestReceiver rec = new TestReceiver();
         NotificationCenter.getSharedInstance().registerListener("Test", rec::receiveMsg, rec);
 
@@ -29,7 +30,7 @@ public class NotificationCenterTest {
         NotificationCenter.getSharedInstance().postNotification("Test", NotificationCenter.getSharedInstance());
         assertTrue(rec.lastNotificationContext == System.identityHashCode(NotificationCenter.getSharedInstance()));
     }
-    
+
     @Ignore
     @Test
     public void postNotificationToObject() {

@@ -1,6 +1,6 @@
 /**
  * (c) https://github.com/MontiCore/monticore
- *
+ * <p>
  * The license generally applicable for this project
  * can be found under https://github.com/MontiCore/monticore.
  */
@@ -35,34 +35,34 @@ import static simulation.vehicle.VehicleActuatorType.VEHICLE_ACTUATOR_TYPE_STEER
  */
 public class ModelicaPhysicalVehicle extends PhysicalVehicle {
 
-	/** Variables for the IPhysicalVehicle interface */
-	
+    /** Variables for the IPhysicalVehicle interface */
+
     /** Position vector of the center of mass */
-	protected Vec3 position;
+    protected Vec3 position;
 
-	/** Rotation matrix around the center of mass */
-	protected RealMatrix rotation;
+    /** Rotation matrix around the center of mass */
+    protected RealMatrix rotation;
 
-	/** Force vector acting on the center of mass */
-	private Vec3 force;
+    /** Force vector acting on the center of mass */
+    private Vec3 force;
 
-	/**
-	 * Vector pointing from the center of mass position to the center of geometry
-	 * position in the local coordinate system
-	 */
-	private Vec3 geometryPositionOffset;
+    /**
+     * Vector pointing from the center of mass position to the center of geometry
+     * position in the local coordinate system
+     */
+    private Vec3 geometryPositionOffset;
 
-	/** Current rotation around the local z axis */
-	private double yawAngle;
+    /** Current rotation around the local z axis */
+    private double yawAngle;
 
-	private double old_sw_angle = 0.0;
+    private double old_sw_angle = 0.0;
 
-	/** VehicleDynamicsModel used for modelica physics */
-	private VehicleDynamicsModel vehicleDynamicsModel;
+    /** VehicleDynamicsModel used for modelica physics */
+    private VehicleDynamicsModel vehicleDynamicsModel;
 
-	/** Coordinate system rotation */
-	public static final RealMatrix coordinateRotation = new BlockRealMatrix(
-			new Rotation(RotationOrder.XYZ, RotationConvention.VECTOR_OPERATOR, 0.0, 0.0, Math.PI / 2).getMatrix());
+    /** Coordinate system rotation */
+    public static final RealMatrix coordinateRotation = new BlockRealMatrix(
+            new Rotation(RotationOrder.XYZ, RotationConvention.VECTOR_OPERATOR, 0.0, 0.0, Math.PI / 2).getMatrix());
 
 
     /** Actuators of vehicle */
@@ -71,367 +71,367 @@ public class ModelicaPhysicalVehicle extends PhysicalVehicle {
     private VehicleActuator brakes;
     private VehicleActuator throttle;
 
-	/**
-	 * Constructor for an uninitialised physical vehicle
-	 */
-	public ModelicaPhysicalVehicle() {
-		super();
+    /**
+     * Constructor for an uninitialised physical vehicle
+     */
+    public ModelicaPhysicalVehicle() {
+        super();
 
-		// Before initialisation
-		// the center of mass position is at the origin
-		// no rotation
-		// the center of geometry position is at the origin
-		this.position = new Vec3(new double[] { 0.0, 0.0, 0.0 });
-		this.rotation = coordinateRotation.copy();
-		this.geometryPositionOffset = new Vec3(new double[] { 0.0, 0.0, 0.0 });
-	}
+        // Before initialisation
+        // the center of mass position is at the origin
+        // no rotation
+        // the center of geometry position is at the origin
+        this.position = new Vec3(new double[]{0.0, 0.0, 0.0});
+        this.rotation = coordinateRotation.copy();
+        this.geometryPositionOffset = new Vec3(new double[]{0.0, 0.0, 0.0});
+    }
 
-	/**
-	 * Function that returns a copy of the center of mass position vector
-	 *
-	 * @return Position vector of the center of mass
-	 */
-	@Override
-	public Vec3 getPosition() {
-		return position.copy();
-	}
+    /**
+     * Function that returns a copy of the center of mass position vector
+     *
+     * @return Position vector of the center of mass
+     */
+    @Override
+    public Vec3 getPosition() {
+        return position.copy();
+    }
 
-	/**
-	 * Function that sets the center of mass position vector
-	 *
-	 * @param position New position vector of the center of mass
-	 */
-	@Override
-	public void setPosition(Vec3 position) {
-		if (!physicalVehicleInitialised) {
-			throw new IllegalStateException("Position can only be set after initialisation.");
-		}
-		this.position = position.copy();
-	}
+    /**
+     * Function that sets the center of mass position vector
+     *
+     * @param position New position vector of the center of mass
+     */
+    @Override
+    public void setPosition(Vec3 position) {
+        if (!physicalVehicleInitialised) {
+            throw new IllegalStateException("Position can only be set after initialisation.");
+        }
+        this.position = position.copy();
+    }
 
-	/**
-	 * Function that returns a copy of the rotation matrix around the center of mass
-	 *
-	 * @return Rotation matrix around the center of mass
-	 */
-	@Override
-	public RealMatrix getRotation() {
-		return coordinateRotation.transpose().multiply(this.rotation);
-	}
+    /**
+     * Function that returns a copy of the rotation matrix around the center of mass
+     *
+     * @return Rotation matrix around the center of mass
+     */
+    @Override
+    public RealMatrix getRotation() {
+        return coordinateRotation.transpose().multiply(this.rotation);
+    }
 
-	/**
-	 * Function that sets the rotation matrix around the center of mass
-	 *
-	 * @param rotation New rotation matrix around the center of mass
-	 */
-	@Override
-	public void setRotation(RealMatrix rotation) {
-		if (!physicalVehicleInitialised) {
-			throw new IllegalStateException("Rotation can only be set after initialisation.");
-		}
-		this.rotation = coordinateRotation.multiply(rotation.copy());
-		// Get angles to set yaw_angle
-		Rotation rot = new Rotation(rotation.getData(), 0.00000001);
-		double[] angles = rot.getAngles(RotationOrder.XYZ, RotationConvention.VECTOR_OPERATOR);
-		yawAngle = angles[2] - Math.PI / 2;
-	}
+    /**
+     * Function that sets the rotation matrix around the center of mass
+     *
+     * @param rotation New rotation matrix around the center of mass
+     */
+    @Override
+    public void setRotation(RealMatrix rotation) {
+        if (!physicalVehicleInitialised) {
+            throw new IllegalStateException("Rotation can only be set after initialisation.");
+        }
+        this.rotation = coordinateRotation.multiply(rotation.copy());
+        // Get angles to set yaw_angle
+        Rotation rot = new Rotation(rotation.getData(), 0.00000001);
+        double[] angles = rot.getAngles(RotationOrder.XYZ, RotationConvention.VECTOR_OPERATOR);
+        yawAngle = angles[2] - Math.PI / 2;
+    }
 
-	/**
-	 * Function that returns a copy of the velocity vector of the center of mass
-	 *
-	 * @return Velocity vector of the center of mass
-	 */
-	@Override
-	public Vec3 getVelocity() {
-		// Get current velocity
-		Vec3 localVelocity = new Vec3(new double[] { vehicleDynamicsModel.getValue("v_x"),
-				vehicleDynamicsModel.getValue("v_y"), vehicleDynamicsModel.getValue("v_z") });
-		// Return in global coordinates
-		return rotation.operate(localVelocity);
-	}
+    /**
+     * Function that returns a copy of the velocity vector of the center of mass
+     *
+     * @return Velocity vector of the center of mass
+     */
+    @Override
+    public Vec3 getVelocity() {
+        // Get current velocity
+        Vec3 localVelocity = new Vec3(new double[]{vehicleDynamicsModel.getValue("v_x"),
+                vehicleDynamicsModel.getValue("v_y"), vehicleDynamicsModel.getValue("v_z")});
+        // Return in global coordinates
+        return rotation.operate(localVelocity);
+    }
 
-	/**
-	 * Function that sets the velocity vector of the center of mass
-	 *
-	 * @param velocity New velocity vector of the center of mass
-	 */
-	@Override
-	public void setVelocity(Vec3 velocity) {
-		if (physicalVehicleInitialised) {
-			throw new IllegalStateException("Velocity can only be set before initialisation.");
-		}
+    /**
+     * Function that sets the velocity vector of the center of mass
+     *
+     * @param velocity New velocity vector of the center of mass
+     */
+    @Override
+    public void setVelocity(Vec3 velocity) {
+        if (physicalVehicleInitialised) {
+            throw new IllegalStateException("Velocity can only be set before initialisation.");
+        }
         throw new UnsupportedOperationException("Setting the velocity before initialisation is done by the builder.");
-	}
+    }
 
-	/**
-	 * Function that returns a copy of the angular velocity vector around the center
-	 * of mass
-	 *
-	 * @return Angular velocity vector around the center of mass
-	 */
-	@Override
-	public Vec3 getAngularVelocity() {
-		// Get current angular velocity
-		Vec3 localAngularVelocity = new Vec3(
-				new double[] { 0.0, 0.0, vehicleDynamicsModel.getValue("omega_z") });
-		// Return in global coordinates
-		return rotation.operate(localAngularVelocity);
-	}
+    /**
+     * Function that returns a copy of the angular velocity vector around the center
+     * of mass
+     *
+     * @return Angular velocity vector around the center of mass
+     */
+    @Override
+    public Vec3 getAngularVelocity() {
+        // Get current angular velocity
+        Vec3 localAngularVelocity = new Vec3(
+                new double[]{0.0, 0.0, vehicleDynamicsModel.getValue("omega_z")});
+        // Return in global coordinates
+        return rotation.operate(localAngularVelocity);
+    }
 
-	/**
-	 * Function that sets the angular velocity vector around the center of mass
-	 *
-	 * @param angularVelocity New angular velocity around of the center of mass
-	 */
-	@Override
-	public void setAngularVelocity(Vec3 angularVelocity) {
-		if (physicalVehicleInitialised) {
-			throw new IllegalStateException("Angular velocity can only be set before initialisation.");
-		}
-		getVDM().setParameter("omega_z_0", angularVelocity.getEntry(2));
-	}
+    /**
+     * Function that sets the angular velocity vector around the center of mass
+     *
+     * @param angularVelocity New angular velocity around of the center of mass
+     */
+    @Override
+    public void setAngularVelocity(Vec3 angularVelocity) {
+        if (physicalVehicleInitialised) {
+            throw new IllegalStateException("Angular velocity can only be set before initialisation.");
+        }
+        getVDM().setParameter("omega_z_0", angularVelocity.getEntry(2));
+    }
 
-	/**
-	 * Function that adds an external force acting on the center of mass
-	 *
-	 * @param force Force vector that acts on the center of mass
-	 */
-	@Override
-	public void addForce(Vec3 force) {
-		this.force = this.force.add(force);
-	}
+    /**
+     * Function that adds an external force acting on the center of mass
+     *
+     * @param force Force vector that acts on the center of mass
+     */
+    @Override
+    public void addForce(Vec3 force) {
+        this.force = this.force.add(force);
+    }
 
-	/**
-	 * Function that add an external torque acting around the center of mass
-	 *
-	 * @param torque Torque vector that acts around the center of mass
-	 */
-	public void addTorque(Vec3 torque) {
-		// TODO: Expand the model to accept external torques
-		throw new UnsupportedOperationException("External torques are currently not supported.");
-	}
+    /**
+     * Function that add an external torque acting around the center of mass
+     *
+     * @param torque Torque vector that acts around the center of mass
+     */
+    public void addTorque(Vec3 torque) {
+        // TODO: Expand the model to accept external torques
+        throw new UnsupportedOperationException("External torques are currently not supported.");
+    }
 
-	/**
-	 * Function that returns the mass of the vehicle
-	 *
-	 * @return Mass of the vehicle
-	 */
-	@Override
-	public double getMass() {
-		if (!physicalVehicleInitialised) {
-			throw new IllegalStateException("Mass can only be read after initialisation.");
-		}
-		return this.getVDM().getValue("m");
-	}
+    /**
+     * Function that returns the mass of the vehicle
+     *
+     * @return Mass of the vehicle
+     */
+    @Override
+    public double getMass() {
+        if (!physicalVehicleInitialised) {
+            throw new IllegalStateException("Mass can only be read after initialisation.");
+        }
+        return this.getVDM().getValue("m");
+    }
 
-	/**
-	 * Function that sets the mass of the vehicle
-	 *
-	 * @param mass New mass of the vehicle
-	 */
-	@Override
-	public void setMass(double mass) {
-		if (physicalVehicleInitialised) {
-			throw new IllegalStateException("Mass can only be set before initialisation.");
-		}
-		this.getVDM().setParameter("m", mass);
-	}
+    /**
+     * Function that sets the mass of the vehicle
+     *
+     * @param mass New mass of the vehicle
+     */
+    @Override
+    public void setMass(double mass) {
+        if (physicalVehicleInitialised) {
+            throw new IllegalStateException("Mass can only be set before initialisation.");
+        }
+        this.getVDM().setParameter("m", mass);
+    }
 
-	/**
-	 * Function that returns the wheel radius of the vehicle
-	 *
-	 * @return Wheel radius of the vehicle
-	 */
-	@Override
-	public double getWheelRadius() {
-		if (!physicalVehicleInitialised) {
-			throw new IllegalStateException("Wheel radius can only be read after initialisation.");
-		}
-		return this.getVDM().getValue("r_nom");
-	}
+    /**
+     * Function that returns the wheel radius of the vehicle
+     *
+     * @return Wheel radius of the vehicle
+     */
+    @Override
+    public double getWheelRadius() {
+        if (!physicalVehicleInitialised) {
+            throw new IllegalStateException("Wheel radius can only be read after initialisation.");
+        }
+        return this.getVDM().getValue("r_nom");
+    }
 
-	/**
-	 * Function that sets the wheel radius of the vehicle
-	 *
-	 * @param wheelRadius New wheel radius of the vehicle
-	 */
-	@Override
-	public void setWheelRadius(double wheelRadius) {
-		if (physicalVehicleInitialised) {
-			throw new IllegalStateException("Wheel radius can only be set before initialisation.");
-		}
-		this.getVDM().setParameter("r_nom", wheelRadius);
-	}
+    /**
+     * Function that sets the wheel radius of the vehicle
+     *
+     * @param wheelRadius New wheel radius of the vehicle
+     */
+    @Override
+    public void setWheelRadius(double wheelRadius) {
+        if (physicalVehicleInitialised) {
+            throw new IllegalStateException("Wheel radius can only be set before initialisation.");
+        }
+        this.getVDM().setParameter("r_nom", wheelRadius);
+    }
 
-	/**
-	 * Function that returns the distance between left and right wheels of the front
-	 * axel of the vehicle
-	 *
-	 * @return Distance between left and right wheels of the front axel of the
-	 *         vehicle
-	 */
-	@Override
-	public double getWheelDistLeftRightFrontSide() {
-		if (!physicalVehicleInitialised) {
-			throw new IllegalStateException("Front axel wheel distance can only be read after initialisation.");
-		}
-		return this.getVDM().getValue("TW_f");
-	}
+    /**
+     * Function that returns the distance between left and right wheels of the front
+     * axel of the vehicle
+     *
+     * @return Distance between left and right wheels of the front axel of the
+     *         vehicle
+     */
+    @Override
+    public double getWheelDistLeftRightFrontSide() {
+        if (!physicalVehicleInitialised) {
+            throw new IllegalStateException("Front axel wheel distance can only be read after initialisation.");
+        }
+        return this.getVDM().getValue("TW_f");
+    }
 
-	/**
-	 * Function that sets the distance between left and right wheels of the front
-	 * axel of the vehicle
-	 *
-	 * @param wheelDistLeftRightFrontSide New distance between left and right wheels
-	 *                                    of the front axel of the vehicle
-	 */
-	@Override
-	public void setWheelDistLeftRightFrontSide(double wheelDistLeftRightFrontSide) {
-		if (physicalVehicleInitialised) {
-			throw new IllegalStateException("Front axel wheel distance can only be set before initialisation.");
-		}
-		this.getVDM().setParameter("TW_f", wheelDistLeftRightFrontSide);
-	}
+    /**
+     * Function that sets the distance between left and right wheels of the front
+     * axel of the vehicle
+     *
+     * @param wheelDistLeftRightFrontSide New distance between left and right wheels
+     *                                    of the front axel of the vehicle
+     */
+    @Override
+    public void setWheelDistLeftRightFrontSide(double wheelDistLeftRightFrontSide) {
+        if (physicalVehicleInitialised) {
+            throw new IllegalStateException("Front axel wheel distance can only be set before initialisation.");
+        }
+        this.getVDM().setParameter("TW_f", wheelDistLeftRightFrontSide);
+    }
 
-	/**
-	 * Function that returns the distance between left and right wheels of the back
-	 * axel of the vehicle
-	 *
-	 * @return Distance between left and right wheels of the back axel of the
-	 *         vehicle
-	 */
-	@Override
-	public double getWheelDistLeftRightBackSide() {
-		if (!physicalVehicleInitialised) {
-			throw new IllegalStateException("Back axel wheel distance can only be set before initialisation.");
-		}
-		return this.getVDM().getValue("TW_r");
-	}
+    /**
+     * Function that returns the distance between left and right wheels of the back
+     * axel of the vehicle
+     *
+     * @return Distance between left and right wheels of the back axel of the
+     *         vehicle
+     */
+    @Override
+    public double getWheelDistLeftRightBackSide() {
+        if (!physicalVehicleInitialised) {
+            throw new IllegalStateException("Back axel wheel distance can only be set before initialisation.");
+        }
+        return this.getVDM().getValue("TW_r");
+    }
 
-	/**
-	 * Function that sets the distance between left and right wheels of the back
-	 * axel of the vehicle
-	 *
-	 * @param wheelDistLeftRightBackSide New distance between left and right wheels
-	 *                                   of the back axel of the vehicle
-	 */
-	@Override
-	public void setWheelDistLeftRightBackSide(double wheelDistLeftRightBackSide) {
-		if (physicalVehicleInitialised) {
-			throw new IllegalStateException("Position can only be set after initialisation.");
-		}
-		this.getVDM().setParameter("TW_r", wheelDistLeftRightBackSide);
-	}
+    /**
+     * Function that sets the distance between left and right wheels of the back
+     * axel of the vehicle
+     *
+     * @param wheelDistLeftRightBackSide New distance between left and right wheels
+     *                                   of the back axel of the vehicle
+     */
+    @Override
+    public void setWheelDistLeftRightBackSide(double wheelDistLeftRightBackSide) {
+        if (physicalVehicleInitialised) {
+            throw new IllegalStateException("Position can only be set after initialisation.");
+        }
+        this.getVDM().setParameter("TW_r", wheelDistLeftRightBackSide);
+    }
 
-	/**
-	 * Function that returns the distance between the center of mass and the front
-	 * axel of the vehicle
-	 *
-	 * @return Distance between center of mass and front axel of the vehicle
-	 */
-	@Override
-	public double getWheelDistToFront() {
-		if (!physicalVehicleInitialised) {
-			throw new IllegalStateException(
-					"Distance from the center of mass to the front axel can only be read after initialisation.");
-		}
-		return this.getVDM().getValue("L_1");
-	}
+    /**
+     * Function that returns the distance between the center of mass and the front
+     * axel of the vehicle
+     *
+     * @return Distance between center of mass and front axel of the vehicle
+     */
+    @Override
+    public double getWheelDistToFront() {
+        if (!physicalVehicleInitialised) {
+            throw new IllegalStateException(
+                    "Distance from the center of mass to the front axel can only be read after initialisation.");
+        }
+        return this.getVDM().getValue("L_1");
+    }
 
-	/**
-	 * Function that sets the distance between the center of mass and the front axel
-	 * of the vehicle
-	 *
-	 * @param wheelDistToFront New distance between center of mass and front axel of
-	 *                         the vehicle
-	 */
-	@Override
-	public void setWheelDistToFront(double wheelDistToFront) {
-		if (physicalVehicleInitialised) {
-			throw new IllegalStateException(
-					"Distance from the center of mass to the front axel can only be set before initialisation.");
-		}
-		this.getVDM().setParameter("L_1", wheelDistToFront);
-	}
+    /**
+     * Function that sets the distance between the center of mass and the front axel
+     * of the vehicle
+     *
+     * @param wheelDistToFront New distance between center of mass and front axel of
+     *                         the vehicle
+     */
+    @Override
+    public void setWheelDistToFront(double wheelDistToFront) {
+        if (physicalVehicleInitialised) {
+            throw new IllegalStateException(
+                    "Distance from the center of mass to the front axel can only be set before initialisation.");
+        }
+        this.getVDM().setParameter("L_1", wheelDistToFront);
+    }
 
-	/**
-	 * Function that returns the distance between the center of mass and the back
-	 * axel of the vehicle
-	 *
-	 * @return Distance between center of mass and back axel of the vehicle
-	 */
-	@Override
-	public double getWheelDistToBack() {
-		if (!physicalVehicleInitialised) {
-			throw new IllegalStateException(
-					"Distance from the center of mass to the back axel can only be set before initialisation.");
-		}
-		return this.getVDM().getValue("L_2");
-	}
+    /**
+     * Function that returns the distance between the center of mass and the back
+     * axel of the vehicle
+     *
+     * @return Distance between center of mass and back axel of the vehicle
+     */
+    @Override
+    public double getWheelDistToBack() {
+        if (!physicalVehicleInitialised) {
+            throw new IllegalStateException(
+                    "Distance from the center of mass to the back axel can only be set before initialisation.");
+        }
+        return this.getVDM().getValue("L_2");
+    }
 
 
-	/**
+    /**
      * Function that sets the distance between the center of mass and the back axel of the vehicle
      *
      * @param wheelDistToBack New distance between center of mass and back axel of the vehicle
      */
-	@Override
-    public void setWheelDistToBack(double wheelDistToBack){
+    @Override
+    public void setWheelDistToBack(double wheelDistToBack) {
         if (physicalVehicleInitialised) {
-    		throw new IllegalStateException("Distance from the center of mass to the back axel can only be read after initialisation.");
+            throw new IllegalStateException("Distance from the center of mass to the back axel can only be read after initialisation.");
         }
         this.getVDM().setParameter("L_2", wheelDistToBack);
     }
 
-	/**
+    /**
      * Function that returns a copy of center of geometry position vector
      * @return Position vector of the center of geometry
      */
     @Override
-    public Vec3 getGeometryPosition(){
+    public Vec3 getGeometryPosition() {
         return position.add(getGeometryPositionOffset());
     }
 
-	/**
+    /**
      * Function that sets the center of geometry position vector.
      * @param geometryPosition New position vector of the center of geometry
      */
     @Override
-    public void setGeometryPosition(Vec3 geometryPosition){
+    public void setGeometryPosition(Vec3 geometryPosition) {
         // Uses setter to check initialisation
         setPosition(geometryPosition.add(getGeometryPositionOffset().mapMultiply(-1.0)));
 
     }
 
-	/**
+    /**
      * Function that returns a copy of the vector pointing from the center of mass position to the center of geometry position
      * @return Offset vector of the center of mass position to the center of geometry position
      */
     @Override
-    public Vec3 getGeometryPositionOffset(){
+    public Vec3 getGeometryPositionOffset() {
         return this.rotation.operate(geometryPositionOffset).copy();
     }
 
-	/**
+    /**
      * Function that sets the vector pointing from the center of mass position to the center of geometry position
      * @param geometryPositionOffset New offset vector of the center of mass position to the center of geometry position
      */
     @Override
-    public void setGeometryPositionOffset(Vec3 geometryPositionOffset){
+    public void setGeometryPositionOffset(Vec3 geometryPositionOffset) {
         throw new UnsupportedOperationException("Geometry position offset is determined by the chassis rotation.");
     }
 
-	/**
+    /**
      * Function that returns a list of pairs of 3D coordinates, indicating a vector on the edges of the physical object
      * @return List of pairs of 3D points, indicating a vector on the edges of the physical object
      */
     @Override
-    public List<Map.Entry<Vec3, Vec3>> getBoundaryVectors(){
+    public List<Map.Entry<Vec3, Vec3>> getBoundaryVectors() {
         //TODO: Function is unnecessary with three dimensional collision detection
         // Build relative vectors between vertices
-        Vec3 relVectorBackFront = new Vec3(new double[] {getLength(), 0.0, 0.0});
-        Vec3 relVectorLeftRight = new Vec3(new double[] {0.0, -getWidth(), 0.0});
-        Vec3 relVectorBottomTop = new Vec3(new double[] {0.0, 0.0, getHeight()});
+        Vec3 relVectorBackFront = new Vec3(new double[]{getLength(), 0.0, 0.0});
+        Vec3 relVectorLeftRight = new Vec3(new double[]{0.0, -getWidth(), 0.0});
+        Vec3 relVectorBottomTop = new Vec3(new double[]{0.0, 0.0, getHeight()});
 
         // Rotate relative vectors
         relVectorBackFront = getRotation().operate(relVectorBackFront);
@@ -461,13 +461,13 @@ public class ModelicaPhysicalVehicle extends PhysicalVehicle {
         return boundaryVectors;
     }
 
-	/**
+    /**
      * Function that computes one step of the physical behaviour of the object
      * @param deltaTime Duration of the current simulation step
      */
     @Override
-    public void computePhysics(Duration deltaTime){
-    	long deltaTms = deltaTime.toMillis();
+    public void computePhysics(Duration deltaTime) {
+        long deltaTms = deltaTime.toMillis();
         if (!this.getError()) {
             // Calculate input values
             // Get values from VDM
@@ -484,14 +484,14 @@ public class ModelicaPhysicalVehicle extends PhysicalVehicle {
             // Do calculation steps with maximum step size as long as possible
             long currentDeltaTms = 0;
             int stepSizems = 2;
-            while(currentDeltaTms + stepSizems <= deltaTms){
+            while (currentDeltaTms + stepSizems <= deltaTms) {
                 doCalculationStep(stepSizems);
                 currentDeltaTms = currentDeltaTms + stepSizems;
             }
 
             // Do a calculation step with partial step size to fill the gap
             long partialStepSize = deltaTms - currentDeltaTms;
-            if(partialStepSize > 0) {
+            if (partialStepSize > 0) {
                 doCalculationStep(partialStepSize);
             }
 
@@ -501,11 +501,11 @@ public class ModelicaPhysicalVehicle extends PhysicalVehicle {
             putOnSurface(roadPlane.getEntry(0), roadPlane.getEntry(1), yawAngle);
         }
         // Reset forces
-        force = new Vec3(new double[] {0.0, 0.0, 0.0});
+        force = new Vec3(new double[]{0.0, 0.0, 0.0});
 
     }
 
-	/**
+    /**
      * Function that sets the position of the center of mass and the rotation of the object, in order to place the object on the surface of the world.
      * given a x, y coordinate and a z rotation
      * @param posX X component of the position of the physical object
@@ -513,7 +513,7 @@ public class ModelicaPhysicalVehicle extends PhysicalVehicle {
      * @param rotZ Z component of the rotation of the physical object
      */
     @Override
-    public void putOnSurface(double posX, double posY, double rotZ){
+    public void putOnSurface(double posX, double posY, double rotZ) {
         //Get values from VDM
         double z = vehicleDynamicsModel.getValue("z");
         double L_1 = vehicleDynamicsModel.getValue("L_1");
@@ -565,7 +565,7 @@ public class ModelicaPhysicalVehicle extends PhysicalVehicle {
         Vec3 xyPlaneNorm = new Vec3(new double[]{0.0, 0.0, 1.0});
         double backToFrontAngle = (Math.PI / 2) - MathHelper.angle(xyPlaneNorm, backToFront);
         double rightToLeftAngle = (Math.PI / 2) - MathHelper.angle(xyPlaneNorm, rightToLeft);
-        if(physicalVehicleInitialised) {
+        if (physicalVehicleInitialised) {
             vehicleDynamicsModel.setInput("slope", backToFrontAngle);
             vehicleDynamicsModel.setInput("bank", rightToLeftAngle);
         }
@@ -586,12 +586,12 @@ public class ModelicaPhysicalVehicle extends PhysicalVehicle {
         position = roadPlaneCenter.add(rotation.operate(roadPlaneCenterToPositionLocal));
     }
 
-	/**
+    /**
      * Function that returns a copy of the position vector of the center of the front right wheel
      * @return Position vector of the center of the front right wheel
      */
     @Override
-    public Vec3 getFrontRightWheelGeometryPosition(){
+    public Vec3 getFrontRightWheelGeometryPosition() {
         //Get values from VDM
         double L_1 = vehicleDynamicsModel.getValue(("L_1"));
         double TW_f = vehicleDynamicsModel.getValue("TW_f");
@@ -603,12 +603,12 @@ public class ModelicaPhysicalVehicle extends PhysicalVehicle {
         return position.add(rotation.operate(localPosition));
     }
 
-	/**
+    /**
      * Function that returns a copy of the position vector of the center of the front left wheel
      * @return Position vector of the center of the front left wheel
      */
     @Override
-    public Vec3 getFrontLeftWheelGeometryPosition(){
+    public Vec3 getFrontLeftWheelGeometryPosition() {
         //Get values from VDM
         double L_1 = vehicleDynamicsModel.getValue(("L_1"));
         double TW_f = vehicleDynamicsModel.getValue("TW_f");
@@ -619,12 +619,12 @@ public class ModelicaPhysicalVehicle extends PhysicalVehicle {
         return position.add(rotation.operate(localPosition));
     }
 
-	/**
+    /**
      * Function that returns a copy of the position vector of the center of the back right wheel
      * @return Position vector of the center of the back right wheel
      */
     @Override
-    public Vec3 getBackRightWheelGeometryPosition(){
+    public Vec3 getBackRightWheelGeometryPosition() {
         //Get values from VDM
         double L_2 = vehicleDynamicsModel.getValue(("L_2"));
         double TW_r = vehicleDynamicsModel.getValue("TW_r");
@@ -635,12 +635,12 @@ public class ModelicaPhysicalVehicle extends PhysicalVehicle {
         return position.add(rotation.operate(localPosition));
     }
 
-	/**
+    /**
      * Function that returns a copy of the position vector of the center of the back left wheel
      * @return Position vector of the center of the back left wheel
      */
     @Override
-    public Vec3 getBackLeftWheelGeometryPosition(){
+    public Vec3 getBackLeftWheelGeometryPosition() {
         //Get values from VDM
         double L_2 = vehicleDynamicsModel.getValue(("L_2"));
         double TW_r = vehicleDynamicsModel.getValue("TW_r");
@@ -653,33 +653,33 @@ public class ModelicaPhysicalVehicle extends PhysicalVehicle {
 
     @Override
     protected void initializeActuators() {
-		super.initializeActuators();
-    	if(gear != null || clutch != null || brakes != null || throttle != null) {
+        super.initializeActuators();
+        if (gear != null || clutch != null || brakes != null || throttle != null) {
             throw new IllegalStateException("Actuators can only be initialised once.");
-		}
-    	VehicleActuatorType actuatorTypes[] = { VehicleActuatorType.VEHICLE_ACTUATOR_TYPE_BRAKE,
-				VehicleActuatorType.VEHICLE_ACTUATOR_TYPE_CLUTCH,
-				VehicleActuatorType.VEHICLE_ACTUATOR_TYPE_GEAR,
-				VehicleActuatorType.VEHICLE_ACTUATOR_TYPE_THROTTLE };
-		List<VehicleActuator> actuators = super.initializeActuators(actuatorTypes);
-		for(VehicleActuator actuator : actuators){
-			switch(actuator.getActuatorType()){
-            case VEHICLE_ACTUATOR_TYPE_GEAR:
-                gear = actuator;
-                break;
-            case VEHICLE_ACTUATOR_TYPE_CLUTCH:
-                clutch = actuator;
-                break;
-            case VEHICLE_ACTUATOR_TYPE_BRAKE:
-                brakes = actuator;
-                break;
-            case VEHICLE_ACTUATOR_TYPE_THROTTLE:
-                throttle = actuator;
-                break;
-            default:
-            	Log.warning("Unknown actuator property");
-			}
-		}
+        }
+        VehicleActuatorType actuatorTypes[] = {VehicleActuatorType.VEHICLE_ACTUATOR_TYPE_BRAKE,
+                VehicleActuatorType.VEHICLE_ACTUATOR_TYPE_CLUTCH,
+                VehicleActuatorType.VEHICLE_ACTUATOR_TYPE_GEAR,
+                VehicleActuatorType.VEHICLE_ACTUATOR_TYPE_THROTTLE};
+        List<VehicleActuator> actuators = super.initializeActuators(actuatorTypes);
+        for (VehicleActuator actuator : actuators) {
+            switch (actuator.getActuatorType()) {
+                case VEHICLE_ACTUATOR_TYPE_GEAR:
+                    gear = actuator;
+                    break;
+                case VEHICLE_ACTUATOR_TYPE_CLUTCH:
+                    clutch = actuator;
+                    break;
+                case VEHICLE_ACTUATOR_TYPE_BRAKE:
+                    brakes = actuator;
+                    break;
+                case VEHICLE_ACTUATOR_TYPE_THROTTLE:
+                    throttle = actuator;
+                    break;
+                default:
+                    Log.warning("Unknown actuator property");
+            }
+        }
     }
 
     /**
@@ -689,34 +689,34 @@ public class ModelicaPhysicalVehicle extends PhysicalVehicle {
      * @return Current vehicle actuator object for the type, otherwise null
      */
     public VehicleActuator getVehicleActuator(VehicleActuatorType type) {
-    	switch (type) {
-    	case VEHICLE_ACTUATOR_TYPE_STEERING:
-    		return steering;
-    	case VEHICLE_ACTUATOR_TYPE_GEAR:
-    		return gear;
-    	case VEHICLE_ACTUATOR_TYPE_BRAKE:
-    		return brakes;
-    	case VEHICLE_ACTUATOR_TYPE_CLUTCH:
-    		return clutch;
-    	case VEHICLE_ACTUATOR_TYPE_THROTTLE:
-    		return throttle;
-    	default:
-    		return null;
-    	}
+        switch (type) {
+            case VEHICLE_ACTUATOR_TYPE_STEERING:
+                return steering;
+            case VEHICLE_ACTUATOR_TYPE_GEAR:
+                return gear;
+            case VEHICLE_ACTUATOR_TYPE_BRAKE:
+                return brakes;
+            case VEHICLE_ACTUATOR_TYPE_CLUTCH:
+                return clutch;
+            case VEHICLE_ACTUATOR_TYPE_THROTTLE:
+                return throttle;
+            default:
+                return null;
+        }
     }
 
-	/**
+    /**
      * Function that initialises the physics computations when the physicalVehicle is created
      * Should only be called by builder
      */
     @Override
     public void initPhysics() {
-        if(physicalVehicleInitialised){
+        if (physicalVehicleInitialised) {
             throw new IllegalStateException("Physical Vehicle can only be initialised once.");
         }
         // Set parameters for the VDM
         vehicleDynamicsModel.setParameter("rho_air", PhysicsEngine.AIR_DENSITY);
-        vehicleDynamicsModel.setParameter("g", - PhysicsEngine.GRAVITY_EARTH);
+        vehicleDynamicsModel.setParameter("g", -PhysicsEngine.GRAVITY_EARTH);
 
         // Initialise the modelica components
         vehicleDynamicsModel.initialise();
@@ -727,32 +727,32 @@ public class ModelicaPhysicalVehicle extends PhysicalVehicle {
         position = geometryPositionOffset.mapMultiply(-1.0);
 
         //Initialise remaining variables
-        force = new Vec3(new double[] {0.0, 0.0, 0.0});
+        force = new Vec3(new double[]{0.0, 0.0, 0.0});
         yawAngle = 0.0;
 
         physicalVehicleInitialised = true;
     }
 
-	@Override
-	public void instantiatePhysicalVehicle() {
-		this.vehicleDynamicsModel = new VehicleDynamicsModel();
-	}
+    @Override
+    public void instantiatePhysicalVehicle() {
+        this.vehicleDynamicsModel = new VehicleDynamicsModel();
+    }
 
-	/**
+    /**
      * Function that returns the force that is acting on the vehicle
      * @return Force acting on the vehicle
      */
     @Override
-    public Vec3 getForce(){
+    public Vec3 getForce() {
         return force.copy();
     }
 
-	/**
+    /**
      * Function that returns the torque that is acting on the vehicle
      * @return Torque acting on the vehicle
      */
     @Override
-    public Vec3 getTorque(){
+    public Vec3 getTorque() {
         //TODO: Expand the model to accept external torques
         throw new UnsupportedOperationException("External torques are currently not supported.");
     }
@@ -763,7 +763,7 @@ public class ModelicaPhysicalVehicle extends PhysicalVehicle {
      * Should only be called by the builder and vehicle
      * @return The VDM of the vehicle
      */
-    public VehicleDynamicsModel getVDM(){
+    public VehicleDynamicsModel getVDM() {
         return vehicleDynamicsModel;
     }
 
@@ -771,7 +771,7 @@ public class ModelicaPhysicalVehicle extends PhysicalVehicle {
      * Function that does a calculation step
      * @param deltaTms Length of the calculation step in milliseconds
      */
-    private void doCalculationStep(long deltaTms){
+    private void doCalculationStep(long deltaTms) {
         // Calculate input values
 
         double deltaT = deltaTms / 1000.0;
@@ -786,8 +786,8 @@ public class ModelicaPhysicalVehicle extends PhysicalVehicle {
         // Get steering angle and changerate
         double steeringAngle = getVehicleActuator(VEHICLE_ACTUATOR_TYPE_STEERING).getActuatorValueCurrent();
         vehicleDynamicsModel.setInput("delta_sw", steeringAngle);
-        double steeringAngleSpeed = (steeringAngle - old_sw_angle)/deltaT;
-        vehicleDynamicsModel.setInput("omega_sw",steeringAngleSpeed);
+        double steeringAngleSpeed = (steeringAngle - old_sw_angle) / deltaT;
+        vehicleDynamicsModel.setInput("omega_sw", steeringAngleSpeed);
 
         double clutchinput = getVehicleActuator(VEHICLE_ACTUATOR_TYPE_CLUTCH).getActuatorValueCurrent();
         vehicleDynamicsModel.setInput("c_input", clutchinput);
@@ -821,14 +821,14 @@ public class ModelicaPhysicalVehicle extends PhysicalVehicle {
         // Integrate over the yaw rotation rate
         double omega_z = vehicleDynamicsModel.getValue("omega_z");
         double alpha_z = vehicleDynamicsModel.getValue("alpha_z");
-        yawAngle = yawAngle + omega_z * deltaT + alpha_z*Math.pow(deltaT, 2);
+        yawAngle = yawAngle + omega_z * deltaT + alpha_z * Math.pow(deltaT, 2);
         // Integrate over the velocity
         double a_x = vehicleDynamicsModel.getValue("a_x");
         double a_y = vehicleDynamicsModel.getValue("a_y");
         double a_z = vehicleDynamicsModel.getValue("a_z");
-        double delta_x = oldv_x* deltaT + 0.5*a_x*Math.pow(deltaT, 2);
-        double delta_y = oldv_y* deltaT + 0.5*a_y*Math.pow(deltaT, 2);
-        double delta_z = oldv_z* deltaT + 0.5*a_z*Math.pow(deltaT, 2);
+        double delta_x = oldv_x * deltaT + 0.5 * a_x * Math.pow(deltaT, 2);
+        double delta_y = oldv_y * deltaT + 0.5 * a_y * Math.pow(deltaT, 2);
+        double delta_z = oldv_z * deltaT + 0.5 * a_z * Math.pow(deltaT, 2);
         Vec3 delta_xyz = new Vec3(new double[]{delta_x, delta_y, delta_z});
         Vec3 rotate_delta = rotation.operate(delta_xyz);
         position = position.add(rotate_delta);
@@ -842,7 +842,7 @@ public class ModelicaPhysicalVehicle extends PhysicalVehicle {
         old_sw_angle = getVehicleActuator(VEHICLE_ACTUATOR_TYPE_STEERING).getActuatorValueCurrent();
         //Set velocity to zero when braking if very near to zero
         double velocity = getVelocity().getNorm();
-        if(velocity <= 0.1 && getVehicleActuator(VEHICLE_ACTUATOR_TYPE_BRAKE).getActuatorValueCurrent() > 0 && getVehicleActuator(VEHICLE_ACTUATOR_TYPE_THROTTLE).getActuatorValueCurrent() == 0) {
+        if (velocity <= 0.1 && getVehicleActuator(VEHICLE_ACTUATOR_TYPE_BRAKE).getActuatorValueCurrent() > 0 && getVehicleActuator(VEHICLE_ACTUATOR_TYPE_THROTTLE).getActuatorValueCurrent() == 0) {
 
             vehicleDynamicsModel.setInput("omega_wheel_1", 0.0);
             vehicleDynamicsModel.setInput("omega_wheel_2", 0.0);
@@ -863,8 +863,8 @@ public class ModelicaPhysicalVehicle extends PhysicalVehicle {
             vehicleDynamicsModel.setInput("F_y_2", 0.0);
             vehicleDynamicsModel.setInput("F_y_3", 0.0);
             vehicleDynamicsModel.setInput("F_y_4", 0.0);
-            }
         }
+    }
 
     /**
      * Overwrite toString() to get a nice output for ModelicaPhysicalVehicles
@@ -872,7 +872,7 @@ public class ModelicaPhysicalVehicle extends PhysicalVehicle {
      */
     @Override
     public String toString() {
-        return  "PhysicalVehicle " + getId() +
+        return "PhysicalVehicle " + getId() +
                 (physicalVehicleInitialised ? " , geometryPos: " + getGeometryPosition() : "") +
                 (physicalVehicleInitialised ? " , position: " + position : "") +
                 (physicalVehicleInitialised ? " , velocity: " + getVelocity() : "") +

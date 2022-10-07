@@ -8,7 +8,8 @@ public final class Information {
     /**
      * Don't let anyone instantiate this class.
      */
-    private Information() {}
+    private Information() {
+    }
 
     /**
      * Current simulation time

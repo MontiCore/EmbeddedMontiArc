@@ -2,6 +2,7 @@
 package de.rwth.montisim.simulation.commons.util;
 
 import de.rwth.montisim.commons.utils.Pair;
+
 import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.List;
@@ -11,13 +12,19 @@ import java.util.function.Consumer;
  * Allows to broadcast information within the program
  */
 public class NotificationCenter {
-    /** Singleton instance of the class */
+    /**
+     * Singleton instance of the class
+     */
     private static final NotificationCenter sharedInstance = new NotificationCenter();
 
-    /** Every object and method waiting for certain notifications */
-    private final HashMap< String, List< Pair<String, Consumer> > > receivers;
+    /**
+     * Every object and method waiting for certain notifications
+     */
+    private final HashMap<String, List<Pair<String, Consumer>>> receivers;
 
-    /** Constructor that clears receivers */
+    /**
+     * Constructor that clears receivers
+     */
     private NotificationCenter() {
         receivers = new HashMap<>();
     }
@@ -59,6 +66,7 @@ public class NotificationCenter {
 
     /**
      * Stop listening for a specific message
+     *
      * @param notificationName Name of the notification to listen to
      * @param reaction         Method to be called when event happens
      * @param receiver         Receiver of the notification
@@ -87,6 +95,7 @@ public class NotificationCenter {
 
     /**
      * Broadcast a notification including some information
+     *
      * @param notificationName Name of the notification, used for identification of message type
      * @param context          Information contained in the notification. May be null.
      */

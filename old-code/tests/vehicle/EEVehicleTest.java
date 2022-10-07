@@ -1,6 +1,6 @@
 /**
  * (c) https://github.com/MontiCore/monticore
- *
+ * <p>
  * The license generally applicable for this project
  * can be found under https://github.com/MontiCore/monticore.
  */
@@ -36,16 +36,16 @@ import static org.junit.Assert.assertTrue;
 public class EEVehicleTest {
 
 
-	@Test
-	public void sendConstantBusData() {
-		PhysicalVehicleBuilder physicalVehicleBuilder = new MassPointPhysicalVehicleBuilder();
-		EESimulator eeSimulator = new EESimulator(Instant.EPOCH);
-		EEVehicleBuilder eeVehicleBuilder = new EEVehicleBuilder(eeSimulator);
-		InstantBus bus = new InstantBus(eeSimulator);
-		eeVehicleBuilder.createAllSensorsNActuators(bus);
-		Vehicle vehicle = new Vehicle(physicalVehicleBuilder, eeVehicleBuilder);
-		PhysicalVehicle physicalVehicle = vehicle.getPhysicalVehicle();
-		EEVehicle eeVehicle = vehicle.getEEVehicle();
+    @Test
+    public void sendConstantBusData() {
+        PhysicalVehicleBuilder physicalVehicleBuilder = new MassPointPhysicalVehicleBuilder();
+        EESimulator eeSimulator = new EESimulator(Instant.EPOCH);
+        EEVehicleBuilder eeVehicleBuilder = new EEVehicleBuilder(eeSimulator);
+        InstantBus bus = new InstantBus(eeSimulator);
+        eeVehicleBuilder.createAllSensorsNActuators(bus);
+        Vehicle vehicle = new Vehicle(physicalVehicleBuilder, eeVehicleBuilder);
+        PhysicalVehicle physicalVehicle = vehicle.getPhysicalVehicle();
+        EEVehicle eeVehicle = vehicle.getEEVehicle();
         HashMap<BusEntry, List<EEComponent>> targetsByMessageId = new HashMap<BusEntry, List<EEComponent>>();
         targetsByMessageId.put(BusEntry.SENSOR_COMPASS, Collections.singletonList(bus));
         //subscribe to all
@@ -68,22 +68,22 @@ public class EEVehicleTest {
         eeVehicle.setConstantBusData();
 
         EESimulator sim = eeVehicle.getEESimulator();
-        assertEquals(sim.getEventList().size(), EEVehicle.constantMessages.size() - 1 + 2 +3);
-	}
+        assertEquals(sim.getEventList().size(), EEVehicle.constantMessages.size() - 1 + 2 + 3);
+    }
 
 
     @Test
-    public void testMessageToActuator(){
-	    //create vehicle
-    	PhysicalVehicleBuilder physicalVehicleBuilder = new MassPointPhysicalVehicleBuilder();
-		EESimulator eeSimulator = new EESimulator(Instant.EPOCH);
-		EEVehicleBuilder eeVehicleBuilder = new EEVehicleBuilder(eeSimulator);
-		InstantBus bus = new InstantBus(eeSimulator);
-		eeVehicleBuilder.createAllSensorsNActuators(bus);
-		Vehicle vehicle = new Vehicle(physicalVehicleBuilder, eeVehicleBuilder);
-		EEVehicle eeVehicle = vehicle.getEEVehicle();
+    public void testMessageToActuator() {
+        //create vehicle
+        PhysicalVehicleBuilder physicalVehicleBuilder = new MassPointPhysicalVehicleBuilder();
+        EESimulator eeSimulator = new EESimulator(Instant.EPOCH);
+        EEVehicleBuilder eeVehicleBuilder = new EEVehicleBuilder(eeSimulator);
+        InstantBus bus = new InstantBus(eeSimulator);
+        eeVehicleBuilder.createAllSensorsNActuators(bus);
+        Vehicle vehicle = new Vehicle(physicalVehicleBuilder, eeVehicleBuilder);
+        EEVehicle eeVehicle = vehicle.getEEVehicle();
 
-        HashMap<BusEntry,List<EEComponent>> emptyMap = new HashMap<BusEntry, List<EEComponent>>();
+        HashMap<BusEntry, List<EEComponent>> emptyMap = new HashMap<BusEntry, List<EEComponent>>();
         //create reference actuator
         VehicleActuator steeringReference = new VehicleActuator(VehicleActuatorType.VEHICLE_ACTUATOR_TYPE_STEERING, Vehicle.VEHICLE_DEFAULT_STEERING_ANGLE_MIN, Vehicle.VEHICLE_DEFAULT_STEERING_ANGLE_MAX, Vehicle.VEHICLE_DEFAULT_STEERING_ANGLE_RATE, vehicle.getEEVehicle().getEESimulator(), Collections.emptyList(), emptyMap);
         VehicleActuator brakeReference = new VehicleActuator(VehicleActuatorType.VEHICLE_ACTUATOR_TYPE_BRAKES_BACK_LEFT, Vehicle.VEHICLE_DEFAULT_BRAKES_ACCELERATION_MIN, Vehicle.VEHICLE_DEFAULT_BRAKES_ACCELERATION_MAX, Vehicle.VEHICLE_DEFAULT_BRAKES_ACCELERATION_RATE, vehicle.getEEVehicle().getEESimulator(), Collections.emptyList(), emptyMap);
@@ -121,39 +121,39 @@ public class EEVehicleTest {
 
     @Test
     public void notifySensorsTest() {
-    	PhysicalVehicleBuilder physicalVehicleBuilder = new MassPointPhysicalVehicleBuilder();
-		EESimulator eeSimulator = new EESimulator(Instant.EPOCH);
-		EEVehicleBuilder eeVehicleBuilder = new EEVehicleBuilder(eeSimulator);
-		InstantBus bus = new InstantBus(eeSimulator);
-		eeVehicleBuilder.createAllSensorsNActuators(bus);
-		Vehicle vehicle = new Vehicle(physicalVehicleBuilder, eeVehicleBuilder);
-		EEVehicle eeVehicle = vehicle.getEEVehicle();
+        PhysicalVehicleBuilder physicalVehicleBuilder = new MassPointPhysicalVehicleBuilder();
+        EESimulator eeSimulator = new EESimulator(Instant.EPOCH);
+        EEVehicleBuilder eeVehicleBuilder = new EEVehicleBuilder(eeSimulator);
+        InstantBus bus = new InstantBus(eeSimulator);
+        eeVehicleBuilder.createAllSensorsNActuators(bus);
+        Vehicle vehicle = new Vehicle(physicalVehicleBuilder, eeVehicleBuilder);
+        EEVehicle eeVehicle = vehicle.getEEVehicle();
 
-    	eeVehicle.notifySensors(Instant.EPOCH.plusMillis(30));
-    	List<EEDiscreteEvent> events = new ArrayList<EEDiscreteEvent>(eeVehicle.getEESimulator().getEventList());
-    	assertEquals(eeVehicle.getSensorList().size(), events.size());
-    	for(EEDiscreteEvent event : events) {
-    		assertEquals(eeVehicle.getEESimulator().getSimulationTime(), event.getEventTime());
-    	}
+        eeVehicle.notifySensors(Instant.EPOCH.plusMillis(30));
+        List<EEDiscreteEvent> events = new ArrayList<EEDiscreteEvent>(eeVehicle.getEESimulator().getEventList());
+        assertEquals(eeVehicle.getSensorList().size(), events.size());
+        for (EEDiscreteEvent event : events) {
+            assertEquals(eeVehicle.getEESimulator().getSimulationTime(), event.getEventTime());
+        }
     }
 
     @Test
     public void notifyActuatorsTest() {
-    	PhysicalVehicleBuilder physicalVehicleBuilder = new MassPointPhysicalVehicleBuilder();
-		EESimulator eeSimulator = new EESimulator(Instant.EPOCH);
-		EEVehicleBuilder eeVehicleBuilder = new EEVehicleBuilder(eeSimulator);
-		InstantBus bus = new InstantBus(eeSimulator);
-		eeVehicleBuilder.createAllSensorsNActuators(bus);
-		Vehicle vehicle = new Vehicle(physicalVehicleBuilder, eeVehicleBuilder);
-		EEVehicle eeVehicle = vehicle.getEEVehicle();
+        PhysicalVehicleBuilder physicalVehicleBuilder = new MassPointPhysicalVehicleBuilder();
+        EESimulator eeSimulator = new EESimulator(Instant.EPOCH);
+        EEVehicleBuilder eeVehicleBuilder = new EEVehicleBuilder(eeSimulator);
+        InstantBus bus = new InstantBus(eeSimulator);
+        eeVehicleBuilder.createAllSensorsNActuators(bus);
+        Vehicle vehicle = new Vehicle(physicalVehicleBuilder, eeVehicleBuilder);
+        EEVehicle eeVehicle = vehicle.getEEVehicle();
 
-    	Instant endTime = eeVehicle.getEESimulator().getSimulationTime().plusMillis(30);
-    	eeVehicle.notifyActuator(endTime);
-    	List<EEDiscreteEvent> events = new ArrayList<EEDiscreteEvent>(eeVehicle.getEESimulator().getEventList());
-    	assertEquals(eeVehicle.getActuatorList().size(), events.size());
-    	for(EEDiscreteEvent event : events) {
-    		assertEquals(endTime, event.getEventTime());
-    	}
+        Instant endTime = eeVehicle.getEESimulator().getSimulationTime().plusMillis(30);
+        eeVehicle.notifyActuator(endTime);
+        List<EEDiscreteEvent> events = new ArrayList<EEDiscreteEvent>(eeVehicle.getEESimulator().getEventList());
+        assertEquals(eeVehicle.getActuatorList().size(), events.size());
+        for (EEDiscreteEvent event : events) {
+            assertEquals(endTime, event.getEventTime());
+        }
     }
 
 }

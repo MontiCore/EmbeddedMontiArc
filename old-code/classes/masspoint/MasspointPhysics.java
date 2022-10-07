@@ -1,6 +1,6 @@
 /**
  * (c) https://github.com/MontiCore/monticore
- *
+ * <p>
  * The license generally applicable for this project
  * can be found under https://github.com/MontiCore/monticore.
  */
@@ -11,7 +11,7 @@ import de.rwth.montisim.simulation.vehicle.physicsmodel.PhysicsModel;
 import de.rwth.montisim.simulation.vehicle.powertrain.PowerTrain;
 
 public class MasspointPhysics extends PhysicsModel {
-    public MasspointPhysics(DynamicObject physical_data, PowerTrain power_train){
+    public MasspointPhysics(DynamicObject physical_data, PowerTrain power_train) {
 
     }
 }

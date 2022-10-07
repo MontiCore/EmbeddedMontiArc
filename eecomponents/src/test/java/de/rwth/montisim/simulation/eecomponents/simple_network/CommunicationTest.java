@@ -46,61 +46,61 @@ public class CommunicationTest {
         VehicleProperties prop2 = new VehicleProperties().setName("v2");
         VehicleProperties prop3 = new VehicleProperties().setName("v3");
         VehicleProperties prop4 = new VehicleProperties().setName("v4");
-        prop1.start_pos = Optional.of(new Vec2(1,0));
-        prop2.start_pos = Optional.of(new Vec2(5,7));
-        prop3.start_pos = Optional.of(new Vec2(7,1));
-        prop4.start_pos = Optional.of(new Vec2(20,7));
+        prop1.start_pos = Optional.of(new Vec2(1, 0));
+        prop2.start_pos = Optional.of(new Vec2(5, 7));
+        prop3.start_pos = Optional.of(new Vec2(7, 1));
+        prop4.start_pos = Optional.of(new Vec2(20, 7));
 
         DataType intPacket = new SimplePacketType(BasicType.INT);
 
         prop1.addComponent(
-            ConstantBusProperties.instantBus().setName("DefaultBus")
+                ConstantBusProperties.instantBus().setName("DefaultBus")
         );
         prop1.addComponent(
-            new SCGProperties().connectTo("DefaultBus")
+                new SCGProperties().connectTo("DefaultBus")
         );
         prop1.addComponent(
-            new TestCompProperties("TestComp1")
-            .addPort(PortInformation.newSocketPort("m1", intPacket, true, true).addTag(SimpleCommunicationGateway.NETWORK_TAG))
-            .addPort(PortInformation.newSocketPort("m2", intPacket, false, true).addTag(SimpleCommunicationGateway.NETWORK_TAG))
-            .addPort(PortInformation.newSocketPort("m3", intPacket, false, true).addTag(SimpleCommunicationGateway.NETWORK_TAG))
-            .connectTo("DefaultBus")
+                new TestCompProperties("TestComp1")
+                        .addPort(PortInformation.newSocketPort("m1", intPacket, true, true).addTag(SimpleCommunicationGateway.NETWORK_TAG))
+                        .addPort(PortInformation.newSocketPort("m2", intPacket, false, true).addTag(SimpleCommunicationGateway.NETWORK_TAG))
+                        .addPort(PortInformation.newSocketPort("m3", intPacket, false, true).addTag(SimpleCommunicationGateway.NETWORK_TAG))
+                        .connectTo("DefaultBus")
         );
         prop2.addComponent(
-            ConstantBusProperties.instantBus().setName("DefaultBus")
+                ConstantBusProperties.instantBus().setName("DefaultBus")
         );
         prop2.addComponent(
-            new SCGProperties().connectTo("DefaultBus")
+                new SCGProperties().connectTo("DefaultBus")
         );
         prop2.addComponent(
-            new TestCompProperties("TestComp2")
-            .addPort(PortInformation.newSocketPort("m1", intPacket, true, true).addTag(SimpleCommunicationGateway.NETWORK_TAG))
-            .addPort(PortInformation.newSocketPort("m2", intPacket, true, false).addTag(SimpleCommunicationGateway.NETWORK_TAG))
-            .connectTo("DefaultBus")
+                new TestCompProperties("TestComp2")
+                        .addPort(PortInformation.newSocketPort("m1", intPacket, true, true).addTag(SimpleCommunicationGateway.NETWORK_TAG))
+                        .addPort(PortInformation.newSocketPort("m2", intPacket, true, false).addTag(SimpleCommunicationGateway.NETWORK_TAG))
+                        .connectTo("DefaultBus")
         );
         prop3.addComponent(
-            ConstantBusProperties.instantBus().setName("DefaultBus")
+                ConstantBusProperties.instantBus().setName("DefaultBus")
         );
         prop3.addComponent(
-            new SCGProperties().connectTo("DefaultBus")
+                new SCGProperties().connectTo("DefaultBus")
         );
         prop3.addComponent(
-            new TestCompProperties("TestComp3")
-            .addPort(PortInformation.newSocketPort("m1", intPacket, true, true).addTag(SimpleCommunicationGateway.NETWORK_TAG))
-            .addPort(PortInformation.newSocketPort("m2", intPacket, false, true).addTag(SimpleCommunicationGateway.NETWORK_TAG))
-            .connectTo("DefaultBus")
+                new TestCompProperties("TestComp3")
+                        .addPort(PortInformation.newSocketPort("m1", intPacket, true, true).addTag(SimpleCommunicationGateway.NETWORK_TAG))
+                        .addPort(PortInformation.newSocketPort("m2", intPacket, false, true).addTag(SimpleCommunicationGateway.NETWORK_TAG))
+                        .connectTo("DefaultBus")
         );
         prop4.addComponent(
-            ConstantBusProperties.instantBus().setName("DefaultBus")
+                ConstantBusProperties.instantBus().setName("DefaultBus")
         );
         prop4.addComponent(
-            new SCGProperties().connectTo("DefaultBus")
+                new SCGProperties().connectTo("DefaultBus")
         );
         prop4.addComponent(
-            new TestCompProperties("TestComp4")
-            .addPort(PortInformation.newSocketPort("m1", intPacket, true, true).addTag(SimpleCommunicationGateway.NETWORK_TAG))
-            .addPort(PortInformation.newSocketPort("m2", intPacket, false, true).addTag(SimpleCommunicationGateway.NETWORK_TAG))
-            .connectTo("DefaultBus")
+                new TestCompProperties("TestComp4")
+                        .addPort(PortInformation.newSocketPort("m1", intPacket, true, true).addTag(SimpleCommunicationGateway.NETWORK_TAG))
+                        .addPort(PortInformation.newSocketPort("m2", intPacket, false, true).addTag(SimpleCommunicationGateway.NETWORK_TAG))
+                        .connectTo("DefaultBus")
         );
 
         Vehicle v1 = prop1.build(context);
@@ -118,32 +118,32 @@ public class CommunicationTest {
 
         // Send messages
         testComp1.sendMessage(
-            start_time.plus(Duration.ofMillis(5)), 
-            new Message(testComp1.getMsgInfo("m1"), SimpleNetworkMessage.newMessage(IPV6Address.BROADCAST_ADDR, Integer.valueOf(1)))
+                start_time.plus(Duration.ofMillis(5)),
+                new Message(testComp1.getMsgInfo("m1"), SimpleNetworkMessage.newMessage(IPV6Address.BROADCAST_ADDR, Integer.valueOf(1)))
         );
 
         testComp2.sendMessage(
-            start_time.plus(Duration.ofMillis(25)), 
-            new Message(testComp2.getMsgInfo("m1"), SimpleNetworkMessage.newMessage(v1addr, Integer.valueOf(2)))
+                start_time.plus(Duration.ofMillis(25)),
+                new Message(testComp2.getMsgInfo("m1"), SimpleNetworkMessage.newMessage(v1addr, Integer.valueOf(2)))
         );
         testComp3.sendMessage(
-            start_time.plus(Duration.ofMillis(35)),
-            new Message(testComp3.getMsgInfo("m1"), SimpleNetworkMessage.newMessage(v1addr, Integer.valueOf(3)))
+                start_time.plus(Duration.ofMillis(35)),
+                new Message(testComp3.getMsgInfo("m1"), SimpleNetworkMessage.newMessage(v1addr, Integer.valueOf(3)))
         );
         testComp4.sendMessage(
-            start_time.plus(Duration.ofMillis(45)),
-            new Message(testComp4.getMsgInfo("m1"), SimpleNetworkMessage.newMessage(v1addr, Integer.valueOf(4)))
+                start_time.plus(Duration.ofMillis(45)),
+                new Message(testComp4.getMsgInfo("m1"), SimpleNetworkMessage.newMessage(v1addr, Integer.valueOf(4)))
         );
 
-        
+
         testComp1.sendMessage(
-            start_time.plus(Duration.ofMillis(70)), 
-            new Message(testComp1.getMsgInfo("m2"), SimpleNetworkMessage.newMessage(IPV6Address.BROADCAST_ADDR, Integer.valueOf(5)))
+                start_time.plus(Duration.ofMillis(70)),
+                new Message(testComp1.getMsgInfo("m2"), SimpleNetworkMessage.newMessage(IPV6Address.BROADCAST_ADDR, Integer.valueOf(5)))
         );
 
         testComp1.sendMessage(
-            start_time.plus(Duration.ofMillis(100)),
-            new Message(testComp1.getMsgInfo("m3"), SimpleNetworkMessage.newMessage(IPV6Address.BROADCAST_ADDR, Integer.valueOf(6)))
+                start_time.plus(Duration.ofMillis(100)),
+                new Message(testComp1.getMsgInfo("m3"), SimpleNetworkMessage.newMessage(IPV6Address.BROADCAST_ADDR, Integer.valueOf(6)))
         );
 
         simulator.update(new TimeUpdate(start_time, Duration.ofSeconds(1)));
@@ -153,12 +153,12 @@ public class CommunicationTest {
         Assert.assertEquals(1, testComp3.events.size());
         Assert.assertEquals(0, testComp4.events.size());
 
-        Assert.assertEquals(2, (long)(Integer)((Object[])testComp1.events.get(0).getMessage().message)[1]);
-        Assert.assertEquals(3, (long)(Integer)((Object[])testComp1.events.get(1).getMessage().message)[1]);
+        Assert.assertEquals(2, (long) (Integer) ((Object[]) testComp1.events.get(0).getMessage().message)[1]);
+        Assert.assertEquals(3, (long) (Integer) ((Object[]) testComp1.events.get(1).getMessage().message)[1]);
 
-        Assert.assertEquals(1, (long)(Integer)((Object[])testComp2.events.get(0).getMessage().message)[1]);
-        Assert.assertEquals(5, (long)(Integer)((Object[])testComp2.events.get(1).getMessage().message)[1]);
-        
-        Assert.assertEquals(1, (long)(Integer)((Object[])testComp3.events.get(0).getMessage().message)[1]);
+        Assert.assertEquals(1, (long) (Integer) ((Object[]) testComp2.events.get(0).getMessage().message)[1]);
+        Assert.assertEquals(5, (long) (Integer) ((Object[]) testComp2.events.get(1).getMessage().message)[1]);
+
+        Assert.assertEquals(1, (long) (Integer) ((Object[]) testComp3.events.get(0).getMessage().message)[1]);
     }
 }

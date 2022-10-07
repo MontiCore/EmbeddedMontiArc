@@ -17,7 +17,7 @@ import de.rwth.montisim.commons.utils.Time;
 
 public class Control extends JPanel implements ActionListener, ChangeListener {
     private static final long serialVersionUID = 2776373934381177954L;
-    public static final Color RUNNING_COLOR = new Color(47,141,235);
+    public static final Color RUNNING_COLOR = new Color(47, 141, 235);
     public static final Color SUCCEEDED_COLOR = Color.GREEN;
     public static final Color FAILED_COLOR = Color.RED;
 
@@ -44,7 +44,7 @@ public class Control extends JPanel implements ActionListener, ChangeListener {
     /*
      * Timer system
      */
-    
+
     Instant simulationStart;
     Duration tick_duration;
     final int targetFps;
@@ -83,22 +83,22 @@ public class Control extends JPanel implements ActionListener, ChangeListener {
         maxUpdateTimeNano = maxFrameDuration;
 
 
-        timerDelta = (int)(frameDurationSec*1000);
+        timerDelta = (int) (frameDurationSec * 1000);
         timer = new Timer(timerDelta, this);
         timer.setCoalesce(true);
 
 
         setupLayout();
-        
+
         setTickSpeed(tick_duration, simulationStart);
-        
+
         updateTimeLabel();
     }
 
     void setSimulationSpeed(double speed) {
         this.simulationSpeed = speed;
         double deltaPerFrame = speed * frameDurationSec;
-        this.ticksPerFrame = (int)Math.floor(deltaPerFrame/tickDurationSec);
+        this.ticksPerFrame = (int) Math.floor(deltaPerFrame / tickDurationSec);
     }
 
     public void init(Duration tick_duration, Instant simulationStart) {
@@ -133,20 +133,20 @@ public class Control extends JPanel implements ActionListener, ChangeListener {
     long lastMsgTime = 0;
     Instant lastSimTime;
 
-    private void updateSimulation(){
+    private void updateSimulation() {
         if (done) return;
         //nextCallTime += timerDelta*1000000;
         long updateStart = System.nanoTime();
 
         //if (updateStart > nextCallTime) return; // Timer calls catch
-        
+
         lastFrameDuration = updateStart - callTime;
         callTime = updateStart;
 
         Duration lastUpdateDuration = Duration.between(lastSimTime, tu.newTime);
         lastSimTime = tu.newTime;
-        
-        updateSimSpeedLabel(Time.secondsFromDuration(lastUpdateDuration) / (lastFrameDuration*Time.NANOSEC_TO_SEC));
+
+        updateSimSpeedLabel(Time.secondsFromDuration(lastUpdateDuration) / (lastFrameDuration * Time.NANOSEC_TO_SEC));
         addFrame(callTime);
 
         // if (updateStart - lastMsgTime > Time.SECOND_TO_NANOSEC){
@@ -155,20 +155,20 @@ public class Control extends JPanel implements ActionListener, ChangeListener {
         //     System.out.println("Current deviation: " + Double.toString((updateStart - expectedCallTime)*0.000001) +"ms");
         // }
 
-        if (fullspeed){
+        if (fullspeed) {
             updateSimulationFullspeed();
         } else {
             updateSimulationRealtime();
         }
-        
+
         // Render
         updateTimeLabel();
         runner.redraw();
     }
 
-    private void updateSimulationFullspeed(){
+    private void updateSimulationFullspeed() {
         long t;
-        long minTime = callTime + frameDurationNano/2; // Make sure at least half the time is spent simulating (vs rendering)
+        long minTime = callTime + frameDurationNano / 2; // Make sure at least half the time is spent simulating (vs rendering)
         long targetTime = callTime + frameDurationNano;
         do {
             runner.update(tu);
@@ -183,7 +183,7 @@ public class Control extends JPanel implements ActionListener, ChangeListener {
         for (int i = 0; i < ticksPerFrame; ++i) {
             runner.update(tu);
             if (checkStatus(runner.status())) return;
-            
+
             tu = new TimeUpdate(tu.newTime, tick_duration);
             if (System.nanoTime() - callTime > maxUpdateTimeNano) break; // Frame-skip
         }
@@ -214,7 +214,7 @@ public class Control extends JPanel implements ActionListener, ChangeListener {
 
     public void play() {
         if (playing || done) return;
-        
+
         statusLabel.setText("RUNNING");
         statusLabel.setForeground(RUNNING_COLOR);
         playing = true;
@@ -240,7 +240,7 @@ public class Control extends JPanel implements ActionListener, ChangeListener {
         timer.stop();
     }
 
-    private void reset(){
+    private void reset() {
         runner.reset();
         done = false;
         tu = new TimeUpdate(simulationStart, tick_duration);
@@ -252,26 +252,26 @@ public class Control extends JPanel implements ActionListener, ChangeListener {
     }
 
 
-    private String printTime(Instant t){
+    private String printTime(Instant t) {
         return timeFormatter.format(t);
     }
 
-    private void updateTimeLabel(){
+    private void updateTimeLabel() {
         timeLabel.setText(printTime(tu.oldTime));
     }
 
-    private void updateDeltaTLabel(long deltaT){
-        deltaTLabel.setText(Long.toString(deltaT/1000000)+"ms");
+    private void updateDeltaTLabel(long deltaT) {
+        deltaTLabel.setText(Long.toString(deltaT / 1000000) + "ms");
     }
 
-    private void updateSimSpeedLabel(double speedRatio){
+    private void updateSimSpeedLabel(double speedRatio) {
         simSpeedLabel.setText(ratioFormatter.format(speedRatio));
     }
 
-    private void addFrame(long callTime){
+    private void addFrame(long callTime) {
         counter.addFrame(callTime);
         long avg = counter.getAvgDelta();
-        if (avg != 0){
+        if (avg != 0) {
             double fps = counter.getFramesPerSeconds();
             fpsLabel.setText(ratioFormatter.format(fps));
             // frameDurationLabel.setText(Long.toString(avg/1000000)+"ms");
@@ -285,7 +285,7 @@ public class Control extends JPanel implements ActionListener, ChangeListener {
         UI
     */
 
-    
+
     /*
      * Handle the Component Actions
      */
@@ -295,23 +295,21 @@ public class Control extends JPanel implements ActionListener, ChangeListener {
         Object s = e.getSource();
         if (s == timer) {
             if (!playing) return;
-            if (mode == Mode.SIMULATION){
+            if (mode == Mode.SIMULATION) {
                 updateSimulation();
-            }
-            else {
+            } else {
                 // TODO
             }
-        }
-        else if (s == simModeButton) {
+        } else if (s == simModeButton) {
             //System.out.println("Sim Mode: " + ((SimulationMode) simModeButton.getSelectedItem()).name);
-            if (((SimulationMode) simModeButton.getSelectedItem()) == SimulationMode.FULL_SPEED){
-                if (!fullspeed){
+            if (((SimulationMode) simModeButton.getSelectedItem()) == SimulationMode.FULL_SPEED) {
+                if (!fullspeed) {
                     fullspeed = true;
                     this.remove(1);
                     this.revalidate();
                 }
             } else {
-                if (fullspeed){
+                if (fullspeed) {
                     fullspeed = false;
                     this.add(speedButton, 1);
                     this.revalidate();
@@ -338,19 +336,20 @@ public class Control extends JPanel implements ActionListener, ChangeListener {
 
     @Override
     public void stateChanged(ChangeEvent e) {
-        if (e.getSource() == slider){
+        if (e.getSource() == slider) {
             //System.out.println("Slider: "+slider.getValue());
-            if (!slider.getValueIsAdjusting()){
+            if (!slider.getValueIsAdjusting()) {
                 // TODO
             }
         }
     }
-    
+
     public static final ImageIcon playIcon;
     public static final ImageIcon pauseIcon;
     public static final ImageIcon stepForwardIcon;
     public static final ImageIcon stepBackIcon;
     public static final ImageIcon resetIcon;
+
     static {
         playIcon = createImageIcon("/images/play.png");
         pauseIcon = createImageIcon("/images/pause.png");
@@ -360,12 +359,12 @@ public class Control extends JPanel implements ActionListener, ChangeListener {
     }
 
     DateTimeFormatter timeFormatter =
-    DateTimeFormatter.ofPattern("HH:mm:ss.SSS")
-                     .withLocale( Locale.UK )
-                     .withZone( ZoneId.systemDefault() );
+            DateTimeFormatter.ofPattern("HH:mm:ss.SSS")
+                    .withLocale(Locale.UK)
+                    .withZone(ZoneId.systemDefault());
 
     private static final DecimalFormat ratioFormatter = new DecimalFormat("##0.000",
-        DecimalFormatSymbols.getInstance(Locale.ENGLISH));
+            DecimalFormatSymbols.getInstance(Locale.ENGLISH));
 
     public static enum Mode {
         SIMULATION, REPLAY
@@ -405,11 +404,11 @@ public class Control extends JPanel implements ActionListener, ChangeListener {
         }
     }
 
-    private final static SimulationMode simModes[] = { SimulationMode.REAL_TIME, SimulationMode.FULL_SPEED };
-    private final static SimulationSpeed simSpeeds[] = { SimulationSpeed.TIMES16, SimulationSpeed.TIMES8,
+    private final static SimulationMode simModes[] = {SimulationMode.REAL_TIME, SimulationMode.FULL_SPEED};
+    private final static SimulationSpeed simSpeeds[] = {SimulationSpeed.TIMES16, SimulationSpeed.TIMES8,
             SimulationSpeed.TIMES4, SimulationSpeed.TIMES2, SimulationSpeed.REAL_TIME, SimulationSpeed.HALF,
             SimulationSpeed.FOURTH, SimulationSpeed.EIGHTH, SimulationSpeed.SIXTEENTH, SimulationSpeed.DIV50,
-            SimulationSpeed.DIV100 };
+            SimulationSpeed.DIV100};
 
     /*
      * SWING COMPONENTS
@@ -433,18 +432,17 @@ public class Control extends JPanel implements ActionListener, ChangeListener {
     JLabel statusLabel;
     // final JLabel frameDurationLabel;
     // final JLabel frameVarianceLabel;
-    
+
     // final JLabel manualFPSLabel;
 
 
-    
     private void setupLayout() {
         FlowLayout layout = new FlowLayout();
         layout.setAlignment(FlowLayout.LEFT);
         setLayout(layout);
         // setBackground(new Color(255,255,255));
 
-        
+
         simModeButton = new JComboBox<>(simModes);
         simModeButton.addActionListener(this);
         if (mode == Mode.SIMULATION)
@@ -505,26 +503,25 @@ public class Control extends JPanel implements ActionListener, ChangeListener {
         add(new JLabel("Status: "));
         statusLabel = new JLabel("INITIALIZED");
         add(statusLabel);
-        
+
         // JLabel frameDurationText = new JLabel("FD=");
         // frameDurationText.setToolTipText("Average Frame Duration (Last "+counter.trackedFrames+" frames)");
         // add(frameDurationText);
         // frameDurationLabel = new JLabel("-");
         // add(frameDurationLabel);
-        
+
         // JLabel frameVarText = new JLabel("V(FD)=");
         // frameVarText.setToolTipText("Frame Duration Variance");
         // add(frameVarText);
         // frameVarianceLabel = new JLabel("-");
         // add(frameVarianceLabel);
-        
+
         // add(new JLabel("FPS'="));
         // manualFPSLabel = new JLabel("-");
         // add(manualFPSLabel);
     }
 
-    
-    
+
     protected static ImageIcon createImageIcon(String path) {
         java.net.URL imgURL = Control.class.getResource(path);
         if (imgURL != null)
@@ -546,47 +543,47 @@ class FrameCounter {
     long sum = 0;
     long sumSquared = 0;
 
-    public FrameCounter(int trackedFrames){
+    public FrameCounter(int trackedFrames) {
         this.trackedFrames = trackedFrames;
         this.deltas = new long[trackedFrames];
     }
 
-    public void addFrame(long timestamp){
-        if (count == 0){
+    public void addFrame(long timestamp) {
+        if (count == 0) {
             lastTime = timestamp;
             count = 1;
             return;
         }
-        long delta = timestamp-lastTime;
-        if (count == trackedFrames){
+        long delta = timestamp - lastTime;
+        if (count == trackedFrames) {
             long last = deltas[currentPos];
             sum += delta - last;
-            sumSquared += (delta*delta) - (last*last);
+            sumSquared += (delta * delta) - (last * last);
         } else {
             ++count;
             sum += delta;
-            sumSquared += (delta*delta);
+            sumSquared += (delta * delta);
         }
         deltas[currentPos] = delta;
         lastTime = timestamp;
-        currentPos = (currentPos+1)%trackedFrames;
+        currentPos = (currentPos + 1) % trackedFrames;
     }
 
-    public long getAvgDelta(){
+    public long getAvgDelta() {
         if (count == 0) return 0;
-        else return sum/count;
+        else return sum / count;
     }
 
-    public long getVariance(){
+    public long getVariance() {
         if (count == 0) return 0;
         long avg = getAvgDelta();
-        return sumSquared/count - avg*avg;
+        return sumSquared / count - avg * avg;
     }
 
-    public double getFramesPerSeconds(){
+    public double getFramesPerSeconds() {
         long a = getAvgDelta();
         if (a == 0) return 0;
-        return Time.SECOND_TO_NANOSEC/(double) a;
+        return Time.SECOND_TO_NANOSEC / (double) a;
     }
-    
+
 }

@@ -3,7 +3,7 @@ package de.rwth.montisim.simulation.commons;
 
 /**
  * Object that can be added to the simulation.
- * 
+ * <p>
  * The simulator must call 'registerComponents()' on the object when it is added to the simulation.
  * This allows the SimulationObject to register its different components by the Simulator.
  */

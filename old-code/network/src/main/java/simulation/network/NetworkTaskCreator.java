@@ -1,6 +1,6 @@
 /**
  * (c) https://github.com/MontiCore/monticore
- *
+ * <p>
  * The license generally applicable for this project
  * can be found under https://github.com/MontiCore/monticore.
  */
@@ -15,7 +15,8 @@ import de.rwth.montisim.simulation.util.Log;
 public final class NetworkTaskCreator {
 
     /** Empty constructor, this class has no instances, only static functions */
-    private NetworkTaskCreator() {}
+    private NetworkTaskCreator() {
+    }
 
     /**
      * Function to create a new network task for a specific network node

@@ -21,25 +21,25 @@ public class Rigidbody extends DynamicObject {
     public Vec3 T = new Vec3(0, 0, 0); // Torque 
 
     // Use to compute in place -> Avoid memory trashing
-    private transient Vec3 accel = new Vec3(0,0,0);
-    private transient Vec3 deltaX = new Vec3(0,0,0);
-    private transient Vec3 JW = new Vec3(0,0,0);
-    private transient Vec3 WxJW = new Vec3(0,0,0);
-    private transient Vec3 ang_accel = new Vec3(0,0,0);
+    private transient Vec3 accel = new Vec3(0, 0, 0);
+    private transient Vec3 deltaX = new Vec3(0, 0, 0);
+    private transient Vec3 JW = new Vec3(0, 0, 0);
+    private transient Vec3 WxJW = new Vec3(0, 0, 0);
+    private transient Vec3 ang_accel = new Vec3(0, 0, 0);
     private transient Mat3 cross_matrix = new Mat3();
     private transient Mat3 a = new Mat3();
 
     public Rigidbody(String type) {
         super(type);
     }
-    
+
     public void symplecticEuler(double delta_secs) {
-        accel.set(0,0,GRAVITY);
-        IPM.multiply(F, 1/mass);
+        accel.set(0, 0, GRAVITY);
+        IPM.multiply(F, 1 / mass);
         IPM.add(accel, F);
         IPM.multiply(accel, delta_secs);
         IPM.add(velocity, accel);
-        
+
         IPM.multiplyTo(deltaX, velocity, delta_secs);
         IPM.add(pos, deltaX);
 
@@ -67,7 +67,7 @@ public class Rigidbody extends DynamicObject {
 
         IPM.multiplyTo(a, rotation, Jl_i);
         IPM.multiplyTo(J_i, a, R_T);
-        
+
         F.x = 0;
         F.y = 0;
         F.z = 0;

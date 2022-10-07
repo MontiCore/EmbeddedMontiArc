@@ -1,6 +1,6 @@
 /**
  * (c) https://github.com/MontiCore/monticore
- *
+ * <p>
  * The license generally applicable for this project
  * can be found under https://github.com/MontiCore/monticore.
  */
@@ -26,11 +26,11 @@ import de.rwth.montisim.simulation.environment.visualisationadapter.interfaces.E
 
 public class FrictionTest {
     @Test
-    public  void testCoefficientValues() {
+    public void testCoefficientValues() {
         double frictionCoefficientDry;
         double frictionCoefficientWet;
 
-        for(StreetPavements pavement: StreetPavements.values()) {
+        for (StreetPavements pavement : StreetPavements.values()) {
             frictionCoefficientDry = PhysicsEngine.calcFrictionCoefficient(pavement, false);
             frictionCoefficientWet = PhysicsEngine.calcFrictionCoefficient(pavement, true);
 
@@ -54,21 +54,21 @@ public class FrictionTest {
 
     @Test
     public void testPavementForSurface() {
-		EESimulator eeSimulator = new EESimulator(Instant.EPOCH);
-		EEVehicleBuilder eeVehicleBuilder1 = new EEVehicleBuilder(eeSimulator);
-		InstantBus bus1 = new InstantBus(eeSimulator);
-		eeVehicleBuilder1.createAllSensorsNActuators(bus1);
+        EESimulator eeSimulator = new EESimulator(Instant.EPOCH);
+        EEVehicleBuilder eeVehicleBuilder1 = new EEVehicleBuilder(eeSimulator);
+        InstantBus bus1 = new InstantBus(eeSimulator);
+        eeVehicleBuilder1.createAllSensorsNActuators(bus1);
 
-    	PhysicalVehicleBuilder physicalVehicleBuilder1 = new ModelicaPhysicalVehicleBuilder();
-		Vehicle vehicle1 = new Vehicle(physicalVehicleBuilder1, eeVehicleBuilder1);
-		ModelicaPhysicalVehicle physicalVehicle1 = (ModelicaPhysicalVehicle) vehicle1.getPhysicalVehicle();
+        PhysicalVehicleBuilder physicalVehicleBuilder1 = new ModelicaPhysicalVehicleBuilder();
+        Vehicle vehicle1 = new Vehicle(physicalVehicleBuilder1, eeVehicleBuilder1);
+        ModelicaPhysicalVehicle physicalVehicle1 = (ModelicaPhysicalVehicle) vehicle1.getPhysicalVehicle();
 
-		EEVehicleBuilder eeVehicleBuilder2 = new EEVehicleBuilder(eeSimulator);
-		InstantBus bus2 = new InstantBus(eeSimulator);
-		eeVehicleBuilder2.createAllSensorsNActuators(bus2);
-		PhysicalVehicleBuilder physicalVehicleBuilder2 = new ModelicaPhysicalVehicleBuilder();
-		Vehicle vehicle2 = new Vehicle(physicalVehicleBuilder2, eeVehicleBuilder2);
-		ModelicaPhysicalVehicle physicalVehicle2 = (ModelicaPhysicalVehicle) vehicle2.getPhysicalVehicle();
+        EEVehicleBuilder eeVehicleBuilder2 = new EEVehicleBuilder(eeSimulator);
+        InstantBus bus2 = new InstantBus(eeSimulator);
+        eeVehicleBuilder2.createAllSensorsNActuators(bus2);
+        PhysicalVehicleBuilder physicalVehicleBuilder2 = new ModelicaPhysicalVehicleBuilder();
+        Vehicle vehicle2 = new Vehicle(physicalVehicleBuilder2, eeVehicleBuilder2);
+        ModelicaPhysicalVehicle physicalVehicle2 = (ModelicaPhysicalVehicle) vehicle2.getPhysicalVehicle();
 
         // puts physicalVehicle1 onto a position on the map that is known to be paved, physicalVehicle2 is already initialized with a position
         // that is known to be unpaved
@@ -92,16 +92,16 @@ public class FrictionTest {
         Vec3 setAngularVelocity = new Vec3(new double[]{7.0, -2.5, 11.75});
 
         // Build vehicle
-    	PhysicalVehicleBuilder physicalVehicleBuilder = new ModelicaPhysicalVehicleBuilder();
-    	physicalVehicleBuilder.setPosition(expectedPosition);
-    	physicalVehicleBuilder.setVelocity(setVelocity);
-    	physicalVehicleBuilder.setAngularVelocity(setAngularVelocity);
+        PhysicalVehicleBuilder physicalVehicleBuilder = new ModelicaPhysicalVehicleBuilder();
+        physicalVehicleBuilder.setPosition(expectedPosition);
+        physicalVehicleBuilder.setVelocity(setVelocity);
+        physicalVehicleBuilder.setAngularVelocity(setAngularVelocity);
 
-    	EESimulator eeSimulator = new EESimulator(Instant.EPOCH);
-		EEVehicleBuilder eeVehicleBuilder = new EEVehicleBuilder(eeSimulator);
-		InstantBus bus = new InstantBus(eeSimulator);
-		eeVehicleBuilder.createAllSensorsNActuators(bus);
-		Vehicle vehicle = new Vehicle(physicalVehicleBuilder, eeVehicleBuilder);
+        EESimulator eeSimulator = new EESimulator(Instant.EPOCH);
+        EEVehicleBuilder eeVehicleBuilder = new EEVehicleBuilder(eeSimulator);
+        InstantBus bus = new InstantBus(eeSimulator);
+        eeVehicleBuilder.createAllSensorsNActuators(bus);
+        Vehicle vehicle = new Vehicle(physicalVehicleBuilder, eeVehicleBuilder);
         ModelicaPhysicalVehicle physicalVehicle = (ModelicaPhysicalVehicle) vehicle.getPhysicalVehicle();
 
         physicalVehicle.computePhysics(Duration.ofMillis(1));

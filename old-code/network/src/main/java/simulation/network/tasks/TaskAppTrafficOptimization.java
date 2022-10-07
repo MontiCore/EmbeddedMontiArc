@@ -1,6 +1,6 @@
 /**
  * (c) https://github.com/MontiCore/monticore
- *
+ * <p>
  * The license generally applicable for this project
  * can be found under https://github.com/MontiCore/monticore.
  */
@@ -24,6 +24,7 @@ import java.time.Duration;
 import java.time.Instant;
 import java.time.temporal.ChronoUnit;
 import java.util.*;
+
 import static simulation.network.NetworkDiscreteEventId.NETWORK_EVENT_ID_APP_UPDATE;
 
 /**
@@ -113,7 +114,7 @@ public class TaskAppTrafficOptimization extends NetworkTask {
                         Vec3 thisGpsPosition = new Vec3(new double[]{0.0, 0.0, 0.0});
 
                         if (gpsSensor.isPresent()) {
-                            thisGpsPosition = (Vec3)(gpsSensor.get().getValue());
+                            thisGpsPosition = (Vec3) (gpsSensor.get().getValue());
                         } else {
                             Log.warning("TaskAppTrafficOptimization - handleNetworkEvent: Vehicle does not have GPS sensor! " + physicalVehicle);
                             return;
@@ -133,7 +134,7 @@ public class TaskAppTrafficOptimization extends NetworkTask {
 
                     // Create new entry if it does not exist for new received data or update if node moved away
                     if ((!infoMap.containsKey(otherIpv6)) ||
-                        (infoMap.containsKey(otherIpv6) && infoMap.get(otherIpv6).getValue().getDistance(otherGpsPosition) > TRAFFIC_OPTIMIZATION_NOT_MOVED_SINGLE_RANGE)) {
+                            (infoMap.containsKey(otherIpv6) && infoMap.get(otherIpv6).getValue().getDistance(otherGpsPosition) > TRAFFIC_OPTIMIZATION_NOT_MOVED_SINGLE_RANGE)) {
                         Map.Entry<Long, Vec3> newEntry = new AbstractMap.SimpleEntry<>(Instant.EPOCH.until(event.getEventMessage().getSimReceiveTime(), ChronoUnit.NANOS), otherGpsPosition);
                         infoMap.put(otherIpv6, newEntry);
                     }

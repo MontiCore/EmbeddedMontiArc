@@ -62,7 +62,7 @@ public class SimulationVisualizer extends JFrame implements SimulationRunner {
     //         }
 
     //         if (t > max_time) return; // Timer calls catch up
-            
+
     //         ++performed;
     //         // Delay
     //         int i = 0;
@@ -152,7 +152,7 @@ public class SimulationVisualizer extends JFrame implements SimulationRunner {
         // VehicleConfig config = setupTurningCar();
         String vehicleName = "TestVehicle";
         VehicleProperties config = DefaultVehicleConfig.withJavaAutopilot().driveTo(-63.83, -171.96, 5).properties.setName(vehicleName);
-        config.start_pos = Optional.of(new Vec2(0,0));
+        config.start_pos = Optional.of(new Vec2(0, 0));
         simConfig.cars.add(config);
 
         simulator = simConfig.build(world, pathfinding, map);
@@ -172,8 +172,8 @@ public class SimulationVisualizer extends JFrame implements SimulationRunner {
 
     private VehicleProperties setupTurningCar() {
         double turnRadius = 30;
-        double maxSpeed = 0.8*270*Math.pow(turnRadius, -0.5614);
-        System.out.println("MaxSpeed: "+Double.toString(maxSpeed));
+        double maxSpeed = 0.8 * 270 * Math.pow(turnRadius, -0.5614);
+        System.out.println("MaxSpeed: " + Double.toString(maxSpeed));
 
         return TestVehicleConfig.newCircleAutopilotConfig(maxSpeed, turnRadius).properties;
     }
@@ -193,28 +193,28 @@ public class SimulationVisualizer extends JFrame implements SimulationRunner {
         }
     }
 
-    
+
     int i = 0;
     int ci = 0;
 
-    
+
     @Override
     public void update(TimeUpdate newTime) {
         simulator.update(newTime);
-        if (i > 200){
-            if (ci == 3){
+        if (i > 200) {
+            if (ci == 3) {
                 System.out.println("x");
             }
             try {
                 String state = vehicle.stateToJson();
-                Files.write(Paths.get("running_state.json"),state.getBytes());
+                Files.write(Paths.get("running_state.json"), state.getBytes());
                 simulator.removeSimulationObject(vehicle);
                 vehicle = VehicleBuilder.fromJsonState(simulator.buildContext, state).build();
                 simulator.addSimulationObject(vehicle);
                 cr.setCar(vehicle);
                 System.out.println("Transfered Vehicle using serialization");
             } catch (SerializationException | IOException | EEMessageTypeException | EESetupException
-                    | EEMissingComponentException e1) {
+                     | EEMissingComponentException e1) {
                 e1.printStackTrace();
             }
             i = 0;

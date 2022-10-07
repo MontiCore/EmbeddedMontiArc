@@ -11,7 +11,7 @@ public class SimpleNetworkRecvEvent extends DiscreteEvent {
     public static final int type = registerType(SimpleNetworkRecvEvent.class);
 
     public SimpleNetworkMessage msg;
-    
+
     public SimpleNetworkRecvEvent(EventTarget target, Instant time, SimpleNetworkMessage msg) {
         super(target, time);
         this.msg = msg;
@@ -21,5 +21,5 @@ public class SimpleNetworkRecvEvent extends DiscreteEvent {
     public int getType() {
         return type;
     }
-    
+
 }

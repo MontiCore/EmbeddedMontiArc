@@ -27,7 +27,7 @@ public class PathGoalProperties extends GoalProperties {
     // the point will be considered reached by the vehicle.
     public double range = 2.0; // In meters
 
-    
+
     // public PathGoal(List<Long> pathOsmIds, LTLOperator ltlOperator, double range) {
     //     this.ltlOperator = ltlOperator;
     //     this.pathOsmIds = pathOsmIds;
@@ -50,7 +50,7 @@ public class PathGoalProperties extends GoalProperties {
     //     this.currDestIdx = 0;
     // }
 
-    
+
     public PathGoalProperties reach(Vec2 coord) {
         if (path == null) {
             path = new Vector<>();
@@ -94,8 +94,10 @@ public class PathGoalProperties extends GoalProperties {
         if (path != null && path.size() > 0) ++spec;
         if (path_osm != null && path_osm.size() > 0) ++spec;
         if (path_lonlat != null && path_lonlat.size() > 0) ++spec;
-        if (spec == 0) throw new IllegalArgumentException("PathGoalProperties has no path specified (path, path_osm or path_lonlat entry).");
-        if (spec > 1) throw new IllegalArgumentException("PathGoalProperties multiple paths specified (path, path_osm or path_lonlat entry).");
+        if (spec == 0)
+            throw new IllegalArgumentException("PathGoalProperties has no path specified (path, path_osm or path_lonlat entry).");
+        if (spec > 1)
+            throw new IllegalArgumentException("PathGoalProperties multiple paths specified (path, path_osm or path_lonlat entry).");
 
         Vector<Vec2> finalPath;
         // Convert paths as needed
@@ -116,11 +118,11 @@ public class PathGoalProperties extends GoalProperties {
     private static List<Coordinates> convertOsmPath(Vector<Long> path_osm, OsmMap map) {
         if (map == null) throw new IllegalArgumentException("Trying to resolve osm-based path without OsmMap.");
         return path_osm.stream().map(
-            osmId -> {
-                Node node = map.getNode(osmId);
-                if (node == null) throw new IllegalArgumentException("Could not find OSM-node: " + osmId);
-                return node.coords;
-            }
+                osmId -> {
+                    Node node = map.getNode(osmId);
+                    if (node == null) throw new IllegalArgumentException("Could not find OSM-node: " + osmId);
+                    return node.coords;
+                }
         ).collect(Collectors.toList());
     }
 

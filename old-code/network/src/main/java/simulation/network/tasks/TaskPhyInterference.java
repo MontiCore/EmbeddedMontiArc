@@ -1,6 +1,6 @@
 /**
  * (c) https://github.com/MontiCore/monticore
- *
+ * <p>
  * The license generally applicable for this project
  * can be found under https://github.com/MontiCore/monticore.
  */
@@ -11,6 +11,7 @@ import de.rwth.montisim.simulation.util.Log;
 
 import java.time.Duration;
 import java.util.*;
+
 import static simulation.network.NetworkDiscreteEventId.*;
 
 /**
@@ -83,7 +84,7 @@ public class TaskPhyInterference extends NetworkTask {
 
                 int dataRate = modulationAndRateInfo[defaultModulationAndRateInfoIndex][0];
                 int bitsPerSignal = modulationAndRateInfo[defaultModulationAndRateInfoIndex][1];
-                double codeRate = (double)(modulationAndRateInfo[defaultModulationAndRateInfoIndex][2]) / (double)(modulationAndRateInfo[defaultModulationAndRateInfoIndex][3]);
+                double codeRate = (double) (modulationAndRateInfo[defaultModulationAndRateInfoIndex][2]) / (double) (modulationAndRateInfo[defaultModulationAndRateInfoIndex][3]);
                 event.getEventMessage().setPhyDataRateKBits(dataRate);
                 event.getEventMessage().setPhyBitsPerSignal(bitsPerSignal);
                 event.getEventMessage().setPhyCodeRate(codeRate);
@@ -95,7 +96,7 @@ public class TaskPhyInterference extends NetworkTask {
                     event.getEventMessage().setMessageLengthBits(event.getEventMessage().getMessageLengthBits() + 62);
 
                     int ofdmSize = (dataRate / 1000) * 8;
-                    int nextMultiple = (int)(Math.ceil((double)(event.getEventMessage().getMessageLengthBits()) / (double)(ofdmSize)) * ofdmSize);
+                    int nextMultiple = (int) (Math.ceil((double) (event.getEventMessage().getMessageLengthBits()) / (double) (ofdmSize)) * ofdmSize);
 
                     // Check for rounding errors
                     if (nextMultiple < event.getEventMessage().getMessageLengthBits()) {

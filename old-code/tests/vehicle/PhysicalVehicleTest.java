@@ -1,6 +1,6 @@
 /**
  * (c) https://github.com/MontiCore/monticore
- *
+ * <p>
  * The license generally applicable for this project
  * can be found under https://github.com/MontiCore/monticore.
  */
@@ -20,7 +20,7 @@ import java.time.Instant;
 
 public class PhysicalVehicleTest {
 
-	@BeforeClass
+    @BeforeClass
     public static void setUpClass() {
         Log.setLogEnabled(false);
     }
@@ -31,27 +31,27 @@ public class PhysicalVehicleTest {
     }
 
     @Test
-    public void setHeightNormal(){
+    public void setHeightNormal() {
         PhysicalVehicle physicalVehicle = new ModelicaPhysicalVehicle();
         physicalVehicle.setHeight(2.0);
         assertEquals(2.0, physicalVehicle.getHeight(), 0);
     }
 
     @Test(expected = IllegalStateException.class)
-    public void setHeightFail(){
-    	Vehicle vehicle = createStandardVehicle(new ModelicaPhysicalVehicleBuilder());
+    public void setHeightFail() {
+        Vehicle vehicle = createStandardVehicle(new ModelicaPhysicalVehicleBuilder());
         PhysicalVehicle physicalVehicle = vehicle.getPhysicalVehicle();
         physicalVehicle.setHeight(2.0);
     }
 
     @Test(expected = IllegalStateException.class)
-    public void getMassFailModelica(){
+    public void getMassFailModelica() {
         PhysicalVehicle physicalVehicle = new ModelicaPhysicalVehicle();
         physicalVehicle.getMass();
     }
 
     @Test
-    public void setMassNormal(){
+    public void setMassNormal() {
         // Test MassPoint case
         PhysicalVehicle physicalVehicle = new MassPointPhysicalVehicle();
         physicalVehicle.setMass(1000.0);
@@ -66,27 +66,27 @@ public class PhysicalVehicleTest {
     }
 
     @Test(expected = IllegalStateException.class)
-    public void setMassFailMassPoint(){
-    	Vehicle vehicle = createStandardVehicle(new MassPointPhysicalVehicleBuilder());
+    public void setMassFailMassPoint() {
+        Vehicle vehicle = createStandardVehicle(new MassPointPhysicalVehicleBuilder());
         PhysicalVehicle physicalVehicle = vehicle.getPhysicalVehicle();
         physicalVehicle.setMass(1000.0);
     }
 
     @Test(expected = IllegalStateException.class)
     public void setMassFailModelica() {
-    	Vehicle vehicle = createStandardVehicle(new ModelicaPhysicalVehicleBuilder());
+        Vehicle vehicle = createStandardVehicle(new ModelicaPhysicalVehicleBuilder());
         PhysicalVehicle physicalVehicle = vehicle.getPhysicalVehicle();
         physicalVehicle.setMass(1000.0);
     }
 
     @Test(expected = IllegalStateException.class)
-    public void getWheelRadiusFailModelica(){
+    public void getWheelRadiusFailModelica() {
         PhysicalVehicle physicalVehicle = new ModelicaPhysicalVehicle();
         physicalVehicle.getWheelRadius();
     }
 
     @Test
-    public void setWheelRadiusNormal(){
+    public void setWheelRadiusNormal() {
         // Test MassPoint case
         PhysicalVehicle physicalVehicle = new MassPointPhysicalVehicle();
         physicalVehicle.setWheelRadius(1.0);
@@ -101,27 +101,27 @@ public class PhysicalVehicleTest {
     }
 
     @Test(expected = IllegalStateException.class)
-    public void setWheelRadiusMassPoint(){
-    	Vehicle vehicle = createStandardVehicle(new MassPointPhysicalVehicleBuilder());
+    public void setWheelRadiusMassPoint() {
+        Vehicle vehicle = createStandardVehicle(new MassPointPhysicalVehicleBuilder());
         PhysicalVehicle physicalVehicle = vehicle.getPhysicalVehicle();
         physicalVehicle.setWheelRadius(1.0);
     }
 
     @Test(expected = IllegalStateException.class)
     public void setWheelRadiusFailModelica() {
-    	Vehicle vehicle = createStandardVehicle(new ModelicaPhysicalVehicleBuilder());
+        Vehicle vehicle = createStandardVehicle(new ModelicaPhysicalVehicleBuilder());
         PhysicalVehicle physicalVehicle = vehicle.getPhysicalVehicle();
         physicalVehicle.setWheelRadius(1.0);
     }
 
     @Test(expected = IllegalStateException.class)
-    public void getWheelDistLeftRightFrontSideFailModelica(){
+    public void getWheelDistLeftRightFrontSideFailModelica() {
         PhysicalVehicle physicalVehicle = new ModelicaPhysicalVehicle();
         physicalVehicle.getWheelDistLeftRightFrontSide();
     }
 
     @Test
-    public void setWheelDistLeftRightFrontSideNormal(){
+    public void setWheelDistLeftRightFrontSideNormal() {
         // Test MassPoint case
         PhysicalVehicle physicalVehicle = new MassPointPhysicalVehicle();
         physicalVehicle.setWheelDistLeftRightFrontSide(1.0);
@@ -136,27 +136,27 @@ public class PhysicalVehicleTest {
     }
 
     @Test(expected = IllegalStateException.class)
-    public void setWheelDistLeftRightFrontSideMassPoint(){
-    	Vehicle vehicle = createStandardVehicle(new MassPointPhysicalVehicleBuilder());
+    public void setWheelDistLeftRightFrontSideMassPoint() {
+        Vehicle vehicle = createStandardVehicle(new MassPointPhysicalVehicleBuilder());
         PhysicalVehicle physicalVehicle = vehicle.getPhysicalVehicle();
         physicalVehicle.setWheelDistLeftRightFrontSide(1.0);
     }
 
     @Test(expected = IllegalStateException.class)
     public void setWheelDistLeftRightFrontSideFailModelica() {
-    	Vehicle vehicle = createStandardVehicle(new ModelicaPhysicalVehicleBuilder());
+        Vehicle vehicle = createStandardVehicle(new ModelicaPhysicalVehicleBuilder());
         PhysicalVehicle physicalVehicle = vehicle.getPhysicalVehicle();
         physicalVehicle.setWheelDistLeftRightFrontSide(1.0);
     }
 
     @Test(expected = IllegalStateException.class)
-    public void getWheelDistLeftRightBackSideFailModelica(){
+    public void getWheelDistLeftRightBackSideFailModelica() {
         PhysicalVehicle physicalVehicle = new ModelicaPhysicalVehicle();
         physicalVehicle.getWheelDistLeftRightBackSide();
     }
 
     @Test
-    public void setWheelDistLeftRightBackSideNormal(){
+    public void setWheelDistLeftRightBackSideNormal() {
         // Test MassPoint case
         PhysicalVehicle physicalVehicle = new MassPointPhysicalVehicle();
         physicalVehicle.setWheelDistLeftRightBackSide(1.0);
@@ -171,27 +171,27 @@ public class PhysicalVehicleTest {
     }
 
     @Test(expected = IllegalStateException.class)
-    public void setWheelDistLeftRightBackSideMassPoint(){
-    	Vehicle vehicle = createStandardVehicle(new MassPointPhysicalVehicleBuilder());
+    public void setWheelDistLeftRightBackSideMassPoint() {
+        Vehicle vehicle = createStandardVehicle(new MassPointPhysicalVehicleBuilder());
         PhysicalVehicle physicalVehicle = vehicle.getPhysicalVehicle();
         physicalVehicle.setWheelDistLeftRightBackSide(1.0);
     }
 
     @Test(expected = IllegalStateException.class)
     public void setWheelDistLeftRightBackSideFailModelica() {
-    	Vehicle vehicle = createStandardVehicle(new ModelicaPhysicalVehicleBuilder());
+        Vehicle vehicle = createStandardVehicle(new ModelicaPhysicalVehicleBuilder());
         PhysicalVehicle physicalVehicle = vehicle.getPhysicalVehicle();
         physicalVehicle.setWheelDistLeftRightBackSide(1.0);
     }
 
     @Test(expected = IllegalStateException.class)
-    public void getWheelDistToFrontFailModelica(){
+    public void getWheelDistToFrontFailModelica() {
         PhysicalVehicle physicalVehicle = new ModelicaPhysicalVehicle();
         physicalVehicle.getWheelDistToFront();
     }
 
     @Test
-    public void setWheelDistToFrontNormal(){
+    public void setWheelDistToFrontNormal() {
         // Test MassPoint case
         PhysicalVehicle physicalVehicle = new MassPointPhysicalVehicle();
         physicalVehicle.setWheelDistToFront(1.0);
@@ -206,27 +206,27 @@ public class PhysicalVehicleTest {
     }
 
     @Test(expected = IllegalStateException.class)
-    public void setWheelDistToFrontMassPoint(){
-    	Vehicle vehicle = createStandardVehicle(new MassPointPhysicalVehicleBuilder());
+    public void setWheelDistToFrontMassPoint() {
+        Vehicle vehicle = createStandardVehicle(new MassPointPhysicalVehicleBuilder());
         PhysicalVehicle physicalVehicle = vehicle.getPhysicalVehicle();
         physicalVehicle.setWheelDistToFront(1.0);
     }
 
     @Test(expected = IllegalStateException.class)
     public void setWheelDistToFrontFailModelica() {
-    	Vehicle vehicle = createStandardVehicle(new ModelicaPhysicalVehicleBuilder());
+        Vehicle vehicle = createStandardVehicle(new ModelicaPhysicalVehicleBuilder());
         PhysicalVehicle physicalVehicle = vehicle.getPhysicalVehicle();
         physicalVehicle.setWheelDistToFront(1.0);
     }
 
     @Test(expected = IllegalStateException.class)
-    public void getWheelDistToBackFailModelica(){
+    public void getWheelDistToBackFailModelica() {
         PhysicalVehicle physicalVehicle = new ModelicaPhysicalVehicle();
         physicalVehicle.getWheelDistToBack();
     }
 
     @Test
-    public void setWheelDistToBackNormal(){
+    public void setWheelDistToBackNormal() {
         // Test MassPoint case
         PhysicalVehicle physicalVehicle = new MassPointPhysicalVehicle();
         physicalVehicle.setWheelDistToBack(1.0);
@@ -241,24 +241,24 @@ public class PhysicalVehicleTest {
     }
 
     @Test(expected = IllegalStateException.class)
-    public void setWheelDistToBackMassPoint(){
-    	Vehicle vehicle = createStandardVehicle(new MassPointPhysicalVehicleBuilder());
+    public void setWheelDistToBackMassPoint() {
+        Vehicle vehicle = createStandardVehicle(new MassPointPhysicalVehicleBuilder());
         PhysicalVehicle physicalVehicle = vehicle.getPhysicalVehicle();
         physicalVehicle.setWheelDistToBack(1.0);
     }
 
     @Test(expected = IllegalStateException.class)
     public void setWheelDistToBackFailModelica() {
-    	Vehicle vehicle = createStandardVehicle(new ModelicaPhysicalVehicleBuilder());
+        Vehicle vehicle = createStandardVehicle(new ModelicaPhysicalVehicleBuilder());
         PhysicalVehicle physicalVehicle = vehicle.getPhysicalVehicle();
         physicalVehicle.setWheelDistToBack(1.0);
     }
 
     private Vehicle createStandardVehicle(PhysicalVehicleBuilder physicalVehicleBuilder) {
-    	EESimulator eeSimulator = new EESimulator(Instant.EPOCH);
-		EEVehicleBuilder eeVehicleBuilder = new EEVehicleBuilder(eeSimulator);
-		InstantBus bus = new InstantBus(eeSimulator);
-		eeVehicleBuilder.createAllSensorsNActuators(bus);
-		return new Vehicle(physicalVehicleBuilder, eeVehicleBuilder);
+        EESimulator eeSimulator = new EESimulator(Instant.EPOCH);
+        EEVehicleBuilder eeVehicleBuilder = new EEVehicleBuilder(eeSimulator);
+        InstantBus bus = new InstantBus(eeSimulator);
+        eeVehicleBuilder.createAllSensorsNActuators(bus);
+        return new Vehicle(physicalVehicleBuilder, eeVehicleBuilder);
     }
 }

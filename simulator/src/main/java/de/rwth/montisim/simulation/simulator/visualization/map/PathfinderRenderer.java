@@ -80,19 +80,19 @@ public class PathfinderRenderer extends Renderer {
 
     @Override
     public JMenuItem[] getClicMenuItem(Vec2 worldPos) {
-        return new JMenuItem[] {
-            new SetTargetMenuItem("Set Start position", worldPos, true),
-            new SetTargetMenuItem("Set Target position", worldPos, false),
-            new ClearTargetsMenuItem("Clear Path")
+        return new JMenuItem[]{
+                new SetTargetMenuItem("Set Start position", worldPos, true),
+                new SetTargetMenuItem("Set Target position", worldPos, false),
+                new ClearTargetsMenuItem("Clear Path")
         };
     }
-    
+
     public class SetTargetMenuItem extends JMenuItem implements ActionListener {
         private static final long serialVersionUID = 170035139576795954L;
-    
+
         final Vec2 value;
         final boolean changeStart;
-    
+
         // Preview: wether the text to be copied is shown in parenthesis after the button message
         public SetTargetMenuItem(String msg, Vec2 value, boolean changeStart) {
             super(msg);
@@ -100,10 +100,10 @@ public class PathfinderRenderer extends Renderer {
             this.value = value;
             this.changeStart = changeStart;
         }
-    
+
         @Override
         public void actionPerformed(ActionEvent e) {
-            if (changeStart){
+            if (changeStart) {
                 startPosition = Optional.of(value);
             } else {
                 targetPosition = Optional.of(value);
@@ -111,6 +111,7 @@ public class PathfinderRenderer extends Renderer {
             updatePath();
         }
     }
+
     public class ClearTargetsMenuItem extends JMenuItem implements ActionListener {
         private static final long serialVersionUID = 5044641911354759117L;
 
@@ -120,7 +121,7 @@ public class PathfinderRenderer extends Renderer {
             super(msg);
             addActionListener(this);
         }
-    
+
         @Override
         public void actionPerformed(ActionEvent e) {
             startPosition = Optional.empty();

@@ -15,6 +15,7 @@ public interface SimulationRunner extends Updatable {
     // long run(Instant timePoint);
 
     TaskStatus status();
+
     void redraw();
 
     void reset();

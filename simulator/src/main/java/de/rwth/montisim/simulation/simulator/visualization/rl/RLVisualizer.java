@@ -25,7 +25,7 @@ import java.util.stream.Collectors;
 
 // Reinforcement learning version of ScenarioVis
 
-public class RLVisualizer{
+public class RLVisualizer {
 
     String current_scenario = "";
     JLabel scenario_name;
@@ -42,32 +42,33 @@ public class RLVisualizer{
     private boolean done_clearing = true;
 
 
-    public RLVisualizer(OsmMap map, SimulationConfig simConfig, Viewer2D viewer, Instant simTime){
-    	this.map = map;
-    	this.simConfig = simConfig;
+    public RLVisualizer(OsmMap map, SimulationConfig simConfig, Viewer2D viewer, Instant simTime) {
+        this.map = map;
+        this.simConfig = simConfig;
         this.viewer = viewer;
         this.simTime = simTime;
     }
 
     // initialize simulation handler
-    public void init(Boolean distributed, Boolean randomize, Boolean play, Boolean miniStep, String selfPlay_mode){
+    public void init(Boolean distributed, Boolean randomize, Boolean play, Boolean miniStep, String selfPlay_mode) {
         String lib_path = System.getProperty("user.dir") + "/";
         System.load(lib_path + "libROSInterface.so");
         rlSimulationHandler = new RLSimulationHandler(simConfig, simTime, map, this);
         rlSimulationHandler.setSettings(distributed, randomize, play, miniStep, selfPlay_mode);
-        new Thread(() -> rlSimulationHandler.start()).start();        
+        new Thread(() -> rlSimulationHandler.start()).start();
     }
 
-    public void clearRenderer(){
+    public void clearRenderer() {
         done_clearing = false;
-        if(viewer != null && !carRenderers.isEmpty()){
+        if (viewer != null && !carRenderers.isEmpty()) {
             viewer.clearRenderers();
             carRenderers.clear();
         }
         done_clearing = true;
-        
+
     }
-    public void setup(World world, Pathfinding pathfinding){
+
+    public void setup(World world, Pathfinding pathfinding) {
         // Setup visualizer
         viewer.addRenderer(new WorldRenderer(world));
         viewer.addRenderer(new PathfinderRenderer(pathfinding));
@@ -81,7 +82,7 @@ public class RLVisualizer{
             viewer.addRenderer(cr);
             carRenderers.add(cr);
         }
-        while(!done_clearing);
+        while (!done_clearing) ;
         viewer.repaint();
 
     }
@@ -127,10 +128,11 @@ public class RLVisualizer{
             scale = yscale;
         viewer.setZoom(scale);
     }
+
     public void redraw() {
         for (CarRenderer cr : carRenderers)
             cr.dirty = true;
-        while(!done_clearing);
+        while (!done_clearing) ;
         viewer.update();
     }
 }

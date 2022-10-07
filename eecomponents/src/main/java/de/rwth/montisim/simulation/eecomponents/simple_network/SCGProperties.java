@@ -39,5 +39,5 @@ public class SCGProperties extends EEComponentProperties {
         Vehicle vehicle = context.getObject(Vehicle.CONTEXT_KEY);
         return new SimpleCommunicationGateway(this, eesystem, network, vehicle);
     }
-    
+
 }

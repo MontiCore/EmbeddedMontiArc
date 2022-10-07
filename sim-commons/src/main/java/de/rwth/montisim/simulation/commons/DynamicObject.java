@@ -6,7 +6,7 @@ import de.rwth.montisim.commons.utils.json.Typed;
 
 /**
  * Represents a dynamic object in the simulation, does have positional and rotation velocities and a mass.
-*/
+ */
 @Typed("dynamic")
 public class DynamicObject extends StaticObject {
     //public static final String TYPE = "dynamic";

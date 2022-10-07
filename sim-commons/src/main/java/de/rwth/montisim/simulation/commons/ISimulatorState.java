@@ -2,5 +2,5 @@
 package de.rwth.montisim.simulation.commons;
 
 public interface ISimulatorState {
-    
+
 }

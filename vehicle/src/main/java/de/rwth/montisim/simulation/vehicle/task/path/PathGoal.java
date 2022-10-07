@@ -9,6 +9,7 @@ import de.rwth.montisim.simulation.vehicle.navigation.Navigation;
 import de.rwth.montisim.simulation.vehicle.task.Goal;
 
 import java.util.List;
+import java.util.ListIterator;
 import java.util.Optional;
 import java.util.Vector;
 
@@ -17,15 +18,14 @@ import java.util.Vector;
  * PathGoal is used for setting up a set of locations, which a vehicle must or must
  * not reach. The order in the path matters, they will be considered in the exact
  * order as they are given.
- *
+ * <p>
  * For example, path = [node1, node2, ...] means node2
  * can only be considered, after node1 has been reached by the vehicle.
- *
  */
 public class PathGoal extends Goal {
     public transient final PathGoalProperties properties;
     public transient Vector<Vec2> path; // In local coordinates (meters)
-    
+
     private int currDestIdx = -1; // the index of current destination (next location the vehicle should reach)
 
     public PathGoal(PathGoalProperties properties, Vector<Vec2> path) {
@@ -34,7 +34,6 @@ public class PathGoal extends Goal {
         this.path = path;
     }
 
-    
 
     public void update(Vehicle v) {
         switch (properties.ltl_operator) {
@@ -44,14 +43,16 @@ public class PathGoal extends Goal {
             case NEVER:
                 handleNever(v);
                 break;
-            default: throw new IllegalArgumentException("Specified LTL operator not supported for the PathGoal.");
+            default:
+                throw new IllegalArgumentException("Specified LTL operator not supported for the PathGoal.");
         }
     }
 
     // Only gets called when this PathGoal is active
     // Returns true if all completed
     public boolean updateDriveTarget(Vehicle v, Optional<Navigation> nav) {
-        if (!nav.isPresent()) throw new IllegalArgumentException("PathGoal requires a Navigation component in the Vehicle.");
+        if (!nav.isPresent())
+            throw new IllegalArgumentException("PathGoal requires a Navigation component in the Vehicle.");
         Navigation navv = nav.get();
         boolean newTarget = false;
         if (currDestIdx < 0) {
@@ -62,7 +63,7 @@ public class PathGoal extends Goal {
             double dist = v.physicalObject.pos.asVec2().distance(dest);
 
             if (dist <= properties.range) {
-                navv.popTargetPos();
+                navv.popTargetPos(); // I think this is unnecessary now (since we set the whole path in the navigation), but doesn't hurt
                 newTarget = true;
             }
         } else return true;
@@ -70,7 +71,12 @@ public class PathGoal extends Goal {
             currDestIdx += 1;
             if (currDestIdx < path.size()) {
                 updateStatus(TaskStatus.RUNNING);
-                navv.pushTargetPos(path.get(currDestIdx));
+                Vector<Vec2> tmp = new Vector<>();
+                // only get the points on the path, which we haven't visited yet
+                for(int index = currDestIdx; index < path.size(); index++) {
+                    tmp.add(path.get(index));
+                }
+                navv.setTargetsPos(tmp);
             } else {
                 // goal is successful if all destinations have been reached
                 updateStatus(TaskStatus.SUCCEEDED);

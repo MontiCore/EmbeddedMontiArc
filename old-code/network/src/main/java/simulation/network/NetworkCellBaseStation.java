@@ -1,6 +1,6 @@
 /**
  * (c) https://github.com/MontiCore/monticore
- *
+ * <p>
  * The license generally applicable for this project
  * can be found under https://github.com/MontiCore/monticore.
  */
@@ -70,18 +70,18 @@ public class NetworkCellBaseStation implements SimulationLoopExecutable, Physica
      * Initial position at origin
      */
     public NetworkCellBaseStation() {
-        position = new Vec3(new double[] {0.0, 0.0, 0.0});
+        position = new Vec3(new double[]{0.0, 0.0, 0.0});
         Rotation rot = new Rotation(RotationOrder.XYZ, RotationConvention.VECTOR_OPERATOR, 0.0, 0.0, 0.0);
         rotation = new BlockRealMatrix(rot.getMatrix());
-        velocity = new Vec3(new double[] {0.0, 0.0, 0.0});
-        angularVelocity = new Vec3(new double[] {0.0, 0.0, 0.0});
-        force = new Vec3(new double[] {0.0, 0.0, 0.0});
-        torque = new Vec3(new double[] {0.0, 0.0, 0.0});
+        velocity = new Vec3(new double[]{0.0, 0.0, 0.0});
+        angularVelocity = new Vec3(new double[]{0.0, 0.0, 0.0});
+        force = new Vec3(new double[]{0.0, 0.0, 0.0});
+        torque = new Vec3(new double[]{0.0, 0.0, 0.0});
         mass = 0.0;
         width = 5.0;
         length = 5.0;
         height = 15.0;
-        geometryPositionOffset = new Vec3(new double[] {0.0, 0.0, 0.0});
+        geometryPositionOffset = new Vec3(new double[]{0.0, 0.0, 0.0});
         physicalObjectType = PhysicalObjectType.PHYSICAL_OBJECT_TYPE_NETWORK_CELL_BASE_STATION;
         error = false;
         collision = false;
@@ -94,8 +94,8 @@ public class NetworkCellBaseStation implements SimulationLoopExecutable, Physica
      * @return Position vector of the center of mass
      */
     @Override
-    public Vec3 getPosition(){
-        return  position.copy();
+    public Vec3 getPosition() {
+        return position.copy();
     }
 
     /**
@@ -103,7 +103,7 @@ public class NetworkCellBaseStation implements SimulationLoopExecutable, Physica
      * @param position New position vector of the center of mass
      */
     @Override
-    public void setPosition(Vec3 position){
+    public void setPosition(Vec3 position) {
         this.position = position.copy();
     }
 
@@ -112,7 +112,7 @@ public class NetworkCellBaseStation implements SimulationLoopExecutable, Physica
      * @return Rotation matrix around the center of mass
      */
     @Override
-    public RealMatrix getRotation(){
+    public RealMatrix getRotation() {
         return this.rotation.copy();
     }
 
@@ -121,7 +121,7 @@ public class NetworkCellBaseStation implements SimulationLoopExecutable, Physica
      * @param rotation New rotation matrix around the center of mass
      */
     @Override
-    public void setRotation(RealMatrix rotation){
+    public void setRotation(RealMatrix rotation) {
         this.rotation = rotation.copy();
     }
 
@@ -130,7 +130,7 @@ public class NetworkCellBaseStation implements SimulationLoopExecutable, Physica
      * @return Velocity vector of the center of mass
      */
     @Override
-    public Vec3 getVelocity(){
+    public Vec3 getVelocity() {
         return this.velocity.copy();
     }
 
@@ -139,7 +139,7 @@ public class NetworkCellBaseStation implements SimulationLoopExecutable, Physica
      * @param velocity New velocity vector of the center of mass
      */
     @Override
-    public void setVelocity(Vec3 velocity){
+    public void setVelocity(Vec3 velocity) {
         this.velocity = velocity.copy();
     }
 
@@ -147,7 +147,7 @@ public class NetworkCellBaseStation implements SimulationLoopExecutable, Physica
      * Function that returns a copy of the angular velocity vector around the center of mass
      * @return Angular velocity vector around the center of mass
      */
-    public Vec3 getAngularVelocity(){
+    public Vec3 getAngularVelocity() {
         return this.angularVelocity.copy();
     }
 
@@ -155,7 +155,7 @@ public class NetworkCellBaseStation implements SimulationLoopExecutable, Physica
      * Function that sets the angular velocity vector around the center of mass
      * @param angularVelocity New angular velocity around of the center of mass
      */
-    public void setAngularVelocity(Vec3 angularVelocity){
+    public void setAngularVelocity(Vec3 angularVelocity) {
         this.angularVelocity = angularVelocity.copy();
     }
 
@@ -164,7 +164,7 @@ public class NetworkCellBaseStation implements SimulationLoopExecutable, Physica
      * @param force Force vector that acts on the center of mass
      */
     @Override
-    public void addForce(Vec3 force){
+    public void addForce(Vec3 force) {
         this.force = this.force.add(force);
     }
 
@@ -172,7 +172,7 @@ public class NetworkCellBaseStation implements SimulationLoopExecutable, Physica
      * Function that add an external torque acting around the center of mass
      * @param torque Torque vector that acts around the center of mass
      */
-    public void addTorque(Vec3 torque){
+    public void addTorque(Vec3 torque) {
         this.torque = this.torque.add(torque);
     }
 
@@ -181,7 +181,7 @@ public class NetworkCellBaseStation implements SimulationLoopExecutable, Physica
      * @return Mass of the physical object
      */
     @Override
-    public double getMass(){
+    public double getMass() {
         return this.mass;
     }
 
@@ -190,7 +190,7 @@ public class NetworkCellBaseStation implements SimulationLoopExecutable, Physica
      * @param mass New mass of the physical object
      */
     @Override
-    public void setMass(double mass){
+    public void setMass(double mass) {
         this.mass = mass;
     }
 
@@ -199,7 +199,7 @@ public class NetworkCellBaseStation implements SimulationLoopExecutable, Physica
      * @return Width of the object
      */
     @Override
-    public double getWidth(){
+    public double getWidth() {
         return this.width;
     }
 
@@ -208,7 +208,7 @@ public class NetworkCellBaseStation implements SimulationLoopExecutable, Physica
      * @param width New width of the object
      */
     @Override
-    public void setWidth(double width){
+    public void setWidth(double width) {
         this.width = width;
     }
 
@@ -217,7 +217,7 @@ public class NetworkCellBaseStation implements SimulationLoopExecutable, Physica
      * @return Length of the object
      */
     @Override
-    public double getLength(){
+    public double getLength() {
         return this.length;
     }
 
@@ -226,7 +226,7 @@ public class NetworkCellBaseStation implements SimulationLoopExecutable, Physica
      * @param length New length of the object
      */
     @Override
-    public void setLength(double length){
+    public void setLength(double length) {
         this.length = length;
     }
 
@@ -235,7 +235,7 @@ public class NetworkCellBaseStation implements SimulationLoopExecutable, Physica
      * @return Height of the object
      */
     @Override
-    public double getHeight(){
+    public double getHeight() {
         return this.height;
     }
 
@@ -244,7 +244,7 @@ public class NetworkCellBaseStation implements SimulationLoopExecutable, Physica
      * @param height New height of the object
      */
     @Override
-    public void setHeight(double height){
+    public void setHeight(double height) {
         this.height = height;
     }
 
@@ -253,7 +253,7 @@ public class NetworkCellBaseStation implements SimulationLoopExecutable, Physica
      * @return Position vector of the center of geometry
      */
     @Override
-    public Vec3 getGeometryPosition(){
+    public Vec3 getGeometryPosition() {
         return position.add(getGeometryPositionOffset());
     }
 
@@ -262,7 +262,7 @@ public class NetworkCellBaseStation implements SimulationLoopExecutable, Physica
      * @param geometryPosition New position vector of the center of geometry
      */
     @Override
-    public void setGeometryPosition(Vec3 geometryPosition){
+    public void setGeometryPosition(Vec3 geometryPosition) {
         this.position = geometryPosition.add(getGeometryPositionOffset().mapMultiply(-1.0));
     }
 
@@ -271,7 +271,7 @@ public class NetworkCellBaseStation implements SimulationLoopExecutable, Physica
      * @return Offset vector of the center of mass position to the center of geometry position
      */
     @Override
-    public Vec3 getGeometryPositionOffset(){
+    public Vec3 getGeometryPositionOffset() {
         return this.rotation.operate(geometryPositionOffset).copy();
     }
 
@@ -280,7 +280,7 @@ public class NetworkCellBaseStation implements SimulationLoopExecutable, Physica
      * @param geometryPositionOffset New offset vector of the center of mass position to the center of geometry position
      */
     @Override
-    public void setGeometryPositionOffset(Vec3 geometryPositionOffset){
+    public void setGeometryPositionOffset(Vec3 geometryPositionOffset) {
         Vec3 currentGeometryPosition = getGeometryPosition();
         RealMatrix inverseRotation = MathHelper.matrixInvert(rotation);
         this.geometryPositionOffset = inverseRotation.operate(geometryPositionOffset);
@@ -292,7 +292,7 @@ public class NetworkCellBaseStation implements SimulationLoopExecutable, Physica
      * @return Type of the physical object
      */
     @Override
-    public PhysicalObjectType getPhysicalObjectType(){
+    public PhysicalObjectType getPhysicalObjectType() {
         return this.physicalObjectType;
     }
 
@@ -301,7 +301,7 @@ public class NetworkCellBaseStation implements SimulationLoopExecutable, Physica
      * @return Error flag of the physical object
      */
     @Override
-    public boolean getError(){
+    public boolean getError() {
         return this.error;
     }
 
@@ -310,7 +310,7 @@ public class NetworkCellBaseStation implements SimulationLoopExecutable, Physica
      * @param error New Error flag of the physical object
      */
     @Override
-    public void setError(boolean error){
+    public void setError(boolean error) {
         Log.warning("NetworkCellBaseStation: setError - error: " + error + ", NetworkCellBaseStation at start: " + this);
         this.error = error;
         Log.warning("NetworkCellBaseStation: setError - error: " + error + ", NetworkCellBaseStation at end: " + this);
@@ -321,7 +321,7 @@ public class NetworkCellBaseStation implements SimulationLoopExecutable, Physica
      * @return Collision flag of the physical object
      */
     @Override
-    public boolean getCollision(){
+    public boolean getCollision() {
         return this.collision;
     }
 
@@ -330,7 +330,7 @@ public class NetworkCellBaseStation implements SimulationLoopExecutable, Physica
      * @param collision New collision flag of the physical object
      */
     @Override
-    public void setCollision(boolean collision){
+    public void setCollision(boolean collision) {
         Log.warning("NetworkCellBaseStation: setCollision - collision: " + collision + ", NetworkCellBaseStation at start: " + this);
         this.collision = collision;
         Log.warning("NetworkCellBaseStation: setCollision - collision: " + collision + ", NetworkCellBaseStation at end: " + this);
@@ -341,7 +341,7 @@ public class NetworkCellBaseStation implements SimulationLoopExecutable, Physica
      * @return Id of the physical object
      */
     @Override
-    public long getId(){
+    public long getId() {
         return this.uniqueId;
     }
 
@@ -351,12 +351,12 @@ public class NetworkCellBaseStation implements SimulationLoopExecutable, Physica
      */
     @Override
     @Deprecated
-    public List<Map.Entry<Vec3, Vec3>> getBoundaryVectors(){
+    public List<Map.Entry<Vec3, Vec3>> getBoundaryVectors() {
         //TODO: Function is unnecessary with three dimensional collision detection
         // Build relative vectors between vertices
-        Vec3 relVectorBackFront = new Vec3(new double[] {0.0, getLength(), 0.0});
-        Vec3 relVectorLeftRight = new Vec3(new double[] {getWidth(), 0.0 , 0.0});
-        Vec3 relVectorBottomTop = new Vec3(new double[] {0.0, 0.0, getHeight()});
+        Vec3 relVectorBackFront = new Vec3(new double[]{0.0, getLength(), 0.0});
+        Vec3 relVectorLeftRight = new Vec3(new double[]{getWidth(), 0.0, 0.0});
+        Vec3 relVectorBottomTop = new Vec3(new double[]{0.0, 0.0, getHeight()});
 
         // Rotate relative vectors
         relVectorBackFront = getRotation().operate(relVectorBackFront);
@@ -391,10 +391,10 @@ public class NetworkCellBaseStation implements SimulationLoopExecutable, Physica
      * @param deltaTime Duration of the current simulation step
      */
     @Override
-    public void computePhysics(Duration deltaTime){
+    public void computePhysics(Duration deltaTime) {
         //No physics computations for network cell base stations
-        force = new Vec3(new double[] {0.0, 0.0, 0.0});
-        torque = new Vec3(new double[] {0.0, 0.0, 0.0});
+        force = new Vec3(new double[]{0.0, 0.0, 0.0});
+        torque = new Vec3(new double[]{0.0, 0.0, 0.0});
     }
 
     /**
@@ -405,9 +405,9 @@ public class NetworkCellBaseStation implements SimulationLoopExecutable, Physica
      * @param rotZ Z component of the rotation of the physical object
      */
     @Override
-    public void putOnSurface(double posX, double posY, double rotZ){
+    public void putOnSurface(double posX, double posY, double rotZ) {
         double groundZ = World.getInstance().getGround(posX, posY, this.getGeometryPosition().getEntry(2)).doubleValue();
-        this.setPosition(new Vec3(new double[] {posX, posY, groundZ + 0.5 * this.getHeight()}));
+        this.setPosition(new Vec3(new double[]{posX, posY, groundZ + 0.5 * this.getHeight()}));
         Rotation rot = new Rotation(RotationOrder.XYZ, RotationConvention.VECTOR_OPERATOR, 0.0, 0.0, rotZ);
         this.setRotation(new BlockRealMatrix(rot.getMatrix()));
     }

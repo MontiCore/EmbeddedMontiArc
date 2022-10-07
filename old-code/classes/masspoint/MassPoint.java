@@ -1,6 +1,6 @@
 /**
  * (c) https://github.com/MontiCore/monticore
- *
+ * <p>
  * The license generally applicable for this project
  * can be found under https://github.com/MontiCore/monticore.
  */
@@ -179,7 +179,7 @@ public class MassPoint {
     /**
      * Resetter for force
      */
-    public void resetForce(){
+    public void resetForce() {
         this.force = new Vec3(3);
     }
 
@@ -229,7 +229,7 @@ public class MassPoint {
      */
     @Override
     public String toString() {
-        return  "MassPoint " + hashCode() + ": type: " + type +
+        return "MassPoint " + hashCode() + ": type: " + type +
                 " , localPosition: " + localPosition +
                 " , localCenterDiff: " + localCenterDiff +
                 " , position: " + position +

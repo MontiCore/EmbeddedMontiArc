@@ -1,6 +1,6 @@
 /**
  * (c) https://github.com/MontiCore/monticore
- *
+ * <p>
  * The license generally applicable for this project
  * can be found under https://github.com/MontiCore/monticore.
  */
@@ -12,6 +12,7 @@ import org.apache.commons.math3.geometry.euclidean.twod.Vector2D;
 import de.rwth.montisim.simulation.environment.geometry.osmadapter.GeomStreet;
 import de.rwth.montisim.simulation.environment.pedestrians.PedestrianStreetParameters;
 import de.rwth.montisim.simulation.environment.visualisationadapter.EnvNode;
+
 import java.util.ArrayList;
 import java.util.List;
 import java.util.Random;
@@ -316,7 +317,7 @@ public class StreetInterpolator {
      * @return the point calculated
      */
     private Vec3 getTargetingPoint(boolean directionForward, boolean isOnLeftPavement,
-                                      MovementBetweenSplinePoints curMovement) {
+                                   MovementBetweenSplinePoints curMovement) {
         if (directionForward) {
             return isOnLeftPavement ? curMovement.mBasePointNextLeft : curMovement.mBasePointNextRight;
         } else {

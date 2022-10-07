@@ -39,7 +39,7 @@ public class CANProperties extends BusProperties {
     public String getType() {
         return TYPE;
     }
-    
+
     @Override
     public float routingCost() {
         return 1.2f;

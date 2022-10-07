@@ -33,7 +33,7 @@ public class OsmToWorldLoader {
         this.nodeRoadCounter = new int[nodeCount];
         this.intersectionID = new int[nodeCount];
         this.nodePoint = new Vec3[nodeCount];
-        for (int i = 0; i < nodeCount; ++i){
+        for (int i = 0; i < nodeCount; ++i) {
             nodeRoadCounter[i] = 0;
             intersectionID[i] = -1;
         }
@@ -48,10 +48,10 @@ public class OsmToWorldLoader {
         converter.coordsToMeters(osmMap.max_corner, world.maxCorner);
 
         int nodeCount = osmMap.nodeTable.size();
-        for (int i = 0; i < nodeCount; ++i){
+        for (int i = 0; i < nodeCount; ++i) {
             OsmMap.Node node = osmMap.nodeTable.elementAt(i);
-            if (node != null){
-                Vec3 pos = new Vec3(0,0,0);
+            if (node != null) {
+                Vec3 pos = new Vec3(0, 0, 0);
                 converter.coordsToMeters(node.coords, pos);
                 nodePoint[i] = pos;
             }
@@ -81,17 +81,17 @@ public class OsmToWorldLoader {
     }
 
     private void countIntersections(OsmMap.Way way) {
-        for (int nid : way.nodesLocalID){
+        for (int nid : way.nodesLocalID) {
             nodeRoadCounter[nid]++;
         }
     }
 
     private void createIntersections() {
-        for (int i = 0; i < nodeRoadCounter.length; ++i){
+        for (int i = 0; i < nodeRoadCounter.length; ++i) {
             int count = nodeRoadCounter[i];
             if (count > 1) {
                 OsmMap.Node node = osmMap.nodeTable.elementAt(i);
-                if (node != null){
+                if (node != null) {
                     Node is = new Node(nodePoint[i]);
                     intersectionID[i] = world.addNode(is);
                 }
@@ -108,11 +108,11 @@ public class OsmToWorldLoader {
         String areaTag = way.getTag(osmMap.TAG.AREA);
         String maxspeedTag = way.getTag(osmMap.TAG.MAX_SPEED);
         Way w = new Way(
-            roadNameTag !=null ? roadNameTag : "", 
-            oneWayTag != null && oneWayTag.equals(osmMap.VALUE_YES.str),
-            lanesTag != null ? Integer.valueOf(lanesTag) : 1,
-            areaTag != null && areaTag.equals(osmMap.VALUE_YES.str),
-            maxspeedTag != null ? Double.parseDouble(maxspeedTag) : DEFAULT_MAX_SPEED
+                roadNameTag != null ? roadNameTag : "",
+                oneWayTag != null && oneWayTag.equals(osmMap.VALUE_YES.str),
+                lanesTag != null ? Integer.valueOf(lanesTag) : 1,
+                areaTag != null && areaTag.equals(osmMap.VALUE_YES.str),
+                maxspeedTag != null ? Double.parseDouble(maxspeedTag) : DEFAULT_MAX_SPEED
         );
 
         int count = way.nodesLocalID.size();
@@ -135,16 +135,16 @@ public class OsmToWorldLoader {
         String levelsTag = way.getTag(osmMap.TAG.BUILDING_LEVELS);
 
         Building b = new Building(
-            nameTag !=null ? nameTag : "",
-            way.osmID,
-            type.equals(osmMap.VALUE_YES.str) ? "" : type, 
-            parseHeight(heightTag), 
-            parseLevels(levelsTag)
+                nameTag != null ? nameTag : "",
+                way.osmID,
+                type.equals(osmMap.VALUE_YES.str) ? "" : type,
+                parseHeight(heightTag),
+                parseLevels(levelsTag)
         );
 
         // Add boundary
         Vec3 lastP = null;
-        for (int nid : way.nodesLocalID){
+        for (int nid : way.nodesLocalID) {
             Vec3 p = nodePoint[nid];
             if (p == null) continue;
             if (lastP != null && p.distance(lastP) < 0.001) continue; // Ensure no points are too close to each other
@@ -152,26 +152,27 @@ public class OsmToWorldLoader {
             lastP = p;
         }
         // Remove last point if it is the same as the first
-        if (b.boundary.size() >= 2 && b.boundary.get(0).distance(b.boundary.get(b.boundary.size()-1)) < 0.001) b.boundary.remove(b.boundary.size()-1);
+        if (b.boundary.size() >= 2 && b.boundary.get(0).distance(b.boundary.get(b.boundary.size() - 1)) < 0.001)
+            b.boundary.remove(b.boundary.size() - 1);
 
         world.buildings.add(b);
     }
 
-    private double parseHeight(String value){
+    private double parseHeight(String value) {
         if (value == null || value.length() == 0) return 0;
         value = value.replace(',', '.');
-        if (value.charAt(value.length()-1) == 'm')
-            return Double.valueOf(value.substring(0, value.length()-1));
-        if (value.contains("'") || value.contains("\"") ){
+        if (value.charAt(value.length() - 1) == 'm')
+            return Double.valueOf(value.substring(0, value.length() - 1));
+        if (value.contains("'") || value.contains("\"")) {
             throw new IllegalArgumentException("TODO: parse Foot/Inch height.");
             //return INCH_LENGTH*inches+FOOT_LENGTH*feet;
         }
         return Double.valueOf(value);
     }
 
-    private int parseLevels(String value){
+    private int parseLevels(String value) {
         if (value == null || value.length() == 0) return 0;
-        if (value.contains(".")){
+        if (value.contains(".")) {
             return (int) Math.floor(Double.valueOf(value));
         }
         return Integer.valueOf(value);

@@ -16,7 +16,7 @@ public class BatteryProperties {
     public BatteryProperties(BatteryType batteryType) {
         this.type = batteryType;
     }
-    
+
     public BatteryProperties() {
         this.type = BatteryType.INFINITE;
     }
@@ -26,14 +26,14 @@ public class BatteryProperties {
     public double capacity = 180 * 1000000; // In Joule
     public double critical_charge = 10; // In percent
 
-    public Battery build(){
+    public Battery build() {
         switch (type) {
             case INFINITE:
                 return new InfiniteBattery(this);
             case SIMPLE:
                 return new SimpleBattery(this);
             default:
-                throw new IllegalArgumentException("Missing Battery Type: "+type);
+                throw new IllegalArgumentException("Missing Battery Type: " + type);
         }
     }
 

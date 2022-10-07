@@ -13,7 +13,7 @@ public class ElectricalPTProperties extends PowerTrainProperties {
     public static final String TYPE = "electrical";
 
     public ElectricalPTProperties(ElectricMotorProperties motorProperties,
-            BatteryProperties batteryProperties) {
+                                  BatteryProperties batteryProperties) {
         this.motorProperties = motorProperties;
         this.batteryProperties = batteryProperties;
     }
@@ -42,6 +42,4 @@ public class ElectricalPTProperties extends PowerTrainProperties {
     }
 
 
-
-    
 }

@@ -73,7 +73,7 @@ public class VehicleProperties {
         public double height = 1.383;
 
         public double center_of_gravity_height = 1.383 * 0.25; // Height of the CoG of the car with maximum suspension
-                                                               // extension.
+        // extension.
     }
 
     /**
@@ -81,22 +81,22 @@ public class VehicleProperties {
      */
     public static class WheelProperties /* implements JsonSerializable */ {
         public double diameter = (0.255 * 0.4) * 2 + (18 * Geometry.INCH_TO_METERS); // in meters: Tire width *
-                                                                                     // Aspect Ratio * 2 + (Rim
-                                                                                     // Diam * Inch)
+        // Aspect Ratio * 2 + (Rim
+        // Diam * Inch)
         public double width = 0.255; // in meters
 
         // For direction wheels
         public double front_wheel_axis_offset = 1; // Distance between the wheel center (track) and the rotation point
-                                                   // of the wheels. (positive is inwards)
+        // of the wheels. (positive is inwards)
         public double max_turning_angle = 30; // In degrees
 
         // Wheel position
         public double front_track_width = 62.2 * Geometry.INCH_TO_METERS; // (Track: center of wheel) -> distance
-                                                                          // between the 2 wheel's tracks
+        // between the 2 wheel's tracks
         public double back_track_dist = 63.1 * Geometry.INCH_TO_METERS;
         public double wheelbase = 2.812; // Distance between the front & back axes
         public double wheelbase_offset = 0; // Offset between the center of the wheelbase and the center of mass of the
-                                            // vehicle (positive -> center of mass more to the front of the wheelbase).
+        // vehicle (positive -> center of mass more to the front of the wheelbase).
 
     }
 
@@ -176,7 +176,7 @@ public class VehicleProperties {
         compContext.addObject(target.popper, EESystem.COMPONENT_POPPER_CONTEXT_KEY);
         compContext.addObject(target.eesystem.getMsgPrioComp());
         compContext.addObject(target);
-        
+
         // Add EEComponents
         for (EEComponentProperties properties : components) {
             properties.build(target.eesystem, compContext);
@@ -206,7 +206,8 @@ public class VehicleProperties {
         int c = 0;
         if (start_coords.isPresent()) {
             ++c;
-            if (!world.isPresent()) throw new IllegalArgumentException("World missing from BuildContext for vehicle start position");
+            if (!world.isPresent())
+                throw new IllegalArgumentException("World missing from BuildContext for vehicle start position");
             world.get().converter.get().coordsToMeters(start_coords.get(), pos);
         }
         if (start_pos.isPresent()) {
@@ -215,16 +216,20 @@ public class VehicleProperties {
         }
         if (start_osm_node.isPresent()) {
             ++c;
-            if (!map.isPresent()) throw new IllegalArgumentException("Osm Map missing from BuildContext for vehicle start position");
-            if (!world.isPresent()) throw new IllegalArgumentException("World missing from BuildContext for vehicle start position");
+            if (!map.isPresent())
+                throw new IllegalArgumentException("Osm Map missing from BuildContext for vehicle start position");
+            if (!world.isPresent())
+                throw new IllegalArgumentException("World missing from BuildContext for vehicle start position");
             world.get().converter.get().coordsToMeters(map.get().getNode(start_osm_node.get()).coords, pos);
         }
-        if (c == 0) throw new IllegalArgumentException("No start position/coordinates/osm-node specified for vehicle: "+vehicleName);
-        if (c > 1) throw new IllegalArgumentException("Multiple start position/coordinates/osm-node specified for vehicle: "+vehicleName);
+        if (c == 0)
+            throw new IllegalArgumentException("No start position/coordinates/osm-node specified for vehicle: " + vehicleName);
+        if (c > 1)
+            throw new IllegalArgumentException("Multiple start position/coordinates/osm-node specified for vehicle: " + vehicleName);
 
         target.physicsModel.setGroundPosition(
-            new Vec3(pos.x, pos.y, 0), 
-            new Vec2(Math.cos(start_orientation * Geometry.DEG_TO_RAD), Math.sin(start_orientation * Geometry.DEG_TO_RAD))
+                new Vec3(pos.x, pos.y, 0),
+                new Vec2(Math.cos(start_orientation * Geometry.DEG_TO_RAD), Math.sin(start_orientation * Geometry.DEG_TO_RAD))
         );
 
         return target;

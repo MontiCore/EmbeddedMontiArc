@@ -11,10 +11,9 @@ import de.rwth.montisim.simulation.vehicle.task.Goal;
 /**
  * This class represents a simple LTL formula that can be evaluated/updated
  * at any time given an instance of the Vehicle class.
- *
+ * <p>
  * The LTL formula of this class concentrate on vehicle's property such as
  * orientation, velocity, speed, battery, etc.
- *
  */
 public class MetricGoal extends Goal {
     public static final double EPSILON = 0.000001; // For equality comparison
@@ -26,7 +25,7 @@ public class MetricGoal extends Goal {
         this.properties = properties;
         PhysicalValue val = vehicle.getPhysicalValues().getPhysicalValue(properties.compare);
         if (!(val instanceof PhysicalValueDouble)) {
-            throw new IllegalArgumentException("MetricGoal only support physical values of type 'double' but '"+properties.compare+"' is not.");
+            throw new IllegalArgumentException("MetricGoal only support physical values of type 'double' but '" + properties.compare + "' is not.");
         }
         this.value = (PhysicalValueDouble) val;
     }
@@ -47,13 +46,19 @@ public class MetricGoal extends Goal {
      * @return result of vehicle.[property] comparator value[unit]
      */
     private boolean evaluate(double value) {
-        switch(properties.operator) {
-            case EQUAL: return properties.with - EPSILON <= value && value <= properties.with + EPSILON;
-            case GREATER: return value > properties.with;
-            case GREATER_EQUAL: return value >= properties.with;
-            case LESS: return value < properties.with;
-            case LESS_EQUAL: return value <= properties.with;
-            default: return false;
+        switch (properties.operator) {
+            case EQUAL:
+                return properties.with - EPSILON <= value && value <= properties.with + EPSILON;
+            case GREATER:
+                return value > properties.with;
+            case GREATER_EQUAL:
+                return value >= properties.with;
+            case LESS:
+                return value < properties.with;
+            case LESS_EQUAL:
+                return value <= properties.with;
+            default:
+                return false;
         }
     }
 
@@ -67,7 +72,7 @@ public class MetricGoal extends Goal {
         MetricGoal vg = (MetricGoal) obj;
 
         return status.equals(vg.status) &&
-            properties.equals(vg.properties);
+                properties.equals(vg.properties);
     }
 
 }

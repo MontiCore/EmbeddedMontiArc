@@ -8,5 +8,5 @@ public class ChargingStation {
     // Tag appears on: NODES
 
     int capacity;
-    
+
 }

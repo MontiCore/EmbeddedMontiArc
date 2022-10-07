@@ -1,6 +1,6 @@
 /**
  * (c) https://github.com/MontiCore/monticore
- *
+ * <p>
  * The license generally applicable for this project
  * can be found under https://github.com/MontiCore/monticore.
  */
@@ -21,37 +21,36 @@ public class ModelicaPhysicalVehicleBuilder extends PhysicalVehicleBuilder {
     /**
      * Constructor
      */
-    public ModelicaPhysicalVehicleBuilder(){
+    public ModelicaPhysicalVehicleBuilder() {
         // Class has no uninitialized fields
     }
 
-	@Override
-	PhysicalVehicle createPhysicalVehicle() {
-		return new ModelicaPhysicalVehicle();
+    @Override
+    PhysicalVehicle createPhysicalVehicle() {
+        return new ModelicaPhysicalVehicle();
     }
-    
-    
 
-	@Override
-	Vec3 calculateAngularVelocity(Vec3 angularVelocity) {
-		// Get rotation
+
+    @Override
+    Vec3 calculateAngularVelocity(Vec3 angularVelocity) {
+        // Get rotation
         RealMatrix rotation;
-        if(this.rotation.isPresent()){
+        if (this.rotation.isPresent()) {
             rotation = ModelicaPhysicalVehicle.coordinateRotation.multiply(new BlockRealMatrix(this.rotation.get().getMatrix()));
-        }else{
+        } else {
             rotation = ModelicaPhysicalVehicle.coordinateRotation.copy();
         }
         // Compute angular velocity in local coordinates
         return rotation.transpose().operate(this.angularVelocity.get());
-	}
+    }
 
-	@Override
-	void setVelocity(PhysicalVehicle physicalVehicle, Vec3 velocity) {
+    @Override
+    void setVelocity(PhysicalVehicle physicalVehicle, Vec3 velocity) {
         // Get rotation
         RealMatrix rotation;
-        if(this.rotation.isPresent()){
+        if (this.rotation.isPresent()) {
             rotation = ModelicaPhysicalVehicle.coordinateRotation.multiply(new BlockRealMatrix(this.rotation.get().getMatrix()));
-        }else{
+        } else {
             rotation = ModelicaPhysicalVehicle.coordinateRotation.copy();
         }
         // Compute velocity in local coordinates
@@ -61,9 +60,9 @@ public class ModelicaPhysicalVehicleBuilder extends PhysicalVehicleBuilder {
         ((ModelicaPhysicalVehicle) physicalVehicle).getVDM().setParameter("v_y_0", localVelocity.getEntry(1));
         // Get wheelRadius
         double wheelRadius;
-        if(this.wheelRadius.isPresent()){
+        if (this.wheelRadius.isPresent()) {
             wheelRadius = this.wheelRadius.get();
-        }else {
+        } else {
             VehicleDynamicsModel model = new VehicleDynamicsModel();
             model.initialise();
             wheelRadius = model.getValue("r_nom");
@@ -74,5 +73,5 @@ public class ModelicaPhysicalVehicleBuilder extends PhysicalVehicleBuilder {
         ((ModelicaPhysicalVehicle) physicalVehicle).getVDM().setParameter("omega_wheel_2_0", localVelocity.getEntry(0));
         ((ModelicaPhysicalVehicle) physicalVehicle).getVDM().setParameter("omega_wheel_3_0", localVelocity.getEntry(0));
         ((ModelicaPhysicalVehicle) physicalVehicle).getVDM().setParameter("omega_wheel_4_0", localVelocity.getEntry(0));
-	}
+    }
 }

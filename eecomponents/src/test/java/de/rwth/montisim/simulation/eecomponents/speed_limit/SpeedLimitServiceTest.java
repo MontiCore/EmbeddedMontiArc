@@ -29,43 +29,43 @@ public class SpeedLimitServiceTest {
 
         World world = new World("Stub");
 
-        Way way1 = new Way("way_1", true,1, false, 30 );
-        Way way2 = new Way("way_2", true,1, false, 50 );
-        Way way3 = new Way("way_3", true,1, false, 30 );
+        Way way1 = new Way("way_1", true, 1, false, 30);
+        Way way2 = new Way("way_2", true, 1, false, 50);
+        Way way3 = new Way("way_3", true, 1, false, 30);
 
         world.addWay(way1);
         world.addWay(way2);
         world.addWay(way3);
 
         //first intersection between way1 and way2
-        Node node1 = new Node(new Vec3(20,0,0));
+        Node node1 = new Node(new Vec3(20, 0, 0));
         node1.ways.add(way1);
         node1.ways.add(way2);
         int node1Id = world.addNode(node1);
 
         //second intersection between way2 and way3
-        Node node2 = new Node(new Vec3(50,0,0));
+        Node node2 = new Node(new Vec3(50, 0, 0));
         node2.ways.add(way2);
         node2.ways.add(way3);
         int node2Id = world.addNode(node2);
 
         //waypoints of way1
-        way1.addPoint(new Vec3(0,0,0), -1);
-        way1.addPoint(new Vec3(10,0,0), -1);
+        way1.addPoint(new Vec3(0, 0, 0), -1);
+        way1.addPoint(new Vec3(10, 0, 0), -1);
         way1.addPoint(node1.point, node1Id);
 
         //waypoints of way2
         way2.addPoint(node1.point, node1Id);
-        way2.addPoint(new Vec3(30,0,0), -1);
-        way2.addPoint(new Vec3(40,0,0), -1);
+        way2.addPoint(new Vec3(30, 0, 0), -1);
+        way2.addPoint(new Vec3(40, 0, 0), -1);
         way2.addPoint(node2.point, node2Id);
 
         //waypoints of way3
         way3.addPoint(node2.point, node2Id);
-        way3.addPoint(new Vec3(60,0,0), -1);
-        way3.addPoint(new Vec3(70,0,0), -1);
-        way3.addPoint(new Vec3(80,0,0), -1);
-        way3.addPoint(new Vec3(90,0,0), -1);
+        way3.addPoint(new Vec3(60, 0, 0), -1);
+        way3.addPoint(new Vec3(70, 0, 0), -1);
+        way3.addPoint(new Vec3(80, 0, 0), -1);
+        way3.addPoint(new Vec3(90, 0, 0), -1);
 
         //construct SpeedlimitService with the world
         BuildContext buildContext = new BuildContext();
@@ -76,8 +76,8 @@ public class SpeedLimitServiceTest {
 
 
         //the test trajectory with same points as on the individual ways
-        double[] trajectoryX = new double[]{ 0 , 10 , 20 , 30 , 40 , 50 , 60 , 70 , 80 , 90};
-        double[] trajectoryY = new double[]{ 0 , 0  , 0  , 0  , 0  , 0  , 0  , 0  , 0  , 0};
+        double[] trajectoryX = new double[]{0, 10, 20, 30, 40, 50, 60, 70, 80, 90};
+        double[] trajectoryY = new double[]{0, 0, 0, 0, 0, 0, 0, 0, 0, 0};
         int trajectoryLength = 10;
         VectorType trajectoryDatatype = new VectorType(BasicType.DOUBLE, trajectoryLength);
 
@@ -107,7 +107,7 @@ public class SpeedLimitServiceTest {
         speedLimitService.receive(new MessageReceiveEvent(speedLimitService, Instant.now(), trajectoryYMessage));
 
         //assertion
-        double[] expectedSpeedLimits = new double[]{30,30,50,50,50,30,30,30,30};
+        double[] expectedSpeedLimits = new double[]{30, 30, 50, 50, 50, 30, 30, 30, 30};
         double[] actualSpeedLimits = speedLimitService.fetchUpperSpeedLimits();
         Assert.assertArrayEquals(expectedSpeedLimits, actualSpeedLimits, Lidar.DOUBLE_TOLERANCE);
     }

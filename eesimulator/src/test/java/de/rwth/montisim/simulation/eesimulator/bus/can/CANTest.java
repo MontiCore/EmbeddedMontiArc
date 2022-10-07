@@ -34,9 +34,9 @@ public class CANTest {
      * All tests assume HIGH_SPEED_CAN transmission speed. The setup uses 3
      * TestEEComponents connected to a CAN bus. Routing: every messages is sent to
      * all 3 test components.
-     * 
+     * <p>
      * For details: [docs/eesimulator.md]
-     * 
+     *
      * @throws EEMessageTypeException
      * @throws EESetupException
      */
@@ -67,34 +67,34 @@ public class CANTest {
         m2 = new Message(c1.getMsgInfo("m2"), null, 3);
         t2 = new CANMessageTransmission(m2, null);
         // Multi frame payload (full)
-        m3 = new Message(c1.getMsgInfo("m3"), null, CAN.MAX_PAYLOAD_SIZE_BYTES*5);
+        m3 = new Message(c1.getMsgInfo("m3"), null, CAN.MAX_PAYLOAD_SIZE_BYTES * 5);
         t3 = new CANMessageTransmission(m3, null);
         // Multi frame payload (full)
-        m4 = new Message(c1.getMsgInfo("m4"), null, CAN.MAX_PAYLOAD_SIZE_BYTES*3 + 5);
+        m4 = new Message(c1.getMsgInfo("m4"), null, CAN.MAX_PAYLOAD_SIZE_BYTES * 3 + 5);
         t4 = new CANMessageTransmission(m4, null);
         // Full frame payload
         m5 = new Message(c1.getMsgInfo("m5"), null, CAN.MAX_PAYLOAD_SIZE_BYTES);
         t5 = new CANMessageTransmission(m5, null);
-        
+
         eesystem.addMessagePriorities(Arrays.asList(
-            new Pair<String, Integer>("m1", 1),
-            new Pair<String, Integer>("m2", 2),
-            new Pair<String, Integer>("m3", 3),
-            new Pair<String, Integer>("m4", 4),
-            new Pair<String, Integer>("m5", 5)
+                new Pair<String, Integer>("m1", 1),
+                new Pair<String, Integer>("m2", 2),
+                new Pair<String, Integer>("m3", 3),
+                new Pair<String, Integer>("m4", 4),
+                new Pair<String, Integer>("m5", 5)
         ));
 
         // Register messages routing.
-        can.msgRoutingTable.put(m1.msgInfo, Arrays.asList(c1,c2,c3));
-        can.msgRoutingTable.put(m2.msgInfo, Arrays.asList(c1,c2,c3));
-        can.msgRoutingTable.put(m3.msgInfo, Arrays.asList(c1,c2,c3));
-        can.msgRoutingTable.put(m4.msgInfo, Arrays.asList(c1,c2,c3));
-        can.msgRoutingTable.put(m5.msgInfo, Arrays.asList(c1,c2,c3));
+        can.msgRoutingTable.put(m1.msgInfo, Arrays.asList(c1, c2, c3));
+        can.msgRoutingTable.put(m2.msgInfo, Arrays.asList(c1, c2, c3));
+        can.msgRoutingTable.put(m3.msgInfo, Arrays.asList(c1, c2, c3));
+        can.msgRoutingTable.put(m4.msgInfo, Arrays.asList(c1, c2, c3));
+        can.msgRoutingTable.put(m5.msgInfo, Arrays.asList(c1, c2, c3));
 
     }
 
     @Test
-    public void fullFrameMsg(){
+    public void fullFrameMsg() {
         // Create events
         MessageReceiveEvent m1send = new MessageReceiveEvent(can, startTime, m1);
         eesystem.simulator.addEvent(m1send);
@@ -112,7 +112,7 @@ public class CANTest {
     }
 
     @Test
-    public void partialFrameMsg(){
+    public void partialFrameMsg() {
         // Create events
         MessageReceiveEvent m2send = new MessageReceiveEvent(can, startTime.plus(Duration.ofMillis(3)), m2);
         eesystem.simulator.addEvent(m2send);
@@ -126,7 +126,7 @@ public class CANTest {
     }
 
     @Test
-    public void multiFullFrameMsg(){
+    public void multiFullFrameMsg() {
         // Create events
         MessageReceiveEvent m3send = new MessageReceiveEvent(can, startTime.plus(Duration.ofSeconds(1)), m3);
         eesystem.simulator.addEvent(m3send);
@@ -154,7 +154,7 @@ public class CANTest {
     }
 
     @Test
-    public void multiMsgsInTime(){
+    public void multiMsgsInTime() {
         // Create events
         MessageReceiveEvent m1send = new MessageReceiveEvent(can, startTime.plus(Duration.ofMillis(3)), m1);
         MessageReceiveEvent m2send = new MessageReceiveEvent(can, startTime.plus(Duration.ofMillis(15)), m2);
@@ -176,8 +176,9 @@ public class CANTest {
         validateReceiveEvent(m3send, c1.events.get(2), bitsToNanos(t3.requiredTotalBits));
         validateReceiveEvent(m4send, c1.events.get(3), bitsToNanos(t4.requiredTotalBits));
     }
+
     @Test
-    public void multiMsgsAtSameTime(){
+    public void multiMsgsAtSameTime() {
         // Create events
         MessageReceiveEvent m1send = new MessageReceiveEvent(can, startTime, m1);
         MessageReceiveEvent m2send = new MessageReceiveEvent(can, startTime, m2);
@@ -206,14 +207,14 @@ public class CANTest {
     }
 
     @Test
-    public void multiMsgsOverlappingTime(){
+    public void multiMsgsOverlappingTime() {
         // Create events
         MessageReceiveEvent m4send = new MessageReceiveEvent(can, startTime, m4);
         MessageReceiveEvent m3send = new MessageReceiveEvent(can, startTime.plus(Duration.ofNanos(bitsToNanos(CAN.FULL_FRAME))), m3);
-        MessageReceiveEvent m1send = new MessageReceiveEvent(can, startTime.plus(Duration.ofNanos(bitsToNanos(CAN.FULL_FRAME*3 - 20))), m1);
-        MessageReceiveEvent m1send2 = new MessageReceiveEvent(can, startTime.plus(Duration.ofNanos(bitsToNanos(CAN.FULL_FRAME*7))), m1);
-        MessageReceiveEvent m5send = new MessageReceiveEvent(can, startTime.plus(Duration.ofNanos(bitsToNanos(CAN.FULL_FRAME*10-100))), m5);
-        
+        MessageReceiveEvent m1send = new MessageReceiveEvent(can, startTime.plus(Duration.ofNanos(bitsToNanos(CAN.FULL_FRAME * 3 - 20))), m1);
+        MessageReceiveEvent m1send2 = new MessageReceiveEvent(can, startTime.plus(Duration.ofNanos(bitsToNanos(CAN.FULL_FRAME * 7))), m1);
+        MessageReceiveEvent m5send = new MessageReceiveEvent(can, startTime.plus(Duration.ofNanos(bitsToNanos(CAN.FULL_FRAME * 10 - 100))), m5);
+
         eesystem.simulator.addEvent(m4send);
         eesystem.simulator.addEvent(m3send);
         eesystem.simulator.addEvent(m1send);
@@ -225,22 +226,22 @@ public class CANTest {
 
         // Verify (Priorities should make the message arrive in order)
         Assert.assertEquals("Unexpected number of events arrived at the TestEEComponent.", 5, c1.events.size());
-        validateReceiveEvent(m1send, c1.events.get(0), bitsToNanos(CAN.FULL_FRAME-CAN.INTERFRAME_SPACE_BITS+20));
-        validateReceiveEvent(m3send, c1.events.get(1), bitsToNanos(CAN.FULL_FRAME*6-CAN.INTERFRAME_SPACE_BITS));
-        validateReceiveEvent(m1send2, c1.events.get(2), bitsToNanos(CAN.FULL_FRAME-CAN.INTERFRAME_SPACE_BITS));
-        long b4 = t4.requiredTotalBits + (t3.requiredTotalBits + t1.requiredTotalBits*2 + CAN.INTERFRAME_SPACE_BITS*3);
+        validateReceiveEvent(m1send, c1.events.get(0), bitsToNanos(CAN.FULL_FRAME - CAN.INTERFRAME_SPACE_BITS + 20));
+        validateReceiveEvent(m3send, c1.events.get(1), bitsToNanos(CAN.FULL_FRAME * 6 - CAN.INTERFRAME_SPACE_BITS));
+        validateReceiveEvent(m1send2, c1.events.get(2), bitsToNanos(CAN.FULL_FRAME - CAN.INTERFRAME_SPACE_BITS));
+        long b4 = t4.requiredTotalBits + (t3.requiredTotalBits + t1.requiredTotalBits * 2 + CAN.INTERFRAME_SPACE_BITS * 3);
         validateReceiveEvent(m4send, c1.events.get(3), bitsToNanos(b4));
-        long b5 = 100 + t5.requiredTotalBits + (t4.requiredTotalBits-(t4.requiredFrames-1)*CAN.FULL_FRAME + CAN.INTERFRAME_SPACE_BITS);
+        long b5 = 100 + t5.requiredTotalBits + (t4.requiredTotalBits - (t4.requiredFrames - 1) * CAN.FULL_FRAME + CAN.INTERFRAME_SPACE_BITS);
         validateReceiveEvent(m5send, c1.events.get(4), bitsToNanos(b5));
     }
 
-    public void validateReceiveEvent(MessageReceiveEvent evt, MessageReceiveEvent targetEvent, long expectedTransmissionDurationNanos){
+    public void validateReceiveEvent(MessageReceiveEvent evt, MessageReceiveEvent targetEvent, long expectedTransmissionDurationNanos) {
         Assert.assertEquals("Wrong message.", targetEvent.getMessage(), evt.getMessage());
         Instant expectedArrival = evt.getEventTime().plus(Duration.ofNanos(expectedTransmissionDurationNanos));
         Assert.assertEquals("Wrong message arrival time.", expectedArrival, targetEvent.getEventTime());
     }
 
-    public long bitsToNanos(long bits){
-        return (Time.SECOND_TO_NANOSEC*bits)/CAN.HIGH_SPEED_CAN_BITRATE;
+    public long bitsToNanos(long bits) {
+        return (Time.SECOND_TO_NANOSEC * bits) / CAN.HIGH_SPEED_CAN_BITRATE;
     }
 }

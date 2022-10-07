@@ -17,26 +17,26 @@ public class DataPoints {
     private int arrayIndex = 0;
     Optional<Color> color = Optional.empty();
 
-    public DataPoints(String name, String unit, Color color){
+    public DataPoints(String name, String unit, Color color) {
         this.name = name;
         this.unit = unit;
         data.add(new double[BLOCK_SIZE]);
         this.color = Optional.of(color);
     }
 
-    public DataPoints(String name, String unit){
+    public DataPoints(String name, String unit) {
         this.name = name;
         this.unit = unit;
         data.add(new double[BLOCK_SIZE]);
     }
 
-    public void setTickData(double v){
+    public void setTickData(double v) {
         data.elementAt(arrayIndex)[index] = v;
     }
 
-    public void nextTimeStep(){
+    public void nextTimeStep() {
         index++;
-        if (index == BLOCK_SIZE){
+        if (index == BLOCK_SIZE) {
             index = 0;
             data.add(new double[BLOCK_SIZE]);
             arrayIndex++;

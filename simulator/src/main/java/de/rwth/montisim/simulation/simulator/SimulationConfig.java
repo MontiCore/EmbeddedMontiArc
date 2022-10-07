@@ -1,12 +1,6 @@
 /* (c) https://github.com/MontiCore/monticore */
 package de.rwth.montisim.simulation.simulator;
 
-import java.io.File;
-import java.time.*;
-import java.util.Objects;
-import java.util.Optional;
-import java.util.Vector;
-
 import de.rwth.montisim.commons.map.Pathfinding;
 import de.rwth.montisim.commons.utils.Time;
 import de.rwth.montisim.commons.utils.json.Json;
@@ -18,9 +12,18 @@ import de.rwth.montisim.simulation.eesimulator.exceptions.EEMissingComponentExce
 import de.rwth.montisim.simulation.eesimulator.exceptions.EESetupException;
 import de.rwth.montisim.simulation.environment.osmmap.OsmMap;
 import de.rwth.montisim.simulation.environment.world.World;
+import de.rwth.montisim.simulation.simulator.communication.PreprocessorProperties;
 import de.rwth.montisim.simulation.simulator.randomization.RandomizationProperties;
+import de.rwth.montisim.simulation.simulator.rewards.RewardFunctionProperties;
 import de.rwth.montisim.simulation.vehicle.Vehicle;
 import de.rwth.montisim.simulation.vehicle.VehicleProperties;
+
+import java.io.File;
+import java.time.Duration;
+import java.time.Instant;
+import java.util.Objects;
+import java.util.Optional;
+import java.util.Vector;
 
 public class SimulationConfig {
     public String name;
@@ -28,7 +31,9 @@ public class SimulationConfig {
     public Duration max_duration = Duration.ofSeconds(60);
     public Duration tick_duration = Duration.ofNanos(Time.SECOND_TO_NANOSEC / 100);
     public Instant start_time = Instant.now();
-    public Optional<RandomizationProperties> randomization = Optional.empty();
+    public Vector<RandomizationProperties> randomization = new Vector<>();
+    public Optional<PreprocessorProperties> preprocessor = Optional.empty();
+    public Optional<RewardFunctionProperties> rewardFunction = Optional.empty();
 
     public Vector<VehicleProperties> cars = new Vector<>();
     public Vector<ModuleProperties> modules = new Vector<>();
@@ -55,7 +60,7 @@ public class SimulationConfig {
             try {
                 vehicle = sim.getVehicleBuilder(v).build();
             } catch (SerializationException | EEMessageTypeException | EESetupException
-                    | EEMissingComponentException e) {
+                     | EEMissingComponentException e) {
                 throw new IllegalStateException(e);
             }
             sim.addSimulationObject(vehicle);

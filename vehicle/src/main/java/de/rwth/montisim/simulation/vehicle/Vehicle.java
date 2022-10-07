@@ -95,7 +95,7 @@ public class Vehicle extends SimulationObject implements Updatable, Destroyable,
     public void handleVehicleCollision(Vehicle otherVehicle) {
         vehicleCollisions.add(otherVehicle);
     }
-    
+
     public void handleStaticCollision(StaticObject o) {
         staticCollisions.add(o);
     }
@@ -107,6 +107,7 @@ public class Vehicle extends SimulationObject implements Updatable, Destroyable,
     public List<Vehicle> getVehicleCollisions() {
         return this.vehicleCollisions;
     }
+
     /**
      * For tests
      *
@@ -122,12 +123,12 @@ public class Vehicle extends SimulationObject implements Updatable, Destroyable,
         return CONTEXT_KEY;
     }
 
-    
+
     @Override
     public void destroy() {
         destroyer.applyDestroy();
     }
-    
+
     @Override
     public void pop() {
         popper.performPop();

@@ -4,16 +4,16 @@ import de.rwth.montisim.commons.utils.IPM;
 import de.rwth.montisim.commons.utils.Vec3;
 
 public class CollisionTests {
-    
+
     public static boolean collides(OBB obb, ConvexHull hull) {
         // Test OBB against half-spaces of the Hull
         for (int i = 0; i < hull.halfSpaceNormals.length; ++i) {
             Vec3 normal = hull.halfSpaceNormals[i];
             if (IPM.dot(obb.pos, normal) -
-            (Math.abs(IPM.dot(obb.world_space_half_axes.col1, normal)) +
-            Math.abs(IPM.dot(obb.world_space_half_axes.col2, normal)) +
-            Math.abs(IPM.dot(obb.world_space_half_axes.col3, normal))) 
-            >= hull.halfSpacePos[i]) return false;
+                    (Math.abs(IPM.dot(obb.world_space_half_axes.col1, normal)) +
+                            Math.abs(IPM.dot(obb.world_space_half_axes.col2, normal)) +
+                            Math.abs(IPM.dot(obb.world_space_half_axes.col3, normal)))
+                    >= hull.halfSpacePos[i]) return false;
         }
 
         // Test hull points against half-axes of the vehicle
@@ -53,7 +53,7 @@ public class CollisionTests {
         Vec3 crossRes = tempVec2;
 
         IPM.subtractTo(RPos, a.pos, b.pos);
-    
+
         if (getSeparatingPlane(a.world_space_half_axes.col1, a, b, RPos)) return false;
         if (getSeparatingPlane(a.world_space_half_axes.col2, a, b, RPos)) return false;
         if (getSeparatingPlane(a.world_space_half_axes.col3, a, b, RPos)) return false;
@@ -82,16 +82,15 @@ public class CollisionTests {
 
         return true;
     }
-    
+
     // check if there's a separating plane in between the selected axes
-    private static boolean getSeparatingPlane(Vec3 Plane, OBB a, OBB b, Vec3 RPos)
-    {
-        return Math.abs(IPM.dot(RPos, Plane)) > 
-            (Math.abs(IPM.dot(a.world_space_half_axes.col1, Plane)) +
-            Math.abs(IPM.dot(a.world_space_half_axes.col2, Plane)) +
-            Math.abs(IPM.dot(a.world_space_half_axes.col3, Plane)) +
-            Math.abs(IPM.dot(b.world_space_half_axes.col1, Plane)) +
-            Math.abs(IPM.dot(b.world_space_half_axes.col2, Plane)) +
-            Math.abs(IPM.dot(b.world_space_half_axes.col3, Plane)));
+    private static boolean getSeparatingPlane(Vec3 Plane, OBB a, OBB b, Vec3 RPos) {
+        return Math.abs(IPM.dot(RPos, Plane)) >
+                (Math.abs(IPM.dot(a.world_space_half_axes.col1, Plane)) +
+                        Math.abs(IPM.dot(a.world_space_half_axes.col2, Plane)) +
+                        Math.abs(IPM.dot(a.world_space_half_axes.col3, Plane)) +
+                        Math.abs(IPM.dot(b.world_space_half_axes.col1, Plane)) +
+                        Math.abs(IPM.dot(b.world_space_half_axes.col2, Plane)) +
+                        Math.abs(IPM.dot(b.world_space_half_axes.col3, Plane)));
     }
 }

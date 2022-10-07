@@ -1,6 +1,6 @@
 /**
  * (c) https://github.com/MontiCore/monticore
- *
+ * <p>
  * The license generally applicable for this project
  * can be found under https://github.com/MontiCore/monticore.
  */
@@ -20,13 +20,13 @@ public class StaticHeightGenerator implements HeightGenerator {
     private ConcentricCircleGenerator generator;
 
     public StaticHeightGenerator(EnvBounds bounds) {
-        ConcentricCircleGenerator.init(bounds,true);
+        ConcentricCircleGenerator.init(bounds, true);
         this.generator = ConcentricCircleGenerator.getInstance();
     }
 
     @Override
     public double getGround(double x, double y) {
-        return generator.getGround(x,y);
+        return generator.getGround(x, y);
     }
 
     @Override
@@ -36,12 +36,12 @@ public class StaticHeightGenerator implements HeightGenerator {
 
     @Override
     public Vec2 getHeightMapMinPoint() {
-        return new Vec2(0,0);
+        return new Vec2(0, 0);
     }
 
     @Override
     public Vec2 getHeightMapMaxPoint() {
-        return new Vec2(2,0);
+        return new Vec2(2, 0);
     }
 
     @Override

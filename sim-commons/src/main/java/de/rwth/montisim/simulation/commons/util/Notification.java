@@ -19,5 +19,6 @@ public class Notification {
     /**
      * Don't let anyone instantiate this class.
      */
-    private Notification() {}
+    private Notification() {
+    }
 }

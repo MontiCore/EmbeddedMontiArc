@@ -3,6 +3,8 @@ package de.rwth.montisim.simulation.vehicle.navigation;
 
 import java.time.*;
 import java.util.*;
+import java.util.stream.Collectors;
+
 import de.rwth.montisim.commons.dynamicinterface.*;
 import de.rwth.montisim.commons.map.Path;
 import de.rwth.montisim.commons.map.Pathfinding;
@@ -69,7 +71,7 @@ public class Navigation extends EEComponent {
         this.pathfinding = pathfinding;
         for (int i = 0; i < TRAJ_ARRAY_LENGTH; ++i) currentTraj[i] = new Vec2();
 
-        
+
         //this.gpsPosMsg = addInput(GPS_POS_MSG, BasicType.VEC2);
         this.truePosMsg = addPort(PortInformation.newOptionalInputDataPort(TruePosition.VALUE_NAME, TruePosition.TYPE, false));
 
@@ -97,7 +99,7 @@ public class Navigation extends EEComponent {
         // } else 
         if (msg.isMsg(truePosMsg)) {
             currentPos = Optional.of((Vec2) msg.message);
-            if (!currentPath.isPresent() && !targets.empty()){
+            if (!currentPath.isPresent() && !targets.empty()) {
                 newTrajectory(time);
             } else {
                 updateTrajectory(time);
@@ -106,7 +108,7 @@ public class Navigation extends EEComponent {
         } else if (msg.isMsg(pushTargetPosMsg)) {
             // Add new position to routing stack -> compute new routing
             // TODO
-            pushTargetPos((Vec2)msg.message, time);
+            pushTargetPos((Vec2) msg.message, time);
             newTrajectory(time);
         } else if (msg.isMsg(popTargetPosMsg)) {
             // Remove target from routing stack -> compute new routing
@@ -116,34 +118,84 @@ public class Navigation extends EEComponent {
         }
     }
 
-    public void pushTargetPos(Vec2 target){
+    /**
+     * Set the whole path as targets. Will later calculate a trajectory through this given path.
+     * @param targets the order of points to generate the trajectory through
+     */
+    public void setTargetsPos(Vector<Vec2> targets) { setTargetsPos(targets, eesystem.simulator.getSimulationTime()); }
+
+    /**
+     * Set the whole path as targets. Will later calculate a trajectory through this given path.
+     * @param targets the order of points to generate the trajectory through
+     * @param time
+     */
+    public void setTargetsPos(Vector<Vec2> targets, Instant time) {
+        this.targets.clear();
+        this.targets.addAll(targets);
+        currentPath = Optional.empty();
+        currentTrajSize = 0;
+        sendMessage(time, currentTargetPosMsg, targets.firstElement());
+    }
+
+    public void pushTargetPos(Vec2 target) {
         pushTargetPos(target, eesystem.simulator.getSimulationTime());
     }
 
-    public void pushTargetPos(Vec2 target, Instant time){
+    public void pushTargetPos(Vec2 target, Instant time) {
         targets.push(target);
         currentPath = Optional.empty();
         currentTrajSize = 0;
         sendMessage(time, currentTargetPosMsg, target);
     }
-    
+
     public void popTargetPos() {
         currentTrajSize = 0;
         if (!targets.empty()) targets.pop();
         currentPath = Optional.empty();
     }
 
-    private void newTrajectory(Instant time){
+    private void newTrajectory(Instant time) {
         currentPath = Optional.empty();
         if (!currentPos.isPresent()) return;
-        if (targets.empty()){
+        if (targets.empty()) {
             sendMessage(time, atTargetPosMsg, Boolean.TRUE);
             return;
         }
         try {
-            currentPath = Optional.of(pathfinding.findShortestPath(currentPos.get(), targets.peek()));
+            // currentPath = Optional.of(pathfinding.findShortestPath(currentPos.get(), targets.peek()));
+
+            Path path = new Path(0);
+
+            // create whole path by combining all sub paths between the adjacent targets
+            Vec2 lastPos = currentPos.get();
+            for(Vec2 target : targets) {
+                Path subPath = pathfinding.findShortestPath(lastPos, target);
+
+                Path newPath = new Path(path.getLength() + subPath.getLength());
+
+                // copy existing path
+                for (int index = 0; index < path.getLength(); index++) {
+                    Vec2 tmp = new Vec2();
+                    path.get(index, tmp);
+                    newPath.set(index, tmp.x, tmp.y);
+                }
+
+                // append the sub path
+                for (int index = 0; index < subPath.getLength(); index++) {
+                    Vec2 tmp = new Vec2();
+                    subPath.get(index, tmp);
+                    newPath.set(index + path.getLength(), tmp.x, tmp.y);
+                }
+
+                path = newPath;
+
+                lastPos = target;
+            }
+
+            currentPath = Optional.of(path);
+
             updateTrajectory(time);
-        } catch(Exception e){
+        } catch (Exception e) {
             e.printStackTrace();
         }
     }
@@ -154,17 +206,17 @@ public class Navigation extends EEComponent {
         int index = getNearestSegment(currentPos.get());
         if (index < 0) return;
         Path p = currentPath.get();
-        int size = Math.min(TRAJ_ARRAY_LENGTH, p.getLength()-index);
+        int size = Math.min(TRAJ_ARRAY_LENGTH, p.getLength() - index);
         double x[] = new double[TRAJ_ARRAY_LENGTH];
         double y[] = new double[TRAJ_ARRAY_LENGTH];
 
         int pointCount = 0;
-        for (int i = 0; i < size; ++i){
-            double vx = p.trajectoryX[index+i];
-            double vy = p.trajectoryY[index+i];
+        for (int i = 0; i < size; ++i) {
+            double vx = p.trajectoryX[index + i];
+            double vy = p.trajectoryY[index + i];
             // Only add the point if it is far enough from the last
             if (pointCount > 0) {
-                double dist = currentTraj[pointCount-1].distance(vx, vy);
+                double dist = currentTraj[pointCount - 1].distance(vx, vy);
                 if (dist < 0.01) continue; // Skip
             }
             x[pointCount] = vx;
@@ -173,11 +225,11 @@ public class Navigation extends EEComponent {
             currentTraj[pointCount].y = y[pointCount];
             ++pointCount;
         }
-        
+
         currentTrajSize = pointCount;
         sendMessage(time, trajectoryLengthMsg, currentTrajSize);
-        sendMessage(time, trajectoryXMsg, x, 8*currentTrajSize);
-        sendMessage(time.plus(Duration.ofMillis(10)), trajectoryYMsg, y, 8*currentTrajSize);
+        sendMessage(time, trajectoryXMsg, x, 8 * currentTrajSize);
+        sendMessage(time.plus(Duration.ofMillis(10)), trajectoryYMsg, y, 8 * currentTrajSize);
     }
 
     private int getNearestSegment(Vec2 pos) {
@@ -192,41 +244,41 @@ public class Navigation extends EEComponent {
         double dist;
         Vec2 lastPoint = new Vec2();
         boolean hasLastPoint = false;
-        
-        for (int i = 0; i < count; i++){
+
+        for (int i = 0; i < count; i++) {
             p.get(i, point);
 
-            if (hasLastPoint){
+            if (hasLastPoint) {
                 // Check segment
 
                 // 1) Get segment "normal"
                 IPM.subtractTo(dir, point, lastPoint);
                 // Manual normalization to keep the length
                 double length = dir.magnitude();
-                if (length > 0.001){
-                    IPM.multiply(dir, 1/length);
+                if (length > 0.001) {
+                    IPM.multiply(dir, 1 / length);
                 } else {
-                    dir.set(Double.NaN,Double.NaN);
+                    dir.set(Double.NaN, Double.NaN);
                 }
 
                 // 2) check if in segment bounds
                 IPM.subtractTo(delta, pos, lastPoint);
                 double projPos = IPM.dot(dir, delta);
                 if (projPos > 0 && projPos < length) {
-                
+
                     // 3) get distance
                     normal.set(-dir.y, dir.x);
                     dist = Math.abs(IPM.dot(normal, delta));
-                    if (dist < currentNearestDistance){
+                    if (dist < currentNearestDistance) {
                         currentNearestDistance = dist;
-                        closestIndex = i-1;
+                        closestIndex = i - 1;
                     }
                 }
             }
 
             //Check point
             dist = point.distance(pos);
-            if (dist < currentNearestDistance){
+            if (dist < currentNearestDistance) {
                 currentNearestDistance = dist;
                 closestIndex = i;
             }
@@ -253,9 +305,22 @@ public class Navigation extends EEComponent {
         return targets;
     }
 
-    public int getCurrentPathIndex(Vec2 currentPosition) {
-        if (!currentPos.isPresent()) return -1;
-        if (!currentPath.isPresent()) return -1;
-        return getNearestSegment(currentPosition);
+    public Optional<Integer> getCurrentPathIndex() {
+        if (!currentPos.isPresent() || !currentPath.isPresent()) return Optional.empty();
+        return Optional.of(getNearestSegment(currentPos.get()));
+    }
+
+    public Optional<Double> getRemainingPathLength() {
+      Optional<Integer> index_optional = getCurrentPathIndex();
+      if (!index_optional.isPresent()) {
+        return Optional.empty();
+      }
+      Path p = currentPath.get();
+      int index = index_optional.get();
+      double distance = currentPos.get().distance(p.trajectoryX[index], p.trajectoryY[index]);
+      for (int i = index; i < p.getLength() - 1; i++) {
+        distance += (new Vec2(p.trajectoryX[i], p.trajectoryY[i])).distance(p.trajectoryX[i + 1], p.trajectoryY[i + 1]);
+      }
+      return Optional.of(distance);
     }
 }

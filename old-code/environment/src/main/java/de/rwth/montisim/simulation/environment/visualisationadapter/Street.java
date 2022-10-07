@@ -1,6 +1,6 @@
 /**
  * (c) https://github.com/MontiCore/monticore
- *
+ * <p>
  * The license generally applicable for this project
  * can be found under https://github.com/MontiCore/monticore.
  */
@@ -13,16 +13,20 @@ import java.util.List;
  * This Class represents streets
  */
 public class Street extends EnvObject {
-    public enum StreetTypes {MOTORWAY, A_ROAD, STREET, LIVING_STREET};
+    public enum StreetTypes {MOTORWAY, A_ROAD, STREET, LIVING_STREET}
+
+    ;
     public static final double STREET_WIDTH = 6;
-    public enum StreetPavements {PAVED, UNPAVED, QUALITY, STONE, DIRT, GRASS};
+
+    public enum StreetPavements {PAVED, UNPAVED, QUALITY, STONE, DIRT, GRASS}
+
+    ;
 
     private boolean isOneWay;
     private Number speedLimit;
     private List<EnvNode> intersections;
     private StreetTypes streetType;
     private StreetPavements streetPavements;
-
 
 
     public Street(List<EnvNode> nodes, Number speedLimit, List<EnvNode> intersections, boolean isOneWay) {
@@ -101,8 +105,12 @@ public class Street extends EnvObject {
         return isOneWay;
     }
 
-    public StreetTypes getStreetType(){ return streetType; }
+    public StreetTypes getStreetType() {
+        return streetType;
+    }
 
-    public StreetPavements getStreetPavement() { return streetPavements; }
+    public StreetPavements getStreetPavement() {
+        return streetPavements;
+    }
 
 }

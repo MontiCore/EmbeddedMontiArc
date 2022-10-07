@@ -1,6 +1,6 @@
 /**
  * (c) https://github.com/MontiCore/monticore
- *
+ * <p>
  * The license generally applicable for this project
  * can be found under https://github.com/MontiCore/monticore.
  */
@@ -15,6 +15,7 @@ import simulation.network.channels.ChannelModelSimple;
 import java.time.Duration;
 import java.time.Instant;
 import java.util.*;
+
 import static simulation.network.NetworkTaskId.*;
 
 /**
@@ -35,7 +36,7 @@ public class SettingsSimple extends NetworkSettings {
 
         setSlowDataRateKBits(1000);
 
-        setModulationAndDataRateInfo(new int[][] {
+        setModulationAndDataRateInfo(new int[][]{
                 {3000, 1, 1, 2},
                 {4500, 1, 3, 4},
                 {6000, 2, 1, 2},
@@ -63,8 +64,8 @@ public class SettingsSimple extends NetworkSettings {
         Map<PhysicalObjectType, List<NetworkTaskId>> networkTaskIdMap = new HashMap<>();
 
         List<NetworkTaskId> taskIdListCars =
-            Arrays.asList(NETWORK_TASK_ID_PHY_SIMPLE, NETWORK_TASK_ID_LINK_SIMPLE, NETWORK_TASK_ID_NET_SIMPLE, NETWORK_TASK_ID_TRANSPORT_SIMPLE,
-                NETWORK_TASK_ID_APP_BEACON, NETWORK_TASK_ID_APP_MESSAGES_SOFT_STATE, NETWORK_TASK_ID_APP_TRAFFIC_OPTIMIZATION, NETWORK_TASK_ID_APP_VELOCITY_CONTROL);
+                Arrays.asList(NETWORK_TASK_ID_PHY_SIMPLE, NETWORK_TASK_ID_LINK_SIMPLE, NETWORK_TASK_ID_NET_SIMPLE, NETWORK_TASK_ID_TRANSPORT_SIMPLE,
+                        NETWORK_TASK_ID_APP_BEACON, NETWORK_TASK_ID_APP_MESSAGES_SOFT_STATE, NETWORK_TASK_ID_APP_TRAFFIC_OPTIMIZATION, NETWORK_TASK_ID_APP_VELOCITY_CONTROL);
         networkTaskIdMap.put(PhysicalObjectType.PHYSICAL_OBJECT_TYPE_CAR, new LinkedList<>(taskIdListCars));
 
         setNetworkTaskIdMap(networkTaskIdMap);

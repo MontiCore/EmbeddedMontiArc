@@ -1,6 +1,6 @@
 /**
  * (c) https://github.com/MontiCore/monticore
- *
+ * <p>
  * The license generally applicable for this project
  * can be found under https://github.com/MontiCore/monticore.
  */
@@ -22,12 +22,13 @@ public class ApproximateConverter implements MetricConverter {
     public ApproximateConverter(Coordinates minCorner) {
         this.minCorner = minCorner;
     }
+
     @Override
     public Vec2 coordinatesToMeters(Coordinates coordinates) {
         Vec2 relativeCoords = coordinates.subtract(minCorner);
         return new Vec2(
-            1000 * relativeCoords.x * (LONG_CONSTANT * Math.cos(Math.toRadians(coordinates.getLatitude()))),
-            1000 * relativeCoords.y * LAT_CONSTANT
+                1000 * relativeCoords.x * (LONG_CONSTANT * Math.cos(Math.toRadians(coordinates.getLatitude()))),
+                1000 * relativeCoords.y * LAT_CONSTANT
         );
     }
 
@@ -35,8 +36,8 @@ public class ApproximateConverter implements MetricConverter {
     public Coordinates metersToCoordinates(Vec2 position) {
         double lat = position.y / (1000 * LAT_CONSTANT);
         return new Coordinates(
-            new Vec2(position.x / (1000 * LONG_CONSTANT * Math.cos(Math.toRadians(lat))), lat)
-            .add(minCorner)
+                new Vec2(position.x / (1000 * LONG_CONSTANT * Math.cos(Math.toRadians(lat))), lat)
+                        .add(minCorner)
         );
     }
 

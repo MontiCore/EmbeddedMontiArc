@@ -27,13 +27,14 @@ public class AABB implements BoundingBox {
         min.z = Math.min(min.z, point.z);
         max.z = Math.max(max.z, point.z);
     }
+
     public void include(Vec2 point) {
         min.x = Math.min(min.x, point.x);
         max.x = Math.max(max.x, point.x);
         min.y = Math.min(min.y, point.y);
         max.y = Math.max(max.y, point.y);
     }
-    
+
     public boolean overlaps3D(AABB other) {
         if (min.x >= other.max.x) return false;
         if (min.y >= other.max.y) return false;
@@ -43,6 +44,7 @@ public class AABB implements BoundingBox {
         if (other.min.z >= max.z) return false;
         return true;
     }
+
     public boolean overlaps2D(AABB other) {
         if (min.x >= other.max.x) return false;
         if (min.y >= other.max.y) return false;

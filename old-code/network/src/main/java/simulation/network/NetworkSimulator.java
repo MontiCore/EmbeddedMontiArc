@@ -1,6 +1,6 @@
 /**
  * (c) https://github.com/MontiCore/monticore
- *
+ * <p>
  * The license generally applicable for this project
  * can be found under https://github.com/MontiCore/monticore.
  */
@@ -173,7 +173,7 @@ public class NetworkSimulator extends DiscreteEventSimulator<NetworkDiscreteEven
     public void simulationStarted(List<SimulationLoopExecutable> simulationObjects) {
         for (SimulationLoopExecutable simulationObject : simulationObjects) {
             if (simulationObject instanceof PhysicalObject) {
-                PhysicalObject physicalObject = (PhysicalObject)(simulationObject);
+                PhysicalObject physicalObject = (PhysicalObject) (simulationObject);
                 physicalObjects.add(physicalObject);
 
                 // Create network node and add it to simulation

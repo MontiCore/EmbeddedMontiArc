@@ -44,8 +44,8 @@ public class TruePosition extends PhysicalValue {
     public boolean hasChanged() {
         if (lastValue == null || value == null) return true;
         return !(
-            UMath.equalsThreshold(lastValue.x, value.x, PhysicalValueDouble.EPSILON) &&
-            UMath.equalsThreshold(lastValue.y, value.y, PhysicalValueDouble.EPSILON)
-            );
+                UMath.equalsThreshold(lastValue.x, value.x, PhysicalValueDouble.EPSILON) &&
+                        UMath.equalsThreshold(lastValue.y, value.y, PhysicalValueDouble.EPSILON)
+        );
     }
 }

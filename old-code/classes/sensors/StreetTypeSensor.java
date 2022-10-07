@@ -1,4 +1,3 @@
-
 public class StreetTypeSensor extends AbstractSensor {
 
     @Override

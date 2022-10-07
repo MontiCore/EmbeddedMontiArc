@@ -1,12 +1,13 @@
 /**
  * (c) https://github.com/MontiCore/monticore
- *
+ * <p>
  * The license generally applicable for this project
  * can be found under https://github.com/MontiCore/monticore.
  */
 package simulation.network;
 
 import de.rwth.montisim.commons.simulation.DiscreteEvent;
+
 import java.time.Instant;
 
 

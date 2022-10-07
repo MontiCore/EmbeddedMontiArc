@@ -11,7 +11,9 @@ import org.javafmi.wrapper.Simulation;
  */
 public class VehicleDynamicsModel {
 
-    /** FMUs for the car. */
+    /**
+     * FMUs for the car.
+     */
     private Simulation inputFilter;
     private Simulation chassis;
     private Simulation suspension;
@@ -27,7 +29,7 @@ public class VehicleDynamicsModel {
     /**
      * Constructor for an uninitialised VDM
      */
-    public VehicleDynamicsModel(){
+    public VehicleDynamicsModel() {
         inputFilter = loadSimulation("lib/InputFilter.fmu");
         chassis = loadSimulation("lib/Chassis.fmu");
         suspension = loadSimulation("lib/Suspension.fmu");
@@ -39,21 +41,21 @@ public class VehicleDynamicsModel {
         needsExchanging = false;
     }
 
-    private Simulation loadSimulation(String name){
-        try{
+    private Simulation loadSimulation(String name) {
+        try {
             LibraryService.prepareLibrary(name, false);
         } catch (LibraryService.LibraryException e) {
             e.printStackTrace();
         }
-        return new Simulation(LibraryService.getWorkingDirectory()+name);
+        return new Simulation(LibraryService.getWorkingDirectory() + name);
     }
 
     /**
      * Function that initialised the VDM
      * Should only be called by physicalVehicleBuilder
      */
-    public void initialise(){
-        if(isInitialised){
+    public void initialise() {
+        if (isInitialised) {
             throw new IllegalStateException("Vehicle dynamics model can only be initialized once.");
         }
         double stopTime = 10.0;
@@ -71,13 +73,14 @@ public class VehicleDynamicsModel {
 
     /**
      * Function that executes one computation step
+     *
      * @param stepSize Size of the computation step
      */
-    public void doStep(double stepSize){
-        if(!isInitialised){
+    public void doStep(double stepSize) {
+        if (!isInitialised) {
             throw new IllegalStateException("A integration step can only be performed after initialisation.");
         }
-        if(needsExchanging){
+        if (needsExchanging) {
             exchangeValues();
         }
         inputFilter.doStep(stepSize);
@@ -92,17 +95,18 @@ public class VehicleDynamicsModel {
 
     /**
      * Function that sets a parameter value into the corresponding FMU
-     * @param name Name of the parameter value to be set
+     *
+     * @param name  Name of the parameter value to be set
      * @param value New value to be set
      */
-    public void setParameter(String name, double value){
+    public void setParameter(String name, double value) {
         if (isInitialised) {
             throw new IllegalStateException("A parameter can only be set before initialisation.");
         }
         switch (name) {
             // Input filter parameters
             case "K_d_road":
-            // Input filter initial parameters
+                // Input filter initial parameters
             case "slope_d_0":
             case "bank_d_0":
                 inputFilter.write(name).with(value);
@@ -116,7 +120,7 @@ public class VehicleDynamicsModel {
             case "f_r":
             case "I_tire":
             case "rho_air":
-            // Chassis initial parameters
+                // Chassis initial parameters
             case "omega_wheel_1_0":
             case "omega_wheel_2_0":
             case "omega_wheel_3_0":
@@ -156,7 +160,7 @@ public class VehicleDynamicsModel {
             case "muv_3":
             case "muv_4":
             case "rlxlen":
-            // Tires initial parameters
+                // Tires initial parameters
             case "F_x_1_0":
             case "F_x_2_0":
             case "F_x_3_0":
@@ -224,18 +228,19 @@ public class VehicleDynamicsModel {
 
     /**
      * Function that sets a input value into the corresponding FMU
-     * @param name Name of the input value to be set
+     *
+     * @param name  Name of the input value to be set
      * @param value New value to be set
      */
-    public void setInput(String name, double value){
-        if(!isInitialised){
+    public void setInput(String name, double value) {
+        if (!isInitialised) {
             throw new IllegalStateException("A input value can only be set after initialisation.");
         }
         switch (name) {
             // Input filter inputs
             case "bank":
             case "slope":
-            // Input filter state variables
+                // Input filter state variables
             case "slope_d":
             case "bank_d":
             case "delta_sw":
@@ -252,7 +257,7 @@ public class VehicleDynamicsModel {
             case "tau_B_4":
             case "F_ext_x":
             case "F_ext_y":
-            // Chassis state variables
+                // Chassis state variables
             case "omega_wheel_1":
             case "omega_wheel_2":
             case "omega_wheel_3":
@@ -271,7 +276,7 @@ public class VehicleDynamicsModel {
             case "mu_2":
             case "mu_3":
             case "mu_4":
-            // Tires state variables
+                // Tires state variables
             case "F_x_1":
             case "F_x_2":
             case "F_x_3":
@@ -302,7 +307,7 @@ public class VehicleDynamicsModel {
             case "delta_4":
                 steering.write(name).with(value);
                 break;
-                //Driveline inputs
+            //Driveline inputs
             case "c_input":
             case "t_input":
             case "i":
@@ -319,7 +324,7 @@ public class VehicleDynamicsModel {
             case "driving_t4":
                 driveline.write(name).with(value);
                 break;
-                //BrakeSystem inputs
+            //BrakeSystem inputs
             case "b_input":
                 // BrakeSystem state variables
             case "brakingtorque_1":
@@ -338,11 +343,12 @@ public class VehicleDynamicsModel {
 
     /**
      * Function that gets a value from the corresponding FMU
+     *
      * @param name Name of the value to be returned
      * @return Value with the given name
      */
-    public double getValue(String name){
-        if(!isInitialised){
+    public double getValue(String name) {
+        if (!isInitialised) {
             throw new IllegalStateException("A value can only be read after initialisation.");
         }
         if (needsExchanging) {
@@ -351,13 +357,13 @@ public class VehicleDynamicsModel {
         switch (name) {
             // Input filter parameters
             case "K_d_road":
-            //Input filter initial parameter
+                //Input filter initial parameter
             case "slope_d_0":
             case "bank_d_0":
-            //Input filter inputs
+                //Input filter inputs
             case "slope":
             case "bank":
-            //Input filter variables
+                //Input filter variables
             case "slope_d":
             case "bank_d":
                 return inputFilter.read(name).asDouble();
@@ -378,7 +384,7 @@ public class VehicleDynamicsModel {
             case "r_nom":
             case "rho_air":
             case "g":
-            //Chassis Initial parameters
+                //Chassis Initial parameters
             case "omega_wheel_1_0":
             case "omega_wheel_2_0":
             case "omega_wheel_3_0":
@@ -390,7 +396,7 @@ public class VehicleDynamicsModel {
             case "omega_x_0":
             case "v_x_0":
             case "v_y_0":
-            //Chassis input
+                //Chassis input
             case "tau_D_1":
             case "tau_D_2":
             case "tau_D_3":
@@ -401,11 +407,11 @@ public class VehicleDynamicsModel {
             case "tau_B_4":
             case "F_ext_x":
             case "F_ext_y":
-            //case "delta_1":
-            //case "delta_2":
-            //case "delta_3":
-            //case "delta_4":
-            //Chassis variables
+                //case "delta_1":
+                //case "delta_2":
+                //case "delta_3":
+                //case "delta_4":
+                //Chassis variables
             case "a_x":
             case "v_x":
             case "a_y":
@@ -429,7 +435,7 @@ public class VehicleDynamicsModel {
             case "omega_wheel_2":
             case "omega_wheel_3":
             case "omega_wheel_4":
-            //Chassis outputs
+                //Chassis outputs
             case "v_x_1":
             case "v_x_2":
             case "v_x_3":
@@ -458,15 +464,15 @@ public class VehicleDynamicsModel {
             case "L_lever_r":
             case "G":
             case "d_pitch":
-            //"L_1":
-            //"L_2":
-            //"COG_z":
-            //"TW_f":
-            //"TW_r":
-            //"m":
-            //"g":
-            //"r_nom":
-            //Suspension variables
+                //"L_1":
+                //"L_2":
+                //"COG_z":
+                //"TW_f":
+                //"TW_r":
+                //"m":
+                //"g":
+                //"r_nom":
+                //Suspension variables
             case "d_roll":
             case "I_antiroll_f":
             case "K_antiroll_f":
@@ -494,7 +500,7 @@ public class VehicleDynamicsModel {
             case "muv_3":
             case "muv_4":
             case "rlxlen":
-            //Tires initial parameters
+                //Tires initial parameters
             case "F_x_1_0":
             case "F_x_2_0":
             case "F_x_3_0":
@@ -503,16 +509,16 @@ public class VehicleDynamicsModel {
             case "F_y_2_0":
             case "F_y_3_0":
             case "F_y_4_0":
-            //Tires inputs
+                //Tires inputs
             case "mu_1":
             case "mu_2":
             case "mu_3":
             case "mu_4":
-            //"delta_1":
-            //"delta_2":
-            //"delta_3":
-            //"delta_4":
-            //Tires variables
+                //"delta_1":
+                //"delta_2":
+                //"delta_3":
+                //"delta_4":
+                //Tires variables
             case "F_x_1":
             case "F_x_2":
             case "F_x_3":
@@ -567,10 +573,10 @@ public class VehicleDynamicsModel {
             case "c_servo":
             case "pinion_r":
             case "fsw":
-            //Steering inputs
+                //Steering inputs
             case "delta_sw":
             case "omega_sw":
-            //Steering Variables
+                //Steering Variables
             case "delta_d":
             case "delta_int":
             case "stw_f":
@@ -588,11 +594,11 @@ public class VehicleDynamicsModel {
             case "i_gear_4":
             case "i_gear_5":
             case "i_final":
-            //Driveline inputs
-            //case "v_x:":
-            //case "omega_wheel_1":
-            //case "omega_wheel_2":
-            //Driveline Variables
+                //Driveline inputs
+                //case "v_x:":
+                //case "omega_wheel_1":
+                //case "omega_wheel_2":
+                //Driveline Variables
             case "engine_tmax":
             case "engine_tmin":
             case "omega_e_int":
@@ -604,9 +610,9 @@ public class VehicleDynamicsModel {
             case "driving_t3":
             case "driving_t4":
                 return driveline.read(name).asDouble();
-             //BrakeSystem inputs
+            //BrakeSystem inputs
             case "b_input":
-            //BrakeSystem Variables
+                //BrakeSystem Variables
             case "brakingtorque_1":
             case "brakingtorque_2":
             case "brakingtorque_3":
@@ -622,7 +628,7 @@ public class VehicleDynamicsModel {
     /**
      * Function that exchanges the values under the FMUs
      */
-    private void exchangeValues(){
+    private void exchangeValues() {
         chassis.write("slope_d").with(inputFilter.read("slope_d").asDouble());
         chassis.write("bank_d").with(inputFilter.read("bank_d").asDouble());
         suspension.write("slope_d").with(inputFilter.read("slope_d").asDouble());

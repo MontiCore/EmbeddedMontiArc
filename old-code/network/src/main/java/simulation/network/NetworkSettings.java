@@ -1,6 +1,6 @@
 /**
  * (c) https://github.com/MontiCore/monticore
- *
+ * <p>
  * The license generally applicable for this project
  * can be found under https://github.com/MontiCore/monticore.
  */
@@ -54,8 +54,8 @@ public abstract class NetworkSettings {
     private Duration messageBufferMaxTime = Duration.ofSeconds(15L);
 
     /** Integer array that holds the information about available modulation and data rates, data rate in kBits, bits per signal, code rate numerator, code rate denominator */
-    private int[][] modulationAndDataRateInfo = new int[][] {
-        {12000, 4, 1, 2}
+    private int[][] modulationAndDataRateInfo = new int[][]{
+            {12000, 4, 1, 2}
     };
 
     /** Default index for modulation and data rate info to be used */

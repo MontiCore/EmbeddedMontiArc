@@ -9,15 +9,18 @@ public class PhysicalValueRegistry implements BuildObject {
     public static final String CONTEXT_KEY = "physical_values";
     HashMap<String, PhysicalValue> physicalValues = new HashMap<>();
 
-    /** Should only be for RESOLVING the physical values, not repeated access. */
+    /**
+     * Should only be for RESOLVING the physical values, not repeated access.
+     */
     public PhysicalValue getPhysicalValue(String name) {
         PhysicalValue res = physicalValues.get(name);
-        if (res == null) throw new IllegalArgumentException("Trying to resolve unknown PhysicalValue: "+name);
+        if (res == null) throw new IllegalArgumentException("Trying to resolve unknown PhysicalValue: " + name);
         return res;
     }
 
     public void addPhysicalValue(PhysicalValue value) {
-        if (physicalValues.containsKey(value.name)) throw new IllegalArgumentException("Double register for PhysicalValue: "+value.name);
+        if (physicalValues.containsKey(value.name))
+            throw new IllegalArgumentException("Double register for PhysicalValue: " + value.name);
         physicalValues.put(value.name, value);
     }
 

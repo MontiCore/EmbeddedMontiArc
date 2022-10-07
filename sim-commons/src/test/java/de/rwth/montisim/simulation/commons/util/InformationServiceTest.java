@@ -2,6 +2,7 @@
 package de.rwth.montisim.simulation.commons.util;
 
 import org.junit.*;
+
 import static org.junit.Assert.assertTrue;
 
 
@@ -27,13 +28,13 @@ public class InformationServiceTest {
         InformationService.getSharedInstance().offerInformation("Test", provider::provide);
 
         //Verify offering works
-        assertTrue((Integer)InformationService.getSharedInstance().requestInformation("Test") == 0);
+        assertTrue((Integer) InformationService.getSharedInstance().requestInformation("Test") == 0);
 
         //Stop providing
         InformationService.getSharedInstance().offerInformation("Test", null);
 
         //Verify offering does not work anymore
-        assertTrue((Integer)InformationService.getSharedInstance().requestInformation("Test") == null);
+        assertTrue((Integer) InformationService.getSharedInstance().requestInformation("Test") == null);
 
     }
 
@@ -47,14 +48,15 @@ public class InformationServiceTest {
         InformationService.getSharedInstance().offerInformation("Test", provider::provide);
 
         //Try to request it, it should change with every try
-        assertTrue((Integer)InformationService.getSharedInstance().requestInformation("Test") == 0);
-        assertTrue((Integer)InformationService.getSharedInstance().requestInformation("Test") == 1);
-        assertTrue((Integer)InformationService.getSharedInstance().requestInformation("Test") == 2);
+        assertTrue((Integer) InformationService.getSharedInstance().requestInformation("Test") == 0);
+        assertTrue((Integer) InformationService.getSharedInstance().requestInformation("Test") == 1);
+        assertTrue((Integer) InformationService.getSharedInstance().requestInformation("Test") == 2);
     }
 
     private class TestProvider {
         public Integer information = 0;
-        public Integer provide () {
+
+        public Integer provide() {
             return this.information++;
         }
     }

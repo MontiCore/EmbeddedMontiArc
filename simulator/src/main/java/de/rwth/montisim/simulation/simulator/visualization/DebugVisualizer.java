@@ -76,7 +76,7 @@ public class DebugVisualizer extends JFrame {
     }
 
 
-    public static World generateSimpleWorld(){
+    public static World generateSimpleWorld() {
         World world = new World("SimpleTestWorld");
 
         Building bd = new Building("TestBuilding", 0, "Test", 10, 3);
@@ -87,35 +87,35 @@ public class DebugVisualizer extends JFrame {
         world.buildings.add(bd);
 
 
-        Vec3 a = new Vec3(2,1,0);
-        Vec3 b = new Vec3(3,1,0);
-        Vec3 c = new Vec3(2,2,0);
+        Vec3 a = new Vec3(2, 1, 0);
+        Vec3 b = new Vec3(3, 1, 0);
+        Vec3 c = new Vec3(2, 2, 0);
 
         int aid = world.addNode(new Node(a));
         int bid = world.addNode(new Node(b));
         int cid = world.addNode(new Node(c));
 
         Way r1 = new Way("r1", false, 1, false, 50);
-        r1.addPoint(new Vec3(0,0,0), -1);
-        r1.addPoint(new Vec3(1,0,0), -1);
-        r1.addPoint(new Vec3(1,1,0), -1);
+        r1.addPoint(new Vec3(0, 0, 0), -1);
+        r1.addPoint(new Vec3(1, 0, 0), -1);
+        r1.addPoint(new Vec3(1, 1, 0), -1);
         r1.addPoint(a, aid);
-        r1.addPoint(new Vec3(2.5,1,0), -1);
+        r1.addPoint(new Vec3(2.5, 1, 0), -1);
         r1.addPoint(b, bid);
-        r1.addPoint(new Vec3(4,1,0), -1);
+        r1.addPoint(new Vec3(4, 1, 0), -1);
 
         Way r2 = new Way("r2", false, 1, false, 50);
-        r2.addPoint(new Vec3(5,0,0), -1);
-        r2.addPoint(new Vec3(4,0,0), -1);
+        r2.addPoint(new Vec3(5, 0, 0), -1);
+        r2.addPoint(new Vec3(4, 0, 0), -1);
         r2.addPoint(b, bid);
-        r2.addPoint(new Vec3(3,3,0), -1);
-        r2.addPoint(new Vec3(3,4,0), -1);
-        r2.addPoint(new Vec3(3,5,0), -1);
-        
+        r2.addPoint(new Vec3(3, 3, 0), -1);
+        r2.addPoint(new Vec3(3, 4, 0), -1);
+        r2.addPoint(new Vec3(3, 5, 0), -1);
+
         Way r3 = new Way("r3", false, 1, false, 50);
         r3.addPoint(a, aid);
         r3.addPoint(c, cid);
-        r3.addPoint(new Vec3(1,2,0), -1);
+        r3.addPoint(new Vec3(1, 2, 0), -1);
 
         Way r4 = new Way("r4", true, 1, false, 50);
         r4.addPoint(c, cid);
