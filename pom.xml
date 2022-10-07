@@ -26,7 +26,7 @@
     <properties>
 
         <!-- USE THIS VARIABLE TO SET THE VERSION OF THIS PROJECT AND ALL SUB PROJECTS -->
-        <revision>3.3.5</revision>
+        <revision>3.3.6</revision>
         <projectversion>${revision}</projectversion>
 
         <!-- USE THESE TO SET THE VERSIONS OF THE DEPENDENCIES FOR ALL THE SUB-PROJECTS -->
