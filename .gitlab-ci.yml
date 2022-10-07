@@ -2,7 +2,7 @@
 stages:
   - linuxCompile
   - linuxDeploy
-  - dockerize
+  # - dockerize
 
 CompileJobLinux:
   stage: linuxCompile
@@ -23,12 +23,12 @@ DeployJobLinux:
   script:
     - mvn -Dorg.slf4j.simpleLogger.log.org.apache.maven.cli.transfer.Slf4jMavenTransferListener=warn -B deploy --settings settings.xml -U
     
-DockerizeStage:
-  stage: dockerize
-  image: docker:20.10.17
-  dependencies:
-    - DeployJobLinux
-  script:
-    - docker login -u $CI_REGISTRY_USER -p $CI_REGISTRY_PASSWORD $CI_REGISTRY
-    - docker build -t $CI_REGISTRY/monticore/EmbeddedMontiArc/utilities/gdltools/gdltools:latest .
-    - docker push $CI_REGISTRY/monticore/EmbeddedMontiArc/utilities/gdltools/gdltools:latest
+# DockerizeStage:
+#   stage: dockerize
+#   image: docker:20.10.17
+#   dependencies:
+#     - DeployJobLinux
+#   script:
+#     - docker login -u $CI_REGISTRY_USER -p $CI_REGISTRY_PASSWORD $CI_REGISTRY
+#     - docker build -t $CI_REGISTRY/monticore/EmbeddedMontiArc/utilities/gdltools/gdltools:latest .
+#     - docker push $CI_REGISTRY/monticore/EmbeddedMontiArc/utilities/gdltools/gdltools:latest
