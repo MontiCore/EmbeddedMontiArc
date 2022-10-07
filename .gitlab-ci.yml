@@ -3,7 +3,7 @@ stages:
 
 TestBuild:
   stage: linux
-  image: registry.git.rwth-aachen.de/monticore/embeddedmontiarc/applications/reinforcement_learning/cartpole/rl-fix-new2:latest
+  image: registry.git.rwth-aachen.de/monticore/embeddedmontiarc/generators/emadl2cpp/mxnet/190
   before_script:
     - apt-get update
     - apt-get install -y maven
@@ -26,6 +26,10 @@ TestBuild:
     - cp -v *-jar-with-dependencies.jar ../../Autopilot/bin/
     - cd ../../
     - cd experiments
+    - cd basic
+    - ./install.sh
+    - ./run_training.sh
+    - cd ..
     - cd drive_forward
     - ./install.sh
     - cd ..
@@ -46,8 +50,4 @@ TestBuild:
     - cd ..
     - cd platooning
     - ./install.sh
-    - cd ..
-    - cd basic
-    - ./install.sh
-    - ./run_training.sh
     - cd ..
