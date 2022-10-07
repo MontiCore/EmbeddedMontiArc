@@ -11,7 +11,15 @@ public class MatchTests implements GDLTest.TestImpl {
 
     @Test
     public void testSnimmtTyped() {
-        File testDir = new File("MatchTests");
+        File testDir = new File("MatchTests/6nimmtTyped");
+        for (File testFile : testDir.listFiles()) {
+            doTestForFile(testFile);
+        }
+    }
+
+    @Test
+    public void testSnimmt() {
+        File testDir = new File("MatchTests/6nimmt");
         for (File testFile : testDir.listFiles()) {
             doTestForFile(testFile);
         }
