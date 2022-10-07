@@ -8,19 +8,6 @@ import de.monticore.lang.gdl.types.GDLType;
 import org.junit.Test;
 
 public class MappingTest {
-    
-    /*
-    @Test
-    public void bidirectionalActionMappingTest() {
-        ChessEnv.bidirectionalActionMappingTest(new ChessEnv());
-    }
-
-    @Test
-    public void stateMappingTest() {
-        ChessEnv.stateMappingTest(new ChessEnv(), 2);
-        
-        //assertEquals(true, false);
-    }*/
 
     @Test
     public void bidirectionalActionMapping() {
