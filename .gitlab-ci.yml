@@ -13,19 +13,17 @@ TestBuild:
     - mkdir dev
     - cd dev
     - git clone https://git.rwth-aachen.de/monticore/EmbeddedMontiArc/simulators/basic-simulator.git
-    - pwd
     - git clone https://git.rwth-aachen.de/monticore/EmbeddedMontiArc/simulators/simulation.git
-    - pwd
     - cd simulation
     - cd ROSInterface
     - ./install.sh
     - cp target/libROSInterface.so ../../basic-simulator/install/
     - cd ../../basic-simulator
-    - mvn clean install -s settings.xml
+    - mvn clean install -s settings.xml -DskipTests
     - cd ../..
     - git clone https://gitlab-ci-token:${CI_JOB_TOKEN}@git.rwth-aachen.de/monticore/EmbeddedMontiArc/generators/EMAM2Middleware.git
     - cd EMAM2Middleware
-    - mvn clean install -s settings.xml
+    - mvn clean install -s settings.xml -DskipTests
     - cd target
     - cp -v *-jar-with-dependencies.jar ../../Autopilot/bin/
     - cd ../../
