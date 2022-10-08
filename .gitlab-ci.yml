@@ -9,6 +9,7 @@ TestBuild:
     - apt-get install -y maven
     - . /opt/ros/noetic/setup.sh
   script:
+    - pip install numpy==1.19.1
     - mkdir dev
     - cd dev
     - git clone https://git.rwth-aachen.de/monticore/EmbeddedMontiArc/simulators/basic-simulator.git
