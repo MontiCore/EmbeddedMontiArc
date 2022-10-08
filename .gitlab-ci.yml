@@ -12,7 +12,9 @@ TestBuild:
     - mkdir dev
     - cd dev
     - git clone https://git.rwth-aachen.de/monticore/EmbeddedMontiArc/simulators/basic-simulator.git
+    - pwd
     - git clone https://git.rwth-aachen.de/monticore/EmbeddedMontiArc/simulators/simulation.git
+    - pwd
     - cd simulation
     - cd ROSInterface
     - ./install.sh
