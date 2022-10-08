@@ -3,7 +3,7 @@ stages:
 
 TestBuild:
   stage: linux
-  image: registry.git.rwth-aachen.de/monticore/embeddedmontiarc/generators/emadl2cpp/mxnet/190
+  image: registry.git.rwth-aachen.de/monticore/embeddedmontiarc/applications/reinforcement_learning/coopmontisimautopilot
   before_script:
     - apt-get update
     - apt-get install -y maven
