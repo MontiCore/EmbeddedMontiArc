@@ -31,7 +31,7 @@ TestBuild:
     - cd experiments
     - cd basic
     - ./install.sh
-    - ./run_training.sh
+    - ./ci_run_training.sh
     - cd ..
     - cd drive_forward
     - ./install.sh
