@@ -334,11 +334,14 @@ class CNNDataLoader_Alexnet: # pylint: disable=invalid-name
         """
 
         try:
-            return json.load((pathlib.Path(__file__).parent / "conf" / "retraining.json").open(), object_hook=lambda d: SimpleNamespace(**d))
+            conf = json.load((pathlib.Path(__file__).parent / "conf" / "retraining.json").open(), object_hook=lambda d: SimpleNamespace(**d))
+            # Clean files that are not h5 files
+            conf.changes = [dataset for dataset in conf.changes if pathlib.Path(dataset.path).suffix == ".h5"]
+            return conf
         except FileNotFoundError:
             logging.warning("Retraining configuration not found. Fallback to 'train.h5' for training and 'test.h5' for testing.")
             path = "data/Alexnet/"
             return RetrainingConf(
-                testing=Dataset(id="test", path=path + "testing.h5"),
-                changes=[TrainingDataset(id="train", path=path + "training.h5", retraining=True)]
+                testing=Dataset(id="test", path=path + "test.h5"),
+                changes=[TrainingDataset(id="train", path=path + "train.h5", retraining=True)]
             )

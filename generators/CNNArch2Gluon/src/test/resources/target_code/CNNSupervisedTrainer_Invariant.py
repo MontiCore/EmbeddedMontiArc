@@ -825,10 +825,12 @@ class CNNSupervisedTrainer_Invariant:
                 logging.info("Forward for loss functions was not run, export is not possible.")
 
             # Save learning rate
-            learning_rate_path = self.parameter_path(i, dataset) / 'learning_rate.txt'
-            learning_rate_path.write_text(str(trainers[i].learning_rate))
-            logger.info("Saved learning rate to %s", str(learning_rate_path))
-
+            try:
+                learning_rate_path = self.parameter_path(i, dataset) / 'learning_rate.txt'
+                learning_rate_path.write_text(str(trainers[i].learning_rate))
+                logger.info("Saved learning rate to %s", str(learning_rate_path))
+            except IndexError:
+                logging.warning("Failure during saving the learning rate.")
 
     def get_mask_array(self, shape, mask):
         if mask is None:
