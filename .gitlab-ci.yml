@@ -14,7 +14,7 @@ linux_maven_master:
   - scripts/awt_locate.sh
   - mvn -Dorg.slf4j.simpleLogger.log.org.apache.maven.cli.transfer.Slf4jMavenTransferListener=warn -B  clean deploy -s settings.xml
   only:
-  - main
+  - master
 
 linux_maven_branch:
   stage: maven
@@ -25,4 +25,4 @@ linux_maven_branch:
   - scripts/awt_locate.sh
   - mvn -Dorg.slf4j.simpleLogger.log.org.apache.maven.cli.transfer.Slf4jMavenTransferListener=warn -B  clean install -s settings.xml
   except:
-  - main
+  - master
