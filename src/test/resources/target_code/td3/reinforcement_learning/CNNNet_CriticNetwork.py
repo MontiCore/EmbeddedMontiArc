@@ -15,9 +15,9 @@ class ZScoreNormalization(gluon.HybridBlock):
         super(ZScoreNormalization, self).__init__(**kwargs)
         with self.name_scope():
             self.data_mean = self.params.get('data_mean', shape=data_mean.shape,
-                init=mx.init.Constant(data_mean.asnumpy().tolist()), differentiable=False)
+                init=mx.init.Constant(data_mean.asnumpy()), differentiable=False)
             self.data_std = self.params.get('data_std', shape=data_mean.shape,
-                init=mx.init.Constant(data_std.asnumpy().tolist()), differentiable=False)
+                init=mx.init.Constant(data_std.asnumpy()), differentiable=False)
 
     def hybrid_forward(self, F, x, data_mean, data_std):
         x = F.broadcast_sub(x, data_mean)
@@ -90,7 +90,7 @@ class CustomGRU(gluon.HybridBlock):
         output, [state0] = self.gru(data, [F.swapaxes(state0, 0, 1)])
         return output, F.swapaxes(state0, 0, 1)
 
-    
+
 class DotProductSelfAttention(gluon.HybridBlock):
     def __init__(self,
                  scale_factor,
@@ -116,7 +116,7 @@ class DotProductSelfAttention(gluon.HybridBlock):
                 self.dim_values = int(dim_model / self.num_heads)
             else:
                 self.dim_values = dim_values
-    
+
             if scale_factor == -1:
                 self.scale_factor = math.sqrt(self.dim_keys)
             else:
@@ -132,7 +132,7 @@ class DotProductSelfAttention(gluon.HybridBlock):
         queries = F.Reshape(queries, shape=(0, 0,-1))
         keys = F.Reshape(queries, shape=(0, 0, -1))
         values = F.Reshape(queries, shape=(0, 0, -1))
-    
+
         head_queries = self.proj_q(queries)
         head_keys = self.proj_k(keys)
         head_values = self.proj_v(values)
@@ -176,7 +176,7 @@ class DotProductSelfAttention(gluon.HybridBlock):
 
         return ret
 
-    
+
 class EpisodicReplayMemoryInterface(gluon.HybridBlock):
     __metaclass__ = abc.ABCMeta
 
@@ -207,7 +207,7 @@ class EpisodicReplayMemoryInterface(gluon.HybridBlock):
 
     @abc.abstractmethod
     def get_query_network(self, mx_context):
-        pass   
+        pass
 
     @abc.abstractmethod
     def save_memory(self, path):
@@ -216,14 +216,14 @@ class EpisodicReplayMemoryInterface(gluon.HybridBlock):
     @abc.abstractmethod
     def load_memory(self, path):
         pass
-    
+
 #Memory layer
 class LargeMemory(gluon.HybridBlock):
-    def __init__(self, 
-                 sub_key_size, 
-                 query_size, 
+    def __init__(self,
+                 sub_key_size,
+                 query_size,
                  query_act,
-                 k, 
+                 k,
                  num_heads,
                  values_dim,
                  **kwargs):
@@ -235,7 +235,7 @@ class LargeMemory(gluon.HybridBlock):
             self.query_act = query_act
             self.query_size = query_size
             self.num_heads = num_heads
-    
+
             #Batch norm sub-layer
             self.batch_norm = gluon.nn.BatchNorm()
 
@@ -254,7 +254,7 @@ class LargeMemory(gluon.HybridBlock):
             self.label_memory = nd.array([])
 
             self.get_query_network()
-                        
+
     def hybrid_forward(self, F, x, sub_keys1, sub_keys2, values):
         x = self.batch_norm(x)
 
@@ -368,7 +368,7 @@ class EpisodicMemory(EpisodicReplayMemoryInterface):
             self.query_net_dir = query_net_dir
             self.query_net_prefix = query_net_prefix
             self.query_net_num_inputs = query_net_num_inputs
-    
+
             #Memory
             self.key_memory = nd.array([])
             self.value_memory = nd.array([])
@@ -500,7 +500,7 @@ class EpisodicMemory(EpisodicReplayMemoryInterface):
             net = mx.gluon.nn.SymbolBlock.imports(self.query_net_dir + symbolFile, inputNames, self.query_net_dir + weightFile, ctx=context[0])
         net.hybridize()
         return net
-    
+
     def save_memory(self, path):
         mem_arr = [("keys", self.key_memory)] + [("values_"+str(k),v) for (k,v) in enumerate(self.value_memory)] + [("labels_"+str(k),v) for (k,v) in enumerate(self.label_memory)]
         mem_dict = {entry[0]:entry[1] for entry in mem_arr}
@@ -614,7 +614,6 @@ class Net_0(gluon.HybridBlock):
 
 
             pass
-
 
     def hybrid_forward(self, F, state_, action_):
         state_ = self.input_normalization_state_(state_)
