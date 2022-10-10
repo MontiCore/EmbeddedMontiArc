@@ -66,7 +66,7 @@ class CNNCreator_InfoQNetwork: # pylint: disable=invalid-name
                 for trained_model in models_to_remove:
                     if trained_model.exists():
                         try:
-                            trained_model.unlink(missing_ok=True)
+                            trained_model.unlink()
                         except OSError:
                             log.info("Error during deletion of file %s", trained_model.absolute())
 
@@ -89,7 +89,7 @@ class CNNCreator_InfoQNetwork: # pylint: disable=invalid-name
                     earliestLastEpoch = 0
                 else:
                     logging.info("Loading checkpoint: %s", param_file)
-                    network.load_parameters(self.get_model_dir(i) + param_file)
+                    network.load_parameters(str(param_file))
                     if hasattr(network, 'episodic_sub_nets'):
                         for j, sub_net in enumerate(network.episodic_sub_nets):
                             if mem_files[j] != None:
