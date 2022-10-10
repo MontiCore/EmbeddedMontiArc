@@ -3,29 +3,53 @@ stages:
 
 TestBuild:
   stage: linux
-  image: registry.git.rwth-aachen.de/monticore/embeddedmontiarc/applications/reinforcement_learning/cartpole/rl-fix-new2:latest
+  image: registry.git.rwth-aachen.de/monticore/embeddedmontiarc/applications/reinforcement_learning/coopmontisimautopilot
   before_script:
     - apt-get update
-    - apt-get install -y maven 
+    - apt-get install -y maven
+    - . /opt/ros/noetic/setup.sh
   script:
+    - pip install numpy==1.19.1
+    - mkdir dev
+    - cd dev
+    - git clone https://git.rwth-aachen.de/monticore/EmbeddedMontiArc/simulators/basic-simulator.git
+    - git clone https://git.rwth-aachen.de/monticore/EmbeddedMontiArc/simulators/simulation.git
+    - cd simulation
+    - cd ROSInterface
+    - ./install.sh
+    - cp target/libROSInterface.so ../../basic-simulator/install/
+    - cd ../../basic-simulator
+    - mvn clean install -s settings.xml -DskipTests
+    - cd ../..
     - git clone https://gitlab-ci-token:${CI_JOB_TOKEN}@git.rwth-aachen.de/monticore/EmbeddedMontiArc/generators/EMAM2Middleware.git
     - cd EMAM2Middleware
-    - mvn clean install -s settings.xml
+    - mvn clean install -s settings.xml -DskipTests
     - cd target
-    - xargs -n 1 cp -v *-jar-with-dependencies.jar<<<"../../Autopilot1/bin/ ../../Autopilot1_random/bin/ ../../Autopilot2/bin/ ../../Autopilot2_random/bin/ ../../Autopilot3/bin/" 
+    - cp -v *-jar-with-dependencies.jar ../../Autopilot/bin/
     - cd ../../
-    - cd Autopilot1
+    - cd experiments
+    - cd basic
+    - ./install.sh
+    - ./ci_run_training.sh
+    - cd ..
+    - cd drive_forward
     - ./install.sh
     - cd ..
-    - cd Autopilot1_random
+    - cd angle/baseline-angle-representation
+    - ./install.sh
+    - cd ../../
+    - cd angle/angle-representation
+    - ./install.sh
+    - cd ../../
+    - cd centering/baseline-centering
+    - ./install.sh
+    - cd ../../
+    - cd centering/centering
+    - ./install.sh
+    - cd ../../
+    - cd intersection
     - ./install.sh
     - cd ..
-    - cd Autopilot2
-    - ./install.sh
-    - cd ..
-    - cd Autopilot2_random
-    - ./install.sh
-    - cd ..
-    - cd Autopilot3
+    - cd platooning
     - ./install.sh
     - cd ..

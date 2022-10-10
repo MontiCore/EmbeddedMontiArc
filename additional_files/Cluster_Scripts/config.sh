@@ -1,6 +1,0 @@
-PROJECT_ROOT="$HOME/yourClusterPath"
-BINARY="target/bin"
-GENERATOR_PATH="bin/embedded-montiarc-math-middleware-generator-0.1.2-SNAPSHOT-jar-with-dependencies.jar"
-AGENT_BUILD="target/agent/build"
-SIMULATOR_PATH="$HOME/yourClusterPath/install"
-SCENARIO_PATH="scenarios/rl_autopilot.json"
