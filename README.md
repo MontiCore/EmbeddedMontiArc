@@ -5,9 +5,9 @@ Implementierung von 6 nimmt! als GDL-Modell
 Zur Ausführung dieser Modelle im GDL_Interpreter: siehe [GDL](https://git.rwth-aachen.de/monticore/EmbeddedMontiArc/languages/GDL)
 
 ## Aufbau
-Beinhaltet das Standardmodell sowie ein teilweise Typisiertes Modell
+Beinhaltet das Standardmodell sowie ein typisiertes Modell
 6nimmt.gdl => Standardmodell
-6nimmtTyped.gdl => unvollständig typisiertes Modell. Noch nicht zur automatischen Generierung von Zustands- und Aktionsräumen geeignet
+6nimmtTyped.gdl => typisiertes Modell
 
 ## Regeln
 siehe [Kramer-Spiele](http://www.kramer-spiele.de/spielregeln/6%20nimmt%20Reg%20140108%20UM.pdf)
