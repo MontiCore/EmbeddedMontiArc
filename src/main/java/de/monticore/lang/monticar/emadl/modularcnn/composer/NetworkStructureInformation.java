@@ -88,6 +88,19 @@ public class NetworkStructureInformation {
         return this.instances;
     }
 
+    public boolean isInstancePartOfNetwork(EMAComponentInstanceSymbol instanceSymbol){
+        if (this.instances.contains(instanceSymbol)) return true;
+
+        if (this.subNetworks != null && this.subNetworks.size() > 0){
+            for (NetworkStructureInformation networkStructureInformation: this.subNetworks){
+                if (networkStructureInformation.isInstancePartOfNetwork(instanceSymbol)){
+                    return true;
+                }
+            }
+        }
+        return false;
+    }
+
     private void setThisAsParentNetworkInSubnetworks(){
         if (this.subNetworks == null) return;
         for (NetworkStructureInformation subnet : this.subNetworks){
