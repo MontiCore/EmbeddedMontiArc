@@ -1,0 +1,6 @@
+[DEFAULT]
+ClusterUser=
+ClusterKeyPassword=
+ClusterWorkingDirectory=Dokumente/topologyoptimizer
+SSHKeyFolder=
+LogFolder=

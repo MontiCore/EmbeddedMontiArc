@@ -2,3 +2,7 @@
 *.priv
 *.pub
 .idea/
+config.ini
+log
+__pycache__
+launch.json
