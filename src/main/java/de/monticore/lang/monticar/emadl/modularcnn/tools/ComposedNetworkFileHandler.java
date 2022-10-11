@@ -20,18 +20,13 @@ public class ComposedNetworkFileHandler {
     private String composedNetworksFilePath;
     public ComposedNetworkFileHandler(String composedNetworksFilePath){
         if (composedNetworksFilePath == null || composedNetworksFilePath.equals("")){
-            this.composedNetworksFilePath = "ComposedNetworks" + timeStamp();
+            this.composedNetworksFilePath = "ComposedNetworks";
         } else {
-            this.composedNetworksFilePath = composedNetworksFilePath + timeStamp();
+            this.composedNetworksFilePath = composedNetworksFilePath ;
         }
     }
 
-    private String timeStamp(){
-        String dateFormat = "yyyy-MM-dd_HH:mm:ss";
-        Calendar calendar = Calendar.getInstance();
-        SimpleDateFormat simpleDateFormat = new SimpleDateFormat(dateFormat);
-        return "_" + simpleDateFormat.format(calendar.getTime());
-    }
+
     public void documentNetworkInFile(ComponentInformation componentInformation){
         writeNetworkFile(componentInformation, composedNetworksFilePath);
     }
