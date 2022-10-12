@@ -94,7 +94,6 @@ def download_files_with_retry(files: List[str], local_path: str, remote_path: st
     """
     return_code = 1
     tries = 0
-    interval = 10
     while tries < max_tries:
         tries += 1
         completed_process = download_files(files, local_path, remote_path, delete_sources)

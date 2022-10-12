@@ -6,3 +6,6 @@ config.ini
 log
 __pycache__
 launch.json
+src/main/local/files/constraint.txt
+src/main/local/files/Input.csv
+src/main/local/files/Lattice_Structures/1.k

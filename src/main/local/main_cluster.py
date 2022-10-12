@@ -20,10 +20,14 @@ def train():
     cluster_home_dir = f'/home/{cluster_user}'
     cluster_working_dir = config.get("DEFAULT", "ClusterWorkingDirectory")
     cluster_files_dir = f'{cluster_home_dir}/{cluster_working_dir}/toolchain/files'
+    cluster_lattice_structure_dir = f'{cluster_files_dir}/Lattice_Structures'
     local_files_dir = current_path.joinpath("files")
+    local_lattice_structure_dir = local_files_dir.joinpath("Lattice_Structures")
     input_csv_filename = "Input.csv"
     fe_mesh_filename = "1.k"
-    signalfile_filename = "signalfile"
+    signal_filename = "signalfile"
+    local_input_csv_file = local_files_dir.joinpath(input_csv_filename)
+    local_fe_mesh_file = local_lattice_structure_dir.joinpath(fe_mesh_filename)
 
     print("Preparing...")
 
@@ -52,12 +56,12 @@ def train():
         download_files_with_retry([input_csv_filename], local_files_dir, cluster_files_dir, delete_sources=True)
 
         # Check for input files
-        if not os.path.isfile(local_files_dir.joinpath(input_csv_filename)):
+        if not os.path.isfile(local_input_csv_file):
             sys.exit("Cluster timeout. Exiting...")
 
         print("Received Input file for nTop!")
 
-        with open(local_files_dir.joinpath(input_csv_filename), 'r') as inputcsv:
+        with open(local_input_csv_file, 'r') as inputcsv:
             reader = csv.reader(inputcsv)
             for row in reader:
                 print(row)
@@ -72,13 +76,13 @@ def train():
         
         # Copy necessary files to cluster
         print("Copying files to cluster...")
-        upload_files( fe_mesh_filename, local_files_dir.joinpath("Lattice_Structures"), f'{cluster_files_dir}/Lattice_Structures')
-        upload_files( signalfile_filename, local_files_dir.joinpath("Lattice_Structures"), f'{cluster_files_dir}/Lattice_Structures')
+        upload_files( fe_mesh_filename, local_lattice_structure_dir, cluster_lattice_structure_dir)
+        upload_files( signal_filename, local_lattice_structure_dir, cluster_lattice_structure_dir)
 
         # Clean up local files
         print("Clean-up...")
-        os.remove(local_files_dir.joinpath(input_csv_filename))
-        os.remove(local_files_dir.joinpath(f'Lattice_Structures/{fe_mesh_filename}'))
+        os.remove(local_input_csv_file)
+        os.remove(local_fe_mesh_file)
 
         i += 1
         print("Iteration " + str(i) + " finished!")
