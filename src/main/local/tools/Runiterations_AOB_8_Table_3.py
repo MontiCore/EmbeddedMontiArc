@@ -1,9 +1,17 @@
 # -*- coding: utf-8 -*-
 
+import configparser
+import os
+import pathlib
 import subprocess
 from subprocess import Popen, PIPE, STDOUT
 
 import csv
+
+config = configparser.ConfigParser() # Reading config
+config.read('../../../../config.ini')
+config = config['DEFAULT']
+project_path = pathlib.Path(__file__).parent.resolve().parent
 # Here's the input example that needs to be called
 # C:\Users\chaseallan\Downloads\nTop-1.6.5-rc\ntop.exe  -i 4.0mm -i C:\Users\chaseallan\Documents\nTop\api\ C:\Users\chaseallan\Documents\nTop\api\sphereApi.ntop
 
@@ -14,11 +22,11 @@ import csv
 # based on their machines configuration.
 #%%------------------------------------------------------------------------------
 #set up path variables
-pathToExe = "C:/Program Files/nTopology/nTopology/nTopcl.exe"
-pathToFiletoRun = 'C:\\Users\\Anis\\Desktop\\toolchain\\tools\\Cube_Infill_Lattice_V3_for_DoE.ntop'
-PathToCSV = 'C:\\Users\\Anis\\Desktop\\toolchain\\files\\Input.csv'
+pathToExe = config['NTopDirectory']
+pathToFiletoRun = os.path.join(project_path, 'tools', 'Cube_Infill_Lattice_V3_for_DoE.ntop')
+PathToCSV = os.path.join(project_path, 'files', 'Input.csv')
 # DER PFAD WIRD IM MODELL DEFINIERT UND HAT IN DIESEM SCRIPT DESHALB KEINE FUNKTION
-pathForExport = 'C:\\Users\\Anis\\Desktop\\toolchain\\files\\Lattice_Structures'
+pathForExport = os.path.join(project_path, 'files', 'Lattice_Structures')
 #%%----------------------------------------------------------------------------
 # Call the API in a Loop
 #%%----------------------------------------------------------------------------

@@ -9,7 +9,7 @@ import time
 
 i = 0  # Iteration counter
 delay = 2 # Delay (in seconds) between each iteration
-current_path = pathlib.Path().resolve()  # Project path
+current_path = pathlib.Path(__file__).parent.resolve()  # Project path
 
 
 # Catch Ctrl-c

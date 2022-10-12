@@ -1,3 +1,4 @@
+import configparser
 import csv
 import os
 import pathlib
@@ -5,9 +6,13 @@ import subprocess
 import sys
 
 interrupted  = False # Flag to exit safely after Ctrl-c
-current_path = pathlib.Path().resolve()  # Project path
-cluster_user = "wj777230"  # Cluster username for cluster computation
-cluster_key_password = "Pax40nO9b" # Password for ssh key for cluster authentication
+current_path = pathlib.Path(__file__).parent.resolve()  # Project path
+config = configparser.ConfigParser() # Reading config
+config.read('../../../config.ini')
+config = config['DEFAULT']
+cluster_user = config['ClusterUser']  # Cluster username for cluster computation
+cluster_key_password = config['ClusterKeyPassword'] # Password for ssh key for cluster authentication
+cluster_path = config['ClusterWorkingDirectory'] # Cluster path
 constraint_file = os.path.join(current_path, "tools", "constraint.txt")
 
 print("Preparing...")
@@ -28,11 +33,11 @@ subprocess.run(
      os.path.join(current_path, "tools", "Keys", "key.ppk"),            # Path to ssh key
      cluster_key_password,                                              # Password for ssh key
      os.path.join(current_path, "tools"),         # Local path (origin)
-     '/home/wj777230/Dokumente/topologyoptimizer/rl'])     # Path on the cluster
+     '/home/'+ cluster_user +'/'+ cluster_path +'/src/main/cluster/rl'])     # Path on the cluster
 
 ## Start Cluster
 print("Starting RL-component...")
-subprocess.run(['python', os.path.join(current_path, "tools", "agent.py"), current_path, cluster_user, cluster_key_password])
+subprocess.run(['python', os.path.join(current_path, "tools", "agent.py"), current_path, cluster_user, cluster_key_password, cluster_path])
 
 ## Wait for output file (Input.csv) from the cluster and copy it to the local folder
 subprocess.run([os.path.join(current_path, "tools", "Cluster_to_PC.bat"),
@@ -40,7 +45,7 @@ subprocess.run([os.path.join(current_path, "tools", "Cluster_to_PC.bat"),
      os.path.join(current_path, "tools", "Keys", "key.ppk"),            # Path to ssh key
      cluster_key_password,                                                       # Password for ssh key
      os.path.join(current_path, "files"),                               # Local path (destination)
-     '/home/wj777230/Dokumente/topologyoptimizer/toolchain/files'],     # Path on the cluster
+     '/home/'+ cluster_user +'/'+ cluster_path +'/src/main/cluster/toolchain/files'],     # Path on the cluster
          cwd=os.path.join(current_path, "tools"))
 
 # Check for input files
@@ -70,7 +75,7 @@ subprocess.run(
      os.path.join(current_path, "tools", "Keys", "key.ppk"),            # Path to ssh key
      cluster_key_password,                                              # Password for ssh key
      os.path.join(current_path, "files", "Lattice_Structures"),         # Local path (origin)
-     '/home/wj777230/Dokumente/topologyoptimizer/toolchain/files/Lattice_Structures'])     # Path on the cluster
+     '/home/'+ cluster_user +'/'+ cluster_path +'/src/main/cluster/toolchain/files/Lattice_Structures'])     # Path on the cluster
 
 # Clean up local files
 print("Clean-up...")

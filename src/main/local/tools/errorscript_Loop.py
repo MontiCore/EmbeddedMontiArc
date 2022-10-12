@@ -1,9 +1,14 @@
 # -*- coding: utf-8 -*-
+import os
+import pathlib
 """
 Created on Thu Nov 11 14:13:57 2021
 
 @author: j_buehring
 """
+
+project_path = pathlib.Path(__file__).parent.resolve().parent  # Project path
+
 def correction(filepath,filename):
     # Read in the file
     with open(filepath+filename, 'r') as file :       
@@ -22,6 +27,6 @@ def correction(filepath,filename):
 
 for i in range(1,2):
 
-    filepath = 'C:/Users/Anis/Desktop/toolchain/files/Lattice_Structures/'
+    filepath = os.path.join(project_path, "files", "Lattice_Structures")
     filename = '{}.k'.format(i)                             #name file which needs to be changed
     correction(filepath, filename)

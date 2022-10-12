@@ -25,6 +25,7 @@
 #SBATCH --ntasks=48
 #SBATCH --nodes=2
 
-cd $HOME/Dokumente/topologyoptimizer/rl
+SCRIPT_DIR=$(cd $(dirname "${BASH_SOURCE[0]}") && pwd)
+cd $SCRIPT_DIR/rl
 
 singularity exec /rwthfs/rz/SW/UTIL.common/singularity/dglqd_rlcontainercpu rl/execute.sh
