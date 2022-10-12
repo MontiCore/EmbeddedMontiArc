@@ -7,7 +7,7 @@ from local.tools import winscp
 
 if __name__ == "__main__":
     parser = OptionParser(usage='usage: %prog [options]')
-    parser.add_option('-i', '--install-remote',action="store_false", dest='install',
+    parser.add_option('-i', '--install-remote',action="store_true", dest='install',
                       help='copies the cluster code to the hpc cluster')
     parser.add_option("-t", '--train', action="store_true", dest="train",
                       help='start the training')
@@ -19,7 +19,7 @@ if __name__ == "__main__":
     options, args = parser.parse_args()
 
     if options.install:
-        print("TODO")
+        cluster.install()
     elif options.train:
         if not options.local:
             cluster.train()

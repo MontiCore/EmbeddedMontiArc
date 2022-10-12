@@ -8,7 +8,7 @@ import time
 
 from config import config
 from local.tools.ntopology import generate_lattice
-from local.tools.winscp import download_files_with_retry, upload_files,  download_files
+from local.tools import winscp
 
 def train():
     i = 0  # Iteration counter
@@ -18,9 +18,8 @@ def train():
     cluster_user = config.get("DEFAULT", "ClusterUser")
     cluster_key_password = config.get("DEFAULT", "ClusterKeyPassword")
     ssh_key = pathlib.Path(config.get("DEFAULT", "SSHKeyFolder")).joinpath("key.priv")
-    cluster_home_dir = f'/home/{cluster_user}'
     cluster_working_dir = config.get("DEFAULT", "ClusterWorkingDirectory")
-    cluster_files_dir = f'{cluster_home_dir}/{cluster_working_dir}/toolchain/files'
+    cluster_files_dir = f'{cluster_working_dir}/toolchain/files'
     cluster_lattice_structure_dir = f'{cluster_files_dir}/Lattice_Structures'
     local_files_dir = current_path.joinpath("files")
     local_lattice_structure_dir = local_files_dir.joinpath("Lattice_Structures")
@@ -54,7 +53,7 @@ def train():
             print("exiting now...")
             break
 
-        download_files_with_retry([input_csv_filename], local_files_dir, cluster_files_dir, delete_sources=True)
+        winscp.download_files_with_retry([input_csv_filename], local_files_dir, cluster_files_dir, delete_sources=True)
 
         # Check for input files
         if not os.path.isfile(local_input_csv_file):
@@ -73,8 +72,8 @@ def train():
         
         # Copy necessary files to cluster
         print("Copying files to cluster...")
-        upload_files( fe_mesh_filename, local_lattice_structure_dir, cluster_lattice_structure_dir)
-        upload_files( signal_filename, local_lattice_structure_dir, cluster_lattice_structure_dir)
+        winscp.upload_files( fe_mesh_filename, local_lattice_structure_dir, cluster_lattice_structure_dir)
+        winscp.upload_files( signal_filename, local_lattice_structure_dir, cluster_lattice_structure_dir)
 
         # Clean up local files
         print("Clean-up...")
@@ -85,3 +84,17 @@ def train():
         print("Iteration " + str(i) + " finished!")
         print("Starting next iteration in " + str(delay) + " seconds...")
         time.sleep(delay)
+
+def install():
+    remote_cluster_dir = config.get("DEFAULT", "ClusterWorkingDirectory")
+    local_cluster_dir = pathlib.Path(config.get("DEFAULT", "ProjectRootDirectory")).joinpath("src/main/cluster")
+
+    if not winscp.exists(remote_cluster_dir):
+        winscp.mkdir(remote_cluster_dir)
+    else:    
+        accept = str(input(f'{remote_cluster_dir} does exist on the cluster. Do you want to overwrite it? yes / no\n'))
+        if accept != "yes":
+            sys.exit(0)
+
+    winscp.synchronize_directory(local_cluster_dir, remote_cluster_dir)
+    

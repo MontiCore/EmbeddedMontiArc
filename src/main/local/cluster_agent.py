@@ -14,10 +14,9 @@ def execute():
     cluster_user = config.get("DEFAULT", "ClusterUser")
     cluster_key_password = config.get("DEFAULT", "ClusterKeyPassword")
     ssh_key_folder = pathlib.Path(config.get("DEFAULT", "SSHKeyFolder"))
-    cluster_home_dir = f'/home/{cluster_user}'
     cluster_working_dir = config.get("DEFAULT", "ClusterWorkingDirectory")
-    cluster_files_dir = f'{cluster_home_dir}/{cluster_working_dir}/toolchain/files'
-    cluster_rl_dir = f'{cluster_home_dir}/{cluster_working_dir}/rl'
+    cluster_files_dir = f'{cluster_working_dir}/toolchain/files'
+    cluster_rl_dir = f'{cluster_working_dir}/rl'
     cluster_lattice_structure_dir = f'{cluster_files_dir}/Lattice_Structures'
     local_files_dir = current_path.joinpath("files")
     local_lattice_structure_dir = local_files_dir.joinpath("Lattice_Structures")

@@ -4,6 +4,7 @@ from pathlib import Path
 import time
 from typing import List
 from config import config
+import paramiko
 
 def current_path():
     return Path( __file__ ).parent.resolve()
@@ -107,3 +108,79 @@ def download_files_with_retry(files: List[str], local_path: str, remote_path: st
         elif tries < max_tries:
             print(f'Cluster has not finished, retrying in {interval} seconds')
             time.sleep(interval)
+
+
+def exists(remote_file: str):
+    cluster_user = config.get("DEFAULT", "ClusterUser")
+    ssh_key_password = config.get("DEFAULT", "ClusterKeyPassword")
+    ssh_key_file = Path(config.get("DEFAULT", "SSHKeyFolder")).joinpath("key.priv")
+    ssh_key = paramiko.Ed25519Key.from_private_key_file(ssh_key_file, ssh_key_password)
+    hostname = config.get("DEFAULT", "ClusterHost")
+
+    # the command to run remotely to check if the file exists
+    cmd = f'ls -a -d {remote_file} > /dev/null 2>&1 || exit $?'
+    
+    ssh = paramiko.SSHClient()
+    ssh.set_missing_host_key_policy(paramiko.AutoAddPolicy)
+
+    print(f'Connecting to {hostname} ...')
+    try:
+        ssh.connect( hostname=hostname, username=cluster_user, pkey=ssh_key)
+        
+        print(f'Connection established')
+
+        print(f'Executing remote command "{cmd}"')
+        _, stdout, _ = ssh.exec_command(cmd)
+        if stdout.channel.recv_exit_status() == 0:
+            return True
+        else:
+            return False
+    finally:
+        ssh.close()
+        print("Connection closed")
+
+def mkdir(remote_dir: str):
+    cluster_user = config.get("DEFAULT", "ClusterUser")
+    ssh_key_password = config.get("DEFAULT", "ClusterKeyPassword")
+    ssh_key_file = Path(config.get("DEFAULT", "SSHKeyFolder")).joinpath("key.priv")
+    ssh_key = paramiko.Ed25519Key.from_private_key_file(ssh_key_file, ssh_key_password)
+    hostname = config.get("DEFAULT", "ClusterHost")
+
+    # the command to run remotely to check if the file exists
+    cmd = f'mkdir -p {remote_dir} 2>&1 || exit $?'
+    
+    ssh = paramiko.SSHClient()
+    ssh.set_missing_host_key_policy(paramiko.AutoAddPolicy)
+
+    print(f'Connecting to {hostname} ...')
+    try:
+        ssh.connect( hostname=hostname, username=cluster_user, pkey=ssh_key)
+        print(f'Connection established')
+
+        print(f'Executing remote command "{cmd}"')
+        _, stdout, _ = ssh.exec_command(cmd)
+        output = stdout.read()
+        exit_code = stdout.channel.recv_exit_status()
+        if exit_code != 0:
+            raise Exception(f'Could not create {remote_dir} on the cluster', output)
+    finally:
+        ssh.close()
+        print("Connection closed")
+
+def synchronize_directory(local_dir: str, remote_dir: str):
+    logfolder = Path(config.get("DEFAULT", "LogFolder")).joinpath("transferC2P.log")
+    script = current_path().joinpath("winscp/Synchronize_directory.txt")
+    cluster_user = config.get("DEFAULT", "ClusterUser")
+    putty_ssh_key = Path(config.get("DEFAULT", "SSHKeyFolder")).joinpath("key.ppk")
+    putty_ssh_key_passphrase = config.get("DEFAULT", "ClusterKeyPassword")    
+
+    return subprocess.run(
+        [
+            'winscp.com', '/ini=nul', f'/log={logfolder}', f'/script={script}', '/parameter',
+            cluster_user,
+            putty_ssh_key,
+            putty_ssh_key_passphrase,
+            local_dir,
+            remote_dir
+        ] 
+    )
