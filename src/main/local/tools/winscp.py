@@ -1,3 +1,4 @@
+import random
 import subprocess
 from pathlib import Path
 import time
@@ -65,6 +66,8 @@ def download_files(files: List[str], local_path: str, remote_path: str, delete_s
         files.insert(0,"-delete")
     
     filestring = " ".join(files)
+
+    
     
     print(f'Copying files {filestring} from cluster dir {remote_path} to local dir {local_path}...')
     return subprocess.run(
@@ -75,7 +78,8 @@ def download_files(files: List[str], local_path: str, remote_path: str, delete_s
             putty_ssh_key_passphrase,
             local_path,
             remote_path,
-            filestring
+            filestring,
+            str(random.randint(1, 1000000))
         ] 
     )
 

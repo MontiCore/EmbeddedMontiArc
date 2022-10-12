@@ -8,6 +8,12 @@ lcd %4%
 # Change remote directory
 cd %5%
 
+# workaround so that winscp throws away the directory cache.
+# without this workaround winscp sometimes thinks that a file
+# does not exist remotely even when it does
+# See https://winscp.net/eng/docs/directory_cache
+call echo "%7%" > /dev/null
+
 # Download file
 get %6%
 
