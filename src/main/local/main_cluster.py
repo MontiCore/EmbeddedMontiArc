@@ -6,8 +6,9 @@ import subprocess
 import sys
 import time
 
-from local.tools.winscp import download_files_with_retry, upload_files,  download_files
 from config import config
+from local.tools.ntopology import generate_lattice
+from local.tools.winscp import download_files_with_retry, upload_files,  download_files
 
 def train():
     i = 0  # Iteration counter
@@ -66,12 +67,8 @@ def train():
             for row in reader:
                 print(row)
 
-        # Python script for nTop
         print("Generating structure with nTop...")
-        subprocess.run(['python', os.path.join(current_path, "tools", "Runiterations_AOB_8_Table_3.py")])
-
-        # Modify and copy files
-        subprocess.run(['python', os.path.join(current_path, "tools", "errorscript_Loop.py")])
+        generate_lattice(local_input_csv_file, local_fe_mesh_file)
         print("Finished!")
         
         # Copy necessary files to cluster

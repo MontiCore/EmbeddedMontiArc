@@ -6,6 +6,7 @@ import sys
 
 from config import config
 from local.tools.winscp import download_files_with_retry, upload_files
+from local.tools.ntopology import generate_lattice
 
 def execute():
     interrupted  = False # Flag to exit safely after Ctrl-c
@@ -60,12 +61,8 @@ def execute():
         for row in reader:
             print(row)
 
-    # Python script for nTop
     print("Generating structure with nTop...")
-    subprocess.run(['python', os.path.join(current_path, "tools", "Runiterations_AOB_8_Table_3.py")])
-
-    # Modify and copy files
-    subprocess.run(['python', os.path.join(current_path, "tools", "errorscript_Loop.py")])
+    generate_lattice(local_input_csv_file, local_fe_mesh_file)
     print("Finished!")
 
     # Copy necessary files to cluster
