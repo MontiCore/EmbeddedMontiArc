@@ -21,7 +21,6 @@ class SupervisedTrainer():
         begin_epoch= 0
         self._network_.train()
         num_epoch = self._schemaApi_.getNum_epoch()
-        file_object = open('train.log', 'w')
         if os.path.isdir(self._model_dir_):
             shutil.rmtree(self._model_dir_)
         try:
@@ -32,8 +31,7 @@ class SupervisedTrainer():
 
         epoch_loss = 0
         epoch_accuracy = 0
-        print(len(self._train_loader_))
-        
+
         for epoch in range(num_epoch):  
             train_losses = []
             train_accuracy = []
@@ -54,12 +52,9 @@ class SupervisedTrainer():
                 optimizer.step()
             epoch_loss = torch.stack(train_losses).mean().item()
             epoch_accuracy = torch.stack(train_accuracy).mean().item()
-            print(f' Epoch: {epoch+1} Train Loss:{epoch_loss:.4f} Train Accuracy:{100 *epoch_accuracy:.2f}%')
-            file_object.write(f' Epoch: {epoch+1} Train Loss:{epoch_loss:.4f} Train Accuracy:{100 *epoch_accuracy:.2f}% \n')
-        
-        
-        print(f'Training Loss and accuracy after  {num_epoch} epochs,  Loss:{epoch_loss:.4f} , Accuracy:{100 * epoch_accuracy:.2f}%')
-        file_object.write(f'Training Loss and accuracy after  {num_epoch} epochs,  Loss:{epoch_loss:.4f} , Accuracy:{100 *               epoch_accuracy:.2f}% \n')
+            print(f'Epoch:{epoch+1} Train Loss:{epoch_loss:.4f} Train Accuracy:{100*epoch_accuracy:.2f}%')
+
+        print(f'Training Loss and accuracy after  {num_epoch} epochs,  Loss:{epoch_loss:.4f} , Accuracy:{100 *epoch_accuracy:.2f}%')
         #Saving model according to number of epoch
         torch.save({
             'epoch': str(num_epoch + begin_epoch),
