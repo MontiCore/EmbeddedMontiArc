@@ -305,14 +305,14 @@
 
 
 // Define legal moves
-(<= (legal ?player (move col:?start_col [1,8]:?start_row col:?dest_col [1,8]:?dest_row))
+(<= (legal ?player (move field_fig:?color_fig col:?start_col [1,8]:?start_row col:?dest_col [1,8]:?dest_row))
     (true (control ?player))
     (isFigureOnField ?player ?figure ?color_fig ?start_col ?start_row)
     (isLegalMove ?figure ?player ?start_col ?start_row ?dest_col ?dest_row)
     (not (isInCheckAfterMove ?player ?start_col ?start_row ?dest_col ?dest_row))
 )
 
-(<= (legal ?player (move col:?start_col [1,8]:?start_row col:?dest_col [1,8]:?dest_row))
+(<= (legal ?player (move field_fig:?color_fig col:?start_col [1,8]:?start_row col:?dest_col [1,8]:?dest_row))
     (true (control ?player))
     (isFigureOnField ?player ?figure ?color_fig ?start_col ?start_row)
     (isLegalCastleMove ?color_fig ?start_col ?start_row ?dest_col ?dest_row)
