@@ -26,7 +26,7 @@ To install, please clone this repository, then copy the content of `/src/main/lo
 
 If you plan to use the cluster, you need to generate an ssh key for authentication (Ed25519). Place the key in the `tools/Keys` folder on your local PC, and make sure to secure your key with a password. The key is needed in both `.ppk` and split `.priv` and `.pub` format. Guides on how to generate these files can be found [here](https://www.simplified.guide/putty/puttygen-generate-ssh-key-pair) and [here](https://www.simplified.guide/putty/convert-ppk-to-ssh-key). Please name your files `key.ppk` (PuTTY format), `key.priv` (Private OpenSSH Key) and `key.pub` (Public OpenSSH Key). You will also need to add the public key to the authorized keys on the cluster.
 
-If you are running everything locally, you need to build the docker container for the preprocessing. You can use the Dockerfile and requirements file in the `/additional_files/Docker` folder in the root of this repository. Please name the container "preprocessing" (command: `docker build -t preprocessing .`).
+If you are running everything locally, you need to download the docker container for the preprocessing. You can download the docker container from `registry.git.rwth-aachen.de/monticore/embeddedmontiarc/generators/emadl2cpp/dockerimages/dgl-qd`. Please name the container "preprocessing".
 
 **Note that the Machine Learning component has not been adapted for local execution and will not be executed locally!**
 

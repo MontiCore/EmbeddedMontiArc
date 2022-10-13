@@ -1,9 +1,9 @@
 #!/bin/bash
 
-cd $HOME/Dokumente/topologyoptimizer/rl
+SCRIPT_DIR=$(cd $(dirname "${BASH_SOURCE[0]}") && pwd)
+cd $SCRIPT_DIR
 
-directory=$(pwd)
-. $directory/config.sh
+. $SCRIPT_DIR/config.sh
 
 rm -rf target
 

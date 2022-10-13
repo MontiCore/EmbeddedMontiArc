@@ -1,19 +1,10 @@
-#!/usr/local_rwth/bin/zsh
+#!/bin/bash
 
 ### the default Claix-2018 section
 #SBATCH --partition=c18m
 
-### project account
-#SBATCH --account=thes1203
-
 ### clean environment
 #SBATCH --export=NONE,DISPLAY
-
-### job name
-#SBATCH --job-name=Topologyoptimizer
-
-### job log
-#SBATCH --output=/home/wj777230/Dokumente/topologyoptimizer/logs/agent.out
 
 ### time limit
 #SBATCH --time 00:20:00
@@ -25,6 +16,6 @@
 #SBATCH --ntasks=48
 #SBATCH --nodes=2
 
-cd $HOME/Dokumente/topologyoptimizer/rl
+cd $WORKING_DIR/rl
 
 singularity exec /rwthfs/rz/SW/UTIL.common/singularity/dglqd_rlcontainercpu rl/execute.sh

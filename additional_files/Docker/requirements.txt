@@ -1,8 +1,0 @@
-qd
-zipfile38
-matplotlib
-pandas
-h5py
-xlrd
-mxnet
-plotly

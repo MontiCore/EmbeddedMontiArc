@@ -1,5 +1,9 @@
 # This file is only for local execution of the preprocessing!
+import os
+import pathlib
 import sys
+
+project_path = pathlib.Path().resolve().parent  # Project path
 
 if sys.version_info > (3, 9, 100):
     sys.exit("Sorry, Python > 3.9 is not supported")

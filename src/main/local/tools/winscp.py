@@ -19,16 +19,18 @@ def upload_files(files: List[str], local_path: str, remote_path: str, delete_sou
     if isinstance(files, str):
         files = [files]
 
-    logfolder = Path(config.get("DEFAULT", "LogFolder")).joinpath("transferP2C.log")
+    logfolder = Path(config.get("DEFAULT", "LocalLogFolder")).joinpath("transferP2C.log")
     script = current_path().joinpath("winscp/PC_to_Cluster.txt")
     cluster_user = config.get("DEFAULT", "ClusterUser")
     putty_ssh_key = Path(config.get("DEFAULT", "SSHKeyFolder")).joinpath("key.ppk")
     putty_ssh_key_passphrase = config.get("DEFAULT", "ClusterKeyPassword")
 
-    if delete_sources:
-        files.insert(0,"-delete")
+    options = []
 
-    filestring = " ".join(files)
+    if delete_sources:
+        options.append("-delete")
+    
+    filestring = f'{" ".join(options)} {" ".join(files)}'
 
     print("Copying files to cluster...")
     return subprocess.run(
@@ -57,18 +59,18 @@ def download_files(files: List[str], local_path: str, remote_path: str, delete_s
     if isinstance(files, str):
         files = [files]
 
-    logfolder = Path(config.get("DEFAULT", "LogFolder")).joinpath("transferC2P.log")
+    logfolder = Path(config.get("DEFAULT", "LocalLogFolder")).joinpath("transferC2P.log")
     script = current_path().joinpath("winscp/Cluster_to_PC.txt")
     cluster_user = config.get("DEFAULT", "ClusterUser")
     putty_ssh_key = Path(config.get("DEFAULT", "SSHKeyFolder")).joinpath("key.ppk")
     putty_ssh_key_passphrase = config.get("DEFAULT", "ClusterKeyPassword")
 
-    if delete_sources:
-        files.insert(0,"-delete")
-    
-    filestring = " ".join(files)
+    options = []
 
+    if delete_sources:
+        options.append("-delete")
     
+    filestring = f'{" ".join(options)} {" ".join(files)}'
     
     print(f'Copying files {filestring} from cluster dir {remote_path} to local dir {local_path}...')
     return subprocess.run(
@@ -168,7 +170,7 @@ def mkdir(remote_dir: str):
         print("Connection closed")
 
 def synchronize_directory(local_dir: str, remote_dir: str):
-    logfolder = Path(config.get("DEFAULT", "LogFolder")).joinpath("transferC2P.log")
+    logfolder = Path(config.get("DEFAULT", "LocalLogFolder")).joinpath("transferC2P.log")
     script = current_path().joinpath("winscp/Synchronize_directory.txt")
     cluster_user = config.get("DEFAULT", "ClusterUser")
     putty_ssh_key = Path(config.get("DEFAULT", "SSHKeyFolder")).joinpath("key.ppk")

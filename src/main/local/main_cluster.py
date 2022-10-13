@@ -2,22 +2,19 @@ import csv
 import os
 import pathlib
 import signal
-import subprocess
 import sys
 import time
 
 from config import config
 from local.tools.ntopology import generate_lattice
 from local.tools import winscp
+from local.tools import sbatch
 
 def train():
     i = 0  # Iteration counter
     delay = 20 # Delay (in seconds) between each iteration
     interrupted  = False # Flag to exit safely after Ctrl-c
     current_path = pathlib.Path(__file__).parent.resolve()  # Project path
-    cluster_user = config.get("DEFAULT", "ClusterUser")
-    cluster_key_password = config.get("DEFAULT", "ClusterKeyPassword")
-    ssh_key = pathlib.Path(config.get("DEFAULT", "SSHKeyFolder")).joinpath("key.priv")
     cluster_working_dir = config.get("DEFAULT", "ClusterWorkingDirectory")
     cluster_files_dir = f'{cluster_working_dir}/toolchain/files'
     cluster_lattice_structure_dir = f'{cluster_files_dir}/Lattice_Structures'
@@ -41,7 +38,7 @@ def train():
 
     ## Start Cluster
     print("Starting RL-component...")
-    subprocess.run(['python', os.path.join(current_path, "tools", "cluster.py"), current_path, cluster_user, cluster_key_password, ssh_key])
+    sbatch.schedule_job("topologyoptimizer_train", 'run.job')
 
     # Initial delay
     time.sleep(10)

@@ -1,19 +1,15 @@
 import csv
 import os
 import pathlib
-import subprocess
 import sys
 
 from config import config
 from local.tools.winscp import download_files_with_retry, upload_files
 from local.tools.ntopology import generate_lattice
+from local.tools import sbatch
 
 def execute():
-    interrupted  = False # Flag to exit safely after Ctrl-c
     current_path = pathlib.Path(__file__).parent.resolve()
-    cluster_user = config.get("DEFAULT", "ClusterUser")
-    cluster_key_password = config.get("DEFAULT", "ClusterKeyPassword")
-    ssh_key_folder = pathlib.Path(config.get("DEFAULT", "SSHKeyFolder"))
     cluster_working_dir = config.get("DEFAULT", "ClusterWorkingDirectory")
     cluster_files_dir = f'{cluster_working_dir}/toolchain/files'
     cluster_rl_dir = f'{cluster_working_dir}/rl'
@@ -44,7 +40,7 @@ def execute():
 
     ## Start Cluster
     print("Starting RL-component...")
-    subprocess.run(['python', os.path.join(current_path, "tools", "agent.py"), current_path, cluster_user, cluster_key_password, ssh_key_folder])
+    sbatch.schedule_job("topologyoptimizer_agent", f'{cluster_working_dir}/agent.job')
 
     ## Wait for output file (Input.csv) from the cluster and copy it to the local folder
     download_files_with_retry(input_csv_filename, local_files_dir, cluster_files_dir, delete_sources=True)
