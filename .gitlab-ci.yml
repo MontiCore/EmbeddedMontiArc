@@ -12,8 +12,7 @@ TestBuild:
     - cd EMAM2Middleware
     - mvn clean install -s settings.xml
     - cd target
-    - xargs -n 1 cp -v *-jar-with-dependencies.jar<<<"../topologyoptimizer/cluster/rl/bin/"
-    - cd ../
-    - cd topologyoptimizer/cluster/rl/
+    - xargs -n 1 cp -v *-jar-with-dependencies.jar<<<"../../topologyoptimizer/cluster/rl/bin/"
+    - cd ../../topologyoptimizer/cluster/rl/
     - chmod +x install.sh
     - ./install.sh
