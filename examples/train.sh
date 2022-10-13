@@ -8,7 +8,15 @@ sleep 3s
 pid_env=$!
 sleep 2s
 
+exitfn () {
+    trap SIGINT
+    kill $pid_env
+    kill $pid_ros
+    exit
+}
+
+trap "exitfn" INT
+
 ./trainAgent.sh
 
-kill $pid_env
-kill $pid_ros
+exitfn()
