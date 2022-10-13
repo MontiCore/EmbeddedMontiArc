@@ -6,7 +6,7 @@ def load_config():
     config = configparser.ConfigParser()
 
     current_path = Path( __file__ ).parent.resolve()
-    project_root_dir = current_path.joinpath("../../").resolve()
+    project_root_dir = current_path.joinpath("../").resolve()
     resources_dir = project_root_dir.joinpath("resources").resolve()
     config_file = project_root_dir.joinpath("config.ini").resolve()
 

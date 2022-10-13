@@ -10,7 +10,7 @@ from local.tools.ntopology import generate_lattice
 from local.tools import winscp
 from local.tools import sbatch
 
-def train():
+def train(options):
     i = 0  # Iteration counter
     delay = 20 # Delay (in seconds) between each iteration
     interrupted  = False # Flag to exit safely after Ctrl-c
@@ -84,7 +84,7 @@ def train():
 
 def install():
     remote_cluster_dir = config.get("DEFAULT", "ClusterWorkingDirectory")
-    local_cluster_dir = pathlib.Path(config.get("DEFAULT", "ProjectRootDirectory")).joinpath("src/main/cluster")
+    local_cluster_dir = pathlib.Path(config.get("DEFAULT", "ProjectRootDirectory")).joinpath("topologyoptimizer/cluster")
 
     if not winscp.exists(remote_cluster_dir):
         winscp.mkdir(remote_cluster_dir)

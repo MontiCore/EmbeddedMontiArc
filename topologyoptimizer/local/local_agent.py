@@ -8,7 +8,10 @@ import sys
 import time
 
 
-def train():
+def execute():
+    print("Currently not supported. Please train and execute the agent on the cluster")
+    sys.exit(1)
+
     i = 0  # Iteration counter
     delay = 2 # Delay (in seconds) between each iteration
     current_path = pathlib.Path().resolve()  # Project path
