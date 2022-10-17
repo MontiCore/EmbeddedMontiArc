@@ -2,6 +2,8 @@
 
 schema HyperparameterOpt {
 
-    optimizer: string
+    optimizer: enum {
+        SA, BO, WeightedRS, GA, PSO, Hyperband, BOHB, DEHB;
+    }
 
 }

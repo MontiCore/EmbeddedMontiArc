@@ -2,7 +2,9 @@
 
 schema EvaluationCriteria {
 
-    metric: string
+    metric: enum {
+        accuracy, loss, f1;
+    }
     acceptance_rate: Q
 
 }

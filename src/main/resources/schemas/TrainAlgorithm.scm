@@ -4,7 +4,11 @@ schema TrainAlgorithm {
 
     save_trained_architecture: B
     architecture_save_path: string
-    train_algorithm_name: string
-    train_pipeline_name: string
+    train_algorithm_name: enum {
+        EfficientNet, AdaNet;
+    }
+    train_pipeline_name: enum {
+        Pytorch, Gluon, Tensorflow;
+    }
 
 }
