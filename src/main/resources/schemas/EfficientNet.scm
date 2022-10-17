@@ -6,7 +6,7 @@ schema EfficientNet extends TrainAlgorithm {
     min_scaling_factors_gamma: Q
     max_scaling_factors_alpha: Q
     max_scaling_factors_beta: Q
-    scaling_factors_stepsize_gamma: Q
+    max_scaling_factors_gamma: Q
     scaling_factors_stepsize_alpha: Q
     scaling_factors_stepsize_beta: Q
     scaling_factors_stepsize_gamma: Q
