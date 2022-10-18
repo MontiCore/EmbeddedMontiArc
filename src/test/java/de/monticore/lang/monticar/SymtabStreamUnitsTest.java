@@ -49,8 +49,7 @@ public class SymtabStreamUnitsTest {
         Log.debug(symTab.toString(), "SymTab:");
         ComponentStreamUnitsSymbol comp = symTab.<ComponentStreamUnitsSymbol>resolve(
                 "basicLibrary.AddTest", ComponentStreamUnitsSymbol.KIND).orElse(null);
-        comp.getNamedStream("in1");
-        assertNotNull(comp);
+        assertNotNull(comp.getNamedStream("in1"));
     }
 
     @Test
@@ -75,22 +74,6 @@ public class SymtabStreamUnitsTest {
         ASTNumberWithUnit percision = (ASTNumberWithUnit) instruction.getStreamValue().get().getPrecision();
         assertEquals(0.5, percision.getNumber().get(), 0);
         assertFalse(instruction.getStreamCompare().isPresent());
-    }
-
-    @Test
-    public void testResolveFilePathStreamUnit() {
-        Scope symTab = createSymTab("src/test/resources/unitstreams/streams");
-
-        NamedStreamUnitsSymbol namedStreamSymbol = symTab.<NamedStreamUnitsSymbol>resolve(
-                "basicLibrary.AddTest.in1", NamedStreamUnitsSymbol.KIND).orElse(null);
-
-        StreamInstruction instruction = (StreamInstruction) namedStreamSymbol.getValue(2);
-
-        ASTNumberWithUnit percision = (ASTNumberWithUnit) instruction.getStreamValue().get().getValue();
-
-
-        assertEquals(3, percision.getNumber().get(), 0);
-
     }
 
     @Test
@@ -217,6 +200,7 @@ public class SymtabStreamUnitsTest {
         assertEquals(3, streamValues.getDepthDimension());
         assertEquals(3, streamValues.getRowDimension());
         assertEquals(3, streamValues.getColumnDimension());
+        assertEquals(0.1, streamValues.getElementTolerance(), 0);
         assertEquals("1.0", streamValues.getStreamValue(0, 0,0).toString());
         assertEquals("3.0", streamValues.getStreamValue(0, 1,1).toString());
         assertEquals("4.0", streamValues.getStreamValue(0, 2,1).toString());

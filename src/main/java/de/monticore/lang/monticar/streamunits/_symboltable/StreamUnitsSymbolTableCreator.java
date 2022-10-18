@@ -7,6 +7,7 @@ package de.monticore.lang.monticar.streamunits._symboltable;
 
 import de.monticore.lang.monticar.streamunits._ast.*;
 import de.monticore.lang.monticar.streamunits._parser.StreamUnitsParser;
+import de.monticore.literals.literals._ast.ASTDoubleLiteral;
 import de.monticore.literals.literals._ast.ASTSignedLiteral;
 import de.monticore.symboltable.ArtifactScope;
 import de.monticore.symboltable.MutableScope;
@@ -92,7 +93,24 @@ public class StreamUnitsSymbolTableCreator extends StreamUnitsSymbolTableCreator
             streamSymbol.add(new StreamCompare(new StreamValuePrecision(astStreamCompare.getLeft()),
                     astStreamCompare.getOperator(), new StreamValuePrecision(astStreamCompare.getRight())));
         } else if (streamInstruction.getStreamArrayValuesOpt().isPresent()) {
-            streamSymbol.add(handleStreamArrayValues(streamInstruction));
+            streamSymbol.add(handleStreamArrayValues(streamInstruction, Optional.empty(), Optional.empty()));
+        } else if (streamInstruction.getFilePathOpt().isPresent()) {
+            handleFilePath(streamSymbol, streamInstruction);
+        }
+    }
+
+    private void handleStreamInstructionForFilePath(NamedStreamUnitsSymbol streamSymbol,
+                                         ASTStreamInstruction streamInstruction,
+                                         Optional<ASTDoubleLiteral> elementTolerance,
+                                                    Optional<ASTDoubleLiteral> generalTolerance) {
+        if (streamInstruction.getStreamValueOpt().isPresent()) {
+            streamSymbol.add(handleStreamValue(streamInstruction.getStreamValueOpt().get()));
+        } else if (streamInstruction.getStreamCompareOpt().isPresent()) {
+            ASTStreamCompare astStreamCompare = streamInstruction.getStreamCompareOpt().get();
+            streamSymbol.add(new StreamCompare(new StreamValuePrecision(astStreamCompare.getLeft()),
+                    astStreamCompare.getOperator(), new StreamValuePrecision(astStreamCompare.getRight())));
+        } else if (streamInstruction.getStreamArrayValuesOpt().isPresent()) {
+            streamSymbol.add(handleStreamArrayValues(streamInstruction, elementTolerance, generalTolerance));
         } else if (streamInstruction.getFilePathOpt().isPresent()) {
             handleFilePath(streamSymbol, streamInstruction);
         }
@@ -108,7 +126,8 @@ public class StreamUnitsSymbolTableCreator extends StreamUnitsSymbolTableCreator
             try {
                 Optional<ASTStreamInstruction> astStreamInstruction =
                         handleFileByExtension(file);
-                astStreamInstruction.ifPresent(instruction -> handleStreamInstruction(streamSymbol, instruction));
+                astStreamInstruction.ifPresent(instruction ->
+                        handleStreamInstructionForFilePath(streamSymbol, instruction, astFilePath.getElementToleranceOpt(), astFilePath.getGeneralToleranceOpt()));
             } catch (IOException | NumberFormatException e) {
                 if (e instanceof  IOException) {
                     Log.error("Error on reading file:" + filePath);
@@ -134,10 +153,10 @@ public class StreamUnitsSymbolTableCreator extends StreamUnitsSymbolTableCreator
     }
 
     private String convertCubeToString(double[][][] cube) {
-        double[][] matrix = cube[0];
         String str = "[";
         for (int k = 0; k < cube.length; k++) {
             str += "[";
+            double[][] matrix = cube[k];
             for (int i = 0; i < matrix.length; i++) {
                 for (int j = 0; j < matrix[i].length; j++) {
                     str += " " + matrix[i][j];
@@ -185,9 +204,9 @@ public class StreamUnitsSymbolTableCreator extends StreamUnitsSymbolTableCreator
 
     private double[][][] translateToCube(double[] source, int[] shape) {
         assert(shape.length == 3);
-        double[][][] cubeMatrix = new double[shape[0]][shape[2]][shape[1]]; // slices(channels), columns(width), rows(height)
+        double[][][] cubeMatrix = new double[shape[0]][shape[1]][shape[2]]; // slices(channels), rows(height), columns(width)
         final int matrixSize = shape[1] * shape[2];
-        long[] matrixShape = new long[]{shape[2], shape[1]};
+        long[] matrixShape = new long[]{shape[1], shape[2]}; // rows, columns
         int startPos = 0;
         int endPos = matrixSize;
 
@@ -200,9 +219,9 @@ public class StreamUnitsSymbolTableCreator extends StreamUnitsSymbolTableCreator
         return cubeMatrix;
     }
 
-    private double[][] translateToMat(double[] source, long[] shape) { // shape {col, row}
+    private double[][] translateToMat(double[] source, long[] shape) { // shape {rows, columns}
         assert(shape.length == 2);
-        double[][] matrix = new double[(int) shape[1]][(int) shape[0]];
+        double[][] matrix = new double[(int) shape[1]][(int) shape[0]]; // this matrix should be inverted
         int startPos = 0;
         int endPos = (int) shape[1];
         final int[] columnShape = new int[]{(int) shape[1]};
@@ -212,8 +231,23 @@ public class StreamUnitsSymbolTableCreator extends StreamUnitsSymbolTableCreator
             startPos = endPos;
             endPos += shape[1];
         }
-        return matrix;
+        return inverte(matrix);
     }
+
+    private double[][] inverte(double[][] matrix) {
+        int oldRows = matrix.length;
+        int oldColumns = matrix.length > 0 ? matrix[0].length : 0;
+        int newRows = oldRows;
+        int newColumns = oldRows;
+        double[][] inverted = new double[newRows][newColumns];
+        for (int i = 0; i < oldRows; i++) {
+            for (int j = 0; j < oldColumns; j++) {
+                inverted[j][i] = matrix[i][j];
+            }
+        }
+        return inverted;
+    }
+
 
     private double[] translateToCol(double[] source, int[] shape) {
         assert shape.length == 1;
@@ -247,7 +281,8 @@ public class StreamUnitsSymbolTableCreator extends StreamUnitsSymbolTableCreator
         return result;
     }
 
-    private StreamValues handleStreamArrayValues(ASTStreamInstruction streamInstruction) {
+    private StreamValues handleStreamArrayValues(ASTStreamInstruction streamInstruction,
+                                                 Optional<ASTDoubleLiteral> elementTolerance, Optional<ASTDoubleLiteral> generalTolerance) {
         ASTStreamArrayValues streamArrayValues = streamInstruction.getStreamArrayValues();
         StreamValues result = null;
         if (streamArrayValues.getMatrixPairOpt().isPresent()) {
@@ -257,6 +292,34 @@ public class StreamUnitsSymbolTableCreator extends StreamUnitsSymbolTableCreator
         } else if (streamArrayValues.getCubePairOpt().isPresent()) {
             result = handleCubePair(streamArrayValues.getCubePairOpt().get());
         }
+
+        if (result != null) {
+            if (streamArrayValues.getElementToleranceOpt().isPresent()) {
+                if (elementTolerance.isPresent()) {
+                    result.setElementTolerance(elementTolerance.get().getValue());
+                } else {
+                    result.setElementTolerance(streamArrayValues.getElementToleranceOpt().get().getValue());
+                }
+            } else {
+                if (elementTolerance.isPresent()) {
+                    result.setElementTolerance(elementTolerance.get().getValue());
+                }
+            }
+
+            if (streamArrayValues.getGeneralToleranceOpt().isPresent()) {
+                if (generalTolerance.isPresent()) {
+                    result.setGeneralTolerance(generalTolerance.get().getValue());
+                } else {
+                    result.setGeneralTolerance(streamArrayValues.getGeneralToleranceOpt().get().getValue());
+                }
+            } else {
+                if (generalTolerance.isPresent()) {
+                    result.setGeneralTolerance(generalTolerance.get().getValue());
+                }
+            }
+        }
+
+
         return result;
     }
 
