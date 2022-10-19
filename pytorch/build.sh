@@ -8,9 +8,8 @@ rm -rf build
 mkdir build && cd build
 
 echo "Building DigitClassifier.."
-cmake -DCMAKE_PREFIX_PATH=/usr/lib/libtorch/  ..
+cmake -DCMAKE_PREFIX_PATH='/usr/lib/libtorch' ..
 cmake --build . --config Release
 
 cd ..
 cd target
-/bin/bash
