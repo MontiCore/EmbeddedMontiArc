@@ -82,7 +82,7 @@ def train(options):
         print("Starting next iteration in " + str(delay) + " seconds...")
         time.sleep(delay)
 
-def install():
+def install(options):
     remote_cluster_dir = config.get("DEFAULT", "ClusterWorkingDirectory")
     local_cluster_dir = pathlib.Path(config.get("DEFAULT", "ProjectRootDirectory")).joinpath("topologyoptimizer/cluster")
 
