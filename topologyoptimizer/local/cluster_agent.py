@@ -8,7 +8,7 @@ from local.tools.winscp import download_files_with_retry, upload_files
 from local.tools.ntopology import generate_lattice
 from local.tools import sbatch
 
-def execute(options):
+def execute():
     current_path = pathlib.Path(__file__).parent.resolve()
     cluster_working_dir = config.get("DEFAULT", "ClusterWorkingDirectory")
     cluster_files_dir = f'{cluster_working_dir}/toolchain/files'
