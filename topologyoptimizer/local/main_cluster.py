@@ -1,3 +1,4 @@
+from asyncio import CancelledError, sleep
 import csv
 import os
 import pathlib
@@ -11,7 +12,7 @@ from local.tools import winscp
 from local.tools import sbatch
 from local.tools import send_command
 
-def train(options):
+async def train(options):
     i = 0  # Iteration counter
     delay = 20 # Delay (in seconds) between each iteration
     interrupted  = False # Flag to exit safely after Ctrl-c
@@ -29,61 +30,52 @@ def train(options):
 
     print("Preparing...")
 
-    # Catch Ctrl-c
-    def signal_handler(signal, frame):
-        print("Received stop signal, finishing last loop iteration...")
-        global interrupted
-        interrupted = True
-
-    signal.signal(signal.SIGINT, signal_handler)
-
     ## Start Cluster
     print("Starting RL-component...")
     sbatch.schedule_job("topologyoptimizer_train", 'run.job')
 
     # Initial delay
-    time.sleep(10)
+    await sleep(10)
 
-    ## Iteration loop
-    while True:
-        if interrupted:
-            print("Interrupted, completed ", i, " iterations")
-            print("exiting now...")
-            break
+    # Iteration loop
+    try:
+        while True:
+            await winscp.download_files_with_retry([input_csv_filename], local_files_dir, cluster_files_dir, delete_sources=True)
 
-        winscp.download_files_with_retry([input_csv_filename], local_files_dir, cluster_files_dir, delete_sources=True)
+            # Check for input files
+            if not os.path.isfile(local_input_csv_file):
+                sys.exit("Cluster timeout. Exiting...")
 
-        # Check for input files
-        if not os.path.isfile(local_input_csv_file):
-            sys.exit("Cluster timeout. Exiting...")
+            print("Received Input file for nTop!")
 
-        print("Received Input file for nTop!")
+            with open(local_input_csv_file, 'r') as inputcsv:
+                reader = csv.reader(inputcsv)
+                for row in reader:
+                    print(row)
 
-        with open(local_input_csv_file, 'r') as inputcsv:
-            reader = csv.reader(inputcsv)
-            for row in reader:
-                print(row)
+            print("Generating structure with nTop...")
+            generate_lattice(local_input_csv_file, local_fe_mesh_file)
+            print("Finished!")
+                
+            # Copy necessary files to cluster
+            print("Copying files to cluster...")
+            await winscp.upload_files( fe_mesh_filename, local_lattice_structure_dir, cluster_lattice_structure_dir)
+            await winscp.upload_files( signal_filename, local_lattice_structure_dir, cluster_lattice_structure_dir)
 
-        print("Generating structure with nTop...")
-        generate_lattice(local_input_csv_file, local_fe_mesh_file)
-        print("Finished!")
-        
-        # Copy necessary files to cluster
-        print("Copying files to cluster...")
-        winscp.upload_files( fe_mesh_filename, local_lattice_structure_dir, cluster_lattice_structure_dir)
-        winscp.upload_files( signal_filename, local_lattice_structure_dir, cluster_lattice_structure_dir)
+            # Clean up local files
+            print("Clean-up...")
+            os.remove(local_input_csv_file)
+            os.remove(local_fe_mesh_file)
 
-        # Clean up local files
-        print("Clean-up...")
-        os.remove(local_input_csv_file)
-        os.remove(local_fe_mesh_file)
+            i += 1
+            print("Iteration " + str(i) + " finished!")
+            print("Starting next iteration in " + str(delay) + " seconds...")
+            await sleep(delay)
+    except CancelledError:
+        print("Interrupted, completed ", i, " iterations")
+        print("exiting now...")
 
-        i += 1
-        print("Iteration " + str(i) + " finished!")
-        print("Starting next iteration in " + str(delay) + " seconds...")
-        time.sleep(delay)
-
-def install(options):
+async def install(options):
     remote_cluster_dir = config.get("DEFAULT", "ClusterWorkingDirectory")
     local_cluster_dir = pathlib.Path(config.get("DEFAULT", "ProjectRootDirectory")).joinpath("topologyoptimizer/cluster")
 
@@ -94,7 +86,7 @@ def install(options):
         if accept != "yes":
             sys.exit(0)
 
-    winscp.synchronize_directory(local_cluster_dir, remote_cluster_dir)
+    await winscp.synchronize_directory(local_cluster_dir, remote_cluster_dir)
 
     send_command.send_command(f'find {remote_cluster_dir} -type f -name "*.sh" -print0 | xargs -0 chmod u+x')
     

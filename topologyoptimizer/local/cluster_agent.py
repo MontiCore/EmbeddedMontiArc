@@ -1,3 +1,4 @@
+from asyncio import CancelledError
 import csv
 import os
 import pathlib
@@ -8,7 +9,7 @@ from local.tools.winscp import download_files_with_retry, upload_files
 from local.tools.ntopology import generate_lattice
 from local.tools import sbatch
 
-def execute():
+async def execute():
     current_path = pathlib.Path(__file__).parent.resolve()
     cluster_working_dir = config.get("DEFAULT", "ClusterWorkingDirectory")
     cluster_files_dir = f'{cluster_working_dir}/toolchain/files'
@@ -36,14 +37,17 @@ def execute():
         file.close()
 
     print("Copying constraint to cluster...")
-    upload_files(constraint_filename, local_files_dir, cluster_rl_dir)
+    await upload_files(constraint_filename, local_files_dir, cluster_rl_dir)
 
     ## Start Cluster
     print("Starting RL-component...")
     sbatch.schedule_job("topologyoptimizer_agent", f'{cluster_working_dir}/agent.job')
 
-    ## Wait for output file (Input.csv) from the cluster and copy it to the local folder
-    download_files_with_retry(input_csv_filename, local_files_dir, cluster_files_dir, delete_sources=True)
+    try:
+        ## Wait for output file (Input.csv) from the cluster and copy it to the local folder
+        await download_files_with_retry(input_csv_filename, local_files_dir, cluster_files_dir, delete_sources=True)
+    except CancelledError:
+        return
 
     # Check for input files
     if not os.path.isfile(local_input_csv_file):
@@ -62,8 +66,8 @@ def execute():
 
     # Copy necessary files to cluster
     print("Copying files to cluster...")
-    upload_files( fe_mesh_filename, local_lattice_structure_dir, cluster_lattice_structure_dir)
-    upload_files( signal_filename, local_lattice_structure_dir, cluster_lattice_structure_dir)
+    await upload_files( fe_mesh_filename, local_lattice_structure_dir, cluster_lattice_structure_dir)
+    await upload_files( signal_filename, local_lattice_structure_dir, cluster_lattice_structure_dir)
 
     # Clean up local files
     print("Clean-up...")

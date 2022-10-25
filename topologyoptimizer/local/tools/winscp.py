@@ -1,3 +1,5 @@
+import asyncio
+from asyncio.subprocess import PIPE
 import random
 import subprocess
 from pathlib import Path
@@ -9,7 +11,7 @@ import paramiko
 def current_path():
     return Path( __file__ ).parent.resolve()
 
-def upload_files(files: List[str], local_path: str, remote_path: str, delete_sources = False):
+async def upload_files(files: List[str], local_path: str, remote_path: str, delete_sources = False):
     """ Uploads a list of files to the cluster into the specified path
 
         Parameters:
@@ -33,19 +35,28 @@ def upload_files(files: List[str], local_path: str, remote_path: str, delete_sou
     filestring = f'{" ".join(options)} {" ".join(files)}'
 
     print("Copying files to cluster...")
-    return subprocess.run(
-        [
-            'winscp.com', '/ini=nul', f'/log={logfolder}', f'/script={script}', '/parameter',
+
+    process = await asyncio.create_subprocess_exec('winscp.com',
+                                                   '/ini=nul',
+                                                   f'/log={logfolder}',
+                                                   f'/script={script}',
+                                                   '/parameter',
             cluster_user,
             putty_ssh_key,
             putty_ssh_key_passphrase,
             local_path,
             remote_path,
-            filestring
-        ] 
+                                                   filestring,
+                                                   stdout=PIPE,
+                                                   stderr=PIPE
     )
 
-def download_files(files: List[str], local_path: str, remote_path: str, delete_sources=False):
+    stdout, stderr = await process.communicate()
+
+    return process.returncode
+
+
+async def download_files(files: List[str], local_path: str, remote_path: str, delete_sources=False):
     """ Downloads a list of files from the cluster into the specified path
         on the local machine
 
@@ -73,20 +84,27 @@ def download_files(files: List[str], local_path: str, remote_path: str, delete_s
     filestring = f'{" ".join(options)} {" ".join(files)}'
     
     print(f'Copying files {filestring} from cluster dir {remote_path} to local dir {local_path}...')
-    return subprocess.run(
-        [
-            'winscp.com', '/ini=nul', f'/log={logfolder}', f'/script={script}', '/parameter',
-            cluster_user,
-            putty_ssh_key,
-            putty_ssh_key_passphrase,
-            local_path,
-            remote_path,
-            filestring,
-            str(random.randint(1, 1000000))
-        ] 
+    process = await asyncio.create_subprocess_exec('winscp.com', 
+                                                    '/ini=nul',
+                                                    f'/log={logfolder}',
+                                                    f'/script={script}',
+                                                    '/parameter',
+                                                    cluster_user,
+                                                    putty_ssh_key,
+                                                    putty_ssh_key_passphrase,
+                                                    local_path,
+                                                    remote_path,
+                                                    filestring,
+                                                    str(random.randint(1, 1000000)),
+                                                    stdout=PIPE,
+                                                    stderr=PIPE
     )
 
-def download_files_with_retry(files: List[str], local_path: str, remote_path: str, delete_sources=False, max_tries = 300, interval = 10):
+    stdout, stderr = await process.communicate()
+    
+    return process.returncode
+
+async def download_files_with_retry(files: List[str], local_path: str, remote_path: str, delete_sources=False, max_tries = 300, interval = 10):
     """ Downloads a list of files from the cluster into the specified path
         on the local machine. In case of an error the operation will be 
         retried every {interval} seconds until {max_tries} tries are reached
@@ -101,15 +119,17 @@ def download_files_with_retry(files: List[str], local_path: str, remote_path: st
     """
     return_code = 1
     tries = 0
-    while tries < max_tries:
-        tries += 1
-        completed_process = download_files(files, local_path, remote_path, delete_sources)
-        return_code = completed_process.returncode
-        if return_code == 0:
-            break
-        elif tries < max_tries:
-            print(f'Cluster has not finished, retrying in {interval} seconds')
-            time.sleep(interval)
+    try:
+        while tries < max_tries:    
+            tries += 1
+            return_code = await download_files(files, local_path, remote_path, delete_sources)
+            if return_code == 0:
+                break
+            elif tries < max_tries:
+                print(f'Cluster has not finished, retrying in {interval} seconds')
+                await asyncio.sleep(interval)
+    except asyncio.CancelledError:
+        raise
 
 
 def exists(remote_file: str):
@@ -169,20 +189,22 @@ def mkdir(remote_dir: str):
         ssh.close()
         print("Connection closed")
 
-def synchronize_directory(local_dir: str, remote_dir: str):
+async def synchronize_directory(local_dir: str, remote_dir: str):
     logfolder = Path(config.get("DEFAULT", "LocalLogFolder")).joinpath("transferC2P.log")
     script = current_path().joinpath("winscp/Synchronize_directory.txt")
     cluster_user = config.get("DEFAULT", "ClusterUser")
     putty_ssh_key = Path(config.get("DEFAULT", "SSHKeyFolder")).joinpath("key.ppk")
     putty_ssh_key_passphrase = config.get("DEFAULT", "ClusterKeyPassword")    
 
-    return subprocess.run(
-        [
+    process = await asyncio.create_subprocess_exec(
             'winscp.com', '/ini=nul', f'/log={logfolder}', f'/script={script}', '/parameter',
             cluster_user,
             putty_ssh_key,
             putty_ssh_key_passphrase,
             local_dir,
             remote_dir
-        ] 
     )
+
+    await process.communicate()
+        
+    return process.returncode

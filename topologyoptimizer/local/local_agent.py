@@ -8,7 +8,7 @@ import sys
 import time
 
 
-def execute():
+async def execute():
     print("Currently not supported. Please train and execute the agent on the cluster")
     sys.exit(1)
 
