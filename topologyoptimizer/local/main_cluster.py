@@ -96,5 +96,5 @@ def install(options):
 
     winscp.synchronize_directory(local_cluster_dir, remote_cluster_dir)
 
-    send_command.send_command(f'find {remote_cluster_dir} -type f -name "*.sh" -print0 | xargs -0 chmod +x')
+    send_command.send_command(f'find {remote_cluster_dir} -type f -name "*.sh" -print0 | xargs -0 chmod u+x')
     
