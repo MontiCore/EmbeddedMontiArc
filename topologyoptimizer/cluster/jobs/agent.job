@@ -16,6 +16,6 @@
 #SBATCH --ntasks=48
 #SBATCH --nodes=2
 
-cd $WORKING_DIR/rl
+cd $WORKING_DIR
 
 singularity exec /rwthfs/rz/SW/UTIL.common/singularity/dglqd_rlcontainercpu rl/execute.sh
