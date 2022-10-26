@@ -1,3 +1,4 @@
+import logging
 import sys
 import os
 
@@ -5,7 +6,18 @@ from numpy import True_
 
 from lsdynabin_to_train.tools import *
 
+log_folder = os.environ['LOG_FOLDER']
+
+# Initialize logging
+logger = logging.getLogger(__name__)
+logger.setLevel(logging.DEBUG)
+file_handler = logging.FileHandler(f'{log_folder}/preprocessing.log')
+formatter = logging.Formatter('%(asctime)s - %(name)s - %(levelname)s - %(message)s')
+file_handler.setFormatter(formatter)
+logger.addHandler(file_handler)
+
 if __name__ == "__main__":
+    logger.debug("Start creating h5 from raw...")
     base_dir = "./toolchain/preprocessing/"
     use_cached = False
     get_node_force = False
@@ -36,3 +48,4 @@ if __name__ == "__main__":
     write_dgl(graph_dict, path=os.path.join(base_dir, "h5", "raw"))
     read_hdf5(path=os.path.join(base_dir, "h5", "raw"))
     read_dgl(path=os.path.join(base_dir, "h5", "raw"))
+    logger.debug("Finished creating h5 from raw")
