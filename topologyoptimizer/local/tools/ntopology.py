@@ -34,7 +34,7 @@ def generate_lattice(input_csv_file: Path, output_file: Path):
         #bcc=1,fcc=0 (others can be added/changed in ntop file)
 
     for p in parameters_list:
-        arguments = f'{ntopcl} \
+        cmd = f'{ntopcl} \
                         -i {p["size"]:0.1f}mm \
                         -i {p["unittype"]:0.1f} \
                         -i {p["Scale_x"]:0.1f}mm \
@@ -46,11 +46,9 @@ def generate_lattice(input_csv_file: Path, output_file: Path):
                         -i {output_file} \
                         {script_file}'
 
-        process = run(arguments,shell=False, stdout=PIPE, stderr=STDOUT, close_fds=True, encoding="utf8",)
+        process = run(cmd,shell=False, stdout=PIPE, stderr=STDOUT, close_fds=True, encoding="utf8",)
         if process.returncode != 0:
-            print(f'command "{arguments}" failed with errors:')
-            print(process.stdout)
-            logger.critical("NTOP failed")
+            logger.error("Command %s failed with errors: %s", cmd, process.stdout)
             sys.exit(1)
 
         post_process(output_file)

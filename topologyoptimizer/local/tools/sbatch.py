@@ -33,17 +33,11 @@ def schedule_job(job_name: str, job_file: str):
     ssh = paramiko.SSHClient()
     ssh.set_missing_host_key_policy(paramiko.AutoAddPolicy)
     try:
-        
-
-        print(f'Connecting to {cluster_host} ...')
-        logger.debug("Connecting to cluster...")
+        logger.debug('Connecting to host %s...', cluster_host)
         ssh.connect(hostname=cluster_host, username=cluster_user, pkey=ssh_key)
-        print(f'Connection established')
         logger.debug("Connection established")
 
-        print(f'Submitting job {job_name}')
-        logger.debug("Submitting job %s...", job_name)
-        print(cmd)
+        logger.debug("Submitting job '%s' via command '%s'", job_name, cmd)
         _, stdout, _ = ssh.exec_command(cmd)
         output = stdout.readlines()
         exit_code = stdout.channel.recv_exit_status()
@@ -52,6 +46,5 @@ def schedule_job(job_name: str, job_file: str):
             raise Exception(f'Could not schedule job', "\n".join(output))
     finally:
         ssh.close()
-        print("Connection closed")
-        logger.debug("Job submitted, connection closed")
+        logger.debug("Connection closed")
         logger.debug("Finished function schedule_job")

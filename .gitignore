@@ -9,3 +9,4 @@ launch.json
 topologyoptimizer/local/files/constraint.txt
 topologyoptimizer/local/files/Input.csv
 topologyoptimizer/local/files/Lattice_Structures/1.k
+logs

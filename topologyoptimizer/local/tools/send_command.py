@@ -18,23 +18,17 @@ def send_command(cmd):
     ssh.set_missing_host_key_policy(paramiko.AutoAddPolicy)
 
     try:
-        print(f'Connecting to {cluster_host} ...')
-        logger.debug("Connecting to cluster...")
+        logger.debug("Connecting to host %s...", cluster_host)
         ssh.connect(hostname=cluster_host, username=cluster_user, pkey=ssh_key)
-        print(f'Connection established')
         logger.debug("Connection established")
 
-        print(f'Executing command...')
-        logger.debug("Executing command...")
-        print(cmd)
+        logger.debug("Executing command '%s'...",cmd)
         _, stdout, _ = ssh.exec_command(cmd)
         output = stdout.readlines()
         exit_code = stdout.channel.recv_exit_status()
         if exit_code != 0:
-            logger.exception("Could not execute command")
             raise Exception(f'Could not execute command: ', output)
     finally:
         ssh.close()
-        print("Connection closed")
-        logger.debug("Command sent, connection closed")
+        logger.debug("Connection closed")
         logger.debug("Finished function send_command")

@@ -52,7 +52,7 @@ Commands:
     if cmd in commands.keys():
         task = asyncio.create_task(commands[cmd](options))
         def sigint_handler(sig, frame):
-            print("Cancelled via ctrl-c")
+            logging.info("Cancelled via ctrl-c")
             task.cancel()
         signal.signal(SIGINT,sigint_handler)
         await task

@@ -133,9 +133,9 @@ async def download_files_with_retry(files: List[str], local_path: str, remote_pa
                 logger.debug("Files successfully downloaded")
                 break
             elif tries < max_tries:
-                logger.debug(f'Attempt {tries}/{max_tries}, files still not available. Retry in {interval} seconds')
+                logger.debug("Attempt %d/%d, files still not available. Retry in %d seconds", tries, max_tries, interval)
                 await asyncio.sleep(interval)
-        logger.debug(f'Files still not available after {max_tries} tries, aborting...')
+        logger.debug("Files still not available after %d tries, aborting...", max_tries)
     except asyncio.CancelledError:
         raise
 
@@ -154,16 +154,12 @@ def exists(remote_file: str):
     ssh = paramiko.SSHClient()
     ssh.set_missing_host_key_policy(paramiko.AutoAddPolicy)
 
-    print(f'Connecting to {hostname} ...')
-    logger.debug("Connecting to cluster...")
+    logger.debug("Connecting to host %s...", hostname)
     try:
-        ssh.connect( hostname=hostname, username=cluster_user, pkey=ssh_key)
-        
-        print(f'Connection established')
+        ssh.connect( hostname=hostname, username=cluster_user, pkey=ssh_key)        
         logger.debug("Connection established")
 
-        print(f'Executing remote command "{cmd}"')
-        logger.debug("Checking if file exists...")
+        logger.debug("Executing remote command %s", cmd)
         _, stdout, _ = ssh.exec_command(cmd)
         if stdout.channel.recv_exit_status() == 0:
             return True
@@ -171,7 +167,6 @@ def exists(remote_file: str):
             return False
     finally:
         ssh.close()
-        print("Connection closed")
         logger.debug("Connection closed")
         logger.debug("Finished function exists")
 
@@ -189,24 +184,19 @@ def mkdir(remote_dir: str):
     ssh = paramiko.SSHClient()
     ssh.set_missing_host_key_policy(paramiko.AutoAddPolicy)
 
-    print(f'Connecting to {hostname} ...')
-    logger.debug("Connecting to cluster...")
+    logger.debug("Connecting to host %s...", hostname)
     try:
         ssh.connect( hostname=hostname, username=cluster_user, pkey=ssh_key)
-        print(f'Connection established')
         logger.debug("Connection established")
 
-        print(f'Executing remote command "{cmd}"')
-        logger.debug("Creating remote directory")
+        logger.debug("Executing remote command %s", cmd)
         _, stdout, _ = ssh.exec_command(cmd)
         output = stdout.read()
         exit_code = stdout.channel.recv_exit_status()
         if exit_code != 0:
-            logger.exception("Could not create directory on the cluster")
             raise Exception(f'Could not create {remote_dir} on the cluster', output)
     finally:
         ssh.close()
-        print("Connection closed")
         logger.debug("Connection closed")
         logger.debug("Finished function mkdir")
 
