@@ -96,6 +96,8 @@ public class StreamUnitsSymbolTableCreator extends StreamUnitsSymbolTableCreator
             streamSymbol.add(handleStreamArrayValues(streamInstruction, Optional.empty(), Optional.empty()));
         } else if (streamInstruction.getFilePathOpt().isPresent()) {
             handleFilePath(streamSymbol, streamInstruction);
+        } else if (streamInstruction.getImagePathOpt().isPresent()) {
+            streamSymbol.add(handleImagePath(streamInstruction.getImagePathOpt().get()));
         }
     }
 
@@ -349,5 +351,11 @@ public class StreamUnitsSymbolTableCreator extends StreamUnitsSymbolTableCreator
             currentList.add(handleStreamValue(streamValues.get(i)));
         }
         return currentList;
+    }
+
+    private ImagePath handleImagePath(ASTImagePath imagePath) {
+        ImagePath result = new ImagePath();
+        result.setImagePath(imagePath.getStringLiteral().getValue());
+        return result;
     }
 }

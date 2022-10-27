@@ -10,6 +10,7 @@ public class StreamInstruction {
     protected Optional<StreamCompare> streamCompare = Optional.empty();
     protected Optional<StreamValueAtTick> streamValueAtTick = Optional.empty();
     protected Optional<StreamValues> streamValues = Optional.empty();
+    protected Optional<ImagePath> imagePath = Optional.empty();
 
     public StreamInstruction() {
 
@@ -30,6 +31,8 @@ public class StreamInstruction {
     public StreamInstruction(StreamCompare streamCompare) {
         this.streamCompare = Optional.of(streamCompare);
     }
+
+    public StreamInstruction(ImagePath imagePath) { this.imagePath = Optional.of(imagePath); }
 
     public Optional<StreamValuePrecision> getStreamValue() {
         return streamValue;
@@ -70,4 +73,8 @@ public class StreamInstruction {
     public void setStreamValues(Optional<StreamValues> streamValues) {
         this.streamValues = streamValues;
     }
+
+    public Optional<ImagePath> getImagePath() { return imagePath; }
+
+    public void setImagePath(Optional<ImagePath> imagePath) { this.imagePath = imagePath; }
 }
