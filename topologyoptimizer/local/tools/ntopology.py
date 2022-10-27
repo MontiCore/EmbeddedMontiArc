@@ -1,16 +1,22 @@
 from ast import arg
+import logging
 from pathlib import Path
 from subprocess import Popen, run, PIPE, STDOUT
 import csv
 import sys
 from config import config
 
+# Initialize logging
+logger = logging.getLogger(__name__)
+
 def generate_lattice(input_csv_file: Path, output_file: Path):
+    logger.debug("Start function generate_lattice")
     ntopcl = config.get("DEFAULT","ntopcl")
     resources_dir = config.get("DEFAULT", "ResourcesDirectory")
     script_file = Path(resources_dir).joinpath("Cube_Infill_Lattice_V3_for_DoE.ntop")
     
     parameters_list = []
+    logger.debug("Read csv file")
     with open(input_csv_file) as csvData:
         csvReader = csv.reader(csvData)
         for row in csvReader:
@@ -44,11 +50,14 @@ def generate_lattice(input_csv_file: Path, output_file: Path):
         if process.returncode != 0:
             print(f'command "{arguments}" failed with errors:')
             print(process.stdout)
+            logger.critical("NTOP failed")
             sys.exit(1)
 
         post_process(output_file)
+    logger.debug("Finished function generate_lattice")
 
 def post_process(file: Path):
+    logger.debug("Start function post_process")
     with open(file, 'r') as fd:       
         data = fd.read()
     
@@ -56,3 +65,4 @@ def post_process(file: Path):
     
     with open(file, 'w') as fd:
         fd.write(data)
+    logger.debug("Finished function post_process")

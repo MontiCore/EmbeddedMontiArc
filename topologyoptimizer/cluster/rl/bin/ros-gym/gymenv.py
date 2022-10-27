@@ -1,3 +1,4 @@
+import logging
 import os
 import pathlib
 import gym
@@ -18,9 +19,17 @@ ROT_STEP = 10 # step size for rotation in degree (min. 1)
 this_directory = pathlib.Path(__file__).parent.resolve()
 project_root = os.path.join(this_directory, '..', '..', '..')
 
-log_file = os.path.join(project_root, 'logs', 'env.log')
+log_folder = os.environ['LOG_FOLDER']
 results = os.path.join(project_root, 'logs', 'results.log')
 constraint_file = os.path.join(project_root, 'rl', 'constraint.txt')
+
+# Initialize logging
+logger = logging.getLogger(__name__)
+logger.setLevel(logging.DEBUG)
+file_handler = logging.FileHandler(f'{log_folder}/rosgym.log')
+formatter = logging.Formatter('%(asctime)s - %(name)s - %(levelname)s - %(message)s')
+file_handler.setFormatter(formatter)
+logger.addHandler(file_handler)
 
 class TopoEnv(gym.Env):
     metadata = {'render.modes': ['human']}
@@ -51,8 +60,7 @@ class TopoEnv(gym.Env):
         
 
     def step(self, action):
-        logging = open(log_file, 'a')
-        logging.write("STEP \n")
+        logger.info("Step %d started", self.current_step+1)
         # Execute one time step within the environment
         
         assert self.action_space.contains(action), "Invalid Action"
@@ -84,9 +92,8 @@ class TopoEnv(gym.Env):
             self.material.change(5,1)
 
         self.dyna.updateMaterial(self.material.get_material())
-        logging.write("Updated Material \n")
         new_penalty = self.materialPenalty()
-        logging.write("Got penalty\n")
+        logger.debug("Got penalty")
         old_penalty = self.last_penalty
 
         if new_penalty < old_penalty:
@@ -94,13 +101,13 @@ class TopoEnv(gym.Env):
         else:
             reward = -10.0
 
-        logging.write("Got reward: " + str(reward) + "\n")
+        logger.info("REWARD: %s", str(reward))
 
         self.last_reward = reward
         self.last_penalty = new_penalty
         
-        logging.write("This was step " + str(self.current_step) + "\n")
-        logging.close()
+        logger.info("Step %d completed", self.current_step+1)
+        logger.info("--------------------------------")
 
         self.current_step += 1
         
@@ -113,8 +120,7 @@ class TopoEnv(gym.Env):
     
 
     def reset(self):
-        logging = open(log_file, 'a')
-        logging.write("RESET \n")
+        logger.info("Reset environment")
         # Reset the state of the environment to an initial state
         if self.set_constraint:
             with open(constraint_file, 'r') as file:
@@ -138,11 +144,9 @@ class TopoEnv(gym.Env):
         self.last_reward = 0.0
 
         self.dyna = DynaWrapper(self.material.get_material())
-        logging.write("Finished initializing DynaWrapper \n")
-        logging.close()
-        with open(results, 'a') as result_log:
-            result_log.write("Constraint: " + str(self.constraint) + "\n")
-            result_log.write("Structure init: " + str(self.material.get_material()) + "\n")
+        logger.debug("Finished initializing DynaWrapper")
+        logger.info("Structure init: %s", str(self.material.get_material()))
+        logger.info("Constraint init: %s", str(self.constraint))
         self.last_penalty = 0.0
 
         observation = np.concatenate((np.array(self.constraint), np.array(self.material.get_material(), dtype=np.int32)), axis=None) # get new material and constraint
@@ -161,11 +165,9 @@ class TopoEnv(gym.Env):
         print(f'Last reward: {self.last_reward}')
 
     def materialPenalty(self):
-        logging = open(log_file, 'a')
-        logging.write("MATERIALPENALTY \n")
-        logging.flush()
+        logger.debug("Calculating Material Penalty...")
         self.dyna.simulate()
-        logging.write("Dyna finished \n")
+        logger.debug("Simulation finished")
         energy_absorption = self.dyna.integrate()
         peak = self.dyna.getPeak()
         final_level = self.dyna.getFinalLevel()
@@ -181,16 +183,14 @@ class TopoEnv(gym.Env):
         if peak_penalty <= 0.0:
             peak_penalty = 0.0
 
-        logging.write("Finished calculating penalty \n")
-        logging.close()
+        logger.debug("Finished calculating penalty")
         penalty = (energy_absorption_penalty * (1 + peak_penalty + (int(cube_size / 2) - avg_scale)))
         # alternative function
         # penalty = (int(cube_size / 2) - avg_scale) * (1 + energy_absorption_penalty + peak_penalty)
-        with open(results, 'a') as result_log:
-            result_log.write("EA: " + str(energy_absorption) + "\n")
-            result_log.write("PCF: " + str(peak) + "\n")
-            result_log.write("Scale: " + str(avg_scale) + "\n")
-            result_log.write("PENALTY: " + str(penalty) + "\n")
+        logger.info("EA: %s", str(energy_absorption))
+        logger.info("PCF: %s", str(peak))
+        logger.info("Scale: %s", str(avg_scale))
+        logger.info("PENALTY: %s", str(penalty))
         return penalty
 
     

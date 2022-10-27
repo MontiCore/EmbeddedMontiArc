@@ -1,12 +1,14 @@
 import asyncio
 from signal import SIGINT
 import signal
+import logging
 import sys
 from local import main_cluster as cluster
 from local import local_agent as local_agent
 from local import cluster_agent as cluster_agent
 
 from optparse import OptionParser
+from local.tools.logging import initialize_logging
 
 
 async def execute(options):
@@ -16,6 +18,12 @@ async def execute(options):
         await cluster_agent.execute()
 
 async def main():
+    # Initialize logging
+    initialize_logging()
+    logger = logging.getLogger(__name__)
+
+    logger.debug("Main function started")
+    
     parser = OptionParser(usage='usage: python %prog [options] cmd')
 
     parser.set_usage("""usage: python %prog [options] COMMAND
