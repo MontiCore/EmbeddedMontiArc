@@ -13,6 +13,7 @@ import de.monticore.lang.monticar.emadl.modularcnn.tools.json.JSONReader;
 import de.monticore.symboltable.references.SymbolReference;
 
 import java.util.ArrayList;
+import java.util.Set;
 
 public class NetworkStructureInformation {
     private ArrayList<NetworkStructureInformation> subNetworks = new ArrayList<>();
@@ -83,6 +84,34 @@ public class NetworkStructureInformation {
     public void addInstance(EMAComponentInstanceSymbol instanceSymbol){
         this.instances.add(instanceSymbol);
     }
+
+    public EMAComponentInstanceSymbol addInstancesAndSymbolReference(Set<EMAComponentInstanceSymbol> componentInstanceSymbols){
+        EMAComponentInstanceSymbol hitInstance = null;
+
+        for (EMAComponentInstanceSymbol instanceSymbol: componentInstanceSymbols) {
+            String instanceSymbolName = instanceSymbol.getComponentType().getReferencedSymbol().getName();
+            if(instanceSymbolName.equals(this.getNetworkName())){
+                if (this.symbolReference == null){
+                    this.setSymbolReference(instanceSymbol.getComponentType());
+                }
+
+                if (!this.instances.contains(instanceSymbol)){
+                    this.addInstance(instanceSymbol);
+                }
+
+                if (hitInstance == null){
+                    hitInstance = instanceSymbol;
+                }
+            }
+            if (this.subNetworks != null && this.subNetworks.size() > 0){
+                for (NetworkStructureInformation subNet: this.subNetworks){
+                    subNet.addInstancesAndSymbolReference(componentInstanceSymbols);
+                }
+            }
+        }
+        return hitInstance;
+    }
+
 
     public ArrayList<EMAComponentInstanceSymbol> getInstances(){
         return this.instances;
