@@ -1,0 +1,22 @@
+package turtlebot.preprocessor.util;
+
+component LidarScan {
+    ports
+        in Q^{360} msgRanges,
+        out Q^{360} distancesOut;
+
+    implementation Math {
+        Q max_lidar_distance = 1.0;
+        Q  range_min = 0.1199999;
+
+        for i=1:360
+            if msgRanges(i) > max_lidar_distance
+                distancesOut(i) = max_lidar_distance;
+            elseif msgRanges(i) < range_min
+                distancesOut(i) = range_min;
+            else
+                distancesOut(i) = msgRanges(i);
+            end 
+        end
+    }
+}
