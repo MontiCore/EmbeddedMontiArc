@@ -48,7 +48,7 @@ public class SymtabStreamUnitsTest {
         Scope symTab = createSymTab("src/test/resources/unitstreams/streams");
         Log.debug(symTab.toString(), "SymTab:");
         ComponentStreamUnitsSymbol comp = symTab.<ComponentStreamUnitsSymbol>resolve(
-                "basicLibrary.AddTest", ComponentStreamUnitsSymbol.KIND).orElse(null);
+                "basicLibrary.AndTest", ComponentStreamUnitsSymbol.KIND).orElse(null);
         assertNotNull(comp.getNamedStream("in1"));
     }
 
