@@ -10,7 +10,7 @@
 
   <groupId>de.monticore.lang.monticar</groupId>
   <artifactId>common-monticar</artifactId>
-  <version>0.4.5-SNAPSHOT</version>
+  <version>0.4.7-SNAPSHOT</version>
 
 
   <!-- == PROJECT DEPENDENCIES ============================================= -->
@@ -92,7 +92,7 @@
         <artifactId>opencv</artifactId>
         <version>4.5.5-0</version>
     </dependency>
-  
+
   </dependencies>
     <!-- == PROJECT BUILD SETTINGS =========================================== -->
 
