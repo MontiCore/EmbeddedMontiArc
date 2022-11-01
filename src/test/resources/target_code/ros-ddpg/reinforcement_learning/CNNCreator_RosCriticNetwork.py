@@ -14,7 +14,7 @@ import mxnet as mx
 
 from CNNNet_RosCriticNetwork import Net_0
 
-from CNNDataLoader_RosCriticNetwork import Dataset, TrainingDataset
+from CNNDatasets_RosCriticNetwork import Dataset, TrainingDataset
 
 log = logging.getLogger(__name__)
 

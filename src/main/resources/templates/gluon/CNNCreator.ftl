@@ -25,7 +25,7 @@ from CNNNet_${tc.fullArchitectureName} import Net_${networkInstruction?index}
 </#if>
 </#list>
 
-from CNNDataLoader_${tc.fullArchitectureName} import Dataset, TrainingDataset
+from CNNDatasets_${tc.fullArchitectureName} import Dataset, TrainingDataset
 
 log = logging.getLogger(__name__)
 

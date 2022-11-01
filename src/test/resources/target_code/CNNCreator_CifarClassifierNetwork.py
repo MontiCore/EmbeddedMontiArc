@@ -14,7 +14,7 @@ import mxnet as mx
 
 from CNNNet_CifarClassifierNetwork import Net_0
 
-from CNNDataLoader_CifarClassifierNetwork import Dataset, TrainingDataset
+from CNNDatasets_CifarClassifierNetwork import Dataset, TrainingDataset
 
 log = logging.getLogger(__name__)
 

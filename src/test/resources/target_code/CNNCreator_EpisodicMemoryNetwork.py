@@ -14,7 +14,7 @@ import mxnet as mx
 
 from CNNNet_EpisodicMemoryNetwork import Net_0
 
-from CNNDataLoader_EpisodicMemoryNetwork import Dataset, TrainingDataset
+from CNNDatasets_EpisodicMemoryNetwork import Dataset, TrainingDataset
 
 log = logging.getLogger(__name__)
 

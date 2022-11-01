@@ -14,7 +14,7 @@ import mxnet as mx
 
 from CNNNet_InfoQNetwork import Net_0
 
-from CNNDataLoader_InfoQNetwork import Dataset, TrainingDataset
+from CNNDatasets_InfoQNetwork import Dataset, TrainingDataset
 
 log = logging.getLogger(__name__)
 

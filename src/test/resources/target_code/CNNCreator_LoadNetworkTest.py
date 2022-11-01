@@ -14,7 +14,7 @@ import mxnet as mx
 
 from CNNNet_LoadNetworkTest import Net_0
 
-from CNNDataLoader_LoadNetworkTest import Dataset, TrainingDataset
+from CNNDatasets_LoadNetworkTest import Dataset, TrainingDataset
 
 log = logging.getLogger(__name__)
 

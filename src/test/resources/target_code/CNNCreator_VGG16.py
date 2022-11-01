@@ -14,7 +14,7 @@ import mxnet as mx
 
 from CNNNet_VGG16 import Net_0
 
-from CNNDataLoader_VGG16 import Dataset, TrainingDataset
+from CNNDatasets_VGG16 import Dataset, TrainingDataset
 
 log = logging.getLogger(__name__)
 

@@ -18,7 +18,7 @@ try:
     import AdamW
 except:
     pass
-from CNNDataLoader_EpisodicMemoryNetwork import TrainingDataset
+from CNNDatasets_EpisodicMemoryNetwork import TrainingDataset
 
 logger = logging.getLogger(__name__)
 

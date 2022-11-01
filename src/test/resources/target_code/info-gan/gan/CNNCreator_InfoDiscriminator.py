@@ -14,7 +14,7 @@ import mxnet as mx
 
 from CNNNet_InfoDiscriminator import Net_0
 
-from CNNDataLoader_InfoDiscriminator import Dataset, TrainingDataset
+from CNNDatasets_InfoDiscriminator import Dataset, TrainingDataset
 
 log = logging.getLogger(__name__)
 

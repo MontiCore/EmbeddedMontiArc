@@ -31,7 +31,7 @@ try:
     import AdamW
 except:
     pass
-from CNNDataLoader_${tc.fullArchitectureName} import TrainingDataset
+from CNNDatasets_${tc.fullArchitectureName} import TrainingDataset
 
 logger = logging.getLogger(__name__)
 

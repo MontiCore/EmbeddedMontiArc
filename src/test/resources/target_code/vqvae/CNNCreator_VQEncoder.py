@@ -14,7 +14,7 @@ import mxnet as mx
 
 from CNNNet_VQEncoder import Net_0
 
-from CNNDataLoader_VQEncoder import Dataset, TrainingDataset
+from CNNDatasets_VQEncoder import Dataset, TrainingDataset
 
 log = logging.getLogger(__name__)
 

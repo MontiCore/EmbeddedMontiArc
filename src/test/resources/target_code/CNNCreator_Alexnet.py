@@ -14,7 +14,7 @@ import mxnet as mx
 
 from CNNNet_Alexnet import Net_0
 
-from CNNDataLoader_Alexnet import Dataset, TrainingDataset
+from CNNDatasets_Alexnet import Dataset, TrainingDataset
 
 log = logging.getLogger(__name__)
 
