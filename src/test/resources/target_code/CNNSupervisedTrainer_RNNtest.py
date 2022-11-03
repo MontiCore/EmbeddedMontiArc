@@ -18,7 +18,7 @@ try:
     import AdamW
 except:
     pass
-from CNNDataLoader_RNNtest import TrainingDataset
+from CNNDatasets_RNNtest import TrainingDataset
 
 logger = logging.getLogger(__name__)
 

@@ -1,20 +1,19 @@
 /* (c) https://github.com/MontiCore/monticore */
 package de.monticore.lang.monticar.cnnarch.gluongenerator;
 
+import java.util.ArrayList;
+import java.util.List;
+
+import de.monticore.lang.monticar.cnnarch._symboltable.ArchitectureSymbol;
 import de.monticore.lang.monticar.cnnarch.generator.CNNArchGenerator;
 import de.monticore.lang.monticar.cnnarch.generator.Target;
 import de.monticore.lang.monticar.cnnarch.generator.TemplateConfiguration;
-
-import de.monticore.lang.monticar.cnnarch._symboltable.ArchitectureSymbol;
+import de.monticore.lang.monticar.cnnarch.gluongenerator.reinforcement.CNNArch2GluonTemplateController;
 import de.monticore.lang.monticar.generator.FileContent;
 import de.monticore.lang.monticar.generator.cmake.CMakeConfig;
 import de.monticore.lang.monticar.generator.cmake.CMakeFindModule;
 import de.monticore.lang.tagging._symboltable.TaggingResolver;
 import de.monticore.symboltable.CommonSymbol;
-import de.monticore.lang.monticar.cnnarch.gluongenerator.reinforcement.CNNArch2GluonTemplateController;
-
-import java.io.File;
-import java.util.*;
 
 public class CNNArch2Gluon extends CNNArchGenerator {
 
@@ -51,6 +50,10 @@ public class CNNArch2Gluon extends CNNArchGenerator {
         FileContent temp;
 
         temp = controller.process("CNNNet", Target.PYTHON);
+        fileContents.add(temp);
+
+
+        temp = controller.process("CNNDatasets", Target.PYTHON);
         fileContents.add(temp);
 
         if (architecture.getDataPath() != null) {
