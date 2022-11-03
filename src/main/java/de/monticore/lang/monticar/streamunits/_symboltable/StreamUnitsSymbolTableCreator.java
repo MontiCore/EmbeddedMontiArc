@@ -14,12 +14,7 @@ import de.monticore.symboltable.MutableScope;
 import de.monticore.symboltable.ResolvingConfiguration;
 import de.se_rwth.commons.Names;
 import de.se_rwth.commons.logging.Log;
-import nu.pattern.OpenCV;
 import org.apache.commons.io.FilenameUtils;
-import org.opencv.core.Mat;
-import org.opencv.core.Size;
-import org.opencv.imgcodecs.Imgcodecs;
-import org.opencv.imgproc.Imgproc;
 
 import java.io.File;
 import java.io.IOException;
@@ -27,7 +22,6 @@ import java.nio.charset.Charset;
 import java.nio.file.Files;
 import java.nio.file.Path;
 import java.util.ArrayList;
-import java.util.Arrays;
 import java.util.List;
 import java.util.Optional;
 
@@ -96,8 +90,6 @@ public class StreamUnitsSymbolTableCreator extends StreamUnitsSymbolTableCreator
             streamSymbol.add(handleStreamArrayValues(streamInstruction, Optional.empty(), Optional.empty()));
         } else if (streamInstruction.getFilePathOpt().isPresent()) {
             handleFilePath(streamSymbol, streamInstruction);
-        } else if (streamInstruction.getImagePathOpt().isPresent()) {
-            streamSymbol.add(handleImagePath(streamInstruction.getImagePathOpt().get()));
         }
     }
 
@@ -126,10 +118,7 @@ public class StreamUnitsSymbolTableCreator extends StreamUnitsSymbolTableCreator
 
         if (file.exists()) {
             try {
-                Optional<ASTStreamInstruction> astStreamInstruction =
-                        handleFileByExtension(file);
-                astStreamInstruction.ifPresent(instruction ->
-                        handleStreamInstructionForFilePath(streamSymbol, instruction, astFilePath.getElementToleranceOpt(), astFilePath.getGeneralToleranceOpt()));
+                handleFileByExtension(file, streamSymbol, astFilePath);
             } catch (IOException | NumberFormatException e) {
                 if (e instanceof  IOException) {
                     Log.error("Error on reading file:" + filePath);
@@ -140,124 +129,19 @@ public class StreamUnitsSymbolTableCreator extends StreamUnitsSymbolTableCreator
         }
     }
 
-    private Optional<ASTStreamInstruction> handleFileByExtension(File file) throws IOException {
+    private void handleFileByExtension(File file, NamedStreamUnitsSymbol streamSymbol, ASTFilePath astFilePath) throws IOException {
         String extension = FilenameUtils.getExtension(file.getPath());
         if (extension.equals("txt")) {
             Path path = file.toPath();
             List<String> content = Files.readAllLines(path, Charset.defaultCharset());
-            return new StreamUnitsParser().parse_StringStreamInstruction((content.get(0)));
+            Optional<ASTStreamInstruction> astStreamInstruction = new StreamUnitsParser().parse_StringStreamInstruction((content.get(0)));
+            astStreamInstruction.ifPresent(instruction ->
+                    handleStreamInstructionForFilePath(streamSymbol, instruction, astFilePath.getElementToleranceOpt(), astFilePath.getGeneralToleranceOpt()));
         } else if (extension.equals("png")) {
-            double[][][] cube = handleFilePNG(file);
-            return new StreamUnitsParser().parse_StringStreamInstruction(convertCubeToString(cube));
+            streamSymbol.add(handleImagePath(astFilePath));
+        } else {
+            Log.error("File Extension not supported");
         }
-        Log.error("File Extension not supported");
-        return Optional.empty();
-    }
-
-    private String convertCubeToString(double[][][] cube) {
-        String str = "[";
-        for (int k = 0; k < cube.length; k++) {
-            str += "[";
-            double[][] matrix = cube[k];
-            for (int i = 0; i < matrix.length; i++) {
-                for (int j = 0; j < matrix[i].length; j++) {
-                    str += " " + matrix[i][j];
-                    if (j < matrix[i].length - 1) {
-                        str += ",";
-                    }
-                }
-                if (i < matrix.length - 1) {
-                    str += ";";
-                }
-            }
-            str += "]";
-        }
-
-        str += "]";
-        return str;
-    }
-
-    private double[][][] handleFilePNG(File file) {
-        OpenCV.loadShared();
-        Mat img = Imgcodecs.imread(file.getAbsolutePath());
-        Log.debug("Original image size:", img.size().toString());
-
-        Log.debug("Start resizing for ", file.getName());
-        Size scale = new Size(28, 28);
-        Imgproc.resize(img, img, scale);
-
-        int channels = 1;
-        int height = img.rows();
-        int width = img.width();
-
-        double[] data = new double[channels * height * width];
-
-        for (int j = 0; j < height; j++) {
-            for (int k = 0; k < width; k++) {
-                double[] intensity = img.get(j, k);
-                for (int i = 0; i < channels; i++) {
-                    data[i * height * width + j * height + k] = intensity[i];
-                }
-            }
-        }
-
-        return translateToCube(data, new int[]{channels, height, width});
-    }
-
-    private double[][][] translateToCube(double[] source, int[] shape) {
-        assert(shape.length == 3);
-        double[][][] cubeMatrix = new double[shape[0]][shape[1]][shape[2]]; // slices(channels), rows(height), columns(width)
-        final int matrixSize = shape[1] * shape[2];
-        long[] matrixShape = new long[]{shape[1], shape[2]}; // rows, columns
-        int startPos = 0;
-        int endPos = matrixSize;
-
-        for (int i = 0; i < shape[0]; i++) {
-            double[] matrixSource = Arrays.copyOfRange(source, startPos, endPos);
-            cubeMatrix[i] = translateToMat(matrixSource, matrixShape);
-            startPos = endPos;
-            endPos += matrixSize;
-        }
-        return cubeMatrix;
-    }
-
-    private double[][] translateToMat(double[] source, long[] shape) { // shape {rows, columns}
-        assert(shape.length == 2);
-        double[][] matrix = new double[(int) shape[1]][(int) shape[0]]; // this matrix should be inverted
-        int startPos = 0;
-        int endPos = (int) shape[1];
-        final int[] columnShape = new int[]{(int) shape[1]};
-        for (int i = 0; i < shape[0]; i++) {  // for each column
-            double[] colSource = Arrays.copyOfRange(source, startPos, endPos);
-            matrix[i] = translateToCol(colSource, columnShape);
-            startPos = endPos;
-            endPos += shape[1];
-        }
-        return inverte(matrix);
-    }
-
-    private double[][] inverte(double[][] matrix) {
-        int oldRows = matrix.length;
-        int oldColumns = matrix.length > 0 ? matrix[0].length : 0;
-        int newRows = oldRows;
-        int newColumns = oldRows;
-        double[][] inverted = new double[newRows][newColumns];
-        for (int i = 0; i < oldRows; i++) {
-            for (int j = 0; j < oldColumns; j++) {
-                inverted[j][i] = matrix[i][j];
-            }
-        }
-        return inverted;
-    }
-
-
-    private double[] translateToCol(double[] source, int[] shape) {
-        assert shape.length == 1;
-        double[] column = new double[shape[0]];
-        for (int i = 0; i < source.length; i++) {
-            column[i] = source[i];
-        }
-        return column;
     }
 
     private IStreamValue handleStreamValue(ASTStreamValue streamValue) {
@@ -320,8 +204,6 @@ public class StreamUnitsSymbolTableCreator extends StreamUnitsSymbolTableCreator
                 }
             }
         }
-
-
         return result;
     }
 
@@ -353,7 +235,7 @@ public class StreamUnitsSymbolTableCreator extends StreamUnitsSymbolTableCreator
         return currentList;
     }
 
-    private ImagePath handleImagePath(ASTImagePath imagePath) {
+    private ImagePath handleImagePath(ASTFilePath imagePath) {
         ImagePath result = new ImagePath();
         result.setImagePath(imagePath.getStringLiteral().getValue());
         return result;

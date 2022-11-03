@@ -2,6 +2,6 @@ package basicLibrary;
 
 stream AddTest for Add {
  in1: 1 tick 2 tick (0.1, 0.1)~file::"/src/test/resources/images/0.png";
- in2: 2 tick 3 tick image::"/src/test/resources/images/0.png";
+ in2: 2 tick 3 tick file::"/src/test/resources/images/0.png";
  out: 3 tick 5 tick 7;
 }

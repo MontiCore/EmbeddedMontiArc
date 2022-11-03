@@ -19,12 +19,11 @@ grammar StreamUnits extends de.monticore.NumberUnit, de.monticore.literals.Liter
 
   Stream = (StreamInstruction | "tick" )+;
 
-  StreamInstruction = StreamValue | StreamCompare | StreamArrayValues | FilePath | ImagePath;
+  StreamInstruction = StreamValue | StreamCompare | StreamArrayValues | FilePath;
 
     StreamValue = Name | PrecisionNumber | SignedLiteral | DontCare | ValueAtTick;
     ValueAtTick = Name "(" (value:NumberWithUnit|lowerBound:NumberWithUnit ":" upperBound:NumberWithUnit ) ")";
     FilePath = ( "(" elementTolerance:DoubleLiteral "," generalTolerance:DoubleLiteral ")" "~")? "file::" StringLiteral;
-    ImagePath = "image::" StringLiteral;
     DontCare = "-";
     StreamArrayValues = ( "(" elementTolerance:DoubleLiteral "," generalTolerance:DoubleLiteral ")" "~")? "[" (ValuePair | MatrixPair | CubePair)"]" ;
     ValuePair = (StreamValue | ",")+;
