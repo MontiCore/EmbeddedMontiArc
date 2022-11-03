@@ -84,6 +84,24 @@ trigger-coopautopilot:
   only:
     - master    
 
+trigger-doppelkopf:
+  stage: trigger_apps
+  allow_failure: true
+  trigger:
+    project: monticore/EmbeddedMontiArc/applications/reinforcement_learning/doppelkopf-agent
+    branch: main
+  only:
+    - master    
+
+trigger-tictactoe:
+  stage: trigger_apps
+  allow_failure: true
+  trigger:
+    project: monticore/EmbeddedMontiArc/applications/reinforcement_learning/tictactoeagent
+    branch: main
+  only:
+    - master  
+
 
 pages:
   stage: page
