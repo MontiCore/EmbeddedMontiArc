@@ -7,7 +7,7 @@ import mxnet as mx
 import CNNCreator_simpleConfig
 import CNNDataLoader_simpleConfig
 import CNNSupervisedTrainer_simpleConfig
-from CNNDataLoader_simpleConfig import RetrainingConf
+from CNNDatasets_simpleConfig import RetrainingConf
 
 if __name__ == "__main__":
     logger = logging.getLogger()
