@@ -8,6 +8,7 @@ package de.monticore.lang.monticar.emadl.modularcnn.composer;
 
 import de.monticore.lang.embeddedmontiarc.embeddedmontiarc._symboltable.cncModel.EMAComponentSymbolReference;
 import de.monticore.lang.embeddedmontiarc.embeddedmontiarc._symboltable.instanceStructure.EMAComponentInstanceSymbol;
+import de.monticore.lang.monticar.cnnarch._symboltable.ArchitectureSymbol;
 import de.monticore.lang.monticar.emadl.modularcnn.tools.json.JSONBuilder;
 import de.monticore.lang.monticar.emadl.modularcnn.tools.json.JSONReader;
 import de.monticore.symboltable.references.SymbolReference;
@@ -25,6 +26,8 @@ public class NetworkStructureInformation {
     private EMAComponentSymbolReference symbolReference = null;
     private String instanceSymbolName;
     private NetworkStructureInformation parentNetwork = null;
+
+    private ArchitectureSymbol composedNetworkArchitectureSymbol = null;
 
     public NetworkStructureInformation(ComponentInformation componentInformation) {
         this.networkName = componentInformation.getComponentName();
@@ -71,6 +74,13 @@ public class NetworkStructureInformation {
 
 
 
+    }
+
+    public ArchitectureSymbol getComposedNetworkArchitectureSymbol(){
+        return composedNetworkArchitectureSymbol;
+    }
+    public void setComposedNetworkArchitectureSymbol(ArchitectureSymbol symbol){
+        this.composedNetworkArchitectureSymbol = symbol;
     }
 
     public EMAComponentSymbolReference getSymbolReference() {
