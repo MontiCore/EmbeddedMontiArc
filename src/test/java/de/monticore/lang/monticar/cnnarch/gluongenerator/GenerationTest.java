@@ -54,6 +54,7 @@ public class GenerationTest extends AbstractSymtabTest {
                 Paths.get("src/test/resources/target_code"),
                 Arrays.asList(
                         "CNNCreator_CifarClassifierNetwork.py",
+                        "CNNDatasets_CifarClassifierNetwork.py",
                         "CNNNet_CifarClassifierNetwork.py",
                         "CNNDataLoader_CifarClassifierNetwork.py",
                         "CNNSupervisedTrainer_CifarClassifierNetwork.py",
@@ -73,6 +74,7 @@ public class GenerationTest extends AbstractSymtabTest {
                 Paths.get("./src/test/resources/target_code"),
                 Arrays.asList(
                         "CNNCreator_Alexnet.py",
+                        "CNNDatasets_Alexnet.py",
                         "CNNNet_Alexnet.py",
                         "CNNDataLoader_Alexnet.py",
                         "CNNSupervisedTrainer_Alexnet.py",
@@ -167,6 +169,7 @@ public class GenerationTest extends AbstractSymtabTest {
                 Paths.get("./src/test/resources/target_code"),
                 Arrays.asList(
                         "CNNCreator_EpisodicMemoryNetwork.py",
+                        "CNNDatasets_EpisodicMemoryNetwork.py",
                         "CNNNet_EpisodicMemoryNetwork.py",
                         "CNNDataLoader_EpisodicMemoryNetwork.py",
                         "CNNSupervisedTrainer_EpisodicMemoryNetwork.py",
@@ -186,6 +189,7 @@ public class GenerationTest extends AbstractSymtabTest {
                 Paths.get("./src/test/resources/target_code"),
                 Arrays.asList(
                         "CNNCreator_LoadNetworkTest.py",
+                        "CNNDatasets_LoadNetworkTest.py",
                         "CNNNet_LoadNetworkTest.py",
                         "CNNDataLoader_LoadNetworkTest.py",
                         "CNNSupervisedTrainer_LoadNetworkTest.py",
@@ -332,6 +336,7 @@ public class GenerationTest extends AbstractSymtabTest {
                         "CNNLAOptimizer_actorNetwork.h",
                         "start_training.sh",
                         "reinforcement_learning/CNNCreator_CriticNetwork.py",
+                        "reinforcement_learning/CNNDatasets_CriticNetwork.py",
                         "reinforcement_learning/CNNNet_CriticNetwork.py",
                         "reinforcement_learning/__init__.py",
                         "reinforcement_learning/strategy.py",

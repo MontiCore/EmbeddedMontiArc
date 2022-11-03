@@ -10,7 +10,7 @@ import mxnet as mx
 import CNNCreator_${config.instanceName}
 import CNNDataLoader_${config.instanceName}
 import CNNSupervisedTrainer_${config.instanceName}
-from CNNDataLoader_${config.instanceName} import RetrainingConf
+from CNNDatasets_${config.instanceName} import RetrainingConf
 </#list>
 
 if __name__ == "__main__":
