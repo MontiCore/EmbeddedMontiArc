@@ -8,7 +8,6 @@ import os
 import pathlib
 import sys
 import typing as t
-from dataclasses import dataclass
 from types import SimpleNamespace
 
 import h5py
@@ -20,20 +19,7 @@ from mxnet import nd
     from dgl.data.utils import load_graphs
 </#if>
 
-@dataclass
-class Dataset:
-    id: str
-    path: pathlib.Path
-    graphFile: t.Optional[pathlib.Path] = None
-
-@dataclass
-class TrainingDataset(Dataset):
-    retraining: bool = True
-
-@dataclass
-class RetrainingConf:
-    testing: Dataset
-    changes: t.List[TrainingDataset]
+from CNNDatasets_${tc.fullArchitectureName} import Dataset, TrainingDataset, RetrainingConf
 
 class ${tc.fileNameWithoutEnding}: # pylint: disable=invalid-name
     _input_names_ = [<#list tc.architectureInputs as inputName><#if inputName?index == tc.architectureInputs?seq_index_of(inputName)>'${inputName?keep_before_last("_")}'<#sep>, </#if></#list>]

@@ -18,7 +18,7 @@ try:
     import AdamW
 except:
     pass
-from CNNDataLoader_CifarClassifierNetwork import TrainingDataset
+from CNNDatasets_CifarClassifierNetwork import TrainingDataset
 
 logger = logging.getLogger(__name__)
 
