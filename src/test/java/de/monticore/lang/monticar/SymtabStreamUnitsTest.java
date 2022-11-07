@@ -48,9 +48,8 @@ public class SymtabStreamUnitsTest {
         Scope symTab = createSymTab("src/test/resources/unitstreams/streams");
         Log.debug(symTab.toString(), "SymTab:");
         ComponentStreamUnitsSymbol comp = symTab.<ComponentStreamUnitsSymbol>resolve(
-                "basicLibrary.AddTest", ComponentStreamUnitsSymbol.KIND).orElse(null);
-        comp.getNamedStream("in1");
-        assertNotNull(comp);
+                "basicLibrary.AndTest", ComponentStreamUnitsSymbol.KIND).orElse(null);
+        assertNotNull(comp.getNamedStream("in1"));
     }
 
     @Test
@@ -75,22 +74,6 @@ public class SymtabStreamUnitsTest {
         ASTNumberWithUnit percision = (ASTNumberWithUnit) instruction.getStreamValue().get().getPrecision();
         assertEquals(0.5, percision.getNumber().get(), 0);
         assertFalse(instruction.getStreamCompare().isPresent());
-    }
-
-    @Test
-    public void testResolveFilePathStreamUnit() {
-        Scope symTab = createSymTab("src/test/resources/unitstreams/streams");
-
-        NamedStreamUnitsSymbol namedStreamSymbol = symTab.<NamedStreamUnitsSymbol>resolve(
-                "basicLibrary.AddTest.in1", NamedStreamUnitsSymbol.KIND).orElse(null);
-
-        StreamInstruction instruction = (StreamInstruction) namedStreamSymbol.getValue(2);
-
-        ASTNumberWithUnit percision = (ASTNumberWithUnit) instruction.getStreamValue().get().getValue();
-
-
-        assertEquals(3, percision.getNumber().get(), 0);
-
     }
 
     @Test
@@ -202,6 +185,38 @@ public class SymtabStreamUnitsTest {
         assertEquals("1.0", streamValues.getStreamValue(0, 0).toString());
         assertEquals("0.0", streamValues.getStreamValue(0, 1).toString());
         assertEquals("1.0", streamValues.getStreamValue(0, 2).toString());
+    }
+
+    @Test
+    public void testResolveCubeStream() {
+        Scope symTab = createSymTab("src/test/resources/unitstreams/streams");
+
+        NamedStreamUnitsSymbol namedStreamSymbol = symTab.<NamedStreamUnitsSymbol>resolve(
+                "advancedLibrary.ImageTest.in1", NamedStreamUnitsSymbol.KIND).orElse(null);
+        assertNotNull(namedStreamSymbol);
+        StreamInstruction streamInstruction = (StreamInstruction) namedStreamSymbol.getValue(0);
+        assertTrue(streamInstruction.getStreamValues().isPresent());
+        StreamValues streamValues = streamInstruction.getStreamValues().get();
+        assertEquals(3, streamValues.getDepthDimension());
+        assertEquals(3, streamValues.getRowDimension());
+        assertEquals(3, streamValues.getColumnDimension());
+        assertEquals(0.1, streamValues.getElementTolerance(), 0);
+        assertEquals("1.0", streamValues.getStreamValue(0, 0,0).toString());
+        assertEquals("3.0", streamValues.getStreamValue(0, 1,1).toString());
+        assertEquals("4.0", streamValues.getStreamValue(0, 2,1).toString());
+    }
+
+    @Test
+    public void testResolveImagePath() {
+        Scope symTab = createSymTab("src/test/resources/unitstreams/streams");
+
+        NamedStreamUnitsSymbol namedStreamSymbol = symTab.<NamedStreamUnitsSymbol>resolve(
+                "basicLibrary.AddTest.in2", NamedStreamUnitsSymbol.KIND).orElse(null);
+        assertNotNull(namedStreamSymbol);
+        StreamInstruction streamInstruction = (StreamInstruction) namedStreamSymbol.getValue(2);
+        assertTrue(streamInstruction.getImagePath().isPresent());
+        ImagePath imagePath = streamInstruction.getImagePath().get();
+        assertEquals(imagePath.getImagePath(), "/src/test/resources/images/0.png");
     }
 
 

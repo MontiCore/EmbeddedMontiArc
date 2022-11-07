@@ -53,6 +53,8 @@ public class NamedStreamUnitsSymbol extends NamedStreamUnitsSymbolTOP {
         timeValues.add(new StreamInstruction(values));
     }
 
+    public void add(ImagePath imagePath) { timeValues.add(new StreamInstruction(imagePath)); }
+
     public void add(Object value, Object precision) {
         timeValues.add(new StreamInstruction(new StreamValuePrecision(value, precision)));
     }
