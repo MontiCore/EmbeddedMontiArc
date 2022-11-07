@@ -10,7 +10,7 @@
 
   <groupId>de.monticore.lang.monticar</groupId>
   <artifactId>common-monticar</artifactId>
-  <version>0.4.6-SNAPSHOT</version>
+  <version>0.4.7-SNAPSHOT</version>
 
 
   <!-- == PROJECT DEPENDENCIES ============================================= -->
@@ -40,6 +40,7 @@
     <project.build.sourceEncoding>UTF-8</project.build.sourceEncoding>
     <project.reporting.outputEncoding>UTF-8</project.reporting.outputEncoding>
     <github.global.server>github</github.global.server>
+    <opencv.version>4.5.5-1</opencv.version>
   </properties>
 
   <scm>
@@ -90,9 +91,9 @@
     <dependency>
         <groupId>org.openpnp</groupId>
         <artifactId>opencv</artifactId>
-        <version>4.5.5-0</version>
+        <version>${opencv.version}</version>
     </dependency>
-  
+
   </dependencies>
     <!-- == PROJECT BUILD SETTINGS =========================================== -->
 
