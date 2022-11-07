@@ -31,10 +31,14 @@ masterJobLinux:
   - mvn -Dorg.slf4j.simpleLogger.log.org.apache.maven.cli.transfer.Slf4jMavenTransferListener=warn -B  clean deploy --settings settings.xml
   only:
   - master
-  except:
-    changes:
-    - .gitlab-ci.yml
-    - README.md
+  rules:
+    - if: $CI_COMMIT_BRANCH == "master" && $CI_PIPELINE_SOURCE == "web"
+    - if: $CI_COMMIT_BRANCH == "master" 
+      changes:
+        - src/**/*
+        - pom.xml
+        - settings.xml
+
 
 BranchJobLinux:
   stage: linux
