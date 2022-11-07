@@ -6,6 +6,7 @@ from caffe2.proto import caffe2_pb2
 import numpy as np
 import logging
 import CNNCreator_unsupportedConfig
+import CNNDataCleaner_unsupportedConfig
 
 if __name__ == "__main__":
     logging.basicConfig(level=logging.DEBUG)
@@ -13,7 +14,10 @@ if __name__ == "__main__":
     handler = logging.FileHandler("train.log", "w", encoding=None, delay="true")
     logger.addHandler(handler)
 
-    unsupportedConfig = CNNCreator_unsupportedConfig.CNNCreator_unsupportedConfig()
+    unsupportedConfig_cleaner = CNNDataCleaner_unsupportedConfig.CNNDataCleaner_unsupportedConfig()
+    unsupportedConfig = CNNCreator_unsupportedConfig.CNNCreator_unsupportedConfig(
+        unsupportedConfig_cleaner
+    )
     unsupportedConfig.train(
         num_epoch=5,
         batch_size=100,

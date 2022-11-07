@@ -1,6 +1,0 @@
-    vector<float> CNN_softmax(10);
-
-    _predictor_0_.predict(CNNTranslator::translate(data),
-                CNN_softmax);
-
-    softmax = CNNTranslator::translateToCol(CNN_softmax, std::vector<size_t> {10});

@@ -7,8 +7,8 @@
 <#assign inputWidth = element.element.inputTypes[0].width>
 <#--flatten is not needed since the fc layer applies it automatically-->
 <#if inputLayerType?matches("FullyConnected") || (inputHeight == 1 && inputWidth == 1)>
-    		${element.name} = brew.fc(model, ${input}, '${element.name}', dim_in=${inputChannels}, dim_out=${element.units?c})
+            ${element.name} = brew.fc(model, ${input}, '${element.name}', dim_in=${inputChannels}, dim_out=${element.units?c})
 <#else>
-    		${element.name} = brew.fc(model, ${input}, '${element.name}', dim_in=${inputChannels} * ${inputHeight} * ${inputWidth}, dim_out=${element.units?c})
+            ${element.name} = brew.fc(model, ${input}, '${element.name}', dim_in=${inputChannels} * ${inputHeight} * ${inputWidth}, dim_out=${element.units?c})
 </#if>
 <#include "OutputShape.ftl">

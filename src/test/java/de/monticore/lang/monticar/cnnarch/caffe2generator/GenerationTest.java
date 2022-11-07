@@ -42,6 +42,7 @@ public class GenerationTest extends AbstractSymtabTest{
                 Paths.get("./src/test/resources/target_code"),
                 Arrays.asList(
                         "CNNCreator_LeNet.py",
+                        "CNNDataCleaner_LeNet.py",
                         "CNNPredictor_LeNet.h",
                         "execute_LeNet"));
     }
@@ -83,6 +84,7 @@ public class GenerationTest extends AbstractSymtabTest{
                 Paths.get("./src/test/resources/target_code"),
                 Arrays.asList(
                         "CNNCreator_VGG16.py",
+                        "CNNDataCleaner_VGG16.py",
                         "CNNPredictor_VGG16.h",
                         "execute_VGG16"));
     }

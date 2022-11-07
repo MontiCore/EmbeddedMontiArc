@@ -7,12 +7,12 @@
     <!-- == PROJECT COORDINATES ============================================= -->
     <groupId>de.monticore.lang.monticar</groupId>
     <artifactId>cnnarch-caffe2-generator</artifactId>
-    <version>0.4.8-SNAPSHOT</version>
+    <version>0.4.9-SNAPSHOT</version>
 
     <!-- == PROJECT DEPENDENCIES ============================================= -->
     <properties>
         <!-- .. SE-Libraries .................................................. -->
-        <CNNArch2X.version>0.4.10-SNAPSHOT</CNNArch2X.version>
+        <CNNArch2X.version>0.4.13-SNAPSHOT</CNNArch2X.version>
 
         <!-- .. Libraries .................................................. -->
         <guava.version>25.1-jre</guava.version>

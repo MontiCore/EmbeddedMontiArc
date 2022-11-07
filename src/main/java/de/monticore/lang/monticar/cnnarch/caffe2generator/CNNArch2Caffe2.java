@@ -49,6 +49,9 @@ public class CNNArch2Caffe2 extends CNNArchGenerator {
         temp = archTc.process("CNNCreator", Target.PYTHON);
         fileContents.add(temp);
 
+        temp = archTc.process("CNNDataCleaner", Target.PYTHON);
+        fileContents.add(temp);
+
         temp = archTc.process("execute", Target.CPP);
         temp.setFileName(temp.getFileName().replace(".h", ""));
         fileContents.add(temp);
