@@ -19,11 +19,11 @@ from CNNDatasets_VGG16 import Dataset, TrainingDataset
 log = logging.getLogger(__name__)
 
 class CNNCreator_VGG16: # pylint: disable=invalid-name
-    _model_basedir_ = pathlib.Path("model", "VGG16")
 
     def __init__(self):
         self.weight_initializer = mx.init.Normal()
         self.networks = {}
+        self._model_basedir_ = pathlib.Path("model", "VGG16")
         self.dataset: TrainingDataset = None
         self._weights_dir_ = None
 

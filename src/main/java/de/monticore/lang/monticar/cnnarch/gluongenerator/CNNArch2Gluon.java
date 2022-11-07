@@ -61,6 +61,9 @@ public class CNNArch2Gluon extends CNNArchGenerator {
             fileContents.add(temp);
         }
 
+        temp = controller.process("CNNDataCleaner", Target.PYTHON);
+        fileContents.add(temp);
+
         temp = controller.process("CNNCreator", Target.PYTHON);
         fileContents.add(temp);
 

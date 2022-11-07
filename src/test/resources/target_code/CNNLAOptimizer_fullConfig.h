@@ -27,7 +27,7 @@ public:
         optimizerHandle->SetParam("epsilon", 1.0E-6);
         optimizerHandle->SetParam("rescale_grad", 1.1);
         optimizerHandle->SetParam("clip_gradient", 10.0);
-        optimizerHandle->SetParam("learning_rate_policy", 'step');
+    optimizerHandle->SetParam("learning_rate_policy", 'step');
         optimizerHandle->SetParam("lr", 0.001);
         std::unique_ptr<LRScheduler> lrScheduler(new FactorScheduler(1000, 0.9, 1.0E-5));
         optimizerHandle->SetLRScheduler(std::move(lrScheduler));

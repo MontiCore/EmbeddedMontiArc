@@ -54,3 +54,57 @@ In order to visualize attention from an attention network, the data from this la
 ```
 * Use the custom layer inside the model with the same name as the file and the class inside is called
 * When you use the script or directly use the EMADL2CPP generator to start generating code and training your model add the "-cfp" command line argument followed by the path to the custom_files folder
+
+## How to apply Data Cleaning
+Missing, noisy and duplicate data can be classified as dirty data. Dirt data have an negative impact on the model performance. Therefore, one can apply data cleaning techniques like data removal to remove these kind of data entries. 
+In order to apply data removal on our dataset, one can add a `cleaning` flag in the `Network.conf`:
+
+```
+cleaning: remove {
+    missing:true
+    duplicate:true
+    noisy:true
+}
+```
+The sub-parameters specifies if the corresponding dirty data type should be removed or not.
+
+### Data Augmentation to counteract Data Imbalance
+
+Data removal can cause data imbalance. To counter data imbalance, one can apply data up-sampling algorithms like data augmentation (e.g. image augmentation for images like the MNIST dataset). In order to apply image augmentation on our MNIST dataset, one can add a `data_augmentation` flag in the `Network.conf`:
+
+```
+data_imbalance: image_augmentation {
+    rotation_angle:(-10,10,20) 
+    shift:true
+    scale_in:true
+    scale_out:true
+    check_bias:true
+}
+```
+- `rotation_angle`: a list specifying the rotation degrees to be applied on an original image
+- `shift`: speficies if a up, down, left and right shift should be applied
+- `scale_in` and `scale_out`: specifies if the image should be scaled in and scaled out
+- `check_bias`: specifies if the resulting up-sampled dataset should be checked for bias
+
+
+## How to use Hyperparameter Optimization
+
+To carry out a Hyperparameter Optimization (HPO), one can set the `optimizer` flag as the nested parameter `hpo` like in the following:
+
+```
+optimizer: hpo {
+    learning_rate_range: (0.00001, 1.0)
+    weight_decay_range: (0.00001, 0.1) 
+    momentum_range: (0.1, 0.9)
+    optimizer_options: ("Adam", "SGD", "RMSProp", "AdaGrad", "NAG", "AdaDelta")
+    with_cleaning:false
+    ntrials:10
+}
+```
+
+- `learning_rate_range`: minimum and maximum range of the learning rate hyperparameter
+- `weight_decay_range`: minimum and maximum range of the weight decay hyperparameter
+- `momentum_range`: minimum and maximum range of the momentum hyperparameter (only important for the NAG and SGD optimizer)
+- `optimizer_options`: list of optimizers options for HPO
+- `with_cleaning`: specifies if the cleaning parameters like `missing`, `noisy` and `duplicated` should be optimized as well
+- `ntrials`: specifies how many trials a HPO should execute
