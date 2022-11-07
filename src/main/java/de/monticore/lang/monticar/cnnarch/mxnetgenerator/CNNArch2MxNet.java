@@ -46,6 +46,9 @@ public class CNNArch2MxNet extends CNNArchGenerator {
         temp = archTc.process("CNNPredictor", Target.CPP);
         fileContents.add(temp);
 
+        temp = archTc.process("CNNDataCleaner", Target.PYTHON);
+        fileContents.add(temp);
+
         temp = archTc.process("CNNCreator", Target.PYTHON);
         fileContents.add(temp);
 

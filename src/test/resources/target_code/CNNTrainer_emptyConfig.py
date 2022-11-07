@@ -2,6 +2,7 @@
 import logging
 import mxnet as mx
 import CNNCreator_emptyConfig
+import CNNDataCleaner_emptyConfig
 
 if __name__ == "__main__":
     logging.basicConfig(level=logging.DEBUG)
@@ -9,6 +10,9 @@ if __name__ == "__main__":
     handler = logging.FileHandler("train.log", "w", encoding=None, delay="true")
     logger.addHandler(handler)
 
-    emptyConfig = CNNCreator_emptyConfig.CNNCreator_emptyConfig()
+    emptyConfig_cleaner = CNNDataCleaner_emptyConfig.CNNDataCleaner_emptyConfig()
+    emptyConfig = CNNCreator_emptyConfig.CNNCreator_emptyConfig(
+        emptyConfig_cleaner
+    )
     emptyConfig.train(
     )
