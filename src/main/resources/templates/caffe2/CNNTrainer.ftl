@@ -10,6 +10,7 @@ import numpy as np
 import logging
 <#list configurations as config>
 import CNNCreator_${config.instanceName}
+import CNNDataCleaner_${config.instanceName}
 </#list>
 
 if __name__ == "__main__":
@@ -19,7 +20,10 @@ if __name__ == "__main__":
     logger.addHandler(handler)
 
 <#list configurations as config>
-    ${config.instanceName} = CNNCreator_${config.instanceName}.CNNCreator_${config.instanceName}()
+    ${config.instanceName}_cleaner = CNNDataCleaner_${config.instanceName}.CNNDataCleaner_${config.instanceName}()
+    ${config.instanceName} = CNNCreator_${config.instanceName}.CNNCreator_${config.instanceName}(
+        ${config.instanceName}_cleaner
+    )
     ${config.instanceName}.train(
     <#if (config.numEpoch)??>
         num_epoch=${config.numEpoch},
@@ -29,6 +33,26 @@ if __name__ == "__main__":
     </#if>
     <#if (config.context)??>
         context='${config.context}',
+    </#if>
+    <#if (config.cleaning)??>
+        cleaning='${config.cleaningName}',
+        cleaning_params={
+        <#if (config.cleaningParameters)??>
+        <#list config.cleaningParameters?keys as param>
+            '${param}': ${config.cleaningParameters[param]}<#sep>,
+        </#list>
+        </#if>
+        },
+    </#if>
+    <#if (config.dataImbalance)??>
+        data_imbalance='${config.dataImbalanceName}',
+        data_imbalance_params={
+        <#if (config.dataImbalanceParameters)??>
+        <#list config.dataImbalanceParameters?keys as param>
+            '${param}': ${config.dataImbalanceParameters[param]}<#sep>,
+        </#list>
+        </#if>
+        },
     </#if>
     <#if (config.evalMetric)??>
         eval_metric='${config.evalMetricName}',

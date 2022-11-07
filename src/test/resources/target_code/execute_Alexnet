@@ -1,6 +1,0 @@
-    vector<float> CNN_predictions(10);
-
-    _predictor_0_.predict(CNNTranslator::translate(data),
-                CNN_predictions);
-
-    predictions = CNNTranslator::translateToCol(CNN_predictions, std::vector<size_t> {10});

@@ -9,15 +9,15 @@
 
 find_path(Armadillo_INCLUDE_DIR
         NAMES armadillo
-        PATH_SUFFIXES "include"
+        PATH_SUFFIXES "include" 
         PATHS
-        HINTS $ENV{Armadillo_HOME}
+        HINTS $ENV{Armadillo_HOME} 
         )
 find_library(Armadillo_LIBRARY
         NAMES armadillo
-        PATH_SUFFIXES "lib" "lib64" "lib/x86_64-linux-gnu" "examples/lib_win64" "build" "Release" "x64" "x86"
+        PATH_SUFFIXES "lib" "lib64" "lib/x86_64-linux-gnu" "examples/lib_win64" "build" "Release" "x64" "x86" 
         PATHS
-        HINTS $ENV{Armadillo_HOME}
+        HINTS $ENV{Armadillo_HOME} 
         )
 
 include(FindPackageHandleStandardArgs)
