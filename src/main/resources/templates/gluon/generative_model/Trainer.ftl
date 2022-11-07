@@ -93,13 +93,22 @@ if __name__ == "__main__":
 <#if (config.normalize)??>
         normalize=${config.normalize?string("True","False")},
 </#if>
+<#if (config.cleaning)??>
+        cleaning='${config.cleaningName}',
+        cleaning_params={
+        <#if (config.cleaningParameters)??>
+        <#list config.cleaningParameters?keys as param>
+            '${param}': ${config.cleaningParameters[param]}<#sep>,
+        </#list>
+        </#if>},
+    </#if>
 <#if (config.preprocessor)??>
         preprocessing=${config.preprocessor?string("True","False")},
 </#if>
 <#if (config.evalMetric)??>
         eval_metric='${config.evalMetric}',
 </#if>
-<#if (config.optimizer)??>
+<#if (config.optimizer)?? && (config.optimizerName) != "hpo">
         optimizer='${config.optimizerName}',
         optimizer_params={
 <#list config.optimizerParameters?keys as param>

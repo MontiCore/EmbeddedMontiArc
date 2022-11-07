@@ -37,13 +37,27 @@ public:
 <#elseif param == "weight_decay">
         optimizerHandle->SetParam("wd", ${config.optimizerParameters[param]});
 <#elseif param == "learning_rate_policy">
-    optimizerHandle->SetParam("learning_rate_policy", '${config.optimizerParameters[param]}');
+        optimizerHandle->SetParam("learning_rate_policy", '${config.optimizerParameters[param]}');
 <#elseif param == "learning_rate_decay">
 <#assign learningRateDecay = config.optimizerParameters[param]>
 <#elseif param == "learning_rate_minimum">
 <#assign minLearningRate = config.optimizerParameters[param]>
 <#elseif param == "step_size">
 <#assign stepSize = config.optimizerParameters[param]>
+<#elseif param == "learning_rate_range">
+        double lr_arr [] = { <#list config.optimizerParameters['learning_rate_range'] as lr>${lr}<#if lr?has_next>, </#if></#list> };
+        optimizerHandle->SetParam("lr_range", lr_arr);
+<#elseif param == "weight_decay_range">
+        double wd_arr [] = { <#list config.optimizerParameters['weight_decay_range'] as lr>${lr}<#if lr?has_next>, </#if></#list> };
+        optimizerHandle->SetParam("wd_range", wd_arr);
+<#elseif param == "momentum_range">
+        double m_arr [] = { <#list config.optimizerParameters['momentum_range'] as lr>${lr}<#if lr?has_next>, </#if></#list>};
+        optimizerHandle->SetParam("momentum_range", m_arr);
+<#elseif param == "optimizer_options">
+        std::string opt_arr [] = { <#list config.optimizerParameters['optimizer_options'] as lr>"${lr}"<#if lr?has_next>, </#if></#list> };
+        optimizerHandle->SetParam("optimizer_options", opt_arr);
+<#elseif param == "with_cleaning">
+        optimizerHandle->SetParam("with_cleaning", "${config.optimizerParameters[param]}");
 <#else>
         optimizerHandle->SetParam("${param}", ${config.optimizerParameters[param]});
 </#if>

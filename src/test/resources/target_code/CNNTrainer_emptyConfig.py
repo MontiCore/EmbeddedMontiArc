@@ -6,8 +6,9 @@ import mxnet as mx
 
 import CNNCreator_emptyConfig
 import CNNDataLoader_emptyConfig
-import CNNSupervisedTrainer_emptyConfig
 from CNNDatasets_emptyConfig import RetrainingConf
+import CNNDataCleaner_emptyConfig
+import CNNSupervisedTrainer_emptyConfig
 
 if __name__ == "__main__":
     logger = logging.getLogger()
@@ -17,14 +18,19 @@ if __name__ == "__main__":
 
     emptyConfig_creator = CNNCreator_emptyConfig.CNNCreator_emptyConfig()
     emptyConfig_creator.validate_parameters()
-    emptyConfig_loader = CNNDataLoader_emptyConfig.CNNDataLoader_emptyConfig()
+    emptyConfig_cleaner = CNNDataCleaner_emptyConfig.CNNDataCleaner_emptyConfig()
+    emptyConfig_loader = CNNDataLoader_emptyConfig.CNNDataLoader_emptyConfig(
+        emptyConfig_cleaner
+    )
+
+    prev_dataset = None
+    retraining_conf = emptyConfig_loader.load_retraining_conf()
+    
     emptyConfig_trainer = CNNSupervisedTrainer_emptyConfig.CNNSupervisedTrainer_emptyConfig(
         emptyConfig_loader,
         emptyConfig_creator
     )
 
-    prev_dataset = None
-    retraining_conf = emptyConfig_loader.load_retraining_conf()
     for dataset in retraining_conf.changes:
         emptyConfig_creator.dataset = dataset
         if(dataset.retraining):
@@ -47,6 +53,6 @@ if __name__ == "__main__":
             )
         else: 
             logger.info("Skipped training of dataset %s. Training is not necessary", dataset.id)
-        
+
         prev_dataset = dataset
 
