@@ -43,6 +43,7 @@ public class GenerationTest extends AbstractSymtabTest{
                 Arrays.asList(
                 "CNNCreator_CifarClassifierNetwork.py",
                 "CNNPredictor_CifarClassifierNetwork.h",
+                "CNNDataCleaner_CifarClassifierNetwork.py",
                 "execute_CifarClassifierNetwork",
                 "CNNBufferFile.h"));
     }
@@ -60,6 +61,7 @@ public class GenerationTest extends AbstractSymtabTest{
                 Arrays.asList(
                         "CNNCreator_Alexnet.py",
                         "CNNPredictor_Alexnet.h",
+                        "CNNDataCleaner_Alexnet.py",
                         "execute_Alexnet"));
     }
 
@@ -76,6 +78,7 @@ public class GenerationTest extends AbstractSymtabTest{
                 Arrays.asList(
                         "CNNCreator_VGG16.py",
                         "CNNPredictor_VGG16.h",
+                        "CNNDataCleaner_VGG16.py",
                         "execute_VGG16"));
     }
 

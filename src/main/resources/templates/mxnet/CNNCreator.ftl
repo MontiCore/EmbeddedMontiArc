@@ -3,7 +3,7 @@
 # (c) https://github.com/MontiCore/monticore
 import mxnet as mx
 import logging
-import os
+import os, gc
 import errno
 import shutil
 import h5py
@@ -20,16 +20,18 @@ class MyConstant(mx.init.Initializer):
 
 class ${tc.fileNameWithoutEnding}:
 
-    module = None
-    _data_dir_ = "${tc.dataPath}/"
-    _model_dir_ = "model/${tc.componentName}/"
-    _model_prefix_ = "model"
-    _input_names_ = [${tc.join(tc.architectureInputs, ",", "'", "'")}]
-    _input_shapes_ = [<#list tc.architecture.inputs as input>(${tc.join(input.ioDeclaration.type.dimensions, ",")})</#list>]
-    _output_names_ = [${tc.join(tc.architectureOutputs, ",", "'", "_label'")}]
-    _input_data_names_ = [<#list tc.architectureInputs as inputName>'${inputName?keep_before_last("_")}'<#sep>, </#list>]
-    _output_data_names_ = [${tc.join(tc.architectureOutputs, ",", "'", "label'")}]
+    def __init__(self, data_cleaner):
+        self.module = None
+        self._data_dir_ = "${tc.dataPath}/"
+        self._model_dir_ = "model/${tc.componentName}/"
+        self._model_prefix_ = "model"
+        self._data_cleaner_ = data_cleaner
 
+        self._input_shapes_ = [<#list tc.architecture.inputs as input>(${tc.join(input.ioDeclaration.type.dimensions, ",")})</#list>]
+        self._input_names_ = [${tc.join(tc.architectureInputs, ",", "'", "'")}]
+        self._output_names_ = [${tc.join(tc.architectureOutputs, ",", "'", "_label'")}]
+        self._input_data_names_ = [<#list tc.architectureInputs as inputName>'${inputName?keep_before_last("_")}'<#sep>, </#list>]
+        self._output_data_names_ = [${tc.join(tc.architectureOutputs, ",", "'", "label'")}]
 
 
     def load(self, context):
@@ -65,8 +67,19 @@ class ${tc.fileNameWithoutEnding}:
             return lastEpoch
 
 
-    def load_data(self, batch_size):
+    def load_data(self, batch_size, cleaning, cleaning_params, data_imbalance, data_imbalance_params):
         train_h5, test_h5 = self.load_h5_files()
+
+        if cleaning == 'remove':
+            train_data, train_label, test_data, test_label = self._data_cleaner_.clean_data( train_h5, test_h5, cleaning, cleaning_params )
+            
+            if data_imbalance == 'image_augmentation':
+                train_data, train_label = self._data_cleaner_.image_augmentation( train_data, train_label, data_imbalance_params )
+                test_data, test_label = self._data_cleaner_.image_augmentation( test_data, test_label, data_imbalance_params )
+        
+            train_h5, test_h5 = self._data_cleaner_.numpy_to_hdf5(train_data, train_label, test_data, test_label)
+            os.remove('_train.h5')
+            os.remove('_test.h5')
 
         data_mean = train_h5[self._input_data_names_[0]][:].mean(axis=0)
         data_std = train_h5[self._input_data_names_[0]][:].std(axis=0) + 1e-5
@@ -120,7 +133,8 @@ class ${tc.fileNameWithoutEnding}:
         if loss == 'softmax_cross_entropy':
             fromLogits = params['from_logits'] if 'from_logits' in params else False
             if not fromLogits:
-                prediction = mx.symbol.log_softmax(data=prediction, axis=1)
+                <#--  prediction = mx.symbol.log_softmax(data=prediction, axis=1)  -->
+                loss_funct = mx.symbol.log_softmax(data=prediction, axis=1)
             if sparseLabel:
                 loss_func = mx.symbol.mean(-mx.symbol.pick(prediction, label, axis=-1, keepdims=True), axis=0, exclude=True)
             else:
@@ -192,7 +206,12 @@ class ${tc.fileNameWithoutEnding}:
               load_checkpoint=True,
               context='gpu',
               checkpoint_period=5,
-              normalize=True):
+              normalize=True,
+              cleaning=None,
+              cleaning_params=(None),
+              data_imbalance=None,
+              data_imbalance_params=(None)):
+              
         if context == 'gpu':
             mx_context = mx.gpu()
         elif context == 'cpu':
@@ -215,7 +234,8 @@ class ${tc.fileNameWithoutEnding}:
             del optimizer_params['step_size']
             del optimizer_params['learning_rate_decay']
 
-        train_iter, test_iter, data_mean, data_std = self.load_data(batch_size)
+        train_iter, test_iter, data_mean, data_std = self.load_data(batch_size, cleaning, cleaning_params, data_imbalance, data_imbalance_params)
+        
         if self.module == None:
             if normalize:
                 self.construct(mx_context, data_mean, data_std)
@@ -255,8 +275,14 @@ class ${tc.fileNameWithoutEnding}:
             epoch_end_callback=mx.callback.do_checkpoint(prefix=self._model_dir_ + self._model_prefix_, period=checkpoint_period),
             begin_epoch=begin_epoch,
             num_epoch=num_epoch + begin_epoch)
+        
         self.module.save_checkpoint(self._model_dir_ + self._model_prefix_, num_epoch + begin_epoch)
         self.module.save_checkpoint(self._model_dir_ + self._model_prefix_ + '_newest', 0)
+
+        if data_imbalance is not None:
+            if data_imbalance_params['check_bias']:
+                _, test = self.load_h5_files()
+                self._data_cleaner_.check_bias(np.array(test["data"]), np.array(test["softmax_label"]).astype(int), self._model_dir_)
 
 
     def construct(self, context, data_mean=None, data_std=None):

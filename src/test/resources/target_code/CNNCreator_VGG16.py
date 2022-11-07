@@ -1,7 +1,7 @@
 # (c) https://github.com/MontiCore/monticore
 import mxnet as mx
 import logging
-import os
+import os, gc
 import errno
 import shutil
 import h5py
@@ -18,16 +18,18 @@ class MyConstant(mx.init.Initializer):
 
 class CNNCreator_VGG16:
 
-    module = None
-    _data_dir_ = "data/VGG16/"
-    _model_dir_ = "model/VGG16/"
-    _model_prefix_ = "model"
-    _input_names_ = ['data_']
-    _input_shapes_ = [(3,224,224)]
-    _output_names_ = ['predictions__label']
-    _input_data_names_ = ['data']
-    _output_data_names_ = ['predictions_label']
+    def __init__(self, data_cleaner):
+        self.module = None
+        self._data_dir_ = "data/VGG16/"
+        self._model_dir_ = "model/VGG16/"
+        self._model_prefix_ = "model"
+        self._data_cleaner_ = data_cleaner
 
+        self._input_shapes_ = [(3,224,224)]
+        self._input_names_ = ['data_']
+        self._output_names_ = ['predictions__label']
+        self._input_data_names_ = ['data']
+        self._output_data_names_ = ['predictions_label']
 
 
     def load(self, context):
@@ -63,8 +65,19 @@ class CNNCreator_VGG16:
             return lastEpoch
 
 
-    def load_data(self, batch_size):
+    def load_data(self, batch_size, cleaning, cleaning_params, data_imbalance, data_imbalance_params):
         train_h5, test_h5 = self.load_h5_files()
+
+        if cleaning == 'remove':
+            train_data, train_label, test_data, test_label = self._data_cleaner_.clean_data( train_h5, test_h5, cleaning, cleaning_params )
+            
+            if data_imbalance == 'image_augmentation':
+                train_data, train_label = self._data_cleaner_.image_augmentation( train_data, train_label, data_imbalance_params )
+                test_data, test_label = self._data_cleaner_.image_augmentation( test_data, test_label, data_imbalance_params )
+        
+            train_h5, test_h5 = self._data_cleaner_.numpy_to_hdf5(train_data, train_label, test_data, test_label)
+            os.remove('_train.h5')
+            os.remove('_test.h5')
 
         data_mean = train_h5[self._input_data_names_[0]][:].mean(axis=0)
         data_std = train_h5[self._input_data_names_[0]][:].std(axis=0) + 1e-5
@@ -118,7 +131,7 @@ class CNNCreator_VGG16:
         if loss == 'softmax_cross_entropy':
             fromLogits = params['from_logits'] if 'from_logits' in params else False
             if not fromLogits:
-                prediction = mx.symbol.log_softmax(data=prediction, axis=1)
+                loss_funct = mx.symbol.log_softmax(data=prediction, axis=1)
             if sparseLabel:
                 loss_func = mx.symbol.mean(-mx.symbol.pick(prediction, label, axis=-1, keepdims=True), axis=0, exclude=True)
             else:
@@ -190,7 +203,12 @@ class CNNCreator_VGG16:
               load_checkpoint=True,
               context='gpu',
               checkpoint_period=5,
-              normalize=True):
+              normalize=True,
+              cleaning=None,
+              cleaning_params=(None),
+              data_imbalance=None,
+              data_imbalance_params=(None)):
+              
         if context == 'gpu':
             mx_context = mx.gpu()
         elif context == 'cpu':
@@ -213,7 +231,8 @@ class CNNCreator_VGG16:
             del optimizer_params['step_size']
             del optimizer_params['learning_rate_decay']
 
-        train_iter, test_iter, data_mean, data_std = self.load_data(batch_size)
+        train_iter, test_iter, data_mean, data_std = self.load_data(batch_size, cleaning, cleaning_params, data_imbalance, data_imbalance_params)
+        
         if self.module == None:
             if normalize:
                 self.construct(mx_context, data_mean, data_std)
@@ -253,13 +272,19 @@ class CNNCreator_VGG16:
             epoch_end_callback=mx.callback.do_checkpoint(prefix=self._model_dir_ + self._model_prefix_, period=checkpoint_period),
             begin_epoch=begin_epoch,
             num_epoch=num_epoch + begin_epoch)
+        
         self.module.save_checkpoint(self._model_dir_ + self._model_prefix_, num_epoch + begin_epoch)
         self.module.save_checkpoint(self._model_dir_ + self._model_prefix_ + '_newest', 0)
+
+        if data_imbalance is not None:
+            if data_imbalance_params['check_bias']:
+                _, test = self.load_h5_files()
+                self._data_cleaner_.check_bias(np.array(test["data"]), np.array(test["softmax_label"]).astype(int), self._model_dir_)
 
 
     def construct(self, context, data_mean=None, data_std=None):
         data_ = mx.sym.var("data_",
-            shape=(0,3,224,224))
+            shape=(1,3,224,224))
         # data_, output shape: {[3,224,224]}
 
         if not data_mean is None:
@@ -523,7 +548,6 @@ class CNNCreator_VGG16:
             name="relu14_")
 
         dropout14_ = mx.symbol.Dropout(data=relu14_,
-            p=0.5,
             name="dropout14_")
         fc14_ = mx.symbol.FullyConnected(data=dropout14_,
             num_hidden=4096,
@@ -534,18 +558,19 @@ class CNNCreator_VGG16:
             name="relu15_")
 
         dropout15_ = mx.symbol.Dropout(data=relu15_,
-            p=0.5,
             name="dropout15_")
         fc15_ = mx.symbol.FullyConnected(data=dropout15_,
             num_hidden=1000,
             no_bias=False,
             name="fc15_")
+
         softmax15_ = mx.symbol.softmax(data=fc15_,
-            axis=1,
-            name="softmax15_")
+            axis=-1,
+            name="softmax15_"
+        )
         predictions_ = mx.symbol.SoftmaxOutput(data=softmax15_,
             name="predictions_")
-
+        
 
         self.module = mx.mod.Module(symbol=mx.symbol.Group([predictions_]),
                                          data_names=self._input_names_,

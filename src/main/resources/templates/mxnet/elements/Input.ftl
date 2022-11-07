@@ -8,7 +8,7 @@
 <#if widthIndex != 0><#assign indexList = indexList + [widthIndex]></#if>
 <#assign dimensions = element.element.outputTypes[0].dimensions>
         ${element.name} = mx.sym.var("${element.name}",
-            shape=(0,${tc.join(dimensions, ",")}))
+            shape=(1,${tc.join(dimensions, ",")}))
 <#include "OutputShape.ftl">
 <#if heightIndex != channelIndex + 1 || widthIndex != heightIndex + 1>
         ${element.name} = mx.symbol.transpose(data=${element.name},

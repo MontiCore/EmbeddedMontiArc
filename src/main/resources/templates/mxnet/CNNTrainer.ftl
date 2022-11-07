@@ -6,6 +6,7 @@ import logging
 import mxnet as mx
 <#list configurations as config>
 import CNNCreator_${config.instanceName}
+import CNNDataCleaner_${config.instanceName}
 </#list>
 
 if __name__ == "__main__":
@@ -15,7 +16,10 @@ if __name__ == "__main__":
     logger.addHandler(handler)
 
 <#list configurations as config>
-    ${config.instanceName} = CNNCreator_${config.instanceName}.CNNCreator_${config.instanceName}()
+    ${config.instanceName}_cleaner = CNNDataCleaner_${config.instanceName}.CNNDataCleaner_${config.instanceName}()
+    ${config.instanceName} = CNNCreator_${config.instanceName}.CNNCreator_${config.instanceName}(
+        ${config.instanceName}_cleaner
+    )
     ${config.instanceName}.train(
 <#if (config.batchSize)??>
         batch_size=${config.batchSize},
@@ -32,6 +36,26 @@ if __name__ == "__main__":
 <#if (config.normalize)??>
         normalize=${config.normalize?string("True","False")},
 </#if>
+<#if (config.cleaning)??>
+        cleaning='${config.cleaningName}',
+        cleaning_params={
+        <#if (config.cleaningParameters)??>
+        <#list config.cleaningParameters?keys as param>
+            '${param}': ${config.cleaningParameters[param]}<#sep>,
+        </#list>
+        </#if>
+        },
+    </#if>
+<#if (config.dataImbalance)??>
+        data_imbalance='${config.dataImbalanceName}',
+        data_imbalance_params={
+        <#if (config.dataImbalanceParameters)??>
+        <#list config.dataImbalanceParameters?keys as param>
+            '${param}': ${config.dataImbalanceParameters[param]}<#sep>,
+        </#list>
+        </#if>
+        },
+    </#if>
 <#if (config.evalMetric)??>
         eval_metric='${config.evalMetricName}',
 </#if>
