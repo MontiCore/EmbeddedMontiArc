@@ -659,6 +659,19 @@ public abstract class ConfigurationData {
         return trainedArchitecture.getDimensions().get(inputName);
     }
 
+    public Boolean isDiscreteState() {
+        Optional<ArchitectureAdapter> trainedArchitectureOpt = trainingComponentsContainer.getTrainedArchitecture();
+        if (!trainedArchitectureOpt.isPresent()) {
+            return null;
+        }
+
+        final String inputName = getInputNameOfTrainedArchitecture();
+        ArchitectureAdapter trainedArchitecture = trainedArchitectureOpt.get();
+        
+        String stateType = trainedArchitecture.getTypes().get(inputName);
+        return stateType.equals("Z");
+    }
+
     public List<Integer> getActionDim() {
         Optional<ArchitectureAdapter> trainedArchitectureOpt = trainingComponentsContainer.getTrainedArchitecture();
         if (!trainedArchitectureOpt.isPresent()) {
