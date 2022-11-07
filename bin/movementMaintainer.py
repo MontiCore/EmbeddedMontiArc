@@ -213,3 +213,11 @@ def getPosition(odomMsg):
     y = odomMsg.pose.pose.position.y
     arr = [x, y]
     return arr
+
+# Check - goal near
+def checkGoalNear(x, y, x_goal, y_goal):
+    ro = sqrt( pow( ( x_goal - x ) , 2 ) + pow( ( y_goal - y ) , 2) )
+    if ro < 0.3:
+        return True
+    else:
+        return False
