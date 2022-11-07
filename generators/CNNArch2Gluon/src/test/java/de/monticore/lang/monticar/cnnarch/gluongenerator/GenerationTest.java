@@ -60,7 +60,8 @@ public class GenerationTest extends AbstractSymtabTest {
                         "CNNSupervisedTrainer_CifarClassifierNetwork.py",
                         "CNNPredictor_CifarClassifierNetwork.h",
                         "execute_CifarClassifierNetwork",
-                        "CNNModelLoader.h"));
+                        "CNNModelLoader.h",
+                        "CNNDataCleaner_CifarClassifierNetwork.py"));
     }
 
     @Test
@@ -80,7 +81,8 @@ public class GenerationTest extends AbstractSymtabTest {
                         "CNNSupervisedTrainer_Alexnet.py",
                         "CNNPredictor_Alexnet.h",
                         "execute_Alexnet",
-                        "CNNModelLoader.h"));
+                        "CNNModelLoader.h",
+                        "CNNDataCleaner_Alexnet.py"));
     }
 
     @Test
@@ -99,7 +101,8 @@ public class GenerationTest extends AbstractSymtabTest {
                         "CNNSupervisedTrainer_VGG16.py",
                         "CNNPredictor_VGG16.h",
                         "execute_VGG16",
-                        "CNNModelLoader.h"));
+                        "CNNModelLoader.h",
+                        "CNNDataCleaner_VGG16.py"));
     }
 
     @Test
@@ -175,7 +178,8 @@ public class GenerationTest extends AbstractSymtabTest {
                         "CNNSupervisedTrainer_EpisodicMemoryNetwork.py",
                         "CNNPredictor_EpisodicMemoryNetwork.h",
                         "execute_EpisodicMemoryNetwork",
-                        "CNNModelLoader.h"));
+                        "CNNModelLoader.h",
+                        "CNNDataCleaner_EpisodicMemoryNetwork.py"));
     }
 
     @Test
@@ -195,7 +199,8 @@ public class GenerationTest extends AbstractSymtabTest {
                         "CNNSupervisedTrainer_LoadNetworkTest.py",
                         "CNNPredictor_LoadNetworkTest.h",
                         "execute_LoadNetworkTest",
-                        "CNNModelLoader.h"));
+                        "CNNModelLoader.h",
+                        "CNNDataCleaner_LoadNetworkTest.py"));
     }
 
     @Test
@@ -233,8 +238,8 @@ public class GenerationTest extends AbstractSymtabTest {
     public void testEmptyCfgGeneration() throws IOException {
         Path modelPath = Paths.get("src/test/resources/valid_tests");
         CNNTrain2Gluon trainGenerator = new CNNTrain2Gluon(rewardFunctionSourceGenerator);
-        trainGenerator.generate(modelPath, "EmptyConfig");
 
+        trainGenerator.generate(modelPath, "EmptyConfig");
         assertTrue(Log.getFindings().isEmpty());
         checkFilesAreEqual(
                 Paths.get("./target/generated-sources-cnnarch"),
@@ -242,6 +247,7 @@ public class GenerationTest extends AbstractSymtabTest {
                 Arrays.asList(
                         "CNNTrainer_emptyConfig.py",
                         "CNNLAOptimizer_emptyConfig.h"));
+
     }
 
     @Test
@@ -326,7 +332,7 @@ public class GenerationTest extends AbstractSymtabTest {
                 Paths.get("./src/test/resources/valid_tests/ddpg/comp"), "CriticNetwork");
 
         trainGenerator.generate(modelPath, "ActorNetwork", trainedArchitecture, criticArchitecture);
-
+        
         assertTrue(Log.getFindings().isEmpty());
         checkFilesAreEqual(
                 Paths.get("./target/generated-sources-cnnarch"),
@@ -358,7 +364,7 @@ public class GenerationTest extends AbstractSymtabTest {
                 Paths.get("./src/test/resources/valid_tests/td3/comp"), "CriticNetwork");
 
         trainGenerator.generate(modelPath, "TD3Config", trainedArchitecture, criticArchitecture);
-
+        
         assertTrue(Log.getFindings().stream().noneMatch(Finding::isError));
         checkFilesAreEqual(
                 Paths.get("./target/generated-sources-cnnarch"),
@@ -389,7 +395,6 @@ public class GenerationTest extends AbstractSymtabTest {
                 Paths.get("./src/test/resources/valid_tests/ddpg-ros/comp"), "RosCriticNetwork");
 
         trainGenerator.generate(modelPath, "RosActorNetwork", trainedArchitecture, criticArchitecture);
-
         assertEquals(0, Log.getErrorCount());
         checkFilesAreEqual(
                 Paths.get("./target/generated-sources-cnnarch"),
@@ -699,7 +704,8 @@ public class GenerationTest extends AbstractSymtabTest {
                         "CNNSupervisedTrainer_Alexnet.py",
                         "CNNPredictor_Alexnet.h",
                         "execute_Alexnet",
-                        "CNNModelLoader.h"));
+                        "CNNModelLoader.h",
+                        "CNNDataCleaner_Alexnet.py"));
     }
 
     private boolean containsErrorWithMessage(List<Finding> findings, String message) {

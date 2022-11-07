@@ -9,8 +9,12 @@ import mxnet as mx
 <#list configurations as config>
 import CNNCreator_${config.instanceName}
 import CNNDataLoader_${config.instanceName}
-import CNNSupervisedTrainer_${config.instanceName}
 from CNNDatasets_${config.instanceName} import RetrainingConf
+import CNNDataCleaner_${config.instanceName}
+import CNNSupervisedTrainer_${config.instanceName}
+<#if (config.optimizer)?? && (config.optimizerName == "hpo")>
+import CNNHyperparameterOptimization_${config.instanceName}
+</#if>
 </#list>
 
 if __name__ == "__main__":
@@ -22,14 +26,109 @@ if __name__ == "__main__":
 <#list configurations as config>
     ${config.instanceName}_creator = CNNCreator_${config.instanceName}.CNNCreator_${config.instanceName}()
     ${config.instanceName}_creator.validate_parameters()
-    ${config.instanceName}_loader = CNNDataLoader_${config.instanceName}.CNNDataLoader_${config.instanceName}()
+    ${config.instanceName}_cleaner = CNNDataCleaner_${config.instanceName}.CNNDataCleaner_${config.instanceName}()
+    ${config.instanceName}_loader = CNNDataLoader_${config.instanceName}.CNNDataLoader_${config.instanceName}(
+        ${config.instanceName}_cleaner
+    )
+
+    prev_dataset = None
+    retraining_conf = ${config.instanceName}_loader.load_retraining_conf()
+    
+<#--  Hyperparameter Optimization Code  -->
+<#if (config.optimizer)?? && (config.optimizerName == "hpo")>
+    dataset = retraining_conf.changes[0]
+    ${config.instanceName}_creator.dataset = dataset
+
+    ${config.instanceName}_hyperparameter_tuner = CNNHyperparameterOptimization_${config.instanceName}.CNNHyperparameterOptimization_${config.instanceName}(
+        ${config.instanceName}_loader,
+        ${config.instanceName}_creator
+    )
+    
+    ${config.instanceName}_hyperparameter_tuner.hyperparameter_optimization(
+    <#if (config.batchSize)??>
+        batch_size=${config.batchSize},
+    </#if>
+    <#if (config.numEpoch)??>
+        num_epoch=${config.numEpoch},
+    </#if>
+    <#if (config.context)??>
+        context='${config.context}',
+    </#if>
+    <#if (config.cleaning)??>
+                cleaning='${config.cleaningName}',
+                cleaning_params={
+                <#if (config.cleaningParameters)??>
+                <#list config.cleaningParameters?keys as param>
+                    '${param}': ${config.cleaningParameters[param]}<#sep>,
+                </#list>
+                </#if>
+                },
+            </#if>
+    <#if (config.dataImbalance)??>
+        data_imbalance='${config.dataImbalanceName}',
+        data_imbalance_params={
+        <#if (config.dataImbalanceParameters)??>
+        <#list config.dataImbalanceParameters?keys as param>
+            <#if param == "rotation_angle">
+            '${param}': [<#list config.dataImbalanceParameters[param] as lr>${lr}<#if lr?has_next>, </#if></#list>],
+            <#else>
+            '${param}': ${config.dataImbalanceParameters[param]}<#sep>,
+            </#if>
+        </#list>
+        </#if>
+        },
+    </#if>
+    <#if (config.dataSplitting)??>
+        data_splitting='${config.dataSplittingName}',
+        data_splitting_params={
+        <#if (config.dataSplittingParameters)??>
+        <#list config.dataSplittingParameters?keys as param>
+            <#if param == "tvt_ratio">
+            '${param}': [<#list config.dataSplittingParameters[param] as r>${r}<#if r?has_next>, </#if></#list>],
+            <#else>
+            '${param}': ${config.dataSplittingParameters[param]}<#sep>,
+            </#if>
+        </#list>
+        </#if>
+        },
+    </#if>
+    <#if (config.optimizer)??>
+        optimizer='${config.optimizerName}',
+        optimizer_params={
+        <#if (config.optimizerParameters)??>
+        <#if (config.optimizerParameters['learning_rate_range'])??>
+            'learning_rate_range': [<#list config.optimizerParameters['learning_rate_range'] as lr>${lr}<#if lr?has_next>, </#if></#list>],
+        </#if>
+        <#if (config.optimizerParameters['weight_decay_range'])??>
+            'weight_decay_range': [<#list config.optimizerParameters['weight_decay_range'] as wd>${wd}<#if wd?has_next>, </#if></#list>],
+        </#if>
+        <#if (config.optimizerParameters['momentum_range'])??>
+            'momentum_range': [<#list config.optimizerParameters['momentum_range'] as m>${m}<#if m?has_next>, </#if></#list>],
+        </#if>
+        <#if (config.optimizerParameters['optimizer_options'])??>
+            'optimizer_options': [<#list config.optimizerParameters['optimizer_options'] as t>"${t}"<#if t?has_next>, </#if></#list>],
+        </#if>
+        <#if (config.optimizerParameters['with_cleaning'])??>
+            'with_cleaning': ${config.optimizerParameters['with_cleaning']},
+        </#if>
+        <#if (config.optimizerParameters['ntrials'])??>
+            'ntrials': ${config.optimizerParameters['ntrials']}<#sep>,
+        </#if>
+        </#if>
+        },
+    </#if>
+        dataset=dataset,
+        test_dataset=retraining_conf.testing,
+        val_dataset=retraining_conf.validating
+    )
+
+<#--  Supervised Trainer Code  -->
+<#else>
     ${config.instanceName}_trainer = CNNSupervisedTrainer_${config.instanceName}.CNNSupervisedTrainer_${config.instanceName}(
         ${config.instanceName}_loader,
         ${config.instanceName}_creator
     )
 
-    prev_dataset = None
-    retraining_conf = ${config.instanceName}_loader.load_retraining_conf()
     for dataset in retraining_conf.changes:
         ${config.instanceName}_creator.dataset = dataset
         if(dataset.retraining):
@@ -120,6 +219,44 @@ if __name__ == "__main__":
             <#if (config.shuffleData)??>
                 shuffle_data=${config.shuffleData?string("True","False")},
             </#if>
+            <#if (config.cleaning)??>
+                cleaning='${config.cleaningName}',
+                cleaning_params={
+                <#if (config.cleaningParameters)??>
+                <#list config.cleaningParameters?keys as param>
+                    '${param}': ${config.cleaningParameters[param]}<#sep>,
+                </#list>
+                </#if>
+                },
+            </#if>
+            <#if (config.dataImbalance)??>
+                data_imbalance='${config.dataImbalanceName}',
+                data_imbalance_params={
+                <#if (config.dataImbalanceParameters)??>
+                <#list config.dataImbalanceParameters?keys as param>
+                    <#if param == "rotation_angle">
+                    '${param}': [<#list config.dataImbalanceParameters[param] as lr>${lr}<#if lr?has_next>, </#if></#list>],
+                    <#else>
+                    '${param}': ${config.dataImbalanceParameters[param]}<#sep>,
+                    </#if>
+                </#list>
+                </#if>
+                },
+            </#if>
+            <#if (config.dataSplitting)??>
+                data_splitting='${config.dataSplittingName}',
+                data_splitting_params={
+                <#if (config.dataSplittingParameters)??>
+                <#list config.dataSplittingParameters?keys as param>
+                    <#if param == "tvt_ratio">
+                    '${param}': [<#list config.dataSplittingParameters[param] as r>${r}<#if r?has_next>, </#if></#list>],
+                    <#else>
+                    '${param}': ${config.dataSplittingParameters[param]}<#sep>,
+                    </#if>
+                </#list>
+                </#if>
+                },
+            </#if>
             <#if (config.clipGlobalGradNorm)??>
                 clip_global_grad_norm=${config.clipGlobalGradNorm},
             </#if>
@@ -172,7 +309,8 @@ if __name__ == "__main__":
             )
         else: 
             logger.info("Skipped training of dataset %s. Training is not necessary", dataset.id)
-        
+
         prev_dataset = dataset
+</#if>
 
 </#list>

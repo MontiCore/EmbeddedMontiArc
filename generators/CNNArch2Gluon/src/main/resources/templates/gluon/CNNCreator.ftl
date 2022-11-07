@@ -30,11 +30,11 @@ from CNNDatasets_${tc.fullArchitectureName} import Dataset, TrainingDataset
 log = logging.getLogger(__name__)
 
 class ${tc.fileNameWithoutEnding}: # pylint: disable=invalid-name
-    _model_basedir_ = pathlib.Path("model", "${tc.componentName}")
 
     def __init__(self):
         self.weight_initializer = mx.init.Normal()
         self.networks = {}
+        self._model_basedir_ = pathlib.Path("model", "${tc.componentName}")
         self.dataset: TrainingDataset = None
         <#if tc.containsAdaNet()>
         self.dataClass = {}

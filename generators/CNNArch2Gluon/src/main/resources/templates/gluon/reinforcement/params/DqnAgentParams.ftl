@@ -16,7 +16,7 @@
 },
 </#if>
 </#if>
-<#if (config.optimizer)??>
+<#if (config.optimizer)?? && (config.optimizerName) != "hpo">
         'optimizer': '${config.optimizerName}',
         'optimizer_params': {
 <#list config.optimizerParameters?keys as param>

@@ -135,11 +135,16 @@ public class CNNTrain2Gluon extends CNNTrainGenerator {
                 String adamWContent = templateConfiguration.processTemplate(ftlContext, "Optimizer/AdamW.ftl");
                 fileContents.add(new FileContent(adamWContent, "AdamW.py"));
             }
+
+            if (trainingConfiguration.getOptimizerName().get().equals(new String("hpo"))) {
+                String cnnHPOTemplateContent = templateConfiguration.processTemplate(ftlContext, "CNNHyperparameterOptimization.ftl");
+                fileContents.add(new FileContent(cnnHPOTemplateContent, "CNNHyperparameterOptimization_" + getInstanceName() + ".py"));
+            }
         }
 
         if (trainingConfiguration.isSupervisedLearning()) {
             String cnnTrainTrainerTemplateContent = templateConfiguration.processTemplate(ftlContext, "CNNTrainer.ftl");
-            fileContents.add(new FileContent(cnnTrainTrainerTemplateContent, "CNNTrainer_" + getInstanceName() + ".py"));
+            fileContents.add(new FileContent(cnnTrainTrainerTemplateContent, "CNNTrainer_" + getInstanceName() + ".py")); 
 
         } else if (trainingConfiguration.isGanLearning()) {
 
