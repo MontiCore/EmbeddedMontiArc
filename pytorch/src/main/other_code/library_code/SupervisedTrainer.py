@@ -6,6 +6,7 @@ import torch
 import torch.nn as nn
 import torch.nn.functional as F
 
+
 class SupervisedTrainer():
 
     def __init__(self, network, trainData, schemaApi, model_dir, model_prefix):
@@ -18,7 +19,7 @@ class SupervisedTrainer():
     def execute(self):
         criterion = translate_loss_name(self._schemaApi_.getLoss())
         optimizer = translate_optim_name(list(self._network_.parameters()), self._schemaApi_.getoptimizer())
-        begin_epoch= 0
+        begin_epoch = 0
         self._network_.train()
         num_epoch = self._schemaApi_.getNum_epoch()
         if os.path.isdir(self._model_dir_):
@@ -32,7 +33,7 @@ class SupervisedTrainer():
         epoch_loss = 0
         epoch_accuracy = 0
 
-        for epoch in range(num_epoch):  
+        for epoch in range(num_epoch):
             train_losses = []
             train_accuracy = []
             for i, data in enumerate(self._train_loader_, 0):
@@ -42,26 +43,28 @@ class SupervisedTrainer():
                 optimizer.zero_grad()
                 # forward + backward + optimize
                 outputs = self._network_(inputs)
-                
+
                 loss = criterion(outputs, labels)
                 train_losses.append(loss)
-                
+
                 _, predicted = torch.max(outputs.data, 1)
                 train_accuracy.append(torch.tensor((torch.sum(predicted == labels).item() / len(predicted))))
                 loss.backward()
                 optimizer.step()
             epoch_loss = torch.stack(train_losses).mean().item()
             epoch_accuracy = torch.stack(train_accuracy).mean().item()
-            print(f'Epoch:{epoch+1} Train Loss:{epoch_loss:.4f} Train Accuracy:{100*epoch_accuracy:.2f}%')
+            print(f'Epoch:{epoch + 1} Train Loss:{epoch_loss:.4f} Train Accuracy:{100 * epoch_accuracy:.2f}%')
 
-        print(f'Training Loss and accuracy after  {num_epoch} epochs,  Loss:{epoch_loss:.4f} , Accuracy:{100 *epoch_accuracy:.2f}%')
-        #Saving model according to number of epoch
+        print(
+            f'Training Loss and accuracy after  {num_epoch} epochs,  Loss:{epoch_loss:.4f} , Accuracy:{100 * epoch_accuracy:.2f}%')
+        # Saving model according to number of epoch
         torch.save({
             'epoch': str(num_epoch + begin_epoch),
             'model_state_dict': self._network_.state_dict(),
             'optimizer_state_dict': optimizer.state_dict(),
-            'loss': epoch_loss}, self._model_dir_ + (self._model_prefix_ + "_" + str(num_epoch + begin_epoch)+ ".pth"))
-        #Saving model in .pt format for prediction in c++
-        model_scripted = torch.jit.script(self._network_) # Export to TorchScript
-        model_scripted.save(self._model_dir_+'model_cpp.pt')
-        return self._network_ , epoch_accuracy, epoch_loss
+            'loss': epoch_loss}, self._model_dir_ + (self._model_prefix_ + "_" + str(num_epoch + begin_epoch) + ".pth"))
+        # Saving model in .pt format for prediction in c++
+        model_scripted = torch.jit.script(self._network_)  # Export to TorchScript
+        network_path = self._model_dir_ + 'model_cpp.pt'
+        model_scripted.save(network_path)
+        return network_path, epoch_accuracy, epoch_loss

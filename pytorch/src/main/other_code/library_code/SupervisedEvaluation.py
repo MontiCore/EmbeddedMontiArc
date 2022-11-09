@@ -5,7 +5,7 @@ import torch.nn.functional as F
 class SupervisedEvaluation():
 
     def __init__(self, trained_model, test_loader):
-        self._trained_model_ = trained_model
+        self._trained_model_ = torch.jit.load(trained_model)
         self._test_loader_ = test_loader
 
     def execute(self):
