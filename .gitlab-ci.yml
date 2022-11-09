@@ -58,6 +58,9 @@ TestEMADLMavenPlugin:
   script:
   - mv /mxnet/build/libmxnet.so /mxnet/build/libmxnet.a /usr/lib/
   - cd emadl-maven-plugin
+  - python3 -m pip install -U pip
+  - python3 -m pip install scikit-image
+  - python3 -m pip install opencv-python
   - mvn dependency:resolve emadl:train -s settings.xml -U 
 
 TestMnistWithAdaNet:
