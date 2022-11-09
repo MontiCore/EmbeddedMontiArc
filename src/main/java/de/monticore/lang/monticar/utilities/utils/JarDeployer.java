@@ -1,5 +1,6 @@
 package de.monticore.lang.monticar.utilities.utils;
 
+import de.monticore.lang.monticar.utilities.artifactdeployer.POMGenerator;
 import org.apache.maven.shared.invoker.*;
 
 import java.io.File;

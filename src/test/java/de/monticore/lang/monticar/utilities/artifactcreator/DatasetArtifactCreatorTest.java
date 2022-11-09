@@ -12,8 +12,10 @@ import org.powermock.modules.junit4.PowerMockRunner;
 
 import java.io.File;
 import java.io.IOException;
+import java.util.HashMap;
 import java.util.LinkedList;
 import java.util.List;
+import java.util.Map;
 import java.util.jar.JarFile;
 
 import static org.junit.Assert.*;
@@ -72,19 +74,18 @@ public class DatasetArtifactCreatorTest {
     JarFile jar = new JarFile(artifact);
 
     assertTrue(artifact.exists());
-    assertEquals(3, jar.size());
+    assertEquals(5, jar.size());
   }
 
   @Test
   public void testGetDatasetLocations() {
     File datasetPath = new File(getClass().getClassLoader().getResource("dataset/episodicMemorySimple").getFile());
-    List<FileLocation> datasetLocations = DatasetArtifactCreator.getDatasetLocations(datasetPath);
+    Map<String, FileLocation> datasetLocations = DatasetArtifactCreator.getDatasetLocations(datasetPath);
 
     assertEquals(2, datasetLocations.size());
 
-    List<String> jarLocations = new LinkedList<String>() {{add(datasetLocations.get(0).getJarLocation()); add(datasetLocations.get(1).getJarLocation());}};
-    assertTrue(jarLocations.stream().anyMatch(l -> StringUtils.equals(l.replace('\\', '/'), "training_data/train.h5")));
-    assertTrue(jarLocations.stream().anyMatch(l -> StringUtils.equals(l.replace('\\', '/'), "training_data/test.h5")));
+    assertTrue(StringUtils.equals(datasetLocations.get("train.h5").getJarLocation().replace('\\', '/'), "training_data/train.h5"));
+    assertTrue(StringUtils.equals(datasetLocations.get("test.h5").getJarLocation().replace('\\', '/'), "training_data/test.h5"));
   }
 
 

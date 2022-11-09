@@ -3,6 +3,7 @@ package de.monticore.lang.monticar.utilities.mojos;
 import de.monticore.lang.monticar.utilities.models.Constants;
 import de.monticore.lang.monticar.utilities.models.StorageInformation;
 import org.apache.maven.execution.MavenSession;
+import org.apache.maven.model.Dependency;
 import org.apache.maven.model.DeploymentRepository;
 import org.apache.maven.plugin.AbstractMojo;
 import org.apache.maven.plugin.BuildPluginManager;
@@ -22,6 +23,7 @@ import org.eclipse.aether.resolution.VersionRangeResult;
 import java.io.File;
 import java.nio.file.Paths;
 import java.util.Collections;
+import java.util.List;
 
 public abstract class BaseMojo extends AbstractMojo {
 
@@ -83,6 +85,10 @@ public abstract class BaseMojo extends AbstractMojo {
 
   public DeploymentRepository getRepository() {
     return mavenProject.getDistributionManagement().getRepository();
+  }
+
+  public List<Dependency> getDependencies() {
+    return mavenProject.getDependencies();
   }
 
   private RemoteRepository getRemoteRepository() {

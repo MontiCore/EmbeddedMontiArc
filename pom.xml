@@ -11,7 +11,7 @@
 
     <groupId>de.monticore.lang.monticar.utilities</groupId>
     <artifactId>emadl-maven-plugin</artifactId>
-    <version>0.0.6-SNAPSHOT</version>
+    <version>0.0.8-SNAPSHOT</version>
     <packaging>maven-plugin</packaging>
 
     <name>Process Automation of EMADL Projects</name>
@@ -20,6 +20,7 @@
 
     <properties>
         <MavenStreamTest.version>0.0.29-SNAPSHOT</MavenStreamTest.version>
+        <cnnarch-generator.version>0.4.12-SNAPSHOT</cnnarch-generator.version>
         
         <montisim.hardware_emulator.version>2.1.0-SNAPSHOT</montisim.hardware_emulator.version>
 
@@ -86,6 +87,14 @@
             <version>${montisim.hardware_emulator.version}</version>
         </dependency>
 
+        <!-- https://mvnrepository.com/artifact/com.fasterxml.jackson.core/jackson-databind -->
+        <!-- Used to create JSONMetadata of datasets -->
+        <dependency>
+            <groupId>com.fasterxml.jackson.core</groupId>
+            <artifactId>jackson-databind</artifactId>
+            <version>2.13.3</version>
+        </dependency>
+
         <!-- TEST LIBRARIES -->
         <dependency>
             <groupId>junit</groupId>
@@ -105,11 +114,32 @@
             <version>${powermock.version}</version>
             <scope>test</scope>
         </dependency>
+
+        <!-- https://mvnrepository.com/artifact/org.freemarker/freemarker -->
+        <dependency>
+            <groupId>org.freemarker</groupId>
+            <artifactId>freemarker</artifactId>
+            <version>2.3.31</version>
+        </dependency>
     </dependencies>
 
 
     <!-- ........... BUILD ................................... -->
     <build>
+
+        <!--
+        This is a small hack to inject the version number (defined in the pom.xml) to the application:
+        https://stackoverflow.com/questions/11740618/is-there-a-way-to-use-maven-property-in-java-class-during-compilation
+        -->
+        <resources>
+            <resource>
+                <directory>src/main/resources</directory>
+                <filtering>true</filtering>
+                <includes>
+                    <include>templates/*.ftl</include>
+                </includes>
+            </resource>
+        </resources>
         <plugins>
             <plugin>
                 <groupId>org.apache.maven.plugins</groupId>
@@ -158,7 +188,7 @@
                                 <artifactItem>
                                     <groupId>de.monticore.lang.monticar</groupId>
                                     <artifactId>cnnarch-generator</artifactId>
-                                    <version>0.4.10-SNAPSHOT</version>
+                                    <version>${cnnarch-generator.version}</version>
                                     <type>jar</type>
                                     <overWrite>true</overWrite>
                                     <outputDirectory>${project.build.directory}/classes</outputDirectory>
