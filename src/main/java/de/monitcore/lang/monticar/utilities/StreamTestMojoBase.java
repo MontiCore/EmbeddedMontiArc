@@ -40,6 +40,7 @@ import org.apache.maven.plugin.MojoFailureException;
 import org.apache.maven.plugins.annotations.Parameter;
 
 import java.io.File;
+import java.nio.charset.Charset;
 import java.nio.file.Paths;
 import java.time.LocalDateTime;
 import java.time.format.DateTimeFormatter;
@@ -255,6 +256,12 @@ public class StreamTestMojoBase extends AbstractMojo {
     protected boolean checkForExecution() throws MojoExecutionException {
         return true;
     }
+
+    protected Charset getCharset() {
+        return Charset.forName("utf-8");
+    }
+
+    
 
 
     //</editor-fold>

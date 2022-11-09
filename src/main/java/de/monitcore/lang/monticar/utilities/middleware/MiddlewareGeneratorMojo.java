@@ -172,9 +172,9 @@ public class MiddlewareGeneratorMojo extends MiddlewareMojoBase {
         String testHash = SearchFiles.hashDirFiles(this.getPathTest());
         String inputHash = getInputsHash();
         try {
-            FileUtils.write(hashFileMain(), mainHash, false);
-            FileUtils.write(hashFileTest(), testHash, false);
-            FileUtils.write(hashFileInputs(), inputHash, false);
+            FileUtils.write(hashFileMain(), mainHash, this.getCharset(), false);
+            FileUtils.write(hashFileTest(), testHash, this.getCharset(), false);
+            FileUtils.write(hashFileInputs(), inputHash, this.getCharset(), false);
         } catch (IOException e) {
             e.printStackTrace();
             throw new MojoExecutionException("Failed to create hash files for "+MojoName());
@@ -202,9 +202,9 @@ public class MiddlewareGeneratorMojo extends MiddlewareMojoBase {
         String newTestHash = SearchFiles.hashDirFiles(this.getPathTest());
         String newInputHash = getInputsHash();
         try {
-            oldMainHash = FileUtils.readFileToString(hmain);
-            oldTestHash = FileUtils.readFileToString(htest);
-            oldInputHash = FileUtils.readFileToString(hinput);
+            oldMainHash = FileUtils.readFileToString(hmain, this.getCharset());
+            oldTestHash = FileUtils.readFileToString(htest, this.getCharset());
+            oldInputHash = FileUtils.readFileToString(hinput, this.getCharset());
         } catch (IOException e) {
             e.printStackTrace();
             throw new MojoExecutionException("Can't read old hash files");
