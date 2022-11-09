@@ -2,18 +2,57 @@ deploy-mnist-dataset:
   image: maven:3.6-jdk-8
   script:
     - cd datasets/mnist
-    - mvn emadl:deploy-dataset -s ci_settings.xml
+    - mvn emadl:deploy-dataset -s ../ci_settings.xml
   only:
     - master
-
 
 install-mnist-dataset:
   image: maven:3.6-jdk-8
   script:
     - cd datasets/mnist
-    - mvn emadl:install-dataset -s ci_settings.xml
-  except:
+    - mvn emadl:install-dataset -s ../ci_settings.xml
+
+deploy-mnist-base-dataset:
+  image: maven:3.6-jdk-8
+  script:
+    - cd datasets/mnist_base
+    - mvn emadl:deploy-dataset -s ../ci_settings.xml
+  only:
     - master
+
+install-mnist-base-dataset:
+  image: maven:3.6-jdk-8
+  script:
+    - cd datasets/mnist_base
+    - mvn emadl:install-dataset -s ../ci_settings.xml
+
+deploy-mnist-extension-dataset:
+  image: maven:3.6-jdk-8
+  script:
+    - cd datasets/mnist_extension
+    - mvn emadl:deploy-dataset -s ../ci_settings.xml
+  only:
+    - master
+
+install-mnist-extension-dataset:
+  image: maven:3.6-jdk-8
+  script:
+    - cd datasets/mnist_extension
+    - mvn emadl:install-dataset -s ../ci_settings.xml
+
+deploy-mnist-separated-dataset:
+  image: maven:3.6-jdk-8
+  script:
+    - cd datasets/mnist_separated
+    - mvn emadl:deploy-dataset -s ../ci_settings.xml
+  only:
+    - master
+
+install-mnist-separated-dataset:
+  image: maven:3.6-jdk-8
+  script:
+    - cd datasets/mnist_separated
+    - mvn emadl:install-dataset -s ../ci_settings.xml
 
 # VAE
 deploy-vae-mnist-dataset:
