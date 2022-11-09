@@ -1,6 +1,7 @@
 package de.monticore.lang.monticar.utilities.artifactcreator;
 
 import com.google.common.base.Preconditions;
+import de.monticore.lang.monticar.utilities.models.DatasetsConfiguration;
 import de.monticore.lang.monticar.utilities.models.StorageInformation;
 import org.apache.commons.lang3.StringUtils;
 
@@ -34,9 +35,13 @@ abstract class ArtifactCreator {
     return String.format("%s%s%s%s%s.jar", System.getProperty("user.dir"), File.separator, tempDirectory, File.separator, jarName);
   }
 
-  public static void checkStorageInformation(StorageInformation storageInformation, String storingObject) {
+  public static void checkStorageInformationWithoutPath(StorageInformation storageInformation, String storingObject) {
     Preconditions.checkArgument(!StringUtils.isEmpty(storageInformation.getGroupId()), "Group ID of " + storingObject + " artifact must be specified.");
     Preconditions.checkArgument(!StringUtils.isEmpty(storageInformation.getArtifactId()), "Artifact ID of " + storingObject + " artifact must be specified.");
+  }
+
+  public static void checkStorageInformation(StorageInformation storageInformation, String storingObject){
+    checkStorageInformationWithoutPath(storageInformation, storingObject);
     Preconditions.checkNotNull(storageInformation.getPath(), "Path of " + storingObject + " must be specified.");
   }
 

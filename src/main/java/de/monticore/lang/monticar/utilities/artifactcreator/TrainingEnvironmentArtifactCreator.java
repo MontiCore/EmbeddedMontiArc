@@ -17,7 +17,7 @@ public class TrainingEnvironmentArtifactCreator extends ArtifactCreator {
       throws IOException {
     List<FileLocation> fileLocations = new LinkedList<>();
     if (datasetToStore != null)
-      fileLocations.addAll(DatasetArtifactCreator.getDatasetLocations(datasetToStore.getPath()));
+      fileLocations.addAll(DatasetArtifactCreator.getDatasetLocations(datasetToStore.getPath()).values());
     if (modelToStore != null)
       fileLocations.addAll(ModelArtifactCreator.getFileLocations(modelToStore.getPath(), new EMADLParser()));
 

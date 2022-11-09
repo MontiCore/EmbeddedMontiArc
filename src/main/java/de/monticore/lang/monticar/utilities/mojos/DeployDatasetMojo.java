@@ -2,6 +2,8 @@ package de.monticore.lang.monticar.utilities.mojos;
 
 import de.monticore.lang.monticar.utilities.artifactcreator.DatasetArtifactCreator;
 import de.monticore.lang.monticar.utilities.artifactdeployer.ArtifactDeployer;
+import de.monticore.lang.monticar.utilities.models.Dataset;
+import de.monticore.lang.monticar.utilities.models.DatasetsConfiguration;
 import de.monticore.lang.monticar.utilities.models.StorageInformation;
 import de.monticore.lang.monticar.utilities.utils.JarClassifierEnum;
 import org.apache.maven.plugin.MojoExecutionException;
@@ -13,6 +15,7 @@ import org.apache.maven.shared.invoker.MavenInvocationException;
 import java.io.File;
 import java.io.IOException;
 import java.util.Arrays;
+import java.util.stream.Collectors;
 
 /**
  * Creates a JAR containing a dataset and deploys it to the remote repository.
@@ -38,22 +41,45 @@ public class DeployDatasetMojo extends BaseMojo {
   @Parameter
   private StorageInformation datasetToStore;
 
+  @Parameter
+  private DatasetsConfiguration datasetsToStore;
+
   public void execute() throws MojoExecutionException, MojoFailureException {
     this.mkTmpDir();
-    String newestVersion = this.getNewestVersion(datasetToStore);
-    datasetToStore.setVersion(newestVersion);
-
     File jarFile;
-    try {
-      getLog().info(String.format("STARTING creating Jar for dataset in directory %s", this.datasetToStore.getPath()));
-      jarFile = DatasetArtifactCreator.createArtifact(this.datasetToStore, this.getPathTmpOut());
-      getLog().info("FINISHED creating Jar for dataset");
 
-      ArtifactDeployer.deployArtifact(jarFile.getAbsolutePath(), this.datasetToStore, getRepository(), JarClassifierEnum.DATASET,
-          getMavenSession().getRequest().getUserSettingsFile());
-    }
-    catch (IOException | MavenInvocationException e) {
-      throw new MojoFailureException(Arrays.toString(e.getStackTrace()));
+    if(datasetToStore != null){
+      String newestVersion = this.getNewestVersion(datasetToStore);
+      datasetToStore.setVersion(newestVersion);
+
+      try {
+        getLog().info(String.format("STARTING creating Jar for dataset in directory %s", this.datasetToStore.getPath()));
+        jarFile = DatasetArtifactCreator.createArtifact(this.datasetToStore, this.getPathTmpOut());
+        getLog().info("FINISHED creating Jar for dataset");
+
+        ArtifactDeployer.deployArtifact(jarFile.getAbsolutePath(), this.datasetToStore, getRepository(), JarClassifierEnum.DATASET,
+                getMavenSession().getRequest().getUserSettingsFile());
+      }
+      catch (IOException | MavenInvocationException e) {
+        throw new MojoFailureException(Arrays.toString(e.getStackTrace()));
+      }
+    } else if (this.datasetsToStore != null) {
+      String newestVersion = this.getNewestVersion(this.datasetsToStore);
+      this.datasetsToStore.setVersion(newestVersion);
+
+      try {
+        getLog().info(String.format("STARTING creating Jar for the following datasets: %s", String.join(", ", datasetsToStore.getDatasets().stream().map(Dataset::getId).collect(Collectors.toList()))));
+        jarFile = DatasetArtifactCreator.createArtifact(this.datasetsToStore, this.getPathTmpOut());
+        getLog().info("FINISHED creating Jar for dataset(s)");
+
+        ArtifactDeployer.deployArtifact(jarFile.getAbsolutePath(), this.datasetsToStore, getRepository(), JarClassifierEnum.DATASET,
+                getMavenSession().getRequest().getUserSettingsFile(), getDependencies());
+      }
+      catch (IOException | MavenInvocationException e) {
+        throw new MojoFailureException(Arrays.toString(e.getStackTrace()));
+      }
+    } else {
+      throw new MojoFailureException("Neither datasetToStore nor datasetsToStore are defined.");
     }
 
   }

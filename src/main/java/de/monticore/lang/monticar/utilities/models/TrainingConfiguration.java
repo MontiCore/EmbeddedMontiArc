@@ -19,6 +19,16 @@ public class TrainingConfiguration {
 
   private String useDgl;
 
+  private String forceRun;
+
+  public String getForceRun() {
+    return forceRun;
+  }
+
+  public void setForceRun(String forceRun) {
+    this.forceRun = forceRun;
+  }
+
   private Backend backend;
 
   private GeneratorEnum generator;
@@ -53,5 +63,37 @@ public class TrainingConfiguration {
 
   public GeneratorEnum getGenerator() {
     return generator;
+  }
+
+  public void setPathToPython(File pathToPython) {
+    this.pathToPython = pathToPython;
+  }
+
+  public void setCustomFilesPath(File customFilesPath) {
+    this.customFilesPath = customFilesPath;
+  }
+
+  public void setPathToProject(File pathToProject) {
+    this.pathToProject = pathToProject;
+  }
+
+  public void setPathToTest(File pathToTest) {
+    this.pathToTest = pathToTest;
+  }
+
+  public void setModelToTrain(String modelToTrain) {
+    this.modelToTrain = modelToTrain;
+  }
+
+  public void setUseDgl(String useDgl) {
+    this.useDgl = useDgl;
+  }
+
+  public void setBackend(Backend backend) {
+    this.backend = backend;
+  }
+
+  public void setGenerator(GeneratorEnum generator) {
+    this.generator = generator;
   }
 }

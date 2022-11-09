@@ -38,8 +38,6 @@ public class ImportMojo extends BaseMojo {
           e.printStackTrace();
         }
       }
-
-      System.out.println(dependencies);
     }
 
   }

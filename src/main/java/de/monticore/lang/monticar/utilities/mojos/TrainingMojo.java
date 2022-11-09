@@ -2,6 +2,7 @@
 package de.monticore.lang.monticar.utilities.mojos;
 
 import de.monticore.lang.monticar.utilities.models.TrainingConfiguration;
+import de.monticore.lang.monticar.utilities.utils.PropertyReader;
 import org.apache.maven.plugin.MojoExecutionException;
 import org.apache.maven.plugin.MojoFailureException;
 import org.apache.maven.plugins.annotations.Mojo;
@@ -19,11 +20,12 @@ public class TrainingMojo extends TrainingConfigMojo {
 
   @Override
   public void execute() throws MojoExecutionException, MojoFailureException {
+    PropertyReader p = new PropertyReader();
     executeMojo(
         plugin(
             groupId("de.monticore.lang.monticar.utilities"),
             artifactId("maven-streamtest"),
-            version("0.0.29-SNAPSHOT")
+            version(p.getProperty("MavenStreamTest.version"))
         ),
         goal("streamtest-generator"),
         configuration(getConfigElements().toArray(new Element[0])),
@@ -56,6 +58,8 @@ public class TrainingMojo extends TrainingConfigMojo {
       elements.add(element(name("customFilesPath"), trainingConfig.getCustomFilesPath().getAbsolutePath()));
     if (trainingConfig.getUseDgl() != null)
       elements.add(element(name("useDgl"), trainingConfig.getUseDgl()));
+    if (trainingConfig.getForceRun() != null)
+      elements.add(element(name("forceRun"), trainingConfig.getForceRun()));
     return elements;
   }
 

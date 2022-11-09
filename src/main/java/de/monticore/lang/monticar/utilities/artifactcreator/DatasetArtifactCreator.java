@@ -1,16 +1,20 @@
 package de.monticore.lang.monticar.utilities.artifactcreator;
 
+import de.monticore.lang.monticar.utilities.models.Dataset;
+import de.monticore.lang.monticar.utilities.models.DatasetsConfiguration;
 import de.monticore.lang.monticar.utilities.models.FileLocation;
 import de.monticore.lang.monticar.utilities.models.StorageInformation;
 import de.monticore.lang.monticar.utilities.utils.JarCreator;
+import de.monticore.lang.monticar.utilities.utils.JsonCreator;
 
 import java.io.File;
 import java.io.IOException;
-import java.util.LinkedList;
-import java.util.List;
-import java.util.Objects;
+import java.lang.reflect.Array;
+import java.nio.file.Files;
+import java.util.*;
 import java.util.jar.Attributes;
 import java.util.jar.Manifest;
+import java.util.stream.Collectors;
 
 public class DatasetArtifactCreator extends ArtifactCreator {
 
@@ -22,13 +26,31 @@ public class DatasetArtifactCreator extends ArtifactCreator {
 
     Manifest manifest = createManifest(datasetGroupId, datasetArtifactId, datasetToStore.getVersion(), getAdditionalAttributes());
     String jarFileName = createJarFileName(tempDirectory, "dataset");
-    List<FileLocation> datasetLocations = getDatasetLocations(datasetPath);
+    Map<String, FileLocation> datasetLocations = getDatasetLocations(datasetPath);
+
+    if(datasetLocations.isEmpty()) {
+      throw new RuntimeException("No dataset found. You have to provide at least one dataset.");
+    }
 
     return JarCreator.createArtifact(jarFileName, manifest, datasetLocations);
   }
 
-  protected static List<FileLocation> getDatasetLocations(File datasetPath) {
-    List<FileLocation> datasetLocations = new LinkedList<>();
+  public static File createArtifact(DatasetsConfiguration datasetsToStore, String tempDirectory) throws IOException {
+    checkStorageInformationWithoutPath(datasetsToStore, "dataset");
+    String datasetGroupId = datasetsToStore.getGroupId();
+    String datasetArtifactId = datasetsToStore.getArtifactId();
+
+    Manifest manifest = createManifest(datasetGroupId, datasetArtifactId, datasetsToStore.getVersion(), getAdditionalAttributes());
+    String jarFileName = createJarFileName(tempDirectory, "dataset");
+    Map<String, FileLocation> datasetLocations = getDatasetLocations(datasetsToStore.getDatasets());
+    JsonCreator.createJSONMetadata(datasetLocations, datasetsToStore.getDatasets());
+
+    return JarCreator.createArtifact(jarFileName, manifest, datasetLocations);
+  }
+
+
+  protected static Map<String, FileLocation> getDatasetLocations(File datasetPath) {
+    HashMap<String, FileLocation> datasetLocations = new HashMap<>();
 
     for (File dataset : Objects.requireNonNull(datasetPath.listFiles())) {
       String datasetName = dataset.getName();
@@ -39,12 +61,45 @@ public class DatasetArtifactCreator extends ArtifactCreator {
         fileLocation.setJarLocation(String.format("training_data%s%s", File.separator, dataset.getName()));
         fileLocation.setSourceLocation((new File(datasetPath, dataset.getName()).getAbsolutePath()));
 
-        datasetLocations.add(fileLocation);
+        try {
+          fileLocation.setPropertiesLocation(Files.createTempFile("metadata", "").toAbsolutePath().toString());
+        } catch (IOException e) {
+          e.printStackTrace();
+        }
+
+        fileLocation.setMetadataJarLocation(String.format(String.format("data%s%s", File.separator,  datasetName + ".json")));
+
+        datasetLocations.put(dataset.getName(), fileLocation);
       }
     }
 
     return datasetLocations;
   }
+
+  protected static Map<String, FileLocation> getDatasetLocations(List<Dataset> datasets) throws IOException {
+    return datasets.stream().collect(Collectors.toMap(Dataset::getId, (Dataset dataset) -> {
+      FileLocation fileLocation = new FileLocation();
+      fileLocation.setJarLocation(String.format("data%s%s", File.separator, dataset.getId() + getFileExtension(dataset.getPath())));
+      fileLocation.setSourceLocation((new File(dataset.getPath()).getAbsolutePath()));
+      try {
+        fileLocation.setPropertiesLocation(Files.createTempFile("metadata", "").toAbsolutePath().toString());
+      } catch (IOException e) {
+        e.printStackTrace();
+      }
+
+      fileLocation.setMetadataJarLocation(String.format(String.format("data%s%s", File.separator, dataset.getId() + ".json")));
+      return fileLocation;
+    }));
+  }
+
+  public static String getFileExtension(String filePath){
+    if(!filePath.contains(".")){
+      return "";
+    }
+
+    return "." + filePath.substring(filePath.lastIndexOf(".") + 1);
+  }
+
 
   private static Attributes getAdditionalAttributes() {
     Attributes attributes = new Attributes();
