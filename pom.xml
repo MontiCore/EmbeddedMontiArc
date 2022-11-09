@@ -12,9 +12,9 @@
     <url>http://maven.apache.org</url>
 
     <properties>
-        <EMAM2Middleware.version>0.1.3-SNAPSHOT</EMAM2Middleware.version>
-        <EMADLGenerator.version>0.5.6-SNAPSHOT</EMADLGenerator.version>
-        <cnnarch-generator.version>0.4.11-SNAPSHOT</cnnarch-generator.version>
+        <EMAM2Middleware.version>0.1.4-SNAPSHOT</EMAM2Middleware.version>
+        <EMADLGenerator.version>0.5.7-SNAPSHOT</EMADLGenerator.version>
+        <cnnarch-generator.version>0.4.12-SNAPSHOT</cnnarch-generator.version>
         <source.plugin>2.4</source.plugin>
         <!--misc-->
         <project.build.sourceEncoding>UTF-8</project.build.sourceEncoding>
@@ -44,11 +44,34 @@
             <version>2.3.23</version>
         </dependency>
 
+        <!-- https://mvnrepository.com/artifact/org.json/json -->
+        <dependency>
+            <groupId>org.json</groupId>
+            <artifactId>json</artifactId>
+            <version>20220320</version>
+        </dependency>
+
+        <!-- https://mvnrepository.com/artifact/commons-io/commons-io -->
+        <dependency>
+            <groupId>commons-io</groupId>
+            <artifactId>commons-io</artifactId>
+            <version>2.11.0</version>
+        </dependency>
+
+        <!-- https://mvnrepository.com/artifact/commons-codec/commons-codec -->
+        <dependency>
+            <groupId>commons-codec</groupId>
+            <artifactId>commons-codec</artifactId>
+            <version>1.15</version>
+        </dependency>
+
+
         <dependency>
             <groupId>de.monticore.lang.monticar</groupId>
             <artifactId>embedded-montiarc-math-middleware-generator</artifactId>
             <version>${EMAM2Middleware.version}</version>
         </dependency>
+
 
         <dependency>
             <groupId>de.monticore.lang.monticar</groupId>

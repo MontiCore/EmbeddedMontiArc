@@ -1,10 +1,10 @@
 /* (c) https://github.com/MontiCore/monticore */
 package de.monitcore.lang.monticar.utilities;
 
+import de.monitcore.lang.monticar.utilities.tools.ChecksumChecker;
 import de.monitcore.lang.monticar.utilities.tools.SearchFiles;
 import de.monticore.antlr4.MCConcreteParser;
 import de.monticore.ast.ASTNode;
-//import de.monticore.lang.embeddedmontiarc.embeddedmontiarc._symboltable.ComponentSymbol;
 import de.monticore.lang.embeddedmontiarc.embeddedmontiarc._symboltable.cncModel.EMAComponentSymbol;
 import de.monticore.lang.embeddedmontiarc.embeddedmontiarc._symboltable.instanceStructure.EMAComponentInstanceSymbol;
 import de.monticore.lang.embeddedmontiarc.embeddedmontiarc._ast.ASTEMACompilationUnit;
@@ -18,16 +18,21 @@ import de.monticore.lang.monticar.struct._ast.ASTStructCompilationUnit;
 import de.monticore.lang.monticar.struct._symboltable.StructSymbol;
 import de.monticore.lang.tagging._symboltable.TaggingResolver;
 import de.monticore.symboltable.Scope;
+import de.rwth.montisim.commons.utils.json.Json;
 import de.se_rwth.commons.Joiners;
 import de.se_rwth.commons.logging.Log;
 import freemarker.template.TemplateException;
 import org.apache.commons.io.FileUtils;
+import org.apache.commons.io.IOUtils;
+import org.apache.commons.io.filefilter.WildcardFileFilter;
 import org.apache.maven.plugin.MojoExecutionException;
 import org.apache.maven.plugin.MojoFailureException;
 import org.apache.maven.plugins.annotations.Mojo;
+import org.json.JSONObject;
 
-import java.io.File;
-import java.io.IOException;
+import java.io.*;
+import java.nio.charset.Charset;
+import java.nio.file.Path;
 import java.nio.file.Paths;
 import java.util.*;
 
@@ -42,30 +47,13 @@ public class StreamTestGeneratorMojo extends StreamTestMojoBase {
     @Override
     protected void preExecution() throws MojoExecutionException, MojoFailureException {
         super.preExecution();
-
+        this.generateHashFile();
     }
 
     @Override
     protected void mainExecution() throws MojoExecutionException {
         Log.info("StreamTestGeneratorMojo", "StreamTestGeneratorMojo");
 
-        //Remove old hasfiles
-        File fmain = hashFileMain();
-        if(fmain.exists()){
-            fmain.delete();
-        }
-        File ftest = hashFileTest();
-        if(ftest.exists()){
-            ftest.delete();
-        }
-        File femam = hashEmamFile();
-        if(femam.exists()){
-            femam.delete();
-        }
-        File femadl = hashEmadlFile();
-        if(femadl.exists()){
-            femadl.delete();
-        }
         if(!checkCocosOfInputFiles()){
             throw new MojoExecutionException("Some files are invalid");
         }
@@ -76,7 +64,7 @@ public class StreamTestGeneratorMojo extends StreamTestMojoBase {
             FileUtils.copyDirectory(Paths.get(this.pathTest).toFile(), temam);
         } catch (IOException e) {
             e.printStackTrace();
-            throw new MojoExecutionException("Could not copy files: "+e.getMessage() );
+            throw new MojoExecutionException("Could not copy files: " + e.getMessage());
         }
 
         List<EMAComponentSymbol> toTest = getToTestComponentSymbols(true);
@@ -86,55 +74,81 @@ public class StreamTestGeneratorMojo extends StreamTestMojoBase {
     @Override
     protected void postExecution() throws MojoExecutionException {
         super.postExecution();
-        //Create hash of files
-        String mainHash = SearchFiles.hashDirFiles(this.getPathMain());
-        String testHash = SearchFiles.hashDirFiles(this.getPathTest());
-        String emamHash = SearchFiles.hashDirFiles(this.getPathTmpOutEMAM());
-        try {
-            FileUtils.write(hashFileMain(), mainHash, false);
-            FileUtils.write(hashFileTest(), testHash, false);
-            FileUtils.write(hashEmamFile(), emamHash, false);
-        } catch (IOException e) {
-            e.printStackTrace();
-            throw new MojoExecutionException("Failed to create hash files for "+MojoName());
+
+        File oldHashFile = getHashFile().toFile();
+        System.out.println(oldHashFile.getAbsolutePath());
+        if(oldHashFile.exists() && !oldHashFile.delete()){
+            logError("Deletion of file " + oldHashFile.getName() + " failed.");
         }
+
+        File newHashFile = getNewHashFile().toFile();
+        System.out.println(newHashFile.getAbsolutePath());
+
+        if(!newHashFile.exists()){
+            logError("File " + newHashFile.getName() + " does not exist!");
+        }
+        if(!newHashFile.renameTo(oldHashFile)){
+            logError("Renaming file " + newHashFile.getName() + " to file " + oldHashFile.getName() + " failed.");
+        };
     }
 
     @Override
     protected boolean checkForExecution() throws MojoExecutionException {
-        File hmain = hashFileMain();
-        File htest = hashFileTest();
-        File hemam = hashEmamFile();
-        if(!hmain.exists() || !htest.exists() || !hemam.exists() ){
-            logInfo("Execution necessary: Hashfiles not found.");
-            return true;
-        }
-
-        String oldMainHash = "",oldTestHash = "", oldEmamHash = "", oldCppHash;
-
-        String newMainHash = SearchFiles.hashDirFiles(this.getPathMain());
-        String newTestHash = SearchFiles.hashDirFiles(this.getPathTest());
-        String newEmamHash = SearchFiles.hashDirFiles(this.getPathTmpOutEMAM());
+        JSONObject hashes;
+        JSONObject newHashes;
 
         try {
-            oldMainHash = FileUtils.readFileToString(hmain);
-            oldTestHash = FileUtils.readFileToString(htest);
-            oldEmamHash = FileUtils.readFileToString(hemam);
+            hashes = new JSONObject(getHashFileContent());
+        } catch (FileNotFoundException e){
+            logInfo("Execution necessary: Hashfile not found.");
+            return true;
         } catch (IOException e) {
             e.printStackTrace();
-            throw new MojoExecutionException("Can't read old hash files");
+            throw new MojoExecutionException("Exception while reading old hash files");
         }
 
-        if(newMainHash.equalsIgnoreCase(oldMainHash) && newTestHash.equalsIgnoreCase(oldTestHash) &&
-                newEmamHash.equalsIgnoreCase(oldEmamHash) ){
-            logInfo("Execution of "+this.MojoName().toUpperCase()+" not necessary. No input files changed.");
-            return false;
+        try {
+            newHashes = new JSONObject(getHashFileContent());
+        } catch (FileNotFoundException e){
+            throw new MojoExecutionException("New intermediate hashfile not found, but required for execution.");
+        } catch (IOException e) {
+            e.printStackTrace();
+            throw new MojoExecutionException("Exception while reading the intermediate new hash files");
         }
 
-        logInfo("Execution necessary: One or more input files chaned.");
-        return true;
+        for(String key : newHashes.keySet()){
+            if(newHashes.getString(key).equalsIgnoreCase(hashes.getString(key))){
+                logDebug("Input file" + key + " did not change.");
+            } else {
+                logInfo("Input file " + key + " did change. Execution necessary.");
+                return true;
+            }
+        }
+
+        logInfo("Execution not necessary: No files changed.");
+        return false;
     }
 
+    private JSONObject generateHashFile() throws MojoExecutionException {
+        JSONObject newHashes = new JSONObject();
+        newHashes.put("main", SearchFiles.hashDirFiles(this.getPathMain()));
+        newHashes.put("test", SearchFiles.hashDirFiles(this.getPathTest()));
+        newHashes.put("emam", SearchFiles.hashDirFiles(this.getPathTmpOutEMAM()));
+
+        File newHashFile = getNewHashFile().toFile();
+        if(newHashFile.exists()){
+            newHashFile.delete();
+        }
+
+        try {
+            FileUtils.writeStringToFile(newHashFile, newHashes.toString(), Charset.defaultCharset());
+        } catch (IOException e){
+            e.printStackTrace();
+            throw new MojoExecutionException("Could not write to file " + newHashFile.getAbsolutePath());
+        }
+
+        return newHashes;
+    }
 
     @Override
     protected String MojoName(){
@@ -294,10 +308,12 @@ public class StreamTestGeneratorMojo extends StreamTestMojoBase {
                     emadlGenerator.generate(this.getPathMain(), this.getRootModel(), this.getPathToPython(), "x", true, this.getUseDgl());
                 }
                 catch (IOException e){
+                    e.printStackTrace();
                     Log.error("io error during generation", e);
                     System.exit(1);
                 }
                 catch (TemplateException e){
+                    e.printStackTrace();
                     Log.error("template error during generation", e);
                     System.exit(1);
                 }
@@ -310,20 +326,18 @@ public class StreamTestGeneratorMojo extends StreamTestMojoBase {
 
     //<editor-fold desc="Hashfiles">
 
-    protected File hashFileMain(){
-        return Paths.get(this.pathTmpOut, mojoDirectory, this.MojoName(), "Main.txt").toFile();
+    private Path getHashFile(){
+        return Paths.get(this.pathTmpOut, mojoDirectory, this.MojoName(), "hashes.json");
     }
 
-    protected File hashFileTest(){
-        return Paths.get(this.pathTmpOut, mojoDirectory, this.MojoName(), "Test.txt").toFile();
+    private Path getNewHashFile(){
+        return Paths.get(this.pathTmpOut, mojoDirectory, this.MojoName(), "new_hashes.json");
     }
 
-    protected File hashEmamFile(){
-        return Paths.get(this.pathTmpOut, mojoDirectory, this.MojoName(), "Emam.txt").toFile();
-    }
-
-    protected File hashEmadlFile(){
-        return Paths.get(this.pathTmpOut,mojoDirectory,this.MojoName(),"Emadl.txt").toFile();
+    private String getHashFileContent() throws IOException {
+        try(FileInputStream hashInputStream = new FileInputStream(getHashFile().toString())) {
+            return IOUtils.toString(hashInputStream, Charset.defaultCharset());
+        }
     }
 
     //</editor-fold>

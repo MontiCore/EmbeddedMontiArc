@@ -1,15 +1,19 @@
 /* (c) https://github.com/MontiCore/monticore */
 package de.monitcore.lang.monticar.utilities.tools;
 
+import org.apache.commons.codec.digest.DigestUtils;
+
+import java.io.FileInputStream;
 import java.io.IOException;
+import java.nio.charset.Charset;
 import java.nio.file.Files;
 import java.nio.file.Path;
 import java.nio.file.Paths;
 import java.security.MessageDigest;
 import java.security.NoSuchAlgorithmException;
 import java.util.List;
-
-
+import de.se_rwth.commons.logging.Log;
+import org.apache.commons.io.IOUtils;
 
 public class ChecksumChecker {
     // From https://stackoverflow.com/questions/9655181/how-to-convert-a-byte-array-to-a-hex-string-in-java
@@ -81,6 +85,19 @@ public class ChecksumChecker {
 
     public static boolean checkFile(String filePath, String checksum) throws IOException {
         return getChecksumForFileSHA256(filePath).equalsIgnoreCase(checksum);
+    }
+
+    public static String getChecksumForFileSHA1(String s){
+        String hash = "";
+        Log.info("Start hashing of file " + s, ChecksumChecker.class.getSimpleName());
+        try(FileInputStream inputStream = new FileInputStream(s)) {
+            hash = DigestUtils.sha1Hex(inputStream);
+        } catch (IOException e){
+            e.printStackTrace();
+            Log.info("Exception during hashing the file " + s, ChecksumChecker.class.getSimpleName());
+        }
+        Log.info("Finished hashing of file " + s, ChecksumChecker.class.getSimpleName());
+        return hash;
     }
 
 }
