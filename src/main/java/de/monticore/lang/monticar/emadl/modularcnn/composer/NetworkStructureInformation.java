@@ -122,6 +122,36 @@ public class NetworkStructureInformation {
         return hitInstance;
     }
 
+    public EMAComponentInstanceSymbol refreshInstancesAndSymbolReferences(Set<EMAComponentInstanceSymbol> componentInstanceSymbols){
+        EMAComponentInstanceSymbol hitInstance = null;
+        this.symbolReference = null;
+        this.instances = new ArrayList<>();
+
+
+        for (EMAComponentInstanceSymbol instanceSymbol: componentInstanceSymbols) {
+            String instanceSymbolName = instanceSymbol.getComponentType().getReferencedSymbol().getName();
+            if(instanceSymbolName.equals(this.getNetworkName())){
+                if (this.symbolReference == null){
+                    this.setSymbolReference(instanceSymbol.getComponentType());
+                }
+
+                if (!this.instances.contains(instanceSymbol)){
+                    this.addInstance(instanceSymbol);
+                }
+
+                if (hitInstance == null){
+                    hitInstance = instanceSymbol;
+                }
+            }
+            if (this.subNetworks != null && this.subNetworks.size() > 0){
+                for (NetworkStructureInformation subNet: this.subNetworks){
+                    subNet.refreshInstancesAndSymbolReferences(componentInstanceSymbols);
+                }
+            }
+        }
+        return hitInstance;
+    }
+
 
     public ArrayList<EMAComponentInstanceSymbol> getInstances(){
         return this.instances;
