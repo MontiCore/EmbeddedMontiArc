@@ -305,6 +305,33 @@ public class GenerationTest extends AbstractSymtabTest {
     }
 
     @Test
+    public void testReinforcementConfig4() {
+        Path modelPath = Paths.get("src/test/resources/valid_tests");
+        CNNTrain2Gluon trainGenerator = new CNNTrain2Gluon(rewardFunctionSourceGenerator);
+        ArchitectureAdapter trainedArchitecture = NNArchitectureMockFactory.createDQNDiscreteMock();
+
+        trainGenerator.generate(modelPath, "ReinforcementConfig4", trainedArchitecture);
+
+        assertTrue(Log.getFindings().isEmpty());
+        checkFilesAreEqual(
+                Paths.get("./target/generated-sources-cnnarch"),
+                Paths.get("./src/test/resources/target_code/ReinforcementConfig4"),
+                Arrays.asList(
+                        "CNNTrainer_reinforcementConfig4.py",
+                        "CNNLAOptimizer_reinforcementConfig4.h",
+                        "start_training.sh",
+                        "reinforcement_learning/__init__.py",
+                        "reinforcement_learning/strategy.py",
+                        "reinforcement_learning/agent.py",
+                        "reinforcement_learning/environment.py",
+                        "reinforcement_learning/replay_memory.py",
+                        "reinforcement_learning/util.py",
+                        "reinforcement_learning/cnnarch_logger.py"
+                )
+        );
+    }
+
+    @Test
     public void testCMakeGeneration() {
         String rootModelName = "alexnet";
         CNNArch2Gluon generator = new CNNArch2Gluon();

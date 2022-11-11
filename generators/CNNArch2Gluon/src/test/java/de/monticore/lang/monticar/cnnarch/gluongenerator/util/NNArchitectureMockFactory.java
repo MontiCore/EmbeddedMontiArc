@@ -91,6 +91,42 @@ public class NNArchitectureMockFactory {
         return trainedArchitecture;
     }
 
+    public static ArchitectureAdapter createDQNDiscreteMock() {
+        ArchitectureAdapter trainedArchitecture = mock(ArchitectureAdapter.class);
+
+        final String inputState = "state";
+        final String outputAction = "qvalues";
+
+        Map<String, List<Integer>> dimensionMap = ImmutableMap.<String, List<Integer>> builder()
+                .put(inputState, Lists.newArrayList(8))
+                .put(outputAction, Lists.newArrayList(3))
+                .build();
+
+        Range stateRange = Range.withInfinityLimits();
+        Range actionRange = Range.withLimits(-1, 1);
+        Map<String, Range> rangeMap = ImmutableMap.<String, Range>builder()
+                .put(inputState, stateRange)
+                .put(outputAction, actionRange)
+                .build();
+
+        Map<String, String> typeMap = ImmutableMap.<String, String>builder()
+                .put(inputState, "Z")
+                .put(outputAction, "Q")
+                .build();
+
+        ArchitectureSymbol architectureSymbol = new ArchitectureSymbol();
+        architectureSymbol.setFullName("FullName");
+
+        when(trainedArchitecture.getInputs()).thenReturn(Lists.newArrayList(inputState));
+        when(trainedArchitecture.getOutputs()).thenReturn(Lists.newArrayList(outputAction));
+        when(trainedArchitecture.getDimensions()).thenReturn(dimensionMap);
+        when(trainedArchitecture.getRanges()).thenReturn(rangeMap);
+        when(trainedArchitecture.getTypes()).thenReturn(typeMap);
+        when(trainedArchitecture.getArchitectureSymbol()).thenReturn(architectureSymbol);
+
+        return trainedArchitecture;
+    }
+
     public static ArchitectureAdapter createArchitectureSymbolByCNNArchModel(final Path modelsDirPath,
                                                                               final String rootModel) {
         CNNArchSymbolCompiler symbolCompiler = new CNNArchSymbolCompiler(new CNNArch2GluonArchitectureSupportChecker(),
