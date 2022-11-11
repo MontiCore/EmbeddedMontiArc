@@ -6,6 +6,7 @@
  */
 package de.monticore.lang.monticar.emadl.modularcnn.composer;
 
+import de.monticore.lang.embeddedmontiarc.embeddedmontiarc._symboltable.EmbeddedMontiArcArtifactScope;
 import de.monticore.lang.embeddedmontiarc.embeddedmontiarc._symboltable.cncModel.EMAComponentSymbolReference;
 import de.monticore.lang.embeddedmontiarc.embeddedmontiarc._symboltable.instanceStructure.EMAComponentInstanceSymbol;
 import de.monticore.lang.monticar.cnnarch._symboltable.ArchitectureSymbol;
@@ -28,6 +29,9 @@ public class NetworkStructureInformation {
     private NetworkStructureInformation parentNetwork = null;
 
     private ArchitectureSymbol composedNetworkArchitectureSymbol = null;
+    private String componentName = null;
+
+
 
     public NetworkStructureInformation(ComponentInformation componentInformation) {
         this.networkName = componentInformation.getComponentName();
@@ -76,6 +80,14 @@ public class NetworkStructureInformation {
 
     }
 
+    public String getComponentName() {
+        return componentName;
+    }
+
+    public void setComponentName(String componentName) {
+        this.componentName = componentName;
+    }
+
     public ArchitectureSymbol getComposedNetworkArchitectureSymbol(){
         return composedNetworkArchitectureSymbol;
     }
@@ -103,6 +115,8 @@ public class NetworkStructureInformation {
             if(instanceSymbolName.equals(this.getNetworkName())){
                 if (this.symbolReference == null){
                     this.setSymbolReference(instanceSymbol.getComponentType());
+                    EmbeddedMontiArcArtifactScope scope = (EmbeddedMontiArcArtifactScope) getSymbolReference().getReferencedSymbol().getEnclosingScope();
+                    this.setComponentName(scope.getPackageName() + "." + scope.getName());
                 }
 
                 if (!this.instances.contains(instanceSymbol)){
@@ -159,6 +173,19 @@ public class NetworkStructureInformation {
 
     public boolean isInstancePartOfNetwork(EMAComponentInstanceSymbol instanceSymbol){
         if (this.instances.contains(instanceSymbol)) return true;
+
+        if (this.subNetworks != null && this.subNetworks.size() > 0){
+            for (NetworkStructureInformation networkStructureInformation: this.subNetworks){
+                if (networkStructureInformation.isInstancePartOfNetwork(instanceSymbol)){
+                    return true;
+                }
+            }
+        }
+        return false;
+    }
+
+    public boolean isInstancePartOfSubNetworks(EMAComponentInstanceSymbol instanceSymbol){
+        //if (this.instances.contains(instanceSymbol)) return true;
 
         if (this.subNetworks != null && this.subNetworks.size() > 0){
             for (NetworkStructureInformation networkStructureInformation: this.subNetworks){
