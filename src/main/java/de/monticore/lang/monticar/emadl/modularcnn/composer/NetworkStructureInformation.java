@@ -30,6 +30,7 @@ public class NetworkStructureInformation {
 
     private ArchitectureSymbol composedNetworkArchitectureSymbol = null;
     private String componentName = null;
+    private ArrayList<String> networkInstancesDataFlow = new ArrayList<>();
 
 
 
@@ -46,15 +47,17 @@ public class NetworkStructureInformation {
                 subNetworks.add(comp.analyzeNetworkStructure());
             }
             rebuildParentRelation();
+            this.networkInstancesDataFlow = componentInformation.getConnectorFlow();
         }
     }
 
-    public NetworkStructureInformation(String name, String instanceSymbolName, boolean atomic, ArrayList<NetworkStructureInformation> subNets, NetworkStructureInformation parent) {
+    public NetworkStructureInformation(String name, String instanceSymbolName, boolean atomic, ArrayList<NetworkStructureInformation> subNets, ArrayList<String> dataFlow, NetworkStructureInformation parent) {
         this.networkName = name;
         this.instanceSymbolName = instanceSymbolName;
         this.atomic = atomic;
         this.subNetworks = subNets;
         this.parentNetwork = parent;
+        this.networkInstancesDataFlow = dataFlow;
         rebuildParentRelation();
     }
 
@@ -65,6 +68,7 @@ public class NetworkStructureInformation {
         this.instanceSymbolName = networkStructureInformation.getInstanceSymbolName();
         this.atomic = networkStructureInformation.isAtomic();
         this.subNetworks = networkStructureInformation.getSubNetworks();
+        this.networkInstancesDataFlow = networkStructureInformation.getNetworkInstancesDataFlow();
         rebuildParentRelation();
     }
 
@@ -75,9 +79,14 @@ public class NetworkStructureInformation {
                 subNet.rebuildParentRelation();
             }
         }
+    }
 
+    public void setNetworkInstancesDataFlow(ArrayList<String> flow){
+        this.networkInstancesDataFlow = flow;
+    }
 
-
+    public ArrayList<String> getNetworkInstancesDataFlow(){
+        return this.networkInstancesDataFlow;
     }
 
     public String getComponentName() {
@@ -283,11 +292,16 @@ public class NetworkStructureInformation {
             return "";
         }
 
+        if (this.networkInstancesDataFlow == null){
+            this.networkInstancesDataFlow = new ArrayList<>();
+        }
+
         JSONBuilder jsonObject = new JSONBuilder();
 
         jsonObject.addContent("name", this.networkName, false);
         jsonObject.addContent("instanceSymbolName",this.instanceSymbolName,false);
         jsonObject.addContent("atomic", this.atomic, false);
+        jsonObject.addContent("dataFlow",this.networkInstancesDataFlow,false);
 
         ArrayList<String> arrayContents = new ArrayList<>();
         if (this.getSubNetworks() != null && this.getSubNetworks().size() > 0) {

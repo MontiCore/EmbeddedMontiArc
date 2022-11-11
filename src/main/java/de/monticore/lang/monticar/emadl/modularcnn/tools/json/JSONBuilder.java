@@ -41,8 +41,19 @@ public class JSONBuilder {
     private String JSONArray(String key, ArrayList<String> values, boolean trailing) {
         String array = "\"" + key + "\"" + ":" + "[";
 
-        for (String element : values)
-            array += element + (element.equals(values.get(values.size()-1)) ? "" : ",");
+        for (int i=0; i< values.size();i++){
+            String element = values.get(i);
+            String newContent = "";
+
+            if (i != values.size() -1){
+                newContent = element + ",";
+            } else {
+                newContent = element + "";
+            }
+
+            array += newContent;
+        }
+
 
         array += "]" + (trailing ? "" : ",");
 

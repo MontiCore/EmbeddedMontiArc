@@ -14,6 +14,7 @@ package de.monticore.lang.monticar.emadl.modularcnn.composer;
 
 import de.monticore.lang.embeddedmontiarc.embeddedmontiarc._ast.*;
 import de.monticore.lang.embeddedmontiarc.embeddedmontiarc._symboltable.ComponentKind;
+import de.monticore.lang.embeddedmontiarc.embeddedmontiarc._symboltable.cncModel.EMAComponentSymbol;
 import de.monticore.lang.embeddedmontiarcdynamic.embeddedmontiarcdynamic._symboltable.cncModel.EMADynamicComponentSymbol;
 import de.monticore.lang.embeddedmontiarcdynamic.embeddedmontiarcdynamic._symboltable.cncModel.EMADynamicConnectorSymbol;
 import de.monticore.lang.embeddedmontiarcdynamic.embeddedmontiarcdynamic._symboltable.instanceStructure.EMADynamicComponentInstantiationSymbol;
@@ -43,6 +44,7 @@ public class ComponentInformation {
     private boolean violatesNetworkForm = false;
     private boolean isCNNNode = false;
 
+    private ArrayList<String> connectorFlow = new ArrayList<>();
     public ArrayList<ASTInterface> getInterfaces() {
         return interfaces;
     }
@@ -95,6 +97,8 @@ public class ComponentInformation {
         return originalComponentReference;
     }
 
+
+
     //TODO: CHECK
     public ComponentInformation(ASTComponent component, ArrayList<ArchitectureNode> currentNodes) {
         this.originalComponentReference = component;
@@ -119,6 +123,8 @@ public class ComponentInformation {
 
         this.isCNNNode = this.isASTArchitectureNode() || this.isComposedCNN();
         findInstanceSymbolNameIfEmpty();
+        this.connectorFlow = analyzeConnectorFlow();
+
     }
 
     private boolean isASTArchitectureNode() {
@@ -153,6 +159,37 @@ public class ComponentInformation {
 
     public String printNetworkStructureJSON(){
         return analyzeNetworkStructure().printStructureJSON();
+    }
+
+    public ArrayList<String> getConnectorFlow(){
+
+
+        return this.connectorFlow;
+    }
+
+    private ArrayList<String> analyzeConnectorFlow(){
+        if (this.connectorRelations == null){
+            return new ArrayList<>();
+        }
+        ArrayList<String> flow = new ArrayList<>();
+
+        for ( ConnectorRelation relation : this.connectorRelations) {
+            if (relation.getSource() == null || relation.getTarget() == null) continue;
+            String source = relation.getSource().getComponentName();
+            String target = relation.getTarget().getComponentName();
+
+            if (flow.size() == 0) {
+                flow.add(source);
+            } else if (!flow.get(flow.size() - 1).equals(source)) {
+                flow.add(source);
+                //relation.getSource().getOriginalComponentReference().
+            }
+
+            if (!flow.get(flow.size()-1).equals(target)) {
+                    flow.add(target);
+            }
+        }
+        return flow;
     }
 
     private void initLists(ASTComponent component) {

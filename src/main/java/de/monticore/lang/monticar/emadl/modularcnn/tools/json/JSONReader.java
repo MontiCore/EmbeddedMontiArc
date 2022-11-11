@@ -34,6 +34,7 @@ public class JSONReader {
         String name = null;
         String instanceName = null;
         boolean atomic = false;
+        ArrayList<String> dataFlow = null;
         ArrayList<NetworkStructureInformation> subnets = null;
 
         for (int i = 0; i < levelKvPairs.size(); i++) {
@@ -47,6 +48,11 @@ public class JSONReader {
                 case "atomic":
                     atomic = Boolean.parseBoolean(levelKvPairs.get(i).value);
                     break;
+                case "dataFlow":
+                    String arrayContentDataFlow = levelKvPairs.get(i).value;
+                    int[] levelDF = findTopLevelType(arrayContentDataFlow, 0, arrayContentDataFlow.length() - 1);
+                    dataFlow = processStringArray(arrayContentDataFlow.substring(levelDF[0],levelDF[1]));
+                    break;
                 case "subNetworks":
                     String arrayContent = levelKvPairs.get(i).value;
                     int[] level = findTopLevelType(arrayContent, 0, arrayContent.length() - 1);
@@ -57,7 +63,7 @@ public class JSONReader {
             }
         }
 
-        NetworkStructureInformation networkStructureInformation = new NetworkStructureInformation(name, instanceName, atomic, subnets,null);
+        NetworkStructureInformation networkStructureInformation = new NetworkStructureInformation(name, instanceName, atomic, subnets, dataFlow,null);
         return networkStructureInformation;
     }
 
@@ -76,6 +82,23 @@ public class JSONReader {
 
         if (subNetworkStructures.size() == 0) return null;
         return subNetworkStructures;
+    }
+
+    private ArrayList<String> processStringArray(String jsonContent) {
+        if (jsonContent.equals("") ) return null;
+
+        ArrayList<String> seperatedEntries = separateEntries(jsonContent);
+        ArrayList<String> dataFlow = new ArrayList<>();
+
+        for (int i = 0; i < seperatedEntries.size(); i++) {
+            String arrayContent = seperatedEntries.get(i);
+            //int[] level = findTopLevelType(arrayContent, 0, arrayContent.length() - 1);
+            //String entry = String.valueOf(processStringArray(arrayContent.substring(level[0], level[1])));
+            dataFlow.add(arrayContent);
+        }
+
+        if (dataFlow.size() == 0) return null;
+        return dataFlow;
     }
 
     private ArrayList<KeyValuePair> splitLevelContent(ArrayList<String> seperatedEntries) {
