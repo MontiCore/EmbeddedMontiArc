@@ -1,5 +1,6 @@
 #!/usr/bin/env python
 
+import rospy
 import numpy as np
 from gazebo_msgs.msg import ModelState
 from geometry_msgs.msg import Twist
@@ -116,34 +117,36 @@ def getTurtleBotRotation(odomMsg):
 
 ###
 def getReward(action, prev_action, lidar, prev_lidar, crash):
-    if crash:
-        terminal_state = True
-        reward = -100
-    else:
-        lidar_front_view = np.concatenate((lidar[(ANGLE_MIN + HORIZON_WIDTH):(ANGLE_MIN):-1],lidar[(ANGLE_MAX):(ANGLE_MAX - HORIZON_WIDTH):-1]))
-        prev_lidar_front_view = np.concatenate((prev_lidar[(ANGLE_MIN + HORIZON_WIDTH):(ANGLE_MIN):-1],prev_lidar[(ANGLE_MAX):(ANGLE_MAX - HORIZON_WIDTH):-1]))
-        terminal_state = False
-        # Reward from action taken = fowrad -> +0.2 , turn -> -0.1
-        if action == 0:
-            r_action = +0.2
+    reward = 0
+    terminal_state = False
+    if prev_action is not None:
+        if crash:
+            terminal_state = True
+            reward = -100
         else:
-            r_action = -0.1
-        # Reward from crash distance to obstacle change
-        W = np.linspace(0.9, 1.1, len(lidar_front_view) // 2)
-        W = np.append(W, np.linspace(1.1, 0.9, len(lidar_front_view) // 2))
-        if np.sum( W * ( lidar_front_view - prev_lidar_front_view) ) >= 0:
-            r_obstacle = +0.2
-        else:
-            r_obstacle = -0.2
-        # Reward from turn left/right change
-        if ( prev_action == 1 and action == 2 ) or ( prev_action == 2 and action == 1 ):
-            r_change = -0.8
-        else:
-            r_change = 0.0
-
-        # Cumulative reward
-        reward = r_action + r_obstacle + r_change
-
+            lidar_front_view = np.concatenate((lidar[(ANGLE_MIN + HORIZON_WIDTH):(ANGLE_MIN):-1],lidar[(ANGLE_MAX):(ANGLE_MAX - HORIZON_WIDTH):-1]))
+            prev_lidar_front_view = np.concatenate((prev_lidar[(ANGLE_MIN + HORIZON_WIDTH):(ANGLE_MIN):-1],prev_lidar[(ANGLE_MAX):(ANGLE_MAX - HORIZON_WIDTH):-1]))
+            terminal_state = False
+            # Reward from action taken = fowrad -> +0.2 , turn -> -0.1
+            if action == 0:
+                r_action = +0.2
+            else:
+                r_action = -0.1
+            # Reward from crash distance to obstacle change
+            W = np.linspace(0.9, 1.1, len(lidar_front_view) // 2)
+            W = np.append(W, np.linspace(1.1, 0.9, len(lidar_front_view) // 2))
+            if np.sum( W * ( lidar_front_view - prev_lidar_front_view) ) >= 0:
+                r_obstacle = +0.2
+            else:
+                r_obstacle = -0.2
+            # Reward from turn left/right change
+            if ( prev_action == 1 and action == 2 ) or ( prev_action == 2 and action == 1 ):
+                r_change = -0.8
+            else:
+                r_change = 0.0
+    
+            # Cumulative reward
+            reward = r_action + r_obstacle + r_change
     return ( reward, terminal_state )
 
 ###
