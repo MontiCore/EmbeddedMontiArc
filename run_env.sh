@@ -2,7 +2,8 @@
 
 
 echo "Start the simulator"
-roslaunch turtlebot3_gazebo turtlebot3_empty_world.launch
+#roslaunch turtlebot3_gazebo turtlebot3_empty_world.launch
+roslaunch turtlebot3_gazebo turtlebot3_world.launch
 
 echo "Start up environment..."
 python bin/roslauncher.py --environment \"gazeboEnv\"
