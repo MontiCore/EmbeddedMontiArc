@@ -1,6 +1,7 @@
 #!/usr/bin/env python
 
 import rospy
+import math
 import numpy as np
 from gazebo_msgs.msg import ModelState
 from geometry_msgs.msg import Twist
@@ -104,50 +105,85 @@ def setTurtleBotPos(setPosPub, x, y, theta):
     setPosPub.publish(initModel)
     return ( x , y, theta )
 
-def getTurtleBotPos(odomMsg):
-    x = odomMsg.pose.pose.position.x
-    y = odomMsg.pose.pose.position.y
-    return ( x , y)
-
+'''
+    getTurtleBotRotation 
+    ROS function to calculate the orientation of the turtlebot by using Odometry data
+    
+    return: the orientation of the turtlebot as yaw
+'''
 def getTurtleBotRotation(odomMsg):
     orientation_q = odomMsg.pose.pose.orientation
     orientation_list = [ orientation_q.x, orientation_q.y, orientation_q.z, orientation_q.w]
     (roll, pitch, yaw) = euler_from_quaternion(orientation_list)
     return yaw
 
-###
-def getReward(action, prev_action, lidar, prev_lidar, crash):
+'''
+    getTurtleBotRotation 
+    ROS function to calculate the the position of the turtlebot by using Odometry data
+    
+    return: x and y of the turtlebot as array
+'''
+def getPosition(odomMsg):
+    x = odomMsg.pose.pose.position.x
+    y = odomMsg.pose.pose.position.y
+    arr = [x, y]
+    return arr
+
+'''
+    getHeading
+    Calculate heading angle from turtlebot to goal
+    
+    return: angle in float
+'''
+
+def getHeading(turtle_x, goal_x, turtle_y, goal_y, yaw):
+    
+    targetAngle = math.atan2(goal_y - turtle_y, goal_x - turtle_x)
+    heading = targetAngle - yaw
+    if heading > math.pi:
+        heading -= 2 * math.pi
+    elif heading < -math.pi:
+        heading += 2 * math.pi
+    return round(heading, 2)
+
+'''
+    getReward
+    Calculate the reward of an action.
+    
+    return: reward and terminate state
+'''
+def getReward(action, heading, current_distance, goal_distance, obstacle_min_range, crash):
+    
     reward = 0
     terminal_state = False
-    if prev_action is not None:
-        if crash:
-            terminal_state = True
-            reward = -100
-        else:
-            lidar_front_view = np.concatenate((lidar[(ANGLE_MIN + HORIZON_WIDTH):(ANGLE_MIN):-1],lidar[(ANGLE_MAX):(ANGLE_MAX - HORIZON_WIDTH):-1]))
-            prev_lidar_front_view = np.concatenate((prev_lidar[(ANGLE_MIN + HORIZON_WIDTH):(ANGLE_MIN):-1],prev_lidar[(ANGLE_MAX):(ANGLE_MAX - HORIZON_WIDTH):-1]))
-            terminal_state = False
-            # Reward from action taken = fowrad -> +0.2 , turn -> -0.1
-            if action == 0:
-                r_action = +0.2
-            else:
-                r_action = -0.1
-            # Reward from crash distance to obstacle change
-            W = np.linspace(0.9, 1.1, len(lidar_front_view) // 2)
-            W = np.append(W, np.linspace(1.1, 0.9, len(lidar_front_view) // 2))
-            if np.sum( W * ( lidar_front_view - prev_lidar_front_view) ) >= 0:
-                r_obstacle = +0.2
-            else:
-                r_obstacle = -0.2
-            # Reward from turn left/right change
-            if ( prev_action == 1 and action == 2 ) or ( prev_action == 2 and action == 1 ):
-                r_change = -0.8
-            else:
-                r_change = 0.0
+    angle = -pi / 4 + heading + (pi / 8 * action) + pi / 2
     
-            # Cumulative reward
-            reward = r_action + r_obstacle + r_change
-    return ( reward, terminal_state )
+    yaw_reward = 1 - 4 * math.fabs(0.5 - math.modf(0.25 + 0.5 * angle % (2 * math.pi) / math.pi)[0])
+    
+    try:
+        distance_rate = 2 ** (current_distance / goal_distance)
+    except Exception:
+        print("Overflow err CurrentDistance = ", current_distance, " TargetDistance = ", goal_distance)
+        distance_rate = 2 ** (current_distance // goal_distance)
+    
+    reward += ((round(yaw_reward * 3, 2)) * distance_rate) #multiply with the number of action, here: 3 
+    
+    if obstacle_min_range < 0.5:
+        reward += -5
+    else:
+        reward += 0
+        
+    if crash: # could be a crash and near to goal? maybe if else
+        rospy.loginfo("Crash!!")
+        terminal_state = True
+        reward += -150
+    
+    if current_distance <= 0.2:
+        rospy.loginfo("Goal!!")
+        terminal_state = True
+        reward += 200
+
+    return reward, terminal_state
 
 ###
 def doTurtleBotAction(cmdVelPub, action):
@@ -181,14 +217,14 @@ def turtleBotStop(cmdVelPub):
     cmdVelPub.publish(velMsg)
 
 def checkCrash(lidarDist):
-    lidar_front_view = np.concatenate((lidarDist[(ANGLE_MIN + HORIZON_WIDTH):(ANGLE_MIN):-1],\
-        lidarDist[(ANGLE_MAX): (ANGLE_MAX - HORIZON_WIDTH):-1]))
-    param = np.linspace(1.2, 1, len(lidar_front_view) // 2)
-    param = np.append(param, np.linspace(1, 1.2, len(lidar_front_view) // 2))
-    if np.min( param * lidar_front_view ) < COLLISION_DISTANCE:
-        return True
-    else:
-        return False
+    if lidarDist is not None:
+        lidar_front_view = np.concatenate((lidarDist[(ANGLE_MIN + HORIZON_WIDTH):(ANGLE_MIN):-1],\
+            lidarDist[(ANGLE_MAX): (ANGLE_MAX - HORIZON_WIDTH):-1]))
+        param = np.linspace(1.2, 1, len(lidar_front_view) // 2)
+        param = np.append(param, np.linspace(1, 1.2, len(lidar_front_view) // 2))
+        if np.min( param * lidar_front_view ) < COLLISION_DISTANCE:
+            return True
+    return False
 
 def  getLidarDist(msgScan):
     distances = np.array([])
@@ -203,19 +239,22 @@ def  getLidarDist(msgScan):
 
         distances = np.append(distances, distance)
     # distances in [m]
-    return distances    
+    return distances
 
 def checkDiff(a, b, tolerant_value):
     if abs(a-b) < tolerant_value:
         return True
     else:
         return False
+
+
+    '''
+    Calculate euler distance of given two points
+    return distance in float
+    '''
+def calcDistance(x1, y1, x2, y2):
+    return math.sqrt((x1 - x2)**2 + (y1 - y2)**2)
     
-def getPosition(odomMsg):
-    x = odomMsg.pose.pose.position.x
-    y = odomMsg.pose.pose.position.y
-    arr = [x, y]
-    return arr
 
 # Check - goal near
 def checkGoalNear(x, y, x_goal, y_goal):
@@ -223,4 +262,13 @@ def checkGoalNear(x, y, x_goal, y_goal):
     if ro < 0.3:
         return True
     else:
+
         return False
+    
+'''
+def getTurtleBotPos(odomMsg):
+    x = odomMsg.pose.pose.position.x
+    y = odomMsg.pose.pose.position.y
+    return ( x , y)
+    
+    '''
