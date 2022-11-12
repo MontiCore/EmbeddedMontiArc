@@ -31,7 +31,6 @@ class RosConnector(object):
     Y_GOAL = -1
     THETA_GOAL = -30
     
-    
     def __init__(self, env_str, verbose=True):
         # initialize the node
         rospy.init_node(env_str, anonymous=True)
@@ -117,14 +116,7 @@ class RosConnector(object):
                     self.positionResetter()
                     print('positionresetter step')
                 else:
-                    maxAngularVel = 1.5
-                    angVel = ((3 - 1)/2 - action) * maxAngularVel / 2
-                    velCmd = Twist()
-                    velCmd.linear.x = 0.15
-                    velCmd.angular.z = angVel
-
-                    self.__set_navigation_publisher.publish(velCmd)
-                    #status_info = doTurtleBotAction(self.__set_navigation_publisher, action)
+                    status_info = doTurtleBotAction(self.__set_navigation_publisher, action)
                     time.sleep(0.1)
                     msgScan = rospy.wait_for_message('/scan', LaserScan)
                     ranges_array = Float32MultiArray()
