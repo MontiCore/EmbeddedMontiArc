@@ -25,18 +25,12 @@ if __name__ == "__main__":
                       help='environment string')
     parser.add_option("-v", '--verbose', action="store_true", dest="verbose",
                       help='show logging information')
-    parser.add_option("-q", '--quiet', action="store_false", dest="verbose",
-                      help='no output')
-    parser.add_option('-r', '--render', dest='render', type='int',
-                      help='number of steps after the game is rendered')
     parser.add_option('-t', '--training', action='store_true', dest='training',
                       help='training mode')
     parser.add_option('-p', '--play', action='store_true', dest='play',
                       help='play mode')
     parser.add_option('--eval', action='store_true', dest='eval',
                       help='evaluation mode')
-    parser.add_option('-c', '--continuous', action='store_true',
-                      dest='continuous', help='continuous environment')
 
     options, args = parser.parse_args()
 
@@ -58,11 +52,9 @@ if __name__ == "__main__":
         parser.error('more than one mode is not allowed')
 
     verbose = options.verbose
-    render = 0 if not options.render else options.render
-    continuous = True if options.continuous else False
     sample_games = 100 
 
-    connector = RosConnector(options.environment, verbose, render, continuous)
+    connector = RosConnector(options.environment, verbose)
 
     if mode == PLAY_MODE:
         time.sleep(8)
