@@ -8,8 +8,8 @@ component Master {
         in  Q^{360}  ranges,
         in  Q        gazebo_reward,
         in  B        gazebo_terminal,
-        in  Q^{2}    cur_position,
-        out Q^{8}    state,
+        in  Q^{4}    cur_position,
+        out Q^{10}    state,
         out Q        reward,
         out B        terminal;
 

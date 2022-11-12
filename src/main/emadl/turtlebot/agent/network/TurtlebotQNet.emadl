@@ -2,7 +2,7 @@ package turtlebot.agent.network;
 
 component TurtlebotQNet {
     ports
-        in Q(-oo:oo)^{8} state,
+        in Q(-oo:oo)^{10} state,
         out Q(-oo:oo)^{3} qvalues;
 
 
@@ -16,16 +16,3 @@ component TurtlebotQNet {
         qvalues;
     }
 }
-
-
-/*
-Relu() ->
-        FullyConnected(units=27) ->
-        Relu() ->
-        FullyConnected(units=27) ->
-        Relu() ->
-        FullyConnected(units=27) ->
-        Relu() ->
-        FullyConnected(units=6) ->
-
-*/

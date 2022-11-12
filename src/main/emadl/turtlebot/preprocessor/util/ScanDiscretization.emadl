@@ -3,8 +3,8 @@ package turtlebot.preprocessor.util;
 component ScanDiscretization {
     ports
         in Q^{360} distances,
-        in  Q^{2} position,
-        out Q^{8} state;
+        in  Q^{4} position,
+        out Q^{10} state;
 
     implementation Math {
         B hCollect = true;
@@ -145,8 +145,10 @@ component ScanDiscretization {
         state(4) = x4;
         state(5) = position(1);
         state(6) = position(2);
-        state(7) = goal_x;
-        state(8) = goal_y;
+        state(7) = position(3);
+        state(8) = position(4);
+        state(9) = goal_x;
+        state(10) = goal_y;
 
     }
 }
