@@ -156,8 +156,7 @@ def getReward(action, heading, current_distance, goal_distance, obstacle_min_ran
     
     reward = 0
     terminal_state = False
-    angle = -pi / 4 + heading + (pi / 8 * action) + pi / 2
-    
+    angle = -math.pi / 4 + heading + (math.pi / 8 * action) + math.pi / 2
     yaw_reward = 1 - 4 * math.fabs(0.5 - math.modf(0.25 + 0.5 * angle % (2 * math.pi) / math.pi)[0])
     
     try:
@@ -168,10 +167,10 @@ def getReward(action, heading, current_distance, goal_distance, obstacle_min_ran
     
     reward += ((round(yaw_reward * 3, 2)) * distance_rate) #multiply with the number of action, here: 3 
     
-    if obstacle_min_range < 0.5:
+    '''if obstacle_min_range < 0.5: 
         reward += -5
     else:
-        reward += 0
+        reward += 0'''#for later training 
         
     if crash: # could be a crash and near to goal? maybe if else
         rospy.loginfo("Crash!!")
@@ -182,17 +181,17 @@ def getReward(action, heading, current_distance, goal_distance, obstacle_min_ran
         rospy.loginfo("Goal!!")
         terminal_state = True
         reward += 200
-
+    rospy.loginfo("reward: " + str(reward))
     return reward, terminal_state
 
 ###
 def doTurtleBotAction(cmdVelPub, action):
     status = 'doTurtleBotAction => OK'
-    if action == 0:
+    if action == 2:
         turtleBotGoForward(cmdVelPub)
     elif action == 1:
         turtleBotTurnLeft(cmdVelPub)
-    elif action == 2:
+    elif action == 0:
         turtleBotTurnRight(cmdVelPub)
     else:
         status = 'doTurtleBotAction => INVALID ACTION'
