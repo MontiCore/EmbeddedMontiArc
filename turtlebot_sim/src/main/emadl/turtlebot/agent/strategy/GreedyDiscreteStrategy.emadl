@@ -1,0 +1,21 @@
+package turtlebot.agent.strategy;
+
+component GreedyDiscreteStrategy<Z(1:oo) n = 2> {
+    ports 
+        in Q(-oo:oo)^{3}  values,
+        out Z(0:2) action;
+
+    implementation Math {
+        Z best_action = 0;
+        Q value_of_best_action = values(1);
+
+        for i=2:n
+            if values(i) > value_of_best_action
+                best_action = i-1;
+                value_of_best_action = values(i);
+            end
+        end
+
+        action = best_action;
+    }
+}
