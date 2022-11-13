@@ -27,8 +27,8 @@ class RosConnector(object):
     Y_INIT = -0.4
     THETA_INIT = 45.0
     
-    X_GOAL = 2
-    Y_GOAL = -1
+    X_GOAL = 1.7
+    Y_GOAL = -0.7
     THETA_GOAL = -30
     
     def __init__(self, env_str, verbose=True):
@@ -85,8 +85,10 @@ class RosConnector(object):
             odomMsg = rospy.wait_for_message('/odom', Odometry)
             odomMsg_array.data = getPosition(odomMsg)
             yaw = getTurtleBotRotation(odomMsg)
-            heading = getHeading(odomMsg_array.data[0], self.X_GOAL, odomMsg_array.data[1], self.Y_GOAL, yaw)
-            self.__goal_distance = calcDistance(odomMsg_array.data[0], self.X_GOAL, odomMsg_array.data[1], self.Y_GOAL)
+            heading = getHeading(odomMsg_array.data[0], odomMsg_array.data[1], self.X_GOAL, self.Y_GOAL, yaw)
+            self.__goal_distance = calcDistance(odomMsg_array.data[0], odomMsg_array.data[1], self.X_GOAL, self.Y_GOAL)
+
+            rospy.loginfo('goal distance:' + str(self.__goal_distance)) # only for logging needed to be delted
             
             odomMsg_array.data += [heading , self.__goal_distance ]
             
@@ -101,7 +103,6 @@ class RosConnector(object):
             self.__crash = False            
             
     def step(self, msg):
-        rospy.loginfo('step: '+str(msg.data)) # only for logging needed to be delted
         if not rospy.is_shutdown():
             action = msg.data
 
@@ -114,7 +115,6 @@ class RosConnector(object):
             else:
                 if not self.__turtleBot_in_position:
                     self.positionResetter()
-                    print('positionresetter step')
                 else:
                     status_info = doTurtleBotAction(self.__set_navigation_publisher, action)
                     time.sleep(0.1)
@@ -132,13 +132,15 @@ class RosConnector(object):
                     odomMsg_array.data= array_position
                     
                     yaw = getTurtleBotRotation(odomMsg)
-                    heading = getHeading(odomMsg_array.data[0], self.X_GOAL, odomMsg_array.data[1], self.Y_GOAL, yaw)
-                    current_distance = calcDistance(odomMsg_array.data[0], self.X_GOAL, odomMsg_array.data[1], self.Y_GOAL)
+                    heading = getHeading(odomMsg_array.data[0], odomMsg_array.data[1], self.X_GOAL, self.Y_GOAL, yaw)
+                    current_distance = calcDistance(odomMsg_array.data[0], odomMsg_array.data[1], self.X_GOAL, self.Y_GOAL)
                     obstacle_min_range = round(min(ranges), 2)
                     
-                    odomMsg_array.data += [heading , self.__goal_distance ]
+                    odomMsg_array.data += [heading , current_distance ]
                     
                     (reward, terminal ) = getReward(action, heading, current_distance, self.__goal_distance,obstacle_min_range, self.__crash)   
+                    
+                    rospy.loginfo('action: ' + str(action) + ', current distance: ' + str(current_distance) + ', reward: ' + str(reward)) #delete this line later
                     
                     time.sleep(0.1)
                     if terminal:
