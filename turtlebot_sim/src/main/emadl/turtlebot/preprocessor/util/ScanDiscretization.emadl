@@ -16,8 +16,8 @@ component ScanDiscretization {
         Q x3 = 3.0; //left sector (no obstacle detected)
         Q x4 = 3.0; //right sector (no obstacle detected)
 
-        Q goal_x = 2;
-        Q goal_y = -1;
+        Q goal_x = 1.7;
+        Q goal_y = -0.7;
 
         Q max_lidar_distance = 1.0;
         Q collistion_distance = 0.14;
@@ -47,31 +47,31 @@ component ScanDiscretization {
         Q min_right_far = distances(286); //minimum distance in (286-336) degree
 
         for i=1:360
-            if (1 <= i <= 76) && distances(i) < min_left_area
+            if (1 <= i) && (i <= 76) && distances(i) < min_left_area
                 min_left_area = distances(i);
             end
 
-            if (286 <= i <= 360) && distances(i) < min_right_area
+            if (286 <= i) && (i <= 360) && distances(i) < min_right_area
                 min_right_area = distances(i);
             end
             
-            if ((1 <= i <= 26) || (95 <= i <= 360)) && distances(i) < min_close_front
+            if ( ((1 <= i) && (i <= 26)) || ((95 <= i) && (i <= 360)) ) && distances(i) < min_close_front
                 min_close_front = distances(i);
             end
 
-            if (1 <= i <= 51) && distances(i) < min_left_side_front
+            if (1 <= i) && (i <= 51) && distances(i) < min_left_side_front
                 min_left_side_front = distances(i);
             end
 
-            if (310 <= i <= 360) && distances(i) < min_right_side_front
+            if (310 <= i) && (i <= 360) && distances(i) < min_right_side_front
                 min_right_side_front = distances(i);
             end
 
-            if (26 <= i <= 76) && distances(i) < min_left_far
+            if (26 <= i) && (i <= 76) && distances(i) < min_left_far
                 min_left_far = distances(i);
             end
 
-            if (286 <= i <= 336) && distances(i) < min_right_far
+            if (286 <= i) && (i <= 336) && distances(i) < min_right_far
                 min_right_far = distances(i);
             end
         end
@@ -81,14 +81,14 @@ component ScanDiscretization {
         //determinating the states x1 and x2
 
         //position of an object on the left side
-        if zone_0_length < min_left_area < zone_1_length
+        if (zone_0_length < min_left_area) && (min_left_area < zone_1_length)
             x1 = 1.0; //zone 1
         elseif min_left_area <= zone_0_length
             x1 = 0.0; //zone 0
         end
         
         //position of an object on the right side
-        if zone_0_length < min_right_area < zone_1_length
+        if (zone_0_length < min_right_area) && (min_right_area < zone_1_length)
             x2 = 1.0; //zone 1
         elseif min_right_area <= zone_0_length
             x2 = 0.0; //zone 0
