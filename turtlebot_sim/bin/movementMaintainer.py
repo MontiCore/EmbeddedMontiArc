@@ -136,7 +136,7 @@ def getPosition(odomMsg):
     return: angle in float
 '''
 
-def getHeading(turtle_x, goal_x, turtle_y, goal_y, yaw):
+def getHeading(turtle_x, turtle_y, goal_x, goal_y, yaw):
     
     targetAngle = math.atan2(goal_y - turtle_y, goal_x - turtle_x)
     heading = targetAngle - yaw
@@ -181,7 +181,6 @@ def getReward(action, heading, current_distance, goal_distance, obstacle_min_ran
         rospy.loginfo("Goal!!")
         terminal_state = True
         reward += 200
-    rospy.loginfo("reward: " + str(reward))
     return reward, terminal_state
 
 ###
