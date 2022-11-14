@@ -25,7 +25,7 @@
         <SOMEIP.version>1.6-SNAPSHOT</SOMEIP.version>
         <MQTT.version>1.8-SNAPSHOT</MQTT.version>
         <embedded-montiarc-component-clustering.version>0.0.5-SNAPSHOT</embedded-montiarc-component-clustering.version>
-        <cnnarch-generator.version>0.4.13-SNAPSHOT</cnnarch-generator.version>
+        <cnnarch-generator.version>0.4.14-SNAPSHOT</cnnarch-generator.version>
 
         <!-- .. Libraries .................................................. -->
         <guava.version>18.0</guava.version>
