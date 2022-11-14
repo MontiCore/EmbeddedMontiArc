@@ -7,12 +7,12 @@
     <!-- == PROJECT COORDINATES ============================================= -->
     <groupId>de.monticore.lang.monticar</groupId>
     <artifactId>cnnarch-generator</artifactId>
-    <version>0.4.11-SNAPSHOT</version>
+    <version>0.4.14-SNAPSHOT</version>
 
     <!-- == PROJECT DEPENDENCIES ============================================= -->
     <properties>
         <!-- .. SE-Libraries .................................................. -->
-        <CNNArch.version>0.4.10-SNAPSHOT</CNNArch.version>
+        <CNNArch.version>0.4.11-SNAPSHOT</CNNArch.version>
         <conflang.version>1.0.0-SNAPSHOT</conflang.version>
         <schemalang.version>1.0.0-SNAPSHOT</schemalang.version>
         <embedded-montiarc-math-generator>0.4.9</embedded-montiarc-math-generator>
@@ -43,7 +43,6 @@
     </properties>
 
     <dependencies>
-
         <dependency>
             <groupId>org.antlr</groupId>
             <artifactId>antlr4-runtime</artifactId>

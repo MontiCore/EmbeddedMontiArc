@@ -99,6 +99,57 @@ public abstract class ConfigurationData {
         return normalizeOpt.orElse(null);
     }
 
+    public Boolean getCleaning() {
+        return trainingConfiguration.hasCleaning() ? true : null;
+    }
+
+    public String getCleaningName() {
+        Optional<String> cleaningNameOpt = trainingConfiguration.getCleaningName();
+        return cleaningNameOpt.orElse(null);
+    }
+
+    public Map<String, Object> getCleaningParameters() {
+        if (!getCleaning()) {
+            return null;
+        }
+        Map<String, Object> cleaningParameters = trainingConfiguration.getCleaningParameters();
+        return formatParameters(cleaningParameters);
+    }
+
+    public Boolean getDataImbalance() {
+        return trainingConfiguration.hasDataImbalance() ? true : null;
+    }
+
+    public String getDataImbalanceName() {
+        Optional<String> dataImbalanceNameOpt = trainingConfiguration.getDataImbalanceName();
+        return dataImbalanceNameOpt.orElse(null);
+    }
+
+    public Map<String, Object> getDataImbalanceParameters() {
+        if (!getDataImbalance()) {
+            return null;
+        }
+        Map<String, Object> dataImbalanceParameters = trainingConfiguration.getDataImbalanceParameters();
+        return formatParameters(dataImbalanceParameters);
+    }
+
+    public Boolean getDataSplitting() {
+        return trainingConfiguration.hasDataSplitting() ? true : null;
+    }
+
+    public String getDataSplittingName() {
+        Optional<String> dataSplittingNameOpt = trainingConfiguration.getDataSplittingName();
+        return dataSplittingNameOpt.orElse(null);
+    }
+
+    public Map<String, Object> getDataSplittingParameters() {
+        if (!getDataSplitting()) {
+            return null;
+        }
+        Map<String, Object> dataSplittingParameters = trainingConfiguration.getDataSplittingParameters();
+        return formatParameters(dataSplittingParameters);
+    }
+
     public Boolean getOnnxExport() {
         Optional<Boolean> onnxExport = trainingConfiguration.getOnnxExport();
         return onnxExport.orElse(null);
@@ -234,6 +285,29 @@ public abstract class ConfigurationData {
         }
         Map<String, Object> discriminatorOptimizerParameters = trainingConfiguration.getDiscriminatorOptimizerParameters();
         return formatParameters(discriminatorOptimizerParameters);
+    }
+
+    public String getRetrainingType() { // TODO enum?
+        Optional<String> context = trainingConfiguration.getRetrainingType();
+        return context.orElse(null);
+    }
+
+    public Boolean getRetrainingOptimizer() {
+        if (!trainingConfiguration.hasRetrainingOptimizer()) return null;
+        return true;
+    }
+
+    public String getRetrainingOptimizerName() {
+        Optional<String> getRetrainingOptimizerNameOpt = trainingConfiguration.getRetrainingOptimizerName();
+        return getRetrainingOptimizerNameOpt.orElse(null);
+    }
+
+    public Map<String, Object> getRetrainingOptimizerParameters() {
+        if (!getRetrainingOptimizer()) {
+            return null;
+        }
+
+        return trainingConfiguration.getRetrainingOptimizerParameters();
     }
 
     public Boolean getNoiseDistribution() {
@@ -583,6 +657,19 @@ public abstract class ConfigurationData {
         final String inputName = getInputNameOfTrainedArchitecture();
         ArchitectureAdapter trainedArchitecture = trainedArchitectureOpt.get();
         return trainedArchitecture.getDimensions().get(inputName);
+    }
+
+    public Boolean isDiscreteState() {
+        Optional<ArchitectureAdapter> trainedArchitectureOpt = trainingComponentsContainer.getTrainedArchitecture();
+        if (!trainedArchitectureOpt.isPresent()) {
+            return null;
+        }
+
+        final String inputName = getInputNameOfTrainedArchitecture();
+        ArchitectureAdapter trainedArchitecture = trainedArchitectureOpt.get();
+        
+        String stateType = trainedArchitecture.getTypes().get(inputName);
+        return stateType.equals("Z");
     }
 
     public List<Integer> getActionDim() {
