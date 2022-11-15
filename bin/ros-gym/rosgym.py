@@ -2,7 +2,8 @@
 import gym
 import rospy
 import time
-import thread
+import _thread
+import numpy as np
 
 from std_msgs.msg import Float32MultiArray, Bool, Int32, Float32
 from gym import wrappers
@@ -70,7 +71,7 @@ class RosGymConnector(object):
         rospy.init_node(
             'gymEnv{}'.format(env_str.replace('-', '_')), anonymous=True)
         rate = rospy.Rate(RosGymConnector.ros_update_rate)
-        self.__listener = thread.start_new_thread(rospy.spin, ())
+        self.__listener = _thread.start_new_thread(rospy.spin, ())
         time.sleep(2)
         self.print_if_verbose('Ros node initialized')
 
@@ -95,7 +96,7 @@ class RosGymConnector(object):
             self.__in_reset = True
             self.__score = 0
             self.__current_step = 0
-            state = self.__env.reset()
+            state, _ = self.__env.reset()
             self.print_if_verbose('Game {} started'.format(self.__env_str))
             self.render()
             time.sleep(1)
@@ -117,7 +118,7 @@ class RosGymConnector(object):
 
         action = msg.data
 
-        s, r, t, _ = self.__env.step(action)
+        s, r, t, _, _ = self.__env.step(action)
         self.render()
         self.__score += r
         self.__current_step += 1

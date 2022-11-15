@@ -5,7 +5,7 @@ then
     echo "No target folder found..."
     echo "Generate project..."
     rm -rf target
-    java -jar bin/embedded-montiarc-math-middleware-generator-0.0.33-SNAPSHOT-jar-with-dependencies.jar config.json
+    java -jar bin/embedded-montiarc-math-middleware-generator-0.1.4-SNAPSHOT-jar-with-dependencies.jar config.json
 fi
 echo "Target folder found!"
 echo "Build project..."

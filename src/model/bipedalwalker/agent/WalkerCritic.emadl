@@ -5,7 +5,7 @@ component WalkerCritic {
     ports
         in Q^{24} state,
         in Q(-1:1)^{4} action,
-        out Q(-oo:oo)^{1} qvalue;
+        out Q(-oo:oo)^{1} qvalues;
     
     implementation CNN {
         (state | action) -> 
@@ -15,6 +15,6 @@ component WalkerCritic {
         FullyConnected(units=300) ->
         Relu() ->
         FullyConnected(units=1) ->
-        qvalue;
+        qvalues;
     }
 }
