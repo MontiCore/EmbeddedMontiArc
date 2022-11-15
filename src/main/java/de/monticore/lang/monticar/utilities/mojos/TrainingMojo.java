@@ -20,12 +20,11 @@ public class TrainingMojo extends TrainingConfigMojo {
 
   @Override
   public void execute() throws MojoExecutionException, MojoFailureException {
-    PropertyReader p = new PropertyReader();
     executeMojo(
         plugin(
             groupId("de.monticore.lang.monticar.utilities"),
             artifactId("maven-streamtest"),
-            version(p.getProperty("MavenStreamTest.version"))
+            version("0.0.29-SNAPSHOT")
         ),
         goal("streamtest-generator"),
         configuration(getConfigElements().toArray(new Element[0])),

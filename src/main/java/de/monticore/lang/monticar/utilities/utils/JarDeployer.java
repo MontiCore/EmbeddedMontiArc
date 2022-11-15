@@ -13,7 +13,6 @@ public class JarDeployer {
     InvocationRequest request = new DefaultInvocationRequest().setGoals(Collections.singletonList("deploy:deploy-file"));
     request.setProperties(properties);
     request.setUserSettingsFile(settingsFile);
-
     Invoker invoker = new DefaultInvoker();
     invoker.execute(request);
   }

@@ -66,12 +66,10 @@ public class DeployDatasetMojo extends BaseMojo {
     } else if (this.datasetsToStore != null) {
       String newestVersion = this.getNewestVersion(this.datasetsToStore);
       this.datasetsToStore.setVersion(newestVersion);
-
       try {
         getLog().info(String.format("STARTING creating Jar for the following datasets: %s", String.join(", ", datasetsToStore.getDatasets().stream().map(Dataset::getId).collect(Collectors.toList()))));
         jarFile = DatasetArtifactCreator.createArtifact(this.datasetsToStore, this.getPathTmpOut());
         getLog().info("FINISHED creating Jar for dataset(s)");
-
         ArtifactDeployer.deployArtifact(jarFile.getAbsolutePath(), this.datasetsToStore, getRepository(), JarClassifierEnum.DATASET,
                 getMavenSession().getRequest().getUserSettingsFile(), getDependencies());
       }
