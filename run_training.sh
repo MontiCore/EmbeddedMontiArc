@@ -9,6 +9,14 @@ then
     exit 1
 fi
 
+echo "Start ROSCORE..."
+roscore &
+sleep 2
+
+echo "Start up environment..." 
+python bin/ros-gym/launcher.py --environment "BipedalWalker-v3" --quiet --continuous &
+sleep 2
+
 # Start the training
 cd "${TRAINING_ROOT}"
 python CNNTrainer_bipedalwalker_master_walker.py
