@@ -38,11 +38,17 @@ public class JSONBuilder {
         return JSONBoolean(key,value) + (trailing ? "" : ",");
     }
 
-    private String JSONArray(String key, ArrayList<String> values, boolean trailing) {
+    private String JSONArray(String key, ArrayList<String> values, boolean simpleValues, boolean trailing) {
         String array = "\"" + key + "\"" + ":" + "[";
 
         for (int i=0; i< values.size();i++){
             String element = values.get(i);
+            if (simpleValues){
+                element = "\"" + element + "\"";
+            }
+            //element = stripLeadingTrailingQuotes(element).replaceAll(" ","");
+            //if (element.toCharArray()[0] != '"' || element.toCharArray()[0] != '{' || element.toCharArray()[0] != '[' ) element = "\"" + element;
+            //if (element.toCharArray()[element.toCharArray().length-1] != '"' || element.toCharArray()[element.toCharArray().length-1] != '}' || element.toCharArray()[element.toCharArray().length-1] != ']') element = element + "\"";
             String newContent = "";
 
             if (i != values.size() -1){
@@ -60,6 +66,20 @@ public class JSONBuilder {
         return array;
     }
 
+    private String stripLeadingTrailingQuotes(String str){
+        String newString = str;
+        char[] charArray = str.toCharArray();
+
+        while (charArray[0] == '"' || charArray[charArray.length-1] == '"'){
+            if(charArray[0] == '"') charArray[0] = Character.MIN_VALUE;
+            if(charArray[charArray.length-1] == '"') charArray[charArray.length-1] = Character.MIN_VALUE;
+            newString = charArray.toString();
+            charArray = newString.toCharArray();
+        }
+
+        return newString;
+    }
+
     private void reset(){
         this.content = "";
     }
@@ -72,8 +92,8 @@ public class JSONBuilder {
         this.content += JSONEntry(key,value,trailing);
     }
 
-    public void addContent(String key, ArrayList<String> values, boolean trailing){
-        this.content += JSONArray(key,values,trailing);
+    public void addContent(String key, ArrayList<String> values,  boolean simpleValues,boolean trailing){
+        this.content += JSONArray(key,values,simpleValues,trailing);
     }
 
     public String getJSONObject(boolean trailing){

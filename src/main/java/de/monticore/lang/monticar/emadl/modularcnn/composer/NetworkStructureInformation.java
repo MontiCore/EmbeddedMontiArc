@@ -301,7 +301,7 @@ public class NetworkStructureInformation {
         jsonObject.addContent("name", this.networkName, false);
         jsonObject.addContent("instanceSymbolName",this.instanceSymbolName,false);
         jsonObject.addContent("atomic", this.atomic, false);
-        jsonObject.addContent("dataFlow",this.networkInstancesDataFlow,false);
+        jsonObject.addContent("dataFlow",this.networkInstancesDataFlow,true,false);
 
         ArrayList<String> arrayContents = new ArrayList<>();
         if (this.getSubNetworks() != null && this.getSubNetworks().size() > 0) {
@@ -312,7 +312,7 @@ public class NetworkStructureInformation {
 
         }
 
-        jsonObject.addContent("subNetworks", arrayContents, true);
+        jsonObject.addContent("subNetworks", arrayContents, false,true);
         return jsonObject.getJSONObjectAndReset(true);
     }
 
