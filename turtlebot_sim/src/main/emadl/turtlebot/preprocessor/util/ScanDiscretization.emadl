@@ -7,10 +7,6 @@ component ScanDiscretization {
         out Q^{10} state;
 
     implementation Math {
-        B hCollect = true;
-        B wCollect = true;
-        Z hCount = 1;
-        Z wCount = 1;
         Q x1 = 2.0; //left zone (no obstacle detected)
         Q x2 = 2.0; //right zone (no obstacle detected)
         Q x3 = 3.0; //left sector (no obstacle detected)
