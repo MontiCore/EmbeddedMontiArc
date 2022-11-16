@@ -92,6 +92,7 @@ public class JSONReader {
 
         for (int i = 0; i < seperatedEntries.size(); i++) {
             String arrayContent = seperatedEntries.get(i);
+            arrayContent = arrayContent.replaceAll("\"","");
             //int[] level = findTopLevelType(arrayContent, 0, arrayContent.length() - 1);
             //String entry = String.valueOf(processStringArray(arrayContent.substring(level[0], level[1])));
             dataFlow.add(arrayContent);

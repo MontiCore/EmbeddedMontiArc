@@ -175,8 +175,8 @@ public class ComponentInformation {
 
         for ( ConnectorRelation relation : this.connectorRelations) {
             if (relation.getSource() == null || relation.getTarget() == null) continue;
-            String source = relation.getSource().getComponentName();
-            String target = relation.getTarget().getComponentName();
+            String source = relation.getSource().getComponentName()  + "|" + relation.getSource().getComponentInstanceSymbolName();
+            String target = relation.getTarget().getComponentName()  + "|" + relation.getTarget().getComponentInstanceSymbolName();
 
             if (flow.size() == 0) {
                 flow.add(source);
