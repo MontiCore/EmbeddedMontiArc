@@ -33,10 +33,10 @@ def stopTurtleBot(velPub):
 def createCmdVelMsg(v,w):
     velMsg = Twist()
     velMsg.linear.x = v
-    velMsg.linear.y = 0
-    velMsg.linear.z = 0
-    velMsg.angular.x = 0
-    velMsg.angular.y = 0
+    velMsg.linear.y = 0  # you can delte this line see rl navigation (mantis) github
+    velMsg.linear.z = 0  # you can delte this line see rl navigation (mantis) github
+    velMsg.angular.x = 0 # you can delte this line see rl navigation (mantis) github
+    velMsg.angular.y = 0 # you can delte this line see rl navigation (mantis) github
     velMsg.angular.z = w
     return velMsg
     
@@ -67,13 +67,13 @@ def setTurtleBotRandomPos(setPosPub):
     initModel.pose.orientation.z = z_q
     initModel.pose.orientation.w = w_q
 
-    initModel.twist.linear.x = 0.0
-    initModel.twist.linear.y = 0.0
-    initModel.twist.linear.z = 0.0
-
-    initModel.twist.angular.x = 0.0
-    initModel.twist.angular.y = 0.0
-    initModel.twist.angular.z = 0.0
+    initModel.twist.linear.x = 0.0  #try to delte this line and see what will happend
+    initModel.twist.linear.y = 0.0  #try to delte this line and see what will happend
+    initModel.twist.linear.z = 0.0  #try to delte this line and see what will happend
+    
+    initModel.twist.angular.x = 0.0 #try to delte this line and see what will happend
+    initModel.twist.angular.y = 0.0 #try to delte this line and see what will happend
+    initModel.twist.angular.z = 0.0 #try to delte this line and see what will happend
 
     setPosPub.publish(initModel)
     return ( x , y, theta )
@@ -94,13 +94,13 @@ def setTurtleBotPos(setPosPub, x, y, theta):
     initModel.pose.orientation.z = z_q
     initModel.pose.orientation.w = w_q
 
-    initModel.twist.linear.x = 0.0
-    initModel.twist.linear.y = 0.0
-    initModel.twist.linear.z = 0.0
+    initModel.twist.linear.x = 0.0  #try to delte this line and see what will happend
+    initModel.twist.linear.y = 0.0  #try to delte this line and see what will happend
+    initModel.twist.linear.z = 0.0  #try to delte this line and see what will happend
 
-    initModel.twist.angular.x = 0.0
-    initModel.twist.angular.y = 0.0
-    initModel.twist.angular.z = 0.0
+    initModel.twist.angular.x = 0.0 #try to delte this line and see what will happend
+    initModel.twist.angular.y = 0.0 #try to delte this line and see what will happend
+    initModel.twist.angular.z = 0.0 #try to delte this line and see what will happend
 
     setPosPub.publish(initModel)
     return ( x , y, theta )
@@ -209,10 +209,6 @@ def turtleBotTurnRight(cmdVelPub):
 def turtleBotTurnLeft(cmdVelPub):
     velMsg = createCmdVelMsg(CONST_LINEAR_SPEED_TURN,+CONST_ANGULAR_SPEED_TURN)
     cmdVelPub.publish(velMsg)
-###   
-def turtleBotStop(cmdVelPub):
-    velMsg = createCmdVelMsg(0.0,0.0)
-    cmdVelPub.publish(velMsg)
 
 def checkCrash(lidarDist):
     if lidarDist is not None:
@@ -252,21 +248,3 @@ def checkDiff(a, b, tolerant_value):
     '''
 def calcDistance(x1, y1, x2, y2):
     return math.sqrt((x1 - x2)**2 + (y1 - y2)**2)
-    
-
-# Check - goal near
-def checkGoalNear(x, y, x_goal, y_goal):
-    ro = sqrt( pow( ( x_goal - x ) , 2 ) + pow( ( y_goal - y ) , 2) )
-    if ro < 0.3:
-        return True
-    else:
-
-        return False
-    
-'''
-def getTurtleBotPos(odomMsg):
-    x = odomMsg.pose.pose.position.x
-    y = odomMsg.pose.pose.position.y
-    return ( x , y)
-    
-    '''
