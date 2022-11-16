@@ -20,7 +20,7 @@ import java.util.Optional;
 
 public class Schema2API {
 
-    private File outputDirectory = new File("target/schemaAPI");
+    private File outputDirectory = new File("target/generated-sources/schemaAPI");
     private ModelPath schemasModelPath = new ModelPath(Paths.get("src/main/resources/schemas"));
 
     public void setOutputDirectory(File outputDirectory) {
@@ -42,22 +42,20 @@ public class Schema2API {
         generatorSetup.setOutputDirectory(outputDirectory);
         generatorSetup.setGlex(new GlobalExtensionManagement());
         GeneratorEngine generatorEngine = new GeneratorEngine(generatorSetup);
-        StringBuilder result = new StringBuilder();
         for (SchemaDefinitionSymbol schemaDefinitionSymbol : schemaDefinitionSymbols) {
             final ASTSchemaDefinition astSchemaDefinition = schemaDefinitionSymbol.getSchemaDefinitionNode().orElseThrow(IllegalStateException::new);
             final ASTSchemaDefinition astSuperSchemaDefinition = astSchemaDefinition.getSuperSchemaDefinitions().stream().findFirst().orElse(null);
-            result.append(generatorEngine.generate(FreeMarkerTemplate.SCHEMA_CLASS.getTemplateName(), astSchemaDefinition,
-                    astSchemaDefinition, astSuperSchemaDefinition, astSchemaDefinition.getSchemaMemberList()));
+            generatorEngine.generate(FreeMarkerTemplate.SCHEMA_CLASS.getTemplateName(), Paths.get("Supervised_Schema_API.py"), astSchemaDefinition,
+                    astSchemaDefinition, astSuperSchemaDefinition, astSchemaDefinition.getSchemaMemberList());
         }
 
         //TODO FMU to be transformed into file generation
-        System.out.println(result);
+        //System.out.println(result);
     }
 
 
     protected List<SchemaDefinitionSymbol> resolveSchemas() {
         List<SchemaDefinitionSymbol> schemas = new ArrayList<>();
-        schemas.add(resolveSchema("General"));
         schemas.add(resolveSchema("Supervised"));
         return schemas;
 

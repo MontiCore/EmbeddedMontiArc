@@ -17,8 +17,7 @@ public class SchemaTypeUtil {
             case BASIC:
                 return mapTypedDeclarationToPythonType(((ASTTypedDeclaration) schemaMember).getType());
             default:
-                throw
-                        new IllegalArgumentException("Schema type not handled");
+                throw new IllegalArgumentException("Schema type not handled");
         }
     }
 
@@ -52,6 +51,7 @@ public class SchemaTypeUtil {
     public boolean isObjectSchemaMember(ASTSchemaMember astSchemaMember) {
         return isTypedDeclaration(astSchemaMember) && isObjectType((ASTTypedDeclaration) astSchemaMember);
     }
+
     public boolean isEnumSchemaMember(ASTSchemaMember astSchemaMember) {
         return astSchemaMember.getSchemaMemberType().equals(SchemaMemberType.ENUM);
     }
