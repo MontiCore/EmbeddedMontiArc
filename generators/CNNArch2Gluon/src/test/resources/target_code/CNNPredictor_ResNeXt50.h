@@ -15,7 +15,7 @@ using namespace mxnet::cpp;
     
 class CNNPredictor_ResNeXt50_0{
 public:
-    const std::string file_prefix = "model/ResNeXt50/model_0_newest";
+    const std::string file_prefix = "model/ResNeXt50/newest";
     
     //network
     const std::vector<std::string> network_input_keys = {

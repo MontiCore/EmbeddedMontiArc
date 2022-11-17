@@ -15,7 +15,7 @@ using namespace mxnet::cpp;
     
 class CNNPredictor_ThreeInputCNN_M14_0{
 public:
-    const std::string file_prefix = "model/ThreeInputCNN_M14/model_0_newest";
+    const std::string file_prefix = "model/ThreeInputCNN_M14/newest";
     
     //network
     const std::vector<std::string> network_input_keys = {

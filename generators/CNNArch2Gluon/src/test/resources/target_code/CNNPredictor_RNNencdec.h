@@ -15,7 +15,7 @@ using namespace mxnet::cpp;
     
 class CNNPredictor_RNNencdec_0{
 public:
-    const std::string file_prefix = "model/RNNencdec/model_0_newest";
+    const std::string file_prefix = "model/RNNencdec/newest";
     
     //network
     const std::vector<std::string> network_input_keys = {
@@ -169,7 +169,7 @@ public:
 };
 class CNNPredictor_RNNencdec_1{
 public:
-    const std::string file_prefix = "model/RNNencdec/model_1_newest";
+    const std::string file_prefix = "model/RNNencdec/newest";
     
     //network
     const std::vector<std::string> network_input_keys = {
@@ -303,7 +303,7 @@ public:
 };
 class CNNPredictor_RNNencdec_2{
 public:
-    const std::string file_prefix = "model/RNNencdec/model_2_newest";
+    const std::string file_prefix = "model/RNNencdec/newest";
     
     //network
     const std::vector<std::string> network_input_keys = {
@@ -447,7 +447,7 @@ public:
 };
 class CNNPredictor_RNNencdec_3{
 public:
-    const std::string file_prefix = "model/RNNencdec/model_3_newest";
+    const std::string file_prefix = "model/RNNencdec/newest";
     
     //network
     const std::vector<std::string> network_input_keys = {
