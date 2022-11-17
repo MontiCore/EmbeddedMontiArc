@@ -19,7 +19,7 @@ from CNNDatasets_RosCriticNetwork import Dataset, TrainingDataset
 log = logging.getLogger(__name__)
 
 class CNNCreator_RosCriticNetwork: # pylint: disable=invalid-name
-    
+
     def __init__(self):
         self.weight_initializer = mx.init.Normal()
         self.networks = {}
@@ -28,13 +28,7 @@ class CNNCreator_RosCriticNetwork: # pylint: disable=invalid-name
         self._weights_dir_ = None
 
     def get_model_dir(self, epoch: int, dataset: Dataset = None) -> pathlib.Path:
-        if not dataset and not self.dataset:
-            return self._model_basedir_ / "model" / str(epoch)
-        elif not dataset:
-            return self._model_basedir_ / "model" / self.dataset.id / str(epoch)
-        else:
-            return self._model_basedir_ / "model" / dataset.id / str(epoch)
-        fi
+        return self._model_basedir_ 
 
     def load(self, context): # pylint: disable=unused-argument
         earliestLastEpoch = None
