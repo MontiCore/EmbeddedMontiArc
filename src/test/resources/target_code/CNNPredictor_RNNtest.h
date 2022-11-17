@@ -15,7 +15,7 @@ using namespace mxnet::cpp;
     
 class CNNPredictor_RNNtest_0{
 public:
-    const std::string file_prefix = "model/RNNtest/model_0_newest";
+    const std::string file_prefix = "model/RNNtest/newest";
     
     //network
     const std::vector<std::string> network_input_keys = {
@@ -149,7 +149,7 @@ public:
 };
 class CNNPredictor_RNNtest_1{
 public:
-    const std::string file_prefix = "model/RNNtest/model_1_newest";
+    const std::string file_prefix = "model/RNNtest/newest";
     
     //network
     const std::vector<std::string> network_input_keys = {
