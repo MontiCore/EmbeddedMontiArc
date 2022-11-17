@@ -18,7 +18,7 @@ using namespace mxnet::cpp;
 <#list tc.architecture.networkInstructions as networkInstruction>
 class ${tc.fileNameWithoutEnding}_${networkInstruction?index}{
 public:
-    const std::string file_prefix = "model/${tc.componentName}/model_${networkInstruction?index}_newest";
+    const std::string file_prefix = "model/${tc.componentName}/newest";
     
     //network
     const std::vector<std::string> network_input_keys = {

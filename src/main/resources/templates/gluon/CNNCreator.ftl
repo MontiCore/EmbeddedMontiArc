@@ -46,13 +46,7 @@ class ${tc.fileNameWithoutEnding}: # pylint: disable=invalid-name
 </#if>
 
     def get_model_dir(self, epoch: int, dataset: Dataset = None) -> pathlib.Path:
-        if not dataset and not self.dataset:
-            return self._model_basedir_ / "model" / str(epoch)
-        elif not dataset:
-            return self._model_basedir_ / "model" / self.dataset.id / str(epoch)
-        else:
-            return self._model_basedir_ / "model" / dataset.id / str(epoch)
-        fi
+        return self._model_basedir_ 
 
     def load(self, context): # pylint: disable=unused-argument
         earliestLastEpoch = None

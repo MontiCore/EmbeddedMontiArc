@@ -15,7 +15,7 @@ using namespace mxnet::cpp;
     
 class CNNPredictor_Invariant_0{
 public:
-    const std::string file_prefix = "model/Invariant/model_0_newest";
+    const std::string file_prefix = "model/Invariant/newest";
     
     //network
     const std::vector<std::string> network_input_keys = {
@@ -149,7 +149,7 @@ public:
 };
 class CNNPredictor_Invariant_1{
 public:
-    const std::string file_prefix = "model/Invariant/model_1_newest";
+    const std::string file_prefix = "model/Invariant/newest";
     
     //network
     const std::vector<std::string> network_input_keys = {
@@ -283,7 +283,7 @@ public:
 };
 class CNNPredictor_Invariant_2{
 public:
-    const std::string file_prefix = "model/Invariant/model_2_newest";
+    const std::string file_prefix = "model/Invariant/newest";
     
     //network
     const std::vector<std::string> network_input_keys = {

@@ -15,7 +15,7 @@ using namespace mxnet::cpp;
     
 class CNNPredictor_CifarClassifierNetwork_0{
 public:
-    const std::string file_prefix = "model/CifarClassifierNetwork/model_0_newest";
+    const std::string file_prefix = "model/CifarClassifierNetwork/newest";
     
     //network
     const std::vector<std::string> network_input_keys = {

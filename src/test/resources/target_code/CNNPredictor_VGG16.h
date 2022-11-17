@@ -15,7 +15,7 @@ using namespace mxnet::cpp;
     
 class CNNPredictor_VGG16_0{
 public:
-    const std::string file_prefix = "model/VGG16/model_0_newest";
+    const std::string file_prefix = "model/VGG16/newest";
     
     //network
     const std::vector<std::string> network_input_keys = {
