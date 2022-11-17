@@ -1,23 +1,24 @@
 # (c) https://github.com/MontiCore/monticore
 
 stages:
-- linux
+  - prebuild
+  - test
+  - build
 
 #TestMXNET:
-#  stage: linux
+#  stage: build
 #  image: registry.git.rwth-aachen.de/monticore/embeddedmontiarc/applications/mnistcalculator/mxnet:v0.0.5
-#  script: 
+#  script:
 #  - cd mxnet
 #  - chmod +x build.sh
 #  - ./build.sh
 #  - RES=$(./build/src/cpp/DigitCalculator resources/images/1.png resources/images/2.png resources/images/3.png resources/images/4.png resources/images/5.png resources/images/6.png)
 #  - "if [[ $RES != *\"SUM: 579\"* ]]; then echo \"Wrong result:\" $RES; exit 1; fi;"
 
-
 #TestCAFFE2:
-#  stage: linux
+#  stage: build
 #  image: registry.git.rwth-aachen.de/monticore/embeddedmontiarc/applications/mnistcalculator/caffe2:v0.0.2
-#  script: 
+#  script:
 #  - cd caffe2
 #  - chmod +x build.sh
 #  - ./build.sh
@@ -25,76 +26,89 @@ stages:
 #  - "if [[ $RES != *\"SUM: 857\"* ]]; then echo \"Wrong result:\" $RES; exit 1; fi;"
 
 TestGLUON:
-  stage: linux
+  stage: test
   image: registry.git.rwth-aachen.de/monticore/embeddedmontiarc/applications/mnistcalculator/mxnet:v0.0.5
-  script: 
-  - cd gluon-cpp
-  - chmod +x build.sh
-  - ./build.sh
-  - RES=$(./build/src/cpp/DigitCalculator resources/images/1.png resources/images/2.png resources/images/3.png resources/images/4.png resources/images/5.png resources/images/6.png)
-  - "if [[ $RES != *\"SUM: 579\"* ]]; then echo \"Wrong result:\" $RES; exit 1; fi;"
+  when: always
+  script:
+    - cd gluon-cpp
+    - chmod +x build.sh
+    - ./build.sh
+    - RES=$(./build/src/cpp/DigitCalculator resources/images/1.png resources/images/2.png resources/images/3.png resources/images/4.png resources/images/5.png resources/images/6.png)
+    - 'if [[ $RES != *"SUM: 579"* ]]; then echo "Wrong result:" $RES; exit 1; fi;'
 
 TestTENSORFLOW:
-  stage: linux
+  stage: test
   image: registry.git.rwth-aachen.de/monticore/embeddedmontiarc/applications/mnistcalculator/tensorflow
+  when: always
   script:
-  - cd tensorflow
-  - chmod +x build.sh
-  - ./build.sh
-  - RES=$(./build/src/cpp/DigitCalculator resources/images/1.png resources/images/2.png resources/images/3.png resources/images/4.png resources/images/5.png resources/images/6.png)
-  - "if [[ $RES != *\"SUM: 579\"* ]]; then echo \"Wrong result:\" $RES; exit 1; fi;"
+    - cd tensorflow
+    - chmod +x build.sh
+    - ./build.sh
+    - RES=$(./build/src/cpp/DigitCalculator resources/images/1.png resources/images/2.png resources/images/3.png resources/images/4.png resources/images/5.png resources/images/6.png)
+    - 'if [[ $RES != *"SUM: 579"* ]]; then echo "Wrong result:" $RES; exit 1; fi;'
 
 TestMnistCalculator-II:
-  stage: linux
+  stage: test
   image: registry.git.rwth-aachen.de/monticore/embeddedmontiarc/generators/emadl2cpp/dockerimages/mxnet170:v0.0.1
+  when: always
+  allow_failure: true
   script:
-  - mv /mxnet/build/libmxnet.so /mxnet/build/libmxnet.a /usr/lib/
-  - cd mnist-calculator
-  - mvn streamtest:streamtest-build -s settings.xml
+    - mv /mxnet/build/libmxnet.so /mxnet/build/libmxnet.a /usr/lib/
+    - cd mnist-calculator
+    - mvn streamtest:streamtest-build -s settings.xml
 
 TestEMADLMavenPlugin:
-  stage: linux
+  stage: test
   image: registry.git.rwth-aachen.de/monticore/embeddedmontiarc/generators/emadl2cpp/dockerimages/mxnet170:v0.0.1
+  when: always
   script:
-  - mv /mxnet/build/libmxnet.so /mxnet/build/libmxnet.a /usr/lib/
-  - cd emadl-maven-plugin
-  - python3 -m pip install -U pip
-  - python3 -m pip install scikit-image
-  - python3 -m pip install opencv-python
-  - mvn dependency:resolve emadl:train -s settings.xml -U 
+    - mv /mxnet/build/libmxnet.so /mxnet/build/libmxnet.a /usr/lib/
+    - cd emadl-maven-plugin
+    - python3 -m pip install -U pip
+    - python3 -m pip install scikit-image
+    - python3 -m pip install opencv-python
+    - mvn dependency:resolve emadl:train -s settings.xml -U
+    - mkdir output
+    - python3 calculator.py
+  artifacts:
+    paths:
+      - emadl-maven-plugin/output/*
+    expire_in: 1 week
 
 TestMnistWithAdaNet:
-  stage: linux
+  stage: test
   image: registry.git.rwth-aachen.de/monticore/embeddedmontiarc/generators/emadl2cpp/dockerimages/mxnet170:v0.0.1
+  when: always
   script:
     - mv /mxnet/build/libmxnet.so /mxnet/build/libmxnet.a /usr/lib/
     - cd AdaNet
     - mvn dependency:resolve emadl:train -s settings.xml
 
 TestMNISTwithCustomLayer:
-  stage: linux
+  stage: test
   image: registry.git.rwth-aachen.de/monticore/embeddedmontiarc/generators/emadl2cpp/dockerimages/mxnet170:v0.0.1
+  when: always
   script:
-  - shopt -s expand_aliases
-  - echo 'alias python='\''/usr/bin/python3'\''' >> ~/.bashrc
-  - . ~/.bashrc
-  - cat ~/.bashrc
-  - echo $PYTHONPATH
-  - python --version
-  - python3 --version
-  - which python
-  - which python3
-  - alias python=/usr/bin/python3
-  - python --version
-  - python3 --version
-  - which python
-  - type -a python
-  - mv /mxnet/build/libmxnet.so /mxnet/build/libmxnet.a /usr/lib/
-  - cd mnist-custom-layer
-  - mvn dependency:resolve emadl:train -s settings.xml
+    - shopt -s expand_aliases
+    - echo 'alias python='\''/usr/bin/python3'\''' >> ~/.bashrc
+    - . ~/.bashrc
+    - cat ~/.bashrc
+    - echo $PYTHONPATH
+    - python --version
+    - python3 --version
+    - which python
+    - which python3
+    - alias python=/usr/bin/python3
+    - python --version
+    - python3 --version
+    - which python
+    - type -a python
+    - mv /mxnet/build/libmxnet.so /mxnet/build/libmxnet.a /usr/lib/
+    - cd mnist-custom-layer
+    - mvn dependency:resolve emadl:train -s settings.xml
 
 TrainTensorflowONNX:
-  stage: linux
+  stage: test
   image: registry.git.rwth-aachen.de/monticore/embeddedmontiarc/generators/emadl2cpp/dockerimages/tensorflow-onnx:latest
   artifacts:
     paths:
@@ -104,13 +118,49 @@ TrainTensorflowONNX:
     - cd onnx/tensorflow-pretrained
     - mvn dependency:resolve emadl:train -s settings.xml
 
+.docker: &docker
+  - docker login -u $CI_REGISTRY_USER -p $CI_REGISTRY_PASSWORD $CI_REGISTRY
+  - docker push $CI_REGISTRY_IMAGE/$IMAGE_NAME:$CI_COMMIT_REF_NAME
+  - >
+    if [ "$CI_COMMIT_REF_NAME" == "master" ]; 
+    then
+      docker tag $CI_REGISTRY_IMAGE/$IMAGE_NAME:$CI_COMMIT_REF_NAME $CI_REGISTRY_IMAGE/$IMAGE_NAME:latest
+      docker push $CI_REGISTRY_IMAGE/$IMAGE_NAME:latest
+    fi
+
+base/mxnet:
+  stage: prebuild
+  image: docker:dind
+  only:
+    changes:
+      - docker/base/*
+  variables:
+    IMAGE_NAME: base/mxnet
+  script:
+    - cd docker/base
+    - docker build -t $CI_REGISTRY_IMAGE/$IMAGE_NAME:$CI_COMMIT_REF_NAME .
+    - *docker
+
+#mnistcalculator:
+#  stage: build
+#  image: docker:dind
+#  variables:
+#    IMAGE_NAME: mnistcalculator
+#  script:
+#    - cd emadl-maven-plugin
+#    - docker build -t $CI_REGISTRY_IMAGE/$IMAGE_NAME:$CI_COMMIT_REF_NAME --build-arg BASE_IMAGE=$CI_REGISTRY_IMAGE/base/mxnet --build-arg CI_JOB_TOKEN=${CI_JOB_TOKEN} .
+#    - *docker
+
 TestGluonONNX:
-  stage: linux
+  stage: test
   image: registry.git.rwth-aachen.de/monticore/embeddedmontiarc/generators/emadl2cpp/dockerimages/mxnet170-onnx:v0.0.1
   needs:
     - TrainTensorflowONNX
   script:
     - mv /mxnet/build/libmxnet.so /mxnet/build/libmxnet.a /usr/lib/
+    - python3 -m pip install -U pip
+    - python3 -m pip install scikit-image
+    - python3 -m pip install opencv-python
     - cd onnx/tensorflow-pretrained
     - python3 -m pip install -U pip
     - python3 -m pip install scikit-image
