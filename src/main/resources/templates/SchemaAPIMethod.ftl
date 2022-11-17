@@ -3,12 +3,12 @@ ${tc.signature ("schemaMembers","astEnumeratedDeclarationList")}
 <#assign enumeratedDeclarations= astEnumeratedDeclarationList>
 
 <#list schemaMembers as schemaMember>
-    <#assign methodName = schemaMember.getName()?cap_first><#if typeUtil.isPrimitiveSchemaMember(schemaMember)>
-    def get${methodName}(self):
-        return self.training_configuration.get${methodName}()
+    <#assign methodName = schemaMember.getName()><#if typeUtil.isPrimitiveSchemaMember(schemaMember)>
+    def get_${methodName}(self):
+        return self.training_configuration.get_${methodName}()
     <#elseif typeUtil.isObjectSchemaMember(schemaMember)>
-    <#assign getterMethodName = schemaMember.getType().getGenericType()?cap_first>
-    def get${getterMethodName}(self):
+    <#assign getterMethodName = schemaMember.getType().getGenericType()>
+    def get_${getterMethodName}(self):
         return self.${getterMethodName}(self)
     <#elseif typeUtil.isComplexPropertyDefinition(schemaMember)>
     ${tc.includeArgs("templates.SchemaAPIObjectType",[schemaMember])}
@@ -16,7 +16,7 @@ ${tc.signature ("schemaMembers","astEnumeratedDeclarationList")}
 </#list>
 
 <#list enumeratedDeclarations as enumeratedDeclaration>
-<#assign methodName = "get"+enumeratedDeclaration.getName()>
+<#assign methodName = "get_"+enumeratedDeclaration.getName()>
     def ${methodName}(self):
         return self.training_configuration.${methodName}()
 </#list>
