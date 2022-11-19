@@ -14,10 +14,14 @@ import schemalang._ast.ASTSchemaLangCompilationUnit;
 import schemalang._ast.ASTTypedDeclaration;
 import schemalang._symboltable.SchemaDefinitionSymbol;
 
+import java.io.File;
+import java.io.IOException;
+import java.nio.file.Files;
 import java.nio.file.Path;
 import java.nio.file.Paths;
 import java.util.List;
 
+import static org.junit.jupiter.api.Assertions.assertEquals;
 import static org.junit.jupiter.api.Assertions.assertNotNull;
 
 class Schema2APITest {
@@ -58,15 +62,15 @@ class Schema2APITest {
     }
 
     @Test
-    void objectType2Python() {
-        final Schema2API schema2API = new Schema2API();
+    void objectType2Python() throws IOException {
         final ASTSchemaDefinition schemaWithObjectTypeEntry = SchemaUtil.resolveASTSchemaDefinition("SchemaWithObjectTypeEntry", new ModelPath(Paths.get("src/test/resources/schemas")));
-        final ASTTypedDeclaration optimizerMember = (ASTTypedDeclaration) schemaWithObjectTypeEntry.getSchemaMemberList().get(2);
+        final ASTTypedDeclaration optimizerMember = (ASTTypedDeclaration) schemaWithObjectTypeEntry.getSchemaMemberList().get(1);
         final ASTComplexPropertyDefinition optimizerTypeDefinition = SchemaUtil.getPropertyDefinitionForDeclaration(optimizerMember, schemaWithObjectTypeEntry);
         final StringBuilder generationResult = generatorEngine.generate(FreeMarkerTemplate.SCHEMA_API_OBJECTTYPE.getTemplateName(), optimizerMember, optimizerMember, optimizerTypeDefinition);
-        System.out.print(generationResult);
+        final String expected = String.join("\n",Files.readAllLines(Paths.get("src/test/resources/schemaAPIs/SchemaWithObjectTypeEntry.py")));
+        final String actual = String.join("\n",generationResult.toString());
+        assertEquals(expected.trim(), actual.trim());
     }
-
     @Test
     void inheritanceOnRefModels() {
         final Schema2API schema2API = new Schema2API();
