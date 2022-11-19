@@ -19,7 +19,9 @@ import java.io.IOException;
 import java.nio.file.Files;
 import java.nio.file.Path;
 import java.nio.file.Paths;
+import java.util.Collections;
 import java.util.List;
+import java.util.stream.Collectors;
 
 import static org.junit.jupiter.api.Assertions.assertEquals;
 import static org.junit.jupiter.api.Assertions.assertNotNull;
@@ -34,12 +36,14 @@ class Schema2APITest {
         GeneratorSetup generatorSetup = new GeneratorSetup();
         generatorSetup.setTracing(false);
         generatorSetup.setGlex(new GlobalExtensionManagement());
+        generatorSetup.setOutputDirectory(new File("target/generated-sources/schemaAPI/"));
         this.generatorEngine = new GeneratorEngine(generatorSetup);
     }
 
     @Test
     void generateSchemaAPI() {
-        new Schema2API().generatePythonAPI();
+        final Schema2API schema2API = new Schema2API();
+//        schema2API.generatePythonAPIs(schema2API.resolveSchemas());
     }
 
     @Test
@@ -67,10 +71,27 @@ class Schema2APITest {
         final ASTTypedDeclaration optimizerMember = (ASTTypedDeclaration) schemaWithObjectTypeEntry.getSchemaMemberList().get(1);
         final ASTComplexPropertyDefinition optimizerTypeDefinition = SchemaUtil.getPropertyDefinitionForDeclaration(optimizerMember, schemaWithObjectTypeEntry);
         final StringBuilder generationResult = generatorEngine.generate(FreeMarkerTemplate.SCHEMA_API_OBJECTTYPE.getTemplateName(), optimizerMember, optimizerMember, optimizerTypeDefinition);
-        final String expected = String.join("\n",Files.readAllLines(Paths.get("src/test/resources/schemaAPIs/SchemaWithObjectTypeEntry.py")));
-        final String actual = String.join("\n",generationResult.toString());
+        final String expected = String.join("\n", Files.readAllLines(Paths.get("src/test/resources/schemaAPIs/SchemaWithObjectTypeEntry.py")));
+        final String actual = String.join("\n", generationResult.toString());
         assertEquals(expected.trim(), actual.trim());
     }
+
+    @Test
+    void generateSupervisedConfigurationAPI() throws IOException {
+        final ASTSchemaDefinition supervisedSchema = SchemaUtil.resolveASTSchemaDefinition("Supervised", new ModelPath(Paths.get("src/test/resources/schemas")));
+        final Path generatedPath = Paths.get("target/generated-sources/schemaAPI/Supervised_Schema_API.py");
+        new Schema2API().generatePythonAPIs(Collections.singletonList(supervisedSchema));
+        final List<String> expectedFile = Files.readAllLines(Paths.get("src/test/resources/schemaAPIs/Supervised_Simplified.py"));
+        final String expected = expectedFile.stream().map(String::trim)
+                .filter(l -> !l.isEmpty())
+                .collect(Collectors.joining("\n"));
+        final List<String> actualFile = Files.readAllLines(generatedPath);
+        final String actual = actualFile.stream().map(String::trim)
+                .filter(l -> !l.isEmpty())
+                .collect(Collectors.joining("\n"));
+        assertEquals(expected, actual);
+    }
+
     @Test
     void inheritanceOnRefModels() {
         final Schema2API schema2API = new Schema2API();
