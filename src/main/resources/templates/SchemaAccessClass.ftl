@@ -6,4 +6,4 @@ class ${schemaDefinition.getName()?cap_first}_Schema_API<#if superSchema??>(${su
         self.training_configuration = None
     def set_training_configuration(self,training_configuration):
         self.training_configuration =  training_configuration
-    ${tc.includeArgs("templates.SchemaAPIMethod",[schemaMembers, schemaDefinition.getEnumPropertyDefinitions()])}
+    ${tc.includeArgs("templates.Schema_API_Method",[schemaDefinition, schemaDefinition.getEnumPropertyDefinitions()])}
