@@ -31,26 +31,26 @@ public class Schema2API {
         this.schemasModelPath = schemasModelPath;
     }
 
-    public void generatePythonAPI() {
-
-        //resolve schema
-        List<SchemaDefinitionSymbol> schemaDefinitionSymbols = resolveSchemas();
-        //check cocos
-        //for each schema generate class
+    /***
+     * assumption: symbol table has been built on AST
+     * @param schemaModels
+     */
+    public void generatePythonAPIs(List<ASTSchemaDefinition> schemaModels) {
         GeneratorSetup generatorSetup = new GeneratorSetup();
         generatorSetup.setTracing(false);
         generatorSetup.setOutputDirectory(outputDirectory);
         generatorSetup.setGlex(new GlobalExtensionManagement());
         GeneratorEngine generatorEngine = new GeneratorEngine(generatorSetup);
-        for (SchemaDefinitionSymbol schemaDefinitionSymbol : schemaDefinitionSymbols) {
-            final ASTSchemaDefinition astSchemaDefinition = schemaDefinitionSymbol.getSchemaDefinitionNode().orElseThrow(IllegalStateException::new);
-            final ASTSchemaDefinition astSuperSchemaDefinition = astSchemaDefinition.getSuperSchemaDefinitions().stream().findFirst().orElse(null);
-            generatorEngine.generate(FreeMarkerTemplate.SCHEMA_CLASS.getTemplateName(), Paths.get("Supervised_Schema_API.py"), astSchemaDefinition,
-                    astSchemaDefinition, astSuperSchemaDefinition, astSchemaDefinition.getSchemaMemberList());
+        for (ASTSchemaDefinition schemaDefinitionSymbol : schemaModels) {
+            generateForSchema(generatorEngine, schemaDefinitionSymbol);
         }
+    }
 
-        //TODO FMU to be transformed into file generation
-        //System.out.println(result);
+    private  void generateForSchema(final GeneratorEngine generatorEngine, final ASTSchemaDefinition schemaDefinition) {
+        final ASTSchemaDefinition astSchemaDefinition = schemaDefinition;
+        final ASTSchemaDefinition astSuperSchemaDefinition = astSchemaDefinition.getSuperSchemaDefinitions().stream().findFirst().orElse(null);
+        generatorEngine.generate(FreeMarkerTemplate.SCHEMA_CLASS.getTemplateName(), Paths.get(schemaDefinition.getName() + "_Schema_API.py"), astSchemaDefinition,
+                astSchemaDefinition, astSuperSchemaDefinition, astSchemaDefinition.getSchemaMemberList());
     }
 
 
