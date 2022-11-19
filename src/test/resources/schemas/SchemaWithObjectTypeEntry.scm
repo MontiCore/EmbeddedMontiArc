@@ -2,20 +2,31 @@
 
 schema SchemaWithObjectTypeEntry{
 
-    eval_metric_type {
-            values:
-                rmse,
-                accuracy_ignore_label,
-                bleu;
-             //batchy: N1
-            define accuracy_ignore_label {
-                axis: Z
-                metric_ignore_label: Z
-            }
+   optimizer_type {
+           values:
+               sgd,
+               adam,
+               adamw;
 
-            define bleu {
-                exclude: Z*
-            }
-        }
+           /*
+           * Parameters common to all optimizer algorithms.
+           */
+           learning_rate: Q
+           learning_rate_policy: enum {
+               fixed, step, exp, inv, poly, sigmoid;
+           }
+
+           define sgd {
+               momentum: Q
+           }
+
+           define adam {
+               beta1: Q
+               beta2: Q
+           }
+       }
+   optimizer: optimizer_type
+   optimizer2: optimizer_type
+
 
 }
