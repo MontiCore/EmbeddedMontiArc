@@ -9,7 +9,7 @@ component Master {
         in  Q        gazebo_reward,
         in  B        gazebo_terminal,
         in  Q^{4}    cur_position,
-        out Q^{10}    state,
+        out Q^{8}    state,
         out Q        reward,
         out B        terminal;
 

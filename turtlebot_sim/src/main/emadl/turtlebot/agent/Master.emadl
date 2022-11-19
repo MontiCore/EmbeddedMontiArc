@@ -5,7 +5,7 @@ import turtlebot.agent.strategy.GreedyDiscreteStrategy;
 
 component Master {
     ports
-        in Q^{10} state,
+        in Q^{8} state,
         out Z(0:2) action;
 
         instance TurtlebotQNet dqn;

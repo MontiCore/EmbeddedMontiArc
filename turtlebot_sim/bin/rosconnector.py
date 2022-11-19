@@ -23,13 +23,12 @@ class RosConnector(object):
     ros_update_rate = 10
     
     RANDOM_START_POS = False
-    X_INIT = -0.4
-    Y_INIT = -0.4
+    X_INIT = -1.2
+    Y_INIT = 0
     THETA_INIT = 45.0
     
-    X_GOAL = 1.7
-    Y_GOAL = -0.7
-    THETA_GOAL = -30
+    X_GOAL = -1.5
+    Y_GOAL = -1.5
     
     def __init__(self, env_str, verbose=True):
         # initialize the node
@@ -39,6 +38,7 @@ class RosConnector(object):
         self.__verbose = verbose
         self.__turtleBot_in_position = False
         self.__crash = False
+        self.__goal_reached = False
 
         self.__goal_distance = 0.0
         self.__heading = 0 #you can replace the heading with self.__heading
@@ -75,20 +75,36 @@ class RosConnector(object):
             self.__in_reset = True
             if not self.__turtleBot_in_position:
                 self.positionResetter()
-            self.print_if_verbose('TurtleBot started')
-            time.sleep(0.1)
-            
+
+            msgScan = None
+            while msgScan is None:
+                try:
+                    msgScan = rospy.wait_for_message('/scan', LaserScan, timeout=5)
+                except:
+                    pass
+
             ranges_array = Float32MultiArray()
-            ranges_array.data = rospy.wait_for_message('/scan', LaserScan).ranges 
+            ranges = msgScan.ranges
+            ranges_array.data = ranges
+            
+            if self.__goal_reached:
+                self.X_GOAL, self.Y_GOAL = setRandomGoalPos()
             
             odomMsg_array = Float32MultiArray()
-            odomMsg = rospy.wait_for_message('/odom', Odometry)
+            
+            odomMsg = None
+            while odomMsg is None:
+                try:
+                    odomMsg = rospy.wait_for_message('/odom', Odometry, timeout=5)
+                except:
+                    pass            
+            
             odomMsg_array.data = getPosition(odomMsg)
             yaw = getTurtleBotRotation(odomMsg)
             heading = getHeading(odomMsg_array.data[0], odomMsg_array.data[1], self.X_GOAL, self.Y_GOAL, yaw)
             self.__goal_distance = calcDistance(odomMsg_array.data[0], odomMsg_array.data[1], self.X_GOAL, self.Y_GOAL)
 
-            rospy.loginfo('goal distance:' + str(self.__goal_distance)) # only for logging needed to be delted
+            rospy.loginfo('goal distance:' + str(self.__goal_distance) + ', x_goal: '+ str(self.X_GOAL)+ 'y_goal' + str(self.Y_GOAL)) # only for logging needed to be delted
             
             odomMsg_array.data += [heading , self.__goal_distance ]
             
@@ -100,7 +116,8 @@ class RosConnector(object):
 
             self.__terminated = False
             self.__in_reset = False
-            self.__crash = False            
+            self.__crash = False
+            self.__goal_reached = False        
             
     def step(self, msg):
         if not rospy.is_shutdown():
@@ -115,10 +132,17 @@ class RosConnector(object):
             else:
                 if not self.__turtleBot_in_position:
                     self.positionResetter()
+                    rospy.loginfo('step not in pos') # only for logging needed to be delted
                 else:
                     status_info = doTurtleBotAction(self.__set_navigation_publisher, action)
-                    time.sleep(0.1)
-                    msgScan = rospy.wait_for_message('/scan', LaserScan)
+                    
+                    msgScan = None
+                    while msgScan is None:
+                        try:
+                            msgScan = rospy.wait_for_message('/scan', LaserScan, timeout=5)
+                        except:
+                            pass
+
                     ranges_array = Float32MultiArray()
                     lidarDistances = getLidarDist(msgScan)
                     ranges = msgScan.ranges
@@ -127,7 +151,14 @@ class RosConnector(object):
                     self.__crash = checkCrash(lidarDistances)
                     
                     odomMsg_array = Float32MultiArray()
-                    odomMsg = rospy.wait_for_message('/odom', Odometry)
+                    
+                    odomMsg = None
+                    while odomMsg is None:
+                        try:
+                            odomMsg = rospy.wait_for_message('/odom', Odometry, timeout=5)
+                        except:
+                            pass
+
                     array_position = getPosition(odomMsg) # du kannst odomMsg_array direkt zuweisen
                     odomMsg_array.data= array_position
                     
@@ -138,11 +169,10 @@ class RosConnector(object):
                     
                     odomMsg_array.data += [heading , current_distance ]
                     
-                    (reward, terminal ) = getReward(action, heading, current_distance, self.__goal_distance,obstacle_min_range, self.__crash)   
+                    (reward, terminal, self.__goal_reached ) = getReward(action, heading, current_distance, self.__goal_distance,obstacle_min_range, self.__crash)   
                     
-                    rospy.loginfo('action: ' + str(action) + ', current distance: ' + str(current_distance) + ', reward: ' + str(reward)) #delete this line later
+                    rospy.loginfo('action: ' + str(action) + ', current distance: ' + str(current_distance) + ', reward: ' + str(reward) + ', goal reached:' + str(self.__goal_reached)) #delete this line later
                     
-                    time.sleep(0.1)
                     if terminal:
                         self.__terminated = True
                         self.__turtleBot_in_position = False
@@ -166,25 +196,20 @@ class RosConnector(object):
     
     def positionResetter(self):
         stopTurtleBot(self.__set_navigation_publisher)
-        #self.__first_action_taken = False
         
-        if self.RANDOM_START_POS:
-            (x_init, y_init, theta_init) = setTurtleBotRandomPos(
-                self.__set_position_publisher)
+        (x_init, y_init, theta_init) = setTurtleBotPos(self.__set_position_publisher,self.X_INIT, self.Y_INIT, self.THETA_INIT)
+        odomMsg = None
+        while odomMsg is None:
+            try:
+                odomMsg = rospy.wait_for_message('/odom', Odometry, timeout=5)
+            except:
+                pass
+
+        array_pos = getPosition(odomMsg)
+        if abs(array_pos[0]- x_init) <  0.01 and abs(array_pos[1] - y_init) < 0.01:
+            self.__turtleBot_in_position = True
         else:
-            (x_init, y_init, theta_init) = setTurtleBotPos(
-                self.__set_position_publisher, 
-                self.X_INIT, self.Y_INIT, self.THETA_INIT)
-            odomMsg = rospy.wait_for_message('/odom', Odometry)
-            array_pos = getPosition(odomMsg)
-            theta = degrees(getTurtleBotRotation(odomMsg))
-            if checkDiff(array_pos[0],x_init, 0.01) and checkDiff(array_pos[1],y_init,0.01) \
-                and checkDiff(theta, theta_init, 1):
-                    self.__turtleBot_in_position = True
-                    print("positonResetter: turlte in position")
-            else:
-                self.__turtleBot_in_position = False
-                print("positonResetter: turlte in Not position")
+            self.__turtleBot_in_position = False
     
     
 

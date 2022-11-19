@@ -40,6 +40,24 @@ def createCmdVelMsg(v,w):
     velMsg.angular.z = w
     return velMsg
     
+def setRandomGoalPos():
+
+    ''' Stage 1
+        goal_x_list = [0.9, 1.5, 1.5, 0.2, -1.0, -1.5, -0.3]
+        goal_y_list = [-0.9, 0.0, 1.3, 1.5, 0.9, 0.0, -1.5]
+    '''
+
+
+    #Stage 2
+    goal_x_list = [0, 1.4, -1.5, 0, -1.5, 1.6]
+    goal_y_list = [ -1.5, -1.5,  -1.5, 1.4, 1.4, 1.4]
+    index = np.random.randint(0,len(goal_x_list))
+
+    x = goal_x_list[index]
+    y = goal_y_list[index]
+
+    return x, y
+
 def setTurtleBotRandomPos(setPosPub):
     x_range = np.array([ 2.0, 2.0, -2.5, 1.0, -1.0, -0.4, 0.6, 0.6, -1.4, -1.4])
     y_range = np.array([-0.4, 0.6, -1.4, 0.6, 2.0, -1.4, 1.0, -1.0, 0.0, 2.0])
@@ -158,6 +176,7 @@ def getReward(action, heading, current_distance, goal_distance, obstacle_min_ran
     terminal_state = False
     angle = -math.pi / 4 + heading + (math.pi / 8 * action) + math.pi / 2
     yaw_reward = 1 - 4 * math.fabs(0.5 - math.modf(0.25 + 0.5 * angle % (2 * math.pi) / math.pi)[0])
+    goal_reached = False
     
     try:
         distance_rate = 2 ** (current_distance / goal_distance)
@@ -179,9 +198,10 @@ def getReward(action, heading, current_distance, goal_distance, obstacle_min_ran
     
     if current_distance <= 0.2:
         rospy.loginfo("Goal!!")
+        goal_reached = True
         terminal_state = True
         reward += 200
-    return reward, terminal_state
+    return reward, terminal_state, goal_reached
 
 ###
 def doTurtleBotAction(cmdVelPub, action):
@@ -234,13 +254,6 @@ def  getLidarDist(msgScan):
         distances = np.append(distances, distance)
     # distances in [m]
     return distances
-
-def checkDiff(a, b, tolerant_value):
-    if abs(a-b) < tolerant_value:
-        return True
-    else:
-        return False
-
 
     '''
     Calculate euler distance of given two points
