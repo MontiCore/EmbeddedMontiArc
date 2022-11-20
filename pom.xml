@@ -55,6 +55,12 @@
             <version>${guava.version}</version>
         </dependency>
 
+        <dependency>
+            <groupId>de.se_rwth.maven</groupId>
+            <artifactId>se-groovy-maven-plugin</artifactId>
+            <version>1.2.4-SNAPSHOT</version>
+        </dependency>
+
         <!-- MontiCore Dependencies -->
 
         <dependency>
