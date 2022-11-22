@@ -4,7 +4,7 @@ component ScanDiscretization {
     ports
         in Q^{360} distances,
         in  Q^{4} position,
-        out Q^{8} state;
+        out Q^{29} state;
 
     implementation Math {
         Q x1 = 2.0; //left zone (no obstacle detected)
@@ -15,6 +15,8 @@ component ScanDiscretization {
         Q max_lidar_distance = 1.0;
         Q collistion_distance = 0.14;
         Q nearby_distance = 0.45;
+        Q indexLaser = 1;
+        Q indexState = 1; 
 
         Q zone_0_length = 0.4;
         Q zone_1_length = 0.7;
@@ -39,7 +41,20 @@ component ScanDiscretization {
         Q min_left_far = distances(26); //minimum distance in (26-76) degree
         Q min_right_far = distances(286); //minimum distance in (286-336) degree
 
+        Q minObstacle = distances(1);
+
         for i=1:360
+
+            if (i == indexLaser)
+                state(indexState) = distances(indexLaser);
+                indexState += 1;
+                indexLaser += 15;
+            end
+
+            if (distances(i) < minObstacle)
+                minObstacle = distances(i);
+            end
+
             if (1 <= i) && (i <= 76) && distances(i) < min_left_area
                 min_left_area = distances(i);
             end
@@ -132,14 +147,15 @@ component ScanDiscretization {
             x4 = 2.0; //sector 2
         end
         
-        state(1) = x1;
-        state(2) = x2;
-        state(3) = x3;
-        state(4) = x4;
-        state(5) = position(1);
-        state(6) = position(2);
-        state(7) = position(3);
-        state(8) = position(4);
+        //state(1) = x1;
+        //state(2) = x2;
+        //state(3) = x3;
+        //state(4) = x4;
+        state(25) = position(1);
+        state(26) = position(2);
+        state(27) = position(3);
+        state(28) = position(4);
+        state(29) = minObstacle;
 
     }
 }
