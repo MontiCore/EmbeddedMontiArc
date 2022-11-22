@@ -42,16 +42,16 @@ def createCmdVelMsg(v,w):
     
 def setRandomGoalPos():
 
-    ''' Stage 1
-        goal_x_list = [0.9, 1.5, 1.5, 0.2, -1.0, -1.5, -0.3]
-        goal_y_list = [-0.9, 0.0, 1.3, 1.5, 0.9, 0.0, -1.5]
-    '''
+    #Stage 1
+    goal_x_list = [0.9, 1.5, 1.5, 0.2, -1.0, -1.5, -0.3]
+    goal_y_list = [-0.9, 0.0, 1.3, 1.5, 0.9, 0.0, -1.5]
+    
 
-
-    #Stage 2
-    goal_x_list = [0, 1.4, -1.5, 0, -1.5, 1.6]
-    goal_y_list = [ -1.5, -1.5,  -1.5, 1.4, 1.4, 1.4]
     index = np.random.randint(0,len(goal_x_list))
+
+    '''#Stage 2
+    goal_x_list = [0, 1.4, -1.5, 0, -1.5, 1.6]
+    goal_y_list = [ -1.5, -1.5,  -1.5, 1.4, 1.4, 1.4]'''
 
     x = goal_x_list[index]
     y = goal_y_list[index]
@@ -184,7 +184,7 @@ def getReward(action, heading, current_distance, goal_distance, obstacle_min_ran
         print("Overflow err CurrentDistance = ", current_distance, " TargetDistance = ", goal_distance)
         distance_rate = 2 ** (current_distance // goal_distance)
     
-    reward += ((round(yaw_reward * 3, 2)) * distance_rate) #multiply with the number of action, here: 3 
+    reward += ((round(yaw_reward * 5, 2)) * distance_rate) #multiply with the number of action, here: 3 
     
     '''if obstacle_min_range < 0.5: 
         reward += -5
@@ -206,7 +206,17 @@ def getReward(action, heading, current_distance, goal_distance, obstacle_min_ran
 ###
 def doTurtleBotAction(cmdVelPub, action):
     status = 'doTurtleBotAction => OK'
-    if action == 2:
+
+    max_angular_vel = 1.5
+    
+    ang_vel = ((5 - 1)/2 - action) * max_angular_vel * 0.5
+    vel_cmd = Twist()
+    vel_cmd.linear.x = 0.15
+    vel_cmd.angular.z = ang_vel
+    cmdVelPub.publish(vel_cmd)
+
+
+    '''if action == 2:
         turtleBotGoForward(cmdVelPub)
     elif action == 1:
         turtleBotTurnLeft(cmdVelPub)
@@ -214,7 +224,7 @@ def doTurtleBotAction(cmdVelPub, action):
         turtleBotTurnRight(cmdVelPub)
     else:
         status = 'doTurtleBotAction => INVALID ACTION'
-        turtleBotGoForward(cmdVelPub)
+        turtleBotGoForward(cmdVelPub)'''
 
     return status
 ###
