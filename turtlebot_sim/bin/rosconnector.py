@@ -23,12 +23,12 @@ class RosConnector(object):
     ros_update_rate = 10
     
     RANDOM_START_POS = False
-    X_INIT = -1.2
-    Y_INIT = 0
+    X_INIT = -0.4
+    Y_INIT = -0.4
     THETA_INIT = 45.0
     
-    X_GOAL = -1.5
-    Y_GOAL = -1.5
+    X_GOAL = 1.7
+    Y_GOAL = -1
     
     def __init__(self, env_str, verbose=True):
         # initialize the node
