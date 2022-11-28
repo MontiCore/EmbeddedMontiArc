@@ -125,7 +125,7 @@ public class NetworkStructureInformation {
                 if (this.symbolReference == null){
                     this.setSymbolReference(instanceSymbol.getComponentType());
                     EmbeddedMontiArcArtifactScope scope = (EmbeddedMontiArcArtifactScope) getSymbolReference().getReferencedSymbol().getEnclosingScope();
-                    this.setComponentName(scope.getPackageName() + "." + scope.getName());
+                    this.setComponentName(scope.getPackageName() + "." + scope.getName().get());
                 }
 
                 if (!this.instances.contains(instanceSymbol)){
