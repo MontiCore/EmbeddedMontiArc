@@ -37,8 +37,8 @@ public class ConfLangGenerator extends CNNTrainGenerator {
         generatorEngine = new GeneratorEngine(generatorSetup);
     }
 
-    public void generatePythonTrainingConfiguration(final ASTConfLangCompilationUnit configurationModel) {
-        final Path fileName = Paths.get("Training_Configuration_" + configurationModel.getConfiguration().getName() + ".py");
+    public void generatePythonTrainingConfiguration(final ASTConfLangCompilationUnit configurationModel, String generatedConfigurationName) {
+        final Path fileName = Paths.get(generatedConfigurationName + ".py");
         generatorEngine.generate(Template.TRAINING_CONFIGURATION_CLASS.getTemplateName(), fileName, configurationModel, configurationModel);
 
     }
