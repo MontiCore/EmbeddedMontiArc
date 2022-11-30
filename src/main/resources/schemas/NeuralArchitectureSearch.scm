@@ -1,6 +1,6 @@
 /* (c) https://github.com/MontiCore/monticore */
 
-schema TrainAlgorithm {
+schema NeuralArchitectureSearch {
 
     save_trained_architecture: B
     architecture_save_path: string
@@ -10,5 +10,5 @@ schema TrainAlgorithm {
     train_pipeline_name: enum {
         Pytorch, Gluon, Tensorflow;
     }
-
+    max_episodes: N
 }

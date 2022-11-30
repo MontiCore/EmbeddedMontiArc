@@ -12,7 +12,7 @@
     <!-- == PROJECT DEPENDENCIES ============================================= -->
     <properties>
         <!-- .. SE-Libraries .................................................. -->
-        <CNNArch.version>0.4.10-SNAPSHOT</CNNArch.version>
+        <CNNArch.version>0.4.11-SNAPSHOT</CNNArch.version>
         <conflang.version>1.0.0-SNAPSHOT</conflang.version>
         <schemalang.version>1.0.0-SNAPSHOT</schemalang.version>
         <embedded-montiarc-math-generator>0.4.9</embedded-montiarc-math-generator>
@@ -43,7 +43,6 @@
     </properties>
 
     <dependencies>
-
         <dependency>
             <groupId>org.antlr</groupId>
             <artifactId>antlr4-runtime</artifactId>
@@ -54,6 +53,12 @@
             <groupId>com.google.guava</groupId>
             <artifactId>guava</artifactId>
             <version>${guava.version}</version>
+        </dependency>
+
+        <dependency>
+            <groupId>de.se_rwth.maven</groupId>
+            <artifactId>se-groovy-maven-plugin</artifactId>
+            <version>1.2.4-SNAPSHOT</version>
         </dependency>
 
         <!-- MontiCore Dependencies -->
