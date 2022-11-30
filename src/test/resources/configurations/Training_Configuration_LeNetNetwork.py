@@ -3,7 +3,11 @@
 class Training_Configuration_LeNetNetwork:
     def __init__(self):
         pass
-    
+
+
+    def get_num_epoch(self):
+        return 20
+
 
     def get_batch_size(self):
         return 64
@@ -16,7 +20,12 @@ class Training_Configuration_LeNetNetwork:
     def get_eval_metric_value(self):
         return 'accuracy'
 
-    
+
+
+    def get_loss_value(self):
+        return 'cross_entropy'
+
+
 
     def get_optimizer_value(self):
         return 'adam'

@@ -16,18 +16,21 @@ public class TemplateLinker {
         for (ASTConfigurationEntry astConfigurationEntry : configurationModel.getConfiguration().getAllConfigurationEntries()
         ) {
             if (astConfigurationEntry.isNestedConfiguration()) {
-                ConfLangGeneratorConfiguration.getGlobalExtensionManagement().replaceTemplate(Template.TRAINING_CONFIGURATION_METHOD.getTemplateName(),
+                ConfLangGeneratorConfiguration.getGlobalExtensionManagement().replaceTemplate(Template.EMPTY_CONFIGURATION_METHOD
+                        .getTemplateName(),
                         astConfigurationEntry, new TemplateHookPoint(Template.NESTED_CONFIGURATION.getTemplateName()));
 
                 for (ASTConfigurationEntry nestedEntry : ((ASTNestedConfigurationEntry) astConfigurationEntry).getConfigurationEntryList()
                 ) {
-                    ConfLangGeneratorConfiguration.getGlobalExtensionManagement().replaceTemplate(Template.TRAINING_CONFIGURATION_METHOD.getTemplateName(),
+                    ConfLangGeneratorConfiguration.getGlobalExtensionManagement().replaceTemplate(Template.EMPTY_CONFIGURATION_METHOD
+                            .getTemplateName(),
                             nestedEntry, new TemplateHookPoint(Template.SIMPLE_CONFIGURATION.getTemplateName()));
 
                 }
             }
             else {
-                ConfLangGeneratorConfiguration.getGlobalExtensionManagement().replaceTemplate(Template.TRAINING_CONFIGURATION_METHOD.getTemplateName(),
+                ConfLangGeneratorConfiguration.getGlobalExtensionManagement().replaceTemplate(Template.EMPTY_CONFIGURATION_METHOD
+                        .getTemplateName(),
                         astConfigurationEntry, new TemplateHookPoint(Template.SIMPLE_CONFIGURATION.getTemplateName()));
             }
             }
