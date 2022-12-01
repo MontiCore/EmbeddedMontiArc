@@ -6,5 +6,5 @@ class Training_Configuration_${configurationModel.getConfiguration().getName()}:
     def __init__(self):
         pass
 <#list configurationEntries as configurationEntry>
-    ${tc.includeArgs("templates.confLang.python.Training_Configuration_Method", configurationEntry,[configurationEntry,""])}
+    ${tc.includeArgs("templates.confLang.python.Empty_Configuration_Method", configurationEntry,[configurationEntry,""])}
 </#list>

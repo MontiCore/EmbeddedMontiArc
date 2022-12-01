@@ -1,5 +1,5 @@
-${tc.signature ("ASTConfigurationEntry")}
-<#assign configurationEntry = ASTConfLangCompilationUnit/>
+${tc.signature ("ASTConfigurationEntry", "methodNamePrefix")}
+<#assign configurationEntry = ASTConfigurationEntry/>
 
-def ${configurationEntry.getName}(self):
+def ${configurationEntry.getName()}(self):
     pass
