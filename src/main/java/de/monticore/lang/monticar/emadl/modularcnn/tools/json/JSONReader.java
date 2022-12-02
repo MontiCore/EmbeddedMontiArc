@@ -6,7 +6,7 @@
  */
 package de.monticore.lang.monticar.emadl.modularcnn.tools.json;
 
-import de.monticore.lang.monticar.emadl.modularcnn.composer.NetworkStructureInformation;
+import de.monticore.lang.monticar.emadl.modularcnn.compositions.NetworkStructureInformation;
 
 import java.util.ArrayList;
 

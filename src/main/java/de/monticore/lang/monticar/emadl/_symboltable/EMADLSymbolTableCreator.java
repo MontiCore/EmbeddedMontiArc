@@ -19,8 +19,8 @@ import de.monticore.lang.monticar.emadl._ast.ASTBehaviorEmbedding;
 import de.monticore.lang.monticar.emadl._visitor.EMADLVisitor;
 import de.monticore.lang.monticar.emadl._visitor.ModularEMADLDelegatorVisitor;
 import de.monticore.lang.monticar.emadl._visitor.ModularNetworkVisitor;
-import de.monticore.lang.monticar.emadl.modularcnn.composer.ArchitectureNode;
-import de.monticore.lang.monticar.emadl.modularcnn.ModularCNNSymbolTableCreator;
+import de.monticore.lang.monticar.emadl.modularcnn.compositions.ArchitectureNode;
+import de.monticore.lang.monticar.emadl.modularcnn.ComposedCNNScanner;
 import de.monticore.symboltable.MutableScope;
 import de.monticore.symboltable.ResolvingConfiguration;
 import de.monticore.symboltable.Scope;
@@ -38,7 +38,7 @@ public class EMADLSymbolTableCreator extends de.monticore.symboltable.CommonSymb
     private MathOptSymbolTableCreator mathOptSTC;
     private EmbeddedMontiArcDynamicSymbolTableCreator emadSTC;
     private EmbeddedMontiArcBehaviorVisitor emaBehaviorSTC;
-    private ModularNetworkVisitor mcnnSTC;
+    private ModularNetworkVisitor compCNNScanner;
 
     private ArrayList<ArchitectureNode> archNodes = null;
     private String composedNetworksFilePath = "";
@@ -83,7 +83,7 @@ public class EMADLSymbolTableCreator extends de.monticore.symboltable.CommonSymb
         this.emadSTC.setInstanceSymbolCreator(new ModifiedEMAComponentInstanceSymbolCreator()); //Use an instance symbol, creator that adds math statement to instances
         this.emaBehaviorSTC = new EmbeddedMontiArcBehaviorSymbolTableCreator(resolvingConfig, scopeStack);
 
-        this.mcnnSTC = new ModularCNNSymbolTableCreator(resolvingConfig, scopeStack, archNodes, this.composedNetworksFilePath);
+        this.compCNNScanner = new ComposedCNNScanner(resolvingConfig, scopeStack, archNodes, this.composedNetworksFilePath);
 
         visitor.setEMADLVisitor(this);
         visitor.setCNNArchVisitor(cnnArchSTC);
@@ -103,7 +103,7 @@ public class EMADLSymbolTableCreator extends de.monticore.symboltable.CommonSymb
 
         visitor.setCommon2Visitor(emamSTC);
 
-        visitor.setModularNetworkVisitor(mcnnSTC);
+        visitor.setModularNetworkVisitor(compCNNScanner);
     }
 
     private void initSuperSTC(final ResolvingConfiguration resolvingConfig, String customFilesPath, String pythonPath, String backend, String composedNetworksFilePath) {
@@ -113,7 +113,7 @@ public class EMADLSymbolTableCreator extends de.monticore.symboltable.CommonSymb
         this.emadSTC = new ModifiedEMADynamicSymbolTableCreator(resolvingConfig, scopeStack);
         this.emadSTC.setInstanceSymbolCreator(new ModifiedEMAComponentInstanceSymbolCreator()); //Use an instance symbol, creator that adds math statement to instances
         this.emaBehaviorSTC = new EmbeddedMontiArcBehaviorSymbolTableCreator(resolvingConfig, scopeStack);
-        this.mcnnSTC = new ModularCNNSymbolTableCreator(resolvingConfig, scopeStack, archNodes, composedNetworksFilePath);
+        this.compCNNScanner = new ComposedCNNScanner(resolvingConfig, scopeStack, archNodes, composedNetworksFilePath);
 
         visitor.setEMADLVisitor(this);
         visitor.setCNNArchVisitor(cnnArchSTC);
@@ -133,7 +133,7 @@ public class EMADLSymbolTableCreator extends de.monticore.symboltable.CommonSymb
 
         visitor.setCommon2Visitor(emamSTC);
 
-        visitor.setModularNetworkVisitor(mcnnSTC);
+        visitor.setModularNetworkVisitor(compCNNScanner);
     }
 
 /**

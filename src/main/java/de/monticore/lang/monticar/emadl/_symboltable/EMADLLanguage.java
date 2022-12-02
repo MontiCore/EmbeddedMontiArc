@@ -16,7 +16,7 @@ import de.monticore.lang.mathopt._symboltable.MathOptLanguage;
 import de.monticore.lang.monticar.cnnarch._symboltable.CNNArchLanguage;
 import de.monticore.lang.monticar.emadl._parser.EMADLParser;
 import de.monticore.lang.monticar.emadl.adapter.PortArraySymbol2IODeclarationSymbolTypeFilter;
-import de.monticore.lang.monticar.emadl.modularcnn.composer.ArchitectureNode;
+import de.monticore.lang.monticar.emadl.modularcnn.compositions.ArchitectureNode;
 import de.monticore.symboltable.MutableScope;
 import de.monticore.symboltable.ResolvingConfiguration;
 import de.monticore.symboltable.Symbol;

@@ -24,21 +24,6 @@ public interface ModularNetworkVisitor extends EMADLVisitor {
         throw new UnsupportedOperationException("setRealThis setter for ModularNetworkVisitor as ModularNetworkVisitor not implemented");
     }
 
-    /*
-    default void setRealThis(EMADLVisitor v){
-        throw new UnsupportedOperationException("setRealThis setter for ModularNetworkVisitor as EMADLVisitor not implemented");
-    }*/
-
-    //@Override
-    default void traverse(ASTNode node){
-        //Log.info("MVN","TRAVERSE_MVN");
-    }
-
-    //@Override
-    default void handle(ASTNode node) {
-        //Log.info("MVN","HANDLE_MVN");
-    }
-
     @Override
     default void visit(ASTNode node) {
         //Log.info("MVN","VISIT_MVN");

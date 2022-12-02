@@ -4,7 +4,7 @@
  * The license generally applicable for this project
  * can be found under https://github.com/MontiCore/monticore.
  */
-package de.monticore.lang.monticar.emadl.modularcnn.composer;
+package de.monticore.lang.monticar.emadl.modularcnn.compositions;
 
 import de.monticore.lang.embeddedmontiarc.embeddedmontiarc._symboltable.EmbeddedMontiArcArtifactScope;
 import de.monticore.lang.embeddedmontiarc.embeddedmontiarc._symboltable.cncModel.EMAComponentSymbolReference;
@@ -12,7 +12,6 @@ import de.monticore.lang.embeddedmontiarc.embeddedmontiarc._symboltable.instance
 import de.monticore.lang.monticar.cnnarch._symboltable.ArchitectureSymbol;
 import de.monticore.lang.monticar.emadl.modularcnn.tools.json.JSONBuilder;
 import de.monticore.lang.monticar.emadl.modularcnn.tools.json.JSONReader;
-import de.monticore.symboltable.references.SymbolReference;
 
 import java.util.ArrayList;
 import java.util.Set;

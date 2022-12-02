@@ -6,15 +6,11 @@
  */
 package de.monticore.lang.monticar.emadl.modularcnn.tools;
 
-import de.monticore.lang.monticar.emadl.modularcnn.composer.ComponentInformation;
-import de.monticore.lang.monticar.emadl.modularcnn.composer.NetworkStructureInformation;
+import de.monticore.lang.monticar.emadl.modularcnn.compositions.ComponentInformation;
+import de.monticore.lang.monticar.emadl.modularcnn.compositions.NetworkStructureInformation;
 
 import java.io.*;
-import java.text.SimpleDateFormat;
-import java.time.LocalDate;
 import java.util.ArrayList;
-import java.util.Calendar;
-import java.util.Date;
 
 public class ComposedNetworkFileHandler {
     private String composedNetworksFilePath;

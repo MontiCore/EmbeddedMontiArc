@@ -14,10 +14,7 @@ package de.monticore.lang.monticar.emadl._visitor;
 
 import de.monticore.ast.ASTNode;
 import de.monticore.lang.embeddedmontiarc.embeddedmontiarc._ast.ASTEMACompilationUnit;
-import de.monticore.lang.embeddedmontiarc.embeddedmontiarc._symboltable.instanceStructure.EMAComponentInstanceSymbol;
 import de.monticore.lang.monticar.emadl._ast.ASTEMADLNode;
-import de.monticore.lang.monticar.emadl.modularcnn.ModularCNNSymbolTableCreator;
-import de.se_rwth.commons.logging.Log;
 
 import java.util.Optional;
 
@@ -35,7 +32,6 @@ public class ModularEMADLDelegatorVisitor extends EMADLDelegatorVisitor implemen
         if (this.realThis != realThis) {
             this.realThis = (ModularEMADLDelegatorVisitor) realThis;
             if (this.modularNetworkVisitor.isPresent()) {
-                //Log.info("Trying to set MVN","MEDV_SetRealThis");
                 this.setModularNetworkVisitor(modularNetworkVisitor.get());
             }
         }
@@ -50,10 +46,8 @@ public class ModularEMADLDelegatorVisitor extends EMADLDelegatorVisitor implemen
     public void setModularNetworkVisitor(ModularNetworkVisitor mvn) {
         this.modularNetworkVisitor = Optional.ofNullable(mvn);
         if (this.modularNetworkVisitor.isPresent()) {
-            //Log.info("Trying to set MVN","MEDV_setModularNetworkVisitor_1");
             this.modularNetworkVisitor.get().setRealThis(getRealThis());
         }
-        //Log.info("Trying to set MVN","MEDV_setModularNetworkVisitor_2");
         if (getRealThis() != this) {
             getRealThis().setModularNetworkVisitor(mvn);
         }

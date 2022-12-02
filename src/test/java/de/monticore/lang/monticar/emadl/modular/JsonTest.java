@@ -6,7 +6,7 @@
  */
 package de.monticore.lang.monticar.emadl.modular;
 
-import de.monticore.lang.monticar.emadl.modularcnn.composer.NetworkStructureInformation;
+import de.monticore.lang.monticar.emadl.modularcnn.compositions.NetworkStructureInformation;
 import de.se_rwth.commons.logging.Log;
 import org.junit.Before;
 import org.junit.Test;
