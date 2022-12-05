@@ -23,6 +23,6 @@ schema Reinforcement extends General {
     snapshot_interval: N1
 
     actor_optimizer: optimizer_type
-    environment: environment_type!
+    environment_gym: environment_type!
     replay_memory = buffer: replay_memory_type
 }
