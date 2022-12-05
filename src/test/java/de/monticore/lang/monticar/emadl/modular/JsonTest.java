@@ -37,11 +37,11 @@ public class JsonTest {
 
         String json = net3.printStructureJSON();
         NetworkStructureInformation net3Read = new NetworkStructureInformation(json);
-        assertTrue(net3.equals(net3Read));
+        assertTrue(net3.equals(net3Read, true));
 
         json = net2.printStructureJSON();
         NetworkStructureInformation net2Read = new NetworkStructureInformation(json);
-        assertTrue(net2.equals(net2Read));
+        assertTrue(net2.equals(net2Read, true));
 
         json = net1.printStructureJSON();
         NetworkStructureInformation net1Read = new NetworkStructureInformation(json);

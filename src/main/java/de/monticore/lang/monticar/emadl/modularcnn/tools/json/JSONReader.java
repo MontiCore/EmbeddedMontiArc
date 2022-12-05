@@ -80,7 +80,7 @@ public class JSONReader {
             subNetworkStructures.add(networkStructureInformation);
         }
 
-        if (subNetworkStructures.size() == 0) return null;
+        //if (subNetworkStructures.size() == 0) return null;
         return subNetworkStructures;
     }
 
@@ -98,7 +98,7 @@ public class JSONReader {
             dataFlow.add(arrayContent);
         }
 
-        if (dataFlow.size() == 0) return null;
+        //if (dataFlow.size() == 0) return null;
         return dataFlow;
     }
 

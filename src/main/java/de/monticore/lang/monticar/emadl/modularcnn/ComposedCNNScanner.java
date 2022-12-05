@@ -102,6 +102,5 @@ public class ComposedCNNScanner extends CommonSymbolTableCreator implements Modu
         if (cnnProcessor.checkNotNullAndValid(node)){
             cnnProcessor.checkAndProcessComponentOnMatch(node);
         }
-        Log.info("DONE","END_MCNNSTC_COMP_DONE");
     }
 }
