@@ -29,7 +29,7 @@ public class JSONReader {
 
     private NetworkStructureInformation processObject(String jsonContent) {
         ArrayList<String> separatedEntries = separateEntries(jsonContent);
-        ArrayList<KeyValuePair> levelKvPairs = splitLevelContent(separatedEntries);
+        ArrayList<JSONKVPair> levelKvPairs = splitLevelContent(separatedEntries);
 
         String name = null;
         String instanceName = null;
@@ -102,13 +102,13 @@ public class JSONReader {
         return dataFlow;
     }
 
-    private ArrayList<KeyValuePair> splitLevelContent(ArrayList<String> seperatedEntries) {
-        ArrayList<KeyValuePair> keyValuePairs = new ArrayList<>();
+    private ArrayList<JSONKVPair> splitLevelContent(ArrayList<String> seperatedEntries) {
+        ArrayList<JSONKVPair> jsonKvPairs = new ArrayList<>();
 
         for (int i = 0; i < seperatedEntries.size(); i++) {
-            keyValuePairs.add(extractKeyValuePair(seperatedEntries.get(i)));
+            jsonKvPairs.add(extractKeyValuePair(seperatedEntries.get(i)));
         }
-        return keyValuePairs;
+        return jsonKvPairs;
     }
 
     private ArrayList<String> separateEntries(String jsonContent) {
@@ -136,11 +136,11 @@ public class JSONReader {
 
     }
 
-    private KeyValuePair extractKeyValuePair(String jsonEntry) {
+    private JSONKVPair extractKeyValuePair(String jsonEntry) {
         String[] pair = jsonEntry.split(":",2);
         String key = pair[0].replace("\"", "");
         String value = "";
-        KeyValuePair keyValuePair = null;
+        JSONKVPair JSONKVPair = null;
 
         char[] valueChars = pair[1].toCharArray();
         char startsWith = Character.MIN_VALUE, endsWith = Character.MIN_VALUE;
@@ -161,16 +161,16 @@ public class JSONReader {
 
         if (startsWith == '[' && endsWith == ']') {
             value = pair[1];
-            keyValuePair = new KeyValuePair(key, value, LevelType.ARRAY);
+            JSONKVPair = new JSONKVPair(key, value, LevelType.ARRAY);
         } else if (startsWith == '{' && endsWith == '}') {
             value = pair[1];
-            keyValuePair = new KeyValuePair(key, value, LevelType.OBJECT);
+            JSONKVPair = new JSONKVPair(key, value, LevelType.OBJECT);
         } else {
             value = pair[1].replace("\"", "");
-            keyValuePair = new KeyValuePair(key, value, LevelType.VALUE);
+            JSONKVPair = new JSONKVPair(key, value, LevelType.VALUE);
         }
 
-        return keyValuePair;
+        return JSONKVPair;
     }
 
     private LevelType translateLevelType(int l) {

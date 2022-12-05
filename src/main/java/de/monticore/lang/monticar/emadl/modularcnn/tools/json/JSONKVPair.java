@@ -6,8 +6,8 @@
  */
 package de.monticore.lang.monticar.emadl.modularcnn.tools.json;
 
-class KeyValuePair {
-    public KeyValuePair(String key, String value, LevelType type) {
+class JSONKVPair {
+    public JSONKVPair(String key, String value, LevelType type) {
         this.key = key;
         this.value = value;
         this.type = type;
