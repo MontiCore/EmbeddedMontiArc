@@ -70,10 +70,13 @@ public class DatasetArtifactSymbolCreator implements TagSymbolCreator {
               .filter(Optional::isPresent)
               .map(Optional::get)
               .forEachOrdered(scope -> {
-                String artifact = String.format("%s%s%s%s%s", matcher.group(1).replace('.', File.separatorChar),
-                    File.separator, matcher.group(2), File.separator, matcher.group(3));
-                String jar = String.format("%s-%s-dataset", matcher.group(2), matcher.group(3));
-                tagging.addTag(scope, new DatasetArtifactSymbol(artifact, jar, matcher.group(4))); }
+                String groupId = matcher.group(1);
+                String artifactId = matcher.group(2);
+                String version = matcher.group(3);
+                String artifact = String.format("%s%s%s%s%s", groupId.replace('.', File.separatorChar),
+                    File.separator, artifactId, File.separator, version);
+                String jar = String.format("%s-%s-dataset", artifactId, version);
+                tagging.addTag(scope, new DatasetArtifactSymbol(artifact, jar, matcher.group(4), artifactId, groupId, version)); }
               );
         });
   }
