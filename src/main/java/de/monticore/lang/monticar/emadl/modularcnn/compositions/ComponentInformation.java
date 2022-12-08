@@ -97,8 +97,6 @@ public class ComponentInformation {
     }
 
 
-
-    //TODO: CHECK
     public ComponentInformation(ASTComponent component, ArrayList<ArchitectureNode> currentNodes) {
         this.originalComponentReference = component;
         this.componentName = component.getName();
@@ -137,7 +135,6 @@ public class ComponentInformation {
         return this.isCNNNode;
     }
 
-    //TODO: CHECK
     public boolean isComposedCNN() {
         if (violatesNetworkForm) {
             return false;
@@ -257,7 +254,6 @@ public class ComponentInformation {
         }
     }
 
-    //TODO: CHECK
     private void findComponents(ArrayList<ASTSubComponent> components) {
         if (!(components.size() > 0)) {
             this.violatesNetworkForm = true;

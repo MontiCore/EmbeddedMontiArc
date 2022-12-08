@@ -51,14 +51,6 @@ public class ComposedNetworkFileHandler {
             boolean hit = false;
             for (int i = 0; i<knownNetworks.size(); i++){
                 NetworkStructureInformation network = knownNetworks.get(i);
-                /*
-                if (network.isSubNetOf(componentInformation)){
-                    hit = true;
-                    knownNetworks.set(i, new NetworkStructureInformation(componentInformation));
-                } else if( network.isSuperNetOf(componentInformation)){
-                    hit = true;
-                }
-                */
                 if (network.printStructureJSON().equals(componentInformation.printNetworkStructureJSON())){
                     hit = true;
                 }
