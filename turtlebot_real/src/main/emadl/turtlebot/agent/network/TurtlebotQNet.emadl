@@ -2,8 +2,8 @@ package turtlebot.agent.network;
 
 component TurtlebotQNet {
     ports
-        in Q(-oo:oo)^{10} state,
-        out Q(-oo:oo)^{3} qvalues;
+        in Q(-oo:oo)^{31} state,
+        out Q(-oo:oo)^{5} qvalues;
 
 
     implementation CNN {
@@ -12,7 +12,8 @@ component TurtlebotQNet {
         Relu() ->
         FullyConnected(units=600) ->
         Relu() ->
-        FullyConnected(units=3) ->
+        Dropout()->
+        FullyConnected(units=5) ->
         qvalues;
     }
 }

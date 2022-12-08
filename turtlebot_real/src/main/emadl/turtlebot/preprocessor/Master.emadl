@@ -2,26 +2,68 @@ package turtlebot.preprocessor;
 
 import turtlebot.preprocessor.util.LidarScan;
 import turtlebot.preprocessor.util.ScanDiscretization;
+import turtlebot.preprocessor.move.GetQuat;
+import turtlebot.preprocessor.util.CombineState;
+import turtlebot.preprocessor.util.CheckCrash;
+
+import turtlebot.preprocessor.move.EulerFromQuaternion;
+import turtlebot.preprocessor.move.CalcHeading;
+import turtlebot.preprocessor.move.CalcDistance;
+import turtlebot.preprocessor.move.SetGoal;
+import turtlebot.preprocessor.util.CalcReward;
 
 component Master {
     ports
         in  Q^{360}  ranges,
         in  Q        gazebo_reward,
         in  B        gazebo_terminal,
-        in  Q^{4}    cur_position,
-        out Q^{10}    state,
+        in  Q^{6}    positions,
+        in  Z        actionIn,
+        in  B        resetState,
+        out Q^{31}    state,
         out Q        reward,
         out B        terminal;
 
         
     instance LidarScan lidarScan;
     instance ScanDiscretization scanDisc;
+    instance CombineState combineState;
+    instance GetQuat getQuat;
+    instance SetGoal setGoal;
+    instance EulerFromQuaternion euFromQuat;
+    instance CalcHeading calcHead;
+    instance CalcDistance calcDist;
+    instance CheckCrash checkCrash;
+    instance CalcReward calcReward;
 
     connect ranges                 -> lidarScan.msgRanges; 
     connect lidarScan.distancesOut -> scanDisc.distances;
-    connect cur_position           -> scanDisc.position;
-    connect scanDisc.state         -> state;
-    connect gazebo_reward          -> reward;
-    connect gazebo_terminal        -> terminal;
+    connect scanDisc.scanState     -> combineState.laserState;
+    connect scanDisc.scanState     -> checkCrash.checkState;
+    connect positions              -> getQuat.positions;
+    connect getQuat.robotPosition  -> calcDist.first_point;
+    connect getQuat.quat           -> euFromQuat.quaternion;
+    connect euFromQuat.eulerAngles -> calcHead.angles;
+    connect getQuat.robotPosition  -> calcHead.robotPosition;
+    connect setGoal.goalPos        -> calcHead.goalPosition;
+    connect setGoal.goalPos        -> calcDist.second_point;
+    connect setGoal.absDistance    -> calcReward.abs_distance;
+    connect calcHead.heading       -> calcReward.heading;
+    connect calcDist.distance      -> calcReward.current_distance;
+    connect checkCrash.isCrash     -> calcReward.crash;
+    connect calcHead.heading       -> combineState.headingState;
+    connect calcDist.distance      -> combineState.curDistance;
+
+    connect actionIn               -> calcReward.actionIn;
+    connect resetState             -> calcReward.resetState;
+
+
+    connect combineState.state     -> state;
+    
+    connect calcReward.reward      -> reward;
+    connect calcReward.terminal    -> terminal;
+    
+    //connect gazebo_reward          -> reward;
+    //connect gazebo_terminal        -> terminal;
 
 }
