@@ -16,6 +16,7 @@ import de.monticore.lang.mathopt._symboltable.MathOptLanguage;
 import de.monticore.lang.monticar.cnnarch._symboltable.CNNArchLanguage;
 import de.monticore.lang.monticar.emadl._parser.EMADLParser;
 import de.monticore.lang.monticar.emadl.adapter.PortArraySymbol2IODeclarationSymbolTypeFilter;
+import de.monticore.lang.monticar.emadl.modularcnn.compositions.ArchitectureNode;
 import de.monticore.symboltable.MutableScope;
 import de.monticore.symboltable.ResolvingConfiguration;
 import de.monticore.symboltable.Symbol;
@@ -30,9 +31,13 @@ public class EMADLLanguage extends EmbeddingModelingLanguage {
     private String backend = "";
     private String pythonPath = "";
 
+
     public static final EmbeddedMontiArcDynamicLanguage HOST_LANGUAGE = new EmbeddedMontiArcDynamicLanguage();
     public static final CNNArchLanguage CNNARCH_LANGUAGE = new CNNArchLanguage();
     public static final MathOptLanguage MATH_LANGUAGE = new MathOptLanguage();
+
+    private ArrayList<ArchitectureNode> architectureNodes = new ArrayList<>();
+    private String composedNetworkFilePath = "";
 
     public EMADLLanguage() {
         super("Embedded MontiArc Deep Learning Language",
@@ -49,6 +54,11 @@ public class EMADLLanguage extends EmbeddingModelingLanguage {
         setBackend(backend);
         setCustomFilesPath(customFilesPath);
         setPythonPath(pythonPath);
+    }
+
+    public EMADLLanguage(String customFilesPath, String pythonPath, String backend, String composedNetworkFilePath) {
+        this(customFilesPath, pythonPath, backend);
+        setComposedNetworkFilePath(composedNetworkFilePath);
     }
 
     private void setBackend(String backend){
@@ -70,6 +80,18 @@ public class EMADLLanguage extends EmbeddingModelingLanguage {
     private void setPythonPath (String pythonPath){ this.pythonPath = pythonPath; }
 
     public String getPythonPath (){ return this.pythonPath; }
+
+    public void setComposedNetworkFilePath(String composedNetworkFilePath){
+        this.composedNetworkFilePath = composedNetworkFilePath;
+    }
+
+    public String getComposedNetworkFilePath(){
+        return this.composedNetworkFilePath;
+    }
+
+    public ArrayList<ArchitectureNode> getArchitectureNodes() {
+        return architectureNodes;
+    }
 
 
     @Override
@@ -95,10 +117,12 @@ public class EMADLLanguage extends EmbeddingModelingLanguage {
         return new EMADLParser();
     }
 
+
+
     @Override
     public Optional<EMADLSymbolTableCreator> getSymbolTableCreator(ResolvingConfiguration resolvingConfiguration, MutableScope enclosingScope) {
         return Optional.of(new EMADLSymbolTableCreator(
-                resolvingConfiguration, enclosingScope,getCustomFilesPath(), getPythonPath(), getBackend()));
+                resolvingConfiguration, enclosingScope,getCustomFilesPath(), getPythonPath(), getBackend(), getArchitectureNodes(), getComposedNetworkFilePath()));
     }
 
 }

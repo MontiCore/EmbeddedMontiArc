@@ -13,54 +13,66 @@ import de.monticore.lang.embeddedmontiarc.embeddedmontiarcbehavior._visitor.Embe
 import de.monticore.lang.embeddedmontiarc.embeddedmontiarcmath._symboltable.EmbeddedMontiArcMathSymbolTableCreatorTOP;
 import de.monticore.lang.embeddedmontiarc.embeddedmontiarcmath._symboltable.instanceStructure.ModifiedEMAComponentInstanceSymbolCreator;
 import de.monticore.lang.embeddedmontiarcdynamic.embeddedmontiarcdynamic._symboltable.EmbeddedMontiArcDynamicSymbolTableCreator;
-import de.monticore.lang.math._ast.ASTStatement;
 import de.monticore.lang.mathopt._symboltable.MathOptSymbolTableCreator;
 import de.monticore.lang.monticar.cnnarch._symboltable.CNNArchSymbolTableCreator;
 import de.monticore.lang.monticar.emadl._ast.ASTBehaviorEmbedding;
-import de.monticore.lang.monticar.emadl._visitor.EMADLDelegatorVisitor;
 import de.monticore.lang.monticar.emadl._visitor.EMADLVisitor;
+import de.monticore.lang.monticar.emadl._visitor.ModularEMADLDelegatorVisitor;
+import de.monticore.lang.monticar.emadl._visitor.ModularNetworkVisitor;
+import de.monticore.lang.monticar.emadl.modularcnn.compositions.ArchitectureNode;
+import de.monticore.lang.monticar.emadl.modularcnn.ComposedCNNScanner;
 import de.monticore.symboltable.MutableScope;
 import de.monticore.symboltable.ResolvingConfiguration;
 import de.monticore.symboltable.Scope;
 import de.se_rwth.commons.logging.Log;
 
-import java.util.ArrayList;
-import java.util.Deque;
-import java.util.HashMap;
+import java.util.*;
 
 public class EMADLSymbolTableCreator extends de.monticore.symboltable.CommonSymbolTableCreator
         implements EMADLVisitor {
     
-    private final EMADLDelegatorVisitor visitor = new EMADLDelegatorVisitor();
+    private final ModularEMADLDelegatorVisitor visitor = new ModularEMADLDelegatorVisitor();
 
     private EmbeddedMontiArcMathSymbolTableCreatorTOP emamSTC;
     private CNNArchSymbolTableCreator cnnArchSTC;
     private MathOptSymbolTableCreator mathOptSTC;
     private EmbeddedMontiArcDynamicSymbolTableCreator emadSTC;
     private EmbeddedMontiArcBehaviorVisitor emaBehaviorSTC;
+    private ModularNetworkVisitor compCNNScanner;
+
+    private ArrayList<ArchitectureNode> archNodes = null;
+    private String composedNetworksFilePath = "";
+
 
     public EMADLSymbolTableCreator(
-            final ResolvingConfiguration resolvingConfig, final MutableScope enclosingScope) {
+            final ResolvingConfiguration resolvingConfig, final MutableScope enclosingScope, ArrayList<ArchitectureNode> archNodes) {
         super(resolvingConfig, enclosingScope);
+        this.archNodes = archNodes;
         initSuperSTC(resolvingConfig);
     }
 
     public EMADLSymbolTableCreator(
             final ResolvingConfiguration resolvingConfig, final MutableScope enclosingScope,
-            String customFilesPath, String pythonPath, String backend) {
+            String customFilesPath, String pythonPath, String backend, ArrayList<ArchitectureNode> archNodes, String composedNetworksFilePath) {
         super(resolvingConfig, enclosingScope);
-        initSuperSTC(resolvingConfig, customFilesPath, pythonPath, backend);
+        this.archNodes = archNodes;
+        this.composedNetworksFilePath = composedNetworksFilePath;
+        initSuperSTC(resolvingConfig, customFilesPath, pythonPath, backend, composedNetworksFilePath);
     }
 
-    public EMADLSymbolTableCreator(final ResolvingConfiguration resolvingConfig, final Deque<MutableScope> scopeStack) {
+    public EMADLSymbolTableCreator(final ResolvingConfiguration resolvingConfig, final Deque<MutableScope> scopeStack, ArrayList<ArchitectureNode> archNodes, String composedNetworksFilePath) {
         super(resolvingConfig, scopeStack);
+        this.archNodes = archNodes;
+        this.composedNetworksFilePath = composedNetworksFilePath;
         initSuperSTC(resolvingConfig);
     }
 
     public EMADLSymbolTableCreator(final ResolvingConfiguration resolvingConfig, final Deque<MutableScope> scopeStack,
-                                   String customFilesPath, String pythonPath, String backend) {
+                                   String customFilesPath, String pythonPath, String backend, ArrayList<ArchitectureNode> archNodes, String composedNetworksFilePath) {
         super(resolvingConfig, scopeStack);
-        initSuperSTC(resolvingConfig, customFilesPath, pythonPath, backend);
+        this.archNodes = archNodes;
+        this.composedNetworksFilePath = composedNetworksFilePath;
+        initSuperSTC(resolvingConfig, customFilesPath, pythonPath, backend, composedNetworksFilePath);
     }
 
     private void initSuperSTC(final ResolvingConfiguration resolvingConfig) {
@@ -68,8 +80,10 @@ public class EMADLSymbolTableCreator extends de.monticore.symboltable.CommonSymb
         this.emamSTC = new EmbeddedMontiArcMathSymbolTableCreatorTOP(resolvingConfig, scopeStack);
         this.mathOptSTC = new MathOptSymbolTableCreator(resolvingConfig, scopeStack);
         this.emadSTC = new ModifiedEMADynamicSymbolTableCreator(resolvingConfig, scopeStack);
-        this.emadSTC.setInstanceSymbolCreator(new ModifiedEMAComponentInstanceSymbolCreator()); //Use an instance symbo, creator that adds math statement to instances
+        this.emadSTC.setInstanceSymbolCreator(new ModifiedEMAComponentInstanceSymbolCreator()); //Use an instance symbol, creator that adds math statement to instances
         this.emaBehaviorSTC = new EmbeddedMontiArcBehaviorSymbolTableCreator(resolvingConfig, scopeStack);
+
+        this.compCNNScanner = new ComposedCNNScanner(resolvingConfig, scopeStack, archNodes, this.composedNetworksFilePath);
 
         visitor.setEMADLVisitor(this);
         visitor.setCNNArchVisitor(cnnArchSTC);
@@ -88,15 +102,18 @@ public class EMADLSymbolTableCreator extends de.monticore.symboltable.CommonSymb
         visitor.setMathOptVisitor(mathOptSTC);
 
         visitor.setCommon2Visitor(emamSTC);
+
+        visitor.setModularNetworkVisitor(compCNNScanner);
     }
 
-    private void initSuperSTC(final ResolvingConfiguration resolvingConfig, String customFilesPath, String pythonPath, String backend) {
+    private void initSuperSTC(final ResolvingConfiguration resolvingConfig, String customFilesPath, String pythonPath, String backend, String composedNetworksFilePath) {
         this.cnnArchSTC = new CNNArchSymbolTableCreator(resolvingConfig, scopeStack, customFilesPath, pythonPath, backend);
         this.emamSTC = new EmbeddedMontiArcMathSymbolTableCreatorTOP(resolvingConfig, scopeStack);
         this.mathOptSTC = new MathOptSymbolTableCreator(resolvingConfig, scopeStack);
         this.emadSTC = new ModifiedEMADynamicSymbolTableCreator(resolvingConfig, scopeStack);
-        this.emadSTC.setInstanceSymbolCreator(new ModifiedEMAComponentInstanceSymbolCreator()); //Use an instance symbo, creator that adds math statement to instances
+        this.emadSTC.setInstanceSymbolCreator(new ModifiedEMAComponentInstanceSymbolCreator()); //Use an instance symbol, creator that adds math statement to instances
         this.emaBehaviorSTC = new EmbeddedMontiArcBehaviorSymbolTableCreator(resolvingConfig, scopeStack);
+        this.compCNNScanner = new ComposedCNNScanner(resolvingConfig, scopeStack, archNodes, composedNetworksFilePath);
 
         visitor.setEMADLVisitor(this);
         visitor.setCNNArchVisitor(cnnArchSTC);
@@ -115,6 +132,8 @@ public class EMADLSymbolTableCreator extends de.monticore.symboltable.CommonSymb
         visitor.setMathOptVisitor(mathOptSTC);
 
         visitor.setCommon2Visitor(emamSTC);
+
+        visitor.setModularNetworkVisitor(compCNNScanner);
     }
 
 /**
@@ -158,6 +177,4 @@ public class EMADLSymbolTableCreator extends de.monticore.symboltable.CommonSymb
             addToScopeAndLinkWithNode(new EMADLMathStatementsSymbol("MathStatements", ast.getStatementList()), ast);
         }
     }
-
-
 }

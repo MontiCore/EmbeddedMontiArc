@@ -8,6 +8,7 @@
 package de.monticore.lang.monticar.emadl._symboltable;
 
 import de.monticore.lang.embeddedmontiarc.embeddedmontiarc._ast.ASTEMACompilationUnit;
+import de.monticore.lang.monticar.emadl._ast.EMADLMill;
 import de.monticore.symboltable.ArtifactScope;
 import de.monticore.symboltable.MutableScope;
 import de.monticore.symboltable.ResolvingConfiguration;
@@ -31,6 +32,7 @@ public class EMADLModelLoader extends de.monticore.modelloader.ModelingLanguageM
             Log.debug("Start creation of symbol table for model \"" + modelName + "\".",
                     EMADLModelLoader.class.getSimpleName());
             final Scope scope = symbolTableCreator.createFromAST(ast);
+            Log.info("Created Scope from AST","SCOPE_AST_CREATION");
 
             if (!(scope instanceof ArtifactScope)) {
                 Log.warn("0xA7001_184 Top scope of model " + modelName + " is expected to be an artifact scope, but"

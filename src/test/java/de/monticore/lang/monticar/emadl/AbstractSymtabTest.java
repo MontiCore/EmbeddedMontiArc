@@ -17,6 +17,7 @@ import de.monticore.lang.monticar.streamunits._symboltable.StreamUnitsLanguage;
 import de.monticore.lang.monticar.struct._symboltable.StructLanguage;
 import de.monticore.symboltable.GlobalScope;
 import de.monticore.symboltable.Scope;
+import de.se_rwth.commons.logging.Log;
 
 import java.nio.file.Paths;
 
@@ -34,7 +35,9 @@ public class AbstractSymtabTest {
         for (String m : modelPath) {
             mp.addEntry(Paths.get(m));
         }
-        LogConfig.init();//TODO comment for debug output
+
+        // LogConfig.init(); //TODO comment OUT for debug output
+
         GlobalScope scope = new GlobalScope(mp, fam);
         de.monticore.lang.monticar.Utils.addBuiltInTypes(scope);
         return scope;
