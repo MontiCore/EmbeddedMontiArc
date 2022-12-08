@@ -1,0 +1,41 @@
+package turtlebot.preprocessor.move;
+// Source: https://en.wikipedia.org/wiki/Conversion_between_quaternions_and_Euler_angles
+// input: a vecotr of {quaternion.w, quaternion.x, quaternion.y, quaternion.z}
+// return: EulerAngles {roll, pitch, yaw}
+
+component EulerFromQuaternion {
+    ports
+        in Q^{4} quaternion,
+        out Q^{3} eulerAngles;
+
+    implementation Math {
+
+        Q pi = 3.14159;
+
+        // roll (x-axis rotation)
+        Q sinr_cosp = 2 * (quaternion(1) * quaternion(2) + quaternion(3) * quaternion(4));
+        Q cosr_cosp = 1 - 2 * (quaternion(2) * quaternion(2) + quaternion(3) * quaternion(3));
+
+        eulerAngles(1) = atan2(sinr_cosp, cosr_cosp);
+
+        // pitch (y-axis rotation)
+        Q sinp = 2 * (quaternion(1) * quaternion(3) - quaternion(4) * quaternion(2));
+        Q abs_sinp = abs(sinp);
+
+        if (abs_sinp >= 1)
+            if (sinp < 0)  // use 90 degrees if out of range
+                eulerAngles(2) = -(pi/2);
+            else
+                eulerAngles(2) = (pi/2);
+            end
+        else
+            eulerAngles(2) = asin(sinp);
+        end
+
+        // yaw (z-axis rotation)
+        Q siny_cosp = 2 * (quaternion(1) * quaternion(4) + quaternion(2) * quaternion(3));
+        Q cosy_cosp = 1 - 2 * (quaternion(3) * quaternion(3) + quaternion(4) * quaternion(4));
+        eulerAngles(3) = atan2(siny_cosp, cosy_cosp);
+
+    }
+}
