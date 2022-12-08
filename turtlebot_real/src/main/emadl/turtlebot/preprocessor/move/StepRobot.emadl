@@ -1,0 +1,18 @@
+package turtlebot.preprocessor.move;
+
+component StepRobot {
+    ports
+        in  B    reset_done,
+        in  Z(0:4)    action,
+        out Z      actionOut,
+        out Q^{2}     vel_cmd;
+
+    implementation Math {
+
+        Q max_angular_vel = 1.5;
+        Q action_size = 5;
+
+        vel_cmd(1) = 0.15;
+        vel_cmd(2) = ((action_size - 1)/2 - action) * max_angular_vel * 0.5;
+    }
+}
