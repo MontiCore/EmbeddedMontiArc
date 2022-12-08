@@ -25,8 +25,7 @@ public class InstanceTest extends AbstractSymtabTest {
     public void setUp() {
         // ensure an empty log
         Log.getFindings().clear();
-        //Log.enableFailQuick(ENABLE_FAIL_QUICK);
-        Log.enableFailQuick(false);
+        Log.enableFailQuick(ENABLE_FAIL_QUICK);
     }
 
     @Test
