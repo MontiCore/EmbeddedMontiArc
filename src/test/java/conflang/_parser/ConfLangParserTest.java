@@ -97,6 +97,7 @@ public class ConfLangParserTest extends AbstractTest {
         parse("src/test/resources/conflang/_parser/Simple1.conf");
         parse("src/test/resources/conflang/_parser/Simple2.conf");
         parse("src/test/resources/conflang/_parser/TD3.conf");
+        parse("src/test/resources/conflang/_parser/Range.conf");
 
         /* Assert */
     }

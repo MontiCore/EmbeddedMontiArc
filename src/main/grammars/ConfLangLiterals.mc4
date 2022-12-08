@@ -10,4 +10,6 @@ component grammar ConfLangLiterals extends de.monticore.MCLiterals, de.monticore
     ListLiteral implements ConfLangLiteral = value:"(" SignedLiteral ("," SignedLiteral)* ")";
     ComplexNumberLiteral implements ConfLangLiteral = (negRe:"-")? real:NumericLiteral ("+" | negIm:"-") im:NumericLiteral Name;
     InfinityLiteral implements ConfLangLiteral = "oo";
+    RangeLiteral implements ConfLangLiteral = value:"(" SignedLiteral ":" ( SignedLiteral ":")?  SignedLiteral ")";
+
 }
