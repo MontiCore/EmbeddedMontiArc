@@ -1,6 +1,6 @@
 package turtlebot.agent.strategy;
 
-component GreedyDiscreteStrategy<Z(1:oo) n = 2> {
+component GreedyDiscreteStrategy<Z(1:oo) n = 5> {
     ports 
         in Q(-oo:oo)^{5}  values,
         out Z(0:4) action;
