@@ -20,10 +20,10 @@ ANGLE_MIN = 1 - 1
 HORIZON_WIDTH = 75
 
 # speed parameters
-CONST_LINEAR_SPEED_FORWARD = 0.08
+CONST_LINEAR_SPEED_FORWARD = 0.15
 CONST_ANGULAR_SPEED_FORWARD = 0.0
-CONST_LINEAR_SPEED_TURN = 0.06
-CONST_ANGULAR_SPEED_TURN = 0.4
+CONST_LINEAR_SPEED_TURN = 0.15
+CONST_ANGULAR_SPEED_TURN = 0.8
 
 
 def stopTurtleBot(velPub):
@@ -33,13 +33,31 @@ def stopTurtleBot(velPub):
 def createCmdVelMsg(v,w):
     velMsg = Twist()
     velMsg.linear.x = v
-    velMsg.linear.y = 0
-    velMsg.linear.z = 0
-    velMsg.angular.x = 0
-    velMsg.angular.y = 0
+    velMsg.linear.y = 0  # you can delte this line see rl navigation (mantis) github
+    velMsg.linear.z = 0  # you can delte this line see rl navigation (mantis) github
+    velMsg.angular.x = 0 # you can delte this line see rl navigation (mantis) github
+    velMsg.angular.y = 0 # you can delte this line see rl navigation (mantis) github
     velMsg.angular.z = w
     return velMsg
     
+def setRandomGoalPos():
+
+    #Stage 1
+    goal_x_list = [0.9, 1.5, 1.5, 0.2, -1.0, -1.5, -0.3]
+    goal_y_list = [-0.9, 0.0, 1.3, 1.5, 0.9, 0.0, -1.5]
+    
+
+    index = np.random.randint(0,len(goal_x_list))
+
+    '''#Stage 2
+    goal_x_list = [0, 1.4, -1.5, 0, -1.5, 1.6]
+    goal_y_list = [ -1.5, -1.5,  -1.5, 1.4, 1.4, 1.4]'''
+
+    x = goal_x_list[index]
+    y = goal_y_list[index]
+
+    return x, y
+
 def setTurtleBotRandomPos(setPosPub):
     x_range = np.array([ 2.0, 2.0, -2.5, 1.0, -1.0, -0.4, 0.6, 0.6, -1.4, -1.4])
     y_range = np.array([-0.4, 0.6, -1.4, 0.6, 2.0, -1.4, 1.0, -1.0, 0.0, 2.0])
@@ -67,13 +85,13 @@ def setTurtleBotRandomPos(setPosPub):
     initModel.pose.orientation.z = z_q
     initModel.pose.orientation.w = w_q
 
-    initModel.twist.linear.x = 0.0
-    initModel.twist.linear.y = 0.0
-    initModel.twist.linear.z = 0.0
-
-    initModel.twist.angular.x = 0.0
-    initModel.twist.angular.y = 0.0
-    initModel.twist.angular.z = 0.0
+    initModel.twist.linear.x = 0.0  #try to delte this line and see what will happend
+    initModel.twist.linear.y = 0.0  #try to delte this line and see what will happend
+    initModel.twist.linear.z = 0.0  #try to delte this line and see what will happend
+    
+    initModel.twist.angular.x = 0.0 #try to delte this line and see what will happend
+    initModel.twist.angular.y = 0.0 #try to delte this line and see what will happend
+    initModel.twist.angular.z = 0.0 #try to delte this line and see what will happend
 
     setPosPub.publish(initModel)
     return ( x , y, theta )
@@ -94,13 +112,13 @@ def setTurtleBotPos(setPosPub, x, y, theta):
     initModel.pose.orientation.z = z_q
     initModel.pose.orientation.w = w_q
 
-    initModel.twist.linear.x = 0.0
-    initModel.twist.linear.y = 0.0
-    initModel.twist.linear.z = 0.0
+    initModel.twist.linear.x = 0.0  #try to delte this line and see what will happend
+    initModel.twist.linear.y = 0.0  #try to delte this line and see what will happend
+    initModel.twist.linear.z = 0.0  #try to delte this line and see what will happend
 
-    initModel.twist.angular.x = 0.0
-    initModel.twist.angular.y = 0.0
-    initModel.twist.angular.z = 0.0
+    initModel.twist.angular.x = 0.0 #try to delte this line and see what will happend
+    initModel.twist.angular.y = 0.0 #try to delte this line and see what will happend
+    initModel.twist.angular.z = 0.0 #try to delte this line and see what will happend
 
     setPosPub.publish(initModel)
     return ( x , y, theta )
@@ -136,7 +154,7 @@ def getPosition(odomMsg):
     return: angle in float
 '''
 
-def getHeading(turtle_x, goal_x, turtle_y, goal_y, yaw):
+def getHeading(turtle_x, turtle_y, goal_x, goal_y, yaw):
     
     targetAngle = math.atan2(goal_y - turtle_y, goal_x - turtle_x)
     heading = targetAngle - yaw
@@ -153,20 +171,25 @@ def getHeading(turtle_x, goal_x, turtle_y, goal_y, yaw):
     return: reward and terminate state
 '''
 def getReward(action, heading, current_distance, goal_distance, obstacle_min_range, crash):
-    
+    rospy.loginfo("heading" + str(heading))
+    rospy.loginfo("action" + str(action))
     reward = 0
     terminal_state = False
     angle = -math.pi / 4 + heading + (math.pi / 8 * action) + math.pi / 2
+    rospy.loginfo("angle" + str(angle))
     yaw_reward = 1 - 4 * math.fabs(0.5 - math.modf(0.25 + 0.5 * angle % (2 * math.pi) / math.pi)[0])
+    rospy.loginfo("yaw_reward" + str(yaw_reward))
+    goal_reached = False
     
     try:
         distance_rate = 2 ** (current_distance / goal_distance)
+        rospy.loginfo("distance_rate" + str(distance_rate))
     except Exception:
         print("Overflow err CurrentDistance = ", current_distance, " TargetDistance = ", goal_distance)
         distance_rate = 2 ** (current_distance // goal_distance)
     
-    reward += ((round(yaw_reward * 3, 2)) * distance_rate) #multiply with the number of action, here: 3 
-    
+    reward += ((round(yaw_reward * 5, 2)) * distance_rate) #multiply with the number of action, here: 3 
+    rospy.loginfo("reward_distance_rate" + str(reward))
     '''if obstacle_min_range < 0.5: 
         reward += -5
     else:
@@ -179,15 +202,27 @@ def getReward(action, heading, current_distance, goal_distance, obstacle_min_ran
     
     if current_distance <= 0.2:
         rospy.loginfo("Goal!!")
+        goal_reached = True
         terminal_state = True
         reward += 200
-    rospy.loginfo("reward: " + str(reward))
-    return reward, terminal_state
+    
+    rospy.loginfo("reward" + str(reward))
+    return reward, terminal_state, goal_reached
 
 ###
 def doTurtleBotAction(cmdVelPub, action):
     status = 'doTurtleBotAction => OK'
-    if action == 2:
+
+    max_angular_vel = 1.5
+    
+    ang_vel = ((5 - 1)/2 - action) * max_angular_vel * 0.5
+    vel_cmd = Twist()
+    vel_cmd.linear.x = 0.08
+    vel_cmd.angular.z = ang_vel
+    cmdVelPub.publish(vel_cmd)
+
+
+    '''if action == 2:
         turtleBotGoForward(cmdVelPub)
     elif action == 1:
         turtleBotTurnLeft(cmdVelPub)
@@ -195,7 +230,7 @@ def doTurtleBotAction(cmdVelPub, action):
         turtleBotTurnRight(cmdVelPub)
     else:
         status = 'doTurtleBotAction => INVALID ACTION'
-        turtleBotGoForward(cmdVelPub)
+        turtleBotGoForward(cmdVelPub)'''
 
     return status
 ###
@@ -209,10 +244,6 @@ def turtleBotTurnRight(cmdVelPub):
 ###
 def turtleBotTurnLeft(cmdVelPub):
     velMsg = createCmdVelMsg(CONST_LINEAR_SPEED_TURN,+CONST_ANGULAR_SPEED_TURN)
-    cmdVelPub.publish(velMsg)
-###   
-def turtleBotStop(cmdVelPub):
-    velMsg = createCmdVelMsg(0.0,0.0)
     cmdVelPub.publish(velMsg)
 
 def checkCrash(lidarDist):
@@ -240,34 +271,9 @@ def  getLidarDist(msgScan):
     # distances in [m]
     return distances
 
-def checkDiff(a, b, tolerant_value):
-    if abs(a-b) < tolerant_value:
-        return True
-    else:
-        return False
-
-
     '''
     Calculate euler distance of given two points
     return distance in float
     '''
 def calcDistance(x1, y1, x2, y2):
     return math.sqrt((x1 - x2)**2 + (y1 - y2)**2)
-    
-
-# Check - goal near
-def checkGoalNear(x, y, x_goal, y_goal):
-    ro = sqrt( pow( ( x_goal - x ) , 2 ) + pow( ( y_goal - y ) , 2) )
-    if ro < 0.3:
-        return True
-    else:
-
-        return False
-    
-'''
-def getTurtleBotPos(odomMsg):
-    x = odomMsg.pose.pose.position.x
-    y = odomMsg.pose.pose.position.y
-    return ( x , y)
-    
-    '''
