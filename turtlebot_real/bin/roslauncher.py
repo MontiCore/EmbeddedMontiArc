@@ -72,5 +72,5 @@ if __name__ == "__main__":
                 time.sleep(0.5)
     else: #training mode
         while True:
-            time.sleep(0.5)
+            time.sleep(0.3)
     connector.shutdown()        
