@@ -1,0 +1,57 @@
+package turtlebot.preprocessor.util;
+
+component CalcReward {
+    ports
+        in Z actionIn,
+        in B resetState,
+        in Q heading,
+        in Q current_distance,
+        in Q abs_distance,
+        in B crash,
+        out B terminal,
+        out Q reward;
+
+    implementation Math {
+        reward = 0.0;
+        terminal = false;
+        Q math_pi = 3.14159;
+
+        Z action = 3; //temporaray solution
+
+        if resetState
+            reward = 0.0;
+            terminal = false;
+        else
+            Q angle = -(math_pi / 4) + heading + (math_pi / 8 * actionIn) + (math_pi / 2);
+
+            //fmod(a,b) = ((a) - ((int)((a)/(b))) * (b))
+            Q a = (0.5 * angle);
+            Q b = (2 * math_pi);
+            Z a_div_b = a / b;
+            Q fmod_a_b = a - a_div_b * b; 
+            Q term = 0.25 + (fmod_a_b / math_pi);
+
+            Z int_term = term;
+            Q fractional = term - int_term;
+
+            Q yaw_reward = 1 - 4 * abs(0.5 - fractional);
+
+            Z distance_rate = 1;
+
+            Q y = (current_distance / abs_distance);
+
+            // add double distance_rate = std::pow(2,y); manullay
+            reward += yaw_reward * 5 * distance_rate;
+
+            if crash
+                terminal = true;
+                reward += -150;
+            end
+
+            if current_distance <= 0.2
+                terminal = true;
+                reward += 200;
+            end
+        end
+    }
+}
