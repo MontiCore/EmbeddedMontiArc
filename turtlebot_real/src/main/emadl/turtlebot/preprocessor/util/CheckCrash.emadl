@@ -1,0 +1,15 @@
+package turtlebot.preprocessor.util;
+
+component CheckCrash {
+    ports
+        in Q^{29} checkState,
+        out B isCrash;
+
+    implementation Math {
+        Q crash_range = 0.13;
+        isCrash = false;
+        if checkState(29) < crash_range
+            isCrash = true;
+        end
+    }
+}
