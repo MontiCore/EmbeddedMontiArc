@@ -46,7 +46,7 @@ public class EMADLLanguage extends EmbeddingModelingLanguage {
                 Arrays.asList(CNNARCH_LANGUAGE, MATH_LANGUAGE));
     }
 
-    public EMADLLanguage(String customFilesPath, String pythonPath, String backend, String composedNetworkFilePath) {
+    public EMADLLanguage(String customFilesPath, String pythonPath, String backend) {
         super("Embedded MontiArc Deep Learning Language",
                 FILE_ENDING,
                 HOST_LANGUAGE,
@@ -54,6 +54,10 @@ public class EMADLLanguage extends EmbeddingModelingLanguage {
         setBackend(backend);
         setCustomFilesPath(customFilesPath);
         setPythonPath(pythonPath);
+    }
+
+    public EMADLLanguage(String customFilesPath, String pythonPath, String backend, String composedNetworkFilePath) {
+        this(customFilesPath, pythonPath, backend);
         setComposedNetworkFilePath(composedNetworkFilePath);
     }
 
