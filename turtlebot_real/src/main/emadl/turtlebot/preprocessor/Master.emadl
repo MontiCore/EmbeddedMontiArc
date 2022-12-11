@@ -20,7 +20,9 @@ component Master {
         in  Q^{6}    positions,
         in  Z        actionIn,
         in  B        resetState,
-        out Q^{31}    state,
+        in  Q^{2}    goal_position,
+        out B        goalReached,
+        out Q^{31}   state,
         out Q        reward,
         out B        terminal;
 
@@ -36,7 +38,8 @@ component Master {
     instance CheckCrash checkCrash;
     instance CalcReward calcReward;
 
-    connect ranges                 -> lidarScan.msgRanges; 
+    connect ranges                 -> lidarScan.msgRanges;
+    connect goal_position          -> setGoal.goalPosIn; 
     connect lidarScan.distancesOut -> scanDisc.distances;
     connect scanDisc.scanState     -> combineState.laserState;
     connect scanDisc.scanState     -> checkCrash.checkState;
@@ -60,6 +63,7 @@ component Master {
 
     connect combineState.state     -> state;
     
+    connect calcReward.goal_reached -> goalReached;
     connect calcReward.reward      -> reward;
     connect calcReward.terminal    -> terminal;
     

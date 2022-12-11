@@ -14,4 +14,7 @@ tags Master {
     tag master.actionIn with RosConnection = {topic=(/gazebo/actionIn, std_msgs/Int32)};
     tag master.resetState with RosConnection = {topic=(/gazebo/resetState, std_msgs/Bool)};
 
+    tag master.goal_position with RosConnection = {topic=(/gazebo/goalPosition, std_msgs/Float32MultiArray)};
+    tag master.goalReached with RosConnection = {topic=(/gazebo/goalReached, std_msgs/Bool)};
+
 }
