@@ -42,16 +42,19 @@ def createCmdVelMsg(v,w):
     
 def setRandomGoalPos():
 
-    #Stage 1
+    '''#Stage 1
     goal_x_list = [0.9, 1.5, 1.5, 0.2, -1.0, -1.5, -0.3]
-    goal_y_list = [-0.9, 0.0, 1.3, 1.5, 0.9, 0.0, -1.5]
+    goal_y_list = [-0.9, 0.0, 1.3, 1.5, 0.9, 0.0, -1.5]'''
     
+    '''#Stage 2 & 3
+    goal_x_list = [0, 1.4, 0, 0, -1.5, 1.6]
+    goal_y_list = [ -1.5, -1.5,  0, 1.4, 1.4, 1.4]
+'''
+    #Stage 4
+    goal_x_list = [2.0, 1.6, 2.0, 1.8, -2.0, -2.0, 2.0, 1.4, -1,9]
+    goal_y_list = [2.0, 2.0, 1.0, -1.7, 2.0, -2.0, -2.0, -1.0, 0.2]
 
     index = np.random.randint(0,len(goal_x_list))
-
-    '''#Stage 2
-    goal_x_list = [0, 1.4, -1.5, 0, -1.5, 1.6]
-    goal_y_list = [ -1.5, -1.5,  -1.5, 1.4, 1.4, 1.4]'''
 
     x = goal_x_list[index]
     y = goal_y_list[index]
