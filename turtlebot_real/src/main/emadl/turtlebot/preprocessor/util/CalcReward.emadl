@@ -8,6 +8,7 @@ component CalcReward {
         in Q current_distance,
         in Q abs_distance,
         in B crash,
+        out B goal_reached,
         out B terminal,
         out Q reward;
 
@@ -15,6 +16,7 @@ component CalcReward {
         reward = 0.0;
         terminal = false;
         Q math_pi = 3.14159;
+        goal_reached = false;
 
         Z action = 3; //temporaray solution
 
@@ -50,6 +52,7 @@ component CalcReward {
 
             if current_distance <= 0.2
                 terminal = true;
+                goal_reached = true;
                 reward += 200;
             end
         end
