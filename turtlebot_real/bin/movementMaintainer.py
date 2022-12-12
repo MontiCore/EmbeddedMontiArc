@@ -8,23 +8,6 @@ from geometry_msgs.msg import Twist
 from math import *
 from tf.transformations import euler_from_quaternion, quaternion_from_euler
 
-MAX_LIDAR_DISTANCE = 1.0 #limit the maximum lidar distance to 1 meter
-COLLISION_DISTANCE = 0.14 # limit the lidar distance for collision
-NEARBY_DISTANCE = 0.45
-
-ZONE_0_LENGTH = 0.4
-ZONE_1_LENGTH = 0.7
-
-ANGLE_MAX = 360 - 1
-ANGLE_MIN = 1 - 1
-HORIZON_WIDTH = 75
-
-# speed parameters
-CONST_LINEAR_SPEED_FORWARD = 0.15
-CONST_ANGULAR_SPEED_FORWARD = 0.0
-CONST_LINEAR_SPEED_TURN = 0.15
-CONST_ANGULAR_SPEED_TURN = 0.8
-
 
 def stopTurtleBot(velPub):
     velMsg = createCmdVelMsg(0.0,0.0)
@@ -57,44 +40,6 @@ def setRandomGoalPos():
     y = goal_y_list[index]
 
     return x, y
-
-def setTurtleBotRandomPos(setPosPub):
-    x_range = np.array([ 2.0, 2.0, -2.5, 1.0, -1.0, -0.4, 0.6, 0.6, -1.4, -1.4])
-    y_range = np.array([-0.4, 0.6, -1.4, 0.6, 2.0, -1.4, 1.0, -1.0, 0.0, 2.0])
-    theta_range = np.arange(0, 360, 15)
-
-    index = np.random.randint(0,len(x_range))
-    index_theta = np.random.randint(0,len(theta_range))
-
-    x = x_range[index]
-    y = y_range[index]
-    theta = theta_range[index_theta]
-
-    initModel = ModelState()
-
-    initModel.model_name = 'turtlebot3_burger'
-
-    initModel.pose.position.x = x
-    initModel.pose.position.y = y
-    initModel.pose.position.z = 0.0
-
-    [x_q,y_q,z_q,w_q] = quaternion_from_euler(0.0,0.0,radians(theta))
-
-    initModel.pose.orientation.x = x_q
-    initModel.pose.orientation.y = y_q
-    initModel.pose.orientation.z = z_q
-    initModel.pose.orientation.w = w_q
-
-    initModel.twist.linear.x = 0.0  #try to delte this line and see what will happend
-    initModel.twist.linear.y = 0.0  #try to delte this line and see what will happend
-    initModel.twist.linear.z = 0.0  #try to delte this line and see what will happend
-    
-    initModel.twist.angular.x = 0.0 #try to delte this line and see what will happend
-    initModel.twist.angular.y = 0.0 #try to delte this line and see what will happend
-    initModel.twist.angular.z = 0.0 #try to delte this line and see what will happend
-
-    setPosPub.publish(initModel)
-    return ( x , y, theta )
 
 def setTurtleBotPos(setPosPub, x, y, theta):
     initModel = ModelState()
@@ -221,55 +166,7 @@ def doTurtleBotAction(cmdVelPub, action):
     vel_cmd.angular.z = ang_vel
     cmdVelPub.publish(vel_cmd)
 
-
-    '''if action == 2:
-        turtleBotGoForward(cmdVelPub)
-    elif action == 1:
-        turtleBotTurnLeft(cmdVelPub)
-    elif action == 0:
-        turtleBotTurnRight(cmdVelPub)
-    else:
-        status = 'doTurtleBotAction => INVALID ACTION'
-        turtleBotGoForward(cmdVelPub)'''
-
     return status
-###
-def turtleBotGoForward(cmdVelPub):
-    velMsg = createCmdVelMsg(CONST_LINEAR_SPEED_FORWARD,CONST_ANGULAR_SPEED_FORWARD)
-    cmdVelPub.publish(velMsg)
-###
-def turtleBotTurnRight(cmdVelPub):
-    velMsg = createCmdVelMsg(CONST_LINEAR_SPEED_TURN,-CONST_ANGULAR_SPEED_TURN)
-    cmdVelPub.publish(velMsg)
-###
-def turtleBotTurnLeft(cmdVelPub):
-    velMsg = createCmdVelMsg(CONST_LINEAR_SPEED_TURN,+CONST_ANGULAR_SPEED_TURN)
-    cmdVelPub.publish(velMsg)
-
-def checkCrash(lidarDist):
-    if lidarDist is not None:
-        lidar_front_view = np.concatenate((lidarDist[(ANGLE_MIN + HORIZON_WIDTH):(ANGLE_MIN):-1],\
-            lidarDist[(ANGLE_MAX): (ANGLE_MAX - HORIZON_WIDTH):-1]))
-        param = np.linspace(1.2, 1, len(lidar_front_view) // 2)
-        param = np.append(param, np.linspace(1, 1.2, len(lidar_front_view) // 2))
-        if np.min( param * lidar_front_view ) < COLLISION_DISTANCE:
-            return True
-    return False
-
-def  getLidarDist(msgScan):
-    distances = np.array([])
-
-    for i in range(len(msgScan.ranges)):
-        if ( msgScan.ranges[i] > MAX_LIDAR_DISTANCE ):
-            distance = MAX_LIDAR_DISTANCE
-        elif ( msgScan.ranges[i] < msgScan.range_min ):
-            distance = msgScan.range_min
-        else:
-            distance = msgScan.ranges[i]
-
-        distances = np.append(distances, distance)
-    # distances in [m]
-    return distances
 
     '''
     Calculate euler distance of given two points

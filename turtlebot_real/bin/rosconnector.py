@@ -168,7 +168,6 @@ class RosConnector(object):
                             pass
 
                     ranges_array = Float32MultiArray()
-                    lidarDistances = getLidarDist(msgScan)
                     ranges = msgScan.ranges
                     ranges_array.data = ranges
                     
