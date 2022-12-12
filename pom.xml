@@ -10,14 +10,14 @@
 
     <groupId>de.monticore.lang</groupId>
     <artifactId>math</artifactId>
-    <version>0.4.4-SNAPSHOT</version>
+    <version>0.4.6-SNAPSHOT</version>
 
     <!-- == PROJECT DEPENDENCIES ============================================= -->
 
     <properties>
 
         <!-- .. EMA-Libraries ................................................. -->
-        <Common-MontiCar.version>0.4.4-SNAPSHOT</Common-MontiCar.version>
+        <Common-MontiCar.version>0.4.7-SNAPSHOT</Common-MontiCar.version>
         <!-- .. SE-Libraries .................................................. -->
         <monticore.version>5.0.1</monticore.version>
         <se-commons.version>1.7.7</se-commons.version>
