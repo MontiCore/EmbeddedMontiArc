@@ -38,8 +38,8 @@ public class ComponentInformation {
     private ArrayList<ASTPort> ports = new ArrayList<>();
     private String componentInstanceSymbolName;
     private ComponentKind componentKind;
-    private String inputPort;
-    private String outputPort;
+    private ArrayList<String> inputPorts = new ArrayList<>();
+    private ArrayList<String> outputPorts = new ArrayList<>();
     private boolean violatesNetworkForm = false;
     private boolean isCNNNode = false;
 
@@ -84,12 +84,12 @@ public class ComponentInformation {
         return componentKind;
     }
 
-    public String getInputPort() {
-        return inputPort;
+    public ArrayList<String> getInputPorts() {
+        return inputPorts;
     }
 
-    public String getOutputPort() {
-        return outputPort;
+    public ArrayList<String> getOutputPorts() {
+        return outputPorts;
     }
 
     public ASTComponent getOriginalComponentReference() {
@@ -169,6 +169,9 @@ public class ComponentInformation {
         }
         ArrayList<String> flow = new ArrayList<>();
 
+        String previousSource = "";
+        String previousTarget = "";
+
         for ( ConnectorRelation relation : this.connectorRelations) {
             if (relation.getSource() == null || relation.getTarget() == null) continue;
             String source = relation.getSource().getComponentName()  + "|" + relation.getSource().getComponentInstanceSymbolName();
@@ -177,13 +180,20 @@ public class ComponentInformation {
             if (flow.size() == 0) {
                 flow.add(source);
             } else if (!flow.get(flow.size() - 1).equals(source)) {
-                flow.add(source);
-                //relation.getSource().getOriginalComponentReference().
+                if (!previousSource.equals(source)){
+                    flow.add(source);
+                }
             }
 
             if (!flow.get(flow.size()-1).equals(target)) {
+                if (!previousTarget.equals(target)){
                     flow.add(target);
+                }
+
             }
+
+            previousSource = source;
+            previousTarget = target;
         }
         return flow;
     }
@@ -215,7 +225,7 @@ public class ComponentInformation {
             instanceName = keyIterator.next();
         }
 
-        if (instanceName != null && !instanceName.equals("")) this.componentInstanceSymbolName = instanceName;
+        if (instanceName != null && !instanceName.equals("")) this.componentInstanceSymbolName = instanceName.toLowerCase();
     }
 
     private void printConnectiorRelations() {
@@ -226,10 +236,12 @@ public class ComponentInformation {
     }
 
     private void findPorts(ArrayList<ASTInterface> interfaces){
+        /*
         if (interfaces.size() != 1) {
             this.violatesNetworkForm = true;
             return;
         }
+        */
 
         for (ASTInterface i : interfaces) {
             ArrayList<ASTPort> interfacePorts = (ArrayList<ASTPort>) i.getPortsList();
@@ -238,17 +250,21 @@ public class ComponentInformation {
             }
         }
 
+
+
+        /*
         if (this.ports.size() != 2) {
             this.violatesNetworkForm = true;
             return;
         }
+         */
 
         for (ASTPort p : this.ports) {
             if (p.getNameOpt().isPresent()) {
                 if (p.isIncoming() && !p.isOutgoing()) {
-                    this.inputPort = p.getNameOpt().get();
+                    this.inputPorts.add(p.getNameOpt().get());
                 } else if (!p.isIncoming() && p.isOutgoing()) {
-                    this.outputPort = p.getNameOpt().get();
+                    this.outputPorts.add(p.getNameOpt().get());
                 }
             }
         }
@@ -290,14 +306,14 @@ public class ComponentInformation {
     }
 
     private ComponentInformation matchComponentToPort(String portValue) {
-        if (portValue.equals(this.inputPort) || portValue.equals(this.outputPort)) return this;
+        if (this.inputPorts.contains(portValue) || this.outputPorts.contains(portValue)) return this;
 
-        String[] qualifiedNameDecons = portValue.split("\\.");
+        String[] qualifiedNameDecons = portValue.split("\\.", 2);
         String instanceRef = qualifiedNameDecons[0];
 
         for (ComponentInformation info : this.subComponentsInformation) {
-            if (!instanceRef.equals("") && !info.componentInstanceSymbolName.equals("") && instanceRef.equals(info.componentInstanceSymbolName)) {
-                return info;
+            if (!instanceRef.equals("") && !info.componentInstanceSymbolName.equals("") && (instanceRef.equals(info.componentInstanceSymbolName) || instanceRef.equals(info.componentInstanceSymbolName.toLowerCase()) )) {
+                return info.matchComponentToPort(qualifiedNameDecons[1]);
             }
         }
         return null;
