@@ -236,12 +236,7 @@ public class ComponentInformation {
     }
 
     private void findPorts(ArrayList<ASTInterface> interfaces){
-        /*
-        if (interfaces.size() != 1) {
-            this.violatesNetworkForm = true;
-            return;
-        }
-        */
+        if (this.interfaces.size() == 0 || this.ports.size() == 0) this.violatesNetworkForm = true;
 
         for (ASTInterface i : interfaces) {
             ArrayList<ASTPort> interfacePorts = (ArrayList<ASTPort>) i.getPortsList();
@@ -249,15 +244,6 @@ public class ComponentInformation {
                 this.ports = interfacePorts;
             }
         }
-
-
-
-        /*
-        if (this.ports.size() != 2) {
-            this.violatesNetworkForm = true;
-            return;
-        }
-         */
 
         for (ASTPort p : this.ports) {
             if (p.getNameOpt().isPresent()) {
@@ -271,7 +257,7 @@ public class ComponentInformation {
     }
 
     private void findComponents(ArrayList<ASTSubComponent> components) {
-        if (!(components.size() > 0)) {
+        if (!(components.size() > 1)) {
             this.violatesNetworkForm = true;
             return;
         }
@@ -284,8 +270,15 @@ public class ComponentInformation {
             EMADynamicComponentInstantiationSymbol symbol = (EMADynamicComponentInstantiationSymbol) subComponent.getSymbolOpt().get();
             EMADynamicComponentSymbol refSymbol = (EMADynamicComponentSymbol) symbol.getComponentType().getReferencedSymbol();
             if (refSymbol.getAstNode().isPresent()) {
-                this.includedComponents.add((ASTComponent) refSymbol.getAstNode().get());
-                this.subComponentsInformation.add(new ComponentInformation((ASTComponent) refSymbol.getAstNode().get(), this.archNodes));
+                ASTComponent astComponent = (ASTComponent) refSymbol.getAstNode().get();
+                ComponentInformation subCompInfo = new ComponentInformation(astComponent, this.archNodes);
+
+                if (subCompInfo.isCNNNode ){
+                    this.includedComponents.add(astComponent);
+                    this.subComponentsInformation.add(subCompInfo);
+                } else {
+                    this.violatesNetworkForm = true;
+                }
             }
         }
     }
