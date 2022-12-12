@@ -236,13 +236,19 @@ public class ComponentInformation {
     }
 
     private void findPorts(ArrayList<ASTInterface> interfaces){
-        if (this.interfaces.size() == 0 || this.ports.size() == 0) this.violatesNetworkForm = true;
+        if (this.interfaces.size() == 0){
+            this.violatesNetworkForm = true;
+        }
 
         for (ASTInterface i : interfaces) {
             ArrayList<ASTPort> interfacePorts = (ArrayList<ASTPort>) i.getPortsList();
             if (interfacePorts.size() > 0) {
                 this.ports = interfacePorts;
             }
+        }
+
+        if (this.ports.size() == 0){
+            this.violatesNetworkForm = true;
         }
 
         for (ASTPort p : this.ports) {
