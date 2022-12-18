@@ -15,10 +15,9 @@ from movementMaintainer import *
 
 class RosConnector(object):
     laser_topic = '/gazebo/scan'
-    terminate_topic = '/gazebo/terminal'
     step_topic = '/gazebo/step'
     reset_topic = '/gazebo/reset'
-    reward_topic = '/gazebo/reward'
+    goalReachedBool_topic = '/gazebo/goalReachedBool'
     position_topic = '/gazebo/position'
     actionIn_topic = '/gazebo/actionIn'
     resetState_topic = '/gazebo/resetState'
@@ -50,10 +49,6 @@ class RosConnector(object):
         
         self.__laser_publisher = rospy.Publisher(
             RosConnector.laser_topic, Float32MultiArray,queue_size=1)
-        self.__terminate_publisher = rospy.Publisher(
-            RosConnector.terminate_topic, Bool, queue_size=1)
-        self.__reward_publisher = rospy.Publisher(
-            RosConnector.reward_topic, Float32, queue_size=1)
         self.__position_publisher = rospy.Publisher(
             RosConnector.position_topic, Float32MultiArray, queue_size=1)
         
@@ -62,6 +57,9 @@ class RosConnector(object):
         
         self.__resetState_publisher = rospy.Publisher(
             RosConnector.resetState_topic, Bool, queue_size=1)
+        
+        self.__goalReachedBool_publisher = rospy.Publisher(
+            RosConnector.goalReachedBool_topic, Bool, queue_size=1)
         
         self.__set_position_publisher = rospy.Publisher(
             'gazebo/set_model_state', ModelState, queue_size=10)
@@ -89,7 +87,7 @@ class RosConnector(object):
     def reset(self, msg=Bool(data=True)):
         rospy.loginfo('reset') # only for logging needed to be delted
         
-        if msg.data is True: #and self.is_terminated:
+        if msg.data is True:
             self.__in_reset = True
             self.__turtleBot_in_position = False # added only for realbot 07.12.
             if not self.__turtleBot_in_position:
@@ -116,14 +114,11 @@ class RosConnector(object):
                     pass            
             
             odomMsg_array.data = getPosition(odomMsg)
-            arr = getPosition(odomMsg) # only tmp
-            yaw = getTurtleBotRotation(odomMsg)
-            heading = getHeading(odomMsg_array.data[0], odomMsg_array.data[1], self.X_GOAL, self.Y_GOAL, yaw)
+            
             self.__goal_distance = calcDistance(odomMsg_array.data[0], odomMsg_array.data[1], self.X_GOAL, self.Y_GOAL)
             
             orientation_q = odomMsg.pose.pose.orientation
             odomMsg_array.data += [ orientation_q.w, orientation_q.x, orientation_q.y, orientation_q.z]
-            rospy.loginfo('goal distance:' + str(self.__goal_distance) + 'position' + str(arr) + 'yaw: ' + str(yaw) + 'Heading:' + str(heading)) # only for logging needed to be delted
             
             goal_position = Float32MultiArray()
             goal_position.data = [self.X_GOAL, self.Y_GOAL ]
@@ -132,10 +127,9 @@ class RosConnector(object):
             self.__resetState_publisher.publish(Bool(True))
             
             self.__goalIn_publisher.publish(goal_position)
-            self.__terminate_publisher.publish(Bool(False))
             self.__laser_publisher.publish(ranges_array)
-            self.__position_publisher.publish(odomMsg_array) # postion, heading, distance to the goal
-            self.__reward_publisher.publish(Float32(0.0))
+            self.__position_publisher.publish(odomMsg_array)
+            self.__goalReachedBool_publisher.publish(Bool(False))
 
             self.__terminated = False
             self.__in_reset = False
@@ -156,7 +150,6 @@ class RosConnector(object):
             else:
                 if not self.__turtleBot_in_position:
                     self.positionResetter()
-                    rospy.loginfo('step not in pos') # only for logging needed to be delted
                 else:
                     status_info = doTurtleBotAction(self.__set_navigation_publisher, action)
                     
@@ -168,9 +161,7 @@ class RosConnector(object):
                             pass
 
                     ranges_array = Float32MultiArray()
-                    lidarDistances = getLidarDist(msgScan)
-                    ranges = msgScan.ranges
-                    ranges_array.data = ranges
+                    ranges_array.data = msgScan.ranges
                     
                     self.__crash = False
                     odomMsg_array = Float32MultiArray()
@@ -185,36 +176,23 @@ class RosConnector(object):
                     array_position = getPosition(odomMsg) # du kannst odomMsg_array direkt zuweisen
                     odomMsg_array.data= array_position
                     
-                    yaw = getTurtleBotRotation(odomMsg)
-                    heading = getHeading(odomMsg_array.data[0], odomMsg_array.data[1], self.X_GOAL, self.Y_GOAL, yaw)
                     current_distance = calcDistance(odomMsg_array.data[0], odomMsg_array.data[1], self.X_GOAL, self.Y_GOAL)
-                    obstacle_min_range = round(min(ranges), 2)
                     
                     orientation_q = odomMsg.pose.pose.orientation
                     odomMsg_array.data += [ orientation_q.w, orientation_q.x, orientation_q.y, orientation_q.z]
                     
-                    (reward, terminal, self.__goal_reached ) = getReward(action, heading, current_distance, self.__goal_distance,obstacle_min_range, self.__crash)   
-                    
-                    #rospy.loginfo('action: ' + str(action) + ', current distance: ' + str(current_distance) + ', reward: ' + str(reward) + ', goal reached:' + str(self.__goal_reached)) #delete this line later
-                    
-                    if terminal:
-                        self.__terminated = True
-                        self.__turtleBot_in_position = False
-                    
-                    
                     goal_position = Float32MultiArray()
                     goal_position.data = [self.X_GOAL, self.Y_GOAL ]
                     self.__goalIn_publisher.publish(goal_position)
+                    self.__goalReachedBool_publisher.publish(Bool(self.__goal_reached))
                     self.__actionIn_publisher.publish(msg)
                     self.__resetState_publisher.publish(Bool(False))
-                    rospy.loginfo('reward: ' + str(reward))
                     self.__laser_publisher.publish(ranges_array)
                     self.__position_publisher.publish(odomMsg_array)
-                    self.__terminate_publisher.publish(Bool(terminal))
-                    self.__reward_publisher.publish(Float32(reward))
                     
     def goalReached(self, msg=Bool(data=True)):
         if msg.data is True:
+            self.__goal_reached = True
             self.X_GOAL, self.Y_GOAL = setRandomGoalPos()
 
 
