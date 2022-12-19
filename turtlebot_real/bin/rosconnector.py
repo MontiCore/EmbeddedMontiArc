@@ -135,9 +135,8 @@ class RosConnector(object):
             
             cmd_vel_data = msg.data
             action = cmd_vel_data[0]
-            max_angular_vel = 1.5
-            cmd_vel_linear = 0.08 #cmd_vel_data[1]
-            cmd_vel_angular = ((5 - 1)/2 - action) * max_angular_vel * 0.5 #cmd_vel_data[2]
+            cmd_vel_linear = cmd_vel_data[1]
+            cmd_vel_angular = cmd_vel_data[2]
 
             if self.is_terminated or self.in_reset or self.is_crash: #check if we need this conditional block
                 rospy.loginfo('Discard action because turtleBot is in reset or terminated or crashed')
