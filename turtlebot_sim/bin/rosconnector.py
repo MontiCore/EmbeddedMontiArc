@@ -23,9 +23,9 @@ class RosConnector(object):
     ros_update_rate = 10
     
     RANDOM_START_POS = False
-    X_INIT = -0.4
-    Y_INIT = -0.4
-    THETA_INIT = 45.0
+    X_INIT = 0 #-0.4
+    Y_INIT = 0 #-0.4
+    THETA_INIT = 180
     
     X_GOAL = 1.7
     Y_GOAL = -1
