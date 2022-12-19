@@ -2,31 +2,34 @@ package turtlebot.preprocessor.move;
 
 component SetGoal {
     ports
-        in  Q^{2}     goalPosIn,
+        in B          goalReachedBool,
+        in Q^{2}      inital_position,
+        in Q^{1,6}    goalXArray,
+        in Q^{1,6}    goalYArray,
         out Q^{2}     goalPos,
         out Q         absDistance;
 
     implementation Math {
-        //inital Postion
-        Q initlPosX = -0.4;
-        Q initlPosY = -0.4;
-        goalPos(1) = goalPosIn(1);
-        goalPos(2) = goalPosIn(2);
+        static Z counter = 0;
         
+        static Q goalX = 0.0;
+        static Q goalY = 0.0;
 
+        if goalReachedBool
+        Z randomIndex = counter % 6;
+        goalX = goalXArray(1, randomIndex+1);
+        goalY = goalYArray(1, randomIndex+1);
+        end
 
-        Q firTerm = initlPosX - goalPosIn(1);
-        
-        Q secTerm = initlPosY - goalPosIn(2);
+        //Goal position
+        goalPos(1) = goalX;
+        goalPos(2) = goalY;
+
+        Q firTerm = inital_position(1) - goalPos(1);
+        Q secTerm = inital_position(2) - goalPos(2);
 
         absDistance = sqrt(firTerm * firTerm + secTerm * secTerm);
+
+        counter += 0;
     }
 }
-
-
-//Q^{7} goal_x_list = [0.9, 1.5, 1.5, 0.2, -1.0, -1.5, -0.3];
-        //Q^{7} goal_y_list = [-0.9, 0.0, 1.3, 1.5, 0.9, 0.0, -1.5];
-        
-        //if goalReached
-        //    goalPos(1) = 1.7;
-        //    goalPos(2) = 

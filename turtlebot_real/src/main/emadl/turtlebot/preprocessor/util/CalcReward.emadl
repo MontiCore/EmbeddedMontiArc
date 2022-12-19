@@ -18,8 +18,6 @@ component CalcReward {
         Q math_pi = 3.14159;
         goal_reached = false;
 
-        Z action = 3; //temporaray solution
-
         if resetState
             reward = 0.0;
             terminal = false;
@@ -38,11 +36,10 @@ component CalcReward {
 
             Q yaw_reward = 1 - 4 * abs(0.5 - fractional);
 
-            Z distance_rate = 1;
-
             Q y = (current_distance / abs_distance);
 
             // add double distance_rate = std::pow(2,y); manullay
+            Q distance_rate = pow(2,y); 
             reward += yaw_reward * 5 * distance_rate;
 
             if crash
