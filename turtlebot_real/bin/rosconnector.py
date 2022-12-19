@@ -23,7 +23,6 @@ class RosConnector(object):
     resetState_topic = '/gazebo/resetState'
     
     goalReached_topic = '/gazebo/goalReached'
-    goal_topic = '/gazebo/goalPosition'
     ros_update_rate = 10
     
     RANDOM_START_POS = False
@@ -66,14 +65,10 @@ class RosConnector(object):
         self.__set_navigation_publisher = rospy.Publisher(
             '/cmd_vel', Twist, queue_size=10)
         
-        self.__goalIn_publisher = rospy.Publisher(
-            RosConnector.goal_topic, Float32MultiArray, queue_size=1)
-        
         self.__goalReached_subscriber = rospy.Subscriber(
             RosConnector.goalReached_topic, Bool, self.goalReached)
-        
         self.__action_subscriber = rospy.Subscriber(
-            RosConnector.step_topic, Int32, self.step)
+            RosConnector.step_topic, Float32MultiArray, self.step)
         self.__reset_subscriber = rospy.Subscriber(
             RosConnector.reset_topic, Bool, self.reset)
         
@@ -126,10 +121,9 @@ class RosConnector(object):
             self.__actionIn_publisher.publish(Int32(10))
             self.__resetState_publisher.publish(Bool(True))
             
-            self.__goalIn_publisher.publish(goal_position)
             self.__laser_publisher.publish(ranges_array)
             self.__position_publisher.publish(odomMsg_array)
-            self.__goalReachedBool_publisher.publish(Bool(False))
+            self.__goalReachedBool_publisher.publish(Bool(self.__goal_reached))
 
             self.__terminated = False
             self.__in_reset = False
@@ -139,7 +133,11 @@ class RosConnector(object):
     def step(self, msg):
         if not rospy.is_shutdown():
             
-            action = msg.data
+            cmd_vel_data = msg.data
+            action = cmd_vel_data[0]
+            max_angular_vel = 1.5
+            cmd_vel_linear = 0.08 #cmd_vel_data[1]
+            cmd_vel_angular = ((5 - 1)/2 - action) * max_angular_vel * 0.5 #cmd_vel_data[2]
 
             if self.is_terminated or self.in_reset or self.is_crash: #check if we need this conditional block
                 rospy.loginfo('Discard action because turtleBot is in reset or terminated or crashed')
@@ -151,7 +149,7 @@ class RosConnector(object):
                 if not self.__turtleBot_in_position:
                     self.positionResetter()
                 else:
-                    status_info = doTurtleBotAction(self.__set_navigation_publisher, action)
+                    status_info = doTurtleBotAction(self.__set_navigation_publisher, cmd_vel_linear, cmd_vel_angular)
                     
                     msgScan = None
                     while msgScan is None:
@@ -183,9 +181,8 @@ class RosConnector(object):
                     
                     goal_position = Float32MultiArray()
                     goal_position.data = [self.X_GOAL, self.Y_GOAL ]
-                    self.__goalIn_publisher.publish(goal_position)
                     self.__goalReachedBool_publisher.publish(Bool(self.__goal_reached))
-                    self.__actionIn_publisher.publish(msg)
+                    self.__actionIn_publisher.publish(Int32(action))
                     self.__resetState_publisher.publish(Bool(False))
                     self.__laser_publisher.publish(ranges_array)
                     self.__position_publisher.publish(odomMsg_array)
@@ -193,7 +190,8 @@ class RosConnector(object):
     def goalReached(self, msg=Bool(data=True)):
         if msg.data is True:
             self.__goal_reached = True
-            self.X_GOAL, self.Y_GOAL = setRandomGoalPos()
+        else:
+            self.__goal_reached = False
 
 
     def print_if_verbose(self, massage):
