@@ -128,19 +128,21 @@ component ScanDiscretization {
         end
       
         //determinating the states x3 and x4
-        
-        if (object_front && object_left) && not(object_far_left)
+        B not_object_far_left = object_far_left - 1;
+        B not_object_front = object_front - 1;
+        if (object_front && object_left) && not_object_far_left
             x3 = 0.0; //sector 0
-        elseif (object_left && object_far_left) && not(object_front)
+        elseif (object_left && object_far_left) && not_object_front
             x3 = 1.0; //sector 1
         elseif object_front && object_left && object_far_left
             x3 = 2.0; //sector 2
         end
 
+        B not_object_far_right = object_far_right - 1;
 
-        if (object_front && object_right) && not(object_far_right)
+        if (object_front && object_right) && not_object_far_right
             x4 = 0.0; //sector 0
-        elseif (object_right && object_far_right) && not(object_front)
+        elseif (object_right && object_far_right) && not_object_front
             x4 = 1.0; //sector 1
         elseif object_front && object_right && object_far_right
             x4 = 2.0; //sector 2
