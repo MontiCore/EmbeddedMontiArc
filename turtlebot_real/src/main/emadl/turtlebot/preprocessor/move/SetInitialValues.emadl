@@ -1,0 +1,39 @@
+package turtlebot.preprocessor.move;
+
+component SetInitialValues {
+    ports
+        out Q^{2}      inital_position,
+        out Q^{1,6}    goalXArray,
+        out Q^{1,6}    goalYArray;
+
+    implementation Math {
+        
+        Z stage = 1;
+        //inital Postion
+        Q initlPosX = -0.4;
+        Q initlPosY = -0.4;
+        
+        //Goal position arrays # Stage 1
+        Q^{1,6} X_stage1 = [1.0, 2.0, 5.0, 1.5, 1.0, 4.2];
+        Q^{1,6} Y_stage1 = [1.0, 2.0, 5.0, 1.5, 1.0, 4.2];
+
+        //Goal position arrays # Stage 2
+        Q^{1,6} X_stage2 = [0.9, 1.5, 1.5, 0.2, -1.0, -1.5];
+        Q^{1,6} Y_stage2  = [-0.9, 0.0, 1.3, 1.5, 0.9, 0.0];
+
+        if stage == 1
+            goalXArray = X_stage1;
+            goalYArray = Y_stage1;
+        elseif stage == 2
+            goalXArray = X_stage2;
+            goalYArray = Y_stage2;
+        else
+            goalXArray = X_stage2;
+            goalYArray = Y_stage2;
+        end
+        
+        inital_position(1) = initlPosX;
+        inital_position(2) = initlPosY;
+
+    }
+}
