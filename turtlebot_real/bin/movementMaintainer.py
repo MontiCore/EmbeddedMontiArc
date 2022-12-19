@@ -69,15 +69,15 @@ def getPosition(odomMsg):
     return arr
 
 ###
-def doTurtleBotAction(cmdVelPub, action):
+def doTurtleBotAction(cmdVelPub, cmd_vel_linear, cmd_vel_angular):
     status = 'doTurtleBotAction => OK'
 
-    max_angular_vel = 1.5
+    #max_angular_vel = 1.5
     
-    ang_vel = ((5 - 1)/2 - action) * max_angular_vel * 0.5
+    #ang_vel = ((5 - 1)/2 - action) * max_angular_vel * 0.5
     vel_cmd = Twist()
-    vel_cmd.linear.x = 0.08
-    vel_cmd.angular.z = ang_vel
+    vel_cmd.linear.x = cmd_vel_linear
+    vel_cmd.angular.z = cmd_vel_angular
     cmdVelPub.publish(vel_cmd)
     return status
     
