@@ -1,0 +1,17 @@
+package turtlebot.postprocessor.util;
+
+component StepRobot {
+    ports
+        in  Z(0:4)    step,
+        out Q^{3}     vel_cmd;
+
+    implementation Math {
+
+        Q max_angular_vel = 1.5;
+        Q action_size = 5;
+
+        vel_cmd(1) = step;
+        vel_cmd(2) = 0.15;
+        vel_cmd(3) = ((action_size - 1)/2 - step) * max_angular_vel * 0.5;
+    }
+}
