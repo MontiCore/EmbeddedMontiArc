@@ -80,43 +80,6 @@ def doTurtleBotAction(cmdVelPub, cmd_vel_linear, cmd_vel_angular):
     vel_cmd.angular.z = cmd_vel_angular
     cmdVelPub.publish(vel_cmd)
     return status
-###
-def turtleBotGoForward(cmdVelPub):
-    velMsg = createCmdVelMsg(CONST_LINEAR_SPEED_FORWARD,CONST_ANGULAR_SPEED_FORWARD)
-    cmdVelPub.publish(velMsg)
-###
-def turtleBotTurnRight(cmdVelPub):
-    velMsg = createCmdVelMsg(CONST_LINEAR_SPEED_TURN,-CONST_ANGULAR_SPEED_TURN)
-    cmdVelPub.publish(velMsg)
-###
-def turtleBotTurnLeft(cmdVelPub):
-    velMsg = createCmdVelMsg(CONST_LINEAR_SPEED_TURN,+CONST_ANGULAR_SPEED_TURN)
-    cmdVelPub.publish(velMsg)
-
-def checkCrash(lidarDist):
-    if lidarDist is not None:
-        lidar_front_view = np.concatenate((lidarDist[(ANGLE_MIN + HORIZON_WIDTH):(ANGLE_MIN):-1],\
-            lidarDist[(ANGLE_MAX): (ANGLE_MAX - HORIZON_WIDTH):-1]))
-        param = np.linspace(1.2, 1, len(lidar_front_view) // 2)
-        param = np.append(param, np.linspace(1, 1.2, len(lidar_front_view) // 2))
-        if np.min( param * lidar_front_view ) < COLLISION_DISTANCE:
-            return True
-    return False
-
-def  getLidarDist(msgScan):
-    distances = np.array([])
-
-    for i in range(len(msgScan.ranges)):
-        if ( msgScan.ranges[i] > MAX_LIDAR_DISTANCE ):
-            distance = MAX_LIDAR_DISTANCE
-        elif ( msgScan.ranges[i] < msgScan.range_min ):
-            distance = msgScan.range_min
-        else:
-            distance = msgScan.ranges[i]
-
-        distances = np.append(distances, distance)
-    # distances in [m]
-    return distances
 
     '''
     Calculate euler distance of given two points
