@@ -9,18 +9,17 @@ import turtlebot.preprocessor.util.CheckCrash;
 import turtlebot.preprocessor.move.EulerFromQuaternion;
 import turtlebot.preprocessor.move.CalcHeading;
 import turtlebot.preprocessor.move.CalcDistance;
+import turtlebot.preprocessor.move.SetInitialValues;
 import turtlebot.preprocessor.move.SetGoal;
 import turtlebot.preprocessor.util.CalcReward;
 
 component Master {
     ports
         in  Q^{360}  ranges,
-        in  Q        gazebo_reward,
-        in  B        gazebo_terminal,
         in  Q^{6}    positions,
         in  Z        actionIn,
         in  B        resetState,
-        in  Q^{2}    goal_position,
+        in  B        goalReachedBool,
         out B        goalReached,
         out Q^{31}   state,
         out Q        reward,
@@ -31,6 +30,7 @@ component Master {
     instance ScanDiscretization scanDisc;
     instance CombineState combineState;
     instance GetQuat getQuat;
+    instance SetInitialValues setInitials;
     instance SetGoal setGoal;
     instance EulerFromQuaternion euFromQuat;
     instance CalcHeading calcHead;
@@ -39,7 +39,10 @@ component Master {
     instance CalcReward calcReward;
 
     connect ranges                 -> lidarScan.msgRanges;
-    connect goal_position          -> setGoal.goalPosIn; 
+    connect goalReachedBool        -> setGoal.goalReachedBool; 
+    connect setInitials.inital_position      -> setGoal.inital_position;
+    connect setInitials.goalXArray      -> setGoal.goalXArray;
+    connect setInitials.goalYArray      -> setGoal.goalYArray;
     connect lidarScan.distancesOut -> scanDisc.distances;
     connect scanDisc.scanState     -> combineState.laserState;
     connect scanDisc.scanState     -> checkCrash.checkState;
@@ -66,8 +69,5 @@ component Master {
     connect calcReward.goal_reached -> goalReached;
     connect calcReward.reward      -> reward;
     connect calcReward.terminal    -> terminal;
-    
-    //connect gazebo_reward          -> reward;
-    //connect gazebo_terminal        -> terminal;
 
 }

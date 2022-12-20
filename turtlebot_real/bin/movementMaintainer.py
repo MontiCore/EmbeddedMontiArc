@@ -16,10 +16,6 @@ def stopTurtleBot(velPub):
 def createCmdVelMsg(v,w):
     velMsg = Twist()
     velMsg.linear.x = v
-    velMsg.linear.y = 0  # you can delte this line see rl navigation (mantis) github
-    velMsg.linear.z = 0  # you can delte this line see rl navigation (mantis) github
-    velMsg.angular.x = 0 # you can delte this line see rl navigation (mantis) github
-    velMsg.angular.y = 0 # you can delte this line see rl navigation (mantis) github
     velMsg.angular.z = w
     return velMsg
     
@@ -57,28 +53,8 @@ def setTurtleBotPos(setPosPub, x, y, theta):
     initModel.pose.orientation.z = z_q
     initModel.pose.orientation.w = w_q
 
-    initModel.twist.linear.x = 0.0  #try to delte this line and see what will happend
-    initModel.twist.linear.y = 0.0  #try to delte this line and see what will happend
-    initModel.twist.linear.z = 0.0  #try to delte this line and see what will happend
-
-    initModel.twist.angular.x = 0.0 #try to delte this line and see what will happend
-    initModel.twist.angular.y = 0.0 #try to delte this line and see what will happend
-    initModel.twist.angular.z = 0.0 #try to delte this line and see what will happend
-
     setPosPub.publish(initModel)
     return ( x , y, theta )
-
-'''
-    getTurtleBotRotation 
-    ROS function to calculate the orientation of the turtlebot by using Odometry data
-    
-    return: the orientation of the turtlebot as yaw
-'''
-def getTurtleBotRotation(odomMsg):
-    orientation_q = odomMsg.pose.pose.orientation
-    orientation_list = [ orientation_q.x, orientation_q.y, orientation_q.z, orientation_q.w]
-    (roll, pitch, yaw) = euler_from_quaternion(orientation_list)
-    return yaw
 
 '''
     getTurtleBotRotation 
@@ -92,81 +68,55 @@ def getPosition(odomMsg):
     arr = [x, y]
     return arr
 
-'''
-    getHeading
-    Calculate heading angle from turtlebot to goal
-    
-    return: angle in float
-'''
-
-def getHeading(turtle_x, turtle_y, goal_x, goal_y, yaw):
-    
-    targetAngle = math.atan2(goal_y - turtle_y, goal_x - turtle_x)
-    heading = targetAngle - yaw
-    if heading > math.pi:
-        heading -= 2 * math.pi
-    elif heading < -math.pi:
-        heading += 2 * math.pi
-    return round(heading, 2)
-
-'''
-    getReward
-    Calculate the reward of an action.
-    
-    return: reward and terminate state
-'''
-def getReward(action, heading, current_distance, goal_distance, obstacle_min_range, crash):
-    rospy.loginfo("heading" + str(heading))
-    rospy.loginfo("action" + str(action))
-    reward = 0
-    terminal_state = False
-    angle = -math.pi / 4 + heading + (math.pi / 8 * action) + math.pi / 2
-    rospy.loginfo("angle" + str(angle))
-    yaw_reward = 1 - 4 * math.fabs(0.5 - math.modf(0.25 + 0.5 * angle % (2 * math.pi) / math.pi)[0])
-    rospy.loginfo("yaw_reward" + str(yaw_reward))
-    goal_reached = False
-    
-    try:
-        distance_rate = 2 ** (current_distance / goal_distance)
-        rospy.loginfo("distance_rate" + str(distance_rate))
-    except Exception:
-        print("Overflow err CurrentDistance = ", current_distance, " TargetDistance = ", goal_distance)
-        distance_rate = 2 ** (current_distance // goal_distance)
-    
-    reward += ((round(yaw_reward * 5, 2)) * distance_rate) #multiply with the number of action, here: 3 
-    rospy.loginfo("reward_distance_rate" + str(reward))
-    '''if obstacle_min_range < 0.5: 
-        reward += -5
-    else:
-        reward += 0'''#for later training 
-        
-    if crash: # could be a crash and near to goal? maybe if else
-        rospy.loginfo("Crash!!")
-        terminal_state = True
-        reward += -150
-    
-    if current_distance <= 0.2:
-        rospy.loginfo("Goal!!")
-        goal_reached = True
-        terminal_state = True
-        reward += 200
-    
-    rospy.loginfo("reward" + str(reward))
-    return reward, terminal_state, goal_reached
-
 ###
-def doTurtleBotAction(cmdVelPub, action):
+def doTurtleBotAction(cmdVelPub, cmd_vel_linear, cmd_vel_angular):
     status = 'doTurtleBotAction => OK'
 
-    max_angular_vel = 1.5
+    #max_angular_vel = 1.5
     
-    ang_vel = ((5 - 1)/2 - action) * max_angular_vel * 0.5
+    #ang_vel = ((5 - 1)/2 - action) * max_angular_vel * 0.5
     vel_cmd = Twist()
-    vel_cmd.linear.x = 0.08
-    vel_cmd.angular.z = ang_vel
+    vel_cmd.linear.x = cmd_vel_linear
+    vel_cmd.angular.z = cmd_vel_angular
     cmdVelPub.publish(vel_cmd)
-
     return status
+###
+def turtleBotGoForward(cmdVelPub):
+    velMsg = createCmdVelMsg(CONST_LINEAR_SPEED_FORWARD,CONST_ANGULAR_SPEED_FORWARD)
+    cmdVelPub.publish(velMsg)
+###
+def turtleBotTurnRight(cmdVelPub):
+    velMsg = createCmdVelMsg(CONST_LINEAR_SPEED_TURN,-CONST_ANGULAR_SPEED_TURN)
+    cmdVelPub.publish(velMsg)
+###
+def turtleBotTurnLeft(cmdVelPub):
+    velMsg = createCmdVelMsg(CONST_LINEAR_SPEED_TURN,+CONST_ANGULAR_SPEED_TURN)
+    cmdVelPub.publish(velMsg)
+
+def checkCrash(lidarDist):
+    if lidarDist is not None:
+        lidar_front_view = np.concatenate((lidarDist[(ANGLE_MIN + HORIZON_WIDTH):(ANGLE_MIN):-1],\
+            lidarDist[(ANGLE_MAX): (ANGLE_MAX - HORIZON_WIDTH):-1]))
+        param = np.linspace(1.2, 1, len(lidar_front_view) // 2)
+        param = np.append(param, np.linspace(1, 1.2, len(lidar_front_view) // 2))
+        if np.min( param * lidar_front_view ) < COLLISION_DISTANCE:
+            return True
+    return False
+
+def  getLidarDist(msgScan):
+    distances = np.array([])
+
+    for i in range(len(msgScan.ranges)):
+        if ( msgScan.ranges[i] > MAX_LIDAR_DISTANCE ):
+            distance = MAX_LIDAR_DISTANCE
+        elif ( msgScan.ranges[i] < msgScan.range_min ):
+            distance = msgScan.range_min
+        else:
+            distance = msgScan.ranges[i]
+
+        distances = np.append(distances, distance)
+    # distances in [m]
+    return distances
 
     '''
     Calculate euler distance of given two points
