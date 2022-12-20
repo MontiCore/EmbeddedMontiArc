@@ -8,13 +8,13 @@
     <!-- == PROJECT COORDINATES ============================================= -->
     <groupId>de.monticore.lang.monticar</groupId>
     <artifactId>enum</artifactId>
-    <version>0.4.4-SNAPSHOT</version>
+    <version>0.4.5-SNAPSHOT</version>
 
     <!-- == PROJECT DEPENDENCIES ============================================= -->
     <properties>
 
         <!-- .. EMA-Libraries ................................................. -->
-        <Common-MontiCar.version>0.4.6-SNAPSHOT</Common-MontiCar.version>
+        <Common-MontiCar.version>0.4.7-SNAPSHOT</Common-MontiCar.version>
 
         <!-- .. SE-Libraries .................................................. -->
         <guava.version>25.1-jre</guava.version>
