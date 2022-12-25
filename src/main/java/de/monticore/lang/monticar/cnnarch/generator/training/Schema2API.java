@@ -14,9 +14,7 @@ import schemalang._symboltable.SchemaDefinitionSymbol;
 import java.io.File;
 import java.io.IOException;
 import java.nio.file.Paths;
-import java.util.ArrayList;
-import java.util.List;
-import java.util.Optional;
+import java.util.*;
 
 public class Schema2API {
 
@@ -29,6 +27,19 @@ public class Schema2API {
 
     public void setSchemasModelPath(ModelPath schemasModelPath) {
         this.schemasModelPath = schemasModelPath;
+    }
+
+
+    public static void main(String[] args) {
+        final String pathToSchemas = args[0];
+        final List<String> schemaModels = new LinkedList<>(Arrays.asList(args).subList(1, args.length));
+        final ModelPath modelPath = new ModelPath(Paths.get(pathToSchemas));
+        final List<ASTSchemaDefinition> schemaDefinitions = new LinkedList<>();
+        for (String schemaModel : schemaModels
+        ) {
+            schemaDefinitions.add(SchemaUtil.resolveASTSchemaDefinition(schemaModel, modelPath));
+        }
+        new Schema2API().generatePythonAPIs(schemaDefinitions);
     }
 
     /***
@@ -46,7 +57,7 @@ public class Schema2API {
         }
     }
 
-    private  void generateForSchema(final GeneratorEngine generatorEngine, final ASTSchemaDefinition schemaDefinition) {
+    private void generateForSchema(final GeneratorEngine generatorEngine, final ASTSchemaDefinition schemaDefinition) {
         final ASTSchemaDefinition astSchemaDefinition = schemaDefinition;
         final ASTSchemaDefinition astSuperSchemaDefinition = astSchemaDefinition.getSuperSchemaDefinitions().stream().findFirst().orElse(null);
         generatorEngine.generate(FreeMarkerTemplate.SCHEMA_CLASS.getTemplateName(), Paths.get(schemaDefinition.getName() + "_Schema_API.py"), astSchemaDefinition,
