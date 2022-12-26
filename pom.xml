@@ -139,7 +139,7 @@
                 <executions>
                     <execution>
                         <id>schemaAPI</id>
-                        <phase>generate-sources</phase>
+                        <phase>compile</phase>
                         <goals>
                             <goal>java</goal>
                         </goals>
