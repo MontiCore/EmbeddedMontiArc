@@ -60,7 +60,7 @@ public class SchemaTypeUtil {
         return astSchemaMember instanceof ASTTypedDeclaration;
     }
 
-    private boolean isObjectType(ASTTypedDeclaration astTypedDeclaration) {
+    public static boolean isObjectType(ASTTypedDeclaration astTypedDeclaration) {
         return (astTypedDeclaration.getType() instanceof ASTObjectType);
     }
 }
