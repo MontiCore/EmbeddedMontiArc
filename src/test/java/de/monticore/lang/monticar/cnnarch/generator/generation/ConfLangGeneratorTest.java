@@ -19,7 +19,7 @@ class ConfLangGeneratorTest {
         new TemplateLinker().linkToTrainingConfigurationTemplates(astConfLangCompilationUnit);
         final File pathToGeneratedFile = new File("target/generated-sources/configurations/Training_Configuration_LeNetNetwork.py");
         final File pathToExpectedFile = new File("src/test/resources/configurations/Training_Configuration_LeNetNetwork.py");
-        new ConfLangGenerator().generatePythonTrainingConfiguration(astConfLangCompilationUnit);
-        Assertions.assertEquals(FileUtils.readFileToString(pathToExpectedFile, "UTF-8"), FileUtils.readFileToString(pathToGeneratedFile, "UTF-8"));
+        new ConfLangGenerator().generatePythonTrainingConfiguration(astConfLangCompilationUnit, "Training_Configuration_" + astConfLangCompilationUnit.getConfiguration().getName());
+        Assertions.assertEquals(FileUtils.readFileToString(pathToExpectedFile, "UTF-8").replace("  ",""), FileUtils.readFileToString(pathToGeneratedFile, "UTF-8").replace("  ",""));
     }
 }
