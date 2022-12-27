@@ -1,7 +1,7 @@
 /* (c) https://github.com/MontiCore/monticore */
 import Optimizer;
 
-schema DDPG extends Reinforcement {
+schema DDPG extends ReinforcementLearning {
 
     reference-model: referencemodels.ddpg.DDPG, referencemodels.ddpg.DDPGWithoutRewardComponent, referencemodels.ddpg.DDPGGymEnvironment
     soft_target_update_rate: Q
