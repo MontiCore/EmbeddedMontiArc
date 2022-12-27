@@ -1,7 +1,7 @@
 /* (c) https://github.com/MontiCore/monticore */
 import Loss;
 
-schema DQN extends Reinforcement {
+schema DQN extends ReinforcementLearning {
 
     reference-model: referencemodels.dqn.DQN, referencemodels.dqn.DQNGym, referencemodels.dqn.DQNGymPolicyReward
     use_fix_target_network: B
