@@ -15,10 +15,10 @@ import java.util.ArrayList;
 
 
 
-public class NetworkStructureScanner{
+public class ArchitectureNodeScanner {
     ArrayList<ArchitectureNode> architecturesNodes = null;
 
-    public NetworkStructureScanner(ArrayList<ArchitectureNode> currentNodes) {
+    public ArchitectureNodeScanner(ArrayList<ArchitectureNode> currentNodes) {
         this.architecturesNodes = currentNodes;
     }
 

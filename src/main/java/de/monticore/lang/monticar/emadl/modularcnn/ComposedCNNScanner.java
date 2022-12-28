@@ -13,7 +13,7 @@ import de.monticore.lang.monticar.emadl._visitor.EMADLVisitor;
 import de.monticore.lang.monticar.emadl._visitor.ModularNetworkVisitor;
 import de.monticore.lang.monticar.emadl.modularcnn.compositions.ArchitectureNode;
 import de.monticore.lang.monticar.emadl.modularcnn.compositions.CNNProcessor;
-import de.monticore.lang.monticar.emadl.modularcnn.compositions.NetworkStructureScanner;
+import de.monticore.lang.monticar.emadl.modularcnn.compositions.ArchitectureNodeScanner;
 import de.monticore.symboltable.*;
 import de.se_rwth.commons.logging.Log;
 
@@ -24,7 +24,7 @@ public class ComposedCNNScanner extends CommonSymbolTableCreator implements Modu
 
 
     private ModularNetworkVisitor realThis = this;
-    private NetworkStructureScanner nss = null;
+    private ArchitectureNodeScanner nss = null;
     private ArrayList<ArchitectureNode> archNodes = null;
 
     private String composedNetworksFilePath = "";
@@ -47,7 +47,7 @@ public class ComposedCNNScanner extends CommonSymbolTableCreator implements Modu
     }
 
     public void initNetworkStructureScanner(ArrayList<ArchitectureNode> archNodes, String composedNetworksFilePath){
-        nss = new NetworkStructureScanner(archNodes);
+        nss = new ArchitectureNodeScanner(archNodes);
         this.archNodes = archNodes;
         this.composedNetworksFilePath = composedNetworksFilePath;
         //Log.info("Initialized Network Structure Scanner","NSS_INIT");
