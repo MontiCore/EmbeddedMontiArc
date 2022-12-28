@@ -24,7 +24,7 @@ public class ComposedCNNScanner extends CommonSymbolTableCreator implements Modu
 
 
     private ModularNetworkVisitor realThis = this;
-    private ArchitectureNodeScanner nss = null;
+    private ArchitectureNodeScanner architectureNodeScanner = null;
     private ArrayList<ArchitectureNode> archNodes = null;
 
     private String composedNetworksFilePath = "";
@@ -47,7 +47,7 @@ public class ComposedCNNScanner extends CommonSymbolTableCreator implements Modu
     }
 
     public void initNetworkStructureScanner(ArrayList<ArchitectureNode> archNodes, String composedNetworksFilePath){
-        nss = new ArchitectureNodeScanner(archNodes);
+        architectureNodeScanner = new ArchitectureNodeScanner(archNodes);
         this.archNodes = archNodes;
         this.composedNetworksFilePath = composedNetworksFilePath;
         //Log.info("Initialized Network Structure Scanner","NSS_INIT");
@@ -88,7 +88,7 @@ public class ComposedCNNScanner extends CommonSymbolTableCreator implements Modu
 
     @Override
     public void endVisit(ASTNode node){
-        nss.scanForArchitectureNodes(node);
+        architectureNodeScanner.scanForArchitectureNodes(node);
     }
 
     @Override
