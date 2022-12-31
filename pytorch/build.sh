@@ -1,5 +1,5 @@
 echo "Copying resources to target directory.."
-# cp -r src/main/resources/* target
+cp -r src/main/resources/* target
 cp -r src/main/cpp/* target
 echo "Done copying"
 
