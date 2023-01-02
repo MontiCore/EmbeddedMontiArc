@@ -1,5 +1,6 @@
 echo "Copying resources to target directory.."
 cp  target/generated-sources/backend/* target
+cp -r target/generated-sources/model/ target
 cp -r src/main/cpp/* target
 echo "Done copying"
 
