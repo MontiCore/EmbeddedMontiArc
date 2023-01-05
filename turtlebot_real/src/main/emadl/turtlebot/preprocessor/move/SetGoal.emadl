@@ -16,9 +16,9 @@ component SetGoal {
         static Q goalY = 0.0;
 
         if goalReachedBool
-        Z randomIndex = counter % 6;
-        goalX = goalXArray(1, randomIndex+1);
-        goalY = goalYArray(1, randomIndex+1);
+            Z randomIndex = counter % 6;
+            goalX = goalXArray(1, randomIndex+1);
+            goalY = goalYArray(1, randomIndex+1);
         end
 
         //Goal position
@@ -30,6 +30,6 @@ component SetGoal {
 
         absDistance = sqrt(firTerm * firTerm + secTerm * secTerm);
 
-        counter += 0;
+        counter += 1;
     }
 }
