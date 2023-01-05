@@ -80,7 +80,7 @@ def doTurtleBotAction(cmdVelPub, cmd_vel_linear, cmd_vel_angular):
     vel_cmd.angular.z = cmd_vel_angular
     cmdVelPub.publish(vel_cmd)
     return status
-    
+
     '''
     Calculate euler distance of given two points
     return distance in float
