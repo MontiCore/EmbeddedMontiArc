@@ -4,6 +4,7 @@ import rospy
 import time
 import numpy as np
 import math
+import thread
 
 from std_msgs.msg import Float32MultiArray, Bool, Int32, Float32
 from sensor_msgs.msg import LaserScan
@@ -26,15 +27,13 @@ class RosConnector(object):
     ros_update_rate = 10
     
     RANDOM_START_POS = False
-    X_INIT = -0.4
-    Y_INIT = -0.4
-    THETA_INIT = 45.0
-    
-    X_GOAL = 1.7
-    Y_GOAL = -1
+    X_INIT = -2.0
+    Y_INIT = -0.5
+    THETA_INIT = 0.0
     
     def __init__(self, env_str, verbose=True):
         # initialize the node
+        print('Start init:')
         rospy.init_node(env_str, anonymous=True)
         
         self.__terminated = True
@@ -74,7 +73,8 @@ class RosConnector(object):
         
         
         rate = rospy.Rate(10)
-        rospy.spin()
+        #rospy.spin()
+        self__listener = thread.start_new_thread(rospy.spin, ())
         time.sleep(1) # check if with less time to sleep it would be faster inialization
         self.print_if_verbose('ROS node initialized')
         
@@ -109,14 +109,9 @@ class RosConnector(object):
                     pass            
             
             odomMsg_array.data = getPosition(odomMsg)
-            
-            self.__goal_distance = calcDistance(odomMsg_array.data[0], odomMsg_array.data[1], self.X_GOAL, self.Y_GOAL)
-            
+                        
             orientation_q = odomMsg.pose.pose.orientation
             odomMsg_array.data += [ orientation_q.w, orientation_q.x, orientation_q.y, orientation_q.z]
-            
-            goal_position = Float32MultiArray()
-            goal_position.data = [self.X_GOAL, self.Y_GOAL ]
             
             self.__actionIn_publisher.publish(Int32(10))
             self.__resetState_publisher.publish(Bool(True))
@@ -172,14 +167,10 @@ class RosConnector(object):
 
                     array_position = getPosition(odomMsg) # du kannst odomMsg_array direkt zuweisen
                     odomMsg_array.data= array_position
-                    
-                    current_distance = calcDistance(odomMsg_array.data[0], odomMsg_array.data[1], self.X_GOAL, self.Y_GOAL)
-                    
+                                        
                     orientation_q = odomMsg.pose.pose.orientation
                     odomMsg_array.data += [ orientation_q.w, orientation_q.x, orientation_q.y, orientation_q.z]
                     
-                    goal_position = Float32MultiArray()
-                    goal_position.data = [self.X_GOAL, self.Y_GOAL ]
                     self.__goalReachedBool_publisher.publish(Bool(self.__goal_reached))
                     self.__actionIn_publisher.publish(Int32(action))
                     self.__resetState_publisher.publish(Bool(False))

@@ -18,24 +18,6 @@ def createCmdVelMsg(v,w):
     velMsg.linear.x = v
     velMsg.angular.z = w
     return velMsg
-    
-def setRandomGoalPos():
-
-    #Stage 1
-    goal_x_list = [0.9, 1.5, 1.5, 0.2, -1.0, -1.5, -0.3]
-    goal_y_list = [-0.9, 0.0, 1.3, 1.5, 0.9, 0.0, -1.5]
-    
-
-    index = np.random.randint(0,len(goal_x_list))
-
-    '''#Stage 2
-    goal_x_list = [0, 1.4, -1.5, 0, -1.5, 1.6]
-    goal_y_list = [ -1.5, -1.5,  -1.5, 1.4, 1.4, 1.4]'''
-
-    x = goal_x_list[index]
-    y = goal_y_list[index]
-
-    return x, y
 
 def setTurtleBotPos(setPosPub, x, y, theta):
     initModel = ModelState()
@@ -72,9 +54,6 @@ def getPosition(odomMsg):
 def doTurtleBotAction(cmdVelPub, cmd_vel_linear, cmd_vel_angular):
     status = 'doTurtleBotAction => OK'
 
-    #max_angular_vel = 1.5
-    
-    #ang_vel = ((5 - 1)/2 - action) * max_angular_vel * 0.5
     vel_cmd = Twist()
     vel_cmd.linear.x = cmd_vel_linear
     vel_cmd.angular.z = cmd_vel_angular

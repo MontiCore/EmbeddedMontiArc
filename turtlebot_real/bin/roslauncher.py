@@ -33,7 +33,6 @@ if __name__ == "__main__":
                       help='evaluation mode')
 
     options, args = parser.parse_args()
-
     if not options.environment:
         parser.error('Enviroment string not given')
 
@@ -53,11 +52,10 @@ if __name__ == "__main__":
 
     verbose = options.verbose
     sample_games = 100 
-
     connector = RosConnector(options.environment, verbose)
-
     if mode == PLAY_MODE:
-        time.sleep(8)
+        print('Start Play Mode')
+        time.sleep(4)
         connector.reset()
         while not connector.is_terminated or connector.in_reset:
             time.sleep(1)
@@ -71,6 +69,7 @@ if __name__ == "__main__":
             while not connector.is_terminated:
                 time.sleep(0.5)
     else: #training mode
+        print('Start Training Mode')
         while True:
             time.sleep(0.3)
     connector.shutdown()        
