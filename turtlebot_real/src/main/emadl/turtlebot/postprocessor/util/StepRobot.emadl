@@ -11,7 +11,7 @@ component StepRobot {
         Q action_size = 5;
 
         vel_cmd(1) = step;
-        vel_cmd(2) = 0.15;
+        vel_cmd(2) = 0.11;
         vel_cmd(3) = ((action_size - 1)/2 - step) * max_angular_vel * 0.5;
     }
 }
