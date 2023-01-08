@@ -41,31 +41,6 @@ class Schema2APITest {
     }
 
     @Test
-    void generateSchemaAPI() {
-        final Schema2API schema2API = new Schema2API();
-//        schema2API.generatePythonAPIs(schema2API.resolveSchemas());
-    }
-
-    @Test
-    void parseSingleSchema() {
-        List<ASTSchemaLangCompilationUnit> astSchemaDefinitions = new Schema2API().parseSchemas();
-        assertNotNull(astSchemaDefinitions);
-    }
-
-    @Test
-    void allSchemaTypes() {
-        final Schema2API schema2API = new Schema2API();
-        schema2API.setSchemasModelPath(new ModelPath(Paths.get("src/test/resources/schemas")));
-        SchemaDefinitionSymbol supervised = schema2API.resolveSchema("Supervised");
-        final ASTSchemaDefinition astSchemaDefinition = (ASTSchemaDefinition) supervised.getAstNode().get();
-        final StringBuilder generationResult = generatorEngine.generate(FreeMarkerTemplate.SCHEMA_CLASS.getTemplateName(), astSchemaDefinition, astSchemaDefinition, null, astSchemaDefinition.getSchemaMemberList());
-        System.out.print(generationResult);
-//        IndentPrinter printer = new IndentPrinter();
-//        new SchemaLang2OD(printer, new ReportingRepository(new ASTNodeIdentHelper())).handle(supervised.getSchemaDefinitionNode().get());
-//        System.out.println(printer.getContent());
-    }
-
-    @Test
     void objectType2Python() throws IOException {
         final ASTSchemaDefinition schemaWithObjectTypeEntry = SchemaUtil.resolveASTSchemaDefinition("SchemaWithObjectTypeEntry", new ModelPath(Paths.get("src/test/resources/schemas")));
         final ASTTypedDeclaration optimizerMember = (ASTTypedDeclaration) schemaWithObjectTypeEntry.getSchemaMemberList().get(1);
@@ -92,17 +67,4 @@ class Schema2APITest {
         assertEquals(expected, actual);
     }
 
-    @Test
-    void inheritanceOnRefModels() {
-        final Schema2API schema2API = new Schema2API();
-        schema2API.setSchemasModelPath(new ModelPath(Paths.get("src/test/resources/schemas")));
-        SchemaDefinitionSymbol schema = schema2API.resolveSchema("SchemaWithReferenceModel");
-        assertNotNull(schema.getAstNode().get());
-        final ASTSchemaDefinition schemaDefinition = (ASTSchemaDefinition) schema.getAstNode().get();
-    }
-
-    @Test
-    void referencemodelValidation() {
-        Path src = Paths.get("src/test/resources/architectures");
-    }
 }

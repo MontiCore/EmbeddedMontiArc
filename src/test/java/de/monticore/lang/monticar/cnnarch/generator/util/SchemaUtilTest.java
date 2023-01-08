@@ -7,6 +7,8 @@ import schemalang._ast.ASTSchemaDefinition;
 import schemalang._ast.ASTTypedDeclaration;
 
 import java.nio.file.Paths;
+import java.util.List;
+import java.util.stream.Collectors;
 
 import static de.monticore.lang.monticar.cnnarch.generator.util.SchemaUtil.resolveASTSchemaDefinition;
 import static org.junit.jupiter.api.Assertions.assertTrue;
@@ -23,5 +25,16 @@ class SchemaUtilTest {
         assertTrue(definitionForDeclaration != null && definitionForDeclaration.getName().equals("optimizer_type"));
     }
 
+    @Test
+    void getPropertyDefinitionFromImportedAndInheritedSchemas() {
+        final ASTSchemaDefinition astSchemaDefinition = resolveASTSchemaDefinition("Reinforcement", modelPath);
+        final List<ASTTypedDeclaration> objectDeclarations = astSchemaDefinition.getBasicSchemaProperties().stream().filter(SchemaTypeUtil::isObjectType).collect(Collectors.toList());
+        for (ASTTypedDeclaration objectDeclaration:objectDeclarations
+             ) {
+            final ASTComplexPropertyDefinition definitionForDeclaration = SchemaUtil.getPropertyDefinitionForDeclaration(objectDeclaration, astSchemaDefinition);
+            final String declarationTypeName = objectDeclaration.getTypedDeclarationSymbol().getTypeName();
+            assertTrue(definitionForDeclaration != null && definitionForDeclaration.getName().equals(declarationTypeName));
+        }
+    }
 
 }

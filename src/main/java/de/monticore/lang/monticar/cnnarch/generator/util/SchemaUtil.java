@@ -10,6 +10,7 @@ import schemalang._ast.ASTSchemaDefinition;
 import schemalang._ast.ASTTypedDeclaration;
 import schemalang._cocos.SchemaLangCoCoChecker;
 import schemalang._cocos.SchemaLangCocoFactory;
+import schemalang._symboltable.ComplexPropertyDefinitionSymbol;
 import schemalang._symboltable.SchemaDefinitionSymbol;
 import schemalang._symboltable.SchemaLangLanguage;
 import schemalang._symboltable.TypedDeclarationSymbol;
@@ -43,11 +44,24 @@ public class SchemaUtil {
         return schemaDefinitionSymbol;
     }
 
+    /***
+     * gets the complex property definition for an object-type schema declaration
+     * the method looks up for the definition in the provided schema definition, and imported and inherited schemas
+     * assumption: the symbol table has been built such that the given AST node has its symbol
+     */
     public static ASTComplexPropertyDefinition getPropertyDefinitionForDeclaration(final ASTTypedDeclaration objectDeclaration, final ASTSchemaDefinition schemaDefinition) {
-        // look up definition in the model first
         final TypedDeclarationSymbol typedDeclarationSymbol = objectDeclaration.getTypedDeclarationSymbol();
+        final String complexPropertyName = typedDeclarationSymbol.getTypeName();
         final List<ASTComplexPropertyDefinition> complexPropertyDefinitions = schemaDefinition.getComplexPropertyDefinitions();
-        final Optional<ASTComplexPropertyDefinition> complexPropertyDefinition = complexPropertyDefinitions.stream().filter(astComplexPropertyDefinition -> astComplexPropertyDefinition.getName().equals(typedDeclarationSymbol.getTypeName())).findFirst();
-        return complexPropertyDefinition.orElse(null);
+        final Optional<ASTComplexPropertyDefinition> complexPropertyDefinition = complexPropertyDefinitions.stream().filter(astComplexPropertyDefinition -> astComplexPropertyDefinition.getName().equals(complexPropertyName)).findFirst();
+        if (complexPropertyDefinition.isPresent()) {
+            return complexPropertyDefinition.orElse(null);
+        }
+        final SchemaDefinitionSymbol schemaDefinitionSymbol = schemaDefinition.getSchemaDefinitionSymbol();
+        final Optional<ComplexPropertyDefinitionSymbol> complexPropertyDefinitionSymbol = schemaDefinitionSymbol.getAttributeEntryOfKindComplex(complexPropertyName);
+        if (complexPropertyDefinitionSymbol.isPresent()) {
+            return complexPropertyDefinitionSymbol.get().getComplexPropertyDefinitionNode().orElseThrow(IllegalStateException::new);
+        }
+        throw new IllegalStateException("Could not find complex property definition for " + objectDeclaration.getName());
     }
 }
