@@ -8,10 +8,10 @@ component SetInitialValues {
 
     implementation Math {
         
-        Z stage = 1;
+        Z stage = 3;
         //inital Postion
-        Q initlPosX = -0.4;
-        Q initlPosY = -0.4;
+        Q initlPosX = 1.5;
+        Q initlPosY = 1.5;
         
         //Goal position arrays # Stage 1
         Q^{1,6} X_stage1 = [0.9, 1.5, 1.5, 0.2, -1.0, -1.5];
