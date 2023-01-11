@@ -10,15 +10,15 @@
 
   <groupId>de.monticore.lang.monticar</groupId>
   <artifactId>embedded-montiarc-behaviour</artifactId>
-  <version>0.4.4-SNAPSHOT</version>
+  <version>0.4.5-SNAPSHOT</version>
 
   <!-- == PROJECT DEPENDENCIES ============================================= -->
 
   <properties>
 
     <!-- .. EMA-Libraries ................................................. -->
-    <Embedded-MontiArc.version>0.4.4-SNAPSHOT</Embedded-MontiArc.version>
-    <Common-MontiCar.version>0.4.4-SNAPSHOT</Common-MontiCar.version>
+    <Embedded-MontiArc.version>0.4.6-SNAPSHOT</Embedded-MontiArc.version>
+    <Common-MontiCar.version>0.4.7-SNAPSHOT</Common-MontiCar.version>
 
     <!-- .. SE-Libraries .................................................. -->
     <monticore.version>5.0.1</monticore.version>
