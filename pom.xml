@@ -14,7 +14,7 @@
         <!-- .. SE-Libraries .................................................. -->
         <CNNArch.version>0.4.11-SNAPSHOT</CNNArch.version>
         <conflang.version>1.0.0-SNAPSHOT</conflang.version>
-        <schemalang.version>1.0.0-SNAPSHOT</schemalang.version>
+        <schemalang.version>1.0.1-SNAPSHOT</schemalang.version>
         <embedded-montiarc-math-generator>0.4.9</embedded-montiarc-math-generator>
         <EMADL2PythonWrapper.version>0.0.3-SNAPSHOT</EMADL2PythonWrapper.version>
 
