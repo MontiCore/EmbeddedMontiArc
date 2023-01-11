@@ -7,7 +7,7 @@
     <!-- == PROJECT COORDINATES ============================================= -->
     <groupId>de.monticore.lang.monticar</groupId>
     <artifactId>cnnarch-generator</artifactId>
-    <version>0.4.14-SNAPSHOT</version>
+    <version>0.4.15-SNAPSHOT</version>
 
     <!-- == PROJECT DEPENDENCIES ============================================= -->
     <properties>
