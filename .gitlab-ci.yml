@@ -1,13 +1,20 @@
+image: zoroac/monti_turtle:latest
+
 stages:
 - build
+- train
 
 TestBuild:
   stage: build
-  image: registry.git.rwth-aachen.de/monticore/embeddedmontiarc/applications/reinforcement_learning/turtlebot
   artifacts:
     paths:
-    - "turtlebot_real/target/"
+      - "turtlebot_real/target/"
   script: 
-  - cd turtlebot_real
-  - . config.sh
+  - cd turtlebot_real/
   - ./install.sh
+
+TestTrain:
+  stage: test
+  script: 
+  - ./train.sh
+
