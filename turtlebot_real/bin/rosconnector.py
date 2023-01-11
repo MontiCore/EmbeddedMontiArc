@@ -33,7 +33,6 @@ class RosConnector(object):
     
     def __init__(self, env_str, verbose=True):
         # initialize the node
-        print('Start init:')
         rospy.init_node(env_str, anonymous=True)
         
         self.__terminated = True
@@ -133,8 +132,7 @@ class RosConnector(object):
             cmd_vel_linear = cmd_vel_data[1]
             cmd_vel_angular = cmd_vel_data[2]
 
-            if self.is_terminated or self.in_reset or self.is_crash: #check if we need this conditional block
-                rospy.loginfo('Discard action because turtleBot is in reset or terminated or crashed')
+            if self.is_terminated or self.in_reset or self.is_crash: 
                 stopTurtleBot(self.__set_navigation_publisher)
                 self.__crash = False
                 self.__turtleBot_in_position = False
@@ -165,8 +163,7 @@ class RosConnector(object):
                         except:
                             pass
 
-                    array_position = getPosition(odomMsg) # du kannst odomMsg_array direkt zuweisen
-                    odomMsg_array.data= array_position
+                    odomMsg_array.data= getPosition(odomMsg)
                                         
                     orientation_q = odomMsg.pose.pose.orientation
                     odomMsg_array.data += [ orientation_q.w, orientation_q.x, orientation_q.y, orientation_q.z]
@@ -191,10 +188,6 @@ class RosConnector(object):
     def shutdown(self):
         rospy.signal_shutdown('Shutdown')
         
-    def createActions():
-        actions = np.array([0,1,2])
-        return actions
-    
     def positionResetter(self):
         stopTurtleBot(self.__set_navigation_publisher)
         
@@ -226,7 +219,3 @@ class RosConnector(object):
     @property
     def in_reset(self):
         return self.__in_reset
-    
-    @property
-    def last_game_score(self):
-        pass
