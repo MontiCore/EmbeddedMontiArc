@@ -16,5 +16,7 @@ TestBuild:
 TestTrain:
   stage: test
   script: 
+  - cd turtlebot_real/
+  - chmod +x train.sh
   - ./train.sh
 
