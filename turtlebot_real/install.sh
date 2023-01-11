@@ -1,5 +1,5 @@
 #!/bin/bash
-# (c) https://github.com/MontiCore/monticore  
+# this script generate the code for the pre-, postprocessor, and the agent models and build it.
 . config.sh
 
 GENERATOR_PATH="bin/embedded-montiarc-math-middleware-generator-0.1.4-SNAPSHOT-jar-with-dependencies.jar"

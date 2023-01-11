@@ -1,15 +1,18 @@
 #!/bin/bash
-#source /ros_entrypoint.sh
-
-#roscore &
-#pid_ros=$!
-#sleep 3s
 
 ./run_env.sh &
 pid_env=$!
-sleep 2s
+sleep 2
+
+
+exitfn () {
+    trap SIGINT
+    kill $pid_env
+    exit
+}
+
+trap "exitfn" INT
 
 ./run_training.sh
 
-kill $pid_env
-kill $pid_ros
+exitfn()
