@@ -16,6 +16,7 @@ TestBuild:
 TestTrain:
   stage: train
   script: 
+  - source ~/.bashrc
   - source ~/catkin_ws/devel/setup.bash
   - roslaunch turtlebot3_gazebo turtlebot3_world.launch
 
