@@ -16,7 +16,8 @@ stages:
 TestTrain:
   stage: train
   script: 
-  - source ~/.bashrc
+  #- source ~/.bashrc
   - source ~/catkin_ws/devel/setup.bash
+  - export TURTLEBOT3_MODEL=burger
   - echo $TURTLEBOT3_MODEL
 
