@@ -18,5 +18,7 @@ TestTrain:
   script: 
   - source ~/catkin_ws/devel/setup.bash
   - export TURTLEBOT3_MODEL=burger
-  - roslaunch turtlebot3_gazebo turtlebot3_world.launch
+  - roslaunch turtlebot3_gazebo turtlebot3_world.launch &
+  - sleep 15
+  - rostopic list
 
