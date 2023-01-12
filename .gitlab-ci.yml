@@ -1,22 +1,22 @@
 image: zoroac/monti_turtle:latest
 
 stages:
-- build
+#- build
 - train
 
-TestBuild:
-  stage: build
-  artifacts:
-    paths:
-      - "turtlebot_real/target/"
-  script: 
-  - cd turtlebot_real/
-  - ./install.sh
+#TestBuild:
+#  stage: build
+#  artifacts:
+#    paths:
+#      - "turtlebot_real/target/"
+#  script: 
+#  - cd turtlebot_real/
+#  - ./install.sh
 
 TestTrain:
   stage: train
   script: 
   - source ~/.bashrc
   - source ~/catkin_ws/devel/setup.bash
-  - roslaunch turtlebot3_gazebo turtlebot3_world.launch
+  - echo $TURTLEBOT3_MODEL
 
