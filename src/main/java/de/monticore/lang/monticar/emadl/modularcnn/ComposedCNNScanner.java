@@ -99,8 +99,6 @@ public class ComposedCNNScanner extends CommonSymbolTableCreator implements Modu
     @Override
     public void endVisit(ASTEMACompilationUnit node){
         CNNProcessor cnnProcessor = new CNNProcessor(archNodes, this.composedNetworksFilePath);
-        if (cnnProcessor.checkNotNullAndValid(node)){
-            cnnProcessor.checkAndProcessComponentOnMatch(node);
-        }
+        cnnProcessor.checkAndProcessComponentOnMatch(node);
     }
 }
