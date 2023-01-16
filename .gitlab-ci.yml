@@ -140,6 +140,8 @@ base/mxnet:
     - cd docker/base
     - docker build -t $CI_REGISTRY_IMAGE/$IMAGE_NAME:$CI_COMMIT_REF_NAME .
     - *docker
+  except:
+    - modular_testing
 
 #mnistcalculator:
 #  stage: build
