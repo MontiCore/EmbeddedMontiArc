@@ -131,6 +131,24 @@ public class SymtabTest extends AbstractSymtabTest {
         assertEquals("9", assignment2.getRightExpression().getTextualRepresentation());
     }
 
+    @Test
+    public void testCubeValid() {
+        Scope symTab = createSymTab("src/test/resources/emam/cube/main", "src/test/resources/emam/cube/test");
+        EMAComponentInstanceSymbol a =
+                symTab.<EMAComponentInstanceSymbol>resolve("testB.cube_TestWrapper",
+                        EMAComponentInstanceSymbol.KIND).orElse(null);
+        assertNotNull(a);
+    }
+
+    @Test
+    public void testBoolValid() {
+        Scope symTab = createSymTab("src/test/resources/emam/valid/main", "src/test/resources/emam/valid/test");
+        EMAComponentInstanceSymbol a =
+                symTab.<EMAComponentInstanceSymbol>resolve("testA.and_TestWrapper",
+                        EMAComponentInstanceSymbol.KIND).orElse(null);
+        assertNotNull(a);
+    }
+
     /*
   @Test
   public void testSymbolTableCreatorDelegation1() {
