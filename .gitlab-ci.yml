@@ -25,12 +25,12 @@ stages:
 #  - RES=$(./build/src/cpp/DigitCalculator resources/images/2.jpg resources/images/3.jpg resources/images/4.png resources/images/6.png resources/images/2.jpg resources/images/3.jpg)
 #  - "if [[ $RES != *\"SUM: 857\"* ]]; then echo \"Wrong result:\" $RES; exit 1; fi;"
 
-TestGLUON:
+TestGLUON-Modular:
   stage: test
   image: registry.git.rwth-aachen.de/monticore/embeddedmontiarc/applications/mnistcalculator/mxnet:v0.0.5
   when: always
   script:
-    - cd gluon-cpp
+    - cd mnist-modular/gluon-cpp-modular
     - chmod +x build.sh
     - ./build.sh
     - RES=$(./build/src/cpp/DigitCalculator resources/images/1.png resources/images/2.png resources/images/3.png resources/images/4.png resources/images/5.png resources/images/6.png)
