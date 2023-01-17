@@ -6,11 +6,11 @@
 
     <groupId>de.monticore.lang.monticar</groupId>
     <artifactId>executionSemantics</artifactId>
-    <version>0.4.6-SNAPSHOT</version>
+    <version>0.4.7-SNAPSHOT</version>
 
     <properties>
         <!-- .. EMA-Libraries ................................................. -->
-        <Embedded-MontiArc-Math.version>0.4.6-SNAPSHOT</Embedded-MontiArc-Math.version>
+        <Embedded-MontiArc-Math.version>0.4.7-SNAPSHOT</Embedded-MontiArc-Math.version>
 
         <!-- .. Libraries .................................................. -->
         <guava.version>25.1-jre</guava.version>
