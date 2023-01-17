@@ -9,7 +9,6 @@ masterJobLinux:
     - apt-get update -q && apt-get install -y -q g++ libhdf5-serial-dev libhdf5-dev libopenblas-dev
     - gcc --help
     - mvn -Dmaven.wagon.http.ssl.insecure=true -Dmaven.wagon.http.ssl.allowall=true -Dorg.slf4j.simpleLogger.log.org.apache.maven.cli.transfer.Slf4jMavenTransferListener=warn -B  clean deploy --settings settings.xml
-    - mvn package sonar:sonar -s settings.xml
   only:
     - master
   except:
