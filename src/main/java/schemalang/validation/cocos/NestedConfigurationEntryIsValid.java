@@ -34,6 +34,9 @@ public class NestedConfigurationEntryIsValid extends AbstractSchemaValidator imp
         Optional<TypedDeclarationSymbol> attributeDefinitionSymbolOpt = getTypedDeclaration(symbol.getName());
 
         if (!attributeDefinitionSymbolOpt.isPresent()) {
+            if (isNestedEntryDefinedInReferenceModels(symbol)) {
+                return;
+            }
             String errorMessage = String.format(ERROR_MSG_SL_10C, symbol.getName());
             addSchemaViolation(SchemaViolation.create(ERROR_CODE_SL_10C, errorMessage, Joiner.on(", ").join(getAllSchemaNames())));
             logError(node, ERROR_CODE_SL_10C.concat(errorMessage));
@@ -69,4 +72,6 @@ public class NestedConfigurationEntryIsValid extends AbstractSchemaValidator imp
             logError(node, ERROR_CODE_SL_12C.concat(errorMessage));
         }
     }
+
+
 }
