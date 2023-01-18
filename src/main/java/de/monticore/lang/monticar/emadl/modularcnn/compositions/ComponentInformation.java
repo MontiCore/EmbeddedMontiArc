@@ -31,7 +31,7 @@ public class ComponentInformation {
     final private ArrayList<ASTSubComponent> astSubComponents = new ArrayList<>();
     final private ArrayList<ASTComponent> includedComponents = new ArrayList<>();
     final private ArrayList<ComponentInformation> subComponentsInformation = new ArrayList<>();
-    final private ArrayList<ConnectorRelation> connectorRelations = new ArrayList<>();
+    final private ArrayList<DataflowRelation> dataflowRelations = new ArrayList<>();
     final private ASTComponent originalComponentReference;
     final private String componentName;
     final private ArrayList<ArchitectureNode> archNodes;
@@ -68,8 +68,8 @@ public class ComponentInformation {
         return subComponentsInformation;
     }
 
-    public ArrayList<ConnectorRelation> getConnectorRelations() {
-        return connectorRelations;
+    public ArrayList<DataflowRelation> getConnectorRelations() {
+        return dataflowRelations;
     }
 
     public String getComponentName() {
@@ -164,7 +164,7 @@ public class ComponentInformation {
     }
 
     private ArrayList<String> analyzeConnectorFlow(){
-        if (this.connectorRelations == null){
+        if (this.dataflowRelations == null){
             return new ArrayList<>();
         }
         ArrayList<String> flow = new ArrayList<>();
@@ -172,7 +172,7 @@ public class ComponentInformation {
         String previousSource = "";
         String previousTarget = "";
 
-        for ( ConnectorRelation relation : this.connectorRelations) {
+        for ( DataflowRelation relation : this.dataflowRelations) {
             if (relation.getSource() == null || relation.getTarget() == null) continue;
             String source = relation.getSource().getComponentName()  + "|" + relation.getSource().getComponentInstanceSymbolName();
             String target = relation.getTarget().getComponentName()  + "|" + relation.getTarget().getComponentInstanceSymbolName();
@@ -230,7 +230,7 @@ public class ComponentInformation {
 
     private void printConnectiorRelations() {
         Log.info("Connector relations of: " + this.componentName + " " + this.componentInstanceSymbolName, "COMPONENT_INFORMATION");
-        for (ConnectorRelation c : connectorRelations) {
+        for (DataflowRelation c : dataflowRelations) {
             Log.info(c.getSourceValue() + " -> " + c.getTargetValue(), "COMPONENT_INFORMATION");
         }
     }
@@ -300,7 +300,7 @@ public class ComponentInformation {
             ComponentInformation sourceComponent = matchComponentToPort(sourceValue);
             ComponentInformation targetComponent = matchComponentToPort(targetValue);
 
-            this.connectorRelations.add(new ConnectorRelation(sourceComponent, sourceValue, targetComponent, targetValue));
+            this.dataflowRelations.add(new DataflowRelation(sourceComponent, sourceValue, targetComponent, targetValue));
         }
     }
 

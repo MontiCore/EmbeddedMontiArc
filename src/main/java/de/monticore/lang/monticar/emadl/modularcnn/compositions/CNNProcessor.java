@@ -20,24 +20,13 @@ public class CNNProcessor {
         this.composedNetworksFilePath = composedNetworksFilePath;
     }
 
-    private boolean isValidCNNCanditate(ASTComponent component){
-        if (component == null) return false;
-
-        ComponentInformation componentInformation = new ComponentInformation(component, archNodes);
-        Log.info(component.getName() + " is composed CNN: " + componentInformation.isComposedCNN(),"IS_COMPOSED_CNN");
-        return componentInformation.isComposedCNN();
-    }
-
-    public boolean checkNotNullAndValid(ASTEMACompilationUnit node){
-        ASTComponent component = node.getComponent();
-        return isValidCNNCanditate(component);
-    }
-
     public void checkAndProcessComponentOnMatch(ASTEMACompilationUnit node) {
-        if (!checkNotNullAndValid(node)) return;
+        if (node.getComponent() == null) return;
         ComponentInformation componentInformation = new ComponentInformation(node.getComponent(), archNodes);
 
-        ComposedNetworkFileHandler composedNetworkFileHandler = new ComposedNetworkFileHandler(this.composedNetworksFilePath);
-        composedNetworkFileHandler.documentNetworkInFile(componentInformation);
+        if (componentInformation.isComposedCNN()){
+            ComposedNetworkFileHandler composedNetworkFileHandler = new ComposedNetworkFileHandler(this.composedNetworksFilePath);
+            composedNetworkFileHandler.documentNetworkInFile(componentInformation);
+        }
     }
 }
