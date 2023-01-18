@@ -9,6 +9,7 @@ public final class ComponentStreamTestViewModel extends ViewModelBase {
     private String fileNameWithoutExtension;
     private String componentName;
     private List<StreamViewModel> streams = Collections.emptyList();
+    private boolean useOpenCV = false;
 
     public String getFileNameWithExtension() {
         return getFileNameWithoutExtension() + ".hpp";
@@ -36,5 +37,13 @@ public final class ComponentStreamTestViewModel extends ViewModelBase {
 
     public void setStreams(List<StreamViewModel> streams) {
         this.streams = streams;
+    }
+
+    public boolean isUseOpenCV() {
+        return useOpenCV;
+    }
+
+    public void setUseOpenCV(boolean useOpenCV) {
+        this.useOpenCV = useOpenCV;
     }
 }

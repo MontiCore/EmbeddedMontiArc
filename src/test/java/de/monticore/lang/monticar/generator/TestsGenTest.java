@@ -67,6 +67,7 @@ public class TestsGenTest extends AbstractSymtabTest {
 
         assertTrue(content.stream().anyMatch(line -> line.contains("component.in1.field = 1.0;")));
         assertTrue(content.stream().anyMatch(line -> line.contains("component.in1.field = 2.0;")));
+        assertTrue(content.stream().anyMatch(line -> line.contains("component.in1.field = 10.0;")));
     }
 
     @Test
@@ -122,5 +123,42 @@ public class TestsGenTest extends AbstractSymtabTest {
         assertTrue(content.stream().anyMatch(line -> line.matches(".*component.colVecIn\\s*<<\\s*1.0\\s*<<\\s*2.0\\s*<<\\s*3.0\\s*<<\\s*arma::endr\\s*;.*")));
         assertTrue(content.stream().anyMatch(line -> line.matches(".*component.matIn\\s*<<\\s*1.0\\s*<<\\s*2.0\\s*<<\\s*3.0\\s*<<\\s*arma::endr\\s*<<\\s*4.0\\s*<<\\s*5.0\\s*<<\\s*6.0\\s*<<\\s*arma::endr\\s*<<\\s*7.0\\s*<<\\s*8.0\\s*<<\\s*9.0\\s*<<\\s*arma::endr\\s*;.*")));
         assertTrue(content.stream().anyMatch(line -> line.matches(".*component.rowVecIn\\s*<<\\s*1.0\\s*<<\\s*arma::endr\\s*<<\\s*2.0\\s*<<\\s*arma::endr\\s*<<\\s*3.0\\s*<<\\s*arma::endr\\s*;.*")));
+    }
+
+    @Test
+    public void testCubeComp() throws IOException {
+        Log.initDEBUG();
+        TaggingResolver symTab = createSymTabAndTaggingResolver("src/test/resources/cube/");
+        EMAComponentInstanceSymbol componentSymbol = symTab.<EMAComponentInstanceSymbol>resolve(
+                "basic.cube",
+                EMAComponentInstanceSymbol.KIND
+        ).orElse(null);
+        assertNotNull(componentSymbol);
+        GeneratorCPP generatorCPP = new GeneratorCPP();
+        generatorCPP.setModelsDirPath(Paths.get("src/test/resources/cube/"));
+        generatorCPP.setGenerateTests(true);
+        generatorCPP.setGenerateCMake(true);
+        generatorCPP.setGenerationTargetPath("./target/generated-sources-cpp/streamTest/cube/");
+        generatorCPP.setCheckModelDir(true);
+        Set<File> files = new HashSet<>(generatorCPP.generateFiles(symTab, componentSymbol));
+
+    }
+
+    @Test
+    public void testCubeComp2() throws IOException {
+        Log.initDEBUG();
+        TaggingResolver symTab = createSymTabAndTaggingResolver("src/test/resources/valid/main", "src/test/resources/valid/test");
+        EMAComponentInstanceSymbol componentSymbol = symTab.<EMAComponentInstanceSymbol>resolve(
+                "testA.and_TestWrapper",
+                EMAComponentInstanceSymbol.KIND
+        ).orElse(null);
+        assertNotNull(componentSymbol);
+        GeneratorCPP generatorCPP = new GeneratorCPP();
+        generatorCPP.setModelsDirPath(Paths.get("src/test/resources/cube/"));
+        generatorCPP.setGenerateTests(true);
+        generatorCPP.setGenerateCMake(true);
+        generatorCPP.setGenerationTargetPath("./target/generated-sources-cpp/streamTest/cube/");
+        generatorCPP.setCheckModelDir(true);
+        Set<File> files = new HashSet<>(generatorCPP.generateFiles(symTab, componentSymbol));
     }
 }
