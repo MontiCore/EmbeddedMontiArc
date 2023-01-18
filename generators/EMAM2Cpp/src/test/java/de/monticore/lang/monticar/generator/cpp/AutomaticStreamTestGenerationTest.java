@@ -263,7 +263,7 @@ public class AutomaticStreamTestGenerationTest extends AbstractSymtabTest {
         String targetRestPath = "/multipleAssignments";
         String streamTestBaseName = "de.MultipleAssignmentsTest";
 
-        executeTest(fullComponentInstanceName, streamTestBaseName, modelDir, targetBasePath, targetRestPath, "1", 1, false);
+        executeTest(fullComponentInstanceName, streamTestBaseName, modelDir, targetBasePath, targetRestPath, "1", 1, true);
     }
 
     public void testGenCPPFilesAndExec(String targetBasePath, String targetRestPath, String modelDirectory, String outputDirectory,
