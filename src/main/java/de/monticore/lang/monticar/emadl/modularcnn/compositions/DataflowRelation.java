@@ -6,7 +6,7 @@
  */
 package de.monticore.lang.monticar.emadl.modularcnn.compositions;
 
-public class ConnectorRelation {
+public class DataflowRelation {
 
     private ComponentInformation source;
     private ComponentInformation target;
@@ -29,7 +29,7 @@ public class ConnectorRelation {
         return targetValue;
     }
 
-    public ConnectorRelation(ComponentInformation source, String sourceValue, ComponentInformation target, String targetValue){
+    public DataflowRelation(ComponentInformation source, String sourceValue, ComponentInformation target, String targetValue){
         this.source = source;
         this.sourceValue = sourceValue;
 

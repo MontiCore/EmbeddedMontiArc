@@ -15,10 +15,10 @@ import java.util.ArrayList;
 
 
 
-public class NetworkStructureScanner{
+public class ArchitectureNodeScanner {
     ArrayList<ArchitectureNode> architecturesNodes = null;
 
-    public NetworkStructureScanner(ArrayList<ArchitectureNode> currentNodes) {
+    public ArchitectureNodeScanner(ArrayList<ArchitectureNode> currentNodes) {
         this.architecturesNodes = currentNodes;
     }
 
@@ -26,10 +26,6 @@ public class NetworkStructureScanner{
 
     public void scanForArchitectureNodes(ASTNode node){
         if (node instanceof ASTArchitecture){
-           for (ArchitectureNode architectureNode: architecturesNodes){
-               if (!architectureNode.isComposedNode() && architectureNode.getOriginalNode().equals((ASTArchitecture) node)) return;
-           }
-
            ArchitectureNode newArchNode = new ArchitectureNode((ASTArchitecture) node);
 
            for (ArchitectureNode architectureNode: architecturesNodes) {
