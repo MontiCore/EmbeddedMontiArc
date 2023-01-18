@@ -72,7 +72,6 @@ public class AbstractCoCoTest extends AbstractSymtabTest {
         // check whether all the expected errors are present when using all cocos
         Log.getFindings().clear();
         EMADLCocos.checkAll(getComponentInstance(modelPath, model));
-        EMADLCocos.checkAll(getComponentInstance(modelPath, model));
         expectedErrors.checkExpectedPresent(Log.getFindings(), "Got no findings when checking all "
                 + "cocos. Did you forget to add the new coco to MontiArcCocos?");
     }
