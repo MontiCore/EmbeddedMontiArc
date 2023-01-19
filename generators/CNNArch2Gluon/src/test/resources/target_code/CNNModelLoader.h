@@ -8,6 +8,14 @@
 #include <iostream>
 #include <fstream>
 
+#ifdef WINDOWS
+#include <direct.h>
+#define getCurrentDir _getcwd
+#else
+#include <unistd.h>
+#define getCurrentDir getcwd
+#endif
+
 using namespace mxnet::cpp;
 
 // Read files to load moddel symbol and parameters
@@ -25,10 +33,17 @@ private:
     std::vector<Symbol> loss_symbol;
     std::vector<std::map<std::string, NDArray>> loss_param_map;
 
+    std::string getCurrentWorkingDir( void ) {
+        char buff[FILENAME_MAX];
+        getCurrentDir( buff, FILENAME_MAX );
+        std::string current_working_dir(buff);
+        return current_working_dir;
+    }
 
     void checkFile(std::string file_path){
         std::ifstream ifs(file_path.c_str(), std::ios::in | std::ios::binary);
         if (!ifs) {
+            std::cout << "Current path is " << getCurrentWorkingDir() << '\n';
             std::cerr << "Can't open the file. Please check " << file_path << ". \n";
             return;
         }
@@ -112,6 +127,7 @@ public:
             loadComponent(loss_json_path, loss_param_path, loss_symbol, loss_param_map);
         }
         else {
+            std::cout << "Current path is " << getCurrentWorkingDir() << '\n';
             std::cerr << "Can't open the file. Please check if " << file_prefix << "_loss-symbol.json" << "exists. \n";
         }
 

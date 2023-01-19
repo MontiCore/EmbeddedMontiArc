@@ -7,13 +7,13 @@
     <!-- == PROJECT COORDINATES ============================================= -->
     <groupId>de.monticore.lang.monticar</groupId>
     <artifactId>cnnarch-gluon-generator</artifactId>
-    <version>0.5.4-SNAPSHOT</version>
+    <version>0.5.5-SNAPSHOT</version>
 
     <!-- == PROJECT DEPENDENCIES ============================================= -->
     <properties>
         <!-- .. SE-Libraries .................................................. -->
-        <CNNArch2X.version>0.4.14-SNAPSHOT</CNNArch2X.version>
-        <EMADL2PythonWrapper.version>0.0.3-SNAPSHOT</EMADL2PythonWrapper.version>
+        <CNNArch2X.version>0.4.15-SNAPSHOT</CNNArch2X.version>
+        <EMADL2PythonWrapper.version>0.0.4-SNAPSHOT</EMADL2PythonWrapper.version>
         <se-commons.version>1.7.11-SNAPSHOT</se-commons.version>
 
         <!-- .. Libraries .................................................. -->

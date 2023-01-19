@@ -15,6 +15,7 @@ import de.monticore.lang.monticar.generator.cmake.CMakeFindModule;
 import de.monticore.lang.tagging._symboltable.TaggingResolver;
 import de.monticore.symboltable.CommonSymbol;
 
+
 public class CNNArch2Gluon extends CNNArchGenerator {
 
     private CMakeConfig cMakeConfig = new CMakeConfig("");
