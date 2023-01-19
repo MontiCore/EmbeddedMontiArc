@@ -1,4 +1,4 @@
-schema EfficientNet extends TrainAlgorithm {
+schema EfficientNet extends NeuralArchitectureSearch {
 
     flops_condition_value: Q
     min_scaling_factors_alpha: Q
