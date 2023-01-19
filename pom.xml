@@ -9,14 +9,13 @@
 
     <groupId>de.monticore.lang.monticar</groupId>
     <artifactId>embedded-montiarc-emadl-pythonwrapper-generator</artifactId>
-    <version>0.0.3-SNAPSHOT</version>
+    <version>0.0.4-SNAPSHOT</version>
 
     <!-- == PROJECT DEPENDENCIES ============================================= -->
     <properties>
 
         <!-- .. EMA-Libraries ................................................. -->
-        <emadl.version>0.4.6-SNAPSHOT</emadl.version>
-        <embedded-montiarc-math.version>0.4.8-SNAPSHOT</embedded-montiarc-math.version>
+        <emadl.version>0.4.9-SNAPSHOT</emadl.version>
 
         <!-- .. SE-Libraries .................................................. -->
         <se-commons.version>1.7.7</se-commons.version>
