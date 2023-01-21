@@ -12,13 +12,6 @@ masterJobLinux:
   - mvn -Dorg.slf4j.simpleLogger.log.org.apache.maven.cli.transfer.Slf4jMavenTransferListener=warn -B  clean deploy --settings settings.xml
   #- cat target/site/jacoco/index.html
 #  - mvn package sonar:sonar -s settings.xml
-  rules:
-    - if: $CI_COMMIT_BRANCH == "main" && $CI_PIPELINE_SOURCE == "web"
-    - if: $CI_COMMIT_BRANCH == "main"
-      changes:
-        - src/**/*
-        - pom.xml
-        - settings.xml
   only:
     - main
 
