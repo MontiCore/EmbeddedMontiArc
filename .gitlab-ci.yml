@@ -25,7 +25,7 @@ stages:
 #  - RES=$(./build/src/cpp/DigitCalculator resources/images/2.jpg resources/images/3.jpg resources/images/4.png resources/images/6.png resources/images/2.jpg resources/images/3.jpg)
 #  - "if [[ $RES != *\"SUM: 857\"* ]]; then echo \"Wrong result:\" $RES; exit 1; fi;"
 
-TestGLUON-Modular:
+TestMNIST-Modular-Simple:
   stage: test
   image: registry.git.rwth-aachen.de/monticore/embeddedmontiarc/applications/mnistcalculator/mxnet:v0.0.5
   when: always
@@ -39,6 +39,22 @@ TestGLUON-Modular:
     - 'if [[ $RES != *"SUM: 912"* ]]; then echo "Wrong result:" $RES; exit 1; fi;'
     - RES=$(./build/src/cpp/DigitCalculator resources/images/1.png resources/images/2.png resources/images/4.png resources/images/5.png resources/images/6.png resources/images/7.png)
     - 'if [[ $RES != *"SUM: 691"* ]]; then echo "Wrong result:" $RES; exit 1; fi;'
+
+TestMNIST-Modular-Complex:
+  stage: test
+  image: registry.git.rwth-aachen.de/monticore/embeddedmontiarc/applications/mnistcalculator/mxnet:v0.0.5
+  when: always
+  script:
+    - cd mnist-modular/gluon-cpp-modular-complex
+    - chmod +x build.sh
+    - ./build.sh
+    - RES=$(./build/src/cpp/DigitCalculator resources/images/1.png resources/images/2.png resources/images/3.png resources/images/4.png resources/images/5.png resources/images/6.png)
+    - 'if [[ $RES != *"SUM: 579"* ]]; then echo "Wrong result:" $RES; exit 1; fi;'
+    - RES=$(./build/src/cpp/DigitCalculator resources/images/1.png resources/images/2.png resources/images/3.png resources/images/7.png resources/images/8.png resources/images/9.png)
+    - 'if [[ $RES != *"SUM: 912"* ]]; then echo "Wrong result:" $RES; exit 1; fi;'
+    - RES=$(./build/src/cpp/DigitCalculator resources/images/1.png resources/images/2.png resources/images/4.png resources/images/5.png resources/images/6.png resources/images/7.png)
+    - 'if [[ $RES != *"SUM: 691"* ]]; then echo "Wrong result:" $RES; exit 1; fi;'
+
 
 TestTENSORFLOW:
   stage: test
