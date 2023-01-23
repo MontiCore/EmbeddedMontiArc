@@ -63,4 +63,14 @@
         </dependency>
     </dependencies>
 
+    <distributionManagement>
+        <repository>
+            <id>se-nexus</id>
+            <url>https://nexus.se.rwth-aachen.de/content/repositories/embeddedmontiarc-releases/</url>
+        </repository>
+        <snapshotRepository>
+            <id>se-nexus</id>
+            <url>https://nexus.se.rwth-aachen.de/content/repositories/embeddedmontiarc-snapshots/</url>
+        </snapshotRepository>
+    </distributionManagement>
 </project>
