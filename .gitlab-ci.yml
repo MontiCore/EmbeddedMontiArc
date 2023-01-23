@@ -6,7 +6,7 @@ stages:
 #- deploy
 
 masterJobLinux:
-  stage: linux
+  stage: deploy
   image: maven:3-jdk-8
   script: 
   - mvn -Dorg.slf4j.simpleLogger.log.org.apache.maven.cli.transfer.Slf4jMavenTransferListener=warn -B  clean deploy --settings settings.xml
