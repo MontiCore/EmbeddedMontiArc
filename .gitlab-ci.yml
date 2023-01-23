@@ -13,7 +13,7 @@ masterJobLinux:
   #- cat target/site/jacoco/index.html
 #  - mvn package sonar:sonar -s settings.xml
   only:
-    - fix-deployment
+    - main
 
 #masterJobWindows:
 #  stage: windows
