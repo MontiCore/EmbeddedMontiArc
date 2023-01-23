@@ -3,7 +3,7 @@
 stages:
 #- windows
 - linux
-#- deploy
+- deploy
 
 masterJobLinux:
   stage: deploy
