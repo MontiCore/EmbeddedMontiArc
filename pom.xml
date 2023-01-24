@@ -7,7 +7,7 @@
     <!-- == PROJECT COORDINATES ============================================= -->
     <groupId>de.monticore.lang.monticar</groupId>
     <artifactId>cnnarch-generator</artifactId>
-    <version>0.4.15-SNAPSHOT</version>
+    <version>0.4.16-SNAPSHOT</version>
 
     <!-- == PROJECT DEPENDENCIES ============================================= -->
     <properties>
@@ -15,7 +15,7 @@
         <CNNArch.version>0.4.12-SNAPSHOT</CNNArch.version>
         <conflang.version>1.0.0-SNAPSHOT</conflang.version>
         <schemalang.version>1.0.1-SNAPSHOT</schemalang.version>
-        <embedded-montiarc-math-generator>0.4.10</embedded-montiarc-math-generator>
+        <embedded-montiarc-math-generator>0.4.11</embedded-montiarc-math-generator>
         <EMADL2PythonWrapper.version>0.0.4-SNAPSHOT</EMADL2PythonWrapper.version>
 
         <!-- .. Libraries .................................................. -->
