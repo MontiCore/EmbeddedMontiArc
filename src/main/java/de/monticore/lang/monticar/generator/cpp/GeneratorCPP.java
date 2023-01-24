@@ -52,6 +52,8 @@ public class GeneratorCPP implements EMAMGenerator {
     private boolean genLibraryInterface = false;
     private boolean genServerAdapter = false;
     private boolean importArmadillo = false;
+    private boolean importOpenCV = false;
+    private boolean importCNNTranslator = false;
     private String outputName = "";
     private boolean isGenerateServerWrapper = false;
     protected boolean isExecutionLoggingActive = false;
@@ -421,6 +423,11 @@ public class GeneratorCPP implements EMAMGenerator {
         if (isGenerateTests() || isCheckModelDir()) {
             TestsGeneratorCPP g = new TestsGeneratorCPP(this);
             List<FileContent> fileConts = g.generateStreamTests(symtab, componentSymbol);
+            if (g.isUseOpenCV()) {
+                cMakeConfig.addModuleDependency(new CMakeFindModule("OpenCV", true).asFindAsPackage());
+                fileContents.add(FileUtil.getResourceAsFile("/shared_cpp/CNNTranslator.h", "/test/CNNTranslator.h"));
+                fileContents.add(FileUtil.getResourceAsFile("/shared_cpp/ImageMatcher.h", "/test/ImageMatcher.h"));
+            }
             fileContents.addAll(fileConts);
         }
         return fileContents;
@@ -771,5 +778,21 @@ public class GeneratorCPP implements EMAMGenerator {
 
     public void setLogSymbolicSolve(boolean optionValue) {
         ExecutionSemantics.LOG_SYMBOLIC_SOLVE = (optionValue);
+    }
+
+    public boolean isImportOpenCV() {
+        return importOpenCV;
+    }
+
+    public void setImportOpenCV(boolean importOpenCV) {
+        this.importOpenCV = importOpenCV;
+    }
+
+    public boolean isImportCNNTranslator() {
+        return importCNNTranslator;
+    }
+
+    public void setImportCNNTranslator(boolean importCNNTranslator) {
+        this.importCNNTranslator = importCNNTranslator;
     }
 }

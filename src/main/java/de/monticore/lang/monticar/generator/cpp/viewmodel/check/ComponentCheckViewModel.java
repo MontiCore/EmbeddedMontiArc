@@ -8,14 +8,14 @@ import java.util.Map;
 
 public final class ComponentCheckViewModel extends ViewModelBase {
 
-    private Map<String, String> inputPortName2Value = Collections.emptyMap();
+    private Map<String, InputPort> inputPortName2Value = Collections.emptyMap();
     private Map<String, IOutputPortCheck> outputPortName2Check = Collections.emptyMap();
 
-    public Map<String, String> getInputPortName2Value() {
+    public Map<String, InputPort> getInputPortName2Value() {
         return inputPortName2Value;
     }
 
-    public void setInputPortName2Value(Map<String, String> inputPortName2Value) {
+    public void setInputPortName2Value(Map<String, InputPort> inputPortName2Value) {
         this.inputPortName2Value = inputPortName2Value;
     }
 
