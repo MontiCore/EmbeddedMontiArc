@@ -207,6 +207,11 @@ public class ArmadilloFunctionTest extends AbstractSymtabTest {
         testMathCommand("ceil");
 
     }
+    @Test
+    public void testPowCommand() throws IOException {
+        testMathCommand("pow");
+
+    }
 
     @Test
     public void testMaxCommand() throws IOException {
