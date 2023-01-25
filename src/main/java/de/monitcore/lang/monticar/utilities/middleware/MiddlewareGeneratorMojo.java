@@ -8,8 +8,6 @@ import de.monitcore.lang.monticar.utilities.tools.SearchFiles;
 //import de.monticore.lang.embeddedmontiarc.embeddedmontiarc._symboltable.ExpandedComponentInstanceSymbol;
 import de.monticore.lang.embeddedmontiarc.embeddedmontiarc._symboltable.instanceStructure.EMAComponentInstanceSymbol;
 import de.monticore.lang.embeddedmontiarc.tagging.middleware.ros.RosToEmamTagSchema;
-import de.monticore.lang.monticar.emadl.generator.EMADLGenerator;
-import de.monticore.lang.monticar.emadl.generator.Backend;
 import de.monticore.lang.monticar.generator.middleware.DistributedTargetGenerator;
 import de.monticore.lang.monticar.generator.middleware.impls.*;
 import de.monticore.lang.monticar.generator.roscpp.helper.TagHelper;
@@ -17,8 +15,6 @@ import de.monticore.lang.monticar.generator.roscpp.helper.TagHelper;
 
 import de.monticore.lang.tagging._symboltable.TaggingResolver;
 import de.monticore.symboltable.Scope;
-import de.se_rwth.commons.logging.Log;
-import freemarker.template.TemplateException;
 import org.apache.commons.io.FileUtils;
 import org.apache.maven.plugin.MojoExecutionException;
 import org.apache.maven.plugin.MojoFailureException;
@@ -53,7 +49,7 @@ public class MiddlewareGeneratorMojo extends MiddlewareMojoBase {
 
         mkdir(Paths.get(this.getPathMiddlewareOut(), mojoDirectory).toString());
         if(myLog == null) {
-            myLog = LogToFile.init();
+            myLog = LogToFile.initFile();
         }
         myLog.setLogFile(Paths.get(this.getPathMiddlewareOut(), mojoDirectory, this.MojoName()+".log").toString());
         myLog.clear();

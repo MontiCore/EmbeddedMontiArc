@@ -239,7 +239,7 @@ public class StreamTestMojoBase extends AbstractMojo {
         Log.enableFailQuick(false);
 
         if(myLog == null) {
-            myLog = LogToFile.init();
+            myLog = LogToFile.initFile();
         }
         myLog.setLogFile(Paths.get(this.getPathTmpOut(), mojoDirectory, this.MojoName()+".log").toString());
         myLog.clear();
@@ -308,7 +308,7 @@ public class StreamTestMojoBase extends AbstractMojo {
 
     protected void resetToMyLog(){
         if(myLog == null){
-            myLog = LogToFile.init();
+            myLog = LogToFile.initFile();
         }else{
             LogToFile.resetTo(myLog);
         }
@@ -497,7 +497,6 @@ public class StreamTestMojoBase extends AbstractMojo {
                     }
                 }
             }
-
         }
 
         return toTestComponents;
