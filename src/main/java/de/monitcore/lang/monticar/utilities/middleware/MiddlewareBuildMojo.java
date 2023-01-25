@@ -18,7 +18,6 @@ import java.nio.file.Path;
 import java.nio.file.Paths;
 import java.util.ArrayList;
 import java.util.List;
-import java.util.Scanner;
 
 /**
  * runs cmake and make for generated c++ code of given middlewarerootmodels
@@ -36,7 +35,7 @@ public class MiddlewareBuildMojo extends MiddlewareMojoBase {
         mkdir(Paths.get(this.getPathMiddlewareOut(), mojoDirectory, this.MojoName(), "runbuild").toString());
 
         if(myLog == null) {
-            myLog = LogToFile.init();
+            myLog = LogToFile.initFile();
         }
         myLog.setLogFile(Paths.get(this.getPathMiddlewareOut(), mojoDirectory, this.MojoName()+".log").toString());
         myLog.clear();

@@ -23,7 +23,7 @@ public class LogToFile extends Log {
         logFilePath = Optional.empty();
     }
 
-    public static LogToFile init(){
+    public static LogToFile initFile(){
         LogToFile ltf = new LogToFile();
         //Log.setLog(new LogToFile());
         Log.setLog(ltf);

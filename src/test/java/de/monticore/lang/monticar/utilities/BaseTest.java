@@ -90,8 +90,9 @@ public class BaseTest {
         if (trainingNeeded) {
             stmb.setBackend(Backend.GLUON);
             stmb.setTrainingNeeded(true);
-            stmb.setPathToPython("/usr/bin/python");
-            stmb.setRootModel("cNNCalculator.Connector");
+            stmb.setPathToPython("/usr/bin/python3");
+            stmb.setRootModel("cNNCalculator.connector");
+            stmb.setUseDgl("n");
         }
     }
 

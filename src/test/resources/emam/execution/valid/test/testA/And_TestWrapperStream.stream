@@ -2,7 +2,7 @@
 package testA;
 
 stream And_TestWrapperStream for And_TestWrapper {
-    in1: true tick true tick false tick false ;
+    in1: file::"/src/test/resources/true.txt" tick true tick false tick false ;
     in2: true tick false tick true tick false;
 
     out1: true tick false tick false tick false;

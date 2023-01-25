@@ -49,4 +49,10 @@ public class TestStreamTestBuildMojo {
         Test_02_execution_invalid();
         Test_03_many();
     }
+
+    @Test
+    public void Test_06_valid_cube(){
+        int r = BaseTest.validBuild("./src/test/resources/emam/execution/cube", "./target/tmp/build/06");
+        assertTrue("Build-06: Build is valid.["+r+"]", r==0);
+    }
 }

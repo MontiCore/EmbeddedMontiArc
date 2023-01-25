@@ -143,7 +143,7 @@ public class StreamTestBuildMojo extends StreamTestMojoBase {
 
     protected void buildStreamTests() throws MojoExecutionException, MojoFailureException {
 
-        List<EMAComponentSymbol> toBuild = getToTestComponentSymbols(false);
+        List<EMAComponentSymbol> toBuild = getToTestComponentSymbols(true);
 
 
         logInfo("Build StreamTest executables:");

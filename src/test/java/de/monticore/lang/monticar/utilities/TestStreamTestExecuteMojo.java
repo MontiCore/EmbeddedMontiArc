@@ -44,4 +44,16 @@ public class TestStreamTestExecuteMojo  {
         Test_03_many();
     }
 
+    @Test
+    public void Test_06_valid_cube(){
+        int r = BaseTest.validExecution("./src/test/resources/emam/execution/cube", "./target/tmp/generator/06");
+        assertTrue("Execution-06: Execution is valid.["+r+"]", r==0);
+    }
+
+    @Test
+    public void Test_07_valid_cube(){
+        int r = BaseTest.validExecution("./src/test/resources/emam/execution/cubeWithTolerance", "./target/tmp/generator/07");
+        assertTrue("Execution-07: Execution is valid.["+r+"]", r==0);
+    }
+
 }
