@@ -48,15 +48,6 @@ trigger-mnist-vae:
   only:
     - master
 
-trigger-cvae:
-  stage: trigger_apps
-  allow_failure: true
-  trigger:
-    project: monticore/EmbeddedMontiArc/applications/vaes/cvae
-    branch: main
-  only:
-    - master
-
 trigger-kipf-gnn:
   stage: trigger_apps
   allow_failure: true
@@ -89,7 +80,7 @@ trigger-doppelkopf:
   allow_failure: true
   trigger:
     project: monticore/EmbeddedMontiArc/applications/reinforcement_learning/doppelkopf-agent
-    branch: main
+    branch: master
   only:
     - master    
 

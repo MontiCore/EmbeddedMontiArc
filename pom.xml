@@ -11,7 +11,7 @@
 
     <groupId>de.monticore.lang.monticar.utilities</groupId>
     <artifactId>emadl-maven-plugin</artifactId>
-    <version>0.0.8-SNAPSHOT</version>
+    <version>0.0.9-SNAPSHOT</version>
     <packaging>maven-plugin</packaging>
 
     <name>Process Automation of EMADL Projects</name>
@@ -19,8 +19,8 @@
     <url>https://git.rwth-aachen.de/monticore/EmbeddedMontiArc/utilities/emadl-maven-plugin</url>
 
     <properties>
-        <MavenStreamTest.version>0.0.29-SNAPSHOT</MavenStreamTest.version>
-        <cnnarch-generator.version>0.4.12-SNAPSHOT</cnnarch-generator.version>
+        <MavenStreamTest.version>0.0.32-SNAPSHOT</MavenStreamTest.version>
+        <cnnarch-generator.version>0.4.16-SNAPSHOT</cnnarch-generator.version>
         
         <montisim.hardware_emulator.version>2.1.0-SNAPSHOT</montisim.hardware_emulator.version>
 
