@@ -1,5 +1,6 @@
 echo "Copying resources to target directory.."
-# cp -r src/main/resources/* target
+cp  target/generated-sources/backend/* target
+cp -r target/generated-sources/model/ target
 cp -r src/main/cpp/* target
 echo "Done copying"
 
@@ -11,5 +12,5 @@ echo "Building DigitClassifier.."
 cmake -DCMAKE_PREFIX_PATH='/usr/lib/libtorch' ..
 cmake --build . --config Release
 
-cd ..
-cd target
+#cd ..
+#cd target

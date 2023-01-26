@@ -6,10 +6,8 @@ TestPYTORCH:
   image: registry.git.rwth-aachen.de/monticore/embeddedmontiarc/generators/emadl2cpp/dockerimages/pytorch
   script: 
   - cd pytorch
-  - chmod +x generate.sh
-  - ./generate.sh
-  - chmod +x train.sh
-  - ./train.sh
+  - chmod +x execute-pipeline.sh
+  - ./execute-pipeline.sh
   - chmod +x build.sh
   - ./build.sh
   - cd target
