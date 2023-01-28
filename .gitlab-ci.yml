@@ -128,18 +128,18 @@ TrainTensorflowONNX:
       docker push $CI_REGISTRY_IMAGE/$IMAGE_NAME:latest
     fi
 
-base/mxnet:
-  stage: prebuild
-  image: docker:dind
-  only:
-    changes:
-      - docker/base/*
-  variables:
-    IMAGE_NAME: base/mxnet
-  script:
-    - cd docker/base
-    - docker build -t $CI_REGISTRY_IMAGE/$IMAGE_NAME:$CI_COMMIT_REF_NAME .
-    - *docker
+#base/mxnet:
+#  stage: prebuild
+#  image: docker:dind
+#  only:
+#    changes:
+#     - docker/base/*
+#  variables:
+#    IMAGE_NAME: base/mxnet
+#  script:
+#    - cd docker/base
+#    - docker build -t #$CI_REGISTRY_IMAGE/#$IMAGE_NAME:$CI_COMMIT_REF_NA#ME .
+#    - *docker
 
 #mnistcalculator:
 #  stage: build
