@@ -46,14 +46,20 @@ public class TestStreamTestExecuteMojo  {
 
     @Test
     public void Test_06_valid_cube(){
-        int r = BaseTest.validExecution("./src/test/resources/emam/execution/cube", "./target/tmp/generator/06");
+        int r = BaseTest.validExecution("./src/test/resources/emam/execution/cube", "./target/tmp/exec/06");
         assertTrue("Execution-06: Execution is valid.["+r+"]", r==0);
     }
 
     @Test
     public void Test_07_valid_cube(){
-        int r = BaseTest.validExecution("./src/test/resources/emam/execution/cubeWithTolerance", "./target/tmp/generator/07");
+        int r = BaseTest.validExecution("./src/test/resources/emam/execution/cubeWithTolerance", "./target/tmp/exec/07");
         assertTrue("Execution-07: Execution is valid.["+r+"]", r==0);
+    }
+
+    @Test
+    public void Test_08_invalid_cube(){
+        int r = BaseTest.validExecution("./src/test/resources/emam/execution/cubeInvalidFile", "./target/tmp/exec/08");
+        assertTrue("Execution-08: Execution is invalid.["+r+"]", r==1);
     }
 
 }

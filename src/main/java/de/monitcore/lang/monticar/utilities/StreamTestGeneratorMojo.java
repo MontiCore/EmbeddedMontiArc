@@ -1,7 +1,6 @@
 /* (c) https://github.com/MontiCore/monticore */
 package de.monitcore.lang.monticar.utilities;
 
-import de.monitcore.lang.monticar.utilities.tools.ChecksumChecker;
 import de.monitcore.lang.monticar.utilities.tools.SearchFiles;
 import de.monticore.antlr4.MCConcreteParser;
 import de.monticore.ast.ASTNode;
@@ -18,13 +17,11 @@ import de.monticore.lang.monticar.struct._ast.ASTStructCompilationUnit;
 import de.monticore.lang.monticar.struct._symboltable.StructSymbol;
 import de.monticore.lang.tagging._symboltable.TaggingResolver;
 import de.monticore.symboltable.Scope;
-import de.rwth.montisim.commons.utils.json.Json;
 import de.se_rwth.commons.Joiners;
 import de.se_rwth.commons.logging.Log;
 import freemarker.template.TemplateException;
 import org.apache.commons.io.FileUtils;
 import org.apache.commons.io.IOUtils;
-import org.apache.commons.io.filefilter.WildcardFileFilter;
 import org.apache.maven.plugin.MojoExecutionException;
 import org.apache.maven.plugin.MojoFailureException;
 import org.apache.maven.plugins.annotations.Mojo;
@@ -234,7 +231,7 @@ public class StreamTestGeneratorMojo extends StreamTestMojoBase {
 
     }
 
-    protected void generateCPP(List<EMAComponentSymbol> toTest){
+    protected void generateCPP(List<EMAComponentSymbol> toTest) throws MojoExecutionException {
 
         logInfo("Generate CPP:");
         for (EMAComponentSymbol cs :toTest) {
@@ -295,6 +292,7 @@ public class StreamTestGeneratorMojo extends StreamTestMojoBase {
                 //logInfo("   -> Files: "+s);
             }catch (IOException ioex){
                 logError("   -> IOException generating cpp files for "+cs.getFullName());
+                throw new MojoExecutionException("Some files are invalid:" + ioex.getMessage());
             }
             // Needed, as the C++ generator modifies the Symbol Table in destructive ways
 
