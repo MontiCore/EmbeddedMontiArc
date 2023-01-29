@@ -57,7 +57,7 @@ public final class TestsGeneratorCPP {
         this.generator = Log.errorIfNull(generator);
     }
 
-    public List<FileContent> generateStreamTests(Scope symTab, EMAComponentInstanceSymbol componentSymbol) {
+    public List<FileContent> generateStreamTests(Scope symTab, EMAComponentInstanceSymbol componentSymbol) throws IOException {
         bluePrints = new ArrayList<>(generator.getBluePrints());
         findStreams(symTab);
         findComponents(symTab);
@@ -79,7 +79,7 @@ public final class TestsGeneratorCPP {
         availableComponents = componentScanner.scan();
     }
 
-    private List<FileContent> generateFiles(EMAComponentInstanceSymbol componentSymbol) {
+    private List<FileContent> generateFiles(EMAComponentInstanceSymbol componentSymbol) throws IOException {
         testedComponents = new HashSet<>();
         files = new ArrayList<>();
         viewModelForMain = new TestsMainEntryViewModel();
@@ -197,7 +197,7 @@ public final class TestsGeneratorCPP {
         return result;
     }
 
-    private void processBluePrint(EMAMBluePrintCPP b, EMAComponentInstanceSymbol s) {
+    private void processBluePrint(EMAMBluePrintCPP b, EMAComponentInstanceSymbol s) throws IOException {
         //TODO: 123 : check if EMAComponentSymbol is correct choice here:  ComponentSymbol cs = s.getComponentType().getReferencedSymbol();
         if (s.getComponentType() == null) return;
         EMAComponentSymbol cs = s.getComponentType().getReferencedSymbol();
@@ -206,7 +206,7 @@ public final class TestsGeneratorCPP {
         }
     }
 
-    private void processBluePrint(EMAMBluePrintCPP b, EMAComponentSymbol cs) {
+    private void processBluePrint(EMAMBluePrintCPP b, EMAComponentSymbol cs) throws IOException {
         Set<ComponentStreamUnitsSymbol> streamsForComponent = availableStreams.get(cs);
         if (streamsForComponent == null || streamsForComponent.isEmpty()) {
             return;
@@ -220,7 +220,7 @@ public final class TestsGeneratorCPP {
 
     }
 
-    private static ComponentStreamTestViewModel getStreamViewModel(EMAMBluePrintCPP b, EMAComponentSymbol cs, Set<ComponentStreamUnitsSymbol> streamsForComponent) {
+    private static ComponentStreamTestViewModel getStreamViewModel(EMAMBluePrintCPP b, EMAComponentSymbol cs, Set<ComponentStreamUnitsSymbol> streamsForComponent) throws IOException {
         ComponentStreamTestViewModel viewModel = new ComponentStreamTestViewModel();
         viewModel.setComponentName(b.getName());
         viewModel.setFileNameWithoutExtension(b.getName() + "_test");
@@ -242,7 +242,7 @@ public final class TestsGeneratorCPP {
         return viewModel;
     }
 
-    private static List<ComponentCheckViewModel> getComponentPortChecks(EMAComponentSymbol cs, ComponentStreamUnitsSymbol stream) {
+    private static List<ComponentCheckViewModel> getComponentPortChecks(EMAComponentSymbol cs, ComponentStreamUnitsSymbol stream) throws IOException {
         List<PortStreamTuple> port2NamedStream = getPort2NamedStream(cs, stream);
         int streamLength = getStreamLengths(port2NamedStream, stream);
         List<ComponentCheckViewModel> result = new ArrayList<>();
@@ -298,7 +298,7 @@ public final class TestsGeneratorCPP {
         return streamLength;
     }
 
-    private static void processInstruction(ComponentCheckViewModel vm, ASTStreamInstruction nextInstruction, PortStreamTuple portStreamTuple) {
+    private static void processInstruction(ComponentCheckViewModel vm, ASTStreamInstruction nextInstruction, PortStreamTuple portStreamTuple) throws IOException {
         EMAPortSymbol port = portStreamTuple.getPort();
 
         if (nextInstruction.getStreamValueOpt().isPresent()) {
@@ -335,7 +335,7 @@ public final class TestsGeneratorCPP {
                                                       PortStreamTuple portStreamTuple,
                                                       Optional<ASTDoubleLiteral> elementTolerance,
                                                       Optional<ASTDoubleLiteral> generalTolerance
-                                                      ) {
+                                                      ) throws IOException {
         EMAPortSymbol port = portStreamTuple.getPort();
 
         if (nextInstruction.getStreamValueOpt().isPresent()) {
@@ -388,7 +388,7 @@ public final class TestsGeneratorCPP {
         return Optional.empty();
     }
 
-    private static void processFilePath(ComponentCheckViewModel vm, ASTFilePath astFilePath, PortStreamTuple portStreamTuple, EMAPortSymbol port) {
+    private static void processFilePath(ComponentCheckViewModel vm, ASTFilePath astFilePath, PortStreamTuple portStreamTuple, EMAPortSymbol port) throws IOException {
         final String dir = System.getProperty("user.dir");
         final String filePath = dir + astFilePath.getStringLiteral().getSource();
         File file = new File(filePath);
@@ -404,7 +404,7 @@ public final class TestsGeneratorCPP {
                 }
             }
         } else {
-            Log.error("File: " + filePath + " does not exist!");
+            throw new IOException("File: " + file.getPath() + " could not be found");
         }
 
     }
@@ -418,8 +418,14 @@ public final class TestsGeneratorCPP {
             List<String> content = Files.readAllLines(path, Charset.defaultCharset());
             Optional<ASTStreamInstruction> astStreamInstruction = new StreamUnitsParser().parse_StringStreamInstruction((content.get(0)));
             astStreamInstruction.ifPresent(instruction ->
-            {processInstructionForFilePath(vm, instruction,
-                    portStreamTuple, astFilePath.getElementToleranceOpt(), astFilePath.getGeneralToleranceOpt());});
+            {
+                try {
+                    processInstructionForFilePath(vm, instruction,
+                            portStreamTuple, astFilePath.getElementToleranceOpt(), astFilePath.getGeneralToleranceOpt());
+                } catch (IOException e) {
+                    throw new RuntimeException(e);
+                }
+            });
         } else if (extension.equals("png")) {
             useOpenCV = true;
             if (port.isIncoming()) {
