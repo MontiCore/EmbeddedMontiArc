@@ -148,11 +148,17 @@ void require_lower_or_equals(double a, double b){
 }
 
 void rangeValueCheck(double A, double lower, double upper){
+    std::cout << "Actual value: " << A << std::endl;
+    std::cout << "Lower bound for expected value: " << lower << std::endl;
+    std::cout << "Upper bound for expected value: " << lower << std::endl;
     require_lower_or_equals(lower, A);
     require_lower_or_equals(A, upper);
 }
 
 void rangeValueCheck(int A, double lower, double upper){
+    std::cout << "Actual value: " << A << std::endl;
+    std::cout << "Lower bound for expected value: " << lower << std::endl;
+    std::cout << "Upper bound for expected value: " << lower << std::endl;
     require_lower_or_equals(lower, A);
     require_lower_or_equals(A, upper);
 }
