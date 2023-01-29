@@ -65,7 +65,7 @@ public class TestStreamTestGeneratorMojo {
 
     @Test
     public void Test_06_Cube() {
-        int r = BaseTest.validGenerator("./src/test/resources/emam/execution/cubeWithTolerance", "./target/tmp/generator/06");
-        assertTrue("Generator-06: Generator is invalid.["+r+"]", r==0);
+        int r = BaseTest.validGenerator("./src/test/resources/emam/execution/cubeInvalidFile", "./target/tmp/generator/06");
+        assertTrue("Generator-06: Generator is invalid.["+r+"]", r==1);
     }
 }
