@@ -3,7 +3,6 @@ package de.monticore.lang.monticar.generator.cpp;
 
 import de.monticore.lang.embeddedmontiarc.embeddedmontiarc.ComponentScanner;
 import de.monticore.lang.embeddedmontiarc.embeddedmontiarc._symboltable.instanceStructure.EMAComponentInstanceSymbol;
-import de.monticore.lang.embeddedmontiarc.embeddedmontiarc._symboltable.instanceStructure.EMAPortInstanceSymbol;
 import de.monticore.lang.embeddedmontiarc.embeddedmontiarcmath._symboltable.math.symbols.EMAMEquationSymbol;
 import de.monticore.lang.embeddedmontiarcdynamic.embeddedmontiarcdynamic._symboltable.instanceStructure.EMADynamicComponentInstanceSymbol;
 import de.monticore.lang.math._symboltable.MathStatementsSymbol;
@@ -418,7 +417,7 @@ public class GeneratorCPP implements EMAMGenerator {
         return files;
     }
 
-    public List<FileContent> handleTestAndCheckDir(Scope symtab, EMAComponentInstanceSymbol componentSymbol) {
+    public List<FileContent> handleTestAndCheckDir(Scope symtab, EMAComponentInstanceSymbol componentSymbol) throws IOException {
         List<FileContent> fileContents = new ArrayList<>();
         if (isGenerateTests() || isCheckModelDir()) {
             TestsGeneratorCPP g = new TestsGeneratorCPP(this);
