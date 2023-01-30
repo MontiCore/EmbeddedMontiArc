@@ -3,7 +3,7 @@ stages:
 
 TestBuild:
   stage: linux
-  image: registry.git.rwth-aachen.de/monticore/embeddedmontiarc/applications/reinforcement_learning/coopmontisimautopilot
+  image: registry.git.rwth-aachen.de/monticore/embeddedmontiarc/applications/reinforcement_learning/coopmontisimautopilot:v0.0.2 
   before_script:
     - apt-get update
     - apt-get install -y maven
