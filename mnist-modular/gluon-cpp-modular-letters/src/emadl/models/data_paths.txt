@@ -1,0 +1,1 @@
+letterpred.Network resources/training_data_letters
