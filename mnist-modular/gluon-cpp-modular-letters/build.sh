@@ -16,6 +16,6 @@ java -jar ../embedded-montiarc-emadl-generator-0.5.7-SNAPSHOT-jar-with-dependenc
 rm -rf build
 mkdir build && cd build
 
-echo "Building DigitClassifier.."
+echo "Building LetterPredictor.."
 cmake -D MXNET_PATH=$MXNET_FOLDER/libmxnet.so ..
 make
