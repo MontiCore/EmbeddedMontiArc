@@ -21,9 +21,6 @@ def signal_handler(sig, frame):
     print("Starting shutdown")
     sys.exit(0)
 
-def shut_down_other_node():
-    subprocess.call(["rosnode", "kill", "traj_node"])
-
 if __name__ == "__main__":
     signal.signal(signal.SIGINT, signal_handler)
 
@@ -42,19 +39,21 @@ if __name__ == "__main__":
         "-t", "--training", action="store_true", dest="training", help="training mode"
     )
     parser.add_option(
-        "-p", "--play", action="store_true", dest="play", help="play mode"
+        "-p", "--play", action="store", dest="file_name", help="play mode"
     )
 
     options, args = parser.parse_args()
     if not options.environment:
         parser.error("Enviroment string not given")
+    if not options.file_name:
+        parser.error("file name for exporting trajectory not given")
 
     mode_options = 0
     mode = TRAINING_MODE
     if options.training:
         mode = TRAINING_MODE
         mode_options += 1
-    if options.play:
+    if options.file_name:
         mode = PLAY_MODE
         mode_options += 1
     if mode_options > 1:
@@ -67,8 +66,9 @@ if __name__ == "__main__":
         print("Start Play Mode")
         time.sleep(3)
         connector.reset()
-        export_traj.
-        while not connector.is_goalReached or connector.is_crash:
+        
+        export_traj.run_export_node(options.file_name)
+        while not connector.is_goalReached:
             time.sleep(1)
     else:  # training mode
         print("Start Training Mode")
@@ -79,7 +79,7 @@ if __name__ == "__main__":
     if connector.is_goalReached:
         print("Goal is reached")
     elif connector.is_crash:
-        print("TurtleBot is Crashed")
+        print("TurtleBot is crashed")
         
     connector.shutdown()
-    rospy.on_shutdown(shut_down_other_node)
+    
