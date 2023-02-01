@@ -11,14 +11,28 @@ component SetGoal {
 
     implementation Math {
         static Z counter = 0;
+
+        static Z random = 0;            //set to 1 when training on randomized goal. set to 0 for fixed Goal
+
+        static B firstTime = true;
         
         static Q goalX = 0.0;
         static Q goalY = 0.0;
 
-        if goalReachedBool
-            Z randomIndex = counter % 6;
-            goalX = goalXArray(1, randomIndex+1);
-            goalY = goalYArray(1, randomIndex+1);
+        if random
+            if goalReachedBool
+                Z randomIndex = counter % 6;
+                goalX = goalXArray(1, randomIndex+1);
+                goalY = goalYArray(1, randomIndex+1);
+                firstTime = false;
+            elseif firstTime
+                goalX = goalXArray(1, 1);
+                goalY = goalYArray(1, 1);
+                firstTime = false;
+            end
+        else
+            goalX = goalXArray(1, 1);
+            goalY = goalYArray(1, 1);
         end
 
         //Goal position
