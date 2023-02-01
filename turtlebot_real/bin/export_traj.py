@@ -8,15 +8,6 @@ from movementMaintainer import getPosition
 
 traj_x, traj_y = [], []
 
-def odom_cb(data):
-    global traj_x, traj_y
-    odom_arr = getPosition(data)
-    print(str(odom_arr))
-    traj_x += [odom_arr[0]]
-    traj_y +=  [odom_arr[1]]
-    
-odom_sub = rospy.Subscriber("/odom", Odometry, odom_cb)
-
 def export_to_excel(x, y, file_name):
     
     """
@@ -33,11 +24,13 @@ def export_to_excel(x, y, file_name):
     worksheet.write(0, 0, 'x_values')
     worksheet.write(0, 1, 'y_values')
     
-    x_filtered, y_filtered = [x[0]], [y[0]]
+    x_filtered, y_filtered = [round(x[0], 2)], [round(y[0], 2)]
     for i in range(1, len(x)):
-        if x[i] != x[i-1] or y[i] != y[i-1]:
-            x_filtered.append(x[i])
-            y_filtered.append(y[i])
+        x_rounded = round(x[i], 2)
+        y_rounded = round(y[i], 2)
+        if x_rounded != x_filtered[-1] or y_rounded != y_filtered[-1]:
+            x_filtered.append(x_rounded)
+            y_filtered.append(y_rounded)
 
     # Write x and y to the first two columns
     for i, value in enumerate(x_filtered):
@@ -49,34 +42,21 @@ def export_to_excel(x, y, file_name):
     workbook.close()
     
     
-def import_from_excel(file_path):
-    """
-    This function takes in a file path as an argument and returns the x and y lists
-    that were exported using the export_to_excel function.
-    """
-    # Read the Excel file into a pandas DataFrame
-    data = pd.read_excel(file_path)
+def odom_cb(data):
+    global traj_x, traj_y
+    odom_arr = getPosition(data)
+    print(str(odom_arr))
+    traj_x += [odom_arr[0]]
+    traj_y +=  [odom_arr[1]]
 
-    # Extract the x and y lists from the DataFrame
-    x = data['x_values'].to_list()
-    y = data['y_values'].to_list()
-
-    return x, y
-
-#### how to use ####x, y = import_from_excel('variables.xlsx')
+def run_export_node(file_name):
+    def wrapper_func():
+        export_to_excel(traj_x, traj_y, file_name)
+    
+    #rospy.init_node('traj_node', anonymous=True)
+    odom_sub = rospy.Subscriber("/odom", Odometry, odom_cb)
     
 
-def my_node(file_name):
-    export_to_excel(traj_x, traj_y, file_name)
-
-
-if __name__ == '__main__':
-    rospy.init_node('traj_node')
-    param = sys.argv[1]
-     
-    if param is None:
-        raise ValueError("A name for the generated excel file should be passed")
-        
-    rospy.spin()
-    rospy.on_shutdown(my_node(param))
+    rospy.on_shutdown(wrapper_func)
+    #rospy.spin()
 
