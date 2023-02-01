@@ -1,24 +1,32 @@
 image: zoroac/monti_turtle:latest
 
 stages:
-#- build
-- train
+- build
+#- train
 
-#TestBuild:
-#  stage: build
-#  artifacts:
-#    paths:
-#      - "turtlebot_real/target/"
+TestBuild:
+  stage: build
+  artifacts:
+    paths:
+      - "turtlebot_real/target/"
+  script:
+  # get generator start
+  - git clone https://gitlab-ci-token:${CI_JOB_TOKEN}@git.rwth-aachen.de/monticore/EmbeddedMontiArc/generators/EMAM2Middleware.git
+  - cd EMAM2Middleware
+  - mvn clean package -s settings.xml -DskipTests
+  - cd ..
+  - cp "EMAM2Middleware/target/embedded-montiarc-math-middleware-generator"*"jar-with-dependencies.jar" turtlebot_real/embedded-montiarc-math-middleware-generator-jar-with-dependencies.jar
+  # get generator end
+  - cd turtlebot_real/
+  - chmod 777 *.sh
+  - ./install.sh
+
+#TestTrain:
+#  stage: train
 #  script: 
-#  - cd turtlebot_real/
-#  - ./install.sh
-
-TestTrain:
-  stage: train
-  script: 
-  - source ~/catkin_ws/devel/setup.bash
-  - export TURTLEBOT3_MODEL=burger
-  - roslaunch turtlebot3_gazebo turtlebot3_world.launch &
-  - sleep 15
-  - rostopic list
+#  - source ~/catkin_ws/devel/setup.bash
+#  - export TURTLEBOT3_MODEL=burger
+#  - roslaunch turtlebot3_gazebo turtlebot3_world.launch &
+#  - sleep 15
+#  - rostopic list
 
