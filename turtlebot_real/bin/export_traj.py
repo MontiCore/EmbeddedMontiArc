@@ -53,10 +53,8 @@ def run_export_node(file_name):
     def wrapper_func():
         export_to_excel(traj_x, traj_y, file_name)
     
-    #rospy.init_node('traj_node', anonymous=True)
     odom_sub = rospy.Subscriber("/odom", Odometry, odom_cb)
     
 
     rospy.on_shutdown(wrapper_func)
-    #rospy.spin()
 
