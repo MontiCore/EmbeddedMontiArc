@@ -93,7 +93,7 @@ def runner():
                 resNumStr = lastLine.replace(" ", "").split(":")[1]
                 resNumStr = resNumStr.replace("\"", "")
                 resNum = int(resNumStr)
-                results.append(resNum)
+                results.append(str(resNum))
                 print("Result:", str(resNum), "| Expected:", str(expected[k]))
 
                 if scenario == "digits":
