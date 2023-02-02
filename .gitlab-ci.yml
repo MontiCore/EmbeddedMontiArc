@@ -34,6 +34,8 @@ MNIST-Modular-Digits-Mono-Big:
     - chmod +x build.sh
     - ./build.sh
     - ./executeStaticTest.sh d s
+  only:
+    - modular_testing
 
 MNIST-Modular-Digits-Simple-Big:
   stage: test
@@ -44,6 +46,8 @@ MNIST-Modular-Digits-Simple-Big:
     - chmod +x build.sh
     - ./build.sh
     - ./executeStaticTest.sh d s
+  only:
+    - modular_testing
 
 MNIST-Modular-Digits-Complex-Big:
   stage: test
@@ -54,6 +58,8 @@ MNIST-Modular-Digits-Complex-Big:
     - chmod +x build.sh
     - ./build.sh
     - ./executeStaticTest.sh d s
+  only:
+    - modular_testing
 
 MNIST-Modular-Digits-Mono-Default:
   stage: test
@@ -64,6 +70,8 @@ MNIST-Modular-Digits-Mono-Default:
     - chmod +x build.sh
     - ./build.sh
     - ./executeStaticTest.sh d s
+  only:
+    - modular_testing
 
 MNIST-Modular-Digits-Simple-Default:
   stage: test
@@ -74,6 +82,8 @@ MNIST-Modular-Digits-Simple-Default:
     - chmod +x build.sh
     - ./build.sh
     - ./executeStaticTest.sh d s
+  only:
+    - modular_testing
 
 MNIST-Modular-Digits-Complex-Default:
   stage: test
@@ -84,6 +94,8 @@ MNIST-Modular-Digits-Complex-Default:
     - chmod +x build.sh
     - ./build.sh
     - ./executeStaticTest.sh d s
+  only:
+    - modular_testing
 
 MNIST-Modular-Digits-Mono-Small:
   stage: test
@@ -94,6 +106,8 @@ MNIST-Modular-Digits-Mono-Small:
     - chmod +x build.sh
     - ./build.sh
     - ./executeStaticTest.sh d s
+  only:
+    - modular_testing
 
 MNIST-Modular-Digits-Simple-Small:
   stage: test
@@ -104,6 +118,8 @@ MNIST-Modular-Digits-Simple-Small:
     - chmod +x build.sh
     - ./build.sh
     - ./executeStaticTest.sh d s
+  only:
+    - modular_testing
 
 MNIST-Modular-Digits-Complex-Small:
   stage: test
@@ -114,6 +130,8 @@ MNIST-Modular-Digits-Complex-Small:
     - chmod +x build.sh
     - ./build.sh
     - ./executeStaticTest.sh d s
+  only:
+    - modular_testing
 
 MNIST-Modular-Letters-Mono:
   stage: test
@@ -124,6 +142,8 @@ MNIST-Modular-Letters-Mono:
     - chmod +x build.sh
     - ./build.sh
     - ./executeStaticTest.sh l s
+  only:
+    - modular_testing
 
 MNIST-Modular-Letters-Simple:
   stage: test
@@ -134,6 +154,8 @@ MNIST-Modular-Letters-Simple:
     - chmod +x build.sh
     - ./build.sh
     - ./executeStaticTest.sh l s
+  only:
+    - modular_testing
 
 MNIST-Modular-Letters-Complex:
   stage: test
@@ -144,6 +166,8 @@ MNIST-Modular-Letters-Complex:
     - chmod +x build.sh
     - ./build.sh
     - ./executeStaticTest.sh l s
+  only:
+    - modular_testing
 
 
 
@@ -161,6 +185,8 @@ TestMNIST-Modular-Simple:
     - 'if [[ $RES != *"SUM: 912"* ]]; then echo "Wrong result:" $RES; exit 1; fi;'
     - RES=$(./build/src/cpp/DigitCalculator resources/images/1.png resources/images/2.png resources/images/4.png resources/images/5.png resources/images/6.png resources/images/7.png)
     - 'if [[ $RES != *"SUM: 691"* ]]; then echo "Wrong result:" $RES; exit 1; fi;'
+  only:
+    - modular_testing
 
 TestMNIST-Modular-Letters:
   stage: test
@@ -182,6 +208,8 @@ TestMNIST-Modular-Letters:
     - 'if [[ $RES != *"SUM: 15"* ]]; then echo "Wrong result:" $RES; exit 1; fi;'
     - RES=$(./build/src/cpp/LetterPredictor resources/images/w.png)
     - 'if [[ $RES != *"SUM: 23"* ]]; then echo "Wrong result:" $RES; exit 1; fi;'
+  only:
+    - modular_testing
 
 
 TestMNIST-Modular-Complex:
@@ -198,6 +226,8 @@ TestMNIST-Modular-Complex:
     - 'if [[ $RES != *"SUM: 912"* ]]; then echo "Wrong result:" $RES; exit 1; fi;'
     - RES=$(./build/src/cpp/DigitCalculator resources/images/1.png resources/images/2.png resources/images/4.png resources/images/5.png resources/images/6.png resources/images/7.png)
     - 'if [[ $RES != *"SUM: 691"* ]]; then echo "Wrong result:" $RES; exit 1; fi;'
+  only:
+    - modular_testing
 
 
 TestTENSORFLOW:
