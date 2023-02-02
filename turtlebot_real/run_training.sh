@@ -12,8 +12,11 @@ then
 
   cd "${PROJECT_ROOT}/${BINARY}"
   cd model/${NAME_OF_AGENT}.agent.network.${NAME_OF_AGENT_U}QNet
-  mv model_0-0000.params model_0_newest-0000.params
-  mv model_0-symbol.json model_0_newest-symbol.json
+  #mv model_0-0000.params model_0_newest-0000.params
+  #mv model_0-symbol.json model_0_newest-symbol.json
+  mv best_network-0000.params model_0_newest-0000.params
+  mv best_network-symbol.json model_0_newest-symbol.json
+  
 
   cd "${PROJECT_ROOT}/${BINARY}"
   ./agent -executeOnDemand &
