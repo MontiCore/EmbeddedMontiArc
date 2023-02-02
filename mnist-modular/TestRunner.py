@@ -122,7 +122,7 @@ def runner():
             print(r)
 
         resSummary = "Correct Results: " + str(posCounter) + " | Wrong Results: " + str(negCounter) + "\n"
-        print()
+        print(resSummary)
         print(scenario, "scenario done. Writing results")
         writeResultsToFile(scenario+"-results.txt", results, resSummary)
 
