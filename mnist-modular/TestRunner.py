@@ -75,11 +75,11 @@ def runner():
             process = subprocess.Popen(commands[k], text=True, stderr=subprocess.PIPE, stdout=subprocess.PIPE)
             output, error = process.communicate()
 
-            if len(output) > 0:
-                print("Output:", str(output))
+            #if len(output) > 0:
+            #    print("Output:", str(output))
 
-            if len(error) > 0:
-                print("Error:", str(error))
+            #if len(error) > 0:
+            #    print("Error:", str(error))
 
             lines = str(output).split("\n")
             lastLine = lines[len(lines) - 2]
@@ -94,6 +94,7 @@ def runner():
                 resNumStr = resNumStr.replace("\"", "")
                 resNum = int(resNumStr)
                 results.append(resNum)
+                print("Result:", str(resNum), "| Expected:", str(expected[k]))
 
                 if scenario == "digits":
                     if resNum == expected[k][6]:
@@ -212,7 +213,7 @@ def readListFromFile(path):
     f = open(path, "r")
     for line in f:
         line = line[:-1]
-        print(line)
+        #print(line)
         if line == "-|-|-":
             cDone = True
             continue
