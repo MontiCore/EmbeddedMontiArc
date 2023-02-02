@@ -185,7 +185,7 @@ TestMNIST-Modular-Simple:
   image: registry.git.rwth-aachen.de/monticore/embeddedmontiarc/applications/mnistcalculator/mxnet:v0.0.5
   when: always
   script:
-    - cd mnist-modular/gluon-cpp-modular-digits-simple
+    - cd mnist-modular/gluon-cpp-modular-digits-simple-small
     - chmod +x build.sh
     - ./build.sh
     - RES=$(./build/src/cpp/DigitCalculator resources/images/1.png resources/images/2.png resources/images/3.png resources/images/4.png resources/images/5.png resources/images/6.png)
@@ -227,7 +227,7 @@ TestMNIST-Modular-Complex:
   image: registry.git.rwth-aachen.de/monticore/embeddedmontiarc/applications/mnistcalculator/mxnet:v0.0.5
   when: always
   script:
-    - cd mnist-modular/gluon-cpp-modular-digits-complex
+    - cd mnist-modular/gluon-cpp-modular-digits-complex-small
     - chmod +x build.sh
     - ./build.sh
     - RES=$(./build/src/cpp/DigitCalculator resources/images/1.png resources/images/2.png resources/images/3.png resources/images/4.png resources/images/5.png resources/images/6.png)
