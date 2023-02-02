@@ -121,9 +121,10 @@ def runner():
         for r in results:
             print(r)
 
-        print("Correct Results: ", str(posCounter), " | Wrong Results: ", str(negCounter))
+        resSummary = "Correct Results: " + str(posCounter) + " | Wrong Results: " + str(negCounter) + "\n"
+        print()
         print(scenario, "scenario done. Writing results")
-        writeResultsToFile(scenario+"-results.txt", results)
+        writeResultsToFile(scenario+"-results.txt", results, resSummary)
 
     else:
         print("Commands are None. Error happened. Aborting.")
@@ -236,11 +237,11 @@ def readListFromFile(path):
 
     return commands, expected
 
-def writeResultsToFile(path,results):
+def writeResultsToFile(path,results,summary):
     clearFile(path)
 
     f = open(path, "w")
-    f.write("Corr")
+    f.write(summary + "\n")
     for c in results:
         f.write(str(c) + "\n")
 
