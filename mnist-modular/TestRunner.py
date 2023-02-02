@@ -1,6 +1,7 @@
 import random
 import subprocess
 import sys, os
+from datetime import datetime
 
 
 def runner():
@@ -11,6 +12,7 @@ def runner():
     staticPath = None
     staticMode = False
     limit = 100
+    timestamp = getTimeStamp()
 
 
     if len(sys.argv) == 3:
@@ -59,7 +61,7 @@ def runner():
             c.insert(0, execPath)
 
         if len(commands) > 0 and len(expected) > 0 :
-            writeCommandsToFile(commands, expected, scenario+"-static-run.txt")
+            writeCommandsToFile(commands, expected, scenario+"-static-run-" + timestamp + ".txt")
 
     if commands is not None and len(commands) > 0:
         k = 0
@@ -124,7 +126,7 @@ def runner():
         resSummary = "Correct Results: " + str(posCounter) + " | Wrong Results: " + str(negCounter) + "\n"
         print(resSummary)
         print(scenario, "scenario done. Writing results")
-        writeResultsToFile(scenario+"-results.txt", results, resSummary)
+        writeResultsToFile(scenario+"-results-" + timestamp + ".txt", results, resSummary)
 
     else:
         print("Commands are None. Error happened. Aborting.")
@@ -246,6 +248,11 @@ def writeResultsToFile(path,results,summary):
         f.write(str(c) + "\n")
 
     f.close()
+
+def getTimeStamp():
+    now = datetime.now()
+    date_time = now.strftime("%m_%d_%Y-%H:%M:%S")
+    return date_time
 
 def clearFile(path):
     try:
