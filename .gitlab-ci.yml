@@ -25,12 +25,134 @@ stages:
 #  - RES=$(./build/src/cpp/DigitCalculator resources/images/2.jpg resources/images/3.jpg resources/images/4.png resources/images/6.png resources/images/2.jpg resources/images/3.jpg)
 #  - "if [[ $RES != *\"SUM: 857\"* ]]; then echo \"Wrong result:\" $RES; exit 1; fi;"
 
+MNIST-Modular-Digits-Mono-Big:
+  stage: test
+  image: registry.git.rwth-aachen.de/monticore/embeddedmontiarc/applications/mnistcalculator/mxnet:v0.0.5
+  when: always
+  script:
+    - cd mnist-modular/gluon-cpp-modular-digits-mono-big
+    - chmod +x build.sh
+    - ./build.sh
+    - ./executeStaticTest.sh d s
+
+MNIST-Modular-Digits-Simple-Big:
+  stage: test
+  image: registry.git.rwth-aachen.de/monticore/embeddedmontiarc/applications/mnistcalculator/mxnet:v0.0.5
+  when: always
+  script:
+    - cd mnist-modular/gluon-cpp-modular-digits-simple-big
+    - chmod +x build.sh
+    - ./build.sh
+    - ./executeStaticTest.sh d s
+
+MNIST-Modular-Digits-Complex-Big:
+  stage: test
+  image: registry.git.rwth-aachen.de/monticore/embeddedmontiarc/applications/mnistcalculator/mxnet:v0.0.5
+  when: always
+  script:
+    - cd mnist-modular/gluon-cpp-modular-digits-complex-big
+    - chmod +x build.sh
+    - ./build.sh
+    - ./executeStaticTest.sh d s
+
+MNIST-Modular-Digits-Mono-Default:
+  stage: test
+  image: registry.git.rwth-aachen.de/monticore/embeddedmontiarc/applications/mnistcalculator/mxnet:v0.0.5
+  when: always
+  script:
+    - cd mnist-modular/gluon-cpp-modular-digits-mono-default
+    - chmod +x build.sh
+    - ./build.sh
+    - ./executeStaticTest.sh d s
+
+MNIST-Modular-Digits-Simple-Default:
+  stage: test
+  image: registry.git.rwth-aachen.de/monticore/embeddedmontiarc/applications/mnistcalculator/mxnet:v0.0.5
+  when: always
+  script:
+    - cd mnist-modular/gluon-cpp-modular-digits-simple-default
+    - chmod +x build.sh
+    - ./build.sh
+    - ./executeStaticTest.sh d s
+
+MNIST-Modular-Digits-Complex-Default:
+  stage: test
+  image: registry.git.rwth-aachen.de/monticore/embeddedmontiarc/applications/mnistcalculator/mxnet:v0.0.5
+  when: always
+  script:
+    - cd mnist-modular/gluon-cpp-modular-digits-complex-default
+    - chmod +x build.sh
+    - ./build.sh
+    - ./executeStaticTest.sh d s
+
+MNIST-Modular-Digits-Mono-Small:
+  stage: test
+  image: registry.git.rwth-aachen.de/monticore/embeddedmontiarc/applications/mnistcalculator/mxnet:v0.0.5
+  when: always
+  script:
+    - cd mnist-modular/gluon-cpp-modular-digits-mono-small
+    - chmod +x build.sh
+    - ./build.sh
+    - ./executeStaticTest.sh d s
+
+MNIST-Modular-Digits-Simple-Small:
+  stage: test
+  image: registry.git.rwth-aachen.de/monticore/embeddedmontiarc/applications/mnistcalculator/mxnet:v0.0.5
+  when: always
+  script:
+    - cd mnist-modular/gluon-cpp-modular-digits-simple-small
+    - chmod +x build.sh
+    - ./build.sh
+    - ./executeStaticTest.sh d s
+
+MNIST-Modular-Digits-Complex-Small:
+  stage: test
+  image: registry.git.rwth-aachen.de/monticore/embeddedmontiarc/applications/mnistcalculator/mxnet:v0.0.5
+  when: always
+  script:
+    - cd mnist-modular/gluon-cpp-modular-digits-complex-small
+    - chmod +x build.sh
+    - ./build.sh
+    - ./executeStaticTest.sh d s
+
+MNIST-Modular-Letters-Mono:
+  stage: test
+  image: registry.git.rwth-aachen.de/monticore/embeddedmontiarc/applications/mnistcalculator/mxnet:v0.0.5
+  when: always
+  script:
+    - cd mnist-modular/gluon-cpp-modular-letters-mono
+    - chmod +x build.sh
+    - ./build.sh
+    - ./executeStaticTest.sh l s
+
+MNIST-Modular-Letters-Simple:
+  stage: test
+  image: registry.git.rwth-aachen.de/monticore/embeddedmontiarc/applications/mnistcalculator/mxnet:v0.0.5
+  when: always
+  script:
+    - cd mnist-modular/gluon-cpp-modular-letters-simple
+    - chmod +x build.sh
+    - ./build.sh
+    - ./executeStaticTest.sh l s
+
+MNIST-Modular-Letters-Complex:
+  stage: test
+  image: registry.git.rwth-aachen.de/monticore/embeddedmontiarc/applications/mnistcalculator/mxnet:v0.0.5
+  when: always
+  script:
+    - cd mnist-modular/gluon-cpp-modular-letters-complex
+    - chmod +x build.sh
+    - ./build.sh
+    - ./executeStaticTest.sh l s
+
+
+
 TestMNIST-Modular-Simple:
   stage: test
   image: registry.git.rwth-aachen.de/monticore/embeddedmontiarc/applications/mnistcalculator/mxnet:v0.0.5
   when: always
   script:
-    - cd mnist-modular/gluon-cpp-modular
+    - cd mnist-modular/gluon-cpp-modular-digits-simple
     - chmod +x build.sh
     - ./build.sh
     - RES=$(./build/src/cpp/DigitCalculator resources/images/1.png resources/images/2.png resources/images/3.png resources/images/4.png resources/images/5.png resources/images/6.png)
@@ -45,7 +167,7 @@ TestMNIST-Modular-Letters:
   image: registry.git.rwth-aachen.de/monticore/embeddedmontiarc/applications/mnistcalculator/mxnet:v0.0.5
   when: always
   script:
-    - cd mnist-modular/gluon-cpp-modular-letters
+    - cd mnist-modular/gluon-cpp-modular-letters-simple
     - chmod +x build.sh
     - ./build.sh
     - RES=$(./build/src/cpp/LetterPredictor resources/images/a.png)
@@ -67,7 +189,7 @@ TestMNIST-Modular-Complex:
   image: registry.git.rwth-aachen.de/monticore/embeddedmontiarc/applications/mnistcalculator/mxnet:v0.0.5
   when: always
   script:
-    - cd mnist-modular/gluon-cpp-modular-complex
+    - cd mnist-modular/gluon-cpp-modular-digits-complex
     - chmod +x build.sh
     - ./build.sh
     - RES=$(./build/src/cpp/DigitCalculator resources/images/1.png resources/images/2.png resources/images/3.png resources/images/4.png resources/images/5.png resources/images/6.png)
@@ -88,6 +210,8 @@ TestTENSORFLOW:
     - ./build.sh
     - RES=$(./build/src/cpp/DigitCalculator resources/images/1.png resources/images/2.png resources/images/3.png resources/images/4.png resources/images/5.png resources/images/6.png)
     - 'if [[ $RES != *"SUM: 579"* ]]; then echo "Wrong result:" $RES; exit 1; fi;'
+  except:
+    - modular_testing
 
 TestMnistCalculator-II:
   stage: test
@@ -98,6 +222,8 @@ TestMnistCalculator-II:
     - mv /mxnet/build/libmxnet.so /mxnet/build/libmxnet.a /usr/lib/
     - cd mnist-calculator
     - mvn streamtest:streamtest-build -s settings.xml
+  except:
+    - modular_testing
 
 TestEMADLMavenPlugin:
   stage: test
@@ -116,6 +242,8 @@ TestEMADLMavenPlugin:
     paths:
       - emadl-maven-plugin/output/*
     expire_in: 1 week
+  except:
+    - modular_testing
 
 TestMnistWithAdaNet:
   stage: test
@@ -125,6 +253,8 @@ TestMnistWithAdaNet:
     - mv /mxnet/build/libmxnet.so /mxnet/build/libmxnet.a /usr/lib/
     - cd AdaNet
     - mvn dependency:resolve emadl:train -s settings.xml
+  except:
+    - modular_testing
 
 TestMNISTwithCustomLayer:
   stage: test
@@ -148,6 +278,8 @@ TestMNISTwithCustomLayer:
     - mv /mxnet/build/libmxnet.so /mxnet/build/libmxnet.a /usr/lib/
     - cd mnist-custom-layer
     - mvn dependency:resolve emadl:train -s settings.xml
+  except:
+    - modular_testing
 
 TrainTensorflowONNX:
   stage: test
@@ -159,6 +291,8 @@ TrainTensorflowONNX:
   script:
     - cd onnx/tensorflow-pretrained
     - mvn dependency:resolve emadl:train -s settings.xml
+  except:
+    - modular_testing
 
 .docker: &docker
   - docker login -u $CI_REGISTRY_USER -p $CI_REGISTRY_PASSWORD $CI_REGISTRY
@@ -169,6 +303,7 @@ TrainTensorflowONNX:
       docker tag $CI_REGISTRY_IMAGE/$IMAGE_NAME:$CI_COMMIT_REF_NAME $CI_REGISTRY_IMAGE/$IMAGE_NAME:latest
       docker push $CI_REGISTRY_IMAGE/$IMAGE_NAME:latest
     fi
+  
 
 base/mxnet:
   stage: prebuild
@@ -217,3 +352,5 @@ TestGluonONNX:
     - ./build.sh
     - RES=$(./build/src/cpp/DigitCalculator resources/images/1.png resources/images/2.png resources/images/3.png resources/images/4.png resources/images/5.png resources/images/6.png)
     - "if [[ $RES != *\"SUM: 579\"* ]]; then echo \"Wrong result:\" $RES; exit 1; fi;"
+  except:
+    - modular_testing
