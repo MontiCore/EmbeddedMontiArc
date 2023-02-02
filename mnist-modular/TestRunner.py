@@ -56,10 +56,21 @@ def runner():
             print("SecondLast", secondLastLine)
 
             if scenario == "digits":
-                pass
+                resNumStr = lastLine.split(" ")[1]
+                resNumStr = resNumStr.replace("\"", "")
+                resNum = int(resNumStr)
+
+                if resNum == expected[k][6]:
+                    posCounter += 1
+                else:
+                    negCounter += 1
 
             k += 1
 
+        if scenario == "digits":
+            print("Correct Results: ", str(posCounter), " | Wrong Results: ", str(negCounter))
+
+        print(scenario, " scenario done")
 
     else:
         print("Commands are None. Error happened. Aborting.")

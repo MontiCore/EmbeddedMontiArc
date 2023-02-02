@@ -11,7 +11,7 @@ if [ ! -f $MXNET_FOLDER/libmxnet.so ]; then
 fi
 
 rm -rf target
-java -jar ../embedded-montiarc-emadl-generator-0.5.7-SNAPSHOT-jar-with-dependencies.jar -m src/emadl/models/ -r letterpred.Connector -o target -b GLUON
+java -jar ../embedded-montiarc-emadl-generator-0.5.7-SNAPSHOT-jar-with-dependencies.jar -m src/emadl/models/ -r letterpred.Connector -o target -b GLUON -ndl
 
 rm -rf build
 mkdir build && cd build
