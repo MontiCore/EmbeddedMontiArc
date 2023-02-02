@@ -1,9 +1,13 @@
 # (c) https://github.com/MontiCore/monticore
 
 stages:
+  - mono
+  - simple
+  - complex
   - prebuild
   - test
   - build
+
 
 #TestMXNET:
 #  stage: build
@@ -26,7 +30,7 @@ stages:
 #  - "if [[ $RES != *\"SUM: 857\"* ]]; then echo \"Wrong result:\" $RES; exit 1; fi;"
 
 MNIST-Modular-Digits-Mono-Big:
-  stage: test
+  stage: mono
   image: registry.git.rwth-aachen.de/monticore/embeddedmontiarc/applications/mnistcalculator/mxnet:v0.0.5
   when: always
   script:
@@ -38,7 +42,7 @@ MNIST-Modular-Digits-Mono-Big:
     - modular_testing
 
 MNIST-Modular-Digits-Simple-Big:
-  stage: test
+  stage: simple
   image: registry.git.rwth-aachen.de/monticore/embeddedmontiarc/applications/mnistcalculator/mxnet:v0.0.5
   when: always
   script:
@@ -50,7 +54,7 @@ MNIST-Modular-Digits-Simple-Big:
     - modular_testing
 
 MNIST-Modular-Digits-Complex-Big:
-  stage: test
+  stage: complex
   image: registry.git.rwth-aachen.de/monticore/embeddedmontiarc/applications/mnistcalculator/mxnet:v0.0.5
   when: always
   script:
@@ -62,7 +66,7 @@ MNIST-Modular-Digits-Complex-Big:
     - modular_testing
 
 MNIST-Modular-Digits-Mono-Default:
-  stage: test
+  stage: mono
   image: registry.git.rwth-aachen.de/monticore/embeddedmontiarc/applications/mnistcalculator/mxnet:v0.0.5
   when: always
   script:
@@ -74,7 +78,7 @@ MNIST-Modular-Digits-Mono-Default:
     - modular_testing
 
 MNIST-Modular-Digits-Simple-Default:
-  stage: test
+  stage: simple
   image: registry.git.rwth-aachen.de/monticore/embeddedmontiarc/applications/mnistcalculator/mxnet:v0.0.5
   when: always
   script:
@@ -86,7 +90,7 @@ MNIST-Modular-Digits-Simple-Default:
     - modular_testing
 
 MNIST-Modular-Digits-Complex-Default:
-  stage: test
+  stage: complex
   image: registry.git.rwth-aachen.de/monticore/embeddedmontiarc/applications/mnistcalculator/mxnet:v0.0.5
   when: always
   script:
@@ -98,7 +102,7 @@ MNIST-Modular-Digits-Complex-Default:
     - modular_testing
 
 MNIST-Modular-Digits-Mono-Small:
-  stage: test
+  stage: mono
   image: registry.git.rwth-aachen.de/monticore/embeddedmontiarc/applications/mnistcalculator/mxnet:v0.0.5
   when: always
   script:
@@ -110,7 +114,7 @@ MNIST-Modular-Digits-Mono-Small:
     - modular_testing
 
 MNIST-Modular-Digits-Simple-Small:
-  stage: test
+  stage: simple
   image: registry.git.rwth-aachen.de/monticore/embeddedmontiarc/applications/mnistcalculator/mxnet:v0.0.5
   when: always
   script:
@@ -122,7 +126,7 @@ MNIST-Modular-Digits-Simple-Small:
     - modular_testing
 
 MNIST-Modular-Digits-Complex-Small:
-  stage: test
+  stage: complex
   image: registry.git.rwth-aachen.de/monticore/embeddedmontiarc/applications/mnistcalculator/mxnet:v0.0.5
   when: always
   script:
