@@ -11,3 +11,4 @@ component Net2 {
     connect dataInput -> net3.data;
     connect net3.dataOutput -> net4.dataInput;
     connect net4.softmax -> softmax;
+}
