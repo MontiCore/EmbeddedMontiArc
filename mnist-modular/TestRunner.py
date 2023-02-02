@@ -97,7 +97,7 @@ def runner():
                 print("Result:", str(resNum), "| Expected:", str(expected[k]))
 
                 if scenario == "digits":
-                    if resNum == expected[k][6]:
+                    if resNum == int(expected[k][6]):
                         posCounter += 1
                     else:
                         negCounter += 1
