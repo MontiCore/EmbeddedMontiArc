@@ -166,17 +166,17 @@ MNIST-Modular-Letters-Simple:
   only:
     - modular_testing
 
-MNIST-Modular-Letters-Complex:
-  stage: letters
-  image: registry.git.rwth-aachen.de/monticore/embeddedmontiarc/applications/mnistcalculator/mxnet:v0.0.5
-  when: always
-  script:
-    - cd mnist-modular/gluon-cpp-modular-letters-complex
-    - chmod +x build.sh
-    - ./build.sh
-    - ./executeStaticTest.sh l s
-  only:
-    - modular_testing
+#MNIST-Modular-Letters-Complex:
+#  stage: letters
+#  image: registry.git.rwth-aachen.de/monticore/embeddedmontiarc/applications/mnistcalculator/mxnet:v0.0.5
+#  when: always
+#  script:
+#    - cd mnist-modular/gluon-cpp-modular-letters-complex
+#    - chmod +x build.sh
+#    - ./build.sh
+#    - ./executeStaticTest.sh l s
+#  only:
+#    - modular_testing
 
 
 

@@ -5,7 +5,7 @@ BUILD="echo Running without rebuilding"
 
 if [ "$1" == "b" ]; then
     #BUILD=./build.sh  
-    #echo "using small test runs"
+    echo "trying to recompile. Disabled currently. Adapt script."
 fi
 
 #### Digits
