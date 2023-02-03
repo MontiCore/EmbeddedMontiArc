@@ -39,7 +39,7 @@ def runner():
         print("Round:", str(k), "| Real:", str(realResult), "| Found:", str(infResult))
 
 
-        if infResult == realResult:
+        if int(infResult) == (realResult):
             correct += 1
         else:
             wrong += 1
