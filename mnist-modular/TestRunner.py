@@ -96,7 +96,7 @@ def runner():
                 resNumStr = resNumStr.replace("\"", "")
                 resNum = int(resNumStr)
                 results.append(str(resNum))
-                print("Result:", str(resNum), "| Expected:", str(expected[k]))
+                print("Round:", str(k), "| Result:", str(resNum), "| Expected:", str(expected[k]))
 
                 if scenario == "digits":
                     if resNum == int(expected[k][6]):
