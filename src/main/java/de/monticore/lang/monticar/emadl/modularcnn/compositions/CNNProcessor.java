@@ -15,9 +15,12 @@ import java.util.ArrayList;
 public class CNNProcessor {
     private ArrayList<ArchitectureNode> archNodes = null;
     private String composedNetworksFilePath = "";
+
+    ComposedNetworkFileHandler composedNetworkFileHandler = null;
     public CNNProcessor(ArrayList<ArchitectureNode> currentNodes, String composedNetworksFilePath) {
         this.archNodes = currentNodes;
         this.composedNetworksFilePath = composedNetworksFilePath;
+        this.composedNetworkFileHandler = new ComposedNetworkFileHandler(this.composedNetworksFilePath);
     }
 
     public void checkAndProcessComponentOnMatch(ASTEMACompilationUnit node) {
@@ -25,7 +28,6 @@ public class CNNProcessor {
         ComponentInformation componentInformation = new ComponentInformation(node.getComponent(), archNodes);
 
         if (componentInformation.isComposedCNN()){
-            ComposedNetworkFileHandler composedNetworkFileHandler = new ComposedNetworkFileHandler(this.composedNetworksFilePath);
             composedNetworkFileHandler.documentNetworkInFile(componentInformation);
         }
     }
