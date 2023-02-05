@@ -12,7 +12,7 @@ import de.monticore.lang.monticar.emadl._ast.ASTEMADLNode;
 import de.monticore.lang.monticar.emadl._visitor.EMADLVisitor;
 import de.monticore.lang.monticar.emadl._visitor.ModularNetworkVisitor;
 import de.monticore.lang.monticar.emadl.modularcnn.compositions.ArchitectureNode;
-import de.monticore.lang.monticar.emadl.modularcnn.compositions.CNNProcessor;
+import de.monticore.lang.monticar.emadl.modularcnn.compositions.ComposedNetworkScanner;
 import de.monticore.lang.monticar.emadl.modularcnn.compositions.ArchitectureNodeScanner;
 import de.monticore.symboltable.*;
 import de.se_rwth.commons.logging.Log;
@@ -20,7 +20,7 @@ import de.se_rwth.commons.logging.Log;
 import java.util.ArrayList;
 import java.util.Deque;
 
-public class ComposedCNNScanner extends CommonSymbolTableCreator implements ModularNetworkVisitor {
+public class NetworkProcessor extends CommonSymbolTableCreator implements ModularNetworkVisitor {
 
 
     private ModularNetworkVisitor realThis = this;
@@ -30,13 +30,13 @@ public class ComposedCNNScanner extends CommonSymbolTableCreator implements Modu
     private String composedNetworksFilePath = "";
 
 
-    public ComposedCNNScanner(ResolvingConfiguration resolvingConfig, MutableScope enclosingScope, ArrayList<ArchitectureNode> archNodes, String composedNetworksFilePath) {
+    public NetworkProcessor(ResolvingConfiguration resolvingConfig, MutableScope enclosingScope, ArrayList<ArchitectureNode> archNodes, String composedNetworksFilePath) {
         super(resolvingConfig, enclosingScope);
         this.initSuperSTC();
         this.initComposedCNNScanner(archNodes, composedNetworksFilePath);
     }
 
-    public ComposedCNNScanner(ResolvingConfiguration resolvingConfig, Deque<MutableScope> scopeStack, ArrayList<ArchitectureNode> archNodes, String composedNetworksFilePath) {
+    public NetworkProcessor(ResolvingConfiguration resolvingConfig, Deque<MutableScope> scopeStack, ArrayList<ArchitectureNode> archNodes, String composedNetworksFilePath) {
         super(resolvingConfig, scopeStack);
         this.initSuperSTC();
         this.initComposedCNNScanner(archNodes, composedNetworksFilePath);
@@ -98,7 +98,7 @@ public class ComposedCNNScanner extends CommonSymbolTableCreator implements Modu
 
     @Override
     public void endVisit(ASTEMACompilationUnit node){
-        CNNProcessor cnnProcessor = new CNNProcessor(archNodes, this.composedNetworksFilePath);
-        cnnProcessor.checkAndProcessComponentOnMatch(node);
+        ComposedNetworkScanner composedNetworkScanner = new ComposedNetworkScanner(archNodes, this.composedNetworksFilePath);
+        composedNetworkScanner.checkAndProcessComponentOnMatch(node);
     }
 }

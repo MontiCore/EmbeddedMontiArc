@@ -8,16 +8,15 @@ package de.monticore.lang.monticar.emadl.modularcnn.compositions;
 
 import de.monticore.lang.embeddedmontiarc.embeddedmontiarc._ast.*;
 import de.monticore.lang.monticar.emadl.modularcnn.tools.ComposedNetworkFileHandler;
-import de.se_rwth.commons.logging.Log;
 
 import java.util.ArrayList;
 
-public class CNNProcessor {
+public class ComposedNetworkScanner {
     private ArrayList<ArchitectureNode> archNodes = null;
     private String composedNetworksFilePath = "";
 
     ComposedNetworkFileHandler composedNetworkFileHandler = null;
-    public CNNProcessor(ArrayList<ArchitectureNode> currentNodes, String composedNetworksFilePath) {
+    public ComposedNetworkScanner(ArrayList<ArchitectureNode> currentNodes, String composedNetworksFilePath) {
         this.archNodes = currentNodes;
         this.composedNetworksFilePath = composedNetworksFilePath;
         this.composedNetworkFileHandler = new ComposedNetworkFileHandler(this.composedNetworksFilePath);
