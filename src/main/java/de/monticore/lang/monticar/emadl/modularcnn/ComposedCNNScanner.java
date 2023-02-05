@@ -46,7 +46,7 @@ public class ComposedCNNScanner extends CommonSymbolTableCreator implements Modu
 
     }
 
-    public void initNetworkStructureScanner(ArrayList<ArchitectureNode> archNodes, String composedNetworksFilePath){
+    public void initComposedCNNScanner(ArrayList<ArchitectureNode> archNodes, String composedNetworksFilePath){
         architectureNodeScanner = new ArchitectureNodeScanner(archNodes);
         this.archNodes = archNodes;
         this.composedNetworksFilePath = composedNetworksFilePath;
