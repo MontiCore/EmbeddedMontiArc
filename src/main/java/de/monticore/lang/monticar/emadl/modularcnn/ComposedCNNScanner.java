@@ -33,13 +33,13 @@ public class ComposedCNNScanner extends CommonSymbolTableCreator implements Modu
     public ComposedCNNScanner(ResolvingConfiguration resolvingConfig, MutableScope enclosingScope, ArrayList<ArchitectureNode> archNodes, String composedNetworksFilePath) {
         super(resolvingConfig, enclosingScope);
         this.initSuperSTC();
-        this.initNetworkStructureScanner(archNodes, composedNetworksFilePath);
+        this.initComposedCNNScanner(archNodes, composedNetworksFilePath);
     }
 
     public ComposedCNNScanner(ResolvingConfiguration resolvingConfig, Deque<MutableScope> scopeStack, ArrayList<ArchitectureNode> archNodes, String composedNetworksFilePath) {
         super(resolvingConfig, scopeStack);
         this.initSuperSTC();
-        this.initNetworkStructureScanner(archNodes, composedNetworksFilePath);
+        this.initComposedCNNScanner(archNodes, composedNetworksFilePath);
     }
 
     public void initSuperSTC(){
