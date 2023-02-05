@@ -10,7 +10,7 @@ import de.monticore.ast.ASTNode;
 import de.monticore.lang.embeddedmontiarc.embeddedmontiarc._ast.ASTEMACompilationUnit;
 import de.monticore.lang.monticar.emadl._ast.ASTEMADLNode;
 import de.monticore.lang.monticar.emadl._visitor.EMADLVisitor;
-import de.monticore.lang.monticar.emadl._visitor.ModularNetworkVisitor;
+import de.monticore.lang.monticar.emadl._visitor.NetworkVisitor;
 import de.monticore.lang.monticar.emadl.modularcnn.compositions.ArchitectureNode;
 import de.monticore.lang.monticar.emadl.modularcnn.compositions.ComposedNetworkScanner;
 import de.monticore.lang.monticar.emadl.modularcnn.compositions.ArchitectureNodeScanner;
@@ -20,10 +20,10 @@ import de.se_rwth.commons.logging.Log;
 import java.util.ArrayList;
 import java.util.Deque;
 
-public class NetworkProcessor extends CommonSymbolTableCreator implements ModularNetworkVisitor {
+public class NetworkProcessor extends CommonSymbolTableCreator implements NetworkVisitor {
 
 
-    private ModularNetworkVisitor realThis = this;
+    private NetworkVisitor realThis = this;
     private ArchitectureNodeScanner architectureNodeScanner = null;
     private ArrayList<ArchitectureNode> archNodes = null;
 
@@ -65,19 +65,19 @@ public class NetworkProcessor extends CommonSymbolTableCreator implements Modula
         return this.getFirstCreatedScope();
     }
 
-    public ModularNetworkVisitor getRealThis() {
+    public NetworkVisitor getRealThis() {
         return this.realThis;
     }
 
-    public void setRealThis (ModularNetworkVisitor rt) {
+    public void setRealThis (NetworkVisitor rt) {
         if (this.realThis != rt) {
             this.realThis =  rt;
         }
     }
 
     public void setRealThis (EMADLVisitor v) {
-        if (v instanceof ModularNetworkVisitor){
-            this.setRealThis((ModularNetworkVisitor) v);
+        if (v instanceof NetworkVisitor){
+            this.setRealThis((NetworkVisitor) v);
         }
     }
 

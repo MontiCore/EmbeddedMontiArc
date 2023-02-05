@@ -8,19 +8,15 @@ package de.monticore.lang.monticar.emadl._visitor;
 
 import de.monticore.ast.ASTNode;
 import de.monticore.lang.embeddedmontiarc.embeddedmontiarc._ast.ASTEMACompilationUnit;
-import de.monticore.lang.embeddedmontiarc.embeddedmontiarc._visitor.EmbeddedMontiArcVisitor;
-import de.monticore.lang.embeddedmontiarcdynamic.embeddedmontiarcdynamic._visitor.EmbeddedMontiArcDynamicVisitor;
-import de.monticore.lang.mathopt._visitor.MathOptVisitor;
 import de.monticore.lang.monticar.emadl._ast.ASTEMADLNode;
-import de.se_rwth.commons.logging.Log;
 
-public interface ModularNetworkVisitor extends EMADLVisitor {
+public interface NetworkVisitor extends EMADLVisitor {
 
-    default ModularNetworkVisitor getRealThis() {
+    default NetworkVisitor getRealThis() {
         return this;
     }
 
-    default void setRealThis(ModularNetworkVisitor mvn){
+    default void setRealThis(NetworkVisitor mvn){
         throw new UnsupportedOperationException("setRealThis setter for ModularNetworkVisitor as ModularNetworkVisitor not implemented");
     }
 

@@ -18,7 +18,7 @@ import de.monticore.lang.monticar.cnnarch._symboltable.CNNArchSymbolTableCreator
 import de.monticore.lang.monticar.emadl._ast.ASTBehaviorEmbedding;
 import de.monticore.lang.monticar.emadl._visitor.EMADLVisitor;
 import de.monticore.lang.monticar.emadl._visitor.ModularEMADLDelegatorVisitor;
-import de.monticore.lang.monticar.emadl._visitor.ModularNetworkVisitor;
+import de.monticore.lang.monticar.emadl._visitor.NetworkVisitor;
 import de.monticore.lang.monticar.emadl.modularcnn.compositions.ArchitectureNode;
 import de.monticore.lang.monticar.emadl.modularcnn.NetworkProcessor;
 import de.monticore.symboltable.MutableScope;
@@ -38,7 +38,7 @@ public class EMADLSymbolTableCreator extends de.monticore.symboltable.CommonSymb
     private MathOptSymbolTableCreator mathOptSTC;
     private EmbeddedMontiArcDynamicSymbolTableCreator emadSTC;
     private EmbeddedMontiArcBehaviorVisitor emaBehaviorSTC;
-    private ModularNetworkVisitor compCNNScanner;
+    private NetworkVisitor compCNNScanner;
 
     private ArrayList<ArchitectureNode> archNodes = null;
     private String composedNetworksFilePath = "";
