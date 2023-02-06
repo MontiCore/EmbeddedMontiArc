@@ -1,7 +1,7 @@
 import matplotlib.pyplot as plt
-import random
 import os
 from calc_rmse import import_from_excel
+import sys
 
 def plot_trajectory(recorded_x, recorded_y, actual_x, actual_y, pdf_file):
     """
@@ -37,10 +37,14 @@ def plot_trajectory(recorded_x, recorded_y, actual_x, actual_y, pdf_file):
     
     
 if __name__ == "__main__":
-
-    actual_x, actual_y = import_from_excel('../excel_traj_files/act_traj_exp1.xlsx')
-    recorded_x, recorded_y = import_from_excel('../excel_traj_files/rec_traj_exp1.xlsx')
+    try:
+        exp_name = sys.argv[1]
+    except IndexError:
+        print("No argument for the experiment is provided")
+        sys.exit(1)
     
-    current_directory = os.getcwd()
-    pdf_file = current_directory + '/trajectory_exp1.pdf'
+    actual_x, actual_y = import_from_excel('../excel_traj_files/act_traj_' + exp_name + '.xlsx')
+    recorded_x, recorded_y = import_from_excel('../excel_traj_files/rec_traj_' + exp_name + '.xlsx')
+    
+    pdf_file = '../pdf_traj_plot/trajectory_' + exp_name + '.pdf'
     plot_trajectory(recorded_x, recorded_y, actual_x, actual_y, pdf_file)

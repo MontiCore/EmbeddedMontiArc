@@ -17,7 +17,7 @@ def export_to_excel(x, y, file_name):
     The values of x and y will be written to the first two columns of the worksheet.
     """
     # Create a new Excel file
-    workbook = xlsxwriter.Workbook(file_name+'.xlsx')
+    workbook = xlsxwriter.Workbook('..' + '/excel_traj_files/rec_traj_' + file_name + '.xlsx')
     worksheet = workbook.add_worksheet()
     
     # Write the column names to the first row

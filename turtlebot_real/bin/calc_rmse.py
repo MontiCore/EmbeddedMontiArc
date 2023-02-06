@@ -2,6 +2,7 @@ from math import sqrt
 from scipy.interpolate import interp1d
 import numpy as np
 import openpyxl
+import sys
 
 def import_from_excel(file_path):
     """
@@ -59,9 +60,14 @@ def make_lists_same(recorded_x, recorded_y, actual_x, actual_y, num_points):
 
 if __name__ == "__main__":
     
-     
-    actual_x, actual_y = import_from_excel('../excel_traj_files/act_traj_exp1.xlsx')
-    recorded_x, recorded_y = import_from_excel('../excel_traj_files/rec_traj_exp1.xlsx')
+    try:
+        exp_name = sys.argv[1]
+    except IndexError:
+        print("No argument for the experiment is provided")
+        sys.exit(1)
+    
+    actual_x, actual_y = import_from_excel('../excel_traj_files/act_traj_' + exp_name +'.xlsx')
+    recorded_x, recorded_y = import_from_excel('../excel_traj_files/rec_traj_' + exp_name +'.xlsx')
     
     num_points = min(len(actual_x), len(recorded_x))
     

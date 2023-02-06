@@ -14,7 +14,6 @@ from rosconnector import RosConnector
 
 TRAINING_MODE = 0
 PLAY_MODE = 1
-EVAL_MODE = 2
 
 
 def signal_handler(sig, frame):
@@ -60,7 +59,7 @@ if __name__ == "__main__":
         parser.error("more than one mode is not allowed")
 
     verbose = options.verbose
-    connector = RosConnector(options.environment, verbose)
+    connector = RosConnector(options.environment, options.file_name, verbose)
     
     if mode == PLAY_MODE:
         print("Start Play Mode")

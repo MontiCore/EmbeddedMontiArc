@@ -24,14 +24,23 @@ class RosConnector(object):
     resetState_topic = "/gazebo/resetState"
     goalReached_topic = "/gazebo/goalReached"
 
-    X_INIT = -2.0
-    Y_INIT = -0.5
+    X_INIT = None
+    Y_INIT = None
     THETA_INIT = 0.0
 
-    def __init__(self, env_str, verbose=True):
+    def __init__(self, env_str, exp_number, verbose=True):
         # initialize the node
         rospy.init_node(env_str, anonymous=True)
 
+        if exp_number == "exp1":
+            self.X_INIT = -2.0
+            self.Y_INIT = -0.5
+        elif exp_number == "exp2":
+            self.X_INIT = 1.5
+            self.Y_INIT = 1.5
+        elif exp_number == "exp3":
+            self.X_INIT = -0.7
+            self.Y_INIT = 0.0 
         self.__terminated = True
         self.__verbose = verbose
         self.__turtleBot_in_position = False
