@@ -33,20 +33,20 @@ public class NetworkProcessor extends CommonSymbolTableCreator implements Networ
     public NetworkProcessor(ResolvingConfiguration resolvingConfig, MutableScope enclosingScope, ArrayList<ArchitectureNode> archNodes, String composedNetworksFilePath) {
         super(resolvingConfig, enclosingScope);
         this.initSuperSTC();
-        this.initComposedCNNScanner(archNodes, composedNetworksFilePath);
+        this.initNetworkProcessor(archNodes, composedNetworksFilePath);
     }
 
     public NetworkProcessor(ResolvingConfiguration resolvingConfig, Deque<MutableScope> scopeStack, ArrayList<ArchitectureNode> archNodes, String composedNetworksFilePath) {
         super(resolvingConfig, scopeStack);
         this.initSuperSTC();
-        this.initComposedCNNScanner(archNodes, composedNetworksFilePath);
+        this.initNetworkProcessor(archNodes, composedNetworksFilePath);
     }
 
     public void initSuperSTC(){
 
     }
 
-    public void initComposedCNNScanner(ArrayList<ArchitectureNode> archNodes, String composedNetworksFilePath){
+    public void initNetworkProcessor(ArrayList<ArchitectureNode> archNodes, String composedNetworksFilePath){
         architectureNodeScanner = new ArchitectureNodeScanner(archNodes);
         this.archNodes = archNodes;
         this.composedNetworksFilePath = composedNetworksFilePath;
