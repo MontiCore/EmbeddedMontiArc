@@ -1,4 +1,4 @@
-image: zoroac/monti_turtle:latest
+image: zoroac/turtle_ci:latest
 
 stages:
 - build
@@ -21,12 +21,13 @@ TestBuild:
   - chmod 777 *.sh
   - ./install.sh
 
-#TestTrain:
-#  stage: train
-#  script: 
-#  - source ~/catkin_ws/devel/setup.bash
-#  - export TURTLEBOT3_MODEL=burger
-#  - roslaunch turtlebot3_gazebo turtlebot3_world.launch &
-#  - sleep 15
-#  - rostopic list
+TestTrain:
+  stage: train
+  script: 
+  - source ~/catkin_ws/devel/setup.bash
+  - export TURTLEBOT3_MODEL=burger
+  - roslaunch turtlebot3_gazebo turtlebot3_world.launch &
+  - sleep 15
+  - chmod 777 *.sh
+  - ./run_env.sh
 
