@@ -13,6 +13,6 @@ exitfn () {
 
 trap "exitfn" INT
 
-./run_training.sh
+#./run_training.sh
 
 exitfn()
