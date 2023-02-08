@@ -11,11 +11,11 @@ TestBuild:
       - "turtlebot_real/target/"
   script:
   # get generator start
-  - git clone https://gitlab-ci-token:${CI_JOB_TOKEN}@git.rwth-aachen.de/monticore/EmbeddedMontiArc/generators/EMAM2Middleware.git
-  - cd EMAM2Middleware
-  - mvn clean package -s settings.xml -DskipTests
-  - cd ..
-  - cp "EMAM2Middleware/target/embedded-montiarc-math-middleware-generator"*"jar-with-dependencies.jar" turtlebot_real/embedded-montiarc-math-middleware-generator-jar-with-dependencies.jar
+  #- git clone https://gitlab-ci-token:${CI_JOB_TOKEN}@git.rwth-aachen.de/monticore/EmbeddedMontiArc/generators/EMAM2Middleware.git
+  #- cd EMAM2Middleware
+  #- mvn clean package -s settings.xml -DskipTests
+  #- cd ..
+  #- cp "EMAM2Middleware/target/embedded-montiarc-math-middleware-generator"*"jar-with-dependencies.jar" turtlebot_real/embedded-montiarc-math-middleware-generator-jar-with-dependencies.jar
   # get generator end
   - cd turtlebot_real/
   - chmod 777 *.sh
