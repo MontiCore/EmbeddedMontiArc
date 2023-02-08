@@ -2,7 +2,7 @@ image: zoroac/turtle_ci:latest
 
 stages:
 - build
-#- train
+- train
 
 TestBuild:
   stage: build
