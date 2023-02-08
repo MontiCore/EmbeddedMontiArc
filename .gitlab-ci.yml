@@ -28,6 +28,7 @@ TestTrain:
   - export TURTLEBOT3_MODEL=burger
   - roslaunch turtlebot3_gazebo turtlebot3_world.launch &
   - sleep 15
+  - cd turtlebot_real/
   - chmod 777 *.sh
   - ./run_env.sh
 
