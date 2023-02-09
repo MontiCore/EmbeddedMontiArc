@@ -23,10 +23,12 @@ TestBuild:
 
 TestTrain:
   stage: train
+  artifacts:
+    paths:
+      - "turtlebot_real/excel_traj_files/"
   script: 
   - source ~/catkin_ws/devel/setup.bash
   - export TURTLEBOT3_MODEL=burger
-  - roslaunch turtlebot3_gazebo turtlebot3_world.launch &
   - sleep 15
   - cd turtlebot_real/
   - chmod 777 *.sh
