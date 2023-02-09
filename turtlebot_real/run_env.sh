@@ -25,5 +25,5 @@ sleep 5
 
 cd "${PROJECT_ROOT}/${BINARY_GAZEBO}"
 echo "Start up gazebo environment..."
-python roslauncher.py --environment gazeboEnv -p exp1 > /dev/null 2>&1 &
+python roslauncher.py --environment gazeboEnv -p exp1
 sleep 6
