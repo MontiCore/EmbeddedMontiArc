@@ -41,6 +41,6 @@ ValidateTrain:
     paths:
       - "turtlebot_real/pdf_traj_plot/"
   script: 
-  - cd turtlebot_real/
+  - cd turtlebot_real/bin/
   - chmod 777 *.sh
   - ./run_check.sh
