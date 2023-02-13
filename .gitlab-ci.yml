@@ -3,6 +3,7 @@ image: zoroac/turtle_ci:latest
 stages:
 - build
 - train
+- validate
 
 TestBuild:
   stage: build
@@ -34,3 +35,12 @@ TestTrain:
   - chmod 777 *.sh
   - ./run_env.sh
 
+ValidateTrain:
+  stage: validate
+  artifacts:
+    paths:
+      - "turtlebot_real/pdf_traj_plot/"
+  script: 
+  - cd turtlebot_real/
+  - chmod 777 *.sh
+  - ./run_check.sh
