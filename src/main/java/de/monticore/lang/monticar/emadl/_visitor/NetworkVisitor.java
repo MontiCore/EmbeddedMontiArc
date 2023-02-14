@@ -21,36 +21,20 @@ public interface NetworkVisitor extends EMADLVisitor {
     }
 
     @Override
-    default void visit(ASTNode node) {
-        //Log.info("MVN","VISIT_MVN");
-    }
-
+    default void visit(ASTNode node) {}
 
     @Override
-    default void endVisit(ASTNode node) {
-        //Log.info("MVN","END_VISIT_MVN");
-
-    }
+    default void endVisit(ASTNode node) {}
 
     @Override
-    default void visit(ASTEMACompilationUnit node){
-        //Log.info("MVN","VISIT_MVN_COMP");
-
-    }
+    default void visit(ASTEMACompilationUnit node){}
 
     @Override
-    default void endVisit(ASTEMACompilationUnit node){
-        //Log.info("MVN","END_VISIT_MVN_COMP");
-    }
+    default void endVisit(ASTEMACompilationUnit node){}
 
     @Override
-    default void visit(ASTEMADLNode node) {
-        //Log.info("MVN","VISIT_MVN");
-    }
+    default void visit(ASTEMADLNode node) {}
 
     @Override
-    default void endVisit(ASTEMADLNode node) {
-        //Log.info("MVN","END_VISIT_MVN");
-
-    }
+    default void endVisit(ASTEMADLNode node) {}
 }
