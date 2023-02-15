@@ -12,45 +12,45 @@ fi
 
 # Mono
 
-cd gluon-cpp-modular-digits-mono-small
+cd digits-mono-small
 $BUILD && ./executeStaticTest.sh d s
 cd ..
 
-cd gluon-cpp-modular-digits-mono-default
+cd digits-mono-default
 $BUILD && ./executeStaticTest.sh d s
 cd ..
 
-cd gluon-cpp-modular-digits-mono-big
+cd digits-mono-big
 $BUILD ./executeStaticTest.sh d s
 cd ..
 
 
 # Simple
 
-cd gluon-cpp-modular-digits-simple-small
+cd digits-simple-small
 $BUILD && ./executeStaticTest.sh d s
 cd ..
 
-cd gluon-cpp-modular-digits-simple-default
+cd digits-simple-default
 $BUILD && ./executeStaticTest.sh d s
 cd ..
 
-cd gluon-cpp-modular-digits-simple-big
+cd digits-simple-big
 $BUILD && ./executeStaticTest.sh d s
 cd ..
 
 
 # Complex
 
-cd gluon-cpp-modular-digits-complex-small
+cd digits-complex-small
 $BUILD && ./executeStaticTest.sh d s
 cd ..
 
-cd gluon-cpp-modular-digits-complex-default
+cd digits-complex-default
 $BUILD && ./executeStaticTest.sh d s
 cd ..
 
-cd gluon-cpp-modular-digits-complex-big
+cd digits-complex-big
 $BUILD && ./executeStaticTest.sh d s
 cd ..
 
@@ -58,15 +58,15 @@ cd ..
 
 #### Letters
 
-cd gluon-cpp-modular-letters-mono
+cd letters-mono
 $BUILD && ./executeStaticTest.sh l s
 cd ..
 
-cd gluon-cpp-modular-letters-simple
+cd letters-simple
 $BUILD && ./executeStaticTest.sh l s
 cd ..
 
-cd gluon-cpp-modular-letters-complex
+cd letters-complex
 $BUILD && ./executeStaticTest.sh l s
 cd ..
 
