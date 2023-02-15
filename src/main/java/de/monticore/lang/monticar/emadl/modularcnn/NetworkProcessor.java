@@ -10,9 +10,9 @@ import de.monticore.ast.ASTNode;
 import de.monticore.lang.embeddedmontiarc.embeddedmontiarc._ast.ASTEMACompilationUnit;
 import de.monticore.lang.monticar.emadl._ast.ASTEMADLNode;
 import de.monticore.lang.monticar.emadl._visitor.EMADLVisitor;
-import de.monticore.lang.monticar.emadl._visitor.ModularNetworkVisitor;
+import de.monticore.lang.monticar.emadl._visitor.NetworkVisitor;
 import de.monticore.lang.monticar.emadl.modularcnn.compositions.ArchitectureNode;
-import de.monticore.lang.monticar.emadl.modularcnn.compositions.CNNProcessor;
+import de.monticore.lang.monticar.emadl.modularcnn.compositions.ComposedNetworkScanner;
 import de.monticore.lang.monticar.emadl.modularcnn.compositions.ArchitectureNodeScanner;
 import de.monticore.symboltable.*;
 import de.se_rwth.commons.logging.Log;
@@ -20,33 +20,33 @@ import de.se_rwth.commons.logging.Log;
 import java.util.ArrayList;
 import java.util.Deque;
 
-public class ComposedCNNScanner extends CommonSymbolTableCreator implements ModularNetworkVisitor {
+public class NetworkProcessor extends CommonSymbolTableCreator implements NetworkVisitor {
 
 
-    private ModularNetworkVisitor realThis = this;
+    private NetworkVisitor realThis = this;
     private ArchitectureNodeScanner architectureNodeScanner = null;
     private ArrayList<ArchitectureNode> archNodes = null;
 
     private String composedNetworksFilePath = "";
 
 
-    public ComposedCNNScanner(ResolvingConfiguration resolvingConfig, MutableScope enclosingScope, ArrayList<ArchitectureNode> archNodes, String composedNetworksFilePath) {
+    public NetworkProcessor(ResolvingConfiguration resolvingConfig, MutableScope enclosingScope, ArrayList<ArchitectureNode> archNodes, String composedNetworksFilePath) {
         super(resolvingConfig, enclosingScope);
         this.initSuperSTC();
-        this.initNetworkStructureScanner(archNodes, composedNetworksFilePath);
+        this.initNetworkProcessor(archNodes, composedNetworksFilePath);
     }
 
-    public ComposedCNNScanner(ResolvingConfiguration resolvingConfig, Deque<MutableScope> scopeStack, ArrayList<ArchitectureNode> archNodes, String composedNetworksFilePath) {
+    public NetworkProcessor(ResolvingConfiguration resolvingConfig, Deque<MutableScope> scopeStack, ArrayList<ArchitectureNode> archNodes, String composedNetworksFilePath) {
         super(resolvingConfig, scopeStack);
         this.initSuperSTC();
-        this.initNetworkStructureScanner(archNodes, composedNetworksFilePath);
+        this.initNetworkProcessor(archNodes, composedNetworksFilePath);
     }
 
     public void initSuperSTC(){
 
     }
 
-    public void initNetworkStructureScanner(ArrayList<ArchitectureNode> archNodes, String composedNetworksFilePath){
+    public void initNetworkProcessor(ArrayList<ArchitectureNode> archNodes, String composedNetworksFilePath){
         architectureNodeScanner = new ArchitectureNodeScanner(archNodes);
         this.archNodes = archNodes;
         this.composedNetworksFilePath = composedNetworksFilePath;
@@ -65,19 +65,19 @@ public class ComposedCNNScanner extends CommonSymbolTableCreator implements Modu
         return this.getFirstCreatedScope();
     }
 
-    public ModularNetworkVisitor getRealThis() {
+    public NetworkVisitor getRealThis() {
         return this.realThis;
     }
 
-    public void setRealThis (ModularNetworkVisitor rt) {
+    public void setRealThis (NetworkVisitor rt) {
         if (this.realThis != rt) {
             this.realThis =  rt;
         }
     }
 
     public void setRealThis (EMADLVisitor v) {
-        if (v instanceof ModularNetworkVisitor){
-            this.setRealThis((ModularNetworkVisitor) v);
+        if (v instanceof NetworkVisitor){
+            this.setRealThis((NetworkVisitor) v);
         }
     }
 
@@ -98,7 +98,7 @@ public class ComposedCNNScanner extends CommonSymbolTableCreator implements Modu
 
     @Override
     public void endVisit(ASTEMACompilationUnit node){
-        CNNProcessor cnnProcessor = new CNNProcessor(archNodes, this.composedNetworksFilePath);
-        cnnProcessor.checkAndProcessComponentOnMatch(node);
+        ComposedNetworkScanner composedNetworkScanner = new ComposedNetworkScanner(archNodes, this.composedNetworksFilePath);
+        composedNetworkScanner.checkAndProcessComponentOnMatch(node);
     }
 }
