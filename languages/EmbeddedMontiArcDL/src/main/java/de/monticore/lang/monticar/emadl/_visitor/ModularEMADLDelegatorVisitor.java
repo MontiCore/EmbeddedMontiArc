@@ -37,13 +37,13 @@ public class ModularEMADLDelegatorVisitor extends EMADLDelegatorVisitor implemen
         }
     }
 
-    private Optional<ModularNetworkVisitor> modularNetworkVisitor = Optional.empty();
+    private Optional<NetworkVisitor> modularNetworkVisitor = Optional.empty();
 
-    public Optional<ModularNetworkVisitor> getModularNetworkVisitor() {
+    public Optional<NetworkVisitor> getModularNetworkVisitor() {
         return modularNetworkVisitor;
     }
 
-    public void setModularNetworkVisitor(ModularNetworkVisitor mvn) {
+    public void setModularNetworkVisitor(NetworkVisitor mvn) {
         this.modularNetworkVisitor = Optional.ofNullable(mvn);
         if (this.modularNetworkVisitor.isPresent()) {
             this.modularNetworkVisitor.get().setRealThis(getRealThis());
