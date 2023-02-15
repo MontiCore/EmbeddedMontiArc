@@ -33,7 +33,7 @@ MNIST-Modular-Digits-Mono-Big:
   image: registry.git.rwth-aachen.de/monticore/embeddedmontiarc/applications/mnistcalculator/mxnet:v0.0.5
   when: always
   script:
-    - cd mnist-modular/gluon-cpp-modular-digits-mono-big
+    - cd mnist-modular/digits-mono-big
     - chmod +x build.sh
     - ./build.sh
     - ./executeStaticTest.sh d s
@@ -46,7 +46,7 @@ MNIST-Modular-Digits-Simple-Big:
   image: registry.git.rwth-aachen.de/monticore/embeddedmontiarc/applications/mnistcalculator/mxnet:v0.0.5
   when: always
   script:
-    - cd mnist-modular/gluon-cpp-modular-digits-simple-big
+    - cd mnist-modular/digits-simple-big
     - chmod +x build.sh
     - ./build.sh
     - ./executeStaticTest.sh d s
@@ -59,7 +59,7 @@ MNIST-Modular-Digits-Complex-Big:
   image: registry.git.rwth-aachen.de/monticore/embeddedmontiarc/applications/mnistcalculator/mxnet:v0.0.5
   when: always
   script:
-    - cd mnist-modular/gluon-cpp-modular-digits-complex-big
+    - cd mnist-modular/digits-complex-big
     - chmod +x build.sh
     - ./build.sh
     - ./executeStaticTest.sh d s
@@ -71,7 +71,7 @@ MNIST-Modular-Digits-Mono-Default:
   image: registry.git.rwth-aachen.de/monticore/embeddedmontiarc/applications/mnistcalculator/mxnet:v0.0.5
   when: always
   script:
-    - cd mnist-modular/gluon-cpp-modular-digits-mono-default
+    - cd mnist-modular/digits-mono-default
     - chmod +x build.sh
     - ./build.sh
     - ./executeStaticTest.sh d s
@@ -84,7 +84,7 @@ MNIST-Modular-Digits-Simple-Default:
   image: registry.git.rwth-aachen.de/monticore/embeddedmontiarc/applications/mnistcalculator/mxnet:v0.0.5
   when: always
   script:
-    - cd mnist-modular/gluon-cpp-modular-digits-simple-default
+    - cd mnist-modular/digits-simple-default
     - chmod +x build.sh
     - ./build.sh
     - ./executeStaticTest.sh d s
@@ -97,7 +97,7 @@ MNIST-Modular-Digits-Complex-Default:
   image: registry.git.rwth-aachen.de/monticore/embeddedmontiarc/applications/mnistcalculator/mxnet:v0.0.5
   when: always
   script:
-    - cd mnist-modular/gluon-cpp-modular-digits-complex-default
+    - cd mnist-modular/digits-complex-default
     - chmod +x build.sh
     - ./build.sh
     - ./executeStaticTest.sh d s
@@ -109,7 +109,7 @@ MNIST-Modular-Digits-Mono-Small:
   image: registry.git.rwth-aachen.de/monticore/embeddedmontiarc/applications/mnistcalculator/mxnet:v0.0.5
   when: always
   script:
-    - cd mnist-modular/gluon-cpp-modular-digits-mono-small
+    - cd mnist-modular/digits-mono-small
     - chmod +x build.sh
     - ./build.sh
     - ./executeStaticTest.sh d s
@@ -122,7 +122,7 @@ MNIST-Modular-Digits-Simple-Small:
   image: registry.git.rwth-aachen.de/monticore/embeddedmontiarc/applications/mnistcalculator/mxnet:v0.0.5
   when: always
   script:
-    - cd mnist-modular/gluon-cpp-modular-digits-simple-small
+    - cd mnist-modular/digits-simple-small
     - chmod +x build.sh
     - ./build.sh
     - ./executeStaticTest.sh d s
@@ -135,7 +135,7 @@ MNIST-Modular-Digits-Complex-Small:
   image: registry.git.rwth-aachen.de/monticore/embeddedmontiarc/applications/mnistcalculator/mxnet:v0.0.5
   when: always
   script:
-    - cd mnist-modular/gluon-cpp-modular-digits-complex-small
+    - cd mnist-modular/digits-complex-small
     - chmod +x build.sh
     - ./build.sh
     - ./executeStaticTest.sh d s
@@ -147,7 +147,7 @@ MNIST-Modular-Letters-Mono:
   image: registry.git.rwth-aachen.de/monticore/embeddedmontiarc/applications/mnistcalculator/mxnet:v0.0.5
   when: always
   script:
-    - cd mnist-modular/gluon-cpp-modular-letters-mono
+    - cd mnist-modular/letters-mono
     - chmod +x build.sh
     - ./build.sh
     - ./executeStaticTest.sh l s
@@ -159,7 +159,7 @@ MNIST-Modular-Letters-Simple:
   image: registry.git.rwth-aachen.de/monticore/embeddedmontiarc/applications/mnistcalculator/mxnet:v0.0.5
   when: always
   script:
-    - cd mnist-modular/gluon-cpp-modular-letters-simple
+    - cd mnist-modular/letters-simple
     - chmod +x build.sh
     - ./build.sh
     - ./executeStaticTest.sh l s
@@ -171,7 +171,7 @@ MNIST-Modular-Letters-Complex:
   image: registry.git.rwth-aachen.de/monticore/embeddedmontiarc/applications/mnistcalculator/mxnet:v0.0.5
   when: always
   script:
-    - cd mnist-modular/gluon-cpp-modular-letters-complex
+    - cd mnist-modular/letters-complex
     - chmod +x build.sh
     - ./build.sh
     - ./executeStaticTest.sh l s
@@ -185,7 +185,7 @@ TestMNIST-Modular-Simple:
   image: registry.git.rwth-aachen.de/monticore/embeddedmontiarc/applications/mnistcalculator/mxnet:v0.0.5
   when: always
   script:
-    - cd mnist-modular/gluon-cpp-modular-digits-simple-small
+    - cd mnist-modular/digits-simple-small
     - chmod +x build.sh
     - ./build.sh
     - RES=$(./build/src/cpp/DigitCalculator resources/images/1.png resources/images/2.png resources/images/3.png resources/images/4.png resources/images/5.png resources/images/6.png)
@@ -203,7 +203,7 @@ TestMNIST-Modular-Letters:
   image: registry.git.rwth-aachen.de/monticore/embeddedmontiarc/applications/mnistcalculator/mxnet:v0.0.5
   when: always
   script:
-    - cd mnist-modular/gluon-cpp-modular-letters-simple
+    - cd mnist-modular/letters-simple
     - chmod +x build.sh
     - ./build.sh
     - RES=$(./build/src/cpp/LetterPredictor resources/images/a.png)
@@ -227,7 +227,7 @@ TestMNIST-Modular-Complex:
   image: registry.git.rwth-aachen.de/monticore/embeddedmontiarc/applications/mnistcalculator/mxnet:v0.0.5
   when: always
   script:
-    - cd mnist-modular/gluon-cpp-modular-digits-complex-small
+    - cd mnist-modular/digits-complex-small
     - chmod +x build.sh
     - ./build.sh
     - RES=$(./build/src/cpp/DigitCalculator resources/images/1.png resources/images/2.png resources/images/3.png resources/images/4.png resources/images/5.png resources/images/6.png)
