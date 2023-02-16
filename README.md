@@ -44,3 +44,5 @@ For detailed instructions on how to run the MXNet/Gluon, Tensorflow and Caffe2 e
    docker stop mxnetcalculator
    docker rm mxnetcalculator
    ```
+## AutoML Pipeline
+More information about the AutoML pipeline can be found in [AutoML.md](AutoML.md)
