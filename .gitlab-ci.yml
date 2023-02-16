@@ -64,10 +64,18 @@ deploy-vae-mnist-dataset:
     - master
 
 
-install-vae-mnist-dataset:
+#install-vae-mnist-dataset:
+#  image: maven:3.6-jdk-8
+#  script:
+#    - cd datasets/vae/vae-mnist
+#    - mvn emadl:install-dataset -s ci_settings.xml
+#  except:
+#    - master
+
+deploy-mnist-letter-dataset:
   image: maven:3.6-jdk-8
   script:
-    - cd datasets/vae/vae-mnist
-    - mvn emadl:install-dataset -s ci_settings.xml
-  except:
+    - cd datasets/mnist_letters
+    - mvn emadl:deploy-dataset -s ../ci_settings.xml
+  only:
     - master
