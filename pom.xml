@@ -252,7 +252,7 @@
                             <includeArtifactIds>cnnarch-generator</includeArtifactIds>
                             <excludeTransitive>true</excludeTransitive>
                             <outputDirectory>${build.outputDirectory}</outputDirectory>
-                            <excludes>de/**,META-INF/**</excludes>
+                            <excludes>de/**,META-INF/**,templates/**</excludes>
                             <overWriteIfNewer>true</overWriteIfNewer>
                             <overWriteReleases>true</overWriteReleases>
                             <overWriteSnapshots>true</overWriteSnapshots>
