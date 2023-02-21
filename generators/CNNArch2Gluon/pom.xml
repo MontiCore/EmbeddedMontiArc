@@ -7,7 +7,7 @@
     <!-- == PROJECT COORDINATES ============================================= -->
     <groupId>de.monticore.lang.monticar</groupId>
     <artifactId>cnnarch-gluon-generator</artifactId>
-    <version>0.5.6-SNAPSHOT</version>
+    <version>0.5.7-SNAPSHOT</version>
 
     <!-- == PROJECT DEPENDENCIES ============================================= -->
     <properties>
@@ -252,7 +252,7 @@
                             <includeArtifactIds>cnnarch-generator</includeArtifactIds>
                             <excludeTransitive>true</excludeTransitive>
                             <outputDirectory>${build.outputDirectory}</outputDirectory>
-                            <excludes>de/**,META-INF/**</excludes>
+                            <excludes>de/**,META-INF/**,templates/**</excludes>
                             <overWriteIfNewer>true</overWriteIfNewer>
                             <overWriteReleases>true</overWriteReleases>
                             <overWriteSnapshots>true</overWriteSnapshots>
