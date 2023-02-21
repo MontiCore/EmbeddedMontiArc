@@ -6,8 +6,8 @@ ${tc.signature("importStatementsString", "pipelineConfigurationEntryList", "exec
 <#assign schemaAPI = schemaAPINameString>
 <#assign trainConf = trainConfNameString>
 import sys
-sys.path.append("../../src/main/resources/experiments/steps")
-sys.path.append("../../src/main/resources/experiments/schema_apis")
+sys.path.append("./steps")
+sys.path.append("./schema_apis")
 sys.path.append("../../src/test/resources/experiments/steps")
 sys.path.append("../../src/test/resources/experiments/schema_apis")
 sys.path.append("./configurations")
