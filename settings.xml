@@ -158,16 +158,6 @@
             
             <pluginRepositories>
                 <pluginRepository>
-                    <id>central</id>
-                    <url>http://central</url>
-                    <releases>
-                        <enabled />
-                    </releases>
-                    <snapshots>
-                        <enabled />
-                    </snapshots>
-                </pluginRepository>
-                <pluginRepository>
                     <id>nexus</id>
                     <url>https://nexus.se.rwth-aachen.de/content/groups/public</url>
                     <releases>
