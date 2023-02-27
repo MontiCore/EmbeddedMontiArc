@@ -78,7 +78,7 @@
             <plugin>
                 <groupId>de.monticore.lang.monticar.utilities</groupId>
                 <artifactId>maven-streamtest</artifactId>
-                <version>0.0.27-SNAPSHOT</version>
+                <version>0.0.33-SNAPSHOT</version>
                 <configuration>
                     <pathMain>./src/main/ema/emadl/models</pathMain>
                     <pathTest>./src/main/ema/emadl/models</pathTest>
