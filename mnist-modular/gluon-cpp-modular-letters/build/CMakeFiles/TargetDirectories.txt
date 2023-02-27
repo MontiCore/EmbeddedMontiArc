@@ -1,0 +1,8 @@
+/root/mnist/build/CMakeFiles/edit_cache.dir
+/root/mnist/build/CMakeFiles/rebuild_cache.dir
+/root/mnist/build/src/cpp/CMakeFiles/LetterPredictor.dir
+/root/mnist/build/src/cpp/CMakeFiles/edit_cache.dir
+/root/mnist/build/src/cpp/CMakeFiles/rebuild_cache.dir
+/root/mnist/build/target/CMakeFiles/letterpred_connector.dir
+/root/mnist/build/target/CMakeFiles/edit_cache.dir
+/root/mnist/build/target/CMakeFiles/rebuild_cache.dir
