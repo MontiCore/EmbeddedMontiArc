@@ -1,7 +1,7 @@
 stages:
   - test
 
-TestLetterPredictor
+TestLetterPredictor:
   stage: test
   image: registry.git.rwth-aachen.de/monticore/embeddedmontiarc/generators/emadl2cpp/mxnet/190:v0.0.2
   when: always
