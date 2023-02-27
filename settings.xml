@@ -25,10 +25,28 @@
             <username>travisbuilduser</username>
             <password>${env.travisbuilduserpassword}</password>
         </server>
+
+        <server>
+            <id>gitlab-maven-mnist</id>
+            <configuration>
+                <httpHeaders>
+                    <property>
+                        <name>Job-Token</name>
+                        <value>${env.CI_JOB_TOKEN}</value>
+                    </property>
+                </httpHeaders>
+            </configuration>
+        </server>
     </servers>
 
-    <!--<mirrors>
+    <mirrors>
         <mirror>
+            <id>gitlab-maven-mnist</id>
+            <mirrorOf>gitlab-maven-mnist</mirrorOf>
+            <url>https://git.rwth-aachen.de/api/v4/projects/57999/packages/maven</url>
+        </mirror>
+
+        <!--mirror>
             <id>se-nexus</id>
             <mirrorOf>external:*</mirrorOf>
             <url>https://nexus.se.rwth-aachen.de/content/groups/public</url>
@@ -42,9 +60,9 @@
             <id>rosjava_mvn_repo</id>
             <mirrorOf>rosjava_mvn</mirrorOf>
             <url>https://github.com/rosjava/rosjava_mvn_repo/raw/master/</url>
-        </mirror>
+        </mirror-->
         
-    </mirrors>-->
+    </mirrors>
 
     <profiles>
         <profile>
@@ -149,6 +167,13 @@
                   <id>jena</id>
                   <name>Uni Jena</name>
                   <url>https://bio.informatik.uni-jena.de/repository/libs-release-oss</url>
+                </repository>
+
+                <repository>
+                    <id>gitlab-maven-mnist</id>
+                    <url>https://git.rwth-aachen.de/api/v4/projects/57999/packages/maven</url>
+                    <releases><enabled /></releases>
+                    <snapshots><enabled /></snapshots>
                 </repository>
             </repositories>
             
