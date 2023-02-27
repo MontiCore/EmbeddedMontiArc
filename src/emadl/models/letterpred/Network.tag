@@ -1,8 +1,8 @@
 /* (c) https://github.com/MontiCore/monticore */
 package letterpred;
-conforms to artifacttag.DatasetArtifactTagSchema;
+conforms to dltag.DataPathTagSchema;
 
 tags NeuronalNetwork {
- tag Network with DataPath = {path = src/test/resources/models/ModularCNN/letterPredictor/resources/training_data_letters, type = HDF5};
+ tag Network with DataPath = {path = src/resources/training_data_letters, type = HDF5};
 }
 
