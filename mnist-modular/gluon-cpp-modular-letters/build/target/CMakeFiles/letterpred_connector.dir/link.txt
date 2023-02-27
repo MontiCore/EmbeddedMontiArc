@@ -1,2 +1,0 @@
-/usr/bin/ar qc libletterpred_connector.a CMakeFiles/letterpred_connector.dir/letterpred_connector.cpp.o
-/usr/bin/ranlib libletterpred_connector.a
