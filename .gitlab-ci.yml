@@ -73,6 +73,22 @@ TestEMADLMavenPlugin:
   except:
     - modular_testing
 
+TestModularModels:
+  stage: test
+  image: registry.git.rwth-aachen.de/monticore/embeddedmontiarc/generators/emadl2cpp/mxnet/190:v0.0.2
+  when: always
+  script:
+    - cd mnist-modular/Streamtest
+    - python3 -m pip install -U pip
+    - python3 -m pip install scikit-image
+    - python3 -m pip install opencv-python
+    - mvn dependency:resolve emadl:train -s settings.xml -U
+    - mkdir output
+    - python3 calculator.py
+  artifacts:
+    paths:
+      - mnist-modular/Streamtest/output/*
+
 TestMnistWithAdaNet:
   stage: test
   image: registry.git.rwth-aachen.de/monticore/embeddedmontiarc/generators/emadl2cpp/dockerimages/mxnet170:v0.0.1
