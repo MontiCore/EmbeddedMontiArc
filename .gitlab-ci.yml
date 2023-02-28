@@ -6,6 +6,7 @@ TestCoraCustomNetwork:
   stage: linux
   image: registry.git.rwth-aachen.de/monticore/embeddedmontiarc/generators/emadl2cpp/dockerimages/mxnet170:v0.0.1
   script:
+  - ln /usr/bin/python3 /usr/bin/python -f
   - python -m pip install -U pip
   - python -m pip install scikit-image
   - python -m pip install opencv-python
