@@ -6,6 +6,9 @@ TestCoraCustomNetwork:
   stage: linux
   image: registry.git.rwth-aachen.de/monticore/embeddedmontiarc/generators/emadl2cpp/dockerimages/mxnet170:v0.0.1
   script:
+  - python -m pip install -U pip
+  - python -m pip install scikit-image
+  - python -m pip install opencv-python
   - mv /mxnet/build/libmxnet.so /mxnet/build/libmxnet.a /usr/lib/
   - cd cora-custom-gnn
   - mvn dependency:resolve emadl:train -s settings.xml -U
