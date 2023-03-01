@@ -90,6 +90,29 @@ TestModularModels:
     paths:
       - mnist-modular/Streamtest/output/*
 
+TestDecomposition:
+  stage: test
+  image: registry.git.rwth-aachen.de/monticore/embeddedmontiarc/generators/emadl2cpp/mxnet/190:v0.0.2
+  when: always
+  script:
+    - export TZ=Europe/Berlin && apt update && DEBIAN_FRONTEND=noninteractive apt install -y tzdata
+    - apt update && apt install -y libomp-dev libopencv-dev python3-opencv libopenblas-dev liblapack-dev
+    - ln -fs /usr/share/zoneinfo/Europe/Berlin /etc/localtime
+    - dpkg-reconfigure --frontend noninteractive tzdata
+    - python3 -m pip install -U pip
+    - python3 -m pip install scikit-image
+    - python3 -m pip install opencv-python
+    - ln /usr/bin/python3 /usr/bin/python -f
+    - cd mnist-modular/Decomposition
+    - ./runDecomposition.sh
+    - STATUS=$?
+    - 'if [[ $STATUS -eq 1 ]]; then echo "Error during decomposition." $RES; exit 1; fi;'
+
+  artifacts:
+    paths:
+      - mnist-modular/Streamtest/output/*
+
+
 TestMnistWithAdaNet:
   stage: test
   image: registry.git.rwth-aachen.de/monticore/embeddedmontiarc/generators/emadl2cpp/dockerimages/mxnet170:v0.0.1
