@@ -103,6 +103,7 @@ TestDecomposition:
     - python3 -m pip install scikit-image
     - python3 -m pip install opencv-python
     - ln /usr/bin/python3 /usr/bin/python -f
+    - mvn dependency:resolve -s settings.xml -U
     - cd mnist-modular/Decomposition
     - ./runDecomposition.sh
     - STATUS=$?
