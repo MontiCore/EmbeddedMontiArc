@@ -96,7 +96,7 @@ TestDecomposition:
   when: always
   script:
     - export TZ=Europe/Berlin && apt update && DEBIAN_FRONTEND=noninteractive apt install -y tzdata
-    - apt update && apt install -y libomp-dev libopencv-dev python3-opencv libopenblas-dev liblapack-dev
+    - apt update && apt install -y libomp-dev libopencv-dev python3-opencv
     - ln -fs /usr/share/zoneinfo/Europe/Berlin /etc/localtime
     - dpkg-reconfigure --frontend noninteractive tzdata
     - python3 -m pip install -U pip
