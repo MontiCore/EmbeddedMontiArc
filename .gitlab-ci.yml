@@ -103,8 +103,9 @@ TestDecomposition:
     - python3 -m pip install scikit-image
     - python3 -m pip install opencv-python
     - ln /usr/bin/python3 /usr/bin/python -f
-    - mvn dependency:resolve -s mnist-modular/Streamtest/settings.xml -U
-    - cd mnist-modular/Decomposition
+    - cd mnist-modular/Streamtest
+    - mvn dependency:resolve -s settings.xml -U
+    - cd ../Decomposition
     - ./runDecomposition.sh
     - STATUS=$?
     - 'if [[ $STATUS -eq 1 ]]; then echo "Error during decomposition." $RES; exit 1; fi;'
