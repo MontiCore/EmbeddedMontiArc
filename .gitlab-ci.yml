@@ -103,7 +103,7 @@ TestDecomposition:
     - python3 -m pip install scikit-image
     - python3 -m pip install opencv-python
     - ln /usr/bin/python3 /usr/bin/python -f
-    - mvn clean install -s settings.xml -U
+    - mvn dependency:resolve -s mnist-modular/Streamtest/settings.xml -U
     - cd mnist-modular/Decomposition
     - ./runDecomposition.sh
     - STATUS=$?
