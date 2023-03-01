@@ -1,1 +1,0 @@
-{"name":"Network","instanceSymbolName":"network","atomic":false,"dataFlow":["Network|network","Net1|net1","Net2|net2","Network|network"],"subNetworks":[{"name":"Net1","instanceSymbolName":"net1","atomic":true,"dataFlow":[],"subNetworks":[]},{"name":"Net2","instanceSymbolName":"net2","atomic":true,"dataFlow":[],"subNetworks":[]}]}
