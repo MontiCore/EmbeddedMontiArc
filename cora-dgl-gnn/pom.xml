@@ -28,7 +28,7 @@
             <plugin>
                 <groupId>de.monticore.lang.monticar.utilities</groupId>
                 <artifactId>emadl-maven-plugin</artifactId>
-                <version>0.0.10-SNAPSHOT</version>
+                <version>0.0.11-SNAPSHOT</version>
                 <configuration>
                     <training>
                         <backend>GLUON</backend>
