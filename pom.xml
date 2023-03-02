@@ -15,6 +15,15 @@
         <project.reporting.outputEncoding>UTF-8</project.reporting.outputEncoding>
     </properties>
 
+    <dependencies>
+        <dependency>
+            <groupId>de.monticore.lang.monticar.datasets</groupId>
+            <artifactId>mnist-letters</artifactId>
+            <version>1</version>
+            <classifier>dataset</classifier>
+        </dependency>
+    </dependencies>
+
     <build>
         <plugins>
             <plugin>
