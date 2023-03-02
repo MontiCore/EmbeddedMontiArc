@@ -73,7 +73,7 @@ install-vae-mnist-dataset:
     - master
 
 #Letters
-deploy-mnist-letter-dataset:
+install-mnist-letter-dataset:
   image: maven:3.6-jdk-8
   script:
     - cd datasets/mnist_letters
