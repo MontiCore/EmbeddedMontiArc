@@ -27,7 +27,7 @@
                         <pathToPython>/usr/bin/python3</pathToPython>
                         <modelToTrain>letterpred.Connector</modelToTrain>
                         <pathToProject>src/emadl/models</pathToProject>
-                        <!--pathToTest>src/emadl/models</pathToTest-->
+                        <pathToTest>src/emadl/models</pathToTest>
                     </training>
                 </configuration>
            </plugin>

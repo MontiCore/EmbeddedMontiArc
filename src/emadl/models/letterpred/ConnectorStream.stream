@@ -3,5 +3,5 @@ package letterpred;
 stream ConnectorStream for Connector {
     image1: file::"/src/resources/images/d.png" tick file::"/src/resources/images/d.png";
 
-    res: 4 tick 222; //
+    res: 4 tick 4; //
 }
