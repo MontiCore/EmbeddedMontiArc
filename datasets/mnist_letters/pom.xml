@@ -21,22 +21,12 @@
                 <artifactId>emadl-maven-plugin</artifactId>
                 <version>0.0.11-SNAPSHOT</version>
                 <configuration>
-                    <datasetsToStore>
-                        <datasets>
-                            <dataset>
-                                <id>main</id>
-                                <path>./train.h5</path>
-                            </dataset>
-                            <dataset>
-                                <id>testing</id>
-                                <path>./test.h5</path>
-                                <testing>true</testing>
-                            </dataset>
-                        </datasets>
+                    <datasetToStore>
+                        <path>./</path>
                         <artifactId>mnist-letters</artifactId>
                         <groupId>de.monticore.lang.monticar.datasets</groupId>
                         <version>1</version>
-                    </datasetsToStore>
+                    </datasetToStore>
                 </configuration>
            </plugin>
         </plugins>
