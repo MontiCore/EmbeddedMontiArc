@@ -13,13 +13,7 @@ RUN git clone --recursive https://github.com/apache/incubator-mxnet.git /mxnet &
     cd /mxnet && git checkout tags/1.9.1 && git submodule update --recursive --init && \
     mkdir build && cd build && \
     cmake -DUSE_CPP_PACKAGE=1 -DUSE_CUDA=0 -DUSE_OPENCV=1 -DBUILD_CPP_EXAMPLES=0 -DUSE_OPERATOR_TUNING=1 -DUSE_GPERFTOOLS=0 -DUSE_JEMALLOC=0 -DUSE_SSE=1 -DUSE_F16C=0 -GNinja .. && \
-    ninja && cd .. && \
-    cp -r include/mxnet /usr/include/mxnet && \
-    cp -r cpp-package/include/mxnet-cpp /usr/include && \
-    cp -r 3rdparty/tvm/nnvm/include/nnvm /usr/include && \
-    cp -r 3rdparty/dmlc-core/include/dmlc /usr/include && \
-    cp -r build/libmxnet.so /usr/lib && \
-    cd .. && \
+    ninja && ninja install && \
     rm -rf /mxnet
 
 RUN pip install pyprind h5py 'matplotlib<3.7.0' 'numpy>=1.19.0,<1.20.0' mxnet==1.9.1 gym[all]
