@@ -90,9 +90,9 @@ class ${tc.fileNameWithoutEnding}: # pylint: disable=invalid-name
                 if input_name == 'graph':
                     if multi_graph:
                         # switch to load_graphs(test_dataset.graphFile)
-                        train_graph, _ = load_graphs(self._data_dir + "train" + "_graph")
+                        train_graph, _ = load_graphs(os.path.join(self._data_dir, "train_graph"))
                     else:
-                        train_graph, _ = load_graphs(self._data_dir + "graph")
+                        train_graph, _ = load_graphs(os.path.join(self._data_dir, "graph"))
             </#if>
 
         train_label = {}
@@ -126,7 +126,7 @@ class ${tc.fileNameWithoutEnding}: # pylint: disable=invalid-name
                 else:
                     if input_name == 'graph':
                         if multi_graph:
-                            test_graph, _ = load_graphs(self._data_dir + "test" + "_graph")
+                            test_graph, _ = load_graphs(os.path.join(self._data_dir, "test_graph"))
                 </#if>
 
             test_label = {}
@@ -155,7 +155,7 @@ class ${tc.fileNameWithoutEnding}: # pylint: disable=invalid-name
                 else:
                     if input_name == 'graph':
                         if multi_graph:
-                            val_graph, _ = load_graphs(self._data_dir + "val" + "_graph")
+                            val_graph, _ = load_graphs(self._data_dir + "test" + "_graph")
 
             val_label = {}
             index = 0
