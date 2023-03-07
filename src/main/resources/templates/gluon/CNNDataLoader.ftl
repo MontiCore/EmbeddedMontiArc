@@ -15,7 +15,7 @@ import numpy as np
 import mxnet as mx
 from mxnet import gluon, nd
 <#if tc.architecture.useDgl>
-    from dgl.data.utils import load_graphs
+from dgl.data.utils import load_graphs
 </#if>
 
 from CNNDatasets_${tc.fullArchitectureName} import Dataset, TrainingDataset, RetrainingConf
@@ -88,7 +88,11 @@ class ${tc.fileNameWithoutEnding}: # pylint: disable=invalid-name
             <#if tc.architecture.useDgl>
             else:
                 if input_name == 'graph':
-                    train_graph, _ = load_graphs(dataset.graphFile)
+                    if multi_graph:
+                        # switch to load_graphs(test_dataset.graphFile)
+                        train_graph, _ = load_graphs(os.path.join(self._data_dir, "train_graph"))
+                    else:
+                        train_graph, _ = load_graphs(os.path.join(self._data_dir, "graph"))
             </#if>
 
         train_label = {}
@@ -122,7 +126,7 @@ class ${tc.fileNameWithoutEnding}: # pylint: disable=invalid-name
                 else:
                     if input_name == 'graph':
                         if multi_graph:
-                            test_graph, _ = load_graphs(test_dataset.graphFile)
+                            test_graph, _ = load_graphs(os.path.join(self._data_dir, "test_graph"))
                 </#if>
 
             test_label = {}
