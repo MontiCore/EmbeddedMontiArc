@@ -12,6 +12,7 @@ import de.monticore.lang.monticar.semantics.Constants;
 import de.monticore.lang.monticar.semantics.ExecutionSemantics;
 import de.monticore.lang.monticar.semantics.construct.SymtabCreator;
 import de.monticore.lang.tagging._symboltable.TaggingResolver;
+import de.monticore.mlpipelines.automl.helper.ConfigurationValidationHandler;
 import de.monticore.mlpipelines.backend.generation.MontiAnnaGenerator;
 import de.monticore.mlpipelines.configuration.MontiAnnaContext;
 import de.monticore.mlpipelines.pipelines.Pipeline;
@@ -154,10 +155,14 @@ public abstract class AbstractWorkflow {
             ASTConfLangCompilationUnit nasConf = this.getNASConfiguration(
                     pathToModelsDirectory, rootModelName, instanceName, componentTypeName
             );
+            // Validate NAS configuration:
+            ConfigurationValidationHandler.validateConfiguration(nasConf);
             ASTConfLangCompilationUnit instanceTrainingConfiguration = this.getAutoMLConfiguration(
                     pathToModelsDirectory, rootModelName, instanceName, componentTypeName, instanceNetworkName + ".conf"
             );
             instanceTrainingConfiguration.getConfiguration().addSuperConfiguration(nasConf.getConfiguration());
+            // Validate initial training configuration:
+            ConfigurationValidationHandler.validateConfiguration(instanceTrainingConfiguration);
             configMap.put("trainingConfiguration", instanceTrainingConfiguration);
 
             // Set configurations for Hyperparameters Optimization algorithm:
@@ -172,6 +177,8 @@ public abstract class AbstractWorkflow {
             ASTConfLangCompilationUnit evaluationCriteria = this.getAutoMLConfiguration(
                     pathToModelsDirectory, rootModelName, instanceName, componentTypeName, "EvaluationCriteria.conf"
             );
+            // TODO: Validate evaluation criteria configuration:
+            // ConfigurationValidationHandler.validateConfiguration(evaluationCriteria);
             configMap.put("EvaluationCriteria", evaluationCriteria);
 
             // Set pipeline configuration
