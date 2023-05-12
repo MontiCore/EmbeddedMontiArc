@@ -15,7 +15,6 @@ import de.monticore.lang.tagging._symboltable.TaggingResolver;
 import de.monticore.mlpipelines.backend.generation.MontiAnnaGenerator;
 import de.monticore.mlpipelines.configuration.MontiAnnaContext;
 import de.monticore.mlpipelines.pipelines.Pipeline;
-import de.monticore.mlpipelines.pipelines.PythonPipeline;
 import de.monticore.parsing.ConfigurationLanguageParser;
 import de.monticore.parsing.EMADLParser;
 import de.monticore.symbolmanagement.SymbolTableCreator;
@@ -62,6 +61,8 @@ public abstract class AbstractWorkflow {
 
     public void execute() throws IOException {
         addPythonScriptsToTarget();
+        // Add schemas for configuration validation into target
+        this.copySchemasToTarget();
         // frontend
         final String rootModelName = Names.getSimpleName(montiAnnaContext.getRootModelName());
         final String pathToModelsDirectory = Paths.get(montiAnnaContext.getParentModelPath().toString(),
@@ -306,7 +307,7 @@ public abstract class AbstractWorkflow {
     }
 
     private void addPythonScriptsToTarget() {
-        Log.info("Adding Python scripts from steps and schema_apis folder to target.", PythonPipeline.class.getName());
+        Log.info("Adding Python scripts from steps and schema_apis folder to target.", AbstractWorkflow.class.getName());
 
         List<String> stepDirPyFiles = Arrays.asList("HDF5DataAccess.py", "MyEvaluations.py", "MySupervisedTrainer.py", "Utils.py");
         String stepsResourceDir = "experiments/steps/";
@@ -329,5 +330,28 @@ public abstract class AbstractWorkflow {
                 throw new RuntimeException(e);
             }
         }
+    }
+
+    protected void copySchemasToTarget() {
+        Log.info("Adding schema files for configuration validation to target.", AbstractWorkflow.class.getName());
+        List<String> schemaFiles = Arrays.asList(
+                "Cleaning.scm",
+                "DataImbalance.scm",
+                "DataSplitting.scm",
+                "EfficientNet.scm",
+                "Environment.scm",
+                "EvalMetric.scm",
+                "EvaluationCriteria.scm",
+                "General.scm",
+                "HyperparameterOpt.scm",
+                "Loss.scm",
+                "NeuralArchitectureSearch.scm",
+                "NoiseDistribution.scm",
+                "Optimizer.scm",
+                "ReplayMemory.scm",
+                "Supervised.scm");
+        String schemasResourceDir = "schemas/";
+        String schemasTargetDir = "target/generated-sources/schemas/";
+        this.addAllFiles(schemasResourceDir, schemasTargetDir, schemaFiles);
     }
 }
