@@ -15,6 +15,7 @@ import de.monticore.lang.tagging._symboltable.TaggingResolver;
 import de.monticore.mlpipelines.backend.generation.MontiAnnaGenerator;
 import de.monticore.mlpipelines.configuration.MontiAnnaContext;
 import de.monticore.mlpipelines.pipelines.Pipeline;
+import de.monticore.mlpipelines.pipelines.PythonPipeline;
 import de.monticore.parsing.ConfigurationLanguageParser;
 import de.monticore.parsing.EMADLParser;
 import de.monticore.symbolmanagement.SymbolTableCreator;
@@ -22,9 +23,13 @@ import de.monticore.symboltable.GlobalScope;
 import de.monticore.symboltable.Scope;
 import de.se_rwth.commons.Names;
 import de.se_rwth.commons.StringTransformations;
+import de.se_rwth.commons.logging.Log;
+import org.apache.commons.io.FileUtils;
 
+import java.io.File;
 import java.io.FileNotFoundException;
 import java.io.IOException;
+import java.net.URL;
 import java.nio.file.Files;
 import java.nio.file.Path;
 import java.nio.file.Paths;
@@ -56,6 +61,7 @@ public abstract class AbstractWorkflow {
     }
 
     public void execute() throws IOException {
+        addPythonScriptsToTarget();
         // frontend
         final String rootModelName = Names.getSimpleName(montiAnnaContext.getRootModelName());
         final String pathToModelsDirectory = Paths.get(montiAnnaContext.getParentModelPath().toString(),
@@ -296,6 +302,32 @@ public abstract class AbstractWorkflow {
             return this.getAutoMLConfiguration(
                     pathToModelsDirectory, rootModelName, instanceName, componentTypeName, "EfficientNet.conf"
             );
+        }
+    }
+
+    private void addPythonScriptsToTarget() {
+        Log.info("Adding Python scripts from steps and schema_apis folder to target.", PythonPipeline.class.getName());
+
+        List<String> stepDirPyFiles = Arrays.asList("HDF5DataAccess.py", "MyEvaluations.py", "MySupervisedTrainer.py", "Utils.py");
+        String stepsResourceDir = "experiments/steps/";
+        String stepsTargetDir = "target/generated-sources/steps/";
+
+        List<String> schemaDirPyFiles = Arrays.asList("Supervised_Schema_API.py");
+        String schemaResourceDir = "experiments/schema_apis/";
+        String schemaTargetDir = "target/generated-sources/schema_apis/";
+
+        this.addAllFiles(stepsResourceDir, stepsTargetDir, stepDirPyFiles);
+        this.addAllFiles(schemaResourceDir, schemaTargetDir, schemaDirPyFiles);
+    }
+
+    private void addAllFiles(String resourceDir, String targetDir, List<String> fileNameList) {
+        for (String fileName : fileNameList) {
+            URL fileURL = getClass().getClassLoader().getResource(resourceDir + fileName);
+            try {
+                FileUtils.copyURLToFile(fileURL, new File(targetDir + fileName));
+            } catch (IOException e) {
+                throw new RuntimeException(e);
+            }
         }
     }
 }
