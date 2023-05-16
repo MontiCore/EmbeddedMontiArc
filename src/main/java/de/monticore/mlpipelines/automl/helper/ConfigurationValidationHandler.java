@@ -15,15 +15,9 @@ import schemalang.validation.exception.SchemaLangException;
 
 import java.nio.file.Paths;
 import java.util.Collection;
-import java.util.HashMap;
-import java.util.Map;
 
 public class ConfigurationValidationHandler {
 
-    private static final Map<String, String> validationScmMap = new HashMap<String, String>() {{
-        put("AdaNet", "NeuralArchitectureSearch");
-        put("mnistClassifier_net", "Supervised");
-    }};
     private static ConfigurationScope createConfLangSymbolTable(ASTConfiguration confLangConfiguration) {
         final ModelPath modelPath = new ModelPath(Paths.get(""));
         final ConfLangLanguage confLangLanguage = new ConfLangLanguage();
@@ -36,8 +30,10 @@ public class ConfigurationValidationHandler {
 
     private static String getScmName(ASTConfiguration configuration) {
         String scmName = configuration.getName();
-        if (validationScmMap.containsKey(scmName)) {
-            scmName = validationScmMap.get(scmName);
+        if (scmName.startsWith("mnistClassifier")) {
+            scmName = "Supervised";
+        } else if (scmName.equals("AdaNet")) {
+            scmName = "NeuralArchitectureSearch";
         }
         return scmName;
     }

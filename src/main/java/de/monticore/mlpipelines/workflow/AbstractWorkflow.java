@@ -156,11 +156,20 @@ public abstract class AbstractWorkflow {
                     pathToModelsDirectory, rootModelName, instanceName, componentTypeName
             );
             // Validate NAS configuration:
-            ConfigurationValidationHandler.validateConfiguration(nasConf);
+            if (nasConf != null) {
+                ConfigurationValidationHandler.validateConfiguration(nasConf);
+            }
+
+            configMap.put("nasConf", nasConf);
+
             ASTConfLangCompilationUnit instanceTrainingConfiguration = this.getAutoMLConfiguration(
                     pathToModelsDirectory, rootModelName, instanceName, componentTypeName, instanceNetworkName + ".conf"
             );
-            instanceTrainingConfiguration.getConfiguration().addSuperConfiguration(nasConf.getConfiguration());
+
+            if (nasConf != null) {
+                instanceTrainingConfiguration.getConfiguration().addSuperConfiguration(nasConf.getConfiguration());
+            }
+
             // Validate initial training configuration:
             ConfigurationValidationHandler.validateConfiguration(instanceTrainingConfiguration);
             configMap.put("trainingConfiguration", instanceTrainingConfiguration);
@@ -302,6 +311,9 @@ public abstract class AbstractWorkflow {
     protected ASTConfLangCompilationUnit getNASConfiguration(
             String pathToModelsDirectory, String rootModelName,
             String instanceName, String componentTypeName) throws IOException {
+        if ((!componentTypeName.equals("AdaNetCustom")) && (!componentTypeName.equals("EfficientNetBase"))) {
+            return null;
+        }
         try {
             return this.getAutoMLConfiguration(
                     pathToModelsDirectory, rootModelName, instanceName, componentTypeName, "AdaNet.conf"
