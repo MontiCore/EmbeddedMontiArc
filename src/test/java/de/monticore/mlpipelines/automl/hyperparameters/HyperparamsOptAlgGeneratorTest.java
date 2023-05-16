@@ -32,11 +32,6 @@ public class HyperparamsOptAlgGeneratorTest extends TestCase {
     }
 
     @Test
-    public void testGenerateWeightedRS() throws IOException {
-        // TODO: Add test for Weighted RS
-    }
-
-    @Test
     public void testGenerateHyperband() throws IOException {
         AbstractHyperparameterAlgorithm hyperparameterAlgorithm = this.getAlgObjByName("Hyperband");
         assertTrue(hyperparameterAlgorithm instanceof HyperbandAlgorithm);

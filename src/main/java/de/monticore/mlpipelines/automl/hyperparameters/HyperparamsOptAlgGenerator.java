@@ -22,8 +22,6 @@ public class HyperparamsOptAlgGenerator {
                 return getSimulatedAnnealing(nestedMap);
             case "BO":
                 return getBayesianOptimization(nestedMap);
-            case "WeightedRS":
-                return getWeightedRS(nestedMap);
             case "GA":
                 return getGeneticAlgorithm(nestedMap);
             case "PSO":
@@ -34,7 +32,6 @@ public class HyperparamsOptAlgGenerator {
                 return getRandomSearchAlgorithm(nestedMap);
             case "SH":
                 return getSuccessiveHalvingAlgorithm(nestedMap);
-            //TODO: Add cases for other optimization algorithms
             default:
                 throw new IllegalArgumentException("Optimizer name in HyperparameterOpt.conf not valid.");
         }
@@ -51,12 +48,6 @@ public class HyperparamsOptAlgGenerator {
         bo.setNumRandomIter((Integer) nestedMap.get("num_random_iter"));
         bo.setTradeOff((Double) nestedMap.get("tradeoff"));
         return bo;
-    }
-
-    private static WeightedRS getWeightedRS(Map<String, Object> nestedMap) {
-        WeightedRS wrs = new WeightedRS();
-        // TODO: set parameters for WeightedRS using nestedKey
-        return wrs;
     }
 
     private static GeneticAlgorithm getGeneticAlgorithm(Map<String, Object> nestedMap) {
