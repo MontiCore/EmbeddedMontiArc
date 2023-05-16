@@ -83,6 +83,10 @@ public class AutoMLPipeline extends Pipeline {
             trainPipeline.setNeuralNetwork(neuralNetwork);
         }
         executeHyperparameterOptimization(hyperparamsOptConf);
+        trainPipeline.setConfigurationModel(hyperparameterAlgorithm.getCurrBestHyperparams());
+
+        Log.info("Execute final training with optimized neural architecture and hyperparameters",
+                AutoMLPipeline.class.getName());
         trainPipeline.execute();
     }
 
