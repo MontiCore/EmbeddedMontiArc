@@ -18,6 +18,7 @@ public class HyperbandAlgorithm extends SequentialAlgorithm {
     private double B ;
     ArrayList<Map<String, Object>> results = new ArrayList<>();
     ArrayList<Map<String, Object>> bestConfigInBracket = new ArrayList<>();
+    List<Double> iterEvalValueList = new ArrayList<>();
     private double best_loss;
     private float best_accuracy;
     private double best_counter ;
@@ -31,6 +32,7 @@ public class HyperbandAlgorithm extends SequentialAlgorithm {
         int counter =0;
         outerloop:
         for (int s = this.s_max; s >=0; s--) {
+            Log.info(String.format("Iteration: %s", counter),HyperbandAlgorithm.class.getName());
             // initial number of configurations
             int n = (int) Math.ceil( this.B / this.max_iter / ( s + 1 ) * Math.pow(this.eta,s ));
             //initial number of iterations per config
@@ -73,6 +75,7 @@ public class HyperbandAlgorithm extends SequentialAlgorithm {
                     map.put(currentHyperparams,valLoss);
                     Log.info("Iteration", String.valueOf(counter));
                     this.results.add(result);
+                    iterEvalValueList.add((double) accuracy);
                     bestResult = result;
                     if (evalValue >= criteria) {
                         break outerloop;
@@ -95,8 +98,13 @@ public class HyperbandAlgorithm extends SequentialAlgorithm {
                 HyperbandAlgorithm.class.getName());
         Log.info(String.format("Best Loss:%s", this.best_loss),
                 HyperbandAlgorithm.class.getName());
-        Log.info("Saving best hyperparameter configuration into a conf file", SequentialAlgorithm.class.getName());
+        Log.info("Saving best hyperparameter configuration into a bestConfiguration.conf file", HyperbandAlgorithm.class.getName());
         this.saveConfFile(currBestHyperparams, printer, pipeline.getNetworkName());
+        Log.info("Saving eval value for each iteration into a evalValues.txt file", HyperbandAlgorithm.class.getName());
+        this.saveEvalValListAsFile(iterEvalValueList, pipeline.getNetworkName(), "evalValues.txt");
+        //train model with the best hyperparameter configuration found
+        pipeline.setTrainingConfiguration(currBestHyperparams);
+        pipeline.execute();
     }
 
     @Override
