@@ -186,8 +186,8 @@ public abstract class AbstractWorkflow {
             ASTConfLangCompilationUnit evaluationCriteria = this.getAutoMLConfiguration(
                     pathToModelsDirectory, rootModelName, instanceName, componentTypeName, "EvaluationCriteria.conf"
             );
-            // TODO: Validate evaluation criteria configuration:
-            // ConfigurationValidationHandler.validateConfiguration(evaluationCriteria);
+            // Validate evaluation criteria configuration:
+            ConfigurationValidationHandler.validateConfiguration(evaluationCriteria);
             configMap.put("EvaluationCriteria", evaluationCriteria);
 
             // Set pipeline configuration
