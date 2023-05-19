@@ -74,6 +74,18 @@ public class HyperparamsOptAlgGeneratorTest extends TestCase {
     }
 
     @Test
+    public void testDefaultGA() throws IOException {
+        AbstractHyperparameterAlgorithm hyperparameterAlgorithm = this.getAlgObjByName("default");
+        assertTrue(hyperparameterAlgorithm instanceof GeneticAlgorithm);
+
+        GeneticAlgorithm ga = (GeneticAlgorithm) hyperparameterAlgorithm;
+        assertEquals(ga.getSelectionRate(), 0.6);
+        assertEquals(ga.getCrossoverConfig(), 0.5);
+        assertEquals(ga.getMutationConfig(), 0.3);
+        assertEquals(ga.getPopulationSize(), 10);
+    }
+
+    @Test
     public void testGenerateParticleSwarmOptimization() throws IOException {
         AbstractHyperparameterAlgorithm hyperparameterAlgorithm = this.getAlgObjByName("PSO");
         assertTrue(hyperparameterAlgorithm instanceof ParticleSwarmOptimization);
