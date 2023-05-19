@@ -39,6 +39,9 @@ public class ConfigurationValidationHandler {
     }
 
     public static void validateConfiguration(ASTConfLangCompilationUnit compilationUnit) {
+        if (compilationUnit == null) {
+            return;
+        }
         ASTConfiguration configuration = compilationUnit.getConfiguration();
         String scmName = getScmName(configuration);
         Log.info(String.format("Validate %s configuration using schema.", scmName), ConfigurationValidationHandler.class.getName());

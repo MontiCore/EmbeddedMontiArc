@@ -156,9 +156,7 @@ public abstract class AbstractWorkflow {
                     pathToModelsDirectory, rootModelName, instanceName, componentTypeName
             );
             // Validate NAS configuration:
-            if (nasConf != null) {
-                ConfigurationValidationHandler.validateConfiguration(nasConf);
-            }
+            ConfigurationValidationHandler.validateConfiguration(nasConf);
 
             configMap.put("nasConf", nasConf);
 
@@ -292,7 +290,7 @@ public abstract class AbstractWorkflow {
             // Priority 3: parent/global configuration
             pathToConfiguration = parentPath.toString();
         } else {
-            throw new FileNotFoundException(String.format("No conf file %s found.", configurationName));
+            return null;
         }
 
         return this.parseTrainingConfiguration(pathToConfiguration);

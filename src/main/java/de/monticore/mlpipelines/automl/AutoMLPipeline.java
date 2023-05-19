@@ -82,8 +82,14 @@ public class AutoMLPipeline extends Pipeline {
             executeNeuralArchitectureSearch(originalArchitecture);
             trainPipeline.setNeuralNetwork(neuralNetwork);
         }
-        executeHyperparameterOptimization(hyperparamsOptConf);
-        trainPipeline.setConfigurationModel(hyperparameterAlgorithm.getCurrBestHyperparams());
+
+        if ((hyperparamsOptConf == null) || (searchSpace == null)) {
+            Log.info("Skip hyperparameter optimization step since configurations not given",
+                    AutoMLPipeline.class.getName());
+        } else {
+            executeHyperparameterOptimization(hyperparamsOptConf);
+            trainPipeline.setConfigurationModel(hyperparameterAlgorithm.getCurrBestHyperparams());
+        }
 
         Log.info("Execute final training with optimized neural architecture and hyperparameters",
                 AutoMLPipeline.class.getName());

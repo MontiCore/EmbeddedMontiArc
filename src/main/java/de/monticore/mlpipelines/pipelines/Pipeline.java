@@ -50,9 +50,11 @@ public abstract class Pipeline {
     }
 
     public void setSearchSpace(ASTConfLangCompilationUnit trainingConfiguration, ASTConfLangCompilationUnit searchSpace) {
-        String trainConfigName = trainingConfiguration.getConfiguration().getName();
-        searchSpace.getConfiguration().setName(trainConfigName);
-        this.searchSpace = searchSpace;
+        if (searchSpace != null) {
+            String trainConfigName = trainingConfiguration.getConfiguration().getName();
+            searchSpace.getConfiguration().setName(trainConfigName);
+            this.searchSpace = searchSpace;
+        }
     }
 
     public void setHyperparamsOptConf(ASTConfLangCompilationUnit hyperparamsOptConf) {
