@@ -38,7 +38,7 @@ public class ConfigurationValidationHandler {
         return scmName;
     }
 
-    public static void validateConfiguration(ASTConfLangCompilationUnit compilationUnit) {
+    public static void validateConfiguration(ASTConfLangCompilationUnit compilationUnit, String schemaPath) {
         if (compilationUnit == null) {
             return;
         }
@@ -46,7 +46,7 @@ public class ConfigurationValidationHandler {
         String scmName = getScmName(configuration);
         Log.info(String.format("Validate %s configuration using schema.", scmName), ConfigurationValidationHandler.class.getName());
         createConfLangSymbolTable(configuration);
-        ModelPath schemaModelPath = new ModelPath(Paths.get("target/generated-sources/schemas"));
+        ModelPath schemaModelPath = new ModelPath(Paths.get(schemaPath));
         try {
             Collection<Violation> violations = SchemaLangValidator.validate(configuration.getConfigurationSymbol(),
                     scmName, null, schemaModelPath);

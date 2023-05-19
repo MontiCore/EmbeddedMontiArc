@@ -33,6 +33,8 @@ public abstract class Pipeline {
 
     protected String modelOutputDirectoryWithDot = "." + modelOutputDirectory;
 
+    protected String schemasTargetDir;
+
     protected Pipeline(final LearningMethod learningMethod) {
         this.learningMethod = learningMethod;
     }
@@ -98,6 +100,14 @@ public abstract class Pipeline {
     public void setModelOutputDirectory(final String modelOutputDirectory) {
         this.modelOutputDirectory = modelOutputDirectory;
         this.modelOutputDirectoryWithDot = "." + modelOutputDirectory;
+    }
+
+    public String getSchemasTargetDir() {
+        return schemasTargetDir;
+    }
+
+    public void setSchemasTargetDir(String schemasTargetDir) {
+        this.schemasTargetDir = schemasTargetDir;
     }
 
     public abstract float getTrainedAccuracy();

@@ -42,6 +42,8 @@ public abstract class AbstractWorkflow {
 
     protected Pipeline pipeline;
 
+    protected String schemasTargetDir = "target/generated-sources/schemas/";
+
     public AbstractWorkflow(final MontiAnnaContext montiAnnaContext) {
         this.montiAnnaContext = montiAnnaContext;
         this.montiAnnaGenerator = new MontiAnnaGenerator(montiAnnaContext);
@@ -82,6 +84,7 @@ public abstract class AbstractWorkflow {
         generateBackendArtefactsIntoExperiment();
         final LearningMethod learningMethod = LearningMethod.SUPERVISED;
         createPipeline(learningMethod);
+        pipeline.setSchemasTargetDir(schemasTargetDir);
         pipeline.setNetworkInstancesConfigs(
                 this.getNetworkInstanceConfigs(pathToModelsDirectory, rootModelName, rootEMADLComponent, emadlSymbolTable)
         );
@@ -153,7 +156,7 @@ public abstract class AbstractWorkflow {
                     pathToModelsDirectory, rootModelName, instanceName, componentTypeName
             );
             // Validate NAS configuration:
-            ConfigurationValidationHandler.validateConfiguration(nasConf);
+            ConfigurationValidationHandler.validateConfiguration(nasConf, this.pipeline.getSchemasTargetDir());
 
             configMap.put("nasConf", nasConf);
 
@@ -166,7 +169,8 @@ public abstract class AbstractWorkflow {
             }
 
             // Validate initial training configuration:
-            ConfigurationValidationHandler.validateConfiguration(instanceTrainingConfiguration);
+            ConfigurationValidationHandler.validateConfiguration(instanceTrainingConfiguration,
+                    this.pipeline.getSchemasTargetDir());
             configMap.put("trainingConfiguration", instanceTrainingConfiguration);
 
             // Set configurations for Hyperparameters Optimization algorithm:
@@ -182,7 +186,8 @@ public abstract class AbstractWorkflow {
                     pathToModelsDirectory, rootModelName, instanceName, componentTypeName, "EvaluationCriteria.conf"
             );
             // Validate evaluation criteria configuration:
-            ConfigurationValidationHandler.validateConfiguration(evaluationCriteria);
+            ConfigurationValidationHandler.validateConfiguration(evaluationCriteria,
+                    this.pipeline.getSchemasTargetDir());
             configMap.put("EvaluationCriteria", evaluationCriteria);
 
             // Set pipeline configuration
@@ -365,7 +370,6 @@ public abstract class AbstractWorkflow {
                 "ReplayMemory.scm",
                 "Supervised.scm");
         String schemasResourceDir = "schemas/";
-        String schemasTargetDir = "target/generated-sources/schemas/";
-        this.addAllFiles(schemasResourceDir, schemasTargetDir, schemaFiles);
+        this.addAllFiles(schemasResourceDir, this.schemasTargetDir, schemaFiles);
     }
 }
