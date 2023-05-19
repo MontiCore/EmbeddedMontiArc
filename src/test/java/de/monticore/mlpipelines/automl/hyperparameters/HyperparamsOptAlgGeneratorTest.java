@@ -37,9 +37,9 @@ public class HyperparamsOptAlgGeneratorTest extends TestCase {
         assertTrue(hyperparameterAlgorithm instanceof HyperbandAlgorithm);
 
         HyperbandAlgorithm ha = (HyperbandAlgorithm) hyperparameterAlgorithm;
-        assertEquals(ha.getMaxIter(), 81);
+        assertEquals(ha.getMaxIter(), 9);
         assertEquals(ha.getEta(), 3);
-        assertEquals(ha.getSkipLast(),1);
+        assertEquals(ha.getSkipLast(),0);
     }
 
     @Test
@@ -86,9 +86,10 @@ public class HyperparamsOptAlgGeneratorTest extends TestCase {
 
     private AbstractHyperparameterAlgorithm getAlgObjByName(String algorithmName) throws IOException {
         String path = "src/test/resources/models/automl/hyperparams_opt/%s/HyperparameterOpt.conf";
+        String schemaPath = "src/test/resources/models/automl/schemas/HyperparameterOpt.scm";
         path = String.format(path, algorithmName);
         ConfLangParser parser = new ConfLangParser();
         ASTConfLangCompilationUnit hyperparamsOptConf = parser.parse(path).get();
-        return HyperparamsOptAlgGenerator.generateAlgorithm(hyperparamsOptConf);
+        return HyperparamsOptAlgGenerator.generateAlgorithm(hyperparamsOptConf, schemaPath);
     }
 }

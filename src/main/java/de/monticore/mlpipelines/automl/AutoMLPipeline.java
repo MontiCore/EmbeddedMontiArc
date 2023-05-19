@@ -114,7 +114,8 @@ public class AutoMLPipeline extends Pipeline {
     }
 
     private void executeHyperparameterOptimization(ASTConfLangCompilationUnit hyperparamsOptConf) {
-        hyperparameterAlgorithm = HyperparamsOptAlgGenerator.generateAlgorithm(hyperparamsOptConf);
+        hyperparameterAlgorithm = HyperparamsOptAlgGenerator.generateAlgorithm(hyperparamsOptConf,
+                this.getSchemasTargetDir() + "HyperparameterOpt.scm");
         hyperparameterAlgorithm.executeOptimization(this.trainPipeline, this.searchSpace, this.evaluationCriteria);
     }
 
