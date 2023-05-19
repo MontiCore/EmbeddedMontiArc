@@ -74,9 +74,6 @@ public abstract class AbstractWorkflow {
         final Scope emadlSymbolTable = SymbolTableCreator.createEMADLSymbolTable(rootEMADLComponent,
                 new GlobalScope(modelPath, new EMADLLanguage()));
 
-//        final ConfigurationValidator configurationValidator = new ConfigurationValidator();
-//        configurationValidator.validateTrainingConfiguration(trainingConfigurationSymbol);
-
         checkCoCos();
         backendSpecificValidations();
         final EMAComponentInstanceSymbol pipelineModelWithExecutionSemantics = calculateExecutionSemantics();
