@@ -63,6 +63,9 @@ public abstract class AbstractWorkflow {
     }
 
     public void execute() throws IOException {
+        // measure the time for the whole function
+        final long startTime = System.nanoTime();
+
         addPythonScriptsToTarget();
         // Add schemas for configuration validation into target
         this.copySchemasToTarget();
@@ -90,7 +93,15 @@ public abstract class AbstractWorkflow {
         );
         pipeline.setPipelineModelWithExecutionSemantics(pipelineModelWithExecutionSemantics);
 
+        final long midTime = System.nanoTime();
+
+        System.out.println("Monti time: " + (midTime - startTime) / 1000000 + "ms");
         executePipeline();
+
+        final long endTime = System.nanoTime();
+        System.out.println("Total time: " + (endTime - startTime) / 1000000 + "ms");
+        System.out.println("Monti time: " + (midTime - startTime) / 1000000 + "ms");
+        System.out.println("AutoML time: " + (endTime - midTime) / 1000000 + "ms");
     }
 
     protected String getDirectoryPathSupplementFromComponentName(final String rootModelName) {
