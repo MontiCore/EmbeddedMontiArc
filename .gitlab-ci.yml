@@ -24,3 +24,6 @@ TestAutoML:
   - mv src/main/resources/experiments/training_data src/main/resources/experiments/data
   - echo "Execute AutoML pipeline"
   - mvn exec:java -s settings.xml -U
+  artifacts:
+    paths:
+      - automl/target/generated-sources/**
