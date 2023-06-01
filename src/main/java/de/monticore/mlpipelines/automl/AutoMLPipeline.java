@@ -38,6 +38,7 @@ public class AutoMLPipeline extends Pipeline {
         for (Map<String, Object> configMap : instanceConfigs) {
             EMAComponentInstanceSymbol neuralNetwork = (EMAComponentInstanceSymbol) configMap.get("network");
             String networkName = (String) configMap.get("networkName");
+            ASTConfLangCompilationUnit nasConf = (ASTConfLangCompilationUnit) configMap.get("nasConf");
             ASTConfLangCompilationUnit trainingConfiguration = (ASTConfLangCompilationUnit) configMap.get("trainingConfiguration");
             ASTConfLangCompilationUnit pipelineConfiguration = (ASTConfLangCompilationUnit) configMap.get("pipelineConfiguration");
             ASTConfLangCompilationUnit searchSpace = (ASTConfLangCompilationUnit) configMap.get("SearchSpace");
@@ -45,7 +46,7 @@ public class AutoMLPipeline extends Pipeline {
             ASTConfLangCompilationUnit evaluationCriteria = (ASTConfLangCompilationUnit) configMap.get("EvaluationCriteria");
 
             executeInstance(
-                neuralNetwork, networkName, trainingConfiguration, pipelineConfiguration,
+                neuralNetwork, networkName, nasConf, trainingConfiguration, pipelineConfiguration,
                 searchSpace, hyperparamsOptConf, evaluationCriteria
             );
         }
@@ -54,6 +55,7 @@ public class AutoMLPipeline extends Pipeline {
     private void executeInstance(
             EMAComponentInstanceSymbol neuralNetwork,
             String networkName,
+            ASTConfLangCompilationUnit nasConf,
             ASTConfLangCompilationUnit trainingConfiguration,
             ASTConfLangCompilationUnit pipelineConfiguration,
             ASTConfLangCompilationUnit searchSpace,
@@ -72,10 +74,25 @@ public class AutoMLPipeline extends Pipeline {
         this.trainPipeline.setModelOutputDirectory(String.format("/model/%s/", networkName));
 
         Log.info(String.format("Executing optimization for instance: %s", networkName), AutoMLPipeline.class.getName());
-        ArchitectureSymbol originalArchitecture = getArchitectureSymbol();
-        executeNeuralArchitectureSearch(originalArchitecture);
-        trainPipeline.setNeuralNetwork(neuralNetwork);
-        executeHyperparameterOptimization(hyperparamsOptConf);
+        if (nasConf == null) {
+            Log.info("Skip neural architecture search step since nas configuration not given",
+                    AutoMLPipeline.class.getName());
+        } else {
+            ArchitectureSymbol originalArchitecture = getArchitectureSymbol();
+            executeNeuralArchitectureSearch(originalArchitecture);
+            trainPipeline.setNeuralNetwork(neuralNetwork);
+        }
+
+        if ((hyperparamsOptConf == null) || (searchSpace == null)) {
+            Log.info("Skip hyperparameter optimization step since configurations not given",
+                    AutoMLPipeline.class.getName());
+        } else {
+            executeHyperparameterOptimization(hyperparamsOptConf);
+            trainPipeline.setConfigurationModel(hyperparameterAlgorithm.getCurrBestHyperparams());
+        }
+
+        Log.info("Execute final training with optimized neural architecture and hyperparameters",
+                AutoMLPipeline.class.getName());
         trainPipeline.execute();
     }
 
@@ -97,7 +114,9 @@ public class AutoMLPipeline extends Pipeline {
     }
 
     private void executeHyperparameterOptimization(ASTConfLangCompilationUnit hyperparamsOptConf) {
-        hyperparameterAlgorithm = HyperparamsOptAlgGenerator.generateAlgorithm(hyperparamsOptConf);
+        hyperparameterAlgorithm = HyperparamsOptAlgGenerator.generateAlgorithm(hyperparamsOptConf,
+                this.getSchemasTargetDir() + "HyperparameterOpt.scm");
+        this.trainPipeline.setSchemasTargetDir(this.getSchemasTargetDir());
         hyperparameterAlgorithm.executeOptimization(this.trainPipeline, this.searchSpace, this.evaluationCriteria);
     }
 

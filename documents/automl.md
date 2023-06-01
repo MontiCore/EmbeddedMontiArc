@@ -70,7 +70,12 @@ The model is defined in the files
 All configuration files are in the MnistClassifier folder.
 Important files are:
 
-- AdaNet.config (AdaNet configuration, if EfficientNet ist used, use an EfficientNet config file instead)
-- HyperparameterOptimization.config (Hyperparameter optimization configuration)
+- AdaNet.conf (AdaNet configuration, if EfficientNet ist used, use an EfficientNet.conf file instead)
+  - To skip Neural Architecture Search Step: Remove both AdaNet.conf and EfficientNet.conf file and use a fixed
+  architecture (example: LeNetNetwork.emadl)
+- HyperparameterOpt.conf (Hyperparameter optimization configuration)
+  - Definition of hyper-hyperparameters is optional (if a value for a hyper-hyperparameter is not defined a default
+  value is used)
+  - To skip Hyperparameter Optimization step: Remove HyperparameterOpt.conf file
 - mnistClassifier_net.conf (Training pipeline configuration)
 

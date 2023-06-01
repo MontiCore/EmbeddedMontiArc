@@ -28,9 +28,8 @@ public class HyperHyperparameterDefaultValueExtractor {
         return schemaLangCompilationUnit;
     }
 
-    private static ASTSignedLiteral getLiteral(
-            ASTSchemaMember optimizerMember,
-            String algName, String hyperHyperparameterName) {
+    private static ASTSignedLiteral getLiteral(ASTSchemaMember optimizerMember,
+                                                   String algName, String hyperHyperparameterName) {
         List<ASTComplexPropertyValueDefinition> definitionList = ((ASTComplexPropertyDefinition) optimizerMember).getComplexPropertyValueDefinitionList();
         ASTComplexPropertyValueDefinition algDefinition = definitionList.stream().filter(
                 definition -> algName.equals(definition.getName())).findFirst().orElse(null);
