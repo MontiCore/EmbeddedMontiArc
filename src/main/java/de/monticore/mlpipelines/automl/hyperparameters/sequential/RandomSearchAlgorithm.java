@@ -11,18 +11,21 @@ import java.util.*;
 
 public class RandomSearchAlgorithm extends SequentialAlgorithm {
     private int max_iter ;
-    private double valLoss;
+    private float valLoss;
     private float accuracy;
-    private double best_loss=Double.POSITIVE_INFINITY;
+    private float best_loss=Float.POSITIVE_INFINITY;
     private float best_accuracy;
     ArrayList<Map<String, Object>> results = new ArrayList<>();
+    List<Double> iterEvalValueList = new ArrayList<>();
     protected ASTConfLangCompilationUnit bestTrainingConfig;
 
 
     @Override
     public void executeOptimization( Pipeline pipeline, ASTConfLangCompilationUnit searchSpace,ASTConfLangCompilationUnit evaluationCriteria) {
         int counter =0;
+
         for (int i = 0; i < max_iter; i++) {
+            Log.info(String.format("Iteration: %s", i),RandomSearchAlgorithm.class.getName());
             ASTConfLangCompilationUnit currentHyperparams = getNewHyperparamsCandidate(searchSpace);
             Map<String,Object> result = new HashMap<>();
             long totalTime=0;
@@ -34,20 +37,24 @@ public class RandomSearchAlgorithm extends SequentialAlgorithm {
                 long endTime = System.currentTimeMillis();
                 totalTime = endTime - startTime;
                 accuracy = pipeline.getTrainedAccuracy();
-                valLoss = 1-(Double.valueOf(((Float) (pipeline.getTrainedAccuracy() / 100)).toString()));
+                valLoss = 1-(Float.valueOf(((Float) (pipeline.getTrainedAccuracy() / 100)).toString()));
             }
-            result.put("counter",counter);
+            result.put("iteration",counter);
             result.put("params",currentHyperparams);
             result.put("loss",valLoss);
             result.put("accuracy",accuracy);
             result.put("time",totalTime);
             this.results.add(result);
+            iterEvalValueList.add((double) accuracy);
             if (valLoss < this.best_loss){
                 this.best_loss = valLoss;
                 this.best_accuracy= accuracy;
                 this.currBestHyperparams= currentHyperparams;
             }
 
+            //train model with the best hyperparameter configuration found
+            pipeline.setTrainingConfiguration(currBestHyperparams);
+            pipeline.execute();
         }
         //this.bestTrainingConfig=bestPerformingConfiguration(results);
         ASTConfLangCompilationUnitPrinter printer = new ASTConfLangCompilationUnitPrinter();
@@ -56,11 +63,13 @@ public class RandomSearchAlgorithm extends SequentialAlgorithm {
         Log.info(String.format("Best hyperparameter configuration:\n%s", printer.prettyPrint(currBestHyperparams)),
                 RandomSearchAlgorithm.class.getName());
         Log.info(String.format("Best Accuracy :%s", this.best_accuracy),
-                HyperbandAlgorithm.class.getName());
+                RandomSearchAlgorithm.class.getName());
         Log.info(String.format("Best Loss :%s", this.best_loss),
-                HyperbandAlgorithm.class.getName());
-        Log.info("Saving best hyperparameter configuration into a conf file", SequentialAlgorithm.class.getName());
+                RandomSearchAlgorithm.class.getName());
+        Log.info("Saving best hyperparameter configuration into a bestConfiguration.conf file", RandomSearchAlgorithm.class.getName());
         this.saveConfFile(currBestHyperparams, printer, pipeline.getNetworkName());
+        Log.info("Saving eval value for each iteration into a evalValues.txt file", RandomSearchAlgorithm.class.getName());
+        this.saveEvalValListAsFile(iterEvalValueList, pipeline.getNetworkName(), "evalValues.txt");
     }
 
     @Override

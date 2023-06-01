@@ -16,6 +16,7 @@ public class SuccessiveHalvingAlgorithm extends SequentialAlgorithm {
     private int s_max;
     private double B ;
     ArrayList<Map<String, Object>> results = new ArrayList<>();
+    List<Double> iterEvalValueList = new ArrayList<>();
     private double best_loss=Double.POSITIVE_INFINITY;
     private float best_accuracy;
     private double best_counter ;
@@ -32,15 +33,15 @@ public class SuccessiveHalvingAlgorithm extends SequentialAlgorithm {
         Map<ASTConfLangCompilationUnit, Double> map = new HashMap<>();
         outerloop:
         while(nConfigurations.size()>0){
-            int n_configs = nConfigurations.size();
-            System.out.println("Akash----------------"+nConfigurations.size());
+             int n_configs = nConfigurations.size();
             Iterator<ASTConfLangCompilationUnit> iterator = nConfigurations.iterator();
             while (iterator.hasNext()) {
+                Log.info(String.format("Iteration: %s", counter),SuccessiveHalvingAlgorithm.class.getName());
                 Map<String,Object> result = new HashMap<>();
                 counter++;
                 ASTConfLangCompilationUnit currentHyperparams = iterator.next();
                 //Override num_epoch with n_iterations as num_epoch is used as a budget for the training which means the number of iterations
-                ASTConfLangCompilationUnitHandler.setValueForKey(currentHyperparams, "num_epoch", 1);
+                ASTConfLangCompilationUnitHandler.setValueForKey(currentHyperparams, "num_epoch", max_iter);
                 if(pipeline != null) {
                     long startTime = System.currentTimeMillis();
                     pipeline.setTrainingConfiguration(currentHyperparams);
@@ -52,16 +53,15 @@ public class SuccessiveHalvingAlgorithm extends SequentialAlgorithm {
                 evalValue = Double.valueOf(((Float) (pipeline.getTrainedAccuracy() / 100)).toString());
                 valLoss  = 1-evalValue;
 
-                result.put("counter",counter);
+                result.put("iteration",counter);
                 result.put("params",currentHyperparams);
                 //result.put("iterations/epoch",n_iterations);
                 result.put("accuracy",accuracy);
                 result.put("loss",valLoss);
                 result.put("time",totalTime);
                 map.put(currentHyperparams,valLoss);
-                //System.out.println(counter);
-                Log.info("Iteration", String.valueOf(counter));
                 this.results.add(result);
+                iterEvalValueList.add((double) accuracy);
                 if (valLoss < this.best_loss){
                     this.best_loss = valLoss;
                     this.best_accuracy= accuracy;
@@ -83,8 +83,10 @@ public class SuccessiveHalvingAlgorithm extends SequentialAlgorithm {
                 SuccessiveHalvingAlgorithm.class.getName());
         Log.info(String.format("Best Loss :%s", this.best_loss),
                 SuccessiveHalvingAlgorithm.class.getName());
-        Log.info("Saving best hyperparameter configuration into a conf file", SequentialAlgorithm.class.getName());
+        Log.info("Saving best hyperparameter configuration into a bestConfiguration.conf file", SuccessiveHalvingAlgorithm.class.getName());
         this.saveConfFile(currBestHyperparams, printer, pipeline.getNetworkName());
+        Log.info("Saving eval value for each iteration into a evalValues.txt file", SuccessiveHalvingAlgorithm.class.getName());
+        this.saveEvalValListAsFile(iterEvalValueList, pipeline.getNetworkName(), "evalValues.txt");
     }
 
     @Override

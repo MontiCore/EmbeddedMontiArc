@@ -2,6 +2,7 @@ package de.monticore.mlpipelines.automl.hyperparameters;
 
 import conflang._ast.ASTConfLangCompilationUnit;
 import de.monticore.mlpipelines.automl.helper.ASTConfLangCompilationUnitHandler;
+import de.monticore.mlpipelines.automl.helper.HyperHyperparameterDefaultValueExtractor;
 import de.monticore.mlpipelines.automl.hyperparameters.parallel.GeneticAlgorithm;
 import de.monticore.mlpipelines.automl.hyperparameters.parallel.ParticleSwarmOptimization;
 import de.monticore.mlpipelines.automl.hyperparameters.sequential.*;
@@ -11,7 +12,8 @@ import java.util.Map;
 
 public class HyperparamsOptAlgGenerator {
 
-    public static AbstractHyperparameterAlgorithm generateAlgorithm(ASTConfLangCompilationUnit hyperparamsOptConf) {
+    public static AbstractHyperparameterAlgorithm generateAlgorithm(ASTConfLangCompilationUnit hyperparamsOptConf,
+                                                                    String schemaPath) {
         Map<String, Object> optimizerMap = ASTConfLangCompilationUnitHandler.getValuesFromNestedConfiguration(hyperparamsOptConf, "optimizer");
         String optimizerName = (String) optimizerMap.get("optimizer");
         Map<String, Object> nestedMap = (Map<String, Object>) optimizerMap.get("nestedMap");
@@ -19,81 +21,96 @@ public class HyperparamsOptAlgGenerator {
                 HyperparamsOptAlgGenerator.class.getName());
         switch (optimizerName) {
             case "SA":
-                return getSimulatedAnnealing(nestedMap);
+                return getSimulatedAnnealing(optimizerName, schemaPath, nestedMap);
             case "BO":
-                return getBayesianOptimization(nestedMap);
-            case "WeightedRS":
-                return getWeightedRS(nestedMap);
+                return getBayesianOptimization(optimizerName, schemaPath, nestedMap);
             case "GA":
-                return getGeneticAlgorithm(nestedMap);
+                return getGeneticAlgorithm(optimizerName, schemaPath, nestedMap);
             case "PSO":
-                return getParticleSwarmOptimization(nestedMap);
+                return getParticleSwarmOptimization(optimizerName, schemaPath, nestedMap);
             case "Hyperband":
-                return getHyperbandAlgorithm(nestedMap);
+                return getHyperbandAlgorithm(optimizerName, schemaPath, nestedMap);
             case "RS":
-                return getRandomSearchAlgorithm(nestedMap);
+                return getRandomSearchAlgorithm(optimizerName, schemaPath, nestedMap);
             case "SH":
-                return getSuccessiveHalvingAlgorithm(nestedMap);
-            //TODO: Add cases for other optimization algorithms
+                return getSuccessiveHalvingAlgorithm(optimizerName, schemaPath, nestedMap);
             default:
                 throw new IllegalArgumentException("Optimizer name in HyperparameterOpt.conf not valid.");
         }
     }
 
-    private static SimulatedAnnealing getSimulatedAnnealing(Map<String, Object> nestedMap) {
+    private static Object getHyperHyperparams(String algName, String schemaPath, String attributeName,
+                                              Map<String, Object> nestedMap) {
+        Object value = nestedMap.get(attributeName);
+        if (value == null) {
+            value = HyperHyperparameterDefaultValueExtractor.getDefaultValue(schemaPath, algName, attributeName);
+        }
+        return value;
+    }
+
+    private static SimulatedAnnealing getSimulatedAnnealing(String algName, String schemaPath,
+                                                            Map<String, Object> nestedMap) {
         SimulatedAnnealing sa = new SimulatedAnnealing();
-        sa.setInitialTemperature((Double) nestedMap.get("initial_temperature"));
+        sa.setInitialTemperature((Double) getHyperHyperparams(algName, schemaPath, "initial_temperature",
+                nestedMap));
         return sa;
     }
 
-    private static BayesianOptimization getBayesianOptimization(Map<String, Object> nestedMap) {
+    private static BayesianOptimization getBayesianOptimization(String algName, String schemaPath,
+                                                                Map<String, Object> nestedMap) {
         BayesianOptimization bo = new BayesianOptimization();
-        bo.setNumRandomIter((Integer) nestedMap.get("num_random_iter"));
-        bo.setTradeOff((Double) nestedMap.get("tradeoff"));
+        bo.setNumRandomIter((Integer) getHyperHyperparams(algName, schemaPath, "num_random_iter",
+                nestedMap));
+        bo.setTradeOff((Double) getHyperHyperparams(algName, schemaPath, "tradeoff",
+                nestedMap));
         return bo;
     }
 
-    private static WeightedRS getWeightedRS(Map<String, Object> nestedMap) {
-        WeightedRS wrs = new WeightedRS();
-        // TODO: set parameters for WeightedRS using nestedKey
-        return wrs;
-    }
-
-    private static GeneticAlgorithm getGeneticAlgorithm(Map<String, Object> nestedMap) {
+    private static GeneticAlgorithm getGeneticAlgorithm(String algName, String schemaPath,
+                                                        Map<String, Object> nestedMap) {
         GeneticAlgorithm ga = new GeneticAlgorithm();
-        ga.setSelectionRate((Double) nestedMap.get("selection_rate"));
-        ga.setCrossoverConfig((Double) nestedMap.get("crossover_rate"));
-        ga.setMutationConfig((Double) nestedMap.get("mutation_rate"));
-        ga.setPopulationSize((Integer) nestedMap.get("population_size"));
+        ga.setSelectionRate((Double) getHyperHyperparams(algName, schemaPath, "selection_rate",
+                nestedMap));
+        ga.setCrossoverConfig((Double) getHyperHyperparams(algName, schemaPath, "crossover_rate",
+                nestedMap));
+        ga.setMutationConfig((Double) getHyperHyperparams(algName, schemaPath, "mutation_rate",
+                nestedMap));
+        ga.setPopulationSize((Integer) getHyperHyperparams(algName, schemaPath, "population_size",
+                nestedMap));
         return ga;
     }
 
-    private static ParticleSwarmOptimization getParticleSwarmOptimization(Map<String, Object> nestedMap) {
+    private static ParticleSwarmOptimization getParticleSwarmOptimization(String algName, String schemaPath,
+                                                                          Map<String, Object> nestedMap) {
         ParticleSwarmOptimization pso = new ParticleSwarmOptimization();
-        pso.setC1((Double) nestedMap.get("c1"));
-        pso.setC2((Double) nestedMap.get("c2"));
-        pso.setPopulationSize((Integer) nestedMap.get("population_size"));
+        pso.setC1((Double) getHyperHyperparams(algName, schemaPath, "c1", nestedMap));
+        pso.setC2((Double) getHyperHyperparams(algName, schemaPath, "c2", nestedMap));
+        pso.setPopulationSize((Integer) getHyperHyperparams(algName, schemaPath, "population_size",
+                nestedMap));
         return pso;
     }
-    private static HyperbandAlgorithm getHyperbandAlgorithm(Map<String, Object> nestedMap) {
+    private static HyperbandAlgorithm getHyperbandAlgorithm(String algName, String schemaPath,
+                                                            Map<String, Object> nestedMap) {
         HyperbandAlgorithm hyperband = new HyperbandAlgorithm();
-        hyperband.setMaxIter((int) nestedMap.get("max_iter"));
-        hyperband.setEta((int) nestedMap.get("eta"));
-        hyperband.setSkipLast((int) nestedMap.get("skip_last"));
+        hyperband.setMaxIter((int) getHyperHyperparams(algName, schemaPath, "max_iter", nestedMap));
+        hyperband.setEta((int) getHyperHyperparams(algName, schemaPath, "eta", nestedMap));
+        hyperband.setSkipLast((int) getHyperHyperparams(algName, schemaPath, "skip_last", nestedMap));
         return hyperband;
     }
 
-    private static RandomSearchAlgorithm getRandomSearchAlgorithm(Map<String, Object> nestedMap) {
+    private static RandomSearchAlgorithm getRandomSearchAlgorithm(String algName, String schemaPath,
+                                                                  Map<String, Object> nestedMap) {
         RandomSearchAlgorithm rs = new RandomSearchAlgorithm();
-        rs.setMaxIter((int) nestedMap.get("max_iter"));
+        rs.setMaxIter((int) getHyperHyperparams(algName, schemaPath, "max_iter", nestedMap));
         return rs;
     }
 
-    private static SuccessiveHalvingAlgorithm getSuccessiveHalvingAlgorithm(Map<String, Object> nestedMap) {
+    private static SuccessiveHalvingAlgorithm getSuccessiveHalvingAlgorithm(String algName, String schemaPath,
+                                                                            Map<String, Object> nestedMap) {
         SuccessiveHalvingAlgorithm sh = new SuccessiveHalvingAlgorithm();
-        sh.setMaxConfig((int) nestedMap.get("max_config"));
-        sh.setMaxIter((int) nestedMap.get("max_iter"));
-        sh.setEta((int) nestedMap.get("eta"));
+        sh.setMaxConfig((int) getHyperHyperparams(algName, schemaPath, "max_config", nestedMap));
+        sh.setMaxIter((int) getHyperHyperparams(algName, schemaPath, "max_iter", nestedMap));
+        sh.setEta((int) getHyperHyperparams(algName, schemaPath, "eta", nestedMap));
         return sh;
     }
 }

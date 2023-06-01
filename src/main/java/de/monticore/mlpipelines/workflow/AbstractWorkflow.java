@@ -12,6 +12,7 @@ import de.monticore.lang.monticar.semantics.Constants;
 import de.monticore.lang.monticar.semantics.ExecutionSemantics;
 import de.monticore.lang.monticar.semantics.construct.SymtabCreator;
 import de.monticore.lang.tagging._symboltable.TaggingResolver;
+import de.monticore.mlpipelines.automl.helper.ConfigurationValidationHandler;
 import de.monticore.mlpipelines.backend.generation.MontiAnnaGenerator;
 import de.monticore.mlpipelines.configuration.MontiAnnaContext;
 import de.monticore.mlpipelines.pipelines.Pipeline;
@@ -22,9 +23,12 @@ import de.monticore.symboltable.GlobalScope;
 import de.monticore.symboltable.Scope;
 import de.se_rwth.commons.Names;
 import de.se_rwth.commons.StringTransformations;
+import de.se_rwth.commons.logging.Log;
+import org.apache.commons.io.FileUtils;
 
-import java.io.FileNotFoundException;
+import java.io.File;
 import java.io.IOException;
+import java.net.URL;
 import java.nio.file.Files;
 import java.nio.file.Path;
 import java.nio.file.Paths;
@@ -36,6 +40,8 @@ public abstract class AbstractWorkflow {
     protected MontiAnnaGenerator montiAnnaGenerator;
 
     protected Pipeline pipeline;
+
+    protected String schemasTargetDir = "target/generated-sources/schemas/";
 
     public AbstractWorkflow(final MontiAnnaContext montiAnnaContext) {
         this.montiAnnaContext = montiAnnaContext;
@@ -59,6 +65,9 @@ public abstract class AbstractWorkflow {
         // measure the time for the whole function
         final long startTime = System.nanoTime();
 
+        addPythonScriptsToTarget();
+        // Add schemas for configuration validation into target
+        this.copySchemasToTarget();
         // frontend
         final String rootModelName = Names.getSimpleName(montiAnnaContext.getRootModelName());
         final String pathToModelsDirectory = Paths.get(montiAnnaContext.getParentModelPath().toString(),
@@ -69,9 +78,6 @@ public abstract class AbstractWorkflow {
         final Scope emadlSymbolTable = SymbolTableCreator.createEMADLSymbolTable(rootEMADLComponent,
                 new GlobalScope(modelPath, new EMADLLanguage()));
 
-//        final ConfigurationValidator configurationValidator = new ConfigurationValidator();
-//        configurationValidator.validateTrainingConfiguration(trainingConfigurationSymbol);
-
         checkCoCos();
         backendSpecificValidations();
         final EMAComponentInstanceSymbol pipelineModelWithExecutionSemantics = calculateExecutionSemantics();
@@ -80,6 +86,7 @@ public abstract class AbstractWorkflow {
         generateBackendArtefactsIntoExperiment();
         final LearningMethod learningMethod = LearningMethod.SUPERVISED;
         createPipeline(learningMethod);
+        pipeline.setSchemasTargetDir(schemasTargetDir);
         pipeline.setNetworkInstancesConfigs(
                 this.getNetworkInstanceConfigs(pathToModelsDirectory, rootModelName, rootEMADLComponent, emadlSymbolTable)
         );
@@ -158,10 +165,22 @@ public abstract class AbstractWorkflow {
             ASTConfLangCompilationUnit nasConf = this.getNASConfiguration(
                     pathToModelsDirectory, rootModelName, instanceName, componentTypeName
             );
+            // Validate NAS configuration:
+            ConfigurationValidationHandler.validateConfiguration(nasConf, this.pipeline.getSchemasTargetDir());
+
+            configMap.put("nasConf", nasConf);
+
             ASTConfLangCompilationUnit instanceTrainingConfiguration = this.getAutoMLConfiguration(
                     pathToModelsDirectory, rootModelName, instanceName, componentTypeName, instanceNetworkName + ".conf"
             );
-            instanceTrainingConfiguration.getConfiguration().addSuperConfiguration(nasConf.getConfiguration());
+
+            if (nasConf != null) {
+                instanceTrainingConfiguration.getConfiguration().addSuperConfiguration(nasConf.getConfiguration());
+            }
+
+            // Validate initial training configuration:
+            ConfigurationValidationHandler.validateConfiguration(instanceTrainingConfiguration,
+                    this.pipeline.getSchemasTargetDir());
             configMap.put("trainingConfiguration", instanceTrainingConfiguration);
 
             // Set configurations for Hyperparameters Optimization algorithm:
@@ -176,6 +195,9 @@ public abstract class AbstractWorkflow {
             ASTConfLangCompilationUnit evaluationCriteria = this.getAutoMLConfiguration(
                     pathToModelsDirectory, rootModelName, instanceName, componentTypeName, "EvaluationCriteria.conf"
             );
+            // Validate evaluation criteria configuration:
+            ConfigurationValidationHandler.validateConfiguration(evaluationCriteria,
+                    this.pipeline.getSchemasTargetDir());
             configMap.put("EvaluationCriteria", evaluationCriteria);
 
             // Set pipeline configuration
@@ -280,7 +302,7 @@ public abstract class AbstractWorkflow {
             // Priority 3: parent/global configuration
             pathToConfiguration = parentPath.toString();
         } else {
-            throw new FileNotFoundException(String.format("No conf file %s found.", configurationName));
+            return null;
         }
 
         return this.parseTrainingConfiguration(pathToConfiguration);
@@ -299,14 +321,63 @@ public abstract class AbstractWorkflow {
     protected ASTConfLangCompilationUnit getNASConfiguration(
             String pathToModelsDirectory, String rootModelName,
             String instanceName, String componentTypeName) throws IOException {
-        try {
-            return this.getAutoMLConfiguration(
-                    pathToModelsDirectory, rootModelName, instanceName, componentTypeName, "AdaNet.conf"
-            );
-        } catch (FileNotFoundException fileNotFoundException) {
-            return this.getAutoMLConfiguration(
-                    pathToModelsDirectory, rootModelName, instanceName, componentTypeName, "EfficientNet.conf"
-            );
+        switch (componentTypeName) {
+            case "AdaNetCustom":
+                return this.getAutoMLConfiguration(
+                        pathToModelsDirectory, rootModelName, instanceName, componentTypeName, "AdaNet.conf");
+            case "EfficientNetBase":
+                return this.getAutoMLConfiguration(
+                        pathToModelsDirectory, rootModelName, instanceName, componentTypeName, "EfficientNet.conf");
+            default:
+                return null;
         }
+    }
+
+    private void addPythonScriptsToTarget() {
+        Log.info("Adding Python scripts from steps and schema_apis folder to target.", AbstractWorkflow.class.getName());
+
+        List<String> stepDirPyFiles = Arrays.asList("HDF5DataAccess.py", "MyEvaluations.py", "MySupervisedTrainer.py", "Utils.py");
+        String stepsResourceDir = "experiments/steps/";
+        String stepsTargetDir = "target/generated-sources/steps/";
+
+        List<String> schemaDirPyFiles = Arrays.asList("Supervised_Schema_API.py");
+        String schemaResourceDir = "experiments/schema_apis/";
+        String schemaTargetDir = "target/generated-sources/schema_apis/";
+
+        this.addAllFiles(stepsResourceDir, stepsTargetDir, stepDirPyFiles);
+        this.addAllFiles(schemaResourceDir, schemaTargetDir, schemaDirPyFiles);
+    }
+
+    private void addAllFiles(String resourceDir, String targetDir, List<String> fileNameList) {
+        for (String fileName : fileNameList) {
+            URL fileURL = getClass().getClassLoader().getResource(resourceDir + fileName);
+            try {
+                FileUtils.copyURLToFile(fileURL, new File(targetDir + fileName));
+            } catch (IOException e) {
+                throw new RuntimeException(e);
+            }
+        }
+    }
+
+    protected void copySchemasToTarget() {
+        Log.info("Adding schema files for configuration validation to target.", AbstractWorkflow.class.getName());
+        List<String> schemaFiles = Arrays.asList(
+                "Cleaning.scm",
+                "DataImbalance.scm",
+                "DataSplitting.scm",
+                "EfficientNet.scm",
+                "Environment.scm",
+                "EvalMetric.scm",
+                "EvaluationCriteria.scm",
+                "General.scm",
+                "HyperparameterOpt.scm",
+                "Loss.scm",
+                "NeuralArchitectureSearch.scm",
+                "NoiseDistribution.scm",
+                "Optimizer.scm",
+                "ReplayMemory.scm",
+                "Supervised.scm");
+        String schemasResourceDir = "schemas/";
+        this.addAllFiles(schemasResourceDir, this.schemasTargetDir, schemaFiles);
     }
 }
