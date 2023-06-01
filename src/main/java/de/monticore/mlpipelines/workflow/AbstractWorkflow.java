@@ -27,7 +27,6 @@ import de.se_rwth.commons.logging.Log;
 import org.apache.commons.io.FileUtils;
 
 import java.io.File;
-import java.io.FileNotFoundException;
 import java.io.IOException;
 import java.net.URL;
 import java.nio.file.Files;
@@ -322,17 +321,15 @@ public abstract class AbstractWorkflow {
     protected ASTConfLangCompilationUnit getNASConfiguration(
             String pathToModelsDirectory, String rootModelName,
             String instanceName, String componentTypeName) throws IOException {
-        if ((!componentTypeName.equals("AdaNetCustom")) && (!componentTypeName.equals("EfficientNetBase"))) {
-            return null;
-        }
-        try {
-            return this.getAutoMLConfiguration(
-                    pathToModelsDirectory, rootModelName, instanceName, componentTypeName, "AdaNet.conf"
-            );
-        } catch (FileNotFoundException fileNotFoundException) {
-            return this.getAutoMLConfiguration(
-                    pathToModelsDirectory, rootModelName, instanceName, componentTypeName, "EfficientNet.conf"
-            );
+        switch (componentTypeName) {
+            case "AdaNetCustom":
+                return this.getAutoMLConfiguration(
+                        pathToModelsDirectory, rootModelName, instanceName, componentTypeName, "AdaNet.conf");
+            case "EfficientNetBase":
+                return this.getAutoMLConfiguration(
+                        pathToModelsDirectory, rootModelName, instanceName, componentTypeName, "EfficientNet.conf");
+            default:
+                return null;
         }
     }
 
