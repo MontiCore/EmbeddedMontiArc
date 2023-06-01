@@ -32,19 +32,14 @@ public class HyperparamsOptAlgGeneratorTest extends TestCase {
     }
 
     @Test
-    public void testGenerateWeightedRS() throws IOException {
-        // TODO: Add test for Weighted RS
-    }
-
-    @Test
     public void testGenerateHyperband() throws IOException {
         AbstractHyperparameterAlgorithm hyperparameterAlgorithm = this.getAlgObjByName("Hyperband");
         assertTrue(hyperparameterAlgorithm instanceof HyperbandAlgorithm);
 
         HyperbandAlgorithm ha = (HyperbandAlgorithm) hyperparameterAlgorithm;
-        assertEquals(ha.getMaxIter(), 81);
+        assertEquals(ha.getMaxIter(), 9);
         assertEquals(ha.getEta(), 3);
-        assertEquals(ha.getSkipLast(),1);
+        assertEquals(ha.getSkipLast(),0);
     }
 
     @Test
@@ -79,6 +74,18 @@ public class HyperparamsOptAlgGeneratorTest extends TestCase {
     }
 
     @Test
+    public void testDefaultGA() throws IOException {
+        AbstractHyperparameterAlgorithm hyperparameterAlgorithm = this.getAlgObjByName("default");
+        assertTrue(hyperparameterAlgorithm instanceof GeneticAlgorithm);
+
+        GeneticAlgorithm ga = (GeneticAlgorithm) hyperparameterAlgorithm;
+        assertEquals(ga.getSelectionRate(), 0.6);
+        assertEquals(ga.getCrossoverConfig(), 0.5);
+        assertEquals(ga.getMutationConfig(), 0.3);
+        assertEquals(ga.getPopulationSize(), 10);
+    }
+
+    @Test
     public void testGenerateParticleSwarmOptimization() throws IOException {
         AbstractHyperparameterAlgorithm hyperparameterAlgorithm = this.getAlgObjByName("PSO");
         assertTrue(hyperparameterAlgorithm instanceof ParticleSwarmOptimization);
@@ -91,9 +98,10 @@ public class HyperparamsOptAlgGeneratorTest extends TestCase {
 
     private AbstractHyperparameterAlgorithm getAlgObjByName(String algorithmName) throws IOException {
         String path = "src/test/resources/models/automl/hyperparams_opt/%s/HyperparameterOpt.conf";
+        String schemaPath = "src/test/resources/models/automl/schemas/HyperparameterOpt.scm";
         path = String.format(path, algorithmName);
         ConfLangParser parser = new ConfLangParser();
         ASTConfLangCompilationUnit hyperparamsOptConf = parser.parse(path).get();
-        return HyperparamsOptAlgGenerator.generateAlgorithm(hyperparamsOptConf);
+        return HyperparamsOptAlgGenerator.generateAlgorithm(hyperparamsOptConf, schemaPath);
     }
 }

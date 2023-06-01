@@ -3,6 +3,7 @@ package de.monticore.mlpipelines.automl.hyperparameters.sequential;
 import conflang._ast.ASTConfLangCompilationUnit;
 import de.monticore.mlpipelines.automl.emadlprinter.ASTConfLangCompilationUnitPrinter;
 import de.monticore.mlpipelines.automl.helper.ASTConfLangCompilationUnitHandler;
+import de.monticore.mlpipelines.automl.helper.ConfigurationValidationHandler;
 import de.monticore.mlpipelines.automl.hyperparameters.AbstractHyperparameterAlgorithm;
 import de.monticore.mlpipelines.pipelines.Pipeline;
 import de.se_rwth.commons.logging.Log;
@@ -45,6 +46,7 @@ public abstract class SequentialAlgorithm extends AbstractHyperparameterAlgorith
         ASTConfLangCompilationUnitPrinter printer = new ASTConfLangCompilationUnitPrinter();
 
         while(this.getCurrentIteration() < maxIterNum) {
+            ConfigurationValidationHandler.validateConfiguration(trainingConfiguration, pipeline.getSchemasTargetDir());
             pipeline.setConfigurationModel(trainingConfiguration);
             pipeline.execute();
 

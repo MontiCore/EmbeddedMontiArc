@@ -1,6 +1,5 @@
 package de.monticore.mlpipelines.automl.trainalgorithms.efficientnet;
 
-import de.monticore.lang.math._symboltable.expression.MathNumberExpressionSymbol;
 import de.monticore.lang.monticar.cnnarch._symboltable.ArchitectureElementSymbol;
 import de.monticore.lang.monticar.cnnarch._symboltable.ArchitectureSymbol;
 import de.monticore.lang.monticar.cnnarch._symboltable.NetworkInstructionSymbol;
@@ -8,7 +7,6 @@ import de.monticore.lang.monticar.cnnarch._symboltable.SerialCompositeElementSym
 import de.monticore.mlpipelines.automl.configuration.EfficientNetConfig;
 import de.monticore.mlpipelines.automl.helper.ArchitectureHelper;
 import de.monticore.mlpipelines.automl.helper.FileLoader;
-import de.monticore.mlpipelines.automl.helper.MathNumberExpressionWrapper;
 import de.monticore.mlpipelines.automl.helper.OriginalLayerParams;
 import de.monticore.mlpipelines.automl.trainalgorithms.NeuralArchitectureSearch;
 

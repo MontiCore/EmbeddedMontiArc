@@ -3,6 +3,7 @@ package de.monticore.mlpipelines.automl.hyperparameters.parallel;
 import conflang._ast.ASTConfLangCompilationUnit;
 import de.monticore.mlpipelines.automl.emadlprinter.ASTConfLangCompilationUnitPrinter;
 import de.monticore.mlpipelines.automl.helper.ASTConfLangCompilationUnitHandler;
+import de.monticore.mlpipelines.automl.helper.ConfigurationValidationHandler;
 import de.monticore.mlpipelines.automl.hyperparameters.AbstractHyperparameterAlgorithm;
 import de.monticore.mlpipelines.pipelines.Pipeline;
 import de.se_rwth.commons.logging.Log;
@@ -87,6 +88,7 @@ public abstract class ParallelAlgorithm extends AbstractHyperparameterAlgorithm 
         while(this.getCurrentIteration() < maxIterNum) {
             List<Double> evalValues = new ArrayList<>();
             for (ASTConfLangCompilationUnit trainingConfiguration : population) {
+                ConfigurationValidationHandler.validateConfiguration(trainingConfiguration, pipeline.getSchemasTargetDir());
                 pipeline.setConfigurationModel(trainingConfiguration);
                 pipeline.execute();
                 double evalValue = Double.valueOf(((Float) (pipeline.getTrainedAccuracy() / 100)).toString());
