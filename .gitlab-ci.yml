@@ -27,4 +27,3 @@ TestAutoML:
   artifacts:
     paths:
       - automl/target/generated-sources/**
-  timeout: 6h 30m
