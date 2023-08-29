@@ -660,7 +660,7 @@ public class FileHandler {
 
         List<File> datasets = architecture.get().getDataPaths().stream().map(File::new).map(
                 file -> file.listFiles((FilenameFilter) new WildcardFileFilter("*.json"))
-        ).flatMap(Arrays::stream).collect(Collectors.toList());
+        ).filter(Objects::nonNull).flatMap(Arrays::stream).collect(Collectors.toList());
         if(!datasets.isEmpty()){
             String content = "";
             for(File child : datasets){
@@ -681,7 +681,7 @@ public class FileHandler {
         } else {
             Log.info("No metadata information about datasets found. Fallback to hashing all files.", this.getClass().getName());
             datasets = architecture.get().getDataPaths().stream().map(File::new).map(
-                    file -> file.listFiles()).flatMap(Arrays::stream).collect(Collectors.toList());
+                    File::listFiles).filter(Objects::nonNull).flatMap(Arrays::stream).collect(Collectors.toList());
             for (File child : datasets) {
                 if(child.isDirectory()){
                     continue;
@@ -703,9 +703,18 @@ public class FileHandler {
         String mainComponentConfigFilename = componentInstance.getComponentType().getFullName().replaceAll("\\.", "/");
         String instanceConfigFilename = componentInstance.getFullName().replaceAll("\\.", "/") + "_" + componentInstance.getName();
         String configFilename = getConfigFilename(mainComponentConfigFilename, componentInstance.getFullName().replaceAll("\\.", "/"), instanceConfigFilename);
+
+        System.out.println("[FileHandler]generateHashFile: mainComponentConfigFilename=" + mainComponentConfigFilename);
+        System.out.println("[FileHandler]generateHashFile: instanceConfigFilename=" + instanceConfigFilename);
+        System.out.println("[FileHandler]generateHashFile: configFilename=" + configFilename);
+
         String configFilepath = getModelsPath().concat(configFilename);
         String emadlPath = configFilepath.concat(".emadl");
         String cnntPath = configFilepath.concat(".conf");
+
+        System.out.println("[FileHandler]generateHashFile: configFilepath=" + configFilepath);
+        System.out.println("[FileHandler]generateHashFile: emadlPath=" + emadlPath);
+        System.out.println("[FileHandler]generateHashFile: cnntPath=" + cnntPath);
 
         JSONObject newHashes = new JSONObject();
         newHashes.put("datasets", newDatasetsHashes);
