@@ -13,17 +13,38 @@ TestPYTORCH:
   - cd target
   - ../build/target/mnist_mnistClassifier ../src/main/resources/test_img/2.jpg
 
-TestAutoML:
-  stage: linux
-  image: registry.git.rwth-aachen.de/monticore/embeddedmontiarc/generators/emadl2cpp/dockerimages/pytorch
+#TestAutoML:
+#  stage: linux
+#  image: registry.git.rwth-aachen.de/monticore/embeddedmontiarc/generators/emadl2cpp/dockerimages/pytorch
+#  script:
+#  - cd automl
+#  - echo "Maven clean compile"
+#  - mvn clean compile -s settings.xml -U
+#  - echo "Rename directory location of dataset"
+#  - mv src/main/resources/experiments/training_data src/main/resources/experiments/data
+#  - echo "Execute AutoML pipeline"
+#  - mvn exec:java -s settings.xml -U
+#  artifacts:
+#    paths:
+#      - automl/target/generated-sources/**
+
+TestEMADLMavenPlugin:
+  stage: test
+  image: registry.git.rwth-aachen.de/monticore/embeddedmontiarc/generators/emadl2cpp/mxnet/190:v0.0.2
+  when: always
   script:
-  - cd automl
-  - echo "Maven clean compile"
-  - mvn clean compile -s settings.xml -U
-  - echo "Rename directory location of dataset"
-  - mv src/main/resources/experiments/training_data src/main/resources/experiments/data
-  - echo "Execute AutoML pipeline"
-  - mvn exec:java -s settings.xml -U
+    - cd emadl-maven-automl
+    - python3 -m pip install -U pip
+    - python3 -m pip install scikit-image
+    - python3 -m pip install opencv-python
+    - mvn dependency:resolve emadl:train -s settings.xml -U -e
+    - mvn dependency:resolve emadl:deploy-dataset -s settings.xml -U -e
+    - mvn dependency:resolve emadl:deploy-pretrained -s settings.xml -U -e
+    - mkdir output
+    - python3 calculator.py
   artifacts:
     paths:
-      - automl/target/generated-sources/**
+      - emadl-maven-plugin/output/*
+    expire_in: 1 week
+  except:
+    - modular_testing
