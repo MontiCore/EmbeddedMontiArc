@@ -30,7 +30,7 @@ TestPYTORCH:
 
 TestEMADLMavenPlugin:
   stage: linux
-  image: registry.git.rwth-aachen.de/monticore/embeddedmontiarc/generators/emadl2cpp/mxnet/190:v0.0.2
+  image: registry.git.rwth-aachen.de/monticore/embeddedmontiarc/generators/emadl2cpp/dockerimages/pytorch
   when: always
   script:
     - cd emadl-maven-automl
