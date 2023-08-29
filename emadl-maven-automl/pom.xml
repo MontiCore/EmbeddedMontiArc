@@ -20,7 +20,7 @@
             <!-- EMADL2CPP -->
             <groupId>de.monticore.lang.monticar</groupId>
             <artifactId>embedded-montiarc-emadl-generator</artifactId>
-            <version>0.5.16-SNAPSHOT</version>
+            <version>0.5.15-SNAPSHOT</version>
         </dependency>
 
     </dependencies>
