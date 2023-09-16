@@ -1,5 +1,6 @@
 stages:
 - linux
+- test
 
 TestPYTORCH:
   stage: linux
@@ -29,8 +30,8 @@ TestPYTORCH:
 #      - automl/target/generated-sources/**
 
 TestEMADLMavenPlugin:
-  stage: linux
-  image: registry.git.rwth-aachen.de/monticore/embeddedmontiarc/generators/emadl2cpp/dockerimages/pytorch
+  stage: test
+  image: registry.git.rwth-aachen.de/monticore/embeddedmontiarc/generators/emadl2cpp/mxnet/190:v0.0.2
   when: always
   script:
     - cd emadl-maven-automl
