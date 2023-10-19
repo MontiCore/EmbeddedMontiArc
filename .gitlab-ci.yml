@@ -3,111 +3,118 @@ stages:
   - linux
   - page
   - trigger_apps
+  - test
 
-BranchJobLinux:
-  stage: linux
-  image: registry.git.rwth-aachen.de/monticore/embeddedmontiarc/applications/carlacomponents/ros-maven
+ma_antovski:
+  stage: test
+  image: maven:latest
   script:
-    - mvn -B  clean install -s settings.xml
-  except:
-    - master
+    - mvn deploy -s settings.xml
 
-MasterDeployJobLinux:
-  stage: linux
-  image: maven:3-jdk-8
-  #image: registry.git.rwth-aachen.de/monticore/embeddedmontiarc/applications/carlacomponents/ros-maven
-  script:
-    - mvn -s settings.xml -Dorg.slf4j.simpleLogger.log.org.apache.maven.cli.transfer.Slf4jMavenTransferListener=warn -B clean deploy 
-  only:
-    - master
-
-trigger-mnistcalc:
-  stage: trigger_apps
-  allow_failure: true
-  trigger:
-    project: monticore/EmbeddedMontiArc/applications/MNISTCalculator
-    branch: master
-  only:
-    - master
-
-trigger-3d-gan:
-  stage: trigger_apps
-  allow_failure: true
-  trigger:
-    project: monticore/EmbeddedMontiArc/applications/gans/3d-gan
-    branch: master
-  only:
-    - master
-
-trigger-mnist-vae:
-  stage: trigger_apps
-  allow_failure: true
-  trigger:
-    project: monticore/EmbeddedMontiArc/applications/vaes/mnist-vae
-    branch: master
-  only:
-    - master
-
-trigger-kipf-gnn:
-  stage: trigger_apps
-  allow_failure: true
-  trigger:
-    project: monticore/EmbeddedMontiArc/applications/kipf-gnn
-    branch: main
-  only:
-    - master
-
-trigger-sentiment:
-  stage: trigger_apps
-  allow_failure: true
-  trigger:
-    project: monticore/EmbeddedMontiArc/applications/bertsentimentanalyzer
-    branch: master
-  only:
-    - master
-    
-trigger-coopautopilot:
-  stage: trigger_apps
-  allow_failure: true
-  trigger:
-    project: monticore/EmbeddedMontiArc/applications/reinforcement_learning/CoopMontiSimAutopilot
-    branch: main
-  only:
-    - master    
-
-trigger-doppelkopf:
-  stage: trigger_apps
-  allow_failure: true
-  trigger:
-    project: monticore/EmbeddedMontiArc/applications/reinforcement_learning/doppelkopf-agent
-    branch: master
-  only:
-    - master    
-
-trigger-tictactoe:
-  stage: trigger_apps
-  allow_failure: true
-  trigger:
-    project: monticore/EmbeddedMontiArc/applications/reinforcement_learning/tictactoeagent
-    branch: main
-  only:
-    - master  
-
-
-pages:
-  stage: page
-  image: registry.git.rwth-aachen.de/monticore/embeddedmontiarc/applications/carlacomponents/ros-maven
-  script:
-    - mvn clean site -s settings.xml
-    - mv target/site/ public/
-  artifacts:
-    paths:
-      - public
-  only:
-    - master
-  except:
-    changes:
-      - .gitignore
-      - README.md
+#BranchJobLinux:
+#  stage: linux
+#  image: registry.git.rwth-aachen.de/monticore/embeddedmontiarc/applications/carlacomponents/ros-maven
+#  script:
+#    - mvn -B  clean install -s settings.xml
+#  except:
+#    - master
+#
+#MasterDeployJobLinux:
+#  stage: linux
+#  image: maven:3-jdk-8
+#  #image: registry.git.rwth-aachen.de/monticore/embeddedmontiarc/applications/carlacomponents/ros-maven
+#  script:
+#    - mvn -s settings.xml -Dorg.slf4j.simpleLogger.log.org.apache.maven.cli.transfer.Slf4jMavenTransferListener=warn -B clean deploy
+#  only:
+#    - master
+#
+#trigger-mnistcalc:
+#  stage: trigger_apps
+#  allow_failure: true
+#  trigger:
+#    project: monticore/EmbeddedMontiArc/applications/MNISTCalculator
+#    branch: master
+#  only:
+#    - master
+#
+#trigger-3d-gan:
+#  stage: trigger_apps
+#  allow_failure: true
+#  trigger:
+#    project: monticore/EmbeddedMontiArc/applications/gans/3d-gan
+#    branch: master
+#  only:
+#    - master
+#
+#trigger-mnist-vae:
+#  stage: trigger_apps
+#  allow_failure: true
+#  trigger:
+#    project: monticore/EmbeddedMontiArc/applications/vaes/mnist-vae
+#    branch: master
+#  only:
+#    - master
+#
+#trigger-kipf-gnn:
+#  stage: trigger_apps
+#  allow_failure: true
+#  trigger:
+#    project: monticore/EmbeddedMontiArc/applications/kipf-gnn
+#    branch: main
+#  only:
+#    - master
+#
+#trigger-sentiment:
+#  stage: trigger_apps
+#  allow_failure: true
+#  trigger:
+#    project: monticore/EmbeddedMontiArc/applications/bertsentimentanalyzer
+#    branch: master
+#  only:
+#    - master
+#
+#trigger-coopautopilot:
+#  stage: trigger_apps
+#  allow_failure: true
+#  trigger:
+#    project: monticore/EmbeddedMontiArc/applications/reinforcement_learning/CoopMontiSimAutopilot
+#    branch: main
+#  only:
+#    - master
+#
+#trigger-doppelkopf:
+#  stage: trigger_apps
+#  allow_failure: true
+#  trigger:
+#    project: monticore/EmbeddedMontiArc/applications/reinforcement_learning/doppelkopf-agent
+#    branch: master
+#  only:
+#    - master
+#
+#trigger-tictactoe:
+#  stage: trigger_apps
+#  allow_failure: true
+#  trigger:
+#    project: monticore/EmbeddedMontiArc/applications/reinforcement_learning/tictactoeagent
+#    branch: main
+#  only:
+#    - master
+#
+#
+#pages:
+#  stage: page
+#  image: registry.git.rwth-aachen.de/monticore/embeddedmontiarc/applications/carlacomponents/ros-maven
+#  script:
+#    - mvn clean site -s settings.xml
+#    - mv target/site/ public/
+#  artifacts:
+#    paths:
+#      - public
+#  only:
+#    - master
+#  except:
+#    changes:
+#      - .gitignore
+#      - README.md
 
 

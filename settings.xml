@@ -25,6 +25,18 @@
             <username>travisbuilduser</username>
             <password>${env.travisbuilduserpassword}</password>
         </server>
+
+        <server>
+            <id>gitlab-maven</id>
+            <configuration>
+                <httpHeaders>
+                    <property>
+                        <name>Job-Token</name>
+                        <value>${CI_JOB_TOKEN}</value>
+                    </property>
+                </httpHeaders>
+            </configuration>
+        </server>
     </servers>
 
     <!--mirrors>
@@ -211,6 +223,16 @@
 
             </pluginRepositories>
 
+        </profile>
+
+        <profile>
+            <id>gitlab-maven</id>
+            <repositories>
+                <repository>
+                    <id>central</id>
+                    <url>https://repo1.maven.org/maven2/</url>
+                </repository>
+            </repositories>
         </profile>
     </profiles>
 

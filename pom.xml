@@ -229,14 +229,30 @@
 
 
     <!-- ........... DISTRIBUTION ............................ -->
+<!--    <distributionManagement>-->
+<!--        <repository>-->
+<!--          <id>se-nexus</id>-->
+<!--          <url>https://nexus.se.rwth-aachen.de/content/repositories/embeddedmontiarc-releases/</url>-->
+<!--        </repository>-->
+<!--        <snapshotRepository>-->
+<!--          <id>se-nexus</id>-->
+<!--          <url>https://nexus.se.rwth-aachen.de/content/repositories/embeddedmontiarc-snapshots/</url>-->
+<!--        </snapshotRepository>-->
+<!--    </distributionManagement>-->
+    <repositories>
+        <repository>
+            <id>gitlab-maven</id>
+            <url>${CI_API_V4_URL}/projects/49355/packages/maven</url>
+        </repository>
+    </repositories>
     <distributionManagement>
         <repository>
-          <id>se-nexus</id>
-          <url>https://nexus.se.rwth-aachen.de/content/repositories/embeddedmontiarc-releases/</url>
+            <id>gitlab-maven</id>
+            <url>${CI_API_V4_URL}/projects/49355/packages/maven</url>
         </repository>
         <snapshotRepository>
-          <id>se-nexus</id>
-          <url>https://nexus.se.rwth-aachen.de/content/repositories/embeddedmontiarc-snapshots/</url>
+            <id>gitlab-maven</id>
+            <url>${CI_API_V4_URL}/projects/49355/packages/maven</url>
         </snapshotRepository>
     </distributionManagement>
 
