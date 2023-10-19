@@ -1,12 +1,14 @@
 /* (c) https://github.com/MontiCore/monticore */
 package de.monticore.lang.monticar.utilities.mojos;
 
+import de.monticore.lang.monticar.utilities.configcheck.ConfigCheck;
 import de.monticore.lang.monticar.utilities.models.TrainingConfiguration;
-import de.monticore.lang.monticar.utilities.utils.PropertyReader;
+import org.apache.maven.model.DeploymentRepository;
 import org.apache.maven.plugin.MojoExecutionException;
 import org.apache.maven.plugin.MojoFailureException;
 import org.apache.maven.plugins.annotations.Mojo;
 
+import java.io.File;
 import java.util.LinkedList;
 import java.util.List;
 
@@ -20,20 +22,40 @@ public class TrainingMojo extends TrainingConfigMojo {
 
   @Override
   public void execute() throws MojoExecutionException, MojoFailureException {
-    executeMojo(
-        plugin(
-            groupId("de.monticore.lang.monticar.utilities"),
-            artifactId("maven-streamtest"),
-            version("0.0.34-SNAPSHOT")
-        ),
-        goal("streamtest-generator"),
-        configuration(getConfigElements().toArray(new Element[0])),
-        executionEnvironment(
-            this.getMavenProject(),
-            this.getMavenSession(),
-            this.getPluginManager()
-        )
-    );
+    boolean configCheckEnabled = getTrainingConfig().getConfigCheck();
+    ConfigCheck configCheck = null;
+
+    if (configCheckEnabled) {
+      configCheck = new ConfigCheck(getTrainingConfig(), getPathTmpOut());
+      if (configCheck.configurationAlreadyRun()) {
+        System.out.println("configuration already run. Skipping...");
+        return;
+      }
+    }
+
+    System.out.println("executeMojo()");
+      executeMojo(
+              plugin(
+                      groupId("de.monticore.lang.monticar.utilities"),
+                      artifactId("maven-streamtest"),
+                      version("0.0.34-SNAPSHOT")
+              ),
+              goal("streamtest-generator"),
+              configuration(getConfigElements().toArray(new Element[0])),
+              executionEnvironment(
+                      this.getMavenProject(),
+                      this.getMavenSession(),
+                      this.getPluginManager()
+              )
+      );
+
+    if (configCheckEnabled) {
+      // TODO: Save evaluationMetrics to conf
+      System.out.println("executeDeploy()");
+      DeploymentRepository repository = this.getMavenProject().getDistributionManagement().getRepository();
+      File settingsFile = this.getMavenSession().getRequest().getUserSettingsFile();
+      configCheck.deployConfigCheckArtifact(repository, settingsFile);
+    }
   }
 
   private List<Element> getConfigElements() {

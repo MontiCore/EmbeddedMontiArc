@@ -33,6 +33,8 @@ public class TrainingConfiguration {
 
   private GeneratorEnum generator;
 
+  private Boolean configCheck;
+
   public File getPathToPython() {
     return pathToPython;
   }
@@ -63,6 +65,10 @@ public class TrainingConfiguration {
 
   public GeneratorEnum getGenerator() {
     return generator;
+  }
+
+  public Boolean getConfigCheck() {
+    return configCheck;
   }
 
   public void setPathToPython(File pathToPython) {
