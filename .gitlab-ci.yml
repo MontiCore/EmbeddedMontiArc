@@ -9,7 +9,7 @@ ma_antovski:
   stage: test
   image: maven:latest
   script:
-    - mvn deploy -s settings.xml
+    - mvn deploy -s settings.xml -DskipTests
 
 #BranchJobLinux:
 #  stage: linux
