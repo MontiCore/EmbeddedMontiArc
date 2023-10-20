@@ -21,29 +21,29 @@
             <password>${env.cibuild}</password>
         </server>
 
-    <server>
-      <id>gitlab-maven</id>
-      <configuration>
-        <httpHeaders>
-          <property>
-              <name>Job-Token</name>
-              <value>${env.CI_JOB_TOKEN}</value>
-          </property>
-        </httpHeaders>
-      </configuration>
-    </server>
+        <server>
+            <id>gitlab-maven</id>
+            <configuration>
+                <httpHeaders>
+                    <property>
+                        <name>Deploy-Token</name>
+                        <value>KJkmCZosey-A8XBES2Fy</value>
+                    </property>
+                </httpHeaders>
+            </configuration>
+        </server>
 
-    <server>
-      <id>gitlab-maven-mnist</id>
-      <configuration>
-        <httpHeaders>
-            <property>
-                <name>Job-Token</name>
-                <value>${env.CI_JOB_TOKEN}</value>
-            </property>
-        </httpHeaders>
-      </configuration>
-    </server>
+        <server>
+          <id>gitlab-maven-mnist</id>
+          <configuration>
+            <httpHeaders>
+                <property>
+                    <name>Deploy-Token</name>
+                    <value>KJkmCZosey-A8XBES2Fy</value>
+                </property>
+            </httpHeaders>
+          </configuration>
+        </server>
 
 
     <server>
