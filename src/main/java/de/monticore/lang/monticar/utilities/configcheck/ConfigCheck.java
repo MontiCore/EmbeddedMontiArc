@@ -108,23 +108,8 @@ public class ConfigCheck {
 
     private DeploymentRepository getGitlabRepository() {
         DeploymentRepository deploymentRepository = null;
-        File pluginPomFile = new File("pom.xml");
-        MavenXpp3Reader reader = new MavenXpp3Reader();
-        try {
-            Model pluginPomModel = reader.read(new FileReader(pluginPomFile));
-            List repositories = pluginPomModel.getRepositories();
-            System.out.println("Repositories:");
-            for (Object r : repositories) {
-                Repository repository = ((Repository) r);
-                System.out.println(repository.getId());
-                if (repository.getId().equals("gitlab-maven")) {
-                    deploymentRepository.setId(repository.getId());
-                    deploymentRepository.setUrl(repository.getUrl());
-                }
-            }
-        } catch (IOException | XmlPullParserException e) {
-            e.printStackTrace();
-        }
+        deploymentRepository.setId("gitlab-maven");
+        deploymentRepository.setUrl("https://git.rwth-aachen.de/api/v4/projects/49355/packages/maven");
         return deploymentRepository;
     }
 }

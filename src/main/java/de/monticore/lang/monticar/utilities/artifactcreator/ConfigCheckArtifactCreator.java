@@ -13,14 +13,11 @@ public class ConfigCheckArtifactCreator extends ArtifactCreator {
 
     public static File createArtifact(StorageInformation storageInformation, String tmpOut) throws IOException {
         Manifest manifest = createManifest(storageInformation.getGroupId(), storageInformation.getArtifactId(), storageInformation.getVersion(), new Attributes());
-        // TODO: Set the encoded configuration string as jarName
-        String jarFileName = createJarFileName(tmpOut, "configCheck");
+        String jarFileName = createJarFileName(tmpOut, storageInformation.getArtifactId());
         List<FileLocation> fileLocations = getFileLocations(new File(tmpOut));
-
         if (fileLocations.isEmpty()) {
-            throw new RuntimeException("No <encodedString>.json file was found in " + tmpOut);
+            throw new RuntimeException("No " + storageInformation.getArtifactId() + ".json file was found in " + tmpOut);
         }
-
         return JarCreator.createArtifact(jarFileName, manifest, fileLocations);
     }
 
