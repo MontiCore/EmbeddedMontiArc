@@ -72,12 +72,21 @@ public class ConfigCheck {
     private void createConfFile() {
 //        String encoded = Encoder.encode(gson.toJson(configurationMap));
         String encoded = "ENCODED";
+        // TODO: this should be removed once the training works
+        createFoldersIfNotExists(pathTmp);
         try {
             FileWriter writer = new FileWriter(pathTmp + "/" + encoded + ".json");
             new Gson().toJson(configurationMap, writer);
             writer.close();
         } catch (IOException e) {
             e.printStackTrace();
+        }
+    }
+
+    private static void createFoldersIfNotExists(String folderPath) {
+        File folder = new File(folderPath);
+        if (!folder.exists()) {
+            folder.mkdirs();
         }
     }
 
