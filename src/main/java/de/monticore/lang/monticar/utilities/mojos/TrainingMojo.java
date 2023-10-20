@@ -3,7 +3,6 @@ package de.monticore.lang.monticar.utilities.mojos;
 
 import de.monticore.lang.monticar.utilities.configcheck.ConfigCheck;
 import de.monticore.lang.monticar.utilities.models.TrainingConfiguration;
-import org.apache.maven.model.DeploymentRepository;
 import org.apache.maven.plugin.MojoExecutionException;
 import org.apache.maven.plugin.MojoFailureException;
 import org.apache.maven.plugins.annotations.Mojo;
@@ -52,9 +51,8 @@ public class TrainingMojo extends TrainingConfigMojo {
     if (configCheckEnabled) {
       // TODO: Save evaluationMetrics to conf
       System.out.println("executeDeploy()");
-      DeploymentRepository repository = this.getMavenProject().getDistributionManagement().getRepository();
       File settingsFile = this.getMavenSession().getRequest().getUserSettingsFile();
-      configCheck.deployConfigCheckArtifact(repository, settingsFile);
+      configCheck.deployConfigCheckArtifact(settingsFile);
     }
   }
 
