@@ -107,7 +107,7 @@ public class ConfigCheck {
     }
 
     private DeploymentRepository getGitlabRepository() {
-        DeploymentRepository deploymentRepository = null;
+        DeploymentRepository deploymentRepository = new DeploymentRepository();
         deploymentRepository.setId("gitlab-maven");
         deploymentRepository.setUrl("https://git.rwth-aachen.de/api/v4/projects/49355/packages/maven");
         return deploymentRepository;
