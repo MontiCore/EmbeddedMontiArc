@@ -107,25 +107,24 @@ public class ConfigCheck {
     }
 
     private DeploymentRepository getGitlabRepository() {
-        DeploymentRepository repository = null;
+        DeploymentRepository deploymentRepository = null;
         File pluginPomFile = new File("pom.xml");
         MavenXpp3Reader reader = new MavenXpp3Reader();
         try {
             Model pluginPomModel = reader.read(new FileReader(pluginPomFile));
-            List profiles = pluginPomModel.getProfiles();
-            System.out.println("PROFILES:");
-            for (Object p : profiles) {
-                Profile profile = ((Profile) p);
-                System.out.println(profile.getId());
-                if (profile.getId().equals("gitlab-maven")) {
-                    Repository repo = (Repository) profile.getRepositories().get(0);
-                    repository.setId(repo.getId());
-                    repository.setUrl(repo.getUrl());
+            List repositories = pluginPomModel.getRepositories();
+            System.out.println("Repositories:");
+            for (Object r : repositories) {
+                Repository repository = ((Repository) r);
+                System.out.println(repository.getId());
+                if (repository.getId().equals("gitlab-maven")) {
+                    deploymentRepository.setId(repository.getId());
+                    deploymentRepository.setUrl(repository.getUrl());
                 }
             }
         } catch (IOException | XmlPullParserException e) {
             e.printStackTrace();
         }
-        return repository;
+        return deploymentRepository;
     }
 }
