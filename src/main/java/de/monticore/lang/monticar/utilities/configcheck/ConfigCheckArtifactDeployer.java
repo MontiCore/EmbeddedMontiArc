@@ -1,20 +1,15 @@
 package de.monticore.lang.monticar.utilities.configcheck;
 
-import de.monticore.lang.monticar.utilities.artifactcreator.ConfigCheckArtifactCreator;
 import de.monticore.lang.monticar.utilities.artifactdeployer.ArtifactDeployer;
 import de.monticore.lang.monticar.utilities.models.StorageInformation;
 import de.monticore.lang.monticar.utilities.utils.JarClassifierEnum;
-import org.apache.maven.model.DeploymentRepository;
 import org.apache.maven.shared.invoker.MavenInvocationException;
 
 import java.io.File;
 import java.io.IOException;
 
-public class ArtifactManager {
-
-    public void createArtifact() {}
-
-    public static void deployArtifact(StorageInformation storageInformation, DeploymentRepository repository, File settingsFile) {
+public class ConfigCheckArtifactDeployer {
+    public static void deployArtifact(StorageInformation storageInformation, File settingsFile) {
         File jarFile;
         try {
             System.out.println(String.format("STARTING creating Jar for config-check %s", storageInformation.getPath()));
@@ -23,16 +18,10 @@ public class ArtifactManager {
 
             System.out.println("jarFile absolute path: " + jarFile.getAbsolutePath());
 
-            ArtifactDeployer.deployArtifact(jarFile.getAbsolutePath(), storageInformation, repository, JarClassifierEnum.EMPTY, settingsFile);
+            ArtifactDeployer.deployArtifact(jarFile.getAbsolutePath(), storageInformation, GitlabPackagesManager.getGitlabRepository(), JarClassifierEnum.EMPTY, settingsFile);
         }
         catch (IOException | MavenInvocationException e) {
             e.printStackTrace();
         }
     }
-
-    public void installArtifact() {}
-
-    public static void getArtifacts(String filter) {}
-
-
 }

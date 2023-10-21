@@ -9,7 +9,7 @@ import java.io.File;
 import java.util.jar.Attributes;
 import java.util.jar.Manifest;
 
-abstract class ArtifactCreator {
+public abstract class ArtifactCreator {
 
   private static final Attributes.Name GROUP_ID = new Attributes.Name("Group-ID");
   private static final Attributes.Name ARTIFACT_ID = new Attributes.Name("Artifact-ID");

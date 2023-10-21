@@ -7,10 +7,7 @@ import de.monticore.lang.monticar.utilities.artifactinmporter.ArtifactImporter;
 import de.monticore.lang.monticar.utilities.models.StorageInformation;
 import de.monticore.lang.monticar.utilities.models.TrainingConfiguration;
 import org.apache.maven.model.*;
-import org.apache.maven.model.io.xpp3.MavenXpp3Reader;
-import org.apache.maven.profiles.Profile;
 import org.apache.maven.shared.invoker.*;
-import org.codehaus.plexus.util.xml.pull.XmlPullParserException;
 
 public class ConfigCheck {
     protected TrainingConfiguration trainingConfiguration;
@@ -40,18 +37,16 @@ public class ConfigCheck {
 
 
         // query database
-        String filter = "modelToTrain";
-        ArtifactManager.getArtifacts(filter);
+        String filter = "modelToTrain"; // or self.project_name
 
         // TODO: Find similar runs
 
         return configurationAlreadyRun;
     }
 
-    public void deployConfigCheckArtifact(File settingsFile) {
+    public void deployArtifact(File settingsFile) {
         createConfFile();
-        DeploymentRepository repository = getGitlabRepository();
-        ArtifactManager.deployArtifact(getStorageInformation(), repository, settingsFile);
+        ConfigCheckArtifactDeployer.deployArtifact(getStorageInformation(), settingsFile);
     }
 
     private void importConfigCheckArtifact(String importPath) {
@@ -104,12 +99,5 @@ public class ConfigCheck {
         storageInformation.setPath(new File(pathTmp));
 
         return storageInformation;
-    }
-
-    private DeploymentRepository getGitlabRepository() {
-        DeploymentRepository deploymentRepository = new DeploymentRepository();
-        deploymentRepository.setId("gitlab-maven");
-        deploymentRepository.setUrl("https://git.rwth-aachen.de/api/v4/projects/49355/packages/maven");
-        return deploymentRepository;
     }
 }

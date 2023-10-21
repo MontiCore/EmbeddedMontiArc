@@ -1,5 +1,6 @@
-package de.monticore.lang.monticar.utilities.artifactcreator;
+package de.monticore.lang.monticar.utilities.configcheck;
 
+import de.monticore.lang.monticar.utilities.artifactcreator.ArtifactCreator;
 import de.monticore.lang.monticar.utilities.models.FileLocation;
 import de.monticore.lang.monticar.utilities.models.StorageInformation;
 import de.monticore.lang.monticar.utilities.utils.JarCreator;
