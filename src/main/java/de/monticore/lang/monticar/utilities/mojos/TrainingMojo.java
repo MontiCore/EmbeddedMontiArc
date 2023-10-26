@@ -52,7 +52,8 @@ public class TrainingMojo extends TrainingConfigMojo {
       // TODO: Save evaluationMetrics to conf
       System.out.println("executeDeploy()");
       File settingsFile = this.getMavenSession().getRequest().getUserSettingsFile();
-      configCheck.deployArtifact(settingsFile);
+      String version = this.getMavenProject().getVersion();
+      configCheck.deployArtifact(version, settingsFile);
     }
   }
 

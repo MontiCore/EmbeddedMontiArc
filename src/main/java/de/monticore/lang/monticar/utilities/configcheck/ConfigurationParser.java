@@ -12,7 +12,7 @@ import java.util.Map;
 import java.util.TreeMap;
 
 public class ConfigurationParser {
-    public Map<String, String> parseConfiguration(TrainingConfiguration trainingConfiguration) {
+    public static Map<String, String> parseConfiguration(TrainingConfiguration trainingConfiguration) {
         File configCheckPath = trainingConfiguration.getPathToProject();
         String backend = trainingConfiguration.getBackend().name();
         String modelToTrain = trainingConfiguration.getModelToTrain();

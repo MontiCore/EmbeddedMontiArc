@@ -3,11 +3,9 @@ package de.monticore.lang.monticar.utilities.configcheck;
 import java.io.*;
 import java.util.*;
 import com.google.gson.Gson;
-import de.monticore.lang.monticar.utilities.artifactinmporter.ArtifactImporter;
 import de.monticore.lang.monticar.utilities.models.StorageInformation;
 import de.monticore.lang.monticar.utilities.models.TrainingConfiguration;
-import org.apache.maven.model.*;
-import org.apache.maven.shared.invoker.*;
+import org.gitlab4j.api.models.Package;
 
 public class ConfigCheck {
     protected TrainingConfiguration trainingConfiguration;
@@ -16,61 +14,41 @@ public class ConfigCheck {
 
     public ConfigCheck(TrainingConfiguration trainingConfiguration, String pathTmp) {
         this.trainingConfiguration = trainingConfiguration;
-        this.configurationMap = new ConfigurationParser().parseConfiguration(trainingConfiguration);
+        this.configurationMap = ConfigurationParser.parseConfiguration(trainingConfiguration);
         this.pathTmp = pathTmp;
     }
 
-//    private String generateEncodedArchitectureString() {
-//        if (this.parsedPipelineConfiguration == null) {
-//            return null;
-//        }
-//
-//        // TODO: Better encoding function ?
-//        byte[] encodedBytes = Base64.getEncoder().encode(this.parsedPipelineConfiguration.getBytes());
-//        return new String(encodedBytes);
-//    }
-//
     public boolean configurationAlreadyRun() {
         boolean configurationAlreadyRun = false;
         Gson gson = new Gson();
+        GitlabPackagesManager gitlabManager = new GitlabPackagesManager();
         String configurationString = gson.toJson(configurationMap);
 
 
         // query database
         String filter = "modelToTrain"; // or self.project_name
+        List<Package> packages = gitlabManager.getPackages();
 
         // TODO: Find similar runs
+        System.out.println("PACKAGES:");
+        for (Package pkg : packages) {
+            System.out.println(pkg.getId());
+            System.out.println(pkg.getName());
+        }
 
         return configurationAlreadyRun;
     }
 
-    public void deployArtifact(File settingsFile) {
+    public void deployArtifact(String version, File settingsFile) {
         createConfFile();
-        ConfigCheckArtifactDeployer.deployArtifact(getStorageInformation(), settingsFile);
-    }
-
-    private void importConfigCheckArtifact(String importPath) {
-        Dependency dependency = new Dependency();
-        dependency.setGroupId("de.monticore.lang.monticar.utilities");
-        dependency.setArtifactId("config-check");
-        dependency.setVersion("1");
-        File targetPath = new File(importPath);
-
-        try {
-            ArtifactImporter.importArtifact(dependency, targetPath);
-            System.out.println("Artifact imported in " + importPath);
-        } catch (MavenInvocationException e) {
-            e.printStackTrace();
-        }
+        ConfigCheckArtifactDeployer.deployArtifact(getStorageInformation(version), settingsFile);
     }
 
     private void createConfFile() {
-//        String encoded = Encoder.encode(gson.toJson(configurationMap));
-        String encoded = "ENCODED";
         // TODO: this should be removed once the training works
         createFoldersIfNotExists(pathTmp);
         try {
-            FileWriter writer = new FileWriter(pathTmp + "/" + encoded + ".json");
+            FileWriter writer = new FileWriter(pathTmp + "/config-check.json");
             new Gson().toJson(configurationMap, writer);
             writer.close();
         } catch (IOException e) {
@@ -85,17 +63,15 @@ public class ConfigCheck {
         }
     }
 
-    private StorageInformation getStorageInformation() {
+    private StorageInformation getStorageInformation(String version) {
         Gson gson = new Gson();
-//        String encoded = Encoder.encode(gson.toJson(configurationMap));
-        String encoded = "ENCODED";
+        String encoded = Encoder.encode(gson.toJson(configurationMap.values()));
+        version = (version == null || version.isEmpty()) ? "1.0.0" : version;
 
         StorageInformation storageInformation = new StorageInformation();
-//        storageInformation.setGroupId("de.monticore.lang.monticar.utilities");
-        storageInformation.setGroupId("config-check");
-//        storageInformation.setArtifactId("config-check");
+        storageInformation.setGroupId(String.format("config-check/%s", configurationMap.get("modelToTrain")));
         storageInformation.setArtifactId(encoded);
-        storageInformation.setVersion("1.0.0");
+        storageInformation.setVersion(version);
         storageInformation.setPath(new File(pathTmp));
 
         return storageInformation;

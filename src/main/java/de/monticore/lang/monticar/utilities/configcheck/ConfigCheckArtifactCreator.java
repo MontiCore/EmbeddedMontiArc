@@ -26,7 +26,7 @@ public class ConfigCheckArtifactCreator extends ArtifactCreator {
         List<FileLocation> configCheckLocations = new ArrayList<>();
         if (pathTmpOut.isDirectory()) {
             for (File file : Objects.requireNonNull(pathTmpOut.listFiles())) {
-                if (file.getName().endsWith(".json")) {
+                if (file.getName().equals("config-check.json")) {
                     FileLocation fileLocation = new FileLocation();
                     fileLocation.setSourceLocation(file.getAbsolutePath());
                     fileLocation.setJarLocation(file.getName());

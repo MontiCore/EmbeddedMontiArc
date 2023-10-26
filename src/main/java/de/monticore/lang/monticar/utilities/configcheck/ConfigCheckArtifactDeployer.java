@@ -16,8 +16,6 @@ public class ConfigCheckArtifactDeployer {
             jarFile = ConfigCheckArtifactCreator.createArtifact(storageInformation, storageInformation.getPath().getPath());
             System.out.println("FINISHED creating Jar for config-check");
 
-            System.out.println("jarFile absolute path: " + jarFile.getAbsolutePath());
-
             ArtifactDeployer.deployArtifact(jarFile.getAbsolutePath(), storageInformation, GitlabPackagesManager.getGitlabRepository(), JarClassifierEnum.EMPTY, settingsFile);
         }
         catch (IOException | MavenInvocationException e) {
