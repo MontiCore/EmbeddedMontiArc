@@ -69,7 +69,7 @@ public class ConfigCheck {
         version = (version == null || version.isEmpty()) ? "1.0.0" : version;
 
         StorageInformation storageInformation = new StorageInformation();
-        storageInformation.setGroupId(String.format("config-check_%s", configurationMap.get("modelToTrain")));
+        storageInformation.setGroupId(String.format("config-check.%s", configurationMap.get("modelToTrain")));
         storageInformation.setArtifactId(encoded);
         storageInformation.setVersion(version);
         storageInformation.setPath(new File(pathTmp));
