@@ -229,8 +229,8 @@
             <id>gitlab-maven</id>
             <repositories>
                 <repository>
-                    <id>central</id>
-                    <url>https://repo1.maven.org/maven2/</url>
+                    <id>gitlab-maven</id>
+                    <url>https://git.rwth-aachen.de/api/v4/projects/49355/packages/maven</url>
                 </repository>
             </repositories>
         </profile>
