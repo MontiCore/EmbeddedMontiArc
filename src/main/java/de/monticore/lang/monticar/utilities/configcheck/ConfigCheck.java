@@ -5,9 +5,13 @@ import java.util.*;
 import com.google.gson.Gson;
 import de.monticore.lang.monticar.utilities.models.StorageInformation;
 import de.monticore.lang.monticar.utilities.models.TrainingConfiguration;
-import org.gitlab4j.api.models.Package;
+import org.apache.maven.model.Dependency;
+import org.apache.maven.model.DeploymentRepository;
+import org.apache.maven.shared.invoker.MavenInvocationException;
 
 public class ConfigCheck {
+    private static final String GITLAB_API_URL = "https://git.rwth-aachen.de/";
+    private static final String PROJECT_ID = "49355";
     protected TrainingConfiguration trainingConfiguration;
     protected Map<String, String> configurationMap;
     protected String pathTmp;
@@ -18,30 +22,27 @@ public class ConfigCheck {
         this.pathTmp = pathTmp;
     }
 
-    public boolean configurationAlreadyRun() {
-        boolean configurationAlreadyRun = false;
-        Gson gson = new Gson();
-        GitlabPackagesManager gitlabManager = new GitlabPackagesManager();
-        String configurationString = gson.toJson(configurationMap);
-
-
-        // query database
-        String filter = "modelToTrain"; // or self.project_name
-        List<Package> packages = gitlabManager.getPackages();
-
-        // TODO: Find similar runs
-        System.out.println("PACKAGES:");
-        for (Package pkg : packages) {
-            System.out.println(pkg.getId());
-            System.out.println(pkg.getName());
+    public void importArtifact(String version, File targetPath) {
+        Dependency dependency = getDependency(version);
+        try {
+            ConfigCheckArtifactImporter.importArtifact(dependency, targetPath);
+        } catch (MavenInvocationException e) {
+            e.printStackTrace();
         }
-
-        return configurationAlreadyRun;
     }
 
     public void deployArtifact(String version, File settingsFile) {
         createConfFile();
         ConfigCheckArtifactDeployer.deployArtifact(getStorageInformation(version), settingsFile);
+    }
+
+    public boolean configurationAlreadyRun() {
+        for (Map<String, String> conf : getRunConfigurations()) {
+            if (conf.equals(configurationMap)) {
+                return true;
+            }
+        }
+        return false;
     }
 
     private void createConfFile() {
@@ -64,16 +65,48 @@ public class ConfigCheck {
     }
 
     private StorageInformation getStorageInformation(String version) {
-        Gson gson = new Gson();
-        String encoded = Encoder.encode(gson.toJson(configurationMap.values()));
-        version = (version == null || version.isEmpty()) ? "1.0.0" : version;
-
         StorageInformation storageInformation = new StorageInformation();
-        storageInformation.setGroupId(String.format("config-check.%s", configurationMap.get("modelToTrain")));
-        storageInformation.setArtifactId(encoded);
+        storageInformation.setGroupId("config-check");
+        storageInformation.setArtifactId(configurationMap.get("modelToTrain"));
         storageInformation.setVersion(version);
         storageInformation.setPath(new File(pathTmp));
-
         return storageInformation;
+    }
+
+    private Dependency getDependency(String version) {
+        Dependency dependency = new Dependency();
+        dependency.setGroupId("config-check");
+        dependency.setArtifactId(configurationMap.get("modelToTrain"));
+        dependency.setVersion(version);
+        return dependency;
+    }
+
+    private List<Map<String, String>> getRunConfigurations() {
+        List<Map<String, String>> runConfigurations = new ArrayList<>();
+        File[] files = new File(pathTmp + "/runConfigurations").listFiles();
+
+        if (files != null) {
+            for (File jsonConf : files) {
+                try {
+                    FileReader reader = new FileReader(jsonConf.getPath());
+                    Gson gson = new Gson();
+                    Map<String, String> configuration = gson.fromJson(reader, Map.class);
+                    if (configuration != null) {
+                        runConfigurations.add(configuration);
+                    }
+                } catch (FileNotFoundException e) {
+                    e.printStackTrace();
+                }
+            }
+        }
+        System.out.printf("Got %d run configurations\n", runConfigurations.size());
+        return runConfigurations;
+    }
+
+    public static DeploymentRepository getGitlabRepository() {
+        DeploymentRepository deploymentRepository = new DeploymentRepository();
+        deploymentRepository.setId("gitlab-maven");
+        deploymentRepository.setUrl(GITLAB_API_URL + "api/v4/projects/" + PROJECT_ID + "/packages/maven");
+        return deploymentRepository;
     }
 }

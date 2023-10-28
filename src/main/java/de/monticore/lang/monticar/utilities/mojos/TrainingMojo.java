@@ -26,6 +26,7 @@ public class TrainingMojo extends TrainingConfigMojo {
 
     if (configCheckEnabled) {
       configCheck = new ConfigCheck(getTrainingConfig(), getPathTmpOut());
+      configCheck.importArtifact(getMavenProject().getVersion(), new File(getPathTmpOut()));
       if (configCheck.configurationAlreadyRun()) {
         System.out.println("configuration already run. Skipping...");
         return;
@@ -51,9 +52,7 @@ public class TrainingMojo extends TrainingConfigMojo {
     if (configCheckEnabled) {
       // TODO: Save evaluationMetrics to conf
       System.out.println("executeDeploy()");
-      File settingsFile = this.getMavenSession().getRequest().getUserSettingsFile();
-      String version = this.getMavenProject().getVersion();
-      configCheck.deployArtifact(version, settingsFile);
+      configCheck.deployArtifact(getMavenProject().getVersion(), getMavenSession().getRequest().getUserSettingsFile());
     }
   }
 

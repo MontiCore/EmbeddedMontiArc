@@ -12,16 +12,8 @@ public class ArtifactImporter {
   public static void importArtifact(Dependency dependency, File targetPath) throws MavenInvocationException {
     Properties properties = new Properties();
     properties.setProperty("outputDirectory", targetPath.getAbsolutePath());
-
-    // config-check doesn't require classifier
-    if (dependency.getGroupId().equals("config-check")) {
-      System.out.println("[importArtifact] config-check");
-      properties.setProperty("artifact",String.format("%s:%s:%s:jar",
-              dependency.getGroupId(), dependency.getArtifactId(), dependency.getVersion()));
-    } else {
-      properties.setProperty("artifact",String.format("%s:%s:%s:jar:%s",
-              dependency.getGroupId(), dependency.getArtifactId(), dependency.getVersion(), dependency.getClassifier()));
-    }
+    properties.setProperty("artifact",String.format("%s:%s:%s:jar:%s",
+            dependency.getGroupId(), dependency.getArtifactId(), dependency.getVersion(), dependency.getClassifier()));
 
     InvocationRequest request = new DefaultInvocationRequest().setGoals(Collections.singletonList("dependency:unpack"));
     request.setProperties(properties);
