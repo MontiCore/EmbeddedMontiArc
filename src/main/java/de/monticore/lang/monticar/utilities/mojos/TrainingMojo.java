@@ -34,20 +34,20 @@ public class TrainingMojo extends TrainingConfigMojo {
     }
 
     System.out.println("executeMojo()");
-      executeMojo(
-              plugin(
-                      groupId("de.monticore.lang.monticar.utilities"),
-                      artifactId("maven-streamtest"),
-                      version("0.0.34-SNAPSHOT")
-              ),
-              goal("streamtest-generator"),
-              configuration(getConfigElements().toArray(new Element[0])),
-              executionEnvironment(
-                      this.getMavenProject(),
-                      this.getMavenSession(),
-                      this.getPluginManager()
-              )
-      );
+//    executeMojo(
+//            plugin(
+//                    groupId("de.monticore.lang.monticar.utilities"),
+//                    artifactId("maven-streamtest"),
+//                    version("0.0.34-SNAPSHOT")
+//            ),
+//            goal("streamtest-generator"),
+//            configuration(getConfigElements().toArray(new Element[0])),
+//            executionEnvironment(
+//                    this.getMavenProject(),
+//                    this.getMavenSession(),
+//                    this.getPluginManager()
+//            )
+//    );
 
     if (configCheckEnabled) {
       // TODO: Save evaluationMetrics to conf
