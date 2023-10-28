@@ -31,8 +31,8 @@
             <configuration>
                 <httpHeaders>
                     <property>
-                        <name>Job-Token</name>
-                        <value>${CI_JOB_TOKEN}</value>
+                        <name>Private-Token</name>
+                        <value>glpat-Dr2YZgwdmdPWSehyZtWq</value>
                     </property>
                 </httpHeaders>
             </configuration>
@@ -238,5 +238,6 @@
 
     <activeProfiles>
         <activeProfile>se-nexus</activeProfile>
+        <activeProfile>gitlab-maven</activeProfile>
     </activeProfiles>
 </settings>
