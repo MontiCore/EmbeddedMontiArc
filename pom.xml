@@ -212,6 +212,7 @@
                         </configuration>
                     </execution>
                     <execution>
+                        <id>import-gitlab-packages</id>
                         <phase>initialize</phase>
                         <goals>
                             <goal>get</goal>
