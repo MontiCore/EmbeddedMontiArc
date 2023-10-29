@@ -5,14 +5,9 @@ import java.util.*;
 import com.google.gson.Gson;
 import de.monticore.lang.monticar.utilities.models.StorageInformation;
 import de.monticore.lang.monticar.utilities.models.TrainingConfiguration;
-import org.apache.maven.execution.MavenSession;
 import org.apache.maven.model.Dependency;
 import org.apache.maven.model.DeploymentRepository;
-import org.apache.maven.plugin.BuildPluginManager;
-import org.apache.maven.plugin.MojoExecutionException;
-import org.apache.maven.project.MavenProject;
-import static org.twdata.maven.mojoexecutor.MojoExecutor.*;
-import static org.twdata.maven.mojoexecutor.MojoExecutor.executionEnvironment;
+import org.apache.maven.shared.invoker.MavenInvocationException;
 
 public class ConfigCheck {
     private static final String GITLAB_API_URL = "https://git.rwth-aachen.de/";
@@ -27,23 +22,11 @@ public class ConfigCheck {
         this.pathTmp = pathTmp;
     }
 
-    public void importArtifact(MavenProject project, MavenSession session, BuildPluginManager pluginManager) {
+    public void importArtifact(String version, File targetPath) {
+        Dependency dependency = getDependency(version);
         try {
-            executeMojo(
-                    plugin(
-                            groupId("de.monticore.lang.monticar.utilities"),
-                            artifactId("emadl-maven-plugin"),
-                            version("0.0.12-SNAPSHOT")
-                    ),
-                    goal("import-gitlab-packages"),
-                    configuration(),
-                    executionEnvironment(
-                            project,
-                            session,
-                            pluginManager
-                    )
-            );
-        } catch (MojoExecutionException e) {
+            ConfigCheckArtifactImporter.importArtifact(dependency, targetPath);
+        } catch (MavenInvocationException e) {
             e.printStackTrace();
         }
     }
@@ -90,7 +73,7 @@ public class ConfigCheck {
         return storageInformation;
     }
 
-    public Dependency getDependency(String version) {
+    private Dependency getDependency(String version) {
         Dependency dependency = new Dependency();
         dependency.setGroupId("config-check");
         dependency.setArtifactId(configurationMap.get("modelToTrain"));

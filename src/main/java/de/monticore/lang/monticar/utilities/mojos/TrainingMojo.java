@@ -26,7 +26,7 @@ public class TrainingMojo extends TrainingConfigMojo {
 
     if (configCheckEnabled) {
       configCheck = new ConfigCheck(getTrainingConfig(), getPathTmpOut());
-      configCheck.importArtifact(getMavenProject(), getMavenSession(), getPluginManager());
+      configCheck.importArtifact(getMavenProject().getVersion(), new File(getPathTmpOut()));
       if (configCheck.configurationAlreadyRun()) {
         System.out.println("configuration already run. Skipping...");
         return;
