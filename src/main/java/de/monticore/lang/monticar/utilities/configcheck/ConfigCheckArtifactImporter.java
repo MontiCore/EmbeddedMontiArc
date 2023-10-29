@@ -16,8 +16,8 @@ public class ConfigCheckArtifactImporter extends ArtifactImporter{
     public static void importArtifact(Dependency dependency, File targetPath) throws MavenInvocationException {
 //        enableGitlabProfile();
         Properties properties = new Properties();
-        properties.setProperty("artifact", String.format("%s:%s:%s:jar", dependency.getGroupId(), dependency.getArtifactId(), dependency.getVersion()));
-        properties.setProperty("remoteRepositories", "gitlab-maven::::https://git.rwth-aachen.de/api/v4/projects/49355/packages/maven");
+        properties.setProperty("artifact", String.format("%s:%s:%s", dependency.getGroupId(), dependency.getArtifactId(), dependency.getVersion()));
+        properties.setProperty("remoteRepositories", "https://git.rwth-aachen.de/api/v4/projects/49355/packages/maven");
 
         InvocationRequest request = new DefaultInvocationRequest().setGoals(Collections.singletonList("dependency:get"));
         request.setProperties(properties);
