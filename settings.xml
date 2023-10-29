@@ -165,12 +165,6 @@
                   <url>https://bio.informatik.uni-jena.de/repository/libs-release-oss</url>
                 </repository>
 
-                <repository>
-                    <id>gitlab-maven</id>
-                    <name>Gitlab Package Registry</name>
-                    <url>https://git.rwth-aachen.de/api/v4/projects/49355/packages/maven</url>
-                </repository>
-
 
             </repositories>
             
@@ -244,5 +238,6 @@
 
     <activeProfiles>
         <activeProfile>se-nexus</activeProfile>
+        <activeProfile>gitlab-maven</activeProfile>
     </activeProfiles>
 </settings>
