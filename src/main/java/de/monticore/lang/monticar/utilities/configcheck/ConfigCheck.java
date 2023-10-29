@@ -25,7 +25,9 @@ public class ConfigCheck {
     public void importArtifact(String version, File targetPath) {
         Dependency dependency = getDependency(version);
         try {
+            enableGitlabProfile();
             ConfigCheckArtifactImporter.importArtifact(dependency, targetPath);
+            disableGitlabProfile();
         } catch (MavenInvocationException e) {
             e.printStackTrace();
         }
@@ -108,5 +110,22 @@ public class ConfigCheck {
         deploymentRepository.setId("gitlab-maven");
         deploymentRepository.setUrl(GITLAB_API_URL + "api/v4/projects/" + PROJECT_ID + "/packages/maven");
         return deploymentRepository;
+    }
+
+    private static void enableGitlabProfile() {
+        try {
+            FileWriter writer = new FileWriter("useGitlabProfile.temp");
+            writer.write(1);
+            writer.close();
+        } catch (IOException e) {
+            e.printStackTrace();
+        }
+    }
+
+    private static void disableGitlabProfile() {
+        File tempFile = new File("useGitlabProfile.temp");
+        if (tempFile.exists()) {
+            tempFile.delete();
+        }
     }
 }

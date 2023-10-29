@@ -239,6 +239,9 @@
     <profiles>
         <profile>
             <id>se-nexus</id>
+            <activation>
+                <activeByDefault>true</activeByDefault>
+            </activation>
             <distributionManagement>
                 <repository>
                     <id>se-nexus</id>
@@ -252,6 +255,11 @@
         </profile>
         <profile>
             <id>gitlab-maven</id>
+            <activation>
+                <file>
+                    <exists>useGitlabProfile.temp</exists>
+                </file>
+            </activation>
             <distributionManagement>
                 <repository>
                     <id>gitlab-maven</id>
