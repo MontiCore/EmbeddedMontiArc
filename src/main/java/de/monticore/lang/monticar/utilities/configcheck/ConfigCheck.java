@@ -20,6 +20,8 @@ public class ConfigCheck {
         this.trainingConfiguration = trainingConfiguration;
         this.configurationMap = ConfigurationParser.parseConfiguration(trainingConfiguration);
         this.pathTmp = pathTmp;
+        // TODO: this should be removed once the training works
+        createFoldersIfNotExists(pathTmp);
     }
 
     public void importArtifact(String version, File targetPath) {
@@ -46,8 +48,6 @@ public class ConfigCheck {
     }
 
     private void createConfFile() {
-        // TODO: this should be removed once the training works
-        createFoldersIfNotExists(pathTmp);
         try {
             FileWriter writer = new FileWriter(pathTmp + "/config-check.json");
             new Gson().toJson(configurationMap, writer);
