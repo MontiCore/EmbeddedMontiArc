@@ -5,9 +5,14 @@ import java.util.*;
 import com.google.gson.Gson;
 import de.monticore.lang.monticar.utilities.models.StorageInformation;
 import de.monticore.lang.monticar.utilities.models.TrainingConfiguration;
+import org.apache.maven.execution.MavenSession;
 import org.apache.maven.model.Dependency;
 import org.apache.maven.model.DeploymentRepository;
-import org.apache.maven.shared.invoker.MavenInvocationException;
+import org.apache.maven.plugin.BuildPluginManager;
+import org.apache.maven.plugin.MojoExecutionException;
+import org.apache.maven.project.MavenProject;
+import static org.twdata.maven.mojoexecutor.MojoExecutor.*;
+import static org.twdata.maven.mojoexecutor.MojoExecutor.executionEnvironment;
 
 public class ConfigCheck {
     private static final String GITLAB_API_URL = "https://git.rwth-aachen.de/";
@@ -22,13 +27,23 @@ public class ConfigCheck {
         this.pathTmp = pathTmp;
     }
 
-    public void importArtifact(String version, File targetPath) {
-        Dependency dependency = getDependency(version);
+    public void importArtifact(MavenProject project, MavenSession session, BuildPluginManager pluginManager) {
         try {
-            enableGitlabProfile();
-            ConfigCheckArtifactImporter.importArtifact(dependency, targetPath);
-            disableGitlabProfile();
-        } catch (MavenInvocationException e) {
+            executeMojo(
+                    plugin(
+                            groupId("de.monticore.lang.monticar.utilities"),
+                            artifactId("emadl-maven-plugin"),
+                            version("0.0.12-SNAPSHOT")
+                    ),
+                    goal("import-gitlab-packages"),
+                    configuration(),
+                    executionEnvironment(
+                            project,
+                            session,
+                            pluginManager
+                    )
+            );
+        } catch (MojoExecutionException e) {
             e.printStackTrace();
         }
     }
@@ -75,7 +90,7 @@ public class ConfigCheck {
         return storageInformation;
     }
 
-    private Dependency getDependency(String version) {
+    public Dependency getDependency(String version) {
         Dependency dependency = new Dependency();
         dependency.setGroupId("config-check");
         dependency.setArtifactId(configurationMap.get("modelToTrain"));
@@ -110,22 +125,5 @@ public class ConfigCheck {
         deploymentRepository.setId("gitlab-maven");
         deploymentRepository.setUrl(GITLAB_API_URL + "api/v4/projects/" + PROJECT_ID + "/packages/maven");
         return deploymentRepository;
-    }
-
-    private static void enableGitlabProfile() {
-        try {
-            FileWriter writer = new FileWriter("useGitlabProfile.temp");
-            writer.write(1);
-            writer.close();
-        } catch (IOException e) {
-            e.printStackTrace();
-        }
-    }
-
-    private static void disableGitlabProfile() {
-        File tempFile = new File("useGitlabProfile.temp");
-        if (tempFile.exists()) {
-            tempFile.delete();
-        }
     }
 }

@@ -256,8 +256,9 @@
         <profile>
             <id>gitlab-maven</id>
             <activation>
+                <activeByDefault>false</activeByDefault>
                 <file>
-                    <exists>useGitlabProfile.temp</exists>
+                    <exists>target/tmp/useGitlabProfile.temp</exists>
                 </file>
             </activation>
             <distributionManagement>
