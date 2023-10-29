@@ -14,12 +14,12 @@ import java.util.Properties;
 public class ConfigCheckArtifactImporter extends ArtifactImporter{
 
     public static void importArtifact(Dependency dependency, File targetPath) throws MavenInvocationException {
-        enableGitlabProfile();
+//        enableGitlabProfile();
         Properties properties = new Properties();
-        properties.setProperty("outputDirectory", targetPath.getAbsolutePath() + "/runConfigurations");
         properties.setProperty("artifact", String.format("%s:%s:%s:jar", dependency.getGroupId(), dependency.getArtifactId(), dependency.getVersion()));
+        properties.setProperty("remoteRepositories", "gitlab-maven::::https://git.rwth-aachen.de/api/v4/projects/49355/packages/maven");
 
-        InvocationRequest request = new DefaultInvocationRequest().setGoals(Collections.singletonList("dependency:unpack"));
+        InvocationRequest request = new DefaultInvocationRequest().setGoals(Collections.singletonList("dependency:get"));
         request.setProperties(properties);
 //        request.setProfiles(getGitlabProfile());
         Invoker invoker = new DefaultInvoker();

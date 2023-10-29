@@ -211,19 +211,6 @@
                             </artifactItems>
                         </configuration>
                     </execution>
-                    <execution>
-                        <id>import-gitlab-packages</id>
-                        <phase>initialize</phase>
-                        <goals>
-                            <goal>get</goal>
-                        </goals>
-                        <configuration>
-                            <groupId>config-check</groupId>
-                            <artifactId>${artifactId}</artifactId>
-                            <version>${version}</version>
-                            <remoteRepositories>gitlab-maven::::https://git.rwth-aachen.de/api/v4/projects/49355/packages/maven</remoteRepositories>
-                        </configuration>
-                    </execution>
                 </executions>
             </plugin>
         </plugins>
