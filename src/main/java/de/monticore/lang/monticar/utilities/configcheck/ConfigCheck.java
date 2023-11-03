@@ -15,25 +15,27 @@ public class ConfigCheck {
     protected TrainingConfiguration trainingConfiguration;
     protected Map<String, String> configurationMap;
     protected String pathTmp;
+    protected File settingsFile;
 
-    public ConfigCheck(TrainingConfiguration trainingConfiguration, String pathTmp) {
+    public ConfigCheck(TrainingConfiguration trainingConfiguration, String pathTmp, File settingsFile) {
         this.trainingConfiguration = trainingConfiguration;
         this.configurationMap = ConfigurationParser.parseConfiguration(trainingConfiguration);
         this.pathTmp = pathTmp;
+        this.settingsFile = settingsFile;
         // TODO: this should be removed once the training works
         createFoldersIfNotExists(pathTmp);
     }
 
-    public void importArtifact(String version, File targetPath, File userSettingsFile) {
+    public void importArtifact(String version, File targetPath) {
         Dependency dependency = getDependency(version);
         try {
-            ConfigCheckArtifactImporter.importArtifact(dependency, targetPath, userSettingsFile);
+            ConfigCheckArtifactImporter.importArtifact(dependency, targetPath, settingsFile);
         } catch (MavenInvocationException e) {
             e.printStackTrace();
         }
     }
 
-    public void deployArtifact(String version, File settingsFile) {
+    public void deployArtifact(String version) {
         createConfFile();
         ConfigCheckArtifactDeployer.deployArtifact(getStorageInformation(version), settingsFile);
     }
@@ -107,6 +109,7 @@ public class ConfigCheck {
     }
 
     public static DeploymentRepository getGitlabRepository() {
+        // TODO: Read the url from settingsFile?
         DeploymentRepository deploymentRepository = new DeploymentRepository();
         deploymentRepository.setId("gitlab-maven");
         deploymentRepository.setUrl(GITLAB_API_URL + "api/v4/projects/" + PROJECT_ID + "/packages/maven");
