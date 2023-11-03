@@ -224,20 +224,9 @@
             </pluginRepositories>
 
         </profile>
-
-        <profile>
-            <id>gitlab-maven</id>
-            <repositories>
-                <repository>
-                    <id>gitlab-maven</id>
-                    <url>https://git.rwth-aachen.de/api/v4/projects/49355/packages/maven</url>
-                </repository>
-            </repositories>
-        </profile>
     </profiles>
 
     <activeProfiles>
         <activeProfile>se-nexus</activeProfile>
-        <activeProfile>gitlab-maven</activeProfile>
     </activeProfiles>
 </settings>

@@ -27,6 +27,21 @@ public class ConfigCheckArtifactImporter extends ArtifactImporter{
 //        disableGitlabProfile();
     }
 
+    public static void importArtifact(Dependency dependency, File targetPath, File userSettingsFile) throws MavenInvocationException {
+//        enableGitlabProfile();
+        Properties properties = new Properties();
+        properties.setProperty("outputDirectory", targetPath.getAbsolutePath() + "/runConfigurations");
+        properties.setProperty("artifact", String.format("%s:%s:%s:jar", dependency.getGroupId(), dependency.getArtifactId(), dependency.getVersion()));
+
+        InvocationRequest request = new DefaultInvocationRequest().setGoals(Collections.singletonList("dependency:unpack"));
+        request.setProperties(properties);
+        request.setUserSettingsFile(userSettingsFile);
+//        request.setProfiles(getGitlabProfile());
+        Invoker invoker = new DefaultInvoker();
+        invoker.execute(request);
+//        disableGitlabProfile();
+    }
+
     private static void enableGitlabProfile() {
         try {
             FileWriter writer = new FileWriter("target/tmp/useGitlabProfile.temp");

@@ -24,10 +24,10 @@ public class ConfigCheck {
         createFoldersIfNotExists(pathTmp);
     }
 
-    public void importArtifact(String version, File targetPath) {
+    public void importArtifact(String version, File targetPath, File userSettingsFile) {
         Dependency dependency = getDependency(version);
         try {
-            ConfigCheckArtifactImporter.importArtifact(dependency, targetPath);
+            ConfigCheckArtifactImporter.importArtifact(dependency, targetPath, userSettingsFile);
         } catch (MavenInvocationException e) {
             e.printStackTrace();
         }
@@ -87,6 +87,9 @@ public class ConfigCheck {
 
         if (files != null) {
             for (File jsonConf : files) {
+                if (!jsonConf.isFile()) {
+                    continue;
+                }
                 try {
                     FileReader reader = new FileReader(jsonConf.getPath());
                     Gson gson = new Gson();
