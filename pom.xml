@@ -236,40 +236,14 @@
 
 
     <!-- ........... DISTRIBUTION ............................ -->
-    <profiles>
-        <profile>
+    <distributionManagement>
+        <repository>
             <id>se-nexus</id>
-            <activation>
-                <activeByDefault>true</activeByDefault>
-            </activation>
-            <distributionManagement>
-                <repository>
-                    <id>se-nexus</id>
-                    <url>https://nexus.se.rwth-aachen.de/content/repositories/embeddedmontiarc-releases/</url>
-                </repository>
-                <snapshotRepository>
-                    <id>se-nexus</id>
-                    <url>https://nexus.se.rwth-aachen.de/content/repositories/embeddedmontiarc-snapshots/</url>
-                </snapshotRepository>
-            </distributionManagement>
-        </profile>
-        <profile>
-            <id>gitlab-maven</id>
-            <activation>
-                <file>
-                    <exists>target/tmp/useGitlabProfile.temp</exists>
-                </file>
-            </activation>
-            <distributionManagement>
-                <repository>
-                    <id>gitlab-maven</id>
-                    <url>https://git.rwth-aachen.de/api/v4/projects/49355/packages/maven</url>
-                </repository>
-                <snapshotRepository>
-                    <id>gitlab-maven</id>
-                    <url>https://git.rwth-aachen.de/api/v4/projects/49355/packages/maven</url>
-                </snapshotRepository>
-            </distributionManagement>
-        </profile>
-    </profiles>
+            <url>https://nexus.se.rwth-aachen.de/content/repositories/embeddedmontiarc-releases/</url>
+        </repository>
+        <snapshotRepository>
+            <id>se-nexus</id>
+            <url>https://nexus.se.rwth-aachen.de/content/repositories/embeddedmontiarc-snapshots/</url>
+        </snapshotRepository>
+    </distributionManagement>
 </project>
