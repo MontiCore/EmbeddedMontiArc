@@ -1,6 +1,7 @@
 package de.monticore.lang.monticar.utilities.models;
 
 import de.monticore.lang.monticar.emadl.generator.Backend;
+import de.monticore.lang.monticar.utilities.configcheck.ConfigCheck;
 import de.monticore.lang.monticar.utilities.utils.GeneratorEnum;
 
 import java.io.File;
@@ -33,8 +34,6 @@ public class TrainingConfiguration {
 
   private GeneratorEnum generator;
 
-  private Boolean configCheck;
-
   public File getPathToPython() {
     return pathToPython;
   }
@@ -65,10 +64,6 @@ public class TrainingConfiguration {
 
   public GeneratorEnum getGenerator() {
     return generator;
-  }
-
-  public Boolean getConfigCheck() {
-    return configCheck;
   }
 
   public void setPathToPython(File pathToPython) {

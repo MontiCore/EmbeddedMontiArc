@@ -1,7 +1,7 @@
 /* (c) https://github.com/MontiCore/monticore */
 package de.monticore.lang.monticar.utilities.mojos;
 
-import de.monticore.lang.monticar.utilities.configcheck.ConfigCheck;
+import de.monticore.lang.monticar.utilities.configcheck.ConfigCheckManager;
 import de.monticore.lang.monticar.utilities.models.TrainingConfiguration;
 import org.apache.maven.plugin.MojoExecutionException;
 import org.apache.maven.plugin.MojoFailureException;
@@ -21,38 +21,35 @@ public class TrainingMojo extends TrainingConfigMojo {
 
   @Override
   public void execute() throws MojoExecutionException, MojoFailureException {
-    boolean configCheckEnabled = getTrainingConfig().getConfigCheck();
-    ConfigCheck configCheck = null;
+    ConfigCheckManager configCheckManager = new ConfigCheckManager(getTrainingConfig(), getMavenSession().getRequest().getUserSettingsFile());
 
-    if (configCheckEnabled) {
-      configCheck = new ConfigCheck(getTrainingConfig(), getPathTmpOut(), getMavenSession().getRequest().getUserSettingsFile());
-      configCheck.importArtifact(getMavenProject().getVersion(), new File(getPathTmpOut()));
-      if (configCheck.configurationAlreadyRun()) {
-        System.out.println("configuration already run. Skipping...");
+    if (configCheckManager.isEnabled()) {
+      configCheckManager.importArtifact(getMavenProject().getVersion());
+      if (configCheckManager.configurationAlreadyRun()) {
+        getLog().info("[ConfigCheck] Configuration already run. Skip training");
         return;
       }
+      getLog().info("[ConfigCheck] No similar configurations were found.");
     }
 
-    System.out.println("executeMojo()");
-//    executeMojo(
-//            plugin(
-//                    groupId("de.monticore.lang.monticar.utilities"),
-//                    artifactId("maven-streamtest"),
-//                    version("0.0.34-SNAPSHOT")
-//            ),
-//            goal("streamtest-generator"),
-//            configuration(getConfigElements().toArray(new Element[0])),
-//            executionEnvironment(
-//                    this.getMavenProject(),
-//                    this.getMavenSession(),
-//                    this.getPluginManager()
-//            )
-//    );
+    executeMojo(
+            plugin(
+                    groupId("de.monticore.lang.monticar.utilities"),
+                    artifactId("maven-streamtest"),
+                    version("0.0.34-SNAPSHOT")
+            ),
+            goal("streamtest-generator"),
+            configuration(getConfigElements().toArray(new Element[0])),
+            executionEnvironment(
+                    this.getMavenProject(),
+                    this.getMavenSession(),
+                    this.getPluginManager()
+            )
+    );
 
-    if (configCheckEnabled) {
+    if (configCheckManager.isEnabled()) {
       // TODO: Save evaluationMetrics to conf
-      System.out.println("executeDeploy()");
-      configCheck.deployArtifact(getMavenProject().getVersion());
+      configCheckManager.deployArtifact(getMavenProject().getVersion());
     }
   }
 
