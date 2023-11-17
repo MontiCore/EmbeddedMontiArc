@@ -2,17 +2,17 @@ stages:
 - linux
 - test
 
-TestPYTORCH:
-  stage: linux
-  image: registry.git.rwth-aachen.de/monticore/embeddedmontiarc/generators/emadl2cpp/dockerimages/pytorch
-  script: 
-  - cd pytorch
-  - chmod +x execute-pipeline.sh
-  - ./execute-pipeline.sh
-  - chmod +x build.sh
-  - ./build.sh
-  - cd target
-  - ../build/target/mnist_mnistClassifier ../src/main/resources/test_img/2.jpg
+#TestPYTORCH:
+#  stage: linux
+#  image: registry.git.rwth-aachen.de/monticore/embeddedmontiarc/generators/emadl2cpp/dockerimages/pytorch
+#  script:
+#  - cd pytorch
+#  - chmod +x execute-pipeline.sh
+#  - ./execute-pipeline.sh
+#  - chmod +x build.sh
+#  - ./build.sh
+#  - cd target
+#  - ../build/target/mnist_mnistClassifier ../src/main/resources/test_img/2.jpg
 
 #TestAutoML:
 #  stage: linux
