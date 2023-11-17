@@ -31,16 +31,20 @@ TestPYTORCH:
 
 TestEMADLMavenPlugin:
   stage: test
-  image: registry.git.rwth-aachen.de/monticore/embeddedmontiarc/generators/emadl2cpp/mxnet/190:v0.0.2
+  image: registry.git.rwth-aachen.de/monticore/embeddedmontiarc/generators/emadl2cpp/dockerimages/pytorch:latest
   when: always
   script:
     - cd emadl-maven-automl
     - python3 -m pip install -U pip
     - python3 -m pip install scikit-image
     - python3 -m pip install opencv-python
+    - python3 -m pip install mxnet
+    - python3 -m pip install mlflow
+    - python3 -m mlflow server --backend-store-uri file:///tmp/mlruns --serve-artifacts --artifacts-destination file:///tmp/mlartifacts
+    - export Torch_DIR=$(python3 -m pip show torch | grep -E Location:| awk '{print $2}')/torch/share/cmake/Torch
     - mvn dependency:resolve emadl:train -s settings.xml -U -e
-    - mvn dependency:resolve emadl:deploy-dataset -s settings.xml -U -e
-    - mvn dependency:resolve emadl:deploy-pretrained -s settings.xml -U -e
+#    - mvn dependency:resolve emadl:deploy-dataset -s settings.xml -U -e
+#    - mvn dependency:resolve emadl:deploy-pretrained -s settings.xml -U -e
     - mkdir output
     - python3 calculator.py
   artifacts:

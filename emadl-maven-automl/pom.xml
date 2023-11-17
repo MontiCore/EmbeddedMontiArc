@@ -79,7 +79,7 @@
             <plugin>
                 <groupId>de.monticore.lang.monticar.utilities</groupId>
                 <artifactId>emadl-maven-plugin</artifactId>
-                <version>0.0.11-SNAPSHOT</version>
+                <version>0.0.12-SNAPSHOT</version>
                 <configuration>
                     <training>
                         <backend>PYTORCH</backend>  <!-- default=PYTORCH -->
@@ -100,6 +100,10 @@
                         <groupId>de.embeddedmontiarcdl.datasets</groupId>
                         <version>1</version>
                     </datasetToStore>
+                    <configCheck>
+                        <gitlabPackagesUrl>https://git.rwth-aachen.de/api/v4/projects/49355/packages/maven</gitlabPackagesUrl>
+                        <mlflowTrackingUrl>http://localhost:5000</mlflowTrackingUrl>
+                    </configCheck>
                 </configuration>
             </plugin>
 
