@@ -41,7 +41,8 @@ TestEMADLMavenPlugin:
     - python3 -m pip install mxnet
     - python3 -m pip install mlflow
 #    - python3 -m mlflow server --backend-store-uri file:///tmp/mlruns --serve-artifacts --artifacts-destination file:///tmp/mlartifacts
-    - export Torch_DIR=$(python3 -m pip show torch | grep -E Location:| awk '{print $2}')/torch/share/cmake/Torch
+    - export Torch_DIR=$(python3 -m pip show torch | grep -E Location:| awk '{print $2}')/torch
+    - echo $Torch_DIR
     - mvn dependency:resolve emadl:train -s settings.xml -U -e
 #    - mvn dependency:resolve emadl:deploy-dataset -s settings.xml -U -e
 #    - mvn dependency:resolve emadl:deploy-pretrained -s settings.xml -U -e
