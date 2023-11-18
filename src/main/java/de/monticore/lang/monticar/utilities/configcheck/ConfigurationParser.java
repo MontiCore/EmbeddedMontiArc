@@ -1,15 +1,11 @@
 package de.monticore.lang.monticar.utilities.configcheck;
 
-import com.clust4j.utils.EntryPair;
 import de.monticore.lang.monticar.utilities.models.TrainingConfiguration;
 import java.io.BufferedReader;
 import java.io.File;
 import java.io.FileReader;
 import java.io.IOException;
-import java.util.ArrayList;
-import java.util.List;
-import java.util.Map;
-import java.util.TreeMap;
+import java.util.*;
 
 public class ConfigurationParser {
     public static Map<String, String> parseConfiguration(TrainingConfiguration trainingConfiguration) {
@@ -102,7 +98,7 @@ public class ConfigurationParser {
         if (parts.length == 2) {
             String key = parts[0].trim();
             String value = parts[1].trim();
-            return new EntryPair<>(key, value);
+            return new AbstractMap.SimpleEntry<>(key, value);
         }
         return null;
     }
