@@ -69,10 +69,15 @@
             <version>1.4.2</version>
         </dependency>
 
+<!--        <dependency>-->
+<!--            <groupId>de.monticore.lang.monticar.utilities</groupId>-->
+<!--            <artifactId>maven-streamtest</artifactId>-->
+<!--            <version>${MavenStreamTest.version}</version>-->
+<!--        </dependency>-->
         <dependency>
-            <groupId>de.monticore.lang.monticar.utilities</groupId>
-            <artifactId>maven-streamtest</artifactId>
-            <version>${MavenStreamTest.version}</version>
+            <groupId>de.monticore.lang.monticar</groupId>
+            <artifactId>embedded-montiarc-emadl-generator</artifactId>
+            <version>0.5.16-SNAPSHOT</version>
         </dependency>
 
         <dependency>
