@@ -49,18 +49,12 @@ public class TrainingMojo extends TrainingConfigMojo {
 //            )
 //    );
     List<String> arguments = Arrays.asList(
-            "-m",
-            getTrainingConfig().getPathToProject().getPath(),
-            "-r",
-            getTrainingConfig().getModelToTrain(),
-            "-o",
-            "target",
-            "-b",
-            getTrainingConfig().getBackend().name(),
-            "-f",
-            "n",
-            "-c",
-            "n"
+            "-m", getTrainingConfig().getPathToProject().getPath(),
+            "-r", getTrainingConfig().getModelToTrain(),
+            "-o", "target",
+            "-b", getTrainingConfig().getBackend().name(),
+            "-f", "n",
+            "-c", "n"
     );
     AutoMLCli.main(arguments.toArray(new String[0]));
 
