@@ -5,6 +5,7 @@ import java.util.*;
 import com.google.gson.Gson;
 import de.monticore.lang.monticar.utilities.models.StorageInformation;
 import de.monticore.lang.monticar.utilities.models.TrainingConfiguration;
+import de.se_rwth.commons.logging.Log;
 import org.apache.maven.model.Dependency;
 import org.apache.maven.model.DeploymentRepository;
 import org.apache.maven.shared.invoker.MavenInvocationException;
@@ -13,7 +14,6 @@ import org.mlflow.tracking.MlflowClient;
 public class ConfigCheckManager {
     private final String CONFIG_CHECK_FILE_PATH = "src/main/resources/config-check.json";
     private final ConfigCheck configCheck;
-    private final MlflowClient mlflowClient;
     protected Map<String, String> configurationMap;
     protected File settingsFile;
     protected String experimentUuid;
@@ -21,10 +21,8 @@ public class ConfigCheckManager {
     public ConfigCheckManager(TrainingConfiguration trainingConfiguration, File settingsFile) {
         this.experimentUuid = UUID.randomUUID().toString();
         this.configCheck = readConfigCheckFile();
-        this.mlflowClient = new MlflowClient(this.configCheck.getMlflowTrackingUrl());
         this.configurationMap = ConfigurationParser.parseConfiguration(trainingConfiguration);
         this.settingsFile = settingsFile;
-        mkdirs(this.configCheck.getPathTmp());
     }
 
     private static void mkdirs(String folderPath) {
@@ -87,6 +85,7 @@ public class ConfigCheckManager {
     }
 
     private List<Map<String, String>> getRunConfigurationsMlflow() {
+        MlflowClient mlflowClient = new MlflowClient(configCheck.getMlflowTrackingUrl());
         List<Map<String, String>> runConfigurations = new ArrayList<>();
         // TODO: implement search
 //        mlflowClient.searchRuns("");
@@ -137,10 +136,12 @@ public class ConfigCheckManager {
     private ConfigCheck readConfigCheckFile() {
         try (Reader reader = new FileReader(CONFIG_CHECK_FILE_PATH)) {
             Gson gson = new Gson();
-            return gson.fromJson(reader, ConfigCheck.class);
+            ConfigCheck configCheckTmp = gson.fromJson(reader, ConfigCheck.class);
+            mkdirs(configCheckTmp.getPathTmp());
+            return configCheckTmp;
         } catch (Exception e) {
-            System.out.printf("[ConfigCheck] Failed reading %s: %s\n", CONFIG_CHECK_FILE_PATH, e.getMessage());
+            Log.info("[ConfigCheck] Disabled: " + e.getMessage(), "CONFIG_CHECK");
+            return null;
         }
-        return null;
     }
 }
