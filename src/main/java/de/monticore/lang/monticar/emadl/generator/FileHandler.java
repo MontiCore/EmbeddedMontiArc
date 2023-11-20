@@ -542,7 +542,8 @@ public class FileHandler {
             trainConfigFilename = instanceConfigFilename;
         } else if (Files.exists(Paths.get(getModelsPath() + componentConfigFilename + ".conf"))) {
             trainConfigFilename = componentConfigFilename;
-        } else if (Files.exists(Paths.get(getModelsPath() + mainComponentConfigFilename + ".conf"))) {
+        } else if (Files.exists(Paths.get(getModelsPath() + mainComponentConfigFilename + ".conf")) ||
+                Files.exists(Paths.get(getModelsPath() + mainComponentConfigFilename + ".emadl"))) {
             trainConfigFilename = mainComponentConfigFilename;
         } else {
             return null;
