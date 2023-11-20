@@ -34,29 +34,29 @@ public class TrainingMojo extends TrainingConfigMojo {
       getLog().info("[ConfigCheck] No similar configurations were found.");
     }
 
-//    executeMojo(
-//            plugin(
-//                    groupId("de.monticore.lang.monticar.utilities"),
-//                    artifactId("maven-streamtest"),
-//                    version("0.0.34-SNAPSHOT")
-//            ),
-//            goal("streamtest-generator"),
-//            configuration(getConfigElements().toArray(new Element[0])),
-//            executionEnvironment(
-//                    this.getMavenProject(),
-//                    this.getMavenSession(),
-//                    this.getPluginManager()
-//            )
-//    );
-    List<String> arguments = Arrays.asList(
-            "-m", getTrainingConfig().getPathToProject().getPath(),
-            "-r", getTrainingConfig().getModelToTrain(),
-            "-o", "target",
-            "-b", getTrainingConfig().getBackend().name(),
-            "-f", "n",
-            "-c", "n"
+    executeMojo(
+            plugin(
+                    groupId("de.monticore.lang.monticar.utilities"),
+                    artifactId("maven-streamtest"),
+                    version("0.0.34-SNAPSHOT")
+            ),
+            goal("streamtest-generator"),
+            configuration(getConfigElements().toArray(new Element[0])),
+            executionEnvironment(
+                    this.getMavenProject(),
+                    this.getMavenSession(),
+                    this.getPluginManager()
+            )
     );
-    AutoMLCli.main(arguments.toArray(new String[0]));
+//    List<String> arguments = Arrays.asList(
+//            "-m", getTrainingConfig().getPathToProject().getPath(),
+//            "-r", getTrainingConfig().getModelToTrain(),
+//            "-o", "target",
+//            "-b", getTrainingConfig().getBackend().name(),
+//            "-f", "n",
+//            "-c", "n"
+//    );
+//    AutoMLCli.main(arguments.toArray(new String[0]));
 
     if (configCheckManager.isEnabled()) {
       // TODO: Save evaluationMetrics to conf
