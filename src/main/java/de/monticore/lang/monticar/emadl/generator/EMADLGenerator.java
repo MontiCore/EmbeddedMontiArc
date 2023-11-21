@@ -150,12 +150,14 @@ public class EMADLGenerator implements EMAMGenerator {
 
     public void generate(String modelPath, String qualifiedName, String pythonPath, String forced, boolean doCompile, String useDgl, boolean allowDecomposition, String[] decompositionNetworkList) throws IOException, TemplateException {
         Log.info("Generator start", "GENERATION");
+        System.out.println("Generator start");
         processedArchitecture = new HashMap<>();
         fileHandler.setModelsPath( modelPath );
         fileHandler.setPythonPath(pythonPath);
         setUseDgl(useDgl.equals("y"));
 
         TaggingResolver symtab = taggingHandler.getSymTabAndTaggingResolver();
+        System.out.println("getSymTabAndTaggingResolver() done");
 
         EMAComponentInstanceSymbol instance = resolveComponentInstanceSymbol(qualifiedName, symtab);
         //EMAComponentInstanceSymbol vaultBuildingInstance = resolveComponentInstanceSymbol(qualifiedName, symtab);
@@ -163,13 +165,18 @@ public class EMADLGenerator implements EMAMGenerator {
             // copy the AdaNet files to
             fileHandler.copyPythonFilesFromResource("AdaNet");
         } catch (URISyntaxException e) {
+            System.out.println("copyPythonFilesFromResource exception");
             e.printStackTrace();
         }
 
+        System.out.println("copyPythonFilesFromResource done");
+
         //emadlFileHandler.setVaultBuildingInstance(vaultBuildingInstance);
         fileHandler.generateFiles(symtab, instance, pythonPath, forced);
+        System.out.println("generateFiles done!!!");
 
         if (doCompile) {
+            System.out.println("compile()");
             if (!generateCMake) // do it either way
                 fileHandler.generateCMakeFiles(instance);
             compile();
