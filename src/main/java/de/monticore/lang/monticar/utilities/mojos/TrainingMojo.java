@@ -48,15 +48,6 @@ public class TrainingMojo extends TrainingConfigMojo {
                     this.getPluginManager()
             )
     );
-//    List<String> arguments = Arrays.asList(
-//            "-m", getTrainingConfig().getPathToProject().getPath(),
-//            "-r", getTrainingConfig().getModelToTrain(),
-//            "-o", "target",
-//            "-b", getTrainingConfig().getBackend().name(),
-//            "-f", "n",
-//            "-c", "n"
-//    );
-//    AutoMLCli.main(arguments.toArray(new String[0]));
 
     if (configCheckManager.isEnabled()) {
       // TODO: Save evaluationMetrics to conf
