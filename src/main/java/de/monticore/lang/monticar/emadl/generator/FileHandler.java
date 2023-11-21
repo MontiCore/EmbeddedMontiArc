@@ -388,12 +388,10 @@ public class FileHandler {
             Optional<ArchitectureSymbol> architecture = networkCompositionHandler.resolveArchitectureSymbolOfInstance(componentInstance);
 
             if (!architecture.isPresent() || forced.equals("n")) {
-                System.out.println("!architecture.isPresent() || forced.equals(\"n\")");
                 continue;
             }
 
             if ( (!architecture.isPresent() && !networkCompositionHandler.isComposedNet(componentInstance)) || networkCompositionHandler.isPartOfComposedNet(componentInstance) ) {
-                System.out.println("(!architecture.isPresent() && !networkCompositionHandler.isComposedNet(componentInstance)) || networkCompositionHandler.isPartOfComposedNet(componentInstance)");
                 continue;
             }
 
@@ -403,7 +401,6 @@ public class FileHandler {
 
             if (!computeChanges(architecture, componentInstance) && !forced.equals("y")) {
                 Log.error("Training of model " + componentInstance.getFullName() + " skipped");
-                System.out.println("!computeChanges(architecture, componentInstance) && !forced.equals(\"y\")");
                 continue;
             }
 
