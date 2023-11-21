@@ -435,6 +435,7 @@ public class FileHandler {
                 }
             } else {
                 Log.warn("Training file " + trainingPath + " not found.");
+                System.out.println("Training file " + trainingPath + " not found.");
             }
         }
 
