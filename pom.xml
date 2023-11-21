@@ -6,7 +6,7 @@
 
     <groupId>de.monticore.montipipes</groupId>
     <artifactId>montipipes</artifactId>
-    <version>0.0.2-SNAPSHOT</version>
+    <version>0.0.3-SNAPSHOT</version>
 
     <properties>
         <!-- .. SE-Libraries .................................................. -->
