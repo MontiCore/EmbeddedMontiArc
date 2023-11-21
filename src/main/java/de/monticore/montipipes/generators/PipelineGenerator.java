@@ -66,14 +66,17 @@ public class PipelineGenerator {
      * @param semanticAugmentedPipelineModel
      * @param importedDependencies : generated artefacts to be imported: schema api, network, training configuration
      */
-    public void generatePipelineExecutor(final List<ASTConfigurationEntry> pipelineConfigurationEntries, final EMAComponentInstanceSymbol semanticAugmentedPipelineModel, final List<String> importedDependencies) {
+    public void generatePipelineExecutor(final List<ASTConfigurationEntry> pipelineConfigurationEntries,
+            final EMAComponentInstanceSymbol semanticAugmentedPipelineModel,
+            final List<String> importedDependencies,
+            final List<String> cliArguments) {
         final ASTComponent pipelineComponent = (ASTComponent) semanticAugmentedPipelineModel.getComponentType().getReferencedSymbol().getAstNode().orElseThrow(IllegalStateException::new);
         final String importsBlock = createImportStatements(pipelineConfigurationEntries, importedDependencies);
         final LinkedList<EMAComponentInstanceSymbol> pipelineSteps = Find.allAtomicOrNVComponents(semanticAugmentedPipelineModel);
         sortPipelineSteps(pipelineSteps);
         generatorEngine.generate(Template.PIPELINE_EXECUTION.getTemplateName(), Paths.get("Pipeline_Executor.py"), pipelineComponent, importsBlock,
                 pipelineConfigurationEntries, pipelineSteps, pipelineComponent, TemplateUtil.getModelDirNameAndValue(executionScriptConfigurations).getValue(),
-                schemaAPIName, trainingConfigurationName);
+                schemaAPIName, trainingConfigurationName, cliArguments);
     }
 
     private static String createImportStatements(final List<ASTConfigurationEntry> pipelineImplementations, final List<String> importedDependencies) {
