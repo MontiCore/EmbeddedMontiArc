@@ -381,6 +381,9 @@ public class FileHandler {
                 emadlGen.getEmadlCNNHandler().getCachedComposedArchitectureSymbols(), emadlGen.getBackend(), emadlGen.getEmadlCNNHandler().getComposedNetworkStructures());
         ArrayList<EMAComponentInstanceSymbol> networks = networkCompositionHandler.processComponentInstances(allInstances);
 
+        System.out.println("# allInstances: " + allInstances.size());
+        System.out.println("# networks: " + networks.size());
+
         for (EMAComponentInstanceSymbol componentInstance : networks) {
             Optional<ArchitectureSymbol> architecture = networkCompositionHandler.resolveArchitectureSymbolOfInstance(componentInstance);
 
