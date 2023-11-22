@@ -9,6 +9,8 @@ import de.se_rwth.commons.logging.Log;
 import org.apache.maven.model.Dependency;
 import org.apache.maven.model.DeploymentRepository;
 import org.apache.maven.shared.invoker.MavenInvocationException;
+import org.mlflow.api.proto.Service;
+import org.mlflow.tracking.ExperimentsPage;
 import org.mlflow.tracking.MlflowClient;
 
 public class ConfigCheckManager {
@@ -87,9 +89,26 @@ public class ConfigCheckManager {
     private List<Map<String, String>> getRunConfigurationsMlflow() {
         MlflowClient mlflowClient = new MlflowClient(configCheck.getMlflowTrackingUrl());
         List<Map<String, String>> runConfigurations = new ArrayList<>();
-        // TODO: implement search
-//        mlflowClient.searchRuns("");
-        System.out.printf("Got %d run configurations from Mlflow\n", runConfigurations.size());
+
+        ExperimentsPage experimentsPage = mlflowClient.searchExperiments();
+        List<String> experimentIds = new ArrayList<>();
+        for (Service.Experiment experiment : experimentsPage.getItems()) {
+            experimentIds.add(experiment.getExperimentId());
+        }
+
+        String searchFilter = String.format("tags.Model ILIKE '%s' and tags.Backend ILIKE '%s'", configurationMap.get("modelToTrain"), configurationMap.get("backend"));
+        List<Service.RunInfo> mlflowRuns = mlflowClient.searchRuns(experimentIds, searchFilter);
+
+        for (Service.RunInfo runInfo : mlflowRuns) {
+            Service.Run run = mlflowClient.getRun(runInfo.getRunId());
+            List<Service.Param> runParams = run.getData().getParamsList();
+            Map<String, String> mlflowRunConfiguration = new TreeMap<>();
+            for (Service.Param param : runParams) {
+                mlflowRunConfiguration.put(param.getKey(), param.getValue());
+            }
+            runConfigurations.add(mlflowRunConfiguration);
+        }
+        Log.info(String.format("Got %d run configurations from Mlflow\n", runConfigurations.size()), "ConfigCheck");
         return runConfigurations;
     }
 
