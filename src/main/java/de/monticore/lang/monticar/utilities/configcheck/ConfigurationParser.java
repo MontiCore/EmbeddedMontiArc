@@ -60,8 +60,7 @@ public class ConfigurationParser {
         TreeMap<String, String> configMap = new TreeMap<>();
         BufferedReader br = new BufferedReader(new FileReader(confFile));
         String line;
-        String nestedKey = "";
-        boolean nested = false;
+        Map.Entry<String, String> nestedEntry = null;
 
         while ((line = br.readLine()) != null) {
             line = line.replace("{}", "").trim();
@@ -71,16 +70,17 @@ public class ConfigurationParser {
                     Map.Entry<String, String> entry = parseLine(line);
                     if (entry != null) {
                         configMap.put(entry.getKey(), entry.getValue());
-                        nestedKey = entry.getValue();
-                        nested = true;
+                        nestedEntry = new AbstractMap.SimpleEntry<>(entry.getKey(), entry.getValue());
                     }
                 } else if (line.endsWith("}")) {
-                    nested = false;
+                    nestedEntry = null;
                 } else {
                     Map.Entry<String, String> entry = parseLine(line);
                     if (entry != null) {
-                        if (nested && !nestedKey.isEmpty()) {
-                            configMap.put(String.format("%s_%s", nestedKey, entry.getKey()), entry.getValue());
+                        if (nestedEntry != null) {
+                            // TODO: check this
+//                            configMap.put(String.format("%s.%s.%s", nestedEntry.getKey(), nestedEntry.getValue(), entry.getKey()), entry.getValue());
+                            configMap.put(String.format("%s.%s", nestedEntry.getKey(), entry.getKey()), entry.getValue());
                         } else {
                             configMap.put(entry.getKey(), entry.getValue());
                         }

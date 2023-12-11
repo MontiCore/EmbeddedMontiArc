@@ -6,10 +6,6 @@ import de.monticore.lang.monticar.utilities.models.TrainingConfiguration;
 import org.apache.maven.plugin.MojoExecutionException;
 import org.apache.maven.plugin.MojoFailureException;
 import org.apache.maven.plugins.annotations.Mojo;
-import de.monticore.lang.monticar.emadl.generator.AutoMLCli;
-
-import java.io.File;
-import java.util.Arrays;
 import java.util.LinkedList;
 import java.util.List;
 
@@ -23,10 +19,10 @@ public class TrainingMojo extends TrainingConfigMojo {
 
   @Override
   public void execute() throws MojoExecutionException, MojoFailureException {
-    ConfigCheckManager configCheckManager = new ConfigCheckManager(getTrainingConfig(), getMavenSession().getRequest().getUserSettingsFile());
-
+    ConfigCheckManager configCheckManager = new ConfigCheckManager(getTrainingConfig(), getMavenProject().getVersion(), getMavenSession().getSettings());
     if (configCheckManager.isEnabled()) {
-      configCheckManager.importArtifact(getMavenProject().getVersion());
+      configCheckManager.trackDatasetDependency(getMavenProject().getDependencies());
+      configCheckManager.importSimilarRuns(getMavenSession().getRequest().getUserSettingsFile());
       if (configCheckManager.configurationAlreadyRun()) {
         getLog().info("[ConfigCheck] Configuration already run. Skip training");
         return;
@@ -50,8 +46,7 @@ public class TrainingMojo extends TrainingConfigMojo {
     );
 
     if (configCheckManager.isEnabled()) {
-      // TODO: Save evaluationMetrics to conf
-      configCheckManager.deployArtifact(getMavenProject().getVersion());
+      configCheckManager.deployCurrentRuns(getMavenSession().getRequest().getUserSettingsFile());
     }
   }
 
