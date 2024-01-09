@@ -165,7 +165,9 @@ class ${tc.fileNameWithoutEnding}: # pylint: disable=invalid-name
         self.networks[${networkInstruction?index}] = Net_${networkInstruction?index}()
         self.dataClass[${networkInstruction?index}] = DataClass_${networkInstruction?index}
         <#else>
-        self.networks[${networkInstruction?index}] = Net_${networkInstruction?index}(batch_size=batch_size, data_mean=data_mean, data_std=data_std, mx_context=context, prefix="")
+            <#assign currentTimestamp = .now?string("yyMMdd_HHmm")>
+        self.networks[${networkInstruction?index}] = Net_${networkInstruction?index}(batch_size=batch_size, data_mean=data_mean, data_std=data_std, mx_context=context, prefix="Net_${networkInstruction?index}_${currentTimestamp}")
+
         </#if>
         with warnings.catch_warnings():
             warnings.simplefilter("ignore")
