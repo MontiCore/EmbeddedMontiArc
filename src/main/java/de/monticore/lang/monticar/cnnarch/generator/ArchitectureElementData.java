@@ -194,7 +194,8 @@ public class ArchitectureElementData {
     public String getNetworkPrefix(){
         return getLayerSymbol().getStringValue(AllPredefinedLayers.NETWORK_PREFIX_NAME).get();
     }
-
+    public String getElementTypeLowerBound(){return getLayerSymbol().getStringValue(AllPredefinedLayers.ELEMENT_TYPE_LOWER_BOUND).get();}
+    public String getElementTypeUpperBound(){return getLayerSymbol().getStringValue(AllPredefinedLayers.ELEMENT_TYPE_UPPER_BOUND).get();}
     public int getNumInputs(){
         return getLayerSymbol().getIntValue(AllPredefinedLayers.NUM_INPUTS_NAME).get();
     }
