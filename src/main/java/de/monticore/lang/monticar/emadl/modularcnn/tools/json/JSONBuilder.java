@@ -9,6 +9,9 @@ package de.monticore.lang.monticar.emadl.modularcnn.tools.json;
 import de.se_rwth.commons.logging.Log;
 
 import java.util.ArrayList;
+import java.util.HashMap;
+import java.util.List;
+import java.util.Map;
 
 public class JSONBuilder {
 
@@ -65,6 +68,42 @@ public class JSONBuilder {
 
         return array;
     }
+    private <T> String JSONArray(String key, List<T> values, boolean trailing) {
+        StringBuilder arrayBuilder = new StringBuilder();
+        arrayBuilder.append("\"").append(key).append("\": [");
+        for (int i = 0; i < values.size(); i++) {
+            T element = values.get(i);
+            String elementString;
+            if (element instanceof String) {
+                elementString = "\"" + element + "\"";
+            } else {
+                elementString = element.toString();
+            }
+            arrayBuilder.append(elementString);
+            if (i < values.size() - 1) {
+                arrayBuilder.append(",");
+            }
+        }
+        arrayBuilder.append("]").append(trailing ? "" : ",");
+
+        return arrayBuilder.toString();
+    }
+
+    private <K, T> String JSONMap(String key, HashMap<K, ArrayList<T>> values, boolean trailing) {
+        StringBuilder mapBuilder = new StringBuilder();
+        mapBuilder.append("\"").append(key).append("\": {");
+
+        int i = 1;
+        for (HashMap.Entry<K, ArrayList<T>> entry : values.entrySet()) {
+            String mapKey = entry.getKey().toString();
+            List<T> listValue = entry.getValue();
+            mapBuilder.append(JSONArray(mapKey, listValue, i == values.size()));
+            i++;
+        }
+        mapBuilder.append("}").append(trailing ? "" : ",");
+        return mapBuilder.toString();
+    }
+
 
     private String stripLeadingTrailingQuotes(String str){
         String newString = str;
@@ -83,7 +122,6 @@ public class JSONBuilder {
     private void reset(){
         this.content = "";
     }
-
     public void addContent(String key, String value, boolean trailing){
         this.content += JSONEntry(key,value,trailing);
     }
@@ -91,11 +129,12 @@ public class JSONBuilder {
     public void addContent(String key, boolean value, boolean trailing){
         this.content += JSONEntry(key,value,trailing);
     }
-
-    public void addContent(String key, ArrayList<String> values,  boolean simpleValues,boolean trailing){
-        this.content += JSONArray(key,values,simpleValues,trailing);
+    public <T> void addContent(String key, List<T> values,boolean trailing){
+        this.content += JSONArray(key,values,trailing);
     }
-
+    public <T> void addContent(String key, HashMap<String, ArrayList<T>> values, boolean trailing) {
+        this.content += JSONMap(key, values, trailing);
+    }
     public String getJSONObject(boolean trailing){
         return JSONObject(trailing).replaceAll(" ", "").replaceAll("\n","");
     }

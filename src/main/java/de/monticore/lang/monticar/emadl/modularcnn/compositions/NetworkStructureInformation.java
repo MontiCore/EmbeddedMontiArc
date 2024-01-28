@@ -13,8 +13,7 @@ import de.monticore.lang.monticar.cnnarch._symboltable.ArchitectureSymbol;
 import de.monticore.lang.monticar.emadl.modularcnn.tools.json.JSONBuilder;
 import de.monticore.lang.monticar.emadl.modularcnn.tools.json.JSONReader;
 
-import java.util.ArrayList;
-import java.util.Set;
+import java.util.*;
 
 public class NetworkStructureInformation {
     private ArrayList<NetworkStructureInformation> subNetworks = new ArrayList<>();
@@ -30,15 +29,17 @@ public class NetworkStructureInformation {
     private ArchitectureSymbol composedNetworkArchitectureSymbol = null;
     private String componentName = null;
     private ArrayList<String> networkInstancesDataFlow = new ArrayList<>();
+    private HashMap<String, ArrayList<Integer>> inputPortsDim = null;
 
 
 
     public NetworkStructureInformation(ComponentInformation componentInformation) {
         this.networkName = componentInformation.getComponentName();
         this.instanceSymbolName = componentInformation.getComponentInstanceSymbolName();
+        this.inputPortsDim = componentInformation.getInputPortsDim();
         ArrayList<ComponentInformation> subComponentsInformation = componentInformation.getSubComponentsInformation();
 
-        if (subComponentsInformation == null || subComponentsInformation.size() == 0) {
+        if (subComponentsInformation == null || subComponentsInformation.isEmpty()) {
             this.atomic = true;
         } else {
             this.atomic = false;
@@ -50,9 +51,10 @@ public class NetworkStructureInformation {
         }
     }
 
-    public NetworkStructureInformation(String name, String instanceSymbolName, boolean atomic, ArrayList<NetworkStructureInformation> subNets, ArrayList<String> dataFlow, NetworkStructureInformation parent) {
+    public NetworkStructureInformation(String name, String instanceSymbolName,HashMap<String, ArrayList<Integer>> inputPortsDim ,boolean atomic, ArrayList<NetworkStructureInformation> subNets, ArrayList<String> dataFlow, NetworkStructureInformation parent) {
         this.networkName = name;
         this.instanceSymbolName = instanceSymbolName;
+        this.inputPortsDim = inputPortsDim;
         this.atomic = atomic;
         this.subNetworks = subNets;
         this.parentNetwork = parent;
@@ -65,6 +67,7 @@ public class NetworkStructureInformation {
         NetworkStructureInformation networkStructureInformation = jsonReader.getNetworkStructureInstance(json);
         this.networkName = networkStructureInformation.getNetworkName();
         this.instanceSymbolName = networkStructureInformation.getInstanceSymbolName();
+        this.inputPortsDim = networkStructureInformation.getInputPortsDim();
         this.atomic = networkStructureInformation.isAtomic();
         this.subNetworks = networkStructureInformation.getSubNetworks();
         this.networkInstancesDataFlow = networkStructureInformation.getNetworkInstancesDataFlow();
@@ -110,6 +113,9 @@ public class NetworkStructureInformation {
     public void setSymbolReference(EMAComponentSymbolReference symbolReference) {
         this.symbolReference = symbolReference;
     }
+    public HashMap<String, ArrayList<Integer>> getInputPortsDim() {return inputPortsDim;}
+
+    public void setInputPortsDim(HashMap<String, ArrayList<Integer>> inputPortsDim) {this.inputPortsDim = inputPortsDim;}
 
     public void addInstance(EMAComponentInstanceSymbol instanceSymbol){
         this.instances.add(instanceSymbol);
@@ -135,7 +141,7 @@ public class NetworkStructureInformation {
                     hitInstance = instanceSymbol;
                 }
             }
-            if (this.subNetworks != null && this.subNetworks.size() > 0){
+            if (this.subNetworks != null && !this.subNetworks.isEmpty()){
                 for (NetworkStructureInformation subNet: this.subNetworks){
                     subNet.addInstancesAndSymbolReference(componentInstanceSymbols);
                 }
@@ -165,7 +171,7 @@ public class NetworkStructureInformation {
                     hitInstance = instanceSymbol;
                 }
             }
-            if (this.subNetworks != null && this.subNetworks.size() > 0){
+            if (this.subNetworks != null && !this.subNetworks.isEmpty()){
                 for (NetworkStructureInformation subNet: this.subNetworks){
                     subNet.refreshInstancesAndSymbolReferences(componentInstanceSymbols);
                 }
@@ -182,7 +188,7 @@ public class NetworkStructureInformation {
     public boolean isInstancePartOfNetwork(EMAComponentInstanceSymbol instanceSymbol){
         if (this.instances.contains(instanceSymbol)) return true;
 
-        if (this.subNetworks != null && this.subNetworks.size() > 0){
+        if (this.subNetworks != null && !this.subNetworks.isEmpty()){
             for (NetworkStructureInformation networkStructureInformation: this.subNetworks){
                 if (networkStructureInformation.isInstancePartOfNetwork(instanceSymbol)){
                     return true;
@@ -195,7 +201,7 @@ public class NetworkStructureInformation {
     public boolean isInstancePartOfSubNetworks(EMAComponentInstanceSymbol instanceSymbol){
         //if (this.instances.contains(instanceSymbol)) return true;
 
-        if (this.subNetworks != null && this.subNetworks.size() > 0){
+        if (this.subNetworks != null && !this.subNetworks.isEmpty()){
             for (NetworkStructureInformation networkStructureInformation: this.subNetworks){
                 if (networkStructureInformation.isInstancePartOfNetwork(instanceSymbol)){
                     return true;
@@ -287,7 +293,7 @@ public class NetworkStructureInformation {
     }
 
     public String printStructureJSON() {
-        if (this.networkName == null || this.networkName.equals("")) {
+        if (this.networkName == null || this.networkName.isEmpty()) {
             return "";
         }
 
@@ -300,18 +306,17 @@ public class NetworkStructureInformation {
         jsonObject.addContent("name", this.networkName, false);
         jsonObject.addContent("instanceSymbolName",this.instanceSymbolName,false);
         jsonObject.addContent("atomic", this.atomic, false);
-        jsonObject.addContent("dataFlow",this.networkInstancesDataFlow,true,false);
+        jsonObject.addContent("dataFlow",this.networkInstancesDataFlow,false);
+        jsonObject.addContent("inputDimensions", this.inputPortsDim, false);
 
         ArrayList<String> arrayContents = new ArrayList<>();
-        if (this.getSubNetworks() != null && this.getSubNetworks().size() > 0) {
+        if (this.getSubNetworks() != null && !this.getSubNetworks().isEmpty()) {
             for (NetworkStructureInformation networkStructureInformation : this.getSubNetworks()) {
                 String subNetContent = networkStructureInformation.printStructureJSON();
                 arrayContents.add(subNetContent);
             }
-
         }
-
-        jsonObject.addContent("subNetworks", arrayContents, false,true);
+        jsonObject.addContent("subNetworks", arrayContents,true);
         return jsonObject.getJSONObjectAndReset(true);
     }
 
@@ -351,7 +356,7 @@ public class NetworkStructureInformation {
     }
 
     public boolean isSubnet(String networkName, String instanceName){
-        if (this.getSubNetworks() == null || this.getSubNetworks().size() == 0) return false;
+        if (this.getSubNetworks() == null || this.getSubNetworks().isEmpty()) return false;
 
         for (NetworkStructureInformation subNet: this.getSubNetworks()){
             if (subNet.getNetworkName().equals(networkName) && subNet.getInstanceSymbolName().equals(instanceName)) return true;
@@ -361,7 +366,7 @@ public class NetworkStructureInformation {
         return false;
     }
     public NetworkStructureInformation getSubnet(String networkName, String instanceName){
-        if (this.getSubNetworks() == null || this.getSubNetworks().size() == 0) return null;
+        if (this.getSubNetworks() == null || this.getSubNetworks().isEmpty()) return null;
 
         for (NetworkStructureInformation subNet: this.getSubNetworks()){
             if (subNet.getNetworkName().equals(networkName) && subNet.getInstanceSymbolName().equals(instanceName)) return subNet;
