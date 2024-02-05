@@ -15,10 +15,9 @@ import de.se_rwth.commons.logging.Log;
 import org.junit.Before;
 import org.junit.Test;
 
-import java.util.Optional;
+import static org.junit.Assert.assertEquals;
+import static org.junit.Assert.assertNotNull;
 
-import static junit.framework.Assert.assertTrue;
-import static junit.framework.TestCase.assertEquals;
 
 public class ModularTest extends AbstractSymtabTest {
 
@@ -29,117 +28,95 @@ public class ModularTest extends AbstractSymtabTest {
     }
 
     @Test
-    public void testModularInstances(){
-        Scope symtab = createSymTab("src/test/resources/models/");
-        Optional<EMAComponentInstanceSymbol> compInstanceSymbol = symtab.<EMAComponentInstanceSymbol>resolve("ModularInstanceTest.mainB", EMAComponentInstanceSymbol.KIND);
+    public void testModularSimple() {
+        Scope symtab = createSymTab("src/test/resources/models/ModularMNIST");
+        EMAComponentInstanceSymbol compInstanceSymbol = symtab.<EMAComponentInstanceSymbol>resolve("modularNetworkSimple.connector", EMAComponentInstanceSymbol.KIND).orElse(null);
+        assertNotNull(compInstanceSymbol);
 
-        //assertTrue(compInstanceSymbol.isPresent());
-
-        if(compInstanceSymbol.isPresent()){
-            EMAComponentInstanceSymbol mainInstance = compInstanceSymbol.get();
-            /*
-            EMAComponentInstanceSymbol netC = mainInstance.getSpannedScope().<EMAComponentInstanceSymbol>
-                    resolve("netC", EMAComponentInstanceSymbol.KIND).get();
-            EMAComponentInstanceSymbol netD = mainInstance.getSpannedScope().<EMAComponentInstanceSymbol>
-                    resolve("netD", EMAComponentInstanceSymbol.KIND).get();
-
-            assertEquals("ModularInstanceTest.mainB.netC",netC.getFullName());
-            assertEquals("ModularInstanceTest.mainB.netD",netD.getFullName());
-
-            ArchitectureSymbol arch1 = netC.getSpannedScope().<ArchitectureSymbol>
-                    resolve("", ArchitectureSymbol.KIND).get();
-
-            ArchitectureSymbol arch2 = netD.getSpannedScope().<ArchitectureSymbol>
-                    resolve("", ArchitectureSymbol.KIND).get();
-
-            arch1.resolve();
-            arch2.resolve();
-
-            int convChannels1 = ((LayerSymbol)arch1.getStreams().get(0).getElements().get(1)).getArgument("channels").get().getRhs().getIntValue().get();
-            int convChannels2 = ((LayerSymbol)arch2.getStreams().get(0).getElements().get(1)).getArgument("channels").get().getRhs().getIntValue().get();
-
-            assertEquals(20, convChannels1);
-            assertEquals(40, convChannels2);
-
-            */
+        for (int i = 1; i <= 6; i++) {
+            EMAComponentInstanceSymbol predictor = compInstanceSymbol.getSpannedScope().<EMAComponentInstanceSymbol>resolve("predictor" + i, EMAComponentInstanceSymbol.KIND).get();
+            assertNotNull(predictor);
         }
+        EMAComponentInstanceSymbol calculator = compInstanceSymbol.getSpannedScope().<EMAComponentInstanceSymbol>resolve("cal", EMAComponentInstanceSymbol.KIND).get();
+        assertNotNull(calculator);
 
+        EMAComponentInstanceSymbol networkInstance = compInstanceSymbol.getSpannedScope().<EMAComponentInstanceSymbol>resolve("predictor1", EMAComponentInstanceSymbol.KIND).get();
+        assertNotNull(networkInstance);
+
+        EMAComponentInstanceSymbol net1Instance = networkInstance.getSpannedScope().<EMAComponentInstanceSymbol>resolve("net1", EMAComponentInstanceSymbol.KIND).get();
+        assertNotNull(net1Instance);
+        assertEquals("modularNetworkSimple.connector.predictor1.net1", net1Instance.getFullName());
+
+        EMAComponentInstanceSymbol net2Instance = networkInstance.getSpannedScope().<EMAComponentInstanceSymbol>resolve("net2", EMAComponentInstanceSymbol.KIND).get();
+        assertNotNull(net2Instance);
+        assertEquals( "modularNetworkSimple.connector.predictor1.net2", net2Instance.getFullName());
+
+        ArchitectureSymbol net1ArchSym = net1Instance.getSpannedScope().<ArchitectureSymbol>resolve("", ArchitectureSymbol.KIND).get();
+        assertNotNull(net1ArchSym);
+
+        ArchitectureSymbol net2ArchSym = net2Instance.getSpannedScope().<ArchitectureSymbol>resolve("", ArchitectureSymbol.KIND).get();
+        assertNotNull(net2ArchSym);
+
+        net1ArchSym.resolve();
+        net2ArchSym.resolve();
+
+        int channels = ((LayerSymbol)net1ArchSym.getStreams().get(0).getElements().get(1)).getArgument("channels").get().getRhs().getIntValue().get();
+        int units = ((LayerSymbol)net1ArchSym.getStreams().get(0).getElements().get(3)).getArgument("units").get().getRhs().getIntValue().get();
+
+        assertEquals(20, channels);
+        assertEquals(500, units);
+
+        Log.info("END", "MODULAR_TEST");
     }
 
     @Test
-    public void testModularSimple(){
-        Scope symtab = createSymTab("src/test/resources/models/ModularMNIST/");
-        Optional<EMAComponentInstanceSymbol> compInstanceSymbol = symtab.<EMAComponentInstanceSymbol>resolve("modularNetworkSimple.Connector", EMAComponentInstanceSymbol.KIND);
+    public void testModularComplex() {
+        Scope symtab = createSymTab("src/test/resources/models/ModularMNIST");
+        EMAComponentInstanceSymbol compInstanceSymbol = symtab.<EMAComponentInstanceSymbol>resolve("modularNetworkComplex.connector", EMAComponentInstanceSymbol.KIND).orElse(null);
+        assertNotNull(compInstanceSymbol);
 
-        //assertTrue(compInstanceSymbol.isPresent());
+        EMAComponentInstanceSymbol networkInstance = compInstanceSymbol.getSpannedScope().<EMAComponentInstanceSymbol>resolve("predictor1", EMAComponentInstanceSymbol.KIND).get();
+        assertNotNull(networkInstance);
 
-        if(compInstanceSymbol.isPresent()){
+        EMAComponentInstanceSymbol net1Instance = networkInstance.getSpannedScope().<EMAComponentInstanceSymbol>resolve("net1", EMAComponentInstanceSymbol.KIND).get();
+        assertNotNull(net1Instance);
+        assertEquals("modularNetworkComplex.connector.predictor1.net1", net1Instance.getFullName());
 
+        ArchitectureSymbol net1ArchSym = net1Instance.getSpannedScope().<ArchitectureSymbol>resolve("", ArchitectureSymbol.KIND).get();
+        assertNotNull(net1ArchSym);
 
-            EMAComponentInstanceSymbol mainInstance = compInstanceSymbol.get();
+        net1ArchSym.resolve();
 
-            EMAComponentInstanceSymbol network1 = mainInstance.getSpannedScope().<EMAComponentInstanceSymbol>
-                    resolve("predictor1", EMAComponentInstanceSymbol.KIND).get();
+        int channels = ((LayerSymbol)net1ArchSym.getStreams().get(0).getElements().get(1)).getArgument("channels").get().getRhs().getIntValue().get();
+        int units = ((LayerSymbol)net1ArchSym.getStreams().get(0).getElements().get(3)).getArgument("units").get().getRhs().getIntValue().get();
 
-            EMAComponentInstanceSymbol net1 = mainInstance.getSpannedScope().<EMAComponentInstanceSymbol>
-                resolve("net1", EMAComponentInstanceSymbol.KIND).get();
-            EMAComponentInstanceSymbol net2 = mainInstance.getSpannedScope().<EMAComponentInstanceSymbol>
-                resolve("net2", EMAComponentInstanceSymbol.KIND).get();
+        assertEquals(20, channels);
+        assertEquals(500, units);
 
-            assertEquals("modularNetworks.Connector.predictor1",network1.getFullName());
-            assertEquals("modularNetworks.Connector.predictor1.net1",net1.getFullName());
-            assertEquals("modularNetworks.Connector.predictor1.net2",net2.getFullName());
+        EMAComponentInstanceSymbol net2Instance = networkInstance.getSpannedScope().<EMAComponentInstanceSymbol>resolve("net2", EMAComponentInstanceSymbol.KIND).get();
+        assertNotNull(net2Instance);
+        assertEquals( "modularNetworkComplex.connector.predictor1.net2", net2Instance.getFullName());
 
-            ArchitectureSymbol network1ArchSym = network1.getSpannedScope().<ArchitectureSymbol>resolve("",ArchitectureSymbol.KIND).get();
+        EMAComponentInstanceSymbol net3Instance = net2Instance.getSpannedScope().<EMAComponentInstanceSymbol>resolve("net3", EMAComponentInstanceSymbol.KIND).get();
+        assertNotNull(net3Instance);
+        assertEquals( "modularNetworkComplex.connector.predictor1.net2.net3", net3Instance.getFullName());
 
-            ArchitectureSymbol net1ArchSym = net1.getSpannedScope().<ArchitectureSymbol>resolve("", ArchitectureSymbol.KIND).get();
+        ArchitectureSymbol net3ArchSym = net3Instance.getSpannedScope().<ArchitectureSymbol>resolve("", ArchitectureSymbol.KIND).get();
+        assertNotNull(net3ArchSym);
+        net3ArchSym.resolve();
 
-            ArchitectureSymbol net2ArchSym = net2.getSpannedScope().<ArchitectureSymbol>resolve("", ArchitectureSymbol.KIND).get();
+        units = ((LayerSymbol)net3ArchSym.getStreams().get(0).getElements().get(1)).getArgument("units").get().getRhs().getIntValue().get();
+        assertEquals(10, units);
 
-            net1ArchSym.resolve();
-            net2ArchSym.resolve();
-            network1ArchSym.resolve();
+        EMAComponentInstanceSymbol net4Instance = net2Instance.getSpannedScope().<EMAComponentInstanceSymbol>resolve("net4", EMAComponentInstanceSymbol.KIND).get();
+        assertNotNull(net4Instance);
+        assertEquals( "modularNetworkComplex.connector.predictor1.net2.net4", net4Instance.getFullName());
 
-        }
-        Log.info("END","MODULAR_TEST");
-    }
+        ArchitectureSymbol net4ArchSym = net4Instance.getSpannedScope().<ArchitectureSymbol>resolve("", ArchitectureSymbol.KIND).get();
+        assertNotNull(net4ArchSym);
+        net4ArchSym.resolve();
 
-    @Test
-    public void testModularComplex(){
-        Scope symtab = createSymTab("src/test/resources/models/ModularMNIST/");
-        Optional<EMAComponentInstanceSymbol> compInstanceSymbol = symtab.<EMAComponentInstanceSymbol>resolve("modularNetworkComplex.Connector", EMAComponentInstanceSymbol.KIND);
-
-        //assertTrue(compInstanceSymbol.isPresent());
-
-        if(compInstanceSymbol.isPresent()){
-
-        /*
-            EMAComponentInstanceSymbol mainInstance = compInstanceSymbol.get();
-
-            EMAComponentInstanceSymbol network1 = mainInstance.getSpannedScope().<EMAComponentInstanceSymbol>
-                    resolve("predictor1", EMAComponentInstanceSymbol.KIND).get();
-
-            EMAComponentInstanceSymbol net1 = mainInstance.getSpannedScope().<EMAComponentInstanceSymbol>
-                    resolve("net1", EMAComponentInstanceSymbol.KIND).get();
-            EMAComponentInstanceSymbol net2 = mainInstance.getSpannedScope().<EMAComponentInstanceSymbol>
-                    resolve("net2", EMAComponentInstanceSymbol.KIND).get();
-
-            assertEquals("modularNetworks.Connector.predictor1",network1.getFullName());
-            assertEquals("modularNetworks.Connector.predictor1.net1",net1.getFullName());
-            assertEquals("modularNetworks.Connector.predictor1.net2",net2.getFullName());
-
-            ArchitectureSymbol network1ArchSym = network1.getSpannedScope().<ArchitectureSymbol>resolve("",ArchitectureSymbol.KIND).get();
-
-            ArchitectureSymbol net1ArchSym = net1.getSpannedScope().<ArchitectureSymbol>resolve("", ArchitectureSymbol.KIND).get();
-
-            ArchitectureSymbol net2ArchSym = net2.getSpannedScope().<ArchitectureSymbol>resolve("", ArchitectureSymbol.KIND).get();
-
-            net1ArchSym.resolve();
-            net2ArchSym.resolve();
-            network1ArchSym.resolve();
-        */
-        }
-        Log.info("END","MODULAR_TEST");
+        Log.info("END", "MODULAR_TEST");
     }
 }
 

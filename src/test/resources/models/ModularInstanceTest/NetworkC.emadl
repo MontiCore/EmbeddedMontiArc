@@ -1,7 +1,7 @@
 /* (c) https://github.com/MontiCore/monticore */
 package ModularInstanceTest;
 
-component NetworkC<Z classes = 10> (Z convChannels) {
+component NetworkC {
     ports in Z(0:255)^{1,28,28} dataInput,
          out Z(0:255)^{1,28,28} dataOutput;
 
