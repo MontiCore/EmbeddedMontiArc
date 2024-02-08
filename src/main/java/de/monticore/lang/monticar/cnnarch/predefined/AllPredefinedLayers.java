@@ -20,6 +20,7 @@ public class AllPredefinedLayers {
     //predefined layer names
     public static final String FULLY_CONNECTED_NAME = "FullyConnected";
     public static final String CONVOLUTION_NAME = "Convolution";
+    public static final String IDENTITY_NAME = "Identity";
     public static final String UP_CONVOLUTION_NAME = "UpConvolution";
     public static final String SOFTMAX_NAME = "Softmax";
     public static final String SIGMOID_NAME = "Sigmoid";
@@ -135,6 +136,9 @@ public class AllPredefinedLayers {
     public static final String NUM_INPUTS_NAME = "numInputs";
     public static final String OUTPUT_SHAPE_NAME = "outputShape";
     public static final String TRAINABLE = "trainable";
+    public static final String ELEMENT_TYPE_LOWER_BOUND = "elementTypeLowerBound";
+    public static final String ELEMENT_TYPE_UPPER_BOUND = "elementTypeUpperBound";
+
 
     //parameters DotProductSelfAttention
     public static final String SCALE_FACTOR_NAME="scaleFactor";
@@ -186,7 +190,7 @@ public class AllPredefinedLayers {
     // String values for Reparametrization Layer
     public static final String PDF_NAME = "pdf";
     public static final String PDF_NORMAL = "normal";
-    public static final String PDF_DIRICHLET = "dirichlet"; 
+    public static final String PDF_DIRICHLET = "dirichlet";
 
 	//possible activation values for the querry network in the memory layer
 	public static final String MEMORY_ACTIVATION_LINEAR = "linear";
@@ -256,7 +260,8 @@ public class AllPredefinedLayers {
                 Reparameterize.create(),
                 VectorQuantize.create(),
                 SACSquashedGaussian.create(),
-                PositionEncoding.create());
+                PositionEncoding.create(),
+                Identity.create());
 
     }
 
