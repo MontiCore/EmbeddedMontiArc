@@ -10,6 +10,7 @@ modelPath = None
 paramsPath = None
 network = None
 oldNetwork = None
+input_shape = None
 
 oldNetworkPath = None
 
@@ -39,6 +40,14 @@ while index < len(sys.argv):
         oldNetworkPath = sys.argv[index + 1]
     elif arg == "-re":
         reExport = True
+    elif arg == "-shape":
+        input_shape_str = sys.argv[index + 1]
+        input_shape_map = {}
+        shape_pairs = input_shape_str.split(";")
+        for pair in shape_pairs:
+            key, value_str = pair.split(":")
+            values = [int(dim) for dim in value_str.split(",")]
+            input_shape_map[key] = values
 
     index += 1
 
@@ -63,15 +72,15 @@ with warnings.catch_warnings():
 
 with warnings.catch_warnings():
     warnings.simplefilter("ignore")
-    network = gluon.nn.SymbolBlock.imports(modelPath, [inputName], paramsPath, ctx=ctx,
-                                           ignore_extra=True, allow_missing=False)
-
-
-
+    network = gluon.nn.SymbolBlock.imports(modelPath, [inputName], paramsPath, ctx=ctx, ignore_extra=True)
 
 if network is not None :
     file_save_dir = newModelDirectory + "/" + newModelName
+    assert len(input_shape_map) == 1 , f"Single input shape expected, got {len(input_shape_map)}"
+    input_shape_list = list(input_shape_map.values())[0]
+    print(input_shape_list)
+    input_shape_ndarray = mx.nd.zeros((1, *tuple(input_shape_list)))
+    network.forward(input_shape_ndarray)
     network.export(file_save_dir)
 
-    param_file_save_dir = newModelDirectory + "/" + newModelName + "-0000.params"
-    network.save_parameters(param_file_save_dir)
+
