@@ -117,6 +117,25 @@ public class GluonDecomposer implements BackendDecomposer {
         pythonCall.add("-onp");
         pythonCall.add(originalNetworkFile.getPath());
 
+        StringBuilder shapeStrBuilder = new StringBuilder();
+        for (Map.Entry<String, ArrayList<Integer>> entry : gluonNet.getNetworkStructure().getNetworkStructureInformation().getInputPortsDim().entrySet()) {
+            shapeStrBuilder.append(entry.getKey());
+            shapeStrBuilder.append(":");
+            for (int i = 0; i < entry.getValue().size(); i++) {
+                shapeStrBuilder.append(entry.getValue().get(i));
+                if (i < entry.getValue().size() - 1) {
+                    shapeStrBuilder.append(",");
+                }
+            }
+            shapeStrBuilder.append(";");
+        }
+        if (shapeStrBuilder.length() > 0) {
+            shapeStrBuilder.setLength(shapeStrBuilder.length() - 1);
+        }
+
+        pythonCall.add("-shape");
+        pythonCall.add(shapeStrBuilder.toString());
+
         if (reExport) {
             //pythonCall.add("-re");
         }
