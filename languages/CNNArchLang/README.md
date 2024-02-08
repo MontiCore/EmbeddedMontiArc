@@ -877,8 +877,11 @@ All predefined methods start with a capital letter and all constructed methods h
   * **networkPrefix** (string, required): name of the network to load. This is a prefix of the file names, e.g. for Gluon there willl be two files (symbol and params) wich start with networkName- (the prefix would be networkName- with the -) followed by epoch number (param file) and file endings.
   * **numInputs** (integer > 0, required): number of inputs the loaded network expects.
   * **outputShape** (integer tuple > 0, reqiured): The expected shape of the output. If the network does not provide this shape, it it will be transformed with a dense layer and a reshape.
+  * **elementTypeLowerBound** (string, optional, default=`-∞`): The lower bound of the output Domain. (Gluon only)
+  * **elementTypeUpperBound** (string, optional, default=`∞`): The upper bound of the output Domain. (Gluon only)
   * **trainable** (boolean, optional, default=true): whether weights of the imported model must be updated during the training.
-  
+
+
 * **SACSquashedGaussian(output_dim, std_log_min, std_log_max)**
   
   Must be the final layer of the policy network, when using Soft Actor-Critic (SAC) reinforcement learning. It takes in a tensor and returns 3 outputs streams with dimensions (output_dim, 1) (output_dim, 1) and (1, 1). Connect the first stream to the mean_action output, the second stream to the random_action output and the third stream to the random_action_logprob output of the component. The required output_dim parameter must be set to the number of dimensions of the action space. The optional std_log_min and std_log_max parameters 
@@ -888,6 +891,10 @@ All predefined methods start with a capital letter and all constructed methods h
   * **output_dim** ( (integer > 0), required): the number of dimensions of the action space
   * **std_log_min** (float, optional, default=-20): Minimal value for the log standard deviation
   * **std_log_max** (float, optional, default=2): Maximal value for the log standard deviation,
+
+
+* **Identity()**
+  * Layer that passes through the input directly. Currently only available with the Gluon backend.
 
 ## Predefined Unroll Types
 * **GreedySearch(max_length)**

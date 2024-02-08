@@ -45,6 +45,8 @@ public class AllCoCoTest extends AbstractCoCoTest {
         checkValid("valid_tests", "Fixed_ThreeInputCNN_M14");
         checkValid("valid_tests", "ThreeInputCNN_M14_alternative");
         checkValid("valid_tests", "Alexnet_alt");
+        checkValid("valid_tests", "SimpleNetworkIdentity");
+        checkValid("valid_tests", "SimpleLoadNetwork");
         checkValid("valid_tests", "SimpleNetworkSoftmax");
         checkValid("valid_tests", "SimpleNetworkSigmoid");
         checkValid("valid_tests", "SimpleNetworkLinear");
