@@ -63,6 +63,7 @@ public class AllPredefinedLayers {
     public static final String UP_CONVOLUTION3D_NAME = "UpConvolution3D";
     public static final String VECTOR_QUANTIZE_NAME = "VectorQuantize";
     public static final String POSITION_ENCODING_NAME = "PositionEncoding";
+    public static final String SAC_SQUASHED_GAUSSIAN_NAME = "SACSquashedGaussian";
 
     public static final String AdaNet_Name = "AdaNet"; //AdaNet layer
 
@@ -124,6 +125,10 @@ public class AllPredefinedLayers {
     public static final String NUM_EMBEDDINGS_NAME = "num_embeddings";
     public static final String EMA_NAME = "ema";
 
+    // SACSquashedGaussian parameters
+    public static final String SAC_STD_LOG_MIN_NAME = "std_log_min";
+    public static final String SAC_STD_LOG_MAX_NAME = "std_log_max";
+
     //parameters LoadNetwork layer
     public static final String NETWORK_DIR_NAME = "networkDir";
     public static final String NETWORK_PREFIX_NAME = "networkPrefix";
@@ -181,7 +186,7 @@ public class AllPredefinedLayers {
     // String values for Reparametrization Layer
     public static final String PDF_NAME = "pdf";
     public static final String PDF_NORMAL = "normal";
-    public static final String PDF_DIRICHLET = "dirichlet";
+    public static final String PDF_DIRICHLET = "dirichlet"; 
 
 	//possible activation values for the querry network in the memory layer
 	public static final String MEMORY_ACTIVATION_LINEAR = "linear";
@@ -250,6 +255,7 @@ public class AllPredefinedLayers {
                 AdaNet.create(),
                 Reparameterize.create(),
                 VectorQuantize.create(),
+                SACSquashedGaussian.create(),
                 PositionEncoding.create());
 
     }
