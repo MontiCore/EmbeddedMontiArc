@@ -5,7 +5,7 @@
  * The license generally applicable for this project
  * can be found under https://github.com/MontiCore/monticore.
  */
-/* (c) https://github.com/MontiCore/monticore */
+
 package de.monticore.lang.monticar.cnnarch.predefined;
 
 import de.monticore.lang.monticar.cnnarch._symboltable.*;
@@ -25,6 +25,9 @@ public class LoadNetwork extends PredefinedLayerDeclaration {
     @Override
     public List<ArchTypeSymbol> computeOutputTypes(List<ArchTypeSymbol> inputTypes, LayerSymbol layer, VariableSymbol.Member member) {
         Optional<List<Integer>> optValue = layer.getIntOrIntTupleValues(AllPredefinedLayers.OUTPUT_SHAPE_NAME);
+        Optional<String> optLowerValue = layer.getStringValue(AllPredefinedLayers.ELEMENT_TYPE_LOWER_BOUND);
+        Optional<String> optUpperValue = layer.getStringValue(AllPredefinedLayers.ELEMENT_TYPE_UPPER_BOUND);
+
 
         List<Integer> shapeList = Arrays.asList(1, 1, 1);
 
@@ -35,12 +38,20 @@ public class LoadNetwork extends PredefinedLayerDeclaration {
                 shapeList.set(i, outputShape.get(i));
             }
         }
+        if (optLowerValue.isPresent() && optUpperValue.isPresent())
             return Collections.singletonList(new ArchTypeSymbol.Builder()
                     .channels(shapeList.get(0))
                     .height(shapeList.get(1))
                     .width(shapeList.get(2))
-                    .elementType("-oo", "oo")
+                    .elementType(optLowerValue.get(), optUpperValue.get())
                     .build());
+        else return Collections.singletonList(new ArchTypeSymbol.Builder()
+                .channels(shapeList.get(0))
+                .height(shapeList.get(1))
+                .width(shapeList.get(2))
+                .elementType("-oo", "oo")
+                .build());
+
     }
 
     @Override
@@ -48,7 +59,7 @@ public class LoadNetwork extends PredefinedLayerDeclaration {
         errorIfInputIsEmpty(inputTypes, layer);
     }
 
-    public static LoadNetwork create(){
+    public static LoadNetwork create() {
         LoadNetwork declaration = new LoadNetwork();
         List<ParameterSymbol> parameters = new ArrayList<>(Arrays.asList(
                 new ParameterSymbol.Builder()
@@ -71,6 +82,16 @@ public class LoadNetwork extends PredefinedLayerDeclaration {
                         .name(AllPredefinedLayers.TRAINABLE)
                         .constraints(Constraints.BOOLEAN)
                         .defaultValue(true)
+                        .build(),
+                new ParameterSymbol.Builder()
+                        .name(AllPredefinedLayers.ELEMENT_TYPE_LOWER_BOUND)
+                        .constraints(Constraints.STRING)
+                        .defaultValue("-oo")
+                        .build(),
+                new ParameterSymbol.Builder()
+                        .name(AllPredefinedLayers.ELEMENT_TYPE_UPPER_BOUND)
+                        .constraints(Constraints.STRING)
+                        .defaultValue("oo")
                         .build()));
         declaration.setParameters(parameters);
         return declaration;
