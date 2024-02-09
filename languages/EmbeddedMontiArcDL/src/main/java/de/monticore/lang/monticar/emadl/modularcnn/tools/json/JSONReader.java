@@ -9,6 +9,7 @@ package de.monticore.lang.monticar.emadl.modularcnn.tools.json;
 import de.monticore.lang.monticar.emadl.modularcnn.compositions.NetworkStructureInformation;
 
 import java.util.ArrayList;
+import java.util.HashMap;
 
 public class JSONReader {
 
@@ -33,6 +34,7 @@ public class JSONReader {
 
         String name = null;
         String instanceName = null;
+        HashMap<String, ArrayList<Integer>> inputPortDimensions = null;
         boolean atomic = false;
         ArrayList<String> dataFlow = null;
         ArrayList<NetworkStructureInformation> subnets = null;
@@ -44,6 +46,10 @@ public class JSONReader {
                     break;
                 case "instanceSymbolName":
                     instanceName = levelKvPairs.get(i).value;
+                    break;
+                case "inputDimensions":
+                    String dimensionsContent = levelKvPairs.get(i).value;
+                    inputPortDimensions = processInputDimensions(dimensionsContent);
                     break;
                 case "atomic":
                     atomic = Boolean.parseBoolean(levelKvPairs.get(i).value);
@@ -63,12 +69,12 @@ public class JSONReader {
             }
         }
 
-        NetworkStructureInformation networkStructureInformation = new NetworkStructureInformation(name, instanceName, atomic, subnets, dataFlow,null);
+        NetworkStructureInformation networkStructureInformation = new NetworkStructureInformation(name, instanceName, inputPortDimensions, atomic, subnets, dataFlow,null);
         return networkStructureInformation;
     }
 
     private ArrayList<NetworkStructureInformation> processArray(String jsonContent) {
-        if (jsonContent.equals("") ) return null;
+        if (jsonContent.isEmpty()) return null;
 
         ArrayList<String> seperatedEntries = separateEntries(jsonContent);
         ArrayList<NetworkStructureInformation> subNetworkStructures = new ArrayList<>();
@@ -85,7 +91,7 @@ public class JSONReader {
     }
 
     private ArrayList<String> processStringArray(String jsonContent) {
-        if (jsonContent.equals("") ) return null;
+        if (jsonContent.isEmpty()) return null;
 
         ArrayList<String> seperatedEntries = separateEntries(jsonContent);
         ArrayList<String> dataFlow = new ArrayList<>();
@@ -101,6 +107,37 @@ public class JSONReader {
         //if (dataFlow.size() == 0) return null;
         return dataFlow;
     }
+    private HashMap<String, ArrayList<Integer>> processInputDimensions(String jsonContent) {
+        if (jsonContent.isEmpty()) return null;
+
+        HashMap<String, ArrayList<Integer>> dimensions = new HashMap<>();
+        jsonContent = jsonContent.substring(1, jsonContent.length() - 1);
+
+        ArrayList<String> entries = separateEntries(jsonContent);
+        for (String entry : entries) {
+            String[] keyValue = entry.split(":", 2);
+            String key = keyValue[0].replace("\"", "").trim();
+            String value = keyValue[1].trim();
+            ArrayList<Integer> intValues = processIntegerArray(value);
+            dimensions.put(key, intValues);
+        }
+
+        return dimensions;
+    }
+
+    private ArrayList<Integer> processIntegerArray(String jsonContent) {
+        if (jsonContent.isEmpty()) return null;
+        ArrayList<Integer> intList = new ArrayList<>();
+
+        jsonContent = jsonContent.substring(jsonContent.indexOf('[') + 1, jsonContent.lastIndexOf(']'));
+        String[] values = jsonContent.split(",");
+        for (String value : values) {
+            intList.add(Integer.parseInt(value.trim()));
+        }
+
+        return intList;
+    }
+
 
     private ArrayList<JSONKVPair> splitLevelContent(ArrayList<String> seperatedEntries) {
         ArrayList<JSONKVPair> jsonKvPairs = new ArrayList<>();
