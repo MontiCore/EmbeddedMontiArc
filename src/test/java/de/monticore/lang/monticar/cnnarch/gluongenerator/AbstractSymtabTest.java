@@ -9,12 +9,12 @@ import de.monticore.symboltable.GlobalScope;
 import de.monticore.symboltable.Scope;
 import org.junit.Assert;
 
-import java.io.File;
-import java.io.IOException;
+import java.io.*;
 import java.nio.file.Files;
 import java.nio.file.Path;
 import java.nio.file.Paths;
 import java.util.List;
+import java.util.Objects;
 import java.util.stream.Collectors;
 
 import static org.junit.Assert.assertNotNull;
@@ -89,10 +89,19 @@ public class AbstractSymtabTest {
             );
             return false;
         }
-        int len = lines1.size();
-        for (int i = 0; i < len; i++) {
+        boolean skipNext = false; // skip because of Timestamp in model name
+        for (int i = 0; i < lines1.size(); i++) {
             String l1 = lines1.get(i);
             String l2 = lines2.get(i);
+
+            if (l1.contains("def construct(self, context, batch_size=1, data_mean=None, data_std=None):") || l2.contains("def construct(self, context, batch_size=1, data_mean=None, data_std=None):")) {
+                skipNext = true;
+                continue;
+            }
+            if (skipNext) {
+                skipNext = false;
+                continue;
+            }
             Assert.assertEquals("files differ in " + i + " line: "
                             + file1.getAbsolutePath()
                             + " has " + l1

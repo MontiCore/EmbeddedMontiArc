@@ -11,3 +11,4 @@ RNNsearch data/RNNsearch
 Show_attend_tell data/Show_attend_tell
 EpisodicMemoryNetwork data/EpisodicMemoryNetwork
 LoadNetworkTest data/LoadNetworkTest
+SimpleNetworkIdentity data/SimpleNetworkIdentity
