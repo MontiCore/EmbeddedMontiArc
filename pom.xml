@@ -7,17 +7,17 @@
     <!-- == PROJECT COORDINATES ============================================= -->
     <groupId>de.monticore.lang.monticar</groupId>
     <artifactId>cnnarch-generator</artifactId>
-    <version>0.4.19-SNAPSHOT</version>
+    <version>0.4.20-SNAPSHOT</version>
 
     <!-- == PROJECT DEPENDENCIES ============================================= -->
     <properties>
         <!-- .. SE-Libraries .................................................. -->
-        <CNNArch.version>0.4.12-SNAPSHOT</CNNArch.version>
+        <CNNArch.version>0.4.13-SNAPSHOT</CNNArch.version>
         <conflang.version>1.0.0-SNAPSHOT</conflang.version>
         <schemalang.version>1.0.1-SNAPSHOT</schemalang.version>
         <embedded-montiarc-math-generator>0.4.12</embedded-montiarc-math-generator>
         <EMADL2PythonWrapper.version>0.0.4-SNAPSHOT</EMADL2PythonWrapper.version>
-        <emadl.version>0.4.9-SNAPSHOT</emadl.version>
+        <emadl.version>0.4.11-SNAPSHOT</emadl.version>
 
         <!-- .. Libraries .................................................. -->
         <guava.version>25.1-jre</guava.version>
@@ -122,7 +122,7 @@
         <dependency>
             <groupId>org.junit.jupiter</groupId>
             <artifactId>junit-jupiter</artifactId>
-            <version>RELEASE</version>
+            <version>5.10.1</version>
             <scope>test</scope>
         </dependency>
 
@@ -268,6 +268,7 @@
                     <maxmem>256m</maxmem>
                     <!-- aggregated reports for multi-module projects -->
                     <aggregate>true</aggregate>
+                    <check/>
                 </configuration>
             </plugin>
         </plugins>
