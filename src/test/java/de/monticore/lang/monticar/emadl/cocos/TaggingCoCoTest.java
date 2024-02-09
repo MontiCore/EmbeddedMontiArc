@@ -9,13 +9,10 @@ package de.monticore.lang.monticar.emadl.cocos;
 
 
 import de.monticore.lang.embeddedmontiarc.embeddedmontiarc._symboltable.cncModel.EMAComponentSymbol;
-import de.monticore.lang.embeddedmontiarcdynamic.embeddedmontiarcdynamic._symboltable.instanceStructure.EMADynamicComponentInstantiationSymbol;
 import de.monticore.lang.tagging._symboltable.TagSymbol;
 import de.monticore.lang.tagging._symboltable.TaggingResolver;
 import de.monticore.lang.monticar.emadl.tagging.dltag.DataPathSymbol;
-import de.monticore.lang.monticar.cnnarch.helper.ErrorCodes;
 import de.monticore.lang.monticar.emadl._cocos.DataPathCocos;
-import de.monticore.lang.tagging._symboltable.TaggingResolver;
 
 import de.se_rwth.commons.logging.Log;
 import org.junit.Before;

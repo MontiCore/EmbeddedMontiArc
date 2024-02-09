@@ -40,6 +40,7 @@ public class SymtabTest extends AbstractSymtabTest {
         EMAComponentSymbol a = symTab.<EMAComponentSymbol>resolve("ResNet34", EMAComponentSymbol.KIND).orElse(null);
         EMAComponentInstanceSymbol c = symTab.<EMAComponentInstanceSymbol>resolve("resNet34", EMAComponentInstanceSymbol.KIND).orElse(null);
         assertNotNull(a);
+        assertNotNull(c);
     }
 
 
