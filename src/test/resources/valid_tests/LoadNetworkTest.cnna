@@ -4,7 +4,7 @@ architecture LoadNetworkTest{
     def output Q(0:1)^{33} softmax
 
     data ->
-    LoadNetwork(networkDir="pretrained", networkPrefix="network_name-", numInputs=1, outputShape=(1,768)) ->
+    LoadNetwork(networkDir="pretrained", networkPrefix="network_name-", numInputs=1, outputShape=(1,768), elementTypeLowerBound="-oo", elementTypeUpperBound="oo") ->
 	FullyConnected(units=33) ->
     Softmax() ->
     softmax;

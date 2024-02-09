@@ -204,6 +204,31 @@ public class GenerationTest extends AbstractSymtabTest {
     }
 
     @Test
+    public void testIdentityLayerGeneration() throws IOException, TemplateException {
+        String[] args = {"-m", "src/test/resources/valid_tests", "-r", "SimpleNetworkIdentity", "-o", "./target/generated-sources-cnnarch/"};
+        CNNArch2GluonCli.main(args);
+        assertTrue(Log.getFindings().isEmpty());
+
+/*
+        checkFilesAreEqual(
+
+                Paths.get("./target/generated-sources-cnnarch"),
+                Paths.get("./src/test/resources/target_code"),
+                Arrays.asList(
+                        "CNNCreator_SimpleNetworkIdentity.py",
+                        "CNNDatasets_SimpleNetworkIdentity.py",
+                        "CNNNet_SimpleNetworkIdentity.py",
+                        "CNNDataLoader_SimpleNetworkIdentity.py",
+                        "CNNSupervisedTrainer_SimpleNetworkIdentity.py",
+                        "CNNPredictor_SimpleNetworkIdentity.h",
+                        "execute_SimpleNetworkIdentity",
+                        "CNNModelLoader.h",
+                        "CNNDataCleaner_SimpleNetworkIdentity.py"));
+
+ */
+    }
+
+    @Test
     public void testFullCfgGeneration() throws IOException, TemplateException {
         String sourcePath = "src/test/resources/valid_tests";
         CNNTrain2Gluon trainGenerator = new CNNTrain2Gluon(rewardFunctionSourceGenerator);
