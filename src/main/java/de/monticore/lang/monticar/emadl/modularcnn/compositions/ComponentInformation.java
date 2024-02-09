@@ -12,18 +12,20 @@
  */
 package de.monticore.lang.monticar.emadl.modularcnn.compositions;
 
+import de.monticore.expressionsbasis._ast.ASTExpression;
 import de.monticore.lang.embeddedmontiarc.embeddedmontiarc._ast.*;
 import de.monticore.lang.embeddedmontiarc.embeddedmontiarc._symboltable.ComponentKind;
 import de.monticore.lang.embeddedmontiarcdynamic.embeddedmontiarcdynamic._symboltable.cncModel.EMADynamicComponentSymbol;
 import de.monticore.lang.embeddedmontiarcdynamic.embeddedmontiarcdynamic._symboltable.cncModel.EMADynamicConnectorSymbol;
 import de.monticore.lang.embeddedmontiarcdynamic.embeddedmontiarcdynamic._symboltable.instanceStructure.EMADynamicComponentInstantiationSymbol;
+import de.monticore.lang.math._ast.ASTNumberExpression;
 import de.monticore.lang.monticar.cnnarch._ast.ASTArchitecture;
+import de.monticore.lang.monticar.common2._ast.ASTCommonMatrixType;
 import de.monticore.lang.monticar.emadl.modularcnn.tools.ScopeFinder;
+import de.monticore.numberunit._ast.ASTNumberWithUnit;
 import de.se_rwth.commons.logging.Log;
 
-import java.util.ArrayList;
-import java.util.Iterator;
-import java.util.Set;
+import java.util.*;
 
 public class ComponentInformation {
     final private ArrayList<ASTInterface> interfaces = new ArrayList<>();
@@ -39,6 +41,7 @@ public class ComponentInformation {
     private String componentInstanceSymbolName;
     private ComponentKind componentKind;
     private ArrayList<String> inputPorts = new ArrayList<>();
+    private HashMap<String, ArrayList<Integer>> inputPortsDim = new HashMap<>();
     private ArrayList<String> outputPorts = new ArrayList<>();
     private boolean violatesNetworkForm = false;
     private boolean isCNNNode = false;
@@ -87,6 +90,8 @@ public class ComponentInformation {
     public ArrayList<String> getInputPorts() {
         return inputPorts;
     }
+
+    public HashMap<String, ArrayList<Integer>> getInputPortsDim() {return inputPortsDim;}
 
     public ArrayList<String> getOutputPorts() {
         return outputPorts;
@@ -236,30 +241,50 @@ public class ComponentInformation {
     }
 
     private void findPorts(ArrayList<ASTInterface> interfaces){
-        if (this.interfaces.size() == 0){
+        if (this.interfaces.isEmpty()){
             this.violatesNetworkForm = true;
         }
 
         for (ASTInterface i : interfaces) {
             ArrayList<ASTPort> interfacePorts = (ArrayList<ASTPort>) i.getPortsList();
-            if (interfacePorts.size() > 0) {
+            if (!interfacePorts.isEmpty()) {
                 this.ports = interfacePorts;
             }
         }
 
-        if (this.ports.size() == 0){
+        if (this.ports.isEmpty()){
             this.violatesNetworkForm = true;
         }
 
         for (ASTPort p : this.ports) {
-            if (p.getNameOpt().isPresent()) {
-                if (p.isIncoming() && !p.isOutgoing()) {
-                    this.inputPorts.add(p.getNameOpt().get());
-                } else if (!p.isIncoming() && p.isOutgoing()) {
-                    this.outputPorts.add(p.getNameOpt().get());
-                }
+            if (!p.getNameOpt().isPresent()) {
+                continue;
+            }
+            String portName = p.getNameOpt().get();
+            if (p.isIncoming() && !p.isOutgoing()) {
+                this.inputPorts.add(portName);
+                this.inputPortsDim.put(portName, extractPortDimensions(p));
+            } else if (!p.isIncoming() && p.isOutgoing()) {
+                this.outputPorts.add(portName);
             }
         }
+    }
+
+    private ArrayList<Integer> extractPortDimensions(ASTPort port) {
+        ArrayList<Integer> dimensions = new ArrayList<>();
+
+        if (!(port.getType() instanceof ASTCommonMatrixType)) {
+            return dimensions;
+        }
+        ASTCommonMatrixType matrixType = (ASTCommonMatrixType) port.getType();
+        List<ASTExpression> expressions = matrixType.getDimension().getDimensionList();
+        for (ASTExpression expression : expressions) {
+            if (expression instanceof ASTNumberExpression) {
+                ASTNumberWithUnit numberWithUnit = ((ASTNumberExpression) expression).getNumberWithUnit();
+                numberWithUnit.getNumber().ifPresent(number -> dimensions.add(number.intValue()));
+            }
+        }
+        return dimensions;
     }
 
     private void findComponents(ArrayList<ASTSubComponent> components) {

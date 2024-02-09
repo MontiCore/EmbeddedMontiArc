@@ -1,7 +1,7 @@
 /* (c) https://github.com/MontiCore/monticore */
 package ModularInstanceTest;
 
-component NetworkD<Z classes = 10> (Z convChannels) {
+component NetworkD<Z classes = 10> (Z convChannels=200) {
     ports in Z(0:255)^{1,28,28} dataInput,
          out Q(0:1)^{classes} dataOutput;
 
@@ -14,7 +14,7 @@ component NetworkD<Z classes = 10> (Z convChannels) {
         Convolution(kernel=(5,5), channels=convChannels) ->
         Tanh() ->
         Pooling(pool_type="max", kernel=(2,2), stride=(2,2)) ->
-        FullyConnected(units=1000) ->
+        FullyConnected(units=1024) ->
         Tanh() ->
         Dropout() ->
         FullyConnected(units=classes) ->
