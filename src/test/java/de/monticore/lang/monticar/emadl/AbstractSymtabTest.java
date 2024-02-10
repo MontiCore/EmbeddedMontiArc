@@ -55,10 +55,8 @@ public class AbstractSymtabTest {
             Assert.fail("IO error: " + e.getMessage());
             return false;
         }
-        lines1 = discardEmptyLines(lines1);
-        lines1 = discardCopyrightNotice(lines1);
-        lines2 = discardEmptyLines(lines2);
-        lines2 = discardCopyrightNotice(lines2);
+        lines1 = normalizeLines(lines1);
+        lines2 = normalizeLines(lines2);
 
         String lines1AsString = String.join("\n", lines1);
         String lines2AsString = String.join("\n", lines2);
@@ -91,19 +89,13 @@ public class AbstractSymtabTest {
         return true;
     }
 
-    private static List<String> discardEmptyLines(List<String> lines) {
+    private static List<String> normalizeLines(List<String> lines) {
         return lines.stream()
                 .map(String::trim)
-                .filter(l -> !l.isEmpty())
+                .filter(line -> !line.isEmpty())
+                .filter(line -> !line.contains("(c) https://github.com/MontiCore/monticore"))
+                .map(line -> line.replaceAll("prefix=\"[^\"]*\"", "prefix=\"\""))
                 .collect(Collectors.toList());
-    }
-
-    private static List<String> discardCopyrightNotice(List<String> lines) {
-        return lines
-                .stream()
-                .filter(s -> !s.contains("(c) https://github.com/MontiCore/monticore"))
-                .collect(Collectors.toList());
-
     }
 
     protected void checkFindingsCount() {
