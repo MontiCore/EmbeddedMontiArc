@@ -21,25 +21,25 @@ public class ModularBasicTest extends ModularTestSetup {
 
     @Test
     public void testModularNetworkSimpleMultiNet() throws IOException {
-        String[] args = {"-m", "src/test/resources/models/ModularCNN/modularNetworkSimpleMultiNet", "-r", "calculator.Connector", "-o", "target", "-b", "GLUON", "-c", "n", "-f", "n"};
+        String[] args = {"-m", "src/test/resources/models/ModularCNN/modularNetworkSimpleMultiNet", "-r", "calculator.Connector", "-o", "target", "-b", "GLUON", "-c", "y", "-f", "n"};
         runGenerator(args, hashPaths,7,false);
     }
 
     @Test
     public void testModularNetworkComplex() throws IOException {
-        String[] args = {"-m", "src/test/resources/models/ModularCNN/modularNetworkComplex", "-r", "calculator.Connector", "-o", "target", "-b", "GLUON", "-c", "n", "-f", "n"};
+        String[] args = {"-m", "src/test/resources/models/ModularCNN/modularNetworkComplex", "-r", "calculator.Connector", "-o", "target", "-b", "GLUON", "-c", "y", "-f", "n"};
         runGenerator(args, hashPaths,6,false);
     }
 
     @Test
     public void testModularNetworkSimple() throws IOException {
-        String[] args = {"-m", "src/test/resources/models/ModularCNN/modularNetworkSimple", "-r", "calculator.Connector", "-o", "target", "-b", "GLUON","python", "/home/marvin/.pyenv/versions/3.6.9/envs/montianna/bin/python3", "-c", "n", "-f", "n"};
+        String[] args = {"-m", "src/test/resources/models/ModularCNN/modularNetworkSimple", "-r", "calculator.Connector", "-o", "target", "-b", "GLUON", "-c", "y", "-f", "n"};
         runGenerator(args, hashPaths,6,false);
     }
 
     @Test
     public void testSingleNetwork() throws IOException {
-        String[] args = {"-m", "src/test/resources/models/ModularCNN/singleNetwork", "-r", "calculator.Connector", "-o", "target", "-b", "GLUON", "-c", "n", "-f", "n"};
+        String[] args = {"-m", "src/test/resources/models/ModularCNN/singleNetwork", "-r", "calculator.Connector", "-o", "target", "-b", "GLUON", "-c", "y", "-f", "n"};
         runGenerator(args, hashPaths,6,false);
     }
 }
