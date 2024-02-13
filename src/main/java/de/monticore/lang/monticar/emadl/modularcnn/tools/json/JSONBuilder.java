@@ -6,12 +6,9 @@
  */
 package de.monticore.lang.monticar.emadl.modularcnn.tools.json;
 
-import de.se_rwth.commons.logging.Log;
-
 import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.List;
-import java.util.Map;
 
 public class JSONBuilder {
 
@@ -40,34 +37,6 @@ public class JSONBuilder {
     private String JSONEntry(String key, boolean value, boolean trailing){
         return JSONBoolean(key,value) + (trailing ? "" : ",");
     }
-
-    private String JSONArray(String key, ArrayList<String> values, boolean simpleValues, boolean trailing) {
-        String array = "\"" + key + "\"" + ":" + "[";
-
-        for (int i=0; i< values.size();i++){
-            String element = values.get(i);
-            if (simpleValues){
-                element = "\"" + element + "\"";
-            }
-            //element = stripLeadingTrailingQuotes(element).replaceAll(" ","");
-            //if (element.toCharArray()[0] != '"' || element.toCharArray()[0] != '{' || element.toCharArray()[0] != '[' ) element = "\"" + element;
-            //if (element.toCharArray()[element.toCharArray().length-1] != '"' || element.toCharArray()[element.toCharArray().length-1] != '}' || element.toCharArray()[element.toCharArray().length-1] != ']') element = element + "\"";
-            String newContent = "";
-
-            if (i != values.size() -1){
-                newContent = element + ",";
-            } else {
-                newContent = element + "";
-            }
-
-            array += newContent;
-        }
-
-
-        array += "]" + (trailing ? "" : ",");
-
-        return array;
-    }
     private <T> String JSONArray(String key, List<T> values, boolean trailing) {
         StringBuilder arrayBuilder = new StringBuilder();
         arrayBuilder.append("\"").append(key).append("\": [");
@@ -75,7 +44,10 @@ public class JSONBuilder {
             T element = values.get(i);
             String elementString;
             if (element instanceof String) {
-                elementString = "\"" + element + "\"";
+                elementString = (String) element;
+                if (!elementString.startsWith("{") && !elementString.startsWith("[")) {
+                    elementString = "\"" + elementString + "\"";
+                }
             } else {
                 elementString = element.toString();
             }

@@ -7,6 +7,7 @@
 package de.monticore.lang.monticar.emadl.modularcnn.tools.json;
 
 import de.monticore.lang.monticar.emadl.modularcnn.compositions.NetworkStructureInformation;
+import de.se_rwth.commons.logging.Log;
 
 import java.util.ArrayList;
 import java.util.HashMap;
@@ -24,7 +25,6 @@ public class JSONReader {
         jsonContent = removeNewLinesAndWhitespaces(jsonContent);
         int[] currentLevel = findTopLevelType(jsonContent, start, end);
         NetworkStructureInformation networkStructureInformation = processObject(jsonContent.substring(currentLevel[0], currentLevel[1]));
-
         return networkStructureInformation;
     }
 
@@ -127,14 +127,24 @@ public class JSONReader {
 
     private ArrayList<Integer> processIntegerArray(String jsonContent) {
         if (jsonContent.isEmpty()) return null;
+        int startIndex = jsonContent.indexOf('[');
+        int endIndex = jsonContent.lastIndexOf(']');
+        if (startIndex == -1 || endIndex == -1 || startIndex >= endIndex) {
+            return null;
+        }
+        jsonContent = jsonContent.substring(startIndex + 1, endIndex);
+        if (jsonContent.isEmpty()) {
+            return null;
+        }
         ArrayList<Integer> intList = new ArrayList<>();
-
-        jsonContent = jsonContent.substring(jsonContent.indexOf('[') + 1, jsonContent.lastIndexOf(']'));
         String[] values = jsonContent.split(",");
         for (String value : values) {
-            intList.add(Integer.parseInt(value.trim()));
+            try {
+                intList.add(Integer.parseInt(value.trim()));
+            } catch (NumberFormatException e) {
+                Log.error("Integer Array incorrectly parsed", e);
+            }
         }
-
         return intList;
     }
 
