@@ -15,7 +15,7 @@ import java.util.ArrayList;
 public class ComposedNetworkFileHandler {
     private String composedNetworksFilePath;
     public ComposedNetworkFileHandler(String composedNetworksFilePath){
-        if (composedNetworksFilePath == null || composedNetworksFilePath.equals("")){
+        if (composedNetworksFilePath == null || composedNetworksFilePath.isEmpty()){
             this.composedNetworksFilePath = "ComposedNetworks";
         } else {
             this.composedNetworksFilePath = composedNetworksFilePath ;
@@ -61,7 +61,7 @@ public class ComposedNetworkFileHandler {
                 knownNetworks.add(newNet);
             }
 
-            if (knownNetworks.size() > 0){
+            if (!knownNetworks.isEmpty()){
                 removeFile(composedNetworksFilePath);
                 for (NetworkStructureInformation network: knownNetworks){
                     writeToFile(composedNetworksFilePath,network.printStructureJSON());
@@ -119,7 +119,7 @@ public class ComposedNetworkFileHandler {
     }
 
     private void removeFile(String path) throws IOException{
-        if (path.equals("")) {
+        if (path.isEmpty()) {
             return;
         }
 

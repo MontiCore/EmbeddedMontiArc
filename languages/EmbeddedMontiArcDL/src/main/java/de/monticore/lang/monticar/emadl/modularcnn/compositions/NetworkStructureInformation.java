@@ -51,7 +51,7 @@ public class NetworkStructureInformation {
         }
     }
 
-    public NetworkStructureInformation(String name, String instanceSymbolName,HashMap<String, ArrayList<Integer>> inputPortsDim ,boolean atomic, ArrayList<NetworkStructureInformation> subNets, ArrayList<String> dataFlow, NetworkStructureInformation parent) {
+    public NetworkStructureInformation(String name, String instanceSymbolName, HashMap<String, ArrayList<Integer>> inputPortsDim, boolean atomic, ArrayList<NetworkStructureInformation> subNets, ArrayList<String> dataFlow, NetworkStructureInformation parent) {
         this.networkName = name;
         this.instanceSymbolName = instanceSymbolName;
         this.inputPortsDim = inputPortsDim;
@@ -299,6 +299,9 @@ public class NetworkStructureInformation {
 
         if (this.networkInstancesDataFlow == null){
             this.networkInstancesDataFlow = new ArrayList<>();
+        }
+        if (this.inputPortsDim == null){
+            this.inputPortsDim = new HashMap<>();
         }
 
         JSONBuilder jsonObject = new JSONBuilder();
