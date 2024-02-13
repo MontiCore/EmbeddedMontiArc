@@ -4,6 +4,7 @@ import de.monticore.lang.monticar.cnnarch._symboltable.*;
 import de.monticore.lang.monticar.emadl.modularcnn.compositions.NetworkStructureInformation;
 
 import java.util.ArrayList;
+import java.util.HashMap;
 import java.util.List;
 
 public class NetworkStructure {
@@ -16,10 +17,9 @@ public class NetworkStructure {
     private ArrayList<LayerInformation> networkLayers = new ArrayList<>();
     private LayerInformation frontSlicePoint = null;
     private LayerInformation backSlicePoint = null;
-
     private ArrayList<NetworkStructure> subNetworkStructures = new ArrayList<>();
+    private HashMap<String, ArrayList<Integer>> inputPortsDim = new HashMap<>();
     private boolean atomic = false;
-
     private boolean decompositionAllowed = false;
 
     public NetworkStructure(NetworkStructureInformation networkStructureInformation){
@@ -29,6 +29,7 @@ public class NetworkStructure {
         this.componentName = networkStructureInformation.getComponentName();
         this.atomic = networkStructureInformation.isAtomic();
         this.modelName = null;
+        this.inputPortsDim = networkStructureInformation.getInputPortsDim();
     }
 
     public NetworkStructure(NetworkStructureInformation networkStructureInformation, ArchitectureSymbol architectureSymbol){
@@ -67,7 +68,7 @@ public class NetworkStructure {
     public ArrayList<LayerInformation> getNetworkLayers(){
         return this.networkLayers;
     }
-
+    public HashMap<String, ArrayList<Integer>> getInputPortsDim() { return inputPortsDim; }
     public void addNetworkLayer(LayerInformation networkLayer){
         this.networkLayers.add(networkLayer);
     }
@@ -101,7 +102,7 @@ public class NetworkStructure {
     }
 
     public boolean hasSubnet(NetworkStructure network){
-        if (this.subNetworkStructures.size() > 0) {
+        if (!this.subNetworkStructures.isEmpty()) {
             for (int i=0; i<this.subNetworkStructures.size(); i++){
                 NetworkStructure subnet = this.subNetworkStructures.get(i);
                 if (subnet.atomic == network.atomic
@@ -117,7 +118,7 @@ public class NetworkStructure {
     }
 
     public void reassignSubnet(NetworkStructure network){
-        if (this.subNetworkStructures.size() > 0) {
+        if (!this.subNetworkStructures.isEmpty()) {
             for (int i=0; i<this.subNetworkStructures.size(); i++){
                 NetworkStructure subnet = this.subNetworkStructures.get(i);
                 if (subnet.atomic == network.atomic
@@ -223,7 +224,7 @@ public class NetworkStructure {
                     if (i==0) this.frontSlicePoint = layerInformation;
                     else this.backSlicePoint = layerInformation;
                 }
-                if (this.networkLayers.size() > 0){
+                if (!this.networkLayers.isEmpty()){
                     this.networkLayers.get(this.networkLayers.size()-1).setSucceedingLayer(layerInformation);
                     layerInformation.setPreceedingLayer(this.networkLayers.get(this.networkLayers.size()-1));
                 }
