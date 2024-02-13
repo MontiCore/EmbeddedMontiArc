@@ -17,7 +17,6 @@ oldNetworkPath = None
 newModelDirectory = None
 newModelName = None
 parameterLayers = None
-reExport = False
 
 index = 0
 while index < len(sys.argv):
@@ -38,8 +37,6 @@ while index < len(sys.argv):
         parameterLayers = paramList.split(",")
     elif arg == "-onp":
         oldNetworkPath = sys.argv[index + 1]
-    elif arg == "-re":
-        reExport = True
     elif arg == "-shape":
         input_shape_str = sys.argv[index + 1]
         input_shape_map = {}
@@ -50,25 +47,6 @@ while index < len(sys.argv):
             input_shape_map[key] = values
 
     index += 1
-
-if reExport:
-    #warnings.simplefilter("ignore")
-    print("Old network: ", oldNetworkPath)
-    print("Old params: ", paramsPath)
-    print("Input name: ", inputName)
-    oldNetwork = gluon.nn.SymbolBlock.imports(oldNetworkPath, [inputName], paramsPath, ctx=ctx)
-    #oldNetwork.load_parameters(paramsPath)
-    oldNetwork.initialize()
-    print("re-exporting parameters of old network to:", paramsPath)
-    oldNetwork.collect_params()
-    oldNetwork.export(oldNetworkPath)
-    oldNetwork.save_parameters(paramsPath, deduplicate=True)
-
-"""
-with warnings.catch_warnings():
-    warnings.simplefilter("ignore")
-    oldNetwork = gluon.nn.SymbolBlock.imports(oldNetworkPath, [inputName], paramsPath, ctx=ctx, allow_missing=True)
-"""
 
 with warnings.catch_warnings():
     warnings.simplefilter("ignore")
