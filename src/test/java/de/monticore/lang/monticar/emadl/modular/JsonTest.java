@@ -15,8 +15,7 @@ import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.HashMap;
 
-import static org.junit.Assert.assertFalse;
-import static org.junit.Assert.assertTrue;
+import static org.junit.Assert.*;
 
 public class JsonTest {
     private static final String IMAGE = "image";
@@ -78,6 +77,7 @@ public class JsonTest {
         assertTrue(verifySubnet(network0,NET[3]));
         assertTrue(verifySubnet(network0,NET[2]));
         assertTrue(verifySubnet(network0,NET[1]));
+        verifyJsonSerialization(network0);
         Log.info("testJsonSubnetSearch","JSON");
     }
     @Test
@@ -98,6 +98,7 @@ public class JsonTest {
         assertTrue(verifySubnet(network0, NET[3]));
         assertTrue(verifySubnet(network0, NET[2]));
         assertTrue(verifySubnet(network0, NET[1]));
+        verifyJsonSerialization(network0);
         Log.info("testJsonComposedNet","JSON");
 
 
@@ -110,9 +111,11 @@ public class JsonTest {
     }
 
     private void verifyJsonSerialization(NetworkStructureInformation network) {
-        String json = network.printStructureJSON();
-        NetworkStructureInformation networkRead = new NetworkStructureInformation(json);
-        assertTrue("Network should be equal to its JSON representation", network.equals(networkRead, true));
+        String networkPrint = network.printStructureJSON();
+        NetworkStructureInformation networkRead = new NetworkStructureInformation(networkPrint);
+        assertTrue("NetworkStructureInformation instances not equal", network.equals(networkRead, true));
+        assertEquals("JSON representation not equal", networkPrint, networkRead.printStructureJSON());
+
     }
     private NetworkStructureInformation createParentNetwork(String name, ArrayList<NetworkStructureInformation> subNets) {
             return new NetworkStructureInformation(name, name.toLowerCase(), inputPortDimensions, false, subNets, null, null);
