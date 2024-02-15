@@ -70,8 +70,6 @@ public class GluonDecomposer implements BackendDecomposer {
         if (networkFile == null || paramsFile == null) return;
         ArrayList<GluonRepresentation> splitGluonNets = splitNetworkJsonFile(modelPath, composedNetworkStructure, networkFile);
 
-        boolean reExport = true;
-
         for (GluonRepresentation gluonNet : splitGluonNets) {
             String jsonContent = mapToJson(gluonNet.getGluonJsonRepresentation());
             ArrayList<String> parameterLayers = gluonNet.getParameterLayerCandidates();
@@ -88,13 +86,12 @@ public class GluonDecomposer implements BackendDecomposer {
             String decomposedNetPath = decomposedNetDirectory + "/" + decomposedFileName + "-old-symbol.json";
             writeFile(decomposedNetPath, jsonContent);
             //Log.warn("Running Decomposition for: " + gluonNet.getNetworkName());
-            generateNewParamsFileWithPython(decomposedNetDirectory, decomposedFileName, decomposedNetPath, gluonNet.getParameterLayerCandidates(), paramsFile, networkFile, gluonNet, reExport);
-            if (reExport) reExport = false;
+            generateNewParamsFileWithPython(decomposedNetDirectory, decomposedFileName, decomposedNetPath, gluonNet.getParameterLayerCandidates(), paramsFile, networkFile, gluonNet);
         }
     }
 
     private void generateNewParamsFileWithPython(String networkDirectory, String networkName, String decomposedNetFullPath,
-                                                 ArrayList<String> parameterLayers, File originalParamFile, File originalNetworkFile, GluonRepresentation gluonNet, boolean reExport) {
+                                                 ArrayList<String> parameterLayers, File originalParamFile, File originalNetworkFile, GluonRepresentation gluonNet) {
         ArrayList<String> pythonCall = new ArrayList<>();
         pythonCall.add(pythonPath);
         pythonCall.add(pythonTool);
@@ -118,7 +115,7 @@ public class GluonDecomposer implements BackendDecomposer {
         pythonCall.add(originalNetworkFile.getPath());
 
         StringBuilder shapeStrBuilder = new StringBuilder();
-        for (Map.Entry<String, ArrayList<Integer>> entry : gluonNet.getNetworkStructure().getNetworkStructureInformation().getInputPortsDim().entrySet()) {
+        for (Map.Entry<String, ArrayList<Integer>> entry : gluonNet.getNetworkStructure().getInputPortsDim().entrySet()) {
             shapeStrBuilder.append(entry.getKey());
             shapeStrBuilder.append(":");
             for (int i = 0; i < entry.getValue().size(); i++) {
@@ -135,10 +132,6 @@ public class GluonDecomposer implements BackendDecomposer {
 
         pythonCall.add("-shape");
         pythonCall.add(shapeStrBuilder.toString());
-
-        if (reExport) {
-            //pythonCall.add("-re");
-        }
 
         StringBuilder layerList = new StringBuilder();
         for (int i = 0; i < parameterLayers.size(); i++) {
