@@ -6,8 +6,8 @@ import de.monticore.mlpipelines.automl.helper.ASTConfLangCompilationUnitHandler;
 import de.monticore.mlpipelines.automl.helper.ConfigurationValidationHandler;
 import de.monticore.mlpipelines.automl.hyperparameters.AbstractHyperparameterAlgorithm;
 import de.monticore.mlpipelines.pipelines.Pipeline;
+import de.monticore.mlpipelines.tracking.helper.ASTConfLangHelper;
 import de.se_rwth.commons.logging.Log;
-
 import java.util.ArrayList;
 import java.util.Collections;
 import java.util.List;
@@ -89,8 +89,16 @@ public abstract class ParallelAlgorithm extends AbstractHyperparameterAlgorithm 
             List<Double> evalValues = new ArrayList<>();
             for (ASTConfLangCompilationUnit trainingConfiguration : population) {
                 ConfigurationValidationHandler.validateConfiguration(trainingConfiguration, pipeline.getSchemasTargetDir());
-                pipeline.setConfigurationModel(trainingConfiguration);
+                pipeline.setTrainingConfiguration(trainingConfiguration);
+
+                pipeline.getRunTracker().startNewRun();
+                pipeline.getRunTracker().logTag("AutoML Stage", "HPO: " + this.getClass().getSimpleName());
+                pipeline.getRunTracker().logParams(ASTConfLangHelper.getParametersFromConfiguration(trainingConfiguration));
+
                 pipeline.execute();
+
+                pipeline.getRunTracker().endRun();
+
                 double evalValue = Double.valueOf(((Float) (pipeline.getTrainedAccuracy() / 100)).toString());
                 evalValues.add(evalValue);
                 Log.info(String.format("Current iteration: %s; Eval Value: %s", this.getCurrentIteration(), evalValue),
@@ -128,7 +136,7 @@ public abstract class ParallelAlgorithm extends AbstractHyperparameterAlgorithm 
         }
 
         ASTConfLangCompilationUnit bestTrainingConfig = this.getCurrBestHyperparams();
-        pipeline.setConfigurationModel(bestTrainingConfig);
+        pipeline.setTrainingConfiguration(bestTrainingConfig);
         double bestEvalValue = this.getCurrBestEvalMetric();
 
         Log.info(String.format("Best Eval Value: %s", bestEvalValue), ParallelAlgorithm.class.getName());
