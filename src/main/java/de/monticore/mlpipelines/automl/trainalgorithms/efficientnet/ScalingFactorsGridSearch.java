@@ -3,7 +3,7 @@ package de.monticore.mlpipelines.automl.trainalgorithms.efficientnet;
 import de.monticore.lang.monticar.cnnarch._symboltable.ArchitectureSymbol;
 import de.monticore.mlpipelines.automl.configuration.EfficientNetConfig;
 import de.monticore.mlpipelines.pipelines.Pipeline;
-
+import de.monticore.mlpipelines.tracking.helper.ASTConfLangHelper;
 import java.util.ArrayList;
 import java.util.List;
 
@@ -73,9 +73,17 @@ public class ScalingFactorsGridSearch {
         if (scalingFactors.alpha < config.getMinScalingFactors().alpha) {
             return;
         }
-
         this.networkScaler.scale(this.architecture, scalingFactors, this.standardPhi);
+
+        trainPipeline.getRunTracker().startNewRun();
+        trainPipeline.getRunTracker().logTag("AutoML Stage", "NAS: Scaling Factors Grid Search");
+        trainPipeline.getRunTracker().logParams(ASTConfLangHelper.getParametersFromConfiguration(trainPipeline.getTrainingConfiguration()));
+        trainPipeline.getRunTracker().getArtifactHandler().setPlaintext(trainPipeline.getPrettyPrintedNetwork()).setFileName("network.txt").log();
+
         trainPipeline.execute();
+
+        trainPipeline.getRunTracker().endRun();
+
         this.networkScaler.rollbackScaledNetwork();
         checkIfScalingFactorsAreBetterThanBest(scalingFactors);
     }

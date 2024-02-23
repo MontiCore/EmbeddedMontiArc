@@ -3,6 +3,7 @@ package de.monticore.mlpipelines.automl.trainalgorithms;
 import conflang._ast.ASTConfLangCompilationUnit;
 import de.monticore.lang.monticar.cnnarch._symboltable.ArchitectureSymbol;
 import de.monticore.mlpipelines.pipelines.Pipeline;
+import de.monticore.mlpipelines.tracking.tracker.MultiBackendTracker;
 
 public abstract class NeuralArchitectureSearch {
     public double trainedAccuracy;
@@ -34,5 +35,9 @@ public abstract class NeuralArchitectureSearch {
 
     public ArchitectureSymbol getStartNetwork() {
         return startNetwork;
+    }
+
+    public MultiBackendTracker getRunTracker() {
+        return trainPipeline.getRunTracker();
     }
 }

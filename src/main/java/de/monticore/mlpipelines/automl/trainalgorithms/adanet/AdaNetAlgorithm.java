@@ -8,7 +8,7 @@ import de.monticore.mlpipelines.automl.trainalgorithms.adanet.builder.CandidateB
 import de.monticore.mlpipelines.automl.trainalgorithms.adanet.models.AdaNetCandidate;
 import de.monticore.mlpipelines.automl.trainalgorithms.adanet.models.AdaNetComponent;
 import de.monticore.mlpipelines.automl.trainalgorithms.adanet.models.CandidateEvaluationResult;
-
+import de.monticore.mlpipelines.tracking.helper.ASTConfLangHelper;
 import java.util.List;
 
 // For at most n iterations:
@@ -115,7 +115,16 @@ public class AdaNetAlgorithm extends NeuralArchitectureSearch {
     private CandidateEvaluationResult evaluateCandidate(AdaNetCandidate candidate) {
         setCandidateForArchitecture(candidate);
         printArchitecture(architectureSymbol);
+
+        getRunTracker().startNewRun();
+        getRunTracker().logTag("AutoML Stage", "NAS: AdaNet");
+        getRunTracker().logParams(ASTConfLangHelper.getParametersFromConfiguration(this.getTrainPipeline().getTrainingConfiguration()));
+        getRunTracker().getArtifactHandler().setPlaintext(this.getTrainPipeline().getPrettyPrintedNetwork()).setFileName("network.txt").log();
+
         this.getTrainPipeline().execute();
+
+        getRunTracker().endRun();
+
         float score = this.getTrainPipeline().getTrainedAccuracy();
         removeCandidateFromArchitecture();
 

@@ -7,10 +7,6 @@ import de.monticore.mlpipelines.backend.generation.MontiAnnaGenerator;
 import de.monticore.mlpipelines.configuration.MontiAnnaContext;
 import de.monticore.montipipes.config.ExecutionScriptConfiguration;
 import de.monticore.montipipes.generators.PipelineGenerator;
-import org.apache.commons.io.IOUtils;
-import org.apache.commons.lang3.SystemUtils;
-import org.json.JSONObject;
-
 import java.io.File;
 import java.io.FileReader;
 import java.io.IOException;
@@ -18,7 +14,13 @@ import java.io.InputStream;
 import java.nio.charset.StandardCharsets;
 import java.nio.file.Path;
 import java.nio.file.Paths;
+import java.util.ArrayList;
+import java.util.LinkedList;
 import java.util.List;
+import java.util.Map.Entry;
+import org.apache.commons.io.IOUtils;
+import org.apache.commons.lang3.SystemUtils;
+import org.json.JSONObject;
 
 public class PythonPipeline extends Pipeline {
     private MontiAnnaGenerator montiAnnaGenerator;
@@ -31,11 +33,6 @@ public class PythonPipeline extends Pipeline {
         this.montiAnnaGenerator = montiAnnaGenerator;
     }
 
-    public void setModelOutputDirectory(final String modelOutputDirectory) {
-        this.modelOutputDirectory = modelOutputDirectory;
-        this.modelOutputDirectoryWithDot = "." + modelOutputDirectory;
-    }
-
     @Override
     public void execute() {
         generateTrainingConfiguration();
@@ -46,9 +43,7 @@ public class PythonPipeline extends Pipeline {
             String result = IOUtils.toString(pythonConsoleStream, StandardCharsets.UTF_8);
             process.waitFor();
             System.out.println(result);
-        } catch (IOException e) {
-            throw new RuntimeException(e);
-        } catch (InterruptedException e) {
+        } catch (IOException | InterruptedException e) {
             throw new RuntimeException(e);
         }
     }
@@ -56,9 +51,7 @@ public class PythonPipeline extends Pipeline {
     @Override
     public float getTrainedAccuracy() {
         JSONObject json = getTrainingResultsAsJsonObject();
-        float accuracy = json.getFloat("accuracy");
-
-        return accuracy;
+        return json.getFloat("accuracy");
     }
 
     private JSONObject getTrainingResultsAsJsonObject() {
@@ -74,7 +67,7 @@ public class PythonPipeline extends Pipeline {
             pathToFile = System.getProperty("user.dir") + "/" + pathToOutputFile + fileName;
         }
 
-        JSONObject json = null;
+        JSONObject json;
         try {
             FileReader reader = new FileReader(pathToFile);
             json = new JSONObject(IOUtils.toString(reader));
@@ -113,13 +106,14 @@ public class PythonPipeline extends Pipeline {
         final List<String> scriptDependencies = Lists.newArrayList(schemaAPIScriptName, trainingConfFileName,
                 generatedNetworkFileName);
         final PipelineGenerator pipelineGenerator = new PipelineGenerator();
+        final List<String> cliArguments = new ArrayList<>(runTracker.getPythonParams().keySet());
         pipelineGenerator.setTrainingConfigurationName(trainingConfFileName);
         pipelineGenerator.setSchemaAPIName(schemaAPIScriptName);
-        final String networkFullName = this.neuralNetwork.getFullName().replace(".", "_");
+
         pipelineGenerator.addScriptConfiguration(ExecutionScriptConfiguration.MODEL_DIRECTORY,
                 modelOutputDirectoryWithDot);
         pipelineGenerator.generatePipelineExecutor(pipelineConfigurationEntries,
-                this.pipelineModelWithExecutionSemantics, scriptDependencies);
+                this.pipelineModelWithExecutionSemantics, scriptDependencies, cliArguments);
     }
 
     protected Process runScript() {
@@ -127,14 +121,30 @@ public class PythonPipeline extends Pipeline {
                 .getExperimentConfiguration()
                 .getPathToExecutionScript();
         final String pathToExecutionScript = Paths.get("Pipeline_Executor.py").toString();
-        ProcessBuilder processBuilder = new ProcessBuilder("python3", pathToExecutionScript);
-        processBuilder.redirectErrorStream(true);
-        processBuilder.directory(new File(pathToExecutionScriptDirectory));
+
+        // Build the command
+        ProcessBuilder processBuilder = getProcessBuilder(pathToExecutionScript, pathToExecutionScriptDirectory);
         try {
             return processBuilder.start();
         } catch (IOException e) {
             throw new RuntimeException("Pipeline execution has aborted", e);
         }
+    }
+
+    private ProcessBuilder getProcessBuilder(String pathToExecutionScript, String pathToExecutionScriptDirectory) {
+        List<String> command = new LinkedList<>();
+        command.add("python3");
+        command.add(pathToExecutionScript);
+        for(Entry<String, String> entry : runTracker.getPythonParams().entrySet()) {
+            command.add("--" + entry.getKey());
+            if(!entry.getValue().isEmpty())
+                command.add(entry.getValue());
+        }
+
+        ProcessBuilder processBuilder = new ProcessBuilder(command);
+        processBuilder.redirectErrorStream(true);
+        processBuilder.directory(new File(pathToExecutionScriptDirectory));
+        return processBuilder;
     }
 
     private Path calculatePathToGeneratedTrainingConfiguration() {
