@@ -13,7 +13,7 @@ public class DummyWorkflow extends AbstractWorkflow {
     }
 
     @Override
-    public void createPipeline(final LearningMethod learningMethod) {
+    public void createPipelineExecutor(LearningMethod learningMethod) {
     }
 
 }

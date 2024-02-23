@@ -183,6 +183,11 @@ python3 example/CNNTrainer_<your_network_component>.py
 You can submit the job with `sbatch <your-bash-script>.sh` on a backend node. It is also possible to just run the script on the frontend node.
 If you did submit the job, you can access the status information with `sacct`.
 
+## Tracking Experiments
+The EMADL2CPP generator offers a tracking system capable of automatically forwarding all metadata generated during training to multiple tracking frameworks such as [MLflow](https://www.mlflow.org).
+
+- A guide on how to use the tracking system, as an end user, is available [here](documents/experiment_tracking/using_the_tracking_system.md).
+- A guide on how to add new tracking frameworks, as a developer extending the generator, is available [here](documents/experiment_tracking/implementing_new_tracking_backends.md).
 
 # Presentations (Architecture & Hyperparameter Optimization)
 

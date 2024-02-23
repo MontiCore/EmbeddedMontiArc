@@ -1,20 +1,39 @@
 /* (c) https://github.com/MontiCore/monticore */
 package de.monticore.lang.monticar.emadl.generator;
 
+import static de.monticore.lang.monticar.generator.cpp.GeneratorCppCli.OPTION_FLAG_ALGEBRAIC;
+import static de.monticore.lang.monticar.generator.cpp.GeneratorCppCli.OPTION_FLAG_ARMADILLO;
+import static de.monticore.lang.monticar.generator.cpp.GeneratorCppCli.OPTION_FLAG_CHECK_MODEL_DIR;
+import static de.monticore.lang.monticar.generator.cpp.GeneratorCppCli.OPTION_FLAG_CMAKE;
+import static de.monticore.lang.monticar.generator.cpp.GeneratorCppCli.OPTION_FLAG_EXEC_LOGGING;
+import static de.monticore.lang.monticar.generator.cpp.GeneratorCppCli.OPTION_FLAG_GEN_TCP_SERVER;
+import static de.monticore.lang.monticar.generator.cpp.GeneratorCppCli.OPTION_FLAG_LIBRARY_INTERFACE;
+import static de.monticore.lang.monticar.generator.cpp.GeneratorCppCli.OPTION_FLAG_SERVER_WRAPPER;
+import static de.monticore.lang.monticar.generator.cpp.GeneratorCppCli.OPTION_FLAG_TESTS;
+import static de.monticore.lang.monticar.generator.cpp.GeneratorCppCli.OPTION_FLAG_THREADING;
+import static de.monticore.lang.monticar.generator.cpp.GeneratorCppCli.OPTION_IMPORT_ARMADILLO;
+import static de.monticore.lang.monticar.generator.cpp.GeneratorCppCli.OPTION_MODELS_PATH;
+import static de.monticore.lang.monticar.generator.cpp.GeneratorCppCli.OPTION_OUTPUT_NAME;
+import static de.monticore.lang.monticar.generator.cpp.GeneratorCppCli.OPTION_ROOT_MODEL;
+import static de.monticore.lang.monticar.generator.cpp.GeneratorCppCli.addBaseOptions;
+import static de.monticore.lang.monticar.generator.cpp.GeneratorCppCli.addEMAM2CPPOptions;
+
 import de.monticore.lang.monticar.cnnarch.generator.GenerationAbortedException;
 import de.monticore.lang.monticar.emadl.modularcnn.tools.Randomizer;
 import de.monticore.lang.monticar.generator.cpp.GeneratorCPP;
 import de.se_rwth.commons.logging.Log;
 import freemarker.template.TemplateException;
-import org.apache.commons.cli.*;
-import org.apache.commons.lang3.SystemUtils;
-
 import java.io.IOException;
 import java.nio.file.Path;
 import java.nio.file.Paths;
 import java.util.Optional;
-
-import static de.monticore.lang.monticar.generator.cpp.GeneratorCppCli.*;
+import org.apache.commons.cli.CommandLine;
+import org.apache.commons.cli.CommandLineParser;
+import org.apache.commons.cli.DefaultParser;
+import org.apache.commons.cli.Option;
+import org.apache.commons.cli.Options;
+import org.apache.commons.cli.ParseException;
+import org.apache.commons.lang3.SystemUtils;
 
 public class EMADLGeneratorCli {
 
@@ -29,6 +48,13 @@ public class EMADLGeneratorCli {
     public static final Option OPTION_BACKEND = Option.builder("b")
             .longOpt("backend")
             .desc("deep-learning-framework backend. Options: MXNET, CAFFE2, GLUON, TENSORFLOW")
+            .hasArg(true)
+            .required(false)
+            .build();
+
+    public static final Option OPTION_TRACKING_CONFIGURATION = Option.builder("track")
+            .longOpt("tracking-configuration")
+            .desc("Path to the tracking configuration file")
             .hasArg(true)
             .required(false)
             .build();
@@ -124,6 +150,7 @@ public class EMADLGeneratorCli {
     // Add EMADL2CPP Options
     public static void addEMADL2CPPOptions(Options options) {
         options.addOption(OPTION_BACKEND);
+        options.addOption(OPTION_TRACKING_CONFIGURATION);
         options.addOption(OPTION_RESTRAINED_TRAINING);
         options.addOption(OPTION_TRAINING_PYTHON_PATH);
         options.addOption(OPTION_COMPILE);

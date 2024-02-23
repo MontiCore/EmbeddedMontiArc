@@ -39,10 +39,7 @@ public class ResourcesUtil {
                 System.out.println("this should only be printed if the generator is run unpacked");
                 return false;
             }
-        } catch (URISyntaxException e) {
-            e.printStackTrace();
-            return false;
-        } catch (IOException e) {
+        } catch (URISyntaxException | IOException e) {
             e.printStackTrace();
             return false;
         }
