@@ -9,7 +9,7 @@
 
     <groupId>de.monticore.lang.monticar</groupId>
     <artifactId>embedded-montiarc-emadl-generator</artifactId>
-    <version>0.5.15-SNAPSHOT</version>
+    <version>0.5.16-SNAPSHOT</version>
 
     <!-- == PROJECT DEPENDENCIES ============================================= -->
     <properties>
@@ -24,7 +24,7 @@
         <cnnarch-gluon-generator.version>0.5.8-SNAPSHOT</cnnarch-gluon-generator.version>
         <monticore-runtime.version>5.0.1</monticore-runtime.version>
         <schemalang.version>1.0.1-SNAPSHOT</schemalang.version>
-        <montipipes.version>0.0.2-SNAPSHOT</montipipes.version>
+        <montipipes.version>0.0.3-SNAPSHOT</montipipes.version>
 
         <!-- .. Libraries .................................................. -->
         <guava.version>25.1-jre</guava.version>
@@ -135,6 +135,12 @@
             <groupId>org.freemarker</groupId>
             <artifactId>freemarker</artifactId>
             <version>2.3.30</version>
+        </dependency>
+
+        <dependency>
+            <groupId>org.mlflow</groupId>
+            <artifactId>mlflow-client</artifactId>
+            <version>2.6.0</version>
         </dependency>
 
         <!-- https://mvnrepository.com/artifact/org.json/json -->

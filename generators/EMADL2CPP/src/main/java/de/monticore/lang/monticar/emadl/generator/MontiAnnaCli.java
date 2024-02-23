@@ -1,23 +1,23 @@
 package de.monticore.lang.monticar.emadl.generator;
 
+import static de.monticore.lang.monticar.cnnarch.generator.validation.Constants.ROOT_SCHEMA_MODEL_PATH;
+import static de.monticore.lang.monticar.generator.cpp.GeneratorCppCli.OPTION_MODELS_PATH;
+import static de.monticore.lang.monticar.generator.cpp.GeneratorCppCli.OPTION_ROOT_MODEL;
+
 import de.monticore.mlpipelines.configuration.ExperimentConfiguration;
 import de.monticore.mlpipelines.configuration.MontiAnnaContext;
+import de.monticore.mlpipelines.tracking.TrackerFactory;
 import de.monticore.mlpipelines.util.ResourcesUtil;
-import de.monticore.mlpipelines.workflow.AutonomousPipelineOrchestration;
+import de.monticore.mlpipelines.workflow.MontiAnnaPipelineWorkflow;
 import de.se_rwth.commons.logging.Log;
-import org.apache.commons.cli.CommandLine;
-import org.apache.commons.cli.CommandLineParser;
-import org.apache.commons.cli.DefaultParser;
-import org.apache.commons.cli.Options;
-
 import java.io.IOException;
 import java.nio.file.Path;
 import java.nio.file.Paths;
 import java.util.Optional;
-
-import static de.monticore.lang.monticar.cnnarch.generator.validation.Constants.ROOT_SCHEMA_MODEL_PATH;
-import static de.monticore.lang.monticar.generator.cpp.GeneratorCppCli.OPTION_MODELS_PATH;
-import static de.monticore.lang.monticar.generator.cpp.GeneratorCppCli.OPTION_ROOT_MODEL;
+import org.apache.commons.cli.CommandLine;
+import org.apache.commons.cli.CommandLineParser;
+import org.apache.commons.cli.DefaultParser;
+import org.apache.commons.cli.Options;
 
 public class MontiAnnaCli extends EMADLGeneratorCli {
 
@@ -33,9 +33,11 @@ public class MontiAnnaCli extends EMADLGeneratorCli {
     private static void runWorkflow(final CommandLine cliArgs) {
         String rootModelName = cliArgs.getOptionValue(OPTION_ROOT_MODEL.getOpt());
         String backendString = cliArgs.getOptionValue(OPTION_BACKEND.getOpt());
+        String trackingConfigurationPath = cliArgs.getOptionValue(OPTION_TRACKING_CONFIGURATION.getOpt());
         Path modelsDirPath = Paths.get(cliArgs.getOptionValue(OPTION_MODELS_PATH.getOpt()));
-        final String DEFAULT_BACKEND = "PYTORCH";
 
+        // Load backend
+        final String DEFAULT_BACKEND = Backend.getBackendString(Backend.PYTORCH);
         if (backendString == null) {
             Log.warn("Backend not specified. Backend set to default value " + DEFAULT_BACKEND);
             backendString = DEFAULT_BACKEND;
@@ -48,11 +50,13 @@ public class MontiAnnaCli extends EMADLGeneratorCli {
             backend = Backend.getBackendFromString(DEFAULT_BACKEND);
         }
 
+        TrackerFactory trackerFactory = new TrackerFactory(trackingConfigurationPath);
+
         ResourcesUtil.copySchemaFilesFromResource(ROOT_SCHEMA_MODEL_PATH, "target/classes/");
         try {
             if (backend.get().equals(Backend.PYTORCH)) {
 
-                redirectToNewToolchain(rootModelName, modelsDirPath, backend.get());
+                redirectToNewToolchain(rootModelName, modelsDirPath, trackerFactory);
                 return;
             }
             runGenerator(cliArgs);
@@ -64,13 +68,16 @@ public class MontiAnnaCli extends EMADLGeneratorCli {
     private static void redirectToNewToolchain(
             final String rootModelName,
             final Path modelsDirPath,
-            final Backend backend) throws IOException {
+            final TrackerFactory trackerFactory) throws IOException {
         Log.warn("Redirecting for PyTorch");
-        final ExperimentConfiguration experimentConfiguration = new ExperimentConfiguration("src/main/resources/experiment/configuration", "src/main/resources/experiment/steps",
-                "target/generated-sources", "target/generated-sources/backend");
+        final ExperimentConfiguration experimentConfiguration = new ExperimentConfiguration(
+                "src/main/resources/experiment/configuration",
+                "src/main/resources/experiment/steps",
+                "target/generated-sources",
+                "target/generated-sources/backend");
         final MontiAnnaContext montiAnnaContext = MontiAnnaContext.getInstance();
-        montiAnnaContext.initContext(modelsDirPath, rootModelName, experimentConfiguration);
+        montiAnnaContext.initContext(modelsDirPath, rootModelName, experimentConfiguration, trackerFactory);
         montiAnnaContext.setPipelineReferenceModelsPath(Paths.get("src/main/resources/pipelines"));
-        new AutonomousPipelineOrchestration(montiAnnaContext).execute();
+        new MontiAnnaPipelineWorkflow(montiAnnaContext).execute();
     }
 }

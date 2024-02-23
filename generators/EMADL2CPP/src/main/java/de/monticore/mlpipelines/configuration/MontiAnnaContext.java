@@ -1,7 +1,7 @@
 package de.monticore.mlpipelines.configuration;
 
 import de.monticore.lang.monticar.emadl.generator.Backend;
-
+import de.monticore.mlpipelines.tracking.TrackerFactory;
 import java.nio.file.Path;
 import java.nio.file.Paths;
 
@@ -16,6 +16,7 @@ public final class MontiAnnaContext {
     private ExperimentConfiguration experimentConfiguration;
 
     private final Backend targetBackend = Backend.PYTORCH;
+    private TrackerFactory trackerFactory;
 
     private static MontiAnnaContext montiAnnaConfiguration;
     private MontiAnnaContext() {
@@ -44,10 +45,14 @@ public final class MontiAnnaContext {
         return experimentConfiguration;
     }
 
-    public void initContext(final Path parentModelPath, final String rootModelName, final ExperimentConfiguration experimentConfiguration) {
+    public void initContext(final Path parentModelPath,
+            final String rootModelName,
+            final ExperimentConfiguration experimentConfiguration,
+            final TrackerFactory trackerFactory) {
         getInstance().parentModelPath = parentModelPath;
         getInstance().rootModelName = rootModelName;
         getInstance().experimentConfiguration = experimentConfiguration;
+        getInstance().trackerFactory = trackerFactory;
     }
 
     public void setPipelineReferenceModelsPath(final Path pipelineReferenceModelsPath) {
@@ -56,5 +61,9 @@ public final class MontiAnnaContext {
 
     public Path getPipelineReferenceModelsPath() {
         return pipelineReferenceModelsPath;
+    }
+
+    public TrackerFactory getTrackerFactory() {
+        return trackerFactory;
     }
 }

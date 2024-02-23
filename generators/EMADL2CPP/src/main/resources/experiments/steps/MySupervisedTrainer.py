@@ -1,12 +1,13 @@
 import os
 import shutil
+from tracking.RunTracker import MultiBackendTracker
 
 from Utils import *
 
 
 class MySupervisedTrainer():
 
-    def __init__(self, networkImplementation, trainData, schema_api, model_dir, model_prefix="model"):
+    def __init__(self, networkImplementation, trainData, schema_api, model_dir, cli_arguments, model_prefix="model"):
         self._network_ = networkImplementation
         self._schemaApi_ = schema_api
         self._train_loader_ = trainData
@@ -25,6 +26,7 @@ class MySupervisedTrainer():
             "adam_beta": (0.9, 0.999),
             "adam_epsilon": 1e-8
         }
+        self.tracker = MultiBackendTracker(cli_arguments)
 
     def get_optimizer_parameter(self, name):
         try:
@@ -77,6 +79,8 @@ class MySupervisedTrainer():
                 optimizer.step()
             epoch_loss = torch.stack(train_losses).mean().item()
             epoch_accuracy = torch.stack(train_accuracy).mean().item()
+            self.tracker.log_metric("train_loss", epoch_loss, step=epoch)
+            self.tracker.log_metric("train_accuracy", epoch_accuracy, step=epoch)
             print(f'Epoch:{epoch + 1} Train Loss:{epoch_loss:.4f} Train Accuracy:{100 * epoch_accuracy:.2f}%')
 
         print(

@@ -2,10 +2,10 @@ package de.monticore.mlpipelines.pipelines;
 
 import conflang._ast.ASTConfLangCompilationUnit;
 import de.monticore.lang.embeddedmontiarc.embeddedmontiarc._symboltable.instanceStructure.EMAComponentInstanceSymbol;
+import de.monticore.lang.monticar.cnnarch._symboltable.ArchitectureSymbol;
 import de.monticore.lang.monticar.cnnarch.generator.training.LearningMethod;
-
-import java.util.List;
-import java.util.Map;
+import de.monticore.mlpipelines.automl.emadlprinter.EmadlPrettyPrinter;
+import de.monticore.mlpipelines.tracking.tracker.MultiBackendTracker;
 
 public abstract class Pipeline {
 
@@ -19,14 +19,6 @@ public abstract class Pipeline {
 
     private String networkName;
 
-    protected ASTConfLangCompilationUnit searchSpace;
-
-    protected ASTConfLangCompilationUnit hyperparamsOptConf;
-
-    protected ASTConfLangCompilationUnit evaluationCriteria;
-
-    protected List<Map<String, Object>> networkInstancesConfigs;
-
     protected EMAComponentInstanceSymbol pipelineModelWithExecutionSemantics;
 
     protected String modelOutputDirectory = "/model/mnist.LeNetNetwork/";
@@ -35,8 +27,17 @@ public abstract class Pipeline {
 
     protected String schemasTargetDir;
 
+    protected MultiBackendTracker runTracker;
+
     protected Pipeline(final LearningMethod learningMethod) {
         this.learningMethod = learningMethod;
+    }
+
+    public String getPrettyPrintedNetwork() {
+        if(neuralNetwork == null) {
+            return "";
+        }
+        return new EmadlPrettyPrinter().prettyPrint((ArchitectureSymbol) neuralNetwork.getSpannedScope().getSubScopes().get(0).getSpanningSymbol().get());
     }
 
     public void setNeuralNetwork(final EMAComponentInstanceSymbol neuralNetwork) {
@@ -51,32 +52,12 @@ public abstract class Pipeline {
         this.trainingConfiguration = trainingConfiguration;
     }
 
-    public void setSearchSpace(ASTConfLangCompilationUnit trainingConfiguration, ASTConfLangCompilationUnit searchSpace) {
-        if (searchSpace != null) {
-            String trainConfigName = trainingConfiguration.getConfiguration().getName();
-            searchSpace.getConfiguration().setName(trainConfigName);
-            this.searchSpace = searchSpace;
-        }
-    }
-
-    public void setHyperparamsOptConf(ASTConfLangCompilationUnit hyperparamsOptConf) {
-        this.hyperparamsOptConf = hyperparamsOptConf;
-    }
-
-    public void setEvaluationCriteria(ASTConfLangCompilationUnit evaluationCriteria) {
-        this.evaluationCriteria = evaluationCriteria;
+    public ASTConfLangCompilationUnit getTrainingConfiguration() {
+        return trainingConfiguration;
     }
 
     public String getNetworkName() {
         return networkName;
-    }
-
-    public List<Map<String, Object>> getNetworkInstancesConfigs() {
-        return networkInstancesConfigs;
-    }
-
-    public void setNetworkInstancesConfigs(List<Map<String, Object>> networkInstancesConfigs) {
-        this.networkInstancesConfigs = networkInstancesConfigs;
     }
 
     public void setNetworkName(String networkName) {
@@ -85,10 +66,6 @@ public abstract class Pipeline {
 
     public void setPipelineModelWithExecutionSemantics(final EMAComponentInstanceSymbol pipelineModelWithExecutionSemantics) {
         this.pipelineModelWithExecutionSemantics = pipelineModelWithExecutionSemantics;
-    }
-
-    public void setConfigurationModel(final ASTConfLangCompilationUnit trainingConfiguration) {
-        this.trainingConfiguration = trainingConfiguration;
     }
 
     public abstract void execute();
@@ -104,6 +81,14 @@ public abstract class Pipeline {
 
     public String getSchemasTargetDir() {
         return schemasTargetDir;
+    }
+
+    public void setRunTracker(MultiBackendTracker runTracker) {
+        this.runTracker = runTracker;
+    }
+
+    public MultiBackendTracker getRunTracker() {
+        return runTracker;
     }
 
     public void setSchemasTargetDir(String schemasTargetDir) {
