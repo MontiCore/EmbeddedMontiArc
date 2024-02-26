@@ -21,7 +21,7 @@ The value of the configuration entry enabling the MLflow tracking backend must b
 
 #### Caveats
 1. It is required to install the `mlflow` Python package on the local system, even if the tracking server is hosted remotely. This is because of a technical limitation of the MLflow Java client, which wraps the Python package for certain functionalities. If this package is not installed globally, the environment variable `MLFLOW_PYTHON_EXECUTABLE`, pointing to the virtual Python environment where MLflow is installed, must be set prior to running the generator.
-2. When using the optional `clean_up` setting, the state \texttt{RUNNING} should only be included when not working collaboratively on the same tracking server and experiment, as this could result in the loss of runs currently executed by other users.
+2. When using the optional `clean_up` setting, the state `RUNNING` should only be included when not working collaboratively on the same tracking server and experiment, as this could result in the loss of runs currently executed by other users.
 
 ### StdOut
 The StdOutTracker is a simple dummy tracker forwarding all tracking instructions to the console. It's purpose is mostly for debugging, serving as a simple reference for future tracking backends and showcasing the tracking system's ability to manage multiple tracking backends at once. The corresponding implementation of the RunTracker interface is available [here](src/main/java/de/monticore/mlpipelines/tracking/tracker/StdOutTracker.java).
