@@ -1,0 +1,14 @@
+/* (c) https://github.com/MontiCore/monticore */
+package letters;
+
+component LettersClassifier {
+    ports in Q^{500} vector,
+         out Q(0:1)^{26} softmax;
+
+    implementation CNN {
+        vector ->
+        FullyConnected(units=26) ->
+        Softmax() ->
+        softmax;
+    }
+}

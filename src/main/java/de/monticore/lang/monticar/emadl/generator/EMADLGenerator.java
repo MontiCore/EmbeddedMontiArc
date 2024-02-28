@@ -167,7 +167,7 @@ public class EMADLGenerator implements EMAMGenerator {
         }
 
         //emadlFileHandler.setVaultBuildingInstance(vaultBuildingInstance);
-        fileHandler.generateFiles(symtab, instance, pythonPath, forced);
+        fileHandler.generateFiles(symtab, instance, pythonPath, forced); //ERROR
 
         if (doCompile) {
             if (!generateCMake) // do it either way
