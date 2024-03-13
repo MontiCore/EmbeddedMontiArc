@@ -4,7 +4,7 @@ import sys
 
 from mxnet import gluon
 
-ctx = mx.gpu() if mx.context.num_gpus() else mx.cpu()
+ctx = mx.cpu()
 inputName = None
 modelPath = None
 paramsPath = None
@@ -52,13 +52,12 @@ with warnings.catch_warnings():
     warnings.simplefilter("ignore")
     network = gluon.nn.SymbolBlock.imports(modelPath, [inputName], paramsPath, ctx=ctx, ignore_extra=True)
 
-if network is not None :
+if network is not None:
     file_save_dir = newModelDirectory + "/" + newModelName
-    assert len(input_shape_map) == 1 , f"Single input shape expected, got {len(input_shape_map)}"
+    assert len(input_shape_map) == 1, f"Single input shape expected, got {len(input_shape_map)}"
     input_shape_list = list(input_shape_map.values())[0]
     print(input_shape_list)
-    input_shape_ndarray = mx.nd.zeros((1, *tuple(input_shape_list)))
+    input_shape_ndarray = mx.nd.zeros((1, *tuple(input_shape_list)), ctx)
     network.forward(input_shape_ndarray)
     network.export(file_save_dir)
-
 
