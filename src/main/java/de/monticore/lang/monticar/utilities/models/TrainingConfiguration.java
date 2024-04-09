@@ -1,7 +1,6 @@
 package de.monticore.lang.monticar.utilities.models;
 
 import de.monticore.lang.monticar.emadl.generator.Backend;
-import de.monticore.lang.monticar.utilities.configcheck.ConfigCheck;
 import de.monticore.lang.monticar.utilities.utils.GeneratorEnum;
 
 import java.io.File;

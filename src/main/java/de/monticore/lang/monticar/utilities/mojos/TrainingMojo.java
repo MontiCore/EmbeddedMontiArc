@@ -1,11 +1,20 @@
 /* (c) https://github.com/MontiCore/monticore */
 package de.monticore.lang.monticar.utilities.mojos;
 
-import de.monticore.lang.monticar.utilities.configcheck.ConfigCheckManager;
+import de.monticore.lang.monticar.emadl.generator.AutoMLCli;
+import de.monticore.lang.monticar.emadl.generator.Backend;
+import de.monticore.lang.monticar.utilities.artifactdeployer.ConfigurationArtifactDeployer;
+import de.monticore.lang.monticar.utilities.utils.ConfigurationTracking;
 import de.monticore.lang.monticar.utilities.models.TrainingConfiguration;
+import de.monticore.mlpipelines.util.configuration_tracking.ConfigurationTrackingManager;
+import de.se_rwth.commons.logging.Log;
 import org.apache.maven.plugin.MojoExecutionException;
 import org.apache.maven.plugin.MojoFailureException;
 import org.apache.maven.plugins.annotations.Mojo;
+import org.apache.maven.plugins.annotations.Parameter;
+import java.io.File;
+import java.util.ArrayList;
+import java.util.Arrays;
 import java.util.LinkedList;
 import java.util.List;
 
@@ -16,37 +25,57 @@ import static org.twdata.maven.mojoexecutor.MojoExecutor.*;
  */
 @Mojo(name = "train")
 public class TrainingMojo extends TrainingConfigMojo {
+  @Parameter
+  private String artifactTrackingConfiguration;
+  @Parameter
+  private String mlflowTrackingConfiguration;
 
   @Override
   public void execute() throws MojoExecutionException, MojoFailureException {
-    ConfigCheckManager configCheckManager = new ConfigCheckManager(getTrainingConfig(), getMavenProject().getVersion(), getMavenSession().getSettings());
-    if (configCheckManager.isEnabled()) {
-      configCheckManager.trackDatasetDependency(getMavenProject().getDependencies());
-      configCheckManager.importSimilarRuns(getMavenSession().getRequest().getUserSettingsFile());
-      if (configCheckManager.configurationAlreadyRun()) {
-        getLog().info("[ConfigCheck] Configuration already run. Skip training");
+    File settingsFile = getMavenSession().getRequest().getUserSettingsFile();
+    if (artifactTrackingConfiguration != null) {
+      if (artifactTrackingConfiguration.isEmpty()) {
+        Log.error("Please provide the path to the configuration file required for artifact tracking.");
+      }
+      boolean success = ConfigurationTracking.initialize(artifactTrackingConfiguration, getMavenProject(), getMavenSession(), getTrainingConfig());
+      if (!success) {
+        Log.error("The chosen combination of group_id and experiment_name already exists. Please change at least one value");
         return;
       }
-      getLog().info("[ConfigCheck] No similar configurations were found.");
+    }
+    if (getTrainingConfig().getBackend().equals(Backend.PYTORCH)) {
+      List<String> arguments = new ArrayList<>(Arrays.asList(
+              "-m", getTrainingConfig().getPathToProject().getPath(),
+              "-r", getTrainingConfig().getModelToTrain(),
+              "-o", "target",
+              "-b", getTrainingConfig().getBackend().name(),
+              "-f", "n",
+              "-c", "n"
+      ));
+      if (mlflowTrackingConfiguration != null) {
+        arguments.add("-track");
+        arguments.add(mlflowTrackingConfiguration);
+      }
+      AutoMLCli.main(arguments.toArray(new String[0]));
+    } else {
+      executeMojo(
+              plugin(
+                      groupId("de.monticore.lang.monticar.utilities"),
+                      artifactId("maven-streamtest"),
+                      version("0.0.34-SNAPSHOT")
+              ),
+              goal("streamtest-generator"),
+              configuration(getConfigElements().toArray(new Element[0])),
+              executionEnvironment(
+                      this.getMavenProject(),
+                      this.getMavenSession(),
+                      this.getPluginManager()
+              )
+      );
     }
 
-    executeMojo(
-            plugin(
-                    groupId("de.monticore.lang.monticar.utilities"),
-                    artifactId("maven-streamtest"),
-                    version("0.0.34-SNAPSHOT")
-            ),
-            goal("streamtest-generator"),
-            configuration(getConfigElements().toArray(new Element[0])),
-            executionEnvironment(
-                    this.getMavenProject(),
-                    this.getMavenSession(),
-                    this.getPluginManager()
-            )
-    );
-
-    if (configCheckManager.isEnabled()) {
-      configCheckManager.deployCurrentRuns(getMavenSession().getRequest().getUserSettingsFile());
+    if (ConfigurationTrackingManager.shouldDeployArtifact()) {
+      ConfigurationArtifactDeployer.deployArtifact(ConfigurationTracking.getStorageInformation(), ConfigurationTracking.getGitlabRepository(), settingsFile);
     }
   }
 
