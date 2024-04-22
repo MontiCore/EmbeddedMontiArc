@@ -6,7 +6,6 @@ import de.monticore.symboltable.Scope;
 import de.monticore.lang.monticar.cnnarch._symboltable.CNNArchCompilationUnitSymbol;
 import de.monticore.lang.monticar.emadl.modularcnn.compositions.NetworkStructureInformation;
 
-import java.util.ArrayList;
 import java.util.List;
 
 public class NetworkStructureTest extends AbstractSymtabTest {
@@ -18,7 +17,7 @@ public class NetworkStructureTest extends AbstractSymtabTest {
         NetworkStructureInformation networkStructureInformation = new NetworkStructureInformation(jsonInformation);
         NetworkStructure networkStructure = new NetworkStructure(networkStructureInformation, comp.getArchitecture());
         List<LayerInformation> networkLayers = networkStructure.getNetworkLayers();
-        assertEquals(29, networkLayers.size());
+        assertEquals(56, networkLayers.size());
         assertEquals("data", networkLayers.get(0).getLayerName());
         assertEquals("vector", networkLayers.get(networkLayers.size()-1).getLayerName());
     }

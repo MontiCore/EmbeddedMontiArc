@@ -1,8 +1,11 @@
 package de.monticore.lang.monticar.cnnarch.generator.decomposition;
 
+import de.monticore.lang.math._symboltable.JSValue;
+import de.monticore.lang.math._symboltable.expression.MathNumberExpressionSymbol;
 import de.monticore.lang.monticar.cnnarch._symboltable.*;
 import de.monticore.lang.monticar.emadl.modularcnn.compositions.NetworkStructureInformation;
 import de.se_rwth.commons.logging.Log;
+import org.jscience.mathematics.number.Rational;
 
 import java.util.ArrayList;
 import java.util.Collections;
@@ -179,7 +182,9 @@ public class NetworkStructure {
                 ArchitectureElementSymbol elementSymbol = elementSymbols.get(i);
 
                 if (elementSymbol instanceof LayerSymbol) {
-                    processLayerSymbol((LayerSymbol) elementSymbol, i, elementSymbols.size());
+                    for (int j = 0; j < getRepetitionCount((LayerSymbol) elementSymbol); j++) {
+                        processLayerSymbol((LayerSymbol) elementSymbol, i, elementSymbols.size());
+                    }
                 } else if (elementSymbol instanceof ParallelCompositeElementSymbol) {
                     processParallelCompositeElement((ParallelCompositeElementSymbol) elementSymbol, i, elementSymbols.size());
                 } else if (elementSymbol instanceof VariableSymbol) {
@@ -193,6 +198,26 @@ public class NetworkStructure {
                 }
             }
         }
+    }
+
+    private int getRepetitionCount(LayerSymbol layerSymbol) {
+        ArgumentSymbol argument = layerSymbol.getArgument("->").orElse(null);
+        if (argument != null) {
+            if (argument.getRhs() instanceof ArchRangeExpressionSymbol) {
+                ArchRangeExpressionSymbol range = (ArchRangeExpressionSymbol) argument.getRhs();
+                ArchSimpleExpressionSymbol endSymbol = range.getEndSymbol();
+                if (endSymbol.getMathExpression().isPresent() && endSymbol.getMathExpression().get() instanceof MathNumberExpressionSymbol) {
+                    MathNumberExpressionSymbol mathNumberExpression = (MathNumberExpressionSymbol) endSymbol.getMathExpression().get();
+                    JSValue jsValue = mathNumberExpression.getValue();
+                    if (jsValue != null && jsValue.getRealNumber() != null) {
+                        Rational rational = jsValue.getRealNumber();
+                        return rational.getDividend().intValue();
+                    }
+                }
+            }
+            return 1;
+        }
+        return 1;
     }
 
     private void processLayerSymbol(LayerSymbol layerSymbol, int i, int totalElements) {
