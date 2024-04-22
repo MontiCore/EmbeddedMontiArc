@@ -15,30 +15,13 @@ import java.util.stream.Stream;
 
 public class GluonDecomposer implements BackendDecomposer {
 
-    ArrayList<LayerSubstitute> allowedLayerSubstitutes = new ArrayList<>();
+    List<LayerSubstitute> allowedLayerSubstitutes = AllSubstitutes.getAllSubstitutes();
     String pythonPath = "";
     String pythonTool = "target/GluonParameterSplitter.py";
 
     public GluonDecomposer(String pythonPath) {
         this.pythonPath = pythonPath;
-
         rebuildPythonScript();
-
-        String toolCheck = null;
-
-        LayerSubstitute reluSub = new LayerSubstitute("Relu");
-        reluSub.addSubstitute("Activation");
-        allowedLayerSubstitutes.add(reluSub);
-
-        LayerSubstitute softmaxSub = new LayerSubstitute("Softmax");
-        softmaxSub.addSubstitute("softmax");
-        allowedLayerSubstitutes.add(softmaxSub);
-
-        LayerSubstitute loadSub = new LayerSubstitute("LoadNetwork");
-        loadSub.addSubstitute("Reshape");
-        allowedLayerSubstitutes.add(loadSub);
-
-
     }
 
     public void listFilesUsingJavaIO(String dir) {
@@ -171,223 +154,151 @@ public class GluonDecomposer implements BackendDecomposer {
     }
 
     private ArrayList<GluonRepresentation> splitNetworkJsonFile(String modelPath, NetworkStructure networkStructure, File file) {
-        String jsonContent = readFile(file.getPath());
-        Map<String, Object> contentMap = jsonToMap(jsonContent);
-
-        ArrayList<Object> nodes = (ArrayList<Object>) contentMap.get("nodes");
-        Map<String, Object> attributes = (Map<String, Object>) contentMap.get("attrs");
-        ArrayList<NetworkStructure> subNets = networkStructure.getNetsToDecompose();
         ArrayList<GluonRepresentation> gluonNets = new ArrayList<>();
 
-        Map<String, Object> lastNode = (Map<String, Object>) nodes.get(nodes.size() - 1);
-        ArrayList<Object> lastInputs = (ArrayList<Object>) lastNode.get("inputs");
-        ArrayList<Integer> lastInputIntList = (ArrayList<Integer>) lastInputs.get(0);
-        int headSize = lastInputIntList.size() - 1;
+        String symbolJson = readFile(file.getPath());
+        Map<String, Object> contentMap = jsonToMap(symbolJson);
+
+        Map<String, Object> attributes = (Map<String, Object>) contentMap.get("attrs");
+
+        ArrayList<Object> nodes = (ArrayList<Object>) contentMap.get("nodes");
+        ListIterator<Object> nodeIterator = nodes.listIterator();
+
+        ArrayList<NetworkStructure> subNets = networkStructure.getNetsToDecompose();
+
+        int headSize = getHeadSize((Map<String, Object>) nodes.get(nodes.size() - 1));
         int nodeDifference = 0;
         int generatedNodesMalus = 0;
 
-        for (int i = 0, layerPointer = -1; i < subNets.size(); i++) {
-            generatedNodesMalus = 0;
-
+        for (int i = 0, subNetsSize = subNets.size(); i < subNetsSize; i++) {
             NetworkStructure currentNetwork = subNets.get(i);
-            ArrayList<Map<String, Object>> networkNodes = new ArrayList<>();
-            String op = null;
-            String name = null;
-
-            for (int j = 0; j < currentNetwork.getNetworkLayers().size(); j++) {
-                LayerInformation layer = currentNetwork.getNetworkLayers().get(j);
-
-                if (layer.isInputLayer()) {
-                    if (i == 0) {
-                        if (layer.isParallel()) {
-                            layerPointer++;
-                            Map<String, Object> node = (Map<String, Object>) nodes.get(layerPointer);
-                            op = (String) node.get("op");
-                            name = (String) node.get("name");
-
-                            int allowedNullOps = layer.getParallelNames().size();
-                            int processedNullOps = 0;
-
-                            int nextLayerPointer = layerPointer + 1;
-                            int nextLayerInformationPointer = j + 1;
-                            if (nextLayerPointer < nodes.size() && nextLayerInformationPointer < currentNetwork.getNetworkLayers().size()) {
-
-
-                                while (nextLayerPointer < nodes.size() && nextLayerInformationPointer < currentNetwork.getNetworkLayers().size()
-                                        && processedNullOps < allowedNullOps) {
-                                    if (op.equals("null") && layer.parallelNamesContain(name)) {
-                                        networkNodes.add(node);
-                                        processedNullOps++;
-                                    } else {
-                                        networkNodes.add(node);
-                                    }
-                                    layerPointer++;
-                                    node = (Map<String, Object>) nodes.get(layerPointer);
-                                    op = (String) node.get("op");
-                                    name = (String) node.get("name");
-                                }
-
-                                nextLayerPointer = layerPointer + 1;
-                                Map<String, Object> nextNode = (Map<String, Object>) nodes.get(nextLayerPointer);
-                                String nextOp = (String) nextNode.get("op");
-                                String nextName = (String) nextNode.get("name");
-                                LayerInformation nextLayerInfo = currentNetwork.getNetworkLayers().get(nextLayerInformationPointer);
-
-
-                                boolean lastRound = false;
-                                while (nextLayerPointer < nodes.size() && nextLayerInformationPointer < currentNetwork.getNetworkLayers().size() && !lastRound) {
-                                    if (nextNode != null && (nextOp.equals("null") || nextOp.equals(nextLayerInfo.getLayerName()) || nextOp.equals(checkLayerSubstitutesForMatch(nextLayerInfo.getLayerName(), nextOp)))) {
-                                        lastRound = true;
-                                    }
-
-                                    networkNodes.add(node);
-
-                                    if (!lastRound) {
-                                        layerPointer++;
-                                        node = (Map<String, Object>) nodes.get(layerPointer);
-                                        op = (String) node.get("op");
-                                        name = (String) node.get("name");
-
-                                        nextLayerPointer++;
-                                        nextNode = (Map<String, Object>) nodes.get(nextLayerPointer);
-                                        if (nextNode != null) {
-                                            nextOp = (String) nextNode.get("op");
-                                            nextName = (String) nextNode.get("name");
-                                        }
-                                    }
-                                }
-                            }
-                        } else {
-                            layerPointer++;
-                            Map<String, Object> node = (Map<String, Object>) nodes.get(layerPointer);
-                            op = (String) node.get("op");
-                            name = (String) node.get("name");
-                            if (op.equals("null") && name.equals(layer.getLayerName())) {
-                                networkNodes.add(node);
-                            }
-                        }
-
-                    } else {
-                        networkNodes.add(buildInput(layer.getLayerName()));
-                        generatedNodesMalus++;
-                        //nodeDifference--;
-                    }
-                } else if (layer.isDefaultLayer()) {
-                    layerPointer++;
-                    Map<String, Object> node = (Map<String, Object>) nodes.get(layerPointer);
-                    op = (String) node.get("op");
-                    name = (String) node.get("name");
-
-                    boolean substituteCheck = checkLayerSubstitutesForMatch(layer.getLayerName(), op);
-                    while (!op.equals(layer.getLayerName()) && !substituteCheck) {
-
-                        networkNodes.add(node);
-                        layerPointer++;
-                        node = (Map<String, Object>) nodes.get(layerPointer);
-                        op = (String) node.get("op");
-                        name = (String) node.get("name");
-                        substituteCheck = checkLayerSubstitutesForMatch(layer.getLayerName(), op);
-                    }
-
-                    substituteCheck = checkLayerSubstitutesForMatch(layer.getLayerName(), op);
-                    if (op.equals(layer.getLayerName()) || substituteCheck) {
-                        networkNodes.add(node);
-                        node = (Map<String, Object>) nodes.get(layerPointer);
-                        op = (String) node.get("op");
-                        name = (String) node.get("name");
-                    }
-
-                } else if (layer.isOutputLayer()) {
-                    if (i == subNets.size() - 1) {
-                        if (layer.isParallel()) {
-                            layerPointer++;
-                            Map<String, Object> node = (Map<String, Object>) nodes.get(layerPointer);
-                            op = (String) node.get("op");
-                            name = (String) node.get("name");
-
-                            int allowedNullOps = layer.getParallelNames().size();
-                            int processedNullOps = 0;
-
-                            int nextLayerPointer = layerPointer + 1;
-                            int nextLayerInformationPointer = j + 1;
-                            if (nextLayerPointer < nodes.size() && nextLayerInformationPointer < currentNetwork.getNetworkLayers().size()) {
-
-
-                                while (nextLayerPointer < nodes.size() && nextLayerInformationPointer < currentNetwork.getNetworkLayers().size()
-                                        && processedNullOps < allowedNullOps) {
-                                    if (op.equals("null") && layer.parallelNamesContain(name)) {
-                                        networkNodes.add(node);
-                                        processedNullOps++;
-                                    } else {
-                                        networkNodes.add(node);
-                                    }
-                                    layerPointer++;
-                                    node = (Map<String, Object>) nodes.get(layerPointer);
-                                    op = (String) node.get("op");
-                                    name = (String) node.get("name");
-                                }
-
-                                nextLayerPointer = layerPointer + 1;
-                                Map<String, Object> nextNode = (Map<String, Object>) nodes.get(nextLayerPointer);
-                                String nextOp = (String) nextNode.get("op");
-                                String nextName = (String) nextNode.get("name");
-                                LayerInformation nextLayerInfo = currentNetwork.getNetworkLayers().get(nextLayerInformationPointer);
-
-
-                                boolean lastRound = false;
-                                while (nextLayerPointer < nodes.size() && nextLayerInformationPointer < currentNetwork.getNetworkLayers().size() && !lastRound) {
-                                    if (nextNode != null && (nextOp.equals("null") || nextOp.equals(nextLayerInfo.getLayerName()) || nextOp.equals(checkLayerSubstitutesForMatch(nextLayerInfo.getLayerName(), nextOp)))) {
-                                        lastRound = true;
-                                    }
-
-                                    networkNodes.add(node);
-
-                                    if (!lastRound) {
-                                        layerPointer++;
-                                        node = (Map<String, Object>) nodes.get(layerPointer);
-                                        op = (String) node.get("op");
-                                        name = (String) node.get("name");
-
-                                        nextLayerPointer++;
-                                        nextNode = (Map<String, Object>) nodes.get(nextLayerPointer);
-                                        if (nextNode != null) {
-                                            nextOp = (String) nextNode.get("op");
-                                            nextName = (String) nextNode.get("name");
-                                        }
-
-                                    }
-                                }
-                            }
-                        } else {
-                            layerPointer++;
-                            Map<String, Object> node = (Map<String, Object>) nodes.get(layerPointer);
-                            op = (String) node.get("op");
-                            name = (String) node.get("name");
-                            if (op.equals("_copy") && name.equals("identity0")) {
-                                networkNodes.add(node);
-                            }
-                        }
-
-                    } else {
-                        networkNodes.add(buildOutput());
-                        generatedNodesMalus++;
-                    }
-                } else {
-                    throw new RuntimeException("Unknown Layer type when splitting. Type: " + layer.getLayerType().toString());
+            ArrayList<Map<String, Object>> currentNetworkNodes = new ArrayList<>();
+            for (LayerInformation layer : currentNetwork.getNetworkLayers()) {
+                switch (layer.getLayerType()) {
+                    case INPUT:
+                        generatedNodesMalus = handleInput(layer, nodeIterator, currentNetworkNodes, i==0, generatedNodesMalus);
+                        break;
+                    case DEFAULT:
+                        handleDefault(layer, nodeIterator, currentNetworkNodes);
+                        break;
+                    case PARALLEL_DEFAULT:
+                        handleParallel(layer, nodeIterator, currentNetworkNodes);
+                        break;
+                    case OUTPUT:
+                        generatedNodesMalus = handleOutput(layer, nodeIterator, currentNetworkNodes, generatedNodesMalus, i == subNetsSize - 1);
+                        break;
+                    default:
+                        Log.error("Undefined behaviour for Layer: " + layer);
                 }
             }
 
-            gluonNets.add(new GluonRepresentation(currentNetwork, networkNodes, attributes, nodeDifference, headSize));
-            nodeDifference += networkNodes.size() - generatedNodesMalus;
+            gluonNets.add(new GluonRepresentation(currentNetwork, currentNetworkNodes, attributes, nodeDifference, headSize));
+            nodeDifference += currentNetworkNodes.size() - generatedNodesMalus;
             if (i == 0) nodeDifference--;
+            Log.debug("All nodes for " + currentNetwork.getNetworkName() +" processed","GluonDecomposer");
         }
+
         return gluonNets;
     }
+    private int getHeadSize(Map<String, Object> lastNode) {
+        ArrayList<Object> lastInputs = (ArrayList<Object>) lastNode.get("inputs");
+        ArrayList<Integer> lastInputIntList = (ArrayList<Integer>) lastInputs.get(0);
+        return lastInputIntList.size() - 1;
+    }
 
-    private boolean checkLayerSubstitutesForMatch(String originalLayer, String layerSubs) {
+    private int handleOutput(LayerInformation layer, ListIterator<Object> nodeIterator, ArrayList<Map<String, Object>> currentNodes, int generatedNodesMalus, boolean isLast) {
+        if (isLast) {
+            if (layer.isParallel()) {
+                handleParallel(layer, nodeIterator, currentNodes);
+            }
+            else {
+                if (nodeIterator.hasNext()) {
+                    Map<String, Object> node = (Map<String, Object>) nodeIterator.next();
+                    if (node.get("op").equals("_copy") && ((String) node.get("name")).contains("identity")) {
+                        currentNodes.add(node);
+                    }
+                }
+                else Log.error("No more nodes to process but the output layer has not been reached.");
+
+            }
+        } else {
+            currentNodes.add(buildOutput());
+            generatedNodesMalus++;
+        }
+        return generatedNodesMalus;
+    }
+
+    private void handleParallel(LayerInformation layer, ListIterator<Object> nodeIterator, ArrayList<Map<String, Object>> currentNodes) {
+        Log.debug("Processing nodes for: " + layer,"GluonDecomposer");
+
+        String combining_op = layer.getSucceedingLayer().getLayerName();
+        while (nodeIterator.hasNext()) {
+            Map<String, Object> node = (Map<String, Object>) nodeIterator.next();
+            String op = (String) node.get("op");
+            // TODO possible check of min processing of nodes included in the parallel stream
+            if (op.equals(combining_op) || checkLayerSubstitutesForMatch(combining_op, node)) {
+                nodeIterator.previous();
+                break;
+            }
+            Log.debug("Added node op: " + node.get("op")+ " name " + node.get("name"),"GluonDecomposer");
+            currentNodes.add(node);
+        }
+        Log.debug("Finished processing nodes for: " + layer,"GluonDecomposer");
+        Log.debug("-","GluonDecomposer");
+
+    }
+
+    private void handleDefault(LayerInformation layer, ListIterator<Object> nodeIterator, ArrayList<Map<String, Object>> currentNodes) {
+        Log.debug("Processing nodes for: " + layer,"GluonDecomposer");
+        while (nodeIterator.hasNext()) {
+            Map<String, Object> node = (Map<String, Object>) nodeIterator.next();
+            currentNodes.add(node);
+            Log.debug("Added node op: " + node.get("op")+ " name " + node.get("name"),"GluonDecomposer");
+            String op = (String) node.get("op");
+            if (op.equals(layer.getLayerName()) || checkLayerSubstitutesForMatch(layer.getLayerName(), node)) {
+                break;
+            }
+        }
+        Log.debug("Finished processing nodes for: " + layer,"GluonDecomposer");
+        Log.debug("-","GluonDecomposer");
+
+    }
+
+    private int handleInput(LayerInformation layer, ListIterator<Object> nodeIterator, ArrayList<Map<String, Object>> currentNodes, boolean isFirst, int generatedNodesMalus) {
+        if (isFirst) {
+            if (layer.isParallel()) {
+                handleParallel(layer, nodeIterator, currentNodes);
+            } else {
+                if (nodeIterator.hasNext()){
+                    Map<String, Object> node = (Map<String, Object>) nodeIterator.next();
+                    if (node.get("op").equals("null") && node.get("name").equals(layer.getLayerName())) {
+                        currentNodes.add(node);
+                    }
+                }
+                else Log.error("No nodes found for layer: " + layer);
+
+            }
+        } else {
+            currentNodes.add(buildInput(layer.getLayerName()));
+            generatedNodesMalus++;
+        }
+        return generatedNodesMalus;
+    }
+
+    private boolean checkLayerSubstitutesForMatch(String originalLayer, Map<String, Object> node) {
+        String op = (String) node.get("op");
+        Map<String, String> attributes;
+
+        if (node.containsKey("attrs") && node.get("attrs") instanceof Map) {
+            attributes = (Map<String, String>) node.get("attrs");
+        }
+        else attributes = Collections.emptyMap();
+
         for (LayerSubstitute layerSubstitute : this.allowedLayerSubstitutes) {
-            boolean match = layerSubstitute.hasLayerSubstitute(originalLayer, layerSubs);
-            if (match) return true;
+            if (layerSubstitute.hasLayerSubstitute(originalLayer, op) &&
+                    layerSubstitute.isCorrectMatch(op, attributes)) {
+                return true;
+            }
         }
         return false;
     }
@@ -470,7 +381,7 @@ public class GluonDecomposer implements BackendDecomposer {
     }
 
     private Map<String, Object> buildOutput() {
-        return buildIONode("_copy", "identity0", new ArrayList<Object>());
+        return buildIONode("_copy", "identity_gen", new ArrayList<Object>());
     }
 
     private Map<String, Object> buildIONode(String op, String name, ArrayList<Object> inputs) {

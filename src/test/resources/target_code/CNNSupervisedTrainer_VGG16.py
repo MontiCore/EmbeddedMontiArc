@@ -146,7 +146,62 @@ class LocalAdaptationLoss(gluon.loss.Loss):
         else:
             loss = gluon.loss._apply_weighting(F, cross_entr_loss, self._weight, sample_weight)
 
-        return loss    
+        return loss
+
+@mx.metric.register
+class F1_SCORE(mx.metric.EvalMetric):
+    def __init__(self, axis=1, name='f1_score', output_names=None, label_names=None):
+        super(F1_SCORE, self).__init__(name=name, axis=axis, output_names=output_names, label_names=label_names)
+        self.axis = axis
+        self._true_positives = {}
+        self._false_positives = {}
+        self._false_negatives = {}
+
+    def update(self, labels, preds):
+        for label, pred in zip(labels, preds):
+            if pred.shape != label.shape:
+                pred = nd.argmax(pred, axis=self.axis)
+            pred = pred.astype('int32')
+            label = label.astype('int32')
+
+            pred_flat = pred.asnumpy().flatten()
+            label_flat = label.asnumpy().flatten()
+
+            unique_classes = np.unique(np.concatenate((pred_flat, label_flat)))
+            for label in unique_classes:
+                pred_i = pred_flat == label
+                label_i = label_flat == label
+
+                tp = np.sum(pred_i & label_i)
+                fp = np.sum(pred_i & ~label_i)
+                fn = np.sum(~pred_i & label_i)
+
+                self._true_positives[label] = self._true_positives.get(label, 0) + tp
+                self._false_positives[label] = self._false_positives.get(label, 0) + fp
+                self._false_negatives[label] = self._false_negatives.get(label, 0) + fn
+
+    def get(self):
+        precision_sum = 0
+        recall_sum = 0
+        for label in self._true_positives.keys():
+            tp = self._true_positives[label]
+            fp = self._false_positives[label]
+            fn = self._false_negatives[label]
+            precision = tp / (tp + fp + 1e-10)
+            recall = tp / (tp + fn + 1e-10)
+            precision_sum += precision
+            recall_sum += recall
+
+        num_classes = len(self._true_positives)
+        macro_precision = precision_sum / num_classes
+        macro_recall = recall_sum / num_classes
+        f1_score = 2 * (macro_precision * macro_recall) / (macro_precision + macro_recall + 1e-10)
+        return (self.name, f1_score)
+
+    def reset(self):
+        self._true_positives = {}
+        self._false_positives = {}
+        self._false_negatives = {}
 
 @mx.metric.register
 class ACCURACY_IGNORE_LABEL(mx.metric.EvalMetric):
@@ -340,6 +395,7 @@ class CNNSupervisedTrainer_VGG16:
               load_pretrained=False,
               load_pretrained_dataset=None,
               log_period=50,
+              plot_log=False,
               context='gpu',
               save_attention_image=False,
               use_teacher_forcing=False,
@@ -490,6 +546,8 @@ class CNNSupervisedTrainer_VGG16:
 
         avg_speed = 0
         n = 0
+        training_metrics_log = []
+        batch_loss_log = []
     
         for epoch in range(begin_epoch, begin_epoch + num_epoch):
             if shuffle_data:
@@ -575,6 +633,7 @@ class CNNSupervisedTrainer_VGG16:
                         loss_total = 0
 
                         logging.info("Epoch[%d] Batch[%d] Speed: %.2f samples/sec Loss: %.5f" % (epoch, batch_i, speed, loss_avg))
+                        batch_loss_log.append((epoch,batch_i, speed, loss_avg))
                         
                         avg_speed += speed
                         n += 1
@@ -772,6 +831,7 @@ class CNNSupervisedTrainer_VGG16:
                 metric_json_file.write_text(json.dumps(data))
 
             logging.info("Epoch[%d] Train metric: %f, Test metric: %f, Train loss: %f, Test loss: %f" % (epoch, train_metric_score, test_metric_score, global_loss_train, global_loss_test))
+            training_metrics_log.append((epoch, train_metric_score, test_metric_score, global_loss_train, global_loss_test))
 
             if (epoch+1) % checkpoint_period == 0:
                 for i, network in self._networks.items():
@@ -779,6 +839,63 @@ class CNNSupervisedTrainer_VGG16:
                     network.save_parameters(param_path)
                     logger.info("Saved parameters to %s", param_path)
 
+        if plot_log:
+            import csv
+            training_metrics_log_path = self.parameter_path(0, dataset) / 'training_metrics_log.csv'
+            with open(training_metrics_log_path, 'w', newline='') as file:
+                writer = csv.writer(file)
+                writer.writerow(['Epoch', 'Train Metric Score', 'Test Metric Score', 'Train Loss', 'Test Loss'])
+                writer.writerows(training_metrics_log)
+                logger.info(f"Train and Test metrics saved to {training_metrics_log_path}")
+            batch_loss_log_path = self.parameter_path(0, dataset) / 'batch_loss_log.csv'
+            with open(batch_loss_log_path, 'w', newline='') as file:
+                writer = csv.writer(file)
+                writer.writerow(['Epoch', 'Batch', 'Speed', 'Train Loss'])
+                writer.writerows(batch_loss_log)
+                logger.info(f"Training loss saved to {batch_loss_log_path}")
+            logging.getLogger('matplotlib').setLevel(logging.WARNING)
+            import matplotlib.pyplot as plt
+            from matplotlib.ticker import MaxNLocator
+            import pandas as pd
+
+            metrics_df = pd.read_csv(training_metrics_log_path)
+            batch_loss_df = pd.read_csv(batch_loss_log_path)
+
+            plt.figure(figsize=(10, 5))
+            plt.plot(metrics_df['Epoch'], metrics_df['Train Metric Score'], label='Train Metric Score')
+            plt.plot(metrics_df['Epoch'], metrics_df['Test Metric Score'], label='Test Metric Score')
+            plt.xlabel('Epoch')
+            plt.ylabel('Metric Score')
+            plt.title('Training and Test Metric Scores Over Epochs')
+            plt.legend()
+            plt.savefig(self.parameter_path(0, dataset) / 'training_metrics_log.svg', format='svg')
+
+            plt.figure(figsize=(10, 5))
+            plt.plot(metrics_df['Epoch'], metrics_df['Train Loss'], label='Train Loss')
+            plt.plot(metrics_df['Epoch'], metrics_df['Test Loss'], label='Test Loss')
+            plt.xlabel('Epoch')
+            plt.ylabel('Loss')
+            plt.title('Training and Test Loss Over Epochs')
+            plt.legend()
+            plt.savefig(self.parameter_path(0, dataset) / 'training_test_loss.svg', format='svg')
+
+            plt.figure(figsize=(10, 5))
+            ax1 = plt.gca()
+            ax1.plot(metrics_df['Epoch'], metrics_df['Train Metric Score'], label='Train Metric Score', color='tab:blue')
+            ax1.plot(metrics_df['Epoch'], metrics_df['Test Metric Score'], label='Test Metric Score', color='tab:cyan')
+            ax1.set_xlabel('Epoch')
+            ax1.set_ylabel('Metric Score', color='tab:blue')
+            ax1.tick_params(axis='y', labelcolor='tab:blue')
+            ax1.xaxis.set_major_locator(MaxNLocator(integer=True))
+            ax1.set_title('Metrics and Loss Over Epochs')
+            ax1.legend(loc='center left')
+            ax2 = ax1.twinx()
+            ax2.plot(metrics_df['Epoch'], metrics_df['Train Loss'], label='Train Loss', color='tab:red', linestyle='--')
+            ax2.plot(metrics_df['Epoch'], metrics_df['Test Loss'], label='Test Loss', color='tab:orange', linestyle='--')
+            ax2.set_ylabel('Loss', color='tab:red')
+            ax2.tick_params(axis='y', labelcolor='tab:red')
+            ax2.legend(loc='center right')
+            plt.savefig(self.parameter_path(0, dataset) / 'combined_metrics_and_loss.svg', format='svg')
 
         for i, network in self._networks.items():
             param_path = str(self.parameter_path(i, dataset) / (str((num_epoch-1) + begin_epoch).zfill(4) + '.params'))
