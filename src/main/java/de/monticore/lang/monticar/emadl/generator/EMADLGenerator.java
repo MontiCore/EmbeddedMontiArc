@@ -151,7 +151,7 @@ public class EMADLGenerator implements EMAMGenerator {
     public void generate(String modelPath, String qualifiedName, String pythonPath, String forced, boolean doCompile, String useDgl, boolean allowDecomposition, String[] decompositionNetworkList) throws IOException, TemplateException {
         Log.info("Generator start", "GENERATION");
         processedArchitecture = new HashMap<>();
-        fileHandler.setModelsPath( modelPath );
+        fileHandler.setModelsPath(modelPath);
         fileHandler.setPythonPath(pythonPath);
         setUseDgl(useDgl.equals("y"));
 
@@ -167,7 +167,7 @@ public class EMADLGenerator implements EMAMGenerator {
         }
 
         //emadlFileHandler.setVaultBuildingInstance(vaultBuildingInstance);
-        fileHandler.generateFiles(symtab, instance, pythonPath, forced); //ERROR
+        fileHandler.generateFiles(symtab, instance, pythonPath, forced);
 
         if (doCompile) {
             if (!generateCMake) // do it either way
