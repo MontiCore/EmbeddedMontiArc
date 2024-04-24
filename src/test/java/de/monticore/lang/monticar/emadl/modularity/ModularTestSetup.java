@@ -8,7 +8,7 @@ import org.junit.Before;
 import java.io.File;
 import java.io.IOException;
 
-import static org.junit.Assert.assertFalse;
+import static org.junit.Assert.fail;
 
 public abstract class ModularTestSetup  extends AbstractSymtabTest {
 
@@ -77,7 +77,7 @@ public abstract class ModularTestSetup  extends AbstractSymtabTest {
             Log.error("MODULAR_TEST_EXCEPTION: " + trace.toString());
 
             if (!exceptionAllowed) {
-                assertFalse(true);
+                fail();
                 throw new RuntimeException();
             }
         }

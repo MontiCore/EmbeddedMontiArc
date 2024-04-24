@@ -1,22 +1,20 @@
 import mxnet as mx
 import warnings
 import sys
-
 from mxnet import gluon
 
-ctx = mx.gpu() if mx.context.num_gpus() else mx.cpu()
-inputName = None
+ctx = mx.cpu()
 modelPath = None
 paramsPath = None
 network = None
 oldNetwork = None
-
 oldNetworkPath = None
 
 newModelDirectory = None
 newModelName = None
 parameterLayers = None
-reExport = False
+inputNames = []
+zeroInputs = []
 
 index = 0
 while index < len(sys.argv):
@@ -37,41 +35,22 @@ while index < len(sys.argv):
         parameterLayers = paramList.split(",")
     elif arg == "-onp":
         oldNetworkPath = sys.argv[index + 1]
-    elif arg == "-re":
-        reExport = True
-
+    elif arg == "-shape":
+        input_shape_str = sys.argv[index + 1]
+        shape_pairs = input_shape_str.split(";")
+        for pair in shape_pairs:
+            name, shapes = pair.split(":")
+            inputNames.append(name)
+            shape = tuple([int(dim) for dim in shapes.split(",")])
+            zeroInputs.append(mx.nd.zeros((1, *shape), ctx=ctx))
     index += 1
 
-if reExport:
-    #warnings.simplefilter("ignore")
-    print("Old network: ", oldNetworkPath)
-    print("Old params: ", paramsPath)
-    print("Input name: ", inputName)
-    oldNetwork = gluon.nn.SymbolBlock.imports(oldNetworkPath, [inputName], paramsPath, ctx=ctx)
-    #oldNetwork.load_parameters(paramsPath)
-    oldNetwork.initialize()
-    print("re-exporting parameters of old network to:", paramsPath)
-    oldNetwork.collect_params()
-    oldNetwork.export(oldNetworkPath)
-    oldNetwork.save_parameters(paramsPath, deduplicate=True)
-
-"""
 with warnings.catch_warnings():
     warnings.simplefilter("ignore")
-    oldNetwork = gluon.nn.SymbolBlock.imports(oldNetworkPath, [inputName], paramsPath, ctx=ctx, allow_missing=True)
-"""
+    network = gluon.nn.SymbolBlock.imports(modelPath, inputNames, paramsPath, ctx=ctx, ignore_extra=True)
 
-with warnings.catch_warnings():
-    warnings.simplefilter("ignore")
-    network = gluon.nn.SymbolBlock.imports(modelPath, [inputName], paramsPath, ctx=ctx,
-                                           ignore_extra=True, allow_missing=False)
-
-
-
-
-if network is not None :
+if network is not None:
     file_save_dir = newModelDirectory + "/" + newModelName
+    network(*zeroInputs)
     network.export(file_save_dir)
 
-    param_file_save_dir = newModelDirectory + "/" + newModelName + "-0000.params"
-    network.save_parameters(param_file_save_dir)
