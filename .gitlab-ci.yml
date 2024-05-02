@@ -86,3 +86,18 @@ deploy-mnist-letter-dataset:
     - mvn emadl:deploy-dataset -s ../ci_settings.xml
   only:
     - master
+
+#Cifar-10
+install-cifar-10-dataset:
+  image: maven:3.6-jdk-8
+  script:
+    - cd datasets/cifar_10
+    - mvn emadl:install-dataset -s ../ci_settings.xml
+
+deploy-cifar-10-dataset:
+  image: maven:3.6-jdk-8
+  script:
+    - cd datasets/cifar_10
+    - mvn emadl:deploy-dataset -s ../ci_settings.xml
+  only:
+    - master
