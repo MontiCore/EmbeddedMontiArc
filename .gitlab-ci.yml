@@ -126,6 +126,7 @@ TestTransfer:
     - python3 -m pip install -U pip scikit-image opencv-python
     - ln -fs /usr/bin/python3 /usr/bin/python
     - cd transfer
+    - chmod +x runTransfer.sh
     - ./runTransfer.sh
 
 
