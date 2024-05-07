@@ -6,7 +6,7 @@
     <groupId>de.monticore.lang.monticar.utilities</groupId>
     <artifactId>maven-streamtest</artifactId>
     <packaging>maven-plugin</packaging>
-    <version>0.0.34-SNAPSHOT</version>
+    <version>0.0.35-SNAPSHOT</version>
 
     <name>maven-package Streamtest Mojo</name>
     <url>http://maven.apache.org</url>
@@ -14,7 +14,7 @@
     <properties>
         <EMAM2Middleware.version>0.1.6-SNAPSHOT</EMAM2Middleware.version>
         <EMADLGenerator.version>0.5.16-SNAPSHOT</EMADLGenerator.version>
-        <cnnarch-generator.version>0.4.18-SNAPSHOT</cnnarch-generator.version>
+        <cnnarch-generator.version>0.4.20-SNAPSHOT</cnnarch-generator.version>
         <source.plugin>2.4</source.plugin>
         <!--misc-->
         <project.build.sourceEncoding>UTF-8</project.build.sourceEncoding>
