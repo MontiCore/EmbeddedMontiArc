@@ -203,6 +203,17 @@ public class StreamTestMojoBase extends AbstractMojo {
         return generateLibraryInterface;
     }
 
+
+    @Parameter(defaultValue = "false")
+    protected boolean allowDecomposition = false;
+    public boolean getAllowDecomposition() {return allowDecomposition;}
+    public void setAllowDecomposition(boolean allowDecomposition){this.allowDecomposition = allowDecomposition;}
+
+    @Parameter(defaultValue = "")
+    protected String decomposeNetwork;
+    public String getDecomposeNetwork() {return decomposeNetwork;}
+    public void setDecomposeNetwork(String decomposeNetwork){this.decomposeNetwork = decomposeNetwork;}
+
     //</editor-fold>
 
     //<editor-fold desc="Properties">
@@ -292,6 +303,8 @@ public class StreamTestMojoBase extends AbstractMojo {
         stmb.generateLibraryInterface = generateLibraryInterface;
         stmb.generateServerAdapter = generateServerAdapter;
         stmb.useDgl = useDgl;
+        stmb.allowDecomposition = allowDecomposition;
+        stmb.decomposeNetwork = decomposeNetwork;
 
         stmb.setLog(getLog());
 

@@ -303,8 +303,8 @@ public class StreamTestGeneratorMojo extends StreamTestMojoBase {
                     emadlGenerator.setGenerationTargetPath(outputPath);
                 }
                 try{
-                    emadlGenerator.generate(this.getPathMain(), this.getRootModel(), this.getPathToPython(), "x", true, this.getUseDgl());
-                }
+                    emadlGenerator.generate(this.getPathMain(), this.getRootModel(), this.getPathToPython(), "x", true, this.getUseDgl(),this.getAllowDecomposition(), new String[]{this.getDecomposeNetwork()});
+                    }
                 catch (IOException e){
                     e.printStackTrace();
                     Log.error("io error during generation", e);
