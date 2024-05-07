@@ -62,7 +62,7 @@ public class TrainingMojo extends TrainingConfigMojo {
     if (trainingConfig.getAllowDecomposition() != null)
       elements.add(element(name("allowDecomposition"), trainingConfig.getAllowDecomposition()));
     if (trainingConfig.getDecomposeNetwork() != null)
-      elements.add(element(name("decomposableNetwork"),trainingConfig.getDecomposeNetwork()));
+      elements.add(element(name("decomposeNetwork"),trainingConfig.getDecomposeNetwork()));
     return elements;
   }
 
