@@ -24,7 +24,7 @@ public class TrainingMojo extends TrainingConfigMojo {
         plugin(
             groupId("de.monticore.lang.monticar.utilities"),
             artifactId("maven-streamtest"),
-            version("0.0.34-SNAPSHOT")
+            version("0.0.35-SNAPSHOT")
         ),
         goal("streamtest-generator"),
         configuration(getConfigElements().toArray(new Element[0])),
@@ -59,6 +59,10 @@ public class TrainingMojo extends TrainingConfigMojo {
       elements.add(element(name("useDgl"), trainingConfig.getUseDgl()));
     if (trainingConfig.getForceRun() != null)
       elements.add(element(name("forceRun"), trainingConfig.getForceRun()));
+    if (trainingConfig.getAllowDecomposition() != null)
+      elements.add(element(name("allowDecomposition"), trainingConfig.getAllowDecomposition()));
+    if (trainingConfig.getDecomposeNetwork() != null)
+      elements.add(element(name("decomposableNetwork"),trainingConfig.getDecomposeNetwork()));
     return elements;
   }
 
