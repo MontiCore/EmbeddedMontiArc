@@ -138,13 +138,9 @@ TestTransfer:
     - python3 -m pip install -U pip scikit-image opencv-python
     - ln -fs /usr/bin/python3 /usr/bin/python
     - cd transfer
-    - RES=$(./runTransfer.sh 2>&1)
-    - STATUS=$?
-    - |
-      if [[ $STATUS -ne 0 ]]; then
-        echo "Error during transfer learning: $RES"
-        exit $STATUS
-      fi
+    - chmod +x runTransfer.sh
+    - ./runTransfer.sh
+
 
 TestMnistWithAdaNet:
   stage: test
