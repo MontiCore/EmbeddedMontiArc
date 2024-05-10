@@ -3,11 +3,17 @@ package de.monticore.mlpipelines.automl.emadlprinter;
 import conflang._ast.ASTConfLangCompilationUnit;
 import conflang._ast.ASTConfigurationEntry;
 import conflang._ast.ASTNestedConfigurationEntry;
+import conflangliterals.LiteralHelpers;
+import conflangliterals._ast.ASTListLiteral;
+import conflangliterals._ast.ASTRangeLiteral;
 import conflangliterals._ast.ASTTypelessLiteral;
-import de.monticore.mcliterals._ast.*;
+import de.monticore.mcliterals._ast.ASTBooleanLiteral;
+import de.monticore.mcliterals._ast.ASTSignedDoubleLiteral;
+import de.monticore.mcliterals._ast.ASTSignedIntLiteral;
+import de.monticore.mcliterals._ast.ASTSignedLiteral;
+import de.monticore.mcliterals._ast.ASTStringLiteral;
 import de.monticore.prettyprint.AstPrettyPrinter;
 import de.monticore.prettyprint.IndentPrinter;
-
 import java.util.List;
 
 public class ASTConfLangCompilationUnitPrinter implements AstPrettyPrinter<ASTConfLangCompilationUnit> {
@@ -61,8 +67,14 @@ public class ASTConfLangCompilationUnitPrinter implements AstPrettyPrinter<ASTCo
         }
         else if (literal instanceof ASTBooleanLiteral) {
             this.printBooleanLiteral((ASTBooleanLiteral) literal);
+        }
+        else if (literal instanceof ASTListLiteral) {
+            this.printListLiteral((ASTListLiteral) literal);
+        }
+        else if (literal instanceof ASTRangeLiteral) {
+            this.printRangeLiteral((ASTRangeLiteral) literal);
         } else {
-            throw new IllegalArgumentException("Cannot handle the type of value of ConfigurationEntry.");
+            throw new IllegalArgumentException("Cannot handle the type of value of ConfigurationEntry: " + literal.getClass().getSimpleName());
         }
 
         if (nested) {
@@ -102,4 +114,16 @@ public class ASTConfLangCompilationUnitPrinter implements AstPrettyPrinter<ASTCo
     private void printBooleanLiteral(ASTBooleanLiteral astBooleanLiteral) {
         this.printer.print(astBooleanLiteral.getValue());
     }
+
+    private void printListLiteral(ASTListLiteral astListLiteral) {
+        this.printer.print(astListLiteral.toString());
+    }
+
+    private void printRangeLiteral(ASTRangeLiteral astRangeLiteral) {
+        List<ASTSignedLiteral> signedLiterals = astRangeLiteral.getSignedLiteralList();
+        String joinedString = signedLiterals.stream().map(LiteralHelpers::literalToString).reduce((a, b) -> a + ":" + b).get();
+        this.printer.print("(" + joinedString + ")");
+    }
+
+
 }

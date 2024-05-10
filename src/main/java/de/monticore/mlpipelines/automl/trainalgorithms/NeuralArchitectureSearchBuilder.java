@@ -38,7 +38,6 @@ public class NeuralArchitectureSearchBuilder {
             case NasAlgorithm.EfficientNet:
                 return new EfficientNet();
             case NasAlgorithm.AdaNet:
-                String modelPath = "src.test.resources.models.adanet.AdaNet.emadl";
                 return new AdaNetAlgorithm();
             default:
                 throw new IllegalArgumentException(

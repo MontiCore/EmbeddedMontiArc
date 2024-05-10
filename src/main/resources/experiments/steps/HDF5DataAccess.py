@@ -9,7 +9,7 @@ import torch
 
 class HDF5DataAccess():
 
-    def __init__(self, pathToDatasource, schema_api, model_dir):
+    def __init__(self, pathToDatasource, schema_api, model_dir, cli_arguments):
         self._data_source = pathToDatasource
         self._schemaApi_ = schema_api
 

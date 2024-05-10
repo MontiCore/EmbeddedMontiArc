@@ -14,17 +14,17 @@
     <!-- == PROJECT DEPENDENCIES ============================================= -->
     <properties>
         <!-- .. SE-Libraries .................................................. -->
-        <emadl.version>0.4.9-SNAPSHOT</emadl.version>
-        <CNNArch.version>0.4.12-SNAPSHOT</CNNArch.version>
-        <cnnarch-generator.version>0.4.19-SNAPSHOT</cnnarch-generator.version>
+        <emadl.version>0.4.11-SNAPSHOT</emadl.version>
+        <CNNArch.version>0.4.13-SNAPSHOT</CNNArch.version>
+        <cnnarch-generator.version>0.4.20-SNAPSHOT</cnnarch-generator.version>
         <cnnarch-mxnet-generator.version>0.4.9-SNAPSHOT</cnnarch-mxnet-generator.version>
         <cnnarch-caffe2-generator.version>0.4.9-SNAPSHOT</cnnarch-caffe2-generator.version>
         <cnnarch-tensorflow-generator.version>0.4.9-SNAPSHOT</cnnarch-tensorflow-generator.version>
         <cnnarch-pytorch-generator.version>0.0.1-SNAPSHOT</cnnarch-pytorch-generator.version>
-        <cnnarch-gluon-generator.version>0.5.8-SNAPSHOT</cnnarch-gluon-generator.version>
+        <cnnarch-gluon-generator.version>0.5.9-SNAPSHOT</cnnarch-gluon-generator.version>
         <monticore-runtime.version>5.0.1</monticore-runtime.version>
         <schemalang.version>1.0.1-SNAPSHOT</schemalang.version>
-        <montipipes.version>0.0.2-SNAPSHOT</montipipes.version>
+        <montipipes.version>0.0.3-SNAPSHOT</montipipes.version>
 
         <!-- .. Libraries .................................................. -->
         <guava.version>25.1-jre</guava.version>
@@ -137,11 +137,17 @@
             <version>2.3.30</version>
         </dependency>
 
+        <dependency>
+            <groupId>org.mlflow</groupId>
+            <artifactId>mlflow-client</artifactId>
+            <version>2.6.0</version>
+        </dependency>
+
         <!-- https://mvnrepository.com/artifact/org.json/json -->
         <dependency>
             <groupId>org.json</groupId>
             <artifactId>json</artifactId>
-            <version>20220320</version>
+            <version>20231013</version>
         </dependency>
 
         <!-- https://mvnrepository.com/artifact/commons-io/commons-io -->
@@ -257,7 +263,7 @@
         <dependency>
             <groupId>org.junit.jupiter</groupId>
             <artifactId>junit-jupiter</artifactId>
-            <version>RELEASE</version>
+            <version>5.10.2</version>
             <scope>test</scope>
         </dependency>
 

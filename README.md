@@ -7,7 +7,7 @@ Generates CPP/Python code for EmbeddedMontiArcDL, an enlargement of EmbeddedMont
 Thus, is the main project that processes models of EMADL components by parsing in help of the different DSLs (EMA, CNNArchLang, ConfLang, SchemaLang, TaggingLang) and generating training and execution code by delegating the tasks to the different backends. The EMADL2CPP projects main artifact is a jar that can be invoked by hand, but there is also a maven wrapper developed which we recommend to use. 
 See our Hello World example [MNIST-Calculator](https://git.rwth-aachen.de/monticore/EmbeddedMontiArc/applications/mnistcalculator/) for an exemplary application documented in [this paper](http://www.se-rwth.de/publications/Modeling-and-Training-of-Neural-Processing-Systems.pdf). Instead of calling the generation with the .jar file, we developed, as already mentioned, a [maven-plugin](https://git.rwth-aachen.de/monticore/EmbeddedMontiArc/utilities/emadl-maven-plugin), which can be seen in action in the subfolder `emadl-maven-plugin` of the MNIST-Calculator. For its invocation see the corresponding target in the .yml file.
 
-
+A getting started guide for developers can be found [here](documents/getting_started.md).
 
 [ How to develop and train a CNN component using EMADL2CPP](#nn)
 <a name="nn"></a>
@@ -183,6 +183,11 @@ python3 example/CNNTrainer_<your_network_component>.py
 You can submit the job with `sbatch <your-bash-script>.sh` on a backend node. It is also possible to just run the script on the frontend node.
 If you did submit the job, you can access the status information with `sacct`.
 
+## Tracking Experiments
+The EMADL2CPP generator offers a tracking system capable of automatically forwarding all metadata generated during training to multiple tracking frameworks such as [MLflow](https://www.mlflow.org).
+
+- A guide on how to use the tracking system, as an end user, is available [here](documents/experiment_tracking/using_the_tracking_system.md).
+- A guide on how to add new tracking frameworks, as a developer extending the generator, is available [here](documents/experiment_tracking/implementing_new_tracking_backends.md).
 
 # Presentations (Architecture & Hyperparameter Optimization)
 

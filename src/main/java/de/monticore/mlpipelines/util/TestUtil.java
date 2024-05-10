@@ -1,20 +1,20 @@
 package de.monticore.mlpipelines.util;
 
+import static junit.framework.TestCase.assertEquals;
+import static org.junit.Assert.assertTrue;
+
 import de.monticore.mlpipelines.configuration.ExperimentConfiguration;
 import de.monticore.mlpipelines.configuration.MontiAnnaContext;
+import de.monticore.mlpipelines.tracking.TrackerFactory;
 import de.se_rwth.commons.logging.Finding;
 import de.se_rwth.commons.logging.Log;
-import org.junit.Assert;
-
 import java.io.File;
 import java.io.IOException;
 import java.nio.file.Files;
 import java.nio.file.Path;
 import java.util.List;
 import java.util.stream.Collectors;
-
-import static junit.framework.TestCase.assertEquals;
-import static org.junit.Assert.assertTrue;
+import org.junit.Assert;
 
 public class TestUtil {
 
@@ -22,7 +22,7 @@ public class TestUtil {
             Path parentModelPath,
             final String rootModelName,
             final ExperimentConfiguration experimentConfiguration1) {
-        MontiAnnaContext.getInstance().initContext(parentModelPath, rootModelName, experimentConfiguration1);
+        MontiAnnaContext.getInstance().initContext(parentModelPath, rootModelName, experimentConfiguration1, new TrackerFactory(null));
         return MontiAnnaContext.getInstance();
 
     }
