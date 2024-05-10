@@ -25,7 +25,7 @@ public class MontiAnnaPipelineExecutor extends PipelineExecutor {
             runTracker.getArtifactHandler().setArtifacts(emadlFiles).setPath("emadl-Files").addExtension(".txt").log();
             runTracker.getArtifactHandler().setPlaintext(trainPipeline.getPrettyPrintedNetwork()).setFileName("network.txt").log();
             runTracker.logParams(ASTConfLangHelper.getParametersFromConfiguration(trainPipeline.getTrainingConfiguration()));
-            runTracker.getArtifactHandler().setPlaintext(trainPipeline.prettyPrintedNetwork()).setFileName("network.txt").log();
+            runTracker.getArtifactHandler().setPlaintext(trainPipeline.getPrettyPrintedNetwork()).setFileName("network.txt").log();
             ConfigurationTrackingManager.executePipeline(trainPipeline, "MontiAnna Run");
             // End current run
             runTracker.endRun();

@@ -103,7 +103,7 @@ public class AutoMLPipelineExecutor extends PipelineExecutor {
         Log.info("Execute final training with optimized neural architecture and hyperparameters",
                 AutoMLPipelineExecutor.class.getName());
         runTracker.startNewRun();
-        runTracker.setTag("AutoML Stage", "Final Run");
+        runTracker.logTag("AutoML Stage", "Final Run");
         ConfigurationTrackingManager.executePipeline(trainPipeline, "Final Run");
         runTracker.endRun();
     }

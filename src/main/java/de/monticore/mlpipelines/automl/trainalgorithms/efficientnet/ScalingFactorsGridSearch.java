@@ -81,7 +81,7 @@ public class ScalingFactorsGridSearch {
         trainPipeline.getRunTracker().startNewRun();
         trainPipeline.getRunTracker().logTag("AutoML Stage", "NAS: Scaling Factors Grid Search");
         trainPipeline.getRunTracker().logParams(ASTConfLangHelper.getParametersFromConfiguration(trainPipeline.getTrainingConfiguration()));
-        trainPipeline.getRunTracker().getArtifactHandler().setPlaintext(trainPipeline.prettyPrintedNetwork()).setFileName("network.txt").log();
+        trainPipeline.getRunTracker().getArtifactHandler().setPlaintext(trainPipeline.getPrettyPrintedNetwork()).setFileName("network.txt").log();
         ConfigurationTrackingManager.executePipeline(trainPipeline, "NAS: " + this.getClass().getSimpleName());
         trainPipeline.getRunTracker().endRun();
 

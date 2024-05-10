@@ -121,7 +121,7 @@ public class AdaNetAlgorithm extends NeuralArchitectureSearch {
         getRunTracker().startNewRun();
         getRunTracker().logTag("AutoML Stage", "NAS: AdaNet");
         getRunTracker().logParams(ASTConfLangHelper.getParametersFromConfiguration(this.getTrainPipeline().getTrainingConfiguration()));
-        getRunTracker().getArtifactHandler().setPlaintext(this.getTrainPipeline().prettyPrintedNetwork()).setFileName("network.txt").log();
+        getRunTracker().getArtifactHandler().setPlaintext(this.getTrainPipeline().getPrettyPrintedNetwork()).setFileName("network.txt").log();
         ConfigurationTrackingManager.executePipeline(getTrainPipeline(), "NAS: " + this.getClass().getSimpleName());
         getRunTracker().endRun();
 
