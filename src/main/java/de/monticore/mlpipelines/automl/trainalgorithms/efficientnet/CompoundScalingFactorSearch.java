@@ -4,6 +4,8 @@ import de.monticore.lang.monticar.cnnarch._symboltable.ArchitectureSymbol;
 import de.monticore.mlpipelines.automl.configuration.EfficientNetConfig;
 import de.monticore.mlpipelines.pipelines.Pipeline;
 import de.monticore.mlpipelines.tracking.helper.ASTConfLangHelper;
+import de.monticore.mlpipelines.util.configuration_tracking.ConfigurationTrackingConf;
+import de.monticore.mlpipelines.util.configuration_tracking.ConfigurationTrackingManager;
 
 public class CompoundScalingFactorSearch {
     private final NetworkScaler networkScaler;
@@ -33,15 +35,18 @@ public class CompoundScalingFactorSearch {
             trainPipeline.getRunTracker().startNewRun();
             trainPipeline.getRunTracker().logTag("AutoML Stage", "NAS: Compound Scaling Factor");
             trainPipeline.getRunTracker().logParams(ASTConfLangHelper.getParametersFromConfiguration(trainPipeline.getTrainingConfiguration()));
-            trainPipeline.getRunTracker().getArtifactHandler().setPlaintext(trainPipeline.getPrettyPrintedNetwork()).setFileName("network.txt").log();
-
-            trainPipeline.execute();
-
+            trainPipeline.getRunTracker().getArtifactHandler().setPlaintext(trainPipeline.prettyPrintedNetwork()).setFileName("network.txt").log();
+            ConfigurationTrackingManager.executePipeline(trainPipeline, "NAS: " + this.getClass().getSimpleName());
             trainPipeline.getRunTracker().endRun();
 
             this.networkScaler.rollbackScaledNetwork();
-            float newAccuracy = trainPipeline.getTrainedAccuracy();
-            if (trainPipeline.getTrainedAccuracy() > bestAccuracy) {
+            float newAccuracy;
+            if (ConfigurationTrackingConf.isEnabled()) {
+                newAccuracy = ConfigurationTrackingManager.getArtifact().getAccuracy();
+            } else {
+                newAccuracy = trainPipeline.getTrainedAccuracy();
+            }
+            if (newAccuracy > bestAccuracy) {
                 bestAccuracy = newAccuracy;
                 optimalPhi = currentPhi;
             }

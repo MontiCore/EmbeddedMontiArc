@@ -47,11 +47,13 @@ public class PortPrinter {
 
     private void printPort(Map<String, Collection<Symbol>> enclosedSymbols, String portName) {
         ArrayList symbolList = (ArrayList) enclosedSymbols.get(portName);
-        EMAPortArraySymbol port = (EMAPortArraySymbol) symbolList.get(1);
-        String portIncome = port.isIncoming() ? "in " : "out ";
-        printer.print(portIncome);
-        printPortType(port);
-        printPortDimension(port);
+        if (symbolList.size() > 1) {
+            EMAPortArraySymbol port = (EMAPortArraySymbol) symbolList.get(1);
+            String portIncome = port.isIncoming() ? "in " : "out ";
+            printer.print(portIncome);
+            printPortType(port);
+            printPortDimension(port);
+        }
         this.printer.print(" " + portName);
     }
 
