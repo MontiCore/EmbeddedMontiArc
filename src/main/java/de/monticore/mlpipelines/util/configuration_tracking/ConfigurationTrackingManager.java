@@ -1,24 +1,18 @@
 package de.monticore.mlpipelines.util.configuration_tracking;
 
 
-import com.google.gson.Gson;
-import com.google.gson.GsonBuilder;
 import conflang._ast.ASTConfLangCompilationUnit;
 import de.monticore.lang.embeddedmontiarc.embeddedmontiarc._symboltable.instanceStructure.EMAComponentInstanceSymbol;
 import de.monticore.lang.monticar.cnnarch._symboltable.*;
 import de.monticore.mlpipelines.automl.emadlprinter.EmadlPrettyPrinter;
-import de.monticore.mlpipelines.automl.helper.ConfigurationValidationHandler;
 import de.monticore.mlpipelines.configuration.MontiAnnaContext;
 import de.monticore.mlpipelines.pipelines.Pipeline;
 import de.se_rwth.commons.logging.Log;
-
 import java.io.*;
 import java.time.LocalDateTime;
 import java.time.format.DateTimeFormatter;
 import java.util.*;
 import java.util.stream.Collectors;
-
-import static de.monticore.lang.monticar.emadl.generator.EMADLAbstractSymtab.createSymTab;
 
 public class ConfigurationTrackingManager {
     private static int runId = 0;
@@ -113,17 +107,6 @@ public class ConfigurationTrackingManager {
         }
 
         initializeNewRun(pipeline, stage);
-//        if (artifact.getInfoValue("stage").contains("HO:")) {
-//            List<Map<String, ASTConfLangCompilationUnit>> hoSetups = ArtifactManager.getHOConfigurations();
-//
-//            ConfigurationValidationHandler.validateConfiguration(trainingConfiguration, pipeline.getSchemasTargetDir());
-//            pipeline.setTrainingConfiguration(trainingConfiguration);
-//            // Utilize "ho_configuration", "search_space" in order to find better hyperparameter values
-//        if (!artifact1.getInfoValue("stage").contains("HO:") && (confName.equals("ho_configuration") || confName.equals("search_space"))) {
-//            similarity += 1;
-//        }
-//        }
-
         if (configurationNotRun()) {
             pipeline.execute();
             artifact.setAccuracy(pipeline.getTrainedAccuracy());
@@ -161,50 +144,6 @@ public class ConfigurationTrackingManager {
 
         }
     }
-//
-//    private static void analyzeSignificantParamValues(List<Artifact> artifacts, String significantParamName) {
-//        String currentParamValue = artifact.getParameterValue(significantParamName);
-//        Set<String> significantParamValues = getSignificantParamValues(artifacts).get(significantParamName);
-//        if (significantParamValues == null) {
-//            return;
-//        }
-//        for (String paramValue : significantParamValues) {
-//            if (paramValue.equals(currentParamValue)) {
-//                continue;
-//            }
-//            List<Artifact> similarParamArtifacts = artifacts.stream()
-//                    .filter(artifact1 -> artifact1.getParameterValue(significantParamName).equals(paramValue))
-//                    .sorted(Comparator.comparingDouble(Artifact::getSimilarityScore).reversed().thenComparing(Artifact::getAccuracy, Comparator.reverseOrder()))
-//                    .collect(Collectors.toList());
-//            List<Artifact> similarArtifacts;
-//            if (similarParamArtifacts.size() > 3) {
-//                similarArtifacts = similarParamArtifacts.subList(0, 3);
-//            } else {
-//                similarArtifacts = similarParamArtifacts;
-//            }
-//            if (similarArtifacts.size() > 0) {
-//                Log.info(String.format("\t\t%s = %s", significantParamName, paramValue), "CONFIG_CHECK");
-//                for (Artifact artifact1 : similarArtifacts) {
-//                    Log.info(String.format("\t\t\t[%.2f]`%s` with the parameter `%s` set to `%s` achieved accuracy %.2f", artifact1.getSimilarityScore(), artifact1.getArtifactName(), significantParamName, paramValue, artifact1.getAccuracy()), "CONFIG_CHECK");
-//                }
-//            }
-//        }
-//    }
-//
-//    private static Map<String, Set<String>> getSignificantParamValues(List<Artifact> similarArtifacts) {
-//        Map<String, Set<String>> paramValuesMap = new HashMap<>();
-//        for (String paramName : ConfigurationTrackingConf.getSignificantParams()) {
-//            Set<String> paramValues = similarArtifacts.stream()
-//                    .filter(similarArtifact -> similarArtifact.getParameterValue(paramName) != null)
-//                    .map(similarArtifact -> similarArtifact.getParameterValue(paramName))
-//                    .collect(Collectors.toSet());
-//            if (paramValues.size() > 0) {
-//                paramValuesMap.computeIfAbsent(paramName, k -> new HashSet<>());
-//                paramValuesMap.get(paramName).addAll(paramValues);
-//            }
-//        }
-//        return paramValuesMap;
-//    }
 
     private static String getNetworkString(EMAComponentInstanceSymbol componentInstanceSymbol) {
         ArchitectureSymbol architectureSymbol = (ArchitectureSymbol) componentInstanceSymbol.getSpannedScope().getSubScopes().get(0).getSpanningSymbol().get();

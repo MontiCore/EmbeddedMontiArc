@@ -1,28 +1,13 @@
 package de.monticore.mlpipelines.util.configuration_tracking;
 
-import com.github.difflib.text.DiffRow;
 import com.google.gson.Gson;
 import com.google.gson.GsonBuilder;
-import conflang._ast.ASTConfLangCompilationUnit;
-import de.monticore.io.paths.ModelPath;
-import de.monticore.lang.embeddedmontiarc.embeddedmontiarc._ast.ASTEMACompilationUnit;
-import de.monticore.lang.embeddedmontiarc.embeddedmontiarc._symboltable.cncModel.EMAComponentSymbol;
-import de.monticore.lang.embeddedmontiarc.embeddedmontiarc._symboltable.instanceStructure.EMAComponentInstanceSymbol;
 import de.monticore.lang.monticar.cnnarch._ast.ASTArchitecture;
 import de.monticore.lang.monticar.cnnarch._ast.ASTLayerDeclaration;
 import de.monticore.lang.monticar.cnnarch._symboltable.*;
-import de.monticore.lang.monticar.emadl._symboltable.EMADLLanguage;
-import de.monticore.mlpipelines.automl.emadlprinter.EmadlPrettyPrinter;
-import de.monticore.mlpipelines.automl.helper.ArchitectureHelper;
-import de.monticore.mlpipelines.tracking.helper.ASTConfLangHelper;
 import de.monticore.parsing.ConfigurationLanguageParser;
-import de.monticore.parsing.EMADLParser;
-import de.monticore.symbolmanagement.SymbolTableCreator;
-import de.monticore.symboltable.GlobalScope;
 import de.monticore.symboltable.MutableScope;
-import de.monticore.symboltable.Scope;
 import de.se_rwth.commons.logging.Log;
-import org.apache.commons.lang3.StringUtils;
 import org.mlflow.api.proto.Service;
 import org.mlflow.tracking.ExperimentsPage;
 import org.mlflow.tracking.MlflowClient;
@@ -32,9 +17,6 @@ import java.lang.reflect.Type;
 import java.nio.file.Files;
 import java.nio.file.Paths;
 import java.util.*;
-import java.util.stream.Collectors;
-
-import static de.monticore.lang.monticar.emadl.generator.EMADLAbstractSymtab.createSymTab;
 
 public class ArtifactManager {
     private static String model;
@@ -43,7 +25,6 @@ public class ArtifactManager {
     private static List<Artifact> mlflowArtifacts;
     private List<Artifact> similarArtifacts;
 
-    // TODO: CHANGE ARTIFACT LOADING TO BE CALLED ONCE AND NOT FOR EACH RUN!!!
     public ArtifactManager(Artifact currentRunArtifact) {
         model = currentRunArtifact.getInfoValue("model");
         trainAlgorithm = currentRunArtifact.getTrainAlgorithmName();
@@ -212,21 +193,6 @@ public class ArtifactManager {
         return false;
     }
 
-    public static List<Map<String, ASTConfLangCompilationUnit>> getHOConfigurations() {
-        List<Map<String, ASTConfLangCompilationUnit>> hoConfigs = new ArrayList<>();
-        for (Artifact artifact : gitlabArtifacts) {
-            Map<String, ASTConfLangCompilationUnit> hoConf = new HashMap<>();
-            hoConf.put("ho_configuration", artifact.getConfiguration("ho_configuration"));
-            hoConf.put("search_space", artifact.getConfiguration("search_space"));
-            hoConfigs.add(hoConf);
-        }
-        return hoConfigs;
-    }
-
-//    public static void addGitlabArtifact(Artifact artifact) {
-//        gitlabArtifacts.add(artifact);
-//    }
-
     private double artifactSimilarity(Artifact artifact1, Artifact artifact2) {
         String[] confNames = new String[]{"training_configuration", "network", "dataset"};
         float similarity = 0;
@@ -309,140 +275,4 @@ public class ArtifactManager {
         }
         return elementSymbols;
     }
-
-//    private static void saveNetworkIntoFile(String network, String networkName) {
-////        String modelPath = "src/main/resources/efficientnet_experiment/emadl";
-//        String tempName = "temp.emadl";
-//        File adaNetCustomFile = new File(String.format("%s/%s/%s.emadl", ConfigurationTrackingConf.getModelPath(), ConfigurationTrackingConf.getModelName().split("\\.")[0], networkName));
-////        File adaNetCustomFile = new File(String.format("%s/%s/%s.emadl", modelPath, "mnist", networkName));
-//        if (adaNetCustomFile.exists()) {
-//            File tempFile = new File(String.format("%s/%s", adaNetCustomFile.getParentFile().getPath(), tempName));
-//            boolean renamed = adaNetCustomFile.renameTo(tempFile);
-//            if (renamed) {
-//                try {
-//                    FileWriter networkFileWriter = new FileWriter(String.format("%s/%s.emadl", adaNetCustomFile.getParentFile().getPath(), networkName));
-//                    networkFileWriter.write(network);
-//                    networkFileWriter.close();
-//                } catch (IOException e) {
-//                    System.out.println("saveNetworkIntoFile: " + e.getMessage());
-//                }
-//            } else {
-//                System.out.println("renaming failed");
-//            }
-//        } else {
-//            System.out.printf("couldn't find %s.emadl\n", networkName);
-//        }
-//    }
-//
-//    private static void resetNetworkFile(String networkName) {
-//        String tempName = "temp.emadl";
-////        String modelPath = "src/main/resources/efficientnet_experiment/emadl";
-////        File adaNetCustomFile = new File(String.format("%s/%s/%s.emadl", modelPath, "mnist", networkName));
-//        File adaNetCustomFile = new File(String.format("%s/%s/%s.emadl", ConfigurationTrackingConf.getModelPath(), ConfigurationTrackingConf.getModelName().split("\\.")[0], networkName));
-//        File tempFile = new File(String.format("%s/%s/%s", ConfigurationTrackingConf.getModelPath(), ConfigurationTrackingConf.getModelName().split("\\.")[0], tempName));
-//        if (tempFile.exists()) {
-//            tempFile.renameTo(new File(String.format("%s/%s.emadl", adaNetCustomFile.getParentFile().getPath(), networkName)));
-//        }
-//    }
-//
-//    private static ArchitectureSymbol resolveNetwork(String networkName) {
-////        String modelPath = "src/main/resources/efficientnet_experiment/emadl";
-//        String rootComponentPath = Paths.get(ConfigurationTrackingConf.getModelPath(), model.replaceFirst("\\.", "/") + ".emadl").toString();
-////        String rootComponentPath = Paths.get(modelPath, "mnist/MnistClassifier.emadl").toString();
-//        ModelPath modelPath_ = new ModelPath(Paths.get(ConfigurationTrackingConf.getModelPath()));
-////        ModelPath modelPath_ = new ModelPath(Paths.get(modelPath));
-//        ASTEMACompilationUnit rootComponent = null;
-//        try {
-//            rootComponent = new EMADLParser().parseModelIfExists(rootComponentPath);
-//        } catch (IOException e) {
-//            System.out.println("resolveNetwork: " + rootComponentPath + ": " + e.getMessage());
-//        }
-//
-//        if (rootComponent != null) {
-//            Scope emadlSymbolTable = SymbolTableCreator.createEMADLSymbolTable(rootComponent, new GlobalScope(modelPath_, new EMADLLanguage()));
-//            String rootComponentName = rootComponent.getComponent().getName();
-//            String instanceName = rootComponentName.substring(0, 1).toLowerCase() + rootComponentName.substring(1);
-//            EMAComponentInstanceSymbol componentInstance = (EMAComponentInstanceSymbol) emadlSymbolTable.resolve(
-//                    instanceName, EMAComponentInstanceSymbol.KIND).get();
-//            for (EMAComponentInstanceSymbol subcomponent : componentInstance.getSubComponents()) {
-//                EMAComponentSymbol referencedSymbol = subcomponent.getComponentType().getReferencedSymbol();
-//                Optional<ArchitectureSymbol> network_ = referencedSymbol.getSpannedScope()
-//                        .resolve("", ArchitectureSymbol.KIND);
-//                if (network_.isPresent() && network_.get().getEnclosingScope().getEnclosingScope().get().getName().get().equals(networkName)) {
-//                    return network_.get();
-//                }
-//            }
-//        }
-//        return null;
-//    }
-//
-//    private static ArchitectureSymbol parseArchitectureSymbol_String(String network) {
-//        String networkName = StringUtils.capitalize(network.split("<")[0].split("component ")[1].trim());
-//        saveNetworkIntoFile(network,networkName);
-//        ArchitectureSymbol architectureSymbol = resolveNetwork(networkName);
-//        resetNetworkFile(networkName);
-//        return architectureSymbol;
-//    }
-
-//    public static void main(String[] args) {
-//        String networkStr = "package mnist;\n\ncomponent EfficientNetBase<Z(2:oo) classes = 10, Z(1:oo) layerWidth = 10>{\n" +
-//                "    ports in Z(0:255)^{1, 28, 28} image, out Q(0:1)^{classes} predictions;\n" +
-//                "\n" +
-//                "    implementation CNN {\n" +
-//                "        def stem(channels){\n" +
-//                "            Convolution(kernel = (3,3), channels = channels, stride = (2,2), padding = \"same\") ->\n" +
-//                "            BatchNorm() ->\n" +
-//                "            Relu()\n" +
-//                "        }\n" +
-//                "\n" +
-//                "def stem(channels){\n" +
-//            "            Convolution(kernel = (3,3), channels = channels, stride = (2,2), padding = \"same\") ->\n" +
-//                    "            BatchNorm() ->\n" +
-//                    "            Relu()\n" +
-//                    "        }\n" +
-//                    "\n" +
-//                "        def conv(channels){\n" +
-//                "            Convolution(kernel = (3,3), channels = channels, stride = (1,1), padding = \"same\") ->\n" +
-//                "            BatchNorm() ->\n" +
-//                "            Relu()\n" +
-//                "        }\n" +
-//                "\n" +
-//                "        def reductionConv(channels){\n" +
-//                "            Convolution(kernel = (3,3), channels = channels, stride = (2,2), padding = \"same\") ->\n" +
-//                "            BatchNorm() ->\n" +
-//                "            Relu()\n" +
-//                "        }\n" +
-//                "\n" +
-//                "        def residualBlock(channels){\n" +
-//                "            conv(channels = channels) ->\n" +
-//                "            conv(channels = channels) ->\n" +
-//                "            Relu()\n" +
-//                "        }\n" +
-//                "\n" +
-//                "        def reductionBlock(channels){\n" +
-//                "            (\n" +
-//                "                conv(channels = channels) ->\n" +
-//                "                conv(channels = channels) ->\n" +
-//                "                reductionConv(channels = channels)\n" +
-//                "            |\n" +
-//                "                reductionConv(channels = channels)\n" +
-//                "            ) ->\n" +
-//                "            Add()\n" +
-//                "        }\n" +
-//                "\n" +
-//                "        image ->\n" +
-//                "        stem(channels = 4) ->\n" +
-//                "        residualBlock(-> = 4, channels = 16) ->\n" +
-//                "        reductionBlock(channels = 16) ->\n" +
-//                "        residualBlock(-> = 4, channels = 32) ->\n" +
-//                "        reductionBlock(channels = 32) ->\n" +
-//                "        FullyConnected(units = classes) ->\n" +
-//                "        Softmax() ->\n" +
-//                "        predictions\n" +
-//                "        ;\n" +
-//                "    }\n" +
-//                "}";
-//        ArchitectureSymbol architectureSymbol = parseArchitectureSymbol_String(networkStr);
-//        System.out.println(new EmadlPrettyPrinter().prettyPrint(architectureSymbol));
-//    }
 }
