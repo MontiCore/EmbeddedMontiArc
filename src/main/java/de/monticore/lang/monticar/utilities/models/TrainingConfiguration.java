@@ -21,6 +21,10 @@ public class TrainingConfiguration {
 
   private String forceRun;
 
+  private String allowDecomposition;
+
+  private String decomposeNetwork;
+
   public String getForceRun() {
     return forceRun;
   }
@@ -65,6 +69,10 @@ public class TrainingConfiguration {
     return generator;
   }
 
+  public String getAllowDecomposition() {return allowDecomposition; }
+
+  public String getDecomposeNetwork() {return decomposeNetwork; }
+
   public void setPathToPython(File pathToPython) {
     this.pathToPython = pathToPython;
   }
@@ -96,4 +104,8 @@ public class TrainingConfiguration {
   public void setGenerator(GeneratorEnum generator) {
     this.generator = generator;
   }
+
+  public void setAllowDecomposition(String allowDecomposition) {this.allowDecomposition = allowDecomposition; }
+
+  public void setDecomposeNetworks(String decomposeNetworks) {this.decomposeNetwork= decomposeNetworks; }
 }
