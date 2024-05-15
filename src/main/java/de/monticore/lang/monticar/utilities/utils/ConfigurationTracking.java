@@ -10,8 +10,9 @@ import de.monticore.mlpipelines.util.configuration_tracking.ConfigurationTrackin
 import de.monticore.parsing.ConfigurationLanguageParser;
 import de.se_rwth.commons.logging.Log;
 import org.apache.maven.execution.MavenSession;
-import org.apache.maven.model.Dependency;
 import org.apache.maven.model.DeploymentRepository;
+import org.apache.maven.model.Plugin;
+import org.apache.maven.model.PluginExecution;
 import org.apache.maven.project.MavenProject;
 import org.apache.maven.settings.Server;
 import org.apache.maven.settings.Settings;
@@ -38,7 +39,7 @@ public class ConfigurationTracking {
         version = project.getVersion();
         gitlabAccessToken = extractGitLabAccessToken(session.getSettings());
         createRequiredDirs();
-        trackDatasetDependency(project.getDependencies());
+        trackDatasetDependency(project);
         ConfigurationArtifactImporter.importGitlabArtifacts(session.getRequest().getUserSettingsFile());
         return checkUniqueName();
     }
@@ -87,16 +88,33 @@ public class ConfigurationTracking {
         return deploymentRepository;
     }
 
-    public static void trackDatasetDependency(List<Dependency> dependencies) {
-        for (Dependency dependency : dependencies) {
-            if (dependency.getGroupId().equals("de.embeddedmontiarcdl.datasets") || dependency.getGroupId().equals("de.monticore.lang.monticar.datasets")) {
-                String dataset = String.format(DATASET_FORMAT, dependency.getGroupId(), dependency.getArtifactId(), dependency.getVersion());
-                try {
-                    FileWriter writer = new FileWriter(String.format("%s/%s", ConfigurationTrackingConf.getPathTmp(), ConfigurationTrackingConf.getDatasetFileName()));
-                    writer.write(dataset);
-                    writer.close();
-                } catch (IOException e) {
-                    Log.error(String.format("Could not save the dataset info into %s/datasetInfo.txt. Error: %s", ConfigurationTrackingConf.getPathTmp(), e.getMessage()));
+    public static void trackDatasetDependency(MavenProject project) {
+        for (Object buildPlugin : project.getBuildPlugins()) {
+            Plugin plugin = (Plugin) buildPlugin;
+            if (plugin.getArtifactId().equals("maven-dependency-plugin")) {
+                for (Object execution : plugin.getExecutions()) {
+                    Xpp3Dom configuration = (Xpp3Dom) ((PluginExecution) execution).getConfiguration();
+                    if (configuration != null) {
+                        Xpp3Dom artifactItems = configuration.getChild("artifactItems");
+                        if (artifactItems != null) {
+                            for (Xpp3Dom artifactItem : artifactItems.getChildren()) {
+                                if (artifactItem.getChild("classifier").getValue().equals("dataset")) {
+                                    String groupId = artifactItem.getChild("groupId").getValue();
+                                    String artifactId = artifactItem.getChild("artifactId").getValue();
+                                    String version = artifactItem.getChild("version").getValue();
+                                    String dataset = String.format(DATASET_FORMAT, groupId, artifactId, version);
+
+                                    try {
+                                        FileWriter writer = new FileWriter(String.format("%s/%s", ConfigurationTrackingConf.getPathTmp(), ConfigurationTrackingConf.getDatasetFileName()));
+                                        writer.write(dataset);
+                                        writer.close();
+                                    } catch (IOException e) {
+                                        Log.error(String.format("Could not save the dataset info into %s/datasetInfo.txt. Error: %s", ConfigurationTrackingConf.getPathTmp(), e.getMessage()));
+                                    }
+                                }
+                            }
+                        }
+                    }
                 }
             }
         }
@@ -105,7 +123,6 @@ public class ConfigurationTracking {
     private static void createRequiredDirs() {
         File gitlabArtifactsPath = new File(ConfigurationTrackingConf.getGitlabArtifactsPath());
         File currentExperimentPath = new File(String.format("%s/%s", ConfigurationTrackingConf.getPathTmp(), ConfigurationTrackingConf.getExperimentName()));
-        File artifactsDiffPath = new File(ConfigurationTrackingConf.getArtifactsDiffPath());
         if (!gitlabArtifactsPath.exists()) {
             Log.info(String.format("Creating %s", gitlabArtifactsPath.getPath()), ConfigurationTracking.class.getName());
             gitlabArtifactsPath.mkdirs();
@@ -113,10 +130,6 @@ public class ConfigurationTracking {
         if (!currentExperimentPath.exists()) {
             Log.info(String.format("Creating %s", currentExperimentPath.getPath()), ConfigurationTracking.class.getName());
             currentExperimentPath.mkdirs();
-        }
-        if (!artifactsDiffPath.exists()) {
-            Log.info(String.format("Creating %s", artifactsDiffPath.getPath()), ConfigurationTracking.class.getName());
-            artifactsDiffPath.mkdirs();
         }
     }
 
