@@ -6,7 +6,6 @@ import de.monticore.lang.monticar.cnnarch._ast.ASTArchitecture;
 import de.monticore.lang.monticar.cnnarch._ast.ASTLayerDeclaration;
 import de.monticore.lang.monticar.cnnarch._symboltable.*;
 import de.monticore.parsing.ConfigurationLanguageParser;
-import de.monticore.symboltable.MutableScope;
 import de.se_rwth.commons.logging.Log;
 import org.mlflow.api.proto.Service;
 import org.mlflow.tracking.ExperimentsPage;
@@ -256,14 +255,7 @@ public class ArtifactManager {
     private List<String> getLayersFromArchitectureSymbol(List<ArchitectureElementSymbol> architectureElementSymbol) {
         List<String> layers = new ArrayList<>();
         for (ArchitectureElementSymbol symbol : architectureElementSymbol) {
-            try{
-                List<MutableScope> scopes = symbol.getSpannedScope().getSubScopes();
-                for (MutableScope scope : scopes) {
-                    layers.add(scope.getName().get());
-                }
-            } catch (Exception e) {
-                layers.add(symbol.getName());
-            }
+            layers.add(symbol.getName());
         }
         return layers;
     }

@@ -124,25 +124,12 @@ public class ConfigurationTrackingManager {
             return false;
         }
         deployArtifact = true;
-        if (artifact.getInfoValue("stage").contains("HO:")) {
-            proposeConfigurations();
-        }
         ConfigurationTrackingReport.logMessage("No similar artifacts were found, training model...");
         return true;
     }
 
     public static boolean shouldDeployArtifact() {
         return deployArtifact;
-    }
-
-    private static void proposeConfigurations() {
-        List<Artifact> similarArtifacts = artifactManager.getSimilarArtifacts().stream()
-                .filter(artifact1 -> !artifact.get("ho_configuration").equals(artifact1.get("ho_configuration")))
-                .sorted((a1, a2) -> Float.compare(a2.getAccuracy(), a1.getAccuracy()))
-                .collect(Collectors.toList());
-        if (!similarArtifacts.isEmpty()) {
-
-        }
     }
 
     private static String getNetworkString(EMAComponentInstanceSymbol componentInstanceSymbol) {

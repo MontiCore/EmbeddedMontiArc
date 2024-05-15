@@ -87,10 +87,6 @@ public class ConfigurationTrackingConf {
         return gitlabTrackingUrl;
     }
 
-    public static String getArtifactsDiffPath() {
-        return String.format("%s/artifactsDiff", getPathTmp());
-    }
-
     public static String getGitlabArtifactsPath() {
         return String.format("%s/gitlabArtifacts", getPathTmp());
     }
