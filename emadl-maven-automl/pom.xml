@@ -20,7 +20,7 @@
             <!-- EMADL2CPP -->
             <groupId>de.monticore.lang.monticar</groupId>
             <artifactId>embedded-montiarc-emadl-generator</artifactId>
-            <version>0.5.15-SNAPSHOT</version>
+            <version>0.5.17-SNAPSHOT</version>
         </dependency>
 
     </dependencies>
@@ -79,8 +79,10 @@
             <plugin>
                 <groupId>de.monticore.lang.monticar.utilities</groupId>
                 <artifactId>emadl-maven-plugin</artifactId>
-                <version>0.0.12-SNAPSHOT</version>
+                <version>0.0.13-SNAPSHOT</version>
                 <configuration>
+<!--                    <artifactTrackingConfiguration>src/main/resources/configurationTracking.conf</artifactTrackingConfiguration>-->
+<!--                    <mlflowTrackingConfiguration>src/main/resources/trackingConfiguration.conf</mlflowTrackingConfiguration>-->
                     <training>
                         <backend>PYTORCH</backend>  <!-- default=PYTORCH -->
                         <pathToPython>/usr/bin/python3</pathToPython>

@@ -1,5 +1,5 @@
 component EfficientNetB4<classes=10>{
-    ports in Z(0:255)^{1, 28, 28} image,
+    ports in Z(0:255)^{1, 34, 34} image,
           out Q(0:1)^{classes} predictions;
 
     implementation CNN {
@@ -44,11 +44,11 @@ component EfficientNetB4<classes=10>{
         }
 
         image ->
-        stem(channels=4) ->
-        residualBlock(-> = 8, channels=16) ->
-        reductionBlock(channels=16) ->
-        residualBlock(-> = 8, channels=32) ->
-        reductionBlock(channels=32) ->
+        stem(channels=6) ->
+        residualBlock(-> = 5, channels=23) ->
+        reductionBlock(channels=23) ->
+        residualBlock(-> = 5, channels=46) ->
+        reductionBlock(channels=46) ->
         FullyConnected(units=classes) ->
         Softmax() ->
         predictions;
