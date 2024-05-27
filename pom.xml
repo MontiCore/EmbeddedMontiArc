@@ -11,7 +11,7 @@
 
     <groupId>de.monticore.lang.monticar.utilities</groupId>
     <artifactId>emadl-maven-plugin</artifactId>
-    <version>0.0.12-SNAPSHOT</version>
+    <version>0.0.13-SNAPSHOT</version>
     <packaging>maven-plugin</packaging>
 
     <name>Process Automation of EMADL Projects</name>
@@ -139,7 +139,7 @@
         <dependency>
             <groupId>de.monticore.lang.monticar</groupId>
             <artifactId>embedded-montiarc-emadl-generator</artifactId>
-            <version>0.5.16-SNAPSHOT</version>
+            <version>0.5.17-SNAPSHOT</version>
 
         </dependency>
     </dependencies>
