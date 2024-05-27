@@ -9,6 +9,8 @@ import de.monticore.mlpipelines.automl.trainalgorithms.NeuralArchitectureSearch;
 import de.monticore.mlpipelines.automl.trainalgorithms.NeuralArchitectureSearchBuilder;
 import de.monticore.mlpipelines.tracking.helper.ASTConfLangHelper;
 import de.monticore.mlpipelines.tracking.tracker.MultiBackendTracker;
+import de.monticore.mlpipelines.util.configuration_tracking.ConfigurationTrackingConf;
+import de.monticore.mlpipelines.util.configuration_tracking.ConfigurationTrackingManager;
 import de.monticore.symboltable.CommonScope;
 import de.se_rwth.commons.logging.Log;
 import java.util.Map;
@@ -72,7 +74,9 @@ public class AutoMLPipelineExecutor extends PipelineExecutor {
 
         setSearchSpace(trainPipeline.getTrainingConfiguration(), searchSpace);
         trainPipeline.setModelOutputDirectory(String.format("/model/%s/", trainPipeline.getNetworkName()));
-
+        if (ConfigurationTrackingConf.isEnabled()) {
+            ConfigurationTrackingManager.applyConfiguration(nasConf, searchSpace, hyperparamsOptConf, evaluationCriteria, trainPipeline, montiAnnaContext);
+        }
         Log.info(String.format("Executing optimization for instance: %s", trainPipeline.getNetworkName()), AutoMLPipelineExecutor.class.getName());
         if (nasConf == null) {
             Log.info("Skip neural architecture search step since nas configuration not given",
@@ -99,8 +103,8 @@ public class AutoMLPipelineExecutor extends PipelineExecutor {
         Log.info("Execute final training with optimized neural architecture and hyperparameters",
                 AutoMLPipelineExecutor.class.getName());
         runTracker.startNewRun();
-        runTracker.logTag("AutoML Stage", "Final Training");
-        trainPipeline.execute();
+        runTracker.logTag("AutoML Stage", "Final Run");
+        ConfigurationTrackingManager.executePipeline(trainPipeline, "Final Run");
         runTracker.endRun();
     }
 

@@ -4,6 +4,8 @@ import conflang._ast.ASTConfLangCompilationUnit;
 import de.monticore.mlpipelines.automl.emadlprinter.ASTConfLangCompilationUnitPrinter;
 import de.monticore.mlpipelines.automl.helper.ASTConfLangCompilationUnitHandler;
 import de.monticore.mlpipelines.pipelines.Pipeline;
+import de.monticore.mlpipelines.util.configuration_tracking.ConfigurationTrackingConf;
+import de.monticore.mlpipelines.util.configuration_tracking.ConfigurationTrackingManager;
 import de.se_rwth.commons.logging.Log;
 
 import java.util.*;
@@ -38,9 +40,9 @@ public class HyperbandAlgorithm extends SequentialAlgorithm {
             //initial number of iterations per config
             int r = (int) (this.max_iter * Math.pow(this.eta,( -s )));
             Set<ASTConfLangCompilationUnit> nConfigurations = getFullSetOfNewHyperparamsCandidate(searchSpace, n);
-            Double valLoss;
-            Float accuracy;
-            Double evalValue;
+            double valLoss=0;
+            float accuracy=0;
+            double evalValue=0;
             String totalTime="";
             Map<ASTConfLangCompilationUnit, Double> map = new HashMap<>();
             Map<String,Object> bestResult = new HashMap<>();
@@ -58,13 +60,19 @@ public class HyperbandAlgorithm extends SequentialAlgorithm {
                     if(pipeline != null) {
                         long startTime = System.currentTimeMillis();
                         pipeline.setTrainingConfiguration(currentHyperparams);
-                        pipeline.execute();
+                        ConfigurationTrackingManager.executePipeline(pipeline, "HO: " + this.getClass().getSimpleName());
                         long endTime = System.currentTimeMillis();
                         totalTime = (endTime - startTime)/1000 + "s";
                     }
-                    accuracy = pipeline.getTrainedAccuracy();
-                    evalValue = Double.valueOf(((Float) (pipeline.getTrainedAccuracy() / 100)).toString());
-                    valLoss  = 1-evalValue;
+                    if (ConfigurationTrackingConf.isEnabled()) {
+                        accuracy = ConfigurationTrackingManager.getArtifact().getAccuracy();
+                        evalValue = Double.valueOf(((Float) (accuracy / 100)).toString());
+                        valLoss  = 1-evalValue;
+                    } else {
+                        accuracy = pipeline.getTrainedAccuracy();
+                        evalValue = Double.valueOf(((Float) (pipeline.getTrainedAccuracy() / 100)).toString());
+                        valLoss  = 1-evalValue;
+                    }
 
                     result.put("counter",counter);
                     result.put("params",currentHyperparams);
@@ -104,7 +112,7 @@ public class HyperbandAlgorithm extends SequentialAlgorithm {
         this.saveEvalValListAsFile(iterEvalValueList, pipeline.getNetworkName(), "evalValues.txt");
         //train model with the best hyperparameter configuration found
         pipeline.setTrainingConfiguration(currBestHyperparams);
-        pipeline.execute();
+        ConfigurationTrackingManager.executePipeline(pipeline, "HO: " + this.getClass().getSimpleName());
     }
 
     @Override

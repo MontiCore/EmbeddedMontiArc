@@ -123,17 +123,21 @@ public class EmadlPrettyPrinter implements AstPrettyPrinter<ASTArchitecture>, CN
     }
 
     private void printASTParallelBlock(ASTParallelBlock element) {
-        printer.println("(");
         List<ASTStream> groups = element.getGroupsList();
-        for (int i = 0; i < groups.size(); i++) {
-            printer.indent();
-            printASTStream(groups.get(i));
-            printer.unindent();
-            if (i < groups.size() - 1) {
-                printer.println("|");
+        if (groups.size() == 1) {
+            printASTStream(groups.get(0));
+        } else {
+            printer.println("(");
+            for (int i = 0; i < groups.size(); i++) {
+                printer.indent();
+                printASTStream(groups.get(i));
+                printer.unindent();
+                if (i < groups.size() - 1) {
+                    printer.println("|");
+                }
             }
+            printer.print(")");
         }
-        printer.print(")");
     }
 
     private void printASTVariable(ASTVariable element) {

@@ -4,6 +4,7 @@ import conflang._ast.ASTConfLangCompilationUnit;
 import conflang._ast.ASTConfigurationEntry;
 import conflang._ast.ASTNestedConfigurationEntry;
 import conflangliterals._ast.ASTComplexNumberLiteral;
+import conflangliterals._ast.ASTRangeLiteral;
 import de.monticore.mcliterals._ast.ASTBooleanLiteral;
 import de.monticore.mcliterals._ast.ASTCharLiteral;
 import de.monticore.mcliterals._ast.ASTDoubleLiteral;
@@ -82,6 +83,16 @@ public class ASTConfLangHelper {
             return (complexNumberLiteral.getNegReOpt().isPresent() ? "-"  : "") + real +
                     (complexNumberLiteral.getNegImOpt().isPresent() ? "-" : "+") + imaginary +
                     complexNumberLiteral.getName();
+        } else if (literal instanceof ASTRangeLiteral) {
+            ASTRangeLiteral rangeLiteral = (ASTRangeLiteral) literal;
+            StringBuilder rangeString = new StringBuilder();
+            rangeString.append("(");
+            for (ASTSignedLiteral signedLiteral : rangeLiteral.getSignedLiteralList()) {
+                rangeString.append(getSignedLiteralValue(signedLiteral)).append(":");
+            }
+            rangeString.deleteCharAt(rangeString.length() - 1);
+            rangeString.append(")");
+            return rangeString.toString();
         } else {
             return literal.toString(); // ASTTypelessLiteral, ASTListLiteral, ASTRangeLiteral, ASTComponentLiteral
         }

@@ -4,6 +4,9 @@ import de.monticore.lang.monticar.cnnarch._symboltable.ArchitectureSymbol;
 import de.monticore.mlpipelines.automl.configuration.EfficientNetConfig;
 import de.monticore.mlpipelines.pipelines.Pipeline;
 import de.monticore.mlpipelines.tracking.helper.ASTConfLangHelper;
+import de.monticore.mlpipelines.util.configuration_tracking.ConfigurationTrackingConf;
+import de.monticore.mlpipelines.util.configuration_tracking.ConfigurationTrackingManager;
+
 import java.util.ArrayList;
 import java.util.List;
 
@@ -79,9 +82,7 @@ public class ScalingFactorsGridSearch {
         trainPipeline.getRunTracker().logTag("AutoML Stage", "NAS: Scaling Factors Grid Search");
         trainPipeline.getRunTracker().logParams(ASTConfLangHelper.getParametersFromConfiguration(trainPipeline.getTrainingConfiguration()));
         trainPipeline.getRunTracker().getArtifactHandler().setPlaintext(trainPipeline.getPrettyPrintedNetwork()).setFileName("network.txt").log();
-
-        trainPipeline.execute();
-
+        ConfigurationTrackingManager.executePipeline(trainPipeline, "NAS: " + this.getClass().getSimpleName());
         trainPipeline.getRunTracker().endRun();
 
         this.networkScaler.rollbackScaledNetwork();
@@ -89,8 +90,13 @@ public class ScalingFactorsGridSearch {
     }
 
     private void checkIfScalingFactorsAreBetterThanBest(ScalingFactors scalingFactors) {
-        float newAccuracy = trainPipeline.getTrainedAccuracy();
-        if (trainPipeline.getTrainedAccuracy() > bestAccuracy) {
+        float newAccuracy;
+        if (ConfigurationTrackingConf.isEnabled()) {
+            newAccuracy = ConfigurationTrackingManager.getArtifact().getAccuracy();
+        } else {
+            newAccuracy = trainPipeline.getTrainedAccuracy();
+        }
+        if (newAccuracy > bestAccuracy) {
             bestAccuracy = newAccuracy;
             bestScalingFactors = scalingFactors;
         }
