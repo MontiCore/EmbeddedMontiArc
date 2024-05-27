@@ -25,6 +25,18 @@
             <username>travisbuilduser</username>
             <password>${env.travisbuilduserpassword}</password>
         </server>
+
+        <server>
+            <id>gitlab-maven</id>
+            <configuration>
+                <httpHeaders>
+                    <property>
+                        <name>Private-Token</name>
+                        <value>glpat-Dr2YZgwdmdPWSehyZtWq</value>
+                    </property>
+                </httpHeaders>
+            </configuration>
+        </server>
     </servers>
 
     <!--mirrors>
