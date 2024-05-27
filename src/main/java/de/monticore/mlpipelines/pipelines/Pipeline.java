@@ -74,6 +74,10 @@ public abstract class Pipeline {
         this.pipelineConfiguration = pipelineConfiguration;
     }
 
+    public ASTConfLangCompilationUnit getPipelineConfiguration() {
+        return pipelineConfiguration;
+    }
+
     public void setModelOutputDirectory(final String modelOutputDirectory) {
         this.modelOutputDirectory = modelOutputDirectory;
         this.modelOutputDirectoryWithDot = "." + modelOutputDirectory;

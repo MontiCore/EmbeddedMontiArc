@@ -4,6 +4,8 @@ import conflang._ast.ASTConfLangCompilationUnit;
 import de.monticore.mlpipelines.automl.emadlprinter.ASTConfLangCompilationUnitPrinter;
 import de.monticore.mlpipelines.automl.helper.ASTConfLangCompilationUnitHandler;
 import de.monticore.mlpipelines.pipelines.Pipeline;
+import de.monticore.mlpipelines.util.configuration_tracking.ConfigurationTrackingConf;
+import de.monticore.mlpipelines.util.configuration_tracking.ConfigurationTrackingManager;
 import de.se_rwth.commons.logging.Log;
 
 import java.util.*;
@@ -33,11 +35,16 @@ public class RandomSearchAlgorithm extends SequentialAlgorithm {
             if(pipeline != null) {
                 long startTime = System.currentTimeMillis();
                 pipeline.setTrainingConfiguration(currentHyperparams);
-                pipeline.execute();
+                ConfigurationTrackingManager.executePipeline(pipeline, "HO: " + this.getClass().getSimpleName());
                 long endTime = System.currentTimeMillis();
                 totalTime = endTime - startTime;
-                accuracy = pipeline.getTrainedAccuracy();
-                valLoss = 1-(Float.valueOf(((Float) (pipeline.getTrainedAccuracy() / 100)).toString()));
+                if (ConfigurationTrackingConf.isEnabled()) {
+                    accuracy = ConfigurationTrackingManager.getArtifact().getAccuracy();
+                    valLoss = 1-accuracy;
+                } else {
+                    accuracy = pipeline.getTrainedAccuracy();
+                    valLoss = 1-(Float.valueOf(((Float) (pipeline.getTrainedAccuracy() / 100)).toString()));
+                }
             }
             result.put("iteration",counter);
             result.put("params",currentHyperparams);
@@ -54,7 +61,7 @@ public class RandomSearchAlgorithm extends SequentialAlgorithm {
 
             //train model with the best hyperparameter configuration found
             pipeline.setTrainingConfiguration(currBestHyperparams);
-            pipeline.execute();
+            ConfigurationTrackingManager.executePipeline(pipeline,"HO: " + this.getClass().getSimpleName());
         }
         //this.bestTrainingConfig=bestPerformingConfiguration(results);
         ASTConfLangCompilationUnitPrinter printer = new ASTConfLangCompilationUnitPrinter();

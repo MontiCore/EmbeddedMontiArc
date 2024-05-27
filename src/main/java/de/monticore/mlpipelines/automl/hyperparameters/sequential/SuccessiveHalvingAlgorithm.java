@@ -4,6 +4,7 @@ import conflang._ast.ASTConfLangCompilationUnit;
 import de.monticore.mlpipelines.automl.emadlprinter.ASTConfLangCompilationUnitPrinter;
 import de.monticore.mlpipelines.automl.helper.ASTConfLangCompilationUnitHandler;
 import de.monticore.mlpipelines.pipelines.Pipeline;
+import de.monticore.mlpipelines.util.configuration_tracking.ConfigurationTrackingManager;
 import de.se_rwth.commons.logging.Log;
 
 import java.util.*;
@@ -45,7 +46,7 @@ public class SuccessiveHalvingAlgorithm extends SequentialAlgorithm {
                 if(pipeline != null) {
                     long startTime = System.currentTimeMillis();
                     pipeline.setTrainingConfiguration(currentHyperparams);
-                    pipeline.execute();
+                    ConfigurationTrackingManager.executePipeline(pipeline,"HO: " + this.getClass().getSimpleName());
                     long endTime = System.currentTimeMillis();
                     totalTime = (endTime - startTime)/1000 + "s";
                 }

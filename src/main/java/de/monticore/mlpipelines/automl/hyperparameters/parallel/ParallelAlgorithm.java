@@ -7,6 +7,8 @@ import de.monticore.mlpipelines.automl.helper.ConfigurationValidationHandler;
 import de.monticore.mlpipelines.automl.hyperparameters.AbstractHyperparameterAlgorithm;
 import de.monticore.mlpipelines.pipelines.Pipeline;
 import de.monticore.mlpipelines.tracking.helper.ASTConfLangHelper;
+import de.monticore.mlpipelines.util.configuration_tracking.ConfigurationTrackingConf;
+import de.monticore.mlpipelines.util.configuration_tracking.ConfigurationTrackingManager;
 import de.se_rwth.commons.logging.Log;
 import java.util.ArrayList;
 import java.util.Collections;
@@ -94,12 +96,15 @@ public abstract class ParallelAlgorithm extends AbstractHyperparameterAlgorithm 
                 pipeline.getRunTracker().startNewRun();
                 pipeline.getRunTracker().logTag("AutoML Stage", "HPO: " + this.getClass().getSimpleName());
                 pipeline.getRunTracker().logParams(ASTConfLangHelper.getParametersFromConfiguration(trainingConfiguration));
-
-                pipeline.execute();
-
+                ConfigurationTrackingManager.executePipeline(pipeline, "HO: " + this.getClass().getSimpleName());
                 pipeline.getRunTracker().endRun();
 
-                double evalValue = Double.valueOf(((Float) (pipeline.getTrainedAccuracy() / 100)).toString());
+                double evalValue;
+                if (ConfigurationTrackingConf.isEnabled()) {
+                    evalValue = ConfigurationTrackingManager.getArtifact().getAccuracy() / 100;
+                } else {
+                    evalValue = Double.valueOf(((Float) (pipeline.getTrainedAccuracy() / 100)).toString());
+                }
                 evalValues.add(evalValue);
                 Log.info(String.format("Current iteration: %s; Eval Value: %s", this.getCurrentIteration(), evalValue),
                         ParallelAlgorithm.class.getName());

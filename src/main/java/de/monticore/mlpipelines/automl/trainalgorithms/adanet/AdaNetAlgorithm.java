@@ -9,6 +9,8 @@ import de.monticore.mlpipelines.automl.trainalgorithms.adanet.models.AdaNetCandi
 import de.monticore.mlpipelines.automl.trainalgorithms.adanet.models.AdaNetComponent;
 import de.monticore.mlpipelines.automl.trainalgorithms.adanet.models.CandidateEvaluationResult;
 import de.monticore.mlpipelines.tracking.helper.ASTConfLangHelper;
+import de.monticore.mlpipelines.util.configuration_tracking.ConfigurationTrackingConf;
+import de.monticore.mlpipelines.util.configuration_tracking.ConfigurationTrackingManager;
 import java.util.List;
 
 // For at most n iterations:
@@ -120,12 +122,15 @@ public class AdaNetAlgorithm extends NeuralArchitectureSearch {
         getRunTracker().logTag("AutoML Stage", "NAS: AdaNet");
         getRunTracker().logParams(ASTConfLangHelper.getParametersFromConfiguration(this.getTrainPipeline().getTrainingConfiguration()));
         getRunTracker().getArtifactHandler().setPlaintext(this.getTrainPipeline().getPrettyPrintedNetwork()).setFileName("network.txt").log();
-
-        this.getTrainPipeline().execute();
-
+        ConfigurationTrackingManager.executePipeline(getTrainPipeline(), "NAS: " + this.getClass().getSimpleName());
         getRunTracker().endRun();
 
-        float score = this.getTrainPipeline().getTrainedAccuracy();
+        float score;
+        if (ConfigurationTrackingConf.isEnabled()) {
+            score = ConfigurationTrackingManager.getArtifact().getAccuracy();
+        } else {
+            score = this.getTrainPipeline().getTrainedAccuracy();
+        }
         removeCandidateFromArchitecture();
 
         return new CandidateEvaluationResult(candidate, score);
