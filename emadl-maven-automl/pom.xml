@@ -22,7 +22,6 @@
             <artifactId>embedded-montiarc-emadl-generator</artifactId>
             <version>0.5.17-SNAPSHOT</version>
         </dependency>
-
     </dependencies>
 
     <build>
