@@ -145,8 +145,6 @@ TestTransfer:
     - cd transfer
     - chmod +x runTransfer.sh
     - ./runTransfer.sh
-  needs:
-    - TestDecompositionResNet
 
 
 TestMnistWithAdaNet:
