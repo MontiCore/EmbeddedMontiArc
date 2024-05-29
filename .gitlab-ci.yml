@@ -3,6 +3,7 @@
 stages:
   - prebuild
   - test
+  - testmodular
   - build
 
 
@@ -74,7 +75,7 @@ TestEMADLMavenPlugin:
     - modular_testing
 
 TestModularModels:
-  stage: test
+  stage: testmodular
   image: registry.git.rwth-aachen.de/monticore/embeddedmontiarc/generators/emadl2cpp/mxnet/190:v0.0.2
   when: always
   script:
@@ -91,7 +92,7 @@ TestModularModels:
       - mnist-modular/Streamtest/output/*
 
 TestDecomposition:
-  stage: test
+  stage: testmodular
   image: registry.git.rwth-aachen.de/monticore/embeddedmontiarc/generators/emadl2cpp/mxnet/190:v0.0.2
   when: always
   script:
@@ -115,7 +116,7 @@ TestDecomposition:
       - mnist-modular/Streamtest/output/*
 
 TestDecompositionResNet:
-  stage: test
+  stage: testmodular
   image: registry.git.rwth-aachen.de/monticore/embeddedmontiarc/generators/emadl2cpp/mxnet/190:v0.0.2
   when: always
   script:
@@ -132,7 +133,7 @@ TestDecompositionResNet:
     - TestEMADLMavenPlugin
 
 TestTransfer:
-  stage: test
+  stage: testmodular
   image: registry.git.rwth-aachen.de/monticore/embeddedmontiarc/generators/emadl2cpp/mxnet/190:v0.0.2
   when: always
   script:
