@@ -128,6 +128,8 @@ TestDecompositionResNet:
     - ln -fs /usr/bin/python3 /usr/bin/python
     - cd mnist-modular/DecompositionResNet
     - mvn dependency:resolve emadl:train -s settings.xml -U
+  needs:
+    - TestEMADLMavenPlugin
 
 TestTransfer:
   stage: test
@@ -143,6 +145,8 @@ TestTransfer:
     - cd transfer
     - chmod +x runTransfer.sh
     - ./runTransfer.sh
+  needs:
+    - TestDecompositionResNet
 
 
 TestMnistWithAdaNet:
