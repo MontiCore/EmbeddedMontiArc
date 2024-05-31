@@ -143,8 +143,7 @@ public class ConfigurationTracking {
                         if (property != null) {
                             String name = property.getChild("name").getValue();
                             String value = property.getChild("value").getValue();
-                            // TODO: Add Deploy-Token and...?
-                            if (name.equals("Private-Token")) {
+                            if (name.equals("Private-Token") || name.equals("Job-Token")) {
                                 return value;
                             }
                         }
