@@ -80,8 +80,8 @@
                 <artifactId>emadl-maven-plugin</artifactId>
                 <version>0.0.13-SNAPSHOT</version>
                 <configuration>
-<!--                    <artifactTrackingConfiguration>src/main/resources/configurationTracking.conf</artifactTrackingConfiguration>-->
-<!--                    <mlflowTrackingConfiguration>src/main/resources/trackingConfiguration.conf</mlflowTrackingConfiguration>-->
+                    <artifactTrackingConfiguration>src/main/resources/experiments/tracking/configurationTracking.conf</artifactTrackingConfiguration>
+<!--                    <mlflowTrackingConfiguration>src/main/resources/experiments/tracking/trackingConfiguration.conf</mlflowTrackingConfiguration>-->
                     <training>
                         <backend>PYTORCH</backend>  <!-- default=PYTORCH -->
                         <pathToPython>/usr/bin/python3</pathToPython>
