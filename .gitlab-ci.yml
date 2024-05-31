@@ -3,6 +3,7 @@
 stages:
   - prebuild
   - test
+  - testmodular
   - build
 
 
@@ -74,7 +75,7 @@ TestEMADLMavenPlugin:
     - modular_testing
 
 TestModularModels:
-  stage: test
+  stage: testmodular
   image: registry.git.rwth-aachen.de/monticore/embeddedmontiarc/generators/emadl2cpp/mxnet/190:v0.0.2
   when: always
   script:
@@ -91,7 +92,7 @@ TestModularModels:
       - mnist-modular/Streamtest/output/*
 
 TestDecomposition:
-  stage: test
+  stage: testmodular
   image: registry.git.rwth-aachen.de/monticore/embeddedmontiarc/generators/emadl2cpp/mxnet/190:v0.0.2
   when: always
   script:
@@ -115,19 +116,24 @@ TestDecomposition:
       - mnist-modular/Streamtest/output/*
 
 TestDecompositionResNet:
-  stage: test
+  stage: testmodular
   image: registry.git.rwth-aachen.de/monticore/embeddedmontiarc/generators/emadl2cpp/mxnet/190:v0.0.2
   when: always
   script:
-    - apt update && apt install -y libomp-dev
+    - export TZ=Europe/Berlin
+    - apt-get update && DEBIAN_FRONTEND=noninteractive apt-get install -y tzdata libomp-dev libopencv-dev python3-opencv
+    - ln -fs /usr/share/zoneinfo/Europe/Berlin /etc/localtime
+    - dpkg-reconfigure --frontend noninteractive tzdata
+    - python3 -m pip install --upgrade pip
+    - python3 -m pip install scikit-image opencv-python
+    - ln -fs /usr/bin/python3 /usr/bin/python
     - cd mnist-modular/DecompositionResNet
-    - python3 -m pip install -U pip
-    - python3 -m pip install scikit-image
-    - python3 -m pip install opencv-python
     - mvn dependency:resolve emadl:train -s settings.xml -U
+  needs:
+    - TestEMADLMavenPlugin
 
 TestTransfer:
-  stage: test
+  stage: testmodular
   image: registry.git.rwth-aachen.de/monticore/embeddedmontiarc/generators/emadl2cpp/mxnet/190:v0.0.2
   when: always
   script:
