@@ -3,8 +3,9 @@
 rm -rf target
 rm -rf model
 
-# Run the composed model trained on the MNIST dataset
-java -jar embedded-montiarc-emadl-generator-0.5.16-SNAPSHOT-jar-with-dependencies.jar -m src/main/emadl/ -r digits.DigitsComposed -o target/digitsComposed -b GLUON -c n -f y -ad -dn "DigitsComposed"
+## Run the composed model trained on the MNIST dataset
+mvn dependency:resolve emadl:train -f pom_digits.xml -s settings.xml
+
 if [ $? -ne 0 ]; then
     echo "Execution of EMADL-Generator for the digit base model failed."
     exit 1
@@ -20,9 +21,7 @@ if [ ! -f "$PARAMSFILE" ] || [ ! -f "$SYMBOLFILE" ]; then
     exit 1
 fi
 
+rm -rf target
+
 # Run the "partially" pretrained model trained on the EMNIST dataset
-java -jar embedded-montiarc-emadl-generator-0.5.16-SNAPSHOT-jar-with-dependencies.jar -m src/main/emadl/ -r transfer.Transfer -o target/transferMNIST2EMNIST -b GLUON -f y
-if [ $? -ne 0 ]; then
-    echo "Execution of EMADL-Generator for the letter transfer model failed."
-    exit 1
-fi
+mvn dependency:resolve emadl:train -f pom_letters.xml -s settings.xml
