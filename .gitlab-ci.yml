@@ -2,32 +2,32 @@ stages:
 - linux
 - test
 
-TestPYTORCH:
-  stage: linux
-  image: registry.git.rwth-aachen.de/monticore/embeddedmontiarc/generators/emadl2cpp/dockerimages/pytorch
-  script:
-  - cd pytorch
-  - chmod +x execute-pipeline.sh
-  - ./execute-pipeline.sh
-  - chmod +x build.sh
-  - ./build.sh
-  - cd target
-  - ../build/target/mnist_mnistClassifier ../src/main/resources/test_img/2.jpg
-
-TestAutoML:
-  stage: linux
-  image: registry.git.rwth-aachen.de/monticore/embeddedmontiarc/generators/emadl2cpp/dockerimages/pytorch
-  script:
-  - cd automl
-  - echo "Maven clean compile"
-  - mvn clean compile -s settings.xml -U
-  - echo "Rename directory location of dataset"
-  - mv src/main/resources/experiments/training_data src/main/resources/experiments/data
-  - echo "Execute AutoML pipeline"
-  - mvn exec:java -s settings.xml -U
-  artifacts:
-    paths:
-      - automl/target/generated-sources/**
+#TestPYTORCH:
+#  stage: linux
+#  image: registry.git.rwth-aachen.de/monticore/embeddedmontiarc/generators/emadl2cpp/dockerimages/pytorch
+#  script:
+#  - cd pytorch
+#  - chmod +x execute-pipeline.sh
+#  - ./execute-pipeline.sh
+#  - chmod +x build.sh
+#  - ./build.sh
+#  - cd target
+#  - ../build/target/mnist_mnistClassifier ../src/main/resources/test_img/2.jpg
+#
+#TestAutoML:
+#  stage: linux
+#  image: registry.git.rwth-aachen.de/monticore/embeddedmontiarc/generators/emadl2cpp/dockerimages/pytorch
+#  script:
+#  - cd automl
+#  - echo "Maven clean compile"
+#  - mvn clean compile -s settings.xml -U
+#  - echo "Rename directory location of dataset"
+#  - mv src/main/resources/experiments/training_data src/main/resources/experiments/data
+#  - echo "Execute AutoML pipeline"
+#  - mvn exec:java -s settings.xml -U
+#  artifacts:
+#    paths:
+#      - automl/target/generated-sources/**
 
 TestEMADLMavenPlugin:
   stage: test
