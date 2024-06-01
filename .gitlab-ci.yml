@@ -39,6 +39,7 @@ TestEMADLMavenPlugin:
     - python3 -m pip install scikit-image
     - python3 -m pip install opencv-python
     - python3 -m pip install mxnet
+    - python3 -m pip install mlflow
     - export Torch_DIR=$(python3 -m pip show torch | grep -E Location:| awk '{print $2}')/torch
     - echo $Torch_DIR
     - mvn dependency:resolve emadl:train -s settings.xml -U -e
