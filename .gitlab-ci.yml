@@ -43,8 +43,6 @@ TestEMADLMavenPlugin:
     - export Torch_DIR=$(python3 -m pip show torch | grep -E Location:| awk '{print $2}')/torch
     - echo $Torch_DIR
     - mvn dependency:resolve emadl:train -s settings.xml -U -e
-    - mkdir output
-    - python3 calculator.py
   artifacts:
     paths:
       - emadl-maven-plugin/output/*
