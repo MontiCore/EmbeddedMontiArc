@@ -1,0 +1,110 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!-- (c) https://github.com/MontiCore/monticore -->
+<project xmlns="http://maven.apache.org/POM/4.0.0"
+         xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+         xsi:schemaLocation="http://maven.apache.org/POM/4.0.0 http://maven.apache.org/xsd/maven-4.0.0.xsd">
+    <modelVersion>4.0.0</modelVersion>
+
+    <groupId>de.monticore.lang.monticar.application</groupId>
+    <artifactId>mnist-predictor</artifactId>
+    <version>0.0.1</version>
+
+    <properties>
+        <java.version>1.8</java.version>
+        <project.build.sourceEncoding>UTF-8</project.build.sourceEncoding>
+        <project.reporting.outputEncoding>UTF-8</project.reporting.outputEncoding>
+    </properties>
+
+    <dependencies>
+        <dependency>
+            <!-- EMADL2CPP -->
+            <groupId>de.monticore.lang.monticar</groupId>
+            <artifactId>embedded-montiarc-emadl-generator</artifactId>
+            <version>0.5.17-SNAPSHOT</version>
+        </dependency>
+    </dependencies>
+
+    <build>
+        <plugins>
+            <plugin>
+                <groupId>org.apache.maven.plugins</groupId>
+                <artifactId>maven-dependency-plugin</artifactId>
+                <executions>
+                    <execution>
+                        <id>resource-dependencies</id>
+                        <phase>compile</phase>
+                        <goals>
+                            <goal>unpack</goal>
+                        </goals>
+                        <configuration>
+                            <artifactItems>
+                                <artifactItem>
+                                    <groupId>de.monticore.lang.monticar.datasets</groupId>
+                                    <artifactId>mnist</artifactId>
+                                    <version>1</version>
+                                    <classifier>dataset</classifier>
+                                </artifactItem>
+                            </artifactItems>
+                            <includes>training_data/*</includes>
+                            <outputDirectory>src/main/resources/experiments/</outputDirectory>
+                        </configuration>
+                    </execution>
+                </executions>
+            </plugin>
+
+            <plugin>
+                <groupId>org.codehaus.mojo</groupId>
+                <artifactId>exec-maven-plugin</artifactId>
+                <version>1.2.1</version>
+                <configuration>
+                    <mainClass>de.monticore.lang.monticar.emadl.generator.AutoMLCli</mainClass>
+                    <arguments>
+                        <argument>-m</argument>
+                        <argument>src/main/emadl</argument>
+                        <argument>-r</argument>
+                        <argument>mnist.MnistClassifier</argument>
+                        <argument>-o</argument>
+                        <argument>target</argument>
+                        <argument>-b</argument>
+                        <argument>PYTORCH</argument>
+                        <argument>-f</argument>
+                        <argument>n</argument>
+                        <argument>-c</argument>
+                        <argument>n</argument>
+                    </arguments>
+                </configuration>
+            </plugin>
+
+            <plugin>
+                <groupId>de.monticore.lang.monticar.utilities</groupId>
+                <artifactId>emadl-maven-plugin</artifactId>
+                <version>0.0.13-SNAPSHOT</version>
+                <configuration>
+                    <artifactTrackingConfiguration>src/main/resources/experiments/tracking/configurationTracking.conf</artifactTrackingConfiguration>
+<!--                    <mlflowTrackingConfiguration>src/main/resources/experiments/tracking/trackingConfiguration.conf</mlflowTrackingConfiguration>-->
+                    <training>
+                        <backend>PYTORCH</backend>  <!-- default=PYTORCH -->
+                        <pathToPython>/usr/bin/python3</pathToPython>
+                        <modelToTrain>mnist.MnistClassifier</modelToTrain>
+                        <pathToProject>src/main/emadl</pathToProject>
+                        <pathToTest>src/main/emadl</pathToTest>
+                    </training>
+<!--                    <pretrainedModelToStore>-->
+<!--                        <path>../gluon-cpp/model/cNNCalculator.Network</path>-->
+<!--                        <artifactId>mnistcalc-emadl-pretrained-antovski</artifactId>-->
+<!--                        <groupId>de.monticore.lang.monticar.pretrained</groupId>-->
+<!--                        <version>1</version>-->
+<!--                    </pretrainedModelToStore>-->
+<!--                    <datasetToStore>-->
+<!--                        <path>../mnist-calculator/src/main/resources/training_data</path>-->
+<!--                        <artifactId>mnist-images-antovski</artifactId>-->
+<!--                        <groupId>de.embeddedmontiarcdl.datasets</groupId>-->
+<!--                        <version>1</version>-->
+<!--                    </datasetToStore>-->
+                </configuration>
+            </plugin>
+
+        </plugins>
+    </build>
+
+</project>
