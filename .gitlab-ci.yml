@@ -45,7 +45,8 @@ TestEMADLMavenPlugin:
     - mvn dependency:resolve emadl:train -s settings.xml -U -e
   artifacts:
     paths:
-      - emadl-maven-plugin/output/*
+      - emadl-maven-plugin/target/tmp/configurationTracking/adanet_initial_1/*
+      - emadl-maven-plugin/target/tmp/configurationTracking/report.txt
     expire_in: 1 week
   except:
     - modular_testing
