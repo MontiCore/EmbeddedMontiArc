@@ -43,9 +43,3 @@ TestEMADLMavenPlugin:
     - export Torch_DIR=$(python3 -m pip show torch | grep -E Location:| awk '{print $2}')/torch
     - echo $Torch_DIR
     - mvn dependency:resolve emadl:train -s settings.xml -U -e
-  artifacts:
-    paths:
-      - emadl-maven-plugin/output/*
-    expire_in: 1 week
-  except:
-    - modular_testing

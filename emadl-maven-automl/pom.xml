@@ -86,8 +86,8 @@
                         <backend>PYTORCH</backend>  <!-- default=PYTORCH -->
                         <pathToPython>/usr/bin/python3</pathToPython>
                         <modelToTrain>mnist.MnistClassifier</modelToTrain>
-                        <pathToProject>src/main/emadl</pathToProject>
-                        <pathToTest>src/main/emadl</pathToTest>
+                        <pathToProject>src/main/adanet_experiment</pathToProject>
+                        <pathToTest>src/main/adanet_experiment</pathToTest>
                     </training>
 <!--                    <pretrainedModelToStore>-->
 <!--                        <path>../gluon-cpp/model/cNNCalculator.Network</path>-->
