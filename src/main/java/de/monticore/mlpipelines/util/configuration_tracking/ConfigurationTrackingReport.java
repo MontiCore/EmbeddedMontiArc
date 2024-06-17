@@ -10,7 +10,7 @@ import java.io.IOException;
 
 public class ConfigurationTrackingReport {
     private static final StringBuilder report = new StringBuilder();
-    private static final String reportFilePath = String.format("%s/report.txt", ConfigurationTrackingConf.getPathTmp());
+    private static final String reportFilePath = String.format("%s/%s/report.txt", ConfigurationTrackingConf.getPathTmp(), ConfigurationTrackingConf.getExperimentName());
 
     public static void logMessage(String message) {
         report.append("\t").append(message).append("\n");
