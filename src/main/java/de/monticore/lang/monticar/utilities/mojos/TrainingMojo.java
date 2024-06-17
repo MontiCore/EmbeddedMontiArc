@@ -25,8 +25,14 @@ import static org.twdata.maven.mojoexecutor.MojoExecutor.*;
  */
 @Mojo(name = "train")
 public class TrainingMojo extends TrainingConfigMojo {
+  /**
+   * Path to the artifact tracking configuration file. This enables the artifact tracking functionality.<br>
+   */
   @Parameter
   private String artifactTrackingConfiguration;
+  /**
+   * Path to the MLflow tracking configuration file. This enables the MLflow tracking functionality.<br>
+   */
   @Parameter
   private String mlflowTrackingConfiguration;
 
