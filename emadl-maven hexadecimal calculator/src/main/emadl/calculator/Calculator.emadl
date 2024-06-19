@@ -10,7 +10,7 @@ component Calculator {
                 in Q(0:1)^10 in2_2,
                 in Q(0:1)^10 in2_3,
 
-                out Z(0:1998) out1;
+                out Z(0x0:0x1FFD) out1;
         
         instance ArgMax<10> number1ones;
         instance ArgMax<10> number1tens;
@@ -18,8 +18,8 @@ component Calculator {
         instance ArgMax<10> number2ones;
         instance ArgMax<10> number2tens;
         instance ArgMax<10> number2hundreds;
-        instance DigitCombiner c1;
-        instance DigitCombiner c2;
+        instance HexaCombiner c1;
+        instance HexaCombiner c2;
         instance Add add;
 
 

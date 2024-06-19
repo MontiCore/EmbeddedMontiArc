@@ -1,11 +1,12 @@
 /* (c) https://github.com/MontiCore/monticore */
+/* Changed to hexadecimal numbers*/
 package calculator;
 
 component Add{
     ports
-            in Z(0:999) num1,
-            in Z(0:999) num2,
-            out Z(0:1998) sum;
+            in Z(0x0:0xFFF) num1,
+            in Z(0x0:0xFFF) num2,
+            out Z(0x0:0x1FFD) sum;
 
     implementation Math{
         sum = num1 + num2;
