@@ -1,0 +1,25 @@
+/* (c) https://github.com/MontiCore/monticore */
+/* (c) Adapted Add function with an operator input*/
+package calculator;
+
+component Calculate{
+    ports
+            in Z(0:999) num1,
+            in Z(0:999) num2,
+            in String from {"add","substract","multiply","divide","modulo"} operator,
+            out Q(0:998001) result;
+
+    implementation Math{
+        switch(operator):
+            case "add":
+                  result = num1 + num2;
+            case "substract":
+                 result = num1 - num2;
+            case "multiply":
+                 result = num1 * num2;
+            case "divide":
+                 result = num1 / num2; /* possibly //*/
+            case "modulo":
+                 result = num1 % num2;
+    }
+}
