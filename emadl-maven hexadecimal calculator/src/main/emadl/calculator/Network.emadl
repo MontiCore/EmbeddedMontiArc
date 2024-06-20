@@ -1,9 +1,10 @@
 /* (c) https://github.com/MontiCore/monticore */
+/* Increased the number of output classes to 16 (hexa)*/
 package calculator;
 
 component Network{
     ports in Z(0:255)^{1, 28, 28} data,
-         out Q(0:1)^{10} softmax;
+         out Q(0:1)^{16} softmax;
 
     implementation CNN {
         def conv(channels, kernel=1, stride=1){
@@ -18,7 +19,7 @@ component Network{
         FullyConnected(units=500) ->
         Relu() ->
         Dropout() ->
-        FullyConnected(units=10) ->
+        FullyConnected( units=16) ->
         Softmax() ->
         softmax;
     }

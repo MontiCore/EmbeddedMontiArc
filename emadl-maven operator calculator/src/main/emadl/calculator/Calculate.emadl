@@ -6,20 +6,20 @@ component Calculate{
     ports
             in Z(0:999) num1,
             in Z(0:999) num2,
-            in String from {"add","substract","multiply","divide","modulo"} operator,
+            in Z(0:4) operator,
             out Q(0:998001) result;
 
     implementation Math{
         switch(operator):
-            case "add":
+            case 0:
                   result = num1 + num2;
-            case "substract":
+            case 1:
                  result = num1 - num2;
-            case "multiply":
+            case 2:
                  result = num1 * num2;
-            case "divide":
+            case 3:
                  result = num1 / num2; /* possibly //*/
-            case "modulo":
+            case 4:
                  result = num1 % num2;
     }
 }

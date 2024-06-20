@@ -10,7 +10,7 @@ component Calculator {
                 in Q(0:1)^10 in2_1,
                 in Q(0:1)^10 in2_2,
                 in Q(0:1)^10 in2_3,
-                in String^10 in_op,
+                in Q(0:1)^5 in_op,
 
                 out Z(0:1998) out1;
         
@@ -20,7 +20,7 @@ component Calculator {
         instance ArgMax<10> number2ones;
         instance ArgMax<10> number2tens;
         instance ArgMax<10> number2hundreds;
-        instance ArgMax<10> determineOperator;
+        instance ArgMax<5> determineOperator;
         instance DigitCombiner c1;
         instance DigitCombiner c2;
         instance Calculate calculate;
