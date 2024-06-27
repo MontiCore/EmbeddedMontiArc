@@ -6,7 +6,7 @@ WORKDIR /build/mnistcalc/emadl-maven-plugin
 
 ARG PRIVATE_TOKEN
 ARG CI_JOB_TOKEN
-RUN mvn -e dependency:resolve emadl:train -s settings.xml -U
+RUN mvn -X -e dependency:resolve emadl:train -s settings.xml -U
 RUN chmod +x calculator.sh
 
 RUN mkdir -p input output

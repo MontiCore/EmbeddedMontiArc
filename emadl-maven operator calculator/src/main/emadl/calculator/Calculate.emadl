@@ -10,6 +10,18 @@ component Calculate{
             out Q(0:998001) result;
 
     implementation Math{
+        if operator == 0
+            result = num1 + num2;
+        elseif operator == 1
+            result = num1 - num2;
+        elseif operator == 2
+            result = num1 * num2;
+        elseif operator == 3
+            result = num1 / num2;
+        elseif operator == 4
+            result = num1 % num2;
+        end
+    /*
         switch(operator):
             case 0:
                   result = num1 + num2;
@@ -18,8 +30,9 @@ component Calculate{
             case 2:
                  result = num1 * num2;
             case 3:
-                 result = num1 / num2; /* possibly //*/
+                 result = num1 / num2;
             case 4:
                  result = num1 % num2;
+                 */
     }
 }
