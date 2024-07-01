@@ -5,7 +5,7 @@
 */
 package calculator;
 
-component Network{
+component NetworkOperator{
     ports in Z(0:255)^{1, 28, 28} data,
          out Q{0:1}^{5} result;
 
