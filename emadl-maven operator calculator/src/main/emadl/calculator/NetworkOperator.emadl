@@ -22,7 +22,7 @@ component NetworkOperator{
         FullyConnected(units=500) ->
         Relu() ->
         Dropout() ->
-        FullyConnected(units=10) ->
+        FullyConnected(units=5) ->
         Softmax() ->
         result;
     }
