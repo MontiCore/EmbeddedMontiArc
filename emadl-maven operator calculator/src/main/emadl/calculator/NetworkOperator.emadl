@@ -7,7 +7,7 @@ package calculator;
 
 component NetworkOperator{
     ports in Z(0:255)^{1, 28, 28} data,
-         out Q{0:1}^{5} result;
+         out Q(0:1)^{5} result;
 
     implementation CNN {
         def conv(channels, kernel=1, stride=1){
