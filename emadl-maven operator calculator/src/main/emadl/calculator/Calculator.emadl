@@ -12,7 +12,7 @@ component Calculator {
                 in Q(0:1)^10 in2_3,
                 in Q(0:1)^5 in_op,
 
-                out Z(0:1998) out1;
+                out Q(0:998001) out1;
         
         instance ArgMax<10> number1ones;
         instance ArgMax<10> number1tens;
@@ -43,7 +43,7 @@ component Calculator {
 
         connect c1.number -> calculate.num1;
         connect c2.number -> calculate.num2;
-        connect determineOperator.maxIndex -> calculate.operator;
+        connect determineOperator.maxIndex -> calculate.op;
 
         connect calculate.result -> out1;
 
