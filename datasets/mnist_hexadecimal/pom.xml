@@ -19,14 +19,14 @@
             <plugin>
                 <groupId>de.monticore.lang.monticar.utilities</groupId>
                 <artifactId>emadl-maven-plugin</artifactId>
-                <version>0.0.8-SNAPSHOT</version>
+                <version>0.0.5-SNAPSHOT</version>
                 <configuration>
-                    <datasetsToStore>
+                    <datasetToStore>
                         <path>./</path>
                         <artifactId>mnist-hexadecimal</artifactId>
                         <groupId>de.monticore.lang.monticar.datasets</groupId>
-                        <version>0.1</version>
-                    </datasetsToStore>
+                        <version>1</version>
+                    </datasetToStore>
                 </configuration>
            </plugin>
         </plugins>
