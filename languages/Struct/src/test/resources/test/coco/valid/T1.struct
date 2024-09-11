@@ -1,8 +1,0 @@
-/* (c) https://github.com/MontiCore/monticore */
-package test.coco.valid;
-
-struct T1 {
-  B f1;
-  (0 : oo) f2;
-  Q f3;
-}

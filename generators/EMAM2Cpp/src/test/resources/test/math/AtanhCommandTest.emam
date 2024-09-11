@@ -1,8 +1,0 @@
-/* (c) https://github.com/MontiCore/monticore */
-package test.math;
-
-component AtanhCommandTest{
-    implementation Math{
-        Q a = atanh(0.5);
-    }
-}

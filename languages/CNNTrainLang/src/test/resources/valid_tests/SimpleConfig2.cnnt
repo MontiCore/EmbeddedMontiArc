@@ -1,8 +1,0 @@
-/* (c) https://github.com/MontiCore/monticore */
-configuration SimpleConfig2{
-    num_epoch:5
-    batch_size:100
-    optimizer:sgd{
-        learning_rate:0.1
-    }
-}

@@ -1,9 +1,0 @@
-/* (c) https://github.com/MontiCore/monticore */
-package test.symtable;
-
-import test.symtable.sub1.ErrAmbiguouslyReferencedStruct1;
-
-struct ErrAmbiguousReference1 {
-  B f1;
-  ErrAmbiguouslyReferencedStruct1 err;
-}

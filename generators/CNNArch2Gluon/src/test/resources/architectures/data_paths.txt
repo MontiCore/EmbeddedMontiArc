@@ -1,8 +1,0 @@
-VGG16 data/VGG16
-CifarClassifierNetwork data/CifarClassifierNetwork
-ThreeInputCNN_M14 data/ThreeInputCNN_M14
-Alexnet data/Alexnet
-MultipleOutputs data/MultipleOutputs
-ResNeXt50 data/ResNeXt50
-RNNtest data/RNNtest
-VAETestNet data/VAETestNet

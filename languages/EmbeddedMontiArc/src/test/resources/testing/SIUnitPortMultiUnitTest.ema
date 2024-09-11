@@ -1,6 +1,0 @@
-/* (c) https://github.com/MontiCore/monticore */
-package testing;
-component SIUnitPortMultiUnitTest{
-      port in (0 m/s : 0.1 m/s: 250 m/s ) speed;
-
-}

@@ -1,7 +1,0 @@
-/* (c) https://github.com/MontiCore/monticore */
-package de.rwth.monticar.optimization;
-
-stream HS71 for HS71{
-    xOut: [-4.5676 +/- 0.01; -1.6614 +/- 0.01; -1.7612 +/- 0.01; -3.6434 +/- 0.01];
-    yOut: -134.734 +/- 0.01;
-}

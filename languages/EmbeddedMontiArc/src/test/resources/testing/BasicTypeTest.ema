@@ -1,8 +1,0 @@
-/* (c) https://github.com/MontiCore/monticore */
-package testing;
-
-component BasicTypeTest<T> {
-	port
-		in T in1,
-		out T out1;
-}

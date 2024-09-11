@@ -1,8 +1,0 @@
-/* (c) https://github.com/MontiCore/monticore */
-package testing;
-
-component PortInitialFromParameter(Q val = 3) {
-
-    instance PortInitialSimple{out1(t=0) ~= val} simple;
-
-}

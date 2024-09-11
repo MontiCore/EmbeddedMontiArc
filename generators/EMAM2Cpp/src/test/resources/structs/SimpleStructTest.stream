@@ -1,6 +1,0 @@
-package structs;
-
-stream SimpleStructTest for SimpleStructComp{
-    in1.field:  1 tick 2 tick file::"/src/test/resources/text/ten.txt";
-    out1.field: 2 tick 4 tick 20;
-}

@@ -1,7 +1,0 @@
-package structs;
-
-stream NestedStructTest for NestedStructComp{
-    in1.simpleField:        1 tick 2;
-    in1.structField.field:  3 tick 4;
-    out1.field: 3 tick 4;
-}

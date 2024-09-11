@@ -1,7 +1,0 @@
-/* (c) https://github.com/MontiCore/monticore */
-package de.rwth.monticar.optimization;
-
-stream ConstraintTest for ConstraintTest{
-    xOut: [0 +/- 0.0001, 2 +/- 0.0001, 2 +/- 0.0001; 1 +/- 0.0001, 1 +/- 0.0001, 2 +/- 0.0001];
-    yOut: -1.6901 +/- 0.0001;
-}

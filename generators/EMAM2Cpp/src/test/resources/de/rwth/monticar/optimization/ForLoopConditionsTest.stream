@@ -1,7 +1,0 @@
-/* (c) https://github.com/MontiCore/monticore */
-package de.rwth.monticar.optimization;
-
-stream ForLoopConditionsTest for ForLoopConditionsTest{
-    xOut: [0 +/- 0.0001; 0 +/- 0.0001; 0 +/- 0.0001];
-    yOut: 0 +/- 0.0001;
-}

@@ -1,8 +1,0 @@
-/* (c) https://github.com/MontiCore/monticore */
-package performance;
-
-component TP {
-    port
-        in B aIn,
-        out Q(0:255) aOut[5000];
-}

@@ -1,8 +1,0 @@
-/* (c) https://github.com/MontiCore/monticore */
-package portvalue;
-
-event Test_ValueVariablePrecision(Q a, Q b) for PortValueEMA {
-
-    testValue::value( a +/- b )
-
-}

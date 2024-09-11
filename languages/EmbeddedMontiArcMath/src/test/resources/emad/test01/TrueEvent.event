@@ -1,6 +1,0 @@
-/* (c) https://github.com/MontiCore/monticore */
-package test01;
-
-event TrueEvent<Port<B> portA> {
-    portA::value(true)
-}

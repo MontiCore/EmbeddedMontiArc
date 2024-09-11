@@ -1,8 +1,0 @@
-/* (c) https://github.com/MontiCore/monticore */
-package test.symtable.sub2;
-
-struct T3 {
-  Z f1;
-  Z f2;
-  T4 f3;
-}

@@ -1,8 +1,0 @@
-/* (c) https://github.com/MontiCore/monticore */
-package portvalue;
-
-event Test_Matrix for PortValueEMA {
-
-    testArray::value( [1,2,3 ; 5,6,7] )
-
-}

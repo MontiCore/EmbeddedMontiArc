@@ -1,8 +1,0 @@
-/* (c) https://github.com/MontiCore/monticore */
-package test.math;
-
-component TanhCommandTest{
-    implementation Math{
-        Q a = tanh(0.5);
-    }
-}

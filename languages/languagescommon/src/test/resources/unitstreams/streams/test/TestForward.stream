@@ -1,7 +1,0 @@
-/* (c) https://github.com/MontiCore/monticore */
-package test;
-stream TestForward for Pedestrian {
-  direction: FORWARD tick FORWARD tick FORWARD tick FORWARD tick FORWARD;
-  yPosition: -  tick yPosition(2) > yPosition(1) tick yPosition(3) > yPosition(2) tick
-                  yPosition(4) > yPosition(3) tick yPosition(5) > yPosition(4);
-}

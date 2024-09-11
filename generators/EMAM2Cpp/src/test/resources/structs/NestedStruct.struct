@@ -1,6 +1,0 @@
-package structs;
-
-struct NestedStruct{
-    SimpleStruct structField;
-    Q simpleField;
-}

@@ -1,7 +1,0 @@
-/* (c) https://github.com/MontiCore/monticore */
-package handling.test1;
-
-event PortTestInner<Port<B> portA>(B val) {
-    //portA::value( val )
-    PortTestInnerInner<portA>(val) && portA::connect
-}

@@ -1,8 +1,0 @@
-/* (c) https://github.com/MontiCore/monticore */
-package portvalue;
-
-event Test_ValueCompareGreaterEquals for PortValueEMA {
-
-    testValue::value( >= 99 )
-
-}

@@ -1,8 +1,0 @@
-/* (c) https://github.com/MontiCore/monticore */
-package test.math;
-
-component CeilCommandTest{
-    implementation Math{
-        Q a = ceil(2.3);
-    }
-}

@@ -1,7 +1,0 @@
-/* (c) https://github.com/MontiCore/monticore */
-package test.parser;
-
-struct Line {
-  Point p1;
-  Point p2;
-}

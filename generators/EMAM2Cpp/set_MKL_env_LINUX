@@ -1,2 +1,0 @@
-# Default Intel MKL library path
-source $MKL_HOME/bin/mklvars.sh intel64

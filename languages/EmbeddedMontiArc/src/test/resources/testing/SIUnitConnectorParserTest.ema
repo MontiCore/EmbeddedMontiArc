@@ -1,5 +1,0 @@
-/* (c) https://github.com/MontiCore/monticore */
-package testing;
-component SIUnitConnectorParserTest{
-  connect 1 kg*m/s^2 -> out1;
-}

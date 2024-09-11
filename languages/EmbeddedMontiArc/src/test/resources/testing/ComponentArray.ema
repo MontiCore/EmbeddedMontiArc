@@ -1,8 +1,0 @@
-/* (c) https://github.com/MontiCore/monticore */
-package testing;
-component ComponentArray{
-  ports in B lightsIn[25],
-        out B lightOut[25];
-
-  instance PortArray portArray[5];
-}

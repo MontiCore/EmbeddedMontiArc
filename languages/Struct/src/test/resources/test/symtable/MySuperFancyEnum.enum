@@ -1,6 +1,0 @@
-/* (c) https://github.com/MontiCore/monticore */
-package test.symtable;
-
-enum MySuperFancyEnum {
-  ONE | TWO | THREE | FOUR | FIVE
-}

@@ -1,6 +1,0 @@
-/* (c) https://github.com/MontiCore/monticore */
-package test.parser;
-
-enum Enum1 {
-  C1 |  C2 |  C3
-}

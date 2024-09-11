@@ -1,8 +1,0 @@
-    vector<float> data_ = CNNTranslator::translate(data);
-
-    vector<float> encoding_(2);
-
-
-    _predictor_0_.predict(data_, encoding_);
-
-    encoding = CNNTranslator::translateToCol(encoding_, std::vector<size_t> {2});

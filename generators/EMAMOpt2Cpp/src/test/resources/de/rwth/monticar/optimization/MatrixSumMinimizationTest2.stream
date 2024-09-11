@@ -1,7 +1,0 @@
-/* (c) https://github.com/MontiCore/monticore */
-package de.rwth.monticar.optimization;
-
-stream MatrixSumMinimizationTest2 for MatrixSumMinimizationTest2{
-    xOut: [0 +/- 0.0001, 0 +/- 0.0001; 0 +/- 0.0001, 0 +/- 0.0001];
-    yOut: 0 +/- 0.0001;
-}

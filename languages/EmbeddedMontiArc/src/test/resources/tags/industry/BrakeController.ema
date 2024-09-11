@@ -1,9 +1,0 @@
-/* (c) https://github.com/MontiCore/monticore */
-package industry;
-
-component BrakeController {
-  ports in (0 : 100) pitchBrake,
-        in (0 : 100) regulatedPitch,
-        in (0 : 100) turbineState,
-        out (0 : 100) brakeSignal;
-}

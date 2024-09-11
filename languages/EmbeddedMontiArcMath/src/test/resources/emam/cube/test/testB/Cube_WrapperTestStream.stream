@@ -1,6 +1,0 @@
-package testB;
-
-stream Cube_WrapperTestStream for Cube {
-    data: [[1,1,1;1,1,1;1,1,1][1,1,1;1,1,1;1,1,1][1,1,1;1,1,1;1,1,1]];
-    out1: 100;
-}

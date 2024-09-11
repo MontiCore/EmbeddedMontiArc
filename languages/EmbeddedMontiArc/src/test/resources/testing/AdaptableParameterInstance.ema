@@ -1,7 +1,0 @@
-/* (c) https://github.com/MontiCore/monticore */
-package testing;
-
-component AdaptableParameterInstance{
-    instance AdaptableParameter(1,2) adaptableParameter;
-    instance AdaptableParameter(3,4) adaptableParameter2;
-}

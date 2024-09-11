@@ -1,1 +1,0 @@
-#include "de_rwth_monticar_optimization_matrixSumMinimizationTest2.h"

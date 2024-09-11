@@ -1,6 +1,0 @@
-package invalid;
-
-component SimpleComponentInvalidName{
-    port in Q p1,
-         out Q p2;
-}

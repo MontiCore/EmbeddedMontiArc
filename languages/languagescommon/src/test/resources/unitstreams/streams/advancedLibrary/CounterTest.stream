@@ -1,7 +1,0 @@
-/* (c) https://github.com/MontiCore/monticore */
-package advancedLibrary;
-
-stream CounterTest for Counter {
-  in1: 0m/s +/- 0.5 tick 2m/s tick 4m/s tick 6m/s tick 8m/s tick 10m/s tick 12m/s tick 14m/s tick 16m/s tick 18m/s;
-  counterSum: 0m/s tick 2m/s tick 6m/s tick 12m/s tick 20m/s tick 30m/s tick 42m/s tick 56m/s tick 72m/s tick 90m/s;
-}

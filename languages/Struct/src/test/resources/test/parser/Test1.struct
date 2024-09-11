@@ -1,7 +1,0 @@
-/* (c) https://github.com/MontiCore/monticore */
-package test.parser;
-
-struct Test1 {
-  Z f1;
-  B f2;
-}

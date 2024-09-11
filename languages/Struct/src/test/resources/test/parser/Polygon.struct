@@ -1,6 +1,0 @@
-/* (c) https://github.com/MontiCore/monticore */
-package test.parser;
-
-struct Polygon {
-  Point[] points;
-}

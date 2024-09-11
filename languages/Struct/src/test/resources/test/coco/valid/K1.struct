@@ -1,8 +1,0 @@
-/* (c) https://github.com/MontiCore/monticore */
-package test.coco.valid;
-
-struct K1 {
-  Z f1;
-  Q f2;
-  test.coco.valid.S1[] f3;
-}

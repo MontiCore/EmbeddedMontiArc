@@ -1,5 +1,0 @@
-/* (c) https://github.com/MontiCore/monticore */
-package testing;
-component ComponentArray{
-  instance PortArray portArray[51];
-}

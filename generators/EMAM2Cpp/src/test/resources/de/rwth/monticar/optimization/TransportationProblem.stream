@@ -1,6 +1,0 @@
-/* (c) https://github.com/MontiCore/monticore */
-package de.rwth.monticar.optimization;
-
-stream TransportationProblem for TransportationProblem{
-    yOut: 1763.7096763348 +/- 0.0001;
-}

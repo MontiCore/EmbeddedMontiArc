@@ -1,1 +1,0 @@
-#include "cifar10_cifar10Classifier.h"

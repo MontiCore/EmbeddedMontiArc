@@ -1,7 +1,0 @@
-/* (c) https://github.com/MontiCore/monticore */
-architecture architecture(img_height=224, img_width=224,  classes=10){
-    def input Z(0:255)^{img_height, img_width} image
-    def output Q(0:1)^{classes} predictions
-
-    image -> predictions;
-}

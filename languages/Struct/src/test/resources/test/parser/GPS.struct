@@ -1,7 +1,0 @@
-/* (c) https://github.com/MontiCore/monticore */
-package test.parser;
-
-struct GPS {
-  (-90 : 0.001 : 90) latitude;
-  (-180 : 0.001 : 180) longitude;
-}

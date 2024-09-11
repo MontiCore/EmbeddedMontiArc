@@ -1,7 +1,0 @@
-/* (c) https://github.com/MontiCore/monticore */
-package de.rwth.monticar.optimization;
-
-stream ColRowMinTest for ColRowMinTest{
-    xOut: [1 +/- 0.0001, 2 +/- 0.0001; 1 +/- 0.0001, 1 +/- 0.0001];
-    yOut: 3 +/- 0.0001;
-}

@@ -1,8 +1,0 @@
-/* (c) https://github.com/MontiCore/monticore */
-configuration CheckRLAlgorithmParameter1 {
-    learning_method : reinforcement
-    critic : path.to.component
-    environment : gym { name:"CartPole-v1" }
-    soft_target_update_rate: 0.001
-    use_double_dqn: true
-}

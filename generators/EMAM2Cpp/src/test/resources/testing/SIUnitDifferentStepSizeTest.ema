@@ -1,6 +1,0 @@
-/* (c) https://github.com/MontiCore/monticore */
-package testing;
-component SIUnitDifferentStepSizeTest{
-      port in (0 m: 0.1 mm : 10 m ) distance;
-
-}

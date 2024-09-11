@@ -1,9 +1,0 @@
-/* (c) https://github.com/MontiCore/monticore */
-package testing.subpackage1;
-
-stream Comp2Test3 for Comp2 {
-    in1: 1.0 tick 2.0 tick 3.0 tick 4.0 tick 5.0;
-    in2: 6.0 tick 7.0 tick 8.0 tick 9.0 tick 1.0;
-
-    out1: 97.2 +/- 0.1 tick 92.4 +/- 0.1 tick 87.6 +/- 0.1 tick 83.5 +/- 0.1 tick 96.1 +/- 0.1;
-}

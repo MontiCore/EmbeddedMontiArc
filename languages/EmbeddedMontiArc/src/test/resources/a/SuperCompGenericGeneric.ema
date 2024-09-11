@@ -1,8 +1,0 @@
-/* (c) https://github.com/MontiCore/monticore */
-package a;
-
-component SuperCompGenericGeneric<N1 n = 1>{
-    port in (1:1:100) percentage[n],
-          out B success;
-
-}

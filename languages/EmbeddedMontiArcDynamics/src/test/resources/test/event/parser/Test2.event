@@ -1,7 +1,0 @@
-/* (c) https://github.com/MontiCore/monticore */
-
-package parser;
-
-event Test2(Q a)  {
-    a::value( 1 +/- 5 )
-}

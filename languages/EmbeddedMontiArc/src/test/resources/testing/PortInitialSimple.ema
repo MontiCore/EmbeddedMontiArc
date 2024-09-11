@@ -1,9 +1,0 @@
-/* (c) https://github.com/MontiCore/monticore */
-package testing;
-
-import fas.basicLibrary.*;
-
-component PortInitialSimple {
-    ports
-        out Q out1;
-}

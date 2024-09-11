@@ -1,7 +1,0 @@
-/* (c) https://github.com/MontiCore/monticore */
-package structures;
-
-struct S1 {
-  Q f1;
-  Z f2;
-}

@@ -1,8 +1,0 @@
-/* (c) https://github.com/MontiCore/monticore */
-package de.monticore.lang.monticar.semantics.loops.artificial;
-
-component Basic {
-    port
-        in Q input,
-        out Q output;
-}

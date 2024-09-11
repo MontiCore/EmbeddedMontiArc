@@ -1,8 +1,0 @@
-/* (c) https://github.com/MontiCore/monticore */
-package test.coco.invalid;
-
-struct ModelWithPrimitiveTypes2 {
-  Q f1;
-  (0 : oo) f2;
-  boolean[][][] f3;
-}

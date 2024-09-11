@@ -1,7 +1,0 @@
-/* (c) https://github.com/MontiCore/monticore */
-package de.rwth.monticar.optimization;
-
-stream ScalarMinimizationTest for ScalarMinimizationTest{
-    xOut: 1 +/- 0.0001;
-    yOut: 0 +/- 0.0001;
-}

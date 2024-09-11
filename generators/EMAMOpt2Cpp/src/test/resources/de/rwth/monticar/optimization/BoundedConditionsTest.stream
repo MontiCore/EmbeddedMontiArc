@@ -1,7 +1,0 @@
-/* (c) https://github.com/MontiCore/monticore */
-package de.rwth.monticar.optimization;
-
-stream BoundedConditionsTest for BoundedConditionsTest{
-    xOut: 0.5 +/- 0.0001;
-    yOut: 0.25 +/- 0.0001;
-}

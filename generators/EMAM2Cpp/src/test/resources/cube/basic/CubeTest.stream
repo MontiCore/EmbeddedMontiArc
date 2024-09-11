@@ -1,7 +1,0 @@
-package basic;
-
-stream CubeTest for Cube{
-    cubeIn : file::"/src/test/resources/images/circle_1.png" tick file::"/src/test/resources/images/circle_1.png";
-
-    cubeOut : (1.0,1.0)~file::"/src/test/resources/images/circle_2.png" tick (1.0,1.0)~file::"/src/test/resources/images/circle_2.png";
-}

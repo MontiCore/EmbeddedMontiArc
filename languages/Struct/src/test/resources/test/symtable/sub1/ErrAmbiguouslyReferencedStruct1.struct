@@ -1,9 +1,0 @@
-/* (c) https://github.com/MontiCore/monticore */
-package test.symtable.sub1;
-
-struct ErrAmbiguouslyReferencedStruct1 {
-  B f1;
-  S1 f3;
-  S2[][] f4;
-  S3 f5;
-}

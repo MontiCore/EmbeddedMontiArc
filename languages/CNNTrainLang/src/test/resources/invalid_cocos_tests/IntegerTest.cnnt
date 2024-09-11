@@ -1,8 +1,0 @@
-/* (c) https://github.com/MontiCore/monticore */
-configuration IntegerTest{
-     num_epoch : 5.1
-     batch_size : 100
-     optimizer : adam{
-         learning_rate : 0.001
-     }
- }

@@ -1,5 +1,0 @@
-/* (c) https://github.com/MontiCore/monticore */
-package testing;
-component SIUnitRangeDifferentPrefix{
-	port in [(0 km : 0.05 km : 10km) (10km : 0.1m : 45 km)] distance;
-}

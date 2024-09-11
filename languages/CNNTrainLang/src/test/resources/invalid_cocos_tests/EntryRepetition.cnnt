@@ -1,7 +1,0 @@
-/* (c) https://github.com/MontiCore/monticore */
-configuration EntryRepetition{
-     num_epoch : 5
-     batch_size : 100
-     optimizer : adam
-     batch_size : 100
- }

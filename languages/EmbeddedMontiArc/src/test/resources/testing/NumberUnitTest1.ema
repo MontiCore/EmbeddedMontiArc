@@ -1,6 +1,0 @@
-/* (c) https://github.com/MontiCore/monticore */
-package testing;
-
-component NumberUnitTest1{
-    ports in (-90:0.001:90) in1;
-}
