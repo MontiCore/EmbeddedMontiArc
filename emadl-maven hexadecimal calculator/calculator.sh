@@ -1,3 +1,4 @@
+#!/bin/bash
 set -e
 echo "Found the following files: $(ls input | tr '\n' ' ')"
 if [ $(ls input | wc -l) == "6" ]; then

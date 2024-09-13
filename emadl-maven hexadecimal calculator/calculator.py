@@ -11,6 +11,9 @@ import numpy as np
 from matplotlib import image
 from matplotlib import pyplot as plt
 from mxnet import gluon, nd
+import subprocess
+import os
+
 
 
 def load_h5(test_file: pathlib.Path) -> np.ndarray:
@@ -82,26 +85,63 @@ if __name__ == "__main__":
             )
             label_list[i] = label_list[i][0]
 
-        num_1 = int(f"{digits[0]}{digits[1]}{digits[2]}")
-        num_2 = int(f"{digits[3]}{digits[4]}{digits[5]}")
+        num_1 = int(f"{digits[0]}{digits[1]}{digits[2]}",16)
+        num_2 = int(f"{digits[3]}{digits[4]}{digits[5]}",16)
 
     else:
         # default method
+        #_data_dir = (
+         #   pathlib.Path().home()
+         #   / ".m2"
+         #   / "repository"
+         #   / "de"
+         #   / "monticore"
+         #   / "lang"
+         #   / "monticar"
+         #   / "datasets"
+         #   / "mnist"
+         #   / "1"
+         #   / "mnist-1-dataset"
+          #  / "training_data"
+         #   / "test.h5"
+        #)
+
+
+        #data2, label2 = load_h5(_data_dir2)
+        #for l in label2:
+         #   print(l)
+
+        #Hexadecimal test
+
         _data_dir = (
-            pathlib.Path().home()
-            / ".m2"
-            / "repository"
-            / "de"
-            / "monticore"
-            / "lang"
-            / "monticar"
-            / "datasets"
-            / "mnist"
-            / "1"
-            / "mnist-1-dataset"
-            / "training_data"
-            / "test.h5"
+                 pathlib.Path().home()
+                / ".m2"
+                / "repository"
+                / "de"
+                / "monticore"
+                / "lang"
+                / "monticar"
+                / "datasets"
+                / "mnist-hexadecimal"
+                / "0.1"
+                / "mnist-hexadecimal-0.1-dataset"
+                / "training_data"
+                / "test.h5"
         )
+
+
+
+
+
+
+       # m2_root = pathlib.Path.home() / '.m2' / 'repository' / 'de' / 'monticore' / 'lang' / 'monticar' / 'datasets' / 'mnist-hexadecimal'
+        #if m2_root.exists() and m2_root.is_dir():
+         #   print(f"Contents of {m2_root}:")
+          #  for item in m2_root.iterdir():
+           #     print(item.name)
+
+        #_data_dir = pathlib.Path(".m2/repository/de/monticore/lang/monticar/datasets/mnist-hexadecimal/0.1/test.h5")
+
         data, label = load_h5(_data_dir)
 
         index = [random.randint(0, 9999) for i in range(0, 6)]
@@ -117,8 +157,8 @@ if __name__ == "__main__":
                 get_prediction(deserialized_net, [data[index[i]]], [label[index[i]]])[0]
             )
 
-        num_1 = int(f"{digits[0]}{digits[1]}{digits[2]}")
-        num_2 = int(f"{digits[3]}{digits[4]}{digits[5]}")
+        num_1 = int(f"{digits[0]}{digits[1]}{digits[2]}",16)
+        num_2 = int(f"{digits[3]}{digits[4]}{digits[5]}",16)
 
     # save images as png
     save_image(input_list, label_list, digits)

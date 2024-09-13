@@ -3,21 +3,21 @@ package calculator;
 
 component Calculator {
         ports  
-                in Q(0:1)^10 in1_1,
-                in Q(0:1)^10 in1_2,
-                in Q(0:1)^10 in1_3,
-                in Q(0:1)^10 in2_1,
-                in Q(0:1)^10 in2_2,
-                in Q(0:1)^10 in2_3,
+                in Q(0:1)^16 in1_1,
+                in Q(0:1)^16 in1_2,
+                in Q(0:1)^16 in1_3,
+                in Q(0:1)^16 in2_1,
+                in Q(0:1)^16 in2_2,
+                in Q(0:1)^16 in2_3,
 
                 out Z(0x0:0x1FFD) out1;
         
-        instance ArgMax<10> number1ones;
-        instance ArgMax<10> number1tens;
-        instance ArgMax<10> number1hundreds;
-        instance ArgMax<10> number2ones;
-        instance ArgMax<10> number2tens;
-        instance ArgMax<10> number2hundreds;
+        instance ArgMax<16> number1ones;
+        instance ArgMax<16> number1tens;
+        instance ArgMax<16> number1hundreds;
+        instance ArgMax<16> number2ones;
+        instance ArgMax<16> number2tens;
+        instance ArgMax<16> number2hundreds;
         instance HexaCombiner c1;
         instance HexaCombiner c2;
         instance Add add;

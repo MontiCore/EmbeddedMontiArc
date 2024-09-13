@@ -19,7 +19,7 @@ component Network{
         FullyConnected(units=500) ->
         Relu() ->
         Dropout() ->
-        FullyConnected( units=16) ->
+        FullyConnected(units=16) ->
         Softmax() ->
         softmax;
     }

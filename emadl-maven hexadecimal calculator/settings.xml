@@ -82,6 +82,10 @@
             <id>se-nexus</id>
             <repositories>
                 <repository>
+                    <id>local1</id>
+                    <url>/root/.m2/repository</url>
+                </repository>
+                <repository>
                     <id>central</id>
                     <url>https://repo1.maven.org/maven2/</url>
                     <releases>
@@ -254,4 +258,7 @@
     <activeProfiles>
         <activeProfile>se-nexus</activeProfile>
     </activeProfiles>
+    <localRepository>/root/.m2/repository</localRepository>
 </settings>
+
+
