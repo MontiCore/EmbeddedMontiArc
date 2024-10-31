@@ -1,5 +1,6 @@
 /* (c) https://github.com/MontiCore/monticore */
-/* (c) Adapted Add function with an operator input*/
+/* (c) Adapted Add function with an operator input. Each operator bears the same label as a number,
+allowing for the same detector to detect both.*/
 package calculator;
 
 component Calculate{
@@ -12,7 +13,6 @@ component Calculate{
     implementation Math{
 
 
-                op = 3;
 
                 if op == 0
                     result = num1 + num2;
