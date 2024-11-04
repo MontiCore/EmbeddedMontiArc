@@ -2,7 +2,7 @@
 <!--
     (c) https://github.com/MontiCore/monticore
 -->
-<settings xmlns="http://maven.apache.org/SETTINGS/1.0.0" 
+<settings xmlns="http://maven.apache.org/SETTINGS/1.0.0"
     xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:schemaLocation="http://maven.apache.org/SETTINGS/1.0.0 http://maven.apache.org/xsd/settings-1.0.0.xsd">
 
     <pluginGroups>
@@ -165,15 +165,15 @@
                     <name>Public Rosjava repository</name>
                     <url>https://github.com/rosjava/rosjava_mvn_repo</url>
                 </repository>
-				
+
 				<repository>
                    <id>icm</id>
                    <name>icm</name>
                     <url>http://maven.icm.edu.pl/artifactory/repo/</url>
                  </repository>
-        
+
             </repositories>
-            
+
             <pluginRepositories>
                 <pluginRepository>
                     <id>central</id>

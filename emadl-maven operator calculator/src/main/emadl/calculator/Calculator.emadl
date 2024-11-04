@@ -4,23 +4,23 @@ package calculator;
 
 component Calculator {
         ports  
-                in Q(0:1)^10 in1_1,
-                in Q(0:1)^10 in1_2,
-                in Q(0:1)^10 in1_3,
-                in Q(0:1)^10 in2_1,
-                in Q(0:1)^10 in2_2,
-                in Q(0:1)^10 in2_3,
-                in Q(0:1)^5 in_op,
+                in Q(0:1)^13 in1_1,
+                in Q(0:1)^13 in1_2,
+                in Q(0:1)^13 in1_3,
+                in Q(0:1)^13 in2_1,
+                in Q(0:1)^13 in2_2,
+                in Q(0:1)^13 in2_3,
+                in Q(0:1)^13 in_op,
 
                 out Q(0:998001) out1;
         
-        instance ArgMax<10> number1ones;
-        instance ArgMax<10> number1tens;
-        instance ArgMax<10> number1hundreds;
-        instance ArgMax<10> number2ones;
-        instance ArgMax<10> number2tens;
-        instance ArgMax<10> number2hundreds;
-        instance ArgMax<5> determineOperator;
+        instance ArgMax<13> number1ones;
+        instance ArgMax<13> number1tens;
+        instance ArgMax<13> number1hundreds;
+        instance ArgMax<13> number2ones;
+        instance ArgMax<13> number2tens;
+        instance ArgMax<13> number2hundreds;
+        instance ArgMax<13> determineOperator;
         instance DigitCombiner c1;
         instance DigitCombiner c2;
         instance Calculate calculate;
