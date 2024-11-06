@@ -129,3 +129,13 @@ if __name__ == "__main__":
     print(f"  \t\t - MNISTDetector:\t{digits}")
     print(f"  \t\t - Compose Number:\t{num_1} and {num_2}")
     print(f"  \t\t - SUM:\t\t\t{num_1 + num_2}\n")
+
+    #Determine the accuracy of the Neural Networks
+    #1000 Tests
+    correct = 0
+    for i in range(0,1000):
+        rand = random.randint(0, 9999)
+        predicted = get_prediction(deserialized_net,[data[rand]],[label[rand]])
+        if predicted[0] == predicted[1]:
+            correct = correct + 1
+    print(f"Accuracy = {correct / 1000:.3f}")

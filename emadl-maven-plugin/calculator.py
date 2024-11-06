@@ -129,3 +129,4 @@ if __name__ == "__main__":
     print(f"  \t\t - MNISTDetector:\t{digits}")
     print(f"  \t\t - Compose Number:\t{num_1} and {num_2}")
     print(f"  \t\t - SUM:\t\t\t{num_1 + num_2}\n")
+
