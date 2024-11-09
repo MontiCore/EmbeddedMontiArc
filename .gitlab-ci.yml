@@ -101,3 +101,34 @@ deploy-cifar-10-dataset:
     - mvn emadl:deploy-dataset -s ../ci_settings.xml
   only:
     - master
+
+#Operator mnist dataset
+install-mnist-operator-dataset:
+  image: maven:3.6-jdk-8
+  script:
+    - cd datasets/mnist_operators
+    - mvn emadl:install-dataset -s ../ci_settings.xml
+
+deploy-mnist-operator-dataset:
+  image: maven:3.6-jdk-8
+  script:
+    - cd datasets/mnist_operators
+    - mvn emadl:deploy-dataset -s ../ci_settings.xml
+  only:
+    - master
+
+#Hexadecimal mnist dataset
+install-mnist-hexadecimal-dataset:
+  image: maven:3.6-jdk-8
+  script:
+    - cd datasets/mnist_hexadecimal
+    - mvn emadl:install-dataset -s ../ci_settings.xml
+
+deploy-mnist-hexadecimal-dataset:
+  image: maven:3.6-jdk-8
+  script:
+    - cd datasets/mnist_hexadecimal
+    - mvn emadl:deploy-dataset -s ../ci_settings.xml
+  only:
+    - master
+
