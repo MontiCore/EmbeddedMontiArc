@@ -21,12 +21,12 @@
                 <artifactId>emadl-maven-plugin</artifactId>
                 <version>0.0.8-SNAPSHOT</version>
                 <configuration>
-                    <datasetsToStore>
+                    <datasetToStore>
                         <path>./</path>
                         <artifactId>mnist-operators</artifactId>
                         <groupId>de.monticore.lang.monticar.datasets</groupId>
                         <version>0.1</version>
-                    </datasetsToStore>
+                    </datasetToStore>
                 </configuration>
            </plugin>
         </plugins>
