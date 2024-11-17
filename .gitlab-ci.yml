@@ -262,4 +262,4 @@ DeployMnistCalcArtifact:
   image: maven:3.6-jdk-11
   script:
     - cd "emadl-maven hexadecimal calculator"
-    - 'mvn deploy -s _settings.xml'
+    - 'mvn deploy -s settings.xml'
