@@ -5,6 +5,7 @@ stages:
   - test
   - testmodular
   - build
+  - deploy
 
 
 #TestMXNET:
