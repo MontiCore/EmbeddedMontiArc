@@ -15,28 +15,29 @@
 
     <servers>
         <server>
+            <id>se-nexus</id>
+            <username>cibuild</username>
+            <password>${env.cibuild}</password>
+        </server>
+
+        <server>
+            <id>github</id>
+            <username>travisbuilduser</username>
+            <password>${env.travisbuilduserpassword}</password>
+        </server>
+
+        <server>
             <id>gitlab-maven</id>
             <configuration>
                 <httpHeaders>
                     <property>
-                        <name>Deploy-Token</name>
-                        <value>KJkmCZosey-A8XBES2Fy</value>
+                        <name>Job-Token</name>
+                        <value>${env.CI_JOB_TOKEN}</value>
                     </property>
                 </httpHeaders>
             </configuration>
         </server>
 
-        <server>
-            <id>gitlab-maven-mnist</id>
-            <configuration>
-                <httpHeaders>
-                    <property>
-                        <name>Deploy-Token</name>
-                        <value>KJkmCZosey-A8XBES2Fy</value>
-                    </property>
-                </httpHeaders>
-            </configuration>
-        </server>
     </servers>
 
     <!--<mirrors>
@@ -81,10 +82,6 @@
         <profile>
             <id>se-nexus</id>
             <repositories>
-                <repository>
-                    <id>local1</id>
-                    <url>/root/.m2/repository</url>
-                </repository>
                 <repository>
                     <id>central</id>
                     <url>https://repo1.maven.org/maven2/</url>
@@ -258,7 +255,4 @@
     <activeProfiles>
         <activeProfile>se-nexus</activeProfile>
     </activeProfiles>
-    <localRepository>/root/.m2/repository</localRepository>
 </settings>
-
-
