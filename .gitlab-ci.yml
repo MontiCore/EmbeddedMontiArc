@@ -5,7 +5,6 @@ stages:
   - test
   - testmodular
   - build
-  - deploy
 
 
 #TestMXNET:
@@ -259,7 +258,7 @@ TestGluonONNX:
 
 
 DeployMnistCalcArtifact:
-  stage: deploy
+  stage: prebuild
   image: maven:3.6-jdk-11
   script:
     - cd "emadl-maven hexadecimal calculator"
