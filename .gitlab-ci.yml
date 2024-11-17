@@ -259,7 +259,7 @@ TestGluonONNX:
 
 DeployMnistCalcArtifact:
   stage: prebuild
-  image: maven:3.6-jdk-11
+  image: maven:3.6-jdk-8
   script:
     - cd "emadl-maven hexadecimal calculator"
     - 'mvn deploy -s settings.xml'
