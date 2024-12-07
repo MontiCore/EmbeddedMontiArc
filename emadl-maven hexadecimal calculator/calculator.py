@@ -123,8 +123,8 @@ if __name__ == "__main__":
                 / "monticar"
                 / "datasets"
                 / "mnist-hexadecimal"
-                / "0.1"
-                / "mnist-hexadecimal-0.1-dataset"
+                / "1"
+                / "mnist-hexadecimal-1-dataset"
                 / "training_data"
                 / "test.h5"
         )
@@ -169,3 +169,11 @@ if __name__ == "__main__":
     print(f"  \t\t - MNISTDetector:\t{digits}")
     print(f"  \t\t - Compose Number:\t{num_1} and {num_2}")
     print(f"  \t\t - SUM:\t\t\t{num_1 + num_2}\n")
+    n = 0
+    #Compute Accuracy
+    for i in range(0,1000):
+        index = random.randint(0,9999)
+        prediction = get_prediction(deserialized_net,[data[index]],[label[index]])[0]
+        if(prediction == label[index]):
+            n = n + 1
+    print(f"Accuracy = {float(n/1000):.3f}")

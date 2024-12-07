@@ -4,12 +4,7 @@ FROM $BASE_IMAGE
 RUN rm -rf /root/.m2/repository
 
 COPY . /build/mnistcalc/emadl-maven-plugin
-WORKDIR /build/mnistcalc/emadl-maven-plugin/mnist_operators
-RUN mvn -X clean install -s ../settings.xml
-RUN mvn -X emadl:install-dataset -s ../settings.xml
-RUN sleep 2
 WORKDIR /build/mnistcalc/emadl-maven-plugin
-RUN sleep 2
 
 
 

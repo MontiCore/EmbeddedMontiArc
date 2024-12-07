@@ -42,7 +42,7 @@
         <dependency>
             <groupId>de.monticore.lang.monticar.datasets</groupId>
             <artifactId>mnist-hexadecimal</artifactId>
-            <version>0.1</version>
+            <version>1</version>
             <classifier>dataset</classifier>
         </dependency>
     </dependencies>
