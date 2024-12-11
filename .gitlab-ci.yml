@@ -279,10 +279,10 @@ DeployDecompositionResNetArtifact:
     - python3 -m pip install --upgrade pip
     - python3 -m pip install scikit-image opencv-python
     - ln -fs /usr/bin/python3 /usr/bin/python
-    - cd mnist-modular/DecompositionResNet
-    - mvn dependency:resolve -s settings.xml -U
-    - mvn emadl:train -s settings.xml -U
-    - mvn deploy -s settings.xml -U
+    - cd mnist-modular/DecompositionResNetExport
+    - mvn dependency:resolve -s settings.xml -U -f pom_build.xml
+    - mvn emadl:train -s settings.xml -U pom_build.xml
+    - mvn deploy -s settings.xml -U -f -f pom_deploy.xml
   needs:
     - TestEMADLMavenPlugin
 
