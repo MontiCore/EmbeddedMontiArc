@@ -257,9 +257,32 @@ TestGluonONNX:
     - modular_testing
 
 
+#Deployment of Maven Artifacts (required for other some of the tranfer experiments)
+
 DeployMnistCalcArtifact:
   stage: prebuild
   image: maven:3.6-jdk-8
   script:
     - cd "emadl-maven hexadecimal calculator"
     - 'mvn deploy -s settings.xml'
+
+
+#From experiment mnist-modular: The use of emadl:train is required (thus stage test)
+DeployDecompositionResNetArtifact:
+  stage: test
+  image: registry.git.rwth-aachen.de/monticore/embeddedmontiarc/generators/emadl2cpp/mxnet/190:v0.0.2
+  script:
+    - export TZ=Europe/Berlin
+    - apt-get update && DEBIAN_FRONTEND=noninteractive apt-get install -y tzdata libomp-dev libopencv-dev python3-opencv
+    - ln -fs /usr/share/zoneinfo/Europe/Berlin /etc/localtime
+    - dpkg-reconfigure --frontend noninteractive tzdata
+    - python3 -m pip install --upgrade pip
+    - python3 -m pip install scikit-image opencv-python
+    - ln -fs /usr/bin/python3 /usr/bin/python
+    - cd mnist-modular/DecompositionResNet
+    - mvn dependency:resolve -s settings.xml -U
+    - mvn emadl:train -s settings.xml -U
+    - mvn deploy -s settings.xml -U
+  needs:
+    - TestEMADLMavenPlugin
+
