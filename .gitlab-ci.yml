@@ -282,7 +282,7 @@ DeployDecompositionResNetArtifact:
     - cd mnist-modular/DecompositionResNetExport
     - mvn dependency:resolve -s settings.xml -U -f pom_build.xml
     - mvn emadl:train -s settings.xml -U -f pom_build.xml
-    - mvn deploy -s settings.xml -U -f -f pom_deploy.xml
+    - mvn deploy -s settings.xml -U -f pom_deploy.xml
   needs:
     - TestEMADLMavenPlugin
 
