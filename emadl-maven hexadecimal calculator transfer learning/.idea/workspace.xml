@@ -5,34 +5,20 @@
   </component>
   <component name="ChangeListManager">
     <list default="true" id="45e08a6c-9ef5-4313-a141-fb49e47ae34b" name="Changes" comment="">
-      <change afterPath="$PROJECT_DIR$/../emadl-maven operator calculator  transfer learning/trained_mnist_calc/ci_settings.xml" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/../emadl-maven operator calculator  transfer learning/trained_mnist_calc/pom.xml" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/../emadl-maven operator calculator  transfer learning/trained_mnist_calc/src/main/resources/model.params" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/../emadl-maven operator calculator  transfer learning/trained_mnist_calc/src/main/resources/network-symbol.json" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/../emadl-maven operator calculator/trained_mnist_calc/ci_settings.xml" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/../emadl-maven operator calculator/trained_mnist_calc/pom.xml" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/../emadl-maven operator calculator/trained_mnist_calc/src/main/resources/model.params" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/../emadl-maven operator calculator/trained_mnist_calc/src/main/resources/network-symbol.json" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/../emadl-maven hexadecimal calculator/Dockerfile" beforeDir="false" afterPath="$PROJECT_DIR$/../emadl-maven hexadecimal calculator/Dockerfile" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/../emadl-maven hexadecimal calculator/calculator.py" beforeDir="false" afterPath="$PROJECT_DIR$/../emadl-maven hexadecimal calculator/calculator.py" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/../emadl-maven hexadecimal calculator/pom.xml" beforeDir="false" afterPath="$PROJECT_DIR$/../emadl-maven hexadecimal calculator/pom.xml" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/../emadl-maven hexadecimal calculator/settings.xml" beforeDir="false" afterPath="$PROJECT_DIR$/../emadl-maven hexadecimal calculator/settings.xml" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/../emadl-maven hexadecimal calculator/src/main/emadl/calculator/Network.tag" beforeDir="false" afterPath="$PROJECT_DIR$/../emadl-maven hexadecimal calculator/src/main/emadl/calculator/Network.tag" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/../emadl-maven hexadecimal calculator/trained_mnist_calc/pom.xml" beforeDir="false" afterPath="$PROJECT_DIR$/../emadl-maven hexadecimal calculator/trained_mnist_calc/pom.xml" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/../emadl-maven operator calculator/Dockerfile" beforeDir="false" afterPath="$PROJECT_DIR$/../emadl-maven operator calculator/Dockerfile" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/../emadl-maven operator calculator/calculator.py" beforeDir="false" afterPath="$PROJECT_DIR$/../emadl-maven operator calculator/calculator.py" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/../emadl-maven operator calculator/src/main/emadl/calculator/Network.tag" beforeDir="false" afterPath="$PROJECT_DIR$/../emadl-maven operator calculator/src/main/emadl/calculator/Network.tag" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/../emadl-maven-plugin/pom.xml" beforeDir="false" afterPath="$PROJECT_DIR$/../emadl-maven-plugin/pom.xml" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/../emadl-maven-plugin/settings.xml" beforeDir="false" afterPath="$PROJECT_DIR$/../emadl-maven-plugin/settings.xml" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/../mnist-modular/Decomposition/runDecomposition.sh" beforeDir="false" afterPath="$PROJECT_DIR$/../mnist-modular/Decomposition/runDecomposition.sh" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/../mnist-modular/Streamtest/Dockerfile" beforeDir="false" afterPath="$PROJECT_DIR$/../mnist-modular/Streamtest/Dockerfile" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/../mnist-modular/Streamtest/calculator.py" beforeDir="false" afterPath="$PROJECT_DIR$/../mnist-modular/Streamtest/calculator.py" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/../mnist-modular/Streamtest/calculator.sh" beforeDir="false" afterPath="$PROJECT_DIR$/../mnist-modular/Streamtest/calculator.sh" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/../mnist-modular/Streamtest/settings.xml" beforeDir="false" afterPath="$PROJECT_DIR$/../mnist-modular/Streamtest/settings.xml" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/../transfer/pom_digits.xml" beforeDir="false" afterPath="$PROJECT_DIR$/../transfer/pom_digits.xml" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/../transfer/pom_letters.xml" beforeDir="false" afterPath="$PROJECT_DIR$/../transfer/pom_letters.xml" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/../transfer/runTransfer.sh" beforeDir="false" afterPath="$PROJECT_DIR$/../transfer/runTransfer.sh" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/../transfer/settings.xml" beforeDir="false" afterPath="$PROJECT_DIR$/../transfer/settings.xml" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/.idea/workspace.xml" beforeDir="false" afterPath="$PROJECT_DIR$/.idea/workspace.xml" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/calculator.Network.Net1_decomposed/ci_settings.xml" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/calculator.Network.Net1_decomposed/model_Net1_decomposed-0000.params" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/calculator.Network.Net1_decomposed/model_Net1_decomposed-old-symbol.json" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/calculator.Network.Net1_decomposed/model_Net1_decomposed-symbol.json" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/calculator.Network.Net1_decomposed/pom.xml" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/calculator.Network.Net1_decomposed/target/maven-archiver/pom.properties" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/calculator.Network.Net1_decomposed/target/mnist-Net1-decomposed-0.0.1.jar" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/pom.xml" beforeDir="false" afterPath="$PROJECT_DIR$/pom.xml" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/settings.xml" beforeDir="false" afterPath="$PROJECT_DIR$/settings.xml" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/target/dependency-maven-plugin-markers/de.monticore.lang.monticar.application-mnist-calculator-trained-jar-0.0.1-564276918" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/target/model/model.params" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/target/model/network-symbol.json" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/../mnist-modular/.idea/workspace.xml" beforeDir="false" afterPath="$PROJECT_DIR$/../mnist-modular/.idea/workspace.xml" afterDir="false" />
     </list>
     <option name="SHOW_DIALOG" value="false" />
     <option name="HIGHLIGHT_CONFLICTS" value="true" />
@@ -73,6 +59,7 @@
   "keyToString": {
     "Docker.Dockerfile.executor": "Run",
     "RunOnceActivity.ShowReadmeOnStart": "true",
+    "RunOnceActivity.git.unshallow": "true",
     "git-widget-placeholder": "master-haag",
     "kotlin-language-version-configured": "true",
     "last_opened_file_path": "C:/Users/chris/Desktop/mnistcalculator/emadl-maven hexadecimal calculator transfer learning",
@@ -113,8 +100,8 @@
   <component name="SharedIndexes">
     <attachedChunks>
       <set>
-        <option value="bundled-jdk-9f38398b9061-39b83d9b5494-intellij.indexing.shared.core-IU-241.18034.62" />
-        <option value="bundled-js-predefined-1d06a55b98c1-0b3e54e931b4-JavaScript-IU-241.18034.62" />
+        <option value="bundled-jdk-9823dce3aa75-fdfe4dae3a2d-intellij.indexing.shared.core-IU-243.22562.145" />
+        <option value="bundled-js-predefined-d6986cc7102b-deb605915726-JavaScript-IU-243.22562.145" />
       </set>
     </attachedChunks>
   </component>
@@ -147,6 +134,7 @@
       <workItem from="1733473980620" duration="5092000" />
       <workItem from="1733503143818" duration="25000" />
       <workItem from="1733555644828" duration="1325000" />
+      <workItem from="1734011600560" duration="147000" />
     </task>
     <servers />
   </component>

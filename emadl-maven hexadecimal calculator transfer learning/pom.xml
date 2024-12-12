@@ -74,7 +74,7 @@
         </dependency>
         <dependency>
             <groupId>de.monticore.lang.monticar.application</groupId>
-            <artifactId>mnist-Net1-decomposed</artifactId>
+            <artifactId>mnist-resnet-models</artifactId>
             <version>0.0.1</version>
         </dependency>
     </dependencies>
