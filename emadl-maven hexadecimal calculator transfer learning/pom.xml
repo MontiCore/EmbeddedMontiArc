@@ -36,11 +36,10 @@
                                 <artifactItems>
                                     <artifactItem>
                                         <groupId>de.monticore.lang.monticar.application</groupId>
-                                        <artifactId>mnist-calculator-trained</artifactId>
+                                        <artifactId>mnist-resnet-models</artifactId>
                                         <version>0.0.1</version>
                                         <type>jar</type>
-                                        <outputDirectory>${project.build.directory}/model</outputDirectory>
-                                        <includes>*.json,*.params</includes>
+                                        <outputDirectory>${project.build.directory}/pretrained_model</outputDirectory>
                                     </artifactItem>
                                 </artifactItems>
                             </configuration>
@@ -79,6 +78,25 @@
         </dependency>
     </dependencies>
 
+
+    <repositories>
+        <repository>
+            <id>gitlab-maven</id>
+            <url>https://git.rwth-aachen.de/api/v4/projects/25225/packages/maven</url>
+        </repository>
+    </repositories>
+
+    <distributionManagement>
+        <repository>
+            <id>gitlab-maven</id>
+            <url>https://git.rwth-aachen.de/api/v4/projects/25225/packages/maven</url>
+        </repository>
+
+        <snapshotRepository>
+            <id>gitlab-maven</id>
+            <url>https://git.rwth-aachen.de/api/v4/projects/25225/packages/maven</url>
+        </snapshotRepository>
+    </distributionManagement>
 
 
 </project>

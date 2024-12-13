@@ -14,7 +14,7 @@ component Network{
         }
 
         data ->
-        LoadNetwork(networkDir="target/model", networkPrefix="network-", numInputs=1, outputShape=10, trainable=false) ->
+        LoadNetwork(networkDir="target/pretrained_model/digits.DigitsComposed.DigitsInputLayer_decomposed", networkPrefix="model_DigitsInputLayer_decomposed-", numInputs=1, outputShape=128, trainable=true) ->
         FullyConnected(units=16) ->
         Softmax() ->
         softmax;

@@ -4,7 +4,20 @@
     <option name="autoReloadType" value="SELECTIVE" />
   </component>
   <component name="ChangeListManager">
-    <list default="true" id="45e08a6c-9ef5-4313-a141-fb49e47ae34b" name="Changes" comment="" />
+    <list default="true" id="45e08a6c-9ef5-4313-a141-fb49e47ae34b" name="Changes" comment="">
+      <change beforePath="$PROJECT_DIR$/.idea/encodings.xml" beforeDir="false" afterPath="$PROJECT_DIR$/.idea/encodings.xml" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/.idea/jarRepositories.xml" beforeDir="false" afterPath="$PROJECT_DIR$/.idea/jarRepositories.xml" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/.idea/workspace.xml" beforeDir="false" afterPath="$PROJECT_DIR$/.idea/workspace.xml" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/Dockerfile" beforeDir="false" afterPath="$PROJECT_DIR$/Dockerfile" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/calculator.sh" beforeDir="false" afterPath="$PROJECT_DIR$/calculator.sh" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/pom.xml" beforeDir="false" afterPath="$PROJECT_DIR$/pom.xml" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/settings.xml" beforeDir="false" afterPath="$PROJECT_DIR$/settings.xml" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/src/main/emadl/calculator/ConnectorStream.stream" beforeDir="false" afterPath="$PROJECT_DIR$/src/main/emadl/calculator/ConnectorStream.stream" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/src/main/emadl/calculator/Network.conf" beforeDir="false" afterPath="$PROJECT_DIR$/src/main/emadl/calculator/Network.conf" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/src/main/emadl/calculator/Network.emadl" beforeDir="false" afterPath="$PROJECT_DIR$/src/main/emadl/calculator/Network.emadl" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/../emadl-maven operator calculator  transfer learning/.idea/workspace.xml" beforeDir="false" afterPath="$PROJECT_DIR$/../emadl-maven operator calculator  transfer learning/.idea/workspace.xml" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/../mnist-modular/.idea/workspace.xml" beforeDir="false" afterPath="$PROJECT_DIR$/../mnist-modular/.idea/workspace.xml" afterDir="false" />
+    </list>
     <option name="SHOW_DIALOG" value="false" />
     <option name="HIGHLIGHT_CONFLICTS" value="true" />
     <option name="HIGHLIGHT_NON_ACTIVE_CHANGELIST" value="false" />
@@ -47,7 +60,7 @@
     "RunOnceActivity.git.unshallow": "true",
     "git-widget-placeholder": "master-haag",
     "kotlin-language-version-configured": "true",
-    "last_opened_file_path": "C:/Users/chris/Desktop/mnistcalculator/emadl-maven hexadecimal calculator transfer learning",
+    "last_opened_file_path": "C:/Users/chris/Desktop/mnistcalculator/emadl-maven operator calculator  transfer learning",
     "node.js.detected.package.eslint": "true",
     "node.js.detected.package.tslint": "true",
     "node.js.selected.package.eslint": "(autodetect)",
@@ -69,7 +82,7 @@
     <configuration name="Dockerfile" type="docker-deploy" factoryName="dockerfile" temporary="true" server-name="Docker">
       <deployment type="dockerfile">
         <settings>
-          <option name="buildCliOptions" value="--no-cache " />
+          <option name="buildCliOptions" value="--no-cache --progress=plain" />
           <option name="containerName" value="" />
           <option name="sourceFilePath" value="Dockerfile" />
         </settings>
@@ -120,6 +133,9 @@
       <workItem from="1733503143818" duration="25000" />
       <workItem from="1733555644828" duration="1325000" />
       <workItem from="1734011600560" duration="310000" />
+      <workItem from="1734012085199" duration="11872000" />
+      <workItem from="1734077548088" duration="1246000" />
+      <workItem from="1734080179022" duration="4082000" />
     </task>
     <servers />
   </component>

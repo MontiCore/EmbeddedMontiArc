@@ -5,19 +5,14 @@ RUN rm -rf /root/.m2
 
 COPY . .
 
-RUN cd trained_mnist_calc && \
-    mvn clean install -s "../settings.xml"
-
-
 
 
 RUN mvn -e dependency:resolve -s settings.xml
 RUN mvn -e clean verify -s settings.xml
-RUN cd target/model && \
-    mv model.params network-0000.params
 
 RUN mvn  emadl:train -s settings.xml -U
 RUN chmod +x calculator.sh
 RUN mkdir -p input output
 
 ENTRYPOINT [ "/bin/bash", "calculator.sh" ]
+

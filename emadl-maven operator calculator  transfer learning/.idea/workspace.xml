@@ -5,29 +5,18 @@
   </component>
   <component name="ChangeListManager">
     <list default="true" id="7bfd14f2-faaf-4563-9767-f29a8dfce1d0" name="Changes" comment="">
-      <change afterPath="$PROJECT_DIR$/trained_mnist_calc/ci_settings.xml" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/trained_mnist_calc/pom.xml" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/trained_mnist_calc/src/main/resources/model.params" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/trained_mnist_calc/src/main/resources/network-symbol.json" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/../emadl-maven operator calculator/trained_mnist_calc/ci_settings.xml" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/../emadl-maven operator calculator/trained_mnist_calc/pom.xml" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/../emadl-maven operator calculator/trained_mnist_calc/src/main/resources/model.params" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/../emadl-maven operator calculator/trained_mnist_calc/src/main/resources/network-symbol.json" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/../emadl-maven hexadecimal calculator/Dockerfile" beforeDir="false" afterPath="$PROJECT_DIR$/../emadl-maven hexadecimal calculator/Dockerfile" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/../emadl-maven hexadecimal calculator/calculator.py" beforeDir="false" afterPath="$PROJECT_DIR$/../emadl-maven hexadecimal calculator/calculator.py" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/../emadl-maven hexadecimal calculator/pom.xml" beforeDir="false" afterPath="$PROJECT_DIR$/../emadl-maven hexadecimal calculator/pom.xml" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/../emadl-maven hexadecimal calculator/settings.xml" beforeDir="false" afterPath="$PROJECT_DIR$/../emadl-maven hexadecimal calculator/settings.xml" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/../emadl-maven hexadecimal calculator/src/main/emadl/calculator/Network.tag" beforeDir="false" afterPath="$PROJECT_DIR$/../emadl-maven hexadecimal calculator/src/main/emadl/calculator/Network.tag" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/../emadl-maven hexadecimal calculator/trained_mnist_calc/pom.xml" beforeDir="false" afterPath="$PROJECT_DIR$/../emadl-maven hexadecimal calculator/trained_mnist_calc/pom.xml" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/../emadl-maven operator calculator/Dockerfile" beforeDir="false" afterPath="$PROJECT_DIR$/../emadl-maven operator calculator/Dockerfile" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/../emadl-maven operator calculator/calculator.py" beforeDir="false" afterPath="$PROJECT_DIR$/../emadl-maven operator calculator/calculator.py" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/../emadl-maven operator calculator/src/main/emadl/calculator/Network.tag" beforeDir="false" afterPath="$PROJECT_DIR$/../emadl-maven operator calculator/src/main/emadl/calculator/Network.tag" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/../emadl-maven-plugin/pom.xml" beforeDir="false" afterPath="$PROJECT_DIR$/../emadl-maven-plugin/pom.xml" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/../emadl-maven-plugin/settings.xml" beforeDir="false" afterPath="$PROJECT_DIR$/../emadl-maven-plugin/settings.xml" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/../transfer/pom_digits.xml" beforeDir="false" afterPath="$PROJECT_DIR$/../transfer/pom_digits.xml" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/../transfer/pom_letters.xml" beforeDir="false" afterPath="$PROJECT_DIR$/../transfer/pom_letters.xml" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/../transfer/runTransfer.sh" beforeDir="false" afterPath="$PROJECT_DIR$/../transfer/runTransfer.sh" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/../transfer/settings.xml" beforeDir="false" afterPath="$PROJECT_DIR$/../transfer/settings.xml" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/../emadl-maven hexadecimal calculator transfer learning/.idea/encodings.xml" beforeDir="false" afterPath="$PROJECT_DIR$/../emadl-maven hexadecimal calculator transfer learning/.idea/encodings.xml" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/../emadl-maven hexadecimal calculator transfer learning/.idea/jarRepositories.xml" beforeDir="false" afterPath="$PROJECT_DIR$/../emadl-maven hexadecimal calculator transfer learning/.idea/jarRepositories.xml" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/../emadl-maven hexadecimal calculator transfer learning/.idea/workspace.xml" beforeDir="false" afterPath="$PROJECT_DIR$/../emadl-maven hexadecimal calculator transfer learning/.idea/workspace.xml" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/../emadl-maven hexadecimal calculator transfer learning/Dockerfile" beforeDir="false" afterPath="$PROJECT_DIR$/../emadl-maven hexadecimal calculator transfer learning/Dockerfile" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/../emadl-maven hexadecimal calculator transfer learning/calculator.sh" beforeDir="false" afterPath="$PROJECT_DIR$/../emadl-maven hexadecimal calculator transfer learning/calculator.sh" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/../emadl-maven hexadecimal calculator transfer learning/pom.xml" beforeDir="false" afterPath="$PROJECT_DIR$/../emadl-maven hexadecimal calculator transfer learning/pom.xml" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/../emadl-maven hexadecimal calculator transfer learning/settings.xml" beforeDir="false" afterPath="$PROJECT_DIR$/../emadl-maven hexadecimal calculator transfer learning/settings.xml" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/../emadl-maven hexadecimal calculator transfer learning/src/main/emadl/calculator/ConnectorStream.stream" beforeDir="false" afterPath="$PROJECT_DIR$/../emadl-maven hexadecimal calculator transfer learning/src/main/emadl/calculator/ConnectorStream.stream" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/../emadl-maven hexadecimal calculator transfer learning/src/main/emadl/calculator/Network.conf" beforeDir="false" afterPath="$PROJECT_DIR$/../emadl-maven hexadecimal calculator transfer learning/src/main/emadl/calculator/Network.conf" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/../emadl-maven hexadecimal calculator transfer learning/src/main/emadl/calculator/Network.emadl" beforeDir="false" afterPath="$PROJECT_DIR$/../emadl-maven hexadecimal calculator transfer learning/src/main/emadl/calculator/Network.emadl" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/.idea/workspace.xml" beforeDir="false" afterPath="$PROJECT_DIR$/.idea/workspace.xml" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/../mnist-modular/.idea/workspace.xml" beforeDir="false" afterPath="$PROJECT_DIR$/../mnist-modular/.idea/workspace.xml" afterDir="false" />
     </list>
     <option name="SHOW_DIALOG" value="false" />
     <option name="HIGHLIGHT_CONFLICTS" value="true" />
@@ -54,9 +43,10 @@
   "keyToString": {
     "Docker.Dockerfile.executor": "Run",
     "RunOnceActivity.ShowReadmeOnStart": "true",
+    "RunOnceActivity.git.unshallow": "true",
     "git-widget-placeholder": "master-haag",
     "kotlin-language-version-configured": "true",
-    "last_opened_file_path": "C:/Users/chris/Desktop/mnistcalculator/emadl-maven operator calculator",
+    "last_opened_file_path": "C:/Users/chris/Desktop/mnistcalculator/emadl-maven operator calculator  transfer learning",
     "node.js.detected.package.eslint": "true",
     "node.js.detected.package.tslint": "true",
     "node.js.selected.package.eslint": "(autodetect)",
@@ -74,6 +64,40 @@
     </key>
   </component>
   <component name="RunManager">
+    <configuration default="true" type="docs" factoryName="Docutils task">
+      <module name="emadl-maven operator calculator" />
+      <option name="ENV_FILES" value="" />
+      <option name="INTERPRETER_OPTIONS" value="" />
+      <option name="PARENT_ENVS" value="true" />
+      <option name="SDK_HOME" value="" />
+      <option name="WORKING_DIRECTORY" value="" />
+      <option name="IS_MODULE_SDK" value="false" />
+      <option name="ADD_CONTENT_ROOTS" value="true" />
+      <option name="ADD_SOURCE_ROOTS" value="true" />
+      <option name="docutils_input_file" value="" />
+      <option name="docutils_output_file" value="" />
+      <option name="docutils_params" value="" />
+      <option name="docutils_task" value="" />
+      <option name="docutils_open_in_browser" value="false" />
+      <method v="2" />
+    </configuration>
+    <configuration default="true" type="docs" factoryName="Sphinx task">
+      <module name="emadl-maven operator calculator" />
+      <option name="ENV_FILES" value="" />
+      <option name="INTERPRETER_OPTIONS" value="" />
+      <option name="PARENT_ENVS" value="true" />
+      <option name="SDK_HOME" value="" />
+      <option name="WORKING_DIRECTORY" value="" />
+      <option name="IS_MODULE_SDK" value="false" />
+      <option name="ADD_CONTENT_ROOTS" value="true" />
+      <option name="ADD_SOURCE_ROOTS" value="true" />
+      <option name="docutils_input_file" value="" />
+      <option name="docutils_output_file" value="" />
+      <option name="docutils_params" value="" />
+      <option name="docutils_task" value="" />
+      <option name="docutils_open_in_browser" value="false" />
+      <method v="2" />
+    </configuration>
     <configuration default="true" type="JetRunConfigurationType">
       <module name="emadl-maven operator calculator" />
       <method v="2">
@@ -147,40 +171,6 @@
       </deployment>
       <method v="2" />
     </configuration>
-    <configuration default="true" type="docs" factoryName="Docutils task">
-      <module name="emadl-maven operator calculator" />
-      <option name="ENV_FILES" value="" />
-      <option name="INTERPRETER_OPTIONS" value="" />
-      <option name="PARENT_ENVS" value="true" />
-      <option name="SDK_HOME" value="" />
-      <option name="WORKING_DIRECTORY" value="" />
-      <option name="IS_MODULE_SDK" value="false" />
-      <option name="ADD_CONTENT_ROOTS" value="true" />
-      <option name="ADD_SOURCE_ROOTS" value="true" />
-      <option name="docutils_input_file" value="" />
-      <option name="docutils_output_file" value="" />
-      <option name="docutils_params" value="" />
-      <option name="docutils_task" value="" />
-      <option name="docutils_open_in_browser" value="false" />
-      <method v="2" />
-    </configuration>
-    <configuration default="true" type="docs" factoryName="Sphinx task">
-      <module name="emadl-maven operator calculator" />
-      <option name="ENV_FILES" value="" />
-      <option name="INTERPRETER_OPTIONS" value="" />
-      <option name="PARENT_ENVS" value="true" />
-      <option name="SDK_HOME" value="" />
-      <option name="WORKING_DIRECTORY" value="" />
-      <option name="IS_MODULE_SDK" value="false" />
-      <option name="ADD_CONTENT_ROOTS" value="true" />
-      <option name="ADD_SOURCE_ROOTS" value="true" />
-      <option name="docutils_input_file" value="" />
-      <option name="docutils_output_file" value="" />
-      <option name="docutils_params" value="" />
-      <option name="docutils_task" value="" />
-      <option name="docutils_open_in_browser" value="false" />
-      <method v="2" />
-    </configuration>
     <recent_temporary>
       <list>
         <item itemvalue="Docker.Dockerfile" />
@@ -190,8 +180,8 @@
   <component name="SharedIndexes">
     <attachedChunks>
       <set>
-        <option value="bundled-jdk-9f38398b9061-39b83d9b5494-intellij.indexing.shared.core-IU-241.18034.62" />
-        <option value="bundled-js-predefined-1d06a55b98c1-0b3e54e931b4-JavaScript-IU-241.18034.62" />
+        <option value="bundled-jdk-9823dce3aa75-fdfe4dae3a2d-intellij.indexing.shared.core-IU-243.22562.145" />
+        <option value="bundled-js-predefined-d6986cc7102b-deb605915726-JavaScript-IU-243.22562.145" />
       </set>
     </attachedChunks>
   </component>
@@ -239,6 +229,7 @@
       <workItem from="1731173088210" duration="5117000" />
       <workItem from="1731267616269" duration="619000" />
       <workItem from="1733474372615" duration="3780000" />
+      <workItem from="1734085169709" duration="883000" />
     </task>
     <servers />
   </component>
