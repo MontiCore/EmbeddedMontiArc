@@ -14,6 +14,7 @@ ARG PRIVATE_TOKEN
 ARG CI_JOB_TOKEN
 RUN mvn -X -e dependency:resolve -s settings.xml
 RUN mvn -e verify -s settings.xml
+
 RUN mvn -X  emadl:train -s settings.xml -U
 RUN chmod +x calculator.sh
 RUN mkdir -p input output

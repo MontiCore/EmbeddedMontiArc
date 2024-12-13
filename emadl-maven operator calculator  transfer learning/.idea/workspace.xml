@@ -5,18 +5,18 @@
   </component>
   <component name="ChangeListManager">
     <list default="true" id="7bfd14f2-faaf-4563-9767-f29a8dfce1d0" name="Changes" comment="">
-      <change beforePath="$PROJECT_DIR$/../emadl-maven hexadecimal calculator transfer learning/.idea/encodings.xml" beforeDir="false" afterPath="$PROJECT_DIR$/../emadl-maven hexadecimal calculator transfer learning/.idea/encodings.xml" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/../emadl-maven hexadecimal calculator transfer learning/.idea/jarRepositories.xml" beforeDir="false" afterPath="$PROJECT_DIR$/../emadl-maven hexadecimal calculator transfer learning/.idea/jarRepositories.xml" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/../emadl-maven hexadecimal calculator transfer learning/.idea/workspace.xml" beforeDir="false" afterPath="$PROJECT_DIR$/../emadl-maven hexadecimal calculator transfer learning/.idea/workspace.xml" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/../emadl-maven hexadecimal calculator transfer learning/Dockerfile" beforeDir="false" afterPath="$PROJECT_DIR$/../emadl-maven hexadecimal calculator transfer learning/Dockerfile" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/../emadl-maven hexadecimal calculator transfer learning/calculator.sh" beforeDir="false" afterPath="$PROJECT_DIR$/../emadl-maven hexadecimal calculator transfer learning/calculator.sh" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/../emadl-maven hexadecimal calculator transfer learning/pom.xml" beforeDir="false" afterPath="$PROJECT_DIR$/../emadl-maven hexadecimal calculator transfer learning/pom.xml" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/../emadl-maven hexadecimal calculator transfer learning/settings.xml" beforeDir="false" afterPath="$PROJECT_DIR$/../emadl-maven hexadecimal calculator transfer learning/settings.xml" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/../emadl-maven hexadecimal calculator transfer learning/src/main/emadl/calculator/ConnectorStream.stream" beforeDir="false" afterPath="$PROJECT_DIR$/../emadl-maven hexadecimal calculator transfer learning/src/main/emadl/calculator/ConnectorStream.stream" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/../emadl-maven hexadecimal calculator transfer learning/src/main/emadl/calculator/Network.conf" beforeDir="false" afterPath="$PROJECT_DIR$/../emadl-maven hexadecimal calculator transfer learning/src/main/emadl/calculator/Network.conf" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/../emadl-maven hexadecimal calculator transfer learning/src/main/emadl/calculator/Network.emadl" beforeDir="false" afterPath="$PROJECT_DIR$/../emadl-maven hexadecimal calculator transfer learning/src/main/emadl/calculator/Network.emadl" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/../emadl-maven hexadecimal calculator/.idea/misc.xml" beforeDir="false" afterPath="$PROJECT_DIR$/../emadl-maven hexadecimal calculator/.idea/misc.xml" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/../emadl-maven hexadecimal calculator/.idea/workspace.xml" beforeDir="false" afterPath="$PROJECT_DIR$/../emadl-maven hexadecimal calculator/.idea/workspace.xml" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/../emadl-maven hexadecimal calculator/settings.xml" beforeDir="false" afterPath="$PROJECT_DIR$/../emadl-maven hexadecimal calculator/settings.xml" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/.idea/workspace.xml" beforeDir="false" afterPath="$PROJECT_DIR$/.idea/workspace.xml" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/../mnist-modular/.idea/workspace.xml" beforeDir="false" afterPath="$PROJECT_DIR$/../mnist-modular/.idea/workspace.xml" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/Dockerfile" beforeDir="false" afterPath="$PROJECT_DIR$/Dockerfile" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/pom.xml" beforeDir="false" afterPath="$PROJECT_DIR$/pom.xml" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/settings.xml" beforeDir="false" afterPath="$PROJECT_DIR$/settings.xml" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/src/main/emadl/calculator/Network.emadl" beforeDir="false" afterPath="$PROJECT_DIR$/src/main/emadl/calculator/Network.emadl" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/../emadl-maven operator calculator/.idea/workspace.xml" beforeDir="false" afterPath="$PROJECT_DIR$/../emadl-maven operator calculator/.idea/workspace.xml" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/../emadl-maven operator calculator/settings.xml" beforeDir="false" afterPath="$PROJECT_DIR$/../emadl-maven operator calculator/settings.xml" afterDir="false" />
     </list>
     <option name="SHOW_DIALOG" value="false" />
     <option name="HIGHLIGHT_CONFLICTS" value="true" />
@@ -46,7 +46,7 @@
     "RunOnceActivity.git.unshallow": "true",
     "git-widget-placeholder": "master-haag",
     "kotlin-language-version-configured": "true",
-    "last_opened_file_path": "C:/Users/chris/Desktop/mnistcalculator/emadl-maven operator calculator  transfer learning",
+    "last_opened_file_path": "C:/Users/chris/Desktop/mnistcalculator/emadl-maven operator calculator",
     "node.js.detected.package.eslint": "true",
     "node.js.detected.package.tslint": "true",
     "node.js.selected.package.eslint": "(autodetect)",
@@ -229,7 +229,7 @@
       <workItem from="1731173088210" duration="5117000" />
       <workItem from="1731267616269" duration="619000" />
       <workItem from="1733474372615" duration="3780000" />
-      <workItem from="1734085169709" duration="883000" />
+      <workItem from="1734085169709" duration="1719000" />
     </task>
     <servers />
   </component>
