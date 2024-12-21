@@ -14,8 +14,8 @@
             <resource>
                 <directory>src/main/resources</directory>
                 <includes>
-                	<include>model.params</include>
-			<include>network-symbol.json</include>
+                	<include>network-0000.params</include>
+			        <include>network-symbol.json</include>
                 </includes>
             </resource>
         </resources>

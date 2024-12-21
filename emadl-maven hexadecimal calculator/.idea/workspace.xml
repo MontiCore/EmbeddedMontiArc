@@ -11,8 +11,12 @@
       <change beforePath="$PROJECT_DIR$/../emadl-maven hexadecimal calculator transfer learning/calculator.sh" beforeDir="false" afterPath="$PROJECT_DIR$/../emadl-maven hexadecimal calculator transfer learning/calculator.sh" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/../emadl-maven hexadecimal calculator transfer learning/pom.xml" beforeDir="false" afterPath="$PROJECT_DIR$/../emadl-maven hexadecimal calculator transfer learning/pom.xml" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/../emadl-maven hexadecimal calculator transfer learning/src/main/emadl/calculator/Network.emadl" beforeDir="false" afterPath="$PROJECT_DIR$/../emadl-maven hexadecimal calculator transfer learning/src/main/emadl/calculator/Network.emadl" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/../emadl-maven hexadecimal calculator transfer learning/trained_mnist_calc/pom.xml" beforeDir="false" afterPath="$PROJECT_DIR$/../emadl-maven hexadecimal calculator transfer learning/trained_mnist_calc/pom.xml" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/../emadl-maven hexadecimal calculator transfer learning/trained_mnist_calc/src/main/resources/model.params" beforeDir="false" afterPath="$PROJECT_DIR$/../emadl-maven hexadecimal calculator transfer learning/trained_mnist_calc/src/main/resources/network-0000.params" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/../emadl-maven hexadecimal calculator transfer learning/trained_mnist_calc/target/classes/model.params" beforeDir="false" />
       <change beforePath="$PROJECT_DIR$/../emadl-maven hexadecimal calculator transfer learning/trained_mnist_calc/target/mnist-calculator-trained-0.0.1.jar" beforeDir="false" afterPath="$PROJECT_DIR$/../emadl-maven hexadecimal calculator transfer learning/trained_mnist_calc/target/mnist-calculator-trained-0.0.1.jar" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/trained_mnist_calc/src/main/resources/model.params" beforeDir="false" afterPath="$PROJECT_DIR$/trained_mnist_calc/src/main/resources/network-0000.params" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/.idea/workspace.xml" beforeDir="false" afterPath="$PROJECT_DIR$/.idea/workspace.xml" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/trained_mnist_calc/pom.xml" beforeDir="false" afterPath="$PROJECT_DIR$/trained_mnist_calc/pom.xml" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/../emadl-maven operator calculator  transfer learning/.idea/jarRepositories.xml" beforeDir="false" afterPath="$PROJECT_DIR$/../emadl-maven operator calculator  transfer learning/.idea/jarRepositories.xml" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/../emadl-maven operator calculator  transfer learning/.idea/workspace.xml" beforeDir="false" afterPath="$PROJECT_DIR$/../emadl-maven operator calculator  transfer learning/.idea/workspace.xml" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/../emadl-maven operator calculator  transfer learning/Dockerfile" beforeDir="false" afterPath="$PROJECT_DIR$/../emadl-maven operator calculator  transfer learning/Dockerfile" afterDir="false" />
@@ -46,25 +50,25 @@
     <option name="hideEmptyMiddlePackages" value="true" />
     <option name="showLibraryContents" value="true" />
   </component>
-  <component name="PropertiesComponent">{
-  &quot;keyToString&quot;: {
-    &quot;Docker.Dockerfile.executor&quot;: &quot;Run&quot;,
-    &quot;RunOnceActivity.ShowReadmeOnStart&quot;: &quot;true&quot;,
-    &quot;RunOnceActivity.git.unshallow&quot;: &quot;true&quot;,
-    &quot;git-widget-placeholder&quot;: &quot;master-haag&quot;,
-    &quot;kotlin-language-version-configured&quot;: &quot;true&quot;,
-    &quot;last_opened_file_path&quot;: &quot;C:/Users/chris/Desktop/mnistcalculator/emadl-maven hexadecimal calculator&quot;,
-    &quot;node.js.detected.package.eslint&quot;: &quot;true&quot;,
-    &quot;node.js.detected.package.tslint&quot;: &quot;true&quot;,
-    &quot;node.js.selected.package.eslint&quot;: &quot;(autodetect)&quot;,
-    &quot;node.js.selected.package.tslint&quot;: &quot;(autodetect)&quot;,
-    &quot;nodejs_package_manager_path&quot;: &quot;npm&quot;,
-    &quot;project.structure.last.edited&quot;: &quot;Facets&quot;,
-    &quot;project.structure.proportion&quot;: &quot;0.0&quot;,
-    &quot;project.structure.side.proportion&quot;: &quot;0.2&quot;,
-    &quot;vue.rearranger.settings.migration&quot;: &quot;true&quot;
+  <component name="PropertiesComponent"><![CDATA[{
+  "keyToString": {
+    "Docker.Dockerfile.executor": "Run",
+    "RunOnceActivity.ShowReadmeOnStart": "true",
+    "RunOnceActivity.git.unshallow": "true",
+    "git-widget-placeholder": "master-haag",
+    "kotlin-language-version-configured": "true",
+    "last_opened_file_path": "C:/Users/chris/Desktop/mnistcalculator/emadl-maven hexadecimal calculator",
+    "node.js.detected.package.eslint": "true",
+    "node.js.detected.package.tslint": "true",
+    "node.js.selected.package.eslint": "(autodetect)",
+    "node.js.selected.package.tslint": "(autodetect)",
+    "nodejs_package_manager_path": "npm",
+    "project.structure.last.edited": "Facets",
+    "project.structure.proportion": "0.0",
+    "project.structure.side.proportion": "0.2",
+    "vue.rearranger.settings.migration": "true"
   }
-}</component>
+}]]></component>
   <component name="RecentsManager">
     <key name="CopyFile.RECENT_KEYS">
       <recent name="C:\Users\chris\Desktop\mnistcalculator\emadl-maven hexadecimal calculator" />
@@ -121,7 +125,9 @@
       <workItem from="1733390207235" duration="3297000" />
       <workItem from="1733473962821" duration="2733000" />
       <workItem from="1734090168251" duration="63000" />
-      <workItem from="1734796700509" duration="53000" />
+      <workItem from="1734796700509" duration="143000" />
+      <workItem from="1734796854105" duration="10000" />
+      <workItem from="1734797700111" duration="21000" />
     </task>
     <servers />
   </component>
