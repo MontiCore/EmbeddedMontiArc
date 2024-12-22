@@ -34,14 +34,14 @@
                     <training>
                         <backend>GLUON</backend>
                         <pathToPython>/usr/bin/python3</pathToPython>
-                        <modelToTrain>digits.DigitsComposed</modelToTrain>
+                        <modelToTrain>calculator.MnistComposed</modelToTrain>
                         <pathToProject>src/emadl</pathToProject>
                         <pathToTest>src/emadl</pathToTest>
                         <allowDecomposition>true</allowDecomposition>
-                        <decomposeNetwork>DigitsComposed</decomposeNetwork>
+                        <decomposeNetwork>MnistComposed</decomposeNetwork>
                     </training>
                 </configuration>
-           </plugin>
+            </plugin>
         </plugins>
     </build>
 
