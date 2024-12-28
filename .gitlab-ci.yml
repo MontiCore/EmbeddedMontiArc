@@ -117,6 +117,21 @@ deploy-mnist-operator-dataset:
   only:
     - master
 
+#Reduced operator mnist dataset
+install-mnist-operator-reduced-dataset:
+  image: maven:3.6-jdk-8
+  script:
+    - cd datasets/mnist_operators_reduced
+    - mvn emadl:install-dataset -s ../ci_settings.xml
+
+deploy-mnist-operator-reduced-dataset:
+  image: maven:3.6-jdk-8
+  script:
+    - cd datasets/mnist_operators_reduced
+    - mvn emadl:deploy-dataset -s ../ci_settings.xml
+  only:
+    - master
+
 #Hexadecimal mnist dataset
 install-mnist-hexadecimal-dataset:
   image: maven:3.6-jdk-8
