@@ -41,6 +41,14 @@
                                         <type>jar</type>
                                         <outputDirectory>${project.build.directory}/pretrained_model</outputDirectory>
                                     </artifactItem>
+                                    <artifactItem>
+                                        <groupId>de.monticore.lang.monticar.application</groupId>
+                                        <artifactId>mnist-calculator-trained</artifactId>
+                                        <version>0.0.1</version>
+                                        <type>jar</type>
+                                        <outputDirectory>${project.build.directory}/pretrained_Mnist_model</outputDirectory>
+                                        <includes>*.json,*.params</includes>
+                                    </artifactItem>
                                 </artifactItems>
                             </configuration>
                         </execution>
@@ -74,6 +82,11 @@
         <dependency>
             <groupId>de.monticore.lang.monticar.application</groupId>
             <artifactId>mnist-resnet-models</artifactId>
+            <version>0.0.1</version>
+        </dependency>
+        <dependency>
+            <groupId>de.monticore.lang.monticar.application</groupId>
+            <artifactId>mnist-calculator-trained</artifactId>
             <version>0.0.1</version>
         </dependency>
     </dependencies>

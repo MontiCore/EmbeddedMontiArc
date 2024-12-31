@@ -178,3 +178,5 @@ if __name__ == "__main__":
         if(prediction == label[index]):
             n = n + 1
     print(f"Accuracy = {float(n/1000):.3f}")
+
+

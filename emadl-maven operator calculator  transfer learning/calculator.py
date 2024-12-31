@@ -97,7 +97,7 @@ if __name__ == "__main__":
             / "monticar"
             / "datasets"
             / "mnist-operators"
-            / "1"
+            / "0.1"
             / "mnist-operators-1-dataset"
             / "training_data"
             / "test.h5"

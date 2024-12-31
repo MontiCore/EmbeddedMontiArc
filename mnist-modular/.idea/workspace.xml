@@ -5,11 +5,23 @@
   </component>
   <component name="ChangeListManager">
     <list default="true" id="27bc5749-1450-4740-8daf-d71e57296281" name="Changes" comment="">
-      <change afterPath="$PROJECT_DIR$/ModularesMnistExport/src/emadl/calculator/MnistClassifier.emadl" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/ModularesMnistExport/src/emadl/calculator/MnistComposed.conf" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/ModularesMnistExport/src/emadl/calculator/MnistComposed.emadl" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/ModularesMnistExport/src/emadl/calculator/MnistComposed.tag" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/ModularesMnistExport/src/emadl/calculator/MnistInputLayer.emadl" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/ModularMnistExport/Testing the Mxnet files/MnistInputLayer.emadl" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/ModularMnistExport/Testing the Mxnet files/modularMnistM2/calculator.MnistComposed.MnistClassifier_decomposed/model_MnistClassifier_decomposed-0000.params" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/ModularMnistExport/Testing the Mxnet files/modularMnistM2/calculator.MnistComposed.MnistClassifier_decomposed/model_MnistClassifier_decomposed-old-symbol.json" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/ModularMnistExport/Testing the Mxnet files/modularMnistM2/calculator.MnistComposed.MnistClassifier_decomposed/model_MnistClassifier_decomposed-symbol.json" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/ModularMnistExport/Testing the Mxnet files/modularMnistM2/calculator.MnistComposed.MnistInputLayer_decomposed/model_MnistInputLayer_decomposed-0000.params" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/ModularMnistExport/Testing the Mxnet files/modularMnistM2/calculator.MnistComposed.MnistInputLayer_decomposed/model_MnistInputLayer_decomposed-old-symbol.json" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/ModularMnistExport/Testing the Mxnet files/modularMnistM2/calculator.MnistComposed.MnistInputLayer_decomposed/model_MnistInputLayer_decomposed-symbol.json" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/ModularMnistExport/Testing the Mxnet files/modularMnistM2/calculator.MnistComposed/0000.params" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/ModularMnistExport/Testing the Mxnet files/modularMnistM2/calculator.MnistComposed/learning_rate.txt" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/ModularMnistExport/Testing the Mxnet files/modularMnistM2/calculator.MnistComposed/metric.json" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/ModularMnistExport/Testing the Mxnet files/modularMnistM2/calculator.MnistComposed/metric.txt" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/ModularMnistExport/Testing the Mxnet files/modularMnistM2/calculator.MnistComposed/newest-0000.params" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/ModularMnistExport/Testing the Mxnet files/modularMnistM2/calculator.MnistComposed/newest-symbol.json" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/ModularMnistExport/Testing the Mxnet files/modularMnistM2/calculator.MnistComposed/newest_loss-0000.params" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/ModularMnistExport/Testing the Mxnet files/modularMnistM2/calculator.MnistComposed/newest_loss-symbol.json" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/ModularMnistExport/Testing the Mxnet files/readme" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/ModularMnistExport/pom_build.xml" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/../emadl-maven hexadecimal calculator transfer learning/.idea/workspace.xml" beforeDir="false" afterPath="$PROJECT_DIR$/../emadl-maven hexadecimal calculator transfer learning/.idea/workspace.xml" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/../emadl-maven hexadecimal calculator transfer learning/Dockerfile" beforeDir="false" afterPath="$PROJECT_DIR$/../emadl-maven hexadecimal calculator transfer learning/Dockerfile" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/../emadl-maven hexadecimal calculator transfer learning/calculator.py" beforeDir="false" afterPath="$PROJECT_DIR$/../emadl-maven hexadecimal calculator transfer learning/calculator.py" afterDir="false" />
@@ -32,7 +44,15 @@
       <change beforePath="$PROJECT_DIR$/../emadl-maven-plugin/calculator.py" beforeDir="false" afterPath="$PROJECT_DIR$/../emadl-maven-plugin/calculator.py" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/../emadl-maven-plugin/calculator.sh" beforeDir="false" afterPath="$PROJECT_DIR$/../emadl-maven-plugin/calculator.sh" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/.idea/workspace.xml" beforeDir="false" afterPath="$PROJECT_DIR$/.idea/workspace.xml" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/DecompositionResNetExport/pom.xml" beforeDir="false" afterPath="$PROJECT_DIR$/ModularesMnistExport/pom_build.xml" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/ModularesMnistExport/Dockerfile" beforeDir="false" afterPath="$PROJECT_DIR$/ModularMnistExport/Dockerfile" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/ModularesMnistExport/pom_build.xml" beforeDir="false" afterPath="$PROJECT_DIR$/ModularMnistExport/Testing the Mxnet files/pom_build.xml" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/ModularesMnistExport/pom_deploy.xml" beforeDir="false" afterPath="$PROJECT_DIR$/ModularMnistExport/pom_deploy.xml" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/ModularesMnistExport/settings.xml" beforeDir="false" afterPath="$PROJECT_DIR$/ModularMnistExport/settings.xml" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/ModularesMnistExport/src/emadl/calculator/MnistClassifier.emadl" beforeDir="false" afterPath="$PROJECT_DIR$/ModularMnistExport/src/emadl/calculator/MnistClassifier.emadl" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/ModularesMnistExport/src/emadl/calculator/MnistComposed.conf" beforeDir="false" afterPath="$PROJECT_DIR$/ModularMnistExport/src/emadl/calculator/MnistComposed.conf" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/ModularesMnistExport/src/emadl/calculator/MnistComposed.emadl" beforeDir="false" afterPath="$PROJECT_DIR$/ModularMnistExport/src/emadl/calculator/MnistComposed.emadl" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/ModularesMnistExport/src/emadl/calculator/MnistComposed.tag" beforeDir="false" afterPath="$PROJECT_DIR$/ModularMnistExport/src/emadl/calculator/MnistComposed.tag" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/ModularesMnistExport/src/emadl/calculator/MnistInputLayer.emadl" beforeDir="false" afterPath="$PROJECT_DIR$/ModularMnistExport/src/emadl/calculator/MnistInputLayer.emadl" afterDir="false" />
     </list>
     <option name="SHOW_DIALOG" value="false" />
     <option name="HIGHLIGHT_CONFLICTS" value="true" />
@@ -69,7 +89,7 @@
     "RunOnceActivity.git.unshallow": "true",
     "git-widget-placeholder": "master-haag",
     "kotlin-language-version-configured": "true",
-    "last_opened_file_path": "C:/Users/chris/Desktop/mnistcalculator/mnist-modular/ModularesMnistExport",
+    "last_opened_file_path": "C:/Users/chris/Desktop/Experimente/emadl-maven hexadecimal calculator transfer learning",
     "node.js.detected.package.eslint": "true",
     "node.js.detected.package.tslint": "true",
     "node.js.selected.package.eslint": "(autodetect)",
@@ -80,9 +100,13 @@
 }]]></component>
   <component name="RecentsManager">
     <key name="CopyFile.RECENT_KEYS">
+      <recent name="C:\Users\chris\Desktop\mnistcalculator\mnist-modular\ModularesMnistExport\Testing the Mxnet files" />
       <recent name="C:\Users\chris\Desktop\mnistcalculator\mnist-modular\ModularesMnistExport" />
       <recent name="C:\Users\chris\Desktop\mnistcalculator\mnist-modular\ModularesMnistExport\src" />
       <recent name="C:\Users\chris\Desktop\mnistcalculator\mnist-modular" />
+    </key>
+    <key name="MoveFile.RECENT_KEYS">
+      <recent name="C:\Users\chris\Desktop\mnistcalculator\mnist-modular\ModularesMnistExport\Testing the Mxnet files" />
     </key>
   </component>
   <component name="SharedIndexes">
@@ -107,7 +131,12 @@
       <workItem from="1734012631352" duration="4932000" />
       <workItem from="1734077548339" duration="17000" />
       <workItem from="1734263769746" duration="2292000" />
-      <workItem from="1734857324109" duration="22561000" />
+      <workItem from="1734857324109" duration="23823000" />
+      <workItem from="1734890020994" duration="15000" />
+      <workItem from="1734892114768" duration="2721000" />
+      <workItem from="1734895218803" duration="3623000" />
+      <workItem from="1734899706026" duration="839000" />
+      <workItem from="1734970163814" duration="165000" />
     </task>
     <servers />
   </component>

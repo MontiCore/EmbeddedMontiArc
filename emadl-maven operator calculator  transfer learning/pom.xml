@@ -18,8 +18,8 @@
     <dependencies>
         <dependency>
             <groupId>de.monticore.lang.monticar.datasets</groupId>
-            <artifactId>mnist</artifactId>
-            <version>1</version>
+            <artifactId>mnist-operators</artifactId>
+            <version>0.1</version>
             <classifier>dataset</classifier>
         </dependency>
         <dependency>
@@ -51,24 +51,6 @@
                                     <type>jar</type>
                                     <outputDirectory>${project.build.directory}/pretrained_model</outputDirectory>
                                 </artifactItem>
-                            </artifactItems>
-                        </configuration>
-                    </execution>
-                </executions>
-            </plugin>
-            <plugin>
-                <groupId>org.apache.maven.plugins</groupId>
-                <artifactId>maven-dependency-plugin</artifactId>
-                <version>3.6.0</version>
-                <executions>
-                    <execution>
-                        <id>unpack-files</id>
-                        <phase>package</phase>
-                        <goals>
-                            <goal>unpack</goal>
-                        </goals>
-                        <configuration>
-                            <artifactItems>
                                 <artifactItem>
                                     <groupId>de.monticore.lang.monticar.application</groupId>
                                     <artifactId>mnist-calculator-trained</artifactId>
@@ -98,5 +80,24 @@
            </plugin>
         </plugins>
     </build>
+
+    <repositories>
+        <repository>
+            <id>gitlab-maven</id>
+            <url>https://git.rwth-aachen.de/api/v4/projects/25225/packages/maven</url>
+        </repository>
+    </repositories>
+
+    <distributionManagement>
+        <repository>
+            <id>gitlab-maven</id>
+            <url>https://git.rwth-aachen.de/api/v4/projects/25225/packages/maven</url>
+        </repository>
+
+        <snapshotRepository>
+            <id>gitlab-maven</id>
+            <url>https://git.rwth-aachen.de/api/v4/projects/25225/packages/maven</url>
+        </snapshotRepository>
+    </distributionManagement>
 
 </project>

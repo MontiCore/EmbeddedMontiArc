@@ -5,6 +5,7 @@ RUN rm -rf /root/.m2
 
 COPY . .
 
+RUN cd trained_mnist_calc && mvn clean install -s ci_settings.xml
 
 
 RUN mvn -e dependency:resolve -s settings.xml

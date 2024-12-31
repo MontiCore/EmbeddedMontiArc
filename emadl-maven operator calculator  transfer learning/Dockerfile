@@ -1,21 +1,16 @@
 ARG BASE_IMAGE=registry.git.rwth-aachen.de/monticore/embeddedmontiarc/generators/emadl2cpp/mxnet/190:v0.0.2
 FROM $BASE_IMAGE
 
-RUN rm -rf /root/.m2/repository
+RUN rm -rf /root/.m2
 
-COPY . /build/mnistcalc/emadl-maven-plugin
-WORKDIR /build/mnistcalc/emadl-maven-plugin/trained_mnist_calc
-RUN mvn clean install -s ci_settings.xml
-WORKDIR /build/mnistcalc/emadl-maven-plugin
+COPY . .
 
 
 
-ARG PRIVATE_TOKEN
-ARG CI_JOB_TOKEN
-RUN mvn -X -e dependency:resolve -s settings.xml
-RUN mvn -e verify -s settings.xml
+RUN mvn -e dependency:resolve -s settings.xml
+RUN mvn -e clean verify -s settings.xml
 
-RUN mvn -X  emadl:train -s settings.xml -U
+RUN mvn  emadl:train -s settings.xml -U
 RUN chmod +x calculator.sh
 RUN mkdir -p input output
 
