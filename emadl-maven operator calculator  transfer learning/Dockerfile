@@ -3,8 +3,8 @@ FROM $BASE_IMAGE
 
 RUN rm -rf /root/.m2
 
-COPY . .
-
+COPY . /build/mnistcalc/opTL
+WORKDIR /build/mnistcalc/opTL
 
 
 RUN mvn -e dependency:resolve -s settings.xml

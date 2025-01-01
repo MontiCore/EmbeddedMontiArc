@@ -27,6 +27,17 @@
             <artifactId>mnist-resnet-models</artifactId>
             <version>0.0.1</version>
         </dependency>
+        <dependency>
+            <groupId>de.monticore.lang.monticar.application</groupId>
+            <artifactId>mnist-calculator-trained</artifactId>
+            <version>0.0.1</version>
+        </dependency>
+        <dependency>
+            <groupId>de.monticore.lang.monticar.datasets</groupId>
+            <artifactId>mnist-operators-reduced</artifactId>
+            <version>0.1</version>
+            <classifier>dataset</classifier>
+        </dependency>
     </dependencies>
 
     <build>
@@ -77,27 +88,8 @@
                         <pathToTest>src/main/emadl</pathToTest>
                     </training>
                 </configuration>
-           </plugin>
+            </plugin>
         </plugins>
     </build>
-
-    <repositories>
-        <repository>
-            <id>gitlab-maven</id>
-            <url>https://git.rwth-aachen.de/api/v4/projects/25225/packages/maven</url>
-        </repository>
-    </repositories>
-
-    <distributionManagement>
-        <repository>
-            <id>gitlab-maven</id>
-            <url>https://git.rwth-aachen.de/api/v4/projects/25225/packages/maven</url>
-        </repository>
-
-        <snapshotRepository>
-            <id>gitlab-maven</id>
-            <url>https://git.rwth-aachen.de/api/v4/projects/25225/packages/maven</url>
-        </snapshotRepository>
-    </distributionManagement>
 
 </project>
