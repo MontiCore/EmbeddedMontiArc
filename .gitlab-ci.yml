@@ -286,3 +286,14 @@ DeployDecompositionResNetArtifact:
   needs:
     - TestEMADLMavenPlugin
 
+  
+#Mnist Variants Functional Tests
+TrainHexadecimal_MnistCalculator:
+  stage: test
+  image: registry.git.rwth-aachen.de/monticore/embeddedmontiarc/generators/emadl2cpp/mxnet/190:v0.0.2
+
+  script:
+  - cd  "emadl-maven hexadecimal calculator"
+  - mvn dependency:resolve -s settings.xml
+  - mvn emadl:train -s settings.xml
+
