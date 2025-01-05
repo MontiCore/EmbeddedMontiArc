@@ -28,19 +28,6 @@ stages:
 #  - "if [[ $RES != *\"SUM: 857\"* ]]; then echo \"Wrong result:\" $RES; exit 1; fi;"
 
 
-  
-#Mnist Variants Functional Tests
-TrainHexadecimal_MnistCalculator:
-  stage: test
-  image: registry.git.rwth-aachen.de/monticore/embeddedmontiarc/generators/emadl2cpp/mxnet/190:v0.0.2
-
-  script:
-    - cd "emadl-maven hexadecimal calculator"
-    - python3 -m pip install -U pip
-    - python3 -m pip install scikit-image
-    - python3 -m pip install opencv-python
-    - mvn dependency:resolve emadl:train -s settings.xml -U
-
 TestTENSORFLOW:
   stage: test
   image: registry.git.rwth-aachen.de/monticore/embeddedmontiarc/applications/mnistcalculator/tensorflow
@@ -300,6 +287,17 @@ DeployDecompositionResNetArtifact:
 
   
 #Mnist Variants Functional Tests
+TrainHexadecimal_MnistCalculator:
+  stage: test
+  image: registry.git.rwth-aachen.de/monticore/embeddedmontiarc/generators/emadl2cpp/mxnet/190:v0.0.2
+
+  script:
+    - cd "emadl-maven hexadecimal calculator"
+    - python3 -m pip install -U pip
+    - python3 -m pip install scikit-image
+    - python3 -m pip install opencv-python
+    - echo "$PWD"
+    - mvn dependency:resolve emadl:train -s settings.xml -U
 
 TrainOperator_MnistCalculator:
   stage: test
@@ -310,7 +308,7 @@ TrainOperator_MnistCalculator:
     - python3 -m pip install -U pip
     - python3 -m pip install scikit-image
     - python3 -m pip install opencv-python
-    - echo $pwd
+    - echo "$PWD"
     - mvn dependency:resolve emadl:train -s settings.xml -U
     - mkdir output
     - python3 calculator.py
