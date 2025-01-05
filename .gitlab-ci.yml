@@ -262,7 +262,7 @@ DeployMnistCalcArtifact:
   stage: prebuild
   image: maven:3.6-jdk-8
   script:
-    - cd "emadl-maven hexadecimal calculator/trained_mnist_calc"
+    - cd "emadl-maven_hexadecimal_calculator/trained_mnist_calc"
     - 'mvn deploy -s ci_settings.xml'
 
 
@@ -292,11 +292,14 @@ TrainHexadecimal_MnistCalculator:
   image: registry.git.rwth-aachen.de/monticore/embeddedmontiarc/generators/emadl2cpp/mxnet/190:v0.0.2
 
   script:
-    - cd "emadl-maven hexadecimal calculator"
+    - cd "emadl-maven_hexadecimal_calculator"
     - python3 -m pip install -U pip
     - python3 -m pip install scikit-image
     - python3 -m pip install opencv-python
     - echo "$PWD"
+    - cd src/main/emadl/calculator
+    - ls
+    - cd ../../../..
     - mvn dependency:resolve emadl:train -s settings.xml -U
 
 TrainOperator_MnistCalculator:
@@ -304,7 +307,7 @@ TrainOperator_MnistCalculator:
   image: registry.git.rwth-aachen.de/monticore/embeddedmontiarc/generators/emadl2cpp/mxnet/190:v0.0.2
 
   script:
-    - cd "emadl-maven operator calculator"
+    - cd "emadl-maven_operator_calculator"
     - python3 -m pip install -U pip
     - python3 -m pip install scikit-image
     - python3 -m pip install opencv-python
