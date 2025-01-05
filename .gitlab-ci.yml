@@ -293,7 +293,8 @@ TrainHexadecimal_MnistCalculator:
   image: registry.git.rwth-aachen.de/monticore/embeddedmontiarc/generators/emadl2cpp/mxnet/190:v0.0.2
 
   script:
+  - ls
   - cd  "emadl-maven hexadecimal calculator"
-  - mvn dependency:resolve -s settings.xml
-  - mvn emadl:train -s settings.xml
+  - mvn dependency:resolve -s settings.xml -U
+  - mvn emadl:train -s settings.xml -U
 
