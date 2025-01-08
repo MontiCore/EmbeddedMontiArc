@@ -321,7 +321,7 @@ TrainHexadecimal_MnistCalculatorTL:
   image: registry.git.rwth-aachen.de/monticore/embeddedmontiarc/generators/emadl2cpp/mxnet/190:v0.0.2
 
   script:
-    - cd "emadl-maven_operator_calculator_transfer_learning"
+    - cd "emadl-maven_hexadecimal_calculator_transfer_learning"
     - python3 -m pip install -U pip
     - python3 -m pip install scikit-image
     - python3 -m pip install opencv-python
