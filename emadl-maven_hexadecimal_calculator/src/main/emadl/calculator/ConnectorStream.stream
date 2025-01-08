@@ -9,5 +9,5 @@ stream ConnectorStream for Connector {
     image6: file::"/src/main/resources/images/6.png" tick file::"/src/main/resources/images/1.png";
 
 
-    res: 3081 tick 546; //1401 //579 tick 546 // 222; // durch eine Datei
+    res: 1497 tick 546; //1401 //579 tick 546 // 222; // durch eine Datei
 }
