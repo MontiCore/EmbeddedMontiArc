@@ -326,7 +326,9 @@ TrainOperator_MnistCalculatorTL:
     - python3 -m pip install scikit-image
     - python3 -m pip install opencv-python
     - echo "$PWD"
-    - mvn dependency:resolve emadl:train -s settings.xml -U
+    - mvn dependency:resolve  -s settings.xml -U
+    - mvn clean verify -s settings.xml -U
+    - mvn emadl:train -s settings.xml -U
     - mkdir output
     - python3 calculator.py
 
