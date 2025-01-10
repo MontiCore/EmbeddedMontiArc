@@ -287,6 +287,8 @@ DeployDecompositionResNetArtifact:
 
   
 #Mnist Variants Functional Tests
+#Hexadecimal Calculator
+
 TrainHexadecimal_MnistCalculator:
   stage: test
   image: registry.git.rwth-aachen.de/monticore/embeddedmontiarc/generators/emadl2cpp/mxnet/190:v0.0.2
@@ -317,6 +319,8 @@ TrainHexadecimal_MnistCalculatorTL:
     - mvn emadl:train -s settings.xml -U
     - mkdir output
     - python3 calculator.py
+
+#Operator Calculator
 
 TrainOperator_MnistCalculator:
   stage: test
