@@ -302,6 +302,22 @@ TrainHexadecimal_MnistCalculator:
     - cd ../../../..
     - mvn dependency:resolve emadl:train -s settings.xml -U
 
+TrainHexadecimal_MnistCalculatorTL:
+  stage: test
+  image: registry.git.rwth-aachen.de/monticore/embeddedmontiarc/generators/emadl2cpp/mxnet/190:v0.0.2
+
+  script:
+    - cd "emadl-maven_hexadecimal_calculator_transfer_learning"
+    - python3 -m pip install -U pip
+    - python3 -m pip install scikit-image
+    - python3 -m pip install opencv-python
+    - echo "$PWD"
+    - mvn dependency:resolve  -s settings.xml -U
+    - mvn clean verify -s settings.xml -U
+    - mvn emadl:train -s settings.xml -U
+    - mkdir output
+    - python3 calculator.py
+
 TrainOperator_MnistCalculator:
   stage: test
   image: registry.git.rwth-aachen.de/monticore/embeddedmontiarc/generators/emadl2cpp/mxnet/190:v0.0.2
