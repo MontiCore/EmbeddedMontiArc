@@ -1,5 +1,5 @@
+#bin/bash
 set -e
-
 echo "Found the following files: $(ls input | tr '\n' ' ')"
 if [ $(ls input | wc -l) == "6" ]; then
     echo "Found exactly 6 input files. The mnistcalculator will run with the input files.";

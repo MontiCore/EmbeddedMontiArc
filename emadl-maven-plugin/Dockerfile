@@ -1,4 +1,4 @@
-ARG BASE_IMAGE=base/mxnet
+ARG BASE_IMAGE=registry.git.rwth-aachen.de/monticore/embeddedmontiarc/generators/emadl2cpp/mxnet/190:v0.0.2
 FROM $BASE_IMAGE
 
 COPY . /build/mnistcalc/emadl-maven-plugin

@@ -28,7 +28,6 @@ stages:
 #  - "if [[ $RES != *\"SUM: 857\"* ]]; then echo \"Wrong result:\" $RES; exit 1; fi;"
 
 
-
 TestTENSORFLOW:
   stage: test
   image: registry.git.rwth-aachen.de/monticore/embeddedmontiarc/applications/mnistcalculator/tensorflow
@@ -255,3 +254,101 @@ TestGluonONNX:
     - "if [[ $RES != *\"SUM: 579\"* ]]; then echo \"Wrong result:\" $RES; exit 1; fi;"
   except:
     - modular_testing
+
+
+#Deployment of Maven Artifacts (required for other some of the tranfer experiments)
+
+DeployMnistCalcArtifact:
+  stage: prebuild
+  image: maven:3.6-jdk-8
+  script:
+    - cd "emadl-maven_hexadecimal_calculator/trained_mnist_calc"
+    - 'mvn deploy -s ci_settings.xml'
+
+
+#From experiment mnist-modular: The use of emadl:train is required (thus stage test)
+DeployDecompositionResNetArtifact:
+  stage: test
+  image: registry.git.rwth-aachen.de/monticore/embeddedmontiarc/generators/emadl2cpp/mxnet/190:v0.0.2
+  script:
+    - export TZ=Europe/Berlin
+    - apt-get update && DEBIAN_FRONTEND=noninteractive apt-get install -y tzdata libomp-dev libopencv-dev python3-opencv
+    - ln -fs /usr/share/zoneinfo/Europe/Berlin /etc/localtime
+    - dpkg-reconfigure --frontend noninteractive tzdata
+    - python3 -m pip install --upgrade pip
+    - python3 -m pip install scikit-image opencv-python
+    - ln -fs /usr/bin/python3 /usr/bin/python
+    - cd mnist-modular/DecompositionResNetExport
+    - mvn dependency:resolve -s settings.xml -U -f pom_build.xml
+    - mvn emadl:train -s settings.xml -U -f pom_build.xml
+    - mvn deploy -s settings.xml -U -f pom_deploy.xml
+  needs:
+    - TestEMADLMavenPlugin
+
+  
+#Mnist Variants Functional Tests
+#Hexadecimal Calculator
+
+TrainHexadecimal_MnistCalculator:
+  stage: test
+  image: registry.git.rwth-aachen.de/monticore/embeddedmontiarc/generators/emadl2cpp/mxnet/190:v0.0.2
+
+  script:
+    - cd "emadl-maven_hexadecimal_calculator"
+    - python3 -m pip install -U pip
+    - python3 -m pip install scikit-image
+    - python3 -m pip install opencv-python
+    - echo "$PWD"
+    - cd src/main/emadl/calculator
+    - ls
+    - cd ../../../..
+    - mvn dependency:resolve emadl:train -s settings.xml -U
+
+TrainHexadecimal_MnistCalculatorTL:
+  stage: test
+  image: registry.git.rwth-aachen.de/monticore/embeddedmontiarc/generators/emadl2cpp/mxnet/190:v0.0.2
+
+  script:
+    - cd "emadl-maven_hexadecimal_calculator_transfer_learning"
+    - python3 -m pip install -U pip
+    - python3 -m pip install scikit-image
+    - python3 -m pip install opencv-python
+    - echo "$PWD"
+    - mvn dependency:resolve  -s settings.xml -U
+    - mvn clean verify -s settings.xml -U
+    - mvn emadl:train -s settings.xml -U
+    - mkdir output
+    - python3 calculator.py
+
+#Operator Calculator
+
+TrainOperator_MnistCalculator:
+  stage: test
+  image: registry.git.rwth-aachen.de/monticore/embeddedmontiarc/generators/emadl2cpp/mxnet/190:v0.0.2
+
+  script:
+    - cd "emadl-maven_operator_calculator"
+    - python3 -m pip install -U pip
+    - python3 -m pip install scikit-image
+    - python3 -m pip install opencv-python
+    - echo "$PWD"
+    - mvn dependency:resolve emadl:train -s settings.xml -U
+    - mkdir output
+    - python3 calculator.py
+
+TrainOperator_MnistCalculatorTL:
+  stage: test
+  image: registry.git.rwth-aachen.de/monticore/embeddedmontiarc/generators/emadl2cpp/mxnet/190:v0.0.2
+
+  script:
+    - cd "emadl-maven_operator_calculator_transfer_learning"
+    - python3 -m pip install -U pip
+    - python3 -m pip install scikit-image
+    - python3 -m pip install opencv-python
+    - echo "$PWD"
+    - mvn dependency:resolve  -s settings.xml -U
+    - mvn clean verify -s settings.xml -U
+    - mvn emadl:train -s settings.xml -U
+    - mkdir output
+    - python3 calculator.py
+
