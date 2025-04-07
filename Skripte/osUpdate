@@ -1,0 +1,7 @@
+Ubuntu
+docker run -it your-container-id /bin/bash
+docker exec -it your-container-id /bin/bash
+apt update && apt upgrade -y
+sed -i 's/bionic/focal/g' /etc/apt/sources.list
+apt update && apt dist-upgrade -y
+docker commit your-container-id new-image-name:latest
