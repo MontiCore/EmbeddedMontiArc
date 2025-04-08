@@ -98,6 +98,8 @@ class GithubActionConverter(Converter):
             jobString += f"\t\t\t\trun: |\n"
             #jobString += f"\t\t\t\t\tcd repo\n"    #For manual clone
             for command in job.script:
+                if "mvn" in command:
+                    command += " -Dmaven.wagon.http.retryHandler.count=50 -Dmaven.wagon.http.connectionTimeout=6000000 -Dmaven.wagon.http.readTimeout=600000000"
                 jobString += f"\t\t\t\t\t{command}\n"
         else:
             jobString += f"\t\t\t- name: Script\n"
@@ -106,6 +108,8 @@ class GithubActionConverter(Converter):
             jobString += f"\t\t\t\t\t\tcd /workspace\n"
 
             for command in job.script:
+                if "mvn" in command:
+                    command += " -Dmaven.wagon.http.retryHandler.count=50 -Dmaven.wagon.http.connectionTimeout=60000000 -Dmaven.wagon.http.readTimeout=60000000"
                 jobString += f"\t\t\t\t\t\t{command}\n"
             jobString += f'\t\t\t\trun: docker exec build-container bash -c "$SCRIPT"\n'
         if job.artifacts:
@@ -182,7 +186,7 @@ class GithubActionConverter(Converter):
         upload += f"\t\t\t\tuses: actions/upload-artifact@v4\n"
         upload += f"\t\t\t\tif: success()\n"
         upload += f"\t\t\t\twith:\n"
-        upload +=  f'\t\t\t\t\tname: {name}\n' #Todo: Change to previous job name
+        upload +=  f'\t\t\t\t\tname: {name}\n'
         upload += f"\t\t\t\t\tretention-days: 7\n" #Todo: Change to expiration
         upload += f"\t\t\t\t\tpath: |\n"
         for path in paths:

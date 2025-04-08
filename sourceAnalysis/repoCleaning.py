@@ -1,12 +1,13 @@
 import subprocess
 
-def run_git_filter_repo():
+def run_git_filter_repo(path = "."):
     try:
         result = subprocess.run(
-            ['git', 'filter-repo', '--strip-blobs-bigger-than', '100M'],
+            ['git', 'filter-repo', '--strip-blobs-bigger-than', '100M', '--force'],
             check=True,
             stdout=subprocess.PIPE,
-            stderr=subprocess.PIPE
+            stderr=subprocess.PIPE,
+            cwd=path
         )
         print("Command output:", result.stdout.decode())
     except subprocess.CalledProcessError as e:
