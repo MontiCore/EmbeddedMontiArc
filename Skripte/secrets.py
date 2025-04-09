@@ -24,7 +24,7 @@ def find_env_vars_in_repo(repo_path):
     return env_vars_found
 
 if __name__ == "__main__":
-    repo_path = '/mnt/c/Users/blumd/Desktop/Public migration/mnistcalculator'  # Path to the git repository
+    repo_path = '../repos/MNISTCalculator'  # Path to the git repository
     print(repo_path)
     env_vars = find_env_vars_in_repo(repo_path)
     env_All = set()

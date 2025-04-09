@@ -36,6 +36,9 @@ class GithubUploader(Uploader):
                     logger.info(f"Repository '{repoName}' deleted.")
                     repo = self.g.get_user().create_repo(repoName, private=True)
                     logger.info(f"New repository '{repoName}' created.")
+                else:
+                    logger.info(f"Keeping existing repository '{repoName}'.")
+                    repo = self.g.get_user().get_repo(repoName)
             else:
                 raise
         return repo
@@ -60,26 +63,31 @@ class GithubUploader(Uploader):
     def uploadRepo(self, repoID):
         """
         Upload a repository to the target Git instance.
-        :param repo: Repository object
+        :param repoID: RepositoryID to be uploaded
         """
         repo = git.Repo("./repos/" + self.repoNames[repoID])
         logger.info(f"Uploading {self.repoNames[repoID]} to the target Git instance...")
 
         # Create a new private repository on the target Git instance
         newRepo = self.createPrivateRepo(self.repoNames[repoID])
+        existingBranches = [b.name for b in newRepo.get_branches()]
         remote_url = newRepo.clone_url.replace("https://", f"https://{self.__privateToken}@")
         self.reset_remote_origin(repo, remote_url)
         for branch in self.branchesToBeMigrated[repoID]:
-            logger.info(f"Uploading {branch} branch...")
-            with PushProgress() as progress:
-                repo.remote(name="origin").push(refspec=f"{branch}:{branch}", force=True, progress=progress)
-            logger.info(f"Branch {branch} uploaded successfully.")
+
+            if branch in existingBranches:
+                logger.info(f"Branch {branch} already exists in the target repository.")
+            else:
+                logger.info(f"Uploading {branch} branch...")
+                with PushProgress() as progress:
+                    repo.remote(name="origin").push(refspec=f"{branch}:{branch}", force=True, progress=progress)
+                logger.info(f"Branch {branch} uploaded successfully.")
         newRepo.edit(default_branch="master")
 
     def reset_remote_origin(self, repo, new_remote_url):
         """
         Entfernt das Remote-Repository 'origin' und setzt es mit einem neuen Wert zurück.
-        :param repo_path: Pfad zum lokalen Git-Repository
+        :param repo: Repo Objekt, das das Remote-Repository enthält
         :param new_remote_url: Neue URL für das Remote-Repository
         """
         try:
