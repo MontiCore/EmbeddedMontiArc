@@ -8,7 +8,12 @@ class Uploader(ABC):
 
         self.branchesToBeMigrated = {}
         for repoID in data.keys():
-            self.branchesToBeMigrated[str(repoID)] = data[repoID]["Branches"]
+            if data[repoID]["Branches"] is None:
+                self.branchesToBeMigrated[str(repoID)] = data[repoID]["StaleBranches"]
+            elif data[repoID]["StaleBranches"] is None:
+                self.branchesToBeMigrated[str(repoID)] = data[repoID]["Branches"]
+            else:
+                self.branchesToBeMigrated[str(repoID)] = list(set(data[repoID]["Branches"]).union(set(data[repoID]["StaleBranches"])))
         print(self.branchesToBeMigrated)
 
         self.repoIDS = data.keys()

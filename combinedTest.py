@@ -2,29 +2,56 @@ from tqdm import tqdm
 
 import Config
 import sourceAnalysis
+#from UploaderTest import architecture
 from sourceAnalysis import findLargeFilesInHistory
 from pipelineMigration import GitlabToGithub
 from sourceAnalysis import run_git_filter_repo, split_large_files
 
 import yaml
+import git
 
+print("Starting scan and clone")
 
 config = Config.Config("repos.yaml")
 dr = sourceAnalysis.scanAndCloneRepos(config)
 
 data = yaml.safe_load(open("architecture.yaml"))
-for repoID in data.keys():
-    print()
-    print(data[repoID]["Name"])
-    findLargeFilesInHistory("repos/" + data[repoID]["Name"])
-
-    split_large_files("repos/" + data[repoID]["Name"], 1000000)
-    run_git_filter_repo("repos/" + data[repoID]["Name"])
+#for repoID in data.keys():
+    #print()
+    #print(data[repoID]["Name"])
     #findLargeFilesInHistory("repos/" + data[repoID]["Name"])
+
+    #split_large_files("./repos/" + data[repoID]["Name"])
+    #run_git_filter_repo("repos/" + data[repoID]["Name"])
+    #findLargeFilesInHistory("repos/" + data[repoID]["Name"])
+
+#print()
+#print("Starting migration")
+#for repoID in tqdm(data.keys(), desc="Migrating pipelines"):
+#    gitlabRepoPath = "repos/" + data[repoID]["Name"]
+#    githubRepoPath = "repos/" + data[repoID]["Name"]
+#    print(repoID)
+#    GitlabToGithub(gitlabRepoPath, githubRepoPath, "pipeline", ["GITLABTOKEN", "CI_API_V4_URL", "CI_PROJECT_ID"])
 
 print()
 print("Starting migration")
+architecture = yaml.safe_load(open("architecture.yaml"))
 for repoID in tqdm(data.keys(), desc="Migrating pipelines"):
-    gitlabFilePath = "repos/" + data[repoID]["Name"] + "/.gitlab-ci.yml"
-    githubFilePath = "repos/" + data[repoID]["Name"] + "/.main.yml"
-    GitlabToGithub(gitlabFilePath, githubFilePath, "pipeline", ["GitlabToken", "URL", "ID"])
+    repo = git.Repo("./repos/" + data[repoID]["Name"])
+    gitlabRepoPath = "repos/" + data[repoID]["Name"]
+    githubRepoPath = "repos/" + data[repoID]["Name"]
+    if data[repoID]["Branches"] is None:
+        branches= data[repoID]["StaleBranches"]
+    elif data[repoID]["StaleBranches"] is None:
+        branches = data[repoID]["Branches"]
+    else:
+        branches = list(set(data[repoID]["Branches"]).union(set(data[repoID]["StaleBranches"])))
+    for branch in branches:
+        split_large_files("./repos/" + data[repoID]["Name"])
+        print("Migrating branch: " + branch)
+        print(repoID)
+        repo.git.checkout(branch)
+        GitlabToGithub(gitlabRepoPath, githubRepoPath, "pipeline", ["GITLABTOKEN", "CI_API_V4_URL", "CI_PROJECT_ID"])
+        #input("WAIT")
+    repo.git.checkout("master")
+    run_git_filter_repo("repos/" + data[repoID]["Name"])

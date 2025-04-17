@@ -56,7 +56,7 @@ class GithubActionConverter(Converter):
             previousJobs = self.pipeline.getPreviousStageJobs(job)
 
         jobString=""
-        jobString += f"\t{job.name}:\n"
+        jobString += f"\t{job.name.replace("/","_")}:\n"
         if previousJobs:
             jobString += (f"\t\tneeds: ")
             if len(previousJobs) == 1:
@@ -82,10 +82,11 @@ class GithubActionConverter(Converter):
             jobString += f"\t\t\timage: {job.image}\n"
         jobString += f"\t\ttimeout-minutes: {self.timeout}\n"
         jobString += f"\t\tsteps:\n"
-        jobString += GithubActionConverter.__addCheckoutStep("DavidBlm/MNISTPipeline")
+        jobString += GithubActionConverter.__addCheckoutStep()
+        #jobString += GithubActionConverter.__addCheckoutStep("DavidBlm/MNISTPipeline")
         #jobString += self.__addCheckoutStepManual("DavidBlm/MNISTPipeline")
-        #jobString += GithubActionConverter.__restoreLargeFilesStep()
-        jobString += GithubActionConverter.__restoreH5()
+        jobString += GithubActionConverter.__restoreLargeFilesStep()
+        #jobString += GithubActionConverter.__restoreH5()
         if job.needs:
             for need in job.needs:
                 if self.pipeline.jobs[need].artifacts:

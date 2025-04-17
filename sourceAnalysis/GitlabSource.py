@@ -1,5 +1,7 @@
+import datetime
 import os
 import subprocess
+
 
 import gitlab
 import yaml
@@ -8,6 +10,7 @@ from tqdm import tqdm
 import git
 
 from sourceAnalysis.Git import Git
+
 
 
 class Gitlab(Git):
@@ -24,7 +27,21 @@ class Gitlab(Git):
             repoData= {}
             repo = self.getRepo(repoID)
             repoData['Name'] = self.getRepoName(repo)
-            repoData['Branches'] = self.getBranches(repo)
+            repoData['Namespace'] = self.getNamespace(repo)
+            branches = self.getBranches(repo)
+            staleBranches = self.getStaleBranches(repo)
+            repoData['Branches'] = []
+            repoData['StaleBranches'] = []
+            for b in branches:
+                if b not in staleBranches:
+                    repoData['Branches'].append(b)
+                else:
+                    repoData['StaleBranches'].append(b)
+            if repoData['Branches'] == []:
+                repoData['Branches'] = None
+            if repoData['StaleBranches'] == []:
+                repoData['StaleBranches'] = None
+
             dockerImages = self.getDockerImages(repo)
             if dockerImages:
                 repoData['DockerImages'] = dockerImages
@@ -68,6 +85,16 @@ class Gitlab(Git):
             data.append(branch.name)
         return data
 
+    def getStaleBranches(self, repo):
+        cutoff_date = datetime.datetime.now(datetime.timezone.utc) - datetime.timedelta(days=90)
+        stale_branches = []
+        branches = repo.branches.list(all=True)
+        for branch in branches:
+            commit_date = datetime.datetime.fromisoformat(branch.commit['committed_date']).replace(tzinfo=datetime.timezone.utc)
+            if commit_date < cutoff_date:
+                stale_branches.append(branch.name)
+        return stale_branches
+
     def getDockerImages(self,repo):
         data = []
         try:
@@ -87,6 +114,9 @@ class Gitlab(Git):
         except gitlab.exceptions.GitlabListError:
             pass
         return data
+
+    def getNamespace(self, repo):
+        return repo.namespace['full_path']
 
     def cloneRepo(self, repo_id, clone_path):
         repo = self.getRepo(repo_id)
@@ -113,7 +143,29 @@ class Gitlab(Git):
             rc = process.poll()
         else:
             print("LFS-Objekte nicht gefunden, keine weiteren Schritte erforderlich.")
+        self.chekoutBranches(name)
         #self.removeRemoteOrigin(clone_path)
+
+    def chekoutBranches(self, repoName):
+        """
+        Checkout all branches available in the remote repository.
+        :param repoName: Name of the repository to be checked out
+        """
+        repo = git.Repo("./repos/" + repoName)
+        print(f"Fetching all branches for {repoName}...")
+        repo.remotes.origin.fetch()  # Fetch all branches from the remote
+        print(f"Checking out branches for {repoName}...")
+        for branch in repo.remotes.origin.refs:  # Iterate over all remote branches
+            branch_name = branch.name.split('/')[-1]  # Extract branch name
+            if branch_name == "HEAD":
+                continue
+            try:
+                repo.git.checkout('-B', branch_name,
+                                  branch.name)  # Create and checkout local branch tracking the remote
+                print(f"Checked out branch {branch_name}.")
+            except Exception as e:
+                print(f"Error checking out branch {branch_name}: {e}")
+            repo.git.checkout('master')  # Checkout the master branch
 
     def removeRemoteOrigin(self, repo_path):
         try:
@@ -133,6 +185,7 @@ class CloneProgress(RemoteProgress):
         self.pbar.total = max_count
         self.pbar.n = cur_count
         self.pbar.refresh()
+
 
 
 if __name__ == '__main__':

@@ -59,7 +59,7 @@ class GitlabCIImporter(Importer):
             for jobName in stageJobs[stage]:
                 if self.jobs[jobName].needs != []:
                     for j in self.jobs[jobName].needs:
-                        if j in jobNeeds:
+                        if jobName in jobNeeds:
                             jobNeeds[jobName].add(j)
                         else:
                             jobNeeds[jobName] = {j}
