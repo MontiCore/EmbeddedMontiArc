@@ -41,3 +41,4 @@ Reod docker push url
 - Otherwise seems to work
 
 Problem with skipping as then downstream is not triggered
+Solution idea: Add a stage job that decides whether the current stage is deemend successfull (all jobs either skipped or success) and if yes triggers next stage. All jobs in next stage then have need for this job
