@@ -46,7 +46,7 @@ class Converter(ABC):
             # Backup der Originaldatei erstellen
             backup_path = file_path + '.bak'
             shutil.copy(file_path, backup_path)
-            print(f"Backup erstellt: {backup_path}")
+            #print(f"Backup erstellt: {backup_path}")
 
             # 'Job-Token' durch 'Private-Token' ersetzen
             updated_content = content.replace('Job-Token', 'Private-Token')

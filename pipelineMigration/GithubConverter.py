@@ -44,7 +44,7 @@ class GithubActionConverter(Converter):
         return self.set_indentation_to_two_spaces(pipelineString)
 
     def parseJob(self, job : Job, secrets : list[str] = []) -> str:
-        if job.image in self.compatibleImages:
+        if job.image in self.compatibleImages or not job.image:
             native = True
         else:
             native = False
@@ -56,28 +56,58 @@ class GithubActionConverter(Converter):
             previousJobs = self.pipeline.getPreviousStageJobs(job)
 
         jobString=""
-        jobString += f"\t{job.name.replace("/","_")}:\n"
+        jobString += f"\t{job.name.replace("/","_").replace(" ","_")}:\n"
         if previousJobs:
             jobString += (f"\t\tneeds: ")
             if len(previousJobs) == 1:
-                jobString += f"{previousJobs[0]}\n"
+                jobString += f"{previousJobs[0].replace("/","_").replace(" ","_")}\n"
             else:
                 for i,j in enumerate(previousJobs):
                     if i == 0:
-                        jobString += (f"[ {j} ")
+                        jobString += (f"[ {j.replace("/","_").replace(" ","_")} ")
                     else:
-                        jobString += (f", {j}")
+                        jobString += (f", {j.replace("/","_").replace(" ","_")}")
                 jobString += (f"]\n")
-
-        jobString += f"\t\truns-on: ubuntu-latest\n"
+        # Handle only
+        if job.only:
+            if type(job.only) == dict and False: #ToDO: Activate
+                if "changes" in job.only:
+                    jobString += f"\t\tif: contains(github.event.head_commit.message, '"
+                    for i,p in enumerate(job.only['changes']):
+                        if i == 0:
+                            jobString += f"{p}"
+                        else:
+                            jobString += f", {p}"
+                    jobString += "')\n"
+            if type(job.only ) == list:
+                for i,branch in enumerate(job.only):
+                    if i == 0:
+                        jobString += f"\t\tif: github.ref == 'refs/heads/{branch}'\n"
+                    else:
+                        jobString += f"\t\t  && github.ref == 'refs/heads/{branch}'\n"
+        #Handle except
         if job.exc:
-            for i,branch in enumerate(job.exc):
-                if i == 0:
-                    jobString += f"\t\tif: github.ref != 'refs/heads/{branch}'\n"
-                else:
-                    jobString += f"\t\t  && github.ref != 'refs/heads/{branch}'\n"
+            if type(job.exc) == dict:
+                if not job.only:
+                    jobString += f"\t\tif: "
+                if "changes" in job.exc:
+                    jobString += f"(!contains(github.event.head_commit.message, '"
+                    for i,p in enumerate(job.exc['changes']):
+                        if i == 0:
+                            jobString += f"{p}"
+                        else:
+                            jobString += f", {p}"
+                    jobString += "'))\n"
 
-        if native:
+            if type(job.exc) == list:
+                for i,branch in enumerate(job.exc):
+                    if i == 0 and not job.only:
+                        jobString += f"\t\tif: github.ref != 'refs/heads/{branch}'\n"
+                    else:
+                        jobString += f"\t\t  && github.ref != 'refs/heads/{branch}'\n"
+        jobString += f"\t\truns-on: ubuntu-latest\n"
+
+        if native and job.image:
             jobString += f"\t\tcontainer:\n"
             jobString += f"\t\t\timage: {job.image}\n"
         jobString += f"\t\ttimeout-minutes: {self.timeout}\n"
@@ -90,7 +120,7 @@ class GithubActionConverter(Converter):
         if job.needs:
             for need in job.needs:
                 if self.pipeline.jobs[need].artifacts:
-                    jobString += GithubActionConverter.__downloadArtifacts(self.pipeline.jobs[need].artifacts["paths"], need)
+                    jobString += GithubActionConverter.__downloadArtifacts(self.pipeline.jobs[need].artifacts["paths"], need.replace("/","_").replace(" ","_"))
         if not native:
             jobString += GithubActionConverter.__startDockerContainer(job.image, secrets, "")
         if native:
@@ -114,7 +144,7 @@ class GithubActionConverter(Converter):
                 jobString += f"\t\t\t\t\t\t{command}\n"
             jobString += f'\t\t\t\trun: docker exec build-container bash -c "$SCRIPT"\n'
         if job.artifacts:
-            jobString += GithubActionConverter.__uploadArtifacs(job.artifacts["paths"],job.name)
+            jobString += GithubActionConverter.__uploadArtifacs(job.artifacts["paths"],job.name.replace("/","_").replace(" ","_"))
         return Converter.set_indentation_to_two_spaces(jobString)
 
     @staticmethod

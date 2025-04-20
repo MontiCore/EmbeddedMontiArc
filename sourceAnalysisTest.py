@@ -4,7 +4,7 @@ import yaml
 
 from sourceAnalysis import findLargeFilesInHistory
 
-config = Config.Config("repos.yaml")
+config = Config.Config("config.yaml")
 dr = sourceAnalysis.scanAndCloneRepos(config)
 
 data = yaml.safe_load(open("architecture.yaml"))

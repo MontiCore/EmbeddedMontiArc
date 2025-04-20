@@ -51,7 +51,22 @@ class GithubUploader(Uploader):
         :param repoName: Name of the repository to be created
         :return: Repository object
         """
-        repo = self.g.get_user().create_repo(repoName, private=False)
+        try:
+            repo = self.g.get_user().create_repo(repoName, private=False)
+        except GithubException as e:
+            if e.status == 422:
+                logger.info(f"Repository '{repoName}' already exists.")
+                repo = self.g.get_user().get_repo(repoName)
+                if input("Delete existing repository? (y/n): ").lower() == 'y':
+                    repo.delete()
+                    logger.info(f"Repository '{repoName}' deleted.")
+                    repo = self.g.get_user().create_repo(repoName, private=False)
+                    logger.info(f"New repository '{repoName}' created.")
+                else:
+                    logger.info(f"Keeping existing repository '{repoName}'.")
+                    repo = self.g.get_user().get_repo(repoName)
+            else:
+                raise
         return repo
 
     def createSecrets(self, github_repo, secrets):
@@ -79,11 +94,12 @@ class GithubUploader(Uploader):
         """
         repo = git.Repo("./repos/" + self.repoNames[repoID])
         logger.info(f"Uploading {self.repoNames[repoID]} to the target Git instance...")
-
+        print(repo.branches)
         #self.set_upstream_for_branches(repo)
 
         # Create a new private repository on the target Git instance
-        newRepo = self.createPrivateRepo(self.repoNames[repoID])
+        #newRepo = self.createPrivateRepo(self.repoNames[repoID])
+        newRepo = self.createPublicRepo(self.repoNames[repoID])
         secrets = {"GITLABTOKEN": self.__gitlabToken, "CI_API_V4_URL": "https://git.rwth-aachen.de/api/v4", "CI_PROJECT_ID": repoID}
         self.createSecrets(newRepo,secrets)
 
@@ -91,7 +107,6 @@ class GithubUploader(Uploader):
         remote_url = newRepo.clone_url.replace("https://", f"https://{self.__githubToken}@")
         self.reset_remote_origin(repo, remote_url)
         for branch in self.branchesToBeMigrated[repoID]:
-
             if branch in existingBranches:
                 logger.info(f"Branch {branch} already exists in the target repository.")
             else:

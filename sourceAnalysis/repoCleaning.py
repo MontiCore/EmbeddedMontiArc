@@ -46,6 +46,11 @@ def split_large_files(directory, size="90M"):
     repo.git.add(all=True)
     repo.index.commit("Split large files into smaller parts")
 
+def remove_lfs(directory):
+    repo = git.Repo(directory)
+    repo.git.lfs("migrate", "export", "--everything", "--include", "*")
+    repo.git.lfs('uninstall')
+
 def concatenate_files(directory):
     try:
         command = f"find {directory} -type f -name '*.part*' | while read part; do base=$(echo \"$part\" | sed 's/.part.*//'); cat \"$part\" >> \"$base\"; rm \"$part\"; done"

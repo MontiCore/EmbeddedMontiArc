@@ -10,9 +10,11 @@ from sourceAnalysis import run_git_filter_repo, split_large_files
 import yaml
 import git
 
+from sourceAnalysis.repoCleaning import remove_lfs
+
 print("Starting scan and clone")
 
-config = Config.Config("repos.yaml")
+config = Config.Config("config.yaml")
 dr = sourceAnalysis.scanAndCloneRepos(config)
 
 data = yaml.safe_load(open("architecture.yaml"))
@@ -47,11 +49,12 @@ for repoID in tqdm(data.keys(), desc="Migrating pipelines"):
     else:
         branches = list(set(data[repoID]["Branches"]).union(set(data[repoID]["StaleBranches"])))
     for branch in branches:
-        split_large_files("./repos/" + data[repoID]["Name"])
+        #remove_lfs("./repos/" + data[repoID]["Name"])
+        #split_large_files("./repos/" + data[repoID]["Name"])
         print("Migrating branch: " + branch)
         print(repoID)
         repo.git.checkout(branch)
         GitlabToGithub(gitlabRepoPath, githubRepoPath, "pipeline", ["GITLABTOKEN", "CI_API_V4_URL", "CI_PROJECT_ID"])
         #input("WAIT")
     repo.git.checkout("master")
-    run_git_filter_repo("repos/" + data[repoID]["Name"])
+    #run_git_filter_repo("repos/" + data[repoID]["Name"])

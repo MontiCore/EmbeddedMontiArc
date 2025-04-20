@@ -28,11 +28,23 @@ class GitlabCIImporter(Importer):
         jobs = {}
         for name,parameter in self.yamlData.items():
             if "script" in parameter or "trigger" in parameter:
-                jobs[name] = Job(
+                #Add before script infront of normal script
+                if "before_script" in parameter:
+                    sc = parameter.get("before_script", []) + parameter.get("script", [])
+                else:
+                    sc = parameter.get("script", [])
+
+                #Handle dependencies
+                if "dependencies" in parameter:
+                    needs = parameter.get("dependencies", []) + parameter.get("needs", [])
+                else:
+                    needs = parameter.get("needs", [])
+
+                jobs[name] = Job(   #ToDo: Include tags (at least in a way that handles shell), when, multiple changes, allow failure, only
                     name=name,
                     image=parameter.get("image", ""),
                     stage=parameter.get("stage", ""),
-                    script=parameter.get("script", []),
+                    script=sc,
                     needs=parameter.get("needs", []),
                     when=parameter.get("when", ""),
                     exc=parameter.get("except", []),
