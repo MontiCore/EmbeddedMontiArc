@@ -68,43 +68,7 @@ class GithubActionConverter(Converter):
             if i > 0:
                 jobString += f"\t\tneeds: {self.pipeline.schedule[i-1].replace('/','_').replace(' ','_')+"_phase"}\n"
 
-        # Handle only
-        if job.only:
-            if type(job.only) == dict:
-                if "changes" in job.only:
-                    jobString += f"\t\tif: contains(github.event.head_commit.message, '"
-                    for i, p in enumerate(job.only['changes']):
-                        if i == 0:
-                            jobString += f"{p}"
-                        else:
-                            jobString += f", {p}"
-                    jobString += "')\n"
-            if type(job.only) == list:
-                for i, branch in enumerate(job.only):
-                    if i == 0:
-                        jobString += f"\t\tif: github.ref == 'refs/heads/{branch}'\n"
-                    else:
-                        jobString += f"\t\t  && github.ref == 'refs/heads/{branch}'\n"
-        # Handle except
-        if job.exc:
-            if type(job.exc) == dict:
-                if not job.only:
-                    jobString += f"\t\tif: "
-                if "changes" in job.exc:
-                    jobString += f"(!contains(github.event.head_commit.message, '"
-                    for i, p in enumerate(job.exc['changes']):
-                        if i == 0:
-                            jobString += f"{p}"
-                        else:
-                            jobString += f", {p}"
-                    jobString += "'))\n"
-
-            if type(job.exc) == list:
-                for i, branch in enumerate(job.exc):
-                    if i == 0 and not job.only:
-                        jobString += f"\t\tif: github.ref != 'refs/heads/{branch}'\n"
-                    else:
-                        jobString += f"\t\t  && github.ref != 'refs/heads/{branch}'\n"
+        jobString +=    self.__ifCondition(job)
 
         jobString += f"\t\truns-on: ubuntu-latest\n"
 
@@ -236,6 +200,60 @@ class GithubActionConverter(Converter):
         for path in paths:
             download += f"\t\t\t\t\t\t{path}\n"
         return download
+
+    def __ifCondition(self, job : Job) -> str:
+        ifString = ""
+        if self.pipeline.stages.index(job.stage) != 0:
+            ifString += "\t\tif: ${{ !cancelled() && !contains(needs.*.result, 'failure') "
+
+        # Handle only
+        if job.only:
+            if type(job.only) == dict:
+                if "changes" in job.only:
+                    if ifString =="":
+                        ifString += "\t\tif: ${{"
+                    else:
+                        ifString += " && "
+                    ifString += "contains(github.event.head_commit.message, '"
+                    for i, p in enumerate(job.only['changes']):
+                        if i == 0:
+                            ifString += f"{p}"
+                        else:
+                            ifString += f", {p}"
+                    ifString += "')"
+            if type(job.only) == list:
+                if ifString =="":
+                    ifString += "\t\tif: ${{"
+                else:
+                    ifString += " && "
+                for i, branch in enumerate(job.only):
+                    if i == 0:
+                        ifString += f" github.ref == 'refs/heads/{branch}'"
+                    else:
+                        ifString += f" && github.ref == 'refs/heads/{branch}'"
+        # Handle except
+        if job.exc:
+            if type(job.exc) == dict:
+                if ifString =="":
+                    ifString += "\t\tif: ${{"
+                if "changes" in job.exc:
+                    ifString += f" && !contains(github.event.head_commit.message, '"
+                    for i, p in enumerate(job.exc['changes']):
+                        if i == 0:
+                            ifString += f"{p}"
+                        else:
+                            ifString += f", {p}"
+                    ifString += "')"
+
+            if type(job.exc) == list:
+                for i, branch in enumerate(job.exc):
+                    if i == 0 and not ifString:
+                        ifString += f"\t\tif: github.ref != 'refs/heads/{branch}'"
+                    else:
+                        ifString += f"\t\t  && github.ref != 'refs/heads/{branch}'"
+        if  ifString:
+            ifString += "}}\n"
+        return ifString
 
     def __createStageJobs(self):
         lastStage = ""
