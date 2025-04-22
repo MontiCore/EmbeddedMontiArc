@@ -38,6 +38,8 @@ class GithubActionConverter(Converter):
 
         pipelineString += "jobs:\n"
 
+        pipelineString += self.__createStageJobs()
+
         for job in self.pipeline.jobs:
             pipelineString += self.parseJob(self.pipeline.jobs[job],secrets)
             pipelineString += "\n"
@@ -48,51 +50,49 @@ class GithubActionConverter(Converter):
             native = True
         else:
             native = False
-
-
-        if job.needs:
-            previousJobs = job.needs
-        else:
-            previousJobs = self.pipeline.getPreviousStageJobs(job)
-
         jobString=""
         jobString += f"\t{job.name.replace("/","_").replace(" ","_")}:\n"
-        if previousJobs:
+        if job.needs:
             jobString += (f"\t\tneeds: ")
-            if len(previousJobs) == 1:
-                jobString += f"{previousJobs[0].replace("/","_").replace(" ","_")}\n"
+            if len(job.needs) == 1:
+                jobString += f"{job.needs[0].replace("/","_").replace(" ","_")}\n"
             else:
-                for i,j in enumerate(previousJobs):
+                for i,j in enumerate(job.needs):
                     if i == 0:
                         jobString += (f"[ {j.replace("/","_").replace(" ","_")} ")
                     else:
                         jobString += (f", {j.replace("/","_").replace(" ","_")}")
                 jobString += (f"]\n")
+        else:
+            i = self.pipeline.stages.index(job.stage)
+            if i > 0:
+                jobString += f"\t\tneeds: {self.pipeline.schedule[i-1].replace('/','_').replace(' ','_')+"_phase"}\n"
+
         # Handle only
         if job.only:
-            if type(job.only) == dict and False: #ToDO: Activate
+            if type(job.only) == dict:
                 if "changes" in job.only:
                     jobString += f"\t\tif: contains(github.event.head_commit.message, '"
-                    for i,p in enumerate(job.only['changes']):
+                    for i, p in enumerate(job.only['changes']):
                         if i == 0:
                             jobString += f"{p}"
                         else:
                             jobString += f", {p}"
                     jobString += "')\n"
-            if type(job.only ) == list:
-                for i,branch in enumerate(job.only):
+            if type(job.only) == list:
+                for i, branch in enumerate(job.only):
                     if i == 0:
                         jobString += f"\t\tif: github.ref == 'refs/heads/{branch}'\n"
                     else:
                         jobString += f"\t\t  && github.ref == 'refs/heads/{branch}'\n"
-        #Handle except
+        # Handle except
         if job.exc:
             if type(job.exc) == dict:
                 if not job.only:
                     jobString += f"\t\tif: "
                 if "changes" in job.exc:
                     jobString += f"(!contains(github.event.head_commit.message, '"
-                    for i,p in enumerate(job.exc['changes']):
+                    for i, p in enumerate(job.exc['changes']):
                         if i == 0:
                             jobString += f"{p}"
                         else:
@@ -100,11 +100,12 @@ class GithubActionConverter(Converter):
                     jobString += "'))\n"
 
             if type(job.exc) == list:
-                for i,branch in enumerate(job.exc):
+                for i, branch in enumerate(job.exc):
                     if i == 0 and not job.only:
                         jobString += f"\t\tif: github.ref != 'refs/heads/{branch}'\n"
                     else:
                         jobString += f"\t\t  && github.ref != 'refs/heads/{branch}'\n"
+
         jobString += f"\t\truns-on: ubuntu-latest\n"
 
         if native and job.image:
@@ -235,3 +236,34 @@ class GithubActionConverter(Converter):
         for path in paths:
             download += f"\t\t\t\t\t\t{path}\n"
         return download
+
+    def __createStageJobs(self):
+        lastStage = ""
+        jobString = ""
+        for stage in self.pipeline.schedule[:-1]:
+            jobString += f"\t{stage + "_phase:"}\n"
+
+            jobString += f"\t\tneeds: ["
+            if lastStage:
+                jobString += f'{lastStage + "_phase, "}'
+            lastStage = stage
+            for i,job in enumerate(self.pipeline.stageJobs[stage]):
+                if i == 0:
+                    jobString += f"{job.replace('/','_').replace(' ','_')}"
+                else:
+                    jobString += f", {job.replace('/','_').replace(' ','_')}"
+            jobString += f"]\n"
+            jobString += "\t\tif: ${{ !cancelled()"
+            #jobString += " && !contains(needs.*.result, 'failure')}}\n"
+            jobString += "}}\n"
+            jobString += f"\t\truns-on: ubuntu-latest\n"
+            jobString += "\t\tsteps:\n"
+            jobString += f"\t\t\t\t- run: |\n"
+            jobString += f'\t\t\t\t\t\techo "Finished stage {stage}"\n'
+            jobString +=  "\t\t\t\t  if: ${{!contains(needs.*.result, 'failure')}}\n"
+            jobString += f"\t\t\t\t- run: |\n"
+            jobString += f'\t\t\t\t\t\techo "Failed stage {stage}"\n'
+            jobString +=  "\t\t\t\t\t\texit 1\n"
+            jobString +=  "\t\t\t\t  if: ${{contains(needs.*.result, 'failure')}}\n"
+        jobString += "\n"
+        return jobString
