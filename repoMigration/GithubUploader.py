@@ -112,8 +112,11 @@ class GithubUploader(Uploader):
             else:
                 logger.info(f"Uploading {branch} branch...")
                 with (PushProgress() as progress):
-                    repo.remote(name="origin").push(refspec=f"{branch}:{branch}", force=True, progress=progress)
-
+                    a = repo.remote(name="origin").push(refspec=f"{branch}:{branch}", force=True, progress=progress)
+                    print(a[0].summary)
+                    print(a[0].flags)
+                    print(a[0].remote_ref_string)
+                    print()
                 logger.info(f"Branch {branch} uploaded successfully.")
 
         newRepo.edit(default_branch="master")
@@ -230,3 +233,15 @@ class PushProgress(RemoteProgress):
 
     def __exit__(self, exc_type, exc_value, traceback):
         self.close()
+
+
+    def new_message_handler(self):
+        """
+        :return:
+            a progress handler suitable for handle_process_output(), passing lines on to this Progress
+            handler in a suitable format"""
+        def handler(line):
+            print(line.rstrip())  # THIS IS THE LINE I ADDED TO THE ORIGINAL METHOD
+            return self._parse_progress_line(line.rstrip())
+        # end
+        return handler

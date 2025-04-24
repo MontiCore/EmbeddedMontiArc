@@ -96,11 +96,27 @@ class Gitlab(Git):
         return stale_branches
 
     def getDockerImages(self,repo):
+        #data = []
+        #try:
+        #    images =repo.repositories.list(all=True)
+        #    for image in images:
+        #        data.append(image.name)
+        #except gitlab.exceptions.GitlabListError:
+        #    pass
+        #return data
         data = []
         try:
-            images =repo.repositories.list(all=True)
+            images = repo.repositories.list(all=True)
             for image in images:
-                data.append(image.name)
+                #image_data = {"name": image.name, "tags": []}
+                try:
+                    tags = image.tags.list(all=True)
+                    for tag in tags:
+                        data.append(image.name+":" + tag.name)
+                        #image_data["tags"].append(tag.name)
+                except gitlab.exceptions.GitlabListError:
+                    pass
+                #data.append(image_data)
         except gitlab.exceptions.GitlabListError:
             pass
         return data
@@ -160,8 +176,7 @@ class Gitlab(Git):
             if branch_name == "HEAD":
                 continue
             try:
-                repo.git.checkout('-B', branch_name,
-                                  branch.name)  # Create and checkout local branch tracking the remote
+                repo.git.checkout('-B', branch_name, branch.name)  # Create and checkout local branch tracking the remote
                 print(f"Checked out branch {branch_name}.")
             except Exception as e:
                 print(f"Error checking out branch {branch_name}: {e}")

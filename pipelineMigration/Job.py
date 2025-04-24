@@ -2,7 +2,7 @@ class Job:
     """
     A class representing a single job in a CI/CD pipeline.
     """
-    def __init__(self,name : str, image : str, stage : str, script : list[str], needs : list[str] = [], when :str  = "", exc : list[str] = [], artifacts = {}, only : list[str] = []):
+    def __init__(self,name : str, image : str, stage : str, script : list[str], needs : list[str] = [], when :str  = "", exc : list[str] = [], artifacts = {}, only : list[str] = [], allowFailure = False):
         """
         Initializes the job with the given parameters.
         :param name: Name of the job
@@ -14,6 +14,7 @@ class Job:
         :param exc: List of branches that should not trigger the job
         :param artifacts: Path to artifacts produced by the job
         :param only: List of branches that should trigger the job
+        :param allowFailure: Flag indicating if the job can fail without failing the pipeline
         """
 
         self.name = name
@@ -25,6 +26,7 @@ class Job:
         self.exc = exc
         self.artifacts = artifacts
         self.only = only
+        self.allowFailure = allowFailure
 
     def __str__(self):
         result = f"Name: {self.name}\n"
@@ -44,4 +46,6 @@ class Job:
             result += f"Artifacts: {self.artifacts}\n"
         if self.only:
             result += f"Only: {self.only}\n"
+        if self.allowFailure:
+            result += f"Allow Failure: {self.allowFailure}\n"
         return result

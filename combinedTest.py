@@ -1,3 +1,5 @@
+import subprocess
+
 from tqdm import tqdm
 
 import Config
@@ -10,7 +12,7 @@ from sourceAnalysis import run_git_filter_repo, split_large_files
 import yaml
 import git
 
-from sourceAnalysis.repoCleaning import remove_lfs
+from sourceAnalysis.repoCleaning import remove_lfs, remove_lfs_from_gitattributes
 
 print("Starting scan and clone")
 
@@ -48,13 +50,17 @@ for repoID in tqdm(data.keys(), desc="Migrating pipelines"):
         branches = data[repoID]["Branches"]
     else:
         branches = list(set(data[repoID]["Branches"]).union(set(data[repoID]["StaleBranches"])))
+    lfs_check = subprocess.run(["git", "lfs", "ls-files"], cwd="repos/" + data[repoID]["Name"], capture_output=True, text=True)
+    if lfs_check.stdout:
+        remove_lfs("./repos/" + data[repoID]["Name"])
     for branch in branches:
-        #remove_lfs("./repos/" + data[repoID]["Name"])
-        #split_large_files("./repos/" + data[repoID]["Name"])
+        repo.git.checkout(branch)
+        split_large_files("./repos/" + data[repoID]["Name"])
         print("Migrating branch: " + branch)
         print(repoID)
-        repo.git.checkout(branch)
+        remove_lfs_from_gitattributes("./repos/" + data[repoID]["Name"])
+
         GitlabToGithub(gitlabRepoPath, githubRepoPath, "pipeline", ["GITLABTOKEN", "CI_API_V4_URL", "CI_PROJECT_ID"])
         #input("WAIT")
     repo.git.checkout("master")
-    #run_git_filter_repo("repos/" + data[repoID]["Name"])
+    run_git_filter_repo("repos/" + data[repoID]["Name"])

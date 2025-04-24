@@ -38,6 +38,7 @@ class GithubActionConverter(Converter):
 
         pipelineString += "jobs:\n"
 
+        pipelineString += self.__createFileChangeJob()
         pipelineString += self.__createStageJobs()
 
         for job in self.pipeline.jobs:
@@ -67,6 +68,8 @@ class GithubActionConverter(Converter):
             i = self.pipeline.stages.index(job.stage)
             if i > 0:
                 jobString += f"\t\tneeds: {self.pipeline.schedule[i-1].replace('/','_').replace(' ','_')+"_phase"}\n"
+            else:
+                jobString += f"\t\tneeds: FileChanges\n"
 
         jobString +=    self.__ifCondition(job)
 
@@ -90,6 +93,8 @@ class GithubActionConverter(Converter):
             jobString += GithubActionConverter.__startDockerContainer(job.image, secrets, "")
         if native:
             jobString += f"\t\t\t- name: Script\n"
+            if job.allowFailure == True:
+                jobString += "\t\t\t\tcontinue-on-error: true\n"
             #jobString += f"\t\t\t\tshell: bash\n"
             jobString += f"\t\t\t\trun: |\n"
             #jobString += f"\t\t\t\t\tcd repo\n"    #For manual clone
@@ -99,26 +104,31 @@ class GithubActionConverter(Converter):
                 jobString += f"\t\t\t\t\t{command}\n"
         else:
             jobString += f"\t\t\t- name: Script\n"
+            if job.allowFailure == True:
+                jobString += "\t\t\t\tcontinue-on-error: true\n"
             jobString += f"\t\t\t\tenv:\n"
             jobString += f"\t\t\t\t\tSCRIPT: |\n"
             jobString += f"\t\t\t\t\t\tcd /workspace\n"
 
-            for command in job.script:
+            for command in job.script:  #ToDo: ADD function to implement changes for selected commands like below
                 if "mvn" in command:
                     command += " -Dmaven.wagon.http.retryHandler.count=50 -Dmaven.wagon.http.connectionTimeout=60000000 -Dmaven.wagon.http.readTimeout=60000000"
                 jobString += f"\t\t\t\t\t\t{command}\n"
             jobString += f'\t\t\t\trun: docker exec build-container bash -c "$SCRIPT"\n'
         if job.artifacts:
-            jobString += GithubActionConverter.__uploadArtifacs(job.artifacts["paths"],job.name.replace("/","_").replace(" ","_"))
+            if job.artifacts["paths"] == ["public"] and job.name == "pages":
+                jobString += GithubActionConverter.__deployPages(job.artifacts["paths"][0])
+            else:
+                jobString += GithubActionConverter.__uploadArtifacs(job.artifacts["paths"],job.name.replace("/","_").replace(" ","_"))
         return Converter.set_indentation_to_two_spaces(jobString)
 
     @staticmethod
-    def __addCheckoutStep(repo : str ="") -> str:
+    def __addCheckoutStep(repo : str ="", depth = 1) -> str:
         checkout =""
         checkout += f"\t\t\t- name: Checkout latest commit\n"
         checkout += f"\t\t\t\tuses: actions/checkout@v4\n"
         checkout += f"\t\t\t\twith:\n"
-        checkout += f"\t\t\t\t\tfetch-depth: 1\n"
+        checkout += f"\t\t\t\t\tfetch-depth: {depth}\n"
         if repo:
             checkout += f"\t\t\t\t\trepository: {repo}\n"
             checkout +=  "\t\t\t\t\ttoken: ${{ secrets.ACCESS_TOKEN }}\n"
@@ -129,7 +139,7 @@ class GithubActionConverter(Converter):
         checkout =""
         checkout += f"\t\t\t- name: Checkout latest commit\n"
         checkout += f"\t\t\t\trun: |\n"
-        checkout +=  "\t\t\t\t\tgit clone --depth 1 https://${{github.REPOSITORY_OWNER}}:${{ secrets.ACCESS_TOKEN }}@github.com/"+f"{repo} repo\n"
+        checkout +=  "\t\t\t\t\tgit clone --depth 1 " + "https://${{github.REPOSITORY_OWNER}}:${{ secrets.ACCESS_TOKEN }}@github.com/"+f"{repo} repo\n"
         checkout += f"\t\t\t\t\tcd repo\n"
         checkout += f"\t\t\t\t\tls\n"
         return checkout
@@ -201,6 +211,17 @@ class GithubActionConverter(Converter):
             download += f"\t\t\t\t\t\t{path}\n"
         return download
 
+    @staticmethod
+    def __deployPages(path : str) -> str:
+        deploy = ""
+        deploy += "\t\t\t- name: Upload Pages\n"
+        deploy += "\t\t\t\tuses: actions/upload-pages-artifact@v3\n"
+        deploy += "\t\t\t\twith:\n"
+        deploy +=f"\t\t\t\t\tpath: {path}/\n"
+        deploy += "\t\t\t- name: Deploy to Pages\n"
+        deploy += "\t\t\t\tuses: actions/deploy-pages@v4\n"
+        return deploy
+
     def __ifCondition(self, job : Job) -> str:
         ifString = ""
         if self.pipeline.stages.index(job.stage) != 0:
@@ -214,13 +235,7 @@ class GithubActionConverter(Converter):
                         ifString += "\t\tif: ${{"
                     else:
                         ifString += " && "
-                    ifString += "contains(github.event.head_commit.message, '"
-                    for i, p in enumerate(job.only['changes']):
-                        if i == 0:
-                            ifString += f"{p}"
-                        else:
-                            ifString += f", {p}"
-                    ifString += "')"
+                    ifString += f"needs.FileChanges.outputs.run{job.name.replace('/','_').replace(' ','_')} == 'true'"
             if type(job.only) == list:
                 if ifString =="":
                     ifString += "\t\tif: ${{"
@@ -284,4 +299,34 @@ class GithubActionConverter(Converter):
             jobString +=  "\t\t\t\t\t\texit 1\n"
             jobString +=  "\t\t\t\t  if: ${{contains(needs.*.result, 'failure')}}\n"
         jobString += "\n"
+        return jobString
+
+    def __createFileChangeJob(self):
+        jobString = "\tFileChanges:\n"
+        jobString += f"\t\truns-on: ubuntu-latest\n"
+        jobString += f"\t\toutputs:\n"
+        for _,job in self.pipeline.jobs.items():
+            if job.only and type(job.only) == dict and "changes" in job.only:
+                jobString += f"\t\t\trun{job.name}: " + "${{" + f"steps.{job.name.replace('/','_').replace(' ','_')}.outputs.run" + "}}\n"
+        jobString += "\t\tsteps:\n"
+        jobString += self.__addCheckoutStep(depth = 2)
+        jobString += f"\t\t\t- name: Check for file changes\n"
+        jobString += f"\t\t\t\trun: |\n"
+        jobString += f"\t\t\t\t\tCHANGES=$(git diff --name-only HEAD^ HEAD)\n"
+        jobString +=  '\t\t\t\t\techo "$CHANGES"\n'
+        jobString +=  '\t\t\t\t\techo "$CHANGES" > diff.txt\n'
+        for _,job in self.pipeline.jobs.items():
+            if job.only and type(job.only) == dict and "changes" in job.only:
+                jobString += f"\t\t\t- name: Check {job.name}\n"
+                jobString += f"\t\t\t\tid: {job.name.replace('/','_').replace(' ','_')}\n"
+                jobString += f"\t\t\t\trun: |\n"
+                jobString +=  "\t\t\t\t\trun=false\n"
+                for path in job.only["changes"]:
+                    jobString += "\t\t\t\t\tif cat diff.txt | grep" + f" '^{path.replace("/**/*", "")}'" + "; then\n"
+                    jobString += '\t\t\t\t\t\techo "RUN"\n'
+                    jobString += "\t\t\t\t\t\trun=true\n"
+                    jobString += "\t\t\t\t\telse\n"
+                    jobString += '\t\t\t\t\t\techo "DONT RUN"\n'
+                    jobString += "\t\t\t\t\tfi\n"
+                jobString += '\t\t\t\t\techo "run=$run" >> $GITHUB_OUTPUT\n'
         return jobString

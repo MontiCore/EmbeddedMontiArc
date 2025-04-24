@@ -1,3 +1,4 @@
+import os
 import subprocess
 import git
 
@@ -50,6 +51,28 @@ def remove_lfs(directory):
     repo = git.Repo(directory)
     repo.git.lfs("migrate", "export", "--everything", "--include", "*")
     repo.git.lfs('uninstall')
+
+def remove_lfs_from_gitattributes(directory):
+    changes = False
+    for root, _, files in os.walk(directory):
+        for file in files:
+            if file == ".gitattributes":
+                file_path = os.path.join(root, file)
+                with open(file_path, "r") as f:
+                    lines = f.readlines()
+                with open(file_path, "w") as f:
+                    for line in lines:
+                        if "filter=lfs" not in line:
+                            f.write(line)
+                print(f"Bereinigt: {file_path}")
+                changes = True
+    if changes:
+        repo = git.Repo(directory)
+        repo.git.add(all=True)
+        repo.index.commit("Removed LFS from .gitattributes")
+
+
+
 
 def concatenate_files(directory):
     try:

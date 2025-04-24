@@ -40,16 +40,16 @@ class GitlabCIImporter(Importer):
                 else:
                     needs = parameter.get("needs", [])
 
-                jobs[name] = Job(   #ToDo: Include tags (at least in a way that handles shell), when, multiple changes, allow failure, only
-                    name=name,
+                jobs[name] = Job(   #ToDo: Include tags (at least in a way that handles shell), when
                     image=parameter.get("image", ""),
                     stage=parameter.get("stage", ""),
                     script=sc,
-                    needs=parameter.get("needs", []),
+                    needs=needs,
                     when=parameter.get("when", ""),
                     exc=parameter.get("except", []),
                     artifacts=parameter.get("artifacts", []),
-                    only = parameter.get("only", [])
+                    only=parameter.get("only", []),
+                    allowFailure=parameter.get("allow_failure", False)
                 )
         return jobs
 
