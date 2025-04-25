@@ -235,13 +235,12 @@ class PushProgress(RemoteProgress):
         self.close()
 
 
-    def new_message_handler(self):
+    def new_message_handler__disabled(self):
         """
         :return:
             a progress handler suitable for handle_process_output(), passing lines on to this Progress
             handler in a suitable format"""
         def handler(line):
-            print(line.rstrip())  # THIS IS THE LINE I ADDED TO THE ORIGINAL METHOD
+            print(line.rstrip())
             return self._parse_progress_line(line.rstrip())
-        # end
         return handler

@@ -114,6 +114,44 @@ ranges_handler
 sac
 - seems to work
 
-Problem with skipping as then downstream is not triggered
+
+ToDo
+=================
+
+- [x] Problem with skipping as then downstream is not triggered
 Solution idea: Add a stage job that decides whether the current stage is deemend successfull (all jobs either skipped or success) and if yes triggers next stage. All jobs in next stage then have need for this job
-Solved
+
+
+- [x] Pages deployment
+
+- [x] Add on file change
+
+- [ ] **Can I run arbitraty pipelines in GitLab to compare results?**
+
+- [ ] Add function to change docker image in action if they are to be migrated
+
+- [ ] Add function that scans script line and if necessary implements changes
+    - Change CI_Token to GITLAB_TOKEN
+    - Change REGISTRY in docker login
+    - Change password in docker login
+    - Change docker tag to github
+    - Chabge docker push to github
+  
+- [ ] Add secrets from GitLab and variables to architecture.yaml, then manual input of values required there
+
+- [ ] Scan for secrets and Variables in Maven files
+
+- [ ] Verify LFS 
+
+- [ ] Implement usage as CLI, implement adaptability in the script
+
+- [ ] Implement usage as library
+
+- [ ] Implement retry mechanism for migration, so that no double commits
+
+- [ ] Maybe local secret scanning with 3rd party tool?
+
+- [ ] Need organization acces to Monticore -> Create extra repos, as no folder structure as in GitLab
+
+- [ ] Change tool to be independent of user Namespace, currently only works for David.Blum
+

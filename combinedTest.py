@@ -50,7 +50,8 @@ for repoID in tqdm(data.keys(), desc="Migrating pipelines"):
         branches = data[repoID]["Branches"]
     else:
         branches = list(set(data[repoID]["Branches"]).union(set(data[repoID]["StaleBranches"])))
-    lfs_check = subprocess.run(["git", "lfs", "ls-files"], cwd="repos/" + data[repoID]["Name"], capture_output=True, text=True)
+    lfs_check = subprocess.run(["git", "lfs", "ls-files"], cwd="repos/" + data[repoID]["Name"], capture_output=True,
+                               text=True)
     if lfs_check.stdout:
         remove_lfs("./repos/" + data[repoID]["Name"])
     for branch in branches:
@@ -62,5 +63,7 @@ for repoID in tqdm(data.keys(), desc="Migrating pipelines"):
 
         GitlabToGithub(gitlabRepoPath, githubRepoPath, "pipeline", ["GITLABTOKEN", "CI_API_V4_URL", "CI_PROJECT_ID"])
         #input("WAIT")
+
+
     repo.git.checkout("master")
     run_git_filter_repo("repos/" + data[repoID]["Name"])
