@@ -1,11 +1,16 @@
+import logging
 from abc import ABC
 import yaml
 import git
 
+
+logger = logging.getLogger(__name__)
 class Uploader(ABC):
     def __init__(self):
         data = yaml.safe_load(open("architecture.yaml"))
 
+        self.namespaces = {}
+        self.repoNames = {}
         self.branchesToBeMigrated = {}
         for repoID in data.keys():
             if data[repoID]["Branches"] is None:
@@ -14,17 +19,21 @@ class Uploader(ABC):
                 self.branchesToBeMigrated[str(repoID)] = data[repoID]["Branches"]
             else:
                 self.branchesToBeMigrated[str(repoID)] = list(set(data[repoID]["Branches"]).union(set(data[repoID]["StaleBranches"])))
+            self.repoNames[str(repoID)] = data[repoID]["Name"]
+            self.namespaces[str(repoID)] = data[repoID]["Namespace"]
+
         print(self.branchesToBeMigrated)
 
         self.repoIDS = data.keys()
-        self.repoNames = {}
 
-        for repoID in self.repoIDS:
-            self.repoNames[str(repoID)] = data[repoID]["Name"]
+
+
+
+
         print(self.repoNames)
 
 
-    def delete_local_branch(slef, repoPath, branch_name):
+    def delete_local_branch(self, repoPath, branch_name):
         try:
             repo = git.Repo(repoPath)
             repo.git.branch('-D', branch_name)
@@ -66,5 +75,20 @@ class Uploader(ABC):
         if subtreeRepoName in repo.remotes:
             repo.delete_remote(subtreeRepoName)
         repo.create_remote(subtreeRepoName, "../" + subtreeRepoName)
-        repo.git.fetch(subtreeRepoName)
+        repo.git.fetch(subtreeRepoName, branch)
         repo.git.subtree("add", "--prefix", prefix +"/" + subtreeRepoName, subtreeRepoName, branch)
+
+    def addReposAsSubtree(self, targetRepoName, subtreeRepoIDs, ):
+        """
+        Add repositories as subtrees to the target repository.
+        :param targetRepoName: Name of the target GitHub repository
+        :param subtreeRepoIDs: IDs of the repositories to be uploaded as subtrees
+        """
+        targetRepo = self.initRepo(targetRepoName)
+        for repoID in subtreeRepoIDs:
+            repoName = self.repoNames[repoID]
+            logger.info(f"Uploading {repoName} as a subtree to {targetRepoName}...")
+            namespace = self.namespaces[repoID]
+
+            self.addSubtree(targetRepoName, repoName, prefix=namespace)
+            logger.info(f"Repository {repoName} uploaded as a subtree to {targetRepoName}.")

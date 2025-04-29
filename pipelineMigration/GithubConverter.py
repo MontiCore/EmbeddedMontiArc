@@ -101,9 +101,7 @@ class GithubActionConverter(Converter):
             jobString += f"\t\t\t\trun: |\n"
             #jobString += f"\t\t\t\t\tcd repo\n"    #For manual clone
             for command in job.script:
-                if "mvn" in command:
-                    command += " -Dmaven.wagon.http.retryHandler.count=50 -Dmaven.wagon.http.connectionTimeout=6000000 -Dmaven.wagon.http.readTimeout=600000000"
-                jobString += f"\t\t\t\t\t{command}\n"
+                jobString += self.scriptParser(command)
         else:
             jobString += f"\t\t\t- name: Script\n"
             if job.allowFailure == True:
@@ -335,3 +333,14 @@ class GithubActionConverter(Converter):
                     jobString += "\t\t\t\t\tfi\n"
                 jobString += '\t\t\t\t\techo "run=$run" >> $GITHUB_OUTPUT\n'
         return jobString
+
+    def scriptParser(self, script : str) -> str:
+        """
+        Parses the script of a job and returns it as a string.
+        :param script: Script to be parsed
+        :return: Parsed script
+        """
+        if "mvn" in script:
+            script += " -Dmaven.wagon.http.retryHandler.count=50 -Dmaven.wagon.http.connectionTimeout=6000000 -Dmaven.wagon.http.readTimeout=600000000"
+            return f"\t\t\t\t\t{script}\n"
+        return script

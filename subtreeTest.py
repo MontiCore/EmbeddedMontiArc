@@ -72,6 +72,7 @@ for repoID in tqdm(data.keys(), desc="Migrating pipelines"):
 
 Uploader = GithubUploader.GithubUploader(config.targetToken, config.sourceToken)
 
-Uploader.initRepo("subtreeTest")
-Uploader.addSubtree("subtreeTest", "EMADL2CPP", "generator")
-Uploader.addSubtree("subtreeTest", "MNISTCalculator", "application")
+#Uploader.initRepo("subtreeTest")
+#Uploader.addSubtree("subtreeTest", "EMADL2CPP", "generator")
+#Uploader.addSubtree("subtreeTest", "MNISTCalculator", "application")
+Uploader.addReposAsSubtree("subtreeTest", data.keys())

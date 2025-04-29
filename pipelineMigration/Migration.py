@@ -10,6 +10,7 @@ def writeStringToFile( file_path, content):
     with open(file_path, 'w') as file:
         file.write(content)
 
+#ToDo: Add for Subtree variant
 def GitlabToGithub(gitlabFilePath: str, githubFilePath: str, name: str = "pipeline", secrets: list[str] = []) -> None:
     """
     This function migrates a file from GitLab to GitHub.
