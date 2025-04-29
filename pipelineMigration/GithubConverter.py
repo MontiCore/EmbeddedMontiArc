@@ -37,8 +37,10 @@ class GithubActionConverter(Converter):
                 pipelineString += f"\t{secret} : " + "${{ secrets."+ f"{secret}"+" }}\n"
 
         pipelineString += "jobs:\n"
-
-        pipelineString += self.__createFileChangeJob()
+        for _,job in self.pipeline.jobs.items():
+            if job.only and type(job.only) == dict and "changes" in job.only:
+                pipelineString += self.__createFileChangeJob()
+                break
         pipelineString += self.__createStageJobs()
 
         for job in self.pipeline.jobs:
@@ -212,7 +214,7 @@ class GithubActionConverter(Converter):
         return download
 
     @staticmethod
-    def __deployPages(path : str) -> str:
+    def __deployPages(path : str) -> str:   #ToDo: Add special rights for token for this job
         deploy = ""
         deploy += "\t\t\t- name: Upload Pages\n"
         deploy += "\t\t\t\tuses: actions/upload-pages-artifact@v3\n"
@@ -304,7 +306,10 @@ class GithubActionConverter(Converter):
     def __createFileChangeJob(self):
         jobString = "\tFileChanges:\n"
         jobString += f"\t\truns-on: ubuntu-latest\n"
-        jobString += f"\t\toutputs:\n"
+        for _,job in self.pipeline.jobs.items():
+            if job.only and type(job.only) == dict and "changes" in job.only:
+                jobString += f"\t\toutputs:\n"
+                break
         for _,job in self.pipeline.jobs.items():
             if job.only and type(job.only) == dict and "changes" in job.only:
                 jobString += f"\t\t\trun{job.name}: " + "${{" + f"steps.{job.name.replace('/','_').replace(' ','_')}.outputs.run" + "}}\n"

@@ -11,7 +11,7 @@ master:
 #clean secrets for public repo
 
 16-create-example ...
--  base_mxnet Problemwith docker deployment
+-  base_mxnet Problem with docker deployment
 
 ma-antovski
 - seems to work (even tough it fails)
@@ -135,7 +135,7 @@ Solution idea: Add a stage job that decides whether the current stage is deemend
     - Change REGISTRY in docker login
     - Change password in docker login
     - Change docker tag to github
-    - Chabge docker push to github
+    - Change docker push to github
   
 - [ ] Add secrets from GitLab and variables to architecture.yaml, then manual input of values required there
 
@@ -155,3 +155,4 @@ Solution idea: Add a stage job that decides whether the current stage is deemend
 
 - [ ] Change tool to be independent of user Namespace, currently only works for David.Blum
 
+- [ ] Add pre-commit hook to check for file siz -> if yes split? Add pull-hook to rebuild those large files

@@ -13,5 +13,5 @@ print(Uploader.listPrivateRepos())
 for repoID in config.repoIDS:
     print("----------------")
     print("Uploading repo: " + repoID)
-    #Uploader.uploadRepo(repoID)
-    Uploader.dockerImageMigration("monticore/EmbeddedMontiArc/generators/", architecture[repoID]["Name"], architecture[repoID]["DockerImages"])
+    Uploader.uploadRepo(repoID)
+    #Uploader.dockerImageMigration("monticore/EmbeddedMontiArc/generators/", architecture[repoID]["Name"], architecture[repoID]["DockerImages"])
